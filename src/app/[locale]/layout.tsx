@@ -16,7 +16,7 @@
 // codes) are the canon Obsidian typography.
 // ============================================================================
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale, getMessages } from "next-intl/server";
@@ -60,8 +60,27 @@ export async function generateMetadata({
   return {
     title: `${t("name")} · ${t("tagline")}`,
     description: t("tagline"),
+    // Favicon set generated from the RN mark (see public/). favicon.ico covers
+    // legacy/tab use; the PNGs give crisp 16/32; apple-touch is the iOS tile.
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+        { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    },
+    manifest: "/manifest.webmanifest",
   };
 }
+
+/**
+ * Tints mobile browser chrome (address bar) to the Obsidian background so the
+ * page does not show a bright bar above the dark UI.
+ */
+export const viewport: Viewport = {
+  themeColor: "#0A1628",
+};
 
 export default async function LocaleLayout({
   children,

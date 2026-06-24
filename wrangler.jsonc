@@ -22,6 +22,12 @@
   // Runtime compatibility baseline. Set to the deploy date.
   "compatibility_date": "2026-06-24",
 
+  // Retire the public *.workers.dev URL so the site has ONE canonical address
+  // (ronutz.com, the Custom Domain). Without this set in the config, a
+  // Git-triggered deploy re-enables workers.dev by default. Branch Preview URLs
+  // are unaffected by this.
+  "workers_dev": false,
+
   "assets": {
     // Folder produced by `npm run build` (next build -> ./out, then pagefind
     // writes its search index into ./out/pagefind).

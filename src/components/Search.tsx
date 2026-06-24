@@ -15,9 +15,13 @@
 //   We use Pagefind's JS API directly (not its prebuilt UI) so results render
 //   in our own theme, fully integrated — no clashing light-mode widget.
 //
-// MULTILINGUAL: we filter results to the active language so a visitor reading
-// in Portuguese gets Portuguese results. Pagefind tags each page with its
-// language (from <html lang>), and we pass that as a filter.
+// MULTILINGUAL: Pagefind splits its index by language at build time (detected
+// from each page's <html lang>). At runtime, loading /pagefind/pagefind.js on a
+// page auto-selects the index matching that page's <html lang>, so a visitor on
+// /pt-BR/ searches Portuguese content and one on /en/ searches English, with no
+// extra wiring. We therefore do NOT pass a language "filter": Pagefind filters
+// are faceted filters declared via data-pagefind-filter (this build has none),
+// so filtering by a non-existent "language" facet would match zero results.
 //
 // LOADING: the runtime lives in the build OUTPUT (/pagefind/pagefind.js), not
 // in node_modules, so it is imported dynamically at runtime via a path the
@@ -27,7 +31,7 @@
 // ============================================================================
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 // Minimal shapes for the parts of the Pagefind API we use (it ships no types).
 interface PagefindSubResult {
@@ -71,7 +75,6 @@ function sanitizeExcerpt(raw: string): string {
 
 export default function Search() {
   const t = useTranslations("search");
-  const locale = useLocale();
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -137,8 +140,9 @@ export default function Search() {
         setLoading(false);
         return;
       }
-      // Filter to the active language so results match what the visitor reads.
-      const search = await pf.search(q, { filters: { language: locale } });
+      // Pagefind already scoped to this page's language via <html lang> when the
+      // runtime loaded, so a plain query returns correctly-localized results.
+      const search = await pf.search(q);
       const data = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
       if (!cancelled) {
         setResults(data);
@@ -149,7 +153,7 @@ export default function Search() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [query, open, locale, loadPagefind]);
+  }, [query, open, loadPagefind]);
 
   // Close on outside click.
   useEffect(() => {
