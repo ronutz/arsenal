@@ -8,15 +8,16 @@
 // full HISTORICAL record grouped by vendor for depth. Recognition (the F5 MVP
 // award) sits between as its own thing.
 //
-// HONESTY / EVIDENCE: cert names, issuers, and years are stated as recorded.
-// Most certifications across a 30-year career are historical or expired; that is
-// shown plainly rather than blurred. Some acronym expansions for older vendor
-// certs are kept minimal where the exact official title is uncertain, to avoid
-// asserting a wrong name; these can be refined.
+// HONESTY / EVIDENCE: cert names, issuers, and years are stated as recorded in
+// Rodolfo's CVs and the Red Education instructor bio. Most certifications across
+// a 30-year career are historical or expired; that is shown plainly rather than
+// blurred. Some acronym expansions for older vendor certs are kept minimal where
+// the exact official title is uncertain, to avoid asserting a wrong name.
 //
-// A per-credential `verify` field exists for future use (e.g. F5 CertMetrics
-// verification links). It is intentionally left unpopulated until Rodolfo
-// confirms which verification details to publish.
+// F5 credentials carry CertMetrics verification (verifyId + candidateId) taken
+// from Rodolfo's records, so visitors can verify them directly. Non-F5 partner
+// accreditations (Tenable, CyberArk, Palo Alto, Corvil) are listed from his CVs;
+// most have no public verification portal, so they appear without a verify link.
 // ============================================================================
 
 export interface CredentialEvidence {
@@ -125,8 +126,20 @@ export const historical: HistoricalGroup[] = [
           candidateId: "F50000042507",
         },
       },
-      { name: "F5 Certified Technology Specialist, BIG-IP ASM", issuer: "F5", detail: "Application Security Manager (303)", period: "2020" },
-      { name: "F5 Certified Technology Specialist, BIG-IP DNS", issuer: "F5", detail: "302", period: "2017" },
+      { name: "F5 Certified Technology Specialist, BIG-IP ASM", issuer: "F5", detail: "Application Security Manager (303)", period: "2020",
+        evidence: {
+          verifyUrl: "https://cp.certmetrics.com/f5certified/en/public/verify/credential",
+          verifyId: "HQGHCERC1JF1Q632",
+          candidateId: "F50000042507",
+        },
+      },
+      { name: "F5 Certified Technology Specialist, BIG-IP DNS", issuer: "F5", detail: "302", period: "2018",
+        evidence: {
+          verifyUrl: "https://cp.certmetrics.com/f5certified/en/public/verify/credential",
+          verifyId: "QDXKFZGCCFBEQ69Z",
+          candidateId: "F50000042507",
+        },
+      },
       { name: "F5 Certified Technology Specialist, BIG-IP LTM", issuer: "F5", detail: "Local Traffic Manager (301)" },
       {
         name: "F5 Certified Administrator, BIG-IP",
@@ -141,6 +154,13 @@ export const historical: HistoricalGroup[] = [
       },
       { name: "F5 Certified Solution Expert, Security", issuer: "F5", detail: "CSE Security" },
       { name: "F5 Certified Solution Expert, Cloud", issuer: "F5", detail: "CSE Cloud" },
+      { name: "F5 Certified Technical Professional, Sales (CTP)", issuer: "F5", period: "2019",
+        evidence: {
+          verifyUrl: "https://cp.certmetrics.com/f5certified/en/public/verify/credential",
+          verifyId: "3VRHHCEC1EQE1SWP",
+          candidateId: "F50000042507",
+        },
+      },
       { name: "F5 sales accreditations", issuer: "F5", detail: "Sales, Technical Sales, Security", period: "2013 – 2019" },
     ],
   },
@@ -153,9 +173,32 @@ export const historical: HistoricalGroup[] = [
   {
     vendor: "Palo Alto Networks",
     items: [
+      { name: "Palo Alto Networks Accredited Systems Engineer (PSE)", issuer: "Palo Alto Networks", detail: "Foundation · Platform Associate", period: "2020" },
       { name: "Palo Alto Certified Network Security Engineer", issuer: "Palo Alto Networks", detail: "CNSE 5.1", period: "2014" },
       { name: "Palo Alto Accredited Configuration Engineer (ACE)", issuer: "Palo Alto Networks", period: "2014" },
       { name: "Palo Alto Accredited Sales Expert (ASE)", issuer: "Palo Alto Networks", period: "2014" },
+    ],
+  },
+  {
+    vendor: "Tenable",
+    items: [
+      { name: "Tenable.io Certified Pre-Sales Engineer, Integrator, Architect", issuer: "Tenable", period: "2020" },
+      { name: "Tenable.sc Certified Pre-Sales Engineer, Integrator, Architect", issuer: "Tenable", period: "2020" },
+      { name: "Tenable Certified Sales Associate (TCSA)", issuer: "Tenable", period: "2020" },
+    ],
+  },
+  {
+    vendor: "CyberArk",
+    items: [
+      { name: "CyberArk Certified Pre-Sales Engineer (CPE)", issuer: "CyberArk", period: "2020" },
+      { name: "CyberArk Certified Sales Professional (CSP)", issuer: "CyberArk", period: "2020" },
+      { name: "CyberArk Certified Trustee", issuer: "CyberArk", period: "2020" },
+    ],
+  },
+  {
+    vendor: "Corvil",
+    items: [
+      { name: "Corvil Certified Administrator (CCA)", issuer: "Corvil", detail: "Credential ID E-E1LNZV", period: "2020" },
     ],
   },
   {

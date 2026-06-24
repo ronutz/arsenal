@@ -23,6 +23,7 @@ import { getTranslations, setRequestLocale, getMessages } from "next-intl/server
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { dirFor } from "@/i18n/locales";
+import InputModality from "@/components/InputModality";
 import "@/app/globals.css";
 
 // Canon typography: Inter (prose) + JetBrains Mono (data/codes/BCP-47 tags).
@@ -111,6 +112,9 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={dir} className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
+        {/* Tracks last input modality (keyboard vs pointer) so the skip link
+            reveals only for keyboard users — see InputModality. */}
+        <InputModality />
         {/* Provider makes the loaded (merged-with-English) messages available
             to all client components via useTranslations(). */}
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>

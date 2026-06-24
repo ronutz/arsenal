@@ -107,6 +107,13 @@ body {
 .skip-link:focus {
   top: 0.5rem;
 }
+/* When the last input was a pointer (mouse/touch), keep the skip link hidden
+   even if Next.js moves focus here after a client-side navigation. Keyboard
+   users (data-kbd="1", set on Tab) are unaffected; with no JS the attribute is
+   absent and the plain :focus rule above still reveals it. See InputModality. */
+:root[data-kbd="0"] .skip-link:focus {
+  top: -3rem;
+}
 
 /* --- Component stylesheets (imported here so they load globally) --- */
 @import "./components.css";
