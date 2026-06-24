@@ -1,0 +1,51 @@
+---
+slug: subnetting-basics
+title: "Subnetting basics"
+summary: "How to divide one network into smaller subnets, and why borrowing host bits is the whole trick."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+status: reviewed
+updated: "2026-06-23"
+---
+
+## What subnetting is for
+
+A single large network is rarely what you want. Subnetting is the practice of taking one block of addresses and splitting it into several smaller blocks, **subnets**, each of which can be a separate broadcast domain, security boundary, or physical segment. A campus might give each building its own subnet; a cloud account might give each tier of an application its own.
+
+The mechanism is simpler than it is usually made to sound: **subnetting borrows bits from the host portion and adds them to the network portion.**
+
+## Borrowing bits
+
+Start with `192.168.1.0/24`. The prefix is 24, so 8 bits are free for hosts, giving one block of 256 addresses.
+
+Suppose you need four separate subnets instead of one. Four is 2², so you need **2 more network bits**. Borrow them from the host side: the prefix grows from /24 to /26.
+
+- `/26` fixes 26 bits, leaves 6 free → 64 addresses per subnet.
+- Four such subnets tile the original /24 exactly:
+  - `192.168.1.0/26`, addresses .0 to .63
+  - `192.168.1.64/26`, addresses .64 to .127
+  - `192.168.1.128/26`, addresses .128 to .191
+  - `192.168.1.192/26`, addresses .192 to .255
+
+Notice the pattern: each subnet is 64 addresses wide, so each one starts on a multiple of 64. That "starts on a multiple of its size" rule is how valid subnet boundaries are found. A block must begin on an address that is a multiple of its own size, or it is not a valid CIDR block.
+
+## The trade-off
+
+Every bit you borrow for the network halves the hosts per subnet:
+
+| Prefix | Subnets of a /24 | Addresses each | Usable hosts each |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+More subnets means fewer hosts in each. Network design is largely choosing where on this curve to sit: enough subnets for your segments, enough hosts in each for the devices that live there, with some room to grow.
+
+## Variable-length subnetting
+
+Subnets within the same parent do not all have to be the same size. **Variable-length subnet masking (VLSM)** lets you carve a large subnet for the segment that needs many hosts and small subnets for point-to-point links, all from the same parent block. The only rules are the constant ones: each subnet is a power of two in size, and each begins on a multiple of its size so the blocks never overlap.
+
+The [CIDR calculator](/learn) shows the exact range, boundaries, and usable host count for any prefix, which makes checking a subnet plan a matter of typing in each block.

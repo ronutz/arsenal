@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "locale": "de",
+    "status": "stub",
+    "note": "STUB / TEMPLATE. This pack is intentionally incomplete. Any key not present here automatically falls back to English (see src/i18n/request.ts). This file doubles as the worked example for community contributors: copy en.json, translate values, set status to 'machine-draft' (AI draft) or 'reviewed' (native speaker approved), and open a pull request. The two keys below are filled only to demonstrate that a partial pack works and merges correctly with the English base."
+  },
+  "site": {
+    "tagline": "Netzwerk- und Sicherheitswerkzeuge, die auf Ihrem Rechner laufen, nicht in der Cloud eines anderen."
+  },
+  "nav": {
+    "tools": "Werkzeuge"
+  }
+}

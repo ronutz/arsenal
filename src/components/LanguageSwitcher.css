@@ -1,0 +1,152 @@
+/* ============================================================================
+   src/components/LanguageSwitcher.css
+   --------------------------------------------------------------------------
+   Styling for the command-palette language switcher. Obsidian-themed, sleek,
+   RTL-aware (logical properties). Loaded globally (imported once) but all
+   selectors are scoped under .ls-root so they don't leak.
+   ============================================================================ */
+
+.ls-root {
+  position: relative;
+  display: inline-block;
+}
+
+/* --- Trigger button --- */
+.ls-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-prose);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.ls-trigger:hover {
+  border-color: var(--accent-primary);
+  background: var(--surface-elevated);
+}
+.ls-globe {
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+.ls-trigger-name {
+  font-weight: 500;
+}
+.ls-trigger-code {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  background: var(--canvas-primary);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+/* --- Panel --- */
+.ls-panel {
+  position: absolute;
+  inset-inline-end: 0;          /* anchored to the inline-end edge; flips in RTL */
+  top: calc(100% + 0.5rem);
+  z-index: 50;
+  width: min(20rem, 80vw);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  padding: 0.5rem;
+  /* Gentle entrance; respects reduced-motion via the global rule. */
+  animation: ls-pop 0.13s ease-out;
+}
+@keyframes ls-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Filter input --- */
+.ls-input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  margin-bottom: 0.4rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-prose);
+  font-size: 0.875rem;
+}
+.ls-input::placeholder {
+  color: var(--text-tertiary);
+}
+.ls-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+/* --- List --- */
+.ls-list {
+  list-style: none;
+  max-height: 18rem;
+  overflow-y: auto;
+  /* Thin, themed scrollbar. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.ls-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-prose);
+  font-size: 0.9rem;
+  text-align: start;            /* logical: left in LTR, right in RTL */
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+.ls-item--highlighted {
+  background: var(--surface-base);
+}
+.ls-item--active {
+  color: var(--accent-primary);
+}
+.ls-item-native {
+  flex: 1;
+  font-weight: 500;
+}
+.ls-item-code {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+/* Status dot for stub (untranslated → English) languages. Amber = "not yet". */
+.ls-item-status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  flex-shrink: 0;
+}
+.ls-item-check {
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.ls-empty {
+  padding: 0.75rem;
+  text-align: center;
+  color: var(--text-tertiary);
+}

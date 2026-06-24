@@ -1,0 +1,85 @@
+// ============================================================================
+// next.config.mjs
+// ----------------------------------------------------------------------------
+// Next.js configuration + SECURITY HEADERS (secure-by-design, per the canon
+// Red/Blue assessment RB-01…RB-07).
+//
+// WHY the headers matter: defense-in-depth. Even though the everyday tools run
+// locally and there is little server attack surface, we ship strict security
+// headers so the site is hardened from the first commit, not retrofitted:
+//   - Content-Security-Policy: constrains what can load/execute (RB-01). Blocks
+//     inline-script injection from doing anything. (NOTE: this baseline CSP is
+//     strict but uses 'unsafe-inline' for styles only as a documented, tracked
+//     interim — full nonce-based style CSP is a follow-up, logged DEFERRED in
+//     the Conformance Manifest. Scripts are NOT unsafe-inline.)
+//   - HSTS: forces HTTPS, prevents downgrade attacks.
+//   - X-Frame-Options / frame-ancestors 'none': prevents clickjacking.
+//   - X-Content-Type-Options nosniff: stops MIME-confusion attacks.
+//   - Referrer-Policy: limits referrer leakage.
+//   - Permissions-Policy: disables powerful APIs we do not use.
+// ============================================================================
+
+import createNextIntlPlugin from "next-intl/plugin";
+
+// Point the plugin at our request config (the pack loader with English fallback).
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
+// The Content-Security-Policy. Scripts: self only (Next injects its own with
+// hashes in production). Styles: self + 'unsafe-inline' is a KNOWN interim for
+// styled output; tracked for tightening. No object/embed. Frame-ancestors none.
+const ContentSecurityPolicy = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+/** Security headers applied to every response. */
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: ContentSecurityPolicy },
+  // Force HTTPS for 2 years incl. subdomains; eligible for preload lists.
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  // Belt-and-suspenders clickjacking protection alongside frame-ancestors.
+  { key: "X-Frame-Options", value: "DENY" },
+  // Stop browsers from MIME-sniffing a response away from its declared type.
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  // Send only the origin on cross-origin navigations; full URL same-origin.
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // Disable powerful features the site does not use.
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+];
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // STATIC EXPORT: render the whole site to static HTML at build time.
+  // WHY: (1) Pagefind indexes built static HTML to produce the search index;
+  // (2) the MDX Learn articles are inherently static content; (3) a static site
+  // has minimal attack surface (privacy-first) and deploys to any static host
+  // (Cloudflare Pages, Vercel, etc.). The Engine/Services split in canon means
+  // dynamic server features (hosted API tools) live elsewhere later if needed.
+  output: "export",
+
+  // Static export cannot use the Next.js image optimization server, so images
+  // are served as-is. (We use few/no raster images; SVG and CSS do the work.)
+  images: { unoptimized: true },
+
+  // Emit each route as a folder with index.html (cleaner URLs on static hosts).
+  trailingSlash: true,
+
+  // Fail the build on type errors / lint errors — quality gate, not optional.
+  reactStrictMode: true,
+
+  // NOTE: the headers() function is NOT supported with output:"export" (there is
+  // no Next.js server to apply them). Security headers are therefore applied at
+  // the HOST level via the `public/_headers` file (Cloudflare Pages / Netlify
+  // format). See that file for the CSP/HSTS/X-Frame-Options/etc. set.
+};
+
+export default withNextIntl(nextConfig);

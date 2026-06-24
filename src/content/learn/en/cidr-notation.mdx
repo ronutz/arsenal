@@ -1,0 +1,51 @@
+---
+slug: cidr-notation
+title: "CIDR notation explained"
+summary: "What the slash in 192.168.1.0/24 actually means, and how a prefix length defines a block of IP addresses."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+status: reviewed
+updated: "2026-06-23"
+---
+
+## The problem CIDR solves
+
+Every device on an IP network needs an address. In IPv4, that address is 32 bits, usually written as four numbers from 0 to 255 separated by dots, like `192.168.1.10`. The hard question is never "what is one address" but "how do I describe a *range* of addresses that belong together", a single office, a subnet, a customer allocation. **CIDR notation** is the compact way to write that range.
+
+CIDR stands for Classless Inter-Domain Routing. The "classless" part matters: older addressing forced ranges into fixed sizes (the old Class A, B, and C blocks). CIDR removed that rigidity and let a range be *any* power-of-two size, which is why it is the standard today.
+
+## Reading the slash
+
+A CIDR block looks like `192.168.1.0/24`. The part after the slash, the **prefix length**, is the single most important number. It says: *the first N bits of the address are fixed, and the rest are free to vary.*
+
+- `/24` means the first 24 bits are the fixed network part. The remaining 8 bits (32 − 24) identify individual hosts.
+- 8 free bits give 2⁸ = 256 possible combinations, so `192.168.1.0/24` describes the 256 addresses from `192.168.1.0` to `192.168.1.255`.
+
+Change the prefix and the block size changes with it. A smaller prefix means *more* free bits and a *larger* block:
+
+- `/16` fixes 16 bits, leaves 16 free → 65,536 addresses.
+- `/25` fixes 25 bits, leaves 7 free → 128 addresses.
+- `/30` fixes 30 bits, leaves 2 free → 4 addresses.
+
+Each step of one in the prefix length **halves or doubles** the block. That single rule is the whole intuition.
+
+## Network, broadcast, and usable hosts
+
+Within most blocks, two addresses are special and not assignable to a host:
+
+- The **network address** is the first address in the block, all host bits set to 0 (`192.168.1.0` for a `/24`). It names the block itself.
+- The **broadcast address** is the last address, all host bits set to 1 (`192.168.1.255`). Traffic sent here reaches every host in the block.
+
+So a `/24` has 256 total addresses but **254 usable** for actual hosts. The "usable hosts" figure is simply total minus those two reserved addresses.
+
+Two edge cases break this pattern, both deliberately:
+
+- A **/31** (RFC 3021) is used for point-to-point links between two routers. It has only 2 addresses and, by design, both are usable, there is no room for a separate network and broadcast address, and none is needed for a link with exactly two ends.
+- A **/32** is a single address, a host route. It describes exactly one machine.
+
+## Why this is worth understanding
+
+Prefix length governs how networks are designed, how routes are summarized, and how address space is handed out. When you see `10.0.0.0/8` in a routing table or `0.0.0.0/0` as a default route, you are reading the same notation: a base address plus a prefix length that says how much of it is fixed. The arithmetic never changes, only the numbers.
+
+You can try any block in the [CIDR calculator](/learn) to see its network address, broadcast address, mask, and usable host count computed instantly, entirely in your browser.

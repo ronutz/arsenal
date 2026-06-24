@@ -1,0 +1,132 @@
+/* ============================================================================
+   src/app/globals.css
+   --------------------------------------------------------------------------
+   THE OBSIDIAN DESIGN SYSTEM (from canon) + accessibility floor + RTL support.
+
+   WHY these specific values: the canon brand design system pins the Obsidian
+   theme — #020617 canvas, #22D3EE cyan accent, #F59E0B amber, Inter for prose,
+   JetBrains Mono for data. These are SEMANTIC tokens (named by role) so a future
+   theme swap changes values, not component code (matches the netcore token model).
+
+   RTL: we use CSS LOGICAL PROPERTIES (margin-inline, padding-inline, inset-inline)
+   instead of physical left/right wherever direction matters, so the layout mirrors
+   automatically when <html dir="rtl"> is set for Arabic (or any future RTL script).
+   ============================================================================ */
+
+:root {
+  /* --- Obsidian palette (canon) --- */
+  --canvas-primary: #020617;     /* deepest background */
+  --surface-base: #0f172a;       /* cards, panels */
+  --surface-elevated: #1e293b;   /* raised surfaces, dropdowns */
+  --border-subtle: #334155;      /* dividers (decorative only) */
+  --border-strong: #475569;      /* dividers needing more contrast */
+
+  --text-primary: #f8fafc;       /* body text — high contrast on canvas */
+  --text-secondary: #94a3b8;     /* secondary text — clears WCAG-AA 4.5:1 on canvas */
+  --text-tertiary: #64748b;      /* hints, captions (large text only) */
+
+  --accent-primary: #22d3ee;     /* cyan — primary accent */
+  --accent-hover: #67e8f9;       /* cyan, brighter — hover state */
+  --accent-amber: #f59e0b;       /* amber — secondary accent */
+
+  /* --- Type --- */
+  --font-prose: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* --- Scale / rhythm --- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --space-page: clamp(1rem, 5vw, 4rem);
+  --maxw-content: 72rem;
+}
+
+/* --- Minimal reset --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--canvas-primary);
+  color: var(--text-primary);
+  font-family: var(--font-prose);
+  line-height: 1.6;
+  font-size: 1rem;
+  min-height: 100dvh;
+  /* Subtle, non-distracting texture: a single radial wash, not a gradient soup. */
+  background-image: radial-gradient(
+    ellipse 80% 50% at 50% -10%,
+    rgba(34, 211, 238, 0.06),
+    transparent
+  );
+  background-repeat: no-repeat;
+}
+
+/* --- Accessibility floor (the quality bar, not announced) --- */
+
+/* Visible keyboard focus everywhere — never remove without replacement. */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Respect users who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skip-to-content link: visible only when focused (keyboard users). */
+.skip-link {
+  position: absolute;
+  inset-inline-start: 0.5rem;   /* logical: flips for RTL */
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+/* --- Component stylesheets (imported here so they load globally) --- */
+@import "./components.css";
+@import "../components/LanguageSwitcher.css";
+
+/* --- Shared helpers --- */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--maxw-content);
+  margin-inline: auto;            /* logical centering */
+  padding-inline: var(--space-page);
+}
+
+/* Monospace utility for codes / data (BCP-47 tags, IP results). */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+}

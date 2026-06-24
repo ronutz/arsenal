@@ -1,0 +1,229 @@
+{
+  "_meta": {
+    "locale": "es",
+    "status": "reviewed",
+    "note": "Contenido real en español, redactado de forma idiomática. Recomendación: confirmar con un hablante nativo antes de campañas de marketing, conforme a la pauta de calidad de traducción. Sin guiones largos (em dash)."
+  },
+  "site": {
+    "name": "ronutz",
+    "tagline": "Herramientas de red y seguridad que se ejecutan en tu equipo, no en la nube de otra persona."
+  },
+  "nav": {
+    "tools": "Herramientas",
+    "about": "Acerca de",
+    "certifications": "Certificaciones",
+    "training": "Formación",
+    "contact": "Contacto",
+    "skipToContent": "Saltar al contenido",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "learn": "Aprender",
+    "endorsements": "Testimonios",
+    "certs": "Certificaciones"
+  },
+  "languageSwitcher": {
+    "label": "Idioma",
+    "stubNotice": "Este idioma aún no está traducido. Mostrando en inglés."
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Creado por un profesional del sector, con la privacidad por delante",
+      "title": "La caja de herramientas de red y seguridad que mantiene tus datos en tu equipo.",
+      "subtitle": "Cálculo de subredes, diagnóstico de DNS y correo, inspección de certificados y mucho más, procesado de forma local en tu navegador. Sin subir datos, sin registros y sin necesidad de cuenta para las herramientas de uso diario.",
+      "ctaPrimary": "Abrir la caja de herramientas",
+      "ctaSecondary": "Quién lo desarrolla"
+    },
+    "credibility": {
+      "title": "Creado por alguien que hace este trabajo desde 1996.",
+      "body": "Treinta años en redes y seguridad empresarial, de la mano de un instructor en activo y no de una página de marketing. Certificado en cuatro plataformas, así que las comparaciones aquí se hacen con honestidad, no para vender."
+    },
+    "pillars": {
+      "title": "Cuatro plataformas, enseñadas y mantenidas al día.",
+      "f5": "F5",
+      "fortinet": "Fortinet",
+      "extreme": "Extreme Networks",
+      "netskope": "Netskope"
+    },
+    "privacy": {
+      "title": "Por qué el procesamiento local importa en seguridad.",
+      "body": "Cuando pegas una configuración, una captura de paquetes o un certificado en una herramienta, esos datos suelen contener secretos. Aquí, las herramientas de uso diario se ejecutan por completo en tu navegador. La información nunca sale de tu dispositivo, así que no hay nada que registrar, filtrar ni requerir judicialmente."
+    },
+    "toolPreview": {
+      "title": "Prueba una herramienta ahora mismo.",
+      "body": "La calculadora CIDR de abajo se ejecuta de forma local. Escribe una red y un prefijo para ver el rango de direcciones, la cantidad de hosts y la máscara. No se envía nada a ningún sitio.",
+      "learnHeading": "Aprende los conceptos"
+    },
+    "provenance": {
+      "title": "Créditos y fuentes",
+      "show": "Mostrar",
+      "hide": "Ocultar",
+      "basisLabel": "Cómo funciona",
+      "sourcesLabel": "Normas y fuentes"
+    },
+    "funding": {
+      "title": "Apoya esta herramienta",
+      "pitch": "Esta herramienta es gratuita y está hecha para seguir siéndolo. Si se gana un lugar en tu flujo de trabajo, puedes ayudar a financiar su mantenimiento y lo que viene.",
+      "purposeLabel": "Financiando ahora"
+    }
+  },
+  "tools": {
+    "cidr": {
+      "title": "Calculadora CIDR",
+      "description": "Calcula las direcciones de red y de difusión, el rango de hosts utilizables, la cantidad de hosts y la máscara de un bloque CIDR IPv4. Se ejecuta de forma local en tu navegador.",
+      "inputLabel": "Bloque CIDR",
+      "inputPlaceholder": "192.168.1.0/24",
+      "compute": "Calcular",
+      "runsLocally": "Se ejecuta de forma local, no se envía nada a ningún servidor.",
+      "results": {
+        "network": "Dirección de red",
+        "broadcast": "Dirección de difusión",
+        "netmask": "Máscara de red",
+        "wildcard": "Máscara comodín",
+        "firstHost": "Primer host utilizable",
+        "lastHost": "Último host utilizable",
+        "totalAddresses": "Direcciones totales",
+        "usableHosts": "Hosts utilizables"
+      },
+      "errors": {
+        "empty": "Introduce un bloque CIDR para calcular.",
+        "invalid": "Esto no parece un bloque CIDR válido. Prueba con un formato como 192.168.1.0/24."
+      }
+    }
+  },
+  "footer": {
+    "builtWith": "Creado por Rodolfo Nützmann con CONCORD",
+    "colophon": "Cómo se construyó esto",
+    "openSource": "El motor es de código abierto",
+    "rights": "Disponible bajo términos abiertos y comerciales."
+  },
+  "search": {
+    "label": "Buscar",
+    "placeholder": "Buscar en el sitio…",
+    "close": "Cerrar",
+    "searching": "Buscando…",
+    "noResults": "Sin resultados para “{query}”.",
+    "unavailable": "La búsqueda funciona en el sitio publicado. No está disponible en la vista previa local.",
+    "hint": "Escribe para buscar artículos, herramientas y páginas."
+  },
+  "endorsements": {
+    "eyebrow": "Testimonios",
+    "title": "Lo que dice la gente, en sus propias palabras.",
+    "intro": "{count} recomendaciones y reseñas textuales, a lo largo de dos décadas de enseñanza y consultoría. Nada aquí está parafraseado ni editado.",
+    "provenance": "Provenientes de recomendaciones de LinkedIn, reseñas de Google y reseñas verificadas de estudiantes de Red Education. La redacción y ortografía originales se conservan exactamente como fueron escritas."
+  },
+  "testimonials": {
+    "filterLabel": "Filtrar testimonios",
+    "sourceFilter": "Origen",
+    "languageFilter": "Idioma",
+    "all": "Todos",
+    "showing": "Mostrando {count} de {total}",
+    "reply": "Respuesta de Red Education",
+    "translateLabel": "Traducción",
+    "translateOff": "Traducir al inglés",
+    "translateOn": "Mostrando en inglés",
+    "machineDisclaimer": "Traducción generada por máquina. Puede no reflejar con exactitud el texto original.",
+    "showOriginal": "Ver original",
+    "hideOriginal": "Ocultar original"
+  },
+  "training": {
+    "eyebrow": "Formación que imparto",
+    "title": "Cuatro plataformas, enseñadas por quien las ha operado.",
+    "intro": "Formación oficial y certificada, impartida por instructor, en {courses} cursos sobre las cuatro plataformas en el centro de las redes y la seguridad modernas. Cada curso lo imparte un instructor autorizado, con décadas de implementación práctica detrás de la enseñanza.",
+    "courseCount": "{count} cursos",
+    "since": "desde",
+    "representativeNote": "Este catálogo es representativo, no exhaustivo. Los nombres de los cursos, las duraciones y los contenidos reflejan información pública actual y se refinan a partir de fichas técnicas oficiales.",
+    "allPlatforms": "Todas las plataformas",
+    "authorizedSince": "Instructor autorizado desde {year}",
+    "coursesHeading": "{count} cursos",
+    "duration": "Duración",
+    "delivery": "Entrega",
+    "deliveryValue": "Virtual o presencial",
+    "modules": "Módulos",
+    "aboutCourse": "Sobre este curso",
+    "tableOfContents": "Contenido",
+    "agendaPending": "Se añadirá una agenda detallada, día a día, a partir de la ficha técnica oficial del curso.",
+    "moreFrom": "Más cursos de {platform}",
+    "requestTraining": "Solicitar esta formación",
+    "requestVia": "Impartido a través de {destination}"
+  },
+  "contact": {
+    "title": "Ponte en contacto",
+    "lede": "Ya sea para contratar formación oficial, crear un programa a medida para tu equipo o sumar asesoría experimentada en un problema difícil, será un gusto conversar.",
+    "formHeading": "Envía un mensaje",
+    "directHeading": "O contacta directamente",
+    "formName": "Tu nombre",
+    "formEmail": "Tu correo",
+    "formTopic": "¿De qué se trata?",
+    "topicTraining": "Formación oficial",
+    "topicCustom": "Programa a medida para equipo",
+    "topicAdvisory": "Asesoría y consultoría",
+    "topicOther": "Otro asunto",
+    "formMessage": "Tu mensaje",
+    "formSend": "Enviar mensaje",
+    "formSending": "Enviando…",
+    "formRequired": "Por favor, completa tu nombre, correo y un mensaje.",
+    "successTitle": "Gracias.",
+    "successBody": "Tu mensaje está en camino. Te responderé lo antes posible.",
+    "errorBody": "Algo salió mal al enviar. Inténtalo de nuevo o escribe directamente por correo.",
+    "emailLabel": "Correo"
+  },
+  "certs": {
+    "title": "Certificaciones y credenciales",
+    "lede": "Tres décadas de credenciales formales en redes y seguridad. Las autorizaciones de instructor y las certificaciones a continuación están vigentes; un registro completo de las credenciales obtenidas, la mayoría ya históricas, sigue para quien busque profundidad.",
+    "jumpToHistorical": "Ir al registro completo",
+    "current": "Vigente",
+    "historical": "Histórico",
+    "instructorTitle": "Autorizaciones de instructor",
+    "instructorIntro": "Autorizado para impartir formación oficial y certificada en cada una de estas plataformas actualmente.",
+    "currentCertsTitle": "Certificaciones vigentes",
+    "recognitionTitle": "Reconocimiento",
+    "historicalTitle": "Registro completo",
+    "historicalIntro": "Credenciales obtenidas a lo largo de una carrera que comenzó en 1996. La mayoría son históricas o caducadas, conservadas aquí por la profundidad que representan.",
+    "verify": "Verificar",
+    "credly": "Credly",
+    "certificate": "Certificado",
+    "verifyCode": "Código",
+    "candidateId": "ID"
+  },
+  "support": {
+    "title": "Apoya el proyecto",
+    "lede": "Estas herramientas son gratuitas y están hechas para seguir siéndolo. Si te ahorran tiempo, puedes contribuir a su mantenimiento. Totalmente opcional, siempre.",
+    "tipHeading": "Deja una propina",
+    "tipBlurb": "Cada contribución va directamente a apoyar las herramientas y el tiempo dedicado a ellas.",
+    "zeroCommission": "0% de comisión. Los enlaces van directo al proveedor; este sitio nunca está en el flujo de pago.",
+    "placeholder": "Las opciones de apoyo se están configurando y aparecerán aquí pronto."
+  },
+  "admin": {
+    "eyebrow": "Admin",
+    "title": "Control del sitio",
+    "lede": "La superficie de control de las funciones y ajustes opcionales de este sitio.",
+    "previewBanner": "Estructura de vista previa. En el sitio estático estos controles previsualizan la interfaz de administración; el control en vivo se activa con la capa de servicio. Los cambios aquí no se guardan.",
+    "featuresTitle": "Funciones",
+    "flagRequestTraining": "Solicitar esta formación",
+    "flagRequestTrainingDesc": "El CTA de generación de leads en las páginas de cursos y plataformas.",
+    "flagTipJar": "TipJar",
+    "flagTipJarDesc": "Enlaces de apoyo al creador en la página de apoyo.",
+    "flagToolFunding": "Financiación de herramienta",
+    "flagToolFundingDesc": "Interfaz de apoyo por herramienta.",
+    "flagToolProvenance": "Procedencia de herramienta",
+    "flagToolProvenanceDesc": "Panel de créditos y fuentes por herramienta.",
+    "routingTitle": "Enrutamiento de leads",
+    "routingDefaultLabel": "Predeterminado global",
+    "routingNoOverrides": "No hay anulaciones por plataforma o curso configuradas.",
+    "contactTitle": "Contacto",
+    "contactEmailLabel": "Correo",
+    "contactFormLabel": "Envío del formulario",
+    "formMailto": "Respaldo mailto (sin backend)",
+    "formEndpoint": "Enviando al endpoint",
+    "tipJarTitle": "Proveedores de TipJar",
+    "tipConfigured": "Configurado",
+    "tipNotConfigured": "Sin configurar",
+    "on": "Activado",
+    "off": "Desactivado",
+    "accessTitle": "Control de acceso",
+    "accessNote": "Solo estas identidades federadas pueden tener acceso de administrador. Aplicado en el servidor por la capa de servicio; el sitio estático no autentica.",
+    "accessFederatedOnly": "Solo inicio de sesión federado. Sin respaldo de cuenta local.",
+    "accessRoleLabel": "Rol",
+    "accessPermsLabel": "Permisos de owner"
+  }
+}

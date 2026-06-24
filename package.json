@@ -1,0 +1,41 @@
+{
+  "//": "================================================================",
+  "//1": "ARSENAL — the ronutz.com application (private). This repo BECOMES the",
+  "//2": "deployable site. It CONSUMES @ronutz/netcore (the public Engine) from the",
+  "//3": "published npm package (^0.1.1). The dependency direction is one-way and",
+  "//4": "unchanged: arsenal -> netcore, never the reverse (C-73). Was file:../netcore",
+  "//5": "during dev; graduated to npm once netcore 0.1.1 published.",
+  "//6": "================================================================",
+  "name": "@ronutz/arsenal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The ronutz.com application — a privacy-first, local-compute network/security toolbox PWA (Next.js).",
+  "type": "module",
+  "scripts": {
+    "//build-note": "build runs next build THEN pagefind. Pagefind indexes the static HTML in out/ to produce the client-side search index. The two steps must run in order.",
+    "dev": "next dev",
+    "build:next": "next build",
+    "build:search": "pagefind --site out",
+    "build": "next build && pagefind --site out",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "//7": "Consumes @ronutz/netcore ^0.1.1 from npm (the public Engine).",
+  "dependencies": {
+    "@ronutz/netcore": "^0.1.1",
+    "gray-matter": "^4.0.3",
+    "next": "^15.1.0",
+    "next-intl": "^3.26.0",
+    "next-mdx-remote": "^6.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "pagefind": "^1.5.2",
+    "typescript": "^5.7.0"
+  },
+  "license": "UNLICENSED"
+}

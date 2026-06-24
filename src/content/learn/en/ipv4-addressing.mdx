@@ -1,0 +1,40 @@
+---
+slug: ipv4-addressing
+title: "How IPv4 addresses work"
+summary: "The 32 bits behind every dotted-quad address, and what private, loopback, and special ranges mean."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+status: reviewed
+updated: "2026-06-23"
+---
+
+## Thirty-two bits in disguise
+
+An IPv4 address is a single 32-bit number. We almost never write it that way because 32 ones and zeros are hard to read, so it is split into four 8-bit groups called **octets**, each shown in decimal from 0 to 255 and joined by dots. `192.168.1.10` is just a friendlier way of writing one specific 32-bit value.
+
+Because each octet is 8 bits, the whole space is 2³² addresses, about 4.3 billion. That sounded enormous in the 1980s and is the reason IPv4 address exhaustion became a real problem decades later, and why private addressing and IPv6 exist.
+
+## Network part and host part
+
+No address stands alone, it belongs to a block, and within that block the bits divide into a **network part** (which block this is) and a **host part** (which machine within the block). The prefix length, written CIDR-style as `/24`, marks where that division falls. Everything to the left of the line is network; everything to the right identifies a host. This is the same idea explored in CIDR notation, viewed from the address side.
+
+## Ranges with special meaning
+
+Not every address is an ordinary host address. Several ranges are reserved for specific purposes, and recognizing them is part of reading any network configuration:
+
+- **Private ranges (RFC 1918)** are reserved for use inside private networks and are never routed on the public internet:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  This is why home and office networks so often use `192.168.x.x` or `10.x.x.x`, those addresses are free to reuse everywhere because they never appear on the open internet.
+- **Loopback (`127.0.0.0/8`)** always refers to the local machine itself. `127.0.0.1` is the address a computer uses to talk to itself.
+- **Link-local (`169.254.0.0/16`)** addresses are self-assigned when a device cannot reach a DHCP server. Seeing one usually means "no address was handed out."
+- **The unspecified address (`0.0.0.0`)** and the default route (`0.0.0.0/0`) are special: the latter is the catch-all route that matches any destination not covered by a more specific route.
+
+## Why the special ranges matter for security
+
+These reserved ranges are not just trivia. A tool that fetches a user-supplied address must refuse to reach private, loopback, and link-local ranges, or it can be tricked into making requests against internal systems it should never touch, a class of attack called server-side request forgery. Knowing which ranges are internal is the first step in defending against it. This is exactly why the network-touching tools on this site check a resolved address against these ranges before ever connecting.
+
+To see how any address sits inside its block, its network address, broadcast address, and the usable range around it, try the [CIDR calculator](/learn), which computes all of it locally in your browser.
