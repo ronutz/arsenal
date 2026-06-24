@@ -7,11 +7,15 @@
 // WHY the headers matter: defense-in-depth. Even though the everyday tools run
 // locally and there is little server attack surface, we ship strict security
 // headers so the site is hardened from the first commit, not retrofitted:
-//   - Content-Security-Policy: constrains what can load/execute (RB-01). Blocks
-//     inline-script injection from doing anything. (NOTE: this baseline CSP is
-//     strict but uses 'unsafe-inline' for styles only as a documented, tracked
-//     interim — full nonce-based style CSP is a follow-up, logged DEFERRED in
-//     the Conformance Manifest. Scripts are NOT unsafe-inline.)
+//   - Content-Security-Policy: constrains what can load/execute (RB-01). The
+//     'unsafe-inline' on style-src is a documented, tracked interim (full
+//     nonce-based style CSP is a follow-up, logged DEFERRED in the Conformance
+//     Manifest). script-src also carries 'unsafe-inline' + 'wasm-unsafe-eval':
+//     this is FORCED by the architecture, not a lapse. Next.js App Router in
+//     static-export mode emits per-page inline RSC hydration scripts that cannot
+//     be hashed (per-page content) or nonced (no server to mint nonces), and
+//     Pagefind needs WASM for client-side search. See public/_headers for the
+//     full rationale and the nonce-via-Worker hardening path.
 //   - HSTS: forces HTTPS, prevents downgrade attacks.
 //   - X-Frame-Options / frame-ancestors 'none': prevents clickjacking.
 //   - X-Content-Type-Options nosniff: stops MIME-confusion attacks.
@@ -24,12 +28,15 @@ import createNextIntlPlugin from "next-intl/plugin";
 // Point the plugin at our request config (the pack loader with English fallback).
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-// The Content-Security-Policy. Scripts: self only (Next injects its own with
-// hashes in production). Styles: self + 'unsafe-inline' is a KNOWN interim for
-// styled output; tracked for tightening. No object/embed. Frame-ancestors none.
+// The Content-Security-Policy. script-src allows 'self' plus 'unsafe-inline'
+// (required for Next.js App Router static-export inline hydration scripts) and
+// 'wasm-unsafe-eval' (required for Pagefind's client-side search WASM). Styles:
+// self + 'unsafe-inline' is a KNOWN interim. No object/embed. Frame-ancestors
+// none. NOTE: this block is INERT under output:"export" (headers() needs a
+// server); the live policy is public/_headers. Kept in sync for portability.
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",

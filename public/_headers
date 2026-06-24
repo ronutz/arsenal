@@ -10,10 +10,25 @@
 # (RB-01…RB-07) hardening — the protection is identical, just applied at the edge.
 #
 # When deployed to a different host, port these headers to that host's mechanism.
+#
+# SCRIPT-SRC NOTE: script-src intentionally includes 'unsafe-inline' and
+# 'wasm-unsafe-eval'. This is REQUIRED by the chosen architecture, not a lapse:
+#   - 'unsafe-inline': Next.js App Router (static export) emits per-page inline
+#     RSC hydration scripts (self.__next_f.push(...)). They cannot be hashed
+#     (content differs on every page, so no fixed hash list works in a global
+#     header) nor nonced (a static export has no server to mint per-request
+#     nonces). Without this, React cannot hydrate and the site renders blank.
+#   - 'wasm-unsafe-eval': Pagefind compiles its search index as client-side
+#     WebAssembly, which CSP gates behind this token.
+# Residual risk is low on a static, first-party site with no server-side
+# reflection of user input into HTML and React-escaped tool output (no inline
+# injection vector). A stricter nonce-based CSP would require a Worker injecting
+# per-request nonces via HTMLRewriter (a documented future hardening option),
+# not something a static _headers file can do.
 # ============================================================================
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
