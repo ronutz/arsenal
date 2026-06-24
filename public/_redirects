@@ -1,0 +1,19 @@
+# ============================================================================
+# public/_redirects
+# ----------------------------------------------------------------------------
+# HOST-LEVEL REDIRECTS (Cloudflare Pages / Workers Static Assets format).
+#
+# WHY: with localePrefix "always", English lives at /en/ and there is no page
+# at the bare root (/). This rule sends the apex to the English homepage so
+# ronutz.com/ resolves instead of falling through to the 404 page.
+#
+# 302 (temporary) is deliberate: if Accept-Language locale detection is added
+# later (e.g. in the API Worker), browsers will not have cached a permanent
+# redirect to /en/. Cloudflare parses this file and applies its rules ahead of
+# the not_found_handling behavior declared in wrangler.jsonc.
+#
+# Next.js copies public/ into the static export (out/), so this ships as
+# out/_redirects, which is exactly where Workers Static Assets looks for it.
+# ============================================================================
+
+/    /en/    302

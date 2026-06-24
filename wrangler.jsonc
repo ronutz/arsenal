@@ -1,0 +1,35 @@
+{
+  // ==========================================================================
+  // wrangler.jsonc
+  // --------------------------------------------------------------------------
+  // Cloudflare Workers Static Assets configuration for ronutz.com (ARSENAL).
+  //
+  // This is an ASSETS-ONLY Worker: it serves the static Next.js export in ./out
+  // as files on Cloudflare's edge. There is intentionally NO "main" (no Worker
+  // script) and NO "binding": "ASSETS" — those are only valid alongside a
+  // script. When the API-first layer arrives (canon C-04 / C-68), a "main"
+  // Worker plus assets.run_worker_first: ["/api/*"] can be added here with no
+  // disruption to static delivery.
+  //
+  // Providing this file also stops Cloudflare's autoconfig from misdetecting the
+  // static export as a server Next.js app (which would try to wire up OpenNext
+  // + R2 — neither of which a pure static export needs).
+  // ==========================================================================
+
+  // Worker / project name. Lowercase, no underscores. Matches the dashboard.
+  "name": "arsenal",
+
+  // Runtime compatibility baseline. Set to the deploy date.
+  "compatibility_date": "2026-06-24",
+
+  "assets": {
+    // Folder produced by `npm run build` (next build -> ./out, then pagefind
+    // writes its search index into ./out/pagefind).
+    "directory": "./out",
+
+    // Multi-page static site (NOT a single-page app): serve the branded
+    // 404.html for any path that matches no asset. Redirects in _redirects are
+    // evaluated first, so the apex redirect to /en/ still wins.
+    "not_found_handling": "404-page"
+  }
+}
