@@ -2753,3 +2753,164 @@
   transition: opacity 0.15s ease;
 }
 .toolfund-link:hover { opacity: 0.9; }
+
+/* ============================================================================
+   CONTACT PAGE
+   --------------------------------------------------------------------------
+   Hero, the two-column form/channels layout, the form controls (matching the
+   tool inputs, e.g. .cidr-input), and the direct-channel cards. Without these,
+   the unstyled <a>/<span> channel markup collapses inline (label and value run
+   together). Uses the shared Obsidian tokens so it matches every other page.
+   ============================================================================ */
+
+/* --- Hero --- */
+.contact-hero {
+  padding-block: clamp(3rem, 10vw, 6rem);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.contact-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  max-width: 16ch;
+  margin-bottom: 1.25rem;
+}
+.contact-lede {
+  font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+  color: var(--text-secondary);
+  max-width: 56ch;
+  line-height: 1.5;
+}
+
+/* Dev-only placeholder-email reminder (never shown in production). */
+.dev-reminder {
+  margin-top: 1.5rem;
+  padding: 0.6rem 0.9rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--accent-amber);
+  border-radius: var(--radius-md);
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+/* --- Two-column layout: form (wider) + direct channels --- */
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+@media (min-width: 56rem) {
+  .contact-layout {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+}
+
+/* Column heading above the form and above the channels. */
+.contact-section-label {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+}
+
+/* --- Form --- */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.contact-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.contact-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: inherit;   /* Inter, not the UA default for inputs */
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.contact-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+.contact-input::placeholder {
+  color: var(--text-tertiary);
+}
+.contact-select {
+  cursor: pointer;
+}
+.contact-textarea {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+.contact-error {
+  font-size: 0.85rem;
+  color: var(--accent-amber);
+}
+.contact-submit {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+/* --- Direct channels (the section that was rendering as one run of text) --- */
+.contact-channels-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.contact-channel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.contact-channel:hover {
+  border-color: var(--accent-primary);
+  background: var(--surface-elevated);
+}
+.contact-channel-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+.contact-channel-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  word-break: break-word;   /* long emails/URLs wrap instead of overflowing */
+}
+
+/* --- Submitted state --- */
+.contact-success {
+  padding: 1.5rem;
+  background: var(--surface-base);
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-lg);
+}
+.contact-success-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+.contact-success-body {
+  color: var(--text-secondary);
+}
