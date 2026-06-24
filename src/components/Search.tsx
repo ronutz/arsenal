@@ -81,6 +81,9 @@ export default function Search() {
   const [results, setResults] = useState<PagefindSubResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
+  // Shortcut hint: Mac users expect ⌘, everyone else Ctrl. Default to Ctrl (the
+  // larger audience and a safe SSR default); corrected on mount for Mac.
+  const [isMac, setIsMac] = useState(false);
 
   const pagefindRef = useRef<PagefindApi | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -102,6 +105,14 @@ export default function Search() {
       setUnavailable(true);
       return null;
     }
+  }, []);
+
+  // Detect platform once on mount so the shortcut hint matches the OS. Both
+  // Cmd+K and Ctrl+K already work (handler below checks metaKey OR ctrlKey);
+  // only the displayed label needs to match.
+  useEffect(() => {
+    const p = navigator.platform || navigator.userAgent || "";
+    setIsMac(/mac|iphone|ipad|ipod/i.test(p));
   }, []);
 
   // Open search → load runtime + focus the input.
@@ -189,7 +200,7 @@ export default function Search() {
           <path d="M21 21l-4.3-4.3" />
         </svg>
         <span className="search-trigger-text">{t("label")}</span>
-        <kbd className="search-trigger-kbd mono">⌘K</kbd>
+        <kbd className="search-trigger-kbd mono">{isMac ? "⌘K" : "Ctrl K"}</kbd>
       </button>
 
       {/* Search overlay */}

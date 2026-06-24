@@ -30,10 +30,7 @@ export interface ContactChannel {
 export interface ContactSettings {
   /**
    * The address contact-form messages are composed to (mailto fallback) and
-   * shown as the direct email channel.
-   *
-   * TODO(Rodolfo): set this to the real public ronutz.com contact address.
-   * Placeholder until then.
+   * shown as the direct email channel. This is the official public address.
    */
   email: string;
   /**
@@ -49,7 +46,7 @@ export interface ContactSettings {
 // Current settings. EDIT THESE (or, later, drive from the admin panel).
 // ----------------------------------------------------------------------------
 const SETTINGS: ContactSettings = {
-  // PLACEHOLDER: replace with the real public contact address.
+  // Official public contact address for ronutz.com.
   email: "hello@ronutz.com",
 
   // No backend on the static site; form uses the mailto fallback.
@@ -90,7 +87,11 @@ export function contactChannels(): ContactChannel[] {
   return SETTINGS.channels;
 }
 
-/** True if the placeholder email is still in place (drives a dev-only reminder). */
+/**
+ * Kept for the contact page's optional dev reminder. The address is now the
+ * official public one, so this is always false; flip the logic back if you ever
+ * stage a placeholder again.
+ */
 export function contactEmailIsPlaceholder(): boolean {
-  return SETTINGS.email === "hello@ronutz.com";
+  return false;
 }

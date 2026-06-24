@@ -400,7 +400,7 @@
     "title": "How this was built",
     "lede": "Most websites do not explain themselves. This one does, because how it was made is part of what it is: a deliberate experiment in building well, with unusual collaborators, and a record worth keeping.",
     "concordTitle": "CONCORD",
-    "concordBody1": "This site was designed and built through a process called CONCORD: a structured collaboration between one person and three different AI systems, each in a distinct role. It is not a gimmick. It is a working method, with its own governance, its own decision record, and a single human accountable for every choice that shipped.",
+    "concordBody1": "This site was designed and built through a protocol called CONCORD: a structured collaboration between one person and three different AI systems, each in a distinct role. It is not a gimmick. It is a working method, with its own governance, its own decision record, and a single human accountable for every choice that shipped.",
     "concordBody2": "The premise is simple. Different AI models have different strengths, and a hard problem benefits from more than one perspective held in tension. So the work was divided by role, and one person sat at the center, relaying between them, ratifying what was sound, and rejecting what was not.",
     "rolesTitle": "The seats",
     "rolePrime": "PRIME",

@@ -14,6 +14,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ContactForm from "@/components/ContactForm";
+import ObfuscatedEmail from "@/components/ObfuscatedEmail";
 import {
   contactEmail,
   contactChannels,
@@ -32,6 +33,10 @@ export default async function ContactPage({
   const tNav = await getTranslations("nav");
 
   const channels = contactChannels();
+
+  // Split the email so ObfuscatedEmail assembles it at runtime, keeping the full
+  // address out of the static HTML where spam harvesters would scrape it.
+  const [emailUser, emailDomain] = contactEmail().split("@");
 
   // Dev-only: surface the placeholder email so it is not forgotten before launch.
   const showEmailReminder =
@@ -95,11 +100,13 @@ export default async function ContactPage({
                 <aside className="contact-channels-col">
                   <h2 className="contact-section-label">{t("directHeading")}</h2>
 
-                  {/* Email */}
-                  <a className="contact-channel" href={`mailto:${contactEmail()}`}>
-                    <span className="contact-channel-label">{t("emailLabel")}</span>
-                    <span className="contact-channel-desc">{contactEmail()}</span>
-                  </a>
+                  {/* Email — rendered client-side (ObfuscatedEmail) so the plain
+                      address is never in the static HTML for spam crawlers. */}
+                  <ObfuscatedEmail
+                    label={t("emailLabel")}
+                    user={emailUser}
+                    domain={emailDomain}
+                  />
 
                   {/* Configured channels */}
                   {channels.map((c) => (

@@ -75,6 +75,17 @@ export const instructorAuthorizations: Credential[] = [
 // ----------------------------------------------------------------------------
 export const currentCertifications: Credential[] = [
   {
+    name: "Fortinet Certified Professional, Network Security (FCP)",
+    issuer: "Fortinet",
+    detail: "FCP-NS",
+    period: "2024 – 2026",
+  },
+  {
+    name: "Extreme Networks Certified Professional, Switching (ECP)",
+    issuer: "Extreme Networks",
+    period: "2023 – 2026",
+  },
+  {
     name: "Netskope Architect Accreditation",
     issuer: "Netskope",
     period: "2026 – 2028",
@@ -133,14 +144,14 @@ export const historical: HistoricalGroup[] = [
           candidateId: "F50000042507",
         },
       },
-      { name: "F5 Certified Technology Specialist, BIG-IP DNS", issuer: "F5", detail: "302", period: "2018",
+      { name: "F5 Certified Technology Specialist, BIG-IP DNS", issuer: "F5", detail: "302", period: "2017",
         evidence: {
           verifyUrl: "https://cp.certmetrics.com/f5certified/en/public/verify/credential",
           verifyId: "QDXKFZGCCFBEQ69Z",
           candidateId: "F50000042507",
         },
       },
-      { name: "F5 Certified Technology Specialist, BIG-IP LTM", issuer: "F5", detail: "Local Traffic Manager (301)" },
+      { name: "F5 Certified Technology Specialist, BIG-IP LTM", issuer: "F5", detail: "Local Traffic Manager (301)", period: "2021" },
       {
         name: "F5 Certified Administrator, BIG-IP",
         issuer: "F5",
@@ -152,8 +163,8 @@ export const historical: HistoricalGroup[] = [
           candidateId: "F50000042507",
         },
       },
-      { name: "F5 Certified Solution Expert, Security", issuer: "F5", detail: "CSE Security" },
-      { name: "F5 Certified Solution Expert, Cloud", issuer: "F5", detail: "CSE Cloud" },
+      { name: "F5 Certified Solution Expert, Security", issuer: "F5", detail: "CSE Security", period: "2022" },
+      { name: "F5 Certified Solution Expert, Cloud", issuer: "F5", detail: "CSE Cloud", period: "2021" },
       { name: "F5 Certified Technical Professional, Sales (CTP)", issuer: "F5", period: "2019",
         evidence: {
           verifyUrl: "https://cp.certmetrics.com/f5certified/en/public/verify/credential",
@@ -167,13 +178,23 @@ export const historical: HistoricalGroup[] = [
   {
     vendor: "Fortinet",
     items: [
-      { name: "Fortinet NSE 4", issuer: "Fortinet", detail: "FortiGate", note: "Not currently recertified." },
+      { name: "Fortinet Certified Professional, Security Operations (FCP)", issuer: "Fortinet", detail: "FCP-SO", period: "2024", note: "Expired 2026." },
+      { name: "Fortinet Certified Associate, Cybersecurity (FCA)", issuer: "Fortinet" },
+      { name: "Fortinet Certified Fundamentals, Cybersecurity (FCF)", issuer: "Fortinet" },
+      { name: "Fortinet NSE 1–4", issuer: "Fortinet", detail: "Legacy NSE track, superseded by FCP/FCA" },
+    ],
+  },
+  {
+    vendor: "Extreme Networks",
+    items: [
+      { name: "Extreme Networks Certified Associate, Switching (ECA)", issuer: "Extreme Networks" },
+      { name: "Extreme Certified Design Professional (ECDP)", issuer: "Extreme Networks", period: "2014" },
+      { name: "Extreme Certified Sales Professional (ECSP)", issuer: "Extreme Networks", period: "2014" },
     ],
   },
   {
     vendor: "Palo Alto Networks",
     items: [
-      { name: "Palo Alto Networks Accredited Systems Engineer (PSE)", issuer: "Palo Alto Networks", detail: "Foundation · Platform Associate", period: "2020" },
       { name: "Palo Alto Certified Network Security Engineer", issuer: "Palo Alto Networks", detail: "CNSE 5.1", period: "2014" },
       { name: "Palo Alto Accredited Configuration Engineer (ACE)", issuer: "Palo Alto Networks", period: "2014" },
       { name: "Palo Alto Accredited Sales Expert (ASE)", issuer: "Palo Alto Networks", period: "2014" },
