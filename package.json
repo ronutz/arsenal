@@ -23,6 +23,11 @@
     "update-swagger-ui": "node scripts/update-swagger-ui.mjs"
   },
   "//7": "Consumes @ronutz/netcore ^0.1.1 from npm (the public Engine).",
+  "//overrides": "postcss pinned to >=8.5.10 to clear GHSA-qx2v-qp2m-jg93 (XSS in CSS stringify); build-time tooling only.",
+  "overrides": {
+    "postcss": "^8.5.10"
+  },
+
   "dependencies": {
     "@ronutz/netcore": "^0.1.1",
     "gray-matter": "^4.0.3",
