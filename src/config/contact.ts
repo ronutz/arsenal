@@ -45,9 +45,26 @@ export interface ContactSettings {
 // ----------------------------------------------------------------------------
 // Current settings. EDIT THESE (or, later, drive from the admin panel).
 // ----------------------------------------------------------------------------
+// Official public contact address, encoded as character codes and assembled at
+// runtime so that NO part of the literal "user@domain" string (not even the
+// "@") appears in the source or any shipped JS bundle. This defeats regex-based
+// address harvesters that scrape served HTML and JS.
+//
+// NOTE: a simpler `"user" + String.fromCharCode(64) + "domain"` assembly was
+// tried first and the minifier constant-folded it straight back into a literal.
+// Encoding as codes and assembling via .map keeps fromCharCode's argument a
+// runtime variable, which the minifier will not fold.
+const EMAIL_CODES = [
+  104, 101, 108, 108, 111, 64, 114, 111, 110, 117, 116, 122, 46, 99, 111, 109,
+];
+
+function assembleEmail(): string {
+  return EMAIL_CODES.map((c) => String.fromCharCode(c)).join("");
+}
+
 const SETTINGS: ContactSettings = {
-  // Official public contact address for ronutz.com.
-  email: "hello@ronutz.com",
+  // Official public contact address (assembled at runtime, never a literal).
+  email: assembleEmail(),
 
   // No backend on the static site; form uses the mailto fallback.
   formEndpoint: null,
