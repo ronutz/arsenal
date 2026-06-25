@@ -1,0 +1,27 @@
+Copyright (c) 2026 Rodolfo Nützmann. All rights reserved.
+
+This software and its associated documentation files (the "Software") are the
+proprietary and confidential property of Rodolfo Nützmann. No license is
+granted to use, copy, modify, merge, publish, distribute, sublicense, or sell
+copies of the Software, in whole or in part, except by express written
+permission of the copyright holder.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+----------------------------------------------------------------------------
+INTENDED FUTURE LICENSING
+
+This project is intended to be released, if and when it is made public, under:
+  - the Apache License, Version 2.0, for source code; and
+  - the Creative Commons Attribution 4.0 International license, for content.
+
+This mirrors the licensing of the companion engine @ronutz/netcore. Until that
+release, the proprietary terms above govern. Replacing this file with the
+corresponding Apache-2.0 and CC-BY-4.0 license texts (and updating the README
+"License" section) is the single step that opens the project.
+----------------------------------------------------------------------------
+
+Third-party components redistributed with this project are licensed separately;
+see the NOTICE file in this repository.

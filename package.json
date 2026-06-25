@@ -1,6 +1,6 @@
 {
   "//": "================================================================",
-  "//1": "ARSENAL — the ronutz.com application (private). This repo BECOMES the",
+  "//1": "ARSENAL: the ronutz.com application (private). This repo BECOMES the",
   "//2": "deployable site. It CONSUMES @ronutz/netcore (the public Engine) from the",
   "//3": "published npm package (^0.1.1). The dependency direction is one-way and",
   "//4": "unchanged: arsenal -> netcore, never the reverse (C-73). Was file:../netcore",
@@ -9,7 +9,7 @@
   "name": "@ronutz/arsenal",
   "version": "0.1.0",
   "private": true,
-  "description": "The ronutz.com application — a privacy-first, local-compute network/security toolbox PWA (Next.js).",
+  "description": "The ronutz.com application: a privacy-first, local-compute network/security toolbox PWA (Next.js).",
   "type": "module",
   "scripts": {
     "//build-note": "build runs next build THEN pagefind. Pagefind indexes the static HTML in out/ to produce the client-side search index. The two steps must run in order.",

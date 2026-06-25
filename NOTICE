@@ -1,0 +1,21 @@
+@ronutz/arsenal
+Copyright (c) 2026 Rodolfo Nützmann.
+
+This repository redistributes third-party software components, each governed by
+its own license, listed below.
+
+============================================================================
+Swagger UI
+----------------------------------------------------------------------------
+  Bundled files:
+    public/vendor/swagger-ui/swagger-ui-bundle.js
+    public/vendor/swagger-ui/swagger-ui.css
+  Copyright SmartBear Software and the Swagger UI contributors.
+  Licensed under the Apache License, Version 2.0.
+    https://www.apache.org/licenses/LICENSE-2.0
+  Source: https://github.com/swagger-api/swagger-ui
+============================================================================
+
+The application's tools execute via the @ronutz/netcore engine, which is
+distributed separately (not vendored in this repository) under the Apache
+License 2.0 for code and CC-BY-4.0 for content.
