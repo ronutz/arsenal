@@ -29,6 +29,24 @@ export default async function SiteFooter() {
             {t("builtWith")}
           </Link>
         </p>
+        {/* Quiet link to the translation contribution page, so speakers of any
+            language can find it (the in-page notice only shows on machine-draft
+            locales). */}
+        <p className="footer-contribute">
+          <Link href="/contribute" className="footer-contribute-link">
+            {t("contribute")}
+          </Link>
+        </p>
+        <p className="footer-contribute">
+          <Link href="/api" className="footer-contribute-link">
+            {t("api")}
+          </Link>
+        </p>
+        <p className="footer-contribute">
+          <Link href="/contribute/tools" className="footer-contribute-link">
+            {t("contributeTools")}
+          </Link>
+        </p>
       </div>
     </footer>
   );

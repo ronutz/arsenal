@@ -2914,3 +2914,452 @@
 .contact-success-body {
   color: var(--text-secondary);
 }
+
+/* ============================================================================
+   THEME SWITCHER (header control + dropdown). Uses tokens so it re-skins too.
+   ========================================================================== */
+.theme-switcher {
+  position: relative;
+  display: inline-flex;
+}
+
+.theme-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.55rem;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.theme-trigger:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.theme-trigger-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border-subtle) inset;
+}
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 50;
+  width: 18rem;
+  max-width: calc(100vw - 2rem);
+  max-height: min(70vh, 32rem);
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.6rem 0.7rem 0.7rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Each group: a small section label over a grid of swatch chips. */
+.theme-group + .theme-group { margin-top: 0.85rem; }
+.theme-group-label {
+  margin: 0 0 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.6rem, 1fr));
+  gap: 0.4rem;
+}
+
+.theme-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.3rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+.theme-chip:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.theme-chip-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border-subtle) inset;
+}
+.theme-chip-name {
+  font-size: 0.7rem;
+  line-height: 1.2;
+  word-break: break-word;
+}
+.theme-chip--active {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+.theme-chip--active .theme-chip-swatch {
+  box-shadow: 0 0 0 2px var(--accent-primary);
+}
+.theme-chip--active .theme-chip-name { font-weight: 600; }
+
+/* Certifications hero: row of jump links. */
+.certs-hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: center;
+}
+
+/* ============================================================================
+   TOOLS INDEX (/tools) — category headings + responsive card grid.
+   ========================================================================== */
+.tools-category {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin: 0 0 1rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tools-grid li {
+  margin: 0;
+}
+
+.tools-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.25rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+a.tools-card:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+.tools-card--soon {
+  opacity: 0.6;
+}
+
+.tools-card-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.4rem;
+}
+.tools-card-blurb {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+.tools-card-go {
+  margin-top: auto;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+}
+.tools-card-soon {
+  margin-top: auto;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
+
+.tools-note {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  max-width: 40rem;
+  margin: 0;
+}
+
+/* Vendor-level note in the historical certs section (e.g. program transitions). */
+.certs-vendor-note {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  background: var(--surface-base);
+  border-left: 2px solid var(--accent-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.6rem 0.85rem;
+  margin: 0 0 0.85rem;
+  max-width: 60rem;
+}
+
+/* ============================================================================
+   MACHINE-TRANSLATION NOTICE BAR (shown on machine-draft locales)
+   ============================================================================ */
+.mt-notice {
+  background: color-mix(in srgb, var(--accent-amber) 9%, var(--canvas-primary));
+  border-block-end: 1px solid color-mix(in srgb, var(--accent-amber) 26%, transparent);
+}
+.mt-notice-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding-block: 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.mt-notice-icon { color: var(--accent-amber); flex: none; }
+.mt-notice-cta {
+  margin-inline-start: auto;
+  color: var(--accent-primary);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mt-notice-cta:hover { text-decoration: underline; }
+
+/* ============================================================================
+   CONTRIBUTE TRANSLATIONS PAGE
+   ============================================================================ */
+.contribute-container { max-width: 46rem; }
+.contribute-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0.5rem 0 1rem;
+}
+.contribute-lede {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 60ch;
+}
+.contribute-block { margin-top: 2.5rem; }
+.contribute-h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: var(--text-primary);
+}
+.contribute-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 66ch;
+}
+.contribute-packs {
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+}
+.contribute-pack {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.contribute-pack:hover { border-color: var(--border-strong); }
+.contribute-pack-name { font-weight: 600; }
+.contribute-pack-meta { display: flex; align-items: center; gap: 0.5rem; }
+.contribute-pack-code { font-size: 0.8rem; color: var(--text-tertiary); }
+.contribute-pack-ref {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-primary);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 40%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 0.05rem 0.35rem;
+}
+.contribute-email { margin-top: 0.5rem; }
+.contribute-back { margin-top: 2.5rem; display: inline-block; }
+
+/* Footer contribute link */
+.footer-contribute { margin-top: 0.4rem; }
+.footer-contribute-link {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  text-decoration: none;
+}
+.footer-contribute-link:hover { color: var(--text-secondary); text-decoration: underline; }
+
+/* ============================================================================
+   API DOCS PAGE + ON-BRAND REFERENCE (ApiReference.tsx)
+   ----------------------------------------------------------------------------
+   All colors come from the theme tokens, so this renders correctly across every
+   theme, including the dedicated "Swagger" theme. Method/status chips use fixed
+   semantic colors (filled, white text) since those conventions are colour-coded;
+   buttons use var(--canvas-primary) as their text colour so they contrast the
+   accent on both light and dark themes.
+   ========================================================================== */
+
+/* ---- Page intro ---- */
+.api-title { font-size: 2rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.75rem; }
+.api-lede { font-size: 1.05rem; line-height: 1.65; color: var(--text-secondary); max-width: 70ch; margin: 0 0 1.5rem; }
+.api-block { margin: 1.5rem 0; }
+.api-h2 { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.5rem; }
+.api-body { font-size: 1rem; line-height: 1.65; color: var(--text-secondary); max-width: 70ch; margin: 0 0 0.75rem; }
+.api-reference-heading { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle); }
+.api-download {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.9rem;
+  color: var(--accent-primary); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm); padding: 0.45rem 0.8rem; text-decoration: none;
+}
+.api-download:hover { border-color: var(--accent-primary); color: var(--accent-hover); }
+
+/* ---- Reference shell ---- */
+.apiref { margin-top: 1rem; }
+.apiref-status { color: var(--text-tertiary); padding: 1rem 0; }
+.apiref-h2 { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin: 2rem 0 1rem; }
+.apiref-meta {
+  display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem;
+  background: var(--surface-elevated); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+}
+.apiref-meta-label {
+  display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-tertiary); margin-bottom: 0.3rem;
+}
+.apiref-code {
+  font-family: var(--font-mono); font-size: 0.88em; color: var(--text-primary);
+  background: var(--surface-base); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm); padding: 0.1rem 0.35rem;
+}
+
+/* ---- Operation card ---- */
+.apiref-op {
+  background: var(--surface-elevated); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); padding: 1.25rem 1.4rem; margin-bottom: 1.25rem;
+}
+.apiref-op-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+.apiref-method {
+  font-family: var(--font-mono); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.03em;
+  color: #fff; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: var(--radius-sm);
+}
+.apiref-method-get { background: #2563eb; }
+.apiref-method-post { background: #16a34a; }
+.apiref-method-put { background: #d97706; }
+.apiref-method-patch { background: #7c3aed; }
+.apiref-method-delete { background: #dc2626; }
+.apiref-path { font-family: var(--font-mono); font-size: 1rem; color: var(--text-primary); }
+.apiref-summary { font-weight: 600; color: var(--text-primary); margin: 0.25rem 0; }
+.apiref-desc { color: var(--text-secondary); line-height: 1.6; margin: 0.4rem 0; white-space: pre-line; }
+.apiref-link { color: var(--accent-primary); text-decoration: underline; }
+.apiref-link:hover { color: var(--accent-hover); }
+
+.apiref-block { margin-top: 1.25rem; }
+.apiref-h3 {
+  font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-tertiary); margin: 0 0 0.6rem;
+}
+
+/* ---- Tables (parameters + schemas) ---- */
+.apiref-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.apiref-table th {
+  text-align: left; font-weight: 600; color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-strong); padding: 0.4rem 0.6rem 0.4rem 0;
+}
+.apiref-table td {
+  color: var(--text-secondary); border-bottom: 1px solid var(--border-subtle);
+  padding: 0.5rem 0.6rem 0.5rem 0; vertical-align: top;
+}
+.apiref-required { color: var(--accent-amber); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.apiref-type { font-family: var(--font-mono); color: var(--text-primary); font-size: 0.85rem; }
+
+/* ---- Responses ---- */
+.apiref-response { margin-top: 0.75rem; }
+.apiref-response-head { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.4rem; color: var(--text-secondary); }
+.apiref-status-code {
+  font-family: var(--font-mono); font-weight: 700; font-size: 0.8rem; color: #fff;
+  padding: 0.12rem 0.45rem; border-radius: var(--radius-sm);
+}
+.apiref-status-2xx { background: #16a34a; }
+.apiref-status-4xx { background: #d97706; }
+.apiref-status-5xx { background: #dc2626; }
+.apiref-status-0xx { background: var(--border-strong); }
+.apiref-schema-ref {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-tertiary);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.05rem 0.35rem;
+}
+.apiref-pre {
+  font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.5; color: var(--text-primary);
+  background: var(--canvas-primary); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); padding: 0.85rem 1rem; overflow-x: auto; margin: 0.4rem 0 0;
+}
+
+/* ---- Try it ---- */
+.apiref-tryit { border-top: 1px solid var(--border-subtle); padding-top: 1.1rem; }
+.apiref-tryit-form { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
+.apiref-tryit-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.apiref-tryit-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-tertiary); }
+.apiref-input {
+  font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-primary);
+  background: var(--surface-base); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm); padding: 0.5rem 0.65rem; min-width: 16rem;
+}
+.apiref-input:focus { outline: none; border-color: var(--accent-primary); }
+.apiref-send {
+  font-family: inherit; font-weight: 600; font-size: 0.92rem; cursor: pointer;
+  color: var(--canvas-primary); background: var(--accent-primary); border: none;
+  border-radius: var(--radius-sm); padding: 0.55rem 1.15rem;
+}
+.apiref-send:hover { background: var(--accent-hover); }
+.apiref-send:disabled { opacity: 0.6; cursor: default; }
+.apiref-tryit-hint { font-size: 0.78rem; color: var(--text-tertiary); margin: 0.6rem 0 0; }
+.apiref-result { display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 0.85rem; }
+.apiref-result .apiref-pre { flex: 1; margin: 0; }
+
+.apiref-schemas { margin-top: 2rem; }
+
+/* ---- API view toggle (Reference | Swagger UI) ---- */
+.api-explorer { margin-top: 1rem; }
+.api-viewtoggle {
+  display: inline-flex; border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem;
+}
+.api-viewtab {
+  font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  padding: 0.5rem 1.1rem; background: var(--surface-base); color: var(--text-secondary);
+  border: none;
+}
+.api-viewtab + .api-viewtab { border-left: 1px solid var(--border-strong); }
+.api-viewtab:hover { color: var(--text-primary); }
+.api-viewtab.is-active { background: var(--accent-primary); color: var(--canvas-primary); }
+
+/* Stock Swagger UI brings its own (light) styling, so give it a clean white
+   surface that reads correctly even under the dark themes. */
+.swagger-ui-host {
+  margin-top: 0.5rem; background: #fff; border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); padding: 0.5rem;
+}

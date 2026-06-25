@@ -1,0 +1,184 @@
+# =============================================================================
+# openapi.yaml - the ronutz tools API contract
+# -----------------------------------------------------------------------------
+# A small, stateless HTTP API that exposes the same deterministic computations
+# that power the in-browser tools, for automation: scripts, CI pipelines, and
+# integrations. It is the programmatic counterpart to the browser tools, not a
+# replacement for them.
+#
+# PRIVACY STANCE (deliberate, and consistent with the rest of the site):
+#   - The in-browser tools remain the zero-egress default: what you type there
+#     never leaves your device.
+#   - This API receives ONLY the input you send it, computes a result, and
+#     returns it. It is stateless and logs no request bodies or query values.
+#   - If you need guaranteed zero data egress, use the browser tools, or run the
+#     open core engine yourself.
+#
+# Served by the Cloudflare Worker on /api/* (run_worker_first), alongside the
+# static site. Grows one operation at a time as the toolbox grows; only live
+# tools are documented here (no vaporware endpoints).
+# =============================================================================
+
+openapi: 3.1.0
+
+info:
+  title: ronutz tools API
+  version: 1.0.0
+  summary: Deterministic network and security computations over HTTP.
+  description: |
+    The programmatic counterpart to the in-browser tools at ronutz.com.
+
+    Every operation here is a pure function: the same input always yields the
+    same output, nothing is stored, and no request bodies or query values are
+    logged. The browser tools remain the zero-egress default for sensitive work;
+    this API exists for automation (scripts, pipelines, integrations).
+
+    The surface grows as the toolbox grows. Today it exposes the CIDR / subnet
+    calculator. Only live operations are listed.
+  contact:
+    name: ronutz
+    url: https://ronutz.com/contact
+  license:
+    name: Apache-2.0 (code), CC-BY-4.0 (content)
+    url: https://ronutz.com/colophon
+
+servers:
+  - url: https://ronutz.com/api/v1
+    description: Production edge (Cloudflare Worker, stateless, no request logging)
+
+tags:
+  - name: Networking
+    description: IP addressing and subnet computations.
+
+paths:
+  /cidr:
+    get:
+      tags: [Networking]
+      operationId: computeCidr
+      summary: Break down an IPv4 CIDR block
+      description: >
+        Computes the network and broadcast addresses, usable host range, host
+        counts, netmask, and wildcard mask for an IPv4 CIDR block.
+
+        Edge cases follow the common conventions: a `/31` is treated as an
+        RFC 3021 point-to-point link (2 usable addresses, no separate broadcast),
+        and a `/32` is a single host (1 usable address). For `/0`–`/30`, the
+        network and broadcast addresses are excluded from the usable host count.
+      externalDocs:
+        description: "RFC 4632: Classless Inter-Domain Routing"
+        url: https://www.rfc-editor.org/rfc/rfc4632
+      parameters:
+        - name: block
+          in: query
+          required: true
+          description: An IPv4 CIDR block, host bits optional (they are masked off).
+          schema:
+            type: string
+            pattern: '^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$'
+          examples:
+            standard:
+              summary: A /24 network
+              value: 192.168.1.0/24
+            hostBitsSet:
+              summary: Host bits set (masked off automatically)
+              value: 10.0.5.37/22
+            pointToPoint:
+              summary: RFC 3021 point-to-point
+              value: 198.51.100.0/31
+      responses:
+        '200':
+          description: The computed breakdown.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CidrResult'
+              example:
+                input: 192.168.1.0/24
+                network: 192.168.1.0
+                broadcast: 192.168.1.255
+                netmask: 255.255.255.0
+                wildcard: 0.0.0.255
+                firstHost: 192.168.1.1
+                lastHost: 192.168.1.254
+                totalAddresses: 256
+                usableHosts: 254
+        '400':
+          description: The input is missing or not a valid IPv4 CIDR block.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: invalid_cidr
+                message: "Not a valid IPv4 CIDR block. Expected something like 192.168.1.0/24."
+
+components:
+  schemas:
+    CidrResult:
+      type: object
+      description: The full breakdown of an IPv4 CIDR block.
+      required:
+        - input
+        - network
+        - broadcast
+        - netmask
+        - wildcard
+        - firstHost
+        - lastHost
+        - totalAddresses
+        - usableHosts
+      properties:
+        input:
+          type: string
+          description: The input echoed back in canonical dotted-quad form. Host bits are preserved here; see `network` for the masked base address.
+          examples: ["192.168.1.0/24"]
+        network:
+          type: string
+          description: The network (base) address.
+          examples: ["192.168.1.0"]
+        broadcast:
+          type: string
+          description: The broadcast address. For a /31 or /32 this equals the upper address.
+          examples: ["192.168.1.255"]
+        netmask:
+          type: string
+          description: The subnet mask in dotted-decimal form.
+          examples: ["255.255.255.0"]
+        wildcard:
+          type: string
+          description: The inverse (wildcard) mask, as used in ACLs.
+          examples: ["0.0.0.255"]
+        firstHost:
+          type: string
+          description: The first usable host address.
+          examples: ["192.168.1.1"]
+        lastHost:
+          type: string
+          description: The last usable host address.
+          examples: ["192.168.1.254"]
+        totalAddresses:
+          type: integer
+          minimum: 1
+          description: Total addresses in the block (2 ^ host bits).
+          examples: [256]
+        usableHosts:
+          type: integer
+          minimum: 0
+          description: >
+            Addresses assignable to hosts. For /0–/30 this excludes the network
+            and broadcast addresses; /31 yields 2 and /32 yields 1.
+          examples: [254]
+
+    Error:
+      type: object
+      description: A structured error. No request input is echoed beyond what is needed to explain the problem.
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          description: A stable, machine-readable error code.
+          examples: ["invalid_cidr"]
+        message:
+          type: string
+          description: A human-readable explanation.
+          examples: ["Not a valid IPv4 CIDR block. Expected something like 192.168.1.0/24."]

@@ -41,6 +41,529 @@
   --maxw-content: 72rem;
 }
 
+/* ============================================================================
+   THEMES — each block re-defines the core color tokens; every component reads
+   these through var(), so a single attribute on <html> re-skins the whole site.
+   Default (no attribute) is Obsidian, defined in :root above. The seven below
+   are nods to the FortiGate GUI themes (Dark Matter, Onyx, Eclipse, Jade,
+   Graphite, Neutrino, Security Fabric), renamed with a wink to the originals.
+   Switching is handled by ThemeSwitcher (sets data-theme + remembers it).
+   ========================================================================== */
+
+/* Dark Energy — dark, indigo accent. (nods to Dark Matter) */
+:root[data-theme="dark-energy"] {
+  --canvas-primary: #0a0a16;
+  --surface-base: #15152a;
+  --surface-elevated: #22223e;
+  --border-subtle: #33334f;
+  --border-strong: #4b4b6e;
+  --text-primary: #f4f4fb;
+  --text-secondary: #a4a4c6;
+  --text-tertiary: #71719a;
+  --accent-primary: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-amber: #f59e0b;
+}
+
+/* Olivine — dark, emerald accent. (nods to Onyx) */
+:root[data-theme="olivine"] {
+  --canvas-primary: #07100b;
+  --surface-base: #0f1c14;
+  --surface-elevated: #1a2c20;
+  --border-subtle: #284032;
+  --border-strong: #3c5a47;
+  --text-primary: #f1faf4;
+  --text-secondary: #96b8a3;
+  --text-tertiary: #648571;
+  --accent-primary: #34d399;
+  --accent-hover: #6ee7b7;
+  --accent-amber: #f59e0b;
+}
+
+/* Penumbra — dark, amber accent. (nods to Eclipse) */
+:root[data-theme="penumbra"] {
+  --canvas-primary: #14100a;
+  --surface-base: #201810;
+  --surface-elevated: #2f2519;
+  --border-subtle: #3f3424;
+  --border-strong: #5a4a34;
+  --text-primary: #faf6ef;
+  --text-secondary: #bba98c;
+  --text-tertiary: #85745c;
+  --accent-primary: #fb923c;
+  --accent-hover: #fdba74;
+  --accent-amber: #fbbf24;
+}
+
+/* Emerald — light, green accent. (nods to Jade) */
+:root[data-theme="emerald"] {
+  --canvas-primary: #f5faf7;
+  --surface-base: #ffffff;
+  --surface-elevated: #eef5f0;
+  --border-subtle: #d7e7dd;
+  --border-strong: #b3ccbc;
+  --text-primary: #0f1f15;
+  --text-secondary: #46604f;
+  --text-tertiary: #6a8073;
+  --accent-primary: #059669;
+  --accent-hover: #047857;
+  --accent-amber: #b45309;
+}
+
+/* Slate — light, blue accent. (nods to Graphite) */
+:root[data-theme="slate"] {
+  --canvas-primary: #f5f7fa;
+  --surface-base: #ffffff;
+  --surface-elevated: #eef2f7;
+  --border-subtle: #dbe2ea;
+  --border-strong: #b6c1ce;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --accent-primary: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-amber: #b45309;
+}
+
+/* Photon — light, indigo-navy accent. (nods to Neutrino) */
+:root[data-theme="photon"] {
+  --canvas-primary: #f6f8fc;
+  --surface-base: #ffffff;
+  --surface-elevated: #eef1f8;
+  --border-subtle: #dbe0ec;
+  --border-strong: #b6bed6;
+  --text-primary: #0f172a;
+  --text-secondary: #414c63;
+  --text-tertiary: #646e88;
+  --accent-primary: #3730a3;
+  --accent-hover: #312e81;
+  --accent-amber: #b45309;
+}
+
+/* Kevlar — light, red accent. (nods to Security Fabric) */
+:root[data-theme="kevlar"] {
+  --canvas-primary: #faf7f6;
+  --surface-base: #ffffff;
+  --surface-elevated: #f6efee;
+  --border-subtle: #ebd9d8;
+  --border-strong: #d2b6b4;
+  --text-primary: #1f1413;
+  --text-secondary: #5a4744;
+  --text-tertiary: #836e6b;
+  --accent-primary: #dc2626;
+  --accent-hover: #b91c1c;
+  --accent-amber: #b45309;
+}
+
+/* ============================================================================
+   RETRO THEME SET — homages to vintage machines and terminals. Grouped under
+   the `retro-` id prefix and kept together in ThemeSwitcher. These go beyond a
+   color swap: the terminal/8-bit members also zero the radius and switch prose
+   to the mono face for a period feel; the Macintosh keeps gentle rounding and a
+   proportional face, true to its GUI. The two CRT terminals carry a scanline +
+   phosphor-glow signature (defined after the blocks). No motion is used, so the
+   reduced-motion floor is met by construction.
+   Naming: "retro" not "8-bit", because the Amiga is 16-bit and the Macintosh
+   32-bit — the label groups them honestly. Palettes are drawn from each
+   machine's documented colors; primary text is nudged toward legibility where
+   the authentic combination would fail contrast (e.g. white on C64 blue).
+   ========================================================================== */
+
+/* Retro · Amber — amber-phosphor CRT terminal. The "premium" 80s monochrome. */
+:root[data-theme="retro-amber"] {
+  --canvas-primary: #0a0700;
+  --surface-base: #140e02;
+  --surface-elevated: #1f1604;
+  --border-subtle: #3a2a08;
+  --border-strong: #5a4310;
+  --text-primary: #ffb000;     /* amber phosphor */
+  --text-secondary: #c88a00;   /* dimmer amber, still legible on near-black */
+  --text-tertiary: #8a6000;
+  --accent-primary: #ffb000;
+  --accent-hover: #ffd24a;
+  --accent-amber: #ff8c00;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · Green — P1 green-phosphor CRT terminal. The classic green screen. */
+:root[data-theme="retro-green"] {
+  --canvas-primary: #000a00;
+  --surface-base: #021202;
+  --surface-elevated: #041c04;
+  --border-subtle: #0c3a0c;
+  --border-strong: #115a11;
+  --text-primary: #33ff66;     /* phosphor green */
+  --text-secondary: #1fc840;
+  --text-tertiary: #158a28;
+  --accent-primary: #39ff14;
+  --accent-hover: #75ff75;
+  --accent-amber: #b6ff3f;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · C64 — Commodore 64 boot screen: light-blue on blue, light-blue chrome. */
+:root[data-theme="retro-c64"] {
+  --canvas-primary: #352879;   /* C64 blue */
+  --surface-base: #3e3088;
+  --surface-elevated: #473998;
+  --border-subtle: #6c5eb5;    /* C64 light blue */
+  --border-strong: #8b7fd4;
+  --text-primary: #ffffff;     /* white for legibility on C64 blue */
+  --text-secondary: #b8aeea;
+  --text-tertiary: #8b7fd4;
+  --accent-primary: #9d8fe8;   /* brightened light-blue, pops on the blue */
+  --accent-hover: #b8aeea;
+  --accent-amber: #b8c76f;     /* C64 yellow */
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · Spectrum — ZX Spectrum: bright attribute colors on black. */
+:root[data-theme="retro-spectrum"] {
+  --canvas-primary: #000000;
+  --surface-base: #0a0a14;
+  --surface-elevated: #14141e;
+  --border-subtle: #2a2a44;
+  --border-strong: #3a3a5a;
+  --text-primary: #ffffff;     /* Spectrum bright white */
+  --text-secondary: #c8c8e0;
+  --text-tertiary: #9090b0;
+  --accent-primary: #ff2bd6;   /* Spectrum bright magenta */
+  --accent-hover: #ff6fe0;
+  --accent-amber: #ffe000;     /* Spectrum bright yellow */
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · CoCo — TRS-80 Color Computer green text screen, with artifact orange. */
+:root[data-theme="retro-coco"] {
+  --canvas-primary: #9bd17f;   /* CoCo VDG green (lightened for legibility) */
+  --surface-base: #8ac76e;
+  --surface-elevated: #a8d98d;
+  --border-subtle: #5e9e45;
+  --border-strong: #487a35;
+  --text-primary: #0c2a0c;     /* near-black green */
+  --text-secondary: #2e5a24;
+  --text-tertiary: #487a35;
+  --accent-primary: #c84b1e;   /* CoCo artifact orange */
+  --accent-hover: #e26536;
+  --accent-amber: #a85a00;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · Apple II — HGR artifact palette: violet + orange on black, white text,
+   violet-tinted chrome. Carries the 6-color Apple rainbow as its signature
+   (top stripe, defined below). */
+:root[data-theme="retro-apple2"] {
+  --canvas-primary: #000000;   /* HGR black */
+  --surface-base: #0e0a12;     /* faint violet-tinted dark */
+  --surface-elevated: #170f1c;
+  --border-subtle: #2e2440;    /* violet-tinted chrome */
+  --border-strong: #463a5e;
+  --text-primary: #ffffff;     /* HGR white */
+  --text-secondary: #c9b8e0;
+  --text-tertiary: #8f7fb0;
+  --accent-primary: #c95fff;   /* HGR violet — iconic artifact color */
+  --accent-hover: #d98fff;
+  --accent-amber: #ff7028;     /* HGR orange */
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · MSX — TMS9918 palette: indigo with the distinctive MSX cyan. */
+:root[data-theme="retro-msx"] {
+  --canvas-primary: #353594;   /* TMS dark blue */
+  --surface-base: #3e3ea0;
+  --surface-elevated: #4747ac;
+  --border-subtle: #5955e0;
+  --border-strong: #8076f1;
+  --text-primary: #ffffff;
+  --text-secondary: #b0aef0;
+  --text-tertiary: #8076f1;
+  --accent-primary: #65dbef;   /* TMS cyan */
+  --accent-hover: #92e8f5;
+  --accent-amber: #ded087;     /* TMS light yellow */
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · Amiga — Workbench 1.x: azure blue with the iconic Workbench orange. */
+:root[data-theme="retro-amiga"] {
+  --canvas-primary: #0058a8;   /* Workbench blue */
+  --surface-base: #15639f;
+  --surface-elevated: #1e6da8;
+  --border-subtle: #4a8ac8;
+  --border-strong: #7fb0e0;
+  --text-primary: #ffffff;
+  --text-secondary: #c8dcf0;
+  --text-tertiary: #9fc0e0;
+  --accent-primary: #ff8800;   /* Workbench orange */
+  --accent-hover: #ffa033;
+  --accent-amber: #ff8800;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Retro · Macintosh — classic 1-bit System: black on white, gentle rounding and
+   a proportional face (Chicago/Geneva spirit). The one retro theme that stays
+   proportional and rounded, true to the Mac GUI. Light. */
+:root[data-theme="retro-mac"] {
+  --canvas-primary: #d8d8d8;   /* desktop grey */
+  --surface-base: #ffffff;     /* windows */
+  --surface-elevated: #ffffff;
+  --border-subtle: #6e6e6e;
+  --border-strong: #000000;    /* black 1px frames, very Mac */
+  --text-primary: #000000;
+  --text-secondary: #3a3a3a;
+  --text-tertiary: #6e6e6e;
+  --accent-primary: #2222cc;   /* restrained System-highlight blue for links */
+  --accent-hover: #4444e0;
+  --accent-amber: #9a6a00;     /* muted amber so warnings still read */
+  --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px;
+}
+
+/* ============================================================================
+   MATRIX SET — digital-rain aesthetic: pure black, one saturated color, a strong
+   phosphor glow (defined below), full mono, zero radius. Deliberately NO
+   scanlines (that is the terminal signature); the Matrix look is clean glowing
+   code. Three colorways: the classic green, plus blue and red.
+   ========================================================================== */
+
+/* Matrix · Green — the classic falling-code green. */
+:root[data-theme="matrix-green"] {
+  --canvas-primary: #000000;
+  --surface-base: #020802;
+  --surface-elevated: #041004;
+  --border-subtle: #0a2a0a;
+  --border-strong: #104810;
+  --text-primary: #00ff41;
+  --text-secondary: #00b82f;
+  --text-tertiary: #008020;
+  --accent-primary: #00ff41;
+  --accent-hover: #5bff7a;
+  --accent-amber: #7fff00;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Matrix · Blue — cyan-blue rain. */
+:root[data-theme="matrix-blue"] {
+  --canvas-primary: #000000;
+  --surface-base: #02060a;
+  --surface-elevated: #040c14;
+  --border-subtle: #0a2030;
+  --border-strong: #103850;
+  --text-primary: #19c3ff;
+  --text-secondary: #0d8fc8;
+  --text-tertiary: #0a6a92;
+  --accent-primary: #19c3ff;
+  --accent-hover: #5bd8ff;
+  --accent-amber: #00e0ff;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Matrix · Red — red-pill rain. */
+:root[data-theme="matrix-red"] {
+  --canvas-primary: #000000;
+  --surface-base: #0a0202;
+  --surface-elevated: #140404;
+  --border-subtle: #2e0a0a;
+  --border-strong: #501010;
+  --text-primary: #ff4040;     /* lightened for legibility on black */
+  --text-secondary: #c82020;
+  --text-tertiary: #921515;
+  --accent-primary: #ff3030;
+  --accent-hover: #ff6a6a;
+  --accent-amber: #ff6a00;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* ============================================================================
+   WEB SET — homages to classic community sites. Proportional faces (these are
+   websites, not terminals); Slashdot keeps boxy early-2000s corners, Reddit the
+   softer modern rounding.
+   ========================================================================== */
+
+/* Web · Slashdot — light grey with the Slashdot green; boxy. */
+:root[data-theme="web-slashdot"] {
+  --canvas-primary: #f3f4ef;
+  --surface-base: #ffffff;
+  --surface-elevated: #ffffff;
+  --border-subtle: #cdd0c6;
+  --border-strong: #9aa08e;
+  --text-primary: #1e201c;
+  --text-secondary: #494c44;
+  --text-tertiary: #6d7065;
+  --accent-primary: #00692e;   /* Slashdot green */
+  --accent-hover: #008a3d;
+  --accent-amber: #b45309;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+}
+
+/* Web · Reddit — light grey with OrangeRed; softly rounded. */
+:root[data-theme="web-reddit"] {
+  --canvas-primary: #f6f7f8;
+  --surface-base: #ffffff;
+  --surface-elevated: #ffffff;
+  --border-subtle: #ccced0;
+  --border-strong: #a8abad;
+  --text-primary: #1a1a1b;
+  --text-secondary: #4a4d50;
+  --text-tertiary: #787c7e;
+  --accent-primary: #ff4500;   /* Reddit OrangeRed */
+  --accent-hover: #ff6a33;
+  --accent-amber: #cc5200;
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+}
+
+/* ============================================================================
+   SWAGGER — echoes the Swagger UI look (light grey, slate text, Swagger green),
+   so the on-brand API reference can read like Swagger when this theme is on.
+   Proportional face, gentle rounding, like the real Swagger UI.
+   ========================================================================== */
+:root[data-theme="swagger"] {
+  --canvas-primary: #fafafa;   /* Swagger UI background */
+  --surface-base: #ffffff;
+  --surface-elevated: #ffffff;
+  --border-subtle: #d6dce0;
+  --border-strong: #b5bcc4;
+  --text-primary: #3b4151;     /* Swagger UI slate text */
+  --text-secondary: #5b6770;
+  --text-tertiary: #828d96;
+  --accent-primary: #4a9c2d;   /* Swagger green (readable) */
+  --accent-hover: #5cb33e;
+  --accent-amber: #b45309;
+  --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px;
+}
+
+/* ============================================================================
+   VS CODE — the Dark+ palette (editor grey, the #007acc status-bar blue).
+   Proportional UI face like the editor chrome; lightly squared corners.
+   ========================================================================== */
+:root[data-theme="vscode"] {
+  --canvas-primary: #1e1e1e;   /* editor background */
+  --surface-base: #252526;     /* side bar */
+  --surface-elevated: #2d2d2d; /* panels */
+  --border-subtle: #3c3c3c;
+  --border-strong: #505050;
+  --text-primary: #d4d4d4;     /* editor foreground */
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #6e7681;
+  --accent-primary: #007acc;   /* VS Code blue */
+  --accent-hover: #3794ff;
+  --accent-amber: #d7ba7d;     /* editor gold */
+  --radius-sm: 3px; --radius-md: 4px; --radius-lg: 6px;
+}
+
+/* ============================================================================
+   ASCII — colorless text art. Pure grayscale, monospace, zero radius, no
+   effects: the look of 7-bit ASCII art, where there is no color, only glyphs.
+   ========================================================================== */
+:root[data-theme="ascii"] {
+  --canvas-primary: #0b0b0b;
+  --surface-base: #161616;
+  --surface-elevated: #1e1e1e;
+  --border-subtle: #2c2c2c;
+  --border-strong: #444444;
+  --text-primary: #e6e6e6;
+  --text-secondary: #a8a8a8;
+  --text-tertiary: #6e6e6e;
+  --accent-primary: #ffffff;   /* bright white is the only "color" */
+  --accent-hover: #cfcfcf;
+  --accent-amber: #bdbdbd;     /* grey, to keep the palette colorless */
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* ============================================================================
+   ANSI — the DOS/BBS 16-color palette: light-grey text with vivid cyan and
+   yellow on black, monospace, zero radius, flat (no glow): block-art color.
+   ========================================================================== */
+:root[data-theme="ansi"] {
+  --canvas-primary: #000000;
+  --surface-base: #0d0d12;
+  --surface-elevated: #14141c;
+  --border-subtle: #2a2a3a;
+  --border-strong: #44445a;
+  --text-primary: #cfcfcf;     /* DOS light grey */
+  --text-secondary: #9a9aae;
+  --text-tertiary: #6a6a7e;
+  --accent-primary: #54fefe;   /* DOS bright cyan */
+  --accent-hover: #aafefe;
+  --accent-amber: #fefe54;     /* DOS bright yellow */
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* --- CRT signature: fine static scanlines over every retro theme except the
+   Macintosh (a crisp GUI, not a phosphor screen). pointer-events:none so it
+   never blocks interaction; static, so no motion is introduced. --- */
+:root[data-theme^="retro-"]:not([data-theme="retro-mac"]) body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.16) 2px,
+    rgba(0, 0, 0, 0.16) 3px
+  );
+}
+
+/* Phosphor glow: only the two monochrome terminals, where a halo reads true and
+   does not muddy color. Kept faint so body text stays legible. */
+:root[data-theme="retro-amber"] body {
+  text-shadow: 0 0 1px currentColor, 0 0 7px rgba(255, 176, 0, 0.2);
+}
+:root[data-theme="retro-green"] body {
+  text-shadow: 0 0 1px currentColor, 0 0 7px rgba(57, 255, 20, 0.2);
+}
+
+/* Apple II signature: the six-color Apple rainbow as a thin fixed top stripe.
+   Sits above the scanlines (z 10000 > 9999); never blocks interaction. */
+:root[data-theme="retro-apple2"] body::before {
+  content: "";
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 4px;
+  z-index: 10000;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    #61bb46 0 16.66%,
+    #fdb827 16.66% 33.33%,
+    #f5821f 33.33% 50%,
+    #e03a3e 50% 66.66%,
+    #963d97 66.66% 83.33%,
+    #009ddc 83.33% 100%
+  );
+}
+
+/* Matrix glow: a stronger halo than the terminals, on pure black, no scanlines. */
+:root[data-theme="matrix-green"] body {
+  text-shadow: 0 0 2px currentColor, 0 0 10px rgba(0, 255, 65, 0.35);
+}
+:root[data-theme="matrix-blue"] body {
+  text-shadow: 0 0 2px currentColor, 0 0 10px rgba(25, 195, 255, 0.32);
+}
+:root[data-theme="matrix-red"] body {
+  text-shadow: 0 0 2px currentColor, 0 0 10px rgba(255, 48, 48, 0.3);
+}
+
+/* Smooth the transition when the theme changes (kept subtle). */
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
 /* --- Minimal reset --- */
 *,
 *::before,

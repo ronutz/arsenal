@@ -11,6 +11,7 @@
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { TRANSLATED_LOCALE_COUNT } from "@/i18n/locales";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -119,7 +120,11 @@ export default async function ColophonPage({
                 {stack.map(([label, value]) => (
                   <div className="colophon-stack-row" key={label}>
                     <dt className="colophon-stack-label">{t(label)}</dt>
-                    <dd className="colophon-stack-value">{t(value)}</dd>
+                    <dd className="colophon-stack-value">
+                      {value === "stackI18nV"
+                        ? t(value, { count: TRANSLATED_LOCALE_COUNT })
+                        : t(value)}
+                    </dd>
                   </div>
                 ))}
               </dl>

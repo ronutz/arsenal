@@ -20,6 +20,7 @@ import {
   currentCertifications,
   recognition,
   historical,
+  CREDLY_PROFILE,
 } from "@/content/certifications/data";
 
 export default async function CertificationsPage({
@@ -56,9 +57,19 @@ export default async function CertificationsPage({
             <div className="container certs-container">
               <h1 className="certs-title">{t("title")}</h1>
               <p className="certs-lede">{t("lede")}</p>
-              <a href="#historical" className="certs-jump">
-                {t("jumpToHistorical")} ↓
-              </a>
+              <div className="certs-hero-links">
+                <a href="#historical" className="certs-jump">
+                  {t("jumpToHistorical")} ↓
+                </a>
+                <a
+                  href={CREDLY_PROFILE}
+                  className="certs-jump"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t("credlyVerify")} ↗
+                </a>
+              </div>
             </div>
           </section>
 
@@ -132,6 +143,7 @@ export default async function CertificationsPage({
                 {historical.map((g) => (
                   <div className="certs-vendor-group" key={g.vendor}>
                     <h3 className="certs-vendor-name">{g.vendor}</h3>
+                    {g.note && <p className="certs-vendor-note">{g.note}</p>}
                     <ul className="certs-vendor-list">
                       {g.items.map((c) => (
                         <li className="certs-hist-item" key={c.name}>

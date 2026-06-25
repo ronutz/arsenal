@@ -4,12 +4,13 @@
   // --------------------------------------------------------------------------
   // Cloudflare Workers Static Assets configuration for ronutz.com (ARSENAL).
   //
-  // This is an ASSETS-ONLY Worker: it serves the static Next.js export in ./out
-  // as files on Cloudflare's edge. There is intentionally NO "main" (no Worker
-  // script) and NO "binding": "ASSETS" — those are only valid alongside a
-  // script. When the API-first layer arrives (canon C-04 / C-68), a "main"
-  // Worker plus assets.run_worker_first: ["/api/*"] can be added here with no
-  // disruption to static delivery.
+  // This Worker serves the static Next.js export in ./out as files on
+  // Cloudflare's edge, AND hosts the tools API. `assets.run_worker_first`
+  // routes only /api/* to the Worker script (worker/index.ts); every other path
+  // is served straight from assets, untouched. This is canon C-04 / C-68
+  // ("Seam 1"): the hosted endpoint calls the same @ronutz/netcore function the
+  // browser calls, so output is byte-identical. The ASSETS binding lets the
+  // Worker fall back to static assets for any non-API path that reaches it.
   //
   // Providing this file also stops Cloudflare's autoconfig from misdetecting the
   // static export as a server Next.js app (which would try to wire up OpenNext
@@ -18,6 +19,11 @@
 
   // Worker / project name. Lowercase, no underscores. Matches the dashboard.
   "name": "arsenal",
+
+  // The Worker script that handles /api/* (see assets.run_worker_first below).
+  // Lives outside src/ and is excluded from the Next tsconfig, so it has no
+  // effect on the static build; wrangler bundles it (and @ronutz/netcore) here.
+  "main": "worker/index.ts",
 
   // Runtime compatibility baseline. Set to the deploy date.
   "compatibility_date": "2026-06-24",
@@ -32,6 +38,15 @@
     // Folder produced by `npm run build` (next build -> ./out, then pagefind
     // writes its search index into ./out/pagefind).
     "directory": "./out",
+
+    // Bind the static assets to the Worker as env.ASSETS, so the Worker can
+    // serve files for any non-API path that reaches it (defensive fallback).
+    "binding": "ASSETS",
+
+    // Run the Worker FIRST only for API paths; everything else is served
+    // directly from assets without invoking the Worker. The tools API lives
+    // under /api/* (today: /api/v1/cidr).
+    "run_worker_first": ["/api/*"],
 
     // Multi-page static site (NOT a single-page app): serve the branded
     // 404.html for any path that matches no asset. Redirects in _redirects are

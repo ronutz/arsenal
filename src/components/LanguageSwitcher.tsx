@@ -14,7 +14,9 @@
 //   - COMMAND-PALETTE pattern: a trigger showing the current language + its
 //     BCP-47 code (mono), opening a panel with type-to-filter. This reads as a
 //     practitioner tool, not a consumer widget — matching the site's authority.
-//   - Status dots mark untranslated (stub) languages honestly.
+//   - LIVE LANGUAGES ONLY: the panel lists only locales with real translations.
+//     Stubs stay registered for routing and English fallback but are never
+//     advertised here — we claim only what is actually translated.
 //   - Fully keyboard-navigable (arrow keys, Enter, Escape) and Obsidian-themed.
 //
 // SECURITY: renders only registry data (endonyms/codes are static, trusted
@@ -26,7 +28,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { LOCALES, getLocale, type LocaleMeta } from "@/i18n/locales";
+import { LOCALES, LIVE_LOCALES, getLocale, type LocaleMeta } from "@/i18n/locales";
 
 export default function LanguageSwitcher() {
   const t = useTranslations("languageSwitcher");
@@ -45,11 +47,12 @@ export default function LanguageSwitcher() {
 
   // Filter languages by query — matches against BOTH the native name and the
   // English name and the code, so a user can find their language however they
-  // think of it (type "japan", "日本", or "ja" — all find Japanese).
+  // think of it (type "japan", "日本", or "ja" — all find Japanese). Only LIVE
+  // locales are listed; stubs are never offered, so we only claim what we have.
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return LOCALES;
-    return LOCALES.filter(
+    if (!q) return LIVE_LOCALES;
+    return LIVE_LOCALES.filter(
       (l) =>
         l.nativeName.toLowerCase().includes(q) ||
         l.englishName.toLowerCase().includes(q) ||
@@ -176,14 +179,6 @@ export default function LanguageSwitcher() {
                   >
                     <span className="ls-item-native">{l.nativeName}</span>
                     <span className="ls-item-code mono">{l.code}</span>
-                    {/* Honest status dot: stub languages fall back to English. */}
-                    {l.status === "stub" && (
-                      <span
-                        className="ls-item-status"
-                        title={t("stubNotice")}
-                        aria-label={t("stubNotice")}
-                      />
-                    )}
                     {isActive && (
                       <svg
                         className="ls-item-check"

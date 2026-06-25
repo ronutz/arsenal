@@ -22,8 +22,9 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale, getMessages } from "next-intl/server";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
-import { dirFor } from "@/i18n/locales";
+import { dirFor, getLocale } from "@/i18n/locales";
 import InputModality from "@/components/InputModality";
+import MachineTranslationNotice from "@/components/MachineTranslationNotice";
 import "@/app/globals.css";
 
 // Canon typography: Inter (prose) + JetBrains Mono (data/codes/BCP-47 tags).
@@ -104,6 +105,14 @@ export default async function LocaleLayout({
   // Text direction from the registry — this is the RTL switch.
   const dir = dirFor(locale);
 
+  // Show the machine-translation notice only on machine-draft locales (English
+  // and any human-reviewed locale never show it). Strings are resolved here, in
+  // the page's own language, and handed to the presentational notice component.
+  const isMachineDraft = getLocale(locale)?.status === "machine-draft";
+  const tNotice = isMachineDraft
+    ? await getTranslations({ locale, namespace: "machineTranslation" })
+    : null;
+
   // Fetch the merged (English-base + locale pack) messages so CLIENT components
   // (e.g. the language switcher) receive them through the provider. Without
   // passing messages explicitly, client components get MISSING_MESSAGE.
@@ -112,9 +121,27 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={dir} className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
+        {/* Apply the saved theme before first paint (no flash). Runs synchronously
+            ahead of hydration; ThemeSwitcher reads the same key thereafter. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var t=localStorage.getItem('ronutz-theme');if(t&&t!=='obsidian'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();",
+          }}
+        />
         {/* Tracks last input modality (keyboard vs pointer) so the skip link
             reveals only for keyboard users — see InputModality. */}
         <InputModality />
+        {/* Honesty banner: machine-draft locales announce themselves and link to
+            the contribute page. Rendered above page content, hidden on English
+            and any human-reviewed locale. */}
+        {isMachineDraft && tNotice && (
+          <MachineTranslationNotice
+            message={tNotice("notice")}
+            ctaLabel={tNotice("cta")}
+            ctaHref={`/${locale}/contribute`}
+          />
+        )}
         {/* Provider makes the loaded (merged-with-English) messages available
             to all client components via useTranslations(). */}
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>

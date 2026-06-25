@@ -148,6 +148,22 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </Link>
           </p>
           <p className="footer-meta">{tFooter("rights")}</p>
+          {/* Link to the translation contribution page (mirrors SiteFooter). */}
+          <p className="footer-contribute">
+            <Link href="/contribute" className="footer-contribute-link">
+              {tFooter("contribute")}
+            </Link>
+          </p>
+          <p className="footer-contribute">
+            <Link href="/api" className="footer-contribute-link">
+              {tFooter("api")}
+            </Link>
+          </p>
+          <p className="footer-contribute">
+            <Link href="/contribute/tools" className="footer-contribute-link">
+              {tFooter("contributeTools")}
+            </Link>
+          </p>
         </div>
       </footer>
     </>

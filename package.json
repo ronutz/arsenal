@@ -18,12 +18,15 @@
     "build:search": "pagefind --site out",
     "build": "next build && pagefind --site out",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prebuild": "node scripts/copy-locales.mjs && node scripts/build-openapi.mjs",
+    "update-swagger-ui": "node scripts/update-swagger-ui.mjs"
   },
   "//7": "Consumes @ronutz/netcore ^0.1.1 from npm (the public Engine).",
   "dependencies": {
     "@ronutz/netcore": "^0.1.1",
     "gray-matter": "^4.0.3",
+    "js-yaml": "^4.2.0",
     "next": "^15.1.0",
     "next-intl": "^3.26.0",
     "next-mdx-remote": "^6.0.0",

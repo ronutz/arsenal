@@ -12,6 +12,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeSwitcher from "./ThemeSwitcher";
 import Search from "./Search";
 
 export default async function Header() {
@@ -28,7 +29,7 @@ export default async function Header() {
         </Link>
 
         <nav className="site-nav" aria-label="Primary">
-          <Link href="/" className="site-nav-link">
+          <Link href="/tools" className="site-nav-link">
             {t("tools")}
           </Link>
           <Link href="/learn" className="site-nav-link">
@@ -53,6 +54,7 @@ export default async function Header() {
 
         <div className="site-header-actions">
           <Search />
+          <ThemeSwitcher />
           <LanguageSwitcher />
         </div>
       </div>

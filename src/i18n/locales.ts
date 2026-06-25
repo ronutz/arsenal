@@ -46,22 +46,28 @@ export interface LocaleMeta {
 export const LOCALES: readonly LocaleMeta[] = [
   // --- Languages with real, human-reviewed content shipping day-one ---
   { code: "en",         nativeName: "English",            englishName: "English",                 dir: "ltr", status: "reviewed" },
-  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "reviewed" },
-  { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "reviewed" },
+  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "machine-draft" },
+  { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "machine-draft" },
 
   // --- Registered + selectable day-one; stubs falling back to English until translated ---
-  { code: "de",         nativeName: "Deutsch",            englishName: "German",                  dir: "ltr", status: "stub" },
-  { code: "fr",         nativeName: "Français",           englishName: "French",                  dir: "ltr", status: "stub" },
-  { code: "ru",         nativeName: "Русский",            englishName: "Russian",                 dir: "ltr", status: "stub" },
-  { code: "pl",         nativeName: "Polski",             englishName: "Polish",                  dir: "ltr", status: "stub" },
+  { code: "de",         nativeName: "Deutsch",            englishName: "German",                  dir: "ltr", status: "machine-draft" },
+  { code: "fr",         nativeName: "Français",           englishName: "French",                  dir: "ltr", status: "machine-draft" },
+  { code: "nl",         nativeName: "Nederlands",         englishName: "Dutch",                   dir: "ltr", status: "machine-draft" },
+  { code: "it",         nativeName: "Italiano",           englishName: "Italian",                 dir: "ltr", status: "machine-draft" },
+  { code: "sv",         nativeName: "Svenska",            englishName: "Swedish",                 dir: "ltr", status: "machine-draft" },
+  { code: "da",         nativeName: "Dansk",              englishName: "Danish",                  dir: "ltr", status: "machine-draft" },
+  { code: "nb",         nativeName: "Norsk bokmål",       englishName: "Norwegian Bokmål",        dir: "ltr", status: "machine-draft" },
+  { code: "ru",         nativeName: "Русский",            englishName: "Russian",                 dir: "ltr", status: "machine-draft" },
+  { code: "pl",         nativeName: "Polski",             englishName: "Polish",                  dir: "ltr", status: "machine-draft" },
+  { code: "tr",         nativeName: "Türkçe",             englishName: "Turkish",                 dir: "ltr", status: "machine-draft" },
   { code: "hi",         nativeName: "हिन्दी",               englishName: "Hindi",                   dir: "ltr", status: "stub" },
   { code: "ta",         nativeName: "தமிழ்",              englishName: "Tamil",                   dir: "ltr", status: "stub" },
-  { code: "ms",         nativeName: "Bahasa Melayu",      englishName: "Malay",                   dir: "ltr", status: "stub" },
-  { code: "fil",        nativeName: "Filipino",           englishName: "Filipino",                dir: "ltr", status: "stub" },
+  { code: "ms",         nativeName: "Bahasa Melayu",      englishName: "Malay",                   dir: "ltr", status: "machine-draft" },
+  { code: "fil",        nativeName: "Filipino",           englishName: "Filipino",                dir: "ltr", status: "machine-draft" },
   { code: "ko",         nativeName: "한국어",              englishName: "Korean",                  dir: "ltr", status: "stub" },
   { code: "ja",         nativeName: "日本語",              englishName: "Japanese",                dir: "ltr", status: "stub" },
   // Three Chinese variants — split by script + region so no major demographic is excluded.
-  { code: "zh-Hans",    nativeName: "简体中文",            englishName: "Chinese (Simplified)",    dir: "ltr", status: "stub" },
+  { code: "zh-Hans",    nativeName: "简体中文",            englishName: "Chinese (Simplified)",    dir: "ltr", status: "machine-draft" },
   { code: "zh-Hant-TW", nativeName: "繁體中文（台灣）",     englishName: "Chinese (Traditional, Taiwan)", dir: "ltr", status: "stub" },
   { code: "zh-Hant-HK", nativeName: "繁體中文（香港）",     englishName: "Chinese (Traditional, Hong Kong)", dir: "ltr", status: "stub" },
   // Arabic — right-to-left. RTL layout support is built into the foundation now;
@@ -75,6 +81,15 @@ export const DEFAULT_LOCALE = "en";
 
 /** Convenience: just the codes, derived (never hand-maintain a second list). */
 export const LOCALE_CODES = LOCALES.map((l) => l.code);
+
+/** The locales we actually offer in the UI: everything with a real translation
+ *  (reviewed or machine-draft). Stubs are registered for routing/fallback but
+ *  are NOT advertised in the language switcher — we only claim what we have. */
+export const LIVE_LOCALES = LOCALES.filter((l) => l.status !== "stub");
+
+/** How many locales carry real translations. Derived from LIVE_LOCALES so the
+ *  colophon's language count is always accurate and never hand-edited. */
+export const TRANSLATED_LOCALE_COUNT = LIVE_LOCALES.length;
 
 /** Look up one locale's metadata by code; undefined if not registered. */
 export function getLocale(code: string): LocaleMeta | undefined {
