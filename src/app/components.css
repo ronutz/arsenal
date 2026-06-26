@@ -2291,6 +2291,67 @@
   margin-bottom: 1.1rem;
 }
 
+/* CONCORD narrative — a lead, a pull-quote for the principal/agent line, and a
+   labeled panel for the protocol mechanics, breaking up the prose. */
+.colophon-lead {
+  font-size: clamp(1.2rem, 2.2vw, 1.4rem);
+  line-height: 1.55;
+  color: var(--text-primary);
+  max-width: 58ch;
+  margin-bottom: 1.4rem;
+}
+.colophon-pullquote {
+  margin: 2rem 0;
+  padding: 0.35rem 0 0.35rem 1.5rem;
+  border-left: 3px solid var(--accent-primary);
+  font-size: clamp(1.35rem, 3.2vw, 1.9rem);
+  line-height: 1.32;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: var(--text-primary);
+  max-width: 34ch;
+}
+.colophon-mechanics {
+  margin-top: 1.85rem;
+  padding: 1.5rem;
+  background: color-mix(in srgb, var(--accent-primary) 5%, var(--canvas-primary));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+.colophon-mech-title {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin-bottom: 1.1rem;
+}
+.colophon-mech-grid {
+  display: grid;
+  gap: 1.1rem 1.75rem;
+}
+@media (min-width: 40rem) {
+  .colophon-mech-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.colophon-mech {
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+}
+.colophon-mech-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent-primary);
+}
+.colophon-mech-gloss {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
 /* Seats */
 .colophon-seats-section {
   border-block: 1px solid var(--border-subtle);
@@ -2338,6 +2399,18 @@
   font-size: 0.98rem;
   line-height: 1.6;
   color: var(--text-secondary);
+}
+.colophon-seat-model {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  margin: 0 0 0.65rem;
+}
+.colophon-seats-note {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-style: italic;
 }
 
 /* Principles */

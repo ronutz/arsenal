@@ -37,6 +37,9 @@ export default async function ColophonPage({
   // The build principles.
   const principles = ["p1", "p2", "p3", "p4"];
 
+  // The CONCORD mechanics, shown as a labeled panel beneath the narrative.
+  const mechanics = ["mech1", "mech2", "mech3", "mech4", "mech5", "mech6"];
+
   // The stack rows.
   const stack = [
     ["stackFramework", "stackFrameworkV"],
@@ -66,13 +69,27 @@ export default async function ColophonPage({
           </section>
 
           {/* CONCORD */}
-          <section className="section">
+          <section className="section colophon-concord-section">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("concordTitle")}</h2>
-              <p className="colophon-body">{t("concordBody1")}</p>
+              <p className="colophon-lead">{t("concordBody1")}</p>
               <p className="colophon-body">{t("concordBody2")}</p>
               <p className="colophon-body">{t("concordBody3")}</p>
+              <blockquote className="colophon-pullquote">
+                {t("concordPrincipal")}
+              </blockquote>
               <p className="colophon-body">{t("concordBody4")}</p>
+              <div className="colophon-mechanics">
+                <p className="colophon-mech-title">{t("concordMechTitle")}</p>
+                <div className="colophon-mech-grid">
+                  {mechanics.map((m) => (
+                    <div className="colophon-mech" key={m}>
+                      <span className="colophon-mech-label mono">{t(`${m}Label`)}</span>
+                      <span className="colophon-mech-gloss">{t(`${m}Gloss`)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
 
@@ -90,10 +107,12 @@ export default async function ColophonPage({
                       <span className="colophon-seat-name mono">{t(s.key)}</span>
                       <span className="colophon-seat-who">{t(`${s.key}Who`)}</span>
                     </div>
+                    <span className="colophon-seat-model mono">{t(`${s.key}Model`)}</span>
                     <p className="colophon-seat-body">{t(`${s.key}Body`)}</p>
                   </li>
                 ))}
               </ul>
+              <p className="colophon-seats-note">{t("seatsModelNote")}</p>
             </div>
           </section>
 

@@ -77,6 +77,18 @@ const SETTINGS: ContactSettings = {
       external: true,
     },
     {
+      label: "YouTube",
+      description: "Videos and walkthroughs",
+      url: "https://www.youtube.com/@ronutz",
+      external: true,
+    },
+    {
+      label: "Instagram",
+      description: "Behind the scenes",
+      url: "https://www.instagram.com/ronutz/",
+      external: true,
+    },
+    {
       label: "Official training",
       description: "Book a course through Red Education",
       url: "https://www.rededucation.com/",
