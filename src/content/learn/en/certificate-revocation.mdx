@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Certificate revocation: CRL, OCSP, and short-lived certificates"
+summary: "Why a certificate sometimes needs to be cancelled before it expires, why the classic revocation systems work poorly, and why the industry is shrinking certificate lifetimes instead."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Why revoke at all
+
+A certificate carries an expiry date, but sometimes it must be cancelled before that date arrives. The private key might have leaked, the certificate might have been issued in error, or the domain might have changed hands. In all of these cases the certificate is still cryptographically valid and still inside its validity window, yet relying parties should stop trusting it. Revocation is the mechanism for saying "ignore this certificate even though it has not expired." The hard part is delivering that message reliably to every client in the world, and this turns out to be the weakest link in the web PKI.
+
+## CRLs: the published blocklist
+
+The original answer is the Certificate Revocation List, defined alongside the certificate profile in RFC 5280. A CA periodically publishes a signed list of the serial numbers it has revoked, and certificates can point to it through a CRL Distribution Point. A client downloads the list and checks whether the certificate's serial appears on it.
+
+The problem is size and freshness. A busy CA can accumulate enormous lists, so downloading and parsing a CRL on every connection is impractical, and a cached list is stale until the next publish. CRLs are still used, increasingly in compressed and pre-processed forms that browsers ship to themselves, but as a per-connection check they scale badly.
+
+## OCSP: asking about one certificate
+
+The Online Certificate Status Protocol, RFC 6960, was meant to fix the size problem by letting a client ask about a single certificate instead of downloading the whole list. The client sends the certificate's serial to an OCSP responder and gets back a signed "good", "revoked", or "unknown".
+
+This trades one problem for three. It adds latency, because the client now makes an extra network round trip during connection setup. It leaks privacy, because the responder learns which sites the user is visiting. And it creates an availability coupling: if the responder is down, the client must either fail the connection or, far more commonly, **soft-fail** and proceed as if the certificate were good, which quietly defeats the whole point.
+
+## OCSP stapling and Must-Staple
+
+Stapling addresses the latency and privacy issues by having the *server* fetch a recent, signed OCSP response and attach it to the TLS handshake (the status_request extension from RFC 6066). The client gets the freshness without contacting the responder. Must-Staple, RFC 7633, is a certificate extension that says "reject me if a staple is missing", closing the soft-fail gap, but it is rarely deployed because a single stapling hiccup then takes the site down.
+
+## The uncomfortable truth
+
+Across these mechanisms, the recurring failure is soft-fail: when revocation information is unavailable, clients overwhelmingly choose availability over security and accept the certificate. That makes revocation an unreliable safety net precisely when it is needed. Browsers have responded with their own out-of-band systems that push revocation data to themselves, but the per-connection protocols never delivered on their promise.
+
+## The modern answer: make certificates expire sooner
+
+If you cannot reliably cancel a certificate, the alternative is to make it short-lived enough that cancellation rarely matters: a compromised certificate simply expires on its own within days or weeks. The industry has committed to exactly this. The CA/Browser Forum's Ballot SC-081v3, approved in April 2025, phases the maximum public TLS certificate lifetime down from 398 days to 200 days (as of March 2026), 100 days (March 2027), and 47 days (March 2029), with the domain-validation reuse period shrinking to 10 days. Separately, since 2023 the Forum has allowed short-lived certificates that expire within 7 days to skip CRL and OCSP support entirely, and Let's Encrypt has begun issuing certificates with lifetimes measured in days. The whole premise is that a short enough lifetime is itself the revocation.
+
+This only works with automation. Renewing certificates every six or seven weeks by hand is untenable, which is why the ACME protocol (see the [signing request article](/learn/certificate-signing-request)) and certificate lifecycle tooling have become essential infrastructure rather than a convenience. Note that these rules apply to publicly trusted certificates in browser root programs; a private internal PKI sets its own policy.
+
+## What this means when you inspect a certificate
+
+When you decode a certificate, the validity window is no longer a once-a-year afterthought; it is becoming the primary revocation control. The tool's report of notBefore, notAfter, and whether the certificate is valid right now is, increasingly, the most security-relevant thing about it. Revocation lists and responders still exist, but the direction of travel is clear: shorten the lifetime so that the question of revocation rarely comes up.

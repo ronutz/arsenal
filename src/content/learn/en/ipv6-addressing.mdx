@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Understanding IPv6 Addressing"
+summary: "How a 128-bit IPv6 address is structured and written, the rules for compressing it canonically, what the address types and scopes mean, and how interface identifiers and reverse DNS work."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Why IPv6 exists
+
+IPv4 has roughly 4.3 billion addresses (2^32). That seemed inexhaustible in the 1980s and is now long exhausted at the registries. IPv6, defined for addressing in RFC 4291, widens the address from 32 bits to **128 bits**, which is 2^128 addresses, a number large enough that scarcity stops being the design constraint. The practical effect is that subnets become enormous and address-conservation tricks like NAT are no longer required for basic connectivity.
+
+## The 128-bit structure
+
+An IPv6 address is 128 bits, written as **eight groups of four hexadecimal digits** separated by colons. Each group is a 16-bit value:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+That fully written form is the **expanded** representation. Because it is long and full of zeros, the text form has compression rules.
+
+## Writing an address: the compression rules
+
+Two rules shorten the text, and RFC 5952 makes the result canonical (one address, one preferred spelling):
+
+- **Suppress leading zeros** in each group: `0db8` becomes `db8`, `0000` becomes `0`.
+- **Replace one run of consecutive all-zero groups with `::`**. The double colon may appear **at most once**, and it stands for one or more 16-bit groups of zeros. When several equal-length runs exist, the first is compressed.
+
+Applying both to the address above gives its canonical form:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+RFC 5952 adds a few finishing rules so tools agree: hex digits are lower-case, and `::` is not used to "compress" a single zero group (that would not shorten anything meaningful). The IPv6 tool shows both the canonical compressed form and the fully expanded form side by side, so you can see exactly what `::` stands for.
+
+A special case: an address may carry an **embedded IPv4** tail in its last 32 bits, written in dotted-decimal. The most common is the **IPv4-mapped** form, where RFC 5952 recommends the mixed notation `::ffff:192.0.2.128` rather than pure hex.
+
+## Prefixes and prefix math
+
+Like IPv4 CIDR, an IPv6 prefix is written `address/length`, where the length counts the leading network bits:
+
+```
+2001:db8::/64
+```
+
+A `/64` means the first 64 bits are the network and the remaining 64 are the interface identifier. `/64` is the standard size for a single LAN, and it alone holds 2^64 addresses, about 18 quintillion. The tool computes the network (first) address, the last address, and the count for any prefix you give it, masking the host bits to zero to find the network even if you typed an address with host bits set.
+
+## Address types and scopes
+
+The high bits of an address place it in a category. The most important, from RFC 4291 and the IANA registry:
+
+- **Global unicast (2000::/3)** is the routable public space, the IPv6 equivalent of a public IPv4 address.
+- **Unique local, or ULA (fc00::/7)** is the private-use space (RFC 4193), analogous to RFC 1918 in IPv4. It is not routed on the public internet.
+- **Link-local unicast (fe80::/10)** is valid only on a single link and is configured automatically on every IPv6 interface. Routers never forward it. Its scope is the local link.
+- **Multicast (ff00::/8)** addresses a group rather than a single host. A scope field inside the address says how far it reaches: interface-local, link-local, admin-local, site-local, organization-local, or global. For example `ff02::1` is the link-local all-nodes group.
+- **Loopback (::1/128)** is the IPv6 equivalent of 127.0.0.1, and the **unspecified address (::/128)** means "no address," used as a placeholder during configuration.
+- **Documentation (2001:db8::/32)** is reserved by RFC 3849 for examples and writing, which is why nearly every IPv6 example you see, including the canonical one in RFC 4291 itself, uses it.
+
+The IPv6 tool reports the matching type and the specific prefix it matched, plus the scope for multicast and link-local addresses.
+
+## Interface identifiers and EUI-64
+
+In a typical `/64`, the lower 64 bits are the **interface identifier**. One historical way to build it was **modified EUI-64** (RFC 4291, Appendix A): take the 48-bit MAC address, insert the bytes `ff:fe` in the middle, and flip the seventh bit (the universal/local bit). That made the interface id derivable from the hardware address. When the tool sees the tell-tale `ff:fe` in the middle of the interface id, it reverses the process and shows you the original MAC. Modern systems often prefer randomized or privacy interface identifiers instead, precisely because deriving the id from a MAC leaks the hardware address.
+
+## Reverse DNS: ip6.arpa
+
+Reverse lookups (address to name) for IPv6 live under the **ip6.arpa** domain. The address is expanded to its 32 hex nibbles, those nibbles are reversed, and each becomes a label. So `2001:db8::1` becomes a name ending in `...8.b.d.0.1.0.0.2.ip6.arpa`. The tool generates this name for any address, which is the exact value you would place in a `PTR` record.
+
+## A note on what the tool does
+
+The IPv6 tool is a deterministic, local calculator. It parses, canonicalizes, classifies, and computes, all in your browser, with no lookup against the live network. It tells you what an address **is** structurally. It does not tell you whether that address is reachable, allocated, or in use, which are separate questions that require querying the network or a registry.

@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Why HMAC, and not hash(key + message)"
+summary: "The length-extension attack that breaks naive keyed hashing, and the nested construction HMAC uses to defeat it."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: reviewed
+updated: "2026-06-27"
+---
+
+## The obvious idea that fails
+
+You want to prove a message came from someone who holds a shared secret and was not altered. The intuitive approach is to hash the secret together with the message: `tag = SHA256(secret + message)`. It looks sound, the tag depends on the secret, so an attacker who does not know the secret cannot produce it. Unfortunately, for the most common hash functions, this construction is broken.
+
+## The length-extension attack
+
+Hashes in the Merkle-Damgård family, which includes MD5, SHA-1, and SHA-256, process input in blocks and carry forward an internal state. Their final output *is* that internal state. That leaks something dangerous: given `SHA256(secret + message)` and the length of `secret + message`, an attacker can set the hash's internal state to your tag and keep hashing, computing
+
+```
+SHA256(secret + message + padding + attacker_data)
+```
+
+as a valid tag for an extended message, **without ever knowing the secret**. They can append data and produce a tag that verifies. For an API where the message is a set of signed parameters, that can mean appending `&admin=true` to a request and still passing the signature check. The naive `hash(secret + message)` is not safe.
+
+## How HMAC fixes it
+
+HMAC (RFC 2104) does not just concatenate. It hashes twice with the key mixed in two different ways:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+The message is hashed with the key under an inner pad (`ipad`), and that result is hashed again with the key under an outer pad (`opad`). Because the outer hash wraps the inner one, the value an attacker sees is not a raw internal state they can extend; it is the output of a second hashing step keyed by the secret. Length extension no longer works, and HMAC's security has a solid proof resting only on the underlying hash being reasonable.
+
+This is why every mature system uses HMAC (or another proper MAC) rather than hand-rolled keyed hashing. Note that SHA-3 and BLAKE are not length-extendable, so they can be keyed more directly, but HMAC remains the portable, widely supported standard.
+
+## The takeaway
+
+Use HMAC with a strong hash (HMAC-SHA256 is the common default) and a high-entropy secret. Do not invent your own keyed-hash scheme: the failure is not obvious from the outside, which is exactly what makes it dangerous.
+
+The [HMAC tool](/tools/hmac) computes HMAC-SHA256 and related variants over a message and key so you can see the tag and compare it, all in your browser, with nothing sent anywhere.

@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Where Base64 shows up: data URIs, MIME, PEM, and Basic auth"
+summary: "The real places binary gets wrapped in text, the size cost of doing it, and why Base64 in an auth header is not encryption."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Why wrap binary in text at all
+
+Many transports were built for text, not raw bytes: email bodies, JSON and XML documents, HTTP headers, source files. Drop raw binary into any of them and a stray control byte or null can break parsing. Base64 solves this by re-expressing bytes using only safe printable characters, so binary can ride inside a text-only channel untouched. Here is where that actually happens.
+
+## The common venues
+
+- **Data URIs.** A `data:` URL embeds a small asset directly in markup or CSS, for example `data:image/png;base64,iVBORw0KGgo...`. The bytes of the image are Base64 right there in the attribute, saving a separate network request for tiny assets.
+- **Email (MIME).** Attachments and non-ASCII bodies are carried with `Content-Transfer-Encoding: base64`. MIME wraps the output into lines (classically 76 characters) so old mail servers do not choke on long lines.
+- **PEM.** Certificates and keys are DER bytes wrapped in Base64 between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` markers, lines wrapped at 64 characters. PEM is why a certificate is a block of text you can paste into a config file.
+- **HTTP Basic authentication.** The `Authorization: Basic` header is the Base64 of `username:password`.
+
+## The size cost
+
+Base64 is not free. Three bytes become four characters, so the encoded form is about **33% larger** than the original, before any line-break overhead. That trade is usually worth it for correctness on a text channel, but it is the reason you would not Base64 a large file you could send as raw bytes. For small inline assets the convenience wins; for big payloads the overhead argues for a binary transport.
+
+## Encoding is not encryption
+
+The Basic auth example makes the most important point on its own. `Authorization: Basic dXNlcjpwYXNz` looks opaque, but `dXNlcjpwYXNz` is simply Base64 for `user:pass`, reversible by anyone, with no key involved. Base64 provides **no confidentiality whatsoever.** It is an encoding (a reversible change of representation), not encryption (a key-protected secret) and not hashing (a one-way fingerprint). This is why Basic auth is only safe over TLS: the transport encrypts the header, because Base64 certainly does not.
+
+Whenever you see a long opaque-looking string, decoding it first is a cheap way to learn what it is. The [Base64 tool](/tools/base64) decodes data URIs, PEM bodies, and auth headers to their raw bytes and text, entirely in your browser, so nothing you paste leaves the page.

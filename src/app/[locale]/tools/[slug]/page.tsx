@@ -33,6 +33,10 @@ import PkceTool from "@/components/PkceTool";
 import { manifest as pkceManifest } from "@/lib/tools/pkce";
 import UuidTool from "@/components/UuidTool";
 import { manifest as uuidManifest } from "@/lib/tools/uuid";
+import X509Tool from "@/components/X509Tool";
+import { manifest as x509Manifest } from "@/lib/tools/x509";
+import Ipv6Tool from "@/components/Ipv6Tool";
+import { manifest as ipv6Manifest } from "@/lib/tools/ipv6";
 
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
@@ -73,6 +77,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   uuid: {
     Component: UuidTool,
     sources: uuidManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  x509: {
+    Component: X509Tool,
+    sources: x509Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  ipv6: {
+    Component: Ipv6Tool,
+    sources: ipv6Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
 };
 

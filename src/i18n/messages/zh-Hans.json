@@ -100,7 +100,8 @@
     "colophon": "如何打造",
     "openSource": "其引擎是开源的",
     "rights": "以开放及商业条款提供。",
-    "contribute": "帮助改进翻译"
+    "contribute": "帮助改进翻译",
+    "feedback": "提交反馈"
   },
   "search": {
     "label": "搜索",
@@ -386,7 +387,22 @@
     "successTitle": "谢谢您。",
     "successBody": "您的消息已在途中。我会尽快回复。",
     "errorBody": "发送时出了点问题。请重试，或直接发送电子邮件。",
-    "emailLabel": "电子邮箱"
+    "emailLabel": "电子邮箱",
+    "channels": {
+      "linkedin": {
+        "description": "建立职业联系"
+      },
+      "youtube": {
+        "description": "视频与教程"
+      },
+      "instagram": {
+        "description": "幕后花絮"
+      },
+      "training": {
+        "label": "官方培训",
+        "description": "通过 Red Education 预订课程"
+      }
+    }
   },
   "certs": {
     "title": "认证与资质",

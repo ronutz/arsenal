@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Choosing a hash: MD5, SHA-1, SHA-2, SHA-3, and BLAKE"
+summary: "Which hash functions are still safe, which are broken, what their output sizes are, and how to pick the right one."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Not all hashes are equal
+
+A cryptographic hash maps any input to a fixed-size fingerprint. Several families exist, and they are not interchangeable: some are still strong, and some have been broken badly enough that using them for security is a mistake. The right choice depends on the job, and on the calendar, because a hash that was respectable twenty years ago may be trivially broken today.
+
+## The broken ones
+
+- **MD5** (128-bit) is broken. Collisions can be produced in seconds on a laptop, and they have been used in real attacks (the Flame malware forged a code-signing certificate with an MD5 collision). It survives only as a fast, non-security checksum, and even there better options exist.
+- **SHA-1** (160-bit) is broken. The 2017 SHAttered research produced two different PDFs with the same SHA-1 digest, and chosen-prefix collisions followed. Browsers and certificate authorities removed SHA-1 support years ago. Do not use it for signatures or integrity that an adversary could attack.
+
+## The current workhorses
+
+- **SHA-2** is the default family for most work. It is a set of related functions, commonly **SHA-256** and **SHA-512** (also SHA-224, SHA-384, and the truncated SHA-512/256). No practical collision attack exists against SHA-2. When in doubt, SHA-256 is the safe, universally supported choice.
+- **SHA-3** (Keccak) is a newer standard built on a completely different internal design (a sponge construction) from SHA-2. SHA3-256 and SHA3-512 offer comparable security and exist partly as a hedge: if a weakness were ever found in SHA-2, SHA-3 is unlikely to share it. It is also immune by design to the length-extension issue that affects SHA-2.
+- **BLAKE2 and BLAKE3** are modern, very fast hashes with strong security. BLAKE3 in particular is built to parallelize, making it attractive when you hash large volumes of data and want speed without giving up safety.
+
+## Picking one
+
+A short decision guide:
+
+- General-purpose integrity, signatures, or "I just need a secure hash": **SHA-256**.
+- Want algorithm diversity or length-extension immunity without HMAC: **SHA-3** or **SHA-512/256**.
+- Hashing large files where throughput matters: **BLAKE3**.
+- A fast non-security checksum (detecting accidental corruption, not tampering): a CRC or MD5 is fine, but never call that "secure".
+- **Passwords are a separate problem.** General hashes are too fast for password storage; use a purpose-built password hash such as bcrypt, scrypt, or Argon2 instead (see the password hashing article).
+
+The [hash tool](/tools/hash) computes MD5, SHA-1, SHA-256, SHA-512, and more over text or a file so you can compare outputs side by side, all in your browser, with nothing uploaded.

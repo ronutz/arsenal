@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomy of an X.509 Certificate"
+summary: "What lives inside a TLS certificate, how the ASN.1/DER bytes are structured, what the v3 extensions actually control, and why decoding a certificate is not the same as trusting it."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: reviewed
+updated: "2026-06-26"
+---
+
+## What a certificate is
+
+An X.509 certificate is a signed statement that binds a public key to an identity. When a browser connects to a site over HTTPS, the server presents a certificate that says, in effect, "this public key belongs to test.ronutz.com, and a certificate authority vouches for that." The profile that defines what fields a certificate carries and how they are interpreted is RFC 5280.
+
+The binding is what matters. Anyone can generate a key pair, so a bare public key proves nothing about who is on the other end. A certificate adds a signature from an issuer the relying party already trusts, turning an anonymous key into a key with a name attached. This is the foundation of the web public key infrastructure (PKI).
+
+## The chain of trust
+
+A single certificate is rarely trusted on its own. It is trusted because it was signed by an issuer, who was in turn signed by another issuer, up to a root the relying party already holds in a trust store:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Each link is a signature: the issuer signs the child's certificate with the issuer's private key, and a verifier checks that signature with the issuer's public key. A **root** is self-issued and self-signed, which is why a self-signed certificate is a useful local stand-in for a root but carries no external authority. The X.509 tool flags a self-issued certificate (issuer equal to subject) and whether the certificate is marked as a CA, both of which tell you where a certificate sits in this picture.
+
+## ASN.1 and DER: the byte layout
+
+A certificate is not JSON or text. It is described in ASN.1 (Abstract Syntax Notation One) and encoded with the Distinguished Encoding Rules (DER), specified in ITU-T X.690. DER is a tag-length-value (TLV) format: every element starts with a tag byte saying what type it is, then a length, then that many content bytes. Constructed types such as SEQUENCE and SET hold child elements, so the whole certificate is a tree of TLVs.
+
+A PEM file is just that DER, Base64-encoded and wrapped in armor lines:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+So decoding a certificate means stripping the armor, Base64-decoding to DER, then walking the TLV tree. The X.509 tool does exactly this in your browser, with no library and no network call.
+
+## The top-level structure
+
+At the outermost level, RFC 5280 defines three parts:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+The **tbsCertificate** ("to be signed") holds all the real content. The **signatureAlgorithm** names how the issuer signed it, for example sha256WithRSAEncryption or ecdsa-with-SHA256. The **signatureValue** is the signature itself, computed over the DER bytes of the tbsCertificate. That last point is worth holding onto: the signature covers the to-be-signed body exactly as encoded, which is why even a one-byte change anywhere in the body breaks verification.
+
+## Inside the TBSCertificate
+
+The to-be-signed body is where the tool spends most of its time:
+
+- **Version** is almost always v3, the version that introduced extensions.
+- **Serial number** is a large integer the issuer assigns. Combined with the issuer name it uniquely identifies the certificate, and it is what a revocation list references.
+- **Issuer** and **Subject** are Distinguished Names. A DN is a sequence of attributes such as CN (common name), O (organization), OU (organizational unit), L (locality), ST (state), and C (country). RFC 4514 defines the one-line, most-specific-first rendering you see, for example `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- **Validity** is a notBefore and a notAfter timestamp. These are encoded as UTCTime or GeneralizedTime; the tool converts both to ISO-8601 and, against your local clock, tells you whether the certificate is valid now, not yet valid, or expired.
+- **subjectPublicKeyInfo** carries the public key plus its algorithm. For RSA the tool reports the modulus size (for example 2048-bit) and the public exponent (almost always 65537). For elliptic-curve keys it reports the named curve (P-256, P-384, P-521), per RFC 5480.
+
+## The v3 extensions
+
+Extensions are where modern certificates encode most of their policy. Each extension has an identifier, a critical flag, and a value. The critical flag matters: if a relying party does not understand an extension marked critical, it must reject the certificate rather than ignore the field. The tool decodes the ones that carry the most weight:
+
+- **Subject Alternative Name (SAN)** lists the identities the certificate is actually valid for, as DNS names, IP addresses, email addresses, or URIs. For TLS this is the field browsers check, not the CN. A certificate for `test.ronutz.com` that omits that name from its SAN will fail validation in a modern client even if the CN matches.
+- **Key Usage** constrains what the key may do at a low level: digitalSignature, keyEncipherment, keyCertSign, cRLSign, and others. A CA certificate carries keyCertSign; a TLS leaf typically carries digitalSignature and keyEncipherment.
+- **Extended Key Usage (EKU)** names higher-level purposes such as serverAuth (TLS server), clientAuth (TLS client), codeSigning, or emailProtection.
+- **Basic Constraints** states whether the certificate is a CA, and if so, how many intermediate CAs may appear below it (the path length). This is the field that stops a leaf certificate from being used to sign other certificates.
+- **Subject Key Identifier** and **Authority Key Identifier** are hashes that let a verifier match a certificate to its issuer quickly when building a chain.
+
+## Fingerprints
+
+A certificate **fingerprint** is simply a cryptographic hash of the certificate's DER bytes, usually SHA-256 (and, for older references, SHA-1). It is not a field inside the certificate; it is computed over the whole thing. Fingerprints give you a short, fixed-length value to compare two certificates for equality or to pin a known certificate. The tool computes both SHA-256 and SHA-1 locally with the Web Crypto API, so the bytes you paste are never sent anywhere. For more on what a hash is and is not, see the hashing article.
+
+## Decoding is not validating
+
+This is the single most important idea, and it mirrors the same caution that applies to JSON Web Tokens. Reading a certificate's fields tells you what it *claims*. It does not tell you that the claim is *true*. Full validation is a separate, heavier process: checking that the signature chains to a trusted root, that none of the certificates in the chain are expired or revoked, that the name you connected to is in the SAN, and that the key usages permit what you are doing.
+
+A certificate decoder, including this one, is an inspection and learning instrument. It shows you precisely what an issuer asserted and how it was encoded. Treat the output as a faithful reading of the document, not as a verdict on whether to trust it.

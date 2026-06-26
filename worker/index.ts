@@ -1,10 +1,17 @@
 // ============================================================================
 // worker/index.ts
 // ----------------------------------------------------------------------------
-// THE ronutz TOOLS API — Cloudflare Worker (canon C-04 / C-68, "Seam 1").
+// THE ronutz TOOLS API + LOCALE REDIRECT — Cloudflare Worker (canon C-04 / C-68, "Seam 1").
 //
-// Serves /api/* only (wrangler `assets.run_worker_first`); every other path is
-// served straight from static assets, untouched. This Worker is the PROGRAMMATIC
+// Two jobs: (1) serve the tools API under /api/*; (2) redirect bare, non-
+// localized routes to the default locale (e.g. /colophon -> /en/colophon),
+// because the static export (localePrefix "always") emits pages only under
+// /<locale>/ and has no file at a bare path. Locale-prefixed pages and the
+// heavy asset directories are served straight from assets (wrangler
+// `assets.run_worker_first` excludes them), so the Worker only does real work
+// for /api/* and for bare-route redirects.
+//
+// For the API, this Worker is the PROGRAMMATIC
 // counterpart to the in-browser tools: it calls the EXACT SAME @ronutz/netcore
 // function the browser calls, so hosted and in-browser output are byte-identical
 // (the Seam-1 invariant, proven by netcore's golden vectors).
@@ -19,6 +26,11 @@
 // ============================================================================
 
 import { run as computeCidr } from "@ronutz/netcore/tools/cidr";
+// Locale registry is the single source of truth (src/i18n/locales.ts). Imported
+// via a relative path because the Worker is outside src/ and the "@/" alias is
+// not in scope for wrangler's bundler. locales.ts has no runtime deps, so it
+// bundles cleanly into the Worker.
+import { LOCALE_CODES, DEFAULT_LOCALE } from "../src/i18n/locales";
 
 interface Env {
   // Static assets binding. Present so future /api routes could serve assets;
@@ -108,8 +120,30 @@ export default {
       );
     }
 
-    // Defensive fallback. `run_worker_first` scopes this Worker to /api/*, so a
-    // non-API path reaching here is unexpected; hand it back to static assets.
+    // ---- Non-API path: the LOCALE GATE -------------------------------------
+    // run_worker_first now routes non-asset page paths here too. Three cases:
+    //   • locale-prefixed page (/en/…, /fr/…)   -> serve from assets
+    //   • root-level static file (/favicon.ico) -> serve from assets
+    //   • bare, non-localized route (/colophon) or the apex (/) -> redirect to
+    //     the default locale, since the static export (localePrefix "always")
+    //     has no page there.
+    const seg = url.pathname.split("/")[1] ?? "";
+    const isLocalePrefixed = LOCALE_CODES.includes(seg);
+    const looksLikeFile = /\.[a-z0-9]+$/i.test(url.pathname); // has a file extension
+    if (!isLocalePrefixed && !looksLikeFile) {
+      // The static export uses trailingSlash:true, so canonical pages end in
+      // "/". Add it here so the redirect lands on the canonical URL in a single
+      // hop (otherwise the asset layer's auto-trailing-slash adds a 2nd redirect).
+      let rest = url.pathname === "/" ? "/" : url.pathname; // preserve the deep path
+      if (!rest.endsWith("/")) rest += "/";
+      const dest = `/${DEFAULT_LOCALE}${rest}${url.search}`;
+      // 302 (temporary), matching public/_redirects: leaves the door open for
+      // future Accept-Language detection without browsers hard-caching /en/.
+      return Response.redirect(new URL(dest, url.origin).toString(), 302);
+    }
+
+    // Locale-prefixed page or root-level asset: hand back to static assets
+    // (which applies not_found_handling = 404-page for a genuine miss).
     return env.ASSETS.fetch(request);
   },
 };

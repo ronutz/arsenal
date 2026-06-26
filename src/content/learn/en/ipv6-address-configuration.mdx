@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "How IPv6 hosts get addresses: SLAAC and DHCPv6"
+summary: "How an IPv6 host configures itself from link-local up, what router advertisements decide, and the difference between SLAAC, privacy addresses, and DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Self-configuration by default
+
+One of IPv6's defining features is that a host can configure a working address with no server and no manual setup. Where IPv4 leans on DHCP to hand out addresses, IPv6 can build them locally from information the router broadcasts. The result is that a single interface usually ends up with several addresses at once, each for a different purpose, which surprises people coming from IPv4.
+
+## Link-local comes first
+
+Before anything else, every IPv6 interface configures a link-local address in `fe80::/10` (the type the tool labels link-local). It is generated locally, never routed beyond the local link, and exists so the host can talk to neighbors and routers immediately, including to ask how to configure the rest of its addresses. Link-local is the bootstrap: it is always present, and the neighbor discovery machinery in the [neighbor discovery](/learn/ipv6-neighbor-discovery) article runs over it.
+
+## The router advertisement decides the method
+
+To get a globally routable address, the host listens for Router Advertisements, periodic messages a router sends (and that a host can request with a Router Solicitation). The advertisement carries the on-link prefix, almost always a /64, and two flags that tell the host how to configure itself:
+
+- The **M (Managed) flag** says "use DHCPv6 to get an address".
+- The **O (Other) flag** says "configure your address yourself, but get other settings like DNS from DHCPv6".
+
+With both flags off, the host uses pure stateless autoconfiguration. This is why IPv6 address assignment is a negotiation between what the router advertises and what the host chooses, rather than a single server handing out leases.
+
+## SLAAC: building your own address
+
+Stateless Address Autoconfiguration (RFC 4862) is the mechanism a host uses to form its own address: take the /64 prefix from the advertisement and append a 64-bit interface identifier. This is the whole reason a subnet must be a /64 (see the [subnetting](/learn/ipv6-subnetting) article). No server tracks the assignment, which is what "stateless" means.
+
+The interface identifier can be formed several ways, and this has real privacy consequences:
+
+- **Modified EUI-64** derives the identifier from the interface's MAC address, which the tool can demonstrate. It is stable and convenient, but it embeds the hardware address into every IPv6 address the host uses, letting a remote server track the device across networks.
+- **Stable, opaque identifiers** (RFC 7217) produce an identifier that is stable per network but reveals no hardware address, fixing the cross-network tracking problem while keeping a consistent address on a given link.
+- **Temporary (privacy) addresses** (RFC 8981, which obsoletes the earlier RFC 4941) generate random identifiers that rotate over time, so outbound connections do not present a long-lived address at all.
+
+Modern operating systems typically use a stable address for incoming connections and a rotating temporary address for outgoing ones, which is why a single interface shows multiple global addresses.
+
+## Duplicate Address Detection
+
+Before a host actually uses any address it has formed, it runs Duplicate Address Detection: it sends a Neighbor Solicitation for its own tentative address and waits. If anyone answers, the address is already in use and must not be claimed. DAD is cheap insurance that self-configuration does not produce collisions, and it relies on the same neighbor discovery messages described in the companion article.
+
+## DHCPv6 for stateful control
+
+When an administrator wants to track and assign addresses centrally, DHCPv6 (RFC 8415) provides stateful assignment, much like IPv4 DHCP: a server leases specific addresses and records who has what. There is also a stateless DHCPv6 mode that hands out only configuration like DNS servers while the host still forms its own address by SLAAC, which is what the O flag selects. DHCPv6 is also where prefix delegation lives, the mechanism by which a home router receives a whole prefix to subnet behind it.
+
+## Many addresses, by design
+
+The mental model to carry away is that an IPv6 host is largely self-driving. It always has a link-local address, it learns the prefix and the configuration method from router advertisements, and depending on the flags it either builds its own global addresses with SLAAC or leases them from DHCPv6, often ending up with a stable address and a rotating temporary one side by side. When the tool shows you an address and identifies its type, that type tells you which of these paths produced it.

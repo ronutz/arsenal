@@ -47,6 +47,11 @@ export default async function SiteFooter() {
             {t("contributeTools")}
           </Link>
         </p>
+        <p className="footer-contribute">
+          <Link href="/contact" className="footer-contribute-link">
+            {t("feedback")}
+          </Link>
+        </p>
       </div>
     </footer>
   );

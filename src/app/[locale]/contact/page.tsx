@@ -108,18 +108,19 @@ export default async function ContactPage({
                     domain={emailDomain}
                   />
 
-                  {/* Configured channels */}
+                  {/* Configured channels — routing from config, display text
+                      from i18n (contact.channels.<id>.label/.description). */}
                   {channels.map((c) => (
                     <a
-                      key={c.label}
+                      key={c.id}
                       className="contact-channel"
                       href={c.url}
                       {...(c.external
                         ? { target: "_blank", rel: "noopener noreferrer" }
                         : {})}
                     >
-                      <span className="contact-channel-label">{c.label}</span>
-                      <span className="contact-channel-desc">{c.description}</span>
+                      <span className="contact-channel-label">{t(`channels.${c.id}.label`)}</span>
+                      <span className="contact-channel-desc">{t(`channels.${c.id}.description`)}</span>
                     </a>
                   ))}
                 </aside>

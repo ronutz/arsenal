@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: identity on top of OAuth 2.0"
+summary: "How OIDC adds authentication to OAuth's authorization, what the ID token is, and why the code flow with PKCE is the recommended path."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Authorization is not authentication
+
+OAuth 2.0 answers "is this app allowed to access that resource on the user's behalf". It is an *authorization* protocol, and it deliberately says nothing standard about *who the user is*. Apps tried to repurpose it for login anyway, in incompatible and sometimes insecure ways. **OpenID Connect (OIDC)** is the standard that fixes this: a thin identity layer on top of OAuth 2.0 that adds authentication without throwing away anything OAuth already does.
+
+## The ID token
+
+The defining addition is the **ID token**, and it is a JWT. Where an OAuth access token is meant for an API and is often opaque to the client, the ID token is meant for the *client* and carries standard claims about the authenticated user:
+
+- `iss` (issuer) and `aud` (audience, the client it was issued for)
+- `sub` (the stable, unique user identifier)
+- `exp` and `iat` (expiry and issued-at)
+- `nonce` (binds the token to the specific login request, defeating replay)
+- profile claims such as `name`, `email`, and `picture` when those scopes are granted
+
+Because it is a JWT, the client verifies the ID token's signature and validates those claims exactly as described for any JWT. The same pinning and `aud`/`iss`/`exp` checks apply.
+
+## How a login flows
+
+OIDC reuses OAuth's machinery. The recommended flow is the **authorization code flow with PKCE**:
+
+1. The app sends the user to the provider's authorization endpoint, requesting the `openid` scope (plus `profile`, `email`, and so on), and includes a PKCE `code_challenge`.
+2. The user authenticates and consents at the provider.
+3. The app receives a one-time code, and exchanges it (proving possession of the PKCE `code_verifier`) for an **ID token** and an **access token**.
+4. The app verifies the ID token to establish *who the user is*, and uses the access token to call APIs *on their behalf*.
+
+Two endpoints round it out: a **userinfo** endpoint returns profile claims for a valid access token, and a **discovery document** at `/.well-known/openid-configuration` advertises the provider's endpoints and its JWKS URL, so a client can find the keys to verify ID tokens and follow key rotation automatically.
+
+## Why it matters
+
+OIDC is what most "Sign in with ..." buttons actually run on. Keeping the two tokens straight is the key insight: the **ID token proves identity to the client**, the **access token authorizes API calls**, and they are not interchangeable. Combined with the code flow and PKCE, it is the modern, standards-based way to do federated login.
+
+The [PKCE tool](/tools/pkce) generates and verifies the `code_verifier` and `code_challenge` for the flow, and the [JWT tool](/tools/jwt) decodes and verifies the ID token, both entirely in your browser with nothing sent anywhere.

@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: splitting a block into unequal subnets"
+summary: "How to carve one address block into subnets of different sizes without wasting space, and the largest-first rule that keeps it tidy."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## The problem with equal subnets
+
+Classic subnetting splits a block into pieces of one fixed size. That is simple, but it is wasteful when your needs differ. If one segment has 100 hosts and another is a two-router link with 2, giving both a `/26` (62 usable) fails the first and squanders 60 addresses on the second. **VLSM**, variable-length subnet masking, fixes this by letting each subnet use the prefix length that fits its own need, all carved from the same parent block.
+
+The only thing that makes VLSM more involved than fixed subnetting is order: you must place the **largest subnets first**, or you will strand addresses and create overlaps.
+
+## Sizing each subnet
+
+Start from the host count each segment needs, then find the smallest block that holds it, remembering that two addresses in every ordinary block are reserved (network and broadcast):
+
+- 100 hosts needs 7 host bits (2⁷ − 2 = 126 usable), a `/25`.
+- 50 hosts needs 6 host bits (62 usable), a `/26`.
+- 25 hosts needs 5 host bits (30 usable), a `/27`.
+- 10 hosts needs 4 host bits (14 usable), a `/28`.
+- A 2-host point-to-point link is a `/30` (2 usable), or a `/31` under RFC 3021.
+
+Always round up to the next power of two. A segment of 100 hosts does not fit in a `/26` (62), so it takes the next size, a `/25`.
+
+## Carving from the block, largest first
+
+Suppose you own `192.168.10.0/24` and need the five subnets above. Allocate in descending size, each starting on its natural boundary:
+
+```
+/25  192.168.10.0   – .127   (126 usable)  ← 100-host segment
+/26  192.168.10.128 – .191   (62 usable)   ← 50-host segment
+/27  192.168.10.192 – .223   (30 usable)   ← 25-host segment
+/28  192.168.10.224 – .239   (14 usable)   ← 10-host segment
+/30  192.168.10.240 – .243   (2 usable)    ← router link
+```
+
+Each block begins exactly where the previous one ends, and `192.168.10.244` onward is still free for later growth. Had you allocated the `/30` first, the `/25` would no longer have a clean boundary to land on, which is the whole reason for the largest-first rule.
+
+## Why it matters
+
+VLSM is how real networks conserve address space and keep allocations aligned so routes can be summarized cleanly. The arithmetic is the same prefix-length math as a single subnet, applied repeatedly: fix more bits to make a block smaller, and keep each block on a power-of-two boundary.
+
+You can check any allocation in the [CIDR calculator](/#cidr), which shows each block's network and broadcast addresses, mask, and usable host count instantly and entirely in your browser.

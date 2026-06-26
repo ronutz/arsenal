@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "IPv6 subnetting and the /64 boundary"
+summary: "Why IPv6 subnetting is about structure rather than scarcity, why a single subnet is almost always a /64, and how prefix delegation hands out address space."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## A different reason to subnet
+
+In IPv4, subnetting is mostly about conservation: addresses are scarce, so you carve a block into the smallest pieces that still fit each network (the logic in the [subnetting basics](/learn/subnetting-basics) article). IPv6 removes that pressure entirely. A single /64 subnet contains 2^64 addresses, more than the entire IPv4 internet squared, so you never subnet an IPv6 network to save space. You subnet it to give structure: one prefix per VLAN, per site, per customer. The math is the same prefix arithmetic as IPv4 (the tool computes it with arbitrary-precision integers), but the mindset is the opposite.
+
+## Why a subnet is a /64
+
+The single most important rule in IPv6 addressing is that a normal subnet is a /64, leaving 64 bits for the interface identifier. This is not a suggestion; large parts of the protocol assume it. Stateless address autoconfiguration (covered in the [address configuration](/learn/ipv6-address-configuration) article) builds a host's address by appending a 64-bit interface identifier to the announced prefix, and the modified EUI-64 derivation that the tool can perform produces exactly 64 bits. Use a longer prefix like a /80 or /112 on a link and autoconfiguration simply stops working. The addressing architecture (RFC 4291) is built around this boundary, so the practical advice is blunt: make every end-user subnet a /64 and do not try to be frugal inside it.
+
+## The allocation hierarchy
+
+If every subnet is a /64, sites and providers work in larger blocks above that:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+An ISP typically delegates a /48 or /56 to a customer, who then assigns /64s out of it to individual links. RFC 6177 walks back the original "/48 for everyone" guidance toward giving each site enough space to subnet comfortably, which in practice means a /48 or /56. The point is that you have room to spare: even a /56 gives a home or small office 256 separate networks, far more than it will ever use.
+
+## Subnet on nibble boundaries
+
+Because IPv6 is written in hex and each hex digit is 4 bits (a nibble), prefixes that fall on a 4-bit boundary are far easier to read and manage. A /48, /52, /56, /60, and /64 all end cleanly between hex digits, so the subnet portion lines up with whole characters in the address. Subnetting a /48 into /52s gives you 16 blocks distinguished by a single hex digit; going to /56 gives 256 blocks across two digits. Staying on nibble boundaries keeps your addressing plan legible, which matters more in IPv6 than squeezing out the last bit ever could.
+
+## Counting subnets and addresses
+
+The arithmetic is straightforward. The number of /64 subnets inside a shorter prefix is 2 raised to the difference in prefix lengths: a /48 holds 2^(64-48) = 2^16 = 65,536 subnets. The number of addresses inside any /64 is 2^(128-64) = 2^64. The tool reports both the address count for a prefix and the usable range, and the numbers get large quickly, which is exactly the point: scarcity is not a constraint you design around anymore.
+
+## The takeaway
+
+IPv6 subnetting flips the IPv4 habit on its head. You are not dividing a scarce resource; you are imposing structure on an effectively unlimited one. Give every subnet a /64 so autoconfiguration and neighbor discovery work as designed, request a /48 or /56 so you have room to organize, and subnet on nibble boundaries so your plan stays readable. When you paste a prefix into the tool and see the address count, treat that abundance as permission to design for clarity rather than for conservation.

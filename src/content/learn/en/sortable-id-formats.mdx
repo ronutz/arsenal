@@ -1,0 +1,43 @@
+---
+slug: sortable-id-formats
+title: "ULID, KSUID, Snowflake, and other sortable IDs"
+summary: "The popular alternatives to UUIDs for time-ordered identifiers, how each is built, and why UUIDv7 now covers most of what they were invented for."
+concepts: ["uuid", "ulid", "ksuid", "snowflake", "nanoid", "sortable-ids"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Why these exist
+
+Random UUIDv4 is excellent at being unique and terrible at being ordered, and that disorder quietly hurts database performance (the story in the [database keys](/learn/uuid-database-keys) article). Before UUIDv7 standardized a time-ordered UUID, several projects invented their own identifier formats to get the same benefit: an ID that sorts by creation time, is compact and URL-friendly, and still needs no central coordination. They are worth knowing because you will meet them in real systems, and because they illustrate the same handful of trade-offs.
+
+## The common recipe
+
+Almost every sortable ID uses one idea: put a **timestamp first** and **random or sequential bits after**. Sorting the IDs as text then sorts them roughly by time, because the most significant part is the clock. Encoding the whole thing in a base that preserves order (so that the text sorts the same way the bytes do) makes the IDs lexicographically sortable as plain strings. The formats differ in how many bits they spend on time versus randomness, how they encode the result, and whether they need any coordination between generators.
+
+## ULID
+
+ULID is a 128-bit identifier, the same width as a UUID, rendered as 26 characters in Crockford base32. The first 48 bits are a millisecond timestamp and the remaining 80 are random. The encoding is case-insensitive and chosen to be readable, and it is lexicographically sortable, with an optional monotonic mode that guarantees ordering even for IDs created in the same millisecond. ULID was one of the most popular answers to the v4 ordering problem, and being 128-bit, it can be stored in the same space as a UUID.
+
+## KSUID
+
+KSUID (from Segment) is a 160-bit identifier encoded as 27 base62 characters. It uses a 32-bit second-resolution timestamp with a custom epoch (so its timestamps stay compact for many years) followed by 128 bits of randomness. The larger random portion makes collisions vanishingly unlikely even at high generation rates, at the cost of being wider than a UUID. Like ULID, it sorts by time when sorted as text.
+
+## Snowflake
+
+Snowflake (originating at Twitter) is a different shape: a 64-bit integer, not a 128-bit value. It packs a millisecond timestamp, a machine or datacenter identifier, and a per-millisecond sequence number into 64 bits, so it fits in a standard signed bigint column. That compactness is its appeal for very large datasets. The catch is coordination: every generator needs a unique machine ID, which has to be assigned and managed, so Snowflake trades the coordination-free property of UUIDs for a much smaller identifier. Many systems have their own Snowflake-like scheme built on the same packing idea.
+
+## NanoID
+
+NanoID is the outlier: it is not time-based at all. It is simply a compact, URL-safe random string with a configurable alphabet and length, designed as a smaller, friendlier alternative to a random UUID when you want an opaque identifier in a short string. Compare it to UUIDv4 rather than to the sortable formats: it optimizes for size and URL-friendliness, not for ordering.
+
+## How they compare
+
+The trade-offs line up along a few axes. **Size**: Snowflake is 64-bit, ULID and UUID are 128-bit, KSUID is 160-bit. **Encoding**: base32 (ULID), base62 (KSUID), an integer (Snowflake), or hex (UUID). **Coordination**: only Snowflake needs assigned machine IDs; the rest are coordination-free. **Sortability**: all except NanoID are time-ordered. And a shared caveat: any timestamp-prefixed ID makes its creation time visible to anyone who can read it, which is fine for most uses but worth noting when an identifier is exposed publicly.
+
+## Why UUIDv7 changed the calculus
+
+The reason this list matters less than it used to is that UUIDv7 (see the [versions](/learn/uuid-versions) article) standardized the same timestamp-plus-random recipe inside the regular 128-bit UUID format. It gives you time ordering and good index locality while remaining a standard UUID that every database and library already understands, with no custom encoding and no coordination. So for new systems, the honest default is to reach for v7 first and use one of these alternatives only when you need its specific property: a 64-bit width that fits a bigint (Snowflake), a particular text encoding, or a larger random space. They solved a real problem; v7 now solves most of it in a standard form.

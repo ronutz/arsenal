@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Private IPv4 address space and RFC 1918"
+summary: "The three private ranges, why they are not routable on the Internet, and the other special blocks the CIDR tool flags."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Addresses you can reuse
+
+There are only about 4.3 billion IPv4 addresses, far too few for every device to have a unique public one. The answer (RFC 1918) is to set aside three ranges that anyone may use inside their own network, with no registration. Because everyone reuses the same private ranges, they cannot be unique on the public Internet, so they are **not routable** there. Reaching the outside requires Network Address Translation (NAT), which swaps a private source address for a shared public one at the network edge.
+
+## The three RFC 1918 ranges
+
+- **`10.0.0.0/8`**: `10.0.0.0` to `10.255.255.255`, 16,777,216 addresses. A single very large network.
+- **`172.16.0.0/12`**: `172.16.0.0` to `172.31.255.255`, 1,048,576 addresses. Not a whole class-B but the 16 contiguous `/16`s from `172.16` through `172.31`, the range people most often misremember.
+- **`192.168.0.0/16`**: `192.168.0.0` to `192.168.255.255`, 65,536 addresses. The familiar home-router range.
+
+## The other special blocks
+
+Several more ranges are reserved for specific purposes and are likewise not ordinary public addresses:
+
+- **`100.64.0.0/10`** (RFC 6598) is carrier-grade NAT (CGNAT) shared space, used by ISPs between the customer and their public pool. It is private-like but distinct from RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) is link-local, the self-assigned address a host picks when no DHCP server answers (APIPA on Windows). It never leaves the local link.
+- **`127.0.0.0/8`** is loopback; `127.0.0.1` is the host talking to itself.
+- **`0.0.0.0/8`**, the multicast range `224.0.0.0/4`, and the documentation ranges (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) are reserved too.
+
+IPv6 has the same idea in a different shape: **Unique Local Addresses** in `fc00::/7` (in practice `fd00::/8`) are the private-use analog of RFC 1918, again not globally routable.
+
+## Why it matters
+
+Knowing whether an address is private, public, or special tells you immediately whether it can appear on the Internet, whether it needs NAT, and whether a firewall rule or route makes sense. An address from `10/8` in a public DNS record, or a `169.254` address where you expected DHCP, is a signal worth noticing.
+
+The [CIDR calculator](/#cidr) classifies any address or block by these special-use ranges and reports whether it is private, reserved, or globally reachable, computed entirely in your browser.

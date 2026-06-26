@@ -6,8 +6,10 @@
   //
   // This Worker serves the static Next.js export in ./out as files on
   // Cloudflare's edge, AND hosts the tools API. `assets.run_worker_first`
-  // routes only /api/* to the Worker script (worker/index.ts); every other path
-  // is served straight from assets, untouched. This is canon C-04 / C-68
+  // routes /api/* plus non-asset page paths to the Worker script
+  // (worker/index.ts) — the API is served, and bare non-localized routes are
+  // redirected to the default locale; the heavy asset directories are served
+  // straight from assets, untouched. This is canon C-04 / C-68
   // ("Seam 1"): the hosted endpoint calls the same @ronutz/netcore function the
   // browser calls, so output is byte-identical. The ASSETS binding lets the
   // Worker fall back to static assets for any non-API path that reaches it.
@@ -43,14 +45,26 @@
     // serve files for any non-API path that reaches it (defensive fallback).
     "binding": "ASSETS",
 
-    // Run the Worker FIRST only for API paths; everything else is served
-    // directly from assets without invoking the Worker. The tools API lives
-    // under /api/* (today: /api/v1/cidr).
-    "run_worker_first": ["/api/*"],
+    // Run the Worker FIRST for the tools API (/api/*) AND for non-asset page
+    // paths, so the Worker can redirect bare, non-localized routes (e.g.
+    // /colophon) to the default locale (/en/colophon) — see worker/index.ts.
+    // The heavy static-asset directories are excluded (negative patterns) so
+    // they keep being served straight from the edge with no Worker hop. The
+    // locale list itself is NOT duplicated here — the Worker derives it from
+    // src/i18n/locales — so adding a language needs no change to this file.
+    "run_worker_first": [
+      "/*",
+      "!/_next/*",
+      "!/pagefind/*",
+      "!/locales/*",
+      "!/certs/*",
+      "!/vendor/*"
+    ],
 
     // Multi-page static site (NOT a single-page app): serve the branded
-    // 404.html for any path that matches no asset. Redirects in _redirects are
-    // evaluated first, so the apex redirect to /en/ still wins.
+    // 404.html for any path that matches no asset. Locale redirects for bare
+    // routes (and the apex) are owned by the Worker (worker/index.ts); the
+    // _redirects apex rule is kept as a belt-and-suspenders fallback.
     "not_found_handling": "404-page"
   }
 }

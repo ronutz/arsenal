@@ -100,7 +100,8 @@
     "colophon": "Como isto foi construído",
     "openSource": "O motor é de código aberto",
     "rights": "Disponível sob termos abertos e comerciais.",
-    "contribute": "Ajude a melhorar as traduções"
+    "contribute": "Ajude a melhorar as traduções",
+    "feedback": "Enviar feedback"
   },
   "search": {
     "label": "Buscar",
@@ -386,7 +387,22 @@
     "successTitle": "Obrigado.",
     "successBody": "Sua mensagem está a caminho. Responderei assim que possível.",
     "errorBody": "Algo deu errado no envio. Tente novamente ou escreva diretamente por e-mail.",
-    "emailLabel": "E-mail"
+    "emailLabel": "E-mail",
+    "channels": {
+      "linkedin": {
+        "description": "Conecte-se profissionalmente"
+      },
+      "youtube": {
+        "description": "Vídeos e tutoriais"
+      },
+      "instagram": {
+        "description": "Nos bastidores"
+      },
+      "training": {
+        "label": "Treinamento oficial",
+        "description": "Reserve um curso pela Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Certificações e credenciais",

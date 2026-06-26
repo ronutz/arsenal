@@ -100,7 +100,8 @@
     "colophon": "Hur det här byggdes",
     "openSource": "Motorn är öppen källkod",
     "rights": "Tillgänglig under öppna och kommersiella villkor.",
-    "contribute": "Hjälp till att förbättra översättningarna"
+    "contribute": "Hjälp till att förbättra översättningarna",
+    "feedback": "Skicka feedback"
   },
   "search": {
     "label": "Sök",
@@ -386,7 +387,22 @@
     "successTitle": "Tack.",
     "successBody": "Ditt meddelande är på väg. Jag återkommer så snart jag kan.",
     "errorBody": "Något gick fel vid sändningen. Försök igen, eller skicka ett e-postmeddelande direkt.",
-    "emailLabel": "E-post"
+    "emailLabel": "E-post",
+    "channels": {
+      "linkedin": {
+        "description": "Nätverka professionellt"
+      },
+      "youtube": {
+        "description": "Videor och genomgångar"
+      },
+      "instagram": {
+        "description": "Bakom kulisserna"
+      },
+      "training": {
+        "label": "Officiell utbildning",
+        "description": "Boka en kurs via Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Certifieringar och meriter",

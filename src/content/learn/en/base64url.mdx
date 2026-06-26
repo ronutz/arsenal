@@ -1,0 +1,42 @@
+---
+slug: base64url
+title: "Base64URL and the URL-safe alphabet"
+summary: "Why JWTs and PKCE use a different Base64 alphabet, the two characters that change, and what happens to the padding."
+concepts: ["base64", "base64url", "rfc4648", "url-safe", "padding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "character-encoding", "jwt-anatomy", "pkce"]
+category: encoding
+status: reviewed
+updated: "2026-06-27"
+---
+
+## One encoding, two alphabets
+
+Base64 turns arbitrary bytes into 64 printable characters, four output characters for every three input bytes. The standard alphabet (RFC 4648, section 4) is `A` to `Z`, `a` to `z`, `0` to `9`, and the two symbols `+` and `/`, with `=` used to pad the final group.
+
+The trouble is that `+`, `/`, and `=` all have special meanings elsewhere. In a URL, `/` is a path separator, `+` historically means a space in query strings, and `=` separates a key from a value. In a filename, `/` is illegal on most systems. So plain Base64 cannot be dropped into a URL or a filename without being mangled or needing further escaping.
+
+## What Base64URL changes
+
+Base64URL (RFC 4648, section 5) is the same encoding with a safer alphabet. Exactly two characters differ:
+
+- `+` becomes `-` (minus)
+- `/` becomes `_` (underscore)
+
+Every other character is identical, and the three-bytes-to-four-characters arithmetic is unchanged. The result is a string that survives being placed in a URL path, a query parameter, or a filename without any percent-encoding.
+
+Padding is the other difference. Standard Base64 pads the last group to a multiple of four with `=`. Base64URL usually **omits the padding** entirely, because `=` is itself awkward in URLs. A decoder can always recompute how much padding was dropped from the length of the string, so nothing is lost.
+
+## Where you actually meet it
+
+Base64URL is not an exotic corner of the spec. It is the encoding behind several things you use constantly:
+
+- **JSON Web Tokens.** A JWT is three Base64URL segments joined by dots (`header.payload.signature`). The `+`/`/` swap and the dropped `=` are exactly why a token is one clean, URL-safe string.
+- **PKCE.** The `code_challenge` in an OAuth authorization-code flow is the Base64URL encoding (without padding) of a SHA-256 hash, precisely so it can travel in a URL.
+- **Web Push, JWK, and many tokens** encode their binary fields the same way.
+
+## A practical caution
+
+Because the alphabets overlap so heavily, a Base64URL string and a standard Base64 string can look almost identical, and a value with no `+`, `/`, or `=` in it is valid in both. The mismatch only bites when the raw bytes happen to produce a `-`/`_` or a `+`/`/`, at which point decoding with the wrong alphabet fails or yields garbage. When a token will not decode, the alphabet is the first thing to check.
+
+The [Base64 tool](/tools/base64) encodes and decodes both the standard and URL-safe alphabets, handles missing padding, and shows you the raw bytes, all in your browser. Nothing you paste is sent anywhere.

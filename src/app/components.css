@@ -3737,3 +3737,12 @@ a.tools-card:hover {
 .uuid-inspect {
   margin-top: 1.5rem;
 }
+
+/* IPv6 toolkit — muted detail text + wrapped reverse-DNS string */
+.ipv6-detail {
+  color: var(--text-tertiary);
+  font-size: 0.85em;
+}
+.ipv6-wrap {
+  word-break: break-all;
+}

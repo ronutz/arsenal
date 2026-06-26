@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "JWT security pitfalls: alg:none, key confusion, and missing checks"
+summary: "The handful of mistakes that turn a JWT verifier into a forgery machine, and the validation a correct verifier must perform."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: reviewed
+updated: "2026-06-27"
+---
+
+## The signature is only as good as the verifier
+
+A JWT's signature makes its claims trustworthy, but only if the code checking it does so correctly. Most JWT vulnerabilities are not breaks in the cryptography; they are verifiers that can be tricked into accepting tokens they should reject. Here are the ones that matter, and the checks that prevent them.
+
+## Trusting the token's own algorithm
+
+- **`alg: none`.** The JWT spec defines an "unsecured" token with no signature, declared by `{"alg":"none"}`. A verifier that honors this will accept a token with forged claims and an empty signature. A correct verifier never treats `none` as valid for a token that is supposed to be signed.
+- **Algorithm confusion (RS256 to HS256).** With RS256 the token is signed by a private key and verified with the public key. If a verifier reads the algorithm *from the token* and an attacker changes the header to HS256, the verifier may try to verify an HMAC using the **public** key as the secret, a value the attacker also has. The forged token then passes.
+
+The single defense for both is the same: **the verifier decides the acceptable algorithm, not the token.** Pin the expected algorithm (or a small allow-list) in your verification call and reject anything else.
+
+## Skipping the claims
+
+A valid signature proves the token was issued and not altered. It does not prove the token is *for you* or *still valid*. A correct verifier also checks:
+
+- **`exp` (expiry)** and **`nbf` (not-before):** reject expired or not-yet-valid tokens, allowing a small clock-skew tolerance.
+- **`aud` (audience):** confirm the token was meant for this service. A token issued for service A must not be accepted by service B.
+- **`iss` (issuer):** confirm it came from the issuer you trust, and resolve the verification key from that issuer rather than from the token.
+
+Omitting these is how a stolen or misdirected token gets accepted where it should not be.
+
+## The smaller traps
+
+- **Weak HMAC secrets.** An HS256 token signed with a short or guessable secret can be brute-forced offline until a matching signature is found. Use a long, random key.
+- **`kid` and JWKS handling.** The `kid` header selects a key; treat it as untrusted input (it has been used for injection), and fetch keys only from your trusted issuer's JWKS.
+- **Decoding mistaken for verifying.** Reading a token's claims without checking the signature and timing is not verification. Act only on a fully verified token.
+
+## The short version
+
+Pin the algorithm, validate `exp`, `aud`, and `iss`, use strong keys, and never confuse decoding with verifying. The [JWT tool](/tools/jwt) decodes a token, shows its claims and expiry in plain language, and verifies an HMAC signature against a secret you paste, all in your browser, with the token and secret never sent anywhere.

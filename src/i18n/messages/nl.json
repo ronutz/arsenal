@@ -100,7 +100,8 @@
     "colophon": "Hoe dit is gebouwd",
     "openSource": "De engine is open source",
     "rights": "Beschikbaar onder open en commerciële voorwaarden.",
-    "contribute": "Help de vertalingen verbeteren"
+    "contribute": "Help de vertalingen verbeteren",
+    "feedback": "Feedback geven"
   },
   "search": {
     "label": "Zoeken",
@@ -386,7 +387,22 @@
     "successTitle": "Bedankt.",
     "successBody": "Je bericht is onderweg. Ik kom zo snel mogelijk bij je terug.",
     "errorBody": "Er is iets misgegaan bij het verzenden. Probeer het opnieuw, of stuur rechtstreeks een e-mail.",
-    "emailLabel": "E-mail"
+    "emailLabel": "E-mail",
+    "channels": {
+      "linkedin": {
+        "description": "Professioneel netwerken"
+      },
+      "youtube": {
+        "description": "Video's en handleidingen"
+      },
+      "instagram": {
+        "description": "Achter de schermen"
+      },
+      "training": {
+        "label": "Officiële training",
+        "description": "Boek een cursus via Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Certificeringen en kwalificaties",

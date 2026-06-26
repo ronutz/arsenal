@@ -81,9 +81,9 @@ export const currentCertifications: Credential[] = [
   { name: "Extreme Certified Professional, Switching", issuer: "Extreme Networks", detail: "ECP", period: "2023 – 2026", evidence: { pdf: P("extreme-ecp-switching") } },
   { name: "Extreme Networks Certified Administrator, Switching", issuer: "Extreme Networks", period: "2026" },
 
-  { name: "Netskope Cloud Security Architect", issuer: "Netskope", detail: "NCSA", period: "2026 – 2028" },
-  { name: "Netskope Cloud Security Integrator", issuer: "Netskope", detail: "NCSI", period: "2025 – 2027" },
-  { name: "Netskope Cloud Security Administrator", issuer: "Netskope", detail: "NCSA-dm", period: "2024 – 2026" },
+  { name: "Netskope Cloud Security Architect", issuer: "Netskope", detail: "NCSA", period: "2026 – 2028", evidence: { pdf: P("netskope-architect"), verifyUrl: "https://verify.skilljar.com/c/zbvsjdg4a2a2", verifyId: "zbvsjdg4a2a2" } },
+  { name: "Netskope Cloud Security Integrator", issuer: "Netskope", detail: "NCSI", period: "2025 – 2027", evidence: { pdf: P("netskope-integrator") } },
+  { name: "Netskope Cloud Security Administrator", issuer: "Netskope", detail: "NCSA-dm", period: "2024 – 2026", evidence: { pdf: P("netskope-administrator") } },
   { name: "Netskope Cloud Security Sales credentials", issuer: "Netskope", detail: "NCSSA · NCSSE" },
 ];
 

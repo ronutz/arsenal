@@ -23,9 +23,8 @@ ID (`C-xx` seam / `D-xx` decision) or the Parking Lot (Charter Appendix C). Comp
 
 ## 2. Tools (build one tool + its Learn content end-to-end)
 
-- 🟢 Live: jwt · pkce · base64 · hash · hmac · uuid · cidr (RFC-anchored golden vectors). **[C-21/C-03]**
-- 🟡 X.509 / certificate decoder (ASN.1 / DER). **[§8]**
-- 🟡 IPv6 toolkit. **[§8.K · RFC 4291]**
+- 🟢 Live: jwt · pkce · base64 · hash · hmac · uuid · cidr · x509 · ipv6 (RFC-anchored golden vectors). **[C-21/C-03]**
+- 🟡 Cipher-suite decoder — next pick. **[§8.O]**
 - ⚪ Cipher-suite decoder · IP converter · VLSM · reverse-DNS · epoch/NTP · URL parser · generic diff ·
   password/entropy. **[§8.K/§8.O · Appendix C]**
 - ⚪ Regex toolkit (multi-flavor tester/visualizer, railroad diagrams, ReDoS warnings). **[§8.T]**
@@ -54,8 +53,8 @@ ID (`C-xx` seam / `D-xx` decision) or the Parking Lot (Charter Appendix C). Comp
 - 🟡 Per-tool credits & sources (header brief + footer detail, per-tool show/hide). **[D-38 · D-39]**
 - ⚪ Federated avatars (upload → IdP picture → opt-in Gravatar → jdenticon; one sharp re-encode +
   EXIF-strip pipeline; never hotlinked). **[D-46]**
-- ⚠️ **Netskope credentials are PRIME-ATTESTED, not VERIFIED** — do NOT publish them as verified until
-  the certificate PDFs are supplied. **[CertRecon v1.0]**
+- ✅ **Netskope: VERIFIED (26/06).** Six certificate PDFs supplied; Architect/Integrator/Administrator + NCSSE Sales
+  Executive are VERIFIED and cleared to publish (the 3 accreditation PDFs are wired into `data.ts`). Only NCSSA (no PDF) stays attested. **[CertRecon v1.1]**
 - ⚠️ Cert-expiry watch: Extreme ECP-Switching (2026-08-08), Fortinet FCP-NS (2026-08-19).
 
 ## 5. Themes / flavor

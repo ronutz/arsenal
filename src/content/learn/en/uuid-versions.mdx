@@ -1,0 +1,43 @@
+---
+slug: uuid-versions
+title: "UUID versions explained: v1 through v8"
+summary: "The whole UUID family in one place, from time-and-MAC v1 to random v4 to time-ordered v7, plus the name-based versions and how the version and variant bits are read."
+concepts: ["uuid", "uuidv4", "uuidv7", "rfc9562", "version", "variant"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: reviewed
+updated: "2026-06-27"
+---
+
+## One format, several recipes
+
+A UUID is always the same shape: 128 bits, written as 32 hexadecimal digits in the familiar `8-4-4-4-12` grouping. What changes between versions is how those bits are generated. The current standard, RFC 9562 (published in 2024, replacing the long-serving RFC 4122), defines versions 1 through 8, each a different strategy for filling 128 bits in a way that stays unique without a central authority. The [UUID overview](/learn/uuid) focuses on the two you will use most, v4 and v7; this article maps the whole family so you can recognize and choose any of them.
+
+## How a UUID announces its version
+
+Two small fields are reserved no matter the version, and the tool reads both. The **version** is encoded in four bits (the first hex digit of the third group), so a `4` there means a v4 UUID and a `7` means v7. The **variant** is encoded in the top bits of the next group (the first hex digit of the fourth group is typically `8`, `9`, `a`, or `b` for the standard variant). Together these tell a reader how to interpret the remaining bits, which is why a tool can label a UUID's version just by inspecting it, with no context.
+
+## The time-based versions: v1, v6, v7
+
+Three versions encode a timestamp, which makes them roughly time-ordered, a useful property for database keys (see the [database keys](/learn/uuid-database-keys) article):
+
+- **Version 1** combines a 60-bit timestamp with a clock sequence and a node identifier, where the node is traditionally the machine's MAC address. It works, but it leaks the MAC and the generation time, and its timestamp field ordering does not sort cleanly as text.
+- **Version 6** is v1 with the timestamp fields rearranged so the bytes sort in chronological order. It exists as a drop-in improvement for systems already invested in v1 that want sortability.
+- **Version 7** uses a straightforward Unix timestamp in milliseconds followed by random bits. It is the modern recommendation for new time-ordered identifiers: sortable, no hardware leak, and simple. For most new work that wants ordered keys, v7 is the answer.
+
+## The name-based versions: v3 and v5
+
+Versions 3 and 5 are deterministic: the same input always produces the same UUID. You hash a namespace identifier together with a name, and the digest becomes the UUID. **Version 3** uses MD5 and **version 5** uses SHA-1; v5 is preferred because SHA-1, while not used here for security, is the less brittle choice. These are the version to reach for when you need a stable identifier derived from existing data, for example a consistent UUID for a given URL or filename, so that two systems independently compute the same value.
+
+## The random version: v4
+
+**Version 4** fills 122 bits with randomness (the other 6 are the fixed version and variant bits). It carries no timestamp, no MAC, and no structure, which makes it the safe default when you simply want an opaque, collision-resistant identifier and do not care about ordering. Its one drawback is precisely that lack of order, which is what hurts database index locality and motivated v7. The tool's v4 generation uses a cryptographically secure random source in your browser, so the values never touch a server.
+
+## Version 8 and the special UUIDs
+
+**Version 8** is reserved for custom or experimental use: only the version and variant bits are fixed, and the rest is yours to define, which lets a system encode its own data in UUID shape while staying a valid UUID. There are also two special values to recognize: the **nil** UUID, all zeros, and the **max** UUID, all ones, both used as sentinels. Version 2 exists historically (a DCE Security variant) but is rarely seen in practice and not something you would choose today.
+
+## Choosing by intent
+
+The family is large, but the choice is usually quick once you name what you need. For an opaque, unguessable identifier with no ordering, use **v4**. For a stable identifier derived deterministically from existing data, use **v5**. For a time-ordered key that indexes well, use **v7**. The older time-based versions (v1, v6) mostly matter for compatibility with existing systems, and v8 is there when you genuinely need to encode your own structure. When you paste a UUID into the tool and it reports the version, that single digit tells you which of these recipes produced it.

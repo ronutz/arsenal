@@ -76,6 +76,7 @@
       "encoding": "Encoding & data",
       "hashing": "Hashing & crypto",
       "identifiers": "Identifiers",
+      "pki": "Certificates & PKI",
       "networking": "Networking"
     },
     "jwt": {
@@ -217,6 +218,97 @@
       "timestampField": "Timestamp (v7)",
       "versionValue": "Version {version}"
     },
+    "x509": {
+      "name": "X.509 Certificate Decoder",
+      "blurb": "Paste a PEM, base64, or hex certificate to read its subject, issuer, validity window, public key, and v3 extensions, with SHA-256 and SHA-1 fingerprints. Runs entirely in your browser.",
+      "inputLabel": "X.509 certificate",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Decoding and fingerprints run locally. The certificate never leaves your browser.",
+      "errors": {
+        "empty": "Paste an X.509 certificate to decode.",
+        "format": "That does not look like a certificate. Paste PEM (-----BEGIN CERTIFICATE-----), base64, or hex.",
+        "der": "The bytes are not valid DER. Check that the whole certificate was pasted, including the END line.",
+        "structure": "This decodes as ASN.1 but is not an X.509 certificate. A certificate is a SEQUENCE of TBSCertificate, signatureAlgorithm, and signatureValue."
+      },
+      "status": {
+        "valid": "Valid, expires {rel}",
+        "expired": "Expired {rel}",
+        "notYetValid": "Not valid yet, starts {rel}"
+      },
+      "panels": {
+        "subject": "Subject",
+        "issuer": "Issuer",
+        "details": "Details",
+        "publicKey": "Public key",
+        "extensions": "Extensions",
+        "fingerprints": "Fingerprints"
+      },
+      "fields": {
+        "version": "Version",
+        "serial": "Serial number",
+        "notBefore": "Not before",
+        "notAfter": "Not after",
+        "signatureAlgorithm": "Signature algorithm",
+        "algorithm": "Algorithm",
+        "keySize": "Key size",
+        "exponent": "Exponent",
+        "curve": "Curve",
+        "bits": "{n}-bit",
+        "selfSigned": "Self-issued"
+      },
+      "ext": {
+        "san": "Subject alternative names",
+        "keyUsage": "Key usage",
+        "extKeyUsage": "Extended key usage",
+        "basicConstraints": "Basic constraints",
+        "subjectKeyId": "Subject key identifier",
+        "authorityKeyId": "Authority key identifier",
+        "caTrue": "Certificate authority (CA: true)",
+        "caFalse": "Not a CA (CA: false)",
+        "pathLen": "path length {n}",
+        "critical": "critical"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Computing fingerprints..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6 Toolkit",
+      "blurb": "Parse an IPv6 address or prefix to see its canonical (RFC 5952) and fully expanded forms, special-use classification, prefix math, an EUI-64 MAC if present, and its ip6.arpa reverse-DNS name. Runs entirely in your browser.",
+      "inputLabel": "IPv6 address or prefix",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Parsing runs locally. The address never leaves your browser.",
+      "errors": {
+        "empty": "Enter an IPv6 address or prefix to decode.",
+        "format": "That is not a valid IPv6 address. Use eight hex groups, optionally compressed with :: once (for example 2001:db8::1).",
+        "prefix": "The prefix length is not valid. For IPv6 it must be between 0 and 128."
+      },
+      "panels": {
+        "forms": "Canonical forms",
+        "classification": "Classification",
+        "prefix": "Prefix",
+        "identifiers": "Identifiers"
+      },
+      "fields": {
+        "compressed": "Compressed (RFC 5952)",
+        "expanded": "Expanded",
+        "type": "Type",
+        "scope": "Scope",
+        "embeddedIpv4": "Embedded IPv4",
+        "network": "Network",
+        "firstAddress": "First address",
+        "lastAddress": "Last address",
+        "count": "Addresses",
+        "hostBits": "Host bits",
+        "eui64": "EUI-64 MAC",
+        "reverseDns": "Reverse DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multicast"
+      }
+    },
     "cidr": {
       "name": "CIDR / Subnet Calculator",
       "blurb": "Break down any IPv4 CIDR block into network and broadcast addresses, usable host range, host count, and netmask. Runs entirely in your browser.",
@@ -254,7 +346,8 @@
     "rights": "Available under open and commercial terms.",
     "contribute": "Improve the translations",
     "api": "API reference",
-    "contributeTools": "Contribute a tool"
+    "contributeTools": "Contribute a tool",
+    "feedback": "Submit feedback"
   },
   "search": {
     "label": "Search",
@@ -540,7 +633,25 @@
     "successTitle": "Thank you.",
     "successBody": "Your message is on its way. I'll get back to you as soon as I can.",
     "errorBody": "Something went wrong sending that. Please try again, or email directly.",
-    "emailLabel": "Email"
+    "emailLabel": "Email",
+    "channels": {
+      "linkedin": {
+        "label": "LinkedIn",
+        "description": "Connect professionally"
+      },
+      "youtube": {
+        "label": "YouTube",
+        "description": "Videos and walkthroughs"
+      },
+      "instagram": {
+        "label": "Instagram",
+        "description": "Behind the scenes"
+      },
+      "training": {
+        "label": "Official training",
+        "description": "Book a course through Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Certifications & credentials",

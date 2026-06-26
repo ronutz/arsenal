@@ -100,7 +100,8 @@
     "colophon": "Cara ia dibina",
     "openSource": "Enjin ini sumber terbuka",
     "rights": "Tersedia di bawah terma terbuka dan komersial.",
-    "contribute": "Bantu perbaiki terjemahan"
+    "contribute": "Bantu perbaiki terjemahan",
+    "feedback": "Hantar maklum balas"
   },
   "search": {
     "label": "Cari",
@@ -386,7 +387,22 @@
     "successTitle": "Terima kasih.",
     "successBody": "Mesej anda dalam perjalanan. Saya akan membalas secepat mungkin.",
     "errorBody": "Ada sesuatu yang tidak kena semasa menghantar. Cuba lagi atau e-mel terus.",
-    "emailLabel": "E-mel"
+    "emailLabel": "E-mel",
+    "channels": {
+      "linkedin": {
+        "description": "Berhubung secara profesional"
+      },
+      "youtube": {
+        "description": "Video dan panduan"
+      },
+      "instagram": {
+        "description": "Di sebalik tabir"
+      },
+      "training": {
+        "label": "Latihan rasmi",
+        "description": "Tempah kursus melalui Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Pensijilan dan kelayakan",

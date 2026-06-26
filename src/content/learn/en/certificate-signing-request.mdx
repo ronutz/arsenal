@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Certificate signing requests and how certificates are issued"
+summary: "What a CSR contains, why your private key never leaves your machine, how a CA validates and issues, and how ACME automates the whole exchange."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: reviewed
+updated: "2026-06-27"
+---
+
+## The issuance problem
+
+You can generate a key pair on your own in seconds, but a bare public key proves nothing about who you are (the binding problem from the [anatomy article](/learn/x509-anatomy)). To get a certificate, you need a certificate authority that a relying party already trusts to vouch that this public key belongs to your name. The Certificate Signing Request is how you ask for that, without ever handing over your private key.
+
+## What a CSR contains
+
+A CSR is itself an ASN.1 structure, defined by PKCS#10 (RFC 2986) and usually shipped as a PEM block labelled `CERTIFICATE REQUEST`. It carries:
+
+- the **subject** you are requesting (the names that should end up in the certificate),
+- your **public key**, and
+- a **signature over the request, made with the matching private key**.
+
+That last part is the clever bit. By signing the request with the private key, you prove you actually hold the key that pairs with the public key you submitted, all without revealing the private key itself. The private key never leaves your control, which is exactly as it should be, because anyone who has it can impersonate you.
+
+## The CA is the authority, not the requester
+
+A crucial point: the CSR is a *request*, and the CA is free to honor parts of it and ignore others. You can ask for any subject and any extensions you like, but the CA decides what the issued certificate actually says. It will set the validity period according to current rules, choose the serial number, and include only the names and usages it is willing to vouch for. The CA's signature, not your request, is what gives the final certificate its authority. This separation is why a CSR full of ambitious fields does not get you a certificate full of them.
+
+## How the CA decides to trust you
+
+Before signing, the CA validates that you are entitled to the names you asked for, and how thoroughly depends on the certificate type:
+
+- **Domain Validated (DV)** proves only that you control the domain. This is the overwhelming majority of TLS certificates today.
+- **Organization Validated (OV)** and **Extended Validation (EV)** additionally vet the legal entity behind the domain, the Subject Identity Information that appears in the certificate.
+
+For DV, the CA challenges you to demonstrate control of the domain. Common methods are placing a specific file at a URL on the site (HTTP-01), publishing a specific DNS TXT record (DNS-01), or responding to an email sent to an address at the domain. Passing the challenge is what convinces the CA the public key in your CSR should be bound to that name.
+
+## Self-signed certificates skip the CA
+
+If you sign your own CSR with your own key instead of sending it to a CA, you get a self-signed certificate, where the Issuer equals the Subject. It carries no external authority, because the only thing vouching for it is itself, but it is perfectly useful for local development, internal services with their own trust store, or acting as the root of a private PKI. The tool flags when a certificate is self-issued, which tells you immediately that its trust comes from somewhere other than a public CA.
+
+## ACME: automating the exchange
+
+Doing all of this by hand, repeatedly, is exactly what the move to short certificate lifetimes makes impossible (see the [revocation article](/learn/certificate-revocation)). The ACME protocol (RFC 8555), popularized by Let's Encrypt, automates the entire conversation: a client generates the key pair and CSR, proves domain control through HTTP-01 or DNS-01 automatically, receives the certificate, and repeats before each expiry, with no human involved. ACME is the reason millions of sites can run certificates that renew every few weeks, and it is the operational backbone of the short-lived-certificate future.
+
+## A request becomes a credential
+
+The arc is simple to state. You hold a key pair. A CSR asks a CA to vouch for the public half, proving along the way that you hold the private half. The CA checks that you control the name, then issues a certificate whose authority comes from the CA's signature, not from anything you wrote in the request. Inspecting the result with a decoder shows you the binding the CA actually made, which is the whole point of the exercise: turning an anonymous key into a key with a trusted name attached.

@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "Will UUIDs collide? Probability and the birthday bound"
+summary: "How many random bits a UUID actually has, the birthday math for a collision, and when you want deterministic UUIDs instead."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: reviewed
+updated: "2026-06-27"
+---
+
+## The question behind every UUID
+
+A UUID is 128 bits, usually generated at random (version 4) so that anyone, anywhere, can mint one without coordination and expect it to be unique. The reasonable worry is: if everyone is just rolling dice, won't two eventually match? The answer is yes in principle and effectively never in practice, and the math says exactly why.
+
+## How many random bits there really are
+
+A version-4 UUID is not 128 random bits. Four bits are fixed to mark the version and two more to mark the variant, leaving **122 random bits**. That is still an enormous space: 2¹²², roughly 5.3 undecillion (5.3 × 10³⁶) possible values.
+
+## The birthday bound, applied
+
+Collision probability does not depend on filling the space; it depends on the number of *pairs*, which grows with the square of how many you generate. This is the birthday paradox again. For a space of 2¹²² values, the chance of any collision among `n` UUIDs is approximately:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+A 50% chance of a single collision arrives only after about **2⁶¹** UUIDs, which is around 2.3 quintillion. To make that concrete: generating a billion version-4 UUIDs every second, you would need on the order of *85 years* just to reach a 50% chance of one collision. At any realistic application volume, the probability is so small it is dwarfed by the chance of a hardware fault corrupting the data anyway.
+
+The one real caveat is the **quality of the randomness**. The math holds only if the generator is a proper cryptographically secure source. A weak or poorly seeded random source can produce repeats far sooner, so the practical risk is a bad RNG, not the UUID design.
+
+## When you do not want randomness
+
+Sometimes a collision is not the concern, repeatability is:
+
+- **Namespace UUIDs (versions 3 and 5)** are deterministic: they hash a namespace plus a name (MD5 for v3, SHA-1 for v5), so the *same* input always yields the *same* UUID. Useful when you want a stable identifier derived from existing data rather than a fresh random one.
+- **Time-ordered UUIDs (version 7)** keep randomness but prefix a timestamp, so IDs sort by creation time. That helps database index locality while keeping collision risk negligible.
+
+## The takeaway
+
+For unique identifiers at any normal scale, a version-4 UUID from a good random source will not collide, and you do not need a central authority to guarantee it. Choose v3/v5 when you need the same input to map to the same ID, and v7 when you want time ordering.
+
+The [UUID tool](/tools/uuid) generates version-4 (and other) UUIDs and parses any UUID to show its version and variant, all in your browser with nothing sent anywhere.

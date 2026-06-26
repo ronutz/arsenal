@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Neighbor Discovery: how IPv6 replaces ARP"
+summary: "How IPv6 finds neighbors on a link using ICMPv6 and multicast instead of broadcast ARP, the five Neighbor Discovery messages, and why broadcast is gone."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## ICMPv6 is not optional
+
+In IPv4, ICMP is a diagnostic afterthought you can block without breaking basic connectivity. In IPv6, ICMPv6 (RFC 4443) is load-bearing: the protocol depends on it for core link operation, so filtering it indiscriminately breaks the network. The reason is that IPv6 moved several jobs that IPv4 spread across ARP, ICMP router discovery, and ICMP redirects into one ICMPv6-based protocol called Neighbor Discovery (RFC 4861). Understanding Neighbor Discovery is understanding how an IPv6 link actually works.
+
+## Five messages do the work
+
+Neighbor Discovery defines five ICMPv6 message types, and almost everything on a link is some combination of them:
+
+- **Router Solicitation (RS)**: a host asks routers to announce themselves.
+- **Router Advertisement (RA)**: a router announces the prefix and configuration flags (the input to autoconfiguration in the [address configuration](/learn/ipv6-address-configuration) article).
+- **Neighbor Solicitation (NS)**: a host asks "who has this address, and what is your link-layer address?"
+- **Neighbor Advertisement (NA)**: the reply giving that link-layer address.
+- **Redirect**: a router tells a host about a better next hop for a destination.
+
+Router solicitation and advertisement handle "how do I configure myself"; neighbor solicitation and advertisement handle "how do I reach this neighbor"; redirect handles "there is a better path". That covers the day-to-day life of a link.
+
+## Address resolution without broadcast
+
+The job ARP does in IPv4, mapping an IP address to a hardware address, is done in IPv6 by the Neighbor Solicitation and Advertisement pair. The important difference is *how* the question is asked. ARP shouts to the broadcast address, interrupting every device on the segment. IPv6 instead sends the Neighbor Solicitation to the target's **solicited-node multicast address**, a group that only the small set of hosts sharing the same address suffix will be listening on. The target answers with a Neighbor Advertisement carrying its link-layer address. The querier caches the result, exactly as an ARP cache works, and revalidates it through Neighbor Unreachability Detection when traffic suggests a neighbor may have gone away.
+
+## The solicited-node multicast address
+
+The solicited-node multicast address is built from the target address: take the prefix `ff02::1:ff00:0/104` and append the last 24 bits of the target's address. Because resolution targets only the handful of hosts sharing those low 24 bits rather than the whole link, the request reaches far fewer machines than an ARP broadcast would. This construction is why the [addressing](/learn/ipv6-addressing) article treats solicited-node multicast as part of the address plan rather than an afterthought: every host that configures an address automatically joins the corresponding solicited-node group so that others can find it.
+
+## No broadcast at all
+
+IPv6 has no broadcast address. Everything that IPv4 used broadcast for, including address resolution and router discovery, is handled by multicast to specific, well-scoped groups. There is an all-nodes multicast group (`ff02::1`) and an all-routers group (`ff02::2`), but routine resolution targets the narrow solicited-node groups instead. Replacing "interrupt everyone" with "notify exactly the relevant listeners" is more efficient on busy links and is one of the quieter improvements IPv6 makes over IPv4.
+
+## Trusting the link
+
+Because Neighbor Discovery is unauthenticated by default, a malicious host on the same link can send forged Router Advertisements or Neighbor Advertisements to redirect or intercept traffic, the IPv6 analogue of ARP spoofing. The defenses live at the network edge: RA Guard on switches drops router advertisements from ports that should not have routers, and SEcure Neighbor Discovery (SEND) adds cryptographic protection where it is deployed. As with IPv4, the local link is a trust boundary worth defending.
+
+## The nervous system of the link
+
+The summary is that IPv6 folded address resolution, router discovery, and redirection into a single ICMPv6-based protocol, swapped broadcast shouting for targeted multicast, and made the whole thing essential rather than optional. When you see an address in the tool and notice its solicited-node group or its link-local form, you are looking at the pieces Neighbor Discovery uses to let hosts find each other on a link without ever disturbing the neighbors that are not involved.

@@ -100,7 +100,8 @@
     "colophon": "Paano ito ginawa",
     "openSource": "Open source ang engine nito",
     "rights": "Inihahandog sa bukas at komersyal na mga termino.",
-    "contribute": "Tumulong na pahusayin ang mga pagsasalin"
+    "contribute": "Tumulong na pahusayin ang mga pagsasalin",
+    "feedback": "Magpadala ng feedback"
   },
   "search": {
     "label": "Maghanap",
@@ -386,7 +387,22 @@
     "successTitle": "Salamat.",
     "successBody": "Nasa daan na ang iyong mensahe. Babalikan kita sa lalong madaling panahon.",
     "errorBody": "May nangyaring mali sa pagpapadala. Subukan muli o direktang mag-email.",
-    "emailLabel": "Email"
+    "emailLabel": "Email",
+    "channels": {
+      "linkedin": {
+        "description": "Kumonekta nang propesyonal"
+      },
+      "youtube": {
+        "description": "Mga video at gabay"
+      },
+      "instagram": {
+        "description": "Sa likod ng eksena"
+      },
+      "training": {
+        "label": "Opisyal na pagsasanay",
+        "description": "Mag-book ng kurso sa pamamagitan ng Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Mga Sertipiko at Kwalipikasyon",

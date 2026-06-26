@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Access tokens, refresh tokens, and ID tokens"
+summary: "Three OAuth and OpenID Connect tokens that get constantly confused, what each is actually for, and why sending the wrong one to the wrong place is a real bug."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Three tokens, three jobs
+
+After the authorization code flow completes (see the [code flow](/learn/oauth-code-flow) article), a client can end up holding three different tokens, and conflating them is one of the most common mistakes in OAuth and OpenID Connect. An access token, a refresh token, and an ID token look superficially similar, especially when all three happen to be JWTs, but they have different audiences and different purposes. Getting them right is mostly a matter of asking, for each token, who is it for and what does it authorize.
+
+## The access token: a key to an API
+
+The access token is what the client sends to a resource server (an API) to prove it is allowed to make a request. It is the closest thing OAuth has to a session key for machine-to-machine access, defined by OAuth 2.0 (RFC 6749). Two properties matter. It is **short-lived**, often minutes to an hour, so that a leaked token is only briefly useful. And it is a **bearer** token: whoever holds it can use it, with no further proof of identity, which is why access tokens must travel only over TLS and never be logged or put in a URL. The API validates the token and the scopes it carries, then serves or denies the request.
+
+## The refresh token: getting new access tokens
+
+Because access tokens expire quickly, forcing the user to log in again every few minutes would be unbearable. The refresh token solves this: it is a long-lived credential the client exchanges at the authorization server for a fresh access token, with no user interaction. It is far more sensitive than an access token precisely because it is long-lived, so it must stay on the back channel (server side, or in protected storage) and never be exposed to a browser front end. Good practice is **refresh token rotation**: each use issues a new refresh token and invalidates the old one, so a stolen token is detected the moment the legitimate client tries to use the now-revoked copy. Tokens can also be explicitly revoked (RFC 7009).
+
+## The ID token: a statement about the user
+
+The ID token is the piece OpenID Connect adds on top of OAuth, and it is the one most often misused. It is always a JWT (see the [JWT anatomy](/learn/jwt-anatomy) article), and it describes the authentication event: who the user is, when they authenticated, and which authorization server vouches for that. Crucially, **the ID token is for the client, not for an API**. It answers "who just logged in" so the application can establish a user session. Sending an ID token to a resource server as if it were an access token is a classic bug: the API should reject it, because the ID token's audience is the client, and using it for authorization confuses identity with permission.
+
+## Bearer tokens and the temptation to trust them
+
+Most access tokens are bearer tokens, which makes them easy to use and easy to misuse. The handling rules follow directly: always TLS, short lifetimes, never in logs or query strings, and never in browser-accessible storage if a more protected option exists. Where the bearer model is too risky, **sender-constrained** tokens bind a token to a specific client key (mechanisms such as DPoP or mutual TLS), so that a stolen token cannot be replayed by anyone else. For most applications, short-lived bearer access tokens over TLS are the working baseline.
+
+## Opaque versus JWT access tokens
+
+An access token can be opaque (a random string the API checks by calling the authorization server's introspection endpoint, RFC 7662) or a JWT the API validates by itself. The JWT form is self-contained and avoids a network round trip, but it cannot be revoked before it expires, which is one more reason access-token lifetimes are kept short. An ID token, by contrast, is always a JWT, because its entire job is to convey verifiable claims to the client. Whether a token is a JWT tells you how it is validated, not what it is for.
+
+## Match the token to the audience
+
+The single rule that prevents most token bugs is to match each token to its intended audience. The **ID token** is for the application, to learn who logged in. The **access token** is for the API, to authorize a request. The **refresh token** is for the authorization server, to mint new access tokens without bothering the user. Keep those three audiences straight, hold the long-lived refresh token on the back channel, and treat every bearer token as a short-lived secret, and the rest of OAuth's token handling falls into place.

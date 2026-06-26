@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Collisions, preimage resistance, and the birthday bound"
+summary: "The three security properties a cryptographic hash must have, why collisions matter, and the birthday math that sets the real strength."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: reviewed
+updated: "2026-06-27"
+---
+
+## What "secure" means for a hash
+
+Any function that maps inputs to fixed-size outputs will eventually map two different inputs to the same output, because there are infinitely many inputs and only finitely many outputs. A hash being **secure** does not mean collisions cannot exist; it means they cannot be *found* in any feasible amount of work. Three distinct properties capture this.
+
+## The three properties
+
+- **Preimage resistance.** Given a hash value `h`, it is infeasible to find any input `m` with `hash(m) = h`. This is the one-way property: a fingerprint should not reveal what produced it. For an n-bit hash this costs about 2ⁿ work.
+- **Second-preimage resistance.** Given a specific input `m1`, it is infeasible to find a *different* input `m2` with the same hash. An attacker cannot forge a second document that matches a given one's fingerprint. Also roughly 2ⁿ work.
+- **Collision resistance.** It is infeasible to find *any* two different inputs that hash to the same value. The attacker gets to choose both, which makes this the easiest of the three to attack.
+
+## The birthday bound
+
+Collision resistance is weaker than the other two for a subtle reason, the **birthday paradox**. In a room of just 23 people there is about a 50% chance two share a birthday, because the number of *pairs* grows quadratically. The same effect applies to hashes: finding a collision in an n-bit hash takes only about **2^(n/2)** attempts, not 2ⁿ.
+
+This halves the effective strength against collisions:
+
+- SHA-256 gives about 128-bit collision resistance (2¹²⁸ work), which is far out of reach.
+- A 128-bit hash like MD5 would give only about 64-bit collision resistance even if it were not otherwise broken, which is why output size alone matters.
+
+It is why modern hashes use 256 bits or more: to keep the halved figure comfortably beyond any attacker.
+
+## Why a found collision is dangerous
+
+When collision resistance fails, an attacker can craft two inputs with the same hash, get one signed or trusted, and substitute the other. SHAttered demonstrated two PDFs with the same SHA-1 digest; the Flame malware used an MD5 collision to forge a trusted certificate. In both cases the signature was valid for *both* documents, so a checked signature no longer proved which one you actually received. This is the concrete reason MD5 and SHA-1 must not be used where an adversary can choose the input.
+
+The [hash tool](/tools/hash) lets you hash any input and compare digests, so you can see for yourself that one changed bit produces a completely different fingerprint, all computed in your browser with nothing sent anywhere.

@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Verifying an HMAC safely: constant-time and replay"
+summary: "Why comparing signatures with == leaks a timing side channel, and why a valid signature alone does not stop a replayed request."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Computing the tag is the easy part
+
+Producing an HMAC correctly is well understood. The mistakes cluster on the *verifying* side, where two issues catch people who got the cryptography right but the surrounding logic wrong: how you compare the tags, and what a valid tag actually proves.
+
+## Compare in constant time
+
+To verify, the receiver recomputes the HMAC over the message and checks it against the tag the sender supplied. The natural way to compare two strings, a normal `==`, returns as soon as it finds the first differing byte. That early exit leaks timing: a tag whose first byte is correct takes very slightly longer to reject than one that is wrong immediately. By measuring response times over many attempts, an attacker can recover the correct tag one byte at a time, a **timing attack**.
+
+The defense is a **constant-time comparison** that always examines every byte regardless of where the first difference is, so the time taken reveals nothing about how close a guess was. Most languages provide one:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Never verify a signature with ordinary string equality.
+
+## A valid signature is not a fresh request
+
+Even a perfectly verified HMAC only proves the message was produced by someone with the key and was not altered. It says nothing about *when*. An attacker who captures a legitimate signed request can send the exact same bytes again, and the signature still verifies. That is a **replay attack**, and it matters for anything that causes an effect: a payment, a state change, a command.
+
+Stopping replay needs something in the signed data that makes each request unique and checkable:
+
+- A **timestamp** in the signed payload, with the server rejecting requests outside a short window (and accounting for clock skew).
+- A **nonce**, a unique value per request that the server records and refuses to accept twice.
+
+Both must be *inside* the signed content, so an attacker cannot alter them without breaking the signature.
+
+## The two-part rule
+
+A request is trustworthy only when its HMAC verifies in constant time **and** it is fresh. Get either wrong and the signature gives a false sense of safety. This is the verification side of the same discipline as request signing.
+
+The [HMAC tool](/tools/hmac) lets you compute and compare tags for a message and key directly in your browser, with nothing sent anywhere, so you can confirm a signature by hand while building or debugging.

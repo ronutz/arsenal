@@ -100,7 +100,8 @@
     "colophon": "Nasıl yapıldı",
     "openSource": "Motoru açık kaynak",
     "rights": "Açık ve ticari koşullarla sunulur.",
-    "contribute": "Çevirileri iyileştirmeye yardım et"
+    "contribute": "Çevirileri iyileştirmeye yardım et",
+    "feedback": "Geri bildirim gönder"
   },
   "search": {
     "label": "Ara",
@@ -386,7 +387,22 @@
     "successTitle": "Teşekkürler.",
     "successBody": "Mesajın yola çıktı. Sana en kısa sürede döneceğim.",
     "errorBody": "Gönderirken bir şeyler ters gitti. Tekrar dene ya da doğrudan e-posta gönder.",
-    "emailLabel": "E-posta"
+    "emailLabel": "E-posta",
+    "channels": {
+      "linkedin": {
+        "description": "Profesyonel bağlantı kurun"
+      },
+      "youtube": {
+        "description": "Videolar ve anlatımlar"
+      },
+      "instagram": {
+        "description": "Perde arkası"
+      },
+      "training": {
+        "label": "Resmi eğitim",
+        "description": "Red Education aracılığıyla kurs ayırtın"
+      }
+    }
   },
   "certs": {
     "title": "Sertifikalar ve nitelikler",

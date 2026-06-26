@@ -1,0 +1,43 @@
+---
+slug: ipv6-transition
+title: "Running IPv6 and IPv4 together: dual-stack and translation"
+summary: "How the internet bridges two incompatible address families: dual-stack, Happy Eyeballs, NAT64, and the IPv4-embedded addresses that make it work."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Two internets at once
+
+IPv6 and IPv4 are not compatible on the wire: an IPv6-only host cannot speak directly to an IPv4-only server, because the packets use different address sizes and headers. There was never going to be a flag day where everyone switched at midnight, so the internet has spent years running both protocols side by side and bridging between them. The transition technologies exist to make that coexistence invisible to users while the old protocol is slowly retired.
+
+## Dual-stack: just run both
+
+The simplest approach is dual-stack: a host, router, or server runs IPv4 and IPv6 simultaneously, with an address in each. When a name has both an A record (IPv4) and a AAAA record (IPv6) in DNS, a dual-stack client can reach it over either. The standing preference is to use IPv6 when it is available and fall back to IPv4 otherwise. Dual-stack is the path most networks take first, because nothing has to be translated; each protocol simply runs natively.
+
+## Happy Eyeballs: hide the failures
+
+Preferring IPv6 is only pleasant if a broken IPv6 path does not make the user wait. Happy Eyeballs (RFC 8305) solves this by racing the two: the client starts an IPv6 connection and, after a very short head start, also starts an IPv4 one, then uses whichever completes first and quietly drops the other. The effect is that users get IPv6 when it is healthy and an instant, unnoticed fallback to IPv4 when it is not. This algorithm is a big part of why enabling IPv6 rarely makes anything feel slower.
+
+## IPv4 addresses embedded in IPv6
+
+Several mechanisms work by carrying an IPv4 address inside an IPv6 address, and the tool recognizes these forms. The IPv4-mapped range `::ffff:0:0/96` represents an IPv4 address to a dual-stack socket, so `::ffff:192.0.2.1` is how the IPv4 host 192.0.2.1 appears in an IPv6 API. Translation systems use the well-known prefix `64:ff9b::/96` (RFC 6052) to embed an IPv4 destination into an IPv6 address that can be routed to a translator. Recognizing an embedded IPv4 address tells you that what looks like an IPv6 destination is really a path to something on the IPv4 internet.
+
+## NAT64 and DNS64: IPv6-only reaching IPv4
+
+For networks that have gone IPv6-only, NAT64 (RFC 6146) and DNS64 (RFC 6147) let those clients still reach IPv4-only servers. DNS64 synthesizes a AAAA record for an IPv4-only name by embedding its IPv4 address into the well-known prefix, so the client gets an IPv6 destination to connect to. NAT64 then sits at the boundary and translates those IPv6 packets into IPv4 on the way out, and back on the way in. Together they let a modern IPv6-only network behave as though the whole internet were reachable over IPv6.
+
+## 464XLAT for stubborn IPv4 apps
+
+Some applications still hand around literal IPv4 addresses and break on an IPv6-only network even with NAT64 present. 464XLAT (RFC 6877), widely deployed on mobile carriers, adds a small translation on the client that presents a private IPv4 address locally and tunnels it across the IPv6-only network to a NAT64 gateway. It is the reason IPv6-only mobile networks can still run IPv4-only apps without the user noticing.
+
+## Why there is no NAT in native IPv6
+
+A frequent question from IPv4 administrators is where the NAT went. Native IPv6 gives every host a globally routable address, so the address-sharing NAT that defined IPv4 home and office networks is simply unnecessary; connectivity is end to end, and a stateful firewall, not address translation, provides the boundary. Where private, non-routed addressing is genuinely wanted, IPv6 offers Unique Local Addresses in `fc00::/7`, the ULA type the tool identifies. The translation seen at IPv6 edges is for reaching the *old* protocol, not for stretching a scarce address space.
+
+## Scaffolding, not the destination
+
+All of this machinery, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, is transitional scaffolding. The end state is native IPv6 everywhere, with translation needed only to reach whatever IPv4 remains. In the meantime, recognizing the embedded-IPv4 forms and understanding which bridge is in play helps you reason about a path that may quietly cross between the two internets. When the tool flags an address as IPv4-mapped or sitting in the translation prefix, that is your cue that an IPv4 endpoint is hiding inside an IPv6 address.

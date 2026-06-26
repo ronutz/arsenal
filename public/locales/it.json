@@ -100,7 +100,8 @@
     "colophon": "Come è stato costruito",
     "openSource": "Il motore è open source",
     "rights": "Disponibile secondo termini aperti e commerciali.",
-    "contribute": "Migliora le traduzioni"
+    "contribute": "Migliora le traduzioni",
+    "feedback": "Invia un feedback"
   },
   "search": {
     "label": "Cerca",
@@ -386,7 +387,22 @@
     "successTitle": "Grazie.",
     "successBody": "Il tuo messaggio è in viaggio. Ti risponderò il prima possibile.",
     "errorBody": "Qualcosa è andato storto nell'invio. Riprova, oppure scrivi direttamente un'e-mail.",
-    "emailLabel": "E-mail"
+    "emailLabel": "E-mail",
+    "channels": {
+      "linkedin": {
+        "description": "Connettiti professionalmente"
+      },
+      "youtube": {
+        "description": "Video e tutorial"
+      },
+      "instagram": {
+        "description": "Dietro le quinte"
+      },
+      "training": {
+        "label": "Formazione ufficiale",
+        "description": "Prenota un corso tramite Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Certificazioni e qualifiche",

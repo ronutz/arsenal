@@ -100,7 +100,8 @@
     "colophon": "Hvordan dette ble bygd",
     "openSource": "Motoren er åpen kildekode",
     "rights": "Tilgjengelig under åpne og kommersielle vilkår.",
-    "contribute": "Hjelp til å forbedre oversettelsene"
+    "contribute": "Hjelp til å forbedre oversettelsene",
+    "feedback": "Send tilbakemelding"
   },
   "search": {
     "label": "Søk",
@@ -386,7 +387,22 @@
     "successTitle": "Takk.",
     "successBody": "Meldingen din er på vei. Jeg svarer så snart jeg kan.",
     "errorBody": "Noe gikk galt under sendingen. Prøv igjen, eller send en e-post direkte.",
-    "emailLabel": "E-post"
+    "emailLabel": "E-post",
+    "channels": {
+      "linkedin": {
+        "description": "Nettverk profesjonelt"
+      },
+      "youtube": {
+        "description": "Videoer og gjennomganger"
+      },
+      "instagram": {
+        "description": "Bak kulissene"
+      },
+      "training": {
+        "label": "Offisiell opplæring",
+        "description": "Bestill et kurs via Red Education"
+      }
+    }
   },
   "certs": {
     "title": "Sertifiseringer og kvalifikasjoner",

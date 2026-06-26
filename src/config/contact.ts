@@ -17,10 +17,13 @@
 // ============================================================================
 
 export interface ContactChannel {
-  /** Channel label, e.g. "LinkedIn". */
-  label: string;
-  /** Short descriptor of what it's for. */
-  description: string;
+  /**
+   * Stable id. The display label + description are resolved from i18n
+   * (contact.channels.<id>.label / .description) so they translate with the
+   * rest of the page; only the structural routing (where it links, whether it
+   * opens externally) lives here in config.
+   */
+  id: string;
   /** Destination URL (or mailto:). */
   url: string;
   /** Whether the link is external (opens in a new tab). */
@@ -70,30 +73,14 @@ const SETTINGS: ContactSettings = {
   formEndpoint: null,
 
   channels: [
-    {
-      label: "LinkedIn",
-      description: "Connect professionally",
-      url: "https://www.linkedin.com/in/nutzmann",
-      external: true,
-    },
-    {
-      label: "YouTube",
-      description: "Videos and walkthroughs",
-      url: "https://www.youtube.com/@ronutz",
-      external: true,
-    },
-    {
-      label: "Instagram",
-      description: "Behind the scenes",
-      url: "https://www.instagram.com/ronutz/",
-      external: true,
-    },
-    {
-      label: "Official training",
-      description: "Book a course through Red Education",
-      url: "https://www.rededucation.com/",
-      external: true,
-    },
+    // Display label + description for each id live in i18n under
+    // contact.channels.<id> (translatable). Brand names (LinkedIn, YouTube,
+    // Instagram) are the same in every locale, so only their descriptions are
+    // translated in the non-English packs; "training" translates both.
+    { id: "linkedin", url: "https://www.linkedin.com/in/nutzmann", external: true },
+    { id: "youtube", url: "https://www.youtube.com/@ronutz", external: true },
+    { id: "instagram", url: "https://www.instagram.com/ronutz/", external: true },
+    { id: "training", url: "https://www.rededucation.com/", external: true },
   ],
 };
 

@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "How certificate validation actually works"
+summary: "The steps a client runs to decide a certificate is trustworthy: building the chain, checking signatures and dates, matching the name, and enforcing constraints."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Reading is not trusting
+
+The [anatomy article](/learn/x509-anatomy) ends on a point worth repeating: decoding a certificate tells you what it *claims*, not whether the claim is *true*. Validation is the separate process a TLS client runs to decide whether to trust the certificate in front of it. It is governed mainly by RFC 5280, and it is a conjunction of independent checks, every one of which must pass. A decoder, including this tool, shows you the inputs to that process; the client is what enforces it.
+
+## Step 1: build the chain
+
+A leaf certificate is almost never trusted on its own. The client must build a path from the leaf up to a root it already holds in its trust store. It does this by following issuer names: the leaf's Issuer should match some intermediate's Subject, and that intermediate's Issuer should match the next one up, until it reaches a self-issued root. The Authority Key Identifier and Subject Key Identifier extensions speed this matching up by letting the client link a certificate to its issuer by key hash rather than by name alone. If no path to a trusted root can be built, validation fails immediately, no matter how well-formed the leaf is.
+
+## Step 2: verify every signature
+
+A chain is only meaningful if each link is cryptographically sound. For every certificate in the path, the client verifies that the signature was produced by the issuer's private key, by checking it against the issuer's public key over the DER bytes of the child's to-be-signed body. Because the signature covers those exact bytes, a single altered byte anywhere in the body breaks the check. This is also why the signature algorithm (for example sha256WithRSAEncryption or ecdsa-with-SHA256) matters: a chain is only as strong as its weakest signature and hash. For what a hash guarantees here, see the [hashing article](/learn/hashing).
+
+## Step 3: check the validity window
+
+Each certificate carries a notBefore and notAfter timestamp, and the client checks the current time against the window for every certificate in the chain, not just the leaf. A certificate that is expired, or not yet valid, fails. The tool performs this same check against your local clock and reports whether a certificate is valid now, not yet valid, or expired, which is often the fastest way to diagnose a "your connection is not private" warning.
+
+## Step 4: match the name
+
+A valid chain proves the certificate is authentic, but not that it was issued for the site you are visiting. The client checks that the host it connected to appears in the certificate's Subject Alternative Name extension. Modern clients ignore the Common Name entirely for this purpose and look only at the SAN, following the identity-matching rules of RFC 6125. Wildcards such as `*.ronutz.com` match a single label, so they cover `api.ronutz.com` but not `ronutz.com` itself or `a.b.ronutz.com`. A certificate whose chain is perfect but whose SAN does not list the name you asked for is still rejected.
+
+## Step 5: enforce the constraints
+
+The v3 extensions are not decoration; they are rules the client enforces. Basic Constraints says whether a certificate may act as a CA and, through the path length, how many intermediates may sit below it, which is what stops a leaf certificate from being used to sign other certificates. Key Usage and Extended Key Usage constrain what the key is allowed to do: a TLS server certificate must carry the serverAuth EKU, and an extension marked critical that the client does not understand forces a rejection rather than a shrug. The tool surfaces these fields so you can see exactly which constraints an issuer set.
+
+## Step 6: check revocation
+
+Finally, a certificate that was valid when issued may have been revoked since, for instance because its private key leaked. The client may consult a CRL or an OCSP responder to find out. In practice this is the weakest and most inconsistent step, and the industry is moving toward short-lived certificates instead, which the [revocation article](/learn/certificate-revocation) covers in full.
+
+## Validation is an AND, not an OR
+
+The reason a single tampered or misconfigured certificate gets rejected is that all of these checks combine with logical AND. The chain must build, every signature must verify, every certificate must be in its validity window, the name must be in the SAN, the constraints must permit the use, and the certificate must not be revoked. A decoder lays out the certificate's assertions clearly and faithfully; treat that as a careful reading of the document, and remember that the verdict belongs to the client that runs all six checks.
