@@ -1,0 +1,53 @@
+---
+slug: base64
+title: "Base64 and Base64URL, explained"
+summary: "How binary data becomes safe-to-transmit text, why padding exists, and what changes in the URL-safe variant."
+concepts: ["base64", "base64url", "encoding", "binary-to-text"]
+relatedTools: ["base64"]
+relatedArticles: ["character-encoding", "hashing-encryption-encoding", "hashing"]
+category: encoding
+status: reviewed
+updated: "2026-06-26"
+---
+
+## The problem Base64 solves
+
+Computers store everything as bytes, arbitrary values from 0 to 255. Many systems that move data around, though, were built to carry **text**, not arbitrary bytes: email bodies, URLs, JSON strings, HTTP headers. Hand them a raw byte that happens to be a control character or a quote, and they mangle it or break. Base64 is the standard way to take any bytes and rewrite them using a small, safe set of printable characters that those text-only channels will carry untouched.
+
+It is worth being precise about what that means: Base64 is an **encoding**, not encryption. It hides nothing. Anyone can decode it back to the original bytes with no key and no effort. Its only job is to survive transport, not to keep a secret.
+
+## How the encoding works
+
+The trick is regrouping bits. Base64 reads the input three bytes at a time. Three bytes are 24 bits, and 24 divides evenly into four groups of 6 bits. Each 6-bit group is a number from 0 to 63, and each of those 64 values maps to one character in the Base64 alphabet:
+
+- `A` to `Z` for values 0 to 25
+- `a` to `z` for values 26 to 51
+- `0` to `9` for values 52 to 61
+- `+` and `/` for values 62 and 63
+
+So every three input bytes become exactly four output characters. That is why Base64 output is always about one third larger than the input: four characters carry what three bytes did.
+
+## Why padding exists
+
+Input is not always a clean multiple of three bytes. When the last group has only one or two bytes left over, the encoder still emits a full four-character block and fills the gap with the `=` character:
+
+- One leftover byte (8 bits) produces two meaningful characters, then `==`.
+- Two leftover bytes (16 bits) produce three meaningful characters, then `=`.
+
+The `=` is not data. It is a marker that tells the decoder how many bytes the final block really represents, so it can drop the padding and reconstruct the exact original length. This is why a Base64 string's length is always a multiple of four.
+
+## The URL-safe variant
+
+Two of the standard alphabet's characters cause trouble in specific places. `+` and `/` both have reserved meanings in URLs (a space and a path separator), and `/` is also illegal in many filenames. **Base64URL** (defined in RFC 4648) fixes this with two substitutions and one habit:
+
+- `+` becomes `-`
+- `/` becomes `_`
+- the `=` padding is usually stripped, since the length can be inferred
+
+The result is a string that drops cleanly into a URL, a filename, or a JSON Web Token without further escaping. This is exactly why JWTs and OAuth PKCE challenges use Base64URL rather than the classic form: those values live inside URLs and tokens.
+
+## Where you meet it
+
+Once you recognize the pattern, Base64 is everywhere: `data:` URIs that embed an image directly in a page, the three dot-separated segments of a JWT, MIME email attachments, HTTP Basic authentication headers, and certificates in PEM format. In every case the reason is the same, raw bytes need to ride through a channel that only trusts text.
+
+You can paste either text or Base64 into the [Base64 tool](/tools/base64) to encode or decode it both ways, standard and URL-safe, entirely in your browser.

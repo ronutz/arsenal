@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: keyed hashing for message authentication"
+summary: "Why a plain hash proves integrity but not authenticity, how a secret key fixes that, and why HMAC's structure matters."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: reviewed
+updated: "2026-06-26"
+---
+
+## The gap a plain hash leaves
+
+A cryptographic hash proves **integrity**: if the digest still matches, the data was not altered. But it proves nothing about **who** produced it. Anyone can hash a message, so a digest sent alongside a message offers no protection against an attacker who simply changes the message *and* recomputes the digest. There is no secret involved, so there is nothing only the legitimate sender could have done.
+
+HMAC closes that gap. It is a **message authentication code**: a value that proves a message both was not tampered with and came from someone who holds a shared secret key. The verifier recomputes the HMAC with the same key; if it matches, the message is authentic.
+
+## Adding a key, the right way
+
+The obvious idea, just hash the key and message together as `hash(key + message)`, is subtly unsafe. Many hash functions (the SHA-2 family included) are built on a construction that is vulnerable to a **length-extension attack**: knowing `hash(key + message)` and the length of the secret, an attacker can compute a valid hash for `key + message + extra` without ever knowing the key. That would let them forge an extended, still-valid message.
+
+HMAC (defined in RFC 2104) avoids this by hashing twice with the key mixed in differently each time. Conceptually it computes:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+where `ipad` and `opad` are two fixed padding constants. The inner hash binds the key to the message; the outer hash wraps the result so the length-extension trick cannot reach it. You do not need to memorize the formula, the takeaway is that the nested structure, not a casual concatenation, is what makes HMAC sound.
+
+## HMAC versus a digital signature
+
+Both prove authenticity, but the trust model differs:
+
+- **HMAC is symmetric.** One secret key is shared by both sides. Whoever can verify an HMAC can also create one, so it works when both parties already share a key but cannot prove authorship to a third party.
+- **A digital signature is asymmetric.** The signer uses a private key; anyone can verify with the public key. This proves authorship to the world, at a higher computational cost.
+
+Choose HMAC when two systems share a secret and need fast, mutual authentication; choose a signature when verifiers must not be able to forge what they verify.
+
+## Where you meet HMAC
+
+- **API request signing.** Schemes like AWS Signature Version 4 sign each request with HMAC-SHA256 so the server can confirm the caller holds the secret key.
+- **Webhooks.** A provider sends an HMAC of the payload in a header; your endpoint recomputes it to reject forged calls.
+- **JWTs with HS256.** A token signed with HS256 is literally HMAC-SHA256 over the token's header and payload. The [HMAC tool](/tools/hmac) uses exactly the same Web Crypto construction that the JWT verifier uses, so the two agree by design.
+
+Your message and key never leave the browser; the HMAC is computed locally.

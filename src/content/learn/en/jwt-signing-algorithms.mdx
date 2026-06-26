@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "JWT signing algorithms: HMAC, RSA, and ECDSA"
+summary: "Why a JWT's alg header matters, the difference between symmetric and asymmetric signing, and how to choose."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: reviewed
+updated: "2026-06-26"
+---
+
+## The alg header decides everything
+
+A JWT's header names the algorithm used to sign it, for example `"alg": "HS256"`. That single value determines what kind of key the verifier needs and what the signature actually proves. The algorithms fall into two families, symmetric and asymmetric, and the choice between them is really a choice about *who needs to verify the token*.
+
+## Symmetric: the HMAC family (HS256/384/512)
+
+`HS256`, `HS384`, and `HS512` are HMAC with SHA-256, SHA-384, or SHA-512. They use **one shared secret** for both signing and verification. Whoever can verify an HS256 token can also forge one, because creating and checking the signature use the same key.
+
+That makes the HMAC family a good fit when the **same party** issues and verifies the token, or when issuer and verifier already share a trusted secret, a single backend signing its own session tokens, for instance. It is fast and simple. Its limit is distribution: every verifier needs the secret, and the more places the secret lives, the larger the blast radius if one leaks.
+
+## Asymmetric: RSA and ECDSA (RS256, ES256, and more)
+
+`RS256` (RSASSA-PKCS1-v1_5 with SHA-256), `PS256` (RSA-PSS), and `ES256` (ECDSA with the P-256 curve) use a **key pair**: a private key signs, and the corresponding public key verifies. The private key never leaves the issuer; the public key can be handed to anyone.
+
+This is what you want when **many independent services** must verify tokens from one issuer. An identity provider signs with its private key and publishes its public keys (commonly as a JWKS endpoint); every downstream service verifies with the public key and none of them can mint tokens. This is why OpenID Connect providers issue RS256 or ES256 ID tokens by default.
+
+Between RSA and ECDSA, the trade-off is size and speed: ECDSA keys and signatures are much smaller for equivalent security, while RSA is older and more universally supported. `EdDSA` (Ed25519) is a modern, fast alternative gaining adoption.
+
+## Choosing
+
+- **One party signs and verifies, or a secret is already shared** → HMAC (HS256). Simple and fast.
+- **One signer, many independent verifiers** → asymmetric (RS256 or ES256). The public key can be distributed freely; only the holder of the private key can sign.
+
+Whatever you choose, the verifier must **pin the acceptable algorithm** rather than trusting the token's own `alg` header. Accepting whatever the token claims opens the door to the `alg: none` and algorithm-confusion attacks described in the JWT anatomy article.
+
+The [JWT tool](/tools/jwt) decodes the header so you can see which algorithm a token declares, and verifies the HMAC family (HS256/384/512) against a secret you paste, locally in your browser.

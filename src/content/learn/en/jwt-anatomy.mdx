@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Anatomy of a JSON Web Token"
+summary: "The three segments of a JWT, how the signature makes it trustworthy, and why decoding a token is not the same as verifying it."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: reviewed
+updated: "2026-06-26"
+---
+
+## What a JWT is
+
+A JSON Web Token (JWT, defined in RFC 7519) is a compact, self-contained way to carry a set of **claims**, statements about an entity (usually a user) plus some metadata, in a form a recipient can verify. It is the token format behind most modern web authentication: an OpenID Connect ID token is a JWT, and OAuth 2.0 access tokens very often are too.
+
+"Self-contained" is the key idea. Rather than a random session id that the server must look up in a database, a JWT carries the claims *inside it*, signed so the recipient can trust them without a round trip. That makes JWTs convenient for stateless, distributed systems, with one important trade-off covered at the end.
+
+## The three segments
+
+A JWT is three Base64URL-encoded segments joined by dots:
+
+```
+header.payload.signature
+```
+
+Each segment has a distinct job:
+
+- **Header** is a small JSON object naming the signing algorithm and token type, for example `{"alg":"HS256","typ":"JWT"}`. The `alg` value tells the recipient how to verify the signature.
+- **Payload** is the JSON object of claims. It holds registered claims with standard meanings (`iss` issuer, `sub` subject, `aud` audience, `exp` expiry, `nbf` not-before, `iat` issued-at, `jti` token id) alongside any custom claims the issuer adds.
+- **Signature** is computed over the encoded header and payload together, using the algorithm from the header. It is what makes the first two segments trustworthy.
+
+Because the header and payload are only Base64URL-encoded, not encrypted, anyone holding the token can decode and read them. This is the single most important property to internalize: **a JWT payload is readable, not secret.** Never put a password, a card number, or anything sensitive in it.
+
+## The signature: how trust is established
+
+The signature is what separates a JWT from any string a client could fabricate. How it is produced depends on the algorithm family:
+
+- **HMAC (HS256, HS384, HS512)** signs with one shared secret. The signature is `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. It is symmetric: the same secret both creates and verifies, so issuer and verifier must share it. This is exactly the construction the HMAC tool computes.
+- **RSA and ECDSA (RS256, ES256, and others)** sign with a private key and verify with the matching public key. This is asymmetric: the issuer alone can sign, but anyone with the public key can verify, which suits tokens checked by many independent services.
+
+Verifying recomputes or checks the signature against the encoded header and payload. If a single byte of either segment is altered, the signature no longer matches and the token is rejected.
+
+Two classic pitfalls are worth knowing. The `alg: none` value declares an unsigned token; a verifier that does not explicitly reject it can be tricked into trusting forged claims. And in the **algorithm-confusion** attack, an attacker takes an RS256 token, switches the header to HS256, and signs it using the public key as the HMAC secret, which succeeds against verifiers that take the algorithm from the token rather than pinning it. The defense for both is the same: the verifier decides which algorithm is acceptable, not the token.
+
+## Decoding is not verifying
+
+These are two different operations, and conflating them is a common source of bugs. **Decoding** simply Base64URL-decodes the segments to reveal the header and claims: no key, no trust, anyone can do it. **Verifying** checks the signature with the correct key and confirms the timing claims. Only a verified token's claims should be acted on.
+
+Timing matters too. `exp` (expiry) and `nbf` (not-before) are Unix timestamps that bound the token's validity window, and `iat` records when it was issued. A correct verifier rejects an expired or not-yet-valid token, usually allowing a small clock-skew tolerance.
+
+## What a JWT is not
+
+A JWT is **signed, not encrypted** (encryption is a separate standard, JWE). It proves who issued the claims and that they were not tampered with; it does not hide them.
+
+A signed JWT is also **not easily revocable on its own.** Because the claims live inside the token and verification needs no server lookup, a token stays valid until it expires even if you would like to cancel it sooner. The practical answer is short lifetimes plus a separate mechanism (a refresh token, a revocation list, or token introspection) when immediate revocation is required.
+
+The [JWT tool](/tools/jwt) decodes a token's header and claims, reads its expiry and timing in plain language, and verifies an HS256, HS384, or HS512 signature against a secret you paste, all in your browser. The token and secret are never sent anywhere.

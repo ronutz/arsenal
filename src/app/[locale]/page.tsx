@@ -58,15 +58,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <a href="#cidr" className="btn btn-primary">
                 {t("hero.ctaPrimary")}
               </a>
-              <Link href="/" className="btn btn-secondary">
+              <a href="#who" className="btn btn-secondary">
                 {t("hero.ctaSecondary")}
-              </Link>
+              </a>
             </div>
           </div>
         </section>
 
         {/* --- CREDIBILITY --- */}
-        <section className="section">
+        <section className="section" id="who">
           <div className="container section-narrow">
             <h2 className="section-title">{t("credibility.title")}</h2>
             <p className="section-body">{t("credibility.body")}</p>
@@ -99,6 +99,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="container section-narrow">
             <h2 className="section-title">{t("toolPreview.title")}</h2>
             <p className="section-body">{t("toolPreview.body")}</p>
+            <p className="tool-toolbox-cta">
+              <Link href="/tools" className="tool-toolbox-link">
+                {t("toolPreview.toolboxCta")} →
+              </Link>
+            </p>
             <div className="tool-mount">
               <CidrTool />
               {/* In-tool Learn panel (surface a): contextual articles for this

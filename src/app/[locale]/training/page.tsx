@@ -74,7 +74,7 @@ export default async function TrainingLandingPage({
           </section>
 
           {/* The four platforms, linking to course indexes */}
-          <section className="section">
+          <section className="section" id="catalog">
             <div className="container teach-container">
               <h2 className="teach-section-heading">{t("platformsTitle")}</h2>
               <p className="teach-section-intro">{t("platformsBody")}</p>
@@ -109,7 +109,7 @@ export default async function TrainingLandingPage({
               <div className="teach-tools">
                 <h2 className="teach-tools-title">{t("toolsTitle")}</h2>
                 <p className="teach-tools-body">{t("toolsBody")}</p>
-                <Link href="/" className="btn btn-secondary">
+                <Link href="/tools" className="btn btn-secondary">
                   {t("toolsCta")} →
                 </Link>
               </div>
@@ -140,9 +140,9 @@ export default async function TrainingLandingPage({
                 <Link href="/contact" className="btn btn-primary">
                   {t("ctaButton")}
                 </Link>
-                <Link href="/training/f5" className="btn btn-secondary">
+                <a href="#catalog" className="btn btn-secondary">
                   {t("coursesButton")}
-                </Link>
+                </a>
               </div>
             </div>
           </section>

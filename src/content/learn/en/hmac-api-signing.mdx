@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Authenticating API requests with HMAC"
+summary: "How a shared secret and a hash let a server trust a request it did not see being made, and how replay protection fits in."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: reviewed
+updated: "2026-06-26"
+---
+
+## The problem: trusting a request
+
+When a server receives an API request, how does it know the caller is who they claim to be, and that nobody altered the request in transit? Sending a shared secret with every request would work until that secret is logged, cached, or leaked. **HMAC request signing** solves this without ever transmitting the secret: the caller proves it holds the secret by using it to sign the request, and the server checks the signature.
+
+## How signing works
+
+Both sides share a secret key. To sign a request, the client:
+
+1. Builds a **canonical string** from the parts of the request that must not change, typically the HTTP method, the path, key headers, a timestamp, and a hash of the body. "Canonical" means both sides assemble it in exactly the same, agreed way, so they compute over identical input.
+2. Computes `HMAC-SHA256(canonical string, secret)` and attaches it to the request, usually in a header such as `Authorization` or `X-Signature`.
+
+The server, holding the same secret, rebuilds the canonical string from the request it received and computes the HMAC itself. If its value matches the one in the header, two things are proven at once: the caller holds the secret (**authenticity**), and nothing covered by the signature was altered (**integrity**). The secret itself never travels.
+
+## A real example: AWS Signature Version 4
+
+Amazon's SigV4 is the best-known instance. Each request is signed with HMAC-SHA256 over a canonical request, using a signing key **derived** from the secret access key, the date, the region, and the service. The server re-derives the key and recomputes the signature; a mismatch is rejected. The same pattern, canonicalize, HMAC, compare, underlies countless other API authentication schemes.
+
+## Webhooks: the same idea, reversed
+
+Webhooks flip the direction. A provider (a payment processor, a Git host) calls **your** endpoint to notify you of an event, and signs the payload with a secret you both share, sending the HMAC in a header. Your endpoint recomputes the HMAC over the received body and compares, which is how you reject forged calls from anyone who does not hold the secret. Always compare using a constant-time check to avoid leaking information through timing.
+
+## Replay protection
+
+A valid signed request that an attacker captures could be **replayed** verbatim. The standard defenses are to include a **timestamp** in the signed data and reject requests outside a short window, and optionally a **nonce** (a one-time value the server remembers briefly) so the same request cannot be accepted twice. Signing proves authenticity; the timestamp and nonce keep an old, genuine request from being reused.
+
+The [HMAC tool](/tools/hmac) computes the HMAC-SHA256 (and SHA-384/512) at the heart of every one of these schemes, over a message and key you provide, entirely in your browser.

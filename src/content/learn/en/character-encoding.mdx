@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Bytes, code points, and UTF-8"
+summary: "The difference between a character and a byte, why Unicode and UTF-8 exist, and what that has to do with Base64."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: reviewed
+updated: "2026-06-26"
+---
+
+## Characters are not bytes
+
+A computer stores bytes, values from 0 to 255. Humans read characters: letters, digits, punctuation, emoji. A **character encoding** is the agreed mapping between the two. Get the mapping wrong and you see the classic garbled text (`café` becoming `cafÃ©`), which is almost always a mismatch between the encoding used to write bytes and the one used to read them.
+
+## ASCII: the original 128
+
+The oldest widely used encoding is **ASCII**, which assigns the numbers 0 to 127 to the basic English letters, digits, and common symbols. Seven bits, 128 characters. ASCII is simple and still underlies much of computing, but 128 characters cannot represent accented letters, non-Latin scripts, or symbols, so it was never enough for the world's text.
+
+## Unicode: one number per character
+
+**Unicode** solves the coverage problem by giving every character a unique number called a **code point**, written like `U+0041` (the letter A) or `U+2615` (a hot beverage). Unicode is a giant catalogue of characters and their code points, well over a hundred thousand of them, covering essentially every script in use.
+
+Crucially, Unicode says *which number* each character has, but not *how to store that number as bytes*. That second job belongs to an encoding form.
+
+## UTF-8: how code points become bytes
+
+**UTF-8** is the dominant way to turn Unicode code points into bytes, and it is the default across the modern web. It is **variable-length**: a character takes one to four bytes depending on its code point.
+
+- The ASCII range (U+0000 to U+007F) is encoded as a single byte, identical to ASCII. This is why UTF-8 is backward compatible: any plain-ASCII text is already valid UTF-8.
+- Characters beyond ASCII use two, three, or four bytes. So `é` is two bytes and `☕` is three, even though each is one character.
+
+That last point is the common surprise: **one character is not always one byte.** Counting bytes and counting characters give different answers for any non-ASCII text. (UTF-16 and UTF-32 are alternative encodings of the same code points; UTF-8 won the web for its ASCII compatibility and compactness for Latin text.)
+
+## Where Base64 comes in
+
+This matters for Base64 because **Base64 operates on bytes, not characters.** To Base64-encode a string, the string must first be turned into bytes with a character encoding, and that encoding is essentially always UTF-8. Encode the same character with a different scheme and you get different bytes, and therefore different Base64. So the full pipeline for text is: characters become bytes (UTF-8), then bytes become safe text (Base64). When you decode, you reverse both steps.
+
+The [Base64 tool](/tools/base64) encodes text as UTF-8 bytes before Base64-encoding, and flags when a decoded result is not valid UTF-8, all in your browser.

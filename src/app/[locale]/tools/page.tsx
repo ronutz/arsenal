@@ -47,7 +47,7 @@ export default async function ToolsPage({
           {categories.map((category) => (
             <section className="section" key={category}>
               <div className="container certs-container">
-                <h2 className="tools-category">{category}</h2>
+                <h2 className="tools-category">{t(`categories.${category}`)}</h2>
                 <ul className="tools-grid">
                   {tools
                     .filter((tool) => tool.category === category)
@@ -55,8 +55,8 @@ export default async function ToolsPage({
                       tool.available ? (
                         <li key={tool.id}>
                           <Link href={tool.href} className="tools-card">
-                            <h3 className="tools-card-name">{tool.name}</h3>
-                            <p className="tools-card-blurb">{tool.blurb}</p>
+                            <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
+                            <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
                             <span className="tools-card-go" aria-hidden="true">
                               {t("open")} →
                             </span>
@@ -65,8 +65,8 @@ export default async function ToolsPage({
                       ) : (
                         <li key={tool.id}>
                           <div className="tools-card tools-card--soon" aria-disabled="true">
-                            <h3 className="tools-card-name">{tool.name}</h3>
-                            <p className="tools-card-blurb">{tool.blurb}</p>
+                            <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
+                            <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
                             <span className="tools-card-soon">{t("comingSoon")}</span>
                           </div>
                         </li>

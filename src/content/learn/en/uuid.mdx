@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUIDs: random v4 and time-ordered v7"
+summary: "How a 128-bit identifier stays unique without a central authority, and why v7 is becoming the default for database keys."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-database-keys"]
+category: identifiers
+status: reviewed
+updated: "2026-06-26"
+---
+
+## What a UUID is
+
+A UUID (Universally Unique Identifier, also called a GUID) is a 128-bit value used to label something, a row, a request, a file, without coordinating with anyone else. The promise in the name is that two independently generated UUIDs are, for all practical purposes, never the same. That lets separate services, offline devices, and parallel processes all mint identifiers that will not collide when the data is later merged, with no central allocator handing out numbers.
+
+A UUID is written as 32 hexadecimal digits in five hyphen-separated groups: `8-4-4-4-12`, for example `550e8400-e29b-41d4-a716-446655440000`. Two specific positions are not random: a **version** nibble identifies how the UUID was generated, and a **variant** field marks the layout standard (the modern one being RFC 4122 / RFC 9562).
+
+## Version 4: random
+
+By far the most common form, **version 4** is almost entirely random: 122 of the 128 bits come from a secure random source, with the remaining bits fixed to mark the version and variant. With that much entropy, the chance of two v4 UUIDs colliding is negligible for any realistic volume of identifiers.
+
+Its weakness is not uniqueness but **ordering**. Because v4 values are random, consecutive inserts scatter across the whole key space. When a v4 UUID is used as a database primary key, that randomness fights the B-tree index: new rows land in arbitrary places, hurting cache locality and fragmenting the index over time.
+
+## Version 7: time-ordered
+
+**Version 7**, standardized in RFC 9562 (2024), was designed to fix exactly that. It places a **48-bit Unix timestamp in milliseconds** in the most significant bits, followed by random bits for uniqueness within the same millisecond. Because the timestamp leads, v7 UUIDs **sort in creation order** when compared as text or bytes.
+
+That single property makes v7 a much better primary key: new rows append near the end of the index rather than scattering, restoring the locality that sequential integer keys enjoy, while keeping the decentralized uniqueness of a UUID. A v7 value also carries its own creation time, which you can read straight out of those leading bits, the [UUID tool](/tools/uuid) does this when you inspect one.
+
+## The other versions, briefly
+
+For completeness: **version 1** combines a timestamp with the generating machine's MAC address, which leaks hardware identity and creation time and so raises privacy concerns. **Versions 3 and 5** are name-based, they hash a namespace plus a name (with MD5 and SHA-1 respectively) to produce a deterministic UUID, useful when the same input must always map to the same identifier. **Version 6** reorders version 1's fields to be sortable, but for new systems v7 is the recommended time-ordered choice.
+
+## Choosing one
+
+Reach for **v4** when you just need a random, opaque identifier and ordering does not matter. Reach for **v7** when the UUID will be a database key or anything else that benefits from sorting by creation time, which is increasingly the default recommendation. The [UUID tool](/tools/uuid) generates both and decodes the version, variant, and embedded timestamp of any UUID you paste, entirely in your browser.

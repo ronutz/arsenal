@@ -30,7 +30,7 @@
       "eyebrow": "Practitioner-built, privacy-first",
       "title": "The network and security toolbox that keeps your data on your machine.",
       "subtitle": "Subnet math, DNS and email diagnostics, certificate inspection, and more, computed locally in your browser. No upload, no logging, no account required for the everyday tools.",
-      "ctaPrimary": "Open the toolbox",
+      "ctaPrimary": "Try a tool",
       "ctaSecondary": "Who builds this"
     },
     "credibility": {
@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Try a tool right now.",
       "body": "The CIDR calculator below runs locally. Type a network and prefix to see the address range, host count, and mask. Nothing is sent anywhere.",
-      "learnHeading": "Learn the concepts"
+      "learnHeading": "Learn the concepts",
+      "toolboxCta": "Open the full toolbox"
     },
     "provenance": {
       "title": "Credits & sources",
@@ -67,7 +68,158 @@
     }
   },
   "tools": {
+    "learnHeading": "Learn the concepts",
+    "backToTools": "Tools",
+    "references": "References",
+    "categories": {
+      "identity": "Identity & tokens",
+      "encoding": "Encoding & data",
+      "hashing": "Hashing & crypto",
+      "identifiers": "Identifiers",
+      "networking": "Networking"
+    },
+    "jwt": {
+      "name": "JWT Decoder & Verifier",
+      "blurb": "Decode a JSON Web Token's header and claims, read its expiry and timing in plain language, and verify an HS256/384/512 signature with a pasted secret. Runs entirely in your browser.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Decoding and signature checks run locally. The token and secret never leave your browser.",
+      "errors": {
+        "empty": "Paste a JSON Web Token to decode.",
+        "format": "That does not look like a JWT. A token has three base64url parts separated by dots: header.payload.signature.",
+        "header": "The header is not valid. It should be base64url-encoded JSON.",
+        "payload": "The payload is not valid. It should be base64url-encoded JSON."
+      },
+      "panels": {
+        "header": "Header",
+        "payload": "Payload",
+        "signature": "Signature",
+        "noSignature": "No signature segment (unsecured token)."
+      },
+      "claims": {
+        "iss": "Issuer (iss)",
+        "sub": "Subject (sub)",
+        "aud": "Audience (aud)",
+        "jti": "JWT ID (jti)",
+        "iat": "Issued at (iat)",
+        "nbf": "Not before (nbf)",
+        "exp": "Expires (exp)"
+      },
+      "status": {
+        "expired": "Expired {rel}",
+        "expiresIn": "Valid, expires {rel}",
+        "notYetValid": "Not valid yet, starts {rel}",
+        "noExpiry": "No expiry (exp) claim"
+      },
+      "verify": {
+        "label": "Verify HMAC signature (HS256/384/512)",
+        "placeholder": "shared secret",
+        "button": "Verify",
+        "valid": "Signature valid for this secret.",
+        "invalid": "Signature does not match this secret.",
+        "algNone": "This token is unsecured (alg: none), so there is no signature to verify.",
+        "unsupportedAlg": "In-browser verification covers HS256/384/512 only. {alg} is asymmetric and needs a public key.",
+        "hint": "The secret is used only to compute an HMAC in your browser. It is never sent anywhere."
+      }
+    },
+    "base64": {
+      "name": "Base64 / Base64URL Encoder & Decoder",
+      "blurb": "Encode text to standard or URL-safe Base64, or decode either variant back to text. Tolerant of missing padding, and it flags binary (non-UTF-8) results. Runs entirely in your browser.",
+      "directionLabel": "Direction",
+      "variantLabel": "Base64 variant",
+      "direction": {
+        "encode": "Encode (text to Base64)",
+        "decode": "Decode (Base64 to text)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "URL-safe"
+      },
+      "inputLabelEncode": "Text to encode",
+      "inputLabelDecode": "Base64 to decode",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Encoding and decoding run locally. Nothing you paste leaves your browser.",
+      "decodeErrors": {
+        "invalid-characters": "That is not valid Base64. It contains characters outside the Base64 alphabet.",
+        "invalid-length": "That is not valid Base64. Its length is not a valid Base64 length."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Decoded text",
+      "copy": "Copy",
+      "copied": "Copied",
+      "emptyOutput": "(empty)",
+      "decodedBytes": "Decoded {bytes, plural, one {# byte} other {# bytes}}.",
+      "notUtf8": "Decoded {bytes, plural, one {# byte} other {# bytes}}, but the result is not valid UTF-8 text (likely binary)."
+    },
+    "hash": {
+      "name": "Hash Generator (SHA-1/256/384/512)",
+      "blurb": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser.",
+      "algorithmLabel": "Hash algorithm",
+      "inputLabel": "Text to hash",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Hashing runs locally via Web Crypto. Nothing you type leaves your browser.",
+      "bits": "{bits} bits ({bytes} bytes)",
+      "sha1Note": "SHA-1 is broken for collision resistance and unsuitable for security (signatures, certificates). It is fine only for non-security checksums and legacy interop.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "hmac": {
+      "name": "HMAC Generator (SHA-256/384/512)",
+      "blurb": "Compute a keyed HMAC over a message with your secret key, shown as hex and Base64, via the browser's native Web Crypto. The same construction the JWT verifier uses for HS256. Your key never leaves your browser.",
+      "algorithmLabel": "HMAC algorithm",
+      "messageLabel": "Message",
+      "messagePlaceholder": "The message to authenticate",
+      "keyLabel": "Secret key",
+      "keyPlaceholder": "Your shared secret",
+      "runsLocally": "HMAC runs locally via Web Crypto. Your message and key never leave your browser.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "pkce": {
+      "name": "OAuth PKCE Verifier & Challenge",
+      "blurb": "Generate an OAuth 2.0 code_verifier and derive its S256 code_challenge, or paste your own and check it against RFC 7636's length and charset rules. The same SHA-256 base64url derivation your authorization server expects. Runs entirely in your browser.",
+      "verifierLabel": "Code verifier",
+      "verifierPlaceholder": "Paste a code_verifier, or generate one",
+      "generate": "Generate",
+      "runsLocally": "Generation and derivation run locally. Your verifier never leaves your browser.",
+      "lengthBadge": "Length {length} (43-128)",
+      "charsetOk": "Unreserved charset",
+      "charsetBad": "Invalid characters",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "The plain method is discouraged. Use S256 wherever the client can compute SHA-256.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "uuid": {
+      "name": "UUID Generator & Inspector (v4 / v7)",
+      "blurb": "Generate random v4 or time-ordered v7 UUIDs, or paste any UUID to read its version, variant, and (for v7) the embedded creation timestamp. Generation uses the browser's secure random source. Runs entirely in your browser.",
+      "versionLabel": "UUID version",
+      "generate": "Generate",
+      "clear": "Clear",
+      "emptyHint": "Pick a version and generate.",
+      "runsLocally": "Generation and inspection run locally. Nothing is sent anywhere.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "inspectLabel": "Inspect a UUID",
+      "inspectPlaceholder": "Paste any UUID to decode it",
+      "valid": "Valid UUID",
+      "invalid": "Not a valid UUID",
+      "versionField": "Version",
+      "variantField": "Variant",
+      "timestampField": "Timestamp (v7)",
+      "versionValue": "Version {version}"
+    },
     "cidr": {
+      "name": "CIDR / Subnet Calculator",
+      "blurb": "Break down any IPv4 CIDR block into network and broadcast addresses, usable host range, host count, and netmask. Runs entirely in your browser.",
       "title": "CIDR Calculator",
       "description": "Compute the network and broadcast addresses, usable host range, host count, and netmask for an IPv4 CIDR block. Runs locally in your browser.",
       "inputLabel": "CIDR block",
@@ -357,7 +509,7 @@
     "platformsTitle": "What I teach",
     "platformsBody": "Official, certified instructor-led training across four platforms at the center of modern networking and security. Each links to its full course catalog.",
     "s5Title": "Beyond the classroom",
-    "s5Body": "The same depth that makes for good teaching makes for good counsel. Thirty years across application delivery, network security, identity, and infrastructure, on both the vendor and the customer side, is a perspective that travels well beyond a training room, into architecture decisions, technology selection, and the hard problems that do not fit a syllabus. The teaching is the focus; the experience behind it is available to teams that need more than a course.",
+    "s5Body": "The same depth that makes for good teaching makes for good counsel. Thirty years across application delivery, network security, identity, and infrastructure, on both the vendor and the integrator side, with a consistent record of customer advocacy, is a perspective that travels well beyond a training room, into architecture decisions, technology selection, and the hard problems that do not fit a syllabus. The teaching is the focus; the experience behind it is available to teams that need more than a course.",
     "toolsTitle": "Tools that compute, never guess",
     "toolsBody": "Alongside the training sits a growing set of free, privacy-first network and security tools, deterministic utilities that run entirely in your browser and never send your input anywhere. Subnet and CIDR math, IPv6, certificate and token inspection, and more, the kind of everyday tools a working engineer reaches for. They are built in the same spirit as the teaching: precise, practical, and genuinely useful. Try them, no sign-up, no tracking.",
     "toolsCta": "Explore the tools",
@@ -416,6 +568,8 @@
     "concordTitle": "CONCORD",
     "concordBody1": "This site was designed and built through a protocol called CONCORD: a structured collaboration between one person and three different AI systems, each in a distinct role. It is not a gimmick. It is a working method, with its own governance, its own decision record, and a single human accountable for every choice that shipped.",
     "concordBody2": "The premise is simple. Different AI models have different strengths, and a hard problem benefits from more than one perspective held in tension. So the work was divided by role, and one person sat at the center, relaying between them, ratifying what was sound, and rejecting what was not.",
+    "concordBody3": "CONCORD was not adopted from anywhere. It was designed by Rodolfo Nützmann for this project, out of a practical need: how to draw on several AI systems at once, each genuinely strong at something different, without surrendering the single thread of human accountability that real work requires. The answer was to give each system a defined seat, keep them from negotiating with one another, and route every exchange through one person who held the whole picture.",
+    "concordBody4": "It began informally, as a way of dividing the work, and hardened over the build into a named method: fixed seats, a single overriding rule that nothing ships without PRIME ratifying it, and a written record of why each choice was made. The mechanics are deliberately plain. The seats propose; PRIME relays between them, since they do not negotiate with one another, and ratifies or rejects each proposal; a standing set of house rules constrains every output; and the decision record keeps the reasoning. The name states the aim: concord, agreement reached on purpose through a process, not whatever an unsupervised tool happens to produce.",
     "rolesTitle": "The seats",
     "rolePrime": "PRIME",
     "rolePrimeWho": "Rodolfo Nützmann",
@@ -453,6 +607,10 @@
     "stackEngineV": "An open-core engine, released under a permissive license",
     "stackSearch": "Search",
     "stackSearchV": "Static, client-side full-text search; no search server",
+    "vibeTitle": "Is this vibe coding?",
+    "vibeBody1": "It is a fair question, and worth answering plainly. Vibe coding is a term the AI researcher Andrej Karpathy coined in early 2025 for a way of building software where you describe what you want to a language model, accept what it writes without reading it closely, and steer by results rather than by the code itself. He framed it as giving in to the vibes and forgetting that the code even exists, and was clear that it suited quick, throwaway projects more than systems people depend on.",
+    "vibeBody2": "By that definition, part of this site was built that way, and it is worth owning rather than hiding. The application's surface, the framework wiring, the components, the styling, the plumbing that holds the pages together, was produced quickly with an AI engineer and steered by outcome and by a fixed set of house rules, not typed out by hand line by line. For that layer, where a mistake is visible and easily corrected, speed was the point.",
+    "vibeBody3": "The parts that matter most are held to a different standard. Everything that computes your data is verified, not vibed: each tool's core is checked against the published standard it implements, the relevant RFCs and specifications, and its output is confirmed against independent references before it ships. As a widely cited line from the programmer Simon Willison puts it, code you have reviewed, tested, and understood is not vibe coding at all. Karpathy himself now calls the disciplined version agentic engineering: keeping the leverage of AI without conceding the quality of the result. That is the line this project draws. Fast where speed is free, rigorous where it counts, and one human accountable for all of it.",
     "closingTitle": "A note on the method",
     "closingBody": "Building software with AI collaborators is new enough that the honest thing is to be transparent about it. Nothing here was published without a human deciding it should be. The AIs were instruments, capable ones, but instruments. The judgment, the accountability, and the name on the work are human.",
     "backHome": "Back to the tools"

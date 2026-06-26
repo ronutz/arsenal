@@ -71,6 +71,8 @@ export default async function ColophonPage({
               <h2 className="colophon-h2">{t("concordTitle")}</h2>
               <p className="colophon-body">{t("concordBody1")}</p>
               <p className="colophon-body">{t("concordBody2")}</p>
+              <p className="colophon-body">{t("concordBody3")}</p>
+              <p className="colophon-body">{t("concordBody4")}</p>
             </div>
           </section>
 
@@ -128,6 +130,17 @@ export default async function ColophonPage({
                   </div>
                 ))}
               </dl>
+            </div>
+          </section>
+
+          {/* Is this vibe coding? — the honest line between fast surface and
+              verified core, answering the question a savvy reader will ask. */}
+          <section className="section">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("vibeTitle")}</h2>
+              <p className="colophon-body">{t("vibeBody1")}</p>
+              <p className="colophon-body">{t("vibeBody2")}</p>
+              <p className="colophon-body">{t("vibeBody3")}</p>
             </div>
           </section>
 

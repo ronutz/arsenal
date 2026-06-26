@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "The OAuth 2.0 authorization code flow"
+summary: "The four roles, the redirect-and-exchange dance, and why the code is swapped for a token on the back channel."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: reviewed
+updated: "2026-06-26"
+---
+
+## What the flow is for
+
+OAuth 2.0 (RFC 6749) lets an application act on a user's behalf without ever seeing the user's password. "Log in with Google" is the everyday example: the app gets permission to access something, but Google, not the app, handles the credentials. The **authorization code flow** is the most common and most secure way to arrange this, and it is the flow that PKCE protects.
+
+## The four roles
+
+- **Resource owner** is the user who owns the data and grants access.
+- **Client** is the application requesting access.
+- **Authorization server** authenticates the user and issues tokens (Google, an identity provider, your own auth service).
+- **Resource server** is the API that holds the protected data and accepts the token.
+
+## The dance, step by step
+
+1. **Redirect to authorize.** The client sends the user's browser to the authorization server's authorize endpoint, carrying its `client_id`, a `redirect_uri`, the `scope` it wants, a random `state` value, and (with PKCE) a code challenge. The client never handles the password.
+2. **Authenticate and consent.** The authorization server logs the user in and asks them to approve the requested scopes.
+3. **Redirect back with a code.** The server redirects the browser back to the client's `redirect_uri` with a short-lived **authorization code** and the original `state`. The client checks that `state` matches, which defends against cross-site request forgery on the callback.
+4. **Exchange the code for tokens.** Now on the back channel (a direct server-to-server call, not the browser), the client sends the code to the token endpoint along with its credentials (a client secret, or the PKCE code verifier) and receives an **access token**, often a **refresh token**, and for OpenID Connect an **ID token**.
+5. **Call the API.** The client presents the access token to the resource server, which validates it and returns the data.
+
+## Why a code, and not the token directly?
+
+The detour through an authorization code exists so the token never travels through the browser's address bar or history, where it could leak. The code that *does* travel there is useless on its own: redeeming it requires the back-channel call with the client's secret or PKCE verifier. That separation, a throwaway code on the front channel and the real token on the back channel, is the core security property of the flow.
+
+This is also exactly the gap PKCE fills for clients that cannot keep a secret (single-page and mobile apps): it binds the code to a one-time verifier so an intercepted code still cannot be exchanged. The tokens the flow returns are very often JWTs.
+
+The [PKCE tool](/tools/pkce) generates and checks the verifier and challenge this flow relies on, and the [JWT tool](/tools/jwt) decodes the tokens it returns, both locally in your browser.

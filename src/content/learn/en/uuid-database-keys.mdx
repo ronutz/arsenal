@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUIDs as database keys: v4, v7, and index locality"
+summary: "The real trade-off between UUIDs and auto-increment integers, and why random v4 keys quietly hurt database performance."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: reviewed
+updated: "2026-06-26"
+---
+
+## Two ways to make a primary key
+
+Most tables need a unique key for each row. The two common choices are a database **auto-increment integer** (1, 2, 3, ...) and a **UUID**. The integer is small and naturally ordered; the UUID can be generated anywhere, by anyone, with no coordination. Which is better depends on what you value, and the answer has a performance dimension that is easy to miss.
+
+## Why teams reach for UUIDs
+
+- **No coordination.** Any service, client, or offline device can mint a UUID that will not collide, so you do not need a central sequence or a round trip to the database to get an id. This is invaluable in distributed systems and for generating ids before a row is saved.
+- **Non-guessable.** Sequential integer ids leak information (how many orders exist, and the id of the next one) and let an attacker walk through records by incrementing. A random UUID exposes none of that.
+- **Merge-friendly.** Data from separate systems combines without id collisions.
+
+The cost is size, 16 bytes versus 4 or 8 for an integer, which matters because the primary key is copied into every secondary index and every foreign key referencing the row.
+
+## The hidden cost of random keys
+
+There is a subtler, more important cost. Databases store rows in an index (commonly a B-tree) ordered by the primary key. With a **sequential** key, every new row appends to the end of the index, so the active pages stay in memory and writes are cheap. With a **random v4 UUID**, each insert lands at an arbitrary position. The database must read, modify, and write pages scattered throughout the index, causing **page splits**, **fragmentation**, and far more cache misses. On a large, write-heavy table, random keys can measurably slow inserts and bloat the index, all without any error to point at.
+
+## Why v7 changes the calculation
+
+This is exactly the problem **UUID version 7** was designed to solve. By putting a millisecond timestamp in the most significant bits, v7 values are **time-ordered**: new rows insert near the end of the index, just like a sequential integer, while keeping the decentralized, non-coordinated generation of a UUID. You get most of the index-locality benefit of an auto-increment key without the central sequence. For new systems that want UUID keys, v7 is usually the right version for precisely this reason.
+
+## Practical notes
+
+- **Store UUIDs as a native UUID or binary type, not as a 36-character string.** Storing the text form wastes space and slows comparisons; the binary form is 16 bytes.
+- **Use v7 for keys** where insert performance matters, and **v4** where you specifically want no time information embedded in the id.
+- An auto-increment integer is still perfectly good for a single-node table that never needs externally generated ids; UUIDs earn their keep when distribution, unpredictability, or pre-generation matters.
+
+The [UUID tool](/tools/uuid) generates both v4 and v7 and decodes the embedded timestamp of a v7 value, so you can see the ordering property directly, all in your browser.

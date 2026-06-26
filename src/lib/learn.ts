@@ -31,6 +31,13 @@ export interface ArticleFrontmatter {
   relatedTools: string[];
   /** Slugs of related articles (drives "read next" cross-links). */
   relatedArticles: string[];
+  /**
+   * Category KEY (matches the tool category keys: identity, encoding, hashing,
+   * identifiers, networking). Drives the grouped Learn index. The human-readable
+   * label is resolved in the page layer via the i18n "tools.categories.*" keys,
+   * so one label set serves both the tools index and the Learn index.
+   */
+  category: string;
   /** Translation/quality status, mirroring the i18n + credential model. */
   status: "reviewed" | "machine-draft" | "stub";
   updated: string;
@@ -101,4 +108,51 @@ export function getRelatedArticles(article: Article, locale: string = SOURCE_LOC
   return article.relatedArticles
     .map((slug) => all.find((a) => a.slug === slug))
     .filter((a): a is Article => a != null);
+}
+
+/**
+ * Display order for Learn categories, mirroring the tools index order so the
+ * two sections feel like one taxonomy. Keys map to "tools.categories.*" labels.
+ */
+export const LEARN_CATEGORY_ORDER = [
+  "identity",
+  "encoding",
+  "hashing",
+  "identifiers",
+  "networking",
+] as const;
+
+/** A category group: its KEY (label resolved in the page) plus its articles. */
+export interface CategoryGroup {
+  category: string;
+  articles: Article[];
+}
+
+/**
+ * getArticlesByCategory — articles grouped for the Learn index, in
+ * LEARN_CATEGORY_ORDER. Empty categories are dropped; any article whose
+ * category is not in the known order is appended in a trailing group so nothing
+ * silently disappears. Within a group, articles keep the title sort.
+ */
+export function getArticlesByCategory(locale: string = SOURCE_LOCALE): CategoryGroup[] {
+  const articles = getAllArticles(locale);
+  const known: CategoryGroup[] = LEARN_CATEGORY_ORDER.map((category) => ({
+    category,
+    articles: articles.filter((a) => a.category === category),
+  })).filter((g) => g.articles.length > 0);
+
+  // Safety net: surface any unexpected categories rather than hiding them.
+  const knownKeys = new Set<string>(LEARN_CATEGORY_ORDER);
+  const orphans = articles.filter((a) => !knownKeys.has(a.category));
+  const orphanGroups: CategoryGroup[] = [];
+  for (const a of orphans) {
+    let g = orphanGroups.find((x) => x.category === a.category);
+    if (!g) {
+      g = { category: a.category, articles: [] };
+      orphanGroups.push(g);
+    }
+    g.articles.push(a);
+  }
+
+  return [...known, ...orphanGroups];
 }

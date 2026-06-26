@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hashing, encryption, and encoding: three different things"
+summary: "Three operations that get constantly confused, separated cleanly by two questions: is it reversible, and does it need a key?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: reviewed
+updated: "2026-06-26"
+---
+
+## Three words, constantly mixed up
+
+"Is this password encrypted?" "Just hash the URL." "The data is encoded so it's secure." These sentences are everywhere, and most of them use the wrong word. Hashing, encryption, and encoding are three distinct operations with three different purposes, and confusing them leads to real security mistakes, like storing passwords with a method that protects nothing.
+
+The good news is that two simple questions separate them completely.
+
+## The two questions
+
+1. **Is it reversible?** Can you get the original input back from the output?
+2. **Does it need a key?** Is a secret required, or can anyone perform the operation?
+
+Plot the three operations against those questions and the picture is clear:
+
+- **Encoding** is reversible, and needs no key.
+- **Hashing** is not reversible, and needs no key.
+- **Encryption** is reversible, and needs a key.
+
+That table is the whole article. The rest is detail.
+
+## Encoding: reversible, no key
+
+Encoding rewrites data into a different representation so it can travel through a channel that expects a particular format. Base64 turns bytes into safe text; URL-encoding escapes characters that are illegal in a URL; UTF-8 turns characters into bytes. None of it is secret. Anyone can decode it back, because reversibility is the entire point. **Encoding provides zero security.** If you hear "the token is encoded so it's safe," that is a red flag: encoded means readable.
+
+## Hashing: not reversible, no key
+
+A hash function maps any input to a fixed-size digest, and you cannot run it backward to recover the input. It needs no key, so anyone can compute the same digest from the same input. That makes it perfect for **verification**: integrity checks, content addressing, and detecting change. It is the right tool when you need to confirm that two things are the same without storing the original, but it hides nothing reversibly, because there is nothing to reverse.
+
+## Encryption: reversible, with a key
+
+Encryption transforms data so that only someone holding the right key can transform it back. This is the only one of the three built for **secrecy**. It is reversible by design, but only with the key, which is exactly the property the other two lack: encoding is reversible by anyone, hashing is reversible by no one, encryption is reversible by key-holders.
+
+## Picking the right one
+
+The purpose decides the tool. Need data to survive transport as text? Encode it. Need to verify integrity or compare without storing the original? Hash it. Need to keep data secret from anyone without the key? Encrypt it.
+
+The classic mistake is reaching for the wrong column. Storing passwords with plain encoding (reversible by anyone) or even plain encryption (one stolen key exposes everything) is far weaker than a purpose-built password hash, which is covered in its own article. The [Hash tool](/tools/hash) and the [Base64 tool](/tools/base64) let you watch hashing and encoding behave differently on the same input, the digest never reverses, the Base64 always does.

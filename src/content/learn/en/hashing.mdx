@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Cryptographic hashing: SHA-256 and the SHA-2 family"
+summary: "What a hash function guarantees, the properties that make it cryptographic, and why a digest is not encryption."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: reviewed
+updated: "2026-06-26"
+---
+
+## What a hash is
+
+A cryptographic hash function takes input of any size, a word, a file, a multi-gigabyte disk image, and produces a fixed-size output called a **digest**. SHA-256 always returns 256 bits (32 bytes), no matter whether you fed it one character or a million. The same input always yields the same digest, and even a one-bit change to the input produces a completely different one.
+
+That fixed-size, deterministic fingerprint is the whole idea. A digest is a compact stand-in for the data: if two digests match, you can be confident the inputs were identical; if they differ, the inputs differed somewhere.
+
+## The properties that make it cryptographic
+
+Plenty of functions shrink data to a fixed size. A function earns the word *cryptographic* by holding to three hard guarantees:
+
+- **Preimage resistance (one-way).** Given a digest, it is computationally infeasible to find an input that produces it. You cannot run the function backward.
+- **Second-preimage and collision resistance.** It is infeasible to find two different inputs that hash to the same digest. Without this, a digest would be a weak fingerprint.
+- **The avalanche effect.** Flipping a single input bit changes roughly half the output bits, with no visible pattern linking input to output.
+
+These hold only for functions that have survived scrutiny. SHA-1, once standard, is now **broken** for collision resistance (a practical collision was demonstrated in 2017) and should not be used where security depends on it. The SHA-2 family, SHA-256, SHA-384, and SHA-512, remains sound and is the safe default today.
+
+## A hash is not encryption
+
+This is the most common confusion, so it is worth stating plainly. Encryption is **reversible** with a key: you encrypt to keep data secret and decrypt to get it back. A hash has **no key and no inverse**. You cannot "dehash" a digest to recover the input, because the output is far smaller than the possible inputs and information is deliberately destroyed. Hashing is for verification, not secrecy.
+
+## Where hashing earns its keep
+
+- **Integrity and checksums.** Publish a file's SHA-256 alongside it; a downloader who recomputes the digest can confirm nothing was altered or corrupted in transit.
+- **Content addressing.** Systems like Git name objects by their hash, so identical content lands at the same address automatically.
+- **Digital signatures.** Signing schemes sign the hash of a message rather than the whole message, because the digest is small and fixed-size.
+
+One important caveat: **passwords are a special case.** A plain fast hash like SHA-256 is the wrong tool for storing passwords, precisely because it is fast, an attacker can try billions of guesses per second. Password storage needs a deliberately slow, salted algorithm such as bcrypt, scrypt, or Argon2. Use SHA-2 for integrity; use a password hash for passwords.
+
+## How the tool computes it
+
+The [Hash tool](/tools/hash) uses the browser's native Web Crypto implementation of SHA-1, SHA-256, SHA-384, and SHA-512, the same vetted code your browser uses for TLS, and shows each digest as hexadecimal and Base64. Nothing is uploaded; the computation happens locally.

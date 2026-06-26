@@ -3,14 +3,16 @@
 // ----------------------------------------------------------------------------
 // THE LEARN SECTION INDEX — surface (b): the standalone reference/Learn area.
 //
-// Lists every article (for the active locale, English fallback) as a scannable
-// set of cards. This is the independent "documentation / learn" section you
-// asked for, distinct from the in-tool panels but fed by the SAME loader
-// (src/lib/learn.ts) — one content source, two surfaces.
+// Articles are GROUPED BY CATEGORY (the same taxonomy as the tools index), so
+// the two sections read as one coherent library as the catalogue grows. The
+// grouping + ordering lives in the loader (getArticlesByCategory); the category
+// LABELS come from the shared "tools.categories.*" i18n keys, so one label set
+// serves both indexes. Fed by the SAME loader as the in-tool panels — one
+// content source, two surfaces.
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getAllArticles } from "@/lib/learn";
+import { getArticlesByCategory } from "@/lib/learn";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -24,8 +26,10 @@ export default async function LearnIndexPage({
   setRequestLocale(locale);
 
   const tNav = await getTranslations("nav");
-  // Articles come from the shared loader (English fallback handled inside).
-  const articles = getAllArticles(locale);
+  // Category labels are shared with the tools index (tools.categories.*).
+  const tTools = await getTranslations("tools");
+  // Articles, grouped + ordered by the loader (English fallback handled inside).
+  const groups = getArticlesByCategory(locale);
 
   return (
     <>
@@ -46,17 +50,23 @@ export default async function LearnIndexPage({
               build genuine understanding, not just to define a term.
             </p>
 
-            <ul className="learn-grid">
-              {articles.map((a) => (
-                <li key={a.slug}>
-                  <Link href={`/learn/${a.slug}`} className="learn-card">
-                    <h2 className="learn-card-title">{a.title}</h2>
-                    <p className="learn-card-summary">{a.summary}</p>
-                    <span className="learn-card-cta">Read</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* One block per category, mirroring the tools index taxonomy. */}
+            {groups.map((group) => (
+              <section key={group.category} style={{ marginBottom: "2.5rem" }}>
+                <h2 className="tools-category">{tTools(`categories.${group.category}`)}</h2>
+                <ul className="learn-grid">
+                  {group.articles.map((a) => (
+                    <li key={a.slug}>
+                      <Link href={`/learn/${a.slug}`} className="learn-card">
+                        <h3 className="learn-card-title">{a.title}</h3>
+                        <p className="learn-card-summary">{a.summary}</p>
+                        <span className="learn-card-cta">Read</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
           </div>
         </section>
       </main>

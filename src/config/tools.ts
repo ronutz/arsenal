@@ -2,42 +2,39 @@
 // src/config/tools.ts
 // ----------------------------------------------------------------------------
 // TOOL REGISTRY — the single source of truth for the /tools index. Add a tool
-// by adding one entry here; the index page renders it automatically. Today the
-// toolbox holds one tool (the CIDR calculator on the home page), but this is
-// built to grow, so the index exists now and fills in as tools ship.
+// by adding one entry here; the index page renders it automatically.
+//
+// User-facing strings live in the message packs, NOT here: a tool's display
+// name and blurb are `tools.<id>.name` / `tools.<id>.blurb`, and the category
+// label is `tools.categories.<category>`. This keeps every visible tool-UI
+// string translatable (English in en.json, other locales layered on top via
+// deepMerge). The registry holds only structural data: id, route, category
+// key, and availability.
 //
 // `available: false` renders a tool as a muted "coming soon" card (useful for
 // signalling what is next without linking to an unfinished page).
-//
-// NOTE: tool name/blurb are English here for now; when the toolbox grows they
-// can move to the message packs like the rest of the copy.
 // ============================================================================
 
 export interface ToolEntry {
-  /** Stable id (also the in-page anchor / future route segment). */
+  /** Stable id. Also the in-page anchor / route segment AND the i18n key
+   *  segment: the index resolves tools.<id>.name and tools.<id>.blurb. */
   id: string;
-  /** Display name. */
-  name: string;
-  /** One-line description of what it does. */
-  blurb: string;
-  /** Where the tool lives (an in-page anchor today, a route later). */
+  /** Where the tool lives (an in-page anchor for cidr, a route otherwise). */
   href: string;
-  /** Grouping label, e.g. "Networking". */
+  /** Category KEY, resolved to a label through tools.categories.<key>. */
   category: string;
   /** False renders a muted "coming soon" card with no link. */
   available: boolean;
 }
 
 export const tools: ToolEntry[] = [
-  {
-    id: "cidr",
-    name: "CIDR / Subnet Calculator",
-    blurb:
-      "Break down any IPv4 CIDR block into network and broadcast addresses, usable host range, host count, and netmask. Runs entirely in your browser.",
-    href: "/#cidr",
-    category: "Networking",
-    available: true,
-  },
+  { id: "jwt", href: "/tools/jwt", category: "identity", available: true },
+  { id: "pkce", href: "/tools/pkce", category: "identity", available: true },
+  { id: "base64", href: "/tools/base64", category: "encoding", available: true },
+  { id: "hash", href: "/tools/hash", category: "hashing", available: true },
+  { id: "hmac", href: "/tools/hmac", category: "hashing", available: true },
+  { id: "uuid", href: "/tools/uuid", category: "identifiers", available: true },
+  { id: "cidr", href: "/#cidr", category: "networking", available: true },
 ];
 
 /** Tools that are live and linkable. */
@@ -45,7 +42,7 @@ export function availableTools(): ToolEntry[] {
   return tools.filter((t) => t.available);
 }
 
-/** Distinct categories present in the registry, in first-seen order. */
+/** Distinct category keys present in the registry, in first-seen order. */
 export function toolCategories(): string[] {
   const seen: string[] = [];
   for (const t of tools) if (!seen.includes(t.category)) seen.push(t.category);
