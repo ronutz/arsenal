@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomia zestawu szyfrów TLS"
+summary: "Co tak naprawdę nazywa zestaw szyfrów TLS, jak czytać zestaw taki jak TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 część po części i jak ten sam dwubajtowy punkt kodowy pojawia się w trzech różnych konwencjach nazw."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Czym jest zestaw szyfrów
+
+Zestaw szyfrów TLS to nazwany pakiet wyborów kryptograficznych, które klient i serwer uzgadniają podczas uzgadniania połączenia. Pojedyncza nazwa, taka jak `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, pakuje kilka niezależnych decyzji w jeden identyfikator: jak obie strony uzgadniają wspólny sekret, jak serwer dowodzi, kim jest, który algorytm szyfruje dane aplikacji i jak te dane są chronione przed manipulacją.
+
+Każdy zarejestrowany zestaw ma także dwubajtowy punkt kodowy przydzielony przez IANA. Nazwa powyżej to `0xC02F` na łączu. Uzgadnianie nigdy nie wysyła nazwy tekstowej; wysyła dwa bajty. Nazwy istnieją dla ludzi, a konwencji nazw jest więcej niż jedna — częste źródło nieporozumień.
+
+## Zadania, które opisuje zestaw
+
+Dla TLS 1.2 i wcześniejszych zestaw nazywa do pięciu rzeczy:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**Wymiana kluczy** to sposób, w jaki obie strony ustanawiają wspólny sekret. `ECDHE` to efemeryczny Diffie-Hellman na krzywych eliptycznych, który zapewnia utajnianie z wyprzedzeniem. Inne wartości, które zobaczysz, to `DHE` (efemeryczny Diffie-Hellman nad ciałem skończonym), `RSA` (statyczny transport klucza RSA, bez utajniania z wyprzedzeniem) i `PSK` (klucz wstępnie współdzielony).
+
+**Uwierzytelnianie** to sposób, w jaki serwer (a czasem klient) dowodzi swojej tożsamości, prawie zawsze kluczem prywatnym stojącym za jego certyfikatem. `RSA` i `ECDSA` to powszechne wartości. Gdy zestaw używa statycznego `RSA` do wymiany kluczy, ten sam klucz RSA wykonuje oba zadania, więc nazwa wymienia `RSA` tylko raz.
+
+**Szyfr blokowy i długość klucza** to algorytm symetryczny, który szyfruje rzeczywisty ruch po zakończeniu uzgadniania. Dominują `AES_128` i `AES_256`; `CHACHA20` to częsta alternatywa na urządzeniach bez sprzętowego AES.
+
+**Tryb** zamienia szyfr blokowy w coś, co potrafi szyfrować strumień rekordów. `GCM`, `CCM` i `CHACHA20_POLY1305` to tryby AEAD, które same dbają o integralność. `CBC` to starszy tryb, który wymaga osobnego MAC.
+
+**Skrót MAC lub PRF** to ostatni token. W zestawie CBC jest to skrót HMAC, który uwierzytelnia każdy rekord. W zestawie AEAD szyfr już zapewnia integralność, więc końcowy skrót nazywa zamiast tego PRF, którego uzgadnianie używa do wyprowadzania kluczy (`SHA256` lub `SHA384`).
+
+## Czytanie od tyłu
+
+Gdy znasz gramatykę, możesz odczytać dowolny zestaw TLS 1.2 od tyłu jednym rzutem oka. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` to efemeryczny Diffie-Hellman nad ciałem skończonym do wymiany kluczy, RSA do uwierzytelniania, AES z kluczem 256-bitowym w trybie GCM i SHA-384 jako PRF uzgadniania. Ponieważ GCM jest AEAD, nie ma osobnego MAC.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` to ostrzegawcze przeciwieństwo: statyczny transport klucza RSA bez utajniania z wyprzedzeniem, AES-128 w trybie CBC i MAC HMAC-SHA1. Wszystko w nim to spuścizna przeszłości, dlatego IANA oznacza go teraz jako odradzany.
+
+## Jeden zestaw, trzy nazwy
+
+To samo `0xC02F` pojawia się w trzech konwencjach:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Nazwa IANA to standard rejestru. OpenSSL używa myślników, pomija `WITH` i zapisuje `AES128` jako jeden token, dlatego konfiguracja OpenSSL i przechwycenie pakietów mogą wydawać się sprzeczne, choć nazywają ten sam zestaw. Dekoder akceptuje wszystkie trzy formy oraz surowy punkt kodowy i pokazuje pozostałe.
+
+## Dekodowanie to nie aprobata
+
+Odczytanie zestawu mówi, co by zrobił, a nie czy powinieneś go używać. Nazwa może być doskonale poprawnie zbudowana, a mimo to opisywać RC4, anonimową wymianę kluczy lub klucze klasy eksportowej. Dekoder łączy strukturalny rozkład z oceną bezpieczeństwa i niezależną rekomendacją IANA, aby zdrowo wyglądająca nazwa z fatalną wadą się nie prześlizgnęła. Artykuły towarzyszące omawiają, co czyni zestaw nowoczesnym: AEAD zamiast CBC oraz utajnianie z wyprzedzeniem w wymianie kluczy.

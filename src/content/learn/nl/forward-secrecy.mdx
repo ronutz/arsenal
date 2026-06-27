@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Forward secrecy en de sleuteluitwisseling"
+summary: "Wat forward secrecy oplevert, waarom statisch RSA-sleuteltransport het niet biedt, hoe ECDHE en DHE dat wel doen, en waarom authenticatie en sleuteluitwisseling twee aparte taken zijn die de naam van een suite gescheiden houdt."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## De vraag die forward secrecy beantwoordt
+
+Stel je voor dat een aanvaller je versleutelde verkeer vandaag opneemt en opslaat. Maanden later bemachtigt hij de langlevende privésleutel van de server, misschien via een inbraak of een gerechtelijk bevel. Kan hij nu teruggaan en het opgenomen verkeer ontsleutelen?
+
+Als het antwoord nee is, had de verbinding **forward secrecy**, soms perfect forward secrecy genoemd. Als het antwoord ja is, had ze die niet. Het verschil komt volledig neer op de sleuteluitwisseling die in de cipher suite wordt benoemd, en daarom is het een van de eerste dingen die de decoder meldt.
+
+## Statisch RSA: handig en kwetsbaar
+
+Bij de oude statische RSA-sleuteluitwisseling kiest de client het geheim dat de sessie zal beschermen, versleutelt het met de publieke sleutel van de server uit zijn certificaat en stuurt het. Alleen de privésleutel van de server kan het ontsleutelen, dus de sessie is op dat moment privé voor afluisteraars.
+
+De fatale eigenschap is dat het sessiegeheim werd beschermd door de langlevende sleutel van de server. Als die sleutel ooit lekt, kan elke voorbije sessie die hem gebruikte uit een opname worden uitgepakt, omdat het versleutelde geheim daar gewoon ligt, in de opgenomen handshake. Eén sleutelcompromittering breekt met terugwerkende kracht elk gesprek dat hij ooit beschermde. Suites die met `TLS_RSA_WITH_` beginnen, werken zo, en de decoder markeert ze als zonder forward secrecy.
+
+## Vluchtige Diffie-Hellman: de oplossing
+
+Vluchtige Diffie-Hellman verbreekt de band tussen het sessiegeheim en elke langlevende sleutel. Voor elke verbinding genereren beide kanten verse, wegwerpbare Diffie-Hellman-sleutelparen, wisselen de publieke helften uit, en elk combineert zijn eigen privéhelft met de publieke helft van de ander om tot hetzelfde gedeelde geheim te komen. De privéhelften verlaten nooit hun machines en worden weggegooid wanneer de verbinding eindigt.
+
+Omdat het gedeelde geheim nooit onder de langlevende sleutel van de server is versleuteld, en de vluchtige privésleutels niet meer bestaan, onthult een latere compromittering van de langlevende sleutel niets over voorbije sessies. Er is simpelweg niets in de opname om uit te pakken.
+
+Je ziet dit als `ECDHE`, vluchtige elliptische-curve-Diffie-Hellman, of `DHE`, de oudere finite-field-variant. ECDHE is sneller en is de moderne standaard; DHE wordt uitgefaseerd, en daarom draagt zelfs een sterke DHE-AEAD-suite als `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` nu een IANA-markering afgeraden. De statische, niet-vluchtige neven `ECDH` en `DH`, zonder de afsluitende `E`, bieden geen forward secrecy.
+
+## Authenticatie is een aparte taak
+
+Een veelvoorkomende verwarring is denken dat het verwijderen van statisch RSA het verwijderen van RSA betekent. Dat is niet zo. Sleuteluitwisseling en authenticatie zijn twee verschillende taken, en de naam van een suite noemt ze apart.
+
+In `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` doet de `ECDHE` de sleuteluitwisseling en de `RSA` de authenticatie: de server ondertekent de vluchtige handshakewaarden met de privésleutel achter zijn RSA-certificaat en bewijst zo dat hij de rechtmatige houder is. Het sessiegeheim komt uit de vluchtige Diffie-Hellman-uitwisseling, dus forward secrecy houdt stand, terwijl het certificaat nog steeds de identiteit bewijst. Het artikel over de certificaatanatomie behandelt hoe die identiteitsbinding werkt.
+
+## Waarom TLS 1.3 het verplicht maakte
+
+TLS 1.3 beslechtte de kwestie door het statische RSA-sleuteltransport volledig te verwijderen. Elke TLS 1.3-sleuteluitwisseling is vluchtig, dus forward secrecy is niet langer iets dat je moet kiezen door de juiste suite te selecteren; het wordt door het protocol gegarandeerd. RSA en ECDSA blijven alleen als handtekeningalgoritmen voor de authenticatie. Daarom heeft de naam van een TLS 1.3-suite ook helemaal geen sleuteluitwisselingstoken: er is geen optie zonder forward secrecy meer om te benoemen.
+
+## Nu oogsten, later ontsleutelen
+
+Forward secrecy beschermt tegen een sleutelcompromittering die achteraf gebeurt, maar veronderstelt dat de onderliggende Diffie-Hellman-wiskunde moeilijk blijft. De dreigende zorg is een toekomstige kwantumcomputer die de huidige elliptische-curve-sleuteluitwisselingen kan breken, wat opgenomen verkeer een lange houdbaarheid geeft voor een aanvaller die bereid is te wachten. Dit is de dreiging van nu oogsten en later ontsleutelen, en ze drijft de overstap naar hybride post-kwantum-sleuteluitwisselingen aan, die een klassieke en een kwantumbestendige uitwisseling samen uitvoeren. Forward secrecy blijft noodzakelijk; ze wordt alleen niet meer voor altijd als voldoende verondersteld.

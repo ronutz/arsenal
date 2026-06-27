@@ -37,6 +37,8 @@ import X509Tool from "@/components/X509Tool";
 import { manifest as x509Manifest } from "@/lib/tools/x509";
 import Ipv6Tool from "@/components/Ipv6Tool";
 import { manifest as ipv6Manifest } from "@/lib/tools/ipv6";
+import CipherTool from "@/components/CipherTool";
+import { manifest as cipherManifest } from "@/lib/tools/cipher";
 
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
@@ -85,6 +87,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   ipv6: {
     Component: Ipv6Tool,
     sources: ipv6Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  cipher: {
+    Component: CipherTool,
+    sources: cipherManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
 };
 

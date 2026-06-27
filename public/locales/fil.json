@@ -108,7 +108,8 @@
       "hashing": "Hashing at crypto",
       "identifiers": "Mga identifier",
       "pki": "Mga certificate at PKI",
-      "networking": "Networking"
+      "networking": "Networking",
+      "transport": "TLS at transport"
     },
     "hash": {
       "name": "Hash Generator (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "multicast"
       }
+    },
+    "cipher": {
+      "name": "Cipher suite decoder",
+      "blurb": "Maglagay ng TLS cipher suite, bilang IANA name, OpenSSL o GnuTLS name, o hexadecimal code point, upang hatiin ito sa key exchange, authentication, cipher, mode, at MAC, kasama ang malinaw na pagtatasa ng seguridad at ang opisyal na rekomendasyon ng IANA. Ganap na tumatakbo sa iyong browser laban sa naka-embed na kopya ng IANA registry.",
+      "inputLabel": "Cipher suite",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256, o 0x1301",
+      "runsLocally": "Lokal na tumatakbo ang pag-decode laban sa naka-embed na kopya ng IANA TLS cipher suite registry. Walang ipinapadala kahit saan.",
+      "notInRegistryNote": "Na-parse nang structural ang pangalang ito ngunit hindi natagpuan sa naka-embed na snapshot ng IANA registry, kaya hindi ipinapakita ang code point at mga katumbas na pangalan nito.",
+      "errors": {
+        "empty": "Maglagay ng cipher suite na ide-decode.",
+        "format": "Hindi iyon cipher suite. Maglagay ng IANA name (TLS_...), OpenSSL name, o hexadecimal code point gaya ng 0x1301.",
+        "unknown": "Wastong format iyon ng code point, ngunit hindi iyon nakatalagang cipher suite sa IANA registry."
+      },
+      "ratings": {
+        "recommended": "Inirerekomenda",
+        "secure": "Ligtas",
+        "weak": "Mahina",
+        "insecure": "Hindi ligtas",
+        "unknown": "Hindi alam"
+      },
+      "iana": {
+        "Y": "IANA: inirerekomenda",
+        "N": "IANA: hindi inirerekomenda",
+        "D": "IANA: iniiwasan"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Wala sa snapshot ng IANA"
+      },
+      "panels": {
+        "identity": "Pagkakakilanlan",
+        "components": "Mga bahagi",
+        "security": "Seguridad"
+      },
+      "fields": {
+        "codePoint": "Code point",
+        "name": "IANA name",
+        "openssl": "OpenSSL name",
+        "gnutls": "GnuTLS name",
+        "protocol": "Protocol",
+        "dtls": "DTLS-OK",
+        "references": "Mga sanggunian"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 at mas luma"
+      },
+      "comp": {
+        "keyExchange": "Key exchange",
+        "authentication": "Authentication",
+        "forwardSecrecy": "Forward secrecy",
+        "cipher": "Cipher",
+        "mode": "Mode",
+        "aead": "AEAD",
+        "prf": "PRF/KDF hash",
+        "mac": "MAC",
+        "yes": "Oo",
+        "no": "Hindi",
+        "bits": "{n}-bit",
+        "negotiatedSeparately": "Hiwalay na napagkasunduan (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "NULL cipher: hindi naka-encrypt ang trapiko kahit kaunti.",
+        "anon": "Anonymous na key exchange: hindi na-authenticate ang kabilang panig, kaya wala itong proteksyon laban sa aktibong man-in-the-middle.",
+        "export40": "Export-grade na 40-bit na susi: madaling ma-brute-force, isang labi ng mga panuntunan sa export noong 1990s.",
+        "rc4": "RC4 stream cipher: ang biased na keystream ang dahilan kaya ito sira, at ipinagbabawal ito ng RFC 7465 para sa TLS.",
+        "singleDes": "Single DES na may 56-bit na susi: ma-brute-force sa loob ng ilang oras.",
+        "rc2": "RC2: lipas nang 40/64-bit na cipher na hindi ligtas para sa modernong paggamit.",
+        "tripleDes": "May 64-bit na block ang 3DES, na naglalantad dito sa Sweet32 birthday attack (CVE-2016-2183). Pinawalang-bisa ito ng RFC 8429.",
+        "md5Mac": "MD5 MAC: sira na ang MD5 sa cryptography.",
+        "cbcMac": "Ang CBC na may HMAC-SHA1 o MD5 MAC ay gumagamit ng MAC-then-encrypt, na nalalantad sa mga padding-oracle attack gaya ng BEAST at Lucky13.",
+        "ccm8": "Pinuputol ng CCM_8 ang authentication tag sa 8 bytes, na nagpapahina sa integridad. Hindi ito minarkahan ng IANA bilang inirerekomenda.",
+        "noFs": "Walang forward secrecy: sa static na key exchange, ang isang na-compromise na pangmatagalang susi ay makakapag-decrypt ng mga nakaraang session. Hinihingi ng modernong gabay ang ECDHE o DHE.",
+        "legacyCipher": "Ang {value} ay isang legacy na cipher, lipas na para sa TLS.",
+        "aead": "AEAD cipher (authenticated encryption): confidentiality at integrity sa iisang primitive, walang hiwalay na MAC na maaaring mali ang gamit.",
+        "fs": "Forward secrecy: ang ephemeral na key exchange ay nagpapanatiling ligtas ng nakaraang trapiko kahit ma-compromise ang pangmatagalang susi sa bandang huli.",
+        "tls13": "TLS 1.3 suite: modernong AEAD cipher lamang, na ang key exchange ay hiwalay na napagkakasunduan at palaging ephemeral.",
+        "ianaD": "Minarkahan ng IANA ang suite na ito bilang \"D\" (iniiwasan): HINDI DAPAT o HINDI MAAARING gamitin, depende sa sitwasyon.",
+        "ianaN": "Hindi minarkahan ng IANA ang suite na ito bilang \"Inirerekomenda\": limitado ang pagkakagamit nito o hindi dumaan sa proseso ng konsensus ng IETF.",
+        "signalling": "Signalling suite (SCSV): hindi tunay na cipher, nagdadala ito ng signal ng protocol gaya ng proteksyon sa downgrade o impormasyon ng renegotiation."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Bumalik sa home"
   },
   "footer": {
-    "redEducation": "Mag-book ng opisyal na training sa Red Education",
+    "redEducation": "Mag-book ng opisyal na training sa <b>Red Education</b>",
     "privacy": "Privacy",
     "builtWith": "Ginawa ni Rodolfo Nützmann gamit ang CONCORD",
     "colophon": "Paano ito ginawa",
-    "openSource": "Open source ang engine nito",
-    "rights": "Inihahandog sa bukas at komersyal na mga termino.",
     "contribute": "Tumulong na pahusayin ang mga pagsasalin",
     "feedback": "Magpadala ng feedback",
     "api": "Reperensya ng API",
-    "contributeTools": "Mag-ambag ng tool"
+    "contributeTools": "Mag-ambag ng tool",
+    "license": "Lisensya",
+    "coffee": "Ibili mo ako ng kape"
   },
   "search": {
     "label": "Maghanap",
@@ -883,5 +965,16 @@
     "viewReference": "Reperensya",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Hindi maload ang Swagger UI."
+  },
+  "license_page": {
+    "eyebrow": "Bukás na ubod",
+    "title": "Lisensya",
+    "lede": "Ang ronutz.com ay may bukás na ubod: ang makina sa likod ng bawat tool ay open source, ngunit ang website na nakabuo rito ay hindi.",
+    "openHeading": "Open source, ang makina",
+    "openBody": "Ang @ronutz/netcore, ang makina sa likod ng bawat tool at bawat tugon ng API sa site na ito, ay inilalabas sa ilalim ng Apache License 2.0. Ang parehong function na tinatawag ng mga tool sa browser ang tinatawag din ng API, kaya malaya mong magagamit, mababago, at mapagbubuhatan ito sa ilalim ng lisensyang iyon.",
+    "closedHeading": "Closed source, ang website na ito",
+    "closedBody": "Ang website mismo ay closed source. Ang disenyo, interface, nakasulat na nilalaman nito (kasama ang bawat artikulo ng Learn), branding, at ang partikular na paraan ng pagkakabuo at pagkakapakita ng mga tool dito ay pag-aaring eksklusibo, nakalaan ang lahat ng karapatan. Walang ipinagkakaloob na pahintulot na kopyahin, kopyahing muli, baguhin, muling ipamahagi, o lumikha ng mga akdang hango mula sa site o nilalaman nito nang walang naunang nakasulat na pahintulot.",
+    "contact": "May tanong tungkol sa lisensya? <a>Makipag-ugnayan.</a>",
+    "backHome": "Bumalik sa mga tool"
   }
 }

@@ -108,7 +108,8 @@
       "hashing": "Hashning och krypto",
       "identifiers": "Identifierare",
       "pki": "Certifikat och PKI",
-      "networking": "Nätverk"
+      "networking": "Nätverk",
+      "transport": "TLS och transport"
     },
     "hash": {
       "name": "Hash-generator (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "multicast"
       }
+    },
+    "cipher": {
+      "name": "Avkodare för chiffersviter",
+      "blurb": "Ange en TLS-chiffersvit, som IANA-namn, OpenSSL- eller GnuTLS-namn, eller en hexadecimal kodpunkt, för att bryta ner den i nyckelutbyte, autentisering, chiffer, läge och MAC, med en begriplig säkerhetsbedömning och den officiella IANA-rekommendationen. Körs helt i din webbläsare mot en inbäddad kopia av IANA-registret.",
+      "inputLabel": "Chiffersvit",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256 eller 0x1301",
+      "runsLocally": "Avkodningen körs lokalt mot en inbäddad kopia av IANA:s register över TLS-chiffersviter. Inget skickas någonstans.",
+      "notInRegistryNote": "Det här namnet tolkades strukturellt men hittades inte i den inbäddade ögonblicksbilden av IANA-registret – dess kodpunkt och alternativa namn visas därför inte.",
+      "errors": {
+        "empty": "Ange en chiffersvit att avkoda.",
+        "format": "Det är inte en chiffersvit. Ange ett IANA-namn (TLS_...), ett OpenSSL-namn eller en hexadecimal kodpunkt som 0x1301.",
+        "unknown": "Det är ett giltigt kodpunktsformat, men det är inte en tilldelad chiffersvit i IANA-registret."
+      },
+      "ratings": {
+        "recommended": "Rekommenderad",
+        "secure": "Säker",
+        "weak": "Svag",
+        "insecure": "Osäker",
+        "unknown": "Okänd"
+      },
+      "iana": {
+        "Y": "IANA: rekommenderad",
+        "N": "IANA: ej rekommenderad",
+        "D": "IANA: avrådd"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Ej i IANA-ögonblicksbild"
+      },
+      "panels": {
+        "identity": "Identitet",
+        "components": "Komponenter",
+        "security": "Säkerhet"
+      },
+      "fields": {
+        "codePoint": "Kodpunkt",
+        "name": "IANA-namn",
+        "openssl": "OpenSSL-namn",
+        "gnutls": "GnuTLS-namn",
+        "protocol": "Protokoll",
+        "dtls": "DTLS-OK",
+        "references": "Referenser"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 och tidigare"
+      },
+      "comp": {
+        "keyExchange": "Nyckelutbyte",
+        "authentication": "Autentisering",
+        "forwardSecrecy": "Forward secrecy",
+        "cipher": "Chiffer",
+        "mode": "Läge",
+        "aead": "AEAD",
+        "prf": "PRF-/KDF-hash",
+        "mac": "MAC",
+        "yes": "Ja",
+        "no": "Nej",
+        "bits": "{n} bitar",
+        "negotiatedSeparately": "Förhandlas separat (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "NULL-chiffer: trafiken krypteras inte alls.",
+        "anon": "Anonymt nyckelutbyte: motparten autentiseras inte och ger därför inget skydd mot en aktiv man-in-the-middle.",
+        "export40": "Nyckel av exportstyrka (40 bitar): trivialt att knäcka med råstyrka, en kvarleva från 1990-talets exportregler.",
+        "rc4": "RC4-strömchiffer: den skeva nyckelströmmen gör det brutet, och RFC 7465 förbjuder det för TLS.",
+        "singleDes": "Enkel DES med 56-bitarsnyckel: knäckbart med råstyrka på timmar.",
+        "rc2": "RC2: ett föråldrat 40/64-bitars chiffer, inte säkert för modern användning.",
+        "tripleDes": "3DES har ett 64-bitarsblock, vilket utsätter det för Sweet32-födelsedagsattacken (CVE-2016-2183). RFC 8429 föråldrar det.",
+        "md5Mac": "MD5-MAC: MD5 är kryptografiskt brutet.",
+        "cbcMac": "CBC med en HMAC-SHA1- eller MD5-MAC använder MAC-then-encrypt och är utsatt för padding-oracle-attacker som BEAST och Lucky13.",
+        "ccm8": "CCM_8 trunkerar autentiseringstaggen till 8 byte, vilket försvagar integriteten. IANA markerar det inte som rekommenderat.",
+        "noFs": "Ingen forward secrecy: med ett statiskt nyckelutbyte kan en komprometterad långtidsnyckel dekryptera tidigare sessioner. Moderna riktlinjer kräver ECDHE eller DHE.",
+        "legacyCipher": "{value} är ett föråldrat chiffer, överspelat för TLS.",
+        "aead": "AEAD-chiffer (autentiserad kryptering): konfidentialitet och integritet i en enda primitiv, utan en separat MAC som kan användas fel.",
+        "fs": "Forward secrecy: ett flyktigt nyckelutbyte håller tidigare trafik säker även om långtidsnyckeln senare komprometteras.",
+        "tls13": "TLS 1.3-svit: endast moderna AEAD-chiffer, med nyckelutbytet förhandlat separat och alltid flyktigt.",
+        "ianaD": "IANA markerar denna svit som \"D\" (avrådd): den BÖR INTE eller FÅR INTE användas, beroende på situationen.",
+        "ianaN": "IANA markerar inte denna svit som \"Rekommenderad\": begränsad tillämpbarhet eller har inte gått igenom IETF:s konsensusprocess.",
+        "signalling": "Signaleringssvit (SCSV): inget riktigt chiffer, utan bär en protokollsignal som nedgraderingsskydd eller omförhandlingsinfo."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Tillbaka till startsidan"
   },
   "footer": {
-    "redEducation": "Boka officiell utbildning med Red Education",
+    "redEducation": "Boka officiell utbildning med <b>Red Education</b>",
     "privacy": "Integritet",
     "builtWith": "Byggt av Rodolfo Nützmann med CONCORD",
     "colophon": "Hur det här byggdes",
-    "openSource": "Motorn är öppen källkod",
-    "rights": "Tillgänglig under öppna och kommersiella villkor.",
     "contribute": "Hjälp till att förbättra översättningarna",
     "feedback": "Skicka feedback",
     "api": "API-referens",
-    "contributeTools": "Bidra med ett verktyg"
+    "contributeTools": "Bidra med ett verktyg",
+    "license": "Licens",
+    "coffee": "Bjud mig på en kaffe"
   },
   "search": {
     "label": "Sök",
@@ -883,5 +965,16 @@
     "viewReference": "Referens",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Swagger UI kunde inte laddas."
+  },
+  "license_page": {
+    "eyebrow": "Öppen kärna",
+    "title": "Licens",
+    "lede": "ronutz.com har en öppen kärna: motorn bakom varje verktyg är öppen källkod, men webbplatsen som byggts på den är det inte.",
+    "openHeading": "Öppen källkod – motorn",
+    "openBody": "@ronutz/netcore, motorn bakom varje verktyg och varje API-svar på den här webbplatsen, släpps under Apache License 2.0. Samma funktion som verktygen i webbläsaren anropar är den som API:et anropar, så du är fri att använda den, ändra den och bygga vidare på den enligt den licensen.",
+    "closedHeading": "Sluten källkod – den här webbplatsen",
+    "closedBody": "Själva webbplatsen är sluten källkod. Dess design, gränssnitt, skrivna innehåll (inklusive varje Learn-artikel), varumärke och det särskilda sättet som dessa verktyg sätts samman och presenteras på här är skyddat, med ensamrätt. Inget tillstånd ges att kopiera, mångfaldiga, ändra, vidaredistribuera eller skapa härledda verk av webbplatsen eller dess innehåll utan föregående skriftligt medgivande.",
+    "contact": "Frågor om licensen? <a>Hör av dig.</a>",
+    "backHome": "Tillbaka till verktygen"
   }
 }

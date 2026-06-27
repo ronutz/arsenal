@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Kerahsiaan ke hadapan dan pertukaran kunci"
+summary: "Apa yang diberikan oleh kerahsiaan ke hadapan, mengapa pengangkutan kunci RSA statik tidak menawarkannya, bagaimana ECDHE dan DHE menawarkannya, dan mengapa pengesahan dan pertukaran kunci ialah dua tugas berasingan yang dipisahkan oleh nama suite."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Soalan yang dijawab oleh kerahsiaan ke hadapan
+
+Bayangkan penyerang merakam trafik tersulit anda hari ini dan menyimpannya. Berbulan-bulan kemudian, dia memperoleh kunci peribadi jangka panjang pelayan, mungkin melalui pelanggaran atau perintah mahkamah. Bolehkah dia kini berundur dan menyahsulit trafik yang ditangkapnya?
+
+Jika jawapannya tidak, sambungan itu mempunyai **kerahsiaan ke hadapan**, kadangkala dipanggil kerahsiaan ke hadapan sempurna. Jika jawapannya ya, ia tidak mempunyainya. Perbezaannya berbalik sepenuhnya kepada pertukaran kunci yang dinamakan dalam suite sifer, dan itulah sebabnya ia antara perkara pertama yang dilaporkan oleh penyahkod.
+
+## RSA statik: mudah dan rapuh
+
+Dalam pertukaran kunci RSA statik lama, klien memilih rahsia yang akan melindungi sesi, menyulitkannya dengan kunci awam pelayan yang diambil daripada sijilnya, dan menghantarnya. Hanya kunci peribadi pelayan boleh menyahsulitnya, jadi sesi itu peribadi daripada penyadap pada masa itu.
+
+Sifat maut ialah rahsia sesi dilindungi oleh kunci jangka panjang pelayan. Jika kunci itu pernah bocor, setiap sesi lampau yang menggunakannya boleh dibuka daripada rakaman, kerana rahsia tersulit terletak betul-betul di situ, di dalam jabat tangan yang ditangkap. Satu pencerobohan kunci secara retroaktif memecahkan setiap perbualan yang pernah dilindunginya. Suite yang bermula dengan `TLS_RSA_WITH_` berfungsi sebegitu, dan penyahkod menandakannya sebagai kekurangan kerahsiaan ke hadapan.
+
+## Diffie-Hellman sementara: penyelesaian
+
+Diffie-Hellman sementara memutuskan ikatan antara rahsia sesi dan mana-mana kunci jangka panjang. Bagi setiap sambungan, kedua-dua pihak menjana pasangan kunci Diffie-Hellman yang baharu dan sekali guna, bertukar separuh awam, dan masing-masing menggabungkan separuh peribadinya sendiri dengan separuh awam pihak lain untuk mencapai rahsia kongsi yang sama. Separuh peribadi tidak pernah meninggalkan mesin masing-masing dan dibuang apabila sambungan tamat.
+
+Oleh sebab rahsia kongsi tidak pernah disulitkan di bawah kunci jangka panjang pelayan, dan kunci peribadi sementara tidak lagi wujud, pencerobohan kemudian terhadap kunci jangka panjang tidak mendedahkan apa-apa tentang sesi lampau. Tiada apa-apa dalam rakaman untuk dibuka.
+
+Anda akan melihat ini sebagai `ECDHE`, Diffie-Hellman sementara lengkung eliptik, atau `DHE`, varian medan terhingga yang lebih lama. ECDHE lebih laju dan ialah lalai moden, DHE pula sedang dihentikan, dan itulah sebabnya walaupun suite DHE-AEAD yang kuat seperti `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` kini membawa tanda IANA dinasihatkan elak. Sepupu statik, bukan sementara `ECDH` dan `DH`, tanpa `E` penutup, tidak memberikan kerahsiaan ke hadapan.
+
+## Pengesahan ialah tugas berasingan
+
+Kekeliruan biasa ialah menyangka bahawa mengalih keluar RSA statik bermakna mengalih keluar RSA. Bukan begitu. Pertukaran kunci dan pengesahan ialah dua tugas berbeza, dan nama suite menyenaraikannya secara berasingan.
+
+Dalam `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, `ECDHE` melaksanakan pertukaran kunci dan `RSA` melaksanakan pengesahan: pelayan menandatangani nilai jabat tangan sementara dengan kunci peribadi di sebalik sijil RSA-nya, membuktikan ia pemegang yang sah. Rahsia sesi datang daripada pertukaran Diffie-Hellman sementara, jadi kerahsiaan ke hadapan kekal, manakala sijil masih membuktikan identiti. Artikel tentang anatomi sijil merangkumi cara ikatan identiti itu berfungsi.
+
+## Mengapa TLS 1.3 menjadikannya wajib
+
+TLS 1.3 menyelesaikan persoalan ini dengan mengalih keluar pengangkutan kunci RSA statik sepenuhnya. Setiap pertukaran kunci TLS 1.3 adalah sementara, jadi kerahsiaan ke hadapan bukan lagi sesuatu yang perlu anda pilih dengan memilih suite yang betul, ia dijamin oleh protokol. RSA dan ECDSA kekal hanya sebagai algoritma tandatangan untuk pengesahan. Itulah juga sebabnya nama suite TLS 1.3 langsung tidak mempunyai token pertukaran kunci: tiada lagi pilihan tanpa kerahsiaan ke hadapan untuk dinamakan.
+
+## Tuai sekarang, nyahsulit kemudian
+
+Kerahsiaan ke hadapan melindungi daripada pencerobohan kunci yang berlaku selepas itu, tetapi mengandaikan matematik Diffie-Hellman yang mendasarinya kekal sukar. Kebimbangan yang menghampiri ialah komputer kuantum masa depan yang boleh memecahkan pertukaran kunci lengkung eliptik hari ini, yang memberi trafik yang dirakam jangka hayat panjang untuk penyerang yang sanggup menunggu. Inilah ancaman tuai sekarang, nyahsulit kemudian, dan ia mendorong peralihan ke pertukaran kunci hibrid pascakuantum, yang menjalankan pertukaran klasik dan pertukaran tahan kuantum bersama. Kerahsiaan ke hadapan kekal perlu, ia cuma berhenti diandaikan mencukupi selama-lamanya.

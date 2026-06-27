@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomie van een TLS-cipher suite"
+summary: "Wat een TLS-cipher suite werkelijk benoemt, hoe je een suite als TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 stuk voor stuk leest, en hoe hetzelfde codepunt van twee bytes onder drie verschillende naamconventies verschijnt."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Wat een cipher suite is
+
+Een TLS-cipher suite is een benoemde bundel cryptografische keuzes waarover een client en een server het tijdens de handshake eens worden. Eén enkele naam als `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` verpakt meerdere onafhankelijke beslissingen in één identificatie: hoe beide kanten een gedeeld geheim afspreken, hoe de server bewijst wie hij is, welk algoritme de applicatiegegevens versleutelt en hoe die gegevens tegen manipulatie worden beschermd.
+
+Elke geregistreerde suite heeft ook een codepunt van twee bytes, toegekend door de IANA. De naam hierboven is `0xC02F` op de lijn. De handshake stuurt nooit de tekstnaam; hij stuurt de twee bytes. De namen bestaan voor mensen, en er is meer dan één naamconventie – een veelvoorkomende bron van verwarring.
+
+## De taken die een suite beschrijft
+
+Voor TLS 1.2 en eerder benoemt een suite tot vijf dingen:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**Sleuteluitwisseling** is hoe beide kanten een gedeeld geheim opzetten. `ECDHE` is vluchtige elliptische-curve-Diffie-Hellman, die forward secrecy biedt. Andere waarden die je ziet zijn `DHE` (vluchtige finite-field-Diffie-Hellman), `RSA` (statisch RSA-sleuteltransport, geen forward secrecy) en `PSK` (een vooraf gedeelde sleutel).
+
+**Authenticatie** is hoe de server (en soms de client) zijn identiteit bewijst, bijna altijd met de privésleutel achter zijn certificaat. `RSA` en `ECDSA` zijn de gangbare waarden. Wanneer een suite statisch `RSA` voor de sleuteluitwisseling gebruikt, doet dezelfde RSA-sleutel beide taken, dus de naam noemt `RSA` maar één keer.
+
+**Blokversleuteling en sleutellengte** is het symmetrische algoritme dat het eigenlijke verkeer versleutelt zodra de handshake klaar is. `AES_128` en `AES_256` overheersen; `CHACHA20` is het gangbare alternatief op apparaten zonder AES-hardware.
+
+**Modus** maakt van de blokversleuteling iets dat een stroom records kan versleutelen. `GCM`, `CCM` en `CHACHA20_POLY1305` zijn AEAD-modi die de integriteit zelf afhandelen. `CBC` is de oudere modus die een aparte MAC nodig heeft.
+
+**MAC- of PRF-hash** is het laatste token. In een CBC-suite is het de HMAC-hash die elk record authenticeert. In een AEAD-suite levert de versleuteling de integriteit al, dus de afsluitende hash benoemt in plaats daarvan de PRF die de handshake gebruikt om sleutels af te leiden (`SHA256` of `SHA384`).
+
+## Hem andersom lezen
+
+Zodra je de grammatica kent, kun je elke TLS 1.2-suite in één oogopslag achterstevoren lezen. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` is vluchtige finite-field-Diffie-Hellman voor de sleuteluitwisseling, RSA voor de authenticatie, AES met een 256-bits sleutel in GCM-modus, en SHA-384 als handshake-PRF. Omdat GCM AEAD is, is er geen aparte MAC.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` is het waarschuwende tegendeel: statisch RSA-sleuteltransport zonder forward secrecy, AES-128 in CBC-modus, en een HMAC-SHA1-MAC. Alles eraan is verouderd, en daarom markeert de IANA het nu als afgeraden.
+
+## Eén suite, drie namen
+
+Hetzelfde `0xC02F` verschijnt onder drie conventies:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+De IANA-naam is de registerstandaard. OpenSSL gebruikt koppeltekens, laat de `WITH` weg en schrijft `AES128` als één token, en daarom kunnen een OpenSSL-configuratie en een pakketopname lijken te botsen terwijl ze dezelfde suite benoemen. De decoder accepteert alle drie de vormen, plus het ruwe codepunt, en toont de andere.
+
+## Decoderen is geen goedkeuren
+
+Een suite lezen vertelt je wat hij zou doen, niet of je hem zou moeten gebruiken. Een naam kan perfect goedgevormd zijn en toch RC4, anonieme sleuteluitwisseling of sleutels van exportsterkte beschrijven. De decoder koppelt de structurele uitsplitsing aan een beveiligingsoordeel en de onafhankelijke IANA-aanbeveling, zodat een gezond ogende naam met een fatale fout niet glipt. De begeleidende artikelen behandelen wat een suite modern maakt: AEAD in plaats van CBC, en forward secrecy in de sleuteluitwisseling.

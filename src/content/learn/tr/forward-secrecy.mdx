@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "İleri gizlilik ve anahtar değişimi"
+summary: "İleri gizliliğin ne sağladığı, statik RSA anahtar taşımasının neden onu sunmadığı, ECDHE ile DHE'nin nasıl sunduğu ve kimlik doğrulama ile anahtar değişiminin, bir paketin adının ayrı tuttuğu iki farklı görev olduğu."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## İleri gizliliğin yanıtladığı soru
+
+Bir saldırganın şifreli trafiğinizi bugün kaydedip sakladığını düşünün. Aylar sonra, belki bir ihlal ya da bir mahkeme kararıyla, sunucunun uzun ömürlü özel anahtarını ele geçiriyor. Şimdi geri dönüp yakaladığı trafiğin şifresini çözebilir mi?
+
+Yanıt hayırsa, bağlantı **ileri gizliliğe** sahipti, kimi zaman kusursuz ileri gizlilik denir. Yanıt evetse, sahip değildi. Fark tamamen şifre paketinde adlandırılan anahtar değişimine iner ve bu yüzden çözücünün bildirdiği ilk şeylerden biridir.
+
+## Statik RSA: kullanışlı ve kırılgan
+
+Eski statik RSA anahtar değişiminde istemci, oturumu koruyacak sırrı seçer, sunucunun sertifikasından alınan açık anahtarıyla şifreler ve gönderir. Yalnızca sunucunun özel anahtarı bunu çözebilir, bu yüzden oturum o an için dinleyicilere kapalıdır.
+
+Ölümcül özellik, oturum sırrının sunucunun uzun ömürlü anahtarıyla korunmuş olmasıdır. O anahtar bir gün sızarsa, onu kullanan her geçmiş oturum bir kayıttan açılabilir, çünkü şifreli sır tam orada, yakalanan el sıkışmanın içindedir. Tek bir anahtar ele geçirilmesi, o anahtarın koruduğu her konuşmayı geriye dönük olarak kırar. `TLS_RSA_WITH_` ile başlayan paketler böyle çalışır ve çözücü onları ileri gizlilikten yoksun olarak işaretler.
+
+## Geçici Diffie-Hellman: çözüm
+
+Geçici Diffie-Hellman, oturum sırrı ile herhangi bir uzun ömürlü anahtar arasındaki bağı koparır. Her bağlantı için iki taraf yeni, tek kullanımlık Diffie-Hellman anahtar çiftleri üretir, açık yarıları değiş tokuş eder ve her biri kendi özel yarısını diğerinin açık yarısıyla birleştirerek aynı paylaşılan sırra ulaşır. Özel yarılar makinelerinden hiç ayrılmaz ve bağlantı sona erince atılır.
+
+Paylaşılan sır asla sunucunun uzun ömürlü anahtarı altında şifrelenmediğinden ve geçici özel anahtarlar artık var olmadığından, uzun ömürlü anahtarın daha sonra ele geçirilmesi geçmiş oturumlar hakkında hiçbir şey açığa çıkarmaz. Kayıtta açılacak hiçbir şey yoktur.
+
+Bunu `ECDHE` olarak, eliptik eğri üzerinde geçici Diffie-Hellman, ya da daha eski sonlu cisim çeşidi `DHE` olarak görürsünüz. ECDHE daha hızlıdır ve modern varsayılandır, DHE ise kullanımdan kaldırılmaktadır, bu yüzden `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` gibi güçlü bir DHE-AEAD paketi bile artık bir IANA sakıncalı işareti taşır. Sonundaki `E` olmayan statik, geçici olmayan kuzenler `ECDH` ve `DH`, ileri gizlilik sağlamaz.
+
+## Kimlik doğrulama ayrı bir görevdir
+
+Yaygın bir karışıklık, statik RSA'yı kaldırmanın RSA'yı kaldırmak olduğunu sanmaktır. Öyle değildir. Anahtar değişimi ve kimlik doğrulama iki farklı görevdir ve bir paketin adı onları ayrı listeler.
+
+`TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` içinde `ECDHE` anahtar değişimini, `RSA` ise kimlik doğrulamayı yapar: sunucu, geçici el sıkışma değerlerini RSA sertifikasının arkasındaki özel anahtarla imzalayarak meşru sahibi olduğunu kanıtlar. Oturum sırrı geçici Diffie-Hellman değişiminden gelir, bu yüzden ileri gizlilik korunur, sertifika ise kimliği kanıtlamayı sürdürür. Sertifika anatomisi makalesi, bu kimlik bağlamasının nasıl işlediğini ele alır.
+
+## TLS 1.3 neden onu zorunlu kıldı
+
+TLS 1.3, statik RSA anahtar taşımasını tamamen kaldırarak konuyu çözdü. Her TLS 1.3 anahtar değişimi geçicidir, bu yüzden ileri gizlilik artık doğru paketi seçerek seçmeniz gereken bir şey değildir, protokol tarafından garanti edilir. RSA ve ECDSA yalnızca kimlik doğrulama için imza algoritmaları olarak kalır. Bir TLS 1.3 paketinin adının hiçbir anahtar değişimi belirteci taşımamasının nedeni de budur: adlandırılacak, ileri gizlilik olmadan bir seçenek artık yoktur.
+
+## Şimdi topla, sonra çöz
+
+İleri gizlilik, sonradan gerçekleşen bir anahtar ele geçirilmesine karşı korur, ama altta yatan Diffie-Hellman matematiğinin zor kalacağını varsayar. Yaklaşan kaygı, bugünün eliptik eğri anahtar değişimlerini kırabilecek gelecekteki bir kuantum bilgisayardır, bu da beklemeye razı bir saldırgan için kaydedilmiş trafiğe uzun bir raf ömrü verir. Bu, şimdi topla sonra çöz tehdididir ve klasik ile kuantuma dirençli bir değişimi birlikte çalıştıran hibrit kuantum sonrası anahtar değişimlerine geçişi hızlandırmaktadır. İleri gizlilik gerekli olmayı sürdürür, yalnızca sonsuza dek yeterli sayılmaktan çıkmıştır.

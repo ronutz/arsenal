@@ -79,7 +79,8 @@
       "hashing": "Hashing & crypto",
       "identifiers": "Identifiers",
       "pki": "Certificates & PKI",
-      "networking": "Networking"
+      "networking": "Networking",
+      "transport": "TLS & transport"
     },
     "jwt": {
       "name": "JWT Decoder & Verifier",
@@ -339,7 +340,88 @@
     "lede": "Small, fast, privacy-first utilities that run entirely in your browser. Nothing you type is sent anywhere. More are on the way.",
     "open": "Open",
     "comingSoon": "Coming soon",
-    "note": "This toolbox is growing. New tools are added here as they ship, each one local-first and free to use."
+    "note": "This toolbox is growing. New tools are added here as they ship, each one local-first and free to use.",
+    "cipher": {
+      "name": "Cipher Suite Decoder",
+      "blurb": "Enter a TLS cipher suite, as an IANA name, an OpenSSL or GnuTLS name, or a hex code point, to break it into its key exchange, authentication, cipher, mode, and MAC, with a plain-language security read-out and the official IANA recommendation. Runs entirely in your browser against a bundled copy of the IANA registry.",
+      "inputLabel": "Cipher suite",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256, or 0x1301",
+      "runsLocally": "Decoding runs locally against a bundled copy of the IANA TLS Cipher Suite registry. Nothing is sent anywhere.",
+      "notInRegistryNote": "This name parsed structurally but was not found in the bundled IANA registry snapshot, so its code point and cross-names are not shown.",
+      "errors": {
+        "empty": "Enter a cipher suite to decode.",
+        "format": "That is not a cipher suite. Enter an IANA name (TLS_...), an OpenSSL name, or a hex code point such as 0x1301.",
+        "unknown": "That is a valid code-point format, but it is not an assigned cipher suite in the IANA registry."
+      },
+      "ratings": {
+        "recommended": "Recommended",
+        "secure": "Secure",
+        "weak": "Weak",
+        "insecure": "Insecure",
+        "unknown": "Unknown"
+      },
+      "iana": {
+        "Y": "IANA: Recommended",
+        "N": "IANA: not recommended",
+        "D": "IANA: discouraged"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Not in IANA snapshot"
+      },
+      "panels": {
+        "identity": "Identity",
+        "components": "Components",
+        "security": "Security"
+      },
+      "fields": {
+        "codePoint": "Code point",
+        "name": "IANA name",
+        "openssl": "OpenSSL name",
+        "gnutls": "GnuTLS name",
+        "protocol": "Protocol",
+        "dtls": "DTLS-OK",
+        "references": "References"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 and earlier"
+      },
+      "comp": {
+        "keyExchange": "Key exchange",
+        "authentication": "Authentication",
+        "forwardSecrecy": "Forward secrecy",
+        "cipher": "Cipher",
+        "mode": "Mode",
+        "aead": "AEAD",
+        "prf": "PRF / KDF hash",
+        "mac": "MAC",
+        "yes": "Yes",
+        "no": "No",
+        "bits": "{n}-bit",
+        "negotiatedSeparately": "Negotiated separately (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "NULL cipher: the traffic is not encrypted at all.",
+        "anon": "Anonymous key exchange: the peer is not authenticated, so it gives no protection against an active man-in-the-middle.",
+        "export40": "Export-grade 40-bit key: trivially brute-forced, a relic of 1990s export rules.",
+        "rc4": "RC4 stream cipher: a biased keystream makes it broken, and RFC 7465 prohibits it for TLS.",
+        "singleDes": "Single DES with a 56-bit key: brute-forceable in hours.",
+        "rc2": "RC2: an obsolete 40/64-bit cipher that is not safe for modern use.",
+        "tripleDes": "3DES has a 64-bit block, which exposes it to the Sweet32 birthday attack (CVE-2016-2183). RFC 8429 deprecates it.",
+        "md5Mac": "MD5 MAC: MD5 is cryptographically broken.",
+        "cbcMac": "CBC with an HMAC-SHA1 or MD5 MAC uses MAC-then-encrypt, which is exposed to padding-oracle attacks such as BEAST and Lucky13.",
+        "ccm8": "CCM_8 truncates the authentication tag to 8 bytes, weakening integrity. IANA does not mark it Recommended.",
+        "noFs": "No forward secrecy: with a static key exchange, one compromised long-term key can decrypt past sessions. Modern guidance requires ECDHE or DHE.",
+        "legacyCipher": "{value} is a legacy cipher that is deprecated for TLS.",
+        "aead": "AEAD cipher (authenticated encryption): confidentiality and integrity in one primitive, with no separate MAC to misuse.",
+        "fs": "Forward secrecy: an ephemeral key exchange keeps past traffic safe even if the long-term key is later compromised.",
+        "tls13": "TLS 1.3 suite: only modern AEAD ciphers, with the key exchange negotiated separately and always ephemeral.",
+        "ianaD": "IANA marks this suite \"D\" (discouraged): it SHOULD NOT or MUST NOT be used, depending on the situation.",
+        "ianaN": "IANA does not mark this suite \"Recommended\": it has limited applicability or has not been through the IETF consensus process.",
+        "signalling": "Signalling suite (SCSV): not an actual cipher, it carries a protocol signal such as fallback protection or renegotiation info."
+      }
+    }
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -376,16 +458,16 @@
     "backHome": "Back to home"
   },
   "footer": {
-    "redEducation": "Book official training with Red Education",
+    "redEducation": "Book official training with <b>Red Education</b>",
     "builtWith": "Built by Rodolfo Nützmann with CONCORD",
     "colophon": "How this was built",
-    "openSource": "The engine is open source",
-    "rights": "Available under open and commercial terms.",
     "contribute": "Improve the translations",
     "api": "API reference",
     "contributeTools": "Contribute a tool",
     "feedback": "Submit feedback",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "license": "License",
+    "coffee": "Buy me a coffee"
   },
   "search": {
     "label": "Search",
@@ -883,5 +965,16 @@
     "proposeBody": "Send a short proposal by email: what the tool computes, an example input with the exact output it should produce, and the source its correctness rests on. A sketch of the manifest and a few golden vectors is welcome but not required. If it fits, it gets built into the engine and the toolbox.",
     "emailLabel": "Email",
     "backToTools": "Back to the toolbox"
+  },
+  "license_page": {
+    "eyebrow": "Open-core",
+    "title": "License",
+    "lede": "ronutz.com is open-core: the engine that powers every tool is open source, and the website built around it is not.",
+    "openHeading": "Open source: the engine",
+    "openBody": "@ronutz/netcore, the engine behind every tool and every API response on this site, is released under the Apache License 2.0. The same function the in-browser tools call is the one the API calls, so you are free to use, modify, and build on it under that license.",
+    "closedHeading": "Closed source: this website",
+    "closedBody": "The website itself is closed source. Its design, interface, written content (including every Learn article), branding, and the particular way these tools are assembled and presented here are proprietary, all rights reserved. No permission is granted to copy, reproduce, modify, redistribute, or create derivative works from the site or its content without prior written consent.",
+    "contact": "Questions about licensing? <a>Get in touch.</a>",
+    "backHome": "Back to the tools"
   }
 }

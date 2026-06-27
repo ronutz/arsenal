@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Membaca nama suite sifer: IANA, OpenSSL dan GnuTLS"
+summary: "Mengapa suite sifer yang sama mempunyai tiga nama berbeza dan satu titik kod dua bait, cara menterjemah antara konvensyen IANA, OpenSSL dan GnuTLS, dan apa sebenarnya maksud lajur Recommended IANA dengan Y, N dan D."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Mengapa suite mempunyai banyak nama
+
+Satu suite sifer boleh ditulis dalam sekurang-kurangnya tiga cara, dan perbezaannya menyandung sesiapa sahaja yang membandingkan konfigurasi pelayan dengan tangkapan paket atau laporan pengimbas. Suite yang dipanggil IANA `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` ialah yang sama dengan yang dipanggil OpenSSL `ECDHE-RSA-AES128-GCM-SHA256`. Ia menggambarkan bait yang sama pada talian, iaitu titik kod `0xC02F`.
+
+Titik kod ialah satu-satunya perkara yang benar-benar digunakan oleh protokol. Nama ialah kemudahan untuk fail konfigurasi, dokumentasi dan manusia, dan setiap ekosistem alat membangunkan konvensyennya sendiri.
+
+## Tiga konvensyen
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Nama **IANA** ialah piawai daftar. Ia sentiasa bermula dengan `TLS_`, memisahkan setiap token dengan garis bawah, dan menggunakan perkataan `WITH` untuk membahagikan pertukaran kunci dan pengesahan daripada sifer dan MAC.
+
+Nama **OpenSSL** menggugurkan awalan `TLS_`, menggunakan sempang dan bukan garis bawah, mengalih keluar `WITH`, dan menulis sifer dan saiz kunci sebagai satu token (`AES128` dan bukan `AES_128`). Untuk suite RSA statik, OpenSSL turut menggugurkan token pertukaran kunci yang berlebihan, jadi `TLS_RSA_WITH_AES_128_CBC_SHA` menjadi sekadar `AES128-SHA`. TLS 1.3 ialah pengecualian: di situ OpenSSL menerima pakai nama IANA tanpa ubah, jadi `TLS_AES_128_GCM_SHA256` ditulis sama dalam kedua-duanya.
+
+Nama **GnuTLS** mengekalkan awalan `TLS_` dan garis bawah tetapi, seperti OpenSSL, meninggalkan `WITH`. Ia yang paling jarang dilihat antara ketiga-tiganya.
+
+Ketakpadanan inilah yang membuatkan orang menyangka dua sistem bercanggah sedangkan mereka telah mengkonfigurasi suite yang sama. Penyahkod yang menerima mana-mana nama, serta titik kod mentah, menghapuskan tekaan dengan memaparkan kesemuanya sekali gus.
+
+## Membaca titik kod
+
+Titik kod suite sifer ialah dua bait, ditulis dalam beberapa cara yang kesemuanya bermaksud nombor yang sama:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+Bait pertama mengumpulkan suite yang berkaitan: blok `0x00xx` memuatkan suite TLS 1.0 dan 1.1 asal, `0xC0xx` memuatkan suite lengkung eliptik daripada RFC 5289 dan yang berkaitan, `0xCCxx` memuatkan suite ChaCha20-Poly1305, dan `0x13xx` memuatkan suite TLS 1.3. Melihat `0xC0` atau `0xCC` pada permulaan ialah petunjuk pantas bahawa anda sedang melihat suite ECDHE atau ChaCha20 moden.
+
+## Apa maksud lajur Recommended
+
+Daftar IANA mempunyai lajur Recommended dengan tiga nilai, dan ia mudah disalah baca.
+
+`Y` bermaksud suite telah melalui proses konsensus IETF dan disarankan untuk kegunaan umum pada masa pendaftaran. `N` tidak bermaksud suite itu cacat, ia bermaksud suite itu tidak melalui proses tersebut, mempunyai kebolehgunaan terhad, atau ditujukan untuk ceruk tertentu. Suite `CCM_8` ditandakan `N` atas sebab inilah: teg terpotong ialah tolak ansur yang disengajakan, bukan kecacatan.
+
+`D` ialah yang kuat. Ia bermaksud suite itu dinasihatkan elak dan tidak sepatutnya, atau tidak boleh, digunakan bergantung pada situasi. Seluruh keluarga telah beralih ke `D` apabila IETF menghentikannya, termasuk suite RSA statik dan, lebih kebelakangan ini, suite `DHE` medan terhingga. Suite boleh kukuh dari segi kriptografi namun masih ditandakan `D` atas sebab ekosistem, dan itulah sebabnya penyahkod memaparkan tanda IANA di sebelah bacaan keselamatannya sendiri, dan bukan melebur kedua-duanya menjadi satu keputusan. Kedua-duanya menjawab soalan berbeza: adakah binaan itu kukuh, dan adakah proses pemiawaian masih mahu anda menggunakannya?
+
+## Menyatukan semuanya
+
+Untuk mengenal pasti suite yang tidak diketahui, tampal bentuk yang anda ada, sama ada nama IANA, nama OpenSSL atau titik kod, ke dalam penyahkod. Ia menyelesaikan suite terhadap salinan terbenam daftar IANA, memaparkan nama-nama lain, memecahkan suite kepada bahagian-bahagiannya, dan memadankan penilaian keselamatan berasaskan peraturan dengan saranan rasmi IANA. Artikel iringan menerangkan bahagian-bahagian itu sendiri: anatomi am, pilihan antara AEAD dan CBC, kerahsiaan ke hadapan, dan apa yang diubah oleh TLS 1.3.

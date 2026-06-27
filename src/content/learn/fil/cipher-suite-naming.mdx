@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Pagbasa ng mga pangalan ng cipher suite: IANA, OpenSSL, at GnuTLS"
+summary: "Bakit may tatlong magkaibang pangalan at isang two-byte code point ang iisang cipher suite, paano magsalin sa pagitan ng mga convention ng IANA, OpenSSL, at GnuTLS, at ano talaga ang ibig sabihin ng Recommended na column ng IANA na may Y, N, at D."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Bakit maraming pangalan ang isang suite
+
+Ang iisang cipher suite ay maaaring isulat sa kahit man lamang tatlong paraan, at ang mga pagkakaiba ay natitisod kahit sino na naghahambing ng isang server configuration sa isang packet capture o ulat ng scanner. Ang suite na tinatawag ng IANA na `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` ay siyang tinatawag ng OpenSSL na `ECDHE-RSA-AES128-GCM-SHA256`. Inilalarawan ng mga ito ang magkaparehong byte sa linya, ibig sabihin ang code point na `0xC02F`.
+
+Ang code point ang tanging bagay na talagang ginagamit ng protocol. Ang mga pangalan ay mga kaginhawahan para sa configuration file, dokumentasyon, at tao, at pinatubo ng bawat tool ecosystem ang sarili nitong convention.
+
+## Ang tatlong convention
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Ang **IANA** name ang pamantayan ng registry. Lagi itong nagsisimula sa `TLS_`, hinihiwalay ang bawat token gamit ang underscore, at ginagamit ang salitang `WITH` para hiwalayin ang key exchange at authentication mula sa cipher at MAC.
+
+Ang **OpenSSL** name ay inaalis ang `TLS_` prefix, gumagamit ng gitling sa halip na underscore, inaalis ang `WITH`, at isinusulat ang cipher at key size bilang iisang token (`AES128` sa halip na `AES_128`). Para sa mga static RSA suite, inaalis din ng OpenSSL ang labis na key exchange token, kaya ang `TLS_RSA_WITH_AES_128_CBC_SHA` ay nagiging `AES128-SHA` na lamang. Ang TLS 1.3 ang eksepsiyon: doon, tinanggap ng OpenSSL ang mga IANA name nang hindi binabago, kaya ang `TLS_AES_128_GCM_SHA256` ay pareho ang baybay sa dalawa.
+
+Ang **GnuTLS** name ay pinapanatili ang `TLS_` prefix at ang mga underscore ngunit, tulad ng OpenSSL, inaalis ang `WITH`. Ito ang pinakabihirang makita sa tatlo.
+
+Ito mismong di-pagkakatugma ang nagpapaisip sa mga tao na nagkakasalungatan ang dalawang sistema gayong iisang suite ang ni-configure nila. Ang isang decoder na tumatanggap sa kahit alin sa mga pangalan, pati ang raw code point, ay inaalis ang panghuhula sa pamamagitan ng pagpapakita ng lahat ng ito nang sabay-sabay.
+
+## Pagbasa ng isang code point
+
+Ang code point ng isang cipher suite ay dalawang byte, isinulat sa ilang paraan na pawang nangangahulugan ng parehong numero:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+Pinagpapangkat ng unang byte ang magkakaugnay na suite: ang block na `0x00xx` ay naglalaman ng orihinal na TLS 1.0 at 1.1 suite, ang `0xC0xx` ay naglalaman ng elliptic-curve suite mula sa RFC 5289 at mga kaugnay, ang `0xCCxx` ay naglalaman ng ChaCha20-Poly1305 suite, at ang `0x13xx` ay naglalaman ng TLS 1.3 suite. Ang pagkakita ng `0xC0` o `0xCC` sa simula ay isang mabilis na pahiwatig na isang modernong ECDHE o ChaCha20 suite ang tinitingnan mo.
+
+## Ano ang ibig sabihin ng Recommended na column
+
+May Recommended na column ang IANA registry na may tatlong halaga, at madali silang mabasang mali.
+
+Ang `Y` ay nangangahulugang dumaan ang suite sa IETF consensus process at inirerekomenda para sa pangkalahatang gamit sa panahon ng pagrehistro. Ang `N` ay hindi nangangahulugang depektibo ang suite, nangangahulugan itong hindi ito dumaan sa prosesong iyon, may limitadong kakayahang magamit, o nakatuon sa isang partikular na niche. Minamarkahan ang `CCM_8` suite ng `N` dahil mismo dito: ang pinaikling tag ay isang sinadyang trade-off, hindi depekto.
+
+Ang `D` ang malakas. Nangangahulugan itong iniiwasan ang suite at hindi dapat, o hindi maaaring, gamitin depende sa sitwasyon. Buong pamilya ang lumipat sa `D` habang inaalis ng IETF ang mga ito, kabilang ang mga static RSA suite at, mas kamakailan, ang finite-field na `DHE` suite. Maaaring matibay sa cryptographic ang isang suite ngunit minamarkahan pa rin ng `D` dahil sa mga dahilang pang-ecosystem, kaya ipinapakita ng decoder ang IANA na marka sa tabi ng sarili nitong security reading, sa halip na pagsamahin ang dalawa sa iisang hatol. Sinasagot ng dalawa ang magkaibang tanong: matibay ba ang konstruksyon, at gusto pa rin ba ng standardization process na gamitin mo ito?
+
+## Pagsasama-sama ng lahat
+
+Para matukoy ang isang hindi kilalang suite, i-paste ang anyong nasa iyo, isang IANA name man, isang OpenSSL name, o isang code point, sa decoder. Ni-resolve nito ang suite laban sa isang naka-embed na kopya ng IANA registry, ipinapakita ang iba pang mga pangalan, hinahati ang suite sa mga bahagi nito, at pinapares ang isang rule-based na pagtatasa ng seguridad sa opisyal na rekomendasyon ng IANA. Ipinapaliwanag ng mga kaakibat na artikulo ang mga bahagi mismo: ang pangkalahatang anatomya, ang pagpili sa pagitan ng AEAD at CBC, ang forward secrecy, at kung ano ang binago ng TLS 1.3.

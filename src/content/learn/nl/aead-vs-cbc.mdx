@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD tegenover CBC: waarom de modus telt"
+summary: "Het praktische verschil tussen een AEAD-versleuteling als AES-GCM en een oudere CBC-versleuteling met een aparte HMAC, de padding-oracle-aanvallen die het MAC-then-encrypt om zeep hielpen, en de ene afweging die AEAD nog steeds vraagt."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Twee manieren om een record te versleutelen
+
+Zodra een TLS-handshake de sleutels heeft afgesproken, moet elk record met applicatiegegevens zowel versleuteld zijn, zodat een afluisteraar het niet kan lezen, als geauthenticeerd, zodat een aanvaller er niet mee kan knoeien. Er zijn twee brede manieren waarop een cipher suite dit doet, en het modus-token in de suitenaam vertelt je welke.
+
+Een **AEAD**-versleuteling, zoals AES-GCM, AES-CCM of ChaCha20-Poly1305, doet beide taken in één primitief. Je geeft hem de platte tekst en wat bijbehorende gegevens, en hij geeft de versleutelde tekst plus een authenticatietag terug. De ontsleuteling verifieert de tag en de gegevens samen, en faalt als één bewerking als er iets is gewijzigd.
+
+Een **CBC**-versleuteling doet alleen de versleuteling. Voor integriteit koppelt de suite hem aan een aparte HMAC, benoemd door de afsluitende hash van de suite (bijvoorbeeld de `SHA` in `TLS_RSA_WITH_AES_128_CBC_SHA`). Het protocol bout de twee bewerkingen aan elkaar, en de volgorde waarin ze gebeuren blijkt enorm te tellen.
+
+## Waarom MAC-then-encrypt misging
+
+TLS gebruikte oorspronkelijk MAC-then-encrypt: de HMAC over de platte tekst berekenen, hem toevoegen, het resultaat opvullen tot een blokgrens en dan alles met CBC versleutelen. Het probleem is dat de ontvanger moet ontsleutelen en de opvulling verwijderen voordat hij de MAC kan controleren, dus misvormde opvulling en een onjuiste MAC worden in verschillende stadia ontdekt. Een aanvaller die kan zien of een record op de opvulling of op de MAC faalde – via een foutmelding of alleen via de timing – leert één bit over de platte tekst per poging. Herhaald wordt dat bit het hele bericht.
+
+Dit is een padding oracle, en het is niet theoretisch. Een reeks aanvallen door de jaren heen, waaronder BEAST, Lucky13 en POODLE, buitte allemaal de CBC-recordbescherming in TLS uit. Elk werd gepatcht met steeds delicatere constante-tijdcode, maar de onderliggende constructie bleef nieuwe varianten voortbrengen. De les die de sector trok, was om hem niet meer te gebruiken.
+
+## Waarom AEAD nu de standaard is
+
+AEAD verwijdert de hele probleemklasse. Er is geen aparte opvulstap om te sonderen en geen aparte MAC-stap om te timen, omdat verificatie en ontsleuteling één bewerking zijn die slaagt of faalt. TLS 1.3 trekt dit door en staat alleen AEAD-versleutelingen toe; CBC-suites maken simpelweg geen deel uit van TLS 1.3. In TLS 1.2 bestaan beide, en daarom markeert de decoder een CBC-met-HMAC-SHA1-suite als zwak, zelfs wanneer de versleuteling AES is.
+
+Wanneer je `GCM`, `CCM` of `POLY1305` in een suitenaam ziet, kijk je naar AEAD. Wanneer je `CBC` ziet, kijk je naar de oudere constructie, en op een moderne dienst zou dat hooguit een terugval moeten zijn.
+
+## De afweging die AEAD nog steeds vraagt
+
+AEAD is niet vrij van scherpe randen; het verschuift ze alleen. Elke AEAD-versleuteling heeft een nonce nodig, een getal dat één keer wordt gebruikt, en de veiligheid van GCM in het bijzonder stort in als dezelfde nonce ooit met dezelfde sleutel wordt hergebruikt. TLS beheert de nonces voor je met een teller per verbinding, dus dit is eerder een gevaar voor systemen die hun eigen omkadering bouwen dan voor TLS zelf, maar het is de reden dat AEAD-ontwerpen zoveel om de nonce-constructie geven.
+
+De andere afweging is de lengte van de authenticatietag. De standaard GCM- en Poly1305-suites gebruiken een tag van 16 bytes. De `CCM_8`-suites korten die in tot 8 bytes om overhead te besparen op beperkte verbindingen, wat de integriteit meetbaar verzwakt. Daarom is `TLS_AES_128_CCM_8_SHA256` een echte AEAD-suite van TLS 1.3 die de IANA toch weigert als aanbevolen te markeren: de modus is modern, maar de korte tag is een compromis dat het algemene internet niet hoeft te sluiten.

@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "Zestawy szyfrów TLS 1.3: co się zmieniło"
+summary: "Dlaczego zestaw TLS 1.3 nazywa tylko szyfr i skrót, dokąd trafiły wymiana kluczy i uwierzytelnianie oraz dlaczego lista zestawów skurczyła się z setek do garstki."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Inny rodzaj zestawu
+
+TLS 1.3, zdefiniowany w RFC 8446, zmienił to, co nazywa zestaw szyfrów. W TLS 1.2 zestaw łączył wymianę kluczy, uwierzytelnianie, szyfr i MAC. W TLS 1.3 zestaw nazywa tylko dwie rzeczy: szyfr AEAD i funkcję skrótu używaną przez funkcję wyprowadzania kluczy.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+W nazwie nie ma wymiany kluczy ani uwierzytelniania, ponieważ TLS 1.3 negocjuje je osobno. To największa zmiana i dlatego zestaw TLS 1.3 wygląda tak krótko obok zestawu TLS 1.2.
+
+## Dokąd trafiła wymiana kluczy
+
+W TLS 1.3 wymianę kluczy niesie własne rozszerzenie `key_share`, a oferowane grupy są wymienione w `supported_groups`. Uwierzytelnianie negocjuje się przez `signature_algorithms`. Wyciągnięcie tego z zestawu ma realną zaletę: garstka zestawów szyfrów łączy się dowolnie z każdą obsługiwaną grupą i każdym algorytmem podpisu, zamiast kombinatorycznej eksplozji, która dała TLS 1.2 setki zarejestrowanych zestawów.
+
+Wbudowuje to także dwie dobre wartości domyślne. Każda wymiana kluczy w TLS 1.3 jest efemeryczna, więc utajnianie z wyprzedzeniem jest obowiązkowe, a nie opcjonalne. A statyczny transport klucza RSA, klasyczny sposób utraty utajniania z wyprzedzeniem, usunięto całkowicie; RSA przetrwał jedynie jako algorytm podpisu do uwierzytelniania.
+
+## Pięć zestawów
+
+Specyfikacja bazowa definiuje pięć zestawów, a w praktyce zobaczysz głównie trzy pierwsze:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Wszystkie pięć to AEAD; TLS 1.3 nie dopuszcza niczego innego. `TLS_AES_128_GCM_SHA256` jest obowiązkowy do wdrożenia, co czyni go bezpiecznym wspólnym mianownikiem. ChaCha20-Poly1305 to zwykły wybór na sprzęcie bez akceleracji AES. Dwa zestawy CCM są skierowane do środowisk o ograniczonych zasobach, a `CCM_8` wymienia krótszy znacznik uwierzytelniający na mniejszy narzut, dlatego IANA nie oznacza go jako zalecanego, choć jest to zestaw TLS 1.3.
+
+## Ten sam rejestr, niewymienne
+
+TLS 1.3 ponownie wykorzystuje ten sam rejestr zestawów szyfrów IANA i tę samą dwubajtową przestrzeń kodów co wcześniejsze wersje, ale obie definicje nie są wymienne. Wartości zestawu TLS 1.3 nie można użyć z TLS 1.2, a wartości zestawu TLS 1.2 nie można użyć z TLS 1.3. Punkty kodowe leżą przypadkiem w niewykorzystanej wcześniej części zakresu (`0x13xx`), co utrzymuje je wizualnie odrębnymi.
+
+Dlatego dekoder musi wiedzieć, do którego świata należy zestaw. Nazwa bez tokenu `WITH` w zakresie `0x13xx` to zestaw TLS 1.3, którego wymiana kluczy jest negocjowana gdzie indziej; nazwa z tokenem `WITH` to zestaw dla TLS 1.2 i wcześniejszych, którego wymiana kluczy jest wypisana.
+
+## Ochrona przed degradacją
+
+Ponieważ starsze zestawy nadal istnieją dla starszych partnerów, TLS 1.3 dodaje ochronę przed wymuszeniem degradacji przez atakującego. Serwer obsługujący TLS 1.3, który jednak negocjuje starszą wersję, zapisuje stałą wartość wartowniczą w ostatnich ośmiu bajtach swojego `server random`. Prawdziwy klient TLS 1.3 sprawdza ten wartownik i przerywa, jeśli pojawi się on na połączeniu, które powinno być 1.3, co zamienia cichą degradację w nieudane uzgadnianie. Lista zestawów szyfrów się skurczyła, ale protokół wokół niej stał się bardziej defensywny.

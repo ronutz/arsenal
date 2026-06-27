@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Lire les noms de suites de chiffrement : IANA, OpenSSL et GnuTLS"
+summary: "Pourquoi la même suite de chiffrement a trois noms différents et un point de code de deux octets, comment traduire entre les conventions de l'IANA, d'OpenSSL et de GnuTLS, et ce que la colonne Recommended de l'IANA, avec Y, N et D, signifie réellement."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Pourquoi une suite a plusieurs noms
+
+Une seule suite de chiffrement peut s'écrire d'au moins trois façons, et les différences déroutent quiconque compare la configuration d'un serveur à une capture de paquets ou à un rapport de scanner. La suite que l'IANA appelle `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` est la même qu'OpenSSL appelle `ECDHE-RSA-AES128-GCM-SHA256`. Elles décrivent des octets identiques sur la connexion, à savoir le point de code `0xC02F`.
+
+Le point de code est la seule chose que le protocole utilise réellement. Les noms sont des commodités pour les fichiers de configuration, la documentation et les humains, et chaque écosystème d'outils a fait grandir sa propre convention.
+
+## Les trois conventions
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Le nom **IANA** est la norme du registre. Il commence toujours par `TLS_`, sépare chaque jeton par un tiret bas et utilise le mot `WITH` pour diviser l'échange de clés et l'authentification du chiffrement et du MAC.
+
+Le nom **OpenSSL** abandonne le préfixe `TLS_`, utilise des tirets au lieu de tirets bas, retire le `WITH` et écrit le chiffrement et la taille de clé en un seul jeton (`AES128` plutôt que `AES_128`). Pour les suites à RSA statique, OpenSSL abandonne aussi le jeton d'échange de clés redondant, donc `TLS_RSA_WITH_AES_128_CBC_SHA` devient simplement `AES128-SHA`. TLS 1.3 est l'exception : là, OpenSSL a adopté les noms IANA inchangés, donc `TLS_AES_128_GCM_SHA256` s'écrit pareil dans les deux.
+
+Le nom **GnuTLS** conserve le préfixe `TLS_` et les tirets bas mais, comme OpenSSL, omet le `WITH`. C'est le moins courant des trois.
+
+C'est exactement cette discordance qui fait croire que deux systèmes se contredisent alors qu'ils ont configuré la même suite. Un décodeur qui accepte n'importe lequel des noms, ainsi que le point de code brut, supprime les devinettes en les affichant tous d'un coup.
+
+## Lire un point de code
+
+Un point de code de suite de chiffrement, ce sont deux octets, écrits de plusieurs façons qui signifient le même nombre :
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+Le premier octet regroupe les suites apparentées : le bloc `0x00xx` contient les suites d'origine de TLS 1.0 et 1.1, `0xC0xx` contient les suites sur courbes elliptiques du RFC 5289 et apparentés, `0xCCxx` contient les suites ChaCha20-Poly1305, et `0x13xx` contient les suites TLS 1.3. Voir `0xC0` ou `0xCC` au début est un indice rapide que vous regardez une suite moderne ECDHE ou ChaCha20.
+
+## Ce que signifie la colonne Recommended
+
+Le registre de l'IANA a une colonne Recommended avec trois valeurs, et elles sont faciles à mal interpréter.
+
+`Y` signifie que la suite a suivi le processus de consensus de l'IETF et est recommandée pour un usage général au moment de l'enregistrement. `N` ne signifie pas que la suite est défaillante ; cela signifie qu'elle n'a pas suivi ce processus, a une applicabilité limitée ou vise un créneau précis. Les suites `CCM_8` sont marquées `N` pour exactement cette raison : l'étiquette tronquée est un compromis délibéré, pas un défaut.
+
+`D` est la forte. Elle signifie que la suite est déconseillée et ne devrait pas, ou ne doit pas, être utilisée selon la situation. Des familles entières sont passées en `D` à mesure que l'IETF les retire, dont les suites à RSA statique et, plus récemment, les suites `DHE` à corps fini. Une suite peut être cryptographiquement solide et tout de même marquée `D` pour des raisons d'écosystème, et c'est pourquoi le décodeur affiche la marque de l'IANA à côté de sa propre lecture de sécurité, au lieu de fondre les deux en un verdict unique. Elles répondent à des questions différentes : la construction est-elle solide, et le processus de normalisation veut-il encore que vous l'utilisiez ?
+
+## Mettre le tout ensemble
+
+Pour identifier une suite inconnue, collez la forme que vous avez — un nom IANA, un nom OpenSSL ou un point de code — dans le décodeur. Il résout la suite contre une copie intégrée du registre de l'IANA, affiche les autres noms, décompose la suite en ses parties et associe une évaluation de sécurité fondée sur des règles à la recommandation officielle de l'IANA. Les articles complémentaires expliquent les parties elles-mêmes : l'anatomie générale, le choix entre AEAD et CBC, la confidentialité persistante et ce que TLS 1.3 a changé.

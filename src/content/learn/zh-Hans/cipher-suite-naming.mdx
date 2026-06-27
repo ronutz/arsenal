@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "读懂密码套件名称：IANA、OpenSSL 和 GnuTLS"
+summary: "为什么同一个密码套件有三个不同的名称和一个两字节代码点，如何在 IANA、OpenSSL 和 GnuTLS 的约定之间互译，以及 IANA 那含 Y、N 和 D 的 Recommended 列究竟意味着什么。"
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## 为什么一个套件有许多名称
+
+一个密码套件至少可以写成三种形式，而这些差别会绊倒任何把服务器配置同抓包或扫描器报告相比对的人。IANA 称作 `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` 的套件，与 OpenSSL 称作 `ECDHE-RSA-AES128-GCM-SHA256` 的是同一个。它们描述线路上完全相同的字节，也就是代码点 `0xC02F`。
+
+代码点是协议真正使用的唯一东西。名称是为配置文件、文档和人提供的便利，而每个工具生态都长出了自己的一套约定。
+
+## 三种约定
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+**IANA** 名称是注册表的标准。它总是以 `TLS_` 开头，用下划线分隔每个标记，并用 `WITH` 一词把密钥交换和身份验证同密码与 MAC 分开。
+
+**OpenSSL** 名称去掉 `TLS_` 前缀，用连字符代替下划线，移除 `WITH`，并把密码和密钥长度写成单个标记（用 `AES128` 而非 `AES_128`）。对静态 RSA 套件，OpenSSL 还会去掉多余的密钥交换标记，于是 `TLS_RSA_WITH_AES_128_CBC_SHA` 就简化为 `AES128-SHA`。TLS 1.3 是例外：在那里 OpenSSL 原封不动地采用了 IANA 名称，所以 `TLS_AES_128_GCM_SHA256` 在两者中写法相同。
+
+**GnuTLS** 名称保留 `TLS_` 前缀和下划线，但和 OpenSSL 一样省去 `WITH`。它是三者中最少见的。
+
+正是这种不一致，让人们在配置了同一个套件时误以为两个系统彼此矛盾。一个能接受其中任一名称、也接受原始代码点的解码器，通过一次把它们全部显示出来，消除了猜测。
+
+## 读懂一个代码点
+
+一个密码套件代码点是两个字节，可写成多种形式，但都表示同一个数：
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+第一个字节把相关套件分组：`0x00xx` 块容纳最初的 TLS 1.0 和 1.1 套件，`0xC0xx` 容纳来自 RFC 5289 及相关文档的椭圆曲线套件，`0xCCxx` 容纳 ChaCha20-Poly1305 套件，`0x13xx` 容纳 TLS 1.3 套件。在开头看到 `0xC0` 或 `0xCC`，是一个迅速的线索，说明你正看着一个现代的 ECDHE 或 ChaCha20 套件。
+
+## Recommended 列意味着什么
+
+IANA 注册表有一个含三个取值的 Recommended 列，而它们很容易被误读。
+
+`Y` 表示该套件已走过 IETF 的共识流程，并在注册之时被推荐用于一般用途。`N` 并不表示该套件有缺陷，它表示该套件未走过那一流程、适用范围有限，或是面向某个特定的小众场景。`CCM_8` 套件正是因此被标为 `N`：截短的标签是一种刻意的取舍，而非缺陷。
+
+`D` 是分量重的那一个。它表示该套件被列为不建议，视情况而定不应或一律不得使用。随着 IETF 逐步淘汰，整族整族的套件已转入 `D`，其中包括静态 RSA 套件，以及更近期的有限域 `DHE` 套件。一个套件可以在密码学上稳健，却仍因生态方面的原因被标为 `D`，所以解码器把 IANA 标记摆在自己的安全评估旁边，而不是把两者熔成单一裁决。它们回答的是不同的问题：构造是否稳健，以及标准化流程是否仍希望你使用它。
+
+## 把这一切拼起来
+
+要辨识一个未知套件，把你手头的形式，无论是 IANA 名称、OpenSSL 名称还是代码点，粘贴进解码器。它会对照一份内置的 IANA 注册表副本解析该套件，显示其余名称，把套件拆解为各个部分，并把一份基于规则的安全评估同 IANA 的官方推荐配在一起。配套文章会解释各个部分本身：总体结构、AEAD 与 CBC 之间的取舍、前向保密，以及 TLS 1.3 改变了什么。

@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "Suites de chiffrement TLS 1.3 : ce qui a changé"
+summary: "Pourquoi une suite TLS 1.3 ne nomme qu'un chiffrement et un hachage, où sont passés l'échange de clés et l'authentification, et pourquoi la liste des suites est passée de centaines à une poignée."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Un type de suite différent
+
+TLS 1.3, défini dans le RFC 8446, a changé ce qu'une suite de chiffrement nomme. Dans TLS 1.2, une suite regroupait l'échange de clés, l'authentification, le chiffrement et le MAC. Dans TLS 1.3, une suite ne nomme que deux choses : le chiffrement AEAD et la fonction de hachage utilisée par la fonction de dérivation de clés.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Il n'y a ni échange de clés ni authentification dans le nom, parce que TLS 1.3 les négocie séparément. C'est le plus grand changement, et c'est pourquoi une suite TLS 1.3 paraît si courte à côté d'une suite TLS 1.2.
+
+## Où est passé l'échange de clés
+
+Dans TLS 1.3, l'échange de clés est porté par sa propre extension, `key_share`, et les groupes proposés sont listés dans `supported_groups`. L'authentification est négociée via `signature_algorithms`. Sortir cela de la suite a un véritable avantage : la poignée de suites de chiffrement se combine librement avec n'importe quel groupe pris en charge et n'importe quel algorithme de signature, au lieu de l'explosion combinatoire qui avait donné des centaines de suites enregistrées à TLS 1.2.
+
+Cela intègre aussi deux bons réglages par défaut. Tout échange de clés TLS 1.3 est éphémère, donc la confidentialité persistante est obligatoire plutôt qu'optionnelle. Et le transport de clé RSA statique, la manière classique de perdre la confidentialité persistante, a été entièrement supprimé ; RSA ne survit que comme algorithme de signature pour l'authentification.
+
+## Les cinq suites
+
+La spécification de base définit cinq suites, et en pratique vous verrez surtout les trois premières :
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Les cinq sont AEAD ; TLS 1.3 n'autorise rien d'autre. `TLS_AES_128_GCM_SHA256` est d'implémentation obligatoire, ce qui en fait le dénominateur commun sûr. ChaCha20-Poly1305 est le choix habituel sur le matériel sans accélération AES. Les deux suites CCM visent les environnements contraints, et `CCM_8` échange une étiquette d'authentification plus courte contre moins de surcharge, et c'est pourquoi l'IANA ne la marque pas comme recommandée même si c'est une suite TLS 1.3.
+
+## Même registre, non interchangeables
+
+TLS 1.3 réutilise le même registre de suites de chiffrement de l'IANA et le même espace de code de deux octets que les versions antérieures, mais les deux définitions ne sont pas interchangeables. Une valeur de suite TLS 1.3 ne peut pas être utilisée avec TLS 1.2, et une valeur de suite TLS 1.2 ne peut pas être utilisée avec TLS 1.3. Les points de code se trouvent dans une partie auparavant inutilisée de la plage (`0x13xx`), ce qui les garde visuellement distincts.
+
+C'est pourquoi un décodeur doit savoir à quel monde appartient une suite. Un nom sans le jeton `WITH` dans la plage `0x13xx` est une suite TLS 1.3 dont l'échange de clés est négocié ailleurs ; un nom avec le jeton `WITH` est une suite TLS 1.2 et antérieurs dont l'échange de clés est explicité.
+
+## Protection contre la rétrogradation
+
+Comme les suites plus anciennes existent toujours pour les pairs plus anciens, TLS 1.3 ajoute une protection contre un attaquant qui forcerait une rétrogradation. Un serveur qui prend en charge TLS 1.3 mais finit par négocier une version plus ancienne écrit une valeur sentinelle fixe dans les huit derniers octets de son `server random`. Un vrai client TLS 1.3 vérifie cette sentinelle et abandonne si elle apparaît sur une connexion qui aurait dû être en 1.3, ce qui transforme une rétrogradation silencieuse en un handshake échoué. La liste des suites de chiffrement a rétréci, mais le protocole autour d'elle est devenu plus défensif.

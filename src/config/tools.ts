@@ -35,6 +35,7 @@ export const tools: ToolEntry[] = [
   { id: "hmac", href: "/tools/hmac", category: "hashing", available: true },
   { id: "uuid", href: "/tools/uuid", category: "identifiers", available: true },
   { id: "x509", href: "/tools/x509", category: "pki", available: true },
+  { id: "cipher", href: "/tools/cipher", category: "transport", available: true },
   { id: "ipv6", href: "/tools/ipv6", category: "networking", available: true },
   { id: "cidr", href: "/#cidr", category: "networking", available: true },
 ];

@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD'a karşı CBC: mod neden önemlidir"
+summary: "AES-GCM gibi bir AEAD şifresi ile ayrı bir HMAC'li daha eski bir CBC şifresi arasındaki pratik fark, MAC-then-encrypt'i ortadan kaldıran dolgu kâhini saldırıları ve AEAD'ın hâlâ istediği tek ödün."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Bir kaydı şifrelemenin iki yolu
+
+Bir TLS el sıkışması anahtarlar üzerinde anlaştıktan sonra, her uygulama verisi kaydı hem şifrelenmiş, böylece bir dinleyici onu okuyamaz, hem de doğrulanmış olmalıdır, böylece bir saldırgan onu kurcalayamaz. Bir şifre paketinin bunu yapmasının iki geniş yolu vardır ve paket adındaki mod belirteci hangisi olduğunu söyler.
+
+AES-GCM, AES-CCM veya ChaCha20-Poly1305 gibi bir **AEAD** şifresi, her iki görevi de tek bir ilkelde yapar. Ona düz metni ve bazı ilişkili verileri verirsiniz, o da şifreli metni artı bir kimlik doğrulama etiketi döndürür. Şifre çözme etiketi ve veriyi birlikte doğrular ve bir şey değiştirildiyse tek bir işlem olarak başarısız olur.
+
+Bir **CBC** şifresi yalnızca şifrelemeyi yapar. Bütünlük için paket onu ayrı bir HMAC ile eşler, bu HMAC paketin son özetiyle adlandırılır (örneğin `TLS_RSA_WITH_AES_128_CBC_SHA` içindeki `SHA`). Protokol iki işlemi birbirine cıvatalar ve gerçekleştikleri sıranın çok büyük önem taşıdığı ortaya çıkar.
+
+## MAC-then-encrypt neden ters gitti
+
+TLS başlangıçta MAC-then-encrypt kullanıyordu: HMAC'i düz metin üzerinden hesapla, ekle, sonucu bir blok sınırına kadar doldur, sonra hepsini CBC ile şifrele. Sorun şu ki alıcı, MAC'i denetleyebilmeden önce şifreyi çözüp dolguyu çıkarmak zorundadır, bu yüzden bozuk dolgu ile yanlış bir MAC farklı aşamalarda saptanır. Bir kaydın dolguda mı yoksa MAC'te mi başarısız olduğunu görebilen bir saldırgan, bir hata iletisiyle ya da yalnızca yanıt süresiyle, deneme başına düz metin hakkında bir bit öğrenir. Tekrarlandığında o bit, tüm iletiye dönüşür.
+
+Bu bir dolgu kâhinidir ve kuramsal değildir. Yıllar içinde BEAST, Lucky13 ve POODLE dâhil bir dizi saldırı, TLS'teki CBC kayıt korumasını sömürdü. Her biri giderek daha hassas sabit zamanlı kodla yamandı, ama altta yatan yapı yeni türevler üretmeyi sürdürdü. Sektörün çıkardığı ders, onu kullanmayı bırakmak oldu.
+
+## AEAD neden artık varsayılan
+
+AEAD, sorun sınıfının tamamını ortadan kaldırır. Sondalanacak ayrı bir dolgu aşaması ve süresi ölçülecek ayrı bir MAC aşaması yoktur, çünkü doğrulama ve şifre çözme, başarılı olan ya da olmayan tek bir işlemdir. TLS 1.3 bunu sonucuna götürür ve yalnızca AEAD şifrelerine izin verir, CBC paketleri TLS 1.3'ün parçası değildir. TLS 1.2'de ikisi de vardır ve bu yüzden çözücü, şifre AES olsa bile bir CBC-HMAC-SHA1 paketini zayıf olarak işaretler.
+
+Bir paket adında `GCM`, `CCM` veya `POLY1305` gördüğünüzde AEAD'a bakıyorsunuzdur. `CBC` gördüğünüzde daha eski yapıya bakıyorsunuzdur ve modern bir hizmette bu en fazla bir yedek olmalıdır.
+
+## AEAD'ın hâlâ istediği ödün
+
+AEAD keskin köşelerden yoksun değildir, onları yalnızca kaydırır. Her AEAD şifrelemesi bir nonce'a, bir kez kullanılan bir sayıya ihtiyaç duyar ve özellikle GCM'in güvenliği, aynı nonce aynı anahtarla yeniden kullanılırsa çöker. TLS, nonce'ları sizin için bağlantı başına bir sayaçla yönetir, bu yüzden bu, TLS'in kendisi için değil kendi çerçevelemesini kuran sistemler için bir tehlikedir, ama AEAD tasarımlarının nonce yapımını bu kadar önemsemesinin nedeni budur.
+
+Diğer ödün, kimlik doğrulama etiketinin uzunluğudur. Standart GCM ve Poly1305 paketleri 16 baytlık bir etiket kullanır. `CCM_8` paketleri, kısıtlı bağlantılarda ek yükten tasarruf için bunu 8 bayta kısaltır, bu da bütünlüğü ölçülebilir biçimde zayıflatır. Bu yüzden `TLS_AES_128_CCM_8_SHA256`, IANA'nın yine de önerilen olarak işaretlemeyi reddettiği gerçek bir TLS 1.3 AEAD paketidir: mod moderndir, ama kısa etiket, genel internetin yapması gerekmeyen bir ödündür.

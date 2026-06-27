@@ -108,7 +108,8 @@
       "hashing": "哈希与加密",
       "identifiers": "标识符",
       "pki": "证书与 PKI",
-      "networking": "网络"
+      "networking": "网络",
+      "transport": "TLS 与传输"
     },
     "hash": {
       "name": "哈希生成器（SHA-1/256/384/512）",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "组播"
       }
+    },
+    "cipher": {
+      "name": "密码套件解码器",
+      "blurb": "输入一个 TLS 密码套件，可以是 IANA 名称、OpenSSL 或 GnuTLS 名称，或十六进制代码点，将其拆解为密钥交换、身份验证、加密算法、模式和 MAC，并给出通俗的安全评估和 IANA 的官方推荐状态。完全在你的浏览器中针对内置的 IANA 注册表副本运行。",
+      "inputLabel": "密码套件",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256、ECDHE-RSA-AES128-GCM-SHA256 或 0x1301",
+      "runsLocally": "解码在本地针对内置的 IANA TLS 密码套件注册表副本运行。不会向任何地方发送任何内容。",
+      "notInRegistryNote": "该名称已按结构解析，但未在内置的 IANA 注册表快照中找到，因此不显示其代码点和等效名称。",
+      "errors": {
+        "empty": "请输入要解码的密码套件。",
+        "format": "这不是密码套件。请输入 IANA 名称（TLS_...）、OpenSSL 名称或十六进制代码点（如 0x1301）。",
+        "unknown": "这是有效的代码点格式，但它不是 IANA 注册表中已分配的密码套件。"
+      },
+      "ratings": {
+        "recommended": "推荐",
+        "secure": "安全",
+        "weak": "弱",
+        "insecure": "不安全",
+        "unknown": "未知"
+      },
+      "iana": {
+        "Y": "IANA：推荐",
+        "N": "IANA：不推荐",
+        "D": "IANA：不建议"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "不在 IANA 快照中"
+      },
+      "panels": {
+        "identity": "标识",
+        "components": "组成部分",
+        "security": "安全性"
+      },
+      "fields": {
+        "codePoint": "代码点",
+        "name": "IANA 名称",
+        "openssl": "OpenSSL 名称",
+        "gnutls": "GnuTLS 名称",
+        "protocol": "协议",
+        "dtls": "DTLS-OK",
+        "references": "参考"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 及更早版本"
+      },
+      "comp": {
+        "keyExchange": "密钥交换",
+        "authentication": "身份验证",
+        "forwardSecrecy": "前向保密",
+        "cipher": "加密算法",
+        "mode": "模式",
+        "aead": "AEAD",
+        "prf": "PRF/KDF 哈希",
+        "mac": "MAC",
+        "yes": "是",
+        "no": "否",
+        "bits": "{n} 位",
+        "negotiatedSeparately": "单独协商（TLS 1.3）"
+      },
+      "reasons": {
+        "nullCipher": "NULL 加密：流量完全不加密。",
+        "anon": "匿名密钥交换：对端未经身份验证，因此无法抵御主动的中间人攻击。",
+        "export40": "出口级 40 位密钥：可被轻易暴力破解，是 1990 年代出口管制规则的遗留物。",
+        "rc4": "RC4 流密码：其有偏的密钥流使其已被攻破，RFC 7465 禁止在 TLS 中使用。",
+        "singleDes": "56 位密钥的单 DES：可在数小时内被暴力破解。",
+        "rc2": "RC2：过时的 40/64 位密码，不适合现代使用。",
+        "tripleDes": "3DES 的分组为 64 位，这使其易受 Sweet32 生日攻击（CVE-2016-2183）。RFC 8429 已将其弃用。",
+        "md5Mac": "MD5 MAC：MD5 在密码学上已被攻破。",
+        "cbcMac": "采用 HMAC-SHA1 或 MD5 MAC 的 CBC 使用先 MAC 后加密，易受 BEAST 和 Lucky13 等填充预言机攻击。",
+        "ccm8": "CCM_8 将认证标签截断为 8 字节，削弱了完整性。IANA 未将其标记为推荐。",
+        "noFs": "无前向保密：采用静态密钥交换时，一个被泄露的长期密钥即可解密过去的会话。现代指南要求使用 ECDHE 或 DHE。",
+        "legacyCipher": "{value} 是一种过时的密码，对 TLS 而言已被淘汰。",
+        "aead": "AEAD 加密（认证加密）：在单一原语中同时实现机密性和完整性，没有可被误用的独立 MAC。",
+        "fs": "前向保密：临时密钥交换可保证过去的流量安全，即使长期密钥日后被泄露也是如此。",
+        "tls13": "TLS 1.3 套件：仅使用现代 AEAD 密码，密钥交换单独协商且始终为临时密钥。",
+        "ianaD": "IANA 将此套件标记为“D”（不建议）：视情况而定，不应或不得使用。",
+        "ianaN": "IANA 未将此套件标记为“推荐”：适用范围有限，或未经过 IETF 共识流程。",
+        "signalling": "信令套件（SCSV）：并非真正的密码，而是携带协议信号，例如降级保护或重新协商信息。"
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "返回首页"
   },
   "footer": {
-    "redEducation": "通过 Red Education 预订官方培训",
+    "redEducation": "通过 <b>Red Education</b> 预订官方培训",
     "privacy": "隐私",
     "builtWith": "由 Rodolfo Nützmann 使用 CONCORD 打造",
     "colophon": "如何打造",
-    "openSource": "其引擎是开源的",
-    "rights": "以开放及商业条款提供。",
     "contribute": "帮助改进翻译",
     "feedback": "提交反馈",
     "api": "API 参考",
-    "contributeTools": "贡献一个工具"
+    "contributeTools": "贡献一个工具",
+    "license": "许可",
+    "coffee": "请我喝杯咖啡"
   },
   "search": {
     "label": "搜索",
@@ -883,5 +965,16 @@
     "viewReference": "参考",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "无法加载 Swagger UI。"
+  },
+  "license_page": {
+    "eyebrow": "开放内核",
+    "title": "许可",
+    "lede": "ronutz.com 采用开放内核：驱动每个工具的引擎是开源的，而在其之上构建的网站则不是。",
+    "openHeading": "开源：引擎",
+    "openBody": "@ronutz/netcore 是本站每个工具和每个 API 响应背后的引擎，依据 Apache License 2.0 发布。浏览器内工具调用的函数与 API 调用的是同一个，因此你可以在该许可下自由使用、修改并在其基础上构建。",
+    "closedHeading": "闭源：本网站",
+    "closedBody": "网站本身是闭源的。其设计、界面、文字内容（包括每一篇 Learn 文章）、品牌，以及这些工具在此处被组合与呈现的特定方式，均为专有财产，保留所有权利。未经事先书面同意，不得复制、再现、修改、再分发本网站或其内容，或据此创作衍生作品。",
+    "contact": "对许可有疑问？<a>请联系我们。</a>",
+    "backHome": "返回工具"
   }
 }

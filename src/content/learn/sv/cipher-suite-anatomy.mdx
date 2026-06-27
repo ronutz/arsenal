@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomin hos en TLS-chiffersvit"
+summary: "Vad en TLS-chiffersvit faktiskt namnger, hur man läser en svit som TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 del för del, och hur samma kodpunkt på två byte dyker upp under tre olika namnkonventioner."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Vad en chiffersvit är
+
+En TLS-chiffersvit är ett namngivet knippe kryptografiska val som en klient och en server kommer överens om under handskakningen. Ett enda namn som `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` packar flera oberoende beslut i en identifierare: hur de två sidorna kommer överens om en delad hemlighet, hur servern bevisar vem den är, vilken algoritm som krypterar applikationsdatan och hur den datan skyddas mot manipulering.
+
+Varje registrerad svit har också en kodpunkt på två byte, tilldelad av IANA. Namnet ovan är `0xC02F` på tråden. Handskakningen skickar aldrig textnamnet; den skickar de två bytena. Namnen finns för människor, och det finns mer än en namnkonvention – en vanlig källa till förvirring.
+
+## Uppgifterna som en svit beskriver
+
+För TLS 1.2 och tidigare namnger en svit upp till fem saker:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**Nyckelutbyte** är hur de två sidorna upprättar en delad hemlighet. `ECDHE` är efemär Diffie-Hellman på elliptiska kurvor, som ger forward secrecy. Andra värden du ser är `DHE` (efemär Diffie-Hellman över ändlig kropp), `RSA` (statiskt RSA-nyckeltransport, ingen forward secrecy) och `PSK` (en fördelad nyckel).
+
+**Autentisering** är hur servern (och ibland klienten) bevisar sin identitet, nästan alltid med den privata nyckeln bakom sitt certifikat. `RSA` och `ECDSA` är de vanliga värdena. När en svit använder statiskt `RSA` för nyckelutbytet gör samma RSA-nyckel båda uppgifterna, så namnet listar `RSA` bara en gång.
+
+**Blockchiffer och nyckellängd** är den symmetriska algoritmen som krypterar den faktiska trafiken när handskakningen är klar. `AES_128` och `AES_256` dominerar; `CHACHA20` är det vanliga alternativet på enheter utan AES-hårdvara.
+
+**Läge** gör blockchiffret till något som kan kryptera en ström av poster. `GCM`, `CCM` och `CHACHA20_POLY1305` är AEAD-lägen som hanterar integriteten själva. `CBC` är det äldre läget som behöver en separat MAC.
+
+**MAC- eller PRF-hash** är det sista token. I en CBC-svit är det HMAC-hashen som autentiserar varje post. I en AEAD-svit ger chiffret redan integritet, så den avslutande hashen namnger i stället den PRF som handskakningen använder för att härleda nycklar (`SHA256` eller `SHA384`).
+
+## Att läsa den baklänges
+
+När du kan grammatiken kan du läsa vilken TLS 1.2-svit som helst baklänges med en blick. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` är efemär Diffie-Hellman över ändlig kropp för nyckelutbytet, RSA för autentiseringen, AES med 256-bitarsnyckel i GCM-läge, och SHA-384 som handskakningens PRF. Eftersom GCM är AEAD finns ingen separat MAC.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` är den varnande motsatsen: statiskt RSA-nyckeltransport utan forward secrecy, AES-128 i CBC-läge, och en HMAC-SHA1-MAC. Allt med den är ett arv från förr, och därför märker IANA den nu som avrådd.
+
+## En svit, tre namn
+
+Samma `0xC02F` dyker upp under tre konventioner:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+IANA-namnet är registerstandarden. OpenSSL använder bindestreck, släpper `WITH` och skriver `AES128` som ett token, och därför kan en OpenSSL-konfiguration och en paketdump se ut att vara oense fast de namnger samma svit. Avkodaren accepterar alla tre formerna, plus den råa kodpunkten, och visar de andra.
+
+## Att avkoda är inte att gilla
+
+Att läsa en svit talar om vad den skulle göra, inte om du borde använda den. Ett namn kan vara helt korrekt format och ändå beskriva RC4, anonymt nyckelutbyte eller nycklar av exportstyrka. Avkodaren parar den strukturella uppdelningen med en säkerhetsbedömning och den oberoende IANA-rekommendationen, så att ett friskt utseende namn med ett ödesdigert fel inte slinker igenom. Följdartiklarna täcker vad som gör en svit modern: AEAD i stället för CBC, och forward secrecy i nyckelutbytet.

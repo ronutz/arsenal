@@ -108,7 +108,8 @@
       "hashing": "Hashing & Krypto",
       "identifiers": "Bezeichner",
       "pki": "Zertifikate & PKI",
-      "networking": "Netzwerk"
+      "networking": "Netzwerk",
+      "transport": "TLS und Transport"
     },
     "hash": {
       "name": "Hash-Generator (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "Multicast"
       }
+    },
+    "cipher": {
+      "name": "Cipher-Suite-Decoder",
+      "blurb": "Gib eine TLS-Cipher-Suite ein, als IANA-Name, OpenSSL- oder GnuTLS-Name oder als Hex-Codepunkt, um sie in Schlüsselaustausch, Authentifizierung, Verschlüsselung, Modus und MAC aufzuschlüsseln, mit einer verständlichen Sicherheitsbewertung und der offiziellen IANA-Empfehlung. Läuft vollständig in deinem Browser gegen eine eingebettete Kopie der IANA-Registry.",
+      "inputLabel": "Cipher-Suite",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256 oder 0x1301",
+      "runsLocally": "Die Dekodierung läuft lokal gegen eine eingebettete Kopie der IANA-TLS-Cipher-Suite-Registry. Es wird nichts irgendwohin gesendet.",
+      "notInRegistryNote": "Dieser Name wurde strukturell analysiert, aber nicht im eingebetteten Abzug der IANA-Registry gefunden – sein Codepunkt und die alternativen Namen werden daher nicht angezeigt.",
+      "errors": {
+        "empty": "Gib eine Cipher-Suite zum Dekodieren ein.",
+        "format": "Das ist keine Cipher-Suite. Gib einen IANA-Namen (TLS_...), einen OpenSSL-Namen oder einen Hex-Codepunkt wie 0x1301 ein.",
+        "unknown": "Das ist ein gültiges Codepunkt-Format, aber keine in der IANA-Registry vergebene Cipher-Suite."
+      },
+      "ratings": {
+        "recommended": "Empfohlen",
+        "secure": "Sicher",
+        "weak": "Schwach",
+        "insecure": "Unsicher",
+        "unknown": "Unbekannt"
+      },
+      "iana": {
+        "Y": "IANA: empfohlen",
+        "N": "IANA: nicht empfohlen",
+        "D": "IANA: abgeraten"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Nicht im IANA-Abzug"
+      },
+      "panels": {
+        "identity": "Identität",
+        "components": "Komponenten",
+        "security": "Sicherheit"
+      },
+      "fields": {
+        "codePoint": "Codepunkt",
+        "name": "IANA-Name",
+        "openssl": "OpenSSL-Name",
+        "gnutls": "GnuTLS-Name",
+        "protocol": "Protokoll",
+        "dtls": "DTLS-OK",
+        "references": "Referenzen"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 und früher"
+      },
+      "comp": {
+        "keyExchange": "Schlüsselaustausch",
+        "authentication": "Authentifizierung",
+        "forwardSecrecy": "Forward Secrecy",
+        "cipher": "Verschlüsselung",
+        "mode": "Modus",
+        "aead": "AEAD",
+        "prf": "PRF-/KDF-Hash",
+        "mac": "MAC",
+        "yes": "Ja",
+        "no": "Nein",
+        "bits": "{n} Bit",
+        "negotiatedSeparately": "Separat ausgehandelt (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "NULL-Verschlüsselung: Der Datenverkehr wird überhaupt nicht verschlüsselt.",
+        "anon": "Anonymer Schlüsselaustausch: Die Gegenstelle wird nicht authentifiziert und bietet damit keinen Schutz vor einem aktiven Man-in-the-Middle.",
+        "export40": "Schlüssel in Exportstärke (40 Bit): trivial per Brute Force zu knacken, ein Relikt der Exportregeln der 1990er.",
+        "rc4": "RC4-Stromchiffre: Der verzerrte Schlüsselstrom macht sie gebrochen, und RFC 7465 verbietet sie für TLS.",
+        "singleDes": "Einfaches DES mit 56-Bit-Schlüssel: in Stunden per Brute Force zu knacken.",
+        "rc2": "RC2: eine veraltete 40/64-Bit-Chiffre, für moderne Nutzung nicht sicher.",
+        "tripleDes": "3DES hat eine 64-Bit-Blockgröße, was es dem Sweet32-Geburtstagsangriff aussetzt (CVE-2016-2183). RFC 8429 erklärt es für veraltet.",
+        "md5Mac": "MD5-MAC: MD5 ist kryptografisch gebrochen.",
+        "cbcMac": "CBC mit einem HMAC-SHA1- oder MD5-MAC nutzt MAC-then-encrypt und ist Padding-Oracle-Angriffen wie BEAST und Lucky13 ausgesetzt.",
+        "ccm8": "CCM_8 kürzt das Authentifizierungs-Tag auf 8 Byte und schwächt damit die Integrität. IANA stuft es nicht als empfohlen ein.",
+        "noFs": "Keine Forward Secrecy: Bei statischem Schlüsselaustausch kann ein kompromittierter Langzeitschlüssel vergangene Sitzungen entschlüsseln. Moderne Vorgaben verlangen ECDHE oder DHE.",
+        "legacyCipher": "{value} ist eine veraltete Chiffre, für TLS überholt.",
+        "aead": "AEAD-Chiffre (authentifizierte Verschlüsselung): Vertraulichkeit und Integrität in einer Primitive, ohne separaten MAC, der falsch verwendet werden könnte.",
+        "fs": "Forward Secrecy: Ein flüchtiger Schlüsselaustausch hält vergangenen Verkehr sicher, selbst wenn der Langzeitschlüssel später kompromittiert wird.",
+        "tls13": "TLS-1.3-Suite: nur moderne AEAD-Chiffren, mit separat ausgehandeltem und stets flüchtigem Schlüsselaustausch.",
+        "ianaD": "IANA kennzeichnet diese Suite als \"D\" (abgeraten): Sie SOLLTE NICHT oder DARF NICHT verwendet werden, je nach Situation.",
+        "ianaN": "IANA kennzeichnet diese Suite nicht als \"Empfohlen\": begrenzte Anwendbarkeit oder kein IETF-Konsensverfahren durchlaufen.",
+        "signalling": "Signalisierungs-Suite (SCSV): keine echte Chiffre, sondern ein Protokollsignal wie Downgrade-Schutz oder Renegotiation-Info."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Zurück zur Startseite"
   },
   "footer": {
-    "redEducation": "Offizielles Training mit Red Education buchen",
+    "redEducation": "Offizielles Training mit <b>Red Education</b> buchen",
     "privacy": "Datenschutz",
     "builtWith": "Von Rodolfo Nützmann mit CONCORD gebaut",
     "colophon": "Wie dies gebaut wurde",
-    "openSource": "Die Engine ist Open Source",
-    "rights": "Verfügbar zu offenen und kommerziellen Bedingungen.",
     "contribute": "Übersetzungen verbessern",
     "feedback": "Feedback senden",
     "api": "API-Referenz",
-    "contributeTools": "Ein Werkzeug beitragen"
+    "contributeTools": "Ein Werkzeug beitragen",
+    "license": "Lizenz",
+    "coffee": "Spendier mir einen Kaffee"
   },
   "search": {
     "label": "Suche",
@@ -883,5 +965,16 @@
     "viewReference": "Referenz",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Swagger UI konnte nicht geladen werden."
+  },
+  "license_page": {
+    "eyebrow": "Open Core",
+    "title": "Lizenz",
+    "lede": "ronutz.com ist Open Core: die Engine hinter jedem Tool ist quelloffen, die darauf aufgebaute Website ist es nicht.",
+    "openHeading": "Open Source – die Engine",
+    "openBody": "@ronutz/netcore, die Engine hinter jedem Tool und jeder API-Antwort auf dieser Website, wird unter der Apache License 2.0 veröffentlicht. Dieselbe Funktion, die die Tools im Browser aufrufen, ruft auch die API auf, sodass Sie sie unter dieser Lizenz frei verwenden, ändern und darauf aufbauen dürfen.",
+    "closedHeading": "Closed Source – diese Website",
+    "closedBody": "Die Website selbst ist Closed Source. Ihr Design, ihre Oberfläche, ihre Inhalte (einschließlich jedes Learn-Artikels), ihre Marke und die besondere Art, wie diese Tools hier zusammengestellt und dargestellt werden, sind geschützt, alle Rechte vorbehalten. Es wird keine Erlaubnis erteilt, die Website oder ihre Inhalte ohne vorherige schriftliche Zustimmung zu kopieren, zu vervielfältigen, zu verändern, weiterzuverbreiten oder daraus abgeleitete Werke zu erstellen.",
+    "contact": "Fragen zur Lizenz? <a>Nehmen Sie Kontakt auf.</a>",
+    "backHome": "Zurück zu den Tools"
   }
 }

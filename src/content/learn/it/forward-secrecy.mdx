@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "La forward secrecy e lo scambio di chiavi"
+summary: "Cosa offre la forward secrecy, perché il trasporto di chiave RSA statico non la fornisce, come la forniscono ECDHE e DHE, e perché autenticazione e scambio di chiavi sono due compiti distinti che il nome di una suite tiene separati."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## La domanda a cui risponde la forward secrecy
+
+Immagina che un aggressore registri il tuo traffico cifrato oggi e lo memorizzi. Mesi dopo ottiene la chiave privata a lungo termine del server, magari tramite una violazione o un'ordinanza del tribunale. Può ora tornare indietro e decifrare il traffico che ha catturato?
+
+Se la risposta è no, la connessione aveva la **forward secrecy**, talvolta chiamata perfect forward secrecy. Se la risposta è sì, non l'aveva. La differenza si riduce interamente allo scambio di chiavi nominato nella suite di cifratura, ed è per questo che è una delle prime cose che il decodificatore riferisce.
+
+## RSA statico: comodo e fragile
+
+Nel vecchio scambio di chiavi RSA statico, il client sceglie il segreto che proteggerà la sessione, lo cifra con la chiave pubblica del server presa dal suo certificato e lo invia. Solo la chiave privata del server può decifrarlo, quindi la sessione è privata dagli origliatori al momento.
+
+La proprietà fatale è che il segreto di sessione era protetto dalla chiave a lungo termine del server. Se quella chiave trapela mai, ogni sessione passata che l'ha usata può essere scartata da una registrazione, perché il segreto cifrato è proprio lì, nell'handshake catturato. La compromissione di una chiave rompe retroattivamente ogni conversazione che ha mai protetto. Le suite che iniziano con `TLS_RSA_WITH_` funzionano così, e il decodificatore le segna come prive di forward secrecy.
+
+## Diffie-Hellman effimero: la soluzione
+
+Il Diffie-Hellman effimero recide il legame tra il segreto di sessione e qualsiasi chiave a lungo termine. Per ogni connessione, le due parti generano coppie di chiavi Diffie-Hellman nuove e usa e getta, scambiano le metà pubbliche, e ciascuna combina la propria metà privata con la metà pubblica dell'altra per arrivare allo stesso segreto condiviso. Le metà private non lasciano mai le loro macchine e vengono scartate alla fine della connessione.
+
+Poiché il segreto condiviso non è mai stato cifrato sotto la chiave a lungo termine del server, e le chiavi private effimere non esistono più, una compromissione successiva della chiave a lungo termine non rivela nulla sulle sessioni passate. Semplicemente non c'è nulla nella registrazione da scartare.
+
+Vedrai questo come `ECDHE`, Diffie-Hellman effimero su curve ellittiche, o `DHE`, la variante più vecchia a campo finito. ECDHE è più veloce ed è il valore predefinito moderno; DHE è in via di dismissione, ed è per questo che persino una solida suite DHE-AEAD come `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` ora porta una marca di sconsigliato della IANA. I cugini statici e non effimeri `ECDH` e `DH`, senza la `E` finale, non forniscono forward secrecy.
+
+## L'autenticazione è un compito a parte
+
+Una confusione comune è pensare che rimuovere l'RSA statico significhi rimuovere l'RSA. Non è così. Scambio di chiavi e autenticazione sono due compiti diversi, e il nome di una suite li elenca separatamente.
+
+In `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, l'`ECDHE` svolge lo scambio di chiavi e l'`RSA` svolge l'autenticazione: il server firma i valori effimeri dell'handshake con la chiave privata dietro il suo certificato RSA, dimostrando di esserne il legittimo titolare. Il segreto di sessione proviene dallo scambio Diffie-Hellman effimero, quindi la forward secrecy regge, mentre il certificato dimostra ancora l'identità. L'articolo sull'anatomia dei certificati tratta come funziona questo legame d'identità.
+
+## Perché TLS 1.3 l'ha resa obbligatoria
+
+TLS 1.3 ha risolto la questione rimuovendo del tutto il trasporto di chiave RSA statico. Ogni scambio di chiavi di TLS 1.3 è effimero, quindi la forward secrecy non è più qualcosa da scegliere selezionando la suite giusta; è garantita dal protocollo. RSA ed ECDSA rimangono solo come algoritmi di firma per l'autenticazione. È anche per questo che il nome di una suite TLS 1.3 non ha alcun token di scambio di chiavi: non c'è più un'opzione priva di forward secrecy da nominare.
+
+## Raccogliere ora, decifrare dopo
+
+La forward secrecy protegge da una compromissione di chiave che avvenga a posteriori, ma presuppone che la matematica Diffie-Hellman sottostante resti difficile. La preoccupazione incombente è un futuro computer quantistico in grado di rompere gli odierni scambi di chiavi su curve ellittiche, il che dà al traffico registrato una lunga durata utile per un aggressore disposto ad aspettare. Questa è la minaccia del raccogliere ora e decifrare dopo, e sta spingendo verso scambi di chiavi ibridi post-quantistici, che eseguono insieme uno scambio classico e uno resistente al quantistico. La forward secrecy resta necessaria; ha solo smesso di essere presunta sufficiente per sempre.

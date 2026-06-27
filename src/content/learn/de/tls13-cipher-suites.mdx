@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "TLS-1.3-Cipher-Suites: Was sich geändert hat"
+summary: "Warum eine TLS-1.3-Suite nur eine Chiffre und einen Hash benennt, wohin Schlüsselaustausch und Authentifizierung gewandert sind und warum die Liste der Suiten von Hunderten auf eine Handvoll geschrumpft ist."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Eine andere Art von Suite
+
+TLS 1.3, definiert in RFC 8446, hat geändert, was eine Cipher-Suite benennt. In TLS 1.2 bündelte eine Suite Schlüsselaustausch, Authentifizierung, Chiffre und MAC. In TLS 1.3 benennt eine Suite nur zwei Dinge: die AEAD-Chiffre und die Hash-Funktion, die von der Schlüsselableitungsfunktion verwendet wird.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Es gibt keinen Schlüsselaustausch und keine Authentifizierung im Namen, weil TLS 1.3 diese separat aushandelt. Das ist die größte Änderung, und deshalb sieht eine TLS-1.3-Suite neben einer TLS-1.2-Suite so kurz aus.
+
+## Wohin der Schlüsselaustausch gewandert ist
+
+In TLS 1.3 wird der Schlüsselaustausch über seine eigene Erweiterung `key_share` getragen, und die angebotenen Gruppen stehen in `supported_groups`. Die Authentifizierung wird über `signature_algorithms` ausgehandelt. Dies aus der Suite herauszuziehen hat einen echten Vorteil: Die Handvoll Cipher-Suites kombiniert sich frei mit jeder unterstützten Gruppe und jedem Signaturalgorithmus, statt der kombinatorischen Explosion, die TLS 1.2 Hunderte registrierter Suiten beschert hatte.
+
+Es verankert außerdem zwei gute Standardwerte. Jeder TLS-1.3-Schlüsselaustausch ist flüchtig, daher ist Forward Secrecy verpflichtend statt optional. Und der statische RSA-Schlüsseltransport, der klassische Weg, Forward Secrecy zu verlieren, wurde vollständig entfernt; RSA überlebt nur als Signaturalgorithmus für die Authentifizierung.
+
+## Die fünf Suiten
+
+Die Basisspezifikation definiert fünf Suiten, und in der Praxis sehen Sie meist die ersten drei:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Alle fünf sind AEAD; TLS 1.3 lässt nichts anderes zu. `TLS_AES_128_GCM_SHA256` ist verpflichtend zu implementieren, was es zum sicheren gemeinsamen Nenner macht. ChaCha20-Poly1305 ist die übliche Wahl auf Hardware ohne AES-Beschleunigung. Die beiden CCM-Suiten zielen auf eingeschränkte Umgebungen, und `CCM_8` tauscht eine kürzere Authentifizierungs-Tag gegen geringeren Overhead, weshalb die IANA es nicht als empfohlen kennzeichnet, obwohl es eine TLS-1.3-Suite ist.
+
+## Dieselbe Registry, nicht austauschbar
+
+TLS 1.3 verwendet dieselbe IANA-Cipher-Suite-Registry und denselben Zwei-Byte-Coderaum wie frühere Versionen, aber die beiden Definitionen sind nicht austauschbar. Ein TLS-1.3-Suite-Wert kann nicht mit TLS 1.2 verwendet werden, und ein TLS-1.2-Suite-Wert kann nicht mit TLS 1.3 verwendet werden. Die Codepunkte liegen zufällig in einem zuvor ungenutzten Teil des Bereichs (`0x13xx`), was sie optisch unterscheidbar hält.
+
+Deshalb muss ein Decoder wissen, zu welcher Welt eine Suite gehört. Ein Name ohne das `WITH`-Token im Bereich `0x13xx` ist eine TLS-1.3-Suite, deren Schlüsselaustausch anderswo ausgehandelt wird; ein Name mit dem `WITH`-Token ist eine Suite für TLS 1.2 und früher, deren Schlüsselaustausch ausgeschrieben ist.
+
+## Downgrade-Schutz
+
+Da ältere Suiten für ältere Gegenstellen weiter existieren, fügt TLS 1.3 Schutz dagegen hinzu, dass ein Angreifer ein Downgrade erzwingt. Ein Server, der TLS 1.3 unterstützt, aber am Ende eine ältere Version aushandelt, schreibt einen festen Sentinel-Wert in die letzten acht Bytes seines `server random`. Ein echter TLS-1.3-Client prüft auf diesen Sentinel und bricht ab, wenn er auf einer Verbindung erscheint, die 1.3 hätte sein sollen, was ein stilles Downgrade in einen fehlgeschlagenen Handshake verwandelt. Die Liste der Cipher-Suites schrumpfte, aber das Protokoll darum herum wurde defensiver.

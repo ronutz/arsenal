@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomi suite sifer TLS"
+summary: "Apa yang sebenarnya dinamakan oleh suite sifer TLS, cara membaca suite seperti TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 bahagian demi bahagian, dan bagaimana titik kod dua bait yang sama muncul di bawah tiga konvensyen penamaan yang berbeza."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Apa itu suite sifer
+
+Suite sifer TLS ialah sehimpunan pilihan kriptografi bernama yang dipersetujui oleh klien dan pelayan semasa jabat tangan. Satu nama tunggal seperti `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` membungkus beberapa keputusan bebas ke dalam satu pengecam: bagaimana kedua-dua pihak mempersetujui rahsia kongsi, bagaimana pelayan membuktikan siapa dirinya, algoritma mana yang menyulitkan data aplikasi, dan bagaimana data itu dilindungi daripada gangguan.
+
+Setiap suite berdaftar juga mempunyai titik kod dua bait yang diberikan oleh IANA. Nama di atas ialah `0xC02F` pada talian. Jabat tangan tidak pernah menghantar nama teks, ia menghantar dua bait itu. Nama wujud untuk manusia, dan terdapat lebih daripada satu konvensyen penamaan, satu punca kekeliruan yang kerap berlaku.
+
+## Tugas yang digambarkan oleh suite
+
+Untuk TLS 1.2 dan lebih awal, satu suite menamakan sehingga lima perkara:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**Pertukaran kunci** ialah cara kedua-dua pihak mewujudkan rahsia kongsi. `ECDHE` ialah Diffie-Hellman sementara lengkung eliptik, yang memberikan kerahsiaan ke hadapan. Nilai lain yang akan anda lihat ialah `DHE` (Diffie-Hellman sementara medan terhingga), `RSA` (pengangkutan kunci RSA statik, tiada kerahsiaan ke hadapan) dan `PSK` (kunci prakongsi).
+
+**Pengesahan** ialah cara pelayan (dan kadangkala klien) membuktikan identitinya, hampir selalu dengan kunci peribadi di sebalik sijilnya. `RSA` dan `ECDSA` ialah nilai biasa. Apabila suite menggunakan `RSA` statik untuk pertukaran kunci, kunci RSA yang sama melaksanakan kedua-dua tugas, jadi nama menyenaraikan `RSA` sekali sahaja.
+
+**Sifer blok dan saiz kunci** ialah algoritma simetri yang menyulitkan trafik sebenar selepas jabat tangan selesai. `AES_128` dan `AES_256` mendominasi, manakala `CHACHA20` ialah alternatif biasa pada peranti tanpa perkakasan AES.
+
+**Mod** menjadikan sifer blok sesuatu yang boleh menyulitkan aliran rekod. `GCM`, `CCM` dan `CHACHA20_POLY1305` ialah mod AEAD yang menguruskan integriti sendiri. `CBC` ialah mod yang lebih lama yang memerlukan MAC berasingan.
+
+**Cincang MAC atau PRF** ialah token terakhir. Dalam suite CBC, ia ialah cincang HMAC yang mengesahkan setiap rekod. Dalam suite AEAD, sifer sudah pun memberikan integriti, jadi cincang penutup sebaliknya menamakan PRF yang digunakan jabat tangan untuk menerbitkan kunci (`SHA256` atau `SHA384`).
+
+## Membacanya secara terbalik
+
+Setelah anda mengetahui tatabahasanya, anda boleh membaca mana-mana suite TLS 1.2 secara terbalik dengan sekali pandang. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` ialah Diffie-Hellman sementara medan terhingga untuk pertukaran kunci, RSA untuk pengesahan, AES dengan kunci 256-bit dalam mod GCM, dan SHA-384 sebagai PRF jabat tangan. Oleh sebab GCM ialah AEAD, tiada MAC berasingan.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` ialah lawan yang memperingatkan: pengangkutan kunci RSA statik tanpa kerahsiaan ke hadapan, AES-128 dalam mod CBC, dan MAC HMAC-SHA1. Segala-galanya tentangnya ialah warisan masa lampau, dan itulah sebabnya IANA kini menandakannya sebagai dinasihatkan elak.
+
+## Satu suite, tiga nama
+
+`0xC02F` yang sama muncul di bawah tiga konvensyen:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Nama IANA ialah piawai daftar. OpenSSL menggunakan sempang, menggugurkan `WITH` dan menulis `AES128` sebagai satu token, dan itulah sebabnya konfigurasi OpenSSL dan tangkapan paket mungkin kelihatan bercanggah walaupun menamakan suite yang sama. Penyahkod menerima ketiga-tiga bentuk, serta titik kod mentah, dan memaparkan yang lain.
+
+## Menyahkod bukan menyokong
+
+Membaca suite memberitahu anda apa yang akan dilakukannya, bukan sama ada anda patut menggunakannya. Sesuatu nama boleh terbentuk dengan sempurna namun masih menggambarkan RC4, pertukaran kunci tanpa nama, atau kunci gred eksport. Penyahkod memadankan pecahan berstruktur dengan bacaan keselamatan dan saranan bebas IANA, supaya nama yang kelihatan sihat dengan kecacatan maut tidak terlepas pandang. Artikel iringan merangkumi apa yang menjadikan suite moden: AEAD dan bukan CBC, serta kerahsiaan ke hadapan dalam pertukaran kunci.

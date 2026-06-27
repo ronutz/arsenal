@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Confidencialidad futura y el intercambio de claves"
+summary: "Qué aporta la confidencialidad futura, por qué el transporte de clave RSA estático no la ofrece, cómo lo hacen ECDHE y DHE, y por qué la autenticación y el intercambio de claves son dos tareas distintas que el nombre de una suite mantiene separadas."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## La pregunta que responde la confidencialidad futura
+
+Imagina que un atacante graba tu tráfico cifrado hoy y lo almacena. Meses después obtiene la clave privada a largo plazo del servidor, quizá por una filtración o una orden judicial. ¿Puede ahora volver atrás y descifrar el tráfico que capturó?
+
+Si la respuesta es no, la conexión tenía **confidencialidad futura**, a veces llamada confidencialidad futura perfecta. Si la respuesta es sí, no la tenía. La diferencia se reduce por completo al intercambio de claves nombrado en la suite de cifrado, y por eso es una de las primeras cosas que informa el decodificador.
+
+## RSA estático: cómodo y frágil
+
+En el antiguo intercambio de claves RSA estático, el cliente elige el secreto que protegerá la sesión, lo cifra con la clave pública del servidor tomada de su certificado y lo envía. Solo la clave privada del servidor puede descifrarlo, así que la sesión es privada frente a fisgones en ese momento.
+
+La propiedad fatal es que el secreto de la sesión quedó protegido por la clave a largo plazo del servidor. Si esa clave alguna vez se filtra, cada sesión pasada que la usó puede desenvolverse a partir de una grabación, porque el secreto cifrado está justo ahí, en el handshake capturado. El compromiso de una clave rompe retroactivamente toda conversación que alguna vez protegió. Las suites que empiezan por `TLS_RSA_WITH_` funcionan así, y el decodificador las marca como carentes de confidencialidad futura.
+
+## Diffie-Hellman efímero: la solución
+
+El Diffie-Hellman efímero rompe el vínculo entre el secreto de la sesión y cualquier clave a largo plazo. Para cada conexión, ambos lados generan pares de claves Diffie-Hellman nuevos y desechables, intercambian las mitades públicas, y cada uno combina su propia mitad privada con la mitad pública del otro para llegar al mismo secreto compartido. Las mitades privadas nunca salen de sus máquinas y se descartan cuando la conexión termina.
+
+Como el secreto compartido nunca se cifró bajo la clave a largo plazo del servidor, y las claves privadas efímeras ya no existen, un compromiso posterior de la clave a largo plazo no revela nada sobre sesiones pasadas. Simplemente no hay nada en la grabación que desenvolver.
+
+Verás esto como `ECDHE`, Diffie-Hellman efímero de curva elíptica, o `DHE`, la variante más antigua de campo finito. ECDHE es más rápido y es el valor por defecto moderno; DHE se está retirando, y por eso incluso una suite DHE-AEAD fuerte como `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` ahora lleva una marca de desaconsejado de la IANA. Los primos estáticos y no efímeros `ECDH` y `DH`, sin la `E` final, no aportan confidencialidad futura.
+
+## La autenticación es una tarea aparte
+
+Una confusión común es pensar que eliminar el RSA estático significa eliminar el RSA. No es así. El intercambio de claves y la autenticación son dos tareas diferentes, y el nombre de una suite las lista por separado.
+
+En `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, el `ECDHE` hace el intercambio de claves y el `RSA` hace la autenticación: el servidor firma los valores efímeros del handshake con la clave privada detrás de su certificado RSA, probando que es el titular legítimo. El secreto de la sesión proviene del intercambio Diffie-Hellman efímero, así que la confidencialidad futura se mantiene, mientras el certificado sigue probando la identidad. El artículo sobre la anatomía de los certificados cubre cómo funciona esa vinculación de identidad.
+
+## Por qué TLS 1.3 la hizo obligatoria
+
+TLS 1.3 zanjó el asunto eliminando el transporte de clave RSA estático por completo. Todo intercambio de claves de TLS 1.3 es efímero, así que la confidencialidad futura ya no es algo que tengas que elegir seleccionando la suite correcta; la garantiza el protocolo. RSA y ECDSA permanecen solo como algoritmos de firma para la autenticación. Por eso también el nombre de una suite de TLS 1.3 no tiene ningún token de intercambio de claves: ya no hay una opción sin confidencialidad futura que nombrar.
+
+## Recolectar ahora, descifrar después
+
+La confidencialidad futura protege contra un compromiso de clave que ocurra después del hecho, pero supone que la matemática Diffie-Hellman subyacente sigue siendo difícil. La preocupación inminente es una futura computadora cuántica que pueda romper los intercambios de claves de curva elíptica de hoy, lo que da al tráfico grabado una larga vida útil para un atacante dispuesto a esperar. Esta es la amenaza de recolectar ahora y descifrar después, y está impulsando la migración a intercambios de claves híbridos poscuánticos, que ejecutan un intercambio clásico y uno resistente a lo cuántico juntos. La confidencialidad futura sigue siendo necesaria; solo ha dejado de suponerse suficiente para siempre.

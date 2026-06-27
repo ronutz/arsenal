@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomie einer TLS-Cipher-Suite"
+summary: "Was eine TLS-Cipher-Suite tatsächlich benennt, wie man eine Suite wie TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 Stück für Stück liest und wie derselbe Zwei-Byte-Codepunkt unter drei verschiedenen Namenskonventionen erscheint."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Was eine Cipher-Suite ist
+
+Eine TLS-Cipher-Suite ist ein benanntes Bündel kryptografischer Entscheidungen, auf das sich Client und Server während des Handshakes einigen. Ein einziger Name wie `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` packt mehrere unabhängige Entscheidungen in eine Kennung: wie sich beide Seiten auf ein gemeinsames Geheimnis einigen, wie der Server seine Identität nachweist, welcher Algorithmus die Anwendungsdaten verschlüsselt und wie diese Daten vor Manipulation geschützt werden.
+
+Jede registrierte Suite hat außerdem einen Zwei-Byte-Codepunkt, der von der IANA vergeben wird. Der Name oben ist `0xC02F` auf der Leitung. Der Handshake sendet nie den Textnamen; er sendet die zwei Bytes. Die Namen existieren für Menschen, und es gibt mehr als eine Namenskonvention – eine häufige Quelle der Verwirrung.
+
+## Die Aufgaben, die eine Suite beschreibt
+
+Für TLS 1.2 und früher benennt eine Suite bis zu fünf Dinge:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**Schlüsselaustausch** ist, wie beide Seiten ein gemeinsames Geheimnis aufbauen. `ECDHE` ist flüchtiger elliptischer-Kurven-Diffie-Hellman, der Forward Secrecy bietet. Weitere Werte, die Sie sehen, sind `DHE` (flüchtiger Finite-Field-Diffie-Hellman), `RSA` (statischer RSA-Schlüsseltransport, keine Forward Secrecy) und `PSK` (ein vorab geteilter Schlüssel).
+
+**Authentifizierung** ist, wie der Server (und manchmal der Client) seine Identität nachweist, fast immer mit dem privaten Schlüssel hinter seinem Zertifikat. `RSA` und `ECDSA` sind die üblichen Werte. Wenn eine Suite statisches `RSA` für den Schlüsselaustausch verwendet, erledigt derselbe RSA-Schlüssel beide Aufgaben, daher führt der Name `RSA` nur einmal auf.
+
+**Blockchiffre und Schlüssellänge** ist der symmetrische Algorithmus, der den eigentlichen Verkehr verschlüsselt, sobald der Handshake fertig ist. `AES_128` und `AES_256` dominieren; `CHACHA20` ist die übliche Alternative auf Geräten ohne AES-Hardware.
+
+**Modus** macht aus der Blockchiffre etwas, das einen Strom von Records verschlüsseln kann. `GCM`, `CCM` und `CHACHA20_POLY1305` sind AEAD-Modi, die die Integrität selbst übernehmen. `CBC` ist der ältere Modus, der einen separaten MAC braucht.
+
+**MAC- oder PRF-Hash** ist das letzte Token. In einer CBC-Suite ist es der HMAC-Hash, der jeden Record authentifiziert. In einer AEAD-Suite liefert die Chiffre die Integrität bereits, daher benennt der abschließende Hash stattdessen die PRF, die der Handshake zur Schlüsselableitung nutzt (`SHA256` oder `SHA384`).
+
+## Sie andersherum lesen
+
+Sobald Sie die Grammatik kennen, können Sie jede TLS-1.2-Suite auf einen Blick rückwärts lesen. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` ist flüchtiger Finite-Field-Diffie-Hellman für den Schlüsselaustausch, RSA für die Authentifizierung, AES mit 256-Bit-Schlüssel im GCM-Modus und SHA-384 als Handshake-PRF. Da GCM AEAD ist, gibt es keinen separaten MAC.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` ist das mahnende Gegenteil: statischer RSA-Schlüsseltransport ohne Forward Secrecy, AES-128 im CBC-Modus und ein HMAC-SHA1-MAC. Alles daran ist veraltet, weshalb die IANA es jetzt als abgeraten kennzeichnet.
+
+## Eine Suite, drei Namen
+
+Dasselbe `0xC02F` erscheint unter drei Konventionen:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Der IANA-Name ist der Registry-Standard. OpenSSL verwendet Bindestriche, lässt das `WITH` weg und schreibt `AES128` als ein Token, weshalb eine OpenSSL-Konfiguration und ein Paketmitschnitt scheinbar widersprüchlich aussehen, obwohl sie dieselbe Suite benennen. Der Decoder akzeptiert alle drei Formen sowie den rohen Codepunkt und zeigt die anderen an.
+
+## Decodieren ist kein Gutheißen
+
+Eine Suite zu lesen sagt Ihnen, was sie täte, nicht, ob Sie sie verwenden sollten. Ein Name kann vollkommen wohlgeformt sein und trotzdem RC4, anonymen Schlüsselaustausch oder Schlüssel in Exportstärke beschreiben. Der Decoder kombiniert die strukturelle Aufschlüsselung mit einer Sicherheitsbewertung und der unabhängigen IANA-Empfehlung, damit ein gesund aussehender Name mit einem fatalen Fehler nicht durchrutscht. Die Begleitartikel behandeln, was eine Suite modern macht: AEAD statt CBC und Forward Secrecy beim Schlüsselaustausch.

@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Cipher-Suite-Namen lesen: IANA, OpenSSL und GnuTLS"
+summary: "Warum dieselbe Cipher-Suite drei verschiedene Namen und einen Zwei-Byte-Codepunkt hat, wie man zwischen den Konventionen von IANA, OpenSSL und GnuTLS übersetzt und was die Recommended-Spalte der IANA mit Y, N und D wirklich bedeutet."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Warum eine Suite viele Namen hat
+
+Eine einzige Cipher-Suite lässt sich auf mindestens drei Arten schreiben, und die Unterschiede bringen jeden ins Stolpern, der eine Serverkonfiguration mit einem Paketmitschnitt oder einem Scanner-Bericht vergleicht. Die Suite, die die IANA `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` nennt, ist dieselbe, die OpenSSL `ECDHE-RSA-AES128-GCM-SHA256` nennt. Sie beschreiben identische Bytes auf der Leitung, nämlich den Codepunkt `0xC02F`.
+
+Der Codepunkt ist das Einzige, was das Protokoll tatsächlich verwendet. Die Namen sind Bequemlichkeiten für Konfigurationsdateien, Dokumentation und Menschen, und jedes Werkzeug-Ökosystem hat seine eigene Konvention entwickelt.
+
+## Die drei Konventionen
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Der **IANA**-Name ist der Registry-Standard. Er beginnt immer mit `TLS_`, trennt jedes Token mit einem Unterstrich und verwendet das Wort `WITH`, um Schlüsselaustausch und Authentifizierung von Chiffre und MAC zu trennen.
+
+Der **OpenSSL**-Name lässt das Präfix `TLS_` weg, verwendet Bindestriche statt Unterstrichen, entfernt das `WITH` und schreibt Chiffre und Schlüssellänge als ein Token (`AES128` statt `AES_128`). Bei statischen RSA-Suiten lässt OpenSSL auch das redundante Schlüsselaustausch-Token weg, sodass aus `TLS_RSA_WITH_AES_128_CBC_SHA` schlicht `AES128-SHA` wird. TLS 1.3 ist die Ausnahme: Dort übernahm OpenSSL die IANA-Namen unverändert, sodass `TLS_AES_128_GCM_SHA256` in beiden gleich geschrieben wird.
+
+Der **GnuTLS**-Name behält das Präfix `TLS_` und die Unterstriche, lässt aber wie OpenSSL das `WITH` weg. Er ist der am seltensten gesehene der drei.
+
+Genau diese Diskrepanz lässt Leute glauben, zwei Systeme widersprächen sich, obwohl sie dieselbe Suite konfiguriert haben. Ein Decoder, der jeden der Namen sowie den rohen Codepunkt akzeptiert, beseitigt das Rätselraten, indem er alle auf einmal anzeigt.
+
+## Einen Codepunkt lesen
+
+Ein Cipher-Suite-Codepunkt sind zwei Bytes, auf mehrere Arten geschrieben, die alle dieselbe Zahl bedeuten:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+Das erste Byte gruppiert verwandte Suiten: Der Block `0x00xx` enthält die ursprünglichen TLS-1.0- und 1.1-Suiten, `0xC0xx` enthält die elliptischen-Kurven-Suiten aus RFC 5289 und verwandten, `0xCCxx` enthält die ChaCha20-Poly1305-Suiten und `0x13xx` enthält die TLS-1.3-Suiten. `0xC0` oder `0xCC` am Anfang zu sehen ist ein schneller Hinweis, dass Sie eine moderne ECDHE- oder ChaCha20-Suite betrachten.
+
+## Was die Recommended-Spalte bedeutet
+
+Die IANA-Registry hat eine Recommended-Spalte mit drei Werten, die leicht falsch gelesen werden.
+
+`Y` bedeutet, dass die Suite den IETF-Konsensprozess durchlaufen hat und zum Zeitpunkt der Registrierung für den allgemeinen Gebrauch empfohlen ist. `N` bedeutet nicht, dass die Suite fehlerhaft ist; es bedeutet, dass sie diesen Prozess nicht durchlaufen hat, begrenzte Anwendbarkeit hat oder für eine bestimmte Nische gedacht ist. Die `CCM_8`-Suiten sind genau deshalb mit `N` gekennzeichnet: Das gekürzte Tag ist ein bewusster Kompromiss, kein Fehler.
+
+`D` ist das starke. Es bedeutet, dass die Suite abgeraten ist und je nach Situation nicht oder keinesfalls verwendet werden sollte. Ganze Familien sind auf `D` gewandert, während die IETF sie ausmustert, darunter die statischen RSA-Suiten und in jüngerer Zeit die Finite-Field-`DHE`-Suiten. Eine Suite kann kryptografisch solide sein und dennoch aus Ökosystemgründen mit `D` gekennzeichnet werden, weshalb der Decoder die IANA-Kennzeichnung neben seiner eigenen Sicherheitsbewertung anzeigt, statt beide zu einem einzigen Urteil zu verschmelzen. Die beiden beantworten verschiedene Fragen: Ist die Konstruktion solide, und will der Standardisierungsprozess noch, dass Sie sie verwenden?
+
+## Alles zusammenfügen
+
+Um eine unbekannte Suite zu identifizieren, fügen Sie die Form, die Sie haben – einen IANA-Namen, einen OpenSSL-Namen oder einen Codepunkt –, in den Decoder ein. Er löst die Suite gegen eine eingebettete Kopie der IANA-Registry auf, zeigt die anderen Namen, zerlegt die Suite in ihre Teile und kombiniert eine regelbasierte Sicherheitsbewertung mit der offiziellen IANA-Empfehlung. Die Begleitartikel erklären die Teile selbst: die allgemeine Anatomie, die Wahl zwischen AEAD und CBC, Forward Secrecy und was TLS 1.3 änderte.

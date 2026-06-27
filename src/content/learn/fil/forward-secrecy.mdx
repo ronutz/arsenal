@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Forward secrecy at ang key exchange"
+summary: "Ano ang ibinibigay ng forward secrecy, bakit hindi ito inaalok ng static RSA key transport, paano ito inaalok ng ECDHE at DHE, at bakit ang authentication at key exchange ay dalawang magkahiwalay na gawaing pinaghihiwalay ng pangalan ng isang suite."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Ang tanong na sinasagot ng forward secrecy
+
+Isipin na nire-record ng isang umaatake ang iyong naka-encrypt na trapiko ngayon at iniimbak ito. Pagkalipas ng mga buwan, nakuha niya ang long-lived private key ng server, marahil sa pamamagitan ng isang breach o utos ng korte. Maaari ba siya ngayong bumalik at i-decrypt ang trapikong nakuha niya?
+
+Kung hindi ang sagot, ang koneksyon ay may **forward secrecy**, tinatawag minsan na perfect forward secrecy. Kung oo ang sagot, wala ito nito. Ang pagkakaiba ay ganap na bumabalik sa key exchange na pinapangalanan sa cipher suite, kaya isa ito sa mga unang bagay na iniuulat ng decoder.
+
+## Static RSA: maginhawa at marupok
+
+Sa lumang static RSA key exchange, pinipili ng client ang secret na magpoprotekta sa session, ine-encrypt ito gamit ang public key ng server na kinuha mula sa sertipiko nito, at ipinapadala ito. Ang private key lang ng server ang makaka-decrypt nito, kaya pribado ang session laban sa mga nakikinig sa sandaling iyon.
+
+Ang nakamamatay na katangian ay pinoprotektahan ng long-lived key ng server ang session secret. Kung mag-leak man ang key na iyon, ang bawat nakaraang session na gumamit nito ay maaaring buksan mula sa isang recording, dahil nandoon lang ang naka-encrypt na secret, sa loob ng nakuhang handshake. Ang iisang key compromise ay retroactive na sumisira sa bawat usapang naiprotektahan nito kailanman. Ganito gumagana ang mga suite na nagsisimula sa `TLS_RSA_WITH_`, at minamarkahan ng decoder ang mga ito bilang kulang sa forward secrecy.
+
+## Ephemeral Diffie-Hellman: ang solusyon
+
+Pinuputol ng ephemeral Diffie-Hellman ang ugnayan sa pagitan ng session secret at ng anumang long-lived key. Para sa bawat koneksyon, ang dalawang panig ay bumubuo ng sariwa at isang-beses na mga Diffie-Hellman key pair, nagpapalitan ng mga public na kalahati, at pinagsasama ng bawat isa ang sariling private na kalahati sa public na kalahati ng kabila para marating ang parehong shared secret. Hindi kailanman umaalis ang mga private na kalahati sa kani-kanilang makina at itinatapon ang mga ito kapag natapos ang koneksyon.
+
+Dahil hindi kailanman na-encrypt ang shared secret sa ilalim ng long-lived key ng server, at hindi na umiiral ang mga ephemeral private key, ang isang mas huling compromise ng long-lived key ay walang inilalantad tungkol sa mga nakaraang session. Wala lang talagang mabubuksan sa recording.
+
+Makikita mo ito bilang `ECDHE`, elliptic-curve ephemeral Diffie-Hellman, o `DHE`, ang mas lumang finite-field na variant. Mas mabilis ang ECDHE at ito ang modernong default, samantalang inaalis na ang DHE, kaya kahit ang isang matibay na DHE-AEAD suite tulad ng `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` ay may dala nang IANA na markang iniiwasan. Ang static, hindi-ephemeral na mga pinsan na `ECDH` at `DH`, na walang pangwakas na `E`, ay hindi nagbibigay ng forward secrecy.
+
+## Ang authentication ay hiwalay na gawain
+
+Isang karaniwang kalituhan ang pag-aakalang ang pag-alis ng static RSA ay pag-alis ng RSA. Hindi ganoon. Ang key exchange at authentication ay dalawang magkaibang gawain, at hiwalay na inililista ng pangalan ng isang suite ang mga ito.
+
+Sa `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, ang `ECDHE` ang gumagawa ng key exchange at ang `RSA` ang gumagawa ng authentication: pinipirmahan ng server ang mga ephemeral na handshake value gamit ang private key sa likod ng RSA certificate nito, na pinatutunayang ito ang lehitimong may-ari. Nagmumula ang session secret sa ephemeral Diffie-Hellman exchange, kaya nananatili ang forward secrecy, habang pinatutunayan pa rin ng sertipiko ang pagkakakilanlan. Tinatalakay ng artikulo tungkol sa anatomya ng sertipiko kung paano gumagana ang pagbubuklod ng pagkakakilanlang iyon.
+
+## Bakit ginawa itong sapilitan ng TLS 1.3
+
+Nilutas ng TLS 1.3 ang usapin sa pamamagitan ng tuluyang pag-alis ng static RSA key transport. Ephemeral ang bawat TLS 1.3 key exchange, kaya hindi na isang bagay ang forward secrecy na kailangan mong piliin sa pamamagitan ng pagpili ng tamang suite, ginagarantiya ito ng protocol. Nananatili ang RSA at ECDSA bilang mga signature algorithm lang para sa authentication. Kaya rin walang anumang key exchange token ang pangalan ng isang TLS 1.3 suite: wala nang opsyong walang forward secrecy na maaaring pangalanan.
+
+## Anihin ngayon, i-decrypt mamaya
+
+Nagpoprotekta ang forward secrecy laban sa isang key compromise na nangyayari matapos ang lahat, ngunit ipinapalagay nito na nananatiling mahirap ang pinagbabatayang Diffie-Hellman na matematika. Ang nalalapit na alalahanin ay isang hinaharap na quantum computer na kayang sirain ang elliptic-curve key exchange sa kasalukuyan, na nagbibigay sa naka-record na trapiko ng mahabang shelf life para sa isang umaatakeng handang maghintay. Ito ang banta ng anihin ngayon, i-decrypt mamaya, at ito ang nagtutulak sa paglipat patungo sa hybrid post-quantum key exchange, na nagpapatakbo ng isang klasiko at isang quantum-resistant na palitan nang magkasama. Nananatiling kailangan ang forward secrecy, tumigil lang itong ipalagay na sapat magpakailanman.

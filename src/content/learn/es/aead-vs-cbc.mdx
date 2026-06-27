@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD frente a CBC: por qué importa el modo"
+summary: "La diferencia práctica entre un cifrado AEAD como AES-GCM y un cifrado CBC más antiguo con un HMAC aparte, los ataques de oráculo de relleno que acabaron con el MAC-then-encrypt, y la única concesión que AEAD sigue pidiendo."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Dos formas de cifrar un registro
+
+Una vez que un handshake TLS ha acordado las claves, cada registro de datos de la aplicación debe estar a la vez cifrado, para que un fisgón no pueda leerlo, y autenticado, para que un atacante no pueda manipularlo. Hay dos grandes maneras de que una suite de cifrado haga esto, y el token de modo en el nombre de la suite te dice cuál.
+
+Un cifrado **AEAD**, como AES-GCM, AES-CCM o ChaCha20-Poly1305, hace ambas tareas en una sola primitiva. Le das el texto plano y algunos datos asociados, y devuelve el texto cifrado más una etiqueta de autenticación. El descifrado verifica la etiqueta y los datos juntos, y falla como una sola operación si algo se alteró.
+
+Un cifrado **CBC** hace solo el cifrado. Para obtener integridad, la suite lo combina con un HMAC aparte, nombrado por el hash final de la suite (por ejemplo, el `SHA` en `TLS_RSA_WITH_AES_128_CBC_SHA`). El protocolo une ambas operaciones, y el orden en que ocurren resulta importar enormemente.
+
+## Por qué el MAC-then-encrypt salió mal
+
+TLS usaba originalmente MAC-then-encrypt: calcular el HMAC sobre el texto plano, añadirlo, rellenar el resultado hasta un límite de bloque y luego cifrarlo todo con CBC. El problema es que el receptor tiene que descifrar y quitar el relleno antes de poder comprobar el MAC, así que un relleno mal formado y un MAC incorrecto se detectan en etapas distintas. Un atacante que pueda ver si un registro falló en el relleno o en el MAC — ya sea por un mensaje de error o solo por el tiempo de respuesta — aprende un bit sobre el texto plano por intento. Repetido, ese bit se convierte en todo el mensaje.
+
+Esto es un oráculo de relleno, y no es teórico. Una serie de ataques a lo largo de los años, incluidos BEAST, Lucky13 y POODLE, explotaron todos la protección de registros CBC en TLS. Cada uno se parcheó con código de tiempo constante cada vez más delicado, pero la construcción subyacente seguía produciendo nuevas variantes. La lección que sacó la industria fue dejar de usarla.
+
+## Por qué AEAD es ahora el valor por defecto
+
+AEAD elimina toda la clase de problema. No hay una etapa de relleno aparte que sondear ni una etapa de MAC aparte que cronometrar, porque la verificación y el descifrado son una operación que tiene éxito o falla. TLS 1.3 lleva esto a su conclusión y permite solo cifrados AEAD; las suites CBC simplemente no forman parte de TLS 1.3. En TLS 1.2 existen ambas, y por eso el decodificador marca una suite CBC-con-HMAC-SHA1 como débil aunque el cifrado sea AES.
+
+Cuando ves `GCM`, `CCM` o `POLY1305` en el nombre de una suite, estás mirando AEAD. Cuando ves `CBC`, estás mirando la construcción más antigua, y en un servicio moderno debería ser, como mucho, un recurso de reserva.
+
+## La concesión que AEAD sigue pidiendo
+
+AEAD no está libre de aristas; solo las desplaza. Todo cifrado AEAD necesita un nonce, un número usado una sola vez, y la seguridad de GCM en particular se desmorona si el mismo nonce se reutiliza con la misma clave. TLS gestiona los nonces por ti con un contador por conexión, así que esto es un peligro para sistemas que construyen su propio entramado más que para TLS en sí, pero es la razón por la que los diseños AEAD se preocupan tanto por la construcción de nonces.
+
+La otra concesión es la longitud de la etiqueta de autenticación. Las suites estándar de GCM y Poly1305 usan una etiqueta de 16 bytes. Las suites `CCM_8` la truncan a 8 bytes para ahorrar sobrecarga en enlaces restringidos, lo que debilita de forma medible la integridad. Por eso `TLS_AES_128_CCM_8_SHA256` es una suite AEAD de TLS 1.3 real que la IANA aun así se niega a marcar como recomendada: el modo es moderno, pero la etiqueta corta es una concesión que la internet en general no necesita hacer.

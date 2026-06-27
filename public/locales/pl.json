@@ -108,7 +108,8 @@
       "hashing": "Hashowanie i krypto",
       "identifiers": "Identyfikatory",
       "pki": "Certyfikaty i PKI",
-      "networking": "Sieci"
+      "networking": "Sieci",
+      "transport": "TLS i transport"
     },
     "hash": {
       "name": "Generator skrótów (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "multicast"
       }
+    },
+    "cipher": {
+      "name": "Dekoder zestawów szyfrów",
+      "blurb": "Wpisz zestaw szyfrów TLS, jako nazwę IANA, nazwę OpenSSL lub GnuTLS albo szesnastkowy punkt kodowy, aby rozłożyć go na wymianę kluczy, uwierzytelnianie, szyfr, tryb i MAC, wraz z czytelną oceną bezpieczeństwa i oficjalną rekomendacją IANA. Działa w całości w przeglądarce, na wbudowanej kopii rejestru IANA.",
+      "inputLabel": "Zestaw szyfrów",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256 lub 0x1301",
+      "runsLocally": "Dekodowanie działa lokalnie, na wbudowanej kopii rejestru zestawów szyfrów TLS organizacji IANA. Nic nie jest nigdzie wysyłane.",
+      "notInRegistryNote": "Ta nazwa została przeanalizowana strukturalnie, ale nie znaleziono jej w wbudowanej migawce rejestru IANA — dlatego jej punkt kodowy i nazwy równoważne nie są pokazywane.",
+      "errors": {
+        "empty": "Wpisz zestaw szyfrów do zdekodowania.",
+        "format": "To nie jest zestaw szyfrów. Wpisz nazwę IANA (TLS_...), nazwę OpenSSL lub szesnastkowy punkt kodowy, np. 0x1301.",
+        "unknown": "To poprawny format punktu kodowego, ale nie jest to zestaw szyfrów przypisany w rejestrze IANA."
+      },
+      "ratings": {
+        "recommended": "Zalecany",
+        "secure": "Bezpieczny",
+        "weak": "Słaby",
+        "insecure": "Niebezpieczny",
+        "unknown": "Nieznany"
+      },
+      "iana": {
+        "Y": "IANA: zalecany",
+        "N": "IANA: niezalecany",
+        "D": "IANA: odradzany"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Poza migawką IANA"
+      },
+      "panels": {
+        "identity": "Tożsamość",
+        "components": "Składniki",
+        "security": "Bezpieczeństwo"
+      },
+      "fields": {
+        "codePoint": "Punkt kodowy",
+        "name": "Nazwa IANA",
+        "openssl": "Nazwa OpenSSL",
+        "gnutls": "Nazwa GnuTLS",
+        "protocol": "Protokół",
+        "dtls": "DTLS-OK",
+        "references": "Odniesienia"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 i wcześniejsze"
+      },
+      "comp": {
+        "keyExchange": "Wymiana kluczy",
+        "authentication": "Uwierzytelnianie",
+        "forwardSecrecy": "Utajnianie z wyprzedzeniem",
+        "cipher": "Szyfr",
+        "mode": "Tryb",
+        "aead": "AEAD",
+        "prf": "Skrót PRF/KDF",
+        "mac": "MAC",
+        "yes": "Tak",
+        "no": "Nie",
+        "bits": "{n} bitów",
+        "negotiatedSeparately": "Negocjowane osobno (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "Szyfr NULL: ruch nie jest w ogóle szyfrowany.",
+        "anon": "Anonimowa wymiana kluczy: druga strona nie jest uwierzytelniana, więc nie daje to żadnej ochrony przed aktywnym atakiem typu man-in-the-middle.",
+        "export40": "Klucz klasy eksportowej (40-bitowy): trywialny do złamania metodą brute force, relikt reguł eksportowych z lat 90.",
+        "rc4": "Szyfr strumieniowy RC4: tendencyjny strumień klucza czyni go złamanym, a RFC 7465 zakazuje go dla TLS.",
+        "singleDes": "Pojedynczy DES z kluczem 56-bitowym: możliwy do złamania metodą brute force w ciągu godzin.",
+        "rc2": "RC2: przestarzały szyfr 40/64-bitowy, niebezpieczny do nowoczesnego użytku.",
+        "tripleDes": "3DES ma blok 64-bitowy, co naraża go na atak urodzinowy Sweet32 (CVE-2016-2183). RFC 8429 uznaje go za przestarzały.",
+        "md5Mac": "MAC z MD5: MD5 jest kryptograficznie złamany.",
+        "cbcMac": "CBC z MAC HMAC-SHA1 lub MD5 stosuje MAC-then-encrypt i jest narażony na ataki padding oracle, takie jak BEAST i Lucky13.",
+        "ccm8": "CCM_8 skraca znacznik uwierzytelniający do 8 bajtów, osłabiając integralność. IANA nie oznacza go jako zalecanego.",
+        "noFs": "Brak utajniania z wyprzedzeniem: przy statycznej wymianie kluczy jeden skompromitowany klucz długoterminowy może odszyfrować wcześniejsze sesje. Nowoczesne wytyczne wymagają ECDHE lub DHE.",
+        "legacyCipher": "{value} to przestarzały szyfr, nieaktualny dla TLS.",
+        "aead": "Szyfr AEAD (szyfrowanie uwierzytelnione): poufność i integralność w jednej prymitywie, bez osobnego MAC, którego można użyć niewłaściwie.",
+        "fs": "Utajnianie z wyprzedzeniem: efemeryczna wymiana kluczy utrzymuje wcześniejszy ruch w bezpieczeństwie, nawet jeśli klucz długoterminowy zostanie później skompromitowany.",
+        "tls13": "Zestaw TLS 1.3: wyłącznie nowoczesne szyfry AEAD, z wymianą kluczy negocjowaną osobno i zawsze efemeryczną.",
+        "ianaD": "IANA oznacza ten zestaw jako \"D\" (odradzany): NIE POWINIEN lub NIE MOŻE być używany, zależnie od sytuacji.",
+        "ianaN": "IANA nie oznacza tego zestawu jako \"Zalecany\": ma ograniczone zastosowanie lub nie przeszedł procesu konsensusu IETF.",
+        "signalling": "Zestaw sygnalizacyjny (SCSV): nie jest prawdziwym szyfrem, lecz przenosi sygnał protokołu, taki jak ochrona przed degradacją lub informacja o renegocjacji."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Powrót do strony głównej"
   },
   "footer": {
-    "redEducation": "Zarezerwuj oficjalne szkolenie w Red Education",
+    "redEducation": "Zarezerwuj oficjalne szkolenie w <b>Red Education</b>",
     "privacy": "Prywatność",
     "builtWith": "Stworzone przez Rodolfo Nützmanna z CONCORD",
     "colophon": "Jak to zostało zbudowane",
-    "openSource": "Silnik jest open source",
-    "rights": "Dostępne na warunkach otwartych i komercyjnych.",
     "contribute": "Pomóż ulepszyć tłumaczenia",
     "feedback": "Prześlij opinię",
     "api": "Dokumentacja API",
-    "contributeTools": "Zaproponuj narzędzie"
+    "contributeTools": "Zaproponuj narzędzie",
+    "license": "Licencja",
+    "coffee": "Postaw mi kawę"
   },
   "search": {
     "label": "Szukaj",
@@ -883,5 +965,16 @@
     "viewReference": "Dokumentacja",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Nie udało się załadować Swagger UI."
+  },
+  "license_page": {
+    "eyebrow": "Otwarty rdzeń",
+    "title": "Licencja",
+    "lede": "ronutz.com ma otwarty rdzeń: silnik napędzający każde narzędzie jest open source, a zbudowana na nim witryna już nie.",
+    "openHeading": "Open source — silnik",
+    "openBody": "@ronutz/netcore, silnik stojący za każdym narzędziem i każdą odpowiedzią API w tej witrynie, jest udostępniany na licencji Apache License 2.0. Ta sama funkcja, którą wywołują narzędzia w przeglądarce, jest wywoływana przez API, więc możesz swobodnie z niej korzystać, modyfikować ją i budować na niej zgodnie z tą licencją.",
+    "closedHeading": "Zamknięty kod — ta witryna",
+    "closedBody": "Sama witryna ma zamknięty kod. Jej projekt, interfejs, treści pisane (w tym każdy artykuł Learn), marka oraz szczególny sposób, w jaki te narzędzia są tu zestawione i przedstawione, są własnością zastrzeżoną, wszelkie prawa zastrzeżone. Nie udziela się zgody na kopiowanie, powielanie, modyfikowanie, redystrybucję ani tworzenie dzieł pochodnych witryny lub jej treści bez uprzedniej pisemnej zgody.",
+    "contact": "Pytania o licencję? <a>Skontaktuj się.</a>",
+    "backHome": "Powrót do narzędzi"
   }
 }

@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomien til en TLS-chiffersuite"
+summary: "Hva en TLS-chiffersuite faktisk navngir, hvordan man leser en suite som TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 del for del, og hvordan det samme kodepunktet på to byte dukker opp under tre ulike navnekonvensjoner."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Hva en chiffersuite er
+
+En TLS-chiffersuite er et navngitt knippe kryptografiske valg som en klient og en server blir enige om under håndtrykket. Et enkelt navn som `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` pakker flere uavhengige beslutninger inn i én identifikator: hvordan de to sidene blir enige om en delt hemmelighet, hvordan serveren beviser hvem den er, hvilken algoritme som krypterer applikasjonsdataene, og hvordan disse dataene beskyttes mot manipulering.
+
+Hver registrerte suite har også et kodepunkt på to byte, tildelt av IANA. Navnet over er `0xC02F` på ledningen. Håndtrykket sender aldri tekstnavnet; det sender de to bytene. Navnene finnes for mennesker, og det finnes mer enn én navnekonvensjon – en hyppig kilde til forvirring.
+
+## Oppgavene en suite beskriver
+
+For TLS 1.2 og tidligere navngir en suite opptil fem ting:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**Nøkkelutveksling** er hvordan de to sidene etablerer en delt hemmelighet. `ECDHE` er flyktig Diffie-Hellman på elliptiske kurver, som gir forward secrecy. Andre verdier du ser er `DHE` (flyktig Diffie-Hellman over endelig kropp), `RSA` (statisk RSA-nøkkeltransport, ingen forward secrecy) og `PSK` (en forhåndsdelt nøkkel).
+
+**Autentisering** er hvordan serveren (og noen ganger klienten) beviser sin identitet, nesten alltid med den private nøkkelen bak sertifikatet sitt. `RSA` og `ECDSA` er de vanlige verdiene. Når en suite bruker statisk `RSA` til nøkkelutvekslingen, gjør den samme RSA-nøkkelen begge oppgavene, så navnet lister `RSA` bare én gang.
+
+**Blokkchiffer og nøkkellengde** er den symmetriske algoritmen som krypterer den faktiske trafikken når håndtrykket er ferdig. `AES_128` og `AES_256` dominerer; `CHACHA20` er det vanlige alternativet på enheter uten AES-maskinvare.
+
+**Modus** gjør blokkchifferet til noe som kan kryptere en strøm av poster. `GCM`, `CCM` og `CHACHA20_POLY1305` er AEAD-moduser som håndterer integriteten selv. `CBC` er den eldre modusen som trenger en separat MAC.
+
+**MAC- eller PRF-hash** er det siste tokenet. I en CBC-suite er det HMAC-hashen som autentiserer hver post. I en AEAD-suite gir chifferet allerede integritet, så den avsluttende hashen navngir i stedet PRF-en som håndtrykket bruker til å utlede nøkler (`SHA256` eller `SHA384`).
+
+## Å lese den baklengs
+
+Når du kan grammatikken, kan du lese hvilken som helst TLS 1.2-suite baklengs med et blikk. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` er flyktig Diffie-Hellman over endelig kropp til nøkkelutvekslingen, RSA til autentiseringen, AES med 256-bits nøkkel i GCM-modus, og SHA-384 som håndtrykkets PRF. Siden GCM er AEAD, finnes det ingen separat MAC.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` er den advarende motsetningen: statisk RSA-nøkkeltransport uten forward secrecy, AES-128 i CBC-modus, og en HMAC-SHA1-MAC. Alt ved den er en arv fra fortiden, og derfor merker IANA den nå som frarådet.
+
+## Én suite, tre navn
+
+Det samme `0xC02F` dukker opp under tre konvensjoner:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+IANA-navnet er registerstandarden. OpenSSL bruker bindestreker, dropper `WITH` og skriver `AES128` som ett token, og derfor kan en OpenSSL-konfigurasjon og en pakkefangst se ut til å være uenige selv om de navngir den samme suiten. Dekoderen godtar alle tre formene pluss det rå kodepunktet og viser de andre.
+
+## Å dekode er ikke å bifalle
+
+Å lese en suite forteller deg hva den ville gjort, ikke om du bør bruke den. Et navn kan være helt korrekt utformet og likevel beskrive RC4, anonym nøkkelutveksling eller nøkler av eksportstyrke. Dekoderen parer den strukturelle oppdelingen med en sikkerhetsvurdering og den uavhengige IANA-anbefalingen, slik at et sunt utseende navn med en fatal feil ikke slipper gjennom. Følgeartiklene dekker hva som gjør en suite moderne: AEAD i stedet for CBC, og forward secrecy i nøkkelutvekslingen.

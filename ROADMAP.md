@@ -23,13 +23,13 @@ ID (`C-xx` seam / `D-xx` decision) or the Parking Lot (Charter Appendix C). Comp
 
 ## 2. Tools (build one tool + its Learn content end-to-end)
 
-- 🟢 Live: jwt · pkce · base64 · hash · hmac · uuid · cidr · x509 · ipv6 (RFC-anchored golden vectors). **[C-21/C-03]**
-- 🟡 Cipher-suite decoder — next pick. **[§8.O]**
-- ⚪ Cipher-suite decoder · IP converter · VLSM · reverse-DNS · epoch/NTP · URL parser · generic diff ·
-  password/entropy. **[§8.K/§8.O · Appendix C]**
-- ⚪ Regex toolkit (multi-flavor tester/visualizer, railroad diagrams, ReDoS warnings). **[§8.T]**
-- ⚪ Encoding zoo + WAF evasion/normalization lab (F5 AWAF set); IT-unit converters. **[§8.O]**
-- ⚪ Network-path/registry diagnostics (ping/traceroute/WHOIS-RDAP/ASN/RPKI/blacklist). **[C-87 · §8.N]**
+- 🟢 Live (10): jwt · pkce · base64 · hash · hmac · uuid · cidr · x509 · ipv6 · cipher (RFC/IANA-anchored golden vectors). cidr is now full subnetting (absorbed vlsm-supernet, M1); base64 is now a unified codec incl. hex + percent-encoding (absorbed hex-url, M5). **[C-21/C-03]**
+- 🟡 Next pick (F5-first): **asm-waf-inspector**, then **bigip-persistence-cookie**. Full ratified inventory + disposition (62 entries) is the source of truth in `src/content/catalogue/catalogue.ts` and renders in the admin console.
+- 🟡 Queued — Security & WAF (F5-priority): asm-waf-inspector (base + deep/fingerprint/diff/cohort — INCLUDED) · bigip-persistence-cookie (decode + encode — INCLUDED) · saml-decoder + xml-decoder (kept separate M6; XXE-hardened golden vector) · secure-headers · waf-evasion-normalizer (defensive only) · oidc.
+- 🟡 Queued — packet decoders (decode-only): layered-packet-decoder · layers-nest-explainer (separate M3) · tcp · **udp · dhcp · dns-message · ntp · vxlan · geneve · quic-header** (NEW UDP set, RFC 768/2131/1035/5905/7348/8926/8999) · ospf · icmp · bpdu-stp · pppoe · lldp-cdp · ipsec.
+- 🟡 Queued — general: mac-oui · network-number-registries · ip-multicast-group · asn-prefix (asn+route-object merged M4) · charset-equivalency · http-methods-comparison · http-request-translator · http-method-override · mtu-mss (tunneling-overhead merged M2) · bits-bytes (separate M7) · epoch · regex · log-parser · diff · password-entropy.
+- ⚪ Deferred (gating model reserved): dns-lookup (egress) · asn-live · x509/cidr extended tiers. **[D-50…D-53 reserved]**
+- ⛔ Dropped on principle (control-defeat / frame-forging): RST injection · *-recover · *-crack · ESP decrypt · all four craft/spoof/inject calls. Decoders give the value without the weapon.
 
 ## 3. Internationalization
 
@@ -78,7 +78,7 @@ ID (`C-xx` seam / `D-xx` decision) or the Parking Lot (Charter Appendix C). Comp
 - ⚪ Tool-specific funding mechanism. **[D-40]**
 - ⚪ "Request this training" lead-routing → configurable provider-routing registry (Red Education
   default; Direct/self off until PRIME + Red Education green-light). **[C-63 · D-47]**
-- ⚪ Admin on-the-fly feature toggles + per-user feature visibility. **[C-23 · C-39 · C-80 · C-67]**
+- 🟢 Admin console remapped off `/admin` to an unguessable URI and shipped to production (en-only, noindex, search-excluded); renders the config surface + the consolidated tool catalogue. Obscurity-only — no access control yet. On-the-fly toggles / per-user visibility still await the service layer. **[C-23 · C-39 · C-80 · C-67]**
 - ⚪ Contributor public pages (read-only first; tips gated; noindex below a threshold). **[D-40 · D-43]**
 - ⚪ Documented API at `/api` + `/docs` (Swagger UI vendored same-origin under strict CSP) + embeddable
   client-side module. **[C-04]**

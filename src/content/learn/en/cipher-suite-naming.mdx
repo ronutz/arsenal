@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Reading Cipher Suite Names: IANA, OpenSSL, and GnuTLS"
+summary: "Why the same cipher suite has three different names and a two-byte code point, how to translate between the IANA, OpenSSL, and GnuTLS conventions, and what the IANA Recommended column of Y, N, and D actually means."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Why one suite has many names
+
+A single cipher suite can be written at least three ways, and the differences trip up anyone comparing a server config against a packet capture or a scanner report. The suite that IANA calls `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` is the same one OpenSSL calls `ECDHE-RSA-AES128-GCM-SHA256`. They describe identical bytes on the wire, namely the code point `0xC02F`.
+
+The code point is the only thing the protocol actually uses. The names are conveniences for configuration files, documentation, and humans, and each tool ecosystem grew its own convention.
+
+## The three conventions
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+The **IANA** name is the registry standard. It always starts with `TLS_`, separates every token with an underscore, and uses the word `WITH` to divide the key exchange and authentication from the cipher and MAC.
+
+The **OpenSSL** name drops the `TLS_` prefix, uses hyphens instead of underscores, removes the `WITH`, and writes the cipher and key size as one token (`AES128` rather than `AES_128`). For static-RSA suites OpenSSL also drops the redundant key-exchange token, so `TLS_RSA_WITH_AES_128_CBC_SHA` becomes simply `AES128-SHA`. TLS 1.3 is the exception: there OpenSSL adopted the IANA names unchanged, so `TLS_AES_128_GCM_SHA256` is spelled the same in both.
+
+The **GnuTLS** name keeps the `TLS_` prefix and underscores but, like OpenSSL, omits the `WITH`. It is the least commonly seen of the three.
+
+This is exactly the mismatch that makes people think two systems disagree when they have configured the same suite. A decoder that accepts any of the names, plus the raw code point, removes the guesswork by showing you all of them at once.
+
+## Reading a code point
+
+A cipher suite code point is two bytes, written several ways that all mean the same number:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+The first byte groups related suites: the `0x00xx` block holds the original TLS 1.0 and 1.1 suites, `0xC0xx` holds the elliptic-curve suites from RFC 5289 and friends, `0xCCxx` holds the ChaCha20-Poly1305 suites, and `0x13xx` holds the TLS 1.3 suites. Seeing `0xC0` or `0xCC` at the front is a quick hint that you are looking at a modern ECDHE or ChaCha20 suite.
+
+## What the Recommended column means
+
+The IANA registry has a Recommended column with three values, and they are easy to misread.
+
+`Y` means the suite has been through the IETF consensus process and is recommended for general use at the time of registration. `N` does not mean the suite is broken; it means it has not been through that process, has limited applicability, or is meant for a specific niche. The `CCM_8` suites are marked `N` for exactly this reason: the truncated tag is a deliberate tradeoff, not a flaw.
+
+`D` is the strong one. It means the suite is discouraged and should not, or must not, be used depending on the situation. Whole families have moved to `D` as the IETF deprecates them, including the static-RSA suites and, more recently, the finite-field `DHE` suites. A suite can be cryptographically sound and still be marked `D` for ecosystem reasons, which is why the decoder shows the IANA flag next to its own security read-out rather than folding them into one verdict. The two answer different questions: is the construction sound, and does the standards process still want you using it.
+
+## Putting it together
+
+To identify an unfamiliar suite, paste whatever form you have, an IANA name, an OpenSSL name, or a code point, into the decoder. It resolves the suite against a bundled copy of the IANA registry, shows the other names, breaks the suite into its parts, and pairs a rule-based security assessment with the official IANA recommendation. The companion articles explain the parts themselves: the overall anatomy, the AEAD-versus-CBC choice, forward secrecy, and what TLS 1.3 changed.

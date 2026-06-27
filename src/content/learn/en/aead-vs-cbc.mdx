@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD vs CBC: Why the Mode Matters"
+summary: "The practical difference between an AEAD cipher like AES-GCM and an older CBC cipher with a separate HMAC, the padding-oracle attacks that killed MAC-then-encrypt, and the one tradeoff AEAD still asks you to make."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Two ways to encrypt a record
+
+Once a TLS handshake has agreed on keys, every record of application data has to be both encrypted, so an eavesdropper cannot read it, and authenticated, so an attacker cannot tamper with it. There are two broad ways a cipher suite does this, and the mode token in the suite name tells you which.
+
+An **AEAD** cipher, such as AES-GCM, AES-CCM, or ChaCha20-Poly1305, does both jobs in a single primitive. You give it the plaintext and some associated data, and it returns ciphertext plus an authentication tag. Decryption verifies the tag and the data together, and fails as one operation if anything was altered.
+
+A **CBC** cipher does only encryption. To get integrity, the suite pairs it with a separate HMAC, named by the trailing hash in the suite (for example the `SHA` in `TLS_RSA_WITH_AES_128_CBC_SHA`). The two operations are bolted together by the protocol, and the order in which they happen turns out to matter enormously.
+
+## Why MAC-then-encrypt went wrong
+
+TLS originally used MAC-then-encrypt: compute the HMAC over the plaintext, append it, pad the result to a block boundary, then encrypt the whole thing with CBC. The problem is that the receiver has to decrypt and remove padding before it can check the MAC, so malformed padding and a bad MAC are detected at different stages. An attacker who can see whether a record failed on padding or on the MAC, whether by an error message or just by timing, learns one bit about the plaintext per probe. Repeated, that bit becomes the whole message.
+
+This is a padding oracle, and it is not theoretical. A series of attacks over the years, including BEAST, Lucky13, and POODLE, all exploited CBC record protection in TLS. Each one was patched with increasingly delicate constant-time code, but the underlying construction kept producing new variants. The lesson the industry drew was to stop using it.
+
+## Why AEAD is the default now
+
+AEAD removes the whole class of problem. There is no separate padding step to probe and no separate MAC stage to time, because verification and decryption are one operation that either succeeds or fails. TLS 1.3 takes this to its conclusion and permits AEAD ciphers only; CBC suites are simply not part of TLS 1.3. In TLS 1.2 both exist, which is why the decoder flags a CBC-with-HMAC-SHA1 suite as weak even when the cipher itself is AES.
+
+When you see `GCM`, `CCM`, or `POLY1305` in a suite name, you are looking at AEAD. When you see `CBC`, you are looking at the older construction, and on a modern service it should be a fallback at best.
+
+## The tradeoff AEAD still asks
+
+AEAD is not free of sharp edges; it just moves them. Every AEAD encryption needs a nonce, a number used once, and the security of GCM in particular collapses if the same nonce is ever reused with the same key. TLS manages nonces for you with a per-connection counter, so this is a danger for systems that build their own framing rather than for TLS itself, but it is the reason AEAD designs care so much about nonce construction.
+
+The other tradeoff is the authentication tag length. The standard GCM and Poly1305 suites use a 16-byte tag. The `CCM_8` suites truncate that to 8 bytes to save overhead on constrained links, which measurably weakens integrity. That is why `TLS_AES_128_CCM_8_SHA256` is a real TLS 1.3 AEAD suite that IANA still declines to mark recommended: the mode is modern, but the short tag is a compromise the general internet does not need to make.

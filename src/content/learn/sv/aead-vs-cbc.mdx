@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD mot CBC: varför läget spelar roll"
+summary: "Den praktiska skillnaden mellan ett AEAD-chiffer som AES-GCM och ett äldre CBC-chiffer med en separat HMAC, padding-orakel-attackerna som tog kål på MAC-then-encrypt, och den enda kompromiss som AEAD fortfarande begär."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Två sätt att kryptera en post
+
+När en TLS-handskakning har kommit överens om nycklar måste varje post med applikationsdata vara både krypterad, så att en tjuvlyssnare inte kan läsa den, och autentiserad, så att en angripare inte kan manipulera den. Det finns två breda sätt för en chiffersvit att göra detta, och lägestoken i svitnamnet talar om vilket.
+
+Ett **AEAD**-chiffer, som AES-GCM, AES-CCM eller ChaCha20-Poly1305, gör båda uppgifterna i en enda primitiv. Du ger det klartexten och vissa tillhörande data, och det returnerar chiffertexten plus en autentiseringstagg. Dekrypteringen verifierar taggen och datan tillsammans, och misslyckas som en enda operation om något har ändrats.
+
+Ett **CBC**-chiffer gör bara krypteringen. För integritet parar sviten det med en separat HMAC, namngiven av svitens avslutande hash (till exempel `SHA` i `TLS_RSA_WITH_AES_128_CBC_SHA`). Protokollet bultar ihop de två operationerna, och ordningen de sker i visar sig spela enormt stor roll.
+
+## Varför MAC-then-encrypt gick fel
+
+TLS använde ursprungligen MAC-then-encrypt: beräkna HMAC över klartexten, lägg till den, fyll ut resultatet till en blockgräns och kryptera sedan allt med CBC. Problemet är att mottagaren måste dekryptera och ta bort utfyllnaden innan den kan kontrollera MAC:en, så felaktig utfyllnad och en felaktig MAC upptäcks i olika steg. En angripare som kan se om en post misslyckades på utfyllnaden eller på MAC:en – via ett felmeddelande eller bara via tidtagningen – lär sig en bit om klartexten per försök. Upprepat blir den biten hela meddelandet.
+
+Detta är ett padding-orakel, och det är inte teoretiskt. En rad attacker genom åren, däribland BEAST, Lucky13 och POODLE, utnyttjade alla CBC-postskyddet i TLS. Var och en lappades med allt känsligare kod med konstant tid, men den underliggande konstruktionen fortsatte att producera nya varianter. Lärdomen branschen drog var att sluta använda den.
+
+## Varför AEAD är standard nu
+
+AEAD tar bort hela problemklassen. Det finns inget separat utfyllnadssteg att sondera och inget separat MAC-steg att tidsmäta, eftersom verifiering och dekryptering är en operation som lyckas eller misslyckas. TLS 1.3 drar detta till sin slutpunkt och tillåter bara AEAD-chiffer; CBC-sviter är helt enkelt inte en del av TLS 1.3. I TLS 1.2 finns båda, och därför märker avkodaren en CBC-med-HMAC-SHA1-svit som svag även när chiffret är AES.
+
+När du ser `GCM`, `CCM` eller `POLY1305` i ett svitnamn tittar du på AEAD. När du ser `CBC` tittar du på den äldre konstruktionen, och på en modern tjänst bör det på sin höjd vara en reserv.
+
+## Kompromissen som AEAD fortfarande begär
+
+AEAD är inte fritt från vassa kanter; det flyttar dem bara. Varje AEAD-kryptering behöver en nonce, ett tal som används en gång, och säkerheten hos GCM i synnerhet kollapsar om samma nonce någonsin återanvänds med samma nyckel. TLS hanterar noncerna åt dig med en räknare per anslutning, så detta är en fara för system som bygger sin egen inramning snarare än för TLS självt, men det är skälet till att AEAD-konstruktioner bryr sig så mycket om nonce-konstruktionen.
+
+Den andra kompromissen är autentiseringstaggens längd. Standardsviterna för GCM och Poly1305 använder en tagg på 16 byte. `CCM_8`-sviterna förkortar den till 8 byte för att spara omkostnad på begränsade länkar, vilket märkbart försvagar integriteten. Därför är `TLS_AES_128_CCM_8_SHA256` en äkta AEAD-svit i TLS 1.3 som IANA ändå vägrar märka som rekommenderad: läget är modernt, men den korta taggen är en kompromiss som det allmänna internet inte behöver göra.

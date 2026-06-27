@@ -108,7 +108,8 @@
       "hashing": "Hashing & kripto",
       "identifiers": "Pengecam",
       "pki": "Sijil & PKI",
-      "networking": "Rangkaian"
+      "networking": "Rangkaian",
+      "transport": "TLS dan pengangkutan"
     },
     "hash": {
       "name": "Penjana Hash (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "multicast"
       }
+    },
+    "cipher": {
+      "name": "Penyahkod suite sifer",
+      "blurb": "Masukkan suite sifer TLS, sebagai nama IANA, nama OpenSSL atau GnuTLS, atau titik kod heksadesimal, untuk memecahkannya kepada pertukaran kunci, pengesahan, sifer, mod dan MAC, dengan bacaan keselamatan dalam bahasa mudah serta saranan rasmi IANA. Berjalan sepenuhnya dalam pelayar anda terhadap salinan terbenam daftar IANA.",
+      "inputLabel": "Suite sifer",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256 atau 0x1301",
+      "runsLocally": "Penyahkodan berjalan secara setempat terhadap salinan terbenam daftar suite sifer TLS IANA. Tiada apa-apa dihantar ke mana-mana.",
+      "notInRegistryNote": "Nama ini dihuraikan secara berstruktur tetapi tidak ditemui dalam petikan terbenam daftar IANA, jadi titik kod dan nama setaranya tidak dipaparkan.",
+      "errors": {
+        "empty": "Masukkan suite sifer untuk dinyahkod.",
+        "format": "Itu bukan suite sifer. Masukkan nama IANA (TLS_...), nama OpenSSL atau titik kod heksadesimal seperti 0x1301.",
+        "unknown": "Itu format titik kod yang sah, tetapi ia bukan suite sifer yang ditetapkan dalam daftar IANA."
+      },
+      "ratings": {
+        "recommended": "Disarankan",
+        "secure": "Selamat",
+        "weak": "Lemah",
+        "insecure": "Tidak selamat",
+        "unknown": "Tidak diketahui"
+      },
+      "iana": {
+        "Y": "IANA: disarankan",
+        "N": "IANA: tidak disarankan",
+        "D": "IANA: dinasihatkan elak"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Tiada dalam petikan IANA"
+      },
+      "panels": {
+        "identity": "Identiti",
+        "components": "Komponen",
+        "security": "Keselamatan"
+      },
+      "fields": {
+        "codePoint": "Titik kod",
+        "name": "Nama IANA",
+        "openssl": "Nama OpenSSL",
+        "gnutls": "Nama GnuTLS",
+        "protocol": "Protokol",
+        "dtls": "DTLS-OK",
+        "references": "Rujukan"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 dan lebih awal"
+      },
+      "comp": {
+        "keyExchange": "Pertukaran kunci",
+        "authentication": "Pengesahan",
+        "forwardSecrecy": "Kerahsiaan ke hadapan",
+        "cipher": "Sifer",
+        "mode": "Mod",
+        "aead": "AEAD",
+        "prf": "Cincang PRF/KDF",
+        "mac": "MAC",
+        "yes": "Ya",
+        "no": "Tidak",
+        "bits": "{n} bit",
+        "negotiatedSeparately": "Dirundingkan berasingan (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "Sifer NULL: trafik langsung tidak disulitkan.",
+        "anon": "Pertukaran kunci tanpa nama: pihak rakan tidak disahkan, jadi ia tidak memberi perlindungan terhadap serangan orang di tengah yang aktif.",
+        "export40": "Kunci gred eksport (40-bit): mudah dipecahkan secara kekerasan, sisa peraturan eksport tahun 1990-an.",
+        "rc4": "Sifer aliran RC4: aliran kunci berat sebelah menjadikannya pecah, dan RFC 7465 melarangnya untuk TLS.",
+        "singleDes": "DES tunggal dengan kunci 56-bit: boleh dipecahkan secara kekerasan dalam beberapa jam.",
+        "rc2": "RC2: sifer 40/64-bit lapuk yang tidak selamat untuk kegunaan moden.",
+        "tripleDes": "3DES mempunyai blok 64-bit, yang mendedahkannya kepada serangan hari jadi Sweet32 (CVE-2016-2183). RFC 8429 melapukkannya.",
+        "md5Mac": "MAC MD5: MD5 telah pecah dari segi kriptografi.",
+        "cbcMac": "CBC dengan MAC HMAC-SHA1 atau MD5 menggunakan MAC-then-encrypt, terdedah kepada serangan padding oracle seperti BEAST dan Lucky13.",
+        "ccm8": "CCM_8 memendekkan teg pengesahan kepada 8 bait, melemahkan integriti. IANA tidak menandakannya sebagai disarankan.",
+        "noFs": "Tiada kerahsiaan ke hadapan: dengan pertukaran kunci statik, satu kunci jangka panjang yang terjejas boleh menyahsulit sesi lampau. Panduan moden memerlukan ECDHE atau DHE.",
+        "legacyCipher": "{value} ialah sifer warisan, sudah lapuk untuk TLS.",
+        "aead": "Sifer AEAD (penyulitan disahkan): kerahsiaan dan integriti dalam satu primitif, tanpa MAC berasingan yang boleh disalah guna.",
+        "fs": "Kerahsiaan ke hadapan: pertukaran kunci sementara memastikan trafik lampau kekal selamat walaupun kunci jangka panjang terjejas kemudian.",
+        "tls13": "Suite TLS 1.3: hanya sifer AEAD moden, dengan pertukaran kunci dirundingkan berasingan dan sentiasa sementara.",
+        "ianaD": "IANA menandakan suite ini sebagai \"D\" (dinasihatkan elak): ia TIDAK SEPATUTNYA atau TIDAK BOLEH digunakan, bergantung pada situasi.",
+        "ianaN": "IANA tidak menandakan suite ini sebagai \"Disarankan\": ia mempunyai kebolehgunaan terhad atau tidak melalui proses konsensus IETF.",
+        "signalling": "Suite isyarat (SCSV): bukan sifer sebenar, ia membawa isyarat protokol seperti perlindungan penurunan taraf atau maklumat perundingan semula."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Kembali ke laman utama"
   },
   "footer": {
-    "redEducation": "Tempah latihan rasmi dengan Red Education",
+    "redEducation": "Tempah latihan rasmi dengan <b>Red Education</b>",
     "privacy": "Privasi",
     "builtWith": "Dibina oleh Rodolfo Nützmann dengan CONCORD",
     "colophon": "Cara ia dibina",
-    "openSource": "Enjin ini sumber terbuka",
-    "rights": "Tersedia di bawah terma terbuka dan komersial.",
     "contribute": "Bantu perbaiki terjemahan",
     "feedback": "Hantar maklum balas",
     "api": "Rujukan API",
-    "contributeTools": "Sumbangkan satu alat"
+    "contributeTools": "Sumbangkan satu alat",
+    "license": "Lesen",
+    "coffee": "Belanja saya kopi"
   },
   "search": {
     "label": "Cari",
@@ -883,5 +965,16 @@
     "viewReference": "Rujukan",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Swagger UI tidak dapat dimuatkan."
+  },
+  "license_page": {
+    "eyebrow": "Teras terbuka",
+    "title": "Lesen",
+    "lede": "ronutz.com berteras terbuka: enjin yang menggerakkan setiap alat adalah sumber terbuka, manakala tapak web yang dibina di atasnya tidak.",
+    "openHeading": "Sumber terbuka, enjin",
+    "openBody": "@ronutz/netcore, enjin di sebalik setiap alat dan setiap respons API di tapak ini, dikeluarkan di bawah Apache License 2.0. Fungsi yang sama yang dipanggil oleh alat dalam pelayar ialah fungsi yang dipanggil oleh API, jadi anda bebas menggunakannya, mengubah suainya dan membina di atasnya di bawah lesen tersebut.",
+    "closedHeading": "Sumber tertutup, tapak web ini",
+    "closedBody": "Tapak web itu sendiri ialah sumber tertutup. Reka bentuk, antara muka, kandungan bertulisnya (termasuk setiap artikel Learn), penjenamaan dan cara khusus alat-alat ini disusun serta dipersembahkan di sini adalah hak milik eksklusif, semua hak terpelihara. Tiada kebenaran diberikan untuk menyalin, menghasilkan semula, mengubah suai, mengedar semula atau mencipta karya terbitan daripada tapak atau kandungannya tanpa kebenaran bertulis terlebih dahulu.",
+    "contact": "Ada soalan tentang lesen? <a>Hubungi kami.</a>",
+    "backHome": "Kembali ke alat"
   }
 }

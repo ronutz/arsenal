@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "Suite sifer TLS 1.3: apa yang berubah"
+summary: "Mengapa suite TLS 1.3 hanya menamakan satu sifer dan satu cincang, ke mana perginya pertukaran kunci dan pengesahan, dan mengapa senarai suite mengecut daripada ratusan kepada segelintir."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Suite jenis yang berbeza
+
+TLS 1.3, yang ditakrifkan dalam RFC 8446, mengubah apa yang dinamakan oleh suite sifer. Dalam TLS 1.2, suite menggabungkan pertukaran kunci, pengesahan, sifer dan MAC. Dalam TLS 1.3, suite hanya menamakan dua perkara: sifer AEAD dan fungsi cincang yang digunakan oleh fungsi penerbitan kunci.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Tiada pertukaran kunci dan tiada pengesahan dalam nama, kerana TLS 1.3 merundingkannya secara berasingan. Itulah perubahan terbesar, dan itulah sebabnya suite TLS 1.3 kelihatan begitu pendek di sebelah suite TLS 1.2.
+
+## Ke mana perginya pertukaran kunci
+
+Dalam TLS 1.3, pertukaran kunci dibawa oleh sambungannya sendiri `key_share`, dan kumpulan yang ditawarkan disenaraikan dalam `supported_groups`. Pengesahan dirundingkan melalui `signature_algorithms`. Menarik ini keluar daripada suite mempunyai kelebihan sebenar: segelintir suite sifer bergabung dengan bebas dengan mana-mana kumpulan yang disokong dan mana-mana algoritma tandatangan, dan bukannya letupan gabungan yang memberikan TLS 1.2 ratusan suite berdaftar.
+
+Ia juga menanam dua tetapan lalai yang baik. Setiap pertukaran kunci TLS 1.3 adalah sementara, jadi kerahsiaan ke hadapan adalah wajib dan bukannya pilihan. Dan pengangkutan kunci RSA statik, cara klasik kehilangan kerahsiaan ke hadapan, dialih keluar sepenuhnya, RSA hidup hanya sebagai algoritma tandatangan untuk pengesahan.
+
+## Lima suite
+
+Spesifikasi asas mentakrifkan lima suite, dan dalam amalan anda kebanyakannya akan melihat tiga yang pertama:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Kelima-limanya ialah AEAD, TLS 1.3 tidak membenarkan yang lain. `TLS_AES_128_GCM_SHA256` wajib dilaksanakan, yang menjadikannya penyebut sepunya yang selamat. ChaCha20-Poly1305 ialah pilihan biasa pada perkakasan tanpa pemecutan AES. Dua suite CCM disasarkan pada persekitaran terkawal, dan `CCM_8` menukar teg pengesahan yang lebih pendek dengan overhead yang lebih kecil, dan itulah sebabnya IANA tidak menandakannya sebagai disarankan walaupun ia ialah suite TLS 1.3.
+
+## Daftar sama, tidak boleh ditukar ganti
+
+TLS 1.3 menggunakan semula daftar suite sifer IANA yang sama dan ruang kod dua bait yang sama seperti versi terdahulu, tetapi kedua-dua takrifan tidak boleh ditukar ganti. Nilai suite TLS 1.3 tidak boleh digunakan dengan TLS 1.2, dan nilai suite TLS 1.2 tidak boleh digunakan dengan TLS 1.3. Titik kod kebetulan terletak dalam bahagian julat yang sebelum ini tidak digunakan (`0x13xx`), yang mengekalkannya berbeza secara visual.
+
+Itulah sebabnya penyahkod mesti tahu dunia mana yang dimiliki oleh suite. Nama tanpa token `WITH` dalam julat `0x13xx` ialah suite TLS 1.3 yang pertukaran kuncinya dirundingkan di tempat lain, nama dengan token `WITH` ialah suite untuk TLS 1.2 dan lebih awal yang pertukaran kuncinya ditulis dengan jelas.
+
+## Perlindungan penurunan taraf
+
+Oleh sebab suite lebih lama masih wujud untuk rakan lebih lama, TLS 1.3 menambah perlindungan terhadap penyerang yang memaksa penurunan taraf. Pelayan yang menyokong TLS 1.3 tetapi akhirnya merundingkan versi lebih lama menulis nilai pengawal tetap dalam lapan bait terakhir `server random`-nya. Klien TLS 1.3 yang sebenar memeriksa pengawal itu dan membatalkan jika ia muncul pada sambungan yang sepatutnya 1.3, yang menukar penurunan taraf senyap menjadi jabat tangan yang gagal. Senarai suite sifer mengecut, tetapi protokol di sekelilingnya menjadi lebih bersifat pertahanan.

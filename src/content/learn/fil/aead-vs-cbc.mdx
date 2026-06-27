@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD laban sa CBC: bakit mahalaga ang mode"
+summary: "Ang praktikal na pagkakaiba ng isang AEAD cipher tulad ng AES-GCM at isang mas lumang CBC cipher na may hiwalay na HMAC, ang mga padding oracle attack na pumatay sa MAC-then-encrypt, at ang iisang trade-off na hinihingi pa rin ng AEAD."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Dalawang paraan para mag-encrypt ng record
+
+Matapos magkasundo sa mga key ang isang TLS handshake, kailangang ang bawat record ng application data ay sabay na naka-encrypt, para hindi ito mabasa ng isang nakikinig, at naka-authenticate, para hindi ito mapakialaman ng isang umaatake. May dalawang malawak na paraan para gawin ito ng isang cipher suite, at sinasabi sa iyo ng mode token sa pangalan ng suite kung alin.
+
+Ang isang **AEAD** cipher, tulad ng AES-GCM, AES-CCM, o ChaCha20-Poly1305, ay gumagawa ng dalawang gawain sa iisang primitive. Binibigyan mo ito ng plaintext at ilang associated data, at ibinabalik nito ang ciphertext kasama ang isang authentication tag. Vine-verify ng decryption ang tag at ang data nang magkasama, at nabibigo bilang iisang operasyon kung may binago.
+
+Ang isang **CBC** cipher ay gumagawa lang ng encryption. Para sa integridad, pinapares ito ng suite sa isang hiwalay na HMAC, na pinapangalanan ng pangwakas na hash ng suite (halimbawa ang `SHA` sa `TLS_RSA_WITH_AES_128_CBC_SHA`). Pinagdudugtong ng protocol ang dalawang operasyon, at lumalabas na napakahalaga ng pagkakasunod-sunod ng pagganap ng mga ito.
+
+## Bakit nagkamali ang MAC-then-encrypt
+
+Orihinal na gumamit ang TLS ng MAC-then-encrypt: kalkulahin ang HMAC sa plaintext, idugtong ito, i-pad ang resulta hanggang sa isang block boundary, pagkatapos ay i-encrypt ang lahat gamit ang CBC. Ang problema, kailangan munang mag-decrypt at mag-alis ng padding ang tatanggap bago nito ma-check ang MAC, kaya magkaibang yugto natutukoy ang malformed padding at maling MAC. Ang isang umaatake na nakakakita kung nabigo ang isang record sa padding o sa MAC, sa pamamagitan man ng error message o sa timing lang, ay natututo ng isang bit tungkol sa plaintext kada pagtatangka. Inulit-ulit, nagiging buong mensahe ang bit na iyon.
+
+Ito ay isang padding oracle, at hindi ito teoretikal. Isang serye ng mga atake sa paglipas ng mga taon, kabilang ang BEAST, Lucky13, at POODLE, ang lahat ay nagsamantala sa CBC record protection sa TLS. Bawat isa ay na-patch ng papalalim na constant-time code, ngunit patuloy na nagluluwal ng mga bagong variant ang pinagbabatayang konstruksyon. Ang aral na hinango ng industriya ay tigilan na itong gamitin.
+
+## Bakit default na ngayon ang AEAD
+
+Inaalis ng AEAD ang buong klase ng problema. Walang hiwalay na padding stage na susuriin at walang hiwalay na MAC stage na titimingan, dahil ang verification at decryption ay iisang operasyon na nagtatagumpay o nabibigo. Dinadala ito ng TLS 1.3 hanggang sa kongklusyon nito at pinapayagan lamang ang mga AEAD cipher, hindi talaga bahagi ng TLS 1.3 ang mga CBC suite. Sa TLS 1.2, umiiral ang pareho, kaya minamarkahan ng decoder ang isang CBC-na-may-HMAC-SHA1 na suite bilang mahina kahit AES ang cipher.
+
+Kapag nakita mong `GCM`, `CCM`, o `POLY1305` sa pangalan ng suite, AEAD ang tinitingnan mo. Kapag nakita mong `CBC`, ang mas lumang konstruksyon ang tinitingnan mo, at sa isang modernong serbisyo dapat ito, sa pinakamadaling sukat, ay isang fallback lang.
+
+## Ang trade-off na hinihingi pa rin ng AEAD
+
+Hindi malaya sa matatalim na gilid ang AEAD, inililipat lang nito ang mga ito. Kailangan ng bawat AEAD encryption ng isang nonce, isang numerong ginagamit nang isang beses, at gumuguho ang seguridad ng GCM lalo na kapag muling ginamit ang parehong nonce sa parehong key. Pinamamahalaan ng TLS ang mga nonce para sa iyo sa pamamagitan ng isang counter kada koneksyon, kaya ito ay panganib para sa mga sistemang gumagawa ng sariling framing kaysa sa TLS mismo, ngunit ito ang dahilan kung bakit ganoon na lang ang pagpapahalaga ng mga AEAD design sa konstruksyon ng nonce.
+
+Ang isa pang trade-off ay ang haba ng authentication tag. Gumagamit ang standard na GCM at Poly1305 suite ng 16-byte na tag. Pinaiikli ito ng `CCM_8` suite sa 8 byte para makatipid ng overhead sa mga constrained na link, na nagpapahina sa integridad sa paraang masusukat. Kaya ang `TLS_AES_128_CCM_8_SHA256` ay isang tunay na TLS 1.3 AEAD suite na tumatangging pa ring markahan ng IANA bilang inirerekomenda: moderno ang mode, ngunit ang maikling tag ay isang kompromisong hindi kailangang gawin ng pangkalahatang internet.

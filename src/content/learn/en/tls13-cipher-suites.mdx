@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "TLS 1.3 Cipher Suites: What Changed"
+summary: "Why a TLS 1.3 suite names only a cipher and a hash, where the key exchange and authentication went, and why the list of suites shrank from hundreds to a handful."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: reviewed
+updated: "2026-06-29"
+---
+
+## A different kind of suite
+
+TLS 1.3, defined in RFC 8446, changed what a cipher suite names. In TLS 1.2 a suite bundled the key exchange, the authentication, the cipher, and the MAC. In TLS 1.3 a suite names only two things: the AEAD cipher and the hash function used by the key-derivation function.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+There is no key exchange and no authentication in the name, because TLS 1.3 negotiates those separately. That is the single biggest change, and it is why a TLS 1.3 suite looks so short next to a TLS 1.2 one.
+
+## Where the key exchange went
+
+In TLS 1.3 the key exchange is carried by its own extension, `key_share`, and the groups on offer are listed in `supported_groups`. Authentication is negotiated through `signature_algorithms`. Pulling these out of the suite has a real benefit: the handful of cipher suites combine freely with any supported group and any signature algorithm, instead of the combinatorial explosion that gave TLS 1.2 hundreds of registered suites.
+
+It also bakes in two good defaults. Every TLS 1.3 key exchange is ephemeral, so forward secrecy is mandatory rather than optional. And static RSA key transport, the classic way to lose forward secrecy, was removed entirely; RSA survives only as a signature algorithm for authentication.
+
+## The five suites
+
+The base specification defines five suites, and in practice you will mostly see the first three:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+All five are AEAD; TLS 1.3 does not allow anything else. `TLS_AES_128_GCM_SHA256` is mandatory to implement, which makes it the safe common denominator. ChaCha20-Poly1305 is the usual pick on hardware without AES acceleration. The two CCM suites are aimed at constrained environments, and `CCM_8` trades a shorter authentication tag for smaller overhead, which is why IANA does not mark it recommended even though it is a TLS 1.3 suite.
+
+## Same registry, not interchangeable
+
+TLS 1.3 reuses the same IANA cipher-suite registry and the same two-byte code space as earlier versions, but the two definitions are not interchangeable. A TLS 1.3 suite value cannot be used with TLS 1.2, and a TLS 1.2 suite value cannot be used with TLS 1.3. The code points happen to live in a previously unused part of the range (`0x13xx`), which keeps them visually distinct.
+
+This is why a decoder has to know which world a suite belongs to. A name with no `WITH` token in the `0x13xx` range is a TLS 1.3 suite whose key exchange is negotiated elsewhere; a name with a `WITH` token is a TLS 1.2-and-earlier suite whose key exchange is spelled out.
+
+## Downgrade protection
+
+Because older suites still exist for older peers, TLS 1.3 adds protection against an attacker forcing a downgrade. A server that supports TLS 1.3 but ends up negotiating an older version writes a fixed sentinel value into the last eight bytes of its `server random`. A real TLS 1.3 client checks for that sentinel and aborts if it appears on a connection that should have been 1.3, which turns a silent downgrade into a failed handshake. The cipher suite list shrank, but the protocol around it grew more defensive.

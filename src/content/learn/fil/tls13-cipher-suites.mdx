@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "Mga cipher suite ng TLS 1.3: ano ang nagbago"
+summary: "Bakit isang cipher at isang hash lang ang pinapangalanan ng isang TLS 1.3 suite, saan napunta ang key exchange at authentication, at bakit lumiit ang listahan ng mga suite mula daan-daan tungo sa iilan."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Ibang uri ng suite
+
+Binago ng TLS 1.3, na tinukoy sa RFC 8446, kung ano ang pinapangalanan ng isang cipher suite. Sa TLS 1.2, pinagsasama ng isang suite ang key exchange, authentication, cipher, at MAC. Sa TLS 1.3, dalawang bagay lang ang pinapangalanan ng isang suite: ang AEAD cipher at ang hash function na ginagamit ng key derivation function.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Walang key exchange at walang authentication sa pangalan, dahil hiwalay na minamake-negosasyon ng TLS 1.3 ang mga ito. Ito ang pinakamalaking pagbabago, at ito ang dahilan kung bakit napakaikli ng isang TLS 1.3 suite katabi ng isang TLS 1.2 suite.
+
+## Saan napunta ang key exchange
+
+Sa TLS 1.3, dinadala ang key exchange ng sarili nitong extension na `key_share`, at nakalista sa `supported_groups` ang mga grupong inialok. Minamake-negosasyon ang authentication sa pamamagitan ng `signature_algorithms`. May tunay na bentahe ang paghugot nito palabas ng suite: malayang nagkokombina ang iilang cipher suite sa kahit anong suportadong grupo at kahit anong signature algorithm, sa halip na ang combinatorial explosion na nagbigay sa TLS 1.2 ng daan-daang nakarehistrong suite.
+
+Naka-bake rin dito ang dalawang magandang default. Ephemeral ang bawat key exchange sa TLS 1.3, kaya sapilitan ang forward secrecy sa halip na opsyonal. At ang static RSA key transport, ang klasikong paraan para mawalan ng forward secrecy, ay tuluyan nang inalis, nananatili ang RSA bilang signature algorithm lang para sa authentication.
+
+## Ang limang suite
+
+Limang suite ang tinutukoy ng base specification, at sa praktika ang unang tatlo ang kadalasang makikita mo:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+AEAD ang lahat ng lima, walang ibang pinapayagan ang TLS 1.3. Sapilitang ipatupad ang `TLS_AES_128_GCM_SHA256`, kaya ito ang ligtas na pinakamababang common denominator. Ang ChaCha20-Poly1305 ang karaniwang pinipili sa hardware na walang AES acceleration. Nakatuon ang dalawang CCM suite sa mga constrained na kapaligiran, at ipinagpapalit ng `CCM_8` ang mas maikling authentication tag para sa mas kaunting overhead, kaya hindi ito minamarkahan ng IANA bilang inirerekomenda kahit isa itong TLS 1.3 suite.
+
+## Iisang registry, hindi mapapalitan
+
+Ginagamit muli ng TLS 1.3 ang parehong IANA cipher suite registry at parehong two-byte code space gaya ng mga naunang bersyon, ngunit hindi mapapalitan ang dalawang kahulugan. Hindi magagamit ang halaga ng isang TLS 1.3 suite sa TLS 1.2, at hindi magagamit ang halaga ng isang TLS 1.2 suite sa TLS 1.3. Nagkataon lang na nasa dating hindi ginagamit na bahagi ng saklaw (`0x13xx`) ang mga code point, kaya nananatili silang magkaiba sa paningin.
+
+Kaya nga kailangang malaman ng isang decoder kung aling mundo ang kinabibilangan ng isang suite. Ang pangalang walang `WITH` token sa saklaw na `0x13xx` ay isang TLS 1.3 suite na ang key exchange ay minamake-negosasyon sa ibang lugar, ang pangalang may `WITH` token ay isang suite para sa TLS 1.2 at mas luma na nakasulat nang malinaw ang key exchange.
+
+## Proteksyon laban sa downgrade
+
+Dahil umiiral pa rin ang mas lumang suite para sa mas lumang kapareha, nagdadagdag ang TLS 1.3 ng proteksyon laban sa isang umaatake na pinipilit ang downgrade. Ang isang server na sumusuporta sa TLS 1.3 ngunit napilitang mag-negotiate ng mas lumang bersyon ay nagsusulat ng nakapirming sentinel value sa huling walong byte ng `server random` nito. Tinitingnan ng tunay na TLS 1.3 client ang sentinel na iyon at humihinto kung lumitaw ito sa isang koneksyong dapat sana ay 1.3, na ginagawang bigong handshake ang isang tahimik na downgrade. Lumiit ang listahan ng cipher suite, ngunit naging mas mapagtanggol ang protocol sa paligid nito.

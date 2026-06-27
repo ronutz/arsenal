@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "TLS 密码套件的结构"
+summary: "TLS 密码套件实际命名了什么，如何逐部分阅读像 TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 这样的套件，以及同一个两字节代码点如何以三种不同的命名约定出现。"
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## 什么是密码套件
+
+TLS 密码套件是一组带名称的密码学选择，由客户端和服务器在握手期间商定。像 `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` 这样一个名称，把若干个相互独立的决定打包进一个标识符：双方如何商定一个共享密钥、服务器如何证明自己的身份、由哪个算法加密应用数据，以及这些数据如何防止被篡改。
+
+每个已注册的套件还有一个由 IANA 分配的两字节代码点。上面那个名称在线路上就是 `0xC02F`。握手从不发送文本名称，它发送的是这两个字节。名称是给人看的，而且命名约定不止一种，这是常见的困惑来源。
+
+## 一个套件描述的各项任务
+
+对 TLS 1.2 及更早版本，一个套件最多命名五样东西：
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**密钥交换**是双方建立共享密钥的方式。`ECDHE` 是椭圆曲线临时 Diffie-Hellman，提供前向保密。你会见到的其他取值有 `DHE`（有限域临时 Diffie-Hellman）、`RSA`（静态 RSA 密钥传输，无前向保密）以及 `PSK`（预共享密钥）。
+
+**身份验证**是服务器（有时还有客户端）证明身份的方式，几乎总是用其证书背后的私钥完成。`RSA` 和 `ECDSA` 是常见取值。当一个套件用静态 `RSA` 做密钥交换时，同一把 RSA 密钥同时承担两项任务，所以名称里只列出 `RSA` 一次。
+
+**分组密码和密钥长度**是握手结束后加密真正流量的对称算法。`AES_128` 和 `AES_256` 占主导，`CHACHA20` 是在没有 AES 硬件的设备上的常见替代。
+
+**模式**把分组密码变成能够加密一连串记录的东西。`GCM`、`CCM` 和 `CHACHA20_POLY1305` 是自行处理完整性的 AEAD 模式。`CBC` 是需要单独 MAC 的较旧模式。
+
+**MAC 或 PRF 哈希**是最后一个标记。在 CBC 套件中，它是对每条记录做身份验证的 HMAC 哈希。在 AEAD 套件中，密码本身已经提供完整性，所以末尾的哈希转而命名握手用于派生密钥的 PRF（`SHA256` 或 `SHA384`）。
+
+## 反向阅读
+
+掌握了这套语法后，你可以一眼把任何 TLS 1.2 套件倒着读出来。`TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` 是有限域临时 Diffie-Hellman 做密钥交换、RSA 做身份验证、GCM 模式下 256 位密钥的 AES，以及作为握手 PRF 的 SHA-384。由于 GCM 是 AEAD，所以没有单独的 MAC。
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` 则是值得警惕的反面：无前向保密的静态 RSA 密钥传输、CBC 模式的 AES-128，以及一个 HMAC-SHA1 的 MAC。它的一切都是历史遗留，因此 IANA 现在把它标记为不建议。
+
+## 一个套件，三个名称
+
+同一个 `0xC02F` 以三种约定出现：
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+IANA 名称是注册表的标准。OpenSSL 使用连字符，去掉 `WITH`，并把 `AES128` 写成单个标记，因此一份 OpenSSL 配置和一次抓包在命名同一个套件时可能看起来彼此矛盾。解码器接受这三种形式，也接受原始代码点，并把其余形式一并显示出来。
+
+## 解码不等于认可
+
+读懂一个套件，告诉你的是它会做什么，而不是你是否应该使用它。一个名称可以格式完全正确，却仍然描述 RC4、匿名密钥交换或出口级密钥。解码器把结构化拆解与一份安全评估以及 IANA 的独立推荐配在一起，这样一个看似健康却带有致命缺陷的名称就不会蒙混过关。配套文章会讲述什么让一个套件称得上现代：用 AEAD 而非 CBC，以及在密钥交换中具备前向保密。

@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "TLS 1.3-chiffersviter: vad som ändrades"
+summary: "Varför en TLS 1.3-svit bara namnger ett chiffer och en hash, vart nyckelutbytet och autentiseringen tog vägen, och varför listan över sviter krympte från hundratals till en handfull."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## En annan sorts svit
+
+TLS 1.3, definierad i RFC 8446, ändrade vad en chiffersvit namnger. I TLS 1.2 buntade en svit ihop nyckelutbyte, autentisering, chiffer och MAC. I TLS 1.3 namnger en svit bara två saker: AEAD-chiffret och hashfunktionen som nyckelhärledningsfunktionen använder.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Det finns inget nyckelutbyte och ingen autentisering i namnet, eftersom TLS 1.3 förhandlar dem separat. Det är den största förändringen, och därför ser en TLS 1.3-svit så kort ut bredvid en TLS 1.2-svit.
+
+## Vart nyckelutbytet tog vägen
+
+I TLS 1.3 bärs nyckelutbytet av sitt eget tillägg `key_share`, och grupperna som erbjuds listas i `supported_groups`. Autentiseringen förhandlas via `signature_algorithms`. Att dra ut detta ur sviten ger en verklig fördel: handfullen chiffersviter kombineras fritt med vilken stödd grupp och vilken signaturalgoritm som helst, i stället för den kombinatoriska explosion som gav TLS 1.2 hundratals registrerade sviter.
+
+Det bakar också in två bra standardvärden. Varje TLS 1.3-nyckelutbyte är efemärt, så forward secrecy är obligatoriskt i stället för valfritt. Och statiskt RSA-nyckeltransport, det klassiska sättet att förlora forward secrecy, togs bort helt; RSA överlever bara som signaturalgoritm för autentiseringen.
+
+## De fem sviterna
+
+Basspecifikationen definierar fem sviter, och i praktiken ser du mest de tre första:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Alla fem är AEAD; TLS 1.3 tillåter inget annat. `TLS_AES_128_GCM_SHA256` är obligatorisk att implementera, vilket gör den till den säkra minsta gemensamma nämnaren. ChaCha20-Poly1305 är det vanliga valet på hårdvara utan AES-acceleration. De två CCM-sviterna riktar sig mot begränsade miljöer, och `CCM_8` byter en kortare autentiseringstagg mot mindre omkostnad, och därför märker IANA den inte som rekommenderad fast den är en TLS 1.3-svit.
+
+## Samma register, inte utbytbara
+
+TLS 1.3 återanvänder samma IANA-chiffersvitsregister och samma tvåbytes kodutrymme som tidigare versioner, men de två definitionerna är inte utbytbara. Ett TLS 1.3-svitvärde kan inte användas med TLS 1.2, och ett TLS 1.2-svitvärde kan inte användas med TLS 1.3. Kodpunkterna råkar ligga i en tidigare oanvänd del av intervallet (`0x13xx`), vilket håller dem visuellt åtskilda.
+
+Därför måste en avkodare veta vilken värld en svit tillhör. Ett namn utan token `WITH` i intervallet `0x13xx` är en TLS 1.3-svit vars nyckelutbyte förhandlas på annat håll; ett namn med token `WITH` är en svit för TLS 1.2 och tidigare vars nyckelutbyte är utskrivet.
+
+## Skydd mot nedgradering
+
+Eftersom äldre sviter fortfarande finns för äldre motparter lägger TLS 1.3 till skydd mot att en angripare framtvingar en nedgradering. En server som stöder TLS 1.3 men slutar med att förhandla en äldre version skriver ett fast vaktvärde i de sista åtta bytena av sin `server random`. En äkta TLS 1.3-klient kontrollerar den vakten och avbryter om den dyker upp på en anslutning som borde ha varit 1.3, vilket gör en tyst nedgradering till en misslyckad handskakning. Listan över chiffersviter krympte, men protokollet runt den blev mer defensivt.

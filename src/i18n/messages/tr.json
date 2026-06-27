@@ -108,7 +108,8 @@
       "hashing": "Hash ve kripto",
       "identifiers": "Tanımlayıcılar",
       "pki": "Sertifikalar ve PKI",
-      "networking": "Ağ"
+      "networking": "Ağ",
+      "transport": "TLS ve taşıma"
     },
     "hash": {
       "name": "Hash Üreteci (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "çok noktaya yayın"
       }
+    },
+    "cipher": {
+      "name": "Şifre paketi çözücü",
+      "blurb": "Bir TLS şifre paketini IANA adı, OpenSSL veya GnuTLS adı ya da onaltılık kod noktası olarak girin; anahtar değişimi, kimlik doğrulama, şifre, mod ve MAC bileşenlerine ayırın. Sade dilde bir güvenlik değerlendirmesi ve resmî IANA önerisiyle birlikte gelir. Tamamen tarayıcınızda, gömülü bir IANA kayıt kopyası üzerinde çalışır.",
+      "inputLabel": "Şifre paketi",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256 veya 0x1301",
+      "runsLocally": "Çözümleme, IANA TLS şifre paketi kaydının gömülü bir kopyası üzerinde yerel olarak çalışır. Hiçbir yere bir şey gönderilmez.",
+      "notInRegistryNote": "Bu ad yapısal olarak ayrıştırıldı ancak gömülü IANA kayıt anlık görüntüsünde bulunamadı, bu nedenle kod noktası ve eşdeğer adları gösterilmiyor.",
+      "errors": {
+        "empty": "Çözmek için bir şifre paketi girin.",
+        "format": "Bu bir şifre paketi değil. Bir IANA adı (TLS_...), bir OpenSSL adı veya 0x1301 gibi onaltılık bir kod noktası girin.",
+        "unknown": "Bu geçerli bir kod noktası biçimi, ancak IANA kaydında atanmış bir şifre paketi değil."
+      },
+      "ratings": {
+        "recommended": "Önerilen",
+        "secure": "Güvenli",
+        "weak": "Zayıf",
+        "insecure": "Güvensiz",
+        "unknown": "Bilinmiyor"
+      },
+      "iana": {
+        "Y": "IANA: önerilen",
+        "N": "IANA: önerilmiyor",
+        "D": "IANA: sakıncalı"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "IANA anlık görüntüsünde yok"
+      },
+      "panels": {
+        "identity": "Kimlik",
+        "components": "Bileşenler",
+        "security": "Güvenlik"
+      },
+      "fields": {
+        "codePoint": "Kod noktası",
+        "name": "IANA adı",
+        "openssl": "OpenSSL adı",
+        "gnutls": "GnuTLS adı",
+        "protocol": "Protokol",
+        "dtls": "DTLS-OK",
+        "references": "Kaynaklar"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 ve öncesi"
+      },
+      "comp": {
+        "keyExchange": "Anahtar değişimi",
+        "authentication": "Kimlik doğrulama",
+        "forwardSecrecy": "İleri gizlilik",
+        "cipher": "Şifre",
+        "mode": "Mod",
+        "aead": "AEAD",
+        "prf": "PRF/KDF özeti",
+        "mac": "MAC",
+        "yes": "Evet",
+        "no": "Hayır",
+        "bits": "{n} bit",
+        "negotiatedSeparately": "Ayrıca müzakere edilir (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "NULL şifre: trafik hiç şifrelenmez.",
+        "anon": "Anonim anahtar değişimi: karşı taraf doğrulanmaz, bu yüzden aktif bir ortadaki adam saldırısına karşı koruma sağlamaz.",
+        "export40": "İhracat düzeyinde 40 bitlik anahtar: kaba kuvvetle önemsizce kırılır, 1990'ların ihracat kurallarından kalma bir kalıntı.",
+        "rc4": "RC4 akış şifresi: yanlı anahtar akışı onu kırık kılar ve RFC 7465 onu TLS için yasaklar.",
+        "singleDes": "56 bit anahtarlı tekli DES: kaba kuvvetle saatler içinde kırılabilir.",
+        "rc2": "RC2: modern kullanım için güvenli olmayan, eski 40/64 bitlik bir şifre.",
+        "tripleDes": "3DES'in 64 bitlik bloğu vardır, bu da onu Sweet32 doğum günü saldırısına açık bırakır (CVE-2016-2183). RFC 8429 onu kullanımdan kaldırır.",
+        "md5Mac": "MD5 MAC: MD5 kriptografik olarak kırıktır.",
+        "cbcMac": "HMAC-SHA1 veya MD5 MAC ile CBC, MAC-then-encrypt kullanır ve BEAST ile Lucky13 gibi dolgu kâhini saldırılarına açıktır.",
+        "ccm8": "CCM_8, kimlik doğrulama etiketini 8 bayta kısaltarak bütünlüğü zayıflatır. IANA bunu önerilen olarak işaretlemez.",
+        "noFs": "İleri gizlilik yok: statik bir anahtar değişiminde, ele geçirilen tek bir uzun ömürlü anahtar geçmiş oturumların şifresini çözebilir. Modern kılavuzlar ECDHE veya DHE gerektirir.",
+        "legacyCipher": "{value} eski bir şifredir, TLS için modası geçmiştir.",
+        "aead": "AEAD şifresi (kimliği doğrulanmış şifreleme): gizlilik ve bütünlük tek bir ilkelde, yanlış kullanılabilecek ayrı bir MAC olmadan.",
+        "fs": "İleri gizlilik: geçici bir anahtar değişimi, uzun ömürlü anahtar daha sonra ele geçirilse bile geçmiş trafiği güvende tutar.",
+        "tls13": "TLS 1.3 paketi: yalnızca modern AEAD şifreleri, anahtar değişimi ayrıca müzakere edilir ve daima geçicidir.",
+        "ianaD": "IANA bu paketi \"D\" (sakıncalı) olarak işaretler: duruma göre KULLANILMAMALIDIR veya KULLANILMAMALIDIR.",
+        "ianaN": "IANA bu paketi \"Önerilen\" olarak işaretlemez: sınırlı uygulanabilirliği vardır veya IETF uzlaşı sürecinden geçmemiştir.",
+        "signalling": "Sinyalleşme paketi (SCSV): gerçek bir şifre değildir, sürüm düşürme koruması veya yeniden müzakere bilgisi gibi bir protokol sinyali taşır."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Ana sayfaya dön"
   },
   "footer": {
-    "redEducation": "Red Education ile resmi eğitim ayırtın",
+    "redEducation": "<b>Red Education</b> ile resmi eğitim ayırtın",
     "privacy": "Gizlilik",
     "builtWith": "Rodolfo Nützmann tarafından CONCORD ile yapıldı",
     "colophon": "Nasıl yapıldı",
-    "openSource": "Motoru açık kaynak",
-    "rights": "Açık ve ticari koşullarla sunulur.",
     "contribute": "Çevirileri iyileştirmeye yardım et",
     "feedback": "Geri bildirim gönder",
     "api": "API referansı",
-    "contributeTools": "Bir araç katkıla"
+    "contributeTools": "Bir araç katkıla",
+    "license": "Lisans",
+    "coffee": "Bana bir kahve ısmarla"
   },
   "search": {
     "label": "Ara",
@@ -883,5 +965,16 @@
     "viewReference": "Referans",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Swagger UI yüklenemedi."
+  },
+  "license_page": {
+    "eyebrow": "Açık çekirdek",
+    "title": "Lisans",
+    "lede": "ronutz.com açık çekirdeklidir: her aracı çalıştıran motor açık kaynaktır, ancak üzerine kurulu web sitesi değildir.",
+    "openHeading": "Açık kaynak, motor",
+    "openBody": "Bu sitedeki her aracın ve her API yanıtının arkasındaki motor olan @ronutz/netcore, Apache License 2.0 altında yayımlanır. Tarayıcıdaki araçların çağırdığı işlevin aynısını API de çağırır, dolayısıyla onu bu lisans kapsamında özgürce kullanabilir, değiştirebilir ve üzerine geliştirme yapabilirsiniz.",
+    "closedHeading": "Kapalı kaynak, bu web sitesi",
+    "closedBody": "Web sitesinin kendisi kapalı kaynaktır. Tasarımı, arayüzü, yazılı içeriği (her Learn makalesi dahil), markası ve bu araçların burada bir araya getirilip sunulma biçimi özel mülktür, tüm hakları saklıdır. Önceden yazılı izin olmadan sitenin veya içeriğinin kopyalanmasına, çoğaltılmasına, değiştirilmesine, yeniden dağıtılmasına ya da bunlardan türev çalışmalar oluşturulmasına izin verilmez.",
+    "contact": "Lisansla ilgili sorularınız mı var? <a>İletişime geçin.</a>",
+    "backHome": "Araçlara dön"
   }
 }

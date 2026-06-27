@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD lawan CBC: mengapa mod penting"
+summary: "Perbezaan praktikal antara sifer AEAD seperti AES-GCM dan sifer CBC lebih lama dengan HMAC berasingan, serangan padding oracle yang menamatkan MAC-then-encrypt, dan satu tolak ansur yang AEAD masih minta."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Dua cara menyulitkan rekod
+
+Setelah jabat tangan TLS mempersetujui kunci, setiap rekod data aplikasi mesti pada masa yang sama disulitkan, supaya penyadap tidak boleh membacanya, dan disahkan, supaya penyerang tidak boleh menggangguinya. Terdapat dua cara luas suite sifer melakukan ini, dan token mod dalam nama suite memberitahu anda yang mana satu.
+
+Sifer **AEAD**, seperti AES-GCM, AES-CCM atau ChaCha20-Poly1305, melaksanakan kedua-dua tugas dalam satu primitif. Anda memberinya teks biasa dan beberapa data berkaitan, dan ia memulangkan teks sifer serta teg pengesahan. Penyahsulitan mengesahkan teg dan data bersama, dan gagal sebagai satu operasi jika apa-apa telah diubah.
+
+Sifer **CBC** hanya melaksanakan penyulitan. Untuk integriti, suite memadankannya dengan HMAC berasingan, dinamakan oleh cincang penutup suite (contohnya `SHA` dalam `TLS_RSA_WITH_AES_128_CBC_SHA`). Protokol membaut kedua-dua operasi bersama, dan susunan kejadiannya ternyata amat penting.
+
+## Mengapa MAC-then-encrypt menjadi silap
+
+TLS pada asalnya menggunakan MAC-then-encrypt: kira HMAC ke atas teks biasa, tambahkannya, isi padat hasil sehingga sempadan blok, kemudian sulitkan kesemuanya dengan CBC. Masalahnya, penerima mesti menyahsulit dan membuang isi padat sebelum ia boleh memeriksa MAC, jadi isi padat cacat dan MAC salah dikesan pada peringkat berbeza. Penyerang yang dapat melihat sama ada rekod gagal pada isi padat atau pada MAC, sama ada melalui mesej ralat atau hanya melalui pemasaan, mempelajari satu bit tentang teks biasa setiap percubaan. Diulang, bit itu menjadi keseluruhan mesej.
+
+Ini ialah padding oracle, dan ia bukan teori semata. Satu siri serangan sepanjang tahun, termasuk BEAST, Lucky13 dan POODLE, kesemuanya mengeksploitasi perlindungan rekod CBC dalam TLS. Setiap satu ditampal dengan kod masa malar yang semakin halus, tetapi binaan asas terus menghasilkan varian baharu. Pengajaran yang diambil oleh industri ialah berhenti menggunakannya.
+
+## Mengapa AEAD kini lalai
+
+AEAD menghapuskan keseluruhan kelas masalah. Tiada peringkat isi padat berasingan untuk diuji dan tiada peringkat MAC berasingan untuk dimasakan, kerana pengesahan dan penyahsulitan ialah satu operasi yang sama ada berjaya atau gagal. TLS 1.3 membawa ini ke kesimpulannya dan hanya membenarkan sifer AEAD, suite CBC sememangnya bukan sebahagian daripada TLS 1.3. Dalam TLS 1.2, kedua-duanya wujud, dan itulah sebabnya penyahkod menandakan suite CBC-dengan-HMAC-SHA1 sebagai lemah walaupun sifernya AES.
+
+Apabila anda melihat `GCM`, `CCM` atau `POLY1305` dalam nama suite, anda sedang melihat AEAD. Apabila anda melihat `CBC`, anda sedang melihat binaan lebih lama, dan pada perkhidmatan moden itu sepatutnya, paling tinggi pun, sandaran.
+
+## Tolak ansur yang AEAD masih minta
+
+AEAD bukan tanpa bucu tajam, ia hanya mengalihkannya. Setiap penyulitan AEAD memerlukan nonce, satu nombor yang digunakan sekali, dan keselamatan GCM khususnya runtuh jika nonce yang sama pernah digunakan semula dengan kunci yang sama. TLS menguruskan nonce untuk anda dengan pembilang bagi setiap sambungan, jadi ini lebih merupakan bahaya bagi sistem yang membina pembingkaian sendiri berbanding TLS itu sendiri, tetapi itulah sebabnya reka bentuk AEAD begitu mengambil berat tentang binaan nonce.
+
+Tolak ansur yang satu lagi ialah panjang teg pengesahan. Suite GCM dan Poly1305 piawai menggunakan teg 16 bait. Suite `CCM_8` memendekkannya kepada 8 bait untuk menjimatkan overhead pada pautan terkawal, yang melemahkan integriti dengan cara yang boleh diukur. Itulah sebabnya `TLS_AES_128_CCM_8_SHA256` ialah suite AEAD TLS 1.3 yang tulen yang IANA tetap enggan menandakan sebagai disarankan: modnya moden, tetapi teg pendek ialah kompromi yang tidak perlu dibuat oleh internet umum.

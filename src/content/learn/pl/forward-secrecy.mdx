@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Utajnianie z wyprzedzeniem a wymiana kluczy"
+summary: "Co daje utajnianie z wyprzedzeniem, dlaczego statyczny transport klucza RSA go nie oferuje, jak robią to ECDHE i DHE oraz dlaczego uwierzytelnianie i wymiana kluczy to dwa odrębne zadania, które nazwa zestawu trzyma osobno."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Pytanie, na które odpowiada utajnianie z wyprzedzeniem
+
+Wyobraź sobie, że atakujący nagrywa dziś twój zaszyfrowany ruch i go przechowuje. Miesiące później zdobywa długoterminowy klucz prywatny serwera, być może przez włamanie lub nakaz sądowy. Czy może teraz cofnąć się i odszyfrować ruch, który przechwycił?
+
+Jeśli odpowiedź brzmi nie, połączenie miało **utajnianie z wyprzedzeniem**, czasem nazywane doskonałym utajnianiem z wyprzedzeniem. Jeśli odpowiedź brzmi tak, nie miało. Różnica sprowadza się w całości do wymiany kluczy nazwanej w zestawie szyfrów, dlatego jest to jedna z pierwszych rzeczy, które zgłasza dekoder.
+
+## Statyczny RSA: wygodny i kruchy
+
+W dawnej statycznej wymianie kluczy RSA klient wybiera sekret, który ochroni sesję, szyfruje go kluczem publicznym serwera pobranym z jego certyfikatu i wysyła. Tylko klucz prywatny serwera może go odszyfrować, więc sesja jest w danej chwili prywatna wobec podsłuchujących.
+
+Fatalna właściwość polega na tym, że sekret sesji był chroniony długoterminowym kluczem serwera. Jeśli ten klucz kiedykolwiek wycieknie, każdą przeszłą sesję, która go użyła, można rozpakować z nagrania, ponieważ zaszyfrowany sekret leży właśnie tam, w przechwyconym uzgadnianiu. Jedna kompromitacja klucza wstecznie łamie każdą rozmowę, jaką kiedykolwiek chronił. Zestawy zaczynające się od `TLS_RSA_WITH_` działają tak, a dekoder oznacza je jako pozbawione utajniania z wyprzedzeniem.
+
+## Efemeryczny Diffie-Hellman: rozwiązanie
+
+Efemeryczny Diffie-Hellman przecina więź między sekretem sesji a jakimkolwiek długoterminowym kluczem. Dla każdego połączenia obie strony generują świeże, jednorazowe pary kluczy Diffie-Hellmana, wymieniają połowy publiczne, a każda łączy własną połowę prywatną z połową publiczną drugiej, by dojść do tego samego wspólnego sekretu. Połowy prywatne nigdy nie opuszczają swoich maszyn i są odrzucane po zakończeniu połączenia.
+
+Ponieważ wspólny sekret nigdy nie został zaszyfrowany pod długoterminowym kluczem serwera, a efemeryczne klucze prywatne już nie istnieją, późniejsza kompromitacja długoterminowego klucza nie ujawnia nic o przeszłych sesjach. Po prostu nie ma w nagraniu nic do rozpakowania.
+
+Zobaczysz to jako `ECDHE`, efemeryczny Diffie-Hellman na krzywych eliptycznych, lub `DHE`, starszy wariant nad ciałem skończonym. ECDHE jest szybszy i jest nowoczesnym domyślnym wyborem; DHE jest wycofywany, dlatego nawet mocny zestaw DHE-AEAD, taki jak `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384`, nosi teraz oznaczenie IANA odradzany. Statyczni, nieefemeryczni kuzyni `ECDH` i `DH`, bez końcowego `E`, nie zapewniają utajniania z wyprzedzeniem.
+
+## Uwierzytelnianie to osobne zadanie
+
+Częstym nieporozumieniem jest sądzić, że usunięcie statycznego RSA oznacza usunięcie RSA. Tak nie jest. Wymiana kluczy i uwierzytelnianie to dwa różne zadania, a nazwa zestawu wymienia je osobno.
+
+W `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` `ECDHE` wykonuje wymianę kluczy, a `RSA` uwierzytelnianie: serwer podpisuje efemeryczne wartości uzgadniania kluczem prywatnym stojącym za jego certyfikatem RSA, dowodząc, że jest prawowitym posiadaczem. Sekret sesji pochodzi z efemerycznej wymiany Diffie-Hellmana, więc utajnianie z wyprzedzeniem się utrzymuje, podczas gdy certyfikat nadal dowodzi tożsamości. Artykuł o anatomii certyfikatu omawia, jak działa to powiązanie tożsamości.
+
+## Dlaczego TLS 1.3 uczynił je obowiązkowym
+
+TLS 1.3 rozstrzygnął sprawę, usuwając statyczny transport klucza RSA całkowicie. Każda wymiana kluczy w TLS 1.3 jest efemeryczna, więc utajnianie z wyprzedzeniem nie jest już czymś, co musisz wybrać, dobierając właściwy zestaw; gwarantuje je protokół. RSA i ECDSA pozostają jedynie jako algorytmy podpisu do uwierzytelniania. Dlatego też nazwa zestawu TLS 1.3 w ogóle nie ma tokenu wymiany kluczy: nie ma już opcji bez utajniania z wyprzedzeniem do nazwania.
+
+## Zbieraj teraz, odszyfruj później
+
+Utajnianie z wyprzedzeniem chroni przed kompromitacją klucza, która następuje po fakcie, ale zakłada, że leżąca u podstaw matematyka Diffie-Hellmana pozostaje trudna. Nadciągającą obawą jest przyszły komputer kwantowy zdolny złamać dzisiejsze wymiany kluczy na krzywych eliptycznych, co daje nagranemu ruchowi długą przydatność dla atakującego skłonnego poczekać. To jest zagrożenie zbieraj teraz, odszyfruj później, i napędza ono migrację do hybrydowych postkwantowych wymian kluczy, które uruchamiają wymianę klasyczną i odporną na kwanty razem. Utajnianie z wyprzedzeniem pozostaje konieczne; przestało jedynie być uznawane za wystarczające na zawsze.

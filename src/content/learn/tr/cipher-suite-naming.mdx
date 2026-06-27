@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Şifre paketi adlarını okumak: IANA, OpenSSL ve GnuTLS"
+summary: "Aynı şifre paketinin neden üç farklı adı ve iki baytlık bir kod noktası olduğu, IANA, OpenSSL ve GnuTLS kuralları arasında nasıl çeviri yapılacağı ve IANA'nın Y, N ve D içeren Recommended sütununun gerçekte ne anlama geldiği."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Bir paketin neden çok sayıda adı var
+
+Tek bir şifre paketi en az üç şekilde yazılabilir ve farklar, bir sunucu yapılandırmasını bir paket yakalaması veya bir tarayıcı raporuyla karşılaştıran herkesi yanıltır. IANA'nın `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` dediği paket, OpenSSL'in `ECDHE-RSA-AES128-GCM-SHA256` dediğiyle aynıdır. Hatta özdeş baytları, yani `0xC02F` kod noktasını tanımlarlar.
+
+Kod noktası, protokolün gerçekten kullandığı tek şeydir. Adlar, yapılandırma dosyaları, belgeler ve insanlar için kolaylıklardır ve her araç ekosistemi kendi kuralını geliştirdi.
+
+## Üç kural
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+**IANA** adı, kayıt standardıdır. Her zaman `TLS_` ile başlar, her belirteci bir alt çizgiyle ayırır ve anahtar değişimi ile kimlik doğrulamayı şifre ile MAC'ten ayırmak için `WITH` sözcüğünü kullanır.
+
+**OpenSSL** adı, `TLS_` önekini atar, alt çizgi yerine kısa çizgi kullanır, `WITH` ifadesini kaldırır ve şifre ile anahtar boyutunu tek bir belirteç olarak yazar (`AES_128` yerine `AES128`). Statik RSA paketleri için OpenSSL, gereksiz anahtar değişimi belirtecini de atar, böylece `TLS_RSA_WITH_AES_128_CBC_SHA`, yalnızca `AES128-SHA` olur. TLS 1.3 istisnadır: orada OpenSSL, IANA adlarını değiştirmeden benimsedi, bu yüzden `TLS_AES_128_GCM_SHA256` ikisinde de aynı yazılır.
+
+**GnuTLS** adı, `TLS_` önekini ve alt çizgileri korur, ama OpenSSL gibi `WITH` ifadesini atlar. Üçü arasında en az görülenidir.
+
+İnsanların aynı paketi yapılandırdıkları hâlde iki sistemin çeliştiğini sanmasına neden olan tam da bu uyuşmazlıktır. Adlardan herhangi birini, ham kod noktasını da kabul eden bir çözücü, hepsini bir kerede göstererek tahminleri ortadan kaldırır.
+
+## Bir kod noktasını okumak
+
+Bir şifre paketi kod noktası iki bayttır, hepsi aynı sayıyı belirten birkaç şekilde yazılır:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+İlk bayt, ilişkili paketleri gruplar: `0x00xx` bloğu özgün TLS 1.0 ve 1.1 paketlerini, `0xC0xx` RFC 5289 ve benzerlerinin eliptik eğri paketlerini, `0xCCxx` ChaCha20-Poly1305 paketlerini ve `0x13xx` TLS 1.3 paketlerini barındırır. Başta `0xC0` veya `0xCC` görmek, modern bir ECDHE veya ChaCha20 paketine baktığınıza dair hızlı bir ipucudur.
+
+## Recommended sütunu ne anlama gelir
+
+IANA kaydında üç değerli bir Recommended sütunu vardır ve bunları yanlış okumak kolaydır.
+
+`Y`, paketin IETF uzlaşı sürecinden geçtiği ve kayıt anında genel kullanım için önerildiği anlamına gelir. `N`, paketin kusurlu olduğu anlamına gelmez, o süreçten geçmediği, sınırlı uygulanabilirliği olduğu ya da belirli bir niş için tasarlandığı anlamına gelir. `CCM_8` paketleri tam da bu nedenle `N` ile işaretlenir: kısaltılmış etiket bir kusur değil, kasıtlı bir ödündür.
+
+`D`, güçlü olanıdır. Paketin sakıncalı olduğu ve duruma göre kullanılmaması ya da kesinlikle kullanılmaması gerektiği anlamına gelir. IETF onları kullanımdan kaldırdıkça bütün aileler `D`'ye geçti, bunlara statik RSA paketleri ve son zamanlarda sonlu cisim `DHE` paketleri dâhildir. Bir paket kriptografik olarak sağlam olabilir ve yine de ekosistem nedenleriyle `D` ile işaretlenebilir, bu yüzden çözücü, ikisini tek bir hükme eritmek yerine IANA işaretini kendi güvenlik okumasının yanında gösterir. İkisi farklı sorulara yanıt verir: yapı sağlam mı ve standartlaşma süreci hâlâ onu kullanmanızı istiyor mu?
+
+## Hepsini bir araya getirmek
+
+Bilinmeyen bir paketi tanımlamak için, elinizdeki biçimi, bir IANA adını, bir OpenSSL adını veya bir kod noktasını, çözücüye yapıştırın. Paketi IANA kaydının gömülü bir kopyasına göre çözer, diğer adları gösterir, paketi parçalarına ayırır ve kurallara dayalı bir güvenlik değerlendirmesini IANA'nın resmî önerisiyle eşler. Eşlik eden makaleler parçaların kendisini açıklar: genel anatomi, AEAD ile CBC arasındaki seçim, ileri gizlilik ve TLS 1.3'ün neyi değiştirdiği.

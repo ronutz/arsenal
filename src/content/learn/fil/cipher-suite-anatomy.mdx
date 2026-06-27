@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomya ng isang TLS cipher suite"
+summary: "Kung ano talaga ang pinapangalanan ng isang TLS cipher suite, paano basahin nang bahagi-bahagi ang isang suite tulad ng TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, at paano lumilitaw ang iisang two-byte code point sa ilalim ng tatlong magkaibang convention ng pangalan."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Ano ang cipher suite
+
+Ang TLS cipher suite ay isang pinangalanang bundle ng mga piniling cryptographic na pinagkakasunduan ng isang client at server habang nag-handshake. Ang iisang pangalan tulad ng `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` ay nagbabalot ng ilang magkahiwalay na desisyon sa loob ng isang identifier: kung paano nagkakasundo ang dalawang panig sa isang shared secret, kung paano pinatutunayan ng server kung sino siya, kung aling algorithm ang nag-eencrypt ng application data, at kung paano pinoprotektahan ang datos na iyon laban sa pakikialam.
+
+May two-byte code point din ang bawat nakarehistrong suite, na inilaan ng IANA. Ang pangalan sa itaas ay `0xC02F` sa linya. Hindi kailanman ipinapadala ng handshake ang text na pangalan, ang dalawang byte ang ipinapadala nito. Umiiral ang mga pangalan para sa tao, at mahigit sa isa ang convention ng pangalan, isang madalas na pinagmumulan ng kalituhan.
+
+## Ang mga gawaing inilalarawan ng isang suite
+
+Para sa TLS 1.2 at mas luma, hanggang limang bagay ang pinapangalanan ng isang suite:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+Ang **key exchange** ay kung paano nagtatatag ang dalawang panig ng isang shared secret. Ang `ECDHE` ay elliptic-curve ephemeral Diffie-Hellman, na nagbibigay ng forward secrecy. Ang iba pang halagang makikita mo ay `DHE` (finite-field ephemeral Diffie-Hellman), `RSA` (static RSA key transport, walang forward secrecy), at `PSK` (isang pre-shared key).
+
+Ang **authentication** ay kung paano pinatutunayan ng server (at minsan ng client) ang pagkakakilanlan nito, halos lagi sa pamamagitan ng private key sa likod ng sertipiko nito. `RSA` at `ECDSA` ang mga karaniwang halaga. Kapag gumamit ang isang suite ng static `RSA` para sa key exchange, iisang RSA key ang gumagawa ng dalawang gawain, kaya minsan lang inililista ng pangalan ang `RSA`.
+
+Ang **block cipher at key size** ay ang symmetric algorithm na nag-eencrypt ng aktwal na trapiko matapos matapos ang handshake. Nangingibabaw ang `AES_128` at `AES_256`, samantalang ang `CHACHA20` ang karaniwang alternatibo sa mga device na walang AES hardware.
+
+Ang **mode** ay gumagawa sa block cipher na maging isang bagay na kayang mag-encrypt ng isang stream ng records. Ang `GCM`, `CCM`, at `CHACHA20_POLY1305` ay mga AEAD mode na sila na mismo ang humahawak ng integridad. Ang `CBC` ang mas lumang mode na nangangailangan ng hiwalay na MAC.
+
+Ang **MAC o PRF hash** ang huling token. Sa isang CBC suite, ito ang HMAC hash na nag-aauthenticate sa bawat record. Sa isang AEAD suite, ibinibigay na ng cipher ang integridad, kaya pinapangalanan na lang ng pangwakas na hash ang PRF na ginagamit ng handshake para mag-derive ng mga key (`SHA256` o `SHA384`).
+
+## Pagbasa nito nang pabaligtad
+
+Kapag alam mo na ang gramatika, kaya mong basahin nang pabaligtad ang anumang TLS 1.2 suite sa isang sulyap. Ang `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` ay finite-field ephemeral Diffie-Hellman para sa key exchange, RSA para sa authentication, AES na may 256-bit key sa GCM mode, at SHA-384 bilang PRF ng handshake. Dahil AEAD ang GCM, walang hiwalay na MAC.
+
+Ang `TLS_RSA_WITH_AES_128_CBC_SHA` ang nagbababalang kasalungat: static RSA key transport na walang forward secrecy, AES-128 sa CBC mode, at isang HMAC-SHA1 MAC. Lahat ng bahagi nito ay pamana ng nakaraan, kaya minamarkahan na ito ngayon ng IANA bilang iniiwasan.
+
+## Isang suite, tatlong pangalan
+
+Lumilitaw ang iisang `0xC02F` sa ilalim ng tatlong convention:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Ang IANA name ang pamantayan ng registry. Gumagamit ang OpenSSL ng gitling, inaalis ang `WITH`, at isinusulat ang `AES128` bilang iisang token, kaya maaaring magmukhang nagkakasalungatan ang isang OpenSSL configuration at isang packet capture gayong iisang suite ang pinapangalanan nila. Tinatanggap ng decoder ang lahat ng tatlong anyo, pati ang raw code point, at ipinapakita ang iba pa.
+
+## Ang pag-decode ay hindi pag-endorso
+
+Ang pagbasa ng isang suite ay nagsasabi sa iyo kung ano ang gagawin nito, hindi kung dapat mo itong gamitin. Maaaring perpektong well-formed ang isang pangalan ngunit naglalarawan pa rin ng RC4, anonymous key exchange, o export-grade na mga key. Pinagsasama ng decoder ang structural na pagkakahati at isang security reading at ang independiyenteng rekomendasyon ng IANA, para hindi makalusot ang isang malusog ang anyo na pangalan na may nakamamatay na depekto. Tinatalakay ng mga kaakibat na artikulo kung ano ang nagpapamoderno sa isang suite: AEAD sa halip na CBC, at forward secrecy sa key exchange.

@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD gegen CBC: Warum der Modus zählt"
+summary: "Der praktische Unterschied zwischen einer AEAD-Chiffre wie AES-GCM und einer älteren CBC-Chiffre mit separatem HMAC, die Padding-Oracle-Angriffe, die MAC-then-encrypt erledigten, und der eine Kompromiss, den AEAD weiterhin verlangt."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Zwei Wege, einen Record zu verschlüsseln
+
+Sobald sich ein TLS-Handshake auf Schlüssel geeinigt hat, muss jeder Record mit Anwendungsdaten zugleich verschlüsselt sein, damit ein Lauscher ihn nicht lesen kann, und authentifiziert, damit ein Angreifer ihn nicht manipulieren kann. Es gibt zwei grundlegende Wege, wie eine Cipher-Suite das tut, und das Modus-Token im Suite-Namen sagt Ihnen welchen.
+
+Eine **AEAD**-Chiffre wie AES-GCM, AES-CCM oder ChaCha20-Poly1305 erledigt beide Aufgaben in einer einzigen Primitive. Sie geben ihr den Klartext und einige zugehörige Daten, und sie liefert den Chiffretext plus ein Authentifizierungs-Tag zurück. Die Entschlüsselung prüft Tag und Daten zusammen und schlägt als eine Operation fehl, wenn etwas verändert wurde.
+
+Eine **CBC**-Chiffre erledigt nur die Verschlüsselung. Für die Integrität koppelt die Suite sie mit einem separaten HMAC, benannt durch den abschließenden Hash der Suite (zum Beispiel das `SHA` in `TLS_RSA_WITH_AES_128_CBC_SHA`). Die beiden Operationen werden vom Protokoll zusammengeschraubt, und die Reihenfolge, in der sie geschehen, erweist sich als enorm wichtig.
+
+## Warum MAC-then-encrypt schiefging
+
+TLS verwendete ursprünglich MAC-then-encrypt: den HMAC über den Klartext berechnen, anhängen, das Ergebnis bis zu einer Blockgrenze auffüllen und dann alles mit CBC verschlüsseln. Das Problem ist, dass der Empfänger entschlüsseln und das Padding entfernen muss, bevor er den MAC prüfen kann, sodass fehlerhaftes Padding und ein falscher MAC in verschiedenen Stufen erkannt werden. Ein Angreifer, der sehen kann, ob ein Record am Padding oder am MAC scheiterte – sei es durch eine Fehlermeldung oder nur durch das Timing –, lernt ein Bit über den Klartext pro Versuch. Wiederholt wird aus diesem Bit die ganze Nachricht.
+
+Das ist ein Padding-Oracle, und es ist nicht theoretisch. Eine Reihe von Angriffen über die Jahre, darunter BEAST, Lucky13 und POODLE, nutzte allesamt den CBC-Record-Schutz in TLS aus. Jeder wurde mit immer heiklerem Constant-Time-Code geflickt, aber die zugrunde liegende Konstruktion brachte weiter neue Varianten hervor. Die Lehre, die die Branche zog, war, ihn nicht mehr zu verwenden.
+
+## Warum AEAD jetzt Standard ist
+
+AEAD beseitigt die ganze Problemklasse. Es gibt keine separate Padding-Stufe zum Abtasten und keine separate MAC-Stufe zum Timen, weil Prüfung und Entschlüsselung eine Operation sind, die entweder gelingt oder scheitert. TLS 1.3 zieht dies zu Ende und erlaubt nur AEAD-Chiffren; CBC-Suiten sind schlicht kein Teil von TLS 1.3. In TLS 1.2 existieren beide, weshalb der Decoder eine CBC-mit-HMAC-SHA1-Suite als schwach kennzeichnet, selbst wenn die Chiffre AES ist.
+
+Wenn Sie `GCM`, `CCM` oder `POLY1305` in einem Suite-Namen sehen, betrachten Sie AEAD. Wenn Sie `CBC` sehen, betrachten Sie die ältere Konstruktion, und auf einem modernen Dienst sollte das bestenfalls ein Rückfall sein.
+
+## Der Kompromiss, den AEAD weiterhin verlangt
+
+AEAD ist nicht frei von scharfen Kanten; es verschiebt sie nur. Jede AEAD-Verschlüsselung braucht eine Nonce, eine einmal verwendete Zahl, und die Sicherheit von GCM bricht insbesondere zusammen, wenn dieselbe Nonce je mit demselben Schlüssel wiederverwendet wird. TLS verwaltet die Nonces für Sie mit einem Zähler pro Verbindung, daher ist dies eher eine Gefahr für Systeme, die ihren eigenen Rahmen bauen, als für TLS selbst, aber es ist der Grund, warum AEAD-Entwürfe so viel Wert auf die Nonce-Konstruktion legen.
+
+Der andere Kompromiss ist die Länge des Authentifizierungs-Tags. Die Standard-GCM- und Poly1305-Suiten verwenden ein 16-Byte-Tag. Die `CCM_8`-Suiten kürzen es auf 8 Byte, um Overhead auf eingeschränkten Verbindungen zu sparen, was die Integrität messbar schwächt. Deshalb ist `TLS_AES_128_CCM_8_SHA256` eine echte TLS-1.3-AEAD-Suite, die die IANA dennoch nicht als empfohlen kennzeichnet: Der Modus ist modern, aber das kurze Tag ist ein Kompromiss, den das allgemeine Internet nicht eingehen muss.

@@ -4,7 +4,7 @@ title: "Subnetting-basis"
 summary: "Hoe je één netwerk verdeelt in kleinere subnetten, en waarom het lenen van host-bits de hele truc is."
 concepts: ["subnetting", "cidr", "ipv4", "network-design"]
 relatedTools: ["cidr"]
-relatedArticles: ["cidr-notation", "ipv4-addressing"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "ipv6-subnetting", "vlsm"]
 category: networking
 status: machine-draft
 updated: "2026-06-27"
@@ -12,7 +12,7 @@ updated: "2026-06-27"
 
 ## Waar subnetting voor dient
 
-E�n groot netwerk is zelden wat je wilt. Subnetting is de praktijk van het nemen van één blok adressen en het splitsen in meerdere kleinere blokken, **subnetten**, die elk een apart broadcastdomein, beveiligingsgrens, of fysiek segment kunnen zijn. Een campus zou elk gebouw zijn eigen subnet kunnen geven; een cloudaccount zou elke laag van een applicatie de zijne kunnen geven.
+E�n groot netwerk is zelden wat je wilt. Subnetting is de praktijk van het nemen van één blok adressen en het splitsen in meerdere kleinere blokken, **subnetten**, die elk een apart broadcastdomein, beveiligingsgrens, of fysiek segment kunnen zijn. Een campus zou elk gebouw zijn eigen subnet kunnen geven; een cloudaccount zou elke laag van een applicatie de zijne kunnen geven.
 
 Het mechanisme is eenvoudiger dan het gewoonlijk klinkt: **subnetting leent bits van het host-deel en voegt ze toe aan het netwerkdeel.**
 

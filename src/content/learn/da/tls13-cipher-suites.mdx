@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "TLS 1.3-ciphersuiter: hvad der ændrede sig"
+summary: "Hvorfor en TLS 1.3-suite kun navngiver et cipher og en hash, hvor nøgleudvekslingen og autentificeringen blev af, og hvorfor listen over suiter skrumpede fra hundreder til en håndfuld."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## En anden slags suite
+
+TLS 1.3, defineret i RFC 8446, ændrede, hvad en ciphersuite navngiver. I TLS 1.2 buntede en suite nøgleudveksling, autentificering, cipher og MAC. I TLS 1.3 navngiver en suite kun to ting: AEAD-cipheret og den hashfunktion, som nøgleudledningsfunktionen bruger.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Der er ingen nøgleudveksling og ingen autentificering i navnet, fordi TLS 1.3 forhandler dem separat. Det er den største ændring, og derfor ser en TLS 1.3-suite så kort ud ved siden af en TLS 1.2-suite.
+
+## Hvor nøgleudvekslingen blev af
+
+I TLS 1.3 bæres nøgleudvekslingen af sin egen udvidelse `key_share`, og de tilbudte grupper anføres i `supported_groups`. Autentificeringen forhandles via `signature_algorithms`. At trække dette ud af suiten har en reel fordel: håndfulden af ciphersuiter kombineres frit med enhver understøttet gruppe og enhver signaturalgoritme i stedet for den kombinatoriske eksplosion, der gav TLS 1.2 hundreder af registrerede suiter.
+
+Det indbygger også to gode standardværdier. Hver TLS 1.3-nøgleudveksling er flygtig, så forward secrecy er obligatorisk i stedet for valgfri. Og statisk RSA-nøgletransport, den klassiske måde at miste forward secrecy på, blev fjernet helt; RSA overlever kun som signaturalgoritme til autentificeringen.
+
+## De fem suiter
+
+Basisspecifikationen definerer fem suiter, og i praksis ser du mest de tre første:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Alle fem er AEAD; TLS 1.3 tillader intet andet. `TLS_AES_128_GCM_SHA256` er obligatorisk at implementere, hvilket gør den til den sikre fællesnævner. ChaCha20-Poly1305 er det sædvanlige valg på hardware uden AES-acceleration. De to CCM-suiter er rettet mod begrænsede miljøer, og `CCM_8` bytter et kortere autentificerings-tag mod mindre overhead, og derfor markerer IANA den ikke som anbefalet, selvom den er en TLS 1.3-suite.
+
+## Samme register, ikke ombyttelige
+
+TLS 1.3 genbruger samme IANA-ciphersuite-register og samme to-byte-koderum som tidligere versioner, men de to definitioner er ikke ombyttelige. En TLS 1.3-suiteværdi kan ikke bruges med TLS 1.2, og en TLS 1.2-suiteværdi kan ikke bruges med TLS 1.3. Kodepunkterne ligger tilfældigvis i en tidligere ubrugt del af intervallet (`0x13xx`), hvilket holder dem visuelt adskilte.
+
+Derfor skal en afkoder vide, hvilken verden en suite tilhører. Et navn uden token `WITH` i intervallet `0x13xx` er en TLS 1.3-suite, hvis nøgleudveksling forhandles andetsteds; et navn med token `WITH` er en suite til TLS 1.2 og tidligere, hvis nøgleudveksling er skrevet ud.
+
+## Beskyttelse mod nedgradering
+
+Da ældre suiter stadig findes til ældre modparter, tilføjer TLS 1.3 beskyttelse mod, at en angriber fremtvinger en nedgradering. En server, der understøtter TLS 1.3, men ender med at forhandle en ældre version, skriver en fast vagtværdi i de sidste otte byte af sin `server random`. En ægte TLS 1.3-klient tjekker den vagt og afbryder, hvis den optræder på en forbindelse, der burde have været 1.3, hvilket gør en stille nedgradering til et mislykket handshake. Listen over ciphersuiter skrumpede, men protokollen omkring den blev mere defensiv.

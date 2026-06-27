@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Forward secrecy og nøkkelutvekslingen"
+summary: "Hva forward secrecy gir, hvorfor statisk RSA-nøkkeltransport ikke tilbyr det, hvordan ECDHE og DHE gjør det, og hvorfor autentisering og nøkkelutveksling er to atskilte oppgaver som en suites navn holder fra hverandre."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Spørsmålet forward secrecy besvarer
+
+Tenk deg at en angriper tar opp den krypterte trafikken din i dag og lagrer den. Måneder senere får han serverens langlevde private nøkkel, kanskje via et innbrudd eller en rettskjennelse. Kan han nå gå tilbake og dekryptere trafikken han fanget?
+
+Hvis svaret er nei, hadde tilkoblingen **forward secrecy**, noen ganger kalt perfect forward secrecy. Hvis svaret er ja, hadde den det ikke. Forskjellen koker helt ned til nøkkelutvekslingen som navngis i chiffersuiten, og derfor er det noe av det første dekoderen rapporterer.
+
+## Statisk RSA: praktisk og skjørt
+
+I den gamle statiske RSA-nøkkelutvekslingen velger klienten hemmeligheten som skal beskytte økten, krypterer den med serverens offentlige nøkkel fra sertifikatet og sender den. Bare serverens private nøkkel kan dekryptere den, så økten er privat fra avlyttere i øyeblikket.
+
+Den fatale egenskapen er at øktshemmeligheten ble beskyttet av serverens langlevde nøkkel. Hvis den nøkkelen noensinne lekker, kan hver tidligere økt som brukte den pakkes ut fra et opptak, fordi den krypterte hemmeligheten ligger rett der, i det opptatte håndtrykket. Én nøkkelkompromittering bryter med tilbakevirkende kraft enhver samtale den noen gang beskyttet. Suiter som begynner med `TLS_RSA_WITH_` fungerer slik, og dekoderen merker dem som uten forward secrecy.
+
+## Flyktig Diffie-Hellman: løsningen
+
+Flyktig Diffie-Hellman bryter båndet mellom øktshemmeligheten og enhver langlevd nøkkel. For hver tilkobling genererer de to sidene ferske, engangs Diffie-Hellman-nøkkelpar, utveksler de offentlige halvdelene, og hver kombinerer sin egen private halvdel med den andres offentlige halvdel for å komme frem til den samme delte hemmeligheten. De private halvdelene forlater aldri maskinene sine og forkastes når tilkoblingen avsluttes.
+
+Siden den delte hemmeligheten aldri ble kryptert under serverens langlevde nøkkel, og de flyktige private nøklene ikke lenger finnes, avslører en senere kompromittering av den langlevde nøkkelen ingenting om tidligere økter. Det finnes rett og slett ingenting i opptaket å pakke ut.
+
+Du ser dette som `ECDHE`, flyktig Diffie-Hellman på elliptiske kurver, eller `DHE`, den eldre varianten over endelig kropp. ECDHE er raskere og er den moderne standarden; DHE fases ut, og derfor bærer selv en sterk DHE-AEAD-suite som `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` nå en IANA-merking frarådet. De statiske, ikke-flyktige fetterne `ECDH` og `DH`, uten den avsluttende `E`, gir ikke forward secrecy.
+
+## Autentisering er en egen oppgave
+
+En vanlig forveksling er å tro at å fjerne statisk RSA betyr å fjerne RSA. Det gjør den ikke. Nøkkelutveksling og autentisering er to forskjellige oppgaver, og en suites navn lister dem separat.
+
+I `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` gjør `ECDHE` nøkkelutvekslingen og `RSA` autentiseringen: serveren signerer de flyktige håndtrykksverdiene med den private nøkkelen bak RSA-sertifikatet sitt og beviser dermed at den er den rettmessige innehaveren. Øktshemmeligheten kommer fra den flyktige Diffie-Hellman-utvekslingen, så forward secrecy holder, mens sertifikatet fremdeles beviser identiteten. Artikkelen om sertifikatanatomi dekker hvordan den identitetsbindingen fungerer.
+
+## Hvorfor TLS 1.3 gjorde det obligatorisk
+
+TLS 1.3 avgjorde saken ved å fjerne den statiske RSA-nøkkeltransporten helt. Hver TLS 1.3-nøkkelutveksling er flyktig, så forward secrecy er ikke lenger noe du må velge ved å velge riktig suite; det garanteres av protokollen. RSA og ECDSA forblir bare som signaturalgoritmer til autentiseringen. Det er også derfor navnet på en TLS 1.3-suite ikke har noe nøkkelutvekslings-token i det hele tatt: det finnes ikke lenger et alternativ uten forward secrecy å navngi.
+
+## Høst nå, dekrypter senere
+
+Forward secrecy beskytter mot en nøkkelkompromittering som skjer i etterkant, men forutsetter at den underliggende Diffie-Hellman-matematikken forblir vanskelig. Den truende bekymringen er en fremtidig kvantedatamaskin som kan bryte dagens nøkkelutvekslinger på elliptiske kurver, noe som gir opptatt trafikk lang holdbarhet for en angriper som er villig til å vente. Dette er trusselen høst nå, dekrypter senere, og den driver overgangen til hybride postkvante-nøkkelutvekslinger som kjører en klassisk og en kvanteresistent utveksling sammen. Forward secrecy forblir nødvendig; den har bare sluttet å bli antatt tilstrekkelig for alltid.

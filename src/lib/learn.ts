@@ -131,6 +131,7 @@ export const LEARN_CATEGORY_ORDER = [
   "hashing",
   "identifiers",
   "pki",
+  "transport",
   "networking",
 ] as const;
 

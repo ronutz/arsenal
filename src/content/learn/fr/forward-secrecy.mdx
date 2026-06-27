@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "La confidentialité persistante et l'échange de clés"
+summary: "Ce qu'apporte la confidentialité persistante, pourquoi le transport de clé RSA statique ne la fournit pas, comment ECDHE et DHE le font, et pourquoi l'authentification et l'échange de clés sont deux tâches distinctes que le nom d'une suite garde séparées."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## La question à laquelle répond la confidentialité persistante
+
+Imaginez qu'un attaquant enregistre votre trafic chiffré aujourd'hui et le stocke. Des mois plus tard, il obtient la clé privée à long terme du serveur, peut-être par une fuite ou une décision de justice. Peut-il maintenant revenir en arrière et déchiffrer le trafic qu'il a capturé ?
+
+Si la réponse est non, la connexion avait la **confidentialité persistante**, parfois appelée confidentialité persistante parfaite. Si la réponse est oui, elle ne l'avait pas. La différence tient entièrement à l'échange de clés nommé dans la suite de chiffrement, et c'est pourquoi c'est l'une des premières choses que le décodeur rapporte.
+
+## RSA statique : pratique et fragile
+
+Dans l'ancien échange de clés RSA statique, le client choisit le secret qui protégera la session, le chiffre avec la clé publique du serveur tirée de son certificat et l'envoie. Seule la clé privée du serveur peut le déchiffrer, donc la session est privée vis-à-vis des espions sur le moment.
+
+La propriété fatale est que le secret de session était protégé par la clé à long terme du serveur. Si cette clé fuit un jour, chaque session passée qui l'a utilisée peut être déballée à partir d'un enregistrement, parce que le secret chiffré est juste là, dans le handshake capturé. La compromission d'une clé casse rétroactivement toute conversation qu'elle a jamais protégée. Les suites qui commencent par `TLS_RSA_WITH_` fonctionnent ainsi, et le décodeur les marque comme dépourvues de confidentialité persistante.
+
+## Diffie-Hellman éphémère : la solution
+
+Le Diffie-Hellman éphémère rompt le lien entre le secret de session et toute clé à long terme. Pour chaque connexion, les deux parties génèrent des paires de clés Diffie-Hellman neuves et jetables, échangent les moitiés publiques, et chacune combine sa propre moitié privée avec la moitié publique de l'autre pour aboutir au même secret partagé. Les moitiés privées ne quittent jamais leurs machines et sont jetées à la fin de la connexion.
+
+Comme le secret partagé n'a jamais été chiffré sous la clé à long terme du serveur, et que les clés privées éphémères n'existent plus, une compromission ultérieure de la clé à long terme ne révèle rien sur les sessions passées. Il n'y a tout simplement rien à déballer dans l'enregistrement.
+
+Vous verrez cela comme `ECDHE`, Diffie-Hellman éphémère sur courbes elliptiques, ou `DHE`, la variante plus ancienne à corps fini. ECDHE est plus rapide et c'est le choix par défaut moderne ; DHE est en cours de retrait, et c'est pourquoi même une suite DHE-AEAD solide comme `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` porte désormais une marque de déconseillé de l'IANA. Les cousins statiques et non éphémères `ECDH` et `DH`, sans le `E` final, n'apportent pas la confidentialité persistante.
+
+## L'authentification est une tâche distincte
+
+Une confusion courante est de croire que supprimer le RSA statique revient à supprimer le RSA. Ce n'est pas le cas. L'échange de clés et l'authentification sont deux tâches différentes, et le nom d'une suite les liste séparément.
+
+Dans `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, le `ECDHE` fait l'échange de clés et le `RSA` fait l'authentification : le serveur signe les valeurs éphémères du handshake avec la clé privée derrière son certificat RSA, prouvant qu'il en est le détenteur légitime. Le secret de session provient de l'échange Diffie-Hellman éphémère, donc la confidentialité persistante tient, tandis que le certificat prouve toujours l'identité. L'article sur l'anatomie des certificats couvre le fonctionnement de cette liaison d'identité.
+
+## Pourquoi TLS 1.3 l'a rendue obligatoire
+
+TLS 1.3 a tranché la question en supprimant entièrement le transport de clé RSA statique. Tout échange de clés TLS 1.3 est éphémère, donc la confidentialité persistante n'est plus quelque chose à choisir en sélectionnant la bonne suite ; elle est garantie par le protocole. RSA et ECDSA ne demeurent que comme algorithmes de signature pour l'authentification. C'est aussi pourquoi le nom d'une suite TLS 1.3 n'a aucun jeton d'échange de clés : il n'y a plus d'option sans confidentialité persistante à nommer.
+
+## Récolter maintenant, déchiffrer plus tard
+
+La confidentialité persistante protège contre une compromission de clé survenant après coup, mais elle suppose que les mathématiques Diffie-Hellman sous-jacentes restent difficiles. La préoccupation imminente est un futur ordinateur quantique capable de casser les échanges de clés sur courbes elliptiques d'aujourd'hui, ce qui donne au trafic enregistré une longue durée de vie pour un attaquant prêt à patienter. C'est la menace « récolter maintenant, déchiffrer plus tard », et elle pousse à la migration vers des échanges de clés hybrides post-quantiques, qui exécutent ensemble un échange classique et un échange résistant au quantique. La confidentialité persistante reste nécessaire ; elle a seulement cessé d'être présumée suffisante pour toujours.

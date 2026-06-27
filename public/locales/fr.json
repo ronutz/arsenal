@@ -108,7 +108,8 @@
       "hashing": "Hachage et crypto",
       "identifiers": "Identifiants",
       "pki": "Certificats et PKI",
-      "networking": "Réseau"
+      "networking": "Réseau",
+      "transport": "TLS et transport"
     },
     "hash": {
       "name": "Générateur de hachage (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "multidiffusion"
       }
+    },
+    "cipher": {
+      "name": "Décodeur de suites de chiffrement",
+      "blurb": "Saisissez une suite de chiffrement TLS, sous forme de nom IANA, de nom OpenSSL ou GnuTLS, ou de point de code hexadécimal, pour la décomposer en échange de clés, authentification, chiffrement, mode et MAC, avec une lecture de sécurité en langage clair et la recommandation officielle de l'IANA. Tout s'exécute dans votre navigateur, sur une copie intégrée du registre de l'IANA.",
+      "inputLabel": "Suite de chiffrement",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256 ou 0x1301",
+      "runsLocally": "Le décodage s'exécute localement, sur une copie intégrée du registre des suites de chiffrement TLS de l'IANA. Rien n'est envoyé nulle part.",
+      "notInRegistryNote": "Ce nom a été analysé structurellement mais n'a pas été trouvé dans l'instantané intégré du registre de l'IANA — son point de code et ses noms équivalents ne sont donc pas affichés.",
+      "errors": {
+        "empty": "Saisissez une suite de chiffrement à décoder.",
+        "format": "Ce n'est pas une suite de chiffrement. Saisissez un nom IANA (TLS_...), un nom OpenSSL ou un point de code hexadécimal tel que 0x1301.",
+        "unknown": "C'est un format de point de code valide, mais ce n'est pas une suite de chiffrement attribuée dans le registre de l'IANA."
+      },
+      "ratings": {
+        "recommended": "Recommandée",
+        "secure": "Sûre",
+        "weak": "Faible",
+        "insecure": "Non sûre",
+        "unknown": "Inconnue"
+      },
+      "iana": {
+        "Y": "IANA : recommandée",
+        "N": "IANA : non recommandée",
+        "D": "IANA : déconseillée"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Hors de l'instantané IANA"
+      },
+      "panels": {
+        "identity": "Identité",
+        "components": "Composants",
+        "security": "Sécurité"
+      },
+      "fields": {
+        "codePoint": "Point de code",
+        "name": "Nom IANA",
+        "openssl": "Nom OpenSSL",
+        "gnutls": "Nom GnuTLS",
+        "protocol": "Protocole",
+        "dtls": "DTLS-OK",
+        "references": "Références"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 et antérieurs"
+      },
+      "comp": {
+        "keyExchange": "Échange de clés",
+        "authentication": "Authentification",
+        "forwardSecrecy": "Confidentialité persistante",
+        "cipher": "Chiffrement",
+        "mode": "Mode",
+        "aead": "AEAD",
+        "prf": "Hachage PRF/KDF",
+        "mac": "MAC",
+        "yes": "Oui",
+        "no": "Non",
+        "bits": "{n} bits",
+        "negotiatedSeparately": "Négocié séparément (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "Chiffrement NULL : le trafic n'est pas chiffré du tout.",
+        "anon": "Échange de clés anonyme : le pair n'est pas authentifié, ce qui n'offre aucune protection contre un intercepteur actif.",
+        "export40": "Clé de niveau export (40 bits) : cassée par force brute de façon triviale, un vestige des règles d'exportation des années 1990.",
+        "rc4": "Chiffrement de flux RC4 : son flux de clés biaisé le rend cassé, et le RFC 7465 l'interdit pour TLS.",
+        "singleDes": "DES simple avec clé de 56 bits : cassable par force brute en quelques heures.",
+        "rc2": "RC2 : un chiffrement obsolète de 40/64 bits, non sûr pour un usage moderne.",
+        "tripleDes": "Le 3DES a un bloc de 64 bits, ce qui l'expose à l'attaque des anniversaires Sweet32 (CVE-2016-2183). Le RFC 8429 le rend obsolète.",
+        "md5Mac": "MAC en MD5 : MD5 est cassé sur le plan cryptographique.",
+        "cbcMac": "CBC avec un MAC HMAC-SHA1 ou MD5 utilise le MAC-then-encrypt, exposé aux attaques par oracle de remplissage comme BEAST et Lucky13.",
+        "ccm8": "CCM_8 tronque le tag d'authentification à 8 octets, ce qui affaiblit l'intégrité. L'IANA ne le marque pas comme recommandé.",
+        "noFs": "Pas de confidentialité persistante : avec un échange de clés statique, une clé à long terme compromise peut déchiffrer les sessions passées. Les recommandations modernes exigent ECDHE ou DHE.",
+        "legacyCipher": "{value} est un chiffrement hérité, obsolète pour TLS.",
+        "aead": "Chiffrement AEAD (chiffrement authentifié) : confidentialité et intégrité dans une seule primitive, sans MAC distinct susceptible d'être mal utilisé.",
+        "fs": "Confidentialité persistante : un échange de clés éphémère garde le trafic passé en sécurité même si la clé à long terme est compromise plus tard.",
+        "tls13": "Suite TLS 1.3 : uniquement des chiffrements AEAD modernes, avec l'échange de clés négocié séparément et toujours éphémère.",
+        "ianaD": "L'IANA marque cette suite « D » (déconseillée) : elle NE DEVRAIT PAS ou NE DOIT PAS être utilisée, selon la situation.",
+        "ianaN": "L'IANA ne marque pas cette suite « Recommandée » : applicabilité limitée ou non passée par le processus de consensus de l'IETF.",
+        "signalling": "Suite de signalisation (SCSV) : pas un vrai chiffrement, elle porte un signal de protocole comme la protection anti-rétrogradation ou l'info de renégociation."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Retour à l'accueil"
   },
   "footer": {
-    "redEducation": "Réservez une formation officielle avec Red Education",
+    "redEducation": "Réservez une formation officielle avec <b>Red Education</b>",
     "privacy": "Confidentialité",
     "builtWith": "Conçu par Rodolfo Nützmann avec CONCORD",
     "colophon": "Comment cela a été conçu",
-    "openSource": "Le moteur est open source",
-    "rights": "Disponible selon des conditions ouvertes et commerciales.",
     "contribute": "Améliorer les traductions",
     "feedback": "Envoyer un retour",
     "api": "Référence de l'API",
-    "contributeTools": "Proposer un outil"
+    "contributeTools": "Proposer un outil",
+    "license": "Licence",
+    "coffee": "Offre-moi un café"
   },
   "search": {
     "label": "Recherche",
@@ -883,5 +965,16 @@
     "viewReference": "Référence",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Swagger UI n'a pas pu être chargé."
+  },
+  "license_page": {
+    "eyebrow": "Cœur ouvert",
+    "title": "Licence",
+    "lede": "ronutz.com repose sur un cœur ouvert : le moteur qui alimente chaque outil est open source, et le site web bâti dessus ne l'est pas.",
+    "openHeading": "Open source — le moteur",
+    "openBody": "@ronutz/netcore, le moteur derrière chaque outil et chaque réponse de l'API sur ce site, est publié sous la licence Apache 2.0. La même fonction qu'appellent les outils dans le navigateur est celle qu'appelle l'API, vous êtes donc libre de l'utiliser, de le modifier et de bâtir dessus selon cette licence.",
+    "closedHeading": "Code fermé — ce site web",
+    "closedBody": "Le site web lui-même est à code fermé. Son design, son interface, son contenu rédigé (y compris chaque article Learn), son identité de marque et la manière particulière dont ces outils sont assemblés et présentés ici sont la propriété exclusive de leur auteur, tous droits réservés. Aucune autorisation n'est accordée pour copier, reproduire, modifier, redistribuer ou créer des œuvres dérivées du site ou de son contenu sans accord écrit préalable.",
+    "contact": "Des questions sur la licence ? <a>Contactez-nous.</a>",
+    "backHome": "Retour aux outils"
   }
 }

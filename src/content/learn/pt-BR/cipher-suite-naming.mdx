@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Lendo nomes de suítes de cifra: IANA, OpenSSL e GnuTLS"
+summary: "Por que a mesma suíte de cifra tem três nomes diferentes e um ponto de código de dois bytes, como traduzir entre as convenções da IANA, do OpenSSL e do GnuTLS, e o que a coluna Recommended da IANA, com Y, N e D, realmente significa."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Por que uma suíte tem muitos nomes
+
+Uma única suíte de cifra pode ser escrita de pelo menos três maneiras, e as diferenças confundem qualquer um que compare a configuração de um servidor com uma captura de pacotes ou um relatório de scanner. A suíte que a IANA chama de `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` é a mesma que o OpenSSL chama de `ECDHE-RSA-AES128-GCM-SHA256`. Elas descrevem bytes idênticos na conexão, a saber, o ponto de código `0xC02F`.
+
+O ponto de código é a única coisa que o protocolo realmente usa. Os nomes são conveniências para arquivos de configuração, documentação e humanos, e cada ecossistema de ferramentas criou sua própria convenção.
+
+## As três convenções
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+O nome **IANA** é o padrão do registro. Ele sempre começa com `TLS_`, separa cada token com um sublinhado e usa a palavra `WITH` para dividir a troca de chaves e a autenticação da cifra e do MAC.
+
+O nome **OpenSSL** descarta o prefixo `TLS_`, usa hifens em vez de sublinhados, remove o `WITH` e escreve a cifra e o tamanho da chave como um único token (`AES128` em vez de `AES_128`). Para suítes de RSA estático, o OpenSSL também descarta o token redundante de troca de chaves, então `TLS_RSA_WITH_AES_128_CBC_SHA` vira simplesmente `AES128-SHA`. O TLS 1.3 é a exceção: lá o OpenSSL adotou os nomes IANA inalterados, então `TLS_AES_128_GCM_SHA256` é escrito da mesma forma nos dois.
+
+O nome **GnuTLS** mantém o prefixo `TLS_` e os sublinhados mas, como o OpenSSL, omite o `WITH`. É o menos comum dos três.
+
+É exatamente essa incompatibilidade que faz as pessoas acharem que dois sistemas discordam quando configuraram a mesma suíte. Um decodificador que aceita qualquer um dos nomes, além do ponto de código bruto, elimina a adivinhação ao mostrar todos eles de uma vez.
+
+## Lendo um ponto de código
+
+Um ponto de código de suíte de cifra são dois bytes, escritos de várias formas que significam o mesmo número:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+O primeiro byte agrupa suítes relacionadas: o bloco `0x00xx` contém as suítes originais de TLS 1.0 e 1.1, `0xC0xx` contém as suítes de curva elíptica da RFC 5289 e afins, `0xCCxx` contém as suítes ChaCha20-Poly1305, e `0x13xx` contém as suítes de TLS 1.3. Ver `0xC0` ou `0xCC` no início é uma dica rápida de que você está olhando para uma suíte moderna ECDHE ou ChaCha20.
+
+## O que a coluna Recommended significa
+
+O registro da IANA tem uma coluna Recommended com três valores, e eles são fáceis de interpretar errado.
+
+`Y` significa que a suíte passou pelo processo de consenso do IETF e é recomendada para uso geral no momento do registro. `N` não significa que a suíte é falha; significa que ela não passou por esse processo, tem aplicabilidade limitada ou é destinada a um nicho específico. As suítes `CCM_8` são marcadas com `N` exatamente por isso: a etiqueta truncada é uma troca deliberada, não uma falha.
+
+`D` é o forte. Significa que a suíte é desaconselhada e não deveria, ou não deve, ser usada, dependendo da situação. Famílias inteiras passaram para `D` à medida que o IETF as descontinua, incluindo as suítes de RSA estático e, mais recentemente, as suítes `DHE` de campo finito. Uma suíte pode ser criptograficamente sólida e ainda assim ser marcada como `D` por razões de ecossistema, e é por isso que o decodificador mostra a marca da IANA ao lado de sua própria leitura de segurança, em vez de fundir as duas em um único veredito. As duas respondem a perguntas diferentes: a construção é sólida, e o processo de padronização ainda quer que você a use?
+
+## Juntando tudo
+
+Para identificar uma suíte desconhecida, cole qualquer forma que você tenha — um nome IANA, um nome OpenSSL ou um ponto de código — no decodificador. Ele resolve a suíte contra uma cópia embutida do registro da IANA, mostra os outros nomes, decompõe a suíte em suas partes e combina uma avaliação de segurança baseada em regras com a recomendação oficial da IANA. Os artigos complementares explicam as próprias partes: a anatomia geral, a escolha entre AEAD e CBC, o sigilo de encaminhamento e o que o TLS 1.3 mudou.

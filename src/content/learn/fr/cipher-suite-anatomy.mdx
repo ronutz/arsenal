@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Anatomie d'une suite de chiffrement TLS"
+summary: "Ce qu'une suite de chiffrement TLS nomme réellement, comment lire une suite comme TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 morceau par morceau, et comment le même point de code de deux octets apparaît sous trois conventions de noms différentes."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Ce qu'est une suite de chiffrement
+
+Une suite de chiffrement TLS est un ensemble nommé de choix cryptographiques qu'un client et un serveur conviennent pendant le handshake. Un seul nom comme `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` regroupe plusieurs décisions indépendantes dans un identifiant : comment les deux parties conviennent d'un secret partagé, comment le serveur prouve son identité, quel algorithme chiffre les données applicatives et comment ces données sont protégées contre l'altération.
+
+Toute suite enregistrée possède aussi un point de code de deux octets, attribué par l'IANA. Le nom ci-dessus est `0xC02F` sur la connexion. Le handshake n'envoie jamais le nom en texte ; il envoie les deux octets. Les noms existent pour les humains, et il y a plus d'une convention de noms — une source fréquente de confusion.
+
+## Les tâches qu'une suite décrit
+
+Pour TLS 1.2 et antérieurs, une suite nomme jusqu'à cinq choses :
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**L'échange de clés** est la façon dont les deux parties établissent un secret partagé. `ECDHE` est le Diffie-Hellman éphémère sur courbes elliptiques, qui apporte la confidentialité persistante. D'autres valeurs que vous verrez sont `DHE` (Diffie-Hellman éphémère à corps fini), `RSA` (transport de clé RSA statique, sans confidentialité persistante) et `PSK` (une clé pré-partagée).
+
+**L'authentification** est la façon dont le serveur (et parfois le client) prouve son identité, presque toujours avec la clé privée derrière son certificat. `RSA` et `ECDSA` sont les valeurs courantes. Quand une suite utilise `RSA` statique pour l'échange de clés, la même clé RSA fait les deux tâches, donc le nom ne liste `RSA` qu'une fois.
+
+**Le chiffrement par bloc et la taille de clé** est l'algorithme symétrique qui chiffre le trafic réel une fois le handshake terminé. `AES_128` et `AES_256` dominent ; `CHACHA20` est l'alternative courante sur les appareils sans matériel AES.
+
+**Le mode** transforme le chiffrement par bloc en quelque chose qui peut chiffrer un flux d'enregistrements. `GCM`, `CCM` et `CHACHA20_POLY1305` sont des modes AEAD qui gèrent l'intégrité eux-mêmes. `CBC` est le mode plus ancien qui a besoin d'un MAC distinct.
+
+**Le hachage MAC ou PRF** est le dernier jeton. Dans une suite CBC, c'est le hachage HMAC qui authentifie chaque enregistrement. Dans une suite AEAD, le chiffrement fournit déjà l'intégrité, donc le hachage final nomme plutôt le PRF que le handshake utilise pour dériver les clés (`SHA256` ou `SHA384`).
+
+## La lire dans l'autre sens
+
+Une fois la grammaire connue, vous pouvez lire n'importe quelle suite TLS 1.2 à l'envers d'un coup d'œil. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384`, c'est Diffie-Hellman éphémère à corps fini pour l'échange de clés, RSA pour l'authentification, AES avec une clé de 256 bits en mode GCM, et SHA-384 comme PRF du handshake. Comme GCM est AEAD, il n'y a pas de MAC distinct.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA` est l'opposé à surveiller : transport de clé RSA statique sans confidentialité persistante, AES-128 en mode CBC, et un MAC HMAC-SHA1. Tout cela est hérité du passé, et c'est pourquoi l'IANA le marque désormais comme déconseillé.
+
+## Une suite, trois noms
+
+Le même `0xC02F` apparaît sous trois conventions :
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Le nom IANA est la norme du registre. OpenSSL utilise des tirets, abandonne le `WITH` et écrit `AES128` en un seul jeton, et c'est pourquoi une configuration OpenSSL et une capture de paquets peuvent sembler se contredire alors qu'elles nomment la même suite. Le décodeur accepte les trois formes, ainsi que le point de code brut, et affiche les autres.
+
+## Décoder n'est pas approuver
+
+Lire une suite vous dit ce qu'elle ferait, pas si vous devriez l'utiliser. Un nom peut être parfaitement bien formé et décrire malgré tout RC4, un échange de clés anonyme ou des clés de niveau export. Le décodeur associe la décomposition structurelle à une lecture de sécurité et à la recommandation indépendante de l'IANA, pour qu'un nom d'apparence saine avec un défaut fatal ne passe pas inaperçu. Les articles complémentaires couvrent ce qui rend une suite moderne : AEAD plutôt que CBC, et la confidentialité persistante dans l'échange de clés.

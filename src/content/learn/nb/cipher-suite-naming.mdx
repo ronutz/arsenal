@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Å lese chiffersuitenavn: IANA, OpenSSL og GnuTLS"
+summary: "Hvorfor den samme chiffersuiten har tre forskjellige navn og et kodepunkt på to byte, hvordan man oversetter mellom IANA-, OpenSSL- og GnuTLS-konvensjonene, og hva IANAs Recommended-kolonne med Y, N og D virkelig betyr."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Hvorfor en suite har mange navn
+
+En enkelt chiffersuite kan skrives på minst tre måter, og forskjellene får alle til å snuble som sammenligner en serverkonfigurasjon med en pakkefangst eller en skannerrapport. Suiten som IANA kaller `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` er den samme som OpenSSL kaller `ECDHE-RSA-AES128-GCM-SHA256`. De beskriver identiske byte på ledningen, nemlig kodepunktet `0xC02F`.
+
+Kodepunktet er det eneste protokollen faktisk bruker. Navnene er bekvemmeligheter for konfigurasjonsfiler, dokumentasjon og mennesker, og hvert verktøysøkosystem lot sin egen konvensjon vokse frem.
+
+## De tre konvensjonene
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+**IANA**-navnet er registerstandarden. Det begynner alltid med `TLS_`, skiller hvert token med en understrek og bruker ordet `WITH` til å dele nøkkelutvekslingen og autentiseringen fra chifferet og MAC-en.
+
+**OpenSSL**-navnet dropper prefikset `TLS_`, bruker bindestreker i stedet for understreker, fjerner `WITH` og skriver chifferet og nøkkellengden som ett token (`AES128` i stedet for `AES_128`). For statiske RSA-suiter dropper OpenSSL også det overflødige nøkkelutvekslings-tokenet, så `TLS_RSA_WITH_AES_128_CBC_SHA` blir rett og slett `AES128-SHA`. TLS 1.3 er unntaket: der tok OpenSSL i bruk IANA-navnene uendret, så `TLS_AES_128_GCM_SHA256` skrives likt i begge.
+
+**GnuTLS**-navnet beholder prefikset `TLS_` og understrekene, men utelater som OpenSSL `WITH`. Det er det minst sette av de tre.
+
+Det er nettopp dette misforholdet som får folk til å tro at to systemer er uenige når de har konfigurert den samme suiten. En dekoder som godtar hvilket som helst av navnene, pluss det rå kodepunktet, fjerner gjettingen ved å vise dem alle på én gang.
+
+## Å lese et kodepunkt
+
+Et chiffersuite-kodepunkt er to byte, skrevet på flere måter som alle betyr det samme tallet:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+Den første byten grupperer beslektede suiter: blokken `0x00xx` rommer de opprinnelige TLS 1.0- og 1.1-suitene, `0xC0xx` rommer suitene på elliptiske kurver fra RFC 5289 med flere, `0xCCxx` rommer ChaCha20-Poly1305-suitene, og `0x13xx` rommer TLS 1.3-suitene. Å se `0xC0` eller `0xCC` i begynnelsen er et raskt hint om at du ser på en moderne ECDHE- eller ChaCha20-suite.
+
+## Hva Recommended-kolonnen betyr
+
+IANA-registeret har en Recommended-kolonne med tre verdier, og de er lette å lese feil.
+
+`Y` betyr at suiten har gått gjennom IETFs konsensusprosess og anbefales for generell bruk på registreringstidspunktet. `N` betyr ikke at suiten er mangelfull; det betyr at den ikke har gått gjennom den prosessen, har begrenset anvendelighet eller er ment for en bestemt nisje. `CCM_8`-suitene er merket `N` nettopp av denne grunnen: den avkortede taggen er et bevisst kompromiss, ikke en feil.
+
+`D` er den sterke. Det betyr at suiten frarådes og ikke bør, eller ikke må, brukes avhengig av situasjonen. Hele familier har flyttet til `D` etter hvert som IETF faser dem ut, deriblant de statiske RSA-suitene og, i nyere tid, `DHE`-suitene over endelig kropp. En suite kan være kryptografisk solid og likevel merkes `D` av økosystemgrunner, og derfor viser dekoderen IANA-merkingen ved siden av sin egen sikkerhetsvurdering i stedet for å smelte de to sammen til én dom. De besvarer ulike spørsmål: er konstruksjonen solid, og vil standardiseringsprosessen fremdeles at du skal bruke den?
+
+## Å sette det hele sammen
+
+For å identifisere en ukjent suite limer du inn formen du har – et IANA-navn, et OpenSSL-navn eller et kodepunkt – i dekoderen. Den slår opp suiten mot en innebygd kopi av IANA-registeret, viser de andre navnene, deler suiten opp i delene sine og parer en regelbasert sikkerhetsvurdering med den offisielle IANA-anbefalingen. Følgeartiklene forklarer delene selv: den generelle anatomien, valget mellom AEAD og CBC, forward secrecy og hva TLS 1.3 endret.

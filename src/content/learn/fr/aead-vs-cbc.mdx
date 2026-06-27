@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD contre CBC : pourquoi le mode compte"
+summary: "La différence pratique entre un chiffrement AEAD comme AES-GCM et un ancien chiffrement CBC avec un HMAC distinct, les attaques par oracle de remplissage qui ont eu raison du MAC-then-encrypt, et le seul compromis que l'AEAD demande encore."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Deux façons de chiffrer un enregistrement
+
+Une fois qu'un handshake TLS a convenu des clés, chaque enregistrement de données applicatives doit être à la fois chiffré, pour qu'un espion ne puisse pas le lire, et authentifié, pour qu'un attaquant ne puisse pas l'altérer. Il y a deux grandes façons pour une suite de chiffrement de faire cela, et le jeton de mode dans le nom de la suite vous dit laquelle.
+
+Un chiffrement **AEAD**, comme AES-GCM, AES-CCM ou ChaCha20-Poly1305, fait les deux tâches dans une seule primitive. Vous lui donnez le texte clair et des données associées, et il renvoie le texte chiffré plus une étiquette d'authentification. Le déchiffrement vérifie l'étiquette et les données ensemble, et échoue en une seule opération si quoi que ce soit a été modifié.
+
+Un chiffrement **CBC** ne fait que le chiffrement. Pour obtenir l'intégrité, la suite l'associe à un HMAC distinct, nommé par le hachage final de la suite (par exemple le `SHA` dans `TLS_RSA_WITH_AES_128_CBC_SHA`). Le protocole boulonne les deux opérations ensemble, et l'ordre dans lequel elles se produisent s'avère compter énormément.
+
+## Pourquoi le MAC-then-encrypt a mal tourné
+
+TLS utilisait à l'origine le MAC-then-encrypt : calculer le HMAC sur le texte clair, l'ajouter, compléter le résultat jusqu'à une limite de bloc, puis tout chiffrer avec CBC. Le problème est que le récepteur doit déchiffrer et retirer le remplissage avant de pouvoir vérifier le MAC, donc un remplissage mal formé et un mauvais MAC sont détectés à des étapes différentes. Un attaquant capable de voir si un enregistrement a échoué sur le remplissage ou sur le MAC — par un message d'erreur ou simplement par le temps de réponse — apprend un bit sur le texte clair par essai. Répété, ce bit devient tout le message.
+
+C'est un oracle de remplissage, et ce n'est pas théorique. Une série d'attaques au fil des ans, dont BEAST, Lucky13 et POODLE, ont toutes exploité la protection des enregistrements CBC dans TLS. Chacune a été corrigée par du code à temps constant de plus en plus délicat, mais la construction sous-jacente continuait de produire de nouvelles variantes. La leçon que l'industrie en a tirée a été de cesser de l'utiliser.
+
+## Pourquoi l'AEAD est désormais le choix par défaut
+
+L'AEAD supprime toute la classe de problème. Il n'y a pas d'étape de remplissage distincte à sonder ni d'étape de MAC distincte à chronométrer, parce que la vérification et le déchiffrement sont une seule opération qui réussit ou échoue. TLS 1.3 pousse cela jusqu'au bout et n'autorise que les chiffrements AEAD ; les suites CBC ne font tout simplement pas partie de TLS 1.3. Dans TLS 1.2, les deux existent, et c'est pourquoi le décodeur marque une suite CBC-avec-HMAC-SHA1 comme faible même quand le chiffrement est AES.
+
+Quand vous voyez `GCM`, `CCM` ou `POLY1305` dans le nom d'une suite, vous regardez de l'AEAD. Quand vous voyez `CBC`, vous regardez l'ancienne construction, et sur un service moderne cela devrait être un repli, au mieux.
+
+## Le compromis que l'AEAD demande encore
+
+L'AEAD n'est pas dépourvu d'arêtes vives ; il les déplace seulement. Tout chiffrement AEAD a besoin d'un nonce, un nombre utilisé une seule fois, et la sécurité de GCM en particulier s'effondre si le même nonce est réutilisé avec la même clé. TLS gère les nonces pour vous avec un compteur par connexion, donc c'est un danger pour les systèmes qui construisent leur propre encadrement plutôt que pour TLS lui-même, mais c'est la raison pour laquelle les conceptions AEAD se soucient tant de la construction des nonces.
+
+L'autre compromis est la longueur de l'étiquette d'authentification. Les suites GCM et Poly1305 standard utilisent une étiquette de 16 octets. Les suites `CCM_8` la tronquent à 8 octets pour économiser de la surcharge sur les liaisons contraintes, ce qui affaiblit l'intégrité de façon mesurable. C'est pourquoi `TLS_AES_128_CCM_8_SHA256` est une vraie suite AEAD de TLS 1.3 que l'IANA refuse malgré tout de marquer comme recommandée : le mode est moderne, mais l'étiquette courte est un compromis dont l'internet en général n'a pas besoin.

@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Forward secrecy och nyckelutbytet"
+summary: "Vad forward secrecy ger, varför statiskt RSA-nyckeltransport inte erbjuder det, hur ECDHE och DHE gör det, och varför autentisering och nyckelutbyte är två skilda uppgifter som en svits namn håller åtskilda."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Frågan som forward secrecy besvarar
+
+Tänk dig att en angripare spelar in din krypterade trafik i dag och lagrar den. Månader senare får han serverns långlivade privata nyckel, kanske genom ett intrång eller ett domstolsbeslut. Kan han nu gå tillbaka och dekryptera trafiken han fångade?
+
+Om svaret är nej hade anslutningen **forward secrecy**, ibland kallad perfect forward secrecy. Om svaret är ja hade den det inte. Skillnaden handlar helt om nyckelutbytet som namnges i chiffersviten, och därför är det en av de första sakerna avkodaren rapporterar.
+
+## Statiskt RSA: bekvämt och bräckligt
+
+I det gamla statiska RSA-nyckelutbytet väljer klienten hemligheten som ska skydda sessionen, krypterar den med serverns publika nyckel från dess certifikat och skickar den. Bara serverns privata nyckel kan dekryptera den, så sessionen är privat från tjuvlyssnare för stunden.
+
+Den ödesdigra egenskapen är att sessionshemligheten skyddades av serverns långlivade nyckel. Om den nyckeln någonsin läcker kan varje förfluten session som använde den packas upp från en inspelning, eftersom den krypterade hemligheten ligger just där, i den inspelade handskakningen. En nyckelkompromiss bryter retroaktivt varje konversation den någonsin skyddade. Sviter som börjar med `TLS_RSA_WITH_` fungerar så, och avkodaren märker dem som saknar forward secrecy.
+
+## Efemär Diffie-Hellman: lösningen
+
+Efemär Diffie-Hellman bryter bandet mellan sessionshemligheten och varje långlivad nyckel. För varje anslutning genererar de två sidorna färska, slängbara Diffie-Hellman-nyckelpar, byter de publika halvorna, och var och en kombinerar sin egen privata halva med den andras publika halva för att nå samma delade hemlighet. De privata halvorna lämnar aldrig sina maskiner och kasseras när anslutningen avslutas.
+
+Eftersom den delade hemligheten aldrig krypterades under serverns långlivade nyckel, och de efemära privata nycklarna inte längre finns, avslöjar en senare kompromiss av den långlivade nyckeln ingenting om förflutna sessioner. Det finns helt enkelt inget i inspelningen att packa upp.
+
+Du ser detta som `ECDHE`, efemär Diffie-Hellman på elliptiska kurvor, eller `DHE`, den äldre varianten över ändlig kropp. ECDHE är snabbare och är den moderna standarden; DHE fasas ut, och därför bär även en stark DHE-AEAD-svit som `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` nu en IANA-märkning avrådd. De statiska, icke-efemära kusinerna `ECDH` och `DH`, utan det avslutande `E`, ger ingen forward secrecy.
+
+## Autentisering är en skild uppgift
+
+En vanlig förväxling är att tro att ta bort statiskt RSA innebär att ta bort RSA. Det gör det inte. Nyckelutbyte och autentisering är två olika uppgifter, och en svits namn listar dem separat.
+
+I `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` gör `ECDHE` nyckelutbytet och `RSA` autentiseringen: servern signerar de efemära handskakningsvärdena med den privata nyckeln bakom sitt RSA-certifikat och bevisar att den är den rättmätiga innehavaren. Sessionshemligheten kommer från det efemära Diffie-Hellman-utbytet, så forward secrecy håller, medan certifikatet fortfarande bevisar identiteten. Artikeln om certifikatanatomi täcker hur den identitetsbindningen fungerar.
+
+## Varför TLS 1.3 gjorde det obligatoriskt
+
+TLS 1.3 avgjorde saken genom att ta bort det statiska RSA-nyckeltransporten helt. Varje TLS 1.3-nyckelutbyte är efemärt, så forward secrecy är inte längre något du måste välja genom att välja rätt svit; det garanteras av protokollet. RSA och ECDSA finns kvar bara som signaturalgoritmer för autentiseringen. Det är också därför namnet på en TLS 1.3-svit inte har något nyckelutbytes-token alls: det finns inte längre något alternativ utan forward secrecy att namnge.
+
+## Skörda nu, dekryptera senare
+
+Forward secrecy skyddar mot en nyckelkompromiss som sker i efterhand, men förutsätter att den underliggande Diffie-Hellman-matematiken förblir svår. Den hotande oron är en framtida kvantdator som kan bryta dagens nyckelutbyten på elliptiska kurvor, vilket ger inspelad trafik en lång hållbarhet för en angripare som är villig att vänta. Detta är hotet skörda nu, dekryptera senare, och det driver övergången till hybrida postkvant-nyckelutbyten som kör ett klassiskt och ett kvantresistent utbyte tillsammans. Forward secrecy förblir nödvändigt; det har bara upphört att antas räcka för alltid.

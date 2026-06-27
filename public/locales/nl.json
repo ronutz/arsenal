@@ -108,7 +108,8 @@
       "hashing": "Hashing & crypto",
       "identifiers": "Identifiers",
       "pki": "Certificaten & PKI",
-      "networking": "Netwerken"
+      "networking": "Netwerken",
+      "transport": "TLS en transport"
     },
     "hash": {
       "name": "Hash-generator (SHA-1/256/384/512)",
@@ -339,6 +340,87 @@
       "badges": {
         "multicast": "multicast"
       }
+    },
+    "cipher": {
+      "name": "Cipher suite-decoder",
+      "blurb": "Voer een TLS-cipher suite in, als IANA-naam, OpenSSL- of GnuTLS-naam, of als hexadecimaal codepunt, om hem te ontleden in sleuteluitwisseling, authenticatie, versleuteling, modus en MAC, met een begrijpelijke beveiligingsbeoordeling en de officiële IANA-aanbeveling. Draait volledig in je browser tegen een ingebouwde kopie van het IANA-register.",
+      "inputLabel": "Cipher suite",
+      "inputPlaceholder": "TLS_AES_128_GCM_SHA256, ECDHE-RSA-AES128-GCM-SHA256 of 0x1301",
+      "runsLocally": "Het decoderen draait lokaal tegen een ingebouwde kopie van het IANA-register van TLS-cipher suites. Er wordt niets verzonden.",
+      "notInRegistryNote": "Deze naam is structureel ontleed maar niet gevonden in de ingebouwde momentopname van het IANA-register – het codepunt en de alternatieve namen worden daarom niet getoond.",
+      "errors": {
+        "empty": "Voer een cipher suite in om te decoderen.",
+        "format": "Dat is geen cipher suite. Voer een IANA-naam (TLS_...), een OpenSSL-naam of een hexadecimaal codepunt zoals 0x1301 in.",
+        "unknown": "Dat is een geldig codepunt-formaat, maar het is geen toegewezen cipher suite in het IANA-register."
+      },
+      "ratings": {
+        "recommended": "Aanbevolen",
+        "secure": "Veilig",
+        "weak": "Zwak",
+        "insecure": "Onveilig",
+        "unknown": "Onbekend"
+      },
+      "iana": {
+        "Y": "IANA: aanbevolen",
+        "N": "IANA: niet aanbevolen",
+        "D": "IANA: afgeraden"
+      },
+      "badges": {
+        "tls13": "TLS 1.3",
+        "notInRegistry": "Niet in IANA-momentopname"
+      },
+      "panels": {
+        "identity": "Identiteit",
+        "components": "Componenten",
+        "security": "Beveiliging"
+      },
+      "fields": {
+        "codePoint": "Codepunt",
+        "name": "IANA-naam",
+        "openssl": "OpenSSL-naam",
+        "gnutls": "GnuTLS-naam",
+        "protocol": "Protocol",
+        "dtls": "DTLS-OK",
+        "references": "Referenties"
+      },
+      "protocol": {
+        "tls13": "TLS 1.3",
+        "legacy": "TLS 1.2 en eerder"
+      },
+      "comp": {
+        "keyExchange": "Sleuteluitwisseling",
+        "authentication": "Authenticatie",
+        "forwardSecrecy": "Forward secrecy",
+        "cipher": "Versleuteling",
+        "mode": "Modus",
+        "aead": "AEAD",
+        "prf": "PRF-/KDF-hash",
+        "mac": "MAC",
+        "yes": "Ja",
+        "no": "Nee",
+        "bits": "{n}-bits",
+        "negotiatedSeparately": "Apart onderhandeld (TLS 1.3)"
+      },
+      "reasons": {
+        "nullCipher": "NULL-versleuteling: het verkeer wordt helemaal niet versleuteld.",
+        "anon": "Anonieme sleuteluitwisseling: de tegenpartij wordt niet geauthenticeerd en biedt dus geen bescherming tegen een actieve man-in-the-middle.",
+        "export40": "Sleutel van exportsterkte (40-bits): triviaal te kraken met brute kracht, een overblijfsel van de exportregels uit de jaren negentig.",
+        "rc4": "RC4-stroomversleuteling: de vertekende sleutelstroom maakt hem gebroken, en RFC 7465 verbiedt hem voor TLS.",
+        "singleDes": "Enkelvoudig DES met 56-bits sleutel: in uren te kraken met brute kracht.",
+        "rc2": "RC2: een verouderde 40/64-bits versleuteling, niet veilig voor modern gebruik.",
+        "tripleDes": "3DES heeft een 64-bits blok, wat het blootstelt aan de Sweet32-verjaardagsaanval (CVE-2016-2183). RFC 8429 verklaart het verouderd.",
+        "md5Mac": "MD5-MAC: MD5 is cryptografisch gebroken.",
+        "cbcMac": "CBC met een HMAC-SHA1- of MD5-MAC gebruikt MAC-then-encrypt en is blootgesteld aan padding-oracle-aanvallen zoals BEAST en Lucky13.",
+        "ccm8": "CCM_8 kort de authenticatietag in tot 8 bytes, wat de integriteit verzwakt. IANA markeert het niet als aanbevolen.",
+        "noFs": "Geen forward secrecy: bij een statische sleuteluitwisseling kan één gecompromitteerde langetermijnsleutel eerdere sessies ontsleutelen. Moderne richtlijnen vereisen ECDHE of DHE.",
+        "legacyCipher": "{value} is een verouderde versleuteling, achterhaald voor TLS.",
+        "aead": "AEAD-versleuteling (geauthenticeerde versleuteling): vertrouwelijkheid en integriteit in één primitief, zonder aparte MAC die verkeerd gebruikt kan worden.",
+        "fs": "Forward secrecy: een vluchtige sleuteluitwisseling houdt eerder verkeer veilig, zelfs als de langetermijnsleutel later wordt gecompromitteerd.",
+        "tls13": "TLS 1.3-suite: alleen moderne AEAD-versleutelingen, met de sleuteluitwisseling apart onderhandeld en altijd vluchtig.",
+        "ianaD": "IANA markeert deze suite als \"D\" (afgeraden): hij ZOU NIET of MAG NIET gebruikt worden, afhankelijk van de situatie.",
+        "ianaN": "IANA markeert deze suite niet als \"Aanbevolen\": beperkte toepasbaarheid of niet door het IETF-consensusproces gegaan.",
+        "signalling": "Signaleringssuite (SCSV): geen echte versleuteling, maar draagt een protocolsignaal zoals downgradebescherming of heronderhandelingsinfo."
+      }
     }
   },
   "privacy_page": {
@@ -376,16 +458,16 @@
     "backHome": "Terug naar home"
   },
   "footer": {
-    "redEducation": "Boek officiële training bij Red Education",
+    "redEducation": "Boek officiële training bij <b>Red Education</b>",
     "privacy": "Privacy",
     "builtWith": "Gebouwd door Rodolfo Nützmann met CONCORD",
     "colophon": "Hoe dit is gebouwd",
-    "openSource": "De engine is open source",
-    "rights": "Beschikbaar onder open en commerciële voorwaarden.",
     "contribute": "Help de vertalingen verbeteren",
     "feedback": "Feedback geven",
     "api": "API-referentie",
-    "contributeTools": "Een tool bijdragen"
+    "contributeTools": "Een tool bijdragen",
+    "license": "Licentie",
+    "coffee": "Trakteer me op een koffie"
   },
   "search": {
     "label": "Zoeken",
@@ -883,5 +965,16 @@
     "viewReference": "Referentie",
     "viewSwagger": "Swagger UI",
     "swaggerLoadError": "Swagger UI kon niet worden geladen."
+  },
+  "license_page": {
+    "eyebrow": "Open core",
+    "title": "Licentie",
+    "lede": "ronutz.com is open core: de engine achter elke tool is opensource, en de website die erop is gebouwd niet.",
+    "openHeading": "Opensource – de engine",
+    "openBody": "@ronutz/netcore, de engine achter elke tool en elke API-respons op deze site, wordt uitgebracht onder de Apache License 2.0. Dezelfde functie die de tools in de browser aanroepen, roept ook de API aan, dus je bent vrij om die te gebruiken, aan te passen en erop voort te bouwen onder die licentie.",
+    "closedHeading": "Closed source – deze website",
+    "closedBody": "De website zelf is closed source. Het ontwerp, de interface, de geschreven inhoud (waaronder elk Learn-artikel), de merkidentiteit en de specifieke manier waarop deze tools hier zijn samengesteld en gepresenteerd zijn eigendom, alle rechten voorbehouden. Er wordt geen toestemming verleend om de site of de inhoud ervan te kopiëren, te verveelvoudigen, te wijzigen, te herdistribueren of er afgeleide werken van te maken zonder voorafgaande schriftelijke toestemming.",
+    "contact": "Vragen over de licentie? <a>Neem contact op.</a>",
+    "backHome": "Terug naar de tools"
   }
 }

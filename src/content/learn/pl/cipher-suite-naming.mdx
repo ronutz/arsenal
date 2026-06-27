@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Czytanie nazw zestawów szyfrów: IANA, OpenSSL i GnuTLS"
+summary: "Dlaczego ten sam zestaw szyfrów ma trzy różne nazwy i dwubajtowy punkt kodowy, jak tłumaczyć między konwencjami IANA, OpenSSL i GnuTLS oraz co naprawdę oznacza kolumna Recommended IANA z Y, N i D."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Dlaczego zestaw ma wiele nazw
+
+Pojedynczy zestaw szyfrów można zapisać na co najmniej trzy sposoby, a różnice wykolejają każdego, kto porównuje konfigurację serwera z przechwyceniem pakietów lub raportem skanera. Zestaw, który IANA nazywa `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, to ten sam, który OpenSSL nazywa `ECDHE-RSA-AES128-GCM-SHA256`. Opisują identyczne bajty na łączu, mianowicie punkt kodowy `0xC02F`.
+
+Punkt kodowy to jedyna rzecz, której protokół naprawdę używa. Nazwy to udogodnienia dla plików konfiguracyjnych, dokumentacji i ludzi, a każdy ekosystem narzędzi wyhodował własną konwencję.
+
+## Trzy konwencje
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+Nazwa **IANA** to standard rejestru. Zawsze zaczyna się od `TLS_`, oddziela każdy token podkreśleniem i używa słowa `WITH`, aby oddzielić wymianę kluczy i uwierzytelnianie od szyfru i MAC.
+
+Nazwa **OpenSSL** pomija przedrostek `TLS_`, używa myślników zamiast podkreśleń, usuwa `WITH` i zapisuje szyfr oraz długość klucza jako jeden token (`AES128` zamiast `AES_128`). Dla zestawów ze statycznym RSA OpenSSL pomija także zbędny token wymiany kluczy, więc `TLS_RSA_WITH_AES_128_CBC_SHA` staje się po prostu `AES128-SHA`. TLS 1.3 to wyjątek: tam OpenSSL przyjął nazwy IANA bez zmian, więc `TLS_AES_128_GCM_SHA256` zapisuje się tak samo w obu.
+
+Nazwa **GnuTLS** zachowuje przedrostek `TLS_` i podkreślenia, ale podobnie jak OpenSSL pomija `WITH`. To najrzadziej spotykana z trzech.
+
+To właśnie ta rozbieżność sprawia, że ludzie sądzą, iż dwa systemy są sprzeczne, choć skonfigurowały ten sam zestaw. Dekoder, który akceptuje dowolną z nazw oraz surowy punkt kodowy, usuwa zgadywanie, pokazując je wszystkie naraz.
+
+## Czytanie punktu kodowego
+
+Punkt kodowy zestawu szyfrów to dwa bajty, zapisywane na kilka sposobów, które oznaczają tę samą liczbę:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+Pierwszy bajt grupuje pokrewne zestawy: blok `0x00xx` mieści pierwotne zestawy TLS 1.0 i 1.1, `0xC0xx` mieści zestawy na krzywych eliptycznych z RFC 5289 i pokrewnych, `0xCCxx` mieści zestawy ChaCha20-Poly1305, a `0x13xx` mieści zestawy TLS 1.3. Zobaczenie `0xC0` lub `0xCC` na początku to szybka wskazówka, że patrzysz na nowoczesny zestaw ECDHE lub ChaCha20.
+
+## Co oznacza kolumna Recommended
+
+Rejestr IANA ma kolumnę Recommended z trzema wartościami i łatwo je źle odczytać.
+
+`Y` oznacza, że zestaw przeszedł proces konsensusu IETF i jest zalecany do ogólnego użytku w chwili rejestracji. `N` nie oznacza, że zestaw jest wadliwy; oznacza, że nie przeszedł tego procesu, ma ograniczone zastosowanie lub jest przeznaczony do określonej niszy. Zestawy `CCM_8` są oznaczone `N` właśnie z tego powodu: skrócony znacznik to celowy kompromis, nie wada.
+
+`D` jest tym mocnym. Oznacza, że zestaw jest odradzany i nie powinien lub nie może być używany, zależnie od sytuacji. Całe rodziny przeszły na `D`, gdy IETF je wycofuje, w tym zestawy ze statycznym RSA, a ostatnio zestawy `DHE` nad ciałem skończonym. Zestaw może być kryptograficznie solidny, a mimo to oznaczony `D` z powodów ekosystemowych, dlatego dekoder pokazuje oznaczenie IANA obok własnej oceny bezpieczeństwa, zamiast łączyć obie w jeden werdykt. Odpowiadają na różne pytania: czy konstrukcja jest solidna i czy proces standaryzacji nadal chce, byś jej używał?
+
+## Składanie wszystkiego razem
+
+Aby zidentyfikować nieznany zestaw, wklej posiadaną formę — nazwę IANA, nazwę OpenSSL lub punkt kodowy — do dekodera. Rozwiązuje on zestaw względem wbudowanej kopii rejestru IANA, pokazuje pozostałe nazwy, rozkłada zestaw na części i łączy ocenę bezpieczeństwa opartą na regułach z oficjalną rekomendacją IANA. Artykuły towarzyszące wyjaśniają same części: ogólną anatomię, wybór między AEAD a CBC, utajnianie z wyprzedzeniem i to, co zmienił TLS 1.3.

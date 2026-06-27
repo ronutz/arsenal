@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD kontra CBC: dlaczego tryb ma znaczenie"
+summary: "Praktyczna różnica między szyfrem AEAD, takim jak AES-GCM, a starszym szyfrem CBC z osobnym HMAC, ataki padding oracle, które dobiły MAC-then-encrypt, oraz jeden kompromis, o który AEAD nadal prosi."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Dwa sposoby szyfrowania rekordu
+
+Gdy uzgadnianie TLS uzgodni klucze, każdy rekord danych aplikacji musi być zarazem zaszyfrowany, aby podsłuchujący nie mógł go odczytać, i uwierzytelniony, aby atakujący nie mógł go zmienić. Są dwa główne sposoby, w jakie robi to zestaw szyfrów, a token trybu w nazwie zestawu mówi, który z nich.
+
+Szyfr **AEAD**, taki jak AES-GCM, AES-CCM lub ChaCha20-Poly1305, wykonuje oba zadania w jednej prymitywie. Podajesz mu tekst jawny i pewne dane powiązane, a on zwraca szyfrogram oraz znacznik uwierzytelniający. Odszyfrowanie weryfikuje znacznik i dane razem i zawodzi jako jedna operacja, jeśli cokolwiek zmieniono.
+
+Szyfr **CBC** wykonuje tylko szyfrowanie. Aby uzyskać integralność, zestaw łączy go z osobnym HMAC, nazwanym przez końcowy skrót zestawu (na przykład `SHA` w `TLS_RSA_WITH_AES_128_CBC_SHA`). Protokół skręca obie operacje razem, a kolejność, w jakiej zachodzą, okazuje się mieć ogromne znaczenie.
+
+## Dlaczego MAC-then-encrypt poszedł źle
+
+TLS pierwotnie używał MAC-then-encrypt: oblicz HMAC nad tekstem jawnym, dołącz go, dopełnij wynik do granicy bloku, a potem zaszyfruj całość za pomocą CBC. Problem w tym, że odbiorca musi odszyfrować i usunąć dopełnienie, zanim zdoła sprawdzić MAC, więc błędne dopełnienie i zły MAC są wykrywane na różnych etapach. Atakujący, który widzi, czy rekord zawiódł na dopełnieniu, czy na MAC — przez komunikat błędu lub po samym czasie — uczy się jednego bitu tekstu jawnego na próbę. Powtarzany, ten bit staje się całą wiadomością.
+
+To jest padding oracle i nie jest teoretyczny. Seria ataków na przestrzeni lat, w tym BEAST, Lucky13 i POODLE, wykorzystywała ochronę rekordów CBC w TLS. Każdy łatano coraz bardziej delikatnym kodem o stałym czasie, ale podstawowa konstrukcja wciąż rodziła nowe warianty. Wnioskiem, jaki wyciągnęła branża, było zaprzestanie jej używania.
+
+## Dlaczego AEAD jest teraz domyślny
+
+AEAD usuwa całą klasę problemu. Nie ma osobnego etapu dopełniania do sondowania ani osobnego etapu MAC do mierzenia czasu, ponieważ weryfikacja i odszyfrowanie to jedna operacja, która się udaje albo zawodzi. TLS 1.3 doprowadza to do końca i dopuszcza tylko szyfry AEAD; zestawy CBC po prostu nie są częścią TLS 1.3. W TLS 1.2 istnieją oba, dlatego dekoder oznacza zestaw CBC-z-HMAC-SHA1 jako słaby, nawet gdy szyfrem jest AES.
+
+Gdy widzisz `GCM`, `CCM` lub `POLY1305` w nazwie zestawu, patrzysz na AEAD. Gdy widzisz `CBC`, patrzysz na starszą konstrukcję, a na nowoczesnej usłudze powinno to być co najwyżej rozwiązanie awaryjne.
+
+## Kompromis, o który AEAD nadal prosi
+
+AEAD nie jest pozbawiony ostrych krawędzi; jedynie je przesuwa. Każde szyfrowanie AEAD potrzebuje nonce, liczby użytej raz, a bezpieczeństwo GCM w szczególności załamuje się, jeśli ta sama nonce zostanie kiedykolwiek użyta ponownie z tym samym kluczem. TLS zarządza nonce za ciebie licznikiem dla każdego połączenia, więc to raczej zagrożenie dla systemów budujących własne ramkowanie niż dla samego TLS, ale jest to powód, dla którego projekty AEAD tak bardzo dbają o konstrukcję nonce.
+
+Drugim kompromisem jest długość znacznika uwierzytelniającego. Standardowe zestawy GCM i Poly1305 używają znacznika 16-bajtowego. Zestawy `CCM_8` skracają go do 8 bajtów, aby zaoszczędzić narzut na ograniczonych łączach, co wymiernie osłabia integralność. Dlatego `TLS_AES_128_CCM_8_SHA256` to prawdziwy zestaw AEAD TLS 1.3, którego IANA mimo to odmawia oznaczenia jako zalecanego: tryb jest nowoczesny, ale krótki znacznik to kompromis, którego ogólny internet nie musi zawierać.

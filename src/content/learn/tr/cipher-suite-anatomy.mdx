@@ -1,0 +1,64 @@
+---
+slug: cipher-suite-anatomy
+title: "Bir TLS şifre paketinin anatomisi"
+summary: "Bir TLS şifre paketinin gerçekte neyi adlandırdığı, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 gibi bir paketin parça parça nasıl okunacağı ve aynı iki baytlık kod noktasının üç farklı adlandırma kuralı altında nasıl göründüğü."
+concepts: ["tls", "cipher suite", "key exchange", "aead", "mac", "handshake"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Şifre paketi nedir
+
+Bir TLS şifre paketi, bir istemci ile bir sunucunun el sıkışma sırasında üzerinde anlaştığı, adlandırılmış bir kriptografik seçimler demetidir. `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` gibi tek bir ad, birkaç bağımsız kararı tek bir tanımlayıcıda toplar: iki tarafın paylaşılan bir sırrı nasıl uzlaştırdığı, sunucunun kim olduğunu nasıl kanıtladığı, hangi algoritmanın uygulama verisini şifrelediği ve o verinin kurcalamaya karşı nasıl korunduğu.
+
+Kayıtlı her paketin ayrıca IANA tarafından atanan iki baytlık bir kod noktası vardır. Yukarıdaki ad, hatta `0xC02F` şeklindedir. El sıkışma asla metin adını göndermez, iki baytı gönderir. Adlar insanlar için vardır ve birden fazla adlandırma kuralı bulunur, bu da sık görülen bir kafa karışıklığı kaynağıdır.
+
+## Bir paketin tanımladığı görevler
+
+TLS 1.2 ve öncesi için bir paket en çok beş şeyi adlandırır:
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+    |     |        |   |   |   |
+    |     |        |   |   |   +-- MAC / PRF hash: SHA-256
+    |     |        |   |   +------ mode of operation: GCM (an AEAD mode)
+    |     |        |   +---------- cipher key size: 128-bit
+    |     |        +-------------- bulk cipher: AES
+    |     +----------------------- authentication: RSA
+    +----------------------------- key exchange: ECDHE
+```
+
+**Anahtar değişimi**, iki tarafın paylaşılan bir sırrı nasıl kurduğudur. `ECDHE`, ileri gizlilik sağlayan, eliptik eğri üzerinde geçici Diffie-Hellman'dır. Göreceğiniz diğer değerler `DHE` (sonlu cisim üzerinde geçici Diffie-Hellman), `RSA` (statik RSA anahtar taşıması, ileri gizlilik yok) ve `PSK` (önceden paylaşılmış bir anahtar) şeklindedir.
+
+**Kimlik doğrulama**, sunucunun (ve bazen istemcinin) kimliğini nasıl kanıtladığıdır, neredeyse her zaman sertifikasının arkasındaki özel anahtarla. `RSA` ve `ECDSA` yaygın değerlerdir. Bir paket anahtar değişimi için statik `RSA` kullandığında, aynı RSA anahtarı her iki görevi de yapar, bu yüzden ad `RSA` değerini yalnızca bir kez listeler.
+
+**Blok şifre ve anahtar boyutu**, el sıkışma bittikten sonra gerçek trafiği şifreleyen simetrik algoritmadır. `AES_128` ve `AES_256` baskındır, `CHACHA20` ise AES donanımı olmayan cihazlarda yaygın alternatiftir.
+
+**Mod**, blok şifreyi bir kayıt akışını şifreleyebilecek bir şeye dönüştürür. `GCM`, `CCM` ve `CHACHA20_POLY1305`, bütünlüğü kendileri halleden AEAD modlarıdır. `CBC`, ayrı bir MAC gerektiren daha eski moddur.
+
+**MAC veya PRF özeti**, son belirteçtir. Bir CBC paketinde her kaydı doğrulayan HMAC özetidir. Bir AEAD paketinde şifre zaten bütünlüğü sağlar, bu yüzden son özet bunun yerine el sıkışmanın anahtar türetmek için kullandığı PRF'yi adlandırır (`SHA256` veya `SHA384`).
+
+## Tersten okumak
+
+Dilbilgisini bildiğinizde, herhangi bir TLS 1.2 paketini bir bakışta tersten okuyabilirsiniz. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384`, anahtar değişimi için sonlu cisim üzerinde geçici Diffie-Hellman, kimlik doğrulama için RSA, GCM modunda 256 bit anahtarlı AES ve el sıkışma PRF'si olarak SHA-384'tür. GCM bir AEAD olduğundan, ayrı bir MAC yoktur.
+
+`TLS_RSA_WITH_AES_128_CBC_SHA`, uyarıcı karşıtıdır: ileri gizlilik olmadan statik RSA anahtar taşıması, CBC modunda AES-128 ve bir HMAC-SHA1 MAC. Onunla ilgili her şey geçmişten kalmadır, bu yüzden IANA artık onu sakıncalı olarak işaretler.
+
+## Bir paket, üç ad
+
+Aynı `0xC02F` üç kural altında görünür:
+
+```
+IANA:    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL: ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+IANA adı, kayıt standardıdır. OpenSSL kısa çizgi kullanır, `WITH` ifadesini atar ve `AES128` değerini tek bir belirteç olarak yazar, bu yüzden bir OpenSSL yapılandırması ile bir paket yakalaması aynı paketi adlandırırken çelişiyormuş gibi görünebilir. Çözücü üç biçimi de, ham kod noktasını da kabul eder ve diğerlerini gösterir.
+
+## Çözmek onaylamak değildir
+
+Bir paketi okumak, ne yapacağını söyler, onu kullanmanız gerekip gerekmediğini değil. Bir ad tamamen doğru biçimlendirilmiş olabilir ve yine de RC4'ü, anonim anahtar değişimini veya ihracat düzeyinde anahtarları tanımlayabilir. Çözücü, yapısal ayrıştırmayı bir güvenlik okuması ve IANA'nın bağımsız önerisiyle eşleştirir, böylece ölümcül bir kusuru olan sağlıklı görünümlü bir ad fark edilmeden geçmez. Eşlik eden makaleler, bir paketi modern yapan şeyi ele alır: CBC yerine AEAD ve anahtar değişiminde ileri gizlilik.

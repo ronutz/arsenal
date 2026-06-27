@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Sigilo de encaminhamento e a troca de chaves"
+summary: "O que o sigilo de encaminhamento garante, por que o transporte de chave RSA estático não o oferece, como ECDHE e DHE oferecem, e por que autenticação e troca de chaves são duas tarefas distintas que o nome de uma suíte mantém separadas."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## A pergunta que o sigilo de encaminhamento responde
+
+Imagine que um atacante grava seu tráfego cifrado hoje e o armazena. Meses depois, ele obtém a chave privada de longo prazo do servidor, talvez por uma violação ou uma ordem judicial. Ele agora consegue voltar e decifrar o tráfego que capturou?
+
+Se a resposta for não, a conexão tinha **sigilo de encaminhamento**, às vezes chamado de sigilo perfeito de encaminhamento. Se a resposta for sim, ela não tinha. A diferença se resume inteiramente à troca de chaves nomeada na suíte de cifra, e é por isso que é uma das primeiras coisas que o decodificador informa.
+
+## RSA estático: conveniente e frágil
+
+Na antiga troca de chaves RSA estática, o cliente escolhe o segredo que protegerá a sessão, cifra-o com a chave pública do servidor extraída de seu certificado e o envia. Só a chave privada do servidor pode decifrá-lo, então a sessão fica privada de bisbilhoteiros no momento.
+
+A propriedade fatal é que o segredo da sessão foi protegido pela chave de longo prazo do servidor. Se essa chave algum dia vazar, toda sessão passada que a usou pode ser desembrulhada a partir de uma gravação, porque o segredo cifrado está bem ali, dentro do handshake capturado. O comprometimento de uma chave quebra retroativamente toda conversa que ela já protegeu. Suítes que começam com `TLS_RSA_WITH_` funcionam assim, e o decodificador as marca como sem sigilo de encaminhamento.
+
+## Diffie-Hellman efêmero: a solução
+
+O Diffie-Hellman efêmero rompe o vínculo entre o segredo da sessão e qualquer chave de longo prazo. Para cada conexão, os dois lados geram pares de chaves Diffie-Hellman novos e descartáveis, trocam as metades públicas, e cada um combina sua própria metade privada com a metade pública do outro para chegar ao mesmo segredo compartilhado. As metades privadas nunca saem de suas máquinas e são descartadas quando a conexão termina.
+
+Como o segredo compartilhado nunca foi cifrado sob a chave de longo prazo do servidor, e as chaves privadas efêmeras não existem mais, um comprometimento posterior da chave de longo prazo não revela nada sobre sessões passadas. Simplesmente não há nada na gravação para desembrulhar.
+
+Você verá isso como `ECDHE`, Diffie-Hellman efêmero de curva elíptica, ou `DHE`, a variante mais antiga de campo finito. O ECDHE é mais rápido e é o padrão moderno; o DHE está sendo descontinuado, e é por isso que até uma suíte DHE-AEAD forte como `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` agora carrega uma marca de desaconselhado da IANA. Os primos estáticos e não efêmeros `ECDH` e `DH`, sem o `E` final, não oferecem sigilo de encaminhamento.
+
+## Autenticação é uma tarefa à parte
+
+Uma confusão comum é achar que remover o RSA estático significa remover o RSA. Não significa. Troca de chaves e autenticação são duas tarefas diferentes, e o nome de uma suíte as lista separadamente.
+
+Em `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`, o `ECDHE` faz a troca de chaves e o `RSA` faz a autenticação: o servidor assina os valores efêmeros do handshake com a chave privada por trás de seu certificado RSA, provando que é o detentor legítimo. O segredo da sessão vem da troca Diffie-Hellman efêmera, então o sigilo de encaminhamento se mantém, enquanto o certificado ainda prova a identidade. O artigo sobre a anatomia de certificados cobre como funciona essa vinculação de identidade.
+
+## Por que o TLS 1.3 o tornou obrigatório
+
+O TLS 1.3 encerrou a questão removendo o transporte de chave RSA estático por completo. Toda troca de chaves do TLS 1.3 é efêmera, então o sigilo de encaminhamento não é mais algo que você precisa escolher selecionando a suíte certa; ele é garantido pelo protocolo. RSA e ECDSA permanecem apenas como algoritmos de assinatura para autenticação. É também por isso que o nome de uma suíte de TLS 1.3 não tem nenhum token de troca de chaves: não há mais uma opção sem sigilo de encaminhamento para nomear.
+
+## Coletar agora, decifrar depois
+
+O sigilo de encaminhamento protege contra um comprometimento de chave que aconteça depois do fato, mas pressupõe que a matemática Diffie-Hellman subjacente continue difícil. A preocupação iminente é um futuro computador quântico que possa quebrar as trocas de chaves de curva elíptica de hoje, o que dá ao tráfego gravado uma longa vida útil para um atacante disposto a esperar. Essa é a ameaça de coletar agora e decifrar depois, e ela está impulsionando a migração para trocas de chaves híbridas pós-quânticas, que executam uma troca clássica e uma resistente a quântica juntas. O sigilo de encaminhamento continua necessário; ele apenas deixou de ser presumido suficiente para sempre.

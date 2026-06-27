@@ -1,0 +1,56 @@
+---
+slug: cipher-suite-naming
+title: "Cipher suite-namen lezen: IANA, OpenSSL en GnuTLS"
+summary: "Waarom dezelfde cipher suite drie verschillende namen en een codepunt van twee bytes heeft, hoe je vertaalt tussen de conventies van IANA, OpenSSL en GnuTLS, en wat de Recommended-kolom van de IANA met Y, N en D werkelijk betekent."
+concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "forward-secrecy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Waarom een suite veel namen heeft
+
+Een enkele cipher suite kan op minstens drie manieren worden geschreven, en de verschillen doen iedereen struikelen die een serverconfiguratie met een pakketopname of een scannerrapport vergelijkt. De suite die de IANA `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` noemt, is dezelfde die OpenSSL `ECDHE-RSA-AES128-GCM-SHA256` noemt. Ze beschrijven identieke bytes op de lijn, namelijk het codepunt `0xC02F`.
+
+Het codepunt is het enige dat het protocol werkelijk gebruikt. De namen zijn gemakken voor configuratiebestanden, documentatie en mensen, en elk gereedschapsecosysteem liet zijn eigen conventie groeien.
+
+## De drie conventies
+
+```
+Code point: 0xC02F
+IANA:       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+OpenSSL:    ECDHE-RSA-AES128-GCM-SHA256
+GnuTLS:     TLS_ECDHE_RSA_AES_128_GCM_SHA256
+```
+
+De **IANA**-naam is de registerstandaard. Hij begint altijd met `TLS_`, scheidt elk token met een underscore en gebruikt het woord `WITH` om de sleuteluitwisseling en authenticatie te scheiden van de versleuteling en de MAC.
+
+De **OpenSSL**-naam laat het voorvoegsel `TLS_` weg, gebruikt koppeltekens in plaats van underscores, verwijdert de `WITH` en schrijft de versleuteling en sleutellengte als één token (`AES128` in plaats van `AES_128`). Voor statische RSA-suites laat OpenSSL ook het overbodige sleuteluitwisselingstoken weg, dus `TLS_RSA_WITH_AES_128_CBC_SHA` wordt eenvoudigweg `AES128-SHA`. TLS 1.3 is de uitzondering: daar nam OpenSSL de IANA-namen ongewijzigd over, dus `TLS_AES_128_GCM_SHA256` wordt in beide hetzelfde geschreven.
+
+De **GnuTLS**-naam behoudt het voorvoegsel `TLS_` en de underscores maar laat, net als OpenSSL, de `WITH` weg. Hij is de minst geziene van de drie.
+
+Het is precies deze discrepantie die mensen doet denken dat twee systemen het oneens zijn terwijl ze dezelfde suite hebben geconfigureerd. Een decoder die elk van de namen accepteert, plus het ruwe codepunt, verwijdert het giswerk door ze allemaal tegelijk te tonen.
+
+## Een codepunt lezen
+
+Een cipher suite-codepunt is twee bytes, op meerdere manieren geschreven die allemaal hetzelfde getal betekenen:
+
+```
+0x1301      0x13,0x01      13 01      1301
+```
+
+De eerste byte groepeert verwante suites: het blok `0x00xx` bevat de oorspronkelijke TLS 1.0- en 1.1-suites, `0xC0xx` bevat de elliptische-curve-suites uit RFC 5289 en verwanten, `0xCCxx` bevat de ChaCha20-Poly1305-suites, en `0x13xx` bevat de TLS 1.3-suites. `0xC0` of `0xCC` aan het begin zien is een snelle hint dat je naar een moderne ECDHE- of ChaCha20-suite kijkt.
+
+## Wat de Recommended-kolom betekent
+
+Het IANA-register heeft een Recommended-kolom met drie waarden, en ze worden gemakkelijk verkeerd gelezen.
+
+`Y` betekent dat de suite het IETF-consensusproces heeft doorlopen en op het moment van registratie wordt aanbevolen voor algemeen gebruik. `N` betekent niet dat de suite gebrekkig is; het betekent dat ze dat proces niet heeft doorlopen, beperkte toepasbaarheid heeft of voor een specifieke niche bedoeld is. De `CCM_8`-suites zijn precies daarom met `N` gemarkeerd: de ingekorte tag is een bewuste afweging, geen fout.
+
+`D` is de sterke. Het betekent dat de suite is afgeraden en afhankelijk van de situatie niet of in geen geval mag worden gebruikt. Hele families zijn naar `D` verschoven naarmate de IETF ze uitfaseert, waaronder de statische RSA-suites en, recenter, de finite-field-`DHE`-suites. Een suite kan cryptografisch deugdelijk zijn en toch om ecosysteemredenen met `D` worden gemarkeerd, en daarom toont de decoder de IANA-markering naast zijn eigen beveiligingsoordeel, in plaats van beide tot één oordeel samen te smelten. Ze beantwoorden verschillende vragen: is de constructie deugdelijk, en wil het standaardisatieproces nog dat je hem gebruikt?
+
+## Alles samenvoegen
+
+Om een onbekende suite te identificeren, plak je de vorm die je hebt – een IANA-naam, een OpenSSL-naam of een codepunt – in de decoder. Hij lost de suite op tegen een ingebouwde kopie van het IANA-register, toont de andere namen, splitst de suite in zijn delen en koppelt een op regels gebaseerde beveiligingsbeoordeling aan de officiële IANA-aanbeveling. De begeleidende artikelen leggen de delen zelf uit: de algemene anatomie, de keuze tussen AEAD en CBC, forward secrecy en wat TLS 1.3 veranderde.

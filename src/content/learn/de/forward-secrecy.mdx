@@ -1,0 +1,45 @@
+---
+slug: forward-secrecy
+title: "Forward Secrecy und der Schlüsselaustausch"
+summary: "Was Forward Secrecy bringt, warum statischer RSA-Schlüsseltransport sie nicht bietet, wie ECDHE und DHE es tun und warum Authentifizierung und Schlüsselaustausch zwei getrennte Aufgaben sind, die der Name einer Suite getrennt hält."
+concepts: ["forward secrecy", "ecdhe", "dhe", "rsa", "key exchange", "harvest now decrypt later"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", "cipher-suite-naming", "x509-anatomy"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Die Frage, die Forward Secrecy beantwortet
+
+Stellen Sie sich vor, ein Angreifer zeichnet Ihren verschlüsselten Verkehr heute auf und speichert ihn. Monate später erlangt er den langlebigen privaten Schlüssel des Servers, vielleicht durch einen Einbruch oder eine gerichtliche Anordnung. Kann er nun zurückgehen und den aufgezeichneten Verkehr entschlüsseln?
+
+Wenn die Antwort nein lautet, hatte die Verbindung **Forward Secrecy**, manchmal Perfect Forward Secrecy genannt. Wenn die Antwort ja lautet, hatte sie keine. Der Unterschied läuft vollständig auf den in der Cipher-Suite benannten Schlüsselaustausch hinaus, weshalb er eines der ersten Dinge ist, die der Decoder meldet.
+
+## Statisches RSA: bequem und fragil
+
+Beim alten statischen RSA-Schlüsselaustausch wählt der Client das Geheimnis, das die Sitzung schützen wird, verschlüsselt es mit dem öffentlichen Schlüssel des Servers aus seinem Zertifikat und sendet es. Nur der private Schlüssel des Servers kann es entschlüsseln, daher ist die Sitzung im Moment vor Lauschern privat.
+
+Die fatale Eigenschaft ist, dass das Sitzungsgeheimnis durch den langlebigen Schlüssel des Servers geschützt war. Wenn dieser Schlüssel je durchsickert, kann jede vergangene Sitzung, die ihn verwendete, aus einer Aufzeichnung ausgepackt werden, weil das verschlüsselte Geheimnis genau dort im aufgezeichneten Handshake liegt. Eine Schlüsselkompromittierung bricht rückwirkend jedes Gespräch, das er je geschützt hat. Suiten, die mit `TLS_RSA_WITH_` beginnen, funktionieren so, und der Decoder kennzeichnet sie als ohne Forward Secrecy.
+
+## Flüchtiger Diffie-Hellman: die Lösung
+
+Flüchtiger Diffie-Hellman durchtrennt die Verbindung zwischen dem Sitzungsgeheimnis und jedem langlebigen Schlüssel. Für jede Verbindung erzeugen beide Seiten frische, wegwerfbare Diffie-Hellman-Schlüsselpaare, tauschen die öffentlichen Hälften aus, und jede kombiniert ihre eigene private Hälfte mit der öffentlichen Hälfte der anderen, um zum selben gemeinsamen Geheimnis zu gelangen. Die privaten Hälften verlassen nie ihre Maschinen und werden verworfen, wenn die Verbindung endet.
+
+Da das gemeinsame Geheimnis nie unter dem langlebigen Schlüssel des Servers verschlüsselt wurde und die flüchtigen privaten Schlüssel nicht mehr existieren, offenbart eine spätere Kompromittierung des langlebigen Schlüssels nichts über vergangene Sitzungen. Es gibt schlicht nichts in der Aufzeichnung auszupacken.
+
+Sie sehen das als `ECDHE`, flüchtiger elliptischer-Kurven-Diffie-Hellman, oder `DHE`, die ältere Finite-Field-Variante. ECDHE ist schneller und der moderne Standard; DHE wird ausgemustert, weshalb selbst eine starke DHE-AEAD-Suite wie `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` nun eine IANA-Kennzeichnung „abgeraten“ trägt. Die statischen, nicht flüchtigen Verwandten `ECDH` und `DH`, ohne das abschließende `E`, bieten keine Forward Secrecy.
+
+## Authentifizierung ist eine getrennte Aufgabe
+
+Eine häufige Verwechslung ist die Annahme, statisches RSA zu entfernen bedeute, RSA zu entfernen. Tut es nicht. Schlüsselaustausch und Authentifizierung sind zwei verschiedene Aufgaben, und der Name einer Suite führt sie getrennt auf.
+
+In `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` erledigt das `ECDHE` den Schlüsselaustausch und das `RSA` die Authentifizierung: Der Server signiert die flüchtigen Handshake-Werte mit dem privaten Schlüssel hinter seinem RSA-Zertifikat und beweist so, dass er der rechtmäßige Inhaber ist. Das Sitzungsgeheimnis stammt aus dem flüchtigen Diffie-Hellman-Austausch, daher hält Forward Secrecy, während das Zertifikat weiterhin die Identität beweist. Der Artikel zur Zertifikatsanatomie behandelt, wie diese Identitätsbindung funktioniert.
+
+## Warum TLS 1.3 sie verpflichtend machte
+
+TLS 1.3 hat die Sache geklärt, indem es den statischen RSA-Schlüsseltransport vollständig entfernte. Jeder TLS-1.3-Schlüsselaustausch ist flüchtig, daher ist Forward Secrecy nicht mehr etwas, das Sie durch die Wahl der richtigen Suite auswählen müssen; sie wird vom Protokoll garantiert. RSA und ECDSA bleiben nur als Signaturalgorithmen für die Authentifizierung. Auch deshalb hat der Name einer TLS-1.3-Suite gar kein Schlüsselaustausch-Token: Es gibt keine Option ohne Forward Secrecy mehr zu benennen.
+
+## Jetzt ernten, später entschlüsseln
+
+Forward Secrecy schützt gegen eine Schlüsselkompromittierung, die im Nachhinein geschieht, setzt aber voraus, dass die zugrunde liegende Diffie-Hellman-Mathematik schwer bleibt. Die drohende Sorge ist ein künftiger Quantencomputer, der die heutigen elliptischen-Kurven-Schlüsselaustausche brechen könnte, was aufgezeichnetem Verkehr eine lange Haltbarkeit für einen Angreifer gibt, der zu warten bereit ist. Das ist die Bedrohung „jetzt ernten, später entschlüsseln“, und sie treibt den Umstieg auf hybride postquanten Schlüsselaustausche voran, die einen klassischen und einen quantenresistenten Austausch gemeinsam ausführen. Forward Secrecy bleibt notwendig; sie wird nur nicht mehr für immer als ausreichend angenommen.

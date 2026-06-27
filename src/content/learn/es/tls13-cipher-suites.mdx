@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "Suites de cifrado de TLS 1.3: qué cambió"
+summary: "Por qué una suite de TLS 1.3 nombra solo un cifrado y un hash, adónde fueron el intercambio de claves y la autenticación, y por qué la lista de suites se redujo de cientos a un puñado."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Un tipo distinto de suite
+
+TLS 1.3, definido en el RFC 8446, cambió lo que nombra una suite de cifrado. En TLS 1.2 una suite agrupaba el intercambio de claves, la autenticación, el cifrado y el MAC. En TLS 1.3 una suite nombra solo dos cosas: el cifrado AEAD y la función de hash que usa la función de derivación de claves.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+No hay intercambio de claves ni autenticación en el nombre, porque TLS 1.3 negocia esas cosas por separado. Ese es el mayor cambio, y por eso una suite de TLS 1.3 se ve tan corta al lado de una de TLS 1.2.
+
+## Adónde fue el intercambio de claves
+
+En TLS 1.3 el intercambio de claves lo transporta su propia extensión, `key_share`, y los grupos ofrecidos se listan en `supported_groups`. La autenticación se negocia mediante `signature_algorithms`. Sacar esto de la suite tiene una ventaja real: el puñado de suites de cifrado se combina libremente con cualquier grupo admitido y cualquier algoritmo de firma, en lugar de la explosión combinatoria que dio a TLS 1.2 cientos de suites registradas.
+
+También integra dos buenos valores por defecto. Todo intercambio de claves de TLS 1.3 es efímero, así que la confidencialidad futura es obligatoria en vez de opcional. Y el transporte de clave RSA estático, la forma clásica de perder la confidencialidad futura, se eliminó por completo; RSA sobrevive solo como algoritmo de firma para la autenticación.
+
+## Las cinco suites
+
+La especificación base define cinco suites, y en la práctica verás sobre todo las tres primeras:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Las cinco son AEAD; TLS 1.3 no permite otra cosa. `TLS_AES_128_GCM_SHA256` es de implementación obligatoria, lo que la convierte en el denominador común seguro. ChaCha20-Poly1305 es la elección habitual en hardware sin aceleración AES. Las dos suites CCM están dirigidas a entornos restringidos, y `CCM_8` cambia una etiqueta de autenticación más corta por menos sobrecarga, y por eso la IANA no la marca como recomendada aunque sea una suite de TLS 1.3.
+
+## Mismo registro, no intercambiables
+
+TLS 1.3 reutiliza el mismo registro de suites de cifrado de la IANA y el mismo espacio de código de dos bytes que las versiones anteriores, pero las dos definiciones no son intercambiables. Un valor de suite de TLS 1.3 no puede usarse con TLS 1.2, y un valor de suite de TLS 1.2 no puede usarse con TLS 1.3. Los puntos de código resultan estar en una parte antes sin usar del rango (`0x13xx`), lo que los mantiene visualmente distintos.
+
+Por eso un decodificador tiene que saber a qué mundo pertenece una suite. Un nombre sin el token `WITH` en el rango `0x13xx` es una suite de TLS 1.3 cuyo intercambio de claves se negocia en otro lugar; un nombre con el token `WITH` es una suite de TLS 1.2 y anteriores cuyo intercambio de claves se detalla.
+
+## Protección contra degradación
+
+Como las suites más antiguas siguen existiendo para pares más antiguos, TLS 1.3 añade protección contra un atacante que fuerce una degradación. Un servidor que admite TLS 1.3 pero acaba negociando una versión más antigua escribe un valor centinela fijo en los últimos ocho bytes de su `server random`. Un cliente de TLS 1.3 real comprueba ese centinela y aborta si aparece en una conexión que debería haber sido 1.3, lo que convierte una degradación silenciosa en un handshake fallido. La lista de suites de cifrado se redujo, pero el protocolo a su alrededor se volvió más defensivo.

@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "Suítes de cifra do TLS 1.3: o que mudou"
+summary: "Por que uma suíte de TLS 1.3 nomeia apenas uma cifra e um hash, para onde foram a troca de chaves e a autenticação, e por que a lista de suítes encolheu de centenas para um punhado."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Um tipo diferente de suíte
+
+O TLS 1.3, definido na RFC 8446, mudou o que uma suíte de cifra nomeia. No TLS 1.2 uma suíte reunia a troca de chaves, a autenticação, a cifra e o MAC. No TLS 1.3 uma suíte nomeia apenas duas coisas: a cifra AEAD e a função de hash usada pela função de derivação de chaves.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Não há troca de chaves nem autenticação no nome, porque o TLS 1.3 negocia essas coisas separadamente. Essa é a maior mudança, e é por isso que uma suíte de TLS 1.3 parece tão curta ao lado de uma de TLS 1.2.
+
+## Para onde foi a troca de chaves
+
+No TLS 1.3 a troca de chaves é transportada por sua própria extensão, `key_share`, e os grupos oferecidos são listados em `supported_groups`. A autenticação é negociada por meio de `signature_algorithms`. Tirar isso da suíte tem um benefício real: o punhado de suítes de cifra combina livremente com qualquer grupo suportado e qualquer algoritmo de assinatura, em vez da explosão combinatória que deu ao TLS 1.2 centenas de suítes registradas.
+
+Isso também embute dois bons padrões. Toda troca de chaves do TLS 1.3 é efêmera, então o sigilo de encaminhamento é obrigatório, não opcional. E o transporte de chave RSA estático, a forma clássica de perder o sigilo de encaminhamento, foi removido por completo; o RSA sobrevive apenas como algoritmo de assinatura para autenticação.
+
+## As cinco suítes
+
+A especificação base define cinco suítes, e na prática você verá principalmente as três primeiras:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Todas as cinco são AEAD; o TLS 1.3 não permite outra coisa. `TLS_AES_128_GCM_SHA256` é de implementação obrigatória, o que faz dela o denominador comum seguro. ChaCha20-Poly1305 é a escolha usual em hardware sem aceleração AES. As duas suítes CCM são voltadas a ambientes restritos, e `CCM_8` troca uma etiqueta de autenticação mais curta por menos sobrecarga, e é por isso que a IANA não a marca como recomendada, mesmo sendo uma suíte de TLS 1.3.
+
+## Mesmo registro, não intercambiáveis
+
+O TLS 1.3 reutiliza o mesmo registro de suítes de cifra da IANA e o mesmo espaço de código de dois bytes das versões anteriores, mas as duas definições não são intercambiáveis. Um valor de suíte de TLS 1.3 não pode ser usado com o TLS 1.2, e um valor de suíte de TLS 1.2 não pode ser usado com o TLS 1.3. Os pontos de código por acaso ficam em uma parte antes não usada da faixa (`0x13xx`), o que os mantém visualmente distintos.
+
+É por isso que um decodificador precisa saber a qual mundo uma suíte pertence. Um nome sem o token `WITH` na faixa `0x13xx` é uma suíte de TLS 1.3 cuja troca de chaves é negociada em outro lugar; um nome com o token `WITH` é uma suíte de TLS 1.2 e anteriores cuja troca de chaves é explicitada.
+
+## Proteção contra downgrade
+
+Como as suítes mais antigas ainda existem para pares mais antigos, o TLS 1.3 adiciona proteção contra um atacante que force um downgrade. Um servidor que suporta TLS 1.3 mas acaba negociando uma versão mais antiga escreve um valor sentinela fixo nos últimos oito bytes de seu `server random`. Um cliente TLS 1.3 de verdade verifica esse sentinela e aborta se ele aparecer em uma conexão que deveria ter sido 1.3, o que transforma um downgrade silencioso em um handshake malsucedido. A lista de suítes de cifra encolheu, mas o protocolo ao redor dela ficou mais defensivo.

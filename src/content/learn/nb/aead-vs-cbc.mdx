@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD mot CBC: hvorfor modusen betyr noe"
+summary: "Den praktiske forskjellen mellom et AEAD-chiffer som AES-GCM og et eldre CBC-chiffer med en separat HMAC, padding-orakel-angrepene som tok knekken på MAC-then-encrypt, og det ene kompromisset AEAD fremdeles ber om."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## To måter å kryptere en post på
+
+Når et TLS-håndtrykk har blitt enig om nøkler, må hver post med applikasjonsdata være både kryptert, så en avlytter ikke kan lese den, og autentisert, så en angriper ikke kan manipulere den. Det finnes to brede måter en chiffersuite gjør dette på, og modus-tokenet i suitenavnet forteller deg hvilken.
+
+Et **AEAD**-chiffer, som AES-GCM, AES-CCM eller ChaCha20-Poly1305, gjør begge oppgavene i én primitiv. Du gir det klarteksten og noen tilhørende data, og det returnerer chifferteksten pluss en autentiseringstagg. Dekrypteringen verifiserer taggen og dataene sammen og feiler som én operasjon hvis noe er endret.
+
+Et **CBC**-chiffer gjør bare krypteringen. For integritet parer suiten det med en separat HMAC, navngitt av suitens avsluttende hash (for eksempel `SHA` i `TLS_RSA_WITH_AES_128_CBC_SHA`). Protokollen bolter de to operasjonene sammen, og rekkefølgen de skjer i viser seg å bety enormt mye.
+
+## Hvorfor MAC-then-encrypt gikk galt
+
+TLS brukte opprinnelig MAC-then-encrypt: regn ut HMAC over klarteksten, legg den til, fyll resultatet ut til en blokkgrense, og krypter så alt med CBC. Problemet er at mottakeren må dekryptere og fjerne utfyllingen før den kan sjekke MAC-en, så feilaktig utfylling og en feil MAC oppdages i ulike trinn. En angriper som kan se om en post feilet på utfyllingen eller på MAC-en – via en feilmelding eller bare via tidsbruken – lærer én bit om klarteksten per forsøk. Gjentatt blir den biten til hele meldingen.
+
+Dette er et padding-orakel, og det er ikke teoretisk. En rekke angrep gjennom årene, deriblant BEAST, Lucky13 og POODLE, utnyttet alle CBC-postbeskyttelsen i TLS. Hvert ble lappet med stadig mer ømtålig kode med konstant tid, men den underliggende konstruksjonen fortsatte å frembringe nye varianter. Lærdommen bransjen trakk, var å slutte å bruke den.
+
+## Hvorfor AEAD er standard nå
+
+AEAD fjerner hele problemklassen. Det finnes ikke noe separat utfyllingstrinn å sondere og ikke noe separat MAC-trinn å ta tiden på, fordi verifisering og dekryptering er én operasjon som enten lykkes eller feiler. TLS 1.3 fører dette til sin konklusjon og tillater bare AEAD-chiffer; CBC-suiter er rett og slett ikke en del av TLS 1.3. I TLS 1.2 finnes begge, og derfor merker dekoderen en CBC-med-HMAC-SHA1-suite som svak selv når chifferet er AES.
+
+Når du ser `GCM`, `CCM` eller `POLY1305` i et suitenavn, ser du på AEAD. Når du ser `CBC`, ser du på den eldre konstruksjonen, og på en moderne tjeneste bør det i beste fall være en reserveløsning.
+
+## Kompromisset AEAD fremdeles ber om
+
+AEAD er ikke uten skarpe kanter; det flytter dem bare. Hver AEAD-kryptering trenger en nonce, et tall brukt én gang, og sikkerheten i GCM spesielt bryter sammen hvis den samme noncen noensinne gjenbrukes med den samme nøkkelen. TLS håndterer noncene for deg med en teller per tilkobling, så dette er mer en fare for systemer som bygger sin egen innramming enn for TLS selv, men det er grunnen til at AEAD-design bryr seg så mye om nonce-konstruksjonen.
+
+Det andre kompromisset er lengden på autentiseringstaggen. Standard GCM- og Poly1305-suitene bruker en tagg på 16 byte. `CCM_8`-suitene forkorter den til 8 byte for å spare overhead på begrensede lenker, noe som målbart svekker integriteten. Derfor er `TLS_AES_128_CCM_8_SHA256` en ekte AEAD-suite i TLS 1.3 som IANA likevel nekter å merke som anbefalt: modusen er moderne, men den korte taggen er et kompromiss som det allmenne internett ikke trenger å inngå.

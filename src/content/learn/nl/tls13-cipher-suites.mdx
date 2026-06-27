@@ -1,0 +1,54 @@
+---
+slug: tls13-cipher-suites
+title: "TLS 1.3-cipher suites: wat er veranderde"
+summary: "Waarom een TLS 1.3-suite alleen een versleuteling en een hash benoemt, waar de sleuteluitwisseling en authenticatie naartoe gingen, en waarom de lijst met suites kromp van honderden naar een handvol."
+concepts: ["tls 1.3", "cipher suite", "aead", "key exchange", "handshake", "downgrade"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## Een ander soort suite
+
+TLS 1.3, gedefinieerd in RFC 8446, veranderde wat een cipher suite benoemt. In TLS 1.2 bundelde een suite de sleuteluitwisseling, de authenticatie, de versleuteling en de MAC. In TLS 1.3 benoemt een suite slechts twee dingen: de AEAD-versleuteling en de hashfunctie die de sleutelafleidingsfunctie gebruikt.
+
+```
+TLS_AES_128_GCM_SHA256
+    |          |
+    |          +-- handshake hash (HKDF): SHA-256
+    +------------- AEAD cipher: AES-128-GCM
+```
+
+Er is geen sleuteluitwisseling en geen authenticatie in de naam, omdat TLS 1.3 die apart onderhandelt. Dat is de grootste verandering, en daarom ziet een TLS 1.3-suite er zo kort uit naast een TLS 1.2-suite.
+
+## Waar de sleuteluitwisseling naartoe ging
+
+In TLS 1.3 wordt de sleuteluitwisseling gedragen door zijn eigen extensie `key_share`, en de aangeboden groepen staan in `supported_groups`. De authenticatie wordt onderhandeld via `signature_algorithms`. Dit uit de suite trekken heeft een echt voordeel: de handvol cipher suites combineert vrij met elke ondersteunde groep en elk handtekeningalgoritme, in plaats van de combinatorische explosie die TLS 1.2 honderden geregistreerde suites bezorgde.
+
+Het bakt ook twee goede standaardwaarden in. Elke TLS 1.3-sleuteluitwisseling is vluchtig, dus forward secrecy is verplicht in plaats van optioneel. En het statische RSA-sleuteltransport, de klassieke manier om forward secrecy te verliezen, werd helemaal verwijderd; RSA overleeft alleen als handtekeningalgoritme voor de authenticatie.
+
+## De vijf suites
+
+De basisspecificatie definieert vijf suites, en in de praktijk zie je vooral de eerste drie:
+
+```
+0x1301  TLS_AES_128_GCM_SHA256         (mandatory to implement)
+0x1302  TLS_AES_256_GCM_SHA384
+0x1303  TLS_CHACHA20_POLY1305_SHA256
+0x1304  TLS_AES_128_CCM_SHA256
+0x1305  TLS_AES_128_CCM_8_SHA256
+```
+
+Alle vijf zijn AEAD; TLS 1.3 staat niets anders toe. `TLS_AES_128_GCM_SHA256` is verplicht te implementeren, wat het de veilige gemene deler maakt. ChaCha20-Poly1305 is de gebruikelijke keuze op hardware zonder AES-versnelling. De twee CCM-suites zijn bedoeld voor beperkte omgevingen, en `CCM_8` ruilt een kortere authenticatietag voor minder overhead, en daarom markeert de IANA het niet als aanbevolen ook al is het een TLS 1.3-suite.
+
+## Hetzelfde register, niet uitwisselbaar
+
+TLS 1.3 hergebruikt hetzelfde IANA-cipher suite-register en dezelfde codeerruimte van twee bytes als eerdere versies, maar de twee definities zijn niet uitwisselbaar. Een TLS 1.3-suitewaarde kan niet met TLS 1.2 worden gebruikt, en een TLS 1.2-suitewaarde kan niet met TLS 1.3 worden gebruikt. De codepunten liggen toevallig in een eerder ongebruikt deel van het bereik (`0x13xx`), wat ze visueel onderscheidbaar houdt.
+
+Daarom moet een decoder weten tot welke wereld een suite behoort. Een naam zonder het `WITH`-token in het bereik `0x13xx` is een TLS 1.3-suite waarvan de sleuteluitwisseling elders wordt onderhandeld; een naam met het `WITH`-token is een suite voor TLS 1.2 en eerder waarvan de sleuteluitwisseling is uitgeschreven.
+
+## Downgradebescherming
+
+Omdat oudere suites nog bestaan voor oudere tegenpartijen, voegt TLS 1.3 bescherming toe tegen een aanvaller die een downgrade afdwingt. Een server die TLS 1.3 ondersteunt maar uiteindelijk een oudere versie onderhandelt, schrijft een vaste sentinelwaarde in de laatste acht bytes van zijn `server random`. Een echte TLS 1.3-client controleert op die sentinel en breekt af als hij verschijnt op een verbinding die 1.3 had moeten zijn, wat een stille downgrade in een mislukte handshake verandert. De lijst met cipher suites kromp, maar het protocol eromheen werd defensiever.

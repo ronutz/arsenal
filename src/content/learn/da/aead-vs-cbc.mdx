@@ -1,0 +1,37 @@
+---
+slug: aead-vs-cbc
+title: "AEAD over for CBC: hvorfor tilstanden betyder noget"
+summary: "Den praktiske forskel mellem et AEAD-cipher som AES-GCM og et ældre CBC-cipher med en separat HMAC, padding-orakel-angrebene der gjorde det af med MAC-then-encrypt, og det ene kompromis, som AEAD stadig beder om."
+concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
+relatedTools: ["cipher"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
+category: transport
+status: machine-draft
+updated: "2026-06-29"
+---
+
+## To måder at kryptere en record på
+
+Når et TLS-handshake har aftalt nøgler, skal hver record med applikationsdata være både krypteret, så en aflytter ikke kan læse den, og autentificeret, så en angriber ikke kan manipulere den. Der er to brede måder, en ciphersuite gør dette på, og tilstands-token i suitenavnet fortæller dig hvilken.
+
+Et **AEAD**-cipher, som AES-GCM, AES-CCM eller ChaCha20-Poly1305, klarer begge opgaver i én primitiv. Du giver det klarteksten og nogle tilhørende data, og det returnerer chifferteksten plus et autentificerings-tag. Dekrypteringen verificerer tagget og dataene sammen og fejler som én operation, hvis noget er ændret.
+
+Et **CBC**-cipher klarer kun krypteringen. For integritet parrer suiten det med en separat HMAC, navngivet af suitens afsluttende hash (for eksempel `SHA` i `TLS_RSA_WITH_AES_128_CBC_SHA`). Protokollen bolter de to operationer sammen, og rækkefølgen, de sker i, viser sig at betyde enormt meget.
+
+## Hvorfor MAC-then-encrypt gik galt
+
+TLS brugte oprindeligt MAC-then-encrypt: beregn HMAC over klarteksten, tilføj den, fyld resultatet op til en blokgrænse, og kryptér så det hele med CBC. Problemet er, at modtageren skal dekryptere og fjerne udfyldningen, før den kan tjekke MAC'en, så fejlbehæftet udfyldning og en forkert MAC opdages i forskellige trin. En angriber, der kan se, om en record fejlede på udfyldningen eller på MAC'en – via en fejlmeddelelse eller blot via timingen – lærer én bit om klarteksten pr. forsøg. Gentaget bliver den bit til hele beskeden.
+
+Dette er et padding-orakel, og det er ikke teoretisk. En række angreb gennem årene, herunder BEAST, Lucky13 og POODLE, udnyttede alle CBC-recordbeskyttelsen i TLS. Hvert blev lappet med stadig mere delikat kode med konstant tid, men den underliggende konstruktion blev ved med at frembringe nye varianter. Den lære, branchen drog, var at holde op med at bruge den.
+
+## Hvorfor AEAD er standard nu
+
+AEAD fjerner hele problemklassen. Der er intet separat udfyldningstrin at sondere og intet separat MAC-trin at tage tid på, fordi verificering og dekryptering er én operation, der enten lykkes eller fejler. TLS 1.3 fører dette til sin konklusion og tillader kun AEAD-ciphere; CBC-suiter er simpelthen ikke en del af TLS 1.3. I TLS 1.2 findes begge, og derfor markerer afkoderen en CBC-med-HMAC-SHA1-suite som svag, selv når cipheret er AES.
+
+Når du ser `GCM`, `CCM` eller `POLY1305` i et suitenavn, kigger du på AEAD. Når du ser `CBC`, kigger du på den ældre konstruktion, og på en moderne tjeneste bør det i bedste fald være en nødløsning.
+
+## Kompromiset, AEAD stadig beder om
+
+AEAD er ikke uden skarpe kanter; det flytter dem bare. Hver AEAD-kryptering har brug for en nonce, et tal brugt én gang, og sikkerheden i GCM i særdeleshed bryder sammen, hvis den samme nonce nogensinde genbruges med den samme nøgle. TLS håndterer noncerne for dig med en tæller pr. forbindelse, så dette er mere en fare for systemer, der bygger deres egen indramning, end for TLS selv, men det er grunden til, at AEAD-designs går så meget op i nonce-konstruktionen.
+
+Det andet kompromis er autentificerings-taggets længde. Standard-GCM- og Poly1305-suiterne bruger et tag på 16 byte. `CCM_8`-suiterne afkorter det til 8 byte for at spare overhead på begrænsede forbindelser, hvilket målbart svækker integriteten. Derfor er `TLS_AES_128_CCM_8_SHA256` en ægte AEAD-suite i TLS 1.3, som IANA alligevel nægter at markere som anbefalet: tilstanden er moderne, men det korte tag er et kompromis, som det almindelige internet ikke behøver at indgå.
