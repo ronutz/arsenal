@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Pag-authenticate ng API requests gamit ang HMAC"
+summary: "Paano hinahayaan ng isang ibinahaging lihim at isang hash ang isang server na magtiwala sa isang request na hindi nito nakitang ginawa, at paano umaangkop ang replay protection."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang problema: pagtitiwala sa isang request
+
+Kapag tumanggap ang isang server ng isang API request, paano nito nalalaman na ang tumawag ay siyang inaangkin nito, at walang nagbago sa request habang naglalakbay? Ang pagpapadala ng isang ibinahaging lihim sa bawat request ay gagana hanggang ma-log, ma-cache, o ma-leak ang lihim na iyon. Niloresolba ito ng **HMAC request signing** nang hindi kailanman ipinapadala ang lihim: pinatutunayan ng tumawag na hawak nito ang lihim sa pamamagitan ng paggamit nito upang lagdaan ang request, at sinusuri ng server ang lagda.
+
+## Paano gumagana ang signing
+
+Parehong panig ay nagbabahagi ng isang lihim na susi. Upang lagdaan ang isang request, ang kliyente ay:
+
+1. Bumubuo ng isang **canonical string** mula sa mga bahagi ng request na hindi dapat magbago, kadalasan ang HTTP method, ang path, mga pangunahing header, isang timestamp, at isang hash ng body. Ang ibig sabihin ng "canonical" ay binubuo ito ng magkabilang panig sa eksaktong parehong, napagkasunduang paraan, upang magkuwenta sila sa magkaparehong input.
+2. Kinukuwenta ang `HMAC-SHA256(canonical string, lihim)` at ikinakabit ito sa request, kadalasan sa isang header gaya ng `Authorization` o `X-Signature`.
+
+Ang server, na hawak ang parehong lihim, ay muling bumubuo ng canonical string mula sa request na natanggap nito at kinukuwenta mismo ang HMAC. Kung tumugma ang halaga nito sa nasa header, dalawang bagay ang napatunayan nang sabay: hawak ng tumawag ang lihim (**pagiging tunay**), at walang sinasaklaw ng lagda ang binago (**integridad**). Ang lihim mismo ay hindi kailanman naglalakbay.
+
+## Isang totoong halimbawa: AWS Signature Version 4
+
+Ang SigV4 ng Amazon ang pinakakilalang halimbawa. Ang bawat request ay nilalagdaan ng HMAC-SHA256 sa isang canonical request, gamit ang isang signing key na **hinango** mula sa secret access key, ang petsa, ang rehiyon, at ang serbisyo. Muling hinahango ng server ang susi at muling kinukuwenta ang lagda; ang isang hindi pagtutugma ay tinatanggihan. Ang parehong pattern, canonicalize, HMAC, ihambing, ay sumasailalim sa di-mabilang na iba pang scheme ng API authentication.
+
+## Mga webhook: ang parehong ideya, baligtad
+
+Binabaligtad ng mga webhook ang direksyon. Tinatawagan ng isang provider (isang payment processor, isang Git host) ang **iyong** endpoint upang ipaalam sa iyo ang isang kaganapan, at nilalagdaan ang payload gamit ang isang lihim na kapwa ninyo ibinabahagi, ipinapadala ang HMAC sa isang header. Muling kinukuwenta ng iyong endpoint ang HMAC sa natanggap na body at inihahambing, at iyon ang paraan upang tanggihan ang mga pekeng tawag mula sa sinumang hindi hawak ang lihim. Palaging ihambing gamit ang isang constant-time na pagsusuri upang maiwasan ang pag-leak ng impormasyon sa pamamagitan ng timing.
+
+## Replay protection
+
+Ang isang wastong nilagdaang request na nakuha ng isang umaatake ay maaaring **i-replay** nang salita-sa-salita. Ang mga karaniwang depensa ay ang pagsasama ng isang **timestamp** sa nilagdaang datos at pagtanggi sa mga request na lampas sa isang maikling window, at opsyonal na isang **nonce** (isang one-time na halagang panandaliang naaalala ng server) upang ang parehong request ay hindi matanggap nang dalawang beses. Pinatutunayan ng signing ang pagiging tunay; pinipigilan ng timestamp at nonce ang isang luma, tunay na request na magamit muli.
+
+Kinukuwenta ng [tool na HMAC](/tools/hmac) ang HMAC-SHA256 (at SHA-384/512) na nasa puso ng bawat isa sa mga scheme na ito, sa isang mensahe at susi na iyong ibinibigay, lubos sa iyong browser.

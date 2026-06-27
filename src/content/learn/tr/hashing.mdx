@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Kriptografik karma: SHA-256 ve SHA-2 ailesi"
+summary: "Bir karma fonksiyonunun neyi garanti ettiği, onu kriptografik yapan özellikler ve bir özetin neden şifreleme olmadığı."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Karma nedir
+
+Bir kriptografik karma fonksiyonu herhangi bir boyutta girdi alır, bir kelime, bir dosya, çok gigabaytlık bir disk imajı, ve **özet** (digest) denilen sabit boyutlu bir çıktı üretir. SHA-256, ona bir karakter mi yoksa bir milyon mu verdiğinize bakılmaksızın her zaman 256 bit (32 bayt) döndürür. Aynı girdi her zaman aynı özeti verir ve girdideki tek bir bitlik bir değişiklik bile tamamen farklı bir özet üretir.
+
+O sabit boyutlu, belirlenimci parmak izi tüm fikirdir. Bir özet, verinin tıkız bir vekilidir: iki özet eşleşiyorsa girdilerin aynı olduğundan emin olabilirsiniz; farklılarsa girdiler bir yerde farklıydı.
+
+## Onu kriptografik yapan özellikler
+
+Birçok fonksiyon veriyi sabit bir boyuta küçültür. Bir fonksiyon, üç katı garantiyi tutarak *kriptografik* sözcüğünü hak eder:
+
+- **Ön görüntü direnci (tek yönlü).** Bir özet verildiğinde, onu üreten bir girdiyi bulmak hesaplama açısından uygulanamazdır. Fonksiyonu geriye doğru çalıştıramazsınız.
+- **İkinci ön görüntü ve çakışma direnci.** Aynı özete karma veren iki farklı girdiyi bulmak uygulanamazdır. Bu olmadan bir özet zayıf bir parmak izi olurdu.
+- **Çığ etkisi.** Tek bir girdi bitini ters çevirmek çıktı bitlerinin kabaca yarısını değiştirir, girdiyle çıktıyı bağlayan görünür bir desen olmadan.
+
+Bu yalnızca incelemeyi atlatmış fonksiyonlar için geçerlidir. Bir zamanlar standart olan SHA-1, artık çakışma direnci için **kırıktır** (2017'de pratik bir çakışma gösterildi) ve güvenliğin ona bağlı olduğu yerlerde kullanılmamalıdır. SHA-2 ailesi, SHA-256, SHA-384 ve SHA-512, sağlam kalır ve bugün güvenli varsayılandır.
+
+## Karma şifreleme değildir
+
+Bu en yaygın karışıklıktır, bu yüzden açıkça söylemekte yarar var. Şifreleme bir anahtarla **geri döndürülebilir**: veriyi gizli tutmak için şifreler, geri almak için çözersiniz. Bir karmanın **anahtarı ve tersi yoktur**. Bir özeti "ters karmalayıp" girdiyi geri kazanamazsınız, çünkü çıktı olası girdilerden çok daha küçüktür ve bilgi kasıtlı olarak yok edilir. Karma doğrulama içindir, gizlilik için değil.
+
+## Karmanın işe yaradığı yerler
+
+- **Bütünlük ve sağlama toplamları.** Bir dosyanın SHA-256'sını yanında yayınlayın; indirip özeti yeniden hesaplayan biri, taşıma sırasında hiçbir şeyin değişmediğini veya bozulmadığını doğrulayabilir.
+- **İçeriğe göre adresleme.** Git gibi sistemler nesneleri karmalarına göre adlandırır, böylece aynı içerik otomatik olarak aynı adrese düşer.
+- **Dijital imzalar.** İmza şemaları, özet küçük ve sabit boyutlu olduğu için tüm mesaj yerine bir mesajın karmasını imzalar.
+
+Önemli bir uyarı: **parolalar özel bir durumdur.** SHA-256 gibi basit hızlı bir karma, parolaları saklamak için yanlış araçtır, tam da hızlı olduğu için, bir saldırgan saniyede milyarlarca tahmin deneyebilir. Parola saklama, bcrypt, scrypt veya Argon2 gibi kasıtlı olarak yavaş, tuzlu bir algoritma gerektirir. Bütünlük için SHA-2 kullanın; parolalar için bir parola karması kullanın.
+
+## Araç bunu nasıl hesaplar
+
+[Karma aracı](/tools/hash), tarayıcının SHA-1, SHA-256, SHA-384 ve SHA-512'nin yerel Web Crypto uygulamasını kullanır, tarayıcınızın TLS için kullandığı aynı incelenmiş kod, ve her özeti onaltılık ve Base64 olarak gösterir. Hiçbir şey yüklenmez; hesaplama yerel olarak gerçekleşir.

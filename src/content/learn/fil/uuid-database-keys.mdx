@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "Mga UUID bilang database key: v4, v7, at index locality"
+summary: "Ang totoong trade-off sa pagitan ng mga UUID at auto-increment na integer, at kung bakit tahimik na nakakasakit ang random na v4 key sa performance ng database."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dalawang paraan ng paggawa ng primary key
+
+Karamihan sa mga table ay nangangailangan ng natatanging key para sa bawat row. Ang dalawang karaniwang pagpipilian ay isang **auto-increment na integer** ng database (1, 2, 3, ...) at isang **UUID**. Maliit ang integer at likas na nakaayos; ang UUID ay maaaring buoin kahit saan, ng sinuman, nang walang koordinasyon. Kung alin ang mas mabuti ay nakasalalay sa kung ano ang pinahahalagahan mo, at ang sagot ay may dimensyon ng performance na madaling makaligtaan.
+
+## Bakit umaabot sa mga UUID ang mga team
+
+- **Walang koordinasyon.** Anumang serbisyo, kliyente, o offline na device ay makakagawa ng isang UUID na hindi magbabanggaan, kaya hindi mo kailangan ng isang sentral na sequence o isang pagbabalikan sa database upang makakuha ng id. Napakahalaga nito sa mga distributed system at para sa pagbuo ng mga id bago ma-save ang isang row.
+- **Hindi mahuhulaan.** Naglalabas ng impormasyon ang mga sequential na integer id (ilang order ang umiiral, at ang id ng susunod) at hinahayaan ang isang umaatake na maglakad sa mga record sa pamamagitan ng pag-increment. Walang inilalabas na anuman dito ang isang random na UUID.
+- **Madaling pagsamahin.** Ang datos mula sa magkakahiwalay na sistema ay nagsasama nang walang banggaan ng id.
+
+Ang halaga ay ang laki, 16 byte laban sa 4 o 8 para sa isang integer, na mahalaga dahil ang primary key ay kinokopya sa bawat secondary index at sa bawat foreign key na tumutukoy sa row.
+
+## Ang nakatagong halaga ng random na key
+
+May isang mas banayad, mas mahalagang halaga. Iniimbak ng mga database ang mga row sa isang index (karaniwang isang B-tree) na nakaayos ayon sa primary key. Sa isang **sequential** na key, bawat bagong row ay idinaragdag sa dulo ng index, kaya ang mga aktibong page ay nananatili sa memory at mura ang mga pagsusulat. Sa isang **random na v4 UUID**, ang bawat insert ay napupunta sa isang di-makatuwirang posisyon. Kailangan ng database na basahin, baguhin, at isulat ang mga page na nagkalat sa buong index, na nagdudulot ng **mga page split**, **fragmentation**, at higit na mas maraming cache miss. Sa isang malaki at mabigat-sa-pagsusulat na table, ang random na key ay maaaring masusukat na magpabagal sa mga insert at magpalobo sa index, lahat ng ito nang walang anumang error na maituturo.
+
+## Bakit binabago ng v7 ang kuwenta
+
+Ito mismo ang problemang dinisenyo ang **UUID version 7** upang lutasin. Sa paglalagay ng isang millisecond timestamp sa pinaka-makabuluhang bit, ang mga halaga ng v7 ay **time-ordered**: ang mga bagong row ay nag-iinsert malapit sa dulo ng index, gaya lamang ng isang sequential na integer, habang pinananatili ang desentralisado, walang-koordinasyon na pagbuo ng isang UUID. Nakukuha mo ang karamihan ng benepisyo ng index locality ng isang auto-increment na key nang walang sentral na sequence. Para sa mga bagong sistemang gustong magkaroon ng UUID key, ang v7 ay kadalasan ang tamang bersyon dahil mismo sa kadahilanang ito.
+
+## Mga praktikal na tala
+
+- **Iimbak ang mga UUID bilang isang native na UUID o binary na uri, hindi bilang isang 36-character na string.** Ang pag-imbak ng anyong teksto ay nag-aaksaya ng espasyo at nagpapabagal sa mga paghahambing; ang anyong binary ay 16 byte.
+- **Gamitin ang v7 para sa mga key** kung saan mahalaga ang performance ng insert, at ang **v4** kung saan partikular mong hindi nais ng anumang impormasyon ng oras na naka-embed sa id.
+- Ang isang auto-increment na integer ay perpektong mabuti pa rin para sa isang single-node na table na hindi kailanman nangangailangan ng mga id na binuo nang panlabas; ang mga UUID ay nagpapakita ng halaga nila kapag mahalaga ang distribution, hindi-mahuhulaan, o pre-generation.
+
+Ang [tool na UUID](/tools/uuid) ay bumubuo ng v4 at v7 at dinedecode ang naka-embed na timestamp ng isang v7 na halaga, upang makita mo ang katangian ng pagkakaayos nang tuwiran, lahat sa iyong browser.

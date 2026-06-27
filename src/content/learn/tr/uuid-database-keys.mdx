@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "Veritabanı anahtarı olarak UUID'ler: v4, v7 ve dizin yerelliği"
+summary: "UUID'ler ile otomatik artan tam sayılar arasındaki gerçek ödünleşim ve rastgele v4 anahtarlarının veritabanı başarımına nasıl sessizce zarar verdiği."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Birincil anahtar yapmanın iki yolu
+
+Çoğu tablo her satır için benzersiz bir anahtara ihtiyaç duyar. İki yaygın seçenek, veritabanının **otomatik artan tam sayısı** (1, 2, 3, ...) ve bir **UUID**'dir. Tam sayı küçüktür ve doğal olarak sıralıdır; UUID, koordinasyon olmadan her yerde, herkes tarafından üretilebilir. Hangisinin daha iyi olduğu neye değer verdiğinize bağlıdır ve yanıtın gözden kaçırması kolay bir başarım boyutu vardır.
+
+## Ekipler neden UUID'lere yönelir
+
+- **Koordinasyon yok.** Herhangi bir hizmet, istemci veya çevrimdışı cihaz, çakışmayacak bir UUID basabilir, dolayısıyla bir id almak için merkezi bir diziye veya veritabanına gidiş-dönüşe ihtiyacınız yoktur. Bu, dağıtık sistemlerde ve bir satır kaydedilmeden önce id üretmek için paha biçilmezdir.
+- **Tahmin edilemez.** Sıralı tam sayı id'leri bilgi sızdırır (kaç sipariş olduğu ve bir sonrakinin id'si) ve bir saldırganın artırarak kayıtlar arasında dolaşmasına olanak tanır. Rastgele bir UUID bunların hiçbirini açığa vurmaz.
+- **Birleştirme dostu.** Ayrı sistemlerden gelen veriler id çakışması olmadan birleşir.
+
+Maliyet boyuttur, bir tam sayı için 4 veya 8'e karşı 16 bayt, ki bu önemlidir çünkü birincil anahtar her ikincil dizine ve satıra başvuran her yabancı anahtara kopyalanır.
+
+## Rastgele anahtarların gizli maliyeti
+
+Daha incelikli, daha önemli bir maliyet vardır. Veritabanları satırları birincil anahtara göre sıralanmış bir dizinde (yaygın olarak bir B-ağacı) saklar. **Sıralı** bir anahtarla her yeni satır dizinin sonuna eklenir, böylece etkin sayfalar bellekte kalır ve yazmalar ucuzdur. **Rastgele bir v4 UUID** ile her ekleme rastgele bir konuma düşer. Veritabanı, dizin boyunca dağılmış sayfaları okumalı, değiştirmeli ve yazmalıdır, bu da **sayfa bölünmelerine**, **parçalanmaya** ve çok daha fazla önbellek ıskalamasına neden olur. Büyük, yoğun yazılan bir tabloda rastgele anahtarlar eklemeleri ölçülebilir biçimde yavaşlatabilir ve dizini şişirebilir, hepsi de işaret edilecek herhangi bir hata olmadan.
+
+## v7 hesabı neden değiştirir
+
+Bu, tam olarak **UUID sürüm 7**'nin çözmek için tasarlandığı sorundur. En önemli bitlere milisaniyelik bir zaman damgası koyarak v7 değerleri **zaman sıralıdır**: yeni satırlar tıpkı sıralı bir tam sayı gibi dizinin sonuna yakın eklenir, bir UUID'nin merkezi olmayan, koordinasyonsuz üretimi korunurken. Merkezi dizi olmadan, otomatik artan bir anahtarın dizin yerelliği faydasının çoğunu elde edersiniz. UUID anahtarları isteyen yeni sistemler için v7, tam da bu nedenle genellikle doğru sürümdür.
+
+## Pratik notlar
+
+- **UUID'leri 36 karakterlik bir dize olarak değil, yerel bir UUID veya ikili tür olarak saklayın.** Metin biçimini saklamak yer israf eder ve karşılaştırmaları yavaşlatır; ikili biçim 16 bayttır.
+- Ekleme başarımının önemli olduğu yerde anahtarlar için **v7** kullanın ve id'ye gömülü hiçbir zaman bilgisi istemediğiniz yerde **v4** kullanın.
+- Otomatik artan bir tam sayı, hiçbir zaman dışarıdan üretilen id'lere ihtiyaç duymayan tek düğümlü bir tablo için hâlâ son derece iyidir; UUID'ler, dağıtım, öngörülemezlik veya önceden üretim önemli olduğunda işe yarar.
+
+[UUID aracı](/tools/uuid) hem v4 hem v7 üretir ve bir v7 değerinin gömülü zaman damgasını çözer, böylece sıralama özelliğini doğrudan görebilirsiniz, hepsi tarayıcınızda.

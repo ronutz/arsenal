@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "API isteklerini HMAC ile kimlik doğrulama"
+summary: "Paylaşılan bir sırrın ve bir karmanın, bir sunucunun yapıldığını görmediği bir isteğe güvenmesini nasıl sağladığı ve yeniden oynatma korumasının nasıl uyduğu."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Sorun: bir isteğe güvenmek
+
+Bir sunucu bir API isteği aldığında, çağıranın iddia ettiği kişi olduğunu ve isteği yolda kimsenin değiştirmediğini nereden bilir? Her istekle paylaşılan bir sır göndermek, o sır günlüğe yazılana, önbelleğe alınana veya sızdırılana kadar işe yarardı. **HMAC istek imzalama**, sırrı hiç iletmeden bunu çözer: çağıran, isteği imzalamak için sırrı kullanarak ona sahip olduğunu kanıtlar ve sunucu imzayı denetler.
+
+## İmzalama nasıl çalışır
+
+İki taraf da gizli bir anahtarı paylaşır. Bir isteği imzalamak için istemci:
+
+1. İsteğin değişmemesi gereken parçalarından bir **kanonik dize** kurar, tipik olarak HTTP yöntemi, yol, anahtar başlıklar, bir zaman damgası ve gövdenin bir karması. "Kanonik", iki tarafın da onu tam olarak aynı, üzerinde anlaşılmış biçimde birleştirmesi demektir, böylece aynı girdi üzerinde hesaplarlar.
+2. `HMAC-SHA256(kanonik dize, sır)`'ı hesaplar ve isteğe ekler, genellikle `Authorization` veya `X-Signature` gibi bir başlıkta.
+
+Aynı sırrı elinde tutan sunucu, aldığı istekten kanonik dizeyi yeniden kurar ve HMAC'i kendisi hesaplar. Değeri başlıktakiyle eşleşirse iki şey bir anda kanıtlanır: çağıran sırra sahiptir (**gerçeklik**) ve imzanın kapsadığı hiçbir şey değiştirilmemiştir (**bütünlük**). Sırrın kendisi asla yolculuk etmez.
+
+## Gerçek bir örnek: AWS Signature Version 4
+
+Amazon'un SigV4'ü en bilinen örnektir. Her istek, gizli erişim anahtarından, tarihten, bölgeden ve hizmetten **türetilen** bir imzalama anahtarı kullanılarak bir kanonik istek üzerinde HMAC-SHA256 ile imzalanır. Sunucu anahtarı yeniden türetir ve imzayı yeniden hesaplar; bir uyuşmazlık reddedilir. Aynı desen, kanonikleştir, HMAC, karşılaştır, sayısız başka API kimlik doğrulama şemasının temelinde yatar.
+
+## Webhook'lar: aynı fikir, tersine
+
+Webhook'lar yönü tersine çevirir. Bir sağlayıcı (bir ödeme işleyici, bir Git ana makinesi), bir olaydan haberdar etmek için **sizin** uç noktanızı çağırır ve yükü ikinizin paylaştığı bir sırla imzalar, HMAC'i bir başlıkta gönderir. Uç noktanız HMAC'i alınan gövde üzerinde yeniden hesaplar ve karşılaştırır, sırra sahip olmayan herhangi birinin sahte çağrılarını işte böyle reddedersiniz. Zamanlama yoluyla bilgi sızdırmamak için daima sabit zamanlı bir denetimle karşılaştırın.
+
+## Yeniden oynatma koruması
+
+Bir saldırganın yakaladığı geçerli, imzalı bir istek aynen **yeniden oynatılabilir**. Standart savunmalar, imzalı verilere bir **zaman damgası** eklemek ve kısa bir pencerenin dışındaki istekleri reddetmek, ve isteğe bağlı olarak bir **nonce** (sunucunun kısa süre hatırladığı tek seferlik bir değer), böylece aynı istek iki kez kabul edilemez. İmzalama gerçekliği kanıtlar; zaman damgası ve nonce, eski, gerçek bir isteğin yeniden kullanılmasını engeller.
+
+[HMAC aracı](/tools/hmac), bu şemaların her birinin kalbinde yer alan HMAC-SHA256'yı (ve SHA-384/512'yi), sağladığınız bir mesaj ve anahtar üzerinde, tamamen tarayıcınızda hesaplar.

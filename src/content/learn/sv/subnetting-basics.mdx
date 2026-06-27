@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Grunderna i subnätsindelning"
+summary: "Hur man delar upp ett nätverk i mindre subnät, och varför att låna värdbitar är hela tricket."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Vad subnätsindelning är till för
+
+Ett enskilt stort nätverk är sällan vad du vill ha. Subnätsindelning är praktiken att ta ett block av adresser och dela det i flera mindre block, **subnät**, som vart och ett kan vara en separat broadcast-domän, säkerhetsgräns eller fysiskt segment. Ett campus kan ge varje byggnad sitt eget subnät; ett molnkonto kan ge varje nivå av en applikation sitt eget.
+
+Mekanismen är enklare än den vanligen får låta: **subnätsindelning lånar bitar från värddelen och lägger till dem till nätverksdelen.**
+
+## Att låna bitar
+
+Börja med `192.168.1.0/24`. Prefixet är 24, så 8 bitar är fria för värdar, vilket ger ett block av 256 adresser.
+
+Anta att du behöver fyra separata subnät i stället för ett. Fyra är 2², så du behöver **2 fler nätverksbitar**. Låna dem från värdsidan: prefixet växer från /24 till /26.
+
+- `/26` fixerar 26 bitar, lämnar 6 fria → 64 adresser per subnät.
+- Fyra sådana subnät kaklar det ursprungliga /24 exakt:
+  - `192.168.1.0/26`, adresser .0 till .63
+  - `192.168.1.64/26`, adresser .64 till .127
+  - `192.168.1.128/26`, adresser .128 till .191
+  - `192.168.1.192/26`, adresser .192 till .255
+
+Lägg märke till mönstret: varje subnät är 64 adresser brett, så vart och ett börjar på en multipel av 64. Den regeln "börjar på en multipel av sin storlek" är hur giltiga subnätgränser hittas. Ett block måste börja på en adress som är en multipel av sin egen storlek, annars är det inte ett giltigt CIDR-block.
+
+## Avvägningen
+
+Varje bit du lånar för nätverket halverar värdarna per subnät:
+
+| Prefix | Subnät av ett /24 | Adresser var | Användbara värdar var |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Fler subnät betyder färre värdar i varje. Nätverksdesign är till stor del att välja var på denna kurva man ska sitta: tillräckligt med subnät för dina segment, tillräckligt med värdar i varje för enheterna som lever där, med lite utrymme att växa.
+
+## Subnätsindelning med variabel längd
+
+Subnät inom samma förälder behöver inte alla vara av samma storlek. **Subnätsmaskering med variabel längd (VLSM)** låter dig hugga ut ett stort subnät för segmentet som behöver många värdar och små subnät för punkt-till-punkt-länkar, allt från samma föräldrablock. De enda reglerna är de konstanta: varje subnät är en tvåpotens i storlek, och vart och ett börjar på en multipel av sin storlek så att blocken aldrig överlappar.
+
+[CIDR-kalkylatorn](/learn) visar det exakta intervallet, gränserna, och antalet användbara värdar för vilket prefix som helst, vilket gör att kontrollera en subnätplan blir en fråga om att skriva in varje block.

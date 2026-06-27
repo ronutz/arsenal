@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "Botsen UUID's? Waarschijnlijkheid en de verjaardagsgrens"
+summary: "Hoeveel willekeurige bits een UUID echt heeft, de verjaardagswiskunde voor een botsing en wanneer je deterministische UUID's wilt."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## De vraag achter elke UUID
+
+Een UUID heeft 128 bits, meestal willekeurig gegenereerd (versie 4) zodat iedereen, overal, er een kan aanmaken zonder coördinatie en kan verwachten dat hij uniek is. De redelijke zorg is: als iedereen gewoon met dobbelstenen gooit, zullen er dan niet twee samenvallen? Het antwoord is in principe ja en in de praktijk vrijwel nooit, en de wiskunde zegt precies waarom.
+
+## Hoeveel willekeurige bits er echt zijn
+
+Een UUID versie 4 heeft geen 128 willekeurige bits. Vier bits zijn vast om de versie te markeren en nog twee om de variant te markeren, wat **122 willekeurige bits** overlaat. Dat is nog steeds een enorme ruimte: 2¹²², ongeveer 5,3 undeciljoen (5,3 × 10³⁶) mogelijke waarden.
+
+## De verjaardagsgrens, toegepast
+
+De botsingskans hangt niet af van het vullen van de ruimte; hij hangt af van het aantal *paren*, dat groeit met het kwadraat van hoeveel je er genereert. Het is opnieuw de verjaardagsparadox. Voor een ruimte van 2¹²² waarden is de kans op een willekeurige botsing onder `n` UUID's ongeveer:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+Een kans van 50% op één enkele botsing komt pas na ongeveer **2⁶¹** UUID's, dat is rond de 2,3 triljard (lange schaal). Om het concreet te maken: bij het genereren van een miljard UUID's versie 4 per seconde zou je in de orde van *85 jaar* nodig hebben om alleen al een kans van 50% op een botsing te bereiken. Bij elk realistisch toepassingsvolume is de kans zo klein dat hij overschaduwd wordt door de kans dat een hardwarefout de data toch beschadigt.
+
+De enige echte kanttekening is de **kwaliteit van de willekeur**. De wiskunde houdt alleen stand als de generator een degelijke cryptografisch veilige bron is. Een zwakke of slecht geïnitialiseerde willekeurbron kan veel eerder herhalingen produceren, dus het praktische risico is een slechte RNG, niet het ontwerp van de UUID.
+
+## Wanneer je geen willekeur wilt
+
+Soms is de botsing niet de zorg, maar de herhaalbaarheid:
+
+- **Namespace-UUID's (versies 3 en 5)** zijn deterministisch: ze hashen een namespace plus een naam (MD5 voor v3, SHA-1 voor v5), dus dezelfde invoer levert altijd dezelfde UUID op. Nuttig wanneer je een stabiele identificator wilt die is afgeleid van bestaande data, in plaats van een nieuwe willekeurige.
+- **Tijd-geordende UUID's (versie 7)** behouden de willekeur maar plaatsen er een tijdstempel voor, zodat ID's op aanmaaktijd sorteren. Dat helpt de indexlokaliteit in de database terwijl het botsingsrisico verwaarloosbaar blijft.
+
+## De les
+
+Voor unieke identificatoren op elke normale schaal botst een UUID versie 4 uit een goede willekeurbron niet, en je hebt geen centrale autoriteit nodig om dat te garanderen. Kies v3/v5 wanneer je nodig hebt dat dezelfde invoer op dezelfde ID afbeeldt, en v7 wanneer je tijdsordening wilt.
+
+De [UUID-tool](/tools/uuid) genereert UUID's versie 4 (en andere) en ontleedt elke UUID om de versie en variant te tonen, allemaal in je browser, zonder iets te verzenden.

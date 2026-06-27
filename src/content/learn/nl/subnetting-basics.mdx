@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Subnetting-basis"
+summary: "Hoe je één netwerk verdeelt in kleinere subnetten, en waarom het lenen van host-bits de hele truc is."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Waar subnetting voor dient
+
+E�n groot netwerk is zelden wat je wilt. Subnetting is de praktijk van het nemen van één blok adressen en het splitsen in meerdere kleinere blokken, **subnetten**, die elk een apart broadcastdomein, beveiligingsgrens, of fysiek segment kunnen zijn. Een campus zou elk gebouw zijn eigen subnet kunnen geven; een cloudaccount zou elke laag van een applicatie de zijne kunnen geven.
+
+Het mechanisme is eenvoudiger dan het gewoonlijk klinkt: **subnetting leent bits van het host-deel en voegt ze toe aan het netwerkdeel.**
+
+## Bits lenen
+
+Begin met `192.168.1.0/24`. Het prefix is 24, dus 8 bits zijn vrij voor hosts, wat één blok van 256 adressen geeft.
+
+Stel dat je vier aparte subnetten nodig hebt in plaats van één. Vier is 2², dus heb je **2 extra netwerk-bits** nodig. Leen ze van de host-kant: het prefix groeit van /24 naar /26.
+
+- `/26` legt 26 bits vast, laat 6 vrij → 64 adressen per subnet.
+- Vier van zulke subnetten betegelen de oorspronkelijke /24 precies:
+  - `192.168.1.0/26`, adressen .0 tot .63
+  - `192.168.1.64/26`, adressen .64 tot .127
+  - `192.168.1.128/26`, adressen .128 tot .191
+  - `192.168.1.192/26`, adressen .192 tot .255
+
+Merk het patroon op: elk subnet is 64 adressen breed, dus elk begint op een veelvoud van 64. Die regel "begint op een veelvoud van zijn grootte" is hoe geldige subnetgrenzen worden gevonden. Een blok moet beginnen op een adres dat een veelvoud van zijn eigen grootte is, of het is geen geldig CIDR-blok.
+
+## De afweging
+
+Elke bit die je leent voor het netwerk halveert de hosts per subnet:
+
+| Prefix | Subnetten van een /24 | Adressen elk | Bruikbare hosts elk |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Meer subnetten betekent minder hosts in elk. Netwerkontwerp is grotendeels kiezen waar op deze curve je gaat zitten: genoeg subnetten voor je segmenten, genoeg hosts in elk voor de apparaten die daar wonen, met wat ruimte om te groeien.
+
+## Subnetting met variabele lengte
+
+Subnetten binnen dezelfde ouder hoeven niet allemaal dezelfde grootte te zijn. **Subnetmaskering met variabele lengte (VLSM)** laat je een groot subnet uithakken voor het segment dat veel hosts nodig heeft en kleine subnetten voor punt-tot-punt-verbindingen, allemaal uit hetzelfde ouderblok. De enige regels zijn de constante: elk subnet is een macht van twee in grootte, en elk begint op een veelvoud van zijn grootte zodat de blokken nooit overlappen.
+
+De [CIDR-calculator](/learn) toont het exacte bereik, de grenzen, en het aantal bruikbare hosts voor elk prefix, wat het controleren van een subnetplan een kwestie van het intypen van elk blok maakt.

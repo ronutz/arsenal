@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect : l'identite par-dessus OAuth 2.0"
+summary: "Comment OIDC ajoute l'authentification a l'autorisation d'OAuth, ce qu'est le jeton d'identite, et pourquoi le flux de code avec PKCE est la voie recommandee."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Autorisation n'est pas authentification
+
+OAuth 2.0 repond a "cette application est-elle autorisee a acceder a cette ressource au nom de l'utilisateur". C'est un protocole d'*autorisation*, et il ne dit deliberement rien de standard sur *qui est l'utilisateur*. Les applications ont tout de meme tente de le detourner pour la connexion, de facons incompatibles et parfois peu sures. **OpenID Connect (OIDC)** est la norme qui corrige cela : une fine couche d'identite par-dessus OAuth 2.0 qui ajoute l'authentification sans rien retirer de ce qu'OAuth fait deja.
+
+## Le jeton d'identite
+
+L'ajout determinant est le **jeton d'identite (ID token)**, et c'est un JWT. La ou un jeton d'acces OAuth est destine a une API et souvent opaque pour le client, le jeton d'identite est destine au *client* et porte des revendications standard sur l'utilisateur authentifie :
+
+- `iss` (emetteur) et `aud` (audience, le client pour lequel il a ete emis)
+- `sub` (l'identifiant d'utilisateur stable et unique)
+- `exp` et `iat` (expiration et date d'emission)
+- `nonce` (lie le jeton a la requete de connexion precise, dejouant le rejeu)
+- des revendications de profil comme `name`, `email` et `picture` quand ces portees sont accordees
+
+Comme c'est un JWT, le client verifie la signature du jeton d'identite et valide ces revendications exactement comme pour tout JWT. Les memes controles d'epinglage d'algorithme et de `aud`/`iss`/`exp` s'appliquent.
+
+## Comment se deroule une connexion
+
+OIDC reutilise la machinerie d'OAuth. Le flux recommande est le **flux de code d'autorisation avec PKCE** :
+
+1. L'application envoie l'utilisateur vers le point de terminaison d'autorisation du fournisseur, en demandant la portee `openid` (plus `profile`, `email`, etc.), et inclut un `code_challenge` PKCE.
+2. L'utilisateur s'authentifie et consent chez le fournisseur.
+3. L'application recoit un code a usage unique et l'echange (en prouvant la possession du `code_verifier` PKCE) contre un **jeton d'identite** et un **jeton d'acces**.
+4. L'application verifie le jeton d'identite pour etablir *qui est l'utilisateur*, et utilise le jeton d'acces pour appeler des API *en son nom*.
+
+Deux points de terminaison completent le tableau : un point **userinfo** renvoie des revendications de profil pour un jeton d'acces valide, et un **document de decouverte** a `/.well-known/openid-configuration` annonce les points de terminaison du fournisseur et l'URL de son JWKS, pour qu'un client trouve les cles permettant de verifier les jetons d'identite et suive la rotation des cles automatiquement.
+
+## Pourquoi c'est important
+
+OIDC est ce qui fait reellement fonctionner la plupart des boutons "Se connecter avec ...". Garder les deux jetons distincts est l'idee cle : le **jeton d'identite prouve l'identite au client**, le **jeton d'acces autorise les appels d'API**, et ils ne sont pas interchangeables. Combine au flux de code et a PKCE, c'est la facon moderne et normalisee de faire de la connexion federee.
+
+L'[outil PKCE](/tools/pkce) genere et verifie le `code_verifier` et le `code_challenge` du flux, et l'[outil JWT](/tools/jwt) decode et verifie le jeton d'identite, tous deux entierement dans votre navigateur, sans rien envoyer.

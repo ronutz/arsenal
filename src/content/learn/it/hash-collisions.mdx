@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Collisioni, resistenza alla preimmagine e il limite del compleanno"
+summary: "Le tre proprietà di sicurezza che un hash crittografico deve avere, perché le collisioni contano e la matematica del compleanno che fissa la forza reale."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Cosa significa "sicuro" per un hash
+
+Qualsiasi funzione che associ input a output di dimensione fissa finirà per associare due input diversi allo stesso output, perché ci sono infiniti input e solo finiti output. Che un hash sia **sicuro** non significa che non possano esistere collisioni; significa che non possono essere *trovate* con una quantità di lavoro praticabile. Tre proprietà distinte catturano questo.
+
+## Le tre proprietà
+
+- **Resistenza alla preimmagine.** Dato un valore di hash `h`, è impraticabile trovare un qualsiasi input `m` con `hash(m) = h`. Questa è la proprietà a senso unico: un'impronta non deve rivelare cosa l'ha prodotta. Per un hash a n bit, ciò costa circa 2ⁿ di lavoro.
+- **Resistenza alla seconda preimmagine.** Dato un input specifico `m1`, è impraticabile trovare un input *diverso* `m2` con lo stesso hash. Un attaccante non può falsificare un secondo documento che coincida con l'impronta di uno dato. Anche circa 2ⁿ di lavoro.
+- **Resistenza alla collisione.** È impraticabile trovare *due qualsiasi* input diversi che producano lo stesso valore di hash. L'attaccante può scegliere entrambi, il che rende questa la più facile da attaccare delle tre.
+
+## Il limite del compleanno
+
+La resistenza alla collisione è più debole delle altre due per una ragione sottile, il **paradosso del compleanno**. In una stanza di sole 23 persone c'è circa il 50% di probabilità che due condividano il compleanno, perché il numero di *coppie* cresce in modo quadratico. Lo stesso effetto si applica agli hash: trovare una collisione in un hash a n bit richiede solo circa **2^(n/2)** tentativi, non 2ⁿ.
+
+Questo dimezza la forza effettiva contro le collisioni:
+
+- SHA-256 offre circa 128 bit di resistenza alla collisione (2¹²⁸ di lavoro), il che è ben oltre la portata.
+- Un hash a 128 bit come MD5 offrirebbe solo circa 64 bit di resistenza alla collisione, anche se non fosse compromesso per altri motivi, ed è per questo che la dimensione dell'output da sola conta.
+
+Per questo gli hash moderni usano 256 bit o più: per mantenere la cifra dimezzata comodamente oltre la portata di qualsiasi attaccante.
+
+## Perché una collisione trovata è pericolosa
+
+Quando la resistenza alla collisione cede, un attaccante può creare due input con lo stesso hash, far firmare o ritenere fidato uno e sostituirlo con l'altro. SHAttered ha dimostrato due PDF con lo stesso digest SHA-1; il malware Flame ha usato una collisione MD5 per falsificare un certificato fidato. In entrambi i casi la firma era valida per *entrambi* i documenti, quindi una firma verificata cessava di provare quale avevi effettivamente ricevuto. Questa è la ragione concreta per cui MD5 e SHA-1 non devono essere usati dove un avversario può scegliere l'input.
+
+Lo [strumento di hash](/tools/hash) ti permette di eseguire l'hash di qualsiasi input e confrontare i digest, così da vedere tu stesso che un singolo bit cambiato produce un'impronta completamente diversa, tutto calcolato nel tuo browser senza nulla inviato.

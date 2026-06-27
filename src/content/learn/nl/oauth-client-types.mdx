@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Publieke vs vertrouwelijke clients, en waar PKCE past"
+summary: "Of een OAuth-client een geheim kan bewaren beslist zijn hele beveiligingsmodel. Waarom SPA's en mobiele apps publieke clients zijn, en waarom PKCE nu voor ze allemaal wordt aanbevolen."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## De vraag die alles beslist
+
+OAuth verdeelt clients in twee soorten, en de scheidslijn is één enkele vraag: kan deze client een geheim bewaren? RFC 6749 noemt de twee antwoorden **vertrouwelijke** en **publieke** clients, en welke je bent bepaalt hoe je je authenticeert, welke flows veilig zijn en of je PKCE nodig hebt. Bijna elke OAuth-ontwerpfout op applicatieniveau is terug te voeren op het behandelen van een publieke client alsof die een geheim kon bewaren dat hij in werkelijkheid niet kan beschermen.
+
+## Vertrouwelijke clients kunnen een geheim bewaren
+
+Een vertrouwelijke client draait ergens waar de gebruiker zijn code of opslag niet kan bereiken, klassiek een serverzijdige webapplicatie. Hem wordt bij registratie een **clientgeheim** uitgegeven, en hij gebruikt dat geheim om zich te authenticeren bij het token-endpoint van de autorisatieserver. Omdat het geheim alleen op de server leeft, kan de autorisatieserver erop vertrouwen dat een tokenverzoek echt van de geregistreerde client komt. Dit is het sterke geval: de client bewijst zijn identiteit met iets dat alleen hij kent.
+
+## Publieke clients kunnen dat niet
+
+Een publieke client draait waar zijn code en data zichtbaar zijn voor de gebruiker of aanvaller: een single-page-app in de browser, een native mobiele of desktop-app, alles wat naar het apparaat wordt verzonden. Het bepalende probleem is dat elk geheim dat je in zo'n client inbedt geen geheim is, omdat iedereen het uit het verzonden bundel of binary kan onttrekken. Dus een publieke client kan zich helemaal niet authenticeren met een clientgeheim; er is niets dat hij kan bewaren dat een aanvaller niet ook kan verkrijgen. Dat verandert wat de autorisatieserver mag aannemen, en het is de reden dat publieke clients extra bescherming nodig hebben op de autorisatiecodeflow.
+
+## Waarom publieke clients kwetsbaar waren
+
+De autorisatiecodeflow overhandigt de client een eenmalige code in de redirect, die de client vervolgens inruilt voor tokens. Voor een vertrouwelijke client wordt die uitwisseling beschermd door het clientgeheim. Voor een publieke client zonder geheim kan een aanvaller die de redirect kan onderscheppen, bijvoorbeeld een kwaadaardige app geregistreerd voor hetzelfde aangepaste URL-schema op een mobiel apparaat, de code stelen en hem zelf inwisselen. Dit is de onderscheppingsaanval die het [PKCE](/learn/pkce)-artikel in detail beschrijft, en het is precies het gat dat een ontbrekend clientgeheim openlaat.
+
+## PKCE vult het gat, voor iedereen
+
+PKCE sluit dat gat zonder een vooraf gedeeld geheim. De client verzint per verzoek een verse willekeurige **codeverifier**, zendt alleen zijn hash (de **code-challenge**) bij het vragen om de code, en onthult de verifier alleen bij het inwisselen ervan. Een aanvaller die de code onderschept zag de verifier nooit, dus de gestolen code is nutteloos. Dit werd geïntroduceerd voor publieke clients, maar de richtlijn is sindsdien verbreed: OAuth 2.1 beveelt PKCE aan voor de autorisatiecodeflow ongeacht het clienttype, omdat het verdediging in de diepte toevoegt zelfs waar een clientgeheim aanwezig is. De praktische regel is overal autorisatiecode plus PKCE te gebruiken en te stoppen met redeneren over of je het strikt nodig hebt.
+
+## De impliciete flow is met pensioen
+
+Publieke browser-apps gebruikten ooit de impliciete flow, die tokens rechtstreeks in de redirect retourneerde om de code-uitwisseling te vermijden. Dat ontwerp stelde tokens bloot in URL's en browsergeschiedenis en is nu afgeschaft; OAuth 2.1 verwijdert het. Het moderne antwoord voor een single-page-app is hetzelfde als voor iedereen anders: de autorisatiecodeflow met PKCE. Kom je advies tegen om de impliciete flow te gebruiken, behandel het dan als verouderd.
+
+## Native apps hebben hun eigen valkuilen
+
+Native en mobiele apps zijn publieke clients met een specifiek gevaar: de redirect terug in de app. Aangepaste URL-schema's kunnen door andere apps op het apparaat worden geclaimd, wat onderschepping mogelijk maakt, dus de best-practice-richtlijn voor native apps (RFC 8252) is geclaimde HTTPS-redirects te gebruiken waar het platform ze ondersteunt, de flow in een systeembrowser te draaien in plaats van een ingebedde webweergave, en altijd PKCE toe te passen. Voor apparaten met beperkte invoer zoals een tv, waar er helemaal geen browser is om naar te redirecten, laat de device-autorisatieflow (RFC 8628) de gebruiker in plaats daarvan autoriseren op een aparte telefoon of laptop.
+
+## Bij twijfel, neem publiek aan
+
+De rode draad is dat clienttype geen label is dat je voor het gemak kiest; het is een feit over waar je code draait en wat hij kan beschermen. Als de client naar de gebruiker wordt verzonden, is hij publiek, kan hij geen geheim bewaren, en heeft hij PKCE nodig. Draait hij alleen op je server, dan kan hij vertrouwelijk zijn en zich authenticeren met een geheim, en zou hij toch PKCE moeten gebruiken voor de extra marge. Beslis in welke wereld je client leeft, en de rest van zijn OAuth-beveiligingsmodel volgt uit dat ene eerlijke antwoord.

@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Bakit HMAC, at hindi hash(susi + mensahe)"
+summary: "Ang length-extension attack na sumisira sa walang-muwang na keyed hashing, at ang nested na construction na ginagamit ng HMAC upang talunin ito."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang halatang ideya na nabibigo
+
+Gusto mong patunayan na ang isang mensahe ay galing sa isang taong may hawak na ibinabahaging lihim at hindi ito binago. Ang intuitibong paraan ay i-hash ang lihim kasama ang mensahe: `tag = SHA256(lihim + mensahe)`. Mukhang matatag ito, nakasalalay ang tag sa lihim, kaya ang isang umaatake na hindi alam ang lihim ay hindi ito makakagawa. Sa kasamaang-palad, para sa pinakakaraniwang mga hash function, sira ang construction na ito.
+
+## Ang length-extension attack
+
+Pinoproseso ng mga hash sa pamilyang Merkle-Damgård, na kinabibilangan ng MD5, SHA-1, at SHA-256, ang input sa mga bloke at dinadala ang isang internal state. Ang kanilang panghuling output *ay* ang internal state na iyon. Naglalabas iyon ng isang bagay na mapanganib: sa `SHA256(lihim + mensahe)` at sa haba ng `lihim + mensahe`, maaaring itakda ng isang umaatake ang internal state ng hash sa iyong tag at magpatuloy sa pag-hash, kinakalkula ang
+
+```
+SHA256(lihim + mensahe + padding + datos ng umaatake)
+```
+
+bilang isang wastong tag para sa isang pinalawig na mensahe, **nang hindi kailanman nalalaman ang lihim**. Maaari siyang magdagdag ng datos at gumawa ng isang tag na mapapatunayan. Para sa isang API kung saan ang mensahe ay isang set ng mga nilagdaang parametro, maaaring mangahulugan iyon ng pagdaragdag ng `&admin=true` sa isang request at lumampas pa rin sa pagsusuri ng lagda. Hindi ligtas ang walang-muwang na `hash(lihim + mensahe)`.
+
+## Paano inaayos ito ng HMAC
+
+Hindi lamang nagkakadugtong ang HMAC (RFC 2104). Nag-ha-hash ito nang dalawang beses kasama ang susi na hinalo sa dalawang magkaibang paraan:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Hina-hash ang mensahe kasama ang susi sa ilalim ng isang panloob na padding (`ipad`), at muling hina-hash ang resultang iyon kasama ang susi sa ilalim ng isang panlabas na padding (`opad`). Dahil binabalot ng panlabas na hash ang panloob na hash, ang halagang nakikita ng isang umaatake ay hindi isang hilaw na internal state na mapapalawig niya; ito ang output ng pangalawang hakbang ng pag-hash kasama ang susi ng lihim. Tumitigil sa paggana ang length extension, at ang seguridad ng HMAC ay may matatag na patunay na nakasalalay lamang sa pagiging makatuwiran ng pinagbabatayang hash.
+
+Kaya gumagamit ang bawat hinog na sistema ng HMAC (o ng ibang naaangkop na MAC) sa halip na gawang-bahay na keyed hashing. Pansinin na hindi madaling-tablan ng length extension ang SHA-3 at BLAKE, kaya maaari silang bigyan ng susi nang mas direkta, ngunit nananatili ang HMAC bilang ang madaling-dalhin at malawak na suportadong pamantayan.
+
+## Ang aral
+
+Gumamit ng HMAC na may malakas na hash (ang HMAC-SHA256 ang karaniwang default) at isang lihim na may mataas na entropy. Huwag mag-imbento ng sarili mong scheme ng keyed hashing: hindi halata ang depekto mula sa labas, na siyang ginagawang mapanganib ito.
+
+Kinakalkula ng [tool na HMAC](/tools/hmac) ang HMAC-SHA256 at mga kaugnay na variant sa isang mensahe at susi upang makita mo ang tag at maihambing ito, lahat sa iyong browser, nang walang anumang ipinapadala.

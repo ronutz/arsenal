@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "Ang OAuth 2.0 authorization code flow"
+summary: "Ang apat na papel, ang sayaw ng redirect-at-palit, at kung bakit ipinagpapalit ang code para sa isang token sa back channel."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Para saan ang flow
+
+Ang OAuth 2.0 (RFC 6749) ay nagpapahintulot sa isang aplikasyon na kumilos sa ngalan ng isang user nang hindi kailanman nakikita ang password ng user. Ang "Mag-log in gamit ang Google" ang pang-araw-araw na halimbawa: nakakakuha ang app ng pahintulot na mag-access ng isang bagay, ngunit ang Google, hindi ang app, ang humahawak sa mga kredensyal. Ang **authorization code flow** ang pinakakaraniwan at pinakaligtas na paraan upang isaayos ito, at ito ang flow na pinoprotektahan ng PKCE.
+
+## Ang apat na papel
+
+- Ang **resource owner** ay ang user na nagmamay-ari ng datos at nagbibigay ng access.
+- Ang **client** ay ang aplikasyong humihingi ng access.
+- Ang **authorization server** ay nagpapatunay sa user at naglalabas ng mga token (Google, isang identity provider, ang iyong sariling auth service).
+- Ang **resource server** ay ang API na humahawak sa protektadong datos at tumatanggap sa token.
+
+## Ang sayaw, hakbang-hakbang
+
+1. **Mag-redirect upang mag-authorize.** Ipinapadala ng client ang browser ng user sa authorize endpoint ng authorization server, dala ang `client_id` nito, isang `redirect_uri`, ang `scope` na gusto nito, isang random na halagang `state`, at (sa PKCE) isang code challenge. Hindi kailanman hinahawakan ng client ang password.
+2. **Mag-authenticate at pumayag.** Nilo-log in ng authorization server ang user at hinihiling dito na aprubahan ang mga hiniling na scope.
+3. **Mag-redirect pabalik na may code.** Ire-redirect ng server ang browser pabalik sa `redirect_uri` ng client na may isang panandaliang **authorization code** at ang orihinal na `state`. Sinusuri ng client na tumutugma ang `state`, na nagtatanggol laban sa cross-site request forgery sa callback.
+4. **Ipagpalit ang code para sa mga token.** Ngayon sa back channel (isang tuwirang server-to-server na tawag, hindi ang browser), ipinapadala ng client ang code sa token endpoint kasama ang mga kredensyal nito (isang client secret, o ang PKCE code verifier) at tumatanggap ng isang **access token**, kadalasan isang **refresh token**, at para sa OpenID Connect isang **ID token**.
+5. **Tawagin ang API.** Iniharap ng client ang access token sa resource server, na nagva-validate nito at ibinabalik ang datos.
+
+## Bakit isang code, at hindi ang token nang tuwiran?
+
+Ang paliko sa pamamagitan ng isang authorization code ay umiiral upang ang token ay hindi kailanman maglakbay sa address bar o history ng browser, kung saan maaari itong matagas. Ang code na *talagang* naglalakbay doon ay walang silbi nang mag-isa: ang pagtubos nito ay nangangailangan ng back-channel na tawag na may client secret o PKCE verifier. Ang paghihiwalay na iyon, isang code na itatapon sa front channel at ang tunay na token sa back channel, ang ubod na katangian ng seguridad ng flow.
+
+Ito rin mismo ang puwang na pinupunan ng PKCE para sa mga client na hindi makapag-iingat ng lihim (mga single-page at mobile app): itinatali nito ang code sa isang one-time verifier kaya ang isang naharang na code ay hindi pa rin maipapalit. Ang mga token na ibinabalik ng flow ay napakadalas na mga JWT.
+
+Ang [tool na PKCE](/tools/pkce) ay bumubuo at sumusuri sa verifier at challenge na inaasahan ng flow na ito, at ang [tool na JWT](/tools/jwt) ay nide-decode ang mga token na ibinabalik nito, kapwa lokal sa iyong browser.

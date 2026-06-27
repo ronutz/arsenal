@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Pourquoi HMAC, et non hash(cle + message)"
+summary: "L'attaque par extension de longueur qui casse le hachage a cle naif, et la construction imbriquee que HMAC emploie pour la dejouer."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## L'idee evidente qui echoue
+
+Vous voulez prouver qu'un message vient de quelqu'un detenant un secret partage et qu'il n'a pas ete altere. L'approche intuitive est de hacher le secret avec le message : `tag = SHA256(secret + message)`. Cela semble correct, le tag depend du secret, donc un attaquant qui ne connait pas le secret ne peut le produire. Malheureusement, pour les fonctions de hachage les plus courantes, cette construction est cassee.
+
+## L'attaque par extension de longueur
+
+Les hachages de la famille Merkle-Damgard, qui inclut MD5, SHA-1 et SHA-256, traitent l'entree par blocs et propagent un etat interne. Leur sortie finale *est* cet etat interne. Cela divulgue quelque chose de dangereux : etant donne `SHA256(secret + message)` et la longueur de `secret + message`, un attaquant peut fixer l'etat interne du hachage a votre tag et continuer a hacher, calculant
+
+```
+SHA256(secret + message + remplissage + donnees_attaquant)
+```
+
+comme un tag valide pour un message etendu, **sans jamais connaitre le secret**. Il peut ajouter des donnees et produire un tag qui se verifie. Pour une API ou le message est un ensemble de parametres signes, cela peut signifier ajouter `&admin=true` a une requete et passer quand meme la verification de signature. Le naif `hash(secret + message)` n'est pas sur.
+
+## Comment HMAC corrige cela
+
+HMAC (RFC 2104) ne se contente pas de concatener. Il hache deux fois avec la cle melangee de deux facons differentes :
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Le message est hache avec la cle sous un remplissage interne (`ipad`), et ce resultat est hache de nouveau avec la cle sous un remplissage externe (`opad`). Parce que le hachage externe enveloppe l'interne, la valeur qu'un attaquant voit n'est pas un etat interne brut qu'il puisse etendre ; c'est la sortie d'une seconde etape de hachage avec la cle du secret. L'extension de longueur cesse de fonctionner, et la securite de HMAC repose sur une preuve solide ne dependant que du fait que le hachage sous-jacent soit raisonnable.
+
+C'est pourquoi tout systeme mature utilise HMAC (ou un autre MAC approprie) plutot qu'un hachage a cle fait maison. Notez que SHA-3 et BLAKE ne sont pas sensibles a l'extension de longueur, ils peuvent donc etre cles plus directement, mais HMAC reste la norme portable et largement prise en charge.
+
+## A retenir
+
+Utilisez HMAC avec un hachage solide (HMAC-SHA256 est le defaut courant) et un secret a forte entropie. N'inventez pas votre propre schema de hachage a cle : la faille n'est pas evidente de l'exterieur, ce qui est precisement ce qui la rend dangereuse.
+
+L'[outil HMAC](/tools/hmac) calcule HMAC-SHA256 et des variantes apparentees sur un message et une cle pour que vous voyiez le tag et le compariez, le tout dans votre navigateur, sans rien envoyer.

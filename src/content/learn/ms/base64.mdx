@@ -1,0 +1,53 @@
+---
+slug: base64
+title: "Base64 dan Base64URL, dijelaskan"
+summary: "Bagaimana data binari menjadi teks selamat-untuk-dihantar, mengapa pengisian wujud, dan apa yang berubah dalam varian selamat-URL."
+concepts: ["base64", "base64url", "encoding", "binary-to-text"]
+relatedTools: ["base64"]
+relatedArticles: ["character-encoding", "hashing-encryption-encoding", "hashing"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Masalah yang diselesaikan Base64
+
+Komputer menyimpan segalanya sebagai bait, nilai sewenang-wenangnya dari 0 hingga 255. Namun, banyak sistem yang menggerakkan data dibina untuk membawa **teks**, bukan bait sewenang-wenangnya: badan e-mel, URL, rentetan JSON, pengepala HTTP. Berikan mereka bait mentah yang kebetulan ialah aksara kawalan atau tanda petik, dan ia merosakkannya atau pecah. Base64 ialah cara piawai untuk mengambil sebarang bait dan menulisnya semula menggunakan set kecil aksara boleh cetak yang selamat, yang dibawa oleh saluran teks semata-mata itu tanpa cedera.
+
+Berbaloi untuk tepat tentang apa maksudnya: Base64 ialah **pengekodan**, bukan penyulitan. Ia tidak menyembunyikan apa-apa. Sesiapa sahaja boleh menyahkodnya semula kepada bait asal tanpa kunci dan tanpa usaha. Tugas tunggalnya ialah bertahan dalam pengangkutan, bukan menyimpan rahsia.
+
+## Bagaimana pengekodan berfungsi
+
+Helahnya ialah mengumpulkan semula bit. Base64 membaca masukan tiga bait sekali gus. Tiga bait ialah 24 bit, dan 24 terbahagi sama rata kepada empat kumpulan 6 bit. Setiap kumpulan 6 bit ialah nombor dari 0 hingga 63, dan setiap satu daripada 64 nilai itu memeta kepada satu aksara dalam abjad Base64:
+
+- `A` hingga `Z` untuk nilai 0 hingga 25
+- `a` hingga `z` untuk nilai 26 hingga 51
+- `0` hingga `9` untuk nilai 52 hingga 61
+- `+` dan `/` untuk nilai 62 dan 63
+
+Maka setiap tiga bait masukan menjadi tepat empat aksara keluaran. Itulah sebab keluaran Base64 sentiasa kira-kira satu pertiga lebih besar daripada masukan: empat aksara membawa apa yang dibawa oleh tiga bait.
+
+## Mengapa pengisian wujud
+
+Masukan tidak selalu gandaan kemas tiga bait. Apabila kumpulan terakhir hanya mempunyai satu atau dua bait yang tinggal, pengekod tetap mengeluarkan blok empat aksara yang penuh dan mengisi jurang dengan aksara `=`:
+
+- Satu bait baki (8 bit) menghasilkan dua aksara bermakna, kemudian `==`.
+- Dua bait baki (16 bit) menghasilkan tiga aksara bermakna, kemudian `=`.
+
+`=` bukan data. Ia ialah penanda yang memberitahu penyahkod berapa banyak bait yang sebenarnya diwakili oleh blok terakhir, supaya ia boleh menggugurkan pengisian dan membina semula panjang asal yang tepat. Itulah sebab panjang rentetan Base64 sentiasa gandaan empat.
+
+## Varian selamat-URL
+
+Dua daripada aksara abjad piawai menimbulkan masalah di tempat tertentu. `+` dan `/` kedua-duanya mempunyai makna terpelihara dalam URL (ruang dan pemisah laluan), dan `/` juga haram dalam banyak nama fail. **Base64URL** (ditakrifkan dalam RFC 4648) membetulkan ini dengan dua penggantian dan satu tabiat:
+
+- `+` menjadi `-`
+- `/` menjadi `_`
+- pengisian `=` biasanya dibuang, kerana panjang boleh disimpulkan
+
+Hasilnya ialah rentetan yang masuk dengan bersih ke dalam URL, nama fail, atau JSON Web Token tanpa pelarian lanjut. Inilah tepatnya sebab JWT dan cabaran PKCE OAuth menggunakan Base64URL dan bukan bentuk klasik: nilai-nilai itu tinggal dalam URL dan token.
+
+## Di mana anda menemuinya
+
+Sebaik anda mengenali corak ini, Base64 ada di mana-mana: URI `data:` yang membenamkan imej terus dalam halaman, tiga segmen yang dipisahkan titik bagi JWT, lampiran e-mel MIME, pengepala pengesahan HTTP Basic, dan sijil dalam format PEM. Dalam setiap kes sebabnya sama, bait mentah perlu merentas saluran yang hanya mempercayai teks.
+
+Anda boleh menampal teks atau Base64 ke dalam [alat Base64](/tools/base64) untuk mengekod atau menyahkodnya dua hala, piawai dan selamat-URL, sepenuhnya dalam pelayar anda.

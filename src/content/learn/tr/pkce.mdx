@@ -1,0 +1,43 @@
+---
+slug: pkce
+title: "PKCE: OAuth yetkilendirme kodu akışını güvenceye almak"
+summary: "PKCE'nin yendiği ele geçirme saldırısı, verifier ile challenge'ın nasıl bir araya geldiği ve S256'nın neden zorunlu olduğu."
+concepts: ["pkce", "oauth", "oidc", "code-verifier", "code-challenge", "s256"]
+relatedTools: ["pkce"]
+relatedArticles: ["oauth-client-types", "oauth-tokens", "oauth-code-flow", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## PKCE'nin yendiği saldırı
+
+OAuth 2.0 yetkilendirme kodu akışında, yetkilendirme sunucusu istemciye kısa ömürlü bir **yetkilendirme kodu** verir, ki istemci bunu sonra token'larla takas eder. Gizli istemciler bu takası bir istemci sırrıyla korur. Ama **açık istemciler**, tek sayfalı uygulamalar ve mobil uygulamalar, bir sır tutamaz: tarayıcıya veya cihaza gönderilen her şey çıkarılabilir. Bu bir boşluk bırakır. Bir saldırgan yetkilendirme kodunu ele geçirirse (aynı yönlendirme için kayıtlı kötü amaçlı bir uygulama, sızdırılmış bir günlük veya uydurma bir URL aracılığıyla), onu kendisi token'larla bozdurabilir.
+
+PKCE, Proof Key for Code Exchange (RFC 7636, "pixy" diye okunur), bu boşluğu önceden paylaşılan bir sır gerektirmeden tıkar. Yetkilendirme kodunu yalnızca gerçek istemcinin bildiği tek kullanımlık bir sırra bağlar.
+
+## verifier ile challenge nasıl bir araya gelir
+
+Akış iki değer ekler:
+
+- **code_verifier**, istemcinin ürettiği ve sakladığı yüksek entropili rastgele bir dizedir. RFC 7636, ayrılmamış kümeden (harfler, rakamlar ve `- . _ ~`) 43 ila 128 karakter ister.
+- **code_challenge**, verifier'dan türetilir. S256 yöntemi için `BASE64URL(SHA256(ASCII(code_verifier)))`'tir.
+
+Sıra şudur:
+
+1. İstemci taze bir `code_verifier` üretir, `code_challenge`'ı türetir ve yetkilendirme isteğinde **yalnızca challenge'ı** gönderir.
+2. Yetkilendirme sunucusu challenge'ı saklar ve her zamanki gibi bir yetkilendirme kodu döndürür.
+3. Token isteğinde istemci **verifier'ı** gönderir.
+4. Sunucu verifier'ı aynı şekilde karmalar ve saklanan challenge'a karşı denetler. Eşleşme yok, token yok.
+
+Güvenlik tek bir gerçeğe dayanır: challenge, verifier'ın tek yönlü bir karmasıdır. Yetkilendirme kodunu ele geçiren bir saldırgan yine de takası tamamlayamaz, çünkü verifier'ı hiç görmedi ve onu challenge'dan geriye doğru çözemez.
+
+## Neden S256, plain değil
+
+RFC 7636 iki yöntem tanımlar. `plain` yöntemi challenge'ı verifier'a eşit ayarlar, ki bu yetkilendirme isteğinin kendisi gözlemlenirse hiçbir koruma sunmaz. `S256` yöntemi yalnızca SHA-256 karmasını gönderir, böylece verifier nihai, TLS korumalı token çağrısına dek gizli kalır. **İstemcinin SHA-256 hesaplayabildiği her yerde S256 zorunludur**, ki bu önemli olan her yerdir; `plain` yalnızca karma yapamayan ender kısıtlı cihaz için vardır.
+
+## İsteğe bağlıdan zorunluya
+
+PKCE açık istemciler için bir uzantı olarak başladı, ama yönlendirme kararlı biçimde değişti. OAuth 2.0 Security Best Current Practice (RFC 9700) artık **tüm** yetkilendirme kodu istemcilerinde, gizli olanlar dahil, PKCE çağrısı yapar, çünkü o belirli kod enjeksiyonu saldırılarına karşı da savunur. Bugün bir OAuth veya OpenID Connect tümleştirmesi kuruyor ya da sınıyorsanız, PKCE'yi bir eklenti değil, varsayılan olarak ele alın.
+
+[PKCE aracı](/tools/pkce), uyumlu bir verifier üretir, S256 challenge'ını Web Crypto ile türetir ve herhangi bir verifier'ı RFC'nin uzunluk ve karakter kümesi kurallarına karşı denetler, hepsi yerel olarak. Verifier asla tarayıcınızdan çıkmaz.

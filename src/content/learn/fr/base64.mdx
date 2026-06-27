@@ -1,0 +1,53 @@
+---
+slug: base64
+title: "Base64 et Base64URL, expliqués"
+summary: "Comment les données binaires deviennent du texte transmissible en toute sécurité, pourquoi le remplissage existe et ce qui change dans la variante sûre pour URL."
+concepts: ["base64", "base64url", "encoding", "binary-to-text"]
+relatedTools: ["base64"]
+relatedArticles: ["character-encoding", "hashing-encryption-encoding", "hashing"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Le problème que résout Base64
+
+Les ordinateurs stockent tout sous forme d'octets, des valeurs arbitraires de 0 à 255. Pourtant, de nombreux systèmes qui déplacent des données ont été conçus pour transporter du **texte**, et non des octets arbitraires : corps d'e-mails, URL, chaînes JSON, en-têtes HTTP. Donnez-leur un octet brut qui se trouve être un caractère de contrôle ou un guillemet, et ils le déforment ou plantent. Base64 est la manière standard de prendre n'importe quels octets et de les réécrire à l'aide d'un petit ensemble sûr de caractères imprimables que ces canaux purement textuels transportent intacts.
+
+Il vaut la peine d'être précis sur ce que cela signifie : Base64 est un **encodage**, pas un chiffrement. Il ne cache rien. N'importe qui peut le décoder pour retrouver les octets d'origine sans clé et sans effort. Son seul travail est de survivre au transport, pas de garder un secret.
+
+## Comment fonctionne l'encodage
+
+L'astuce consiste à regrouper les bits. Base64 lit l'entrée trois octets à la fois. Trois octets font 24 bits, et 24 se divise exactement en quatre groupes de 6 bits. Chaque groupe de 6 bits est un nombre de 0 à 63, et chacune de ces 64 valeurs correspond à un caractère de l'alphabet Base64 :
+
+- `A` à `Z` pour les valeurs 0 à 25
+- `a` à `z` pour les valeurs 26 à 51
+- `0` à `9` pour les valeurs 52 à 61
+- `+` et `/` pour les valeurs 62 et 63
+
+Ainsi, chaque trois octets d'entrée deviennent exactement quatre caractères de sortie. C'est pourquoi la sortie Base64 est toujours environ un tiers plus grande que l'entrée : quatre caractères transportent ce que trois octets transportaient.
+
+## Pourquoi le remplissage existe
+
+L'entrée n'est pas toujours un multiple exact de trois octets. Lorsque le dernier groupe n'a qu'un ou deux octets restants, l'encodeur émet quand même un bloc complet de quatre caractères et comble le vide avec le caractère `=` :
+
+- Un octet restant (8 bits) produit deux caractères significatifs, puis `==`.
+- Deux octets restants (16 bits) produisent trois caractères significatifs, puis `=`.
+
+Le `=` n'est pas une donnée. C'est un marqueur qui indique au décodeur combien d'octets le bloc final représente réellement, afin qu'il puisse retirer le remplissage et reconstruire la longueur d'origine exacte. C'est pourquoi la longueur d'une chaîne Base64 est toujours un multiple de quatre.
+
+## La variante sûre pour URL
+
+Deux des caractères de l'alphabet standard posent problème à certains endroits. `+` et `/` ont tous deux des significations réservées dans les URL (une espace et un séparateur de chemin), et `/` est aussi illégal dans de nombreux noms de fichiers. **Base64URL** (défini dans la RFC 4648) corrige cela par deux substitutions et une habitude :
+
+- `+` devient `-`
+- `/` devient `_`
+- le remplissage `=` est généralement supprimé, puisque la longueur peut être déduite
+
+Le résultat est une chaîne qui s'insère proprement dans une URL, un nom de fichier ou un JSON Web Token sans échappement supplémentaire. C'est exactement pourquoi les JWT et les défis PKCE d'OAuth utilisent Base64URL plutôt que la forme classique : ces valeurs vivent à l'intérieur des URL et des jetons.
+
+## Où vous le rencontrez
+
+Une fois le motif reconnu, Base64 est partout : les URI `data:` qui intègrent une image directement dans une page, les trois segments séparés par des points d'un JWT, les pièces jointes d'e-mail MIME, les en-têtes d'authentification HTTP Basic et les certificats au format PEM. Dans chaque cas, la raison est la même, des octets bruts doivent traverser un canal qui ne fait confiance qu'au texte.
+
+Vous pouvez coller du texte ou du Base64 dans l'[outil Base64](/tools/base64) pour l'encoder ou le décoder dans les deux sens, standard et sûr pour URL, entièrement dans votre navigateur.

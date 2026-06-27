@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Kollisionen, Urbildresistenz und die Geburtstagsgrenze"
+summary: "Die drei Sicherheitseigenschaften, die ein kryptografischer Hash haben muss, warum Kollisionen wichtig sind und die Geburtstagsmathematik, die die reale Stärke bestimmt."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Was „sicher“ für einen Hash bedeutet
+
+Jede Funktion, die Eingaben auf Ausgaben fester Größe abbildet, wird irgendwann zwei verschiedene Eingaben auf dieselbe Ausgabe abbilden, denn es gibt unendlich viele Eingaben und nur endlich viele Ausgaben. Dass ein Hash **sicher** ist, bedeutet nicht, dass keine Kollisionen existieren können; es bedeutet, dass sie sich nicht mit machbarem Aufwand *finden* lassen. Drei eigenständige Eigenschaften fassen das.
+
+## Die drei Eigenschaften
+
+- **Urbildresistenz.** Zu einem Hashwert `h` ist es nicht machbar, irgendeine Eingabe `m` mit `hash(m) = h` zu finden. Das ist die Einwegeigenschaft: Ein Fingerabdruck soll nicht verraten, was ihn erzeugt hat. Für einen n-Bit-Hash kostet das etwa 2ⁿ Aufwand.
+- **Zweiturbildresistenz.** Zu einer bestimmten Eingabe `m1` ist es nicht machbar, eine *andere* Eingabe `m2` mit demselben Hash zu finden. Ein Angreifer kann kein zweites Dokument fälschen, das zum Fingerabdruck eines gegebenen passt. Ebenfalls rund 2ⁿ Aufwand.
+- **Kollisionsresistenz.** Es ist nicht machbar, *irgendwelche* zwei verschiedenen Eingaben zu finden, die auf denselben Wert hashen. Der Angreifer darf beide wählen, was dies zur am leichtesten angreifbaren der drei macht.
+
+## Die Geburtstagsgrenze
+
+Kollisionsresistenz ist aus einem subtilen Grund schwächer als die anderen beiden, dem **Geburtstagsparadoxon**. In einem Raum mit nur 23 Personen besteht etwa 50 % Chance, dass zwei am selben Tag Geburtstag haben, weil die Zahl der *Paare* quadratisch wächst. Derselbe Effekt gilt für Hashes: Eine Kollision in einem n-Bit-Hash zu finden braucht nur etwa **2^(n/2)** Versuche, nicht 2ⁿ.
+
+Das halbiert die effektive Stärke gegen Kollisionen:
+
+- SHA-256 bietet etwa 128 Bit Kollisionsresistenz (2¹²⁸ Aufwand), was weit außer Reichweite ist.
+- Ein 128-Bit-Hash wie MD5 böte nur etwa 64 Bit Kollisionsresistenz, selbst wenn er nicht ohnehin gebrochen wäre, weshalb allein die Ausgabegröße zählt.
+
+Deshalb verwenden moderne Hashes 256 Bit oder mehr: um den halbierten Wert bequem außerhalb der Reichweite jedes Angreifers zu halten.
+
+## Warum eine gefundene Kollision gefährlich ist
+
+Wenn die Kollisionsresistenz versagt, kann ein Angreifer zwei Eingaben mit demselben Hash erstellen, eine signieren oder vertrauen lassen und durch die andere ersetzen. SHAttered demonstrierte zwei PDFs mit demselben SHA-1-Digest; die Flame-Malware nutzte eine MD5-Kollision, um ein vertrauenswürdiges Zertifikat zu fälschen. In beiden Fällen war die Signatur für *beide* Dokumente gültig, sodass eine geprüfte Signatur nicht mehr belegte, welches Sie tatsächlich erhielten. Das ist der konkrete Grund, warum MD5 und SHA-1 nicht verwendet werden dürfen, wo ein Angreifer die Eingabe wählen kann.
+
+Das [Hash-Tool](/tools/hash) lässt Sie jede Eingabe hashen und Digests vergleichen, sodass Sie selbst sehen, dass ein einziges geändertes Bit einen völlig anderen Fingerabdruck erzeugt, alles in Ihrem Browser berechnet, ohne dass etwas gesendet wird.

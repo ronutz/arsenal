@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Permintaan tandatangan sijil dan bagaimana sijil dikeluarkan"
+summary: "Apa yang CSR kandungi, mengapa kunci persendirian anda tidak pernah meninggalkan mesin anda, bagaimana CA mengesahkan dan mengeluarkan, dan bagaimana ACME mengautomasikan keseluruhan pertukaran."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Masalah pengeluaran
+
+Anda boleh menjana pasangan kunci sendiri dalam beberapa saat, tetapi kunci awam bogel tidak membuktikan apa-apa tentang siapa anda (masalah pengikatan daripada [artikel anatomi](/learn/x509-anatomy)). Untuk mendapatkan sijil, anda memerlukan pihak berkuasa sijil yang pihak yang bergantung sudah percayai untuk menjamin bahawa kunci awam ini milik nama anda. Permintaan Tandatangan Sijil (Certificate Signing Request) ialah bagaimana anda memintanya, tanpa pernah menyerahkan kunci persendirian anda.
+
+## Apa yang CSR kandungi
+
+CSR itu sendiri ialah struktur ASN.1, ditakrifkan oleh PKCS#10 (RFC 2986) dan biasanya dihantar sebagai blok PEM berlabel `CERTIFICATE REQUEST`. Ia membawa:
+
+- **subjek** yang anda minta (nama yang patut berakhir dalam sijil),
+- **kunci awam** anda, dan
+- **tandatangan ke atas permintaan, dibuat dengan kunci persendirian yang sepadan**.
+
+Bahagian terakhir itu ialah bahagian bijak. Dengan menandatangani permintaan dengan kunci persendirian, anda membuktikan anda benar-benar memegang kunci yang berpasangan dengan kunci awam yang anda serahkan, semuanya tanpa mendedahkan kunci persendirian itu sendiri. Kunci persendirian tidak pernah meninggalkan kawalan anda, yang tepat sebagaimana ia patut, kerana sesiapa yang memilikinya boleh menyamar sebagai anda.
+
+## CA ialah pihak berkuasa, bukan pemohon
+
+Satu titik penting: CSR ialah *permintaan*, dan CA bebas untuk menghormati sebahagian daripadanya dan mengabaikan yang lain. Anda boleh meminta sebarang subjek dan sebarang sambungan yang anda suka, tetapi CA memutuskan apa yang sijil yang dikeluarkan sebenarnya katakan. Ia akan menetapkan tempoh kesahihan mengikut peraturan semasa, memilih nombor siri, dan memasukkan hanya nama dan kegunaan yang ia sanggup jamin. Tandatangan CA, bukan permintaan anda, ialah apa yang memberi sijil akhir kuasanya. Pemisahan ini ialah sebab mengapa CSR yang penuh dengan medan bercita-cita tinggi tidak memberi anda sijil yang penuh dengannya.
+
+## Bagaimana CA memutuskan untuk mempercayai anda
+
+Sebelum menandatangani, CA mengesahkan bahawa anda berhak kepada nama yang anda minta, dan betapa telitinya bergantung pada jenis sijil:
+
+- **Domain Validated (DV)** membuktikan hanya bahawa anda mengawal domain. Ini ialah majoriti besar sijil TLS hari ini.
+- **Organization Validated (OV)** dan **Extended Validation (EV)** tambahan menapis entiti undang-undang di belakang domain, Subject Identity Information yang muncul dalam sijil.
+
+Untuk DV, CA mencabar anda untuk menunjukkan kawalan domain. Kaedah lazim ialah meletakkan fail tertentu pada URL di laman (HTTP-01), menerbitkan rekod DNS TXT tertentu (DNS-01), atau membalas e-mel yang dihantar ke alamat dalam domain. Lulus cabaran ialah apa yang meyakinkan CA bahawa kunci awam dalam CSR anda patut diikat kepada nama itu.
+
+## Sijil tandatangan sendiri melangkau CA
+
+Jika anda menandatangani CSR anda sendiri dengan kunci anda sendiri dan bukannya menghantarnya kepada CA, anda mendapat sijil tandatangan sendiri, di mana Issuer sama dengan Subject. Ia tidak membawa kuasa luaran, kerana satu-satunya benda yang menjamin untuknya ialah ia sendiri, tetapi ia amat berguna untuk pembangunan tempatan, perkhidmatan dalaman dengan stor kepercayaan mereka sendiri, atau bertindak sebagai akar PKI persendirian. Alat menanda apabila sijil dikeluarkan sendiri, yang memberitahu anda serta-merta bahawa kepercayaannya datang dari tempat selain CA awam.
+
+## ACME: mengautomasikan pertukaran
+
+Melakukan semua ini dengan tangan, berulang kali, ialah tepat apa yang peralihan kepada tempoh hayat sijil pendek menjadikan mustahil (lihat [artikel pembatalan](/learn/certificate-revocation)). Protokol ACME (RFC 8555), dipopularkan oleh Let's Encrypt, mengautomasikan keseluruhan perbualan: klien menjana pasangan kunci dan CSR, membuktikan kawalan domain melalui HTTP-01 atau DNS-01 secara automatik, menerima sijil, dan mengulang sebelum setiap luput, tanpa manusia terlibat. ACME ialah sebab berjuta-juta laman boleh menjalankan sijil yang memperbaharui setiap beberapa minggu, dan ia ialah tulang belakang operasi masa depan sijil-berhayat-pendek.
+
+## Permintaan menjadi kelayakan
+
+Lengkok mudah untuk dinyatakan. Anda memegang pasangan kunci. CSR meminta CA menjamin separuh awam, membuktikan sepanjang jalan bahawa anda memegang separuh persendirian. CA menyemak bahawa anda mengawal nama, kemudian mengeluarkan sijil yang kuasanya datang daripada tandatangan CA, bukan daripada apa-apa yang anda tulis dalam permintaan. Memeriksa hasilnya dengan penyahkod menunjukkan anda ikatan yang CA sebenarnya buat, yang ialah seluruh tujuan latihan: menukar kunci tanpa nama menjadi kunci dengan nama dipercayai dilampirkan.

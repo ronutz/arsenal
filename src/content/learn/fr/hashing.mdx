@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Hachage cryptographique : SHA-256 et la famille SHA-2"
+summary: "Ce que garantit une fonction de hachage, les propriétés qui la rendent cryptographique et pourquoi un condensé n'est pas du chiffrement."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ce qu'est un hachage
+
+Une fonction de hachage cryptographique prend une entrée de n'importe quelle taille, un mot, un fichier, une image disque de plusieurs gigaoctets, et produit une sortie de taille fixe appelée **condensé** (digest). SHA-256 renvoie toujours 256 bits (32 octets), que vous lui donniez un caractère ou un million. La même entrée donne toujours le même condensé, et même un changement d'un bit dans l'entrée en produit un complètement différent.
+
+Cette empreinte de taille fixe et déterministe est toute l'idée. Un condensé est un substitut compact des données : si deux condensés correspondent, vous pouvez avoir confiance que les entrées étaient identiques ; s'ils diffèrent, les entrées différaient quelque part.
+
+## Les propriétés qui le rendent cryptographique
+
+Beaucoup de fonctions réduisent des données à une taille fixe. Une fonction mérite le mot *cryptographique* en tenant trois garanties fortes :
+
+- **Résistance à la préimage (sens unique).** Étant donné un condensé, il est calculatoirement infaisable de trouver une entrée qui le produise. Vous ne pouvez pas exécuter la fonction à l'envers.
+- **Résistance à la seconde préimage et aux collisions.** Il est infaisable de trouver deux entrées différentes qui hachent vers le même condensé. Sans cela, un condensé serait une empreinte faible.
+- **L'effet d'avalanche.** Inverser un seul bit d'entrée change environ la moitié des bits de sortie, sans motif visible reliant l'entrée à la sortie.
+
+Cela ne tient que pour les fonctions qui ont survécu à l'examen. SHA-1, autrefois standard, est désormais **cassé** pour la résistance aux collisions (une collision pratique a été démontrée en 2017) et ne doit pas être utilisé là où la sécurité en dépend. La famille SHA-2, SHA-256, SHA-384 et SHA-512, reste solide et constitue la valeur sûre par défaut aujourd'hui.
+
+## Un hachage n'est pas du chiffrement
+
+C'est la confusion la plus courante, il vaut donc la peine de le dire clairement. Le chiffrement est **réversible** avec une clé : vous chiffrez pour garder des données secrètes et déchiffrez pour les récupérer. Un hachage **n'a ni clé ni inverse**. Vous ne pouvez pas « déhacher » un condensé pour récupérer l'entrée, car la sortie est bien plus petite que les entrées possibles et l'information est délibérément détruite. Le hachage sert à la vérification, pas au secret.
+
+## Là où le hachage prouve son utilité
+
+- **Intégrité et sommes de contrôle.** Publiez le SHA-256 d'un fichier à côté de lui ; quiconque le télécharge et recalcule le condensé peut confirmer que rien n'a été altéré ni corrompu en transit.
+- **Adressage par contenu.** Des systèmes comme Git nomment les objets par leur hachage, si bien qu'un contenu identique aboutit automatiquement à la même adresse.
+- **Signatures numériques.** Les schémas de signature signent le hachage d'un message plutôt que le message entier, car le condensé est petit et de taille fixe.
+
+Une réserve importante : **les mots de passe sont un cas particulier.** Un hachage rapide simple comme SHA-256 est le mauvais outil pour stocker des mots de passe, précisément parce qu'il est rapide, un attaquant peut tenter des milliards d'essais par seconde. Le stockage des mots de passe exige un algorithme délibérément lent et salé, tel que bcrypt, scrypt ou Argon2. Utilisez SHA-2 pour l'intégrité ; utilisez un hachage de mot de passe pour les mots de passe.
+
+## Comment l'outil le calcule
+
+L'[outil de hachage](/tools/hash) utilise l'implémentation native Web Crypto du navigateur de SHA-1, SHA-256, SHA-384 et SHA-512, le même code vérifié que votre navigateur utilise pour TLS, et affiche chaque condensé en hexadécimal et en Base64. Rien n'est téléversé ; le calcul a lieu localement.

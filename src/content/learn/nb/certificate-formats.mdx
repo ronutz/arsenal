@@ -1,0 +1,62 @@
+---
+slug: certificate-formats
+title: "PEM, DER og certifikatfilformatene"
+summary: "Hvorfor det samme sertifikatet kommer i så mange filformer, hva PEM og DER faktisk er, og hva .crt, .pem, .pfx og .p12 virkelig holder."
+concepts: ["x509", "pem", "der", "pkcs12", "pkcs7", "encoding"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-signing-request", "base64"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ett sertifikat, mange innpakninger
+
+En vanlig kilde til forvirring er at et enkelt sertifikat kan ankomme som en `.crt`, en `.cer`, en `.pem`, en `.der`, eller begravd inne i en `.pfx`, og folk antar at disse er forskjellige ting. Det er de som regel ikke. Sertifikatet er én fast struktur (ASN.1-oppsettet beskrevet i [anatomiartikkelen](/learn/x509-anatomy)); hva som endrer seg er hvordan de bytene kodes og hva ellers er pakket ved siden av dem. Å kjenne den håndfullen virkelige formater får filendelsene til å slutte å være mystiske.
+
+## DER: den kanoniske binæren
+
+Nederst er DER, Distinguished Encoding Rules fra ITU-T X.690. DER er den faktiske binære serialiseringen av sertifikatets ASN.1-tre: en følge av tag-length-value-poster, med nøyaktig én gyldig koding for enhver gitt verdi. Denne determinismen betyr noe, fordi utstederens signatur beregnes over disse nøyaktige bytene. En `.der`-fil (og ofte en `.cer`-fil) er rå DER uten tekstinnpakning. X.509-verktøyet avkoder denne binæren direkte.
+
+## PEM: DER innpakket i tekst
+
+PEM er DER som er blitt Base64-kodet og pakket inn i panserlinjer, definert av RFC 7468:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...   (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+PEM eksisterer fordi binær ikke overlever å bli limt inn i en e-post, en konfigurasjonsfil eller en terminal, mens Base64-tekst gjør det. Etiketten på `BEGIN`/`END`-linjene forteller deg hva kroppen er, og det finnes flere:
+
+- `CERTIFICATE` er et X.509-sertifikat.
+- `CERTIFICATE REQUEST` er en CSR (se [signeringsforespørsel-artikkelen](/learn/certificate-signing-request)).
+- `PRIVATE KEY` er en PKCS#8-privat nøkkel; `RSA PRIVATE KEY` og `EC PRIVATE KEY` er de eldre nøkkelspesifikke formatene.
+- `PUBLIC KEY` er et nakent SubjectPublicKeyInfo.
+- `X509 CRL` er en sertifikattilbakekallingsliste.
+
+En enkelt PEM-fil kan holde flere blokker etter hverandre, noe som er hvordan en tjeners bladsertifikat pluss dens mellomkjede leveres i en enkelt `fullchain.pem`. For kodingen under, se [Base64-artikkelen](/learn/base64).
+
+## Filendelsen er ikke formatet
+
+Dette er delen som får folk til å snuble: `.crt`, `.cer`, `.pem` og `.key` beskriver hensikt, ikke koding. En `.crt` kan være PEM eller DER. En `.cer` er ofte DER på Windows men PEM andre steder. En `.key` er en privat nøkkel, men kan være PKCS#1, PKCS#8 eller SEC1, i enten PEM eller DER. Den eneste pålitelige måten å vite hva du har er å se på de første bytene: PEM begynner med den synlige `-----BEGIN`-linjen, mens DER begynner med SEQUENCE-tag-byten `0x30`. Verktøyet aksepterer enten, så du kan lime inn en PEM-blokk eller laste opp rå DER uten å konvertere først.
+
+## Beholdere som bunter mer enn én ting
+
+To PKCS-formater pakker flere objekter sammen:
+
+- **PKCS#7** (`.p7b`, `.p7c`) bærer ett eller flere sertifikater, typisk et sertifikat pluss dets kjede, men ingen privat nøkkel. Det brukes ofte til å gi noen en full kjede i én fil.
+- **PKCS#12** (`.pfx`, `.p12`), definert av RFC 7292, bunter et sertifikat, dets kjede og den matchende private nøkkelen til en enkelt passordbeskyttet blob. Dette er hva du eksporterer fra et Windows-sertifikatlager eller importerer til en lastbalanserer når du vil at nøkkelen og sertifikatet skal reise sammen. Fordi den inneholder den private nøkkelen, er en PKCS#12-fil sensitiv og passordet er det eneste som beskytter den.
+
+## Privatnøkkelkodinger
+
+Private nøkler har sin egen lille dyrehage. **PKCS#1** (`RSA PRIVATE KEY`) er det opprinnelige kun-RSA-formatet. **SEC1** (`EC PRIVATE KEY`) er ekvivalenten for elliptisk-kurve-nøkler. **PKCS#8** (`PRIVATE KEY`, valgfritt `ENCRYPTED PRIVATE KEY`) er den moderne, algoritmenøytrale innpakningen som kan holde enten, og er hva de fleste nåværende verktøy avgir. En sertifikatavkoder trenger aldri den private nøkkelen, og du bør aldri lime inn en privat nøkkel i et verktøy du ikke kontrollerer; X.509-verktøyet er for sertifikater, som er offentlige ved design.
+
+## Konvertere mellom dem
+
+Fordi den indre strukturen er identisk, er konvertering tapsfri og rutinemessig. Med OpenSSL er PEM til DER `openssl x509 -in cert.pem -outform der -out cert.der`, og det omvendte bytter in- og out-formene. Å bygge et PKCS#12 fra et separat sertifikat og nøkkel er `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`. Ingen av disse endrer sertifikatet selv; de ompakker det bare.
+
+## Innpakning, ikke substans
+
+Konklusjonen er at PEM mot DER, og `.crt` mot `.pfx`, er spørsmål om transport og bunting, ikke om hva sertifikatet sier. Fjern panseret, avkod fra Base64 og ignorer beholderen, og under hver eneste av disse er den samme signerte ASN.1-erklæringen som binder en offentlig nøkkel til et navn. Verktøyets oppgave er å skrelle av den innpakningen i nettleseren din og vise deg strukturen inni, uten at noen fil noensinne forlater siden.

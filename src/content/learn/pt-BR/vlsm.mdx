@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: dividindo um bloco em sub-redes desiguais"
+summary: "Como recortar um bloco de endereços em sub-redes de tamanhos diferentes sem desperdiçar espaço, e a regra do maior primeiro que mantém tudo organizado."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## O problema com sub-redes iguais
+
+O sub-redeamento clássico divide um bloco em pedaços de um único tamanho fixo. Isso é simples, mas é um desperdício quando suas necessidades diferem. Se um segmento tem 100 hosts e outro é um enlace entre dois roteadores com 2, dar a ambos um `/26` (62 utilizáveis) falha para o primeiro e desperdiça 60 endereços no segundo. O **VLSM**, mascaramento de sub-rede de comprimento variável, corrige isso ao deixar cada sub-rede usar o comprimento de prefixo que atende à sua própria necessidade, tudo recortado do mesmo bloco pai.
+
+A única coisa que torna o VLSM mais trabalhoso que o sub-redeamento fixo é a ordem: você precisa colocar as **maiores sub-redes primeiro**, ou vai desperdiçar endereços e criar sobreposições.
+
+## Dimensionando cada sub-rede
+
+Comece pela quantidade de hosts que cada segmento precisa, depois encontre o menor bloco que a comporta, lembrando que dois endereços em todo bloco comum são reservados (rede e broadcast):
+
+- 100 hosts precisam de 7 bits de host (2⁷ − 2 = 126 utilizáveis), um `/25`.
+- 50 hosts precisam de 6 bits de host (62 utilizáveis), um `/26`.
+- 25 hosts precisam de 5 bits de host (30 utilizáveis), um `/27`.
+- 10 hosts precisam de 4 bits de host (14 utilizáveis), um `/28`.
+- Um enlace ponto a ponto de 2 hosts é um `/30` (2 utilizáveis), ou um `/31` sob a RFC 3021.
+
+Sempre arredonde para cima para a próxima potência de dois. Um segmento de 100 hosts não cabe em um `/26` (62), então ele assume o próximo tamanho, um `/25`.
+
+## Recortando do bloco, do maior primeiro
+
+Suponha que você possua `192.168.10.0/24` e precise das cinco sub-redes acima. Aloque em ordem decrescente de tamanho, cada uma começando em seu limite natural:
+
+```
+/25  192.168.10.0   – .127   (126 utilizáveis)  ← segmento de 100 hosts
+/26  192.168.10.128 – .191   (62 utilizáveis)   ← segmento de 50 hosts
+/27  192.168.10.192 – .223   (30 utilizáveis)   ← segmento de 25 hosts
+/28  192.168.10.224 – .239   (14 utilizáveis)   ← segmento de 10 hosts
+/30  192.168.10.240 – .243   (2 utilizáveis)    ← enlace de roteador
+```
+
+Cada bloco começa exatamente onde o anterior termina, e de `192.168.10.244` em diante ainda está livre para crescimento futuro. Se você tivesse alocado o `/30` primeiro, o `/25` não teria mais um limite limpo onde se encaixar, que é toda a razão da regra do maior primeiro.
+
+## Por que isso importa
+
+O VLSM é como redes reais conservam espaço de endereçamento e mantêm as alocações alinhadas para que as rotas possam ser sumarizadas de forma limpa. A aritmética é a mesma matemática de comprimento de prefixo de uma única sub-rede, aplicada repetidamente: fixe mais bits para tornar um bloco menor e mantenha cada bloco em um limite de potência de dois.
+
+Você pode verificar qualquer alocação na [calculadora CIDR](/#cidr), que mostra o endereço de rede e de broadcast, a máscara e a contagem de hosts utilizáveis de cada bloco instantaneamente e inteiramente no seu navegador.

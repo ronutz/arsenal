@@ -1,0 +1,43 @@
+---
+slug: sortable-id-formats
+title: "ULID, KSUID, Snowflake och andra sorterbara ID:n"
+summary: "De populära alternativen till UUID:er för tidsordnade identifierare, hur var och en är byggd, och varför UUIDv7 nu täcker det mesta de uppfanns för."
+concepts: ["uuid", "ulid", "ksuid", "snowflake", "nanoid", "sortable-ids"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Varför dessa finns
+
+Slumpmässig UUIDv4 är utmärkt på att vara unik och usel på att vara ordnad, och den oordningen skadar i tysthet databasens prestanda (berättelsen i artikeln [databasnycklar](/learn/uuid-database-keys)). Innan UUIDv7 standardiserade en tidsordnad UUID uppfann flera projekt sina egna identifierarformat för att få samma fördel: ett ID som sorterar efter skapelsetid, är kompakt och URL-vänligt, och ändå inte behöver någon central samordning. De är värda att känna till eftersom du kommer att möta dem i verkliga system och eftersom de illustrerar samma handfull avvägningar.
+
+## Det gemensamma receptet
+
+Nästan varje sorterbart ID använder en idé: lägg en **tidsstämpel först** och **slumpmässiga eller sekventiella bitar efter**. Att sortera ID:na som text ordnar dem då ungefär efter tid, eftersom den mest signifikanta delen är klockan. Att koda alltihop i en bas som bevarar ordningen (så att texten sorterar likadant som byten) gör ID:na lexikografiskt sorterbara som vanliga strängar. Formaten skiljer sig i hur många bitar de lägger på tid kontra slumpmässighet, hur de kodar resultatet och om de behöver någon samordning mellan generatorer.
+
+## ULID
+
+ULID är en 128-bitars identifierare, samma bredd som en UUID, återgiven som 26 tecken i Crockford-base32. De första 48 bitarna är en millisekundstidsstämpel och de återstående 80 är slumpmässiga. Kodningen är skiftlägesokänslig och vald för att vara läsbar, och den är lexikografiskt sorterbar, med ett valfritt monotont läge som garanterar ordning även för ID:n skapade under samma millisekund. ULID var ett av de populäraste svaren på v4:s ordningsproblem och kan, då den är 128-bitars, lagras i samma utrymme som en UUID.
+
+## KSUID
+
+KSUID (från Segment) är en 160-bitars identifierare kodad som 27 base62-tecken. Den använder en 32-bitars tidsstämpel med sekundupplösning och en egen epok (så att dess tidsstämplar förblir kompakta i många år) följt av 128 bitar slumpmässighet. Den större slumpdelen gör kollisioner försvinnande osannolika även vid höga genereringstakter, till priset av att vara bredare än en UUID. Liksom ULID sorterar den efter tid när den sorteras som text.
+
+## Snowflake
+
+Snowflake (med ursprung hos Twitter) har en annan form: ett 64-bitars heltal, inte ett 128-bitars värde. Den packar en millisekundstidsstämpel, en maskin- eller datacenteridentifierare och ett sekvensnummer per millisekund i 64 bitar, så att den får plats i en vanlig teckenförsedd bigint-kolumn. Den kompaktheten är dess dragningskraft för mycket stora datamängder. Haken är samordning: varje generator behöver ett unikt maskin-ID, som måste tilldelas och hanteras, så Snowflake byter UUID:ernas samordningsfria egenskap mot en mycket mindre identifierare. Många system har sitt eget Snowflake-liknande system byggt på samma packningsidé.
+
+## NanoID
+
+NanoID är avvikaren: den är inte tidsbaserad alls. Den är helt enkelt en kompakt, URL-säker slumpsträng med konfigurerbart alfabet och längd, utformad som ett mindre, vänligare alternativ till en slumpmässig UUID när du vill ha en ogenomskinlig identifierare i en kort sträng. Jämför den med UUIDv4 snarare än med de sorterbara formaten: den optimerar för storlek och URL-vänlighet, inte för ordning.
+
+## Hur de jämförs
+
+Avvägningarna ställer upp längs några axlar. **Storlek**: Snowflake är 64-bitars, ULID och UUID är 128-bitars, KSUID är 160-bitars. **Kodning**: base32 (ULID), base62 (KSUID), ett heltal (Snowflake) eller hex (UUID). **Samordning**: bara Snowflake behöver tilldelade maskin-ID:n; resten är samordningsfria. **Sorterbarhet**: alla utom NanoID är tidsordnade. Och en gemensam förbehåll: vilket tidsstämpel-prefixat ID som helst gör sin skapelsetid synlig för var och en som kan läsa det, vilket är fint för de flesta användningar men värt att notera när en identifierare exponeras offentligt.
+
+## Varför UUIDv7 ändrade kalkylen
+
+Anledningen till att den här listan betyder mindre än den brukade är att UUIDv7 (se artikeln [versioner](/learn/uuid-versions)) standardiserade samma tidsstämpel-plus-slump-recept inom det vanliga 128-bitars UUID-formatet. Den ger dig tidsordning och god indexlokalitet samtidigt som den förblir en standard-UUID som varje databas och bibliotek redan förstår, utan egen kodning och utan samordning. Så för nya system är den ärliga standarden att gripa efter v7 först och använda ett av dessa alternativ endast när du behöver dess specifika egenskap: en 64-bitars bredd som ryms i ett bigint (Snowflake), en viss textkodning eller ett större slumputrymme. De löste ett verkligt problem; v7 löser nu det mesta av det i en standardform.

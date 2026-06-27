@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Podstawy dzielenia na podsieci"
+summary: "Jak podzielić jedną sieć na mniejsze podsieci, i dlaczego pożyczanie bitów hosta to cały trik."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Po co służy dzielenie na podsieci
+
+Pojedyncza duża sieć rzadko jest tym, czego chcesz. Dzielenie na podsieci (subnetting) to praktyka brania jednego bloku adresów i rozdzielania go na kilka mniejszych bloków, **podsieci**, z których każda może być osobną domeną broadcast, granicą bezpieczeństwa, lub segmentem fizycznym. Kampus może dać każdemu budynkowi własną podsieć; konto w chmurze może dać każdej warstwie aplikacji własną.
+
+Mechanizm jest prostszy, niż zwykle brzmi: **dzielenie na podsieci pożycza bity z części hosta i dodaje je do części sieci.**
+
+## Pożyczanie bitów
+
+Zacznij od `192.168.1.0/24`. Prefiks to 24, więc 8 bitów jest wolnych dla hostów, dając jeden blok 256 adresów.
+
+Załóżmy, że potrzebujesz czterech osobnych podsieci zamiast jednej. Cztery to 2², więc potrzebujesz **2 dodatkowych bitów sieci**. Pożycz je ze strony hosta: prefiks rośnie z /24 do /26.
+
+- `/26` ustala 26 bitów, zostawia 6 wolnych → 64 adresy na podsieć.
+- Cztery takie podsieci kafelkują pierwotne /24 dokładnie:
+  - `192.168.1.0/26`, adresy .0 do .63
+  - `192.168.1.64/26`, adresy .64 do .127
+  - `192.168.1.128/26`, adresy .128 do .191
+  - `192.168.1.192/26`, adresy .192 do .255
+
+Zauważ wzorzec: każda podsieć ma 64 adresy szerokości, więc każda zaczyna się na wielokrotności 64. Ta reguła „zaczyna się na wielokrotności swojego rozmiaru" to sposób, w jaki znajduje się poprawne granice podsieci. Blok musi zaczynać się na adresie będącym wielokrotnością swojego własnego rozmiaru, inaczej nie jest poprawnym blokiem CIDR.
+
+## Kompromis
+
+Każdy bit, który pożyczasz dla sieci, połowi hosty na podsieć:
+
+| Prefiks | Podsieci z /24 | Adresy każda | Użyteczne hosty każda |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Więcej podsieci oznacza mniej hostów w każdej. Projektowanie sieci to w dużej mierze wybór, gdzie na tej krzywej usiąść: dość podsieci dla twoich segmentów, dość hostów w każdej dla urządzeń, które tam mieszkają, z pewnym miejscem na wzrost.
+
+## Dzielenie na podsieci o zmiennej długości
+
+Podsieci w obrębie tego samego rodzica nie muszą wszystkie być tego samego rozmiaru. **Maskowanie podsieci o zmiennej długości (VLSM)** pozwala ci wyrzeźbić dużą podsieć dla segmentu, który potrzebuje wielu hostów, i małe podsieci dla łączy punkt-punkt, wszystko z tego samego bloku rodzica. Jedyne reguły to te stałe: każda podsieć jest potęgą dwójki w rozmiarze, i każda zaczyna się na wielokrotności swojego rozmiaru, tak by bloki nigdy się nie nakładały.
+
+[Kalkulator CIDR](/learn) pokazuje dokładny zakres, granice, i liczbę użytecznych hostów dla dowolnego prefiksu, co czyni sprawdzanie planu podsieci kwestią wpisania każdego bloku.

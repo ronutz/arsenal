@@ -1,0 +1,43 @@
+---
+slug: ipv6-transition
+title: "Menjalankan IPv6 dan IPv4 bersama: dual-stack dan terjemahan"
+summary: "Bagaimana internet merentas dua keluarga alamat tidak serasi: dual-stack, Happy Eyeballs, NAT64, dan alamat IPv4-terbenam yang menjadikannya berfungsi."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dua internet sekaligus
+
+IPv6 dan IPv4 tidak serasi pada wayar: hos hanya-IPv6 tidak boleh bercakap terus dengan pelayan hanya-IPv4, kerana paket menggunakan saiz alamat dan pengepala berbeza. Tidak akan pernah ada hari keputusan di mana semua orang bertukar pada tengah malam, jadi internet telah menghabiskan bertahun-tahun menjalankan kedua-dua protokol sebelah-menyebelah dan merentas antara mereka. Teknologi peralihan wujud untuk menjadikan kewujudan bersama itu tidak kelihatan kepada pengguna sementara protokol lama perlahan-lahan dibersarakan.
+
+## Dual-stack: jalankan sahaja kedua-duanya
+
+Pendekatan paling ringkas ialah dual-stack: hos, penghala, atau pelayan menjalankan IPv4 dan IPv6 serentak, dengan alamat dalam setiap satu. Apabila nama mempunyai kedua-dua rekod A (IPv4) dan rekod AAAA (IPv6) dalam DNS, klien dual-stack boleh mencapainya melalui mana-mana. Keutamaan semasa ialah menggunakan IPv6 apabila ia tersedia dan berundur ke IPv4 jika tidak. Dual-stack ialah laluan yang kebanyakan rangkaian ambil dahulu, kerana tiada apa perlu diterjemahkan; setiap protokol cuma berjalan secara asli.
+
+## Happy Eyeballs: sembunyikan kegagalan
+
+Mengutamakan IPv6 hanya menyenangkan jika laluan IPv6 rosak tidak membuat pengguna menunggu. Happy Eyeballs (RFC 8305) menyelesaikan ini dengan melumbakan kedua-duanya: klien memulakan sambungan IPv6 dan, selepas pendahuluan amat pendek, juga memulakan satu IPv4, kemudian menggunakan yang mana selesai dahulu dan diam-diam menggugurkan yang satu lagi. Kesannya ialah pengguna mendapat IPv6 apabila ia sihat dan undur segera, tidak disedari ke IPv4 apabila ia tidak. Algoritma ini ialah sebahagian besar sebab mengapa mendayakan IPv6 jarang membuat apa-apa terasa lebih perlahan.
+
+## Alamat IPv4 terbenam dalam IPv6
+
+Beberapa mekanisme berfungsi dengan membawa alamat IPv4 dalam alamat IPv6, dan alat mengenali bentuk ini. Julat IPv4-dipetakan `::ffff:0:0/96` mewakili alamat IPv4 kepada soket dual-stack, jadi `::ffff:192.0.2.1` ialah bagaimana hos IPv4 192.0.2.1 muncul dalam API IPv6. Sistem terjemahan menggunakan awalan terkenal `64:ff9b::/96` (RFC 6052) untuk membenamkan destinasi IPv4 ke dalam alamat IPv6 yang boleh dihalakan ke penterjemah. Mengenali alamat IPv4 terbenam memberitahu anda bahawa apa yang kelihatan seperti destinasi IPv6 sebenarnya laluan ke sesuatu di internet IPv4.
+
+## NAT64 dan DNS64: hanya-IPv6 mencapai IPv4
+
+Untuk rangkaian yang telah menjadi hanya-IPv6, NAT64 (RFC 6146) dan DNS64 (RFC 6147) membenarkan klien itu masih mencapai pelayan hanya-IPv4. DNS64 mensintesis rekod AAAA untuk nama hanya-IPv4 dengan membenamkan alamat IPv4-nya ke dalam awalan terkenal, jadi klien mendapat destinasi IPv6 untuk disambungkan. NAT64 kemudian duduk di sempadan dan menterjemah paket IPv6 itu ke IPv4 dalam perjalanan keluar, dan kembali dalam perjalanan masuk. Bersama mereka membenarkan rangkaian moden hanya-IPv6 berkelakuan seolah-olah seluruh internet boleh dicapai melalui IPv6.
+
+## 464XLAT untuk aplikasi IPv4 degil
+
+Sesetengah aplikasi masih menghulurkan alamat IPv4 literal dan rosak pada rangkaian hanya-IPv6 walaupun dengan NAT64 hadir. 464XLAT (RFC 6877), diatur guna secara meluas pada pembawa mudah alih, menambah terjemahan kecil pada klien yang membentangkan alamat IPv4 persendirian secara tempatan dan menerowonginya merentas rangkaian hanya-IPv6 ke get laluan NAT64. Ia ialah sebab rangkaian mudah alih hanya-IPv6 masih boleh menjalankan aplikasi hanya-IPv4 tanpa pengguna menyedari.
+
+## Mengapa tiada NAT dalam IPv6 asli
+
+Soalan kerap daripada pentadbir IPv4 ialah ke mana NAT pergi. IPv6 asli memberi setiap hos alamat boleh dihala secara global, jadi NAT perkongsian alamat yang mentakrifkan rangkaian rumah dan pejabat IPv4 cuma tidak perlu; ketersambungan ialah hujung ke hujung, dan dinding api berkeadaan, bukan terjemahan alamat, menyediakan sempadan. Di tempat pengalamatan persendirian, tidak dihala benar-benar diingini, IPv6 menawarkan Alamat Tempatan Unik (Unique Local Addresses) dalam `fc00::/7`, jenis ULA yang alat kenal pasti. Terjemahan yang dilihat di tepi IPv6 ialah untuk mencapai protokol *lama*, bukan untuk meregangkan ruang alamat terhad.
+
+## Perancah, bukan destinasi
+
+Semua jentera ini, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, ialah perancah peralihan. Keadaan akhir ialah IPv6 asli di mana-mana, dengan terjemahan diperlukan hanya untuk mencapai apa jua IPv4 yang berbaki. Sementara itu, mengenali bentuk IPv4-terbenam dan memahami jambatan mana yang dimainkan membantu anda menaakul tentang laluan yang mungkin diam-diam melintas antara dua internet. Apabila alat menandai alamat sebagai IPv4-dipetakan atau duduk dalam awalan terjemahan, itu ialah petunjuk anda bahawa titik akhir IPv4 sedang bersembunyi dalam alamat IPv6.

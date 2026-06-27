@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Prywatna przestrzeń adresowa IPv4 i RFC 1918"
+summary: "Trzy zakresy prywatne, dlaczego nie są routowalne w internecie oraz inne bloki specjalne, które oznacza narzędzie CIDR."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Adresy, których możesz używać wielokrotnie
+
+Istnieje tylko około 4,3 miliarda adresów IPv4, zbyt mało, by każde urządzenie miało jeden adres publiczny. Odpowiedzią (RFC 1918) jest zarezerwowanie trzech zakresów, których każdy może używać we własnej sieci, bez rejestracji. Ponieważ wszyscy używają tych samych zakresów prywatnych, nie mogą być one unikalne w publicznym internecie, więc **nie są tam routowalne**. Dotarcie do świata zewnętrznego wymaga translacji adresów sieciowych (NAT), która zamienia prywatny adres źródłowy na współdzielony adres publiczny na brzegu sieci.
+
+## Trzy zakresy RFC 1918
+
+- **`10.0.0.0/8`**: od `10.0.0.0` do `10.255.255.255`, 16 777 216 adresów. Jedna bardzo duża sieć.
+- **`172.16.0.0/12`**: od `172.16.0.0` do `172.31.255.255`, 1 048 576 adresów. Nie cała klasa B, lecz 16 ciągłych `/16` od `172.16` do `172.31`, zakres najczęściej zapamiętywany błędnie.
+- **`192.168.0.0/16`**: od `192.168.0.0` do `192.168.255.255`, 65 536 adresów. Znajomy zakres routerów domowych.
+
+## Inne bloki specjalne
+
+Kilka innych zakresów jest zarezerwowanych do określonych celów i również nie są zwykłymi adresami publicznymi:
+
+- **`100.64.0.0/10`** (RFC 6598) to współdzielona przestrzeń NAT operatora (CGNAT), używana przez dostawców między klientem a ich publiczną pulą. Przypomina prywatną, lecz różni się od RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) to link-local, samodzielnie przydzielany adres, który host wybiera, gdy żaden serwer DHCP nie odpowiada (APIPA w Windows). Nigdy nie opuszcza lokalnego łącza.
+- **`127.0.0.0/8`** to pętla zwrotna; `127.0.0.1` to host rozmawiający sam ze sobą.
+- **`0.0.0.0/8`**, zakres multicast `224.0.0.0/4` oraz zakresy dokumentacyjne (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) także są zarezerwowane.
+
+IPv6 ma tę samą ideę w innej formie: **Unique Local Addresses** w `fc00::/7` (w praktyce `fd00::/8`) są odpowiednikiem prywatnego użycia RFC 1918, również nieroutowalne globalnie.
+
+## Dlaczego to ważne
+
+Wiedza, czy adres jest prywatny, publiczny czy specjalny, od razu mówi, czy może pojawić się w internecie, czy potrzebuje NAT i czy reguła zapory lub trasa ma sens. Adres `10/8` w publicznym rekordzie DNS lub adres `169.254` tam, gdzie spodziewałeś się DHCP, to sygnał wart odnotowania.
+
+[Kalkulator CIDR](/#cidr) klasyfikuje każdy adres lub blok względem tych zakresów specjalnych i raportuje, czy jest prywatny, zarezerwowany czy globalnie osiągalny, w całości obliczone w przeglądarce.

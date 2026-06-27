@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Paano gumagana ang mga IPv4 address"
+summary: "Ang 32 bits sa likod ng bawat dotted-quad na address, at kung ano ang ibig sabihin ng mga private, loopback, at espesyal na range."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tatlumpu't dalawang bits na nakabalatkayo
+
+Ang isang IPv4 address ay isang nag-iisang 32-bit na numero. Halos hindi natin ito isinusulat sa ganoong paraan dahil mahirap basahin ang 32 na isa at sero, kaya ito ay hinahati sa apat na 8-bit na grupo na tinatawag na mga **octet**, bawat isa ay ipinapakita sa decimal mula 0 hanggang 255 at pinagdurugtong ng mga tuldok. Ang `192.168.1.10` ay isa lamang mas magiliw na paraan ng pagsulat ng isang tiyak na 32-bit na halaga.
+
+Dahil ang bawat octet ay 8 bits, ang buong espasyo ay 2³² na address, mga 4.3 bilyon. Iyon ay tunog napakalaki noong dekada 1980 at ang dahilan kung bakit ang pagkaubos ng IPv4 address ay naging isang tunay na problema makalipas ang mga dekada, at kung bakit umiiral ang private addressing at IPv6.
+
+## Network part at host part
+
+Walang address na nakatayong mag-isa, ito ay kabilang sa isang block, at sa loob ng block na iyon ang bits ay nahahati sa isang **network part** (aling block ito) at isang **host part** (aling makina sa loob ng block). Ang prefix length, isinusulat sa istilong CIDR bilang `/24`, ay minamarkahan kung saan bumabagsak ang hatihan na iyon. Lahat ng nasa kaliwa ng linya ay network; lahat ng nasa kanan ay tumutukoy sa isang host. Ito ang parehong ideyang sinaliksik sa CIDR notation, na tinitingnan mula sa panig ng address.
+
+## Mga range na may espesyal na kahulugan
+
+Hindi bawat address ay isang ordinaryong host address. Ilang range ang nakareserba para sa mga tiyak na layunin, at ang pagkilala sa mga ito ay bahagi ng pagbabasa ng anumang network configuration:
+
+- Ang **mga private range (RFC 1918)** ay nakareserba para sa paggamit sa loob ng mga private network at hindi kailanman ni-ruta sa pampublikong internet:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Ito ang dahilan kung bakit ang mga home at office network ay madalas gumamit ng `192.168.x.x` o `10.x.x.x`, ang mga address na iyon ay malayang muling gamitin saanman dahil hindi sila kailanman lumilitaw sa bukas na internet.
+- Ang **loopback (`127.0.0.0/8`)** ay laging tumutukoy sa lokal na makina mismo. Ang `127.0.0.1` ay ang address na ginagamit ng isang computer upang makipag-usap sa sarili nito.
+- Ang **mga link-local (`169.254.0.0/16`)** na address ay sariling-itinatalaga kapag ang isang device ay hindi makaabot sa isang DHCP server. Ang pagkakita ng isa ay karaniwang nangangahulugang "walang address na ibinigay".
+- Ang **unspecified address (`0.0.0.0`)** at ang default route (`0.0.0.0/0`) ay espesyal: ang huli ay ang catch-all na route na tumutugma sa anumang destinasyon na hindi saklaw ng isang mas tiyak na route.
+
+## Bakit mahalaga ang mga espesyal na range para sa seguridad
+
+Ang mga nakareserbang range na ito ay hindi lamang trivia. Ang isang tool na kumukuha ng isang user-supplied na address ay dapat tumangging maabot ang mga private, loopback, at link-local na range, o maaari itong malinlang na gumawa ng mga request laban sa mga internal na sistema na hindi nito dapat hawakan kailanman, isang uri ng pag-atake na tinatawag na server-side request forgery. Ang pag-alam kung aling mga range ang internal ang unang hakbang sa pagtatanggol laban dito. Ito mismo ang dahilan kung bakit ang mga network-touching na tool sa site na ito ay sinusuri ang isang resolved na address laban sa mga range na ito bago pa man kumonekta.
+
+Upang makita kung paano nakaupo ang anumang address sa loob ng block nito, ang network address nito, broadcast address, at ang magagamit na range sa paligid nito, subukan ang [CIDR calculator](/learn), na kinukuwenta ang lahat ng iyon nang lokal sa iyong browser.

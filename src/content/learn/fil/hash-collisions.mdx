@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Mga collision, preimage resistance, at ang birthday bound"
+summary: "Ang tatlong katangian ng seguridad na dapat taglayin ng isang cryptographic hash, bakit mahalaga ang mga collision, at ang matematika ng birthday na nagtatakda ng tunay na lakas."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ano ang ibig sabihin ng "ligtas" para sa isang hash
+
+Ang anumang function na nag-map ng mga input sa mga output na nakapirming laki ay magmamapa rin sa huli ng dalawang magkaibang input sa parehong output, dahil may walang hanggang input at may hangganang output lamang. Ang pagiging **ligtas** ng isang hash ay hindi nangangahulugang hindi maaaring umiral ang mga collision; nangangahulugan ito na hindi sila *mahahanap* sa isang magagawang dami ng trabaho. Nakukuha ito ng tatlong magkakahiwalay na katangian.
+
+## Ang tatlong katangian
+
+- **Preimage resistance.** Sa isang halagang hash na `h`, hindi magagawa ang paghahanap ng anumang input `m` na may `hash(m) = h`. Ito ang katangiang one-way: hindi dapat ihayag ng isang fingerprint kung ano ang gumawa nito. Para sa isang n-bit na hash, nagkakahalaga ito ng humigit-kumulang 2ⁿ na trabaho.
+- **Second-preimage resistance.** Sa isang partikular na input `m1`, hindi magagawa ang paghahanap ng *ibang* input `m2` na may parehong hash. Hindi makakagawa ng pekeng pangalawang dokumento ang isang umaatake na tumutugma sa fingerprint ng isang ibinigay. Humigit-kumulang 2ⁿ na trabaho rin.
+- **Collision resistance.** Hindi magagawa ang paghahanap ng *anumang* dalawang magkaibang input na nagbubunga ng parehong halagang hash. Maaaring piliin ng umaatake ang dalawa, na nagpapagawang ito ang pinakamadali sa tatlo na atakihin.
+
+## Ang birthday bound
+
+Mas mahina ang collision resistance kaysa sa iba pang dalawa dahil sa isang banayad na dahilan, ang **birthday paradox**. Sa isang silid na may 23 katao lamang, may humigit-kumulang 50% na tsansa na dalawa ang magkaparehong kaarawan, dahil lumalaki nang quadratic ang bilang ng *mga pares*. Naaangkop ang parehong epekto sa mga hash: ang paghahanap ng isang collision sa isang n-bit na hash ay nangangailangan lamang ng humigit-kumulang **2^(n/2)** na pagsubok, hindi 2ⁿ.
+
+Hinahati nito sa kalahati ang epektibong lakas laban sa mga collision:
+
+- Nagbibigay ang SHA-256 ng humigit-kumulang 128 bit ng collision resistance (2¹²⁸ na trabaho), na malayo sa abot.
+- Ang isang 128-bit na hash gaya ng MD5 ay magbibigay lamang ng humigit-kumulang 64 bit ng collision resistance, kahit hindi ito nasira sa ibang dahilan, at ito ang dahilan kung bakit mahalaga ang laki ng output mismo.
+
+Kaya gumagamit ang mga modernong hash ng 256 bit o higit pa: upang panatilihin ang hinating numero nang kumportableng lampas sa abot ng sinumang umaatake.
+
+## Bakit mapanganib ang isang nahanap na collision
+
+Kapag nabigo ang collision resistance, makakagawa ang isang umaatake ng dalawang input na may parehong hash, mapapirmahan o mapagkatiwalaan ang isa, at mapapalitan ito ng isa pa. Nagpakita ang SHAttered ng dalawang PDF na may parehong SHA-1 digest; gumamit ang Flame malware ng isang MD5 collision upang magpeke ng isang pinagkakatiwalaang sertipiko. Sa parehong kaso wasto ang lagda para sa *parehong* dokumento, kaya huminto sa pagpapatunay ang isang na-verify na lagda kung alin ang aktwal mong natanggap. Ito ang konkretong dahilan kung bakit hindi dapat gamitin ang MD5 at SHA-1 kung saan maaaring pumili ng input ang isang kalaban.
+
+Pinapayagan ka ng [tool na hash](/tools/hash) na mag-hash ng anumang input at ihambing ang mga digest, upang makita mo mismo na ang isang binagong bit ay nagbubunga ng ganap na naiibang fingerprint, lahat kinakalkula sa iyong browser nang walang anumang ipinapadala.

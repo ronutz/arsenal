@@ -1,0 +1,43 @@
+---
+slug: sortable-id-formats
+title: "ULID, KSUID, Snowflake, dan ID boleh-susun lain"
+summary: "Alternatif popular kepada UUID untuk pengecam tertib-masa, bagaimana setiap satu dibina, dan mengapa UUIDv7 kini meliputi kebanyakan tujuan ia dicipta."
+concepts: ["uuid", "ulid", "ksuid", "snowflake", "nanoid", "sortable-ids"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Mengapa ini wujud
+
+UUIDv4 rawak amat baik dalam menjadi unik dan sangat teruk dalam menjadi tersusun, dan kekacauan itu secara senyap menjejaskan prestasi pangkalan data (kisahnya dalam artikel [kunci pangkalan data](/learn/uuid-database-keys)). Sebelum UUIDv7 mempiawaikan UUID tertib-masa, beberapa projek mencipta format pengecam mereka sendiri untuk mendapat manfaat yang sama: ID yang menyusun mengikut masa penciptaan, padat dan mesra URL, dan masih tidak memerlukan koordinasi pusat. Ia berbaloi diketahui kerana anda akan menemuinya dalam sistem sebenar dan kerana ia menggambarkan segenggam pertukaran yang sama.
+
+## Resipi yang sama
+
+Hampir setiap ID boleh-susun menggunakan satu idea: letak **cap masa dahulu** dan **bit rawak atau berjujukan selepas**. Menyusun ID sebagai teks kemudian mengaturnya lebih kurang mengikut masa, kerana bahagian paling penting ialah jam. Mengekod keseluruhannya dalam asas yang memelihara tertib (supaya teks menyusun cara yang sama seperti bait) menjadikan ID boleh disusun secara leksikografi sebagai rentetan biasa. Format berbeza dari segi berapa banyak bit yang dibelanjakan pada masa berbanding kerawakan, cara mereka mengekod hasil, dan sama ada mereka memerlukan sebarang koordinasi antara penjana.
+
+## ULID
+
+ULID ialah pengecam 128-bit, lebar yang sama dengan UUID, dipaparkan sebagai 26 aksara dalam base32 Crockford. 48 bit pertama ialah cap masa milisaat dan 80 yang berbaki adalah rawak. Pengekodan tidak peka huruf besar-kecil dan dipilih supaya mudah dibaca, dan ia boleh disusun secara leksikografi, dengan mod monoton pilihan yang menjamin tertib walaupun bagi ID yang dicipta dalam milisaat yang sama. ULID ialah salah satu jawapan paling popular kepada masalah tertib v4 dan, kerana ia 128-bit, ia boleh disimpan dalam ruang yang sama dengan UUID.
+
+## KSUID
+
+KSUID (daripada Segment) ialah pengecam 160-bit yang dikod sebagai 27 aksara base62. Ia menggunakan cap masa 32-bit beresolusi saat dengan epok tersuai (supaya cap masanya kekal padat selama bertahun-tahun) diikuti 128 bit kerawakan. Bahagian rawak yang lebih besar menjadikan perlanggaran amat tidak mungkin walaupun pada kadar penjanaan tinggi, dengan kos menjadi lebih lebar daripada UUID. Seperti ULID, ia menyusun mengikut masa apabila disusun sebagai teks.
+
+## Snowflake
+
+Snowflake (berasal di Twitter) berbentuk berbeza: integer 64-bit, bukan nilai 128-bit. Ia membungkus cap masa milisaat, pengecam mesin atau pusat data, dan nombor jujukan setiap milisaat ke dalam 64 bit, supaya ia muat dalam lajur bigint bertanda piawai. Kepadatan itu ialah daya tarikannya bagi set data yang sangat besar. Kelemahannya ialah koordinasi: setiap penjana memerlukan ID mesin unik, yang perlu diumpukkan dan diurus, jadi Snowflake menukar sifat bebas-koordinasi UUID dengan pengecam yang jauh lebih kecil. Banyak sistem mempunyai skema seperti Snowflake sendiri yang dibina atas idea pembungkusan yang sama.
+
+## NanoID
+
+NanoID ialah pengecualian: ia langsung tidak berasaskan masa. Ia sekadar rentetan rawak padat dan selamat-URL dengan abjad dan panjang boleh konfigurasi, direka sebagai alternatif lebih kecil dan lebih mesra kepada UUID rawak apabila anda mahu pengecam legap dalam rentetan pendek. Bandingkannya dengan UUIDv4 dan bukan dengan format boleh-susun: ia mengoptimumkan untuk saiz dan kemesraan URL, bukan untuk tertib.
+
+## Bagaimana mereka dibandingkan
+
+Pertukaran berbaris sepanjang beberapa paksi. **Saiz**: Snowflake 64-bit, ULID dan UUID 128-bit, KSUID 160-bit. **Pengekodan**: base32 (ULID), base62 (KSUID), satu integer (Snowflake), atau heks (UUID). **Koordinasi**: hanya Snowflake memerlukan ID mesin yang diumpukkan; selebihnya bebas-koordinasi. **Kebolehsusunan**: semua kecuali NanoID adalah tertib-masa. Dan satu peringatan dikongsi: mana-mana ID berawalan cap masa menjadikan masa penciptaannya kelihatan kepada sesiapa yang boleh membacanya, yang baik untuk kebanyakan kegunaan tetapi berbaloi dicatat apabila pengecam didedahkan secara terbuka.
+
+## Mengapa UUIDv7 mengubah pengiraan
+
+Sebab senarai ini kurang penting daripada dahulu ialah UUIDv7 (lihat artikel [versi](/learn/uuid-versions)) mempiawaikan resipi cap masa-tambah-rawak yang sama di dalam format UUID 128-bit biasa. Ia memberi anda tertib masa dan kesetempatan indeks yang baik sambil kekal UUID piawai yang setiap pangkalan data dan pustaka sudah faham, tanpa pengekodan tersuai dan tanpa koordinasi. Jadi bagi sistem baharu, lalai yang jujur ialah mencapai v7 dahulu dan menggunakan salah satu alternatif ini hanya apabila anda memerlukan sifat khususnya: lebar 64-bit yang muat bigint (Snowflake), pengekodan teks tertentu, atau ruang rawak yang lebih besar. Mereka menyelesaikan masalah sebenar; v7 kini menyelesaikan kebanyakannya dalam bentuk piawai.

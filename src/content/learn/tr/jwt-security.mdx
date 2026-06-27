@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "JWT güvenlik tuzakları: alg:none, anahtar karışıklığı ve eksik kontroller"
+summary: "Bir JWT doğrulayıcısını bir sahtecilik makinesine dönüştüren bir avuç hata ve doğru bir doğrulayıcının yapması gereken doğrulama."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## İmza ancak doğrulayıcı kadar iyidir
+
+Bir JWT'nin imzası, talep edilen bilgilerini güvenilir kılar, ama yalnızca onu doğrulayan kod bunu doğru yaparsa. JWT güvenlik açıklarının çoğu kriptografideki kusurlar değildir; reddetmeleri gereken token'ları kabul etmeleri için kandırılabilen doğrulayıcılardır. İşte önemli olanlar ve onları önleyen kontroller.
+
+## Token'ın kendi algoritmasına güvenmek
+
+- **`alg: none`.** JWT spesifikasyonu, `{"alg":"none"}` ile bildirilen, imzasız "korumasız" bir token tanımlar. Bunu onurlandıran bir doğrulayıcı, sahtelenmiş talepler ve boş bir imzaya sahip bir token'ı kabul eder. Doğru bir doğrulayıcı, imzalı olması gereken bir token için `none`'u asla geçerli saymaz.
+- **Algoritma karışıklığı (RS256'dan HS256'ya).** RS256'da token bir özel anahtarla imzalanır ve genel anahtarla doğrulanır. Bir doğrulayıcı algoritmayı *token'dan* okursa ve bir saldırgan başlığı HS256'ya değiştirirse, doğrulayıcı **genel** anahtarı sır olarak kullanarak bir HMAC doğrulamaya çalışabilir; bu, saldırganın da sahip olduğu bir değerdir. Sahtelenmiş token o zaman geçer.
+
+Her ikisi için tek savunma aynıdır: **kabul edilebilir algoritmaya doğrulayıcı karar verir, token değil.** Beklenen algoritmayı (veya kısa bir izin listesini) doğrulama çağrınızda sabitleyin ve diğer her şeyi reddedin.
+
+## Talepleri atlamak
+
+Geçerli bir imza, token'ın verildiğini ve değiştirilmediğini kanıtlar. Token'ın *sizin için* veya *hâlâ geçerli* olduğunu kanıtlamaz. Doğru bir doğrulayıcı ayrıca şunları kontrol eder:
+
+- **`exp` (son kullanma)** ve **`nbf` (önce-değil):** süresi dolmuş veya henüz geçerli olmayan token'ları, saat sapması için küçük bir toleransla reddedin.
+- **`aud` (hedef kitle):** token'ın bu hizmet için tasarlandığını doğrulayın. Hizmet A için verilen bir token, hizmet B tarafından kabul edilmemelidir.
+- **`iss` (veren):** güvendiğiniz verenden geldiğini doğrulayın ve doğrulama anahtarını token'dan değil, o verenden türetin.
+
+Bunu atlamak, çalınmış veya yanlış yönlendirilmiş bir token'ın olmaması gereken yerde kabul edilmesinin yoludur.
+
+## Daha küçük tuzaklar
+
+- **Zayıf HMAC sırları.** Kısa veya tahmin edilebilir bir sırla imzalanmış bir HS256 token'ı, eşleşen bir imza bulunana dek çevrimdışı kaba kuvvetle kırılabilir. Uzun, rastgele bir anahtar kullanın.
+- **`kid` ve JWKS'yi ele alma.** `kid` başlığı bir anahtar seçer; onu güvenilmez girdi olarak ele alın (enjeksiyon için kullanılmıştır) ve anahtarları yalnızca güvendiğiniz verenin JWKS'sinden alın.
+- **Çözmeyi doğrulamayla karıştırma.** Bir token'ın taleplerini imza ve zamanı kontrol etmeden okumak doğrulama değildir. Yalnızca tamamen doğrulanmış bir token üzerinde işlem yapın.
+
+## Kısa versiyon
+
+Algoritmayı sabitleyin, `exp`, `aud` ve `iss`'i doğrulayın, güçlü anahtarlar kullanın ve çözmeyi asla doğrulamayla karıştırmayın. [JWT aracı](/tools/jwt) bir token'ı çözer, taleplerini ve son kullanmasını açık bir dille gösterir ve bir HMAC imzasını yapıştırdığınız bir sırra karşı doğrular; tamamı tarayıcınızda, token ve sır asla gönderilmeden.

@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Wie IPv6-Hosts Adressen bekommen: SLAAC und DHCPv6"
+summary: "Wie ein IPv6-Host sich von link-local aufwärts konfiguriert, was Router Advertisements entscheiden, und der Unterschied zwischen SLAAC, Privatsphäre-Adressen, und DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Selbstkonfiguration standardmäßig
+
+Eines der definierenden Merkmale von IPv6 ist, dass ein Host eine funktionierende Adresse ohne Server und ohne manuelle Einrichtung konfigurieren kann. Wo IPv4 sich auf DHCP stützt, um Adressen auszugeben, kann IPv6 sie lokal aus Information bauen, die der Router rundsendet. Das Ergebnis ist, dass eine einzelne Schnittstelle gewöhnlich mit mehreren Adressen auf einmal endet, jede für einen anderen Zweck, was Menschen überrascht, die von IPv4 kommen.
+
+## Link-local kommt zuerst
+
+Vor allem anderen konfiguriert jede IPv6-Schnittstelle eine Link-local-Adresse in `fe80::/10` (der Typ, den das Werkzeug als link-local kennzeichnet). Sie wird lokal erzeugt, nie über den lokalen Link hinaus geroutet, und existiert, damit der Host sofort mit Nachbarn und Routern sprechen kann, einschließlich zu fragen, wie der Rest seiner Adressen zu konfigurieren ist. Link-local ist der Bootstrap: sie ist immer vorhanden, und die Nachbarerkennungsmaschinerie im Artikel [Nachbarerkennung](/learn/ipv6-neighbor-discovery) läuft über sie.
+
+## Das Router Advertisement entscheidet die Methode
+
+Um eine global routbare Adresse zu bekommen, lauscht der Host auf Router Advertisements, periodische Nachrichten, die ein Router sendet (und die ein Host mit einer Router Solicitation anfordern kann). Das Advertisement trägt das On-Link-Präfix, fast immer ein /64, und zwei Flags, die dem Host sagen, wie er sich konfigurieren soll:
+
+- Das **M-Flag (Managed)** sagt „verwende DHCPv6, um eine Adresse zu bekommen".
+- Das **O-Flag (Other)** sagt „konfiguriere deine Adresse selbst, aber bekomme andere Einstellungen wie DNS von DHCPv6".
+
+Mit beiden Flags aus verwendet der Host reine zustandslose Autokonfiguration. Deshalb ist die IPv6-Adresszuweisung eine Verhandlung zwischen dem, was der Router ankündigt, und dem, was der Host wählt, statt eines einzelnen Servers, der Leases ausgibt.
+
+## SLAAC: die eigene Adresse bauen
+
+Stateless Address Autoconfiguration (RFC 4862) ist der Mechanismus, den ein Host verwendet, um seine eigene Adresse zu bilden: nehmen Sie das /64-Präfix aus dem Advertisement und hängen Sie einen 64-Bit-Interface-Identifier an. Dies ist der ganze Grund, warum ein Subnetz ein /64 sein muss (siehe den Artikel [Subnetzbildung](/learn/ipv6-subnetting)). Kein Server verfolgt die Zuweisung, was „zustandslos" bedeutet.
+
+Der Interface-Identifier kann auf verschiedene Weisen gebildet werden, und dies hat echte Privatsphäre-Konsequenzen:
+
+- **Modifiziertes EUI-64** leitet den Identifier von der MAC-Adresse der Schnittstelle ab, was das Werkzeug demonstrieren kann. Er ist stabil und bequem, aber er bettet die Hardwareadresse in jede IPv6-Adresse ein, die der Host verwendet, und lässt einen entfernten Server das Gerät über Netzwerke hinweg verfolgen.
+- **Stabile, undurchsichtige Identifier** (RFC 7217) erzeugen einen Identifier, der pro Netzwerk stabil ist, aber keine Hardwareadresse enthüllt, was das netzwerkübergreifende Verfolgungsproblem behebt und zugleich eine konsistente Adresse auf einem gegebenen Link behält.
+- **Temporäre (Privatsphäre-)Adressen** (RFC 8981, die die frühere RFC 4941 ablöst) erzeugen zufällige Identifier, die über die Zeit rotieren, sodass ausgehende Verbindungen überhaupt keine langlebige Adresse präsentieren.
+
+Moderne Betriebssysteme verwenden typischerweise eine stabile Adresse für eingehende Verbindungen und eine rotierende temporäre Adresse für ausgehende, weshalb eine einzelne Schnittstelle mehrere globale Adressen zeigt.
+
+## Duplicate Address Detection
+
+Bevor ein Host tatsächlich eine Adresse verwendet, die er gebildet hat, führt er Duplicate Address Detection aus: er sendet eine Neighbor Solicitation für seine eigene vorläufige Adresse und wartet. Wenn jemand antwortet, ist die Adresse bereits in Gebrauch und darf nicht beansprucht werden. DAD ist eine billige Versicherung, dass die Selbstkonfiguration keine Kollisionen erzeugt, und sie verlässt sich auf dieselben Nachbarerkennungsnachrichten, die im Begleitartikel beschrieben sind.
+
+## DHCPv6 für zustandsbehaftete Kontrolle
+
+Wenn ein Administrator Adressen zentral verfolgen und zuweisen will, bietet DHCPv6 (RFC 8415) zustandsbehaftete Zuweisung, ähnlich wie IPv4-DHCP: ein Server least bestimmte Adressen und zeichnet auf, wer was hat. Es gibt auch einen zustandslosen DHCPv6-Modus, der nur Konfiguration wie DNS-Server ausgibt, während der Host immer noch seine eigene Adresse per SLAAC bildet, was das O-Flag auswählt. DHCPv6 ist auch, wo die Präfixdelegation lebt, der Mechanismus, durch den ein Heimrouter ein ganzes Präfix empfängt, um dahinter Subnetze zu bilden.
+
+## Viele Adressen, by Design
+
+Das mitzunehmende mentale Modell ist, dass ein IPv6-Host weitgehend selbstfahrend ist. Er hat immer eine Link-local-Adresse, er lernt das Präfix und die Konfigurationsmethode aus Router Advertisements, und je nach den Flags baut er entweder seine eigenen globalen Adressen mit SLAAC oder least sie von DHCPv6, und endet oft mit einer stabilen Adresse und einer rotierenden temporären Seite an Seite. Wenn das Werkzeug Ihnen eine Adresse zeigt und ihren Typ identifiziert, sagt Ihnen dieser Typ, welcher dieser Wege sie erzeugt hat.

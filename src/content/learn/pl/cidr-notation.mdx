@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "Notacja CIDR wyjaśniona"
+summary: "Co ukośnik w 192.168.1.0/24 faktycznie oznacza, i jak długość prefiksu definiuje blok adresów IP."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problem, który CIDR rozwiązuje
+
+Każde urządzenie w sieci IP potrzebuje adresu. W IPv4 ten adres ma 32 bity, zwykle zapisywany jako cztery liczby od 0 do 255 rozdzielone kropkami, jak `192.168.1.10`. Trudnym pytaniem nigdy nie jest „czym jest jeden adres", lecz „jak opisać *zakres* adresów, które należą do siebie", jedno biuro, podsieć, przydział klienta. **Notacja CIDR** to zwięzły sposób zapisania tego zakresu.
+
+CIDR oznacza Classless Inter-Domain Routing (Bezklasowy Routing Międzydomenowy). Część „bezklasowa" ma znaczenie: starsze adresowanie wymuszało na zakresach stałe rozmiary (stare bloki Klasy A, B i C). CIDR usunął tę sztywność i pozwolił zakresowi mieć *dowolny* rozmiar potęgi dwójki, co jest powodem, dla którego jest standardem dziś.
+
+## Czytanie ukośnika
+
+Blok CIDR wygląda jak `192.168.1.0/24`. Część po ukośniku, **długość prefiksu**, to pojedyncza najważniejsza liczba. Mówi ona: *pierwsze N bitów adresu jest stałe, a reszta może swobodnie się zmieniać.*
+
+- `/24` oznacza, że pierwsze 24 bity to stała część sieci. Pozostałe 8 bitów (32 − 24) identyfikuje pojedyncze hosty.
+- 8 wolnych bitów daje 2⁸ = 256 możliwych kombinacji, więc `192.168.1.0/24` opisuje 256 adresów od `192.168.1.0` do `192.168.1.255`.
+
+Zmień prefiks, a rozmiar bloku zmieni się z nim. Mniejszy prefiks oznacza *więcej* wolnych bitów i *większy* blok:
+
+- `/16` ustala 16 bitów, zostawia 16 wolnych → 65 536 adresów.
+- `/25` ustala 25 bitów, zostawia 7 wolnych → 128 adresów.
+- `/30` ustala 30 bitów, zostawia 2 wolne → 4 adresy.
+
+Każdy krok o jeden w długości prefiksu **połowi lub podwaja** blok. Ta pojedyncza reguła to cała intuicja.
+
+## Sieć, broadcast i użyteczne hosty
+
+Wewnątrz większości bloków dwa adresy są specjalne i nieprzydzielalne do hosta:
+
+- **Adres sieci** to pierwszy adres w bloku, wszystkie bity hosta ustawione na 0 (`192.168.1.0` dla `/24`). Nazywa on sam blok.
+- **Adres broadcast** to ostatni adres, wszystkie bity hosta ustawione na 1 (`192.168.1.255`). Ruch wysłany tutaj dociera do każdego hosta w bloku.
+
+Więc `/24` ma 256 adresów łącznie, lecz **254 użyteczne** dla faktycznych hostów. Liczba „użytecznych hostów" to po prostu łączna liczba minus te dwa zarezerwowane adresy.
+
+Dwa przypadki skrajne łamią ten wzorzec, oba celowo:
+
+- **/31** (RFC 3021) używa się dla łączy punkt-punkt między dwoma routerami. Ma tylko 2 adresy i, z założenia, oba są użyteczne, nie ma miejsca na osobny adres sieci i broadcast, i żaden nie jest potrzebny dla łącza z dokładnie dwoma końcami.
+- **/32** to pojedynczy adres, trasa hosta. Opisuje dokładnie jedną maszynę.
+
+## Dlaczego warto to zrozumieć
+
+Długość prefiksu rządzi tym, jak sieci są projektowane, jak trasy są podsumowywane, i jak przestrzeń adresowa jest rozdawana. Gdy widzisz `10.0.0.0/8` w tablicy routingu lub `0.0.0.0/0` jako trasę domyślną, czytasz tę samą notację: adres bazowy plus długość prefiksu mówiąca, ile z niego jest stałe. Arytmetyka nigdy się nie zmienia, tylko liczby.
+
+Możesz wypróbować dowolny blok w [kalkulatorze CIDR](/learn), by zobaczyć jego adres sieci, adres broadcast, maskę i liczbę użytecznych hostów obliczone natychmiast, w całości w twojej przeglądarce.

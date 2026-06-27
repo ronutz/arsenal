@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "Perangkap keselamatan JWT: alg:none, kekeliruan kunci dan semakan yang tertinggal"
+summary: "Segelintir kesilapan yang menukar pengesah JWT menjadi mesin pemalsuan, dan pengesahan yang mesti dilakukan pengesah yang betul."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tandatangan hanya sebaik pengesah
+
+Tandatangan JWT menjadikan tuntutannya boleh dipercayai, tetapi hanya jika kod yang mengesahkannya berbuat demikian dengan betul. Kebanyakan kerentanan JWT bukan kecacatan dalam kriptografi; ia ialah pengesah yang boleh ditipu untuk menerima token yang sepatutnya ditolak. Berikut ialah yang penting, dan semakan yang menghalangnya.
+
+## Mempercayai algoritma token itu sendiri
+
+- **`alg: none`.** Spesifikasi JWT mentakrifkan token "tidak dilindungi" tanpa tandatangan, diisytiharkan dengan `{"alg":"none"}`. Pengesah yang menghormatinya akan menerima token dengan tuntutan palsu dan tandatangan kosong. Pengesah yang betul tidak pernah menganggap `none` sah bagi token yang sepatutnya ditandatangani.
+- **Kekeliruan algoritma (RS256 ke HS256).** Dengan RS256 token ditandatangani oleh kunci persendirian dan disahkan dengan kunci awam. Jika pengesah membaca algoritma *daripada token* dan penyerang menukar pengepala kepada HS256, pengesah mungkin cuba mengesahkan HMAC menggunakan kunci **awam** sebagai rahsia, satu nilai yang juga dimiliki penyerang. Token palsu itu kemudian lulus.
+
+Satu-satunya pertahanan untuk kedua-duanya adalah sama: **pengesah memutuskan algoritma yang boleh diterima, bukan token.** Tetapkan algoritma yang dijangka (atau senarai dibenarkan yang pendek) dalam panggilan pengesahan anda dan tolak apa-apa yang lain.
+
+## Melangkau tuntutan
+
+Tandatangan sah membuktikan token telah dikeluarkan dan tidak diubah. Ia tidak membuktikan token itu *untuk anda* atau *masih sah*. Pengesah yang betul juga menyemak:
+
+- **`exp` (luput)** dan **`nbf` (tidak-sebelum):** tolak token yang luput atau belum sah, dengan toleransi kecil bagi hanyutan jam.
+- **`aud` (khalayak):** sahkan token itu bertujuan untuk perkhidmatan ini. Token yang dikeluarkan untuk perkhidmatan A tidak sepatutnya diterima oleh perkhidmatan B.
+- **`iss` (pengeluar):** sahkan ia datang daripada pengeluar yang anda percaya, dan terbitkan kunci pengesahan daripada pengeluar itu, bukan daripada token.
+
+Meninggalkan ini ialah cara token yang dicuri atau salah hala akhirnya diterima di tempat ia tidak sepatutnya.
+
+## Perangkap yang lebih kecil
+
+- **Rahsia HMAC lemah.** Token HS256 yang ditandatangani dengan rahsia pendek atau boleh diteka boleh diserang secara luar talian sehingga tandatangan yang sepadan ditemui. Gunakan kunci panjang yang rawak.
+- **Mengendalikan `kid` dan JWKS.** Pengepala `kid` memilih kunci; anggapnya sebagai masukan tidak dipercayai (ia telah digunakan untuk suntikan) dan dapatkan kunci hanya daripada JWKS pengeluar yang anda percaya.
+- **Mengelirukan menyahkod dengan mengesahkan.** Membaca tuntutan token tanpa menyemak tandatangan dan masa bukan pengesahan. Bertindak hanya atas token yang disahkan sepenuhnya.
+
+## Versi ringkas
+
+Tetapkan algoritma, sahkan `exp`, `aud` dan `iss`, gunakan kunci kuat, dan jangan sekali-kali mengelirukan menyahkod dengan mengesahkan. [Alat JWT](/tools/jwt) menyahkod token, menunjukkan tuntutan dan luputnya dalam bahasa jelas dan mengesahkan tandatangan HMAC terhadap rahsia yang anda tampal, semuanya dalam pelayar anda, di mana token dan rahsia tidak pernah dihantar.

@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hashing, cifratura e codifica: tre cose diverse"
+summary: "Tre operazioni costantemente confuse, separate nettamente da due domande: è reversibile e richiede una chiave?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tre parole, costantemente confuse
+
+"Questa password è cifrata?" "Fai semplicemente l'hash dell'URL." "I dati sono codificati, quindi sono sicuri." Queste frasi sono ovunque, e la maggior parte usa la parola sbagliata. Hashing, cifratura e codifica sono tre operazioni distinte con tre scopi diversi, e confonderle porta a veri errori di sicurezza, come memorizzare password con un metodo che non protegge nulla.
+
+La buona notizia è che due semplici domande le separano completamente.
+
+## Le due domande
+
+1. **È reversibile?** Puoi recuperare l'input originale dall'output?
+2. **Richiede una chiave?** Serve un segreto, o chiunque può eseguire l'operazione?
+
+Disponi le tre operazioni rispetto a quelle domande e il quadro è chiaro:
+
+- **Codifica** è reversibile e non richiede chiave.
+- **Hashing** non è reversibile e non richiede chiave.
+- **Cifratura** è reversibile e richiede una chiave.
+
+Quella tabella è l'intero articolo. Il resto è dettaglio.
+
+## Codifica: reversibile, senza chiave
+
+La codifica riscrive i dati in una rappresentazione diversa così da poter attraversare un canale che si aspetta un formato particolare. Base64 trasforma i byte in testo sicuro; la codifica URL effettua l'escape dei caratteri illegali in un URL; UTF-8 trasforma i caratteri in byte. Niente di tutto ciò è segreto. Chiunque può decodificarlo di nuovo, perché la reversibilità è tutto lo scopo. **La codifica fornisce sicurezza zero.** Se senti "il token è codificato, quindi è sicuro", quella è una bandiera rossa: codificato significa leggibile.
+
+## Hashing: non reversibile, senza chiave
+
+Una funzione di hash mappa qualsiasi input su un digest di dimensione fissa, e non puoi eseguirla all'indietro per recuperare l'input. Non richiede chiave, quindi chiunque può calcolare lo stesso digest dallo stesso input. Questo la rende perfetta per la **verifica**: controlli di integrità, indirizzamento per contenuto e rilevamento di modifiche. È lo strumento giusto quando devi confermare che due cose sono uguali senza memorizzare l'originale, ma non nasconde nulla in modo reversibile, perché non c'è nulla da invertire.
+
+## Cifratura: reversibile, con chiave
+
+La cifratura trasforma i dati così che solo chi possiede la chiave giusta possa ritrasformarli. Questa è l'unica delle tre costruita per la **segretezza**. È reversibile per progettazione, ma solo con la chiave, che è esattamente la proprietà che alle altre due manca: la codifica è reversibile da chiunque, l'hashing da nessuno, la cifratura da chi detiene la chiave.
+
+## Scegliere quella giusta
+
+Lo scopo decide lo strumento. Hai bisogno che i dati sopravvivano al trasporto come testo? Codificali. Devi verificare l'integrità o confrontare senza memorizzare l'originale? Fai l'hash. Devi tenere i dati segreti da chiunque non abbia la chiave? Cifrali.
+
+L'errore classico è ricorrere alla colonna sbagliata. Memorizzare password con semplice codifica (reversibile da chiunque) o persino semplice cifratura (una chiave rubata espone tutto) è molto più debole di un hash di password costruito allo scopo, trattato in un suo articolo. Lo [strumento Hash](/tools/hash) e lo [strumento Base64](/tools/base64) ti lasciano osservare hashing e codifica comportarsi diversamente sullo stesso input, il digest non si inverte mai, il Base64 sempre.

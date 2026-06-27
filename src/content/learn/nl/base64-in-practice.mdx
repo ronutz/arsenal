@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Waar Base64 opduikt: data-URI's, MIME, PEM en Basic auth"
+summary: "De echte plekken waar binair in tekst wordt verpakt, de groottekosten daarvan en waarom Base64 in een authenticatieheader geen versleuteling is."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Waarom binair in tekst verpakken
+
+Veel transporten zijn ontworpen voor tekst, niet voor ruwe bytes: e-mailberichten, JSON- en XML-documenten, HTTP-headers, broncodebestanden. Stop ruwe binaire data in een van deze en een verdwaalde controle- of nulbyte kan het parsen breken. Base64 lost dit op door de bytes opnieuw uit te drukken met alleen veilige afdrukbare tekens, zodat binair ongeschonden door een tekstkanaal kan reizen. Hier gebeurt dat echt.
+
+## De gebruikelijke scenario's
+
+- **Data-URI's.** Een `data:`-URL bedt een kleine bron rechtstreeks in de markup of CSS in, bijvoorbeeld `data:image/png;base64,iVBORw0KGgo...`. De bytes van de afbeelding staan in Base64 precies daar in het attribuut, wat een aparte netwerkaanvraag voor minuscule bronnen bespaart.
+- **E-mail (MIME).** Bijlagen en niet-ASCII-berichten worden vervoerd met `Content-Transfer-Encoding: base64`. MIME breekt de uitvoer op in regels (klassiek 76 tekens) zodat oude e-mailservers niet stikken in lange regels.
+- **PEM.** Certificaten en sleutels zijn DER-bytes verpakt in Base64 tussen de markeringen `-----BEGIN CERTIFICATE-----` en `-----END CERTIFICATE-----`, met regels gebroken op 64 tekens. PEM is de reden waarom een certificaat een tekstblok is dat je in een configuratiebestand kunt plakken.
+- **HTTP Basic-authenticatie.** De header `Authorization: Basic` is de Base64 van `gebruiker:wachtwoord`.
+
+## De groottekosten
+
+Base64 is niet gratis. Drie bytes worden vier tekens, dus de gecodeerde vorm is ongeveer **33% groter** dan het origineel, vóór enige overhead door regeleinden. Die afweging is meestal de moeite waard voor correctheid in een tekstkanaal, maar het is de reden waarom je geen groot bestand in Base64 zou coderen dat je als ruwe bytes zou kunnen verzenden. Voor kleine ingebedde bronnen wint het gemak; voor grote payloads pleit de overhead voor een binair transport.
+
+## Coderen is niet versleutelen
+
+Het Basic-auth-voorbeeld maakt het belangrijkste punt al duidelijk. `Authorization: Basic dXNlcjpwYXNz` ziet er ondoorzichtig uit, maar `dXNlcjpwYXNz` is simpelweg de Base64 van `user:pass`, omkeerbaar door iedereen, zonder enige sleutel. Base64 biedt **geen vertrouwelijkheid**. Het is een codering (een omkeerbare verandering van representatie), geen versleuteling (een door een sleutel beschermd geheim) en geen hashing (een eenrichtingsvingerafdruk). Daarom is Basic auth alleen veilig over TLS: het transport versleutelt de header, want Base64 doet dat zeker niet.
+
+Telkens wanneer je een lange, ondoorzichtig ogende tekenreeks ziet, is hem eerst decoderen een goedkope manier om te ontdekken wat het is. De [Base64-tool](/tools/base64) decodeert data-URI's, PEM-blokken en authenticatieheaders naar hun ruwe bytes en tekst, volledig in je browser, dus niets van wat je plakt verlaat de pagina.

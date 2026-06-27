@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Di mana Base64 muncul: data URI, MIME, PEM dan Basic auth"
+summary: "Tempat sebenar binari dibungkus dalam teks, kos saiz untuk berbuat demikian, dan mengapa Base64 dalam pengepala pengesahan bukan penyulitan."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Mengapa membungkus binari dalam teks
+
+Banyak pengangkutan dibina untuk teks, bukan untuk bait mentah: badan e-mel, dokumen JSON dan XML, pengepala HTTP, fail sumber. Letakkan data binari mentah dalam mana-mana satu daripadanya, dan satu bait kawalan atau nol yang sesat boleh merosakkan penghuraian. Base64 menyelesaikan ini dengan menyatakan semula bait menggunakan hanya aksara boleh cetak yang selamat, supaya binari boleh merentas tanpa cedera melalui saluran teks semata-mata. Di sinilah ia benar-benar berlaku.
+
+## Senario lazim
+
+- **Data URI.** Sebuah URL `data:` membenamkan sumber kecil terus dalam penanda atau CSS, contohnya `data:image/png;base64,iVBORw0KGgo...`. Bait imej berada dalam Base64 tepat di situ dalam atribut, menjimatkan permintaan rangkaian berasingan bagi sumber yang amat kecil.
+- **E-mel (MIME).** Lampiran dan badan bukan ASCII diangkut dengan `Content-Transfer-Encoding: base64`. MIME memecahkan keluaran kepada baris (klasiknya 76 aksara) supaya pelayan mel lama tidak tercekik pada baris panjang.
+- **PEM.** Sijil dan kunci ialah bait DER yang dibungkus dalam Base64 antara penanda `-----BEGIN CERTIFICATE-----` dan `-----END CERTIFICATE-----`, dengan baris dipecahkan pada 64 aksara. PEM ialah sebab sijil menjadi blok teks yang boleh anda tampal ke dalam fail konfigurasi.
+- **Pengesahan HTTP Basic.** Pengepala `Authorization: Basic` ialah Base64 bagi `pengguna:kata laluan`.
+
+## Kos saiz
+
+Base64 tidak percuma. Tiga bait menjadi empat aksara, jadi bentuk terkod adalah kira-kira **33% lebih besar** daripada asal, sebelum sebarang overhed bagi pemutus baris. Pertukaran itu biasanya berbaloi untuk ketepatan dalam saluran teks, tetapi itulah sebab anda tidak akan mengekod Base64 sebuah fail besar yang boleh anda hantar sebagai bait mentah. Bagi sumber terbenam kecil, kemudahan menang; bagi muatan besar, overhed memihak kepada pengangkutan binari.
+
+## Mengekod bukan menyulitkan
+
+Contoh Basic auth membuat titik paling penting itu dengan sendirinya. `Authorization: Basic dXNlcjpwYXNz` kelihatan legap, tetapi `dXNlcjpwYXNz` hanyalah Base64 bagi `user:pass`, boleh diterbalikkan oleh sesiapa sahaja, tanpa sebarang kunci terlibat. Base64 tidak memberikan **sebarang kerahsiaan**. Ia ialah pengekodan (perubahan perwakilan yang boleh diterbalikkan), bukan penyulitan (rahsia yang dilindungi kunci) mahupun pencincangan (cap jari sehala). Itulah sebab Basic auth hanya selamat melalui TLS: pengangkutan menyulitkan pengepala, kerana Base64 sememangnya tidak.
+
+Setiap kali anda melihat rentetan panjang yang kelihatan legap, menyahkodnya dahulu ialah cara murah untuk mengetahui apa ia. [Alat Base64](/tools/base64) menyahkod data URI, blok PEM dan pengepala pengesahan kepada bait mentah dan teksnya, sepenuhnya dalam pelayar anda, jadi tiada apa-apa yang anda tampal meninggalkan halaman.

@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID : v4 aléatoire et v7 ordonné dans le temps"
+summary: "Comment un identifiant de 128 bits reste unique sans autorité centrale, et pourquoi v7 devient la valeur par défaut pour les clés de base de données."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ce qu'est un UUID
+
+Un UUID (Universally Unique Identifier, aussi appelé GUID) est une valeur de 128 bits utilisée pour étiqueter quelque chose, une ligne, une requête, un fichier, sans se coordonner avec personne d'autre. La promesse contenue dans le nom est que deux UUID générés indépendamment ne sont, à toutes fins pratiques, jamais identiques. Cela permet à des services séparés, des appareils hors ligne et des processus parallèles de frapper des identifiants qui n'entreront pas en collision lors d'une fusion ultérieure des données, sans allocateur central distribuant les numéros.
+
+Un UUID s'écrit en 32 chiffres hexadécimaux en cinq groupes séparés par des tirets : `8-4-4-4-12`, par exemple `550e8400-e29b-41d4-a716-446655440000`. Deux positions précises ne sont pas aléatoires : un quartet de **version** indique comment l'UUID a été généré, et un champ de **variante** marque le standard de disposition (le moderne étant RFC 4122 / RFC 9562).
+
+## Version 4 : aléatoire
+
+De loin la forme la plus courante, la **version 4** est presque entièrement aléatoire : 122 des 128 bits proviennent d'une source aléatoire sûre, les bits restants étant fixés pour marquer la version et la variante. Avec autant d'entropie, la probabilité que deux UUID v4 entrent en collision est négligeable pour tout volume réaliste d'identifiants.
+
+Sa faiblesse n'est pas l'unicité mais l'**ordre**. Parce que les valeurs v4 sont aléatoires, des insertions consécutives se dispersent dans tout l'espace de clés. Quand un UUID v4 sert de clé primaire de base de données, cette aléa se heurte à l'index B-tree : les nouvelles lignes atterrissent à des endroits arbitraires, nuisant à la localité de cache et fragmentant l'index avec le temps.
+
+## Version 7 : ordonnée dans le temps
+
+La **version 7**, normalisée dans la RFC 9562 (2024), a été conçue pour corriger précisément cela. Elle place un **horodatage Unix de 48 bits en millisecondes** dans les bits de poids fort, suivi de bits aléatoires pour l'unicité au sein de la même milliseconde. Parce que l'horodatage est en tête, les UUID v7 **se trient dans l'ordre de création** lorsqu'on les compare comme texte ou comme octets.
+
+Cette seule propriété fait de v7 une bien meilleure clé primaire : les nouvelles lignes s'ajoutent près de la fin de l'index plutôt que de se disperser, restaurant la localité dont jouissent les clés entières séquentielles, tout en conservant l'unicité décentralisée d'un UUID. Une valeur v7 porte aussi son propre instant de création, que vous pouvez lire directement dans ces bits de tête, l'[outil UUID](/tools/uuid) le fait lorsque vous en inspectez un.
+
+## Les autres versions, brièvement
+
+Pour être complet : la **version 1** combine un horodatage avec l'adresse MAC de la machine génératrice, ce qui divulgue l'identité matérielle et l'instant de création et soulève donc des préoccupations de confidentialité. Les **versions 3 et 5** sont basées sur le nom, elles hachent un espace de noms plus un nom (avec MD5 et SHA-1 respectivement) pour produire un UUID déterministe, utile quand la même entrée doit toujours correspondre au même identifiant. La **version 6** réordonne les champs de la version 1 pour les rendre triables, mais pour les nouveaux systèmes v7 est le choix recommandé ordonné dans le temps.
+
+## En choisir un
+
+Tournez-vous vers **v4** lorsque vous avez juste besoin d'un identifiant aléatoire et opaque et que l'ordre importe peu. Tournez-vous vers **v7** lorsque l'UUID sera une clé de base de données ou toute autre chose qui profite d'un tri par instant de création, ce qui est de plus en plus la recommandation par défaut. L'[outil UUID](/tools/uuid) génère les deux et décode la version, la variante et l'horodatage intégré de tout UUID que vous collez, entièrement dans votre navigateur.

@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID-y: losowe v4 i uporządkowane czasem v7"
+summary: "Jak 128-bitowy identyfikator pozostaje unikatowy bez centralnego organu i dlaczego v7 staje się domyślnym wyborem dla kluczy bazy danych."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Czym jest UUID
+
+UUID (Universally Unique Identifier, zwany też GUID) to 128-bitowa wartość służąca do oznaczania czegoś, wiersza, żądania, pliku, bez uzgadniania z kimkolwiek innym. Obietnica zawarta w nazwie jest taka, że dwa niezależnie wygenerowane UUID-y w praktyce nigdy nie są takie same. Pozwala to oddzielnym usługom, urządzeniom offline i równoległym procesom wybijać identyfikatory, które nie zderzą się, gdy dane zostaną później scalone, bez centralnego przydzielacza rozdającego numery.
+
+UUID zapisuje się jako 32 cyfry szesnastkowe w pięciu grupach oddzielonych myślnikami: `8-4-4-4-12`, na przykład `550e8400-e29b-41d4-a716-446655440000`. Dwie konkretne pozycje nie są losowe: półbajt **wersji** wskazuje, jak wygenerowano UUID, a pole **wariantu** oznacza standard układu (nowoczesny to RFC 4122 / RFC 9562).
+
+## Wersja 4: losowa
+
+Zdecydowanie najpowszechniejsza forma, **wersja 4**, jest niemal w całości losowa: 122 ze 128 bitów pochodzą z bezpiecznego źródła losowego, a pozostałe bity są ustalone, by oznaczyć wersję i wariant. Przy tak dużej entropii szansa, że dwa UUID-y v4 się zderzą, jest pomijalna dla każdej realistycznej liczby identyfikatorów.
+
+Jego słabością nie jest unikatowość, lecz **uporządkowanie**. Ponieważ wartości v4 są losowe, kolejne wstawienia rozpraszają się po całej przestrzeni kluczy. Gdy UUID v4 jest używany jako klucz główny bazy danych, ta losowość walczy z indeksem B-drzewa: nowe wiersze trafiają w dowolne miejsca, szkodząc lokalności pamięci podręcznej i fragmentując indeks z czasem.
+
+## Wersja 7: uporządkowana czasem
+
+**Wersja 7**, znormalizowana w RFC 9562 (2024), została zaprojektowana, by naprawić dokładnie to. Umieszcza **48-bitowy znacznik czasu Unix w milisekundach** w najbardziej znaczących bitach, po którym następują bity losowe dla unikatowości w obrębie tej samej milisekundy. Ponieważ znacznik czasu jest na czele, UUID-y v7 **sortują się w kolejności utworzenia**, gdy porównywane są jako tekst lub bajty.
+
+Ta jedna właściwość czyni v7 znacznie lepszym kluczem głównym: nowe wiersze dołączają się blisko końca indeksu zamiast się rozpraszać, przywracając lokalność, jaką cieszą się sekwencyjne klucze całkowite, przy zachowaniu zdecentralizowanej unikatowości UUID. Wartość v7 niesie też swój własny czas utworzenia, który możesz odczytać wprost z tych wiodących bitów, [narzędzie UUID](/tools/uuid) robi to, gdy go badasz.
+
+## Pozostałe wersje, w skrócie
+
+Dla kompletności: **wersja 1** łączy znacznik czasu z adresem MAC generującej maszyny, co ujawnia tożsamość sprzętu i czas utworzenia, a więc rodzi obawy o prywatność. **Wersje 3 i 5** są oparte na nazwie, haszują przestrzeń nazw plus nazwę (odpowiednio MD5 i SHA-1), by wytworzyć deterministyczny UUID, przydatny, gdy to samo wejście musi zawsze odwzorowywać się na ten sam identyfikator. **Wersja 6** zmienia kolejność pól wersji 1, by były sortowalne, lecz dla nowych systemów v7 to zalecany wybór uporządkowany czasem.
+
+## Wybór jednej
+
+Sięgnij po **v4**, gdy potrzebujesz tylko losowego, nieprzejrzystego identyfikatora i uporządkowanie nie ma znaczenia. Sięgnij po **v7**, gdy UUID będzie kluczem bazy danych lub czymkolwiek innym, co zyskuje na sortowaniu według czasu utworzenia, co coraz częściej jest domyślnym zaleceniem. [Narzędzie UUID](/tools/uuid) generuje oba i dekoduje wersję, wariant i wbudowany znacznik czasu dowolnego UUID, który wkleisz, w całości w przeglądarce.

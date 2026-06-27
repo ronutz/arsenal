@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Zertifikatssignieranfragen und wie Zertifikate ausgestellt werden"
+summary: "Was eine CSR enthält, warum Ihr Privatschlüssel nie Ihre Maschine verlässt, wie eine CA validiert und ausstellt, und wie ACME den ganzen Austausch automatisiert."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Das Ausstellungsproblem
+
+Sie können selbst in Sekunden ein Schlüsselpaar erzeugen, aber ein nackter öffentlicher Schlüssel beweist nichts darüber, wer Sie sind (das Bindungsproblem aus dem [Anatomie-Artikel](/learn/x509-anatomy)). Um ein Zertifikat zu erhalten, brauchen Sie eine Zertifizierungsstelle, der eine vertrauende Partei bereits vertraut, um zu bürgen, dass dieser öffentliche Schlüssel zu Ihrem Namen gehört. Die Zertifikatssignieranfrage (Certificate Signing Request) ist, wie Sie das verlangen, ohne je Ihren Privatschlüssel herauszugeben.
+
+## Was eine CSR enthält
+
+Eine CSR ist selbst eine ASN.1-Struktur, definiert durch PKCS#10 (RFC 2986) und gewöhnlich als PEM-Block ausgeliefert, beschriftet mit `CERTIFICATE REQUEST`. Sie trägt:
+
+- das **Subjekt**, das Sie anfragen (die Namen, die im Zertifikat landen sollen),
+- Ihren **öffentlichen Schlüssel**, und
+- eine **Signatur über die Anfrage, gemacht mit dem passenden Privatschlüssel**.
+
+Dieser letzte Teil ist der clevere Kniff. Indem Sie die Anfrage mit dem Privatschlüssel signieren, beweisen Sie, dass Sie tatsächlich den Schlüssel halten, der sich mit dem eingereichten öffentlichen Schlüssel paart, alles ohne den Privatschlüssel selbst zu enthüllen. Der Privatschlüssel verlässt nie Ihre Kontrolle, was genau so sein sollte, weil jeder, der ihn hat, sich als Sie ausgeben kann.
+
+## Die CA ist die Autorität, nicht der Anfragende
+
+Ein entscheidender Punkt: Die CSR ist eine *Anfrage*, und die CA steht es frei, Teile davon zu honorieren und andere zu ignorieren. Sie können jedes Subjekt und beliebige Erweiterungen anfragen, aber die CA entscheidet, was das ausgestellte Zertifikat tatsächlich sagt. Sie setzt die Gültigkeitsdauer gemäß aktuellen Regeln, wählt die Seriennummer, und schließt nur die Namen und Verwendungen ein, für die sie zu bürgen bereit ist. Die Signatur der CA, nicht Ihre Anfrage, ist es, was dem endgültigen Zertifikat seine Autorität gibt. Diese Trennung ist, warum eine CSR voller ehrgeiziger Felder Ihnen kein Zertifikat voller davon verschafft.
+
+## Wie die CA entscheidet, Ihnen zu vertrauen
+
+Vor dem Signieren validiert die CA, dass Sie zu den angefragten Namen berechtigt sind, und wie gründlich hängt vom Zertifikatstyp ab:
+
+- **Domain Validated (DV)** beweist nur, dass Sie die Domäne kontrollieren. Dies ist heute die überwältigende Mehrheit der TLS-Zertifikate.
+- **Organization Validated (OV)** und **Extended Validation (EV)** prüfen zusätzlich die juristische Person hinter der Domäne, die Subject Identity Information, die im Zertifikat erscheint.
+
+Für DV fordert die CA Sie heraus, Kontrolle über die Domäne nachzuweisen. Übliche Methoden sind, eine bestimmte Datei an eine URL auf der Seite zu legen (HTTP-01), einen bestimmten DNS-TXT-Eintrag zu veröffentlichen (DNS-01), oder auf eine E-Mail zu antworten, die an eine Adresse in der Domäne gesendet wurde. Die Herausforderung zu bestehen, ist, was die CA überzeugt, dass der öffentliche Schlüssel in Ihrer CSR an diesen Namen gebunden werden sollte.
+
+## Selbstsignierte Zertifikate überspringen die CA
+
+Wenn Sie Ihre eigene CSR mit Ihrem eigenen Schlüssel signieren, statt sie an eine CA zu senden, erhalten Sie ein selbstsigniertes Zertifikat, bei dem der Issuer dem Subject gleicht. Es trägt keine externe Autorität, weil das Einzige, das für es bürgt, es selbst ist, aber es ist vollkommen nützlich für lokale Entwicklung, interne Dienste mit ihrem eigenen Vertrauensspeicher, oder um als die Wurzel einer privaten PKI zu agieren. Das Werkzeug kennzeichnet, wann ein Zertifikat selbst ausgestellt ist, was Ihnen sofort sagt, dass sein Vertrauen von woanders als einer öffentlichen CA kommt.
+
+## ACME: den Austausch automatisieren
+
+All dies von Hand zu tun, wiederholt, ist genau das, was die Verschiebung zu kurzen Zertifikatslebensdauern unmöglich macht (siehe den [Widerrufs-Artikel](/learn/certificate-revocation)). Das ACME-Protokoll (RFC 8555), popularisiert durch Let's Encrypt, automatisiert die gesamte Konversation: Ein Client erzeugt das Schlüsselpaar und die CSR, beweist Domänenkontrolle durch HTTP-01 oder DNS-01 automatisch, empfängt das Zertifikat, und wiederholt vor jedem Ablauf, ohne dass ein Mensch beteiligt ist. ACME ist der Grund, warum Millionen von Seiten Zertifikate betreiben können, die sich alle paar Wochen erneuern, und es ist das operative Rückgrat der Zukunft kurzlebiger Zertifikate.
+
+## Eine Anfrage wird zu einem Berechtigungsnachweis
+
+Der Bogen ist einfach zu formulieren. Sie halten ein Schlüsselpaar. Eine CSR bittet eine CA, für die öffentliche Hälfte zu bürgen, und beweist dabei, dass Sie die private Hälfte halten. Die CA prüft, dass Sie den Namen kontrollieren, und stellt dann ein Zertifikat aus, dessen Autorität von der Signatur der CA kommt, nicht von irgendetwas, das Sie in die Anfrage geschrieben haben. Das Ergebnis mit einem Dekodierer zu inspizieren, zeigt Ihnen die Bindung, die die CA tatsächlich gemacht hat, was der ganze Sinn der Übung ist: einen anonymen Schlüssel in einen Schlüssel mit einem vertrauenswürdigen, angehängten Namen zu verwandeln.

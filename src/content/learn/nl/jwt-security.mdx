@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "JWT-beveiligingsvalkuilen: alg:none, sleutelverwarring en ontbrekende controles"
+summary: "De handvol fouten die een JWT-verificateur in een vervalsingsmachine veranderen, en de validatie die een correcte verificateur moet uitvoeren."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## De handtekening is alleen zo goed als de verificateur
+
+De handtekening van een JWT maakt de claims betrouwbaar, maar alleen als de code die hem verifieert dat correct doet. De meeste JWT-kwetsbaarheden zijn geen fouten in de cryptografie; het zijn verificateurs die misleid kunnen worden om tokens te accepteren die ze zouden moeten verwerpen. Hier zijn degene die ertoe doen, en de controles die ze voorkomen.
+
+## Het algoritme van het token zelf vertrouwen
+
+- **`alg: none`.** De JWT-specificatie definieert een "onbeschermd" token zonder handtekening, aangegeven met `{"alg":"none"}`. Een verificateur die dit eert, accepteert een token met vervalste claims en een lege handtekening. Een correcte verificateur behandelt `none` nooit als geldig voor een token dat ondertekend hoort te zijn.
+- **Algoritmeverwarring (RS256 naar HS256).** Bij RS256 wordt het token door een privésleutel ondertekend en met de publieke sleutel geverifieerd. Als een verificateur het algoritme *uit het token* leest en een aanvaller de header naar HS256 verandert, kan de verificateur proberen een HMAC te verifiëren met de **publieke** sleutel als geheim, een waarde die de aanvaller ook bezit. Het vervalste token slaagt dan.
+
+De enige verdediging voor beide is dezelfde: **de verificateur bepaalt het aanvaardbare algoritme, niet het token.** Leg het verwachte algoritme (of een korte toegestane lijst) vast in je verificatie-aanroep en verwerp elk ander.
+
+## De claims overslaan
+
+Een geldige handtekening bewijst dat het token is uitgegeven en niet gewijzigd. Het bewijst niet dat het token *voor jou* is of *nog geldig*. Een correcte verificateur controleert ook:
+
+- **`exp` (vervaltijd)** en **`nbf` (niet-voor):** verwerp verlopen of nog niet geldige tokens, met een kleine tolerantie voor klokafwijking.
+- **`aud` (doelgroep):** bevestig dat het token voor deze service bedoeld was. Een token uitgegeven voor service A mag niet door service B worden geaccepteerd.
+- **`iss` (uitgever):** bevestig dat het van de uitgever komt die je vertrouwt, en bepaal de verificatiesleutel vanuit die uitgever, niet vanuit het token.
+
+Dit weglaten is hoe een gestolen of verkeerd gericht token uiteindelijk wordt geaccepteerd waar het niet hoort.
+
+## De kleinere valkuilen
+
+- **Zwakke HMAC-geheimen.** Een HS256-token ondertekend met een kort of raadbaar geheim kan offline met brute kracht gekraakt worden tot een passende handtekening wordt gevonden. Gebruik een lange, willekeurige sleutel.
+- **Omgaan met `kid` en JWKS.** De `kid`-header selecteert een sleutel; behandel hem als niet-vertrouwde invoer (hij is voor injectie gebruikt) en haal sleutels alleen op uit de JWKS van de uitgever die je vertrouwt.
+- **Decoderen verward met verifiëren.** De claims van een token lezen zonder de handtekening en de tijd te controleren is geen verificatie. Handel alleen op een volledig geverifieerd token.
+
+## De korte versie
+
+Leg het algoritme vast, valideer `exp`, `aud` en `iss`, gebruik sterke sleutels en verwar decoderen nooit met verifiëren. De [JWT-tool](/tools/jwt) decodeert een token, toont de claims en vervaltijd in heldere taal en verifieert een HMAC-handtekening tegen een geheim dat je plakt, allemaal in je browser, waarbij het token en het geheim nooit worden verzonden.

@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Pencincangan, penyulitan dan pengekodan: tiga perkara berbeza"
+summary: "Tiga operasi yang sentiasa dikelirukan, dipisahkan dengan bersih oleh dua soalan: adakah ia boleh diterbalikkan, dan adakah ia memerlukan kunci?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tiga perkataan, sentiasa bercampur aduk
+
+"Adakah kata laluan ini disulitkan?" "Cincang sahaja URL itu." "Data itu dikodkan, jadi ia selamat." Ayat-ayat ini ada di mana-mana, dan kebanyakannya menggunakan perkataan yang salah. Pencincangan, penyulitan dan pengekodan ialah tiga operasi berbeza dengan tiga tujuan berbeza, dan mengelirukannya membawa kepada kesilapan keselamatan sebenar, seperti menyimpan kata laluan dengan kaedah yang tidak melindungi apa-apa.
+
+Berita baiknya ialah dua soalan ringkas memisahkannya sepenuhnya.
+
+## Dua soalan
+
+1. **Adakah ia boleh diterbalikkan?** Bolehkah anda mendapat semula masukan asal daripada keluaran?
+2. **Adakah ia memerlukan kunci?** Adakah satu rahsia diperlukan, atau bolehkah sesiapa sahaja melakukan operasi itu?
+
+Plotkan tiga operasi terhadap soalan-soalan itu dan gambarannya jelas:
+
+- **Pengekodan** boleh diterbalikkan dan tidak memerlukan kunci.
+- **Pencincangan** tidak boleh diterbalikkan dan tidak memerlukan kunci.
+- **Penyulitan** boleh diterbalikkan dan memerlukan kunci.
+
+Jadual itu ialah keseluruhan artikel. Selebihnya ialah perincian.
+
+## Pengekodan: boleh diterbalikkan, tiada kunci
+
+Pengekodan menulis semula data ke dalam perwakilan berbeza supaya ia boleh merentas saluran yang menjangkakan format tertentu. Base64 menjadikan bait sebagai teks selamat; pengekodan URL melarikan aksara yang haram dalam URL; UTF-8 menjadikan aksara sebagai bait. Tiada satu pun daripadanya rahsia. Sesiapa boleh menyahkodnya semula, kerana keboleh terbalikan ialah keseluruhan tujuan. **Pengekodan memberi sifar keselamatan.** Jika anda dengar "token itu dikodkan, jadi ia selamat", itu bendera merah: dikodkan bermaksud boleh dibaca.
+
+## Pencincangan: tidak boleh diterbalikkan, tiada kunci
+
+Fungsi cincangan memeta sebarang masukan kepada ringkasan bersaiz tetap, dan anda tidak boleh menjalankannya ke belakang untuk memulihkan masukan. Ia tidak memerlukan kunci, jadi sesiapa boleh mengira ringkasan yang sama daripada masukan yang sama. Itu menjadikannya sempurna untuk **pengesahan**: semakan integriti, pengalamatan kandungan dan mengesan perubahan. Ia ialah alat yang betul apabila anda perlu mengesahkan dua perkara adalah sama tanpa menyimpan asal, tetapi ia tidak menyembunyikan apa-apa secara boleh terbalik, kerana tiada apa-apa untuk diterbalikkan.
+
+## Penyulitan: boleh diterbalikkan, dengan kunci
+
+Penyulitan menjelmakan data supaya hanya seseorang yang memegang kunci yang betul boleh menjelmakannya semula. Ini ialah satu-satunya daripada tiga yang dibina untuk **kerahsiaan**. Ia boleh diterbalikkan mengikut reka bentuk, tetapi hanya dengan kunci, yang tepat ialah sifat yang tidak ada pada dua yang lain: pengekodan boleh diterbalikkan oleh sesiapa, pencincangan oleh tiada sesiapa, penyulitan oleh pemegang kunci.
+
+## Memilih yang betul
+
+Tujuan menentukan alat. Perlukan data bertahan dalam pengangkutan sebagai teks? Kodkannya. Perlu mengesahkan integriti atau membandingkan tanpa menyimpan asal? Cincangnya. Perlu merahsiakan data daripada sesiapa tanpa kunci? Sulitkannya.
+
+Kesilapan klasik ialah mencapai lajur yang salah. Menyimpan kata laluan dengan pengekodan biasa (boleh diterbalikkan oleh sesiapa) atau bahkan penyulitan biasa (satu kunci dicuri mendedahkan segalanya) jauh lebih lemah daripada cincangan kata laluan yang dibina khas, yang diliputi dalam artikelnya sendiri. [Alat cincangan](/tools/hash) dan [alat Base64](/tools/base64) membenarkan anda menyaksikan pencincangan dan pengekodan berkelakuan berbeza pada masukan yang sama, ringkasan tidak pernah terbalik, Base64 sentiasa terbalik.

@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomie van een X.509-certificaat"
+summary: "Wat er in een TLS-certificaat leeft, hoe de ASN.1/DER-bytes gestructureerd zijn, wat de v3-extensies werkelijk regelen, en waarom een certificaat decoderen niet hetzelfde is als het vertrouwen."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Wat een certificaat is
+
+Een X.509-certificaat is een ondertekende verklaring die een publieke sleutel aan een identiteit bindt. Wanneer een browser via HTTPS verbinding maakt met een site, biedt de server een certificaat aan dat in feite zegt: "deze publieke sleutel hoort bij test.ronutz.com, en een certificeringsinstantie staat daarvoor in." Het profiel dat definieert welke velden een certificaat draagt en hoe ze worden geïnterpreteerd is RFC 5280.
+
+De binding is wat ertoe doet. Iedereen kan een sleutelpaar genereren, dus een kale publieke sleutel bewijst niets over wie aan het andere eind zit. Een certificaat voegt een handtekening toe van een uitgever die de vertrouwende partij al vertrouwt, en verandert een anonieme sleutel in een sleutel met een naam eraan. Dit is de fundering van de web-public-key-infrastructuur (PKI).
+
+## De vertrouwensketen
+
+Een enkel certificaat wordt zelden op zichzelf vertrouwd. Het wordt vertrouwd omdat het werd ondertekend door een uitgever, die op zijn beurt werd ondertekend door een andere uitgever, omhoog tot een root die de vertrouwende partij al in een vertrouwensopslag houdt:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Elke schakel is een handtekening: de uitgever ondertekent het certificaat van het kind met de privésleutel van de uitgever, en een verifieerder controleert die handtekening met de publieke sleutel van de uitgever. Een **root** is zelf-uitgegeven en zelf-ondertekend, daarom is een zelf-ondertekend certificaat een nuttige lokale plaatsvervanger voor een root maar draagt het geen externe autoriteit. De X.509-tool markeert een zelf-uitgegeven certificaat (uitgever gelijk aan subject) en of het certificaat als een CA is gemarkeerd, beide vertellen je waar een certificaat in dit beeld zit.
+
+## ASN.1 en DER: de byte-indeling
+
+Een certificaat is geen JSON of tekst. Het wordt beschreven in ASN.1 (Abstract Syntax Notation One) en gecodeerd met de Distinguished Encoding Rules (DER), gespecificeerd in ITU-T X.690. DER is een tag-length-value-formaat (TLV): elk element begint met een tag-byte dat zegt welk type het is, dan een lengte, dan dat aantal inhoudsbytes. Geconstrueerde types zoals SEQUENCE en SET houden kindelementen, dus het hele certificaat is een boom van TLV's.
+
+Een PEM-bestand is precies dat DER, Base64-gecodeerd en gewikkeld in armeringsregels:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Dus een certificaat decoderen betekent de armering verwijderen, van Base64 naar DER decoderen, en dan de TLV-boom doorlopen. De X.509-tool doet precies dit in je browser, zonder bibliotheek en zonder netwerkoproep.
+
+## De bovenste structuur
+
+Op het buitenste niveau definieert RFC 5280 drie delen:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+Het **tbsCertificate** ("to be signed", te ondertekenen) houdt alle echte inhoud. Het **signatureAlgorithm** noemt hoe de uitgever het ondertekende, bijvoorbeeld sha256WithRSAEncryption of ecdsa-with-SHA256. De **signatureValue** is de handtekening zelf, berekend over de DER-bytes van het tbsCertificate. Dat laatste punt is het vasthouden waard: de handtekening dekt het te-ondertekenen lichaam precies zoals gecodeerd, daarom breekt zelfs een één-byte-wijziging waar dan ook in het lichaam de verificatie.
+
+## Binnen het TBSCertificate
+
+Het te-ondertekenen lichaam is waar de tool het grootste deel van zijn tijd doorbrengt:
+
+- De **Versie** is bijna altijd v3, de versie die extensies introduceerde.
+- Het **Serienummer** is een groot geheel getal dat de uitgever toewijst. Gecombineerd met de uitgeversnaam identificeert het het certificaat uniek, en het is wat een herroepingslijst refereert.
+- De **Uitgever** (Issuer) en het **Subject** zijn Distinguished Names. Een DN is een reeks attributen zoals CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) en C (country). RFC 4514 definieert de éénregelige, meest-specifiek-eerst weergave die je ziet, bijvoorbeeld `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- De **Geldigheid** (Validity) is een notBefore- en een notAfter-tijdstempel. Deze worden gecodeerd als UTCTime of GeneralizedTime; de tool converteert beide naar ISO-8601 en vertelt je, tegen je lokale klok, of het certificaat nu geldig, nog-niet-geldig of verlopen is.
+- Het **subjectPublicKeyInfo** draagt de publieke sleutel plus zijn algoritme. Voor RSA rapporteert de tool de modulusgrootte (bijvoorbeeld 2048-bit) en de publieke exponent (bijna altijd 65537). Voor elliptische-curve-sleutels rapporteert hij de benoemde curve (P-256, P-384, P-521), volgens RFC 5480.
+
+## De v3-extensies
+
+Extensies zijn waar moderne certificaten het grootste deel van hun beleid coderen. Elke extensie heeft een identifier, een kritiekvlag en een waarde. De kritiekvlag doet ertoe: begrijpt een vertrouwende partij een als kritiek gemarkeerde extensie niet, dan moet ze het certificaat weigeren in plaats van het veld te negeren. De tool decodeert die welke het meeste gewicht dragen:
+
+- De **Subject Alternative Name (SAN)** somt de identiteiten op waarvoor het certificaat werkelijk geldig is, als DNS-namen, IP-adressen, e-mailadressen of URI's. Voor TLS is dit het veld dat browsers controleren, niet de CN. Een certificaat voor `test.ronutz.com` dat die naam uit zijn SAN weglaat zal in een moderne client de validatie missen, zelfs als de CN overeenkomt.
+- De **Key Usage** beperkt wat de sleutel op laag niveau mag doen: digitalSignature, keyEncipherment, keyCertSign, cRLSign en andere. Een CA-certificaat draagt keyCertSign; een TLS-blad draagt typisch digitalSignature en keyEncipherment.
+- De **Extended Key Usage (EKU)** noemt hogerliggende doeleinden zoals serverAuth (TLS-server), clientAuth (TLS-client), codeSigning of emailProtection.
+- De **Basic Constraints** stellen of het certificaat een CA is, en zo ja, hoeveel tussen-CA's eronder mogen verschijnen (de padlengte). Dit is het veld dat verhindert dat een bladcertificaat wordt gebruikt om andere certificaten te ondertekenen.
+- De **Subject Key Identifier** en de **Authority Key Identifier** zijn hashes die een verifieerder toelaten een certificaat snel aan zijn uitgever te koppelen bij het bouwen van een keten.
+
+## Vingerafdrukken
+
+Een certificaat-**vingerafdruk** (fingerprint) is simpelweg een cryptografische hash van de DER-bytes van het certificaat, gewoonlijk SHA-256 (en, voor oudere referenties, SHA-1). Het is geen veld in het certificaat; het wordt over het geheel berekend. Vingerafdrukken geven je een korte waarde van vaste lengte om twee certificaten op gelijkheid te vergelijken of een bekend certificaat te pinnen. De tool berekent zowel SHA-256 als SHA-1 lokaal met de Web Crypto API, dus de bytes die je plakt worden nooit ergens heen gestuurd. Voor meer over wat een hash is en niet is, zie het hashing-artikel.
+
+## Decoderen is niet valideren
+
+Dit is het allerbelangrijkste idee, en het weerspiegelt dezelfde voorzichtigheid die op JSON Web Tokens van toepassing is. De velden van een certificaat lezen vertelt je wat het *beweert*. Het vertelt je niet dat de bewering *waar* is. Volledige validatie is een apart, zwaarder proces: controleren dat de handtekening tot een vertrouwde root keten, dat geen van de certificaten in de keten verlopen of herroepen is, dat de naam waarmee je verbond in de SAN staat, en dat de sleutelgebruiken toelaten wat je doet.
+
+Een certificaatdecoder, deze inbegrepen, is een inspectie- en leerinstrument. Het toont je precies wat een uitgever beweerde en hoe het gecodeerd werd. Behandel de uitvoer als een getrouwe lezing van het document, niet als een oordeel over of je het moet vertrouwen.

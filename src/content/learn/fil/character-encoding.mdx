@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Mga byte, code point, at UTF-8"
+summary: "Ang pagkakaiba ng isang karakter at isang byte, bakit may Unicode at UTF-8, at ano ang kaugnayan nito sa Base64."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang mga karakter ay hindi byte
+
+Nag-iimbak ang isang computer ng mga byte, mga halaga mula 0 hanggang 255. Nagbabasa ang mga tao ng mga karakter: titik, digit, bantas, emoji. Ang isang **character encoding** ay ang napagkasunduang pagmamapa sa pagitan ng dalawa. Pagkamalian ang pagmamapa at makikita mo ang klasikong baluktot na teksto (`café` na nagiging `cafÃ©`), na halos palaging isang hindi pagkakatugma sa pagitan ng encoding na ginamit sa pagsulat ng mga byte at ng ginamit sa pagbasa ng mga ito.
+
+## ASCII: ang orihinal na 128
+
+Ang pinakalumang malawakang ginagamit na encoding ay ang **ASCII**, na nagtatalaga ng mga numerong 0 hanggang 127 sa mga pangunahing titik na Ingles, digit, at karaniwang simbolo. Pitong bit, 128 karakter. Simple ang ASCII at sumasailalim pa rin sa malaking bahagi ng computing, ngunit hindi makakatawan ang 128 karakter ng mga titik na may diin, hindi-Latin na mga sistema ng pagsulat, o mga simbolo, kaya hindi ito kailanman sumapat para sa teksto ng mundo.
+
+## Unicode: isang numero kada karakter
+
+Niloresolba ng **Unicode** ang problema ng saklaw sa pamamagitan ng pagbibigay sa bawat karakter ng natatanging numerong tinatawag na **code point**, isinusulat na tulad ng `U+0041` (ang titik A) o `U+2615` (isang mainit na inumin). Ang Unicode ay isang napakalaking katalogo ng mga karakter at ng kanilang mga code point, lampas pa nang husto sa isang daang libo, na sumasaklaw sa halos bawat sistema ng pagsulat na ginagamit.
+
+Mahalaga, sinasabi ng Unicode kung *aling numero* ang taglay ng bawat karakter, ngunit hindi kung *paano iimbak ang numerong iyon bilang mga byte*. Ang ikalawang trabahong iyon ay nabibilang sa isang anyo ng encoding.
+
+## UTF-8: paano nagiging byte ang mga code point
+
+Ang **UTF-8** ang nangingibabaw na paraan upang gawing byte ang mga Unicode code point, at ito ang default sa buong modernong web. Ito ay **variable-length**: ang isang karakter ay kumukuha ng isa hanggang apat na byte depende sa code point nito.
+
+- Ang saklaw ng ASCII (U+0000 hanggang U+007F) ay ini-encode bilang isang byte, kaparehas ng ASCII. Ito ang dahilan kung bakit backward compatible ang UTF-8: anumang purong ASCII na teksto ay wastong UTF-8 na.
+- Ang mga karakter na lampas sa ASCII ay gumagamit ng dalawa, tatlo, o apat na byte. Kaya ang `é` ay dalawang byte at ang `☕` ay tatlo, kahit na ang bawat isa ay isang karakter.
+
+Ang huling puntong iyon ang karaniwang sorpresa: **ang isang karakter ay hindi palaging isang byte.** Ang pagbilang ng byte at ang pagbilang ng karakter ay nagbibigay ng magkaibang sagot para sa anumang hindi-ASCII na teksto. (Ang UTF-16 at UTF-32 ay mga alternatibong encoding ng parehong code point; nanalo ang UTF-8 sa web dahil sa pagiging tugma nito sa ASCII at kasiksikan para sa tekstong Latin.)
+
+## Saan pumapasok ang Base64
+
+Mahalaga ito para sa Base64 dahil **gumagana ang Base64 sa mga byte, hindi sa mga karakter.** Upang i-Base64-encode ang isang string, kailangan munang gawing byte ang string gamit ang isang character encoding, at ang encoding na iyon ay halos palaging UTF-8. I-encode ang parehong karakter gamit ang ibang scheme at makakakuha ka ng ibang byte, at kaya ibang Base64. Kaya ang buong daloy para sa teksto ay: ang mga karakter ay nagiging byte (UTF-8), tapos ang mga byte ay nagiging ligtas na teksto (Base64). Kapag nag-decode ka, binabaligtad mo ang dalawang hakbang.
+
+Ine-encode ng [tool na Base64](/tools/base64) ang teksto bilang mga byte na UTF-8 bago i-Base64-encode, at minamarkahan kapag ang isang na-decode na resulta ay hindi wastong UTF-8, lahat sa iyong browser.

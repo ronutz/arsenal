@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: mesaj kimlik doğrulaması için anahtarlı karma"
+summary: "Düz bir karmanın neden bütünlüğü kanıtladığı ama gerçekliği kanıtlamadığı, gizli bir anahtarın bunu nasıl düzelttiği ve HMAC'in yapısının neden önemli olduğu."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Düz bir karmanın bıraktığı boşluk
+
+Bir kriptografik karma **bütünlüğü** kanıtlar: özet hâlâ eşleşiyorsa veri değiştirilmemiştir. Ama onu **kimin** ürettiği hakkında hiçbir şey kanıtlamaz. Herkes bir mesajı karmalayabilir, dolayısıyla bir mesajın yanında gönderilen bir özet, mesajı basitçe değiştirip *ve* özeti yeniden hesaplayan bir saldırgana karşı hiçbir koruma sunmaz. İşin içinde bir sır yoktur, dolayısıyla yalnızca meşru göndericinin yapabileceği bir şey yoktur.
+
+HMAC bu boşluğu kapatır. O bir **mesaj kimlik doğrulama kodudur**: bir mesajın kurcalanmadığını ve paylaşılan gizli bir anahtara sahip birinden geldiğini kanıtlayan bir değer. Doğrulayıcı, HMAC'i aynı anahtarla yeniden hesaplar; eşleşirse mesaj gerçektir.
+
+## Bir anahtar eklemek, doğru biçimde
+
+Bariz fikir, anahtar ve mesajı basitçe birlikte `hash(anahtar + mesaj)` olarak karmalamak, ince biçimde güvensizdir. Birçok karma fonksiyonu (SHA-2 ailesi dâhil), bir **uzunluk genişletme saldırısına** açık bir yapı üzerine kuruludur: `hash(anahtar + mesaj)`'ı ve sırrın uzunluğunu bilen bir saldırgan, anahtarı hiç bilmeden `anahtar + mesaj + ek` için geçerli bir karma hesaplayabilir. Bu, ona genişletilmiş, hâlâ geçerli bir mesaj sahteciliği yapma olanağı verirdi.
+
+HMAC (RFC 2104'te tanımlanır), her seferinde anahtarı farklı karıştırarak iki kez karmalayarak bundan kaçınır. Kavramsal olarak şunu hesaplar:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+burada `ipad` ve `opad` iki sabit dolgu sabitidir. İçteki karma, anahtarı mesaja bağlar; dıştaki karma, uzunluk genişletme hilesi ona ulaşamasın diye sonucu sarar. Formülü ezberlemeniz gerekmez, çıkarım şudur: HMAC'i sağlam kılan, gelişigüzel bir birleştirme değil, iç içe geçmiş yapıdır.
+
+## HMAC'e karşı dijital imza
+
+Her ikisi de gerçekliği kanıtlar, ama güven modeli farklıdır:
+
+- **HMAC simetriktir.** Tek bir gizli anahtar iki tarafça paylaşılır. Bir HMAC'i doğrulayabilen onu oluşturabilir de, dolayısıyla iki taraf zaten bir anahtarı paylaştığında ama yazarlığı üçüncü bir tarafa kanıtlayamadığında işe yarar.
+- **Dijital imza asimetriktir.** İmzalayan özel bir anahtar kullanır; herkes açık anahtarla doğrulayabilir. Bu, yazarlığı tüm dünyaya kanıtlar, daha yüksek bir hesaplama maliyetiyle.
+
+İki sistem bir sır paylaşıyor ve hızlı, karşılıklı kimlik doğrulamaya ihtiyaç duyuyorsa HMAC'i seçin; doğrulayıcıların doğruladıkları şeyi sahteleyememesi gerekiyorsa bir imza seçin.
+
+## HMAC ile nerede karşılaşırsınız
+
+- **API isteği imzalama.** AWS Signature Version 4 gibi şemalar, sunucunun çağıranın gizli anahtara sahip olduğunu doğrulayabilmesi için her isteği HMAC-SHA256 ile imzalar.
+- **Webhook'lar.** Bir sağlayıcı, yükün bir HMAC'ini bir başlıkta gönderir; uç noktanız sahte çağrıları reddetmek için onu yeniden hesaplar.
+- **HS256 ile JWT'ler.** HS256 ile imzalanmış bir token, tam anlamıyla tokenin başlığı ve yükü üzerinde HMAC-SHA256'dır. [HMAC aracı](/tools/hmac), JWT doğrulayıcısının kullandığı tam olarak aynı Web Crypto yapısını kullanır, böylece ikisi tasarım gereği uyuşur.
+
+Mesajınız ve anahtarınız tarayıcıdan asla çıkmaz; HMAC yerel olarak hesaplanır.

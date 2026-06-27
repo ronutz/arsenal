@@ -1,0 +1,43 @@
+---
+slug: uuid-versions
+title: "Versi UUID dijelaskan: v1 hingga v8"
+summary: "Seluruh keluarga UUID di satu tempat, daripada v1 masa-dan-MAC kepada v4 rawak kepada v7 tertib-masa, tambah versi berasaskan nama dan bagaimana bit versi dan varian dibaca."
+concepts: ["uuid", "uuidv4", "uuidv7", "rfc9562", "version", "variant"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Satu format, beberapa resipi
+
+UUID sentiasa berbentuk sama: 128 bit, ditulis sebagai 32 digit heksadesimal dalam pengumpulan `8-4-4-4-12` yang biasa. Yang berubah antara versi ialah bagaimana bit itu dijana. Piawai semasa, RFC 9562 (diterbitkan pada 2024, menggantikan RFC 4122 yang lama berkhidmat), mentakrifkan versi 1 hingga 8, setiap satunya strategi berbeza untuk mengisi 128 bit dengan cara yang kekal unik tanpa pihak berkuasa pusat. [Gambaran keseluruhan UUID](/learn/uuid) memberi tumpuan kepada dua yang paling kerap anda guna, v4 dan v7; artikel ini memetakan seluruh keluarga supaya anda boleh mengenali dan memilih mana-mana satu.
+
+## Bagaimana UUID mengumumkan versinya
+
+Dua medan kecil dikhaskan tanpa mengira versi, dan alat membaca kedua-duanya. **Versi** dikodkan dalam empat bit (digit heks pertama kumpulan ketiga), jadi `4` di situ bermakna UUID v4 dan `7` bermakna v7. **Varian** dikodkan dalam bit teratas kumpulan seterusnya (digit heks pertama kumpulan keempat lazimnya `8`, `9`, `a` atau `b` bagi varian piawai). Bersama-sama mereka memberitahu pembaca cara mentafsir bit yang berbaki, itulah sebabnya alat boleh melabel versi UUID sekadar dengan memeriksanya, tanpa konteks.
+
+## Versi berasaskan masa: v1, v6, v7
+
+Tiga versi mengekod cap masa, yang menjadikannya lebih kurang tertib-masa, sifat berguna untuk kunci pangkalan data (lihat artikel [kunci pangkalan data](/learn/uuid-database-keys)):
+
+- **Versi 1** menggabungkan cap masa 60-bit dengan jujukan jam dan pengecam nod, di mana nod secara tradisi ialah alamat MAC mesin. Ia berfungsi, tetapi membocorkan MAC dan masa penjanaan, dan tertib medan cap masanya tidak menyusun dengan bersih sebagai teks.
+- **Versi 6** ialah v1 dengan medan cap masa disusun semula supaya bait menyusun dalam tertib kronologi. Ia wujud sebagai penambahbaikan masuk-terus untuk sistem yang sudah melabur dalam v1 dan mahu kebolehsusunan.
+- **Versi 7** menggunakan cap masa Unix yang terus terang dalam milisaat diikuti bit rawak. Ia ialah syor moden untuk pengecam tertib-masa baharu: boleh disusun, tiada kebocoran perkakasan dan ringkas. Bagi kebanyakan kerja baharu yang mahukan kunci tertib, v7 ialah jawapannya.
+
+## Versi berasaskan nama: v3 dan v5
+
+Versi 3 dan 5 adalah berketentuan: masukan yang sama sentiasa menghasilkan UUID yang sama. Anda mencincang pengecam ruang nama bersama satu nama, dan ringkasan menjadi UUID. **Versi 3** menggunakan MD5 dan **versi 5** menggunakan SHA-1; v5 lebih disukai kerana SHA-1, walaupun tidak digunakan di sini untuk keselamatan, ialah pilihan yang kurang rapuh. Inilah versi untuk dicapai apabila anda perlukan pengecam stabil terbitan daripada data sedia ada, contohnya UUID konsisten untuk URL atau nama fail tertentu, supaya dua sistem mengira nilai yang sama secara bebas.
+
+## Versi rawak: v4
+
+**Versi 4** mengisi 122 bit dengan kerawakan (6 yang lain ialah bit versi dan varian tetap). Ia tidak membawa cap masa, tiada MAC, dan tiada struktur, yang menjadikannya lalai selamat apabila anda hanya mahu pengecam legap dan tahan perlanggaran serta tidak peduli tentang tertib. Satu-satunya kelemahannya ialah tepat kekurangan tertib itu, yang menjejaskan kesetempatan indeks pangkalan data dan mendorong v7. Penjanaan v4 alat menggunakan sumber rawak selamat secara kriptografi dalam pelayar anda, jadi nilai tidak pernah menyentuh pelayan.
+
+## Versi 8 dan UUID istimewa
+
+**Versi 8** dikhaskan untuk kegunaan tersuai atau eksperimen: hanya bit versi dan varian yang tetap, dan selebihnya untuk anda takrifkan, yang membenarkan sistem mengekod data sendiri dalam bentuk UUID sambil kekal UUID yang sah. Ada juga dua nilai istimewa untuk dikenali: UUID **nil**, semua sifar, dan UUID **max**, semua satu, kedua-duanya digunakan sebagai pengawal. Versi 2 wujud dari segi sejarah (varian DCE Security) tetapi jarang dilihat dalam amalan dan bukan sesuatu yang anda akan pilih hari ini.
+
+## Memilih mengikut niat
+
+Keluarga ini besar, tetapi pilihan biasanya pantas sebaik anda menamakan apa yang anda perlukan. Untuk pengecam legap dan tidak boleh diteka tanpa tertib, guna **v4**. Untuk pengecam stabil terbitan secara berketentuan daripada data sedia ada, guna **v5**. Untuk kunci tertib-masa yang mengindeks dengan baik, guna **v7**. Versi berasaskan masa yang lebih lama (v1, v6) kebanyakannya penting untuk keserasian dengan sistem sedia ada, dan v8 ada apabila anda benar-benar perlu mengekod struktur anda sendiri. Apabila anda menampal UUID ke dalam alat dan ia melaporkan versi, digit tunggal itu memberitahu anda resipi yang mana menghasilkannya.

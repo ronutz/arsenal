@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Verificando um HMAC com segurança: tempo constante e repetição"
+summary: "Por que comparar assinaturas com == vaza um canal lateral de tempo, e por que uma assinatura válida sozinha não impede uma requisição repetida."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Calcular a tag é a parte fácil
+
+Produzir um HMAC corretamente é bem compreendido. Os erros se concentram no lado da *verificação*, onde dois problemas pegam quem acertou a criptografia mas errou a lógica ao redor: como você compara as tags, e o que uma tag válida realmente prova.
+
+## Compare em tempo constante
+
+Para verificar, o receptor recalcula o HMAC sobre a mensagem e o confere com a tag que o remetente forneceu. A forma natural de comparar duas strings, um `==` comum, retorna assim que encontra o primeiro byte diferente. Essa saída antecipada vaza tempo: uma tag cujo primeiro byte está correto leva um pouquinho mais de tempo para ser rejeitada do que uma que está errada imediatamente. Medindo os tempos de resposta ao longo de muitas tentativas, um atacante consegue recuperar a tag correta um byte de cada vez, um **ataque de tempo**.
+
+A defesa é uma **comparação em tempo constante** que sempre examina todos os bytes, independentemente de onde está a primeira diferença, de modo que o tempo gasto não revela nada sobre quão perto um palpite chegou. A maioria das linguagens fornece uma:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Nunca verifique uma assinatura com igualdade de strings comum.
+
+## Uma assinatura válida não é uma requisição nova
+
+Mesmo um HMAC perfeitamente verificado só prova que a mensagem foi produzida por alguém com a chave e não foi alterada. Não diz nada sobre *quando*. Um atacante que captura uma requisição assinada legítima pode enviar exatamente os mesmos bytes de novo, e a assinatura ainda será verificada. Isso é um **ataque de repetição**, e importa para qualquer coisa que cause um efeito: um pagamento, uma mudança de estado, um comando.
+
+Impedir a repetição exige algo nos dados assinados que torne cada requisição única e verificável:
+
+- Um **timestamp** na carga assinada, com o servidor rejeitando requisições fora de uma janela curta (e levando em conta o desvio de relógio).
+- Um **nonce**, um valor único por requisição que o servidor registra e se recusa a aceitar duas vezes.
+
+Ambos precisam estar *dentro* do conteúdo assinado, para que um atacante não possa alterá-los sem quebrar a assinatura.
+
+## A regra em duas partes
+
+Uma requisição é confiável apenas quando seu HMAC é verificado em tempo constante **e** ela é nova. Erre qualquer um dos dois e a assinatura dá uma falsa sensação de segurança. Este é o lado da verificação da mesma disciplina da assinatura de requisições.
+
+A [ferramenta HMAC](/tools/hmac) permite que você calcule e compare tags para uma mensagem e uma chave diretamente no seu navegador, sem nada enviado, então você pode conferir uma assinatura à mão enquanto desenvolve ou depura.

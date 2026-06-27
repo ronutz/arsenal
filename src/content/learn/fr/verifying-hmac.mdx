@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Verifier un HMAC en securite : temps constant et rejeu"
+summary: "Pourquoi comparer des signatures avec == fuit un canal auxiliaire temporel, et pourquoi une signature valide seule n'empeche pas une requete rejouee."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Calculer le tag est la partie facile
+
+Produire un HMAC correctement est bien compris. Les erreurs se concentrent du cote de la *verification*, ou deux problemes piegent ceux qui ont reussi la cryptographie mais rate la logique alentour : comment vous comparez les tags, et ce qu'un tag valide prouve reellement.
+
+## Comparez en temps constant
+
+Pour verifier, le destinataire recalcule le HMAC sur le message et le confronte au tag fourni par l'expediteur. La facon naturelle de comparer deux chaines, un `==` ordinaire, retourne des qu'il trouve le premier octet different. Cette sortie anticipee fuit du temps : un tag dont le premier octet est correct met un tout petit peu plus de temps a etre rejete qu'un tag faux d'emblee. En mesurant les temps de reponse sur de nombreuses tentatives, un attaquant peut recuperer le bon tag un octet a la fois, une **attaque temporelle**.
+
+La defense est une **comparaison en temps constant** qui examine toujours tous les octets, quel que soit l'endroit de la premiere difference, de sorte que le temps pris ne revele rien sur la proximite d'une supposition. La plupart des langages en fournissent une :
+
+- Node.js : `crypto.timingSafeEqual(a, b)`
+- Python : `hmac.compare_digest(a, b)`
+- Go : `hmac.Equal(a, b)`
+
+Ne verifiez jamais une signature avec une egalite de chaines ordinaire.
+
+## Une signature valide n'est pas une requete recente
+
+Meme un HMAC parfaitement verifie ne prouve que ceci : le message a ete produit par quelqu'un detenant la cle et n'a pas ete altere. Il ne dit rien sur le *quand*. Un attaquant qui capture une requete signee legitime peut renvoyer exactement les memes octets, et la signature se verifie toujours. C'est une **attaque par rejeu**, et elle compte pour tout ce qui produit un effet : un paiement, un changement d'etat, une commande.
+
+Empecher le rejeu necessite quelque chose dans les donnees signees qui rende chaque requete unique et verifiable :
+
+- Un **horodatage** dans la charge signee, le serveur rejetant les requetes hors d'une courte fenetre (et tenant compte du decalage d'horloge).
+- Un **nonce**, une valeur unique par requete que le serveur enregistre et refuse d'accepter deux fois.
+
+Les deux doivent etre *a l'interieur* du contenu signe, pour qu'un attaquant ne puisse les modifier sans casser la signature.
+
+## La regle en deux parties
+
+Une requete n'est fiable que lorsque son HMAC se verifie en temps constant **et** qu'elle est recente. Ratez l'un des deux et la signature donne un faux sentiment de securite. C'est le versant verification de la meme discipline que la signature de requetes.
+
+L'[outil HMAC](/tools/hmac) vous permet de calculer et comparer des tags pour un message et une cle directement dans votre navigateur, sans rien envoyer, afin de verifier une signature a la main pendant le developpement ou le debogage.

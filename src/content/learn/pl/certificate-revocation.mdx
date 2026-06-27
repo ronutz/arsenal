@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Unieważnianie certyfikatów: CRL, OCSP i certyfikaty krótkożyciowe"
+summary: "Dlaczego certyfikat czasem trzeba anulować zanim wygaśnie, dlaczego klasyczne systemy unieważniania działają słabo, i dlaczego branża zamiast tego skraca czasy życia certyfikatów."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Po co w ogóle unieważniać
+
+Certyfikat niesie datę wygaśnięcia, lecz czasem musi być anulowany zanim ta data nadejdzie. Klucz prywatny mógł wyciec, certyfikat mógł zostać wystawiony przez pomyłkę, lub domena mogła zmienić właściciela. We wszystkich tych przypadkach certyfikat wciąż jest kryptograficznie ważny i wciąż wewnątrz swojego okna ważności, a jednak strony ufające powinny przestać mu ufać. Unieważnienie to mechanizm, by powiedzieć „zignoruj ten certyfikat, choć nie wygasł". Trudną częścią jest dostarczyć tę wiadomość niezawodnie każdemu klientowi na świecie, i to okazuje się najsłabszym ogniwem w webowej PKI.
+
+## CRL: opublikowana lista blokowania
+
+Pierwotną odpowiedzią jest Lista Unieważnień Certyfikatów (Certificate Revocation List), zdefiniowana obok profilu certyfikatu w RFC 5280. CA okresowo publikuje podpisaną listę numerów seryjnych, które unieważniła, a certyfikaty mogą wskazywać na nią przez CRL Distribution Point. Klient pobiera listę i sprawdza, czy numer seryjny certyfikatu się na niej pojawia.
+
+Problemem jest rozmiar i świeżość. Zajęta CA może nagromadzić ogromne listy, więc pobieranie i parsowanie CRL przy każdym połączeniu jest niepraktyczne, a lista w pamięci podręcznej jest nieaktualna aż do następnej publikacji. CRL-e są wciąż używane, coraz częściej w formach skompresowanych i wstępnie przetworzonych, które przeglądarki dostarczają samym sobie, lecz jako sprawdzenie na połączenie skalują się źle.
+
+## OCSP: pytanie o jeden certyfikat
+
+Online Certificate Status Protocol, RFC 6960, miał naprawić problem rozmiaru, pozwalając klientowi zapytać o pojedynczy certyfikat zamiast pobierać całą listę. Klient wysyła numer seryjny certyfikatu do respondera OCSP i dostaje z powrotem podpisane „good", „revoked" lub „unknown".
+
+To wymienia jeden problem na trzy. Dodaje opóźnienie, bo klient teraz wykonuje dodatkową rundę sieciową podczas ustanawiania połączenia. Wycieka prywatność, bo responder dowiaduje się, jakie witryny użytkownik odwiedza. I tworzy sprzężenie dostępności: jeśli responder jest wyłączony, klient musi albo doprowadzić połączenie do niepowodzenia, albo, znacznie częściej, **zawieść miękko** (soft-fail) i kontynuować, jakby certyfikat był dobry, co cicho niweczy cały sens.
+
+## OCSP stapling i Must-Staple
+
+Stapling adresuje problemy opóźnienia i prywatności, sprawiając, że to *serwer* pobiera świeżą, podpisaną odpowiedź OCSP i dołącza ją do uścisku dłoni TLS (rozszerzenie status_request z RFC 6066). Klient dostaje świeżość bez kontaktowania się z responderem. Must-Staple, RFC 7633, to rozszerzenie certyfikatu mówiące „odrzuć mnie, jeśli brakuje staple", zamykając lukę soft-fail, lecz rzadko jest wdrażane, bo pojedyncza czkawka staplingu wtedy wyłącza witrynę.
+
+## Niewygodna prawda
+
+W tych mechanizmach powracającą porażką jest soft-fail: gdy informacja o unieważnieniu jest niedostępna, klienci przytłaczająco wybierają dostępność ponad bezpieczeństwo i akceptują certyfikat. To czyni unieważnienie zawodną siatką bezpieczeństwa właśnie wtedy, gdy jest potrzebna. Przeglądarki odpowiedziały własnymi systemami poza pasmem, które popychają dane unieważnienia samym sobie, lecz protokoły na połączenie nigdy nie spełniły swojej obietnicy.
+
+## Nowoczesna odpowiedź: sprawić, by certyfikaty wygasały wcześniej
+
+Jeśli nie możesz niezawodnie anulować certyfikatu, alternatywą jest uczynienie go na tyle krótkożyciowym, by anulowanie rzadko miało znaczenie: skompromitowany certyfikat po prostu wygasa sam w ciągu dni lub tygodni. Branża zobowiązała się dokładnie do tego. Ballot SC-081v3 CA/Browser Forum, zatwierdzony w kwietniu 2025, fazowo redukuje maksymalny czas życia publicznego certyfikatu TLS z 398 dni do 200 dni (od marca 2026), 100 dni (marzec 2027) i 47 dni (marzec 2029), z okresem ponownego użycia walidacji domeny kurczącym się do 10 dni. Osobno, od 2023 Forum pozwoliło certyfikatom krótkożyciowym wygasającym w ciągu 7 dni pominąć wsparcie CRL i OCSP całkowicie, a Let's Encrypt zaczął wystawiać certyfikaty z czasami życia mierzonymi w dniach. Cała przesłanka jest taka, że wystarczająco krótki czas życia sam jest unieważnieniem.
+
+To działa tylko z automatyzacją. Odnawianie certyfikatów co sześć lub siedem tygodni ręcznie jest nie do utrzymania, dlatego protokół ACME (zobacz [artykuł o żądaniu podpisania](/learn/certificate-signing-request)) i narzędzia cyklu życia certyfikatów stały się istotną infrastrukturą, a nie wygodą. Zauważ, że te reguły stosują się do publicznie zaufanych certyfikatów w programach głównych przeglądarek; prywatna wewnętrzna PKI ustala własną politykę.
+
+## Co to znaczy, gdy badasz certyfikat
+
+Gdy dekodujesz certyfikat, okno ważności nie jest już refleksją raz-do-roku; staje się podstawową kontrolą unieważnienia. Raport narzędzia o notBefore, notAfter i o tym, czy certyfikat jest ważny właśnie teraz, jest coraz bardziej najbardziej istotną dla bezpieczeństwa rzeczą o nim. Listy unieważnień i respondery wciąż istnieją, lecz kierunek podróży jest jasny: skróć czas życia, by kwestia unieważnienia rzadko się pojawiała.

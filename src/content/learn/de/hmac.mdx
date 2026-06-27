@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: geschlüsseltes Hashen zur Nachrichtenauthentifizierung"
+summary: "Warum ein einfacher Hash Integrität, aber nicht Authentizität beweist, wie ein geheimer Schlüssel das behebt und warum HMACs Struktur zählt."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Die Lücke, die ein einfacher Hash lässt
+
+Ein kryptografischer Hash beweist **Integrität**: Stimmt der Digest noch überein, wurden die Daten nicht verändert. Doch er beweist nichts darüber, **wer** sie erzeugt hat. Jeder kann eine Nachricht hashen, also bietet ein neben einer Nachricht gesendeter Digest keinen Schutz gegen einen Angreifer, der einfach die Nachricht ändert *und* den Digest neu berechnet. Es ist kein Geheimnis im Spiel, also gibt es nichts, das nur der rechtmäßige Absender hätte tun können.
+
+HMAC schließt diese Lücke. Es ist ein **Nachrichtenauthentifizierungscode**: ein Wert, der beweist, dass eine Nachricht weder manipuliert wurde noch von jemandem stammt, der einen gemeinsamen geheimen Schlüssel besitzt. Der Prüfer berechnet den HMAC mit demselben Schlüssel neu; stimmt er überein, ist die Nachricht authentisch.
+
+## Einen Schlüssel hinzufügen, auf die richtige Weise
+
+Die naheliegende Idee, Schlüssel und Nachricht einfach zusammen als `hash(schlüssel + nachricht)` zu hashen, ist auf subtile Weise unsicher. Viele Hashfunktionen (einschließlich der SHA-2-Familie) bauen auf einer Konstruktion, die für einen **Length-Extension-Angriff** anfällig ist: Kennt man `hash(schlüssel + nachricht)` und die Länge des Geheimnisses, kann ein Angreifer einen gültigen Hash für `schlüssel + nachricht + zusatz` berechnen, ohne den Schlüssel je zu kennen. Das würde ihm erlauben, eine erweiterte, weiterhin gültige Nachricht zu fälschen.
+
+HMAC (definiert in RFC 2104) vermeidet dies, indem es zweimal hasht, wobei der Schlüssel jedes Mal anders eingemischt wird. Konzeptionell berechnet es:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+wobei `ipad` und `opad` zwei feste Auffüllkonstanten sind. Der innere Hash bindet den Schlüssel an die Nachricht; der äußere Hash umhüllt das Ergebnis, sodass der Length-Extension-Trick es nicht erreichen kann. Sie müssen die Formel nicht auswendig lernen, die Erkenntnis ist, dass die verschachtelte Struktur, nicht eine beiläufige Verkettung, HMAC solide macht.
+
+## HMAC gegenüber einer digitalen Signatur
+
+Beide beweisen Authentizität, doch das Vertrauensmodell unterscheidet sich:
+
+- **HMAC ist symmetrisch.** Ein geheimer Schlüssel wird von beiden Seiten geteilt. Wer einen HMAC prüfen kann, kann auch einen erstellen, also funktioniert es, wenn beide Parteien bereits einen Schlüssel teilen, aber die Urheberschaft gegenüber einem Dritten nicht beweisen können.
+- **Eine digitale Signatur ist asymmetrisch.** Der Signierende verwendet einen privaten Schlüssel; jeder kann mit dem öffentlichen Schlüssel prüfen. Das beweist die Urheberschaft gegenüber der Welt, zu höheren Rechenkosten.
+
+Wählen Sie HMAC, wenn zwei Systeme ein Geheimnis teilen und schnelle, gegenseitige Authentifizierung brauchen; wählen Sie eine Signatur, wenn Prüfer das, was sie prüfen, nicht fälschen können dürfen.
+
+## Wo Sie HMAC begegnen
+
+- **Signieren von API-Anfragen.** Verfahren wie AWS Signature Version 4 signieren jede Anfrage mit HMAC-SHA256, damit der Server bestätigen kann, dass der Aufrufer den geheimen Schlüssel besitzt.
+- **Webhooks.** Ein Anbieter sendet einen HMAC der Nutzlast in einem Header; Ihr Endpunkt berechnet ihn neu, um gefälschte Aufrufe abzuweisen.
+- **JWTs mit HS256.** Ein mit HS256 signiertes Token ist buchstäblich HMAC-SHA256 über Header und Nutzlast des Tokens. Das [HMAC-Werkzeug](/tools/hmac) verwendet genau dieselbe Web-Crypto-Konstruktion wie der JWT-Prüfer, sodass die beiden von Natur aus übereinstimmen.
+
+Ihre Nachricht und Ihr Schlüssel verlassen nie den Browser; der HMAC wird lokal berechnet.

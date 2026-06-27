@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Odkrywanie Sąsiadów: jak IPv6 zastępuje ARP"
+summary: "Jak IPv6 znajduje sąsiadów na łączu, używając ICMPv6 i multicastu zamiast ARP przez broadcast, pięć wiadomości Odkrywania Sąsiadów, oraz dlaczego broadcast zniknął."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 nie jest opcjonalny
+
+W IPv4 ICMP to diagnostyczna refleksja, którą możesz zablokować bez psucia podstawowej łączności. W IPv6 ICMPv6 (RFC 4443) jest nośny: protokół zależy od niego dla podstawowej operacji łącza, więc filtrowanie go bezładnie psuje sieć. Powodem jest to, że IPv6 przeniósł kilka zadań, które IPv4 rozpraszał przez ARP, odkrywanie routera przez ICMP, i przekierowania przez ICMP, do pojedynczego protokołu opartego na ICMPv6 zwanego Odkrywaniem Sąsiadów (Neighbor Discovery, RFC 4861). Zrozumieć Odkrywanie Sąsiadów to zrozumieć, jak łącze IPv6 naprawdę działa.
+
+## Pięć wiadomości wykonuje pracę
+
+Odkrywanie Sąsiadów definiuje pięć typów wiadomości ICMPv6, i niemal wszystko na łączu to jakaś ich kombinacja:
+
+- **Zapytanie Routera (RS)**: host prosi routery, by się ogłosiły.
+- **Ogłoszenie Routera (RA)**: router ogłasza prefiks i flagi konfiguracji (wejście do autokonfiguracji w artykule [konfiguracja adresów](/learn/ipv6-address-configuration)).
+- **Zapytanie Sąsiada (NS)**: host pyta „kto ma ten adres, i jaki jest twój adres warstwy łącza?"
+- **Ogłoszenie Sąsiada (NA)**: odpowiedź dająca ten adres warstwy łącza.
+- **Przekierowanie (Redirect)**: router mówi hostowi o lepszym następnym skoku dla celu.
+
+Zapytanie i ogłoszenie routera traktują o „jak się skonfigurować"; zapytanie i ogłoszenie sąsiada traktują o „jak dosięgnąć tego sąsiada"; przekierowanie traktuje o „jest lepsza ścieżka". To pokrywa codzienne życie łącza.
+
+## Rozwiązywanie adresu bez broadcastu
+
+Pracę, którą ARP wykonuje w IPv4, mapowanie adresu IP na adres sprzętowy, wykonuje w IPv6 para Zapytania i Ogłoszenia Sąsiada. Ważną różnicą jest *jak* pytanie jest zadawane. ARP krzyczy do adresu broadcast, przerywając każde urządzenie w segmencie. IPv6 zamiast tego wysyła Zapytanie Sąsiada do **adresu multicast węzła wywoływanego** (solicited-node multicast address) celu, grupy, na której tylko mały zbiór hostów dzielących ten sam sufiks adresu będzie nasłuchiwał. Cel odpowiada Ogłoszeniem Sąsiada niosącym jego adres warstwy łącza. Pytający zapisuje wynik w pamięci podręcznej, dokładnie jak działa pamięć podręczna ARP, i rewaliduje go przez Wykrywanie Nieosiągalności Sąsiada (Neighbor Unreachability Detection), gdy ruch sugeruje, że sąsiad mógł odejść.
+
+## Adres multicast węzła wywoływanego
+
+Adres multicast węzła wywoływanego jest budowany z adresu celu: weź prefiks `ff02::1:ff00:0/104` i doczep ostatnie 24 bity adresu celu. Ponieważ rozwiązywanie celuje tylko w garstkę hostów dzielących te niskie 24 bity zamiast w całe łącze, żądanie dociera do daleko mniej maszyn, niż dotarłby broadcast ARP. Ta konstrukcja jest powodem, dla którego artykuł [adresowanie](/learn/ipv6-addressing) traktuje multicast węzła wywoływanego jako część planu adresów zamiast refleksji: każdy host konfigurujący adres automatycznie dołącza do odpowiedniej grupy węzła wywoływanego, by inni mogli go znaleźć.
+
+## Żadnego broadcastu w ogóle
+
+IPv6 nie ma adresu broadcast. Wszystko, do czego IPv4 używał broadcastu, w tym rozwiązywanie adresu i odkrywanie routera, jest obsługiwane przez multicast do konkretnych, dobrze ograniczonych grup. Jest grupa multicast wszystkich-węzłów (`ff02::1`) i grupa wszystkich-routerów (`ff02::2`), lecz rutynowe rozwiązywanie celuje zamiast tego w wąskie grupy węzła wywoływanego. Zastąpienie „przerwij wszystkim" przez „powiadom dokładnie istotnych słuchaczy" jest wydajniejsze na zajętych łączach i jest jednym z cichszych ulepszeń, które IPv6 wnosi ponad IPv4.
+
+## Ufanie łączu
+
+Ponieważ Odkrywanie Sąsiadów jest domyślnie nieuwierzytelnione, złośliwy host na tym samym łączu może wysłać sfałszowane Ogłoszenia Routera lub Ogłoszenia Sąsiada, by przekierować lub przechwycić ruch, odpowiednik IPv6 spoofingu ARP. Obrony żyją na krawędzi sieci: RA Guard na przełącznikach odrzuca ogłoszenia routera z portów, które nie powinny mieć routerów, a Bezpieczne Odkrywanie Sąsiadów (SEcure Neighbor Discovery, SEND) dodaje ochronę kryptograficzną tam, gdzie jest wdrożone. Jak w IPv4, łącze lokalne to granica zaufania warta obrony.
+
+## Układ nerwowy łącza
+
+Podsumowaniem jest to, że IPv6 złożył rozwiązywanie adresu, odkrywanie routera, i przekierowanie w pojedynczy protokół oparty na ICMPv6, zamienił krzyk przez broadcast na ukierunkowany multicast, i uczynił całość niezbędną zamiast opcjonalną. Gdy widzisz adres w narzędziu i zauważasz jego grupę węzła wywoływanego lub jego formę link-local, patrzysz na elementy, których Odkrywanie Sąsiadów używa, by pozwolić hostom znajdować się nawzajem na łączu, nigdy nie niepokojąc sąsiadów, którzy nie są zaangażowani.

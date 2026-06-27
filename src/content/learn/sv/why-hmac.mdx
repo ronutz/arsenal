@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Varför HMAC, och inte hash(nyckel + meddelande)"
+summary: "Längdförlängningsattacken som bryter naiv nyckelhashning, och den nästlade konstruktion HMAC använder för att besegra den."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Den uppenbara idén som misslyckas
+
+Du vill bevisa att ett meddelande kommer från någon som har en delad hemlighet och att det inte ändrats. Det intuitiva angreppssättet är att hasha hemligheten tillsammans med meddelandet: `tag = SHA256(hemlighet + meddelande)`. Det verkar gediget, taggen beror på hemligheten, så en angripare som inte känner hemligheten kan inte producera den. Tyvärr är denna konstruktion knäckt för de vanligaste hashfunktionerna.
+
+## Längdförlängningsattacken
+
+Hashar i Merkle-Damgård-familjen, som inkluderar MD5, SHA-1 och SHA-256, bearbetar indata i block och för ett internt tillstånd vidare. Deras slutliga utdata *är* det interna tillståndet. Det läcker något farligt: givet `SHA256(hemlighet + meddelande)` och längden på `hemlighet + meddelande` kan en angripare sätta hashens interna tillstånd till din tagg och fortsätta hasha, och beräkna
+
+```
+SHA256(hemlighet + meddelande + utfyllnad + angripardata)
+```
+
+som en giltig tagg för ett förlängt meddelande, **utan att någonsin känna hemligheten**. Den kan lägga till data och producera en tagg som verifieras. För ett API där meddelandet är en uppsättning signerade parametrar kan det betyda att lägga till `&admin=true` i en begäran och ändå klara signaturkontrollen. Det naiva `hash(hemlighet + meddelande)` är inte säkert.
+
+## Hur HMAC åtgärdar det
+
+HMAC (RFC 2104) sammanfogar inte bara. Den hashar två gånger med nyckeln inblandad på två olika sätt:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Meddelandet hashas med nyckeln under en inre utfyllnad (`ipad`), och det resultatet hashas igen med nyckeln under en yttre utfyllnad (`opad`). Eftersom den yttre hashen omsluter den inre är värdet en angripare ser inte ett rått internt tillstånd den kan förlänga; det är utdata från ett andra hashsteg med hemlighetens nyckel. Längdförlängning slutar fungera, och HMAC:s säkerhet har ett gediget bevis som bara vilar på att den underliggande hashen är rimlig.
+
+Därför använder varje moget system HMAC (eller en annan lämplig MAC) i stället för hemmagjord nyckelhashning. Observera att SHA-3 och BLAKE inte är mottagliga för längdförlängning, så de kan förses med nyckel mer direkt, men HMAC förblir den portabla och brett stödda standarden.
+
+## Lärdomen
+
+Använd HMAC med en stark hash (HMAC-SHA256 är den vanliga standarden) och en hemlighet med hög entropi. Hitta inte på ditt eget schema för nyckelhashning: felet är inte uppenbart utifrån, vilket är just vad som gör det farligt.
+
+[HMAC-verktyget](/tools/hmac) beräknar HMAC-SHA256 och besläktade varianter över ett meddelande och en nyckel så att du ser taggen och jämför den, allt i din webbläsare, utan att något skickas.

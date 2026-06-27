@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Bytes, codepunten en UTF-8"
+summary: "Het verschil tussen een teken en een byte, waarom Unicode en UTF-8 bestaan, en wat dat met Base64 te maken heeft."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tekens zijn geen bytes
+
+Een computer slaat bytes op, waarden van 0 tot 255. Mensen lezen tekens: letters, cijfers, leestekens, emoji. Een **tekencodering** is de afgesproken afbeelding tussen de twee. Krijg de afbeelding verkeerd en je ziet de klassieke verminkte tekst (`café` die `cafÃ©` wordt), wat vrijwel altijd een verschil is tussen de codering die werd gebruikt om de bytes te schrijven en die om ze te lezen.
+
+## ASCII: de oorspronkelijke 128
+
+De oudste breed gebruikte codering is **ASCII**, die de getallen 0 tot 127 toewijst aan de basis-Engelse letters, cijfers en gangbare symbolen. Zeven bits, 128 tekens. ASCII is eenvoudig en ligt nog steeds aan veel van het computerwerk ten grondslag, maar 128 tekens kunnen geen letters met accenten, niet-Latijnse schriften of symbolen weergeven, dus het was nooit genoeg voor de tekst van de wereld.
+
+## Unicode: één getal per teken
+
+**Unicode** lost het dekkingsprobleem op door elk teken een uniek getal te geven, een **codepunt** genoemd, geschreven als `U+0041` (de letter A) of `U+2615` (een warme drank). Unicode is een reusachtige catalogus van tekens en hun codepunten, ruim meer dan honderdduizend, die in wezen elk gebruikt schrift dekt.
+
+Cruciaal is dat Unicode zegt *welk getal* elk teken heeft, maar niet *hoe dat getal als bytes op te slaan*. Die tweede taak hoort bij een coderingsvorm.
+
+## UTF-8: hoe codepunten bytes worden
+
+**UTF-8** is de dominante manier om Unicode-codepunten in bytes om te zetten, en het is de standaard op het hele moderne web. Het is van **variabele lengte**: een teken neemt één tot vier bytes in beslag, afhankelijk van zijn codepunt.
+
+- Het ASCII-bereik (U+0000 tot U+007F) wordt als één byte gecodeerd, identiek aan ASCII. Daarom is UTF-8 achterwaarts compatibel: elke zuivere ASCII-tekst is al geldig UTF-8.
+- Tekens buiten ASCII gebruiken twee, drie of vier bytes. Zo is `é` twee bytes en `☕` drie, ook al is elk één teken.
+
+Dat laatste punt is de gangbare verrassing: **één teken is niet altijd één byte.** Bytes tellen en tekens tellen geven verschillende antwoorden voor elke niet-ASCII-tekst. (UTF-16 en UTF-32 zijn alternatieve coderingen van dezelfde codepunten; UTF-8 won het web door zijn ASCII-compatibiliteit en compactheid voor Latijnse tekst.)
+
+## Waar Base64 om de hoek komt
+
+Dit doet ertoe voor Base64 omdat **Base64 op bytes werkt, niet op tekens.** Om een tekenreeks in Base64 te coderen, moet de tekenreeks eerst met een tekencodering in bytes worden omgezet, en die codering is in wezen altijd UTF-8. Codeer hetzelfde teken met een ander schema en je krijgt andere bytes, en dus andere Base64. De volledige pijplijn voor tekst is dus: tekens worden bytes (UTF-8), dan worden bytes veilige tekst (Base64). Bij het decoderen draai je beide stappen om.
+
+De [Base64-tool](/tools/base64) codeert tekst als UTF-8-bytes voordat hij in Base64 codeert, en markeert wanneer een gedecodeerd resultaat geen geldig UTF-8 is, alles in je browser.

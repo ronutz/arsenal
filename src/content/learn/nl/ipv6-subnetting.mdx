@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "IPv6-subnetting en de /64-grens"
+summary: "Waarom IPv6-subnetting over structuur gaat in plaats van schaarste, waarom één subnet bijna altijd een /64 is, en hoe prefixdelegatie adresruimte uitdeelt."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Een andere reden om te subnetten
+
+In IPv4 gaat subnetting meestal over behoud: adressen zijn schaars, dus je hakt een blok in de kleinste stukken die nog in elk netwerk passen (de logica in het artikel [subnetting-basis](/learn/subnetting-basics)). IPv6 verwijdert die druk geheel. Eén /64-subnet bevat 2^64 adressen, meer dan het hele IPv4-internet in het kwadraat, dus je subnet nooit een IPv6-netwerk om ruimte te besparen. Je subnet het om structuur te geven: één prefix per VLAN, per site, per klant. De wiskunde is dezelfde prefix-rekenkunde als IPv4 (de tool berekent het met gehele getallen van willekeurige precisie), maar de denkwijze is het tegenovergestelde.
+
+## Waarom een subnet een /64 is
+
+De enkele belangrijkste regel in IPv6-adressering is dat een normaal subnet een /64 is, wat 64 bits laat voor de interface-identifier. Dit is geen suggestie; grote delen van het protocol gaan ervan uit. Stateloze adres-autoconfiguratie (behandeld in het artikel [adresconfiguratie](/learn/ipv6-address-configuration)) bouwt het adres van een host door een 64-bits interface-identifier aan het aangekondigde prefix te hangen, en de gemodificeerde EUI-64-afleiding die de tool kan uitvoeren produceert precies 64 bits. Gebruik een langer prefix zoals een /80 of /112 op een link en autoconfiguratie houdt simpelweg op te werken. De adresseringsarchitectuur (RFC 4291) is rond deze grens gebouwd, dus het praktische advies is bot: maak elk eindgebruikerssubnet een /64 en probeer niet zuinig te zijn erbinnen.
+
+## De toewijzingshiërarchie
+
+Als elk subnet een /64 is, werken sites en providers in grotere blokken daarboven:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Een ISP delegeert typisch een /48 of /56 aan een klant, die dan /64s eruit toewijst aan individuele links. RFC 6177 trekt de oorspronkelijke "/48 voor iedereen"-richtlijn terug naar het geven van elke site genoeg ruimte om comfortabel te subnetten, wat in de praktijk een /48 of /56 betekent. Het punt is dat je ruimte over hebt: zelfs een /56 geeft een thuis of klein kantoor 256 aparte netwerken, veel meer dan het ooit zal gebruiken.
+
+## Subnet op nibble-grenzen
+
+Omdat IPv6 in hex wordt geschreven en elk hex-cijfer 4 bits is (een nibble), zijn prefixen die op een 4-bits grens vallen veel makkelijker te lezen en te beheren. Een /48, /52, /56, /60, en /64 eindigen allemaal netjes tussen hex-cijfers, dus het subnet-deel lijnt op met hele tekens in het adres. Een /48 in /52s subnetten geeft je 16 blokken onderscheiden door één hex-cijfer; naar /56 gaan geeft 256 blokken over twee cijfers. Op nibble-grenzen blijven houdt je adresseringsplan leesbaar, wat in IPv6 meer telt dan het uitknijpen van het laatste bit ooit zou kunnen.
+
+## Subnetten en adressen tellen
+
+De rekenkunde is eenvoudig. Het aantal /64-subnetten binnen een korter prefix is 2 verheven tot het verschil in prefixlengtes: een /48 bevat 2^(64-48) = 2^16 = 65.536 subnetten. Het aantal adressen binnen elk /64 is 2^(128-64) = 2^64. De tool rapporteert zowel het adresaantal voor een prefix als het bruikbare bereik, en de getallen worden snel groot, wat precies het punt is: schaarste is geen beperking meer waaromheen je ontwerpt.
+
+## De afdronk
+
+IPv6-subnetting zet de IPv4-gewoonte op zijn kop. Je verdeelt geen schaarse hulpbron; je legt structuur op aan een effectief onbeperkte. Geef elk subnet een /64 zodat autoconfiguratie en buurontdekking werken zoals ontworpen, vraag een /48 of /56 aan zodat je ruimte hebt om te organiseren, en subnet op nibble-grenzen zodat je plan leesbaar blijft. Wanneer je een prefix in de tool plakt en het adresaantal ziet, behandel die overvloed als toestemming om te ontwerpen voor helderheid in plaats van voor behoud.

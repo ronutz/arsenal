@@ -1,0 +1,43 @@
+---
+slug: ipv6-transition
+title: "Pagpapatakbo ng IPv6 at IPv4 nang sama-sama: dual-stack at translation"
+summary: "Paano tinutulayan ng internet ang dalawang hindi-magkatugmang pamilya ng address: dual-stack, Happy Eyeballs, NAT64, at ang mga IPv4-embedded na address na nagpapatakbo rito."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dalawang internet nang sabay
+
+Ang IPv6 at IPv4 ay hindi magkatugma sa wire: ang isang IPv6-lamang na host ay hindi makakapag-usap nang direkta sa isang IPv4-lamang na server, dahil ang mga packet ay gumagamit ng magkaibang laki ng address at mga header. Hindi kailanman magkakaroon ng isang araw ng pagpapasya kung saan lahat ay lilipat sa hatinggabi, kaya ang internet ay gumugol ng mga taon sa pagpapatakbo ng parehong protocol nang magkatabi at sa pagtulay sa pagitan nila. Ang mga teknolohiya ng transisyon ay umiiral upang gawing hindi nakikita ng mga user ang pagkakasamang iyon habang ang lumang protocol ay dahan-dahang inilalabas sa serbisyo.
+
+## Dual-stack: patakbuhin lang ang pareho
+
+Ang pinakasimpleng pamamaraan ay dual-stack: ang isang host, router, o server ay nagpapatakbo ng IPv4 at IPv6 nang sabay-sabay, na may isang address sa bawat isa. Kapag ang isang pangalan ay may parehong A record (IPv4) at AAAA record (IPv6) sa DNS, ang isang dual-stack na client ay makakaabot dito sa alinman. Ang umiiral na kagustuhan ay gumamit ng IPv6 kapag ito ay available at bumalik sa IPv4 kung hindi. Ang dual-stack ang landas na unang kinukuha ng karamihan ng mga network, dahil walang kailangang isalin; ang bawat protocol ay basta tumatakbo nang native.
+
+## Happy Eyeballs: itago ang mga pagkabigo
+
+Ang pagtatangi sa IPv6 ay kaaya-aya lamang kung ang isang sirang IPv6 path ay hindi nagpapahintay sa user. Nireresolba ito ng Happy Eyeballs (RFC 8305) sa pamamagitan ng pagpapakarera sa dalawa: sinisimulan ng client ang isang IPv6 na koneksyon at, pagkatapos ng isang napakaikling pasimula, sinisimulan din ang isang IPv4, pagkatapos ay ginagamit kung alin man ang unang nakumpleto at tahimik na inihuhulog ang isa. Ang epekto ay nakakakuha ang mga user ng IPv6 kapag ito ay malusog at isang agaran, hindi napapansing pagbalik sa IPv4 kapag hindi. Ang algorithm na ito ay isang malaking bahagi kung bakit ang pagpapagana ng IPv6 ay bihirang gumawa ng anumang bagay na maramdamang mas mabagal.
+
+## Mga IPv4 address na naka-embed sa IPv6
+
+Ilang mekanismo ang gumagana sa pamamagitan ng pagdadala ng isang IPv4 address sa loob ng isang IPv6 address, at kinikilala ng tool ang mga anyong ito. Ang IPv4-mapped na range na `::ffff:0:0/96` ay kumakatawan sa isang IPv4 address sa isang dual-stack na socket, kaya ang `::ffff:192.0.2.1` ay kung paano lumilitaw ang IPv4 host na 192.0.2.1 sa isang IPv6 API. Ang mga sistema ng translation ay gumagamit ng kilalang prefix na `64:ff9b::/96` (RFC 6052) upang i-embed ang isang IPv4 na destinasyon sa isang IPv6 address na maaaring i-route papunta sa isang translator. Ang pagkilala sa isang naka-embed na IPv4 address ay nagsasabi sa iyo na ang mukhang isang IPv6 na destinasyon ay talagang isang landas patungo sa isang bagay sa IPv4 internet.
+
+## NAT64 at DNS64: IPv6-lamang na umaabot sa IPv4
+
+Para sa mga network na naging IPv6-lamang, hinahayaan ng NAT64 (RFC 6146) at DNS64 (RFC 6147) ang mga client na iyon na umabot pa rin sa mga IPv4-lamang na server. Ang DNS64 ay nagsi-synthesize ng isang AAAA record para sa isang IPv4-lamang na pangalan sa pamamagitan ng pag-embed ng IPv4 address nito sa kilalang prefix, kaya ang client ay nakakakuha ng isang IPv6 na destinasyon upang ikonekta. Ang NAT64 ay umuupo sa hangganan at isinasalin ang mga IPv6 packet na iyon sa IPv4 sa daan palabas, at pabalik sa daan papasok. Magkasama hinahayaan nila ang isang modernong IPv6-lamang na network na kumilos na para bang ang buong internet ay naaabot sa IPv6.
+
+## 464XLAT para sa matitigas na IPv4 app
+
+Ilang application ang nagpapasa pa rin ng literal na IPv4 address at nasisira sa isang IPv6-lamang na network kahit na may NAT64 na naroroon. Ang 464XLAT (RFC 6877), malawak na na-deploy sa mga mobile carrier, ay nagdadagdag ng isang maliit na translation sa client na naglalahad ng isang pribadong IPv4 address nang lokal at nagta-tunnel nito sa kabuuan ng IPv6-lamang na network patungo sa isang NAT64 gateway. Ito ang dahilan kung bakit ang mga IPv6-lamang na mobile network ay makakapagpatakbo pa rin ng mga IPv4-lamang na app nang hindi napapansin ng user.
+
+## Bakit walang NAT sa native IPv6
+
+Isang madalas na tanong mula sa mga IPv4 administrator ay kung saan napunta ang NAT. Ang native IPv6 ay nagbibigay sa bawat host ng isang globally routable na address, kaya ang address-sharing na NAT na tumukoy sa mga home at office network ng IPv4 ay basta hindi na kailangan; ang connectivity ay end to end, at isang stateful na firewall, hindi ang address translation, ang nagbibigay ng hangganan. Kung saan ang pribado, hindi-naka-route na addressing ay tunay na ninanais, nag-aalok ang IPv6 ng Unique Local Addresses sa `fc00::/7`, ang ULA na uri na kinikilala ng tool. Ang translation na nakikita sa mga IPv6 edge ay para abutin ang *lumang* protocol, hindi para i-unat ang isang kulang na address space.
+
+## Scaffolding, hindi ang destinasyon
+
+Lahat ng makinaryang ito, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, ay transitional na scaffolding. Ang katayuang pangwakas ay native IPv6 saanman, na may translation na kailangan lamang upang abutin ang anumang IPv4 na natitira. Samantala, ang pagkilala sa mga embedded-IPv4 na anyo at pag-unawa kung aling tulay ang gumagana ay tumutulong sa iyong mangatwiran tungkol sa isang landas na maaaring tahimik na tumawid sa pagitan ng dalawang internet. Kapag minarkahan ng tool ang isang address bilang IPv4-mapped o nakaupo sa translation prefix, iyon ang iyong pahiwatig na may isang IPv4 endpoint na nagtatago sa loob ng isang IPv6 address.

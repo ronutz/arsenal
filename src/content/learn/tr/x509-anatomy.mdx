@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Bir X.509 sertifikasının anatomisi"
+summary: "Bir TLS sertifikasının içinde ne yaşadığı, ASN.1/DER baytlarının nasıl yapılandırıldığı, v3 uzantılarının aslında neyi denetlediği ve bir sertifikayı kod çözmenin ona güvenmekle aynı şey olmadığı."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bir sertifika nedir
+
+Bir X.509 sertifikası, bir açık anahtarı bir kimliğe bağlayan imzalı bir ifadedir. Bir tarayıcı HTTPS üzerinden bir siteye bağlandığında, sunucu, esasen "bu açık anahtar test.ronutz.com'a aittir ve bir sertifika makamı buna kefil olur" diyen bir sertifika sunar. Bir sertifikanın hangi alanları taşıdığını ve nasıl yorumlandığını tanımlayan profil RFC 5280'dir.
+
+Bağlama önemli olandır. Herkes bir anahtar çifti üretebilir, dolayısıyla çıplak bir açık anahtar diğer uçta kimin olduğuna dair hiçbir şey kanıtlamaz. Bir sertifika, dayanan tarafın zaten güvendiği bir verenden bir imza ekler, anonim bir anahtarı adı iliştirilmiş bir anahtara dönüştürür. Bu, web açık anahtar altyapısının (PKI) temelidir.
+
+## Güven zinciri
+
+Tek bir sertifikaya nadiren tek başına güvenilir. Ona güvenilir çünkü bir veren tarafından imzalanmıştır, ki o da başka bir veren tarafından imzalanmıştır, dayanan tarafın zaten bir güven deposunda tuttuğu bir köke kadar:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Her halka bir imzadır: veren, çocuğun sertifikasını verenin özel anahtarıyla imzalar ve bir doğrulayıcı o imzayı verenin açık anahtarıyla denetler. Bir **kök** kendi kendine verilmiş ve kendi kendine imzalanmıştır, ki bu yüzden kendi kendine imzalanmış bir sertifika bir kök için yararlı bir yerel vekildir ama hiçbir dış otorite taşımaz. X.509 aracı kendi kendine verilmiş bir sertifikayı (veren özneyle eşit) ve sertifikanın bir CA olarak işaretlenip işaretlenmediğini bayraklar, ki ikisi de size bir sertifikanın bu resimde nerede durduğunu söyler.
+
+## ASN.1 ve DER: bayt düzeni
+
+Bir sertifika JSON veya metin değildir. ASN.1 (Abstract Syntax Notation One) ile tanımlanır ve ITU-T X.690'da belirtilen Distinguished Encoding Rules (DER) ile kodlanır. DER bir tag-length-value (TLV) biçimidir: her öğe hangi tür olduğunu söyleyen bir tag baytıyla başlar, sonra bir uzunluk, sonra o kadar içerik baytı. SEQUENCE ve SET gibi yapılandırılmış türler çocuk öğeler tutar, dolayısıyla tüm sertifika bir TLV ağacıdır.
+
+Bir PEM dosyası tam olarak o DER'dir, Base64 kodlu ve zırh satırlarına sarılmış:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Yani bir sertifikayı kod çözmek, zırhı soymak, Base64'ten DER'e kod çözmek ve sonra TLV ağacında gezinmek demektir. X.509 aracı bunu tam olarak tarayıcınızda, kütüphane olmadan ve ağ çağrısı olmadan yapar.
+
+## En üst düzey yapı
+
+En dıştaki düzeyde, RFC 5280 üç bölüm tanımlar:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+**tbsCertificate** ("to be signed", imzalanacak) tüm gerçek içeriği tutar. **signatureAlgorithm** verenin onu nasıl imzaladığını adlandırır, örneğin sha256WithRSAEncryption veya ecdsa-with-SHA256. **signatureValue** imzanın kendisidir, tbsCertificate'in DER baytları üzerinde hesaplanır. O son nokta tutunmaya değer: imza imzalanacak gövdeyi tam olarak kodlandığı gibi kapsar, ki bu yüzden gövdenin herhangi bir yerinde tek baytlık bir değişiklik bile doğrulamayı kırar.
+
+## TBSCertificate'in içinde
+
+İmzalanacak gövde, aracın zamanının çoğunu geçirdiği yerdir:
+
+- **Sürüm** neredeyse her zaman v3'tür, uzantıları tanıtan sürüm.
+- **Seri numarası** verenin atadığı büyük bir tam sayıdır. Veren adıyla birleştirildiğinde sertifikayı benzersiz olarak tanımlar, ve bir iptal listesinin başvurduğu şeydir.
+- **Veren** (Issuer) ve **Özne** (Subject) Distinguished Name'lerdir. Bir DN, CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) ve C (country) gibi bir nitelik dizisidir. RFC 4514, gördüğünüz tek satırlık, en-özgül-önce sunumu tanımlar, örneğin `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- **Geçerlilik** (Validity) bir notBefore ve bir notAfter zaman damgasıdır. Bunlar UTCTime veya GeneralizedTime olarak kodlanır; araç her ikisini de ISO-8601'e dönüştürür ve yerel saatinize karşı size sertifikanın şimdi geçerli, henüz-geçerli-değil veya süresi dolmuş olup olmadığını söyler.
+- **subjectPublicKeyInfo** açık anahtarı artı algoritmasını taşır. RSA için araç modül boyutunu (örneğin 2048-bit) ve açık üssü (neredeyse her zaman 65537) bildirir. Eliptik eğri anahtarları için adlandırılmış eğriyi (P-256, P-384, P-521) bildirir, RFC 5480 uyarınca.
+
+## v3 uzantıları
+
+Uzantılar, modern sertifikaların politikalarının çoğunu kodladığı yerdir. Her uzantının bir tanımlayıcısı, bir kritik bayrağı ve bir değeri vardır. Kritik bayrağı önemlidir: bir dayanan taraf kritik olarak işaretlenmiş bir uzantıyı anlamazsa, alanı yok saymak yerine sertifikayı reddetmelidir. Araç en çok ağırlık taşıyanları kod çözer:
+
+- **Subject Alternative Name (SAN)**, sertifikanın aslında geçerli olduğu kimlikleri DNS adları, IP adresleri, e-posta adresleri veya URI'ler olarak listeler. TLS için bu, tarayıcıların denetlediği alandır, CN değil. `test.ronutz.com` için o adı SAN'ından çıkaran bir sertifika, CN eşleşse bile modern bir istemcide doğrulamayı geçemez.
+- **Key Usage**, anahtarın düşük düzeyde ne yapabileceğini kısıtlar: digitalSignature, keyEncipherment, keyCertSign, cRLSign ve diğerleri. Bir CA sertifikası keyCertSign taşır; bir TLS yaprağı tipik olarak digitalSignature ve keyEncipherment taşır.
+- **Extended Key Usage (EKU)**, serverAuth (TLS sunucusu), clientAuth (TLS istemcisi), codeSigning veya emailProtection gibi daha yüksek düzeyli amaçları adlandırır.
+- **Basic Constraints**, sertifikanın bir CA olup olmadığını ve eğer öyleyse, altında kaç ara CA'nın görünebileceğini (yol uzunluğu) belirtir. Bu, bir yaprak sertifikanın başka sertifikaları imzalamak için kullanılmasını durduran alandır.
+- **Subject Key Identifier** ve **Authority Key Identifier**, bir doğrulayıcının bir zincir kurarken bir sertifikayı verenine hızlıca eşlemesine olanak tanıyan karmalardır.
+
+## Parmak izleri
+
+Bir sertifika **parmak izi** (fingerprint), basitçe sertifikanın DER baytlarının kriptografik bir karmasıdır, genellikle SHA-256 (ve, daha eski başvurular için, SHA-1). Sertifikanın içinde bir alan değildir; tüm şey üzerinde hesaplanır. Parmak izleri, iki sertifikayı eşitlik açısından karşılaştırmak veya bilinen bir sertifikayı sabitlemek için size kısa, sabit uzunlukta bir değer verir. Araç hem SHA-256'yı hem de SHA-1'i Web Crypto API ile yerel olarak hesaplar, dolayısıyla yapıştırdığınız baytlar asla hiçbir yere gönderilmez. Bir karmanın ne olup ne olmadığı hakkında daha fazlası için, karma makalesine bakın.
+
+## Kod çözmek doğrulamak değildir
+
+Bu, tek en önemli fikirdir ve JSON Web Tokens için geçerli olan aynı dikkati yansıtır. Bir sertifikanın alanlarını okumak size onun ne *iddia ettiğini* söyler. Size iddianın *doğru* olduğunu söylemez. Tam doğrulama ayrı, daha ağır bir süreçtir: imzanın güvenilir bir köke zincirlendiğini, zincirdeki sertifikaların hiçbirinin süresinin dolmadığını veya iptal edilmediğini, bağlandığınız adın SAN'da olduğunu ve anahtar kullanımlarının yaptığınız şeye izin verdiğini denetlemek.
+
+Bir sertifika kod çözücüsü, bu dahil, bir inceleme ve öğrenme aracıdır. Size tam olarak bir verenin neyi öne sürdüğünü ve nasıl kodlandığını gösterir. Çıktıyı belgenin sadık bir okuması olarak ele alın, ona güvenilip güvenilmeyeceğine dair bir hüküm olarak değil.

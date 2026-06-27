@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Comment fonctionnent les adresses IPv4"
+summary: "Les 32 bits derrière toute adresse en quadruplet pointé, et ce que signifient les plages privées, de loopback et spéciales."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trente-deux bits déguisés
+
+Une adresse IPv4 est un seul nombre de 32 bits. Nous ne l'écrivons presque jamais ainsi car 32 uns et zéros sont difficiles à lire, donc elle est divisée en quatre groupes de 8 bits appelés **octets**, chacun montré en décimal de 0 à 255 et joints par des points. `192.168.1.10` n'est qu'une façon plus conviviale d'écrire une valeur spécifique de 32 bits.
+
+Parce que chaque octet fait 8 bits, l'espace entier est de 2³² adresses, environ 4,3 milliards. Cela semblait énorme dans les années 1980 et est la raison pour laquelle l'épuisement des adresses IPv4 est devenu un vrai problème des décennies plus tard, et pour laquelle l'adressage privé et IPv6 existent.
+
+## Partie réseau et partie hôte
+
+Aucune adresse n'est seule, elle appartient à un bloc, et au sein de ce bloc les bits se divisent en une **partie réseau** (quel bloc est-ce) et une **partie hôte** (quelle machine au sein du bloc). La longueur de préfixe, écrite à la manière CIDR comme `/24`, marque où cette division tombe. Tout à gauche de la ligne est réseau ; tout à droite identifie un hôte. C'est la même idée explorée dans la notation CIDR, vue du côté de l'adresse.
+
+## Plages avec une signification spéciale
+
+Toute adresse n'est pas une adresse d'hôte ordinaire. Plusieurs plages sont réservées à des fins spécifiques, et les reconnaître fait partie de la lecture de toute configuration réseau :
+
+- **Les plages privées (RFC 1918)** sont réservées à un usage au sein de réseaux privés et ne sont jamais routées sur l'internet public :
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  C'est pourquoi les réseaux domestiques et de bureau utilisent si souvent `192.168.x.x` ou `10.x.x.x`, ces adresses sont libres d'être réutilisées partout car elles n'apparaissent jamais sur l'internet ouvert.
+- **Le loopback (`127.0.0.0/8`)** se réfère toujours à la machine locale elle-même. `127.0.0.1` est l'adresse qu'un ordinateur utilise pour se parler à lui-même.
+- **Les adresses link-local (`169.254.0.0/16`)** sont auto-assignées quand un appareil ne peut atteindre un serveur DHCP. En voir une signifie généralement « aucune adresse n'a été distribuée ».
+- **L'adresse non spécifiée (`0.0.0.0`)** et la route par défaut (`0.0.0.0/0`) sont spéciales : cette dernière est la route attrape-tout qui correspond à toute destination non couverte par une route plus spécifique.
+
+## Pourquoi les plages spéciales importent pour la sécurité
+
+Ces plages réservées ne sont pas que des anecdotes. Un outil qui récupère une adresse fournie par l'utilisateur doit refuser d'atteindre les plages privées, de loopback et link-local, ou il peut être trompé pour faire des requêtes contre des systèmes internes qu'il ne devrait jamais toucher, une classe d'attaque appelée server-side request forgery (falsification de requête côté serveur). Savoir quelles plages sont internes est le premier pas pour s'en défendre. C'est exactement pourquoi les outils qui touchent le réseau sur ce site vérifient une adresse résolue contre ces plages avant même de se connecter.
+
+Pour voir comment toute adresse se situe au sein de son bloc, son adresse réseau, son adresse de broadcast, et la plage utilisable autour d'elle, essayez la [calculatrice CIDR](/learn), qui calcule tout cela localement dans votre navigateur.

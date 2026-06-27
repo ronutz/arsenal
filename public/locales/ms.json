@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Cuba alat sekarang.",
       "body": "Kalkulator CIDR di bawah berjalan secara setempat. Masukkan rangkaian dan awalan untuk melihat julat alamat, kiraan hos dan topeng. Tiada apa yang dihantar ke mana-mana.",
-      "learnHeading": "Pelajari konsepnya"
+      "learnHeading": "Pelajari konsepnya",
+      "toolboxCta": "Buka kotak alat penuh"
     },
     "provenance": {
       "title": "Penghargaan dan sumber",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Masukkan blok CIDR untuk dikira.",
         "invalid": "Itu tidak kelihatan seperti blok CIDR yang sah. Cuba format seperti 192.168.1.0/24."
-      }
+      },
+      "name": "Kalkulator CIDR / Subnet",
+      "blurb": "Pecahkan mana-mana blok CIDR IPv4 kepada alamat rangkaian dan siaran, julat hos yang boleh digunakan, bilangan hos dan netmask. Berjalan sepenuhnya dalam pelayar anda."
     },
     "title": "Alat",
     "lede": "Alat yang kecil, pantas dan menghormati privasi yang berjalan sepenuhnya dalam pelayar anda. Tiada apa yang anda masukkan dihantar ke mana-mana. Lebih banyak akan datang.",
     "open": "Buka",
     "comingSoon": "Akan datang",
-    "note": "Set alat ini sedang berkembang. Alat baharu ditambah di sini apabila siap, setiap satu berjalan secara setempat dan percuma untuk digunakan."
+    "note": "Set alat ini sedang berkembang. Alat baharu ditambah di sini apabila siap, setiap satu berjalan secara setempat dan percuma untuk digunakan.",
+    "learnHeading": "Pelajari konsepnya",
+    "backToTools": "Alat",
+    "references": "Rujukan",
+    "categories": {
+      "identity": "Identiti & token",
+      "encoding": "Pengekodan & data",
+      "hashing": "Hashing & kripto",
+      "identifiers": "Pengecam",
+      "pki": "Sijil & PKI",
+      "networking": "Rangkaian"
+    },
+    "hash": {
+      "name": "Penjana Hash (SHA-1/256/384/512)",
+      "blurb": "Kira cebisan SHA-1, SHA-256, SHA-384 dan SHA-512 bagi mana-mana teks, dipaparkan sebagai hex dan Base64, menggunakan Web Crypto asli pelayar. Berjalan sepenuhnya dalam pelayar anda.",
+      "algorithmLabel": "Algoritma hash",
+      "inputLabel": "Teks untuk di-hash",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Hashing berjalan secara setempat melalui Web Crypto. Tiada apa yang anda taip keluar dari pelayar anda.",
+      "bits": "{bits} bit ({bytes} bait)",
+      "sha1Note": "SHA-1 telah rosak dari segi rintangan perlanggaran dan tidak sesuai untuk keselamatan (tandatangan, sijil). Ia hanya sesuai untuk hasil tambak semak bukan keselamatan dan kesalingoperasian warisan.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Salin",
+      "copied": "Disalin"
+    },
+    "hmac": {
+      "name": "Penjana HMAC (SHA-256/384/512)",
+      "blurb": "Kira HMAC berkunci ke atas sesuatu mesej dengan kunci rahsia anda, dipaparkan sebagai hex dan Base64, melalui Web Crypto asli pelayar. Binaan yang sama digunakan oleh pengesah JWT untuk HS256. Kunci anda tidak pernah keluar dari pelayar anda.",
+      "algorithmLabel": "Algoritma HMAC",
+      "messageLabel": "Mesej",
+      "messagePlaceholder": "Mesej yang hendak disahkan",
+      "keyLabel": "Kunci rahsia",
+      "keyPlaceholder": "Rahsia kongsi anda",
+      "runsLocally": "HMAC berjalan secara setempat melalui Web Crypto. Mesej dan kunci anda tidak pernah keluar dari pelayar anda.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Salin",
+      "copied": "Disalin"
+    },
+    "base64": {
+      "name": "Pengekod dan Penyahkod Base64 / Base64URL",
+      "blurb": "Kodkan teks kepada Base64 standard atau selamat-URL, atau nyahkodkan mana-mana varian kembali kepada teks. Bertolak ansur dengan padding yang tiada, dan ia menandakan hasil perduaan (bukan UTF-8). Berjalan sepenuhnya dalam pelayar anda.",
+      "directionLabel": "Arah",
+      "variantLabel": "Varian Base64",
+      "direction": {
+        "encode": "Kod (teks ke Base64)",
+        "decode": "Nyahkod (Base64 ke teks)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "Selamat-URL"
+      },
+      "inputLabelEncode": "Teks untuk dikodkan",
+      "inputLabelDecode": "Base64 untuk dinyahkodkan",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Pengekodan dan penyahkodan berjalan secara setempat. Tiada apa yang anda tampal keluar dari pelayar anda.",
+      "decodeErrors": {
+        "invalid-characters": "Itu bukan Base64 yang sah. Ia mengandungi aksara di luar abjad Base64.",
+        "invalid-length": "Itu bukan Base64 yang sah. Panjangnya bukan panjang Base64 yang sah."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Teks dinyahkod",
+      "copy": "Salin",
+      "copied": "Disalin",
+      "emptyOutput": "(kosong)",
+      "decodedBytes": "{bytes, plural, other {Menyahkod # bait.}}",
+      "notUtf8": "{bytes, plural, other {Menyahkod # bait,}} tetapi hasilnya bukan teks UTF-8 yang sah (berkemungkinan perduaan)."
+    },
+    "pkce": {
+      "name": "Pengesah dan Challenge OAuth PKCE",
+      "blurb": "Jana code_verifier OAuth 2.0 dan terbitkan code_challenge S256-nya, atau tampal milik anda sendiri dan semak ia mengikut peraturan panjang dan set aksara RFC 7636. Terbitan SHA-256 base64url yang sama seperti yang dijangka oleh pelayan kebenaran anda. Berjalan sepenuhnya dalam pelayar anda.",
+      "verifierLabel": "Code verifier",
+      "verifierPlaceholder": "Tampal code_verifier, atau jana satu",
+      "generate": "Jana",
+      "runsLocally": "Penjanaan dan penerbitan berjalan secara setempat. Verifier anda tidak pernah keluar dari pelayar anda.",
+      "lengthBadge": "Panjang {length} (43-128)",
+      "charsetOk": "Set aksara tidak terpelihara",
+      "charsetBad": "Aksara tidak sah",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "Kaedah plain tidak digalakkan. Gunakan S256 di mana sahaja klien boleh mengira SHA-256.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Salin",
+      "copied": "Disalin"
+    },
+    "uuid": {
+      "name": "Penjana dan Pemeriksa UUID (v4 / v7)",
+      "blurb": "Jana UUID v4 rawak atau v7 tertib masa, atau tampal mana-mana UUID untuk membaca versi, variannya dan (untuk v7) cap masa penciptaan terbenam. Penjanaan menggunakan sumber rawak selamat pelayar. Berjalan sepenuhnya dalam pelayar anda.",
+      "versionLabel": "Versi UUID",
+      "generate": "Jana",
+      "clear": "Kosongkan",
+      "emptyHint": "Pilih versi dan jana.",
+      "runsLocally": "Penjanaan dan pemeriksaan berjalan secara setempat. Tiada apa-apa dihantar ke mana-mana.",
+      "copy": "Salin",
+      "copied": "Disalin",
+      "inspectLabel": "Periksa UUID",
+      "inspectPlaceholder": "Tampal mana-mana UUID untuk menyahkodnya",
+      "valid": "UUID sah",
+      "invalid": "Bukan UUID yang sah",
+      "versionField": "Versi",
+      "variantField": "Varian",
+      "timestampField": "Cap masa (v7)",
+      "versionValue": "Versi {version}"
+    },
+    "jwt": {
+      "name": "Penyahkod dan Pengesah JWT",
+      "blurb": "Nyahkod pengepala dan claim sesuatu JSON Web Token, baca tamat tempohnya dan pemasaannya dalam bahasa yang jelas, dan sahkan tandatangan HS256/384/512 dengan rahsia yang ditampal. Berjalan sepenuhnya dalam pelayar anda.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Penyahkodan dan semakan tandatangan berjalan secara setempat. Token dan rahsia tidak pernah keluar dari pelayar anda.",
+      "errors": {
+        "empty": "Tampal sesuatu JSON Web Token untuk dinyahkod.",
+        "format": "Itu tidak kelihatan seperti JWT. Sesuatu token mempunyai tiga bahagian base64url yang dipisahkan oleh titik: header.payload.signature.",
+        "header": "Pengepala tidak sah. Ia sepatutnya JSON yang dikodkan dalam base64url.",
+        "payload": "Muatan tidak sah. Ia sepatutnya JSON yang dikodkan dalam base64url."
+      },
+      "panels": {
+        "header": "Pengepala",
+        "payload": "Muatan",
+        "signature": "Tandatangan",
+        "noSignature": "Tiada segmen tandatangan (token tidak terjamin)."
+      },
+      "claims": {
+        "iss": "Pengeluar (iss)",
+        "sub": "Subjek (sub)",
+        "aud": "Khalayak (aud)",
+        "jti": "ID JWT (jti)",
+        "iat": "Dikeluarkan pada (iat)",
+        "nbf": "Tidak sebelum (nbf)",
+        "exp": "Tamat tempoh (exp)"
+      },
+      "status": {
+        "expired": "Tamat tempoh {rel}",
+        "expiresIn": "Sah, tamat tempoh {rel}",
+        "notYetValid": "Belum sah, bermula {rel}",
+        "noExpiry": "Tiada claim tamat tempoh (exp)"
+      },
+      "verify": {
+        "label": "Sahkan tandatangan HMAC (HS256/384/512)",
+        "placeholder": "rahsia kongsi",
+        "button": "Sahkan",
+        "valid": "Tandatangan sah untuk rahsia ini.",
+        "invalid": "Tandatangan tidak sepadan dengan rahsia ini.",
+        "algNone": "Token ini tidak terjamin (alg: none), jadi tiada tandatangan untuk disahkan.",
+        "unsupportedAlg": "Pengesahan dalam pelayar hanya merangkumi HS256/384/512. {alg} adalah tak simetri dan memerlukan kunci awam.",
+        "hint": "Rahsia hanya digunakan untuk mengira HMAC dalam pelayar anda. Ia tidak pernah dihantar ke mana-mana."
+      }
+    },
+    "x509": {
+      "name": "Penyahkod Sijil X.509",
+      "blurb": "Tampal sijil dalam PEM, base64 atau hex untuk membaca subjeknya, pengeluarnya, tetingkap kesahihannya, kunci awam dan sambungan v3, dengan cap jari SHA-256 dan SHA-1. Berjalan sepenuhnya dalam pelayar anda.",
+      "inputLabel": "Sijil X.509",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Penyahkodan dan cap jari berjalan secara setempat. Sijil tidak pernah keluar dari pelayar anda.",
+      "errors": {
+        "empty": "Tampal sesuatu sijil X.509 untuk dinyahkod.",
+        "format": "Itu tidak kelihatan seperti sijil. Tampal PEM (-----BEGIN CERTIFICATE-----), base64 atau hex.",
+        "der": "Bait-bait itu bukan DER yang sah. Semak bahawa keseluruhan sijil telah ditampal, termasuk baris END.",
+        "structure": "Ini dinyahkod sebagai ASN.1 tetapi bukan sijil X.509. Sesuatu sijil ialah SEQUENCE yang terdiri daripada TBSCertificate, signatureAlgorithm dan signatureValue."
+      },
+      "status": {
+        "valid": "Sah, tamat tempoh {rel}",
+        "expired": "Tamat tempoh {rel}",
+        "notYetValid": "Belum sah, bermula {rel}"
+      },
+      "panels": {
+        "subject": "Subjek",
+        "issuer": "Pengeluar",
+        "details": "Butiran",
+        "publicKey": "Kunci awam",
+        "extensions": "Sambungan",
+        "fingerprints": "Cap jari"
+      },
+      "fields": {
+        "version": "Versi",
+        "serial": "Nombor siri",
+        "notBefore": "Tidak sebelum",
+        "notAfter": "Tidak selepas",
+        "signatureAlgorithm": "Algoritma tandatangan",
+        "algorithm": "Algoritma",
+        "keySize": "Saiz kunci",
+        "exponent": "Eksponen",
+        "curve": "Lengkung",
+        "bits": "{n} bit",
+        "selfSigned": "Dikeluarkan sendiri"
+      },
+      "ext": {
+        "san": "Nama alternatif subjek",
+        "keyUsage": "Penggunaan kunci",
+        "extKeyUsage": "Penggunaan kunci lanjutan",
+        "basicConstraints": "Kekangan asas",
+        "subjectKeyId": "Pengecam kunci subjek",
+        "authorityKeyId": "Pengecam kunci pihak berkuasa",
+        "caTrue": "Pihak berkuasa sijil (CA: true)",
+        "caFalse": "Bukan CA (CA: false)",
+        "pathLen": "panjang laluan {n}",
+        "critical": "kritikal"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Mengira cap jari..."
+      }
+    },
+    "ipv6": {
+      "name": "Kit Alat IPv6",
+      "blurb": "Hurai sesuatu alamat atau awalan IPv6 untuk melihat bentuk kanoniknya (RFC 5952) dan bentuk yang dikembangkan sepenuhnya, pengelasan kegunaan khas, aritmetik awalan, sesuatu MAC EUI-64 jika ada, dan nama DNS songsang ip6.arpa-nya. Berjalan sepenuhnya dalam pelayar anda.",
+      "inputLabel": "Alamat atau awalan IPv6",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Penghuraian berjalan secara setempat. Alamat tidak pernah keluar dari pelayar anda.",
+      "errors": {
+        "empty": "Masukkan sesuatu alamat atau awalan IPv6 untuk dinyahkod.",
+        "format": "Itu bukan alamat IPv6 yang sah. Gunakan lapan kumpulan hex, secara pilihan dimampatkan sekali dengan :: (contohnya 2001:db8::1).",
+        "prefix": "Panjang awalan tidak sah. Untuk IPv6 ia mesti antara 0 dan 128."
+      },
+      "panels": {
+        "forms": "Bentuk kanonik",
+        "classification": "Pengelasan",
+        "prefix": "Awalan",
+        "identifiers": "Pengecam"
+      },
+      "fields": {
+        "compressed": "Dimampatkan (RFC 5952)",
+        "expanded": "Dikembangkan",
+        "type": "Jenis",
+        "scope": "Skop",
+        "embeddedIpv4": "IPv4 terbenam",
+        "network": "Rangkaian",
+        "firstAddress": "Alamat pertama",
+        "lastAddress": "Alamat terakhir",
+        "count": "Alamat",
+        "hostBits": "Bit hos",
+        "eui64": "MAC EUI-64",
+        "reverseDns": "DNS songsang (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multicast"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Privasi",
+    "title": "Data anda, dan apa yang laman ini lakukan dengannya",
+    "lede": "Penjelasan dalam bahasa yang jelas tentang apa sebenarnya yang laman web ini lakukan dan tidak lakukan dengan maklumat anda. Ia ditulis untuk tepat dan bukan sekadar menenangkan, kerana di bawah peraturan seperti GDPR dan LGPD Brazil, pendedahan yang tepatlah yang penting.",
+    "shortTitle": "Versi ringkas",
+    "short1": "Laman ini tidak menetapkan kuki, tidak menjalankan analitik, tidak menggunakan pengiklanan dan tidak mengandungi penjejak pihak ketiga atau cap jari (fingerprinting). Tiada apa-apa yang mengikuti anda merentas web.",
+    "short2": "Ia tidak menjual, berkongsi atau membina profil pelawatnya, dan tidak meminta apa-apa daripada anda untuk anda membacanya.",
+    "short3": "Alat interaktif berjalan sepenuhnya dalam pelayar anda. Apa yang anda tampal atau taip ke dalamnya kekal pada peranti anda dan tidak dihantar ke mana-mana.",
+    "short4": "Hanya tiga perkara yang melibatkan data langsung, dan setiap satu dijelaskan di bawah: satu tetapan tema yang disimpan dalam pelayar anda sendiri, log sambungan standard yang setiap lawatan laman cipta pada lapisan pengehosan, dan sebarang mesej yang anda pilih untuk hantar melalui e-mel.",
+    "controllerTitle": "Siapa yang bertanggungjawab",
+    "controllerBody": "Ini ialah laman web peribadi Rodolfo Nützmann (ronutz.com). Untuk sebarang persoalan privasi, atau untuk melaksanakan mana-mana hak yang diterangkan di bawah, tulis kepada hello@ronutz.com. Pertanyaan dikendalikan secara langsung oleh Rodolfo Nützmann, sebagai pengawal data.",
+    "noTrackTitle": "Tiada kuki, tiada penjejakan, tiada analitik",
+    "noTrackBody": "Laman ini tidak menetapkan sebarang kuki. Ia tidak menggunakan sebarang perkhidmatan analitik (seperti Google Analytics atau Plausible), sebarang rangkaian pengiklanan, sebarang piksel penjejakan media sosial dan sebarang cap jari peranti. Lawatan anda tidak diukur, diprofil atau dikongsi dengan sesiapa untuk tujuan tersebut.",
+    "browserTitle": "Apa yang disimpan dalam pelayar anda",
+    "browserBody": "Satu perkara kecil: tema visual yang anda pilih, disimpan dalam storan tempatan (local storage) pelayar anda supaya laman dapat mengingatinya pada lawatan anda yang seterusnya. Ia ialah tetapan kemudahan yang kekal pada peranti anda sendiri, tidak pernah dihantar ke laman ini atau kepada sesiapa lain, dan boleh dipadamkan pada bila-bila masa melalui pelayar anda. Tiada data lain tentang anda disimpan pada peranti anda.",
+    "hostingTitle": "Pengehosan dan log pelayan",
+    "hostingBody": "Laman disampaikan melalui Cloudflare, yang menyediakan pengehosan dan penyampaian kandungannya. Seperti mana-mana laman web, memuatkan halaman bermakna peranti anda bersambung ke pelayan, dan Cloudflare, bertindak sebagai penyedia pengehosan, memproses data sambungan asas, termasuk alamat IP anda dan butiran permintaan standard, untuk menyampaikan halaman kepada anda dan melindungi laman daripada penyalahgunaan dan serangan. Pemprosesan ini perlu untuk mengendalikan dan mengamankan laman (kepentingan sah di bawah Perkara 6(1)(f) GDPR, dan asas yang sepadan dalam Perkara 7 dan 10 LGPD). Ia disimpan hanya seketika oleh penyedia dan tidak digunakan di sini untuk mengenal pasti atau menjejaki anda.",
+    "toolsTitle": "Alat berjalan dalam pelayar anda",
+    "toolsBody": "Penyahkod dan kalkulator di laman ini, untuk JWT, alamat IP, sijil dan selebihnya, mengira sepenuhnya dalam pelayar anda. Nilai yang anda masukkan diproses pada peranti anda sendiri dan tidak pernah dihantar ke pelayan. Antara muka aturcara berasingan (sebuah API) ditawarkan untuk automasi dan penyepaduan; mengikut reka bentuk ia tanpa keadaan dan tidak melog mana-mana pertanyaan atau badan permintaan yang dihantar kepadanya.",
+    "contactTitle": "Jika anda menghubungi saya",
+    "contactBody": "Borang hubungan tidak menghantar apa-apa ke pelayan. Sebaliknya, ia membuka mesej pra-isi dalam aplikasi e-mel anda sendiri, yang kemudian anda hantar sendiri daripada akaun anda sendiri, jadi tiada apa-apa yang melalui pihak ketiga. Jika anda menulis, sama ada melalui borang atau secara langsung, saya menerima maklumat yang anda sertakan, seperti nama, alamat e-mel dan mesej anda, dan menggunakannya hanya untuk membalas anda. Saya menyimpannya hanya selama yang diperlukan untuk mengendalikan pertanyaan anda, tidak menggunakannya untuk pemasaran, dan tidak berkongsinya.",
+    "intlTitle": "Pemprosesan di luar negara anda",
+    "intlBody": "Oleh sebab Cloudflare mengendalikan rangkaian global, pemprosesan pada peringkat sambungan yang diterangkan di atas mungkin berlaku pada pelayan yang terletak di luar negara anda sendiri, termasuk di luar Brazil dan Kawasan Ekonomi Eropah. Apabila data peribadi dikendalikan secara antarabangsa dengan cara ini, ia diproses di bawah perlindungan yang ditawarkan oleh penyedia berkenaan.",
+    "childrenTitle": "Kanak-kanak",
+    "childrenBody": "Laman ini ditujukan untuk khalayak profesional dan umum. Ia tidak ditujukan kepada kanak-kanak dan tidak mengumpul data peribadi mereka secara sedar.",
+    "rightsTitle": "Hak anda",
+    "rightsBody": "Bergantung pada tempat anda tinggal, anda mempunyai hak ke atas data peribadi anda, termasuk untuk mengaksesnya, membetulkan atau memadamnya, membantah atau menyekat pemprosesannya, meminta salinan dalam bentuk mudah alih, dan dimaklumkan tentang cara ia dikendalikan. Untuk melaksanakan mana-mana satu, hanya tulis kepada hello@ronutz.com. Oleh sebab begitu sedikit data peribadi yang pernah diproses di sini, pada praktiknya biasanya terdapat sangat sedikit untuk dilakukan, tetapi saluran sentiasa terbuka.",
+    "rightsGdpr": "Jika anda berada di Kawasan Ekonomi Eropah atau United Kingdom, anda juga berhak untuk mengemukakan aduan kepada pihak berkuasa penyeliaan perlindungan data tempatan anda.",
+    "rightsLgpd": "Jika anda berada di Brazil, anda memegang hak yang ditetapkan dalam Perkara 18 LGPD, dan juga boleh menghubungi pihak berkuasa perlindungan data kebangsaan (ANPD).",
+    "changesTitle": "Perubahan pada notis ini",
+    "changesBody": "Jika notis ini berubah, versi yang disemak akan diterbitkan pada halaman ini dan tarikh di bawah akan dikemas kini. Perubahan material tidak akan dikuatkuasakan secara retroaktif.",
+    "updated": "Kemas kini terakhir: 28 Jun 2026",
+    "backHome": "Kembali ke laman utama"
   },
   "footer": {
+    "redEducation": "Tempah latihan rasmi dengan Red Education",
+    "privacy": "Privasi",
     "builtWith": "Dibina oleh Rodolfo Nützmann dengan CONCORD",
     "colophon": "Cara ia dibina",
     "openSource": "Enjin ini sumber terbuka",
     "rights": "Tersedia di bawah terma terbuka dan komersial.",
     "contribute": "Bantu perbaiki terjemahan",
-    "feedback": "Hantar maklum balas"
+    "feedback": "Hantar maklum balas",
+    "api": "Rujukan API",
+    "contributeTools": "Sumbangkan satu alat"
   },
   "search": {
     "label": "Cari",
@@ -390,13 +672,16 @@
     "emailLabel": "E-mel",
     "channels": {
       "linkedin": {
-        "description": "Berhubung secara profesional"
+        "description": "Berhubung secara profesional",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Video dan panduan"
+        "description": "Video dan panduan",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Di sebalik tabir"
+        "description": "Di sebalik tabir",
+        "label": "Instagram"
       },
       "training": {
         "label": "Latihan rasmi",
@@ -551,5 +836,50 @@
     "accessFederatedOnly": "Log masuk bersekutu sahaja. Tiada akaun setempat sandaran.",
     "accessRoleLabel": "Peranan",
     "accessPermsLabel": "Kebenaran pemilik"
+  },
+  "contributeTools": {
+    "eyebrow": "Kotak alat terbuka",
+    "title": "Sumbangkan satu alat",
+    "lede": "Kotak alat dibina untuk berkembang. Setiap alat ialah modul kecil yang menerangkan dirinya sendiri pada enjin terbuka, dan laman ini memuatkannya dengan cara yang sama seperti yang boleh dilakukan oleh sesiapa sahaja. Jika anda ada alat yang sesuai, cadangkanlah.",
+    "shapeTitle": "Apa itu alat",
+    "shapeBody": "Sesuatu alat ialah tiga perkara serentak: satu manifes yang menerangkannya (apa ia, input yang diterimanya, dari mana ketepatannya berasal), satu fungsi pelaksanaan tulen yang melakukan kerja itu, dan satu set vektor rujukan, iaitu pasangan input dan output tetap yang membuktikan fungsi itu betul. Enjin memuatkan alat daripada manifesnya, jadi modul yang terbentuk dengan baik masuk tanpa menyentuh bahagian lain laman ini.",
+    "principlesTitle": "Apa yang mesti dipatuhi oleh alat",
+    "principlesBody": "Pengiraan berjalan secara setempat dan bersifat berketentuan: input yang sama sentiasa menghasilkan output yang sama, tanpa jam, rangkaian atau kerawakan dalam hasilnya. Apa-apa yang sensitif kekal pada peranti secara lalai. Ketepatan ditambat pada vektor rujukan dan pada sumber yang dipetik, seperti sesuatu RFC atau standard yang diterbitkan, bukan pada pendapat. Kod dikeluarkan di bawah lesen yang permisif, supaya laman ini dan sesiapa sahaja boleh membina di atasnya.",
+    "proposeTitle": "Cadangkan satu",
+    "proposeBody": "Hantar cadangan ringkas melalui e-mel: apa yang dikira oleh alat itu, contoh input dengan output tepat yang sepatutnya dihasilkannya, dan sumber yang menjadi sandaran ketepatannya. Lakaran manifes dan beberapa vektor rujukan dialu-alukan, tetapi tidak diwajibkan. Jika sesuai, ia dibina ke dalam enjin dan kotak alat.",
+    "emailLabel": "E-mel",
+    "backToTools": "Kembali ke kotak alat"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Alat di laman ini berjalan dalam pelayar anda dan mengekalkan data anda pada peranti anda. Untuk automasi, seperti skrip, pipelines dan penyepaduan, pengiraan berketentuan yang sama tersedia sebagai API HTTP yang kecil. Ia ialah pasangan beraturcara bagi alat pelayar, bukan penggantinya.",
+    "privacyTitle": "Apa maksudnya bagi data anda",
+    "privacyBody": "API hanya menerima input yang anda hantar kepadanya, mengira satu hasil, dan memulangkannya. Ia tanpa keadaan dan tidak mencatat sebarang nilai pertanyaan atau badan permintaan. Jika anda perlukan jaminan sifar pengaliran data keluar, gunakan alat pelayar, atau jalankan enjin terbuka itu sendiri.",
+    "engineTitle": "Enjin yang sama seperti pelayar",
+    "engineBody": "Setiap titik akhir memanggil fungsi enjin yang sama seperti yang dipanggil oleh alat dalam pelayar, jadi API dan pelayar memulangkan hasil yang seiras bait demi bait. Enjin itu, @ronutz/netcore, ialah sumber terbuka di bawah lesen yang permisif.",
+    "specTitle": "Spesifikasi",
+    "specBody": "Kontrak penuh diterbitkan sebagai OpenAPI 3.1. Muat turunkannya, halakan perkakas anda sendiri kepadanya, atau baca rujukan di bawah.",
+    "downloadSpec": "Muat turun openapi.yaml",
+    "baseUrlLabel": "URL asas",
+    "authLabel": "Pengesahan",
+    "authValue": "Tiada. Ini ialah API awam yang baca sahaja.",
+    "referenceTitle": "Rujukan",
+    "loading": "Memuatkan spesifikasi.",
+    "loadError": "Spesifikasi tidak dapat dimuatkan.",
+    "tryItTitle": "Cubalah",
+    "tryItSend": "Hantar",
+    "tryItRunning": "Sedang berjalan.",
+    "tryItHint": "Berjalan terhadap API langsung pada origin ini. Input anda dihantar ke titik akhir.",
+    "paramsTitle": "Parameter",
+    "responsesTitle": "Respons",
+    "schemasTitle": "Skema",
+    "exampleLabel": "Contoh",
+    "requiredLabel": "diperlukan",
+    "fieldLabel": "Medan",
+    "typeLabel": "Jenis",
+    "descriptionLabel": "Penerangan",
+    "viewReference": "Rujukan",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI tidak dapat dimuatkan."
   }
 }

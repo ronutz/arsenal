@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Hoe IPv6-hosts adressen krijgen: SLAAC en DHCPv6"
+summary: "Hoe een IPv6-host zichzelf configureert van link-local omhoog, wat router advertisements beslissen, en het verschil tussen SLAAC, privacy-adressen, en DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Zelfconfiguratie standaard
+
+Een van de bepalende kenmerken van IPv6 is dat een host een werkend adres kan configureren zonder server en zonder handmatige instelling. Waar IPv4 op DHCP leunt om adressen uit te delen, kan IPv6 ze lokaal bouwen uit informatie die de router rondstuurt. Het resultaat is dat één interface gewoonlijk met meerdere adressen tegelijk eindigt, elk voor een ander doel, wat mensen die van IPv4 komen verrast.
+
+## Link-local komt eerst
+
+Voor al het andere configureert elke IPv6-interface een link-local-adres in `fe80::/10` (het type dat de tool als link-local labelt). Het wordt lokaal gegenereerd, nooit gerouteerd voorbij de lokale link, en bestaat zodat de host onmiddellijk met buren en routers kan praten, inclusief om te vragen hoe de rest van zijn adressen te configureren. Link-local is de bootstrap: het is altijd aanwezig, en de buurontdekkingsmachinerie in het artikel [buurontdekking](/learn/ipv6-neighbor-discovery) draait erover.
+
+## De router advertisement beslist de methode
+
+Om een globaal routeerbaar adres te krijgen luistert de host naar Router Advertisements, periodieke berichten die een router stuurt (en die een host kan opvragen met een Router Solicitation). De advertisement draagt het on-link prefix, bijna altijd een /64, en twee flags die de host vertellen hoe zichzelf te configureren:
+
+- De **M (Managed) flag** zegt "gebruik DHCPv6 om een adres te krijgen".
+- De **O (Other) flag** zegt "configureer je adres zelf, maar krijg andere instellingen zoals DNS van DHCPv6".
+
+Met beide flags uit gebruikt de host pure stateloze autoconfiguratie. Dit is waarom IPv6-adrestoewijzing een onderhandeling is tussen wat de router aankondigt en wat de host kiest, in plaats van één server die leases uitdeelt.
+
+## SLAAC: je eigen adres bouwen
+
+Stateless Address Autoconfiguration (RFC 4862) is het mechanisme dat een host gebruikt om zijn eigen adres te vormen: neem het /64-prefix uit de advertisement en hang een 64-bits interface-identifier eraan. Dit is de hele reden dat een subnet een /64 moet zijn (zie het artikel [subnetting](/learn/ipv6-subnetting)). Geen server volgt de toewijzing, wat "stateloos" betekent.
+
+De interface-identifier kan op verscheidene manieren worden gevormd, en dit heeft echte privacy-gevolgen:
+
+- **Gemodificeerd EUI-64** leidt de identifier af van het MAC-adres van de interface, wat de tool kan demonstreren. Het is stabiel en handig, maar het bedt het hardware-adres in elk IPv6-adres dat de host gebruikt, waardoor een externe server het apparaat over netwerken heen kan volgen.
+- **Stabiele, ondoorzichtige identifiers** (RFC 7217) produceren een identifier die stabiel is per netwerk maar geen hardware-adres onthult, wat het netwerkoverschrijdende volgprobleem oplost terwijl het een consistent adres op een gegeven link houdt.
+- **Tijdelijke (privacy)adressen** (RFC 8981, die de eerdere RFC 4941 verouderd maakt) genereren willekeurige identifiers die over de tijd roteren, dus uitgaande verbindingen presenteren helemaal geen langlevend adres.
+
+Moderne besturingssystemen gebruiken typisch een stabiel adres voor inkomende verbindingen en een roterend tijdelijk adres voor uitgaande, wat de reden is dat één interface meerdere globale adressen toont.
+
+## Duplicate Address Detection
+
+Voordat een host daadwerkelijk een adres gebruikt dat het heeft gevormd, draait het Duplicate Address Detection: het stuurt een Neighbor Solicitation voor zijn eigen voorlopige adres en wacht. Als iemand antwoordt, is het adres al in gebruik en mag niet worden opgeëist. DAD is goedkope verzekering dat zelfconfiguratie geen botsingen produceert, en het leunt op dezelfde buurontdekkingsberichten beschreven in het begeleidende artikel.
+
+## DHCPv6 voor stateful controle
+
+Wanneer een beheerder adressen centraal wil volgen en toewijzen, biedt DHCPv6 (RFC 8415) stateful toewijzing, veel zoals IPv4-DHCP: een server least specifieke adressen en registreert wie wat heeft. Er is ook een stateloze DHCPv6-modus die alleen configuratie zoals DNS-servers uitdeelt terwijl de host nog zijn eigen adres vormt via SLAAC, wat de O-flag selecteert. DHCPv6 is ook waar prefixdelegatie leeft, het mechanisme waardoor een thuisrouter een heel prefix ontvangt om erachter te subnetten.
+
+## Veel adressen, by design
+
+Het mentale model om mee te nemen is dat een IPv6-host grotendeels zelfrijdend is. Het heeft altijd een link-local-adres, het leert het prefix en de configuratiemethode uit router advertisements, en afhankelijk van de flags bouwt het ofwel zijn eigen globale adressen met SLAAC ofwel leaset ze van DHCPv6, vaak eindigend met een stabiel adres en een roterend tijdelijk naast elkaar. Wanneer de tool je een adres toont en zijn type identificeert, vertelt dat type je welk van deze paden het produceerde.

@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Tokens de acesso, tokens de atualização e tokens de ID"
+summary: "Três tokens do OAuth e do OpenID Connect que vivem sendo confundidos, para que cada um de fato serve, e por que enviar o errado ao lugar errado é um bug de verdade."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Três tokens, três funções
+
+Depois que o fluxo de código de autorização se completa (veja o artigo [fluxo de código](/learn/oauth-code-flow)), um cliente pode acabar segurando três tokens diferentes, e confundi-los é um dos erros mais comuns no OAuth e no OpenID Connect. Um token de acesso, um token de atualização e um token de ID parecem superficialmente similares, especialmente quando os três por acaso são JWTs, mas têm públicos diferentes e propósitos diferentes. Acertá-los é, em grande parte, uma questão de perguntar, para cada token, para quem ele serve e o que ele autoriza.
+
+## O token de acesso: uma chave para uma API
+
+O token de acesso é o que o cliente envia a um servidor de recursos (uma API) para provar que tem permissão de fazer uma requisição. É a coisa mais próxima que o OAuth tem de uma chave de sessão para acesso máquina a máquina, definida pelo OAuth 2.0 (RFC 6749). Duas propriedades importam. Ele é de **vida curta**, frequentemente minutos a uma hora, para que um token vazado seja útil apenas brevemente. E é um token **bearer** (portador): quem o segura pode usá-lo, sem nenhuma prova adicional de identidade, e é por isso que os tokens de acesso devem viajar apenas sobre TLS e nunca ser registrados ou postos em uma URL. A API valida o token e os escopos que ele carrega, e então serve ou nega a requisição.
+
+## O token de atualização: obter novos tokens de acesso
+
+Como os tokens de acesso expiram rapidamente, forçar o usuário a fazer login de novo a cada poucos minutos seria insuportável. O token de atualização resolve isso: é uma credencial de vida longa que o cliente troca no servidor de autorização por um token de acesso novo, sem interação do usuário. É bem mais sensível que um token de acesso justamente por ser de vida longa, então deve permanecer no canal de fundo (no lado do servidor, ou em armazenamento protegido) e nunca ser exposto a um front-end de navegador. Boa prática é a **rotação de token de atualização**: cada uso emite um novo token de atualização e invalida o antigo, de modo que um token roubado é detectado no momento em que o cliente legítimo tenta usar a cópia agora revogada. Os tokens também podem ser revogados explicitamente (RFC 7009).
+
+## O token de ID: uma declaração sobre o usuário
+
+O token de ID é a peça que o OpenID Connect adiciona em cima do OAuth, e é a mais frequentemente mal usada. É sempre um JWT (veja o artigo [anatomia do JWT](/learn/jwt-anatomy)), e descreve o evento de autenticação: quem é o usuário, quando ele se autenticou e qual servidor de autorização atesta isso. Crucialmente, **o token de ID é para o cliente, não para uma API**. Ele responde "quem acabou de fazer login" para que a aplicação possa estabelecer uma sessão de usuário. Enviar um token de ID a um servidor de recursos como se fosse um token de acesso é um bug clássico: a API deveria rejeitá-lo, porque o público do token de ID é o cliente, e usá-lo para autorização confunde identidade com permissão.
+
+## Tokens bearer e a tentação de confiar neles
+
+A maioria dos tokens de acesso são tokens bearer, o que os torna fáceis de usar e fáceis de usar mal. As regras de manuseio decorrem diretamente: sempre TLS, vidas curtas, nunca em logs ou strings de consulta, e nunca em armazenamento acessível pelo navegador se uma opção mais protegida existir. Onde o modelo bearer é arriscado demais, tokens **vinculados ao remetente** (sender-constrained) ligam um token a uma chave específica do cliente (mecanismos como DPoP ou TLS mútuo), de modo que um token roubado não possa ser reproduzido por mais ninguém. Para a maioria das aplicações, tokens de acesso bearer de vida curta sobre TLS são a base funcional.
+
+## Tokens de acesso opacos versus JWT
+
+Um token de acesso pode ser opaco (uma string aleatória que a API checa chamando o endpoint de introspecção do servidor de autorização, RFC 7662) ou um JWT que a API valida por si mesma. A forma JWT é autocontida e evita uma ida e volta de rede, mas não pode ser revogada antes de expirar, o que é mais uma razão para que as vidas dos tokens de acesso sejam mantidas curtas. Um token de ID, em contraste, é sempre um JWT, porque toda a sua função é transmitir claims verificáveis ao cliente. Se um token é um JWT lhe diz como ele é validado, não para que ele serve.
+
+## Case o token com o público
+
+A única regra que previne a maioria dos bugs de token é casar cada token com seu público pretendido. O **token de ID** é para a aplicação, para saber quem fez login. O **token de acesso** é para a API, para autorizar uma requisição. O **token de atualização** é para o servidor de autorização, para cunhar novos tokens de acesso sem incomodar o usuário. Mantenha esses três públicos em ordem, segure o token de atualização de vida longa no canal de fundo, e trate cada token bearer como um segredo de vida curta, e o resto do manuseio de tokens do OAuth se encaixa.

@@ -1,0 +1,43 @@
+---
+slug: uuid-versions
+title: "Versiones de UUID explicadas: v1 a v8"
+summary: "Toda la familia UUID en un solo lugar, de la v1 con tiempo-y-MAC a la v4 aleatoria y la v7 ordenada en el tiempo, más las versiones basadas en nombre y cómo se leen los bits de versión y variante."
+concepts: ["uuid", "uuidv4", "uuidv7", "rfc9562", "version", "variant"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Un formato, varias recetas
+
+Un UUID tiene siempre la misma forma: 128 bits, escritos como 32 dígitos hexadecimales en la familiar agrupación `8-4-4-4-12`. Lo que cambia entre versiones es cómo se generan esos bits. El estándar actual, RFC 9562 (publicado en 2024, en sustitución de la veterana RFC 4122), define las versiones 1 a 8, cada una una estrategia distinta para rellenar 128 bits de un modo que permanezca único sin una autoridad central. La [visión general de UUID](/learn/uuid) se centra en las dos que más usarás, v4 y v7; este artículo mapea la familia entera para que puedas reconocer y elegir cualquiera de ellas.
+
+## Cómo anuncia un UUID su versión
+
+Dos campos pequeños están reservados sin importar la versión, y la herramienta lee ambos. La **versión** se codifica en cuatro bits (el primer dígito hexadecimal del tercer grupo), así que un `4` ahí significa un UUID v4 y un `7` significa v7. La **variante** se codifica en los bits superiores del grupo siguiente (el primer dígito hexadecimal del cuarto grupo suele ser `8`, `9`, `a` o `b` para la variante estándar). Juntos le dicen al lector cómo interpretar los bits restantes, y por eso una herramienta puede etiquetar la versión de un UUID con solo inspeccionarlo, sin contexto.
+
+## Las versiones basadas en tiempo: v1, v6, v7
+
+Tres versiones codifican una marca de tiempo, lo que las hace aproximadamente ordenadas en el tiempo, una propiedad útil para claves de base de datos (véase el artículo de [claves de base de datos](/learn/uuid-database-keys)):
+
+- **La versión 1** combina una marca de tiempo de 60 bits con una secuencia de reloj y un identificador de nodo, donde el nodo es tradicionalmente la dirección MAC de la máquina. Funciona, pero filtra la MAC y la hora de generación, y la ordenación de su campo de marca de tiempo no clasifica de forma limpia como texto.
+- **La versión 6** es la v1 con los campos de la marca de tiempo reordenados para que los bytes clasifiquen en orden cronológico. Existe como mejora de reemplazo directo para sistemas ya invertidos en v1 que quieren ordenabilidad.
+- **La versión 7** usa una marca de tiempo Unix directa en milisegundos seguida de bits aleatorios. Es la recomendación moderna para nuevos identificadores ordenados en el tiempo: ordenable, sin filtración de hardware y simple. Para la mayoría del trabajo nuevo que quiere claves ordenadas, la v7 es la respuesta.
+
+## Las versiones basadas en nombre: v3 y v5
+
+Las versiones 3 y 5 son deterministas: la misma entrada siempre produce el mismo UUID. Haces hash de un identificador de espacio de nombres junto con un nombre, y el resumen se convierte en el UUID. **La versión 3** usa MD5 y **la versión 5** usa SHA-1; se prefiere la v5 porque SHA-1, aunque no se usa aquí por seguridad, es la opción menos frágil. Estas son la versión a la que recurrir cuando necesitas un identificador estable derivado de datos existentes, por ejemplo un UUID consistente para una URL o un nombre de archivo dados, de modo que dos sistemas computen independientemente el mismo valor.
+
+## La versión aleatoria: v4
+
+**La versión 4** rellena 122 bits con aleatoriedad (los otros 6 son los bits fijos de versión y variante). No lleva marca de tiempo, ni MAC, ni estructura, lo que la hace el valor seguro por defecto cuando simplemente quieres un identificador opaco y resistente a colisiones y no te importa la ordenación. Su único inconveniente es precisamente esa falta de orden, que es lo que perjudica la localidad del índice de la base de datos y motivó la v7. La generación de v4 de la herramienta usa una fuente aleatoria criptográficamente segura en tu navegador, así que los valores nunca tocan un servidor.
+
+## La versión 8 y los UUID especiales
+
+**La versión 8** está reservada para uso personalizado o experimental: solo los bits de versión y variante son fijos, y el resto es tuyo para definir, lo que permite a un sistema codificar sus propios datos con forma de UUID sin dejar de ser un UUID válido. Hay también dos valores especiales que reconocer: el UUID **nil**, todo ceros, y el UUID **max**, todo unos, ambos usados como centinelas. La versión 2 existe históricamente (una variante DCE Security) pero rara vez se ve en la práctica y no es algo que elegirías hoy.
+
+## Elegir por intención
+
+La familia es grande, pero la elección suele ser rápida en cuanto nombras lo que necesitas. Para un identificador opaco e inadivinable, sin ordenación, usa **v4**. Para un identificador estable derivado de forma determinista de datos existentes, usa **v5**. Para una clave ordenada en el tiempo que indexa bien, usa **v7**. Las versiones más antiguas basadas en tiempo (v1, v6) importan sobre todo por compatibilidad con sistemas existentes, y la v8 está ahí cuando genuinamente necesitas codificar tu propia estructura. Cuando pegas un UUID en la herramienta y esta informa la versión, ese único dígito te dice cuál de estas recetas lo produjo.

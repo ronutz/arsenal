@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "JWT-Signieralgorithmen: HMAC, RSA und ECDSA"
+summary: "Warum der alg-Header eines JWT zählt, der Unterschied zwischen symmetrischer und asymmetrischer Signierung und wie man wählt."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Der alg-Header entscheidet alles
+
+Der Header eines JWT nennt den Algorithmus, mit dem es signiert wurde, zum Beispiel `"alg": "HS256"`. Dieser eine Wert bestimmt, welche Art von Schlüssel der Verifizierer braucht und was die Signatur tatsächlich beweist. Die Algorithmen zerfallen in zwei Familien, symmetrisch und asymmetrisch, und die Wahl zwischen ihnen ist eigentlich eine Wahl darüber, *wer das Token verifizieren muss*.
+
+## Symmetrisch: die HMAC-Familie (HS256/384/512)
+
+`HS256`, `HS384` und `HS512` sind HMAC mit SHA-256, SHA-384 oder SHA-512. Sie verwenden **ein einziges gemeinsames Geheimnis** sowohl zum Signieren als auch zum Verifizieren. Wer ein HS256-Token verifizieren kann, kann auch eines fälschen, weil Erstellen und Prüfen der Signatur denselben Schlüssel verwenden.
+
+Das macht die HMAC-Familie zu einer guten Wahl, wenn **dieselbe Partei** das Token ausstellt und verifiziert, oder wenn Aussteller und Verifizierer bereits ein vertrauenswürdiges Geheimnis teilen, etwa ein einzelnes Backend, das seine eigenen Sitzungstoken signiert. Sie ist schnell und einfach. Ihre Grenze ist die Verteilung: Jeder Verifizierer braucht das Geheimnis, und je mehr Orte das Geheimnis bewohnt, desto größer der Schadensradius, wenn eines durchsickert.
+
+## Asymmetrisch: RSA und ECDSA (RS256, ES256 und mehr)
+
+`RS256` (RSASSA-PKCS1-v1_5 mit SHA-256), `PS256` (RSA-PSS) und `ES256` (ECDSA mit der P-256-Kurve) verwenden ein **Schlüsselpaar**: Ein privater Schlüssel signiert, und der zugehörige öffentliche Schlüssel verifiziert. Der private Schlüssel verlässt nie den Aussteller; der öffentliche Schlüssel kann an jeden ausgehändigt werden.
+
+Das ist es, was Sie wollen, wenn **viele unabhängige Dienste** Token von einem Aussteller verifizieren müssen. Ein Identitätsanbieter signiert mit seinem privaten Schlüssel und veröffentlicht seine öffentlichen Schlüssel (gängig als JWKS-Endpunkt); jeder nachgelagerte Dienst verifiziert mit dem öffentlichen Schlüssel und keiner von ihnen kann Token prägen. Deshalb stellen OpenID-Connect-Anbieter standardmäßig RS256- oder ES256-ID-Token aus.
+
+Zwischen RSA und ECDSA ist der Kompromiss Größe und Geschwindigkeit: ECDSA-Schlüssel und -Signaturen sind bei gleichwertiger Sicherheit viel kleiner, während RSA älter und universeller unterstützt ist. `EdDSA` (Ed25519) ist eine moderne, schnelle Alternative, die an Verbreitung gewinnt.
+
+## Wählen
+
+- **Eine Partei signiert und verifiziert, oder ein Geheimnis ist bereits geteilt** → HMAC (HS256). Einfach und schnell.
+- **Ein Signierer, viele unabhängige Verifizierer** → asymmetrisch (RS256 oder ES256). Der öffentliche Schlüssel kann frei verteilt werden; nur der Halter des privaten Schlüssels kann signieren.
+
+Was auch immer Sie wählen, der Verifizierer muss **den akzeptablen Algorithmus festlegen**, statt dem eigenen `alg`-Header des Tokens zu vertrauen. Zu akzeptieren, was auch immer das Token behauptet, öffnet die Tür zu den `alg: none`- und Algorithmus-Verwirrungs-Angriffen, die im JWT-Anatomie-Artikel beschrieben sind.
+
+Das [JWT-Werkzeug](/tools/jwt) dekodiert den Header, sodass Sie sehen, welchen Algorithmus ein Token deklariert, und verifiziert die HMAC-Familie (HS256/384/512) gegen ein Geheimnis, das Sie einfügen, lokal in Ihrem Browser.

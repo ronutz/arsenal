@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "IPv6-adressering begrijpen"
+summary: "Hoe een 128-bits IPv6-adres is gestructureerd en geschreven, de regels om het canoniek te comprimeren, wat de adrestypes en scopes betekenen, en hoe interface-identifiers en omgekeerde DNS werken."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Waarom IPv6 bestaat
+
+IPv4 heeft ongeveer 4,3 miljard adressen (2^32). Dat leek onuitputtelijk in de jaren 1980 en is nu lang uitgeput bij de registries. IPv6, voor adressering gedefinieerd in RFC 4291, verbreedt het adres van 32 bits naar **128 bits**, wat 2^128 adressen zijn, een getal groot genoeg dat schaarste ophoudt de ontwerpbeperking te zijn. Het praktische effect is dat subnetten enorm worden en adresbesparingstrucs zoals NAT niet langer vereist zijn voor basale connectiviteit.
+
+## De 128-bits structuur
+
+Een IPv6-adres is 128 bits, geschreven als **acht groepen van vier hexadecimale cijfers** gescheiden door dubbele punten. Elke groep is een 16-bits waarde:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Die volledig geschreven vorm is de **uitgebreide** weergave. Omdat hij lang en vol nullen is, heeft de tekstvorm compressieregels.
+
+## Een adres schrijven: de compressieregels
+
+Twee regels verkorten de tekst, en RFC 5952 maakt het resultaat canoniek (één adres, één voorkeurspelling):
+
+- **Onderdruk voorloopnullen** in elke groep: `0db8` wordt `db8`, `0000` wordt `0`.
+- **Vervang één reeks opeenvolgende geheel-nul-groepen door `::`**. De dubbele dubbele punt mag **ten hoogste eenmaal** verschijnen, en hij staat voor een of meer 16-bits groepen nullen. Wanneer verscheidene reeksen van gelijke lengte bestaan, wordt de eerste gecomprimeerd.
+
+Beide toepassen op het bovenstaande adres geeft zijn canonieke vorm:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+RFC 5952 voegt een paar afrondende regels toe zodat tools overeenstemmen: hex-cijfers zijn kleine letters, en `::` wordt niet gebruikt om een enkele nul-groep te "comprimeren" (dat zou niets betekenisvols verkorten). De IPv6-tool toont zowel de canonieke gecomprimeerde vorm als de volledig uitgebreide vorm naast elkaar, zodat je precies kunt zien waar `::` voor staat.
+
+Een speciaal geval: een adres kan een **ingebed IPv4**-staartstuk dragen in zijn laatste 32 bits, geschreven in gestippeld decimaal. De meest voorkomende is de **IPv4-mapped** vorm, waar RFC 5952 de gemengde notatie `::ffff:192.0.2.128` aanbeveelt in plaats van puur hex.
+
+## Prefixen en prefix-rekenkunde
+
+Zoals IPv4-CIDR wordt een IPv6-prefix `adres/lengte` geschreven, waar de lengte de voorste netwerkbits telt:
+
+```
+2001:db8::/64
+```
+
+Een `/64` betekent dat de eerste 64 bits het netwerk zijn en de resterende 64 de interface-identifier. `/64` is de standaardgrootte voor één LAN, en het alleen al bevat 2^64 adressen, ongeveer 18 triljoen. De tool berekent het netwerkadres (eerste), het laatste adres, en het aantal voor elk prefix dat je hem geeft, maskerend de host-bits naar nul om het netwerk te vinden zelfs als je een adres met host-bits gezet hebt getypt.
+
+## Adrestypes en scopes
+
+De hoge bits van een adres plaatsen het in een categorie. De belangrijkste, uit RFC 4291 en het IANA-register:
+
+- **Global unicast (2000::/3)** is de routeerbare publieke ruimte, het IPv6-equivalent van een publiek IPv4-adres.
+- **Unique local, of ULA (fc00::/7)** is de privégebruiksruimte (RFC 4193), analoog aan RFC 1918 in IPv4. Het wordt niet gerouteerd op het publieke internet.
+- **Link-local unicast (fe80::/10)** is alleen geldig op één link en wordt automatisch geconfigureerd op elke IPv6-interface. Routers sturen het nooit door. Zijn scope is de lokale link.
+- **Multicast (ff00::/8)** adresseert een groep in plaats van één host. Een scope-veld binnen het adres zegt hoe ver het reikt: interface-local, link-local, admin-local, site-local, organization-local, of global. Bijvoorbeeld `ff02::1` is de link-local alle-knopen-groep.
+- **Loopback (::1/128)** is het IPv6-equivalent van 127.0.0.1, en het **niet-gespecificeerde adres (::/128)** betekent "geen adres", gebruikt als plaatshouder tijdens configuratie.
+- **Documentatie (2001:db8::/32)** is gereserveerd door RFC 3849 voor voorbeelden en schrijven, wat de reden is dat bijna elk IPv6-voorbeeld dat je ziet, inclusief het canonieke in RFC 4291 zelf, het gebruikt.
+
+De IPv6-tool rapporteert het overeenkomende type en het specifieke prefix dat het matchte, plus de scope voor multicast- en link-local-adressen.
+
+## Interface-identifiers en EUI-64
+
+In een typische `/64` zijn de onderste 64 bits de **interface-identifier**. Eén historische manier om hem te bouwen was **gemodificeerd EUI-64** (RFC 4291, Bijlage A): neem het 48-bits MAC-adres, voeg de bytes `ff:fe` in het midden in, en kantel het zevende bit (het universal/local-bit). Dat maakte de interface-id afleidbaar uit het hardware-adres. Wanneer de tool de veelzeggende `ff:fe` in het midden van de interface-id ziet, keert het het proces om en toont het je het oorspronkelijke MAC. Moderne systemen verkiezen vaak gerandomiseerde of privacy-interface-identifiers in plaats daarvan, juist omdat het afleiden van de id uit een MAC het hardware-adres lekt.
+
+## Omgekeerde DNS: ip6.arpa
+
+Omgekeerde opzoekingen (adres naar naam) voor IPv6 leven onder het **ip6.arpa**-domein. Het adres wordt uitgebreid tot zijn 32 hex-nibbles, die nibbles worden omgekeerd, en elk wordt een label. Zo wordt `2001:db8::1` een naam eindigend op `...8.b.d.0.1.0.0.2.ip6.arpa`. De tool genereert deze naam voor elk adres, wat de exacte waarde is die je in een `PTR`-record zou plaatsen.
+
+## Een noot over wat de tool doet
+
+De IPv6-tool is een deterministische, lokale calculator. Het parseert, canoniseert, classificeert, en berekent, alles in je browser, zonder enige opzoeking tegen het live netwerk. Het vertelt je wat een adres structureel **is**. Het vertelt je niet of dat adres bereikbaar, toegewezen, of in gebruik is, wat aparte vragen zijn die het bevragen van het netwerk of een register vereisen.

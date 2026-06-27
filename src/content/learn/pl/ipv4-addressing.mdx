@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Jak działają adresy IPv4"
+summary: "32 bity stojące za każdym adresem w notacji kropkowej, i co oznaczają zakresy prywatne, loopback i specjalne."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trzydzieści dwa bity w przebraniu
+
+Adres IPv4 to pojedyncza liczba 32-bitowa. Niemal nigdy nie zapisujemy go w ten sposób, bo 32 jedynki i zera są trudne do odczytania, więc dzieli się go na cztery grupy 8-bitowe zwane **oktetami**, każda pokazywana dziesiętnie od 0 do 255 i połączone kropkami. `192.168.1.10` to po prostu przyjaźniejszy sposób zapisania jednej konkretnej wartości 32-bitowej.
+
+Ponieważ każdy oktet ma 8 bitów, cała przestrzeń to 2³² adresów, około 4,3 miliarda. To brzmiało ogromnie w latach 1980 i jest powodem, dla którego wyczerpanie adresów IPv4 stało się prawdziwym problemem dekady później, i dlaczego adresowanie prywatne oraz IPv6 istnieją.
+
+## Część sieci i część hosta
+
+Żaden adres nie stoi sam, należy do bloku, a wewnątrz tego bloku bity dzielą się na **część sieci** (który to blok) i **część hosta** (która maszyna w obrębie bloku). Długość prefiksu, zapisywana w stylu CIDR jako `/24`, oznacza, gdzie ten podział wypada. Wszystko po lewej od linii to sieć; wszystko po prawej identyfikuje hosta. To ta sama idea badana w notacji CIDR, widziana od strony adresu.
+
+## Zakresy o specjalnym znaczeniu
+
+Nie każdy adres to zwykły adres hosta. Kilka zakresów jest zarezerwowanych do konkretnych celów, a ich rozpoznawanie jest częścią czytania dowolnej konfiguracji sieci:
+
+- **Zakresy prywatne (RFC 1918)** są zarezerwowane do użytku wewnątrz sieci prywatnych i nigdy nie są routowane w publicznym internecie:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  To dlatego sieci domowe i biurowe tak często używają `192.168.x.x` lub `10.x.x.x`, te adresy są wolne do ponownego użycia wszędzie, bo nigdy nie pojawiają się w otwartym internecie.
+- **Loopback (`127.0.0.0/8`)** zawsze odnosi się do samej lokalnej maszyny. `127.0.0.1` to adres, którego komputer używa, by rozmawiać sam ze sobą.
+- **Adresy link-local (`169.254.0.0/16`)** są samoprzydzielane, gdy urządzenie nie może dosięgnąć serwera DHCP. Zobaczenie takiego zwykle oznacza „żaden adres nie został rozdany".
+- **Adres nieokreślony (`0.0.0.0`)** i trasa domyślna (`0.0.0.0/0`) są specjalne: ta druga to trasa łapiąca wszystko, która pasuje do każdego celu nieobjętego bardziej szczegółową trasą.
+
+## Dlaczego specjalne zakresy mają znaczenie dla bezpieczeństwa
+
+Te zarezerwowane zakresy to nie tylko ciekawostka. Narzędzie pobierające adres dostarczony przez użytkownika musi odmówić dosięgnięcia zakresów prywatnych, loopback i link-local, inaczej może zostać podstępem skłonione do wykonania żądań wobec systemów wewnętrznych, których nigdy nie powinno tknąć, klasa ataku zwana server-side request forgery (fałszowanie żądania po stronie serwera). Wiedza, które zakresy są wewnętrzne, to pierwszy krok w obronie przed tym. To dokładnie dlatego narzędzia tykające sieć na tej stronie sprawdzają rozwiązany adres względem tych zakresów, zanim w ogóle się połączą.
+
+Aby zobaczyć, jak dowolny adres mieści się w swoim bloku, jego adres sieci, adres broadcast, i użyteczny zakres wokół niego, wypróbuj [kalkulator CIDR](/learn), który oblicza to wszystko lokalnie w twojej przeglądarce.

@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Memahami pengalamatan IPv6"
+summary: "Bagaimana alamat IPv6 128 bit distrukturkan dan ditulis, peraturan untuk memampatkannya secara berkanun, apa maksud jenis alamat dan skop, dan bagaimana pengecam antara muka dan DNS songsang berfungsi."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Mengapa IPv6 wujud
+
+IPv4 mempunyai kira-kira 4.3 bilion alamat (2^32). Itu kelihatan tidak habis-habis pada tahun 1980-an dan kini telah lama habis di pendaftar. IPv6, ditakrifkan untuk pengalamatan dalam RFC 4291, melebarkan alamat daripada 32 bit kepada **128 bit**, iaitu 2^128 alamat, satu nombor cukup besar sehingga kekurangan berhenti menjadi kekangan reka bentuk. Kesan praktikal ialah subnet menjadi amat besar dan helah penjimatan alamat seperti NAT tidak lagi diperlukan untuk ketersambungan asas.
+
+## Struktur 128 bit
+
+Alamat IPv6 ialah 128 bit, ditulis sebagai **lapan kumpulan empat digit heksadesimal** dipisahkan dengan titik bertindih. Setiap kumpulan ialah nilai 16 bit:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Bentuk yang ditulis penuh itu ialah perwakilan **dikembangkan**. Kerana ia panjang dan penuh sifar, bentuk teks mempunyai peraturan pemampatan.
+
+## Menulis alamat: peraturan pemampatan
+
+Dua peraturan memendekkan teks, dan RFC 5952 menjadikan hasilnya berkanun (satu alamat, satu ejaan dipilih):
+
+- **Tindas sifar pendahuluan** dalam setiap kumpulan: `0db8` menjadi `db8`, `0000` menjadi `0`.
+- **Gantikan satu rentetan kumpulan semua-sifar berturut-turut dengan `::`**. Titik bertindih dua boleh muncul **paling banyak sekali**, dan ia mewakili satu atau lebih kumpulan 16 bit sifar. Apabila beberapa rentetan sama panjang wujud, yang pertama dimampatkan.
+
+Menerapkan kedua-duanya pada alamat di atas memberi bentuk berkanunnya:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+RFC 5952 menambah beberapa peraturan penamat supaya alat bersetuju: digit heks ialah huruf kecil, dan `::` tidak digunakan untuk "memampatkan" satu kumpulan sifar tunggal (itu tidak akan memendekkan apa-apa yang bermakna). Alat IPv6 menunjukkan kedua-dua bentuk dimampatkan berkanun dan bentuk dikembangkan penuh bersebelahan, supaya anda boleh melihat tepat apa yang `::` wakili.
+
+Satu kes istimewa: alamat boleh membawa ekor **IPv4 terbenam** dalam 32 bit terakhirnya, ditulis dalam perpuluhan bertitik. Yang paling biasa ialah bentuk **IPv4-dipetakan**, di mana RFC 5952 mengesyorkan notasi campuran `::ffff:192.0.2.128` dan bukan heks tulen.
+
+## Awalan dan aritmetik awalan
+
+Seperti CIDR IPv4, awalan IPv6 ditulis `alamat/panjang`, di mana panjang mengira bit rangkaian pendahuluan:
+
+```
+2001:db8::/64
+```
+
+`/64` bermaksud 64 bit pertama ialah rangkaian dan 64 yang berbaki ialah pengecam antara muka. `/64` ialah saiz standard untuk satu LAN, dan ia sendiri memuatkan 2^64 alamat, kira-kira 18 kuintilion. Alat mengira alamat rangkaian (pertama), alamat terakhir, dan kiraan untuk sebarang awalan yang anda berinya, menopengkan bit hos kepada sifar untuk mencari rangkaian walaupun anda menaip alamat dengan bit hos ditetapkan.
+
+## Jenis alamat dan skop
+
+Bit tinggi alamat meletakkannya dalam kategori. Yang paling penting, daripada RFC 4291 dan pendaftar IANA:
+
+- **Unicast global (2000::/3)** ialah ruang awam boleh dihala, setara IPv6 bagi alamat IPv4 awam.
+- **Unik tempatan, atau ULA (fc00::/7)** ialah ruang guna persendirian (RFC 4193), serupa dengan RFC 1918 dalam IPv4. Ia tidak dihala di internet awam.
+- **Unicast link-local (fe80::/10)** sah hanya pada satu pautan dan dikonfigurasi secara automatik pada setiap antara muka IPv6. Penghala tidak pernah memajukannya. Skopnya ialah pautan tempatan.
+- **Multicast (ff00::/8)** mengalamatkan kumpulan dan bukan hos tunggal. Medan skop dalam alamat berkata sejauh mana ia mencapai: interface-local, link-local, admin-local, site-local, organization-local, atau global. Sebagai contoh `ff02::1` ialah kumpulan semua-nod link-local.
+- **Loopback (::1/128)** ialah setara IPv6 bagi 127.0.0.1, dan **alamat tidak ditentukan (::/128)** bermaksud "tiada alamat", digunakan sebagai pemegang tempat semasa konfigurasi.
+- **Dokumentasi (2001:db8::/32)** dikhaskan oleh RFC 3849 untuk contoh dan penulisan, yang ialah sebab mengapa hampir setiap contoh IPv6 yang anda lihat, termasuk yang berkanun dalam RFC 4291 sendiri, menggunakannya.
+
+Alat IPv6 melaporkan jenis sepadan dan awalan khusus yang dipadankannya, tambah skop untuk alamat multicast dan link-local.
+
+## Pengecam antara muka dan EUI-64
+
+Dalam `/64` biasa, 64 bit bawah ialah **pengecam antara muka**. Satu cara bersejarah untuk membinanya ialah **EUI-64 diubah suai** (RFC 4291, Lampiran A): ambil alamat MAC 48 bit, sisipkan bait `ff:fe` di tengah, dan terbalikkan bit ketujuh (bit universal/local). Itu menjadikan id antara muka boleh diterbitkan daripada alamat perkakasan. Apabila alat melihat `ff:fe` yang membongkar di tengah id antara muka, ia menterbalikkan proses dan menunjukkan anda MAC asal. Sistem moden sering lebih suka pengecam antara muka rawak atau privasi sebaliknya, tepatnya kerana menerbitkan id daripada MAC membocorkan alamat perkakasan.
+
+## DNS songsang: ip6.arpa
+
+Carian songsang (alamat ke nama) untuk IPv6 hidup di bawah domain **ip6.arpa**. Alamat dikembangkan kepada 32 nibel heksnya, nibel itu diterbalikkan, dan setiap satu menjadi label. Jadi `2001:db8::1` menjadi nama yang berakhir dengan `...8.b.d.0.1.0.0.2.ip6.arpa`. Alat menjana nama ini untuk sebarang alamat, iaitu nilai tepat yang anda akan letakkan dalam rekod `PTR`.
+
+## Satu nota tentang apa yang alat lakukan
+
+Alat IPv6 ialah kalkulator deterministik dan tempatan. Ia menghurai, mengkanunkan, mengelas, dan mengira, semuanya dalam pelayar anda, tanpa sebarang carian terhadap rangkaian langsung. Ia memberitahu anda apa alamat **itu** secara struktur. Ia tidak memberitahu anda sama ada alamat itu boleh dicapai, diperuntukkan, atau sedang digunakan, yang merupakan soalan berasingan yang memerlukan menanyakan rangkaian atau pendaftar.

@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "JWT-Sicherheitsfallen: alg:none, Schlüsselverwechslung und fehlende Prüfungen"
+summary: "Die Handvoll Fehler, die einen JWT-Prüfer in eine Fälschungsmaschine verwandeln, und die Validierung, die ein korrekter Prüfer durchführen muss."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Die Signatur ist nur so gut wie der Prüfer
+
+Die Signatur eines JWT macht seine Claims vertrauenswürdig, aber nur, wenn der prüfende Code es korrekt tut. Die meisten JWT-Schwachstellen sind keine Brüche in der Kryptografie; es sind Prüfer, die sich dazu verleiten lassen, Token zu akzeptieren, die sie ablehnen sollten. Hier sind die wichtigen und die Prüfungen, die sie verhindern.
+
+## Dem eigenen Algorithmus des Tokens vertrauen
+
+- **`alg: none`.** Die JWT-Spezifikation definiert ein „ungesichertes“ Token ohne Signatur, deklariert durch `{"alg":"none"}`. Ein Prüfer, der das achtet, akzeptiert ein Token mit gefälschten Claims und leerer Signatur. Ein korrekter Prüfer behandelt `none` für ein Token, das signiert sein soll, nie als gültig.
+- **Algorithmusverwechslung (RS256 zu HS256).** Bei RS256 wird das Token mit einem privaten Schlüssel signiert und mit dem öffentlichen geprüft. Liest ein Prüfer den Algorithmus *aus dem Token* und ändert ein Angreifer den Header auf HS256, versucht der Prüfer möglicherweise, einen HMAC mit dem **öffentlichen** Schlüssel als Geheimnis zu prüfen, ein Wert, den der Angreifer ebenfalls besitzt. Das gefälschte Token besteht dann.
+
+Die einzige Abwehr für beide ist dieselbe: **Der Prüfer entscheidet den zulässigen Algorithmus, nicht das Token.** Legen Sie den erwarteten Algorithmus (oder eine kurze Erlaubnisliste) in Ihrem Prüfaufruf fest und lehnen Sie alles andere ab.
+
+## Die Claims überspringen
+
+Eine gültige Signatur beweist, dass das Token ausgestellt und nicht verändert wurde. Sie beweist nicht, dass das Token *für Sie* oder *noch gültig* ist. Ein korrekter Prüfer prüft außerdem:
+
+- **`exp` (Ablauf)** und **`nbf` (nicht vor):** abgelaufene oder noch nicht gültige Token ablehnen, mit kleiner Toleranz für Uhrabweichung.
+- **`aud` (Zielgruppe):** bestätigen, dass das Token für diesen Dienst bestimmt war. Ein für Dienst A ausgestelltes Token darf nicht von Dienst B akzeptiert werden.
+- **`iss` (Aussteller):** bestätigen, dass es vom vertrauten Aussteller kam, und den Prüfschlüssel von diesem Aussteller auflösen, nicht aus dem Token.
+
+Dies wegzulassen ist, wie ein gestohlenes oder fehlgeleitetes Token dort akzeptiert wird, wo es nicht sollte.
+
+## Die kleineren Fallen
+
+- **Schwache HMAC-Geheimnisse.** Ein mit kurzem oder erratbarem Geheimnis signiertes HS256-Token kann offline per Brute Force geknackt werden, bis eine passende Signatur gefunden ist. Verwenden Sie einen langen, zufälligen Schlüssel.
+- **Umgang mit `kid` und JWKS.** Der `kid`-Header wählt einen Schlüssel; behandeln Sie ihn als nicht vertrauenswürdige Eingabe (er wurde für Injection genutzt) und holen Sie Schlüssel nur aus dem JWKS des vertrauten Ausstellers.
+- **Dekodieren mit Prüfen verwechseln.** Die Claims eines Tokens zu lesen, ohne Signatur und Zeit zu prüfen, ist keine Prüfung. Handeln Sie nur auf Basis eines vollständig geprüften Tokens.
+
+## Die Kurzfassung
+
+Legen Sie den Algorithmus fest, validieren Sie `exp`, `aud` und `iss`, verwenden Sie starke Schlüssel und verwechseln Sie nie Dekodieren mit Prüfen. Das [JWT-Tool](/tools/jwt) dekodiert ein Token, zeigt seine Claims und seinen Ablauf in klarer Sprache und prüft eine HMAC-Signatur gegen ein eingefügtes Geheimnis, alles in Ihrem Browser, wobei Token und Geheimnis nie gesendet werden.

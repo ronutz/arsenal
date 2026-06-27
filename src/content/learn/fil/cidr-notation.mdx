@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "Ipinaliwanag ang CIDR notation"
+summary: "Kung ano talaga ang ibig sabihin ng slash sa 192.168.1.0/24, at kung paano tinutukoy ng isang prefix length ang isang block ng mga IP address."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang problemang nireresolba ng CIDR
+
+Bawat device sa isang IP network ay nangangailangan ng isang address. Sa IPv4, ang address na iyon ay 32 bits, kadalasang isinusulat bilang apat na numero mula 0 hanggang 255 na pinaghihiwalay ng mga tuldok, tulad ng `192.168.1.10`. Ang mahirap na tanong ay hindi kailanman "ano ang isang address" kundi "paano ko ilalarawan ang isang *saklaw* ng mga address na magkakasama", isang opisina, isang subnet, isang allocation ng customer. Ang **CIDR notation** ay ang siksik na paraan upang isulat ang saklaw na iyon.
+
+Ang CIDR ay nangangahulugang Classless Inter-Domain Routing. Mahalaga ang bahaging "classless": ang mas lumang pag-address ay pumipilit sa mga saklaw sa mga nakapirming laki (ang mga lumang Class A, B, at C na block). Inalis ng CIDR ang katigasang iyon at hinayaan ang isang saklaw na magkaroon ng *anumang* laking power-of-two, na siyang dahilan kung bakit ito ang pamantayan ngayon.
+
+## Pagbasa sa slash
+
+Ang isang CIDR block ay mukhang `192.168.1.0/24`. Ang bahagi pagkatapos ng slash, ang **prefix length**, ang nag-iisang pinakamahalagang numero. Sinasabi nito: *ang unang N bits ng address ay nakapirmi, at ang natitira ay malayang mag-iba.*
+
+- Ang `/24` ay nangangahulugang ang unang 24 bits ay ang nakapirming network part. Ang natitirang 8 bits (32 − 24) ay tumutukoy sa mga indibidwal na host.
+- Ang 8 free bits ay nagbibigay ng 2⁸ = 256 na posibleng kombinasyon, kaya inilalarawan ng `192.168.1.0/24` ang 256 na address mula `192.168.1.0` hanggang `192.168.1.255`.
+
+Baguhin ang prefix at ang laki ng block ay nagbabago kasama nito. Ang isang mas maliit na prefix ay nangangahulugang *mas maraming* free bits at isang *mas malaking* block:
+
+- Ang `/16` ay nag-aayos ng 16 bits, nag-iiwan ng 16 na malaya → 65,536 na address.
+- Ang `/25` ay nag-aayos ng 25 bits, nag-iiwan ng 7 na malaya → 128 na address.
+- Ang `/30` ay nag-aayos ng 30 bits, nag-iiwan ng 2 na malaya → 4 na address.
+
+Ang bawat hakbang ng isa sa prefix length ay **hinahati o dinodoble** ang block. Ang nag-iisang panuntunang iyon ang buong intuwisyon.
+
+## Network, broadcast, at magagamit na host
+
+Sa loob ng karamihan ng mga block, dalawang address ang espesyal at hindi mai-assign sa isang host:
+
+- Ang **network address** ay ang unang address sa block, lahat ng host bits ay naka-set sa 0 (`192.168.1.0` para sa isang `/24`). Pinapangalanan nito ang block mismo.
+- Ang **broadcast address** ay ang huling address, lahat ng host bits ay naka-set sa 1 (`192.168.1.255`). Ang traffic na ipinadala rito ay umaabot sa bawat host sa block.
+
+Kaya ang isang `/24` ay may 256 na address sa kabuuan ngunit **254 ang magagamit** para sa aktwal na mga host. Ang bilang ng "magagamit na host" ay basta lamang ang kabuuan minus ang dalawang nakareserbang address na iyon.
+
+Dalawang edge case ang sumisira sa pattern na ito, kapwa sinadya:
+
+- Ang isang **/31** (RFC 3021) ay ginagamit para sa mga point-to-point na link sa pagitan ng dalawang router. Mayroon lamang itong 2 address at, ayon sa disenyo, kapwa magagamit, walang espasyo para sa isang hiwalay na network at broadcast address, at wala namang kailangan para sa isang link na may eksaktong dalawang dulo.
+- Ang isang **/32** ay isang nag-iisang address, isang host route. Inilalarawan nito ang eksaktong isang makina.
+
+## Bakit ito sulit na maunawaan
+
+Ang prefix length ang namamahala kung paano dinidisenyo ang mga network, kung paano binubuod ang mga route, at kung paano ipinamamahagi ang address space. Kapag nakita mo ang `10.0.0.0/8` sa isang routing table o `0.0.0.0/0` bilang isang default route, binabasa mo ang parehong notation: isang base address kasama ang isang prefix length na nagsasabi kung gaano karami rito ang nakapirmi. Hindi kailanman nagbabago ang aritmetika, ang mga numero lamang.
+
+Maaari mong subukan ang anumang block sa [CIDR calculator](/learn) upang makita ang network address, broadcast address, mask, at bilang ng magagamit na host nito na agad na nakuwenta, ganap sa iyong browser.

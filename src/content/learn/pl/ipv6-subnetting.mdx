@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "Dzielenie na podsieci IPv6 i granica /64"
+summary: "Dlaczego dzielenie na podsieci IPv6 dotyczy struktury, a nie niedoboru, dlaczego pojedyncza podsieć to niemal zawsze /64, oraz jak delegacja prefiksu rozdaje przestrzeń adresową."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Inny powód, by dzielić na podsieci
+
+W IPv4 dzielenie na podsieci dotyczy głównie oszczędzania: adresy są skąpe, więc rzeźbisz blok na najmniejsze kawałki, które wciąż mieszczą się w każdej sieci (logika w artykule [podstawy dzielenia na podsieci](/learn/subnetting-basics)). IPv6 usuwa tę presję całkowicie. Pojedyncza podsieć /64 zawiera 2^64 adresy, więcej niż cały internet IPv4 do kwadratu, więc nigdy nie dzielisz sieci IPv6 na podsieci, by oszczędzić miejsce. Dzielisz ją, by nadać strukturę: jeden prefiks na VLAN, na lokację, na klienta. Matematyka to ta sama arytmetyka prefiksów co IPv4 (narzędzie oblicza ją liczbami całkowitymi dowolnej precyzji), lecz nastawienie jest przeciwne.
+
+## Dlaczego podsieć to /64
+
+Pojedyncza najważniejsza reguła w adresowaniu IPv6 jest taka, że normalna podsieć to /64, pozostawiając 64 bity na identyfikator interfejsu. To nie jest sugestia; duże części protokołu to zakładają. Bezstanowa autokonfiguracja adresów (omówiona w artykule [konfiguracja adresów](/learn/ipv6-address-configuration)) buduje adres hosta, doczepiając 64-bitowy identyfikator interfejsu do ogłoszonego prefiksu, a wyprowadzenie zmodyfikowanego EUI-64, które narzędzie może wykonać, produkuje dokładnie 64 bity. Użyj dłuższego prefiksu jak /80 lub /112 na łączu, a autokonfiguracja po prostu przestaje działać. Architektura adresowania (RFC 4291) jest zbudowana wokół tej granicy, więc praktyczna rada jest dosadna: uczyń każdą podsieć użytkownika końcowego /64 i nie próbuj być oszczędny wewnątrz niej.
+
+## Hierarchia przydziału
+
+Jeśli każda podsieć to /64, lokacje i dostawcy pracują w większych blokach powyżej tego:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+ISP zwykle deleguje /48 lub /56 klientowi, który następnie przydziela /64 z niego do poszczególnych łączy. RFC 6177 wycofuje pierwotną wytyczną „/48 dla każdego" w stronę dawania każdej lokacji dość miejsca, by dzielić na podsieci komfortowo, co w praktyce oznacza /48 lub /56. Sedno jest takie, że masz miejsce na zapas: nawet /56 daje domowi lub małemu biuru 256 osobnych sieci, daleko więcej, niż kiedykolwiek użyje.
+
+## Dziel na podsieci na granicach półbajtów
+
+Ponieważ IPv6 zapisuje się w szesnastkowym, a każda cyfra szesnastkowa to 4 bity (półbajt, nibble), prefiksy padające na granicę 4-bitową są daleko łatwiejsze do czytania i zarządzania. /48, /52, /56, /60 i /64 wszystkie kończą się czysto między cyframi szesnastkowymi, więc część podsieciowa równa się do całych znaków w adresie. Dzielenie /48 na /52 daje ci 16 bloków odróżnianych pojedynczą cyfrą szesnastkową; przejście do /56 daje 256 bloków na dwóch cyfrach. Pozostawanie na granicach półbajtów utrzymuje twój plan adresowania czytelnym, co w IPv6 znaczy więcej, niż wyciśnięcie ostatniego bitu kiedykolwiek mogłoby.
+
+## Liczenie podsieci i adresów
+
+Arytmetyka jest prosta. Liczba podsieci /64 wewnątrz krótszego prefiksu to 2 podniesione do różnicy w długościach prefiksów: /48 mieści 2^(64-48) = 2^16 = 65 536 podsieci. Liczba adresów wewnątrz dowolnego /64 to 2^(128-64) = 2^64. Narzędzie raportuje zarówno liczbę adresów dla prefiksu, jak i użyteczny zakres, a liczby stają się duże szybko, co jest dokładnie sednem: niedobór nie jest już ograniczeniem, wokół którego projektujesz.
+
+## Wniosek
+
+Dzielenie na podsieci IPv6 wywraca nawyk IPv4 do góry nogami. Nie dzielisz skąpego zasobu; nakładasz strukturę na faktycznie nieograniczony. Daj każdej podsieci /64, by autokonfiguracja i odkrywanie sąsiadów działały jak zaprojektowano, poproś o /48 lub /56, byś miał miejsce do organizowania, i dziel na podsieci na granicach półbajtów, by twój plan pozostał czytelny. Gdy wklejasz prefiks do narzędzia i widzisz liczbę adresów, potraktuj tę obfitość jako pozwolenie, by projektować dla jasności zamiast dla oszczędzania.

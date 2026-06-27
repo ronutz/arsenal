@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Zrozumieć adresowanie IPv6"
+summary: "Jak adres IPv6 o długości 128 bitów jest zbudowany i zapisywany, reguły jego kanonicznego kompresowania, co oznaczają typy adresów i zakresy, oraz jak działają identyfikatory interfejsu i odwrotne DNS."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dlaczego IPv6 istnieje
+
+IPv4 ma około 4,3 miliarda adresów (2^32). Wydawało się to niewyczerpalne w latach 1980 i jest teraz dawno wyczerpane w rejestrach. IPv6, zdefiniowany dla adresowania w RFC 4291, poszerza adres z 32 bitów do **128 bitów**, co daje 2^128 adresów, liczbę dość dużą, by niedobór przestał być ograniczeniem projektowym. Praktycznym efektem jest to, że podsieci stają się ogromne, a sztuczki oszczędzania adresów jak NAT nie są już wymagane do podstawowej łączności.
+
+## Struktura 128-bitowa
+
+Adres IPv6 ma 128 bitów, zapisywany jako **osiem grup po cztery cyfry szesnastkowe** rozdzielonych dwukropkami. Każda grupa to wartość 16-bitowa:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Ta w pełni zapisana forma to reprezentacja **rozwinięta**. Ponieważ jest długa i pełna zer, forma tekstowa ma reguły kompresji.
+
+## Zapisywanie adresu: reguły kompresji
+
+Dwie reguły skracają tekst, a RFC 5952 czyni wynik kanonicznym (jeden adres, jedna preferowana pisownia):
+
+- **Pomiń zera wiodące** w każdej grupie: `0db8` staje się `db8`, `0000` staje się `0`.
+- **Zastąp jeden ciąg kolejnych grup całkowicie-zerowych przez `::`**. Podwójny dwukropek może pojawić się **co najwyżej raz**, i oznacza jedną lub więcej grup 16-bitowych zer. Gdy istnieje kilka ciągów równej długości, kompresowany jest pierwszy.
+
+Zastosowanie obu do powyższego adresu daje jego formę kanoniczną:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+RFC 5952 dodaje kilka reguł kończących, by narzędzia się zgadzały: cyfry szesnastkowe są małymi literami, a `::` nie jest używany do „kompresowania" pojedynczej grupy zer (to nie skróciłoby niczego istotnego). Narzędzie IPv6 pokazuje zarówno kanoniczną formę skompresowaną, jak i w pełni rozwiniętą formę obok siebie, byś mógł zobaczyć dokładnie, co oznacza `::`.
+
+Przypadek szczególny: adres może nieść **osadzony IPv4** ogon w swoich ostatnich 32 bitach, zapisany w kropkowym dziesiętnym. Najczęstszą jest forma **IPv4-mapowana**, gdzie RFC 5952 zaleca notację mieszaną `::ffff:192.0.2.128` zamiast czystego szesnastkowego.
+
+## Prefiksy i arytmetyka prefiksów
+
+Jak CIDR w IPv4, prefiks IPv6 zapisuje się `adres/długość`, gdzie długość liczy wiodące bity sieci:
+
+```
+2001:db8::/64
+```
+
+`/64` oznacza, że pierwsze 64 bity to sieć, a pozostałe 64 to identyfikator interfejsu. `/64` to standardowy rozmiar dla pojedynczej sieci LAN, i sam mieści 2^64 adresy, około 18 trylionów. Narzędzie oblicza adres sieci (pierwszy), ostatni adres, i liczbę dla dowolnego prefiksu, który mu podasz, maskując bity hosta do zera, by znaleźć sieć, nawet jeśli wpisałeś adres z ustawionymi bitami hosta.
+
+## Typy adresów i zakresy
+
+Wysokie bity adresu umieszczają go w kategorii. Najważniejsze, z RFC 4291 i rejestru IANA:
+
+- **Unicast globalny (2000::/3)** to routowalna przestrzeń publiczna, odpowiednik IPv6 publicznego adresu IPv4.
+- **Unikatowy lokalny, czyli ULA (fc00::/7)** to przestrzeń do użytku prywatnego (RFC 4193), analogiczna do RFC 1918 w IPv4. Nie jest routowana w publicznym internecie.
+- **Unicast link-local (fe80::/10)** jest ważny tylko na pojedynczym łączu i konfigurowany automatycznie na każdym interfejsie IPv6. Routery nigdy go nie przekazują. Jego zakres to łącze lokalne.
+- **Multicast (ff00::/8)** adresuje grupę zamiast pojedynczego hosta. Pole zakresu wewnątrz adresu mówi, jak daleko sięga: interface-local, link-local, admin-local, site-local, organization-local, lub global. Na przykład `ff02::1` to link-localna grupa wszystkich-węzłów.
+- **Loopback (::1/128)** to odpowiednik IPv6 dla 127.0.0.1, a **adres nieokreślony (::/128)** oznacza „żaden adres", używany jako symbol zastępczy podczas konfiguracji.
+- **Dokumentacja (2001:db8::/32)** jest zarezerwowana przez RFC 3849 dla przykładów i pisania, co jest powodem, dla którego niemal każdy przykład IPv6, który widzisz, w tym kanoniczny w samym RFC 4291, jej używa.
+
+Narzędzie IPv6 raportuje pasujący typ i konkretny prefiks, który dopasowało, plus zakres dla adresów multicast i link-local.
+
+## Identyfikatory interfejsu i EUI-64
+
+W typowym `/64` dolne 64 bity to **identyfikator interfejsu**. Jednym historycznym sposobem jego budowania był **zmodyfikowany EUI-64** (RFC 4291, Dodatek A): weź 48-bitowy adres MAC, wstaw bajty `ff:fe` w środku, i odwróć siódmy bit (bit universal/local). To czyniło id interfejsu wyprowadzalnym z adresu sprzętowego. Gdy narzędzie widzi zdradzieckie `ff:fe` w środku id interfejsu, odwraca proces i pokazuje ci oryginalny MAC. Nowoczesne systemy często wolą zamiast tego losowane lub prywatnościowe identyfikatory interfejsu, właśnie dlatego, że wyprowadzanie id z MAC ujawnia adres sprzętowy.
+
+## Odwrotne DNS: ip6.arpa
+
+Wyszukiwania odwrotne (adres na nazwę) dla IPv6 żyją pod domeną **ip6.arpa**. Adres jest rozwijany do swoich 32 szesnastkowych półbajtów, te półbajty są odwracane, i każdy staje się etykietą. Tak `2001:db8::1` staje się nazwą kończącą się na `...8.b.d.0.1.0.0.2.ip6.arpa`. Narzędzie generuje tę nazwę dla dowolnego adresu, co jest dokładną wartością, którą umieściłbyś w rekordzie `PTR`.
+
+## Uwaga o tym, co narzędzie robi
+
+Narzędzie IPv6 to deterministyczny, lokalny kalkulator. Parsuje, kanonizuje, klasyfikuje, i oblicza, wszystko w twojej przeglądarce, bez żadnego wyszukiwania względem żywej sieci. Mówi ci, czym adres strukturalnie **jest**. Nie mówi ci, czy ten adres jest osiągalny, przydzielony, czy w użyciu, co są osobnymi pytaniami wymagającymi odpytania sieci lub rejestru.

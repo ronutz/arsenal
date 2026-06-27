@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Anatomia tokenu JSON Web Token"
+summary: "Trzy segmenty JWT, jak podpis czyni go godnym zaufania i dlaczego dekodowanie tokenu nie jest tym samym co jego weryfikacja."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Czym jest JWT
+
+JSON Web Token (JWT, zdefiniowany w RFC 7519) to zwarty, samowystarczalny sposób przenoszenia zbioru **claimów**, twierdzeń o pewnym podmiocie (zwykle użytkowniku) plus pewnych metadanych, w postaci, którą odbiorca może zweryfikować. To format tokenu stojący za większością nowoczesnego uwierzytelniania webowego: token ID OpenID Connect jest JWT, a tokeny dostępu OAuth 2.0 bardzo często też.
+
+„Samowystarczalny" to kluczowa idea. Zamiast losowego id sesji, które serwer musi wyszukać w bazie danych, JWT niesie claimy *wewnątrz siebie*, podpisane tak, by odbiorca mógł im zaufać bez podróży w obie strony. To czyni JWT wygodnymi dla bezstanowych, rozproszonych systemów, z jednym ważnym kompromisem omówionym na końcu.
+
+## Trzy segmenty
+
+JWT to trzy segmenty zakodowane w Base64URL połączone kropkami:
+
+```
+header.payload.signature
+```
+
+Każdy segment ma odrębne zadanie:
+
+- **Nagłówek** (header) to mały obiekt JSON nazywający algorytm podpisu i typ tokenu, na przykład `{"alg":"HS256","typ":"JWT"}`. Wartość `alg` mówi odbiorcy, jak zweryfikować podpis.
+- **Ładunek** (payload) to obiekt JSON claimów. Zawiera zarejestrowane claimy o standardowych znaczeniach (`iss` wystawca, `sub` podmiot, `aud` odbiorca, `exp` wygaśnięcie, `nbf` nie-przed, `iat` wystawiony-w, `jti` id tokenu) obok dowolnych własnych claimów, które wystawca dodaje.
+- **Podpis** (signature) jest obliczany nad zakodowanym nagłówkiem i ładunkiem razem, przy użyciu algorytmu z nagłówka. To on czyni dwa pierwsze segmenty godnymi zaufania.
+
+Ponieważ nagłówek i ładunek są jedynie zakodowane w Base64URL, nie zaszyfrowane, każdy posiadający token może je zdekodować i odczytać. To pojedyncza, najważniejsza własność do przyswojenia: **ładunek JWT jest czytelny, nie tajny.** Nigdy nie umieszczaj w nim hasła, numeru karty ani niczego wrażliwego.
+
+## Podpis: jak ustanawiane jest zaufanie
+
+Podpis to to, co oddziela JWT od dowolnego ciągu, który klient mógłby sfabrykować. Sposób jego wytworzenia zależy od rodziny algorytmów:
+
+- **HMAC (HS256, HS384, HS512)** podpisuje jednym współdzielonym sekretem. Podpis to `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. Jest symetryczny: ten sam sekret tworzy i weryfikuje, więc wystawca i weryfikator muszą go współdzielić. To dokładnie ta konstrukcja, którą oblicza narzędzie HMAC.
+- **RSA i ECDSA (RS256, ES256 i inne)** podpisują kluczem prywatnym, a weryfikują pasującym kluczem publicznym. Jest to asymetryczne: tylko wystawca może podpisać, lecz każdy z kluczem publicznym może zweryfikować, co pasuje do tokenów sprawdzanych przez wiele niezależnych usług.
+
+Weryfikacja przelicza lub sprawdza podpis względem zakodowanego nagłówka i ładunku. Jeśli zmieniony zostanie pojedynczy bajt któregokolwiek segmentu, podpis przestaje pasować i token jest odrzucany.
+
+Warto znać dwie klasyczne pułapki. Wartość `alg: none` deklaruje token niepodpisany; weryfikator, który go jawnie nie odrzuca, może zostać oszukany, by zaufać sfałszowanym claimom. A w ataku **pomylenia algorytmu** atakujący bierze token RS256, przełącza nagłówek na HS256 i podpisuje go, używając klucza publicznego jako sekretu HMAC, co udaje się wobec weryfikatorów biorących algorytm z tokenu zamiast go przypiąć. Obrona dla obu jest ta sama: to weryfikator decyduje, który algorytm jest akceptowalny, nie token.
+
+## Dekodowanie to nie weryfikacja
+
+To dwie różne operacje, a ich mylenie jest częstym źródłem błędów. **Dekodowanie** po prostu dekoduje segmenty z Base64URL, by ujawnić nagłówek i claimy: bez klucza, bez zaufania, każdy może to zrobić. **Weryfikacja** sprawdza podpis właściwym kluczem i potwierdza claimy czasowe. Tylko na claimach zweryfikowanego tokenu należy działać.
+
+Czas też ma znaczenie. `exp` (wygaśnięcie) i `nbf` (nie-przed) to uniksowe znaczniki czasu ograniczające okno ważności tokenu, a `iat` zapisuje, kiedy został wystawiony. Poprawny weryfikator odrzuca token wygasły lub jeszcze-nie-ważny, zwykle dopuszczając niewielką tolerancję przesunięcia zegara.
+
+## Czym JWT nie jest
+
+JWT jest **podpisany, nie zaszyfrowany** (szyfrowanie to odrębny standard, JWE). Dowodzi, kto wystawił claimy i że nie zostały naruszone; nie ukrywa ich.
+
+Podpisany JWT jest też **niełatwy do unieważnienia samodzielnie.** Ponieważ claimy żyją wewnątrz tokenu, a weryfikacja nie wymaga wyszukania po stronie serwera, token pozostaje ważny aż do wygaśnięcia, nawet jeśli chciałbyś anulować go wcześniej. Praktyczną odpowiedzią są krótkie czasy życia plus odrębny mechanizm (token odświeżający, lista unieważnień lub introspekcja tokenu), gdy wymagane jest natychmiastowe unieważnienie.
+
+[Narzędzie JWT](/tools/jwt) dekoduje nagłówek i claimy tokenu, odczytuje jego wygaśnięcie i czas prostym językiem oraz weryfikuje podpis HS256, HS384 lub HS512 względem sekretu, który wkleisz, wszystko w przeglądarce. Token i sekret nigdy nigdzie nie są wysyłane.

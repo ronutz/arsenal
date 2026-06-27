@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Wybór skrótu: MD5, SHA-1, SHA-2, SHA-3 i BLAKE"
+summary: "Które funkcje skrótu są nadal bezpieczne, które są złamane, jakie mają rozmiary wyjścia i jak wybrać właściwą."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Nie wszystkie skróty są równe
+
+Skrót kryptograficzny odwzorowuje dowolne wejście na odcisk o stałym rozmiarze. Istnieje kilka rodzin i nie są one wymienne: niektóre są nadal silne, a inne są na tyle poważnie złamane, że używanie ich do bezpieczeństwa jest błędem. Właściwy wybór zależy od zadania i kalendarza, bo skrót szanowany dwadzieścia lat temu może być dziś trywialnie złamany.
+
+## Te złamane
+
+- **MD5** (128 bitów) jest złamany. Kolizje można wytworzyć w sekundy na laptopie i wykorzystano je w rzeczywistych atakach (złośliwe oprogramowanie Flame sfałszowało certyfikat podpisywania kodu kolizją MD5). Przetrwał jedynie jako szybka suma kontrolna bez funkcji bezpieczeństwa, a nawet tam istnieją lepsze opcje.
+- **SHA-1** (160 bitów) jest złamany. Badania SHAttered z 2017 r. wytworzyły dwa różne pliki PDF o tym samym skrócie SHA-1, a później pojawiły się kolizje z wybranym prefiksem. Przeglądarki i urzędy certyfikacji usunęły obsługę SHA-1 lata temu. Nie używaj go do podpisów ani integralności, które przeciwnik może zaatakować.
+
+## Obecne konie robocze
+
+- **SHA-2** to domyślna rodzina do większości zadań. To zestaw powiązanych funkcji, zwykle **SHA-256** i **SHA-512** (a także SHA-224, SHA-384 i skrócony SHA-512/256). Nie istnieje praktyczny atak kolizyjny na SHA-2. W razie wątpliwości SHA-256 to bezpieczny i powszechnie obsługiwany wybór.
+- **SHA-3** (Keccak) to nowszy standard zbudowany na zupełnie innej konstrukcji wewnętrznej (konstrukcji gąbkowej) niż SHA-2. SHA3-256 i SHA3-512 oferują porównywalne bezpieczeństwo i istnieją częściowo jako zabezpieczenie: gdyby kiedykolwiek znaleziono słabość w SHA-2, jest mało prawdopodobne, by SHA-3 ją dzielił. Jest też z założenia odporny na problem rozszerzenia długości, który dotyka SHA-2.
+- **BLAKE2 i BLAKE3** to nowoczesne, bardzo szybkie skróty o silnym bezpieczeństwie. BLAKE3 w szczególności został stworzony do zrównoleglania, co czyni go atrakcyjnym, gdy haszujesz duże ilości danych i chcesz szybkości bez rezygnacji z bezpieczeństwa.
+
+## Wybór jednego
+
+Krótki przewodnik decyzyjny:
+
+- Ogólna integralność, podpisy lub „po prostu potrzebuję bezpiecznego skrótu”: **SHA-256**.
+- Chcesz różnorodności algorytmów lub odporności na rozszerzenie długości bez HMAC: **SHA-3** lub **SHA-512/256**.
+- Haszowanie dużych plików, gdzie liczy się przepustowość: **BLAKE3**.
+- Szybka suma kontrolna bez funkcji bezpieczeństwa (wykrycie przypadkowego uszkodzenia, nie manipulacji): CRC lub MD5 wystarczy, ale nigdy nie nazywaj tego „bezpiecznym”.
+- **Hasła to osobny problem.** Ogólne skróty są zbyt szybkie do przechowywania haseł; użyj dedykowanego skrótu haseł, takiego jak bcrypt, scrypt lub Argon2 (zobacz artykuł o haszowaniu haseł).
+
+[Narzędzie skrótu](/tools/hash) oblicza MD5, SHA-1, SHA-256, SHA-512 i więcej z tekstu lub pliku, byś mógł porównać wyjścia obok siebie, wszystko w przeglądarce, bez wysyłania czegokolwiek.

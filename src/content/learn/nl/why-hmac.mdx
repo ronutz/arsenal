@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Waarom HMAC, en niet hash(sleutel + bericht)"
+summary: "De lengte-uitbreidingsaanval die naïef hashen met sleutel breekt, en de geneste constructie die HMAC gebruikt om hem te verslaan."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het voor de hand liggende idee dat faalt
+
+Je wilt bewijzen dat een bericht afkomstig is van iemand die een gedeeld geheim bezit en dat het niet gewijzigd is. De intuïtieve aanpak is het geheim samen met het bericht te hashen: `tag = SHA256(geheim + bericht)`. Het lijkt solide, de tag hangt af van het geheim, dus een aanvaller die het geheim niet kent, kan hem niet produceren. Helaas is deze constructie voor de meest gebruikte hashfuncties gebroken.
+
+## De lengte-uitbreidingsaanval
+
+Hashes uit de Merkle-Damgård-familie, waaronder MD5, SHA-1 en SHA-256, verwerken de invoer in blokken en dragen een interne toestand mee. Hun uiteindelijke uitvoer *is* die interne toestand. Dat lekt iets gevaarlijks: gegeven `SHA256(geheim + bericht)` en de lengte van `geheim + bericht`, kan een aanvaller de interne toestand van de hash op jouw tag zetten en doorgaan met hashen, om
+
+```
+SHA256(geheim + bericht + opvulling + aanvallersdata)
+```
+
+te berekenen als een geldige tag voor een uitgebreid bericht, **zonder ooit het geheim te kennen**. Hij kan data toevoegen en een tag produceren die geverifieerd wordt. Voor een API waarbij het bericht een set ondertekende parameters is, kan dat betekenen dat `&admin=true` aan een verzoek wordt toegevoegd en de handtekeningcontrole toch wordt doorstaan. Het naïeve `hash(geheim + bericht)` is niet veilig.
+
+## Hoe HMAC dit oplost
+
+HMAC (RFC 2104) voegt niet alleen samen. Het hasht twee keer met de sleutel op twee verschillende manieren gemengd:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Het bericht wordt gehasht met de sleutel onder een binnenopvulling (`ipad`), en dat resultaat wordt opnieuw gehasht met de sleutel onder een buitenopvulling (`opad`). Omdat de buitenhash de binnenhash omhult, is de waarde die een aanvaller ziet geen ruwe interne toestand die hij kan uitbreiden; het is de uitvoer van een tweede hashstap met de sleutel van het geheim. Lengte-uitbreiding werkt niet meer, en de beveiliging van HMAC heeft een solide bewijs dat alleen berust op een redelijke onderliggende hash.
+
+Daarom gebruikt elk volwassen systeem HMAC (of een ander geschikt MAC) in plaats van een zelfgemaakt hashen met sleutel. Merk op dat SHA-3 en BLAKE niet vatbaar zijn voor lengte-uitbreiding, dus ze kunnen directer van een sleutel worden voorzien, maar HMAC blijft de draagbare en breed ondersteunde standaard.
+
+## De les
+
+Gebruik HMAC met een sterke hash (HMAC-SHA256 is de gangbare standaard) en een geheim met hoge entropie. Bedenk geen eigen schema voor hashen met sleutel: de fout is van buitenaf niet duidelijk, wat het juist gevaarlijk maakt.
+
+De [HMAC-tool](/tools/hmac) berekent HMAC-SHA256 en verwante varianten over een bericht en een sleutel zodat je de tag ziet en hem vergelijkt, allemaal in je browser, zonder iets te verzenden.

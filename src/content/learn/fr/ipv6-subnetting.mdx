@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "Le sous-réseautage IPv6 et la frontière /64"
+summary: "Pourquoi le sous-réseautage IPv6 concerne la structure plutôt que la rareté, pourquoi un seul sous-réseau est presque toujours un /64, et comment la délégation de préfixe distribue l'espace d'adresses."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Une raison différente de sous-réseauter
+
+En IPv4, le sous-réseautage concerne surtout la conservation : les adresses sont rares, donc vous taillez un bloc dans les plus petites pièces qui rentrent encore dans chaque réseau (la logique dans l'article [les bases du sous-réseautage](/learn/subnetting-basics)). IPv6 retire cette pression entièrement. Un seul sous-réseau /64 contient 2^64 adresses, plus que tout l'internet IPv4 au carré, donc vous ne sous-réseautez jamais un réseau IPv6 pour économiser de l'espace. Vous le sous-réseautez pour donner de la structure : un préfixe par VLAN, par site, par client. Le calcul est la même arithmétique de préfixe qu'IPv4 (l'outil le calcule avec des entiers de précision arbitraire), mais l'état d'esprit est l'opposé.
+
+## Pourquoi un sous-réseau est un /64
+
+La règle isolée la plus importante dans l'adressage IPv6 est qu'un sous-réseau normal est un /64, laissant 64 bits pour l'identifiant d'interface. Ce n'est pas une suggestion ; de grandes parties du protocole le présument. L'autoconfiguration d'adresse sans état (couverte dans l'article [configuration d'adresse](/learn/ipv6-address-configuration)) construit l'adresse d'un hôte en ajoutant un identifiant d'interface de 64 bits au préfixe annoncé, et la dérivation EUI-64 modifiée que l'outil peut effectuer produit exactement 64 bits. Utilisez un préfixe plus long comme un /80 ou /112 sur un lien et l'autoconfiguration cesse simplement de fonctionner. L'architecture d'adressage (RFC 4291) est construite autour de cette frontière, donc le conseil pratique est direct : faites de chaque sous-réseau d'utilisateur final un /64 et n'essayez pas d'être frugal à l'intérieur.
+
+## La hiérarchie d'allocation
+
+Si chaque sous-réseau est un /64, les sites et fournisseurs travaillent dans des blocs plus grands au-dessus de cela :
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Un FAI délègue typiquement un /48 ou /56 à un client, qui assigne ensuite des /64s à partir de celui-ci à des liens individuels. La RFC 6177 revient sur l'orientation originale du « /48 pour tous » vers le fait de donner à chaque site assez d'espace pour sous-réseauter confortablement, ce qui en pratique signifie un /48 ou /56. Le point est que vous avez de l'espace en réserve : même un /56 donne à un domicile ou petit bureau 256 réseaux séparés, bien plus qu'il n'en utilisera jamais.
+
+## Sous-réseautez sur des frontières de nibble
+
+Parce qu'IPv6 s'écrit en hex et chaque chiffre hex fait 4 bits (un nibble), les préfixes qui tombent sur une frontière de 4 bits sont bien plus faciles à lire et à gérer. Un /48, /52, /56, /60, et /64 se terminent tous proprement entre les chiffres hex, donc la portion de sous-réseau s'aligne avec des caractères entiers dans l'adresse. Sous-réseauter un /48 en /52s vous donne 16 blocs distingués par un seul chiffre hex ; aller à /56 donne 256 blocs sur deux chiffres. Rester sur des frontières de nibble garde votre plan d'adressage lisible, ce qui importe plus en IPv6 que d'extraire le dernier bit ne pourrait jamais.
+
+## Compter les sous-réseaux et les adresses
+
+L'arithmétique est simple. Le nombre de sous-réseaux /64 à l'intérieur d'un préfixe plus court est 2 élevé à la différence des longueurs de préfixe : un /48 contient 2^(64-48) = 2^16 = 65 536 sous-réseaux. Le nombre d'adresses à l'intérieur de tout /64 est 2^(128-64) = 2^64. L'outil rapporte à la fois le compte d'adresses pour un préfixe et la plage utilisable, et les nombres deviennent grands rapidement, ce qui est exactement le point : la rareté n'est plus une contrainte autour de laquelle vous concevez.
+
+## L'enseignement
+
+Le sous-réseautage IPv6 renverse l'habitude IPv4 sur sa tête. Vous ne divisez pas une ressource rare ; vous imposez de la structure sur une effectivement illimitée. Donnez à chaque sous-réseau un /64 pour que l'autoconfiguration et la découverte de voisins fonctionnent comme conçues, demandez un /48 ou /56 pour que vous ayez de l'espace pour organiser, et sous-réseautez sur des frontières de nibble pour que votre plan reste lisible. Quand vous collez un préfixe dans l'outil et voyez le compte d'adresses, traitez cette abondance comme une permission de concevoir pour la clarté plutôt que pour la conservation.

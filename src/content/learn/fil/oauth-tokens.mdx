@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Mga access token, refresh token, at ID token"
+summary: "Tatlong OAuth at OpenID Connect token na laging nalilito, kung para saan talaga ang bawat isa, at kung bakit ang pagpapadala ng mali sa maling lugar ay isang tunay na bug."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tatlong token, tatlong trabaho
+
+Pagkatapos makumpleto ang authorization code flow (tingnan ang artikulong [code flow](/learn/oauth-code-flow)), ang isang client ay maaaring mauwi sa paghawak ng tatlong magkaibang token, at ang paghahalo sa kanila ay isa sa pinakakaraniwang pagkakamali sa OAuth at OpenID Connect. Ang isang access token, isang refresh token, at isang ID token ay magkahawig sa ibabaw, lalo na kapag ang tatlo ay nagkataong mga JWT, ngunit may magkaibang mga audience at magkaibang layunin. Ang pagtama sa kanila ay kadalasang usapin ng pagtatanong, para sa bawat token, kung para kanino ito at kung ano ang pinahihintulutan nito.
+
+## Ang access token: isang susi sa isang API
+
+Ang access token ang ipinapadala ng client sa isang resource server (isang API) upang patunayang pinahihintulutan itong gumawa ng kahilingan. Ito ang pinakamalapit na bagay na mayroon ang OAuth sa isang session key para sa machine-to-machine na access, tinukoy ng OAuth 2.0 (RFC 6749). Dalawang katangian ang mahalaga. Ito ay **panandalian**, kadalasang mga minuto hanggang isang oras, upang ang isang natagasang token ay panandalian lamang na kapaki-pakinabang. At ito ay isang **bearer** token (may hawak): sinumang humahawak nito ay maaaring gumamit nito, nang walang karagdagang patunay ng pagkakakilanlan, kaya ang mga access token ay dapat maglakbay lamang sa TLS at hindi kailanman i-log o ilagay sa isang URL. Vina-validate ng API ang token at ang mga scope na dala nito, pagkatapos ay sinisilbi o tinatanggihan ang kahilingan.
+
+## Ang refresh token: pagkuha ng mga bagong access token
+
+Dahil mabilis na nag-e-expire ang mga access token, ang pagpilit sa user na mag-log in muli kada ilang minuto ay magiging hindi matatagalan. Nireresolba ito ng refresh token: ito ay isang matagal-buhay na kredensyal na ipinagpapalit ng client sa authorization server para sa isang sariwang access token, nang walang interaksyon ng user. Ito ay higit na sensitibo kaysa sa isang access token mismo dahil ito ay matagal-buhay, kaya dapat itong manatili sa back channel (panig ng server, o sa protektadong imbakan) at hindi kailanman ilantad sa isang browser front end. Mabuting gawi ang **refresh token rotation**: bawat paggamit ay naglalabas ng bagong refresh token at pinapawalang-bisa ang luma, kaya ang isang ninakaw na token ay natutuklas sa sandaling subukan ng lehitimong client na gamitin ang ngayon-binawi na kopya. Maaari ring tahasang bawiin ang mga token (RFC 7009).
+
+## Ang ID token: isang pahayag tungkol sa user
+
+Ang ID token ang piyesa na idinaragdag ng OpenID Connect sa ibabaw ng OAuth, at ito ang pinakamadalas na maling ginagamit. Ito ay laging isang JWT (tingnan ang artikulong [anatomiya ng JWT](/learn/jwt-anatomy)), at inilalarawan nito ang kaganapan ng authentication: kung sino ang user, kailan sila nag-authenticate, at aling authorization server ang umaako para riyan. Mahalagang-mahalaga, **ang ID token ay para sa client, hindi para sa isang API**. Sinasagot nito ang "sino ang kakaka-log in" upang ang aplikasyon ay makapagtatag ng isang user session. Ang pagpapadala ng isang ID token sa isang resource server na parang ito ay isang access token ay isang klasikong bug: dapat itong tanggihan ng API, dahil ang audience ng ID token ay ang client, at ang paggamit nito para sa authorization ay nililito ang pagkakakilanlan sa pahintulot.
+
+## Mga bearer token at ang tukso na pagkatiwalaan sila
+
+Karamihan sa mga access token ay mga bearer token, na nagpapadaling gamitin sila at madaling gamitin nang mali. Ang mga patakaran sa paghawak ay direktang sumusunod: palaging TLS, maiikling buhay, hindi kailanman sa mga log o query string, at hindi kailanman sa imbakang naa-access ng browser kung may umiiral na mas protektadong opsyon. Kung saan masyadong mapanganib ang bearer model, ang mga **sender-constrained** na token ay nagtatali ng isang token sa isang partikular na client key (mga mekanismo tulad ng DPoP o mutual TLS), upang ang isang ninakaw na token ay hindi mauulit ng ibang tao. Para sa karamihan ng mga aplikasyon, ang mga panandaliang bearer access token sa TLS ang gumaganang baseline.
+
+## Opaque versus JWT na access token
+
+Ang isang access token ay maaaring opaque (isang random na string na sinusuri ng API sa pamamagitan ng pagtawag sa introspection endpoint ng authorization server, RFC 7662) o isang JWT na vina-validate ng API mismo. Ang anyong JWT ay self-contained at iniiwasan ang isang network round trip, ngunit hindi ito mababawi bago ito mag-expire, na isa pang dahilan kung bakit pinananatiling maikli ang buhay ng access token. Ang isang ID token, sa kabaligtaran, ay laging isang JWT, dahil ang buong trabaho nito ay maghatid ng mapapatunayang claim sa client. Kung ang isang token ay JWT ay nagsasabi sa iyo kung paano ito vina-validate, hindi kung para saan ito.
+
+## Itugma ang token sa audience
+
+Ang nag-iisang panuntunan na pumipigil sa karamihan ng mga bug ng token ay ang pagtutugma ng bawat token sa nilalayon nitong audience. Ang **ID token** ay para sa aplikasyon, upang malaman kung sino ang nag-log in. Ang **access token** ay para sa API, upang pahintulutan ang isang kahilingan. Ang **refresh token** ay para sa authorization server, upang lumikha ng mga bagong access token nang hindi inaabala ang user. Panatilihing malinaw ang tatlong audience na iyon, hawakan ang matagal-buhay na refresh token sa back channel, at ituring ang bawat bearer token bilang isang panandaliang lihim, at ang natitira sa paghawak ng token ng OAuth ay mahuhulog sa lugar.

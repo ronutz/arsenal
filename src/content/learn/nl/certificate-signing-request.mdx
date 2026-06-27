@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Certificaatondertekeningsverzoeken en hoe certificaten worden uitgegeven"
+summary: "Wat een CSR bevat, waarom je privésleutel nooit je machine verlaat, hoe een CA valideert en uitgeeft, en hoe ACME de hele uitwisseling automatiseert."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het uitgifteprobleem
+
+Je kunt zelf in seconden een sleutelpaar genereren, maar een kale publieke sleutel bewijst niets over wie je bent (het bindingsprobleem uit het [anatomie-artikel](/learn/x509-anatomy)). Om een certificaat te krijgen heb je een certificeringsinstantie nodig die een vertrouwende partij al vertrouwt om in te staan dat deze publieke sleutel bij jouw naam hoort. Het Certificaatondertekeningsverzoek (Certificate Signing Request) is hoe je daarom vraagt, zonder ooit je privésleutel af te geven.
+
+## Wat een CSR bevat
+
+Een CSR is zelf een ASN.1-structuur, gedefinieerd door PKCS#10 (RFC 2986) en gewoonlijk verzonden als een PEM-blok gelabeld `CERTIFICATE REQUEST`. Het draagt:
+
+- het **subject** dat je aanvraagt (de namen die in het certificaat zouden moeten belanden),
+- je **publieke sleutel**, en
+- een **handtekening over het verzoek, gemaakt met de bijbehorende privésleutel**.
+
+Dat laatste deel is het slimme stukje. Door het verzoek met de privésleutel te ondertekenen bewijs je dat je werkelijk de sleutel houdt die paart met de publieke sleutel die je indiende, allemaal zonder de privésleutel zelf te onthullen. De privésleutel verlaat nooit je beheer, wat precies is zoals het hoort, want iedereen die hem heeft kan zich als jou voordoen.
+
+## De CA is de autoriteit, niet de aanvrager
+
+Een cruciaal punt: de CSR is een *verzoek*, en de CA staat vrij delen ervan te honoreren en andere te negeren. Je kunt elk subject en elke extensie aanvragen die je wilt, maar de CA beslist wat het uitgegeven certificaat werkelijk zegt. Het stelt de geldigheidsperiode vast volgens huidige regels, kiest het serienummer, en neemt alleen de namen en gebruiken op waarvoor het bereid is in te staan. De handtekening van de CA, niet je verzoek, is wat het uiteindelijke certificaat zijn autoriteit geeft. Deze scheiding is waarom een CSR vol ambitieuze velden je geen certificaat vol ervan oplevert.
+
+## Hoe de CA beslist je te vertrouwen
+
+Voor het ondertekenen valideert de CA dat je recht hebt op de namen die je vroeg, en hoe grondig hangt af van het certificaattype:
+
+- **Domain Validated (DV)** bewijst alleen dat je het domein beheert. Dit is de overweldigende meerderheid van de TLS-certificaten vandaag.
+- **Organization Validated (OV)** en **Extended Validation (EV)** keuren bovendien de juridische entiteit achter het domein, de Subject Identity Information die in het certificaat verschijnt.
+
+Voor DV daagt de CA je uit beheer over het domein aan te tonen. Gangbare methoden zijn een specifiek bestand op een URL op de site plaatsen (HTTP-01), een specifiek DNS-TXT-record publiceren (DNS-01), of antwoorden op een e-mail gestuurd naar een adres in het domein. De uitdaging halen is wat de CA ervan overtuigt dat de publieke sleutel in je CSR aan die naam zou moeten worden gebonden.
+
+## Zelf-ondertekende certificaten slaan de CA over
+
+Als je je eigen CSR met je eigen sleutel ondertekent in plaats van hem naar een CA te sturen, krijg je een zelf-ondertekend certificaat, waar de Issuer gelijk is aan het Subject. Het draagt geen externe autoriteit, want het enige dat ervoor instaat is het zelf, maar het is perfect bruikbaar voor lokale ontwikkeling, interne diensten met hun eigen vertrouwensopslag, of om als de root van een private PKI te fungeren. De tool markeert wanneer een certificaat zelf-uitgegeven is, wat je onmiddellijk vertelt dat zijn vertrouwen ergens anders vandaan komt dan een publieke CA.
+
+## ACME: de uitwisseling automatiseren
+
+Dit alles met de hand doen, herhaaldelijk, is precies wat de verschuiving naar korte certificaatlevensduren onmogelijk maakt (zie het [herroepingsartikel](/learn/certificate-revocation)). Het ACME-protocol (RFC 8555), populair gemaakt door Let's Encrypt, automatiseert het hele gesprek: een client genereert het sleutelpaar en de CSR, bewijst domeinbeheer via HTTP-01 of DNS-01 automatisch, ontvangt het certificaat, en herhaalt voor elke vervaldatum, zonder dat een mens betrokken is. ACME is de reden dat miljoenen sites certificaten kunnen draaien die elke paar weken vernieuwen, en het is de operationele ruggengraat van de toekomst van kortlevende certificaten.
+
+## Een verzoek wordt een credentiaal
+
+De boog is simpel te formuleren. Je houdt een sleutelpaar. Een CSR vraagt een CA in te staan voor de publieke helft, onderweg bewijzend dat je de private helft houdt. De CA controleert dat je de naam beheert, geeft dan een certificaat uit waarvan de autoriteit van de handtekening van de CA komt, niet van iets wat je in het verzoek schreef. Het resultaat met een decoder inspecteren toont je de binding die de CA werkelijk maakte, wat het hele punt van de oefening is: een anonieme sleutel veranderen in een sleutel met een vertrouwde naam eraan.

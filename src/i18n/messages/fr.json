@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Essayez un outil dès maintenant.",
       "body": "Le calculateur CIDR ci-dessous s'exécute localement. Saisissez un réseau et un préfixe pour voir la plage d'adresses, le nombre d'hôtes et le masque. Rien n'est envoyé où que ce soit.",
-      "learnHeading": "Apprendre les concepts"
+      "learnHeading": "Apprendre les concepts",
+      "toolboxCta": "Ouvrir la boîte à outils complète"
     },
     "provenance": {
       "title": "Crédits et sources",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Saisissez un bloc CIDR pour calculer.",
         "invalid": "Cela ne ressemble pas à un bloc CIDR valide. Essayez un format comme 192.168.1.0/24."
-      }
+      },
+      "name": "Calculateur CIDR / de sous-réseaux",
+      "blurb": "Décomposez n'importe quel bloc CIDR IPv4 en adresses de réseau et de diffusion, plage d'hôtes utilisables, nombre d'hôtes et masque de réseau. S'exécute entièrement dans votre navigateur."
     },
     "title": "Outils",
     "lede": "De petits utilitaires rapides et respectueux de la vie privée qui s'exécutent entièrement dans votre navigateur. Rien de ce que vous saisissez n'est envoyé où que ce soit. D'autres arrivent.",
     "open": "Ouvrir",
     "comingSoon": "Bientôt disponible",
-    "note": "Cette boîte à outils s'enrichit. De nouveaux outils sont ajoutés ici au fur et à mesure de leur publication, chacun local-first et gratuit."
+    "note": "Cette boîte à outils s'enrichit. De nouveaux outils sont ajoutés ici au fur et à mesure de leur publication, chacun local-first et gratuit.",
+    "learnHeading": "Apprendre les concepts",
+    "backToTools": "Outils",
+    "references": "Références",
+    "categories": {
+      "identity": "Identité et jetons",
+      "encoding": "Encodage et données",
+      "hashing": "Hachage et crypto",
+      "identifiers": "Identifiants",
+      "pki": "Certificats et PKI",
+      "networking": "Réseau"
+    },
+    "hash": {
+      "name": "Générateur de hachage (SHA-1/256/384/512)",
+      "blurb": "Calculez des empreintes SHA-1, SHA-256, SHA-384 et SHA-512 de n'importe quel texte, affichées en hex et en Base64, à l'aide du Web Crypto natif du navigateur. S'exécute entièrement dans votre navigateur.",
+      "algorithmLabel": "Algorithme de hachage",
+      "inputLabel": "Texte à hacher",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Le hachage s'exécute localement via Web Crypto. Rien de ce que vous saisissez ne quitte votre navigateur.",
+      "bits": "{bits} bits ({bytes} octets)",
+      "sha1Note": "SHA-1 est cassé en matière de résistance aux collisions et inadapté à la sécurité (signatures, certificats). Il ne convient qu'aux sommes de contrôle sans enjeu de sécurité et à l'interopérabilité héritée.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Copier",
+      "copied": "Copié"
+    },
+    "hmac": {
+      "name": "Générateur de HMAC (SHA-256/384/512)",
+      "blurb": "Calculez un HMAC à clé sur un message avec votre clé secrète, affiché en hex et en Base64, via le Web Crypto natif du navigateur. La même construction que le vérificateur de JWT utilise pour HS256. Votre clé ne quitte jamais votre navigateur.",
+      "algorithmLabel": "Algorithme HMAC",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Le message à authentifier",
+      "keyLabel": "Clé secrète",
+      "keyPlaceholder": "Votre secret partagé",
+      "runsLocally": "Le HMAC s'exécute localement via Web Crypto. Votre message et votre clé ne quittent jamais votre navigateur.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Copier",
+      "copied": "Copié"
+    },
+    "base64": {
+      "name": "Encodeur et décodeur Base64 / Base64URL",
+      "blurb": "Encodez du texte en Base64 standard ou compatible URL, ou décodez l'une ou l'autre variante en texte. Tolère le remplissage manquant et signale les résultats binaires (non UTF-8). S'exécute entièrement dans votre navigateur.",
+      "directionLabel": "Sens",
+      "variantLabel": "Variante de Base64",
+      "direction": {
+        "encode": "Encoder (texte vers Base64)",
+        "decode": "Décoder (Base64 vers texte)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "Compatible URL"
+      },
+      "inputLabelEncode": "Texte à encoder",
+      "inputLabelDecode": "Base64 à décoder",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "L'encodage et le décodage s'exécutent localement. Rien de ce que vous collez ne quitte votre navigateur.",
+      "decodeErrors": {
+        "invalid-characters": "Ce n'est pas du Base64 valide. Il contient des caractères hors de l'alphabet Base64.",
+        "invalid-length": "Ce n'est pas du Base64 valide. Sa longueur n'est pas une longueur Base64 valide."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Texte décodé",
+      "copy": "Copier",
+      "copied": "Copié",
+      "emptyOutput": "(vide)",
+      "decodedBytes": "{bytes, plural, one {# octet décodé} other {# octets décodés}}.",
+      "notUtf8": "{bytes, plural, one {# octet décodé} other {# octets décodés}}, mais le résultat n'est pas du texte UTF-8 valide (probablement binaire)."
+    },
+    "pkce": {
+      "name": "Vérificateur et challenge OAuth PKCE",
+      "blurb": "Générez un code_verifier OAuth 2.0 et dérivez son code_challenge S256, ou collez le vôtre et vérifiez-le par rapport aux règles de longueur et de jeu de caractères de RFC 7636. La même dérivation SHA-256 en base64url qu'attend votre serveur d'autorisation. S'exécute entièrement dans votre navigateur.",
+      "verifierLabel": "Vérificateur de code",
+      "verifierPlaceholder": "Collez un code_verifier, ou générez-en un",
+      "generate": "Générer",
+      "runsLocally": "La génération et la dérivation s'exécutent localement. Votre vérificateur ne quitte jamais votre navigateur.",
+      "lengthBadge": "Longueur {length} (43-128)",
+      "charsetOk": "Jeu de caractères non réservés",
+      "charsetBad": "Caractères invalides",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "La méthode plain est déconseillée. Utilisez S256 partout où le client peut calculer SHA-256.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Copier",
+      "copied": "Copié"
+    },
+    "uuid": {
+      "name": "Générateur et inspecteur d'UUID (v4 / v7)",
+      "blurb": "Générez des UUID v4 aléatoires ou v7 ordonnés dans le temps, ou collez n'importe quel UUID pour lire sa version, sa variante et (pour v7) l'horodatage de création intégré. La génération utilise la source aléatoire sécurisée du navigateur. S'exécute entièrement dans votre navigateur.",
+      "versionLabel": "Version d'UUID",
+      "generate": "Générer",
+      "clear": "Effacer",
+      "emptyHint": "Choisissez une version et générez.",
+      "runsLocally": "La génération et l'inspection s'exécutent localement. Rien n'est envoyé où que ce soit.",
+      "copy": "Copier",
+      "copied": "Copié",
+      "inspectLabel": "Inspecter un UUID",
+      "inspectPlaceholder": "Collez n'importe quel UUID pour le décoder",
+      "valid": "UUID valide",
+      "invalid": "UUID non valide",
+      "versionField": "Version",
+      "variantField": "Variante",
+      "timestampField": "Horodatage (v7)",
+      "versionValue": "Version {version}"
+    },
+    "jwt": {
+      "name": "Décodeur et vérificateur de JWT",
+      "blurb": "Décodez l'en-tête et les claims d'un JSON Web Token, lisez son expiration et ses échéances en langage clair et vérifiez une signature HS256/384/512 avec un secret collé. S'exécute entièrement dans votre navigateur.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Le décodage et les vérifications de signature s'exécutent localement. Le jeton et le secret ne quittent jamais votre navigateur.",
+      "errors": {
+        "empty": "Collez un JSON Web Token à décoder.",
+        "format": "Cela ne ressemble pas à un JWT. Un jeton comporte trois parties base64url séparées par des points : header.payload.signature.",
+        "header": "L'en-tête n'est pas valide. Il devrait s'agir de JSON encodé en base64url.",
+        "payload": "La charge utile n'est pas valide. Il devrait s'agir de JSON encodé en base64url."
+      },
+      "panels": {
+        "header": "En-tête",
+        "payload": "Charge utile",
+        "signature": "Signature",
+        "noSignature": "Aucun segment de signature (jeton non sécurisé)."
+      },
+      "claims": {
+        "iss": "Émetteur (iss)",
+        "sub": "Sujet (sub)",
+        "aud": "Audience (aud)",
+        "jti": "ID du JWT (jti)",
+        "iat": "Émis le (iat)",
+        "nbf": "Pas avant (nbf)",
+        "exp": "Expire (exp)"
+      },
+      "status": {
+        "expired": "Expiré {rel}",
+        "expiresIn": "Valide, expire {rel}",
+        "notYetValid": "Pas encore valide, commence {rel}",
+        "noExpiry": "Aucun claim d'expiration (exp)"
+      },
+      "verify": {
+        "label": "Vérifier la signature HMAC (HS256/384/512)",
+        "placeholder": "secret partagé",
+        "button": "Vérifier",
+        "valid": "Signature valide pour ce secret.",
+        "invalid": "La signature ne correspond pas à ce secret.",
+        "algNone": "Ce jeton n'est pas sécurisé (alg: none), il n'y a donc aucune signature à vérifier.",
+        "unsupportedAlg": "La vérification dans le navigateur ne couvre que HS256/384/512. {alg} est asymétrique et nécessite une clé publique.",
+        "hint": "Le secret sert uniquement à calculer un HMAC dans votre navigateur. Il n'est jamais envoyé où que ce soit."
+      }
+    },
+    "x509": {
+      "name": "Décodeur de certificats X.509",
+      "blurb": "Collez un certificat en PEM, base64 ou hex pour lire son sujet, son émetteur, sa fenêtre de validité, sa clé publique et ses extensions v3, avec des empreintes SHA-256 et SHA-1. S'exécute entièrement dans votre navigateur.",
+      "inputLabel": "Certificat X.509",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Le décodage et les empreintes s'exécutent localement. Le certificat ne quitte jamais votre navigateur.",
+      "errors": {
+        "empty": "Collez un certificat X.509 à décoder.",
+        "format": "Cela ne ressemble pas à un certificat. Collez du PEM (-----BEGIN CERTIFICATE-----), du base64 ou du hex.",
+        "der": "Les octets ne sont pas du DER valide. Vérifiez que tout le certificat a été collé, y compris la ligne END.",
+        "structure": "Ceci se décode en ASN.1 mais n'est pas un certificat X.509. Un certificat est une SEQUENCE composée de TBSCertificate, signatureAlgorithm et signatureValue."
+      },
+      "status": {
+        "valid": "Valide, expire {rel}",
+        "expired": "Expiré {rel}",
+        "notYetValid": "Pas encore valide, commence {rel}"
+      },
+      "panels": {
+        "subject": "Sujet",
+        "issuer": "Émetteur",
+        "details": "Détails",
+        "publicKey": "Clé publique",
+        "extensions": "Extensions",
+        "fingerprints": "Empreintes"
+      },
+      "fields": {
+        "version": "Version",
+        "serial": "Numéro de série",
+        "notBefore": "Pas avant",
+        "notAfter": "Pas après",
+        "signatureAlgorithm": "Algorithme de signature",
+        "algorithm": "Algorithme",
+        "keySize": "Taille de clé",
+        "exponent": "Exposant",
+        "curve": "Courbe",
+        "bits": "{n} bits",
+        "selfSigned": "Auto-émis"
+      },
+      "ext": {
+        "san": "Autres noms du sujet",
+        "keyUsage": "Utilisation de la clé",
+        "extKeyUsage": "Utilisation étendue de la clé",
+        "basicConstraints": "Contraintes de base",
+        "subjectKeyId": "Identifiant de clé du sujet",
+        "authorityKeyId": "Identifiant de clé de l'autorité",
+        "caTrue": "Autorité de certification (CA: true)",
+        "caFalse": "Pas une CA (CA: false)",
+        "pathLen": "longueur de chemin {n}",
+        "critical": "critique"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Calcul des empreintes..."
+      }
+    },
+    "ipv6": {
+      "name": "Boîte à outils IPv6",
+      "blurb": "Analysez une adresse ou un préfixe IPv6 pour voir ses formes canonique (RFC 5952) et entièrement développée, sa classification d'usage spécial, le calcul de préfixe, une MAC EUI-64 si elle est présente et son nom DNS inverse ip6.arpa. S'exécute entièrement dans votre navigateur.",
+      "inputLabel": "Adresse ou préfixe IPv6",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "L'analyse s'exécute localement. L'adresse ne quitte jamais votre navigateur.",
+      "errors": {
+        "empty": "Saisissez une adresse ou un préfixe IPv6 à décoder.",
+        "format": "Ce n'est pas une adresse IPv6 valide. Utilisez huit groupes hex, éventuellement compressés une fois avec :: (par exemple 2001:db8::1).",
+        "prefix": "La longueur du préfixe n'est pas valide. Pour IPv6, elle doit être comprise entre 0 et 128."
+      },
+      "panels": {
+        "forms": "Formes canoniques",
+        "classification": "Classification",
+        "prefix": "Préfixe",
+        "identifiers": "Identifiants"
+      },
+      "fields": {
+        "compressed": "Compressée (RFC 5952)",
+        "expanded": "Développée",
+        "type": "Type",
+        "scope": "Portée",
+        "embeddedIpv4": "IPv4 intégrée",
+        "network": "Réseau",
+        "firstAddress": "Première adresse",
+        "lastAddress": "Dernière adresse",
+        "count": "Adresses",
+        "hostBits": "Bits d'hôte",
+        "eui64": "MAC EUI-64",
+        "reverseDns": "DNS inverse (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multidiffusion"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Confidentialité",
+    "title": "Vos données, et ce que ce site en fait",
+    "lede": "Une explication en langage clair de ce que ce site web fait et ne fait pas, exactement, avec vos informations. Elle est rédigée pour être exacte plutôt que simplement rassurante, car sous des réglementations comme le GDPR et la LGPD brésilienne, c'est la divulgation exacte qui compte.",
+    "shortTitle": "La version courte",
+    "short1": "Ce site ne dépose aucun cookie, n'exécute aucune analytique, n'utilise aucune publicité et ne contient aucun traceur tiers ni empreinte numérique (fingerprinting). Rien ne vous suit à travers le web.",
+    "short2": "Il ne vend, ne partage ni ne construit de profils de ses visiteurs, et ne vous demande rien pour que vous le lisiez.",
+    "short3": "Les outils interactifs fonctionnent entièrement dans votre navigateur. Ce que vous y collez ou tapez reste sur votre appareil et n'est transmis nulle part.",
+    "short4": "Seules trois choses impliquent des données, et chacune est expliquée ci-dessous : un unique réglage de thème enregistré dans votre propre navigateur, les journaux (logs) de connexion standard que toute visite d'un site génère au niveau de l'hébergement, et tout message que vous choisissez d'envoyer par courriel.",
+    "controllerTitle": "Qui est responsable",
+    "controllerBody": "Ceci est le site web personnel de Rodolfo Nützmann (ronutz.com). Pour toute question de confidentialité, ou pour exercer l'un des droits décrits ci-dessous, écrivez à hello@ronutz.com. Les demandes sont traitées directement par Rodolfo Nützmann, en qualité de responsable du traitement des données.",
+    "noTrackTitle": "Pas de cookies, pas de pistage, pas d'analytique",
+    "noTrackBody": "Ce site ne dépose aucun cookie d'aucune sorte. Il n'utilise aucun service d'analytique (tel que Google Analytics ou Plausible), aucun réseau publicitaire, aucun pixel de pistage de réseaux sociaux et aucune empreinte d'appareil. Votre visite n'est ni mesurée, ni profilée, ni partagée avec quiconque à ces fins.",
+    "browserTitle": "Ce qui est stocké dans votre navigateur",
+    "browserBody": "Une seule petite chose : le thème visuel que vous choisissez, enregistré dans le stockage local (local storage) de votre navigateur afin que le site puisse s'en souvenir lors de votre prochaine visite. C'est un réglage de confort qui reste sur votre propre appareil, n'est jamais envoyé à ce site ni à quiconque, et peut être effacé à tout moment via votre navigateur. Aucune autre donnée vous concernant n'est stockée sur votre appareil.",
+    "hostingTitle": "Hébergement et journaux serveur",
+    "hostingBody": "Le site est délivré par l'intermédiaire de Cloudflare, qui assure son hébergement et la diffusion du contenu. Comme pour tout site web, charger une page signifie que votre appareil se connecte à un serveur, et Cloudflare, agissant en tant qu'hébergeur, traite des données de connexion de base — dont votre adresse IP et les détails standard de la requête — afin de vous livrer les pages et de protéger le site contre les abus et les attaques. Ce traitement est nécessaire pour exploiter et sécuriser le site (un intérêt légitime au titre de l'Article 6(1)(f) du GDPR, et les bases correspondantes des Articles 7 et 10 de la LGPD). Il n'est conservé que brièvement par le prestataire et n'est pas utilisé ici pour vous identifier ou vous pister.",
+    "toolsTitle": "Les outils fonctionnent dans votre navigateur",
+    "toolsBody": "Les décodeurs et calculateurs de ce site — pour les JWT, les adresses IP, les certificats et le reste — calculent entièrement au sein de votre navigateur. Les valeurs que vous saisissez sont traitées sur votre propre appareil et ne sont jamais envoyées à un serveur. Une interface programmatique distincte (une API) est proposée pour l'automatisation et les intégrations ; par conception, elle est sans état et ne journalise aucune des requêtes ni aucun des corps de requête qui lui sont envoyés.",
+    "contactTitle": "Si vous me contactez",
+    "contactBody": "Le formulaire de contact ne transmet rien à un serveur. À la place, il ouvre un message pré-rempli dans votre propre application de messagerie, que vous envoyez ensuite vous-même depuis votre propre compte, de sorte que rien ne transite par un tiers. Si vous écrivez, que ce soit via le formulaire ou directement, je reçois les informations que vous incluez, telles que votre nom, votre adresse e-mail et votre message, et je les utilise uniquement pour vous répondre. Je ne les conserve que le temps nécessaire au traitement de votre demande, ne les utilise pas à des fins de marketing et ne les partage pas.",
+    "intlTitle": "Traitement hors de votre pays",
+    "intlBody": "Parce que Cloudflare exploite un réseau mondial, le traitement au niveau de la connexion décrit ci-dessus peut avoir lieu sur des serveurs situés hors de votre propre pays, y compris hors du Brésil et de l'Espace économique européen. Lorsque des données personnelles sont ainsi traitées à l'international, elles le sont sous les garanties offertes par le prestataire concerné.",
+    "childrenTitle": "Enfants",
+    "childrenBody": "Ce site s'adresse à un public professionnel et général. Il n'est pas destiné aux enfants et ne collecte pas sciemment de données personnelles les concernant.",
+    "rightsTitle": "Vos droits",
+    "rightsBody": "Selon votre lieu de résidence, vous disposez de droits sur vos données personnelles, dont celui d'y accéder, de les faire corriger ou supprimer, de vous opposer à leur traitement ou de le restreindre, de demander une copie sous une forme portable et d'être informé de la façon dont elles sont traitées. Pour exercer l'un de ces droits, il suffit d'écrire à hello@ronutz.com. Comme si peu de données personnelles sont traitées ici, il y a en pratique généralement très peu à faire, mais le canal reste toujours ouvert.",
+    "rightsGdpr": "Si vous vous trouvez dans l'Espace économique européen ou au Royaume-Uni, vous avez également le droit d'introduire une réclamation auprès de votre autorité locale de protection des données.",
+    "rightsLgpd": "Si vous vous trouvez au Brésil, vous disposez des droits énoncés à l'Article 18 de la LGPD, et vous pouvez aussi contacter l'autorité nationale de protection des données (l'ANPD).",
+    "changesTitle": "Modifications de cet avis",
+    "changesBody": "Si cet avis change, la version révisée sera publiée sur cette page et la date ci-dessous sera mise à jour. Les modifications substantielles ne seront pas appliquées rétroactivement.",
+    "updated": "Dernière mise à jour : 28 juin 2026",
+    "backHome": "Retour à l'accueil"
   },
   "footer": {
+    "redEducation": "Réservez une formation officielle avec Red Education",
+    "privacy": "Confidentialité",
     "builtWith": "Conçu par Rodolfo Nützmann avec CONCORD",
     "colophon": "Comment cela a été conçu",
     "openSource": "Le moteur est open source",
     "rights": "Disponible selon des conditions ouvertes et commerciales.",
     "contribute": "Améliorer les traductions",
-    "feedback": "Envoyer un retour"
+    "feedback": "Envoyer un retour",
+    "api": "Référence de l'API",
+    "contributeTools": "Proposer un outil"
   },
   "search": {
     "label": "Recherche",
@@ -390,13 +672,16 @@
     "emailLabel": "E-mail",
     "channels": {
       "linkedin": {
-        "description": "Se connecter professionnellement"
+        "description": "Se connecter professionnellement",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Vidéos et tutoriels"
+        "description": "Vidéos et tutoriels",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Dans les coulisses"
+        "description": "Dans les coulisses",
+        "label": "Instagram"
       },
       "training": {
         "label": "Formation officielle",
@@ -431,7 +716,7 @@
     "concordBody1": "Ce site a été conçu et construit au moyen d'un protocole nommé CONCORD : une collaboration structurée entre une personne et trois systèmes d'IA différents, chacun dans un rôle distinct. Ce n'est pas un gadget. C'est une méthode de travail, avec sa propre gouvernance, son propre relevé de décisions, et un seul humain responsable de chaque choix livré.",
     "concordBody2": "Le principe est simple. Différents modèles d'IA ont des forces différentes, et un problème difficile bénéficie de plus d'une perspective tenues en tension. Le travail a donc été divisé par rôle, et une personne siégeait au centre, faisant le relais entre eux, ratifiant ce qui était solide et rejetant ce qui ne l'était pas.",
     "concordBody3": "CONCORD n'a été repris de nulle part. Il a été conçu par Rodolfo Nützmann pour ce projet, à partir d'un besoin concret : comment faire appel à plusieurs systèmes d'IA à la fois, chacun véritablement performant sur un point différent, sans renoncer au fil unique de responsabilité humaine qu'exige un vrai travail. La réponse a été de donner à chaque système un siège défini, de les empêcher de négocier entre eux et d'acheminer chaque échange par une seule personne qui gardait la vue d'ensemble. Cet arrangement porte un nom plus ancien. Les systèmes d'IA sont des agents : ils agissent sur instruction et pour le compte d'autrui. PRIME est le principal : celui qui décide réellement, qui exerce le jugement et qui porte les conséquences comme le nom.",
-    "concordBody4": "Cela a commencé de manière informelle, comme une façon de répartir le travail, et s'est durci au fil de la construction en une méthode nommée : des sièges fixes, une règle unique au-dessus de tout, selon laquelle rien n'est publié sans que PRIME le ratifie, et une trace écrite des raisons de chaque décision. Le nom énonce le but : la concorde, un accord atteint à dessein par un processus, et non ce que produirait un outil sans supervision.",
+    "concordBody4": "Cela a commencé de manière informelle — comme une façon de répartir le travail — et s'est durci au fil de la construction en une méthode nommée : des sièges fixes, une règle unique au-dessus de tout, selon laquelle rien n'est publié sans que PRIME le ratifie, et une trace écrite des raisons de chaque décision. Le nom énonce le but : la concorde, un accord atteint à dessein par un processus, et non ce que produirait un outil sans supervision.",
     "concordPrincipal": "La force est celle des agents. La responsabilité est celle du principal, et elle ne se transfère pas.",
     "concordMechTitle": "Le fonctionnement, en clair",
     "mech1Label": "Proposer",
@@ -551,5 +836,50 @@
     "referenceTag": "référence",
     "emailHeading": "Envoyez votre contribution",
     "backHome": "Retour aux outils"
+  },
+  "contributeTools": {
+    "eyebrow": "Boîte à outils ouverte",
+    "title": "Proposer un outil",
+    "lede": "La boîte à outils est faite pour grandir. Chaque outil est un petit module auto-descriptif sur le moteur ouvert, et le site le charge de la même manière que n'importe qui d'autre le pourrait. Si vous avez un outil qui convient, proposez-le.",
+    "shapeTitle": "Ce qu'est un outil",
+    "shapeBody": "Un outil, c'est trois choses à la fois : un manifeste qui le décrit (ce qu'il est, l'entrée qu'il accepte, d'où vient son exactitude), une unique fonction pure d'exécution qui fait le travail, et un ensemble de vecteurs de référence, des paires fixes d'entrée et de sortie qui prouvent que la fonction est correcte. Le moteur charge un outil à partir de son manifeste, si bien qu'un module bien formé s'intègre sans toucher au reste du site.",
+    "principlesTitle": "Ce à quoi un outil doit se tenir",
+    "principlesBody": "Le calcul s'exécute localement et est déterministe : la même entrée donne toujours la même sortie, sans horloge, réseau ni hasard dans le résultat. Tout ce qui est sensible reste sur l'appareil par défaut. L'exactitude est ancrée à des vecteurs de référence et à des sources citées — comme un RFC ou une norme publiée —, non à l'opinion. Le code paraît sous une licence permissive, de sorte que le site et n'importe qui d'autre peuvent s'appuyer dessus.",
+    "proposeTitle": "Proposez-en un",
+    "proposeBody": "Envoyez une brève proposition par e-mail : ce que l'outil calcule, une entrée d'exemple avec la sortie exacte qu'il doit produire, et la source sur laquelle repose son exactitude. Une esquisse du manifeste et quelques vecteurs de référence sont les bienvenus, mais pas obligatoires. Si cela convient, c'est intégré au moteur et à la boîte à outils.",
+    "emailLabel": "E-mail",
+    "backToTools": "Retour à la boîte à outils"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Les outils de ce site s'exécutent dans votre navigateur et gardent vos données sur votre appareil. Pour l'automatisation — scripts, pipelines et intégrations —, les mêmes calculs déterministes sont disponibles sous la forme d'une petite API HTTP. C'est la contrepartie programmatique des outils du navigateur, non un remplacement.",
+    "privacyTitle": "Ce que cela signifie pour vos données",
+    "privacyBody": "L'API ne reçoit que l'entrée que vous lui envoyez, calcule un résultat et le renvoie. Elle est sans état et ne journalise aucune valeur de requête ni aucun corps de requête. S'il vous faut une absence garantie de sortie de données, utilisez les outils du navigateur ou exécutez vous-même le moteur ouvert.",
+    "engineTitle": "Le même moteur que le navigateur",
+    "engineBody": "Chaque point de terminaison appelle la même fonction du moteur que l'outil dans le navigateur, de sorte que l'API et le navigateur renvoient des résultats identiques octet pour octet. Ce moteur, @ronutz/netcore, est open source sous une licence permissive.",
+    "specTitle": "La spécification",
+    "specBody": "Le contrat complet est publié au format OpenAPI 3.1. Téléchargez-le, pointez-y votre propre outillage ou lisez la référence ci-dessous.",
+    "downloadSpec": "Télécharger openapi.yaml",
+    "baseUrlLabel": "URL de base",
+    "authLabel": "Authentification",
+    "authValue": "Aucune. Il s'agit d'une API publique en lecture seule.",
+    "referenceTitle": "Référence",
+    "loading": "Chargement de la spécification.",
+    "loadError": "La spécification n'a pas pu être chargée.",
+    "tryItTitle": "Essayer",
+    "tryItSend": "Envoyer",
+    "tryItRunning": "Exécution.",
+    "tryItHint": "S'exécute sur l'API en direct de cette origine. Votre entrée est envoyée au point de terminaison.",
+    "paramsTitle": "Paramètres",
+    "responsesTitle": "Réponses",
+    "schemasTitle": "Schémas",
+    "exampleLabel": "Exemple",
+    "requiredLabel": "requis",
+    "fieldLabel": "Champ",
+    "typeLabel": "Type",
+    "descriptionLabel": "Description",
+    "viewReference": "Référence",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI n'a pas pu être chargé."
   }
 }

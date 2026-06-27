@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Sertifika iptali: CRL, OCSP ve kısa ömürlü sertifikalar"
+summary: "Bir sertifikanın bazen süresi dolmadan iptal edilmesi gerektiği, klasik iptal sistemlerinin neden zayıf çalıştığı ve sektörün bunun yerine neden sertifika ömürlerini küçülttüğü."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Neden hiç iptal edilsin
+
+Bir sertifika bir son kullanma tarihi taşır, ama bazen o tarih gelmeden iptal edilmesi gerekir. Özel anahtar sızmış olabilir, sertifika hatayla verilmiş olabilir veya alan adı el değiştirmiş olabilir. Bütün bu durumlarda sertifika hâlâ kriptografik olarak geçerlidir ve hâlâ geçerlilik penceresi içindedir, ancak dayanan taraflar ona güvenmeyi bırakmalıdır. İptal, "süresi dolmamış olsa bile bu sertifikayı yok say" demenin mekanizmasıdır. Zor kısım, o mesajı dünyadaki her istemciye güvenilir biçimde ulaştırmaktır, ve bu, web PKI'sindeki en zayıf halka olduğu ortaya çıkar.
+
+## CRL: yayımlanan engelleme listesi
+
+Özgün cevap, RFC 5280'de sertifika profili yanında tanımlanan Sertifika İptal Listesi'dir (Certificate Revocation List). Bir CA, iptal ettiği seri numaralarının imzalı bir listesini periyodik olarak yayımlar ve sertifikalar bir CRL Distribution Point aracılığıyla ona işaret edebilir. Bir istemci listeyi indirir ve sertifikanın serisinin onda görünüp görünmediğini denetler.
+
+Sorun boyut ve tazeliktir. Yoğun bir CA muazzam listeler biriktirebilir, dolayısıyla her bağlantıda bir CRL indirmek ve ayrıştırmak pratik değildir ve önbelleğe alınmış bir liste bir sonraki yayına kadar bayattır. CRL'ler hâlâ kullanılır, giderek tarayıcıların kendilerine sundukları sıkıştırılmış ve önişlenmiş biçimlerde, ama bağlantı başına bir denetim olarak kötü ölçeklenirler.
+
+## OCSP: tek bir sertifika hakkında sormak
+
+Online Certificate Status Protocol, RFC 6960, bir istemcinin tüm listeyi indirmek yerine tek bir sertifika hakkında sormasına izin vererek boyut sorununu düzeltmeyi amaçladı. İstemci sertifikanın serisini bir OCSP yanıtlayıcısına gönderir ve imzalı bir "good", "revoked" veya "unknown" geri alır.
+
+Bu, bir sorunu üçe takas eder. Gecikme ekler, çünkü istemci artık bağlantı kurulumu sırasında fazladan bir ağ gidiş-dönüşü yapar. Mahremiyet sızdırır, çünkü yanıtlayıcı kullanıcının hangi siteleri ziyaret ettiğini öğrenir. Ve bir kullanılabilirlik bağlaşımı yaratır: yanıtlayıcı çökmüşse, istemci ya bağlantıyı başarısız kılmalı ya da, çok daha yaygın olarak, **yumuşak başarısız olmalı** (soft-fail) ve sanki sertifika iyiymiş gibi devam etmelidir, ki bu sessizce tüm amacı boşa çıkarır.
+
+## OCSP stapling ve Must-Staple
+
+Stapling, *sunucunun* yeni, imzalı bir OCSP yanıtı getirip onu TLS el sıkışmasına eklemesini sağlayarak (RFC 6066'dan status_request uzantısı) gecikme ve mahremiyet sorunlarını ele alır. İstemci yanıtlayıcıya başvurmadan tazeliği alır. Must-Staple, RFC 7633, "bir staple eksikse beni reddet" diyen bir sertifika uzantısıdır, soft-fail boşluğunu kapatır, ama nadiren konuşlandırılır çünkü tek bir stapling hıçkırığı o zaman siteyi çökertir.
+
+## Rahatsız edici gerçek
+
+Bu mekanizmalar boyunca, yinelenen başarısızlık soft-fail'dir: iptal bilgisi kullanılamaz olduğunda, istemciler ezici çoğunlukla güvenlik yerine kullanılabilirliği seçer ve sertifikayı kabul eder. Bu, iptali tam da ona ihtiyaç duyulduğunda güvenilmez bir güvenlik ağı yapar. Tarayıcılar, iptal verilerini kendilerine iten kendi bant-dışı sistemleriyle yanıt verdiler, ama bağlantı başına protokoller vaatlerini asla yerine getirmedi.
+
+## Modern cevap: sertifikaların daha erken sona ermesini sağlamak
+
+Bir sertifikayı güvenilir biçimde iptal edemiyorsanız, alternatif onu iptalin nadiren önemli olacağı kadar kısa ömürlü yapmaktır: ele geçirilmiş bir sertifika günler veya haftalar içinde kendi kendine sona erer. Sektör tam olarak buna bağlandı. CA/Browser Forum'un Nisan 2025'te onaylanan Ballot SC-081v3'ü, maksimum genel TLS sertifika ömrünü 398 günden 200 güne (Mart 2026 itibarıyla), 100 güne (Mart 2027) ve 47 güne (Mart 2029) aşamalandırır, alan adı doğrulamasının yeniden kullanım süresi 10 güne küçülür. Ayrıca, 2023'ten beri Forum, 7 gün içinde sona eren kısa ömürlü sertifikaların CRL ve OCSP desteğini tamamen atlamasına izin verdi ve Let's Encrypt günlerle ölçülen ömürlere sahip sertifikalar vermeye başladı. Tüm öncül, yeterince kısa bir ömrün kendisinin iptal olduğudur.
+
+Bu yalnızca otomasyonla çalışır. Sertifikaları her altı veya yedi haftada bir elle yenilemek sürdürülemezdir, ki bu yüzden ACME protokolü ([imzalama isteği makalesine](/learn/certificate-signing-request) bakın) ve sertifika yaşam döngüsü araçları bir kolaylıktan ziyade temel altyapı haline geldi. Bu kuralların tarayıcı kök programlarındaki genel olarak güvenilen sertifikalara uygulandığını unutmayın; özel bir dahili PKI kendi politikasını belirler.
+
+## Bir sertifikayı incelediğinizde bunun anlamı
+
+Bir sertifikayı kod çözdüğünüzde, geçerlilik penceresi artık yılda-bir-kez sonradan akla gelen bir düşünce değildir; birincil iptal denetimi haline geliyor. Aracın notBefore, notAfter ve sertifikanın şu anda geçerli olup olmadığı hakkındaki raporu, giderek onunla ilgili güvenlik açısından en alakalı şeydir. İptal listeleri ve yanıtlayıcılar hâlâ vardır, ama yolculuğun yönü açıktır: ömrü kısaltın ki iptal sorusu nadiren ortaya çıksın.

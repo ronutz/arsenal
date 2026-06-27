@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Spazio di indirizzi IPv4 privati e la RFC 1918"
+summary: "I tre intervalli privati, perché non sono instradabili su Internet e gli altri blocchi speciali che lo strumento CIDR segnala."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Indirizzi che puoi riutilizzare
+
+Esistono solo circa 4,3 miliardi di indirizzi IPv4, troppo pochi perché ogni dispositivo abbia un unico indirizzo pubblico. La risposta (RFC 1918) è riservare tre intervalli che chiunque può usare all'interno della propria rete, senza registrazione. Poiché tutti riutilizzano gli stessi intervalli privati, non possono essere unici sulla Internet pubblica, quindi **non sono instradabili** lì. Raggiungere l'esterno richiede la traduzione degli indirizzi di rete (NAT), che scambia un indirizzo di origine privato con un indirizzo pubblico condiviso al confine della rete.
+
+## I tre intervalli della RFC 1918
+
+- **`10.0.0.0/8`**: da `10.0.0.0` a `10.255.255.255`, 16.777.216 indirizzi. Un'unica rete molto grande.
+- **`172.16.0.0/12`**: da `172.16.0.0` a `172.31.255.255`, 1.048.576 indirizzi. Non è un'intera classe B, ma i 16 `/16` contigui da `172.16` a `172.31`, l'intervallo che le persone confondono più spesso.
+- **`192.168.0.0/16`**: da `192.168.0.0` a `192.168.255.255`, 65.536 indirizzi. L'intervallo familiare dei router domestici.
+
+## Gli altri blocchi speciali
+
+Diversi altri intervalli sono riservati per scopi specifici e non sono nemmeno indirizzi pubblici comuni:
+
+- **`100.64.0.0/10`** (RFC 6598) è lo spazio condiviso NAT del gestore (CGNAT), usato dai provider tra il cliente e il loro pool pubblico. È simile a privato, ma distinto dalla RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) è link-local, l'indirizzo autoassegnato che un host sceglie quando nessun server DHCP risponde (APIPA su Windows). Non lascia mai il collegamento locale.
+- **`127.0.0.0/8`** è loopback; `127.0.0.1` è l'host che parla con sé stesso.
+- **`0.0.0.0/8`**, l'intervallo multicast `224.0.0.0/4` e gli intervalli di documentazione (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) sono anch'essi riservati.
+
+IPv6 ha la stessa idea in un'altra forma: gli **Unique Local Address** in `fc00::/7` (in pratica `fd00::/8`) sono l'analogo a uso privato della RFC 1918, di nuovo non instradabili globalmente.
+
+## Perché è importante
+
+Sapere se un indirizzo è privato, pubblico o speciale ti dice subito se può comparire su Internet, se necessita di NAT e se una regola di firewall o una rotta ha senso. Un indirizzo `10/8` in un record DNS pubblico, o un indirizzo `169.254` dove ti aspettavi DHCP, è un segnale che vale la pena notare.
+
+La [calcolatrice CIDR](/#cidr) classifica qualsiasi indirizzo o blocco in base a questi intervalli a uso speciale e indica se è privato, riservato o raggiungibile globalmente, calcolato interamente nel tuo browser.

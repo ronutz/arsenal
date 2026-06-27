@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Öffentliche vs. vertrauliche Clients, und wo PKCE hineinpasst"
+summary: "Ob ein OAuth-Client ein Geheimnis hüten kann, entscheidet sein gesamtes Sicherheitsmodell. Warum SPAs und mobile Apps öffentliche Clients sind und warum PKCE nun für sie alle empfohlen wird."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Die Frage, die alles entscheidet
+
+OAuth teilt Clients in zwei Arten ein, und die Trennlinie ist eine einzige Frage: Kann dieser Client ein Geheimnis hüten? RFC 6749 nennt die beiden Antworten **vertrauliche** und **öffentliche** Clients, und welcher Sie sind, bestimmt, wie Sie sich authentifizieren, welche Flows sicher sind und ob Sie PKCE brauchen. Fast jeder OAuth-Designfehler auf Anwendungsebene lässt sich darauf zurückführen, einen öffentlichen Client so zu behandeln, als könnte er ein Geheimnis hüten, das er tatsächlich nicht schützen kann.
+
+## Vertrauliche Clients können ein Geheimnis hüten
+
+Ein vertraulicher Client läuft irgendwo, wo der Benutzer seinen Code oder Speicher nicht erreichen kann, klassisch eine serverseitige Webanwendung. Ihm wird bei der Registrierung ein **Client-Geheimnis** ausgestellt, und er nutzt dieses Geheimnis, um sich am Token-Endpunkt des Autorisierungsservers zu authentifizieren. Da das Geheimnis nur auf dem Server lebt, kann der Autorisierungsserver zuversichtlich sein, dass eine Token-Anfrage wirklich vom registrierten Client kommt. Dies ist der starke Fall: Der Client beweist seine Identität mit etwas, das nur er kennt.
+
+## Öffentliche Clients können das nicht
+
+Ein öffentlicher Client läuft dort, wo sein Code und seine Daten für den Benutzer oder Angreifer sichtbar sind: eine Single-Page-App im Browser, eine native mobile oder Desktop-App, alles, was auf das Gerät ausgeliefert wird. Das bestimmende Problem ist, dass jedes Geheimnis, das Sie in einen solchen Client einbetten, kein Geheimnis ist, weil jeder es aus dem ausgelieferten Bundle oder Binary extrahieren kann. Ein öffentlicher Client kann sich also überhaupt nicht mit einem Client-Geheimnis authentifizieren; es gibt nichts, das er hüten könnte und ein Angreifer nicht auch erlangen kann. Das ändert, was der Autorisierungsserver annehmen kann, und ist der Grund, warum öffentliche Clients zusätzlichen Schutz beim Autorisierungscode-Flow brauchen.
+
+## Warum öffentliche Clients verwundbar waren
+
+Der Autorisierungscode-Flow übergibt dem Client einen Einmal-Code in der Weiterleitung, den der Client dann gegen Token tauscht. Für einen vertraulichen Client ist dieser Tausch durch das Client-Geheimnis geschützt. Für einen öffentlichen Client ohne Geheimnis kann ein Angreifer, der die Weiterleitung abfangen kann, zum Beispiel eine bösartige App, die für dasselbe eigene URL-Schema auf einem Mobilgerät registriert ist, den Code stehlen und ihn selbst einlösen. Dies ist der Abfangangriff, den der [PKCE](/learn/pkce)-Artikel im Detail beschreibt, und es ist genau die Lücke, die ein fehlendes Client-Geheimnis offenlässt.
+
+## PKCE füllt die Lücke, für alle
+
+PKCE schließt dieses Loch ohne ein vorab geteiltes Geheimnis. Der Client erfindet pro Anfrage einen frischen zufälligen **Code-Verifier**, sendet nur dessen Hash (die **Code-Challenge**), wenn er den Code anfragt, und enthüllt den Verifier erst beim Einlösen. Ein Angreifer, der den Code abfängt, sah den Verifier nie, also ist der gestohlene Code nutzlos. Das wurde für öffentliche Clients eingeführt, aber die Leitlinie hat sich seither verbreitert: OAuth 2.1 empfiehlt PKCE für den Autorisierungscode-Flow unabhängig vom Client-Typ, weil es selbst dort, wo ein Client-Geheimnis vorhanden ist, gestaffelte Verteidigung hinzufügt. Die praktische Regel ist, überall Autorisierungscode plus PKCE zu verwenden und aufzuhören, darüber nachzudenken, ob Sie es strikt brauchen.
+
+## Der implizite Flow ist ausgemustert
+
+Öffentliche Browser-Apps nutzten einst den impliziten Flow, der Token direkt in der Weiterleitung zurückgab, um den Code-Tausch zu vermeiden. Dieses Design legte Token in URLs und Browser-Historie offen und ist nun veraltet; OAuth 2.1 entfernt es. Die moderne Antwort für eine Single-Page-App ist dieselbe wie für alle anderen: der Autorisierungscode-Flow mit PKCE. Wenn Ihnen der Rat begegnet, den impliziten Flow zu verwenden, behandeln Sie ihn als veraltet.
+
+## Native Apps haben ihre eigenen Fallstricke
+
+Native und mobile Apps sind öffentliche Clients mit einer spezifischen Gefahr: der Weiterleitung zurück in die App. Eigene URL-Schemata können von anderen Apps auf dem Gerät beansprucht werden, was das Abfangen erst möglich macht, also lautet die Best-Practice-Leitlinie für native Apps (RFC 8252), beanspruchte HTTPS-Weiterleitungen zu verwenden, wo die Plattform sie unterstützt, den Flow in einem System-Browser statt einer eingebetteten Web-Ansicht auszuführen und immer PKCE anzuwenden. Für eingabebeschränkte Geräte wie einen Fernseher, wo es überhaupt keinen Browser zum Weiterleiten gibt, lässt der Geräte-Autorisierungs-Flow (RFC 8628) den Benutzer stattdessen auf einem separaten Telefon oder Laptop autorisieren.
+
+## Im Zweifel öffentlich annehmen
+
+Der rote Faden ist, dass der Client-Typ kein Etikett ist, das Sie aus Bequemlichkeit wählen; er ist eine Tatsache darüber, wo Ihr Code läuft und was er schützen kann. Wenn der Client an den Benutzer ausgeliefert wird, ist er öffentlich, kann kein Geheimnis hüten und braucht PKCE. Wenn er nur auf Ihrem Server läuft, kann er vertraulich sein und sich mit einem Geheimnis authentifizieren, und er sollte trotzdem PKCE für die zusätzliche Marge verwenden. Entscheiden Sie, in welcher Welt Ihr Client lebt, und der Rest seines OAuth-Sicherheitsmodells folgt aus dieser einen ehrlichen Antwort.

@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect：建于 OAuth 2.0 之上的身份"
+summary: "OIDC 如何为 OAuth 的授权增添认证、ID 令牌是什么，以及为何采用 PKCE 的授权码流程是推荐路径。"
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## 授权不是认证
+
+OAuth 2.0 回答的是“这个应用是否被授权代表用户访问那个资源？”。它是一个*授权*协议，并刻意不就*用户是谁*说任何标准化的话。然而应用却试图将其重新用于登录，方式互不兼容且有时不安全。**OpenID Connect（OIDC）** 是修复此问题的标准：在 OAuth 2.0 之上的一个薄身份层，在不抛弃 OAuth 已有任何能力的前提下增添认证。
+
+## ID 令牌
+
+那个决定性的增添是 **ID 令牌**，且它是一个 JWT。OAuth 访问令牌面向一个 API 且常对客户端不透明，而 ID 令牌面向*客户端*并携带关于已认证用户的标准声明：
+
+- `iss`（签发者）和 `aud`（受众，即为之签发的客户端）
+- `sub`（稳定、唯一的用户标识符）
+- `exp` 和 `iat`（过期与签发时间）
+- `nonce`（把令牌绑定到具体的登录请求，挫败重放）
+- 当授予相应作用域时的 `name`、`email` 和 `picture` 等档案声明
+
+由于它是一个 JWT，客户端会验证 ID 令牌的签名，并完全按照对任何 JWT 所述的方式验证这些声明。相同的算法固定以及 `aud`/`iss`/`exp` 检查均适用。
+
+## 一次登录如何流转
+
+OIDC 重用 OAuth 的机制。推荐的流程是**采用 PKCE 的授权码流程**：
+
+1. 应用把用户送往提供方的授权端点，请求 `openid` 作用域（外加 `profile`、`email` 等），并包含一个 PKCE `code_challenge`。
+2. 用户在提供方处认证并同意。
+3. 应用收到一个一次性代码，并（通过证明持有 PKCE `code_verifier`）将其换取一个 **ID 令牌** 和一个 **访问令牌**。
+4. 应用验证 ID 令牌以确定*用户是谁*，并使用访问令牌*代表其*调用 API。
+
+两个端点补全了图景：一个 **userinfo** 端点为一个有效的访问令牌返回档案声明，而位于 `/.well-known/openid-configuration` 的一个**发现文档**公布提供方的端点及其 JWKS 地址，使客户端能找到用于验证 ID 令牌的密钥并自动跟随密钥轮换。
+
+## 为何重要
+
+OIDC 是大多数“使用……登录”按钮实际运行的东西。把两个令牌分开是关键洞见：**ID 令牌向客户端证明身份**，**访问令牌授权 API 调用**，二者不可互换。与授权码流程和 PKCE 结合，它便是进行联合登录的现代、基于标准的方式。
+
+[PKCE 工具](/tools/pkce) 生成并验证该流程的 `code_verifier` 与 `code_challenge`，而 [JWT 工具](/tools/jwt) 解码并验证 ID 令牌，二者皆完全在你的浏览器中，不发送任何内容。

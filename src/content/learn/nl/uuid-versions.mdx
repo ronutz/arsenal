@@ -1,0 +1,43 @@
+---
+slug: uuid-versions
+title: "UUID-versies uitgelegd: v1 tot en met v8"
+summary: "De hele UUID-familie op één plek, van de tijd-en-MAC-v1 via de willekeurige v4 tot de tijdgeordende v7, plus de naamgebaseerde versies en hoe de versie- en variantbits worden gelezen."
+concepts: ["uuid", "uuidv4", "uuidv7", "rfc9562", "version", "variant"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Eén formaat, meerdere recepten
+
+Een UUID heeft altijd dezelfde vorm: 128 bits, geschreven als 32 hexadecimale cijfers in de vertrouwde groepering `8-4-4-4-12`. Wat tussen de versies verandert, is hoe die bits worden gegenereerd. De huidige standaard, RFC 9562 (in 2024 gepubliceerd, ter vervanging van de lang dienstdoende RFC 4122), definieert de versies 1 tot en met 8, elk een andere strategie om 128 bits zo te vullen dat ze uniek blijven zonder centrale autoriteit. Het [UUID-overzicht](/learn/uuid) richt zich op de twee die je het meest zult gebruiken, v4 en v7; dit artikel brengt de hele familie in kaart zodat je ze allemaal kunt herkennen en kiezen.
+
+## Hoe een UUID zijn versie aankondigt
+
+Twee kleine velden zijn ongeacht de versie gereserveerd, en de tool leest beide. De **versie** is gecodeerd in vier bits (het eerste hex-cijfer van de derde groep), dus een `4` daar betekent een v4-UUID en een `7` betekent v7. De **variant** is gecodeerd in de bovenste bits van de volgende groep (het eerste hex-cijfer van de vierde groep is voor de standaardvariant doorgaans `8`, `9`, `a` of `b`). Samen vertellen ze een lezer hoe de overige bits te interpreteren, en daarom kan een tool de versie van een UUID labelen door hem alleen te inspecteren, zonder context.
+
+## De tijdgebaseerde versies: v1, v6, v7
+
+Drie versies coderen een tijdstempel, wat ze ruwweg tijdgeordend maakt, een nuttige eigenschap voor databasesleutels (zie het artikel [databasesleutels](/learn/uuid-database-keys)):
+
+- **Versie 1** combineert een 60-bits tijdstempel met een kloksequentie en een knooppuntidentificatie, waarbij het knooppunt traditioneel het MAC-adres van de machine is. Hij werkt, maar lekt het MAC en de generatietijd, en de ordening van zijn tijdstempelveld sorteert niet netjes als tekst.
+- **Versie 6** is v1 met de tijdstempelvelden herschikt zodat de bytes in chronologische volgorde sorteren. Hij bestaat als naadloze verbetering voor systemen die al in v1 hebben geïnvesteerd en sorteerbaarheid willen.
+- **Versie 7** gebruikt een rechttoe rechtaan Unix-tijdstempel in milliseconden gevolgd door willekeurige bits. Het is de moderne aanbeveling voor nieuwe tijdgeordende identificatoren: sorteerbaar, geen hardwarelek en eenvoudig. Voor het meeste nieuwe werk dat geordende sleutels wil, is v7 het antwoord.
+
+## De naamgebaseerde versies: v3 en v5
+
+Versies 3 en 5 zijn deterministisch: dezelfde invoer levert altijd dezelfde UUID op. Je hasht een namespace-identificatie samen met een naam, en de digest wordt de UUID. **Versie 3** gebruikt MD5 en **versie 5** gebruikt SHA-1; v5 verdient de voorkeur omdat SHA-1, hier weliswaar niet voor beveiliging gebruikt, de minder broze keuze is. Deze zijn de versie om naar te grijpen wanneer je een stabiele identificator nodig hebt die uit bestaande data is afgeleid, bijvoorbeeld een consistente UUID voor een gegeven URL of bestandsnaam, zodat twee systemen onafhankelijk dezelfde waarde berekenen.
+
+## De willekeurige versie: v4
+
+**Versie 4** vult 122 bits met willekeur (de andere 6 zijn de vaste versie- en variantbits). Hij draagt geen tijdstempel, geen MAC en geen structuur, wat hem de veilige standaard maakt wanneer je simpelweg een ondoorzichtige, botsingsbestendige identificator wilt en je niet om ordening geeft. Zijn enige nadeel is juist dat gebrek aan orde, wat de localiteit van de database-index schaadt en v7 motiveerde. De v4-generatie van de tool gebruikt een cryptografisch veilige willekeurige bron in je browser, dus de waarden raken nooit een server.
+
+## Versie 8 en de speciale UUID's
+
+**Versie 8** is gereserveerd voor eigen of experimenteel gebruik: alleen de versie- en variantbits liggen vast, en de rest mag jij definiëren, wat een systeem toelaat zijn eigen data in UUID-vorm te coderen en toch een geldige UUID te blijven. Er zijn ook twee speciale waarden om te herkennen: de **nil**-UUID, allemaal nullen, en de **max**-UUID, allemaal enen, beide gebruikt als sentinels. Versie 2 bestaat historisch (een DCE Security-variant) maar wordt in de praktijk zelden gezien en is niets wat je vandaag zou kiezen.
+
+## Kiezen op intentie
+
+De familie is groot, maar de keuze is meestal snel zodra je benoemt wat je nodig hebt. Voor een ondoorzichtige, onraadbare identificator zonder ordening gebruik je **v4**. Voor een stabiele identificator die deterministisch uit bestaande data is afgeleid gebruik je **v5**. Voor een tijdgeordende sleutel die goed indexeert gebruik je **v7**. De oudere tijdgebaseerde versies (v1, v6) tellen vooral voor compatibiliteit met bestaande systemen, en v8 is er wanneer je echt je eigen structuur moet coderen. Wanneer je een UUID in de tool plakt en die de versie rapporteert, vertelt dat ene cijfer je welk van deze recepten hem produceerde.

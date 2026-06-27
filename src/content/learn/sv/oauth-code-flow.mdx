@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "OAuth 2.0-auktoriseringskodflödet"
+summary: "De fyra rollerna, omdirigerings-och-byte-dansen, och varför koden byts mot en token på bakkanalen."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Vad flödet är till för
+
+OAuth 2.0 (RFC 6749) låter en applikation agera på en användares vägnar utan att någonsin se användarens lösenord. "Logga in med Google" är vardagsexemplet: appen får tillstånd att komma åt något, men Google, inte appen, hanterar inloggningsuppgifterna. **Auktoriseringskodflödet** är det vanligaste och säkraste sättet att ordna detta, och det är flödet som PKCE skyddar.
+
+## De fyra rollerna
+
+- **Resursägaren** (resource owner) är användaren som äger datan och beviljar åtkomst.
+- **Klienten** (client) är applikationen som begär åtkomst.
+- **Auktoriseringsservern** (authorization server) autentiserar användaren och utfärdar token (Google, en identitetsleverantör, din egen autentiseringstjänst).
+- **Resursservern** (resource server) är API:t som håller den skyddade datan och accepterar token.
+
+## Dansen, steg för steg
+
+1. **Omdirigera för att auktorisera.** Klienten skickar användarens webbläsare till auktoriseringsserverns auktoriseringsslutpunkt, bärande sitt `client_id`, ett `redirect_uri`, den `scope` den vill ha, ett slumpmässigt `state`-värde och (med PKCE) en kodutmaning. Klienten hanterar aldrig lösenordet.
+2. **Autentisera och samtycka.** Auktoriseringsservern loggar in användaren och ber denne godkänna de begärda omfången.
+3. **Omdirigera tillbaka med en kod.** Servern omdirigerar webbläsaren tillbaka till klientens `redirect_uri` med en kortlivad **auktoriseringskod** och det ursprungliga `state`. Klienten kontrollerar att `state` matchar, vilket försvarar mot cross-site request forgery vid återanropet.
+4. **Byta koden mot token.** Nu på bakkanalen (ett direkt server-till-server-anrop, inte webbläsaren) skickar klienten koden till tokenslutpunkten tillsammans med sina inloggningsuppgifter (en klienthemlighet, eller PKCE-kodverifieraren) och får en **åtkomsttoken**, ofta en **uppdateringstoken**, och för OpenID Connect en **ID-token**.
+5. **Anropa API:t.** Klienten visar åtkomsttoken för resursservern, som validerar den och returnerar datan.
+
+## Varför en kod, och inte token direkt?
+
+Omvägen genom en auktoriseringskod finns för att token aldrig ska färdas genom webbläsarens adressfält eller historik, där den kunde läcka. Koden som *faktiskt* färdas där är värdelös på egen hand: att lösa in den kräver bakkanalanropet med klienthemligheten eller PKCE-verifieraren. Den uppdelningen, en engångskod på framkanalen och den riktiga token på bakkanalen, är flödets centrala säkerhetsegenskap.
+
+Detta är också precis den lucka som PKCE fyller för klienter som inte kan hålla en hemlighet (ensidesappar och mobilappar): den binder koden till en engångsverifierare så att en avlyssnad kod ändå inte kan bytas. Token som flödet returnerar är mycket ofta JWT:er.
+
+[PKCE-verktyget](/tools/pkce) genererar och kontrollerar verifieraren och utmaningen som detta flöde vilar på, och [JWT-verktyget](/tools/jwt) avkodar token det returnerar, båda lokalt i din webbläsare.

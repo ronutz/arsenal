@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Bir JSON Web Token'ın anatomisi"
+summary: "Bir JWT'nin üç bölümü, imzanın onu nasıl güvenilir kıldığı ve bir token'ı kod çözmenin onu doğrulamakla aynı şey olmadığı."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## JWT nedir
+
+Bir JSON Web Token (JWT, RFC 7519'da tanımlanır), bir dizi **claim** (iddia) taşımanın derli toplu, kendi kendine yeten bir yoludur: bir varlık (genellikle bir kullanıcı) hakkında ifadeler artı bir miktar üst veri, bir alıcının doğrulayabileceği bir biçimde. Çoğu modern web kimlik doğrulamasının arkasındaki token biçimidir: bir OpenID Connect kimlik token'ı bir JWT'dir ve OAuth 2.0 erişim token'ları da çok sık öyledir.
+
+"Kendi kendine yeten" temel fikirdir. Sunucunun bir veritabanında araması gereken rastgele bir oturum kimliği yerine, bir JWT claim'leri *kendi içinde* taşır, imzalanmış olarak, böylece alıcı gidiş-dönüş olmadan onlara güvenebilir. Bu, JWT'leri durumsuz, dağıtık sistemler için elverişli kılar, sonda ele alınan önemli bir ödünleşimle.
+
+## Üç bölüm
+
+Bir JWT, noktalarla birleştirilmiş üç Base64URL kodlu bölümdür:
+
+```
+header.payload.signature
+```
+
+Her bölümün ayrı bir görevi vardır:
+
+- **Başlık** (header), imzalama algoritmasını ve token türünü adlandıran küçük bir JSON nesnesidir, örneğin `{"alg":"HS256","typ":"JWT"}`. `alg` değeri alıcıya imzayı nasıl doğrulayacağını söyler.
+- **Yük** (payload), claim'lerin JSON nesnesidir. Standart anlamlara sahip kayıtlı claim'leri (`iss` veren, `sub` özne, `aud` hedef kitle, `exp` sona erme, `nbf` önce-değil, `iat` verildiği-an, `jti` token kimliği) verenin eklediği herhangi bir özel claim'in yanında tutar.
+- **İmza** (signature), başlıktaki algoritmayı kullanarak kodlanmış başlık ve yük üzerinde birlikte hesaplanır. İlk iki bölümü güvenilir kılan şey odur.
+
+Başlık ve yük yalnızca Base64URL kodlu olduğundan, şifreli olmadığından, token'ı elinde tutan herkes onları kod çözüp okuyabilir. Bu, içselleştirilecek en önemli tek özelliktir: **bir JWT yükü okunabilirdir, gizli değildir.** İçine asla bir parola, bir kart numarası veya hassas herhangi bir şey koymayın.
+
+## İmza: güven nasıl kurulur
+
+İmza, bir JWT'yi bir istemcinin uydurabileceği herhangi bir dizeden ayıran şeydir. Nasıl üretildiği algoritma ailesine bağlıdır:
+
+- **HMAC (HS256, HS384, HS512)** tek bir paylaşılan sırla imzalar. İmza `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`'tir. Simetriktir: aynı sır hem oluşturur hem doğrular, dolayısıyla veren ve doğrulayan onu paylaşmalıdır. Bu, tam olarak HMAC aracının hesapladığı yapıdır.
+- **RSA ve ECDSA (RS256, ES256 ve diğerleri)** özel bir anahtarla imzalar ve eşleşen açık anahtarla doğrular. Bu asimetriktir: yalnızca veren imzalayabilir, ama açık anahtara sahip herkes doğrulayabilir, ki bu birçok bağımsız hizmet tarafından denetlenen token'lara uygundur.
+
+Doğrulama, imzayı kodlanmış başlık ve yüke karşı yeniden hesaplar veya denetler. Bölümlerden birinin tek bir baytı bile değiştirilirse imza artık eşleşmez ve token reddedilir.
+
+İki klasik tuzak bilmeye değer. `alg: none` değeri imzasız bir token bildirir; onu açıkça reddetmeyen bir doğrulayıcı, sahte claim'lere güvenmeye kandırılabilir. Ve **algoritma karışıklığı** saldırısında, bir saldırgan bir RS256 token'ı alır, başlığı HS256'ya çevirir ve açık anahtarı HMAC sırrı olarak kullanarak imzalar, ki bu algoritmayı sabitlemek yerine token'dan alan doğrulayıcılara karşı başarılı olur. Her ikisinin de savunması aynıdır: hangi algoritmanın kabul edilebilir olduğuna token değil, doğrulayıcı karar verir.
+
+## Kod çözmek doğrulamak değildir
+
+Bunlar iki farklı işlemdir ve onları birbirine karıştırmak yaygın bir hata kaynağıdır. **Kod çözme**, başlığı ve claim'leri açığa çıkarmak için bölümleri Base64URL'den basitçe çözer: anahtar yok, güven yok, herkes yapabilir. **Doğrulama**, imzayı doğru anahtarla denetler ve zaman claim'lerini onaylar. Yalnızca doğrulanmış bir token'ın claim'lerine göre hareket edilmelidir.
+
+Zaman da önemlidir. `exp` (sona erme) ve `nbf` (önce-değil), token'ın geçerlilik penceresini sınırlayan Unix zaman damgalarıdır ve `iat`, ne zaman verildiğini kaydeder. Doğru bir doğrulayıcı, süresi dolmuş veya henüz geçerli olmayan bir token'ı reddeder, genellikle küçük bir saat sapması toleransına izin vererek.
+
+## Bir JWT ne değildir
+
+Bir JWT **imzalıdır, şifreli değildir** (şifreleme ayrı bir standarttır, JWE). Claim'leri kimin verdiğini ve onların kurcalanmadığını kanıtlar; onları gizlemez.
+
+İmzalı bir JWT ayrıca **tek başına kolayca iptal edilebilir de değildir.** Claim'ler token'ın içinde yaşadığından ve doğrulama bir sunucu araması gerektirmediğinden, bir token siz onu daha erken iptal etmek isteseniz bile süresi dolana dek geçerli kalır. Pratik yanıt, anında iptal gerektiğinde kısa ömürler artı ayrı bir mekanizmadır (bir yenileme token'ı, bir iptal listesi veya token iç gözlemi).
+
+[JWT aracı](/tools/jwt), bir token'ın başlığını ve claim'lerini kod çözer, sona ermesini ve zamanlamasını sade bir dille okur ve yapıştırdığınız bir sırra karşı bir HS256, HS384 veya HS512 imzasını doğrular, hepsi tarayıcınızda. Token ve sır hiçbir yere gönderilmez.

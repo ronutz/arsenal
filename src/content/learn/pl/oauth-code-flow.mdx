@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "Przepływ kodu autoryzacji OAuth 2.0"
+summary: "Cztery role, taniec przekierowania i wymiany oraz dlaczego kod jest wymieniany na token na kanale tylnym."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Do czego służy przepływ
+
+OAuth 2.0 (RFC 6749) pozwala aplikacji działać w imieniu użytkownika, nigdy nie widząc jego hasła. „Zaloguj się przez Google" to codzienny przykład: aplikacja uzyskuje pozwolenie na dostęp do czegoś, lecz to Google, nie aplikacja, obsługuje poświadczenia. **Przepływ kodu autoryzacji** to najczęstszy i najbezpieczniejszy sposób zaaranżowania tego, i to ten przepływ chroni PKCE.
+
+## Cztery role
+
+- **Właściciel zasobu** (resource owner) to użytkownik, który posiada dane i udziela dostępu.
+- **Klient** (client) to aplikacja żądająca dostępu.
+- **Serwer autoryzacji** (authorization server) uwierzytelnia użytkownika i wystawia tokeny (Google, dostawca tożsamości, twoja własna usługa uwierzytelniania).
+- **Serwer zasobów** (resource server) to API, które przechowuje chronione dane i akceptuje token.
+
+## Taniec, krok po kroku
+
+1. **Przekieruj, by autoryzować.** Klient wysyła przeglądarkę użytkownika do punktu końcowego autoryzacji serwera autoryzacji, niosąc swój `client_id`, `redirect_uri`, żądany `scope`, losową wartość `state` oraz (z PKCE) wyzwanie kodu. Klient nigdy nie obsługuje hasła.
+2. **Uwierzytelnij i wyraź zgodę.** Serwer autoryzacji loguje użytkownika i prosi go o zatwierdzenie żądanych zakresów.
+3. **Przekieruj z powrotem z kodem.** Serwer przekierowuje przeglądarkę z powrotem do `redirect_uri` klienta z krótko żyjącym **kodem autoryzacji** i pierwotnym `state`. Klient sprawdza, że `state` się zgadza, co broni przed fałszowaniem żądań między witrynami przy wywołaniu zwrotnym.
+4. **Wymień kod na tokeny.** Teraz na kanale tylnym (bezpośrednie wywołanie serwer-do-serwera, nie przeglądarka) klient wysyła kod do punktu końcowego tokenu wraz ze swoimi poświadczeniami (sekret klienta lub weryfikator kodu PKCE) i otrzymuje **token dostępu**, często **token odświeżający**, a dla OpenID Connect **token ID**.
+5. **Wywołaj API.** Klient przedstawia token dostępu serwerowi zasobów, który go waliduje i zwraca dane.
+
+## Dlaczego kod, a nie token bezpośrednio?
+
+Obejście przez kod autoryzacji istnieje po to, by token nigdy nie podróżował przez pasek adresu lub historię przeglądarki, gdzie mógłby wyciec. Kod, który *faktycznie* tam podróżuje, jest bezużyteczny sam w sobie: jego wymiana wymaga wywołania na kanale tylnym z sekretem klienta lub weryfikatorem PKCE. To rozdzielenie, jednorazowy kod na kanale przednim i prawdziwy token na kanale tylnym, jest podstawową własnością bezpieczeństwa przepływu.
+
+To także dokładnie ta luka, którą PKCE wypełnia dla klientów niemogących utrzymać sekretu (aplikacje jednostronicowe i mobilne): wiąże kod z jednorazowym weryfikatorem, by przechwycony kod wciąż nie mógł być wymieniony. Tokeny, które przepływ zwraca, to bardzo często JWT.
+
+[Narzędzie PKCE](/tools/pkce) generuje i sprawdza weryfikator oraz wyzwanie, na których ten przepływ się opiera, a [narzędzie JWT](/tools/jwt) dekoduje tokeny, które on zwraca, oba lokalnie w przeglądarce.

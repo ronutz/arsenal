@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "IPv6 subnetting at ang /64 boundary"
+summary: "Kung bakit ang IPv6 subnetting ay tungkol sa istraktura sa halip na kakulangan, kung bakit ang isang subnet ay halos palaging isang /64, at kung paano namamahagi ng address space ang prefix delegation."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Isang ibang dahilan upang mag-subnet
+
+Sa IPv4, ang subnetting ay kadalasang tungkol sa pag-iingat: ang mga address ay kulang, kaya inuukit mo ang isang block sa pinakamaliliit na piraso na kasya pa rin sa bawat network (ang lohika sa artikulong [mga batayan ng subnetting](/learn/subnetting-basics)). Inaalis ng IPv6 ang presyon na iyon nang buo. Ang isang /64 subnet ay naglalaman ng 2^64 na address, higit pa sa buong IPv4 internet na nakuwadrado, kaya hindi mo kailanman sinu-subnet ang isang IPv6 network upang makatipid ng espasyo. Sinu-subnet mo ito upang magbigay ng istraktura: isang prefix bawat VLAN, bawat site, bawat customer. Ang matematika ay ang parehong prefix arithmetic ng IPv4 (kinukuwenta ito ng tool gamit ang arbitrary-precision na integer), ngunit ang kaisipan ay kabaligtaran.
+
+## Bakit ang isang subnet ay isang /64
+
+Ang nag-iisang pinakamahalagang panuntunan sa IPv6 addressing ay na ang isang normal na subnet ay isang /64, na nag-iiwan ng 64 bits para sa interface identifier. Hindi ito isang mungkahi; ipinagpapalagay ito ng malalaking bahagi ng protocol. Ang stateless address autoconfiguration (saklaw sa artikulong [address configuration](/learn/ipv6-address-configuration)) ay bumubuo ng address ng isang host sa pamamagitan ng pagdugtong ng isang 64-bit na interface identifier sa inihayag na prefix, at ang modified EUI-64 derivation na maaaring isagawa ng tool ay gumagawa ng eksaktong 64 bits. Gumamit ng mas mahabang prefix tulad ng /80 o /112 sa isang link at ang autoconfiguration ay basta na lang titigil sa paggana. Ang addressing architecture (RFC 4291) ay binuo sa palibot ng boundary na ito, kaya ang praktikal na payo ay tahasan: gawing /64 ang bawat end-user na subnet at huwag subukang maging matipid sa loob nito.
+
+## Ang allocation hierarchy
+
+Kung ang bawat subnet ay isang /64, ang mga site at provider ay gumagana sa mas malalaking block sa itaas niyon:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Karaniwang nagde-delegate ang isang ISP ng /48 o /56 sa isang customer, na pagkatapos ay nag-aassign ng mga /64 mula rito sa mga indibidwal na link. Ibinabalik ng RFC 6177 ang orihinal na "/48 para sa lahat" na patnubay patungo sa pagbibigay sa bawat site ng sapat na espasyo upang mag-subnet nang komportable, na sa praktika ay nangangahulugang isang /48 o /56. Ang punto ay mayroon kang espasyong sobra: kahit ang isang /56 ay nagbibigay sa isang tahanan o maliit na opisina ng 256 na hiwalay na network, higit pa kaysa magagamit nito kailanman.
+
+## Mag-subnet sa mga nibble boundary
+
+Dahil ang IPv6 ay isinusulat sa hex at ang bawat hex digit ay 4 bits (isang nibble), ang mga prefix na bumabagsak sa isang 4-bit boundary ay higit na madaling basahin at pamahalaan. Ang isang /48, /52, /56, /60, at /64 ay lahat nagtatapos nang malinis sa pagitan ng mga hex digit, kaya ang subnet portion ay umaayon sa buong character sa address. Ang pag-subnet ng isang /48 sa mga /52 ay nagbibigay sa iyo ng 16 na block na nakikilala sa pamamagitan ng iisang hex digit; ang pagpunta sa /56 ay nagbibigay ng 256 na block sa dalawang digit. Ang pananatili sa mga nibble boundary ay pinapanatiling nababasa ang iyong addressing plan, na higit na mahalaga sa IPv6 kaysa sa pagpiga ng huling bit kailanman.
+
+## Pagbilang ng mga subnet at address
+
+Ang arithmetic ay tuwiran. Ang bilang ng mga /64 subnet sa loob ng isang mas maikling prefix ay 2 na itinaas sa pagkakaiba sa mga haba ng prefix: ang isang /48 ay humahawak ng 2^(64-48) = 2^16 = 65,536 na subnet. Ang bilang ng mga address sa loob ng anumang /64 ay 2^(128-64) = 2^64. Iniuulat ng tool ang parehong bilang ng address para sa isang prefix at ang magagamit na range, at ang mga numero ay lumalaki nang mabilis, na siyang eksaktong punto: ang kakulangan ay hindi na isang hadlang na dinidisenyo mo nang paikutan.
+
+## Ang aral
+
+Binabaligtad ng IPv6 subnetting ang ugali ng IPv4. Hindi ka naghahati ng isang kulang na rekurso; nagpapataw ka ng istraktura sa isang epektibong walang-limitasyon. Bigyan ang bawat subnet ng isang /64 upang ang autoconfiguration at neighbor discovery ay gumana ayon sa disenyo, humiling ng isang /48 o /56 upang magkaroon ka ng espasyo upang mag-organisa, at mag-subnet sa mga nibble boundary upang manatiling nababasa ang iyong plano. Kapag nag-paste ka ng isang prefix sa tool at nakita ang bilang ng address, ituring ang kasaganaang iyon bilang pahintulot na magdisenyo para sa kalinawan sa halip na para sa pag-iingat.

@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "Notasi CIDR dijelaskan"
+summary: "Apa sebenarnya maksud garis miring dalam 192.168.1.0/24, dan bagaimana panjang awalan mentakrifkan blok alamat IP."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Masalah yang CIDR selesaikan
+
+Setiap peranti pada rangkaian IP memerlukan alamat. Dalam IPv4, alamat itu ialah 32 bit, biasanya ditulis sebagai empat nombor dari 0 hingga 255 dipisahkan dengan titik, seperti `192.168.1.10`. Soalan sukar tidak pernah "apa itu satu alamat" tetapi "bagaimana saya menerangkan satu *julat* alamat yang tergolong bersama", satu pejabat, satu subnet, satu peruntukan pelanggan. **Notasi CIDR** ialah cara padat untuk menulis julat itu.
+
+CIDR bermaksud Classless Inter-Domain Routing (Penghalaan Antara-Domain Tanpa Kelas). Bahagian "tanpa kelas" penting: pengalamatan lama memaksa julat ke dalam saiz tetap (blok lama Kelas A, B, dan C). CIDR membuang kekakuan itu dan membenarkan julat mempunyai *sebarang* saiz kuasa-dua, itulah sebabnya ia ialah standard hari ini.
+
+## Membaca garis miring
+
+Blok CIDR kelihatan seperti `192.168.1.0/24`. Bahagian selepas garis miring, **panjang awalan**, ialah nombor tunggal paling penting. Ia berkata: *N bit pertama alamat adalah tetap, dan selebihnya bebas berubah.*
+
+- `/24` bermaksud 24 bit pertama ialah bahagian rangkaian tetap. Baki 8 bit (32 − 24) mengenal pasti hos individu.
+- 8 bit bebas memberi 2⁸ = 256 kombinasi yang mungkin, jadi `192.168.1.0/24` menerangkan 256 alamat dari `192.168.1.0` hingga `192.168.1.255`.
+
+Tukar awalan dan saiz blok bertukar dengannya. Awalan yang lebih kecil bermaksud *lebih banyak* bit bebas dan blok yang *lebih besar*:
+
+- `/16` menetapkan 16 bit, membiarkan 16 bebas → 65,536 alamat.
+- `/25` menetapkan 25 bit, membiarkan 7 bebas → 128 alamat.
+- `/30` menetapkan 30 bit, membiarkan 2 bebas → 4 alamat.
+
+Setiap langkah satu dalam panjang awalan **menyeparuhkan atau menggandakan** blok. Peraturan tunggal itu ialah keseluruhan gerak hati.
+
+## Rangkaian, siaran, dan hos boleh guna
+
+Dalam kebanyakan blok, dua alamat adalah istimewa dan tidak boleh diumpukkan kepada hos:
+
+- **Alamat rangkaian** ialah alamat pertama dalam blok, semua bit hos ditetapkan ke 0 (`192.168.1.0` untuk `/24`). Ia menamakan blok itu sendiri.
+- **Alamat siaran** ialah alamat terakhir, semua bit hos ditetapkan ke 1 (`192.168.1.255`). Trafik yang dihantar ke sini mencapai setiap hos dalam blok.
+
+Jadi `/24` mempunyai 256 alamat secara keseluruhan tetapi **254 boleh guna** untuk hos sebenar. Angka "hos boleh guna" hanyalah jumlah tolak dua alamat terpelihara itu.
+
+Dua kes pinggir memecah corak ini, kedua-duanya secara sengaja:
+
+- **/31** (RFC 3021) digunakan untuk pautan titik-ke-titik antara dua penghala. Ia hanya mempunyai 2 alamat dan, mengikut reka bentuk, kedua-duanya boleh guna, tiada ruang untuk alamat rangkaian dan siaran berasingan, dan tiada yang diperlukan untuk pautan dengan tepat dua hujung.
+- **/32** ialah satu alamat tunggal, laluan hos. Ia menerangkan tepat satu mesin.
+
+## Mengapa ini berbaloi difahami
+
+Panjang awalan mentadbir bagaimana rangkaian direka bentuk, bagaimana laluan diringkaskan, dan bagaimana ruang alamat diagihkan. Apabila anda melihat `10.0.0.0/8` dalam jadual penghalaan atau `0.0.0.0/0` sebagai laluan lalai, anda membaca notasi yang sama: alamat asas tambah panjang awalan yang berkata berapa banyak daripadanya yang tetap. Aritmetik tidak pernah berubah, hanya nombor.
+
+Anda boleh mencuba sebarang blok dalam [kalkulator CIDR](/learn) untuk melihat alamat rangkaiannya, alamat siaran, topeng, dan kiraan hos boleh guna dikira serta-merta, sepenuhnya dalam pelayar anda.

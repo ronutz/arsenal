@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Hoe certificaatvalidatie werkelijk werkt"
+summary: "De stappen die een client uitvoert om te beslissen dat een certificaat betrouwbaar is: de keten bouwen, handtekeningen en datums controleren, de naam matchen en beperkingen afdwingen."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Lezen is niet vertrouwen
+
+Het [anatomie-artikel](/learn/x509-anatomy) eindigt op een punt dat het herhalen waard is: een certificaat decoderen vertelt je wat het *beweert*, niet of de bewering *waar* is. Validatie is het aparte proces dat een TLS-client uitvoert om te beslissen of het het certificaat voor zich moet vertrouwen. Het wordt voornamelijk geregeld door RFC 5280, en het is een conjunctie van onafhankelijke controles, die elk moeten slagen. Een decoder, deze tool inbegrepen, toont je de invoer voor dat proces; de client is wat het afdwingt.
+
+## Stap 1: de keten bouwen
+
+Een bladcertificaat wordt bijna nooit op zichzelf vertrouwd. De client moet een pad bouwen van het blad omhoog naar een root die het al in zijn vertrouwensopslag houdt. Het doet dit door uitgeversnamen te volgen: de Issuer van het blad zou moeten matchen met het Subject van een tussencertificaat, en de Issuer van dat tussencertificaat zou moeten matchen met het volgende omhoog, tot het een zelf-uitgegeven root bereikt. De Authority Key Identifier- en Subject Key Identifier-extensies versnellen dit matchen door de client een certificaat aan zijn uitgever te laten koppelen via sleutelhash in plaats van via naam alleen. Kan er geen pad naar een vertrouwde root worden gebouwd, dan faalt de validatie onmiddellijk, hoe welgevormd het blad ook is.
+
+## Stap 2: elke handtekening verifiëren
+
+Een keten is alleen betekenisvol als elke schakel cryptografisch deugdelijk is. Voor elk certificaat in het pad verifieert de client dat de handtekening werd geproduceerd door de privésleutel van de uitgever, door het te controleren tegen de publieke sleutel van de uitgever over de DER-bytes van het te-ondertekenen lichaam van het kind. Omdat de handtekening die precieze bytes dekt, breekt één gewijzigde byte waar dan ook in het lichaam de controle. Dit is ook waarom het handtekeningalgoritme (bijvoorbeeld sha256WithRSAEncryption of ecdsa-with-SHA256) ertoe doet: een keten is slechts zo sterk als zijn zwakste handtekening en hash. Voor wat een hash hier garandeert, zie het [hashing-artikel](/learn/hashing).
+
+## Stap 3: het geldigheidsvenster controleren
+
+Elk certificaat draagt een notBefore- en notAfter-tijdstempel, en de client controleert de huidige tijd tegen het venster voor elk certificaat in de keten, niet alleen het blad. Een certificaat dat verlopen is, of nog niet geldig, faalt. De tool voert deze zelfde controle uit tegen je lokale klok en rapporteert of een certificaat nu geldig, nog niet geldig, of verlopen is, wat vaak de snelste manier is om een "je verbinding is niet privé"-waarschuwing te diagnosticeren.
+
+## Stap 4: de naam matchen
+
+Een geldige keten bewijst dat het certificaat authentiek is, maar niet dat het werd uitgegeven voor de site die je bezoekt. De client controleert dat de host waarmee het verbond verschijnt in de Subject Alternative Name-extensie van het certificaat. Moderne clients negeren de Common Name volledig voor dit doel en kijken alleen naar het SAN, de identiteitsmatchingregels van RFC 6125 volgend. Wildcards zoals `*.ronutz.com` matchen één enkel label, dus ze dekken `api.ronutz.com` maar niet `ronutz.com` zelf of `a.b.ronutz.com`. Een certificaat waarvan de keten perfect is maar waarvan het SAN de naam die je vroeg niet vermeldt, wordt nog steeds geweigerd.
+
+## Stap 5: de beperkingen afdwingen
+
+De v3-extensies zijn geen decoratie; het zijn regels die de client afdwingt. Basic Constraints zegt of een certificaat als een CA mag optreden en, via de padlengte, hoeveel tussencertificaten eronder mogen zitten, wat verhindert dat een bladcertificaat wordt gebruikt om andere certificaten te ondertekenen. Key Usage en Extended Key Usage beperken wat de sleutel mag doen: een TLS-servercertificaat moet de serverAuth-EKU dragen, en een als kritiek gemarkeerde extensie die de client niet begrijpt forceert een weigering in plaats van een schouderophalen. De tool brengt deze velden naar voren zodat je precies kunt zien welke beperkingen een uitgever instelde.
+
+## Stap 6: herroeping controleren
+
+Ten slotte kan een certificaat dat geldig was bij uitgifte sindsdien herroepen zijn, bijvoorbeeld omdat zijn privésleutel lekte. De client kan een CRL of een OCSP-responder raadplegen om dat uit te vinden. In de praktijk is dit de zwakste en meest inconsistente stap, en de industrie beweegt in plaats daarvan richting kortlevende certificaten, die het [herroepingsartikel](/learn/certificate-revocation) volledig behandelt.
+
+## Validatie is een AND, geen OR
+
+De reden dat een enkel geknoeid of verkeerd geconfigureerd certificaat wordt geweigerd is dat al deze controles combineren met logische AND. De keten moet bouwen, elke handtekening moet verifiëren, elk certificaat moet in zijn geldigheidsvenster zijn, de naam moet in het SAN staan, de beperkingen moeten het gebruik toestaan, en het certificaat mag niet herroepen zijn. Een decoder legt de beweringen van het certificaat helder en getrouw uit; behandel dat als een zorgvuldige lezing van het document, en onthoud dat het oordeel toebehoort aan de client die alle zes controles uitvoert.

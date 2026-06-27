@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Botsingen, preimage-weerstand en de verjaardagsgrens"
+summary: "De drie beveiligingseigenschappen die een cryptografische hash moet hebben, waarom botsingen ertoe doen en de verjaardagswiskunde die de echte sterkte bepaalt."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Wat "veilig" betekent voor een hash
+
+Elke functie die invoer afbeeldt op uitvoer van vaste grootte zal uiteindelijk twee verschillende invoeren op dezelfde uitvoer afbeelden, want er zijn oneindig veel invoeren en slechts eindig veel uitvoeren. Dat een hash **veilig** is, betekent niet dat botsingen niet kunnen bestaan; het betekent dat ze niet *gevonden* kunnen worden met een haalbare hoeveelheid werk. Drie afzonderlijke eigenschappen vangen dit.
+
+## De drie eigenschappen
+
+- **Preimage-weerstand.** Gegeven een hashwaarde `h` is het onhaalbaar om enige invoer `m` te vinden met `hash(m) = h`. Dit is de eenrichtingseigenschap: een vingerafdruk mag niet onthullen wat hem heeft voortgebracht. Voor een hash van n bits kost dit ongeveer 2ⁿ werk.
+- **Tweede-preimage-weerstand.** Gegeven een specifieke invoer `m1` is het onhaalbaar om een *andere* invoer `m2` te vinden met dezelfde hash. Een aanvaller kan geen tweede document vervalsen dat overeenkomt met de vingerafdruk van een gegeven document. Ook ongeveer 2ⁿ werk.
+- **Botsingsweerstand.** Het is onhaalbaar om *welke* twee verschillende invoeren dan ook te vinden die dezelfde hashwaarde opleveren. De aanvaller mag beide kiezen, wat dit de makkelijkste van de drie maakt om aan te vallen.
+
+## De verjaardagsgrens
+
+Botsingsweerstand is zwakker dan de andere twee om een subtiele reden, de **verjaardagsparadox**. In een kamer met slechts 23 mensen is er ongeveer 50% kans dat twee dezelfde verjaardag delen, omdat het aantal *paren* kwadratisch groeit. Hetzelfde effect geldt voor hashes: een botsing vinden in een hash van n bits kost slechts ongeveer **2^(n/2)** pogingen, niet 2ⁿ.
+
+Dit halveert de effectieve sterkte tegen botsingen:
+
+- SHA-256 biedt ongeveer 128 bits botsingsweerstand (2¹²⁸ werk), wat ver buiten bereik ligt.
+- Een hash van 128 bits zoals MD5 zou slechts ongeveer 64 bits botsingsweerstand bieden, zelfs als hij niet om andere redenen gebroken was, en daarom doet de uitvoergrootte op zichzelf ertoe.
+
+Daarom gebruiken moderne hashes 256 bits of meer: om het gehalveerde getal comfortabel buiten het bereik van elke aanvaller te houden.
+
+## Waarom een gevonden botsing gevaarlijk is
+
+Wanneer botsingsweerstand faalt, kan een aanvaller twee invoeren met dezelfde hash maken, er één laten ondertekenen of vertrouwen en die door de andere vervangen. SHAttered toonde twee PDF's met dezelfde SHA-1-digest; de Flame-malware gebruikte een MD5-botsing om een vertrouwd certificaat te vervalsen. In beide gevallen was de handtekening geldig voor *beide* documenten, dus een geverifieerde handtekening bewees niet langer welke je daadwerkelijk ontving. Dit is de concrete reden waarom MD5 en SHA-1 niet gebruikt mogen worden waar een tegenstander de invoer kan kiezen.
+
+De [hashtool](/tools/hash) laat je elke invoer hashen en digests vergelijken, zodat je zelf ziet dat één gewijzigd bit een volledig andere vingerafdruk oplevert, allemaal berekend in je browser zonder iets te verzenden.

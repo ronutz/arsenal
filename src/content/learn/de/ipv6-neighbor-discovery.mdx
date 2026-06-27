@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Nachbarerkennung: wie IPv6 ARP ersetzt"
+summary: "Wie IPv6 Nachbarn auf einem Link mit ICMPv6 und Multicast statt Broadcast-ARP findet, die fünf Nachbarerkennungs-Nachrichten, und warum Broadcast weg ist."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 ist nicht optional
+
+In IPv4 ist ICMP ein diagnostischer Nachgedanke, den Sie blockieren können, ohne die grundlegende Konnektivität zu brechen. In IPv6 ist ICMPv6 (RFC 4443) tragend: das Protokoll hängt davon für den zentralen Link-Betrieb ab, also bricht das wahllose Filtern davon das Netzwerk. Der Grund ist, dass IPv6 mehrere Aufgaben, die IPv4 über ARP, ICMP-Router-Erkennung und ICMP-Redirects verteilte, in ein einziges ICMPv6-basiertes Protokoll namens Nachbarerkennung (Neighbor Discovery, RFC 4861) verschob. Die Nachbarerkennung zu verstehen, ist zu verstehen, wie ein IPv6-Link tatsächlich funktioniert.
+
+## Fünf Nachrichten erledigen die Arbeit
+
+Die Nachbarerkennung definiert fünf ICMPv6-Nachrichtentypen, und fast alles auf einem Link ist irgendeine Kombination von ihnen:
+
+- **Router Solicitation (RS)**: ein Host bittet Router, sich anzukündigen.
+- **Router Advertisement (RA)**: ein Router kündigt das Präfix und die Konfigurations-Flags an (die Eingabe für die Autokonfiguration im Artikel [Adresskonfiguration](/learn/ipv6-address-configuration)).
+- **Neighbor Solicitation (NS)**: ein Host fragt „wer hat diese Adresse, und was ist deine Sicherungsschicht-Adresse?"
+- **Neighbor Advertisement (NA)**: die Antwort, die jene Sicherungsschicht-Adresse gibt.
+- **Redirect**: ein Router teilt einem Host einen besseren nächsten Hop für ein Ziel mit.
+
+Router Solicitation und Advertisement behandeln „wie konfiguriere ich mich"; Neighbor Solicitation und Advertisement behandeln „wie erreiche ich diesen Nachbarn"; Redirect behandelt „es gibt einen besseren Pfad". Das deckt das tägliche Leben eines Links ab.
+
+## Adressauflösung ohne Broadcast
+
+Die Arbeit, die ARP in IPv4 tut, eine IP-Adresse auf eine Hardwareadresse abzubilden, wird in IPv6 vom Neighbor-Solicitation-und-Advertisement-Paar getan. Der wichtige Unterschied ist, *wie* die Frage gestellt wird. ARP schreit zur Broadcast-Adresse und unterbricht jedes Gerät im Segment. IPv6 sendet die Neighbor Solicitation stattdessen an die **Solicited-Node-Multicast-Adresse** des Ziels, eine Gruppe, auf der nur die kleine Menge von Hosts lauscht, die dasselbe Adresssuffix teilen. Das Ziel antwortet mit einem Neighbor Advertisement, das seine Sicherungsschicht-Adresse trägt. Der Anfragende cached das Ergebnis, genau wie ein ARP-Cache funktioniert, und revalidiert es durch Neighbor Unreachability Detection, wenn der Verkehr nahelegt, dass ein Nachbar weggegangen sein könnte.
+
+## Die Solicited-Node-Multicast-Adresse
+
+Die Solicited-Node-Multicast-Adresse wird aus der Zieladresse gebaut: nehmen Sie das Präfix `ff02::1:ff00:0/104` und hängen Sie die letzten 24 Bit der Zieladresse an. Weil die Auflösung nur die Handvoll Hosts anvisiert, die jene niedrigen 24 Bit teilen, statt des ganzen Links, erreicht die Anfrage weit weniger Maschinen als ein ARP-Broadcast würde. Diese Konstruktion ist, warum der Artikel [Adressierung](/learn/ipv6-addressing) Solicited-Node-Multicast als Teil des Adressplans statt eines Nachgedankens behandelt: jeder Host, der eine Adresse konfiguriert, tritt automatisch der entsprechenden Solicited-Node-Gruppe bei, damit andere ihn finden können.
+
+## Überhaupt kein Broadcast
+
+IPv6 hat keine Broadcast-Adresse. Alles, wofür IPv4 Broadcast verwendete, einschließlich Adressauflösung und Router-Erkennung, wird durch Multicast an spezifische, gut umrissene Gruppen behandelt. Es gibt eine All-Knoten-Multicast-Gruppe (`ff02::1`) und eine All-Router-Gruppe (`ff02::2`), aber die routinemäßige Auflösung visiert stattdessen die engen Solicited-Node-Gruppen an. „Alle unterbrechen" durch „genau die relevanten Zuhörer benachrichtigen" zu ersetzen, ist auf belebten Links effizienter und ist eine der leiseren Verbesserungen, die IPv6 gegenüber IPv4 macht.
+
+## Dem Link vertrauen
+
+Weil die Nachbarerkennung standardmäßig nicht authentifiziert ist, kann ein bösartiger Host auf demselben Link gefälschte Router Advertisements oder Neighbor Advertisements senden, um Verkehr umzuleiten oder abzufangen, das IPv6-Analogon des ARP-Spoofings. Die Verteidigungen leben am Netzwerkrand: RA Guard auf Switches verwirft Router Advertisements von Ports, die keine Router haben sollten, und SEcure Neighbor Discovery (SEND) fügt kryptografischen Schutz hinzu, wo es eingesetzt wird. Wie bei IPv4 ist der lokale Link eine Vertrauensgrenze, die zu verteidigen sich lohnt.
+
+## Das Nervensystem des Links
+
+Die Zusammenfassung ist, dass IPv6 Adressauflösung, Router-Erkennung und Umleitung in ein einziges ICMPv6-basiertes Protokoll faltete, das Broadcast-Schreien gegen gezieltes Multicast tauschte, und das Ganze essenziell statt optional machte. Wenn Sie eine Adresse im Werkzeug sehen und ihre Solicited-Node-Gruppe oder ihre Link-local-Form bemerken, schauen Sie auf die Teile, die die Nachbarerkennung verwendet, um Hosts einander auf einem Link finden zu lassen, ohne je die Nachbarn zu stören, die nicht beteiligt sind.

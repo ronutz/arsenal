@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Choisir un hachage : MD5, SHA-1, SHA-2, SHA-3 et BLAKE"
+summary: "Quelles fonctions de hachage sont encore sures, lesquelles sont cassees, quelles sont leurs tailles de sortie, et comment choisir la bonne."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tous les hachages ne se valent pas
+
+Un hachage cryptographique associe a toute entree une empreinte de taille fixe. Plusieurs familles existent, et elles ne sont pas interchangeables : certaines restent solides, d'autres ont ete cassees assez gravement pour qu'il soit une erreur de les utiliser en securite. Le bon choix depend de la tache et du calendrier, car un hachage respectable il y a vingt ans peut etre cassable trivialement aujourd'hui.
+
+## Les cassees
+
+- **MD5** (128 bits) est casse. Des collisions se produisent en quelques secondes sur un ordinateur portable, et ont servi dans de vraies attaques (le malware Flame a forge un certificat de signature de code avec une collision MD5). Il ne survit que comme somme de controle rapide et sans securite, et meme la de meilleures options existent.
+- **SHA-1** (160 bits) est casse. La recherche SHAttered de 2017 a produit deux PDF differents avec le meme condense SHA-1, et des collisions a prefixe choisi ont suivi. Les navigateurs et les autorites de certification ont retire le support de SHA-1 il y a des annees. Ne l'utilisez pas pour des signatures ou une integrite qu'un adversaire pourrait attaquer.
+
+## Les piliers actuels
+
+- **SHA-2** est la famille par defaut pour la plupart des travaux. C'est un ensemble de fonctions liees, couramment **SHA-256** et **SHA-512** (aussi SHA-224, SHA-384 et le SHA-512/256 tronque). Aucune attaque de collision pratique n'existe contre SHA-2. En cas de doute, SHA-256 est le choix sur et universellement pris en charge.
+- **SHA-3** (Keccak) est une norme plus recente batie sur une conception interne completement differente (une construction en eponge) de celle de SHA-2. SHA3-256 et SHA3-512 offrent une securite comparable et existent en partie comme protection : si une faiblesse etait trouvee dans SHA-2, il est peu probable que SHA-3 la partage. Il est aussi immunise par conception contre le probleme d'extension de longueur qui affecte SHA-2.
+- **BLAKE2 et BLAKE3** sont des hachages modernes et tres rapides a forte securite. BLAKE3 en particulier est concu pour se paralleliser, ce qui le rend attrayant quand vous hachez de grands volumes de donnees et voulez de la vitesse sans sacrifier la securite.
+
+## En choisir un
+
+Un bref guide de decision :
+
+- Integrite a usage general, signatures, ou "j'ai juste besoin d'un hachage sur" : **SHA-256**.
+- Vous voulez une diversite d'algorithme ou une immunite a l'extension de longueur sans HMAC : **SHA-3** ou **SHA-512/256**.
+- Hachage de gros fichiers ou le debit compte : **BLAKE3**.
+- Une somme de controle rapide et sans securite (detecter une corruption accidentelle, pas une alteration) : un CRC ou MD5 convient, mais ne l'appelez jamais "sur".
+- **Les mots de passe sont un probleme a part.** Les hachages a usage general sont trop rapides pour le stockage de mots de passe ; utilisez un hachage de mot de passe dedie comme bcrypt, scrypt ou Argon2 (voir l'article sur le hachage de mots de passe).
+
+L'[outil de hachage](/tools/hash) calcule MD5, SHA-1, SHA-256, SHA-512 et plus sur du texte ou un fichier pour comparer les sorties cote a cote, le tout dans votre navigateur, sans rien envoyer.

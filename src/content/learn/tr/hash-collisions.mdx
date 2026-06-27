@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Çakışmalar, ön görüntü direnci ve doğum günü sınırı"
+summary: "Kriptografik bir karmanın sahip olması gereken üç güvenlik özelliği, çakışmaların neden önemli olduğu ve gerçek gücü belirleyen doğum günü matematiği."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bir karma için "güvenli" ne demektir
+
+Girdileri sabit boyutlu çıktılara eşleyen herhangi bir fonksiyon, sonunda iki farklı girdiyi aynı çıktıya eşleyecektir; çünkü sonsuz sayıda girdi ve yalnızca sonlu sayıda çıktı vardır. Bir karmanın **güvenli** olması, çakışmaların var olamayacağı anlamına gelmez; uygulanabilir bir iş miktarıyla *bulunamayacakları* anlamına gelir. Üç ayrı özellik bunu kapsar.
+
+## Üç özellik
+
+- **Ön görüntü direnci.** Bir karma değeri `h` verildiğinde, `hash(m) = h` olan herhangi bir girdi `m` bulmak uygulanamazdır. Bu tek yönlülük özelliğidir: bir parmak izi onu üretenin ne olduğunu açığa vurmamalıdır. n bitlik bir karma için bu yaklaşık 2ⁿ iş tutar.
+- **İkinci ön görüntü direnci.** Belirli bir girdi `m1` verildiğinde, aynı karmaya sahip *farklı* bir girdi `m2` bulmak uygulanamazdır. Bir saldırgan, verilenin parmak iziyle eşleşen ikinci bir belge sahteleyemez. Yine yaklaşık 2ⁿ iş.
+- **Çakışma direnci.** Aynı karma değerini veren *herhangi* iki farklı girdiyi bulmak uygulanamazdır. Saldırgan her ikisini de seçebilir; bu da onu üçü arasında saldırması en kolay olan yapar.
+
+## Doğum günü sınırı
+
+Çakışma direnci, ince bir nedenden ötürü diğer ikisinden daha zayıftır: **doğum günü paradoksu**. Yalnızca 23 kişilik bir odada iki kişinin aynı doğum gününü paylaşma olasılığı yaklaşık %50'dir, çünkü *çift* sayısı karesel büyür. Aynı etki karmalar için geçerlidir: n bitlik bir karmada bir çakışma bulmak yalnızca yaklaşık **2^(n/2)** deneme gerektirir, 2ⁿ değil.
+
+Bu, çakışmalara karşı etkili gücü yarıya indirir:
+
+- SHA-256 yaklaşık 128 bit çakışma direnci sağlar (2¹²⁸ iş), ki bu erişimin çok ötesindedir.
+- MD5 gibi 128 bitlik bir karma, başka nedenlerle kırık olmasaydı bile yalnızca yaklaşık 64 bit çakışma direnci sağlardı; bu yüzden çıktı boyutu tek başına önemlidir.
+
+Bu nedenle modern karmalar 256 bit veya daha fazlasını kullanır: yarıya inen rakamı her saldırganın erişiminin rahatça ötesinde tutmak için.
+
+## Bulunan bir çakışma neden tehlikelidir
+
+Çakışma direnci başarısız olduğunda, bir saldırgan aynı karmaya sahip iki girdi oluşturabilir, birini imzalattırabilir veya güvenilir kılabilir ve onu diğeriyle değiştirebilir. SHAttered aynı SHA-1 özetine sahip iki PDF gösterdi; Flame zararlısı güvenilir bir sertifikayı sahtelemek için bir MD5 çakışması kullandı. Her iki durumda da imza *her iki* belge için geçerliydi, dolayısıyla doğrulanmış bir imza hangisini aslında aldığınızı kanıtlamayı bıraktı. Bir saldırganın girdiyi seçebildiği yerlerde MD5 ve SHA-1'in kullanılmaması gerektiğinin somut nedeni budur.
+
+[Karma aracı](/tools/hash) herhangi bir girdiyi karmalamanıza ve özetleri karşılaştırmanıza olanak tanır; böylece tek bir değişmiş bitin tamamen farklı bir parmak izi ürettiğini kendiniz görürsünüz; tamamı tarayıcınızda hesaplanır, hiçbir şey gönderilmeden.

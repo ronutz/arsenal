@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Privé IPv4-adresruimte en RFC 1918"
+summary: "De drie privébereiken, waarom ze niet routeerbaar zijn op internet en de andere speciale blokken die de CIDR-tool markeert."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Adressen die je opnieuw kunt gebruiken
+
+Er zijn slechts ongeveer 4,3 miljard IPv4-adressen, te weinig opdat elk apparaat één publiek adres zou hebben. Het antwoord (RFC 1918) is om drie bereiken te reserveren die iedereen binnen zijn eigen netwerk mag gebruiken, zonder registratie. Omdat iedereen dezelfde privébereiken hergebruikt, kunnen ze niet uniek zijn op het publieke internet, dus zijn ze daar **niet routeerbaar**. De buitenwereld bereiken vereist network address translation (NAT), die een privébronadres inruilt voor een gedeeld publiek adres aan de rand van het netwerk.
+
+## De drie bereiken van RFC 1918
+
+- **`10.0.0.0/8`**: van `10.0.0.0` tot `10.255.255.255`, 16.777.216 adressen. Eén heel groot netwerk.
+- **`172.16.0.0/12`**: van `172.16.0.0` tot `172.31.255.255`, 1.048.576 adressen. Geen volledige klasse B, maar de 16 aaneengesloten `/16`'s van `172.16` tot `172.31`, het bereik dat mensen het vaakst verkeerd hebben.
+- **`192.168.0.0/16`**: van `192.168.0.0` tot `192.168.255.255`, 65.536 adressen. Het vertrouwde bereik van thuisrouters.
+
+## De andere speciale blokken
+
+Verschillende andere bereiken zijn gereserveerd voor specifieke doelen en zijn ook geen gewone publieke adressen:
+
+- **`100.64.0.0/10`** (RFC 6598) is de gedeelde carrier-NAT-ruimte (CGNAT), gebruikt door providers tussen de klant en hun publieke pool. Het lijkt op privé, maar is onderscheiden van RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) is link-local, het zelftoegewezen adres dat een host kiest wanneer geen DHCP-server antwoordt (APIPA op Windows). Het verlaat de lokale koppeling nooit.
+- **`127.0.0.0/8`** is loopback; `127.0.0.1` is de host die met zichzelf praat.
+- **`0.0.0.0/8`**, het multicastbereik `224.0.0.0/4` en de documentatiebereiken (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) zijn ook gereserveerd.
+
+IPv6 heeft hetzelfde idee in een andere vorm: de **Unique Local Addresses** in `fc00::/7` (in de praktijk `fd00::/8`) zijn de privégebruik-tegenhanger van RFC 1918, opnieuw niet globaal routeerbaar.
+
+## Waarom het ertoe doet
+
+Weten of een adres privé, publiek of speciaal is, vertelt je meteen of het op internet kan verschijnen, of het NAT nodig heeft en of een firewallregel of route zinvol is. Een `10/8`-adres in een publiek DNS-record, of een `169.254`-adres waar je DHCP verwachtte, is een signaal dat het opmerken waard is.
+
+De [CIDR-calculator](/#cidr) classificeert elk adres of blok aan de hand van deze speciale-gebruik-bereiken en geeft aan of het privé, gereserveerd of globaal bereikbaar is, volledig berekend in je browser.

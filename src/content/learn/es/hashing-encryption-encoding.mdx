@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hash, cifrado y codificación: tres cosas distintas"
+summary: "Tres operaciones que se confunden constantemente, separadas con claridad por dos preguntas: ¿es reversible y necesita una clave?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tres palabras, constantemente mezcladas
+
+"¿Esta contraseña está cifrada?" "Solo haz hash de la URL." "Los datos están codificados, así que están seguros." Estas frases están por todas partes, y la mayoría usa la palabra equivocada. Hash, cifrado y codificación son tres operaciones distintas con tres propósitos diferentes, y confundirlas lleva a errores reales de seguridad, como almacenar contraseñas con un método que no protege nada.
+
+La buena noticia es que dos preguntas sencillas las separan por completo.
+
+## Las dos preguntas
+
+1. **¿Es reversible?** ¿Puedes recuperar la entrada original a partir de la salida?
+2. **¿Necesita una clave?** ¿Se requiere un secreto, o cualquiera puede realizar la operación?
+
+Sitúa las tres operaciones frente a esas preguntas y el cuadro queda claro:
+
+- **Codificación** es reversible y no necesita clave.
+- **Hash** no es reversible y no necesita clave.
+- **Cifrado** es reversible y necesita clave.
+
+Esa tabla es todo el artículo. El resto es detalle.
+
+## Codificación: reversible, sin clave
+
+La codificación reescribe datos en una representación distinta para que puedan atravesar un canal que espera un formato concreto. Base64 convierte bytes en texto seguro; la codificación de URL escapa caracteres ilegales en una URL; UTF-8 convierte caracteres en bytes. Nada de eso es secreto. Cualquiera puede decodificarlo de vuelta, porque la reversibilidad es todo el sentido. **La codificación ofrece seguridad nula.** Si oyes "el token está codificado, así que es seguro", eso es una bandera roja: codificado significa legible.
+
+## Hash: no reversible, sin clave
+
+Una función de hash asigna cualquier entrada a un resumen de tamaño fijo, y no puedes ejecutarla al revés para recuperar la entrada. No necesita clave, así que cualquiera puede calcular el mismo resumen a partir de la misma entrada. Eso la hace perfecta para la **verificación**: comprobaciones de integridad, direccionamiento por contenido y detección de cambios. Es la herramienta correcta cuando necesitas confirmar que dos cosas son iguales sin almacenar la original, pero no oculta nada de forma reversible, porque no hay nada que revertir.
+
+## Cifrado: reversible, con clave
+
+El cifrado transforma datos de modo que solo quien posea la clave correcta pueda transformarlos de vuelta. Esta es la única de las tres construida para el **secreto**. Es reversible por diseño, pero solo con la clave, que es exactamente la propiedad que las otras dos carecen: la codificación es reversible por cualquiera, el hash no es reversible por nadie, el cifrado es reversible por quienes tienen la clave.
+
+## Elegir la correcta
+
+El propósito decide la herramienta. ¿Necesitas que los datos sobrevivan al transporte como texto? Codifícalos. ¿Necesitas verificar integridad o comparar sin almacenar el original? Hazles hash. ¿Necesitas mantener datos en secreto frente a cualquiera sin la clave? Cífralos.
+
+El error clásico es recurrir a la columna equivocada. Almacenar contraseñas con codificación simple (reversible por cualquiera) o incluso cifrado simple (una clave robada lo expone todo) es mucho más débil que un hash de contraseñas hecho para ese fin, que se trata en su propio artículo. La [herramienta Hash](/tools/hash) y la [herramienta Base64](/tools/base64) te dejan ver cómo el hash y la codificación se comportan de forma distinta sobre la misma entrada, el resumen nunca se revierte, el Base64 siempre lo hace.

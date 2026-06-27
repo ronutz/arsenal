@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "IPv6-subnetinddeling og /64-grænsen"
+summary: "Hvorfor IPv6-subnetinddeling handler om struktur snarere end knaphed, hvorfor et enkelt subnet næsten altid er et /64, og hvordan præfiksdelegering uddeler adresserum."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## En anden grund til at subnetinddele
+
+I IPv4 handler subnetinddeling mest om bevarelse: adresser er knappe, så du udskærer en blok i de mindste stykker, der stadig passer i hvert netværk (logikken i artiklen [grundlæggende om subnetinddeling](/learn/subnetting-basics)). IPv6 fjerner det pres helt. Et enkelt /64-subnet indeholder 2^64 adresser, mere end hele IPv4-internettet i anden potens, så du subnetinddeler aldrig et IPv6-netværk for at spare plads. Du subnetinddeler det for at give struktur: ét præfiks per VLAN, per sted, per kunde. Matematikken er den samme præfiksaritmetik som IPv4 (værktøjet beregner den med heltal af vilkårlig præcision), men tankegangen er den modsatte.
+
+## Hvorfor et subnet er et /64
+
+Den enkeltvigtigste regel i IPv6-adressering er, at et normalt subnet er et /64, hvilket lader 64 bit til grænsefladeidentifikatoren. Dette er ikke et forslag; store dele af protokollen antager det. Tilstandsløs adresseautokonfiguration (behandlet i artiklen [adressekonfiguration](/learn/ipv6-address-configuration)) bygger en værts adresse ved at vedhæfte en 64-bit grænsefladeidentifikator til det annoncerede præfiks, og den modificerede EUI-64-udledning, som værktøjet kan udføre, producerer præcis 64 bit. Brug et længere præfiks som et /80 eller /112 på et link, og autokonfigurationen holder simpelthen op med at fungere. Adresseringsarkitekturen (RFC 4291) er bygget rundt om denne grænse, så det praktiske råd er ligefremt: gør hvert slutbrugersubnet til et /64, og forsøg ikke at være sparsommelig inden i det.
+
+## Tildelingshierarkiet
+
+Hvis hvert subnet er et /64, arbejder steder og udbydere i større blokke over det:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+En ISP delegerer typisk et /48 eller /56 til en kunde, der så tildeler /64s ud af det til individuelle links. RFC 6177 trækker den oprindelige "/48 til alle"-vejledning tilbage mod at give hvert sted nok plads til at subnetinddele komfortabelt, hvilket i praksis betyder et /48 eller /56. Pointen er, at du har plads til overs: selv et /56 giver et hjem eller lille kontor 256 separate netværk, langt mere end det nogensinde vil bruge.
+
+## Subnetinddel på nibble-grænser
+
+Fordi IPv6 skrives i hex og hvert hex-ciffer er 4 bit (en nibble), er præfikser, der falder på en 4-bit-grænse, langt nemmere at læse og håndtere. Et /48, /52, /56, /60, og /64 slutter alle rent mellem hex-cifre, så subnet-delen stiller op med hele tegn i adressen. At subnetinddele et /48 i /52s giver dig 16 blokke skelnet ved et enkelt hex-ciffer; at gå til /56 giver 256 blokke på tværs af to cifre. At blive på nibble-grænser holder din adresseringsplan læsbar, hvilket betyder mere i IPv6, end at presse den sidste bit ud nogensinde kunne.
+
+## At tælle subnet og adresser
+
+Aritmetikken er ligetil. Antallet af /64-subnet inden i et kortere præfiks er 2 opløftet til forskellen i præfikslængder: et /48 rummer 2^(64-48) = 2^16 = 65.536 subnet. Antallet af adresser inden i ethvert /64 er 2^(128-64) = 2^64. Værktøjet rapporterer både adresseantallet for et præfiks og det brugbare interval, og tallene bliver store hurtigt, hvilket er præcis pointen: knaphed er ikke længere en begrænsning, du designer rundt om.
+
+## Det vigtige
+
+IPv6-subnetinddeling vender IPv4-vanen på hovedet. Du deler ikke en knap ressource; du påtvinger struktur på en reelt ubegrænset. Giv hvert subnet et /64, så autokonfiguration og naboopdagelse fungerer som designet, anmod om et /48 eller /56, så du har plads til at organisere, og subnetinddel på nibble-grænser, så din plan forbliver læsbar. Når du indsætter et præfiks i værktøjet og ser adresseantallet, behandl den overflod som tilladelse til at designe for klarhed snarere end for bevarelse.

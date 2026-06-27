@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "OAuth 2.0-autorisasjonskodeflyten"
+summary: "De fire rollene, omdirigerings-og-bytte-dansen, og hvorfor koden byttes mot en token på bakkanalen."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hva flyten er til for
+
+OAuth 2.0 (RFC 6749) lar en applikasjon handle på vegne av en bruker uten noensinne å se brukerens passord. "Logg inn med Google" er hverdagseksempelet: appen får tillatelse til å få tilgang til noe, men Google, ikke appen, håndterer legitimasjonen. **Autorisasjonskodeflyten** er den vanligste og sikreste måten å ordne dette på, og det er flyten som PKCE beskytter.
+
+## De fire rollene
+
+- **Ressurseieren** (resource owner) er brukeren som eier dataene og gir tilgang.
+- **Klienten** (client) er applikasjonen som ber om tilgang.
+- **Autorisasjonstjeneren** (authorization server) autentiserer brukeren og utsteder token (Google, en identitetsleverandør, din egen autentiseringstjeneste).
+- **Ressurstjeneren** (resource server) er API-et som holder de beskyttede dataene og aksepterer token.
+
+## Dansen, trinn for trinn
+
+1. **Omdiriger for å autorisere.** Klienten sender brukerens nettleser til autorisasjonstjenerens autoriseringsendepunkt, bærende sin `client_id`, en `redirect_uri`, den `scope` den vil ha, en tilfeldig `state`-verdi og (med PKCE) en kodeutfordring. Klienten håndterer aldri passordet.
+2. **Autentiser og samtykk.** Autorisasjonstjeneren logger brukeren inn og ber denne om å godkjenne de forespurte scopene.
+3. **Omdiriger tilbake med en kode.** Tjeneren omdirigerer nettleseren tilbake til klientens `redirect_uri` med en kortlivd **autorisasjonskode** og det opprinnelige `state`. Klienten kontrollerer at `state` samsvarer, noe som forsvarer mot cross-site request forgery ved tilbakekallet.
+4. **Bytt koden mot token.** Nå på bakkanalen (et direkte tjener-til-tjener-kall, ikke nettleseren) sender klienten koden til tokenendepunktet sammen med sin legitimasjon (en klienthemmelighet, eller PKCE-kodeverifikatoren) og mottar en **tilgangstoken**, ofte en **fornyelsestoken**, og for OpenID Connect en **ID-token**.
+5. **Kall API-et.** Klienten fremviser tilgangstoken for ressurstjeneren, som validerer den og returnerer dataene.
+
+## Hvorfor en kode, og ikke token direkte?
+
+Omveien gjennom en autorisasjonskode finnes slik at token aldri reiser gjennom nettleserens adresselinje eller historikk, der den kunne lekke. Koden som *faktisk* reiser dit, er ubrukelig alene: å løse den inn krever bakkanalkallet med klienthemmeligheten eller PKCE-verifikatoren. Den oppdelingen, en engangskode på forkanalen og den ekte token på bakkanalen, er flytens sentrale sikkerhetsegenskap.
+
+Dette er også nettopp hullet PKCE fyller for klienter som ikke kan holde en hemmelighet (enkeltsideapper og mobilapper): det binder koden til en engangsverifikator slik at en avlyttet kode likevel ikke kan byttes. Tokenene flyten returnerer, er svært ofte JWT-er.
+
+[PKCE-verktøyet](/tools/pkce) genererer og kontrollerer verifikatoren og utfordringen som denne flyten hviler på, og [JWT-verktøyet](/tools/jwt) avkoder tokenene den returnerer, begge lokalt i nettleseren din.

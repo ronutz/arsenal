@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Pencincangan kriptografi: SHA-256 dan keluarga SHA-2"
+summary: "Apa yang dijamin oleh fungsi cincangan, sifat yang menjadikannya kriptografi, dan mengapa ringkasan bukan penyulitan."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Apa itu cincangan
+
+Fungsi cincangan kriptografi mengambil masukan apa-apa saiz, satu perkataan, satu fail, satu imej cakera bergigabait, dan menghasilkan keluaran bersaiz tetap yang dipanggil **ringkasan** (digest). SHA-256 sentiasa memulangkan 256 bit (32 bait), tidak kira sama ada anda memberinya satu aksara atau sejuta. Masukan yang sama sentiasa menghasilkan ringkasan yang sama, dan perubahan satu bit pun pada masukan menghasilkan ringkasan yang sama sekali berbeza.
+
+Cap jari bersaiz tetap dan berketentuan itu ialah keseluruhan ideanya. Ringkasan ialah pengganti padat bagi data: jika dua ringkasan sepadan, anda boleh yakin masukan adalah serupa; jika berbeza, masukan berbeza di suatu tempat.
+
+## Sifat yang menjadikannya kriptografi
+
+Banyak fungsi mengecilkan data kepada saiz tetap. Sebuah fungsi memperoleh perkataan *kriptografi* dengan berpegang pada tiga jaminan tegas:
+
+- **Rintangan praimej (sehala).** Diberi satu ringkasan, mencari masukan yang menghasilkannya adalah tidak boleh dilaksanakan dari segi pengiraan. Anda tidak boleh menjalankan fungsi itu ke belakang.
+- **Rintangan praimej kedua dan perlanggaran.** Tidak boleh dilaksanakan untuk mencari dua masukan berbeza yang mencincang kepada ringkasan yang sama. Tanpa ini, ringkasan akan menjadi cap jari yang lemah.
+- **Kesan runtuhan.** Membalikkan satu bit masukan mengubah lebih kurang separuh bit keluaran, tanpa corak kelihatan yang mengaitkan masukan dengan keluaran.
+
+Ini hanya berlaku untuk fungsi yang telah bertahan dalam penelitian. SHA-1, dahulu piawai, kini **pecah** bagi rintangan perlanggaran (perlanggaran praktikal ditunjukkan pada 2017) dan tidak harus digunakan di tempat keselamatan bergantung kepadanya. Keluarga SHA-2, SHA-256, SHA-384 dan SHA-512, kekal kukuh dan ialah lalai selamat hari ini.
+
+## Cincangan bukan penyulitan
+
+Ini ialah kekeliruan paling biasa, jadi berbaloi menyatakannya dengan jelas. Penyulitan **boleh diterbalikkan** dengan kunci: anda menyulitkan untuk merahsiakan data dan menyahsulit untuk mendapatkannya semula. Cincangan **tidak mempunyai kunci dan tiada songsangan**. Anda tidak boleh "menyahcincang" ringkasan untuk memulihkan masukan, kerana keluaran jauh lebih kecil daripada masukan yang mungkin dan maklumat sengaja dimusnahkan. Pencincangan adalah untuk pengesahan, bukan kerahsiaan.
+
+## Di mana pencincangan memberi nilai
+
+- **Integriti dan hasil semak.** Terbitkan SHA-256 sesuatu fail di sebelahnya; pemuat turun yang mengira semula ringkasan boleh mengesahkan tiada apa-apa yang diubah atau rosak semasa transit.
+- **Pengalamatan kandungan.** Sistem seperti Git menamakan objek mengikut cincangannya, jadi kandungan yang sama tiba di alamat yang sama secara automatik.
+- **Tandatangan digital.** Skema tandatangan menandatangani cincangan sesuatu mesej dan bukan keseluruhan mesej, kerana ringkasan adalah kecil dan bersaiz tetap.
+
+Satu amaran penting: **kata laluan ialah kes istimewa.** Cincangan pantas biasa seperti SHA-256 ialah alat yang salah untuk menyimpan kata laluan, justru kerana ia pantas, penyerang boleh mencuba berbilion tekaan sesaat. Penyimpanan kata laluan memerlukan algoritma yang sengaja perlahan dan bergaram seperti bcrypt, scrypt atau Argon2. Guna SHA-2 untuk integriti; guna cincangan kata laluan untuk kata laluan.
+
+## Bagaimana alat mengiranya
+
+[Alat cincangan](/tools/hash) menggunakan pelaksanaan Web Crypto asli pelayar bagi SHA-1, SHA-256, SHA-384 dan SHA-512, kod sama yang disahkan yang digunakan pelayar anda untuk TLS, dan menunjukkan setiap ringkasan sebagai heksadesimal dan Base64. Tiada apa-apa dimuat naik; pengiraan berlaku secara setempat.

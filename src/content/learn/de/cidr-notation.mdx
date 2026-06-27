@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "CIDR-Notation erklärt"
+summary: "Was der Schrägstrich in 192.168.1.0/24 tatsächlich bedeutet und wie eine Präfixlänge einen Block von IP-Adressen definiert."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Das Problem, das CIDR löst
+
+Jedes Gerät in einem IP-Netzwerk braucht eine Adresse. In IPv4 ist diese Adresse 32 Bit, gewöhnlich geschrieben als vier Zahlen von 0 bis 255, getrennt durch Punkte, wie `192.168.1.10`. Die schwierige Frage ist nie „was ist eine Adresse", sondern „wie beschreibe ich einen *Bereich* von Adressen, die zusammengehören", ein einzelnes Büro, ein Subnetz, eine Kundenzuteilung. **Die CIDR-Notation** ist die kompakte Art, diesen Bereich zu schreiben.
+
+CIDR steht für Classless Inter-Domain Routing. Der „klassenlose" Teil ist wichtig: Ältere Adressierung zwang Bereiche in feste Größen (die alten Klasse-A-, B- und C-Blöcke). CIDR entfernte diese Starrheit und ließ einen Bereich *jede* Zweierpotenz-Größe haben, weshalb es heute der Standard ist.
+
+## Den Schrägstrich lesen
+
+Ein CIDR-Block sieht aus wie `192.168.1.0/24`. Der Teil nach dem Schrägstrich, die **Präfixlänge**, ist die einzelne wichtigste Zahl. Sie sagt: *Die ersten N Bits der Adresse sind fest, und der Rest ist frei zu variieren.*
+
+- `/24` bedeutet, dass die ersten 24 Bit der feste Netzwerkteil sind. Die verbleibenden 8 Bit (32 − 24) identifizieren einzelne Hosts.
+- 8 freie Bit geben 2⁸ = 256 mögliche Kombinationen, also beschreibt `192.168.1.0/24` die 256 Adressen von `192.168.1.0` bis `192.168.1.255`.
+
+Ändern Sie das Präfix, und die Blockgröße ändert sich mit ihm. Ein kleineres Präfix bedeutet *mehr* freie Bit und einen *größeren* Block:
+
+- `/16` fixiert 16 Bit, lässt 16 frei → 65.536 Adressen.
+- `/25` fixiert 25 Bit, lässt 7 frei → 128 Adressen.
+- `/30` fixiert 30 Bit, lässt 2 frei → 4 Adressen.
+
+Jeder Schritt von eins in der Präfixlänge **halbiert oder verdoppelt** den Block. Diese einzelne Regel ist die ganze Intuition.
+
+## Netzwerk, Broadcast und nutzbare Hosts
+
+Innerhalb der meisten Blöcke sind zwei Adressen besonders und nicht einem Host zuweisbar:
+
+- Die **Netzwerkadresse** ist die erste Adresse im Block, alle Host-Bits auf 0 gesetzt (`192.168.1.0` für ein `/24`). Sie benennt den Block selbst.
+- Die **Broadcast-Adresse** ist die letzte Adresse, alle Host-Bits auf 1 gesetzt (`192.168.1.255`). Hierher gesendeter Verkehr erreicht jeden Host im Block.
+
+Also hat ein `/24` insgesamt 256 Adressen, aber **254 nutzbare** für tatsächliche Hosts. Die Zahl der „nutzbaren Hosts" ist einfach die Gesamtzahl minus dieser zwei reservierten Adressen.
+
+Zwei Randfälle brechen dieses Muster, beide absichtlich:
+
+- Ein **/31** (RFC 3021) wird für Punkt-zu-Punkt-Verbindungen zwischen zwei Routern verwendet. Es hat nur 2 Adressen und, per Design, sind beide nutzbar, es gibt keinen Platz für eine separate Netzwerk- und Broadcast-Adresse, und keine wird für eine Verbindung mit genau zwei Enden benötigt.
+- Ein **/32** ist eine einzelne Adresse, eine Host-Route. Es beschreibt genau eine Maschine.
+
+## Warum dies zu verstehen sich lohnt
+
+Die Präfixlänge bestimmt, wie Netzwerke entworfen werden, wie Routen zusammengefasst werden, und wie Adressraum ausgegeben wird. Wenn Sie `10.0.0.0/8` in einer Routingtabelle oder `0.0.0.0/0` als Standardroute sehen, lesen Sie dieselbe Notation: eine Basisadresse plus eine Präfixlänge, die sagt, wie viel davon fest ist. Die Arithmetik ändert sich nie, nur die Zahlen.
+
+Sie können jeden Block im [CIDR-Rechner](/learn) ausprobieren, um seine Netzwerkadresse, Broadcast-Adresse, Maske und nutzbare Host-Anzahl sofort berechnet zu sehen, vollständig in Ihrem Browser.

@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "CIDR-notation forklaret"
+summary: "Hvad skråstregen i 192.168.1.0/24 faktisk betyder, og hvordan en præfikslængde definerer en blok af IP-adresser."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problemet som CIDR løser
+
+Hver enhed på et IP-netværk har brug for en adresse. I IPv4 er den adresse 32 bit, normalt skrevet som fire tal fra 0 til 255 adskilt af punktummer, som `192.168.1.10`. Det svære spørgsmål er aldrig "hvad er én adresse" men "hvordan beskriver jeg et *interval* af adresser, der hører sammen", et enkelt kontor, et subnet, en kundetildeling. **CIDR-notation** er den kompakte måde at skrive det interval på.
+
+CIDR står for Classless Inter-Domain Routing. Den "klasseløse" del betyder noget: ældre adressering tvang intervaller ind i faste størrelser (de gamle Klasse A-, B- og C-blokke). CIDR fjernede den stivhed og lod et interval have *enhver* topotens-størrelse, hvilket er grunden til, at det er standarden i dag.
+
+## At læse skråstregen
+
+En CIDR-blok ser ud som `192.168.1.0/24`. Delen efter skråstregen, **præfikslængden**, er det enkeltvigtigste tal. Den siger: *de første N bit af adressen er faste, og resten er frie til at variere.*
+
+- `/24` betyder, at de første 24 bit er den faste netværksdel. De resterende 8 bit (32 − 24) identificerer individuelle værter.
+- 8 frie bit giver 2⁸ = 256 mulige kombinationer, så `192.168.1.0/24` beskriver de 256 adresser fra `192.168.1.0` til `192.168.1.255`.
+
+Skift præfikset, og blokstørrelsen skifter med det. Et mindre præfiks betyder *flere* frie bit og en *større* blok:
+
+- `/16` fastsætter 16 bit, lader 16 frie → 65.536 adresser.
+- `/25` fastsætter 25 bit, lader 7 frie → 128 adresser.
+- `/30` fastsætter 30 bit, lader 2 frie → 4 adresser.
+
+Hvert trin på ét i præfikslængden **halverer eller fordobler** blokken. Den ene regel er hele intuitionen.
+
+## Netværk, broadcast og brugbare værter
+
+Inden for de fleste blokke er to adresser særlige og ikke tildelelige til en vært:
+
+- **Netværksadressen** er den første adresse i blokken, alle værtsbit sat til 0 (`192.168.1.0` for en `/24`). Den navngiver blokken selv.
+- **Broadcast-adressen** er den sidste adresse, alle værtsbit sat til 1 (`192.168.1.255`). Trafik sendt hertil når hver vært i blokken.
+
+Så en `/24` har 256 adresser i alt men **254 brugbare** til faktiske værter. Tallet "brugbare værter" er simpelthen totalen minus disse to reserverede adresser.
+
+To grænsetilfælde bryder dette mønster, begge bevidst:
+
+- En **/31** (RFC 3021) bruges til punkt-til-punkt-forbindelser mellem to routere. Den har kun 2 adresser og, ved design, er begge brugbare, der er ingen plads til en separat netværks- og broadcast-adresse, og ingen er nødvendig for en forbindelse med præcis to ender.
+- En **/32** er en enkelt adresse, en værtsrute. Den beskriver præcis én maskine.
+
+## Hvorfor dette er værd at forstå
+
+Præfikslængden styrer, hvordan netværk designes, hvordan ruter sammenfattes, og hvordan adresserum uddeles. Når du ser `10.0.0.0/8` i en routingtabel eller `0.0.0.0/0` som en standardrute, læser du den samme notation: en basisadresse plus en præfikslængde, der siger, hvor meget af den der er fast. Aritmetikken ændrer sig aldrig, kun tallene.
+
+Du kan prøve enhver blok i [CIDR-beregneren](/learn) for at se dens netværksadresse, broadcast-adresse, maske og antal brugbare værter beregnet øjeblikkeligt, helt i din browser.

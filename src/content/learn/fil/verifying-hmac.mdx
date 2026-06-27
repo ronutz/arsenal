@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Ligtas na pag-verify ng HMAC: constant time at replay"
+summary: "Bakit naglalabas ng timing side channel ang paghahambing ng mga lagda gamit ang ==, at bakit hindi pinipigilan ng wastong lagda lamang ang isang inulit na request."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang pagkalkula ng tag ang madaling bahagi
+
+Mahusay na nauunawaan ang tamang paggawa ng isang HMAC. Naiipon ang mga pagkakamali sa panig ng *pag-verify*, kung saan dalawang problema ang humuhuli sa mga nakatama sa cryptography ngunit nagkamali sa lohika sa paligid nito: kung paano mo inihahambing ang mga tag, at kung ano talaga ang pinatutunayan ng isang wastong tag.
+
+## Maghambing sa constant time
+
+Upang mag-verify, muling kinakalkula ng tatanggap ang HMAC sa mensahe at inihahambing ito sa tag na ibinigay ng nagpadala. Ang likas na paraan ng paghahambing ng dalawang string, isang karaniwang `==`, ay bumabalik sa sandaling matagpuan nito ang unang naiibang byte. Naglalabas ng oras ang maagang paglabas na iyon: ang isang tag na tama ang unang byte ay bahagyang mas matagal tanggihan kaysa sa isang mali kaagad. Sa pamamagitan ng pagsukat ng mga oras ng tugon sa maraming pagsubok, mababawi ng isang umaatake ang tamang tag byte kada byte, isang **timing attack**.
+
+Ang depensa ay isang **constant-time comparison** na palaging sinusuri ang lahat ng byte, anuman kung saan nakatago ang unang pagkakaiba, upang ang oras na ginugol ay walang ihayag tungkol sa kung gaano kalapit ang isang hula. Karamihan sa mga wika ay nagbibigay ng isa:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Huwag kailanman mag-verify ng isang lagda gamit ang karaniwang paghahambing ng string.
+
+## Ang wastong lagda ay hindi isang sariwang request
+
+Kahit ang isang perpektong na-verify na HMAC ay nagpapatunay lamang na ginawa ang mensahe ng isang taong may susi at hindi ito binago. Wala itong sinasabi tungkol sa *kailan*. Ang isang umaatake na nakakuha ng isang lehitimong nilagdaang request ay maaaring magpadalang muli ng eksaktong parehong byte, at mave-verify pa rin ang lagda. Iyon ay isang **replay attack**, at mahalaga ito para sa anumang nagdudulot ng epekto: isang bayad, isang pagbabago ng estado, isang utos.
+
+Ang pagpigil sa replay ay nangangailangan ng isang bagay sa nilagdaang datos na nagpapagawang natatangi at masusuri ang bawat request:
+
+- Isang **timestamp** sa nilagdaang payload, kung saan tinatanggihan ng server ang mga request sa labas ng isang maikling bintana (at isinasaalang-alang ang clock drift).
+- Isang **nonce**, isang natatanging halaga kada request na itinatala ng server at tumatangging tanggapin nang dalawang beses.
+
+Dapat nasa *loob* ng nilagdaang nilalaman ang dalawa, upang hindi mababago ng isang umaatake ang mga ito nang hindi sinisira ang lagda.
+
+## Ang panuntunang dalawang-bahagi
+
+Mapagkakatiwalaan ang isang request kung na-verify ang HMAC nito sa constant time **at** ito ay sariwa. Magkamali sa alinman, at ang lagda ay nagbibigay ng huwad na pakiramdam ng seguridad. Ito ang panig ng pag-verify ng parehong disiplina ng paglagda sa mga request.
+
+Pinapayagan ka ng [tool na HMAC](/tools/hmac) na magkalkula at maghambing ng mga tag para sa isang mensahe at susi nang direkta sa iyong browser, nang walang anumang ipinapadala, upang masuri mo ang isang lagda nang manu-mano habang nagde-develop o nagde-debug.

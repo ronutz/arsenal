@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "IPv6-subnätsindelning och /64-gränsen"
+summary: "Varför IPv6-subnätsindelning handlar om struktur snarare än knapphet, varför ett enskilt subnät nästan alltid är ett /64, och hur prefixdelegering delar ut adressutrymme."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## En annan anledning att subnätsindela
+
+I IPv4 handlar subnätsindelning mestadels om bevarande: adresser är knappa, så du hugger ut ett block i de minsta bitarna som fortfarande får plats i varje nätverk (logiken i artikeln [grunderna i subnätsindelning](/learn/subnetting-basics)). IPv6 tar bort det trycket helt. Ett enskilt /64-subnät innehåller 2^64 adresser, mer än hela IPv4-internet i kvadrat, så du subnätsindelar aldrig ett IPv6-nätverk för att spara plats. Du subnätsindelar det för att ge struktur: ett prefix per VLAN, per plats, per kund. Matematiken är samma prefixaritmetik som IPv4 (verktyget beräknar den med heltal av godtycklig precision), men tankesättet är det motsatta.
+
+## Varför ett subnät är ett /64
+
+Den enskilt viktigaste regeln i IPv6-adressering är att ett normalt subnät är ett /64, vilket lämnar 64 bitar för gränssnittsidentifieraren. Detta är inte ett förslag; stora delar av protokollet antar det. Tillståndslös adressautokonfiguration (behandlad i artikeln [adresskonfiguration](/learn/ipv6-address-configuration)) bygger en värds adress genom att foga en 64-bitars gränssnittsidentifierare till det annonserade prefixet, och den modifierade EUI-64-härledningen som verktyget kan utföra producerar exakt 64 bitar. Använd ett längre prefix som ett /80 eller /112 på en länk och autokonfigurationen slutar helt enkelt fungera. Adresseringsarkitekturen (RFC 4291) är byggd runt denna gräns, så det praktiska rådet är trubbigt: gör varje slutanvändarsubnät till ett /64 och försök inte vara sparsam inuti det.
+
+## Tilldelningshierarkin
+
+Om varje subnät är ett /64 arbetar platser och leverantörer i större block ovanför det:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+En ISP delegerar typiskt ett /48 eller /56 till en kund, som sedan tilldelar /64s ur det till enskilda länkar. RFC 6177 backar från den ursprungliga "/48 för alla"-vägledningen mot att ge varje plats tillräckligt med utrymme för att subnätsindela bekvämt, vilket i praktiken betyder ett /48 eller /56. Poängen är att du har utrymme över: även ett /56 ger ett hem eller litet kontor 256 separata nätverk, långt mer än det någonsin kommer att använda.
+
+## Subnätsindela på nibble-gränser
+
+Eftersom IPv6 skrivs i hex och varje hex-siffra är 4 bitar (en nibble), är prefix som faller på en 4-bitars gräns långt enklare att läsa och hantera. Ett /48, /52, /56, /60, och /64 slutar alla rent mellan hex-siffror, så subnät-delen ställer upp med hela tecken i adressen. Att subnätsindela ett /48 i /52s ger dig 16 block urskilda av en enskild hex-siffra; att gå till /56 ger 256 block över två siffror. Att stanna på nibble-gränser håller din adresseringsplan läsbar, vilket spelar mer roll i IPv6 än att klämma ut den sista biten någonsin kunde.
+
+## Att räkna subnät och adresser
+
+Aritmetiken är okomplicerad. Antalet /64-subnät inom ett kortare prefix är 2 upphöjt till skillnaden i prefixlängder: ett /48 rymmer 2^(64-48) = 2^16 = 65 536 subnät. Antalet adresser inom vilket /64 som helst är 2^(128-64) = 2^64. Verktyget rapporterar både adressantalet för ett prefix och det användbara intervallet, och talen blir stora snabbt, vilket är precis poängen: knapphet är inte längre en begränsning du designar runt.
+
+## Slutsatsen
+
+IPv6-subnätsindelning vänder IPv4-vanan på huvudet. Du delar inte en knapp resurs; du påtvingar struktur på en i praktiken obegränsad. Ge varje subnät ett /64 så att autokonfiguration och grannupptäckt fungerar som designat, begär ett /48 eller /56 så att du har utrymme att organisera, och subnätsindela på nibble-gränser så att din plan förblir läsbar. När du klistrar in ett prefix i verktyget och ser adressantalet, behandla det överflödet som tillåtelse att designa för tydlighet snarare än för bevarande.

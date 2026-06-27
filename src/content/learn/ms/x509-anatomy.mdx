@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomi sesuatu Sijil X.509"
+summary: "Apa yang hidup di dalam sijil TLS, bagaimana bait ASN.1/DER distrukturkan, apa yang sebenarnya dikawal oleh sambungan v3, dan mengapa menyahkod sijil bukan sama dengan mempercayainya."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Apa itu sijil
+
+Sijil X.509 ialah kenyataan bertandatangan yang mengikat kunci awam kepada identiti. Apabila pelayar menyambung ke laman melalui HTTPS, pelayan membentangkan sijil yang berkata, pada dasarnya, "kunci awam ini milik test.ronutz.com, dan pihak berkuasa sijil menjamin itu." Profil yang mentakrifkan medan mana yang dibawa sijil dan bagaimana ia ditafsirkan ialah RFC 5280.
+
+Ikatan itulah yang penting. Sesiapa boleh menjana pasangan kunci, jadi kunci awam yang bogel tidak membuktikan apa-apa tentang siapa di hujung satu lagi. Sijil menambah tandatangan daripada pengeluar yang pihak yang bergantung sudah percaya, mengubah kunci tanpa nama menjadi kunci dengan nama dilampirkan. Inilah asas infrastruktur kunci awam (PKI) web.
+
+## Rantaian kepercayaan
+
+Sijil tunggal jarang dipercayai dengan sendirinya. Ia dipercayai kerana ia ditandatangani oleh pengeluar, yang seterusnya ditandatangani oleh pengeluar lain, naik ke akar yang pihak yang bergantung sudah pegang dalam stor kepercayaan:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Setiap pautan ialah tandatangan: pengeluar menandatangani sijil anak dengan kunci persendirian pengeluar, dan pengesah menyemak tandatangan itu dengan kunci awam pengeluar. **Akar** dikeluarkan sendiri dan ditandatangani sendiri, itulah sebabnya sijil yang ditandatangani sendiri ialah pengganti tempatan berguna bagi akar tetapi tidak membawa apa-apa kuasa luar. Alat X.509 menanda sijil yang dikeluarkan sendiri (pengeluar sama dengan subjek) dan sama ada sijil ditanda sebagai CA, kedua-duanya memberitahu anda di mana sijil terletak dalam gambaran ini.
+
+## ASN.1 dan DER: susun atur bait
+
+Sijil bukan JSON atau teks. Ia diterangkan dalam ASN.1 (Abstract Syntax Notation One) dan dikodkan dengan Distinguished Encoding Rules (DER), dinyatakan dalam ITU-T X.690. DER ialah format tag-length-value (TLV): setiap elemen bermula dengan bait tag yang menyatakan jenisnya, kemudian panjang, kemudian sebanyak itu bait kandungan. Jenis terbina seperti SEQUENCE dan SET memegang elemen anak, jadi keseluruhan sijil ialah pokok TLV.
+
+Fail PEM ialah tepat DER itu, dikodkan Base64 dan dibalut dalam baris perisai:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Jadi menyahkod sijil bermaksud menanggalkan perisai, menyahkod daripada Base64 ke DER, kemudian berjalan menyusuri pokok TLV. Alat X.509 melakukan tepat ini dalam pelayar anda, tanpa pustaka dan tanpa panggilan rangkaian.
+
+## Struktur peringkat atas
+
+Pada peringkat paling luar, RFC 5280 mentakrifkan tiga bahagian:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+**tbsCertificate** ("to be signed", untuk ditandatangani) memegang semua kandungan sebenar. **signatureAlgorithm** menamakan bagaimana pengeluar menandatanganinya, contohnya sha256WithRSAEncryption atau ecdsa-with-SHA256. **signatureValue** ialah tandatangan itu sendiri, dikira ke atas bait DER tbsCertificate. Titik terakhir itu berbaloi dipegang: tandatangan meliputi badan untuk-ditandatangani tepat seperti dikodkan, itulah sebabnya walaupun perubahan satu bait di mana-mana dalam badan memecahkan pengesahan.
+
+## Di dalam TBSCertificate
+
+Badan untuk-ditandatangani ialah tempat alat menghabiskan kebanyakan masanya:
+
+- **Versi** hampir selalu v3, versi yang memperkenalkan sambungan.
+- **Nombor siri** ialah integer besar yang pengeluar tetapkan. Digabungkan dengan nama pengeluar, ia mengenal pasti sijil secara unik, dan ia yang dirujuk oleh senarai pembatalan.
+- **Pengeluar** (Issuer) dan **Subjek** (Subject) ialah Distinguished Name. DN ialah jujukan atribut seperti CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) dan C (country). RFC 4514 mentakrifkan persembahan satu baris, paling-khusus-dahulu, yang anda lihat, contohnya `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- **Kesahihan** (Validity) ialah cap masa notBefore dan notAfter. Ini dikodkan sebagai UTCTime atau GeneralizedTime; alat menukar kedua-duanya kepada ISO-8601 dan, terhadap jam tempatan anda, memberitahu anda sama ada sijil sah sekarang, belum-sah, atau luput.
+- **subjectPublicKeyInfo** membawa kunci awam tambah algoritmanya. Bagi RSA alat melaporkan saiz modulus (contohnya 2048-bit) dan eksponen awam (hampir selalu 65537). Bagi kunci lengkung eliptik ia melaporkan lengkung bernama (P-256, P-384, P-521), mengikut RFC 5480.
+
+## Sambungan v3
+
+Sambungan ialah tempat sijil moden mengekod kebanyakan polisinya. Setiap sambungan mempunyai pengecam, bendera kritikal dan nilai. Bendera kritikal penting: jika pihak yang bergantung tidak memahami sambungan yang ditanda kritikal, ia mesti menolak sijil dan bukannya mengabaikan medan. Alat menyahkod yang membawa berat paling banyak:
+
+- **Subject Alternative Name (SAN)** menyenaraikan identiti yang sijil sebenarnya sah untuknya, sebagai nama DNS, alamat IP, alamat e-mel atau URI. Bagi TLS, ini medan yang pelayar semak, bukan CN. Sijil untuk `test.ronutz.com` yang meninggalkan nama itu daripada SAN-nya akan gagal pengesahan dalam klien moden walaupun CN sepadan.
+- **Key Usage** mengekang apa kunci boleh lakukan pada peringkat rendah: digitalSignature, keyEncipherment, keyCertSign, cRLSign dan lain-lain. Sijil CA membawa keyCertSign; daun TLS biasanya membawa digitalSignature dan keyEncipherment.
+- **Extended Key Usage (EKU)** menamakan tujuan peringkat lebih tinggi seperti serverAuth (pelayan TLS), clientAuth (klien TLS), codeSigning atau emailProtection.
+- **Basic Constraints** menyatakan sama ada sijil ialah CA, dan jika ya, berapa banyak CA perantara boleh muncul di bawahnya (panjang laluan). Ini medan yang menghentikan sijil daun daripada digunakan untuk menandatangani sijil lain.
+- **Subject Key Identifier** dan **Authority Key Identifier** ialah cincangan yang membenarkan pengesah memadankan sijil kepada pengeluarnya dengan cepat semasa membina rantaian.
+
+## Cap jari
+
+**Cap jari** (fingerprint) sijil hanyalah cincangan kriptografi bagi bait DER sijil, biasanya SHA-256 (dan, bagi rujukan lebih lama, SHA-1). Ia bukan medan dalam sijil; ia dikira ke atas keseluruhan benda. Cap jari memberi anda nilai pendek, panjang tetap, untuk membandingkan dua sijil bagi kesamaan atau menyemat sijil yang diketahui. Alat mengira kedua-dua SHA-256 dan SHA-1 secara setempat dengan Web Crypto API, jadi bait yang anda tampal tidak pernah dihantar ke mana-mana. Untuk lebih lanjut tentang apa cincangan itu dan bukan, lihat artikel cincangan.
+
+## Menyahkod bukan mengesahkan
+
+Ini ialah idea tunggal paling penting, dan ia mencerminkan kewaspadaan sama yang terpakai pada JSON Web Tokens. Membaca medan sijil memberitahu anda apa yang ia *dakwa*. Ia tidak memberitahu anda bahawa dakwaan itu *benar*. Pengesahan penuh ialah proses berasingan yang lebih berat: menyemak bahawa tandatangan berantai ke akar dipercayai, bahawa tiada satu pun sijil dalam rantaian luput atau dibatalkan, bahawa nama yang anda sambung kepadanya ada dalam SAN, dan bahawa penggunaan kunci membenarkan apa yang anda lakukan.
+
+Penyahkod sijil, ini termasuk, ialah instrumen pemeriksaan dan pembelajaran. Ia menunjukkan anda dengan tepat apa yang pengeluar tegaskan dan bagaimana ia dikodkan. Layan output sebagai pembacaan setia dokumen, bukan sebagai keputusan sama ada untuk mempercayainya.

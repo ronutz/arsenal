@@ -1,0 +1,62 @@
+---
+slug: certificate-formats
+title: "PEM, DER e os formatos de arquivo de certificado"
+summary: "Por que o mesmo certificado vem em tantas formas de arquivo, o que PEM e DER de fato são, e o que .crt, .pem, .pfx e .p12 realmente contêm."
+concepts: ["x509", "pem", "der", "pkcs12", "pkcs7", "encoding"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-signing-request", "base64"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Um certificado, muitos invólucros
+
+Uma fonte comum de confusão é que um único certificado pode chegar como um `.crt`, um `.cer`, um `.pem`, um `.der`, ou enterrado dentro de um `.pfx`, e as pessoas presumem que estas são coisas diferentes. Geralmente não são. O certificado é uma estrutura fixa (o leiaute ASN.1 descrito no [artigo de anatomia](/learn/x509-anatomy)); o que muda é como aqueles bytes são codificados e o que mais é empacotado junto deles. Conhecer o punhado de formatos reais faz as extensões de arquivo deixarem de ser misteriosas.
+
+## DER: o binário canônico
+
+No fundo está o DER, as Distinguished Encoding Rules da ITU-T X.690. O DER é a serialização binária real da árvore ASN.1 do certificado: uma sequência de registros tag-length-value, com exatamente uma codificação válida para qualquer valor dado. Esse determinismo importa, porque a assinatura do emissor é computada sobre esses bytes exatos. Um arquivo `.der` (e frequentemente um arquivo `.cer`) é DER cru sem envoltório de texto. A ferramenta X.509 decodifica esse binário diretamente.
+
+## PEM: DER envolto em texto
+
+PEM é DER que foi codificado em Base64 e envolto em linhas de armadura, definido pela RFC 7468:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...   (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+PEM existe porque o binário não sobrevive a ser colado em um e-mail, um arquivo de configuração ou um terminal, ao passo que o texto Base64 sobrevive. O rótulo nas linhas `BEGIN`/`END` lhe diz o que o corpo é, e há vários:
+
+- `CERTIFICATE` é um certificado X.509.
+- `CERTIFICATE REQUEST` é um CSR (veja o [artigo de requisição de assinatura](/learn/certificate-signing-request)).
+- `PRIVATE KEY` é uma chave privada PKCS#8; `RSA PRIVATE KEY` e `EC PRIVATE KEY` são os formatos mais antigos específicos de chave.
+- `PUBLIC KEY` é um SubjectPublicKeyInfo nu.
+- `X509 CRL` é uma lista de revogação de certificados.
+
+Um único arquivo PEM pode conter vários blocos um atrás do outro, que é como o certificado folha de um servidor mais sua cadeia intermediária são enviados em um único `fullchain.pem`. Para a codificação por baixo, veja o [artigo de Base64](/learn/base64).
+
+## A extensão de arquivo não é o formato
+
+Esta é a parte que confunde as pessoas: `.crt`, `.cer`, `.pem` e `.key` descrevem intenção, não codificação. Um `.crt` pode ser PEM ou DER. Um `.cer` é frequentemente DER no Windows mas PEM em outros lugares. Um `.key` é uma chave privada, mas poderia ser PKCS#1, PKCS#8 ou SEC1, em PEM ou DER. A única maneira confiável de saber o que você tem é olhar os primeiros bytes: PEM começa com a linha visível `-----BEGIN`, enquanto DER começa com o byte de tag de SEQUENCE `0x30`. A ferramenta aceita qualquer um, então você pode colar um bloco PEM ou carregar DER cru sem converter primeiro.
+
+## Contêineres que agrupam mais de uma coisa
+
+Dois formatos PKCS empacotam múltiplos objetos juntos:
+
+- O **PKCS#7** (`.p7b`, `.p7c`) carrega um ou mais certificados, tipicamente um certificado mais sua cadeia, mas nenhuma chave privada. É frequentemente usado para entregar a alguém uma cadeia completa em um único arquivo.
+- O **PKCS#12** (`.pfx`, `.p12`), definido pela RFC 7292, agrupa um certificado, sua cadeia e a chave privada correspondente em um único blob protegido por senha. É isto que você exporta de um repositório de certificados do Windows ou importa em um balanceador de carga quando quer que a chave e o certificado viajem juntos. Por conter a chave privada, um arquivo PKCS#12 é sensível e a senha é a única coisa protegendo-o.
+
+## Codificações de chave privada
+
+Chaves privadas têm seu próprio pequeno zoológico. O **PKCS#1** (`RSA PRIVATE KEY`) é o formato original só-RSA. O **SEC1** (`EC PRIVATE KEY`) é o equivalente para chaves de curva elíptica. O **PKCS#8** (`PRIVATE KEY`, opcionalmente `ENCRYPTED PRIVATE KEY`) é o invólucro moderno, neutro quanto a algoritmo, que pode conter qualquer um, e é o que a maioria das ferramentas atuais emite. Um decodificador de certificados nunca precisa da chave privada, e você nunca deve colar uma chave privada em uma ferramenta que você não controla; a ferramenta X.509 é para certificados, que são públicos por design.
+
+## Convertendo entre eles
+
+Por a estrutura interna ser idêntica, a conversão é sem perdas e rotineira. Com OpenSSL, PEM para DER é `openssl x509 -in cert.pem -outform der -out cert.der`, e o inverso troca as formas de in e out. Construir um PKCS#12 a partir de um certificado e uma chave separados é `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`. Nenhum destes muda o certificado em si; eles apenas o reembalam.
+
+## Embalagem, não substância
+
+A lição é que PEM versus DER, e `.crt` versus `.pfx`, são questões de transporte e agrupamento, não do que o certificado diz. Remova a armadura, decodifique de Base64 e ignore o contêiner, e por baixo de cada um deles está a mesma declaração ASN.1 assinada vinculando uma chave pública a um nome. O trabalho da ferramenta é descascar aquela embalagem no seu navegador e lhe mostrar a estrutura por dentro, sem nenhum arquivo jamais deixar a página.

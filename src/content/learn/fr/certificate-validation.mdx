@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Comment la validation de certificat fonctionne réellement"
+summary: "Les étapes qu'un client exécute pour décider qu'un certificat est digne de confiance : construire la chaîne, vérifier signatures et dates, apparier le nom et faire respecter les contraintes."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Lire n'est pas faire confiance
+
+L'[article d'anatomie](/learn/x509-anatomy) se termine sur un point qui mérite d'être répété : décoder un certificat vous dit ce qu'il *prétend*, non si la prétention est *vraie*. La validation est le processus distinct qu'un client TLS exécute pour décider s'il fait confiance au certificat devant lui. Elle est régie principalement par la RFC 5280, et c'est une conjonction de vérifications indépendantes, dont chacune doit réussir. Un décodeur, cet outil compris, vous montre les entrées de ce processus ; le client est ce qui le fait respecter.
+
+## Étape 1 : construire la chaîne
+
+Un certificat feuille n'est presque jamais digne de confiance à lui seul. Le client doit construire un chemin de la feuille jusqu'à une racine qu'il détient déjà dans son magasin de confiance. Il fait cela en suivant les noms d'émetteur : l'Issuer de la feuille devrait apparier le Subject d'un intermédiaire, et l'Issuer de cet intermédiaire devrait apparier le suivant au-dessus, jusqu'à atteindre une racine auto-émise. Les extensions Authority Key Identifier et Subject Key Identifier accélèrent cet appariement en laissant le client lier un certificat à son émetteur par le hachage de la clé, et non par le nom seul. Si aucun chemin vers une racine de confiance ne peut être construit, la validation échoue immédiatement, peu importe à quel point la feuille est bien formée.
+
+## Étape 2 : vérifier chaque signature
+
+Une chaîne n'a de sens que si chaque maillon est cryptographiquement solide. Pour chaque certificat du chemin, le client vérifie que la signature a été produite par la clé privée de l'émetteur, en la contrôlant face à la clé publique de l'émetteur sur les octets DER du corps à-signer de l'enfant. Parce que la signature couvre ces octets exacts, un seul octet altéré n'importe où dans le corps brise la vérification. C'est aussi pourquoi l'algorithme de signature (par exemple sha256WithRSAEncryption ou ecdsa-with-SHA256) importe : une chaîne n'est aussi forte que sa signature et son hachage les plus faibles. Pour ce qu'un hachage garantit ici, voir l'[article de hachage](/learn/hashing).
+
+## Étape 3 : vérifier la fenêtre de validité
+
+Chaque certificat porte un horodatage notBefore et notAfter, et le client vérifie l'heure actuelle face à la fenêtre de chaque certificat de la chaîne, non seulement de la feuille. Un certificat qui est expiré, ou pas encore valide, échoue. L'outil effectue cette même vérification face à votre horloge locale et rapporte si un certificat est valide maintenant, pas-encore-valide ou expiré, ce qui est souvent la façon la plus rapide de diagnostiquer un avertissement « votre connexion n'est pas privée ».
+
+## Étape 4 : apparier le nom
+
+Une chaîne valide prouve que le certificat est authentique, mais non qu'il a été émis pour le site que vous visitez. Le client vérifie que l'hôte auquel il s'est connecté apparaît dans l'extension Subject Alternative Name du certificat. Les clients modernes ignorent le Common Name entièrement à cette fin et ne regardent que le SAN, suivant les règles d'appariement d'identité de la RFC 6125. Les jokers comme `*.ronutz.com` apparient un seul label, donc ils couvrent `api.ronutz.com` mais pas `ronutz.com` lui-même ou `a.b.ronutz.com`. Un certificat dont la chaîne est parfaite mais dont le SAN ne liste pas le nom que vous avez demandé est tout de même rejeté.
+
+## Étape 5 : faire respecter les contraintes
+
+Les extensions v3 ne sont pas une décoration ; ce sont des règles que le client fait respecter. Basic Constraints dit si un certificat peut agir comme une CA et, à travers la longueur du chemin, combien d'intermédiaires peuvent siéger en dessous, ce qui empêche un certificat feuille d'être utilisé pour signer d'autres certificats. Key Usage et Extended Key Usage contraignent ce que la clé est autorisée à faire : un certificat de serveur TLS doit porter l'EKU serverAuth, et une extension marquée comme critique que le client ne comprend pas force un rejet plutôt qu'un haussement d'épaules. L'outil fait ressortir ces champs pour que vous puissiez voir exactement quelles contraintes un émetteur a fixées.
+
+## Étape 6 : vérifier la révocation
+
+Enfin, un certificat qui était valide à l'émission peut avoir été révoqué depuis, par exemple parce que sa clé privée a fui. Le client peut consulter une CRL ou un répondeur OCSP pour le découvrir. En pratique, c'est l'étape la plus faible et la plus inconsistante, et l'industrie se dirige vers des certificats de courte durée à la place, ce que l'[article de révocation](/learn/certificate-revocation) couvre en entier.
+
+## La validation est un ET, non un OU
+
+La raison pour laquelle un seul certificat altéré ou mal configuré est rejeté est que toutes ces vérifications se combinent avec ET logique. La chaîne doit construire, chaque signature doit vérifier, chaque certificat doit être dans sa fenêtre de validité, le nom doit être dans le SAN, les contraintes doivent permettre l'usage, et le certificat ne doit pas être révoqué. Un décodeur présente les assertions du certificat clairement et fidèlement ; traitez cela comme une lecture attentive du document, et rappelez-vous que le verdict appartient au client qui exécute les six vérifications.

@@ -1,0 +1,43 @@
+---
+slug: uuid-versions
+title: "UUID-versioner förklarade: v1 till v8"
+summary: "Hela UUID-familjen på ett ställe, från tid-och-MAC-v1 via slumpmässig v4 till tidsordnad v7, plus de namnbaserade versionerna och hur versions- och variantbitarna läses."
+concepts: ["uuid", "uuidv4", "uuidv7", "rfc9562", "version", "variant"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ett format, flera recept
+
+En UUID har alltid samma form: 128 bitar, skrivna som 32 hexadecimala siffror i den välbekanta grupperingen `8-4-4-4-12`. Det som ändras mellan versionerna är hur dessa bitar genereras. Den nuvarande standarden, RFC 9562 (publicerad 2024, som ersätter den länge tjänstgörande RFC 4122), definierar versionerna 1 till 8, var och en en annan strategi för att fylla 128 bitar på ett sätt som förblir unikt utan en central auktoritet. [UUID-översikten](/learn/uuid) fokuserar på de två du kommer att använda mest, v4 och v7; den här artikeln kartlägger hela familjen så att du kan känna igen och välja vilken som helst.
+
+## Hur en UUID tillkännager sin version
+
+Två små fält är reserverade oavsett version, och verktyget läser båda. **Versionen** är kodad i fyra bitar (den första hex-siffran i den tredje gruppen), så en `4` där betyder en v4-UUID och en `7` betyder v7. **Varianten** är kodad i de översta bitarna i nästa grupp (den första hex-siffran i den fjärde gruppen är vanligen `8`, `9`, `a` eller `b` för standardvarianten). Tillsammans talar de om för en läsare hur de återstående bitarna ska tolkas, vilket är varför ett verktyg kan märka en UUID:s version bara genom att inspektera den, utan sammanhang.
+
+## De tidsbaserade versionerna: v1, v6, v7
+
+Tre versioner kodar en tidsstämpel, vilket gör dem ungefär tidsordnade, en användbar egenskap för databasnycklar (se artikeln [databasnycklar](/learn/uuid-database-keys)):
+
+- **Version 1** kombinerar en 60-bitars tidsstämpel med en kloecksekvens och en nodidentifierare, där noden traditionellt är maskinens MAC-adress. Den fungerar, men läcker MAC:en och genereringstiden, och ordningen i dess tidsstämpelfält sorterar inte rent som text.
+- **Version 6** är v1 med tidsstämpelfälten omarrangerade så att byten sorterar i kronologisk ordning. Den finns som en sömlös förbättring för system som redan investerat i v1 och vill ha sorterbarhet.
+- **Version 7** använder en rättfram Unix-tidsstämpel i millisekunder följd av slumpmässiga bitar. Den är den moderna rekommendationen för nya tidsordnade identifierare: sorterbar, ingen hårdvaruläcka och enkel. För det mesta nya arbete som vill ha ordnade nycklar är v7 svaret.
+
+## De namnbaserade versionerna: v3 och v5
+
+Versionerna 3 och 5 är deterministiska: samma indata ger alltid samma UUID. Du hashar en namnrymdsidentifierare tillsammans med ett namn, och digesten blir UUID:n. **Version 3** använder MD5 och **version 5** använder SHA-1; v5 föredras eftersom SHA-1, som här inte används för säkerhet, är det mindre sköra valet. Dessa är versionen att gripa efter när du behöver en stabil identifierare härledd från befintliga data, till exempel en konsekvent UUID för en given URL eller filnamn, så att två system oberoende beräknar samma värde.
+
+## Den slumpmässiga versionen: v4
+
+**Version 4** fyller 122 bitar med slumpmässighet (de andra 6 är de fasta versions- och variantbitarna). Den bär ingen tidsstämpel, ingen MAC och ingen struktur, vilket gör den till det säkra standardvalet när du helt enkelt vill ha en ogenomskinlig, kollisionsbeständig identifierare och inte bryr dig om ordning. Dess enda nackdel är just denna brist på ordning, som skadar databasindexets lokalitet och motiverade v7. Verktygets v4-generering använder en kryptografiskt säker slumpkälla i din webbläsare, så värdena rör aldrig en server.
+
+## Version 8 och de speciella UUID:erna
+
+**Version 8** är reserverad för egen eller experimentell användning: bara versions- och variantbitarna är fasta, och resten är ditt att definiera, vilket låter ett system koda sina egna data i UUID-form och ändå förbli en giltig UUID. Det finns också två speciella värden att känna igen: **nil**-UUID:n, alla nollor, och **max**-UUID:n, alla ettor, båda använda som vaktposter. Version 2 finns historiskt (en DCE Security-variant) men ses sällan i praktiken och är inget du skulle välja idag.
+
+## Att välja efter avsikt
+
+Familjen är stor, men valet är oftast snabbt när du väl namnger vad du behöver. För en ogenomskinlig, ogissbar identifierare utan ordning, använd **v4**. För en stabil identifierare härledd deterministiskt från befintliga data, använd **v5**. För en tidsordnad nyckel som indexerar väl, använd **v7**. De äldre tidsbaserade versionerna (v1, v6) spelar mest roll för kompatibilitet med befintliga system, och v8 finns där när du verkligen behöver koda din egen struktur. När du klistrar in en UUID i verktyget och det rapporterar versionen, talar den enda siffran om för dig vilket av dessa recept som producerade den.

@@ -1,0 +1,42 @@
+---
+slug: base64url
+title: "Base64URL dan abjad selamat-URL"
+summary: "Mengapa JWT dan PKCE menggunakan abjad Base64 yang berbeza, dua aksara yang berubah, dan apa yang berlaku pada pengisian."
+concepts: ["base64", "base64url", "rfc4648", "url-safe", "padding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "character-encoding", "jwt-anatomy", "pkce"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Satu pengekodan, dua abjad
+
+Base64 menukar bait sewenang-wenangnya kepada 64 aksara boleh cetak, empat aksara keluaran bagi setiap tiga bait masukan. Abjad piawai (RFC 4648, seksyen 4) ialah `A` hingga `Z`, `a` hingga `z`, `0` hingga `9` serta dua simbol `+` dan `/`, dengan `=` digunakan untuk mengisi kumpulan terakhir.
+
+Masalahnya ialah `+`, `/` dan `=` mempunyai makna khas dalam konteks lain. Dalam URL, `/` ialah pemisah laluan, `+` dari segi sejarah bermaksud ruang dalam rentetan pertanyaan, dan `=` memisahkan kunci daripada nilai. Dalam nama fail, `/` adalah haram pada kebanyakan sistem. Maka Base64 mentah tidak boleh diletakkan dalam URL atau nama fail tanpa rosak atau memerlukan pelarian tambahan.
+
+## Apa yang diubah oleh Base64URL
+
+Base64URL (RFC 4648, seksyen 5) ialah pengekodan yang sama dengan abjad yang lebih selamat. Tepat dua aksara berbeza:
+
+- `+` menjadi `-` (sengkang)
+- `/` menjadi `_` (garis bawah)
+
+Semua aksara lain adalah serupa, dan aritmetik tiga bait kepada empat aksara tidak berubah. Hasilnya ialah rentetan yang bertahan apabila diletakkan dalam laluan URL, parameter pertanyaan atau nama fail, tanpa sebarang pengekodan peratus.
+
+Pengisian ialah perbezaan satu lagi. Base64 piawai mengisi kumpulan terakhir hingga gandaan empat dengan `=`. Base64URL biasanya **meninggalkan pengisian** sepenuhnya, kerana `=` juga menyusahkan dalam URL. Penyahkod sentiasa boleh mengira semula berapa banyak pengisian yang dibuang daripada panjang rentetan, jadi tiada apa-apa yang hilang.
+
+## Di mana ia benar-benar ditemui
+
+Base64URL bukan sudut eksotik spesifikasi. Ia ialah pengekodan di sebalik beberapa perkara yang anda gunakan sentiasa:
+
+- **JSON Web Token.** Sebuah JWT terdiri daripada tiga segmen Base64URL yang disambung dengan titik (`header.payload.signature`). Penggantian `+`/`/` dan `=` yang ditinggalkan ialah sebab tepat mengapa token ialah satu rentetan bersih yang selamat-URL.
+- **PKCE.** `code_challenge` dalam aliran kod kebenaran OAuth ialah pengekodan Base64URL (tanpa pengisian) bagi cincangan SHA-256, tepat supaya ia boleh merentas dalam URL.
+- **Web Push, JWK dan banyak token** mengekod medan binari mereka dengan cara yang sama.
+
+## Satu amaran praktikal
+
+Oleh sebab abjad bertindih dengan begitu banyak, rentetan Base64URL dan rentetan Base64 piawai boleh kelihatan hampir serupa, dan nilai tanpa `+`, `/` atau `=` adalah sah dalam kedua-duanya. Ketakserasian hanya muncul apabila bait mentah menghasilkan `-`/`_` atau `+`/`/`, ketika itu penyahkodan dengan abjad yang salah gagal atau menghasilkan karut. Apabila token tidak menyahkod, abjad ialah perkara pertama untuk diperiksa.
+
+[Alat Base64](/tools/base64) mengekod dan menyahkod kedua-dua abjad piawai dan selamat-URL, mengendalikan pengisian yang hilang dan menunjukkan bait mentah, semuanya dalam pelayar anda. Tiada apa-apa yang anda tampal dihantar ke mana-mana.

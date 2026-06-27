@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Cómo los hosts IPv6 obtienen direcciones: SLAAC y DHCPv6"
+summary: "Cómo un host IPv6 se configura a sí mismo desde el link-local hacia arriba, qué deciden los anuncios de router, y la diferencia entre SLAAC, direcciones de privacidad, y DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Autoconfiguración por defecto
+
+Una de las características definitorias de IPv6 es que un host puede configurar una dirección funcional sin ningún servidor y sin ninguna configuración manual. Donde IPv4 se apoya en DHCP para repartir direcciones, IPv6 puede construirlas localmente a partir de información que el router difunde. El resultado es que una sola interfaz normalmente acaba con varias direcciones a la vez, cada una para un propósito distinto, lo que sorprende a la gente que viene de IPv4.
+
+## El link-local viene primero
+
+Antes que nada, toda interfaz IPv6 configura una dirección link-local en `fe80::/10` (el tipo que la herramienta etiqueta como link-local). Se genera localmente, nunca se enruta más allá del enlace local, y existe para que el host pueda hablar con vecinos y routers inmediatamente, incluso para preguntar cómo configurar el resto de sus direcciones. El link-local es el bootstrap: siempre está presente, y la maquinaria de descubrimiento de vecinos en el artículo de [descubrimiento de vecinos](/learn/ipv6-neighbor-discovery) corre sobre él.
+
+## El anuncio de router decide el método
+
+Para obtener una dirección globalmente enrutable, el host escucha Anuncios de Router (Router Advertisements), mensajes periódicos que un router envía (y que un host puede solicitar con una Solicitud de Router, Router Solicitation). El anuncio lleva el prefijo on-link, casi siempre un /64, y dos flags que le dicen al host cómo configurarse:
+
+- La **flag M (Managed)** dice "usa DHCPv6 para obtener una dirección".
+- La **flag O (Other)** dice "configura tu dirección tú mismo, pero obtén otros ajustes como DNS de DHCPv6".
+
+Con ambas flags apagadas, el host usa autoconfiguración sin estado pura. Por esto la asignación de dirección IPv6 es una negociación entre lo que el router anuncia y lo que el host elige, en vez de un único servidor repartiendo concesiones.
+
+## SLAAC: construyendo tu propia dirección
+
+La Autoconfiguración de Dirección sin Estado (Stateless Address Autoconfiguration, RFC 4862) es el mecanismo que un host usa para formar su propia dirección: toma el prefijo /64 del anuncio y anexa un identificador de interfaz de 64 bits. Esta es toda la razón por la que una subred debe ser un /64 (véase el artículo de [subredes](/learn/ipv6-subnetting)). Ningún servidor rastrea la asignación, que es lo que "sin estado" significa.
+
+El identificador de interfaz puede formarse de varias maneras, y esto tiene consecuencias reales de privacidad:
+
+- El **EUI-64 modificado** deriva el identificador de la dirección MAC de la interfaz, lo que la herramienta puede demostrar. Es estable y conveniente, pero embebe la dirección de hardware en toda dirección IPv6 que el host usa, dejando a un servidor remoto rastrear el dispositivo a través de redes.
+- **Identificadores estables y opacos** (RFC 7217) producen un identificador que es estable por red pero no revela ninguna dirección de hardware, corrigiendo el problema de rastreo entre redes mientras mantiene una dirección consistente en un enlace dado.
+- **Direcciones temporales (de privacidad)** (RFC 8981, que vuelve obsoleta la anterior RFC 4941) generan identificadores aleatorios que rotan con el tiempo, así que las conexiones salientes no presentan una dirección de larga duración en absoluto.
+
+Los sistemas operativos modernos típicamente usan una dirección estable para conexiones entrantes y una dirección temporal rotativa para las salientes, que es por lo que una sola interfaz muestra múltiples direcciones globales.
+
+## Detección de Dirección Duplicada
+
+Antes de que un host realmente use cualquier dirección que haya formado, corre la Detección de Dirección Duplicada (Duplicate Address Detection): envía una Solicitud de Vecino (Neighbor Solicitation) para su propia dirección tentativa y espera. Si alguien responde, la dirección ya está en uso y no debe ser reclamada. El DAD es un seguro barato de que la autoconfiguración no produce colisiones, y se apoya en los mismos mensajes de descubrimiento de vecinos descritos en el artículo compañero.
+
+## DHCPv6 para control con estado
+
+Cuando un administrador quiere rastrear y asignar direcciones centralmente, DHCPv6 (RFC 8415) provee asignación con estado, muy como el DHCP de IPv4: un servidor concede direcciones específicas y registra quién tiene qué. Hay también un modo DHCPv6 sin estado que reparte solo configuración como servidores DNS mientras el host aún forma su propia dirección por SLAAC, que es lo que la flag O selecciona. DHCPv6 es también donde vive la delegación de prefijo, el mecanismo por el que un router doméstico recibe un prefijo entero para hacer subredes detrás de él.
+
+## Muchas direcciones, por diseño
+
+El modelo mental a llevarse es que un host IPv6 es en gran parte autoconducido. Siempre tiene una dirección link-local, aprende el prefijo y el método de configuración de los anuncios de router, y dependiendo de las flags o construye sus propias direcciones globales con SLAAC o las concede de DHCPv6, a menudo acabando con una dirección estable y una temporal rotativa lado a lado. Cuando la herramienta te muestra una dirección e identifica su tipo, ese tipo te dice cuál de estos caminos la produjo.

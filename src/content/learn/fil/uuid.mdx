@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "Mga UUID: random na v4 at time-ordered na v7"
+summary: "Paano nananatiling natatangi ang isang 128-bit na identifier nang walang sentral na awtoridad, at bakit nagiging default na ang v7 para sa mga database key."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ano ang isang UUID
+
+Ang UUID (Universally Unique Identifier, tinatawag ding GUID) ay isang 128-bit na halagang ginagamit upang lagyan ng label ang isang bagay, isang row, isang request, isang file, nang hindi nakikipag-ugnayan sa iba. Ang pangako sa pangalan ay na ang dalawang malaya na nabuong UUID ay, sa lahat ng praktikal na layunin, hindi kailanman magkapareho. Hinahayaan nito ang magkakahiwalay na serbisyo, mga offline na device, at mga parallel na proseso na lahat ay makagawa ng mga identifier na hindi magkakabanggaan kapag pinagsama ang datos sa kalaunan, nang walang sentral na taga-alok na namamahagi ng mga numero.
+
+Ang isang UUID ay isinusulat bilang 32 hexadecimal digit sa limang pangkat na pinaghihiwalay ng gitling: `8-4-4-4-12`, halimbawa `550e8400-e29b-41d4-a716-446655440000`. Dalawang tiyak na posisyon ang hindi random: isang **version** nibble ang tumutukoy kung paano nabuo ang UUID, at isang **variant** field ang nagmamarka ng pamantayan ng layout (ang moderno ay ang RFC 4122 / RFC 9562).
+
+## Version 4: random
+
+Sa malayo ang pinakakaraniwang anyo, ang **version 4** ay halos ganap na random: 122 sa 128 bit ang nanggagaling sa isang ligtas na random source, na ang natitirang bit ay nakapirmi upang markahan ang version at variant. Sa ganoong dami ng entropy, ang tsansang magbanggaan ang dalawang v4 UUID ay bale-wala para sa anumang makatotohanang dami ng identifier.
+
+Ang kahinaan nito ay hindi ang pagiging natatangi kundi ang **pagkakasunod-sunod**. Dahil random ang mga halaga ng v4, ang magkakasunod na insert ay kumakalat sa buong key space. Kapag ginamit ang isang v4 UUID bilang database primary key, ang randomness na iyon ay nakikipaglaban sa B-tree index: ang mga bagong row ay napupunta sa di-makatuwirang mga lugar, nakakasakit sa cache locality at naghihiwa-hiwalay sa index sa paglipas ng panahon.
+
+## Version 7: time-ordered
+
+Ang **version 7**, isinapamantayan sa RFC 9562 (2024), ay dinisenyo upang ayusin mismo iyon. Inilalagay nito ang isang **48-bit na Unix timestamp sa milliseconds** sa pinaka-makabuluhang bit, na sinusundan ng mga random na bit para sa pagiging natatangi sa loob ng parehong millisecond. Dahil nangunguna ang timestamp, ang mga v7 UUID ay **sumusunod sa pagkakasunod ng paglikha** kapag inihambing bilang teksto o byte.
+
+Ang nag-iisang katangiang iyon ang nagpapagawa sa v7 na isang higit na mas mahusay na primary key: ang mga bagong row ay idinaragdag malapit sa dulo ng index sa halip na kumalat, na ibinabalik ang locality na tinatamasa ng mga sequential integer key, habang pinananatili ang desentralisadong pagiging natatangi ng isang UUID. Ang isang v7 na halaga ay nagdadala rin ng sarili nitong oras ng paglikha, na maaari mong basahin nang diretso mula sa mga nangungunang bit na iyon, ginagawa ito ng [tool na UUID](/tools/uuid) kapag sinuri mo ang isa.
+
+## Ang iba pang version, sa madaling salita
+
+Para sa kabuuan: ang **version 1** ay pinagsasama ang isang timestamp sa MAC address ng makinang bumubuo, na naglalabas ng pagkakakilanlan ng hardware at oras ng paglikha kaya nagdudulot ng alalahanin sa privacy. Ang **version 3 at 5** ay nakabatay sa pangalan, hina-hash nila ang isang namespace dagdag ang isang pangalan (gamit ang MD5 at SHA-1 ayon sa pagkakasunod) upang makagawa ng isang deterministikong UUID, kapaki-pakinabang kapag ang parehong input ay dapat palaging mag-map sa parehong identifier. Ang **version 6** ay muling inaayos ang mga field ng version 1 upang maging sortable, ngunit para sa mga bagong sistema, ang v7 ang inirerekomendang time-ordered na pagpipilian.
+
+## Pagpili ng isa
+
+Abutin ang **v4** kapag kailangan mo lamang ng isang random, opaque na identifier at hindi mahalaga ang pagkakasunod-sunod. Abutin ang **v7** kapag ang UUID ay magiging isang database key o anumang iba pang nakikinabang sa pag-sort ayon sa oras ng paglikha, na lalong nagiging default na rekomendasyon. Bumubuo ang [tool na UUID](/tools/uuid) ng dalawa at dinedecode ang version, variant, at nakapaloob na timestamp ng anumang UUID na ipeyst mo, lubos sa iyong browser.

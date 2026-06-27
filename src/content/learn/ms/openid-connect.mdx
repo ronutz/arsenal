@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: identiti di atas OAuth 2.0"
+summary: "Cara OIDC menambah pengesahan pada kebenaran OAuth, apa itu token ID, dan mengapa aliran kod dengan PKCE ialah laluan yang disyorkan."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Kebenaran bukan pengesahan
+
+OAuth 2.0 menjawab "adakah aplikasi ini dibenarkan mencapai sumber itu bagi pihak pengguna?". Ia ialah protokol *kebenaran*, dan ia dengan sengaja tidak mengatakan apa-apa yang piawai tentang *siapa pengguna itu*. Namun aplikasi cuba menggunakannya semula untuk log masuk, dengan cara yang tidak serasi dan kadangkala tidak selamat. **OpenID Connect (OIDC)** ialah piawai yang membetulkan ini: lapisan identiti nipis di atas OAuth 2.0 yang menambah pengesahan tanpa membuang apa-apa yang sudah dilakukan OAuth.
+
+## Token ID
+
+Tambahan yang mentakrifkannya ialah **token ID**, dan ia ialah JWT. Sementara token akses OAuth bertujuan untuk API dan selalunya legap kepada pelanggan, token ID bertujuan untuk *pelanggan* dan membawa tuntutan piawai tentang pengguna yang disahkan:
+
+- `iss` (pengeluar) dan `aud` (khalayak, pelanggan yang ia dikeluarkan untuknya)
+- `sub` (pengecam pengguna yang stabil dan unik)
+- `exp` dan `iat` (luput dan masa dikeluarkan)
+- `nonce` (mengikat token kepada permintaan log masuk tertentu, mengalahkan main semula)
+- tuntutan profil seperti `name`, `email` dan `picture` apabila skop tersebut diberikan
+
+Oleh sebab ia ialah JWT, pelanggan mengesahkan tandatangan token ID dan mengesahkan tuntutan itu tepat seperti yang diterangkan bagi mana-mana JWT. Semakan penetapan algoritma serta `aud`/`iss`/`exp` yang sama terpakai.
+
+## Bagaimana log masuk mengalir
+
+OIDC menggunakan semula jentera OAuth. Aliran yang disyorkan ialah **aliran kod kebenaran dengan PKCE**:
+
+1. Aplikasi menghantar pengguna ke titik akhir kebenaran pembekal, meminta skop `openid` (serta `profile`, `email` dan sebagainya), dan menyertakan PKCE `code_challenge`.
+2. Pengguna mengesahkan dan memberi persetujuan di pembekal.
+3. Aplikasi menerima kod sekali guna dan menukarnya (dengan membuktikan pemilikan PKCE `code_verifier`) dengan **token ID** dan **token akses**.
+4. Aplikasi mengesahkan token ID untuk menetapkan *siapa pengguna itu* dan menggunakan token akses untuk memanggil API *bagi pihaknya*.
+
+Dua titik akhir melengkapkan gambaran: titik akhir **userinfo** memulangkan tuntutan profil bagi token akses yang sah, dan **dokumen penemuan** di `/.well-known/openid-configuration` mengumumkan titik akhir pembekal dan URL JWKSnya, supaya pelanggan boleh mencari kunci untuk mengesahkan token ID dan mengikuti putaran kunci secara automatik.
+
+## Mengapa ia penting
+
+OIDC ialah apa yang sebenarnya dijalankan oleh kebanyakan butang "Log masuk dengan ...". Mengasingkan dua token ialah pandangan utama: **token ID membuktikan identiti kepada pelanggan**, **token akses membenarkan panggilan API**, dan ia tidak boleh ditukar ganti. Digabungkan dengan aliran kod dan PKCE, ia ialah cara moden berasaskan piawai untuk melakukan log masuk berfederasi.
+
+[Alat PKCE](/tools/pkce) menjana dan mengesahkan `code_verifier` dan `code_challenge` aliran itu, dan [alat JWT](/tools/jwt) menyahkod dan mengesahkan token ID, kedua-duanya sepenuhnya dalam pelayar anda, tanpa apa-apa dihantar.

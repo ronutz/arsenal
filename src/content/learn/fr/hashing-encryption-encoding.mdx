@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hachage, chiffrement et encodage : trois choses différentes"
+summary: "Trois opérations constamment confondues, séparées nettement par deux questions : est-ce réversible et faut-il une clé ?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trois mots, sans cesse mélangés
+
+« Ce mot de passe est-il chiffré ? » « Il suffit de hacher l'URL. » « Les données sont encodées, donc elles sont sécurisées. » Ces phrases sont partout, et la plupart emploient le mauvais mot. Hachage, chiffrement et encodage sont trois opérations distinctes aux trois finalités différentes, et les confondre mène à de vraies erreurs de sécurité, comme stocker des mots de passe avec une méthode qui ne protège rien.
+
+La bonne nouvelle, c'est que deux questions simples les séparent complètement.
+
+## Les deux questions
+
+1. **Est-ce réversible ?** Pouvez-vous récupérer l'entrée d'origine à partir de la sortie ?
+2. **Faut-il une clé ?** Un secret est-il requis, ou n'importe qui peut-il effectuer l'opération ?
+
+Placez les trois opérations face à ces questions et le tableau devient clair :
+
+- **L'encodage** est réversible et ne nécessite pas de clé.
+- **Le hachage** n'est pas réversible et ne nécessite pas de clé.
+- **Le chiffrement** est réversible et nécessite une clé.
+
+Ce tableau est tout l'article. Le reste n'est que détail.
+
+## Encodage : réversible, sans clé
+
+L'encodage réécrit les données dans une représentation différente afin qu'elles puissent traverser un canal qui attend un format particulier. Base64 transforme des octets en texte sûr ; l'encodage d'URL échappe les caractères illégaux dans une URL ; UTF-8 transforme des caractères en octets. Rien de tout cela n'est secret. N'importe qui peut le décoder, car la réversibilité est tout l'enjeu. **L'encodage n'offre aucune sécurité.** Si vous entendez « le jeton est encodé, donc il est sûr », c'est un signal d'alarme : encodé signifie lisible.
+
+## Hachage : non réversible, sans clé
+
+Une fonction de hachage fait correspondre n'importe quelle entrée à un condensé de taille fixe, et vous ne pouvez pas l'exécuter à l'envers pour récupérer l'entrée. Elle ne nécessite pas de clé, donc n'importe qui peut calculer le même condensé à partir de la même entrée. Cela la rend parfaite pour la **vérification** : contrôles d'intégrité, adressage par contenu et détection de changement. C'est le bon outil quand il faut confirmer que deux choses sont identiques sans stocker l'original, mais il ne cache rien de façon réversible, car il n'y a rien à inverser.
+
+## Chiffrement : réversible, avec clé
+
+Le chiffrement transforme les données de sorte que seul le détenteur de la bonne clé puisse les retransformer. C'est le seul des trois conçu pour le **secret**. Il est réversible par conception, mais seulement avec la clé, ce qui est exactement la propriété qui manque aux deux autres : l'encodage est réversible par tous, le hachage par personne, le chiffrement par les détenteurs de la clé.
+
+## Choisir le bon
+
+La finalité décide de l'outil. Besoin que les données survivent au transport sous forme de texte ? Encodez-les. Besoin de vérifier l'intégrité ou de comparer sans stocker l'original ? Hachez-les. Besoin de garder des données secrètes vis-à-vis de quiconque sans la clé ? Chiffrez-les.
+
+L'erreur classique est de se tourner vers la mauvaise colonne. Stocker des mots de passe avec un simple encodage (réversible par tous) ou même un simple chiffrement (une clé volée expose tout) est bien plus faible qu'un hachage de mot de passe conçu à cet effet, traité dans son propre article. L'[outil de hachage](/tools/hash) et l'[outil Base64](/tools/base64) vous laissent observer le hachage et l'encodage se comporter différemment sur la même entrée, le condensé ne s'inverse jamais, le Base64 toujours.

@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Public vs confidential na client, at kung saan kasya ang PKCE"
+summary: "Kung kaya ng isang OAuth client na mag-ingat ng lihim ang nagpapasiya sa buong security model nito. Bakit ang mga SPA at mobile app ay public client, at bakit inirerekomenda na ngayon ang PKCE para sa kanilang lahat."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang tanong na nagpapasiya ng lahat
+
+Hinahati ng OAuth ang mga client sa dalawang uri, at ang hangganan ay isang tanong: kaya ba ng client na ito na mag-ingat ng lihim? Tinatawag ng RFC 6749 ang dalawang sagot na **confidential** at **public** na client, at kung alin ka sa dalawa ay nagtatakda kung paano ka mag-authenticate, aling mga flow ang ligtas, at kung kailangan mo ng PKCE. Halos bawat pagkakamali sa disenyo ng OAuth sa antas ng aplikasyon ay nakaugat sa pagtrato sa isang public client na parang kaya nitong mag-ingat ng isang lihim na sa katunayan ay hindi nito mapoprotektahan.
+
+## Kaya ng confidential na client na mag-ingat ng lihim
+
+Ang isang confidential client ay tumatakbo sa isang lugar na hindi maaabot ng user ang code o imbakan nito, klasikong isang server-side na web application. Binibigyan ito ng isang **client secret** sa pagrerehistro at ginagamit ang lihim na iyon upang i-authenticate ang sarili sa token endpoint ng authorization server. Dahil ang lihim ay nabubuhay lamang sa server, ang authorization server ay makatitiyak na ang isang token request ay tunay na nagmumula sa rehistradong client. Ito ang malakas na kaso: pinatutunayan ng client ang pagkakakilanlan nito gamit ang isang bagay na ito lamang ang nakakaalam.
+
+## Hindi kaya ng mga public client
+
+Ang isang public client ay tumatakbo kung saan ang code at datos nito ay nakikita ng user o umaatake: isang single-page app sa browser, isang native na mobile o desktop app, anumang ipinadala sa device. Ang tumutukoy na problema ay anumang lihim na ilalagay mo sa gayong client ay hindi lihim, dahil sinuman ay makakakuha nito mula sa ipinadalang bundle o binary. Kaya ang isang public client ay hindi maaaring mag-authenticate gamit ang isang client secret sa anumang paraan; walang anumang maiingatan nito na hindi rin makukuha ng isang umaatake. Binabago niyan kung ano ang maaaring ipagpalagay ng authorization server, at ito ang dahilan kung bakit ang mga public client ay nangangailangan ng karagdagang proteksyon sa authorization code flow.
+
+## Bakit mahina ang mga public client
+
+Ang authorization code flow ay nag-aabot sa client ng isang one-time na code sa redirect, na ipinagpapalit naman ng client para sa mga token. Para sa isang confidential client, ang palitang iyon ay pinoprotektahan ng client secret. Para sa isang public client na walang lihim, ang isang umaatake na makakaharang sa redirect, halimbawa isang malisyosong app na nakarehistro para sa parehong custom na URL scheme sa isang mobile device, ay maaaring magnakaw ng code at tubusin ito nang sila mismo. Ito ang interception attack na inilalarawan nang detalyado ng artikulong [PKCE](/learn/pkce), at ito mismo ang puwang na iniiwang bukas ng isang nawawalang client secret.
+
+## Pinupunan ng PKCE ang puwang, para sa lahat
+
+Sinasara ng PKCE ang butas na iyon nang walang naunang ibinahaging lihim. Ang client ay nag-iimbento ng isang sariwang random na **code verifier** kada request, nagpapadala lamang ng hash nito (ang **code challenge**) kapag humihingi ng code, at inihahayag ang verifier lamang kapag tinutubos ito. Ang isang umaatakeng humarang sa code ay hindi kailanman nakita ang verifier, kaya ang ninakaw na code ay walang silbi. Ipinakilala ito para sa mga public client, ngunit ang patnubay ay lumawak na simula noon: inirerekomenda ng OAuth 2.1 ang PKCE para sa authorization code flow anuman ang uri ng client, dahil nagdaragdag ito ng defense in depth kahit kung saan may client secret. Ang praktikal na patakaran ay gumamit ng authorization code kasama ang PKCE kahit saan at huminto sa pagrarason kung mahigpit mo ba itong kailangan.
+
+## Ang implicit flow ay nagretiro na
+
+Ang mga public browser app ay minsang gumamit ng implicit flow, na nagbabalik ng mga token nang tuwiran sa redirect upang iwasan ang code exchange. Ang disenyong iyon ay naglantad ng mga token sa mga URL at history ng browser at ngayon ay deprecated na; inaalis ito ng OAuth 2.1. Ang modernong sagot para sa isang single-page app ay pareho sa lahat ng iba pa: ang authorization code flow na may PKCE. Kung makakatagpo ka ng payo na gamitin ang implicit flow, ituring ito na luma na.
+
+## Ang mga native app ay may sariling mga bitag
+
+Ang mga native at mobile app ay public client na may partikular na panganib: ang redirect pabalik sa app. Ang mga custom na URL scheme ay maaaring angkinin ng ibang app sa device, na siyang nagpapaposible sa interception, kaya ang best-practice na patnubay para sa mga native app (RFC 8252) ay gumamit ng mga inangking HTTPS redirect kung saan sinusuportahan ito ng platform, patakbuhin ang flow sa isang system browser sa halip na isang embedded web view, at palaging mag-apply ng PKCE. Para sa mga input-constrained na device gaya ng isang TV, kung saan walang anumang browser na ire-redirect, hinahayaan ng device authorization flow (RFC 8628) ang user na mag-authorize sa isang hiwalay na telepono o laptop sa halip.
+
+## Kapag nagdududa, ipagpalagay na public
+
+Ang sentral na ideya ay ang uri ng client ay hindi isang label na pinipili mo para sa kaginhawaan; ito ay isang katotohanan tungkol sa kung saan tumatakbo ang code mo at kung ano ang kaya nitong protektahan. Kung ang client ay ipinapadala sa user, ito ay public, hindi ito makapag-iingat ng lihim, at kailangan nito ng PKCE. Kung ito ay tumatakbo lamang sa iyong server, maaari itong maging confidential at mag-authenticate gamit ang isang lihim, at dapat pa rin itong gumamit ng PKCE para sa karagdagang margin. Magpasiya kung aling mundo nakatira ang iyong client, at ang natitira sa OAuth security model nito ay sumusunod mula sa isang tapat na sagot na iyon.

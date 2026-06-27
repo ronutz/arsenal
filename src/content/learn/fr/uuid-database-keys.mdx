@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "Les UUID comme clés de base de données : v4, v7 et localité d'index"
+summary: "Le vrai compromis entre les UUID et les entiers auto-incrémentés, et pourquoi les clés v4 aléatoires nuisent discrètement aux performances de la base de données."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Deux façons de faire une clé primaire
+
+La plupart des tables ont besoin d'une clé unique pour chaque ligne. Les deux choix courants sont un **entier auto-incrémenté** de la base (1, 2, 3, ...) et un **UUID**. L'entier est petit et naturellement ordonné ; l'UUID peut être généré n'importe où, par n'importe qui, sans coordination. Lequel est meilleur dépend de ce que vous valorisez, et la réponse a une dimension de performance facile à manquer.
+
+## Pourquoi les équipes se tournent vers les UUID
+
+- **Aucune coordination.** N'importe quel service, client ou appareil hors ligne peut frapper un UUID qui n'entrera pas en collision, donc vous n'avez besoin ni d'une séquence centrale ni d'un aller-retour vers la base pour obtenir un id. C'est inestimable dans les systèmes distribués et pour générer des ids avant qu'une ligne soit enregistrée.
+- **Non devinable.** Les ids entiers séquentiels divulguent de l'information (combien de commandes existent, et l'id de la suivante) et laissent un attaquant parcourir les enregistrements en incrémentant. Un UUID aléatoire n'expose rien de cela.
+- **Favorable à la fusion.** Les données de systèmes séparés se combinent sans collision d'id.
+
+Le coût est la taille, 16 octets contre 4 ou 8 pour un entier, ce qui compte parce que la clé primaire est copiée dans chaque index secondaire et chaque clé étrangère référençant la ligne.
+
+## Le coût caché des clés aléatoires
+
+Il y a un coût plus subtil et plus important. Les bases stockent les lignes dans un index (couramment un B-tree) ordonné par la clé primaire. Avec une clé **séquentielle**, chaque nouvelle ligne s'ajoute à la fin de l'index, donc les pages actives restent en mémoire et les écritures sont peu coûteuses. Avec un **UUID v4 aléatoire**, chaque insertion atterrit à une position arbitraire. La base doit lire, modifier et écrire des pages dispersées dans tout l'index, provoquant des **scissions de page**, de la **fragmentation** et bien plus d'échecs de cache. Sur une grande table à écritures intensives, des clés aléatoires peuvent ralentir de façon mesurable les insertions et gonfler l'index, le tout sans aucune erreur à pointer.
+
+## Pourquoi la v7 change le calcul
+
+C'est exactement le problème que l'**UUID version 7** a été conçue pour résoudre. En plaçant un horodatage en millisecondes dans les bits de poids fort, les valeurs v7 sont **ordonnées dans le temps** : les nouvelles lignes s'insèrent près de la fin de l'index, tout comme un entier séquentiel, tout en gardant la génération décentralisée et non coordonnée d'un UUID. Vous obtenez l'essentiel du bénéfice de localité d'index d'une clé auto-incrémentée sans la séquence centrale. Pour les nouveaux systèmes qui veulent des clés UUID, la v7 est généralement la bonne version pour précisément cette raison.
+
+## Notes pratiques
+
+- **Stockez les UUID comme un type UUID natif ou binaire, pas comme une chaîne de 36 caractères.** Stocker la forme texte gaspille de l'espace et ralentit les comparaisons ; la forme binaire fait 16 octets.
+- **Utilisez la v7 pour les clés** où la performance d'insertion compte, et la **v4** où vous voulez spécifiquement qu'aucune information de temps ne soit intégrée dans l'id.
+- Un entier auto-incrémenté reste parfaitement bon pour une table mononœud qui n'a jamais besoin d'ids générés en externe ; les UUID prouvent leur utilité quand la distribution, l'imprévisibilité ou la prégénération comptent.
+
+L'[outil UUID](/tools/uuid) génère à la fois v4 et v7 et décode l'horodatage intégré d'une valeur v7, afin que vous voyiez la propriété d'ordonnancement directement, le tout dans votre navigateur.

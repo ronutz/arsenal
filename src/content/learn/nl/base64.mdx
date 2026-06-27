@@ -1,0 +1,53 @@
+---
+slug: base64
+title: "Base64 en Base64URL, uitgelegd"
+summary: "Hoe binaire data verzendveilige tekst wordt, waarom opvulling bestaat en wat verandert in de URL-veilige variant."
+concepts: ["base64", "base64url", "encoding", "binary-to-text"]
+relatedTools: ["base64"]
+relatedArticles: ["character-encoding", "hashing-encryption-encoding", "hashing"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het probleem dat Base64 oplost
+
+Computers slaan alles op als bytes, willekeurige waarden van 0 tot 255. Veel systemen die data verplaatsen zijn echter gebouwd om **tekst** te vervoeren, niet willekeurige bytes: e-mailteksten, URL's, JSON-tekenreeksen, HTTP-headers. Geef ze een ruwe byte die toevallig een stuurteken of een aanhalingsteken is, en ze verminken die of breken. Base64 is de standaardmanier om willekeurige bytes te nemen en ze te herschrijven met een kleine, veilige set afdrukbare tekens die die zuivere tekstkanalen ongeschonden vervoeren.
+
+Het loont de moeite precies te zijn over wat dat betekent: Base64 is een **codering**, geen versleuteling. Het verbergt niets. Iedereen kan het zonder sleutel en zonder moeite terugdecoderen naar de oorspronkelijke bytes. Zijn enige taak is het transport te overleven, niet een geheim te bewaren.
+
+## Hoe de codering werkt
+
+De truc is het hergroeperen van bits. Base64 leest de invoer drie bytes tegelijk. Drie bytes zijn 24 bits, en 24 deelt netjes in vier groepen van 6 bits. Elke groep van 6 bits is een getal van 0 tot 63, en elk van die 64 waarden wijst naar één teken in het Base64-alfabet:
+
+- `A` tot `Z` voor de waarden 0 tot 25
+- `a` tot `z` voor de waarden 26 tot 51
+- `0` tot `9` voor de waarden 52 tot 61
+- `+` en `/` voor de waarden 62 en 63
+
+Zo worden elke drie invoerbytes precies vier uitvoertekens. Daarom is de Base64-uitvoer altijd ongeveer een derde groter dan de invoer: vier tekens dragen wat drie bytes deden.
+
+## Waarom opvulling bestaat
+
+De invoer is niet altijd een net veelvoud van drie bytes. Wanneer de laatste groep slechts één of twee bytes overheeft, geeft de codeerder toch een volledig blok van vier tekens uit en vult het gat met het teken `=`:
+
+- Eén overgebleven byte (8 bits) levert twee betekenisvolle tekens op, dan `==`.
+- Twee overgebleven bytes (16 bits) leveren drie betekenisvolle tekens op, dan `=`.
+
+De `=` is geen data. Het is een markering die de decodeerder vertelt hoeveel bytes het laatste blok werkelijk vertegenwoordigt, zodat hij de opvulling kan laten vallen en de exacte oorspronkelijke lengte kan reconstrueren. Daarom is de lengte van een Base64-tekenreeks altijd een veelvoud van vier.
+
+## De URL-veilige variant
+
+Twee van de tekens van het standaardalfabet veroorzaken op specifieke plekken problemen. `+` en `/` hebben beide gereserveerde betekenissen in URL's (een spatie en een padscheidingsteken), en `/` is ook ongeldig in veel bestandsnamen. **Base64URL** (gedefinieerd in RFC 4648) verhelpt dit met twee vervangingen en één gewoonte:
+
+- `+` wordt `-`
+- `/` wordt `_`
+- de `=`-opvulling wordt meestal weggelaten, omdat de lengte kan worden afgeleid
+
+Het resultaat is een tekenreeks die schoon in een URL, een bestandsnaam of een JSON Web Token past zonder verdere escaping. Precies daarom gebruiken JWT's en OAuth PKCE-challenges Base64URL in plaats van de klassieke vorm: die waarden leven in URL's en tokens.
+
+## Waar je het tegenkomt
+
+Zodra je het patroon herkent, is Base64 overal: `data:`-URI's die een afbeelding rechtstreeks in een pagina insluiten, de drie door punten gescheiden segmenten van een JWT, MIME-e-mailbijlagen, HTTP Basic-authenticatieheaders en certificaten in PEM-formaat. In elk geval is de reden dezelfde, ruwe bytes moeten door een kanaal reizen dat alleen tekst vertrouwt.
+
+Je kunt tekst of Base64 in de [Base64-tool](/tools/base64) plakken om het beide kanten op te coderen of decoderen, standaard en URL-veilig, volledig in je browser.

@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Memilih cincangan: MD5, SHA-1, SHA-2, SHA-3 dan BLAKE"
+summary: "Fungsi cincangan mana yang masih selamat, mana yang telah dipecahkan, saiz keluarannya, dan cara memilih yang betul."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bukan semua cincangan adalah sama
+
+Cincangan kriptografi memetakan sebarang masukan kepada cap jari bersaiz tetap. Terdapat beberapa keluarga, dan ia tidak boleh ditukar ganti: sesetengahnya masih kuat dan sesetengah yang lain telah dipecahkan dengan teruk sehingga menggunakannya untuk keselamatan ialah satu kesilapan. Pilihan yang betul bergantung pada tugas dan kalendar, kerana cincangan yang dihormati dua puluh tahun lalu boleh dipecahkan dengan remeh hari ini.
+
+## Yang telah dipecahkan
+
+- **MD5** (128 bit) telah dipecahkan. Perlanggaran boleh dihasilkan dalam beberapa saat pada komputer riba, dan telah digunakan dalam serangan sebenar (perisian hasad Flame memalsukan sijil penandatanganan kod dengan perlanggaran MD5). Ia hanya bertahan sebagai hasil semak pantas tanpa keselamatan, dan walaupun di situ terdapat pilihan yang lebih baik.
+- **SHA-1** (160 bit) telah dipecahkan. Penyelidikan SHAttered 2017 menghasilkan dua PDF berbeza dengan ringkasan SHA-1 yang sama, dan kemudian datang perlanggaran awalan terpilih. Pelayar dan pihak berkuasa sijil membuang sokongan untuk SHA-1 bertahun-tahun lalu. Jangan gunakannya untuk tandatangan atau integriti yang boleh diserang lawan.
+
+## Kuda kerja semasa
+
+- **SHA-2** ialah keluarga lalai untuk kebanyakan kerja. Ia ialah satu set fungsi berkaitan, lazimnya **SHA-256** dan **SHA-512** (juga SHA-224, SHA-384 dan SHA-512/256 yang dipangkas). Tiada serangan perlanggaran praktikal terhadap SHA-2. Jika ragu-ragu, SHA-256 ialah pilihan selamat yang disokong secara universal.
+- **SHA-3** (Keccak) ialah piawai lebih baharu yang dibina atas reka bentuk dalaman yang sama sekali berbeza (binaan span) berbanding SHA-2. SHA3-256 dan SHA3-512 menawarkan keselamatan setanding dan wujud sebahagiannya sebagai perlindungan: jika kelemahan ditemui dalam SHA-2, tidak mungkin SHA-3 berkongsinya. Ia juga kebal mengikut reka bentuknya terhadap masalah peluasan panjang yang menimpa SHA-2.
+- **BLAKE2 dan BLAKE3** ialah cincangan moden yang sangat pantas dengan keselamatan kuat. BLAKE3 khususnya direka untuk menyelari, yang menjadikannya menarik apabila anda mencincang sejumlah besar data dan mahukan kelajuan tanpa menyerahkan keselamatan.
+
+## Memilih satu
+
+Panduan keputusan ringkas:
+
+- Integriti tujuan am, tandatangan atau "saya hanya perlukan cincangan selamat": **SHA-256**.
+- Anda mahukan kepelbagaian algoritma atau kekebalan terhadap peluasan panjang tanpa HMAC: **SHA-3** atau **SHA-512/256**.
+- Mencincang fail besar apabila pemprosesan penting: **BLAKE3**.
+- Hasil semak pantas tanpa keselamatan (mengesan kerosakan tidak sengaja, bukan gangguan): CRC atau MD5 memadai, tetapi jangan sekali-kali memanggilnya "selamat".
+- **Kata laluan ialah masalah berasingan.** Cincangan tujuan am terlalu pantas untuk simpanan kata laluan; gunakan cincangan kata laluan khusus seperti bcrypt, scrypt atau Argon2 (lihat artikel pencincangan kata laluan).
+
+[Alat cincangan](/tools/hash) mengira MD5, SHA-1, SHA-256, SHA-512 dan lebih banyak atas teks atau fail supaya anda boleh membandingkan keluaran bersebelahan, semuanya dalam pelayar anda, tanpa apa-apa dihantar.

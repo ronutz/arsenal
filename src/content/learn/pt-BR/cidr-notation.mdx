@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "Notação CIDR explicada"
+summary: "O que a barra em 192.168.1.0/24 de fato significa, e como um comprimento de prefixo define um bloco de endereços IP."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## O problema que o CIDR resolve
+
+Todo dispositivo em uma rede IP precisa de um endereço. No IPv4, esse endereço tem 32 bits, geralmente escrito como quatro números de 0 a 255 separados por pontos, como `192.168.1.10`. A pergunta difícil nunca é "o que é um endereço" mas "como descrevo uma *faixa* de endereços que pertencem juntos", um único escritório, uma sub-rede, uma alocação de cliente. **A notação CIDR** é a maneira compacta de escrever essa faixa.
+
+CIDR significa Classless Inter-Domain Routing (Roteamento Inter-Domínio Sem Classe). A parte "sem classe" importa: o endereçamento mais antigo forçava as faixas a tamanhos fixos (os antigos blocos Classe A, B e C). O CIDR removeu essa rigidez e deixou uma faixa ter *qualquer* tamanho de potência de dois, que é por que ele é o padrão hoje.
+
+## Lendo a barra
+
+Um bloco CIDR parece com `192.168.1.0/24`. A parte após a barra, o **comprimento de prefixo**, é o número isolado mais importante. Ela diz: *os primeiros N bits do endereço são fixos, e o resto está livre para variar.*
+
+- `/24` significa que os primeiros 24 bits são a parte de rede fixa. Os 8 bits restantes (32 − 24) identificam hosts individuais.
+- 8 bits livres dão 2⁸ = 256 combinações possíveis, então `192.168.1.0/24` descreve os 256 endereços de `192.168.1.0` a `192.168.1.255`.
+
+Mude o prefixo e o tamanho do bloco muda com ele. Um prefixo menor significa *mais* bits livres e um bloco *maior*:
+
+- `/16` fixa 16 bits, deixa 16 livres → 65.536 endereços.
+- `/25` fixa 25 bits, deixa 7 livres → 128 endereços.
+- `/30` fixa 30 bits, deixa 2 livres → 4 endereços.
+
+Cada passo de um no comprimento de prefixo **divide ou dobra** o bloco. Essa única regra é toda a intuição.
+
+## Rede, broadcast e hosts utilizáveis
+
+Dentro da maioria dos blocos, dois endereços são especiais e não atribuíveis a um host:
+
+- O **endereço de rede** é o primeiro endereço no bloco, todos os bits de host definidos como 0 (`192.168.1.0` para um `/24`). Ele nomeia o bloco em si.
+- O **endereço de broadcast** é o último endereço, todos os bits de host definidos como 1 (`192.168.1.255`). O tráfego enviado para cá alcança todo host no bloco.
+
+Então um `/24` tem 256 endereços no total mas **254 utilizáveis** para hosts reais. A cifra de "hosts utilizáveis" é simplesmente o total menos esses dois endereços reservados.
+
+Dois casos extremos quebram esse padrão, ambos deliberadamente:
+
+- Um **/31** (RFC 3021) é usado para enlaces ponto a ponto entre dois roteadores. Ele tem apenas 2 endereços e, por design, ambos são utilizáveis, não há espaço para um endereço de rede e de broadcast separados, e nenhum é necessário para um enlace com exatamente duas pontas.
+- Um **/32** é um único endereço, uma rota de host. Ele descreve exatamente uma máquina.
+
+## Por que isto vale a pena entender
+
+O comprimento de prefixo governa como as redes são projetadas, como as rotas são sumarizadas, e como o espaço de endereços é distribuído. Quando você vê `10.0.0.0/8` em uma tabela de roteamento ou `0.0.0.0/0` como uma rota padrão, você está lendo a mesma notação: um endereço base mais um comprimento de prefixo que diz quanto dele é fixo. A aritmética nunca muda, apenas os números.
+
+Você pode experimentar qualquer bloco na [calculadora CIDR](/learn) para ver seu endereço de rede, endereço de broadcast, máscara e contagem de hosts utilizáveis computados instantaneamente, inteiramente no seu navegador.

@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Kolizje, odporność na przeciwobraz i granica urodzinowa"
+summary: "Trzy właściwości bezpieczeństwa, które musi mieć skrót kryptograficzny, dlaczego kolizje są ważne i matematyka urodzinowa wyznaczająca rzeczywistą siłę."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Co oznacza „bezpieczny” dla skrótu
+
+Każda funkcja odwzorowująca wejścia na wyjścia o stałym rozmiarze w końcu odwzoruje dwa różne wejścia na to samo wyjście, bo wejść jest nieskończenie wiele, a wyjść tylko skończenie wiele. To, że skrót jest **bezpieczny**, nie oznacza, że kolizje nie mogą istnieć; oznacza, że nie da się ich *znaleźć* przy wykonalnej ilości pracy. Ujmują to trzy odrębne właściwości.
+
+## Trzy właściwości
+
+- **Odporność na przeciwobraz.** Mając wartość skrótu `h`, niewykonalne jest znalezienie jakiegokolwiek wejścia `m` z `hash(m) = h`. To właściwość jednokierunkowa: odcisk nie powinien zdradzać, co go wytworzyło. Dla skrótu n-bitowego kosztuje to około 2ⁿ pracy.
+- **Odporność na drugi przeciwobraz.** Mając konkretne wejście `m1`, niewykonalne jest znalezienie *innego* wejścia `m2` o tym samym skrócie. Atakujący nie może sfałszować drugiego dokumentu pasującego do odcisku danego. Również około 2ⁿ pracy.
+- **Odporność na kolizje.** Niewykonalne jest znalezienie *jakichkolwiek* dwóch różnych wejść dających tę samą wartość skrótu. Atakujący może wybrać oba, co czyni to najłatwiejszym z trzech do zaatakowania.
+
+## Granica urodzinowa
+
+Odporność na kolizje jest słabsza od pozostałych dwóch z subtelnego powodu, **paradoksu urodzin**. W pokoju z zaledwie 23 osobami jest około 50% szans, że dwie mają urodziny tego samego dnia, bo liczba *par* rośnie kwadratowo. Ten sam efekt dotyczy skrótów: znalezienie kolizji w skrócie n-bitowym wymaga tylko około **2^(n/2)** prób, a nie 2ⁿ.
+
+To połowi efektywną siłę wobec kolizji:
+
+- SHA-256 daje około 128 bitów odporności na kolizje (2¹²⁸ pracy), co jest daleko poza zasięgiem.
+- Skrót 128-bitowy jak MD5 dawałby tylko około 64 bity odporności na kolizje, nawet gdyby nie był złamany z innych powodów, i dlatego sam rozmiar wyjścia ma znaczenie.
+
+Dlatego nowoczesne skróty używają 256 bitów lub więcej: by utrzymać tę połowioną liczbę wygodnie poza zasięgiem każdego atakującego.
+
+## Dlaczego znaleziona kolizja jest niebezpieczna
+
+Gdy odporność na kolizje zawodzi, atakujący może utworzyć dwa wejścia o tym samym skrócie, sprawić, że jedno zostanie podpisane lub zaufane, i podmienić je na drugie. SHAttered pokazało dwa pliki PDF o tym samym skrócie SHA-1; złośliwe oprogramowanie Flame użyło kolizji MD5 do sfałszowania zaufanego certyfikatu. W obu przypadkach podpis był ważny dla *obu* dokumentów, więc zweryfikowany podpis przestał dowodzić, który faktycznie otrzymałeś. To konkretny powód, dla którego MD5 i SHA-1 nie wolno używać tam, gdzie przeciwnik może wybrać wejście.
+
+[Narzędzie skrótu](/tools/hash) pozwala zahaszować dowolne wejście i porównać skróty, byś sam zobaczył, że jeden zmieniony bit daje zupełnie inny odcisk, wszystko obliczone w przeglądarce bez wysyłania czegokolwiek.

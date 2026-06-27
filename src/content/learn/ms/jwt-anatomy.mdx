@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Anatomi sesuatu JSON Web Token"
+summary: "Tiga segmen JWT, bagaimana tandatangan menjadikannya boleh dipercayai, dan mengapa menyahkod token bukan sama dengan mengesahkannya."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Apa itu JWT
+
+Sebuah JSON Web Token (JWT, ditakrifkan dalam RFC 7519) ialah cara padat dan serba lengkap untuk membawa satu set **claim**, kenyataan tentang sesuatu entiti (biasanya pengguna) tambah sedikit metadata, dalam bentuk yang penerima boleh sahkan. Ia ialah format token di sebalik kebanyakan pengesahan web moden: token ID OpenID Connect ialah JWT, dan token akses OAuth 2.0 sangat kerap juga begitu.
+
+"Serba lengkap" ialah idea utama. Daripada id sesi rawak yang pelayan mesti cari dalam pangkalan data, JWT membawa claim *di dalam dirinya*, ditandatangani supaya penerima boleh mempercayainya tanpa perjalanan pergi-balik. Itu menjadikan JWT mudah untuk sistem tanpa keadaan dan teragih, dengan satu pertukaran penting yang dibincangkan di hujung.
+
+## Tiga segmen
+
+JWT ialah tiga segmen berkod Base64URL yang dicantum dengan titik:
+
+```
+header.payload.signature
+```
+
+Setiap segmen mempunyai tugas tersendiri:
+
+- **Pengepala** (header) ialah objek JSON kecil yang menamakan algoritma tandatangan dan jenis token, contohnya `{"alg":"HS256","typ":"JWT"}`. Nilai `alg` memberitahu penerima cara mengesahkan tandatangan.
+- **Muatan** (payload) ialah objek JSON claim. Ia memegang claim berdaftar dengan makna piawai (`iss` pengeluar, `sub` subjek, `aud` khalayak, `exp` luput, `nbf` tidak-sebelum, `iat` dikeluarkan-pada, `jti` id token) di samping mana-mana claim tersuai yang ditambah pengeluar.
+- **Tandatangan** (signature) dikira ke atas pengepala dan muatan berkod bersama, menggunakan algoritma daripada pengepala. Ia yang menjadikan dua segmen pertama boleh dipercayai.
+
+Kerana pengepala dan muatan hanya berkod Base64URL, bukan disulitkan, sesiapa yang memegang token boleh menyahkod dan membacanya. Ini ialah sifat tunggal paling penting untuk dihadam: **muatan JWT boleh dibaca, bukan rahsia.** Jangan sekali-kali letak kata laluan, nombor kad, atau apa-apa yang sensitif di dalamnya.
+
+## Tandatangan: bagaimana kepercayaan ditubuhkan
+
+Tandatangan ialah yang memisahkan JWT daripada mana-mana rentetan yang klien boleh reka. Bagaimana ia dihasilkan bergantung pada keluarga algoritma:
+
+- **HMAC (HS256, HS384, HS512)** menandatangani dengan satu rahsia kongsi. Tandatangan ialah `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. Ia simetri: rahsia yang sama mencipta dan mengesahkan, jadi pengeluar dan pengesah mesti berkongsinya. Ini ialah tepat pembinaan yang dikira oleh alat HMAC.
+- **RSA dan ECDSA (RS256, ES256 dan lain-lain)** menandatangani dengan kunci persendirian dan mengesahkan dengan kunci awam yang sepadan. Ini asimetri: hanya pengeluar boleh menandatangani, tetapi sesiapa dengan kunci awam boleh mengesahkan, yang sesuai untuk token yang disemak oleh banyak perkhidmatan bebas.
+
+Pengesahan mengira semula atau menyemak tandatangan terhadap pengepala dan muatan berkod. Jika satu bait sahaja mana-mana segmen diubah, tandatangan tidak lagi sepadan dan token ditolak.
+
+Dua perangkap klasik berbaloi diketahui. Nilai `alg: none` mengisytiharkan token tidak ditandatangani; pengesah yang tidak menolaknya secara eksplisit boleh ditipu untuk mempercayai claim palsu. Dan dalam serangan **kekeliruan algoritma**, penyerang mengambil token RS256, menukar pengepala kepada HS256, dan menandatanganinya menggunakan kunci awam sebagai rahsia HMAC, yang berjaya terhadap pengesah yang mengambil algoritma daripada token dan bukannya menetapkannya. Pertahanan untuk kedua-duanya sama: pengesah memutuskan algoritma mana yang boleh diterima, bukan token.
+
+## Menyahkod bukan mengesahkan
+
+Ini dua operasi berbeza, dan mencampuradukkannya ialah punca pepijat yang lazim. **Menyahkod** sekadar menyahkod segmen daripada Base64URL untuk mendedahkan pengepala dan claim: tiada kunci, tiada kepercayaan, sesiapa boleh melakukannya. **Mengesahkan** menyemak tandatangan dengan kunci yang betul dan mengesahkan claim masa. Hanya claim token yang disahkan patut diambil tindakan.
+
+Masa juga penting. `exp` (luput) dan `nbf` (tidak-sebelum) ialah cap masa Unix yang menyempadani tetingkap kesahihan token, dan `iat` merekod bila ia dikeluarkan. Pengesah yang betul menolak token yang luput atau belum-sah, biasanya membenarkan toleransi serong jam yang kecil.
+
+## Apa JWT bukan
+
+JWT itu **ditandatangani, bukan disulitkan** (penyulitan ialah piawai berasingan, JWE). Ia membuktikan siapa yang mengeluarkan claim dan bahawa ia tidak diusik; ia tidak menyembunyikannya.
+
+JWT yang ditandatangani juga **tidak mudah dibatalkan dengan sendirinya.** Kerana claim hidup di dalam token dan pengesahan tidak memerlukan carian pelayan, token kekal sah sehingga ia luput, walaupun anda ingin membatalkannya lebih awal. Jawapan praktikalnya ialah hayat pendek tambah mekanisme berasingan (token segar semula, senarai pembatalan, atau introspeksi token) apabila pembatalan serta-merta diperlukan.
+
+[Alat JWT](/tools/jwt) menyahkod pengepala dan claim token, membaca luput dan masanya dalam bahasa biasa, dan mengesahkan tandatangan HS256, HS384, atau HS512 terhadap rahsia yang anda tampal, semuanya dalam pelayar anda. Token dan rahsia tidak pernah dihantar ke mana-mana.

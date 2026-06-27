@@ -1,0 +1,43 @@
+---
+slug: uuid-versions
+title: "UUID sürümleri açıklandı: v1'den v8'e"
+summary: "Tüm UUID ailesi tek bir yerde, zaman-ve-MAC v1'den rastgele v4'e ve zaman sıralı v7'ye, artı ad tabanlı sürümler ve sürüm ile varyant bitlerinin nasıl okunduğu."
+concepts: ["uuid", "uuidv4", "uuidv7", "rfc9562", "version", "variant"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tek biçim, birkaç tarif
+
+Bir UUID daima aynı şekildedir: 128 bit, tanıdık `8-4-4-4-12` gruplamasında 32 onaltılık basamak olarak yazılır. Sürümler arasında değişen şey, o bitlerin nasıl üretildiğidir. Mevcut standart, RFC 9562 (2024'te yayımlandı, uzun süre hizmet veren RFC 4122'nin yerine geçer), 1'den 8'e kadar sürümleri tanımlar, her biri 128 biti merkezi bir otorite olmadan benzersiz kalacak şekilde doldurmak için farklı bir stratejidir. [UUID genel bakışı](/learn/uuid) en çok kullanacağınız ikisine, v4 ve v7'ye odaklanır; bu makale, hepsini tanıyıp seçebilmeniz için tüm aileyi haritalar.
+
+## Bir UUID sürümünü nasıl bildirir
+
+Sürümden bağımsız olarak iki küçük alan ayrılmıştır ve araç ikisini de okur. **Sürüm** dört bitte kodlanır (üçüncü grubun ilk onaltılık basamağı), dolayısıyla oradaki bir `4` bir v4 UUID, bir `7` ise v7 demektir. **Varyant** sonraki grubun üst bitlerinde kodlanır (dördüncü grubun ilk onaltılık basamağı standart varyant için tipik olarak `8`, `9`, `a` veya `b`'dir). Birlikte, okuyucuya kalan bitlerin nasıl yorumlanacağını söylerler, bu yüzden bir araç, bir UUID'nin sürümünü yalnızca onu inceleyerek, bağlam olmadan etiketleyebilir.
+
+## Zaman tabanlı sürümler: v1, v6, v7
+
+Üç sürüm bir zaman damgası kodlar, bu da onları kabaca zaman sıralı yapar, veritabanı anahtarları için yararlı bir özellik (bkz. [veritabanı anahtarları](/learn/uuid-database-keys) makalesi):
+
+- **Sürüm 1**, 60 bitlik bir zaman damgasını bir saat dizisi ve bir düğüm tanımlayıcısıyla birleştirir; burada düğüm geleneksel olarak makinenin MAC adresidir. Çalışır, ama MAC'i ve üretim zamanını sızdırır ve zaman damgası alanının sıralaması metin olarak temiz biçimde sıralanmaz.
+- **Sürüm 6**, baytlar kronolojik sırada sıralansın diye zaman damgası alanları yeniden düzenlenmiş v1'dir. Zaten v1'e yatırım yapmış ve sıralanabilirlik isteyen sistemler için sorunsuz bir iyileştirme olarak vardır.
+- **Sürüm 7**, milisaniye cinsinden basit bir Unix zaman damgasını ardından rastgele bitleri kullanır. Yeni zaman sıralı tanımlayıcılar için modern öneridir: sıralanabilir, donanım sızıntısı yok ve basit. Sıralı anahtarlar isteyen yeni işlerin çoğu için yanıt v7'dir.
+
+## Ad tabanlı sürümler: v3 ve v5
+
+Sürüm 3 ve 5 belirlenimcidir: aynı girdi daima aynı UUID'yi üretir. Bir ad alanı tanımlayıcısını bir adla birlikte karmalarsınız ve özet UUID olur. **Sürüm 3** MD5 kullanır ve **sürüm 5** SHA-1 kullanır; SHA-1 burada güvenlik için kullanılmasa da daha az kırılgan seçenek olduğundan v5 tercih edilir. Bunlar, mevcut verilerden türetilmiş kararlı bir tanımlayıcıya ihtiyaç duyduğunuzda başvurulacak sürümdür, örneğin belirli bir URL veya dosya adı için tutarlı bir UUID, böylece iki sistem bağımsız olarak aynı değeri hesaplar.
+
+## Rastgele sürüm: v4
+
+**Sürüm 4**, 122 biti rastgelelikle doldurur (diğer 6'sı sabit sürüm ve varyant bitleridir). Zaman damgası, MAC veya yapı taşımaz, bu da onu yalnızca opak, çakışmaya dirençli bir tanımlayıcı istediğinizde ve sıralama umurunuzda olmadığında güvenli varsayılan yapar. Tek dezavantajı tam da bu düzen eksikliğidir, ki bu veritabanı dizininin yerelliğine zarar verir ve v7'yi motive etmiştir. Aracın v4 üretimi, tarayıcınızda kriptografik olarak güvenli bir rastgele kaynak kullanır, böylece değerler asla bir sunucuya dokunmaz.
+
+## Sürüm 8 ve özel UUID'ler
+
+**Sürüm 8**, özel veya deneysel kullanım için ayrılmıştır: yalnızca sürüm ve varyant bitleri sabittir, gerisini siz tanımlarsınız, bu da bir sistemin geçerli bir UUID kalırken kendi verilerini UUID biçiminde kodlamasına olanak tanır. Tanınacak iki özel değer de vardır: hepsi sıfır olan **nil** UUID ve hepsi bir olan **max** UUID, her ikisi de nöbetçi olarak kullanılır. Sürüm 2 tarihsel olarak vardır (bir DCE Security varyantı) ama pratikte nadiren görülür ve bugün seçeceğiniz bir şey değildir.
+
+## Niyete göre seçmek
+
+Aile büyüktür, ama neye ihtiyacınız olduğunu adlandırdığınızda seçim genellikle hızlıdır. Sıralaması olmayan opak, tahmin edilemez bir tanımlayıcı için **v4** kullanın. Mevcut verilerden belirlenimci biçimde türetilmiş kararlı bir tanımlayıcı için **v5** kullanın. İyi dizinlenen zaman sıralı bir anahtar için **v7** kullanın. Eski zaman tabanlı sürümler (v1, v6) çoğunlukla mevcut sistemlerle uyumluluk için önemlidir ve v8, gerçekten kendi yapınızı kodlamanız gerektiğinde oradadır. Bir UUID'yi araca yapıştırdığınızda ve o sürümü bildirdiğinde, o tek basamak size onu hangi tarifin ürettiğini söyler.

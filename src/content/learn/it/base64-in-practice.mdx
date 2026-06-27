@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Dove compare Base64: data URI, MIME, PEM e Basic auth"
+summary: "I luoghi reali in cui il binario viene avvolto nel testo, il costo in dimensione di farlo e perché Base64 in un'intestazione di autenticazione non è cifratura."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Perché avvolgere il binario nel testo
+
+Molti trasporti sono stati progettati per il testo, non per byte grezzi: corpi di e-mail, documenti JSON e XML, intestazioni HTTP, file sorgente. Metti del binario grezzo in uno qualsiasi di essi e un byte di controllo o nullo perso può rompere l'analisi. Base64 lo risolve riesprimendo i byte usando solo caratteri stampabili sicuri, in modo che il binario possa viaggiare intatto dentro un canale di solo testo. Ecco dove ciò accade davvero.
+
+## Gli scenari comuni
+
+- **Data URI.** Una URL `data:` incorpora una piccola risorsa direttamente nel markup o nel CSS, ad esempio `data:image/png;base64,iVBORw0KGgo...`. I byte dell'immagine restano in Base64 proprio lì nell'attributo, risparmiando una richiesta di rete separata per risorse minuscole.
+- **E-mail (MIME).** Gli allegati e i corpi non ASCII vengono trasportati con `Content-Transfer-Encoding: base64`. MIME spezza l'output in righe (classicamente di 76 caratteri) perché i vecchi server di posta non si blocchino su righe lunghe.
+- **PEM.** I certificati e le chiavi sono byte DER avvolti in Base64 tra i marcatori `-----BEGIN CERTIFICATE-----` e `-----END CERTIFICATE-----`, con righe spezzate a 64 caratteri. PEM è il motivo per cui un certificato è un blocco di testo che puoi incollare in un file di configurazione.
+- **Autenticazione HTTP Basic.** L'intestazione `Authorization: Basic` è il Base64 di `utente:password`.
+
+## Il costo in dimensione
+
+Base64 non è gratis. Tre byte diventano quattro caratteri, quindi la forma codificata è circa il **33% più grande** dell'originale, prima di qualsiasi sovraccarico per i ritorni a capo. Questo compromesso vale di solito la pena per la correttezza in un canale di testo, ma è il motivo per cui non codificheresti in Base64 un file grande che potresti inviare come byte grezzi. Per piccole risorse incorporate la comodità vince; per carichi grandi, il sovraccarico consiglia un trasporto binario.
+
+## Codificare non è cifrare
+
+L'esempio di Basic auth chiarisce già il punto più importante. `Authorization: Basic dXNlcjpwYXNz` sembra opaco, ma `dXNlcjpwYXNz` è semplicemente il Base64 di `user:pass`, reversibile da chiunque, senza alcuna chiave coinvolta. Base64 non offre **alcuna riservatezza**. È una codifica (un cambiamento reversibile di rappresentazione), non cifratura (un segreto protetto da chiave) né hashing (un'impronta a senso unico). Per questo Basic auth è sicuro solo su TLS: il trasporto cifra l'intestazione, perché Base64 di certo non lo fa.
+
+Ogni volta che vedi una lunga stringa dall'aspetto opaco, decodificarla per prima cosa è un modo economico per capire cos'è. Lo [strumento Base64](/tools/base64) decodifica data URI, corpi PEM e intestazioni di autenticazione nei loro byte e testo grezzi, interamente nel tuo browser, quindi niente di ciò che incolli lascia la pagina.

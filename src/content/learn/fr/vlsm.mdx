@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM : decouper un bloc en sous-reseaux inegaux"
+summary: "Comment tailler un bloc d'adresses en sous-reseaux de tailles differentes sans gaspiller d'espace, et la regle du plus grand d'abord qui garde tout en ordre."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Le probleme des sous-reseaux egaux
+
+Le decoupage classique partage un bloc en morceaux d'une seule taille fixe. C'est simple, mais c'est du gaspillage quand les besoins different. Si un segment compte 100 hotes et un autre est une liaison entre deux routeurs avec 2, donner a chacun un `/26` (62 utilisables) echoue pour le premier et gaspille 60 adresses pour le second. Le **VLSM**, masque de sous-reseau de longueur variable, corrige cela en laissant chaque sous-reseau utiliser la longueur de prefixe adaptee a son propre besoin, le tout taille dans le meme bloc parent.
+
+La seule chose qui rend le VLSM plus laborieux que le decoupage fixe est l'ordre : vous devez placer les **plus grands sous-reseaux en premier**, sinon vous gaspillerez des adresses et creerez des chevauchements.
+
+## Dimensionner chaque sous-reseau
+
+Partez du nombre d'hotes dont chaque segment a besoin, puis trouvez le plus petit bloc qui le contient, en vous rappelant que deux adresses de tout bloc ordinaire sont reservees (reseau et diffusion) :
+
+- 100 hotes necessitent 7 bits d'hote (2⁷ − 2 = 126 utilisables), un `/25`.
+- 50 hotes necessitent 6 bits d'hote (62 utilisables), un `/26`.
+- 25 hotes necessitent 5 bits d'hote (30 utilisables), un `/27`.
+- 10 hotes necessitent 4 bits d'hote (14 utilisables), un `/28`.
+- Une liaison point a point de 2 hotes est un `/30` (2 utilisables), ou un `/31` selon la RFC 3021.
+
+Arrondissez toujours a la puissance de deux superieure. Un segment de 100 hotes ne tient pas dans un `/26` (62), il prend donc la taille suivante, un `/25`.
+
+## Tailler dans le bloc, le plus grand d'abord
+
+Supposons que vous possediez `192.168.10.0/24` et ayez besoin des cinq sous-reseaux ci-dessus. Attribuez par taille decroissante, chacun commencant a sa frontiere naturelle :
+
+```
+/25  192.168.10.0   – .127   (126 utilisables)  ← segment de 100 hotes
+/26  192.168.10.128 – .191   (62 utilisables)   ← segment de 50 hotes
+/27  192.168.10.192 – .223   (30 utilisables)   ← segment de 25 hotes
+/28  192.168.10.224 – .239   (14 utilisables)   ← segment de 10 hotes
+/30  192.168.10.240 – .243   (2 utilisables)    ← liaison de routeur
+```
+
+Chaque bloc commence exactement la ou le precedent se termine, et de `192.168.10.244` jusqu'a la fin reste libre pour une croissance future. Si vous aviez attribue le `/30` en premier, le `/25` n'aurait plus de frontiere propre ou se poser, ce qui est toute la raison de la regle du plus grand d'abord.
+
+## Pourquoi c'est important
+
+Le VLSM est la facon dont les vrais reseaux conservent l'espace d'adressage et gardent les attributions alignees pour que les routes puissent etre resumees proprement. L'arithmetique est la meme mathematique de longueur de prefixe qu'un seul sous-reseau, appliquee de facon repetee : fixez plus de bits pour rendre un bloc plus petit, et gardez chaque bloc sur une frontiere de puissance de deux.
+
+Vous pouvez verifier toute attribution dans la [calculatrice CIDR](/#cidr), qui montre l'adresse de reseau et de diffusion, le masque et le nombre d'hotes utilisables de chaque bloc instantanement et entierement dans votre navigateur.

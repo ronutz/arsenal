@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Perché HMAC, e non hash(chiave + messaggio)"
+summary: "L'attacco di estensione di lunghezza che rompe l'hashing con chiave ingenuo, e la costruzione annidata che HMAC usa per sconfiggerlo."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## L'idea ovvia che fallisce
+
+Vuoi dimostrare che un messaggio proviene da qualcuno che possiede un segreto condiviso e che non è stato alterato. L'approccio intuitivo è eseguire l'hash del segreto insieme al messaggio: `tag = SHA256(segreto + messaggio)`. Sembra solido, il tag dipende dal segreto, quindi un attaccante che non conosce il segreto non può produrlo. Purtroppo, per le funzioni di hash più comuni, questa costruzione è compromessa.
+
+## L'attacco di estensione di lunghezza
+
+Gli hash della famiglia Merkle-Damgård, che include MD5, SHA-1 e SHA-256, elaborano l'input a blocchi e portano avanti uno stato interno. Il loro output finale *è* quello stato interno. Questo fa trapelare qualcosa di pericoloso: dato `SHA256(segreto + messaggio)` e la lunghezza di `segreto + messaggio`, un attaccante può impostare lo stato interno dell'hash sul tuo tag e continuare a fare l'hash, calcolando
+
+```
+SHA256(segreto + messaggio + padding + dati_dell_attaccante)
+```
+
+come un tag valido per un messaggio esteso, **senza mai conoscere il segreto**. Può aggiungere dati e produrre un tag che verrà verificato. Per un'API in cui il messaggio è un insieme di parametri firmati, questo può significare aggiungere `&admin=true` a una richiesta e superare comunque la verifica della firma. L'ingenuo `hash(segreto + messaggio)` non è sicuro.
+
+## Come lo corregge HMAC
+
+HMAC (RFC 2104) non si limita a concatenare. Esegue l'hash due volte con la chiave mescolata in due modi diversi:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Il messaggio viene sottoposto a hash con la chiave sotto un padding interno (`ipad`), e quel risultato viene sottoposto di nuovo a hash con la chiave sotto un padding esterno (`opad`). Poiché l'hash esterno avvolge quello interno, il valore che un attaccante vede non è uno stato interno grezzo che può estendere; è l'output di un secondo passo di hashing con la chiave del segreto. L'estensione di lunghezza smette di funzionare, e la sicurezza di HMAC ha una prova solida che si basa solo sul fatto che l'hash sottostante sia ragionevole.
+
+Per questo ogni sistema maturo usa HMAC (o un altro MAC adeguato) invece di un hashing con chiave fatto a mano. Nota che SHA-3 e BLAKE non sono suscettibili all'estensione di lunghezza, quindi possono ricevere una chiave in modo più diretto, ma HMAC rimane lo standard portabile e ampiamente supportato.
+
+## La lezione
+
+Usa HMAC con un hash forte (HMAC-SHA256 è il valore predefinito comune) e un segreto ad alta entropia. Non inventare il tuo schema di hash con chiave: il difetto non è ovvio dall'esterno, che è esattamente ciò che lo rende pericoloso.
+
+Lo [strumento HMAC](/tools/hmac) calcola HMAC-SHA256 e varianti correlate su un messaggio e una chiave così da vedere il tag e confrontarlo, tutto nel tuo browser, senza nulla inviato.

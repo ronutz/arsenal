@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Descubrimiento de Vecinos: cómo IPv6 reemplaza a ARP"
+summary: "Cómo IPv6 encuentra vecinos en un enlace usando ICMPv6 y multicast en vez del ARP por broadcast, los cinco mensajes de Descubrimiento de Vecinos, y por qué el broadcast se fue."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 no es opcional
+
+En IPv4, ICMP es un añadido diagnóstico que puedes bloquear sin romper la conectividad básica. En IPv6, ICMPv6 (RFC 4443) es estructural: el protocolo depende de él para la operación central del enlace, así que filtrarlo indiscriminadamente rompe la red. La razón es que IPv6 movió varios trabajos que IPv4 repartía a través de ARP, el descubrimiento de router por ICMP, y los redireccionamientos por ICMP, a un único protocolo basado en ICMPv6 llamado Descubrimiento de Vecinos (Neighbor Discovery, RFC 4861). Entender el Descubrimiento de Vecinos es entender cómo un enlace IPv6 realmente funciona.
+
+## Cinco mensajes hacen el trabajo
+
+El Descubrimiento de Vecinos define cinco tipos de mensaje ICMPv6, y casi todo en un enlace es alguna combinación de ellos:
+
+- **Solicitud de Router (RS)**: un host pide a los routers que se anuncien.
+- **Anuncio de Router (RA)**: un router anuncia el prefijo y las flags de configuración (la entrada a la autoconfiguración en el artículo de [configuración de dirección](/learn/ipv6-address-configuration)).
+- **Solicitud de Vecino (NS)**: un host pregunta "¿quién tiene esta dirección, y cuál es tu dirección de capa de enlace?"
+- **Anuncio de Vecino (NA)**: la respuesta dando esa dirección de capa de enlace.
+- **Redireccionamiento (Redirect)**: un router le dice a un host sobre un mejor próximo salto para un destino.
+
+La solicitud y el anuncio de router tratan de "cómo me configuro"; la solicitud y el anuncio de vecino tratan de "cómo alcanzo este vecino"; el redireccionamiento trata de "hay un camino mejor". Eso cubre la vida cotidiana de un enlace.
+
+## Resolución de dirección sin broadcast
+
+El trabajo que ARP hace en IPv4, mapear una dirección IP a una dirección de hardware, es hecho en IPv6 por el par de Solicitud y Anuncio de Vecino. La diferencia importante es *cómo* se hace la pregunta. ARP grita a la dirección de broadcast, interrumpiendo a todo dispositivo del segmento. IPv6 en cambio envía la Solicitud de Vecino a la **dirección multicast de nodo solicitado** (solicited-node multicast address) del objetivo, un grupo en el que solo el pequeño conjunto de hosts que comparten el mismo sufijo de dirección estará escuchando. El objetivo responde con un Anuncio de Vecino cargando su dirección de capa de enlace. El consultante cachea el resultado, exactamente como funciona un caché ARP, y lo revalida a través de la Detección de Inalcanzabilidad de Vecino (Neighbor Unreachability Detection) cuando el tráfico sugiere que un vecino puede haberse ido.
+
+## La dirección multicast de nodo solicitado
+
+La dirección multicast de nodo solicitado se construye a partir de la dirección objetivo: toma el prefijo `ff02::1:ff00:0/104` y anexa los últimos 24 bits de la dirección del objetivo. Como la resolución apunta solo al puñado de hosts que comparten esos 24 bits bajos en vez del enlace entero, la petición alcanza muchas menos máquinas de las que un broadcast ARP alcanzaría. Esta construcción es por la que el artículo de [direccionamiento](/learn/ipv6-addressing) trata el multicast de nodo solicitado como parte del plan de direcciones en vez de un añadido: todo host que configura una dirección automáticamente se une al grupo de nodo solicitado correspondiente para que otros puedan encontrarlo.
+
+## Ningún broadcast en absoluto
+
+IPv6 no tiene dirección de broadcast. Todo para lo que IPv4 usaba broadcast, incluyendo resolución de dirección y descubrimiento de router, es manejado por multicast a grupos específicos y bien delimitados. Hay un grupo multicast de todos-los-nodos (`ff02::1`) y un grupo de todos-los-routers (`ff02::2`), pero la resolución rutinaria apunta en cambio a los estrechos grupos de nodo solicitado. Reemplazar "interrumpir a todos" por "notificar exactamente a los oyentes relevantes" es más eficiente en enlaces ocupados y es una de las mejoras más silenciosas que IPv6 hace sobre IPv4.
+
+## Confiar en el enlace
+
+Como el Descubrimiento de Vecinos es no autenticado por defecto, un host malicioso en el mismo enlace puede enviar Anuncios de Router o Anuncios de Vecino falsificados para redirigir o interceptar tráfico, el análogo IPv6 del spoofing de ARP. Las defensas viven en el borde de la red: el RA Guard en los switches descarta anuncios de router de puertos que no deberían tener routers, y el Descubrimiento de Vecinos Seguro (SEcure Neighbor Discovery, SEND) añade protección criptográfica donde se implanta. Como con IPv4, el enlace local es una frontera de confianza que vale la pena defender.
+
+## El sistema nervioso del enlace
+
+El resumen es que IPv6 plegó la resolución de dirección, el descubrimiento de router, y la redirección en un único protocolo basado en ICMPv6, cambió el grito por broadcast por multicast dirigido, e hizo la cosa entera esencial en vez de opcional. Cuando ves una dirección en la herramienta y notas su grupo de nodo solicitado o su forma link-local, estás mirando las piezas que el Descubrimiento de Vecinos usa para dejar a los hosts encontrarse unos a otros en un enlace sin jamás perturbar a los vecinos que no están involucrados.

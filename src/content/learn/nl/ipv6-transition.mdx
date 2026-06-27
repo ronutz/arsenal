@@ -1,0 +1,43 @@
+---
+slug: ipv6-transition
+title: "IPv6 en IPv4 samen draaien: dual-stack en vertaling"
+summary: "Hoe het internet twee incompatibele adresfamilies overbrugt: dual-stack, Happy Eyeballs, NAT64, en de IPv4-ingebedde adressen die het laten werken."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Twee internets tegelijk
+
+IPv6 en IPv4 zijn op de draad niet compatibel: een alleen-IPv6-host kan niet rechtstreeks praten met een alleen-IPv4-server, omdat de pakketten verschillende adresgroottes en headers gebruiken. Er zou nooit een beslisdag komen waarop iedereen om middernacht overschakelde, dus het internet heeft jaren besteed aan het naast elkaar draaien van beide protocollen en het overbruggen ertussen. De overgangstechnologieën bestaan om die coëxistentie onzichtbaar te maken voor gebruikers terwijl het oude protocol langzaam met pensioen gaat.
+
+## Dual-stack: draai gewoon beide
+
+De eenvoudigste aanpak is dual-stack: een host, router, of server draait IPv4 en IPv6 tegelijk, met een adres in elk. Wanneer een naam zowel een A-record (IPv4) als een AAAA-record (IPv6) in DNS heeft, kan een dual-stack-client het via beide bereiken. De geldende voorkeur is om IPv6 te gebruiken wanneer het beschikbaar is en anders terug te vallen op IPv4. Dual-stack is het pad dat de meeste netwerken eerst nemen, omdat niets vertaald hoeft te worden; elk protocol draait gewoon natief.
+
+## Happy Eyeballs: verberg de mislukkingen
+
+IPv6 verkiezen is alleen aangenaam als een kapot IPv6-pad de gebruiker niet laat wachten. Happy Eyeballs (RFC 8305) lost dit op door de twee te laten racen: de client start een IPv6-verbinding en, na een zeer korte voorsprong, ook een IPv4, gebruikt dan welke ook het eerst voltooit en laat de andere stilletjes vallen. Het effect is dat gebruikers IPv6 krijgen wanneer het gezond is en een onmiddellijke, onopgemerkte terugval naar IPv4 wanneer het dat niet is. Dit algoritme is een groot deel van waarom het inschakelen van IPv6 zelden iets trager laat aanvoelen.
+
+## IPv4-adressen ingebed in IPv6
+
+Verscheidene mechanismen werken door een IPv4-adres binnen een IPv6-adres te dragen, en de tool herkent deze vormen. Het IPv4-mapped bereik `::ffff:0:0/96` representeert een IPv4-adres aan een dual-stack-socket, dus `::ffff:192.0.2.1` is hoe de IPv4-host 192.0.2.1 verschijnt in een IPv6-API. Vertaalsystemen gebruiken het welbekende prefix `64:ff9b::/96` (RFC 6052) om een IPv4-bestemming in te bedden in een IPv6-adres dat naar een vertaler kan worden gerouteerd. Een ingebed IPv4-adres herkennen vertelt je dat wat eruitziet als een IPv6-bestemming in werkelijkheid een pad is naar iets op het IPv4-internet.
+
+## NAT64 en DNS64: alleen-IPv6 dat IPv4 bereikt
+
+Voor netwerken die alleen-IPv6 zijn geworden, laten NAT64 (RFC 6146) en DNS64 (RFC 6147) die clients nog steeds alleen-IPv4-servers bereiken. DNS64 synthetiseert een AAAA-record voor een alleen-IPv4-naam door zijn IPv4-adres in te bedden in het welbekende prefix, dus de client krijgt een IPv6-bestemming om mee te verbinden. NAT64 zit dan op de grens en vertaalt die IPv6-pakketten naar IPv4 op de weg naar buiten, en terug op de weg naar binnen. Samen laten ze een modern alleen-IPv6-netwerk zich gedragen alsof het hele internet bereikbaar was via IPv6.
+
+## 464XLAT voor koppige IPv4-apps
+
+Sommige applicaties geven nog steeds letterlijke IPv4-adressen door en breken op een alleen-IPv6-netwerk zelfs met NAT64 aanwezig. 464XLAT (RFC 6877), wijdverbreid ingezet bij mobiele providers, voegt een kleine vertaling toe op de client die lokaal een privé IPv4-adres presenteert en het door het alleen-IPv6-netwerk tunnelt naar een NAT64-gateway. Het is de reden dat alleen-IPv6 mobiele netwerken nog steeds alleen-IPv4-apps kunnen draaien zonder dat de gebruiker het merkt.
+
+## Waarom er geen NAT is in natief IPv6
+
+Een frequente vraag van IPv4-beheerders is waar het NAT heen ging. Natief IPv6 geeft elke host een globaal routeerbaar adres, dus het adres-delende NAT dat de IPv4-thuis- en kantoornetwerken definieerde is simpelweg onnodig; de connectiviteit is eind-tot-eind, en een stateful firewall, niet adresvertaling, levert de grens. Waar privé, niet-gerouteerd adresseren werkelijk gewenst is, biedt IPv6 Unique Local Addresses in `fc00::/7`, het ULA-type dat de tool identificeert. De vertaling gezien aan IPv6-randen dient om het *oude* protocol te bereiken, niet om een schaarse adresruimte uit te rekken.
+
+## Steiger, niet de bestemming
+
+Al deze machinerie, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, is overgangssteiger. De eindtoestand is natief IPv6 overal, met vertaling alleen nodig om wat er ook aan IPv4 overblijft te bereiken. Ondertussen helpt het herkennen van de ingebedde-IPv4-vormen en het begrijpen welke brug in het spel is je te redeneren over een pad dat stilletjes tussen de twee internets kan oversteken. Wanneer de tool een adres markeert als IPv4-mapped of zittend in het vertaalprefix, is dat je aanwijzing dat een IPv4-endpoint zich verbergt binnen een IPv6-adres.

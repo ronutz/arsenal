@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Naboopdagelse: hvordan IPv6 erstatter ARP"
+summary: "Hvordan IPv6 finder naboer på et link ved hjælp af ICMPv6 og multicast i stedet for broadcast-ARP, de fem naboopdagelsesbeskeder, og hvorfor broadcast er væk."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 er ikke valgfrit
+
+I IPv4 er ICMP en diagnostisk eftertanke, du kan blokere uden at bryde grundlæggende forbindelse. I IPv6 er ICMPv6 (RFC 4443) bærende: protokollen afhænger af det for central link-drift, så at filtrere det vilkårligt bryder netværket. Grunden er, at IPv6 flyttede flere job, som IPv4 spredte over ARP, ICMP-routeropdagelse og ICMP-redirects, til en enkelt ICMPv6-baseret protokol kaldet Naboopdagelse (Neighbor Discovery, RFC 4861). At forstå Naboopdagelse er at forstå, hvordan et IPv6-link faktisk fungerer.
+
+## Fem beskeder gør arbejdet
+
+Naboopdagelse definerer fem ICMPv6-beskedtyper, og næsten alt på et link er en eller anden kombination af dem:
+
+- **Router Solicitation (RS)**: en vært beder routere om at annoncere sig.
+- **Router Advertisement (RA)**: en router annoncerer præfikset og konfigurationsflagene (inputtet til autokonfiguration i artiklen [adressekonfiguration](/learn/ipv6-address-configuration)).
+- **Neighbor Solicitation (NS)**: en vært spørger "hvem har denne adresse, og hvad er din lænkelagsadresse?"
+- **Neighbor Advertisement (NA)**: svaret, der giver den lænkelagsadresse.
+- **Redirect**: en router fortæller en vært om et bedre næste hop for en destination.
+
+Router solicitation og advertisement håndterer "hvordan konfigurerer jeg mig"; neighbor solicitation og advertisement håndterer "hvordan når jeg denne nabo"; redirect håndterer "der er en bedre sti". Det dækker det daglige liv på et link.
+
+## Adresseopløsning uden broadcast
+
+Arbejdet, ARP gør i IPv4, at kortlægge en IP-adresse til en hardwareadresse, gøres i IPv6 af Neighbor-Solicitation-og-Advertisement-parret. Den vigtige forskel er, *hvordan* spørgsmålet stilles. ARP råber til broadcast-adressen og afbryder hver enhed på segmentet. IPv6 sender i stedet Neighbor Solicitation til målets **solicited-node-multicast-adresse**, en gruppe, som kun den lille mængde værter, der deler det samme adressesuffiks, vil lytte på. Målet svarer med et Neighbor Advertisement, der bærer dets lænkelagsadresse. Spørgeren cacher resultatet, præcis som en ARP-cache fungerer, og revaliderer det gennem Neighbor Unreachability Detection, når trafik antyder, at en nabo kan være gået væk.
+
+## Solicited-node-multicast-adressen
+
+Solicited-node-multicast-adressen bygges fra måladressen: tag præfikset `ff02::1:ff00:0/104` og vedhæft de sidste 24 bit af målets adresse. Fordi opløsning kun retter sig mod den håndfuld værter, der deler de lave 24 bit, snarere end hele linket, når anmodningen langt færre maskiner, end en ARP-broadcast ville. Denne konstruktion er grunden til, at artiklen [adressering](/learn/ipv6-addressing) behandler solicited-node-multicast som en del af adresseplanen snarere end en eftertanke: hver vært, der konfigurerer en adresse, tilslutter sig automatisk den tilsvarende solicited-node-gruppe, så andre kan finde den.
+
+## Slet ingen broadcast
+
+IPv6 har ingen broadcast-adresse. Alt, IPv4 brugte broadcast til, inklusive adresseopløsning og routeropdagelse, håndteres af multicast til specifikke, vel-afgrænsede grupper. Der er en alle-noder-multicast-gruppe (`ff02::1`) og en alle-routere-gruppe (`ff02::2`), men rutinemæssig opløsning retter sig i stedet mod de smalle solicited-node-grupper. At erstatte "afbryd alle" med "underret præcis de relevante lyttere" er mere effektivt på travle links og er en af de mere stille forbedringer, IPv6 gør over IPv4.
+
+## At stole på linket
+
+Fordi Naboopdagelse er uautentificeret som standard, kan en ondsindet vært på det samme link sende forfalskede Router Advertisements eller Neighbor Advertisements for at omdirigere eller opfange trafik, IPv6-analogen til ARP-spoofing. Forsvarene lever ved netværkskanten: RA Guard på switche kasserer router advertisements fra porte, der ikke burde have routere, og SEcure Neighbor Discovery (SEND) tilføjer kryptografisk beskyttelse, hvor det udrulles. Som med IPv4 er det lokale link en tillidsgrænse værd at forsvare.
+
+## Linkets nervesystem
+
+Sammenfatningen er, at IPv6 foldede adresseopløsning, routeropdagelse og omdirigering ind i en enkelt ICMPv6-baseret protokol, byttede broadcast-råb mod målrettet multicast, og gjorde det hele væsentligt snarere end valgfrit. Når du ser en adresse i værktøjet og bemærker dens solicited-node-gruppe eller dens link-local-form, kigger du på de stykker, Naboopdagelse bruger til at lade værter finde hinanden på et link uden nogensinde at forstyrre naboerne, der ikke er involveret.

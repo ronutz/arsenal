@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Autenticando requisições de API com HMAC"
+summary: "Como um segredo compartilhado e um hash permitem que um servidor confie em uma requisição que não viu ser feita, e como a proteção contra repetição se encaixa."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## O problema: confiar em uma requisição
+
+Quando um servidor recebe uma requisição de API, como ele sabe que quem chamou é quem afirma ser, e que ninguém alterou a requisição em trânsito? Enviar um segredo compartilhado a cada requisição funcionaria até esse segredo ser registrado em log, armazenado em cache ou vazado. A **assinatura de requisições com HMAC** resolve isso sem nunca transmitir o segredo: quem chama prova que possui o segredo usando-o para assinar a requisição, e o servidor verifica a assinatura.
+
+## Como a assinatura funciona
+
+Os dois lados compartilham uma chave secreta. Para assinar uma requisição, o cliente:
+
+1. Monta uma **string canônica** a partir das partes da requisição que não podem mudar, tipicamente o método HTTP, o caminho, cabeçalhos-chave, um carimbo de tempo e um hash do corpo. "Canônica" significa que ambos os lados a montam exatamente da mesma forma acordada, para que calculem sobre uma entrada idêntica.
+2. Calcula `HMAC-SHA256(string canônica, segredo)` e o anexa à requisição, geralmente em um cabeçalho como `Authorization` ou `X-Signature`.
+
+O servidor, possuindo o mesmo segredo, reconstrói a string canônica a partir da requisição que recebeu e calcula o HMAC ele mesmo. Se o seu valor coincidir com o do cabeçalho, duas coisas ficam provadas de uma vez: quem chamou possui o segredo (**autenticidade**), e nada coberto pela assinatura foi alterado (**integridade**). O próprio segredo nunca trafega.
+
+## Um exemplo real: AWS Signature Version 4
+
+O SigV4 da Amazon é a instância mais conhecida. Cada requisição é assinada com HMAC-SHA256 sobre uma requisição canônica, usando uma chave de assinatura **derivada** da chave de acesso secreta, da data, da região e do serviço. O servidor re-deriva a chave e recalcula a assinatura; uma divergência é rejeitada. O mesmo padrão, canonizar, HMAC, comparar, sustenta inúmeros outros esquemas de autenticação de API.
+
+## Webhooks: a mesma ideia, invertida
+
+Os webhooks invertem a direção. Um provedor (um processador de pagamentos, um host Git) chama **o seu** endpoint para notificá-lo de um evento, e assina o payload com um segredo que ambos compartilham, enviando o HMAC em um cabeçalho. Seu endpoint recalcula o HMAC sobre o corpo recebido e compara, e é assim que você rejeita chamadas forjadas de qualquer um que não possua o segredo. Sempre compare usando uma verificação de tempo constante para evitar vazar informação pelo tempo de resposta.
+
+## Proteção contra repetição
+
+Uma requisição assinada válida que um atacante capture poderia ser **repetida** literalmente. As defesas padrão são incluir um **carimbo de tempo** nos dados assinados e rejeitar requisições fora de uma janela curta, e, opcionalmente, um **nonce** (um valor de uso único que o servidor lembra por pouco tempo) para que a mesma requisição não possa ser aceita duas vezes. A assinatura prova autenticidade; o carimbo de tempo e o nonce impedem que uma requisição antiga e genuína seja reutilizada.
+
+A [ferramenta HMAC](/tools/hmac) calcula o HMAC-SHA256 (e SHA-384/512) que está no coração de cada um desses esquemas, sobre uma mensagem e uma chave que você fornece, inteiramente no seu navegador.

@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Baytlar, kod noktaları ve UTF-8"
+summary: "Bir karakter ile bir bayt arasındaki fark, Unicode ve UTF-8'in neden var olduğu ve bunun Base64 ile ne ilgisi olduğu."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Karakterler bayt değildir
+
+Bir bilgisayar baytları saklar, 0'dan 255'e kadar değerler. İnsanlar karakterleri okur: harfler, rakamlar, noktalama, emoji. Bir **karakter kodlaması**, ikisi arasındaki üzerinde anlaşılmış eşlemedir. Eşlemeyi yanlış yapın ve klasik bozuk metni görürsünüz (`café`'nin `cafÃ©` olması); bu neredeyse her zaman baytları yazmak için kullanılan kodlama ile onları okumak için kullanılan kodlama arasındaki bir uyumsuzluktur.
+
+## ASCII: özgün 128
+
+En eski yaygın kullanılan kodlama **ASCII**'dir; 0'dan 127'ye kadarki sayıları temel İngilizce harflere, rakamlara ve yaygın sembollere atar. Yedi bit, 128 karakter. ASCII basittir ve hâlâ bilişimin büyük bölümünün temelinde yatar, ama 128 karakter aksanlı harfleri, Latin olmayan yazıları veya sembolleri temsil edemez; dolayısıyla dünyanın metni için asla yetmedi.
+
+## Unicode: karakter başına bir sayı
+
+**Unicode**, her karaktere **kod noktası** denen benzersiz bir sayı vererek kapsam sorununu çözer; `U+0041` (A harfi) veya `U+2615` (sıcak bir içecek) gibi yazılır. Unicode, karakterlerin ve kod noktalarının devasa bir kataloğudur, yüz binin çok üzerinde, ve kullanımdaki hemen her yazıyı kapsar.
+
+Kritik olarak Unicode her karakterin *hangi sayıya* sahip olduğunu söyler, ama *o sayının bayt olarak nasıl saklanacağını* değil. Bu ikinci iş bir kodlama biçimine aittir.
+
+## UTF-8: kod noktaları nasıl bayt olur
+
+**UTF-8**, Unicode kod noktalarını bayta dönüştürmenin baskın yoludur ve modern web genelinde varsayılandır. **Değişken uzunluktadır**: bir karakter, kod noktasına bağlı olarak bir ila dört bayt tutar.
+
+- ASCII aralığı (U+0000 ila U+007F) tek bir bayt olarak, ASCII ile aynı şekilde kodlanır. UTF-8'in geriye dönük uyumlu olmasının nedeni budur: herhangi bir salt ASCII metni zaten geçerli UTF-8'dir.
+- ASCII'nin ötesindeki karakterler iki, üç veya dört bayt kullanır. Yani `é` iki bayt ve `☕` üç bayttır, her biri tek bir karakter olsa da.
+
+Bu son nokta yaygın sürprizdir: **bir karakter her zaman bir bayt değildir.** Bayt saymak ile karakter saymak, herhangi bir ASCII olmayan metin için farklı yanıtlar verir. (UTF-16 ve UTF-32 aynı kod noktalarının alternatif kodlamalarıdır; UTF-8, ASCII uyumluluğu ve Latin metin için tıkızlığı sayesinde web'i kazandı.)
+
+## Base64 nereye giriyor
+
+Bu, Base64 için önemlidir çünkü **Base64 baytlar üzerinde çalışır, karakterler üzerinde değil.** Bir dizeyi Base64'e kodlamak için, dizenin önce bir karakter kodlamasıyla bayta dönüştürülmesi gerekir ve o kodlama esasen her zaman UTF-8'dir. Aynı karakteri farklı bir şemayla kodlayın, farklı baytlar, dolayısıyla farklı Base64 elde edersiniz. Yani metin için tam boru hattı şudur: karakterler bayt olur (UTF-8), sonra baytlar güvenli metin olur (Base64). Çözerken her iki adımı tersine çevirirsiniz.
+
+[Base64 aracı](/tools/base64) metni Base64'e kodlamadan önce UTF-8 bayt olarak kodlar ve çözülmüş bir sonuç geçerli UTF-8 değilse bunu işaretler, tamamı tarayıcınızda.

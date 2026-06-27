@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Ou apparait Base64 : data URI, MIME, PEM et Basic auth"
+summary: "Les endroits reels ou le binaire est enveloppe dans du texte, le cout en taille de cette operation, et pourquoi Base64 dans un en-tete d'authentification n'est pas du chiffrement."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Pourquoi envelopper le binaire dans du texte
+
+Beaucoup de transports ont ete concus pour le texte, pas pour les octets bruts : corps d'e-mails, documents JSON et XML, en-tetes HTTP, fichiers source. Placez-y du binaire brut et un octet de controle ou nul egare peut casser l'analyse. Base64 resout cela en reexprimant les octets avec uniquement des caracteres imprimables surs, afin que le binaire circule intact dans un canal uniquement textuel. Voici ou cela se produit vraiment.
+
+## Les cas courants
+
+- **Data URI.** Une URL `data:` integre une petite ressource directement dans le balisage ou le CSS, par exemple `data:image/png;base64,iVBORw0KGgo...`. Les octets de l'image sont en Base64 directement dans l'attribut, evitant une requete reseau distincte pour de petites ressources.
+- **E-mail (MIME).** Les pieces jointes et les corps non ASCII sont transportes avec `Content-Transfer-Encoding: base64`. MIME decoupe la sortie en lignes (classiquement de 76 caracteres) pour que les anciens serveurs de messagerie ne s'etranglent pas sur de longues lignes.
+- **PEM.** Les certificats et les cles sont des octets DER enveloppes en Base64 entre les marqueurs `-----BEGIN CERTIFICATE-----` et `-----END CERTIFICATE-----`, avec des lignes coupees a 64 caracteres. PEM est la raison pour laquelle un certificat est un bloc de texte que vous pouvez coller dans un fichier de configuration.
+- **Authentification HTTP Basic.** L'en-tete `Authorization: Basic` est le Base64 de `utilisateur:motdepasse`.
+
+## Le cout en taille
+
+Base64 n'est pas gratuit. Trois octets deviennent quatre caracteres, donc la forme encodee est environ **33 % plus grande** que l'originale, avant tout surcout de saut de ligne. Ce compromis vaut generalement la peine pour la fiabilite sur un canal texte, mais c'est la raison pour laquelle vous n'encoderiez pas en Base64 un gros fichier que vous pourriez envoyer en octets bruts. Pour de petites ressources integrees, la commodite l'emporte ; pour de grosses charges, le surcout plaide pour un transport binaire.
+
+## Encoder n'est pas chiffrer
+
+L'exemple de Basic auth resume a lui seul le point le plus important. `Authorization: Basic dXNlcjpwYXNz` parait opaque, mais `dXNlcjpwYXNz` est simplement le Base64 de `user:pass`, reversible par n'importe qui, sans aucune cle. Base64 n'offre **aucune confidentialite**. C'est un encodage (un changement reversible de representation), pas du chiffrement (un secret protege par cle) ni du hachage (une empreinte a sens unique). C'est pourquoi Basic auth n'est sur que sur TLS : le transport chiffre l'en-tete, car Base64 ne le fait certainement pas.
+
+Chaque fois que vous voyez une longue chaine d'apparence opaque, la decoder d'abord est un moyen peu couteux de savoir ce que c'est. L'[outil Base64](/tools/base64) decode les data URI, les corps PEM et les en-tetes d'authentification vers leurs octets et leur texte bruts, entierement dans votre navigateur, donc rien de ce que vous collez ne quitte la page.

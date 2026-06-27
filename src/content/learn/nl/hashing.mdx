@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Cryptografisch hashen: SHA-256 en de SHA-2-familie"
+summary: "Wat een hashfunctie garandeert, de eigenschappen die haar cryptografisch maken, en waarom een digest geen versleuteling is."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Wat een hash is
+
+Een cryptografische hashfunctie neemt invoer van elke grootte, een woord, een bestand, een schijfkopie van meerdere gigabytes, en produceert een uitvoer van vaste grootte, een **digest** genoemd. SHA-256 levert altijd 256 bits (32 bytes) op, of je hem nu één teken gaf of een miljoen. Dezelfde invoer levert altijd dezelfde digest op, en zelfs een wijziging van één bit in de invoer levert een volledig andere op.
+
+Die vingerafdruk van vaste grootte en deterministische aard is het hele idee. Een digest is een compacte plaatsvervanger voor de data: als twee digests overeenkomen, mag je erop vertrouwen dat de invoeren identiek waren; verschillen ze, dan verschilden de invoeren ergens.
+
+## De eigenschappen die hem cryptografisch maken
+
+Veel functies krimpen data tot een vaste grootte. Een functie verdient het woord *cryptografisch* door drie harde garanties na te leven:
+
+- **Pre-image-bestendigheid (eenrichting).** Gegeven een digest is het rekenkundig onhaalbaar een invoer te vinden die hem produceert. Je kunt de functie niet achterstevoren laten lopen.
+- **Tweede-pre-image- en botsingsbestendigheid.** Het is onhaalbaar twee verschillende invoeren te vinden die naar dezelfde digest hashen. Zonder dit zou een digest een zwakke vingerafdruk zijn.
+- **Het lawine-effect.** Het omdraaien van één invoerbit verandert ongeveer de helft van de uitvoerbits, zonder zichtbaar patroon dat invoer met uitvoer verbindt.
+
+Dit geldt alleen voor functies die het onderzoek hebben doorstaan. SHA-1, ooit standaard, is nu **gebroken** voor botsingsbestendigheid (een praktische botsing werd in 2017 aangetoond) en mag niet worden gebruikt waar de beveiliging ervan afhangt. De SHA-2-familie, SHA-256, SHA-384 en SHA-512, blijft degelijk en is vandaag de veilige standaard.
+
+## Een hash is geen versleuteling
+
+Dit is de meest voorkomende verwarring, dus het loont het helder te zeggen. Versleuteling is **omkeerbaar** met een sleutel: je versleutelt om data geheim te houden en ontsleutelt om ze terug te krijgen. Een hash heeft **geen sleutel en geen inverse**. Je kunt een digest niet "onthashen" om de invoer terug te halen, want de uitvoer is veel kleiner dan de mogelijke invoeren en informatie wordt opzettelijk vernietigd. Hashen is voor verificatie, niet voor geheimhouding.
+
+## Waar hashen zijn waarde bewijst
+
+- **Integriteit en controlegetallen.** Publiceer de SHA-256 van een bestand ernaast; wie het downloadt en de digest herberekent kan bevestigen dat onderweg niets is gewijzigd of beschadigd.
+- **Inhoudsadressering.** Systemen als Git benoemen objecten op hun hash, zodat identieke inhoud automatisch op hetzelfde adres belandt.
+- **Digitale handtekeningen.** Handtekeningschema's tekenen de hash van een bericht in plaats van het hele bericht, omdat de digest klein en van vaste grootte is.
+
+Een belangrijke kanttekening: **wachtwoorden zijn een speciaal geval.** Een gewone snelle hash als SHA-256 is het verkeerde gereedschap om wachtwoorden op te slaan, juist omdat hij snel is, een aanvaller kan miljarden gokken per seconde proberen. Wachtwoordopslag vereist een opzettelijk traag, gezouten algoritme zoals bcrypt, scrypt of Argon2. Gebruik SHA-2 voor integriteit; gebruik een wachtwoord-hash voor wachtwoorden.
+
+## Hoe de tool het berekent
+
+De [Hash-tool](/tools/hash) gebruikt de eigen Web Crypto-implementatie van de browser van SHA-1, SHA-256, SHA-384 en SHA-512, dezelfde doorgelichte code die je browser voor TLS gebruikt, en toont elke digest als hexadecimaal en Base64. Niets wordt geüpload; de berekening gebeurt lokaal.

@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Hash criptográfico: SHA-256 y la familia SHA-2"
+summary: "Qué garantiza una función de hash, las propiedades que la hacen criptográfica y por qué un resumen no es cifrado."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Qué es un hash
+
+Una función de hash criptográfico toma una entrada de cualquier tamaño, una palabra, un archivo, una imagen de disco de varios gigabytes, y produce una salida de tamaño fijo llamada **resumen** (digest). SHA-256 siempre devuelve 256 bits (32 bytes), sin importar si le diste un carácter o un millón. La misma entrada siempre produce el mismo resumen, e incluso un cambio de un bit en la entrada produce uno completamente distinto.
+
+Esa huella de tamaño fijo y determinista es toda la idea. Un resumen es un sustituto compacto de los datos: si dos resúmenes coinciden, puedes confiar en que las entradas eran idénticas; si difieren, las entradas difirieron en algún punto.
+
+## Las propiedades que lo hacen criptográfico
+
+Muchas funciones reducen datos a un tamaño fijo. Una función gana la palabra *criptográfico* por sostener tres garantías firmes:
+
+- **Resistencia a la preimagen (un solo sentido).** Dado un resumen, es computacionalmente inviable encontrar una entrada que lo produzca. No puedes ejecutar la función al revés.
+- **Resistencia a la segunda preimagen y a colisiones.** Es inviable encontrar dos entradas distintas que generen el mismo resumen. Sin esto, un resumen sería una huella débil.
+- **El efecto avalancha.** Invertir un solo bit de entrada cambia alrededor de la mitad de los bits de salida, sin un patrón visible que enlace entrada con salida.
+
+Esto solo se cumple para funciones que han sobrevivido al escrutinio. SHA-1, antes estándar, está ahora **roto** en cuanto a resistencia a colisiones (se demostró una colisión práctica en 2017) y no debe usarse donde la seguridad dependa de ello. La familia SHA-2, SHA-256, SHA-384 y SHA-512, sigue siendo sólida y es el valor seguro por defecto hoy.
+
+## Un hash no es cifrado
+
+Esta es la confusión más común, así que vale decirla con claridad. El cifrado es **reversible** con una clave: cifras para mantener los datos en secreto y descifras para recuperarlos. Un hash **no tiene clave ni inverso**. No puedes "deshashear" un resumen para recuperar la entrada, porque la salida es mucho más pequeña que las entradas posibles y la información se destruye deliberadamente. El hash es para verificación, no para secreto.
+
+## Dónde el hash demuestra su valor
+
+- **Integridad y sumas de verificación.** Publica el SHA-256 de un archivo junto a él; quien lo descarga y recalcula el resumen puede confirmar que nada se alteró ni corrompió en tránsito.
+- **Direccionamiento por contenido.** Sistemas como Git nombran objetos por su hash, así que el contenido idéntico llega a la misma dirección automáticamente.
+- **Firmas digitales.** Los esquemas de firma firman el hash de un mensaje en lugar del mensaje completo, porque el resumen es pequeño y de tamaño fijo.
+
+Una advertencia importante: **las contraseñas son un caso especial.** Un hash rápido simple como SHA-256 es la herramienta equivocada para almacenar contraseñas, precisamente por ser rápido, un atacante puede probar miles de millones de intentos por segundo. El almacenamiento de contraseñas necesita un algoritmo deliberadamente lento y con sal, como bcrypt, scrypt o Argon2. Usa SHA-2 para integridad; usa un hash de contraseñas para contraseñas.
+
+## Cómo lo calcula la herramienta
+
+La [herramienta Hash](/tools/hash) usa la implementación nativa Web Crypto del navegador de SHA-1, SHA-256, SHA-384 y SHA-512, el mismo código auditado que tu navegador usa para TLS, y muestra cada resumen en hexadecimal y Base64. Nada se sube; el cálculo ocurre localmente.

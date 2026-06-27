@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "Czy UUID-y się zderzą? Prawdopodobieństwo i granica urodzinowa"
+summary: "Ile losowych bitów ma naprawdę UUID, matematyka urodzinowa kolizji i kiedy chcemy deterministycznych UUID-ów."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Pytanie stojące za każdym UUID
+
+UUID ma 128 bitów, zwykle generowanych losowo (wersja 4), tak by każdy, gdziekolwiek, mógł go wybić bez koordynacji i oczekiwać, że będzie unikalny. Rozsądna obawa brzmi: jeśli wszyscy po prostu rzucają kośćmi, czy dwa w końcu się nie pokryją? Odpowiedź brzmi: w zasadzie tak, a w praktyce niemal nigdy, i matematyka mówi dokładnie dlaczego.
+
+## Ile naprawdę jest losowych bitów
+
+UUID wersji 4 nie ma 128 losowych bitów. Cztery bity są stałe, by oznaczyć wersję, a dwa kolejne, by oznaczyć wariant, co pozostawia **122 losowe bity**. To wciąż ogromna przestrzeń: 2¹²², około 5,3 undecyliona (5,3 × 10³⁶) możliwych wartości.
+
+## Granica urodzinowa w zastosowaniu
+
+Prawdopodobieństwo kolizji nie zależy od zapełnienia przestrzeni; zależy od liczby *par*, która rośnie z kwadratem liczby generowanych. To znów paradoks urodzin. Dla przestrzeni 2¹²² wartości prawdopodobieństwo jakiejkolwiek kolizji wśród `n` UUID-ów wynosi w przybliżeniu:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+50% szansa na pojedynczą kolizję pojawia się dopiero po około **2⁶¹** UUID-ach, czyli około 2,3 tryliona (skala długa). By to unaocznić: generując miliard UUID-ów wersji 4 na sekundę, potrzebowałbyś rzędu *85 lat*, by osiągnąć tylko 50% szansy na kolizję. Przy każdym realistycznym wolumenie aplikacji prawdopodobieństwo jest tak małe, że przesłania je szansa, że awaria sprzętu i tak uszkodzi dane.
+
+Jedynym realnym zastrzeżeniem jest **jakość losowości**. Matematyka utrzymuje się tylko, jeśli generator jest porządnym źródłem kryptograficznie bezpiecznym. Słabe lub źle zainicjowane źródło losowe może dawać powtórzenia znacznie wcześniej, więc praktycznym ryzykiem jest kiepski RNG, nie projekt UUID.
+
+## Kiedy nie chcemy losowości
+
+Czasem zmartwieniem nie jest kolizja, lecz powtarzalność:
+
+- **UUID-y przestrzeni nazw (wersje 3 i 5)** są deterministyczne: haszują przestrzeń nazw plus nazwę (MD5 dla v3, SHA-1 dla v5), więc *to samo* wejście zawsze daje *ten sam* UUID. Przydatne, gdy chcesz stabilnego identyfikatora wyprowadzonego z istniejących danych zamiast nowego losowego.
+- **UUID-y uporządkowane czasowo (wersja 7)** zachowują losowość, ale poprzedzają ją znacznikiem czasu, więc identyfikatory sortują się według czasu utworzenia. Pomaga to lokalności indeksu w bazie danych, przy zachowaniu pomijalnego ryzyka kolizji.
+
+## Nauka
+
+Dla unikalnych identyfikatorów w każdej normalnej skali UUID wersji 4 z dobrego źródła losowego się nie zderza i nie potrzebujesz centralnego autorytetu, by to zagwarantować. Wybierz v3/v5, gdy potrzebujesz, by to samo wejście odwzorowywało się na ten sam identyfikator, i v7, gdy chcesz uporządkowania czasowego.
+
+[Narzędzie UUID](/tools/uuid) generuje UUID-y wersji 4 (i innych) oraz analizuje dowolny UUID, by pokazać jego wersję i wariant, wszystko w przeglądarce, bez wysyłania czegokolwiek.

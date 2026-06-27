@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "Subnet IPv6 dan sempadan /64"
+summary: "Mengapa subnet IPv6 ialah tentang struktur dan bukan kekurangan, mengapa satu subnet hampir selalu ialah /64, dan bagaimana pewakilan awalan mengagihkan ruang alamat."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Sebab berbeza untuk membuat subnet
+
+Dalam IPv4, subnet kebanyakannya tentang pemuliharaan: alamat adalah terhad, jadi anda mengukir blok kepada kepingan terkecil yang masih muat setiap rangkaian (logik dalam artikel [asas subnet](/learn/subnetting-basics)). IPv6 membuang tekanan itu sepenuhnya. Satu subnet /64 mengandungi 2^64 alamat, lebih daripada keseluruhan internet IPv4 dikuasakan dua, jadi anda tidak pernah membuat subnet rangkaian IPv6 untuk menjimatkan ruang. Anda membuat subnet untuk memberi struktur: satu awalan setiap VLAN, setiap tapak, setiap pelanggan. Matematiknya ialah aritmetik awalan sama dengan IPv4 (alat mengiranya dengan integer ketepatan sembarangan), tetapi pemikirannya bertentangan.
+
+## Mengapa subnet ialah /64
+
+Peraturan tunggal paling penting dalam pengalamatan IPv6 ialah bahawa subnet biasa ialah /64, meninggalkan 64 bit untuk pengecam antara muka. Ini bukan cadangan; bahagian besar protokol mengandaikannya. Autokonfigurasi alamat tanpa keadaan (diliputi dalam artikel [konfigurasi alamat](/learn/ipv6-address-configuration)) membina alamat hos dengan menambah pengecam antara muka 64 bit pada awalan yang diumumkan, dan penerbitan EUI-64 diubah suai yang alat boleh laksanakan menghasilkan tepat 64 bit. Gunakan awalan lebih panjang seperti /80 atau /112 pada pautan dan autokonfigurasi sekadar berhenti berfungsi. Seni bina pengalamatan (RFC 4291) dibina sekitar sempadan ini, jadi nasihat praktikal adalah lurus: jadikan setiap subnet pengguna akhir satu /64 dan jangan cuba berjimat di dalamnya.
+
+## Hierarki peruntukan
+
+Jika setiap subnet ialah /64, tapak dan penyedia bekerja dalam blok lebih besar di atasnya:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Sebuah ISP biasanya mewakilkan /48 atau /56 kepada pelanggan, yang kemudian menetapkan /64 daripadanya kepada pautan individu. RFC 6177 berundur daripada panduan asal "/48 untuk semua orang" ke arah memberi setiap tapak ruang cukup untuk membuat subnet dengan selesa, yang dalam amalan bermaksud /48 atau /56. Maksudnya ialah anda mempunyai ruang berlebihan: walaupun /56 memberi rumah atau pejabat kecil 256 rangkaian berasingan, jauh lebih daripada yang ia akan guna.
+
+## Buat subnet pada sempadan nibel
+
+Kerana IPv6 ditulis dalam heks dan setiap digit heks ialah 4 bit (satu nibel, nibble), awalan yang jatuh pada sempadan 4 bit jauh lebih mudah dibaca dan diurus. /48, /52, /56, /60, dan /64 semuanya berakhir bersih antara digit heks, jadi bahagian subnet sejajar dengan aksara penuh dalam alamat. Membuat subnet /48 kepada /52 memberi anda 16 blok dibezakan oleh satu digit heks tunggal; pergi ke /56 memberi 256 blok merentasi dua digit. Kekal pada sempadan nibel mengekalkan pelan pengalamatan anda terbaca, yang lebih penting dalam IPv6 daripada memerah bit terakhir pernah boleh.
+
+## Mengira subnet dan alamat
+
+Aritmetik adalah lurus. Bilangan subnet /64 dalam awalan lebih pendek ialah 2 dinaikkan kepada perbezaan dalam panjang awalan: /48 memuatkan 2^(64-48) = 2^16 = 65,536 subnet. Bilangan alamat dalam mana-mana /64 ialah 2^(128-64) = 2^64. Alat melaporkan kedua-dua kiraan alamat untuk awalan dan julat boleh guna, dan nombor menjadi besar dengan cepat, yang ialah tepat maksudnya: kekurangan bukan lagi kekangan yang anda reka bentuk sekelilingnya.
+
+## Pengajarannya
+
+Subnet IPv6 membalikkan tabiat IPv4 secara terbalik. Anda tidak membahagikan sumber terhad; anda mengenakan struktur pada satu yang secara berkesan tidak terhad. Beri setiap subnet satu /64 supaya autokonfigurasi dan penemuan jiran berfungsi seperti direka, minta /48 atau /56 supaya anda mempunyai ruang untuk menyusun, dan buat subnet pada sempadan nibel supaya pelan anda kekal terbaca. Apabila anda menampal awalan ke dalam alat dan melihat kiraan alamat, perlakukan kelimpahan itu sebagai keizinan untuk mereka bentuk untuk kejelasan dan bukan untuk pemuliharaan.

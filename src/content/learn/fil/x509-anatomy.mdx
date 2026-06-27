@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomiya ng isang X.509 Certificate"
+summary: "Kung ano ang nabubuhay sa loob ng isang TLS certificate, kung paano nakaayos ang mga ASN.1/DER byte, kung ano talaga ang kinokontrol ng mga v3 extension, at kung bakit ang pag-decode ng isang certificate ay hindi pareho sa pagtitiwala rito."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ano ang isang certificate
+
+Ang isang X.509 certificate ay isang nilagdaang pahayag na nagtatali ng isang public key sa isang pagkakakilanlan. Kapag ang isang browser ay kumonekta sa isang site sa pamamagitan ng HTTPS, ang server ay nagpapakita ng isang certificate na nagsasabi, sa katunayan, "ang public key na ito ay pag-aari ng test.ronutz.com, at isang certificate authority ang umaako para riyan." Ang profile na nagtatakda kung anong mga field ang dala ng isang certificate at kung paano ito binibigyang-kahulugan ay ang RFC 5280.
+
+Ang pagkakatali ang mahalaga. Sinuman ay makakagawa ng isang key pair, kaya ang isang hubad na public key ay walang pinatutunayan tungkol sa kung sino ang nasa kabilang dulo. Ang isang certificate ay nagdaragdag ng isang lagda mula sa isang issuer na pinagkakatiwalaan na ng relying party, ginagawa ang isang anonymous na key na isang key na may pangalang nakakabit. Ito ang pundasyon ng web public key infrastructure (PKI).
+
+## Ang chain of trust
+
+Ang isang nag-iisang certificate ay bihirang pinagkakatiwalaan nang mag-isa. Pinagkakatiwalaan ito dahil nilagdaan ito ng isang issuer, na nilagdaan naman ng isa pang issuer, paitaas hanggang sa isang root na hawak na ng relying party sa isang trust store:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Ang bawat kawing ay isang lagda: nilalagdaan ng issuer ang certificate ng anak gamit ang private key ng issuer, at sinusuri ng isang verifier ang lagdang iyon gamit ang public key ng issuer. Ang isang **root** ay self-issued at self-signed, na siyang dahilan kung bakit ang isang self-signed na certificate ay isang kapaki-pakinabang na lokal na kapalit para sa isang root ngunit hindi nagdadala ng anumang panlabas na awtoridad. Tinatandaan ng X.509 tool ang isang self-issued na certificate (issuer katumbas ng subject) at kung ang certificate ay minarkahan bilang isang CA, na pareho ay nagsasabi sa iyo kung saan nakaupo ang isang certificate sa larawang ito.
+
+## ASN.1 at DER: ang byte layout
+
+Ang isang certificate ay hindi JSON o teksto. Inilalarawan ito sa ASN.1 (Abstract Syntax Notation One) at ini-encode gamit ang Distinguished Encoding Rules (DER), tinukoy sa ITU-T X.690. Ang DER ay isang tag-length-value (TLV) na format: ang bawat elemento ay nagsisimula sa isang tag byte na nagsasabi kung anong uri ito, pagkatapos ay isang haba, pagkatapos ay ganoong dami ng content byte. Ang mga constructed na uri tulad ng SEQUENCE at SET ay humahawak ng mga child element, kaya ang buong certificate ay isang puno ng mga TLV.
+
+Ang isang PEM file ay iyon mismong DER, Base64-encoded at nakabalot sa mga armor line:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Kaya ang pag-decode ng isang certificate ay nangangahulugan ng pagtanggal ng armor, pag-decode mula Base64 patungong DER, pagkatapos ay paglalakad sa puno ng TLV. Ginagawa ito mismo ng X.509 tool sa iyong browser, nang walang library at walang network call.
+
+## Ang top-level na istraktura
+
+Sa pinakalabas na antas, ang RFC 5280 ay nagtatakda ng tatlong bahagi:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+Ang **tbsCertificate** ("to be signed", lalagdaan) ay humahawak ng lahat ng tunay na nilalaman. Ang **signatureAlgorithm** ay nagngangalan kung paano ito nilagdaan ng issuer, halimbawa sha256WithRSAEncryption o ecdsa-with-SHA256. Ang **signatureValue** ay ang lagda mismo, kinuwenta sa mga DER byte ng tbsCertificate. Ang huling puntong iyon ay sulit hawakan: sinasaklaw ng lagda ang to-be-signed na katawan nang eksakto gaya ng pagkaka-encode, na siyang dahilan kung bakit kahit isang one-byte na pagbabago saanman sa katawan ay sumisira sa verification.
+
+## Sa loob ng TBSCertificate
+
+Ang to-be-signed na katawan ay kung saan ginugugol ng tool ang karamihan ng oras nito:
+
+- Ang **Version** ay halos palaging v3, ang bersyon na nagpakilala ng mga extension.
+- Ang **Serial number** ay isang malaking integer na itinatalaga ng issuer. Pinagsama sa pangalan ng issuer, natatanging tinutukoy nito ang certificate, at ito ang tinutukoy ng isang revocation list.
+- Ang **Issuer** at **Subject** ay mga Distinguished Name. Ang isang DN ay isang sunod-sunod na mga attribute tulad ng CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) at C (country). Tinutukoy ng RFC 4514 ang isang-linya, pinaka-tiyak-muna na rendering na nakikita mo, halimbawa `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- Ang **Validity** ay isang notBefore at isang notAfter na timestamp. Ang mga ito ay ini-encode bilang UTCTime o GeneralizedTime; kino-convert ng tool ang pareho sa ISO-8601 at, laban sa iyong lokal na orasan, sinasabi sa iyo kung ang certificate ay balido ngayon, hindi-pa-balido, o nag-expire na.
+- Ang **subjectPublicKeyInfo** ay nagdadala ng public key kasama ang algorithm nito. Para sa RSA iniuulat ng tool ang laki ng modulus (halimbawa 2048-bit) at ang public exponent (halos palaging 65537). Para sa elliptic-curve na key iniuulat nito ang pinangalanang curve (P-256, P-384, P-521), ayon sa RFC 5480.
+
+## Ang mga v3 extension
+
+Ang mga extension ay kung saan ini-encode ng mga modernong certificate ang karamihan ng kanilang patakaran. Ang bawat extension ay may identifier, isang critical flag, at isang halaga. Mahalaga ang critical flag: kung ang isang relying party ay hindi nakakaintindi ng isang extension na minarkahang critical, dapat nitong tanggihan ang certificate sa halip na balewalain ang field. Dinedecode ng tool ang mga nagdadala ng pinakamabigat:
+
+- Ang **Subject Alternative Name (SAN)** ay naglilista ng mga pagkakakilanlan na ang certificate ay talagang balido para roon, bilang mga DNS name, IP address, email address, o URI. Para sa TLS, ito ang field na sinusuri ng mga browser, hindi ang CN. Ang isang certificate para sa `test.ronutz.com` na nag-aalis ng pangalang iyon mula sa SAN nito ay mabibigo sa validation sa isang modernong client kahit tumugma ang CN.
+- Ang **Key Usage** ay naglilimita kung ano ang magagawa ng key sa mababang antas: digitalSignature, keyEncipherment, keyCertSign, cRLSign at iba pa. Ang isang CA certificate ay nagdadala ng keyCertSign; ang isang TLS leaf ay karaniwang nagdadala ng digitalSignature at keyEncipherment.
+- Ang **Extended Key Usage (EKU)** ay nagngangalan ng mas mataas na antas na mga layunin tulad ng serverAuth (TLS server), clientAuth (TLS client), codeSigning o emailProtection.
+- Ang **Basic Constraints** ay nagsasaad kung ang certificate ay isang CA, at kung gayon, ilang intermediate CA ang maaaring lumitaw sa ilalim nito (ang path length). Ito ang field na pumipigil sa isang leaf certificate na magamit upang lumagda ng iba pang certificate.
+- Ang **Subject Key Identifier** at **Authority Key Identifier** ay mga hash na nagpapahintulot sa isang verifier na mabilis na itugma ang isang certificate sa issuer nito kapag gumagawa ng isang chain.
+
+## Mga fingerprint
+
+Ang isang certificate **fingerprint** ay isang cryptographic hash lamang ng mga DER byte ng certificate, kadalasan SHA-256 (at, para sa mas lumang mga reference, SHA-1). Hindi ito isang field sa loob ng certificate; kinukuwenta ito sa buong bagay. Ang mga fingerprint ay nagbibigay sa iyo ng isang maikli, fixed-length na halaga upang ihambing ang dalawang certificate para sa pagkakapareho o upang i-pin ang isang kilalang certificate. Kinukuwenta ng tool ang parehong SHA-256 at SHA-1 nang lokal gamit ang Web Crypto API, kaya ang mga byte na iyong idinikit ay hindi kailanman ipinapadala saan man. Para sa higit pa tungkol sa kung ano ang isang hash at kung ano ang hindi, tingnan ang artikulo ng hashing.
+
+## Ang pag-decode ay hindi pag-validate
+
+Ito ang nag-iisang pinakamahalagang ideya, at sinasalamin nito ang parehong pag-iingat na nalalapat sa JSON Web Tokens. Ang pagbabasa ng mga field ng isang certificate ay nagsasabi sa iyo kung ano ang *inaangkin* nito. Hindi nito sinasabi sa iyo na ang angkin ay *totoo*. Ang buong validation ay isang hiwalay, mas mabigat na proseso: ang pagsuri na ang lagda ay nag-chain papunta sa isang pinagkakatiwalaang root, na walang sinuman sa mga certificate sa chain ang nag-expire o binawi, na ang pangalan na iyong kinonekta ay nasa SAN, at na ang mga key usage ay nagpapahintulot sa kung ano ang iyong ginagawa.
+
+Ang isang certificate decoder, kasama ito, ay isang instrumento ng inspeksyon at pagkatuto. Ipinapakita nito sa iyo nang tumpak kung ano ang ipinahayag ng isang issuer at kung paano ito na-encode. Ituring ang output bilang isang tapat na pagbasa ng dokumento, hindi bilang isang hatol kung dapat itong pagkatiwalaan.

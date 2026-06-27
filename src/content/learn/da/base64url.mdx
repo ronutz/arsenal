@@ -1,0 +1,42 @@
+---
+slug: base64url
+title: "Base64URL og det URL-sikre alfabet"
+summary: "Hvorfor JWT'er og PKCE bruger et andet Base64-alfabet, de to tegn der ændres, og hvad der sker med udfyldningen."
+concepts: ["base64", "base64url", "rfc4648", "url-safe", "padding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "character-encoding", "jwt-anatomy", "pkce"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Én kodning, to alfabeter
+
+Base64 omdanner vilkårlige byte til 64 udskrivbare tegn, fire uddatategn for hver tre indatabyte. Standardalfabetet (RFC 4648, afsnit 4) er `A` til `Z`, `a` til `z`, `0` til `9` og de to symboler `+` og `/`, med `=` brugt til at udfylde den sidste gruppe.
+
+Problemet er, at `+`, `/` og `=` har særlige betydninger i andre sammenhænge. I en URL er `/` en stiadskiller, `+` betyder historisk et mellemrum i forespørgselsstrenge, og `=` adskiller en nøgle fra en værdi. I et filnavn er `/` ulovligt på de fleste systemer. Ren Base64 kan derfor ikke placeres i en URL eller et filnavn uden at blive ødelagt eller kræve ekstra escaping.
+
+## Hvad Base64URL ændrer
+
+Base64URL (RFC 4648, afsnit 5) er den samme kodning med et sikrere alfabet. Præcis to tegn er forskellige:
+
+- `+` bliver `-` (bindestreg)
+- `/` bliver `_` (understreg)
+
+Alle andre tegn er identiske, og aritmetikken tre byte til fire tegn ændres ikke. Resultatet er en streng, der overlever at blive placeret i en URL-sti, en forespørgselsparameter eller et filnavn, uden nogen procentkodning.
+
+Udfyldningen er den anden forskel. Standard-Base64 udfylder den sidste gruppe til et multiplum af fire med `=`. Base64URL **udelader oftest udfyldningen** helt, fordi `=` også er besværligt i URL'er. En afkoder kan altid genberegne, hvor meget udfyldning der blev fjernet, ud fra strengens længde, så intet går tabt.
+
+## Hvor man virkelig støder på det
+
+Base64URL er ikke et eksotisk hjørne af specifikationen. Det er kodningen bag flere ting, du bruger hele tiden:
+
+- **JSON Web Tokens.** En JWT består af tre Base64URL-segmenter forbundet med punktummer (`header.payload.signature`). Udskiftningen af `+`/`/` og den fjernede `=` er netop, hvorfor et token er én ren, URL-sikker streng.
+- **PKCE.** `code_challenge` i et OAuth-autorisationskodeforløb er Base64URL-kodningen (uden udfyldning) af et SHA-256-hash, netop så det kan rejse i en URL.
+- **Web Push, JWK og mange token** koder deres binære felter på samme måde.
+
+## En praktisk advarsel
+
+Da alfabeterne overlapper så meget, kan en Base64URL-streng og en standard-Base64-streng se næsten identiske ud, og en værdi uden `+`, `/` eller `=` er gyldig i begge. Inkompatibiliteten viser sig kun, når de rå byte producerer et `-`/`_` eller et `+`/`/`, hvorved afkodning med det forkerte alfabet mislykkes eller giver volapyk. Når et token ikke afkodes, er alfabetet det første at kontrollere.
+
+[Base64-værktøjet](/tools/base64) koder og afkoder både standardalfabetet og det URL-sikre, håndterer manglende udfyldning og viser de rå byte, alt sammen i din browser. Intet af det, du indsætter, sendes nogen steder hen.

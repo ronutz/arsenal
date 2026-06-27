@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Mengapa HMAC, dan bukan hash(kunci + mesej)"
+summary: "Serangan peluasan panjang yang memecahkan pencincangan berkunci naif, dan binaan bersarang yang digunakan HMAC untuk mengalahkannya."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Idea jelas yang gagal
+
+Anda mahu membuktikan mesej datang daripada seseorang yang memiliki rahsia berkongsi dan ia tidak diubah. Pendekatan intuitif ialah mencincang rahsia bersama mesej: `tag = SHA256(rahsia + mesej)`. Ia kelihatan kukuh, tag bergantung pada rahsia, jadi penyerang yang tidak tahu rahsia tidak boleh menghasilkannya. Malangnya, bagi fungsi cincangan yang paling lazim, binaan ini telah dipecahkan.
+
+## Serangan peluasan panjang
+
+Cincangan keluarga Merkle-Damgård, yang merangkumi MD5, SHA-1 dan SHA-256, memproses masukan dalam blok dan membawa keadaan dalaman. Keluaran akhirnya *ialah* keadaan dalaman itu. Itu membocorkan sesuatu yang berbahaya: diberi `SHA256(rahsia + mesej)` dan panjang `rahsia + mesej`, penyerang boleh menetapkan keadaan dalaman cincangan kepada tag anda dan terus mencincang, mengira
+
+```
+SHA256(rahsia + mesej + pengisian + data penyerang)
+```
+
+sebagai tag sah untuk mesej yang diperluas, **tanpa pernah mengetahui rahsia**. Dia boleh menambah data dan menghasilkan tag yang akan disahkan. Bagi API di mana mesej ialah satu set parameter yang ditandatangani, itu boleh bermaksud menambah `&admin=true` pada permintaan dan tetap melepasi semakan tandatangan. `hash(rahsia + mesej)` yang naif tidak selamat.
+
+## Cara HMAC membetulkannya
+
+HMAC (RFC 2104) tidak sekadar mencantum. Ia mencincang dua kali dengan kunci dicampur dalam dua cara berbeza:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Mesej dicincang dengan kunci di bawah pengisian dalaman (`ipad`), dan hasil itu dicincang semula dengan kunci di bawah pengisian luaran (`opad`). Oleh sebab cincangan luaran membalut cincangan dalaman, nilai yang dilihat penyerang bukan keadaan dalaman mentah yang boleh dia perluas; ia ialah keluaran langkah pencincangan kedua dengan kunci rahsia. Peluasan panjang berhenti berfungsi, dan keselamatan HMAC mempunyai bukti kukuh yang hanya bergantung pada cincangan asas yang munasabah.
+
+Sebab itulah setiap sistem matang menggunakan HMAC (atau MAC lain yang sesuai) dan bukannya pencincangan berkunci buatan sendiri. Perhatikan bahawa SHA-3 dan BLAKE tidak terdedah kepada peluasan panjang, jadi ia boleh dikunci dengan lebih langsung, tetapi HMAC kekal sebagai piawai mudah alih yang disokong secara meluas.
+
+## Pengajaran
+
+Gunakan HMAC dengan cincangan kuat (HMAC-SHA256 ialah lalai biasa) dan rahsia entropi tinggi. Jangan mencipta skema pencincangan berkunci anda sendiri: kecacatannya tidak jelas dari luar, yang justru menjadikannya berbahaya.
+
+[Alat HMAC](/tools/hmac) mengira HMAC-SHA256 dan varian berkaitan atas mesej dan kunci supaya anda melihat tag dan membandingkannya, semuanya dalam pelayar anda, tanpa apa-apa dihantar.

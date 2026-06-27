@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Privater IPv4-Adressraum und RFC 1918"
+summary: "Die drei privaten Bereiche, warum sie im Internet nicht routbar sind, und die weiteren Sonderblöcke, die das CIDR-Tool kennzeichnet."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Adressen, die Sie wiederverwenden dürfen
+
+Es gibt nur etwa 4,3 Milliarden IPv4-Adressen, viel zu wenige, als dass jedes Gerät eine eigene öffentliche hätte. Die Antwort (RFC 1918) ist, drei Bereiche zu reservieren, die jeder innerhalb des eigenen Netzes ohne Registrierung nutzen darf. Da alle dieselben privaten Bereiche wiederverwenden, können sie im öffentlichen Internet nicht eindeutig sein und sind dort daher **nicht routbar**. Die Außenwelt zu erreichen erfordert Network Address Translation (NAT), die am Netzrand eine private Quelladresse gegen eine gemeinsame öffentliche tauscht.
+
+## Die drei RFC-1918-Bereiche
+
+- **`10.0.0.0/8`**: von `10.0.0.0` bis `10.255.255.255`, 16.777.216 Adressen. Ein einziges sehr großes Netz.
+- **`172.16.0.0/12`**: von `172.16.0.0` bis `172.31.255.255`, 1.048.576 Adressen. Keine ganze Klasse B, sondern die 16 zusammenhängenden `/16` von `172.16` bis `172.31`, der Bereich, den man am häufigsten falsch erinnert.
+- **`192.168.0.0/16`**: von `192.168.0.0` bis `192.168.255.255`, 65.536 Adressen. Der vertraute Bereich der Heimrouter.
+
+## Die weiteren Sonderblöcke
+
+Mehrere weitere Bereiche sind für bestimmte Zwecke reserviert und ebenfalls keine gewöhnlichen öffentlichen Adressen:
+
+- **`100.64.0.0/10`** (RFC 6598) ist der gemeinsame Bereich für Carrier-Grade NAT (CGNAT), den Provider zwischen Kunde und ihrem öffentlichen Pool verwenden. Privatähnlich, aber von RFC 1918 verschieden.
+- **`169.254.0.0/16`** (RFC 3927) ist Link-Local, die selbst vergebene Adresse, die ein Host wählt, wenn kein DHCP-Server antwortet (APIPA unter Windows). Sie verlässt nie das lokale Segment.
+- **`127.0.0.0/8`** ist Loopback; `127.0.0.1` ist der Host, der mit sich selbst spricht.
+- **`0.0.0.0/8`**, der Multicast-Bereich `224.0.0.0/4` und die Dokumentationsbereiche (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) sind ebenfalls reserviert.
+
+IPv6 hat dieselbe Idee in anderer Form: **Unique Local Addresses** in `fc00::/7` (in der Praxis `fd00::/8`) sind das Pendant zur privaten Nutzung von RFC 1918, ebenfalls nicht global routbar.
+
+## Warum das wichtig ist
+
+Zu wissen, ob eine Adresse privat, öffentlich oder besonders ist, sagt sofort, ob sie im Internet auftauchen kann, ob sie NAT braucht und ob eine Firewall-Regel oder Route sinnvoll ist. Eine Adresse aus `10/8` in einem öffentlichen DNS-Eintrag oder eine `169.254`-Adresse dort, wo Sie DHCP erwarteten, ist ein beachtenswertes Signal.
+
+Der [CIDR-Rechner](/#cidr) klassifiziert jede Adresse oder jeden Block nach diesen Sonderbereichen und meldet, ob er privat, reserviert oder global erreichbar ist, vollständig in Ihrem Browser berechnet.

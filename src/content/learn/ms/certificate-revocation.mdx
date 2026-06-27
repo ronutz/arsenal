@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Pembatalan sijil: CRL, OCSP, dan sijil berhayat pendek"
+summary: "Mengapa sijil kadangkala perlu dibatalkan sebelum ia luput, mengapa sistem pembatalan klasik berfungsi dengan lemah, dan mengapa industri sebaliknya mengecilkan tempoh hayat sijil."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Mengapa membatalkan langsung
+
+Sijil membawa tarikh luput, tetapi kadangkala ia mesti dibatalkan sebelum tarikh itu tiba. Kunci persendirian mungkin telah bocor, sijil mungkin telah dikeluarkan secara silap, atau domain mungkin telah bertukar tangan. Dalam semua kes ini sijil masih sah secara kriptografi dan masih dalam tetingkap kesahihannya, namun pihak yang bergantung patut berhenti mempercayainya. Pembatalan ialah mekanisme untuk berkata "abaikan sijil ini walaupun ia belum luput". Bahagian yang sukar ialah menyampaikan mesej itu dengan boleh dipercayai kepada setiap klien di dunia, dan ini ternyata pautan paling lemah dalam PKI web.
+
+## CRL: senarai sekatan yang diterbitkan
+
+Jawapan asal ialah Senarai Pembatalan Sijil (Certificate Revocation List), ditakrifkan bersama profil sijil dalam RFC 5280. CA secara berkala menerbitkan senarai bertandatangan bagi nombor siri yang telah ia batalkan, dan sijil boleh menunjuk kepadanya melalui CRL Distribution Point. Klien memuat turun senarai dan menyemak sama ada siri sijil muncul padanya.
+
+Masalahnya ialah saiz dan kesegaran. CA yang sibuk boleh menghimpun senarai yang sangat besar, jadi memuat turun dan menghuraikan CRL pada setiap sambungan adalah tidak praktikal, dan senarai cache adalah basi sehingga penerbitan seterusnya. CRL masih digunakan, semakin dalam bentuk termampat dan terpraproses yang pelayar serahkan kepada diri mereka sendiri, tetapi sebagai semakan setiap sambungan ia berskala dengan buruk.
+
+## OCSP: bertanya tentang satu sijil
+
+Online Certificate Status Protocol, RFC 6960, dimaksudkan untuk membaiki masalah saiz dengan membenarkan klien bertanya tentang satu sijil tunggal dan bukannya memuat turun keseluruhan senarai. Klien menghantar siri sijil kepada penyambut OCSP dan mendapat balik "good", "revoked", atau "unknown" yang bertandatangan.
+
+Ini menukar satu masalah dengan tiga. Ia menambah kependaman, kerana klien kini membuat satu pusingan rangkaian tambahan semasa penubuhan sambungan. Ia membocorkan privasi, kerana penyambut mengetahui laman mana yang pengguna lawati. Dan ia mencipta gandingan ketersediaan: jika penyambut tumbang, klien mesti sama ada menggagalkan sambungan atau, jauh lebih lazim, **gagal lembut** (soft-fail) dan teruskan seolah-olah sijil itu baik, yang secara senyap mengalahkan keseluruhan tujuan.
+
+## OCSP stapling dan Must-Staple
+
+Stapling menangani masalah kependaman dan privasi dengan membuat *pelayan* mengambil respons OCSP terkini yang bertandatangan dan melampirkannya pada jabat tangan TLS (sambungan status_request daripada RFC 6066). Klien mendapat kesegaran tanpa menghubungi penyambut. Must-Staple, RFC 7633, ialah sambungan sijil yang berkata "tolak saya jika staple hilang", menutup jurang soft-fail, tetapi ia jarang digunakan kerana satu sedu stapling tunggal kemudian menumbangkan laman.
+
+## Kebenaran yang menyakitkan
+
+Merentasi mekanisme ini, kegagalan berulang ialah soft-fail: apabila maklumat pembatalan tidak tersedia, klien secara amat memilih ketersediaan berbanding keselamatan dan menerima sijil. Itu menjadikan pembatalan jaring keselamatan yang tidak boleh dipercayai tepat apabila ia diperlukan. Pelayar telah membalas dengan sistem luar-jalur mereka sendiri yang menolak data pembatalan kepada diri mereka sendiri, tetapi protokol setiap sambungan tidak pernah menepati janji mereka.
+
+## Jawapan moden: buat sijil luput lebih awal
+
+Jika anda tidak boleh membatalkan sijil dengan boleh dipercayai, alternatifnya ialah menjadikannya cukup berhayat pendek sehingga pembatalan jarang penting: sijil yang terkompromi sekadar luput dengan sendirinya dalam beberapa hari atau minggu. Industri telah komited tepat kepada ini. Ballot SC-081v3 CA/Browser Forum, diluluskan pada April 2025, memfasakan turun tempoh hayat maksimum sijil TLS awam daripada 398 hari ke 200 hari (mulai Mac 2026), 100 hari (Mac 2027), dan 47 hari (Mac 2029), dengan tempoh guna semula pengesahan domain mengecil ke 10 hari. Secara berasingan, sejak 2023 Forum telah membenarkan sijil berhayat pendek yang luput dalam masa 7 hari melangkau sokongan CRL dan OCSP sepenuhnya, dan Let's Encrypt telah mula mengeluarkan sijil dengan tempoh hayat diukur dalam hari. Keseluruhan premis ialah bahawa tempoh hayat yang cukup pendek itu sendiri ialah pembatalan.
+
+Ini hanya berfungsi dengan automasi. Memperbaharui sijil setiap enam atau tujuh minggu dengan tangan tidak boleh dipertahankan, itulah sebabnya protokol ACME (lihat [artikel permintaan tandatangan](/learn/certificate-signing-request)) dan perkakasan kitaran hayat sijil telah menjadi infrastruktur penting dan bukannya satu kemudahan. Perhatikan bahawa peraturan ini terpakai kepada sijil dipercayai secara awam dalam program akar pelayar; PKI dalaman persendirian menetapkan polisinya sendiri.
+
+## Apa yang ini bermakna apabila anda memeriksa sijil
+
+Apabila anda menyahkod sijil, tetingkap kesahihan bukan lagi fikiran-kemudian sekali-setahun; ia menjadi kawalan pembatalan utama. Laporan alat tentang notBefore, notAfter, dan sama ada sijil sah sekarang juga ialah, semakin, perkara yang paling relevan keselamatan tentangnya. Senarai pembatalan dan penyambut masih wujud, tetapi arah perjalanan adalah jelas: pendekkan tempoh hayat supaya soalan pembatalan jarang timbul.

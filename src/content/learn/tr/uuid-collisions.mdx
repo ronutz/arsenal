@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "UUID'ler çakışır mı? Olasılık ve doğum günü sınırı"
+summary: "Bir UUID'nin gerçekte kaç rastgele bite sahip olduğu, bir çakışma için doğum günü matematiği ve ne zaman deterministik UUID'ler istendiği."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Her UUID'nin ardındaki soru
+
+Bir UUID 128 bittir, genellikle rastgele üretilir (sürüm 4); böylece her yerde herkes koordinasyon olmadan bir tane basabilir ve benzersiz olmasını bekleyebilir. Makul endişe şudur: herkes sadece zar atıyorsa, sonunda ikisi çakışmaz mı? Yanıt ilke olarak evet, pratikte ise neredeyse hiçbir zaman değildir ve matematik nedenini tam olarak söyler.
+
+## Gerçekte kaç rastgele bit var
+
+Bir sürüm 4 UUID'nin 128 rastgele biti yoktur. Dört bit sürümü işaretlemek için, iki bit daha varyantı işaretlemek için sabittir; bu da **122 rastgele bit** bırakır. Bu yine de muazzam bir alandır: 2¹²², yaklaşık 5,3 undesilyon (5,3 × 10³⁶) olası değer.
+
+## Doğum günü sınırı, uygulanmış
+
+Çakışma olasılığı alanı doldurmaya bağlı değildir; ürettiğiniz sayının karesiyle büyüyen *çift* sayısına bağlıdır. Bu yine doğum günü paradoksudur. 2¹²² değerlik bir alan için `n` UUID arasında herhangi bir çakışma olasılığı yaklaşık olarak:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+Tek bir çakışma için %50 olasılık, ancak yaklaşık **2⁶¹** UUID'den sonra ortaya çıkar; bu da yaklaşık 2,3 kentilyondur (kısa ölçek). Somutlaştırmak için: saniyede bir milyar sürüm 4 UUID üretseydiniz, yalnızca bir çakışma için %50 olasılığa ulaşmak için *85 yıl* mertebesinde zamana ihtiyacınız olurdu. Gerçekçi herhangi bir uygulama hacminde olasılık o kadar küçüktür ki bir donanım arızasının verileri zaten bozma şansı tarafından gölgede bırakılır.
+
+Tek gerçek uyarı **rastgeleliğin kalitesidir**. Matematik yalnızca üretecin düzgün, kriptografik olarak güvenli bir kaynak olması hâlinde geçerlidir. Zayıf veya kötü ilklendirilmiş bir rastgelelik kaynağı çok daha erken tekrarlar üretebilir; bu yüzden pratik risk UUID'nin tasarımı değil, kötü bir rastgele sayı üreticisidir.
+
+## Rastgelelik istenmediğinde
+
+Bazen endişe çakışma değil, tekrarlanabilirliktir:
+
+- **Ad alanı UUID'leri (sürüm 3 ve 5)** deterministiktir: bir ad alanını artı bir adı karmalarlar (v3 için MD5, v5 için SHA-1); böylece *aynı* girdi her zaman *aynı* UUID'yi verir. Yeni rastgele bir tane yerine mevcut verilerden türetilmiş kararlı bir tanımlayıcı istediğinizde kullanışlıdır.
+- **Zaman sıralı UUID'ler (sürüm 7)** rastgeleliği korur ama önüne bir zaman damgası koyar; böylece kimlikler oluşturulma zamanına göre sıralanır. Bu, çakışma riski ihmal edilebilir kalırken veritabanındaki dizin yerelliğine yardımcı olur.
+
+## Ders
+
+Herhangi bir normal ölçekteki benzersiz tanımlayıcılar için iyi bir rastgelelik kaynağından gelen bir sürüm 4 UUID çakışmaz ve bunu garanti etmek için merkezi bir otoriteye ihtiyacınız yoktur. Aynı girdinin aynı kimliğe eşlenmesini istediğinizde v3/v5'i, zaman sıralaması istediğinizde v7'yi seçin.
+
+[UUID aracı](/tools/uuid) sürüm 4 (ve diğerleri) UUID'ler üretir ve herhangi bir UUID'yi sürümünü ve varyantını göstermek için ayrıştırır; tamamı tarayıcınızda, hiçbir şey gönderilmeden.

@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Grundlagen der Subnetzbildung"
+summary: "Wie man ein Netzwerk in kleinere Subnetze aufteilt, und warum das Borgen von Host-Bits der ganze Trick ist."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Wozu Subnetzbildung dient
+
+Ein einzelnes großes Netzwerk ist selten, was Sie wollen. Subnetzbildung ist die Praxis, einen Block von Adressen zu nehmen und ihn in mehrere kleinere Blöcke aufzuteilen, **Subnetze**, von denen jedes eine separate Broadcast-Domäne, Sicherheitsgrenze oder ein physisches Segment sein kann. Ein Campus könnte jedem Gebäude sein eigenes Subnetz geben; ein Cloud-Konto könnte jeder Schicht einer Anwendung das ihre geben.
+
+Der Mechanismus ist einfacher, als er gewöhnlich klingt: **Subnetzbildung borgt Bits vom Host-Teil und fügt sie dem Netzwerk-Teil hinzu.**
+
+## Bits borgen
+
+Beginnen Sie mit `192.168.1.0/24`. Das Präfix ist 24, also sind 8 Bit frei für Hosts, was einen Block von 256 Adressen ergibt.
+
+Angenommen, Sie brauchen vier separate Subnetze statt einem. Vier ist 2², also brauchen Sie **2 weitere Netzwerk-Bit**. Borgen Sie sie von der Host-Seite: Das Präfix wächst von /24 auf /26.
+
+- `/26` fixiert 26 Bit, lässt 6 frei → 64 Adressen pro Subnetz.
+- Vier solcher Subnetze kacheln das ursprüngliche /24 genau:
+  - `192.168.1.0/26`, Adressen .0 bis .63
+  - `192.168.1.64/26`, Adressen .64 bis .127
+  - `192.168.1.128/26`, Adressen .128 bis .191
+  - `192.168.1.192/26`, Adressen .192 bis .255
+
+Beachten Sie das Muster: Jedes Subnetz ist 64 Adressen breit, also beginnt jedes auf einem Vielfachen von 64. Diese Regel „beginnt auf einem Vielfachen seiner Größe" ist, wie gültige Subnetzgrenzen gefunden werden. Ein Block muss auf einer Adresse beginnen, die ein Vielfaches seiner eigenen Größe ist, oder er ist kein gültiger CIDR-Block.
+
+## Der Kompromiss
+
+Jedes Bit, das Sie für das Netzwerk borgen, halbiert die Hosts pro Subnetz:
+
+| Präfix | Subnetze eines /24 | Adressen je | Nutzbare Hosts je |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Mehr Subnetze bedeutet weniger Hosts in jedem. Netzwerkdesign ist weitgehend die Wahl, wo auf dieser Kurve man sitzt: genug Subnetze für Ihre Segmente, genug Hosts in jedem für die Geräte, die dort leben, mit etwas Raum zum Wachsen.
+
+## Subnetzbildung variabler Länge
+
+Subnetze innerhalb desselben Elternteils müssen nicht alle dieselbe Größe haben. **Subnetzmaskierung variabler Länge (VLSM)** lässt Sie ein großes Subnetz für das Segment schnitzen, das viele Hosts braucht, und kleine Subnetze für Punkt-zu-Punkt-Verbindungen, alles aus demselben Elternblock. Die einzigen Regeln sind die konstanten: Jedes Subnetz ist eine Zweierpotenz in der Größe, und jedes beginnt auf einem Vielfachen seiner Größe, sodass die Blöcke sich nie überlappen.
+
+Der [CIDR-Rechner](/learn) zeigt den exakten Bereich, die Grenzen und die nutzbare Host-Anzahl für jedes Präfix, was das Prüfen eines Subnetzplans zu einer Sache des Eintippens jedes Blocks macht.

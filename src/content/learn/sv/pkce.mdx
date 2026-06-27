@@ -1,0 +1,43 @@
+---
+slug: pkce
+title: "PKCE: att säkra OAuth-auktoriseringskodflödet"
+summary: "Avlyssningsattacken som PKCE besegrar, hur verifieraren och utmaningen passar ihop, och varför S256 är obligatoriskt."
+concepts: ["pkce", "oauth", "oidc", "code-verifier", "code-challenge", "s256"]
+relatedTools: ["pkce"]
+relatedArticles: ["oauth-client-types", "oauth-tokens", "oauth-code-flow", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Attacken som PKCE besegrar
+
+I OAuth 2.0-auktoriseringskodflödet ger auktoriseringsservern klienten en kortlivad **auktoriseringskod**, som klienten sedan byter mot token. Konfidentiella klienter skyddar det bytet med en klienthemlighet. Men **publika klienter**, ensidesappar och mobilappar, kan inte hålla en hemlighet: allt som levereras till webbläsaren eller enheten kan extraheras. Det lämnar ett hål. Om en angripare avlyssnar auktoriseringskoden (via en skadlig app registrerad för samma omdirigering, en läckt logg eller en tillverkad URL) skulle de kunna lösa in den mot token själva.
+
+PKCE, Proof Key for Code Exchange (RFC 7636, uttalas "pixy"), täpper till det hålet utan att kräva en förhandsdelad hemlighet. Det binder auktoriseringskoden till en engångshemlighet som bara den äkta klienten känner.
+
+## Hur verifieraren och utmaningen passar ihop
+
+Flödet lägger till två värden:
+
+- **code_verifier** är en högentropisk slumpsträng som klienten genererar och behåller. RFC 7636 kräver 43 till 128 tecken ur den oreserverade uppsättningen (bokstäver, siffror och `- . _ ~`).
+- **code_challenge** härleds från verifieraren. För S256-metoden är den `BASE64URL(SHA256(ASCII(code_verifier)))`.
+
+Sekvensen är:
+
+1. Klienten genererar en färsk `code_verifier`, härleder `code_challenge` och skickar **endast utmaningen** i auktoriseringsbegäran.
+2. Auktoriseringsservern lagrar utmaningen och returnerar en auktoriseringskod som vanligt.
+3. Vid tokenbegäran skickar klienten **verifieraren**.
+4. Servern hashar verifieraren på samma sätt och kontrollerar den mot den lagrade utmaningen. Ingen matchning, inga token.
+
+Säkerheten vilar på ett faktum: utmaningen är en envägshash av verifieraren. En angripare som avlyssnar auktoriseringskoden kan ändå inte slutföra bytet, eftersom de aldrig såg verifieraren och inte kan räkna ut den baklänges från utmaningen.
+
+## Varför S256, inte plain
+
+RFC 7636 definierar två metoder. `plain`-metoden sätter utmaningen lika med verifieraren, vilket inte erbjuder något skydd om själva auktoriseringsbegäran observeras. `S256`-metoden skickar bara SHA-256-hashen, så verifieraren förblir dold till det slutliga, TLS-skyddade tokenanropet. **S256 krävs varhelst klienten kan beräkna SHA-256**, vilket är överallt som spelar roll; `plain` finns bara för den sällsynta begränsade enhet som inte kan hasha.
+
+## Från valfri till obligatorisk
+
+PKCE började som en utvidgning för publika klienter, men vägledningen har förflyttats beslutsamt. OAuth 2.0 Security Best Current Practice (RFC 9700) kräver nu PKCE på **alla** auktoriseringskodklienter, de konfidentiella inräknade, eftersom den även försvarar mot vissa kodinjektionsattacker. Om du bygger eller testar en OAuth- eller OpenID Connect-integration idag, behandla PKCE som standarden, inte ett tillägg.
+
+[PKCE-verktyget](/tools/pkce) genererar en regelenlig verifierare, härleder dess S256-utmaning med Web Crypto, och kontrollerar varje verifierare mot RFC:ns längd- och teckenuppsättningsregler, allt lokalt. Verifieraren lämnar aldrig din webbläsare.

@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "La notation CIDR expliquée"
+summary: "Ce que la barre oblique dans 192.168.1.0/24 signifie réellement, et comment une longueur de préfixe définit un bloc d'adresses IP."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Le problème que CIDR résout
+
+Chaque appareil sur un réseau IP a besoin d'une adresse. En IPv4, cette adresse fait 32 bits, habituellement écrite comme quatre nombres de 0 à 255 séparés par des points, comme `192.168.1.10`. La question difficile n'est jamais « qu'est-ce qu'une adresse » mais « comment décrire une *plage* d'adresses qui vont ensemble », un seul bureau, un sous-réseau, une allocation client. **La notation CIDR** est la façon compacte d'écrire cette plage.
+
+CIDR signifie Classless Inter-Domain Routing (Routage Inter-Domaine Sans Classe). La partie « sans classe » importe : l'adressage plus ancien forçait les plages dans des tailles fixes (les anciens blocs Classe A, B et C). CIDR a retiré cette rigidité et a laissé une plage avoir *n'importe quelle* taille de puissance de deux, ce qui est pourquoi c'est le standard aujourd'hui.
+
+## Lire la barre oblique
+
+Un bloc CIDR ressemble à `192.168.1.0/24`. La partie après la barre, la **longueur de préfixe**, est le nombre isolé le plus important. Elle dit : *les premiers N bits de l'adresse sont fixes, et le reste est libre de varier.*
+
+- `/24` signifie que les premiers 24 bits sont la partie réseau fixe. Les 8 bits restants (32 − 24) identifient des hôtes individuels.
+- 8 bits libres donnent 2⁸ = 256 combinaisons possibles, donc `192.168.1.0/24` décrit les 256 adresses de `192.168.1.0` à `192.168.1.255`.
+
+Changez le préfixe et la taille du bloc change avec lui. Un préfixe plus petit signifie *plus* de bits libres et un bloc *plus grand* :
+
+- `/16` fixe 16 bits, laisse 16 libres → 65 536 adresses.
+- `/25` fixe 25 bits, laisse 7 libres → 128 adresses.
+- `/30` fixe 30 bits, laisse 2 libres → 4 adresses.
+
+Chaque pas de un dans la longueur de préfixe **divise par deux ou double** le bloc. Cette unique règle est toute l'intuition.
+
+## Réseau, broadcast et hôtes utilisables
+
+Au sein de la plupart des blocs, deux adresses sont spéciales et non assignables à un hôte :
+
+- L'**adresse réseau** est la première adresse du bloc, tous les bits d'hôte mis à 0 (`192.168.1.0` pour un `/24`). Elle nomme le bloc lui-même.
+- L'**adresse de broadcast** est la dernière adresse, tous les bits d'hôte mis à 1 (`192.168.1.255`). Le trafic envoyé ici atteint chaque hôte du bloc.
+
+Donc un `/24` a 256 adresses au total mais **254 utilisables** pour des hôtes réels. Le chiffre des « hôtes utilisables » est simplement le total moins ces deux adresses réservées.
+
+Deux cas limites brisent ce schéma, tous deux délibérément :
+
+- Un **/31** (RFC 3021) est utilisé pour les liaisons point à point entre deux routeurs. Il n'a que 2 adresses et, par conception, les deux sont utilisables, il n'y a pas de place pour une adresse réseau et de broadcast séparées, et aucune n'est nécessaire pour une liaison avec exactement deux extrémités.
+- Un **/32** est une seule adresse, une route d'hôte. Il décrit exactement une machine.
+
+## Pourquoi cela vaut la peine de comprendre
+
+La longueur de préfixe gouverne comment les réseaux sont conçus, comment les routes sont résumées, et comment l'espace d'adresses est distribué. Quand vous voyez `10.0.0.0/8` dans une table de routage ou `0.0.0.0/0` comme route par défaut, vous lisez la même notation : une adresse de base plus une longueur de préfixe qui dit quelle part de celle-ci est fixe. L'arithmétique ne change jamais, seulement les nombres.
+
+Vous pouvez essayer n'importe quel bloc dans la [calculatrice CIDR](/learn) pour voir son adresse réseau, son adresse de broadcast, son masque et son nombre d'hôtes utilisables calculés instantanément, entièrement dans votre navigateur.

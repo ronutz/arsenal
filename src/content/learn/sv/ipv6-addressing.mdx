@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Att förstå IPv6-adressering"
+summary: "Hur en 128-bitars IPv6-adress är strukturerad och skriven, reglerna för att komprimera den kanoniskt, vad adresstyperna och omfattningarna betyder, och hur gränssnittsidentifierare och omvänd DNS fungerar."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Varför IPv6 existerar
+
+IPv4 har ungefär 4,3 miljarder adresser (2^32). Det verkade outtömligt på 1980-talet och är nu sedan länge uttömt hos registren. IPv6, definierat för adressering i RFC 4291, vidgar adressen från 32 bitar till **128 bitar**, vilket är 2^128 adresser, ett tal stort nog att knapphet upphör att vara designbegränsningen. Den praktiska effekten är att subnät blir enorma och adressbevaringstrick som NAT inte längre krävs för grundläggande anslutbarhet.
+
+## 128-bitarsstrukturen
+
+En IPv6-adress är 128 bitar, skriven som **åtta grupper av fyra hexadecimala siffror** åtskilda av kolon. Varje grupp är ett 16-bitarsvärde:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Den fullt skrivna formen är den **expanderade** representationen. Eftersom den är lång och full av nollor har textformen kompressionsregler.
+
+## Att skriva en adress: kompressionsreglerna
+
+Två regler förkortar texten, och RFC 5952 gör resultatet kanoniskt (en adress, en föredragen stavning):
+
+- **Undertryck inledande nollor** i varje grupp: `0db8` blir `db8`, `0000` blir `0`.
+- **Ersätt en följd av konsekutiva helt-noll-grupper med `::`**. Dubbelkolonet får framträda **högst en gång**, och det står för en eller flera 16-bitarsgrupper av nollor. När flera lika långa följder existerar komprimeras den första.
+
+Att tillämpa båda på adressen ovan ger dess kanoniska form:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+RFC 5952 lägger till några avslutande regler så att verktyg är överens: hex-siffror är gemener, och `::` används inte för att "komprimera" en enskild noll-grupp (det skulle inte förkorta något meningsfullt). IPv6-verktyget visar både den kanoniska komprimerade formen och den fullt expanderade formen sida vid sida, så att du kan se exakt vad `::` står för.
+
+Ett specialfall: en adress kan bära en **inbäddad IPv4**-svans i sina sista 32 bitar, skriven i punktdecimal. Den vanligaste är den **IPv4-mappade** formen, där RFC 5952 rekommenderar den blandade notationen `::ffff:192.0.2.128` snarare än ren hex.
+
+## Prefix och prefixaritmetik
+
+Liksom IPv4-CIDR skrivs ett IPv6-prefix `adress/längd`, där längden räknar de inledande nätverksbitarna:
+
+```
+2001:db8::/64
+```
+
+Ett `/64` betyder att de första 64 bitarna är nätverket och de återstående 64 är gränssnittsidentifieraren. `/64` är standardstorleken för ett enskilt LAN, och det ensamt rymmer 2^64 adresser, ungefär 18 triljoner. Verktyget beräknar nätverksadressen (första), den sista adressen, och antalet för vilket prefix du än ger det, maskerande värdbitarna till noll för att finna nätverket även om du skrev en adress med värdbitar satta.
+
+## Adresstyper och omfattningar
+
+De höga bitarna i en adress placerar den i en kategori. De viktigaste, från RFC 4291 och IANA-registret:
+
+- **Global unicast (2000::/3)** är det routbara publika utrymmet, IPv6-motsvarigheten till en publik IPv4-adress.
+- **Unique local, eller ULA (fc00::/7)** är utrymmet för privat bruk (RFC 4193), analogt med RFC 1918 i IPv4. Det routas inte på det publika internet.
+- **Link-local unicast (fe80::/10)** är giltigt endast på en enskild länk och konfigureras automatiskt på varje IPv6-gränssnitt. Routrar vidarebefordrar det aldrig. Dess omfattning är den lokala länken.
+- **Multicast (ff00::/8)** adresserar en grupp snarare än en enskild värd. Ett omfattningsfält inuti adressen säger hur långt det når: interface-local, link-local, admin-local, site-local, organization-local, eller global. Till exempel är `ff02::1` link-local alla-noder-gruppen.
+- **Loopback (::1/128)** är IPv6-motsvarigheten till 127.0.0.1, och den **ospecificerade adressen (::/128)** betyder "ingen adress", använd som platshållare under konfiguration.
+- **Dokumentation (2001:db8::/32)** är reserverad av RFC 3849 för exempel och skrivande, vilket är varför nästan varje IPv6-exempel du ser, inklusive det kanoniska i RFC 4291 själv, använder den.
+
+IPv6-verktyget rapporterar den matchande typen och det specifika prefix den matchade, plus omfattningen för multicast- och link-local-adresser.
+
+## Gränssnittsidentifierare och EUI-64
+
+I ett typiskt `/64` är de lägre 64 bitarna **gränssnittsidentifieraren**. Ett historiskt sätt att bygga den var **modifierad EUI-64** (RFC 4291, Bilaga A): ta den 48-bitars MAC-adressen, infoga byten `ff:fe` i mitten, och vänd den sjunde biten (universal/local-biten). Det gjorde gränssnitts-id:t härledbart från hårdvaruadressen. När verktyget ser den avslöjande `ff:fe` i mitten av gränssnitts-id:t, vänder det processen och visar dig den ursprungliga MAC:en. Moderna system föredrar ofta randomiserade eller integritetsgränssnittsidentifierare istället, just därför att härledandet av id:t från en MAC läcker hårdvaruadressen.
+
+## Omvänd DNS: ip6.arpa
+
+Omvända uppslagningar (adress till namn) för IPv6 lever under **ip6.arpa**-domänen. Adressen expanderas till sina 32 hex-nibblar, de nibblarna vänds, och var och en blir en etikett. Så `2001:db8::1` blir ett namn som slutar på `...8.b.d.0.1.0.0.2.ip6.arpa`. Verktyget genererar detta namn för vilken adress som helst, vilket är det exakta värde du skulle placera i en `PTR`-post.
+
+## En anmärkning om vad verktyget gör
+
+IPv6-verktyget är en deterministisk, lokal kalkylator. Det parsar, kanoniserar, klassificerar, och beräknar, allt i din webbläsare, utan någon uppslagning mot det levande nätverket. Det berättar vad en adress strukturellt **är**. Det berättar inte huruvida den adressen är nåbar, tilldelad, eller i bruk, vilka är separata frågor som kräver att fråga nätverket eller ett register.

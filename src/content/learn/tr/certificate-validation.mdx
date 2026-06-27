@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Sertifika doğrulaması aslında nasıl çalışır"
+summary: "Bir istemcinin bir sertifikanın güvenilir olduğuna karar vermek için çalıştırdığı adımlar: zinciri kurmak, imzaları ve tarihleri denetlemek, adı eşleştirmek ve kısıtlamaları uygulamak."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Okumak güvenmek değildir
+
+[Anatomi makalesi](/learn/x509-anatomy) tekrarlamaya değer bir noktada biter: bir sertifikayı kod çözmek size onun ne *iddia ettiğini* söyler, iddianın *doğru* olup olmadığını değil. Doğrulama, bir TLS istemcisinin önündeki sertifikaya güvenip güvenmeyeceğine karar vermek için çalıştırdığı ayrı süreçtir. Esasen RFC 5280 tarafından yönetilir ve her biri geçmesi gereken bağımsız denetimlerin bir bağlacıdır. Bir kod çözücü, bu araç dahil, size o sürecin girdilerini gösterir; istemci ise onu uygulayan şeydir.
+
+## Adım 1: zinciri kur
+
+Bir yaprak sertifikaya neredeyse hiçbir zaman tek başına güvenilmez. İstemci, yapraktan yukarı, zaten güven deposunda tuttuğu bir köke kadar bir yol kurmalıdır. Bunu veren adlarını takip ederek yapar: yaprağın Issuer'ı bir ara sertifikanın Subject'iyle eşleşmeli ve o ara sertifikanın Issuer'ı bir sonraki yukarıdakiyle eşleşmeli, ta ki kendi kendine verilmiş bir köke ulaşana dek. Authority Key Identifier ve Subject Key Identifier uzantıları, istemcinin bir sertifikayı verenine yalnızca adla değil anahtar karmasıyla bağlamasına izin vererek bu eşleştirmeyi hızlandırır. Güvenilir bir köke hiçbir yol kurulamazsa, yaprak ne kadar iyi biçimli olursa olsun, doğrulama anında başarısız olur.
+
+## Adım 2: her imzayı doğrula
+
+Bir zincir yalnızca her halka kriptografik olarak sağlamsa anlamlıdır. Yoldaki her sertifika için, istemci imzanın verenin özel anahtarıyla üretildiğini, çocuğun imzalanacak gövdesinin DER baytları üzerinde verenin açık anahtarına karşı denetleyerek doğrular. İmza tam olarak o baytları kapsadığından, gövdenin herhangi bir yerinde tek bir değiştirilmiş bayt denetimi kırar. Bu ayrıca imza algoritmasının (örneğin sha256WithRSAEncryption veya ecdsa-with-SHA256) neden önemli olduğudur: bir zincir yalnızca en zayıf imzası ve karması kadar güçlüdür. Bir karmanın burada neyi garanti ettiği için, [karma makalesine](/learn/hashing) bakın.
+
+## Adım 3: geçerlilik penceresini denetle
+
+Her sertifika bir notBefore ve notAfter zaman damgası taşır ve istemci geçerli zamanı yalnızca yaprak için değil, zincirdeki her sertifika için pencereye karşı denetler. Süresi dolmuş veya henüz geçerli olmayan bir sertifika başarısız olur. Araç bu aynı denetimi yerel saatinize karşı yapar ve bir sertifikanın şimdi geçerli, henüz geçerli değil veya süresi dolmuş olup olmadığını bildirir, ki bu çoğu zaman bir "bağlantınız gizli değil" uyarısını teşhis etmenin en hızlı yoludur.
+
+## Adım 4: adı eşleştir
+
+Geçerli bir zincir sertifikanın gerçek olduğunu kanıtlar, ama ziyaret ettiğiniz site için verildiğini değil. İstemci, bağlandığı ana bilgisayarın sertifikanın Subject Alternative Name uzantısında göründüğünü denetler. Modern istemciler bu amaçla Common Name'i tamamen yok sayar ve yalnızca SAN'a bakar, RFC 6125'in kimlik eşleştirme kurallarını izleyerek. `*.ronutz.com` gibi joker karakterler tek bir etiketle eşleşir, dolayısıyla `api.ronutz.com`'u kapsar ama `ronutz.com`'un kendisini veya `a.b.ronutz.com`'u kapsamaz. Zinciri kusursuz ama SAN'ı istediğiniz adı listelemeyen bir sertifika yine de reddedilir.
+
+## Adım 5: kısıtlamaları uygula
+
+v3 uzantıları süsleme değildir; istemcinin uyguladığı kurallardır. Basic Constraints, bir sertifikanın bir CA olarak hareket edip edemeyeceğini ve yol uzunluğu aracılığıyla altında kaç ara sertifikanın oturabileceğini söyler, ki bu bir yaprak sertifikanın başka sertifikaları imzalamak için kullanılmasını durduran şeydir. Key Usage ve Extended Key Usage anahtarın ne yapmasına izin verildiğini kısıtlar: bir TLS sunucu sertifikası serverAuth EKU'sunu taşımalıdır ve istemcinin anlamadığı kritik olarak işaretlenmiş bir uzantı, bir omuz silkmek yerine bir reddi zorlar. Araç bu alanları yüzeye çıkarır, böylece bir verenin tam olarak hangi kısıtlamaları belirlediğini görebilirsiniz.
+
+## Adım 6: iptali denetle
+
+Son olarak, verildiğinde geçerli olan bir sertifika o zamandan beri iptal edilmiş olabilir, örneğin özel anahtarı sızdığı için. İstemci öğrenmek için bir CRL'ye veya bir OCSP yanıtlayıcısına danışabilir. Pratikte bu en zayıf ve en tutarsız adımdır ve sektör bunun yerine kısa ömürlü sertifikalara doğru hareket ediyor, ki [iptal makalesi](/learn/certificate-revocation) bunu tam olarak ele alır.
+
+## Doğrulama bir AND'dir, bir OR değil
+
+Tek bir kurcalanmış veya yanlış yapılandırılmış sertifikanın reddedilmesinin nedeni, tüm bu denetimlerin mantıksal AND ile birleşmesidir. Zincir kurulmalı, her imza doğrulanmalı, her sertifika geçerlilik penceresinde olmalı, ad SAN'da olmalı, kısıtlamalar kullanıma izin vermeli ve sertifika iptal edilmemiş olmalı. Bir kod çözücü, sertifikanın öne sürdüklerini açık ve sadık biçimde sergiler; bunu belgenin dikkatli bir okuması olarak ele alın ve hükmün altı denetimin tümünü çalıştıran istemciye ait olduğunu unutmayın.

@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Probeer nu een tool.",
       "body": "De CIDR-calculator hieronder draait lokaal. Voer een netwerk en een prefix in om het adresbereik, het aantal hosts en het masker te zien. Er wordt niets ergens naartoe gestuurd.",
-      "learnHeading": "Leer de concepten"
+      "learnHeading": "Leer de concepten",
+      "toolboxCta": "Open de volledige toolbox"
     },
     "provenance": {
       "title": "Credits en bronnen",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Voer een CIDR-blok in om te berekenen.",
         "invalid": "Dat ziet er niet uit als een geldig CIDR-blok. Probeer een formaat zoals 192.168.1.0/24."
-      }
+      },
+      "name": "CIDR-/subnetcalculator",
+      "blurb": "Splits een willekeurig IPv4-CIDR-blok uit in netwerk- en broadcastadressen, bruikbaar hostbereik, aantal hosts en netmasker. Draait volledig in je browser."
     },
     "title": "Tools",
     "lede": "Kleine, snelle, privacyvriendelijke hulpprogramma's die volledig in je browser draaien. Niets van wat je typt wordt ergens naartoe gestuurd. Er komen er meer aan.",
     "open": "Openen",
     "comingSoon": "Binnenkort",
-    "note": "Deze toolbox groeit. Nieuwe tools worden hier toegevoegd zodra ze klaar zijn, elk local-first en gratis te gebruiken."
+    "note": "Deze toolbox groeit. Nieuwe tools worden hier toegevoegd zodra ze klaar zijn, elk local-first en gratis te gebruiken.",
+    "learnHeading": "Leer de concepten",
+    "backToTools": "Tools",
+    "references": "Referenties",
+    "categories": {
+      "identity": "Identiteit & tokens",
+      "encoding": "Codering & data",
+      "hashing": "Hashing & crypto",
+      "identifiers": "Identifiers",
+      "pki": "Certificaten & PKI",
+      "networking": "Netwerken"
+    },
+    "hash": {
+      "name": "Hash-generator (SHA-1/256/384/512)",
+      "blurb": "Bereken SHA-1-, SHA-256-, SHA-384- en SHA-512-digests van willekeurige tekst, weergegeven als hex en Base64, met de native Web Crypto van de browser. Draait volledig in je browser.",
+      "algorithmLabel": "Hash-algoritme",
+      "inputLabel": "Te hashen tekst",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Het hashen draait lokaal via Web Crypto. Niets van wat je typt verlaat je browser.",
+      "bits": "{bits} bits ({bytes} bytes)",
+      "sha1Note": "SHA-1 is gebroken wat botsingsbestendigheid betreft en ongeschikt voor beveiliging (handtekeningen, certificaten). Het is alleen geschikt voor niet-beveiligingscontrolesommen en legacy-interoperabiliteit.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd"
+    },
+    "hmac": {
+      "name": "HMAC-generator (SHA-256/384/512)",
+      "blurb": "Bereken een HMAC met sleutel over een bericht met je geheime sleutel, weergegeven als hex en Base64, via de native Web Crypto van de browser. Dezelfde constructie die de JWT-verificateur gebruikt voor HS256. Je sleutel verlaat nooit je browser.",
+      "algorithmLabel": "HMAC-algoritme",
+      "messageLabel": "Bericht",
+      "messagePlaceholder": "Het te authenticeren bericht",
+      "keyLabel": "Geheime sleutel",
+      "keyPlaceholder": "Je gedeelde geheim",
+      "runsLocally": "HMAC draait lokaal via Web Crypto. Je bericht en je sleutel verlaten nooit je browser.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd"
+    },
+    "base64": {
+      "name": "Base64-/Base64URL-encoder en -decoder",
+      "blurb": "Codeer tekst naar standaard- of URL-veilig Base64, of decodeer beide varianten terug naar tekst. Tolerant voor ontbrekende padding en het markeert binaire (niet-UTF-8-)resultaten. Draait volledig in je browser.",
+      "directionLabel": "Richting",
+      "variantLabel": "Base64-variant",
+      "direction": {
+        "encode": "Coderen (tekst naar Base64)",
+        "decode": "Decoderen (Base64 naar tekst)"
+      },
+      "variant": {
+        "standard": "Standaard",
+        "urlsafe": "URL-veilig"
+      },
+      "inputLabelEncode": "Te coderen tekst",
+      "inputLabelDecode": "Te decoderen Base64",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Coderen en decoderen draaien lokaal. Niets van wat je plakt verlaat je browser.",
+      "decodeErrors": {
+        "invalid-characters": "Dat is geen geldige Base64. Het bevat tekens buiten het Base64-alfabet.",
+        "invalid-length": "Dat is geen geldige Base64. De lengte is geen geldige Base64-lengte."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Gedecodeerde tekst",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd",
+      "emptyOutput": "(leeg)",
+      "decodedBytes": "{bytes, plural, one {# byte gedecodeerd} other {# bytes gedecodeerd}}.",
+      "notUtf8": "{bytes, plural, one {# byte gedecodeerd} other {# bytes gedecodeerd}}, maar het resultaat is geen geldige UTF-8-tekst (waarschijnlijk binair)."
+    },
+    "pkce": {
+      "name": "OAuth-PKCE-verificateur en -challenge",
+      "blurb": "Genereer een OAuth 2.0-code_verifier en leid de S256-code_challenge ervan af, of plak je eigen exemplaar en controleer het aan de lengte- en tekensetregels van RFC 7636. Dezelfde SHA-256-base64url-afleiding die je autorisatieserver verwacht. Draait volledig in je browser.",
+      "verifierLabel": "Code-verifier",
+      "verifierPlaceholder": "Plak een code_verifier, of genereer er een",
+      "generate": "Genereren",
+      "runsLocally": "Generatie en afleiding draaien lokaal. Je verifier verlaat nooit je browser.",
+      "lengthBadge": "Lengte {length} (43-128)",
+      "charsetOk": "Niet-gereserveerde tekenset",
+      "charsetBad": "Ongeldige tekens",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "De plain-methode wordt afgeraden. Gebruik S256 overal waar de client SHA-256 kan berekenen.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd"
+    },
+    "uuid": {
+      "name": "UUID-generator en -inspecteur (v4 / v7)",
+      "blurb": "Genereer willekeurige v4- of tijdgeordende v7-UUID's, of plak een willekeurige UUID om de versie, variant en (voor v7) de ingebedde aanmaaktijdstempel te lezen. De generatie gebruikt de veilige willekeurige bron van de browser. Draait volledig in je browser.",
+      "versionLabel": "UUID-versie",
+      "generate": "Genereren",
+      "clear": "Wissen",
+      "emptyHint": "Kies een versie en genereer.",
+      "runsLocally": "Generatie en inspectie draaien lokaal. Er wordt niets ergens naartoe gestuurd.",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd",
+      "inspectLabel": "Een UUID inspecteren",
+      "inspectPlaceholder": "Plak een willekeurige UUID om hem te decoderen",
+      "valid": "Geldige UUID",
+      "invalid": "Geen geldige UUID",
+      "versionField": "Versie",
+      "variantField": "Variant",
+      "timestampField": "Tijdstempel (v7)",
+      "versionValue": "Versie {version}"
+    },
+    "jwt": {
+      "name": "JWT-decoder en -verificateur",
+      "blurb": "Decodeer de header en claims van een JSON Web Token, lees de vervaltijd en timing in gewone taal en verifieer een HS256/384/512-handtekening met een geplakt geheim. Draait volledig in je browser.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Decodering en handtekeningcontroles draaien lokaal. Het token en het geheim verlaten nooit je browser.",
+      "errors": {
+        "empty": "Plak een JSON Web Token om te decoderen.",
+        "format": "Dat ziet er niet uit als een JWT. Een token heeft drie base64url-delen, gescheiden door punten: header.payload.signature.",
+        "header": "De header is niet geldig. Het zou base64url-gecodeerde JSON moeten zijn.",
+        "payload": "De payload is niet geldig. Het zou base64url-gecodeerde JSON moeten zijn."
+      },
+      "panels": {
+        "header": "Header",
+        "payload": "Payload",
+        "signature": "Handtekening",
+        "noSignature": "Geen handtekeningsegment (onbeveiligd token)."
+      },
+      "claims": {
+        "iss": "Uitgever (iss)",
+        "sub": "Onderwerp (sub)",
+        "aud": "Doelgroep (aud)",
+        "jti": "JWT-ID (jti)",
+        "iat": "Uitgegeven op (iat)",
+        "nbf": "Niet vóór (nbf)",
+        "exp": "Verloopt (exp)"
+      },
+      "status": {
+        "expired": "Verlopen {rel}",
+        "expiresIn": "Geldig, verloopt {rel}",
+        "notYetValid": "Nog niet geldig, begint {rel}",
+        "noExpiry": "Geen vervalclaim (exp)"
+      },
+      "verify": {
+        "label": "HMAC-handtekening verifiëren (HS256/384/512)",
+        "placeholder": "gedeeld geheim",
+        "button": "Verifiëren",
+        "valid": "Handtekening geldig voor dit geheim.",
+        "invalid": "Handtekening komt niet overeen met dit geheim.",
+        "algNone": "Dit token is onbeveiligd (alg: none), dus er is geen handtekening om te verifiëren.",
+        "unsupportedAlg": "Verificatie in de browser dekt alleen HS256/384/512. {alg} is asymmetrisch en heeft een openbare sleutel nodig.",
+        "hint": "Het geheim wordt alleen gebruikt om een HMAC in je browser te berekenen. Het wordt nooit ergens naartoe gestuurd."
+      }
+    },
+    "x509": {
+      "name": "X.509-certificaatdecoder",
+      "blurb": "Plak een certificaat als PEM, base64 of hex om het onderwerp, de uitgever, het geldigheidsvenster, de openbare sleutel en v3-extensies te lezen, met SHA-256- en SHA-1-vingerafdrukken. Draait volledig in je browser.",
+      "inputLabel": "X.509-certificaat",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Decodering en vingerafdrukken draaien lokaal. Het certificaat verlaat nooit je browser.",
+      "errors": {
+        "empty": "Plak een X.509-certificaat om te decoderen.",
+        "format": "Dat ziet er niet uit als een certificaat. Plak PEM (-----BEGIN CERTIFICATE-----), base64 of hex.",
+        "der": "De bytes zijn geen geldige DER. Controleer of het hele certificaat is geplakt, inclusief de END-regel.",
+        "structure": "Dit decodeert als ASN.1 maar is geen X.509-certificaat. Een certificaat is een SEQUENCE van TBSCertificate, signatureAlgorithm en signatureValue."
+      },
+      "status": {
+        "valid": "Geldig, verloopt {rel}",
+        "expired": "Verlopen {rel}",
+        "notYetValid": "Nog niet geldig, begint {rel}"
+      },
+      "panels": {
+        "subject": "Onderwerp",
+        "issuer": "Uitgever",
+        "details": "Details",
+        "publicKey": "Openbare sleutel",
+        "extensions": "Extensies",
+        "fingerprints": "Vingerafdrukken"
+      },
+      "fields": {
+        "version": "Versie",
+        "serial": "Serienummer",
+        "notBefore": "Niet vóór",
+        "notAfter": "Niet ná",
+        "signatureAlgorithm": "Handtekeningalgoritme",
+        "algorithm": "Algoritme",
+        "keySize": "Sleutelgrootte",
+        "exponent": "Exponent",
+        "curve": "Curve",
+        "bits": "{n} bits",
+        "selfSigned": "Zelf-uitgegeven"
+      },
+      "ext": {
+        "san": "Alternatieve onderwerpnamen",
+        "keyUsage": "Sleutelgebruik",
+        "extKeyUsage": "Uitgebreid sleutelgebruik",
+        "basicConstraints": "Basisbeperkingen",
+        "subjectKeyId": "Sleutel-id van onderwerp",
+        "authorityKeyId": "Sleutel-id van autoriteit",
+        "caTrue": "Certificeringsinstantie (CA: true)",
+        "caFalse": "Geen CA (CA: false)",
+        "pathLen": "padlengte {n}",
+        "critical": "kritiek"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Vingerafdrukken berekenen..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6-toolkit",
+      "blurb": "Parseer een IPv6-adres of -prefix om de canonieke (RFC 5952) en volledig uitgeschreven vormen, de classificatie voor speciaal gebruik, het prefixrekenwerk, een EUI-64-MAC indien aanwezig en de ip6.arpa reverse-DNS-naam te zien. Draait volledig in je browser.",
+      "inputLabel": "IPv6-adres of -prefix",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Het parseren draait lokaal. Het adres verlaat nooit je browser.",
+      "errors": {
+        "empty": "Voer een IPv6-adres of -prefix in om te decoderen.",
+        "format": "Dat is geen geldig IPv6-adres. Gebruik acht hex-groepen, eventueel één keer gecomprimeerd met :: (bijvoorbeeld 2001:db8::1).",
+        "prefix": "De prefixlengte is niet geldig. Voor IPv6 moet die tussen 0 en 128 liggen."
+      },
+      "panels": {
+        "forms": "Canonieke vormen",
+        "classification": "Classificatie",
+        "prefix": "Prefix",
+        "identifiers": "Identifiers"
+      },
+      "fields": {
+        "compressed": "Gecomprimeerd (RFC 5952)",
+        "expanded": "Uitgeschreven",
+        "type": "Type",
+        "scope": "Bereik",
+        "embeddedIpv4": "Ingebedde IPv4",
+        "network": "Netwerk",
+        "firstAddress": "Eerste adres",
+        "lastAddress": "Laatste adres",
+        "count": "Adressen",
+        "hostBits": "Host-bits",
+        "eui64": "EUI-64-MAC",
+        "reverseDns": "Reverse-DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multicast"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Privacy",
+    "title": "Je gegevens, en wat deze site ermee doet",
+    "lede": "Een uitleg in duidelijke taal van wat deze website precies wel en niet met je gegevens doet. Ze is geschreven om accuraat te zijn in plaats van slechts geruststellend, want onder regelgeving zoals de GDPR en de Braziliaanse LGPD is het de accurate verklaring die telt.",
+    "shortTitle": "De korte versie",
+    "short1": "Deze site plaatst geen cookies, draait geen analytics, gebruikt geen advertenties en bevat geen trackers van derden of fingerprinting. Niets volgt je over het web.",
+    "short2": "Ze verkoopt, deelt of bouwt geen profielen van haar bezoekers, en vraagt je niets om ze te lezen.",
+    "short3": "De interactieve tools draaien volledig in je browser. Wat je erin plakt of typt blijft op je apparaat en wordt nergens naartoe verzonden.",
+    "short4": "Slechts drie dingen raken gegevens, en elk wordt hieronder uitgelegd: één thema-instelling die in je eigen browser wordt opgeslagen, de standaard verbindingslogboeken die elk bezoek aan een site op de hostinglaag genereert, en elk bericht dat je per e-mail kiest te verzenden.",
+    "controllerTitle": "Wie verantwoordelijk is",
+    "controllerBody": "Dit is de persoonlijke website van Rodolfo Nützmann (ronutz.com). Voor elke privacyvraag, of om een van de hieronder beschreven rechten uit te oefenen, schrijf naar hello@ronutz.com. Verzoeken worden rechtstreeks afgehandeld door Rodolfo Nützmann, als verwerkingsverantwoordelijke.",
+    "noTrackTitle": "Geen cookies, geen tracking, geen analytics",
+    "noTrackBody": "Deze site plaatst geen enkele cookie. Ze gebruikt geen analysedienst (zoals Google Analytics of Plausible), geen advertentienetwerk, geen tracking-pixels van sociale media en geen apparaat-fingerprinting. Je bezoek wordt voor die doeleinden niet gemeten, geprofileerd of met iemand gedeeld.",
+    "browserTitle": "Wat in je browser wordt opgeslagen",
+    "browserBody": "Eén klein ding: je gekozen visuele thema, opgeslagen in de lokale opslag (local storage) van je browser zodat de site het bij je volgende bezoek kan onthouden. Het is een gemaksinstelling die op je eigen apparaat blijft, nooit naar deze site of naar iemand anders wordt verzonden, en op elk moment via je browser kan worden gewist. Geen andere gegevens over jou worden op je apparaat opgeslagen.",
+    "hostingTitle": "Hosting en serverlogboeken",
+    "hostingBody": "De site wordt geleverd via Cloudflare, dat de hosting en contentlevering verzorgt. Zoals bij elke website betekent het laden van een pagina dat je apparaat verbinding maakt met een server, en Cloudflare verwerkt, optredend als hostingprovider, basale verbindingsgegevens – waaronder je IP-adres en standaard requestdetails – om je de pagina's te leveren en de site te beschermen tegen misbruik en aanvallen. Deze verwerking is noodzakelijk om de site te exploiteren en te beveiligen (een gerechtvaardigd belang op grond van Artikel 6(1)(f) van de GDPR, en de overeenkomstige grondslagen van Artikelen 7 en 10 van de LGPD). Ze wordt slechts kort door de provider bewaard en wordt hier niet gebruikt om je te identificeren of te volgen.",
+    "toolsTitle": "De tools draaien in je browser",
+    "toolsBody": "De decoders en rekenmachines op deze site – voor JWT's, IP-adressen, certificaten en de rest – rekenen volledig binnen je browser. De waarden die je invoert worden op je eigen apparaat verwerkt en worden nooit naar een server verzonden. Een aparte programmatische interface (een API) wordt aangeboden voor automatisering en integraties; ze is naar ontwerp stateless en logt geen van de queries of request-bodies die ernaartoe worden gestuurd.",
+    "contactTitle": "Als je contact opneemt",
+    "contactBody": "Het contactformulier verzendt niets naar een server. In plaats daarvan opent het een vooraf ingevuld bericht in je eigen e-mailapplicatie, dat je vervolgens zelf vanaf je eigen account verzendt, zodat niets via een derde partij loopt. Als je schrijft, hetzij via het formulier hetzij rechtstreeks, ontvang ik de informatie die je opneemt, zoals je naam, e-mailadres en bericht, en gebruik ik die alleen om je te antwoorden. Ik bewaar die alleen zolang nodig is om je vraag te behandelen, gebruik die niet voor marketing en deel die niet.",
+    "intlTitle": "Verwerking buiten je land",
+    "intlBody": "Omdat Cloudflare een wereldwijd netwerk exploiteert, kan de hierboven beschreven verwerking op verbindingsniveau plaatsvinden op servers buiten je eigen land, ook buiten Brazilië en de Europese Economische Ruimte. Waar persoonsgegevens op deze manier internationaal worden verwerkt, gebeurt dat onder de waarborgen die de betrokken provider biedt.",
+    "childrenTitle": "Kinderen",
+    "childrenBody": "Deze site is bedoeld voor een professioneel, algemeen publiek. Ze is niet gericht op kinderen en verzamelt niet bewust persoonsgegevens van hen.",
+    "rightsTitle": "Je rechten",
+    "rightsBody": "Afhankelijk van waar je woont, heb je rechten over je persoonsgegevens, waaronder het recht op inzage, op correctie of verwijdering, om bezwaar te maken tegen of de verwerking te beperken, om een kopie in een overdraagbare vorm te vragen en om geïnformeerd te worden over hoe ze worden verwerkt. Om er een uit te oefenen, schrijf eenvoudig naar hello@ronutz.com. Omdat hier zo weinig persoonsgegevens worden verwerkt, valt er in de praktijk meestal heel weinig te doen, maar het kanaal staat altijd open.",
+    "rightsGdpr": "Als je je in de Europese Economische Ruimte of het Verenigd Koninkrijk bevindt, heb je ook het recht om een klacht in te dienen bij je lokale toezichthoudende autoriteit voor gegevensbescherming.",
+    "rightsLgpd": "Als je je in Brazilië bevindt, heb je de rechten uiteengezet in Artikel 18 van de LGPD, en kun je ook contact opnemen met de nationale autoriteit voor gegevensbescherming (de ANPD).",
+    "changesTitle": "Wijzigingen in deze kennisgeving",
+    "changesBody": "Als deze kennisgeving verandert, wordt de herziene versie op deze pagina gepubliceerd en wordt de datum hieronder bijgewerkt. Wezenlijke wijzigingen worden niet met terugwerkende kracht toegepast.",
+    "updated": "Laatst bijgewerkt: 28 juni 2026",
+    "backHome": "Terug naar home"
   },
   "footer": {
+    "redEducation": "Boek officiële training bij Red Education",
+    "privacy": "Privacy",
     "builtWith": "Gebouwd door Rodolfo Nützmann met CONCORD",
     "colophon": "Hoe dit is gebouwd",
     "openSource": "De engine is open source",
     "rights": "Beschikbaar onder open en commerciële voorwaarden.",
     "contribute": "Help de vertalingen verbeteren",
-    "feedback": "Feedback geven"
+    "feedback": "Feedback geven",
+    "api": "API-referentie",
+    "contributeTools": "Een tool bijdragen"
   },
   "search": {
     "label": "Zoeken",
@@ -390,13 +672,16 @@
     "emailLabel": "E-mail",
     "channels": {
       "linkedin": {
-        "description": "Professioneel netwerken"
+        "description": "Professioneel netwerken",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Video's en handleidingen"
+        "description": "Video's en handleidingen",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Achter de schermen"
+        "description": "Achter de schermen",
+        "label": "Instagram"
       },
       "training": {
         "label": "Officiële training",
@@ -431,7 +716,7 @@
     "concordBody1": "Deze site is ontworpen en gebouwd via een protocol genaamd CONCORD: een gestructureerde samenwerking tussen één persoon en drie verschillende AI-systemen, elk in een aparte rol. Het is geen gimmick. Het is een werkende methode, met een eigen governance, een eigen besluitenoverzicht, en één mens verantwoordelijk voor elke keuze die werd opgeleverd.",
     "concordBody2": "Het uitgangspunt is eenvoudig. Verschillende AI-modellen hebben verschillende sterktes, en een moeilijk probleem is gebaat bij meer dan één perspectief, in spanning gehouden. Het werk werd daarom verdeeld naar rol, en één persoon zat in het midden, schakelend tussen hen, bekrachtigend wat deugdelijk was en verwerpend wat dat niet was.",
     "concordBody3": "CONCORD is nergens vandaan overgenomen. Het is door Rodolfo Nützmann voor dit project ontworpen, vanuit een praktische behoefte: hoe je tegelijk een beroep doet op meerdere AI-systemen, elk echt sterk in iets anders, zonder de ene draad van menselijke verantwoordelijkheid op te geven die echt werk vereist. Het antwoord was om elk systeem een vaste zetel te geven, te voorkomen dat ze onderling onderhandelden en elke uitwisseling via één persoon te leiden die het geheel overzag. Die opzet heeft een oudere naam. De AI-systemen zijn agenten: ze handelen op aanwijzing en namens iemand anders. PRIME is de opdrachtgever: degene die werkelijk beslist, die het oordeel velt en die zowel de gevolgen als de naam draagt.",
-    "concordBody4": "Het begon informeel, als een manier om het werk te verdelen, en verhardde gaandeweg de bouw tot een benoemde methode: vaste zetels, één overkoepelende regel dat er niets live gaat zonder dat PRIME het bekrachtigt, en een schriftelijke vastlegging van waarom elke beslissing is genomen. De naam benoemt het doel: eendracht, een bewust via een proces bereikte overeenstemming, en niet wat een onbeheerd hulpmiddel toevallig oplevert.",
+    "concordBody4": "Het begon informeel – als een manier om het werk te verdelen – en verhardde gaandeweg de bouw tot een benoemde methode: vaste zetels, één overkoepelende regel dat er niets live gaat zonder dat PRIME het bekrachtigt, en een schriftelijke vastlegging van waarom elke beslissing is genomen. De naam benoemt het doel: eendracht, een bewust via een proces bereikte overeenstemming, en niet wat een onbeheerd hulpmiddel toevallig oplevert.",
     "concordPrincipal": "De hefboom ligt bij de agenten. De verantwoordelijkheid ligt bij de opdrachtgever, en die gaat niet over.",
     "concordMechTitle": "De werking, helder uitgelegd",
     "mech1Label": "Voorstellen",
@@ -551,5 +836,50 @@
     "referenceTag": "referentie",
     "emailHeading": "Stuur je bijdrage",
     "backHome": "Terug naar de tools"
+  },
+  "contributeTools": {
+    "eyebrow": "Open toolbox",
+    "title": "Een tool bijdragen",
+    "lede": "De toolbox is gemaakt om te groeien. Elke tool is een kleine, zelfbeschrijvende module op de open engine, en de site laadt hem op dezelfde manier als ieder ander dat zou kunnen. Heb je een tool die past, draag hem dan voor.",
+    "shapeTitle": "Wat een tool is",
+    "shapeBody": "Een tool is drie dingen tegelijk: een manifest dat hem beschrijft (wat hij is, de invoer die hij accepteert, waar zijn juistheid vandaan komt), een enkele pure uitvoeringsfunctie die het werk doet, en een set referentievectoren, vaste invoer-en-uitvoerparen die bewijzen dat de functie correct is. De engine laadt een tool vanuit zijn manifest, zodat een goed gevormde module past zonder de rest van de site aan te raken.",
+    "principlesTitle": "Waaraan een tool zich moet houden",
+    "principlesBody": "De berekening draait lokaal en is deterministisch: dezelfde invoer levert altijd dezelfde uitvoer op, zonder klok, netwerk of toeval in het resultaat. Alles wat gevoelig is, blijft standaard op het apparaat. De juistheid is verankerd aan referentievectoren en aan geciteerde bronnen – zoals een RFC of een gepubliceerde standaard –, niet aan mening. De code verschijnt onder een permissieve licentie, zodat de site en ieder ander erop kunnen voortbouwen.",
+    "proposeTitle": "Stel er een voor",
+    "proposeBody": "Stuur een kort voorstel per e-mail: wat de tool berekent, een voorbeeldinvoer met de exacte uitvoer die hij moet produceren, en de bron waarop zijn juistheid berust. Een schets van het manifest en een paar referentievectoren zijn welkom, maar niet vereist. Als hij past, wordt hij in de engine en de toolbox ingebouwd.",
+    "emailLabel": "E-mail",
+    "backToTools": "Terug naar de toolbox"
+  },
+  "api": {
+    "title": "API",
+    "lede": "De tools op deze site draaien in je browser en houden je gegevens op je apparaat. Voor automatisering – scripts, pipelines en integraties – zijn dezelfde deterministische berekeningen beschikbaar als een kleine HTTP-API. Het is de programmatische tegenhanger van de browsertools, geen vervanging ervan.",
+    "privacyTitle": "Wat dit betekent voor je gegevens",
+    "privacyBody": "De API ontvangt alleen de invoer die je verstuurt, berekent een resultaat en geeft het terug. Hij is stateless en logt geen query-waarden of request-bodies. Heb je gegarandeerd nul data-uitgang nodig, gebruik dan de browsertools of draai de open engine zelf.",
+    "engineTitle": "Dezelfde engine als de browser",
+    "engineBody": "Elk endpoint roept dezelfde engine-functie aan die de tool in de browser aanroept, zodat de API en de browser byte-identieke resultaten teruggeven. Die engine, @ronutz/netcore, is opensource onder een permissieve licentie.",
+    "specTitle": "De specificatie",
+    "specBody": "Het volledige contract is gepubliceerd als OpenAPI 3.1. Download het, richt je eigen tooling erop of lees de referentie hieronder.",
+    "downloadSpec": "openapi.yaml downloaden",
+    "baseUrlLabel": "Basis-URL",
+    "authLabel": "Authenticatie",
+    "authValue": "Geen. Dit is een openbare, alleen-lezen API.",
+    "referenceTitle": "Referentie",
+    "loading": "Specificatie laden.",
+    "loadError": "De specificatie kon niet worden geladen.",
+    "tryItTitle": "Probeer het",
+    "tryItSend": "Verzenden",
+    "tryItRunning": "Bezig.",
+    "tryItHint": "Draait tegen de live API op deze origin. Je invoer wordt naar het endpoint gestuurd.",
+    "paramsTitle": "Parameters",
+    "responsesTitle": "Reacties",
+    "schemasTitle": "Schema's",
+    "exampleLabel": "Voorbeeld",
+    "requiredLabel": "vereist",
+    "fieldLabel": "Veld",
+    "typeLabel": "Type",
+    "descriptionLabel": "Beschrijving",
+    "viewReference": "Referentie",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI kon niet worden geladen."
   }
 }

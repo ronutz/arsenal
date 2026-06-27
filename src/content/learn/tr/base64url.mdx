@@ -1,0 +1,42 @@
+---
+slug: base64url
+title: "Base64URL ve URL'ye uygun alfabe"
+summary: "JWT'lerin ve PKCE'nin neden farklı bir Base64 alfabesi kullandığı, değişen iki karakter ve dolguya ne olduğu."
+concepts: ["base64", "base64url", "rfc4648", "url-safe", "padding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "character-encoding", "jwt-anatomy", "pkce"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bir kodlama, iki alfabe
+
+Base64, rastgele baytları 64 yazdırılabilir karaktere dönüştürür; her üç giriş baytı için dört çıkış karakteri. Standart alfabe (RFC 4648, bölüm 4) `A`–`Z`, `a`–`z`, `0`–`9` ve `+` ile `/` sembolleridir; son grubu doldurmak için `=` kullanılır.
+
+Sorun şu ki `+`, `/` ve `=` başka bağlamlarda özel anlamlara sahiptir. Bir URL'de `/` yol ayırıcısıdır, `+` sorgu dizelerinde tarihsel olarak boşluk anlamına gelir ve `=` bir anahtarı bir değerden ayırır. Bir dosya adında `/` çoğu sistemde geçersizdir. Bu yüzden ham Base64, bozulmadan veya ek kaçış gerektirmeden bir URL'ye ya da dosya adına yerleştirilemez.
+
+## Base64URL'nin değiştirdiği şey
+
+Base64URL (RFC 4648, bölüm 5), daha güvenli bir alfabeye sahip aynı kodlamadır. Tam olarak iki karakter farklıdır:
+
+- `+`, `-` olur (tire)
+- `/`, `_` olur (alt çizgi)
+
+Diğer tüm karakterler aynıdır ve üç bayttan dört karaktere aritmetik değişmez. Sonuç, hiçbir yüzde kodlaması olmadan bir URL yoluna, sorgu parametresine veya dosya adına yerleştirilmeyi atlatan bir dizedir.
+
+Dolgu, diğer farktır. Standart Base64 son grubu `=` ile dörde tamamlanacak şekilde doldurur. Base64URL genellikle **dolguyu tamamen atlar**, çünkü `=` de URL'lerde sorunludur. Bir çözücü, kaldırılan dolgu miktarını her zaman dizenin uzunluğundan yeniden hesaplayabilir, böylece hiçbir şey kaybolmaz.
+
+## Gerçekte nerede karşılaşılır
+
+Base64URL, spesifikasyonun egzotik bir köşesi değildir. Sürekli kullandığınız birkaç şeyin arkasındaki kodlamadır:
+
+- **JSON Web Token'ları.** Bir JWT, noktalarla birleştirilmiş üç Base64URL segmentinden oluşur (`header.payload.signature`). `+`/`/` değişimi ve atlanan `=`, bir token'ın tek bir temiz, URL'ye uygun dize olmasının tam nedenidir.
+- **PKCE.** Bir OAuth yetkilendirme kodu akışındaki `code_challenge`, bir SHA-256 karmasının Base64URL kodlamasıdır (dolgusuz), tam olarak bir URL'de yolculuk edebilsin diye.
+- **Web Push, JWK ve birçok token** ikili alanlarını aynı şekilde kodlar.
+
+## Pratik bir uyarı
+
+Alfabeler bu kadar çok örtüştüğü için bir Base64URL dizesi ve standart bir Base64 dizesi neredeyse aynı görünebilir ve `+`, `/` veya `=` içermeyen bir değer her ikisinde de geçerlidir. Uyumsuzluk yalnızca ham baytlar bir `-`/`_` ya da bir `+`/`/` ürettiğinde ortaya çıkar; bu noktada yanlış alfabeyle çözme başarısız olur veya anlamsız çıktı verir. Bir token çözülmüyorsa, kontrol edilecek ilk şey alfabedir.
+
+[Base64 aracı](/tools/base64) hem standart hem de URL'ye uygun alfabeyi kodlayıp çözer, eksik dolguyu işler ve ham baytları gösterir; tamamı tarayıcınızda. Yapıştırdığınız hiçbir şey hiçbir yere gönderilmez.

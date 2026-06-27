@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Octets, points de code et UTF-8"
+summary: "La différence entre un caractère et un octet, pourquoi Unicode et UTF-8 existent, et ce que cela a à voir avec Base64."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Les caractères ne sont pas des octets
+
+Un ordinateur stocke des octets, des valeurs de 0 à 255. Les humains lisent des caractères : lettres, chiffres, ponctuation, emoji. Un **encodage de caractères** est la correspondance convenue entre les deux. Trompez-vous de correspondance et vous voyez le classique texte déformé (`café` devenant `cafÃ©`), qui est presque toujours un décalage entre l'encodage utilisé pour écrire les octets et celui utilisé pour les lire.
+
+## ASCII : les 128 d'origine
+
+L'encodage le plus ancien d'usage répandu est **ASCII**, qui attribue les nombres de 0 à 127 aux lettres anglaises de base, aux chiffres et aux symboles courants. Sept bits, 128 caractères. ASCII est simple et sous-tend encore une grande partie de l'informatique, mais 128 caractères ne peuvent représenter les lettres accentuées, les écritures non latines ou les symboles, il n'a donc jamais suffi pour le texte du monde.
+
+## Unicode : un nombre par caractère
+
+**Unicode** résout le problème de couverture en donnant à chaque caractère un nombre unique appelé **point de code**, écrit comme `U+0041` (la lettre A) ou `U+2615` (une boisson chaude). Unicode est un catalogue géant de caractères et de leurs points de code, bien plus de cent mille, couvrant pratiquement toute écriture en usage.
+
+Point crucial, Unicode indique *quel nombre* a chaque caractère, mais pas *comment stocker ce nombre sous forme d'octets*. Ce second travail revient à une forme d'encodage.
+
+## UTF-8 : comment les points de code deviennent des octets
+
+**UTF-8** est la manière dominante de transformer les points de code Unicode en octets, et c'est la valeur par défaut sur tout le web moderne. Il est de **longueur variable** : un caractère occupe de un à quatre octets selon son point de code.
+
+- La plage ASCII (U+0000 à U+007F) est encodée sur un seul octet, identique à ASCII. C'est pourquoi UTF-8 est rétrocompatible : tout texte ASCII pur est déjà du UTF-8 valide.
+- Les caractères au-delà d'ASCII utilisent deux, trois ou quatre octets. Ainsi `é` fait deux octets et `☕` en fait trois, bien que chacun soit un caractère.
+
+Ce dernier point est la surprise courante : **un caractère n'est pas toujours un octet.** Compter les octets et compter les caractères donnent des réponses différentes pour tout texte non ASCII. (UTF-16 et UTF-32 sont des encodages alternatifs des mêmes points de code ; UTF-8 a gagné le web par sa compatibilité ASCII et sa compacité pour le texte latin.)
+
+## Là où Base64 intervient
+
+Cela importe pour Base64 car **Base64 opère sur des octets, pas sur des caractères.** Pour encoder une chaîne en Base64, la chaîne doit d'abord être transformée en octets par un encodage de caractères, et cet encodage est essentiellement toujours UTF-8. Encodez le même caractère avec un schéma différent et vous obtenez des octets différents, et donc un Base64 différent. La chaîne complète pour le texte est donc : les caractères deviennent des octets (UTF-8), puis les octets deviennent du texte sûr (Base64). Au décodage, vous inversez les deux étapes.
+
+L'[outil Base64](/tools/base64) encode le texte en octets UTF-8 avant de l'encoder en Base64, et signale lorsqu'un résultat décodé n'est pas du UTF-8 valide, le tout dans votre navigateur.

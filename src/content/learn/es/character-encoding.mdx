@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Bytes, puntos de código y UTF-8"
+summary: "La diferencia entre un carácter y un byte, por qué existen Unicode y UTF-8, y qué tiene eso que ver con Base64."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Los caracteres no son bytes
+
+Una computadora almacena bytes, valores de 0 a 255. Los humanos leen caracteres: letras, dígitos, puntuación, emoji. Una **codificación de caracteres** es la correspondencia acordada entre ambos. Equivoca la correspondencia y verás el clásico texto distorsionado (`café` convertido en `cafÃ©`), que casi siempre es un desajuste entre la codificación usada para escribir los bytes y la usada para leerlos.
+
+## ASCII: los 128 originales
+
+La codificación más antigua de uso extendido es **ASCII**, que asigna los números 0 a 127 a las letras básicas del inglés, dígitos y símbolos comunes. Siete bits, 128 caracteres. ASCII es sencillo y aún sustenta gran parte de la computación, pero 128 caracteres no pueden representar letras acentuadas, escrituras no latinas ni símbolos, así que nunca bastó para el texto del mundo.
+
+## Unicode: un número por carácter
+
+**Unicode** resuelve el problema de cobertura dando a cada carácter un número único llamado **punto de código**, escrito como `U+0041` (la letra A) o `U+2615` (una bebida caliente). Unicode es un catálogo gigante de caracteres y sus puntos de código, bastante más de cien mil, que cubre esencialmente toda escritura en uso.
+
+De forma crucial, Unicode dice *qué número* tiene cada carácter, pero no *cómo almacenar ese número como bytes*. Ese segundo trabajo corresponde a una forma de codificación.
+
+## UTF-8: cómo los puntos de código se vuelven bytes
+
+**UTF-8** es la forma dominante de convertir puntos de código Unicode en bytes, y es la opción por defecto en toda la web moderna. Es de **longitud variable**: un carácter ocupa de uno a cuatro bytes según su punto de código.
+
+- El rango ASCII (U+0000 a U+007F) se codifica como un solo byte, idéntico a ASCII. Por eso UTF-8 es retrocompatible: cualquier texto ASCII puro ya es UTF-8 válido.
+- Los caracteres más allá de ASCII usan dos, tres o cuatro bytes. Así, `é` son dos bytes y `☕` son tres, aunque cada uno sea un carácter.
+
+Ese último punto es la sorpresa común: **un carácter no siempre es un byte.** Contar bytes y contar caracteres dan respuestas distintas para cualquier texto no ASCII. (UTF-16 y UTF-32 son codificaciones alternativas de los mismos puntos de código; UTF-8 ganó la web por su compatibilidad con ASCII y su compacidad para texto latino.)
+
+## Dónde entra Base64
+
+Esto importa para Base64 porque **Base64 opera sobre bytes, no caracteres.** Para codificar una cadena en Base64, primero hay que convertir la cadena en bytes con una codificación de caracteres, y esa codificación es esencialmente siempre UTF-8. Codifica el mismo carácter con un esquema distinto y obtienes bytes distintos, y por tanto un Base64 distinto. Así que el flujo completo para texto es: los caracteres se vuelven bytes (UTF-8), luego los bytes se vuelven texto seguro (Base64). Al decodificar, inviertes ambos pasos.
+
+La [herramienta Base64](/tools/base64) codifica el texto como bytes UTF-8 antes de codificarlo en Base64, y avisa cuando un resultado decodificado no es UTF-8 válido, todo en tu navegador.

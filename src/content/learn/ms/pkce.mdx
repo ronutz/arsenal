@@ -1,0 +1,43 @@
+---
+slug: pkce
+title: "PKCE: menjamin aliran kod kebenaran OAuth"
+summary: "Serangan pemintasan yang dikalahkan PKCE, bagaimana verifier dan challenge bercantum, dan mengapa S256 wajib."
+concepts: ["pkce", "oauth", "oidc", "code-verifier", "code-challenge", "s256"]
+relatedTools: ["pkce"]
+relatedArticles: ["oauth-client-types", "oauth-tokens", "oauth-code-flow", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Serangan yang dikalahkan PKCE
+
+Dalam aliran kod kebenaran OAuth 2.0, pelayan kebenaran menyerahkan klien suatu **kod kebenaran** berhayat pendek, yang klien kemudian tukar untuk token. Klien sulit melindungi pertukaran itu dengan rahsia klien. Tetapi **klien awam**, aplikasi satu halaman dan aplikasi mudah alih, tidak boleh menyimpan rahsia: apa-apa yang dihantar ke pelayar atau peranti boleh diekstrak. Itu meninggalkan satu lubang. Jika penyerang memintas kod kebenaran (melalui aplikasi berniat jahat yang didaftarkan untuk ubah hala yang sama, log bocor, atau URL yang direka), mereka boleh menebusnya untuk token sendiri.
+
+PKCE, Proof Key for Code Exchange (RFC 7636, disebut "pixy"), menyumbat lubang itu tanpa memerlukan rahsia prakongsi. Ia mengikat kod kebenaran kepada rahsia sekali guna yang hanya klien tulen tahu.
+
+## Bagaimana verifier dan challenge bercantum
+
+Aliran menambah dua nilai:
+
+- **code_verifier** ialah rentetan rawak berentropi tinggi yang klien jana dan simpan. RFC 7636 memerlukan 43 hingga 128 aksara daripada set tak terpelihara (huruf, digit, dan `- . _ ~`).
+- **code_challenge** diterbitkan daripada verifier. Bagi kaedah S256 ia ialah `BASE64URL(SHA256(ASCII(code_verifier)))`.
+
+Urutannya ialah:
+
+1. Klien menjana `code_verifier` segar, menerbitkan `code_challenge`, dan menghantar **hanya challenge** dalam permintaan kebenaran.
+2. Pelayan kebenaran menyimpan challenge dan memulangkan kod kebenaran seperti biasa.
+3. Pada permintaan token, klien menghantar **verifier**.
+4. Pelayan mencincang verifier dengan cara yang sama dan menyemaknya terhadap challenge yang disimpan. Tiada padanan, tiada token.
+
+Keselamatan bersandar pada satu fakta: challenge ialah cincangan sehala bagi verifier. Penyerang yang memintas kod kebenaran tetap tidak boleh menyelesaikan pertukaran, kerana mereka tidak pernah melihat verifier, dan mereka tidak boleh mengusahakannya ke belakang daripada challenge.
+
+## Mengapa S256, bukan plain
+
+RFC 7636 mentakrifkan dua kaedah. Kaedah `plain` menetapkan challenge sama dengan verifier, yang tidak menawarkan perlindungan jika permintaan kebenaran itu sendiri diperhati. Kaedah `S256` menghantar hanya cincangan SHA-256, jadi verifier kekal tersembunyi sehingga panggilan token akhir yang dilindungi TLS. **S256 diperlukan di mana sahaja klien boleh mengira SHA-256**, iaitu di mana-mana yang penting; `plain` wujud hanya untuk peranti terhad yang jarang yang tidak boleh mencincang.
+
+## Daripada pilihan kepada wajib
+
+PKCE bermula sebagai sambungan untuk klien awam, tetapi panduan telah beralih secara tegas. OAuth 2.0 Security Best Current Practice (RFC 9700) kini menyeru PKCE pada **semua** klien kod kebenaran, yang sulit termasuk, kerana ia juga mempertahankan terhadap serangan suntikan kod tertentu. Jika anda membina atau menguji penyepaduan OAuth atau OpenID Connect hari ini, anggap PKCE sebagai lalai, bukan tambahan.
+
+[Alat PKCE](/tools/pkce) menjana verifier yang patuh, menerbitkan challenge S256-nya dengan Web Crypto, dan menyemak mana-mana verifier terhadap peraturan panjang dan set aksara RFC, semuanya secara setempat. Verifier tidak pernah meninggalkan pelayar anda.

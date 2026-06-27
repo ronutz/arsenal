@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Verificér en HMAC sikkert: konstant tid og replay"
+summary: "Hvorfor sammenligning af signaturer med == lækker en tidssidekanal, og hvorfor en gyldig signatur alene ikke stopper en gentaget forespørgsel."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## At beregne taggen er den lette del
+
+At producere en HMAC korrekt er velforstået. Fejlene samler sig på *verifikations*siden, hvor to problemer fanger dem, der fik kryptografien rigtig, men logikken omkring forkert: hvordan du sammenligner taggene, og hvad en gyldig tag faktisk beviser.
+
+## Sammenlign i konstant tid
+
+For at verificere genberegner modtageren HMAC'en over beskeden og sammenligner den med den tag, afsenderen leverede. Den naturlige måde at sammenligne to strenge på, et almindeligt `==`, vender tilbage, så snart den finder den første forskellige byte. Den tidlige udgang lækker tid: en tag, hvis første byte er korrekt, tager en anelse længere at afvise end en, der er forkert med det samme. Ved at måle svartider over mange forsøg kan en angriber gendanne den korrekte tag byte for byte, et **tidsangreb**.
+
+Forsvaret er en **sammenligning i konstant tid**, der altid undersøger alle byte, uanset hvor den første forskel ligger, så den tid, der bruges, ikke afslører noget om, hvor tæt et gæt kom. De fleste sprog tilbyder en:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Verificér aldrig en signatur med en almindelig strengsammenligning.
+
+## En gyldig signatur er ikke en frisk forespørgsel
+
+Selv en perfekt verificeret HMAC beviser kun, at beskeden blev produceret af nogen med nøglen og ikke blev ændret. Den siger intet om *hvornår*. En angriber, der opfanger en legitim signeret forespørgsel, kan sende præcis de samme byte igen, og signaturen verificeres stadig. Det er et **replay-angreb**, og det betyder noget for alt, der udløser en effekt: en betaling, en tilstandsændring, en kommando.
+
+At stoppe replay kræver noget i de signerede data, der gør hver forespørgsel unik og kontrollerbar:
+
+- Et **tidsstempel** i den signerede nyttelast, hvor serveren afviser forespørgsler uden for et kort vindue (og tager højde for uradrift).
+- En **nonce**, en per-forespørgsel unik værdi, som serveren registrerer og nægter at acceptere to gange.
+
+Begge skal ligge *inde i* det signerede indhold, så en angriber ikke kan ændre dem uden at bryde signaturen.
+
+## Todelt-reglen
+
+En forespørgsel er pålidelig kun, når dens HMAC verificeres i konstant tid **og** den er frisk. Fejl på en af dem, og signaturen giver en falsk følelse af sikkerhed. Dette er verifikationssiden af samme disciplin som at signere forespørgsler.
+
+[HMAC-værktøjet](/tools/hmac) lader dig beregne og sammenligne tags for en besked og en nøgle direkte i din browser, uden at noget sendes, så du kan kontrollere en signatur i hånden, mens du udvikler eller fejlfinder.

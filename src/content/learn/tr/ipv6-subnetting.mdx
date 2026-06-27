@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "IPv6 alt ağ oluşturma ve /64 sınırı"
+summary: "IPv6 alt ağ oluşturmanın neden kıtlık yerine yapı hakkında olduğu, tek bir alt ağın neden neredeyse her zaman bir /64 olduğu ve önek devrinin adres alanını nasıl dağıttığı."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Alt ağ oluşturmak için farklı bir neden
+
+IPv4'te alt ağ oluşturma çoğunlukla koruma hakkındadır: adresler kıttır, dolayısıyla bir bloğu her ağa hâlâ sığan en küçük parçalara oyarsınız ([alt ağ oluşturmanın temelleri](/learn/subnetting-basics) makalesindeki mantık). IPv6 o baskıyı tamamen kaldırır. Tek bir /64 alt ağı 2^64 adres içerir, tüm IPv4 internetinin karesinden fazla, dolayısıyla bir IPv6 ağını yer kazanmak için asla alt ağlara bölmezsiniz. Onu yapı vermek için alt ağlara bölersiniz: VLAN başına, site başına, müşteri başına bir önek. Matematik IPv4 ile aynı önek aritmetiğidir (araç onu keyfi-kesinlik tamsayılarıyla hesaplar), ama zihniyet tersidir.
+
+## Bir alt ağın neden bir /64 olduğu
+
+IPv6 adreslemesindeki tek en önemli kural, normal bir alt ağın bir /64 olduğu, arabirim tanımlayıcısı için 64 bit bıraktığıdır. Bu bir öneri değildir; protokolün büyük kısımları bunu varsayar. Durumsuz adres otomatik yapılandırması ([adres yapılandırması](/learn/ipv6-address-configuration) makalesinde ele alınmıştır), bir ana bilgisayarın adresini, duyurulan öneke 64 bitlik bir arabirim tanımlayıcısı ekleyerek inşa eder ve aracın gerçekleştirebileceği değiştirilmiş EUI-64 türetmesi tam olarak 64 bit üretir. Bir bağlantıda /80 veya /112 gibi daha uzun bir önek kullanın ve otomatik yapılandırma basitçe çalışmayı durdurur. Adresleme mimarisi (RFC 4291) bu sınır etrafında inşa edilmiştir, dolayısıyla pratik tavsiye dümdüzdür: her son kullanıcı alt ağını bir /64 yapın ve içinde tutumlu olmaya çalışmayın.
+
+## Tahsis hiyerarşisi
+
+Her alt ağ bir /64 ise, siteler ve sağlayıcılar bunun üzerinde daha büyük bloklarda çalışır:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Bir ISP tipik olarak bir müşteriye bir /48 veya /56 devreder, müşteri de bundan bireysel bağlantılara /64'ler atar. RFC 6177, özgün "/48 herkese" yönergesini, her siteye rahatça alt ağ oluşturacak yeterli alan vermeye doğru geri çeker, ki bu pratikte bir /48 veya /56 demektir. Mesele, fazladan yeriniz olduğudur: bir /56 bile bir eve veya küçük ofise 256 ayrı ağ verir, kullanacağından çok daha fazlası.
+
+## Yarım bayt sınırlarında alt ağ oluşturun
+
+IPv6 onaltılık olarak yazıldığından ve her onaltılık basamak 4 bit (bir yarım bayt, nibble) olduğundan, 4 bitlik bir sınıra düşen önekler okumak ve yönetmek çok daha kolaydır. Bir /48, /52, /56, /60 ve /64'ün hepsi onaltılık basamaklar arasında temiz biter, dolayısıyla alt ağ kısmı adresteki tam karakterlerle hizalanır. Bir /48'i /52'lere alt ağa bölmek size tek bir onaltılık basamakla ayırt edilen 16 blok verir; /56'ya gitmek iki basamak boyunca 256 blok verir. Yarım bayt sınırlarında kalmak adresleme planınızı okunur tutar, ki bu IPv6'da son biti sıkıştırmanın asla olabileceğinden daha çok önemlidir.
+
+## Alt ağları ve adresleri saymak
+
+Aritmetik dümdüzdür. Daha kısa bir önek içindeki /64 alt ağlarının sayısı, önek uzunluklarındaki farkın 2 üssüdür: bir /48, 2^(64-48) = 2^16 = 65.536 alt ağ barındırır. Herhangi bir /64 içindeki adreslerin sayısı 2^(128-64) = 2^64'tür. Araç hem bir önek için adres sayısını hem de kullanılabilir aralığı raporlar ve sayılar hızla büyür, ki bu tam da meseledir: kıtlık artık etrafında tasarım yaptığınız bir kısıtlama değildir.
+
+## Çıkarım
+
+IPv6 alt ağ oluşturma, IPv4 alışkanlığını baş aşağı çevirir. Kıt bir kaynağı bölmüyorsunuz; etkin biçimde sınırsız olan birine yapı dayatıyorsunuz. Otomatik yapılandırma ve komşu keşfi tasarlandığı gibi çalışsın diye her alt ağa bir /64 verin, düzenlemek için yeriniz olsun diye bir /48 veya /56 isteyin ve planınız okunur kalsın diye yarım bayt sınırlarında alt ağ oluşturun. Bir öneki araca yapıştırıp adres sayısını gördüğünüzde, o bolluğu koruma yerine açıklık için tasarlama izni olarak ele alın.

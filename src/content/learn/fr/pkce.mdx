@@ -1,0 +1,43 @@
+---
+slug: pkce
+title: "PKCE : sécuriser le flux de code d'autorisation OAuth"
+summary: "L'attaque d'interception que PKCE déjoue, comment le vérificateur et le défi s'emboîtent, et pourquoi S256 est obligatoire."
+concepts: ["pkce", "oauth", "oidc", "code-verifier", "code-challenge", "s256"]
+relatedTools: ["pkce"]
+relatedArticles: ["oauth-client-types", "oauth-tokens", "oauth-code-flow", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## L'attaque que PKCE déjoue
+
+Dans le flux de code d'autorisation OAuth 2.0, le serveur d'autorisation remet au client un **code d'autorisation** de courte durée, que le client échange ensuite contre des tokens. Les clients confidentiels protègent cet échange avec un secret de client. Mais les **clients publics**, applications monopages et applications mobiles, ne peuvent garder un secret : tout ce qui est livré au navigateur ou à l'appareil peut être extrait. Cela laisse une faille. Si un attaquant intercepte le code d'autorisation (via une application malveillante enregistrée pour la même redirection, un journal fuité ou une URL forgée), il pourrait le faire valoir contre des tokens lui-même.
+
+PKCE, Proof Key for Code Exchange (RFC 7636, prononcé « pixy »), bouche cette faille sans exiger de secret prépartagé. Il lie le code d'autorisation à un secret à usage unique que seul le client authentique connaît.
+
+## Comment le vérificateur et le défi s'emboîtent
+
+Le flux ajoute deux valeurs :
+
+- Le **code_verifier** est une chaîne aléatoire à haute entropie que le client génère et conserve. La RFC 7636 exige de 43 à 128 caractères de l'ensemble non réservé (lettres, chiffres et `- . _ ~`).
+- Le **code_challenge** est dérivé du vérificateur. Pour la méthode S256, il est `BASE64URL(SHA256(ASCII(code_verifier)))`.
+
+La séquence est :
+
+1. Le client génère un `code_verifier` frais, dérive le `code_challenge` et envoie **seulement le défi** dans la requête d'autorisation.
+2. Le serveur d'autorisation stocke le défi et renvoie un code d'autorisation comme d'habitude.
+3. À la requête de token, le client envoie le **vérificateur**.
+4. Le serveur hache le vérificateur de la même façon et le contrôle face au défi stocké. Pas de correspondance, pas de tokens.
+
+La sécurité repose sur un fait : le défi est un hachage à sens unique du vérificateur. Un attaquant qui intercepte le code d'autorisation ne peut toujours pas achever l'échange, car il n'a jamais vu le vérificateur et ne peut le reconstituer à rebours à partir du défi.
+
+## Pourquoi S256, pas plain
+
+La RFC 7636 définit deux méthodes. La méthode `plain` règle le défi égal au vérificateur, ce qui n'offre aucune protection si la requête d'autorisation elle-même est observée. La méthode `S256` n'envoie que le hachage SHA-256, donc le vérificateur reste caché jusqu'à l'appel de token final, protégé par TLS. **S256 est requis partout où le client peut calculer SHA-256**, c'est-à-dire partout où cela compte ; `plain` n'existe que pour le rare appareil contraint qui ne peut hacher.
+
+## D'optionnel à obligatoire
+
+PKCE a commencé comme une extension pour clients publics, mais l'orientation a évolué de façon décisive. La OAuth 2.0 Security Best Current Practice (RFC 9700) réclame désormais PKCE sur **tous** les clients à code d'autorisation, les confidentiels compris, car il défend aussi contre certaines attaques par injection de code. Si vous construisez ou testez une intégration OAuth ou OpenID Connect aujourd'hui, traitez PKCE comme la valeur par défaut, pas un ajout.
+
+L'[outil PKCE](/tools/pkce) génère un vérificateur conforme, dérive son défi S256 avec Web Crypto, et contrôle tout vérificateur face aux règles de longueur et de jeu de caractères de la RFC, le tout localement. Le vérificateur ne quitte jamais votre navigateur.

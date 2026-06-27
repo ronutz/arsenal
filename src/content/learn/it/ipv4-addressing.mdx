@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Come funzionano gli indirizzi IPv4"
+summary: "I 32 bit dietro ogni indirizzo in quad puntato, e cosa significano gli intervalli privati, di loopback e speciali."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trentadue bit in incognito
+
+Un indirizzo IPv4 è un singolo numero di 32 bit. Non lo scriviamo quasi mai in quel modo perché 32 uni e zeri sono difficili da leggere, quindi è diviso in quattro gruppi di 8 bit chiamati **ottetti**, ognuno mostrato in decimale da 0 a 255 e uniti da punti. `192.168.1.10` è solo un modo più amichevole di scrivere uno specifico valore di 32 bit.
+
+Poiché ogni ottetto è di 8 bit, l'intero spazio è di 2³² indirizzi, circa 4,3 miliardi. Sembrava enorme negli anni 1980 ed è il motivo per cui l'esaurimento degli indirizzi IPv4 è diventato un problema reale decenni dopo, e per cui esistono l'indirizzamento privato e IPv6.
+
+## Parte di rete e parte di host
+
+Nessun indirizzo sta da solo, appartiene a un blocco, e all'interno di quel blocco i bit si dividono in una **parte di rete** (quale blocco è questo) e una **parte di host** (quale macchina all'interno del blocco). La lunghezza di prefisso, scritta in stile CIDR come `/24`, segna dove cade quella divisione. Tutto a sinistra della linea è rete; tutto a destra identifica un host. Questa è la stessa idea esplorata nella notazione CIDR, vista dal lato dell'indirizzo.
+
+## Intervalli con significato speciale
+
+Non ogni indirizzo è un indirizzo di host ordinario. Vari intervalli sono riservati per scopi specifici, e riconoscerli è parte del leggere qualsiasi configurazione di rete:
+
+- **Gli intervalli privati (RFC 1918)** sono riservati per l'uso all'interno di reti private e non sono mai instradati su internet pubblica:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Per questo le reti domestiche e d'ufficio usano così spesso `192.168.x.x` o `10.x.x.x`, quegli indirizzi sono liberi di essere riutilizzati ovunque perché non appaiono mai su internet aperta.
+- **Il loopback (`127.0.0.0/8`)** si riferisce sempre alla macchina locale stessa. `127.0.0.1` è l'indirizzo che un computer usa per parlare con sé stesso.
+- **Gli indirizzi link-local (`169.254.0.0/16`)** sono auto-assegnati quando un dispositivo non può raggiungere un server DHCP. Vederne uno di solito significa "nessun indirizzo è stato distribuito".
+- **L'indirizzo non specificato (`0.0.0.0`)** e la rotta predefinita (`0.0.0.0/0`) sono speciali: quest'ultima è la rotta acchiappa-tutto che corrisponde a qualsiasi destinazione non coperta da una rotta più specifica.
+
+## Perché gli intervalli speciali contano per la sicurezza
+
+Questi intervalli riservati non sono solo curiosità. Uno strumento che recupera un indirizzo fornito dall'utente deve rifiutarsi di raggiungere gli intervalli privati, di loopback e link-local, o può essere ingannato a fare richieste contro sistemi interni che non dovrebbe mai toccare, una classe di attacco chiamata server-side request forgery (falsificazione di richiesta lato server). Sapere quali intervalli sono interni è il primo passo per difendersi da essa. È esattamente per questo che gli strumenti che toccano la rete su questo sito controllano un indirizzo risolto contro questi intervalli prima ancora di connettersi.
+
+Per vedere come qualsiasi indirizzo si situa all'interno del suo blocco, il suo indirizzo di rete, indirizzo di broadcast, e l'intervallo utilizzabile attorno a esso, prova la [calcolatrice CIDR](/learn), che calcola tutto ciò localmente nel tuo browser.

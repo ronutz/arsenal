@@ -21,6 +21,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { isEnabled } from "@/config/features";
 import { routeFor, routeForPlatform } from "@/config/leadRouting";
+import { externalRel } from "@/config/redEducation";
 
 interface RequestTrainingProps {
   /** Platform slug (required). */
@@ -59,7 +60,7 @@ export default async function RequestTraining({
           href={dest.url}
           className="btn btn-primary request-training-btn"
           target="_blank"
-          rel="noopener noreferrer"
+          rel={externalRel(dest.url)}
         >
           {label}
         </a>

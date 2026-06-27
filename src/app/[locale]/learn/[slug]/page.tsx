@@ -12,6 +12,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
 import { getArticle, getAllArticleSlugs, getRelatedArticles } from "@/lib/learn";
 import { Link } from "@/i18n/navigation";
@@ -58,9 +59,15 @@ export default async function ArticlePage({
             <p className="article-summary">{article.summary}</p>
 
             {/* The MDX body, compiled to React. Content is trusted (authored by
-                us / reviewed contributors), rendered through MDX, not raw HTML. */}
+                us / reviewed contributors), rendered through MDX, not raw HTML.
+                remark-gfm enables GitHub-flavored Markdown (tables, strikethrough,
+                task lists) for every article; table styling lives in components.css
+                under `.article-body table`. */}
             <div className="article-body">
-              <MDXRemote source={article.body} />
+              <MDXRemote
+                source={article.body}
+                options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+              />
             </div>
 
             {/* Read-next: related articles from frontmatter. */}

@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Een hash kiezen: MD5, SHA-1, SHA-2, SHA-3 en BLAKE"
+summary: "Welke hashfuncties nog veilig zijn, welke gebroken zijn, wat hun uitvoergroottes zijn en hoe je de juiste kiest."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Niet alle hashes zijn gelijk
+
+Een cryptografische hash beeldt elke invoer af op een vingerafdruk van vaste grootte. Er bestaan verschillende families, en ze zijn niet uitwisselbaar: sommige zijn nog sterk en andere zijn ernstig genoeg gebroken dat ze gebruiken voor beveiliging een fout is. De juiste keuze hangt af van de taak en de kalender, want een hash die twintig jaar geleden respectabel was, kan vandaag triviaal gebroken worden.
+
+## De gebroken hashes
+
+- **MD5** (128 bit) is gebroken. Botsingen kunnen in seconden op een laptop geproduceerd worden, en zijn gebruikt in echte aanvallen (de Flame-malware vervalste een codeondertekeningscertificaat met een MD5-botsing). Het overleeft alleen als een snelle, beveiligingsloze checksum, en zelfs daar zijn er betere opties.
+- **SHA-1** (160 bit) is gebroken. Het SHAttered-onderzoek van 2017 produceerde twee verschillende PDF's met dezelfde SHA-1-digest, en daarna kwamen botsingen met gekozen voorvoegsel. Browsers en certificaatautoriteiten verwijderden jaren geleden de ondersteuning voor SHA-1. Gebruik het niet voor handtekeningen of integriteit die een tegenstander kan aanvallen.
+
+## De huidige pijlers
+
+- **SHA-2** is de standaardfamilie voor de meeste taken. Het is een set verwante functies, gewoonlijk **SHA-256** en **SHA-512** (ook SHA-224, SHA-384 en de afgekapte SHA-512/256). Er bestaat geen praktische botsingsaanval tegen SHA-2. Bij twijfel is SHA-256 de veilige en universeel ondersteunde keuze.
+- **SHA-3** (Keccak) is een nieuwere standaard, gebouwd op een volledig ander intern ontwerp (een spons-constructie) dan SHA-2. SHA3-256 en SHA3-512 bieden vergelijkbare beveiliging en bestaan deels als bescherming: mocht er ooit een zwakte in SHA-2 gevonden worden, dan is het onwaarschijnlijk dat SHA-3 die deelt. Het is ook door zijn ontwerp immuun voor het lengte-uitbreidingsprobleem dat SHA-2 treft.
+- **BLAKE2 en BLAKE3** zijn moderne, zeer snelle hashes met sterke beveiliging. BLAKE3 in het bijzonder is gemaakt om te parallelliseren, wat het aantrekkelijk maakt wanneer je grote hoeveelheden data hasht en snelheid wilt zonder beveiliging op te geven.
+
+## Er een kiezen
+
+Een korte beslissingsgids:
+
+- Algemene integriteit, handtekeningen of "ik heb gewoon een veilige hash nodig": **SHA-256**.
+- Je wilt algoritmediversiteit of immuniteit voor lengte-uitbreiding zonder HMAC: **SHA-3** of **SHA-512/256**.
+- Hashen van grote bestanden waar doorvoer telt: **BLAKE3**.
+- Een snelle, beveiligingsloze checksum (toevallige corruptie detecteren, geen manipulatie): een CRC of MD5 volstaat, maar noem het nooit "veilig".
+- **Wachtwoorden zijn een apart probleem.** Algemene hashes zijn te snel voor wachtwoordopslag; gebruik een speciale wachtwoordhash zoals bcrypt, scrypt of Argon2 (zie het artikel over wachtwoordhashing).
+
+De [hashtool](/tools/hash) berekent MD5, SHA-1, SHA-256, SHA-512 en meer over tekst of een bestand zodat je de uitvoer naast elkaar kunt vergelijken, allemaal in je browser, zonder iets te verzenden.

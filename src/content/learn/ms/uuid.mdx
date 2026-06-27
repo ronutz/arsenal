@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID: v4 rawak dan v7 tertib-masa"
+summary: "Bagaimana pengecam 128-bit kekal unik tanpa pihak berkuasa pusat, dan mengapa v7 menjadi lalai untuk kunci pangkalan data."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Apa itu UUID
+
+UUID (Pengecam Unik Sejagat, juga dipanggil GUID) ialah nilai 128-bit yang digunakan untuk melabel sesuatu, satu baris, satu permintaan, satu fail, tanpa berkoordinasi dengan sesiapa pun. Janji dalam namanya ialah bahawa dua UUID yang dijana secara bebas, bagi semua tujuan praktikal, tidak pernah sama. Itu membenarkan perkhidmatan berasingan, peranti luar talian, dan proses selari kesemuanya mencetak pengecam yang tidak akan berlanggar apabila data digabungkan kelak, tanpa pemberi pusat mengeluarkan nombor.
+
+UUID ditulis sebagai 32 digit heksadesimal dalam lima kumpulan yang dipisahkan tanda sempang: `8-4-4-4-12`, contohnya `550e8400-e29b-41d4-a716-446655440000`. Dua kedudukan tertentu bukan rawak: satu nibble **versi** mengenal pasti bagaimana UUID dijana, dan satu medan **varian** menanda piawai susun atur (yang moden ialah RFC 4122 / RFC 9562).
+
+## Versi 4: rawak
+
+Setakat ini bentuk paling lazim, **versi 4** hampir keseluruhannya rawak: 122 daripada 128 bit datang daripada sumber rawak selamat, dengan bit yang berbaki ditetapkan untuk menanda versi dan varian. Dengan entropi sebanyak itu, kemungkinan dua UUID v4 berlanggar boleh diabaikan bagi sebarang jumlah pengecam yang realistik.
+
+Kelemahannya bukan keunikan tetapi **penyusunan**. Kerana nilai v4 adalah rawak, sisipan berturut-turut bertaburan merentas seluruh ruang kunci. Apabila UUID v4 digunakan sebagai kunci primer pangkalan data, kerawakan itu melawan indeks B-tree: baris baharu mendarat di tempat sewenang-wenangnya, menjejaskan kesetempatan cache dan memecahkan indeks dari masa ke masa.
+
+## Versi 7: tertib-masa
+
+**Versi 7**, dipiawaikan dalam RFC 9562 (2024), direka untuk membetulkan perkara itu betul-betul. Ia meletakkan satu **cap masa Unix 48-bit dalam milisaat** pada bit paling penting, diikuti bit rawak untuk keunikan dalam milisaat yang sama. Kerana cap masa mendahului, UUID v7 **menyusun mengikut tertib penciptaan** apabila dibandingkan sebagai teks atau bait.
+
+Sifat tunggal itu menjadikan v7 kunci primer yang jauh lebih baik: baris baharu ditambah berhampiran hujung indeks dan bukan bertaburan, memulihkan kesetempatan yang dinikmati kunci integer berjujukan, sambil mengekalkan keunikan ternyahpusat sesuatu UUID. Nilai v7 juga membawa masa penciptaannya sendiri, yang boleh anda baca terus daripada bit pendahulu itu, [alat UUID](/tools/uuid) melakukan ini apabila anda memeriksa satu.
+
+## Versi yang lain, secara ringkas
+
+Demi kelengkapan: **versi 1** menggabungkan cap masa dengan alamat MAC mesin penjana, yang membocorkan identiti perkakasan dan masa penciptaan lalu menimbulkan kebimbangan privasi. **Versi 3 dan 5** adalah berasaskan nama, ia mencincang satu ruang nama campur satu nama (dengan MD5 dan SHA-1 masing-masing) untuk menghasilkan UUID berketentuan, berguna apabila masukan yang sama mesti sentiasa memeta kepada pengecam yang sama. **Versi 6** menyusun semula medan versi 1 supaya boleh disusun, tetapi bagi sistem baharu v7 ialah pilihan tertib-masa yang disyorkan.
+
+## Memilih satu
+
+Capai **v4** apabila anda hanya perlukan pengecam rawak dan legap dan penyusunan tidak penting. Capai **v7** apabila UUID akan menjadi kunci pangkalan data atau apa-apa lain yang mendapat manfaat daripada penyusunan mengikut masa penciptaan, yang semakin menjadi syor lalai. [Alat UUID](/tools/uuid) menjana kedua-duanya dan menyahkod versi, varian, dan cap masa terbenam bagi sebarang UUID yang anda tampal, sepenuhnya dalam pelayar anda.

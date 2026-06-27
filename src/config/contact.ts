@@ -16,6 +16,8 @@
 // POST to it instead, no component changes required.
 // ============================================================================
 
+import { redEducationUrl } from "@/config/redEducation";
+
 export interface ContactChannel {
   /**
    * Stable id. The display label + description are resolved from i18n
@@ -80,7 +82,7 @@ const SETTINGS: ContactSettings = {
     { id: "linkedin", url: "https://www.linkedin.com/in/nutzmann", external: true },
     { id: "youtube", url: "https://www.youtube.com/@ronutz", external: true },
     { id: "instagram", url: "https://www.instagram.com/ronutz/", external: true },
-    { id: "training", url: "https://www.rededucation.com/", external: true },
+    { id: "training", url: redEducationUrl("contact"), external: true },
   ],
 };
 

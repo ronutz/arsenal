@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Mga certificate signing request at kung paano inisyu ang mga certificate"
+summary: "Kung ano ang nilalaman ng isang CSR, kung bakit hindi kailanman umaalis ang iyong private key sa iyong makina, kung paano nagva-validate at nag-iisyu ang isang CA, at kung paano ina-automate ng ACME ang buong palitan."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang problema sa pag-isyu
+
+Maaari kang bumuo ng isang key pair nang mag-isa sa loob ng ilang segundo, ngunit ang isang hubad na public key ay walang pinapatunayan tungkol sa kung sino ka (ang binding problem mula sa [artikulo ng anatomiya](/learn/x509-anatomy)). Upang makakuha ng isang certificate, kailangan mo ng isang certificate authority na pinagkakatiwalaan na ng isang relying party upang panagutan na ang public key na ito ay pag-aari ng iyong pangalan. Ang Certificate Signing Request ay kung paano mo ito hinihiling, nang hindi kailanman iniaabot ang iyong private key.
+
+## Ano ang nilalaman ng isang CSR
+
+Ang isang CSR ay mismong isang ASN.1 na istraktura, tinukoy ng PKCS#10 (RFC 2986) at karaniwang ipinapadala bilang isang PEM block na may label na `CERTIFICATE REQUEST`. Dinadala nito:
+
+- ang **subject** na hinihiling mo (ang mga pangalang dapat mauwi sa certificate),
+- ang iyong **public key**, at
+- isang **lagda sa request, ginawa gamit ang katugmang private key**.
+
+Ang huling bahaging iyon ang matalinong bahagi. Sa pamamagitan ng paglagda sa request gamit ang private key, pinapatunayan mong tunay mong hawak ang key na napapares sa public key na isinumite mo, lahat nang hindi inilalantad ang private key mismo. Ang private key ay hindi kailanman umaalis sa iyong kontrol, na eksaktong tama, dahil sinumang may hawak nito ay maaaring magpanggap na ikaw.
+
+## Ang CA ang otoridad, hindi ang humihiling
+
+Isang mahalagang punto: ang CSR ay isang *request*, at malaya ang CA na igalang ang ilang bahagi nito at balewalain ang iba. Maaari kang humiling ng anumang subject at anumang extension na gusto mo, ngunit ang CA ang nagpapasya kung ano ang aktwal na sinasabi ng inisyung certificate. Itatakda nito ang validity period ayon sa kasalukuyang mga panuntunan, pipili ng serial number, at isasama lamang ang mga pangalan at gamit na handa nitong panagutan. Ang lagda ng CA, hindi ang iyong request, ang nagbibigay sa huling certificate ng otoridad nito. Ang paghihiwalay na ito ang dahilan kung bakit ang isang CSR na puno ng mga mapangahas na field ay hindi nagbibigay sa iyo ng isang certificate na puno ng mga ito.
+
+## Paano nagpapasya ang CA na pagkatiwalaan ka
+
+Bago lumagda, vine-validate ng CA na may karapatan ka sa mga pangalang hiniling mo, at kung gaano kalalim ay nakadepende sa uri ng certificate:
+
+- Ang **Domain Validated (DV)** ay nagpapatunay lamang na kinokontrol mo ang domain. Ito ang napakalaking mayorya ng mga TLS certificate ngayon.
+- Ang **Organization Validated (OV)** at **Extended Validation (EV)** ay dagdag na sinusuri ang legal na entidad sa likod ng domain, ang Subject Identity Information na lumilitaw sa certificate.
+
+Para sa DV, hinahamon ka ng CA na ipakita ang kontrol sa domain. Ang mga karaniwang paraan ay ang paglalagay ng isang tiyak na file sa isang URL sa site (HTTP-01), ang paglalathala ng isang tiyak na DNS TXT record (DNS-01), o ang pagtugon sa isang email na ipinadala sa isang address sa domain. Ang pagpasa sa hamon ang kumukumbinsi sa CA na ang public key sa iyong CSR ay dapat na itali sa pangalang iyon.
+
+## Ang mga self-signed na certificate ay nilalaktawan ang CA
+
+Kung lalagdaan mo ang sarili mong CSR gamit ang sarili mong key sa halip na ipadala ito sa isang CA, makakakuha ka ng isang self-signed na certificate, kung saan ang Issuer ay katumbas ng Subject. Wala itong dalang panlabas na otoridad, dahil ang tanging bagay na nananagot para rito ay ito mismo, ngunit ito ay ganap na kapaki-pakinabang para sa lokal na pag-develop, mga internal na serbisyo na may kanilang sariling trust store, o pagkilos bilang ugat ng isang pribadong PKI. Minamarkahan ng tool kapag ang isang certificate ay self-issued, na agad na nagsasabi sa iyo na ang tiwala nito ay nagmumula sa kung saan man maliban sa isang public CA.
+
+## ACME: pag-automate sa palitan
+
+Ang paggawa ng lahat ng ito nang manu-mano, nang paulit-ulit, ay eksaktong ginagawang imposible ng paglipat sa maiikling lifetime ng certificate (tingnan ang [artikulo ng revocation](/learn/certificate-revocation)). Ang ACME protocol (RFC 8555), pinasikat ng Let's Encrypt, ay ina-automate ang buong usapan: bumubuo ang isang client ng key pair at CSR, pinapatunayan ang kontrol sa domain sa pamamagitan ng HTTP-01 o DNS-01 nang awtomatiko, tumatanggap ng certificate, at inuulit bago ang bawat pag-expire, nang walang taong kasangkot. Ang ACME ang dahilan kung bakit milyon-milyong site ang makakapagpatakbo ng mga certificate na nagre-renew tuwing ilang linggo, at ito ang operational backbone ng kinabukasan ng short-lived na certificate.
+
+## Ang isang request ay nagiging isang kredensyal
+
+Simple lang sabihin ang arko. Hawak mo ang isang key pair. Ang isang CSR ay humihiling sa isang CA na managot para sa public na kalahati, pinapatunayan sa daan na hawak mo ang private na kalahati. Sinusuri ng CA na kinokontrol mo ang pangalan, pagkatapos ay nag-iisyu ng isang certificate na ang otoridad ay nagmumula sa lagda ng CA, hindi mula sa anumang isinulat mo sa request. Ang pagsusuri sa resulta gamit ang isang decoder ay nagpapakita sa iyo ng binding na aktwal na ginawa ng CA, na siyang buong punto ng ehersisyo: ang pagbabago ng isang anonymous na key tungo sa isang key na may nakakabit na pinagkakatiwalaang pangalan.

@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "La notación CIDR explicada"
+summary: "Qué significa de verdad la barra en 192.168.1.0/24, y cómo una longitud de prefijo define un bloque de direcciones IP."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## El problema que resuelve CIDR
+
+Todo dispositivo en una red IP necesita una dirección. En IPv4, esa dirección tiene 32 bits, normalmente escrita como cuatro números de 0 a 255 separados por puntos, como `192.168.1.10`. La pregunta difícil nunca es "qué es una dirección" sino "cómo describo un *rango* de direcciones que pertenecen juntas", una sola oficina, una subred, una asignación de cliente. **La notación CIDR** es la manera compacta de escribir ese rango.
+
+CIDR significa Classless Inter-Domain Routing (Enrutamiento Inter-Dominio Sin Clases). La parte "sin clases" importa: el direccionamiento más antiguo forzaba los rangos a tamaños fijos (los antiguos bloques Clase A, B y C). CIDR quitó esa rigidez y dejó que un rango tuviera *cualquier* tamaño de potencia de dos, que es por lo que es el estándar hoy.
+
+## Leyendo la barra
+
+Un bloque CIDR se parece a `192.168.1.0/24`. La parte tras la barra, la **longitud de prefijo**, es el número aislado más importante. Dice: *los primeros N bits de la dirección son fijos, y el resto está libre para variar.*
+
+- `/24` significa que los primeros 24 bits son la parte de red fija. Los 8 bits restantes (32 − 24) identifican hosts individuales.
+- 8 bits libres dan 2⁸ = 256 combinaciones posibles, así que `192.168.1.0/24` describe las 256 direcciones de `192.168.1.0` a `192.168.1.255`.
+
+Cambia el prefijo y el tamaño del bloque cambia con él. Un prefijo más pequeño significa *más* bits libres y un bloque *más grande*:
+
+- `/16` fija 16 bits, deja 16 libres → 65.536 direcciones.
+- `/25` fija 25 bits, deja 7 libres → 128 direcciones.
+- `/30` fija 30 bits, deja 2 libres → 4 direcciones.
+
+Cada paso de uno en la longitud de prefijo **divide a la mitad o duplica** el bloque. Esa única regla es toda la intuición.
+
+## Red, broadcast y hosts utilizables
+
+Dentro de la mayoría de los bloques, dos direcciones son especiales y no asignables a un host:
+
+- La **dirección de red** es la primera dirección del bloque, todos los bits de host puestos a 0 (`192.168.1.0` para un `/24`). Nombra el bloque en sí.
+- La **dirección de broadcast** es la última dirección, todos los bits de host puestos a 1 (`192.168.1.255`). El tráfico enviado aquí alcanza a todo host del bloque.
+
+Así que un `/24` tiene 256 direcciones en total pero **254 utilizables** para hosts reales. La cifra de "hosts utilizables" es simplemente el total menos esas dos direcciones reservadas.
+
+Dos casos extremos rompen este patrón, ambos deliberadamente:
+
+- Un **/31** (RFC 3021) se usa para enlaces punto a punto entre dos routers. Tiene solo 2 direcciones y, por diseño, ambas son utilizables, no hay espacio para una dirección de red y de broadcast separadas, y ninguna es necesaria para un enlace con exactamente dos extremos.
+- Un **/32** es una sola dirección, una ruta de host. Describe exactamente una máquina.
+
+## Por qué vale la pena entender esto
+
+La longitud de prefijo gobierna cómo se diseñan las redes, cómo se sumarizan las rutas, y cómo se reparte el espacio de direcciones. Cuando ves `10.0.0.0/8` en una tabla de enrutamiento o `0.0.0.0/0` como una ruta por defecto, estás leyendo la misma notación: una dirección base más una longitud de prefijo que dice cuánto de ella es fijo. La aritmética nunca cambia, solo los números.
+
+Puedes probar cualquier bloque en la [calculadora CIDR](/learn) para ver su dirección de red, dirección de broadcast, máscara y conteo de hosts utilizables computados al instante, enteramente en tu navegador.

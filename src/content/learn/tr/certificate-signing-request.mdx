@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Sertifika imzalama istekleri ve sertifikaların nasıl verildiği"
+summary: "Bir CSR'nin ne içerdiği, özel anahtarınızın neden asla makinenizden ayrılmadığı, bir CA'nın nasıl doğruladığı ve verdiği, ve ACME'nin tüm alışverişi nasıl otomatikleştirdiği."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Verme sorunu
+
+Kendi başınıza saniyeler içinde bir anahtar çifti üretebilirsiniz, ama çıplak bir açık anahtar kim olduğunuz hakkında hiçbir şey kanıtlamaz ([anatomi makalesinden](/learn/x509-anatomy) bağlama sorunu). Bir sertifika almak için, dayanan bir tarafın bu açık anahtarın adınıza ait olduğuna kefil olmak üzere zaten güvendiği bir sertifika makamına ihtiyacınız var. Sertifika İmzalama İsteği (Certificate Signing Request), özel anahtarınızı hiç teslim etmeden bunu istediğiniz yoldur.
+
+## Bir CSR ne içerir
+
+Bir CSR, kendisi PKCS#10 (RFC 2986) tarafından tanımlanan ve genellikle `CERTIFICATE REQUEST` olarak etiketlenmiş bir PEM bloğu olarak gönderilen bir ASN.1 yapısıdır. Şunu taşır:
+
+- istediğiniz **özne** (sertifikada yer alması gereken adlar),
+- **açık anahtarınız**, ve
+- **eşleşen özel anahtarla yapılmış, istek üzerinde bir imza**.
+
+O son kısım zekice olandır. İsteği özel anahtarla imzalayarak, sunduğunuz açık anahtarla eşleşen anahtarı gerçekten elinizde tuttuğunuzu kanıtlarsınız, hepsi özel anahtarın kendisini açığa vurmadan. Özel anahtar asla denetiminizden ayrılmaz, ki bu tam olması gerektiği gibidir, çünkü ona sahip olan herkes sizin kimliğinize bürünebilir.
+
+## CA otoritedir, istekte bulunan değil
+
+Çok önemli bir nokta: CSR bir *istektir* ve CA onun bazı kısımlarını onurlandırmakta ve diğerlerini yok saymakta serbesttir. İstediğiniz herhangi bir özneyi ve herhangi uzantıları isteyebilirsiniz, ama CA verilen sertifikanın aslında ne dediğine karar verir. Geçerlilik süresini güncel kurallara göre ayarlar, seri numarasını seçer ve yalnızca kefil olmaya istekli olduğu adları ve kullanımları dahil eder. CA'nın imzası, isteğiniz değil, son sertifikaya otoritesini veren şeydir. Bu ayrım, hırslı alanlarla dolu bir CSR'nin size onlarla dolu bir sertifika kazandırmamasının nedenidir.
+
+## CA size güvenmeye nasıl karar verir
+
+İmzalamadan önce, CA istediğiniz adlara hak sahibi olduğunuzu doğrular ve ne kadar titizlikle olduğu sertifika türüne bağlıdır:
+
+- **Domain Validated (DV)** yalnızca alan adını denetlediğinizi kanıtlar. Bu bugün TLS sertifikalarının ezici çoğunluğudur.
+- **Organization Validated (OV)** ve **Extended Validation (EV)** ek olarak alan adının arkasındaki tüzel kişiyi, sertifikada görünen Subject Identity Information'ı inceler.
+
+DV için, CA sizi alan adı denetimini göstermeye davet eder. Yaygın yöntemler, sitedeki bir URL'ye belirli bir dosya yerleştirmek (HTTP-01), belirli bir DNS TXT kaydı yayımlamak (DNS-01) veya alan adındaki bir adrese gönderilen bir e-postaya yanıt vermektir. Davranışı geçmek, CA'yı CSR'nizdeki açık anahtarın o ada bağlanması gerektiğine ikna eden şeydir.
+
+## Kendi kendine imzalanan sertifikalar CA'yı atlar
+
+Kendi CSR'nizi bir CA'ya göndermek yerine kendi anahtarınızla imzalarsanız, Issuer'ın Subject'e eşit olduğu, kendi kendine imzalanmış bir sertifika alırsınız. Hiçbir dış otorite taşımaz, çünkü ona kefil olan tek şey kendisidir, ama yerel geliştirme, kendi güven deposuna sahip dahili hizmetler veya özel bir PKI'nin kökü olarak hareket etmek için son derece kullanışlıdır. Araç, bir sertifikanın kendi kendine verilmiş olduğunu işaretler, ki bu size güveninin genel bir CA'dan başka bir yerden geldiğini hemen söyler.
+
+## ACME: alışverişi otomatikleştirmek
+
+Tüm bunu elle, tekrar tekrar yapmak, tam olarak kısa sertifika ömürlerine geçişin imkânsız kıldığı şeydir ([iptal makalesine](/learn/certificate-revocation) bakın). Let's Encrypt tarafından popülerleştirilen ACME protokolü (RFC 8555), tüm konuşmayı otomatikleştirir: bir istemci anahtar çiftini ve CSR'yi üretir, alan adı denetimini HTTP-01 veya DNS-01 aracılığıyla otomatik olarak kanıtlar, sertifikayı alır ve her son kullanımdan önce tekrarlar, hiçbir insan dahil olmadan. ACME, milyonlarca sitenin her birkaç haftada bir yenilenen sertifikalar çalıştırabilmesinin nedenidir ve kısa ömürlü sertifika geleceğinin operasyonel belkemiğidir.
+
+## Bir istek bir kimlik bilgisine dönüşür
+
+Yay söylemesi basittir. Bir anahtar çifti tutarsınız. Bir CSR, bir CA'dan açık yarıya kefil olmasını ister, yol boyunca özel yarıyı tuttuğunuzu kanıtlar. CA adı denetlediğinizi kontrol eder, sonra otoritesi isteğe yazdığınız herhangi bir şeyden değil CA'nın imzasından gelen bir sertifika verir. Sonucu bir kod çözücüyle incelemek, CA'nın aslında yaptığı bağlamayı size gösterir, ki bu egzersizin tüm amacıdır: anonim bir anahtarı, kendisine güvenilir bir ad iliştirilmiş bir anahtara dönüştürmek.

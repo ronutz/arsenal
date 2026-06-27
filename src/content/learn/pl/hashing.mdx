@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Haszowanie kryptograficzne: SHA-256 i rodzina SHA-2"
+summary: "Co gwarantuje funkcja skrótu, właściwości czyniące ją kryptograficzną i dlaczego skrót to nie szyfrowanie."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Czym jest skrót
+
+Kryptograficzna funkcja skrótu przyjmuje wejście dowolnego rozmiaru, słowo, plik, wielogigabajtowy obraz dysku, i wytwarza wyjście o stałym rozmiarze zwane **skrótem** (digest). SHA-256 zawsze zwraca 256 bitów (32 bajty), niezależnie od tego, czy podasz mu jeden znak, czy milion. To samo wejście zawsze daje ten sam skrót, a nawet zmiana jednego bitu na wejściu daje całkowicie inny.
+
+Ten odcisk o stałym rozmiarze i deterministyczny to cała idea. Skrót to zwarty zastępnik danych: jeśli dwa skróty się zgadzają, możesz mieć pewność, że wejścia były identyczne; jeśli się różnią, wejścia gdzieś się różniły.
+
+## Właściwości, które czynią ją kryptograficzną
+
+Wiele funkcji zmniejsza dane do stałego rozmiaru. Funkcja zasługuje na słowo *kryptograficzna*, dotrzymując trzech mocnych gwarancji:
+
+- **Odporność na przeciwobraz (jednokierunkowość).** Mając skrót, znalezienie wejścia, które go wytwarza, jest obliczeniowo niewykonalne. Nie da się uruchomić funkcji wstecz.
+- **Odporność na drugi przeciwobraz i na kolizje.** Niewykonalne jest znalezienie dwóch różnych wejść, które haszują się do tego samego skrótu. Bez tego skrót byłby słabym odciskiem.
+- **Efekt lawinowy.** Odwrócenie jednego bitu wejścia zmienia mniej więcej połowę bitów wyjścia, bez widocznego wzorca łączącego wejście z wyjściem.
+
+Dotyczy to tylko funkcji, które przetrwały analizę. SHA-1, niegdyś standard, jest teraz **złamany** pod względem odporności na kolizje (praktyczną kolizję zademonstrowano w 2017 r.) i nie powinien być używany tam, gdzie zależy od niego bezpieczeństwo. Rodzina SHA-2, SHA-256, SHA-384 i SHA-512, pozostaje solidna i jest dziś bezpiecznym wyborem domyślnym.
+
+## Skrót to nie szyfrowanie
+
+To najczęstsze nieporozumienie, więc warto powiedzieć to wprost. Szyfrowanie jest **odwracalne** za pomocą klucza: szyfrujesz, by utrzymać dane w tajemnicy, i odszyfrowujesz, by je odzyskać. Skrót **nie ma klucza ani odwrotności**. Nie da się „odhaszować" skrótu, by odzyskać wejście, ponieważ wyjście jest znacznie mniejsze od możliwych wejść, a informacja jest celowo niszczona. Haszowanie służy weryfikacji, nie tajności.
+
+## Gdzie haszowanie zarabia na siebie
+
+- **Integralność i sumy kontrolne.** Opublikuj SHA-256 pliku obok niego; ktoś, kto pobiera i przelicza skrót, może potwierdzić, że nic nie zostało zmienione ani uszkodzone w trakcie przesyłu.
+- **Adresowanie treścią.** Systemy takie jak Git nazywają obiekty ich skrótem, więc identyczna treść trafia automatycznie pod ten sam adres.
+- **Podpisy cyfrowe.** Schematy podpisu podpisują skrót wiadomości zamiast całej wiadomości, ponieważ skrót jest mały i o stałym rozmiarze.
+
+Jedno ważne zastrzeżenie: **hasła to przypadek szczególny.** Zwykły szybki skrót jak SHA-256 to niewłaściwe narzędzie do przechowywania haseł, właśnie dlatego, że jest szybki, atakujący może podejmować miliardy prób na sekundę. Przechowywanie haseł wymaga celowo wolnego, solonego algorytmu, takiego jak bcrypt, scrypt lub Argon2. Używaj SHA-2 do integralności; używaj skrótu haseł do haseł.
+
+## Jak oblicza go narzędzie
+
+[Narzędzie skrótu](/tools/hash) używa natywnej implementacji Web Crypto przeglądarki dla SHA-1, SHA-256, SHA-384 i SHA-512, tego samego sprawdzonego kodu, którego przeglądarka używa do TLS, i pokazuje każdy skrót jako szesnastkowy i Base64. Nic nie jest przesyłane; obliczenie odbywa się lokalnie.

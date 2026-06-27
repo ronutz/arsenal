@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUID come chiavi di database: v4, v7 e località dell'indice"
+summary: "Il vero compromesso tra UUID e interi auto-incrementanti, e perché le chiavi v4 casuali danneggiano silenziosamente le prestazioni del database."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Due modi per creare una chiave primaria
+
+La maggior parte delle tabelle ha bisogno di una chiave univoca per ogni riga. Le due scelte comuni sono un **intero auto-incrementante** del database (1, 2, 3, ...) e un **UUID**. L'intero è piccolo e naturalmente ordinato; l'UUID può essere generato ovunque, da chiunque, senza coordinamento. Quale sia migliore dipende da cosa apprezzi, e la risposta ha una dimensione prestazionale facile da mancare.
+
+## Perché i team ricorrono agli UUID
+
+- **Nessun coordinamento.** Qualsiasi servizio, client o dispositivo offline può coniare un UUID che non collide, quindi non ti serve una sequenza centrale né un viaggio di andata e ritorno al database per ottenere un id. Questo è inestimabile nei sistemi distribuiti e per generare id prima che una riga sia salvata.
+- **Non indovinabile.** Gli id interi sequenziali trapelano informazioni (quanti ordini esistono, e l'id del prossimo) e lasciano un attaccante scorrere i record incrementando. Un UUID casuale non espone nulla di tutto ciò.
+- **Adatto al merge.** I dati di sistemi separati si combinano senza collisioni di id.
+
+Il costo è la dimensione, 16 byte contro 4 o 8 di un intero, il che conta perché la chiave primaria è copiata in ogni indice secondario e in ogni chiave esterna che referenzia la riga.
+
+## Il costo nascosto delle chiavi casuali
+
+C'è un costo più sottile e più importante. I database memorizzano le righe in un indice (comunemente un B-tree) ordinato per la chiave primaria. Con una chiave **sequenziale**, ogni nuova riga si aggiunge alla fine dell'indice, quindi le pagine attive restano in memoria e le scritture sono economiche. Con un **UUID v4 casuale**, ogni inserimento cade in una posizione arbitraria. Il database deve leggere, modificare e scrivere pagine sparse per tutto l'indice, causando **divisioni di pagina**, **frammentazione** e molti più cache miss. Su una tabella grande e a scrittura intensa, le chiavi casuali possono rallentare in modo misurabile gli inserimenti e gonfiare l'indice, tutto senza alcun errore da indicare.
+
+## Perché la v7 cambia il calcolo
+
+Questo è esattamente il problema che l'**UUID versione 7** è stata progettata per risolvere. Mettendo un timestamp in millisecondi nei bit più significativi, i valori v7 sono **ordinati nel tempo**: le nuove righe si inseriscono vicino alla fine dell'indice, proprio come un intero sequenziale, mantenendo la generazione decentralizzata e non coordinata di un UUID. Ottieni gran parte del beneficio di località dell'indice di una chiave auto-incrementante senza la sequenza centrale. Per i nuovi sistemi che vogliono chiavi UUID, la v7 è di solito la versione giusta proprio per questa ragione.
+
+## Note pratiche
+
+- **Memorizza gli UUID come un tipo UUID nativo o binario, non come una stringa di 36 caratteri.** Memorizzare la forma testuale spreca spazio e rallenta i confronti; la forma binaria è di 16 byte.
+- **Usa v7 per le chiavi** dove le prestazioni di inserimento contano, e **v4** dove vuoi specificamente che nessuna informazione di tempo sia incorporata nell'id.
+- Un intero auto-incrementante è ancora perfettamente buono per una tabella a nodo singolo che non ha mai bisogno di id generati esternamente; gli UUID danno il loro contributo quando distribuzione, imprevedibilità o pre-generazione contano.
+
+Lo [strumento UUID](/tools/uuid) genera sia v4 che v7 e decodifica il timestamp incorporato di un valore v7, così puoi vedere la proprietà di ordinamento direttamente, tutto nel tuo browser.

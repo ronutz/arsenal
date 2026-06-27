@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Pribadong address space ng IPv4 at ang RFC 1918"
+summary: "Ang tatlong pribadong saklaw, bakit hindi sila nada-route sa internet, at ang iba pang espesyal na bloke na minamarkahan ng tool na CIDR."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Mga address na maaari mong gamiting muli
+
+May humigit-kumulang 4.3 bilyong IPv4 address lamang, masyadong kaunti upang ang bawat device ay magkaroon ng isang pampublikong address. Ang sagot (RFC 1918) ay magreserba ng tatlong saklaw na maaaring gamitin ng sinuman sa loob ng kanilang sariling network, nang walang pagpaparehistro. Dahil ginagamit muli ng lahat ang parehong pribadong saklaw, hindi sila maaaring maging natatangi sa pampublikong internet, kaya **hindi sila nada-route** doon. Ang pag-abot sa labas ng mundo ay nangangailangan ng network address translation (NAT), na ipinapalit ang isang pribadong source address sa isang ibinabahaging pampublikong address sa gilid ng network.
+
+## Ang tatlong saklaw ng RFC 1918
+
+- **`10.0.0.0/8`**: mula `10.0.0.0` hanggang `10.255.255.255`, 16,777,216 na address. Isang napakalaking network.
+- **`172.16.0.0/12`**: mula `172.16.0.0` hanggang `172.31.255.255`, 1,048,576 na address. Hindi isang buong class B, kundi ang 16 na magkakadikit na `/16` mula `172.16` hanggang `172.31`, ang saklaw na pinakamadalas namamali ang mga tao.
+- **`192.168.0.0/16`**: mula `192.168.0.0` hanggang `192.168.255.255`, 65,536 na address. Ang pamilyar na saklaw ng mga router sa tahanan.
+
+## Ang iba pang espesyal na bloke
+
+May ilang iba pang saklaw na nakareserba para sa mga tiyak na layunin at hindi rin sila mga karaniwang pampublikong address:
+
+- **`100.64.0.0/10`** (RFC 6598) ay ang ibinabahaging carrier NAT space (CGNAT), ginagamit ng mga provider sa pagitan ng customer at ng kanilang pampublikong pool. Kahawig ito ng pribado, ngunit naiiba sa RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) ay link-local, ang sariling-itinalagang address na pinipili ng host kapag walang DHCP server na tumugon (APIPA sa Windows). Hindi ito kailanman umaalis sa lokal na link.
+- **`127.0.0.0/8`** ay loopback; ang `127.0.0.1` ay ang host na nakikipag-usap sa sarili nito.
+- **`0.0.0.0/8`**, ang multicast na saklaw na `224.0.0.0/4`, at ang mga saklaw ng dokumentasyon (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) ay nakareserba rin.
+
+May parehong ideya ang IPv6 sa ibang anyo: ang **Unique Local Addresses** sa `fc00::/7` (sa praktika `fd00::/8`) ang katumbas ng pribadong paggamit ng RFC 1918, muli ay hindi nada-route sa buong mundo.
+
+## Bakit ito mahalaga
+
+Ang pagkaalam kung ang isang address ay pribado, pampubliko, o espesyal ay kaagad nagsasabi sa iyo kung maaari itong lumitaw sa internet, kung kailangan nito ng NAT, at kung makatuwiran ang isang panuntunan ng firewall o ruta. Ang isang `10/8` na address sa isang pampublikong DNS record, o isang `169.254` na address kung saan inaasahan mo ang DHCP, ay isang senyas na dapat pansinin.
+
+Inuuri ng [calculator na CIDR](/#cidr) ang anumang address o bloke laban sa mga espesyal na saklaw na ito at iniuulat kung ito ay pribado, nakareserba, o naaabot sa buong mundo, lubos na kinakalkula sa iyong browser.

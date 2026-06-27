@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Base64 出现的地方：data URI、MIME、PEM 和 Basic auth"
+summary: "二进制被包入文本的真实场所、这样做的体积代价，以及为何认证头中的 Base64 不是加密。"
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## 为何把二进制包入文本
+
+许多传输方式是为文本而非原始字节设计的：电子邮件正文、JSON 与 XML 文档、HTTP 头、源代码文件。把原始二进制数据放入其中任何一个，一个游离的控制字节或空字节都可能破坏解析。Base64 通过仅用安全的可打印字符重新表达字节来解决此问题，使二进制能完好地穿过纯文本通道传输。这就是它真正发生的地方。
+
+## 常见场景
+
+- **Data URI。** 一个 `data:` URL 把一个小资源直接嵌入标记或 CSS，例如 `data:image/png;base64,iVBORw0KGgo...`。图像的字节就以 Base64 形式置于属性中，为微小资源省去一次单独的网络请求。
+- **电子邮件（MIME）。** 附件和非 ASCII 正文以 `Content-Transfer-Encoding: base64` 传输。MIME 把输出按行折断（经典为 76 个字符），以免老旧邮件服务器在长行上卡住。
+- **PEM。** 证书和密钥是 DER 字节，包在 `-----BEGIN CERTIFICATE-----` 与 `-----END CERTIFICATE-----` 标记之间的 Base64 中，行在 64 个字符处折断。PEM 是证书成为可粘贴进配置文件的一段文本的原因。
+- **HTTP Basic 认证。** `Authorization: Basic` 头是 `用户:密码` 的 Base64。
+
+## 体积代价
+
+Base64 并非免费。三个字节变成四个字符，因此编码后的形式比原文约**大 33%**，这还不计任何换行带来的开销。在文本通道中为了正确性，这一权衡通常是值得的，但这也是为何你不会把本可以原始字节发送的大文件用 Base64 编码。对小型嵌入资源而言便利取胜；对大型负载而言开销则倾向于使用二进制传输。
+
+## 编码不是加密
+
+Basic auth 的例子本身就道出了最重要的一点。`Authorization: Basic dXNlcjpwYXNz` 看起来不透明，但 `dXNlcjpwYXNz` 只是 `user:pass` 的 Base64，任何人都可逆向，无需任何密钥。Base64 不提供**任何保密性**。它是一种编码（表示形式的可逆变化），既不是加密（受密钥保护的秘密），也不是哈希（单向指纹）。因此 Basic auth 只有在 TLS 之上才安全：是传输加密了这个头，因为 Base64 当然不会。
+
+每当你看到一个看似不透明的长字符串时，先解码它是弄清它是什么的廉价办法。[Base64 工具](/tools/base64) 将 data URI、PEM 块和认证头解码为其原始字节和文本，全部在你的浏览器中，因此你粘贴的任何内容都不会离开页面。

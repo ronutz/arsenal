@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Anatomien af en JSON Web Token"
+summary: "De tre segmenter i en JWT, hvordan signaturen gør den troværdig, og hvorfor at afkode en token ikke er det samme som at verificere den."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hvad en JWT er
+
+En JSON Web Token (JWT, defineret i RFC 7519) er en kompakt, selvstændig måde at bære et sæt **claims**, udsagn om en entitet (normalt en bruger) plus nogle metadata, i en form, en modtager kan verificere. Det er tokenformatet bag det meste af moderne webgodkendelse: en OpenID Connect-ID-token er en JWT, og OAuth 2.0-adgangstoken er det meget ofte også.
+
+"Selvstændig" er kerneidéen. I stedet for et tilfældigt sessions-id, som serveren skal slå op i en database, bærer en JWT sine claims *i sig selv*, signeret så modtageren kan stole på dem uden en tur-retur. Det gør JWT'er bekvemme for tilstandsløse, distribuerede systemer, med én vigtig afvejning, der behandles til sidst.
+
+## De tre segmenter
+
+En JWT er tre Base64URL-kodede segmenter forbundet med punktummer:
+
+```
+header.payload.signature
+```
+
+Hvert segment har en særskilt opgave:
+
+- **Headeren** er et lille JSON-objekt, der navngiver signeringsalgoritmen og tokentypen, for eksempel `{"alg":"HS256","typ":"JWT"}`. Værdien `alg` fortæller modtageren, hvordan signaturen verificeres.
+- **Nyttelasten** (payload) er JSON-objektet med claims. Den indeholder registrerede claims med standardbetydninger (`iss` udsteder, `sub` subjekt, `aud` målgruppe, `exp` udløb, `nbf` ikke-før, `iat` udstedt-ved, `jti` token-id) ved siden af enhver egen claim, udstederen tilføjer.
+- **Signaturen** beregnes over den kodede header og nyttelast tilsammen ved hjælp af algoritmen fra headeren. Den er det, der gør de to første segmenter troværdige.
+
+Fordi headeren og nyttelasten kun er Base64URL-kodede, ikke krypterede, kan enhver, der besidder token, afkode og læse dem. Dette er den enkeltvigtigste egenskab at internalisere: **en JWT-nyttelast er læselig, ikke hemmelig.** Læg aldrig en adgangskode, et kortnummer eller noget følsomt i den.
+
+## Signaturen: hvordan tillid etableres
+
+Signaturen er det, der adskiller en JWT fra enhver streng, en klient kunne fabrikere. Hvordan den produceres, afhænger af algoritmefamilien:
+
+- **HMAC (HS256, HS384, HS512)** signerer med én delt hemmelighed. Signaturen er `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. Den er symmetrisk: den samme hemmelighed opretter og verificerer, så udsteder og verifikator skal dele den. Dette er nøjagtig den konstruktion, HMAC-værktøjet beregner.
+- **RSA og ECDSA (RS256, ES256 og andre)** signerer med en privat nøgle og verificerer med den tilsvarende offentlige nøgle. Dette er asymmetrisk: kun udstederen kan signere, men enhver med den offentlige nøgle kan verificere, hvilket passer til token, der kontrolleres af mange uafhængige tjenester.
+
+At verificere genberegner eller kontrollerer signaturen mod den kodede header og nyttelast. Hvis en enkelt byte i et af segmenterne ændres, stemmer signaturen ikke længere, og token afvises.
+
+To klassiske faldgruber er værd at kende. Værdien `alg: none` erklærer en usigneret token; en verifikator, der ikke udtrykkeligt afviser den, kan narres til at stole på forfalskede claims. Og i **algoritmeforvirrings**-angrebet tager en angriber en RS256-token, skifter headeren til HS256 og signerer den ved at bruge den offentlige nøgle som HMAC-hemmelighed, hvilket lykkes mod verifikatorer, der tager algoritmen fra token i stedet for at fastlåse den. Forsvaret for begge er det samme: verifikatoren afgør, hvilken algoritme der er acceptabel, ikke token.
+
+## At afkode er ikke at verificere
+
+Dette er to forskellige operationer, og at sammenblande dem er en almindelig kilde til fejl. **Afkodning** afkoder simpelthen segmenterne fra Base64URL for at afsløre headeren og claims: ingen nøgle, ingen tillid, enhver kan gøre det. **Verifikation** kontrollerer signaturen med den rigtige nøgle og bekræfter tidsclaims. Kun en verificeret tokens claims bør man handle på.
+
+Tid betyder også noget. `exp` (udløb) og `nbf` (ikke-før) er Unix-tidsstempler, der afgrænser tokenets gyldighedsvindue, og `iat` registrerer, hvornår den blev udstedt. En korrekt verifikator afviser en udløbet eller endnu-ikke-gyldig token, normalt med en lille tolerance for urafvigelse.
+
+## Hvad en JWT ikke er
+
+En JWT er **signeret, ikke krypteret** (kryptering er en separat standard, JWE). Den beviser, hvem der udstedte claims, og at de ikke blev pillet ved; den skjuler dem ikke.
+
+En signeret JWT er desuden **ikke let at tilbagekalde på egen hånd.** Fordi claims lever inde i token, og verifikation ikke kræver et serveropslag, forbliver en token gyldig, indtil den udløber, selv hvis du gerne vil annullere den tidligere. Det praktiske svar er korte levetider plus en separat mekanisme (en fornyelsestoken, en tilbagekaldelsesliste eller tokenintrospektion), når øjeblikkelig tilbagekaldelse kræves.
+
+[JWT-værktøjet](/tools/jwt) afkoder en tokens header og claims, læser dens udløb og timing i klart sprog, og verificerer en HS256-, HS384- eller HS512-signatur mod en hemmelighed, du indsætter, alt sammen i din browser. Token og hemmelighed sendes aldrig nogen steder hen.

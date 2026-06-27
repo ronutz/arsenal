@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Neden HMAC, hash(anahtar + mesaj) değil"
+summary: "Naif anahtarlı karmalamayı kıran uzunluk uzatma saldırısı ve HMAC'in onu yenmek için kullandığı iç içe yapı."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Başarısız olan apaçık fikir
+
+Bir mesajın paylaşılan bir sırrı olan birinden geldiğini ve değiştirilmediğini kanıtlamak istersiniz. Sezgisel yaklaşım, sırrı mesajla birlikte karmalamaktır: `tag = SHA256(sır + mesaj)`. Sağlam görünür; etiket sırra bağlıdır, dolayısıyla sırrı bilmeyen bir saldırgan onu üretemez. Ne yazık ki en yaygın karma fonksiyonları için bu yapı kırıktır.
+
+## Uzunluk uzatma saldırısı
+
+MD5, SHA-1 ve SHA-256'yı içeren Merkle-Damgård ailesindeki karmalar, girdiyi bloklar hâlinde işler ve bir iç durum taşır. Nihai çıktıları *bu* iç durumdur. Bu, tehlikeli bir şey sızdırır: `SHA256(sır + mesaj)` ve `sır + mesaj` uzunluğu verildiğinde, bir saldırgan karmanın iç durumunu etiketinize ayarlayıp karmalamaya devam ederek
+
+```
+SHA256(sır + mesaj + dolgu + saldırgan_verisi)
+```
+
+değerini, **sırrı hiç bilmeden**, uzatılmış bir mesaj için geçerli bir etiket olarak hesaplayabilir. Veri ekleyip doğrulanan bir etiket üretebilir. Mesajın imzalı parametrelerden oluşan bir küme olduğu bir API için bu, bir isteğe `&admin=true` eklemek ve yine de imza kontrolünü geçmek anlamına gelebilir. Naif `hash(sır + mesaj)` güvenli değildir.
+
+## HMAC bunu nasıl düzeltir
+
+HMAC (RFC 2104) yalnızca birleştirmez. Anahtarı iki farklı şekilde karıştırarak iki kez karmalar:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Mesaj, bir iç dolgu (`ipad`) altında anahtarla karmalanır ve bu sonuç, bir dış dolgu (`opad`) altında anahtarla yeniden karmalanır. Dış karma iç karmayı sardığı için, bir saldırganın gördüğü değer uzatabileceği ham bir iç durum değildir; sırrın anahtarıyla ikinci bir karmalama adımının çıktısıdır. Uzunluk uzatma artık çalışmaz ve HMAC'in güvenliği yalnızca altta yatan karmanın makul olmasına dayanan sağlam bir kanıta sahiptir.
+
+Bu yüzden her olgun sistem, ev yapımı anahtarlı karmalama yerine HMAC (veya başka uygun bir MAC) kullanır. SHA-3 ve BLAKE'in uzunluk uzatmaya yatkın olmadığını, dolayısıyla daha doğrudan anahtarlanabileceğini, ama HMAC'in taşınabilir ve geniş çapta desteklenen standart olarak kaldığını unutmayın.
+
+## Ders
+
+Güçlü bir karma (HMAC-SHA256 yaygın varsayılandır) ve yüksek entropili bir sır ile HMAC kullanın. Kendi anahtarlı karmalama şemanızı icat etmeyin: kusur dışarıdan apaçık değildir, ki onu tehlikeli kılan tam da budur.
+
+[HMAC aracı](/tools/hmac) bir mesaj ve anahtar üzerinde HMAC-SHA256 ve ilgili varyantları hesaplar, böylece etiketi görür ve karşılaştırırsınız; tamamı tarayıcınızda, hiçbir şey gönderilmeden.

@@ -1,0 +1,43 @@
+---
+slug: uuid-versions
+title: "Mga bersyon ng UUID na ipinaliwanag: v1 hanggang v8"
+summary: "Ang buong pamilya ng UUID sa isang lugar, mula sa oras-at-MAC na v1 patungo sa random na v4 patungo sa time-ordered na v7, kasama ang mga bersyong nakabatay sa pangalan at kung paano binabasa ang mga version at variant bit."
+concepts: ["uuid", "uuidv4", "uuidv7", "rfc9562", "version", "variant"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Isang format, ilang recipe
+
+Ang isang UUID ay palaging parehong hugis: 128 bit, isinusulat bilang 32 hexadecimal digit sa pamilyar na pagpapangkat na `8-4-4-4-12`. Ang nagbabago sa pagitan ng mga bersyon ay kung paano nabubuo ang mga bit na iyon. Ang kasalukuyang pamantayan, ang RFC 9562 (inilathala noong 2024, kapalit ng matagal nang naglilingkod na RFC 4122), ay tumutukoy sa mga bersyon 1 hanggang 8, bawat isa ay ibang estratehiya sa pagpuno ng 128 bit sa paraang nananatiling natatangi nang walang sentral na awtoridad. Ang [pangkalahatang-ideya ng UUID](/learn/uuid) ay nakatuon sa dalawang pinakamadalas mong gagamitin, v4 at v7; minamapa ng artikulong ito ang buong pamilya upang makilala at mapili mo ang alinman sa kanila.
+
+## Paano ipinapahayag ng isang UUID ang bersyon nito
+
+Dalawang maliit na field ang nakareserba anuman ang bersyon, at binabasa ng tool ang dalawa. Ang **version** ay naka-encode sa apat na bit (ang unang hex digit ng ikatlong pangkat), kaya ang isang `4` doon ay nangangahulugang isang v4 UUID at ang isang `7` ay nangangahulugang v7. Ang **variant** ay naka-encode sa pinakamataas na bit ng susunod na pangkat (ang unang hex digit ng ikaapat na pangkat ay karaniwang `8`, `9`, `a`, o `b` para sa karaniwang variant). Magkasama, sinasabi nila sa isang mambabasa kung paano bibigyang-kahulugan ang natitirang mga bit, kaya nga maaaring lagyan ng label ng isang tool ang bersyon ng isang UUID sa pamamagitan lamang ng pagsusuri rito, nang walang konteksto.
+
+## Ang mga bersyong nakabatay sa oras: v1, v6, v7
+
+Tatlong bersyon ang nag-e-encode ng isang timestamp, na nagpapagawa sa kanilang halos time-ordered, isang kapaki-pakinabang na katangian para sa mga database key (tingnan ang artikulong [mga database key](/learn/uuid-database-keys)):
+
+- **Ang version 1** ay pinagsasama ang isang 60-bit na timestamp sa isang clock sequence at isang node identifier, kung saan ang node ay tradisyonal na ang MAC address ng makina. Gumagana ito, ngunit naglalabas ito ng MAC at ng oras ng pagbuo, at ang pagkakasunod ng timestamp field nito ay hindi nagsa-sort nang malinis bilang teksto.
+- **Ang version 6** ay ang v1 na may mga timestamp field na muling inayos upang ang mga byte ay magsa-sort sa kronolohikong pagkakasunod. Umiiral ito bilang isang tuwirang pagpapahusay para sa mga sistemang puhunan na sa v1 na gustong magkaroon ng sortability.
+- **Ang version 7** ay gumagamit ng isang tuwirang Unix timestamp sa milliseconds na sinusundan ng mga random na bit. Ito ang modernong rekomendasyon para sa mga bagong time-ordered identifier: sortable, walang hardware leak, at simple. Para sa karamihan ng bagong gawaing gustong magkaroon ng ordered key, ang v7 ang sagot.
+
+## Ang mga bersyong nakabatay sa pangalan: v3 at v5
+
+Ang mga bersyon 3 at 5 ay deterministiko: ang parehong input ay palaging gumagawa ng parehong UUID. Hina-hash mo ang isang namespace identifier kasama ang isang pangalan, at ang digest ay nagiging ang UUID. Ang **version 3** ay gumagamit ng MD5 at ang **version 5** ay gumagamit ng SHA-1; mas pinipili ang v5 dahil ang SHA-1, bagama't hindi ginagamit dito para sa seguridad, ay ang hindi gaanong marupok na pagpipilian. Ito ang bersyong aabutin kapag kailangan mo ng isang matatag na identifier na hinango mula sa umiiral na datos, halimbawa ang isang konsistenteng UUID para sa isang ibinigay na URL o filename, upang ang dalawang sistema ay malayang magkuwenta ng parehong halaga.
+
+## Ang random na bersyon: v4
+
+**Ang version 4** ay pinupuno ang 122 bit ng randomness (ang ibang 6 ay ang nakapirming version at variant bit). Wala itong dalang timestamp, walang MAC, at walang istruktura, na nagpapagawa rito bilang ligtas na default kapag gusto mo lamang ng isang opaque, collision-resistant na identifier at walang pakialam sa pagkakasunod. Ang nag-iisang kawalan nito ay tiyak na kawalang-pagkakasunod na iyon, na siyang sumasakit sa locality ng database index at nagtulak sa v7. Ang v4 generation ng tool ay gumagamit ng isang cryptographically secure na random source sa iyong browser, kaya hindi kailanman dumadampi sa isang server ang mga halaga.
+
+## Version 8 at ang mga espesyal na UUID
+
+**Ang version 8** ay nakareserba para sa custom o eksperimental na paggamit: ang version at variant bit lamang ang nakapirmi, at ang iba ay sa iyo upang tukuyin, na nagpapahintulot sa isang sistema na i-encode ang sarili nitong datos sa hugis ng UUID habang nananatiling isang wastong UUID. Mayroon ding dalawang espesyal na halagang dapat makilala: ang **nil** UUID, lahat ng sero, at ang **max** UUID, lahat ng isa, parehong ginagamit bilang mga sentinel. Ang version 2 ay umiiral sa kasaysayan (isang DCE Security variant) ngunit bihirang makita sa praktika at hindi isang bagay na pipiliin mo ngayon.
+
+## Pagpili ayon sa layunin
+
+Malaki ang pamilya, ngunit ang pagpili ay karaniwang mabilis sa sandaling pangalanan mo ang kailangan mo. Para sa isang opaque, hindi mahuhulaang identifier na walang pagkakasunod, gamitin ang **v4**. Para sa isang matatag na identifier na hinango nang deterministiko mula sa umiiral na datos, gamitin ang **v5**. Para sa isang time-ordered na key na mahusay na nag-i-index, gamitin ang **v7**. Ang mas lumang mga bersyong nakabatay sa oras (v1, v6) ay pangunahing mahalaga para sa pagiging tugma sa umiiral na mga sistema, at naroon ang v8 kapag tunay mong kailangang i-encode ang sarili mong istruktura. Kapag idinikit mo ang isang UUID sa tool at iniuulat nito ang bersyon, ang nag-iisang digit na iyon ang nagsasabi sa iyo kung alin sa mga recipe na ito ang gumawa nito.

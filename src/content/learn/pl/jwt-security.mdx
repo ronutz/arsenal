@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "Pułapki bezpieczeństwa JWT: alg:none, pomylenie klucza i brakujące kontrole"
+summary: "Garść błędów, które zamieniają weryfikator JWT w maszynę do fałszerstw, oraz walidacja, którą musi wykonać poprawny weryfikator."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Podpis jest tylko tak dobry jak weryfikator
+
+Podpis JWT czyni jego oświadczenia godnymi zaufania, ale tylko jeśli kod, który go weryfikuje, robi to poprawnie. Większość podatności JWT to nie luki w kryptografii; to weryfikatory, które można nakłonić do akceptacji tokenów, które powinny odrzucić. Oto te, które się liczą, i kontrole, które im zapobiegają.
+
+## Zaufanie do algorytmu samego tokenu
+
+- **`alg: none`.** Specyfikacja JWT definiuje token „niezabezpieczony” bez podpisu, deklarowany przez `{"alg":"none"}`. Weryfikator, który to honoruje, zaakceptuje token ze sfałszowanymi oświadczeniami i pustym podpisem. Poprawny weryfikator nigdy nie traktuje `none` jako ważnego dla tokenu, który powinien być podpisany.
+- **Pomylenie algorytmu (RS256 na HS256).** Przy RS256 token jest podpisywany kluczem prywatnym i weryfikowany kluczem publicznym. Jeśli weryfikator odczytuje algorytm *z tokenu*, a atakujący zmienia nagłówek na HS256, weryfikator może próbować zweryfikować HMAC, używając klucza **publicznego** jako sekretu, wartości, którą atakujący także posiada. Sfałszowany token wtedy przechodzi.
+
+Jedyną obroną dla obu jest ta sama: **weryfikator decyduje o akceptowalnym algorytmie, nie token.** Ustal oczekiwany algorytm (lub krótką listę dozwolonych) w wywołaniu weryfikacji i odrzucaj wszystko inne.
+
+## Pomijanie oświadczeń
+
+Ważny podpis dowodzi, że token został wydany i niezmieniony. Nie dowodzi, że token jest *dla ciebie* ani *nadal ważny*. Poprawny weryfikator sprawdza także:
+
+- **`exp` (wygaśnięcie)** i **`nbf` (nie-przed):** odrzucaj wygasłe lub jeszcze nieważne tokeny, z małą tolerancją na dryf zegara.
+- **`aud` (odbiorca):** potwierdź, że token był przeznaczony dla tej usługi. Token wydany dla usługi A nie powinien być akceptowany przez usługę B.
+- **`iss` (wystawca):** potwierdź, że pochodzi od wystawcy, któremu ufasz, i wyprowadź klucz weryfikacyjny od tego wystawcy, nie z tokenu.
+
+Pominięcie tego sprawia, że skradziony lub źle skierowany token zostaje zaakceptowany tam, gdzie nie powinien.
+
+## Mniejsze pułapki
+
+- **Słabe sekrety HMAC.** Token HS256 podpisany krótkim lub łatwym do odgadnięcia sekretem można złamać offline, aż znajdzie się pasujący podpis. Użyj długiego, losowego klucza.
+- **Obsługa `kid` i JWKS.** Nagłówek `kid` wybiera klucz; traktuj go jako niezaufane wejście (był używany do wstrzykiwania) i pobieraj klucze tylko z JWKS wystawcy, któremu ufasz.
+- **Mylenie dekodowania z weryfikacją.** Odczytanie oświadczeń tokenu bez sprawdzenia podpisu i czasu to nie weryfikacja. Działaj tylko na w pełni zweryfikowanym tokenie.
+
+## Wersja krótka
+
+Ustal algorytm, waliduj `exp`, `aud` i `iss`, używaj silnych kluczy i nigdy nie myl dekodowania z weryfikacją. [Narzędzie JWT](/tools/jwt) dekoduje token, pokazuje jego oświadczenia i wygaśnięcie zrozumiałym językiem oraz weryfikuje podpis HMAC względem wklejonego sekretu, wszystko w przeglądarce, gdzie token i sekret nigdy nie są wysyłane.

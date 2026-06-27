@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Mengesahkan permintaan API dengan HMAC"
+summary: "Bagaimana rahsia kongsi dan cincangan membenarkan pelayan mempercayai permintaan yang tidak dilihatnya dibuat, dan bagaimana perlindungan ulang tayang sesuai."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Masalah: mempercayai sesuatu permintaan
+
+Apabila pelayan menerima permintaan API, bagaimana ia tahu pemanggil ialah siapa yang didakwanya, dan tiada siapa mengubah permintaan dalam transit? Menghantar rahsia kongsi dengan setiap permintaan akan berfungsi sehingga rahsia itu dilog, dicache, atau bocor. **Penandatanganan permintaan HMAC** menyelesaikan ini tanpa pernah menghantar rahsia: pemanggil membuktikan ia memegang rahsia dengan menggunakannya untuk menandatangani permintaan, dan pelayan menyemak tandatangan.
+
+## Bagaimana penandatanganan berfungsi
+
+Kedua-dua pihak berkongsi kunci rahsia. Untuk menandatangani permintaan, klien:
+
+1. Membina **rentetan kanonik** daripada bahagian permintaan yang tidak boleh berubah, lazimnya kaedah HTTP, laluan, pengepala utama, satu cap masa, dan cincangan badan. "Kanonik" bermaksud kedua-dua pihak memasangnya dengan cara yang sama persis dan dipersetujui, supaya mereka mengira ke atas masukan yang serupa.
+2. Mengira `HMAC-SHA256(rentetan kanonik, rahsia)` dan melampirkannya pada permintaan, biasanya dalam pengepala seperti `Authorization` atau `X-Signature`.
+
+Pelayan, yang memegang rahsia yang sama, membina semula rentetan kanonik daripada permintaan yang diterimanya dan mengira HMAC sendiri. Jika nilainya sepadan dengan yang dalam pengepala, dua perkara dibuktikan serentak: pemanggil memegang rahsia (**ketulenan**), dan tiada apa-apa yang diliputi tandatangan diubah (**integriti**). Rahsia itu sendiri tidak pernah bergerak.
+
+## Contoh sebenar: AWS Signature Version 4
+
+SigV4 Amazon ialah contoh paling terkenal. Setiap permintaan ditandatangani dengan HMAC-SHA256 ke atas permintaan kanonik, menggunakan kunci penandatanganan yang **diterbitkan** daripada kunci akses rahsia, tarikh, wilayah, dan perkhidmatan. Pelayan menerbitkan semula kunci dan mengira semula tandatangan; ketakpadanan ditolak. Corak yang sama, kanonikkan, HMAC, banding, mendasari banyak skema pengesahan API yang lain.
+
+## Webhook: idea yang sama, songsang
+
+Webhook membalikkan arah. Pembekal (pemproses pembayaran, hos Git) memanggil titik akhir **anda** untuk memberitahu anda tentang sesuatu peristiwa, dan menandatangani muatan dengan rahsia yang kalian berdua kongsi, menghantar HMAC dalam pengepala. Titik akhir anda mengira semula HMAC ke atas badan yang diterima dan membandingkan, dan itulah cara anda menolak panggilan palsu daripada sesiapa yang tidak memegang rahsia. Sentiasa banding menggunakan semakan masa-tetap untuk mengelakkan kebocoran maklumat melalui pemasaan.
+
+## Perlindungan ulang tayang
+
+Permintaan ditandatangani yang sah yang ditangkap penyerang boleh **diulang tayang** sebulat-bulatnya. Pertahanan piawai ialah menyertakan **cap masa** dalam data yang ditandatangani dan menolak permintaan di luar tetingkap yang singkat, dan secara pilihan satu **nonce** (nilai sekali guna yang diingati pelayan secara ringkas) supaya permintaan yang sama tidak boleh diterima dua kali. Penandatanganan membuktikan ketulenan; cap masa dan nonce menghalang permintaan lama yang tulen daripada digunakan semula.
+
+[Alat HMAC](/tools/hmac) mengira HMAC-SHA256 (dan SHA-384/512) di teras setiap satu skema ini, ke atas mesej dan kunci yang anda berikan, sepenuhnya dalam pelayar anda.

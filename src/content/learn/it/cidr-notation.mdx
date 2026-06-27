@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "La notazione CIDR spiegata"
+summary: "Cosa significa davvero la barra in 192.168.1.0/24, e come una lunghezza di prefisso definisce un blocco di indirizzi IP."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Il problema che il CIDR risolve
+
+Ogni dispositivo su una rete IP ha bisogno di un indirizzo. In IPv4, quell'indirizzo è di 32 bit, di solito scritto come quattro numeri da 0 a 255 separati da punti, come `192.168.1.10`. La domanda difficile non è mai "cos'è un indirizzo" ma "come descrivo un *intervallo* di indirizzi che appartengono insieme", un singolo ufficio, una sottorete, un'allocazione di cliente. **La notazione CIDR** è il modo compatto di scrivere quell'intervallo.
+
+CIDR sta per Classless Inter-Domain Routing (Instradamento Inter-Dominio Senza Classi). La parte "senza classi" conta: l'indirizzamento più vecchio forzava gli intervalli in dimensioni fisse (i vecchi blocchi Classe A, B e C). Il CIDR ha rimosso quella rigidità e ha lasciato che un intervallo avesse *qualsiasi* dimensione potenza di due, che è il motivo per cui è lo standard oggi.
+
+## Leggere la barra
+
+Un blocco CIDR somiglia a `192.168.1.0/24`. La parte dopo la barra, la **lunghezza di prefisso**, è il singolo numero più importante. Dice: *i primi N bit dell'indirizzo sono fissi, e il resto è libero di variare.*
+
+- `/24` significa che i primi 24 bit sono la parte di rete fissa. Gli 8 bit rimanenti (32 − 24) identificano host individuali.
+- 8 bit liberi danno 2⁸ = 256 combinazioni possibili, quindi `192.168.1.0/24` descrive i 256 indirizzi da `192.168.1.0` a `192.168.1.255`.
+
+Cambia il prefisso e la dimensione del blocco cambia con esso. Un prefisso più piccolo significa *più* bit liberi e un blocco *più grande*:
+
+- `/16` fissa 16 bit, lascia 16 liberi → 65.536 indirizzi.
+- `/25` fissa 25 bit, lascia 7 liberi → 128 indirizzi.
+- `/30` fissa 30 bit, lascia 2 liberi → 4 indirizzi.
+
+Ogni passo di uno nella lunghezza di prefisso **dimezza o raddoppia** il blocco. Quella singola regola è l'intera intuizione.
+
+## Rete, broadcast e host utilizzabili
+
+All'interno della maggior parte dei blocchi, due indirizzi sono speciali e non assegnabili a un host:
+
+- L'**indirizzo di rete** è il primo indirizzo nel blocco, tutti i bit di host impostati a 0 (`192.168.1.0` per un `/24`). Nomina il blocco stesso.
+- L'**indirizzo di broadcast** è l'ultimo indirizzo, tutti i bit di host impostati a 1 (`192.168.1.255`). Il traffico inviato qui raggiunge ogni host nel blocco.
+
+Quindi un `/24` ha 256 indirizzi in totale ma **254 utilizzabili** per host reali. La cifra degli "host utilizzabili" è semplicemente il totale meno quei due indirizzi riservati.
+
+Due casi limite rompono questo schema, entrambi deliberatamente:
+
+- Un **/31** (RFC 3021) è usato per collegamenti punto a punto tra due router. Ha solo 2 indirizzi e, per progetto, entrambi sono utilizzabili, non c'è spazio per un indirizzo di rete e di broadcast separati, e nessuno è necessario per un collegamento con esattamente due estremità.
+- Un **/32** è un singolo indirizzo, una rotta di host. Descrive esattamente una macchina.
+
+## Perché vale la pena capire questo
+
+La lunghezza di prefisso governa come le reti sono progettate, come le rotte sono sommarizzate, e come lo spazio di indirizzi è distribuito. Quando vedi `10.0.0.0/8` in una tabella di instradamento o `0.0.0.0/0` come rotta predefinita, stai leggendo la stessa notazione: un indirizzo base più una lunghezza di prefisso che dice quanto di esso è fisso. L'aritmetica non cambia mai, solo i numeri.
+
+Puoi provare qualsiasi blocco nella [calcolatrice CIDR](/learn) per vedere il suo indirizzo di rete, indirizzo di broadcast, maschera e conteggio di host utilizzabili calcolati istantaneamente, interamente nel tuo browser.

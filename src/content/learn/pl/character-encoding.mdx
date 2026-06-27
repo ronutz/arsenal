@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Bajty, punkty kodowe i UTF-8"
+summary: "Różnica między znakiem a bajtem, dlaczego istnieją Unicode i UTF-8 oraz co to ma wspólnego z Base64."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Znaki to nie bajty
+
+Komputer przechowuje bajty, wartości od 0 do 255. Ludzie czytają znaki: litery, cyfry, interpunkcję, emoji. **Kodowanie znaków** to uzgodnione odwzorowanie między nimi. Pomyl odwzorowanie, a zobaczysz klasyczny zniekształcony tekst (`café` zmieniające się w `cafÃ©`), co prawie zawsze jest niezgodnością między kodowaniem użytym do zapisania bajtów a tym użytym do ich odczytania.
+
+## ASCII: pierwotne 128
+
+Najstarszym szeroko stosowanym kodowaniem jest **ASCII**, które przypisuje liczby od 0 do 127 podstawowym literom angielskim, cyfrom i pospolitym symbolom. Siedem bitów, 128 znaków. ASCII jest proste i wciąż leży u podstaw wielu obszarów informatyki, ale 128 znaków nie potrafi przedstawić liter ze znakami diakrytycznymi, pism niełacińskich ani symboli, więc nigdy nie wystarczyło dla tekstu świata.
+
+## Unicode: jedna liczba na znak
+
+**Unicode** rozwiązuje problem pokrycia, nadając każdemu znakowi unikatową liczbę zwaną **punktem kodowym**, zapisywaną jak `U+0041` (litera A) lub `U+2615` (gorący napój). Unicode to gigantyczny katalog znaków i ich punktów kodowych, znacznie ponad sto tysięcy, obejmujący zasadniczo każde używane pismo.
+
+Co kluczowe, Unicode mówi, *jaką liczbę* ma każdy znak, ale nie *jak zapisać tę liczbę jako bajty*. To drugie zadanie należy do formy kodowania.
+
+## UTF-8: jak punkty kodowe stają się bajtami
+
+**UTF-8** to dominujący sposób przekształcania punktów kodowych Unicode w bajty i domyślny w całej nowoczesnej sieci. Ma **zmienną długość**: znak zajmuje od jednego do czterech bajtów w zależności od swojego punktu kodowego.
+
+- Zakres ASCII (U+0000 do U+007F) jest kodowany jako pojedynczy bajt, identyczny z ASCII. Dlatego UTF-8 jest wstecznie zgodne: każdy czysty tekst ASCII jest już poprawnym UTF-8.
+- Znaki spoza ASCII używają dwóch, trzech lub czterech bajtów. Tak więc `é` to dwa bajty, a `☕` to trzy, choć każdy jest jednym znakiem.
+
+Ten ostatni punkt to powszechna niespodzianka: **jeden znak nie zawsze jest jednym bajtem.** Liczenie bajtów i liczenie znaków dają różne odpowiedzi dla dowolnego tekstu spoza ASCII. (UTF-16 i UTF-32 to alternatywne kodowania tych samych punktów kodowych; UTF-8 wygrało sieć dzięki zgodności z ASCII i zwartości dla tekstu łacińskiego.)
+
+## Gdzie wchodzi Base64
+
+Ma to znaczenie dla Base64, ponieważ **Base64 działa na bajtach, nie na znakach.** Aby zakodować ciąg w Base64, ciąg trzeba najpierw zamienić na bajty za pomocą kodowania znaków, a tym kodowaniem jest zasadniczo zawsze UTF-8. Zakoduj ten sam znak innym schematem, a otrzymasz inne bajty, a więc inny Base64. Pełny potok dla tekstu to zatem: znaki stają się bajtami (UTF-8), potem bajty stają się bezpiecznym tekstem (Base64). Przy dekodowaniu odwracasz oba kroki.
+
+[Narzędzie Base64](/tools/base64) koduje tekst jako bajty UTF-8 przed zakodowaniem w Base64 i oznacza, gdy zdekodowany wynik nie jest poprawnym UTF-8, wszystko w przeglądarce.

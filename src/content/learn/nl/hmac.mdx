@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: gesleuteld hashen voor berichtauthenticatie"
+summary: "Waarom een gewone hash integriteit bewijst maar geen authenticiteit, hoe een geheime sleutel dat verhelpt en waarom de structuur van HMAC ertoe doet."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het gat dat een gewone hash laat
+
+Een cryptografische hash bewijst **integriteit**: als de digest nog overeenkomt, zijn de data niet gewijzigd. Maar hij bewijst niets over **wie** ze produceerde. Iedereen kan een bericht hashen, dus een digest die naast een bericht wordt verzonden biedt geen bescherming tegen een aanvaller die simpelweg het bericht wijzigt *en* de digest herberekent. Er is geen geheim bij betrokken, dus er is niets dat alleen de legitieme verzender had kunnen doen.
+
+HMAC dicht dat gat. Het is een **berichtauthenticatiecode**: een waarde die bewijst dat een bericht niet is gemanipuleerd en afkomstig is van iemand die een gedeelde geheime sleutel bezit. De verifieerder herberekent de HMAC met dezelfde sleutel; komt hij overeen, dan is het bericht authentiek.
+
+## Een sleutel toevoegen, op de juiste manier
+
+Het voor de hand liggende idee, de sleutel en het bericht simpelweg samen hashen als `hash(sleutel + bericht)`, is subtiel onveilig. Veel hashfuncties (waaronder de SHA-2-familie) zijn gebouwd op een constructie die kwetsbaar is voor een **length-extension-aanval**: als je `hash(sleutel + bericht)` en de lengte van het geheim kent, kan een aanvaller een geldige hash voor `sleutel + bericht + extra` berekenen zonder ooit de sleutel te kennen. Dat zou hem toestaan een uitgebreid, nog steeds geldig bericht te vervalsen.
+
+HMAC (gedefinieerd in RFC 2104) vermijdt dit door tweemaal te hashen, waarbij de sleutel elke keer anders wordt ingemengd. Conceptueel berekent het:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+waarbij `ipad` en `opad` twee vaste opvulconstanten zijn. De binnenste hash bindt de sleutel aan het bericht; de buitenste hash omhult het resultaat zodat de length-extension-truc er niet bij kan. Je hoeft de formule niet te onthouden, de boodschap is dat de geneste structuur, en niet een achteloze samenvoeging, HMAC degelijk maakt.
+
+## HMAC tegenover een digitale handtekening
+
+Beide bewijzen authenticiteit, maar het vertrouwensmodel verschilt:
+
+- **HMAC is symmetrisch.** Eén geheime sleutel wordt door beide kanten gedeeld. Wie een HMAC kan verifiëren kan er ook een maken, dus het werkt wanneer beide partijen al een sleutel delen maar het auteurschap niet aan een derde kunnen bewijzen.
+- **Een digitale handtekening is asymmetrisch.** De ondertekenaar gebruikt een privésleutel; iedereen kan met de publieke sleutel verifiëren. Dit bewijst auteurschap aan de wereld, tegen hogere rekenkosten.
+
+Kies HMAC wanneer twee systemen een geheim delen en snelle, wederzijdse authenticatie nodig hebben; kies een handtekening wanneer verifieerders niet in staat mogen zijn te vervalsen wat ze verifiëren.
+
+## Waar je HMAC tegenkomt
+
+- **Ondertekening van API-verzoeken.** Schema's als AWS Signature Version 4 ondertekenen elk verzoek met HMAC-SHA256 zodat de server kan bevestigen dat de aanroeper de geheime sleutel bezit.
+- **Webhooks.** Een aanbieder stuurt een HMAC van de payload in een header; jouw endpoint herberekent die om vervalste aanroepen te weigeren.
+- **JWT's met HS256.** Een met HS256 ondertekend token is letterlijk HMAC-SHA256 over de header en payload van het token. De [HMAC-tool](/tools/hmac) gebruikt precies dezelfde Web Crypto-constructie die de JWT-verifieerder gebruikt, dus de twee komen van opzet overeen.
+
+Je bericht en je sleutel verlaten nooit de browser; de HMAC wordt lokaal berekend.

@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Perlanggaran, rintangan praimej dan batas hari jadi"
+summary: "Tiga sifat keselamatan yang mesti dimiliki cincangan kriptografi, mengapa perlanggaran penting, dan matematik hari jadi yang menetapkan kekuatan sebenar."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Apa maksud "selamat" untuk cincangan
+
+Sebarang fungsi yang memetakan masukan kepada keluaran bersaiz tetap akhirnya akan memetakan dua masukan berbeza kepada keluaran yang sama, kerana terdapat masukan tak terhingga dan hanya keluaran terhingga. Cincangan yang **selamat** tidak bermaksud perlanggaran tidak boleh wujud; ia bermaksud ia tidak boleh *ditemui* dengan jumlah kerja yang boleh dilaksanakan. Tiga sifat berasingan menangkap ini.
+
+## Tiga sifat
+
+- **Rintangan praimej.** Diberi nilai cincangan `h`, tidak boleh dilaksanakan untuk mencari sebarang masukan `m` dengan `hash(m) = h`. Ini ialah sifat sehala: cap jari tidak sepatutnya mendedahkan apa yang menghasilkannya. Bagi cincangan n bit, ini menelan kira-kira 2ⁿ kerja.
+- **Rintangan praimej kedua.** Diberi masukan tertentu `m1`, tidak boleh dilaksanakan untuk mencari masukan *berbeza* `m2` dengan cincangan yang sama. Penyerang tidak boleh memalsukan dokumen kedua yang sepadan dengan cap jari satu yang diberi. Juga kira-kira 2ⁿ kerja.
+- **Rintangan perlanggaran.** Tidak boleh dilaksanakan untuk mencari *sebarang* dua masukan berbeza yang menghasilkan nilai cincangan yang sama. Penyerang boleh memilih kedua-duanya, yang menjadikan ini paling mudah daripada ketiga-tiganya untuk diserang.
+
+## Batas hari jadi
+
+Rintangan perlanggaran lebih lemah daripada dua yang lain atas sebab halus, **paradoks hari jadi**. Dalam bilik hanya 23 orang terdapat kira-kira 50% kemungkinan dua berkongsi hari jadi, kerana bilangan *pasangan* berkembang secara kuadratik. Kesan yang sama terpakai pada cincangan: mencari perlanggaran dalam cincangan n bit hanya memerlukan kira-kira **2^(n/2)** percubaan, bukan 2ⁿ.
+
+Ini memotong dua kekuatan berkesan terhadap perlanggaran:
+
+- SHA-256 memberikan kira-kira 128 bit rintangan perlanggaran (2¹²⁸ kerja), yang jauh di luar jangkauan.
+- Cincangan 128 bit seperti MD5 hanya akan memberikan kira-kira 64 bit rintangan perlanggaran, walaupun ia tidak dipecahkan atas sebab lain, dan itulah sebab saiz keluaran itu sendiri penting.
+
+Sebab itulah cincangan moden menggunakan 256 bit atau lebih: untuk mengekalkan angka yang dipotong dua itu dengan selesa di luar jangkauan mana-mana penyerang.
+
+## Mengapa perlanggaran yang ditemui berbahaya
+
+Apabila rintangan perlanggaran gagal, penyerang boleh mencipta dua masukan dengan cincangan yang sama, membuat satu ditandatangani atau dipercayai dan menggantikannya dengan yang lain. SHAttered menunjukkan dua PDF dengan ringkasan SHA-1 yang sama; perisian hasad Flame menggunakan perlanggaran MD5 untuk memalsukan sijil yang dipercayai. Dalam kedua-dua kes tandatangan adalah sah untuk *kedua-dua* dokumen, jadi tandatangan yang disahkan berhenti membuktikan yang mana sebenarnya anda terima. Inilah sebab konkrit mengapa MD5 dan SHA-1 tidak boleh digunakan di tempat lawan boleh memilih masukan.
+
+[Alat cincangan](/tools/hash) membenarkan anda mencincang sebarang masukan dan membandingkan ringkasan, supaya anda sendiri melihat bahawa satu bit yang diubah menghasilkan cap jari yang sama sekali berbeza, semuanya dikira dalam pelayar anda tanpa apa-apa dihantar.

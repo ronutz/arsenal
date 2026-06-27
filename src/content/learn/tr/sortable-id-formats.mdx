@@ -1,0 +1,43 @@
+---
+slug: sortable-id-formats
+title: "ULID, KSUID, Snowflake ve diğer sıralanabilir kimlikler"
+summary: "Zaman sıralı tanımlayıcılar için UUID'lere popüler alternatifler, her birinin nasıl kurulduğu ve UUIDv7'nin artık icat edildikleri şeyin çoğunu nasıl kapsadığı."
+concepts: ["uuid", "ulid", "ksuid", "snowflake", "nanoid", "sortable-ids"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bunlar neden var
+
+Rastgele UUIDv4 benzersiz olmakta mükemmel, sıralı olmakta berbattır ve o düzensizlik veritabanı başarımına sessizce zarar verir ([veritabanı anahtarları](/learn/uuid-database-keys) makalesindeki hikâye). UUIDv7 zaman sıralı bir UUID standartlaştırmadan önce, çeşitli projeler aynı faydayı elde etmek için kendi tanımlayıcı biçimlerini icat etti: oluşturma zamanına göre sıralanan, derli toplu ve URL dostu, ama yine de merkezi koordinasyon gerektirmeyen bir kimlik. Onları bilmeye değer, çünkü gerçek sistemlerde karşılaşacaksınız ve aynı bir avuç ödünleşimi örnekledikleri için.
+
+## Ortak tarif
+
+Neredeyse her sıralanabilir kimlik tek bir fikri kullanır: **önce bir zaman damgası** ve **sonra rastgele veya sıralı bitler** koyun. Kimlikleri metin olarak sıralamak onları o zaman kabaca zamana göre düzenler, çünkü en önemli kısım saattir. Bütünü, sırayı koruyan bir tabanda kodlamak (böylece metin, baytların sıralandığı gibi sıralanır) kimlikleri düz dizeler olarak sözlüksel sıralanabilir kılar. Biçimler, zamana karşı rastgeleliğe kaç bit harcadıkları, sonucu nasıl kodladıkları ve üreteçler arasında herhangi bir koordinasyona ihtiyaç duyup duymadıkları bakımından farklılaşır.
+
+## ULID
+
+ULID, bir UUID ile aynı genişlikte, 128 bitlik bir tanımlayıcıdır, Crockford base32'de 26 karakter olarak gösterilir. İlk 48 bit milisaniyelik bir zaman damgası, kalan 80'i rastgeledir. Kodlama büyük/küçük harfe duyarsızdır ve okunabilir olacak biçimde seçilmiştir ve sözlüksel sıralanabilir; aynı milisaniyede oluşturulan kimlikler için bile sıralamayı garanti eden isteğe bağlı bir monoton kipi vardır. ULID, v4'ün sıralama sorununa en popüler yanıtlardan biriydi ve 128 bit olduğundan bir UUID ile aynı alanda saklanabilir.
+
+## KSUID
+
+KSUID (Segment'ten), 27 base62 karakteri olarak kodlanan 160 bitlik bir tanımlayıcıdır. Saniye çözünürlüklü 32 bitlik bir zaman damgasını özel bir başlangıç dönemiyle (böylece zaman damgaları uzun yıllar derli toplu kalır) ardından 128 bit rastgelelikle kullanır. Daha büyük rastgele bölüm, çakışmaları yüksek üretim hızlarında bile kaybolacak kadar olası kılar, bir UUID'den daha geniş olma pahasına. ULID gibi, metin olarak sıralandığında zamana göre sıralanır.
+
+## Snowflake
+
+Snowflake (Twitter'da ortaya çıkmıştır) başka bir biçimdedir: 128 bitlik bir değer değil, 64 bitlik bir tam sayı. Bir milisaniye zaman damgasını, bir makine veya veri merkezi tanımlayıcısını ve milisaniye başına bir sıra numarasını 64 bite paketler, böylece standart işaretli bir bigint sütununa sığar. O derli topluluk, çok büyük veri kümeleri için çekiciliğidir. Püf noktası koordinasyondur: her üreteç, atanması ve yönetilmesi gereken benzersiz bir makine kimliğine ihtiyaç duyar, dolayısıyla Snowflake, UUID'lerin koordinasyonsuz özelliğini çok daha küçük bir tanımlayıcıyla takas eder. Birçok sistemin aynı paketleme fikri üzerine kurulu kendi Snowflake benzeri şeması vardır.
+
+## NanoID
+
+NanoID aykırı olandır: hiç zaman tabanlı değildir. Yalnızca, yapılandırılabilir bir alfabe ve uzunluğa sahip derli toplu, URL güvenli rastgele bir dizedir, kısa bir dizede opak bir tanımlayıcı istediğinizde rastgele bir UUID'ye daha küçük, daha dostane bir alternatif olarak tasarlanmıştır. Onu sıralanabilir biçimlerle değil UUIDv4 ile karşılaştırın: sıralama için değil, boyut ve URL dostluğu için eniyiler.
+
+## Nasıl karşılaştırılırlar
+
+Ödünleşimler birkaç eksen boyunca dizilir. **Boyut**: Snowflake 64 bit, ULID ve UUID 128 bit, KSUID 160 bittir. **Kodlama**: base32 (ULID), base62 (KSUID), bir tam sayı (Snowflake) veya onaltılık (UUID). **Koordinasyon**: yalnızca Snowflake atanmış makine kimliklerine ihtiyaç duyar; geri kalanı koordinasyonsuzdur. **Sıralanabilirlik**: NanoID dışındakilerin tümü zaman sıralıdır. Ve ortak bir uyarı: zaman damgası ön ekli herhangi bir kimlik, oluşturma zamanını onu okuyabilen herkese görünür kılar, ki bu çoğu kullanım için sorun değildir ama bir tanımlayıcı herkese açık biçimde ifşa edildiğinde not edilmeye değer.
+
+## UUIDv7 hesabı neden değiştirdi
+
+Bu listenin eskisi kadar önemli olmamasının nedeni, UUIDv7'nin ([versions](/learn/uuid-versions) makalesine bakın) aynı zaman-damgası-artı-rastgelelik tarifini sıradan 128 bitlik UUID biçiminin içinde standartlaştırmış olmasıdır. Size zaman sıralaması ve iyi dizin yerelliği verir, bu arada her veritabanı ve kütüphanenin zaten anladığı standart bir UUID olarak kalır, özel kodlama olmadan ve koordinasyon olmadan. Dolayısıyla yeni sistemler için dürüst varsayılan, önce v7'ye uzanmak ve bu alternatiflerden birini yalnızca onun belirli özelliğine ihtiyaç duyduğunuzda kullanmaktır: bir bigint'e sığan 64 bitlik bir genişlik (Snowflake), belirli bir metin kodlaması veya daha büyük bir rastgele alan. Gerçek bir sorunu çözdüler; v7 artık çoğunu standart bir biçimde çözüyor.

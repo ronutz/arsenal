@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hashing, kryptering og kodning: tre forskellige ting"
+summary: "Tre operationer der konstant forveksles, rent adskilt af to spørgsmål: er den reversibel, og kræver den en nøgle?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tre ord, konstant blandet sammen
+
+"Er denne adgangskode krypteret?" "Bare hash URL'en." "Dataene er kodet, så de er sikre." Disse sætninger er overalt, og de fleste bruger det forkerte ord. Hashing, kryptering og kodning er tre forskellige operationer med tre forskellige formål, og at forveksle dem fører til reelle sikkerhedsfejl, som at gemme adgangskoder med en metode, der ikke beskytter noget.
+
+Den gode nyhed er, at to enkle spørgsmål adskiller dem fuldstændigt.
+
+## De to spørgsmål
+
+1. **Er den reversibel?** Kan du få den oprindelige inddata tilbage fra uddata?
+2. **Kræver den en nøgle?** Kræves en hemmelighed, eller kan hvem som helst udføre operationen?
+
+Plot de tre operationer mod disse spørgsmål, og billedet bliver klart:
+
+- **Kodning** er reversibel og kræver ingen nøgle.
+- **Hashing** er ikke reversibel og kræver ingen nøgle.
+- **Kryptering** er reversibel og kræver en nøgle.
+
+Den tabel er hele artiklen. Resten er detaljer.
+
+## Kodning: reversibel, ingen nøgle
+
+Kodning omskriver data til en anden repræsentation, så de kan rejse gennem en kanal, der forventer et bestemt format. Base64 forvandler byte til sikker tekst; URL-kodning escaper tegn, der er ulovlige i en URL; UTF-8 forvandler tegn til byte. Intet af det er hemmeligt. Hvem som helst kan afkode det tilbage, fordi reversibilitet er hele pointen. **Kodning giver nul sikkerhed.** Hvis du hører "token er kodet, så det er sikkert", er det et rødt flag: kodet betyder læsbar.
+
+## Hashing: ikke reversibel, ingen nøgle
+
+En hashfunktion afbilder enhver inddata på en digest af fast størrelse, og du kan ikke køre den baglæns for at gendanne inddata. Den kræver ingen nøgle, så hvem som helst kan beregne samme digest fra samme inddata. Det gør den perfekt til **verifikation**: integritetstjek, indholdsadressering og at opdage ændringer. Den er det rette værktøj, når du skal bekræfte, at to ting er ens uden at gemme originalen, men den skjuler intet reversibelt, fordi der ikke er noget at vende.
+
+## Kryptering: reversibel, med nøgle
+
+Kryptering omdanner data, så kun den, der har den rette nøgle, kan omdanne dem tilbage. Dette er den eneste af de tre, der er bygget til **hemmeligholdelse**. Den er reversibel af design, men kun med nøglen, hvilket er præcis den egenskab, de andre to mangler: kodning er reversibel af hvem som helst, hashing af ingen, kryptering af nøgleindehavere.
+
+## At vælge den rigtige
+
+Formålet afgør værktøjet. Skal data overleve transporten som tekst? Kod dem. Skal du verificere integritet eller sammenligne uden at gemme originalen? Hash dem. Skal du holde data hemmelige for enhver uden nøglen? Krypter dem.
+
+Den klassiske fejl er at gribe efter den forkerte kolonne. At gemme adgangskoder med ren kodning (reversibel af hvem som helst) eller endda ren kryptering (én stjålet nøgle blotlægger alt) er langt svagere end en formålsbygget adgangskode-hash, som behandles i sin egen artikel. [Hash-værktøjet](/tools/hash) og [Base64-værktøjet](/tools/base64) lader dig se hashing og kodning opføre sig forskelligt på samme inddata, digesten vendes aldrig, Base64 altid.

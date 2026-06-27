@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Como hosts IPv6 obtêm endereços: SLAAC e DHCPv6"
+summary: "Como um host IPv6 se configura a partir do link-local para cima, o que os anúncios de roteador decidem, e a diferença entre SLAAC, endereços de privacidade, e DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Autoconfiguração por padrão
+
+Uma das características definidoras do IPv6 é que um host pode configurar um endereço funcional sem nenhum servidor e sem nenhuma configuração manual. Onde o IPv4 se apoia no DHCP para distribuir endereços, o IPv6 pode construí-los localmente a partir de informação que o roteador difunde. O resultado é que uma única interface geralmente acaba com vários endereços de uma vez, cada um para um propósito diferente, o que surpreende as pessoas vindas do IPv4.
+
+## O link-local vem primeiro
+
+Antes de qualquer outra coisa, toda interface IPv6 configura um endereço link-local em `fe80::/10` (o tipo que a ferramenta rotula como link-local). Ele é gerado localmente, nunca roteado além do enlace local, e existe para que o host possa falar com vizinhos e roteadores imediatamente, inclusive para perguntar como configurar o resto de seus endereços. O link-local é o bootstrap: ele está sempre presente, e a maquinaria de descoberta de vizinhos no artigo de [descoberta de vizinhos](/learn/ipv6-neighbor-discovery) roda sobre ele.
+
+## O anúncio de roteador decide o método
+
+Para obter um endereço globalmente roteável, o host escuta por Anúncios de Roteador (Router Advertisements), mensagens periódicas que um roteador envia (e que um host pode requisitar com uma Solicitação de Roteador, Router Solicitation). O anúncio carrega o prefixo on-link, quase sempre um /64, e duas flags que dizem ao host como se configurar:
+
+- A **flag M (Managed)** diz "use DHCPv6 para obter um endereço".
+- A **flag O (Other)** diz "configure seu endereço você mesmo, mas obtenha outras configurações como DNS do DHCPv6".
+
+Com ambas as flags desligadas, o host usa autoconfiguração sem estado pura. É por isso que a atribuição de endereço IPv6 é uma negociação entre o que o roteador anuncia e o que o host escolhe, em vez de um único servidor distribuindo concessões.
+
+## SLAAC: construindo seu próprio endereço
+
+A Autoconfiguração de Endereço sem Estado (Stateless Address Autoconfiguration, RFC 4862) é o mecanismo que um host usa para formar seu próprio endereço: tome o prefixo /64 do anúncio e anexe um identificador de interface de 64 bits. Esta é toda a razão pela qual uma sub-rede deve ser um /64 (veja o artigo de [sub-redes](/learn/ipv6-subnetting)). Nenhum servidor rastreia a atribuição, que é o que "sem estado" significa.
+
+O identificador de interface pode ser formado de várias maneiras, e isto tem consequências reais de privacidade:
+
+- O **EUI-64 modificado** deriva o identificador do endereço MAC da interface, o que a ferramenta pode demonstrar. Ele é estável e conveniente, mas embute o endereço de hardware em todo endereço IPv6 que o host usa, deixando um servidor remoto rastrear o dispositivo através de redes.
+- **Identificadores estáveis e opacos** (RFC 7217) produzem um identificador que é estável por rede mas não revela nenhum endereço de hardware, corrigindo o problema de rastreamento entre redes enquanto mantém um endereço consistente em um dado enlace.
+- **Endereços temporários (de privacidade)** (RFC 8981, que torna obsoleta a anterior RFC 4941) geram identificadores aleatórios que rotacionam ao longo do tempo, então as conexões de saída não apresentam um endereço de longa duração de modo algum.
+
+Os sistemas operacionais modernos tipicamente usam um endereço estável para conexões de entrada e um endereço temporário rotativo para as de saída, que é por que uma única interface mostra múltiplos endereços globais.
+
+## Detecção de Endereço Duplicado
+
+Antes de um host realmente usar qualquer endereço que tenha formado, ele roda a Detecção de Endereço Duplicado (Duplicate Address Detection): ele envia uma Solicitação de Vizinho (Neighbor Solicitation) para seu próprio endereço tentativo e espera. Se alguém responder, o endereço já está em uso e não deve ser reivindicado. O DAD é um seguro barato de que a autoconfiguração não produz colisões, e ele se apoia nas mesmas mensagens de descoberta de vizinhos descritas no artigo companheiro.
+
+## DHCPv6 para controle com estado
+
+Quando um administrador quer rastrear e atribuir endereços centralmente, o DHCPv6 (RFC 8415) provê atribuição com estado, muito como o DHCP do IPv4: um servidor concede endereços específicos e registra quem tem o quê. Há também um modo DHCPv6 sem estado que distribui apenas configuração como servidores DNS enquanto o host ainda forma seu próprio endereço por SLAAC, que é o que a flag O seleciona. O DHCPv6 é também onde a delegação de prefixo vive, o mecanismo pelo qual um roteador doméstico recebe um prefixo inteiro para criar sub-redes atrás dele.
+
+## Muitos endereços, por design
+
+O modelo mental a levar consigo é que um host IPv6 é em grande parte autoconduzido. Ele sempre tem um endereço link-local, ele aprende o prefixo e o método de configuração dos anúncios de roteador, e dependendo das flags ele ou constrói seus próprios endereços globais com SLAAC ou os concede do DHCPv6, frequentemente acabando com um endereço estável e um temporário rotativo lado a lado. Quando a ferramenta lhe mostra um endereço e identifica seu tipo, aquele tipo lhe diz qual desses caminhos o produziu.

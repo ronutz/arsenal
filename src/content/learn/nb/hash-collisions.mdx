@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Kollisjoner, forbildemotstand og bursdagsgrensen"
+summary: "De tre sikkerhetsegenskapene en kryptografisk hash må ha, hvorfor kollisjoner er viktige, og bursdagsmatematikken som setter den reelle styrken."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hva "trygg" betyr for en hash
+
+Enhver funksjon som avbilder inndata på utdata av fast størrelse vil til slutt avbilde to forskjellige inndata på samme utdata, for det finnes uendelig mange inndata og bare endelig mange utdata. At en hash er **trygg** betyr ikke at kollisjoner ikke kan eksistere; det betyr at de ikke kan *finnes* med en gjennomførbar mengde arbeid. Tre separate egenskaper fanger dette.
+
+## De tre egenskapene
+
+- **Forbildemotstand.** Gitt en hashverdi `h` er det ugjennomførbart å finne noen inndata `m` med `hash(m) = h`. Dette er enveis-egenskapen: et fingeravtrykk skal ikke avsløre hva som produserte det. For en hash på n bit koster dette omtrent 2ⁿ arbeid.
+- **Andreforbildemotstand.** Gitt en spesifikk inndata `m1` er det ugjennomførbart å finne en *annen* inndata `m2` med samme hash. En angriper kan ikke forfalske et andre dokument som matcher fingeravtrykket av et gitt. Også omtrent 2ⁿ arbeid.
+- **Kollisjonsmotstand.** Det er ugjennomførbart å finne *hvilke som helst* to forskjellige inndata som gir samme hashverdi. Angriperen får velge begge, noe som gjør dette lettest av de tre å angripe.
+
+## Bursdagsgrensen
+
+Kollisjonsmotstand er svakere enn de to andre av en subtil grunn, **bursdagsparadokset**. I et rom med bare 23 personer er det omtrent 50 % sjanse for at to deler bursdag, fordi antallet *par* vokser kvadratisk. Samme effekt gjelder hasher: å finne en kollisjon i en hash på n bit krever bare omtrent **2^(n/2)** forsøk, ikke 2ⁿ.
+
+Dette halverer den effektive styrken mot kollisjoner:
+
+- SHA-256 gir omtrent 128 bit kollisjonsmotstand (2¹²⁸ arbeid), noe som er langt utenfor rekkevidde.
+- En hash på 128 bit som MD5 ville gi bare omtrent 64 bit kollisjonsmotstand, selv om den ikke var brutt av andre grunner, og derfor er utdatastørrelsen i seg selv viktig.
+
+Derfor bruker moderne hasher 256 bit eller mer: for å holde det halverte tallet komfortabelt utenfor enhver angripers rekkevidde.
+
+## Hvorfor en funnet kollisjon er farlig
+
+Når kollisjonsmotstanden svikter, kan en angriper lage to inndata med samme hash, få den ene signert eller betrodd og bytte den ut med den andre. SHAttered viste to PDF-er med samme SHA-1-digest; Flame-skadevaren brukte en MD5-kollisjon til å forfalske et betrodd sertifikat. I begge tilfeller var signaturen gyldig for *begge* dokumentene, så en verifisert signatur sluttet å bevise hvilket du faktisk mottok. Dette er den konkrete grunnen til at MD5 og SHA-1 ikke må brukes der en motstander kan velge inndata.
+
+[Hash-verktøyet](/tools/hash) lar deg hashe enhver inndata og sammenligne digester, så du selv ser at en enkelt endret bit gir et helt annet fingeravtrykk, alt beregnet i nettleseren din uten at noe sendes.

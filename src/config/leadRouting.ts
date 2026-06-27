@@ -22,6 +22,8 @@
 // components that call it.
 // ============================================================================
 
+import { redEducationUrl } from "@/config/redEducation";
+
 export interface LeadDestination {
   /** Short label shown to users / used in the button. */
   name: string;
@@ -38,7 +40,10 @@ export interface LeadDestination {
 /** Red Education — the current authorized training center for all courses. */
 const RED_EDUCATION: LeadDestination = {
   name: "Red Education",
-  url: "https://www.rededucation.com/",
+  // Lead-attributed URL: utm_campaign=training-cta marks this as the course/
+  // platform "Request this training" placement. The UTM params ride the query
+  // string and are safely ignored if Red Education does not consume them.
+  url: redEducationUrl("training-cta"),
   kind: "atc",
 };
 

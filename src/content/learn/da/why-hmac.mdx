@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Hvorfor HMAC, og ikke hash(nøgle + besked)"
+summary: "Længdeudvidelsesangrebet, der bryder naiv nøglehashing, og den indlejrede konstruktion, HMAC bruger til at besejre det."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Den oplagte idé, der fejler
+
+Du vil bevise, at en besked kommer fra nogen, der har en delt hemmelighed, og at den ikke er ændret. Den intuitive tilgang er at hashe hemmeligheden sammen med beskeden: `tag = SHA256(hemmelighed + besked)`. Det virker solidt, taggen afhænger af hemmeligheden, så en angriber, der ikke kender hemmeligheden, kan ikke producere den. Desværre er denne konstruktion brudt for de mest almindelige hashfunktioner.
+
+## Længdeudvidelsesangrebet
+
+Hash i Merkle-Damgård-familien, som omfatter MD5, SHA-1 og SHA-256, behandler indata i blokke og fører en intern tilstand videre. Deres endelige uddata *er* den interne tilstand. Det lækker noget farligt: givet `SHA256(hemmelighed + besked)` og længden af `hemmelighed + besked` kan en angriber sætte hashets interne tilstand til din tag og fortsætte med at hashe og beregne
+
+```
+SHA256(hemmelighed + besked + udfyldning + angriberdata)
+```
+
+som en gyldig tag for en udvidet besked, **uden nogensinde at kende hemmeligheden**. Den kan tilføje data og producere en tag, der verificeres. For et API, hvor beskeden er et sæt signerede parametre, kan det betyde at tilføje `&admin=true` til en forespørgsel og alligevel bestå signaturkontrollen. Det naive `hash(hemmelighed + besked)` er ikke sikkert.
+
+## Hvordan HMAC retter det
+
+HMAC (RFC 2104) sammenkæder ikke bare. Den hasher to gange med nøglen blandet ind på to forskellige måder:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Beskeden hashes med nøglen under en indre udfyldning (`ipad`), og det resultat hashes igen med nøglen under en ydre udfyldning (`opad`). Fordi det ydre hash omslutter det indre, er den værdi, en angriber ser, ikke en rå intern tilstand, den kan udvide; det er uddata fra et andet hashtrin med hemmelighedens nøgle. Længdeudvidelse holder op med at virke, og HMAC's sikkerhed har et solidt bevis, der kun hviler på, at det underliggende hash er rimeligt.
+
+Derfor bruger ethvert modent system HMAC (eller en anden passende MAC) i stedet for hjemmelavet nøglehashing. Bemærk, at SHA-3 og BLAKE ikke er modtagelige over for længdeudvidelse, så de kan forsynes med nøgle mere direkte, men HMAC forbliver den portable og bredt understøttede standard.
+
+## Læren
+
+Brug HMAC med et stærkt hash (HMAC-SHA256 er den almindelige standard) og en hemmelighed med høj entropi. Find ikke på dit eget skema for nøglehashing: fejlen er ikke åbenlys udefra, hvilket er netop, hvad der gør den farlig.
+
+[HMAC-værktøjet](/tools/hmac) beregner HMAC-SHA256 og beslægtede varianter over en besked og en nøgle, så du ser taggen og sammenligner den, alt sammen i din browser, uden at noget sendes.

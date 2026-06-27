@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Açık ile gizli istemciler ve PKCE'nin yeri"
+summary: "Bir OAuth istemcisinin bir sır tutup tutamaması tüm güvenlik modeline karar verir. Neden SPA'lar ve mobil uygulamalar açık istemcilerdir ve neden PKCE artık hepsi için önerilir."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Her şeye karar veren soru
+
+OAuth istemcileri iki türe ayırır ve ayrım çizgisi tek bir sorudur: bu istemci bir sır tutabilir mi? RFC 6749 iki yanıtı **gizli** ve **açık** istemciler olarak adlandırır ve hangisi olduğunuz nasıl kimlik doğruladığınızı, hangi akışların güvenli olduğunu ve PKCE'ye ihtiyacınız olup olmadığını belirler. Uygulama düzeyindeki neredeyse her OAuth tasarım hatası, bir açık istemciyi gerçekte koruyamayacağı bir sırrı tutabilirmiş gibi ele almaya dayanır.
+
+## Gizli istemciler bir sır tutabilir
+
+Bir gizli istemci, kullanıcının kodunu veya depolamasını erişemeyeceği bir yerde çalışır, klasik olarak sunucu tarafı bir web uygulaması. Kayıt sırasında kendisine bir **istemci sırrı** verilir ve bu sırrı yetkilendirme sunucusunun token uç noktasına karşı kendini kimlik doğrulamak için kullanır. Sır yalnızca sunucuda yaşadığından, yetkilendirme sunucusu bir token isteğinin gerçekten kayıtlı istemciden geldiğinden emin olabilir. Bu güçlü durumdur: istemci kimliğini yalnızca kendisinin bildiği bir şeyle kanıtlar.
+
+## Açık istemciler tutamaz
+
+Bir açık istemci, kodunun ve verisinin kullanıcıya veya saldırgana görünür olduğu yerde çalışır: tarayıcıdaki tek sayfalı bir uygulama, yerel bir mobil veya masaüstü uygulaması, cihaza gönderilen her şey. Tanımlayıcı sorun, böyle bir istemciye gömdüğünüz herhangi bir sırrın sır olmadığıdır, çünkü herkes onu gönderilen paketten veya ikiliden çıkarabilir. Dolayısıyla bir açık istemci bir istemci sırrıyla hiç kimlik doğrulayamaz; bir saldırganın da elde edemeyeceği, tutabileceği hiçbir şey yoktur. Bu, yetkilendirme sunucusunun varsayabileceğini değiştirir ve açık istemcilerin yetkilendirme kodu akışında ek korumaya ihtiyaç duymasının nedenidir.
+
+## Açık istemciler neden savunmasızdı
+
+Yetkilendirme kodu akışı, istemciye yönlendirmede tek kullanımlık bir kod verir, ki istemci bunu sonra token'larla takas eder. Bir gizli istemci için o takas istemci sırrıyla korunur. Sırsız bir açık istemci için, yönlendirmeyi ele geçirebilen bir saldırgan, örneğin bir mobil cihazda aynı özel URL şeması için kayıtlı kötü amaçlı bir uygulama, kodu çalıp onu kendisi bozdurabilir. Bu, [PKCE](/learn/pkce) makalesinin ayrıntılı anlattığı ele geçirme saldırısıdır ve tam olarak eksik bir istemci sırrının açık bıraktığı boşluktur.
+
+## PKCE boşluğu herkes için doldurur
+
+PKCE o deliği önceden paylaşılan bir sır olmadan kapatır. İstemci istek başına taze rastgele bir **kod verifier'ı** uydurur, kodu isterken yalnızca karmasını (**kod challenge'ı**) gönderir ve verifier'ı yalnızca onu bozdururken açığa çıkarır. Kodu ele geçiren bir saldırgan verifier'ı hiç görmedi, dolayısıyla çalınan kod işe yaramaz. Bu açık istemciler için tanıtıldı, ama yönlendirme o zamandan beri genişledi: OAuth 2.1, istemci türünden bağımsız olarak yetkilendirme kodu akışı için PKCE'yi önerir, çünkü bir istemci sırrının bulunduğu yerde bile derinlemesine savunma ekler. Pratik kural, her yerde yetkilendirme kodu artı PKCE kullanmak ve ona kesinlikle ihtiyacınız olup olmadığını akıl yürütmeyi bırakmaktır.
+
+## Örtük akış emekli oldu
+
+Açık tarayıcı uygulamaları bir zamanlar, kod takasından kaçınmak için token'ları doğrudan yönlendirmede döndüren örtük akışı kullanırdı. O tasarım token'ları URL'lerde ve tarayıcı geçmişinde ifşa etti ve artık kullanımdan kaldırıldı; OAuth 2.1 onu çıkarır. Tek sayfalı bir uygulama için modern yanıt herkes için olanla aynıdır: PKCE'li yetkilendirme kodu akışı. Örtük akışı kullanma tavsiyesiyle karşılaşırsanız, onu güncelliğini yitirmiş kabul edin.
+
+## Yerel uygulamaların kendi tuzakları var
+
+Yerel ve mobil uygulamalar belirli bir tehlikeye sahip açık istemcilerdir: uygulamaya geri yönlendirme. Özel URL şemaları cihazdaki başka uygulamalarca talep edilebilir, ki ele geçirmeyi mümkün kılan budur, dolayısıyla yerel uygulamalar için en iyi uygulama yönlendirmesi (RFC 8252), platformun desteklediği yerlerde talep edilmiş HTTPS yönlendirmeleri kullanmak, akışı gömülü bir web görünümü yerine bir sistem tarayıcısında çalıştırmak ve her zaman PKCE uygulamaktır. Bir TV gibi, yönlendirilecek hiçbir tarayıcının olmadığı, girdisi kısıtlı cihazlar için, cihaz yetkilendirme akışı (RFC 8628) kullanıcının bunun yerine ayrı bir telefon veya dizüstünde yetkilendirmesine olanak tanır.
+
+## Şüphedeyken açık varsay
+
+Ana fikir, istemci türünün kolaylık için seçtiğiniz bir etiket olmadığıdır; kodunuzun nerede çalıştığı ve neyi koruyabildiği hakkında bir gerçektir. İstemci kullanıcıya gönderiliyorsa, açıktır, bir sır tutamaz ve PKCE'ye ihtiyaç duyar. Yalnızca sunucunuzda çalışıyorsa, gizli olabilir ve bir sırla kimlik doğrulayabilir, ve ek pay için yine de PKCE kullanmalıdır. İstemcinizin hangi dünyada yaşadığına karar verin, geri kalan OAuth güvenlik modeli o tek dürüst yanıttan gelir.

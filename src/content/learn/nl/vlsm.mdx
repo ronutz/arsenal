@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: een blok opdelen in ongelijke subnetten"
+summary: "Hoe je een adresblok opknipt in subnetten van verschillende groottes zonder ruimte te verspillen, en de grootste-eerst-regel die alles netjes houdt."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het probleem met gelijke subnetten
+
+Klassiek subnetten splitst een blok in stukken van één vaste grootte. Dat is eenvoudig, maar verspillend wanneer je behoeften verschillen. Als één segment 100 hosts heeft en een ander een koppeling tussen twee routers met 2, dan faalt het geven van een `/26` (62 bruikbaar) aan beide voor het eerste en verspilt het 60 adressen op het tweede. **VLSM**, subnetmasker met variabele lengte, lost dit op door elk subnet de prefixlengte te laten gebruiken die bij zijn eigen behoefte past, allemaal geknipt uit hetzelfde bovenliggende blok.
+
+Het enige dat VLSM bewerkelijker maakt dan vast subnetten is de volgorde: je moet de **grootste subnetten eerst** plaatsen, anders verspil je adressen en creëer je overlappingen.
+
+## Elk subnet dimensioneren
+
+Begin bij het aantal hosts dat elk segment nodig heeft, zoek dan het kleinste blok dat het bevat, onthoudend dat twee adressen van elk gewoon blok zijn gereserveerd (netwerk en broadcast):
+
+- 100 hosts vereisen 7 hostbits (2⁷ − 2 = 126 bruikbaar), een `/25`.
+- 50 hosts vereisen 6 hostbits (62 bruikbaar), een `/26`.
+- 25 hosts vereisen 5 hostbits (30 bruikbaar), een `/27`.
+- 10 hosts vereisen 4 hostbits (14 bruikbaar), een `/28`.
+- Een punt-naar-punt-koppeling van 2 hosts is een `/30` (2 bruikbaar), of een `/31` onder RFC 3021.
+
+Rond altijd af naar boven naar de volgende macht van twee. Een segment van 100 hosts past niet in een `/26` (62), dus het neemt de volgende grootte, een `/25`.
+
+## Knippen uit het blok, grootste eerst
+
+Stel dat je `192.168.10.0/24` bezit en de vijf subnetten hierboven nodig hebt. Wijs toe in aflopende volgorde van grootte, elk beginnend op zijn natuurlijke grens:
+
+```
+/25  192.168.10.0   – .127   (126 bruikbaar)  ← segment van 100 hosts
+/26  192.168.10.128 – .191   (62 bruikbaar)   ← segment van 50 hosts
+/27  192.168.10.192 – .223   (30 bruikbaar)   ← segment van 25 hosts
+/28  192.168.10.224 – .239   (14 bruikbaar)   ← segment van 10 hosts
+/30  192.168.10.240 – .243   (2 bruikbaar)    ← routerkoppeling
+```
+
+Elk blok begint precies waar het vorige eindigt, en vanaf `192.168.10.244` is het nog vrij voor toekomstige groei. Had je het `/30` eerst toegewezen, dan zou het `/25` geen schone grens meer hebben om op te passen, wat de hele reden van de grootste-eerst-regel is.
+
+## Waarom het ertoe doet
+
+VLSM is hoe echte netwerken adresruimte besparen en toewijzingen uitgelijnd houden zodat routes netjes samengevat kunnen worden. De rekenkunde is dezelfde prefixlengte-wiskunde van een enkel subnet, herhaaldelijk toegepast: leg meer bits vast om een blok kleiner te maken en houd elk blok op een grens die een macht van twee is.
+
+Je kunt elke toewijzing controleren in de [CIDR-calculator](/#cidr), die het netwerk- en broadcastadres, het masker en het aantal bruikbare hosts van elk blok direct en volledig in je browser toont.

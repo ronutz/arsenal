@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: hash com chave para autenticação de mensagens"
+summary: "Por que um hash simples prova integridade mas não autenticidade, como uma chave secreta resolve isso e por que a estrutura do HMAC importa."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## A lacuna que um hash simples deixa
+
+Um hash criptográfico prova **integridade**: se o resumo ainda coincide, os dados não foram alterados. Mas não prova nada sobre **quem** os produziu. Qualquer um pode fazer hash de uma mensagem, então um resumo enviado junto a uma mensagem não oferece proteção alguma contra um atacante que simplesmente altera a mensagem *e* recalcula o resumo. Não há segredo envolvido, então não há nada que só o remetente legítimo poderia ter feito.
+
+O HMAC fecha essa lacuna. Ele é um **código de autenticação de mensagem**: um valor que prova que uma mensagem não foi adulterada e veio de alguém que possui uma chave secreta compartilhada. O verificador recalcula o HMAC com a mesma chave; se coincidir, a mensagem é autêntica.
+
+## Adicionando uma chave, da forma certa
+
+A ideia óbvia, apenas fazer hash da chave e da mensagem juntas como `hash(chave + mensagem)`, é sutilmente insegura. Muitas funções de hash (incluindo a família SHA-2) são construídas sobre uma construção vulnerável a um **ataque de extensão de comprimento**: conhecendo `hash(chave + mensagem)` e o comprimento do segredo, um atacante pode calcular um hash válido para `chave + mensagem + extra` sem nunca conhecer a chave. Isso lhe permitiria forjar uma mensagem estendida e ainda válida.
+
+O HMAC (definido na RFC 2104) evita isso fazendo hash duas vezes, com a chave misturada de forma diferente a cada vez. Conceitualmente, ele calcula:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+onde `ipad` e `opad` são duas constantes fixas de preenchimento. O hash interno vincula a chave à mensagem; o hash externo envolve o resultado para que o truque de extensão de comprimento não o alcance. Você não precisa memorizar a fórmula, o ponto é que a estrutura aninhada, e não uma concatenação casual, é o que torna o HMAC sólido.
+
+## HMAC versus uma assinatura digital
+
+Ambos provam autenticidade, mas o modelo de confiança difere:
+
+- **O HMAC é simétrico.** Uma chave secreta é compartilhada pelos dois lados. Quem pode verificar um HMAC também pode criar um, então ele funciona quando ambas as partes já compartilham uma chave mas não podem provar autoria a um terceiro.
+- **Uma assinatura digital é assimétrica.** O assinante usa uma chave privada; qualquer um pode verificar com a chave pública. Isso prova autoria ao mundo, a um custo computacional maior.
+
+Escolha HMAC quando dois sistemas compartilham um segredo e precisam de autenticação mútua e rápida; escolha uma assinatura quando os verificadores não podem ser capazes de forjar o que verificam.
+
+## Onde você encontra o HMAC
+
+- **Assinatura de requisições de API.** Esquemas como o AWS Signature Version 4 assinam cada requisição com HMAC-SHA256 para que o servidor confirme que quem chamou possui a chave secreta.
+- **Webhooks.** Um provedor envia um HMAC do payload em um cabeçalho; seu endpoint o recalcula para rejeitar chamadas forjadas.
+- **JWTs com HS256.** Um token assinado com HS256 é literalmente HMAC-SHA256 sobre o cabeçalho e o payload do token. A [ferramenta HMAC](/tools/hmac) usa exatamente a mesma construção Web Crypto que o verificador de JWT usa, então os dois concordam por desenho.
+
+Sua mensagem e sua chave nunca saem do navegador; o HMAC é calculado localmente.

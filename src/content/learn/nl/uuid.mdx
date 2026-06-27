@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID's: willekeurig v4 en tijdgeordend v7"
+summary: "Hoe een 128-bits identificator uniek blijft zonder centrale autoriteit, en waarom v7 de standaard wordt voor databasesleutels."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Wat een UUID is
+
+Een UUID (Universally Unique Identifier, ook GUID genoemd) is een 128-bits waarde om iets te labelen, een rij, een verzoek, een bestand, zonder met iemand anders af te stemmen. De belofte in de naam is dat twee onafhankelijk gegenereerde UUID's, voor alle praktische doeleinden, nooit hetzelfde zijn. Dat laat aparte services, offline apparaten en parallelle processen identificatoren slaan die niet botsen wanneer de data later worden samengevoegd, zonder een centrale toewijzer die nummers uitdeelt.
+
+Een UUID wordt geschreven als 32 hexadecimale cijfers in vijf met koppeltekens gescheiden groepen: `8-4-4-4-12`, bijvoorbeeld `550e8400-e29b-41d4-a716-446655440000`. Twee specifieke posities zijn niet willekeurig: een **versie**-nibble geeft aan hoe de UUID is gegenereerd, en een **variant**-veld markeert de indelingsstandaard (de moderne is RFC 4122 / RFC 9562).
+
+## Versie 4: willekeurig
+
+Veruit de meest voorkomende vorm, **versie 4**, is bijna volledig willekeurig: 122 van de 128 bits komen uit een veilige willekeurige bron, met de overige bits vastgezet om versie en variant te markeren. Met zoveel entropie is de kans dat twee v4-UUID's botsen verwaarloosbaar voor elk realistisch aantal identificatoren.
+
+Zijn zwakte is niet de uniciteit maar de **ordening**. Omdat v4-waarden willekeurig zijn, verspreiden opeenvolgende invoegingen zich over de hele sleutelruimte. Wanneer een v4-UUID als databaseprimaire sleutel wordt gebruikt, vecht die willekeur tegen de B-tree-index: nieuwe rijen belanden op willekeurige plekken, wat de cachelokaliteit schaadt en de index na verloop van tijd fragmenteert.
+
+## Versie 7: tijdgeordend
+
+**Versie 7**, gestandaardiseerd in RFC 9562 (2024), is ontworpen om precies dat te verhelpen. Ze plaatst een **48-bits Unix-tijdstempel in milliseconden** in de meest significante bits, gevolgd door willekeurige bits voor uniciteit binnen dezelfde milliseconde. Omdat de tijdstempel voorop gaat, **sorteren** v7-UUID's zich in aanmaakvolgorde wanneer je ze als tekst of bytes vergelijkt.
+
+Die ene eigenschap maakt v7 een veel betere primaire sleutel: nieuwe rijen worden bijna aan het eind van de index aangehecht in plaats van te verspreiden, wat de lokaliteit herstelt die sequentiële gehele sleutels genieten, terwijl de gedecentraliseerde uniciteit van een UUID behouden blijft. Een v7-waarde draagt ook zijn eigen aanmaaktijd, die je rechtstreeks uit die voorste bits kunt lezen, de [UUID-tool](/tools/uuid) doet dit wanneer je er een inspecteert.
+
+## De andere versies, kort
+
+Voor de volledigheid: **versie 1** combineert een tijdstempel met het MAC-adres van de genererende machine, wat de hardware-identiteit en aanmaaktijd lekt en daarom privacybezwaren oproept. **Versies 3 en 5** zijn naamgebaseerd, ze hashen een naamruimte plus een naam (met MD5 respectievelijk SHA-1) om een deterministische UUID te produceren, nuttig wanneer dezelfde invoer altijd naar dezelfde identificator moet afbeelden. **Versie 6** herordent de velden van versie 1 om sorteerbaar te zijn, maar voor nieuwe systemen is v7 de aanbevolen tijdgeordende keuze.
+
+## Een kiezen
+
+Grijp naar **v4** wanneer je gewoon een willekeurige, ondoorzichtige identificator nodig hebt en ordening er niet toe doet. Grijp naar **v7** wanneer de UUID een databasesleutel wordt of iets anders dat baat heeft bij sorteren op aanmaaktijd, wat steeds vaker de standaardaanbeveling is. De [UUID-tool](/tools/uuid) genereert beide en decodeert de versie, variant en ingebedde tijdstempel van elke UUID die je plakt, volledig in je browser.

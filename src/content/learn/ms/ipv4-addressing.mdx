@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Bagaimana alamat IPv4 berfungsi"
+summary: "32 bit di sebalik setiap alamat quad bertitik, dan apa maksud julat persendirian, loopback, dan istimewa."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tiga puluh dua bit menyamar
+
+Alamat IPv4 ialah satu nombor 32 bit tunggal. Kita hampir tidak pernah menulisnya begitu kerana 32 satu dan sifar sukar dibaca, jadi ia dibahagikan kepada empat kumpulan 8 bit dipanggil **oktet**, setiap satu ditunjukkan dalam perpuluhan dari 0 hingga 255 dan disambung dengan titik. `192.168.1.10` hanyalah cara yang lebih mesra untuk menulis satu nilai 32 bit tertentu.
+
+Kerana setiap oktet ialah 8 bit, keseluruhan ruang ialah 2³² alamat, kira-kira 4.3 bilion. Itu kedengaran amat besar pada tahun 1980-an dan ialah sebab mengapa kehabisan alamat IPv4 menjadi masalah sebenar beberapa dekad kemudian, dan mengapa pengalamatan persendirian dan IPv6 wujud.
+
+## Bahagian rangkaian dan bahagian hos
+
+Tiada alamat berdiri sendiri, ia tergolong dalam blok, dan dalam blok itu bit terbahagi kepada **bahagian rangkaian** (blok yang mana ini) dan **bahagian hos** (mesin yang mana dalam blok). Panjang awalan, ditulis gaya CIDR sebagai `/24`, menandakan di mana pembahagian itu jatuh. Segala-galanya di sebelah kiri garisan ialah rangkaian; segala-galanya di sebelah kanan mengenal pasti hos. Ini ialah idea sama yang diterokai dalam notasi CIDR, dilihat dari sisi alamat.
+
+## Julat dengan makna istimewa
+
+Tidak setiap alamat ialah alamat hos biasa. Beberapa julat dikhaskan untuk tujuan khusus, dan mengenalinya ialah sebahagian daripada membaca sebarang konfigurasi rangkaian:
+
+- **Julat persendirian (RFC 1918)** dikhaskan untuk kegunaan dalam rangkaian persendirian dan tidak pernah dihalakan di internet awam:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Inilah sebabnya rangkaian rumah dan pejabat begitu kerap menggunakan `192.168.x.x` atau `10.x.x.x`, alamat itu bebas untuk diguna semula di mana-mana kerana ia tidak pernah muncul di internet terbuka.
+- **Loopback (`127.0.0.0/8`)** sentiasa merujuk kepada mesin tempatan itu sendiri. `127.0.0.1` ialah alamat yang komputer gunakan untuk bercakap dengan dirinya sendiri.
+- **Alamat link-local (`169.254.0.0/16`)** diumpukkan sendiri apabila peranti tidak dapat mencapai pelayan DHCP. Melihat satu biasanya bermaksud "tiada alamat diberikan".
+- **Alamat tidak ditentukan (`0.0.0.0`)** dan laluan lalai (`0.0.0.0/0`) adalah istimewa: yang kedua ialah laluan tangkap-semua yang sepadan dengan sebarang destinasi yang tidak diliputi oleh laluan yang lebih khusus.
+
+## Mengapa julat istimewa penting untuk keselamatan
+
+Julat dikhaskan ini bukan sekadar fakta remeh. Alat yang mengambil alamat yang dibekalkan pengguna mesti enggan mencapai julat persendirian, loopback, dan link-local, atau ia boleh diperdaya untuk membuat permintaan terhadap sistem dalaman yang ia tidak sepatutnya sentuh, satu kelas serangan dipanggil server-side request forgery (pemalsuan permintaan sisi pelayan). Mengetahui julat mana yang dalaman ialah langkah pertama dalam mempertahankan terhadapnya. Inilah tepatnya sebab alat yang menyentuh rangkaian di laman ini menyemak alamat yang diselesaikan terhadap julat ini sebelum pernah menyambung.
+
+Untuk melihat bagaimana sebarang alamat duduk dalam bloknya, alamat rangkaiannya, alamat siaran, dan julat boleh guna di sekitarnya, cuba [kalkulator CIDR](/learn), yang mengira kesemuanya secara tempatan dalam pelayar anda.

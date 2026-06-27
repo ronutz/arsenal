@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: identità sopra OAuth 2.0"
+summary: "Come OIDC aggiunge l'autenticazione all'autorizzazione di OAuth, cos'è il token ID e perché il flusso di codice con PKCE è il percorso raccomandato."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Autorizzazione non è autenticazione
+
+OAuth 2.0 risponde "questa applicazione è autorizzata ad accedere a quella risorsa per conto dell'utente?". È un protocollo di *autorizzazione*, e deliberatamente non dice nulla di standard su *chi è l'utente*. Eppure le applicazioni hanno provato a riutilizzarlo per l'accesso, in modi incompatibili e talvolta insicuri. **OpenID Connect (OIDC)** è lo standard che corregge questo: un sottile strato di identità sopra OAuth 2.0 che aggiunge l'autenticazione senza scartare nulla di ciò che OAuth fa già.
+
+## Il token ID
+
+L'aggiunta che lo definisce è il **token ID**, ed è un JWT. Mentre un token di accesso OAuth è destinato a un'API ed è spesso opaco per il client, il token ID è destinato al *client* e porta claim standard sull'utente autenticato:
+
+- `iss` (emittente) e `aud` (destinatario, il client per cui è stato emesso)
+- `sub` (l'identificatore utente stabile e univoco)
+- `exp` e `iat` (scadenza ed emesso-il)
+- `nonce` (lega il token alla specifica richiesta di accesso, sconfiggendo il replay)
+- claim di profilo come `name`, `email` e `picture` quando vengono concessi quegli scope
+
+Essendo un JWT, il client verifica la firma del token ID e valida quelle claim esattamente come descritto per qualsiasi JWT. Si applicano gli stessi controlli di fissaggio dell'algoritmo e di `aud`/`iss`/`exp`.
+
+## Come scorre un accesso
+
+OIDC riutilizza il macchinario di OAuth. Il flusso raccomandato è il **flusso di codice di autorizzazione con PKCE**:
+
+1. L'applicazione invia l'utente all'endpoint di autorizzazione del provider, richiedendo lo scope `openid` (più `profile`, `email` e così via), e include un `code_challenge` di PKCE.
+2. L'utente si autentica e acconsente presso il provider.
+3. L'applicazione riceve un codice monouso e lo scambia (dimostrando il possesso del `code_verifier` di PKCE) per un **token ID** e un **token di accesso**.
+4. L'applicazione verifica il token ID per stabilire *chi è l'utente* e usa il token di accesso per chiamare le API *per suo conto*.
+
+Due endpoint completano il quadro: un endpoint **userinfo** restituisce claim di profilo per un token di accesso valido, e un **documento di discovery** in `/.well-known/openid-configuration` annuncia gli endpoint del provider e la URL del suo JWKS, così che un client possa trovare le chiavi per verificare i token ID e seguire la rotazione delle chiavi automaticamente.
+
+## Perché è importante
+
+OIDC è ciò che la maggior parte dei pulsanti "Accedi con ..." esegue davvero. Mantenere i due token distinti è l'intuizione chiave: il **token ID prova l'identità al client**, il **token di accesso autorizza le chiamate API**, e non sono intercambiabili. Combinato con il flusso di codice e PKCE, è il modo moderno e basato su standard di fare l'accesso federato.
+
+Lo [strumento PKCE](/tools/pkce) genera e verifica il `code_verifier` e il `code_challenge` del flusso, e lo [strumento JWT](/tools/jwt) decodifica e verifica il token ID, entrambi interamente nel tuo browser, senza nulla inviato.

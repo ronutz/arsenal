@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Hur IPv6-värdar får adresser: SLAAC och DHCPv6"
+summary: "Hur en IPv6-värd konfigurerar sig från link-local och uppåt, vad router advertisements beslutar, och skillnaden mellan SLAAC, integritetsadresser, och DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Självkonfiguration som standard
+
+En av IPv6:s definierande egenskaper är att en värd kan konfigurera en fungerande adress utan någon server och utan någon manuell inställning. Där IPv4 lutar sig mot DHCP för att dela ut adresser, kan IPv6 bygga dem lokalt från information som routern sänder ut. Resultatet är att ett enskilt gränssnitt vanligen slutar med flera adresser på en gång, var och en för ett annat ändamål, vilket överraskar folk som kommer från IPv4.
+
+## Link-local kommer först
+
+Före allt annat konfigurerar varje IPv6-gränssnitt en link-local-adress i `fe80::/10` (typen som verktyget märker som link-local). Den genereras lokalt, routas aldrig bortom den lokala länken, och existerar så att värden kan tala med grannar och routrar omedelbart, inklusive att fråga hur resten av dess adresser ska konfigureras. Link-local är uppstarten: den är alltid närvarande, och grannupptäcktsmaskineriet i artikeln [grannupptäckt](/learn/ipv6-neighbor-discovery) kör över den.
+
+## Router advertisement beslutar metoden
+
+För att få en globalt routbar adress lyssnar värden efter Router Advertisements, periodiska meddelanden som en router sänder (och som en värd kan begära med en Router Solicitation). Advertisementet bär on-link-prefixet, nästan alltid ett /64, och två flaggor som säger åt värden hur den ska konfigurera sig:
+
+- **M (Managed)-flaggan** säger "använd DHCPv6 för att få en adress".
+- **O (Other)-flaggan** säger "konfigurera din adress själv, men hämta andra inställningar som DNS från DHCPv6".
+
+Med båda flaggorna av använder värden ren tillståndslös autokonfiguration. Detta är varför IPv6-adresstilldelning är en förhandling mellan vad routern annonserar och vad värden väljer, snarare än en enskild server som delar ut leasingar.
+
+## SLAAC: att bygga din egen adress
+
+Stateless Address Autoconfiguration (RFC 4862) är mekanismen en värd använder för att forma sin egen adress: ta /64-prefixet från advertisementet och foga till en 64-bitars gränssnittsidentifierare. Detta är hela skälet till att ett subnät måste vara ett /64 (se artikeln [subnätsindelning](/learn/ipv6-subnetting)). Ingen server spårar tilldelningen, vilket är vad "tillståndslös" betyder.
+
+Gränssnittsidentifieraren kan formas på flera sätt, och detta har verkliga integritetskonsekvenser:
+
+- **Modifierad EUI-64** härleder identifieraren från gränssnittets MAC-adress, vilket verktyget kan demonstrera. Den är stabil och bekväm, men den bäddar in hårdvaruadressen i varje IPv6-adress värden använder, och låter en fjärrserver spåra enheten över nätverk.
+- **Stabila, ogenomskinliga identifierare** (RFC 7217) producerar en identifierare som är stabil per nätverk men avslöjar ingen hårdvaruadress, vilket åtgärdar det nätverksöverskridande spårningsproblemet samtidigt som den behåller en konsekvent adress på en given länk.
+- **Tillfälliga (integritets-)adresser** (RFC 8981, som ersätter den tidigare RFC 4941) genererar slumpmässiga identifierare som roterar över tid, så utgående anslutningar presenterar ingen långlivad adress alls.
+
+Moderna operativsystem använder typiskt en stabil adress för inkommande anslutningar och en roterande tillfällig adress för utgående, vilket är varför ett enskilt gränssnitt visar flera globala adresser.
+
+## Duplicate Address Detection
+
+Innan en värd faktiskt använder någon adress den har format, kör den Duplicate Address Detection: den sänder en Neighbor Solicitation för sin egen preliminära adress och väntar. Om någon svarar är adressen redan i bruk och får inte göras anspråk på. DAD är en billig försäkring att självkonfiguration inte producerar kollisioner, och den förlitar sig på samma grannupptäcktsmeddelanden som beskrivs i följeslagarartikeln.
+
+## DHCPv6 för tillståndsbaserad kontroll
+
+När en administratör vill spåra och tilldela adresser centralt, tillhandahåller DHCPv6 (RFC 8415) tillståndsbaserad tilldelning, mycket som IPv4-DHCP: en server leasar specifika adresser och registrerar vem som har vad. Det finns också ett tillståndslöst DHCPv6-läge som delar ut endast konfiguration som DNS-servrar medan värden fortfarande formar sin egen adress via SLAAC, vilket O-flaggan väljer. DHCPv6 är också där prefixdelegering lever, mekanismen genom vilken en hemrouter tar emot ett helt prefix för att subnätsindela bakom sig.
+
+## Många adresser, by design
+
+Den mentala modellen att bära med sig är att en IPv6-värd till stor del är självkörande. Den har alltid en link-local-adress, den lär sig prefixet och konfigurationsmetoden från router advertisements, och beroende på flaggorna bygger den antingen sina egna globala adresser med SLAAC eller leasar dem från DHCPv6, och slutar ofta med en stabil adress och en roterande tillfällig sida vid sida. När verktyget visar dig en adress och identifierar dess typ, säger den typen dig vilken av dessa vägar som producerade den.

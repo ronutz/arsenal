@@ -1,0 +1,43 @@
+---
+slug: pkce
+title: "PKCE: de OAuth-autorisatiecodeflow beveiligen"
+summary: "De onderscheppingsaanval die PKCE verslaat, hoe de verifier en challenge in elkaar passen, en waarom S256 verplicht is."
+concepts: ["pkce", "oauth", "oidc", "code-verifier", "code-challenge", "s256"]
+relatedTools: ["pkce"]
+relatedArticles: ["oauth-client-types", "oauth-tokens", "oauth-code-flow", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## De aanval die PKCE verslaat
+
+In de OAuth 2.0-autorisatiecodeflow overhandigt de autorisatieserver de client een kortlevende **autorisatiecode**, die de client vervolgens inruilt voor tokens. Vertrouwelijke clients beschermen die uitwisseling met een clientgeheim. Maar **publieke clients**, single-page-apps en mobiele apps, kunnen geen geheim bewaren: alles wat naar de browser of het apparaat wordt verzonden kan worden onttrokken. Dat laat een gat. Onderschept een aanvaller de autorisatiecode (via een kwaadaardige app geregistreerd voor dezelfde redirect, een gelekt logboek of een vervaardigde URL), dan zou hij hem zelf voor tokens kunnen inwisselen.
+
+PKCE, Proof Key for Code Exchange (RFC 7636, uitgesproken als "pixy"), dicht dat gat zonder een vooraf gedeeld geheim te vereisen. Het bindt de autorisatiecode aan een eenmalig geheim dat alleen de echte client kent.
+
+## Hoe de verifier en challenge in elkaar passen
+
+De flow voegt twee waarden toe:
+
+- De **code_verifier** is een willekeurige tekenreeks met hoge entropie die de client genereert en bewaart. RFC 7636 vereist 43 tot 128 tekens uit de niet-gereserveerde set (letters, cijfers en `- . _ ~`).
+- De **code_challenge** wordt afgeleid van de verifier. Voor de S256-methode is hij `BASE64URL(SHA256(ASCII(code_verifier)))`.
+
+De volgorde is:
+
+1. De client genereert een verse `code_verifier`, leidt de `code_challenge` af en zendt **alleen de challenge** in het autorisatieverzoek.
+2. De autorisatieserver bewaart de challenge en retourneert een autorisatiecode zoals gebruikelijk.
+3. Bij het tokenverzoek zendt de client de **verifier**.
+4. De server hasht de verifier op dezelfde manier en controleert hem tegen de bewaarde challenge. Geen overeenkomst, geen tokens.
+
+De beveiliging rust op één feit: de challenge is een eenrichtingshash van de verifier. Een aanvaller die de autorisatiecode onderschept kan de uitwisseling toch niet voltooien, omdat hij de verifier nooit zag en hem niet achterwaarts uit de challenge kan afleiden.
+
+## Waarom S256, niet plain
+
+RFC 7636 definieert twee methoden. De `plain`-methode stelt de challenge gelijk aan de verifier, wat geen bescherming biedt als het autorisatieverzoek zelf wordt waargenomen. De `S256`-methode zendt alleen de SHA-256-hash, zodat de verifier verborgen blijft tot de finale, TLS-beschermde tokenoproep. **S256 is verplicht overal waar de client SHA-256 kan berekenen**, wat overal is waar het ertoe doet; `plain` bestaat alleen voor het zeldzame beperkte apparaat dat niet kan hashen.
+
+## Van optioneel naar verplicht
+
+PKCE begon als een uitbreiding voor publieke clients, maar de richtlijn is beslist verschoven. De OAuth 2.0 Security Best Current Practice (RFC 9700) vraagt nu om PKCE bij **alle** autorisatiecodeclients, de vertrouwelijke inbegrepen, omdat het ook verdedigt tegen bepaalde code-injectieaanvallen. Bouw of test je vandaag een OAuth- of OpenID Connect-integratie, behandel PKCE dan als de standaard, geen toevoeging.
+
+De [PKCE-tool](/tools/pkce) genereert een conforme verifier, leidt zijn S256-challenge af met Web Crypto, en controleert elke verifier tegen de lengte- en tekensetregels van de RFC, alles lokaal. De verifier verlaat nooit je browser.

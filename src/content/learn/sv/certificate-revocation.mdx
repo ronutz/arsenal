@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Certifikatåterkallelse: CRL, OCSP och kortlivade certifikat"
+summary: "Varför ett certifikat ibland måste annulleras innan det går ut, varför de klassiska återkallelsesystemen fungerar dåligt, och varför industrin i stället krymper certifikatlivslängderna."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Varför återkalla över huvud taget
+
+Ett certifikat bär ett utgångsdatum, men ibland måste det annulleras innan det datumet anländer. Den privata nyckeln kan ha läckt, certifikatet kan ha utfärdats av misstag, eller domänen kan ha bytt ägare. I alla dessa fall är certifikatet fortfarande kryptografiskt giltigt och fortfarande inom sitt giltighetsfönster, ändå bör förlitande parter sluta lita på det. Återkallelse är mekanismen för att säga "ignorera detta certifikat fastän det inte har gått ut". Den svåra delen är att leverera det meddelandet tillförlitligt till varje klient i världen, och detta visar sig vara den svagaste länken i webbens PKI.
+
+## CRL: den publicerade blockeringslistan
+
+Det ursprungliga svaret är Certifikatåterkallelselistan (Certificate Revocation List), definierad jämte certifikatprofilen i RFC 5280. En CA publicerar periodiskt en signerad lista över de serienummer den har återkallat, och certifikat kan peka på den genom en CRL Distribution Point. En klient laddar ner listan och kontrollerar om certifikatets serienummer framträder på den.
+
+Problemet är storlek och färskhet. En upptagen CA kan ackumulera enorma listor, så att ladda ner och tolka en CRL vid varje anslutning är opraktiskt, och en cachad lista är inaktuell tills nästa publicering. CRL:er används fortfarande, allt mer i komprimerade och förbearbetade former som webbläsare levererar till sig själva, men som kontroll per anslutning skalar de dåligt.
+
+## OCSP: att fråga om ett certifikat
+
+Online Certificate Status Protocol, RFC 6960, var menat att åtgärda storleksproblemet genom att låta en klient fråga om ett enskilt certifikat i stället för att ladda ner hela listan. Klienten skickar certifikatets serienummer till en OCSP-svarare och får tillbaka ett signerat "good", "revoked" eller "unknown".
+
+Detta byter ett problem mot tre. Det lägger till latens, eftersom klienten nu gör en extra nätverks-tur-och-retur under anslutningsetableringen. Det läcker integritet, eftersom svararen får veta vilka webbplatser användaren besöker. Och det skapar en tillgänglighetskoppling: om svararen är nere måste klienten antingen låta anslutningen misslyckas eller, mycket vanligare, **misslyckas mjukt** (soft-fail) och fortsätta som om certifikatet vore gott, vilket tyst omintetgör hela poängen.
+
+## OCSP-stapling och Must-Staple
+
+Stapling adresserar latens- och integritetsproblemen genom att låta *servern* hämta ett färskt, signerat OCSP-svar och fästa det till TLS-handskakningen (status_request-tillägget från RFC 6066). Klienten får färskheten utan att kontakta svararen. Must-Staple, RFC 7633, är ett certifikattillägg som säger "avvisa mig om en staple saknas", vilket sluter soft-fail-gapet, men det driftsätts sällan eftersom en enda staplinghicka då tar ner webbplatsen.
+
+## Den obekväma sanningen
+
+Tvärs över dessa mekanismer är det återkommande felet soft-fail: när återkallelseinformation är otillgänglig väljer klienter överväldigande tillgänglighet framför säkerhet och accepterar certifikatet. Det gör återkallelse till ett otillförlitligt skyddsnät precis när det behövs. Webbläsare har svarat med sina egna out-of-band-system som skjuter återkallelsedata till sig själva, men protokollen per anslutning infriade aldrig sitt löfte.
+
+## Det moderna svaret: få certifikat att gå ut tidigare
+
+Om du inte tillförlitligt kan annullera ett certifikat är alternativet att göra det tillräckligt kortlivat att annullering sällan spelar roll: ett komprometterat certifikat går helt enkelt ut av sig självt inom dagar eller veckor. Industrin har förbundit sig till exakt detta. CA/Browser Forums Ballot SC-081v3, godkänt i april 2025, fasar ner den maximala publika TLS-certifikatlivslängden från 398 dagar till 200 dagar (från och med mars 2026), 100 dagar (mars 2027) och 47 dagar (mars 2029), med domänvalideringens återanvändningsperiod krympande till 10 dagar. Separat har Forumet sedan 2023 tillåtit kortlivade certifikat som går ut inom 7 dagar att hoppa över CRL- och OCSP-stöd helt, och Let's Encrypt har börjat utfärda certifikat med livslängder mätta i dagar. Hela premissen är att en tillräckligt kort livslängd själv är återkallelsen.
+
+Detta fungerar bara med automatisering. Att förnya certifikat var sjätte eller sjunde vecka för hand är ohållbart, vilket är varför ACME-protokollet (se [signeringsbegäran-artikeln](/learn/certificate-signing-request)) och certifikatlivscykel-verktyg har blivit väsentlig infrastruktur snarare än en bekvämlighet. Notera att dessa regler gäller publikt betrodda certifikat i webbläsarnas rotprogram; en privat intern PKI sätter sin egen policy.
+
+## Vad detta betyder när du inspekterar ett certifikat
+
+När du avkodar ett certifikat är giltighetsfönstret inte längre en en-gång-om-året-eftertanke; det blir den primära återkallelsekontrollen. Verktygets rapport om notBefore, notAfter, och huruvida certifikatet är giltigt just nu är, allt mer, det mest säkerhetsrelevanta med det. Återkallelselistor och svarare existerar fortfarande, men resans riktning är tydlig: korta ner livslängden så att frågan om återkallelse sällan kommer upp.

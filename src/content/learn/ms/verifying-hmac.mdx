@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Mengesahkan HMAC dengan selamat: masa malar dan main semula"
+summary: "Mengapa membandingkan tandatangan dengan == membocorkan saluran sisi masa, dan mengapa tandatangan sah semata-mata tidak menghentikan permintaan yang diulang."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Mengira tag ialah bahagian mudah
+
+Menghasilkan HMAC dengan betul difahami dengan baik. Kesilapan tertumpu pada bahagian *pengesahan*, di mana dua masalah menangkap mereka yang betul pada kriptografi tetapi salah pada logik sekelilingnya: cara anda membandingkan tag, dan apa yang sebenarnya dibuktikan oleh tag yang sah.
+
+## Bandingkan dalam masa malar
+
+Untuk mengesahkan, penerima mengira semula HMAC atas mesej dan membandingkannya dengan tag yang diberi pengirim. Cara semula jadi membandingkan dua rentetan, `==` biasa, kembali sebaik sahaja ia menemui bait pertama yang berbeza. Keluar awal itu membocorkan masa: tag yang bait pertamanya betul mengambil masa sedikit lebih lama untuk ditolak berbanding yang salah serta-merta. Dengan mengukur masa tindak balas merentas banyak percubaan, penyerang boleh memulihkan tag yang betul bait demi bait, satu **serangan pemasaan**.
+
+Pertahanannya ialah **perbandingan masa malar** yang sentiasa memeriksa semua bait, tidak kira di mana perbezaan pertama terletak, supaya masa yang diambil tidak mendedahkan apa-apa tentang sejauh mana hampir sesuatu tekaan. Kebanyakan bahasa menyediakan satu:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Jangan sekali-kali mengesahkan tandatangan dengan perbandingan rentetan biasa.
+
+## Tandatangan sah bukan permintaan baharu
+
+Walaupun HMAC yang disahkan dengan sempurna hanya membuktikan mesej dihasilkan oleh seseorang dengan kunci dan tidak diubah. Ia tidak mengatakan apa-apa tentang *bila*. Penyerang yang menangkap permintaan ditandatangani yang sah boleh menghantar bait yang sama persis sekali lagi, dan tandatangan masih akan disahkan. Itu ialah **serangan main semula**, dan ia penting bagi apa-apa yang menyebabkan kesan: pembayaran, perubahan keadaan, arahan.
+
+Menghentikan main semula memerlukan sesuatu dalam data yang ditandatangani yang menjadikan setiap permintaan unik dan boleh disemak:
+
+- **Cap masa** dalam muatan yang ditandatangani, dengan pelayan menolak permintaan di luar tetingkap pendek (dan mengambil kira hanyutan jam).
+- **Nonce**, nilai unik setiap permintaan yang dicatatkan pelayan dan enggan diterima dua kali.
+
+Kedua-duanya mesti berada *dalam* kandungan yang ditandatangani, supaya penyerang tidak boleh mengubahnya tanpa memecahkan tandatangan.
+
+## Peraturan dua bahagian
+
+Permintaan boleh dipercayai hanya apabila HMACnya disahkan dalam masa malar **dan** ia baharu. Tersilap pada salah satu, dan tandatangan memberikan rasa selamat yang palsu. Ini ialah bahagian pengesahan bagi disiplin yang sama seperti menandatangani permintaan.
+
+[Alat HMAC](/tools/hmac) membenarkan anda mengira dan membandingkan tag bagi mesej dan kunci terus dalam pelayar anda, tanpa apa-apa dihantar, supaya anda boleh menyemak tandatangan dengan tangan semasa membangun atau menyahpepijat.

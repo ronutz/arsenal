@@ -1,0 +1,43 @@
+---
+slug: pkce
+title: "PKCE: pagseguro sa OAuth authorization code flow"
+summary: "Ang interception attack na tinatalo ng PKCE, kung paano nagkakasya ang verifier at challenge, at kung bakit ipinag-uutos ang S256."
+concepts: ["pkce", "oauth", "oidc", "code-verifier", "code-challenge", "s256"]
+relatedTools: ["pkce"]
+relatedArticles: ["oauth-client-types", "oauth-tokens", "oauth-code-flow", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang atake na tinatalo ng PKCE
+
+Sa OAuth 2.0 authorization code flow, iniaabot ng authorization server sa kliyente ang isang panandaliang **authorization code**, na ipinagpapalit naman ng kliyente para sa mga token. Pinrotektahan ng mga confidential client ang palitang iyon gamit ang isang client secret. Ngunit ang **mga public client**, mga single-page app at mobile app, ay hindi makapag-iingat ng lihim: anumang ipinadala sa browser o sa device ay maaaring makuha. Nag-iiwan iyon ng butas. Kung maharang ng isang umaatake ang authorization code (sa pamamagitan ng isang malisyosong app na nakarehistro para sa parehong redirect, isang natagasang log, o isang ginawang URL), maaari nila itong tubusin para sa mga token nang sila mismo.
+
+Ang PKCE, Proof Key for Code Exchange (RFC 7636, binibigkas na "pixy"), ang sumasara sa butas na iyon nang hindi nangangailangan ng isang naunang ibinahaging lihim. Itinatali nito ang authorization code sa isang one-time na lihim na alam lamang ng tunay na kliyente.
+
+## Kung paano nagkakasya ang verifier at challenge
+
+Ang flow ay nagdaragdag ng dalawang halaga:
+
+- Ang **code_verifier** ay isang high-entropy na random na string na binubuo at iniingatan ng kliyente. Ang RFC 7636 ay nag-aatas ng 43 hanggang 128 na karakter mula sa unreserved set (mga titik, digit, at `- . _ ~`).
+- Ang **code_challenge** ay hinango mula sa verifier. Para sa S256 method ito ay `BASE64URL(SHA256(ASCII(code_verifier)))`.
+
+Ang pagkakasunod ay:
+
+1. Bumubuo ang kliyente ng isang sariwang `code_verifier`, hinahango ang `code_challenge`, at nagpapadala ng **tanging ang challenge** sa authorization request.
+2. Iniimbak ng authorization server ang challenge at nagbabalik ng isang authorization code gaya ng dati.
+3. Sa token request, ipinapadala ng kliyente ang **verifier**.
+4. Hina-hash ng server ang verifier sa parehong paraan at sinusuri ito laban sa naka-imbak na challenge. Walang tugma, walang token.
+
+Ang seguridad ay nakasalalay sa isang katotohanan: ang challenge ay isang one-way na hash ng verifier. Ang isang umaatakeng humarang sa authorization code ay hindi pa rin makakatapos ng palitan, dahil hindi nila kailanman nakita ang verifier, at hindi nila ito mababaligtad mula sa challenge.
+
+## Bakit S256, hindi plain
+
+Ang RFC 7636 ay nagtatakda ng dalawang method. Ang `plain` method ay itinatakda ang challenge na katumbas ng verifier, na hindi nag-aalok ng proteksyon kung ang authorization request mismo ay napapanood. Ang `S256` method ay nagpapadala lamang ng SHA-256 hash, kaya ang verifier ay nananatiling nakatago hanggang sa pinal, TLS-protected na token call. **Kinakailangan ang S256 saanman makakapag-compute ng SHA-256 ang kliyente**, na nasa lahat ng dako na mahalaga; ang `plain` ay umiiral lamang para sa bihirang constrained device na hindi makaka-hash.
+
+## Mula opsyonal tungo sa ipinag-uutos
+
+Ang PKCE ay nagsimula bilang isang extension para sa mga public client, ngunit ang patnubay ay tumalon nang matatag. Ang OAuth 2.0 Security Best Current Practice (RFC 9700) ay tumatawag na ngayon para sa PKCE sa **lahat** ng authorization code client, kasama ang mga confidential, dahil nagtatanggol din ito laban sa ilang code-injection na atake. Kung ikaw ay gumagawa o sumusubok ng isang OAuth o OpenID Connect na integration ngayon, ituring ang PKCE bilang ang default, hindi isang add-on.
+
+Ang [tool na PKCE](/tools/pkce) ay bumubuo ng isang sumusunod na verifier, hinahango ang S256 challenge nito gamit ang Web Crypto, at sinusuri ang anumang verifier laban sa mga panuntunan ng haba at charset ng RFC, lahat nang lokal. Ang verifier ay hindi kailanman umaalis sa iyong browser.

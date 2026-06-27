@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Kryptografisk hashning: SHA-256 och SHA-2-familjen"
+summary: "Vad en hashfunktion garanterar, egenskaperna som gör den kryptografisk, och varför en digest inte är kryptering."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Vad en hash är
+
+En kryptografisk hashfunktion tar indata av valfri storlek, ett ord, en fil, en diskavbild på flera gigabyte, och producerar en utdata av fast storlek som kallas en **digest**. SHA-256 returnerar alltid 256 bitar (32 byte), oavsett om du matade den med ett tecken eller en miljon. Samma indata ger alltid samma digest, och även en ändring av en bit i indata ger en helt annan.
+
+Det fingeravtrycket av fast storlek och deterministisk natur är hela idén. En digest är en kompakt ställföreträdare för datan: om två digester matchar kan du lita på att indata var identiska; om de skiljer sig åt skilde sig indata någonstans.
+
+## Egenskaperna som gör den kryptografisk
+
+Många funktioner krymper data till en fast storlek. En funktion förtjänar ordet *kryptografisk* genom att hålla tre hårda garantier:
+
+- **Förbildsmotstånd (enkelriktad).** Givet en digest är det beräkningsmässigt ogenomförbart att hitta en indata som producerar den. Du kan inte köra funktionen baklänges.
+- **Andra-förbilds- och kollisionsmotstånd.** Det är ogenomförbart att hitta två olika indata som hashar till samma digest. Utan detta vore en digest ett svagt fingeravtryck.
+- **Lavineffekten.** Att vända en enda indatabit ändrar ungefär hälften av utdatabitarna, utan något synligt mönster som länkar indata till utdata.
+
+Detta håller endast för funktioner som har överlevt granskning. SHA-1, en gång standard, är nu **brutet** för kollisionsmotstånd (en praktisk kollision demonstrerades 2017) och bör inte användas där säkerheten beror på det. SHA-2-familjen, SHA-256, SHA-384 och SHA-512, förblir solid och är det säkra standardvalet idag.
+
+## En hash är inte kryptering
+
+Detta är den vanligaste förväxlingen, så det är värt att säga rakt ut. Kryptering är **reversibel** med en nyckel: du krypterar för att hålla data hemlig och dekrypterar för att få tillbaka den. En hash har **ingen nyckel och ingen invers**. Du kan inte "av-hasha" en digest för att återställa indata, eftersom utdata är mycket mindre än de möjliga indata och information förstörs avsiktligt. Hashning är för verifiering, inte för hemlighållande.
+
+## Var hashning gör nytta
+
+- **Integritet och kontrollsummor.** Publicera en fils SHA-256 bredvid den; den som laddar ner och räknar om digesten kan bekräfta att inget ändrades eller skadades under transporten.
+- **Innehållsadressering.** System som Git namnger objekt efter deras hash, så att identiskt innehåll automatiskt hamnar på samma adress.
+- **Digitala signaturer.** Signeringssystem signerar en hash av ett meddelande i stället för hela meddelandet, eftersom digesten är liten och av fast storlek.
+
+En viktig reservation: **lösenord är ett specialfall.** En enkel snabb hash som SHA-256 är fel verktyg för att lagra lösenord, just för att den är snabb, en angripare kan testa miljarder gissningar per sekund. Lösenordslagring kräver en avsiktligt långsam, saltad algoritm såsom bcrypt, scrypt eller Argon2. Använd SHA-2 för integritet; använd en lösenordshash för lösenord.
+
+## Hur verktyget beräknar den
+
+[Hash-verktyget](/tools/hash) använder webbläsarens egna Web Crypto-implementation av SHA-1, SHA-256, SHA-384 och SHA-512, samma granskade kod som din webbläsare använder för TLS, och visar varje digest som hexadecimal och Base64. Inget laddas upp; beräkningen sker lokalt.

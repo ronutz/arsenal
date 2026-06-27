@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "Adakah UUID akan berlanggar? Kebarangkalian dan batas hari jadi"
+summary: "Berapa banyak bit rawak yang sebenarnya dimiliki UUID, matematik hari jadi bagi perlanggaran, dan bila kita mahukan UUID berketentuan."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Soalan di sebalik setiap UUID
+
+UUID mempunyai 128 bit, biasanya dijana secara rawak (versi 4) supaya sesiapa sahaja, di mana sahaja, boleh menempanya tanpa penyelarasan dan menjangkakan ia unik. Kebimbangan munasabah ialah: jika semua orang hanya membaling dadu, tidakkah dua akhirnya akan bertepatan? Jawapannya ialah ya pada dasarnya dan hampir tidak pernah dalam amalan, dan matematik menyatakan tepat sebabnya.
+
+## Berapa banyak bit rawak yang sebenarnya ada
+
+UUID versi 4 tidak mempunyai 128 bit rawak. Empat bit ditetapkan untuk menanda versi dan dua lagi untuk menanda varian, meninggalkan **122 bit rawak**. Itu masih ruang yang amat besar: 2¹²², kira-kira 5.3 undesilion (5.3 × 10³⁶) nilai yang mungkin.
+
+## Batas hari jadi, dipakai
+
+Kebarangkalian perlanggaran tidak bergantung pada mengisi ruang; ia bergantung pada bilangan *pasangan*, yang berkembang dengan kuasa dua bilangan yang anda jana. Ia paradoks hari jadi sekali lagi. Bagi ruang 2¹²² nilai, kebarangkalian sebarang perlanggaran antara `n` UUID adalah lebih kurang:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+Kebarangkalian 50% bagi satu perlanggaran tunggal hanya tiba selepas kira-kira **2⁶¹** UUID, iaitu sekitar 2.3 trilion (skala panjang). Untuk menjadikannya konkrit: dengan menjana satu bilion UUID versi 4 sesaat, anda memerlukan dalam susunan *85 tahun* hanya untuk mencapai kebarangkalian 50% bagi satu perlanggaran. Pada sebarang isipadu aplikasi yang realistik, kebarangkalian itu begitu kecil sehingga ia dibayangi oleh kemungkinan kegagalan perkakasan merosakkan data lagipun.
+
+Satu-satunya amaran sebenar ialah **kualiti kerawakan**. Matematik hanya bertahan jika penjana ialah sumber kriptografi selamat yang sewajarnya. Sumber rawak yang lemah atau diawalkan dengan buruk boleh menghasilkan pengulangan jauh lebih awal, jadi risiko praktikal ialah RNG yang lemah, bukan reka bentuk UUID.
+
+## Bila kita tidak mahukan kerawakan
+
+Kadangkala kebimbangan bukan perlanggaran, tetapi kebolehulangan:
+
+- **UUID ruang nama (versi 3 dan 5)** berketentuan: ia mencincang ruang nama serta nama (MD5 untuk v3, SHA-1 untuk v5), jadi masukan yang *sama* sentiasa menghasilkan UUID yang *sama*. Berguna apabila anda mahukan pengecam stabil yang diterbitkan daripada data sedia ada, bukannya satu yang rawak baharu.
+- **UUID tersusun masa (versi 7)** mengekalkan kerawakan tetapi mendahuluinya dengan cap masa, jadi ID tersusun mengikut masa penciptaan. Ini membantu kesetempatan indeks dalam pangkalan data sambil mengekalkan risiko perlanggaran yang boleh diabaikan.
+
+## Pengajaran
+
+Bagi pengecam unik pada sebarang skala biasa, UUID versi 4 daripada sumber rawak yang baik tidak berlanggar, dan anda tidak memerlukan pihak berkuasa pusat untuk menjaminnya. Pilih v3/v5 apabila anda perlukan masukan yang sama dipetakan kepada ID yang sama, dan v7 apabila anda mahukan susunan masa.
+
+[Alat UUID](/tools/uuid) menjana UUID versi 4 (dan lain-lain) dan menghurai sebarang UUID untuk menunjukkan versi dan variannya, semuanya dalam pelayar anda, tanpa apa-apa dihantar.

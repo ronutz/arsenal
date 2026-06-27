@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID'er: tilfældig v4 og tidsordnet v7"
+summary: "Hvordan en 128-bit identifikator forbliver unik uden en central myndighed, og hvorfor v7 bliver standard for databasenøgler."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hvad en UUID er
+
+En UUID (Universally Unique Identifier, også kaldet GUID) er en 128-bit værdi, der bruges til at mærke noget, en række, en anmodning, en fil, uden at koordinere med nogen anden. Løftet i navnet er, at to uafhængigt genererede UUID'er i alle praktiske henseender aldrig er ens. Det lader separate tjenester, offline-enheder og parallelle processer alle præge identifikatorer, der ikke vil kollidere, når dataene senere flettes, uden en central tildeler, der uddeler numre.
+
+En UUID skrives som 32 hexadecimale cifre i fem bindestregsadskilte grupper: `8-4-4-4-12`, for eksempel `550e8400-e29b-41d4-a716-446655440000`. To bestemte positioner er ikke tilfældige: en **versions**-nibble angiver, hvordan UUID'en blev genereret, og et **variant**-felt markerer layoutstandarden (den moderne er RFC 4122 / RFC 9562).
+
+## Version 4: tilfældig
+
+Langt den mest almindelige form, **version 4**, er næsten helt tilfældig: 122 af de 128 bit kommer fra en sikker tilfældig kilde, med de resterende bit fastsat til at markere version og variant. Med så meget entropi er chancen for, at to v4-UUID'er kolliderer, ubetydelig for enhver realistisk mængde identifikatorer.
+
+Dens svaghed er ikke unikheden, men **rækkefølgen**. Fordi v4-værdier er tilfældige, spredes på hinanden følgende indsættelser over hele nøglerummet. Når en v4-UUID bruges som primærnøgle i en database, kæmper den tilfældighed mod B-træ-indekset: nye rækker lander på vilkårlige steder, hvilket skader cachelokaliteten og fragmenterer indekset over tid.
+
+## Version 7: tidsordnet
+
+**Version 7**, standardiseret i RFC 9562 (2024), blev designet til at rette præcis det. Den placerer et **48-bit Unix-tidsstempel i millisekunder** i de mest betydende bit, efterfulgt af tilfældige bit til unikhed inden for samme millisekund. Fordi tidsstemplet går forrest, **sorterer** v7-UUID'er sig i oprettelsesrækkefølge, når de sammenlignes som tekst eller byte.
+
+Den ene egenskab gør v7 til en langt bedre primærnøgle: nye rækker tilføjes nær slutningen af indekset i stedet for at sprede sig, hvilket genopretter den lokalitet, som sekventielle heltalsnøgler nyder, mens en UUID's decentraliserede unikhed bevares. En v7-værdi bærer også sin egen oprettelsestid, som du kan læse direkte ud af de førende bit, [UUID-værktøjet](/tools/uuid) gør dette, når du inspicerer en.
+
+## De andre versioner, kort
+
+For fuldstændighedens skyld: **version 1** kombinerer et tidsstempel med den genererende maskines MAC-adresse, hvilket lækker hardwareidentitet og oprettelsestid og derfor rejser bekymringer om privatliv. **Versionerne 3 og 5** er navnebaserede, de hasher et navnerum plus et navn (med henholdsvis MD5 og SHA-1) for at producere en deterministisk UUID, nyttigt når samme inddata altid skal afbildes på samme identifikator. **Version 6** omordner version 1's felter for at være sorterbare, men for nye systemer er v7 det anbefalede tidsordnede valg.
+
+## At vælge en
+
+Grib efter **v4**, når du bare har brug for en tilfældig, uigennemsigtig identifikator, og rækkefølgen er ligegyldig. Grib efter **v7**, når UUID'en skal være en databasenøgle eller noget andet, der har gavn af sortering efter oprettelsestid, hvilket i stigende grad er standardanbefalingen. [UUID-værktøjet](/tools/uuid) genererer begge og afkoder versionen, varianten og det indlejrede tidsstempel for enhver UUID, du indsætter, helt i din browser.

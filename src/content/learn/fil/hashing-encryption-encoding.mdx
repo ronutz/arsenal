@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hashing, encryption, at encoding: tatlong magkaibang bagay"
+summary: "Tatlong operasyong palaging napagkakamalan, malinis na pinaghihiwalay ng dalawang tanong: maibabalik ba ito, at nangangailangan ba ito ng susi?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tatlong salita, palaging napaghahalo
+
+"Naka-encrypt ba ang password na ito?" "I-hash mo na lang ang URL." "Naka-encode ang datos, kaya ligtas ito." Nasa lahat ng dako ang mga pangungusap na ito, at ang karamihan ay gumagamit ng maling salita. Ang hashing, encryption, at encoding ay tatlong magkaibang operasyon na may tatlong magkaibang layunin, at ang pagkalito sa mga ito ay umaakay sa tunay na pagkakamali sa seguridad, gaya ng pag-iimbak ng password gamit ang isang paraang walang pinoprotektahan.
+
+Ang magandang balita, dalawang simpleng tanong ang ganap na naghihiwalay sa kanila.
+
+## Ang dalawang tanong
+
+1. **Maibabalik ba ito?** Maibabalik mo ba ang orihinal na input mula sa output?
+2. **Nangangailangan ba ito ng susi?** Kailangan ba ng isang lihim, o magagawa ng sinuman ang operasyon?
+
+Iplot ang tatlong operasyon laban sa mga tanong na iyon at malinaw ang larawan:
+
+- **Encoding** ay maibabalik at hindi nangangailangan ng susi.
+- **Hashing** ay hindi maibabalik at hindi nangangailangan ng susi.
+- **Encryption** ay maibabalik at nangangailangan ng susi.
+
+Ang talahanayang iyon ang buong artikulo. Ang iba ay detalye.
+
+## Encoding: maibabalik, walang susi
+
+Muling isinusulat ng encoding ang datos sa ibang representasyon upang makatawid ito sa isang channel na umaasa ng partikular na format. Ginagawa ng Base64 ang mga byte na ligtas na teksto; ine-escape ng URL-encoding ang mga karakter na ipinagbabawal sa isang URL; ginagawa ng UTF-8 ang mga karakter na byte. Wala rito ang lihim. Maaari itong i-decode pabalik ninuman, dahil ang pagiging maibabalik ang buong punto. **Walang anumang seguridad ang ibinibigay ng encoding.** Kung maririnig mong "naka-encode ang token kaya ligtas ito," iyon ay isang pulang bandila: ang naka-encode ay nangangahulugang nababasa.
+
+## Hashing: hindi maibabalik, walang susi
+
+Nagmamapa ang isang hash function ng anumang input sa isang nakapirming-laking digest, at hindi mo ito mapapaandar nang pabalik upang mabawi ang input. Hindi ito nangangailangan ng susi, kaya magagawa ninuman ang parehong digest mula sa parehong input. Ginagawa nito itong perpekto para sa **pag-verify**: mga pagsusuri ng integridad, content addressing, at pagtukoy ng pagbabago. Ito ang tamang kasangkapan kapag kailangan mong kumpirmahin na pareho ang dalawang bagay nang hindi iniimbak ang orihinal, ngunit wala itong itinatago nang maibabalik, dahil walang dapat ibalik.
+
+## Encryption: maibabalik, may susi
+
+Binabago ng encryption ang datos upang tanging ang may hawak ng tamang susi ang makakabalik nito. Ito ang tanging isa sa tatlo na itinayo para sa **pagkalihim**. Maibabalik ito ayon sa disenyo, ngunit gamit lamang ang susi, na siyang eksaktong katangiang wala sa dalawa pa: maibabalik ang encoding ninuman, ang hashing ng walang sinuman, ang encryption ng mga may-hawak ng susi.
+
+## Pagpili ng tama
+
+Ang layunin ang nagpapasya ng kasangkapan. Kailangang makaligtas ng datos sa transport bilang teksto? I-encode ito. Kailangang i-verify ang integridad o ihambing nang hindi iniimbak ang orihinal? I-hash ito. Kailangang ilihim ang datos mula sa sinumang walang susi? I-encrypt ito.
+
+Ang klasikong pagkakamali ay ang pag-abot sa maling kolum. Ang pag-iimbak ng password gamit ang simpleng encoding (maibabalik ninuman) o kahit ang simpleng encryption (isang ninakaw na susi ang naglalantad sa lahat) ay higit na mahina kaysa sa isang nakatuong password hash, na tinatalakay sa sarili nitong artikulo. Hinahayaan ka ng [tool na Hash](/tools/hash) at ng [tool na Base64](/tools/base64) na panoorin ang hashing at encoding na umasal nang magkaiba sa parehong input, hindi kailanman nababalik ang digest, palaging nababalik ang Base64.

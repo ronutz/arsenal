@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Prøv et værktøj nu.",
       "body": "CIDR-beregneren nedenfor kører lokalt. Indtast et net og et præfiks for at se adresseintervallet, antallet af værter og masken. Intet sendes nogen steder hen.",
-      "learnHeading": "Lær begreberne"
+      "learnHeading": "Lær begreberne",
+      "toolboxCta": "Åbn hele værktøjskassen"
     },
     "provenance": {
       "title": "Tak og kilder",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Indtast en CIDR-blok for at beregne.",
         "invalid": "Det her ligner ikke en gyldig CIDR-blok. Prøv et format som 192.168.1.0/24."
-      }
+      },
+      "name": "CIDR-/subnetberegner",
+      "blurb": "Opdel en vilkårlig IPv4-CIDR-blok i netværks- og broadcastadresser, brugbart værtsinterval, antal værter og netmaske. Kører helt i din browser."
     },
     "title": "Værktøjer",
     "lede": "Små, hurtige og privatlivsvenlige værktøjer, der kører helt i din browser. Intet af det, du skriver, sendes nogen steder hen. Flere er på vej.",
     "open": "Åbn",
     "comingSoon": "Kommer snart",
-    "note": "Denne værktøjskasse vokser. Nye værktøjer tilføjes her, efterhånden som de bliver klar, hver med lokal kørsel og gratis at bruge."
+    "note": "Denne værktøjskasse vokser. Nye værktøjer tilføjes her, efterhånden som de bliver klar, hver med lokal kørsel og gratis at bruge.",
+    "learnHeading": "Lær koncepterne",
+    "backToTools": "Værktøjer",
+    "references": "Referencer",
+    "categories": {
+      "identity": "Identitet og tokens",
+      "encoding": "Kodning og data",
+      "hashing": "Hashing og krypto",
+      "identifiers": "Identifikatorer",
+      "pki": "Certifikater og PKI",
+      "networking": "Netværk"
+    },
+    "hash": {
+      "name": "Hash-generator (SHA-1/256/384/512)",
+      "blurb": "Beregn SHA-1-, SHA-256-, SHA-384- og SHA-512-sammendrag af vilkårlig tekst, vist som hex og Base64, med browserens indbyggede Web Crypto. Kører helt i din browser.",
+      "algorithmLabel": "Hash-algoritme",
+      "inputLabel": "Tekst der skal hashes",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Hashingen kører lokalt via Web Crypto. Intet af det, du skriver, forlader din browser.",
+      "bits": "{bits} bit ({bytes} byte)",
+      "sha1Note": "SHA-1 er brudt med hensyn til kollisionsmodstand og uegnet til sikkerhed (signaturer, certifikater). Det duer kun til ikke-sikkerhedskontrolsummer og ældre interoperabilitet.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopiér",
+      "copied": "Kopieret"
+    },
+    "hmac": {
+      "name": "HMAC-generator (SHA-256/384/512)",
+      "blurb": "Beregn en nøglebaseret HMAC over en besked med din hemmelige nøgle, vist som hex og Base64, via browserens indbyggede Web Crypto. Samme konstruktion, som JWT-verifikatoren bruger til HS256. Din nøgle forlader aldrig din browser.",
+      "algorithmLabel": "HMAC-algoritme",
+      "messageLabel": "Besked",
+      "messagePlaceholder": "Beskeden der skal autentificeres",
+      "keyLabel": "Hemmelig nøgle",
+      "keyPlaceholder": "Din delte hemmelighed",
+      "runsLocally": "HMAC kører lokalt via Web Crypto. Din besked og din nøgle forlader aldrig din browser.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopiér",
+      "copied": "Kopieret"
+    },
+    "base64": {
+      "name": "Base64-/Base64URL-koder og -afkoder",
+      "blurb": "Kod tekst til standard- eller URL-sikker Base64, eller afkod begge varianter tilbage til tekst. Tolererer manglende udfyldning og markerer binære (ikke-UTF-8-)resultater. Kører helt i din browser.",
+      "directionLabel": "Retning",
+      "variantLabel": "Base64-variant",
+      "direction": {
+        "encode": "Kod (tekst til Base64)",
+        "decode": "Afkod (Base64 til tekst)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "URL-sikker"
+      },
+      "inputLabelEncode": "Tekst der skal kodes",
+      "inputLabelDecode": "Base64 der skal afkodes",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Kodning og afkodning kører lokalt. Intet af det, du indsætter, forlader din browser.",
+      "decodeErrors": {
+        "invalid-characters": "Det er ikke gyldig Base64. Den indeholder tegn uden for Base64-alfabetet.",
+        "invalid-length": "Det er ikke gyldig Base64. Dens længde er ikke en gyldig Base64-længde."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Afkodet tekst",
+      "copy": "Kopiér",
+      "copied": "Kopieret",
+      "emptyOutput": "(tom)",
+      "decodedBytes": "{bytes, plural, one {# byte afkodet} other {# byte afkodet}}.",
+      "notUtf8": "{bytes, plural, one {# byte afkodet} other {# byte afkodet}}, men resultatet er ikke gyldig UTF-8-tekst (sandsynligvis binært)."
+    },
+    "pkce": {
+      "name": "OAuth-PKCE-verifikator og -challenge",
+      "blurb": "Generér en OAuth 2.0-code_verifier og udled dens S256-code_challenge, eller indsæt din egen og tjek den mod længde- og tegnsætsreglerne i RFC 7636. Samme SHA-256-base64url-udledning, som din autorisationsserver forventer. Kører helt i din browser.",
+      "verifierLabel": "Code verifier",
+      "verifierPlaceholder": "Indsæt en code_verifier, eller generér en",
+      "generate": "Generér",
+      "runsLocally": "Generering og udledning kører lokalt. Din verifier forlader aldrig din browser.",
+      "lengthBadge": "Længde {length} (43-128)",
+      "charsetOk": "Ureserveret tegnsæt",
+      "charsetBad": "Ugyldige tegn",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "Plain-metoden frarådes. Brug S256, hvor end klienten kan beregne SHA-256.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Kopiér",
+      "copied": "Kopieret"
+    },
+    "uuid": {
+      "name": "UUID-generator og -inspektør (v4 / v7)",
+      "blurb": "Generér tilfældige v4- eller tidsordnede v7-UUID'er, eller indsæt en vilkårlig UUID for at læse dens version, variant og (for v7) det indlejrede oprettelsestidsstempel. Genereringen bruger browserens sikre tilfældighedskilde. Kører helt i din browser.",
+      "versionLabel": "UUID-version",
+      "generate": "Generér",
+      "clear": "Ryd",
+      "emptyHint": "Vælg en version, og generér.",
+      "runsLocally": "Generering og inspektion kører lokalt. Intet sendes nogen steder hen.",
+      "copy": "Kopiér",
+      "copied": "Kopieret",
+      "inspectLabel": "Inspicér en UUID",
+      "inspectPlaceholder": "Indsæt en vilkårlig UUID for at afkode den",
+      "valid": "Gyldig UUID",
+      "invalid": "Ikke en gyldig UUID",
+      "versionField": "Version",
+      "variantField": "Variant",
+      "timestampField": "Tidsstempel (v7)",
+      "versionValue": "Version {version}"
+    },
+    "jwt": {
+      "name": "JWT-afkoder og -verifikator",
+      "blurb": "Afkod en JSON Web Tokens header og claims, læs dens udløb og tidsangivelser i klart sprog, og verificér en HS256/384/512-signatur med en indsat hemmelighed. Kører helt i din browser.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Afkodning og signaturtjek kører lokalt. Token og hemmelighed forlader aldrig din browser.",
+      "errors": {
+        "empty": "Indsæt en JSON Web Token for at afkode.",
+        "format": "Det ligner ikke en JWT. En token har tre base64url-dele adskilt af punktummer: header.payload.signature.",
+        "header": "Headeren er ikke gyldig. Den bør være base64url-kodet JSON.",
+        "payload": "Payloaden er ikke gyldig. Den bør være base64url-kodet JSON."
+      },
+      "panels": {
+        "header": "Header",
+        "payload": "Payload",
+        "signature": "Signatur",
+        "noSignature": "Intet signatursegment (usikret token)."
+      },
+      "claims": {
+        "iss": "Udsteder (iss)",
+        "sub": "Subjekt (sub)",
+        "aud": "Målgruppe (aud)",
+        "jti": "JWT-ID (jti)",
+        "iat": "Udstedt (iat)",
+        "nbf": "Ikke før (nbf)",
+        "exp": "Udløber (exp)"
+      },
+      "status": {
+        "expired": "Udløbet {rel}",
+        "expiresIn": "Gyldig, udløber {rel}",
+        "notYetValid": "Ikke gyldig endnu, starter {rel}",
+        "noExpiry": "Ingen udløbs-claim (exp)"
+      },
+      "verify": {
+        "label": "Verificér HMAC-signatur (HS256/384/512)",
+        "placeholder": "delt hemmelighed",
+        "button": "Verificér",
+        "valid": "Signatur gyldig for denne hemmelighed.",
+        "invalid": "Signaturen matcher ikke denne hemmelighed.",
+        "algNone": "Denne token er usikret (alg: none), så der er ingen signatur at verificere.",
+        "unsupportedAlg": "Verifikation i browseren dækker kun HS256/384/512. {alg} er asymmetrisk og kræver en offentlig nøgle.",
+        "hint": "Hemmeligheden bruges kun til at beregne en HMAC i din browser. Den sendes aldrig nogen steder hen."
+      }
+    },
+    "x509": {
+      "name": "X.509-certifikatafkoder",
+      "blurb": "Indsæt et certifikat som PEM, base64 eller hex for at læse dets subjekt, udsteder, gyldighedsvindue, offentlige nøgle og v3-udvidelser, med SHA-256- og SHA-1-fingeraftryk. Kører helt i din browser.",
+      "inputLabel": "X.509-certifikat",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Afkodning og fingeraftryk kører lokalt. Certifikatet forlader aldrig din browser.",
+      "errors": {
+        "empty": "Indsæt et X.509-certifikat for at afkode.",
+        "format": "Det ligner ikke et certifikat. Indsæt PEM (-----BEGIN CERTIFICATE-----), base64 eller hex.",
+        "der": "Bytene er ikke gyldig DER. Tjek, at hele certifikatet blev indsat, inklusive END-linjen.",
+        "structure": "Dette afkodes som ASN.1, men er ikke et X.509-certifikat. Et certifikat er en SEQUENCE af TBSCertificate, signatureAlgorithm og signatureValue."
+      },
+      "status": {
+        "valid": "Gyldigt, udløber {rel}",
+        "expired": "Udløbet {rel}",
+        "notYetValid": "Ikke gyldigt endnu, starter {rel}"
+      },
+      "panels": {
+        "subject": "Subjekt",
+        "issuer": "Udsteder",
+        "details": "Detaljer",
+        "publicKey": "Offentlig nøgle",
+        "extensions": "Udvidelser",
+        "fingerprints": "Fingeraftryk"
+      },
+      "fields": {
+        "version": "Version",
+        "serial": "Serienummer",
+        "notBefore": "Ikke før",
+        "notAfter": "Ikke efter",
+        "signatureAlgorithm": "Signaturalgoritme",
+        "algorithm": "Algoritme",
+        "keySize": "Nøglestørrelse",
+        "exponent": "Eksponent",
+        "curve": "Kurve",
+        "bits": "{n} bit",
+        "selfSigned": "Selvudstedt"
+      },
+      "ext": {
+        "san": "Alternative subjektnavne",
+        "keyUsage": "Nøgleanvendelse",
+        "extKeyUsage": "Udvidet nøgleanvendelse",
+        "basicConstraints": "Grundlæggende begrænsninger",
+        "subjectKeyId": "Subjektets nøgleidentifikator",
+        "authorityKeyId": "Udstederens nøgleidentifikator",
+        "caTrue": "Certifikatmyndighed (CA: true)",
+        "caFalse": "Ikke en CA (CA: false)",
+        "pathLen": "stilængde {n}",
+        "critical": "kritisk"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Beregner fingeraftryk..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6-værktøjskasse",
+      "blurb": "Parsér en IPv6-adresse eller et præfiks for at se dens kanoniske (RFC 5952) og fuldt udfoldede former, klassificering til særlig brug, præfiksaritmetik, en EUI-64-MAC hvis den findes, og dens ip6.arpa-omvendt-DNS-navn. Kører helt i din browser.",
+      "inputLabel": "IPv6-adresse eller -præfiks",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Parsningen kører lokalt. Adressen forlader aldrig din browser.",
+      "errors": {
+        "empty": "Indtast en IPv6-adresse eller et præfiks for at afkode.",
+        "format": "Det er ikke en gyldig IPv6-adresse. Brug otte hex-grupper, eventuelt komprimeret én gang med :: (for eksempel 2001:db8::1).",
+        "prefix": "Præfikslængden er ikke gyldig. For IPv6 skal den være mellem 0 og 128."
+      },
+      "panels": {
+        "forms": "Kanoniske former",
+        "classification": "Klassificering",
+        "prefix": "Præfiks",
+        "identifiers": "Identifikatorer"
+      },
+      "fields": {
+        "compressed": "Komprimeret (RFC 5952)",
+        "expanded": "Udfoldet",
+        "type": "Type",
+        "scope": "Omfang",
+        "embeddedIpv4": "Indlejret IPv4",
+        "network": "Netværk",
+        "firstAddress": "Første adresse",
+        "lastAddress": "Sidste adresse",
+        "count": "Adresser",
+        "hostBits": "Værtsbit",
+        "eui64": "EUI-64-MAC",
+        "reverseDns": "Omvendt DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multicast"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Privatliv",
+    "title": "Dine data, og hvad dette websted gør med dem",
+    "lede": "En redegørelse i klart sprog for præcis hvad dette websted gør og ikke gør med dine oplysninger. Den er skrevet for at være præcis snarere end blot beroligende, for under regelsæt som GDPR og Brasiliens LGPD er det den præcise oplysning, der betyder noget.",
+    "shortTitle": "Den korte version",
+    "short1": "Dette websted sætter ingen cookies, kører ingen analyse, bruger ingen reklame og indeholder ingen tredjepartssporere eller fingeraftryk (fingerprinting). Intet følger dig på tværs af nettet.",
+    "short2": "Det sælger, deler eller bygger ikke profiler af sine besøgende og beder dig ikke om noget for at læse det.",
+    "short3": "De interaktive værktøjer kører fuldstændig i din browser. Det, du indsætter eller indtaster i dem, bliver på din enhed og overføres ingen steder.",
+    "short4": "Kun tre ting involverer data overhovedet, og hver enkelt forklares nedenfor: en enkelt temaindstilling gemt i din egen browser, de standardmæssige forbindelseslogfiler, som ethvert webstedsbesøg skaber på hostinglaget, og enhver besked, du vælger at sende via e-mail.",
+    "controllerTitle": "Hvem der er ansvarlig",
+    "controllerBody": "Dette er Rodolfo Nützmanns personlige websted (ronutz.com). For ethvert privatlivsspørgsmål, eller for at udøve nogen af de rettigheder, der beskrives nedenfor, skriv til hello@ronutz.com. Henvendelser behandles direkte af Rodolfo Nützmann, som dataansvarlig.",
+    "noTrackTitle": "Ingen cookies, ingen sporing, ingen analyse",
+    "noTrackBody": "Dette websted sætter ingen cookies af nogen art. Det bruger ingen analysetjeneste (såsom Google Analytics eller Plausible), intet annoncenetværk, ingen sporingspixels fra sociale medier og intet enhedsfingeraftryk. Dit besøg måles, profileres eller deles ikke med nogen til disse formål.",
+    "browserTitle": "Hvad der gemmes i din browser",
+    "browserBody": "En enkelt lille ting: dit valgte visuelle tema, gemt i din browsers lokale lager (local storage), så webstedet kan huske det næste gang du besøger. Det er en bekvemmelighedsindstilling, der bliver på din egen enhed, aldrig sendes til dette websted eller til nogen anden, og kan ryddes når som helst via din browser. Ingen andre data om dig gemmes på din enhed.",
+    "hostingTitle": "Hosting og serverlogfiler",
+    "hostingBody": "Webstedet leveres gennem Cloudflare, som leverer dets hosting og indholdslevering. Som med ethvert websted betyder indlæsning af en side, at din enhed forbinder til en server, og Cloudflare behandler, i sin egenskab af hostingudbyder, grundlæggende forbindelsesdata – herunder din IP-adresse og standardanmodningsdetaljer – for at levere siderne til dig og beskytte webstedet mod misbrug og angreb. Denne behandling er nødvendig for at drive og sikre webstedet (en legitim interesse i henhold til Artikel 6(1)(f) i GDPR og de tilsvarende grundlag i Artikel 7 og 10 i LGPD). Den opbevares kun kortvarigt af udbyderen og bruges ikke her til at identificere eller spore dig.",
+    "toolsTitle": "Værktøjerne kører i din browser",
+    "toolsBody": "Afkoderne og beregnerne på dette websted – til JWT'er, IP-adresser, certifikater og resten – beregner fuldstændig inde i din browser. De værdier, du indtaster, behandles på din egen enhed og sendes aldrig til en server. En separat programmatisk grænseflade (en API) tilbydes til automatisering og integrationer; den er som udgangspunkt tilstandsløs og logger ingen af de forespørgsler eller anmodningskroppe, der sendes til den.",
+    "contactTitle": "Hvis du kontakter mig",
+    "contactBody": "Kontaktformularen sender intet til en server. I stedet åbner den en forudfyldt besked i din egen e-mailapplikation, som du derefter selv sender fra din egen konto, så intet passerer gennem en tredjepart. Hvis du skriver, enten via formularen eller direkte, modtager jeg de oplysninger, du inkluderer, såsom dit navn, din e-mailadresse og din besked, og bruger dem kun til at svare dig. Jeg opbevarer dem kun så længe, det er nødvendigt for at behandle din henvendelse, bruger dem ikke til markedsføring og deler dem ikke.",
+    "intlTitle": "Behandling uden for dit land",
+    "intlBody": "Fordi Cloudflare driver et globalt netværk, kan behandlingen på forbindelsesniveau, der beskrives ovenfor, finde sted på servere placeret uden for dit eget land, herunder uden for Brasilien og Det Europæiske Økonomiske Samarbejdsområde. Hvor personoplysninger behandles internationalt på denne måde, sker det under de garantier, som den pågældende udbyder tilbyder.",
+    "childrenTitle": "Børn",
+    "childrenBody": "Dette websted er beregnet til et professionelt, generelt publikum. Det er ikke rettet mod børn og indsamler ikke bevidst personoplysninger fra dem.",
+    "rightsTitle": "Dine rettigheder",
+    "rightsBody": "Afhængigt af hvor du bor, har du rettigheder over dine personoplysninger, herunder at få adgang til dem, at få dem rettet eller slettet, at gøre indsigelse mod eller begrænse deres behandling, at anmode om en kopi i et portabelt format og at blive informeret om, hvordan de behandles. For at udøve nogen af dem, skriv blot til hello@ronutz.com. Fordi så få personoplysninger nogensinde behandles her, er der i praksis som regel meget lidt at gøre, men kanalen er altid åben.",
+    "rightsGdpr": "Hvis du befinder dig i Det Europæiske Økonomiske Samarbejdsområde eller Storbritannien, har du også ret til at indgive en klage til din lokale datatilsynsmyndighed.",
+    "rightsLgpd": "Hvis du befinder dig i Brasilien, har du de rettigheder, der er fastsat i Artikel 18 i LGPD, og du kan også kontakte den nationale databeskyttelsesmyndighed (ANPD).",
+    "changesTitle": "Ændringer af denne meddelelse",
+    "changesBody": "Hvis denne meddelelse ændres, vil den reviderede version blive offentliggjort på denne side, og datoen nedenfor vil blive opdateret. Væsentlige ændringer anvendes ikke med tilbagevirkende kraft.",
+    "updated": "Sidst opdateret: 28. juni 2026",
+    "backHome": "Tilbage til forsiden"
   },
   "footer": {
+    "redEducation": "Book officiel træning med Red Education",
+    "privacy": "Privatliv",
     "builtWith": "Bygget af Rodolfo Nützmann med CONCORD",
     "colophon": "Hvordan det her blev bygget",
     "openSource": "Motoren er open source",
     "rights": "Tilgængelig under åbne og kommercielle vilkår.",
     "contribute": "Hjælp med at forbedre oversættelserne",
-    "feedback": "Send feedback"
+    "feedback": "Send feedback",
+    "api": "API-reference",
+    "contributeTools": "Bidrag med et værktøj"
   },
   "search": {
     "label": "Søg",
@@ -390,13 +672,16 @@
     "emailLabel": "E-mail",
     "channels": {
       "linkedin": {
-        "description": "Netværk professionelt"
+        "description": "Netværk professionelt",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Videoer og gennemgange"
+        "description": "Videoer og gennemgange",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Bag kulisserne"
+        "description": "Bag kulisserne",
+        "label": "Instagram"
       },
       "training": {
         "label": "Officiel træning",
@@ -551,5 +836,50 @@
     "referenceTag": "reference",
     "emailHeading": "Send dit bidrag",
     "backHome": "Tilbage til værktøjerne"
+  },
+  "contributeTools": {
+    "eyebrow": "Åben værktøjskasse",
+    "title": "Bidrag med et værktøj",
+    "lede": "Værktøjskassen er bygget til at vokse. Hvert værktøj er et lille, selvbeskrivende modul på den åbne motor, og sitet indlæser det på samme måde, som enhver anden ville kunne. Har du et værktøj, der passer, så foreslå det.",
+    "shapeTitle": "Hvad et værktøj er",
+    "shapeBody": "Et værktøj er tre ting på én gang: et manifest, der beskriver det (hvad det er, det input det accepterer, hvor dets korrekthed kommer fra), en enkelt ren udførelsesfunktion, der gør arbejdet, og et sæt referencevektorer, faste input-og-output-par, der beviser, at funktionen er korrekt. Motoren indlæser et værktøj ud fra dets manifest, så et velformet modul falder på plads uden at røre resten af sitet.",
+    "principlesTitle": "Hvad et værktøj skal holde sig til",
+    "principlesBody": "Beregningen kører lokalt og er deterministisk: det samme input giver altid det samme output, uden ur, netværk eller tilfældighed i resultatet. Alt følsomt bliver som standard på enheden. Korrektheden er forankret i referencevektorer og i citerede kilder – såsom en RFC eller en offentliggjort standard –, ikke i holdning. Koden udgives under en tilladende licens, så sitet og enhver anden kan bygge videre på den.",
+    "proposeTitle": "Foreslå et",
+    "proposeBody": "Send et kort forslag via e-mail: hvad værktøjet beregner, et eksempel-input med det nøjagtige output, det skal producere, og kilden, som dets korrekthed hviler på. En skitse af manifestet og et par referencevektorer er velkomne, men ikke påkrævet. Hvis det passer, bygges det ind i motoren og værktøjskassen.",
+    "emailLabel": "E-mail",
+    "backToTools": "Tilbage til værktøjskassen"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Værktøjerne på dette site kører i din browser og holder dine data på din enhed. Til automatisering – scripts, pipelines og integrationer – er de samme deterministiske beregninger tilgængelige som et lille HTTP-API. Det er det programmatiske modstykke til browserværktøjerne, ikke en erstatning for dem.",
+    "privacyTitle": "Hvad det betyder for dine data",
+    "privacyBody": "API'et modtager kun det input, du sender det, beregner et resultat og returnerer det. Det er tilstandsløst og logger ingen forespørgselsværdier eller anmodningstekster. Har du brug for garanteret nul dataudgang, så brug browserværktøjerne eller kør den åbne motor selv.",
+    "engineTitle": "Samme motor som browseren",
+    "engineBody": "Hvert endpoint kalder den samme motorfunktion, som værktøjet i browseren kalder, så API'et og browseren returnerer byte-identiske resultater. Den motor, @ronutz/netcore, er open source under en tilladende licens.",
+    "specTitle": "Specifikationen",
+    "specBody": "Hele kontrakten udgives som OpenAPI 3.1. Download den, ret dit eget værktøj mod den, eller læs referencen nedenfor.",
+    "downloadSpec": "Download openapi.yaml",
+    "baseUrlLabel": "Basis-URL",
+    "authLabel": "Godkendelse",
+    "authValue": "Ingen. Dette er et offentligt, skrivebeskyttet API.",
+    "referenceTitle": "Reference",
+    "loading": "Indlæser specifikationen.",
+    "loadError": "Specifikationen kunne ikke indlæses.",
+    "tryItTitle": "Prøv det",
+    "tryItSend": "Send",
+    "tryItRunning": "Kører.",
+    "tryItHint": "Kører mod det live-API på denne origin. Dit input sendes til endpointet.",
+    "paramsTitle": "Parametre",
+    "responsesTitle": "Svar",
+    "schemasTitle": "Skemaer",
+    "exampleLabel": "Eksempel",
+    "requiredLabel": "påkrævet",
+    "fieldLabel": "Felt",
+    "typeLabel": "Type",
+    "descriptionLabel": "Beskrivelse",
+    "viewReference": "Reference",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI kunne ikke indlæses."
   }
 }

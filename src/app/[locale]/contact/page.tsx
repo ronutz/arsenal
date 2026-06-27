@@ -15,6 +15,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ContactForm from "@/components/ContactForm";
 import ObfuscatedEmail from "@/components/ObfuscatedEmail";
+import { externalRel } from "@/config/redEducation";
 import {
   contactEmail,
   contactChannels,
@@ -116,7 +117,7 @@ export default async function ContactPage({
                       className="contact-channel"
                       href={c.url}
                       {...(c.external
-                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        ? { target: "_blank", rel: externalRel(c.url) }
                         : {})}
                     >
                       <span className="contact-channel-label">{t(`channels.${c.id}.label`)}</span>

@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Comprendre l'adressage IPv6"
+summary: "Comment une adresse IPv6 de 128 bits est structurée et écrite, les règles pour la compresser canoniquement, ce que signifient les types d'adresse et portées, et comment fonctionnent les identifiants d'interface et le DNS inverse."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Pourquoi IPv6 existe
+
+IPv4 a environ 4,3 milliards d'adresses (2^32). Cela semblait inépuisable dans les années 1980 et est maintenant depuis longtemps épuisé aux registres. IPv6, défini pour l'adressage dans la RFC 4291, élargit l'adresse de 32 bits à **128 bits**, ce qui fait 2^128 adresses, un nombre assez grand pour que la rareté cesse d'être la contrainte de conception. L'effet pratique est que les sous-réseaux deviennent énormes et que les astuces de conservation d'adresses comme le NAT ne sont plus requises pour la connectivité de base.
+
+## La structure de 128 bits
+
+Une adresse IPv6 fait 128 bits, écrite comme **huit groupes de quatre chiffres hexadécimaux** séparés par des deux-points. Chaque groupe est une valeur de 16 bits :
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Cette forme entièrement écrite est la représentation **étendue**. Parce qu'elle est longue et pleine de zéros, la forme texte a des règles de compression.
+
+## Écrire une adresse : les règles de compression
+
+Deux règles raccourcissent le texte, et la RFC 5952 rend le résultat canonique (une adresse, une orthographe préférée) :
+
+- **Supprimez les zéros de tête** dans chaque groupe : `0db8` devient `db8`, `0000` devient `0`.
+- **Remplacez une séquence de groupes consécutifs tout-zéro par `::`**. Le double deux-points peut apparaître **au plus une fois**, et il représente un ou plusieurs groupes de 16 bits de zéros. Quand plusieurs séquences de longueur égale existent, la première est compressée.
+
+Appliquer les deux à l'adresse ci-dessus donne sa forme canonique :
+
+```
+2001:db8::8:800:200c:417a
+```
+
+La RFC 5952 ajoute quelques règles finales pour que les outils s'accordent : les chiffres hex sont en minuscules, et `::` n'est pas utilisé pour « compresser » un seul groupe de zéros (cela ne raccourcirait rien de significatif). L'outil IPv6 montre à la fois la forme compressée canonique et la forme entièrement étendue côte à côte, pour que vous puissiez voir exactement ce que `::` représente.
+
+Un cas spécial : une adresse peut porter une queue **IPv4 embarquée** dans ses derniers 32 bits, écrite en décimal pointé. La plus courante est la forme **IPv4-mappée**, où la RFC 5952 recommande la notation mixte `::ffff:192.0.2.128` plutôt que de l'hex pur.
+
+## Préfixes et arithmétique de préfixe
+
+Comme le CIDR d'IPv4, un préfixe IPv6 s'écrit `adresse/longueur`, où la longueur compte les bits de réseau initiaux :
+
+```
+2001:db8::/64
+```
+
+Un `/64` signifie que les premiers 64 bits sont le réseau et les 64 restants sont l'identifiant d'interface. `/64` est la taille standard pour un seul LAN, et il contient à lui seul 2^64 adresses, environ 18 trillions. L'outil calcule l'adresse de réseau (première), la dernière adresse, et le compte pour tout préfixe que vous lui donnez, masquant les bits d'hôte à zéro pour trouver le réseau même si vous avez tapé une adresse avec des bits d'hôte positionnés.
+
+## Types d'adresse et portées
+
+Les bits hauts d'une adresse la placent dans une catégorie. Les plus importants, de la RFC 4291 et du registre IANA :
+
+- **Unicast global (2000::/3)** est l'espace public routable, l'équivalent IPv6 d'une adresse IPv4 publique.
+- **Unique local, ou ULA (fc00::/7)** est l'espace à usage privé (RFC 4193), analogue à la RFC 1918 en IPv4. Il n'est pas routé sur l'internet public.
+- **Unicast link-local (fe80::/10)** est valide seulement sur un seul lien et est configuré automatiquement sur chaque interface IPv6. Les routeurs ne le transmettent jamais. Sa portée est le lien local.
+- **Multicast (ff00::/8)** adresse un groupe plutôt qu'un seul hôte. Un champ de portée à l'intérieur de l'adresse dit jusqu'où il atteint : interface-local, link-local, admin-local, site-local, organization-local, ou global. Par exemple `ff02::1` est le groupe tous-les-nœuds link-local.
+- **Loopback (::1/128)** est l'équivalent IPv6 de 127.0.0.1, et l'**adresse non spécifiée (::/128)** signifie « aucune adresse », utilisée comme marqueur pendant la configuration.
+- **Documentation (2001:db8::/32)** est réservée par la RFC 3849 pour les exemples et l'écriture, ce qui est pourquoi presque chaque exemple IPv6 que vous voyez, y compris le canonique dans la RFC 4291 elle-même, l'utilise.
+
+L'outil IPv6 rapporte le type correspondant et le préfixe spécifique qu'il a apparié, plus la portée pour les adresses multicast et link-local.
+
+## Identifiants d'interface et EUI-64
+
+Dans un `/64` typique, les 64 bits inférieurs sont l'**identifiant d'interface**. Une façon historique de le construire était l'**EUI-64 modifié** (RFC 4291, Annexe A) : prenez l'adresse MAC de 48 bits, insérez les octets `ff:fe` au milieu, et inversez le septième bit (le bit universel/local). Cela rendait l'id d'interface dérivable de l'adresse matérielle. Quand l'outil voit le révélateur `ff:fe` au milieu de l'id d'interface, il inverse le processus et vous montre la MAC originale. Les systèmes modernes préfèrent souvent des identifiants d'interface randomisés ou de confidentialité à la place, précisément parce que dériver l'id d'une MAC fuite l'adresse matérielle.
+
+## DNS inverse : ip6.arpa
+
+Les recherches inverses (adresse vers nom) pour IPv6 vivent sous le domaine **ip6.arpa**. L'adresse est étendue à ses 32 quartets hex, ces quartets sont inversés, et chacun devient une étiquette. Ainsi `2001:db8::1` devient un nom se terminant par `...8.b.d.0.1.0.0.2.ip6.arpa`. L'outil génère ce nom pour toute adresse, ce qui est la valeur exacte que vous placeriez dans un enregistrement `PTR`.
+
+## Une note sur ce que l'outil fait
+
+L'outil IPv6 est une calculatrice déterministe et locale. Il analyse, canonise, classifie, et calcule, le tout dans votre navigateur, sans aucune recherche contre le réseau en direct. Il vous dit ce qu'une adresse **est** structurellement. Il ne vous dit pas si cette adresse est joignable, allouée, ou en usage, qui sont des questions séparées qui requièrent d'interroger le réseau ou un registre.

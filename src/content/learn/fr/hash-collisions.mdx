@@ -1,0 +1,38 @@
+---
+slug: hash-collisions
+title: "Collisions, resistance a la preimage et borne de l'anniversaire"
+summary: "Les trois proprietes de securite qu'un hachage cryptographique doit avoir, pourquoi les collisions comptent, et la mathematique de l'anniversaire qui fixe la force reelle."
+concepts: ["collision-resistance", "preimage", "birthday-bound", "hashing", "security"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-function-families", "hashing-encryption-encoding"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ce que "sur" signifie pour un hachage
+
+Toute fonction qui associe des entrees a des sorties de taille fixe finira par associer deux entrees differentes a la meme sortie, car il y a une infinite d'entrees et seulement un nombre fini de sorties. Qu'un hachage soit **sur** ne signifie pas que des collisions ne peuvent exister ; cela signifie qu'elles ne peuvent etre *trouvees* avec une quantite de travail realisable. Trois proprietes distinctes capturent cela.
+
+## Les trois proprietes
+
+- **Resistance a la preimage.** Etant donne une valeur de hachage `h`, il est irrealisable de trouver une entree `m` telle que `hash(m) = h`. C'est la propriete a sens unique : une empreinte ne doit pas reveler ce qui l'a produite. Pour un hachage de n bits, cela coute environ 2ⁿ de travail.
+- **Resistance a la seconde preimage.** Etant donne une entree precise `m1`, il est irrealisable de trouver une entree *differente* `m2` ayant le meme hachage. Un attaquant ne peut forger un second document correspondant a l'empreinte d'un document donne. Egalement environ 2ⁿ de travail.
+- **Resistance aux collisions.** Il est irrealisable de trouver *deux* entrees differentes quelconques produisant la meme valeur de hachage. L'attaquant peut choisir les deux, ce qui en fait la plus facile des trois a attaquer.
+
+## La borne de l'anniversaire
+
+La resistance aux collisions est plus faible que les deux autres pour une raison subtile, le **paradoxe des anniversaires**. Dans une piece de seulement 23 personnes, il y a environ 50 % de chances que deux partagent un anniversaire, car le nombre de *paires* croit de facon quadratique. Le meme effet s'applique aux hachages : trouver une collision dans un hachage de n bits ne prend qu'environ **2^(n/2)** tentatives, pas 2ⁿ.
+
+Cela divise par deux la force effective contre les collisions :
+
+- SHA-256 offre environ 128 bits de resistance aux collisions (2¹²⁸ de travail), ce qui est largement hors de portee.
+- Un hachage de 128 bits comme MD5 n'offrirait qu'environ 64 bits de resistance aux collisions, meme s'il n'etait pas casse par ailleurs, et c'est pourquoi la taille de sortie a elle seule compte.
+
+C'est pourquoi les hachages modernes utilisent 256 bits ou plus : pour garder la valeur divisee par deux confortablement hors d'atteinte de tout attaquant.
+
+## Pourquoi une collision trouvee est dangereuse
+
+Quand la resistance aux collisions echoue, un attaquant peut fabriquer deux entrees au meme hachage, en faire signer ou approuver une, et la remplacer par l'autre. SHAttered a montre deux PDF au meme condense SHA-1 ; le malware Flame a utilise une collision MD5 pour forger un certificat de confiance. Dans les deux cas, la signature etait valide pour *les deux* documents, donc une signature verifiee ne prouvait plus lequel vous aviez reellement recu. C'est la raison concrete pour laquelle MD5 et SHA-1 ne doivent pas etre utilises la ou un adversaire peut choisir l'entree.
+
+L'[outil de hachage](/tools/hash) vous permet de hacher toute entree et de comparer les condenses, pour constater vous-meme qu'un seul bit modifie produit une empreinte totalement differente, le tout calcule dans votre navigateur sans rien envoyer.

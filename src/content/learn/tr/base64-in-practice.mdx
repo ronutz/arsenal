@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Base64'ün ortaya çıktığı yerler: data URI, MIME, PEM ve Basic auth"
+summary: "İkilinin metne sarıldığı gerçek yerler, bunun boyut maliyeti ve bir kimlik doğrulama başlığındaki Base64'ün neden şifreleme olmadığı."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## İkiliyi neden metne sarmalı
+
+Birçok taşıma, ham baytlar için değil metin için tasarlandı: e-posta gövdeleri, JSON ve XML belgeleri, HTTP başlıkları, kaynak dosyaları. Bunlardan birine ham ikili veri koyun ve başıboş bir kontrol veya null baytı ayrıştırmayı bozabilir. Base64 bunu, baytları yalnızca güvenli yazdırılabilir karakterlerle yeniden ifade ederek çözer; böylece ikili, salt metin kanalından zarar görmeden geçebilir. İşte bunun gerçekte olduğu yerler.
+
+## Yaygın senaryolar
+
+- **Data URI'ler.** Bir `data:` URL'si küçük bir kaynağı doğrudan biçimlendirmeye veya CSS'e gömer, örneğin `data:image/png;base64,iVBORw0KGgo...`. Görüntünün baytları tam orada, özniteliğin içinde Base64 olarak durur ve küçük kaynaklar için ayrı bir ağ isteğinden tasarruf sağlar.
+- **E-posta (MIME).** Ekler ve ASCII olmayan gövdeler `Content-Transfer-Encoding: base64` ile taşınır. MIME, eski posta sunucuları uzun satırlarda boğulmasın diye çıktıyı satırlara böler (klasik olarak 76 karakter).
+- **PEM.** Sertifikalar ve anahtarlar, `-----BEGIN CERTIFICATE-----` ve `-----END CERTIFICATE-----` işaretleri arasında Base64'e sarılmış, 64 karakterde bölünen satırlara sahip DER baytlarıdır. PEM, bir sertifikanın bir yapılandırma dosyasına yapıştırabileceğiniz bir metin bloğu olmasının nedenidir.
+- **HTTP Basic kimlik doğrulaması.** `Authorization: Basic` başlığı, `kullanıcı:parola` değerinin Base64'üdür.
+
+## Boyut maliyeti
+
+Base64 bedava değildir. Üç bayt dört karaktere dönüşür, dolayısıyla kodlanmış biçim, satır sonları için herhangi bir ek yükten önce orijinalden yaklaşık **%33 daha büyük**tür. Bu ödünleşim, bir metin kanalında doğruluk için genellikle değer; ama ham bayt olarak gönderebileceğiniz büyük bir dosyayı Base64'e kodlamamanızın nedeni de budur. Küçük gömülü kaynaklarda kolaylık kazanır; büyük yüklerde ek yük ikili bir taşımayı işaret eder.
+
+## Kodlamak şifrelemek değildir
+
+Basic auth örneği en önemli noktayı kendisi yapar. `Authorization: Basic dXNlcjpwYXNz` anlaşılmaz görünür, ama `dXNlcjpwYXNz` yalnızca `user:pass` değerinin Base64'üdür; hiçbir anahtar olmadan herkesçe tersine çevrilebilir. Base64 **hiçbir gizlilik** sağlamaz. Bir kodlamadır (temsilin tersine çevrilebilir bir değişimi), şifreleme (anahtarla korunan bir sır) ya da karma (tek yönlü bir parmak izi) değildir. Bu yüzden Basic auth yalnızca TLS üzerinden güvenlidir: taşıma başlığı şifreler, çünkü Base64 kesinlikle şifrelemez.
+
+Uzun, anlaşılmaz görünen bir dize gördüğünüzde, onu önce çözmek ne olduğunu öğrenmenin ucuz bir yoludur. [Base64 aracı](/tools/base64) data URI'leri, PEM bloklarını ve kimlik doğrulama başlıklarını ham baytlarına ve metnine çözer, tamamı tarayıcınızda, böylece yapıştırdığınız hiçbir şey sayfadan ayrılmaz.

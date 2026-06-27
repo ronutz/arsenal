@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: identiteit bovenop OAuth 2.0"
+summary: "Hoe OIDC authenticatie toevoegt aan de autorisatie van OAuth, wat het ID-token is en waarom de codestroom met PKCE het aanbevolen pad is."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Autorisatie is geen authenticatie
+
+OAuth 2.0 beantwoordt "mag deze applicatie namens de gebruiker toegang tot die bron?". Het is een *autorisatie*protocol, en het zegt opzettelijk niets standaards over *wie de gebruiker is*. Toch probeerden applicaties het te hergebruiken voor aanmelden, op incompatibele en soms onveilige manieren. **OpenID Connect (OIDC)** is de standaard die dit oplost: een dunne identiteitslaag bovenop OAuth 2.0 die authenticatie toevoegt zonder iets weg te gooien van wat OAuth al doet.
+
+## Het ID-token
+
+De bepalende toevoeging is het **ID-token**, en het is een JWT. Terwijl een OAuth-toegangstoken bedoeld is voor een API en vaak ondoorzichtig is voor de client, is het ID-token bedoeld voor de *client* en draagt het standaardclaims over de geauthenticeerde gebruiker:
+
+- `iss` (uitgever) en `aud` (doelgroep, de client waarvoor het is uitgegeven)
+- `sub` (de stabiele, unieke gebruikers-id)
+- `exp` en `iat` (vervaltijd en uitgegeven-op)
+- `nonce` (bindt het token aan het specifieke aanmeldverzoek en verslaat replay)
+- profielclaims zoals `name`, `email` en `picture` wanneer die scopes worden verleend
+
+Omdat het een JWT is, verifieert de client de handtekening van het ID-token en valideert die claims precies zoals beschreven voor elke JWT. Dezelfde controles van algoritme-vastlegging en `aud`/`iss`/`exp` zijn van toepassing.
+
+## Hoe een aanmelding verloopt
+
+OIDC hergebruikt de machinerie van OAuth. De aanbevolen stroom is de **autorisatiecodestroom met PKCE**:
+
+1. De applicatie stuurt de gebruiker naar het autorisatie-eindpunt van de provider, vraagt de scope `openid` aan (plus `profile`, `email` enzovoort), en voegt een PKCE-`code_challenge` toe.
+2. De gebruiker authenticeert en stemt in bij de provider.
+3. De applicatie ontvangt een eenmalige code en wisselt die (door bezit van de PKCE-`code_verifier` te bewijzen) in voor een **ID-token** en een **toegangstoken**.
+4. De applicatie verifieert het ID-token om *wie de gebruiker is* vast te stellen en gebruikt het toegangstoken om API's *namens hem* aan te roepen.
+
+Twee eindpunten maken het beeld compleet: een **userinfo**-eindpunt retourneert profielclaims voor een geldig toegangstoken, en een **discovery-document** op `/.well-known/openid-configuration` kondigt de eindpunten van de provider en de URL van zijn JWKS aan, zodat een client de sleutels kan vinden om ID-tokens te verifiëren en sleutelrotatie automatisch kan volgen.
+
+## Waarom het ertoe doet
+
+OIDC is wat de meeste "Aanmelden met ..."-knoppen daadwerkelijk uitvoeren. De twee tokens gescheiden houden is het kerninzicht: het **ID-token bewijst de identiteit aan de client**, het **toegangstoken autoriseert API-aanroepen**, en ze zijn niet uitwisselbaar. Gecombineerd met de codestroom en PKCE is het de moderne, op standaarden gebaseerde manier om gefedereerd aanmelden te doen.
+
+De [PKCE-tool](/tools/pkce) genereert en verifieert de `code_verifier` en `code_challenge` van de stroom, en de [JWT-tool](/tools/jwt) decodeert en verifieert het ID-token, beide volledig in je browser, zonder iets te verzenden.

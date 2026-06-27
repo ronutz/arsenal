@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUIDs como chaves de banco de dados: v4, v7 e localidade de índice"
+summary: "O verdadeiro compromisso entre UUIDs e inteiros autoincrementais, e por que chaves v4 aleatórias prejudicam silenciosamente o desempenho do banco."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Duas formas de fazer uma chave primária
+
+A maioria das tabelas precisa de uma chave única para cada linha. As duas escolhas comuns são um **inteiro autoincremental** do banco (1, 2, 3, ...) e um **UUID**. O inteiro é pequeno e naturalmente ordenado; o UUID pode ser gerado em qualquer lugar, por qualquer um, sem coordenação. Qual é melhor depende do que você valoriza, e a resposta tem uma dimensão de desempenho fácil de ignorar.
+
+## Por que equipes recorrem a UUIDs
+
+- **Sem coordenação.** Qualquer serviço, cliente ou dispositivo offline pode cunhar um UUID que não colidirá, então você não precisa de uma sequência central nem de uma ida e volta ao banco para obter um id. Isso é inestimável em sistemas distribuídos e para gerar ids antes de uma linha ser salva.
+- **Não adivinhável.** Ids inteiros sequenciais vazam informação (quantos pedidos existem, e o id do próximo) e deixam um atacante percorrer registros incrementando. Um UUID aleatório não expõe nada disso.
+- **Amigável a mesclagem.** Dados de sistemas separados se combinam sem colisões de id.
+
+O custo é o tamanho, 16 bytes contra 4 ou 8 de um inteiro, o que importa porque a chave primária é copiada em cada índice secundário e em cada chave estrangeira que referencia a linha.
+
+## O custo oculto de chaves aleatórias
+
+Há um custo mais sutil e mais importante. Os bancos armazenam linhas em um índice (comumente uma B-tree) ordenado pela chave primária. Com uma chave **sequencial**, cada nova linha se acrescenta ao fim do índice, então as páginas ativas permanecem na memória e as escritas são baratas. Com um **UUID v4 aleatório**, cada inserção cai em uma posição arbitrária. O banco precisa ler, modificar e escrever páginas espalhadas por todo o índice, causando **divisões de página**, **fragmentação** e muito mais faltas de cache. Em uma tabela grande e com muita escrita, chaves aleatórias podem retardar de forma mensurável as inserções e inchar o índice, tudo sem nenhum erro para apontar.
+
+## Por que a v7 muda a conta
+
+Este é exatamente o problema que a **UUID versão 7** foi projetada para resolver. Ao colocar um carimbo de tempo em milissegundos nos bits mais significativos, os valores v7 são **ordenados no tempo**: novas linhas inserem-se perto do fim do índice, tal como um inteiro sequencial, mantendo a geração descentralizada e não coordenada de um UUID. Você obtém a maior parte do benefício de localidade de índice de uma chave autoincremental sem a sequência central. Para novos sistemas que querem chaves UUID, a v7 costuma ser a versão certa justamente por essa razão.
+
+## Notas práticas
+
+- **Armazene UUIDs como um tipo UUID nativo ou binário, não como uma string de 36 caracteres.** Armazenar a forma textual desperdiça espaço e torna as comparações mais lentas; a forma binária tem 16 bytes.
+- **Use v7 para chaves** onde o desempenho de inserção importa, e **v4** onde você especificamente não quer nenhuma informação de tempo embutida no id.
+- Um inteiro autoincremental ainda é perfeitamente bom para uma tabela de nó único que nunca precisa de ids gerados externamente; UUIDs mostram seu valor quando distribuição, imprevisibilidade ou pré-geração importam.
+
+A [ferramenta UUID](/tools/uuid) gera tanto v4 quanto v7 e decodifica o carimbo de tempo embutido de um valor v7, para que você veja a propriedade de ordenação diretamente, tudo no seu navegador.

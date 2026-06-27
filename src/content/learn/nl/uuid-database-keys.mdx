@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUID's als databasesleutels: v4, v7 en indexlocaliteit"
+summary: "De echte afweging tussen UUID's en auto-increment-gehele getallen, en waarom willekeurige v4-sleutels de databaseprestaties stilletjes schaden."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Twee manieren om een primaire sleutel te maken
+
+De meeste tabellen hebben een unieke sleutel voor elke rij nodig. De twee gangbare keuzes zijn een **auto-increment-geheel getal** van de database (1, 2, 3, ...) en een **UUID**. Het gehele getal is klein en van nature geordend; de UUID kan overal, door iedereen, zonder coördinatie worden gegenereerd. Welke beter is, hangt af van wat je waardeert, en het antwoord heeft een prestatiedimensie die makkelijk te missen is.
+
+## Waarom teams naar UUID's grijpen
+
+- **Geen coördinatie.** Elke dienst, client of offline-apparaat kan een UUID slaan die niet botst, dus je hebt geen centrale sequentie of een heen-en-terugreis naar de database nodig om een id te krijgen. Dat is onbetaalbaar in gedistribueerde systemen en voor het genereren van id's voordat een rij wordt opgeslagen.
+- **Onraadbaar.** Sequentiële gehele id's lekken informatie (hoeveel orders er bestaan, en het id van de volgende) en laten een aanvaller door records lopen door op te tellen. Een willekeurige UUID onthult daar niets van.
+- **Samenvoeg-vriendelijk.** Data uit aparte systemen combineert zonder id-botsingen.
+
+De kosten zijn de grootte, 16 bytes tegenover 4 of 8 voor een geheel getal, wat ertoe doet omdat de primaire sleutel naar elke secundaire index en elke vreemde sleutel die naar de rij verwijst wordt gekopieerd.
+
+## De verborgen kosten van willekeurige sleutels
+
+Er zijn subtielere, belangrijkere kosten. Databases slaan rijen op in een index (vaak een B-tree) geordend op de primaire sleutel. Met een **sequentiële** sleutel hangt elke nieuwe rij aan het eind van de index, dus de actieve pagina's blijven in het geheugen en schrijfacties zijn goedkoop. Met een **willekeurige v4-UUID** belandt elke invoeging op een willekeurige positie. De database moet pagina's verspreid over de hele index lezen, wijzigen en schrijven, wat **paginasplitsingen**, **fragmentatie** en veel meer cache-missers veroorzaakt. Op een grote, schrijfintensieve tabel kunnen willekeurige sleutels invoegingen meetbaar vertragen en de index opblazen, allemaal zonder enige fout om naar te wijzen.
+
+## Waarom v7 de rekensom verandert
+
+Dit is precies het probleem dat **UUID versie 7** moest oplossen. Door een milliseconde-tijdstempel in de meest significante bits te plaatsen, zijn v7-waarden **tijdgeordend**: nieuwe rijen voegen zich nabij het eind van de index in, net als een sequentieel geheel getal, met behoud van de gedecentraliseerde, ongecoördineerde generatie van een UUID. Je krijgt het grootste deel van het indexlocaliteitsvoordeel van een auto-increment-sleutel zonder de centrale sequentie. Voor nieuwe systemen die UUID-sleutels willen, is v7 meestal de juiste versie om precies deze reden.
+
+## Praktische opmerkingen
+
+- **Sla UUID's op als een native UUID- of binair type, niet als een tekenreeks van 36 tekens.** De tekstvorm opslaan verspilt ruimte en vertraagt vergelijkingen; de binaire vorm is 16 bytes.
+- **Gebruik v7 voor sleutels** waar invoegprestaties ertoe doen, en **v4** waar je specifiek geen tijdinformatie in het id ingebed wilt.
+- Een auto-increment-geheel getal is nog steeds prima voor een enkelvoudige-knooppunttabel die nooit extern gegenereerde id's nodig heeft; UUID's bewijzen hun waarde wanneer distributie, onvoorspelbaarheid of voorafgaande generatie ertoe doen.
+
+De [UUID-tool](/tools/uuid) genereert zowel v4 als v7 en decodeert de ingebedde tijdstempel van een v7-waarde, zodat je de ordeningseigenschap direct ziet, alles in je browser.

@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Pag-unawa sa IPv6 addressing"
+summary: "Kung paano binubuo at isinusulat ang isang 128-bit na IPv6 address, ang mga panuntunan sa kanonikong pagsiksik nito, kung ano ang ibig sabihin ng mga uri ng address at scope, at kung paano gumagana ang mga interface identifier at reverse DNS."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bakit umiiral ang IPv6
+
+Ang IPv4 ay may humigit-kumulang 4.3 bilyong address (2^32). Iyon ay tila hindi mauubos noong dekada 1980 at ngayon ay matagal nang naubos sa mga registry. Ang IPv6, na tinukoy para sa addressing sa RFC 4291, ay pinapalawak ang address mula 32 bits patungong **128 bits**, na 2^128 na address, isang numerong sapat na laki upang ang kakulangan ay tumigil sa pagiging hadlang sa disenyo. Ang praktikal na epekto ay ang mga subnet ay nagiging napakalaki at ang mga trick sa pagtitipid ng address tulad ng NAT ay hindi na kailangan para sa pangunahing connectivity.
+
+## Ang 128-bit na istraktura
+
+Ang isang IPv6 address ay 128 bits, isinusulat bilang **walong grupo ng apat na hexadecimal digit** na pinaghihiwalay ng colon. Ang bawat grupo ay isang 16-bit na halaga:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Ang ganap na isinulat na anyong iyon ay ang **pinalawak** na representasyon. Dahil ito ay mahaba at puno ng mga sero, ang anyong teksto ay may mga panuntunan sa pagsiksik.
+
+## Pagsulat ng isang address: ang mga panuntunan sa pagsiksik
+
+Dalawang panuntunan ang nagpapaikli sa teksto, at ginagawang kanoniko ng RFC 5952 ang resulta (isang address, isang ginustong baybay):
+
+- **Pigilin ang mga nangungunang sero** sa bawat grupo: ang `0db8` ay nagiging `db8`, ang `0000` ay nagiging `0`.
+- **Palitan ang isang takbo ng magkakasunod na lahat-serong grupo ng `::`**. Ang double colon ay maaaring lumitaw **nang hindi hihigit sa isang beses**, at kumakatawan ito sa isa o higit pang 16-bit na grupo ng mga sero. Kapag may umiiral na ilang takbo ng pantay na haba, ang una ang sinisiksik.
+
+Ang paglalapat ng pareho sa address sa itaas ay nagbibigay ng kanoniko nitong anyo:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+Nagdaragdag ang RFC 5952 ng ilang panuntunan sa pagtatapos upang magkasundo ang mga tool: ang mga hex digit ay maliliit na titik, at ang `::` ay hindi ginagamit upang "siksikin" ang isang nag-iisang serong grupo (hindi nito paiikliin ang anumang makahulugan). Ipinapakita ng IPv6 tool ang parehong kanonikong sinisiksik na anyo at ang ganap na pinalawak na anyo nang magkatabi, upang makita mo nang eksakto kung ano ang kinakatawan ng `::`.
+
+Isang espesyal na kaso: ang isang address ay maaaring magdala ng isang **naka-embed na IPv4** na buntot sa huling 32 bits nito, na isinulat sa dotted-decimal. Ang pinakakaraniwan ay ang **IPv4-mapped** na anyo, kung saan inirerekomenda ng RFC 5952 ang halong notasyon na `::ffff:192.0.2.128` sa halip na purong hex.
+
+## Mga prefix at prefix math
+
+Tulad ng CIDR ng IPv4, ang isang IPv6 prefix ay isinusulat na `address/haba`, kung saan binibilang ng haba ang mga nangungunang network bits:
+
+```
+2001:db8::/64
+```
+
+Ang `/64` ay nangangahulugang ang unang 64 bits ay ang network at ang natitirang 64 ay ang interface identifier. Ang `/64` ay ang standard na laki para sa isang LAN, at ito lamang ay humahawak ng 2^64 na address, mga 18 kuwintilyon. Kinukuwenta ng tool ang network (una) na address, ang huling address, at ang bilang para sa anumang prefix na ibibigay mo rito, na minamaskara ang host bits patungong sero upang mahanap ang network kahit na nag-type ka ng isang address na may nakatakdang host bits.
+
+## Mga uri ng address at scope
+
+Inilalagay ng mga mataas na bits ng isang address ito sa isang kategorya. Ang pinakamahalaga, mula sa RFC 4291 at ang IANA registry:
+
+- Ang **global unicast (2000::/3)** ay ang routable na pampublikong espasyo, ang IPv6 na katumbas ng isang pampublikong IPv4 address.
+- Ang **unique local, o ULA (fc00::/7)** ay ang private-use na espasyo (RFC 4193), katulad ng RFC 1918 sa IPv4. Hindi ito niruruta sa pampublikong internet.
+- Ang **link-local unicast (fe80::/10)** ay balido lamang sa isang link at awtomatikong na-configure sa bawat IPv6 interface. Hindi ito kailanman pina-forward ng mga router. Ang scope nito ay ang lokal na link.
+- Ang **multicast (ff00::/8)** ay umaaddress sa isang grupo sa halip na isang host. Isang scope field sa loob ng address ang nagsasabi kung gaano kalayo ito umaabot: interface-local, link-local, admin-local, site-local, organization-local, o global. Halimbawa ang `ff02::1` ay ang link-local na all-nodes na grupo.
+- Ang **loopback (::1/128)** ay ang IPv6 na katumbas ng 127.0.0.1, at ang **unspecified address (::/128)** ay nangangahulugang "walang address", ginagamit bilang placeholder sa panahon ng configuration.
+- Ang **documentation (2001:db8::/32)** ay nakareserba ng RFC 3849 para sa mga halimbawa at pagsulat, na siyang dahilan kung bakit halos bawat halimbawa ng IPv6 na nakikita mo, kasama ang kanoniko sa RFC 4291 mismo, ay gumagamit nito.
+
+Iniuulat ng IPv6 tool ang tumutugmang uri at ang tiyak na prefix na tinugma nito, kasama ang scope para sa mga multicast at link-local na address.
+
+## Mga interface identifier at EUI-64
+
+Sa isang tipikal na `/64`, ang mababang 64 bits ay ang **interface identifier**. Isang makasaysayang paraan ng pagbuo nito ay ang **modified EUI-64** (RFC 4291, Appendix A): kunin ang 48-bit na MAC address, ipasok ang mga byte na `ff:fe` sa gitna, at baliktarin ang ikapitong bit (ang universal/local na bit). Iyon ang gumawa sa interface id na maaaring kunin mula sa hardware address. Kapag nakikita ng tool ang nagbubunyag na `ff:fe` sa gitna ng interface id, binabaliktad nito ang proseso at ipinapakita sa iyo ang orihinal na MAC. Ang mga modernong sistema ay madalas na mas gusto ang mga randomized o privacy na interface identifier sa halip, dahil mismo ang pagkuha ng id mula sa isang MAC ay naglalantad ng hardware address.
+
+## Reverse DNS: ip6.arpa
+
+Ang mga reverse lookup (address patungong pangalan) para sa IPv6 ay nabubuhay sa ilalim ng **ip6.arpa** na domain. Ang address ay pinalalawak sa 32 hex nibble nito, ang mga nibble na iyon ay binabaliktad, at bawat isa ay nagiging isang label. Kaya ang `2001:db8::1` ay nagiging isang pangalang nagtatapos sa `...8.b.d.0.1.0.0.2.ip6.arpa`. Bumubuo ang tool ng pangalang ito para sa anumang address, na siyang eksaktong halaga na ilalagay mo sa isang `PTR` na record.
+
+## Isang tala tungkol sa ginagawa ng tool
+
+Ang IPv6 tool ay isang deterministic at lokal na calculator. Nag-parse ito, nagkakanoniko, nag-uuri, at kumukuwenta, lahat sa iyong browser, nang walang anumang lookup laban sa live na network. Sinasabi nito sa iyo kung ano ang isang address sa istraktura. Hindi nito sinasabi sa iyo kung ang address na iyon ay naaabot, naka-allocate, o ginagamit, na mga hiwalay na tanong na nangangailangan ng pag-query sa network o isang registry.

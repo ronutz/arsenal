@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "Subnetting IPv6 e la frontiera /64"
+summary: "Perché il subnetting IPv6 riguarda la struttura invece della scarsità, perché una singola sottorete è quasi sempre un /64, e come la delega di prefisso distribuisce lo spazio di indirizzi."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Una ragione diversa per fare subnetting
+
+In IPv4, il subnetting riguarda per lo più la conservazione: gli indirizzi sono scarsi, quindi intagli un blocco nei pezzi più piccoli che ancora stanno in ogni rete (la logica nell'articolo [fondamenti di subnetting](/learn/subnetting-basics)). IPv6 rimuove quella pressione interamente. Una singola sottorete /64 contiene 2^64 indirizzi, più dell'intera internet IPv4 al quadrato, quindi non fai mai subnetting in una rete IPv6 per risparmiare spazio. Fai subnetting per dare struttura: un prefisso per VLAN, per sito, per cliente. La matematica è la stessa aritmetica di prefisso di IPv4 (lo strumento la calcola con interi a precisione arbitraria), ma la mentalità è l'opposta.
+
+## Perché una sottorete è un /64
+
+La regola singola più importante nell'indirizzamento IPv6 è che una sottorete normale è un /64, lasciando 64 bit per l'identificatore di interfaccia. Questa non è un suggerimento; grandi parti del protocollo lo presumono. L'autoconfigurazione di indirizzo senza stato (coperta nell'articolo [configurazione di indirizzo](/learn/ipv6-address-configuration)) costruisce l'indirizzo di un host aggiungendo un identificatore di interfaccia di 64 bit al prefisso annunciato, e la derivazione EUI-64 modificata che lo strumento può eseguire produce esattamente 64 bit. Usa un prefisso più lungo come un /80 o /112 su un collegamento e l'autoconfigurazione semplicemente smette di funzionare. L'architettura di indirizzamento (RFC 4291) è costruita attorno a questa frontiera, quindi il consiglio pratico è schietto: fai di ogni sottorete dell'utente finale un /64 e non cercare di essere frugale al suo interno.
+
+## La gerarchia di allocazione
+
+Se ogni sottorete è un /64, siti e provider lavorano in blocchi più grandi al di sopra di ciò:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Un ISP tipicamente delega un /48 o /56 a un cliente, che poi assegna /64s a partire da esso a collegamenti individuali. La RFC 6177 fa marcia indietro dall'orientamento originale del "/48 per tutti" verso il dare a ogni sito spazio sufficiente per fare subnetting comodamente, che in pratica significa un /48 o /56. Il punto è che hai spazio d'avanzo: anche un /56 dà a una casa o piccolo ufficio 256 reti separate, molto più di quanto userà mai.
+
+## Fai subnetting su frontiere di nibble
+
+Poiché IPv6 è scritto in esadecimale e ogni cifra esadecimale è di 4 bit (un nibble), i prefissi che cadono su una frontiera di 4 bit sono molto più facili da leggere e gestire. Un /48, /52, /56, /60, e /64 terminano tutti pulitamente tra cifre esadecimali, quindi la porzione di sottorete si allinea con caratteri interi nell'indirizzo. Fare subnetting di un /48 in /52s ti dà 16 blocchi distinti da una singola cifra esadecimale; andando a /56 dà 256 blocchi attraverso due cifre. Rimanere su frontiere di nibble mantiene il tuo piano di indirizzamento leggibile, che conta più in IPv6 di quanto spremere l'ultimo bit potrebbe mai.
+
+## Contare sottoreti e indirizzi
+
+L'aritmetica è semplice. Il numero di sottoreti /64 dentro un prefisso più corto è 2 elevato alla differenza nelle lunghezze di prefisso: un /48 contiene 2^(64-48) = 2^16 = 65.536 sottoreti. Il numero di indirizzi dentro qualsiasi /64 è 2^(128-64) = 2^64. Lo strumento riporta sia il conteggio di indirizzi per un prefisso sia l'intervallo utilizzabile, e i numeri diventano grandi rapidamente, che è esattamente il punto: la scarsità non è più un vincolo attorno al quale progetti.
+
+## La lezione
+
+Il subnetting IPv6 capovolge l'abitudine di IPv4. Non stai dividendo una risorsa scarsa; stai imponendo struttura su una effettivamente illimitata. Dai a ogni sottorete un /64 affinché l'autoconfigurazione e la scoperta dei vicini funzionino come progettate, richiedi un /48 o /56 affinché tu abbia spazio per organizzare, e fai subnetting su frontiere di nibble affinché il tuo piano rimanga leggibile. Quando incolli un prefisso nello strumento e vedi il conteggio di indirizzi, tratta quell'abbondanza come permesso per progettare per la chiarezza invece che per la conservazione.

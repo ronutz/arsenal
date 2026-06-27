@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Zertifikatswiderruf: CRL, OCSP und kurzlebige Zertifikate"
+summary: "Warum ein Zertifikat manchmal vor seinem Ablauf annulliert werden muss, warum die klassischen Widerrufssysteme schlecht funktionieren, und warum die Industrie stattdessen die Zertifikatslebensdauern verkürzt."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Warum überhaupt widerrufen
+
+Ein Zertifikat trägt ein Ablaufdatum, aber manchmal muss es annulliert werden, bevor dieses Datum eintrifft. Der Privatschlüssel könnte geleckt sein, das Zertifikat könnte irrtümlich ausgestellt worden sein, oder die Domäne könnte den Besitzer gewechselt haben. In all diesen Fällen ist das Zertifikat noch kryptografisch gültig und noch innerhalb seines Gültigkeitsfensters, dennoch sollten vertrauende Parteien aufhören, ihm zu vertrauen. Widerruf ist der Mechanismus, um zu sagen „ignoriere dieses Zertifikat, obwohl es nicht abgelaufen ist". Der schwierige Teil ist, diese Nachricht zuverlässig an jeden Client der Welt zu liefern, und dies erweist sich als das schwächste Glied in der Web-PKI.
+
+## CRLs: die veröffentlichte Sperrliste
+
+Die ursprüngliche Antwort ist die Zertifikatswiderrufsliste (Certificate Revocation List), definiert neben dem Zertifikatsprofil in RFC 5280. Eine CA veröffentlicht periodisch eine signierte Liste der Seriennummern, die sie widerrufen hat, und Zertifikate können über einen CRL Distribution Point darauf zeigen. Ein Client lädt die Liste herunter und prüft, ob die Seriennummer des Zertifikats darauf erscheint.
+
+Das Problem ist Größe und Frische. Eine geschäftige CA kann enorme Listen anhäufen, also ist das Herunterladen und Parsen einer CRL bei jeder Verbindung unpraktisch, und eine zwischengespeicherte Liste ist veraltet bis zur nächsten Veröffentlichung. CRLs werden noch genutzt, zunehmend in komprimierten und vorverarbeiteten Formen, die Browser sich selbst ausliefern, aber als Prüfung pro Verbindung skalieren sie schlecht.
+
+## OCSP: nach einem Zertifikat fragen
+
+Das Online Certificate Status Protocol, RFC 6960, sollte das Größenproblem beheben, indem es einen Client nach einem einzelnen Zertifikat fragen lässt, statt die ganze Liste herunterzuladen. Der Client sendet die Seriennummer des Zertifikats an einen OCSP-Responder und erhält ein signiertes „good", „revoked" oder „unknown" zurück.
+
+Dies tauscht ein Problem gegen drei. Es fügt Latenz hinzu, weil der Client nun während des Verbindungsaufbaus eine zusätzliche Netzwerk-Hin-und-Rückreise macht. Es leckt Privatsphäre, weil der Responder erfährt, welche Seiten der Benutzer besucht. Und es schafft eine Verfügbarkeitskopplung: Ist der Responder ausgefallen, muss der Client entweder die Verbindung scheitern lassen oder, weit häufiger, **sanft scheitern** (soft-fail) und fortfahren, als wäre das Zertifikat gut, was den ganzen Sinn still zunichtemacht.
+
+## OCSP-Stapling und Must-Staple
+
+Stapling adressiert die Latenz- und Privatsphäre-Probleme, indem der *Server* eine aktuelle, signierte OCSP-Antwort holt und sie an den TLS-Handshake anhängt (die status_request-Erweiterung aus RFC 6066). Der Client erhält die Frische, ohne den Responder zu kontaktieren. Must-Staple, RFC 7633, ist eine Zertifikatserweiterung, die sagt „weise mich ab, wenn ein Staple fehlt", was die Soft-Fail-Lücke schließt, aber sie wird selten eingesetzt, weil ein einzelner Stapling-Schluckauf dann die Seite lahmlegt.
+
+## Die unbequeme Wahrheit
+
+Über diese Mechanismen hinweg ist das wiederkehrende Versagen der Soft-Fail: Wenn Widerrufsinformationen nicht verfügbar sind, wählen Clients überwältigend Verfügbarkeit über Sicherheit und akzeptieren das Zertifikat. Das macht den Widerruf zu einem unzuverlässigen Sicherheitsnetz genau dann, wenn er gebraucht wird. Browser haben mit ihren eigenen Out-of-Band-Systemen reagiert, die sich Widerrufsdaten selbst zuschieben, aber die Protokolle pro Verbindung lösten ihr Versprechen nie ein.
+
+## Die moderne Antwort: Zertifikate früher ablaufen lassen
+
+Wenn Sie ein Zertifikat nicht zuverlässig annullieren können, ist die Alternative, es kurzlebig genug zu machen, dass die Annullierung selten zählt: Ein kompromittiertes Zertifikat läuft einfach von selbst innerhalb von Tagen oder Wochen ab. Die Industrie hat sich genau dazu verpflichtet. Das Ballot SC-081v3 des CA/Browser Forum, genehmigt im April 2025, reduziert die maximale öffentliche TLS-Zertifikatslebensdauer phasenweise von 398 Tagen auf 200 Tage (ab März 2026), 100 Tage (März 2027) und 47 Tage (März 2029), wobei der Domänenvalidierungs-Wiederverwendungszeitraum auf 10 Tage schrumpft. Gesondert hat das Forum seit 2023 erlaubt, dass kurzlebige Zertifikate, die innerhalb von 7 Tagen ablaufen, die CRL- und OCSP-Unterstützung gänzlich überspringen, und Let's Encrypt hat begonnen, Zertifikate mit in Tagen gemessenen Lebensdauern auszustellen. Die ganze Prämisse ist, dass eine genügend kurze Lebensdauer selbst der Widerruf ist.
+
+Dies funktioniert nur mit Automatisierung. Zertifikate alle sechs oder sieben Wochen von Hand zu erneuern ist unhaltbar, weshalb das ACME-Protokoll (siehe den [Signaturanfrage-Artikel](/learn/certificate-signing-request)) und Zertifikatslebenszyklus-Werkzeuge essenzielle Infrastruktur statt einer Annehmlichkeit geworden sind. Beachten Sie, dass diese Regeln für öffentlich vertrauenswürdige Zertifikate in den Browser-Root-Programmen gelten; eine private interne PKI legt ihre eigene Richtlinie fest.
+
+## Was dies bedeutet, wenn Sie ein Zertifikat inspizieren
+
+Wenn Sie ein Zertifikat dekodieren, ist das Gültigkeitsfenster nicht länger ein einmal-im-Jahr-Nachgedanke; es wird zur primären Widerrufskontrolle. Der Bericht des Werkzeugs über notBefore, notAfter und ob das Zertifikat gerade jetzt gültig ist, ist zunehmend das sicherheitsrelevanteste daran. Widerrufslisten und Responder existieren noch, aber die Reiserichtung ist klar: die Lebensdauer verkürzen, damit die Frage des Widerrufs selten aufkommt.

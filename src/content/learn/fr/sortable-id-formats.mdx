@@ -1,0 +1,43 @@
+---
+slug: sortable-id-formats
+title: "ULID, KSUID, Snowflake et autres ID triables"
+summary: "Les alternatives populaires aux UUID pour les identifiants ordonnés dans le temps, comment chacun est construit, et pourquoi l'UUIDv7 couvre désormais l'essentiel de ce pour quoi ils ont été inventés."
+concepts: ["uuid", "ulid", "ksuid", "snowflake", "nanoid", "sortable-ids"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Pourquoi ceux-ci existent
+
+L'UUIDv4 aléatoire excelle à être unique et est exécrable à être ordonné, et ce désordre nuit discrètement aux performances de la base de données (l'histoire dans l'article [clés de base de données](/learn/uuid-database-keys)). Avant que l'UUIDv7 ne standardise un UUID ordonné dans le temps, plusieurs projets ont inventé leurs propres formats d'identifiant pour obtenir le même bénéfice : un ID qui se trie par heure de création, est compact et compatible avec les URL, et n'a toujours besoin d'aucune coordination centrale. Il vaut la peine de les connaître car vous les rencontrerez dans des systèmes réels et parce qu'ils illustrent la même poignée de compromis.
+
+## La recette commune
+
+Presque tout ID triable utilise une idée : mettre un **horodatage en premier** et des **bits aléatoires ou séquentiels après**. Trier les ID en tant que texte les ordonne alors approximativement par temps, car la partie la plus significative est l'horloge. Encoder le tout dans une base qui préserve l'ordre (de sorte que le texte se trie de la même façon que les octets) rend les ID lexicographiquement triables en tant que simples chaînes. Les formats diffèrent par le nombre de bits qu'ils dépensent en temps contre aléa, par la façon dont ils encodent le résultat, et par le fait qu'ils nécessitent ou non une coordination entre générateurs.
+
+## ULID
+
+L'ULID est un identifiant de 128 bits, la même largeur qu'un UUID, rendu en 26 caractères en base32 de Crockford. Les 48 premiers bits sont un horodatage en millisecondes et les 80 restants sont aléatoires. L'encodage est insensible à la casse et choisi pour être lisible, et il est lexicographiquement triable, avec un mode monotone optionnel qui garantit l'ordre même pour des ID créés dans la même milliseconde. L'ULID a été l'une des réponses les plus populaires au problème d'ordre du v4 et, étant de 128 bits, il peut être stocké dans le même espace qu'un UUID.
+
+## KSUID
+
+Le KSUID (de Segment) est un identifiant de 160 bits encodé en 27 caractères base62. Il utilise un horodatage de 32 bits à résolution de seconde avec une époque personnalisée (de sorte que ses horodatages restent compacts pendant de nombreuses années) suivi de 128 bits d'aléa. La portion aléatoire plus grande rend les collisions extraordinairement improbables même à des taux de génération élevés, au prix d'être plus large qu'un UUID. Comme l'ULID, il se trie par temps lorsqu'il est trié en tant que texte.
+
+## Snowflake
+
+Le Snowflake (originaire de Twitter) a une autre forme : un entier de 64 bits, pas une valeur de 128 bits. Il empaquette un horodatage en millisecondes, un identifiant de machine ou de centre de données et un numéro de séquence par milliseconde dans 64 bits, de sorte qu'il tient dans une colonne bigint signé standard. Cette compacité fait son attrait pour de très grands jeux de données. Le hic est la coordination : chaque générateur a besoin d'un ID de machine unique, qui doit être attribué et géré, donc le Snowflake échange la propriété sans coordination des UUID contre un identifiant bien plus petit. Beaucoup de systèmes ont leur propre schéma à la Snowflake bâti sur la même idée d'empaquetage.
+
+## NanoID
+
+Le NanoID est l'exception : il n'est pas du tout basé sur le temps. C'est simplement une chaîne aléatoire compacte et sûre pour les URL avec alphabet et longueur configurables, conçue comme une alternative plus petite et plus conviviale à un UUID aléatoire quand vous voulez un identifiant opaque dans une chaîne courte. Comparez-le à l'UUIDv4 plutôt qu'aux formats triables : il optimise pour la taille et la compatibilité URL, pas pour l'ordre.
+
+## Comment ils se comparent
+
+Les compromis s'alignent selon quelques axes. **Taille** : le Snowflake fait 64 bits, l'ULID et l'UUID font 128 bits, le KSUID fait 160 bits. **Encodage** : base32 (ULID), base62 (KSUID), un entier (Snowflake) ou hexadécimal (UUID). **Coordination** : seul le Snowflake a besoin d'ID de machine attribués ; le reste est sans coordination. **Triabilité** : tous sauf le NanoID sont ordonnés dans le temps. Et une réserve commune : tout ID préfixé d'un horodatage rend son heure de création visible à quiconque peut le lire, ce qui convient à la plupart des usages, mais mérite d'être noté quand un identifiant est exposé publiquement.
+
+## Pourquoi l'UUIDv7 a changé le calcul
+
+La raison pour laquelle cette liste compte moins qu'avant est que l'UUIDv7 (voir l'article [versions](/learn/uuid-versions)) a standardisé la même recette horodatage-plus-aléa au sein du format UUID régulier de 128 bits. Il vous donne l'ordre temporel et une bonne localité d'index tout en restant un UUID standard que toute base de données et bibliothèque comprend déjà, sans encodage personnalisé et sans coordination. Donc, pour les nouveaux systèmes, la valeur par défaut honnête est de se tourner d'abord vers le v7 et d'utiliser l'une de ces alternatives seulement quand vous avez besoin de sa propriété spécifique : une largeur de 64 bits qui tient dans un bigint (Snowflake), un encodage de texte particulier ou un espace aléatoire plus grand. Ils ont résolu un vrai problème ; le v7 en résout désormais l'essentiel sous une forme standard.

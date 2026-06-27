@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: haszowanie z kluczem do uwierzytelniania wiadomości"
+summary: "Dlaczego zwykły skrót dowodzi integralności, ale nie autentyczności, jak naprawia to tajny klucz i dlaczego struktura HMAC ma znaczenie."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Luka, którą zostawia zwykły skrót
+
+Skrót kryptograficzny dowodzi **integralności**: jeśli skrót nadal się zgadza, dane nie zostały zmienione. Ale nie dowodzi niczego o tym, **kto** je wytworzył. Każdy może zahaszować wiadomość, więc skrót przesłany obok wiadomości nie daje żadnej ochrony przed atakującym, który po prostu zmienia wiadomość *i* przelicza skrót. Nie ma w tym żadnego sekretu, więc nie ma niczego, co mógłby zrobić tylko prawowity nadawca.
+
+HMAC zamyka tę lukę. To **kod uwierzytelniania wiadomości**: wartość dowodząca, że wiadomością nie manipulowano i że pochodzi od kogoś, kto posiada współdzielony tajny klucz. Weryfikator przelicza HMAC tym samym kluczem; jeśli się zgadza, wiadomość jest autentyczna.
+
+## Dodawanie klucza, we właściwy sposób
+
+Oczywisty pomysł, po prostu zahaszować klucz i wiadomość razem jako `hash(klucz + wiadomość)`, jest subtelnie niebezpieczny. Wiele funkcji skrótu (w tym rodzina SHA-2) opiera się na konstrukcji podatnej na **atak rozszerzenia długości**: znając `hash(klucz + wiadomość)` i długość sekretu, atakujący może obliczyć poprawny skrót dla `klucz + wiadomość + dodatek`, nigdy nie znając klucza. Pozwoliłoby mu to sfałszować rozszerzoną, wciąż poprawną wiadomość.
+
+HMAC (zdefiniowany w RFC 2104) unika tego, haszując dwukrotnie, za każdym razem inaczej wmieszując klucz. Pojęciowo oblicza:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+gdzie `ipad` i `opad` to dwie stałe wypełniające. Wewnętrzny skrót wiąże klucz z wiadomością; zewnętrzny skrót owija wynik, by sztuczka rozszerzenia długości nie mogła go dosięgnąć. Nie musisz zapamiętywać wzoru, sedno jest takie, że to zagnieżdżona struktura, a nie niedbała konkatenacja, czyni HMAC solidnym.
+
+## HMAC a podpis cyfrowy
+
+Oba dowodzą autentyczności, ale model zaufania się różni:
+
+- **HMAC jest symetryczny.** Jeden tajny klucz jest współdzielony przez obie strony. Kto może zweryfikować HMAC, może też go utworzyć, więc sprawdza się, gdy obie strony już współdzielą klucz, lecz nie mogą udowodnić autorstwa stronie trzeciej.
+- **Podpis cyfrowy jest asymetryczny.** Podpisujący używa klucza prywatnego; każdy może zweryfikować kluczem publicznym. To dowodzi autorstwa wobec całego świata, kosztem większego nakładu obliczeniowego.
+
+Wybierz HMAC, gdy dwa systemy współdzielą sekret i potrzebują szybkiego, wzajemnego uwierzytelnienia; wybierz podpis, gdy weryfikatorzy nie mogą móc sfałszować tego, co weryfikują.
+
+## Gdzie spotykasz HMAC
+
+- **Podpisywanie żądań API.** Schematy takie jak AWS Signature Version 4 podpisują każde żądanie za pomocą HMAC-SHA256, aby serwer mógł potwierdzić, że wywołujący posiada tajny klucz.
+- **Webhooki.** Dostawca wysyła HMAC ładunku w nagłówku; twój punkt końcowy przelicza go, by odrzucić sfałszowane wywołania.
+- **Tokeny JWT z HS256.** Token podpisany HS256 to dosłownie HMAC-SHA256 nad nagłówkiem i ładunkiem tokenu. [Narzędzie HMAC](/tools/hmac) używa dokładnie tej samej konstrukcji Web Crypto, której używa weryfikator JWT, więc oba zgadzają się z założenia.
+
+Twoja wiadomość i klucz nigdy nie opuszczają przeglądarki; HMAC jest obliczany lokalnie.

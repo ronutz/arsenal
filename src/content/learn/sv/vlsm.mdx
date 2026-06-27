@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: dela ett block i ojämna subnät"
+summary: "Hur man skär ett adressblock i subnät av olika storlek utan att slösa utrymme, och störst-först-regeln som håller allt prydligt."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problemet med lika stora subnät
+
+Klassisk subnätindelning delar ett block i bitar av en enda fast storlek. Det är enkelt men slösaktigt när dina behov skiljer sig. Om ett segment har 100 värdar och ett annat är en länk mellan två routrar med 2, så misslyckas att ge båda ett `/26` (62 användbara) för det första och slösar 60 adresser på det andra. **VLSM**, subnätmask med variabel längd, åtgärdar detta genom att låta varje subnät använda den prefixlängd som passar dess eget behov, allt utskuret ur samma överordnade block.
+
+Det enda som gör VLSM mer arbetskrävande än fast subnätindelning är ordningen: du måste placera de **största subnäten först**, annars strandar adresser och du skapar överlappningar.
+
+## Dimensionera varje subnät
+
+Börja med antalet värdar varje segment behöver, hitta sedan det minsta block som rymmer det, kom ihåg att två adresser i varje vanligt block är reserverade (nätverk och broadcast):
+
+- 100 värdar kräver 7 värdbitar (2⁷ − 2 = 126 användbara), ett `/25`.
+- 50 värdar kräver 6 värdbitar (62 användbara), ett `/26`.
+- 25 värdar kräver 5 värdbitar (30 användbara), ett `/27`.
+- 10 värdar kräver 4 värdbitar (14 användbara), ett `/28`.
+- En punkt-till-punkt-länk med 2 värdar är ett `/30` (2 användbara), eller ett `/31` enligt RFC 3021.
+
+Avrunda alltid uppåt till nästa tvåpotens. Ett segment med 100 värdar får inte plats i ett `/26` (62), så det tar nästa storlek, ett `/25`.
+
+## Skär ur blocket, störst först
+
+Anta att du äger `192.168.10.0/24` och behöver de fem subnäten ovan. Tilldela i fallande storleksordning, vart och ett börjande på sin naturliga gräns:
+
+```
+/25  192.168.10.0   – .127   (126 användbara)  ← segment med 100 värdar
+/26  192.168.10.128 – .191   (62 användbara)   ← segment med 50 värdar
+/27  192.168.10.192 – .223   (30 användbara)   ← segment med 25 värdar
+/28  192.168.10.224 – .239   (14 användbara)   ← segment med 10 värdar
+/30  192.168.10.240 – .243   (2 användbara)    ← routerlänk
+```
+
+Varje block börjar exakt där det föregående slutar, och från `192.168.10.244` och framåt är det fortfarande fritt för framtida tillväxt. Hade du tilldelat `/30` först skulle `/25` inte längre ha en ren gräns att landa på, vilket är hela skälet till störst-först-regeln.
+
+## Varför det spelar roll
+
+VLSM är hur verkliga nätverk sparar adressutrymme och håller tilldelningar inriktade så att rutter kan sammanfattas rent. Aritmetiken är samma prefixlängdsmatematik som för ett enskilt subnät, upprepat tillämpad: lås fler bitar för att göra ett block mindre och håll varje block på en tvåpotensgräns.
+
+Du kan verifiera vilken tilldelning som helst i [CIDR-kalkylatorn](/#cidr), som visar nätverks- och broadcastadress, mask och antal användbara värdar för varje block direkt och helt i din webbläsare.

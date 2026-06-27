@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC : hachage à clé pour l'authentification de messages"
+summary: "Pourquoi un hachage simple prouve l'intégrité mais pas l'authenticité, comment une clé secrète corrige cela et pourquoi la structure de HMAC compte."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## La faille que laisse un hachage simple
+
+Un hachage cryptographique prouve l'**intégrité** : si le condensé correspond toujours, les données n'ont pas été altérées. Mais il ne prouve rien sur **qui** les a produites. N'importe qui peut hacher un message, donc un condensé envoyé à côté d'un message n'offre aucune protection contre un attaquant qui change simplement le message *et* recalcule le condensé. Aucun secret n'est en jeu, il n'y a donc rien que seul l'expéditeur légitime aurait pu faire.
+
+HMAC comble cette faille. C'est un **code d'authentification de message** : une valeur qui prouve qu'un message n'a pas été altéré et qu'il provient de quelqu'un qui détient une clé secrète partagée. Le vérificateur recalcule le HMAC avec la même clé ; s'il correspond, le message est authentique.
+
+## Ajouter une clé, de la bonne manière
+
+L'idée évidente, hacher simplement la clé et le message ensemble comme `hash(clé + message)`, est subtilement non sûre. Beaucoup de fonctions de hachage (la famille SHA-2 comprise) reposent sur une construction vulnérable à une **attaque par extension de longueur** : connaissant `hash(clé + message)` et la longueur du secret, un attaquant peut calculer un hachage valide pour `clé + message + supplément` sans jamais connaître la clé. Cela lui permettrait de forger un message étendu et toujours valide.
+
+HMAC (défini dans la RFC 2104) évite cela en hachant deux fois, la clé étant mélangée différemment chaque fois. Conceptuellement, il calcule :
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+où `ipad` et `opad` sont deux constantes de remplissage fixes. Le hachage interne lie la clé au message ; le hachage externe enveloppe le résultat afin que l'astuce d'extension de longueur ne puisse l'atteindre. Vous n'avez pas à mémoriser la formule, l'essentiel est que la structure imbriquée, et non une concaténation désinvolte, est ce qui rend HMAC solide.
+
+## HMAC face à une signature numérique
+
+Les deux prouvent l'authenticité, mais le modèle de confiance diffère :
+
+- **HMAC est symétrique.** Une clé secrète est partagée par les deux côtés. Quiconque peut vérifier un HMAC peut aussi en créer un, donc cela fonctionne quand les deux parties partagent déjà une clé mais ne peuvent prouver la paternité à un tiers.
+- **Une signature numérique est asymétrique.** Le signataire utilise une clé privée ; n'importe qui peut vérifier avec la clé publique. Cela prouve la paternité au monde entier, à un coût de calcul plus élevé.
+
+Choisissez HMAC lorsque deux systèmes partagent un secret et ont besoin d'une authentification mutuelle rapide ; choisissez une signature lorsque les vérificateurs ne doivent pas pouvoir forger ce qu'ils vérifient.
+
+## Où vous rencontrez HMAC
+
+- **Signature de requêtes d'API.** Des schémas comme AWS Signature Version 4 signent chaque requête avec HMAC-SHA256 afin que le serveur confirme que l'appelant détient la clé secrète.
+- **Webhooks.** Un fournisseur envoie un HMAC de la charge utile dans un en-tête ; votre point de terminaison le recalcule pour rejeter les appels forgés.
+- **JWT avec HS256.** Un jeton signé avec HS256 est littéralement HMAC-SHA256 sur l'en-tête et la charge utile du jeton. L'[outil HMAC](/tools/hmac) utilise exactement la même construction Web Crypto que le vérificateur de JWT, donc les deux concordent par conception.
+
+Votre message et votre clé ne quittent jamais le navigateur ; le HMAC est calculé localement.

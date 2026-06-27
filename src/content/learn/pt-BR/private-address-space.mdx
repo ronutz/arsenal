@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Espaço de endereços IPv4 privados e a RFC 1918"
+summary: "As três faixas privadas, por que não são roteáveis na Internet e os outros blocos especiais que a ferramenta CIDR sinaliza."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Endereços que você pode reutilizar
+
+Existem apenas cerca de 4,3 bilhões de endereços IPv4, poucos demais para que cada dispositivo tenha um único endereço público. A resposta (RFC 1918) é reservar três faixas que qualquer um pode usar dentro da própria rede, sem registro. Como todos reutilizam as mesmas faixas privadas, elas não podem ser únicas na Internet pública, então **não são roteáveis** ali. Alcançar o exterior exige tradução de endereços de rede (NAT), que troca um endereço de origem privado por um endereço público compartilhado na borda da rede.
+
+## As três faixas da RFC 1918
+
+- **`10.0.0.0/8`**: de `10.0.0.0` a `10.255.255.255`, 16.777.216 endereços. Uma única rede muito grande.
+- **`172.16.0.0/12`**: de `172.16.0.0` a `172.31.255.255`, 1.048.576 endereços. Não é uma classe B inteira, mas os 16 `/16` contíguos de `172.16` a `172.31`, a faixa que as pessoas mais costumam confundir.
+- **`192.168.0.0/16`**: de `192.168.0.0` a `192.168.255.255`, 65.536 endereços. A faixa familiar dos roteadores domésticos.
+
+## Os outros blocos especiais
+
+Várias outras faixas são reservadas para finalidades específicas e também não são endereços públicos comuns:
+
+- **`100.64.0.0/10`** (RFC 6598) é o espaço compartilhado de NAT de operadora (CGNAT), usado pelos provedores entre o cliente e seu pool público. É semelhante a privado, mas distinto da RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) é link-local, o endereço autoatribuído que um host escolhe quando nenhum servidor DHCP responde (APIPA no Windows). Nunca sai do enlace local.
+- **`127.0.0.0/8`** é loopback; `127.0.0.1` é o host falando consigo mesmo.
+- **`0.0.0.0/8`**, a faixa de multicast `224.0.0.0/4` e as faixas de documentação (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) também são reservadas.
+
+O IPv6 tem a mesma ideia em outro formato: os **Unique Local Addresses** em `fc00::/7` (na prática `fd00::/8`) são o análogo de uso privado da RFC 1918, novamente não roteáveis globalmente.
+
+## Por que isso importa
+
+Saber se um endereço é privado, público ou especial diz imediatamente se ele pode aparecer na Internet, se precisa de NAT e se uma regra de firewall ou rota faz sentido. Um endereço de `10/8` em um registro DNS público, ou um endereço `169.254` onde você esperava DHCP, é um sinal que vale a pena notar.
+
+A [calculadora CIDR](/#cidr) classifica qualquer endereço ou bloco por essas faixas de uso especial e informa se ele é privado, reservado ou globalmente alcançável, calculado inteiramente no seu navegador.

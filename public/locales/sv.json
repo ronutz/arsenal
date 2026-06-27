@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Prova ett verktyg nu.",
       "body": "CIDR-kalkylatorn nedan körs lokalt. Ange ett nät och ett prefix för att se adressintervallet, antalet värdar och masken. Ingenting skickas någonstans.",
-      "learnHeading": "Lär dig koncepten"
+      "learnHeading": "Lär dig koncepten",
+      "toolboxCta": "Öppna hela verktygslådan"
     },
     "provenance": {
       "title": "Erkännanden och källor",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Ange ett CIDR-block för att beräkna.",
         "invalid": "Det här ser inte ut som ett giltigt CIDR-block. Prova ett format som 192.168.1.0/24."
-      }
+      },
+      "name": "CIDR-/subnätskalkylator",
+      "blurb": "Dela upp ett valfritt IPv4-CIDR-block i nätverks- och broadcastadresser, användbart värdintervall, antal värdar och nätmask. Körs helt i din webbläsare."
     },
     "title": "Verktyg",
     "lede": "Små, snabba och integritetsvänliga verktyg som körs helt i din webbläsare. Inget du skriver skickas någonstans. Fler är på väg.",
     "open": "Öppna",
     "comingSoon": "Kommer snart",
-    "note": "Den här verktygslådan växer. Nya verktyg läggs till här efter hand som de blir klara, vart och ett med lokal körning och gratis att använda."
+    "note": "Den här verktygslådan växer. Nya verktyg läggs till här efter hand som de blir klara, vart och ett med lokal körning och gratis att använda.",
+    "learnHeading": "Lär dig koncepten",
+    "backToTools": "Verktyg",
+    "references": "Referenser",
+    "categories": {
+      "identity": "Identitet och tokens",
+      "encoding": "Kodning och data",
+      "hashing": "Hashning och krypto",
+      "identifiers": "Identifierare",
+      "pki": "Certifikat och PKI",
+      "networking": "Nätverk"
+    },
+    "hash": {
+      "name": "Hash-generator (SHA-1/256/384/512)",
+      "blurb": "Beräkna SHA-1-, SHA-256-, SHA-384- och SHA-512-sammandrag av valfri text, visade som hex och Base64, med webbläsarens inbyggda Web Crypto. Körs helt i din webbläsare.",
+      "algorithmLabel": "Hash-algoritm",
+      "inputLabel": "Text att hasha",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Hashningen körs lokalt via Web Crypto. Inget du skriver lämnar din webbläsare.",
+      "bits": "{bits} bitar ({bytes} byte)",
+      "sha1Note": "SHA-1 är brutet vad gäller kollisionsmotstånd och olämpligt för säkerhet (signaturer, certifikat). Det duger bara för icke-säkerhetskontrollsummor och äldre interoperabilitet.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopiera",
+      "copied": "Kopierad"
+    },
+    "hmac": {
+      "name": "HMAC-generator (SHA-256/384/512)",
+      "blurb": "Beräkna en nyckelförsedd HMAC över ett meddelande med din hemliga nyckel, visad som hex och Base64, via webbläsarens inbyggda Web Crypto. Samma konstruktion som JWT-verifieraren använder för HS256. Din nyckel lämnar aldrig din webbläsare.",
+      "algorithmLabel": "HMAC-algoritm",
+      "messageLabel": "Meddelande",
+      "messagePlaceholder": "Meddelandet som ska autentiseras",
+      "keyLabel": "Hemlig nyckel",
+      "keyPlaceholder": "Din delade hemlighet",
+      "runsLocally": "HMAC körs lokalt via Web Crypto. Ditt meddelande och din nyckel lämnar aldrig din webbläsare.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopiera",
+      "copied": "Kopierad"
+    },
+    "base64": {
+      "name": "Base64-/Base64URL-kodare och -avkodare",
+      "blurb": "Koda text till standard- eller URL-säker Base64, eller avkoda endera varianten tillbaka till text. Tolerar saknad utfyllnad och flaggar binära (icke-UTF-8-)resultat. Körs helt i din webbläsare.",
+      "directionLabel": "Riktning",
+      "variantLabel": "Base64-variant",
+      "direction": {
+        "encode": "Koda (text till Base64)",
+        "decode": "Avkoda (Base64 till text)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "URL-säker"
+      },
+      "inputLabelEncode": "Text att koda",
+      "inputLabelDecode": "Base64 att avkoda",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Kodning och avkodning körs lokalt. Inget du klistrar in lämnar din webbläsare.",
+      "decodeErrors": {
+        "invalid-characters": "Det är inte giltig Base64. Den innehåller tecken utanför Base64-alfabetet.",
+        "invalid-length": "Det är inte giltig Base64. Dess längd är inte en giltig Base64-längd."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Avkodad text",
+      "copy": "Kopiera",
+      "copied": "Kopierad",
+      "emptyOutput": "(tom)",
+      "decodedBytes": "{bytes, plural, one {# byte avkodad} other {# byte avkodade}}.",
+      "notUtf8": "{bytes, plural, one {# byte avkodad} other {# byte avkodade}}, men resultatet är inte giltig UTF-8-text (troligen binärt)."
+    },
+    "pkce": {
+      "name": "OAuth-PKCE-verifierare och -challenge",
+      "blurb": "Generera en OAuth 2.0-code_verifier och härled dess S256-code_challenge, eller klistra in din egen och kontrollera den mot längd- och teckenuppsättningsreglerna i RFC 7636. Samma SHA-256-base64url-härledning som din auktoriseringsserver förväntar sig. Körs helt i din webbläsare.",
+      "verifierLabel": "Code verifier",
+      "verifierPlaceholder": "Klistra in en code_verifier, eller generera en",
+      "generate": "Generera",
+      "runsLocally": "Generering och härledning körs lokalt. Din verifierare lämnar aldrig din webbläsare.",
+      "lengthBadge": "Längd {length} (43-128)",
+      "charsetOk": "Oreserverad teckenuppsättning",
+      "charsetBad": "Ogiltiga tecken",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "Plain-metoden avråds. Använd S256 överallt där klienten kan beräkna SHA-256.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Kopiera",
+      "copied": "Kopierad"
+    },
+    "uuid": {
+      "name": "UUID-generator och -inspektör (v4 / v7)",
+      "blurb": "Generera slumpmässiga v4- eller tidsordnade v7-UUID:er, eller klistra in valfri UUID för att läsa dess version, variant och (för v7) den inbäddade skapandetidsstämpeln. Genereringen använder webbläsarens säkra slumpkälla. Körs helt i din webbläsare.",
+      "versionLabel": "UUID-version",
+      "generate": "Generera",
+      "clear": "Rensa",
+      "emptyHint": "Välj en version och generera.",
+      "runsLocally": "Generering och inspektion körs lokalt. Inget skickas någonstans.",
+      "copy": "Kopiera",
+      "copied": "Kopierad",
+      "inspectLabel": "Inspektera en UUID",
+      "inspectPlaceholder": "Klistra in valfri UUID för att avkoda den",
+      "valid": "Giltig UUID",
+      "invalid": "Inte en giltig UUID",
+      "versionField": "Version",
+      "variantField": "Variant",
+      "timestampField": "Tidsstämpel (v7)",
+      "versionValue": "Version {version}"
+    },
+    "jwt": {
+      "name": "JWT-avkodare och -verifierare",
+      "blurb": "Avkoda en JSON Web Tokens header och claims, läs dess utgång och tidsangivelser i klarspråk och verifiera en HS256/384/512-signatur med en inklistrad hemlighet. Körs helt i din webbläsare.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Avkodning och signaturkontroller körs lokalt. Token och hemlighet lämnar aldrig din webbläsare.",
+      "errors": {
+        "empty": "Klistra in en JSON Web Token för att avkoda.",
+        "format": "Det ser inte ut som en JWT. En token har tre base64url-delar åtskilda av punkter: header.payload.signature.",
+        "header": "Headern är inte giltig. Den bör vara base64url-kodad JSON.",
+        "payload": "Payloaden är inte giltig. Den bör vara base64url-kodad JSON."
+      },
+      "panels": {
+        "header": "Header",
+        "payload": "Payload",
+        "signature": "Signatur",
+        "noSignature": "Inget signatursegment (osäkrad token)."
+      },
+      "claims": {
+        "iss": "Utfärdare (iss)",
+        "sub": "Subjekt (sub)",
+        "aud": "Målgrupp (aud)",
+        "jti": "JWT-ID (jti)",
+        "iat": "Utfärdad (iat)",
+        "nbf": "Inte före (nbf)",
+        "exp": "Går ut (exp)"
+      },
+      "status": {
+        "expired": "Utgången {rel}",
+        "expiresIn": "Giltig, går ut {rel}",
+        "notYetValid": "Inte giltig än, börjar {rel}",
+        "noExpiry": "Ingen utgångs-claim (exp)"
+      },
+      "verify": {
+        "label": "Verifiera HMAC-signatur (HS256/384/512)",
+        "placeholder": "delad hemlighet",
+        "button": "Verifiera",
+        "valid": "Signatur giltig för denna hemlighet.",
+        "invalid": "Signaturen matchar inte denna hemlighet.",
+        "algNone": "Denna token är osäkrad (alg: none), så det finns ingen signatur att verifiera.",
+        "unsupportedAlg": "Verifiering i webbläsaren täcker endast HS256/384/512. {alg} är asymmetrisk och behöver en publik nyckel.",
+        "hint": "Hemligheten används bara för att beräkna en HMAC i din webbläsare. Den skickas aldrig någonstans."
+      }
+    },
+    "x509": {
+      "name": "X.509-certifikatavkodare",
+      "blurb": "Klistra in ett certifikat som PEM, base64 eller hex för att läsa dess subjekt, utfärdare, giltighetsfönster, publika nyckel och v3-tillägg, med SHA-256- och SHA-1-fingeravtryck. Körs helt i din webbläsare.",
+      "inputLabel": "X.509-certifikat",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Avkodning och fingeravtryck körs lokalt. Certifikatet lämnar aldrig din webbläsare.",
+      "errors": {
+        "empty": "Klistra in ett X.509-certifikat för att avkoda.",
+        "format": "Det ser inte ut som ett certifikat. Klistra in PEM (-----BEGIN CERTIFICATE-----), base64 eller hex.",
+        "der": "Byten är inte giltig DER. Kontrollera att hela certifikatet klistrades in, inklusive END-raden.",
+        "structure": "Detta avkodas som ASN.1 men är inget X.509-certifikat. Ett certifikat är en SEQUENCE av TBSCertificate, signatureAlgorithm och signatureValue."
+      },
+      "status": {
+        "valid": "Giltigt, går ut {rel}",
+        "expired": "Utgånget {rel}",
+        "notYetValid": "Inte giltigt än, börjar {rel}"
+      },
+      "panels": {
+        "subject": "Subjekt",
+        "issuer": "Utfärdare",
+        "details": "Detaljer",
+        "publicKey": "Publik nyckel",
+        "extensions": "Tillägg",
+        "fingerprints": "Fingeravtryck"
+      },
+      "fields": {
+        "version": "Version",
+        "serial": "Serienummer",
+        "notBefore": "Inte före",
+        "notAfter": "Inte efter",
+        "signatureAlgorithm": "Signaturalgoritm",
+        "algorithm": "Algoritm",
+        "keySize": "Nyckelstorlek",
+        "exponent": "Exponent",
+        "curve": "Kurva",
+        "bits": "{n} bitar",
+        "selfSigned": "Självutfärdat"
+      },
+      "ext": {
+        "san": "Alternativa subjektnamn",
+        "keyUsage": "Nyckelanvändning",
+        "extKeyUsage": "Utökad nyckelanvändning",
+        "basicConstraints": "Grundläggande begränsningar",
+        "subjectKeyId": "Subjektets nyckelidentifierare",
+        "authorityKeyId": "Utfärdarens nyckelidentifierare",
+        "caTrue": "Certifikatutfärdare (CA: true)",
+        "caFalse": "Inte en CA (CA: false)",
+        "pathLen": "väglängd {n}",
+        "critical": "kritisk"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Beräknar fingeravtryck..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6-verktygslåda",
+      "blurb": "Tolka en IPv6-adress eller ett prefix för att se dess kanoniska (RFC 5952) och fullt expanderade former, klassificering för specialanvändning, prefixaritmetik, en EUI-64-MAC om den finns och dess ip6.arpa-omvänd-DNS-namn. Körs helt i din webbläsare.",
+      "inputLabel": "IPv6-adress eller -prefix",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Tolkningen körs lokalt. Adressen lämnar aldrig din webbläsare.",
+      "errors": {
+        "empty": "Ange en IPv6-adress eller ett prefix för att avkoda.",
+        "format": "Det är inte en giltig IPv6-adress. Använd åtta hex-grupper, eventuellt komprimerade en gång med :: (till exempel 2001:db8::1).",
+        "prefix": "Prefixlängden är inte giltig. För IPv6 måste den vara mellan 0 och 128."
+      },
+      "panels": {
+        "forms": "Kanoniska former",
+        "classification": "Klassificering",
+        "prefix": "Prefix",
+        "identifiers": "Identifierare"
+      },
+      "fields": {
+        "compressed": "Komprimerad (RFC 5952)",
+        "expanded": "Expanderad",
+        "type": "Typ",
+        "scope": "Omfattning",
+        "embeddedIpv4": "Inbäddad IPv4",
+        "network": "Nätverk",
+        "firstAddress": "Första adressen",
+        "lastAddress": "Sista adressen",
+        "count": "Adresser",
+        "hostBits": "Värdbitar",
+        "eui64": "EUI-64-MAC",
+        "reverseDns": "Omvänd DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multicast"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Integritet",
+    "title": "Dina data, och vad den här webbplatsen gör med dem",
+    "lede": "En redogörelse på klarspråk för exakt vad den här webbplatsen gör och inte gör med din information. Den är skriven för att vara korrekt snarare än bara lugnande, eftersom det under regelverk som GDPR och Brasiliens LGPD är den korrekta upplysningen som spelar roll.",
+    "shortTitle": "Den korta versionen",
+    "short1": "Den här webbplatsen sätter inga cookies, kör ingen analys, använder ingen reklam och innehåller inga tredjepartsspårare eller fingeravtryck (fingerprinting). Inget följer dig över webben.",
+    "short2": "Den säljer, delar eller bygger inte profiler av sina besökare, och ber dig inte om något för att du ska läsa den.",
+    "short3": "De interaktiva verktygen körs helt i din webbläsare. Det du klistrar in eller skriver i dem stannar på din enhet och överförs ingenstans.",
+    "short4": "Endast tre saker rör data alls, och var och en förklaras nedan: en enda temainställning som sparas i din egen webbläsare, de standardmässiga anslutningsloggar som varje webbplatsbesök skapar på värdnivån, och varje meddelande du väljer att skicka via e-post.",
+    "controllerTitle": "Vem som är ansvarig",
+    "controllerBody": "Detta är Rodolfo Nützmanns personliga webbplats (ronutz.com). För alla integritetsfrågor, eller för att utöva någon av rättigheterna som beskrivs nedan, skriv till hello@ronutz.com. Förfrågningar hanteras direkt av Rodolfo Nützmann, i egenskap av personuppgiftsansvarig.",
+    "noTrackTitle": "Inga cookies, ingen spårning, ingen analys",
+    "noTrackBody": "Den här webbplatsen sätter inga cookies av något slag. Den använder ingen analystjänst (såsom Google Analytics eller Plausible), inget annonsnätverk, inga spårningspixlar för sociala medier och ingen enhetsfingeravtryck. Ditt besök mäts, profileras eller delas inte med någon för dessa ändamål.",
+    "browserTitle": "Vad som lagras i din webbläsare",
+    "browserBody": "En enda liten sak: ditt valda visuella tema, sparat i din webbläsares lokala lagring (local storage) så att webbplatsen kan minnas det nästa gång du besöker. Det är en bekvämlighetsinställning som stannar på din egen enhet, aldrig skickas till den här webbplatsen eller till någon annan, och kan rensas när som helst via din webbläsare. Inga andra data om dig lagras på din enhet.",
+    "hostingTitle": "Värdtjänst och serverloggar",
+    "hostingBody": "Webbplatsen levereras genom Cloudflare, som tillhandahåller dess värdtjänst och innehållsleverans. Som med vilken webbplats som helst innebär att ladda en sida att din enhet ansluter till en server, och Cloudflare behandlar, i egenskap av värdtjänstleverantör, grundläggande anslutningsdata – inklusive din IP-adress och vanliga begärandetaljer – för att leverera sidorna till dig och skydda webbplatsen mot missbruk och attacker. Denna behandling är nödvändig för att driva och säkra webbplatsen (ett berättigat intresse enligt Artikel 6(1)(f) i GDPR, och motsvarande grunder i Artiklarna 7 och 10 i LGPD). Den behålls endast kort av leverantören och används inte här för att identifiera eller spåra dig.",
+    "toolsTitle": "Verktygen körs i din webbläsare",
+    "toolsBody": "Avkodarna och kalkylatorerna på den här webbplatsen – för JWT:er, IP-adresser, certifikat och resten – beräknar helt inuti din webbläsare. Värdena du anger behandlas på din egen enhet och skickas aldrig till en server. Ett separat programmatiskt gränssnitt (ett API) erbjuds för automatisering och integrationer; det är till sin design tillståndslöst och loggar ingen av de frågor eller begärandekroppar som skickas till det.",
+    "contactTitle": "Om du kontaktar mig",
+    "contactBody": "Kontaktformuläret skickar inget till en server. I stället öppnar det ett förifyllt meddelande i din egen e-postapplikation, som du sedan själv skickar från ditt eget konto, så inget passerar genom en tredje part. Om du skriver, antingen via formuläret eller direkt, tar jag emot informationen du inkluderar, såsom ditt namn, din e-postadress och ditt meddelande, och använder den bara för att svara dig. Jag behåller den bara så länge som behövs för att hantera din förfrågan, använder den inte för marknadsföring och delar den inte.",
+    "intlTitle": "Behandling utanför ditt land",
+    "intlBody": "Eftersom Cloudflare driver ett globalt nätverk kan behandlingen på anslutningsnivå som beskrivs ovan äga rum på servrar belägna utanför ditt eget land, inklusive utanför Brasilien och Europeiska ekonomiska samarbetsområdet. Där personuppgifter behandlas internationellt på detta sätt sker det under de skyddsåtgärder som den berörda leverantören erbjuder.",
+    "childrenTitle": "Barn",
+    "childrenBody": "Den här webbplatsen är avsedd för en professionell, allmän publik. Den riktar sig inte till barn och samlar inte medvetet in personuppgifter från dem.",
+    "rightsTitle": "Dina rättigheter",
+    "rightsBody": "Beroende på var du bor har du rättigheter över dina personuppgifter, inklusive att få tillgång till dem, att få dem rättade eller raderade, att invända mot eller begränsa deras behandling, att begära en kopia i ett portabelt format och att få veta hur de hanteras. För att utöva någon av dem, skriv helt enkelt till hello@ronutz.com. Eftersom så få personuppgifter någonsin behandlas här finns det i praktiken oftast väldigt lite att göra, men kanalen är alltid öppen.",
+    "rightsGdpr": "Om du befinner dig i Europeiska ekonomiska samarbetsområdet eller Storbritannien har du också rätt att lämna in ett klagomål till din lokala tillsynsmyndighet för dataskydd.",
+    "rightsLgpd": "Om du befinner dig i Brasilien har du de rättigheter som anges i Artikel 18 i LGPD, och du kan även kontakta den nationella dataskyddsmyndigheten (ANPD).",
+    "changesTitle": "Ändringar i detta meddelande",
+    "changesBody": "Om detta meddelande ändras kommer den reviderade versionen att publiceras på den här sidan och datumet nedan att uppdateras. Väsentliga ändringar tillämpas inte retroaktivt.",
+    "updated": "Senast uppdaterad: 28 juni 2026",
+    "backHome": "Tillbaka till startsidan"
   },
   "footer": {
+    "redEducation": "Boka officiell utbildning med Red Education",
+    "privacy": "Integritet",
     "builtWith": "Byggt av Rodolfo Nützmann med CONCORD",
     "colophon": "Hur det här byggdes",
     "openSource": "Motorn är öppen källkod",
     "rights": "Tillgänglig under öppna och kommersiella villkor.",
     "contribute": "Hjälp till att förbättra översättningarna",
-    "feedback": "Skicka feedback"
+    "feedback": "Skicka feedback",
+    "api": "API-referens",
+    "contributeTools": "Bidra med ett verktyg"
   },
   "search": {
     "label": "Sök",
@@ -390,13 +672,16 @@
     "emailLabel": "E-post",
     "channels": {
       "linkedin": {
-        "description": "Nätverka professionellt"
+        "description": "Nätverka professionellt",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Videor och genomgångar"
+        "description": "Videor och genomgångar",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Bakom kulisserna"
+        "description": "Bakom kulisserna",
+        "label": "Instagram"
       },
       "training": {
         "label": "Officiell utbildning",
@@ -431,7 +716,7 @@
     "concordBody1": "Den här webbplatsen designades och byggdes genom ett protokoll som heter CONCORD: ett strukturerat samarbete mellan en person och tre olika AI-system, vart och ett i en egen roll. Det är inget trick. Det är en fungerande metod, med en egen styrning, ett eget beslutsregister, och en enda människa ansvarig för varje val som publicerades.",
     "concordBody2": "Premissen är enkel. Olika AI-modeller har olika styrkor, och ett svårt problem vinner på mer än ett perspektiv som hålls i spänning. Därför delades arbetet upp efter roll, och en person satt i mitten, gick som brygga mellan dem, ratificerade det som var gediget och förkastade det som inte var det.",
     "concordBody3": "CONCORD är inte hämtat någonstans ifrån. Det utformades av Rodolfo Nützmann för det här projektet utifrån ett praktiskt behov: hur man drar nytta av flera AI-system samtidigt, vart och ett verkligt starkt på något olika, utan att ge upp den enda tråd av mänskligt ansvar som riktigt arbete kräver. Svaret var att ge varje system ett bestämt säte, hindra dem från att förhandla sinsemellan och leda varje utbyte genom en enda person som höll hela bilden. Den ordningen har ett äldre namn. AI-systemen är agenter: de handlar på anvisning och för någon annans räkning. PRIME är huvudmannen: den som faktiskt beslutar, som utövar omdömet och som bär både följderna och namnet.",
-    "concordBody4": "Det började informellt, som ett sätt att dela upp arbetet, och stelnade under bygget till en namngiven metod: fasta säten, en enda överordnad regel att inget publiceras utan att PRIME ratificerar det, och en skriftlig anteckning om varför varje beslut fattades. Namnet anger syftet: endräkt, en överenskommelse som nås med avsikt genom en process, inte vad ett oövervakat verktyg råkar frambringa.",
+    "concordBody4": "Det började informellt – som ett sätt att dela upp arbetet – och stelnade under bygget till en namngiven metod: fasta säten, en enda överordnad regel att inget publiceras utan att PRIME ratificerar det, och en skriftlig anteckning om varför varje beslut fattades. Namnet anger syftet: endräkt, en överenskommelse som nås med avsikt genom en process, inte vad ett oövervakat verktyg råkar frambringa.",
     "concordPrincipal": "Styrkan ligger hos agenterna. Ansvaret ligger hos huvudmannen, och det kan inte överföras.",
     "concordMechTitle": "Mekaniken, enkelt uttryckt",
     "mech1Label": "Föreslå",
@@ -551,5 +836,50 @@
     "referenceTag": "referens",
     "emailHeading": "Skicka ditt bidrag",
     "backHome": "Tillbaka till verktygen"
+  },
+  "contributeTools": {
+    "eyebrow": "Öppen verktygslåda",
+    "title": "Bidra med ett verktyg",
+    "lede": "Verktygslådan är byggd för att växa. Varje verktyg är en liten, självbeskrivande modul på den öppna motorn, och webbplatsen laddar det på samma sätt som vem som helst annan skulle kunna. Har du ett verktyg som passar, föreslå det.",
+    "shapeTitle": "Vad ett verktyg är",
+    "shapeBody": "Ett verktyg är tre saker på en gång: ett manifest som beskriver det (vad det är, indata det tar emot, var dess korrekthet kommer ifrån), en enda ren körningsfunktion som gör arbetet, och en uppsättning referensvektorer, fasta indata-och-utdata-par som bevisar att funktionen är korrekt. Motorn laddar ett verktyg från dess manifest, så en välformad modul faller på plats utan att röra resten av webbplatsen.",
+    "principlesTitle": "Vad ett verktyg måste hålla sig till",
+    "principlesBody": "Beräkningen körs lokalt och är deterministisk: samma indata ger alltid samma utdata, utan klocka, nätverk eller slump i resultatet. Allt känsligt stannar på enheten som standard. Korrektheten är förankrad i referensvektorer och i citerade källor – såsom en RFC eller en publicerad standard –, inte i åsikt. Koden ges ut under en tillåtande licens, så att webbplatsen och vem som helst annan kan bygga vidare på den.",
+    "proposeTitle": "Föreslå ett",
+    "proposeBody": "Skicka ett kort förslag via e-post: vad verktyget beräknar, en exempelindata med exakt den utdata det ska ge, och källan som dess korrekthet vilar på. En skiss av manifestet och några referensvektorer är välkomna, men inte obligatoriska. Om det passar byggs det in i motorn och verktygslådan.",
+    "emailLabel": "E-post",
+    "backToTools": "Tillbaka till verktygslådan"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Verktygen på den här webbplatsen körs i din webbläsare och håller dina data på din enhet. För automatisering – skript, pipelines och integrationer – finns samma deterministiska beräkningar tillgängliga som ett litet HTTP-API. Det är den programmatiska motsvarigheten till webbläsarverktygen, inte en ersättning för dem.",
+    "privacyTitle": "Vad detta betyder för dina data",
+    "privacyBody": "API:et tar bara emot den indata du skickar, beräknar ett resultat och returnerar det. Det är tillståndslöst och loggar inga frågevärden eller begärandekroppar. Om du behöver garanterat noll datautflöde, använd webbläsarverktygen eller kör den öppna motorn själv.",
+    "engineTitle": "Samma motor som webbläsaren",
+    "engineBody": "Varje slutpunkt anropar samma motorfunktion som verktyget i webbläsaren anropar, så att API:et och webbläsaren returnerar byte-identiska resultat. Den motorn, @ronutz/netcore, är öppen källkod under en tillåtande licens.",
+    "specTitle": "Specifikationen",
+    "specBody": "Hela kontraktet publiceras som OpenAPI 3.1. Ladda ner det, rikta dina egna verktyg mot det eller läs referensen nedan.",
+    "downloadSpec": "Ladda ner openapi.yaml",
+    "baseUrlLabel": "Bas-URL",
+    "authLabel": "Autentisering",
+    "authValue": "Ingen. Detta är ett offentligt, skrivskyddat API.",
+    "referenceTitle": "Referens",
+    "loading": "Laddar specifikationen.",
+    "loadError": "Specifikationen kunde inte laddas.",
+    "tryItTitle": "Prova det",
+    "tryItSend": "Skicka",
+    "tryItRunning": "Kör.",
+    "tryItHint": "Körs mot det live-API:et på denna origin. Din indata skickas till slutpunkten.",
+    "paramsTitle": "Parametrar",
+    "responsesTitle": "Svar",
+    "schemasTitle": "Scheman",
+    "exampleLabel": "Exempel",
+    "requiredLabel": "obligatorisk",
+    "fieldLabel": "Fält",
+    "typeLabel": "Typ",
+    "descriptionLabel": "Beskrivning",
+    "viewReference": "Referens",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI kunde inte laddas."
   }
 }

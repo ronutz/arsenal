@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Alt ağ oluşturmanın temelleri"
+summary: "Bir ağı nasıl daha küçük alt ağlara böleceğiniz ve ana bilgisayar bitlerini ödünç almanın neden tüm hilenin kendisi olduğu."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Alt ağ oluşturma neye yarar
+
+Tek bir büyük ağ nadiren istediğiniz şeydir. Alt ağ oluşturma (subnetting), bir adres bloğunu alıp onu birkaç daha küçük bloğa bölme uygulamasıdır, **alt ağlar**, ki her biri ayrı bir yayın etki alanı, güvenlik sınırı veya fiziksel segment olabilir. Bir kampüs her binaya kendi alt ağını verebilir; bir bulut hesabı bir uygulamanın her katmanına kendi alt ağını verebilir.
+
+Mekanizma genellikle kulağa geldiğinden daha basittir: **alt ağ oluşturma, ana bilgisayar kısmından bit ödünç alır ve bunları ağ kısmına ekler.**
+
+## Bit ödünç almak
+
+`192.168.1.0/24` ile başlayın. Önek 24'tür, dolayısıyla 8 bit ana bilgisayarlar için serbesttir, bu da 256 adreslik bir blok verir.
+
+Bir yerine dört ayrı alt ağa ihtiyacınız olduğunu varsayın. Dört, 2²'dir, dolayısıyla **2 ağ bitine daha** ihtiyacınız var. Bunları ana bilgisayar tarafından ödünç alın: önek /24'ten /26'ya büyür.
+
+- `/26` 26 biti sabitler, 6'yı serbest bırakır → alt ağ başına 64 adres.
+- Böyle dört alt ağ özgün /24'ü tam olarak döşer:
+  - `192.168.1.0/26`, adresler .0 ile .63
+  - `192.168.1.64/26`, adresler .64 ile .127
+  - `192.168.1.128/26`, adresler .128 ile .191
+  - `192.168.1.192/26`, adresler .192 ile .255
+
+Deseni fark edin: her alt ağ 64 adres genişliğindedir, dolayısıyla her biri 64'ün bir katında başlar. O "boyutunun bir katında başlar" kuralı, geçerli alt ağ sınırlarının nasıl bulunduğudur. Bir blok, kendi boyutunun bir katı olan bir adreste başlamalıdır, aksi takdirde geçerli bir CIDR bloğu değildir.
+
+## Ödünleşim
+
+Ağ için ödünç aldığınız her bit, alt ağ başına ana bilgisayarları yarıya indirir:
+
+| Önek | /24'ün alt ağları | Her biri adres | Her biri kullanılabilir ana bilgisayar |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Daha fazla alt ağ, her birinde daha az ana bilgisayar demektir. Ağ tasarımı büyük ölçüde bu eğri üzerinde nerede oturacağını seçmektir: segmentleriniz için yeterli alt ağ, orada yaşayan cihazlar için her birinde yeterli ana bilgisayar, biraz büyüme yeriyle.
+
+## Değişken uzunluklu alt ağ oluşturma
+
+Aynı ebeveyn içindeki alt ağların hepsinin aynı boyutta olması gerekmez. **Değişken uzunluklu alt ağ maskeleme (VLSM)**, çok ana bilgisayara ihtiyaç duyan segment için büyük bir alt ağ ve noktadan-noktaya bağlantılar için küçük alt ağlar oymanıza izin verir, hepsi aynı ebeveyn bloğundan. Tek kurallar sabit olanlardır: her alt ağ boyutça ikinin bir kuvvetidir ve her biri boyutunun bir katında başlar, böylece bloklar asla çakışmaz.
+
+[CIDR hesaplayıcısı](/learn), herhangi bir önek için tam aralığı, sınırları ve kullanılabilir ana bilgisayar sayısını gösterir, ki bu bir alt ağ planını denetlemeyi her bloğu yazma meselesine dönüştürür.

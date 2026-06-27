@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "Errores de seguridad en JWT: alg:none, confusión de clave y comprobaciones ausentes"
+summary: "El puñado de errores que convierte un verificador de JWT en una máquina de falsificación, y la validación que un verificador correcto debe realizar."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## La firma vale solo lo que vale el verificador
+
+La firma de un JWT hace que sus claims sean fiables, pero solo si el código que la verifica lo hace correctamente. La mayoría de las vulnerabilidades de JWT no son fallos en la criptografía; son verificadores a los que se puede engañar para que acepten tokens que deberían rechazar. Aquí están los que importan, y las comprobaciones que los evitan.
+
+## Confiar en el algoritmo del propio token
+
+- **`alg: none`.** La especificación de JWT define un token "no protegido" sin firma, declarado por `{"alg":"none"}`. Un verificador que lo respete aceptará un token con claims falsificadas y una firma vacía. Un verificador correcto nunca trata `none` como válido para un token que se supone firmado.
+- **Confusión de algoritmo (RS256 a HS256).** Con RS256 el token lo firma una clave privada y se verifica con la clave pública. Si un verificador lee el algoritmo *del token* y un atacante cambia la cabecera a HS256, el verificador puede intentar verificar un HMAC usando la clave **pública** como secreto, un valor que el atacante también posee. El token falsificado entonces pasa.
+
+La única defensa para ambos es la misma: **el verificador decide el algoritmo aceptable, no el token.** Fija el algoritmo esperado (o una lista corta de permitidos) en tu llamada de verificación y rechaza cualquier otro.
+
+## Saltarse las claims
+
+Una firma válida prueba que el token se emitió y no se alteró. No prueba que el token sea *para ti* ni que *siga siendo válido*. Un verificador correcto también comprueba:
+
+- **`exp` (expiración)** y **`nbf` (no-antes):** rechaza tokens expirados o aún no válidos, permitiendo una pequeña tolerancia de desfase de reloj.
+- **`aud` (audiencia):** confirma que el token estaba destinado a este servicio. Un token emitido para el servicio A no debe ser aceptado por el servicio B.
+- **`iss` (emisor):** confirma que vino del emisor en el que confías, y resuelve la clave de verificación a partir de ese emisor, no del token.
+
+Omitir esto es cómo un token robado o mal dirigido acaba aceptándose donde no debería.
+
+## Las trampas menores
+
+- **Secretos HMAC débiles.** Un token HS256 firmado con un secreto corto o adivinable puede romperse por fuerza bruta sin conexión hasta encontrar una firma coincidente. Usa una clave larga y aleatoria.
+- **Manejo de `kid` y JWKS.** La cabecera `kid` selecciona una clave; trátala como entrada no confiable (se ha usado para inyección) y obtén claves solo del JWKS del emisor en el que confías.
+- **Decodificar confundido con verificar.** Leer las claims de un token sin comprobar la firma y el tiempo no es verificación. Actúa solo sobre un token totalmente verificado.
+
+## La versión corta
+
+Fija el algoritmo, valida `exp`, `aud` e `iss`, usa claves fuertes y nunca confundas decodificar con verificar. La [herramienta JWT](/tools/jwt) decodifica un token, muestra sus claims y su expiración en lenguaje claro y verifica una firma HMAC contra un secreto que pegas, todo en tu navegador, sin que el token ni el secreto se envíen.

@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Como funcionam os endereços IPv4"
+summary: "Os 32 bits por trás de todo endereço em quad pontilhado, e o que faixas privadas, de loopback e especiais significam."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trinta e dois bits disfarçados
+
+Um endereço IPv4 é um único número de 32 bits. Quase nunca o escrevemos dessa forma porque 32 uns e zeros são difíceis de ler, então ele é dividido em quatro grupos de 8 bits chamados **octetos**, cada um mostrado em decimal de 0 a 255 e unidos por pontos. `192.168.1.10` é apenas uma forma mais amigável de escrever um valor específico de 32 bits.
+
+Como cada octeto tem 8 bits, todo o espaço é de 2³² endereços, cerca de 4,3 bilhões. Isso soava enorme nos anos 1980 e é a razão pela qual a exaustão de endereços IPv4 se tornou um problema real décadas depois, e por que o endereçamento privado e o IPv6 existem.
+
+## Parte de rede e parte de host
+
+Nenhum endereço está sozinho, ele pertence a um bloco, e dentro desse bloco os bits se dividem em uma **parte de rede** (qual bloco é este) e uma **parte de host** (qual máquina dentro do bloco). O comprimento de prefixo, escrito ao estilo CIDR como `/24`, marca onde essa divisão recai. Tudo à esquerda da linha é rede; tudo à direita identifica um host. Esta é a mesma ideia explorada na notação CIDR, vista do lado do endereço.
+
+## Faixas com significado especial
+
+Nem todo endereço é um endereço de host comum. Várias faixas são reservadas para propósitos específicos, e reconhecê-las é parte de ler qualquer configuração de rede:
+
+- **Faixas privadas (RFC 1918)** são reservadas para uso dentro de redes privadas e nunca são roteadas na internet pública:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  É por isso que redes domésticas e de escritório tão frequentemente usam `192.168.x.x` ou `10.x.x.x`, esses endereços estão livres para reutilizar em todo lugar porque nunca aparecem na internet aberta.
+- **Loopback (`127.0.0.0/8`)** sempre se refere à própria máquina local. `127.0.0.1` é o endereço que um computador usa para falar consigo mesmo.
+- **Endereços link-local (`169.254.0.0/16`)** são autoatribuídos quando um dispositivo não consegue alcançar um servidor DHCP. Ver um geralmente significa "nenhum endereço foi distribuído".
+- **O endereço não especificado (`0.0.0.0`)** e a rota padrão (`0.0.0.0/0`) são especiais: esta última é a rota pega-tudo que corresponde a qualquer destino não coberto por uma rota mais específica.
+
+## Por que as faixas especiais importam para a segurança
+
+Essas faixas reservadas não são apenas curiosidades. Uma ferramenta que busca um endereço fornecido pelo usuário deve recusar-se a alcançar faixas privadas, de loopback e link-local, ou pode ser enganada a fazer requisições contra sistemas internos que ela nunca deveria tocar, uma classe de ataque chamada server-side request forgery (falsificação de requisição do lado do servidor). Saber quais faixas são internas é o primeiro passo para defender-se disso. É exatamente por isso que as ferramentas que tocam a rede neste site checam um endereço resolvido contra essas faixas antes mesmo de conectar.
+
+Para ver como qualquer endereço se situa dentro de seu bloco, seu endereço de rede, endereço de broadcast, e a faixa utilizável ao seu redor, experimente a [calculadora CIDR](/learn), que computa tudo isso localmente no seu navegador.

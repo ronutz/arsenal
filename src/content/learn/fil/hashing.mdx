@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Cryptographic hashing: SHA-256 at ang pamilyang SHA-2"
+summary: "Ano ang ginagarantiya ng isang hash function, ang mga katangiang nagpapagawa nitong cryptographic, at bakit ang digest ay hindi pag-encrypt."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ano ang hash
+
+Ang isang cryptographic hash function ay kumukuha ng input ng anumang laki, isang salita, isang file, isang disk image na ilang gigabyte, at gumagawa ng output na nakapirming laki na tinatawag na **digest**. Palaging nagbabalik ang SHA-256 ng 256 na bit (32 byte), pinakain mo man ito ng isang karakter o isang milyon. Ang parehong input ay palaging nagbubunga ng parehong digest, at kahit isang-bit na pagbabago sa input ay gumagawa ng ganap na naiibang digest.
+
+Ang nakapirming-laki at deterministikong fingerprint na iyon ang buong ideya. Ang digest ay isang siksik na kapalit ng datos: kung tumugma ang dalawang digest, makakatiyak kang magkapareho ang mga input; kung magkaiba sila, nagkaiba ang mga input sa isang lugar.
+
+## Ang mga katangiang nagpapagawa nitong cryptographic
+
+Maraming function ang nagpapaliit ng datos sa nakapirming laki. Kinikita ng isang function ang salitang *cryptographic* sa pamamagitan ng paghawak sa tatlong matibay na garantiya:
+
+- **Preimage resistance (one-way).** Sa isang digest, hindi magagawa sa pagkukuwenta ang paghahanap ng input na gumagawa nito. Hindi mo mapapaandar nang pabalik ang function.
+- **Second-preimage at collision resistance.** Hindi magagawa ang paghahanap ng dalawang magkaibang input na nag-ha-hash sa parehong digest. Kung wala ito, magiging mahinang fingerprint ang isang digest.
+- **Ang avalanche effect.** Ang pagbaligtad ng isang input bit ay nagbabago ng halos kalahati ng output bit, nang walang nakikitang pattern na nag-uugnay ng input sa output.
+
+Totoo lamang ito para sa mga function na nakaligtas sa pagsusuri. Ang SHA-1, dating standard, ay ngayon **sira** para sa collision resistance (isang praktikal na collision ang ipinakita noong 2017) at hindi dapat gamitin kung saan nakasalalay rito ang seguridad. Ang pamilyang SHA-2, SHA-256, SHA-384, at SHA-512, ay nananatiling matatag at siyang ligtas na default ngayon.
+
+## Ang hash ay hindi pag-encrypt
+
+Ito ang pinakakaraniwang kalituhan, kaya sulit itong sabihin nang prangka. Ang pag-encrypt ay **maibabalik** gamit ang isang susi: nag-e-encrypt ka upang ilihim ang datos at nagde-decrypt upang ibalik ito. Ang hash ay **walang susi at walang inverse**. Hindi mo maaaring "i-dehash" ang isang digest upang mabawi ang input, dahil ang output ay napakaliit kaysa sa mga posibleng input at sinasadyang sirain ang impormasyon. Ang hashing ay para sa pag-verify, hindi para sa pagkalihim.
+
+## Saan kumikita ang hashing
+
+- **Integridad at mga checksum.** I-publish ang SHA-256 ng isang file katabi nito; ang taong nagda-download at muling nagkukuwenta ng digest ay makakakumpirmang walang binago o nasira habang naglalakbay.
+- **Content addressing.** Pinangangalanan ng mga sistemang gaya ng Git ang mga object ayon sa hash nila, kaya ang magkaparehong nilalaman ay awtomatikong dumarating sa parehong address.
+- **Mga digital signature.** Pinipirmahan ng mga scheme ng pagpirma ang hash ng isang mensahe sa halip na ang buong mensahe, dahil ang digest ay maliit at nakapirming laki.
+
+Isang mahalagang babala: **espesyal na kaso ang mga password.** Ang isang simpleng mabilis na hash gaya ng SHA-256 ay maling kasangkapan para sa pag-iimbak ng password, dahil mismo sa pagiging mabilis nito, makakasubok ang isang umaatake ng bilyun-bilyong hula bawat segundo. Ang pag-iimbak ng password ay nangangailangan ng sinadyang mabagal, na-salt na algorithm gaya ng bcrypt, scrypt, o Argon2. Gamitin ang SHA-2 para sa integridad; gamitin ang isang password hash para sa mga password.
+
+## Paano ito kinakalkula ng tool
+
+Gumagamit ang [tool na Hash](/tools/hash) ng katutubong Web Crypto na pagpapatupad ng browser ng SHA-1, SHA-256, SHA-384, at SHA-512, ang parehong nasuri na code na ginagamit ng iyong browser para sa TLS, at ipinapakita ang bawat digest bilang hexadecimal at Base64. Walang ina-upload; nangyayari ang pagkukuwenta nang lokal.

@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID:er: slumpmässig v4 och tidsordnad v7"
+summary: "Hur en 128-bitars identifierare förblir unik utan en central myndighet, och varför v7 blir standard för databasnycklar."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Vad en UUID är
+
+En UUID (Universally Unique Identifier, även kallad GUID) är ett 128-bitars värde som används för att märka något, en rad, en förfrågan, en fil, utan att samordna med någon annan. Löftet i namnet är att två oberoende genererade UUID:er, i alla praktiska avseenden, aldrig är likadana. Det låter separata tjänster, frånkopplade enheter och parallella processer alla prägla identifierare som inte kommer att kollidera när datan senare slås samman, utan en central tilldelare som delar ut nummer.
+
+En UUID skrivs som 32 hexadecimala siffror i fem bindestrecksåtskilda grupper: `8-4-4-4-12`, till exempel `550e8400-e29b-41d4-a716-446655440000`. Två specifika positioner är inte slumpmässiga: en **versions**-nibble anger hur UUID:n genererades, och ett **variant**-fält markerar layoutstandarden (den moderna är RFC 4122 / RFC 9562).
+
+## Version 4: slumpmässig
+
+Den överlägset vanligaste formen, **version 4**, är nästan helt slumpmässig: 122 av de 128 bitarna kommer från en säker slumpkälla, med de återstående bitarna fasta för att markera version och variant. Med så mycket entropi är chansen att två v4-UUID:er kolliderar försumbar för varje realistisk mängd identifierare.
+
+Dess svaghet är inte unikheten utan **ordningen**. Eftersom v4-värden är slumpmässiga sprids på varandra följande infogningar över hela nyckelutrymmet. När en v4-UUID används som primärnyckel i en databas kämpar den slumpmässigheten mot B-trädsindexet: nya rader hamnar på godtyckliga ställen, vilket skadar cachelokaliteten och fragmenterar indexet med tiden.
+
+## Version 7: tidsordnad
+
+**Version 7**, standardiserad i RFC 9562 (2024), utformades för att åtgärda exakt det. Den placerar en **48-bitars Unix-tidsstämpel i millisekunder** i de mest signifikanta bitarna, följt av slumpbitar för unikhet inom samma millisekund. Eftersom tidsstämpeln går först **sorterar** v7-UUID:er sig i skapelseordning när de jämförs som text eller byte.
+
+Den enda egenskapen gör v7 till en mycket bättre primärnyckel: nya rader läggs till nära slutet av indexet i stället för att spridas, vilket återställer den lokalitet som sekventiella heltalsnycklar åtnjuter, samtidigt som en UUID:s decentraliserade unikhet bevaras. Ett v7-värde bär också sin egen skapelsetid, som du kan läsa direkt ur de inledande bitarna, [UUID-verktyget](/tools/uuid) gör detta när du inspekterar en.
+
+## De andra versionerna, kort
+
+För fullständighetens skull: **version 1** kombinerar en tidsstämpel med den genererande maskinens MAC-adress, vilket läcker hårdvaruidentitet och skapelsetid och därför väcker integritetsfrågor. **Versionerna 3 och 5** är namnbaserade, de hashar en namnrymd plus ett namn (med MD5 respektive SHA-1) för att producera en deterministisk UUID, användbart när samma indata alltid måste avbildas på samma identifierare. **Version 6** ordnar om version 1:s fält för att vara sorterbara, men för nya system är v7 det rekommenderade tidsordnade valet.
+
+## Att välja en
+
+Grip efter **v4** när du bara behöver en slumpmässig, ogenomskinlig identifierare och ordning inte spelar roll. Grip efter **v7** när UUID:n ska vara en databasnyckel eller något annat som gynnas av sortering efter skapelsetid, vilket alltmer är standardrekommendationen. [UUID-verktyget](/tools/uuid) genererar båda och avkodar versionen, varianten och den inbäddade tidsstämpeln för varje UUID du klistrar in, helt i din webbläsare.

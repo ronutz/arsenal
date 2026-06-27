@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: membahagikan blok kepada subrangkaian tidak sama"
+summary: "Cara memotong blok alamat kepada subrangkaian pelbagai saiz tanpa membazir ruang, dan peraturan terbesar-dahulu yang mengekalkan segalanya kemas."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Masalah subrangkaian sama saiz
+
+Subrangkaian klasik membahagikan blok kepada kepingan satu saiz tetap. Itu mudah, tetapi membazir apabila keperluan anda berbeza. Jika satu segmen mempunyai 100 hos dan satu lagi ialah pautan antara dua penghala dengan 2, maka memberi kedua-duanya `/26` (62 boleh guna) gagal untuk yang pertama dan membazir 60 alamat pada yang kedua. **VLSM**, topeng subrangkaian panjang berubah-ubah, membetulkan ini dengan membenarkan setiap subrangkaian menggunakan panjang awalan yang sepadan dengan keperluannya sendiri, semuanya dipotong daripada blok induk yang sama.
+
+Satu-satunya perkara yang menjadikan VLSM lebih memenatkan berbanding subrangkaian tetap ialah susunan: anda mesti meletakkan **subrangkaian terbesar dahulu**, jika tidak alamat akan terbiar dan anda mencipta pertindihan.
+
+## Menyaiz setiap subrangkaian
+
+Mulakan dengan bilangan hos yang diperlukan setiap segmen, kemudian cari blok terkecil yang memuatkannya, ingat bahawa dua alamat dalam setiap blok biasa adalah terpelihara (rangkaian dan siaran):
+
+- 100 hos memerlukan 7 bit hos (2⁷ − 2 = 126 boleh guna), satu `/25`.
+- 50 hos memerlukan 6 bit hos (62 boleh guna), satu `/26`.
+- 25 hos memerlukan 5 bit hos (30 boleh guna), satu `/27`.
+- 10 hos memerlukan 4 bit hos (14 boleh guna), satu `/28`.
+- Pautan titik-ke-titik 2 hos ialah satu `/30` (2 boleh guna), atau satu `/31` di bawah RFC 3021.
+
+Sentiasa bundarkan ke atas kepada kuasa dua seterusnya. Segmen 100 hos tidak muat dalam `/26` (62), jadi ia mengambil saiz seterusnya, satu `/25`.
+
+## Memotong daripada blok, terbesar dahulu
+
+Andaikan anda memiliki `192.168.10.0/24` dan memerlukan lima subrangkaian di atas. Umpukkan dalam susunan saiz menurun, setiap satu bermula pada sempadan semula jadinya:
+
+```
+/25  192.168.10.0   – .127   (126 boleh guna)  ← segmen 100 hos
+/26  192.168.10.128 – .191   (62 boleh guna)   ← segmen 50 hos
+/27  192.168.10.192 – .223   (30 boleh guna)   ← segmen 25 hos
+/28  192.168.10.224 – .239   (14 boleh guna)   ← segmen 10 hos
+/30  192.168.10.240 – .243   (2 boleh guna)    ← pautan penghala
+```
+
+Setiap blok bermula tepat di tempat yang sebelumnya berakhir, dan dari `192.168.10.244` ke atas ia masih lapang untuk pertumbuhan masa depan. Jika anda mengumpukkan `/30` dahulu, `/25` tidak lagi mempunyai sempadan bersih untuk mendarat, yang merupakan keseluruhan sebab peraturan terbesar-dahulu.
+
+## Mengapa ia penting
+
+VLSM ialah cara rangkaian sebenar menjimatkan ruang alamat dan mengekalkan umpukan sejajar supaya laluan boleh diringkaskan dengan bersih. Aritmetiknya ialah matematik panjang awalan yang sama seperti subrangkaian tunggal, digunakan berulang kali: tetapkan lebih banyak bit untuk menjadikan blok lebih kecil, dan kekalkan setiap blok pada sempadan kuasa dua.
+
+Anda boleh mengesahkan sebarang umpukan dalam [kalkulator CIDR](/#cidr), yang menunjukkan alamat rangkaian dan siaran, topeng dan bilangan hos boleh guna bagi setiap blok serta-merta dan sepenuhnya dalam pelayar anda.

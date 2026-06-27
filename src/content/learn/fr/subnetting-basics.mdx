@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Les bases du sous-réseautage"
+summary: "Comment diviser un réseau en sous-réseaux plus petits, et pourquoi emprunter des bits d'hôte est tout le truc."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## À quoi sert le sous-réseautage
+
+Un seul grand réseau est rarement ce que vous voulez. Le sous-réseautage est la pratique consistant à prendre un bloc d'adresses et à le diviser en plusieurs blocs plus petits, **des sous-réseaux**, dont chacun peut être un domaine de broadcast séparé, une frontière de sécurité, ou un segment physique. Un campus pourrait donner à chaque bâtiment son propre sous-réseau ; un compte cloud pourrait donner à chaque couche d'une application le sien.
+
+Le mécanisme est plus simple qu'on ne le fait habituellement paraître : **le sous-réseautage emprunte des bits à la portion d'hôte et les ajoute à la portion de réseau.**
+
+## Emprunter des bits
+
+Commencez avec `192.168.1.0/24`. Le préfixe est 24, donc 8 bits sont libres pour les hôtes, donnant un bloc de 256 adresses.
+
+Supposez que vous ayez besoin de quatre sous-réseaux séparés au lieu d'un. Quatre vaut 2², donc vous avez besoin de **2 bits de réseau de plus**. Empruntez-les du côté hôte : le préfixe passe de /24 à /26.
+
+- `/26` fixe 26 bits, laisse 6 libres → 64 adresses par sous-réseau.
+- Quatre tels sous-réseaux pavent le /24 original exactement :
+  - `192.168.1.0/26`, adresses .0 à .63
+  - `192.168.1.64/26`, adresses .64 à .127
+  - `192.168.1.128/26`, adresses .128 à .191
+  - `192.168.1.192/26`, adresses .192 à .255
+
+Remarquez le schéma : chaque sous-réseau fait 64 adresses de large, donc chacun commence sur un multiple de 64. Cette règle « commence sur un multiple de sa taille » est la façon dont les frontières valides de sous-réseau sont trouvées. Un bloc doit commencer sur une adresse qui est un multiple de sa propre taille, ou ce n'est pas un bloc CIDR valide.
+
+## Le compromis
+
+Chaque bit que vous empruntez pour le réseau divise par deux les hôtes par sous-réseau :
+
+| Préfixe | Sous-réseaux d'un /24 | Adresses chacun | Hôtes utilisables chacun |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Plus de sous-réseaux signifie moins d'hôtes dans chacun. La conception de réseau consiste en grande partie à choisir où se situer sur cette courbe : assez de sous-réseaux pour vos segments, assez d'hôtes dans chacun pour les appareils qui y vivent, avec un peu de place pour grandir.
+
+## Sous-réseautage de longueur variable
+
+Les sous-réseaux au sein du même parent n'ont pas tous à être de la même taille. **Le masquage de sous-réseau de longueur variable (VLSM)** vous permet de tailler un grand sous-réseau pour le segment qui a besoin de nombreux hôtes et de petits sous-réseaux pour les liaisons point à point, le tout à partir du même bloc parent. Les seules règles sont les constantes : chaque sous-réseau est une puissance de deux en taille, et chacun commence sur un multiple de sa taille de sorte que les blocs ne se chevauchent jamais.
+
+La [calculatrice CIDR](/learn) montre la plage exacte, les frontières, et le nombre d'hôtes utilisables pour tout préfixe, ce qui fait de la vérification d'un plan de sous-réseau une affaire de saisie de chaque bloc.

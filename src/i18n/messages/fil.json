@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Subukan ang tool ngayon.",
       "body": "Ang CIDR calculator sa ibaba ay tumatakbo nang local. Maglagay ng network at prefix, at makikita mo ang address range, bilang ng host, at ang mask. Walang ipinapadala kahit saan.",
-      "learnHeading": "Pag-aralan ang mga konsepto"
+      "learnHeading": "Pag-aralan ang mga konsepto",
+      "toolboxCta": "Buksan ang buong toolbox"
     },
     "provenance": {
       "title": "Mga kredito at pinagmulan",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Maglagay ng CIDR block para kalkulahin.",
         "invalid": "Mukhang hindi ito wastong CIDR block. Sumubok ng format na tulad ng 192.168.1.0/24."
-      }
+      },
+      "name": "CIDR / Subnet Calculator",
+      "blurb": "Hatiin ang anumang IPv4 CIDR block sa network at broadcast na mga address, magagamit na host range, bilang ng host, at netmask. Tumatakbo nang buo sa iyong browser."
     },
     "title": "Mga Tool",
     "lede": "Maliliit, mabibilis, at gumagalang-sa-privacy na mga tool na tumatakbo nang buo sa iyong browser. Ang ini-input mo ay hindi ipinapadala kahit saan. May darating pang iba.",
     "open": "Buksan",
     "comingSoon": "Malapit na",
-    "note": "Lumalago ang toolkit na ito. Ang mga bagong tool ay idinaragdag dito kapag handa na, bawat isa ay tumatakbo nang local at libreng gamitin."
+    "note": "Lumalago ang toolkit na ito. Ang mga bagong tool ay idinaragdag dito kapag handa na, bawat isa ay tumatakbo nang local at libreng gamitin.",
+    "learnHeading": "Alamin ang mga konsepto",
+    "backToTools": "Mga tool",
+    "references": "Mga reperensya",
+    "categories": {
+      "identity": "Identity at tokens",
+      "encoding": "Encoding at data",
+      "hashing": "Hashing at crypto",
+      "identifiers": "Mga identifier",
+      "pki": "Mga certificate at PKI",
+      "networking": "Networking"
+    },
+    "hash": {
+      "name": "Hash Generator (SHA-1/256/384/512)",
+      "blurb": "Kuwentahin ang SHA-1, SHA-256, SHA-384, at SHA-512 na mga digest ng anumang teksto, ipinapakita bilang hex at Base64, gamit ang native na Web Crypto ng browser. Tumatakbo nang buo sa iyong browser.",
+      "algorithmLabel": "Hash algorithm",
+      "inputLabel": "Teksto na iha-hash",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Tumatakbo ang hashing nang lokal sa pamamagitan ng Web Crypto. Walang ini-type mo na umaalis sa iyong browser.",
+      "bits": "{bits} bits ({bytes} byte)",
+      "sha1Note": "Sira ang SHA-1 pagdating sa collision resistance at hindi angkop para sa seguridad (mga signature, certificate). Angkop lamang ito para sa mga checksum na hindi pang-seguridad at sa legacy interop.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopyahin",
+      "copied": "Nakopya"
+    },
+    "hmac": {
+      "name": "HMAC Generator (SHA-256/384/512)",
+      "blurb": "Kuwentahin ang isang keyed HMAC sa isang mensahe gamit ang iyong secret key, ipinapakita bilang hex at Base64, sa pamamagitan ng native na Web Crypto ng browser. Ang parehong konstruksyon na ginagamit ng JWT verifier para sa HS256. Hindi umaalis ang iyong key sa iyong browser.",
+      "algorithmLabel": "HMAC algorithm",
+      "messageLabel": "Mensahe",
+      "messagePlaceholder": "Ang mensaheng i-authenticate",
+      "keyLabel": "Secret key",
+      "keyPlaceholder": "Ang iyong shared secret",
+      "runsLocally": "Tumatakbo ang HMAC nang lokal sa pamamagitan ng Web Crypto. Hindi umaalis sa iyong browser ang iyong mensahe at key.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopyahin",
+      "copied": "Nakopya"
+    },
+    "base64": {
+      "name": "Base64 / Base64URL Encoder at Decoder",
+      "blurb": "I-encode ang teksto sa standard o URL-safe na Base64, o i-decode ang alinmang variant pabalik sa teksto. Mapagparaya sa nawawalang padding, at minamarkahan nito ang binary (hindi UTF-8) na mga resulta. Tumatakbo nang buo sa iyong browser.",
+      "directionLabel": "Direksyon",
+      "variantLabel": "Variant ng Base64",
+      "direction": {
+        "encode": "I-encode (teksto patungong Base64)",
+        "decode": "I-decode (Base64 patungong teksto)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "URL-safe"
+      },
+      "inputLabelEncode": "Teksto na ie-encode",
+      "inputLabelDecode": "Base64 na ide-decode",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Tumatakbo nang lokal ang encoding at decoding. Walang ipinapaste mo na umaalis sa iyong browser.",
+      "decodeErrors": {
+        "invalid-characters": "Hindi iyan wastong Base64. Naglalaman ito ng mga karakter na wala sa Base64 alphabet.",
+        "invalid-length": "Hindi iyan wastong Base64. Ang haba nito ay hindi wastong haba ng Base64."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Na-decode na teksto",
+      "copy": "Kopyahin",
+      "copied": "Nakopya",
+      "emptyOutput": "(walang laman)",
+      "decodedBytes": "{bytes, plural, one {Na-decode ang # byte.} other {Na-decode ang # byte.}}",
+      "notUtf8": "{bytes, plural, one {Na-decode ang # byte,} other {Na-decode ang # byte,}} ngunit ang resulta ay hindi wastong UTF-8 na teksto (malamang binary)."
+    },
+    "pkce": {
+      "name": "OAuth PKCE Verifier at Challenge",
+      "blurb": "Bumuo ng OAuth 2.0 code_verifier at i-derive ang S256 code_challenge nito, o i-paste ang sa iyo at suriin ito laban sa mga panuntunan ng haba at charset ng RFC 7636. Ang parehong SHA-256 base64url derivation na inaasahan ng iyong authorization server. Tumatakbo nang buo sa iyong browser.",
+      "verifierLabel": "Code verifier",
+      "verifierPlaceholder": "Mag-paste ng code_verifier, o bumuo ng isa",
+      "generate": "Bumuo",
+      "runsLocally": "Tumatakbo nang lokal ang pagbuo at pag-derive. Hindi umaalis ang iyong verifier sa iyong browser.",
+      "lengthBadge": "Haba {length} (43-128)",
+      "charsetOk": "Unreserved na charset",
+      "charsetBad": "Mga hindi wastong karakter",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "Hindi hinihikayat ang plain na paraan. Gamitin ang S256 saanman makakapag-compute ng SHA-256 ang client.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Kopyahin",
+      "copied": "Nakopya"
+    },
+    "uuid": {
+      "name": "UUID Generator at Inspector (v4 / v7)",
+      "blurb": "Bumuo ng random na v4 o time-ordered na v7 na mga UUID, o mag-paste ng anumang UUID upang basahin ang bersyon, variant, at (para sa v7) ang naka-embed na creation timestamp nito. Gumagamit ang pagbuo ng secure na random source ng browser. Tumatakbo nang buo sa iyong browser.",
+      "versionLabel": "Bersyon ng UUID",
+      "generate": "Bumuo",
+      "clear": "I-clear",
+      "emptyHint": "Pumili ng bersyon at bumuo.",
+      "runsLocally": "Tumatakbo nang lokal ang pagbuo at pagsusuri. Walang ipinapadala kahit saan.",
+      "copy": "Kopyahin",
+      "copied": "Nakopya",
+      "inspectLabel": "Magsuri ng UUID",
+      "inspectPlaceholder": "Mag-paste ng anumang UUID upang i-decode ito",
+      "valid": "Wastong UUID",
+      "invalid": "Hindi wastong UUID",
+      "versionField": "Bersyon",
+      "variantField": "Variant",
+      "timestampField": "Timestamp (v7)",
+      "versionValue": "Bersyon {version}"
+    },
+    "jwt": {
+      "name": "JWT Decoder at Verifier",
+      "blurb": "I-decode ang header at mga claim ng isang JSON Web Token, basahin ang expiry at timing nito sa malinaw na wika, at i-verify ang isang HS256/384/512 na signature gamit ang isang naka-paste na secret. Tumatakbo nang buo sa iyong browser.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Tumatakbo nang lokal ang pag-decode at mga pagsusuri ng signature. Hindi umaalis sa iyong browser ang token at secret.",
+      "errors": {
+        "empty": "Mag-paste ng isang JSON Web Token upang i-decode.",
+        "format": "Hindi iyan mukhang JWT. May tatlong base64url na bahagi ang isang token na pinaghihiwalay ng tuldok: header.payload.signature.",
+        "header": "Hindi wasto ang header. Dapat itong JSON na naka-encode sa base64url.",
+        "payload": "Hindi wasto ang payload. Dapat itong JSON na naka-encode sa base64url."
+      },
+      "panels": {
+        "header": "Header",
+        "payload": "Payload",
+        "signature": "Signature",
+        "noSignature": "Walang signature segment (hindi secured na token)."
+      },
+      "claims": {
+        "iss": "Issuer (iss)",
+        "sub": "Subject (sub)",
+        "aud": "Audience (aud)",
+        "jti": "JWT ID (jti)",
+        "iat": "Inisyu noong (iat)",
+        "nbf": "Hindi bago ang (nbf)",
+        "exp": "Mag-e-expire (exp)"
+      },
+      "status": {
+        "expired": "Nag-expire na {rel}",
+        "expiresIn": "Wasto, mag-e-expire {rel}",
+        "notYetValid": "Hindi pa wasto, magsisimula {rel}",
+        "noExpiry": "Walang expiry (exp) na claim"
+      },
+      "verify": {
+        "label": "I-verify ang HMAC signature (HS256/384/512)",
+        "placeholder": "shared secret",
+        "button": "I-verify",
+        "valid": "Wasto ang signature para sa secret na ito.",
+        "invalid": "Hindi tumutugma ang signature sa secret na ito.",
+        "algNone": "Hindi secured ang token na ito (alg: none), kaya walang signature na ive-verify.",
+        "unsupportedAlg": "Ang verification sa browser ay sumasaklaw lamang sa HS256/384/512. Ang {alg} ay asymmetric at nangangailangan ng public key.",
+        "hint": "Ginagamit lamang ang secret upang mag-compute ng HMAC sa iyong browser. Hindi ito kailanman ipinapadala kahit saan."
+      }
+    },
+    "x509": {
+      "name": "X.509 Certificate Decoder",
+      "blurb": "Mag-paste ng PEM, base64, o hex na certificate upang basahin ang subject, issuer, validity window, public key, at mga v3 extension nito, kasama ang SHA-256 at SHA-1 na mga fingerprint. Tumatakbo nang buo sa iyong browser.",
+      "inputLabel": "X.509 certificate",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Tumatakbo nang lokal ang pag-decode at mga fingerprint. Hindi umaalis sa iyong browser ang certificate.",
+      "errors": {
+        "empty": "Mag-paste ng isang X.509 certificate upang i-decode.",
+        "format": "Hindi iyan mukhang certificate. Mag-paste ng PEM (-----BEGIN CERTIFICATE-----), base64, o hex.",
+        "der": "Ang mga byte ay hindi wastong DER. Tiyaking na-paste ang buong certificate, kasama ang END na linya.",
+        "structure": "Nade-decode ito bilang ASN.1 ngunit hindi ito isang X.509 certificate. Ang isang certificate ay isang SEQUENCE ng TBSCertificate, signatureAlgorithm, at signatureValue."
+      },
+      "status": {
+        "valid": "Wasto, mag-e-expire {rel}",
+        "expired": "Nag-expire na {rel}",
+        "notYetValid": "Hindi pa wasto, magsisimula {rel}"
+      },
+      "panels": {
+        "subject": "Subject",
+        "issuer": "Issuer",
+        "details": "Mga detalye",
+        "publicKey": "Public key",
+        "extensions": "Mga extension",
+        "fingerprints": "Mga fingerprint"
+      },
+      "fields": {
+        "version": "Bersyon",
+        "serial": "Serial number",
+        "notBefore": "Hindi bago ang",
+        "notAfter": "Hindi pagkatapos ng",
+        "signatureAlgorithm": "Signature algorithm",
+        "algorithm": "Algorithm",
+        "keySize": "Key size",
+        "exponent": "Exponent",
+        "curve": "Curve",
+        "bits": "{n}-bit",
+        "selfSigned": "Self-issued"
+      },
+      "ext": {
+        "san": "Subject alternative names",
+        "keyUsage": "Key usage",
+        "extKeyUsage": "Extended key usage",
+        "basicConstraints": "Basic constraints",
+        "subjectKeyId": "Subject key identifier",
+        "authorityKeyId": "Authority key identifier",
+        "caTrue": "Certificate authority (CA: true)",
+        "caFalse": "Hindi CA (CA: false)",
+        "pathLen": "path length {n}",
+        "critical": "critical"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Kinukuwenta ang mga fingerprint..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6 Toolkit",
+      "blurb": "Mag-parse ng isang IPv6 address o prefix upang makita ang canonical (RFC 5952) at ganap na pinalawak na mga anyo nito, ang klasipikasyon ng espesyal na paggamit, ang prefix math, isang EUI-64 MAC kung mayroon, at ang ip6.arpa reverse-DNS na pangalan nito. Tumatakbo nang buo sa iyong browser.",
+      "inputLabel": "IPv6 address o prefix",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Tumatakbo nang lokal ang pag-parse. Hindi umaalis sa iyong browser ang address.",
+      "errors": {
+        "empty": "Maglagay ng isang IPv6 address o prefix upang i-decode.",
+        "format": "Hindi iyan wastong IPv6 address. Gumamit ng walong hex group, na opsyonal na minsang na-compress gamit ang :: (halimbawa 2001:db8::1).",
+        "prefix": "Hindi wasto ang haba ng prefix. Para sa IPv6 dapat itong nasa pagitan ng 0 at 128."
+      },
+      "panels": {
+        "forms": "Mga canonical na anyo",
+        "classification": "Klasipikasyon",
+        "prefix": "Prefix",
+        "identifiers": "Mga identifier"
+      },
+      "fields": {
+        "compressed": "Compressed (RFC 5952)",
+        "expanded": "Expanded",
+        "type": "Uri",
+        "scope": "Scope",
+        "embeddedIpv4": "Naka-embed na IPv4",
+        "network": "Network",
+        "firstAddress": "Unang address",
+        "lastAddress": "Huling address",
+        "count": "Mga address",
+        "hostBits": "Mga host bit",
+        "eui64": "EUI-64 MAC",
+        "reverseDns": "Reverse DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multicast"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Privacy",
+    "title": "Ang iyong data, at kung ano ang ginagawa rito ng site na ito",
+    "lede": "Isang paliwanag sa malinaw na wika kung ano nga ba ang ginagawa at hindi ginagawa ng website na ito sa iyong impormasyon. Isinulat ito upang maging tumpak sa halip na basta nakapagpapanatag lamang, dahil sa ilalim ng mga regulasyon tulad ng GDPR at ng LGPD ng Brazil, ang tumpak na pagsisiwalat ang mahalaga.",
+    "shortTitle": "Ang maikling bersyon",
+    "short1": "Ang site na ito ay hindi naglalagay ng cookie, hindi nagpapatakbo ng analytics, hindi gumagamit ng advertising, at walang anumang third-party tracker o fingerprinting. Walang sumusunod sa iyo sa kabuuan ng web.",
+    "short2": "Hindi ito nagbebenta, nagbabahagi, o gumagawa ng profile ng mga bisita nito, at wala itong hinihingi sa iyo para mabasa mo ito.",
+    "short3": "Ang mga interactive na tool ay ganap na tumatakbo sa iyong browser. Ang ini-paste o tina-type mo sa mga ito ay nananatili sa iyong device at hindi ipinapadala kahit saan.",
+    "short4": "Tatlong bagay lamang ang may kinalaman sa data, at bawat isa ay ipinapaliwanag sa ibaba: isang setting ng tema na nakaimbak sa iyong sariling browser, ang mga karaniwang connection log na nililikha ng bawat pagbisita sa site sa antas ng hosting, at anumang mensaheng pipiliin mong ipadala sa pamamagitan ng email.",
+    "controllerTitle": "Sino ang may pananagutan",
+    "controllerBody": "Ito ang personal na website ni Rodolfo Nützmann (ronutz.com). Para sa anumang tanong tungkol sa privacy, o upang gamitin ang alinman sa mga karapatang inilarawan sa ibaba, sumulat sa hello@ronutz.com. Ang mga katanungan ay direktang hinahawakan ni Rodolfo Nützmann, bilang data controller.",
+    "noTrackTitle": "Walang cookie, walang pagsubaybay, walang analytics",
+    "noTrackBody": "Ang site na ito ay hindi naglalagay ng anumang uri ng cookie. Hindi ito gumagamit ng anumang analytics service (tulad ng Google Analytics o Plausible), anumang advertising network, anumang social-media tracking pixel, at anumang device fingerprinting. Ang iyong pagbisita ay hindi sinusukat, pinoprofile, o ibinabahagi sa kahit sino para sa mga layuning iyon.",
+    "browserTitle": "Ano ang nakaimbak sa iyong browser",
+    "browserBody": "Isang maliit na bagay: ang napili mong visual na tema, naka-save sa local storage ng iyong browser upang maalala ito ng site sa susunod mong pagbisita. Ito ay isang setting para sa kaginhawaan na nananatili sa iyong sariling device, hindi kailanman ipinapadala sa site na ito o sa iba pa, at maaaring burahin anumang oras sa pamamagitan ng iyong browser. Walang ibang data tungkol sa iyo ang iniimbak sa iyong device.",
+    "hostingTitle": "Hosting at mga server log",
+    "hostingBody": "Ang site ay inihahatid sa pamamagitan ng Cloudflare, na nagbibigay ng hosting at content delivery nito. Tulad ng anumang website, ang pag-load ng isang page ay nangangahulugang kumokonekta ang iyong device sa isang server, at ang Cloudflare, na kumikilos bilang hosting provider, ay nagpoproseso ng pangunahing connection data, kabilang ang iyong IP address at mga karaniwang detalye ng request, upang maihatid sa iyo ang mga page at protektahan ang site laban sa pang-aabuso at pag-atake. Ang pagpoprosesong ito ay kinakailangan upang patakbuhin at gawing ligtas ang site (isang lehitimong interes sa ilalim ng Article 6(1)(f) ng GDPR, at ang mga katumbas na batayan sa Articles 7 at 10 ng LGPD). Pansamantala lamang itong itinatago ng provider at hindi ginagamit dito upang kilalanin o subaybayan ka.",
+    "toolsTitle": "Tumatakbo ang mga tool sa iyong browser",
+    "toolsBody": "Ang mga decoder at calculator sa site na ito, para sa mga JWT, IP address, certificate at iba pa, ay kumukuwenta nang ganap sa loob ng iyong browser. Ang mga value na inilalagay mo ay pinoproseso sa iyong sariling device at hindi kailanman ipinapadala sa isang server. Isang hiwalay na programmatic interface (isang API) ang inaalok para sa automation at mga integration; sa disenyo ito ay walang estado at hindi nila-log ang alinman sa mga query o request body na ipinapadala rito.",
+    "contactTitle": "Kung kokontakin mo ako",
+    "contactBody": "Ang contact form ay hindi nagsa-submit ng anuman sa isang server. Sa halip, binubuksan nito ang isang paunang-punong mensahe sa iyong sariling email application, na ikaw mismo ang magpapadala mula sa iyong sariling account, kaya walang dumadaan sa isang third party. Kung susulat ka, sa pamamagitan man ng form o direkta, natatanggap ko ang impormasyong isinasama mo, tulad ng iyong pangalan, email address at mensahe, at ginagamit ko lamang ito upang sagutin ka. Itinatago ko lamang ito hangga't kinakailangan upang asikasuhin ang iyong katanungan, hindi ko ito ginagamit para sa marketing, at hindi ko ito ibinabahagi.",
+    "intlTitle": "Pagpoproseso sa labas ng iyong bansa",
+    "intlBody": "Dahil nagpapatakbo ang Cloudflare ng isang pandaigdigang network, ang pagpoproseso sa antas ng koneksyon na inilarawan sa itaas ay maaaring maganap sa mga server na matatagpuan sa labas ng iyong sariling bansa, kabilang ang sa labas ng Brazil at ng European Economic Area. Kung saan pinoproseso ang personal na data nang pandaigdigan sa ganitong paraan, ginagawa ito sa ilalim ng mga proteksyong inaalok ng kaukulang provider.",
+    "childrenTitle": "Mga bata",
+    "childrenBody": "Ang site na ito ay para sa isang propesyonal, pangkalahatang madla. Hindi ito nakatuon sa mga bata at hindi sinasadyang nangongolekta ng personal na data mula sa kanila.",
+    "rightsTitle": "Ang iyong mga karapatan",
+    "rightsBody": "Depende sa kung saan ka nakatira, may mga karapatan ka sa iyong personal na data, kabilang ang pag-access dito, pagpapaayos o pagbura nito, pagtutol sa o paghihigpit sa pagpoproseso nito, paghiling ng kopya sa isang portable na anyo, at pagiging may-alam kung paano ito hinahawakan. Upang gamitin ang alinman sa mga ito, sumulat lamang sa hello@ronutz.com. Dahil napakakaunting personal na data ang napoproseso dito, sa praktika ay kadalasang napakaliit ang magagawa, ngunit laging bukas ang channel.",
+    "rightsGdpr": "Kung ikaw ay nasa European Economic Area o United Kingdom, may karapatan ka ring maghain ng reklamo sa iyong lokal na awtoridad sa pangangasiwa ng proteksyon ng data.",
+    "rightsLgpd": "Kung ikaw ay nasa Brazil, taglay mo ang mga karapatang nakasaad sa Article 18 ng LGPD, at maaari ka ring makipag-ugnayan sa pambansang awtoridad sa proteksyon ng data (ang ANPD).",
+    "changesTitle": "Mga pagbabago sa abisong ito",
+    "changesBody": "Kung magbago ang abisong ito, ang binagong bersyon ay ilalathala sa page na ito at ia-update ang petsa sa ibaba. Ang mahahalagang pagbabago ay hindi ilalapat nang paatras.",
+    "updated": "Huling na-update: 28 Hunyo 2026",
+    "backHome": "Bumalik sa home"
   },
   "footer": {
+    "redEducation": "Mag-book ng opisyal na training sa Red Education",
+    "privacy": "Privacy",
     "builtWith": "Ginawa ni Rodolfo Nützmann gamit ang CONCORD",
     "colophon": "Paano ito ginawa",
     "openSource": "Open source ang engine nito",
     "rights": "Inihahandog sa bukas at komersyal na mga termino.",
     "contribute": "Tumulong na pahusayin ang mga pagsasalin",
-    "feedback": "Magpadala ng feedback"
+    "feedback": "Magpadala ng feedback",
+    "api": "Reperensya ng API",
+    "contributeTools": "Mag-ambag ng tool"
   },
   "search": {
     "label": "Maghanap",
@@ -390,13 +672,16 @@
     "emailLabel": "Email",
     "channels": {
       "linkedin": {
-        "description": "Kumonekta nang propesyonal"
+        "description": "Kumonekta nang propesyonal",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Mga video at gabay"
+        "description": "Mga video at gabay",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Sa likod ng eksena"
+        "description": "Sa likod ng eksena",
+        "label": "Instagram"
       },
       "training": {
         "label": "Opisyal na pagsasanay",
@@ -551,5 +836,50 @@
     "accessFederatedOnly": "Federated sign-in lamang. Walang fallback na local account.",
     "accessRoleLabel": "Papel",
     "accessPermsLabel": "Mga pahintulot ng may-ari"
+  },
+  "contributeTools": {
+    "eyebrow": "Bukas na toolbox",
+    "title": "Mag-ambag ng tool",
+    "lede": "Ang toolbox ay binuo para lumago. Ang bawat tool ay isang maliit, self-describing na module sa bukas na engine, at niloload ito ng site sa parehong paraan na magagawa ng kahit sino. Kung may tool kang akma, imungkahi ito.",
+    "shapeTitle": "Ano ang isang tool",
+    "shapeBody": "Ang isang tool ay tatlong bagay nang sabay: isang manifest na naglalarawan dito (kung ano ito, ang input na tinatanggap nito, kung saan nagmumula ang katumpakan nito), isang nag-iisang purong run function na gumagawa ng trabaho, at isang set ng reference vectors, mga nakapirming input-at-output pair na nagpapatunay na tama ang function. Niloload ng engine ang tool mula sa manifest nito, kaya ang isang maayos na module ay pumapasok nang hindi ginagalaw ang iba pang bahagi ng site.",
+    "principlesTitle": "Ano ang dapat sundin ng isang tool",
+    "principlesBody": "Lokal na tumatakbo ang computation at deterministic ito: ang parehong input ay palaging nagbubunga ng parehong output, nang walang orasan, network, o randomness sa resulta. Ang anumang sensitibo ay nananatili sa device bilang default. Ang katumpakan ay nakaangkla sa reference vectors at sa mga sinipi na pinagmulan, gaya ng isang RFC o isang nailathalang pamantayan, hindi sa opinyon. Inilalabas ang code sa ilalim ng isang permissive na lisensya, kaya ang site at kahit sino pa ay maaaring magtayo dito.",
+    "proposeTitle": "Magmungkahi ng isa",
+    "proposeBody": "Magpadala ng maikling panukala sa pamamagitan ng email: kung ano ang kinukuwenta ng tool, isang halimbawang input kasama ang eksaktong output na dapat itong magbunga, at ang pinagmulan na pinagbabatayan ng katumpakan nito. Ang isang balangkas ng manifest at ilang reference vector ay malugod na tinatanggap, ngunit hindi kailangan. Kung akma, isinasama ito sa engine at sa toolbox.",
+    "emailLabel": "Email",
+    "backToTools": "Bumalik sa toolbox"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Ang mga tool sa site na ito ay tumatakbo sa iyong browser at pinananatili ang iyong data sa iyong device. Para sa automation, gaya ng mga script, pipeline, at integration, ang parehong deterministic na mga kuwenta ay makukuha bilang isang maliit na HTTP API. Ito ang programmatic na katapat ng mga tool sa browser, hindi isang kapalit ng mga ito.",
+    "privacyTitle": "Ano ang ibig sabihin nito para sa iyong data",
+    "privacyBody": "Tinatanggap lamang ng API ang input na ipinadala mo rito, kinukuwenta ang isang resulta, at ibinabalik ito. Wala itong estado at hindi nagtatala ng anumang query value o request body. Kung kailangan mo ng garantisadong zero data egress, gamitin ang mga tool sa browser, o patakbuhin ang bukas na engine mismo.",
+    "engineTitle": "Ang parehong engine ng browser",
+    "engineBody": "Ang bawat endpoint ay tumatawag sa parehong engine function na tinatawag ng tool sa browser, kaya nagbabalik ang API at ang browser ng magkaparehong resulta byte por byte. Ang engine na iyon, @ronutz/netcore, ay open source sa ilalim ng isang permissive na lisensya.",
+    "specTitle": "Ang espesipikasyon",
+    "specBody": "Ang buong kontrata ay nailathala bilang OpenAPI 3.1. I-download ito, ituro dito ang sarili mong mga kasangkapan, o basahin ang reperensya sa ibaba.",
+    "downloadSpec": "I-download ang openapi.yaml",
+    "baseUrlLabel": "Base URL",
+    "authLabel": "Authentication",
+    "authValue": "Wala. Ito ay isang pampubliko at read-only na API.",
+    "referenceTitle": "Reperensya",
+    "loading": "Niliload ang espesipikasyon.",
+    "loadError": "Hindi maload ang espesipikasyon.",
+    "tryItTitle": "Subukan ito",
+    "tryItSend": "Ipadala",
+    "tryItRunning": "Tumatakbo.",
+    "tryItHint": "Tumatakbo laban sa live na API sa origin na ito. Ang iyong input ay ipinapadala sa endpoint.",
+    "paramsTitle": "Mga parameter",
+    "responsesTitle": "Mga tugon",
+    "schemasTitle": "Mga schema",
+    "exampleLabel": "Halimbawa",
+    "requiredLabel": "kailangan",
+    "fieldLabel": "Field",
+    "typeLabel": "Uri",
+    "descriptionLabel": "Paglalarawan",
+    "viewReference": "Reperensya",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Hindi maload ang Swagger UI."
   }
 }

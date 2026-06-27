@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Token akses, token segar semula dan token ID"
+summary: "Tiga token OAuth dan OpenID Connect yang sentiasa dikelirukan, untuk apa sebenarnya setiap satu, dan mengapa menghantar yang salah ke tempat yang salah ialah pepijat sebenar."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tiga token, tiga tugas
+
+Selepas aliran kod kebenaran selesai (lihat artikel [aliran kod](/learn/oauth-code-flow)), klien boleh berakhir memegang tiga token berbeza, dan mengelirukannya ialah salah satu kesilapan paling lazim dalam OAuth dan OpenID Connect. Token akses, token segar semula dan token ID kelihatan serupa secara cetek, terutama apabila ketiga-tiganya kebetulan JWT, tetapi ia mempunyai khalayak berbeza dan tujuan berbeza. Menepatinya kebanyakannya soal bertanya, bagi setiap token, untuk siapa ia dan apa yang dibenarkannya.
+
+## Token akses: kunci kepada sesuatu API
+
+Token akses ialah apa yang klien hantar ke pelayan sumber (API) untuk membuktikan ia dibenarkan membuat permintaan. Ia perkara paling hampir yang OAuth ada kepada kunci sesi untuk akses mesin-ke-mesin, ditakrifkan oleh OAuth 2.0 (RFC 6749). Dua sifat penting. Ia **berhayat pendek**, selalunya minit hingga sejam, supaya token bocor hanya berguna seketika. Dan ia token **bearer** (pembawa): sesiapa yang memegangnya boleh menggunakannya, tanpa bukti identiti lanjut, itulah sebabnya token akses mesti mengembara hanya melalui TLS dan tidak pernah dilog atau dimasukkan ke URL. API mengesahkan token dan skop yang dibawanya, kemudian melayan atau menolak permintaan.
+
+## Token segar semula: mendapatkan token akses baharu
+
+Kerana token akses luput dengan cepat, memaksa pengguna log masuk semula setiap beberapa minit akan tidak tertahankan. Token segar semula menyelesaikan ini: ia kelayakan berhayat panjang yang klien tukar di pelayan kebenaran untuk token akses segar, tanpa interaksi pengguna. Ia jauh lebih sensitif daripada token akses justeru kerana ia berhayat panjang, jadi ia mesti kekal pada saluran belakang (sisi pelayan, atau dalam storan terlindung) dan tidak pernah didedahkan kepada hujung hadapan pelayar. Amalan baik ialah **putaran token segar semula**: setiap penggunaan mengeluarkan token segar semula baharu dan membatalkan yang lama, supaya token dicuri dikesan pada saat klien sah cuba menggunakan salinan yang kini dibatalkan. Token juga boleh dibatalkan secara eksplisit (RFC 7009).
+
+## Token ID: satu kenyataan tentang pengguna
+
+Token ID ialah kepingan yang OpenID Connect tambah di atas OAuth, dan ia yang paling kerap disalah guna. Ia sentiasa JWT (lihat artikel [anatomi JWT](/learn/jwt-anatomy)), dan ia menerangkan peristiwa pengesahan: siapa pengguna, bila mereka mengesahkan, dan pelayan kebenaran mana yang menjamin itu. Yang kritikal, **token ID adalah untuk klien, bukan untuk API**. Ia menjawab "siapa baru log masuk" supaya aplikasi boleh menubuhkan sesi pengguna. Menghantar token ID ke pelayan sumber seolah-olah ia token akses ialah pepijat klasik: API patut menolaknya, kerana khalayak token ID ialah klien, dan menggunakannya untuk kebenaran mengelirukan identiti dengan keizinan.
+
+## Token bearer dan godaan untuk mempercayainya
+
+Kebanyakan token akses ialah token bearer, yang menjadikannya mudah digunakan dan mudah disalah guna. Peraturan pengendalian mengikut secara terus: sentiasa TLS, hayat pendek, tidak pernah dalam log atau rentetan pertanyaan, dan tidak pernah dalam storan boleh akses pelayar jika pilihan lebih terlindung wujud. Di mana model bearer terlalu berisiko, token **terikat-penghantar** (sender-constrained) mengikat token kepada kunci klien tertentu (mekanisme seperti DPoP atau TLS bersama), supaya token dicuri tidak boleh dimainkan semula oleh orang lain. Bagi kebanyakan aplikasi, token akses bearer berhayat pendek melalui TLS ialah garis dasar yang berfungsi.
+
+## Token akses legap versus JWT
+
+Token akses boleh jadi legap (rentetan rawak yang API semak dengan memanggil titik akhir introspeksi pelayan kebenaran, RFC 7662) atau JWT yang API sahkan sendiri. Bentuk JWT serba lengkap dan mengelak perjalanan rangkaian pergi-balik, tetapi ia tidak boleh dibatalkan sebelum ia luput, yang merupakan satu lagi sebab hayat token akses dikekalkan pendek. Token ID, sebaliknya, sentiasa JWT, kerana seluruh tugasnya ialah menyampaikan claim boleh sahih kepada klien. Sama ada token itu JWT memberitahu anda cara ia disahkan, bukan untuk apa ia.
+
+## Padankan token dengan khalayak
+
+Satu-satunya peraturan yang menghalang kebanyakan pepijat token ialah memadankan setiap token dengan khalayak yang dimaksudkan. **Token ID** adalah untuk aplikasi, untuk mengetahui siapa log masuk. **Token akses** adalah untuk API, untuk membenarkan permintaan. **Token segar semula** adalah untuk pelayan kebenaran, untuk mencipta token akses baharu tanpa mengganggu pengguna. Kekalkan ketiga-tiga khalayak itu jelas, pegang token segar semula berhayat panjang pada saluran belakang, dan layan setiap token bearer sebagai rahsia berhayat pendek, dan selebihnya pengendalian token OAuth jatuh ke tempatnya.

@@ -1,0 +1,62 @@
+---
+slug: certificate-formats
+title: "PEM, DER, at ang mga certificate file format"
+summary: "Kung bakit ang parehong certificate ay dumarating sa napakaraming hugis ng file, kung ano talaga ang PEM at DER, at kung ano talaga ang hawak ng .crt, .pem, .pfx, at .p12."
+concepts: ["x509", "pem", "der", "pkcs12", "pkcs7", "encoding"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-signing-request", "base64"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Isang certificate, maraming balot
+
+Isang karaniwang pinagmumulan ng kalituhan ay ang isang nag-iisang certificate ay maaaring dumating bilang isang `.crt`, isang `.cer`, isang `.pem`, isang `.der`, o nakabaon sa loob ng isang `.pfx`, at inaakala ng mga tao na ito ay magkakaibang bagay. Karaniwan ay hindi. Ang certificate ay isang nakapirming istraktura (ang ASN.1 layout na inilarawan sa [artikulo ng anatomiya](/learn/x509-anatomy)); ang nagbabago ay kung paano ini-encode ang mga byte na iyon at kung ano pa ang nakabalot kasama nila. Ang pag-alam sa kakaunting tunay na format ay nagpapahinto sa mga file extension na maging mahiwaga.
+
+## DER: ang kanonikal na binary
+
+Sa pinakailalim ay ang DER, ang Distinguished Encoding Rules mula sa ITU-T X.690. Ang DER ay ang aktwal na binary serialization ng ASN.1 tree ng certificate: isang sunod-sunod na mga tag-length-value record, na may eksaktong isang balidong encoding para sa anumang ibinigay na halaga. Mahalaga ang determinismong ito, dahil ang lagda ng issuer ay kinukuwenta sa eksaktong mga byte na ito. Ang isang `.der` file (at kadalasan ang isang `.cer` file) ay hilaw na DER na walang text wrapping. Dinedecode ng X.509 tool ang binary na ito nang tuwiran.
+
+## PEM: DER na nakabalot sa teksto
+
+Ang PEM ay DER na na-Base64-encode at nakabalot sa mga armor line, tinukoy ng RFC 7468:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...   (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Umiiral ang PEM dahil ang binary ay hindi nabubuhay sa pagiging idinikit sa isang email, isang config file, o isang terminal, samantalang ang text na Base64 ay nabubuhay. Ang label sa mga `BEGIN`/`END` line ay nagsasabi sa iyo kung ano ang katawan, at marami sila:
+
+- Ang `CERTIFICATE` ay isang X.509 certificate.
+- Ang `CERTIFICATE REQUEST` ay isang CSR (tingnan ang [artikulo ng signing request](/learn/certificate-signing-request)).
+- Ang `PRIVATE KEY` ay isang PKCS#8 private key; ang `RSA PRIVATE KEY` at `EC PRIVATE KEY` ay ang mas lumang mga format na partikular sa key.
+- Ang `PUBLIC KEY` ay isang hubad na SubjectPublicKeyInfo.
+- Ang `X509 CRL` ay isang certificate revocation list.
+
+Ang isang nag-iisang PEM file ay maaaring humawak ng ilang block nang sunod-sunod, na siyang paraan kung paano ang leaf certificate ng isang server kasama ang intermediate chain nito ay ipinapadala sa isang `fullchain.pem`. Para sa encoding sa ilalim, tingnan ang [artikulo ng Base64](/learn/base64).
+
+## Ang file extension ay hindi ang format
+
+Ito ang bahaging nagpapatisod sa mga tao: ang `.crt`, `.cer`, `.pem`, at `.key` ay naglalarawan ng layunin, hindi encoding. Ang isang `.crt` ay maaaring PEM o DER. Ang isang `.cer` ay kadalasang DER sa Windows ngunit PEM sa ibang lugar. Ang isang `.key` ay isang private key, ngunit maaaring PKCS#1, PKCS#8, o SEC1, sa alinman sa PEM o DER. Ang tanging maaasahang paraan upang malaman kung ano ang mayroon ka ay tingnan ang unang mga byte: ang PEM ay nagsisimula sa nakikitang `-----BEGIN` na linya, samantalang ang DER ay nagsisimula sa SEQUENCE tag byte na `0x30`. Tinatanggap ng tool ang alinman, kaya maaari kang magdikit ng isang PEM block o mag-upload ng hilaw na DER nang hindi muna nagko-convert.
+
+## Mga container na nagbubundle ng higit sa isang bagay
+
+Dalawang PKCS format ang nagpapaketе ng maraming object nang magkasama:
+
+- Ang **PKCS#7** (`.p7b`, `.p7c`) ay nagdadala ng isa o higit pang certificate, karaniwang isang certificate kasama ang chain nito, ngunit walang private key. Madalas itong gamitin upang magbigay sa isang tao ng buong chain sa isang file.
+- Ang **PKCS#12** (`.pfx`, `.p12`), tinukoy ng RFC 7292, ay nagbubundle ng isang certificate, ang chain nito, at ang katugmang private key sa isang nag-iisang password-protected na blob. Ito ang ie-export mo mula sa isang Windows certificate store o ii-import sa isang load balancer kapag gusto mong maglakbay nang magkasama ang key at certificate. Dahil naglalaman ito ng private key, ang isang PKCS#12 file ay sensitibo at ang password ang tanging bagay na nagpoprotekta rito.
+
+## Mga encoding ng private key
+
+Ang mga private key ay may sariling maliit na zoo. Ang **PKCS#1** (`RSA PRIVATE KEY`) ay ang orihinal na RSA-lamang na format. Ang **SEC1** (`EC PRIVATE KEY`) ay ang katumbas para sa mga elliptic-curve key. Ang **PKCS#8** (`PRIVATE KEY`, opsyonal na `ENCRYPTED PRIVATE KEY`) ay ang modernong, neutral-sa-algorithm na balot na maaaring humawak ng alinman, at siyang ginagawa ng karamihan ng kasalukuyang tooling. Ang isang certificate decoder ay hindi kailanman nangangailangan ng private key, at hindi mo dapat kailanman idikit ang isang private key sa isang tool na hindi mo kontrolado; ang X.509 tool ay para sa mga certificate, na public sa disenyo.
+
+## Pag-convert sa pagitan nila
+
+Dahil magkapareho ang panloob na istraktura, ang conversion ay walang-pagkawala at nakagawian. Sa OpenSSL, ang PEM patungong DER ay `openssl x509 -in cert.pem -outform der -out cert.der`, at ang kabaligtaran ay nagpapalit ng mga in at out na anyo. Ang pagbuo ng isang PKCS#12 mula sa isang hiwalay na certificate at key ay `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`. Wala sa mga ito ang nagbabago ng certificate mismo; mere-repackage lang nila ito.
+
+## Pagbabalot, hindi sangkap
+
+Ang pangunahing aral ay ang PEM laban sa DER, at ang `.crt` laban sa `.pfx`, ay mga tanong ng transport at bundling, hindi ng kung ano ang sinasabi ng certificate. Tanggalin ang armor, i-decode mula Base64, at balewalain ang container, at sa ilalim ng bawat isa sa mga ito ay ang parehong nilagdaang ASN.1 na pahayag na nagtatali ng isang public key sa isang pangalan. Ang trabaho ng tool ay alisin ang pagbabalot na iyon sa iyong browser at ipakita sa iyo ang istraktura sa loob, na walang file na umaalis kailanman sa pahina.

@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "IPv4 adresleri nasıl çalışır"
+summary: "Her noktalı-dörtlü adresin arkasındaki 32 bit ve özel, loopback ve özel aralıkların ne anlama geldiği."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Kılık değiştirmiş otuz iki bit
+
+Bir IPv4 adresi tek bir 32 bitlik sayıdır. Onu neredeyse hiçbir zaman böyle yazmayız çünkü 32 bir ve sıfırı okumak zordur, dolayısıyla **sekizli** (octet) denen dört adet 8 bitlik gruba bölünür, her biri 0 ile 255 arasında ondalık olarak gösterilir ve noktalarla birleştirilir. `192.168.1.10`, belirli bir 32 bitlik değeri yazmanın yalnızca daha dostane bir yoludur.
+
+Her sekizli 8 bit olduğundan, tüm alan 2³² adrestir, yaklaşık 4,3 milyar. Bu 1980'lerde muazzam geliyordu ve IPv4 adres tükenmesinin onlarca yıl sonra gerçek bir sorun haline gelmesinin nedeni, ve özel adresleme ile IPv6'nın var olmasının sebebidir.
+
+## Ağ kısmı ve ana bilgisayar kısmı
+
+Hiçbir adres tek başına durmaz, bir bloğa aittir, ve o blok içinde bitler bir **ağ kısmı** (bunun hangi blok olduğu) ile bir **ana bilgisayar kısmı** (blok içindeki hangi makine) olarak ayrılır. CIDR tarzında `/24` olarak yazılan önek uzunluğu, o bölünmenin nereye düştüğünü işaretler. Çizginin solundaki her şey ağdır; sağındaki her şey bir ana bilgisayarı tanımlar. Bu, adres tarafından görülen, CIDR notasyonunda keşfedilen aynı fikirdir.
+
+## Özel anlamı olan aralıklar
+
+Her adres sıradan bir ana bilgisayar adresi değildir. Birkaç aralık belirli amaçlar için ayrılmıştır, ve onları tanımak herhangi bir ağ yapılandırmasını okumanın bir parçasıdır:
+
+- **Özel aralıklar (RFC 1918)** özel ağlar içinde kullanım için ayrılmıştır ve genel internette asla yönlendirilmez:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Ev ve ofis ağlarının bu kadar sık `192.168.x.x` veya `10.x.x.x` kullanmasının nedeni budur, o adresler her yerde yeniden kullanılmakta serbesttir çünkü açık internette asla görünmezler.
+- **Loopback (`127.0.0.0/8`)** her zaman yerel makinenin kendisine başvurur. `127.0.0.1`, bir bilgisayarın kendisiyle konuşmak için kullandığı adrestir.
+- **Link-local adresleri (`169.254.0.0/16`)** bir cihaz bir DHCP sunucusuna ulaşamadığında kendiliğinden atanır. Bir tanesini görmek genellikle "hiçbir adres dağıtılmadı" anlamına gelir.
+- **Belirtilmemiş adres (`0.0.0.0`)** ve varsayılan rota (`0.0.0.0/0`) özeldir: ikincisi, daha spesifik bir rota tarafından kapsanmayan herhangi bir hedefle eşleşen her-şeyi-yakala rotasıdır.
+
+## Özel aralıkların güvenlik için neden önemli olduğu
+
+Bu ayrılmış aralıklar yalnızca önemsiz bilgi değildir. Kullanıcı tarafından sağlanan bir adresi getiren bir araç, özel, loopback ve link-local aralıklara ulaşmayı reddetmelidir, aksi takdirde asla dokunmaması gereken dahili sistemlere karşı istek yapmaya kandırılabilir, server-side request forgery (sunucu tarafı istek sahteciliği) denen bir saldırı sınıfı. Hangi aralıkların dahili olduğunu bilmek, ona karşı savunmanın ilk adımıdır. Bu sitedeki ağa dokunan araçların, bağlanmadan önce çözümlenmiş bir adresi bu aralıklara karşı denetlemesinin nedeni tam olarak budur.
+
+Herhangi bir adresin kendi bloğu içinde nasıl yer aldığını, ağ adresini, yayın adresini ve etrafındaki kullanılabilir aralığı görmek için, hepsini yerel olarak tarayıcınızda hesaplayan [CIDR hesaplayıcısını](/learn) deneyin.

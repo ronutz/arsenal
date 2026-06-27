@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "At forstå IPv6-adressering"
+summary: "Hvordan en 128-bit IPv6-adresse er struktureret og skrevet, reglerne for at komprimere den kanonisk, hvad adressetyperne og omfangene betyder, og hvordan grænsefladeidentifikatorer og omvendt DNS fungerer."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hvorfor IPv6 eksisterer
+
+IPv4 har omkring 4,3 milliarder adresser (2^32). Det syntes uudtømmeligt i 1980'erne og er nu længe udtømt hos registrene. IPv6, defineret til adressering i RFC 4291, udvider adressen fra 32 bit til **128 bit**, hvilket er 2^128 adresser, et tal stort nok til, at knaphed ophører med at være designbegrænsningen. Den praktiske effekt er, at subnet bliver enorme, og adressebevaringstricks som NAT ikke længere kræves for grundlæggende forbindelse.
+
+## 128-bit-strukturen
+
+En IPv6-adresse er 128 bit, skrevet som **otte grupper af fire hexadecimale cifre** adskilt af koloner. Hver gruppe er en 16-bit-værdi:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Den fuldt skrevne form er den **udvidede** repræsentation. Fordi den er lang og fuld af nuller, har tekstformen kompressionsregler.
+
+## At skrive en adresse: kompressionsreglerne
+
+To regler forkorter teksten, og RFC 5952 gør resultatet kanonisk (én adresse, én foretrukken stavemåde):
+
+- **Undertryk indledende nuller** i hver gruppe: `0db8` bliver `db8`, `0000` bliver `0`.
+- **Erstat én række af konsekutive helt-nul-grupper med `::`**. Det dobbelte kolon må fremtræde **højst én gang**, og det står for en eller flere 16-bit-grupper af nuller. Når flere lige lange rækker eksisterer, komprimeres den første.
+
+At anvende begge på adressen ovenfor giver dens kanoniske form:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+RFC 5952 tilføjer et par afsluttende regler, så værktøjer er enige: hex-cifre er små bogstaver, og `::` bruges ikke til at "komprimere" en enkelt nul-gruppe (det ville ikke forkorte noget meningsfuldt). IPv6-værktøjet viser både den kanoniske komprimerede form og den fuldt udvidede form side om side, så du kan se præcis, hvad `::` står for.
+
+Et specialtilfælde: en adresse kan bære en **indlejret IPv4**-hale i sine sidste 32 bit, skrevet i punktdecimal. Den mest almindelige er den **IPv4-mappede** form, hvor RFC 5952 anbefaler den blandede notation `::ffff:192.0.2.128` snarere end ren hex.
+
+## Præfikser og præfiksaritmetik
+
+Ligesom IPv4-CIDR skrives et IPv6-præfiks `adresse/længde`, hvor længden tæller de indledende netværksbit:
+
+```
+2001:db8::/64
+```
+
+Et `/64` betyder, at de første 64 bit er netværket, og de resterende 64 er grænsefladeidentifikatoren. `/64` er standardstørrelsen for et enkelt LAN, og det alene rummer 2^64 adresser, omkring 18 trillioner. Værktøjet beregner netværksadressen (første), den sidste adresse, og antallet for ethvert præfiks, du giver det, maskerende værtsbittene til nul for at finde netværket, selv hvis du tastede en adresse med værtsbit sat.
+
+## Adressetyper og omfang
+
+De høje bit i en adresse placerer den i en kategori. De vigtigste, fra RFC 4291 og IANA-registret:
+
+- **Global unicast (2000::/3)** er det routbare offentlige rum, IPv6-ækvivalenten til en offentlig IPv4-adresse.
+- **Unique local, eller ULA (fc00::/7)** er rummet til privat brug (RFC 4193), analogt med RFC 1918 i IPv4. Det routes ikke på det offentlige internet.
+- **Link-local unicast (fe80::/10)** er kun gyldig på et enkelt link og konfigureres automatisk på hver IPv6-grænseflade. Routere videresender det aldrig. Dets omfang er det lokale link.
+- **Multicast (ff00::/8)** adresserer en gruppe snarere end en enkelt vært. Et omfangsfelt inde i adressen siger, hvor langt det når: interface-local, link-local, admin-local, site-local, organization-local, eller global. For eksempel er `ff02::1` link-local alle-noder-gruppen.
+- **Loopback (::1/128)** er IPv6-ækvivalenten til 127.0.0.1, og den **uspecificerede adresse (::/128)** betyder "ingen adresse", brugt som pladsholder under konfiguration.
+- **Dokumentation (2001:db8::/32)** er reserveret af RFC 3849 til eksempler og skrivning, hvilket er grunden til, at næsten ethvert IPv6-eksempel, du ser, inklusive det kanoniske i RFC 4291 selv, bruger den.
+
+IPv6-værktøjet rapporterer den matchende type og det specifikke præfiks, det matchede, plus omfanget for multicast- og link-local-adresser.
+
+## Grænsefladeidentifikatorer og EUI-64
+
+I et typisk `/64` er de nedre 64 bit **grænsefladeidentifikatoren**. En historisk måde at bygge den på var **modificeret EUI-64** (RFC 4291, Appendiks A): tag den 48-bit MAC-adresse, indsæt byten `ff:fe` i midten, og vend den syvende bit (universal/local-bitten). Det gjorde grænseflade-id'et udledeligt fra hardwareadressen. Når værktøjet ser den afslørende `ff:fe` i midten af grænseflade-id'et, vender det processen og viser dig den oprindelige MAC. Moderne systemer foretrækker ofte randomiserede eller privatlivs-grænsefladeidentifikatorer i stedet, netop fordi udledningen af id'et fra en MAC lækker hardwareadressen.
+
+## Omvendt DNS: ip6.arpa
+
+Omvendte opslag (adresse til navn) for IPv6 lever under **ip6.arpa**-domænet. Adressen udvides til sine 32 hex-nibbler, de nibbler vendes, og hver bliver en etikette. Så `2001:db8::1` bliver et navn, der ender på `...8.b.d.0.1.0.0.2.ip6.arpa`. Værktøjet genererer dette navn for enhver adresse, hvilket er den præcise værdi, du ville placere i en `PTR`-post.
+
+## En note om, hvad værktøjet gør
+
+IPv6-værktøjet er en deterministisk, lokal beregner. Det parser, kanoniserer, klassificerer, og beregner, alt sammen i din browser, uden noget opslag mod det levende netværk. Det fortæller dig, hvad en adresse strukturelt **er**. Det fortæller dig ikke, hvorvidt den adresse er nåbar, allokeret, eller i brug, hvilket er separate spørgsmål, der kræver at forespørge netværket eller et register.

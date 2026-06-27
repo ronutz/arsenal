@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Richieste di firma di certificato e come i certificati vengono emessi"
+summary: "Cosa contiene una CSR, perché la tua chiave privata non lascia mai la tua macchina, come una CA valida ed emette, e come ACME automatizza l'intero scambio."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Il problema dell'emissione
+
+Puoi generare una coppia di chiavi per conto tuo in secondi, ma una chiave pubblica nuda non prova nulla su chi sei (il problema del legame dall'[articolo di anatomia](/learn/x509-anatomy)). Per ottenere un certificato, ti serve un'autorità di certificazione di cui una parte facente affidamento già si fida per attestare che questa chiave pubblica appartiene al tuo nome. La Richiesta di Firma di Certificato (Certificate Signing Request) è come lo chiedi, senza mai consegnare la tua chiave privata.
+
+## Cosa contiene una CSR
+
+Una CSR è essa stessa una struttura ASN.1, definita da PKCS#10 (RFC 2986) e di solito spedita come blocco PEM etichettato `CERTIFICATE REQUEST`. Porta:
+
+- il **soggetto** che stai richiedendo (i nomi che dovrebbero finire nel certificato),
+- la tua **chiave pubblica**, e
+- una **firma sulla richiesta, fatta con la chiave privata corrispondente**.
+
+Quest'ultima parte è il punto ingegnoso. Firmando la richiesta con la chiave privata, provi di detenere effettivamente la chiave che fa coppia con la chiave pubblica che hai sottomesso, tutto senza rivelare la chiave privata stessa. La chiave privata non lascia mai il tuo controllo, che è esattamente come dovrebbe essere, perché chiunque la abbia può spacciarsi per te.
+
+## La CA è l'autorità, non il richiedente
+
+Un punto cruciale: la CSR è una *richiesta*, e la CA è libera di onorare parti di essa e ignorarne altre. Puoi chiedere qualsiasi soggetto e qualsiasi estensione tu voglia, ma la CA decide cosa il certificato emesso dice effettivamente. Imposterà il periodo di validità secondo le regole attuali, sceglierà il numero di serie, e includerà solo i nomi e gli usi per cui è disposta ad attestare. La firma della CA, non la tua richiesta, è ciò che dà al certificato finale la sua autorità. Questa separazione è il motivo per cui una CSR piena di campi ambiziosi non ti procura un certificato pieno di essi.
+
+## Come la CA decide di fidarsi di te
+
+Prima di firmare, la CA valida che tu abbia diritto ai nomi che hai chiesto, e quanto minuziosamente dipende dal tipo di certificato:
+
+- **Validato per Dominio (DV)** prova solo che controlli il dominio. Questa è la schiacciante maggioranza dei certificati TLS oggi.
+- **Validato per Organizzazione (OV)** e **Validazione Estesa (EV)** in più vagliano l'entità legale dietro il dominio, la Subject Identity Information che appare nel certificato.
+
+Per DV, la CA ti sfida a dimostrare il controllo del dominio. Metodi comuni sono piazzare un file specifico a una URL sul sito (HTTP-01), pubblicare un record DNS TXT specifico (DNS-01), o rispondere a un'email inviata a un indirizzo nel dominio. Passare la sfida è ciò che convince la CA che la chiave pubblica nella tua CSR dovrebbe essere legata a quel nome.
+
+## I certificati auto-firmati saltano la CA
+
+Se firmi la tua CSR con la tua chiave invece di inviarla a una CA, ottieni un certificato auto-firmato, dove l'Issuer è uguale al Subject. Non porta alcuna autorità esterna, perché l'unica cosa che attesta per esso è esso stesso, ma è perfettamente utile per lo sviluppo locale, servizi interni con il proprio archivio di fiducia, o per agire come la radice di una PKI privata. Lo strumento segnala quando un certificato è auto-emesso, il che ti dice immediatamente che la sua fiducia viene da qualche parte che non è una CA pubblica.
+
+## ACME: automatizzare lo scambio
+
+Fare tutto questo a mano, ripetutamente, è esattamente ciò che lo spostamento verso tempi di vita brevi di certificato rende impossibile (vedi l'[articolo di revoca](/learn/certificate-revocation)). Il protocollo ACME (RFC 8555), reso popolare da Let's Encrypt, automatizza l'intera conversazione: un client genera la coppia di chiavi e la CSR, prova il controllo del dominio attraverso HTTP-01 o DNS-01 automaticamente, riceve il certificato, e ripete prima di ogni scadenza, senza alcun umano coinvolto. ACME è il motivo per cui milioni di siti possono far girare certificati che si rinnovano ogni poche settimane, ed è la spina dorsale operativa del futuro dei certificati a vita breve.
+
+## Una richiesta diventa una credenziale
+
+L'arco è semplice da enunciare. Detieni una coppia di chiavi. Una CSR chiede a una CA di attestare la metà pubblica, provando lungo il cammino che detieni la metà privata. La CA controlla che tu controlli il nome, poi emette un certificato la cui autorità viene dalla firma della CA, non da qualsiasi cosa tu abbia scritto nella richiesta. Ispezionare il risultato con un decodificatore ti mostra il legame che la CA ha effettivamente fatto, che è l'intero scopo dell'esercizio: trasformare una chiave anonima in una chiave con un nome fidato allegato.

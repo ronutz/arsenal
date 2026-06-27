@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUID-er som databasenøkler: v4, v7 og indekslokalitet"
+summary: "Den reelle avveiningen mellom UUID-er og autoinkrementerende heltall, og hvorfor tilfeldige v4-nøkler stille skader databasens ytelse."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## To måter å lage en primærnøkkel
+
+De fleste tabeller trenger en unik nøkkel for hver rad. De to vanlige valgene er et **autoinkrementerende heltall** i databasen (1, 2, 3, ...) og en **UUID**. Heltallet er lite og naturlig ordnet; UUID-en kan genereres hvor som helst, av hvem som helst, uten koordinering. Hvilken som er best, avhenger av hva du verdsetter, og svaret har en ytelsesdimensjon som er lett å gå glipp av.
+
+## Hvorfor team griper etter UUID-er
+
+- **Ingen koordinering.** Enhver tjeneste, klient eller frakoblet enhet kan prege en UUID som ikke kolliderer, så du trenger ingen sentral sekvens eller en tur-retur til databasen for å få en id. Dette er uvurderlig i distribuerte systemer og for å generere id-er før en rad lagres.
+- **Ugjettbar.** Sekvensielle heltalls-id-er lekker informasjon (hvor mange ordrer som finnes, og id-en til den neste) og lar en angriper vandre gjennom poster ved å telle opp. En tilfeldig UUID avslører ingenting av det.
+- **Sammenslåingsvennlig.** Data fra separate systemer kombineres uten id-kollisjoner.
+
+Kostnaden er størrelsen, 16 byte mot 4 eller 8 for et heltall, noe som betyr noe fordi primærnøkkelen kopieres inn i hvert sekundærindeks og hver fremmednøkkel som refererer raden.
+
+## Den skjulte kostnaden ved tilfeldige nøkler
+
+Det finnes en mer subtil, viktigere kostnad. Databaser lagrer rader i et indeks (vanligvis et B-tre) ordnet etter primærnøkkelen. Med en **sekvensiell** nøkkel føyes hver ny rad til slutten av indekset, så de aktive sidene blir værende i minnet, og skrivinger er billige. Med en **tilfeldig v4-UUID** havner hver innsetting på en vilkårlig posisjon. Databasen må lese, endre og skrive sider spredt gjennom hele indekset, noe som forårsaker **sidedelinger**, **fragmentering** og langt flere bufferbom. På en stor, skrivetung tabell kan tilfeldige nøkler målbart bremse innsettinger og blåse opp indekset, alt uten noen feil å peke på.
+
+## Hvorfor v7 endrer regnestykket
+
+Dette er nettopp problemet **UUID versjon 7** ble designet for å løse. Ved å plassere et millisekund-tidsstempel i de mest signifikante bitene er v7-verdier **tidsordnet**: nye rader settes inn nær slutten av indekset, akkurat som et sekvensielt heltall, samtidig som den desentraliserte, ukoordinerte genereringen av en UUID beholdes. Du får mesteparten av indekslokalitetsfordelen ved en autoinkrement-nøkkel uten den sentrale sekvensen. For nye systemer som vil ha UUID-nøkler, er v7 som regel den rette versjonen av nettopp denne grunnen.
+
+## Praktiske notater
+
+- **Lagre UUID-er som en innebygd UUID- eller binærtype, ikke som en streng på 36 tegn.** Å lagre tekstformen sløser plass og bremser sammenligninger; binærformen er 16 byte.
+- **Bruk v7 for nøkler** der innsettingsytelse betyr noe, og **v4** der du spesifikt ikke vil ha noen tidsinformasjon innebygd i id-en.
+- Et autoinkrementerende heltall er fortsatt helt utmerket for en énnodetabell som aldri trenger eksternt genererte id-er; UUID-er gjør nytte når distribusjon, uforutsigbarhet eller forhåndsgenerering betyr noe.
+
+[UUID-verktøyet](/tools/uuid) genererer både v4 og v7 og dekoder det innebygde tidsstempelet i en v7-verdi, slik at du ser ordningsegenskapen direkte, alt i nettleseren din.

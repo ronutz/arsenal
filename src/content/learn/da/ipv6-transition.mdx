@@ -1,0 +1,43 @@
+---
+slug: ipv6-transition
+title: "At køre IPv6 og IPv4 sammen: dual-stack og oversættelse"
+summary: "Hvordan internettet bygger bro mellem to inkompatible adressefamilier: dual-stack, Happy Eyeballs, NAT64, og de IPv4-indlejrede adresser, der får det til at fungere."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## To internet på én gang
+
+IPv6 og IPv4 er ikke kompatible på tråden: en kun-IPv6-vært kan ikke tale direkte med en kun-IPv4-server, fordi pakkerne bruger forskellige adressestørrelser og headere. Der ville aldrig komme en skæringsdag, hvor alle skiftede ved midnat, så internettet har brugt år på at køre begge protokoller side om side og bygge bro mellem dem. Overgangsteknologierne eksisterer for at gøre den sameksistens usynlig for brugere, mens den gamle protokol langsomt pensioneres.
+
+## Dual-stack: kør bare begge
+
+Den enkleste tilgang er dual-stack: en vært, router, eller server kører IPv4 og IPv6 samtidig, med en adresse i hver. Når et navn har både en A-post (IPv4) og en AAAA-post (IPv6) i DNS, kan en dual-stack-klient nå det over enten. Den stående præference er at bruge IPv6, når det er tilgængeligt, og falde tilbage på IPv4 ellers. Dual-stack er den vej, de fleste netværk tager først, fordi intet skal oversættes; hver protokol kører simpelthen nativt.
+
+## Happy Eyeballs: skjul fejlene
+
+At foretrække IPv6 er kun behageligt, hvis en ødelagt IPv6-sti ikke får brugeren til at vente. Happy Eyeballs (RFC 8305) løser dette ved at kapløbe de to: klienten starter en IPv6-forbindelse og, efter et meget kort forspring, starter også en IPv4, bruger så hvilken end der fuldfører først og dropper stille den anden. Effekten er, at brugere får IPv6, når det er sundt, og en øjeblikkelig, ubemærket tilbagefald til IPv4, når det ikke er. Denne algoritme er en stor del af, hvorfor at aktivere IPv6 sjældent får noget til at føles langsommere.
+
+## IPv4-adresser indlejret i IPv6
+
+Flere mekanismer fungerer ved at bære en IPv4-adresse inde i en IPv6-adresse, og værktøjet genkender disse former. Det IPv4-mappede interval `::ffff:0:0/96` repræsenterer en IPv4-adresse over for en dual-stack-socket, så `::ffff:192.0.2.1` er, hvordan IPv4-værten 192.0.2.1 fremtræder i et IPv6-API. Oversættelsessystemer bruger det velkendte præfiks `64:ff9b::/96` (RFC 6052) til at indlejre en IPv4-destination i en IPv6-adresse, der kan routes til en oversætter. At genkende en indlejret IPv4-adresse fortæller dig, at det, der ligner en IPv6-destination, i virkeligheden er en sti til noget på IPv4-internettet.
+
+## NAT64 og DNS64: kun-IPv6 der når IPv4
+
+For netværk, der er gået kun-IPv6, lader NAT64 (RFC 6146) og DNS64 (RFC 6147) de klienter stadig nå kun-IPv4-servere. DNS64 syntetiserer en AAAA-post for et kun-IPv4-navn ved at indlejre dets IPv4-adresse i det velkendte præfiks, så klienten får en IPv6-destination at forbinde til. NAT64 sidder så ved grænsen og oversætter de IPv6-pakker til IPv4 på vejen ud, og tilbage på vejen ind. Sammen lader de et moderne kun-IPv6-netværk opføre sig, som om hele internettet var nåbart over IPv6.
+
+## 464XLAT til stædige IPv4-apps
+
+Nogle applikationer sender stadig bogstavelige IPv4-adresser rundt og bryder på et kun-IPv6-netværk selv med NAT64 til stede. 464XLAT (RFC 6877), bredt udrullet hos mobiloperatører, tilføjer en lille oversættelse på klienten, der præsenterer en privat IPv4-adresse lokalt og tunnelerer den over kun-IPv6-netværket til en NAT64-gateway. Det er grunden til, at kun-IPv6 mobilnetværk stadig kan køre kun-IPv4-apps, uden at brugeren bemærker det.
+
+## Hvorfor der ikke er NAT i nativt IPv6
+
+Et hyppigt spørgsmål fra IPv4-administratorer er, hvor NAT'et blev af. Nativt IPv6 giver hver vært en globalt routbar adresse, så det adressedelende NAT, der definerede IPv4-hjemme- og kontornetværkene, er simpelthen unødvendigt; forbindelsen er ende til ende, og en tilstandsfuld firewall, ikke adresseoversættelse, leverer grænsen. Hvor privat, ikke-routet adressering reelt ønskes, tilbyder IPv6 Unique Local Addresses i `fc00::/7`, ULA-typen, værktøjet identificerer. Den oversættelse, der ses ved IPv6-kanter, er for at nå den *gamle* protokol, ikke for at strække et knapt adresserum.
+
+## Stillads, ikke destinationen
+
+Alt dette maskineri, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, er overgangsstillads. Sluttilstanden er nativt IPv6 overalt, med oversættelse kun nødvendig for at nå, hvilket IPv4 der end forbliver. I mellemtiden hjælper det at genkende de indlejrede-IPv4-former og forstå, hvilken bro der er i spil, dig med at ræsonnere om en sti, der stille kan krydse mellem de to internet. Når værktøjet markerer en adresse som IPv4-mappet eller siddende i oversættelsespræfikset, er det dit fingerpeg om, at et IPv4-endepunkt gemmer sig inde i en IPv6-adresse.

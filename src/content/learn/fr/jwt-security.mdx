@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "Pieges de securite JWT : alg:none, confusion de cle et controles manquants"
+summary: "La poignee d'erreurs qui transforme un verificateur de JWT en machine a falsification, et la validation qu'un verificateur correct doit effectuer."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## La signature ne vaut que ce que vaut le verificateur
+
+La signature d'un JWT rend ses revendications dignes de confiance, mais seulement si le code qui la verifie le fait correctement. La plupart des vulnerabilites JWT ne sont pas des ruptures de la cryptographie ; ce sont des verificateurs que l'on peut tromper pour qu'ils acceptent des tokens qu'ils devraient rejeter. Voici celles qui comptent, et les controles qui les empechent.
+
+## Faire confiance a l'algorithme du token lui-meme
+
+- **`alg: none`.** La specification JWT definit un token "non protege" sans signature, declare par `{"alg":"none"}`. Un verificateur qui l'honore acceptera un token aux revendications falsifiees et a la signature vide. Un verificateur correct ne traite jamais `none` comme valide pour un token cense etre signe.
+- **Confusion d'algorithme (RS256 vers HS256).** Avec RS256, le token est signe par une cle privee et verifie avec la cle publique. Si un verificateur lit l'algorithme *dans le token* et qu'un attaquant remplace l'en-tete par HS256, le verificateur peut tenter de verifier un HMAC en utilisant la cle **publique** comme secret, une valeur que l'attaquant possede aussi. Le token falsifie passe alors.
+
+L'unique defense pour les deux est la meme : **le verificateur decide de l'algorithme acceptable, pas le token.** Fixez l'algorithme attendu (ou une courte liste autorisee) dans votre appel de verification et rejetez tout autre.
+
+## Sauter les revendications
+
+Une signature valide prouve que le token a ete emis et non altere. Elle ne prouve pas que le token est *pour vous* ni *encore valide*. Un verificateur correct controle aussi :
+
+- **`exp` (expiration)** et **`nbf` (pas-avant)** : rejetez les tokens expires ou pas encore valides, avec une petite tolerance de decalage d'horloge.
+- **`aud` (audience)** : confirmez que le token etait destine a ce service. Un token emis pour le service A ne doit pas etre accepte par le service B.
+- **`iss` (emetteur)** : confirmez qu'il vient de l'emetteur en qui vous avez confiance, et resolvez la cle de verification a partir de cet emetteur, pas du token.
+
+Omettre cela, c'est ainsi qu'un token vole ou mal dirige finit par etre accepte la ou il ne devrait pas.
+
+## Les pieges mineurs
+
+- **Secrets HMAC faibles.** Un token HS256 signe avec un secret court ou devinable peut etre casse par force brute hors ligne jusqu'a trouver une signature concordante. Utilisez une cle longue et aleatoire.
+- **Gestion de `kid` et JWKS.** L'en-tete `kid` selectionne une cle ; traitez-le comme une entree non fiable (il a deja servi a de l'injection) et ne recuperez les cles que depuis le JWKS de l'emetteur de confiance.
+- **Decoder confondu avec verifier.** Lire les revendications d'un token sans controler la signature et le temps n'est pas une verification. N'agissez que sur un token entierement verifie.
+
+## La version courte
+
+Fixez l'algorithme, validez `exp`, `aud` et `iss`, utilisez des cles solides, et ne confondez jamais decoder et verifier. L'[outil JWT](/tools/jwt) decode un token, montre ses revendications et son expiration en clair, et verifie une signature HMAC contre un secret que vous collez, le tout dans votre navigateur, le token et le secret n'etant jamais envoyes.

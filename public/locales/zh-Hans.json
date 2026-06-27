@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "现在就试用工具。",
       "body": "下方的 CIDR 计算器在本地运行。输入网络和前缀，即可看到地址范围、主机数量和掩码。没有任何内容被发送到任何地方。",
-      "learnHeading": "了解相关概念"
+      "learnHeading": "了解相关概念",
+      "toolboxCta": "打开完整工具箱"
     },
     "provenance": {
       "title": "致谢与来源",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "请输入一个 CIDR 块以进行计算。",
         "invalid": "这看起来不是有效的 CIDR 块。请尝试类似 192.168.1.0/24 的格式。"
-      }
+      },
+      "name": "CIDR / 子网计算器",
+      "blurb": "将任意 IPv4 CIDR 块拆解为网络地址和广播地址、可用主机范围、主机数量和子网掩码。完全在你的浏览器中运行。"
     },
     "title": "工具",
     "lede": "小巧、快速、尊重隐私的工具，完全在您的浏览器中运行。您输入的内容不会被发送到任何地方。更多工具即将推出。",
     "open": "打开",
     "comingSoon": "即将推出",
-    "note": "这个工具集正在不断扩充。新工具在准备就绪后会添加到这里，每个都在本地运行且免费使用。"
+    "note": "这个工具集正在不断扩充。新工具在准备就绪后会添加到这里，每个都在本地运行且免费使用。",
+    "learnHeading": "学习概念",
+    "backToTools": "工具",
+    "references": "参考",
+    "categories": {
+      "identity": "身份与令牌",
+      "encoding": "编码与数据",
+      "hashing": "哈希与加密",
+      "identifiers": "标识符",
+      "pki": "证书与 PKI",
+      "networking": "网络"
+    },
+    "hash": {
+      "name": "哈希生成器（SHA-1/256/384/512）",
+      "blurb": "使用浏览器原生的 Web Crypto，计算任意文本的 SHA-1、SHA-256、SHA-384 和 SHA-512 摘要，以 hex 和 Base64 显示。完全在你的浏览器中运行。",
+      "algorithmLabel": "哈希算法",
+      "inputLabel": "要哈希的文本",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "哈希通过 Web Crypto 在本地运行。你输入的内容不会离开你的浏览器。",
+      "bits": "{bits} 位（{bytes} 字节）",
+      "sha1Note": "SHA-1 在抗碰撞性方面已被攻破，不适合用于安全场景（签名、证书）。它仅适用于非安全用途的校验和以及旧系统的互操作。",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "复制",
+      "copied": "已复制"
+    },
+    "hmac": {
+      "name": "HMAC 生成器（SHA-256/384/512）",
+      "blurb": "使用你的密钥，通过浏览器原生的 Web Crypto 对消息计算带密钥的 HMAC，以 hex 和 Base64 显示。与 JWT 验证器用于 HS256 的构造相同。你的密钥不会离开你的浏览器。",
+      "algorithmLabel": "HMAC 算法",
+      "messageLabel": "消息",
+      "messagePlaceholder": "要认证的消息",
+      "keyLabel": "密钥",
+      "keyPlaceholder": "你的共享密钥",
+      "runsLocally": "HMAC 通过 Web Crypto 在本地运行。你的消息和密钥不会离开你的浏览器。",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "复制",
+      "copied": "已复制"
+    },
+    "base64": {
+      "name": "Base64 / Base64URL 编码器与解码器",
+      "blurb": "将文本编码为标准或 URL 安全的 Base64，或将任一变体解码回文本。容忍缺失的填充，并标记二进制（非 UTF-8）结果。完全在你的浏览器中运行。",
+      "directionLabel": "方向",
+      "variantLabel": "Base64 变体",
+      "direction": {
+        "encode": "编码（文本到 Base64）",
+        "decode": "解码（Base64 到文本）"
+      },
+      "variant": {
+        "standard": "标准",
+        "urlsafe": "URL 安全"
+      },
+      "inputLabelEncode": "要编码的文本",
+      "inputLabelDecode": "要解码的 Base64",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "编码和解码在本地运行。你粘贴的内容不会离开你的浏览器。",
+      "decodeErrors": {
+        "invalid-characters": "这不是有效的 Base64。它包含 Base64 字母表之外的字符。",
+        "invalid-length": "这不是有效的 Base64。它的长度不是有效的 Base64 长度。"
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "解码后的文本",
+      "copy": "复制",
+      "copied": "已复制",
+      "emptyOutput": "（空）",
+      "decodedBytes": "{bytes, plural, other {已解码 # 字节。}}",
+      "notUtf8": "{bytes, plural, other {已解码 # 字节，}}但结果不是有效的 UTF-8 文本（很可能是二进制）。"
+    },
+    "pkce": {
+      "name": "OAuth PKCE 验证器与 challenge",
+      "blurb": "生成 OAuth 2.0 code_verifier 并派生其 S256 code_challenge，或粘贴你自己的并按 RFC 7636 的长度和字符集规则进行检查。与你的授权服务器所期望的 SHA-256 base64url 派生相同。完全在你的浏览器中运行。",
+      "verifierLabel": "code verifier",
+      "verifierPlaceholder": "粘贴一个 code_verifier，或生成一个",
+      "generate": "生成",
+      "runsLocally": "生成和派生在本地运行。你的 verifier 不会离开你的浏览器。",
+      "lengthBadge": "长度 {length}（43-128）",
+      "charsetOk": "未保留字符集",
+      "charsetBad": "无效字符",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "不建议使用 plain 方法。只要客户端能计算 SHA-256，就应使用 S256。",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "复制",
+      "copied": "已复制"
+    },
+    "uuid": {
+      "name": "UUID 生成器与检查器（v4 / v7）",
+      "blurb": "生成随机 v4 或按时间排序的 v7 UUID，或粘贴任意 UUID 以读取其版本、变体以及（对于 v7）内嵌的创建时间戳。生成使用浏览器的安全随机源。完全在你的浏览器中运行。",
+      "versionLabel": "UUID 版本",
+      "generate": "生成",
+      "clear": "清除",
+      "emptyHint": "选择一个版本并生成。",
+      "runsLocally": "生成和检查在本地运行。不会向任何地方发送任何内容。",
+      "copy": "复制",
+      "copied": "已复制",
+      "inspectLabel": "检查一个 UUID",
+      "inspectPlaceholder": "粘贴任意 UUID 以解码它",
+      "valid": "有效的 UUID",
+      "invalid": "不是有效的 UUID",
+      "versionField": "版本",
+      "variantField": "变体",
+      "timestampField": "时间戳（v7）",
+      "versionValue": "版本 {version}"
+    },
+    "jwt": {
+      "name": "JWT 解码器与验证器",
+      "blurb": "解码 JSON Web Token 的头部和声明，以通俗语言读取其过期时间和时序，并用粘贴的密钥验证 HS256/384/512 签名。完全在你的浏览器中运行。",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "解码和签名校验在本地运行。令牌和密钥不会离开你的浏览器。",
+      "errors": {
+        "empty": "粘贴一个 JSON Web Token 以解码。",
+        "format": "这看起来不像 JWT。令牌由用点分隔的三个 base64url 部分组成：header.payload.signature。",
+        "header": "头部无效。它应是 base64url 编码的 JSON。",
+        "payload": "载荷无效。它应是 base64url 编码的 JSON。"
+      },
+      "panels": {
+        "header": "头部",
+        "payload": "载荷",
+        "signature": "签名",
+        "noSignature": "没有签名段（未签名令牌）。"
+      },
+      "claims": {
+        "iss": "签发者 (iss)",
+        "sub": "主体 (sub)",
+        "aud": "受众 (aud)",
+        "jti": "JWT ID (jti)",
+        "iat": "签发时间 (iat)",
+        "nbf": "生效时间 (nbf)",
+        "exp": "过期时间 (exp)"
+      },
+      "status": {
+        "expired": "已过期 {rel}",
+        "expiresIn": "有效，过期于 {rel}",
+        "notYetValid": "尚未生效，开始于 {rel}",
+        "noExpiry": "没有过期 (exp) 声明"
+      },
+      "verify": {
+        "label": "验证 HMAC 签名（HS256/384/512）",
+        "placeholder": "共享密钥",
+        "button": "验证",
+        "valid": "签名对此密钥有效。",
+        "invalid": "签名与此密钥不匹配。",
+        "algNone": "此令牌未签名（alg: none），因此没有可验证的签名。",
+        "unsupportedAlg": "浏览器内验证仅涵盖 HS256/384/512。{alg} 是非对称的，需要公钥。",
+        "hint": "密钥仅用于在你的浏览器中计算 HMAC。它绝不会被发送到任何地方。"
+      }
+    },
+    "x509": {
+      "name": "X.509 证书解码器",
+      "blurb": "粘贴 PEM、base64 或 hex 证书以读取其主题、颁发者、有效期窗口、公钥和 v3 扩展，并附带 SHA-256 和 SHA-1 指纹。完全在你的浏览器中运行。",
+      "inputLabel": "X.509 证书",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "解码和指纹计算在本地运行。证书不会离开你的浏览器。",
+      "errors": {
+        "empty": "粘贴一个 X.509 证书以解码。",
+        "format": "这看起来不像证书。请粘贴 PEM（-----BEGIN CERTIFICATE-----）、base64 或 hex。",
+        "der": "这些字节不是有效的 DER。请检查是否粘贴了整个证书，包括 END 行。",
+        "structure": "这可解码为 ASN.1，但不是 X.509 证书。证书是由 TBSCertificate、signatureAlgorithm 和 signatureValue 组成的 SEQUENCE。"
+      },
+      "status": {
+        "valid": "有效，过期于 {rel}",
+        "expired": "已过期 {rel}",
+        "notYetValid": "尚未生效，开始于 {rel}"
+      },
+      "panels": {
+        "subject": "主题",
+        "issuer": "颁发者",
+        "details": "详情",
+        "publicKey": "公钥",
+        "extensions": "扩展",
+        "fingerprints": "指纹"
+      },
+      "fields": {
+        "version": "版本",
+        "serial": "序列号",
+        "notBefore": "不早于",
+        "notAfter": "不晚于",
+        "signatureAlgorithm": "签名算法",
+        "algorithm": "算法",
+        "keySize": "密钥大小",
+        "exponent": "指数",
+        "curve": "曲线",
+        "bits": "{n} 位",
+        "selfSigned": "自签发"
+      },
+      "ext": {
+        "san": "主题备用名称",
+        "keyUsage": "密钥用法",
+        "extKeyUsage": "扩展密钥用法",
+        "basicConstraints": "基本约束",
+        "subjectKeyId": "主题密钥标识符",
+        "authorityKeyId": "颁发机构密钥标识符",
+        "caTrue": "证书颁发机构（CA: true）",
+        "caFalse": "不是 CA（CA: false）",
+        "pathLen": "路径长度 {n}",
+        "critical": "关键"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "正在计算指纹……"
+      }
+    },
+    "ipv6": {
+      "name": "IPv6 工具箱",
+      "blurb": "解析一个 IPv6 地址或前缀，查看其规范（RFC 5952）形式和完全展开形式、特殊用途分类、前缀运算、内嵌的 EUI-64 MAC（若存在）以及其 ip6.arpa 反向 DNS 名称。完全在你的浏览器中运行。",
+      "inputLabel": "IPv6 地址或前缀",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "解析在本地运行。地址不会离开你的浏览器。",
+      "errors": {
+        "empty": "输入一个 IPv6 地址或前缀以解码。",
+        "format": "这不是有效的 IPv6 地址。请使用八组十六进制，可用 :: 压缩一次（例如 2001:db8::1）。",
+        "prefix": "前缀长度无效。对于 IPv6，它必须在 0 到 128 之间。"
+      },
+      "panels": {
+        "forms": "规范形式",
+        "classification": "分类",
+        "prefix": "前缀",
+        "identifiers": "标识符"
+      },
+      "fields": {
+        "compressed": "压缩形式（RFC 5952）",
+        "expanded": "展开形式",
+        "type": "类型",
+        "scope": "范围",
+        "embeddedIpv4": "内嵌 IPv4",
+        "network": "网络",
+        "firstAddress": "首个地址",
+        "lastAddress": "末个地址",
+        "count": "地址数",
+        "hostBits": "主机位",
+        "eui64": "EUI-64 MAC",
+        "reverseDns": "反向 DNS（ip6.arpa）"
+      },
+      "badges": {
+        "multicast": "组播"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "隐私",
+    "title": "您的数据，以及本站如何处理它们",
+    "lede": "以通俗语言说明本网站对您的信息究竟做什么、不做什么。它力求准确而非仅仅令人安心，因为在 GDPR 和巴西 LGPD 这类法规之下，重要的是准确的告知。",
+    "shortTitle": "简短版本",
+    "short1": "本站不设置任何 cookie，不运行任何分析，不使用任何广告，也不包含任何第三方追踪器或指纹识别（fingerprinting）。没有任何东西会跨网站追踪您。",
+    "short2": "它不出售、不共享、也不为访客建立画像，并且不要求您提供任何东西即可阅读。",
+    "short3": "交互式工具完全在您的浏览器中运行。您粘贴或输入其中的内容留在您的设备上，不会被传输到任何地方。",
+    "short4": "只有三件事会涉及数据，每一件都在下文说明：保存在您自己浏览器中的单一主题设置、每次网站访问在托管层产生的标准连接日志，以及您选择通过电子邮件发送的任何消息。",
+    "controllerTitle": "谁负责",
+    "controllerBody": "这是 Rodolfo Nützmann 的个人网站（ronutz.com）。如有任何隐私问题，或要行使下文所述的任何权利，请写信至 hello@ronutz.com。请求由 Rodolfo Nützmann 作为数据控制者直接处理。",
+    "noTrackTitle": "无 cookie、无追踪、无分析",
+    "noTrackBody": "本站不设置任何类型的 cookie。它不使用任何分析服务（如 Google Analytics 或 Plausible）、任何广告网络、任何社交媒体追踪像素，也不使用任何设备指纹识别。您的访问不会为这些目的被测量、画像或与任何人共享。",
+    "browserTitle": "您的浏览器中存储了什么",
+    "browserBody": "只有一件小事：您所选的视觉主题，保存在您浏览器的本地存储（local storage）中，以便本站在您下次访问时能够记住它。这是一项便利设置，留在您自己的设备上，绝不会发送到本站或任何其他人，并且可随时通过您的浏览器清除。您设备上不会存储有关您的任何其他数据。",
+    "hostingTitle": "托管与服务器日志",
+    "hostingBody": "本站通过 Cloudflare 交付，由其提供托管与内容分发。与任何网站一样，加载页面意味着您的设备连接到服务器，而 Cloudflare 作为托管提供商，会处理基本的连接数据，包括您的 IP 地址和标准请求详情，以便向您交付页面并保护本站免受滥用和攻击。此处理对于运营和保护本站是必要的（根据 GDPR 第 6(1)(f) 条的正当利益，以及 LGPD 第 7 和第 10 条的相应依据）。它仅由提供商短暂保留，且在此不用于识别或追踪您。",
+    "toolsTitle": "工具在您的浏览器中运行",
+    "toolsBody": "本站的解码器和计算器，用于 JWT、IP 地址、证书及其余内容，完全在您的浏览器内进行计算。您输入的值在您自己的设备上处理，绝不会发送到服务器。另提供一个独立的程序化接口（API）用于自动化与集成；按设计它是无状态的，不会记录发送给它的任何查询或请求正文。",
+    "contactTitle": "如果您联系我",
+    "contactBody": "联系表单不会向任何服务器提交任何内容。相反，它会在您自己的电子邮件应用中打开一封预填的邮件，随后由您自己从自己的账户发送，因此没有任何东西经过第三方。如果您写信，无论通过表单还是直接写信，我都会收到您所包含的信息，例如您的姓名、电子邮件地址和消息，并仅用于回复您。我仅在处理您的咨询所需的时间内保留它，不会将其用于营销，也不会共享它。",
+    "intlTitle": "在您所在国家/地区之外的处理",
+    "intlBody": "由于 Cloudflare 运营一个全球网络，上文所述的连接层处理可能在位于您所在国家/地区之外的服务器上进行，包括巴西和欧洲经济区之外。当个人数据以这种方式在国际间被处理时，会在相关提供商所提供的保障之下进行。",
+    "childrenTitle": "儿童",
+    "childrenBody": "本站面向专业的、一般的受众。它不面向儿童，也不会在知情的情况下收集儿童的个人数据。",
+    "rightsTitle": "您的权利",
+    "rightsBody": "视您居住地而定，您对自己的个人数据享有权利，包括访问、更正或删除、反对或限制处理、以可携格式请求副本，以及被告知它们如何被处理。要行使其中任何一项，只需写信至 hello@ronutz.com。由于此处所处理的个人数据极少，实际上通常几乎无事可办，但渠道始终开放。",
+    "rightsGdpr": "如果您位于欧洲经济区或英国，您还有权向您当地的数据保护监管机构提出投诉。",
+    "rightsLgpd": "如果您位于巴西，您拥有 LGPD 第 18 条所规定的权利，也可以联系国家数据保护机构（ANPD）。",
+    "changesTitle": "本声明的变更",
+    "changesBody": "如果本声明发生变更，修订后的版本将发布在本页面，并更新下方的日期。重大变更不会追溯适用。",
+    "updated": "最后更新：2026年6月28日",
+    "backHome": "返回首页"
   },
   "footer": {
+    "redEducation": "通过 Red Education 预订官方培训",
+    "privacy": "隐私",
     "builtWith": "由 Rodolfo Nützmann 使用 CONCORD 打造",
     "colophon": "如何打造",
     "openSource": "其引擎是开源的",
     "rights": "以开放及商业条款提供。",
     "contribute": "帮助改进翻译",
-    "feedback": "提交反馈"
+    "feedback": "提交反馈",
+    "api": "API 参考",
+    "contributeTools": "贡献一个工具"
   },
   "search": {
     "label": "搜索",
@@ -390,13 +672,16 @@
     "emailLabel": "电子邮箱",
     "channels": {
       "linkedin": {
-        "description": "建立职业联系"
+        "description": "建立职业联系",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "视频与教程"
+        "description": "视频与教程",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "幕后花絮"
+        "description": "幕后花絮",
+        "label": "Instagram"
       },
       "training": {
         "label": "官方培训",
@@ -551,5 +836,50 @@
     "accessFederatedOnly": "仅限联合登录。无本地回退账户。",
     "accessRoleLabel": "角色",
     "accessPermsLabel": "所有者权限"
+  },
+  "contributeTools": {
+    "eyebrow": "开放的工具箱",
+    "title": "贡献一个工具",
+    "lede": "工具箱为成长而生。每个工具都是开放引擎上一个小巧、自描述的模块，本站加载它的方式与任何人都一样。如果你有合适的工具，欢迎提议。",
+    "shapeTitle": "工具是什么",
+    "shapeBody": "一个工具由三部分组成：一份描述它的清单（它是什么、接受何种输入、其正确性来自何处）、一个完成工作的纯执行函数，以及一组参考向量，即证明该函数正确的固定输入输出对。引擎依据清单加载工具，因此一个格式良好的模块无需触碰本站其余部分即可接入。",
+    "principlesTitle": "工具必须遵守什么",
+    "principlesBody": "计算在本地运行且是确定性的：相同的输入始终产生相同的输出，结果中没有时钟、网络或随机性。任何敏感内容默认都留在设备上。正确性锚定于参考向量与所引用的来源（例如某个 RFC 或一项已发布的标准），而非观点。代码以宽松许可发布，因此本站和其他任何人都可以在其上构建。",
+    "proposeTitle": "提议一个",
+    "proposeBody": "通过电子邮件发送一份简短的提议：该工具计算什么、一个示例输入及它应当产生的确切输出，以及其正确性所依据的来源。清单的草图和几个参考向量值得欢迎，但并非必需。如果合适，它便会被构建进引擎和工具箱。",
+    "emailLabel": "电子邮件",
+    "backToTools": "返回工具箱"
+  },
+  "api": {
+    "title": "API",
+    "lede": "本站的工具在你的浏览器中运行，并把你的数据留在你的设备上。对于自动化（脚本、流水线和集成），同样的确定性计算以一个小型 HTTP API 的形式提供。它是浏览器工具的程序化对应物，而非其替代品。",
+    "privacyTitle": "这对你的数据意味着什么",
+    "privacyBody": "该 API 只接收你发送给它的输入，计算出结果并返回。它是无状态的，不记录任何查询值或请求体。如果你需要有保证的零数据外发，请使用浏览器工具，或自行运行开放引擎。",
+    "engineTitle": "与浏览器相同的引擎",
+    "engineBody": "每个端点调用的引擎函数都与浏览器中工具所调用的相同，因此 API 与浏览器返回逐字节一致的结果。该引擎 @ronutz/netcore 以宽松许可开源。",
+    "specTitle": "规范",
+    "specBody": "完整契约以 OpenAPI 3.1 发布。下载它、让你自己的工具指向它，或阅读下方的参考。",
+    "downloadSpec": "下载 openapi.yaml",
+    "baseUrlLabel": "基础 URL",
+    "authLabel": "身份验证",
+    "authValue": "无。这是一个公开的只读 API。",
+    "referenceTitle": "参考",
+    "loading": "正在加载规范。",
+    "loadError": "无法加载规范。",
+    "tryItTitle": "试一试",
+    "tryItSend": "发送",
+    "tryItRunning": "运行中。",
+    "tryItHint": "在此源的实时 API 上运行。你的输入会被发送到该端点。",
+    "paramsTitle": "参数",
+    "responsesTitle": "响应",
+    "schemasTitle": "模式",
+    "exampleLabel": "示例",
+    "requiredLabel": "必填",
+    "fieldLabel": "字段",
+    "typeLabel": "类型",
+    "descriptionLabel": "说明",
+    "viewReference": "参考",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "无法加载 Swagger UI。"
   }
 }

@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Einen HMAC sicher prüfen: konstante Zeit und Replay"
+summary: "Warum der Vergleich von Signaturen mit == einen Zeit-Seitenkanal verrät und warum eine gültige Signatur allein eine wiederholte Anfrage nicht verhindert."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Den Tag zu berechnen ist der einfache Teil
+
+Einen HMAC korrekt zu erzeugen ist gut verstanden. Die Fehler häufen sich auf der *Prüfseite*, wo zwei Probleme jene erwischen, die die Kryptografie richtig, aber die umgebende Logik falsch gemacht haben: wie Sie die Tags vergleichen und was ein gültiger Tag tatsächlich beweist.
+
+## In konstanter Zeit vergleichen
+
+Zum Prüfen berechnet der Empfänger den HMAC über die Nachricht neu und gleicht ihn mit dem vom Absender gelieferten Tag ab. Der natürliche Weg, zwei Zeichenketten zu vergleichen, ein gewöhnliches `==`, kehrt zurück, sobald es das erste abweichende Byte findet. Dieser frühe Ausstieg verrät Zeit: Ein Tag, dessen erstes Byte korrekt ist, braucht geringfügig länger, um abgelehnt zu werden, als einer, der sofort falsch ist. Durch Messung der Antwortzeiten über viele Versuche kann ein Angreifer den korrekten Tag Byte für Byte wiederherstellen, ein **Timing-Angriff**.
+
+Die Abwehr ist ein **Vergleich in konstanter Zeit**, der stets jedes Byte prüft, unabhängig davon, wo die erste Abweichung liegt, sodass die benötigte Zeit nichts darüber verrät, wie nah eine Vermutung war. Die meisten Sprachen bieten einen:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Prüfen Sie eine Signatur niemals mit gewöhnlicher Zeichenkettengleichheit.
+
+## Eine gültige Signatur ist keine frische Anfrage
+
+Selbst ein einwandfrei geprüfter HMAC beweist nur, dass die Nachricht von jemandem mit dem Schlüssel erzeugt und nicht verändert wurde. Er sagt nichts über *wann*. Ein Angreifer, der eine legitime signierte Anfrage abfängt, kann genau dieselben Bytes erneut senden, und die Signatur verifiziert weiterhin. Das ist ein **Replay-Angriff**, und er ist für alles von Belang, das eine Wirkung auslöst: eine Zahlung, eine Zustandsänderung, einen Befehl.
+
+Replay zu verhindern erfordert etwas in den signierten Daten, das jede Anfrage einzigartig und prüfbar macht:
+
+- Einen **Zeitstempel** in der signierten Nutzlast, wobei der Server Anfragen außerhalb eines kurzen Fensters ablehnt (und Uhrabweichung berücksichtigt).
+- Eine **Nonce**, einen pro Anfrage einzigartigen Wert, den der Server festhält und nicht zweimal akzeptiert.
+
+Beide müssen *innerhalb* des signierten Inhalts liegen, damit ein Angreifer sie nicht ändern kann, ohne die Signatur zu brechen.
+
+## Die zweiteilige Regel
+
+Eine Anfrage ist nur dann vertrauenswürdig, wenn ihr HMAC in konstanter Zeit verifiziert **und** sie frisch ist. Machen Sie eines davon falsch, gibt die Signatur ein falsches Sicherheitsgefühl. Das ist die Prüfseite derselben Disziplin wie das Signieren von Anfragen.
+
+Das [HMAC-Tool](/tools/hmac) lässt Sie Tags für eine Nachricht und einen Schlüssel direkt in Ihrem Browser berechnen und vergleichen, ohne dass etwas gesendet wird, sodass Sie eine Signatur beim Entwickeln oder Debuggen von Hand prüfen können.

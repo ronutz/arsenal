@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "Mga bitag sa seguridad ng JWT: alg:none, kalituhan sa susi, at nawawalang pagsusuri"
+summary: "Ang ilang pagkakamali na nagpapagawa sa isang JWT verifier na isang makinang panghuwad, at ang pagpapatunay na dapat gawin ng isang tamang verifier."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Kasing-husay lamang ng verifier ang lagda
+
+Ginagawa ng lagda ng isang JWT na mapagkakatiwalaan ang mga claim nito, ngunit kung tama lamang itong ginagawa ng code na nag-ve-verify nito. Karamihan sa mga kahinaan ng JWT ay hindi mga depekto sa cryptography; ito ay mga verifier na maaaring lokohin upang tanggapin ang mga token na dapat nilang tanggihan. Narito ang mga mahalaga, at ang mga pagsusuring pumipigil sa mga ito.
+
+## Pagtitiwala sa algorithm ng token mismo
+
+- **`alg: none`.** Tinutukoy ng espesipikasyon ng JWT ang isang "unprotected" na token na walang lagda, idineklara gamit ang `{"alg":"none"}`. Ang isang verifier na gumagalang dito ay tatanggap ng isang token na may huwad na mga claim at isang walang-lamang na lagda. Hindi kailanman itinuturing ng isang tamang verifier ang `none` bilang wasto para sa isang token na dapat nilagdaan.
+- **Kalituhan sa algorithm (RS256 tungong HS256).** Sa RS256, nilalagdaan ang token ng isang private key at vine-verify gamit ang public key. Kung binabasa ng isang verifier ang algorithm *mula sa token* at binago ng isang umaatake ang header tungong HS256, maaaring subukan ng verifier na mag-verify ng isang HMAC gamit ang **public** key bilang lihim, isang halagang taglay din ng umaatake. Pumapasa ang huwad na token noon.
+
+Ang tanging depensa para sa dalawa ay pareho: **ang verifier ang nagpapasya ng katanggap-tanggap na algorithm, hindi ang token.** I-pirmi ang inaasahang algorithm (o isang maikling allow-list) sa iyong tawag sa pag-verify at tanggihan ang anumang iba pa.
+
+## Paglaktaw sa mga claim
+
+Pinatutunayan ng isang wastong lagda na inisyu ang token at hindi binago. Hindi nito pinatutunayan na ang token ay *para sa iyo* o *wasto pa*. Sinusuri rin ng isang tamang verifier ang:
+
+- **`exp` (pagkawalang-bisa)** at **`nbf` (hindi-bago):** tanggihan ang mga nawalang-bisa o hindi pa wastong token, na may maliit na tolerance para sa clock drift.
+- **`aud` (audience):** kumpirmahin na nilayon ang token para sa serbisyong ito. Ang isang token na inisyu para sa serbisyo A ay hindi dapat tanggapin ng serbisyo B.
+- **`iss` (issuer):** kumpirmahin na galing ito sa issuer na pinagkakatiwalaan mo, at kunin ang verification key mula sa issuer na iyon, hindi mula sa token.
+
+Ang pag-aalis nito ang paraan kung paano natatanggap ang isang ninakaw o maling-direksyong token kung saan hindi ito dapat.
+
+## Ang mas maliliit na bitag
+
+- **Mahihinang HMAC secret.** Ang isang HS256 na token na nilagdaan ng isang maikli o nahuhulaang secret ay maaaring i-brute-force offline hanggang matagpuan ang isang tumutugmang lagda. Gumamit ng mahaba, random na susi.
+- **Paghawak sa `kid` at JWKS.** Pumipili ng susi ang header na `kid`; ituring itong di-pinagkakatiwalaang input (ginamit na ito para sa injection) at kumuha ng mga susi lamang mula sa JWKS ng issuer na pinagkakatiwalaan mo.
+- **Pagkalito ng pag-decode sa pag-verify.** Ang pagbabasa ng mga claim ng isang token nang hindi sinusuri ang lagda at ang oras ay hindi pag-verify. Kumilos lamang sa isang ganap na na-verify na token.
+
+## Ang maikling bersyon
+
+I-pirmi ang algorithm, i-validate ang `exp`, `aud`, at `iss`, gumamit ng malalakas na susi, at huwag kailanman ipagkamali ang pag-decode sa pag-verify. Dine-decode ng [tool na JWT](/tools/jwt) ang isang token, ipinapakita ang mga claim at pagkawalang-bisa nito sa malinaw na wika at vine-verify ang isang HMAC na lagda laban sa isang secret na ipinepeyst mo, lahat sa iyong browser, kung saan hindi kailanman ipinapadala ang token at ang secret.

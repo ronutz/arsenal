@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Klienci publiczni vs poufni i gdzie pasuje PKCE"
+summary: "To, czy klient OAuth potrafi utrzymać sekret, decyduje o całym jego modelu bezpieczeństwa. Dlaczego SPA i aplikacje mobilne to klienci publiczni i dlaczego PKCE jest teraz zalecany dla nich wszystkich."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Pytanie, które decyduje o wszystkim
+
+OAuth dzieli klientów na dwa rodzaje, a linią podziału jest jedno pytanie: czy ten klient potrafi utrzymać sekret? RFC 6749 nazywa dwie odpowiedzi klientami **poufnymi** i **publicznymi**, a którym z nich jesteś, określa, jak się uwierzytelniasz, które przepływy są bezpieczne i czy potrzebujesz PKCE. Niemal każdy błąd projektowy OAuth na poziomie aplikacji sprowadza się do traktowania klienta publicznego, jakby mógł utrzymać sekret, którego w istocie nie potrafi chronić.
+
+## Klienci poufni potrafią utrzymać sekret
+
+Klient poufny działa gdzieś, gdzie użytkownik nie może sięgnąć jego kodu ani magazynu, klasycznie aplikacja webowa po stronie serwera. Otrzymuje **sekret klienta** przy rejestracji i używa go, by uwierzytelnić się wobec punktu końcowego tokenu serwera autoryzacji. Ponieważ sekret żyje tylko na serwerze, serwer autoryzacji może być pewny, że żądanie tokenu naprawdę pochodzi od zarejestrowanego klienta. To przypadek mocny: klient dowodzi swojej tożsamości czymś, co zna tylko on.
+
+## Klienci publiczni nie potrafią
+
+Klient publiczny działa tam, gdzie jego kod i dane są widoczne dla użytkownika lub atakującego: aplikacja jednostronicowa w przeglądarce, natywna aplikacja mobilna lub desktopowa, cokolwiek wysłanego na urządzenie. Definiującym problemem jest to, że każdy sekret, który osadzisz w takim kliencie, nie jest sekretem, bo każdy może wydobyć go z wysłanego pakietu lub binariów. Więc klient publiczny w ogóle nie potrafi uwierzytelnić się sekretem klienta; nie ma nic, co mógłby utrzymać, czego atakujący też nie mógłby zdobyć. To zmienia, co serwer autoryzacji może założyć, i jest powodem, dla którego klienci publiczni potrzebują dodatkowej ochrony w przepływie kodu autoryzacji.
+
+## Dlaczego klienci publiczni byli podatni
+
+Przepływ kodu autoryzacji wręcza klientowi jednorazowy kod w przekierowaniu, który klient następnie wymienia na tokeny. Dla klienta poufnego ta wymiana jest chroniona sekretem klienta. Dla klienta publicznego bez sekretu atakujący, który potrafi przechwycić przekierowanie, na przykład złośliwa aplikacja zarejestrowana dla tego samego niestandardowego schematu URL na urządzeniu mobilnym, może ukraść kod i sam go wymienić. To atak przechwycenia, który artykuł [PKCE](/learn/pkce) opisuje szczegółowo, i to dokładnie ta luka, którą zostawia otwartą brakujący sekret klienta.
+
+## PKCE wypełnia lukę, dla wszystkich
+
+PKCE zamyka tę dziurę bez sekretu współdzielonego z góry. Klient wymyśla świeży losowy **weryfikator kodu** na żądanie, wysyła tylko jego hasz (**wyzwanie kodu**), gdy prosi o kod, i ujawnia weryfikator dopiero, gdy go wymienia. Atakujący, który przechwyci kod, nigdy nie widział weryfikatora, więc skradziony kod jest bezużyteczny. Wprowadzono to dla klientów publicznych, lecz wytyczne od tego czasu się poszerzyły: OAuth 2.1 zaleca PKCE dla przepływu kodu autoryzacji niezależnie od typu klienta, bo dodaje obronę w głąb nawet tam, gdzie sekret klienta jest obecny. Praktyczną regułą jest używać kodu autoryzacji plus PKCE wszędzie i przestać rozważać, czy ściśle go potrzebujesz.
+
+## Przepływ niejawny jest na emeryturze
+
+Publiczne aplikacje przeglądarkowe używały niegdyś przepływu niejawnego, który zwracał tokeny wprost w przekierowaniu, by uniknąć wymiany kodu. Ten projekt wystawiał tokeny w adresach URL i historii przeglądarki i jest teraz wycofany; OAuth 2.1 go usuwa. Nowoczesną odpowiedzią dla aplikacji jednostronicowej jest ta sama co dla wszystkich innych: przepływ kodu autoryzacji z PKCE. Jeśli natkniesz się na radę, by użyć przepływu niejawnego, traktuj ją jako nieaktualną.
+
+## Aplikacje natywne mają własne pułapki
+
+Aplikacje natywne i mobilne to klienci publiczni z konkretnym zagrożeniem: przekierowanie z powrotem do aplikacji. Niestandardowe schematy URL mogą zostać zgłoszone przez inne aplikacje na urządzeniu, co umożliwia przechwycenie, więc wytyczne dobrej praktyki dla aplikacji natywnych (RFC 8252) to używać zgłoszonych przekierowań HTTPS tam, gdzie platforma je wspiera, uruchamiać przepływ w przeglądarce systemowej zamiast w osadzonym widoku webowym i zawsze stosować PKCE. Dla urządzeń o ograniczonym wprowadzaniu jak telewizor, gdzie nie ma w ogóle przeglądarki do przekierowania, przepływ autoryzacji urządzenia (RFC 8628) pozwala użytkownikowi autoryzować na osobnym telefonie lub laptopie.
+
+## W razie wątpliwości zakładaj publiczny
+
+Myślą przewodnią jest to, że typ klienta nie jest etykietą, którą wybierasz dla wygody; to fakt o tym, gdzie działa twój kod i co potrafi chronić. Jeśli klient jest wysyłany do użytkownika, jest publiczny, nie potrafi utrzymać sekretu i potrzebuje PKCE. Jeśli działa tylko na twoim serwerze, może być poufny i uwierzytelniać się sekretem, a i tak powinien używać PKCE dla dodatkowego marginesu. Zdecyduj, w którym świecie żyje twój klient, a reszta jego modelu bezpieczeństwa OAuth wynika z tej jednej szczerej odpowiedzi.

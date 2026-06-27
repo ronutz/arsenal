@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID'ler: rastgele v4 ve zaman sıralı v7"
+summary: "128 bitlik bir tanımlayıcının merkezi bir otorite olmadan nasıl benzersiz kaldığı ve v7'nin veritabanı anahtarları için neden varsayılan hâline geldiği."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## UUID nedir
+
+Bir UUID (Universally Unique Identifier, GUID olarak da adlandırılır), bir şeyi etiketlemek için kullanılan 128 bitlik bir değerdir, bir satır, bir istek, bir dosya, başka kimseyle eşgüdüm sağlamadan. Addaki vaat, bağımsız olarak üretilen iki UUID'nin, tüm pratik amaçlar için, asla aynı olmadığıdır. Bu, ayrı hizmetlerin, çevrimdışı cihazların ve paralel süreçlerin, veriler sonradan birleştirildiğinde çakışmayacak tanımlayıcılar basmasına olanak tanır, numara dağıtan merkezi bir tahsisçi olmadan.
+
+Bir UUID, kısa çizgiyle ayrılmış beş grupta 32 onaltılık basamak olarak yazılır: `8-4-4-4-12`, örneğin `550e8400-e29b-41d4-a716-446655440000`. İki belirli konum rastgele değildir: bir **sürüm** yarım baytı UUID'nin nasıl üretildiğini belirtir ve bir **varyant** alanı düzen standardını işaretler (modern olanı RFC 4122 / RFC 9562'dir).
+
+## Sürüm 4: rastgele
+
+Açık ara en yaygın biçim olan **sürüm 4** neredeyse tamamen rastgeledir: 128 bitin 122'si güvenli bir rastgele kaynaktan gelir, kalan bitler sürüm ve varyantı işaretlemek için sabittir. Bu kadar entropiyle, iki v4 UUID'nin çakışma olasılığı, gerçekçi herhangi bir tanımlayıcı hacmi için ihmal edilebilir.
+
+Zayıflığı benzersizlik değil, **sıralamadır**. v4 değerleri rastgele olduğundan, ardışık eklemeler tüm anahtar uzayına saçılır. Bir v4 UUID bir veritabanı birincil anahtarı olarak kullanıldığında, bu rastgelelik B-ağacı indeksiyle savaşır: yeni satırlar gelişigüzel yerlere düşer, önbellek yerelliğine zarar verir ve zamanla indeksi parçalar.
+
+## Sürüm 7: zaman sıralı
+
+RFC 9562'de (2024) standartlaştırılan **sürüm 7**, tam da bunu düzeltmek için tasarlandı. En anlamlı bitlere **milisaniye cinsinden 48 bitlik bir Unix zaman damgası** yerleştirir, ardından aynı milisaniye içinde benzersizlik için rastgele bitler gelir. Zaman damgası başta olduğundan, v7 UUID'ler metin veya bayt olarak karşılaştırıldığında **oluşturulma sırasına göre sıralanır**.
+
+O tek özellik, v7'yi çok daha iyi bir birincil anahtar yapar: yeni satırlar saçılmak yerine indeksin sonuna yakın eklenir, sıralı tamsayı anahtarlarının sahip olduğu yerelliği geri kazandırır, bir UUID'nin merkezi olmayan benzersizliğini korurken. Bir v7 değeri ayrıca kendi oluşturulma zamanını taşır, bunu doğrudan o öndeki bitlerden okuyabilirsiniz, [UUID aracı](/tools/uuid) birini incelediğinizde bunu yapar.
+
+## Diğer sürümler, kısaca
+
+Bütünlük için: **sürüm 1**, bir zaman damgasını üreten makinenin MAC adresiyle birleştirir, bu da donanım kimliğini ve oluşturulma zamanını sızdırır ve dolayısıyla gizlilik kaygıları doğurur. **Sürüm 3 ve 5** ad tabanlıdır, deterministik bir UUID üretmek için bir ad alanı artı bir adı (sırasıyla MD5 ve SHA-1 ile) karmalar, aynı girdinin her zaman aynı tanımlayıcıya eşlenmesi gerektiğinde yararlıdır. **Sürüm 6**, sürüm 1'in alanlarını sıralanabilir olacak şekilde yeniden düzenler, ama yeni sistemler için v7 önerilen zaman sıralı seçimdir.
+
+## Birini seçmek
+
+Yalnızca rastgele, opak bir tanımlayıcıya ihtiyacınız olduğunda ve sıralama önemli olmadığında **v4**'e uzanın. UUID bir veritabanı anahtarı veya oluşturulma zamanına göre sıralamadan yararlanan başka bir şey olacaksa **v7**'ye uzanın, ki bu giderek artan biçimde varsayılan öneridir. [UUID aracı](/tools/uuid) ikisini de üretir ve yapıştırdığınız herhangi bir UUID'nin sürümünü, varyantını ve gömülü zaman damgasını çözer, tamamı tarayıcınızda.

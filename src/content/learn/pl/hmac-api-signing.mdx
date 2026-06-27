@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Uwierzytelnianie żądań API za pomocą HMAC"
+summary: "Jak współdzielony sekret i skrót pozwalają serwerowi zaufać żądaniu, którego nie widział, oraz jak wpisuje się w to ochrona przed powtórzeniem."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problem: zaufać żądaniu
+
+Gdy serwer otrzymuje żądanie API, skąd wie, że wywołujący jest tym, za kogo się podaje, i że nikt nie zmienił żądania w tranzycie? Wysyłanie współdzielonego sekretu z każdym żądaniem działałoby, dopóki ten sekret nie trafi do logów, pamięci podręcznej lub nie wycieknie. **Podpisywanie żądań HMAC** rozwiązuje to bez przesyłania sekretu: wywołujący dowodzi, że posiada sekret, używając go do podpisania żądania, a serwer sprawdza podpis.
+
+## Jak działa podpisywanie
+
+Obie strony współdzielą tajny klucz. Aby podpisać żądanie, klient:
+
+1. Buduje **ciąg kanoniczny** z tych części żądania, które nie mogą się zmienić, zwykle metody HTTP, ścieżki, kluczowych nagłówków, znacznika czasu i skrótu treści. „Kanoniczny" oznacza, że obie strony składają go dokładnie w ten sam uzgodniony sposób, by liczyć nad identycznym wejściem.
+2. Oblicza `HMAC-SHA256(ciąg kanoniczny, sekret)` i dołącza go do żądania, zwykle w nagłówku takim jak `Authorization` lub `X-Signature`.
+
+Serwer, posiadając ten sam sekret, odbudowuje ciąg kanoniczny z otrzymanego żądania i sam oblicza HMAC. Jeśli jego wartość zgadza się z tą w nagłówku, dwie rzeczy są dowiedzione naraz: wywołujący posiada sekret (**autentyczność**), a nic objętego podpisem nie zostało zmienione (**integralność**). Sam sekret nigdy nie podróżuje.
+
+## Prawdziwy przykład: AWS Signature Version 4
+
+SigV4 firmy Amazon to najlepiej znany przypadek. Każde żądanie jest podpisywane HMAC-SHA256 nad żądaniem kanonicznym, przy użyciu klucza podpisującego **wyprowadzonego** z tajnego klucza dostępu, daty, regionu i usługi. Serwer ponownie wyprowadza klucz i przelicza podpis; niezgodność jest odrzucana. Ten sam wzorzec, kanonizuj, HMAC, porównaj, leży u podstaw niezliczonych innych schematów uwierzytelniania API.
+
+## Webhooki: ta sama idea, odwrócona
+
+Webhooki odwracają kierunek. Dostawca (procesor płatności, host Git) wywołuje **twój** punkt końcowy, by powiadomić cię o zdarzeniu, i podpisuje ładunek sekretem, który oboje współdzielicie, wysyłając HMAC w nagłówku. Twój punkt końcowy przelicza HMAC nad otrzymaną treścią i porównuje, i tak odrzucasz sfałszowane wywołania od każdego, kto nie posiada sekretu. Zawsze porównuj sprawdzeniem o stałym czasie, by nie wyciekać informacji przez taktowanie.
+
+## Ochrona przed powtórzeniem
+
+Poprawne podpisane żądanie, które przechwyci atakujący, mogłoby zostać **powtórzone** dosłownie. Standardowe zabezpieczenia to dołączenie **znacznika czasu** do podpisanych danych i odrzucanie żądań spoza krótkiego okna oraz opcjonalnie **nonce** (jednorazowa wartość, którą serwer krótko pamięta), aby tego samego żądania nie przyjęto dwa razy. Podpis dowodzi autentyczności; znacznik czasu i nonce powstrzymują ponowne użycie starego, prawdziwego żądania.
+
+[Narzędzie HMAC](/tools/hmac) oblicza HMAC-SHA256 (oraz SHA-384/512), który jest sercem każdego z tych schematów, nad wiadomością i kluczem, które podasz, w całości w przeglądarce.

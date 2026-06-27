@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Comprendere l'indirizzamento IPv6"
+summary: "Come un indirizzo IPv6 di 128 bit è strutturato e scritto, le regole per comprimerlo canonicamente, cosa significano i tipi di indirizzo e gli ambiti, e come funzionano gli identificatori di interfaccia e il DNS inverso."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Perché esiste IPv6
+
+IPv4 ha circa 4,3 miliardi di indirizzi (2^32). Sembrava inesauribile negli anni 1980 ed è ora da tempo esaurito presso i registri. IPv6, definito per l'indirizzamento nella RFC 4291, allarga l'indirizzo da 32 bit a **128 bit**, che sono 2^128 indirizzi, un numero abbastanza grande da far sì che la scarsità smetta di essere il vincolo di progettazione. L'effetto pratico è che le sottoreti diventano enormi e i trucchi di conservazione degli indirizzi come il NAT non sono più richiesti per la connettività di base.
+
+## La struttura di 128 bit
+
+Un indirizzo IPv6 è di 128 bit, scritto come **otto gruppi di quattro cifre esadecimali** separati da due punti. Ogni gruppo è un valore di 16 bit:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Quella forma completamente scritta è la rappresentazione **espansa**. Poiché è lunga e piena di zeri, la forma testuale ha regole di compressione.
+
+## Scrivere un indirizzo: le regole di compressione
+
+Due regole accorciano il testo, e la RFC 5952 rende il risultato canonico (un indirizzo, una grafia preferita):
+
+- **Sopprimi gli zeri iniziali** in ogni gruppo: `0db8` diventa `db8`, `0000` diventa `0`.
+- **Sostituisci una sequenza di gruppi consecutivi tutti-zero con `::`**. Il doppio due punti può apparire **al massimo una volta**, e sta per uno o più gruppi di 16 bit di zeri. Quando esistono varie sequenze di uguale lunghezza, la prima è compressa.
+
+Applicare entrambe all'indirizzo sopra dà la sua forma canonica:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+La RFC 5952 aggiunge alcune regole finali affinché gli strumenti concordino: le cifre esadecimali sono minuscole, e `::` non è usato per "comprimere" un singolo gruppo di zeri (questo non accorcerebbe nulla di significativo). Lo strumento IPv6 mostra sia la forma compressa canonica sia la forma completamente espansa fianco a fianco, così che tu possa vedere esattamente cosa rappresenta `::`.
+
+Un caso speciale: un indirizzo può portare una coda **IPv4 incorporata** nei suoi ultimi 32 bit, scritta in decimale puntato. La più comune è la forma **IPv4-mappata**, dove la RFC 5952 raccomanda la notazione mista `::ffff:192.0.2.128` invece di esadecimale puro.
+
+## Prefissi e aritmetica di prefisso
+
+Come il CIDR di IPv4, un prefisso IPv6 è scritto `indirizzo/lunghezza`, dove la lunghezza conta i bit di rete iniziali:
+
+```
+2001:db8::/64
+```
+
+Un `/64` significa che i primi 64 bit sono la rete e i 64 rimanenti sono l'identificatore di interfaccia. `/64` è la dimensione standard per una singola LAN, e da solo contiene 2^64 indirizzi, circa 18 quintilioni. Lo strumento calcola l'indirizzo di rete (primo), l'ultimo indirizzo, e il conteggio per qualsiasi prefisso che gli dai, mascherando i bit di host a zero per trovare la rete anche se hai digitato un indirizzo con bit di host impostati.
+
+## Tipi di indirizzo e ambiti
+
+I bit alti di un indirizzo lo collocano in una categoria. I più importanti, dalla RFC 4291 e dal registro IANA:
+
+- **Unicast globale (2000::/3)** è lo spazio pubblico instradabile, l'equivalente IPv6 di un indirizzo IPv4 pubblico.
+- **Unico locale, o ULA (fc00::/7)** è lo spazio a uso privato (RFC 4193), analogo alla RFC 1918 in IPv4. Non è instradato su internet pubblica.
+- **Unicast link-local (fe80::/10)** è valido solo su un singolo collegamento ed è configurato automaticamente su ogni interfaccia IPv6. I router non lo inoltrano mai. Il suo ambito è il collegamento locale.
+- **Multicast (ff00::/8)** indirizza un gruppo invece di un singolo host. Un campo di ambito all'interno dell'indirizzo dice quanto lontano raggiunge: interface-local, link-local, admin-local, site-local, organization-local, o global. Per esempio `ff02::1` è il gruppo tutti-i-nodi link-local.
+- **Loopback (::1/128)** è l'equivalente IPv6 di 127.0.0.1, e l'**indirizzo non specificato (::/128)** significa "nessun indirizzo", usato come segnaposto durante la configurazione.
+- **Documentazione (2001:db8::/32)** è riservato dalla RFC 3849 per esempi e scrittura, che è il motivo per cui quasi ogni esempio IPv6 che vedi, incluso quello canonico nella stessa RFC 4291, lo usa.
+
+Lo strumento IPv6 riporta il tipo corrispondente e il prefisso specifico che ha trovato, più l'ambito per indirizzi multicast e link-local.
+
+## Identificatori di interfaccia ed EUI-64
+
+In un `/64` tipico, i 64 bit inferiori sono l'**identificatore di interfaccia**. Un modo storico di costruirlo era l'**EUI-64 modificato** (RFC 4291, Appendice A): prendi l'indirizzo MAC di 48 bit, inserisci i byte `ff:fe` nel mezzo, e inverti il settimo bit (il bit universal/local). Questo rendeva l'id di interfaccia derivabile dall'indirizzo hardware. Quando lo strumento vede il rivelatore `ff:fe` nel mezzo dell'id di interfaccia, inverte il processo e ti mostra il MAC originale. I sistemi moderni spesso preferiscono identificatori di interfaccia randomizzati o di privacy invece, precisamente perché derivare l'id da un MAC fa trapelare l'indirizzo hardware.
+
+## DNS inverso: ip6.arpa
+
+Le ricerche inverse (indirizzo a nome) per IPv6 vivono sotto il dominio **ip6.arpa**. L'indirizzo è espanso ai suoi 32 nibble esadecimali, quei nibble sono invertiti, e ognuno diventa un'etichetta. Così `2001:db8::1` diventa un nome che termina in `...8.b.d.0.1.0.0.2.ip6.arpa`. Lo strumento genera questo nome per qualsiasi indirizzo, che è il valore esatto che metteresti in un record `PTR`.
+
+## Una nota su cosa fa lo strumento
+
+Lo strumento IPv6 è una calcolatrice deterministica e locale. Analizza, canonizza, classifica, e calcola, tutto nel tuo browser, senza alcuna ricerca contro la rete dal vivo. Ti dice cosa **è** un indirizzo strutturalmente. Non ti dice se quell'indirizzo è raggiungibile, allocato, o in uso, che sono domande separate che richiedono di interrogare la rete o un registro.

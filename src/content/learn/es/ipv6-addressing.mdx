@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Entendiendo el direccionamiento IPv6"
+summary: "Cómo se estructura y escribe una dirección IPv6 de 128 bits, las reglas para comprimirla canónicamente, qué significan los tipos de dirección y ámbitos, y cómo funcionan los identificadores de interfaz y el DNS inverso."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Por qué existe IPv6
+
+IPv4 tiene unos 4.300 millones de direcciones (2^32). Eso parecía inagotable en los años 1980 y está ahora hace mucho agotado en los registros. IPv6, definido para direccionamiento en la RFC 4291, ensancha la dirección de 32 bits a **128 bits**, que son 2^128 direcciones, un número lo bastante grande para que la escasez deje de ser la restricción de diseño. El efecto práctico es que las subredes se vuelven enormes y los trucos de conservación de direcciones como NAT ya no son requeridos para conectividad básica.
+
+## La estructura de 128 bits
+
+Una dirección IPv6 tiene 128 bits, escrita como **ocho grupos de cuatro dígitos hexadecimales** separados por dos puntos. Cada grupo es un valor de 16 bits:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Esa forma totalmente escrita es la representación **expandida**. Por ser larga y llena de ceros, la forma de texto tiene reglas de compresión.
+
+## Escribiendo una dirección: las reglas de compresión
+
+Dos reglas acortan el texto, y la RFC 5952 hace canónico el resultado (una dirección, una grafía preferida):
+
+- **Suprime ceros a la izquierda** en cada grupo: `0db8` se vuelve `db8`, `0000` se vuelve `0`.
+- **Reemplaza una secuencia de grupos consecutivos todo-cero con `::`**. El doble dos puntos puede aparecer **como máximo una vez**, y representa uno o más grupos de 16 bits de ceros. Cuando existen varias secuencias de igual longitud, la primera se comprime.
+
+Aplicar ambas a la dirección de arriba da su forma canónica:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+La RFC 5952 añade unas reglas finales para que las herramientas concuerden: los dígitos hex son minúsculos, y `::` no se usa para "comprimir" un único grupo de ceros (eso no acortaría nada significativo). La herramienta IPv6 muestra tanto la forma comprimida canónica como la forma totalmente expandida lado a lado, para que puedas ver exactamente qué representa `::`.
+
+Un caso especial: una dirección puede llevar una cola **IPv4 embebida** en sus últimos 32 bits, escrita en decimal punteado. La más común es la forma **IPv4-mapeada**, donde la RFC 5952 recomienda la notación mixta `::ffff:192.0.2.128` en vez de hex puro.
+
+## Prefijos y aritmética de prefijo
+
+Como el CIDR de IPv4, un prefijo IPv6 se escribe `dirección/longitud`, donde la longitud cuenta los bits de red iniciales:
+
+```
+2001:db8::/64
+```
+
+Un `/64` significa que los primeros 64 bits son la red y los 64 restantes son el identificador de interfaz. `/64` es el tamaño estándar para una sola LAN, y él solo contiene 2^64 direcciones, unos 18 trillones. La herramienta computa la dirección de red (primera), la última dirección, y el conteo para cualquier prefijo que le des, enmascarando los bits de host a cero para hallar la red incluso si tecleaste una dirección con bits de host puestos.
+
+## Tipos de dirección y ámbitos
+
+Los bits altos de una dirección la colocan en una categoría. Los más importantes, de la RFC 4291 y el registro IANA:
+
+- **Unicast global (2000::/3)** es el espacio público enrutable, el equivalente IPv6 de una dirección IPv4 pública.
+- **Único local, o ULA (fc00::/7)** es el espacio de uso privado (RFC 4193), análogo a la RFC 1918 en IPv4. No se enruta en la internet pública.
+- **Unicast link-local (fe80::/10)** es válido solo en un único enlace y se configura automáticamente en toda interfaz IPv6. Los routers nunca lo reenvían. Su ámbito es el enlace local.
+- **Multicast (ff00::/8)** direcciona un grupo en vez de un único host. Un campo de ámbito dentro de la dirección dice cuán lejos alcanza: interface-local, link-local, admin-local, site-local, organization-local, o global. Por ejemplo `ff02::1` es el grupo todos-los-nodos link-local.
+- **Loopback (::1/128)** es el equivalente IPv6 de 127.0.0.1, y la **dirección no especificada (::/128)** significa "ninguna dirección", usada como marcador durante la configuración.
+- **Documentación (2001:db8::/32)** está reservada por la RFC 3849 para ejemplos y escritura, que es por qué casi todo ejemplo IPv6 que ves, incluyendo el canónico en la propia RFC 4291, la usa.
+
+La herramienta IPv6 reporta el tipo correspondiente y el prefijo específico que coincidió, más el ámbito para direcciones multicast y link-local.
+
+## Identificadores de interfaz y EUI-64
+
+En un `/64` típico, los 64 bits inferiores son el **identificador de interfaz**. Una forma histórica de construirlo era el **EUI-64 modificado** (RFC 4291, Apéndice A): toma la dirección MAC de 48 bits, inserta los bytes `ff:fe` en el medio, e invierte el séptimo bit (el bit universal/local). Eso hacía el id de interfaz derivable de la dirección de hardware. Cuando la herramienta ve el revelador `ff:fe` en el medio del id de interfaz, invierte el proceso y te muestra el MAC original. Los sistemas modernos a menudo prefieren identificadores de interfaz aleatorizados o de privacidad en vez de eso, precisamente porque derivar el id de un MAC filtra la dirección de hardware.
+
+## DNS inverso: ip6.arpa
+
+Las búsquedas inversas (dirección a nombre) para IPv6 viven bajo el dominio **ip6.arpa**. La dirección se expande a sus 32 nibbles hex, esos nibbles se invierten, y cada uno se vuelve una etiqueta. Así `2001:db8::1` se vuelve un nombre terminando en `...8.b.d.0.1.0.0.2.ip6.arpa`. La herramienta genera este nombre para cualquier dirección, que es el valor exacto que colocarías en un registro `PTR`.
+
+## Una nota sobre lo que la herramienta hace
+
+La herramienta IPv6 es una calculadora determinista y local. Analiza, canoniza, clasifica, y computa, todo en tu navegador, sin ninguna búsqueda contra la red en vivo. Te dice qué **es** una dirección estructuralmente. No te dice si esa dirección es alcanzable, asignada, o en uso, que son preguntas separadas que requieren consultar la red o un registro.

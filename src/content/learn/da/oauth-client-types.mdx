@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Offentlige vs fortrolige klienter, og hvor PKCE passer ind"
+summary: "Hvorvidt en OAuth-klient kan holde en hemmelighed afgør hele dens sikkerhedsmodel. Hvorfor SPA'er og mobilapps er offentlige klienter, og hvorfor PKCE nu anbefales for dem alle."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Spørgsmålet, der afgør alt
+
+OAuth deler klienter i to slags, og skillelinjen er et enkelt spørgsmål: kan denne klient holde en hemmelighed? RFC 6749 kalder de to svar **fortrolige** og **offentlige** klienter, og hvilken du er afgør, hvordan du autentificerer, hvilke flows der er sikre, og om du har brug for PKCE. Næsten enhver OAuth-designfejl på applikationsniveau går tilbage til at behandle en offentlig klient, som om den kunne holde en hemmelighed, den i virkeligheden ikke kan beskytte.
+
+## Fortrolige klienter kan holde en hemmelighed
+
+En fortrolig klient kører et sted, hvor brugeren ikke kan nå dens kode eller lagring, klassisk en serverside-webapplikation. Den udstedes en **klienthemmelighed** ved registrering og bruger den hemmelighed til at autentificere sig over for autorisationsserverens tokenendpoint. Fordi hemmeligheden kun lever på serveren, kan autorisationsserveren være sikker på, at en tokenanmodning virkelig kommer fra den registrerede klient. Dette er det stærke tilfælde: klienten beviser sin identitet med noget, kun den kender.
+
+## Offentlige klienter kan ikke
+
+En offentlig klient kører, hvor dens kode og data er synlige for brugeren eller angriberen: en enkeltsideapp i browseren, en nativ mobil- eller skrivebordsapp, alt, der leveres til enheden. Det definerende problem er, at enhver hemmelighed, du indlejrer i sådan en klient, ikke er hemmelig, fordi enhver kan udtrække den fra det leverede bundle eller binær. Så en offentlig klient kan slet ikke autentificere med en klienthemmelighed; der er intet, den kan holde, som en angriber ikke også kan få fat i. Det ændrer, hvad autorisationsserveren kan antage, og det er grunden til, at offentlige klienter har brug for ekstra beskyttelse på autorisationskodeflowet.
+
+## Hvorfor offentlige klienter var sårbare
+
+Autorisationskodeflowet giver klienten en engangskode i omdirigeringen, som klienten derefter bytter til token. For en fortrolig klient beskyttes det bytte af klienthemmeligheden. For en offentlig klient uden hemmelighed kan en angriber, der kan aflytte omdirigeringen, for eksempel en ondsindet app registreret til samme tilpassede URL-skema på en mobil enhed, stjæle koden og indløse den selv. Dette er aflytningsangrebet, som artiklen [PKCE](/learn/pkce) beskriver i detaljer, og det er præcis det hul, som en manglende klienthemmelighed efterlader åbent.
+
+## PKCE udfylder hullet, for alle
+
+PKCE lukker det hul uden en forhåndsdelt hemmelighed. Klienten opfinder en frisk tilfældig **kodeverifikator** per anmodning, sender kun dens hash (**kodeudfordringen**), når den beder om koden, og afslører kun verifikatoren, når den indløser den. En angriber, der aflytter koden, så aldrig verifikatoren, så den stjålne kode er ubrugelig. Dette blev indført til offentlige klienter, men vejledningen er siden blevet udvidet: OAuth 2.1 anbefaler PKCE til autorisationskodeflowet uanset klienttype, fordi det tilføjer forsvar i dybden selv dér, hvor en klienthemmelighed er til stede. Den praktiske regel er at bruge autorisationskode plus PKCE overalt og holde op med at ræsonnere om, hvorvidt du strengt taget har brug for det.
+
+## Det implicitte flow er pensioneret
+
+Offentlige browserapps brugte engang det implicitte flow, der returnerede token direkte i omdirigeringen for at undgå kodebyttet. Det design eksponerede token i URL'er og browserhistorik og er nu forældet; OAuth 2.1 fjerner det. Det moderne svar for en enkeltsideapp er det samme som for alle andre: autorisationskodeflowet med PKCE. Hvis du støder på råd om at bruge det implicitte flow, så behandl det som forældet.
+
+## Native apps har deres egne faldgruber
+
+Native og mobilapps er offentlige klienter med en specifik fare: omdirigeringen tilbage ind i appen. Tilpassede URL-skemaer kan gøres krav på af andre apps på enheden, hvilket er, hvad der gør aflytning mulig, så bedste-praksis-vejledningen for native apps (RFC 8252) er at bruge krav-tagne HTTPS-omdirigeringer, hvor platformen understøtter dem, køre flowet i en systembrowser frem for en indlejret webvisning, og altid anvende PKCE. For enheder med begrænset input som et tv, hvor der slet ikke er nogen browser at omdirigere til, lader enhedsautorisationsflowet (RFC 8628) brugeren autorisere på en separat telefon eller bærbar computer i stedet.
+
+## Ved tvivl, antag offentlig
+
+Den røde tråd er, at klienttype ikke er et mærkat, du vælger af bekvemmelighed; det er en kendsgerning om, hvor din kode kører, og hvad den kan beskytte. Hvis klienten leveres til brugeren, er den offentlig, den kan ikke holde en hemmelighed, og den har brug for PKCE. Hvis den kun kører på din server, kan den være fortrolig og autentificere med en hemmelighed, og den bør stadig bruge PKCE for den ekstra margin. Afgør, hvilken verden din klient lever i, og resten af dens OAuth-sikkerhedsmodel følger af det ene ærlige svar.

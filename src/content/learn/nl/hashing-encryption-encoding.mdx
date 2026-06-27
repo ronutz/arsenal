@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hashen, versleuteling en codering: drie verschillende dingen"
+summary: "Drie bewerkingen die voortdurend worden verward, helder gescheiden door twee vragen: is het omkeerbaar, en heeft het een sleutel nodig?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Drie woorden, voortdurend door elkaar gehaald
+
+"Is dit wachtwoord versleuteld?" "Hash gewoon de URL." "De data zijn gecodeerd, dus ze zijn veilig." Deze zinnen zijn overal, en de meeste gebruiken het verkeerde woord. Hashen, versleuteling en codering zijn drie verschillende bewerkingen met drie verschillende doelen, en ze verwarren leidt tot echte beveiligingsfouten, zoals wachtwoorden opslaan met een methode die niets beschermt.
+
+Het goede nieuws is dat twee eenvoudige vragen ze volledig scheiden.
+
+## De twee vragen
+
+1. **Is het omkeerbaar?** Kun je de oorspronkelijke invoer uit de uitvoer terugkrijgen?
+2. **Heeft het een sleutel nodig?** Is een geheim vereist, of kan iedereen de bewerking uitvoeren?
+
+Zet de drie bewerkingen tegenover die vragen en het beeld is helder:
+
+- **Codering** is omkeerbaar en heeft geen sleutel nodig.
+- **Hashen** is niet omkeerbaar en heeft geen sleutel nodig.
+- **Versleuteling** is omkeerbaar en heeft een sleutel nodig.
+
+Die tabel is het hele artikel. De rest is detail.
+
+## Codering: omkeerbaar, geen sleutel
+
+Codering herschrijft data in een andere weergave zodat ze door een kanaal kunnen reizen dat een bepaald formaat verwacht. Base64 zet bytes om in veilige tekst; URL-codering escapet tekens die ongeldig zijn in een URL; UTF-8 zet tekens om in bytes. Niets daarvan is geheim. Iedereen kan het terugdecoderen, want omkeerbaarheid is het hele punt. **Codering biedt nul beveiliging.** Hoor je "het token is gecodeerd, dus het is veilig", dan is dat een rode vlag: gecodeerd betekent leesbaar.
+
+## Hashen: niet omkeerbaar, geen sleutel
+
+Een hashfunctie beeldt elke invoer af op een digest van vaste grootte, en je kunt hem niet achterstevoren laten lopen om de invoer terug te halen. Hij heeft geen sleutel nodig, dus iedereen kan dezelfde digest uit dezelfde invoer berekenen. Dat maakt hem perfect voor **verificatie**: integriteitscontroles, inhoudsadressering en het opsporen van wijzigingen. Het is het juiste gereedschap wanneer je moet bevestigen dat twee dingen gelijk zijn zonder het origineel op te slaan, maar hij verbergt niets omkeerbaar, omdat er niets om te keren valt.
+
+## Versleuteling: omkeerbaar, met sleutel
+
+Versleuteling transformeert data zo dat alleen wie de juiste sleutel heeft ze kan terugtransformeren. Dit is de enige van de drie die voor **geheimhouding** is gebouwd. Hij is omkeerbaar van opzet, maar alleen met de sleutel, wat precies de eigenschap is die de andere twee missen: codering is omkeerbaar door iedereen, hashen door niemand, versleuteling door sleutelhouders.
+
+## De juiste kiezen
+
+Het doel bepaalt het gereedschap. Moeten data het transport als tekst overleven? Codeer ze. Moet je integriteit verifiëren of vergelijken zonder het origineel op te slaan? Hash ze. Moet je data geheim houden voor iedereen zonder de sleutel? Versleutel ze.
+
+De klassieke fout is naar de verkeerde kolom grijpen. Wachtwoorden opslaan met gewone codering (omkeerbaar door iedereen) of zelfs gewone versleuteling (één gestolen sleutel onthult alles) is veel zwakker dan een doelgebouwde wachtwoord-hash, die in een eigen artikel wordt behandeld. De [Hash-tool](/tools/hash) en de [Base64-tool](/tools/base64) laten je zien hoe hashen en codering zich verschillend gedragen op dezelfde invoer, de digest keert nooit om, de Base64 altijd.

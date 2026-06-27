@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Kryptografisches Hashen: SHA-256 und die SHA-2-Familie"
+summary: "Was eine Hashfunktion garantiert, die Eigenschaften, die sie kryptografisch machen, und warum ein Digest keine Verschlüsselung ist."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Was ein Hash ist
+
+Eine kryptografische Hashfunktion nimmt Eingaben beliebiger Größe, ein Wort, eine Datei, ein mehrere Gigabyte großes Festplattenabbild, und erzeugt eine Ausgabe fester Größe namens **Digest**. SHA-256 liefert stets 256 Bit (32 Byte) zurück, egal ob Sie ihm ein Zeichen oder eine Million gaben. Dieselbe Eingabe ergibt stets denselben Digest, und schon eine Ein-Bit-Änderung der Eingabe erzeugt einen völlig anderen.
+
+Dieser Fingerabdruck fester Größe und deterministischer Art ist die ganze Idee. Ein Digest ist ein kompakter Stellvertreter für die Daten: Stimmen zwei Digests überein, dürfen Sie darauf vertrauen, dass die Eingaben identisch waren; unterscheiden sie sich, unterschieden sich die Eingaben irgendwo.
+
+## Die Eigenschaften, die ihn kryptografisch machen
+
+Viele Funktionen schrumpfen Daten auf eine feste Größe. Eine Funktion verdient das Wort *kryptografisch*, indem sie drei harte Garantien einhält:
+
+- **Urbildresistenz (Einwegfunktion).** Zu einem Digest ist es rechnerisch undurchführbar, eine Eingabe zu finden, die ihn erzeugt. Sie können die Funktion nicht rückwärts laufen lassen.
+- **Zweit-Urbild- und Kollisionsresistenz.** Es ist undurchführbar, zwei verschiedene Eingaben zu finden, die zum selben Digest hashen. Ohne dies wäre ein Digest ein schwacher Fingerabdruck.
+- **Der Lawineneffekt.** Das Umkippen eines einzigen Eingabebits ändert ungefähr die Hälfte der Ausgabebits, ohne sichtbares Muster, das Eingabe mit Ausgabe verbindet.
+
+Dies gilt nur für Funktionen, die der Prüfung standgehalten haben. SHA-1, einst Standard, ist nun für die Kollisionsresistenz **gebrochen** (eine praktische Kollision wurde 2017 gezeigt) und sollte nicht verwendet werden, wo die Sicherheit davon abhängt. Die SHA-2-Familie, SHA-256, SHA-384 und SHA-512, bleibt solide und ist heute die sichere Vorgabe.
+
+## Ein Hash ist keine Verschlüsselung
+
+Dies ist die häufigste Verwechslung, daher lohnt es sich, sie klar zu sagen. Verschlüsselung ist mit einem Schlüssel **umkehrbar**: Sie verschlüsseln, um Daten geheim zu halten, und entschlüsseln, um sie zurückzubekommen. Ein Hash hat **keinen Schlüssel und keine Umkehrung**. Sie können einen Digest nicht „enthashen", um die Eingabe zurückzugewinnen, weil die Ausgabe weit kleiner als die möglichen Eingaben ist und Information absichtlich zerstört wird. Hashen dient der Überprüfung, nicht der Geheimhaltung.
+
+## Wo Hashen seinen Wert beweist
+
+- **Integrität und Prüfsummen.** Veröffentlichen Sie den SHA-256 einer Datei neben ihr; wer sie herunterlädt und den Digest neu berechnet, kann bestätigen, dass beim Transport nichts verändert oder beschädigt wurde.
+- **Inhaltsadressierung.** Systeme wie Git benennen Objekte nach ihrem Hash, sodass identischer Inhalt automatisch an derselben Adresse landet.
+- **Digitale Signaturen.** Signaturverfahren signieren den Hash einer Nachricht statt der ganzen Nachricht, weil der Digest klein und fester Größe ist.
+
+Ein wichtiger Vorbehalt: **Passwörter sind ein Sonderfall.** Ein einfacher schneller Hash wie SHA-256 ist das falsche Werkzeug zum Speichern von Passwörtern, gerade weil er schnell ist, kann ein Angreifer Milliarden Rateversuche pro Sekunde unternehmen. Passwortspeicherung braucht einen absichtlich langsamen, gesalzenen Algorithmus wie bcrypt, scrypt oder Argon2. Nutzen Sie SHA-2 für Integrität; nutzen Sie einen Passwort-Hash für Passwörter.
+
+## Wie das Werkzeug ihn berechnet
+
+Das [Hash-Werkzeug](/tools/hash) verwendet die native Web-Crypto-Implementierung des Browsers von SHA-1, SHA-256, SHA-384 und SHA-512, denselben geprüften Code, den Ihr Browser für TLS nutzt, und zeigt jeden Digest als Hexadezimal und Base64. Nichts wird hochgeladen; die Berechnung geschieht lokal.

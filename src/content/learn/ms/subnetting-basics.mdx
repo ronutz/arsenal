@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Asas subnet"
+summary: "Bagaimana membahagikan satu rangkaian kepada subnet lebih kecil, dan mengapa meminjam bit hos ialah keseluruhan helah."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Untuk apa subnet
+
+Satu rangkaian besar tunggal jarang menjadi apa yang anda mahu. Subnet ialah amalan mengambil satu blok alamat dan membahagikannya kepada beberapa blok lebih kecil, **subnet**, yang setiap satunya boleh menjadi domain siaran berasingan, sempadan keselamatan, atau segmen fizikal. Sebuah kampus mungkin memberi setiap bangunan subnetnya sendiri; akaun awan mungkin memberi setiap lapisan aplikasi miliknya sendiri.
+
+Mekanismenya lebih ringkas daripada bunyinya biasa: **subnet meminjam bit daripada bahagian hos dan menambahnya kepada bahagian rangkaian.**
+
+## Meminjam bit
+
+Mulakan dengan `192.168.1.0/24`. Awalan ialah 24, jadi 8 bit bebas untuk hos, memberi satu blok 256 alamat.
+
+Andaikan anda perlukan empat subnet berasingan dan bukannya satu. Empat ialah 2², jadi anda perlukan **2 bit rangkaian lagi**. Pinjamnya daripada sisi hos: awalan tumbuh dari /24 ke /26.
+
+- `/26` menetapkan 26 bit, membiarkan 6 bebas → 64 alamat setiap subnet.
+- Empat subnet sebegitu menjubin /24 asal dengan tepat:
+  - `192.168.1.0/26`, alamat .0 hingga .63
+  - `192.168.1.64/26`, alamat .64 hingga .127
+  - `192.168.1.128/26`, alamat .128 hingga .191
+  - `192.168.1.192/26`, alamat .192 hingga .255
+
+Perhatikan corak: setiap subnet lebar 64 alamat, jadi setiap satu bermula pada gandaan 64. Peraturan "bermula pada gandaan saiznya" itu ialah bagaimana sempadan subnet sah dijumpai. Satu blok mesti bermula pada alamat yang merupakan gandaan saiznya sendiri, atau ia bukan blok CIDR sah.
+
+## Tukar ganti
+
+Setiap bit yang anda pinjam untuk rangkaian menyeparuhkan hos setiap subnet:
+
+| Awalan | Subnet bagi /24 | Alamat setiap | Hos boleh guna setiap |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Lebih banyak subnet bermaksud lebih sedikit hos dalam setiap satu. Reka bentuk rangkaian sebahagian besarnya ialah memilih di mana pada keluk ini hendak duduk: cukup subnet untuk segmen anda, cukup hos dalam setiap satu untuk peranti yang tinggal di sana, dengan sedikit ruang untuk berkembang.
+
+## Subnet panjang berubah
+
+Subnet dalam ibu bapa yang sama tidak semuanya perlu bersaiz sama. **Pelindungan subnet panjang berubah (VLSM)** membenarkan anda mengukir subnet besar untuk segmen yang perlukan banyak hos dan subnet kecil untuk pautan titik-ke-titik, semuanya daripada blok ibu bapa yang sama. Satu-satunya peraturan ialah yang tetap: setiap subnet ialah kuasa dua dalam saiz, dan setiap satu bermula pada gandaan saiznya supaya blok tidak pernah bertindih.
+
+[Kalkulator CIDR](/learn) menunjukkan julat tepat, sempadan, dan kiraan hos boleh guna untuk sebarang awalan, yang menjadikan menyemak pelan subnet satu perkara menaip setiap blok.

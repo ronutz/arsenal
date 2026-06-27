@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "IPv6-Subnetzbildung und die /64-Grenze"
+summary: "Warum IPv6-Subnetzbildung um Struktur statt Knappheit geht, warum ein einzelnes Subnetz fast immer ein /64 ist, und wie Präfixdelegation Adressraum verteilt."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ein anderer Grund zur Subnetzbildung
+
+In IPv4 geht es bei der Subnetzbildung meist um Erhaltung: Adressen sind knapp, also schnitzen Sie einen Block in die kleinsten Stücke, die noch in jedes Netzwerk passen (die Logik im Artikel [Grundlagen der Subnetzbildung](/learn/subnetting-basics)). IPv6 entfernt diesen Druck gänzlich. Ein einzelnes /64-Subnetz enthält 2^64 Adressen, mehr als das gesamte IPv4-Internet zum Quadrat, also bilden Sie nie ein IPv6-Netzwerk in Subnetze, um Platz zu sparen. Sie bilden Subnetze, um Struktur zu geben: ein Präfix pro VLAN, pro Standort, pro Kunde. Die Mathematik ist dieselbe Präfix-Arithmetik wie IPv4 (das Werkzeug berechnet sie mit Ganzzahlen beliebiger Genauigkeit), aber die Denkweise ist das Gegenteil.
+
+## Warum ein Subnetz ein /64 ist
+
+Die einzelne wichtigste Regel in der IPv6-Adressierung ist, dass ein normales Subnetz ein /64 ist, was 64 Bit für den Interface-Identifier lässt. Dies ist kein Vorschlag; große Teile des Protokolls setzen es voraus. Die zustandslose Adress-Autokonfiguration (behandelt im Artikel [Adresskonfiguration](/learn/ipv6-address-configuration)) baut die Adresse eines Hosts, indem sie einen 64-Bit-Interface-Identifier an das angekündigte Präfix anhängt, und die modifizierte EUI-64-Ableitung, die das Werkzeug durchführen kann, erzeugt genau 64 Bit. Verwenden Sie ein längeres Präfix wie ein /80 oder /112 auf einem Link, und die Autokonfiguration hört einfach auf zu funktionieren. Die Adressierungsarchitektur (RFC 4291) ist um diese Grenze herum gebaut, also ist der praktische Rat unverblümt: machen Sie jedes Endbenutzer-Subnetz zu einem /64 und versuchen Sie nicht, darin sparsam zu sein.
+
+## Die Zuteilungshierarchie
+
+Wenn jedes Subnetz ein /64 ist, arbeiten Standorte und Provider in größeren Blöcken darüber:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Ein ISP delegiert typischerweise ein /48 oder /56 an einen Kunden, der dann /64s daraus an einzelne Links zuweist. RFC 6177 nimmt die ursprüngliche „/48-für-jeden"-Leitlinie zurück, hin dazu, jedem Standort genug Raum zu geben, um bequem Subnetze zu bilden, was in der Praxis ein /48 oder /56 bedeutet. Der Punkt ist, dass Sie Raum übrig haben: selbst ein /56 gibt einem Heim oder kleinen Büro 256 separate Netzwerke, weit mehr, als es je nutzen wird.
+
+## Subnetze an Nibble-Grenzen
+
+Weil IPv6 in Hex geschrieben wird und jede Hex-Ziffer 4 Bit ist (ein Nibble), sind Präfixe, die auf eine 4-Bit-Grenze fallen, weit einfacher zu lesen und zu verwalten. Ein /48, /52, /56, /60 und /64 enden alle sauber zwischen Hex-Ziffern, also reiht sich der Subnetz-Teil mit ganzen Zeichen in der Adresse auf. Ein /48 in /52s zu subnetzen gibt Ihnen 16 Blöcke, unterschieden durch eine einzelne Hex-Ziffer; zu /56 zu gehen gibt 256 Blöcke über zwei Ziffern. Auf Nibble-Grenzen zu bleiben hält Ihren Adressierungsplan lesbar, was in IPv6 mehr zählt, als das letzte Bit herauszuquetschen je könnte.
+
+## Subnetze und Adressen zählen
+
+Die Arithmetik ist unkompliziert. Die Anzahl der /64-Subnetze innerhalb eines kürzeren Präfixes ist 2 erhoben zur Differenz in den Präfixlängen: ein /48 enthält 2^(64-48) = 2^16 = 65.536 Subnetze. Die Anzahl der Adressen innerhalb eines /64 ist 2^(128-64) = 2^64. Das Werkzeug meldet sowohl die Adressanzahl für ein Präfix als auch den nutzbaren Bereich, und die Zahlen werden schnell groß, was genau der Punkt ist: Knappheit ist keine Einschränkung mehr, um die herum Sie entwerfen.
+
+## Die Quintessenz
+
+IPv6-Subnetzbildung stellt die IPv4-Gewohnheit auf den Kopf. Sie teilen keine knappe Ressource; Sie zwingen einer effektiv unbegrenzten Struktur auf. Geben Sie jedem Subnetz ein /64, damit Autokonfiguration und Nachbarerkennung wie entworfen funktionieren, fordern Sie ein /48 oder /56 an, damit Sie Raum zum Organisieren haben, und subnetzen Sie an Nibble-Grenzen, damit Ihr Plan lesbar bleibt. Wenn Sie ein Präfix in das Werkzeug einfügen und die Adressanzahl sehen, behandeln Sie diesen Überfluss als Erlaubnis, für Klarheit statt für Erhaltung zu entwerfen.

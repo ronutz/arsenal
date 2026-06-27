@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "CIDR-notatie uitgelegd"
+summary: "Wat de schuine streep in 192.168.1.0/24 werkelijk betekent, en hoe een prefixlengte een blok IP-adressen definieert."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het probleem dat CIDR oplost
+
+Elk apparaat op een IP-netwerk heeft een adres nodig. In IPv4 is dat adres 32 bits, gewoonlijk geschreven als vier getallen van 0 tot 255 gescheiden door punten, zoals `192.168.1.10`. De moeilijke vraag is nooit "wat is één adres" maar "hoe beschrijf ik een *bereik* van adressen die bij elkaar horen", één kantoor, een subnet, een klanttoewijzing. **CIDR-notatie** is de compacte manier om dat bereik te schrijven.
+
+CIDR staat voor Classless Inter-Domain Routing. Het "klasseloze" deel doet ertoe: oudere adressering dwong bereiken in vaste groottes (de oude Klasse A-, B- en C-blokken). CIDR verwijderde die starheid en liet een bereik *elke* macht-van-twee-grootte hebben, wat de reden is dat het vandaag de standaard is.
+
+## De schuine streep lezen
+
+Een CIDR-blok ziet eruit als `192.168.1.0/24`. Het deel na de schuine streep, de **prefixlengte**, is het enkele belangrijkste getal. Het zegt: *de eerste N bits van het adres zijn vast, en de rest is vrij om te variëren.*
+
+- `/24` betekent dat de eerste 24 bits het vaste netwerkdeel zijn. De resterende 8 bits (32 − 24) identificeren individuele hosts.
+- 8 vrije bits geven 2⁸ = 256 mogelijke combinaties, dus `192.168.1.0/24` beschrijft de 256 adressen van `192.168.1.0` tot `192.168.1.255`.
+
+Verander het prefix en de blokgrootte verandert mee. Een kleiner prefix betekent *meer* vrije bits en een *groter* blok:
+
+- `/16` legt 16 bits vast, laat 16 vrij → 65.536 adressen.
+- `/25` legt 25 bits vast, laat 7 vrij → 128 adressen.
+- `/30` legt 30 bits vast, laat 2 vrij → 4 adressen.
+
+Elke stap van één in de prefixlengte **halveert of verdubbelt** het blok. Die ene regel is de hele intuïtie.
+
+## Netwerk, broadcast en bruikbare hosts
+
+Binnen de meeste blokken zijn twee adressen speciaal en niet toewijsbaar aan een host:
+
+- Het **netwerkadres** is het eerste adres in het blok, alle host-bits op 0 gezet (`192.168.1.0` voor een `/24`). Het benoemt het blok zelf.
+- Het **broadcastadres** is het laatste adres, alle host-bits op 1 gezet (`192.168.1.255`). Verkeer dat hierheen wordt gestuurd bereikt elke host in het blok.
+
+Dus een `/24` heeft 256 adressen in totaal maar **254 bruikbare** voor echte hosts. Het getal "bruikbare hosts" is simpelweg het totaal min die twee gereserveerde adressen.
+
+Twee randgevallen breken dit patroon, beide opzettelijk:
+
+- Een **/31** (RFC 3021) wordt gebruikt voor punt-tot-punt-verbindingen tussen twee routers. Het heeft slechts 2 adressen en, per ontwerp, zijn beide bruikbaar, er is geen ruimte voor een apart netwerk- en broadcastadres, en geen is nodig voor een verbinding met precies twee uiteinden.
+- Een **/32** is een enkel adres, een hostroute. Het beschrijft precies één machine.
+
+## Waarom dit het begrijpen waard is
+
+De prefixlengte bestuurt hoe netwerken worden ontworpen, hoe routes worden samengevat, en hoe adresruimte wordt uitgedeeld. Wanneer je `10.0.0.0/8` in een routeringstabel of `0.0.0.0/0` als standaardroute ziet, lees je dezelfde notatie: een basisadres plus een prefixlengte die zegt hoeveel ervan vast is. De rekenkunde verandert nooit, alleen de getallen.
+
+Je kunt elk blok in de [CIDR-calculator](/learn) proberen om zijn netwerkadres, broadcastadres, masker en aantal bruikbare hosts onmiddellijk berekend te zien, geheel in je browser.

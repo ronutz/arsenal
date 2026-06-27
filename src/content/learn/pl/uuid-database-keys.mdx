@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUID jako klucze bazy danych: v4, v7 i lokalność indeksu"
+summary: "Prawdziwy kompromis między UUID a liczbami całkowitymi z autoinkrementacją oraz dlaczego losowe klucze v4 po cichu szkodzą wydajności bazy danych."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dwa sposoby na klucz główny
+
+Większość tabel potrzebuje unikalnego klucza dla każdego wiersza. Dwa popularne wybory to **liczba całkowita z autoinkrementacją** bazy (1, 2, 3, ...) oraz **UUID**. Liczba całkowita jest mała i naturalnie uporządkowana; UUID można wygenerować wszędzie, przez kogokolwiek, bez koordynacji. To, który jest lepszy, zależy od tego, co cenisz, a odpowiedź ma wymiar wydajności łatwy do przeoczenia.
+
+## Dlaczego zespoły sięgają po UUID
+
+- **Brak koordynacji.** Dowolna usługa, klient lub urządzenie offline może wybić UUID, który nie wejdzie w kolizję, więc nie potrzebujesz centralnej sekwencji ani podróży w obie strony do bazy, by uzyskać id. To bezcenne w systemach rozproszonych i do generowania id, zanim wiersz zostanie zapisany.
+- **Niemożliwy do odgadnięcia.** Sekwencyjne identyfikatory całkowite wyciekają informacje (ile zamówień istnieje i id następnego) i pozwalają atakującemu przejść po rekordach poprzez inkrementację. Losowy UUID nie ujawnia niczego z tego.
+- **Przyjazny scalaniu.** Dane z odrębnych systemów łączą się bez kolizji id.
+
+Kosztem jest rozmiar, 16 bajtów wobec 4 lub 8 dla liczby całkowitej, co ma znaczenie, bo klucz główny jest kopiowany do każdego indeksu wtórnego i każdego klucza obcego odwołującego się do wiersza.
+
+## Ukryty koszt losowych kluczy
+
+Istnieje subtelniejszy, ważniejszy koszt. Bazy przechowują wiersze w indeksie (zwykle B-drzewie) uporządkowanym według klucza głównego. Przy **sekwencyjnym** kluczu każdy nowy wiersz dopisuje się na końcu indeksu, więc aktywne strony pozostają w pamięci, a zapisy są tanie. Przy **losowym UUID v4** każde wstawienie ląduje w dowolnym miejscu. Baza musi czytać, modyfikować i zapisywać strony rozproszone po całym indeksie, powodując **podziały stron**, **fragmentację** i znacznie więcej chybień pamięci podręcznej. Na dużej, intensywnie zapisywanej tabeli losowe klucze mogą mierzalnie spowolnić wstawienia i rozdąć indeks, a wszystko to bez żadnego błędu, na który można wskazać.
+
+## Dlaczego v7 zmienia rachunek
+
+To dokładnie problem, który **UUID wersja 7** miała rozwiązać. Umieszczając znacznik czasu w milisekundach w najbardziej znaczących bitach, wartości v7 są **uporządkowane czasowo**: nowe wiersze wstawiają się blisko końca indeksu, zupełnie jak sekwencyjna liczba całkowita, zachowując zdecentralizowane, nieskoordynowane generowanie UUID. Otrzymujesz większość korzyści z lokalności indeksu klucza z autoinkrementacją bez centralnej sekwencji. Dla nowych systemów chcących kluczy UUID v7 jest zwykle właściwą wersją właśnie z tego powodu.
+
+## Uwagi praktyczne
+
+- **Przechowuj UUID jako natywny typ UUID lub binarny, nie jako 36-znakowy ciąg.** Przechowywanie postaci tekstowej marnuje miejsce i spowalnia porównania; postać binarna to 16 bajtów.
+- **Używaj v7 dla kluczy** tam, gdzie liczy się wydajność wstawiania, oraz **v4** tam, gdzie wyraźnie nie chcesz żadnej informacji o czasie wbudowanej w id.
+- Liczba całkowita z autoinkrementacją jest wciąż całkowicie dobra dla tabeli jednowęzłowej, która nigdy nie potrzebuje id generowanych zewnętrznie; UUID dowodzą swojej wartości, gdy liczą się dystrybucja, nieprzewidywalność lub wstępne generowanie.
+
+[Narzędzie UUID](/tools/uuid) generuje zarówno v4, jak i v7 oraz dekoduje wbudowany znacznik czasu wartości v7, abyś mógł zobaczyć własność uporządkowania bezpośrednio, wszystko w przeglądarce.

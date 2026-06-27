@@ -1,0 +1,53 @@
+---
+slug: base64
+title: "Base64 ve Base64URL, açıklandı"
+summary: "İkili verinin nasıl iletime güvenli metne dönüştüğü, dolgunun neden var olduğu ve URL'ye güvenli varyantta neyin değiştiği."
+concepts: ["base64", "base64url", "encoding", "binary-to-text"]
+relatedTools: ["base64"]
+relatedArticles: ["character-encoding", "hashing-encryption-encoding", "hashing"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Base64'ün çözdüğü sorun
+
+Bilgisayarlar her şeyi bayt olarak saklar, 0'dan 255'e kadar rastgele değerler. Ancak veri taşıyan birçok sistem, rastgele baytları değil **metni** taşımak için kuruldu: e-posta gövdeleri, URL'ler, JSON dizeleri, HTTP başlıkları. Onlara bir kontrol karakteri ya da tırnak işareti olan bir ham bayt verin; onu bozar veya kırılırlar. Base64, herhangi bir baytı alıp bu salt metin kanallarının el değmeden taşıdığı küçük, güvenli bir yazdırılabilir karakter kümesiyle yeniden yazmanın standart yoludur.
+
+Bunun ne anlama geldiği konusunda kesin olmakta yarar var: Base64 bir **kodlamadır**, şifreleme değil. Hiçbir şey gizlemez. Herkes onu anahtarsız ve zahmetsizce orijinal baytlara geri çözebilir. Tek görevi taşımayı atlatmaktır, bir sırrı saklamak değil.
+
+## Kodlama nasıl çalışır
+
+Hile, bitleri yeniden gruplamaktır. Base64, girişi üç bayt birden okur. Üç bayt 24 bittir ve 24, eşit olarak dört adet 6 bitlik gruba bölünür. Her 6 bitlik grup 0'dan 63'e kadar bir sayıdır ve bu 64 değerin her biri Base64 alfabesindeki bir karaktere eşlenir:
+
+- 0'dan 25'e kadarki değerler için `A`–`Z`
+- 26'dan 51'e kadarki değerler için `a`–`z`
+- 52'den 61'e kadarki değerler için `0`–`9`
+- 62 ve 63 değerleri için `+` ve `/`
+
+Böylece her üç giriş baytı tam olarak dört çıkış karakterine dönüşür. Base64 çıktısının her zaman girişten yaklaşık üçte bir daha büyük olmasının nedeni budur: dört karakter, üç baytın taşıdığını taşır.
+
+## Dolgu neden var
+
+Giriş her zaman üç baytın tam katı değildir. Son grupta yalnızca bir veya iki bayt kaldığında, kodlayıcı yine de tam dört karakterlik bir blok yayar ve boşluğu `=` karakteriyle doldurur:
+
+- Bir artık bayt (8 bit) iki anlamlı karakter üretir, sonra `==`.
+- İki artık bayt (16 bit) üç anlamlı karakter üretir, sonra `=`.
+
+`=` veri değildir. Çözücüye son bloğun gerçekte kaç bayt temsil ettiğini söyleyen bir işarettir; böylece çözücü dolguyu atıp tam orijinal uzunluğu yeniden kurabilir. Bir Base64 dizesinin uzunluğunun her zaman dörtün katı olmasının nedeni budur.
+
+## URL'ye güvenli varyant
+
+Standart alfabenin iki karakteri belirli yerlerde sorun çıkarır. `+` ve `/` her ikisinin de URL'lerde ayrılmış anlamları vardır (bir boşluk ve bir yol ayırıcı) ve `/` ayrıca birçok dosya adında geçersizdir. **Base64URL** (RFC 4648'de tanımlanır) bunu iki değiştirme ve bir alışkanlıkla düzeltir:
+
+- `+`, `-` olur
+- `/`, `_` olur
+- uzunluk çıkarsanabildiği için `=` dolgusu genellikle çıkarılır
+
+Sonuç, ek bir kaçış olmadan bir URL'ye, bir dosya adına veya bir JSON Web Token'a temiz biçimde yerleşen bir dizedir. JWT'lerin ve OAuth PKCE meydan okumalarının klasik biçim yerine Base64URL kullanmasının nedeni tam da budur: bu değerler URL'lerin ve token'ların içinde yaşar.
+
+## Onunla nerede karşılaşırsınız
+
+Deseni bir kez tanıdığınızda Base64 her yerdedir: bir görüntüyü doğrudan bir sayfaya gömen `data:` URI'leri, bir JWT'nin nokta ile ayrılmış üç segmenti, MIME e-posta ekleri, HTTP Basic kimlik doğrulama başlıkları ve PEM biçimindeki sertifikalar. Her durumda neden aynıdır, ham baytların yalnızca metne güvenen bir kanaldan geçmesi gerekir.
+
+[Base64 aracına](/tools/base64) metin veya Base64 yapıştırarak onu her iki yönde de, standart ve URL'ye güvenli, tamamen tarayıcınızda kodlayabilir veya çözebilirsiniz.

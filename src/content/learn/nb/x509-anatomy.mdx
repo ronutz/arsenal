@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomien til et X.509-sertifikat"
+summary: "Hva som lever inne i et TLS-sertifikat, hvordan ASN.1/DER-bytene er strukturert, hva v3-utvidelsene faktisk styrer, og hvorfor å avkode et sertifikat ikke er det samme som å stole på det."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hva et sertifikat er
+
+Et X.509-sertifikat er en signert erklæring som binder en offentlig nøkkel til en identitet. Når en nettleser kobler til et nettsted over HTTPS, fremviser tjeneren et sertifikat som i praksis sier: "denne offentlige nøkkelen tilhører test.ronutz.com, og en sertifikatmyndighet innestår for det." Profilen som definerer hvilke felt et sertifikat bærer og hvordan de tolkes, er RFC 5280.
+
+Bindingen er hva som betyr noe. Hvem som helst kan generere et nøkkelpar, så en naken offentlig nøkkel beviser ingenting om hvem som er i den andre enden. Et sertifikat legger til en signatur fra en utsteder som den forlitende parten allerede stoler på, og forvandler en anonym nøkkel til en nøkkel med et navn vedheftet. Dette er fundamentet for webbens offentlige nøkkelinfrastruktur (PKI).
+
+## Tillitskjeden
+
+Et enkelt sertifikat stoles sjelden på alene. Det stoles på fordi det ble signert av en utsteder, som igjen ble signert av en annen utsteder, opp til en rot som den forlitende parten allerede holder i et tillitslager:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Hver lenke er en signatur: utstederen signerer barnets sertifikat med utstederens private nøkkel, og en verifikator kontrollerer den signaturen med utstederens offentlige nøkkel. En **rot** er selvutstedt og selvsignert, noe som er grunnen til at et selvsignert sertifikat er en nyttig lokal stedfortreder for en rot, men bærer ingen ekstern autoritet. X.509-verktøyet markerer et selvutstedt sertifikat (utsteder lik subjekt) og hvorvidt sertifikatet er markert som en CA, som begge forteller deg hvor et sertifikat sitter i dette bildet.
+
+## ASN.1 og DER: byte-oppsettet
+
+Et sertifikat er ikke JSON eller tekst. Det beskrives i ASN.1 (Abstract Syntax Notation One) og kodes med Distinguished Encoding Rules (DER), spesifisert i ITU-T X.690. DER er et tag-length-value-format (TLV): hvert element begynner med en tag-byte som sier hvilken type det er, deretter en lengde, deretter så mange innholdsbyte. Konstruerte typer som SEQUENCE og SET holder barneelementer, så hele sertifikatet er et tre av TLV-er.
+
+En PEM-fil er nettopp det DER, Base64-kodet og pakket inn i panserlinjer:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Så å avkode et sertifikat betyr å fjerne panseret, avkode fra Base64 til DER, og deretter gå gjennom TLV-treet. X.509-verktøyet gjør nettopp dette i nettleseren din, uten bibliotek og uten nettverkskall.
+
+## Den øverste strukturen
+
+På det ytterste nivået definerer RFC 5280 tre deler:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+**tbsCertificate** ("to be signed", som skal signeres) holder alt det virkelige innholdet. **signatureAlgorithm** navngir hvordan utstederen signerte det, for eksempel sha256WithRSAEncryption eller ecdsa-with-SHA256. **signatureValue** er signaturen selv, beregnet over tbsCertificates DER-byte. Det siste punktet er verdt å holde fast ved: signaturen dekker den-som-skal-signeres-kroppen nøyaktig som kodet, noe som er grunnen til at selv en en-byte-endring hvor som helst i kroppen bryter verifikasjonen.
+
+## Inne i TBSCertificate
+
+Den-som-skal-signeres-kroppen er der verktøyet tilbringer mesteparten av tiden sin:
+
+- **Versjon** er nesten alltid v3, versjonen som innførte utvidelser.
+- **Serienummer** er et stort heltall som utstederen tildeler. Kombinert med utstedernavnet identifiserer det entydig sertifikatet, og det er hva en tilbakekallingsliste refererer.
+- **Utsteder** (Issuer) og **Subjekt** (Subject) er Distinguished Names. Et DN er en følge av attributter som CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) og C (country). RFC 4514 definerer den enlinjede, mest-spesifikk-først-gjengivelsen du ser, for eksempel `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- **Gyldighet** (Validity) er et notBefore- og et notAfter-tidsstempel. Disse kodes som UTCTime eller GeneralizedTime; verktøyet konverterer begge til ISO-8601 og forteller deg, mot din lokale klokke, om sertifikatet er gyldig nå, ennå-ikke-gyldig eller utløpt.
+- **subjectPublicKeyInfo** bærer den offentlige nøkkelen pluss dens algoritme. For RSA rapporterer verktøyet modulusstørrelsen (for eksempel 2048-bit) og den offentlige eksponenten (nesten alltid 65537). For elliptisk-kurve-nøkler rapporterer det den navngitte kurven (P-256, P-384, P-521), ifølge RFC 5480.
+
+## v3-utvidelsene
+
+Utvidelser er der moderne sertifikater koder det meste av sin politikk. Hver utvidelse har en identifikator, et kritisk-flagg og en verdi. Kritisk-flagget betyr noe: hvis en forlitende part ikke forstår en utvidelse markert som kritisk, må den avvise sertifikatet fremfor å ignorere feltet. Verktøyet avkoder dem som bærer mest vekt:
+
+- **Subject Alternative Name (SAN)** lister opp identitetene som sertifikatet faktisk er gyldig for, som DNS-navn, IP-adresser, e-postadresser eller URI-er. For TLS er dette feltet nettlesere kontrollerer, ikke CN. Et sertifikat for `test.ronutz.com` som utelater det navnet fra sitt SAN vil feile valideringen i en moderne klient selv om CN samsvarer.
+- **Key Usage** begrenser hva nøkkelen kan gjøre på lavt nivå: digitalSignature, keyEncipherment, keyCertSign, cRLSign og andre. Et CA-sertifikat bærer keyCertSign; et TLS-blad bærer typisk digitalSignature og keyEncipherment.
+- **Extended Key Usage (EKU)** navngir høyere nivås formål som serverAuth (TLS-tjener), clientAuth (TLS-klient), codeSigning eller emailProtection.
+- **Basic Constraints** angir hvorvidt sertifikatet er en CA, og hvis så, hvor mange mellomliggende CA-er som kan fremtre under det (stilengden). Dette er feltet som stopper et bladsertifikat fra å bli brukt til å signere andre sertifikater.
+- **Subject Key Identifier** og **Authority Key Identifier** er hashes som lar en verifikator raskt matche et sertifikat til sin utsteder når en kjede bygges.
+
+## Fingeravtrykk
+
+Et sertifikat-**fingeravtrykk** (fingerprint) er ganske enkelt en kryptografisk hash av sertifikatets DER-byte, vanligvis SHA-256 (og, for eldre referanser, SHA-1). Det er ikke et felt inne i sertifikatet; det beregnes over det hele. Fingeravtrykk gir deg en kort verdi med fast lengde for å sammenligne to sertifikater med hensyn til likhet eller for å feste et kjent sertifikat. Verktøyet beregner både SHA-256 og SHA-1 lokalt med Web Crypto API, så bytene du limer inn sendes aldri noe sted. For mer om hva en hash er og ikke er, se hashing-artikkelen.
+
+## Å avkode er ikke å validere
+
+Dette er den enkeltviktigste ideen, og den speiler den samme forsiktigheten som gjelder for JSON Web Tokens. Å lese et sertifikats felt forteller deg hva det *påstår*. Det forteller deg ikke at påstanden er *sann*. Full validering er en separat, tyngre prosess: å kontrollere at signaturen kjeder til en betrodd rot, at ingen av sertifikatene i kjeden er utløpt eller tilbakekalt, at navnet du koblet til er i SAN, og at nøkkelbrukene tillater hva du gjør.
+
+En sertifikatavkoder, denne inkludert, er et inspeksjons- og læringsinstrument. Det viser deg nøyaktig hva en utsteder hevdet og hvordan det ble kodet. Behandle utdataene som en tro lesning av dokumentet, ikke som en dom over hvorvidt man skal stole på det.

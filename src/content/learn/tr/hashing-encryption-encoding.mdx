@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Karma, şifreleme ve kodlama: üç farklı şey"
+summary: "Sürekli karıştırılan üç işlem, iki soruyla temiz biçimde ayrılır: geri döndürülebilir mi ve bir anahtar gerektirir mi?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Üç kelime, sürekli karıştırılır
+
+"Bu parola şifreli mi?" "URL'yi karmala yeter." "Veri kodlanmış, yani güvenli." Bu cümleler her yerde ve çoğu yanlış kelimeyi kullanıyor. Karma, şifreleme ve kodlama, üç farklı amaca sahip üç ayrı işlemdir ve onları karıştırmak gerçek güvenlik hatalarına yol açar, parolaları hiçbir şey korumayan bir yöntemle saklamak gibi.
+
+İyi haber, iki basit sorunun onları tamamen ayırmasıdır.
+
+## İki soru
+
+1. **Geri döndürülebilir mi?** Çıktıdan orijinal girdiyi geri alabilir misiniz?
+2. **Bir anahtar gerektirir mi?** Bir sır gerekli mi, yoksa işlemi herkes yapabilir mi?
+
+Üç işlemi bu sorulara göre yerleştirin, tablo netleşir:
+
+- **Kodlama** geri döndürülebilir ve anahtar gerektirmez.
+- **Karma** geri döndürülemez ve anahtar gerektirmez.
+- **Şifreleme** geri döndürülebilir ve bir anahtar gerektirir.
+
+O tablo, makalenin tamamıdır. Gerisi ayrıntıdır.
+
+## Kodlama: geri döndürülebilir, anahtarsız
+
+Kodlama, veriyi belirli bir biçim bekleyen bir kanaldan geçebilsin diye farklı bir temsile yeniden yazar. Base64 baytları güvenli metne çevirir; URL kodlaması bir URL'de geçersiz olan karakterleri kaçırır; UTF-8 karakterleri bayta çevirir. Bunların hiçbiri gizli değildir. Herkes onu geri çözebilir, çünkü geri döndürülebilirlik tüm amaçtır. **Kodlama sıfır güvenlik sağlar.** "Token kodlanmış, yani güvenli" duyarsanız, bu bir kırmızı bayraktır: kodlanmış, okunabilir demektir.
+
+## Karma: geri döndürülemez, anahtarsız
+
+Bir karma fonksiyonu herhangi bir girdiyi sabit boyutlu bir özete eşler ve girdiyi geri kazanmak için onu geriye doğru çalıştıramazsınız. Anahtar gerektirmez, dolayısıyla herkes aynı girdiden aynı özeti hesaplayabilir. Bu, onu **doğrulama** için kusursuz kılar: bütünlük kontrolleri, içeriğe göre adresleme ve değişikliği saptama. Orijinali saklamadan iki şeyin aynı olduğunu doğrulamanız gerektiğinde doğru araçtır, ama hiçbir şeyi geri döndürülebilir biçimde gizlemez, çünkü geri döndürülecek bir şey yoktur.
+
+## Şifreleme: geri döndürülebilir, anahtarlı
+
+Şifreleme veriyi öyle dönüştürür ki yalnızca doğru anahtara sahip biri onu geri dönüştürebilir. Bu, üçünden **gizlilik** için kurulmuş olan tek işlemdir. Tasarımı gereği geri döndürülebilir, ama yalnızca anahtarla, ki bu tam olarak diğer ikisinde eksik olan özelliktir: kodlama herkes tarafından, karma hiç kimse tarafından, şifreleme anahtar sahipleri tarafından geri döndürülebilir.
+
+## Doğrusunu seçmek
+
+Amaç, aracı belirler. Verinin taşımayı metin olarak atlatması mı gerekiyor? Kodlayın. Orijinali saklamadan bütünlüğü doğrulamanız veya karşılaştırmanız mı gerekiyor? Karmalayın. Veriyi anahtarı olmayan herkesten gizli tutmanız mı gerekiyor? Şifreleyin.
+
+Klasik hata, yanlış sütuna uzanmaktır. Parolaları salt kodlamayla (herkesçe geri döndürülebilir) ya da salt şifrelemeyle bile (çalınan tek anahtar her şeyi açığa çıkarır) saklamak, kendi makalesinde ele alınan amaca özel bir parola karmasından çok daha zayıftır. [Karma aracı](/tools/hash) ve [Base64 aracı](/tools/base64) aynı girdide karma ile kodlamanın farklı davrandığını izlemenizi sağlar, özet asla geri dönmez, Base64 her zaman döner.

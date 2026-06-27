@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Anatomie van een JSON Web Token"
+summary: "De drie segmenten van een JWT, hoe de handtekening hem betrouwbaar maakt, en waarom een token decoderen niet hetzelfde is als hem verifiëren."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Wat een JWT is
+
+Een JSON Web Token (JWT, gedefinieerd in RFC 7519) is een compacte, zelfstandige manier om een verzameling **claims** te dragen, beweringen over een entiteit (meestal een gebruiker) plus wat metadata, in een vorm die een ontvanger kan verifiëren. Het is het tokenformaat achter de meeste moderne webauthenticatie: een OpenID Connect-ID-token is een JWT, en OAuth 2.0-toegangstokens zijn dat heel vaak ook.
+
+"Zelfstandig" is het kernidee. In plaats van een willekeurige sessie-id die de server in een database moet opzoeken, draagt een JWT de claims *in zichzelf*, ondertekend zodat de ontvanger ze kan vertrouwen zonder een heen-en-terugreis. Dat maakt JWT's handig voor stateless, gedistribueerde systemen, met één belangrijke afweging die aan het eind wordt behandeld.
+
+## De drie segmenten
+
+Een JWT bestaat uit drie Base64URL-gecodeerde segmenten verbonden door punten:
+
+```
+header.payload.signature
+```
+
+Elk segment heeft een eigen taak:
+
+- De **header** is een klein JSON-object dat het ondertekenalgoritme en het tokentype noemt, bijvoorbeeld `{"alg":"HS256","typ":"JWT"}`. De waarde `alg` vertelt de ontvanger hoe de handtekening te verifiëren.
+- De **payload** is het JSON-object van claims. Het bevat geregistreerde claims met standaardbetekenissen (`iss` uitgever, `sub` subject, `aud` doelgroep, `exp` vervaltijd, `nbf` niet-voor, `iat` uitgegeven-op, `jti` token-id) naast eventuele eigen claims die de uitgever toevoegt.
+- De **handtekening** (signature) wordt berekend over de gecodeerde header en payload samen, met het algoritme uit de header. Zij is wat de eerste twee segmenten betrouwbaar maakt.
+
+Omdat de header en payload alleen Base64URL-gecodeerd zijn, niet versleuteld, kan iedereen die het token bezit ze decoderen en lezen. Dit is de allerbelangrijkste eigenschap om te verinnerlijken: **een JWT-payload is leesbaar, niet geheim.** Zet er nooit een wachtwoord, een kaartnummer of iets gevoeligs in.
+
+## De handtekening: hoe vertrouwen wordt gevestigd
+
+De handtekening is wat een JWT scheidt van elke tekenreeks die een client zou kunnen verzinnen. Hoe zij wordt geproduceerd hangt af van de algoritmefamilie:
+
+- **HMAC (HS256, HS384, HS512)** ondertekent met één gedeeld geheim. De handtekening is `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. Het is symmetrisch: hetzelfde geheim maakt en verifieert, dus uitgever en verifieerder moeten het delen. Dit is precies de constructie die de HMAC-tool berekent.
+- **RSA en ECDSA (RS256, ES256 en andere)** ondertekenen met een privésleutel en verifiëren met de bijbehorende publieke sleutel. Dit is asymmetrisch: alleen de uitgever kan ondertekenen, maar iedereen met de publieke sleutel kan verifiëren, wat past bij tokens die door veel onafhankelijke diensten worden gecontroleerd.
+
+Verifiëren herberekent of controleert de handtekening tegen de gecodeerde header en payload. Wordt één byte van een segment gewijzigd, dan komt de handtekening niet meer overeen en wordt het token geweigerd.
+
+Twee klassieke valkuilen zijn het kennen waard. De waarde `alg: none` declareert een niet-ondertekend token; een verifieerder die het niet expliciet weigert kan worden misleid om vervalste claims te vertrouwen. En bij de **algoritme-verwarrings**-aanval neemt een aanvaller een RS256-token, schakelt de header om naar HS256 en ondertekent het met de publieke sleutel als HMAC-geheim, wat slaagt tegen verifieerders die het algoritme uit het token nemen in plaats van het vast te zetten. De verdediging voor beide is dezelfde: de verifieerder beslist welk algoritme acceptabel is, niet het token.
+
+## Decoderen is niet verifiëren
+
+Dit zijn twee verschillende operaties, en ze door elkaar halen is een veelvoorkomende bron van bugs. **Decoderen** decodeert simpelweg de segmenten vanuit Base64URL om de header en claims te onthullen: geen sleutel, geen vertrouwen, iedereen kan het. **Verifiëren** controleert de handtekening met de juiste sleutel en bevestigt de tijd-claims. Alleen op de claims van een geverifieerd token mag worden gehandeld.
+
+Tijd telt ook. `exp` (vervaltijd) en `nbf` (niet-voor) zijn Unix-tijdstempels die het geldigheidsvenster van het token begrenzen, en `iat` legt vast wanneer het werd uitgegeven. Een correcte verifieerder weigert een verlopen of nog-niet-geldig token, doorgaans met een kleine klokafwijkingstolerantie.
+
+## Wat een JWT niet is
+
+Een JWT is **ondertekend, niet versleuteld** (versleuteling is een aparte standaard, JWE). Het bewijst wie de claims uitgaf en dat ze niet zijn gemanipuleerd; het verbergt ze niet.
+
+Een ondertekend JWT is ook **op zichzelf niet eenvoudig te herroepen.** Omdat de claims in het token leven en verificatie geen serveropzoeking nodig heeft, blijft een token geldig tot het verloopt, ook als je het eerder zou willen annuleren. Het praktische antwoord is korte levensduren plus een apart mechanisme (een verniewingstoken, een herroepingslijst of tokenintrospectie) wanneer onmiddellijke herroeping vereist is.
+
+De [JWT-tool](/tools/jwt) decodeert de header en claims van een token, leest zijn vervaltijd en timing in gewone taal, en verifieert een HS256-, HS384- of HS512-handtekening tegen een geheim dat je plakt, alles in je browser. Het token en geheim worden nooit ergens heen gestuurd.

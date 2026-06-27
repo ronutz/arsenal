@@ -1,0 +1,42 @@
+---
+slug: base64url
+title: "Base64URL i alfabet bezpieczny dla adresów URL"
+summary: "Dlaczego tokeny JWT i PKCE używają innego alfabetu Base64, dwa znaki, które się zmieniają, i co dzieje się z dopełnieniem."
+concepts: ["base64", "base64url", "rfc4648", "url-safe", "padding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "character-encoding", "jwt-anatomy", "pkce"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Jedno kodowanie, dwa alfabety
+
+Base64 przekształca dowolne bajty w 64 znaki drukowalne, cztery znaki wyjściowe na każde trzy bajty wejściowe. Standardowy alfabet (RFC 4648, sekcja 4) to `A` do `Z`, `a` do `z`, `0` do `9` oraz dwa symbole `+` i `/`, gdzie `=` służy do dopełnienia ostatniej grupy.
+
+Problem polega na tym, że `+`, `/` i `=` mają specjalne znaczenia w innych kontekstach. W adresie URL `/` jest separatorem ścieżki, `+` historycznie oznacza spację w ciągach zapytań, a `=` oddziela klucz od wartości. W nazwie pliku `/` jest niedozwolone w większości systemów. Czysty Base64 nie może więc znaleźć się w adresie URL ani w nazwie pliku bez uszkodzenia lub dodatkowego escapingu.
+
+## Co zmienia Base64URL
+
+Base64URL (RFC 4648, sekcja 5) to to samo kodowanie z bezpieczniejszym alfabetem. Różnią się dokładnie dwa znaki:
+
+- `+` staje się `-` (myślnik)
+- `/` staje się `_` (podkreślenie)
+
+Wszystkie pozostałe znaki są identyczne, a arytmetyka trzech bajtów na cztery znaki się nie zmienia. Wynikiem jest ciąg, który przetrwa umieszczenie w ścieżce adresu URL, parametrze zapytania lub nazwie pliku, bez żadnego kodowania procentowego.
+
+Dopełnienie to druga różnica. Standardowe Base64 dopełnia ostatnią grupę do wielokrotności czterech za pomocą `=`. Base64URL zazwyczaj **całkowicie pomija dopełnienie**, ponieważ `=` jest również kłopotliwe w adresach URL. Dekoder zawsze może przeliczyć, ile dopełnienia usunięto, na podstawie długości ciągu, więc nic nie zostaje utracone.
+
+## Gdzie naprawdę się na to natknąć
+
+Base64URL nie jest egzotycznym zakątkiem specyfikacji. To kodowanie stojące za kilkoma rzeczami, których używasz stale:
+
+- **JSON Web Tokens.** Token JWT składa się z trzech segmentów Base64URL połączonych kropkami (`header.payload.signature`). Zamiana `+`/`/` i pominięte `=` są właśnie powodem, dla którego token jest jednym czystym ciągiem bezpiecznym dla adresów URL.
+- **PKCE.** `code_challenge` w przepływie kodu autoryzacji OAuth to kodowanie Base64URL (bez dopełnienia) skrótu SHA-256, właśnie po to, by mógł podróżować w adresie URL.
+- **Web Push, JWK i wiele tokenów** kodują swoje pola binarne w ten sam sposób.
+
+## Praktyczne ostrzeżenie
+
+Ponieważ alfabety tak bardzo się pokrywają, ciąg Base64URL i standardowy ciąg Base64 mogą wyglądać niemal identycznie, a wartość bez `+`, `/` ani `=` jest poprawna w obu. Niezgodność pojawia się tylko wtedy, gdy surowe bajty dają `-`/`_` lub `+`/`/`, kiedy to dekodowanie niewłaściwym alfabetem zawodzi lub daje bełkot. Gdy token się nie dekoduje, alfabet jest pierwszą rzeczą do sprawdzenia.
+
+[Narzędzie Base64](/tools/base64) koduje i dekoduje zarówno alfabet standardowy, jak i bezpieczny dla adresów URL, obsługuje brakujące dopełnienie i pokazuje surowe bajty, wszystko w przeglądarce. Nic, co wkleisz, nie jest nigdzie wysyłane.

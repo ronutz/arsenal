@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Vælg et hash: MD5, SHA-1, SHA-2, SHA-3 og BLAKE"
+summary: "Hvilke hashfunktioner der stadig er sikre, hvilke der er brudt, deres uddatastørrelser, og hvordan man vælger det rette."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ikke alle hash er ens
+
+Et kryptografisk hash afbilder enhver indata på et fingeraftryk af fast størrelse. Der findes flere familier, og de er ikke udskiftelige: nogle er stadig stærke, og andre er så alvorligt brudt, at det er en fejl at bruge dem til sikkerhed. Det rette valg afhænger af opgaven og kalenderen, for et hash, der var respektabelt for tyve år siden, kan være trivielt brudt i dag.
+
+## De brudte
+
+- **MD5** (128 bit) er brudt. Kollisioner kan produceres på sekunder på en bærbar computer og er blevet brugt i virkelige angreb (Flame-malwaren forfalskede et kodesigneringscertifikat med en MD5-kollision). Det overlever kun som en hurtig, sikkerhedsfri kontrolsum, og selv der findes bedre muligheder.
+- **SHA-1** (160 bit) er brudt. SHAttered-forskningen i 2017 producerede to forskellige PDF'er med samme SHA-1-digest, og derefter fulgte kollisioner med valgt præfiks. Browsere og certifikatudstedere fjernede understøttelsen af SHA-1 for år tilbage. Brug det ikke til signaturer eller integritet, som en modstander kan angribe.
+
+## De nuværende arbejdsheste
+
+- **SHA-2** er standardfamilien til det meste arbejde. Det er et sæt beslægtede funktioner, almindeligvis **SHA-256** og **SHA-512** (også SHA-224, SHA-384 og det afkortede SHA-512/256). Der findes intet praktisk kollisionsangreb mod SHA-2. I tvivlstilfælde er SHA-256 det sikre og universelt understøttede valg.
+- **SHA-3** (Keccak) er en nyere standard bygget på et helt andet internt design (en svampkonstruktion) end SHA-2. SHA3-256 og SHA3-512 giver sammenlignelig sikkerhed og findes delvis som beskyttelse: skulle en svaghed nogensinde findes i SHA-2, er det usandsynligt, at SHA-3 deler den. Den er også ved sit design immun over for det længdeudvidelsesproblem, der rammer SHA-2.
+- **BLAKE2 og BLAKE3** er moderne, meget hurtige hash med stærk sikkerhed. BLAKE3 i særdeleshed er lavet til at parallelisere, hvilket gør den attraktiv, når man hasher store datamængder og vil have hastighed uden at give køb på sikkerhed.
+
+## At vælge et
+
+En kort beslutningsguide:
+
+- Generel integritet, signaturer eller "jeg har bare brug for et sikkert hash": **SHA-256**.
+- Du vil have algoritmemangfoldighed eller immunitet over for længdeudvidelse uden HMAC: **SHA-3** eller **SHA-512/256**.
+- Hashing af store filer, hvor gennemstrømning tæller: **BLAKE3**.
+- En hurtig, sikkerhedsfri kontrolsum (opdage tilfældig korruption, ikke manipulation): en CRC eller MD5 dur, men kald det aldrig "sikkert".
+- **Adgangskoder er et separat problem.** Generelle hash er for hurtige til adgangskodelagring; brug et særligt adgangskodehash som bcrypt, scrypt eller Argon2 (se artiklen om adgangskodehashing).
+
+[Hash-værktøjet](/tools/hash) beregner MD5, SHA-1, SHA-256, SHA-512 og mere over tekst eller en fil, så du kan sammenligne uddata side om side, alt sammen i din browser, uden at noget sendes.

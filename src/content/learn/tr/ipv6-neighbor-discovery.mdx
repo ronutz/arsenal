@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Komşu Keşfi: IPv6 ARP'yi nasıl değiştirir"
+summary: "IPv6'nın bir bağlantıda komşuları yayın ARP yerine ICMPv6 ve çok noktaya yayın kullanarak nasıl bulduğu, beş Komşu Keşfi mesajı, ve yayının neden gittiği."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 isteğe bağlı değildir
+
+IPv4'te ICMP, temel bağlantıyı kırmadan engelleyebileceğiniz tanısal bir sonradan akla gelmedir. IPv6'da ICMPv6 (RFC 4443) yük taşıyıcıdır: protokol çekirdek bağlantı işlemi için ona dayanır, dolayısıyla onu ayrım gözetmeksizin filtrelemek ağı kırar. Sebep, IPv6'nın IPv4'ün ARP, ICMP yönlendirici keşfi ve ICMP yeniden yönlendirmeleri arasında yaydığı birkaç işi, Komşu Keşfi (Neighbor Discovery, RFC 4861) adı verilen tek bir ICMPv6 tabanlı protokole taşımış olmasıdır. Komşu Keşfi'ni anlamak, bir IPv6 bağlantısının gerçekte nasıl çalıştığını anlamaktır.
+
+## Beş mesaj işi yapar
+
+Komşu Keşfi beş ICMPv6 mesaj türü tanımlar ve bir bağlantıdaki neredeyse her şey bunların bir kombinasyonudur:
+
+- **Yönlendirici Talebi (RS)**: bir ana bilgisayar yönlendiricilerden kendilerini duyurmalarını ister.
+- **Yönlendirici Duyurusu (RA)**: bir yönlendirici öneki ve yapılandırma bayraklarını duyurur ([adres yapılandırması](/learn/ipv6-address-configuration) makalesindeki otomatik yapılandırmanın girdisi).
+- **Komşu Talebi (NS)**: bir ana bilgisayar "bu adres kimde, ve senin bağlantı katmanı adresin nedir?" diye sorar.
+- **Komşu Duyurusu (NA)**: o bağlantı katmanı adresini veren yanıt.
+- **Yeniden Yönlendirme (Redirect)**: bir yönlendirici bir ana bilgisayara bir hedef için daha iyi bir sonraki sıçramayı anlatır.
+
+Yönlendirici talebi ve duyurusu "kendimi nasıl yapılandırırım"ı ele alır; komşu talebi ve duyurusu "bu komşuya nasıl ulaşırım"ı ele alır; yeniden yönlendirme "daha iyi bir yol var"ı ele alır. Bu bir bağlantının günlük yaşamını kapsar.
+
+## Yayın olmadan adres çözümleme
+
+ARP'nin IPv4'te yaptığı iş, bir IP adresini bir donanım adresine eşlemek, IPv6'da Komşu Talebi ve Duyurusu çifti tarafından yapılır. Önemli fark, sorunun *nasıl* sorulduğudur. ARP yayın adresine bağırır, segmentteki her cihazı keser. IPv6 bunun yerine Komşu Talebini hedefin **istenen düğüm çok noktaya yayın adresine** (solicited-node multicast address) gönderir, ki bu yalnızca aynı adres son ekini paylaşan küçük ana bilgisayar kümesinin dinleyeceği bir gruptur. Hedef, bağlantı katmanı adresini taşıyan bir Komşu Duyurusu ile yanıtlar. Sorgulayan, sonucu tam bir ARP önbelleğinin çalıştığı gibi önbelleğe alır ve trafik bir komşunun gitmiş olabileceğini düşündürdüğünde onu Komşu Ulaşılamazlık Tespiti (Neighbor Unreachability Detection) aracılığıyla yeniden doğrular.
+
+## İstenen düğüm çok noktaya yayın adresi
+
+İstenen düğüm çok noktaya yayın adresi hedef adresten inşa edilir: `ff02::1:ff00:0/104` önekini al ve hedefin adresinin son 24 bitini ekle. Çözümleme tüm bağlantı yerine yalnızca o düşük 24 biti paylaşan bir avuç ana bilgisayarı hedeflediğinden, istek bir ARP yayınının ulaşacağından çok daha az makineye ulaşır. Bu inşa, [adresleme](/learn/ipv6-addressing) makalesinin istenen düğüm çok noktaya yayınını bir sonradan akla gelme yerine adres planının bir parçası olarak ele almasının sebebidir: bir adres yapılandıran her ana bilgisayar, başkalarının onu bulabilmesi için karşılık gelen istenen düğüm grubuna otomatik olarak katılır.
+
+## Hiç yayın yok
+
+IPv6'nın yayın adresi yoktur. IPv4'ün yayını kullandığı her şey, adres çözümleme ve yönlendirici keşfi dahil, belirli, iyi kapsamlı gruplara çok noktaya yayınla ele alınır. Bir tüm-düğümler çok noktaya yayın grubu (`ff02::1`) ve bir tüm-yönlendiriciler grubu (`ff02::2`) vardır, ama rutin çözümleme bunun yerine dar istenen düğüm gruplarını hedefler. "Herkesi kesmeyi" "tam olarak ilgili dinleyicileri bilgilendirmeyle" değiştirmek meşgul bağlantılarda daha verimlidir ve IPv6'nın IPv4 üzerine yaptığı daha sessiz iyileştirmelerden biridir.
+
+## Bağlantıya güvenmek
+
+Komşu Keşfi varsayılan olarak kimliği doğrulanmamış olduğundan, aynı bağlantıdaki kötü niyetli bir ana bilgisayar trafiği yeniden yönlendirmek veya ele geçirmek için sahte Yönlendirici Duyuruları veya Komşu Duyuruları gönderebilir, ARP sahteciliğinin IPv6 benzeri. Savunmalar ağ kenarında yaşar: anahtarlardaki RA Guard, yönlendirici olmaması gereken bağlantı noktalarından gelen yönlendirici duyurularını düşürür ve Güvenli Komşu Keşfi (SEcure Neighbor Discovery, SEND), dağıtıldığı yerde kriptografik koruma ekler. IPv4'te olduğu gibi, yerel bağlantı savunmaya değer bir güven sınırıdır.
+
+## Bağlantının sinir sistemi
+
+Özet, IPv6'nın adres çözümleme, yönlendirici keşfi ve yeniden yönlendirmeyi tek bir ICMPv6 tabanlı protokole katlamış, yayın bağırışını hedefli çok noktaya yayınla takas etmiş ve her şeyi isteğe bağlı yerine zorunlu kılmış olmasıdır. Araçta bir adres gördüğünüzde ve onun istenen düğüm grubunu veya link-local biçimini fark ettiğinizde, Komşu Keşfi'nin, dahil olmayan komşuları hiç rahatsız etmeden ana bilgisayarların bir bağlantıda birbirini bulmasına izin vermek için kullandığı parçalara bakıyorsunuz.

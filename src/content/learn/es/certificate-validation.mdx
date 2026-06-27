@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Cómo funciona en realidad la validación de certificados"
+summary: "Los pasos que un cliente ejecuta para decidir que un certificado es confiable: construir la cadena, comprobar firmas y fechas, casar el nombre e imponer restricciones."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Leer no es confiar
+
+El [artículo de anatomía](/learn/x509-anatomy) termina en un punto que vale la pena repetir: decodificar un certificado te dice lo que *afirma*, no si la afirmación es *verdadera*. La validación es el proceso separado que un cliente TLS ejecuta para decidir si confiar en el certificado que tiene delante. Está gobernada principalmente por la RFC 5280, y es una conjunción de comprobaciones independientes, cada una de las cuales debe pasar. Un decodificador, esta herramienta incluida, te muestra las entradas a ese proceso; el cliente es lo que lo impone.
+
+## Paso 1: construir la cadena
+
+Un certificado hoja casi nunca es confiable por sí solo. El cliente debe construir una ruta desde la hoja hasta una raíz que ya mantiene en su almacén de confianza. Lo hace siguiendo los nombres de emisor: el Issuer de la hoja debería casar con el Subject de algún intermedio, y el Issuer de ese intermedio debería casar con el siguiente arriba, hasta alcanzar una raíz autoemitida. Las extensiones Authority Key Identifier y Subject Key Identifier aceleran ese emparejamiento al permitir que el cliente vincule un certificado a su emisor por el hash de la clave, y no solo por el nombre. Si no se puede construir ninguna ruta a una raíz confiable, la validación falla inmediatamente, no importa cuán bien formada esté la hoja.
+
+## Paso 2: verificar cada firma
+
+Una cadena solo es significativa si cada eslabón es criptográficamente sólido. Para cada certificado en la ruta, el cliente verifica que la firma fue producida por la clave privada del emisor, comprobándola contra la clave pública del emisor sobre los bytes DER del cuerpo a-ser-firmado del hijo. Como la firma cubre esos bytes exactos, un solo byte alterado en cualquier lugar del cuerpo rompe la comprobación. Esto es también por qué el algoritmo de firma (por ejemplo sha256WithRSAEncryption o ecdsa-with-SHA256) importa: una cadena es tan fuerte como su firma y hash más débiles. Para lo que un hash garantiza aquí, véase el [artículo de hashing](/learn/hashing).
+
+## Paso 3: comprobar la ventana de validez
+
+Cada certificado lleva una marca de tiempo notBefore y notAfter, y el cliente comprueba el tiempo actual contra la ventana de cada certificado en la cadena, no solo de la hoja. Un certificado que está expirado, o aún no válido, falla. La herramienta realiza esta misma comprobación contra tu reloj local y reporta si un certificado es válido ahora, aún-no-válido, o expirado, lo que es a menudo la forma más rápida de diagnosticar una advertencia de "tu conexión no es privada".
+
+## Paso 4: casar el nombre
+
+Una cadena válida prueba que el certificado es auténtico, pero no que fue emitido para el sitio que estás visitando. El cliente comprueba que el host al que se conectó aparece en la extensión Subject Alternative Name del certificado. Los clientes modernos ignoran el Common Name por completo para este propósito y miran solo el SAN, siguiendo las reglas de emparejamiento de identidad de la RFC 6125. Los comodines como `*.ronutz.com` casan con una sola etiqueta, así que cubren `api.ronutz.com` pero no `ronutz.com` en sí o `a.b.ronutz.com`. Un certificado cuya cadena es perfecta pero cuyo SAN no lista el nombre que pediste sigue siendo rechazado.
+
+## Paso 5: imponer las restricciones
+
+Las extensiones v3 no son decoración; son reglas que el cliente impone. Basic Constraints dice si un certificado puede actuar como una CA y, a través de la longitud de la ruta, cuántos intermedios pueden situarse debajo de él, que es lo que impide que un certificado hoja se use para firmar otros certificados. Key Usage y Extended Key Usage restringen lo que la clave tiene permiso de hacer: un certificado de servidor TLS debe llevar el EKU serverAuth, y una extensión marcada como crítica que el cliente no entiende fuerza un rechazo en lugar de un encogimiento de hombros. La herramienta saca a la luz estos campos para que puedas ver exactamente qué restricciones definió un emisor.
+
+## Paso 6: comprobar la revocación
+
+Por último, un certificado que era válido cuando se emitió puede haber sido revocado desde entonces, por ejemplo porque su clave privada se filtró. El cliente puede consultar una CRL o un respondedor OCSP para averiguarlo. En la práctica este es el paso más débil y más inconsistente, y la industria se está moviendo hacia certificados de vida corta en su lugar, que el [artículo de revocación](/learn/certificate-revocation) cubre por completo.
+
+## La validación es un Y, no un O
+
+La razón por la que un solo certificado manipulado o mal configurado es rechazado es que todas estas comprobaciones se combinan con Y lógico. La cadena debe construir, cada firma debe verificar, cada certificado debe estar en su ventana de validez, el nombre debe estar en el SAN, las restricciones deben permitir el uso, y el certificado no debe estar revocado. Un decodificador expone las aserciones del certificado de forma clara y fiel; trata eso como una lectura cuidadosa del documento, y recuerda que el veredicto pertenece al cliente que ejecuta las seis comprobaciones.

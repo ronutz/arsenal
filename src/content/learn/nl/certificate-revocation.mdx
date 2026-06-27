@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Certificaatherroeping: CRL, OCSP en kortlevende certificaten"
+summary: "Waarom een certificaat soms moet worden geannuleerd voordat het verloopt, waarom de klassieke herroepingssystemen slecht werken, en waarom de industrie in plaats daarvan de certificaatlevensduren verkort."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Waarom überhaupt herroepen
+
+Een certificaat draagt een vervaldatum, maar soms moet het worden geannuleerd voordat die datum aanbreekt. De privésleutel kan gelekt zijn, het certificaat kan per vergissing uitgegeven zijn, of het domein kan van eigenaar gewisseld zijn. In al deze gevallen is het certificaat nog cryptografisch geldig en nog binnen zijn geldigheidsvenster, toch zouden vertrouwende partijen moeten ophouden het te vertrouwen. Herroeping is het mechanisme om te zeggen "negeer dit certificaat ook al is het niet verlopen". Het moeilijke deel is dat bericht betrouwbaar te bezorgen aan elke client ter wereld, en dit blijkt de zwakste schakel in de web-PKI te zijn.
+
+## CRL's: de gepubliceerde bloklijst
+
+Het oorspronkelijke antwoord is de Certificaatherroepingslijst (Certificate Revocation List), gedefinieerd naast het certificaatprofiel in RFC 5280. Een CA publiceert periodiek een ondertekende lijst van de serienummers die het heeft herroepen, en certificaten kunnen er via een CRL Distribution Point naar wijzen. Een client downloadt de lijst en controleert of het serienummer van het certificaat erop verschijnt.
+
+Het probleem is grootte en versheid. Een drukke CA kan enorme lijsten ophopen, dus een CRL downloaden en parseren bij elke verbinding is onpraktisch, en een gecachte lijst is verouderd tot de volgende publicatie. CRL's worden nog gebruikt, steeds vaker in gecomprimeerde en voorbewerkte vormen die browsers aan zichzelf leveren, maar als controle per verbinding schalen ze slecht.
+
+## OCSP: vragen over één certificaat
+
+Het Online Certificate Status Protocol, RFC 6960, was bedoeld om het groottevraagstuk te verhelpen door een client over een enkel certificaat te laten vragen in plaats van de hele lijst te downloaden. De client stuurt het serienummer van het certificaat naar een OCSP-responder en krijgt een ondertekend "good", "revoked" of "unknown" terug.
+
+Dit ruilt één probleem voor drie. Het voegt latentie toe, omdat de client nu een extra netwerk-rondreis maakt tijdens het opzetten van de verbinding. Het lekt privacy, omdat de responder leert welke sites de gebruiker bezoekt. En het schept een beschikbaarheidskoppeling: is de responder uitgevallen, dan moet de client ofwel de verbinding laten falen of, veel vaker, **zacht falen** (soft-fail) en doorgaan alsof het certificaat goed was, wat stilletjes het hele punt tenietdoet.
+
+## OCSP-stapling en Must-Staple
+
+Stapling pakt de latentie- en privacyproblemen aan door de *server* een recent, ondertekend OCSP-antwoord te laten ophalen en het aan de TLS-handshake te hechten (de status_request-extensie uit RFC 6066). De client krijgt de versheid zonder de responder te contacteren. Must-Staple, RFC 7633, is een certificaatextensie die zegt "wijs me af als een staple ontbreekt", waarmee de soft-fail-kloof wordt gesloten, maar het wordt zelden ingezet omdat een enkele stapling-hapering dan de site neerhaalt.
+
+## De ongemakkelijke waarheid
+
+Over deze mechanismen heen is het terugkerende falen de soft-fail: wanneer herroepingsinformatie onbeschikbaar is, kiezen clients overweldigend beschikbaarheid boven veiligheid en aanvaarden het certificaat. Dat maakt herroeping een onbetrouwbaar vangnet juist wanneer het nodig is. Browsers hebben gereageerd met hun eigen out-of-band-systemen die zichzelf herroepingsgegevens toeschuiven, maar de protocollen per verbinding losten hun belofte nooit in.
+
+## Het moderne antwoord: certificaten eerder laten verlopen
+
+Als je een certificaat niet betrouwbaar kunt annuleren, is het alternatief het kortlevend genoeg te maken dat annulering zelden ertoe doet: een gecompromitteerd certificaat verloopt eenvoudigweg vanzelf binnen dagen of weken. De industrie heeft zich precies hieraan verbonden. Het Ballot SC-081v3 van het CA/Browser Forum, goedgekeurd in april 2025, verlaagt gefaseerd de maximale publieke TLS-certificaatlevensduur van 398 dagen naar 200 dagen (vanaf maart 2026), 100 dagen (maart 2027) en 47 dagen (maart 2029), waarbij de domeinvalidatie-hergebruikperiode krimpt tot 10 dagen. Apart heeft het Forum sinds 2023 kortlevende certificaten die binnen 7 dagen verlopen toegestaan de CRL- en OCSP-ondersteuning geheel over te slaan, en Let's Encrypt is begonnen certificaten uit te geven met levensduren gemeten in dagen. De hele premisse is dat een kort genoeg levensduur zelf de herroeping is.
+
+Dit werkt alleen met automatisering. Certificaten elke zes of zeven weken met de hand vernieuwen is onhoudbaar, en daarom zijn het ACME-protocol (zie het [ondertekeningsverzoek-artikel](/learn/certificate-signing-request)) en certificaatlevenscyclus-tooling essentiële infrastructuur geworden in plaats van een gemak. Merk op dat deze regels gelden voor publiek vertrouwde certificaten in de browser-rootprogramma's; een private interne PKI stelt zijn eigen beleid vast.
+
+## Wat dit betekent wanneer je een certificaat inspecteert
+
+Wanneer je een certificaat decodeert, is het geldigheidsvenster niet langer een eenmaal-per-jaar-bijgedachte; het wordt de primaire herroepingscontrole. Het rapport van de tool over notBefore, notAfter, en of het certificaat op dit moment geldig is, is steeds meer het meest veiligheidsrelevante eraan. Herroepingslijsten en responders bestaan nog, maar de reisrichting is duidelijk: verkort de levensduur zodat de kwestie van herroeping zelden opkomt.

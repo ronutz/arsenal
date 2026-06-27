@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Bytes, Codepunkte und UTF-8"
+summary: "Der Unterschied zwischen einem Zeichen und einem Byte, warum Unicode und UTF-8 existieren und was das mit Base64 zu tun hat."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Zeichen sind keine Bytes
+
+Ein Computer speichert Bytes, Werte von 0 bis 255. Menschen lesen Zeichen: Buchstaben, Ziffern, Satzzeichen, Emoji. Eine **Zeichenkodierung** ist die vereinbarte Zuordnung zwischen beiden. Stimmt die Zuordnung nicht, sieht man den klassischen verstümmelten Text (`café` wird zu `cafÃ©`), was fast immer eine Diskrepanz zwischen der zum Schreiben der Bytes verwendeten Kodierung und der zum Lesen verwendeten ist.
+
+## ASCII: die ursprünglichen 128
+
+Die älteste weit verbreitete Kodierung ist **ASCII**, die den Zahlen 0 bis 127 die grundlegenden englischen Buchstaben, Ziffern und gängigen Symbole zuweist. Sieben Bit, 128 Zeichen. ASCII ist einfach und liegt noch immer großen Teilen der Datenverarbeitung zugrunde, doch 128 Zeichen können keine akzentuierten Buchstaben, nichtlateinischen Schriften oder Symbole darstellen, also reichte es nie für den Text der Welt.
+
+## Unicode: eine Zahl pro Zeichen
+
+**Unicode** löst das Abdeckungsproblem, indem es jedem Zeichen eine eindeutige Zahl namens **Codepunkt** gibt, geschrieben wie `U+0041` (der Buchstabe A) oder `U+2615` (ein heißes Getränk). Unicode ist ein riesiger Katalog von Zeichen und ihren Codepunkten, weit über hunderttausend davon, der im Wesentlichen jede gebräuchliche Schrift abdeckt.
+
+Entscheidend ist: Unicode sagt, *welche Zahl* jedes Zeichen hat, aber nicht, *wie diese Zahl als Bytes zu speichern ist*. Diese zweite Aufgabe gehört zu einer Kodierungsform.
+
+## UTF-8: wie Codepunkte zu Bytes werden
+
+**UTF-8** ist die vorherrschende Art, Unicode-Codepunkte in Bytes zu verwandeln, und es ist die Vorgabe im gesamten modernen Web. Es ist **variabler Länge**: Ein Zeichen belegt je nach Codepunkt ein bis vier Bytes.
+
+- Der ASCII-Bereich (U+0000 bis U+007F) wird als einzelnes Byte kodiert, identisch mit ASCII. Deshalb ist UTF-8 abwärtskompatibel: Jeder reine ASCII-Text ist bereits gültiges UTF-8.
+- Zeichen jenseits von ASCII verwenden zwei, drei oder vier Bytes. So sind `é` zwei Bytes und `☕` drei, obwohl jedes ein Zeichen ist.
+
+Dieser letzte Punkt ist die häufige Überraschung: **Ein Zeichen ist nicht immer ein Byte.** Bytes zählen und Zeichen zählen ergeben für jeden Nicht-ASCII-Text unterschiedliche Antworten. (UTF-16 und UTF-32 sind alternative Kodierungen derselben Codepunkte; UTF-8 gewann das Web durch seine ASCII-Kompatibilität und Kompaktheit bei lateinischem Text.)
+
+## Wo Base64 ins Spiel kommt
+
+Das ist für Base64 von Belang, weil **Base64 auf Bytes arbeitet, nicht auf Zeichen.** Um eine Zeichenkette in Base64 zu kodieren, muss die Zeichenkette zunächst mit einer Zeichenkodierung in Bytes verwandelt werden, und diese Kodierung ist im Grunde immer UTF-8. Kodiert man dasselbe Zeichen mit einem anderen Schema, erhält man andere Bytes und damit ein anderes Base64. Die vollständige Pipeline für Text lautet also: Zeichen werden zu Bytes (UTF-8), dann werden Bytes zu sicherem Text (Base64). Beim Dekodieren kehrt man beide Schritte um.
+
+Das [Base64-Werkzeug](/tools/base64) kodiert Text als UTF-8-Bytes, bevor es in Base64 kodiert, und markiert, wenn ein dekodiertes Ergebnis kein gültiges UTF-8 ist, alles in Ihrem Browser.

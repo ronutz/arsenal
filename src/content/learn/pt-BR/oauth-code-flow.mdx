@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "O fluxo de código de autorização do OAuth 2.0"
+summary: "Os quatro papéis, a dança de redirecionar e trocar, e por que o código é trocado por um token no canal de fundo."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Para que serve o fluxo
+
+O OAuth 2.0 (RFC 6749) permite que um aplicativo aja em nome de um usuário sem nunca ver a senha do usuário. "Entrar com o Google" é o exemplo cotidiano: o aplicativo obtém permissão para acessar algo, mas é o Google, não o aplicativo, que lida com as credenciais. O **fluxo de código de autorização** é a forma mais comum e mais segura de arranjar isso, e é o fluxo que o PKCE protege.
+
+## Os quatro papéis
+
+- O **dono do recurso** (resource owner) é o usuário que possui os dados e concede o acesso.
+- O **cliente** (client) é o aplicativo que solicita o acesso.
+- O **servidor de autorização** (authorization server) autentica o usuário e emite tokens (o Google, um provedor de identidade, seu próprio serviço de autenticação).
+- O **servidor de recursos** (resource server) é a API que guarda os dados protegidos e aceita o token.
+
+## A dança, passo a passo
+
+1. **Redirecionar para autorizar.** O cliente envia o navegador do usuário ao endpoint de autorização do servidor de autorização, carregando seu `client_id`, um `redirect_uri`, o `scope` que deseja, um valor `state` aleatório e (com PKCE) um desafio de código. O cliente nunca lida com a senha.
+2. **Autenticar e consentir.** O servidor de autorização faz o login do usuário e pede que ele aprove os escopos solicitados.
+3. **Redirecionar de volta com um código.** O servidor redireciona o navegador de volta ao `redirect_uri` do cliente com um **código de autorização** de vida curta e o `state` original. O cliente verifica que o `state` coincide, o que defende contra falsificação de requisição entre sites no retorno de chamada.
+4. **Trocar o código por tokens.** Agora no canal de fundo (uma chamada direta de servidor para servidor, não o navegador), o cliente envia o código ao endpoint de token junto com suas credenciais (um segredo de cliente, ou o verificador de código PKCE) e recebe um **token de acesso**, frequentemente um **token de atualização**, e, para OpenID Connect, um **token de ID**.
+5. **Chamar a API.** O cliente apresenta o token de acesso ao servidor de recursos, que o valida e retorna os dados.
+
+## Por que um código, e não o token diretamente?
+
+O desvio através de um código de autorização existe para que o token nunca viaje pela barra de endereços ou pelo histórico do navegador, onde poderia vazar. O código que *de fato* viaja por ali é inútil por si só: resgatá-lo exige a chamada do canal de fundo com o segredo do cliente ou o verificador PKCE. Essa separação, um código descartável no canal frontal e o token real no canal de fundo, é a propriedade de segurança central do fluxo.
+
+Esta é também exatamente a lacuna que o PKCE preenche para clientes que não conseguem guardar um segredo (aplicativos de página única e móveis): ele vincula o código a um verificador de uso único, de modo que um código interceptado ainda não possa ser trocado. Os tokens que o fluxo retorna são muito frequentemente JWTs.
+
+A [ferramenta PKCE](/tools/pkce) gera e verifica o verificador e o desafio em que este fluxo se apoia, e a [ferramenta JWT](/tools/jwt) decodifica os tokens que ele retorna, ambas localmente no seu navegador.

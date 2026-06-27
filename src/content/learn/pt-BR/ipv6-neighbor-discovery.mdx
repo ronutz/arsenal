@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Descoberta de Vizinhos: como o IPv6 substitui o ARP"
+summary: "Como o IPv6 encontra vizinhos em um enlace usando ICMPv6 e multicast em vez do ARP por broadcast, as cinco mensagens de Descoberta de Vizinhos, e por que o broadcast se foi."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## O ICMPv6 não é opcional
+
+No IPv4, o ICMP é um adendo diagnóstico que você pode bloquear sem quebrar a conectividade básica. No IPv6, o ICMPv6 (RFC 4443) é estrutural: o protocolo depende dele para a operação central do enlace, então filtrá-lo indiscriminadamente quebra a rede. A razão é que o IPv6 moveu vários trabalhos que o IPv4 espalhava através do ARP, da descoberta de roteador por ICMP, e dos redirecionamentos por ICMP, para um único protocolo baseado em ICMPv6 chamado Descoberta de Vizinhos (Neighbor Discovery, RFC 4861). Entender a Descoberta de Vizinhos é entender como um enlace IPv6 realmente funciona.
+
+## Cinco mensagens fazem o trabalho
+
+A Descoberta de Vizinhos define cinco tipos de mensagem ICMPv6, e quase tudo em um enlace é alguma combinação delas:
+
+- **Solicitação de Roteador (RS)**: um host pede aos roteadores que se anunciem.
+- **Anúncio de Roteador (RA)**: um roteador anuncia o prefixo e as flags de configuração (a entrada para a autoconfiguração no artigo de [configuração de endereço](/learn/ipv6-address-configuration)).
+- **Solicitação de Vizinho (NS)**: um host pergunta "quem tem este endereço, e qual é o seu endereço de camada de enlace?"
+- **Anúncio de Vizinho (NA)**: a resposta dando aquele endereço de camada de enlace.
+- **Redirecionamento (Redirect)**: um roteador diz a um host sobre um melhor próximo salto para um destino.
+
+A solicitação e o anúncio de roteador tratam de "como me configuro"; a solicitação e o anúncio de vizinho tratam de "como alcanço este vizinho"; o redirecionamento trata de "há um caminho melhor". Isso cobre a vida cotidiana de um enlace.
+
+## Resolução de endereço sem broadcast
+
+O trabalho que o ARP faz no IPv4, mapear um endereço IP para um endereço de hardware, é feito no IPv6 pelo par de Solicitação e Anúncio de Vizinho. A diferença importante é *como* a pergunta é feita. O ARP grita para o endereço de broadcast, interrompendo todo dispositivo no segmento. O IPv6 em vez disso envia a Solicitação de Vizinho ao **endereço multicast de nó solicitado** (solicited-node multicast address) do alvo, um grupo no qual apenas o pequeno conjunto de hosts que compartilham o mesmo sufixo de endereço estará escutando. O alvo responde com um Anúncio de Vizinho carregando seu endereço de camada de enlace. O consultante coloca o resultado em cache, exatamente como funciona um cache ARP, e o revalida através da Detecção de Inalcançabilidade de Vizinho (Neighbor Unreachability Detection) quando o tráfego sugere que um vizinho pode ter ido embora.
+
+## O endereço multicast de nó solicitado
+
+O endereço multicast de nó solicitado é construído a partir do endereço alvo: tome o prefixo `ff02::1:ff00:0/104` e anexe os últimos 24 bits do endereço do alvo. Como a resolução visa apenas o punhado de hosts que compartilham aqueles 24 bits baixos em vez do enlace inteiro, a requisição alcança muito menos máquinas do que um broadcast ARP alcançaria. Esta construção é por que o artigo de [endereçamento](/learn/ipv6-addressing) trata o multicast de nó solicitado como parte do plano de endereços em vez de um adendo: todo host que configura um endereço automaticamente se junta ao grupo de nó solicitado correspondente para que outros possam encontrá-lo.
+
+## Nenhum broadcast de modo algum
+
+O IPv6 não tem endereço de broadcast. Tudo para o qual o IPv4 usava broadcast, incluindo resolução de endereço e descoberta de roteador, é tratado por multicast para grupos específicos e bem delimitados. Há um grupo multicast de todos-os-nós (`ff02::1`) e um grupo de todos-os-roteadores (`ff02::2`), mas a resolução rotineira visa em vez disso os estreitos grupos de nó solicitado. Substituir "interromper todos" por "notificar exatamente os ouvintes relevantes" é mais eficiente em enlaces ocupados e é uma das melhorias mais silenciosas que o IPv6 faz sobre o IPv4.
+
+## Confiar no enlace
+
+Como a Descoberta de Vizinhos é não autenticada por padrão, um host malicioso no mesmo enlace pode enviar Anúncios de Roteador ou Anúncios de Vizinho forjados para redirecionar ou interceptar tráfego, o análogo IPv6 do spoofing de ARP. As defesas vivem na borda da rede: o RA Guard nos switches descarta anúncios de roteador de portas que não deveriam ter roteadores, e a Descoberta de Vizinhos Segura (SEcure Neighbor Discovery, SEND) adiciona proteção criptográfica onde é implantada. Como no IPv4, o enlace local é uma fronteira de confiança que vale a pena defender.
+
+## O sistema nervoso do enlace
+
+O resumo é que o IPv6 dobrou a resolução de endereço, a descoberta de roteador, e o redirecionamento em um único protocolo baseado em ICMPv6, trocou o grito por broadcast por multicast direcionado, e tornou a coisa toda essencial em vez de opcional. Quando você vê um endereço na ferramenta e nota seu grupo de nó solicitado ou sua forma link-local, você está olhando para as peças que a Descoberta de Vizinhos usa para deixar hosts encontrarem uns aos outros em um enlace sem nunca perturbar os vizinhos que não estão envolvidos.

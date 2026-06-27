@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Cómo funcionan las direcciones IPv4"
+summary: "Los 32 bits tras toda dirección en cuádruple punteado, y qué significan los rangos privados, de loopback y especiales."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Treinta y dos bits disfrazados
+
+Una dirección IPv4 es un único número de 32 bits. Casi nunca la escribimos de esa forma porque 32 unos y ceros son difíciles de leer, así que se divide en cuatro grupos de 8 bits llamados **octetos**, cada uno mostrado en decimal de 0 a 255 y unidos por puntos. `192.168.1.10` es solo una forma más amigable de escribir un valor específico de 32 bits.
+
+Como cada octeto tiene 8 bits, todo el espacio es de 2³² direcciones, unos 4.300 millones. Eso sonaba enorme en los años 1980 y es la razón por la que el agotamiento de direcciones IPv4 se volvió un problema real décadas después, y por la que el direccionamiento privado e IPv6 existen.
+
+## Parte de red y parte de host
+
+Ninguna dirección está sola, pertenece a un bloque, y dentro de ese bloque los bits se dividen en una **parte de red** (qué bloque es este) y una **parte de host** (qué máquina dentro del bloque). La longitud de prefijo, escrita al estilo CIDR como `/24`, marca dónde recae esa división. Todo a la izquierda de la línea es red; todo a la derecha identifica un host. Esta es la misma idea explorada en la notación CIDR, vista desde el lado de la dirección.
+
+## Rangos con significado especial
+
+No toda dirección es una dirección de host común. Varios rangos están reservados para propósitos específicos, y reconocerlos es parte de leer cualquier configuración de red:
+
+- **Rangos privados (RFC 1918)** están reservados para uso dentro de redes privadas y nunca se enrutan en la internet pública:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Por esto las redes domésticas y de oficina tan a menudo usan `192.168.x.x` o `10.x.x.x`, esas direcciones están libres para reutilizar en todas partes porque nunca aparecen en la internet abierta.
+- **Loopback (`127.0.0.0/8`)** siempre se refiere a la propia máquina local. `127.0.0.1` es la dirección que una computadora usa para hablar consigo misma.
+- **Las direcciones link-local (`169.254.0.0/16`)** son autoasignadas cuando un dispositivo no puede alcanzar un servidor DHCP. Ver una normalmente significa "no se entregó ninguna dirección".
+- **La dirección no especificada (`0.0.0.0`)** y la ruta por defecto (`0.0.0.0/0`) son especiales: esta última es la ruta atrapa-todo que coincide con cualquier destino no cubierto por una ruta más específica.
+
+## Por qué los rangos especiales importan para la seguridad
+
+Estos rangos reservados no son solo trivia. Una herramienta que busca una dirección suministrada por el usuario debe rehusarse a alcanzar rangos privados, de loopback y link-local, o puede ser engañada para hacer peticiones contra sistemas internos que nunca debería tocar, una clase de ataque llamada server-side request forgery (falsificación de petición del lado del servidor). Saber qué rangos son internos es el primer paso para defenderse de ello. Por esto exactamente las herramientas que tocan la red en este sitio comprueban una dirección resuelta contra estos rangos antes siquiera de conectar.
+
+Para ver cómo cualquier dirección se sitúa dentro de su bloque, su dirección de red, dirección de broadcast, y el rango utilizable a su alrededor, prueba la [calculadora CIDR](/learn), que computa todo eso localmente en tu navegador.

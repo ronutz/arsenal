@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Fondamenti di subnetting"
+summary: "Come dividere una rete in sottoreti più piccole, e perché prendere in prestito bit di host è l'intero trucco."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## A cosa serve il subnetting
+
+Una singola rete grande è raramente ciò che vuoi. Il subnetting è la pratica di prendere un blocco di indirizzi e suddividerlo in vari blocchi più piccoli, **sottoreti**, ognuna delle quali può essere un dominio di broadcast separato, un confine di sicurezza, o un segmento fisico. Un campus potrebbe dare a ogni edificio la propria sottorete; un account cloud potrebbe dare a ogni livello di un'applicazione il proprio.
+
+Il meccanismo è più semplice di quanto di solito sembri: **il subnetting prende in prestito bit dalla porzione di host e li aggiunge alla porzione di rete.**
+
+## Prendere in prestito bit
+
+Comincia con `192.168.1.0/24`. Il prefisso è 24, quindi 8 bit sono liberi per host, dando un blocco di 256 indirizzi.
+
+Supponi di aver bisogno di quattro sottoreti separate invece di una. Quattro è 2², quindi hai bisogno di **2 bit di rete in più**. Prendili in prestito dal lato host: il prefisso cresce da /24 a /26.
+
+- `/26` fissa 26 bit, lascia 6 liberi → 64 indirizzi per sottorete.
+- Quattro di tali sottoreti piastrellano il /24 originale esattamente:
+  - `192.168.1.0/26`, indirizzi .0 a .63
+  - `192.168.1.64/26`, indirizzi .64 a .127
+  - `192.168.1.128/26`, indirizzi .128 a .191
+  - `192.168.1.192/26`, indirizzi .192 a .255
+
+Nota lo schema: ogni sottorete è larga 64 indirizzi, quindi ognuna inizia su un multiplo di 64. Quella regola di "inizia su un multiplo della sua dimensione" è come si trovano i confini validi di sottorete. Un blocco deve iniziare su un indirizzo che è un multiplo della propria dimensione, o non è un blocco CIDR valido.
+
+## Il compromesso
+
+Ogni bit che prendi in prestito per la rete dimezza gli host per sottorete:
+
+| Prefisso | Sottoreti di un /24 | Indirizzi ciascuna | Host utilizzabili ciascuna |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Più sottoreti significa meno host in ciascuna. Il design di rete è in gran parte scegliere dove sedersi su questa curva: abbastanza sottoreti per i tuoi segmenti, abbastanza host in ciascuna per i dispositivi che vivono lì, con un po' di spazio per crescere.
+
+## Subnetting a lunghezza variabile
+
+Le sottoreti all'interno dello stesso genitore non devono essere tutte della stessa dimensione. **Il mascheramento di sottorete a lunghezza variabile (VLSM)** ti permette di intagliare una sottorete grande per il segmento che ha bisogno di molti host e sottoreti piccole per collegamenti punto a punto, tutto dallo stesso blocco genitore. Le uniche regole sono quelle costanti: ogni sottorete è una potenza di due in dimensione, e ognuna inizia su un multiplo della sua dimensione così che i blocchi non si sovrappongono mai.
+
+La [calcolatrice CIDR](/learn) mostra l'intervallo esatto, i confini, e il conteggio di host utilizzabili per qualsiasi prefisso, il che rende la verifica di un piano di sottorete una questione di digitare ogni blocco.

@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Hvordan sertifikatvalidering faktisk fungerer"
+summary: "Trinnene en klient kjører for å avgjøre at et sertifikat er troverdig: å bygge kjeden, kontrollere signaturer og datoer, matche navnet og håndheve begrensninger."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Å lese er ikke å stole på
+
+[Anatomiartikkelen](/learn/x509-anatomy) slutter på et poeng verdt å gjenta: å avkode et sertifikat forteller deg hva det *påstår*, ikke hvorvidt påstanden er *sann*. Validering er den separate prosessen en TLS-klient kjører for å avgjøre om den skal stole på sertifikatet foran seg. Den styres hovedsakelig av RFC 5280, og den er en konjunksjon av uavhengige kontroller, som hver især må bestå. En avkoder, dette verktøyet inkludert, viser deg inndataene til den prosessen; klienten er hva som håndhever den.
+
+## Trinn 1: bygg kjeden
+
+Et bladsertifikat stoles nesten aldri på alene. Klienten må bygge en sti fra bladet opp til en rot den allerede holder i sitt tillitslager. Den gjør dette ved å følge utstedernavn: bladets Issuer bør matche et mellomledds Subject, og det mellomleddets Issuer bør matche det neste oppover, til den når en selvutstedt rot. Utvidelsene Authority Key Identifier og Subject Key Identifier fremskynder denne matchingen ved å la klienten lenke et sertifikat til sin utsteder via nøkkelhash snarere enn via navn alene. Hvis ingen sti til en betrodd rot kan bygges, feiler valideringen øyeblikkelig, uansett hvor velformet bladet er.
+
+## Trinn 2: verifiser hver signatur
+
+En kjede er bare meningsfull hvis hvert ledd er kryptografisk solid. For hvert sertifikat i stien verifiserer klienten at signaturen ble produsert av utstederens private nøkkel, ved å kontrollere den mot utstederens offentlige nøkkel over DER-bytene av barnets som-skal-signeres-kropp. Fordi signaturen dekker nøyaktig de bytene, bryter en enkelt endret byte hvor som helst i kroppen kontrollen. Dette er også grunnen til at signaturalgoritmen (for eksempel sha256WithRSAEncryption eller ecdsa-with-SHA256) betyr noe: en kjede er bare så sterk som sin svakeste signatur og hash. For hva en hash garanterer her, se [hashing-artikkelen](/learn/hashing).
+
+## Trinn 3: kontroller gyldighetsvinduet
+
+Hvert sertifikat bærer et notBefore- og notAfter-tidsstempel, og klienten kontrollerer den nåværende tiden mot vinduet for hvert sertifikat i kjeden, ikke bare bladet. Et sertifikat som er utløpt, eller ennå ikke gyldig, feiler. Verktøyet utfører denne samme kontrollen mot din lokale klokke og rapporterer om et sertifikat er gyldig nå, ennå ikke gyldig eller utløpt, noe som ofte er den raskeste måten å diagnostisere en "tilkoblingen din er ikke privat"-advarsel.
+
+## Trinn 4: match navnet
+
+En gyldig kjede beviser at sertifikatet er ekte, men ikke at det ble utstedt for nettstedet du besøker. Klienten kontrollerer at verten den koblet til fremtrer i sertifikatets Subject Alternative Name-utvidelse. Moderne klienter ignorerer Common Name fullstendig for dette formålet og ser bare på SAN, idet de følger identitetsmatchingsreglene i RFC 6125. Jokere som `*.ronutz.com` matcher en enkelt etikett, så de dekker `api.ronutz.com`, men ikke `ronutz.com` selv eller `a.b.ronutz.com`. Et sertifikat hvis kjede er perfekt, men hvis SAN ikke lister navnet du ba om, avvises likevel.
+
+## Trinn 5: håndhev begrensningene
+
+v3-utvidelsene er ikke dekorasjon; de er regler klienten håndhever. Basic Constraints sier hvorvidt et sertifikat kan opptre som en CA og, gjennom stilengden, hvor mange mellomledd som kan sitte under det, noe som er hva som stopper et bladsertifikat fra å bli brukt til å signere andre sertifikater. Key Usage og Extended Key Usage begrenser hva nøkkelen har lov til å gjøre: et TLS-tjenersertifikat må bære serverAuth-EKU-en, og en utvidelse markert kritisk som klienten ikke forstår tvinger en avvisning fremfor et skuldertrekk. Verktøyet bringer disse feltene frem så du kan se nøyaktig hvilke begrensninger en utsteder satte.
+
+## Trinn 6: kontroller tilbakekalling
+
+Til slutt kan et sertifikat som var gyldig ved utstedelse ha blitt tilbakekalt siden, for eksempel fordi dets private nøkkel lekket. Klienten kan konsultere en CRL eller en OCSP-responder for å finne ut av det. I praksis er dette det svakeste og mest inkonsistente trinnet, og industrien beveger seg mot kortlivde sertifikater i stedet, noe [tilbakekallingsartikkelen](/learn/certificate-revocation) dekker i sin helhet.
+
+## Validering er et AND, ikke et OR
+
+Grunnen til at et enkelt manipulert eller feilkonfigurert sertifikat avvises, er at alle disse kontrollene kombineres med logisk AND. Kjeden må bygges, hver signatur må verifiseres, hvert sertifikat må være i sitt gyldighetsvindu, navnet må være i SAN, begrensningene må tillate bruken, og sertifikatet må ikke være tilbakekalt. En avkoder legger sertifikatets påstander ut klart og tro; behandle det som en omhyggelig lesning av dokumentet, og husk at dommen tilhører klienten som kjører alle seks kontroller.

@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: Identität auf OAuth 2.0"
+summary: "Wie OIDC der Autorisierung von OAuth Authentifizierung hinzufügt, was das ID-Token ist und warum der Code-Flow mit PKCE der empfohlene Weg ist."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Autorisierung ist nicht Authentifizierung
+
+OAuth 2.0 beantwortet „darf diese Anwendung im Namen des Nutzers auf jene Ressource zugreifen“. Es ist ein *Autorisierungs*protokoll und sagt bewusst nichts Standardisiertes darüber, *wer der Nutzer ist*. Anwendungen versuchten dennoch, es für die Anmeldung umzunutzen, auf inkompatible und teils unsichere Weise. **OpenID Connect (OIDC)** ist der Standard, der das behebt: eine dünne Identitätsschicht auf OAuth 2.0, die Authentifizierung hinzufügt, ohne etwas wegzuwerfen, was OAuth bereits leistet.
+
+## Das ID-Token
+
+Die prägende Ergänzung ist das **ID-Token**, und es ist ein JWT. Während ein OAuth-Access-Token für eine API bestimmt und oft für den Client undurchsichtig ist, ist das ID-Token für den *Client* bestimmt und trägt Standard-Claims über den authentifizierten Nutzer:
+
+- `iss` (Aussteller) und `aud` (Zielgruppe, der Client, für den es ausgestellt wurde)
+- `sub` (die stabile, eindeutige Nutzerkennung)
+- `exp` und `iat` (Ablauf und Ausstellungszeit)
+- `nonce` (bindet das Token an die konkrete Anmeldeanfrage und wehrt Replay ab)
+- Profil-Claims wie `name`, `email` und `picture`, wenn diese Scopes gewährt sind
+
+Da es ein JWT ist, prüft der Client die Signatur des ID-Tokens und validiert diese Claims genau wie bei jedem JWT. Dieselben Prüfungen zur Festlegung des Algorithmus und zu `aud`/`iss`/`exp` gelten.
+
+## Wie eine Anmeldung abläuft
+
+OIDC nutzt die Mechanik von OAuth wieder. Der empfohlene Ablauf ist der **Authorization-Code-Flow mit PKCE**:
+
+1. Die Anwendung schickt den Nutzer zum Autorisierungs-Endpunkt des Anbieters, fordert den Scope `openid` an (dazu `profile`, `email` und so weiter) und fügt einen PKCE-`code_challenge` bei.
+2. Der Nutzer authentifiziert sich und stimmt beim Anbieter zu.
+3. Die Anwendung erhält einen Einmal-Code und tauscht ihn (unter Nachweis des Besitzes des PKCE-`code_verifier`) gegen ein **ID-Token** und ein **Access-Token**.
+4. Die Anwendung prüft das ID-Token, um festzustellen, *wer der Nutzer ist*, und nutzt das Access-Token, um APIs *in seinem Namen* aufzurufen.
+
+Zwei Endpunkte runden es ab: ein **userinfo**-Endpunkt liefert Profil-Claims für ein gültiges Access-Token, und ein **Discovery-Dokument** unter `/.well-known/openid-configuration` gibt die Endpunkte des Anbieters und seine JWKS-URL bekannt, sodass ein Client die Schlüssel zum Prüfen von ID-Tokens finden und der Schlüsselrotation automatisch folgen kann.
+
+## Warum das wichtig ist
+
+OIDC ist das, worauf die meisten „Anmelden mit ...“-Schaltflächen tatsächlich laufen. Die beiden Token auseinanderzuhalten ist die Schlüsselerkenntnis: Das **ID-Token beweist dem Client die Identität**, das **Access-Token autorisiert API-Aufrufe**, und sie sind nicht austauschbar. In Verbindung mit dem Code-Flow und PKCE ist es der moderne, standardbasierte Weg für föderierte Anmeldung.
+
+Das [PKCE-Tool](/tools/pkce) erzeugt und prüft den `code_verifier` und den `code_challenge` des Ablaufs, und das [JWT-Tool](/tools/jwt) dekodiert und prüft das ID-Token, beide vollständig in Ihrem Browser, ohne dass etwas gesendet wird.

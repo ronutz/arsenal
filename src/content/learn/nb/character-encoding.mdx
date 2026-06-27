@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Byte, kodepunkter og UTF-8"
+summary: "Forskjellen mellom et tegn og en byte, hvorfor Unicode og UTF-8 finnes, og hva det har med Base64 å gjøre."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tegn er ikke byte
+
+En datamaskin lagrer byte, verdier fra 0 til 255. Mennesker leser tegn: bokstaver, sifre, tegnsetting, emoji. En **tegnkoding** er den avtalte avbildningen mellom de to. Får du avbildningen feil, ser du den klassiske forvrengte teksten (`café` som blir til `cafÃ©`), som nesten alltid er et misforhold mellom kodingen som ble brukt til å skrive byten, og den som ble brukt til å lese dem.
+
+## ASCII: de opprinnelige 128
+
+Den eldste mye brukte kodingen er **ASCII**, som tildeler tallene 0 til 127 til de grunnleggende engelske bokstavene, sifrene og vanlige symbolene. Sju bit, 128 tegn. ASCII er enkelt og ligger fortsatt til grunn for store deler av databehandlingen, men 128 tegn kan ikke representere aksenttegn, ikke-latinske skriftsystemer eller symboler, så det var aldri nok til verdens tekst.
+
+## Unicode: ett tall per tegn
+
+**Unicode** løser dekningsproblemet ved å gi hvert tegn et unikt tall kalt et **kodepunkt**, skrevet som `U+0041` (bokstaven A) eller `U+2615` (en varm drikk). Unicode er et gigantisk katalog over tegn og deres kodepunkter, langt over hundre tusen av dem, som dekker så å si ethvert skriftsystem i bruk.
+
+Avgjørende er at Unicode sier *hvilket tall* hvert tegn har, men ikke *hvordan det tallet skal lagres som byte*. Den andre jobben hører til en kodingsform.
+
+## UTF-8: hvordan kodepunkter blir til byte
+
+**UTF-8** er den dominerende måten å gjøre Unicode-kodepunkter om til byte, og det er standarden på hele det moderne nettet. Det har **variabel lengde**: et tegn tar fra en til fire byte avhengig av kodepunktet sitt.
+
+- ASCII-området (U+0000 til U+007F) kodes som en enkelt byte, identisk med ASCII. Derfor er UTF-8 bakoverkompatibel: all ren ASCII-tekst er allerede gyldig UTF-8.
+- Tegn utover ASCII bruker to, tre eller fire byte. Så `é` er to byte og `☕` er tre, selv om hvert er ett tegn.
+
+Det siste punktet er den vanlige overraskelsen: **ett tegn er ikke alltid én byte.** Å telle byte og å telle tegn gir forskjellige svar for all ikke-ASCII-tekst. (UTF-16 og UTF-32 er alternative kodinger av de samme kodepunktene; UTF-8 vant nettet på grunn av sin ASCII-kompatibilitet og kompakthet for latinsk tekst.)
+
+## Hvor Base64 kommer inn
+
+Dette betyr noe for Base64 fordi **Base64 arbeider på byte, ikke tegn.** For å Base64-kode en streng må strengen først gjøres om til byte med en tegnkoding, og den kodingen er i bunn og grunn alltid UTF-8. Kod det samme tegnet med et annet skjema, og du får andre byte, og dermed et annet Base64. Hele kjeden for tekst er altså: tegn blir til byte (UTF-8), deretter blir byte til trygg tekst (Base64). Når du dekoder, snur du begge trinnene.
+
+[Base64-verktøyet](/tools/base64) koder tekst som UTF-8-byte før det Base64-koder, og markerer når et dekodet resultat ikke er gyldig UTF-8, alt i nettleseren din.

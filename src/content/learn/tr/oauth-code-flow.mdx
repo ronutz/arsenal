@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "OAuth 2.0 yetkilendirme kodu akışı"
+summary: "Dört rol, yönlendir-ve-takas dansı ve kodun neden arka kanalda bir token'la takas edildiği."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Akış ne içindir
+
+OAuth 2.0 (RFC 6749), bir uygulamanın bir kullanıcının parolasını hiç görmeden onun adına hareket etmesine olanak tanır. "Google ile oturum aç" gündelik örnektir: uygulama bir şeye erişme izni alır, ama kimlik bilgilerini uygulama değil, Google işler. **Yetkilendirme kodu akışı**, bunu düzenlemenin en yaygın ve en güvenli yoludur ve PKCE'nin koruduğu akıştır.
+
+## Dört rol
+
+- **Kaynak sahibi** (resource owner), verilere sahip olan ve erişim veren kullanıcıdır.
+- **İstemci** (client), erişim isteyen uygulamadır.
+- **Yetkilendirme sunucusu** (authorization server), kullanıcının kimliğini doğrular ve token verir (Google, bir kimlik sağlayıcı, kendi kimlik doğrulama hizmetiniz).
+- **Kaynak sunucusu** (resource server), korunan verileri tutan ve token'ı kabul eden API'dir.
+
+## Dans, adım adım
+
+1. **Yetkilendirmek için yönlendir.** İstemci, kullanıcının tarayıcısını yetkilendirme sunucusunun yetkilendirme uç noktasına gönderir, `client_id`'sini, bir `redirect_uri`'yi, istediği `scope`'u, rastgele bir `state` değerini ve (PKCE ile) bir kod challenge'ını taşıyarak. İstemci parolayı asla işlemez.
+2. **Kimlik doğrula ve onayla.** Yetkilendirme sunucusu kullanıcıyı oturum açtırır ve istenen kapsamları onaylamasını ister.
+3. **Bir kodla geri yönlendir.** Sunucu, tarayıcıyı istemcinin `redirect_uri`'sine kısa ömürlü bir **yetkilendirme kodu** ve özgün `state` ile geri yönlendirir. İstemci `state`'in eşleştiğini denetler, ki bu geri çağrıda siteler arası istek sahteciliğine karşı savunur.
+4. **Kodu token'larla takas et.** Şimdi arka kanalda (tarayıcı değil, doğrudan bir sunucudan sunucuya çağrı), istemci kodu kimlik bilgileriyle (bir istemci sırrı veya PKCE kod verifier'ı) birlikte token uç noktasına gönderir ve bir **erişim token'ı**, çoğu zaman bir **yenileme token'ı** ve OpenID Connect için bir **kimlik token'ı** alır.
+5. **API'yi çağır.** İstemci erişim token'ını kaynak sunucusuna sunar, o da onu doğrular ve verileri döndürür.
+
+## Neden bir kod, doğrudan token değil?
+
+Bir yetkilendirme kodu üzerinden yapılan dolambaç, token'ın asla tarayıcının adres çubuğundan veya geçmişinden, sızabileceği yerden, geçmemesi için vardır. Orada *gerçekten* gezinen kod tek başına işe yaramaz: onu bozdurmak, istemci sırrı veya PKCE verifier'ı ile arka kanal çağrısını gerektirir. O ayrım, ön kanalda tek kullanımlık bir kod ve arka kanalda gerçek token, akışın merkezi güvenlik özelliğidir.
+
+Bu ayrıca tam olarak PKCE'nin bir sır tutamayan istemciler (tek sayfalı ve mobil uygulamalar) için doldurduğu boşluktur: kodu tek kullanımlık bir verifier'a bağlar, böylece ele geçirilmiş bir kod yine de takas edilemez. Akışın döndürdüğü token'lar çok sık JWT'lerdir.
+
+[PKCE aracı](/tools/pkce), bu akışın dayandığı verifier ve challenge'ı üretir ve denetler, ve [JWT aracı](/tools/jwt), döndürdüğü token'ları kod çözer, ikisi de tarayıcınızda yerel olarak.

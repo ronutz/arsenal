@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Verificare un HMAC in modo sicuro: tempo costante e replay"
+summary: "Perché confrontare le firme con == fa trapelare un canale laterale temporale, e perché una firma valida da sola non ferma una richiesta ripetuta."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Calcolare il tag è la parte facile
+
+Produrre un HMAC correttamente è ben compreso. Gli errori si concentrano sul lato della *verifica*, dove due problemi colgono chi ha azzeccato la crittografia ma sbagliato la logica intorno: come confronti i tag e cosa prova davvero un tag valido.
+
+## Confronta in tempo costante
+
+Per verificare, il ricevente ricalcola l'HMAC sul messaggio e lo confronta con il tag fornito dal mittente. Il modo naturale di confrontare due stringhe, un comune `==`, ritorna non appena trova il primo byte diverso. Questa uscita anticipata fa trapelare tempo: un tag il cui primo byte è corretto impiega un attimo in più a essere rifiutato di uno sbagliato subito. Misurando i tempi di risposta su molti tentativi, un attaccante può recuperare il tag corretto un byte alla volta, un **attacco temporale**.
+
+La difesa è un **confronto a tempo costante** che esamina sempre tutti i byte, indipendentemente da dove sia la prima differenza, in modo che il tempo impiegato non riveli nulla su quanto un tentativo si sia avvicinato. La maggior parte dei linguaggi ne fornisce uno:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Non verificare mai una firma con un confronto di stringhe comune.
+
+## Una firma valida non è una richiesta nuova
+
+Anche un HMAC verificato perfettamente prova solo che il messaggio è stato prodotto da qualcuno con la chiave e non è stato alterato. Non dice nulla su *quando*. Un attaccante che cattura una richiesta firmata legittima può inviare di nuovo esattamente gli stessi byte, e la firma verrà ancora verificata. Questo è un **attacco di replay**, e conta per qualsiasi cosa provochi un effetto: un pagamento, un cambiamento di stato, un comando.
+
+Fermare il replay richiede qualcosa nei dati firmati che renda ogni richiesta unica e verificabile:
+
+- Una **marca temporale** nel carico firmato, con il server che rifiuta le richieste fuori da una finestra breve (e tenendo conto dello scarto di orologio).
+- Un **nonce**, un valore unico per richiesta che il server registra e rifiuta di accettare due volte.
+
+Entrambi devono trovarsi *dentro* il contenuto firmato, in modo che un attaccante non possa alterarli senza rompere la firma.
+
+## La regola in due parti
+
+Una richiesta è affidabile solo quando il suo HMAC è verificato in tempo costante **e** è nuova. Sbaglia uno dei due e la firma dà un falso senso di sicurezza. Questo è il lato della verifica della stessa disciplina della firma delle richieste.
+
+Lo [strumento HMAC](/tools/hmac) ti permette di calcolare e confrontare tag per un messaggio e una chiave direttamente nel tuo browser, senza nulla inviato, così puoi controllare una firma a mano mentre sviluppi o esegui il debug.

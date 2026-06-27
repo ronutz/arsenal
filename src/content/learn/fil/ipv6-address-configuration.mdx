@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Paano nakakakuha ng address ang mga IPv6 host: SLAAC at DHCPv6"
+summary: "Kung paano kinukonfigura ng isang IPv6 host ang sarili mula link-local pataas, kung ano ang ipinapasya ng mga router advertisement, at ang pagkakaiba ng SLAAC, mga privacy address, at DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Sariling konfigurasyon bilang default
+
+Isa sa mga tumutukoy na katangian ng IPv6 ay na ang isang host ay maaaring magkonfigura ng isang gumaganang address nang walang server at walang manu-manong pag-setup. Kung saan ang IPv4 ay sumasandal sa DHCP upang mamahagi ng mga address, ang IPv6 ay maaaring bumuo ng mga ito nang lokal mula sa impormasyong ibinrodkast ng router. Ang resulta ay na ang isang interface ay kadalasang nauuwi sa ilang address nang sabay-sabay, bawat isa para sa ibang layunin, na nakagugulat sa mga taong galing sa IPv4.
+
+## Una ang link-local
+
+Bago ang anupaman, ang bawat IPv6 interface ay nagkokonfigura ng isang link-local na address sa `fe80::/10` (ang uri na nila-label ng tool na link-local). Ito ay nabubuo nang lokal, hindi kailanman niruruta lampas sa lokal na link, at umiiral upang ang host ay makapag-usap kaagad sa mga kapitbahay at router, kasama ang pagtatanong kung paano ikonfigura ang natitira nitong mga address. Ang link-local ang bootstrap: ito ay laging naroroon, at ang makinarya ng neighbor discovery sa artikulong [neighbor discovery](/learn/ipv6-neighbor-discovery) ay tumatakbo sa ibabaw nito.
+
+## Ang router advertisement ang nagpapasya ng paraan
+
+Upang makakuha ng isang globally routable na address, ang host ay nakikinig para sa mga Router Advertisement, pana-panahong mga mensaheng ipinapadala ng isang router (at maaaring hilingin ng isang host gamit ang isang Router Solicitation). Ang advertisement ay nagdadala ng on-link na prefix, halos palaging isang /64, at dalawang flag na nagsasabi sa host kung paano ikonfigura ang sarili:
+
+- Ang **M (Managed) flag** ay nagsasabing "gumamit ng DHCPv6 upang makakuha ng address".
+- Ang **O (Other) flag** ay nagsasabing "ikonfigura ang iyong address nang mag-isa, ngunit kunin ang ibang mga setting tulad ng DNS mula sa DHCPv6".
+
+Kapag parehong nakapatay ang mga flag, ang host ay gumagamit ng purong stateless autoconfiguration. Ito ang dahilan kung bakit ang pagtatalaga ng IPv6 address ay isang negosasyon sa pagitan ng ina-advertise ng router at ng pinipili ng host, sa halip na isang server na namamahagi ng mga lease.
+
+## SLAAC: pagbuo ng sarili mong address
+
+Ang Stateless Address Autoconfiguration (RFC 4862) ay ang mekanismong ginagamit ng isang host upang bumuo ng sarili nitong address: kunin ang /64 prefix mula sa advertisement at idugtong ang isang 64-bit na interface identifier. Ito ang buong dahilan kung bakit ang isang subnet ay dapat na /64 (tingnan ang artikulong [subnetting](/learn/ipv6-subnetting)). Walang server na sumusubaybay sa pagtatalaga, na siyang ibig sabihin ng "stateless".
+
+Ang interface identifier ay maaaring buuin sa ilang paraan, at ito ay may totoong mga kahihinatnan sa privacy:
+
+- Ang **modified EUI-64** ay kumukuha ng identifier mula sa MAC address ng interface, na maaaring ipakita ng tool. Ito ay matatag at maginhawa, ngunit ini-embed nito ang hardware address sa bawat IPv6 address na ginagamit ng host, na nagpapahintulot sa isang remote server na subaybayan ang device sa kabuuan ng mga network.
+- Ang **mga matatag, opaque na identifier** (RFC 7217) ay gumagawa ng isang identifier na matatag bawat network ngunit hindi naglalantad ng anumang hardware address, na inaayos ang problema ng cross-network tracking habang pinapanatili ang isang consistent na address sa isang ibinigay na link.
+- Ang **mga temporary (privacy) na address** (RFC 8981, na ginagawang luma ang naunang RFC 4941) ay gumagawa ng mga random na identifier na umiikot sa paglipas ng panahon, kaya ang mga papalabas na koneksyon ay hindi naglalahad ng isang matagal na address kahit kailan.
+
+Ang mga modernong operating system ay karaniwang gumagamit ng isang matatag na address para sa mga papasok na koneksyon at isang umiikot na temporary na address para sa mga papalabas, na siyang dahilan kung bakit ang isang interface ay nagpapakita ng maraming global na address.
+
+## Duplicate Address Detection
+
+Bago talagang gamitin ng isang host ang anumang address na nabuo nito, pinapatakbo nito ang Duplicate Address Detection: nagpapadala ito ng isang Neighbor Solicitation para sa sarili nitong tentative na address at naghihintay. Kung may sumagot, ang address ay ginagamit na at hindi dapat angkinin. Ang DAD ay murang insurance na ang sariling konfigurasyon ay hindi gumagawa ng mga banggaan, at sumasandal ito sa parehong mga mensahe ng neighbor discovery na inilarawan sa kasamang artikulo.
+
+## DHCPv6 para sa stateful na kontrol
+
+Kapag nais ng isang administrator na subaybayan at italaga ang mga address nang sentralisado, ang DHCPv6 (RFC 8415) ay nagbibigay ng stateful na pagtatalaga, tulad ng IPv4 DHCP: isang server ang nagpapa-lease ng mga tiyak na address at nagrerekord kung sino ang may ano. Mayroon ding isang stateless DHCPv6 mode na namamahagi lamang ng konfigurasyon tulad ng mga DNS server habang ang host ay bumubuo pa rin ng sarili nitong address sa pamamagitan ng SLAAC, na siyang pinipili ng O flag. Ang DHCPv6 ay kung saan din nakatira ang prefix delegation, ang mekanismo kung saan ang isang home router ay tumatanggap ng isang buong prefix upang i-subnet sa likod nito.
+
+## Maraming address, sa disenyo
+
+Ang mental model na dadalhin ay na ang isang IPv6 host ay higit sa lahat ay self-driving. Lagi itong may isang link-local na address, natututo ito ng prefix at ng paraan ng konfigurasyon mula sa mga router advertisement, at depende sa mga flag ay alinman sa bumubuo ito ng sarili nitong mga global na address gamit ang SLAAC o nagpapa-lease ng mga ito mula sa DHCPv6, na kadalasang nauuwi sa isang matatag na address at isang umiikot na temporary nang magkatabi. Kapag ipinapakita sa iyo ng tool ang isang address at tinutukoy ang uri nito, sinasabi sa iyo ng uri na iyon kung alin sa mga landas na ito ang gumawa nito.

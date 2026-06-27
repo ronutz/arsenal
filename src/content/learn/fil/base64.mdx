@@ -1,0 +1,53 @@
+---
+slug: base64
+title: "Base64 at Base64URL, ipinaliwanag"
+summary: "Paano nagiging ligtas-ipadalang teksto ang binary data, bakit may padding, at ano ang nagbabago sa variant na ligtas-sa-URL."
+concepts: ["base64", "base64url", "encoding", "binary-to-text"]
+relatedTools: ["base64"]
+relatedArticles: ["character-encoding", "hashing-encryption-encoding", "hashing"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang problemang niloresolba ng Base64
+
+Iniimbak ng mga computer ang lahat bilang mga byte, anumang halaga mula 0 hanggang 255. Gayunpaman, maraming sistemang naglilipat ng datos ang ginawa upang magdala ng **teksto**, hindi ng anumang byte: katawan ng email, URL, JSON string, header ng HTTP. Bigyan sila ng isang hilaw na byte na nagkataong isang control character o panipi, at sisirain nila ito o masisira. Ang Base64 ay ang karaniwang paraan upang kunin ang anumang byte at muling isulat ang mga ito gamit ang isang maliit, ligtas na set ng napi-print na karakter na dadalhin nang buo ng mga purong text channel na iyon.
+
+Sulit na maging eksakto tungkol sa ibig sabihin nito: ang Base64 ay isang **encoding**, hindi pag-encrypt. Wala itong itinatago. Maaaring i-decode ito ninuman pabalik sa orihinal na mga byte nang walang susi at walang pagsisikap. Ang tanging trabaho nito ay makaligtas sa transport, hindi mag-ingat ng lihim.
+
+## Paano gumagana ang encoding
+
+Ang lansi ay ang muling pagpapangkat ng mga bit. Binabasa ng Base64 ang input nang tatlong byte sabay. Ang tatlong byte ay 24 na bit, at ang 24 ay nahahati nang pantay sa apat na grupo ng 6 na bit. Ang bawat grupo ng 6 na bit ay isang numero mula 0 hanggang 63, at ang bawat isa sa 64 na halagang iyon ay nag-ma-map sa isang karakter sa alpabetong Base64:
+
+- `A` hanggang `Z` para sa mga halagang 0 hanggang 25
+- `a` hanggang `z` para sa mga halagang 26 hanggang 51
+- `0` hanggang `9` para sa mga halagang 52 hanggang 61
+- `+` at `/` para sa mga halagang 62 at 63
+
+Kaya ang bawat tatlong byte ng input ay nagiging eksaktong apat na karakter ng output. Ito ang dahilan kung bakit ang output ng Base64 ay palaging mga isang-katlo na mas malaki kaysa input: apat na karakter ang nagdadala ng dinala ng tatlong byte.
+
+## Bakit may padding
+
+Ang input ay hindi palaging malinis na multiplo ng tatlong byte. Kapag ang huling grupo ay may natitirang isa o dalawang byte lamang, naglalabas pa rin ang encoder ng buong bloke ng apat na karakter at pinupunan ang puwang gamit ang karakter na `=`:
+
+- Isang natirang byte (8 bit) ang gumagawa ng dalawang makabuluhang karakter, tapos `==`.
+- Dalawang natirang byte (16 bit) ang gumagawa ng tatlong makabuluhang karakter, tapos `=`.
+
+Ang `=` ay hindi datos. Ito ay isang marker na nagsasabi sa decoder kung ilang byte talaga ang kinakatawan ng huling bloke, upang maibaba nito ang padding at maitayong muli ang eksaktong orihinal na haba. Ito ang dahilan kung bakit ang haba ng isang Base64 string ay palaging multiplo ng apat.
+
+## Ang variant na ligtas-sa-URL
+
+Dalawa sa mga karakter ng karaniwang alpabeto ang nagdudulot ng gulo sa mga tiyak na lugar. Ang `+` at `/` ay kapwa may nakalaang kahulugan sa mga URL (isang puwang at isang tagahati ng landas), at ang `/` ay ipinagbabawal din sa maraming pangalan ng file. Inaayos ito ng **Base64URL** (tinukoy sa RFC 4648) sa dalawang pagpapalit at isang ugali:
+
+- Ang `+` ay nagiging `-`
+- Ang `/` ay nagiging `_`
+- karaniwang inaalis ang padding na `=`, dahil mahihinuha ang haba
+
+Ang resulta ay isang string na malinis na pumapasok sa isang URL, isang pangalan ng file, o isang JSON Web Token nang walang karagdagang escaping. Ito mismo ang dahilan kung bakit gumagamit ang mga JWT at OAuth PKCE challenge ng Base64URL sa halip na ang klasikong anyo: nasa loob ng mga URL at token ang mga halagang iyon.
+
+## Saan mo ito makakaharap
+
+Kapag nakilala mo na ang pattern, nasa lahat ng dako ang Base64: mga `data:` URI na naglalagay ng larawan nang direkta sa isang pahina, ang tatlong segment na pinaghihiwalay ng tuldok ng isang JWT, mga MIME email attachment, mga header ng HTTP Basic authentication, at mga sertipiko sa format na PEM. Sa bawat kaso ay pareho ang dahilan, kailangang tumawid ng hilaw na mga byte sa isang channel na teksto lamang ang pinagkakatiwalaan.
+
+Maaari mong ipeyst ang teksto o Base64 sa [tool na Base64](/tools/base64) upang i-encode o i-decode ito sa magkabilang paraan, karaniwan at ligtas-sa-URL, lubos sa iyong browser.

@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Fundamentos de sub-redes"
+summary: "Como dividir uma rede em sub-redes menores, e por que tomar emprestado bits de host é todo o truque."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Para que servem as sub-redes
+
+Uma única rede grande raramente é o que você quer. A divisão em sub-redes (subnetting) é a prática de tomar um bloco de endereços e dividi-lo em vários blocos menores, **sub-redes**, cada uma das quais pode ser um domínio de broadcast separado, uma fronteira de segurança, ou um segmento físico. Um campus pode dar a cada prédio sua própria sub-rede; uma conta de nuvem pode dar a cada camada de uma aplicação a sua.
+
+O mecanismo é mais simples do que costuma soar: **a divisão em sub-redes toma emprestado bits da porção de host e os adiciona à porção de rede.**
+
+## Tomando bits emprestados
+
+Comece com `192.168.1.0/24`. O prefixo é 24, então 8 bits estão livres para hosts, dando um bloco de 256 endereços.
+
+Suponha que você precise de quatro sub-redes separadas em vez de uma. Quatro é 2², então você precisa de **mais 2 bits de rede**. Tome-os emprestados do lado de host: o prefixo cresce de /24 para /26.
+
+- `/26` fixa 26 bits, deixa 6 livres → 64 endereços por sub-rede.
+- Quatro dessas sub-redes ladrilham o /24 original exatamente:
+  - `192.168.1.0/26`, endereços .0 a .63
+  - `192.168.1.64/26`, endereços .64 a .127
+  - `192.168.1.128/26`, endereços .128 a .191
+  - `192.168.1.192/26`, endereços .192 a .255
+
+Note o padrão: cada sub-rede tem 64 endereços de largura, então cada uma começa em um múltiplo de 64. Aquela regra de "começa em um múltiplo de seu tamanho" é como as fronteiras válidas de sub-rede são encontradas. Um bloco deve começar em um endereço que é um múltiplo de seu próprio tamanho, ou não é um bloco CIDR válido.
+
+## O compromisso
+
+Cada bit que você toma emprestado para a rede divide pela metade os hosts por sub-rede:
+
+| Prefixo | Sub-redes de um /24 | Endereços cada | Hosts utilizáveis cada |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Mais sub-redes significa menos hosts em cada. O design de rede é em grande parte escolher onde nessa curva se situar: sub-redes suficientes para seus segmentos, hosts suficientes em cada para os dispositivos que vivem ali, com algum espaço para crescer.
+
+## Divisão em sub-redes de comprimento variável
+
+As sub-redes dentro do mesmo pai não precisam todas ter o mesmo tamanho. **O mascaramento de sub-rede de comprimento variável (VLSM)** lhe permite talhar uma sub-rede grande para o segmento que precisa de muitos hosts e sub-redes pequenas para enlaces ponto a ponto, tudo a partir do mesmo bloco pai. As únicas regras são as constantes: cada sub-rede é uma potência de dois em tamanho, e cada uma começa em um múltiplo de seu tamanho de modo que os blocos nunca se sobrepõem.
+
+A [calculadora CIDR](/learn) mostra a faixa exata, fronteiras, e contagem de hosts utilizáveis para qualquer prefixo, o que torna a verificação de um plano de sub-rede uma questão de digitar cada bloco.

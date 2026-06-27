@@ -25,6 +25,7 @@ import { provenanceFor } from "@/config/toolProvenance";
 import ToolFunding from "@/components/ToolFunding";
 import { fundingFor, hasFunding, fundingLinksFor } from "@/config/toolFunding";
 import { Link } from "@/i18n/navigation";
+import { redEducationUrl, externalRel } from "@/config/redEducation";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   // Next.js 15: route params are async. Await before use.
@@ -37,6 +38,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const t = await getTranslations("home");
   const tNav = await getTranslations("nav");
   const tFooter = await getTranslations("footer");
+  // Honoring Red Education in the homepage footer (lead-attributed, referrer-preserving).
+  const reduUrl = redEducationUrl("footer");
 
   return (
     <>
@@ -147,6 +150,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* --- FOOTER --- */}
       <footer className="site-footer">
         <div className="container site-footer-inner">
+          {/* Red Education callout — honoring the authorized training center;
+              lead-attributed (utm_campaign=footer) + referrer-preserving. */}
+          <p className="footer-built footer-redu">
+            <a
+              href={reduUrl}
+              target="_blank"
+              rel={externalRel(reduUrl)}
+              className="footer-built-link"
+            >
+              {tFooter("redEducation")} →
+            </a>
+          </p>
           <p className="footer-built">
             <Link href="/colophon" className="footer-built-link">
               {tFooter("builtWith")}
@@ -167,6 +182,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="footer-contribute">
             <Link href="/contribute/tools" className="footer-contribute-link">
               {tFooter("contributeTools")}
+            </Link>
+          </p>
+          <p className="footer-contribute">
+            <Link href="/contact" className="footer-contribute-link">
+              {tFooter("feedback")}
+            </Link>
+          </p>
+          <p className="footer-contribute">
+            <Link href="/privacy" className="footer-contribute-link">
+              {tFooter("privacy")}
             </Link>
           </p>
         </div>

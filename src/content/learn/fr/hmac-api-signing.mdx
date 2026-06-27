@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Authentifier les requêtes d'API avec HMAC"
+summary: "Comment un secret partagé et un hachage permettent à un serveur de faire confiance à une requête qu'il n'a pas vu émettre, et comment la protection contre le rejeu s'y intègre."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Le problème : faire confiance à une requête
+
+Lorsqu'un serveur reçoit une requête d'API, comment sait-il que l'appelant est bien celui qu'il prétend être, et que personne n'a altéré la requête en transit ? Envoyer un secret partagé à chaque requête fonctionnerait jusqu'à ce que ce secret soit journalisé, mis en cache ou divulgué. La **signature de requêtes avec HMAC** résout cela sans jamais transmettre le secret : l'appelant prouve qu'il détient le secret en s'en servant pour signer la requête, et le serveur vérifie la signature.
+
+## Comment fonctionne la signature
+
+Les deux côtés partagent une clé secrète. Pour signer une requête, le client :
+
+1. Construit une **chaîne canonique** à partir des parties de la requête qui ne doivent pas changer, typiquement la méthode HTTP, le chemin, des en-têtes clés, un horodatage et un hachage du corps. « Canonique » signifie que les deux côtés l'assemblent exactement de la même manière convenue, afin de calculer sur une entrée identique.
+2. Calcule `HMAC-SHA256(chaîne canonique, secret)` et l'attache à la requête, généralement dans un en-tête tel que `Authorization` ou `X-Signature`.
+
+Le serveur, qui détient le même secret, reconstruit la chaîne canonique à partir de la requête reçue et calcule lui-même le HMAC. Si sa valeur correspond à celle de l'en-tête, deux choses sont prouvées à la fois : l'appelant détient le secret (**authenticité**), et rien de couvert par la signature n'a été altéré (**intégrité**). Le secret lui-même ne voyage jamais.
+
+## Un exemple réel : AWS Signature Version 4
+
+Le SigV4 d'Amazon est l'instance la plus connue. Chaque requête est signée avec HMAC-SHA256 sur une requête canonique, en utilisant une clé de signature **dérivée** de la clé d'accès secrète, de la date, de la région et du service. Le serveur redérive la clé et recalcule la signature ; une non-correspondance est rejetée. Le même schéma, canoniser, HMAC, comparer, sous-tend d'innombrables autres systèmes d'authentification d'API.
+
+## Webhooks : la même idée, inversée
+
+Les webhooks inversent le sens. Un fournisseur (un processeur de paiement, un hébergeur Git) appelle **votre** point de terminaison pour vous notifier d'un événement, et signe la charge utile avec un secret que vous partagez tous deux, en envoyant le HMAC dans un en-tête. Votre point de terminaison recalcule le HMAC sur le corps reçu et compare, et c'est ainsi que vous rejetez les appels forgés de quiconque ne détient pas le secret. Comparez toujours avec une vérification à temps constant pour éviter de divulguer de l'information par le minutage.
+
+## Protection contre le rejeu
+
+Une requête signée valide qu'un attaquant capture pourrait être **rejouée** mot pour mot. Les défenses standard consistent à inclure un **horodatage** dans les données signées et à rejeter les requêtes hors d'une fenêtre courte, et éventuellement un **nonce** (une valeur à usage unique que le serveur mémorise brièvement) pour que la même requête ne puisse être acceptée deux fois. La signature prouve l'authenticité ; l'horodatage et le nonce empêchent qu'une ancienne requête, authentique, soit réutilisée.
+
+L'[outil HMAC](/tools/hmac) calcule le HMAC-SHA256 (et SHA-384/512) au cœur de chacun de ces systèmes, sur un message et une clé que vous fournissez, entièrement dans votre navigateur.

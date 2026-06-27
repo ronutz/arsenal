@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: keyed hashing para sa message authentication"
+summary: "Bakit pinatutunayan ng payak na hash ang integridad ngunit hindi ang pagiging tunay, paano ito inaayos ng isang lihim na susi, at bakit mahalaga ang istruktura ng HMAC."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang puwang na iniiwan ng payak na hash
+
+Pinatutunayan ng isang cryptographic hash ang **integridad**: kung tumutugma pa rin ang digest, hindi binago ang datos. Ngunit wala itong pinatutunayan tungkol sa **sino** ang gumawa nito. Maaaring i-hash ninuman ang isang mensahe, kaya ang isang digest na ipinadala katabi ng isang mensahe ay walang proteksyong inaalok laban sa isang umaatakeng basta na lang binabago ang mensahe *at* muling kinukuwenta ang digest. Walang lihim na sangkot, kaya walang anumang tanging ang lehitimong nagpadala lamang ang makakagawa.
+
+Isinasara ng HMAC ang puwang na iyon. Ito ay isang **message authentication code**: isang halagang nagpapatunay na ang isang mensahe ay hindi ginalaw at nagmula sa isang may hawak ng ibinahaging lihim na susi. Muling kinukuwenta ng verifier ang HMAC gamit ang parehong susi; kung tumugma, tunay ang mensahe.
+
+## Pagdaragdag ng susi, sa tamang paraan
+
+Ang halatang ideya, ang basta lang i-hash ang susi at mensahe nang magkasama bilang `hash(susi + mensahe)`, ay banayad na hindi ligtas. Maraming hash function (kabilang ang pamilyang SHA-2) ang itinayo sa isang konstruksyong mahina sa isang **length-extension attack**: sa pagkaalam ng `hash(susi + mensahe)` at ng haba ng lihim, makakakuwenta ang isang umaatake ng wastong hash para sa `susi + mensahe + dagdag` nang hindi kailanman nalalaman ang susi. Hahayaan nito silang mag-peke ng isang pinalawig, wasto pa ring mensahe.
+
+Iniiwasan ito ng HMAC (tinukoy sa RFC 2104) sa pamamagitan ng dalawang beses na pag-hash, na iba ang pagkakahalo ng susi sa bawat pagkakataon. Sa konsepto, kinukuwenta nito:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+kung saan ang `ipad` at `opad` ay dalawang nakapirming padding constant. Itinatali ng panloob na hash ang susi sa mensahe; binabalot ng panlabas na hash ang resulta upang hindi maabot ito ng panlilinlang ng length-extension. Hindi mo kailangang isaulo ang pormula, ang aral ay ito: ang nested na istruktura, hindi ang basta-bastang concatenation, ang nagpapatibay sa HMAC.
+
+## HMAC laban sa isang digital signature
+
+Pareho silang nagpapatunay ng pagiging tunay, ngunit naiiba ang modelo ng tiwala:
+
+- **Simetriko ang HMAC.** Isang lihim na susi ang ibinabahagi ng magkabilang panig. Ang sinumang makaka-verify ng isang HMAC ay makakagawa rin ng isa, kaya gumagana ito kapag parehong panig ay may ibinahaging susi na ngunit hindi mapapatunayan ang pagiging may-akda sa isang ikatlong partido.
+- **Asimetriko ang isang digital signature.** Gumagamit ang pumipirma ng isang pribadong susi; makaka-verify ang sinuman gamit ang pampublikong susi. Pinatutunayan nito ang pagiging may-akda sa mundo, sa mas mataas na halaga sa pagkukuwenta.
+
+Piliin ang HMAC kapag dalawang sistema ang nagbabahagi ng isang lihim at nangangailangan ng mabilis, magkabilaang authentication; piliin ang isang signature kapag hindi dapat magagawa ng mga verifier na pekein ang kanilang vine-verify.
+
+## Saan mo makakaharap ang HMAC
+
+- **Pagpirma ng API request.** Pinipirmahan ng mga scheme gaya ng AWS Signature Version 4 ang bawat request gamit ang HMAC-SHA256 upang makumpirma ng server na hawak ng tumawag ang lihim na susi.
+- **Mga webhook.** Nagpapadala ang isang provider ng isang HMAC ng payload sa isang header; muli itong kinukuwenta ng iyong endpoint upang tanggihan ang mga pekeng tawag.
+- **Mga JWT na may HS256.** Ang isang token na pinirmahan ng HS256 ay literal na HMAC-SHA256 sa header at payload ng token. Gumagamit ang [tool na HMAC](/tools/hmac) ng eksaktong parehong Web Crypto na konstruksyon na ginagamit ng JWT verifier, kaya nagkakasundo ang dalawa ayon sa disenyo.
+
+Hindi kailanman umaalis sa browser ang iyong mensahe at susi; lokal na kinakalkula ang HMAC.

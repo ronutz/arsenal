@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Offentlige vs konfidensielle klienter, og hvor PKCE passer inn"
+summary: "Hvorvidt en OAuth-klient kan holde en hemmelighet avgjør hele dens sikkerhetsmodell. Hvorfor SPA-er og mobilapper er offentlige klienter, og hvorfor PKCE nå anbefales for dem alle."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Spørsmålet som avgjør alt
+
+OAuth deler klienter i to slag, og skillelinjen er et enkelt spørsmål: kan denne klienten holde en hemmelighet? RFC 6749 kaller de to svarene **konfidensielle** og **offentlige** klienter, og hvilken du er avgjør hvordan du autentiserer, hvilke flyter som er trygge, og om du trenger PKCE. Nesten enhver OAuth-designfeil på applikasjonsnivå går tilbake til å behandle en offentlig klient som om den kunne holde en hemmelighet den i virkeligheten ikke kan beskytte.
+
+## Konfidensielle klienter kan holde en hemmelighet
+
+En konfidensiell klient kjører et sted hvor brukeren ikke kan nå dens kode eller lagring, klassisk en tjenerside-webapplikasjon. Den utstedes en **klienthemmelighet** ved registrering og bruker den hemmeligheten til å autentisere seg overfor autorisasjonstjenerens tokenendepunkt. Fordi hemmeligheten bare lever på tjeneren, kan autorisasjonstjeneren være trygg på at en tokenforespørsel virkelig kommer fra den registrerte klienten. Dette er det sterke tilfellet: klienten beviser sin identitet med noe bare den kjenner.
+
+## Offentlige klienter kan ikke
+
+En offentlig klient kjører der dens kode og data er synlige for brukeren eller angriperen: en enkeltsideapp i nettleseren, en nativ mobil- eller skrivebordsapp, alt som leveres til enheten. Det definerende problemet er at enhver hemmelighet du bygger inn i en slik klient ikke er hemmelig, fordi hvem som helst kan trekke den ut av det leverte bundtet eller binæren. Så en offentlig klient kan slett ikke autentisere med en klienthemmelighet; det er ingenting den kan holde som en angriper ikke også kan få tak i. Det endrer hva autorisasjonstjeneren kan anta, og det er grunnen til at offentlige klienter trenger ekstra beskyttelse på autorisasjonskodeflyten.
+
+## Hvorfor offentlige klienter var sårbare
+
+Autorisasjonskodeflyten gir klienten en engangskode i omdirigeringen, som klienten deretter bytter mot token. For en konfidensiell klient beskyttes det byttet av klienthemmeligheten. For en offentlig klient uten hemmelighet kan en angriper som kan avlytte omdirigeringen, for eksempel en ondsinnet app registrert for samme tilpassede URL-skjema på en mobil enhet, stjele koden og innløse den selv. Dette er avlyttingsangrepet som artikkelen [PKCE](/learn/pkce) beskriver i detalj, og det er nettopp hullet en manglende klienthemmelighet etterlater åpent.
+
+## PKCE fyller hullet, for alle
+
+PKCE lukker det hullet uten en forhåndsdelt hemmelighet. Klienten oppfinner en fersk tilfeldig **kodeverifikator** per forespørsel, sender bare dens hash (**kodeutfordringen**) når den ber om koden, og avslører verifikatoren bare når den innløser den. En angriper som avlytter koden så aldri verifikatoren, så den stjålne koden er ubrukelig. Dette ble innført for offentlige klienter, men veiledningen har siden blitt utvidet: OAuth 2.1 anbefaler PKCE for autorisasjonskodeflyten uansett klienttype, fordi det legger til forsvar i dybden selv der en klienthemmelighet er til stede. Den praktiske regelen er å bruke autorisasjonskode pluss PKCE overalt og slutte å resonnere om hvorvidt du strengt tatt trenger det.
+
+## Den implisitte flyten er pensjonert
+
+Offentlige nettleserapper brukte en gang den implisitte flyten, som returnerte token direkte i omdirigeringen for å unngå kodebyttet. Det designet eksponerte token i URL-er og nettleserhistorikk og er nå utfaset; OAuth 2.1 fjerner det. Det moderne svaret for en enkeltsideapp er det samme som for alle andre: autorisasjonskodeflyten med PKCE. Hvis du støter på råd om å bruke den implisitte flyten, behandle det som utdatert.
+
+## Native apper har sine egne fallgruver
+
+Native og mobilapper er offentlige klienter med en spesifikk fare: omdirigeringen tilbake inn i appen. Tilpassede URL-skjemaer kan kreves av andre apper på enheten, noe som er det som gjør avlytting mulig, så beste-praksis-veiledningen for native apper (RFC 8252) er å bruke krav-tatte HTTPS-omdirigeringer der plattformen støtter dem, kjøre flyten i en systemnettleser fremfor en innebygd nettvisning, og alltid anvende PKCE. For enheter med begrenset inndata som en TV, der det slett ikke er noen nettleser å omdirigere til, lar enhetsautorisasjonsflyten (RFC 8628) brukeren autorisere på en separat telefon eller bærbar maskin i stedet.
+
+## Ved tvil, anta offentlig
+
+Den røde tråden er at klienttype ikke er et merke du velger for bekvemmelighet; det er et faktum om hvor koden din kjører og hva den kan beskytte. Hvis klienten leveres til brukeren, er den offentlig, den kan ikke holde en hemmelighet, og den trenger PKCE. Hvis den bare kjører på tjeneren din, kan den være konfidensiell og autentisere med en hemmelighet, og den bør likevel bruke PKCE for den ekstra marginen. Avgjør hvilken verden klienten din lever i, og resten av dens OAuth-sikkerhetsmodell følger av det ene ærlige svaret.

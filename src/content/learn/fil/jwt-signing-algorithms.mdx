@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "Mga signing algorithm ng JWT: HMAC, RSA, at ECDSA"
+summary: "Kung bakit mahalaga ang alg header ng isang JWT, ang pagkakaiba ng symmetric at asymmetric na pagpirma, at kung paano pumili."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang alg header ang nagpapasiya ng lahat
+
+Ang header ng isang JWT ay nagngangalan sa algorithm na ginamit upang pirmahan ito, halimbawa `"alg": "HS256"`. Ang nag-iisang halagang iyon ang nagtatakda kung anong uri ng susi ang kailangan ng verifier at kung ano talaga ang pinatutunayan ng lagda. Ang mga algorithm ay nahahati sa dalawang pamilya, symmetric at asymmetric, at ang pagpili sa pagitan ng mga ito ay talagang isang pagpili tungkol sa *kung sino ang kailangang mag-verify ng token*.
+
+## Symmetric: ang pamilyang HMAC (HS256/384/512)
+
+Ang `HS256`, `HS384`, at `HS512` ay HMAC na may SHA-256, SHA-384, o SHA-512. Gumagamit sila ng **isang ibinahaging lihim** para sa parehong pagpirma at pag-verify. Ang sinumang makaka-verify ng isang HS256 token ay makakagawa rin ng peke, dahil ang paglikha at pagsuri ng lagda ay gumagamit ng parehong susi.
+
+Iyon ang gumagawa sa pamilyang HMAC na isang mahusay na pagpipilian kapag ang **parehong partido** ang naglalabas at nag-ve-verify ng token, o kapag ang issuer at verifier ay nagbabahagi na ng isang pinagkakatiwalaang lihim, isang nag-iisang backend na pumipirma sa sarili nitong mga session token, halimbawa. Mabilis at simple ito. Ang hangganan nito ay distribusyon: bawat verifier ay nangangailangan ng lihim, at habang mas maraming lugar na tinitirhan ng lihim, mas malaki ang blast radius kung may matagas na isa.
+
+## Asymmetric: RSA at ECDSA (RS256, ES256, at iba pa)
+
+Ang `RS256` (RSASSA-PKCS1-v1_5 na may SHA-256), `PS256` (RSA-PSS), at `ES256` (ECDSA na may P-256 curve) ay gumagamit ng isang **key pair**: isang pribadong susi ang pumipirma, at ang katumbas na pampublikong susi ang nag-ve-verify. Ang pribadong susi ay hindi kailanman umaalis sa issuer; ang pampublikong susi ay maaaring iabot kaninuman.
+
+Ito ang gusto mo kapag **maraming independiyenteng serbisyo** ang kailangang mag-verify ng mga token mula sa isang issuer. Ang isang identity provider ay pumipirma gamit ang pribadong susi nito at naglalathala ng mga pampublikong susi nito (karaniwan bilang isang JWKS endpoint); bawat downstream na serbisyo ay nag-ve-verify gamit ang pampublikong susi at wala ni isa sa kanila ang makakalikha ng token. Ito ang dahilan kung bakit ang mga OpenID Connect provider ay naglalabas ng RS256 o ES256 na ID token bilang default.
+
+Sa pagitan ng RSA at ECDSA, ang trade-off ay laki at bilis: ang mga ECDSA key at lagda ay higit na mas maliit para sa katumbas na seguridad, habang ang RSA ay mas luma at mas pangkalahatang suportado. Ang `EdDSA` (Ed25519) ay isang moderno, mabilis na alternatibo na nakakakuha ng adopsyon.
+
+## Pagpili
+
+- **Isang partido ang pumipirma at nag-ve-verify, o ibinahagi na ang isang lihim** → HMAC (HS256). Simple at mabilis.
+- **Isang pumipirma, maraming independiyenteng verifier** → asymmetric (RS256 o ES256). Ang pampublikong susi ay maaaring ipamahagi nang malaya; tanging ang may hawak ng pribadong susi ang makakapirma.
+
+Anuman ang piliin mo, ang verifier ay dapat **itali ang katanggap-tanggap na algorithm** sa halip na magtiwala sa sariling `alg` header ng token. Ang pagtanggap sa kahit anong inaangkin ng token ay nagbubukas ng pinto sa mga atakeng `alg: none` at algorithm-confusion na inilarawan sa artikulo ng anatomiya ng JWT.
+
+Ang [tool na JWT](/tools/jwt) ay nide-decode ang header upang makita mo kung aling algorithm ang idineklara ng isang token, at nive-verify ang pamilyang HMAC (HS256/384/512) laban sa isang lihim na iyong idinikit, lokal sa iyong browser.

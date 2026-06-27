@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Autenticare le richieste API con HMAC"
+summary: "Come un segreto condiviso e un hash permettono a un server di fidarsi di una richiesta che non ha visto fare, e come si inserisce la protezione dal replay."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Il problema: fidarsi di una richiesta
+
+Quando un server riceve una richiesta API, come fa a sapere che il chiamante è chi afferma di essere e che nessuno ha alterato la richiesta in transito? Inviare un segreto condiviso a ogni richiesta funzionerebbe finché quel segreto non viene registrato nei log, messo in cache o trafugato. La **firma delle richieste con HMAC** risolve questo senza mai trasmettere il segreto: il chiamante prova di possedere il segreto usandolo per firmare la richiesta, e il server verifica la firma.
+
+## Come funziona la firma
+
+Entrambe le parti condividono una chiave segreta. Per firmare una richiesta, il client:
+
+1. Costruisce una **stringa canonica** dalle parti della richiesta che non devono cambiare, tipicamente il metodo HTTP, il percorso, intestazioni chiave, un timestamp e un hash del corpo. "Canonica" significa che entrambe le parti la assemblano esattamente nello stesso modo concordato, così da calcolare su input identico.
+2. Calcola `HMAC-SHA256(stringa canonica, segreto)` e lo allega alla richiesta, di solito in un'intestazione come `Authorization` o `X-Signature`.
+
+Il server, che possiede lo stesso segreto, ricostruisce la stringa canonica dalla richiesta che ha ricevuto e calcola l'HMAC esso stesso. Se il suo valore combacia con quello nell'intestazione, due cose sono provate in una volta: il chiamante possiede il segreto (**autenticità**) e nulla coperto dalla firma è stato alterato (**integrità**). Il segreto stesso non viaggia mai.
+
+## Un esempio reale: AWS Signature Version 4
+
+Il SigV4 di Amazon è l'istanza più nota. Ogni richiesta è firmata con HMAC-SHA256 su una richiesta canonica, usando una chiave di firma **derivata** dalla chiave di accesso segreta, dalla data, dalla regione e dal servizio. Il server ri-deriva la chiave e ricalcola la firma; una discordanza viene respinta. Lo stesso schema, canonizzare, HMAC, confrontare, è alla base di innumerevoli altri schemi di autenticazione API.
+
+## Webhook: la stessa idea, invertita
+
+I webhook invertono la direzione. Un fornitore (un elaboratore di pagamenti, un host Git) chiama **il tuo** endpoint per notificarti un evento, e firma il payload con un segreto che entrambi condividete, inviando l'HMAC in un'intestazione. Il tuo endpoint ricalcola l'HMAC sul corpo ricevuto e confronta, ed è così che respingi le chiamate falsificate di chiunque non possieda il segreto. Confronta sempre con un controllo a tempo costante per evitare di trapelare informazioni tramite i tempi.
+
+## Protezione dal replay
+
+Una richiesta firmata valida che un attaccante cattura potrebbe essere **ripetuta** alla lettera. Le difese standard sono includere un **timestamp** nei dati firmati e respingere richieste fuori da una finestra breve, e opzionalmente un **nonce** (un valore monouso che il server ricorda brevemente) così che la stessa richiesta non possa essere accettata due volte. La firma prova l'autenticità; il timestamp e il nonce impediscono che una richiesta vecchia e genuina venga riutilizzata.
+
+Lo [strumento HMAC](/tools/hmac) calcola l'HMAC-SHA256 (e SHA-384/512) al cuore di ciascuno di questi schemi, su un messaggio e una chiave che fornisci tu, interamente nel tuo browser.

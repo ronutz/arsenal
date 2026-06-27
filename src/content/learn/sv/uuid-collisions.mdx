@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "Kommer UUID:er att kollidera? Sannolikhet och födelsedagsgränsen"
+summary: "Hur många slumpbitar en UUID verkligen har, födelsedagsmatematiken för en kollision och när man vill ha deterministiska UUID:er."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Frågan bakom varje UUID
+
+En UUID har 128 bitar, vanligen slumpmässigt genererade (version 4) så att vem som helst, var som helst, kan prägla en utan koordinering och förvänta sig att den är unik. Den rimliga oron är: om alla bara kastar tärning, kommer inte två till slut att sammanfalla? Svaret är ja i princip och i praktiken nästan aldrig, och matematiken säger exakt varför.
+
+## Hur många slumpbitar det verkligen finns
+
+En UUID version 4 har inte 128 slumpbitar. Fyra bitar är fasta för att markera versionen och två till för att markera varianten, vilket lämnar **122 slumpbitar**. Det är fortfarande ett enormt utrymme: 2¹²², ungefär 5,3 undeciljoner (5,3 × 10³⁶) möjliga värden.
+
+## Födelsedagsgränsen, tillämpad
+
+Kollisionssannolikheten beror inte på att fylla utrymmet; den beror på antalet *par*, som växer med kvadraten av hur många du genererar. Det är födelsedagsparadoxen igen. För ett utrymme på 2¹²² värden är sannolikheten för någon kollision bland `n` UUID:er ungefär:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+En 50-procentig chans för en enda kollision inträffar först efter ungefär **2⁶¹** UUID:er, vilket är runt 2,3 triljoner (lång skala). För att göra det konkret: vid generering av en miljard UUID:er version 4 per sekund skulle du behöva i storleksordningen *85 år* bara för att nå en 50-procentig chans för en kollision. Vid varje realistisk applikationsvolym är sannolikheten så liten att den överskuggas av chansen att ett hårdvarufel ändå förvränger datan.
+
+Den enda verkliga förbehållet är **slumpmässighetens kvalitet**. Matematiken håller bara om generatorn är en ordentlig kryptografiskt säker källa. En svag eller dåligt initierad slumpkälla kan producera upprepningar mycket tidigare, så den praktiska risken är en dålig RNG, inte UUID:ns design.
+
+## När man inte vill ha slumpmässighet
+
+Ibland är kollisionen inte oron, utan upprepbarheten:
+
+- **Namespace-UUID:er (version 3 och 5)** är deterministiska: de hashar en namnrymd plus ett namn (MD5 för v3, SHA-1 för v5), så *samma* indata ger alltid *samma* UUID. Användbart när du vill ha en stabil identifierare härledd från befintlig data, i stället för en ny slumpmässig.
+- **Tidsordnade UUID:er (version 7)** behåller slumpmässigheten men sätter en tidsstämpel först, så att ID:n sorterar efter skapelsetid. Det hjälper indexlokaliteten i databasen medan kollisionsrisken förblir försumbar.
+
+## Lärdomen
+
+För unika identifierare i varje normal skala kolliderar en UUID version 4 från en god slumpkälla inte, och du behöver ingen central auktoritet för att garantera det. Välj v3/v5 när du behöver att samma indata avbildas på samma ID, och v7 när du vill ha tidsordning.
+
+[UUID-verktyget](/tools/uuid) genererar UUID:er version 4 (och andra) och analyserar vilken UUID som helst för att visa dess version och variant, allt i din webbläsare, utan att något skickas.

@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: paghahati ng isang bloke sa di-pantay na mga subnet"
+summary: "Paano hatiin ang isang bloke ng address sa mga subnet na iba-iba ang laki nang hindi nag-aaksaya ng espasyo, at ang patakarang pinakamalaki-muna na nagpapanatiling maayos ng lahat."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang problema ng pantay na mga subnet
+
+Hinahati ng klasikong subnetting ang isang bloke sa mga piraso ng iisang nakapirming laki. Simple iyon, ngunit aksaya kapag iba-iba ang iyong mga pangangailangan. Kung ang isang segment ay may 100 host at ang isa pa ay isang link sa pagitan ng dalawang router na may 2, kung gayon ang pagbibigay sa pareho ng isang `/26` (62 nagagamit) ay kulang para sa una at nag-aaksaya ng 60 address sa pangalawa. Inaayos ito ng **VLSM**, variable-length subnet mask, sa pamamagitan ng pagpapahintulot sa bawat subnet na gumamit ng haba ng prefix na bagay sa sarili nitong pangangailangan, lahat hiniwa mula sa parehong magulang na bloke.
+
+Ang tanging bagay na nagpapahirap sa VLSM kaysa nakapirming subnetting ay ang pagkakasunod-sunod: dapat mong ilagay ang **pinakamalaking mga subnet muna**, kung hindi ay maiipit ang mga address at makakagawa ka ng mga overlap.
+
+## Pagsukat sa bawat subnet
+
+Magsimula sa bilang ng host na kailangan ng bawat segment, pagkatapos ay hanapin ang pinakamaliit na bloke na kasya rito, tandaan na dalawang address sa bawat karaniwang bloke ang nakareserba (network at broadcast):
+
+- 100 host ang nangangailangan ng 7 host bit (2⁷ − 2 = 126 nagagamit), isang `/25`.
+- 50 host ang nangangailangan ng 6 host bit (62 nagagamit), isang `/26`.
+- 25 host ang nangangailangan ng 5 host bit (30 nagagamit), isang `/27`.
+- 10 host ang nangangailangan ng 4 host bit (14 nagagamit), isang `/28`.
+- Ang isang point-to-point link na may 2 host ay isang `/30` (2 nagagamit), o isang `/31` sa ilalim ng RFC 3021.
+
+Laging i-round up sa susunod na kapangyarihan ng dalawa. Ang isang segment na 100 host ay hindi kasya sa `/26` (62), kaya kinukuha nito ang susunod na laki, isang `/25`.
+
+## Paghiwa mula sa bloke, pinakamalaki muna
+
+Ipagpalagay na pag-aari mo ang `192.168.10.0/24` at kailangan mo ang limang subnet sa itaas. Maglaan sa pababang pagkakasunod-sunod ng laki, bawat isa ay nagsisimula sa likas nitong hangganan:
+
+```
+/25  192.168.10.0   – .127   (126 nagagamit)  ← segment na 100 host
+/26  192.168.10.128 – .191   (62 nagagamit)   ← segment na 50 host
+/27  192.168.10.192 – .223   (30 nagagamit)   ← segment na 25 host
+/28  192.168.10.224 – .239   (14 nagagamit)   ← segment na 10 host
+/30  192.168.10.240 – .243   (2 nagagamit)    ← link ng router
+```
+
+Ang bawat bloke ay nagsisimula eksakto kung saan natapos ang nauna, at mula sa `192.168.10.244` pataas ay libre pa rin ito para sa hinaharap na paglago. Kung inilaan mo muna ang `/30`, ang `/25` ay wala nang malinis na hangganan na lalapagan, na siyang buong dahilan ng patakarang pinakamalaki-muna.
+
+## Bakit ito mahalaga
+
+Ang VLSM ay kung paano nagtitipid ang mga tunay na network ng address space at nagpapanatiling nakahanay ang mga alokasyon upang malinis na mabuod ang mga ruta. Ang aritmetika ay ang parehong matematika ng haba ng prefix tulad ng isang solong subnet, inilapat nang paulit-ulit: mag-pirmi ng higit pang bit upang gawing mas maliit ang isang bloke, at panatilihin ang bawat bloke sa hangganang kapangyarihan ng dalawa.
+
+Mave-verify mo ang anumang alokasyon sa [calculator na CIDR](/#cidr), na nagpapakita ng network at broadcast address, mask, at bilang ng nagagamit na host ng bawat bloke kaagad at lubos sa iyong browser.

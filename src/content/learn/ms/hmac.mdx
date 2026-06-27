@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: pencincangan berkunci untuk pengesahan mesej"
+summary: "Mengapa cincangan biasa membuktikan integriti tetapi bukan ketulenan, bagaimana kunci rahsia membetulkannya, dan mengapa struktur HMAC penting."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Jurang yang ditinggalkan oleh cincangan biasa
+
+Cincangan kriptografi membuktikan **integriti**: jika ringkasan masih sepadan, data tidak diubah. Tetapi ia tidak membuktikan apa-apa tentang **siapa** yang menghasilkannya. Sesiapa boleh mencincang mesej, jadi ringkasan yang dihantar di sebelah mesej tidak menawarkan perlindungan terhadap penyerang yang sekadar menukar mesej *dan* mengira semula ringkasan. Tiada rahsia yang terlibat, jadi tiada apa-apa yang hanya pengirim sah boleh lakukan.
+
+HMAC menutup jurang itu. Ia ialah **kod pengesahan mesej**: satu nilai yang membuktikan bahawa mesej tidak diusik dan datang daripada seseorang yang memegang kunci rahsia kongsi. Pengesah mengira semula HMAC dengan kunci yang sama; jika ia sepadan, mesej itu tulen.
+
+## Menambah kunci, dengan cara yang betul
+
+Idea yang jelas, sekadar mencincang kunci dan mesej bersama sebagai `hash(kunci + mesej)`, adalah tidak selamat secara halus. Banyak fungsi cincangan (termasuk keluarga SHA-2) dibina di atas pembinaan yang terdedah kepada **serangan lanjutan panjang**: dengan mengetahui `hash(kunci + mesej)` dan panjang rahsia, penyerang boleh mengira cincangan sah untuk `kunci + mesej + tambahan` tanpa pernah mengetahui kunci. Itu membolehkan mereka memalsukan mesej yang dilanjutkan dan masih sah.
+
+HMAC (ditakrifkan dalam RFC 2104) mengelakkan ini dengan mencincang dua kali, dengan kunci dicampur secara berbeza setiap kali. Secara konsep ia mengira:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+di mana `ipad` dan `opad` ialah dua pemalar pengisian tetap. Cincangan dalaman mengikat kunci kepada mesej; cincangan luaran membalut hasil supaya helah lanjutan panjang tidak dapat mencapainya. Anda tidak perlu menghafal formula, intinya ialah struktur bersarang itu, bukan gabungan sambil lewa, yang menjadikan HMAC kukuh.
+
+## HMAC berbanding tandatangan digital
+
+Kedua-duanya membuktikan ketulenan, tetapi model kepercayaan berbeza:
+
+- **HMAC adalah simetri.** Satu kunci rahsia dikongsi oleh kedua-dua pihak. Sesiapa yang boleh mengesahkan HMAC juga boleh menciptanya, jadi ia berfungsi apabila kedua-dua pihak sudah berkongsi kunci tetapi tidak dapat membuktikan kepengarangan kepada pihak ketiga.
+- **Tandatangan digital adalah asimetri.** Penandatangan menggunakan kunci persendirian; sesiapa boleh mengesahkan dengan kunci awam. Ini membuktikan kepengarangan kepada dunia, pada kos pengiraan yang lebih tinggi.
+
+Pilih HMAC apabila dua sistem berkongsi rahsia dan memerlukan pengesahan pantas dan saling; pilih tandatangan apabila pengesah tidak boleh memalsukan apa yang mereka sahkan.
+
+## Di mana anda menemui HMAC
+
+- **Penandatanganan permintaan API.** Skema seperti AWS Signature Version 4 menandatangani setiap permintaan dengan HMAC-SHA256 supaya pelayan boleh mengesahkan pemanggil memegang kunci rahsia.
+- **Webhook.** Pembekal menghantar HMAC muatan dalam pengepala; titik akhir anda mengiranya semula untuk menolak panggilan palsu.
+- **JWT dengan HS256.** Token yang ditandatangani dengan HS256 secara harfiah ialah HMAC-SHA256 ke atas pengepala dan muatan token. [Alat HMAC](/tools/hmac) menggunakan pembinaan Web Crypto yang sama persis dengan yang digunakan pengesah JWT, jadi kedua-duanya bersetuju mengikut reka bentuk.
+
+Mesej dan kunci anda tidak pernah meninggalkan pelayar; HMAC dikira secara setempat.

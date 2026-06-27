@@ -1,0 +1,53 @@
+---
+slug: base64
+title: "Base64 och Base64URL, förklarat"
+summary: "Hur binärdata blir överföringssäker text, varför utfyllnad finns och vad som ändras i den URL-säkra varianten."
+concepts: ["base64", "base64url", "encoding", "binary-to-text"]
+relatedTools: ["base64"]
+relatedArticles: ["character-encoding", "hashing-encryption-encoding", "hashing"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problemet som Base64 löser
+
+Datorer lagrar allt som byte, godtyckliga värden från 0 till 255. Många system som flyttar data byggdes dock för att bära **text**, inte godtyckliga byte: e-postmeddelanden, URL:er, JSON-strängar, HTTP-rubriker. Ge dem en rå byte som råkar vara ett styrtecken eller ett citationstecken, och de förvränger den eller går sönder. Base64 är det vanliga sättet att ta vilka byte som helst och skriva om dem med en liten, säker uppsättning utskrivbara tecken som dessa rena textkanaler bär oskadda.
+
+Det är värt att vara exakt om vad det betyder: Base64 är en **kodning**, inte kryptering. Den döljer ingenting. Vem som helst kan avkoda den tillbaka till de ursprungliga byten utan nyckel och utan ansträngning. Dess enda uppgift är att överleva transporten, inte att bevara en hemlighet.
+
+## Hur kodningen fungerar
+
+Tricket är att omgruppera bitar. Base64 läser indata tre byte i taget. Tre byte är 24 bitar, och 24 delas jämnt i fyra grupper om 6 bitar. Varje 6-bitsgrupp är ett tal från 0 till 63, och vart och ett av dessa 64 värden avbildas på ett tecken i Base64-alfabetet:
+
+- `A` till `Z` för värdena 0 till 25
+- `a` till `z` för värdena 26 till 51
+- `0` till `9` för värdena 52 till 61
+- `+` och `/` för värdena 62 och 63
+
+Så varje tre indatabyte blir exakt fyra utdatatecken. Det är därför Base64-utdata alltid är ungefär en tredjedel större än indata: fyra tecken bär det som tre byte gjorde.
+
+## Varför utfyllnad finns
+
+Indata är inte alltid en jämn multipel av tre byte. När den sista gruppen bara har en eller två byte kvar avger kodaren ändå ett fullständigt block om fyra tecken och fyller luckan med tecknet `=`:
+
+- En överbliven byte (8 bitar) ger två meningsfulla tecken, sedan `==`.
+- Två överblivna byte (16 bitar) ger tre meningsfulla tecken, sedan `=`.
+
+`=` är inte data. Det är en markör som talar om för avkodaren hur många byte det sista blocket verkligen representerar, så att den kan slänga utfyllnaden och rekonstruera den exakta ursprungliga längden. Det är därför längden på en Base64-sträng alltid är en multipel av fyra.
+
+## Den URL-säkra varianten
+
+Två av standardalfabetets tecken orsakar problem på specifika ställen. `+` och `/` har båda reserverade betydelser i URL:er (ett mellanslag och en sökvägsavgränsare), och `/` är dessutom otillåtet i många filnamn. **Base64URL** (definierad i RFC 4648) åtgärdar detta med två utbyten och en vana:
+
+- `+` blir `-`
+- `/` blir `_`
+- `=`-utfyllnaden tas vanligen bort, eftersom längden kan härledas
+
+Resultatet är en sträng som faller rent in i en URL, ett filnamn eller en JSON Web Token utan ytterligare escaping. Det är just därför JWT:er och OAuth PKCE-utmaningar använder Base64URL i stället för den klassiska formen: dessa värden lever inuti URL:er och token.
+
+## Var du möter det
+
+När du väl känner igen mönstret finns Base64 överallt: `data:`-URI:er som bäddar in en bild direkt i en sida, en JWT:s tre punktseparerade segment, MIME-e-postbilagor, HTTP Basic-autentiseringsrubriker och certifikat i PEM-format. I varje fall är skälet detsamma, råa byte måste färdas genom en kanal som bara litar på text.
+
+Du kan klistra in antingen text eller Base64 i [Base64-verktyget](/tools/base64) för att koda eller avkoda det åt båda hållen, standard och URL-säkert, helt i din webbläsare.

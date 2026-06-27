@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Bagaimana hos IPv6 mendapat alamat: SLAAC dan DHCPv6"
+summary: "Bagaimana hos IPv6 mengkonfigurasi dirinya dari link-local ke atas, apa yang diputuskan oleh pengiklanan penghala, dan perbezaan antara SLAAC, alamat privasi, dan DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Konfigurasi sendiri secara lalai
+
+Satu daripada ciri penentu IPv6 ialah bahawa hos boleh mengkonfigurasi alamat yang berfungsi tanpa pelayan dan tanpa persediaan manual. Di tempat IPv4 bersandar pada DHCP untuk mengagihkan alamat, IPv6 boleh membinanya secara tempatan daripada maklumat yang penghala siarkan. Hasilnya ialah satu antara muka tunggal biasanya berakhir dengan beberapa alamat sekaligus, setiap satu untuk tujuan berbeza, yang mengejutkan orang yang datang daripada IPv4.
+
+## Link-local datang dahulu
+
+Sebelum apa-apa lagi, setiap antara muka IPv6 mengkonfigurasi alamat link-local dalam `fe80::/10` (jenis yang alat label sebagai link-local). Ia dijana secara tempatan, tidak pernah dihalakan melepasi pautan tempatan, dan wujud supaya hos boleh bercakap dengan jiran dan penghala serta-merta, termasuk untuk bertanya bagaimana mengkonfigurasi selebihnya alamatnya. Link-local ialah but-strap: ia sentiasa hadir, dan jentera penemuan jiran dalam artikel [penemuan jiran](/learn/ipv6-neighbor-discovery) berjalan di atasnya.
+
+## Pengiklanan penghala memutuskan kaedah
+
+Untuk mendapat alamat boleh dihala secara global, hos mendengar Pengiklanan Penghala (Router Advertisements), mesej berkala yang penghala hantar (dan yang hos boleh minta dengan Permintaan Penghala, Router Solicitation). Pengiklanan membawa awalan on-link, hampir selalu /64, dan dua bendera yang memberitahu hos bagaimana mengkonfigurasi dirinya:
+
+- **Bendera M (Managed)** berkata "guna DHCPv6 untuk mendapat alamat".
+- **Bendera O (Other)** berkata "konfigurasi alamat anda sendiri, tetapi dapatkan tetapan lain seperti DNS daripada DHCPv6".
+
+Dengan kedua-dua bendera mati, hos menggunakan autokonfigurasi tanpa keadaan tulen. Inilah sebabnya umpukan alamat IPv6 ialah rundingan antara apa yang penghala iklankan dan apa yang hos pilih, dan bukannya satu pelayan tunggal yang mengagihkan pajakan.
+
+## SLAAC: membina alamat anda sendiri
+
+Autokonfigurasi Alamat Tanpa Keadaan (Stateless Address Autoconfiguration, RFC 4862) ialah mekanisme yang hos guna untuk membentuk alamatnya sendiri: ambil awalan /64 daripada pengiklanan dan tambah pengecam antara muka 64 bit. Inilah seluruh sebab mengapa subnet mesti /64 (lihat artikel [subnet](/learn/ipv6-subnetting)). Tiada pelayan menjejak umpukan, iaitu maksud "tanpa keadaan".
+
+Pengecam antara muka boleh dibentuk dalam beberapa cara, dan ini mempunyai akibat privasi yang nyata:
+
+- **EUI-64 diubah suai** menerbitkan pengecam daripada alamat MAC antara muka, yang alat boleh tunjuk. Ia stabil dan mudah, tetapi ia membenamkan alamat perkakasan ke dalam setiap alamat IPv6 yang hos guna, membenarkan pelayan jauh menjejak peranti merentas rangkaian.
+- **Pengecam stabil, legap** (RFC 7217) menghasilkan pengecam yang stabil setiap rangkaian tetapi tidak mendedahkan alamat perkakasan, membaiki masalah penjejakan rentas rangkaian sambil mengekalkan alamat konsisten pada pautan tertentu.
+- **Alamat sementara (privasi)** (RFC 8981, yang menjadikan RFC 4941 terdahulu usang) menjana pengecam rawak yang berputar dari masa ke masa, jadi sambungan keluar tidak mempersembahkan alamat tahan lama langsung.
+
+Sistem pengendalian moden biasanya menggunakan alamat stabil untuk sambungan masuk dan alamat sementara berputar untuk yang keluar, iaitu sebab satu antara muka tunggal menunjukkan pelbagai alamat global.
+
+## Pengesanan Alamat Pendua
+
+Sebelum hos sebenarnya menggunakan sebarang alamat yang ia telah bentuk, ia menjalankan Pengesanan Alamat Pendua (Duplicate Address Detection): ia menghantar Permintaan Jiran (Neighbor Solicitation) untuk alamat percubaannya sendiri dan menunggu. Jika sesiapa menjawab, alamat sudah digunakan dan tidak boleh dituntut. DAD ialah insurans murah bahawa konfigurasi sendiri tidak menghasilkan perlanggaran, dan ia bersandar pada mesej penemuan jiran sama yang diterangkan dalam artikel teman.
+
+## DHCPv6 untuk kawalan berkeadaan
+
+Apabila pentadbir mahu menjejak dan mengumpukkan alamat secara berpusat, DHCPv6 (RFC 8415) menyediakan umpukan berkeadaan, banyak seperti DHCP IPv4: pelayan memajak alamat tertentu dan merekod siapa ada apa. Terdapat juga mod DHCPv6 tanpa keadaan yang mengagihkan hanya konfigurasi seperti pelayan DNS sementara hos masih membentuk alamatnya sendiri melalui SLAAC, iaitu apa yang bendera O pilih. DHCPv6 juga ialah tempat pewakilan awalan hidup, mekanisme yang membolehkan penghala rumah menerima satu awalan penuh untuk subnet di belakangnya.
+
+## Banyak alamat, mengikut reka bentuk
+
+Model mental untuk dibawa pergi ialah bahawa hos IPv6 sebahagian besarnya memandu sendiri. Ia sentiasa mempunyai alamat link-local, ia mempelajari awalan dan kaedah konfigurasi daripada pengiklanan penghala, dan bergantung pada bendera ia sama ada membina alamat global sendiri dengan SLAAC atau memajaknya daripada DHCPv6, sering berakhir dengan alamat stabil dan satu sementara berputar bersebelahan. Apabila alat menunjukkan anda alamat dan mengenal pasti jenisnya, jenis itu memberitahu anda yang mana antara laluan ini menghasilkannya.

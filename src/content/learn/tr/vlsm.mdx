@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: bir bloğu eşit olmayan alt ağlara bölme"
+summary: "Bir adres bloğunu yer israf etmeden farklı boyutlardaki alt ağlara nasıl keseceğiniz ve her şeyi düzenli tutan önce-en-büyük kuralı."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Eşit alt ağ sorunu
+
+Klasik alt ağ oluşturma, bir bloğu tek bir sabit boyutta parçalara böler. Bu basittir ama ihtiyaçlarınız farklı olduğunda savurgandır. Bir segmentte 100 ana bilgisayar, diğerinde iki yönlendirici arasında 2'lik bir bağlantı varsa, ikisine de bir `/26` (62 kullanılabilir) vermek ilki için yetersiz kalır ve ikincisinde 60 adres israf eder. **VLSM**, değişken uzunluklu alt ağ maskesi, her alt ağın kendi ihtiyacına uyan önek uzunluğunu kullanmasına izin vererek bunu düzeltir; hepsi aynı üst bloktan kesilir.
+
+VLSM'yi sabit alt ağ oluşturmaya göre daha zahmetli kılan tek şey sıradır: **en büyük alt ağları önce** yerleştirmelisiniz, yoksa adresler boşta kalır ve örtüşmeler oluşturursunuz.
+
+## Her alt ağı boyutlandırma
+
+Her segmentin ihtiyaç duyduğu ana bilgisayar sayısıyla başlayın, sonra onu barındıran en küçük bloğu bulun; her sıradan blokta iki adresin ayrıldığını unutmayın (ağ ve yayın):
+
+- 100 ana bilgisayar 7 ana bilgisayar biti gerektirir (2⁷ − 2 = 126 kullanılabilir), bir `/25`.
+- 50 ana bilgisayar 6 ana bilgisayar biti gerektirir (62 kullanılabilir), bir `/26`.
+- 25 ana bilgisayar 5 ana bilgisayar biti gerektirir (30 kullanılabilir), bir `/27`.
+- 10 ana bilgisayar 4 ana bilgisayar biti gerektirir (14 kullanılabilir), bir `/28`.
+- 2 ana bilgisayarlı bir noktadan noktaya bağlantı bir `/30`'dur (2 kullanılabilir) ya da RFC 3021'e göre bir `/31`.
+
+Her zaman bir sonraki ikinin kuvvetine yukarı yuvarlayın. 100 ana bilgisayarlı bir segment bir `/26`'ya (62) sığmaz, bu yüzden bir sonraki boyutu, bir `/25`'i alır.
+
+## Bloktan kesme, en büyük önce
+
+`192.168.10.0/24`'e sahip olduğunuzu ve yukarıdaki beş alt ağa ihtiyaç duyduğunuzu varsayın. Azalan boyut sırasında atayın; her biri kendi doğal sınırında başlar:
+
+```
+/25  192.168.10.0   – .127   (126 kullanılabilir)  ← 100 ana bilgisayarlı segment
+/26  192.168.10.128 – .191   (62 kullanılabilir)   ← 50 ana bilgisayarlı segment
+/27  192.168.10.192 – .223   (30 kullanılabilir)   ← 25 ana bilgisayarlı segment
+/28  192.168.10.224 – .239   (14 kullanılabilir)   ← 10 ana bilgisayarlı segment
+/30  192.168.10.240 – .243   (2 kullanılabilir)    ← yönlendirici bağlantısı
+```
+
+Her blok tam olarak öncekinin bittiği yerde başlar ve `192.168.10.244`'ten itibaren gelecekteki büyüme için hâlâ boştur. `/30`'u önce atasaydınız, `/25`'in artık üzerine konacağı temiz bir sınırı olmazdı; önce-en-büyük kuralının tüm nedeni budur.
+
+## Neden önemli
+
+VLSM, gerçek ağların adres alanından tasarruf etme ve atamaları rotaların temiz biçimde özetlenebileceği şekilde hizalı tutma biçimidir. Aritmetik, tek bir alt ağınkiyle aynı önek uzunluğu matematiğidir, tekrar tekrar uygulanır: bir bloğu küçültmek için daha fazla bit sabitleyin ve her bloğu ikinin kuvveti sınırında tutun.
+
+Herhangi bir atamayı [CIDR hesaplayıcısında](/#cidr) doğrulayabilirsiniz; her bloğun ağ ve yayın adresini, maskesini ve kullanılabilir ana bilgisayar sayısını anında ve tamamen tarayıcınızda gösterir.

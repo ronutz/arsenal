@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Wie IPv4-Adressen funktionieren"
+summary: "Die 32 Bit hinter jeder Dotted-Quad-Adresse, und was private, Loopback- und Spezialbereiche bedeuten."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Zweiunddreißig Bit in Verkleidung
+
+Eine IPv4-Adresse ist eine einzelne 32-Bit-Zahl. Wir schreiben sie fast nie so, weil 32 Einsen und Nullen schwer zu lesen sind, also wird sie in vier 8-Bit-Gruppen aufgeteilt, genannt **Oktette**, jedes dezimal von 0 bis 255 gezeigt und durch Punkte verbunden. `192.168.1.10` ist nur eine freundlichere Art, einen bestimmten 32-Bit-Wert zu schreiben.
+
+Weil jedes Oktett 8 Bit ist, ist der ganze Raum 2³² Adressen, etwa 4,3 Milliarden. Das klang in den 1980ern enorm und ist der Grund, warum die IPv4-Adresserschöpfung Jahrzehnte später ein echtes Problem wurde, und warum private Adressierung und IPv6 existieren.
+
+## Netzwerkteil und Hostteil
+
+Keine Adresse steht allein, sie gehört zu einem Block, und innerhalb dieses Blocks teilen sich die Bits in einen **Netzwerkteil** (welcher Block dies ist) und einen **Hostteil** (welche Maschine innerhalb des Blocks). Die Präfixlänge, im CIDR-Stil als `/24` geschrieben, markiert, wo diese Teilung fällt. Alles links der Linie ist Netzwerk; alles rechts identifiziert einen Host. Dies ist dieselbe Idee, die in der CIDR-Notation erkundet wird, von der Adressseite betrachtet.
+
+## Bereiche mit besonderer Bedeutung
+
+Nicht jede Adresse ist eine gewöhnliche Host-Adresse. Mehrere Bereiche sind für bestimmte Zwecke reserviert, und sie zu erkennen, ist Teil des Lesens jeder Netzwerkkonfiguration:
+
+- **Private Bereiche (RFC 1918)** sind für die Nutzung innerhalb privater Netzwerke reserviert und werden nie im öffentlichen Internet geroutet:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Deshalb nutzen Heim- und Büronetzwerke so oft `192.168.x.x` oder `10.x.x.x`, diese Adressen sind frei, überall wiederverwendet zu werden, weil sie nie im offenen Internet erscheinen.
+- **Loopback (`127.0.0.0/8`)** bezieht sich immer auf die lokale Maschine selbst. `127.0.0.1` ist die Adresse, die ein Computer nutzt, um mit sich selbst zu sprechen.
+- **Link-local-Adressen (`169.254.0.0/16`)** werden selbst zugewiesen, wenn ein Gerät keinen DHCP-Server erreichen kann. Eine zu sehen, bedeutet gewöhnlich „keine Adresse wurde ausgegeben".
+- **Die unspezifizierte Adresse (`0.0.0.0`)** und die Standardroute (`0.0.0.0/0`) sind besonders: Letztere ist die Auffangroute, die zu jedem Ziel passt, das nicht von einer spezifischeren Route abgedeckt wird.
+
+## Warum die Spezialbereiche für die Sicherheit zählen
+
+Diese reservierten Bereiche sind nicht nur Wissenswertes. Ein Werkzeug, das eine vom Benutzer gelieferte Adresse abruft, muss sich weigern, private, Loopback- und Link-local-Bereiche zu erreichen, sonst kann es ausgetrickst werden, Anfragen gegen interne Systeme zu stellen, die es nie berühren sollte, eine Angriffsklasse namens Server-Side Request Forgery (serverseitige Anfragefälschung). Zu wissen, welche Bereiche intern sind, ist der erste Schritt, sich dagegen zu verteidigen. Genau deshalb prüfen die netzwerkberührenden Werkzeuge auf dieser Seite eine aufgelöste Adresse gegen diese Bereiche, bevor sie überhaupt verbinden.
+
+Um zu sehen, wie eine Adresse innerhalb ihres Blocks sitzt, ihre Netzwerkadresse, Broadcast-Adresse und der nutzbare Bereich um sie herum, probieren Sie den [CIDR-Rechner](/learn), der alles davon lokal in Ihrem Browser berechnet.

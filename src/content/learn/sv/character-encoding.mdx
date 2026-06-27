@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Byte, kodpunkter och UTF-8"
+summary: "Skillnaden mellan ett tecken och en byte, varför Unicode och UTF-8 finns, och vad det har med Base64 att göra."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tecken är inte byte
+
+En dator lagrar byte, värden från 0 till 255. Människor läser tecken: bokstäver, siffror, skiljetecken, emoji. En **teckenkodning** är den överenskomna avbildningen mellan de två. Får du avbildningen fel ser du den klassiska förvrängda texten (`café` som blir `cafÃ©`), vilket nästan alltid är en oöverensstämmelse mellan kodningen som användes för att skriva byten och den som användes för att läsa dem.
+
+## ASCII: de ursprungliga 128
+
+Den äldsta brett använda kodningen är **ASCII**, som tilldelar talen 0 till 127 till de grundläggande engelska bokstäverna, siffrorna och vanliga symboler. Sju bitar, 128 tecken. ASCII är enkelt och ligger fortfarande till grund för stora delar av databehandlingen, men 128 tecken kan inte representera accenttecken, icke-latinska skriftsystem eller symboler, så det räckte aldrig till för världens text.
+
+## Unicode: ett tal per tecken
+
+**Unicode** löser täckningsproblemet genom att ge varje tecken ett unikt tal som kallas **kodpunkt**, skrivet som `U+0041` (bokstaven A) eller `U+2615` (en varm dryck). Unicode är en gigantisk katalog över tecken och deras kodpunkter, långt över hundratusen av dem, som täcker i stort sett varje skriftsystem i bruk.
+
+Avgörande är att Unicode säger *vilket tal* varje tecken har, men inte *hur det talet ska lagras som byte*. Det andra jobbet tillhör en kodningsform.
+
+## UTF-8: hur kodpunkter blir byte
+
+**UTF-8** är det dominerande sättet att förvandla Unicode-kodpunkter till byte, och det är standard på hela det moderna webben. Det är av **variabel längd**: ett tecken tar en till fyra byte beroende på sin kodpunkt.
+
+- ASCII-intervallet (U+0000 till U+007F) kodas som en enda byte, identisk med ASCII. Det är därför UTF-8 är bakåtkompatibelt: all ren ASCII-text är redan giltig UTF-8.
+- Tecken bortom ASCII använder två, tre eller fyra byte. Så `é` är två byte och `☕` är tre, även om var och en är ett tecken.
+
+Den sista punkten är den vanliga överraskningen: **ett tecken är inte alltid en byte.** Att räkna byte och att räkna tecken ger olika svar för all icke-ASCII-text. (UTF-16 och UTF-32 är alternativa kodningar av samma kodpunkter; UTF-8 vann webben tack vare sin ASCII-kompatibilitet och kompakthet för latinsk text.)
+
+## Var Base64 kommer in
+
+Detta spelar roll för Base64 eftersom **Base64 arbetar på byte, inte tecken.** För att Base64-koda en sträng måste strängen först förvandlas till byte med en teckenkodning, och den kodningen är i princip alltid UTF-8. Koda samma tecken med ett annat schema och du får andra byte, och därmed annan Base64. Hela kedjan för text är alltså: tecken blir byte (UTF-8), sedan blir byte säker text (Base64). När du avkodar vänder du på båda stegen.
+
+[Base64-verktyget](/tools/base64) kodar text som UTF-8-byte innan det Base64-kodar, och flaggar när ett avkodat resultat inte är giltig UTF-8, allt i din webbläsare.

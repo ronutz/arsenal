@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUIDs: v4 aleatório e v7 ordenado por tempo"
+summary: "Como um identificador de 128 bits permanece único sem uma autoridade central, e por que o v7 está se tornando o padrão para chaves de banco de dados."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## O que é um UUID
+
+Um UUID (Universally Unique Identifier, também chamado de GUID) é um valor de 128 bits usado para rotular algo, uma linha, uma requisição, um arquivo, sem coordenar com mais ninguém. A promessa no nome é que dois UUIDs gerados de forma independente são, para todos os efeitos práticos, nunca iguais. Isso permite que serviços separados, dispositivos offline e processos paralelos cunhem identificadores que não colidirão quando os dados forem mais tarde mesclados, sem um alocador central distribuindo números.
+
+Um UUID é escrito como 32 dígitos hexadecimais em cinco grupos separados por hífen: `8-4-4-4-12`, por exemplo `550e8400-e29b-41d4-a716-446655440000`. Duas posições específicas não são aleatórias: um nibble de **versão** identifica como o UUID foi gerado, e um campo de **variante** marca o padrão de layout (o moderno sendo RFC 4122 / RFC 9562).
+
+## Versão 4: aleatória
+
+De longe a forma mais comum, a **versão 4** é quase inteiramente aleatória: 122 dos 128 bits vêm de uma fonte aleatória segura, com os bits restantes fixos para marcar a versão e a variante. Com tanta entropia, a chance de dois UUIDs v4 colidirem é desprezível para qualquer volume realista de identificadores.
+
+Sua fraqueza não é a unicidade, mas a **ordenação**. Como os valores v4 são aleatórios, inserções consecutivas se espalham por todo o espaço de chaves. Quando um UUID v4 é usado como chave primária de banco de dados, essa aleatoriedade luta contra o índice B-tree: novas linhas caem em lugares arbitrários, prejudicando a localidade de cache e fragmentando o índice ao longo do tempo.
+
+## Versão 7: ordenada por tempo
+
+A **versão 7**, padronizada na RFC 9562 (2024), foi projetada para corrigir exatamente isso. Ela coloca um **carimbo de tempo Unix de 48 bits em milissegundos** nos bits mais significativos, seguido por bits aleatórios para unicidade dentro do mesmo milissegundo. Como o carimbo de tempo vem na frente, os UUIDs v7 **ordenam-se na ordem de criação** quando comparados como texto ou bytes.
+
+Essa única propriedade torna o v7 uma chave primária muito melhor: novas linhas se anexam perto do fim do índice em vez de se espalhar, restaurando a localidade que as chaves inteiras sequenciais desfrutam, mantendo a unicidade descentralizada de um UUID. Um valor v7 também carrega seu próprio horário de criação, que você pode ler diretamente daqueles bits iniciais, a [ferramenta UUID](/tools/uuid) faz isso quando você inspeciona um.
+
+## As outras versões, brevemente
+
+Para completar: a **versão 1** combina um carimbo de tempo com o endereço MAC da máquina geradora, o que vaza a identidade do hardware e o horário de criação e, assim, levanta preocupações de privacidade. As **versões 3 e 5** são baseadas em nome, elas fazem hash de um namespace mais um nome (com MD5 e SHA-1 respectivamente) para produzir um UUID determinístico, útil quando a mesma entrada deve sempre mapear para o mesmo identificador. A **versão 6** reordena os campos da versão 1 para serem ordenáveis, mas para novos sistemas o v7 é a escolha recomendada ordenada por tempo.
+
+## Escolhendo uma
+
+Recorra ao **v4** quando você só precisa de um identificador aleatório e opaco e a ordenação não importa. Recorra ao **v7** quando o UUID for uma chave de banco de dados ou qualquer outra coisa que se beneficie de ordenar por horário de criação, o que é cada vez mais a recomendação padrão. A [ferramenta UUID](/tools/uuid) gera ambos e decodifica a versão, a variante e o carimbo de tempo embutido de qualquer UUID que você colar, inteiramente no seu navegador.

@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUID:er som databasnycklar: v4, v7 och indexlokalitet"
+summary: "Den verkliga avvägningen mellan UUID:er och autoinkrementerande heltal, och varför slumpmässiga v4-nycklar i tysthet skadar databasens prestanda."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Två sätt att göra en primärnyckel
+
+De flesta tabeller behöver en unik nyckel för varje rad. De två vanliga valen är ett **autoinkrementerande heltal** i databasen (1, 2, 3, ...) och en **UUID**. Heltalet är litet och naturligt ordnat; UUID:n kan genereras var som helst, av vem som helst, utan samordning. Vilket som är bäst beror på vad du värdesätter, och svaret har en prestandadimension som är lätt att missa.
+
+## Varför team griper efter UUID:er
+
+- **Ingen samordning.** Vilken tjänst, klient eller offline-enhet som helst kan prägla en UUID som inte krockar, så du behöver ingen central sekvens eller en tur-och-retur till databasen för att få ett id. Detta är ovärderligt i distribuerade system och för att generera id:n innan en rad sparas.
+- **Ogissbar.** Sekventiella heltals-id:n läcker information (hur många ordrar som finns, och id:t för nästa) och låter en angripare vandra genom poster genom att räkna upp. En slumpmässig UUID avslöjar inget av det.
+- **Sammanslagningsvänlig.** Data från separata system kombineras utan id-krockar.
+
+Kostnaden är storleken, 16 byte mot 4 eller 8 för ett heltal, vilket spelar roll eftersom primärnyckeln kopieras in i varje sekundärindex och varje främmande nyckel som refererar raden.
+
+## Den dolda kostnaden för slumpmässiga nycklar
+
+Det finns en subtilare, viktigare kostnad. Databaser lagrar rader i ett index (vanligen ett B-träd) ordnat efter primärnyckeln. Med en **sekventiell** nyckel läggs varje ny rad till i slutet av indexet, så de aktiva sidorna stannar i minnet och skrivningar är billiga. Med en **slumpmässig v4-UUID** hamnar varje infogning på en godtycklig position. Databasen måste läsa, ändra och skriva sidor spridda genom hela indexet, vilket orsakar **siduppdelningar**, **fragmentering** och långt fler cachemissar. På en stor, skrivtung tabell kan slumpmässiga nycklar mätbart sakta ner infogningar och svälla indexet, allt utan något fel att peka på.
+
+## Varför v7 ändrar kalkylen
+
+Detta är precis det problem som **UUID version 7** designades för att lösa. Genom att lägga en millisekundstidsstämpel i de mest signifikanta bitarna är v7-värden **tidsordnade**: nya rader infogas nära slutet av indexet, precis som ett sekventiellt heltal, samtidigt som den decentraliserade, osamordnade genereringen av en UUID behålls. Du får större delen av indexlokalitetsfördelen hos en autoinkrement-nyckel utan den centrala sekvensen. För nya system som vill ha UUID-nycklar är v7 vanligen rätt version av precis detta skäl.
+
+## Praktiska anteckningar
+
+- **Lagra UUID:er som en inbyggd UUID- eller binärtyp, inte som en sträng på 36 tecken.** Att lagra textformen slösar utrymme och saktar ner jämförelser; binärformen är 16 byte.
+- **Använd v7 för nycklar** där infogningsprestanda spelar roll, och **v4** där du specifikt inte vill ha någon tidsinformation inbäddad i id:t.
+- Ett autoinkrementerande heltal är fortfarande utmärkt för en enkelnodstabell som aldrig behöver externt genererade id:n; UUID:er gör nytta när distribution, oförutsägbarhet eller förhandsgenerering spelar roll.
+
+[UUID-verktyget](/tools/uuid) genererar både v4 och v7 och avkodar den inbäddade tidsstämpeln i ett v7-värde, så att du ser ordningsegenskapen direkt, allt i din webbläsare.

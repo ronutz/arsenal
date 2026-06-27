@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "IPv6 adreslemesini anlamak"
+summary: "128 bitlik bir IPv6 adresinin nasıl yapılandırıldığı ve yazıldığı, onu kanonik biçimde sıkıştırma kuralları, adres türlerinin ve kapsamların ne anlama geldiği, ve arabirim tanımlayıcıları ile ters DNS'in nasıl çalıştığı."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## IPv6 neden var
+
+IPv4'ün kabaca 4,3 milyar adresi vardır (2^32). Bu 1980'lerde tükenmez görünüyordu ve şimdi kayıt kuruluşlarında uzun süredir tükenmiş durumda. RFC 4291'de adresleme için tanımlanan IPv6, adresi 32 bitten **128 bite** genişletir, ki bu 2^128 adrestir, kıtlığın tasarım kısıtlaması olmaktan çıkması için yeterince büyük bir sayı. Pratik etki, alt ağların muazzam hale gelmesi ve NAT gibi adres koruma hilelerinin temel bağlantı için artık gerekli olmamasıdır.
+
+## 128 bitlik yapı
+
+Bir IPv6 adresi 128 bittir, iki nokta üst üste ile ayrılmış **dört onaltılık basamaktan oluşan sekiz grup** olarak yazılır. Her grup 16 bitlik bir değerdir:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+O tam yazılmış biçim **genişletilmiş** gösterimdir. Uzun ve sıfır dolu olduğu için, metin biçiminin sıkıştırma kuralları vardır.
+
+## Bir adres yazmak: sıkıştırma kuralları
+
+İki kural metni kısaltır ve RFC 5952 sonucu kanonik kılar (bir adres, bir tercih edilen yazım):
+
+- Her grupta **baştaki sıfırları bastır**: `0db8`, `db8` olur, `0000`, `0` olur.
+- **Ardışık tamamen-sıfır grupların bir dizisini `::` ile değiştir**. Çift iki nokta üst üste **en fazla bir kez** görünebilir ve bir veya daha fazla 16 bitlik sıfır grubunu temsil eder. Eşit uzunlukta birkaç dizi olduğunda, ilki sıkıştırılır.
+
+Yukarıdaki adrese her ikisini uygulamak onun kanonik biçimini verir:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+RFC 5952, araçların anlaşması için birkaç bitiş kuralı ekler: onaltılık basamaklar küçük harftir ve `::` tek bir sıfır grubunu "sıkıştırmak" için kullanılmaz (bu anlamlı bir şeyi kısaltmaz). IPv6 aracı hem kanonik sıkıştırılmış biçimi hem de tam genişletilmiş biçimi yan yana gösterir, böylece `::` öğesinin tam olarak neyi temsil ettiğini görebilirsiniz.
+
+Özel bir durum: bir adres, son 32 bitinde noktalı-ondalık olarak yazılmış bir **gömülü IPv4** kuyruğu taşıyabilir. En yaygın olanı, RFC 5952'nin saf onaltılık yerine `::ffff:192.0.2.128` karışık gösterimini önerdiği **IPv4-eşlenmiş** biçimdir.
+
+## Önekler ve önek aritmetiği
+
+IPv4 CIDR gibi, bir IPv6 öneki `adres/uzunluk` olarak yazılır, burada uzunluk baştaki ağ bitlerini sayar:
+
+```
+2001:db8::/64
+```
+
+Bir `/64`, ilk 64 bitin ağ ve kalan 64'ün arabirim tanımlayıcısı olduğu anlamına gelir. `/64`, tek bir LAN için standart boyuttur ve tek başına 2^64 adres, yaklaşık 18 kentilyon barındırır. Araç, verdiğiniz herhangi bir önek için ağ (ilk) adresini, son adresi ve sayıyı hesaplar, ağı bulmak için ana bilgisayar bitlerini sıfıra maskeleyerek, ana bilgisayar bitleri ayarlanmış bir adres yazsanız bile.
+
+## Adres türleri ve kapsamlar
+
+Bir adresin yüksek bitleri onu bir kategoriye yerleştirir. RFC 4291 ve IANA kayıt defterinden en önemlileri:
+
+- **Genel unicast (2000::/3)**, yönlendirilebilir genel alandır, genel bir IPv4 adresinin IPv6 eşdeğeridir.
+- **Benzersiz yerel, veya ULA (fc00::/7)**, özel kullanım alanıdır (RFC 4193), IPv4'teki RFC 1918'e benzer. Genel internette yönlendirilmez.
+- **Link-local unicast (fe80::/10)**, yalnızca tek bir bağlantıda geçerlidir ve her IPv6 arabiriminde otomatik olarak yapılandırılır. Yönlendiriciler onu asla iletmez. Kapsamı yerel bağlantıdır.
+- **Multicast (ff00::/8)**, tek bir ana bilgisayar yerine bir grubu adresler. Adresin içindeki bir kapsam alanı ne kadar uzağa ulaştığını söyler: interface-local, link-local, admin-local, site-local, organization-local veya global. Örneğin `ff02::1` link-local tüm-düğümler grubudur.
+- **Loopback (::1/128)**, 127.0.0.1'in IPv6 eşdeğeridir ve **belirtilmemiş adres (::/128)** "adres yok" anlamına gelir, yapılandırma sırasında yer tutucu olarak kullanılır.
+- **Belgeleme (2001:db8::/32)**, örnekler ve yazma için RFC 3849 tarafından ayrılmıştır, ki bu gördüğünüz neredeyse her IPv6 örneğinin, RFC 4291'in kendisindeki kanonik olan dahil, onu kullanmasının nedenidir.
+
+IPv6 aracı, eşleşen türü ve eşleştirdiği belirli öneki, ayrıca multicast ve link-local adresler için kapsamı raporlar.
+
+## Arabirim tanımlayıcıları ve EUI-64
+
+Tipik bir `/64`'te, alt 64 bit **arabirim tanımlayıcısıdır**. Onu inşa etmenin tarihsel bir yolu **değiştirilmiş EUI-64** idi (RFC 4291, Ek A): 48 bitlik MAC adresini al, ortaya `ff:fe` baytlarını ekle ve yedinci biti (universal/local biti) çevir. Bu, arabirim kimliğini donanım adresinden türetilebilir kılıyordu. Araç, arabirim kimliğinin ortasında ele veren `ff:fe`'yi gördüğünde, süreci tersine çevirir ve size özgün MAC'i gösterir. Modern sistemler bunun yerine sıklıkla rastgeleleştirilmiş veya gizlilik arabirim tanımlayıcılarını tercih eder, tam da kimliği bir MAC'ten türetmek donanım adresini sızdırdığı için.
+
+## Ters DNS: ip6.arpa
+
+IPv6 için ters aramalar (adresten ada) **ip6.arpa** alan adı altında yaşar. Adres, 32 onaltılık yarım baytına genişletilir, o yarım baytlar tersine çevrilir ve her biri bir etiket olur. Böylece `2001:db8::1`, `...8.b.d.0.1.0.0.2.ip6.arpa` ile biten bir ad olur. Araç bu adı herhangi bir adres için üretir, ki bu bir `PTR` kaydına koyacağınız tam değerdir.
+
+## Aracın ne yaptığına dair bir not
+
+IPv6 aracı, deterministik, yerel bir hesaplayıcıdır. Ayrıştırır, kanonikleştirir, sınıflandırır ve hesaplar, hepsi tarayıcınızda, canlı ağa karşı herhangi bir arama olmadan. Size bir adresin yapısal olarak ne **olduğunu** söyler. Size o adresin ulaşılabilir, tahsis edilmiş veya kullanımda olup olmadığını söylemez, ki bunlar ağı veya bir kayıt kuruluşunu sorgulamayı gerektiren ayrı sorulardır.

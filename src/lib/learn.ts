@@ -55,18 +55,8 @@ export interface Article extends ArticleFrontmatter {
 const CONTENT_ROOT = path.join(process.cwd(), "src", "content", "learn");
 const SOURCE_LOCALE = "en";
 
-/** Resolve the content directory for a locale, falling back to English. */
-function localeDir(locale: string): string {
-  const dir = path.join(CONTENT_ROOT, locale);
-  return fs.existsSync(dir) ? dir : path.join(CONTENT_ROOT, SOURCE_LOCALE);
-}
-
-/**
- * getAllArticles — every article for a locale (English fallback). Used by the
- * Learn section index and to build the search index.
- */
-export function getAllArticles(locale: string = SOURCE_LOCALE): Article[] {
-  const dir = localeDir(locale);
+/** Read every .mdx in a directory into Article objects (empty if the dir is absent). */
+function readArticlesFrom(dir: string): Article[] {
   if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)
@@ -75,9 +65,30 @@ export function getAllArticles(locale: string = SOURCE_LOCALE): Article[] {
       const raw = fs.readFileSync(path.join(dir, file), "utf-8");
       const { data, content } = matter(raw);
       return { ...(data as ArticleFrontmatter), body: content };
-    })
-    // Stable, predictable order: by title.
-    .sort((a, b) => a.title.localeCompare(b.title));
+    });
+}
+
+/**
+ * getAllArticles — every article for a locale, with PER-ARTICLE English
+ * fallback. English is the complete source set; for any other locale we start
+ * from English and override, by slug, with whichever articles have a localized
+ * file. This lets a locale be translated one article at a time: untranslated
+ * articles fall back to English individually (mirroring the message-pack
+ * deepMerge model), rather than a whole-directory all-or-nothing fallback that
+ * would hide every not-yet-translated article. Used by the Learn index, the
+ * in-tool panels, and the search index.
+ */
+export function getAllArticles(locale: string = SOURCE_LOCALE): Article[] {
+  const source = readArticlesFrom(path.join(CONTENT_ROOT, SOURCE_LOCALE));
+  if (locale === SOURCE_LOCALE) {
+    return source.sort((a, b) => a.title.localeCompare(b.title));
+  }
+  const bySlug = new Map<string, Article>(source.map((a) => [a.slug, a]));
+  for (const a of readArticlesFrom(path.join(CONTENT_ROOT, locale))) {
+    bySlug.set(a.slug, a); // localized article overrides the English one
+  }
+  // Stable, predictable order: by title.
+  return [...bySlug.values()].sort((a, b) => a.title.localeCompare(b.title));
 }
 
 /** getArticle — one article by slug (English fallback), or null if missing. */

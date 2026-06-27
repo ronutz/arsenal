@@ -16,13 +16,31 @@
 
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { redEducationUrl, externalRel } from "@/config/redEducation";
 
 export default async function SiteFooter() {
   const t = await getTranslations("footer");
 
+  // Honoring Red Education, the authorized training center. Lead-attributed
+  // (utm_campaign=footer) and referrer-preserving (externalRel drops the
+  // referrer-suppressing rel for Red Education links).
+  const reduUrl = redEducationUrl("footer");
+
   return (
     <footer className="site-footer">
       <div className="container site-footer-inner">
+        {/* Red Education callout — book official training with the authorized
+            training center. Prominent, honoring, and lead-attributed. */}
+        <p className="footer-built footer-redu">
+          <a
+            href={reduUrl}
+            target="_blank"
+            rel={externalRel(reduUrl)}
+            className="footer-built-link"
+          >
+            {t("redEducation")} →
+          </a>
+        </p>
         <p className="footer-built">
           {/* The whole line links to the colophon; simple and reliable. */}
           <Link href="/colophon" className="footer-built-link">
@@ -50,6 +68,14 @@ export default async function SiteFooter() {
         <p className="footer-contribute">
           <Link href="/contact" className="footer-contribute-link">
             {t("feedback")}
+          </Link>
+        </p>
+        {/* Privacy notice: an accurate, plain-language disclosure (no cookies,
+            no analytics, what little data the hosting layer and a local theme
+            setting involve), covering the GDPR / LGPD essentials. */}
+        <p className="footer-contribute">
+          <Link href="/privacy" className="footer-contribute-link">
+            {t("privacy")}
           </Link>
         </p>
       </div>

@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Révocation de certificats : CRL, OCSP et certificats à vie courte"
+summary: "Pourquoi un certificat doit parfois être annulé avant d'expirer, pourquoi les systèmes de révocation classiques fonctionnent mal, et pourquoi l'industrie réduit plutôt les durées de vie des certificats."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Pourquoi révoquer
+
+Un certificat porte une date d'expiration, mais parfois il doit être annulé avant que cette date n'arrive. La clé privée pourrait avoir fuité, le certificat pourrait avoir été émis par erreur, ou le domaine pourrait avoir changé de mains. Dans tous ces cas le certificat est toujours cryptographiquement valide et toujours dans sa fenêtre de validité, pourtant les parties utilisatrices devraient cesser de lui faire confiance. La révocation est le mécanisme pour dire « ignorez ce certificat même s'il n'a pas expiré ». La partie difficile est de livrer ce message de façon fiable à chaque client du monde, et cela s'avère être le maillon le plus faible de la PKI du web.
+
+## CRL : la liste de blocage publiée
+
+La réponse originale est la Liste de Révocation de Certificats (Certificate Revocation List), définie aux côtés du profil de certificat dans la RFC 5280. Une CA publie périodiquement une liste signée des numéros de série qu'elle a révoqués, et les certificats peuvent y pointer via un CRL Distribution Point. Un client télécharge la liste et vérifie si le numéro de série du certificat y apparaît.
+
+Le problème est la taille et la fraîcheur. Une CA occupée peut accumuler d'énormes listes, donc télécharger et analyser une CRL à chaque connexion est impraticable, et une liste en cache est périmée jusqu'à la prochaine publication. Les CRL sont encore utilisées, de plus en plus sous des formes compressées et prétraitées que les navigateurs se livrent à eux-mêmes, mais comme vérification par connexion elles passent mal à l'échelle.
+
+## OCSP : interroger sur un certificat
+
+L'Online Certificate Status Protocol, RFC 6960, était censé corriger le problème de taille en laissant un client interroger sur un seul certificat au lieu de télécharger la liste entière. Le client envoie le numéro de série du certificat à un OCSP responder et reçoit en retour un « good », « revoked » ou « unknown » signé.
+
+Cela échange un problème contre trois. Cela ajoute de la latence, car le client fait maintenant un aller-retour réseau supplémentaire pendant l'établissement de la connexion. Cela fuite de la vie privée, car le responder apprend quels sites l'utilisateur visite. Et cela crée un couplage de disponibilité : si le responder est en panne, le client doit soit échouer la connexion, soit, bien plus communément, **échouer en douceur** (soft-fail) et procéder comme si le certificat était bon, ce qui défait silencieusement tout l'intérêt.
+
+## OCSP stapling et Must-Staple
+
+Le stapling adresse les problèmes de latence et de vie privée en faisant en sorte que le *serveur* récupère une réponse OCSP récente et signée et l'attache au handshake TLS (l'extension status_request de la RFC 6066). Le client obtient la fraîcheur sans contacter le responder. Must-Staple, RFC 7633, est une extension de certificat qui dit « rejetez-moi si un staple manque », fermant la brèche du soft-fail, mais elle est rarement déployée car un seul hoquet de stapling met alors le site hors service.
+
+## La vérité inconfortable
+
+À travers ces mécanismes, l'échec récurrent est le soft-fail : quand l'information de révocation est indisponible, les clients choisissent massivement la disponibilité au lieu de la sécurité et acceptent le certificat. Cela fait de la révocation un filet de sécurité non fiable précisément quand il est nécessaire. Les navigateurs ont répondu avec leurs propres systèmes hors bande qui se poussent des données de révocation à eux-mêmes, mais les protocoles par connexion n'ont jamais tenu leur promesse.
+
+## La réponse moderne : faire expirer les certificats plus tôt
+
+Si vous ne pouvez pas annuler un certificat de façon fiable, l'alternative est de le rendre à vie suffisamment courte pour que l'annulation importe rarement : un certificat compromis expire simplement de lui-même en quelques jours ou semaines. L'industrie s'est engagée exactement dans cette voie. Le Ballot SC-081v3 du CA/Browser Forum, approuvé en avril 2025, réduit par phases la durée de vie maximale de certificat TLS public de 398 jours à 200 jours (à compter de mars 2026), 100 jours (mars 2027) et 47 jours (mars 2029), la période de réutilisation de validation de domaine rétrécissant à 10 jours. Séparément, depuis 2023 le Forum a permis aux certificats à vie courte qui expirent dans les 7 jours de sauter entièrement le support de CRL et OCSP, et Let's Encrypt a commencé à émettre des certificats avec des durées de vie mesurées en jours. Toute la prémisse est qu'une durée de vie assez courte est, elle-même, la révocation.
+
+Cela ne fonctionne qu'avec l'automatisation. Renouveler des certificats toutes les six ou sept semaines à la main est intenable, c'est pourquoi le protocole ACME (voir l'[article de demande de signature](/learn/certificate-signing-request)) et l'outillage de cycle de vie des certificats sont devenus une infrastructure essentielle plutôt qu'une commodité. Notez que ces règles s'appliquent aux certificats publiquement de confiance dans les programmes de racine des navigateurs ; une PKI interne privée fixe sa propre politique.
+
+## Ce que cela signifie quand vous inspectez un certificat
+
+Quand vous décodez un certificat, la fenêtre de validité n'est plus une réflexion après coup une-fois-par-an ; elle devient le contrôle de révocation primaire. Le rapport de l'outil sur notBefore, notAfter, et si le certificat est valide en ce moment est, de plus en plus, la chose la plus pertinente pour la sécurité à son sujet. Les listes de révocation et les responders existent encore, mais la direction du voyage est claire : raccourcir la durée de vie pour que la question de la révocation surgisse rarement.

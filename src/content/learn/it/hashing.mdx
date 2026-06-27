@@ -1,0 +1,43 @@
+---
+slug: hashing
+title: "Hashing crittografico: SHA-256 e la famiglia SHA-2"
+summary: "Cosa garantisce una funzione di hash, le proprietà che la rendono crittografica e perché un digest non è cifratura."
+concepts: ["hashing", "sha-256", "digest", "integrity", "web-crypto"]
+relatedTools: ["hash"]
+relatedArticles: ["hmac", "hashing-encryption-encoding", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Cos'è un hash
+
+Una funzione di hash crittografico prende un input di qualsiasi dimensione, una parola, un file, un'immagine disco di molti gigabyte, e produce un output di dimensione fissa chiamato **digest**. SHA-256 restituisce sempre 256 bit (32 byte), che gli si dia un carattere o un milione. Lo stesso input dà sempre lo stesso digest, e perfino un cambiamento di un bit nell'input ne produce uno completamente diverso.
+
+Quell'impronta di dimensione fissa e deterministica è tutta l'idea. Un digest è un sostituto compatto dei dati: se due digest coincidono, puoi essere fiducioso che gli input fossero identici; se differiscono, gli input differivano da qualche parte.
+
+## Le proprietà che lo rendono crittografico
+
+Molte funzioni riducono i dati a una dimensione fissa. Una funzione guadagna la parola *crittografico* mantenendo tre garanzie rigorose:
+
+- **Resistenza alla preimmagine (a senso unico).** Dato un digest, è computazionalmente irrealizzabile trovare un input che lo produca. Non puoi eseguire la funzione all'indietro.
+- **Resistenza alla seconda preimmagine e alle collisioni.** È irrealizzabile trovare due input diversi che facciano hash sullo stesso digest. Senza questo, un digest sarebbe un'impronta debole.
+- **L'effetto valanga.** Invertire un singolo bit di input cambia circa metà dei bit di output, senza alcuno schema visibile che leghi input a output.
+
+Ciò vale solo per le funzioni che hanno superato l'esame. SHA-1, un tempo standard, è ora **rotto** per la resistenza alle collisioni (una collisione pratica è stata dimostrata nel 2017) e non dovrebbe essere usato dove la sicurezza ne dipende. La famiglia SHA-2, SHA-256, SHA-384 e SHA-512, resta solida ed è oggi il valore predefinito sicuro.
+
+## Un hash non è cifratura
+
+Questa è la confusione più comune, quindi vale la pena dirla con chiarezza. La cifratura è **reversibile** con una chiave: cifri per tenere i dati segreti e decifri per riaverli. Un hash **non ha chiave né inversa**. Non puoi "deshashare" un digest per recuperare l'input, perché l'output è molto più piccolo degli input possibili e l'informazione è deliberatamente distrutta. L'hashing serve alla verifica, non alla segretezza.
+
+## Dove l'hashing dà il suo contributo
+
+- **Integrità e checksum.** Pubblica l'SHA-256 di un file accanto a esso; chi lo scarica e ricalcola il digest può confermare che nulla è stato alterato o corrotto in transito.
+- **Indirizzamento per contenuto.** Sistemi come Git nominano gli oggetti tramite il loro hash, così che contenuto identico finisce automaticamente allo stesso indirizzo.
+- **Firme digitali.** Gli schemi di firma firmano l'hash di un messaggio anziché l'intero messaggio, perché il digest è piccolo e di dimensione fissa.
+
+Un'avvertenza importante: **le password sono un caso speciale.** Un semplice hash veloce come SHA-256 è lo strumento sbagliato per memorizzare password, proprio perché è veloce, un attaccante può tentare miliardi di ipotesi al secondo. La memorizzazione delle password richiede un algoritmo deliberatamente lento e con sale, come bcrypt, scrypt o Argon2. Usa SHA-2 per l'integrità; usa un hash di password per le password.
+
+## Come lo calcola lo strumento
+
+Lo [strumento Hash](/tools/hash) usa l'implementazione nativa Web Crypto del browser di SHA-1, SHA-256, SHA-384 e SHA-512, lo stesso codice verificato che il tuo browser usa per TLS, e mostra ogni digest in esadecimale e Base64. Nulla viene caricato; il calcolo avviene localmente.

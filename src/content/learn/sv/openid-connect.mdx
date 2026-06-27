@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: identitet ovanpå OAuth 2.0"
+summary: "Hur OIDC lägger till autentisering till OAuth:s auktorisering, vad ID-tokenet är och varför kodflödet med PKCE är den rekommenderade vägen."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Auktorisering är inte autentisering
+
+OAuth 2.0 besvarar "är denna applikation behörig att komma åt den resursen å användarens vägnar?". Det är ett *auktoriserings*protokoll, och det säger medvetet inget standardiserat om *vem användaren är*. Ändå försökte applikationer återanvända det för inloggning, på inkompatibla och ibland osäkra sätt. **OpenID Connect (OIDC)** är standarden som åtgärdar detta: ett tunt identitetslager ovanpå OAuth 2.0 som lägger till autentisering utan att kasta bort något av vad OAuth redan gör.
+
+## ID-tokenet
+
+Det avgörande tillägget är **ID-tokenet**, och det är en JWT. Medan ett OAuth-åtkomsttoken är avsett för ett API och ofta är ogenomskinligt för klienten, är ID-tokenet avsett för *klienten* och bär standardanspråk om den autentiserade användaren:
+
+- `iss` (utfärdare) och `aud` (målgrupp, klienten det utfärdades för)
+- `sub` (det stabila, unika användar-ID:t)
+- `exp` och `iat` (utgång och utfärdat-vid)
+- `nonce` (binder tokenet till den specifika inloggningsbegäran och besegrar replay)
+- profilanspråk som `name`, `email` och `picture` när dessa scope beviljas
+
+Eftersom det är en JWT verifierar klienten ID-tokenets signatur och validerar de anspråken precis som beskrivet för vilken JWT som helst. Samma kontroller av algoritmlåsning och `aud`/`iss`/`exp` gäller.
+
+## Hur en inloggning flödar
+
+OIDC återanvänder OAuth:s maskineri. Det rekommenderade flödet är **auktoriseringskodflödet med PKCE**:
+
+1. Applikationen skickar användaren till leverantörens auktoriseringsändpunkt, begär scopet `openid` (plus `profile`, `email` och så vidare), och inkluderar en PKCE-`code_challenge`.
+2. Användaren autentiserar och samtycker hos leverantören.
+3. Applikationen får en engångskod och byter den (genom att bevisa innehav av PKCE-`code_verifier`) mot ett **ID-token** och ett **åtkomsttoken**.
+4. Applikationen verifierar ID-tokenet för att fastställa *vem användaren är* och använder åtkomsttokenet för att anropa API:er *å dess vägnar*.
+
+Två ändpunkter fullbordar bilden: en **userinfo**-ändpunkt returnerar profilanspråk för ett giltigt åtkomsttoken, och ett **discovery-dokument** på `/.well-known/openid-configuration` tillkännager leverantörens ändpunkter och dess JWKS-URL, så att en klient kan hitta nycklarna för att verifiera ID-token och följa nyckelrotation automatiskt.
+
+## Varför det spelar roll
+
+OIDC är vad de flesta "Logga in med ..."-knappar faktiskt kör. Att hålla de två tokenen åtskilda är nyckelinsikten: **ID-tokenet bevisar identiteten för klienten**, **åtkomsttokenet auktoriserar API-anrop**, och de är inte utbytbara. Kombinerat med kodflödet och PKCE är det det moderna, standardbaserade sättet att göra federerad inloggning.
+
+[PKCE-verktyget](/tools/pkce) genererar och verifierar flödets `code_verifier` och `code_challenge`, och [JWT-verktyget](/tools/jwt) avkodar och verifierar ID-tokenet, båda helt i din webbläsare, utan att något skickas.

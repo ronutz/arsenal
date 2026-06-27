@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Erişim token'ları, yenileme token'ları ve kimlik token'ları"
+summary: "Sürekli karıştırılan üç OAuth ve OpenID Connect token'ı, her birinin aslında ne işe yaradığı ve yanlış olanı yanlış yere göndermenin neden gerçek bir hata olduğu."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Üç token, üç iş
+
+Yetkilendirme kodu akışı tamamlandıktan sonra ([kod akışı](/learn/oauth-code-flow) makalesine bakın), bir istemci üç farklı token tutuyor olabilir ve onları birbirine karıştırmak OAuth ve OpenID Connect'teki en yaygın hatalardan biridir. Bir erişim token'ı, bir yenileme token'ı ve bir kimlik token'ı yüzeysel olarak benzer görünür, özellikle üçü de tesadüfen JWT olduğunda, ama farklı hedef kitleleri ve farklı amaçları vardır. Onlarda isabet etmek çoğunlukla, her token için, onun kime ait olduğunu ve neyi yetkilendirdiğini sorma meselesidir.
+
+## Erişim token'ı: bir API'ye anahtar
+
+Erişim token'ı, istemcinin bir istek yapma izni olduğunu kanıtlamak için bir kaynak sunucusuna (bir API'ye) gönderdiği şeydir. OAuth'un makineden makineye erişim için bir oturum anahtarına en yakın sahip olduğu şeydir, OAuth 2.0 (RFC 6749) ile tanımlanır. İki özellik önemlidir. **Kısa ömürlüdür**, çoğu zaman dakikalardan bir saate, böylece sızdırılmış bir token yalnızca kısa süre işe yarar. Ve bir **bearer** (hamil) token'dır: onu tutan kullanabilir, daha fazla kimlik kanıtı olmadan, bu yüzden erişim token'ları yalnızca TLS üzerinde gezmeli ve asla günlüğe yazılmamalı veya bir URL'ye konmamalıdır. API token'ı ve taşıdığı kapsamları doğrular, sonra isteği sunar veya reddeder.
+
+## Yenileme token'ı: yeni erişim token'ları almak
+
+Erişim token'ları hızlı sona erdiği için, kullanıcıyı her birkaç dakikada bir yeniden oturum açmaya zorlamak çekilmez olurdu. Yenileme token'ı bunu çözer: istemcinin yetkilendirme sunucusunda taze bir erişim token'ıyla takas ettiği, kullanıcı etkileşimi olmaksızın, uzun ömürlü bir kimlik bilgisidir. Tam da uzun ömürlü olduğu için bir erişim token'ından çok daha hassastır, dolayısıyla arka kanalda (sunucu tarafında veya korunan depolamada) kalmalı ve asla bir tarayıcı ön yüzüne ifşa edilmemelidir. İyi uygulama **yenileme token'ı döndürmesidir**: her kullanım yeni bir yenileme token'ı verir ve eskisini geçersiz kılar, böylece çalınmış bir token, meşru istemci artık iptal edilmiş kopyayı kullanmaya çalıştığı anda saptanır. Token'lar açıkça da iptal edilebilir (RFC 7009).
+
+## Kimlik token'ı: kullanıcı hakkında bir ifade
+
+Kimlik token'ı, OpenID Connect'in OAuth'un üstüne eklediği parçadır ve en sık yanlış kullanılanıdır. Her zaman bir JWT'dir ([JWT anatomisi](/learn/jwt-anatomy) makalesine bakın) ve kimlik doğrulama olayını tanımlar: kullanıcının kim olduğu, ne zaman kimlik doğruladığı ve hangi yetkilendirme sunucusunun buna kefil olduğu. Çok önemli olarak, **kimlik token'ı istemci içindir, bir API için değil**. "Az önce kim oturum açtı" sorusunu yanıtlar, böylece uygulama bir kullanıcı oturumu kurabilir. Bir kimlik token'ını sanki bir erişim token'ıymış gibi bir kaynak sunucusuna göndermek klasik bir hatadır: API onu reddetmelidir, çünkü kimlik token'ının hedef kitlesi istemcidir ve onu yetkilendirme için kullanmak kimliği izinle karıştırır.
+
+## Bearer token'ları ve onlara güvenme cazibesi
+
+Çoğu erişim token'ı bearer token'larıdır, ki bu onları kullanması kolay ve yanlış kullanması kolay kılar. İşleme kuralları doğrudan izler: her zaman TLS, kısa ömürler, asla günlüklerde veya sorgu dizelerinde ve daha korunaklı bir seçenek varsa asla tarayıcının erişebildiği depolamada. Bearer modelinin fazla riskli olduğu yerde, **gönderici-kısıtlı** (sender-constrained) token'lar bir token'ı belirli bir istemci anahtarına bağlar (DPoP veya karşılıklı TLS gibi mekanizmalar), böylece çalınmış bir token başka biri tarafından yeniden oynatılamaz. Çoğu uygulama için TLS üzerinde kısa ömürlü bearer erişim token'ları işleyen temeldir.
+
+## Opak ile JWT erişim token'ları
+
+Bir erişim token'ı opak olabilir (API'nin yetkilendirme sunucusunun iç gözlem uç noktasını çağırarak denetlediği rastgele bir dize, RFC 7662) veya API'nin kendisinin doğruladığı bir JWT. JWT biçimi kendi kendine yeter ve bir ağ gidiş-dönüşünden kaçınır, ama sona ermeden önce iptal edilemez, ki bu erişim token'ı ömürlerinin kısa tutulmasının bir nedeni daha. Bir kimlik token'ı ise her zaman bir JWT'dir, çünkü tüm işi istemciye doğrulanabilir claim'ler iletmektir. Bir token'ın JWT olup olmaması size onun nasıl doğrulandığını söyler, ne işe yaradığını değil.
+
+## Token'ı hedef kitleyle eşleştir
+
+Çoğu token hatasını önleyen tek kural, her token'ı amaçlanan hedef kitlesiyle eşleştirmektir. **Kimlik token'ı** uygulama içindir, kimin oturum açtığını öğrenmek için. **Erişim token'ı** API içindir, bir isteği yetkilendirmek için. **Yenileme token'ı** yetkilendirme sunucusu içindir, kullanıcıyı rahatsız etmeden yeni erişim token'ları basmak için. O üç hedef kitleyi ayrı tutun, uzun ömürlü yenileme token'ını arka kanalda tutun ve her bearer token'ı kısa ömürlü bir sır gibi ele alın, böylece OAuth'un token işlemesinin geri kalanı yerli yerine oturur.

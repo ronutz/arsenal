@@ -1,0 +1,42 @@
+---
+slug: base64url
+title: "Base64URL at ang alpabetong ligtas-sa-URL"
+summary: "Bakit gumagamit ang mga JWT at PKCE ng ibang alpabetong Base64, ang dalawang karakter na nagbabago, at ano ang nangyayari sa padding."
+concepts: ["base64", "base64url", "rfc4648", "url-safe", "padding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "character-encoding", "jwt-anatomy", "pkce"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Isang encoding, dalawang alpabeto
+
+Ginagawa ng Base64 ang anumang mga byte na 64 na napi-print na karakter, apat na karakter ng output kada tatlong byte ng input. Ang karaniwang alpabeto (RFC 4648, seksyon 4) ay `A` hanggang `Z`, `a` hanggang `z`, `0` hanggang `9`, at ang dalawang simbolong `+` at `/`, kung saan ginagamit ang `=` upang punan ang huling grupo.
+
+Ang problema ay may natatanging kahulugan ang `+`, `/`, at `=` sa ibang konteksto. Sa isang URL, ang `/` ay tagahati ng landas, ang `+` ayon sa kasaysayan ay nangangahulugang puwang sa mga query string, at ang `=` ay naghihiwalay ng susi sa halaga. Sa pangalan ng file, iligal ang `/` sa karamihan ng sistema. Kaya hindi mailalagay ang hilaw na Base64 sa isang URL o pangalan ng file nang hindi nasisira o nangangailangan ng dagdag na escaping.
+
+## Ano ang binabago ng Base64URL
+
+Ang Base64URL (RFC 4648, seksyon 5) ay ang parehong encoding na may mas ligtas na alpabeto. Eksaktong dalawang karakter ang naiiba:
+
+- Ang `+` ay nagiging `-` (gitling)
+- Ang `/` ay nagiging `_` (salungguhit)
+
+Pareho ang lahat ng iba pang karakter, at hindi nagbabago ang aritmetikang tatlong byte tungo sa apat na karakter. Ang resulta ay isang string na nakakaligtas kapag inilagay sa landas ng URL, parametro ng query, o pangalan ng file, nang walang anumang percent-encoding.
+
+Ang padding ang isa pang pagkakaiba. Pinupunan ng karaniwang Base64 ang huling grupo hanggang sa multiplo ng apat gamit ang `=`. Karaniwang **lubos na inaalis** ng Base64URL ang padding, dahil maabala rin ang `=` sa mga URL. Palaging maaaring muling kalkulahin ng isang decoder kung gaano karaming padding ang inalis mula sa haba ng string, kaya walang nawawala.
+
+## Saan ito talagang natatagpuan
+
+Hindi sulok na eksotiko ng espesipikasyon ang Base64URL. Ito ang encoding sa likod ng ilang bagay na ginagamit mo nang palagian:
+
+- **JSON Web Token.** Binubuo ang isang JWT ng tatlong segment ng Base64URL na pinagdugtong ng mga tuldok (`header.payload.signature`). Ang pagpapalit ng `+`/`/` at ang inalis na `=` ang eksaktong dahilan kung bakit ang isang token ay isang malinis na string na ligtas-sa-URL.
+- **PKCE.** Ang `code_challenge` sa isang daloy ng authorization code ng OAuth ay ang Base64URL encoding (walang padding) ng isang SHA-256 hash, eksaktong upang makalakbay ito sa isang URL.
+- **Web Push, JWK, at maraming token** ang nag-eencode ng kanilang binary na field sa parehong paraan.
+
+## Isang praktikal na babala
+
+Dahil labis na nag-o-overlap ang mga alpabeto, maaaring halos magkapareho ang itsura ng isang string na Base64URL at isang karaniwang string na Base64, at wasto sa dalawa ang isang halagang walang `+`, `/`, o `=`. Lumalabas lamang ang hindi pagkakatugma kapag ang hilaw na mga byte ay gumagawa ng `-`/`_` o `+`/`/`, kung saan nabibigo ang pag-decode gamit ang maling alpabeto o nagbubunga ng kalokohan. Kapag hindi nag-de-decode ang isang token, ang alpabeto ang unang dapat suriin.
+
+Ine-encode at dine-decode ng [tool na Base64](/tools/base64) ang parehong karaniwan at ligtas-sa-URL na alpabeto, pinangangasiwaan ang nawawalang padding, at ipinapakita ang hilaw na mga byte, lahat sa iyong browser. Walang anumang ipinepeyst mo na ipinapadala kahit saan.

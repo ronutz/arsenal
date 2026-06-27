@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Hoe IPv4-adressen werken"
+summary: "De 32 bits achter elk dotted-quad-adres, en wat private, loopback- en speciale bereiken betekenen."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tweeëndertig bits vermomd
+
+Een IPv4-adres is een enkel 32-bits getal. We schrijven het bijna nooit zo omdat 32 enen en nullen moeilijk te lezen zijn, dus wordt het opgesplitst in vier 8-bits groepen genaamd **octetten**, elk getoond in decimaal van 0 tot 255 en verbonden door punten. `192.168.1.10` is slechts een vriendelijkere manier om één specifieke 32-bits waarde te schrijven.
+
+Omdat elk octet 8 bits is, is de hele ruimte 2³² adressen, ongeveer 4,3 miljard. Dat klonk enorm in de jaren 1980 en is de reden waarom IPv4-adresuitputting decennia later een echt probleem werd, en waarom private adressering en IPv6 bestaan.
+
+## Netwerkdeel en hostdeel
+
+Geen adres staat alleen, het hoort bij een blok, en binnen dat blok delen de bits zich in een **netwerkdeel** (welk blok dit is) en een **hostdeel** (welke machine binnen het blok). De prefixlengte, in CIDR-stijl geschreven als `/24`, markeert waar die deling valt. Alles links van de lijn is netwerk; alles rechts identificeert een host. Dit is hetzelfde idee dat in de CIDR-notatie wordt verkend, bekeken vanaf de adreszijde.
+
+## Bereiken met speciale betekenis
+
+Niet elk adres is een gewoon hostadres. Verscheidene bereiken zijn gereserveerd voor specifieke doeleinden, en ze herkennen is deel van het lezen van elke netwerkconfiguratie:
+
+- **Private bereiken (RFC 1918)** zijn gereserveerd voor gebruik binnen private netwerken en worden nooit gerouteerd op het publieke internet:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Dit is waarom thuis- en kantoornetwerken zo vaak `192.168.x.x` of `10.x.x.x` gebruiken, die adressen zijn vrij om overal te hergebruiken omdat ze nooit op het open internet verschijnen.
+- **Loopback (`127.0.0.0/8`)** verwijst altijd naar de lokale machine zelf. `127.0.0.1` is het adres dat een computer gebruikt om met zichzelf te praten.
+- **Link-local-adressen (`169.254.0.0/16`)** worden zelf-toegewezen wanneer een apparaat geen DHCP-server kan bereiken. Er een zien betekent gewoonlijk "geen adres werd uitgedeeld".
+- **Het niet-gespecificeerde adres (`0.0.0.0`)** en de standaardroute (`0.0.0.0/0`) zijn speciaal: de laatste is de opvangroute die overeenkomt met elke bestemming die niet door een specifiekere route wordt gedekt.
+
+## Waarom de speciale bereiken ertoe doen voor beveiliging
+
+Deze gereserveerde bereiken zijn niet slechts trivia. Een tool die een door de gebruiker geleverd adres ophaalt moet weigeren private, loopback- en link-local-bereiken te bereiken, of het kan worden misleid om verzoeken te doen tegen interne systemen die het nooit zou mogen aanraken, een klasse van aanval genaamd server-side request forgery (serverzijde-verzoekvervalsing). Weten welke bereiken intern zijn is de eerste stap in het ertegen verdedigen. Dit is precies waarom de netwerk-rakende tools op deze site een opgelost adres tegen deze bereiken controleren voordat ze ooit verbinden.
+
+Om te zien hoe een adres binnen zijn blok zit, zijn netwerkadres, broadcastadres, en het bruikbare bereik eromheen, probeer de [CIDR-calculator](/learn), die het allemaal lokaal in je browser berekent.

@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID: v4 aleatorio y v7 ordenado por tiempo"
+summary: "Cómo un identificador de 128 bits se mantiene único sin una autoridad central, y por qué v7 se está convirtiendo en el valor por defecto para claves de base de datos."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Qué es un UUID
+
+Un UUID (Universally Unique Identifier, también llamado GUID) es un valor de 128 bits usado para etiquetar algo, una fila, una solicitud, un archivo, sin coordinar con nadie más. La promesa en el nombre es que dos UUID generados de forma independiente, a todos los efectos prácticos, nunca son iguales. Eso permite que servicios separados, dispositivos sin conexión y procesos paralelos acuñen identificadores que no colisionarán cuando los datos se fusionen más tarde, sin un asignador central que reparta números.
+
+Un UUID se escribe como 32 dígitos hexadecimales en cinco grupos separados por guiones: `8-4-4-4-12`, por ejemplo `550e8400-e29b-41d4-a716-446655440000`. Dos posiciones específicas no son aleatorias: un nibble de **versión** identifica cómo se generó el UUID, y un campo de **variante** marca el estándar de disposición (el moderno es RFC 4122 / RFC 9562).
+
+## Versión 4: aleatoria
+
+Con diferencia la forma más común, la **versión 4** es casi enteramente aleatoria: 122 de los 128 bits provienen de una fuente aleatoria segura, con los bits restantes fijos para marcar la versión y la variante. Con tanta entropía, la probabilidad de que dos UUID v4 colisionen es insignificante para cualquier volumen realista de identificadores.
+
+Su debilidad no es la unicidad sino el **orden**. Como los valores v4 son aleatorios, las inserciones consecutivas se dispersan por todo el espacio de claves. Cuando un UUID v4 se usa como clave primaria de base de datos, esa aleatoriedad pelea contra el índice B-tree: las filas nuevas caen en lugares arbitrarios, perjudicando la localidad de caché y fragmentando el índice con el tiempo.
+
+## Versión 7: ordenada por tiempo
+
+La **versión 7**, estandarizada en RFC 9562 (2024), se diseñó para corregir exactamente eso. Coloca una **marca de tiempo Unix de 48 bits en milisegundos** en los bits más significativos, seguida de bits aleatorios para la unicidad dentro del mismo milisegundo. Como la marca de tiempo va al frente, los UUID v7 **se ordenan en orden de creación** cuando se comparan como texto o bytes.
+
+Esa única propiedad hace de v7 una clave primaria mucho mejor: las filas nuevas se añaden cerca del final del índice en lugar de dispersarse, restaurando la localidad que disfrutan las claves enteras secuenciales, manteniendo la unicidad descentralizada de un UUID. Un valor v7 también lleva su propio momento de creación, que puedes leer directamente de esos bits iniciales, la [herramienta UUID](/tools/uuid) lo hace cuando inspeccionas uno.
+
+## Las otras versiones, brevemente
+
+Para completar: la **versión 1** combina una marca de tiempo con la dirección MAC de la máquina generadora, lo que filtra la identidad del hardware y el momento de creación y por ello plantea preocupaciones de privacidad. Las **versiones 3 y 5** se basan en nombre, hacen hash de un espacio de nombres más un nombre (con MD5 y SHA-1 respectivamente) para producir un UUID determinista, útil cuando la misma entrada debe asignarse siempre al mismo identificador. La **versión 6** reordena los campos de la versión 1 para que sean ordenables, pero para sistemas nuevos v7 es la opción recomendada ordenada por tiempo.
+
+## Elegir uno
+
+Recurre a **v4** cuando solo necesitas un identificador aleatorio y opaco y el orden no importa. Recurre a **v7** cuando el UUID vaya a ser una clave de base de datos o cualquier otra cosa que se beneficie de ordenar por momento de creación, que es cada vez más la recomendación por defecto. La [herramienta UUID](/tools/uuid) genera ambos y decodifica la versión, la variante y la marca de tiempo incrustada de cualquier UUID que pegues, enteramente en tu navegador.

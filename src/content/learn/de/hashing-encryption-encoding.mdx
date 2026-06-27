@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Hashen, Verschlüsselung und Kodierung: drei verschiedene Dinge"
+summary: "Drei Operationen, die ständig verwechselt werden, sauber getrennt durch zwei Fragen: Ist es umkehrbar, und braucht es einen Schlüssel?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Drei Wörter, ständig vermengt
+
+„Ist dieses Passwort verschlüsselt?" „Hash einfach die URL." „Die Daten sind kodiert, also sind sie sicher." Diese Sätze sind überall, und die meisten verwenden das falsche Wort. Hashen, Verschlüsselung und Kodierung sind drei verschiedene Operationen mit drei verschiedenen Zwecken, und sie zu verwechseln führt zu echten Sicherheitsfehlern, etwa Passwörter mit einer Methode zu speichern, die nichts schützt.
+
+Die gute Nachricht: Zwei einfache Fragen trennen sie vollständig.
+
+## Die zwei Fragen
+
+1. **Ist es umkehrbar?** Können Sie die ursprüngliche Eingabe aus der Ausgabe zurückgewinnen?
+2. **Braucht es einen Schlüssel?** Ist ein Geheimnis erforderlich, oder kann jeder die Operation ausführen?
+
+Trägt man die drei Operationen gegen diese Fragen auf, wird das Bild klar:
+
+- **Kodierung** ist umkehrbar und braucht keinen Schlüssel.
+- **Hashen** ist nicht umkehrbar und braucht keinen Schlüssel.
+- **Verschlüsselung** ist umkehrbar und braucht einen Schlüssel.
+
+Diese Tabelle ist der ganze Artikel. Der Rest ist Detail.
+
+## Kodierung: umkehrbar, kein Schlüssel
+
+Kodierung schreibt Daten in eine andere Darstellung um, damit sie durch einen Kanal reisen können, der ein bestimmtes Format erwartet. Base64 verwandelt Bytes in sicheren Text; URL-Kodierung maskiert Zeichen, die in einer URL unzulässig sind; UTF-8 verwandelt Zeichen in Bytes. Nichts davon ist geheim. Jeder kann es zurück dekodieren, weil Umkehrbarkeit der ganze Zweck ist. **Kodierung bietet null Sicherheit.** Wenn Sie hören „das Token ist kodiert, also ist es sicher", ist das ein Warnsignal: kodiert bedeutet lesbar.
+
+## Hashen: nicht umkehrbar, kein Schlüssel
+
+Eine Hashfunktion bildet jede Eingabe auf einen Digest fester Größe ab, und Sie können sie nicht rückwärts laufen lassen, um die Eingabe zurückzugewinnen. Sie braucht keinen Schlüssel, sodass jeder denselben Digest aus derselben Eingabe berechnen kann. Das macht sie perfekt für **Überprüfung**: Integritätsprüfungen, Inhaltsadressierung und Änderungserkennung. Sie ist das richtige Werkzeug, wenn Sie bestätigen müssen, dass zwei Dinge gleich sind, ohne das Original zu speichern, aber sie verbirgt nichts umkehrbar, weil es nichts umzukehren gibt.
+
+## Verschlüsselung: umkehrbar, mit Schlüssel
+
+Verschlüsselung wandelt Daten so um, dass nur jemand mit dem richtigen Schlüssel sie zurückwandeln kann. Dies ist die einzige der drei, die für **Geheimhaltung** gebaut ist. Sie ist von Natur aus umkehrbar, aber nur mit dem Schlüssel, was genau die Eigenschaft ist, die den anderen beiden fehlt: Kodierung ist von jedem umkehrbar, Hashen von niemandem, Verschlüsselung von Schlüsselinhabern.
+
+## Die richtige wählen
+
+Der Zweck entscheidet das Werkzeug. Müssen Daten den Transport als Text überstehen? Kodieren Sie sie. Müssen Sie Integrität prüfen oder vergleichen, ohne das Original zu speichern? Hashen Sie sie. Müssen Sie Daten vor jedem ohne Schlüssel geheim halten? Verschlüsseln Sie sie.
+
+Der klassische Fehler ist, zur falschen Spalte zu greifen. Passwörter mit einfacher Kodierung (von jedem umkehrbar) oder gar einfacher Verschlüsselung (ein gestohlener Schlüssel legt alles offen) zu speichern ist weit schwächer als ein zweckgebauter Passwort-Hash, der in seinem eigenen Artikel behandelt wird. Das [Hash-Werkzeug](/tools/hash) und das [Base64-Werkzeug](/tools/base64) lassen Sie zusehen, wie Hashen und Kodierung sich bei derselben Eingabe unterschiedlich verhalten, der Digest kehrt nie um, das Base64 immer.

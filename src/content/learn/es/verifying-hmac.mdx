@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Verificar un HMAC con seguridad: tiempo constante y repetición"
+summary: "Por qué comparar firmas con == filtra un canal lateral de tiempo, y por qué una firma válida por sí sola no detiene una petición repetida."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Calcular la etiqueta es la parte fácil
+
+Producir un HMAC correctamente está bien entendido. Los errores se concentran en el lado de la *verificación*, donde dos problemas atrapan a quien acertó la criptografía pero falló la lógica de alrededor: cómo comparas las etiquetas y qué prueba realmente una etiqueta válida.
+
+## Compara en tiempo constante
+
+Para verificar, el receptor recalcula el HMAC sobre el mensaje y lo coteja con la etiqueta que aportó el emisor. La forma natural de comparar dos cadenas, un `==` normal, retorna en cuanto encuentra el primer byte distinto. Esa salida anticipada filtra tiempo: una etiqueta cuyo primer byte es correcto tarda un poquito más en rechazarse que una que está mal de inmediato. Midiendo los tiempos de respuesta a lo largo de muchos intentos, un atacante puede recuperar la etiqueta correcta byte a byte, un **ataque de tiempo**.
+
+La defensa es una **comparación en tiempo constante** que siempre examina todos los bytes, sin importar dónde esté la primera diferencia, de modo que el tiempo empleado no revela nada sobre cuán cerca estuvo una suposición. La mayoría de los lenguajes proporcionan una:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Nunca verifiques una firma con igualdad de cadenas normal.
+
+## Una firma válida no es una petición nueva
+
+Incluso un HMAC perfectamente verificado solo prueba que el mensaje lo produjo alguien con la clave y que no se alteró. No dice nada sobre *cuándo*. Un atacante que captura una petición firmada legítima puede enviar exactamente los mismos bytes de nuevo, y la firma sigue verificándose. Eso es un **ataque de repetición**, e importa para cualquier cosa que cause un efecto: un pago, un cambio de estado, una orden.
+
+Detener la repetición necesita algo en los datos firmados que haga cada petición única y comprobable:
+
+- Una **marca de tiempo** en la carga firmada, con el servidor rechazando peticiones fuera de una ventana corta (y teniendo en cuenta el desfase de reloj).
+- Un **nonce**, un valor único por petición que el servidor registra y se niega a aceptar dos veces.
+
+Ambos deben estar *dentro* del contenido firmado, para que un atacante no pueda alterarlos sin romper la firma.
+
+## La regla en dos partes
+
+Una petición es fiable solo cuando su HMAC se verifica en tiempo constante **y** es nueva. Falla cualquiera de las dos y la firma da una falsa sensación de seguridad. Este es el lado de la verificación de la misma disciplina que la firma de peticiones.
+
+La [herramienta HMAC](/tools/hmac) te permite calcular y comparar etiquetas para un mensaje y una clave directamente en tu navegador, sin nada enviado, así que puedes comprobar una firma a mano mientras desarrollas o depuras.

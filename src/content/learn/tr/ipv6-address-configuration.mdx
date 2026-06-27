@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "IPv6 ana bilgisayarları adresleri nasıl alır: SLAAC ve DHCPv6"
+summary: "Bir IPv6 ana bilgisayarının link-local'den yukarıya kendini nasıl yapılandırdığı, yönlendirici duyurularının neye karar verdiği, ve SLAAC, gizlilik adresleri ile DHCPv6 arasındaki fark."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Varsayılan olarak kendini yapılandırma
+
+IPv6'nın tanımlayıcı özelliklerinden biri, bir ana bilgisayarın hiçbir sunucu ve hiçbir elle kurulum olmadan çalışan bir adres yapılandırabilmesidir. IPv4'ün adresleri dağıtmak için DHCP'ye yaslandığı yerde, IPv6 onları yönlendiricinin yayınladığı bilgiden yerel olarak inşa edebilir. Sonuç, tek bir arabirimin genellikle bir kerede birkaç adresle, her biri farklı bir amaç için, son bulmasıdır, ki bu IPv4'ten gelen insanları şaşırtır.
+
+## Link-local önce gelir
+
+Her şeyden önce, her IPv6 arabirimi `fe80::/10` içinde bir link-local adres yapılandırır (aracın link-local olarak etiketlediği tür). Yerel olarak üretilir, asla yerel bağlantının ötesine yönlendirilmez ve ana bilgisayarın komşular ve yönlendiricilerle hemen konuşabilmesi için vardır, adreslerinin geri kalanını nasıl yapılandıracağını sormak dahil. Link-local önyüklemedir: her zaman mevcuttur ve [komşu keşfi](/learn/ipv6-neighbor-discovery) makalesindeki komşu keşfi makinesi onun üzerinde çalışır.
+
+## Yönlendirici duyurusu yöntemi belirler
+
+Genel olarak yönlendirilebilir bir adres almak için, ana bilgisayar Yönlendirici Duyurularını (Router Advertisements) dinler, bir yönlendiricinin gönderdiği (ve bir ana bilgisayarın bir Yönlendirici Talebi, Router Solicitation ile isteyebileceği) periyodik mesajlar. Duyuru, on-link öneki taşır, neredeyse her zaman bir /64, ve ana bilgisayara kendini nasıl yapılandıracağını söyleyen iki bayrak:
+
+- **M (Managed) bayrağı** "bir adres almak için DHCPv6 kullan" der.
+- **O (Other) bayrağı** "adresini kendin yapılandır, ama DNS gibi diğer ayarları DHCPv6'dan al" der.
+
+Her iki bayrak da kapalıyken, ana bilgisayar saf durumsuz otomatik yapılandırma kullanır. IPv6 adres atamasının, kira dağıtan tek bir sunucu yerine, yönlendiricinin duyurduğu ile ana bilgisayarın seçtiği arasında bir müzakere olmasının nedeni budur.
+
+## SLAAC: kendi adresini inşa etmek
+
+Durumsuz Adres Otomatik Yapılandırması (Stateless Address Autoconfiguration, RFC 4862), bir ana bilgisayarın kendi adresini oluşturmak için kullandığı mekanizmadır: duyurudan /64 önekini al ve 64 bitlik bir arabirim tanımlayıcısı ekle. Bir alt ağın bir /64 olması gerekmesinin tüm nedeni budur ([alt ağ oluşturma](/learn/ipv6-subnetting) makalesine bakın). Hiçbir sunucu atamayı izlemez, ki "durumsuz"un anlamı budur.
+
+Arabirim tanımlayıcısı çeşitli yollarla oluşturulabilir ve bunun gerçek gizlilik sonuçları vardır:
+
+- **Değiştirilmiş EUI-64**, tanımlayıcıyı arabirimin MAC adresinden türetir, ki aracın gösterebileceği bir şey. Kararlı ve elverişlidir, ama donanım adresini ana bilgisayarın kullandığı her IPv6 adresine gömer, uzak bir sunucunun cihazı ağlar boyunca izlemesine olanak tanır.
+- **Kararlı, opak tanımlayıcılar** (RFC 7217), ağ başına kararlı olan ama hiçbir donanım adresi açığa vurmayan bir tanımlayıcı üretir, belirli bir bağlantıda tutarlı bir adresi korurken ağlar arası izleme sorununu düzeltir.
+- **Geçici (gizlilik) adresleri** (RFC 8981, daha önceki RFC 4941'i geçersiz kılan), zamanla dönen rastgele tanımlayıcılar üretir, dolayısıyla giden bağlantılar hiç uzun ömürlü bir adres sunmaz.
+
+Modern işletim sistemleri tipik olarak gelen bağlantılar için kararlı bir adres ve giden bağlantılar için dönen bir geçici adres kullanır, ki tek bir arabirimin birden çok genel adres göstermesinin nedeni budur.
+
+## Yinelenen Adres Tespiti
+
+Bir ana bilgisayar oluşturduğu herhangi bir adresi gerçekten kullanmadan önce, Yinelenen Adres Tespiti (Duplicate Address Detection) çalıştırır: kendi geçici adresi için bir Komşu Talebi (Neighbor Solicitation) gönderir ve bekler. Biri yanıt verirse, adres zaten kullanımdadır ve sahiplenilmemelidir. DAD, kendini yapılandırmanın çakışma üretmediğinin ucuz bir sigortasıdır ve eşlik eden makalede tanımlanan aynı komşu keşfi mesajlarına yaslanır.
+
+## Durumsal denetim için DHCPv6
+
+Bir yönetici adresleri merkezi olarak izlemek ve atamak istediğinde, DHCPv6 (RFC 8415) durumsal atama sağlar, tıpkı IPv4 DHCP gibi: bir sunucu belirli adresleri kiralar ve kimde ne olduğunu kaydeder. Ana bilgisayar hâlâ kendi adresini SLAAC ile oluştururken yalnızca DNS sunucuları gibi yapılandırmayı dağıtan durumsuz bir DHCPv6 modu da vardır, ki O bayrağının seçtiği budur. DHCPv6, önek devrinin de yaşadığı yerdir, bir ev yönlendiricisinin arkasında alt ağ oluşturmak için bütün bir önek aldığı mekanizma.
+
+## Birçok adres, tasarımca
+
+Yanında götürülecek zihinsel model, bir IPv6 ana bilgisayarının büyük ölçüde kendi kendine giden olduğudur. Her zaman bir link-local adresi vardır, öneki ve yapılandırma yöntemini yönlendirici duyurularından öğrenir ve bayraklara bağlı olarak ya kendi genel adreslerini SLAAC ile inşa eder ya da onları DHCPv6'dan kiralar, sıklıkla kararlı bir adres ve dönen bir geçici adresle yan yana son bulur. Araç size bir adres gösterip türünü tanımladığında, o tür size bu yollardan hangisinin onu ürettiğini söyler.

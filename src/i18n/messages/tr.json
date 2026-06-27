@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Aracı şimdi dene.",
       "body": "Aşağıdaki CIDR hesaplayıcı yerel olarak çalışır. Bir ağ ve önek gir, adres aralığını, ana bilgisayar sayısını ve maskeyi gör. Hiçbir şey hiçbir yere gönderilmez.",
-      "learnHeading": "Kavramları öğren"
+      "learnHeading": "Kavramları öğren",
+      "toolboxCta": "Tüm araç kutusunu aç"
     },
     "provenance": {
       "title": "Katkılar ve kaynaklar",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Hesaplamak için bir CIDR bloğu gir.",
         "invalid": "Bu geçerli bir CIDR bloğu gibi görünmüyor. 192.168.1.0/24 gibi bir biçim dene."
-      }
+      },
+      "name": "CIDR / Alt Ağ Hesaplayıcı",
+      "blurb": "Herhangi bir IPv4 CIDR bloğunu ağ ve yayın adreslerine, kullanılabilir ana bilgisayar aralığına, ana bilgisayar sayısına ve ağ maskesine ayır. Tamamen tarayıcında çalışır."
     },
     "title": "Araçlar",
     "lede": "Tamamen tarayıcında çalışan küçük, hızlı, gizliliğe saygılı araçlar. Girdiğin hiçbir şey hiçbir yere gönderilmez. Dahası geliyor.",
     "open": "Aç",
     "comingSoon": "Yakında",
-    "note": "Bu araç seti büyüyor. Yeni araçlar hazır olduğunda buraya eklenir, her biri yerel olarak çalışır ve kullanımı ücretsizdir."
+    "note": "Bu araç seti büyüyor. Yeni araçlar hazır olduğunda buraya eklenir, her biri yerel olarak çalışır ve kullanımı ücretsizdir.",
+    "learnHeading": "Kavramları öğren",
+    "backToTools": "Araçlar",
+    "references": "Kaynaklar",
+    "categories": {
+      "identity": "Kimlik ve token'lar",
+      "encoding": "Kodlama ve veri",
+      "hashing": "Hash ve kripto",
+      "identifiers": "Tanımlayıcılar",
+      "pki": "Sertifikalar ve PKI",
+      "networking": "Ağ"
+    },
+    "hash": {
+      "name": "Hash Üreteci (SHA-1/256/384/512)",
+      "blurb": "Herhangi bir metnin SHA-1, SHA-256, SHA-384 ve SHA-512 özetlerini, tarayıcının yerel Web Crypto'su ile hesapla; hex ve Base64 olarak gösterilir. Tamamen tarayıcında çalışır.",
+      "algorithmLabel": "Hash algoritması",
+      "inputLabel": "Hash'lenecek metin",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Hash'leme Web Crypto ile yerel olarak çalışır. Yazdığın hiçbir şey tarayıcından çıkmaz.",
+      "bits": "{bits} bit ({bytes} bayt)",
+      "sha1Note": "SHA-1, çakışma direnci açısından kırılmıştır ve güvenlik (imzalar, sertifikalar) için uygun değildir. Yalnızca güvenlik amacı taşımayan sağlama toplamları ve eski uyumluluk için uygundur.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı"
+    },
+    "hmac": {
+      "name": "HMAC Üreteci (SHA-256/384/512)",
+      "blurb": "Gizli anahtarınla bir mesaj üzerinde anahtarlı bir HMAC hesapla; tarayıcının yerel Web Crypto'su ile hex ve Base64 olarak gösterilir. JWT doğrulayıcının HS256 için kullandığı yapının aynısı. Anahtarın asla tarayıcından çıkmaz.",
+      "algorithmLabel": "HMAC algoritması",
+      "messageLabel": "Mesaj",
+      "messagePlaceholder": "Kimliği doğrulanacak mesaj",
+      "keyLabel": "Gizli anahtar",
+      "keyPlaceholder": "Paylaşılan gizli anahtarın",
+      "runsLocally": "HMAC, Web Crypto ile yerel olarak çalışır. Mesajın ve anahtarın asla tarayıcından çıkmaz.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı"
+    },
+    "base64": {
+      "name": "Base64 / Base64URL Kodlayıcı ve Çözücü",
+      "blurb": "Metni standart ya da URL için güvenli Base64'e kodla veya iki varyanttan birini metne geri çöz. Eksik dolguya toleranslıdır ve ikili (UTF-8 olmayan) sonuçları işaretler. Tamamen tarayıcında çalışır.",
+      "directionLabel": "Yön",
+      "variantLabel": "Base64 varyantı",
+      "direction": {
+        "encode": "Kodla (metinden Base64'e)",
+        "decode": "Çöz (Base64'ten metne)"
+      },
+      "variant": {
+        "standard": "Standart",
+        "urlsafe": "URL için güvenli"
+      },
+      "inputLabelEncode": "Kodlanacak metin",
+      "inputLabelDecode": "Çözülecek Base64",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Kodlama ve çözme yerel olarak çalışır. Yapıştırdığın hiçbir şey tarayıcından çıkmaz.",
+      "decodeErrors": {
+        "invalid-characters": "Bu geçerli bir Base64 değil. Base64 alfabesi dışında karakterler içeriyor.",
+        "invalid-length": "Bu geçerli bir Base64 değil. Uzunluğu geçerli bir Base64 uzunluğu değil."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Çözülmüş metin",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "emptyOutput": "(boş)",
+      "decodedBytes": "{bytes, plural, one {# bayt çözüldü} other {# bayt çözüldü}}.",
+      "notUtf8": "{bytes, plural, one {# bayt çözüldü} other {# bayt çözüldü}}, ancak sonuç geçerli UTF-8 metni değil (büyük olasılıkla ikili)."
+    },
+    "pkce": {
+      "name": "OAuth PKCE Doğrulayıcı ve Challenge",
+      "blurb": "Bir OAuth 2.0 code_verifier üret ve onun S256 code_challenge'ını türet veya kendininkini yapıştır ve RFC 7636'nın uzunluk ve karakter kümesi kurallarına göre denetle. Yetkilendirme sunucunun beklediği SHA-256 base64url türetmesinin aynısı. Tamamen tarayıcında çalışır.",
+      "verifierLabel": "Code verifier",
+      "verifierPlaceholder": "Bir code_verifier yapıştır veya bir tane üret",
+      "generate": "Üret",
+      "runsLocally": "Üretme ve türetme yerel olarak çalışır. Doğrulayıcın asla tarayıcından çıkmaz.",
+      "lengthBadge": "Uzunluk {length} (43-128)",
+      "charsetOk": "Ayrılmamış karakter kümesi",
+      "charsetBad": "Geçersiz karakterler",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "Plain yöntemi önerilmez. İstemcinin SHA-256 hesaplayabildiği her yerde S256 kullan.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı"
+    },
+    "uuid": {
+      "name": "UUID Üreteci ve İnceleyici (v4 / v7)",
+      "blurb": "Rastgele v4 veya zaman sıralı v7 UUID'ler üret ya da herhangi bir UUID yapıştırarak sürümünü, varyantını ve (v7 için) gömülü oluşturma zaman damgasını oku. Üretme, tarayıcının güvenli rastgelelik kaynağını kullanır. Tamamen tarayıcında çalışır.",
+      "versionLabel": "UUID sürümü",
+      "generate": "Üret",
+      "clear": "Temizle",
+      "emptyHint": "Bir sürüm seç ve üret.",
+      "runsLocally": "Üretme ve inceleme yerel olarak çalışır. Hiçbir şey hiçbir yere gönderilmez.",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "inspectLabel": "Bir UUID incele",
+      "inspectPlaceholder": "Çözmek için herhangi bir UUID yapıştır",
+      "valid": "Geçerli UUID",
+      "invalid": "Geçerli bir UUID değil",
+      "versionField": "Sürüm",
+      "variantField": "Varyant",
+      "timestampField": "Zaman damgası (v7)",
+      "versionValue": "Sürüm {version}"
+    },
+    "jwt": {
+      "name": "JWT Çözücü ve Doğrulayıcı",
+      "blurb": "Bir JSON Web Token'ın başlığını ve claim'lerini çöz, son kullanma ve zamanlamasını sade bir dille oku ve yapıştırılan bir sırla bir HS256/384/512 imzasını doğrula. Tamamen tarayıcında çalışır.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Çözme ve imza kontrolleri yerel olarak çalışır. Token ve sır asla tarayıcından çıkmaz.",
+      "errors": {
+        "empty": "Çözmek için bir JSON Web Token yapıştır.",
+        "format": "Bu bir JWT'ye benzemiyor. Bir token, noktalarla ayrılmış üç base64url parçasından oluşur: header.payload.signature.",
+        "header": "Başlık geçerli değil. base64url ile kodlanmış JSON olmalı.",
+        "payload": "Yük geçerli değil. base64url ile kodlanmış JSON olmalı."
+      },
+      "panels": {
+        "header": "Başlık",
+        "payload": "Yük",
+        "signature": "İmza",
+        "noSignature": "İmza segmenti yok (güvenli olmayan token)."
+      },
+      "claims": {
+        "iss": "Veren (iss)",
+        "sub": "Konu (sub)",
+        "aud": "Hedef kitle (aud)",
+        "jti": "JWT kimliği (jti)",
+        "iat": "Veriliş zamanı (iat)",
+        "nbf": "Şundan önce değil (nbf)",
+        "exp": "Sona erer (exp)"
+      },
+      "status": {
+        "expired": "Süresi doldu {rel}",
+        "expiresIn": "Geçerli, sona erer {rel}",
+        "notYetValid": "Henüz geçerli değil, başlar {rel}",
+        "noExpiry": "Son kullanma claim'i yok (exp)"
+      },
+      "verify": {
+        "label": "HMAC imzasını doğrula (HS256/384/512)",
+        "placeholder": "paylaşılan sır",
+        "button": "Doğrula",
+        "valid": "İmza bu sır için geçerli.",
+        "invalid": "İmza bu sırla eşleşmiyor.",
+        "algNone": "Bu token güvenli değil (alg: none), bu yüzden doğrulanacak bir imza yok.",
+        "unsupportedAlg": "Tarayıcıdaki doğrulama yalnızca HS256/384/512 kapsar. {alg} asimetriktir ve bir açık anahtara ihtiyaç duyar.",
+        "hint": "Sır yalnızca tarayıcında bir HMAC hesaplamak için kullanılır. Asla hiçbir yere gönderilmez."
+      }
+    },
+    "x509": {
+      "name": "X.509 Sertifika Çözücü",
+      "blurb": "Konusunu, verenini, geçerlilik penceresini, açık anahtarını ve v3 uzantılarını SHA-256 ve SHA-1 parmak izleriyle okumak için PEM, base64 veya hex bir sertifika yapıştır. Tamamen tarayıcında çalışır.",
+      "inputLabel": "X.509 sertifikası",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Çözme ve parmak izleri yerel olarak çalışır. Sertifika asla tarayıcından çıkmaz.",
+      "errors": {
+        "empty": "Çözmek için bir X.509 sertifikası yapıştır.",
+        "format": "Bu bir sertifikaya benzemiyor. PEM (-----BEGIN CERTIFICATE-----), base64 ya da hex yapıştır.",
+        "der": "Baytlar geçerli DER değil. END satırı dahil, tüm sertifikanın yapıştırıldığını denetle.",
+        "structure": "Bu, ASN.1 olarak çözülüyor ama bir X.509 sertifikası değil. Bir sertifika, TBSCertificate, signatureAlgorithm ve signatureValue'dan oluşan bir SEQUENCE'tir."
+      },
+      "status": {
+        "valid": "Geçerli, sona erer {rel}",
+        "expired": "Süresi doldu {rel}",
+        "notYetValid": "Henüz geçerli değil, başlar {rel}"
+      },
+      "panels": {
+        "subject": "Konu",
+        "issuer": "Veren",
+        "details": "Ayrıntılar",
+        "publicKey": "Açık anahtar",
+        "extensions": "Uzantılar",
+        "fingerprints": "Parmak izleri"
+      },
+      "fields": {
+        "version": "Sürüm",
+        "serial": "Seri numarası",
+        "notBefore": "Şundan önce değil",
+        "notAfter": "Şundan sonra değil",
+        "signatureAlgorithm": "İmza algoritması",
+        "algorithm": "Algoritma",
+        "keySize": "Anahtar boyutu",
+        "exponent": "Üs",
+        "curve": "Eğri",
+        "bits": "{n} bit",
+        "selfSigned": "Kendinden veren"
+      },
+      "ext": {
+        "san": "Konu alternatif adları",
+        "keyUsage": "Anahtar kullanımı",
+        "extKeyUsage": "Genişletilmiş anahtar kullanımı",
+        "basicConstraints": "Temel kısıtlamalar",
+        "subjectKeyId": "Konu anahtarı tanımlayıcısı",
+        "authorityKeyId": "Yetkili anahtarı tanımlayıcısı",
+        "caTrue": "Sertifika yetkilisi (CA: true)",
+        "caFalse": "Bir CA değil (CA: false)",
+        "pathLen": "yol uzunluğu {n}",
+        "critical": "kritik"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Parmak izleri hesaplanıyor..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6 Araç Takımı",
+      "blurb": "Kanonik (RFC 5952) ve tam genişletilmiş biçimlerini, özel kullanım sınıflandırmasını, önek aritmetiğini, varsa bir EUI-64 MAC'i ve ip6.arpa ters DNS adını görmek için bir IPv6 adresi ya da öneki ayrıştır. Tamamen tarayıcında çalışır.",
+      "inputLabel": "IPv6 adresi veya öneki",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Ayrıştırma yerel olarak çalışır. Adres asla tarayıcından çıkmaz.",
+      "errors": {
+        "empty": "Çözmek için bir IPv6 adresi veya öneki gir.",
+        "format": "Bu geçerli bir IPv6 adresi değil. Sekiz hex grubu kullan, isteğe bağlı olarak :: ile bir kez sıkıştır (örneğin 2001:db8::1).",
+        "prefix": "Önek uzunluğu geçerli değil. IPv6 için 0 ile 128 arasında olmalı."
+      },
+      "panels": {
+        "forms": "Kanonik biçimler",
+        "classification": "Sınıflandırma",
+        "prefix": "Önek",
+        "identifiers": "Tanımlayıcılar"
+      },
+      "fields": {
+        "compressed": "Sıkıştırılmış (RFC 5952)",
+        "expanded": "Genişletilmiş",
+        "type": "Tür",
+        "scope": "Kapsam",
+        "embeddedIpv4": "Gömülü IPv4",
+        "network": "Ağ",
+        "firstAddress": "İlk adres",
+        "lastAddress": "Son adres",
+        "count": "Adresler",
+        "hostBits": "Ana bilgisayar bitleri",
+        "eui64": "EUI-64 MAC",
+        "reverseDns": "Ters DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "çok noktaya yayın"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Gizlilik",
+    "title": "Verileriniz ve bu sitenin onlarla ne yaptığı",
+    "lede": "Bu web sitesinin bilgilerinizle tam olarak ne yapıp ne yapmadığına dair sade bir dille açıklama. Yalnızca güven verici olmaktan ziyade doğru olacak şekilde yazılmıştır, çünkü GDPR ve Brezilya'nın LGPD'si gibi düzenlemeler altında önemli olan doğru bildirimdir.",
+    "shortTitle": "Kısa sürüm",
+    "short1": "Bu site hiçbir çerez yerleştirmez, hiçbir analitik çalıştırmaz, hiçbir reklam kullanmaz ve hiçbir üçüncü taraf izleyici veya parmak izi (fingerprinting) içermez. Hiçbir şey sizi web boyunca takip etmez.",
+    "short2": "Ziyaretçilerinin profillerini satmaz, paylaşmaz veya oluşturmaz ve onu okumanız için sizden hiçbir şey istemez.",
+    "short3": "Etkileşimli araçlar tamamen tarayıcınızda çalışır. İçlerine yapıştırdığınız veya yazdığınız şey cihazınızda kalır ve hiçbir yere iletilmez.",
+    "short4": "Verilerle ilgili yalnızca üç şey vardır ve her biri aşağıda açıklanmıştır: kendi tarayıcınızda kaydedilen tek bir tema ayarı, her site ziyaretinin barındırma katmanında oluşturduğu standart bağlantı günlükleri ve e-posta ile göndermeyi seçtiğiniz herhangi bir mesaj.",
+    "controllerTitle": "Sorumlu kim",
+    "controllerBody": "Burası Rodolfo Nützmann'ın kişisel web sitesidir (ronutz.com). Herhangi bir gizlilik sorusu için veya aşağıda açıklanan haklardan herhangi birini kullanmak için hello@ronutz.com adresine yazın. Talepler doğrudan, veri sorumlusu sıfatıyla Rodolfo Nützmann tarafından ele alınır.",
+    "noTrackTitle": "Çerez yok, izleme yok, analitik yok",
+    "noTrackBody": "Bu site hiçbir türde çerez yerleştirmez. Hiçbir analitik hizmeti (Google Analytics veya Plausible gibi), hiçbir reklam ağı, hiçbir sosyal medya izleme pikseli ve hiçbir cihaz parmak izi kullanmaz. Ziyaretiniz bu amaçlarla ölçülmez, profillenmez veya kimseyle paylaşılmaz.",
+    "browserTitle": "Tarayıcınızda ne saklanır",
+    "browserBody": "Tek küçük bir şey: sitenin bir sonraki ziyaretinizde hatırlayabilmesi için tarayıcınızın yerel deposunda (local storage) kaydedilen, seçtiğiniz görsel tema. Bu, kendi cihazınızda kalan, asla bu siteye veya başka birine gönderilmeyen ve tarayıcınız aracılığıyla istediğiniz zaman temizlenebilen bir kolaylık ayarıdır. Sizinle ilgili başka hiçbir veri cihazınızda saklanmaz.",
+    "hostingTitle": "Barındırma ve sunucu günlükleri",
+    "hostingBody": "Site, barındırmasını ve içerik dağıtımını sağlayan Cloudflare aracılığıyla sunulur. Herhangi bir web sitesinde olduğu gibi, bir sayfanın yüklenmesi cihazınızın bir sunucuya bağlanması anlamına gelir ve Cloudflare, barındırma sağlayıcısı sıfatıyla, sayfaları size ulaştırmak ve siteyi kötüye kullanıma ve saldırıya karşı korumak için IP adresiniz ve standart istek ayrıntıları dahil temel bağlantı verilerini işler. Bu işleme, siteyi işletmek ve güvenliğini sağlamak için gereklidir (GDPR Madde 6(1)(f) uyarınca meşru bir menfaat ve LGPD Madde 7 ve 10'un karşılık gelen dayanakları). Sağlayıcı tarafından yalnızca kısa süre saklanır ve burada sizi tanımlamak veya izlemek için kullanılmaz.",
+    "toolsTitle": "Araçlar tarayıcınızda çalışır",
+    "toolsBody": "Bu sitedeki kod çözücüler ve hesaplayıcılar, JWT'ler, IP adresleri, sertifikalar ve geri kalanı için, tamamen tarayıcınızın içinde hesaplar. Girdiğiniz değerler kendi cihazınızda işlenir ve asla bir sunucuya gönderilmez. Otomasyon ve entegrasyonlar için ayrı bir programatik arabirim (bir API) sunulur; tasarımı gereği durumsuzdur ve kendisine gönderilen sorguların veya istek gövdelerinin hiçbirini günlüğe kaydetmez.",
+    "contactTitle": "Benimle iletişime geçerseniz",
+    "contactBody": "İletişim formu bir sunucuya hiçbir şey göndermez. Bunun yerine, kendi e-posta uygulamanızda önceden doldurulmuş bir mesaj açar; onu daha sonra kendi hesabınızdan kendiniz gönderirsiniz, böylece hiçbir şey üçüncü bir tarafın içinden geçmez. İster form aracılığıyla ister doğrudan yazın, adınız, e-posta adresiniz ve mesajınız gibi eklediğiniz bilgileri alırım ve yalnızca size yanıt vermek için kullanırım. Onları yalnızca talebinizi ele almak için gereken süre kadar saklarım, pazarlama için kullanmam ve paylaşmam.",
+    "intlTitle": "Ülkenizin dışında işleme",
+    "intlBody": "Cloudflare küresel bir ağ işlettiği için, yukarıda açıklanan bağlantı düzeyindeki işleme, Brezilya ve Avrupa Ekonomik Alanı dışında dahil olmak üzere, kendi ülkenizin dışında bulunan sunucularda gerçekleşebilir. Kişisel verilerin bu şekilde uluslararası olarak işlendiği yerlerde, bu işleme ilgili sağlayıcının sunduğu güvenceler altında yapılır.",
+    "childrenTitle": "Çocuklar",
+    "childrenBody": "Bu site profesyonel, genel bir kitleye yöneliktir. Çocuklara yönelik değildir ve bilerek onlardan kişisel veri toplamaz.",
+    "rightsTitle": "Haklarınız",
+    "rightsBody": "Yaşadığınız yere bağlı olarak, kişisel verileriniz üzerinde haklara sahipsiniz; bunlara erişmek, düzeltilmelerini veya silinmelerini sağlamak, işlenmelerine itiraz etmek veya kısıtlamak, taşınabilir bir biçimde bir kopya istemek ve nasıl işlendikleri hakkında bilgilendirilmek dahil. Bunlardan herhangi birini kullanmak için yalnızca hello@ronutz.com adresine yazın. Burada çok az kişisel veri işlendiği için, pratikte genellikle yapılacak çok az şey vardır, ancak kanal her zaman açıktır.",
+    "rightsGdpr": "Avrupa Ekonomik Alanı'nda veya Birleşik Krallık'ta iseniz, yerel veri koruma denetim makamınıza şikayette bulunma hakkına da sahipsiniz.",
+    "rightsLgpd": "Brezilya'da iseniz, LGPD'nin 18. Maddesinde belirtilen haklara sahipsiniz ve ulusal veri koruma makamına (ANPD) da başvurabilirsiniz.",
+    "changesTitle": "Bu bildirimde değişiklikler",
+    "changesBody": "Bu bildirim değişirse, gözden geçirilmiş sürüm bu sayfada yayınlanacak ve aşağıdaki tarih güncellenecektir. Esaslı değişiklikler geriye dönük olarak uygulanmayacaktır.",
+    "updated": "Son güncelleme: 28 Haziran 2026",
+    "backHome": "Ana sayfaya dön"
   },
   "footer": {
+    "redEducation": "Red Education ile resmi eğitim ayırtın",
+    "privacy": "Gizlilik",
     "builtWith": "Rodolfo Nützmann tarafından CONCORD ile yapıldı",
     "colophon": "Nasıl yapıldı",
     "openSource": "Motoru açık kaynak",
     "rights": "Açık ve ticari koşullarla sunulur.",
     "contribute": "Çevirileri iyileştirmeye yardım et",
-    "feedback": "Geri bildirim gönder"
+    "feedback": "Geri bildirim gönder",
+    "api": "API referansı",
+    "contributeTools": "Bir araç katkıla"
   },
   "search": {
     "label": "Ara",
@@ -390,13 +672,16 @@
     "emailLabel": "E-posta",
     "channels": {
       "linkedin": {
-        "description": "Profesyonel bağlantı kurun"
+        "description": "Profesyonel bağlantı kurun",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Videolar ve anlatımlar"
+        "description": "Videolar ve anlatımlar",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Perde arkası"
+        "description": "Perde arkası",
+        "label": "Instagram"
       },
       "training": {
         "label": "Resmi eğitim",
@@ -551,5 +836,50 @@
     "accessFederatedOnly": "Yalnızca birleşik oturum açma. Yedek yerel hesap yok.",
     "accessRoleLabel": "Rol",
     "accessPermsLabel": "Sahip izinleri"
+  },
+  "contributeTools": {
+    "eyebrow": "Açık araç kutusu",
+    "title": "Bir araç katkıla",
+    "lede": "Araç kutusu büyümek için tasarlandı. Her araç, açık motor üzerinde küçük, kendini tanımlayan bir modüldür ve site onu başka herkesin yükleyebileceği şekilde yükler. Uygun bir aracın varsa, öner.",
+    "shapeTitle": "Bir araç nedir",
+    "shapeBody": "Bir araç bir arada üç şeydir: onu tanımlayan bir manifest (ne olduğu, kabul ettiği girdi, doğruluğunun nereden geldiği), işi yapan tek bir saf çalıştırma işlevi ve işlevin doğru olduğunu kanıtlayan sabit girdi-çıktı çiftlerinden oluşan bir referans vektörleri kümesi. Motor bir aracı manifestinden yükler, böylece iyi biçimlendirilmiş bir modül sitenin geri kalanına dokunmadan yerine oturur.",
+    "principlesTitle": "Bir aracın uyması gerekenler",
+    "principlesBody": "Hesaplama yerel olarak çalışır ve belirlenimcidir: aynı girdi her zaman aynı çıktıyı verir; sonuçta saat, ağ ya da rastgelelik yoktur. Hassas olan her şey varsayılan olarak cihazda kalır. Doğruluk, görüşe değil, referans vektörlerine ve bir RFC ya da yayımlanmış bir standart gibi belirtilen kaynaklara dayanır. Kod, izin verici bir lisansla yayımlanır; böylece site ve başka herkes onun üzerine inşa edebilir.",
+    "proposeTitle": "Bir tane öner",
+    "proposeBody": "E-posta ile kısa bir öneri gönder: aracın ne hesapladığı, üretmesi gereken tam çıktıyla birlikte örnek bir girdi ve doğruluğunun dayandığı kaynak. Manifestin bir taslağı ve birkaç referans vektörü hoş karşılanır ama zorunlu değildir. Uyuyorsa, motora ve araç kutusuna eklenir.",
+    "emailLabel": "E-posta",
+    "backToTools": "Araç kutusuna dön"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Bu sitedeki araçlar tarayıcında çalışır ve verilerini cihazında tutar. Otomasyon için (betikler, pipeline'lar ve entegrasyonlar) aynı belirlenimci hesaplamalar küçük bir HTTP API olarak sunulur. Bu, tarayıcı araçlarının programatik karşılığıdır, onların yerine geçen bir şey değil.",
+    "privacyTitle": "Bunun verilerin için anlamı",
+    "privacyBody": "API yalnızca ona gönderdiğin girdiyi alır, bir sonuç hesaplar ve onu döndürür. Durumsuzdur ve hiçbir sorgu değerini veya istek gövdesini günlüğe yazmaz. Garantili sıfır veri çıkışına ihtiyacın varsa, tarayıcı araçlarını kullan ya da açık motoru kendin çalıştır.",
+    "engineTitle": "Tarayıcıyla aynı motor",
+    "engineBody": "Her uç nokta, tarayıcıdaki aracın çağırdığı motor işlevinin aynısını çağırır; böylece API ve tarayıcı bayt bayt aynı sonuçları döndürür. O motor, @ronutz/netcore, izin verici bir lisansla açık kaynaklıdır.",
+    "specTitle": "Spesifikasyon",
+    "specBody": "Tam sözleşme OpenAPI 3.1 olarak yayımlanır. İndir, kendi araçlarını ona yönelt ya da aşağıdaki referansı oku.",
+    "downloadSpec": "openapi.yaml indir",
+    "baseUrlLabel": "Temel URL",
+    "authLabel": "Kimlik doğrulama",
+    "authValue": "Yok. Bu, herkese açık, salt okunur bir API'dir.",
+    "referenceTitle": "Referans",
+    "loading": "Spesifikasyon yükleniyor.",
+    "loadError": "Spesifikasyon yüklenemedi.",
+    "tryItTitle": "Dene",
+    "tryItSend": "Gönder",
+    "tryItRunning": "Çalışıyor.",
+    "tryItHint": "Bu origin üzerindeki canlı API'ye karşı çalışır. Girdin uç noktaya gönderilir.",
+    "paramsTitle": "Parametreler",
+    "responsesTitle": "Yanıtlar",
+    "schemasTitle": "Şemalar",
+    "exampleLabel": "Örnek",
+    "requiredLabel": "zorunlu",
+    "fieldLabel": "Alan",
+    "typeLabel": "Tür",
+    "descriptionLabel": "Açıklama",
+    "viewReference": "Referans",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI yüklenemedi."
   }
 }

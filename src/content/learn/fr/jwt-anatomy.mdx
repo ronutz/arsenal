@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Anatomie d'un JSON Web Token"
+summary: "Les trois segments d'un JWT, comment la signature le rend digne de confiance, et pourquoi décoder un token n'est pas la même chose que le vérifier."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ce qu'est un JWT
+
+Un JSON Web Token (JWT, défini dans la RFC 7519) est une façon compacte et autonome de transporter un ensemble de **claims**, des affirmations sur une entité (généralement un utilisateur) plus quelques métadonnées, sous une forme qu'un destinataire peut vérifier. C'est le format de token derrière la plupart de l'authentification web moderne : un token d'ID OpenID Connect est un JWT, et les tokens d'accès OAuth 2.0 le sont très souvent aussi.
+
+« Autonome » est l'idée clé. Plutôt qu'un id de session aléatoire que le serveur doit rechercher dans une base de données, un JWT transporte les claims *en lui-même*, signées pour que le destinataire puisse leur faire confiance sans aller-retour. Cela rend les JWT pratiques pour les systèmes sans état et distribués, avec un compromis important traité à la fin.
+
+## Les trois segments
+
+Un JWT est composé de trois segments encodés en Base64URL joints par des points :
+
+```
+header.payload.signature
+```
+
+Chaque segment a une fonction distincte :
+
+- L'**en-tête** (header) est un petit objet JSON qui nomme l'algorithme de signature et le type de token, par exemple `{"alg":"HS256","typ":"JWT"}`. La valeur `alg` indique au destinataire comment vérifier la signature.
+- La **charge utile** (payload) est l'objet JSON des claims. Elle contient des claims enregistrées aux significations standard (`iss` émetteur, `sub` sujet, `aud` audience, `exp` expiration, `nbf` pas-avant, `iat` émis-le, `jti` id du token) aux côtés de toute claim personnalisée que l'émetteur ajoute.
+- La **signature** est calculée sur l'en-tête et la charge utile encodés ensemble, à l'aide de l'algorithme de l'en-tête. C'est ce qui rend les deux premiers segments dignes de confiance.
+
+Comme l'en-tête et la charge utile sont seulement encodés en Base64URL, non chiffrés, quiconque détient le token peut les décoder et les lire. C'est la propriété la plus importante à intérioriser : **une charge utile de JWT est lisible, pas secrète.** N'y mettez jamais de mot de passe, de numéro de carte ni quoi que ce soit de sensible.
+
+## La signature : comment la confiance s'établit
+
+La signature est ce qui sépare un JWT de toute chaîne qu'un client pourrait fabriquer. Sa production dépend de la famille d'algorithmes :
+
+- Le **HMAC (HS256, HS384, HS512)** signe avec un unique secret partagé. La signature est `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. Il est symétrique : le même secret crée et vérifie, donc l'émetteur et le vérificateur doivent le partager. C'est exactement la construction que calcule l'outil HMAC.
+- Le **RSA et l'ECDSA (RS256, ES256 et autres)** signent avec une clé privée et vérifient avec la clé publique correspondante. C'est asymétrique : seul l'émetteur peut signer, mais quiconque a la clé publique peut vérifier, ce qui convient aux tokens vérifiés par de nombreux services indépendants.
+
+Vérifier recalcule ou contrôle la signature face à l'en-tête et à la charge utile encodés. Si un seul octet de l'un des segments est altéré, la signature ne correspond plus et le token est rejeté.
+
+Deux pièges classiques valent la peine d'être connus. La valeur `alg: none` déclare un token non signé ; un vérificateur qui ne le rejette pas explicitement peut être trompé pour faire confiance à des claims forgées. Et dans l'attaque de **confusion d'algorithme**, un attaquant prend un token RS256, bascule l'en-tête en HS256 et le signe en utilisant la clé publique comme secret HMAC, ce qui réussit face aux vérificateurs qui prennent l'algorithme du token au lieu de le figer. La défense pour les deux est la même : le vérificateur décide quel algorithme est acceptable, pas le token.
+
+## Décoder n'est pas vérifier
+
+Ce sont deux opérations différentes, et les confondre est une source fréquente de bugs. **Décoder** décode simplement les segments depuis Base64URL pour révéler l'en-tête et les claims : pas de clé, pas de confiance, n'importe qui peut le faire. **Vérifier** contrôle la signature avec la bonne clé et confirme les claims de temps. Seules les claims d'un token vérifié devraient guider une action.
+
+Le temps compte aussi. `exp` (expiration) et `nbf` (pas-avant) sont des horodatages Unix qui bornent la fenêtre de validité du token, et `iat` enregistre quand il a été émis. Un vérificateur correct rejette un token expiré ou pas-encore-valide, en autorisant généralement une petite tolérance de décalage d'horloge.
+
+## Ce qu'un JWT n'est pas
+
+Un JWT est **signé, pas chiffré** (le chiffrement est un standard distinct, JWE). Il prouve qui a émis les claims et qu'elles n'ont pas été altérées ; il ne les cache pas.
+
+Un JWT signé n'est pas non plus **facilement révocable à lui seul.** Comme les claims vivent dans le token et que la vérification n'a besoin d'aucune recherche serveur, un token reste valide jusqu'à son expiration, même si vous souhaitez l'annuler plus tôt. La réponse pratique est des durées de vie courtes plus un mécanisme distinct (un token de rafraîchissement, une liste de révocation ou l'introspection de token) quand une révocation immédiate est requise.
+
+L'[outil JWT](/tools/jwt) décode l'en-tête et les claims d'un token, lit son expiration et son temps en langage clair, et vérifie une signature HS256, HS384 ou HS512 face à un secret que vous collez, le tout dans votre navigateur. Le token et le secret ne sont jamais envoyés nulle part.

@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Ruang alamat IPv4 persendirian dan RFC 1918"
+summary: "Tiga julat persendirian, mengapa ia tidak boleh dihalakan di internet, dan blok guna khas lain yang ditandakan oleh alat CIDR."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Alamat yang boleh anda guna semula
+
+Hanya terdapat kira-kira 4.3 bilion alamat IPv4, terlalu sedikit untuk setiap peranti memiliki satu alamat awam. Jawapannya (RFC 1918) ialah memelihara tiga julat yang boleh digunakan oleh sesiapa sahaja dalam rangkaian mereka sendiri, tanpa pendaftaran. Oleh sebab semua orang menggunakan semula julat persendirian yang sama, ia tidak boleh unik di internet awam, jadi ia **tidak boleh dihalakan** di sana. Untuk mencapai dunia luar memerlukan terjemahan alamat rangkaian (NAT), yang menukar alamat sumber persendirian dengan alamat awam berkongsi di pinggir rangkaian.
+
+## Tiga julat RFC 1918
+
+- **`10.0.0.0/8`**: dari `10.0.0.0` hingga `10.255.255.255`, 16,777,216 alamat. Satu rangkaian yang sangat besar.
+- **`172.16.0.0/12`**: dari `172.16.0.0` hingga `172.31.255.255`, 1,048,576 alamat. Bukan satu kelas B penuh, tetapi 16 `/16` bersebelahan dari `172.16` hingga `172.31`, julat yang paling kerap disalah ingati orang.
+- **`192.168.0.0/16`**: dari `192.168.0.0` hingga `192.168.255.255`, 65,536 alamat. Julat penghala rumah yang biasa.
+
+## Blok guna khas lain
+
+Beberapa julat lain dipelihara untuk tujuan tertentu dan ia juga bukan alamat awam biasa:
+
+- **`100.64.0.0/10`** (RFC 6598) ialah ruang NAT pembawa berkongsi (CGNAT), digunakan oleh pembekal antara pelanggan dengan kolam awam mereka. Ia menyerupai persendirian, tetapi berbeza daripada RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) ialah pautan-tempatan, alamat yang diumpuk sendiri yang dipilih hos apabila tiada pelayan DHCP membalas (APIPA pada Windows). Ia tidak pernah meninggalkan pautan tempatan.
+- **`127.0.0.0/8`** ialah gelung balik; `127.0.0.1` ialah hos yang bercakap dengan dirinya sendiri.
+- **`0.0.0.0/8`**, julat multicast `224.0.0.0/4` dan julat dokumentasi (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) juga dipelihara.
+
+IPv6 mempunyai idea yang sama dalam bentuk lain: **Unique Local Address** dalam `fc00::/7` (dalam amalan `fd00::/8`) ialah pasangan penggunaan persendirian RFC 1918, sekali lagi tidak boleh dihalakan secara global.
+
+## Mengapa ia penting
+
+Mengetahui sama ada alamat itu persendirian, awam atau khas memberitahu anda serta-merta sama ada ia boleh muncul di internet, sama ada ia memerlukan NAT, dan sama ada peraturan tembok api atau laluan masuk akal. Alamat `10/8` dalam rekod DNS awam, atau alamat `169.254` di tempat anda menjangkakan DHCP, ialah isyarat yang patut diberi perhatian.
+
+[Kalkulator CIDR](/#cidr) mengelaskan sebarang alamat atau blok terhadap julat guna khas ini dan melaporkan sama ada ia persendirian, terpelihara atau boleh dicapai secara global, dikira sepenuhnya dalam pelayar anda.

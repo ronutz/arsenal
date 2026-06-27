@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUIDs: zufälliges v4 und zeitgeordnetes v7"
+summary: "Wie ein 128-Bit-Bezeichner ohne zentrale Autorität eindeutig bleibt und warum v7 zur Vorgabe für Datenbankschlüssel wird."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Was ein UUID ist
+
+Ein UUID (Universally Unique Identifier, auch GUID genannt) ist ein 128-Bit-Wert, um etwas zu kennzeichnen, eine Zeile, eine Anfrage, eine Datei, ohne sich mit jemand anderem abzustimmen. Das Versprechen im Namen ist, dass zwei unabhängig erzeugte UUIDs für alle praktischen Zwecke nie gleich sind. Das lässt getrennte Dienste, Offline-Geräte und parallele Prozesse Bezeichner prägen, die nicht kollidieren, wenn die Daten später zusammengeführt werden, ohne einen zentralen Zuteiler, der Nummern ausgibt.
+
+Ein UUID wird als 32 hexadezimale Ziffern in fünf bindestrichgetrennten Gruppen geschrieben: `8-4-4-4-12`, zum Beispiel `550e8400-e29b-41d4-a716-446655440000`. Zwei bestimmte Stellen sind nicht zufällig: Ein **Versions**-Nibble gibt an, wie der UUID erzeugt wurde, und ein **Varianten**-Feld kennzeichnet den Layout-Standard (der moderne ist RFC 4122 / RFC 9562).
+
+## Version 4: zufällig
+
+Die mit Abstand häufigste Form, **Version 4**, ist fast vollständig zufällig: 122 der 128 Bit stammen aus einer sicheren Zufallsquelle, die übrigen Bit sind fest, um Version und Variante zu kennzeichnen. Bei so viel Entropie ist die Chance, dass zwei v4-UUIDs kollidieren, für jedes realistische Volumen an Bezeichnern vernachlässigbar.
+
+Seine Schwäche ist nicht die Eindeutigkeit, sondern die **Ordnung**. Weil v4-Werte zufällig sind, streuen aufeinanderfolgende Einfügungen über den gesamten Schlüsselraum. Wird ein v4-UUID als Datenbank-Primärschlüssel verwendet, kämpft diese Zufälligkeit gegen den B-Baum-Index: Neue Zeilen landen an beliebigen Stellen, was die Cache-Lokalität verschlechtert und den Index mit der Zeit fragmentiert.
+
+## Version 7: zeitgeordnet
+
+**Version 7**, in RFC 9562 (2024) standardisiert, wurde entworfen, um genau das zu beheben. Sie platziert einen **48-Bit-Unix-Zeitstempel in Millisekunden** in den höchstwertigen Bits, gefolgt von Zufallsbits für die Eindeutigkeit innerhalb derselben Millisekunde. Weil der Zeitstempel vorangeht, **sortieren** sich v7-UUIDs in Erstellungsreihenfolge, wenn man sie als Text oder Bytes vergleicht.
+
+Diese eine Eigenschaft macht v7 zu einem viel besseren Primärschlüssel: Neue Zeilen werden nahe dem Ende des Index angehängt, statt zu streuen, was die Lokalität wiederherstellt, die sequenzielle Ganzzahlschlüssel genießen, während die dezentrale Eindeutigkeit eines UUID erhalten bleibt. Ein v7-Wert trägt auch seine eigene Erstellungszeit, die Sie direkt aus jenen führenden Bits lesen können, das [UUID-Werkzeug](/tools/uuid) tut dies, wenn Sie einen untersuchen.
+
+## Die anderen Versionen, kurz
+
+Der Vollständigkeit halber: **Version 1** kombiniert einen Zeitstempel mit der MAC-Adresse der erzeugenden Maschine, was die Hardware-Identität und Erstellungszeit preisgibt und daher Datenschutzbedenken aufwirft. **Versionen 3 und 5** sind namensbasiert, sie hashen einen Namensraum plus einen Namen (mit MD5 bzw. SHA-1), um einen deterministischen UUID zu erzeugen, nützlich, wenn dieselbe Eingabe stets auf denselben Bezeichner abbilden muss. **Version 6** ordnet die Felder von Version 1 um, damit sie sortierbar sind, aber für neue Systeme ist v7 die empfohlene zeitgeordnete Wahl.
+
+## Eine wählen
+
+Greifen Sie zu **v4**, wenn Sie nur einen zufälligen, undurchsichtigen Bezeichner brauchen und die Ordnung keine Rolle spielt. Greifen Sie zu **v7**, wenn der UUID ein Datenbankschlüssel sein wird oder etwas anderes, das vom Sortieren nach Erstellungszeit profitiert, was zunehmend die Standardempfehlung ist. Das [UUID-Werkzeug](/tools/uuid) erzeugt beide und dekodiert Version, Variante und eingebetteten Zeitstempel jedes UUID, den Sie einfügen, vollständig in Ihrem Browser.

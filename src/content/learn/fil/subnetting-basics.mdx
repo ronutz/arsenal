@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Mga batayan ng subnetting"
+summary: "Paano hatiin ang isang network sa mas maliliit na subnet, at kung bakit ang panghihiram ng host bits ang buong trick."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Para saan ang subnetting
+
+Ang isang malaking network ay bihirang ang gusto mo. Ang subnetting ay ang pagsasagawa ng pagkuha ng isang block ng mga address at paghahati nito sa ilang mas maliliit na block, mga **subnet**, na ang bawat isa ay maaaring isang hiwalay na broadcast domain, security boundary, o pisikal na segment. Maaaring bigyan ng isang campus ang bawat gusali ng sarili nitong subnet; maaaring bigyan ng isang cloud account ang bawat tier ng isang application ng sa kanila.
+
+Mas simple ang mekanismo kaysa karaniwang pagkakatunog nito: **ang subnetting ay nanghihiram ng bits mula sa host portion at idinadagdag ang mga ito sa network portion.**
+
+## Panghihiram ng bits
+
+Magsimula sa `192.168.1.0/24`. Ang prefix ay 24, kaya 8 bits ang libre para sa mga host, na nagbibigay ng isang block na 256 na address.
+
+Ipagpalagay na kailangan mo ng apat na hiwalay na subnet sa halip na isa. Ang apat ay 2², kaya kailangan mo ng **2 pang network bits**. Hiramin ang mga ito mula sa host side: ang prefix ay lumalaki mula /24 patungong /26.
+
+- Ang `/26` ay nag-aayos ng 26 bits, nag-iiwan ng 6 na libre → 64 na address bawat subnet.
+- Apat na ganoong subnet ang eksaktong nagtatabingi sa orihinal na /24:
+  - `192.168.1.0/26`, mga address .0 hanggang .63
+  - `192.168.1.64/26`, mga address .64 hanggang .127
+  - `192.168.1.128/26`, mga address .128 hanggang .191
+  - `192.168.1.192/26`, mga address .192 hanggang .255
+
+Pansinin ang pattern: ang bawat subnet ay 64 na address ang lapad, kaya bawat isa ay nagsisimula sa isang multiple ng 64. Ang panuntunang iyon na "nagsisimula sa isang multiple ng laki nito" ang paraan kung paano natatagpuan ang mga balidong subnet boundary. Ang isang block ay dapat magsimula sa isang address na isang multiple ng sarili nitong laki, o ito ay hindi isang balidong CIDR block.
+
+## Ang trade-off
+
+Bawat bit na hinihiram mo para sa network ay hinahati ang mga host bawat subnet:
+
+| Prefix | Mga subnet ng isang /24 | Address bawat isa | Magagamit na host bawat isa |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Mas maraming subnet ay nangangahulugang mas kaunting host sa bawat isa. Ang network design ay higit sa lahat ang pagpili kung saan sa kurbang ito uupo: sapat na subnet para sa iyong mga segment, sapat na host sa bawat isa para sa mga device na naninirahan doon, na may kaunting puwang para lumago.
+
+## Variable-length subnetting
+
+Ang mga subnet sa loob ng parehong magulang ay hindi kailangang lahat ng parehong laki. Ang **variable-length subnet masking (VLSM)** ay nagbibigay-daan sa iyong mag-ukit ng isang malaking subnet para sa segment na nangangailangan ng maraming host at mga maliliit na subnet para sa point-to-point na link, lahat mula sa parehong magulang na block. Ang tanging mga panuntunan ay ang mga pare-pareho: ang bawat subnet ay isang power of two sa laki, at bawat isa ay nagsisimula sa isang multiple ng laki nito upang hindi kailanman magsanib ang mga block.
+
+Ipinapakita ng [CIDR calculator](/learn) ang eksaktong saklaw, mga boundary, at bilang ng magagamit na host para sa anumang prefix, na gumagawa sa pagsusuri ng isang subnet plan na isang bagay ng pag-type ng bawat block.

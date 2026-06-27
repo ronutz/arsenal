@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Buurontdekking: hoe IPv6 ARP vervangt"
+summary: "Hoe IPv6 buren op een link vindt met ICMPv6 en multicast in plaats van broadcast-ARP, de vijf buurontdekkingsberichten, en waarom broadcast weg is."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 is niet optioneel
+
+In IPv4 is ICMP een diagnostische bijgedachte die je kunt blokkeren zonder de basale connectiviteit te breken. In IPv6 is ICMPv6 (RFC 4443) dragend: het protocol hangt ervan af voor de centrale linkwerking, dus het onverschillig filteren ervan breekt het netwerk. De reden is dat IPv6 verscheidene taken die IPv4 over ARP, ICMP-routerontdekking en ICMP-redirects verspreidde, in één ICMPv6-gebaseerd protocol genaamd Buurontdekking (Neighbor Discovery, RFC 4861) verplaatste. Buurontdekking begrijpen is begrijpen hoe een IPv6-link daadwerkelijk werkt.
+
+## Vijf berichten doen het werk
+
+Buurontdekking definieert vijf ICMPv6-berichttypes, en bijna alles op een link is een of andere combinatie ervan:
+
+- **Router Solicitation (RS)**: een host vraagt routers zich aan te kondigen.
+- **Router Advertisement (RA)**: een router kondigt het prefix en de configuratie-flags aan (de invoer voor autoconfiguratie in het artikel [adresconfiguratie](/learn/ipv6-address-configuration)).
+- **Neighbor Solicitation (NS)**: een host vraagt "wie heeft dit adres, en wat is je linklaag-adres?"
+- **Neighbor Advertisement (NA)**: het antwoord dat dat linklaag-adres geeft.
+- **Redirect**: een router vertelt een host over een betere volgende hop voor een bestemming.
+
+Router solicitation en advertisement behandelen "hoe configureer ik mezelf"; neighbor solicitation en advertisement behandelen "hoe bereik ik deze buur"; redirect behandelt "er is een beter pad". Dat dekt het dagelijks leven van een link.
+
+## Adresresolutie zonder broadcast
+
+Het werk dat ARP doet in IPv4, een IP-adres afbeelden op een hardware-adres, wordt in IPv6 gedaan door het Neighbor-Solicitation-en-Advertisement-paar. Het belangrijke verschil is *hoe* de vraag wordt gesteld. ARP schreeuwt naar het broadcastadres, waarbij elk apparaat op het segment wordt onderbroken. IPv6 stuurt de Neighbor Solicitation in plaats daarvan naar het **solicited-node multicastadres** van het doel, een groep waarop alleen de kleine set hosts die hetzelfde adressuffix delen zal luisteren. Het doel antwoordt met een Neighbor Advertisement dat zijn linklaag-adres draagt. De bevrager cachet het resultaat, precies zoals een ARP-cache werkt, en hervalideert het via Neighbor Unreachability Detection wanneer verkeer suggereert dat een buur weg kan zijn gegaan.
+
+## Het solicited-node multicastadres
+
+Het solicited-node multicastadres wordt uit het doeladres gebouwd: neem het prefix `ff02::1:ff00:0/104` en hang de laatste 24 bits van het doeladres eraan. Omdat resolutie alleen de handvol hosts viseert die die lage 24 bits delen in plaats van de hele link, bereikt het verzoek veel minder machines dan een ARP-broadcast zou. Deze constructie is waarom het artikel [adressering](/learn/ipv6-addressing) solicited-node multicast als deel van het adresplan behandelt in plaats van een bijgedachte: elke host die een adres configureert sluit zich automatisch aan bij de bijbehorende solicited-node-groep zodat anderen hem kunnen vinden.
+
+## Helemaal geen broadcast
+
+IPv6 heeft geen broadcastadres. Alles waar IPv4 broadcast voor gebruikte, inclusief adresresolutie en routerontdekking, wordt afgehandeld door multicast naar specifieke, goed-afgebakende groepen. Er is een alle-knopen-multicastgroep (`ff02::1`) en een alle-routers-groep (`ff02::2`), maar routine-resolutie viseert in plaats daarvan de smalle solicited-node-groepen. "Iedereen onderbreken" vervangen door "precies de relevante luisteraars notificeren" is efficiënter op drukke links en is een van de stillere verbeteringen die IPv6 maakt over IPv4.
+
+## De link vertrouwen
+
+Omdat Buurontdekking standaard niet-geauthenticeerd is, kan een kwaadwillige host op dezelfde link vervalste Router Advertisements of Neighbor Advertisements sturen om verkeer om te leiden of te onderscheppen, het IPv6-analoog van ARP-spoofing. De verdedigingen leven aan de netwerkrand: RA Guard op switches laat router advertisements vallen van poorten die geen routers zouden moeten hebben, en SEcure Neighbor Discovery (SEND) voegt cryptografische bescherming toe waar het wordt ingezet. Zoals met IPv4 is de lokale link een vertrouwensgrens die het waard is te verdedigen.
+
+## Het zenuwstelsel van de link
+
+De samenvatting is dat IPv6 adresresolutie, routerontdekking en omleiding in één ICMPv6-gebaseerd protocol vouwde, broadcast-geschreeuw inruilde voor gericht multicast, en het geheel essentieel maakte in plaats van optioneel. Wanneer je een adres in de tool ziet en zijn solicited-node-groep of zijn link-local-vorm opmerkt, kijk je naar de stukken die Buurontdekking gebruikt om hosts elkaar op een link te laten vinden zonder ooit de buren te storen die niet betrokken zijn.

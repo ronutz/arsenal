@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomia certyfikatu X.509"
+summary: "Co żyje wewnątrz certyfikatu TLS, jak ustrukturyzowane są bajty ASN.1/DER, co właściwie kontrolują rozszerzenia v3 i dlaczego dekodowanie certyfikatu nie jest tym samym co zaufanie mu."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Czym jest certyfikat
+
+Certyfikat X.509 to podpisane oświadczenie wiążące klucz publiczny z tożsamością. Gdy przeglądarka łączy się z witryną przez HTTPS, serwer przedstawia certyfikat mówiący w istocie: „ten klucz publiczny należy do test.ronutz.com, a urząd certyfikacji za to ręczy". Profil definiujący, jakie pola niesie certyfikat i jak są interpretowane, to RFC 5280.
+
+Wiązanie jest tym, co się liczy. Każdy może wygenerować parę kluczy, więc nagi klucz publiczny niczego nie dowodzi o tym, kto jest po drugiej stronie. Certyfikat dodaje podpis od wystawcy, któremu strona ufająca już ufa, zamieniając anonimowy klucz w klucz z dołączonym nazwiskiem. To fundament webowej infrastruktury klucza publicznego (PKI).
+
+## Łańcuch zaufania
+
+Pojedynczemu certyfikatowi rzadko ufa się samemu. Ufa mu się, bo został podpisany przez wystawcę, który z kolei został podpisany przez innego wystawcę, aż do korzenia, który strona ufająca już przechowuje w magazynie zaufania:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Każde ogniwo to podpis: wystawca podpisuje certyfikat dziecka kluczem prywatnym wystawcy, a weryfikator sprawdza ten podpis kluczem publicznym wystawcy. **Korzeń** jest samowystawiony i samopodpisany, dlatego certyfikat samopodpisany jest użytecznym lokalnym zastępnikiem korzenia, lecz nie niesie żadnego zewnętrznego autorytetu. Narzędzie X.509 oznacza certyfikat samowystawiony (wystawca równy podmiotowi) oraz czy certyfikat jest oznaczony jako CA, co oba mówią ci, gdzie certyfikat sytuuje się na tym obrazie.
+
+## ASN.1 i DER: układ bajtów
+
+Certyfikat nie jest JSON-em ani tekstem. Jest opisany w ASN.1 (Abstract Syntax Notation One) i zakodowany regułami Distinguished Encoding Rules (DER), określonymi w ITU-T X.690. DER to format tag-length-value (TLV): każdy element zaczyna się od bajtu tagu mówiącego, jakiego jest typu, potem długość, potem ta liczba bajtów treści. Typy konstruowane jak SEQUENCE i SET zawierają elementy dzieci, więc cały certyfikat to drzewo TLV-ów.
+
+Plik PEM to po prostu ten DER, zakodowany w Base64 i owinięty w linie pancerza:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Więc dekodowanie certyfikatu oznacza zdjęcie pancerza, dekodowanie z Base64 do DER, a potem przejście drzewa TLV. Narzędzie X.509 robi dokładnie to w twojej przeglądarce, bez biblioteki i bez wywołania sieciowego.
+
+## Struktura najwyższego poziomu
+
+Na najbardziej zewnętrznym poziomie RFC 5280 definiuje trzy części:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+**tbsCertificate** („to be signed", do podpisania) zawiera całą prawdziwą treść. **signatureAlgorithm** nazywa, jak wystawca to podpisał, na przykład sha256WithRSAEncryption lub ecdsa-with-SHA256. **signatureValue** to sam podpis, obliczony nad bajtami DER tbsCertificate. Ten ostatni punkt warto zachować: podpis pokrywa ciało do-podpisania dokładnie tak, jak zakodowane, dlatego nawet zmiana jednego bajtu gdziekolwiek w ciele łamie weryfikację.
+
+## Wewnątrz TBSCertificate
+
+Ciało do-podpisania to miejsce, gdzie narzędzie spędza większość swojego czasu:
+
+- **Wersja** to niemal zawsze v3, wersja, która wprowadziła rozszerzenia.
+- **Numer seryjny** to duża liczba całkowita, którą wystawca przydziela. Połączony z nazwą wystawcy jednoznacznie identyfikuje certyfikat, i to jego referuje lista unieważnień.
+- **Wystawca** (Issuer) i **Podmiot** (Subject) to Nazwy Wyróżniające (Distinguished Names). DN to sekwencja atrybutów jak CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) i C (country). RFC 4514 definiuje jednowierszowe, najbardziej-szczegółowe-najpierw renderowanie, które widzisz, na przykład `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- **Ważność** (Validity) to znacznik czasu notBefore i notAfter. Są one zakodowane jako UTCTime lub GeneralizedTime; narzędzie konwertuje oba do ISO-8601 i, względem twojego lokalnego zegara, mówi ci, czy certyfikat jest ważny teraz, jeszcze-nie-ważny, czy wygasły.
+- **subjectPublicKeyInfo** niesie klucz publiczny plus jego algorytm. Dla RSA narzędzie raportuje rozmiar modułu (na przykład 2048-bit) i wykładnik publiczny (niemal zawsze 65537). Dla kluczy krzywej eliptycznej raportuje nazwaną krzywą (P-256, P-384, P-521), zgodnie z RFC 5480.
+
+## Rozszerzenia v3
+
+Rozszerzenia to miejsce, gdzie nowoczesne certyfikaty kodują większość swojej polityki. Każde rozszerzenie ma identyfikator, flagę krytyczną i wartość. Flaga krytyczna ma znaczenie: jeśli strona ufająca nie rozumie rozszerzenia oznaczonego jako krytyczne, musi odrzucić certyfikat zamiast zignorować pole. Narzędzie dekoduje te, które niosą najwięcej wagi:
+
+- **Subject Alternative Name (SAN)** wymienia tożsamości, dla których certyfikat jest faktycznie ważny, jako nazwy DNS, adresy IP, adresy e-mail lub URI. Dla TLS to pole, które przeglądarki sprawdzają, nie CN. Certyfikat dla `test.ronutz.com`, który pomija tę nazwę w swoim SAN, zawiedzie walidację w nowoczesnym kliencie, nawet jeśli CN się zgadza.
+- **Key Usage** ogranicza, co klucz może robić na niskim poziomie: digitalSignature, keyEncipherment, keyCertSign, cRLSign i inne. Certyfikat CA niesie keyCertSign; liść TLS zwykle niesie digitalSignature i keyEncipherment.
+- **Extended Key Usage (EKU)** nazywa cele wyższego poziomu jak serverAuth (serwer TLS), clientAuth (klient TLS), codeSigning lub emailProtection.
+- **Basic Constraints** stwierdza, czy certyfikat jest CA, a jeśli tak, ile pośrednich CA może pojawić się poniżej niego (długość ścieżki). To pole powstrzymuje certyfikat liścia od użycia do podpisywania innych certyfikatów.
+- **Subject Key Identifier** i **Authority Key Identifier** to hasze pozwalające weryfikatorowi szybko dopasować certyfikat do jego wystawcy przy budowaniu łańcucha.
+
+## Odciski palca
+
+**Odcisk palca** (fingerprint) certyfikatu to po prostu kryptograficzny hasz bajtów DER certyfikatu, zwykle SHA-256 (i, dla starszych odniesień, SHA-1). To nie pole wewnątrz certyfikatu; obliczany jest nad całością. Odciski palca dają ci krótką wartość o stałej długości do porównania dwóch certyfikatów pod względem równości lub do przypięcia znanego certyfikatu. Narzędzie oblicza zarówno SHA-256, jak i SHA-1 lokalnie za pomocą Web Crypto API, więc bajty, które wklejasz, nigdy nigdzie nie są wysyłane. Po więcej o tym, czym hasz jest i nie jest, zobacz artykuł o haszowaniu.
+
+## Dekodowanie to nie walidacja
+
+To pojedyncza, najważniejsza myśl, i odzwierciedla tę samą ostrożność, która stosuje się do JSON Web Tokens. Odczytanie pól certyfikatu mówi ci, co on *twierdzi*. Nie mówi ci, że twierdzenie jest *prawdziwe*. Pełna walidacja to osobny, cięższy proces: sprawdzenie, że podpis łączy się z zaufanym korzeniem, że żaden z certyfikatów w łańcuchu nie jest wygasły ani unieważniony, że nazwa, z którą się połączyłeś, jest w SAN, i że użycia klucza pozwalają na to, co robisz.
+
+Dekoder certyfikatów, ten włącznie, to narzędzie inspekcji i nauki. Pokazuje ci dokładnie, co wystawca stwierdził i jak to zakodowano. Traktuj wynik jako wierne odczytanie dokumentu, nie jako werdykt, czy mu zaufać.

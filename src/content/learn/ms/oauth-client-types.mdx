@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Klien awam vs sulit, dan di mana PKCE muat"
+summary: "Sama ada klien OAuth boleh menyimpan rahsia menentukan keseluruhan model keselamatannya. Mengapa SPA dan aplikasi mudah alih ialah klien awam, dan mengapa PKCE kini disyorkan untuk kesemuanya."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Soalan yang menentukan segalanya
+
+OAuth membahagikan klien kepada dua jenis, dan garis pemisah ialah satu soalan: bolehkah klien ini menyimpan rahsia? RFC 6749 memanggil dua jawapan itu klien **sulit** dan **awam**, dan yang mana satu anda menentukan cara anda mengesahkan, aliran mana selamat, dan sama ada anda memerlukan PKCE. Hampir setiap kesilapan reka bentuk OAuth pada peringkat aplikasi berbalik kepada melayan klien awam seolah-olah ia boleh menyimpan rahsia yang sebenarnya tidak dapat dilindunginya.
+
+## Klien sulit boleh menyimpan rahsia
+
+Klien sulit berjalan di suatu tempat yang penggunanya tidak boleh mencapai kod atau storannya, klasiknya aplikasi web sisi pelayan. Ia dikeluarkan satu **rahsia klien** semasa pendaftaran dan menggunakan rahsia itu untuk mengesahkan dirinya kepada titik akhir token pelayan kebenaran. Kerana rahsia hidup hanya pada pelayan, pelayan kebenaran boleh yakin bahawa permintaan token benar-benar datang daripada klien yang berdaftar. Ini kes kuat: klien membuktikan identitinya dengan sesuatu yang hanya ia tahu.
+
+## Klien awam tidak boleh
+
+Klien awam berjalan di tempat kod dan datanya kelihatan kepada pengguna atau penyerang: aplikasi satu halaman dalam pelayar, aplikasi mudah alih atau desktop natif, apa-apa yang dihantar ke peranti. Masalah yang mentakrifkannya ialah mana-mana rahsia yang anda benamkan dalam klien sedemikian bukanlah rahsia, kerana sesiapa boleh mengekstraknya daripada himpunan atau binari yang dihantar. Jadi klien awam langsung tidak boleh mengesahkan dengan rahsia klien; tiada apa yang boleh disimpannya yang penyerang tidak juga boleh peroleh. Itu mengubah apa yang pelayan kebenaran boleh andaikan, dan ia sebab klien awam memerlukan perlindungan tambahan pada aliran kod kebenaran.
+
+## Mengapa klien awam terdedah
+
+Aliran kod kebenaran menyerahkan klien satu kod sekali guna dalam ubah hala, yang klien kemudian tukar untuk token. Bagi klien sulit, pertukaran itu dilindungi oleh rahsia klien. Bagi klien awam tanpa rahsia, penyerang yang boleh memintas ubah hala, contohnya aplikasi berniat jahat yang didaftarkan untuk skema URL tersuai yang sama pada peranti mudah alih, boleh mencuri kod dan menebusnya sendiri. Ini ialah serangan pemintasan yang artikel [PKCE](/learn/pkce) terangkan secara terperinci, dan ia tepat jurang yang rahsia klien yang tiada biarkan terbuka.
+
+## PKCE mengisi jurang, untuk semua
+
+PKCE menutup lubang itu tanpa rahsia prakongsi. Klien mencipta satu **verifier kod** rawak segar setiap permintaan, menghantar hanya cincangannya (**challenge kod**) ketika meminta kod, dan mendedahkan verifier hanya ketika menebusnya. Penyerang yang memintas kod tidak pernah melihat verifier, jadi kod dicuri tidak berguna. Ini diperkenalkan untuk klien awam, tetapi panduan sejak itu meluas: OAuth 2.1 mengesyorkan PKCE untuk aliran kod kebenaran tanpa mengira jenis klien, kerana ia menambah pertahanan mendalam walaupun di mana rahsia klien hadir. Peraturan praktikalnya ialah gunakan kod kebenaran tambah PKCE di mana-mana dan berhenti menaakul sama ada anda benar-benar memerlukannya.
+
+## Aliran tersirat telah bersara
+
+Aplikasi pelayar awam pernah menggunakan aliran tersirat, yang memulangkan token terus dalam ubah hala untuk mengelak pertukaran kod. Reka bentuk itu mendedahkan token dalam URL dan sejarah pelayar dan kini ditamatkan; OAuth 2.1 mengeluarkannya. Jawapan moden untuk aplikasi satu halaman ialah sama seperti untuk semua orang lain: aliran kod kebenaran dengan PKCE. Jika anda menemui nasihat untuk menggunakan aliran tersirat, anggapnya lapuk.
+
+## Aplikasi natif ada perangkapnya sendiri
+
+Aplikasi natif dan mudah alih ialah klien awam dengan bahaya khusus: ubah hala kembali ke aplikasi. Skema URL tersuai boleh dituntut oleh aplikasi lain pada peranti, yang menjadikan pemintasan mungkin, jadi panduan amalan terbaik untuk aplikasi natif (RFC 8252) ialah gunakan ubah hala HTTPS yang dituntut di mana platform menyokongnya, jalankan aliran dalam pelayar sistem dan bukannya paparan web terbenam, dan sentiasa gunakan PKCE. Bagi peranti input terhad seperti TV, di mana tiada langsung pelayar untuk diubah hala, aliran kebenaran peranti (RFC 8628) membenarkan pengguna memberi kebenaran pada telefon atau komputer riba berasingan sebaliknya.
+
+## Apabila ragu, andaikan awam
+
+Benang merahnya ialah jenis klien bukan label yang anda pilih untuk kemudahan; ia fakta tentang di mana kod anda berjalan dan apa yang boleh dilindunginya. Jika klien dihantar kepada pengguna, ia awam, ia tidak boleh menyimpan rahsia, dan ia memerlukan PKCE. Jika ia berjalan hanya pada pelayan anda, ia boleh jadi sulit dan mengesahkan dengan rahsia, dan ia tetap patut menggunakan PKCE untuk margin tambahan. Putuskan dunia mana klien anda hidup, dan selebihnya model keselamatan OAuthnya mengikut daripada satu jawapan jujur itu.

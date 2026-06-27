@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Privat IPv4-adresseplads og RFC 1918"
+summary: "De tre private intervaller, hvorfor de ikke kan rutes på internettet, og de andre specialblokke, som CIDR-værktøjet markerer."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Adresser du må genbruge
+
+Der findes kun omkring 4,3 milliarder IPv4-adresser, alt for få til, at hver enhed kan have én offentlig adresse. Svaret (RFC 1918) er at reservere tre intervaller, som enhver må bruge inden for sit eget netværk, uden registrering. Da alle genbruger de samme private intervaller, kan de ikke være entydige på det offentlige internet, så de kan **ikke rutes** der. At nå omverdenen kræver netværksadresseoversættelse (NAT), der bytter en privat kildeadresse ud med en delt offentlig adresse ved netværkets kant.
+
+## De tre intervaller i RFC 1918
+
+- **`10.0.0.0/8`**: fra `10.0.0.0` til `10.255.255.255`, 16.777.216 adresser. Ét meget stort netværk.
+- **`172.16.0.0/12`**: fra `172.16.0.0` til `172.31.255.255`, 1.048.576 adresser. Ikke en hel klasse B, men de 16 sammenhængende `/16` fra `172.16` til `172.31`, det interval folk oftest husker forkert.
+- **`192.168.0.0/16`**: fra `192.168.0.0` til `192.168.255.255`, 65.536 adresser. Hjemmerouternes velkendte interval.
+
+## De andre specialblokke
+
+Flere andre intervaller er reserveret til specifikke formål og er heller ikke almindelige offentlige adresser:
+
+- **`100.64.0.0/10`** (RFC 6598) er den delte carrier-NAT-plads (CGNAT), som udbydere bruger mellem kunden og deres offentlige pulje. Det ligner privat, men er forskelligt fra RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) er link-lokal, den selvtildelte adresse, en vært vælger, når ingen DHCP-server svarer (APIPA i Windows). Den forlader aldrig det lokale link.
+- **`127.0.0.0/8`** er loopback; `127.0.0.1` er værten, der taler med sig selv.
+- **`0.0.0.0/8`**, multicast-intervallet `224.0.0.0/4` og dokumentationsintervallerne (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) er også reserveret.
+
+IPv6 har samme idé i en anden form: **Unique Local Addresses** i `fc00::/7` (i praksis `fd00::/8`) er modstykket til RFC 1918's private brug, igen ikke globalt rutbare.
+
+## Hvorfor det betyder noget
+
+At vide, om en adresse er privat, offentlig eller speciel, fortæller dig straks, om den kan optræde på internettet, om den behøver NAT, og om en firewallregel eller rute giver mening. En `10/8`-adresse i en offentlig DNS-post, eller en `169.254`-adresse, hvor du forventede DHCP, er et signal værd at bemærke.
+
+[CIDR-beregneren](/#cidr) klassificerer enhver adresse eller blok mod disse specialintervaller og rapporterer, om den er privat, reserveret eller globalt tilgængelig, helt beregnet i din browser.

@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Zugriffstoken, Auffrischungstoken und ID-Token"
+summary: "Drei OAuth- und OpenID-Connect-Token, die ständig verwechselt werden, wofür jedes tatsächlich da ist und warum das falsche an den falschen Ort zu senden ein echter Fehler ist."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Drei Token, drei Aufgaben
+
+Nachdem der Autorisierungscode-Flow abgeschlossen ist (siehe den Artikel [Code-Flow](/learn/oauth-code-flow)), kann ein Client am Ende drei verschiedene Token halten, und sie zu vermengen ist einer der häufigsten Fehler in OAuth und OpenID Connect. Ein Zugriffstoken, ein Auffrischungstoken und ein ID-Token sehen oberflächlich ähnlich aus, besonders wenn alle drei zufällig JWTs sind, aber sie haben verschiedene Zielgruppen und verschiedene Zwecke. Sie richtig zu treffen, ist größtenteils eine Frage, für jedes Token zu fragen, für wen es ist und was es autorisiert.
+
+## Das Zugriffstoken: ein Schlüssel zu einer API
+
+Das Zugriffstoken ist das, was der Client an einen Ressourcenserver (eine API) sendet, um zu beweisen, dass er eine Anfrage stellen darf. Es ist das Nächste, was OAuth zu einem Sitzungsschlüssel für Maschine-zu-Maschine-Zugriff hat, definiert durch OAuth 2.0 (RFC 6749). Zwei Eigenschaften zählen. Es ist **kurzlebig**, oft Minuten bis eine Stunde, sodass ein durchgesickertes Token nur kurz nützlich ist. Und es ist ein **Bearer**-Token (Inhaber): Wer es hält, kann es benutzen, ohne weiteren Identitätsnachweis, weshalb Zugriffstoken nur über TLS reisen und nie geloggt oder in eine URL gesetzt werden dürfen. Die API validiert das Token und die Scopes, die es trägt, und bedient oder verweigert dann die Anfrage.
+
+## Das Auffrischungstoken: neue Zugriffstoken bekommen
+
+Da Zugriffstoken schnell ablaufen, wäre es unerträglich, den Benutzer alle paar Minuten erneut anmelden zu lassen. Das Auffrischungstoken löst das: Es ist ein langlebiges Credential, das der Client beim Autorisierungsserver gegen ein frisches Zugriffstoken tauscht, ohne Benutzerinteraktion. Es ist weit sensibler als ein Zugriffstoken, gerade weil es langlebig ist, also muss es auf dem Backchannel bleiben (serverseitig oder in geschütztem Speicher) und nie einem Browser-Frontend ausgesetzt werden. Gute Praxis ist die **Auffrischungstoken-Rotation**: Jede Verwendung stellt ein neues Auffrischungstoken aus und entwertet das alte, sodass ein gestohlenes Token in dem Moment erkannt wird, in dem der legitime Client die nun widerrufene Kopie zu benutzen versucht. Token können auch ausdrücklich widerrufen werden (RFC 7009).
+
+## Das ID-Token: eine Aussage über den Benutzer
+
+Das ID-Token ist das Stück, das OpenID Connect auf OAuth draufsetzt, und es ist das am häufigsten missbrauchte. Es ist immer ein JWT (siehe den Artikel [JWT-Anatomie](/learn/jwt-anatomy)), und es beschreibt das Authentifizierungsereignis: wer der Benutzer ist, wann er sich authentifizierte und welcher Autorisierungsserver dafür bürgt. Entscheidend ist: **Das ID-Token ist für den Client, nicht für eine API**. Es beantwortet „wer hat sich gerade angemeldet", sodass die Anwendung eine Benutzersitzung einrichten kann. Ein ID-Token an einen Ressourcenserver zu senden, als wäre es ein Zugriffstoken, ist ein klassischer Fehler: Die API sollte es ablehnen, weil die Zielgruppe des ID-Tokens der Client ist, und es zur Autorisierung zu verwenden verwechselt Identität mit Berechtigung.
+
+## Bearer-Token und die Versuchung, ihnen zu vertrauen
+
+Die meisten Zugriffstoken sind Bearer-Token, was sie leicht zu verwenden und leicht zu missbrauchen macht. Die Handhabungsregeln folgen direkt: immer TLS, kurze Lebensdauern, nie in Logs oder Query-Strings, und nie in browserzugänglichem Speicher, wenn eine geschütztere Option existiert. Wo das Bearer-Modell zu riskant ist, binden **absenderbeschränkte** (sender-constrained) Token ein Token an einen bestimmten Client-Schlüssel (Mechanismen wie DPoP oder gegenseitiges TLS), sodass ein gestohlenes Token nicht von jemand anderem wiederabgespielt werden kann. Für die meisten Anwendungen sind kurzlebige Bearer-Zugriffstoken über TLS die funktionierende Grundlage.
+
+## Opake versus JWT-Zugriffstoken
+
+Ein Zugriffstoken kann opak sein (eine Zufallszeichenkette, die die API durch Aufruf des Introspektions-Endpunkts des Autorisierungsservers prüft, RFC 7662) oder ein JWT, das die API selbst validiert. Die JWT-Form ist eigenständig und vermeidet einen Netzwerk-Hin-und-Rückweg, kann aber vor Ablauf nicht widerrufen werden, was ein weiterer Grund ist, Zugriffstoken-Lebensdauern kurz zu halten. Ein ID-Token hingegen ist immer ein JWT, weil seine gesamte Aufgabe darin besteht, dem Client verifizierbare Claims zu übermitteln. Ob ein Token ein JWT ist, sagt Ihnen, wie es validiert wird, nicht, wofür es da ist.
+
+## Stimme das Token auf die Zielgruppe ab
+
+Die einzige Regel, die die meisten Token-Fehler verhindert, ist, jedes Token auf seine vorgesehene Zielgruppe abzustimmen. Das **ID-Token** ist für die Anwendung, um zu erfahren, wer sich anmeldete. Das **Zugriffstoken** ist für die API, um eine Anfrage zu autorisieren. Das **Auffrischungstoken** ist für den Autorisierungsserver, um neue Zugriffstoken zu prägen, ohne den Benutzer zu behelligen. Halten Sie diese drei Zielgruppen auseinander, halten Sie das langlebige Auffrischungstoken auf dem Backchannel, und behandeln Sie jedes Bearer-Token als kurzlebiges Geheimnis, dann fügt sich der Rest von OAuths Token-Handhabung zusammen.

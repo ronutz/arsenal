@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: dividere un blocco in sottoreti disuguali"
+summary: "Come ritagliare un blocco di indirizzi in sottoreti di dimensioni diverse senza sprecare spazio, e la regola del più grande prima che mantiene tutto ordinato."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Il problema delle sottoreti uguali
+
+Il subnetting classico divide un blocco in pezzi di un'unica dimensione fissa. È semplice, ma è uno spreco quando le tue esigenze differiscono. Se un segmento ha 100 host e un altro è un collegamento tra due router con 2, dare a entrambi un `/26` (62 utilizzabili) fallisce per il primo e spreca 60 indirizzi sul secondo. **VLSM**, maschera di sottorete a lunghezza variabile, lo corregge lasciando che ogni sottorete usi la lunghezza di prefisso adatta alla propria esigenza, tutto ritagliato dallo stesso blocco padre.
+
+L'unica cosa che rende VLSM più laborioso del subnetting fisso è l'ordine: devi collocare le **sottoreti più grandi per prime**, altrimenti sprecherai indirizzi e creerai sovrapposizioni.
+
+## Dimensionare ogni sottorete
+
+Parti dal numero di host di cui ogni segmento ha bisogno, poi trova il blocco più piccolo che lo contiene, ricordando che due indirizzi di ogni blocco comune sono riservati (rete e broadcast):
+
+- 100 host richiedono 7 bit di host (2⁷ − 2 = 126 utilizzabili), un `/25`.
+- 50 host richiedono 6 bit di host (62 utilizzabili), un `/26`.
+- 25 host richiedono 5 bit di host (30 utilizzabili), un `/27`.
+- 10 host richiedono 4 bit di host (14 utilizzabili), un `/28`.
+- Un collegamento punto-punto di 2 host è un `/30` (2 utilizzabili), oppure un `/31` secondo la RFC 3021.
+
+Arrotonda sempre per eccesso alla successiva potenza di due. Un segmento di 100 host non entra in un `/26` (62), quindi prende la dimensione successiva, un `/25`.
+
+## Ritagliare dal blocco, il più grande per primo
+
+Supponi di possedere `192.168.10.0/24` e di aver bisogno delle cinque sottoreti sopra. Assegna in ordine decrescente di dimensione, ciascuna iniziando sul proprio confine naturale:
+
+```
+/25  192.168.10.0   – .127   (126 utilizzabili)  ← segmento di 100 host
+/26  192.168.10.128 – .191   (62 utilizzabili)   ← segmento di 50 host
+/27  192.168.10.192 – .223   (30 utilizzabili)   ← segmento di 25 host
+/28  192.168.10.224 – .239   (14 utilizzabili)   ← segmento di 10 host
+/30  192.168.10.240 – .243   (2 utilizzabili)    ← collegamento router
+```
+
+Ogni blocco inizia esattamente dove finisce il precedente, e da `192.168.10.244` in poi è ancora libero per la crescita futura. Se avessi assegnato prima il `/30`, il `/25` non avrebbe più un confine pulito su cui collocarsi, che è l'intera ragione della regola del più grande prima.
+
+## Perché è importante
+
+VLSM è il modo in cui le reti reali conservano lo spazio di indirizzamento e mantengono le assegnazioni allineate in modo che le rotte possano essere riassunte in modo pulito. L'aritmetica è la stessa matematica della lunghezza di prefisso di una singola sottorete, applicata ripetutamente: fissa più bit per rendere un blocco più piccolo e mantieni ogni blocco su un confine di potenza di due.
+
+Puoi verificare qualsiasi assegnazione nella [calcolatrice CIDR](/#cidr), che mostra l'indirizzo di rete e di broadcast, la maschera e il conteggio degli host utilizzabili di ogni blocco all'istante e interamente nel tuo browser.

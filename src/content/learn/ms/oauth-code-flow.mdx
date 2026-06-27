@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "Aliran kod kebenaran OAuth 2.0"
+summary: "Empat peranan, tarian ubah hala-dan-tukar, dan mengapa kod ditukar untuk token pada saluran belakang."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Untuk apa aliran ini
+
+OAuth 2.0 (RFC 6749) membenarkan sesuatu aplikasi bertindak bagi pihak pengguna tanpa pernah melihat kata laluan pengguna. "Log masuk dengan Google" ialah contoh harian: aplikasi mendapat kebenaran untuk mengakses sesuatu, tetapi Google, bukan aplikasi, mengendalikan kelayakan. **Aliran kod kebenaran** ialah cara paling lazim dan paling selamat untuk menyusun ini, dan ia ialah aliran yang dilindungi PKCE.
+
+## Empat peranan
+
+- **Pemilik sumber** (resource owner) ialah pengguna yang memiliki data dan memberi akses.
+- **Klien** (client) ialah aplikasi yang meminta akses.
+- **Pelayan kebenaran** (authorization server) mengesahkan pengguna dan mengeluarkan token (Google, pembekal identiti, perkhidmatan kebenaran anda sendiri).
+- **Pelayan sumber** (resource server) ialah API yang memegang data terlindung dan menerima token.
+
+## Tarian, langkah demi langkah
+
+1. **Ubah hala untuk membenarkan.** Klien menghantar pelayar pengguna ke titik akhir kebenaran pelayan kebenaran, membawa `client_id`-nya, satu `redirect_uri`, `scope` yang dimahukan, satu nilai `state` rawak, dan (dengan PKCE) satu challenge kod. Klien tidak pernah mengendalikan kata laluan.
+2. **Sahkan dan beri persetujuan.** Pelayan kebenaran mengelog masuk pengguna dan meminta mereka meluluskan skop yang diminta.
+3. **Ubah hala kembali dengan satu kod.** Pelayan mengubah hala pelayar kembali ke `redirect_uri` klien dengan satu **kod kebenaran** berhayat pendek dan `state` asal. Klien menyemak bahawa `state` sepadan, yang mempertahankan terhadap pemalsuan permintaan rentas tapak pada panggilan balik.
+4. **Tukar kod untuk token.** Kini pada saluran belakang (panggilan terus pelayan-ke-pelayan, bukan pelayar), klien menghantar kod ke titik akhir token bersama kelayakannya (rahsia klien, atau verifier kod PKCE) dan menerima satu **token akses**, selalunya satu **token segar semula**, dan untuk OpenID Connect satu **token ID**.
+5. **Panggil API.** Klien menyembahkan token akses kepada pelayan sumber, yang mengesahkannya dan memulangkan data.
+
+## Mengapa satu kod, bukan token terus?
+
+Lencongan melalui satu kod kebenaran wujud supaya token tidak pernah mengembara melalui bar alamat atau sejarah pelayar, di mana ia boleh bocor. Kod yang *memang* mengembara di situ tidak berguna dengan sendirinya: menebusnya memerlukan panggilan saluran belakang dengan rahsia klien atau verifier PKCE. Pemisahan itu, kod buang pada saluran hadapan dan token sebenar pada saluran belakang, ialah sifat keselamatan teras aliran ini.
+
+Inilah juga tepat jurang yang PKCE isi untuk klien yang tidak boleh menyimpan rahsia (aplikasi satu halaman dan mudah alih): ia mengikat kod kepada verifier sekali guna supaya kod yang dipintas tetap tidak boleh ditukar. Token yang dipulangkan aliran ini sangat kerap ialah JWT.
+
+[Alat PKCE](/tools/pkce) menjana dan menyemak verifier dan challenge yang aliran ini bersandar padanya, dan [alat JWT](/tools/jwt) menyahkod token yang dipulangkannya, kedua-duanya secara setempat dalam pelayar anda.

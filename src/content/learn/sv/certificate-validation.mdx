@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Hur certifikatvalidering faktiskt fungerar"
+summary: "Stegen en klient kör för att avgöra att ett certifikat är pålitligt: bygga kedjan, kontrollera signaturer och datum, matcha namnet och upprätthålla begränsningar."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Att läsa är inte att lita på
+
+[Anatomiartikeln](/learn/x509-anatomy) slutar på en punkt värd att upprepa: att avkoda ett certifikat säger dig vad det *påstår*, inte huruvida påståendet är *sant*. Validering är den separata process en TLS-klient kör för att avgöra om den ska lita på certifikatet framför sig. Den styrs huvudsakligen av RFC 5280, och den är en konjunktion av oberoende kontroller, som var och en måste passera. En avkodare, detta verktyg inräknat, visar dig indata till den processen; klienten är vad som upprätthåller den.
+
+## Steg 1: bygga kedjan
+
+Ett lövcertifikat litas nästan aldrig på i sig självt. Klienten måste bygga en väg från lövet upp till en rot den redan håller i sitt förtroendelager. Den gör detta genom att följa utfärdarnamn: lövets Issuer bör matcha något mellanlednings Subject, och det mellanledets Issuer bör matcha nästa uppåt, tills den når en självutfärdad rot. Tilläggen Authority Key Identifier och Subject Key Identifier snabbar upp denna matchning genom att låta klienten länka ett certifikat till sin utfärdare via nyckelhash snarare än via namn allena. Om ingen väg till en betrodd rot kan byggas misslyckas valideringen omedelbart, hur välformat lövet än är.
+
+## Steg 2: verifiera varje signatur
+
+En kedja är bara meningsfull om varje länk är kryptografiskt sund. För varje certifikat i vägen verifierar klienten att signaturen producerades av utfärdarens privata nyckel, genom att kontrollera den mot utfärdarens publika nyckel över DER-byten av barnets att-signeras-kropp. Eftersom signaturen täcker exakt de byten bryter en enda ändrad byte var som helst i kroppen kontrollen. Detta är också varför signaturalgoritmen (till exempel sha256WithRSAEncryption eller ecdsa-with-SHA256) spelar roll: en kedja är bara så stark som sin svagaste signatur och hash. För vad en hash garanterar här, se [hashing-artikeln](/learn/hashing).
+
+## Steg 3: kontrollera giltighetsfönstret
+
+Varje certifikat bär en notBefore- och notAfter-tidsstämpel, och klienten kontrollerar den aktuella tiden mot fönstret för varje certifikat i kedjan, inte bara lövet. Ett certifikat som är utgånget, eller ännu inte giltigt, misslyckas. Verktyget utför denna samma kontroll mot din lokala klocka och rapporterar om ett certifikat är giltigt nu, ännu inte giltigt eller utgånget, vilket ofta är det snabbaste sättet att diagnostisera en "din anslutning är inte privat"-varning.
+
+## Steg 4: matcha namnet
+
+En giltig kedja bevisar att certifikatet är äkta, men inte att det utfärdades för webbplatsen du besöker. Klienten kontrollerar att värden den anslöt till framträder i certifikatets Subject Alternative Name-tillägg. Moderna klienter ignorerar Common Name helt för detta syfte och tittar bara på SAN, följande identitetsmatchningsreglerna i RFC 6125. Jokrar som `*.ronutz.com` matchar en enda etikett, så de täcker `api.ronutz.com` men inte `ronutz.com` självt eller `a.b.ronutz.com`. Ett certifikat vars kedja är perfekt men vars SAN inte listar namnet du bad om avvisas ändå.
+
+## Steg 5: upprätthålla begränsningarna
+
+v3-tilläggen är inte dekoration; de är regler klienten upprätthåller. Basic Constraints säger huruvida ett certifikat får agera som en CA och, genom väglängden, hur många mellanled som får sitta under det, vilket är vad som stoppar ett lövcertifikat från att användas för att signera andra certifikat. Key Usage och Extended Key Usage begränsar vad nyckeln tillåts göra: ett TLS-servercertifikat måste bära serverAuth-EKU:n, och ett tillägg markerat kritiskt som klienten inte förstår tvingar fram ett avvisande snarare än en axelryckning. Verktyget lyfter fram dessa fält så att du kan se exakt vilka begränsningar en utfärdare satte.
+
+## Steg 6: kontrollera återkallelse
+
+Slutligen kan ett certifikat som var giltigt vid utfärdande ha återkallats sedan dess, till exempel för att dess privata nyckel läckte. Klienten kan rådfråga en CRL eller en OCSP-svarare för att ta reda på det. I praktiken är detta det svagaste och mest inkonsekventa steget, och industrin rör sig mot kortlivade certifikat i stället, vilket [återkallelseartikeln](/learn/certificate-revocation) täcker i sin helhet.
+
+## Validering är ett AND, inte ett OR
+
+Skälet till att ett enda manipulerat eller felkonfigurerat certifikat avvisas är att alla dessa kontroller kombineras med logiskt AND. Kedjan måste byggas, varje signatur måste verifieras, varje certifikat måste vara i sitt giltighetsfönster, namnet måste vara i SAN, begränsningarna måste tillåta användningen, och certifikatet får inte vara återkallat. En avkodare lägger ut certifikatets påståenden tydligt och troget; behandla det som en noggrann läsning av dokumentet, och kom ihåg att domen tillhör klienten som kör alla sex kontroller.

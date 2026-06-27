@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Kung paano talaga gumagana ang certificate validation"
+summary: "Ang mga hakbang na pinapatakbo ng isang client upang magpasya na mapagkakatiwalaan ang isang certificate: pagbuo ng chain, pagsuri ng mga lagda at petsa, pagtutugma ng pangalan, at pagpapatupad ng mga constraint."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang pagbabasa ay hindi pagtitiwala
+
+Ang [artikulo ng anatomiya](/learn/x509-anatomy) ay nagtatapos sa isang puntong sulit ulitin: ang pag-decode ng isang certificate ay nagsasabi sa iyo kung ano ang *inaangkin* nito, hindi kung ang angkin ay *totoo*. Ang validation ay ang hiwalay na prosesong pinapatakbo ng isang TLS client upang magpasya kung pagkakatiwalaan ang certificate na nasa harap nito. Pinamamahalaan ito pangunahin ng RFC 5280, at ito ay isang konjunksyon ng mga independiyenteng pagsusuri, na bawat isa ay dapat pumasa. Ang isang decoder, kasama ito, ay nagpapakita sa iyo ng mga input sa prosesong iyon; ang client ang nagpapatupad nito.
+
+## Hakbang 1: buuin ang chain
+
+Ang isang leaf certificate ay halos hindi kailanman pinagkakatiwalaan nang mag-isa. Dapat magbuo ang client ng isang landas mula sa leaf paitaas hanggang sa isang root na hawak na nito sa trust store nito. Ginagawa nito ito sa pamamagitan ng pagsunod sa mga pangalan ng issuer: ang Issuer ng leaf ay dapat tumugma sa Subject ng ilang intermediate, at ang Issuer ng intermediate na iyon ay dapat tumugma sa susunod pataas, hanggang marating nito ang isang self-issued na root. Ang Authority Key Identifier at Subject Key Identifier na mga extension ay nagpapabilis sa pagtutugmang ito sa pamamagitan ng pagpapahintulot sa client na iugnay ang isang certificate sa issuer nito sa pamamagitan ng key hash sa halip na sa pangalan lamang. Kung walang landas patungo sa isang pinagkakatiwalaang root ang maitatayo, agad na nabibigo ang validation, gaano man kahusay ang anyo ng leaf.
+
+## Hakbang 2: i-verify ang bawat lagda
+
+Ang isang chain ay makahulugan lamang kung ang bawat kawing ay matatag sa kriptograpiko. Para sa bawat certificate sa landas, vine-verify ng client na ang lagda ay ginawa ng private key ng issuer, sa pamamagitan ng pagsuri rito laban sa public key ng issuer sa mga DER byte ng to-be-signed na katawan ng anak. Dahil sinasaklaw ng lagda ang eksaktong mga byte na iyon, ang isang binagong byte saanman sa katawan ay sumisira sa pagsusuri. Ito rin ang dahilan kung bakit mahalaga ang signature algorithm (halimbawa sha256WithRSAEncryption o ecdsa-with-SHA256): ang isang chain ay kasing-lakas lamang ng pinakamahina nitong lagda at hash. Para sa kung ano ang ginagarantiya ng isang hash dito, tingnan ang [artikulo ng hashing](/learn/hashing).
+
+## Hakbang 3: suriin ang validity window
+
+Ang bawat certificate ay nagdadala ng isang notBefore at notAfter na timestamp, at sinusuri ng client ang kasalukuyang oras laban sa window para sa bawat certificate sa chain, hindi lamang ang leaf. Ang isang certificate na nag-expire, o hindi pa balido, ay nabibigo. Isinasagawa ng tool ang parehong pagsusuring ito laban sa iyong lokal na orasan at iniuulat kung ang isang certificate ay balido ngayon, hindi-pa-balido, o nag-expire na, na kadalasang pinakamabilis na paraan upang ma-diagnose ang isang babala na "ang iyong koneksyon ay hindi pribado".
+
+## Hakbang 4: itugma ang pangalan
+
+Ang isang balidong chain ay nagpapatunay na ang certificate ay tunay, ngunit hindi na ito ay inisyu para sa site na iyong binibisita. Sinusuri ng client na ang host na kinonekta nito ay lumilitaw sa Subject Alternative Name na extension ng certificate. Lubos na binabalewala ng mga modernong client ang Common Name para sa layuning ito at tumitingin lamang sa SAN, sinusunod ang mga panuntunan sa pagtutugma ng pagkakakilanlan ng RFC 6125. Ang mga wildcard tulad ng `*.ronutz.com` ay tumutugma sa isang label, kaya saklaw nila ang `api.ronutz.com` ngunit hindi ang `ronutz.com` mismo o `a.b.ronutz.com`. Ang isang certificate na perpekto ang chain ngunit ang SAN ay hindi naglilista ng pangalang iyong hiniling ay tinatanggihan pa rin.
+
+## Hakbang 5: ipatupad ang mga constraint
+
+Ang mga v3 extension ay hindi dekorasyon; ang mga ito ay mga panuntunang ipinapatupad ng client. Ang Basic Constraints ay nagsasabi kung ang isang certificate ay maaaring kumilos bilang isang CA at, sa pamamagitan ng path length, kung ilang intermediate ang maaaring umupo sa ilalim nito, na siyang pumipigil sa isang leaf certificate na magamit upang lumagda ng iba pang certificate. Ang Key Usage at Extended Key Usage ay naglilimita kung ano ang pinahihintulutang gawin ng key: ang isang TLS server certificate ay dapat magdala ng serverAuth EKU, at ang isang extension na minarkahang critical na hindi naiintindihan ng client ay nagpipilit ng pagtanggi sa halip na isang pagkibit-balikat. Inilalabas ng tool ang mga field na ito upang makita mo nang eksakto kung aling mga constraint ang itinakda ng isang issuer.
+
+## Hakbang 6: suriin ang revocation
+
+Sa wakas, ang isang certificate na balido noong inisyu ay maaaring nabawi na simula noon, halimbawa dahil tumagas ang private key nito. Maaaring kumonsulta ang client sa isang CRL o isang OCSP responder upang malaman. Sa praktika ito ang pinakamahina at pinaka-hindi-pare-parehong hakbang, at lumilipat ang industriya patungo sa mga short-lived na certificate sa halip, na saklaw nang buo ng [artikulo ng revocation](/learn/certificate-revocation).
+
+## Ang validation ay isang AND, hindi isang OR
+
+Ang dahilan kung bakit tinatanggihan ang isang nag-iisang nadambong o maling na-configure na certificate ay dahil ang lahat ng mga pagsusuring ito ay pinagsasama sa pamamagitan ng logical AND. Dapat maitayo ang chain, dapat ma-verify ang bawat lagda, dapat nasa validity window nito ang bawat certificate, dapat nasa SAN ang pangalan, dapat payagan ng mga constraint ang paggamit, at hindi dapat nabawi ang certificate. Inilalatag ng isang decoder ang mga assertion ng certificate nang malinaw at tapat; ituring iyon bilang isang maingat na pagbasa ng dokumento, at tandaan na ang hatol ay pag-aari ng client na nagpapatakbo ng lahat ng anim na pagsusuri.

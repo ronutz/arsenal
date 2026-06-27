@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Saan lumilitaw ang Base64: data URI, MIME, PEM, at Basic auth"
+summary: "Ang mga tunay na lugar kung saan binabalot sa teksto ang binary, ang halaga sa sukat nito, at bakit hindi pag-encrypt ang Base64 sa isang authentication header."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bakit balutin ang binary sa teksto
+
+Maraming transport ang ginawa para sa teksto, hindi para sa hilaw na mga byte: katawan ng email, dokumentong JSON at XML, header ng HTTP, source file. Maglagay ng hilaw na binary data sa alinman sa mga ito, at maaaring sirain ng isang naliligaw na control o null na byte ang pag-parse. Niresolba ito ng Base64 sa pamamagitan ng muling pagpapahayag ng mga byte gamit lamang ang ligtas na napi-print na karakter, upang makalakbay ang binary nang buo sa isang purong text channel. Dito ito talaga nangyayari.
+
+## Ang karaniwang mga senaryo
+
+- **Data URI.** Ang isang `data:` URL ay nagtatatak ng maliit na resource nang direkta sa markup o CSS, halimbawa `data:image/png;base64,iVBORw0KGgo...`. Ang mga byte ng larawan ay nasa Base64 mismo roon sa attribute, na nakakatipid ng hiwalay na network request para sa maliliit na resource.
+- **Email (MIME).** Dinadala ang mga attachment at di-ASCII na katawan gamit ang `Content-Transfer-Encoding: base64`. Hinahati ng MIME ang output sa mga linya (klasikong 76 na karakter) upang hindi mabilaukan ang lumang mail server sa mahahabang linya.
+- **PEM.** Ang mga sertipiko at susi ay mga byte ng DER na binalot sa Base64 sa pagitan ng mga marker na `-----BEGIN CERTIFICATE-----` at `-----END CERTIFICATE-----`, na may mga linyang pinuputol sa 64 na karakter. Ang PEM ang dahilan kung bakit ang isang sertipiko ay isang bloke ng teksto na maaari mong ipeyst sa isang configuration file.
+- **HTTP Basic authentication.** Ang header na `Authorization: Basic` ay ang Base64 ng `gumagamit:password`.
+
+## Ang halaga sa sukat
+
+Hindi libre ang Base64. Ang tatlong byte ay nagiging apat na karakter, kaya ang naka-encode na anyo ay mga **33% na mas malaki** kaysa orihinal, bago ang anumang overhead para sa mga line break. Karaniwang sulit ang palitang iyon para sa kawastuan sa isang text channel, ngunit ito ang dahilan kung bakit hindi mo ie-encode sa Base64 ang isang malaking file na maipapadala mo bilang hilaw na mga byte. Para sa maliliit na naka-embed na resource, nananalo ang kaginhawahan; para sa malalaking payload, ang overhead ay paboran ang isang binary na transport.
+
+## Hindi pag-encrypt ang pag-encode
+
+Ginagawa na ng halimbawang Basic auth ang pinakamahalagang punto. Tila malabo ang `Authorization: Basic dXNlcjpwYXNz`, ngunit ang `dXNlcjpwYXNz` ay Base64 lamang ng `user:pass`, naibabalik ng sinuman, walang anumang susi na kasangkot. Walang ibinibigay na **anumang pagiging kumpidensyal** ang Base64. Ito ay isang encoding (isang naibabalik na pagbabago ng representasyon), hindi pag-encrypt (isang lihim na pinoprotektahan ng susi) ni pag-hash (isang one-way na fingerprint). Kaya ligtas lamang ang Basic auth sa ibabaw ng TLS: ine-encrypt ng transport ang header, dahil tiyak na hindi ito ginagawa ng Base64.
+
+Tuwing makakakita ka ng mahaba, mukhang malabong string, ang i-decode ito muna ay isang murang paraan upang malaman kung ano ito. Dine-decode ng [tool na Base64](/tools/base64) ang mga data URI, bloke ng PEM, at authentication header tungo sa kanilang hilaw na mga byte at teksto, lubos sa iyong browser, kaya walang anumang ipinepeyst mo na umaalis sa pahina.

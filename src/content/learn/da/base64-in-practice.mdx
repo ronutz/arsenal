@@ -1,0 +1,32 @@
+---
+slug: base64-in-practice
+title: "Hvor Base64 dukker op: data-URI'er, MIME, PEM og Basic auth"
+summary: "De virkelige steder, hvor binært pakkes ind i tekst, størrelsesomkostningen ved det, og hvorfor Base64 i en autentifikationsheader ikke er kryptering."
+concepts: ["base64", "data-uri", "mime", "pem", "basic-auth", "encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "certificate-formats"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hvorfor pakke binært ind i tekst
+
+Mange transporter blev bygget til tekst, ikke til rå byte: e-mailtekster, JSON- og XML-dokumenter, HTTP-headere, kildekodefiler. Læg rå binær data i en af dem, og en vildfaren styre- eller nulbyte kan ødelægge fortolkningen. Base64 løser dette ved at udtrykke byten på ny med kun sikre udskrivbare tegn, så binært kan rejse uskadt gennem en ren tekstkanal. Her sker det i virkeligheden.
+
+## De almindelige scenarier
+
+- **Data-URI'er.** En `data:`-URL indlejrer en lille ressource direkte i markup eller CSS, for eksempel `data:image/png;base64,iVBORw0KGgo...`. Billedets byte ligger i Base64 lige der i attributten, hvilket sparer en separat netværksforespørgsel for små ressourcer.
+- **E-mail (MIME).** Vedhæftninger og ikke-ASCII-tekster transporteres med `Content-Transfer-Encoding: base64`. MIME bryder uddata op i linjer (klassisk 76 tegn), så gamle e-mailservere ikke sætter lange linjer i halsen.
+- **PEM.** Certifikater og nøgler er DER-byte pakket ind i Base64 mellem markørerne `-----BEGIN CERTIFICATE-----` og `-----END CERTIFICATE-----`, med linjer brudt ved 64 tegn. PEM er grunden til, at et certifikat er en tekstblok, du kan indsætte i en konfigurationsfil.
+- **HTTP Basic-autentificering.** Headeren `Authorization: Basic` er Base64 af `bruger:adgangskode`.
+
+## Størrelsesomkostningen
+
+Base64 er ikke gratis. Tre byte bliver fire tegn, så den kodede form er omkring **33 % større** end originalen, før eventuelle omkostninger ved linjeskift. Den afvejning er som regel det værd for korrekthed i en tekstkanal, men det er grunden til, at du ikke ville Base64-kode en stor fil, som du kunne sende som rå byte. For små indlejrede ressourcer vinder bekvemmeligheden; for store nyttelaster taler omkostningen for en binær transport.
+
+## At kode er ikke at kryptere
+
+Basic auth-eksemplet gør den vigtigste pointe af sig selv. `Authorization: Basic dXNlcjpwYXNz` ser uigennemskueligt ud, men `dXNlcjpwYXNz` er simpelthen Base64 af `user:pass`, omvendeligt af enhver, uden nogen nøgle involveret. Base64 giver **ingen fortrolighed**. Det er en kodning (en omvendelig ændring af repræsentation), ikke kryptering (en nøglebeskyttet hemmelighed) og ikke hashing (et envejs-fingeraftryk). Derfor er Basic auth kun sikkert over TLS: transporten krypterer headeren, for det gør Base64 bestemt ikke.
+
+Hver gang du ser en lang, uigennemskueligt udseende streng, er det at afkode den først en billig måde at finde ud af, hvad den er. [Base64-værktøjet](/tools/base64) afkoder data-URI'er, PEM-blokke og autentifikationsheadere til deres rå byte og tekst, helt i din browser, så intet af det, du indsætter, forlader siden.

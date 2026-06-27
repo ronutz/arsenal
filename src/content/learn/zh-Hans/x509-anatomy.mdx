@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "X.509 证书的解剖"
+summary: "一个 TLS 证书内部活着什么、ASN.1/DER 字节如何构造、v3 扩展实际控制什么，以及为何解码一个证书与信任它并不相同。"
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## 证书是什么
+
+一个 X.509 证书是一份签名的声明，它把一个公钥绑定到一个身份。当一个浏览器经由 HTTPS 连接到一个站点时，服务器出示一份证书，其大意是说：“这个公钥属于 test.ronutz.com，且一个证书颁发机构为之担保。”定义一份证书承载哪些字段、它们如何被解释的规约，是 RFC 5280。
+
+绑定才是要紧的。任何人都能生成一个密钥对，所以一个赤裸的公钥并不能证明另一端是谁。一份证书添加了一个颁发者的签名，而依赖方已然信任那个颁发者，从而把一个匿名的密钥变成一个附有名字的密钥。这便是 Web 公钥基础设施（PKI）的基础。
+
+## 信任链
+
+一份单独的证书很少凭它自身就被信任。它之所以被信任，是因为它被一个颁发者签名，而那个颁发者又被另一个颁发者签名，向上直到一个依赖方已持于一个信任库中的根：
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+每一环都是一个签名：颁发者用颁发者的私钥签署子的证书，而一个验证者用颁发者的公钥核验那个签名。一个**根**是自颁发且自签名的，这便是为何一个自签名证书是一个根的有用的本地替身，但不携带任何外部权威。X.509 工具会标示一个自颁发的证书（颁发者等于主体）以及该证书是否被标记为一个 CA，二者都告诉你一份证书在此图景中位居何处。
+
+## ASN.1 与 DER：字节布局
+
+一份证书不是 JSON，也不是文本。它以 ASN.1（Abstract Syntax Notation One）描述，并以 Distinguished Encoding Rules（DER）编码，规定于 ITU-T X.690。DER 是一种 tag-length-value（TLV）格式：每个元素以一个 tag 字节开始，言明它是何种类型，然后是一个长度，然后是那么多个内容字节。诸如 SEQUENCE 与 SET 的构造型持有子元素，所以整份证书是一棵 TLV 之树。
+
+一个 PEM 文件就是那个 DER，经 Base64 编码并裹在护甲行之中：
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+所以解码一份证书意味着剥去护甲、从 Base64 解码为 DER，然后遍历那棵 TLV 之树。X.509 工具正是在你的浏览器中做此事，无库且无网络调用。
+
+## 顶层结构
+
+在最外层，RFC 5280 定义了三个部分：
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+**tbsCertificate**（“to be signed”，待签名）持有全部真实内容。**signatureAlgorithm** 命名颁发者如何签署它，例如 sha256WithRSAEncryption 或 ecdsa-with-SHA256。**signatureValue** 是签名本身，对 tbsCertificate 的 DER 字节计算而来。最后这一点值得记牢：签名覆盖那个待签名的主体，恰如其被编码的那样，这便是为何主体中任何位置哪怕一个字节的改动都会破坏验证。
+
+## TBSCertificate 之内
+
+那个待签名的主体是工具花费其大部分时间之处：
+
+- **版本**几乎总是 v3，即引入扩展的那个版本。
+- **序列号**是颁发者所赋的一个大整数。与颁发者名字相结合，它唯一地标识该证书，也正是一个吊销列表所引用之物。
+- **颁发者**（Issuer）与**主体**（Subject）是判别名（Distinguished Names）。一个 DN 是一串属性，如 CN（common name）、O（organization）、OU（organizational unit）、L（locality）、ST（state）与 C（country）。RFC 4514 定义了你所见的那种单行、最具体在前的呈现，例如 `CN=test.ronutz.com, O=NTZ Technology, C=BR`。
+- **有效期**（Validity）是一个 notBefore 与一个 notAfter 时间戳。它们被编码为 UTCTime 或 GeneralizedTime；工具把二者都转换为 ISO-8601，并针对你的本地时钟，告诉你该证书是此刻有效、尚未有效、还是已过期。
+- **subjectPublicKeyInfo** 承载公钥外加其算法。对 RSA，工具报告模数大小（例如 2048-bit）与公开指数（几乎总是 65537）。对椭圆曲线密钥，它报告所命名的曲线（P-256、P-384、P-521），依照 RFC 5480。
+
+## v3 扩展
+
+扩展是现代证书编码其大部分策略之处。每个扩展有一个标识符、一个 critical 标志与一个值。critical 标志要紧：若一个依赖方不理解一个被标记为 critical 的扩展，它必须拒绝该证书，而非忽略该字段。工具解码那些分量最重的：
+
+- **Subject Alternative Name（SAN）**列出该证书实际为之有效的那些身份，作为 DNS 名字、IP 地址、电子邮件地址或 URI。对 TLS，这是浏览器所检查的字段，而非 CN。一份用于 `test.ronutz.com` 的证书，若其 SAN 省略了那个名字，将在一个现代客户端中验证失败，即便 CN 相符。
+- **Key Usage** 在底层约束该密钥可做什么：digitalSignature、keyEncipherment、keyCertSign、cRLSign 及其他。一份 CA 证书承载 keyCertSign；一片 TLS 叶子通常承载 digitalSignature 与 keyEncipherment。
+- **Extended Key Usage（EKU）**命名更高层的用途，如 serverAuth（TLS 服务器）、clientAuth（TLS 客户端）、codeSigning 或 emailProtection。
+- **Basic Constraints** 陈述该证书是否为一个 CA，若是，则在它之下可出现多少个中间 CA（路径长度）。这便是阻止一片叶子证书被用来签署其他证书的那个字段。
+- **Subject Key Identifier** 与 **Authority Key Identifier** 是哈希，使一个验证者在构建一条链时能迅速把一份证书匹配到它的颁发者。
+
+## 指纹
+
+一份证书的**指纹**（fingerprint）只不过是该证书 DER 字节的一个密码学哈希，通常是 SHA-256（以及，对较旧的引用，SHA-1）。它不是证书内部的一个字段；它是对整件东西计算而来。指纹给你一个短的、定长的值，用以比较两份证书是否相等，或固定一份已知的证书。工具用 Web Crypto API 在本地计算 SHA-256 与 SHA-1 二者，所以你粘贴的字节从不被发送到任何地方。关于哈希是什么、不是什么的更多内容，见哈希一文。
+
+## 解码不是验证
+
+这是最重要的那一个观念，它映照着适用于 JSON Web Tokens 的同一份谨慎。读取一份证书的字段告诉你它所*声称*之事。它并不告诉你那个声称是*真实*的。完整的验证是一个单独的、更重的过程：核查签名是否链至一个受信任的根、链中没有任何一份证书已过期或被吊销、你所连接到的那个名字在 SAN 之中，以及密钥用途允许你正在做之事。
+
+一个证书解码器，本工具在内，是一件检视与学习的器具。它向你精确地展示一个颁发者断言了什么、以及它是如何被编码的。把输出当作对该文档的一份忠实读取，而非关于是否信任它的一个裁决。

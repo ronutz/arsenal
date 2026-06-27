@@ -1,0 +1,42 @@
+---
+slug: jwt-security
+title: "JWT-säkerhetsfällor: alg:none, nyckelförväxling och saknade kontroller"
+summary: "Den handfull misstag som förvandlar en JWT-verifierare till en förfalskningsmaskin, och den validering en korrekt verifierare måste utföra."
+concepts: ["jwt", "alg-none", "algorithm-confusion", "claims-validation", "security"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "jwt-signing-algorithms", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Signaturen är bara så bra som verifieraren
+
+En JWT:s signatur gör dess anspråk pålitliga, men bara om koden som verifierar den gör det korrekt. De flesta JWT-sårbarheter är inte brister i kryptografin; det är verifierare som kan luras att acceptera token de borde avvisa. Här är de som spelar roll, och kontrollerna som förhindrar dem.
+
+## Att lita på tokenets eget algoritm
+
+- **`alg: none`.** JWT-specifikationen definierar ett "oskyddat" token utan signatur, deklarerat med `{"alg":"none"}`. En verifierare som hedrar det accepterar ett token med förfalskade anspråk och en tom signatur. En korrekt verifierare behandlar aldrig `none` som giltigt för ett token som ska vara signerat.
+- **Algoritmförväxling (RS256 till HS256).** Med RS256 signeras tokenet av en privat nyckel och verifieras med den publika nyckeln. Om en verifierare läser algoritmen *från tokenet* och en angripare ändrar rubriken till HS256, kan verifieraren försöka verifiera en HMAC med den **publika** nyckeln som hemlighet, ett värde angriparen också har. Det förfalskade tokenet godkänns då.
+
+Det enda försvaret för båda är detsamma: **verifieraren bestämmer det godtagbara algoritmet, inte tokenet.** Lås det förväntade algoritmet (eller en kort tillåtelselista) i ditt verifieringsanrop och avvisa allt annat.
+
+## Att hoppa över anspråken
+
+En giltig signatur bevisar att tokenet utfärdades och inte ändrades. Den bevisar inte att tokenet är *för dig* eller *fortfarande giltigt*. En korrekt verifierare kontrollerar också:
+
+- **`exp` (utgång)** och **`nbf` (inte-före):** avvisa utgångna eller ännu inte giltiga token, med en liten tolerans för klockavvikelse.
+- **`aud` (målgrupp):** bekräfta att tokenet var avsett för denna tjänst. Ett token utfärdat för tjänst A ska inte accepteras av tjänst B.
+- **`iss` (utfärdare):** bekräfta att det kom från den utfärdare du litar på, och härled verifieringsnyckeln från den utfärdaren, inte från tokenet.
+
+Att utelämna detta är hur ett stulet eller felriktat token slutar med att accepteras där det inte borde.
+
+## De mindre fällorna
+
+- **Svaga HMAC-hemligheter.** Ett HS256-token signerat med en kort eller gissningsbar hemlighet kan brytas offline tills en matchande signatur hittas. Använd en lång, slumpmässig nyckel.
+- **Hantering av `kid` och JWKS.** Rubriken `kid` väljer en nyckel; behandla den som opålitlig indata (den har använts för injektion) och hämta nycklar endast från JWKS:en hos den utfärdare du litar på.
+- **Avkodning förväxlad med verifiering.** Att läsa ett tokens anspråk utan att kontrollera signaturen och tiden är inte verifiering. Agera bara på ett fullständigt verifierat token.
+
+## Kortversionen
+
+Lås algoritmet, validera `exp`, `aud` och `iss`, använd starka nycklar och förväxla aldrig avkodning med verifiering. [JWT-verktyget](/tools/jwt) avkodar ett token, visar dess anspråk och utgång i klartext och verifierar en HMAC-signatur mot en hemlighet du klistrar in, allt i din webbläsare, där tokenet och hemligheten aldrig skickas.

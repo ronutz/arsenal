@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Bir karma seçmek: MD5, SHA-1, SHA-2, SHA-3 ve BLAKE"
+summary: "Hangi karma fonksiyonlarının hâlâ güvenli, hangilerinin kırık olduğu, çıktı boyutları ve doğrusunu nasıl seçeceğiniz."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tüm karmalar eşit değildir
+
+Kriptografik bir karma, herhangi bir girdiyi sabit boyutlu bir parmak izine eşler. Birkaç aile vardır ve birbirinin yerine kullanılamazlar: bazıları hâlâ güçlüyken bazıları, güvenlik için kullanmanın bir hata olacağı kadar ciddi biçimde kırılmıştır. Doğru seçim göreve ve takvime bağlıdır, çünkü yirmi yıl önce saygın olan bir karma bugün önemsiz biçimde kırılmış olabilir.
+
+## Kırık olanlar
+
+- **MD5** (128 bit) kırıktır. Çakışmalar bir dizüstü bilgisayarda saniyeler içinde üretilebilir ve gerçek saldırılarda kullanılmıştır (Flame zararlısı bir MD5 çakışmasıyla bir kod imzalama sertifikasını sahteledi). Yalnızca hızlı, güvenlik içermeyen bir sağlama olarak hayatta kalır ve orada bile daha iyi seçenekler vardır.
+- **SHA-1** (160 bit) kırıktır. 2017'deki SHAttered araştırması aynı SHA-1 özetine sahip iki farklı PDF üretti ve ardından seçilmiş önekli çakışmalar geldi. Tarayıcılar ve sertifika makamları SHA-1 desteğini yıllar önce kaldırdı. Bir saldırganın saldırabileceği imzalar veya bütünlük için kullanmayın.
+
+## Mevcut iş atları
+
+- **SHA-2**, çoğu iş için varsayılan ailedir. İlişkili fonksiyonlardan oluşan bir settir; yaygın olarak **SHA-256** ve **SHA-512** (ayrıca SHA-224, SHA-384 ve kısaltılmış SHA-512/256). SHA-2'ye karşı pratik bir çakışma saldırısı yoktur. Şüphe hâlinde SHA-256 güvenli ve evrensel olarak desteklenen seçimdir.
+- **SHA-3** (Keccak), SHA-2'den tamamen farklı bir iç tasarım (sünger yapısı) üzerine kurulu daha yeni bir standarttır. SHA3-256 ve SHA3-512 karşılaştırılabilir güvenlik sunar ve kısmen bir güvence olarak vardır: SHA-2'de bir zayıflık bulunursa, SHA-3'ün bunu paylaşması olası değildir. Ayrıca tasarımı gereği SHA-2'yi etkileyen uzunluk uzatma sorununa karşı bağışıktır.
+- **BLAKE2 ve BLAKE3**, güçlü güvenliğe sahip modern, çok hızlı karmalardır. Özellikle BLAKE3 paralelleştirme için yapılmıştır; bu, büyük veri miktarlarını karmaladığınızda ve güvenlikten ödün vermeden hız istediğinizde onu çekici kılar.
+
+## Bir tane seçmek
+
+Kısa bir karar kılavuzu:
+
+- Genel bütünlük, imzalar veya "sadece güvenli bir karmaya ihtiyacım var": **SHA-256**.
+- Algoritma çeşitliliği veya HMAC olmadan uzunluk uzatmaya bağışıklık istiyorsanız: **SHA-3** veya **SHA-512/256**.
+- Verimin önemli olduğu büyük dosyaların karmalanması: **BLAKE3**.
+- Hızlı, güvenlik içermeyen bir sağlama (kazara bozulmayı saptamak, kurcalamayı değil): bir CRC veya MD5 yeterlidir, ama buna asla "güvenli" demeyin.
+- **Parolalar ayrı bir sorundur.** Genel karmalar parola depolama için fazla hızlıdır; bcrypt, scrypt veya Argon2 gibi özel bir parola karması kullanın (parola karmalama makalesine bakın).
+
+[Karma aracı](/tools/hash) metin veya bir dosya üzerinde MD5, SHA-1, SHA-256, SHA-512 ve daha fazlasını hesaplar, böylece çıktıları yan yana karşılaştırabilirsiniz; tamamı tarayıcınızda, hiçbir şey gönderilmeden.

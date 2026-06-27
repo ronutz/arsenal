@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Espace d'adresses IPv4 privees et la RFC 1918"
+summary: "Les trois plages privees, pourquoi elles ne sont pas routables sur Internet, et les autres blocs speciaux que l'outil CIDR signale."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Des adresses que vous pouvez reutiliser
+
+Il n'existe qu'environ 4,3 milliards d'adresses IPv4, bien trop peu pour que chaque appareil ait une adresse publique unique. La reponse (RFC 1918) est de reserver trois plages que chacun peut utiliser au sein de son propre reseau, sans enregistrement. Comme tout le monde reutilise les memes plages privees, elles ne peuvent pas etre uniques sur l'Internet public, elles n'y sont donc **pas routables**. Atteindre l'exterieur necessite la traduction d'adresses reseau (NAT), qui echange une adresse source privee contre une adresse publique partagee a la peripherie du reseau.
+
+## Les trois plages de la RFC 1918
+
+- **`10.0.0.0/8`** : de `10.0.0.0` a `10.255.255.255`, 16 777 216 adresses. Un seul tres grand reseau.
+- **`172.16.0.0/12`** : de `172.16.0.0` a `172.31.255.255`, 1 048 576 adresses. Pas une classe B entiere, mais les 16 `/16` contigus de `172.16` a `172.31`, la plage que l'on confond le plus souvent.
+- **`192.168.0.0/16`** : de `192.168.0.0` a `192.168.255.255`, 65 536 adresses. La plage familiere des routeurs domestiques.
+
+## Les autres blocs speciaux
+
+Plusieurs autres plages sont reservees a des fins specifiques et ne sont pas non plus des adresses publiques ordinaires :
+
+- **`100.64.0.0/10`** (RFC 6598) est l'espace partage de NAT d'operateur (CGNAT), utilise par les fournisseurs entre le client et leur pool public. Il ressemble a du prive mais reste distinct de la RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) est link-local, l'adresse auto-attribuee qu'un hote choisit lorsqu'aucun serveur DHCP ne repond (APIPA sous Windows). Elle ne quitte jamais la liaison locale.
+- **`127.0.0.0/8`** est le loopback ; `127.0.0.1` est l'hote qui se parle a lui-meme.
+- **`0.0.0.0/8`**, la plage de multidiffusion `224.0.0.0/4` et les plages de documentation (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) sont egalement reservees.
+
+IPv6 reprend la meme idee sous une autre forme : les **Unique Local Addresses** dans `fc00::/7` (en pratique `fd00::/8`) sont l'equivalent a usage prive de la RFC 1918, la encore non routables globalement.
+
+## Pourquoi c'est important
+
+Savoir si une adresse est privee, publique ou speciale indique immediatement si elle peut apparaitre sur Internet, si elle necessite du NAT, et si une regle de pare-feu ou une route a du sens. Une adresse de `10/8` dans un enregistrement DNS public, ou une adresse `169.254` la ou vous attendiez du DHCP, est un signal a remarquer.
+
+La [calculatrice CIDR](/#cidr) classe toute adresse ou tout bloc selon ces plages a usage special et indique s'il est prive, reserve ou joignable globalement, calcule entierement dans votre navigateur.

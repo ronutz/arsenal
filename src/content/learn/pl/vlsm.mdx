@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: podział bloku na nierówne podsieci"
+summary: "Jak pociąć blok adresów na podsieci różnej wielkości bez marnowania miejsca oraz reguła od największej, która utrzymuje porządek."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problem z równymi podsieciami
+
+Klasyczne dzielenie na podsieci tnie blok na kawałki jednej stałej wielkości. To proste, ale rozrzutne, gdy potrzeby się różnią. Jeśli jeden segment ma 100 hostów, a inny to łącze między dwoma routerami z 2, to przydzielenie obu `/26` (62 użyteczne) zawodzi dla pierwszego i marnuje 60 adresów na drugim. **VLSM**, maska podsieci o zmiennej długości, naprawia to, pozwalając każdej podsieci użyć długości prefiksu pasującej do jej własnej potrzeby, wszystko wycięte z tego samego bloku nadrzędnego.
+
+Jedyne, co czyni VLSM bardziej pracochłonnym niż stałe dzielenie, to kolejność: musisz umieścić **największe podsieci najpierw**, w przeciwnym razie adresy utkną, a powstaną nakładania.
+
+## Wymiarowanie każdej podsieci
+
+Zacznij od liczby hostów, których potrzebuje każdy segment, potem znajdź najmniejszy blok, który ją pomieści, pamiętając, że dwa adresy w każdym zwykłym bloku są zarezerwowane (sieć i rozgłoszenie):
+
+- 100 hostów wymaga 7 bitów hosta (2⁷ − 2 = 126 użytecznych), `/25`.
+- 50 hostów wymaga 6 bitów hosta (62 użyteczne), `/26`.
+- 25 hostów wymaga 5 bitów hosta (30 użytecznych), `/27`.
+- 10 hostów wymaga 4 bitów hosta (14 użytecznych), `/28`.
+- Łącze punkt-punkt z 2 hostami to `/30` (2 użyteczne) lub `/31` według RFC 3021.
+
+Zawsze zaokrąglaj w górę do następnej potęgi dwójki. Segment 100 hostów nie mieści się w `/26` (62), więc bierze następny rozmiar, `/25`.
+
+## Wycinanie z bloku, od największego
+
+Załóżmy, że posiadasz `192.168.10.0/24` i potrzebujesz pięciu powyższych podsieci. Przydzielaj w malejącej kolejności wielkości, każda zaczynająca się na swojej naturalnej granicy:
+
+```
+/25  192.168.10.0   – .127   (126 użytecznych)  ← segment 100 hostów
+/26  192.168.10.128 – .191   (62 użyteczne)     ← segment 50 hostów
+/27  192.168.10.192 – .223   (30 użytecznych)   ← segment 25 hostów
+/28  192.168.10.224 – .239   (14 użytecznych)   ← segment 10 hostów
+/30  192.168.10.240 – .243   (2 użyteczne)      ← łącze routerów
+```
+
+Każdy blok zaczyna się dokładnie tam, gdzie kończy się poprzedni, a od `192.168.10.244` w górę pozostaje wolne na przyszły wzrost. Gdybyś przydzielił `/30` najpierw, `/25` nie miałby już czystej granicy, na której mógłby wylądować, co jest całym powodem reguły od największej.
+
+## Dlaczego to ważne
+
+VLSM to sposób, w jaki rzeczywiste sieci oszczędzają przestrzeń adresową i utrzymują przydziały wyrównane, tak by trasy można było czysto agregować. Arytmetyka to ta sama matematyka długości prefiksu, co dla pojedynczej podsieci, zastosowana wielokrotnie: ustal więcej bitów, by zmniejszyć blok, i trzymaj każdy blok na granicy będącej potęgą dwójki.
+
+Możesz zweryfikować każdy przydział w [kalkulatorze CIDR](/#cidr), który pokazuje adres sieci i rozgłoszenia, maskę oraz liczbę użytecznych hostów każdego bloku natychmiast i w całości w przeglądarce.

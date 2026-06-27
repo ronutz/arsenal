@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Neighbor Discovery: paano pinapalitan ng IPv6 ang ARP"
+summary: "Paano nakakahanap ang IPv6 ng mga kapitbahay sa isang link gamit ang ICMPv6 at multicast sa halip na broadcast ARP, ang limang mensahe ng Neighbor Discovery, at kung bakit wala na ang broadcast."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hindi opsyonal ang ICMPv6
+
+Sa IPv4, ang ICMP ay isang diagnostic na pang-huling-isip na maaari mong harangan nang hindi sinisira ang pangunahing connectivity. Sa IPv6, ang ICMPv6 (RFC 4443) ay load-bearing: umaasa rito ang protocol para sa pangunahing operasyon ng link, kaya ang pagsala rito nang walang pinipili ay sumisira sa network. Ang dahilan ay inilipat ng IPv6 ang ilang trabaho na ikinalat ng IPv4 sa ARP, ICMP router discovery, at ICMP redirects tungo sa isang ICMPv6-based na protocol na tinatawag na Neighbor Discovery (RFC 4861). Ang pag-unawa sa Neighbor Discovery ay pag-unawa kung paano talaga gumagana ang isang IPv6 link.
+
+## Limang mensahe ang gumagawa ng trabaho
+
+Ang Neighbor Discovery ay nagtatakda ng limang uri ng ICMPv6 na mensahe, at halos lahat sa isang link ay ilang kombinasyon ng mga ito:
+
+- **Router Solicitation (RS)**: humihingi ang isang host sa mga router na ipahayag ang kanilang sarili.
+- **Router Advertisement (RA)**: ipinapahayag ng isang router ang prefix at ang mga configuration flag (ang input sa autoconfiguration sa artikulong [address configuration](/learn/ipv6-address-configuration)).
+- **Neighbor Solicitation (NS)**: nagtatanong ang isang host na "sino ang may ganitong address, at ano ang iyong link-layer address?"
+- **Neighbor Advertisement (NA)**: ang sagot na nagbibigay ng link-layer address na iyon.
+- **Redirect**: sinasabihan ng isang router ang isang host tungkol sa isang mas mabuting next hop para sa isang destinasyon.
+
+Hinahawakan ng router solicitation at advertisement ang "paano ko ikonfigura ang sarili"; hinahawakan ng neighbor solicitation at advertisement ang "paano ko maaabot ang kapitbahay na ito"; hinahawakan ng redirect ang "may mas mabuting landas". Saklaw niyon ang pang-araw-araw na buhay ng isang link.
+
+## Address resolution nang walang broadcast
+
+Ang trabaho na ginagawa ng ARP sa IPv4, ang pagmapa ng isang IP address sa isang hardware address, ay ginagawa sa IPv6 ng pares na Neighbor Solicitation at Advertisement. Ang mahalagang pagkakaiba ay *paano* itinatanong ang tanong. Sumisigaw ang ARP sa broadcast address, na inaabala ang bawat device sa segment. Ang IPv6 sa halip ay nagpapadala ng Neighbor Solicitation sa **solicited-node multicast address** ng target, isang grupo na ang maliit na set lamang ng mga host na nagbabahagi ng parehong address suffix ang makikinig. Sumasagot ang target ng isang Neighbor Advertisement na nagdadala ng link-layer address nito. Kina-cache ng nagtatanong ang resulta, eksakto kung paano gumagana ang isang ARP cache, at muli itong vine-validate sa pamamagitan ng Neighbor Unreachability Detection kapag iminumungkahi ng trapiko na maaaring umalis na ang isang kapitbahay.
+
+## Ang solicited-node multicast address
+
+Ang solicited-node multicast address ay binuo mula sa target address: kunin ang prefix `ff02::1:ff00:0/104` at idugtong ang huling 24 bits ng address ng target. Dahil ang resolution ay nagta-target lamang sa kakaunting host na nagbabahagi ng mababang 24 bits na iyon sa halip na sa buong link, ang request ay umaabot sa mas kaunting makina kaysa sa isang ARP broadcast. Ang konstruksyong ito ang dahilan kung bakit itinuturing ng artikulong [addressing](/learn/ipv6-addressing) ang solicited-node multicast bilang bahagi ng plano ng address sa halip na isang pang-huling-isip: ang bawat host na nagkokonfigura ng isang address ay awtomatikong sumasali sa kaukulang solicited-node group upang mahanap siya ng iba.
+
+## Walang broadcast kahit kailan
+
+Ang IPv6 ay walang broadcast address. Lahat ng ginamitan ng IPv4 ng broadcast, kasama ang address resolution at router discovery, ay hinahawakan ng multicast tungo sa mga tiyak, mahusay na saklaw na grupo. May isang all-nodes multicast group (`ff02::1`) at isang all-routers group (`ff02::2`), ngunit ang routine na resolution ay nagta-target sa halip sa makikitid na solicited-node group. Ang pagpapalit ng "abalahin ang lahat" ng "ipaalam nang eksakto sa mga kaugnay na tagapakinig" ay mas mahusay sa mga abalang link at isa sa mas tahimik na mga pagpapahusay na ginagawa ng IPv6 kaysa sa IPv4.
+
+## Pagtitiwala sa link
+
+Dahil ang Neighbor Discovery ay hindi naka-authenticate bilang default, ang isang malisyosong host sa parehong link ay maaaring magpadala ng mga pekeng Router Advertisement o Neighbor Advertisement upang i-redirect o harangin ang trapiko, ang IPv6 na katulad ng ARP spoofing. Ang mga depensa ay nakatira sa gilid ng network: ang RA Guard sa mga switch ay nagde-drop ng mga router advertisement mula sa mga port na hindi dapat may mga router, at ang SEcure Neighbor Discovery (SEND) ay nagdaragdag ng cryptographic na proteksyon kung saan ito ipinatutupad. Tulad ng IPv4, ang lokal na link ay isang trust boundary na sulit ipagtanggol.
+
+## Ang nervous system ng link
+
+Ang buod ay tinupi ng IPv6 ang address resolution, router discovery, at redirection tungo sa isang ICMPv6-based na protocol, ipinagpalit ang sigaw ng broadcast sa nakatuong multicast, at ginawang esensyal sa halip na opsyonal ang buong bagay. Kapag nakita mo ang isang address sa tool at napansin ang solicited-node group nito o ang link-local na anyo nito, tinitingnan mo ang mga piyesa na ginagamit ng Neighbor Discovery upang hayaan ang mga host na mahanap ang isa't isa sa isang link nang hindi kailanman nababagabag ang mga kapitbahay na hindi kasangkot.

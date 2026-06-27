@@ -1,0 +1,43 @@
+---
+slug: ipv6-subnetting
+title: "Subredes IPv6 y la frontera /64"
+summary: "Por qué las subredes IPv6 son sobre estructura en vez de escasez, por qué una sola subred es casi siempre un /64, y cómo la delegación de prefijo reparte espacio de direcciones."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Una razón distinta para hacer subredes
+
+En IPv4, hacer subredes es mayormente sobre conservación: las direcciones son escasas, así que tallas un bloque en las piezas más pequeñas que aún caben en cada red (la lógica en el artículo de [fundamentos de subredes](/learn/subnetting-basics)). IPv6 quita esa presión enteramente. Una sola subred /64 contiene 2^64 direcciones, más que toda la internet IPv4 al cuadrado, así que nunca haces subredes en una red IPv6 para ahorrar espacio. Haces subredes para dar estructura: un prefijo por VLAN, por sitio, por cliente. La matemática es la misma aritmética de prefijo que IPv4 (la herramienta la computa con enteros de precisión arbitraria), pero la mentalidad es la opuesta.
+
+## Por qué una subred es un /64
+
+La regla aislada más importante en el direccionamiento IPv6 es que una subred normal es un /64, dejando 64 bits para el identificador de interfaz. Esto no es una sugerencia; grandes partes del protocolo lo presumen. La autoconfiguración de dirección sin estado (cubierta en el artículo de [configuración de dirección](/learn/ipv6-address-configuration)) construye la dirección de un host anexando un identificador de interfaz de 64 bits al prefijo anunciado, y la derivación EUI-64 modificada que la herramienta puede realizar produce exactamente 64 bits. Usa un prefijo más largo como un /80 o /112 en un enlace y la autoconfiguración simplemente deja de funcionar. La arquitectura de direccionamiento (RFC 4291) está construida en torno a esta frontera, así que el consejo práctico es directo: haz toda subred de usuario final un /64 y no intentes ser frugal dentro de ella.
+
+## La jerarquía de asignación
+
+Si toda subred es un /64, los sitios y proveedores trabajan en bloques más grandes por encima de eso:
+
+```
+/48   a site            65,536 subnets (/64s)
+/56   a small site         256 subnets (/64s)
+/64   one subnet         the link itself
+```
+
+Un ISP típicamente delega un /48 o /56 a un cliente, que luego asigna /64s a partir de él a enlaces individuales. La RFC 6177 retrocede de la orientación original de "/48 para todos" hacia dar a cada sitio espacio suficiente para hacer subredes cómodamente, que en la práctica significa un /48 o /56. El punto es que tienes espacio de sobra: hasta un /56 da a una casa o pequeña oficina 256 redes separadas, mucho más de lo que jamás usará.
+
+## Haz subredes en fronteras de nibble
+
+Como IPv6 se escribe en hex y cada dígito hex tiene 4 bits (un nibble), los prefijos que caen en una frontera de 4 bits son mucho más fáciles de leer y administrar. Un /48, /52, /56, /60, y /64 todos terminan limpiamente entre dígitos hex, así que la porción de subred se alinea con caracteres enteros en la dirección. Hacer subredes de un /48 en /52s te da 16 bloques distinguidos por un único dígito hex; yendo a /56 da 256 bloques a través de dos dígitos. Permanecer en fronteras de nibble mantiene tu plan de direccionamiento legible, que importa más en IPv6 de lo que exprimir el último bit jamás podría.
+
+## Contando subredes y direcciones
+
+La aritmética es directa. El número de subredes /64 dentro de un prefijo más corto es 2 elevado a la diferencia en las longitudes de prefijo: un /48 contiene 2^(64-48) = 2^16 = 65.536 subredes. El número de direcciones dentro de cualquier /64 es 2^(128-64) = 2^64. La herramienta reporta tanto el conteo de direcciones para un prefijo como el rango utilizable, y los números se vuelven grandes rápidamente, que es exactamente el punto: la escasez ya no es una restricción en torno a la cual diseñas.
+
+## La conclusión
+
+Las subredes IPv6 voltean el hábito de IPv4 de cabeza. No estás dividiendo un recurso escaso; estás imponiendo estructura sobre uno efectivamente ilimitado. Da a toda subred un /64 para que la autoconfiguración y el descubrimiento de vecinos funcionen como están diseñados, solicita un /48 o /56 para que tengas espacio para organizar, y haz subredes en fronteras de nibble para que tu plan permanezca legible. Cuando pegas un prefijo en la herramienta y ves el conteo de direcciones, trata esa abundancia como permiso para diseñar para la claridad en vez de para la conservación.

@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUIDs als Datenbankschlüssel: v4, v7 und Indexlokalität"
+summary: "Der echte Kompromiss zwischen UUIDs und Auto-Increment-Ganzzahlen und warum zufällige v4-Schlüssel die Datenbankleistung still beeinträchtigen."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Zwei Wege, einen Primärschlüssel zu bilden
+
+Die meisten Tabellen brauchen einen eindeutigen Schlüssel für jede Zeile. Die zwei üblichen Wahlen sind eine **Auto-Increment-Ganzzahl** der Datenbank (1, 2, 3, ...) und eine **UUID**. Die Ganzzahl ist klein und natürlich geordnet; die UUID kann überall, von jedem, ohne Koordination erzeugt werden. Welche besser ist, hängt davon ab, was Ihnen wichtig ist, und die Antwort hat eine Leistungsdimension, die leicht zu übersehen ist.
+
+## Warum Teams zu UUIDs greifen
+
+- **Keine Koordination.** Jeder Dienst, Client oder jedes Offline-Gerät kann eine UUID prägen, die nicht kollidiert, sodass Sie keine zentrale Sequenz und keinen Hin- und Rückweg zur Datenbank brauchen, um eine id zu erhalten. Das ist in verteilten Systemen und zum Erzeugen von ids vor dem Speichern einer Zeile unbezahlbar.
+- **Nicht erratbar.** Sequentielle Ganzzahl-ids leaken Information (wie viele Bestellungen existieren und die id der nächsten) und lassen einen Angreifer durch Datensätze laufen, indem er hochzählt. Eine zufällige UUID gibt nichts davon preis.
+- **Merge-freundlich.** Daten aus getrennten Systemen kombinieren ohne id-Kollisionen.
+
+Der Preis ist die Größe, 16 Byte gegenüber 4 oder 8 für eine Ganzzahl, was zählt, weil der Primärschlüssel in jeden Sekundärindex und jeden Fremdschlüssel kopiert wird, der die Zeile referenziert.
+
+## Die verborgenen Kosten zufälliger Schlüssel
+
+Es gibt subtilere, wichtigere Kosten. Datenbanken speichern Zeilen in einem Index (häufig einem B-Baum), geordnet nach dem Primärschlüssel. Mit einem **sequentiellen** Schlüssel hängt jede neue Zeile ans Ende des Index, sodass die aktiven Seiten im Speicher bleiben und Schreibvorgänge günstig sind. Mit einer **zufälligen v4-UUID** landet jede Einfügung an einer beliebigen Position. Die Datenbank muss über den ganzen Index verstreute Seiten lesen, ändern und schreiben, was **Seitenteilungen**, **Fragmentierung** und weit mehr Cache-Fehlzugriffe verursacht. Auf einer großen, schreibintensiven Tabelle können zufällige Schlüssel Einfügungen messbar verlangsamen und den Index aufblähen, alles ohne einen Fehler, auf den man zeigen könnte.
+
+## Warum v7 die Rechnung verändert
+
+Genau dieses Problem sollte **UUID Version 7** lösen. Indem sie einen Millisekunden-Zeitstempel in die höchstwertigen Bits legt, sind v7-Werte **zeitgeordnet**: Neue Zeilen werden nahe dem Ende des Index eingefügt, genau wie eine sequentielle Ganzzahl, während die dezentrale, unkoordinierte Erzeugung einer UUID erhalten bleibt. Sie erhalten den Großteil des Indexlokalitäts-Vorteils eines Auto-Increment-Schlüssels ohne die zentrale Sequenz. Für neue Systeme, die UUID-Schlüssel wollen, ist v7 aus genau diesem Grund meist die richtige Version.
+
+## Praktische Hinweise
+
+- **Speichern Sie UUIDs als nativen UUID- oder Binärtyp, nicht als 36-Zeichen-Zeichenkette.** Die Textform zu speichern verschwendet Platz und verlangsamt Vergleiche; die Binärform sind 16 Byte.
+- **Nutzen Sie v7 für Schlüssel**, wo die Einfügeleistung zählt, und **v4**, wo Sie ausdrücklich keine Zeitinformation in der id eingebettet wollen.
+- Eine Auto-Increment-Ganzzahl ist für eine Einzelknoten-Tabelle, die nie extern erzeugte ids braucht, immer noch völlig gut; UUIDs beweisen ihren Wert, wenn Verteilung, Unvorhersehbarkeit oder Vorab-Erzeugung zählen.
+
+Das [UUID-Werkzeug](/tools/uuid) erzeugt sowohl v4 als auch v7 und dekodiert den eingebetteten Zeitstempel eines v7-Werts, sodass Sie die Ordnungseigenschaft direkt sehen, alles in Ihrem Browser.

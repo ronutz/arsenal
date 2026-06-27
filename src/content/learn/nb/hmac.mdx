@@ -1,0 +1,46 @@
+---
+slug: hmac
+title: "HMAC: nøkkelbasert hashing for meldingsautentisering"
+summary: "Hvorfor en vanlig hash beviser integritet, men ikke autentisitet, hvordan en hemmelig nøkkel løser det, og hvorfor HMAC sin struktur betyr noe."
+concepts: ["hmac", "mac", "keyed-hash", "authentication", "sha-256"]
+relatedTools: ["hmac"]
+relatedArticles: ["hashing", "hmac-api-signing", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hullet som en vanlig hash etterlater
+
+En kryptografisk hash beviser **integritet**: hvis digesten fortsatt stemmer, ble dataene ikke endret. Men den beviser ingenting om **hvem** som produserte dem. Hvem som helst kan hashe en melding, så en digest som sendes ved siden av en melding gir ingen beskyttelse mot en angriper som rett og slett endrer meldingen *og* beregner digesten på nytt. Ingen hemmelighet er involvert, så det er ingenting bare den legitime avsenderen kunne ha gjort.
+
+HMAC lukker det hullet. Det er en **meldingsautentiseringskode**: en verdi som beviser at en melding verken er tuklet med eller kom fra noen som innehar en delt hemmelig nøkkel. Verifikatoren beregner HMAC-en på nytt med samme nøkkel; hvis den stemmer, er meldingen autentisk.
+
+## Å legge til en nøkkel, på riktig måte
+
+Den åpenbare ideen, å bare hashe nøkkel og melding sammen som `hash(nøkkel + melding)`, er subtilt usikker. Mange hashfunksjoner (SHA-2-familien inkludert) bygger på en konstruksjon som er sårbar for et **lengdeutvidelsesangrep**: med kjennskap til `hash(nøkkel + melding)` og hemmelighetens lengde kan en angriper beregne en gyldig hash for `nøkkel + melding + ekstra` uten noensinne å kjenne nøkkelen. Det ville la dem forfalske en utvidet, fortsatt gyldig melding.
+
+HMAC (definert i RFC 2104) unngår dette ved å hashe to ganger, med nøkkelen blandet inn forskjellig hver gang. Begrepsmessig beregner den:
+
+```
+HMAC(K, m) = H( (K XOR opad) + H( (K XOR ipad) + m ) )
+```
+
+der `ipad` og `opad` er to faste utfyllingskonstanter. Den indre hashen binder nøkkelen til meldingen; den ytre hashen omslutter resultatet slik at lengdeutvidelsestriks ikke kan nå det. Du trenger ikke å memorere formelen, poenget er at den nestede strukturen, ikke en uvøren sammenslåing, er det som gjør HMAC solid.
+
+## HMAC mot en digital signatur
+
+Begge beviser autentisitet, men tillitsmodellen er forskjellig:
+
+- **HMAC er symmetrisk.** Én hemmelig nøkkel deles av begge sider. Den som kan verifisere en HMAC kan også lage en, så det fungerer når begge parter allerede deler en nøkkel, men ikke kan bevise opphavet overfor en tredjepart.
+- **En digital signatur er asymmetrisk.** Signereren bruker en privat nøkkel; hvem som helst kan verifisere med den offentlige nøkkelen. Dette beviser opphavet for hele verden, til en høyere beregningskostnad.
+
+Velg HMAC når to systemer deler en hemmelighet og trenger rask, gjensidig autentisering; velg en signatur når verifikatorer ikke skal kunne forfalske det de verifiserer.
+
+## Hvor du møter HMAC
+
+- **Signering av API-forespørsler.** Ordninger som AWS Signature Version 4 signerer hver forespørsel med HMAC-SHA256 slik at serveren kan bekrefte at anroperen innehar den hemmelige nøkkelen.
+- **Webhooks.** En leverandør sender en HMAC av nyttelasten i et hode; endepunktet ditt beregner den på nytt for å avvise forfalskede kall.
+- **JWT-er med HS256.** En token signert med HS256 er bokstavelig talt HMAC-SHA256 over tokenets hode og nyttelast. [HMAC-verktøyet](/tools/hmac) bruker nøyaktig samme Web Crypto-konstruksjon som JWT-verifikatoren bruker, så de to stemmer overens av design.
+
+Meldingen og nøkkelen din forlater aldri nettleseren; HMAC-en beregnes lokalt.

@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "API-verzoeken authenticeren met HMAC"
+summary: "Hoe een gedeeld geheim en een hash een server laten vertrouwen op een verzoek dat hij niet zag uitvoeren, en hoe replay-bescherming erin past."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het probleem: een verzoek vertrouwen
+
+Wanneer een server een API-verzoek ontvangt, hoe weet hij dan dat de aanroeper is wie hij beweert te zijn, en dat niemand het verzoek onderweg wijzigde? Een gedeeld geheim bij elk verzoek meesturen zou werken totdat dat geheim wordt gelogd, gecachet of gelekt. **HMAC-verzoekondertekening** lost dit op zonder het geheim ooit te verzenden: de aanroeper bewijst dat hij het geheim bezit door het te gebruiken om het verzoek te ondertekenen, en de server controleert de handtekening.
+
+## Hoe ondertekenen werkt
+
+Beide kanten delen een geheime sleutel. Om een verzoek te ondertekenen, bouwt de client:
+
+1. Een **canonieke tekenreeks** uit de delen van het verzoek die niet mogen veranderen, doorgaans de HTTP-methode, het pad, sleutelheaders, een tijdstempel en een hash van de body. "Canoniek" betekent dat beide kanten die op exact dezelfde, afgesproken manier samenstellen, zodat ze over identieke invoer rekenen.
+2. Berekent `HMAC-SHA256(canonieke tekenreeks, geheim)` en hangt het aan het verzoek, meestal in een header als `Authorization` of `X-Signature`.
+
+De server, die hetzelfde geheim bezit, herbouwt de canonieke tekenreeks uit het ontvangen verzoek en berekent de HMAC zelf. Komt zijn waarde overeen met die in de header, dan zijn twee dingen tegelijk bewezen: de aanroeper bezit het geheim (**authenticiteit**), en niets dat de handtekening dekt is gewijzigd (**integriteit**). Het geheim zelf reist nooit.
+
+## Een echt voorbeeld: AWS Signature Version 4
+
+Amazons SigV4 is de bekendste instantie. Elk verzoek wordt ondertekend met HMAC-SHA256 over een canoniek verzoek, met een ondertekensleutel **afgeleid** uit de geheime toegangssleutel, de datum, de regio en de dienst. De server leidt de sleutel opnieuw af en herberekent de handtekening; een afwijking wordt geweigerd. Hetzelfde patroon, canoniseren, HMAC, vergelijken, ligt aan talloze andere API-authenticatieschema's ten grondslag.
+
+## Webhooks: hetzelfde idee, omgekeerd
+
+Webhooks draaien de richting om. Een aanbieder (een betalingsverwerker, een Git-host) roept **jouw** endpoint aan om je van een gebeurtenis op de hoogte te stellen, en ondertekent de payload met een geheim dat jullie beiden delen, waarbij hij de HMAC in een header verstuurt. Jouw endpoint herberekent de HMAC over de ontvangen body en vergelijkt, en zo weiger je vervalste aanroepen van iedereen die het geheim niet bezit. Vergelijk altijd met een constante-tijdcontrole om geen informatie via de timing te lekken.
+
+## Replay-bescherming
+
+Een geldig ondertekend verzoek dat een aanvaller onderschept kan letterlijk worden **herhaald**. De standaardverdedigingen zijn een **tijdstempel** in de ondertekende data opnemen en verzoeken buiten een kort venster weigeren, en optioneel een **nonce** (een eenmalige waarde die de server kort onthoudt) zodat hetzelfde verzoek niet twee keer kan worden geaccepteerd. Ondertekenen bewijst authenticiteit; de tijdstempel en nonce houden een oud, echt verzoek ervan af opnieuw te worden gebruikt.
+
+De [HMAC-tool](/tools/hmac) berekent de HMAC-SHA256 (en SHA-384/512) in het hart van elk van deze schema's, over een bericht en sleutel die jij aanlevert, volledig in je browser.

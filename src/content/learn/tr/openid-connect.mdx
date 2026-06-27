@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: OAuth 2.0 üzerinde kimlik"
+summary: "OIDC'nin OAuth'un yetkilendirmesine kimlik doğrulamayı nasıl eklediği, kimlik belirtecinin ne olduğu ve PKCE ile kod akışının neden önerilen yol olduğu."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Yetkilendirme kimlik doğrulama değildir
+
+OAuth 2.0, "bu uygulama, kullanıcı adına o kaynağa erişmeye yetkili mi?" sorusunu yanıtlar. Bu bir *yetkilendirme* protokolüdür ve bilinçli olarak *kullanıcının kim olduğu* hakkında standart bir şey söylemez. Yine de uygulamalar bunu oturum açma için yeniden kullanmaya çalıştı; uyumsuz ve bazen güvensiz yollarla. **OpenID Connect (OIDC)** bunu düzelten standarttır: OAuth 2.0 üzerine, OAuth'un hâlihazırda yaptığı hiçbir şeyi atmadan kimlik doğrulamayı ekleyen ince bir kimlik katmanı.
+
+## Kimlik belirteci
+
+Tanımlayıcı ekleme **kimlik belirtecidir** ve bu bir JWT'dir. Bir OAuth erişim belirteci bir API için tasarlanmış ve genellikle istemci için anlaşılmaz iken, kimlik belirteci *istemci* için tasarlanmıştır ve kimliği doğrulanmış kullanıcı hakkında standart talepler taşır:
+
+- `iss` (veren) ve `aud` (hedef kitle, için verildiği istemci)
+- `sub` (kararlı, benzersiz kullanıcı tanımlayıcısı)
+- `exp` ve `iat` (son kullanma ve verilme zamanı)
+- `nonce` (belirteci belirli oturum açma isteğine bağlar ve yeniden oynatmayı yener)
+- bu kapsamlar verildiğinde `name`, `email` ve `picture` gibi profil talepleri
+
+Bir JWT olduğu için istemci, kimlik belirtecinin imzasını doğrular ve bu talepleri tıpkı herhangi bir JWT için anlatıldığı gibi geçerler. Aynı algoritma sabitleme ve `aud`/`iss`/`exp` kontrolleri geçerlidir.
+
+## Bir oturum açma nasıl akar
+
+OIDC, OAuth'un mekanizmasını yeniden kullanır. Önerilen akış **PKCE ile yetkilendirme kodu akışıdır**:
+
+1. Uygulama kullanıcıyı sağlayıcının yetkilendirme uç noktasına gönderir, `openid` kapsamını (artı `profile`, `email` vb.) ister ve bir PKCE `code_challenge` ekler.
+2. Kullanıcı sağlayıcıda kimliğini doğrular ve onay verir.
+3. Uygulama tek kullanımlık bir kod alır ve (PKCE `code_verifier` sahipliğini kanıtlayarak) onu bir **kimlik belirteci** ve bir **erişim belirteci** ile değiştirir.
+4. Uygulama, *kullanıcının kim olduğunu* belirlemek için kimlik belirtecini doğrular ve API'leri *onun adına* çağırmak için erişim belirtecini kullanır.
+
+İki uç nokta tabloyu tamamlar: bir **userinfo** uç noktası geçerli bir erişim belirteci için profil talepleri döndürür ve `/.well-known/openid-configuration` adresindeki bir **keşif belgesi**, sağlayıcının uç noktalarını ve JWKS adresini duyurur; böylece bir istemci kimlik belirteçlerini doğrulamak için anahtarları bulabilir ve anahtar rotasyonunu otomatik olarak izleyebilir.
+
+## Neden önemli
+
+OIDC, çoğu "... ile oturum aç" düğmesinin gerçekte çalıştırdığı şeydir. İki belirteci ayrı tutmak temel kavrayıştır: **kimlik belirteci kimliği istemciye kanıtlar**, **erişim belirteci API çağrılarını yetkilendirir** ve birbirinin yerine kullanılamazlar. Kod akışı ve PKCE ile birleştiğinde, federe oturum açmanın modern, standart tabanlı yoludur.
+
+[PKCE aracı](/tools/pkce) akışın `code_verifier` ve `code_challenge`'ını üretip doğrular ve [JWT aracı](/tools/jwt) kimlik belirtecini çözüp doğrular; ikisi de tamamen tarayıcınızda, hiçbir şey gönderilmeden.

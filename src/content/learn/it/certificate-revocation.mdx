@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Revoca dei certificati: CRL, OCSP e certificati a vita breve"
+summary: "Perché un certificato a volte deve essere annullato prima di scadere, perché i sistemi di revoca classici funzionano male, e perché l'industria sta invece restringendo i tempi di vita dei certificati."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Perché revocare del tutto
+
+Un certificato porta una data di scadenza, ma a volte deve essere annullato prima che quella data arrivi. La chiave privata potrebbe essere trapelata, il certificato potrebbe essere stato emesso per errore, o il dominio potrebbe aver cambiato proprietario. In tutti questi casi il certificato è ancora crittograficamente valido e ancora dentro la sua finestra di validità, eppure le parti facenti affidamento dovrebbero smettere di fidarsi di esso. La revoca è il meccanismo per dire "ignora questo certificato anche se non è scaduto". La parte difficile è consegnare quel messaggio in modo affidabile a ogni client del mondo, e questo si rivela l'anello più debole nella PKI del web.
+
+## CRL: la lista di blocco pubblicata
+
+La risposta originale è la Lista di Revoca dei Certificati (Certificate Revocation List), definita accanto al profilo di certificato nella RFC 5280. Una CA pubblica periodicamente una lista firmata dei numeri di serie che ha revocato, e i certificati possono puntare a essa attraverso un CRL Distribution Point. Un client scarica la lista e controlla se il serial del certificato vi appare.
+
+Il problema è dimensione e freschezza. Una CA affaccendata può accumulare liste enormi, quindi scaricare e analizzare una CRL a ogni connessione è impraticabile, e una lista in cache è obsoleta fino alla pubblicazione successiva. Le CRL sono ancora usate, sempre più in forme compresse e pre-elaborate che i browser consegnano a sé stessi, ma come controllo per connessione scalano male.
+
+## OCSP: chiedere di un certificato
+
+L'Online Certificate Status Protocol, RFC 6960, doveva risolvere il problema di dimensione lasciando che un client chiedesse di un singolo certificato invece di scaricare l'intera lista. Il client invia il serial del certificato a un OCSP responder e riceve indietro un "good", "revoked" o "unknown" firmato.
+
+Questo scambia un problema con tre. Aggiunge latenza, perché il client ora fa un giro di rete extra durante l'instaurazione della connessione. Fa trapelare privacy, perché il responder viene a sapere quali siti l'utente sta visitando. E crea un accoppiamento di disponibilità: se il responder è giù, il client deve o far fallire la connessione o, molto più comunemente, **fallire dolcemente** (soft-fail) e procedere come se il certificato fosse buono, il che silenziosamente vanifica l'intero scopo.
+
+## OCSP stapling e Must-Staple
+
+Lo stapling affronta i problemi di latenza e privacy facendo recuperare al *server* una risposta OCSP recente e firmata e allegandola all'handshake TLS (l'estensione status_request della RFC 6066). Il client ottiene la freschezza senza contattare il responder. Must-Staple, RFC 7633, è un'estensione di certificato che dice "respingimi se manca uno staple", chiudendo la falla del soft-fail, ma è raramente distribuita perché un singolo singhiozzo di stapling allora mette giù il sito.
+
+## La verità scomoda
+
+Attraverso questi meccanismi, il fallimento ricorrente è il soft-fail: quando l'informazione di revoca non è disponibile, i client scelgono in modo schiacciante la disponibilità sulla sicurezza e accettano il certificato. Ciò rende la revoca una rete di sicurezza inaffidabile precisamente quando serve. I browser hanno risposto con i propri sistemi fuori banda che si spingono dati di revoca a sé stessi, ma i protocolli per connessione non hanno mai mantenuto la loro promessa.
+
+## La risposta moderna: far scadere i certificati prima
+
+Se non puoi annullare un certificato in modo affidabile, l'alternativa è renderlo a vita abbastanza breve che l'annullamento raramente conti: un certificato compromesso semplicemente scade da solo entro giorni o settimane. L'industria si è impegnata esattamente in questo. Il Ballot SC-081v3 del CA/Browser Forum, approvato in aprile 2025, riduce per fasi il tempo di vita massimo di certificato TLS pubblico da 398 giorni a 200 giorni (a partire da marzo 2026), 100 giorni (marzo 2027) e 47 giorni (marzo 2029), con il periodo di riuso della validazione di dominio che si restringe a 10 giorni. Separatamente, dal 2023 il Forum ha permesso ai certificati a vita breve che scadono entro 7 giorni di saltare interamente il supporto a CRL e OCSP, e Let's Encrypt ha iniziato a emettere certificati con tempi di vita misurati in giorni. L'intera premessa è che un tempo di vita abbastanza breve è, esso stesso, la revoca.
+
+Questo funziona solo con l'automazione. Rinnovare i certificati ogni sei o sette settimane a mano è insostenibile, ed è per questo che il protocollo ACME (vedi l'[articolo di richiesta di firma](/learn/certificate-signing-request)) e gli strumenti di ciclo di vita dei certificati sono diventati infrastruttura essenziale anziché una comodità. Nota che queste regole si applicano ai certificati pubblicamente fidati nei programmi di radice dei browser; una PKI interna privata fissa la propria politica.
+
+## Cosa significa questo quando ispezioni un certificato
+
+Quando decodifichi un certificato, la finestra di validità non è più un ripensamento una-volta-l'anno; sta diventando il controllo di revoca primario. Il rapporto dello strumento su notBefore, notAfter, e se il certificato è valido proprio ora è, sempre più, la cosa più rilevante per la sicurezza a riguardo. Liste di revoca e responder esistono ancora, ma la direzione del viaggio è chiara: accorciare il tempo di vita così che la questione della revoca raramente sorga.

@@ -1,0 +1,45 @@
+---
+slug: certificate-revocation
+title: "Certificate revocation: CRL, OCSP, at mga short-lived na certificate"
+summary: "Kung bakit minsan kailangang kanselahin ang isang certificate bago ito mag-expire, kung bakit mahina ang gana ng mga klasikong sistema ng revocation, at kung bakit sa halip ay pinapaliit ng industriya ang mga lifetime ng certificate."
+concepts: ["x509", "revocation", "crl", "ocsp", "short-lived", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bakit mag-revoke pa
+
+Ang isang certificate ay nagdadala ng isang petsa ng pag-expire, ngunit minsan ito ay dapat kanselahin bago dumating ang petsang iyon. Maaaring tumagas ang private key, maaaring naisyu ang certificate nang may pagkakamali, o maaaring nagpalit-kamay ang domain. Sa lahat ng mga kasong ito ang certificate ay balido pa rin sa kriptograpiko at nasa loob pa rin ng validity window nito, ngunit dapat ihinto ng mga relying party ang pagtitiwala rito. Ang revocation ay ang mekanismo upang sabihin na "balewalain ang certificate na ito kahit na hindi pa ito nag-expire". Ang mahirap na bahagi ay ang pag-deliver ng mensaheng iyon nang maaasahan sa bawat client sa mundo, at ito ay nagiging pinakamahinang kawing sa web PKI.
+
+## CRL: ang nailathalang blocklist
+
+Ang orihinal na sagot ay ang Certificate Revocation List, tinukoy kasabay ng certificate profile sa RFC 5280. Ang isang CA ay pana-panahong naglalathala ng isang nilagdaang listahan ng mga serial number na binawi nito, at ang mga certificate ay maaaring tumuro rito sa pamamagitan ng isang CRL Distribution Point. Ang isang client ay nagda-download ng listahan at sinusuri kung lumilitaw rito ang serial ng certificate.
+
+Ang problema ay laki at pagka-sariwa. Ang isang abalang CA ay maaaring mag-ipon ng napakalaking listahan, kaya ang pag-download at pag-parse ng isang CRL sa bawat koneksyon ay hindi praktikal, at ang isang naka-cache na listahan ay luma na hanggang sa susunod na paglalathala. Ginagamit pa rin ang mga CRL, lalong-lalo na sa mga naka-compress at na-preprocess na anyo na inihahatid ng mga browser sa kanilang sarili, ngunit bilang isang per-connection na pagsusuri ay mahina ang pag-scale ng mga ito.
+
+## OCSP: pagtatanong tungkol sa isang certificate
+
+Ang Online Certificate Status Protocol, RFC 6960, ay nilayon upang ayusin ang problema sa laki sa pamamagitan ng pagpapahintulot sa isang client na magtanong tungkol sa isang nag-iisang certificate sa halip na i-download ang buong listahan. Ipinapadala ng client ang serial ng certificate sa isang OCSP responder at nakakatanggap ng isang nilagdaang "good", "revoked", o "unknown".
+
+Ito ay nagpapalit ng isang problema para sa tatlo. Nagdadagdag ito ng latency, dahil ang client ngayon ay gumagawa ng isang dagdag na network round trip habang itinatatag ang koneksyon. Nagtatagas ito ng privacy, dahil nalalaman ng responder kung aling mga site ang binibisita ng user. At lumilikha ito ng isang availability coupling: kung bumagsak ang responder, ang client ay dapat na ipabigo ang koneksyon o, mas karaniwan, **mag-soft-fail** at magpatuloy na parang maganda ang certificate, na tahimik na tumatalo sa buong punto.
+
+## OCSP stapling at Must-Staple
+
+Tinutugunan ng stapling ang mga isyu sa latency at privacy sa pamamagitan ng pagpapakuha sa *server* ng isang kamakailang, nilagdaang OCSP response at pagdugtong nito sa TLS handshake (ang status_request extension mula sa RFC 6066). Nakukuha ng client ang pagka-sariwa nang hindi nakikipag-ugnayan sa responder. Ang Must-Staple, RFC 7633, ay isang certificate extension na nagsasabing "tanggihan ako kung nawawala ang isang staple", na nagsasara sa puwang ng soft-fail, ngunit bihira itong ideploy dahil ang isang nag-iisang sinok ng stapling ay nagpapababa noon sa site.
+
+## Ang hindi komportableng katotohanan
+
+Sa mga mekanismong ito, ang umuulit na pagkabigo ay ang soft-fail: kapag hindi available ang impormasyon ng revocation, napakalaking bilang ng mga client ang pumipili ng availability kaysa seguridad at tinatanggap ang certificate. Iyon ang gumagawa sa revocation na isang hindi maaasahang safety net nang eksakto kung kailan ito kinakailangan. Ang mga browser ay tumugon sa kanilang sariling mga out-of-band na sistema na nagtutulak ng datos ng revocation sa kanilang sarili, ngunit hindi kailanman tinupad ng mga per-connection na protokol ang kanilang pangako.
+
+## Ang modernong sagot: gawing mas maaga ang pag-expire ng mga certificate
+
+Kung hindi mo maaasahang makakansela ang isang certificate, ang alternatibo ay gawin itong sapat na short-lived upang ang pagkansela ay bihirang mahalaga: ang isang nakompromisong certificate ay basta na lang nag-e-expire sa sarili nito sa loob ng mga araw o linggo. Ang industriya ay nakatuon nang eksakto rito. Ang Ballot SC-081v3 ng CA/Browser Forum, inaprubahan noong Abril 2025, ay yugto-yugtong ibinababa ang maximum na lifetime ng public TLS certificate mula 398 araw patungong 200 araw (simula Marso 2026), 100 araw (Marso 2027), at 47 araw (Marso 2029), kasama ang panahon ng muling paggamit ng domain-validation na lumiliit patungong 10 araw. Hiwalay, simula 2023 pinahintulutan ng Forum ang mga short-lived na certificate na nag-e-expire sa loob ng 7 araw na laktawan ang suporta ng CRL at OCSP nang buo, at sinimulan na ng Let's Encrypt na mag-isyu ng mga certificate na may mga lifetime na sinusukat sa mga araw. Ang buong premise ay na ang isang sapat na maikling lifetime ay mismong ang revocation.
+
+Gumagana lamang ito sa automation. Ang pag-renew ng mga certificate tuwing anim o pitong linggo nang manu-mano ay hindi mapanghahawakan, na siyang dahilan kung bakit ang ACME protocol (tingnan ang [artikulo ng signing request](/learn/certificate-signing-request)) at ang mga kagamitan sa certificate lifecycle ay naging mahalagang imprastraktura sa halip na isang kaginhawahan. Tandaan na ang mga panuntunang ito ay nalalapat sa mga publicly trusted na certificate sa mga browser root program; ang isang pribadong internal na PKI ay nagtatakda ng sarili nitong patakaran.
+
+## Ano ang ibig sabihin nito kapag sinusuri mo ang isang certificate
+
+Kapag dinedecode mo ang isang certificate, ang validity window ay hindi na isang isang-beses-sa-isang-taon na huling-isip; ito ay nagiging ang pangunahing kontrol ng revocation. Ang ulat ng tool ng notBefore, notAfter, at kung balido ba ang certificate sa mismong sandaling ito ay, lalong-lalo na, ang pinaka-relevant-sa-seguridad na bagay tungkol rito. Umiiral pa rin ang mga revocation list at responder, ngunit malinaw ang direksyon ng paglalakbay: paikliin ang lifetime upang ang tanong ng revocation ay bihirang lumitaw.

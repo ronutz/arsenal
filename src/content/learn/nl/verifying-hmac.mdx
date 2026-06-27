@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Een HMAC veilig verifiëren: constante tijd en replay"
+summary: "Waarom handtekeningen vergelijken met == een timing-zijkanaal lekt, en waarom een geldige handtekening alleen een herhaald verzoek niet tegenhoudt."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## De tag berekenen is het makkelijke deel
+
+Een HMAC correct produceren is goed begrepen. De fouten concentreren zich aan de *verificatie*-kant, waar twee problemen degenen betrappen die de cryptografie goed deden maar de logica eromheen fout: hoe je de tags vergelijkt, en wat een geldige tag echt bewijst.
+
+## Vergelijk in constante tijd
+
+Om te verifiëren herberekent de ontvanger de HMAC over het bericht en vergelijkt die met de tag die de afzender heeft geleverd. De natuurlijke manier om twee tekenreeksen te vergelijken, een gewone `==`, keert terug zodra het eerste verschillende byte wordt gevonden. Dat vroege uitstappen lekt tijd: een tag waarvan de eerste byte klopt, kost een fractie langer om te verwerpen dan een die meteen fout is. Door responstijden over veel pogingen te meten, kan een aanvaller de juiste tag byte voor byte achterhalen, een **timing-aanval**.
+
+De verdediging is een **vergelijking in constante tijd** die altijd alle bytes onderzoekt, ongeacht waar het eerste verschil zit, zodat de bestede tijd niets onthult over hoe dichtbij een gok kwam. De meeste talen bieden er een:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Verifieer een handtekening nooit met een gewone tekenreeksvergelijking.
+
+## Een geldige handtekening is geen nieuw verzoek
+
+Zelfs een perfect geverifieerde HMAC bewijst alleen dat het bericht door iemand met de sleutel is geproduceerd en niet is gewijzigd. Het zegt niets over *wanneer*. Een aanvaller die een legitiem ondertekend verzoek onderschept, kan precies dezelfde bytes opnieuw versturen, en de handtekening wordt nog steeds geverifieerd. Dat is een **replay-aanval**, en die doet ertoe voor alles wat een effect veroorzaakt: een betaling, een statuswijziging, een opdracht.
+
+Replay tegenhouden vereist iets in de ondertekende data dat elk verzoek uniek en controleerbaar maakt:
+
+- Een **tijdstempel** in de ondertekende payload, waarbij de server verzoeken buiten een kort venster verwerpt (en rekening houdt met klokafwijking).
+- Een **nonce**, een per verzoek unieke waarde die de server registreert en weigert twee keer te accepteren.
+
+Beide moeten *binnen* de ondertekende inhoud staan, zodat een aanvaller ze niet kan wijzigen zonder de handtekening te breken.
+
+## De tweedelige regel
+
+Een verzoek is betrouwbaar alleen wanneer zijn HMAC in constante tijd is geverifieerd **en** het nieuw is. Faal in een van beide en de handtekening geeft een vals gevoel van veiligheid. Dit is de verificatiekant van dezelfde discipline als het ondertekenen van verzoeken.
+
+De [HMAC-tool](/tools/hmac) laat je tags berekenen en vergelijken voor een bericht en een sleutel rechtstreeks in je browser, zonder iets te verzenden, zodat je een handtekening met de hand kunt controleren tijdens het ontwikkelen of debuggen.

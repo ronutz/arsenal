@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Prøv et verktøy nå.",
       "body": "CIDR-kalkulatoren nedenfor kjører lokalt. Skriv inn et nett og et prefiks for å se adresseområdet, antall verter og masken. Ingenting sendes noe sted.",
-      "learnHeading": "Lær begrepene"
+      "learnHeading": "Lær begrepene",
+      "toolboxCta": "Åpne hele verktøykassen"
     },
     "provenance": {
       "title": "Takk og kilder",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Skriv inn en CIDR-blokk for å beregne.",
         "invalid": "Dette ser ikke ut som en gyldig CIDR-blokk. Prøv et format som 192.168.1.0/24."
-      }
+      },
+      "name": "CIDR-/subnettkalkulator",
+      "blurb": "Bryt ned en vilkårlig IPv4-CIDR-blokk i nettverks- og kringkastingsadresser, brukbart vertsintervall, antall verter og nettmaske. Kjører helt i nettleseren din."
     },
     "title": "Verktøy",
     "lede": "Små, raske og personvernvennlige verktøy som kjører helt i nettleseren din. Ingenting av det du skriver, sendes noe sted. Flere er på vei.",
     "open": "Åpne",
     "comingSoon": "Kommer snart",
-    "note": "Denne verktøykassen vokser. Nye verktøy legges til her etter hvert som de blir klare, hvert med lokal kjøring og gratis å bruke."
+    "note": "Denne verktøykassen vokser. Nye verktøy legges til her etter hvert som de blir klare, hvert med lokal kjøring og gratis å bruke.",
+    "learnHeading": "Lær konseptene",
+    "backToTools": "Verktøy",
+    "references": "Referanser",
+    "categories": {
+      "identity": "Identitet og tokens",
+      "encoding": "Koding og data",
+      "hashing": "Hashing og krypto",
+      "identifiers": "Identifikatorer",
+      "pki": "Sertifikater og PKI",
+      "networking": "Nettverk"
+    },
+    "hash": {
+      "name": "Hash-generator (SHA-1/256/384/512)",
+      "blurb": "Beregn SHA-1-, SHA-256-, SHA-384- og SHA-512-sammendrag av vilkårlig tekst, vist som hex og Base64, med nettleserens innebygde Web Crypto. Kjører helt i nettleseren din.",
+      "algorithmLabel": "Hash-algoritme",
+      "inputLabel": "Tekst som skal hashes",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Hashingen kjører lokalt via Web Crypto. Ingenting av det du skriver, forlater nettleseren din.",
+      "bits": "{bits} bit ({bytes} byte)",
+      "sha1Note": "SHA-1 er brutt når det gjelder kollisjonsmotstand og uegnet for sikkerhet (signaturer, sertifikater). Det duger bare til ikke-sikkerhetskontrollsummer og eldre interoperabilitet.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopier",
+      "copied": "Kopiert"
+    },
+    "hmac": {
+      "name": "HMAC-generator (SHA-256/384/512)",
+      "blurb": "Beregn en nøkkelbasert HMAC over en melding med din hemmelige nøkkel, vist som hex og Base64, via nettleserens innebygde Web Crypto. Samme konstruksjon som JWT-verifikatoren bruker for HS256. Nøkkelen din forlater aldri nettleseren din.",
+      "algorithmLabel": "HMAC-algoritme",
+      "messageLabel": "Melding",
+      "messagePlaceholder": "Meldingen som skal autentiseres",
+      "keyLabel": "Hemmelig nøkkel",
+      "keyPlaceholder": "Din delte hemmelighet",
+      "runsLocally": "HMAC kjører lokalt via Web Crypto. Meldingen og nøkkelen din forlater aldri nettleseren din.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopier",
+      "copied": "Kopiert"
+    },
+    "base64": {
+      "name": "Base64-/Base64URL-koder og -dekoder",
+      "blurb": "Kod tekst til standard eller URL-sikker Base64, eller dekod begge variantene tilbake til tekst. Tolererer manglende utfylling og flagger binære (ikke-UTF-8-)resultater. Kjører helt i nettleseren din.",
+      "directionLabel": "Retning",
+      "variantLabel": "Base64-variant",
+      "direction": {
+        "encode": "Kod (tekst til Base64)",
+        "decode": "Dekod (Base64 til tekst)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "URL-sikker"
+      },
+      "inputLabelEncode": "Tekst som skal kodes",
+      "inputLabelDecode": "Base64 som skal dekodes",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Koding og dekoding kjører lokalt. Ingenting av det du limer inn, forlater nettleseren din.",
+      "decodeErrors": {
+        "invalid-characters": "Det er ikke gyldig Base64. Den inneholder tegn utenfor Base64-alfabetet.",
+        "invalid-length": "Det er ikke gyldig Base64. Lengden er ikke en gyldig Base64-lengde."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Dekodet tekst",
+      "copy": "Kopier",
+      "copied": "Kopiert",
+      "emptyOutput": "(tom)",
+      "decodedBytes": "{bytes, plural, one {# byte dekodet} other {# byte dekodet}}.",
+      "notUtf8": "{bytes, plural, one {# byte dekodet} other {# byte dekodet}}, men resultatet er ikke gyldig UTF-8-tekst (sannsynligvis binært)."
+    },
+    "pkce": {
+      "name": "OAuth-PKCE-verifikator og -challenge",
+      "blurb": "Generer en OAuth 2.0-code_verifier og utled dens S256-code_challenge, eller lim inn din egen og sjekk den mot lengde- og tegnsettreglene i RFC 7636. Samme SHA-256-base64url-utledning som autorisasjonsserveren din forventer. Kjører helt i nettleseren din.",
+      "verifierLabel": "Code verifier",
+      "verifierPlaceholder": "Lim inn en code_verifier, eller generer en",
+      "generate": "Generer",
+      "runsLocally": "Generering og utledning kjører lokalt. Verifieren din forlater aldri nettleseren din.",
+      "lengthBadge": "Lengde {length} (43-128)",
+      "charsetOk": "Ureservert tegnsett",
+      "charsetBad": "Ugyldige tegn",
+      "s256Title": "Code challenge · S256",
+      "plainTitle": "Code challenge · plain",
+      "plainNote": "Plain-metoden frarådes. Bruk S256 overalt der klienten kan beregne SHA-256.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Kopier",
+      "copied": "Kopiert"
+    },
+    "uuid": {
+      "name": "UUID-generator og -inspektør (v4 / v7)",
+      "blurb": "Generer tilfeldige v4- eller tidsordnede v7-UUID-er, eller lim inn en vilkårlig UUID for å lese versjon, variant og (for v7) det innebygde opprettelsestidsstempelet. Genereringen bruker nettleserens sikre tilfeldighetskilde. Kjører helt i nettleseren din.",
+      "versionLabel": "UUID-versjon",
+      "generate": "Generer",
+      "clear": "Tøm",
+      "emptyHint": "Velg en versjon, og generer.",
+      "runsLocally": "Generering og inspeksjon kjører lokalt. Ingenting sendes noe sted.",
+      "copy": "Kopier",
+      "copied": "Kopiert",
+      "inspectLabel": "Inspiser en UUID",
+      "inspectPlaceholder": "Lim inn en vilkårlig UUID for å dekode den",
+      "valid": "Gyldig UUID",
+      "invalid": "Ikke en gyldig UUID",
+      "versionField": "Versjon",
+      "variantField": "Variant",
+      "timestampField": "Tidsstempel (v7)",
+      "versionValue": "Versjon {version}"
+    },
+    "jwt": {
+      "name": "JWT-dekoder og -verifikator",
+      "blurb": "Dekod en JSON Web Tokens header og claims, les utløpet og tidsangivelsene i klart språk, og verifiser en HS256/384/512-signatur med en innlimt hemmelighet. Kjører helt i nettleseren din.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Dekoding og signaturkontroller kjører lokalt. Token og hemmelighet forlater aldri nettleseren din.",
+      "errors": {
+        "empty": "Lim inn en JSON Web Token for å dekode.",
+        "format": "Det ser ikke ut som en JWT. En token har tre base64url-deler atskilt med punktum: header.payload.signature.",
+        "header": "Headeren er ikke gyldig. Den bør være base64url-kodet JSON.",
+        "payload": "Payloaden er ikke gyldig. Den bør være base64url-kodet JSON."
+      },
+      "panels": {
+        "header": "Header",
+        "payload": "Payload",
+        "signature": "Signatur",
+        "noSignature": "Ingen signaturdel (usikret token)."
+      },
+      "claims": {
+        "iss": "Utsteder (iss)",
+        "sub": "Subjekt (sub)",
+        "aud": "Målgruppe (aud)",
+        "jti": "JWT-ID (jti)",
+        "iat": "Utstedt (iat)",
+        "nbf": "Ikke før (nbf)",
+        "exp": "Utløper (exp)"
+      },
+      "status": {
+        "expired": "Utløpt {rel}",
+        "expiresIn": "Gyldig, utløper {rel}",
+        "notYetValid": "Ikke gyldig ennå, starter {rel}",
+        "noExpiry": "Ingen utløps-claim (exp)"
+      },
+      "verify": {
+        "label": "Verifiser HMAC-signatur (HS256/384/512)",
+        "placeholder": "delt hemmelighet",
+        "button": "Verifiser",
+        "valid": "Signatur gyldig for denne hemmeligheten.",
+        "invalid": "Signaturen samsvarer ikke med denne hemmeligheten.",
+        "algNone": "Denne tokenen er usikret (alg: none), så det finnes ingen signatur å verifisere.",
+        "unsupportedAlg": "Verifisering i nettleseren dekker kun HS256/384/512. {alg} er asymmetrisk og trenger en offentlig nøkkel.",
+        "hint": "Hemmeligheten brukes bare til å beregne en HMAC i nettleseren din. Den sendes aldri noe sted."
+      }
+    },
+    "x509": {
+      "name": "X.509-sertifikatdekoder",
+      "blurb": "Lim inn et sertifikat som PEM, base64 eller hex for å lese subjektet, utstederen, gyldighetsvinduet, den offentlige nøkkelen og v3-utvidelsene, med SHA-256- og SHA-1-fingeravtrykk. Kjører helt i nettleseren din.",
+      "inputLabel": "X.509-sertifikat",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Dekoding og fingeravtrykk kjører lokalt. Sertifikatet forlater aldri nettleseren din.",
+      "errors": {
+        "empty": "Lim inn et X.509-sertifikat for å dekode.",
+        "format": "Det ser ikke ut som et sertifikat. Lim inn PEM (-----BEGIN CERTIFICATE-----), base64 eller hex.",
+        "der": "Bytene er ikke gyldig DER. Sjekk at hele sertifikatet ble limt inn, inkludert END-linjen.",
+        "structure": "Dette dekodes som ASN.1, men er ikke et X.509-sertifikat. Et sertifikat er en SEQUENCE av TBSCertificate, signatureAlgorithm og signatureValue."
+      },
+      "status": {
+        "valid": "Gyldig, utløper {rel}",
+        "expired": "Utløpt {rel}",
+        "notYetValid": "Ikke gyldig ennå, starter {rel}"
+      },
+      "panels": {
+        "subject": "Subjekt",
+        "issuer": "Utsteder",
+        "details": "Detaljer",
+        "publicKey": "Offentlig nøkkel",
+        "extensions": "Utvidelser",
+        "fingerprints": "Fingeravtrykk"
+      },
+      "fields": {
+        "version": "Versjon",
+        "serial": "Serienummer",
+        "notBefore": "Ikke før",
+        "notAfter": "Ikke etter",
+        "signatureAlgorithm": "Signaturalgoritme",
+        "algorithm": "Algoritme",
+        "keySize": "Nøkkelstørrelse",
+        "exponent": "Eksponent",
+        "curve": "Kurve",
+        "bits": "{n} bit",
+        "selfSigned": "Selvutstedt"
+      },
+      "ext": {
+        "san": "Alternative subjektnavn",
+        "keyUsage": "Nøkkelbruk",
+        "extKeyUsage": "Utvidet nøkkelbruk",
+        "basicConstraints": "Grunnleggende begrensninger",
+        "subjectKeyId": "Subjektets nøkkelidentifikator",
+        "authorityKeyId": "Utstederens nøkkelidentifikator",
+        "caTrue": "Sertifiseringsinstans (CA: true)",
+        "caFalse": "Ikke en CA (CA: false)",
+        "pathLen": "stilengde {n}",
+        "critical": "kritisk"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Beregner fingeravtrykk..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6-verktøykasse",
+      "blurb": "Parse en IPv6-adresse eller et prefiks for å se de kanoniske (RFC 5952) og fullt utvidede formene, klassifiseringen for spesialbruk, prefiksaritmetikken, en EUI-64-MAC hvis den finnes, og ip6.arpa-omvendt-DNS-navnet. Kjører helt i nettleseren din.",
+      "inputLabel": "IPv6-adresse eller -prefiks",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Parsingen kjører lokalt. Adressen forlater aldri nettleseren din.",
+      "errors": {
+        "empty": "Skriv inn en IPv6-adresse eller et prefiks for å dekode.",
+        "format": "Det er ikke en gyldig IPv6-adresse. Bruk åtte hex-grupper, eventuelt komprimert én gang med :: (for eksempel 2001:db8::1).",
+        "prefix": "Prefikslengden er ikke gyldig. For IPv6 må den være mellom 0 og 128."
+      },
+      "panels": {
+        "forms": "Kanoniske former",
+        "classification": "Klassifisering",
+        "prefix": "Prefiks",
+        "identifiers": "Identifikatorer"
+      },
+      "fields": {
+        "compressed": "Komprimert (RFC 5952)",
+        "expanded": "Utvidet",
+        "type": "Type",
+        "scope": "Omfang",
+        "embeddedIpv4": "Innebygd IPv4",
+        "network": "Nettverk",
+        "firstAddress": "Første adresse",
+        "lastAddress": "Siste adresse",
+        "count": "Adresser",
+        "hostBits": "Vertsbiter",
+        "eui64": "EUI-64-MAC",
+        "reverseDns": "Omvendt DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "multicast"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Personvern",
+    "title": "Dataene dine, og hva dette nettstedet gjør med dem",
+    "lede": "En redegjørelse på klarspråk for nøyaktig hva dette nettstedet gjør og ikke gjør med informasjonen din. Den er skrevet for å være presis snarere enn bare beroligende, for under regelverk som GDPR og Brasils LGPD er det den presise opplysningen som teller.",
+    "shortTitle": "Den korte versjonen",
+    "short1": "Dette nettstedet setter ingen informasjonskapsler, kjører ingen analyse, bruker ingen reklame og inneholder ingen tredjepartssporere eller fingeravtrykk (fingerprinting). Ingenting følger deg på tvers av nettet.",
+    "short2": "Det selger, deler eller bygger ikke profiler av sine besøkende, og ber deg ikke om noe for at du skal lese det.",
+    "short3": "De interaktive verktøyene kjører helt i nettleseren din. Det du limer inn eller skriver i dem, blir på enheten din og overføres ingen steder.",
+    "short4": "Bare tre ting involverer data i det hele tatt, og hver enkelt forklares nedenfor: en enkelt temainnstilling lagret i din egen nettleser, de standard tilkoblingsloggene som hvert nettstedsbesøk skaper på vertslaget, og enhver melding du velger å sende via e-post.",
+    "controllerTitle": "Hvem som er ansvarlig",
+    "controllerBody": "Dette er Rodolfo Nützmanns personlige nettsted (ronutz.com). For ethvert personvernspørsmål, eller for å utøve noen av rettighetene som beskrives nedenfor, skriv til hello@ronutz.com. Henvendelser håndteres direkte av Rodolfo Nützmann, som behandlingsansvarlig.",
+    "noTrackTitle": "Ingen informasjonskapsler, ingen sporing, ingen analyse",
+    "noTrackBody": "Dette nettstedet setter ingen informasjonskapsler av noe slag. Det bruker ingen analysetjeneste (som Google Analytics eller Plausible), ingen annonsenettverk, ingen sporingspiksler fra sosiale medier og ingen enhetsfingeravtrykk. Besøket ditt måles, profileres eller deles ikke med noen for disse formålene.",
+    "browserTitle": "Hva som lagres i nettleseren din",
+    "browserBody": "Én eneste liten ting: ditt valgte visuelle tema, lagret i nettleserens lokale lagring (local storage) slik at nettstedet kan huske det neste gang du besøker. Det er en bekvemmelighetsinnstilling som blir på din egen enhet, aldri sendes til dette nettstedet eller til noen andre, og kan tømmes når som helst via nettleseren din. Ingen andre data om deg lagres på enheten din.",
+    "hostingTitle": "Vertstjeneste og serverlogger",
+    "hostingBody": "Nettstedet leveres gjennom Cloudflare, som leverer dets vertstjeneste og innholdslevering. Som med ethvert nettsted betyr innlasting av en side at enheten din kobler til en server, og Cloudflare behandler, i sin egenskap av vertsleverandør, grunnleggende tilkoblingsdata – inkludert IP-adressen din og standard forespørselsdetaljer – for å levere sidene til deg og beskytte nettstedet mot misbruk og angrep. Denne behandlingen er nødvendig for å drive og sikre nettstedet (en berettiget interesse etter Artikkel 6(1)(f) i GDPR og de tilsvarende grunnlagene i Artikkel 7 og 10 i LGPD). Den oppbevares bare kort av leverandøren og brukes ikke her til å identifisere eller spore deg.",
+    "toolsTitle": "Verktøyene kjører i nettleseren din",
+    "toolsBody": "Dekoderne og kalkulatorene på dette nettstedet – for JWT-er, IP-adresser, sertifikater og resten – beregner helt inne i nettleseren din. Verdiene du angir, behandles på din egen enhet og sendes aldri til en server. Et separat programmatisk grensesnitt (et API) tilbys for automatisering og integrasjoner; det er av design tilstandsløst og logger ingen av spørringene eller forespørselskroppene som sendes til det.",
+    "contactTitle": "Hvis du kontakter meg",
+    "contactBody": "Kontaktskjemaet sender ingenting til en server. I stedet åpner det en forhåndsutfylt melding i din egen e-postapplikasjon, som du deretter selv sender fra din egen konto, slik at ingenting passerer gjennom en tredjepart. Hvis du skriver, enten via skjemaet eller direkte, mottar jeg informasjonen du inkluderer, som navnet ditt, e-postadressen din og meldingen din, og bruker den bare til å svare deg. Jeg oppbevarer den bare så lenge det er nødvendig for å behandle henvendelsen din, bruker den ikke til markedsføring og deler den ikke.",
+    "intlTitle": "Behandling utenfor landet ditt",
+    "intlBody": "Fordi Cloudflare driver et globalt nettverk, kan behandlingen på tilkoblingsnivå som beskrives ovenfor, finne sted på servere plassert utenfor ditt eget land, inkludert utenfor Brasil og Det europeiske økonomiske samarbeidsområdet. Der personopplysninger behandles internasjonalt på denne måten, skjer det under de garantiene som den aktuelle leverandøren tilbyr.",
+    "childrenTitle": "Barn",
+    "childrenBody": "Dette nettstedet er beregnet på et profesjonelt, allment publikum. Det er ikke rettet mot barn og samler ikke bevisst inn personopplysninger fra dem.",
+    "rightsTitle": "Rettighetene dine",
+    "rightsBody": "Avhengig av hvor du bor, har du rettigheter over personopplysningene dine, inkludert å få tilgang til dem, å få dem rettet eller slettet, å protestere mot eller begrense behandlingen av dem, å be om en kopi i et portabelt format og å bli informert om hvordan de behandles. For å utøve noen av dem, skriv ganske enkelt til hello@ronutz.com. Fordi så få personopplysninger noensinne behandles her, er det i praksis vanligvis svært lite å gjøre, men kanalen er alltid åpen.",
+    "rightsGdpr": "Hvis du befinner deg i Det europeiske økonomiske samarbeidsområdet eller Storbritannia, har du også rett til å sende inn en klage til din lokale tilsynsmyndighet for personvern.",
+    "rightsLgpd": "Hvis du befinner deg i Brasil, har du rettighetene som er fastsatt i Artikkel 18 i LGPD, og du kan også kontakte den nasjonale datatilsynsmyndigheten (ANPD).",
+    "changesTitle": "Endringer i denne erklæringen",
+    "changesBody": "Hvis denne erklæringen endres, vil den reviderte versjonen bli publisert på denne siden, og datoen nedenfor vil bli oppdatert. Vesentlige endringer anvendes ikke med tilbakevirkende kraft.",
+    "updated": "Sist oppdatert: 28. juni 2026",
+    "backHome": "Tilbake til startsiden"
   },
   "footer": {
+    "redEducation": "Bestill offisiell opplæring med Red Education",
+    "privacy": "Personvern",
     "builtWith": "Bygd av Rodolfo Nützmann med CONCORD",
     "colophon": "Hvordan dette ble bygd",
     "openSource": "Motoren er åpen kildekode",
     "rights": "Tilgjengelig under åpne og kommersielle vilkår.",
     "contribute": "Hjelp til å forbedre oversettelsene",
-    "feedback": "Send tilbakemelding"
+    "feedback": "Send tilbakemelding",
+    "api": "API-referanse",
+    "contributeTools": "Bidra med et verktøy"
   },
   "search": {
     "label": "Søk",
@@ -390,13 +672,16 @@
     "emailLabel": "E-post",
     "channels": {
       "linkedin": {
-        "description": "Nettverk profesjonelt"
+        "description": "Nettverk profesjonelt",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Videoer og gjennomganger"
+        "description": "Videoer og gjennomganger",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Bak kulissene"
+        "description": "Bak kulissene",
+        "label": "Instagram"
       },
       "training": {
         "label": "Offisiell opplæring",
@@ -431,7 +716,7 @@
     "concordBody1": "Dette nettstedet ble designet og bygd gjennom en protokoll ved navn CONCORD: et strukturert samarbeid mellom ett menneske og tre forskjellige AI-systemer, hvert i sin egen rolle. Det er ikke et triks. Det er en fungerende metode, med sin egen styring, sitt eget beslutningsregister og ett menneske ansvarlig for hvert valg som ble publisert.",
     "concordBody2": "Premisset er enkelt. Forskjellige AI-modeller har forskjellige styrker, og et vanskelig problem vinner på mer enn ett perspektiv holdt i spenn. Derfor ble arbeidet delt opp etter rolle, og ett menneske satt i midten, gikk som bro mellom dem, ratifiserte det som var solid, og forkastet det som ikke var det.",
     "concordBody3": "CONCORD er ikke hentet noe sted fra. Det ble utformet av Rodolfo Nützmann for dette prosjektet ut fra et praktisk behov: hvordan man kan trekke på flere AI-systemer samtidig, hvert av dem virkelig sterkt på noe forskjellig, uten å gi opp den ene tråden av menneskelig ansvar som virkelig arbeid krever. Svaret var å gi hvert system et fast sete, hindre dem i å forhandle seg imellom og lede hver utveksling gjennom én person som hadde hele bildet. Den ordningen har et eldre navn. AI-systemene er agenter: de handler etter anvisning og på vegne av noen andre. PRIME er prinsipalen: den som faktisk bestemmer, som utøver skjønnet, og som bærer både følgene og navnet.",
-    "concordBody4": "Det begynte uformelt, som en måte å dele opp arbeidet på, og festnet seg gjennom byggingen til en navngitt metode: faste seter, én overordnet regel om at ingenting publiseres uten at PRIME ratifiserer det, og en skriftlig opptegnelse over hvorfor hver beslutning ble tatt. Navnet uttrykker målet: enighet, en avtale oppnådd med hensikt gjennom en prosess, ikke det et uovervåket verktøy tilfeldigvis frembringer.",
+    "concordBody4": "Det begynte uformelt – som en måte å dele opp arbeidet på – og festnet seg gjennom byggingen til en navngitt metode: faste seter, én overordnet regel om at ingenting publiseres uten at PRIME ratifiserer det, og en skriftlig opptegnelse over hvorfor hver beslutning ble tatt. Navnet uttrykker målet: enighet, en avtale oppnådd med hensikt gjennom en prosess, ikke det et uovervåket verktøy tilfeldigvis frembringer.",
     "concordPrincipal": "Styrken ligger hos agentene. Ansvaret ligger hos prinsipalen, og det kan ikke overføres.",
     "concordMechTitle": "Mekanikken, enkelt forklart",
     "mech1Label": "Foreslå",
@@ -551,5 +836,50 @@
     "referenceTag": "referanse",
     "emailHeading": "Send bidraget ditt",
     "backHome": "Tilbake til verktøyene"
+  },
+  "contributeTools": {
+    "eyebrow": "Åpen verktøykasse",
+    "title": "Bidra med et verktøy",
+    "lede": "Verktøykassen er bygd for å vokse. Hvert verktøy er en liten, selvbeskrivende modul på den åpne motoren, og nettstedet laster det på samme måte som hvem som helst andre kunne. Har du et verktøy som passer, så foreslå det.",
+    "shapeTitle": "Hva et verktøy er",
+    "shapeBody": "Et verktøy er tre ting på én gang: et manifest som beskriver det (hva det er, hvilket inndata det tar imot, hvor riktigheten kommer fra), en enkelt ren kjørefunksjon som gjør arbeidet, og et sett med referansevektorer, faste inndata-og-utdata-par som beviser at funksjonen er riktig. Motoren laster et verktøy ut fra manifestet, slik at en velformet modul faller på plass uten å røre resten av nettstedet.",
+    "principlesTitle": "Hva et verktøy må holde seg til",
+    "principlesBody": "Beregningen kjører lokalt og er deterministisk: det samme inndataet gir alltid det samme utdataet, uten klokke, nettverk eller tilfeldighet i resultatet. Alt sensitivt blir værende på enheten som standard. Riktigheten er forankret i referansevektorer og i siterte kilder – som en RFC eller en publisert standard –, ikke i mening. Koden gis ut under en tillatende lisens, slik at nettstedet og hvem som helst andre kan bygge videre på den.",
+    "proposeTitle": "Foreslå et",
+    "proposeBody": "Send et kort forslag på e-post: hva verktøyet beregner, et eksempelinndata med det nøyaktige utdataet det skal produsere, og kilden riktigheten hviler på. En skisse av manifestet og noen referansevektorer er velkomne, men ikke påkrevd. Passer det, bygges det inn i motoren og verktøykassen.",
+    "emailLabel": "E-post",
+    "backToTools": "Tilbake til verktøykassen"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Verktøyene på dette nettstedet kjører i nettleseren din og holder dataene dine på enheten din. For automatisering – skript, pipelines og integrasjoner – er de samme deterministiske beregningene tilgjengelige som et lite HTTP-API. Det er den programmatiske motparten til nettleserverktøyene, ikke en erstatning for dem.",
+    "privacyTitle": "Hva dette betyr for dataene dine",
+    "privacyBody": "API-et mottar bare inndataet du sender det, beregner et resultat og returnerer det. Det er tilstandsløst og logger ingen spørringsverdier eller forespørselskropper. Trenger du garantert null datautgang, bruk nettleserverktøyene eller kjør den åpne motoren selv.",
+    "engineTitle": "Samme motor som nettleseren",
+    "engineBody": "Hvert endepunkt kaller den samme motorfunksjonen som verktøyet i nettleseren kaller, slik at API-et og nettleseren returnerer byte-identiske resultater. Den motoren, @ronutz/netcore, er åpen kildekode under en tillatende lisens.",
+    "specTitle": "Spesifikasjonen",
+    "specBody": "Hele kontrakten publiseres som OpenAPI 3.1. Last den ned, rett ditt eget verktøy mot den, eller les referansen nedenfor.",
+    "downloadSpec": "Last ned openapi.yaml",
+    "baseUrlLabel": "Basis-URL",
+    "authLabel": "Autentisering",
+    "authValue": "Ingen. Dette er et offentlig, skrivebeskyttet API.",
+    "referenceTitle": "Referanse",
+    "loading": "Laster spesifikasjonen.",
+    "loadError": "Spesifikasjonen kunne ikke lastes.",
+    "tryItTitle": "Prøv det",
+    "tryItSend": "Send",
+    "tryItRunning": "Kjører.",
+    "tryItHint": "Kjører mot det aktive API-et på denne origin. Inndataet ditt sendes til endepunktet.",
+    "paramsTitle": "Parametere",
+    "responsesTitle": "Svar",
+    "schemasTitle": "Skjemaer",
+    "exampleLabel": "Eksempel",
+    "requiredLabel": "påkrevd",
+    "fieldLabel": "Felt",
+    "typeLabel": "Type",
+    "descriptionLabel": "Beskrivelse",
+    "viewReference": "Referanse",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI kunne ikke lastes."
   }
 }

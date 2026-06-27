@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Tokens d'accès, tokens de rafraîchissement et tokens d'ID"
+summary: "Trois tokens OAuth et OpenID Connect que l'on confond sans cesse, à quoi chacun sert réellement, et pourquoi envoyer le mauvais au mauvais endroit est un vrai bug."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trois tokens, trois fonctions
+
+Une fois le flux de code d'autorisation achevé (voir l'article [flux de code](/learn/oauth-code-flow)), un client peut se retrouver à détenir trois tokens différents, et les confondre est l'une des erreurs les plus courantes dans OAuth et OpenID Connect. Un token d'accès, un token de rafraîchissement et un token d'ID se ressemblent superficiellement, surtout quand les trois se trouvent être des JWT, mais ils ont des audiences différentes et des objectifs différents. Bien les viser est surtout affaire de demander, pour chaque token, à qui il est destiné et ce qu'il autorise.
+
+## Le token d'accès : une clé vers une API
+
+Le token d'accès est ce que le client envoie à un serveur de ressources (une API) pour prouver qu'il a la permission de faire une requête. C'est ce qu'OAuth a de plus proche d'une clé de session pour l'accès machine à machine, défini par OAuth 2.0 (RFC 6749). Deux propriétés comptent. Il est de **courte durée**, souvent de quelques minutes à une heure, pour qu'un token fuité ne soit utile que brièvement. Et c'est un token **bearer** (porteur) : quiconque le détient peut l'utiliser, sans autre preuve d'identité, c'est pourquoi les tokens d'accès ne doivent voyager que sur TLS et ne jamais être journalisés ni mis dans une URL. L'API valide le token et les portées qu'il porte, puis sert ou refuse la requête.
+
+## Le token de rafraîchissement : obtenir de nouveaux tokens d'accès
+
+Comme les tokens d'accès expirent rapidement, forcer l'utilisateur à se reconnecter toutes les quelques minutes serait insupportable. Le token de rafraîchissement résout cela : c'est un identifiant de longue durée que le client échange auprès du serveur d'autorisation contre un token d'accès frais, sans interaction de l'utilisateur. Il est bien plus sensible qu'un token d'accès précisément parce qu'il est de longue durée, il doit donc rester sur le canal arrière (côté serveur, ou dans un stockage protégé) et ne jamais être exposé à un front-end de navigateur. Une bonne pratique est la **rotation de token de rafraîchissement** : chaque utilisation émet un nouveau token de rafraîchissement et invalide l'ancien, de sorte qu'un token volé est détecté au moment où le client légitime tente d'utiliser la copie désormais révoquée. Les tokens peuvent aussi être révoqués explicitement (RFC 7009).
+
+## Le token d'ID : une déclaration sur l'utilisateur
+
+Le token d'ID est la pièce qu'OpenID Connect ajoute par-dessus OAuth, et c'est celle dont on abuse le plus souvent. C'est toujours un JWT (voir l'article [anatomie du JWT](/learn/jwt-anatomy)), et il décrit l'événement d'authentification : qui est l'utilisateur, quand il s'est authentifié et quel serveur d'autorisation s'en porte garant. De façon cruciale, **le token d'ID est pour le client, pas pour une API**. Il répond à « qui vient de se connecter » pour que l'application puisse établir une session utilisateur. Envoyer un token d'ID à un serveur de ressources comme s'il s'agissait d'un token d'accès est un bug classique : l'API devrait le rejeter, car l'audience du token d'ID est le client, et l'utiliser pour l'autorisation confond identité et permission.
+
+## Tokens bearer et la tentation de leur faire confiance
+
+La plupart des tokens d'accès sont des tokens bearer, ce qui les rend faciles à utiliser et faciles à mal utiliser. Les règles de manipulation en découlent directement : toujours TLS, durées courtes, jamais dans les journaux ni les chaînes de requête, et jamais dans un stockage accessible par le navigateur si une option plus protégée existe. Là où le modèle bearer est trop risqué, les tokens **liés à l'expéditeur** (sender-constrained) lient un token à une clé de client spécifique (des mécanismes tels que DPoP ou TLS mutuel), de sorte qu'un token volé ne puisse être rejoué par quelqu'un d'autre. Pour la plupart des applications, des tokens d'accès bearer de courte durée sur TLS sont la base de travail.
+
+## Tokens d'accès opaques versus JWT
+
+Un token d'accès peut être opaque (une chaîne aléatoire que l'API vérifie en appelant le point de terminaison d'introspection du serveur d'autorisation, RFC 7662) ou un JWT que l'API valide elle-même. La forme JWT est autonome et évite un aller-retour réseau, mais elle ne peut être révoquée avant d'expirer, ce qui est une raison de plus de garder courtes les durées des tokens d'accès. Un token d'ID, en revanche, est toujours un JWT, car toute sa fonction est de transmettre des claims vérifiables au client. Qu'un token soit un JWT vous dit comment il est validé, pas à quoi il sert.
+
+## Associez le token à l'audience
+
+La seule règle qui prévient la plupart des bugs de token est d'associer chaque token à son audience prévue. Le **token d'ID** est pour l'application, pour apprendre qui s'est connecté. Le **token d'accès** est pour l'API, pour autoriser une requête. Le **token de rafraîchissement** est pour le serveur d'autorisation, pour frapper de nouveaux tokens d'accès sans déranger l'utilisateur. Gardez ces trois audiences au clair, conservez le token de rafraîchissement de longue durée sur le canal arrière, et traitez chaque token bearer comme un secret de courte durée, et le reste de la manipulation des tokens d'OAuth se met en place.

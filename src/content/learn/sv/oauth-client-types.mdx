@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Publika vs konfidentiella klienter, och var PKCE passar in"
+summary: "Huruvida en OAuth-klient kan hålla en hemlighet avgör hela dess säkerhetsmodell. Varför SPA:er och mobilappar är publika klienter, och varför PKCE nu rekommenderas för dem alla."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Frågan som avgör allt
+
+OAuth delar in klienter i två slag, och skiljelinjen är en enda fråga: kan denna klient hålla en hemlighet? RFC 6749 kallar de två svaren **konfidentiella** och **publika** klienter, och vilken du är avgör hur du autentiserar, vilka flöden som är säkra och om du behöver PKCE. Nästan varje OAuth-designmisstag på applikationsnivå går tillbaka till att behandla en publik klient som om den kunde hålla en hemlighet den i själva verket inte kan skydda.
+
+## Konfidentiella klienter kan hålla en hemlighet
+
+En konfidentiell klient kör någonstans där användaren inte kan nå dess kod eller lagring, klassiskt en serversidig webbapplikation. Den tilldelas en **klienthemlighet** vid registrering och använder den hemligheten för att autentisera sig hos auktoriseringsserverns tokenslutpunkt. Eftersom hemligheten bara lever på servern kan auktoriseringsservern vara säker på att en tokenbegäran verkligen kommer från den registrerade klienten. Detta är det starka fallet: klienten bevisar sin identitet med något bara den känner till.
+
+## Publika klienter kan inte
+
+En publik klient kör där dess kod och data är synliga för användaren eller angriparen: en ensidesapp i webbläsaren, en nativ mobil- eller skrivbordsapp, allt som levereras till enheten. Det definierande problemet är att vilken hemlighet du än bäddar in i en sådan klient inte är hemlig, eftersom vem som helst kan extrahera den ur det levererade paketet eller binären. Så en publik klient kan inte autentisera med en klienthemlighet alls; det finns inget den kan hålla som en angripare inte också kan få tag i. Det ändrar vad auktoriseringsservern kan anta, och det är skälet till att publika klienter behöver extra skydd på auktoriseringskodflödet.
+
+## Varför publika klienter var sårbara
+
+Auktoriseringskodflödet ger klienten en engångskod i omdirigeringen, som klienten sedan byter mot token. För en konfidentiell klient skyddas det bytet av klienthemligheten. För en publik klient utan hemlighet kan en angripare som kan avlyssna omdirigeringen, till exempel en skadlig app registrerad för samma anpassade URL-schema på en mobil enhet, stjäla koden och lösa in den själv. Detta är avlyssningsattacken som artikeln [PKCE](/learn/pkce) beskriver i detalj, och det är precis den lucka som en saknad klienthemlighet lämnar öppen.
+
+## PKCE fyller luckan, för alla
+
+PKCE stänger det hålet utan en förhandsdelad hemlighet. Klienten uppfinner en färsk slumpmässig **kodverifierare** per begäran, skickar bara dess hash (**kodutmaningen**) när den ber om koden, och avslöjar verifieraren först när den löser in den. En angripare som avlyssnar koden såg aldrig verifieraren, så den stulna koden är värdelös. Detta infördes för publika klienter, men vägledningen har sedan vidgats: OAuth 2.1 rekommenderar PKCE för auktoriseringskodflödet oavsett klienttyp, eftersom det lägger till djupförsvar även där en klienthemlighet finns. Den praktiska regeln är att använda auktoriseringskod plus PKCE överallt och sluta resonera om huruvida du strikt behöver det.
+
+## Det implicita flödet är pensionerat
+
+Publika webbläsarappar använde en gång det implicita flödet, som returnerade token direkt i omdirigeringen för att undvika kodbytet. Den designen exponerade token i URL:er och webbläsarhistorik och är nu föråldrad; OAuth 2.1 tar bort det. Det moderna svaret för en ensidesapp är detsamma som för alla andra: auktoriseringskodflödet med PKCE. Om du stöter på rådet att använda det implicita flödet, behandla det som föråldrat.
+
+## Nativa appar har sina egna fallgropar
+
+Nativa och mobilappar är publika klienter med en specifik fara: omdirigeringen tillbaka in i appen. Anpassade URL-scheman kan göras anspråk på av andra appar på enheten, vilket är vad som gör avlyssning möjlig, så bästa-praxis-vägledningen för nativa appar (RFC 8252) är att använda anspråkstagna HTTPS-omdirigeringar där plattformen stöder dem, köra flödet i en systemwebbläsare snarare än en inbäddad webbvy, och alltid tillämpa PKCE. För enheter med begränsad inmatning som en TV, där det inte finns någon webbläsare att omdirigera till alls, låter enhetsauktoriseringsflödet (RFC 8628) användaren auktorisera på en separat telefon eller bärbar dator i stället.
+
+## Vid tvivel, anta publik
+
+Den röda tråden är att klienttyp inte är en etikett du väljer av bekvämlighet; det är ett faktum om var din kod kör och vad den kan skydda. Om klienten levereras till användaren är den publik, den kan inte hålla en hemlighet, och den behöver PKCE. Om den bara kör på din server kan den vara konfidentiell och autentisera med en hemlighet, och den bör ändå använda PKCE för den extra marginalen. Avgör vilken värld din klient lever i, så följer resten av dess OAuth-säkerhetsmodell ur det ena ärliga svaret.

@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Jak naprawdę działa walidacja certyfikatu"
+summary: "Kroki, które klient wykonuje, by zdecydować, że certyfikat jest godny zaufania: budowanie łańcucha, sprawdzanie podpisów i dat, dopasowanie nazwy oraz egzekwowanie ograniczeń."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Czytanie to nie zaufanie
+
+[Artykuł o anatomii](/learn/x509-anatomy) kończy się na punkcie wartym powtórzenia: zdekodowanie certyfikatu mówi ci, co on *twierdzi*, nie czy twierdzenie jest *prawdziwe*. Walidacja to osobny proces, który klient TLS wykonuje, by zdecydować, czy zaufać certyfikatowi przed sobą. Rządzi nią głównie RFC 5280, i jest koniunkcją niezależnych kontroli, z których każda musi przejść. Dekoder, to narzędzie włącznie, pokazuje ci wejścia do tego procesu; klient jest tym, co go egzekwuje.
+
+## Krok 1: zbuduj łańcuch
+
+Certyfikatowi liścia niemal nigdy nie ufa się samemu. Klient musi zbudować ścieżkę od liścia w górę do korzenia, który już przechowuje w swoim magazynie zaufania. Robi to, śledząc nazwy wystawców: Issuer liścia powinien pasować do Subject jakiegoś pośrednika, a Issuer tego pośrednika powinien pasować do następnego w górę, aż dotrze do samowystawionego korzenia. Rozszerzenia Authority Key Identifier i Subject Key Identifier przyspieszają to dopasowywanie, pozwalając klientowi powiązać certyfikat z jego wystawcą przez hasz klucza, a nie tylko przez nazwę. Jeśli nie da się zbudować żadnej ścieżki do zaufanego korzenia, walidacja zawodzi natychmiast, niezależnie od tego, jak dobrze uformowany jest liść.
+
+## Krok 2: zweryfikuj każdy podpis
+
+Łańcuch jest znaczący tylko, jeśli każde ogniwo jest kryptograficznie zdrowe. Dla każdego certyfikatu w ścieżce klient weryfikuje, że podpis został wytworzony kluczem prywatnym wystawcy, sprawdzając go względem klucza publicznego wystawcy nad bajtami DER ciała do-podpisania dziecka. Ponieważ podpis pokrywa te dokładne bajty, pojedynczy zmieniony bajt gdziekolwiek w ciele łamie kontrolę. To także dlatego algorytm podpisu (na przykład sha256WithRSAEncryption lub ecdsa-with-SHA256) ma znaczenie: łańcuch jest tylko tak mocny, jak jego najsłabszy podpis i hasz. Po to, co hasz tu gwarantuje, zobacz [artykuł o haszowaniu](/learn/hashing).
+
+## Krok 3: sprawdź okno ważności
+
+Każdy certyfikat niesie znacznik czasu notBefore i notAfter, a klient sprawdza bieżący czas względem okna dla każdego certyfikatu w łańcuchu, nie tylko liścia. Certyfikat wygasły lub jeszcze nieważny zawodzi. Narzędzie wykonuje tę samą kontrolę względem twojego lokalnego zegara i raportuje, czy certyfikat jest ważny teraz, jeszcze nieważny, czy wygasły, co często jest najszybszym sposobem zdiagnozowania ostrzeżenia „twoje połączenie nie jest prywatne".
+
+## Krok 4: dopasuj nazwę
+
+Ważny łańcuch dowodzi, że certyfikat jest autentyczny, lecz nie że został wystawiony dla witryny, którą odwiedzasz. Klient sprawdza, że host, z którym się połączył, pojawia się w rozszerzeniu Subject Alternative Name certyfikatu. Nowoczesne klienty całkowicie ignorują Common Name w tym celu i patrzą tylko na SAN, podążając za regułami dopasowania tożsamości RFC 6125. Symbole wieloznaczne jak `*.ronutz.com` pasują do pojedynczej etykiety, więc pokrywają `api.ronutz.com`, lecz nie `ronutz.com` samego ani `a.b.ronutz.com`. Certyfikat, którego łańcuch jest doskonały, lecz którego SAN nie wymienia nazwy, o którą prosiłeś, wciąż jest odrzucany.
+
+## Krok 5: egzekwuj ograniczenia
+
+Rozszerzenia v3 to nie dekoracja; to reguły, które klient egzekwuje. Basic Constraints mówi, czy certyfikat może działać jako CA i, przez długość ścieżki, ile pośredników może siedzieć pod nim, co powstrzymuje certyfikat liścia od użycia do podpisywania innych certyfikatów. Key Usage i Extended Key Usage ograniczają, co kluczowi wolno robić: certyfikat serwera TLS musi nieść EKU serverAuth, a rozszerzenie oznaczone jako krytyczne, którego klient nie rozumie, wymusza odrzucenie zamiast wzruszenia ramion. Narzędzie wydobywa te pola, byś mógł zobaczyć dokładnie, jakie ograniczenia ustawił wystawca.
+
+## Krok 6: sprawdź unieważnienie
+
+Wreszcie, certyfikat, który był ważny przy wystawieniu, mógł zostać od tego czasu unieważniony, na przykład dlatego, że jego klucz prywatny wyciekł. Klient może skonsultować CRL lub responder OCSP, by się dowiedzieć. W praktyce to najsłabszy i najmniej spójny krok, a branża zmierza zamiast tego ku krótko żyjącym certyfikatom, co [artykuł o unieważnieniu](/learn/certificate-revocation) opisuje w pełni.
+
+## Walidacja to AND, nie OR
+
+Powodem, dla którego pojedynczy zmanipulowany lub źle skonfigurowany certyfikat zostaje odrzucony, jest to, że wszystkie te kontrole łączą się logicznym AND. Łańcuch musi się zbudować, każdy podpis musi się zweryfikować, każdy certyfikat musi być w swoim oknie ważności, nazwa musi być w SAN, ograniczenia muszą zezwalać na użycie, a certyfikat nie może być unieważniony. Dekoder układa twierdzenia certyfikatu jasno i wiernie; traktuj to jako staranne odczytanie dokumentu i pamiętaj, że werdykt należy do klienta, który wykonuje wszystkie sześć kontroli.

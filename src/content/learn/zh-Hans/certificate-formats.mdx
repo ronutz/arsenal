@@ -1,0 +1,62 @@
+---
+slug: certificate-formats
+title: "PEM、DER 与证书文件格式"
+summary: "为何同一份证书以如此多的文件形态出现、PEM 与 DER 实际是什么，以及 .crt、.pem、.pfx 与 .p12 真正持有什么。"
+concepts: ["x509", "pem", "der", "pkcs12", "pkcs7", "encoding"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-signing-request", "base64"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## 一份证书，多种包裹
+
+一个常见的困惑之源是：一份单独的证书可以作为一个 `.crt`、一个 `.cer`、一个 `.pem`、一个 `.der`，或埋在一个 `.pfx` 之内而到来，而人们便假设这些是不同的东西。它们通常并非如此。证书是一个固定的结构（[解剖一文](/learn/x509-anatomy)中描述的 ASN.1 布局）；所变化的，是那些字节如何被编码，以及还有什么与之一同被打包。知晓那寥寥数个真正的格式，会让文件扩展名不再神秘。
+
+## DER：规范的二进制
+
+在最底层是 DER，即来自 ITU-T X.690 的 Distinguished Encoding Rules。DER 是该证书 ASN.1 之树的实际二进制序列化：一串 tag-length-value 记录，对任何给定的值恰有一种有效的编码。这种确定性要紧，因为颁发者的签名是对这些确切的字节计算的。一个 `.der` 文件（且常常一个 `.cer` 文件）是不带文本包裹的裸 DER。X.509 工具直接对此二进制解码。
+
+## PEM：裹于文本中的 DER
+
+PEM 是经 Base64 编码并裹于护甲行中的 DER，由 RFC 7468 定义：
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...   (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+PEM 之所以存在，是因为二进制无法在被粘入一封电子邮件、一个配置文件或一个终端时存活，而 Base64 文本则能。`BEGIN`/`END` 行上的标签告诉你那个主体是什么，且有若干种：
+
+- `CERTIFICATE` 是一份 X.509 证书。
+- `CERTIFICATE REQUEST` 是一个 CSR（见[签名请求一文](/learn/certificate-signing-request)）。
+- `PRIVATE KEY` 是一个 PKCS#8 私钥；`RSA PRIVATE KEY` 与 `EC PRIVATE KEY` 是较旧的、密钥专属的格式。
+- `PUBLIC KEY` 是一个裸的 SubjectPublicKeyInfo。
+- `X509 CRL` 是一个证书吊销列表。
+
+一个单独的 PEM 文件可以背靠背地持有若干块，这便是一个服务器的叶子证书外加其中间链如何在一个单一的 `fullchain.pem` 中被送出的方式。关于其下的编码，见 [Base64 一文](/learn/base64)。
+
+## 文件扩展名不是格式
+
+这是绊倒人们的那一部分：`.crt`、`.cer`、`.pem` 与 `.key` 描述的是意图，而非编码。一个 `.crt` 可能是 PEM 或 DER。一个 `.cer` 在 Windows 上常是 DER，但在别处是 PEM。一个 `.key` 是一个私钥，但可能是 PKCS#1、PKCS#8 或 SEC1，以 PEM 或 DER 计。知晓你所拥有之物的唯一可靠途径，是看头几个字节：PEM 以可见的 `-----BEGIN` 行开始，而 DER 以 SEQUENCE 标签字节 `0x30` 开始。工具二者皆受，所以你可以粘入一个 PEM 块或上传裸 DER 而无须先行转换。
+
+## 捆束不止一物的容器
+
+两种 PKCS 格式把多个对象打包在一处：
+
+- **PKCS#7**（`.p7b`、`.p7c`）承载一份或多份证书，通常是一份证书外加其链，但无私钥。它常被用来在一个单一文件中交给某人一条完整的链。
+- **PKCS#12**（`.pfx`、`.p12`），由 RFC 7292 定义，把一份证书、其链与相配的私钥捆束进一个单一的、受密码保护的 blob。这便是当你想让密钥与证书一同行进时，你从一个 Windows 证书库导出、或导入一个负载均衡器之物。因其含有私钥，一个 PKCS#12 文件是敏感的，而密码是保护它的唯一之物。
+
+## 私钥编码
+
+私钥有它们自己的小动物园。**PKCS#1**（`RSA PRIVATE KEY`）是原初的、仅限-RSA 的格式。**SEC1**（`EC PRIVATE KEY`）是椭圆曲线密钥的对应物。**PKCS#8**（`PRIVATE KEY`，可选地 `ENCRYPTED PRIVATE KEY`）是现代的、对算法中立的包裹，可持有任一者，也是大多数当前工具所发出之物。一个证书解码器从不需要私钥，而你绝不该把一个私钥粘入一个你并不掌控的工具；X.509 工具是用于证书的，而证书按设计便是公开的。
+
+## 在它们之间转换
+
+因内层结构相同，转换是无损且例行的。以 OpenSSL，PEM 转 DER 是 `openssl x509 -in cert.pem -outform der -out cert.der`，而其逆向则对调 in 与 out 形态。从一份单独的证书与密钥构建一个 PKCS#12 是 `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`。这些中没有一个会改变证书本身；它们只是重新包裹它。
+
+## 包装，而非实质
+
+要领是：PEM 对 DER、以及 `.crt` 对 `.pfx`，是关于传输与捆束的问题，而非关于证书所言之事。剥去护甲、从 Base64 解码、并无视那个容器，而在这些每一个之下的，都是同一份签名的 ASN.1 声明，把一个公钥绑定到一个名字。工具的职责，是在你的浏览器中剥去那层包装、并向你展示其内的结构，而无任何文件曾离开此页。

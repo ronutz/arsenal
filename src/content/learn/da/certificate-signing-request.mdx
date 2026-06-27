@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Certifikatsigneringsanmodninger og hvordan certifikater udstedes"
+summary: "Hvad en CSR indeholder, hvorfor din private nøgle aldrig forlader din maskine, hvordan en CA validerer og udsteder, og hvordan ACME automatiserer hele udvekslingen."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Udstedelsesproblemet
+
+Du kan generere et nøglepar på egen hånd på sekunder, men en nøgen offentlig nøgle beviser intet om, hvem du er (bindingsproblemet fra [anatomiartiklen](/learn/x509-anatomy)). For at få et certifikat har du brug for en certifikatmyndighed, som en forlassende part allerede stoler på, til at indestå for, at denne offentlige nøgle tilhører dit navn. Certifikatsigneringsanmodningen (Certificate Signing Request) er, hvordan du beder om det, uden nogensinde at udlevere din private nøgle.
+
+## Hvad en CSR indeholder
+
+En CSR er selv en ASN.1-struktur, defineret af PKCS#10 (RFC 2986) og normalt leveret som en PEM-blok mærket `CERTIFICATE REQUEST`. Den bærer:
+
+- **subjektet**, du anmoder om (navnene, der bør ende i certifikatet),
+- din **offentlige nøgle**, og
+- en **signatur over anmodningen, lavet med den matchende private nøgle**.
+
+Den sidste del er det smarte. Ved at signere anmodningen med den private nøgle beviser du, at du faktisk holder nøglen, der parrer med den offentlige nøgle, du indsendte, alt sammen uden at afsløre den private nøgle selv. Den private nøgle forlader aldrig din kontrol, hvilket er præcis, som det bør være, fordi enhver, der har den, kan udgive sig for at være dig.
+
+## CA'en er autoriteten, ikke anmoderen
+
+Et afgørende punkt: CSR'en er en *anmodning*, og CA'en står frit til at hædre dele af den og ignorere andre. Du kan bede om ethvert subjekt og enhver udvidelse, du vil, men CA'en bestemmer, hvad det udstedte certifikat faktisk siger. Den sætter gyldighedsperioden efter nuværende regler, vælger serienummeret, og inkluderer kun navnene og brugene, den er villig til at indestå for. CA'ens signatur, ikke din anmodning, er det, der giver det endelige certifikat dets autoritet. Denne adskillelse er grunden til, at en CSR fuld af ambitiøse felter ikke skaffer dig et certifikat fuld af dem.
+
+## Hvordan CA'en beslutter at stole på dig
+
+Før signering validerer CA'en, at du er berettiget til navnene, du bad om, og hvor grundigt afhænger af certifikattypen:
+
+- **Domain Validated (DV)** beviser kun, at du kontrollerer domænet. Dette er det overvældende flertal af TLS-certifikater i dag.
+- **Organization Validated (OV)** og **Extended Validation (EV)** efterprøver desuden den juridiske enhed bag domænet, Subject Identity Information, der fremtræder i certifikatet.
+
+For DV udfordrer CA'en dig til at demonstrere kontrol over domænet. Almindelige metoder er at placere en specifik fil på en URL på webstedet (HTTP-01), at publicere en specifik DNS-TXT-post (DNS-01), eller at svare på en e-mail sendt til en adresse i domænet. At bestå udfordringen er, hvad der overbeviser CA'en om, at den offentlige nøgle i din CSR bør bindes til det navn.
+
+## Selvsignerede certifikater springer CA'en over
+
+Hvis du signerer din egen CSR med din egen nøgle i stedet for at sende den til en CA, får du et selvsigneret certifikat, hvor Issuer er lig med Subject. Det bærer ingen ekstern autoritet, fordi det eneste, der indestår for det, er det selv, men det er fuldkommen nyttigt til lokal udvikling, interne tjenester med deres eget tillidslager, eller til at agere som roden af en privat PKI. Værktøjet markerer, når et certifikat er selvudstedt, hvilket fortæller dig øjeblikkeligt, at dets tillid kommer fra et andet sted end en offentlig CA.
+
+## ACME: at automatisere udvekslingen
+
+At gøre alt dette i hånden, gentagne gange, er præcis, hvad skiftet til korte certifikatlevetider gør umuligt (se [tilbagekaldelsesartiklen](/learn/certificate-revocation)). ACME-protokollen (RFC 8555), populariseret af Let's Encrypt, automatiserer hele samtalen: en klient genererer nøgleparret og CSR'en, beviser domænekontrol gennem HTTP-01 eller DNS-01 automatisk, modtager certifikatet, og gentager før hver udløb, uden noget menneske involveret. ACME er grunden til, at millioner af websteder kan køre certifikater, der fornyer hver få uger, og det er den operationelle rygrad i den kortlivede-certifikat-fremtid.
+
+## En anmodning bliver en akkreditiv
+
+Buen er enkel at formulere. Du holder et nøglepar. En CSR beder en CA om at indestå for den offentlige halvdel, og beviser undervejs, at du holder den private halvdel. CA'en kontrollerer, at du kontrollerer navnet, udsteder så et certifikat, hvis autoritet kommer fra CA'ens signatur, ikke fra noget, du skrev i anmodningen. At inspicere resultatet med en afkoder viser dig bindingen, CA'en faktisk lavede, hvilket er hele pointen med øvelsen: at forvandle en anonym nøgle til en nøgle med et betroet navn vedhæftet.

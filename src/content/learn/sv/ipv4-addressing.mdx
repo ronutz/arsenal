@@ -1,0 +1,41 @@
+---
+slug: ipv4-addressing
+title: "Hur IPv4-adresser fungerar"
+summary: "De 32 bitarna bakom varje punktquad-adress, och vad privata, loopback- och specialintervall betyder."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "subnetting-basics"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trettiotvå bitar i förklädnad
+
+En IPv4-adress är ett enskilt 32-bitarstal. Vi skriver den nästan aldrig så eftersom 32 ettor och nollor är svåra att läsa, så den delas upp i fyra 8-bitarsgrupper kallade **oktetter**, var och en visad i decimal från 0 till 255 och sammanfogade med punkter. `192.168.1.10` är bara ett vänligare sätt att skriva ett specifikt 32-bitarsvärde.
+
+Eftersom varje oktett är 8 bitar är hela rymden 2³² adresser, ungefär 4,3 miljarder. Det lät enormt på 1980-talet och är skälet till att IPv4-adressuttömning blev ett verkligt problem årtionden senare, och varför privat adressering och IPv6 existerar.
+
+## Nätverksdel och värddel
+
+Ingen adress står ensam, den tillhör ett block, och inom det blocket delar bitarna sig i en **nätverksdel** (vilket block detta är) och en **värddel** (vilken maskin inom blocket). Prefixlängden, skriven i CIDR-stil som `/24`, markerar var den delningen faller. Allt till vänster om linjen är nätverk; allt till höger identifierar en värd. Detta är samma idé som utforskas i CIDR-notation, sedd från adressidan.
+
+## Intervall med särskild betydelse
+
+Inte varje adress är en vanlig värdadress. Flera intervall är reserverade för specifika ändamål, och att känna igen dem är en del av att läsa vilken nätverkskonfiguration som helst:
+
+- **Privata intervall (RFC 1918)** är reserverade för bruk inom privata nätverk och routas aldrig på det publika internet:
+  - `10.0.0.0/8`
+  - `172.16.0.0/12`
+  - `192.168.0.0/16`
+  
+  Detta är varför hem- och kontorsnätverk så ofta använder `192.168.x.x` eller `10.x.x.x`, de adresserna är fria att återanvända överallt eftersom de aldrig framträder på det öppna internet.
+- **Loopback (`127.0.0.0/8`)** refererar alltid till den lokala maskinen själv. `127.0.0.1` är adressen en dator använder för att tala med sig själv.
+- **Link-local-adresser (`169.254.0.0/16`)** är självtilldelade när en enhet inte kan nå en DHCP-server. Att se en betyder vanligen "ingen adress delades ut".
+- **Den ospecificerade adressen (`0.0.0.0`)** och standardrutten (`0.0.0.0/0`) är särskilda: den senare är fånga-allt-rutten som matchar varje destination som inte täcks av en mer specifik rutt.
+
+## Varför specialintervallen spelar roll för säkerhet
+
+Dessa reserverade intervall är inte bara trivia. Ett verktyg som hämtar en användarlevererad adress måste vägra nå privata, loopback- och link-local-intervall, annars kan det luras att göra förfrågningar mot interna system det aldrig borde röra, en klass av attack kallad server-side request forgery (serversidesförfrågningsförfalskning). Att veta vilka intervall som är interna är det första steget i att försvara sig mot den. Detta är precis varför de nätverksrörande verktygen på denna sida kontrollerar en uppslagen adress mot dessa intervall innan de någonsin ansluter.
+
+För att se hur en adress sitter inom sitt block, dess nätverksadress, broadcast-adress, och det användbara intervallet runt den, prova [CIDR-kalkylatorn](/learn), som beräknar allt det lokalt i din webbläsare.

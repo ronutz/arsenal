@@ -1,0 +1,43 @@
+---
+slug: oauth-client-types
+title: "Client pubblici vs confidenziali, e dove si inserisce PKCE"
+summary: "Se un client OAuth può custodire un segreto decide il suo intero modello di sicurezza. Perché le SPA e le app mobili sono client pubblici, e perché PKCE è ora raccomandato per tutti loro."
+concepts: ["oauth", "pkce", "public-client", "confidential-client", "oidc", "native-apps"]
+relatedTools: ["pkce"]
+relatedArticles: ["pkce", "oauth-code-flow", "oauth-tokens"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## La domanda che decide tutto
+
+OAuth divide i client in due tipi, e la linea di demarcazione è una sola domanda: questo client può custodire un segreto? La RFC 6749 chiama le due risposte client **confidenziali** e **pubblici**, e quale dei due sei determina come ti autentichi, quali flussi sono sicuri e se ti serve PKCE. Quasi ogni errore di progettazione OAuth a livello applicativo risale al trattare un client pubblico come se potesse custodire un segreto che in realtà non può proteggere.
+
+## I client confidenziali possono custodire un segreto
+
+Un client confidenziale gira da qualche parte dove l'utente non può raggiungere il suo codice o la sua archiviazione, classicamente un'applicazione web lato server. Gli viene rilasciato un **segreto del client** alla registrazione e usa quel segreto per autenticarsi presso l'endpoint di token del server di autorizzazione. Poiché il segreto vive solo sul server, il server di autorizzazione può essere certo che una richiesta di token provenga davvero dal client registrato. Questo è il caso forte: il client prova la sua identità con qualcosa che solo lui conosce.
+
+## I client pubblici non possono
+
+Un client pubblico gira dove il suo codice e i suoi dati sono visibili all'utente o all'attaccante: un'applicazione a pagina singola nel browser, un'app mobile o desktop nativa, qualsiasi cosa spedita al dispositivo. Il problema che lo definisce è che qualsiasi segreto incorpori in tale client non è segreto, perché chiunque può estrarlo dal bundle o dal binario spedito. Quindi un client pubblico non può autenticarsi con un segreto del client affatto; non c'è nulla che possa custodire che un attaccante non possa anche ottenere. Questo cambia ciò che il server di autorizzazione può assumere, ed è la ragione per cui i client pubblici necessitano di protezione extra sul flusso di codice di autorizzazione.
+
+## Perché i client pubblici erano vulnerabili
+
+Il flusso di codice di autorizzazione consegna al client un codice monouso nel reindirizzamento, che il client scambia poi per token. Per un client confidenziale, quello scambio è protetto dal segreto del client. Per un client pubblico senza segreto, un attaccante che può intercettare il reindirizzamento, per esempio un'app malevola registrata per lo stesso schema URL personalizzato su un dispositivo mobile, può rubare il codice e riscattarlo da sé. Questo è l'attacco di intercettazione che l'articolo [PKCE](/learn/pkce) descrive in dettaglio, ed è esattamente la lacuna che un segreto del client assente lascia aperta.
+
+## PKCE colma la lacuna, per tutti
+
+PKCE chiude quel buco senza un segreto precondiviso. Il client inventa un **verifier di codice** casuale fresco per richiesta, invia solo il suo hash (la **challenge di codice**) quando chiede il codice, e rivela il verifier solo quando lo riscatta. Un attaccante che intercetta il codice non ha mai visto il verifier, quindi il codice rubato è inutile. Questo è stato introdotto per i client pubblici, ma la guida da allora si è ampliata: OAuth 2.1 raccomanda PKCE per il flusso di codice di autorizzazione indipendentemente dal tipo di client, perché aggiunge difesa in profondità anche dove un segreto del client è presente. La regola pratica è usare codice di autorizzazione più PKCE ovunque e smettere di ragionare se ti serva strettamente.
+
+## Il flusso implicito è in pensione
+
+Le app browser pubbliche un tempo usavano il flusso implicito, che restituiva token direttamente nel reindirizzamento per evitare lo scambio di codice. Quel progetto esponeva token negli URL e nella cronologia del browser ed è ora deprecato; OAuth 2.1 lo rimuove. La risposta moderna per un'applicazione a pagina singola è la stessa che per tutti gli altri: il flusso di codice di autorizzazione con PKCE. Se incontri consigli di usare il flusso implicito, trattali come superati.
+
+## Le app native hanno le proprie insidie
+
+Le app native e mobili sono client pubblici con un pericolo specifico: il reindirizzamento di ritorno nell'app. Gli schemi URL personalizzati possono essere rivendicati da altre app sul dispositivo, il che è ciò che rende possibile l'intercettazione, quindi la guida di buona pratica per le app native (RFC 8252) è usare reindirizzamenti HTTPS rivendicati dove la piattaforma li supporta, eseguire il flusso in un browser di sistema anziché in una vista web incorporata, e applicare sempre PKCE. Per i dispositivi con input vincolato come una TV, dove non c'è alcun browser a cui reindirizzare, il flusso di autorizzazione del dispositivo (RFC 8628) consente all'utente di autorizzare su un telefono o laptop separato invece.
+
+## Nel dubbio, assumi pubblico
+
+Il filo conduttore è che il tipo di client non è un'etichetta che scegli per comodità; è un fatto su dove gira il tuo codice e cosa può proteggere. Se il client viene spedito all'utente, è pubblico, non può custodire un segreto, e necessita di PKCE. Se gira solo sul tuo server, può essere confidenziale e autenticarsi con un segreto, e dovrebbe comunque usare PKCE per il margine extra. Decidi in quale mondo vive il tuo client, e il resto del suo modello di sicurezza OAuth segue da quell'unica risposta onesta.

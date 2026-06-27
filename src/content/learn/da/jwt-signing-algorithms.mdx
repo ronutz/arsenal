@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "JWT-signeringsalgoritmer: HMAC, RSA og ECDSA"
+summary: "Hvorfor en JWT's alg-header betyder noget, forskellen mellem symmetrisk og asymmetrisk signering, og hvordan man vælger."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## alg-headeren afgør alt
+
+En JWT's header navngiver algoritmen, der blev brugt til at signere den, for eksempel `"alg": "HS256"`. Den ene værdi afgør, hvilken slags nøgle verifikatoren har brug for, og hvad signaturen faktisk beviser. Algoritmerne falder i to familier, symmetrisk og asymmetrisk, og valget mellem dem er reelt et valg om, *hvem der skal verificere token*.
+
+## Symmetrisk: HMAC-familien (HS256/384/512)
+
+`HS256`, `HS384` og `HS512` er HMAC med SHA-256, SHA-384 eller SHA-512. De bruger **én delt hemmelighed** til både signering og verifikation. Den, der kan verificere en HS256-token, kan også forfalske en, fordi at oprette og kontrollere signaturen bruger den samme nøgle.
+
+Det gør HMAC-familien til et godt valg, når den **samme part** udsteder og verificerer token, eller når udsteder og verifikator allerede deler en betroet hemmelighed, en enkelt backend, der signerer sine egne sessionstoken, for eksempel. Den er hurtig og enkel. Dens grænse er distribution: hver verifikator har brug for hemmeligheden, og jo flere steder hemmeligheden bor, desto større er skaderadius, hvis en lækker.
+
+## Asymmetrisk: RSA og ECDSA (RS256, ES256 og flere)
+
+`RS256` (RSASSA-PKCS1-v1_5 med SHA-256), `PS256` (RSA-PSS) og `ES256` (ECDSA med P-256-kurven) bruger et **nøglepar**: en privat nøgle signerer, og den tilsvarende offentlige nøgle verificerer. Den private nøgle forlader aldrig udstederen; den offentlige nøgle kan udleveres til enhver.
+
+Dette er, hvad du vil have, når **mange uafhængige tjenester** skal verificere token fra én udsteder. En identitetsudbyder signerer med sin private nøgle og udgiver sine offentlige nøgler (almindeligvis som et JWKS-endpoint); hver nedstrømstjeneste verificerer med den offentlige nøgle, og ingen af dem kan præge token. Det er derfor, OpenID Connect-udbydere som standard udsteder RS256- eller ES256-ID-token.
+
+Mellem RSA og ECDSA er afvejningen størrelse og hastighed: ECDSA-nøgler og -signaturer er meget mindre for tilsvarende sikkerhed, mens RSA er ældre og mere universelt understøttet. `EdDSA` (Ed25519) er et moderne, hurtigt alternativ, der vinder udbredelse.
+
+## At vælge
+
+- **Én part signerer og verificerer, eller en hemmelighed er allerede delt** → HMAC (HS256). Enkelt og hurtigt.
+- **Én signerer, mange uafhængige verifikatorer** → asymmetrisk (RS256 eller ES256). Den offentlige nøgle kan distribueres frit; kun indehaveren af den private nøgle kan signere.
+
+Hvad du end vælger, skal verifikatoren **fastlåse den acceptable algoritme** frem for at stole på tokenets egen `alg`-header. At acceptere, hvad end token hævder, åbner døren for `alg: none`- og algoritmeforvirringsangrebene beskrevet i JWT-anatomiartiklen.
+
+[JWT-værktøjet](/tools/jwt) afkoder headeren, så du kan se, hvilken algoritme en token erklærer, og verificerer HMAC-familien (HS256/384/512) mod en hemmelighed, du indsætter, lokalt i din browser.

@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "CIDR notasyonu açıklandı"
+summary: "192.168.1.0/24'teki eğik çizginin aslında ne anlama geldiği ve bir önek uzunluğunun bir IP adresleri bloğunu nasıl tanımladığı."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## CIDR'nin çözdüğü sorun
+
+Bir IP ağındaki her cihazın bir adrese ihtiyacı vardır. IPv4'te o adres 32 bittir, genellikle noktalarla ayrılmış 0 ile 255 arasında dört sayı olarak yazılır, `192.168.1.10` gibi. Zor soru asla "bir adres nedir" değil, "birlikte ait olan bir adres *aralığını* nasıl tarif ederim" sorusudur, tek bir ofis, bir alt ağ, bir müşteri tahsisi. **CIDR notasyonu**, o aralığı yazmanın derli toplu yoludur.
+
+CIDR, Classless Inter-Domain Routing (Sınıfsız Etki Alanları Arası Yönlendirme) anlamına gelir. "Sınıfsız" kısmı önemlidir: daha eski adresleme aralıkları sabit boyutlara zorluyordu (eski Sınıf A, B ve C blokları). CIDR o katılığı kaldırdı ve bir aralığın *herhangi bir* ikinin kuvveti boyutunda olmasına izin verdi, ki bu bugün standart olmasının nedenidir.
+
+## Eğik çizgiyi okumak
+
+Bir CIDR bloğu `192.168.1.0/24` gibi görünür. Eğik çizgiden sonraki kısım, **önek uzunluğu**, tek başına en önemli sayıdır. Şunu söyler: *adresin ilk N biti sabittir ve geri kalanı değişmekte serbesttir.*
+
+- `/24`, ilk 24 bitin sabit ağ kısmı olduğu anlamına gelir. Kalan 8 bit (32 − 24) bireysel ana bilgisayarları tanımlar.
+- 8 serbest bit 2⁸ = 256 olası kombinasyon verir, dolayısıyla `192.168.1.0/24`, `192.168.1.0`'dan `192.168.1.255`'e kadar 256 adresi tarif eder.
+
+Öneki değiştirin, blok boyutu da onunla değişir. Daha küçük bir önek *daha fazla* serbest bit ve *daha büyük* bir blok anlamına gelir:
+
+- `/16` 16 biti sabitler, 16'yı serbest bırakır → 65.536 adres.
+- `/25` 25 biti sabitler, 7'yi serbest bırakır → 128 adres.
+- `/30` 30 biti sabitler, 2'yi serbest bırakır → 4 adres.
+
+Önek uzunluğunda her bir adımlık değişiklik bloğu **yarıya indirir veya iki katına çıkarır**. O tek kural tüm sezgidir.
+
+## Ağ, yayın ve kullanılabilir ana bilgisayarlar
+
+Çoğu blok içinde, iki adres özeldir ve bir ana bilgisayara atanamaz:
+
+- **Ağ adresi**, bloktaki ilk adrestir, tüm ana bilgisayar bitleri 0'a ayarlanmış (`/24` için `192.168.1.0`). Bloğun kendisini adlandırır.
+- **Yayın adresi**, son adrestir, tüm ana bilgisayar bitleri 1'e ayarlanmış (`192.168.1.255`). Buraya gönderilen trafik bloktaki her ana bilgisayara ulaşır.
+
+Dolayısıyla bir `/24` toplamda 256 adrese sahiptir ama gerçek ana bilgisayarlar için **254 kullanılabilir**. "Kullanılabilir ana bilgisayarlar" rakamı, basitçe toplam eksi bu iki ayrılmış adrestir.
+
+İki uç durum bu deseni bozar, ikisi de kasıtlı olarak:
+
+- Bir **/31** (RFC 3021), iki yönlendirici arasındaki noktadan-noktaya bağlantılar için kullanılır. Yalnızca 2 adrese sahiptir ve tasarımca ikisi de kullanılabilirdir, ayrı bir ağ ve yayın adresi için yer yoktur ve tam iki uçlu bir bağlantı için hiçbiri gerekli değildir.
+- Bir **/32** tek bir adrestir, bir ana bilgisayar rotasıdır. Tam olarak bir makineyi tarif eder.
+
+## Bunu anlamaya değmesinin nedeni
+
+Önek uzunluğu, ağların nasıl tasarlandığını, rotaların nasıl özetlendiğini ve adres alanının nasıl dağıtıldığını yönetir. Bir yönlendirme tablosunda `10.0.0.0/8` veya varsayılan rota olarak `0.0.0.0/0` gördüğünüzde, aynı notasyonu okuyorsunuz: bir temel adres artı ne kadarının sabit olduğunu söyleyen bir önek uzunluğu. Aritmetik asla değişmez, yalnızca sayılar.
+
+Herhangi bir bloğu [CIDR hesaplayıcısında](/learn) deneyerek ağ adresini, yayın adresini, maskesini ve kullanılabilir ana bilgisayar sayısını anında, tamamen tarayıcınızda hesaplanmış olarak görebilirsiniz.

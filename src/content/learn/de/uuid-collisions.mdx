@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "Kollidieren UUIDs? Wahrscheinlichkeit und die Geburtstagsgrenze"
+summary: "Wie viele Zufallsbits eine UUID wirklich hat, die Geburtstagsmathematik für eine Kollision und wann deterministische UUIDs sinnvoll sind."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Die Frage hinter jeder UUID
+
+Eine UUID hat 128 Bit, üblicherweise zufällig erzeugt (Version 4), damit jeder überall eine prägen kann, ohne Abstimmung, und Eindeutigkeit erwarten darf. Die berechtigte Sorge: Wenn alle nur würfeln, werden nicht irgendwann zwei übereinstimmen? Die Antwort ist im Prinzip ja und in der Praxis praktisch nie, und die Mathematik sagt genau, warum.
+
+## Wie viele Zufallsbits es wirklich gibt
+
+Eine UUID der Version 4 hat keine 128 Zufallsbits. Vier Bit sind fest, um die Version zu markieren, und zwei weitere für die Variante, was **122 Zufallsbits** lässt. Das ist immer noch ein riesiger Raum: 2¹²², etwa 5,3 Quattrilliarden (5,3 × 10³⁶) mögliche Werte.
+
+## Die Geburtstagsgrenze, angewandt
+
+Die Kollisionswahrscheinlichkeit hängt nicht davon ab, den Raum zu füllen; sie hängt von der Zahl der *Paare* ab, die mit dem Quadrat der Erzeugten wächst. Das ist erneut das Geburtstagsparadoxon. Für einen Raum von 2¹²² Werten beträgt die Wahrscheinlichkeit irgendeiner Kollision unter `n` UUIDs näherungsweise:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+Eine Chance von 50 % auf eine einzige Kollision tritt erst nach etwa **2⁶¹** UUIDs ein, das sind rund 2,3 Trillionen. Um es greifbar zu machen: Erzeugte man eine Milliarde UUIDs der Version 4 pro Sekunde, bräuchte man in der Größenordnung von *85 Jahren*, nur um eine 50-%-Chance auf eine Kollision zu erreichen. Bei jedem realistischen Anwendungsvolumen ist die Wahrscheinlichkeit so klein, dass sie von der Chance, dass ein Hardwarefehler die Daten ohnehin beschädigt, überschattet wird.
+
+Der einzige reale Vorbehalt ist die **Qualität der Zufälligkeit**. Die Mathematik gilt nur, wenn der Generator eine ordentliche kryptografisch sichere Quelle ist. Eine schwache oder schlecht initialisierte Zufallsquelle kann viel früher Wiederholungen erzeugen, sodass das praktische Risiko ein schlechter RNG ist, nicht das Design der UUID.
+
+## Wann Sie keine Zufälligkeit wollen
+
+Manchmal ist nicht die Kollision das Anliegen, sondern die Wiederholbarkeit:
+
+- **Namespace-UUIDs (Version 3 und 5)** sind deterministisch: Sie hashen einen Namensraum plus einen Namen (MD5 für v3, SHA-1 für v5), sodass dieselbe Eingabe stets dieselbe UUID ergibt. Nützlich, wenn Sie eine stabile, aus vorhandenen Daten abgeleitete Kennung statt einer neuen zufälligen wollen.
+- **Zeitlich geordnete UUIDs (Version 7)** behalten die Zufälligkeit, stellen ihr aber einen Zeitstempel voran, sodass IDs nach Erstellungszeit sortieren. Das hilft der Indexlokalität in der Datenbank, während das Kollisionsrisiko vernachlässigbar bleibt.
+
+## Die Lehre
+
+Für eindeutige Kennungen in jeder normalen Größenordnung kollidiert eine UUID der Version 4 aus einer guten Zufallsquelle nicht, und Sie brauchen keine zentrale Instanz, um das zu garantieren. Wählen Sie v3/v5, wenn dieselbe Eingabe auf dieselbe ID abbilden soll, und v7, wenn Sie zeitliche Ordnung wollen.
+
+Das [UUID-Tool](/tools/uuid) erzeugt UUIDs der Version 4 (und anderer) und analysiert jede UUID, um ihre Version und Variante anzuzeigen, alles in Ihrem Browser, ohne dass etwas gesendet wird.

@@ -1,0 +1,44 @@
+---
+slug: openid-connect
+title: "OpenID Connect: pagkakakilanlan sa ibabaw ng OAuth 2.0"
+summary: "Paano nagdaragdag ang OIDC ng authentication sa authorization ng OAuth, ano ang ID token, at bakit ang code flow na may PKCE ang inirerekomendang landas."
+concepts: ["oidc", "oauth", "id-token", "jwt", "pkce", "authentication"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang authorization ay hindi authentication
+
+Sinasagot ng OAuth 2.0 ang "may pahintulot ba ang aplikasyong ito na ma-access ang resource na iyon sa ngalan ng gumagamit?". Ito ay isang protocol ng *authorization*, at sinadya nitong huwag magsabi ng anumang pamantayan tungkol sa *kung sino ang gumagamit*. Gayunpaman, sinubukan ng mga aplikasyon na gamiting muli ito para sa pag-login, sa mga paraang hindi tugma at minsan ay hindi ligtas. Ang **OpenID Connect (OIDC)** ang pamantayang umaayos dito: isang manipis na identity layer sa ibabaw ng OAuth 2.0 na nagdaragdag ng authentication nang hindi itinatapon ang anumang ginagawa na ng OAuth.
+
+## Ang ID token
+
+Ang tumutukoy na dagdag ay ang **ID token**, at ito ay isang JWT. Habang ang isang OAuth access token ay nilayon para sa isang API at madalas malabo sa client, ang ID token ay nilayon para sa *client* at nagdadala ng mga pamantayang claim tungkol sa na-authenticate na gumagamit:
+
+- `iss` (issuer) at `aud` (audience, ang client na pinaglaanan nito)
+- `sub` (ang matatag, natatanging identifier ng gumagamit)
+- `exp` at `iat` (pagkawalang-bisa at oras ng pag-isyu)
+- `nonce` (iniuugnay ang token sa tiyak na login request, tinatalo ang replay)
+- mga profile claim tulad ng `name`, `email`, at `picture` kapag ipinagkaloob ang mga scope na iyon
+
+Dahil ito ay isang JWT, vine-verify ng client ang lagda ng ID token at vina-validate ang mga claim na iyon nang eksakto tulad ng inilarawan para sa anumang JWT. Naaangkop ang parehong pagsusuri ng pag-pirmi ng algorithm at `aud`/`iss`/`exp`.
+
+## Paano dumadaloy ang isang pag-login
+
+Ginagamit muli ng OIDC ang makinarya ng OAuth. Ang inirerekomendang daloy ay ang **authorization code flow na may PKCE**:
+
+1. Ipinapadala ng aplikasyon ang gumagamit sa authorization endpoint ng provider, hinihiling ang scope na `openid` (kasama ang `profile`, `email`, at iba pa), at isinasama ang isang PKCE `code_challenge`.
+2. Nag-a-authenticate at nagbibigay-pahintulot ang gumagamit sa provider.
+3. Tumatanggap ang aplikasyon ng isang one-time na code at ipinapalit ito (sa pamamagitan ng pagpapatunay ng pagmamay-ari ng PKCE `code_verifier`) para sa isang **ID token** at isang **access token**.
+4. Vine-verify ng aplikasyon ang ID token upang matukoy *kung sino ang gumagamit* at ginagamit ang access token upang tumawag sa mga API *sa ngalan nito*.
+
+Dalawang endpoint ang bumubuo sa larawan: isang **userinfo** endpoint ang nagbabalik ng mga profile claim para sa isang wastong access token, at isang **discovery document** sa `/.well-known/openid-configuration` ang nag-aanunsyo ng mga endpoint ng provider at ng URL ng JWKS nito, upang makahanap ang isang client ng mga susi para mag-verify ng mga ID token at masundan ang key rotation nang awtomatiko.
+
+## Bakit ito mahalaga
+
+Ang OIDC ang aktwal na pinapatakbo ng karamihan sa mga button na "Mag-sign in gamit ang ...". Ang paghihiwalay sa dalawang token ang pangunahing kabatiran: **pinatutunayan ng ID token ang pagkakakilanlan sa client**, **pinahihintulutan ng access token ang mga tawag sa API**, at hindi sila mapagpapalit. Kasama ang code flow at PKCE, ito ang modernong, batay-sa-pamantayang paraan ng paggawa ng federated login.
+
+Gumagawa at nag-ve-verify ang [tool na PKCE](/tools/pkce) ng `code_verifier` at `code_challenge` ng daloy, at dine-decode at vine-verify ng [tool na JWT](/tools/jwt) ang ID token, parehong lubos sa iyong browser, nang walang anumang ipinapadala.

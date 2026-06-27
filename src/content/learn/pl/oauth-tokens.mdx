@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Tokeny dostępu, tokeny odświeżające i tokeny ID"
+summary: "Trzy tokeny OAuth i OpenID Connect, które są nieustannie mylone, do czego każdy faktycznie służy oraz dlaczego wysłanie niewłaściwego w niewłaściwe miejsce to prawdziwy błąd."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trzy tokeny, trzy zadania
+
+Po zakończeniu przepływu kodu autoryzacji (zobacz artykuł [przepływ kodu](/learn/oauth-code-flow)) klient może skończyć, trzymając trzy różne tokeny, a ich mylenie to jeden z najczęstszych błędów w OAuth i OpenID Connect. Token dostępu, token odświeżający i token ID wyglądają powierzchownie podobnie, zwłaszcza gdy wszystkie trzy akurat są JWT, lecz mają różnych odbiorców i różne cele. Trafienie z nimi to w większości kwestia pytania, dla każdego tokenu, dla kogo jest i co autoryzuje.
+
+## Token dostępu: klucz do API
+
+Token dostępu to to, co klient wysyła do serwera zasobów (API), by udowodnić, że ma pozwolenie na złożenie żądania. To najbliższe, co OAuth ma do klucza sesji dla dostępu maszyna-do-maszyny, zdefiniowane przez OAuth 2.0 (RFC 6749). Liczą się dwie własności. Jest **krótko żyjący**, często minuty do godziny, by wyciekły token był użyteczny tylko krótko. I jest tokenem **bearer** (na okaziciela): kto go trzyma, może go użyć, bez dalszego dowodu tożsamości, dlatego tokeny dostępu muszą podróżować tylko po TLS i nigdy nie być rejestrowane ani umieszczane w adresie URL. API waliduje token i niesione przez niego zakresy, po czym obsługuje lub odmawia żądania.
+
+## Token odświeżający: zdobywanie nowych tokenów dostępu
+
+Ponieważ tokeny dostępu szybko wygasają, zmuszanie użytkownika do ponownego logowania co kilka minut byłoby nie do zniesienia. Token odświeżający to rozwiązuje: to długo żyjące poświadczenie, które klient wymienia na serwerze autoryzacji na świeży token dostępu, bez interakcji użytkownika. Jest o wiele wrażliwszy od tokenu dostępu właśnie dlatego, że jest długo żyjący, więc musi pozostać na kanale tylnym (po stronie serwera lub w chronionym magazynie) i nigdy nie być wystawiony na front-end przeglądarki. Dobrą praktyką jest **rotacja tokenu odświeżającego**: każde użycie wystawia nowy token odświeżający i unieważnia stary, by skradziony token został wykryty w chwili, gdy prawowity klient spróbuje użyć teraz unieważnionej kopii. Tokeny można też jawnie unieważnić (RFC 7009).
+
+## Token ID: oświadczenie o użytkowniku
+
+Token ID to element, który OpenID Connect dodaje na wierzch OAuth, i to ten najczęściej źle używany. Jest zawsze JWT (zobacz artykuł [anatomia JWT](/learn/jwt-anatomy)), i opisuje zdarzenie uwierzytelnienia: kim jest użytkownik, kiedy się uwierzytelnił i który serwer autoryzacji za to ręczy. Co kluczowe, **token ID jest dla klienta, nie dla API**. Odpowiada na „kto się właśnie zalogował", by aplikacja mogła ustanowić sesję użytkownika. Wysłanie tokenu ID do serwera zasobów, jak gdyby był tokenem dostępu, to klasyczny błąd: API powinno go odrzucić, bo odbiorcą tokenu ID jest klient, a użycie go do autoryzacji myli tożsamość z uprawnieniem.
+
+## Tokeny bearer i pokusa, by im ufać
+
+Większość tokenów dostępu to tokeny bearer, co czyni je łatwymi w użyciu i łatwymi do nadużycia. Reguły obchodzenia się wynikają wprost: zawsze TLS, krótkie czasy życia, nigdy w dziennikach ani ciągach zapytań, i nigdy w magazynie dostępnym dla przeglądarki, jeśli istnieje bardziej chroniona opcja. Tam, gdzie model bearer jest zbyt ryzykowny, tokeny **związane z nadawcą** (sender-constrained) wiążą token z konkretnym kluczem klienta (mechanizmy takie jak DPoP lub wzajemny TLS), by skradziony token nie mógł być odtworzony przez nikogo innego. Dla większości aplikacji krótko żyjące tokeny dostępu bearer po TLS to działająca podstawa.
+
+## Tokeny dostępu nieprzejrzyste versus JWT
+
+Token dostępu może być nieprzejrzysty (losowy ciąg, który API sprawdza, wywołując punkt końcowy introspekcji serwera autoryzacji, RFC 7662) lub JWT, który API waliduje samo. Forma JWT jest samowystarczalna i unika podróży sieciowej w obie strony, lecz nie można jej unieważnić przed wygaśnięciem, co jest kolejnym powodem, by czasy życia tokenów dostępu trzymać krótkie. Token ID natomiast jest zawsze JWT, bo całym jego zadaniem jest przekazanie weryfikowalnych claimów klientowi. To, czy token jest JWT, mówi ci, jak jest walidowany, nie do czego służy.
+
+## Dopasuj token do odbiorcy
+
+Jedyna reguła zapobiegająca większości błędów tokenów to dopasowanie każdego tokenu do jego zamierzonego odbiorcy. **Token ID** jest dla aplikacji, by dowiedzieć się, kto się zalogował. **Token dostępu** jest dla API, by autoryzować żądanie. **Token odświeżający** jest dla serwera autoryzacji, by wybijać nowe tokeny dostępu bez niepokojenia użytkownika. Trzymaj tych trzech odbiorców osobno, trzymaj długo żyjący token odświeżający na kanale tylnym i traktuj każdy token bearer jak krótko żyjący sekret, a reszta obsługi tokenów OAuth ułoży się sama.

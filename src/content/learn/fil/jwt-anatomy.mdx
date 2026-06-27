@@ -1,0 +1,58 @@
+---
+slug: jwt-anatomy
+title: "Anatomiya ng isang JSON Web Token"
+summary: "Ang tatlong segment ng isang JWT, kung paano ginagawa itong mapagkakatiwalaan ng lagda, at kung bakit ang pag-decode ng isang token ay hindi pareho sa pag-verify nito."
+concepts: ["jwt", "jws", "claims", "hs256", "rs256", "authentication"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-signing-algorithms", "oauth-code-flow", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ano ang isang JWT
+
+Ang isang JSON Web Token (JWT, tinukoy sa RFC 7519) ay isang siksik, self-contained na paraan upang magdala ng isang hanay ng **claims**, mga pahayag tungkol sa isang entity (kadalasan ay isang user) kasama ang ilang metadata, sa isang anyo na maaaring i-verify ng isang tatanggap. Ito ang format ng token sa likod ng karamihan ng modernong web authentication: ang isang OpenID Connect ID token ay isang JWT, at ang mga OAuth 2.0 access token ay madalas ding ganoon.
+
+Ang "self-contained" ang pangunahing ideya. Sa halip na isang random na session id na kailangang hanapin ng server sa isang database, ang isang JWT ay nagdadala ng mga claim *sa loob nito*, nilagdaan upang ang tatanggap ay makapagtiwala sa kanila nang walang pagbabalikan. Ginagawa nitong maginhawa ang mga JWT para sa stateless, distributed na mga sistema, na may isang mahalagang trade-off na tinalakay sa dulo.
+
+## Ang tatlong segment
+
+Ang isang JWT ay tatlong Base64URL-encoded na segment na pinagsama ng mga tuldok:
+
+```
+header.payload.signature
+```
+
+Ang bawat segment ay may natatanging trabaho:
+
+- Ang **header** ay isang maliit na JSON object na nagngangalan sa signing algorithm at uri ng token, halimbawa `{"alg":"HS256","typ":"JWT"}`. Sinasabi ng halaga ng `alg` sa tatanggap kung paano i-verify ang lagda.
+- Ang **payload** ay ang JSON object ng mga claim. Hawak nito ang mga rehistradong claim na may standard na kahulugan (`iss` issuer, `sub` subject, `aud` audience, `exp` expiry, `nbf` not-before, `iat` issued-at, `jti` token id) kasama ng anumang custom na claim na idinaragdag ng issuer.
+- Ang **lagda** (signature) ay kinukuwenta sa encoded na header at payload nang magkasama, gamit ang algorithm mula sa header. Ito ang gumagawa sa unang dalawang segment na mapagkakatiwalaan.
+
+Dahil ang header at payload ay Base64URL-encoded lamang, hindi naka-encrypt, sinumang may hawak ng token ay maaaring mag-decode at magbasa ng mga ito. Ito ang nag-iisang pinakamahalagang katangiang dapat isaloob: **ang isang JWT payload ay nababasa, hindi lihim.** Huwag kailanman maglagay rito ng isang password, isang numero ng kard, o anumang sensitibo.
+
+## Ang lagda: kung paano itinatatag ang tiwala
+
+Ang lagda ang naghihiwalay sa isang JWT mula sa anumang string na magagawa ng isang kliyente. Kung paano ito ginagawa ay nakasalalay sa pamilya ng algorithm:
+
+- Ang **HMAC (HS256, HS384, HS512)** ay lumalagda gamit ang isang ibinahaging lihim. Ang lagda ay `HMAC-SHA256(base64url(header) + "." + base64url(payload), secret)`. Ito ay symmetric: ang parehong lihim ay lumilikha at nag-ve-verify, kaya ang issuer at verifier ay kailangang magbahagi nito. Ito mismo ang konstruksyon na kinukuwenta ng tool na HMAC.
+- Ang **RSA at ECDSA (RS256, ES256 at iba pa)** ay lumalagda gamit ang isang pribadong susi at nag-ve-verify gamit ang katugmang pampublikong susi. Ito ay asymmetric: ang issuer lamang ang makakalagda, ngunit sinuman na may pampublikong susi ay maaaring mag-verify, na bagay sa mga token na sinusuri ng maraming independiyenteng serbisyo.
+
+Ang pag-verify ay muling kinukuwenta o sinusuri ang lagda laban sa encoded na header at payload. Kung baguhin ang isang byte ng alinmang segment, ang lagda ay hindi na tutugma at ang token ay tinatanggihan.
+
+Dalawang klasikong bitag ang sulit malaman. Ang halagang `alg: none` ay nagdedeklara ng isang hindi nilagdaang token; ang isang verifier na hindi ito tahasang tinatanggihan ay maaaring malinlang upang magtiwala sa mga pekeng claim. At sa **algorithm-confusion** na atake, kinukuha ng isang umaatake ang isang RS256 token, inililipat ang header sa HS256, at nilalagdaan ito gamit ang pampublikong susi bilang HMAC secret, na nagtatagumpay laban sa mga verifier na kumukuha ng algorithm mula sa token sa halip na itali ito. Pareho ang depensa para sa dalawa: ang verifier ang nagpapasiya kung aling algorithm ang katanggap-tanggap, hindi ang token.
+
+## Ang pag-decode ay hindi pag-verify
+
+Ito ay dalawang magkaibang operasyon, at ang paghahalo sa kanila ay isang karaniwang pinagmumulan ng mga bug. Ang **pag-decode** ay basta lang nide-decode ang mga segment mula sa Base64URL upang ihayag ang header at mga claim: walang susi, walang tiwala, kahit sino ay magagawa ito. Ang **pag-verify** ay sinusuri ang lagda gamit ang tamang susi at kinukumpirma ang mga timing claim. Tanging sa mga claim ng isang na-verify na token dapat kumilos.
+
+Mahalaga rin ang oras. Ang `exp` (expiry) at `nbf` (not-before) ay mga Unix timestamp na naglilimita sa window ng bisa ng token, at itinatala ng `iat` kung kailan ito inilabas. Ang isang tamang verifier ay tumatanggi sa isang nag-expire o hindi-pa-balido na token, kadalasan na may pinapayagang maliit na toleransiya sa clock-skew.
+
+## Ano ang hindi isang JWT
+
+Ang isang JWT ay **nilagdaan, hindi naka-encrypt** (ang encryption ay isang hiwalay na standard, JWE). Pinatutunayan nito kung sino ang naglabas ng mga claim at na hindi ito ginalaw; hindi nito itinatago ang mga ito.
+
+Ang isang nilagdaang JWT ay **hindi rin madaling bawiin nang mag-isa.** Dahil ang mga claim ay nabubuhay sa loob ng token at ang pag-verify ay hindi nangangailangan ng paghahanap sa server, ang isang token ay nananatiling balido hanggang ito ay mag-expire, kahit nais mong kanselahin ito nang mas maaga. Ang praktikal na sagot ay maiikling lifetime kasama ang isang hiwalay na mekanismo (isang refresh token, isang revocation list, o token introspection) kapag kinakailangan ang agarang pagbawi.
+
+Ang [tool na JWT](/tools/jwt) ay nide-decode ang header at mga claim ng isang token, binabasa ang expiry at timing nito sa payak na wika, at nive-verify ang isang HS256, HS384, o HS512 na lagda laban sa isang lihim na iyong idinikit, lahat sa iyong browser. Ang token at lihim ay hindi kailanman ipinapadala saan man.

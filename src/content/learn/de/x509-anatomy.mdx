@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomie eines X.509-Zertifikats"
+summary: "Was in einem TLS-Zertifikat lebt, wie die ASN.1/DER-Bytes strukturiert sind, was die v3-Erweiterungen tatsächlich steuern und warum das Dekodieren eines Zertifikats nicht dasselbe ist, wie ihm zu vertrauen."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Was ein Zertifikat ist
+
+Ein X.509-Zertifikat ist eine signierte Aussage, die einen öffentlichen Schlüssel an eine Identität bindet. Wenn ein Browser sich über HTTPS mit einer Website verbindet, legt der Server ein Zertifikat vor, das im Grunde sagt: „Dieser öffentliche Schlüssel gehört zu test.ronutz.com, und eine Zertifizierungsstelle bürgt dafür." Das Profil, das definiert, welche Felder ein Zertifikat trägt und wie sie interpretiert werden, ist RFC 5280.
+
+Die Bindung ist es, was zählt. Jeder kann ein Schlüsselpaar erzeugen, also beweist ein nackter öffentlicher Schlüssel nichts darüber, wer am anderen Ende ist. Ein Zertifikat fügt eine Signatur eines Ausstellers hinzu, dem die vertrauende Partei bereits vertraut, und verwandelt einen anonymen Schlüssel in einen Schlüssel mit angehängtem Namen. Dies ist die Grundlage der Web-Public-Key-Infrastruktur (PKI).
+
+## Die Vertrauenskette
+
+Einem einzelnen Zertifikat wird selten allein vertraut. Ihm wird vertraut, weil es von einem Aussteller signiert wurde, der wiederum von einem anderen Aussteller signiert wurde, hinauf bis zu einer Wurzel, die die vertrauende Partei bereits in einem Vertrauensspeicher hält:
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Jedes Glied ist eine Signatur: Der Aussteller signiert das Zertifikat des Kindes mit dem privaten Schlüssel des Ausstellers, und ein Verifizierer prüft diese Signatur mit dem öffentlichen Schlüssel des Ausstellers. Eine **Wurzel** ist selbst ausgestellt und selbst signiert, weshalb ein selbstsigniertes Zertifikat ein nützlicher lokaler Stellvertreter für eine Wurzel ist, aber keine externe Autorität trägt. Das X.509-Werkzeug kennzeichnet ein selbst ausgestelltes Zertifikat (Aussteller gleich Subjekt) und ob das Zertifikat als CA markiert ist, beides sagt Ihnen, wo ein Zertifikat in diesem Bild sitzt.
+
+## ASN.1 und DER: das Byte-Layout
+
+Ein Zertifikat ist nicht JSON oder Text. Es wird in ASN.1 (Abstract Syntax Notation One) beschrieben und mit den Distinguished Encoding Rules (DER) kodiert, spezifiziert in ITU-T X.690. DER ist ein Tag-Length-Value-Format (TLV): Jedes Element beginnt mit einem Tag-Byte, das sagt, welcher Typ es ist, dann einer Länge, dann so vielen Inhaltsbytes. Konstruierte Typen wie SEQUENCE und SET halten Kindelemente, also ist das ganze Zertifikat ein Baum von TLVs.
+
+Eine PEM-Datei ist genau dieses DER, Base64-kodiert und in Armierungszeilen gehüllt:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Ein Zertifikat zu dekodieren bedeutet also, die Armierung zu entfernen, von Base64 zu DER zu dekodieren und dann den TLV-Baum zu durchlaufen. Das X.509-Werkzeug tut genau dies in Ihrem Browser, ohne Bibliothek und ohne Netzwerkaufruf.
+
+## Die oberste Struktur
+
+Auf der äußersten Ebene definiert RFC 5280 drei Teile:
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+Das **tbsCertificate** („to be signed", zu signieren) hält den gesamten echten Inhalt. Der **signatureAlgorithm** nennt, wie der Aussteller es signierte, zum Beispiel sha256WithRSAEncryption oder ecdsa-with-SHA256. Der **signatureValue** ist die Signatur selbst, berechnet über die DER-Bytes des tbsCertificate. An diesem letzten Punkt lohnt es sich festzuhalten: Die Signatur deckt den zu-signierenden Körper genau wie kodiert ab, weshalb selbst eine Ein-Byte-Änderung irgendwo im Körper die Verifizierung bricht.
+
+## Im Inneren des TBSCertificate
+
+Der zu-signierende Körper ist, wo das Werkzeug die meiste Zeit verbringt:
+
+- Die **Version** ist fast immer v3, die Version, die Erweiterungen einführte.
+- Die **Seriennummer** ist eine große Ganzzahl, die der Aussteller vergibt. Kombiniert mit dem Ausstellernamen identifiziert sie das Zertifikat eindeutig, und sie ist es, worauf eine Widerrufsliste verweist.
+- **Aussteller** (Issuer) und **Subjekt** (Subject) sind Distinguished Names. Ein DN ist eine Folge von Attributen wie CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) und C (country). RFC 4514 definiert die einzeilige, am-spezifischsten-zuerst-Darstellung, die Sie sehen, zum Beispiel `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- Die **Gültigkeit** (Validity) ist ein notBefore- und ein notAfter-Zeitstempel. Diese werden als UTCTime oder GeneralizedTime kodiert; das Werkzeug konvertiert beide zu ISO-8601 und sagt Ihnen, gegen Ihre lokale Uhr, ob das Zertifikat jetzt gültig, noch-nicht-gültig oder abgelaufen ist.
+- Das **subjectPublicKeyInfo** trägt den öffentlichen Schlüssel plus seinen Algorithmus. Für RSA meldet das Werkzeug die Modulusgröße (zum Beispiel 2048-bit) und den öffentlichen Exponenten (fast immer 65537). Für elliptische-Kurven-Schlüssel meldet es die benannte Kurve (P-256, P-384, P-521), gemäß RFC 5480.
+
+## Die v3-Erweiterungen
+
+Erweiterungen sind, wo moderne Zertifikate die meiste ihrer Richtlinie kodieren. Jede Erweiterung hat einen Identifikator, ein Kritisch-Flag und einen Wert. Das Kritisch-Flag zählt: Versteht eine vertrauende Partei eine als kritisch markierte Erweiterung nicht, muss sie das Zertifikat ablehnen, statt das Feld zu ignorieren. Das Werkzeug dekodiert die, die das meiste Gewicht tragen:
+
+- Der **Subject Alternative Name (SAN)** listet die Identitäten auf, für die das Zertifikat tatsächlich gültig ist, als DNS-Namen, IP-Adressen, E-Mail-Adressen oder URIs. Für TLS ist dies das Feld, das Browser prüfen, nicht der CN. Ein Zertifikat für `test.ronutz.com`, das diesen Namen aus seinem SAN auslässt, wird in einem modernen Client die Validierung verfehlen, selbst wenn der CN übereinstimmt.
+- Der **Key Usage** beschränkt, was der Schlüssel auf niedriger Ebene tun darf: digitalSignature, keyEncipherment, keyCertSign, cRLSign und andere. Ein CA-Zertifikat trägt keyCertSign; ein TLS-Blatt trägt typischerweise digitalSignature und keyEncipherment.
+- Der **Extended Key Usage (EKU)** nennt höherstufige Zwecke wie serverAuth (TLS-Server), clientAuth (TLS-Client), codeSigning oder emailProtection.
+- Die **Basic Constraints** geben an, ob das Zertifikat eine CA ist, und wenn ja, wie viele Zwischen-CAs unter ihm erscheinen dürfen (die Pfadlänge). Dies ist das Feld, das verhindert, dass ein Blattzertifikat zum Signieren anderer Zertifikate verwendet wird.
+- Der **Subject Key Identifier** und der **Authority Key Identifier** sind Hashes, die es einem Verifizierer erlauben, ein Zertifikat beim Aufbau einer Kette schnell seinem Aussteller zuzuordnen.
+
+## Fingerabdrücke
+
+Ein Zertifikats-**Fingerabdruck** (fingerprint) ist einfach ein kryptografischer Hash der DER-Bytes des Zertifikats, meist SHA-256 (und, für ältere Referenzen, SHA-1). Er ist kein Feld im Zertifikat; er wird über das Ganze berechnet. Fingerabdrücke geben Ihnen einen kurzen Wert fester Länge, um zwei Zertifikate auf Gleichheit zu vergleichen oder ein bekanntes Zertifikat anzuheften. Das Werkzeug berechnet sowohl SHA-256 als auch SHA-1 lokal mit der Web Crypto API, sodass die Bytes, die Sie einfügen, nie irgendwohin gesendet werden. Mehr dazu, was ein Hash ist und nicht ist, im Hashing-Artikel.
+
+## Dekodieren ist nicht Validieren
+
+Dies ist die einzige wichtigste Idee, und sie spiegelt dieselbe Vorsicht wider, die für JSON Web Tokens gilt. Die Felder eines Zertifikats zu lesen, sagt Ihnen, was es *behauptet*. Es sagt Ihnen nicht, dass die Behauptung *wahr* ist. Volle Validierung ist ein separater, schwererer Prozess: zu prüfen, dass die Signatur zu einer vertrauenswürdigen Wurzel verkettet, dass keines der Zertifikate in der Kette abgelaufen oder widerrufen ist, dass der Name, mit dem Sie sich verbanden, im SAN ist, und dass die Schlüsselverwendungen erlauben, was Sie tun.
+
+Ein Zertifikatsdekodierer, dieser eingeschlossen, ist ein Inspektions- und Lerninstrument. Er zeigt Ihnen genau, was ein Aussteller behauptete und wie es kodiert wurde. Behandeln Sie die Ausgabe als getreue Lesung des Dokuments, nicht als Urteil darüber, ob ihm zu vertrauen ist.

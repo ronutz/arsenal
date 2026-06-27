@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: opdel en blok i ulige subnet"
+summary: "Hvordan man skærer en adresseblok i subnet af forskellig størrelse uden at spilde plads, og størst-først-reglen, der holder alt pænt."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problemet med lige store subnet
+
+Klassisk subnetopdeling deler en blok i stykker af én fast størrelse. Det er enkelt, men spildende, når dine behov er forskellige. Hvis et segment har 100 værter og et andet er et link mellem to routere med 2, så fejler det at give begge et `/26` (62 brugbare) for det første og spilder 60 adresser på det andet. **VLSM**, subnetmaske med variabel længde, retter dette ved at lade hvert subnet bruge den præfikslængde, der passer til dets eget behov, alt sammen skåret ud af den samme overordnede blok.
+
+Det eneste, der gør VLSM mere arbejdskrævende end fast subnetopdeling, er rækkefølgen: du skal placere de **største subnet først**, ellers strander adresser, og du skaber overlap.
+
+## Dimensioner hvert subnet
+
+Start med antallet af værter, hvert segment har brug for, find derefter den mindste blok, der rummer det, husk at to adresser i hver almindelig blok er reserveret (netværk og broadcast):
+
+- 100 værter kræver 7 værtsbit (2⁷ − 2 = 126 brugbare), et `/25`.
+- 50 værter kræver 6 værtsbit (62 brugbare), et `/26`.
+- 25 værter kræver 5 værtsbit (30 brugbare), et `/27`.
+- 10 værter kræver 4 værtsbit (14 brugbare), et `/28`.
+- Et punkt-til-punkt-link med 2 værter er et `/30` (2 brugbare), eller et `/31` efter RFC 3021.
+
+Rund altid op til næste topotens. Et segment med 100 værter passer ikke i et `/26` (62), så det tager den næste størrelse, et `/25`.
+
+## Skær ud af blokken, størst først
+
+Antag at du ejer `192.168.10.0/24` og har brug for de fem subnet ovenfor. Tildel i faldende størrelsesorden, hvert begyndende på sin naturlige grænse:
+
+```
+/25  192.168.10.0   – .127   (126 brugbare)  ← segment med 100 værter
+/26  192.168.10.128 – .191   (62 brugbare)   ← segment med 50 værter
+/27  192.168.10.192 – .223   (30 brugbare)   ← segment med 25 værter
+/28  192.168.10.224 – .239   (14 brugbare)   ← segment med 10 værter
+/30  192.168.10.240 – .243   (2 brugbare)    ← routerlink
+```
+
+Hver blok begynder præcis, hvor den foregående slutter, og fra `192.168.10.244` og frem er det stadig frit til fremtidig vækst. Havde du tildelt `/30` først, ville `/25` ikke længere have en ren grænse at lande på, hvilket er hele grunden til størst-først-reglen.
+
+## Hvorfor det betyder noget
+
+VLSM er, hvordan virkelige netværk sparer adresseplads og holder tildelinger justeret, så ruter kan opsummeres rent. Aritmetikken er den samme præfikslængdematematik som for et enkelt subnet, anvendt gentagne gange: lås flere bit for at gøre en blok mindre, og hold hver blok på en topotensgrænse.
+
+Du kan verificere enhver tildeling i [CIDR-beregneren](/#cidr), der viser netværks- og broadcastadresse, maske og antal brugbare værter for hver blok øjeblikkeligt og helt i din browser.

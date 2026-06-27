@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: einen Block in ungleiche Subnetze aufteilen"
+summary: "Wie man einen Adressblock in Subnetze unterschiedlicher Größe zerlegt, ohne Platz zu verschwenden, und die Regel vom Größten zuerst, die alles ordentlich hält."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Das Problem mit gleich großen Subnetzen
+
+Klassisches Subnetting teilt einen Block in Stücke einer einzigen festen Größe. Das ist einfach, aber verschwenderisch, wenn der Bedarf unterschiedlich ist. Hat ein Segment 100 Hosts und ein anderes eine Verbindung zwischen zwei Routern mit 2, dann scheitert ein `/26` (62 nutzbar) für beide am ersten und verschwendet 60 Adressen beim zweiten. **VLSM**, Variable Length Subnet Masking, behebt das, indem jedes Subnetz die Präfixlänge verwenden darf, die seinem eigenen Bedarf entspricht, alles aus demselben übergeordneten Block herausgeschnitten.
+
+Das Einzige, was VLSM aufwendiger macht als festes Subnetting, ist die Reihenfolge: Sie müssen die **größten Subnetze zuerst** platzieren, sonst stranden Adressen und es entstehen Überschneidungen.
+
+## Jedes Subnetz dimensionieren
+
+Beginnen Sie mit der Hostzahl, die jedes Segment benötigt, und finden Sie dann den kleinsten Block, der sie aufnimmt, im Bewusstsein, dass zwei Adressen in jedem gewöhnlichen Block reserviert sind (Netz und Broadcast):
+
+- 100 Hosts brauchen 7 Host-Bits (2⁷ − 2 = 126 nutzbar), ein `/25`.
+- 50 Hosts brauchen 6 Host-Bits (62 nutzbar), ein `/26`.
+- 25 Hosts brauchen 5 Host-Bits (30 nutzbar), ein `/27`.
+- 10 Hosts brauchen 4 Host-Bits (14 nutzbar), ein `/28`.
+- Eine Punkt-zu-Punkt-Verbindung mit 2 Hosts ist ein `/30` (2 nutzbar) oder ein `/31` nach RFC 3021.
+
+Runden Sie stets auf die nächste Zweierpotenz auf. Ein Segment mit 100 Hosts passt nicht in ein `/26` (62), also nimmt es die nächste Größe, ein `/25`.
+
+## Aus dem Block schneiden, das Größte zuerst
+
+Angenommen, Sie besitzen `192.168.10.0/24` und benötigen die fünf obigen Subnetze. Weisen Sie in absteigender Größe zu, jedes beginnt an seiner natürlichen Grenze:
+
+```
+/25  192.168.10.0   – .127   (126 nutzbar)  ← Segment mit 100 Hosts
+/26  192.168.10.128 – .191   (62 nutzbar)   ← Segment mit 50 Hosts
+/27  192.168.10.192 – .223   (30 nutzbar)   ← Segment mit 25 Hosts
+/28  192.168.10.224 – .239   (14 nutzbar)   ← Segment mit 10 Hosts
+/30  192.168.10.240 – .243   (2 nutzbar)    ← Router-Verbindung
+```
+
+Jeder Block beginnt genau dort, wo der vorige endet, und ab `192.168.10.244` ist weiterhin alles für künftiges Wachstum frei. Hätten Sie das `/30` zuerst zugewiesen, hätte das `/25` keine saubere Grenze mehr, an der es landen könnte, was der ganze Grund für die Regel vom Größten zuerst ist.
+
+## Warum das wichtig ist
+
+VLSM ist, wie echte Netze Adressraum sparen und Zuweisungen so ausgerichtet halten, dass Routen sauber zusammengefasst werden können. Die Arithmetik ist dieselbe Präfixlängen-Mathematik wie bei einem einzelnen Subnetz, nur wiederholt angewandt: mehr Bits festlegen, um einen Block kleiner zu machen, und jeden Block an einer Zweierpotenz-Grenze halten.
+
+Sie können jede Zuweisung im [CIDR-Rechner](/#cidr) prüfen, der Netz- und Broadcast-Adresse, Maske und nutzbare Hostzahl jedes Blocks sofort und vollständig in Ihrem Browser anzeigt.

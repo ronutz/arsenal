@@ -1,0 +1,50 @@
+---
+slug: certificate-signing-request
+title: "Żądania podpisania certyfikatu i jak certyfikaty są wystawiane"
+summary: "Co zawiera CSR, dlaczego twój klucz prywatny nigdy nie opuszcza twojej maszyny, jak CA waliduje i wystawia, oraz jak ACME automatyzuje całą wymianę."
+concepts: ["x509", "csr", "pkcs10", "acme", "issuance", "domain-validation"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problem wystawiania
+
+Możesz wygenerować parę kluczy samodzielnie w sekundy, lecz nagi klucz publiczny niczego nie dowodzi o tym, kim jesteś (problem wiązania z [artykułu o anatomii](/learn/x509-anatomy)). By dostać certyfikat, potrzebujesz urzędu certyfikacji, któremu strona ufająca już ufa, by zaręczył, że ten klucz publiczny należy do twojej nazwy. Żądanie Podpisania Certyfikatu (Certificate Signing Request) to sposób, w jaki o to prosisz, nigdy nie wydając swojego klucza prywatnego.
+
+## Co zawiera CSR
+
+CSR samo jest strukturą ASN.1, zdefiniowaną przez PKCS#10 (RFC 2986) i zwykle wysyłaną jako blok PEM oznaczony `CERTIFICATE REQUEST`. Niesie:
+
+- **podmiot** (subject), o który prosisz (nazwy, które powinny trafić do certyfikatu),
+- twój **klucz publiczny**, oraz
+- **podpis nad żądaniem, wykonany pasującym kluczem prywatnym**.
+
+Ta ostatnia część to sprytny szczegół. Podpisując żądanie kluczem prywatnym, dowodzisz, że faktycznie posiadasz klucz parujący się z kluczem publicznym, który zgłosiłeś, wszystko bez ujawniania samego klucza prywatnego. Klucz prywatny nigdy nie opuszcza twojej kontroli, co jest dokładnie tak, jak powinno być, bo każdy, kto go ma, może podszyć się pod ciebie.
+
+## CA jest autorytetem, nie żądającym
+
+Kluczowy punkt: CSR to *żądanie*, a CA ma swobodę uhonorowania jego części i zignorowania innych. Możesz prosić o dowolny podmiot i dowolne rozszerzenia, jakie chcesz, lecz CA decyduje, co wystawiony certyfikat faktycznie mówi. Ustawi okres ważności zgodnie z obecnymi regułami, wybierze numer seryjny i włączy tylko nazwy i zastosowania, za które jest skłonny zaręczyć. Podpis CA, nie twoje żądanie, jest tym, co daje finalnemu certyfikatowi jego autorytet. To rozdzielenie jest powodem, dla którego CSR pełne ambitnych pól nie daje ci certyfikatu pełnego ich.
+
+## Jak CA decyduje, by ci zaufać
+
+Przed podpisaniem CA waliduje, że masz prawo do nazw, o które prosiłeś, a jak dokładnie zależy od typu certyfikatu:
+
+- **Walidowany Domeną (DV)** dowodzi jedynie, że kontrolujesz domenę. To przytłaczająca większość certyfikatów TLS dziś.
+- **Walidowany Organizacją (OV)** i **Walidacja Rozszerzona (EV)** dodatkowo sprawdzają podmiot prawny stojący za domeną, Subject Identity Information, która pojawia się w certyfikacie.
+
+Dla DV, CA wyzywa cię, byś wykazał kontrolę nad domeną. Częste metody to umieszczenie konkretnego pliku pod URL-em w witrynie (HTTP-01), opublikowanie konkretnego rekordu DNS TXT (DNS-01), lub odpowiedź na e-mail wysłany na adres w domenie. Przejście wyzwania jest tym, co przekonuje CA, że klucz publiczny w twoim CSR powinien być związany z tą nazwą.
+
+## Certyfikaty samopodpisane pomijają CA
+
+Jeśli podpisujesz własne CSR własnym kluczem zamiast wysłać je do CA, dostajesz certyfikat samopodpisany, gdzie Issuer równa się Subject. Nie niesie żadnego zewnętrznego autorytetu, bo jedyną rzeczą zaręczającą za niego jest on sam, lecz jest doskonale użyteczny do rozwoju lokalnego, usług wewnętrznych z własnym magazynem zaufania, lub do działania jako korzeń prywatnej PKI. Narzędzie oznacza, gdy certyfikat jest samowystawiony, co mówi ci natychmiast, że jego zaufanie pochodzi skądś innego niż publiczne CA.
+
+## ACME: automatyzowanie wymiany
+
+Robienie tego wszystkiego ręcznie, wielokrotnie, jest dokładnie tym, co przejście na krótkie czasy życia certyfikatów czyni niemożliwym (zobacz [artykuł o unieważnianiu](/learn/certificate-revocation)). Protokół ACME (RFC 8555), spopularyzowany przez Let's Encrypt, automatyzuje całą rozmowę: klient generuje parę kluczy i CSR, dowodzi kontroli domeny przez HTTP-01 lub DNS-01 automatycznie, otrzymuje certyfikat i powtarza przed każdym wygaśnięciem, bez żadnego udziału człowieka. ACME jest powodem, dla którego miliony witryn mogą działać na certyfikatach odnawiających się co kilka tygodni, i jest operacyjnym kręgosłupem przyszłości krótkożyciowych certyfikatów.
+
+## Żądanie staje się poświadczeniem
+
+Łuk jest prosty do wypowiedzenia. Posiadasz parę kluczy. CSR prosi CA, by zaręczyło za połowę publiczną, dowodząc po drodze, że posiadasz połowę prywatną. CA sprawdza, że kontrolujesz nazwę, potem wystawia certyfikat, którego autorytet pochodzi z podpisu CA, nie z czegokolwiek, co napisałeś w żądaniu. Zbadanie wyniku dekoderem pokazuje ci wiązanie, które CA faktycznie wykonało, co jest całym sensem ćwiczenia: zamienienie anonimowego klucza w klucz z dołączoną zaufaną nazwą.

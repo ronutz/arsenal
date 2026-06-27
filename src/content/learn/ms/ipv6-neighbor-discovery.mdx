@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Penemuan Jiran: bagaimana IPv6 menggantikan ARP"
+summary: "Bagaimana IPv6 mencari jiran pada pautan menggunakan ICMPv6 dan multicast dan bukan ARP siaran, lima mesej Penemuan Jiran, dan mengapa siaran telah tiada."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 bukan pilihan
+
+Dalam IPv4, ICMP ialah fikiran kemudian diagnostik yang boleh anda sekat tanpa memecahkan ketersambungan asas. Dalam IPv6, ICMPv6 (RFC 4443) menanggung beban: protokol bergantung padanya untuk operasi pautan teras, jadi menapisnya secara membabi buta memecahkan rangkaian. Sebabnya ialah IPv6 memindahkan beberapa tugas yang IPv4 sebarkan merentas ARP, penemuan penghala ICMP, dan pengalihan ICMP, ke dalam satu protokol berasaskan ICMPv6 dipanggil Penemuan Jiran (Neighbor Discovery, RFC 4861). Memahami Penemuan Jiran ialah memahami bagaimana pautan IPv6 sebenarnya berfungsi.
+
+## Lima mesej melakukan kerja
+
+Penemuan Jiran mentakrifkan lima jenis mesej ICMPv6, dan hampir segala-galanya pada pautan ialah suatu kombinasi mereka:
+
+- **Permintaan Penghala (RS)**: hos meminta penghala mengiklankan diri mereka.
+- **Pengiklanan Penghala (RA)**: penghala mengiklankan awalan dan bendera konfigurasi (input kepada autokonfigurasi dalam artikel [konfigurasi alamat](/learn/ipv6-address-configuration)).
+- **Permintaan Jiran (NS)**: hos bertanya "siapa ada alamat ini, dan apakah alamat lapisan pautan anda?"
+- **Pengiklanan Jiran (NA)**: jawapan yang memberi alamat lapisan pautan itu.
+- **Pengalihan (Redirect)**: penghala memberitahu hos tentang lompatan seterusnya yang lebih baik untuk destinasi.
+
+Permintaan dan pengiklanan penghala menangani "bagaimana saya mengkonfigurasi diri"; permintaan dan pengiklanan jiran menangani "bagaimana saya mencapai jiran ini"; pengalihan menangani "ada laluan lebih baik". Itu meliputi kehidupan harian pautan.
+
+## Resolusi alamat tanpa siaran
+
+Kerja yang ARP lakukan dalam IPv4, memetakan alamat IP ke alamat perkakasan, dilakukan dalam IPv6 oleh pasangan Permintaan dan Pengiklanan Jiran. Perbezaan penting ialah *bagaimana* soalan ditanya. ARP menjerit ke alamat siaran, mengganggu setiap peranti pada segmen. IPv6 sebaliknya menghantar Permintaan Jiran ke **alamat multicast nod diminta** (solicited-node multicast address) sasaran, kumpulan yang hanya set kecil hos yang berkongsi akhiran alamat sama akan mendengar. Sasaran menjawab dengan Pengiklanan Jiran yang membawa alamat lapisan pautannya. Penanya menyimpan hasil dalam cache, tepat seperti cache ARP berfungsi, dan mengesahkan semula melaluinya Pengesanan Ketakcapaian Jiran (Neighbor Unreachability Detection) apabila trafik mencadangkan jiran mungkin telah pergi.
+
+## Alamat multicast nod diminta
+
+Alamat multicast nod diminta dibina daripada alamat sasaran: ambil awalan `ff02::1:ff00:0/104` dan tambah 24 bit terakhir alamat sasaran. Kerana resolusi menyasarkan hanya segelintir hos yang berkongsi 24 bit rendah itu dan bukan keseluruhan pautan, permintaan mencapai jauh lebih sedikit mesin daripada siaran ARP. Pembinaan ini ialah sebab mengapa artikel [pengalamatan](/learn/ipv6-addressing) melayan multicast nod diminta sebagai sebahagian pelan alamat dan bukan fikiran kemudian: setiap hos yang mengkonfigurasi alamat secara automatik menyertai kumpulan nod diminta yang sepadan supaya orang lain boleh menemuinya.
+
+## Tiada siaran langsung
+
+IPv6 tiada alamat siaran. Segala-galanya yang IPv4 gunakan siaran untuknya, termasuk resolusi alamat dan penemuan penghala, dikendalikan oleh multicast ke kumpulan tertentu dan berskop baik. Ada kumpulan multicast semua-nod (`ff02::1`) dan kumpulan semua-penghala (`ff02::2`), tetapi resolusi rutin sebaliknya menyasarkan kumpulan nod diminta yang sempit. Menggantikan "ganggu semua orang" dengan "maklumkan tepat pendengar yang berkaitan" adalah lebih cekap pada pautan sibuk dan ialah satu daripada penambahbaikan yang lebih senyap yang IPv6 lakukan atas IPv4.
+
+## Mempercayai pautan
+
+Kerana Penemuan Jiran tidak disahkan secara lalai, hos berniat jahat pada pautan sama boleh menghantar Pengiklanan Penghala atau Pengiklanan Jiran palsu untuk mengalihkan atau memintas trafik, analog IPv6 bagi penipuan ARP. Pertahanan hidup di tepi rangkaian: RA Guard pada suis menjatuhkan pengiklanan penghala daripada port yang tidak sepatutnya mempunyai penghala, dan Penemuan Jiran Selamat (SEcure Neighbor Discovery, SEND) menambah perlindungan kriptografik di tempat ia diatur guna. Seperti dengan IPv4, pautan tempatan ialah sempadan kepercayaan yang berbaloi dipertahankan.
+
+## Sistem saraf pautan
+
+Ringkasannya ialah IPv6 melipat resolusi alamat, penemuan penghala, dan pengalihan ke dalam satu protokol berasaskan ICMPv6, menukar jeritan siaran dengan multicast disasarkan, dan menjadikan keseluruhannya penting dan bukan pilihan. Apabila anda melihat alamat dalam alat dan perasan kumpulan nod dimintanya atau bentuk link-localnya, anda sedang melihat kepingan yang Penemuan Jiran gunakan untuk membenarkan hos mencari satu sama lain pada pautan tanpa pernah mengganggu jiran yang tidak terlibat.

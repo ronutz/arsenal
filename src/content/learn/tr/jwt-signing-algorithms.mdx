@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "JWT imzalama algoritmaları: HMAC, RSA ve ECDSA"
+summary: "Bir JWT'nin alg başlığının neden önemli olduğu, simetrik ve asimetrik imzalama arasındaki fark ve nasıl seçileceği."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## alg başlığı her şeye karar verir
+
+Bir JWT'nin başlığı, onu imzalamak için kullanılan algoritmayı adlandırır, örneğin `"alg": "HS256"`. O tek değer, doğrulayıcının ne tür bir anahtara ihtiyaç duyduğunu ve imzanın gerçekte neyi kanıtladığını belirler. Algoritmalar iki aileye ayrılır, simetrik ve asimetrik, ve aralarındaki seçim aslında *token'ı kimin doğrulaması gerektiğine* dair bir seçimdir.
+
+## Simetrik: HMAC ailesi (HS256/384/512)
+
+`HS256`, `HS384` ve `HS512`, SHA-256, SHA-384 veya SHA-512 ile HMAC'tir. Hem imzalama hem de doğrulama için **tek bir paylaşılan sır** kullanırlar. Bir HS256 token'ını doğrulayabilen onu sahteleyebilir de, çünkü imzayı oluşturmak ve denetlemek aynı anahtarı kullanır.
+
+Bu, **aynı tarafın** token'ı verdiği ve doğruladığı, ya da veren ile doğrulayanın zaten güvenilir bir sırrı paylaştığı, örneğin kendi oturum token'larını imzalayan tek bir arka uç durumunda HMAC ailesini iyi bir seçim kılar. Hızlı ve basittir. Sınırı dağıtımdır: her doğrulayıcı sırra ihtiyaç duyar ve sır ne kadar çok yerde yaşarsa, biri sızdığında patlama yarıçapı o kadar büyük olur.
+
+## Asimetrik: RSA ve ECDSA (RS256, ES256 ve dahası)
+
+`RS256` (SHA-256 ile RSASSA-PKCS1-v1_5), `PS256` (RSA-PSS) ve `ES256` (P-256 eğrisiyle ECDSA) bir **anahtar çifti** kullanır: özel bir anahtar imzalar ve karşılık gelen açık anahtar doğrular. Özel anahtar vereni asla terk etmez; açık anahtar herkese verilebilir.
+
+**Birçok bağımsız hizmetin** tek bir verenin token'larını doğrulaması gerektiğinde istediğiniz şey budur. Bir kimlik sağlayıcı kendi özel anahtarıyla imzalar ve açık anahtarlarını yayımlar (yaygın olarak bir JWKS uç noktası olarak); akış aşağısındaki her hizmet açık anahtarla doğrular ve hiçbiri token basamaz. OpenID Connect sağlayıcılarının varsayılan olarak RS256 veya ES256 kimlik token'ları vermesinin nedeni budur.
+
+RSA ile ECDSA arasında ödünleşim boyut ve hızdır: ECDSA anahtarları ve imzaları eşdeğer güvenlik için çok daha küçüktür, RSA ise daha eski ve daha evrensel olarak desteklenir. `EdDSA` (Ed25519), benimsenme kazanan modern, hızlı bir alternatiftir.
+
+## Seçmek
+
+- **Tek bir taraf imzalar ve doğrular, ya da bir sır zaten paylaşılmış** → HMAC (HS256). Basit ve hızlı.
+- **Tek bir imzalayıcı, birçok bağımsız doğrulayıcı** → asimetrik (RS256 veya ES256). Açık anahtar serbestçe dağıtılabilir; yalnızca özel anahtarın sahibi imzalayabilir.
+
+Ne seçerseniz seçin, doğrulayıcı, token'ın kendi `alg` başlığına güvenmek yerine **kabul edilebilir algoritmayı sabitlemelidir**. Token ne iddia ederse onu kabul etmek, JWT anatomisi makalesinde anlatılan `alg: none` ve algoritma karışıklığı saldırılarına kapı açar.
+
+[JWT aracı](/tools/jwt), bir token'ın hangi algoritmayı bildirdiğini görebilmeniz için başlığı kod çözer ve HMAC ailesini (HS256/384/512) yapıştırdığınız bir sırra karşı, tarayıcınızda yerel olarak doğrular.

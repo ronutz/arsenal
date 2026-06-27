@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "Algoritmos de firma de JWT: HMAC, RSA y ECDSA"
+summary: "Por qué importa el encabezado alg de un JWT, la diferencia entre firma simétrica y asimétrica, y cómo elegir."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## El encabezado alg lo decide todo
+
+El encabezado de un JWT nombra el algoritmo usado para firmarlo, por ejemplo `"alg": "HS256"`. Ese único valor determina qué tipo de clave necesita el verificador y qué prueba realmente la firma. Los algoritmos se dividen en dos familias, simétrica y asimétrica, y la elección entre ellas es, en realidad, una elección sobre *quién necesita verificar el token*.
+
+## Simétrica: la familia HMAC (HS256/384/512)
+
+`HS256`, `HS384` y `HS512` son HMAC con SHA-256, SHA-384 o SHA-512. Usan **un único secreto compartido** tanto para la firma como para la verificación. Quien pueda verificar un token HS256 también puede forjar uno, porque crear y comprobar la firma usan la misma clave.
+
+Eso hace de la familia HMAC una buena opción cuando la **misma parte** emite y verifica el token, o cuando emisor y verificador ya comparten un secreto de confianza, un único backend firmando sus propios tokens de sesión, por ejemplo. Es rápido y simple. Su límite es la distribución: todo verificador necesita el secreto, y cuantos más lugares habita el secreto, mayor es el radio de impacto si uno se filtra.
+
+## Asimétrica: RSA y ECDSA (RS256, ES256 y más)
+
+`RS256` (RSASSA-PKCS1-v1_5 con SHA-256), `PS256` (RSA-PSS) y `ES256` (ECDSA con la curva P-256) usan un **par de claves**: una clave privada firma, y la clave pública correspondiente verifica. La clave privada nunca abandona al emisor; la clave pública puede entregarse a cualquiera.
+
+Esto es lo que quieres cuando **muchos servicios independientes** deben verificar tokens de un único emisor. Un proveedor de identidad firma con su clave privada y publica sus claves públicas (comúnmente como un endpoint JWKS); todo servicio posterior verifica con la clave pública y ninguno de ellos puede acuñar tokens. Por eso los proveedores OpenID Connect emiten tokens de ID RS256 o ES256 por defecto.
+
+Entre RSA y ECDSA, el compromiso es tamaño y velocidad: las claves y firmas ECDSA son mucho más pequeñas para una seguridad equivalente, mientras que RSA es más antiguo y tiene soporte más universal. El `EdDSA` (Ed25519) es una alternativa moderna y rápida que gana adopción.
+
+## Elegir
+
+- **Una parte firma y verifica, o un secreto ya está compartido** → HMAC (HS256). Simple y rápido.
+- **Un firmante, muchos verificadores independientes** → asimétrico (RS256 o ES256). La clave pública puede distribuirse libremente; solo el poseedor de la clave privada puede firmar.
+
+Sea lo que elijas, el verificador debe **fijar el algoritmo aceptable** en lugar de confiar en el propio encabezado `alg` del token. Aceptar lo que sea que el token afirme abre la puerta a los ataques `alg: none` y de confusión de algoritmo descritos en el artículo de anatomía del JWT.
+
+La [herramienta JWT](/tools/jwt) decodifica el encabezado para que veas qué algoritmo declara un token, y verifica la familia HMAC (HS256/384/512) contra un secreto que pegas, localmente en tu navegador.

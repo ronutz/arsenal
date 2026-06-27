@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUID como claves de base de datos: v4, v7 y localidad de índice"
+summary: "El verdadero compromiso entre UUID y enteros autoincrementales, y por qué las claves v4 aleatorias perjudican silenciosamente el rendimiento de la base de datos."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dos formas de hacer una clave primaria
+
+La mayoría de las tablas necesitan una clave única para cada fila. Las dos opciones comunes son un **entero autoincremental** de la base de datos (1, 2, 3, ...) y un **UUID**. El entero es pequeño y está ordenado de forma natural; el UUID puede generarse en cualquier lugar, por cualquiera, sin coordinación. Cuál es mejor depende de lo que valores, y la respuesta tiene una dimensión de rendimiento fácil de pasar por alto.
+
+## Por qué los equipos recurren a los UUID
+
+- **Sin coordinación.** Cualquier servicio, cliente o dispositivo sin conexión puede acuñar un UUID que no colisionará, así que no necesitas una secuencia central ni un viaje de ida y vuelta a la base de datos para obtener un id. Esto es invaluable en sistemas distribuidos y para generar ids antes de guardar una fila.
+- **No adivinable.** Los ids enteros secuenciales filtran información (cuántos pedidos existen, y el id del siguiente) y permiten a un atacante recorrer registros incrementando. Un UUID aleatorio no expone nada de eso.
+- **Amigable con la fusión.** Los datos de sistemas separados se combinan sin colisiones de id.
+
+El coste es el tamaño, 16 bytes frente a 4 u 8 de un entero, lo que importa porque la clave primaria se copia en cada índice secundario y en cada clave foránea que referencia la fila.
+
+## El coste oculto de las claves aleatorias
+
+Hay un coste más sutil y más importante. Las bases de datos almacenan filas en un índice (comúnmente un B-tree) ordenado por la clave primaria. Con una clave **secuencial**, cada nueva fila se añade al final del índice, así que las páginas activas permanecen en memoria y las escrituras son baratas. Con un **UUID v4 aleatorio**, cada inserción cae en una posición arbitraria. La base de datos debe leer, modificar y escribir páginas dispersas por todo el índice, causando **divisiones de página**, **fragmentación** y muchos más fallos de caché. En una tabla grande y con muchas escrituras, las claves aleatorias pueden ralentizar de forma medible las inserciones e hinchar el índice, todo sin ningún error que señalar.
+
+## Por qué la v7 cambia el cálculo
+
+Este es exactamente el problema que la **UUID versión 7** se diseñó para resolver. Al poner una marca de tiempo en milisegundos en los bits más significativos, los valores v7 están **ordenados en el tiempo**: las nuevas filas se insertan cerca del final del índice, igual que un entero secuencial, manteniendo la generación descentralizada y no coordinada de un UUID. Obtienes la mayor parte del beneficio de localidad de índice de una clave autoincremental sin la secuencia central. Para nuevos sistemas que quieren claves UUID, la v7 suele ser la versión correcta precisamente por esta razón.
+
+## Notas prácticas
+
+- **Almacena los UUID como un tipo UUID nativo o binario, no como una cadena de 36 caracteres.** Almacenar la forma de texto desperdicia espacio y ralentiza las comparaciones; la forma binaria son 16 bytes.
+- **Usa v7 para claves** donde el rendimiento de inserción importa, y **v4** donde específicamente no quieres ninguna información de tiempo incrustada en el id.
+- Un entero autoincremental sigue siendo perfectamente bueno para una tabla de un solo nodo que nunca necesita ids generados externamente; los UUID demuestran su valor cuando la distribución, la imprevisibilidad o la pregeneración importan.
+
+La [herramienta UUID](/tools/uuid) genera tanto v4 como v7 y decodifica la marca de tiempo incrustada de un valor v7, para que veas la propiedad de ordenación directamente, todo en tu navegador.

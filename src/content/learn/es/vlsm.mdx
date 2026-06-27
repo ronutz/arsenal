@@ -1,0 +1,49 @@
+---
+slug: vlsm
+title: "VLSM: dividir un bloque en subredes desiguales"
+summary: "Cómo recortar un bloque de direcciones en subredes de distintos tamaños sin desperdiciar espacio, y la regla del mayor primero que lo mantiene ordenado."
+concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## El problema con las subredes iguales
+
+La división en subredes clásica parte un bloque en trozos de un único tamaño fijo. Eso es sencillo, pero es un desperdicio cuando tus necesidades difieren. Si un segmento tiene 100 hosts y otro es un enlace entre dos routers con 2, dar a ambos un `/26` (62 utilizables) falla para el primero y malgasta 60 direcciones en el segundo. **VLSM**, máscara de subred de longitud variable, lo corrige al permitir que cada subred use la longitud de prefijo que se ajusta a su propia necesidad, todo recortado del mismo bloque padre.
+
+Lo único que hace a VLSM más laborioso que la división fija es el orden: debes colocar las **subredes más grandes primero**, o desperdiciarás direcciones y crearás solapamientos.
+
+## Dimensionar cada subred
+
+Empieza por la cantidad de hosts que cada segmento necesita, luego encuentra el bloque más pequeño que la contiene, recordando que dos direcciones de todo bloque común están reservadas (red y difusión):
+
+- 100 hosts necesitan 7 bits de host (2⁷ − 2 = 126 utilizables), un `/25`.
+- 50 hosts necesitan 6 bits de host (62 utilizables), un `/26`.
+- 25 hosts necesitan 5 bits de host (30 utilizables), un `/27`.
+- 10 hosts necesitan 4 bits de host (14 utilizables), un `/28`.
+- Un enlace punto a punto de 2 hosts es un `/30` (2 utilizables), o un `/31` según la RFC 3021.
+
+Redondea siempre hacia arriba a la siguiente potencia de dos. Un segmento de 100 hosts no cabe en un `/26` (62), así que toma el siguiente tamaño, un `/25`.
+
+## Recortar del bloque, el mayor primero
+
+Supón que posees `192.168.10.0/24` y necesitas las cinco subredes de arriba. Asigna en orden decreciente de tamaño, cada una empezando en su límite natural:
+
+```
+/25  192.168.10.0   – .127   (126 utilizables)  ← segmento de 100 hosts
+/26  192.168.10.128 – .191   (62 utilizables)   ← segmento de 50 hosts
+/27  192.168.10.192 – .223   (30 utilizables)   ← segmento de 25 hosts
+/28  192.168.10.224 – .239   (14 utilizables)   ← segmento de 10 hosts
+/30  192.168.10.240 – .243   (2 utilizables)    ← enlace de router
+```
+
+Cada bloque empieza exactamente donde termina el anterior, y de `192.168.10.244` en adelante sigue libre para crecimiento futuro. Si hubieras asignado el `/30` primero, el `/25` ya no tendría un límite limpio donde encajar, que es toda la razón de la regla del mayor primero.
+
+## Por qué importa
+
+VLSM es cómo las redes reales conservan espacio de direcciones y mantienen las asignaciones alineadas para que las rutas puedan resumirse de forma limpia. La aritmética es la misma matemática de longitud de prefijo de una sola subred, aplicada repetidamente: fija más bits para hacer un bloque más pequeño y mantén cada bloque en un límite de potencia de dos.
+
+Puedes comprobar cualquier asignación en la [calculadora CIDR](/#cidr), que muestra la dirección de red y de difusión, la máscara y el recuento de hosts utilizables de cada bloque al instante y enteramente en tu navegador.

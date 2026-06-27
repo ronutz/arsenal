@@ -1,0 +1,39 @@
+---
+slug: uuid-database-keys
+title: "UUID sebagai kunci pangkalan data: v4, v7, dan kesetempatan indeks"
+summary: "Pertukaran sebenar antara UUID dan integer auto-tokokan, dan mengapa kunci v4 rawak secara senyap menjejaskan prestasi pangkalan data."
+concepts: ["uuid", "uuidv7", "database", "primary-key", "index"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dua cara membuat kunci primer
+
+Kebanyakan jadual memerlukan kunci unik bagi setiap baris. Dua pilihan lazim ialah **integer auto-tokokan** pangkalan data (1, 2, 3, ...) dan satu **UUID**. Integer adalah kecil dan tersusun secara semula jadi; UUID boleh dijana di mana-mana, oleh sesiapa, tanpa koordinasi. Yang mana lebih baik bergantung pada apa yang anda hargai, dan jawapannya mempunyai dimensi prestasi yang mudah terlepas pandang.
+
+## Mengapa pasukan mencapai UUID
+
+- **Tiada koordinasi.** Mana-mana perkhidmatan, klien, atau peranti luar talian boleh mencetak UUID yang tidak akan berlanggar, jadi anda tidak perlukan jujukan pusat atau perjalanan pergi-balik ke pangkalan data untuk mendapatkan id. Ini tidak ternilai dalam sistem teragih dan untuk menjana id sebelum sesuatu baris disimpan.
+- **Tidak boleh diteka.** Id integer berjujukan membocorkan maklumat (berapa banyak pesanan wujud, dan id yang seterusnya) dan membenarkan penyerang berjalan melalui rekod dengan menokok. UUID rawak tidak mendedahkan apa-apa daripada itu.
+- **Mesra cantuman.** Data daripada sistem berasingan bergabung tanpa perlanggaran id.
+
+Kosnya ialah saiz, 16 bait berbanding 4 atau 8 bagi integer, yang penting kerana kunci primer disalin ke dalam setiap indeks sekunder dan setiap kunci asing yang merujuk baris itu.
+
+## Kos tersembunyi kunci rawak
+
+Ada kos yang lebih halus dan lebih penting. Pangkalan data menyimpan baris dalam satu indeks (lazimnya B-tree) yang tersusun mengikut kunci primer. Dengan kunci **berjujukan**, setiap baris baharu ditambah ke hujung indeks, jadi halaman aktif kekal dalam ingatan dan penulisan adalah murah. Dengan **UUID v4 rawak**, setiap sisipan mendarat di kedudukan sewenang-wenangnya. Pangkalan data mesti membaca, mengubah suai, dan menulis halaman yang bertaburan di seluruh indeks, menyebabkan **pembahagian halaman**, **pemecahan**, dan jauh lebih banyak terlepas cache. Pada jadual yang besar dan banyak penulisan, kunci rawak boleh memperlahankan sisipan secara boleh ukur dan membengkakkan indeks, semuanya tanpa sebarang ralat untuk ditunjukkan.
+
+## Mengapa v7 mengubah pengiraan
+
+Inilah tepat masalah yang **UUID versi 7** direka untuk selesaikan. Dengan meletakkan cap masa milisaat dalam bit paling penting, nilai v7 adalah **tertib-masa**: baris baharu disisip berhampiran hujung indeks, sama seperti integer berjujukan, sambil mengekalkan penjanaan UUID yang ternyahpusat dan tak terkoordinasi. Anda mendapat sebahagian besar manfaat kesetempatan indeks bagi kunci auto-tokokan tanpa jujukan pusat. Bagi sistem baharu yang mahukan kunci UUID, v7 biasanya versi yang betul tepat atas sebab ini.
+
+## Nota praktikal
+
+- **Simpan UUID sebagai jenis UUID asli atau perduaan, bukan sebagai rentetan 36 aksara.** Menyimpan bentuk teks membazir ruang dan memperlahankan perbandingan; bentuk perduaan ialah 16 bait.
+- **Guna v7 untuk kunci** apabila prestasi sisipan penting, dan **v4** apabila anda khususnya tidak mahu sebarang maklumat masa terbenam dalam id.
+- Integer auto-tokokan masih cukup baik untuk jadual nod tunggal yang tidak pernah memerlukan id yang dijana secara luaran; UUID berbaloi apabila pengagihan, ketakbolehjangkaan, atau pra-penjanaan penting.
+
+[Alat UUID](/tools/uuid) menjana kedua-dua v4 dan v7 dan menyahkod cap masa terbenam sesuatu nilai v7, supaya anda boleh melihat sifat penyusunan secara terus, semuanya dalam pelayar anda.

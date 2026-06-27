@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Bir HMAC'i güvenle doğrulama: sabit zaman ve yeniden oynatma"
+summary: "İmzaları == ile karşılaştırmanın neden bir zaman yan kanalı sızdırdığı ve geçerli bir imzanın tek başına neden tekrarlanan bir isteği durdurmadığı."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Etiketi hesaplamak kolay kısımdır
+
+Bir HMAC'i doğru üretmek iyi anlaşılmıştır. Hatalar *doğrulama* tarafında birikir; burada iki sorun, kriptografiyi doğru ama çevresindeki mantığı yanlış yapanları yakalar: etiketleri nasıl karşılaştırdığınız ve geçerli bir etiketin gerçekte ne kanıtladığı.
+
+## Sabit zamanda karşılaştırın
+
+Doğrulamak için alıcı, HMAC'i mesaj üzerinde yeniden hesaplar ve göndericinin sağladığı etiketle karşılaştırır. İki dizeyi karşılaştırmanın doğal yolu, sıradan bir `==`, ilk farklı baytı bulur bulmaz döner. Bu erken çıkış zaman sızdırır: ilk baytı doğru olan bir etiketin reddedilmesi, hemen yanlış olana göre azıcık daha uzun sürer. Birçok deneme boyunca yanıt sürelerini ölçerek bir saldırgan doğru etiketi bayt bayt geri kazanabilir; bir **zamanlama saldırısı**.
+
+Savunma, ilk farkın nerede olduğuna bakılmaksızın her zaman tüm baytları inceleyen bir **sabit zamanlı karşılaştırma**dır; böylece harcanan süre bir tahminin ne kadar yakın olduğu hakkında hiçbir şey açığa vurmaz. Çoğu dil bir tane sunar:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Bir imzayı asla sıradan bir dize karşılaştırmasıyla doğrulamayın.
+
+## Geçerli bir imza, taze bir istek değildir
+
+Mükemmel biçimde doğrulanmış bir HMAC bile yalnızca mesajın anahtarı olan biri tarafından üretildiğini ve değiştirilmediğini kanıtlar. *Ne zaman* hakkında hiçbir şey söylemez. Meşru bir imzalı isteği ele geçiren bir saldırgan tam olarak aynı baytları yeniden gönderebilir ve imza yine doğrulanır. Bu bir **yeniden oynatma saldırısıdır** ve bir etki tetikleyen her şey için önemlidir: bir ödeme, bir durum değişikliği, bir komut.
+
+Yeniden oynatmayı durdurmak, her isteği benzersiz ve denetlenebilir kılan, imzalı veride bir şey gerektirir:
+
+- İmzalı yükteki bir **zaman damgası**; sunucu kısa bir pencerenin dışındaki istekleri reddeder (ve saat sapmasını hesaba katar).
+- Bir **nonce**; sunucunun kaydettiği ve iki kez kabul etmeyi reddettiği, istek başına benzersiz bir değer.
+
+Her ikisi de imzalı içeriğin *içinde* olmalıdır; böylece bir saldırgan imzayı kırmadan onları değiştiremez.
+
+## İki parçalı kural
+
+Bir istek yalnızca HMAC'i sabit zamanda doğrulandığında **ve** taze olduğunda güvenilirdir. İkisinden birinde hata yapın, imza yanlış bir güvenlik duygusu verir. Bu, istekleri imzalamakla aynı disiplinin doğrulama tarafıdır.
+
+[HMAC aracı](/tools/hmac) bir mesaj ve anahtar için etiketleri doğrudan tarayıcınızda hesaplamanıza ve karşılaştırmanıza olanak tanır; hiçbir şey gönderilmeden, böylece geliştirirken veya hata ayıklarken bir imzayı elle kontrol edebilirsiniz.

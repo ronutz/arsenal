@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Wie Zertifikatsvalidierung tatsächlich funktioniert"
+summary: "Die Schritte, die ein Client durchläuft, um zu entscheiden, dass ein Zertifikat vertrauenswürdig ist: die Kette bauen, Signaturen und Daten prüfen, den Namen abgleichen und Beschränkungen durchsetzen."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Lesen ist nicht Vertrauen
+
+Der [Anatomie-Artikel](/learn/x509-anatomy) endet auf einem Punkt, der eine Wiederholung wert ist: Ein Zertifikat zu dekodieren sagt Ihnen, was es *behauptet*, nicht ob die Behauptung *wahr* ist. Validierung ist der separate Prozess, den ein TLS-Client durchläuft, um zu entscheiden, ob er dem Zertifikat vor sich vertraut. Sie wird hauptsächlich durch RFC 5280 geregelt, und sie ist eine Konjunktion unabhängiger Prüfungen, von denen jede einzelne bestehen muss. Ein Dekodierer, dieses Werkzeug eingeschlossen, zeigt Ihnen die Eingaben für diesen Prozess; der Client ist, was ihn durchsetzt.
+
+## Schritt 1: die Kette bauen
+
+Einem Blattzertifikat wird fast nie allein vertraut. Der Client muss einen Pfad vom Blatt bis zu einer Wurzel bauen, die er bereits in seinem Vertrauensspeicher hält. Er tut dies, indem er Ausstellernamen folgt: Der Issuer des Blatts sollte mit dem Subject irgendeines Intermediären übereinstimmen, und der Issuer jenes Intermediären sollte mit dem nächsten darüber übereinstimmen, bis er eine selbst ausgestellte Wurzel erreicht. Die Erweiterungen Authority Key Identifier und Subject Key Identifier beschleunigen diesen Abgleich, indem sie dem Client erlauben, ein Zertifikat seinem Aussteller per Schlüssel-Hash statt allein per Name zuzuordnen. Kann kein Pfad zu einer vertrauenswürdigen Wurzel gebaut werden, scheitert die Validierung sofort, egal wie wohlgeformt das Blatt ist.
+
+## Schritt 2: jede Signatur verifizieren
+
+Eine Kette ist nur bedeutsam, wenn jedes Glied kryptografisch solide ist. Für jedes Zertifikat im Pfad verifiziert der Client, dass die Signatur vom Privatschlüssel des Ausstellers erzeugt wurde, indem er sie gegen den öffentlichen Schlüssel des Ausstellers über die DER-Bytes des zu-signierenden Körpers des Kindes prüft. Weil die Signatur jene exakten Bytes abdeckt, bricht ein einziges verändertes Byte irgendwo im Körper die Prüfung. Dies ist auch, warum der Signaturalgorithmus (zum Beispiel sha256WithRSAEncryption oder ecdsa-with-SHA256) zählt: Eine Kette ist nur so stark wie ihre schwächste Signatur und ihr schwächster Hash. Für das, was ein Hash hier garantiert, siehe den [Hashing-Artikel](/learn/hashing).
+
+## Schritt 3: das Gültigkeitsfenster prüfen
+
+Jedes Zertifikat trägt einen notBefore- und notAfter-Zeitstempel, und der Client prüft die aktuelle Zeit gegen das Fenster jedes Zertifikats in der Kette, nicht nur des Blatts. Ein Zertifikat, das abgelaufen oder noch nicht gültig ist, scheitert. Das Werkzeug führt dieselbe Prüfung gegen Ihre lokale Uhr durch und meldet, ob ein Zertifikat jetzt gültig, noch-nicht-gültig oder abgelaufen ist, was oft die schnellste Art ist, eine „Ihre Verbindung ist nicht privat"-Warnung zu diagnostizieren.
+
+## Schritt 4: den Namen abgleichen
+
+Eine gültige Kette beweist, dass das Zertifikat echt ist, aber nicht, dass es für die Website ausgestellt wurde, die Sie besuchen. Der Client prüft, dass der Host, mit dem er sich verband, in der Subject-Alternative-Name-Erweiterung des Zertifikats erscheint. Moderne Clients ignorieren den Common Name für diesen Zweck vollständig und sehen nur auf den SAN, den Identitätsabgleichsregeln von RFC 6125 folgend. Platzhalter wie `*.ronutz.com` passen auf ein einzelnes Label, also decken sie `api.ronutz.com` ab, aber nicht `ronutz.com` selbst oder `a.b.ronutz.com`. Ein Zertifikat, dessen Kette perfekt ist, dessen SAN aber den Namen, den Sie anfragten, nicht aufführt, wird dennoch abgelehnt.
+
+## Schritt 5: die Beschränkungen durchsetzen
+
+Die v3-Erweiterungen sind keine Dekoration; sie sind Regeln, die der Client durchsetzt. Basic Constraints sagt, ob ein Zertifikat als CA agieren darf und, durch die Pfadlänge, wie viele Intermediäre unter ihm sitzen dürfen, was ein Blattzertifikat davon abhält, zum Signieren anderer Zertifikate verwendet zu werden. Key Usage und Extended Key Usage beschränken, was der Schlüssel tun darf: Ein TLS-Serverzertifikat muss den serverAuth-EKU tragen, und eine als kritisch markierte Erweiterung, die der Client nicht versteht, erzwingt eine Ablehnung statt eines Achselzuckens. Das Werkzeug bringt diese Felder zum Vorschein, sodass Sie genau sehen können, welche Beschränkungen ein Aussteller setzte.
+
+## Schritt 6: den Widerruf prüfen
+
+Schließlich kann ein Zertifikat, das bei Ausstellung gültig war, seither widerrufen worden sein, zum Beispiel weil sein Privatschlüssel durchsickerte. Der Client kann eine CRL oder einen OCSP-Responder konsultieren, um es herauszufinden. In der Praxis ist dies der schwächste und inkonsistenteste Schritt, und die Branche bewegt sich stattdessen hin zu kurzlebigen Zertifikaten, was der [Widerruf-Artikel](/learn/certificate-revocation) vollständig abdeckt.
+
+## Validierung ist ein UND, kein ODER
+
+Der Grund, warum ein einzelnes manipuliertes oder fehlkonfiguriertes Zertifikat abgelehnt wird, ist, dass all diese Prüfungen sich mit logischem UND verbinden. Die Kette muss bauen, jede Signatur muss verifizieren, jedes Zertifikat muss in seinem Gültigkeitsfenster sein, der Name muss im SAN sein, die Beschränkungen müssen die Verwendung erlauben, und das Zertifikat darf nicht widerrufen sein. Ein Dekodierer legt die Behauptungen des Zertifikats klar und getreu dar; behandeln Sie das als sorgfältige Lesung des Dokuments, und denken Sie daran, dass das Urteil dem Client gehört, der alle sechs Prüfungen durchläuft.

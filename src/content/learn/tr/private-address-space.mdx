@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Özel IPv4 adres alanı ve RFC 1918"
+summary: "Üç özel aralık, neden internette yönlendirilemedikleri ve CIDR aracının işaretlediği diğer özel bloklar."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Yeniden kullanabileceğiniz adresler
+
+Yalnızca yaklaşık 4,3 milyar IPv4 adresi vardır; her cihazın bir genel adrese sahip olması için fazlasıyla az. Yanıt (RFC 1918), herkesin kendi ağı içinde kayıt olmadan kullanabileceği üç aralığı ayırmaktır. Herkes aynı özel aralıkları yeniden kullandığı için bunlar genel internette benzersiz olamaz, dolayısıyla orada **yönlendirilemezler**. Dış dünyaya ulaşmak, ağın kenarında özel bir kaynak adresini paylaşılan bir genel adresle değiştiren ağ adresi çevirisini (NAT) gerektirir.
+
+## RFC 1918'in üç aralığı
+
+- **`10.0.0.0/8`**: `10.0.0.0`'dan `10.255.255.255`'e, 16.777.216 adres. Tek bir çok büyük ağ.
+- **`172.16.0.0/12`**: `172.16.0.0`'dan `172.31.255.255`'e, 1.048.576 adres. Tam bir B sınıfı değil, `172.16`'dan `172.31`'e 16 bitişik `/16`; insanların en sık yanlış hatırladığı aralık.
+- **`192.168.0.0/16`**: `192.168.0.0`'dan `192.168.255.255`'e, 65.536 adres. Ev yönlendiricilerinin tanıdık aralığı.
+
+## Diğer özel bloklar
+
+Birkaç başka aralık belirli amaçlar için ayrılmıştır ve bunlar da sıradan genel adresler değildir:
+
+- **`100.64.0.0/10`** (RFC 6598), sağlayıcıların müşteri ile genel havuzları arasında kullandığı paylaşılan operatör NAT alanıdır (CGNAT). Özele benzer ama RFC 1918'den farklıdır.
+- **`169.254.0.0/16`** (RFC 3927), bir ana bilgisayarın hiçbir DHCP sunucusu yanıt vermediğinde seçtiği kendiliğinden atanan adres olan bağlantı-yerel adrestir (Windows'ta APIPA). Yerel bağlantıdan asla ayrılmaz.
+- **`127.0.0.0/8`** geri döngüdür; `127.0.0.1` kendisiyle konuşan ana bilgisayardır.
+- **`0.0.0.0/8`**, çoklu yayın aralığı `224.0.0.0/4` ve belgeleme aralıkları (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) da ayrılmıştır.
+
+IPv6 aynı fikre farklı bir biçimde sahiptir: `fc00::/7` içindeki **Unique Local Addresses** (pratikte `fd00::/8`), RFC 1918'in özel kullanımının karşılığıdır ve yine küresel olarak yönlendirilemez.
+
+## Neden önemli
+
+Bir adresin özel, genel veya özel amaçlı olup olmadığını bilmek; internette görünüp görünemeyeceğini, NAT'a ihtiyaç duyup duymadığını ve bir güvenlik duvarı kuralının ya da rotanın mantıklı olup olmadığını size hemen söyler. Genel bir DNS kaydındaki bir `10/8` adresi veya DHCP beklediğiniz yerde bir `169.254` adresi, dikkate değer bir sinyaldir.
+
+[CIDR hesaplayıcısı](/#cidr) herhangi bir adresi veya bloğu bu özel aralıklara göre sınıflandırır ve özel, ayrılmış mı yoksa küresel olarak erişilebilir mi olduğunu bildirir; tamamı tarayıcınızda hesaplanır.

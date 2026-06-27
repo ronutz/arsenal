@@ -1,0 +1,48 @@
+---
+slug: hashing-encryption-encoding
+title: "Haszowanie, szyfrowanie i kodowanie: trzy różne rzeczy"
+summary: "Trzy operacje nieustannie mylone, czysto rozdzielone dwoma pytaniami: czy jest odwracalna i czy potrzebuje klucza?"
+concepts: ["hashing", "encryption", "encoding", "cryptography"]
+relatedTools: ["hash", "hmac", "base64"]
+relatedArticles: ["hashing", "base64", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trzy słowa, nieustannie mylone
+
+„Czy to hasło jest zaszyfrowane?" „Po prostu zahaszuj URL." „Dane są zakodowane, więc są bezpieczne." Te zdania są wszędzie, a większość używa złego słowa. Haszowanie, szyfrowanie i kodowanie to trzy odrębne operacje o trzech różnych celach, a ich mylenie prowadzi do realnych błędów bezpieczeństwa, takich jak przechowywanie haseł metodą, która niczego nie chroni.
+
+Dobra wiadomość jest taka, że dwa proste pytania rozdzielają je całkowicie.
+
+## Dwa pytania
+
+1. **Czy jest odwracalna?** Czy możesz odzyskać pierwotne wejście z wyjścia?
+2. **Czy potrzebuje klucza?** Czy wymagany jest sekret, czy każdy może wykonać operację?
+
+Nanieś trzy operacje na te pytania, a obraz staje się jasny:
+
+- **Kodowanie** jest odwracalne i nie potrzebuje klucza.
+- **Haszowanie** nie jest odwracalne i nie potrzebuje klucza.
+- **Szyfrowanie** jest odwracalne i potrzebuje klucza.
+
+Ta tabela to cały artykuł. Reszta to szczegóły.
+
+## Kodowanie: odwracalne, bez klucza
+
+Kodowanie przepisuje dane na inną reprezentację, by mogły przejść przez kanał oczekujący określonego formatu. Base64 zamienia bajty na bezpieczny tekst; kodowanie URL escapuje znaki niedozwolone w adresie URL; UTF-8 zamienia znaki na bajty. Nic z tego nie jest tajne. Każdy może to zdekodować z powrotem, ponieważ odwracalność to cały sens. **Kodowanie zapewnia zero bezpieczeństwa.** Jeśli słyszysz „token jest zakodowany, więc jest bezpieczny", to czerwona flaga: zakodowany znaczy czytelny.
+
+## Haszowanie: nieodwracalne, bez klucza
+
+Funkcja skrótu odwzorowuje dowolne wejście na skrót o stałym rozmiarze i nie da się jej uruchomić wstecz, by odzyskać wejście. Nie potrzebuje klucza, więc każdy może obliczyć ten sam skrót z tego samego wejścia. To czyni ją idealną do **weryfikacji**: kontroli integralności, adresowania treścią i wykrywania zmian. To właściwe narzędzie, gdy musisz potwierdzić, że dwie rzeczy są takie same, bez przechowywania oryginału, ale niczego nie ukrywa odwracalnie, bo nie ma czego odwracać.
+
+## Szyfrowanie: odwracalne, z kluczem
+
+Szyfrowanie przekształca dane tak, by tylko ktoś z właściwym kluczem mógł przekształcić je z powrotem. To jedyna z trzech zbudowana dla **tajności**. Jest odwracalna z założenia, ale tylko z kluczem, co jest dokładnie tą właściwością, której brak pozostałym dwóm: kodowanie jest odwracalne przez każdego, haszowanie przez nikogo, szyfrowanie przez posiadaczy klucza.
+
+## Wybór właściwej
+
+Cel decyduje o narzędziu. Potrzebujesz, by dane przetrwały transport jako tekst? Zakoduj je. Musisz zweryfikować integralność lub porównać bez przechowywania oryginału? Zahaszuj je. Musisz utrzymać dane w tajemnicy przed każdym bez klucza? Zaszyfruj je.
+
+Klasyczny błąd to sięganie po niewłaściwą kolumnę. Przechowywanie haseł zwykłym kodowaniem (odwracalnym przez każdego) lub nawet zwykłym szyfrowaniem (jeden skradziony klucz odsłania wszystko) jest znacznie słabsze od skrótu haseł zaprojektowanego do tego celu, omówionego w osobnym artykule. [Narzędzie skrótu](/tools/hash) i [narzędzie Base64](/tools/base64) pozwalają obserwować, jak haszowanie i kodowanie zachowują się różnie na tym samym wejściu, skrót nigdy się nie odwraca, Base64 zawsze.

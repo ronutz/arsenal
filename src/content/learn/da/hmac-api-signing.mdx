@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "Autentificering af API-anmodninger med HMAC"
+summary: "Hvordan en delt hemmelighed og en hash lader en server stole på en anmodning, den ikke så blive lavet, og hvordan beskyttelse mod genafspilning passer ind."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problemet: at stole på en anmodning
+
+Når en server modtager en API-anmodning, hvordan ved den så, at kalderen er den, vedkommende hævder at være, og at ingen ændrede anmodningen undervejs? At sende en delt hemmelighed med hver anmodning ville virke, indtil den hemmelighed logges, caches eller lækkes. **HMAC-signering af anmodninger** løser dette uden nogensinde at sende hemmeligheden: kalderen beviser, at vedkommende besidder hemmeligheden, ved at bruge den til at signere anmodningen, og serveren kontrollerer signaturen.
+
+## Hvordan signering virker
+
+Begge sider deler en hemmelig nøgle. For at signere en anmodning bygger klienten:
+
+1. En **kanonisk streng** ud fra de dele af anmodningen, der ikke må ændres, typisk HTTP-metoden, stien, nøgleheadere, et tidsstempel og en hash af kroppen. "Kanonisk" betyder, at begge sider samler den på nøjagtig samme aftalte måde, så de beregner over identisk inddata.
+2. Beregner `HMAC-SHA256(kanonisk streng, hemmelighed)` og vedhæfter den til anmodningen, normalt i en header som `Authorization` eller `X-Signature`.
+
+Serveren, der besidder samme hemmelighed, genopbygger den kanoniske streng ud fra den modtagne anmodning og beregner selv HMAC'en. Hvis dens værdi stemmer med den i headeren, bevises to ting på én gang: kalderen besidder hemmeligheden (**autenticitet**), og intet, der dækkes af signaturen, blev ændret (**integritet**). Selve hemmeligheden rejser aldrig.
+
+## Et virkeligt eksempel: AWS Signature Version 4
+
+Amazons SigV4 er den mest kendte instans. Hver anmodning signeres med HMAC-SHA256 over en kanonisk anmodning, ved hjælp af en signeringsnøgle, der **afledes** af den hemmelige adgangsnøgle, datoen, regionen og tjenesten. Serveren afleder nøglen på ny og genberegner signaturen; en uoverensstemmelse afvises. Det samme mønster, kanoniser, HMAC, sammenlign, ligger til grund for utallige andre ordninger til API-autentificering.
+
+## Webhooks: den samme idé, omvendt
+
+Webhooks vender retningen om. En udbyder (en betalingsbehandler, en Git-vært) kalder **dit** endpoint for at underrette dig om en hændelse og signerer nyttelasten med en hemmelighed, I begge deler, og sender HMAC'en i en header. Dit endpoint genberegner HMAC'en over den modtagne krop og sammenligner, og sådan afviser du forfalskede kald fra enhver, der ikke besidder hemmeligheden. Sammenlign altid med et konstanttidstjek for at undgå at lække information via timing.
+
+## Beskyttelse mod genafspilning
+
+En gyldig signeret anmodning, som en angriber opfanger, kunne **genafspilles** ordret. De gængse forsvar er at inkludere et **tidsstempel** i de signerede data og afvise anmodninger uden for et kort vindue, og valgfrit en **nonce** (en engangsværdi, serveren husker kortvarigt), så den samme anmodning ikke kan accepteres to gange. Signering beviser autenticitet; tidsstemplet og noncen forhindrer, at en gammel, ægte anmodning genbruges.
+
+[HMAC-værktøjet](/tools/hmac) beregner den HMAC-SHA256 (og SHA-384/512), der er kernen i hver enkelt af disse ordninger, over en besked og en nøgle, du angiver, helt i din browser.

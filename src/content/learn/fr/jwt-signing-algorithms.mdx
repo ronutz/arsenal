@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "Algorithmes de signature de JWT : HMAC, RSA et ECDSA"
+summary: "Pourquoi l'en-tête alg d'un JWT importe, la différence entre signature symétrique et asymétrique, et comment choisir."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## L'en-tête alg décide de tout
+
+L'en-tête d'un JWT nomme l'algorithme utilisé pour le signer, par exemple `"alg": "HS256"`. Cette unique valeur détermine quel type de clé le vérificateur a besoin et ce que la signature prouve réellement. Les algorithmes se répartissent en deux familles, symétrique et asymétrique, et le choix entre elles est en réalité un choix sur *qui doit vérifier le token*.
+
+## Symétrique : la famille HMAC (HS256/384/512)
+
+`HS256`, `HS384` et `HS512` sont du HMAC avec SHA-256, SHA-384 ou SHA-512. Ils utilisent **un unique secret partagé** à la fois pour la signature et la vérification. Quiconque peut vérifier un token HS256 peut aussi en forger un, car créer et contrôler la signature utilisent la même clé.
+
+Cela fait de la famille HMAC un bon choix quand la **même partie** émet et vérifie le token, ou quand l'émetteur et le vérificateur partagent déjà un secret de confiance, un unique backend signant ses propres tokens de session, par exemple. C'est rapide et simple. Sa limite est la distribution : chaque vérificateur a besoin du secret, et plus le secret habite de lieux, plus le rayon d'impact est grand si l'un fuit.
+
+## Asymétrique : RSA et ECDSA (RS256, ES256 et plus)
+
+`RS256` (RSASSA-PKCS1-v1_5 avec SHA-256), `PS256` (RSA-PSS) et `ES256` (ECDSA avec la courbe P-256) utilisent une **paire de clés** : une clé privée signe, et la clé publique correspondante vérifie. La clé privée ne quitte jamais l'émetteur ; la clé publique peut être remise à n'importe qui.
+
+C'est ce que vous voulez quand **de nombreux services indépendants** doivent vérifier des tokens d'un seul émetteur. Un fournisseur d'identité signe avec sa clé privée et publie ses clés publiques (couramment sous forme d'un point de terminaison JWKS) ; chaque service en aval vérifie avec la clé publique et aucun d'eux ne peut frapper de tokens. C'est pourquoi les fournisseurs OpenID Connect émettent par défaut des tokens d'ID RS256 ou ES256.
+
+Entre RSA et ECDSA, le compromis est taille et vitesse : les clés et signatures ECDSA sont bien plus petites pour une sécurité équivalente, tandis que RSA est plus ancien et plus universellement supporté. `EdDSA` (Ed25519) est une alternative moderne et rapide qui gagne en adoption.
+
+## Choisir
+
+- **Une partie signe et vérifie, ou un secret est déjà partagé** → HMAC (HS256). Simple et rapide.
+- **Un signataire, de nombreux vérificateurs indépendants** → asymétrique (RS256 ou ES256). La clé publique peut être distribuée librement ; seul le détenteur de la clé privée peut signer.
+
+Quoi que vous choisissiez, le vérificateur doit **figer l'algorithme acceptable** plutôt que de faire confiance à l'en-tête `alg` du token lui-même. Accepter ce que le token prétend ouvre la porte aux attaques `alg: none` et de confusion d'algorithme décrites dans l'article d'anatomie du JWT.
+
+L'[outil JWT](/tools/jwt) décode l'en-tête pour que vous voyiez quel algorithme un token déclare, et vérifie la famille HMAC (HS256/384/512) face à un secret que vous collez, localement dans votre navigateur.

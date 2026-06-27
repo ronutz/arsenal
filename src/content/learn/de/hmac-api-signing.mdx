@@ -1,0 +1,38 @@
+---
+slug: hmac-api-signing
+title: "API-Anfragen mit HMAC authentifizieren"
+summary: "Wie ein gemeinsames Geheimnis und ein Hash es einem Server erlauben, einer Anfrage zu vertrauen, deren Stellung er nicht sah, und wie der Wiederholungsschutz hineinpasst."
+concepts: ["hmac", "api-security", "request-signing", "webhooks", "replay"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "jwt-anatomy"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Das Problem: einer Anfrage vertrauen
+
+Wenn ein Server eine API-Anfrage empfängt, woher weiß er, dass der Aufrufer der ist, der er zu sein vorgibt, und dass niemand die Anfrage beim Transport veränderte? Ein gemeinsames Geheimnis mit jeder Anfrage zu senden würde funktionieren, bis dieses Geheimnis geloggt, zwischengespeichert oder geleakt wird. Das **HMAC-Signieren von Anfragen** löst dies, ohne das Geheimnis je zu übertragen: Der Aufrufer beweist, dass er das Geheimnis besitzt, indem er es zum Signieren der Anfrage verwendet, und der Server prüft die Signatur.
+
+## Wie das Signieren funktioniert
+
+Beide Seiten teilen einen geheimen Schlüssel. Um eine Anfrage zu signieren, baut der Client:
+
+1. Eine **kanonische Zeichenkette** aus den Teilen der Anfrage, die sich nicht ändern dürfen, typischerweise die HTTP-Methode, der Pfad, Schlüssel-Header, ein Zeitstempel und ein Hash des Rumpfes. „Kanonisch" bedeutet, dass beide Seiten sie auf genau dieselbe, vereinbarte Weise zusammensetzen, damit sie über identische Eingabe rechnen.
+2. Berechnet `HMAC-SHA256(kanonische Zeichenkette, geheimnis)` und hängt es an die Anfrage, meist in einem Header wie `Authorization` oder `X-Signature`.
+
+Der Server, der dasselbe Geheimnis besitzt, baut die kanonische Zeichenkette aus der empfangenen Anfrage neu auf und berechnet den HMAC selbst. Stimmt sein Wert mit dem im Header überein, sind zwei Dinge auf einmal bewiesen: Der Aufrufer besitzt das Geheimnis (**Authentizität**), und nichts von der Signatur Abgedecktes wurde verändert (**Integrität**). Das Geheimnis selbst reist nie.
+
+## Ein echtes Beispiel: AWS Signature Version 4
+
+Amazons SigV4 ist die bekannteste Instanz. Jede Anfrage wird mit HMAC-SHA256 über eine kanonische Anfrage signiert, unter Verwendung eines Signierschlüssels, der **abgeleitet** wird aus dem geheimen Zugriffsschlüssel, dem Datum, der Region und dem Dienst. Der Server leitet den Schlüssel neu ab und berechnet die Signatur neu; eine Abweichung wird abgelehnt. Dasselbe Muster, kanonisieren, HMAC, vergleichen, liegt unzähligen anderen API-Authentifizierungsverfahren zugrunde.
+
+## Webhooks: dieselbe Idee, umgekehrt
+
+Webhooks kehren die Richtung um. Ein Anbieter (ein Zahlungsabwickler, ein Git-Host) ruft **Ihren** Endpunkt auf, um Sie über ein Ereignis zu benachrichtigen, und signiert die Nutzlast mit einem Geheimnis, das Sie beide teilen, wobei er den HMAC in einem Header sendet. Ihr Endpunkt berechnet den HMAC über den empfangenen Rumpf neu und vergleicht, und so weisen Sie gefälschte Aufrufe von jedem ab, der das Geheimnis nicht besitzt. Vergleichen Sie stets mit einer Konstantzeit-Prüfung, um kein Informationsleck über das Timing zu erzeugen.
+
+## Wiederholungsschutz
+
+Eine gültige signierte Anfrage, die ein Angreifer abfängt, könnte wortwörtlich **wiederholt** werden. Die üblichen Abwehrmaßnahmen sind, einen **Zeitstempel** in die signierten Daten aufzunehmen und Anfragen außerhalb eines kurzen Fensters abzulehnen, und optional einen **Nonce** (einen Einmalwert, den sich der Server kurz merkt), damit dieselbe Anfrage nicht zweimal akzeptiert werden kann. Das Signieren beweist Authentizität; Zeitstempel und Nonce verhindern, dass eine alte, echte Anfrage wiederverwendet wird.
+
+Das [HMAC-Werkzeug](/tools/hmac) berechnet den HMAC-SHA256 (und SHA-384/512), der im Kern jedes dieser Verfahren steht, über eine Nachricht und einen Schlüssel, die Sie bereitstellen, vollständig in Ihrem Browser.

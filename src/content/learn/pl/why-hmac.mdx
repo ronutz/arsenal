@@ -1,0 +1,43 @@
+---
+slug: why-hmac
+title: "Dlaczego HMAC, a nie hash(klucz + wiadomość)"
+summary: "Atak rozszerzenia długości, który łamie naiwne haszowanie z kluczem, i zagnieżdżona konstrukcja, której HMAC używa, by go pokonać."
+concepts: ["hmac", "length-extension", "mac", "ipad-opad", "hashing"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hash-collisions", "verifying-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Oczywisty pomysł, który zawodzi
+
+Chcesz udowodnić, że wiadomość pochodzi od kogoś posiadającego współdzielony sekret i że nie została zmieniona. Intuicyjne podejście to zahaszowanie sekretu razem z wiadomością: `tag = SHA256(sekret + wiadomość)`. Wydaje się solidne, znacznik zależy od sekretu, więc atakujący nieznający sekretu nie może go wytworzyć. Niestety dla najczęstszych funkcji skrótu ta konstrukcja jest złamana.
+
+## Atak rozszerzenia długości
+
+Skróty z rodziny Merkle-Damgård, obejmującej MD5, SHA-1 i SHA-256, przetwarzają wejście w blokach i niosą stan wewnętrzny. Ich końcowe wyjście *jest* tym stanem wewnętrznym. To wycieka coś niebezpiecznego: mając `SHA256(sekret + wiadomość)` i długość `sekret + wiadomość`, atakujący może ustawić stan wewnętrzny skrótu na twój znacznik i haszować dalej, obliczając
+
+```
+SHA256(sekret + wiadomość + dopełnienie + dane atakującego)
+```
+
+jako ważny znacznik dla rozszerzonej wiadomości, **nigdy nie znając sekretu**. Może dołączyć dane i wytworzyć znacznik, który się zweryfikuje. Dla API, gdzie wiadomość to zestaw podpisanych parametrów, może to oznaczać dołączenie `&admin=true` do żądania i mimo to przejście weryfikacji podpisu. Naiwne `hash(sekret + wiadomość)` nie jest bezpieczne.
+
+## Jak naprawia to HMAC
+
+HMAC (RFC 2104) nie tylko łączy. Haszuje dwukrotnie z kluczem wmieszanym na dwa różne sposoby:
+
+```
+HMAC(K, m) = H( (K ⊕ opad) || H( (K ⊕ ipad) || m ) )
+```
+
+Wiadomość jest haszowana z kluczem pod dopełnieniem wewnętrznym (`ipad`), a ten wynik jest haszowany ponownie z kluczem pod dopełnieniem zewnętrznym (`opad`). Ponieważ skrót zewnętrzny otacza wewnętrzny, wartość, którą widzi atakujący, nie jest surowym stanem wewnętrznym, który mógłby rozszerzyć; to wyjście drugiego kroku haszowania z kluczem sekretu. Rozszerzenie długości przestaje działać, a bezpieczeństwo HMAC ma solidny dowód oparty jedynie na tym, że bazowy skrót jest rozsądny.
+
+Dlatego każdy dojrzały system używa HMAC (lub innego odpowiedniego MAC) zamiast samodzielnego haszowania z kluczem. Zauważ, że SHA-3 i BLAKE nie są podatne na rozszerzenie długości, więc mogą być kluczowane bardziej bezpośrednio, ale HMAC pozostaje przenośnym i szeroko obsługiwanym standardem.
+
+## Nauka
+
+Używaj HMAC z silnym skrótem (HMAC-SHA256 to typowy domyślny) i sekretem o wysokiej entropii. Nie wymyślaj własnego schematu haszowania z kluczem: wada nie jest oczywista z zewnątrz, co właśnie czyni ją niebezpieczną.
+
+[Narzędzie HMAC](/tools/hmac) oblicza HMAC-SHA256 i pokrewne warianty z wiadomości i klucza, byś zobaczył znacznik i go porównał, wszystko w przeglądarce, bez wysyłania czegokolwiek.

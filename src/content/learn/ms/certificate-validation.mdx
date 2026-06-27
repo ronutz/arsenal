@@ -1,0 +1,43 @@
+---
+slug: certificate-validation
+title: "Bagaimana pengesahan sijil sebenarnya berfungsi"
+summary: "Langkah yang klien jalankan untuk memutuskan sijil boleh dipercayai: membina rantaian, menyemak tandatangan dan tarikh, memadankan nama, dan menguatkuasakan kekangan."
+concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Membaca bukan mempercayai
+
+[Artikel anatomi](/learn/x509-anatomy) berakhir pada satu titik yang berbaloi diulang: menyahkod sijil memberitahu anda apa yang ia *dakwa*, bukan sama ada dakwaan itu *benar*. Pengesahan ialah proses berasingan yang klien TLS jalankan untuk memutuskan sama ada untuk mempercayai sijil di hadapannya. Ia ditadbir terutamanya oleh RFC 5280, dan ia ialah konjungsi semakan bebas, setiap satu daripadanya mesti lulus. Penyahkod, ini termasuk, menunjukkan anda input kepada proses itu; klien ialah apa yang menguatkuasakannya.
+
+## Langkah 1: bina rantaian
+
+Sijil daun hampir tidak pernah dipercayai dengan sendirinya. Klien mesti membina laluan dari daun naik ke akar yang ia sudah pegang dalam stor kepercayaannya. Ia melakukan ini dengan mengikut nama pengeluar: Issuer daun patut sepadan dengan Subject sesetengah perantara, dan Issuer perantara itu patut sepadan dengan yang seterusnya ke atas, sehingga ia mencapai akar yang dikeluarkan sendiri. Sambungan Authority Key Identifier dan Subject Key Identifier mempercepat pemadanan ini dengan membenarkan klien memautkan sijil kepada pengeluarnya melalui cincangan kunci dan bukan melalui nama semata. Jika tiada laluan ke akar dipercayai boleh dibina, pengesahan gagal serta-merta, tidak kira betapa baik bentuk daun itu.
+
+## Langkah 2: sahkan setiap tandatangan
+
+Rantaian hanya bermakna jika setiap pautan adalah kukuh secara kriptografi. Bagi setiap sijil dalam laluan, klien mengesahkan bahawa tandatangan dihasilkan oleh kunci persendirian pengeluar, dengan menyemaknya terhadap kunci awam pengeluar ke atas bait DER badan untuk-ditandatangani anak. Kerana tandatangan meliputi bait tepat itu, satu bait diubah di mana-mana dalam badan memecahkan semakan. Inilah juga sebabnya algoritma tandatangan (contohnya sha256WithRSAEncryption atau ecdsa-with-SHA256) penting: rantaian hanya sekuat tandatangan dan cincangannya yang paling lemah. Untuk apa cincangan jamin di sini, lihat [artikel cincangan](/learn/hashing).
+
+## Langkah 3: semak tetingkap kesahihan
+
+Setiap sijil membawa cap masa notBefore dan notAfter, dan klien menyemak masa semasa terhadap tetingkap bagi setiap sijil dalam rantaian, bukan hanya daun. Sijil yang luput, atau belum sah, gagal. Alat melakukan semakan sama ini terhadap jam tempatan anda dan melaporkan sama ada sijil sah sekarang, belum-sah, atau luput, yang selalunya cara terpantas untuk mendiagnosis amaran "sambungan anda bukan persendirian".
+
+## Langkah 4: padankan nama
+
+Rantaian sah membuktikan sijil adalah tulen, tetapi bukan bahawa ia dikeluarkan untuk laman yang anda lawati. Klien menyemak bahawa hos yang ia sambung kepadanya muncul dalam sambungan Subject Alternative Name sijil. Klien moden mengabaikan Common Name sepenuhnya bagi tujuan ini dan hanya melihat SAN, mengikut peraturan pemadanan identiti RFC 6125. Kad bebas seperti `*.ronutz.com` sepadan dengan satu label, jadi ia meliputi `api.ronutz.com` tetapi bukan `ronutz.com` itu sendiri atau `a.b.ronutz.com`. Sijil yang rantaiannya sempurna tetapi yang SAN-nya tidak menyenaraikan nama yang anda minta tetap ditolak.
+
+## Langkah 5: kuatkuasakan kekangan
+
+Sambungan v3 bukan hiasan; ia peraturan yang klien kuatkuasakan. Basic Constraints menyatakan sama ada sijil boleh bertindak sebagai CA dan, melalui panjang laluan, berapa banyak perantara boleh duduk di bawahnya, yang ialah apa yang menghentikan sijil daun daripada digunakan untuk menandatangani sijil lain. Key Usage dan Extended Key Usage mengekang apa kunci dibenarkan lakukan: sijil pelayan TLS mesti membawa serverAuth EKU, dan sambungan yang ditanda kritikal yang klien tidak fahami memaksa penolakan dan bukan kuak bahu. Alat menonjolkan medan ini supaya anda boleh melihat tepat kekangan mana yang pengeluar tetapkan.
+
+## Langkah 6: semak pembatalan
+
+Akhirnya, sijil yang sah ketika dikeluarkan mungkin telah dibatalkan sejak itu, contohnya kerana kunci persendiriannya bocor. Klien mungkin merujuk CRL atau penyambut OCSP untuk mengetahui. Dalam praktik ini langkah paling lemah dan paling tidak konsisten, dan industri sedang bergerak ke arah sijil berhayat pendek sebaliknya, yang [artikel pembatalan](/learn/certificate-revocation) liputi sepenuhnya.
+
+## Pengesahan ialah DAN, bukan ATAU
+
+Sebab sijil tunggal yang diganggu atau salah konfigurasi ditolak ialah kerana semua semakan ini bergabung dengan DAN logik. Rantaian mesti terbina, setiap tandatangan mesti sah, setiap sijil mesti dalam tetingkap kesahihannya, nama mesti dalam SAN, kekangan mesti membenarkan penggunaan, dan sijil mesti tidak dibatalkan. Penyahkod membentangkan dakwaan sijil dengan jelas dan setia; layan itu sebagai pembacaan teliti dokumen, dan ingat bahawa keputusan milik klien yang menjalankan kesemua enam semakan.

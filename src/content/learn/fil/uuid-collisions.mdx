@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "Magbabanggaan ba ang mga UUID? Probabilidad at ang birthday bound"
+summary: "Ilang random bit talaga ang taglay ng isang UUID, ang matematika ng birthday para sa isang collision, at kailan natin gusto ang deterministikong mga UUID."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang tanong sa likod ng bawat UUID
+
+May 128 bit ang isang UUID, karaniwang nililikha nang random (bersyon 4) upang ang sinuman, kahit saan, ay makakagawa ng isa nang walang koordinasyon at maaasahang natatangi ito. Ang makatuwirang alalahanin ay: kung lahat ay nagpupukol lamang ng dice, hindi ba magtatagpo rin sa huli ang dalawa? Ang sagot ay oo sa prinsipyo at halos hindi kailanman sa praktika, at sinasabi ng matematika kung bakit.
+
+## Ilang random bit talaga ang mayroon
+
+Ang isang UUID na bersyon 4 ay walang 128 random bit. Apat na bit ang nakapirmi upang markahan ang bersyon at dalawa pa upang markahan ang variant, na nag-iiwan ng **122 random bit**. Napakalaki pa rin ng espasyong iyon: 2¹²², humigit-kumulang 5.3 undecillion (5.3 × 10³⁶) na posibleng halaga.
+
+## Ang birthday bound, inilapat
+
+Hindi nakasalalay ang probabilidad ng collision sa pagpuno ng espasyo; nakasalalay ito sa bilang ng *mga pares*, na lumalaki kasama ng parisukat ng bilang na nililikha mo. Ito ang birthday paradox muli. Para sa isang espasyo na 2¹²² na halaga, ang probabilidad ng anumang collision sa `n` na UUID ay humigit-kumulang:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+Ang isang 50% na tsansa ng isang solong collision ay dumarating lamang pagkatapos ng humigit-kumulang **2⁶¹** na UUID, na nasa paligid ng 2.3 trilyon (mahabang sukat). Upang gawing konkreto ito: sa paglikha ng isang bilyong UUID na bersyon 4 kada segundo, kakailanganin mo ng hanay ng *85 taon* upang maabot lamang ang isang 50% na tsansa ng isang collision. Sa anumang makatotohanang dami ng aplikasyon, napakaliit ng probabilidad na natatabunan ito ng tsansang sirain pa rin ng isang hardware failure ang datos.
+
+Ang tanging tunay na babala ay ang **kalidad ng randomness**. Mananatili lamang ang matematika kung ang generator ay isang wastong cryptographically secure na pinagmulan. Ang isang mahina o masamang sinimulan na random na pinagmulan ay maaaring gumawa ng mga pag-uulit nang mas maaga, kaya ang praktikal na panganib ay isang pangit na RNG, hindi ang disenyo ng UUID.
+
+## Kapag hindi natin gusto ang randomness
+
+Minsan ang alalahanin ay hindi ang collision, kundi ang pagiging mauulit:
+
+- **Namespace UUID (bersyon 3 at 5)** ay deterministiko: hina-hash nila ang isang namespace kasama ang isang pangalan (MD5 para sa v3, SHA-1 para sa v5), kaya ang *parehong* input ay palaging gumagawa ng *parehong* UUID. Kapaki-pakinabang kapag gusto mo ng isang matatag na identifier na hinango mula sa umiiral na datos, sa halip na isang bagong random.
+- **Time-ordered UUID (bersyon 7)** ay pinapanatili ang randomness ngunit inuuna ito ng isang timestamp, kaya nag-aayos ang mga ID ayon sa oras ng paglikha. Tumutulong ito sa index locality sa database habang nananatiling bale-wala ang panganib ng collision.
+
+## Ang aral
+
+Para sa mga natatanging identifier sa anumang normal na sukat, ang isang UUID na bersyon 4 mula sa isang mahusay na random na pinagmulan ay hindi nagbabanggaan, at hindi mo kailangan ng isang sentral na awtoridad upang gawin itong garantiya. Piliin ang v3/v5 kapag kailangan mong ma-map ang parehong input sa parehong ID, at v7 kapag gusto mo ng pagkakasunod-sunod ayon sa oras.
+
+Gumagawa ang [tool na UUID](/tools/uuid) ng mga UUID na bersyon 4 (at iba pa) at sinusuri ang anumang UUID upang ipakita ang bersyon at variant nito, lahat sa iyong browser, nang walang anumang ipinapadala.

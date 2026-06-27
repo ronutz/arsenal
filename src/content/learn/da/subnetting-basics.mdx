@@ -1,0 +1,52 @@
+---
+slug: subnetting-basics
+title: "Grundlæggende om subnetinddeling"
+summary: "Hvordan man deler et netværk op i mindre subnet, og hvorfor at låne værtsbit er hele tricket."
+concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hvad subnetinddeling er til for
+
+Et enkelt stort netværk er sjældent, hvad du vil have. Subnetinddeling er praksissen med at tage en blok af adresser og dele den op i flere mindre blokke, **subnet**, som hver kan være et separat broadcast-domæne, sikkerhedsgrænse eller fysisk segment. Et campus kan give hver bygning sit eget subnet; en cloud-konto kan give hvert lag af en applikation sit eget.
+
+Mekanismen er enklere, end den normalt får til at lyde: **subnetinddeling låner bit fra værtsdelen og tilføjer dem til netværksdelen.**
+
+## At låne bit
+
+Begynd med `192.168.1.0/24`. Præfikset er 24, så 8 bit er frie til værter, hvilket giver en blok af 256 adresser.
+
+Antag, at du har brug for fire separate subnet i stedet for ét. Fire er 2², så du har brug for **2 flere netværksbit**. Lån dem fra værtssiden: præfikset vokser fra /24 til /26.
+
+- `/26` fastsætter 26 bit, lader 6 frie → 64 adresser per subnet.
+- Fire sådanne subnet flisebelægger det oprindelige /24 præcist:
+  - `192.168.1.0/26`, adresser .0 til .63
+  - `192.168.1.64/26`, adresser .64 til .127
+  - `192.168.1.128/26`, adresser .128 til .191
+  - `192.168.1.192/26`, adresser .192 til .255
+
+Bemærk mønstret: hvert subnet er 64 adresser bredt, så hvert begynder på et multiplum af 64. Den regel "begynder på et multiplum af sin størrelse" er, hvordan gyldige subnetgrænser findes. En blok skal begynde på en adresse, der er et multiplum af sin egen størrelse, ellers er den ikke en gyldig CIDR-blok.
+
+## Afvejningen
+
+Hver bit, du låner til netværket, halverer værterne per subnet:
+
+| Præfiks | Subnet af et /24 | Adresser hver | Brugbare værter hver |
+|---|---|---|---|
+| /24 | 1 | 256 | 254 |
+| /25 | 2 | 128 | 126 |
+| /26 | 4 | 64 | 62 |
+| /27 | 8 | 32 | 30 |
+| /28 | 16 | 16 | 14 |
+
+Flere subnet betyder færre værter i hvert. Netværksdesign er i høj grad at vælge, hvor på denne kurve man skal sidde: nok subnet til dine segmenter, nok værter i hvert til enhederne, der lever der, med lidt plads til at vokse.
+
+## Subnetinddeling med variabel længde
+
+Subnet inden for den samme forælder behøver ikke alle at være af samme størrelse. **Subnetmaskering med variabel længde (VLSM)** lader dig udskære et stort subnet til segmentet, der har brug for mange værter, og små subnet til punkt-til-punkt-forbindelser, alt sammen fra den samme forælderblok. De eneste regler er de konstante: hvert subnet er en topotens i størrelse, og hvert begynder på et multiplum af sin størrelse, så blokkene aldrig overlapper.
+
+[CIDR-beregneren](/learn) viser det præcise interval, grænserne, og antallet af brugbare værter for ethvert præfiks, hvilket gør det at kontrollere en subnetplan til et spørgsmål om at taste hver blok ind.

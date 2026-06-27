@@ -1,0 +1,62 @@
+---
+slug: certificate-formats
+title: "PEM, DER ve sertifika dosya biçimleri"
+summary: "Aynı sertifikanın neden bu kadar çok dosya biçiminde geldiği, PEM ve DER'in aslında ne olduğu ve .crt, .pem, .pfx ile .p12'nin gerçekte ne tuttuğu."
+concepts: ["x509", "pem", "der", "pkcs12", "pkcs7", "encoding"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-signing-request", "base64"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bir sertifika, birçok sarmalayıcı
+
+Yaygın bir kafa karışıklığı kaynağı, tek bir sertifikanın bir `.crt`, bir `.cer`, bir `.pem`, bir `.der` olarak veya bir `.pfx` içine gömülü gelebilmesi ve insanların bunların farklı şeyler olduğunu varsaymasıdır. Genellikle değildirler. Sertifika tek bir sabit yapıdır ([anatomi makalesinde](/learn/x509-anatomy) anlatılan ASN.1 düzeni); değişen, o baytların nasıl kodlandığı ve yanlarında başka neyin paketlendiğidir. Bir avuç gerçek biçimi bilmek, dosya uzantılarının gizemli olmaktan çıkmasını sağlar.
+
+## DER: kanonik ikili
+
+En altta DER vardır, ITU-T X.690'dan Distinguished Encoding Rules. DER, sertifikanın ASN.1 ağacının fiili ikili serileştirmesidir: tag-length-value kayıtlarından oluşan bir dizi, herhangi bir verilen değer için tam olarak bir geçerli kodlamayla. Bu belirlenimcilik önemlidir, çünkü verenin imzası tam olarak bu baytlar üzerinde hesaplanır. Bir `.der` dosyası (ve sıklıkla bir `.cer` dosyası) metin sarmalı olmayan ham DER'dir. X.509 aracı bu ikiliyi doğrudan kod çözer.
+
+## PEM: metne sarılı DER
+
+PEM, Base64 ile kodlanmış ve zırh satırlarına sarılmış DER'dir, RFC 7468 tarafından tanımlanır:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...   (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+PEM vardır çünkü ikili, bir e-postaya, bir yapılandırma dosyasına veya bir terminale yapıştırılmayı hayatta kalamaz, oysa Base64 metni kalır. `BEGIN`/`END` satırlarındaki etiket size gövdenin ne olduğunu söyler ve birkaç tane vardır:
+
+- `CERTIFICATE` bir X.509 sertifikasıdır.
+- `CERTIFICATE REQUEST` bir CSR'dir ([imzalama isteği makalesine](/learn/certificate-signing-request) bakın).
+- `PRIVATE KEY` bir PKCS#8 özel anahtarıdır; `RSA PRIVATE KEY` ve `EC PRIVATE KEY` daha eski anahtara-özgü biçimlerdir.
+- `PUBLIC KEY` çıplak bir SubjectPublicKeyInfo'dur.
+- `X509 CRL` bir sertifika iptal listesidir.
+
+Tek bir PEM dosyası art arda birkaç blok tutabilir, ki bu bir sunucunun yaprak sertifikasının artı ara zincirinin tek bir `fullchain.pem` içinde gönderilme biçimidir. Alttaki kodlama için [Base64 makalesine](/learn/base64) bakın.
+
+## Dosya uzantısı biçim değildir
+
+Bu, insanlara çelme takan kısımdır: `.crt`, `.cer`, `.pem` ve `.key` niyeti tanımlar, kodlamayı değil. Bir `.crt` PEM veya DER olabilir. Bir `.cer` Windows'ta sıklıkla DER ama başka yerlerde PEM'dir. Bir `.key` bir özel anahtardır, ama PEM veya DER'de PKCS#1, PKCS#8 veya SEC1 olabilir. Neye sahip olduğunuzu bilmenin tek güvenilir yolu ilk baytlara bakmaktır: PEM görünür `-----BEGIN` satırıyla başlar, oysa DER SEQUENCE tag baytı `0x30` ile başlar. Araç ikisini de kabul eder, dolayısıyla önce dönüştürmeden bir PEM bloku yapıştırabilir veya ham DER yükleyebilirsiniz.
+
+## Birden fazla şeyi demetleyen kapsayıcılar
+
+İki PKCS biçimi birden çok nesneyi birlikte paketler:
+
+- **PKCS#7** (`.p7b`, `.p7c`) bir veya daha fazla sertifika taşır, tipik olarak bir sertifika artı zinciri, ama hiçbir özel anahtar değil. Sıklıkla birine tek bir dosyada tam bir zincir vermek için kullanılır.
+- **PKCS#12** (`.pfx`, `.p12`), RFC 7292 ile tanımlanır, bir sertifikayı, zincirini ve eşleşen özel anahtarı tek bir parola korumalı blob'a demetler. Bu, anahtarın ve sertifikanın birlikte gezmesini istediğinizde bir Windows sertifika deposundan dışa aktardığınız veya bir yük dengeleyiciye içe aktardığınız şeydir. Özel anahtarı içerdiğinden, bir PKCS#12 dosyası hassastır ve parola onu koruyan tek şeydir.
+
+## Özel anahtar kodlamaları
+
+Özel anahtarların kendi küçük hayvanat bahçesi vardır. **PKCS#1** (`RSA PRIVATE KEY`) özgün yalnızca-RSA biçimidir. **SEC1** (`EC PRIVATE KEY`) eliptik eğri anahtarları için eşdeğerdir. **PKCS#8** (`PRIVATE KEY`, isteğe bağlı olarak `ENCRYPTED PRIVATE KEY`) ikisini de tutabilen modern, algoritmadan bağımsız sarmalayıcıdır ve çoğu güncel aracın ürettiği şeydir. Bir sertifika kod çözücüsü asla özel anahtara ihtiyaç duymaz ve denetlemediğiniz bir araca asla bir özel anahtar yapıştırmamalısınız; X.509 aracı, tasarımca açık olan sertifikalar içindir.
+
+## Aralarında dönüştürme
+
+İç yapı özdeş olduğundan, dönüştürme kayıpsız ve rutindir. OpenSSL ile, PEM'den DER'e `openssl x509 -in cert.pem -outform der -out cert.der`'dir ve tersi in ve out biçimlerini değiştirir. Ayrı bir sertifika ve anahtardan bir PKCS#12 kurmak `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`'tir. Bunların hiçbiri sertifikanın kendisini değiştirmez; onu yalnızca yeniden paketler.
+
+## Paketleme, öz değil
+
+Çıkarım, PEM'e karşı DER'in ve `.crt`'ye karşı `.pfx`'in taşıma ve demetleme soruları olduğu, sertifikanın ne dediği değil. Zırhı soyun, Base64'ten kod çözün ve kapsayıcıyı yok sayın, ve bunların her birinin altında bir açık anahtarı bir ada bağlayan aynı imzalı ASN.1 ifadesi vardır. Aracın işi, o paketlemeyi tarayıcınızda soymak ve size içindeki yapıyı göstermek, hiçbir dosya asla sayfayı terk etmeden.

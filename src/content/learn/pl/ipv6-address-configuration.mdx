@@ -1,0 +1,52 @@
+---
+slug: ipv6-address-configuration
+title: "Jak hosty IPv6 dostają adresy: SLAAC i DHCPv6"
+summary: "Jak host IPv6 konfiguruje się od link-local w górę, co decydują ogłoszenia routera, oraz różnica między SLAAC, adresami prywatności, i DHCPv6."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Samokonfiguracja domyślnie
+
+Jedną z definiujących cech IPv6 jest to, że host może skonfigurować działający adres bez żadnego serwera i bez żadnej ręcznej konfiguracji. Tam, gdzie IPv4 opiera się na DHCP, by rozdawać adresy, IPv6 może budować je lokalnie z informacji, którą router rozgłasza. Skutkiem jest to, że pojedynczy interfejs zwykle kończy z kilkoma adresami naraz, każdy do innego celu, co zaskakuje ludzi przychodzących z IPv4.
+
+## Link-local przychodzi pierwszy
+
+Przed czymkolwiek innym, każdy interfejs IPv6 konfiguruje adres link-local w `fe80::/10` (typ, który narzędzie oznacza jako link-local). Jest generowany lokalnie, nigdy nieroutowany poza łącze lokalne, i istnieje, by host mógł natychmiast rozmawiać z sąsiadami i routerami, w tym zapytać, jak skonfigurować resztę swoich adresów. Link-local to rozruch (bootstrap): jest zawsze obecny, a maszyneria odkrywania sąsiadów w artykule [odkrywanie sąsiadów](/learn/ipv6-neighbor-discovery) działa na nim.
+
+## Ogłoszenie routera decyduje o metodzie
+
+By dostać globalnie routowalny adres, host nasłuchuje Ogłoszeń Routera (Router Advertisements), okresowych wiadomości, które router wysyła (i które host może zażądać Zapytaniem Routera, Router Solicitation). Ogłoszenie niesie prefiks on-link, niemal zawsze /64, i dwie flagi, które mówią hostowi, jak się skonfigurować:
+
+- **Flaga M (Managed)** mówi „użyj DHCPv6, by dostać adres".
+- **Flaga O (Other)** mówi „skonfiguruj swój adres sam, ale dostań inne ustawienia jak DNS z DHCPv6".
+
+Z obiema flagami wyłączonymi, host używa czystej bezstanowej autokonfiguracji. To dlatego przydzielanie adresu IPv6 jest negocjacją między tym, co router ogłasza, a tym, co host wybiera, zamiast pojedynczym serwerem rozdającym dzierżawy.
+
+## SLAAC: budowanie własnego adresu
+
+Bezstanowa Autokonfiguracja Adresów (Stateless Address Autoconfiguration, RFC 4862) to mechanizm, którego host używa, by uformować własny adres: weź prefiks /64 z ogłoszenia i doczep 64-bitowy identyfikator interfejsu. To cały powód, dla którego podsieć musi być /64 (zobacz artykuł [dzielenie na podsieci](/learn/ipv6-subnetting)). Żaden serwer nie śledzi przydziału, co znaczy „bezstanowy".
+
+Identyfikator interfejsu może być uformowany na kilka sposobów, a to ma realne konsekwencje prywatności:
+
+- **Zmodyfikowany EUI-64** wyprowadza identyfikator z adresu MAC interfejsu, co narzędzie może zademonstrować. Jest stabilny i wygodny, lecz osadza adres sprzętowy w każdym adresie IPv6, którego host używa, pozwalając zdalnemu serwerowi śledzić urządzenie między sieciami.
+- **Stabilne, nieprzejrzyste identyfikatory** (RFC 7217) produkują identyfikator stabilny na sieć, lecz nieujawniający żadnego adresu sprzętowego, naprawiając problem śledzenia między sieciami przy zachowaniu spójnego adresu na danym łączu.
+- **Tymczasowe (prywatnościowe) adresy** (RFC 8981, która unieważnia wcześniejszą RFC 4941) generują losowe identyfikatory rotujące w czasie, więc połączenia wychodzące w ogóle nie przedstawiają długożyciowego adresu.
+
+Nowoczesne systemy operacyjne zwykle używają stabilnego adresu dla połączeń przychodzących i rotującego tymczasowego adresu dla wychodzących, co jest powodem, dla którego pojedynczy interfejs pokazuje wiele globalnych adresów.
+
+## Wykrywanie Zduplikowanego Adresu
+
+Zanim host faktycznie użyje jakiegokolwiek adresu, który uformował, uruchamia Wykrywanie Zduplikowanego Adresu (Duplicate Address Detection): wysyła Zapytanie Sąsiada (Neighbor Solicitation) o swój własny próbny adres i czeka. Jeśli ktoś odpowie, adres jest już w użyciu i nie może być zgłoszony. DAD to tania polisa, że samokonfiguracja nie produkuje kolizji, i opiera się na tych samych wiadomościach odkrywania sąsiadów opisanych w artykule towarzyszącym.
+
+## DHCPv6 dla kontroli stanowej
+
+Gdy administrator chce śledzić i przydzielać adresy centralnie, DHCPv6 (RFC 8415) zapewnia przydział stanowy, bardzo jak DHCP w IPv4: serwer dzierżawi konkretne adresy i rejestruje, kto ma co. Istnieje też bezstanowy tryb DHCPv6, który rozdaje tylko konfigurację jak serwery DNS, podczas gdy host wciąż formuje własny adres przez SLAAC, co wybiera flaga O. DHCPv6 to także miejsce, gdzie żyje delegacja prefiksu, mechanizm, dzięki któremu router domowy otrzymuje cały prefiks, by dzielić na podsieci za nim.
+
+## Wiele adresów, z założenia
+
+Modelem myślowym do zabrania jest to, że host IPv6 jest w dużej mierze samosterujący. Zawsze ma adres link-local, uczy się prefiksu i metody konfiguracji z ogłoszeń routera, i zależnie od flag albo buduje własne globalne adresy z SLAAC, albo dzierżawi je z DHCPv6, często kończąc ze stabilnym adresem i rotującym tymczasowym obok siebie. Gdy narzędzie pokazuje ci adres i identyfikuje jego typ, ten typ mówi ci, która z tych ścieżek go wyprodukowała.

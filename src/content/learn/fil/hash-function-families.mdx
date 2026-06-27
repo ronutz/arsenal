@@ -1,0 +1,38 @@
+---
+slug: hash-function-families
+title: "Pagpili ng hash: MD5, SHA-1, SHA-2, SHA-3, at BLAKE"
+summary: "Aling mga hash function ang ligtas pa, alin ang nasira, ang kanilang mga laki ng output, at paano piliin ang tama."
+concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
+relatedTools: ["hash"]
+relatedArticles: ["hashing", "hash-collisions", "password-hashing"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Hindi pantay ang lahat ng hash
+
+Ini-map ng isang cryptographic hash ang anumang input sa isang fingerprint na nakapirming laki. May ilang pamilya, at hindi sila mapagpapalit: ang ilan ay malakas pa at ang iba ay matinding nasira na ang paggamit sa kanila para sa seguridad ay isang pagkakamali. Ang tamang pagpili ay nakasalalay sa gawain at sa kalendaryo, dahil ang isang hash na kagalang-galang dalawampung taon na ang nakalipas ay maaaring madaling masira ngayon.
+
+## Ang mga nasira
+
+- **MD5** (128 bit) ay sira. Maaaring gawin ang mga collision sa ilang segundo sa isang laptop, at ginamit na sa mga tunay na pag-atake (huwad ng Flame malware ang isang code-signing certificate gamit ang isang MD5 collision). Nananatili lamang ito bilang isang mabilis, walang seguridad na checksum, at kahit doon ay may mas mahuhusay na opsyon.
+- **SHA-1** (160 bit) ay sira. Gumawa ang pananaliksik na SHAttered noong 2017 ng dalawang magkaibang PDF na may parehong SHA-1 digest, at pagkatapos ay dumating ang chosen-prefix collision. Inalis ng mga browser at certificate authority ang suporta para sa SHA-1 ilang taon na ang nakalipas. Huwag itong gamitin para sa mga lagda o integridad na maaaring atakihin ng isang kalaban.
+
+## Ang kasalukuyang mga work-horse
+
+- **SHA-2** ang default na pamilya para sa karamihan ng gawain. Ito ay isang set ng magkakaugnay na function, karaniwang **SHA-256** at **SHA-512** (gayundin ang SHA-224, SHA-384, at ang pinutol na SHA-512/256). Walang praktikal na collision attack laban sa SHA-2. Kung may pag-aalinlangan, ang SHA-256 ang ligtas at unibersal na suportadong pagpili.
+- **SHA-3** (Keccak) ay isang mas bagong pamantayan na itinayo sa isang ganap na naiibang panloob na disenyo (isang sponge construction) kaysa sa SHA-2. Nag-aalok ang SHA3-256 at SHA3-512 ng katumbas na seguridad at umiiral nang bahagya bilang proteksyon: kung may kahinaang matuklasan sa SHA-2, malabong ibahagi ito ng SHA-3. Imyun din ito ayon sa disenyo nito sa problemang length extension na dumarapo sa SHA-2.
+- **BLAKE2 at BLAKE3** ay mga modernong, napakabilis na hash na may malakas na seguridad. Ang BLAKE3 sa partikular ay ginawa upang mag-parallelize, na ginagawang kaakit-akit ito kapag nagha-hash ka ng malalaking dami ng data at gusto ng bilis nang hindi isinusuko ang seguridad.
+
+## Pagpili ng isa
+
+Isang maikling gabay sa pagpapasya:
+
+- Pangkalahatang integridad, mga lagda, o "kailangan ko lang ng ligtas na hash": **SHA-256**.
+- Gusto mo ng pagkakaiba-iba ng algorithm o imyunidad sa length extension nang walang HMAC: **SHA-3** o **SHA-512/256**.
+- Pagha-hash ng malalaking file kung saan mahalaga ang throughput: **BLAKE3**.
+- Isang mabilis, walang seguridad na checksum (matukoy ang aksidenteng pagkasira, hindi pakikialam): tama ang isang CRC o MD5, ngunit huwag kailanman itong tawaging "ligtas".
+- **Magkahiwalay na problema ang mga password.** Masyadong mabilis ang pangkalahatang mga hash para sa imbakan ng password; gumamit ng nakatuong password hash gaya ng bcrypt, scrypt, o Argon2 (tingnan ang artikulo sa password hashing).
+
+Kinakalkula ng [tool na hash](/tools/hash) ang MD5, SHA-1, SHA-256, SHA-512, at higit pa sa teksto o sa isang file upang maihambing mo ang mga output nang magkatabi, lahat sa iyong browser, nang walang anumang ipinapadala.

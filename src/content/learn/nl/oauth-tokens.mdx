@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Toegangstokens, verniewingstokens en ID-tokens"
+summary: "Drie OAuth- en OpenID Connect-tokens die voortdurend verward worden, waar elk eigenlijk voor is, en waarom de verkeerde naar de verkeerde plek sturen een echte bug is."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Drie tokens, drie taken
+
+Nadat de autorisatiecodeflow voltooid is (zie het artikel [codeflow](/learn/oauth-code-flow)), kan een client uiteindelijk drie verschillende tokens vasthouden, en ze door elkaar halen is een van de meest voorkomende fouten in OAuth en OpenID Connect. Een toegangstoken, een verniewingstoken en een ID-token lijken oppervlakkig op elkaar, vooral wanneer alle drie toevallig JWT's zijn, maar ze hebben verschillende doelgroepen en verschillende doelen. Ze juist treffen is grotendeels een kwestie van je per token afvragen voor wie het is en wat het autoriseert.
+
+## Het toegangstoken: een sleutel tot een API
+
+Het toegangstoken is wat de client naar een resourceserver (een API) zendt om te bewijzen dat het een verzoek mag doen. Het is het dichtst dat OAuth bij een sessiesleutel voor machine-naar-machine-toegang komt, gedefinieerd door OAuth 2.0 (RFC 6749). Twee eigenschappen doen ertoe. Het is **kortlevend**, vaak minuten tot een uur, zodat een gelekt token slechts kort bruikbaar is. En het is een **bearer**-token (houder): wie het vasthoudt kan het gebruiken, zonder verder identiteitsbewijs, daarom moeten toegangstokens alleen over TLS reizen en nooit gelogd worden of in een URL gezet worden. De API valideert het token en de scopes die het draagt, en bedient of weigert dan het verzoek.
+
+## Het verniewingstoken: nieuwe toegangstokens krijgen
+
+Omdat toegangstokens snel verlopen, zou de gebruiker dwingen om de paar minuten opnieuw in te loggen onverdraaglijk zijn. Het verniewingstoken lost dit op: het is een langlevende referentie die de client bij de autorisatieserver inruilt voor een vers toegangstoken, zonder gebruikersinteractie. Het is veel gevoeliger dan een toegangstoken juist omdat het langlevend is, dus het moet op het achterkanaal blijven (aan de serverkant, of in beschermde opslag) en nooit aan een browser-frontend worden blootgesteld. Goede praktijk is **verniewingstokenrotatie**: elk gebruik geeft een nieuw verniewingstoken uit en maakt het oude ongeldig, zodat een gestolen token wordt gedetecteerd op het moment dat de legitieme client de nu ingetrokken kopie probeert te gebruiken. Tokens kunnen ook expliciet worden ingetrokken (RFC 7009).
+
+## Het ID-token: een uitspraak over de gebruiker
+
+Het ID-token is het stuk dat OpenID Connect boven op OAuth toevoegt, en het is het stuk dat het vaakst verkeerd wordt gebruikt. Het is altijd een JWT (zie het artikel [JWT-anatomie](/learn/jwt-anatomy)), en het beschrijft de authenticatiegebeurtenis: wie de gebruiker is, wanneer hij zich authenticeerde en welke autorisatieserver daarvoor instaat. Cruciaal: **het ID-token is voor de client, niet voor een API**. Het beantwoordt "wie heeft net ingelogd" zodat de applicatie een gebruikerssessie kan opzetten. Een ID-token naar een resourceserver sturen alsof het een toegangstoken was, is een klassieke bug: de API zou het moeten weigeren, omdat de doelgroep van het ID-token de client is, en het voor autorisatie gebruiken verwart identiteit met permissie.
+
+## Bearer-tokens en de verleiding ze te vertrouwen
+
+De meeste toegangstokens zijn bearer-tokens, wat ze makkelijk te gebruiken en makkelijk te misbruiken maakt. De behandelregels volgen direct: altijd TLS, korte levensduren, nooit in logs of querystrings, en nooit in browsertoegankelijke opslag als een beter beschermde optie bestaat. Waar het bearer-model te riskant is, binden **afzender-gebonden** (sender-constrained) tokens een token aan een specifieke clientsleutel (mechanismen zoals DPoP of wederzijdse TLS), zodat een gestolen token niet door iemand anders kan worden herhaald. Voor de meeste applicaties zijn kortlevende bearer-toegangstokens over TLS de werkende basis.
+
+## Opaque versus JWT-toegangstokens
+
+Een toegangstoken kan opaque zijn (een willekeurige tekenreeks die de API controleert door het introspectie-endpoint van de autorisatieserver aan te roepen, RFC 7662) of een JWT die de API zelf valideert. De JWT-vorm is zelfstandig en vermijdt een netwerkheen-en-terugreis, maar kan niet worden ingetrokken voordat hij verloopt, wat nog een reden is om de levensduren van toegangstokens kort te houden. Een ID-token daarentegen is altijd een JWT, omdat zijn hele taak is verifieerbare claims aan de client over te brengen. Of een token een JWT is, vertelt je hoe het wordt gevalideerd, niet waar het voor is.
+
+## Match het token met de doelgroep
+
+De enige regel die de meeste tokenbugs voorkomt is elk token matchen met zijn bedoelde doelgroep. Het **ID-token** is voor de applicatie, om te leren wie inlogde. Het **toegangstoken** is voor de API, om een verzoek te autoriseren. Het **verniewingstoken** is voor de autorisatieserver, om nieuwe toegangstokens te slaan zonder de gebruiker lastig te vallen. Houd die drie doelgroepen uit elkaar, houd het langlevende verniewingstoken op het achterkanaal, en behandel elk bearer-token als een kortlevend geheim, en de rest van OAuths tokenbehandeling valt op zijn plaats.

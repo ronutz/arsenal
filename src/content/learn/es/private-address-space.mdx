@@ -1,0 +1,38 @@
+---
+slug: private-address-space
+title: "Espacio de direcciones IPv4 privadas y la RFC 1918"
+summary: "Los tres rangos privados, por qué no son enrutables en Internet y los demás bloques especiales que la herramienta CIDR señala."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Direcciones que puedes reutilizar
+
+Solo hay unos 4300 millones de direcciones IPv4, demasiado pocas para que cada dispositivo tenga una única dirección pública. La respuesta (RFC 1918) es reservar tres rangos que cualquiera puede usar dentro de su propia red, sin registro. Como todos reutilizan los mismos rangos privados, no pueden ser únicos en la Internet pública, así que **no son enrutables** allí. Para alcanzar el exterior se necesita traducción de direcciones de red (NAT), que cambia una dirección de origen privada por una dirección pública compartida en el borde de la red.
+
+## Los tres rangos de la RFC 1918
+
+- **`10.0.0.0/8`**: de `10.0.0.0` a `10.255.255.255`, 16 777 216 direcciones. Una única red muy grande.
+- **`172.16.0.0/12`**: de `172.16.0.0` a `172.31.255.255`, 1 048 576 direcciones. No es una clase B entera, sino los 16 `/16` contiguos de `172.16` a `172.31`, el rango que la gente más suele confundir.
+- **`192.168.0.0/16`**: de `192.168.0.0` a `192.168.255.255`, 65 536 direcciones. El rango familiar de los routers domésticos.
+
+## Los demás bloques especiales
+
+Varios rangos más están reservados para fines específicos y tampoco son direcciones públicas comunes:
+
+- **`100.64.0.0/10`** (RFC 6598) es el espacio compartido de NAT de operador (CGNAT), usado por los proveedores entre el cliente y su pool público. Es similar a privado, pero distinto de la RFC 1918.
+- **`169.254.0.0/16`** (RFC 3927) es link-local, la dirección autoasignada que un host elige cuando ningún servidor DHCP responde (APIPA en Windows). Nunca sale del enlace local.
+- **`127.0.0.0/8`** es loopback; `127.0.0.1` es el host hablando consigo mismo.
+- **`0.0.0.0/8`**, el rango de multidifusión `224.0.0.0/4` y los rangos de documentación (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) también están reservados.
+
+IPv6 tiene la misma idea con otra forma: las **Unique Local Addresses** en `fc00::/7` (en la práctica `fd00::/8`) son el análogo de uso privado de la RFC 1918, de nuevo no enrutables globalmente.
+
+## Por qué importa
+
+Saber si una dirección es privada, pública o especial te dice de inmediato si puede aparecer en Internet, si necesita NAT y si una regla de firewall o una ruta tiene sentido. Una dirección de `10/8` en un registro DNS público, o una dirección `169.254` donde esperabas DHCP, es una señal que vale la pena notar.
+
+La [calculadora CIDR](/#cidr) clasifica cualquier dirección o bloque por estos rangos de uso especial e informa si es privada, reservada o alcanzable globalmente, calculado enteramente en tu navegador.

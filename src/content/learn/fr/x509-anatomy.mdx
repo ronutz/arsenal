@@ -1,0 +1,89 @@
+---
+slug: x509-anatomy
+title: "Anatomie d'un Certificat X.509"
+summary: "Ce qui vit à l'intérieur d'un certificat TLS, comment les octets ASN.1/DER sont structurés, ce que les extensions v3 contrôlent réellement, et pourquoi décoder un certificat n'est pas la même chose que lui faire confiance."
+concepts: ["x509", "certificate", "asn1", "der", "pki", "tls", "san", "extensions"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-validation", "certificate-formats", "certificate-revocation", "certificate-signing-request"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ce qu'est un certificat
+
+Un certificat X.509 est une déclaration signée qui lie une clé publique à une identité. Quand un navigateur se connecte à un site par HTTPS, le serveur présente un certificat qui dit, en effet, « cette clé publique appartient à test.ronutz.com, et une autorité de certification s'en porte garante ». Le profil qui définit quels champs un certificat porte et comment ils sont interprétés est la RFC 5280.
+
+La liaison est ce qui importe. N'importe qui peut générer une paire de clés, donc une clé publique nue ne prouve rien sur qui est à l'autre bout. Un certificat ajoute une signature d'un émetteur en qui la partie utilisatrice fait déjà confiance, transformant une clé anonyme en une clé avec un nom attaché. C'est le fondement de l'infrastructure à clé publique (PKI) du web.
+
+## La chaîne de confiance
+
+Un seul certificat est rarement digne de confiance à lui seul. Il est digne de confiance parce qu'il a été signé par un émetteur, qui a été à son tour signé par un autre émetteur, jusqu'à une racine que la partie utilisatrice détient déjà dans un magasin de confiance :
+
+```
+Root CA  (self-signed, in the OS/browser trust store)
+   |  signs
+Intermediate CA
+   |  signs
+Leaf / end-entity certificate  (test.ronutz.com)
+```
+
+Chaque maillon est une signature : l'émetteur signe le certificat de l'enfant avec la clé privée de l'émetteur, et un vérificateur contrôle cette signature avec la clé publique de l'émetteur. Une **racine** est auto-émise et auto-signée, c'est pourquoi un certificat auto-signé est un substitut local utile pour une racine mais ne porte aucune autorité externe. L'outil X.509 signale un certificat auto-émis (émetteur égal au sujet) et si le certificat est marqué comme une CA, les deux vous disant où un certificat se situe dans cette image.
+
+## ASN.1 et DER : la disposition des octets
+
+Un certificat n'est ni du JSON ni du texte. Il est décrit en ASN.1 (Abstract Syntax Notation One) et encodé avec les Distinguished Encoding Rules (DER), spécifiées dans l'ITU-T X.690. DER est un format tag-length-value (TLV) : chaque élément commence par un octet de tag disant de quel type il s'agit, puis une longueur, puis ce nombre d'octets de contenu. Les types construits comme SEQUENCE et SET contiennent des éléments enfants, donc le certificat entier est un arbre de TLVs.
+
+Un fichier PEM est juste ce DER, encodé en Base64 et enveloppé dans des lignes d'armure :
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...    (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+Donc décoder un certificat signifie retirer l'armure, décoder de Base64 vers DER, puis parcourir l'arbre de TLVs. L'outil X.509 fait exactement cela dans votre navigateur, sans bibliothèque et sans appel réseau.
+
+## La structure de plus haut niveau
+
+Au niveau le plus externe, la RFC 5280 définit trois parties :
+
+```
+Certificate ::= SEQUENCE {
+  tbsCertificate       TBSCertificate,
+  signatureAlgorithm   AlgorithmIdentifier,
+  signatureValue       BIT STRING
+}
+```
+
+Le **tbsCertificate** (« to be signed », à signer) contient tout le contenu réel. Le **signatureAlgorithm** nomme comment l'émetteur l'a signé, par exemple sha256WithRSAEncryption ou ecdsa-with-SHA256. Le **signatureValue** est la signature elle-même, calculée sur les octets DER du tbsCertificate. Ce dernier point mérite d'être retenu : la signature couvre le corps à-signer exactement tel qu'encodé, c'est pourquoi même un changement d'un octet n'importe où dans le corps brise la vérification.
+
+## À l'intérieur du TBSCertificate
+
+Le corps à-signer est là où l'outil passe le plus clair de son temps :
+
+- La **Version** est presque toujours v3, la version qui a introduit les extensions.
+- Le **Numéro de série** est un grand entier que l'émetteur assigne. Combiné au nom de l'émetteur, il identifie de manière unique le certificat, et c'est ce qu'une liste de révocation référence.
+- L'**Émetteur** (Issuer) et le **Sujet** (Subject) sont des Noms Distinctifs (Distinguished Names). Un DN est une séquence d'attributs comme CN (common name), O (organization), OU (organizational unit), L (locality), ST (state) et C (country). La RFC 4514 définit le rendu sur une ligne, le-plus-spécifique-d'abord, que vous voyez, par exemple `CN=test.ronutz.com, O=NTZ Technology, C=BR`.
+- La **Validité** (Validity) est un horodatage notBefore et un notAfter. Ceux-ci sont encodés en UTCTime ou GeneralizedTime ; l'outil convertit les deux en ISO-8601 et, face à votre horloge locale, vous dit si le certificat est valide maintenant, pas-encore-valide ou expiré.
+- Le **subjectPublicKeyInfo** porte la clé publique plus son algorithme. Pour RSA, l'outil rapporte la taille du module (par exemple 2048-bit) et l'exposant public (presque toujours 65537). Pour les clés à courbe elliptique, il rapporte la courbe nommée (P-256, P-384, P-521), selon la RFC 5480.
+
+## Les extensions v3
+
+Les extensions sont là où les certificats modernes encodent l'essentiel de leur politique. Chaque extension a un identifiant, un indicateur critique et une valeur. L'indicateur critique importe : si une partie utilisatrice ne comprend pas une extension marquée comme critique, elle doit rejeter le certificat plutôt qu'ignorer le champ. L'outil décode celles qui portent le plus de poids :
+
+- Le **Subject Alternative Name (SAN)** liste les identités pour lesquelles le certificat est en réalité valide, sous forme de noms DNS, d'adresses IP, d'adresses e-mail ou d'URIs. Pour TLS, c'est le champ que les navigateurs vérifient, pas le CN. Un certificat pour `test.ronutz.com` qui omet ce nom de son SAN échouera à la validation dans un client moderne même si le CN correspond.
+- Le **Key Usage** contraint ce que la clé peut faire à bas niveau : digitalSignature, keyEncipherment, keyCertSign, cRLSign et d'autres. Un certificat de CA porte keyCertSign ; une feuille TLS porte typiquement digitalSignature et keyEncipherment.
+- L'**Extended Key Usage (EKU)** nomme des objectifs de plus haut niveau comme serverAuth (serveur TLS), clientAuth (client TLS), codeSigning ou emailProtection.
+- Les **Basic Constraints** indiquent si le certificat est une CA et, si oui, combien de CA intermédiaires peuvent apparaître en dessous (la longueur du chemin). C'est le champ qui empêche un certificat feuille d'être utilisé pour signer d'autres certificats.
+- Le **Subject Key Identifier** et l'**Authority Key Identifier** sont des hachages qui permettent à un vérificateur d'apparier rapidement un certificat à son émetteur lors de la construction d'une chaîne.
+
+## Empreintes
+
+Une **empreinte** (fingerprint) de certificat est simplement un hachage cryptographique des octets DER du certificat, généralement SHA-256 (et, pour les références plus anciennes, SHA-1). Ce n'est pas un champ dans le certificat ; elle est calculée sur l'ensemble. Les empreintes vous donnent une valeur courte, de longueur fixe, pour comparer deux certificats quant à l'égalité ou pour épingler un certificat connu. L'outil calcule SHA-256 et SHA-1 localement avec l'API Web Crypto, donc les octets que vous collez ne sont jamais envoyés nulle part. Pour en savoir plus sur ce qu'un hachage est et n'est pas, voir l'article de hachage.
+
+## Décoder n'est pas valider
+
+C'est l'idée la plus importante de toutes, et elle reflète la même prudence qui s'applique aux JSON Web Tokens. Lire les champs d'un certificat vous dit ce qu'il *prétend*. Cela ne vous dit pas que la prétention est *vraie*. La validation complète est un processus distinct et plus lourd : vérifier que la signature s'enchaîne jusqu'à une racine de confiance, qu'aucun des certificats de la chaîne n'est expiré ou révoqué, que le nom auquel vous vous êtes connecté est dans le SAN, et que les usages de la clé permettent ce que vous faites.
+
+Un décodeur de certificats, celui-ci compris, est un instrument d'inspection et d'apprentissage. Il vous montre précisément ce qu'un émetteur a affirmé et comment cela a été encodé. Traitez la sortie comme une lecture fidèle du document, non comme un verdict sur la confiance à lui accorder.

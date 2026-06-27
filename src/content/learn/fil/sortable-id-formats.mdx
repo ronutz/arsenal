@@ -1,0 +1,43 @@
+---
+slug: sortable-id-formats
+title: "ULID, KSUID, Snowflake, at iba pang sortable na ID"
+summary: "Ang mga sikat na alternatibo sa mga UUID para sa time-ordered na identifier, kung paano binuo ang bawat isa, at kung bakit saklaw na ngayon ng UUIDv7 ang karamihan ng pinag-imbentuhan sa kanila."
+concepts: ["uuid", "ulid", "ksuid", "snowflake", "nanoid", "sortable-ids"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bakit umiiral ang mga ito
+
+Ang random na UUIDv4 ay mahusay sa pagiging natatangi at napakasama sa pagiging nakaayos, at ang kaguluhang iyon ay tahimik na nakakasakit sa performance ng database (ang kuwento sa artikulong [mga database key](/learn/uuid-database-keys)). Bago isinapamantayan ng UUIDv7 ang isang time-ordered na UUID, ilang proyekto ang nag-imbento ng kanilang sariling mga format ng identifier upang makuha ang parehong benepisyo: isang ID na nagsa-sort ayon sa oras ng paglikha, maliit at URL-friendly, at hindi pa rin nangangailangan ng sentral na koordinasyon. Sulit silang malaman dahil makakaharap mo sila sa totoong mga sistema at dahil inilalarawan nila ang parehong ilang trade-off.
+
+## Ang karaniwang recipe
+
+Halos bawat sortable na ID ay gumagamit ng isang ideya: ilagay ang **timestamp muna** at **random o sequential na mga bit pagkatapos**. Ang pag-sort sa mga ID bilang teksto ay nag-aayos sa kanila nang halos ayon sa oras, dahil ang pinaka-makabuluhang bahagi ay ang orasan. Ang pag-encode sa kabuuan sa isang base na nagpapanatili ng pagkakasunod (upang ang teksto ay magsa-sort nang katulad ng mga byte) ay ginagawa ang mga ID na lexicographically sortable bilang mga payak na string. Nag-iiba ang mga format sa kung gaano karaming bit ang ginugugol nila sa oras laban sa randomness, kung paano nila ineen-encode ang resulta, at kung kailangan nila ng anumang koordinasyon sa pagitan ng mga generator.
+
+## ULID
+
+Ang ULID ay isang 128-bit na identifier, kaparehong lapad ng isang UUID, ipinapakita bilang 26 na karakter sa Crockford base32. Ang unang 48 bit ay isang millisecond timestamp at ang natitirang 80 ay random. Ang encoding ay case-insensitive at pinili upang maging nababasa, at ito ay lexicographically sortable, na may opsyonal na monotonic mode na ginagarantiyahan ang pagkakaayos kahit para sa mga ID na nilikha sa parehong millisecond. Ang ULID ay isa sa pinakasikat na sagot sa problema sa pagkakaayos ng v4 at, dahil 128-bit, maaari itong iimbak sa parehong espasyo ng isang UUID.
+
+## KSUID
+
+Ang KSUID (mula sa Segment) ay isang 160-bit na identifier na naka-encode bilang 27 base62 na karakter. Gumagamit ito ng isang 32-bit na timestamp na second-resolution na may custom na epoch (upang ang mga timestamp nito ay manatiling maliit sa loob ng maraming taon) na sinusundan ng 128 bit ng randomness. Ang mas malaking random na bahagi ay ginagawa ang mga banggaan na halos imposible kahit sa matataas na rate ng pagbuo, sa halaga ng pagiging mas malapad kaysa sa isang UUID. Tulad ng ULID, nagsa-sort ito ayon sa oras kapag sinort bilang teksto.
+
+## Snowflake
+
+Ang Snowflake (nagmula sa Twitter) ay ibang hugis: isang 64-bit na integer, hindi isang 128-bit na halaga. Pinipiga nito ang isang millisecond timestamp, isang machine o datacenter identifier, at isang per-millisecond na sequence number sa 64 bit, upang kasya ito sa isang standard na signed bigint na column. Ang kaliitang iyon ang nagiging hila nito para sa napakalalaking dataset. Ang abala ay koordinasyon: bawat generator ay nangangailangan ng isang natatanging machine ID, na kailangang italaga at pamahalaan, kaya ipinagpapalit ng Snowflake ang coordination-free na katangian ng mga UUID para sa isang mas maliit na identifier. Maraming sistema ang may kani-kanilang Snowflake-like na scheme na binuo sa parehong ideya ng pagpiga.
+
+## NanoID
+
+Ang NanoID ang kakaiba: hindi ito nakabatay sa oras kahit kaunti. Ito ay isa lamang maliit, URL-safe na random na string na may nako-configure na alpabeto at haba, dinisenyo bilang isang mas maliit, mas magiliw na alternatibo sa isang random na UUID kapag gusto mo ng isang opaque na identifier sa isang maikling string. Ihambing ito sa UUIDv4 sa halip na sa mga sortable na format: ino-optimize nito para sa laki at URL-friendliness, hindi para sa pagkakaayos.
+
+## Paano sila naghahambingan
+
+Ang mga trade-off ay nakahanay sa ilang mga aksis. **Laki**: ang Snowflake ay 64-bit, ang ULID at UUID ay 128-bit, ang KSUID ay 160-bit. **Encoding**: base32 (ULID), base62 (KSUID), isang integer (Snowflake), o hex (UUID). **Koordinasyon**: ang Snowflake lamang ang nangangailangan ng mga itinalagang machine ID; ang iba ay coordination-free. **Sortability**: lahat maliban sa NanoID ay time-ordered. At isang ibinahaging babala: ang anumang ID na may prefix na timestamp ay ginagawang nakikita ang oras ng paglikha nito sa sinumang makakabasa nito, na ayos lang para sa karamihan ng mga gamit ngunit sulit tandaan kapag ang isang identifier ay inilantad sa publiko.
+
+## Bakit binago ng UUIDv7 ang kalkulasyon
+
+Ang dahilan kung bakit hindi na gaanong mahalaga ang listahang ito kaysa dati ay isinapamantayan ng UUIDv7 (tingnan ang artikulong [mga bersyon](/learn/uuid-versions)) ang parehong recipe na timestamp-plus-random sa loob ng karaniwang 128-bit na UUID na format. Binibigyan ka nito ng pagkakaayos ayon sa oras at mahusay na index locality habang nananatiling isang standard na UUID na naiintindihan na ng bawat database at library, nang walang custom na encoding at walang koordinasyon. Kaya para sa mga bagong sistema, ang tapat na default ay abutin muna ang v7 at gumamit ng isa sa mga alternatibong ito kapag kailangan mo lamang ang partikular nitong katangian: isang 64-bit na lapad na kasya sa isang bigint (Snowflake), isang partikular na text encoding, o isang mas malaking random na espasyo. Nalutas nila ang isang totoong problema; nilulutas na ngayon ng v7 ang karamihan nito sa isang standard na anyo.

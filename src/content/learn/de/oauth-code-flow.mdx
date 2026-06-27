@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "Der OAuth-2.0-Autorisierungscode-Flow"
+summary: "Die vier Rollen, der Weiterleitungs-und-Tausch-Tanz und warum der Code auf dem Backchannel gegen ein Token getauscht wird."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Wofür der Flow da ist
+
+OAuth 2.0 (RFC 6749) lässt eine Anwendung im Namen eines Benutzers handeln, ohne je das Passwort des Benutzers zu sehen. „Mit Google anmelden" ist das alltägliche Beispiel: Die App erhält die Erlaubnis, auf etwas zuzugreifen, aber Google, nicht die App, handhabt die Anmeldedaten. Der **Autorisierungscode-Flow** ist die häufigste und sicherste Art, das einzurichten, und es ist der Flow, den PKCE schützt.
+
+## Die vier Rollen
+
+- Der **Ressourcenbesitzer** (resource owner) ist der Benutzer, der die Daten besitzt und den Zugriff gewährt.
+- Der **Client** ist die Anwendung, die den Zugriff anfragt.
+- Der **Autorisierungsserver** (authorization server) authentifiziert den Benutzer und stellt Token aus (Google, ein Identitätsanbieter, Ihr eigener Auth-Dienst).
+- Der **Ressourcenserver** (resource server) ist die API, die die geschützten Daten hält und das Token akzeptiert.
+
+## Der Tanz, Schritt für Schritt
+
+1. **Zur Autorisierung weiterleiten.** Der Client schickt den Browser des Benutzers zum Authorize-Endpunkt des Autorisierungsservers, mit seiner `client_id`, einer `redirect_uri`, dem gewünschten `scope`, einem zufälligen `state`-Wert und (mit PKCE) einer Code-Challenge. Der Client handhabt das Passwort nie.
+2. **Authentifizieren und zustimmen.** Der Autorisierungsserver meldet den Benutzer an und bittet ihn, die angefragten Scopes zu genehmigen.
+3. **Mit einem Code zurückleiten.** Der Server leitet den Browser zurück zur `redirect_uri` des Clients mit einem kurzlebigen **Autorisierungscode** und dem ursprünglichen `state`. Der Client prüft, dass der `state` übereinstimmt, was gegen Cross-Site Request Forgery beim Rückruf schützt.
+4. **Den Code gegen Token tauschen.** Nun auf dem Backchannel (ein direkter Server-zu-Server-Aufruf, nicht der Browser) sendet der Client den Code an den Token-Endpunkt zusammen mit seinen Anmeldedaten (einem Client-Geheimnis oder dem PKCE-Code-Verifier) und erhält ein **Zugriffstoken**, oft ein **Auffrischungstoken** und für OpenID Connect ein **ID-Token**.
+5. **Die API aufrufen.** Der Client legt das Zugriffstoken dem Ressourcenserver vor, der es validiert und die Daten zurückgibt.
+
+## Warum ein Code und nicht das Token direkt?
+
+Der Umweg über einen Autorisierungscode existiert, damit das Token nie durch die Adressleiste oder die Historie des Browsers reist, wo es durchsickern könnte. Der Code, der *dort* reist, ist für sich allein nutzlos: Ihn einzulösen erfordert den Backchannel-Aufruf mit dem Client-Geheimnis oder PKCE-Verifier. Diese Trennung, ein Wegwerf-Code auf dem Frontchannel und das echte Token auf dem Backchannel, ist die zentrale Sicherheitseigenschaft des Flows.
+
+Dies ist auch genau die Lücke, die PKCE für Clients füllt, die kein Geheimnis hüten können (Single-Page- und mobile Apps): Es bindet den Code an einen Einmal-Verifier, sodass ein abgefangener Code dennoch nicht getauscht werden kann. Die Token, die der Flow zurückgibt, sind sehr oft JWTs.
+
+Das [PKCE-Werkzeug](/tools/pkce) erzeugt und prüft den Verifier und die Challenge, auf die sich dieser Flow stützt, und das [JWT-Werkzeug](/tools/jwt) dekodiert die Token, die er zurückgibt, beide lokal in Ihrem Browser.

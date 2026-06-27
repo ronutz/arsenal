@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Découverte de Voisins : comment IPv6 remplace ARP"
+summary: "Comment IPv6 trouve les voisins sur un lien en utilisant ICMPv6 et le multicast au lieu de l'ARP par broadcast, les cinq messages de Découverte de Voisins, et pourquoi le broadcast a disparu."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 n'est pas optionnel
+
+En IPv4, ICMP est un ajout diagnostique que vous pouvez bloquer sans casser la connectivité de base. En IPv6, ICMPv6 (RFC 4443) est porteur : le protocole en dépend pour l'opération centrale du lien, donc le filtrer indistinctement casse le réseau. La raison est qu'IPv6 a déplacé plusieurs tâches qu'IPv4 répartissait à travers ARP, la découverte de routeur par ICMP, et les redirections par ICMP, dans un unique protocole basé sur ICMPv6 appelé Découverte de Voisins (Neighbor Discovery, RFC 4861). Comprendre la Découverte de Voisins, c'est comprendre comment un lien IPv6 fonctionne réellement.
+
+## Cinq messages font le travail
+
+La Découverte de Voisins définit cinq types de message ICMPv6, et presque tout sur un lien est quelque combinaison d'entre eux :
+
+- **Sollicitation de Routeur (RS)** : un hôte demande aux routeurs de s'annoncer.
+- **Annonce de Routeur (RA)** : un routeur annonce le préfixe et les flags de configuration (l'entrée de l'autoconfiguration dans l'article [configuration d'adresse](/learn/ipv6-address-configuration)).
+- **Sollicitation de Voisin (NS)** : un hôte demande « qui a cette adresse, et quelle est ton adresse de couche liaison ? »
+- **Annonce de Voisin (NA)** : la réponse donnant cette adresse de couche liaison.
+- **Redirection (Redirect)** : un routeur informe un hôte d'un meilleur saut suivant pour une destination.
+
+La sollicitation et l'annonce de routeur traitent de « comment me configurer » ; la sollicitation et l'annonce de voisin traitent de « comment atteindre ce voisin » ; la redirection traite de « il y a un meilleur chemin ». Cela couvre la vie quotidienne d'un lien.
+
+## Résolution d'adresse sans broadcast
+
+Le travail qu'ARP fait en IPv4, mapper une adresse IP vers une adresse matérielle, est fait en IPv6 par la paire Sollicitation et Annonce de Voisin. La différence importante est *comment* la question est posée. ARP crie à l'adresse de broadcast, interrompant chaque appareil du segment. IPv6 envoie plutôt la Sollicitation de Voisin à l'**adresse multicast de nœud sollicité** (solicited-node multicast address) de la cible, un groupe sur lequel seul le petit ensemble d'hôtes partageant le même suffixe d'adresse sera à l'écoute. La cible répond avec une Annonce de Voisin portant son adresse de couche liaison. Le demandeur met le résultat en cache, exactement comme un cache ARP fonctionne, et le revalide à travers la Détection d'Inaccessibilité de Voisin (Neighbor Unreachability Detection) quand le trafic suggère qu'un voisin a pu s'en aller.
+
+## L'adresse multicast de nœud sollicité
+
+L'adresse multicast de nœud sollicité est construite à partir de l'adresse cible : prenez le préfixe `ff02::1:ff00:0/104` et ajoutez les derniers 24 bits de l'adresse de la cible. Parce que la résolution ne vise que la poignée d'hôtes partageant ces 24 bits bas plutôt que le lien entier, la requête atteint bien moins de machines qu'un broadcast ARP le ferait. Cette construction est pourquoi l'article [adressage](/learn/ipv6-addressing) traite le multicast de nœud sollicité comme partie du plan d'adresses plutôt qu'un ajout : chaque hôte qui configure une adresse rejoint automatiquement le groupe de nœud sollicité correspondant pour que d'autres puissent le trouver.
+
+## Aucun broadcast du tout
+
+IPv6 n'a aucune adresse de broadcast. Tout ce pour quoi IPv4 utilisait le broadcast, y compris la résolution d'adresse et la découverte de routeur, est géré par multicast vers des groupes spécifiques et bien délimités. Il y a un groupe multicast de tous-les-nœuds (`ff02::1`) et un groupe de tous-les-routeurs (`ff02::2`), mais la résolution routinière vise plutôt les étroits groupes de nœud sollicité. Remplacer « interrompre tout le monde » par « notifier exactement les auditeurs pertinents » est plus efficace sur les liens occupés et est l'une des améliorations les plus silencieuses qu'IPv6 fait sur IPv4.
+
+## Faire confiance au lien
+
+Parce que la Découverte de Voisins est non authentifiée par défaut, un hôte malveillant sur le même lien peut envoyer des Annonces de Routeur ou des Annonces de Voisin falsifiées pour rediriger ou intercepter du trafic, l'analogue IPv6 du spoofing d'ARP. Les défenses vivent à la bordure du réseau : le RA Guard sur les commutateurs jette les annonces de routeur des ports qui ne devraient pas avoir de routeurs, et la Découverte de Voisins Sécurisée (SEcure Neighbor Discovery, SEND) ajoute une protection cryptographique là où elle est déployée. Comme avec IPv4, le lien local est une frontière de confiance qui vaut la peine d'être défendue.
+
+## Le système nerveux du lien
+
+Le résumé est qu'IPv6 a plié la résolution d'adresse, la découverte de routeur, et la redirection dans un unique protocole basé sur ICMPv6, a échangé le cri par broadcast contre du multicast ciblé, et a rendu le tout essentiel plutôt qu'optionnel. Quand vous voyez une adresse dans l'outil et remarquez son groupe de nœud sollicité ou sa forme link-local, vous regardez les pièces que la Découverte de Voisins utilise pour laisser les hôtes se trouver les uns les autres sur un lien sans jamais déranger les voisins qui ne sont pas impliqués.

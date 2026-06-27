@@ -1,0 +1,47 @@
+---
+slug: ipv6-neighbor-discovery
+title: "Scoperta dei Vicini: come IPv6 sostituisce ARP"
+summary: "Come IPv6 trova i vicini su un collegamento usando ICMPv6 e multicast invece dell'ARP per broadcast, i cinque messaggi di Scoperta dei Vicini, e perché il broadcast è scomparso."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## ICMPv6 non è opzionale
+
+In IPv4, ICMP è un ripensamento diagnostico che puoi bloccare senza rompere la connettività di base. In IPv6, ICMPv6 (RFC 4443) è portante: il protocollo dipende da esso per l'operazione centrale del collegamento, quindi filtrarlo indiscriminatamente rompe la rete. La ragione è che IPv6 ha spostato vari compiti che IPv4 distribuiva attraverso ARP, la scoperta di router tramite ICMP, e i reindirizzamenti tramite ICMP, in un singolo protocollo basato su ICMPv6 chiamato Scoperta dei Vicini (Neighbor Discovery, RFC 4861). Comprendere la Scoperta dei Vicini è comprendere come un collegamento IPv6 funziona realmente.
+
+## Cinque messaggi fanno il lavoro
+
+La Scoperta dei Vicini definisce cinque tipi di messaggio ICMPv6, e quasi tutto su un collegamento è qualche combinazione di essi:
+
+- **Sollecitazione di Router (RS)**: un host chiede ai router di annunciarsi.
+- **Annuncio di Router (RA)**: un router annuncia il prefisso e i flag di configurazione (l'input per l'autoconfigurazione nell'articolo di [configurazione di indirizzo](/learn/ipv6-address-configuration)).
+- **Sollecitazione di Vicino (NS)**: un host chiede "chi ha questo indirizzo, e qual è il tuo indirizzo di livello di collegamento?"
+- **Annuncio di Vicino (NA)**: la risposta che dà quell'indirizzo di livello di collegamento.
+- **Reindirizzamento (Redirect)**: un router dice a un host di un migliore prossimo salto per una destinazione.
+
+La sollecitazione e l'annuncio di router trattano di "come mi configuro"; la sollecitazione e l'annuncio di vicino trattano di "come raggiungo questo vicino"; il reindirizzamento tratta di "c'è un percorso migliore". Questo copre la vita quotidiana di un collegamento.
+
+## Risoluzione di indirizzo senza broadcast
+
+Il lavoro che ARP fa in IPv4, mappare un indirizzo IP a un indirizzo hardware, è fatto in IPv6 dalla coppia Sollecitazione e Annuncio di Vicino. La differenza importante è *come* la domanda viene posta. ARP grida all'indirizzo di broadcast, interrompendo ogni dispositivo sul segmento. IPv6 invece invia la Sollecitazione di Vicino all'**indirizzo multicast di nodo sollecitato** (solicited-node multicast address) del bersaglio, un gruppo su cui solo il piccolo insieme di host che condividono lo stesso suffisso di indirizzo sarà in ascolto. Il bersaglio risponde con un Annuncio di Vicino che porta il suo indirizzo di livello di collegamento. Il consultante mette in cache il risultato, esattamente come funziona una cache ARP, e lo riconvalida attraverso il Rilevamento di Irraggiungibilità di Vicino (Neighbor Unreachability Detection) quando il traffico suggerisce che un vicino possa essere andato via.
+
+## L'indirizzo multicast di nodo sollecitato
+
+L'indirizzo multicast di nodo sollecitato è costruito a partire dall'indirizzo bersaglio: prendi il prefisso `ff02::1:ff00:0/104` e aggiungi gli ultimi 24 bit dell'indirizzo del bersaglio. Poiché la risoluzione mira solo alla manciata di host che condividono quei 24 bit bassi invece dell'intero collegamento, la richiesta raggiunge molte meno macchine di quanto un broadcast ARP farebbe. Questa costruzione è il motivo per cui l'articolo di [indirizzamento](/learn/ipv6-addressing) tratta il multicast di nodo sollecitato come parte del piano di indirizzi invece di un ripensamento: ogni host che configura un indirizzo si unisce automaticamente al gruppo di nodo sollecitato corrispondente così che altri possano trovarlo.
+
+## Nessun broadcast affatto
+
+IPv6 non ha indirizzo di broadcast. Tutto ciò per cui IPv4 usava il broadcast, inclusa la risoluzione di indirizzo e la scoperta di router, è gestito da multicast verso gruppi specifici e ben delimitati. C'è un gruppo multicast di tutti-i-nodi (`ff02::1`) e un gruppo di tutti-i-router (`ff02::2`), ma la risoluzione di routine mira invece agli stretti gruppi di nodo sollecitato. Sostituire "interrompere tutti" con "notificare esattamente gli ascoltatori rilevanti" è più efficiente su collegamenti affollati ed è uno dei miglioramenti più silenziosi che IPv6 fa su IPv4.
+
+## Fidarsi del collegamento
+
+Poiché la Scoperta dei Vicini è non autenticata per impostazione predefinita, un host malevolo sullo stesso collegamento può inviare Annunci di Router o Annunci di Vicino falsificati per reindirizzare o intercettare traffico, l'analogo IPv6 dello spoofing di ARP. Le difese vivono al bordo della rete: il RA Guard sugli switch scarta gli annunci di router da porte che non dovrebbero avere router, e la Scoperta dei Vicini Sicura (SEcure Neighbor Discovery, SEND) aggiunge protezione crittografica dove è distribuita. Come con IPv4, il collegamento locale è una frontiera di fiducia che vale la pena difendere.
+
+## Il sistema nervoso del collegamento
+
+Il riassunto è che IPv6 ha piegato la risoluzione di indirizzo, la scoperta di router, e il reindirizzamento in un singolo protocollo basato su ICMPv6, ha scambiato il grido per broadcast con multicast mirato, e ha reso l'intera cosa essenziale invece di opzionale. Quando vedi un indirizzo nello strumento e noti il suo gruppo di nodo sollecitato o la sua forma link-local, stai guardando i pezzi che la Scoperta dei Vicini usa per lasciare che gli host si trovino l'un l'altro su un collegamento senza mai disturbare i vicini che non sono coinvolti.

@@ -1,0 +1,62 @@
+---
+slug: certificate-formats
+title: "PEM, DER en de certificaatbestandsformaten"
+summary: "Waarom hetzelfde certificaat in zoveel bestandsvormen komt, wat PEM en DER werkelijk zijn, en wat .crt, .pem, .pfx en .p12 echt bevatten."
+concepts: ["x509", "pem", "der", "pkcs12", "pkcs7", "encoding"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-signing-request", "base64"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Eén certificaat, vele omhulsels
+
+Een veelvoorkomende bron van verwarring is dat een enkel certificaat kan aankomen als een `.crt`, een `.cer`, een `.pem`, een `.der`, of begraven in een `.pfx`, en mensen nemen aan dat dit verschillende dingen zijn. Gewoonlijk zijn ze dat niet. Het certificaat is één vaste structuur (de ASN.1-indeling beschreven in het [anatomie-artikel](/learn/x509-anatomy)); wat verandert is hoe die bytes gecodeerd zijn en wat er nog meer naast verpakt is. De handvol echte formaten kennen laat de bestandsextensies ophouden mysterieus te zijn.
+
+## DER: het canonieke binair
+
+Onderaan is het DER, de Distinguished Encoding Rules uit ITU-T X.690. DER is de feitelijke binaire serialisatie van de ASN.1-boom van het certificaat: een reeks tag-length-value-records, met precies één geldige codering voor elke gegeven waarde. Dat determinisme doet ertoe, want de handtekening van de uitgever wordt over deze exacte bytes berekend. Een `.der`-bestand (en vaak een `.cer`-bestand) is ruw DER zonder tekstomhulsel. De X.509-tool decodeert dit binair rechtstreeks.
+
+## PEM: DER gewikkeld in tekst
+
+PEM is DER dat Base64-gecodeerd en in armeringsregels gewikkeld is, gedefinieerd door RFC 7468:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...   (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+PEM bestaat omdat binair het plakken in een e-mail, een configuratiebestand of een terminal niet overleeft, terwijl Base64-tekst dat wel doet. Het label op de `BEGIN`/`END`-regels vertelt je wat het lichaam is, en er zijn er verscheidene:
+
+- `CERTIFICATE` is een X.509-certificaat.
+- `CERTIFICATE REQUEST` is een CSR (zie het [ondertekeningsverzoek-artikel](/learn/certificate-signing-request)).
+- `PRIVATE KEY` is een PKCS#8-privésleutel; `RSA PRIVATE KEY` en `EC PRIVATE KEY` zijn de oudere sleutel-specifieke formaten.
+- `PUBLIC KEY` is een kale SubjectPublicKeyInfo.
+- `X509 CRL` is een certificaatherroepingslijst.
+
+Een enkel PEM-bestand kan verscheidene blokken achter elkaar houden, wat de manier is waarop het bladcertificaat van een server plus zijn tussenketen in één `fullchain.pem` worden geleverd. Voor de codering eronder, zie het [Base64-artikel](/learn/base64).
+
+## De bestandsextensie is niet het formaat
+
+Dit is het deel dat mensen doet struikelen: `.crt`, `.cer`, `.pem` en `.key` beschrijven intentie, niet codering. Een `.crt` kan PEM of DER zijn. Een `.cer` is vaak DER op Windows maar PEM elders. Een `.key` is een privésleutel, maar kan PKCS#1, PKCS#8 of SEC1 zijn, in PEM of DER. De enige betrouwbare manier om te weten wat je hebt is naar de eerste bytes kijken: PEM begint met de zichtbare `-----BEGIN`-regel, terwijl DER begint met het SEQUENCE-tag-byte `0x30`. De tool accepteert beide, dus je kunt een PEM-blok plakken of ruw DER uploaden zonder eerst te converteren.
+
+## Containers die meer dan één ding bundelen
+
+Twee PKCS-formaten verpakken meerdere objecten samen:
+
+- **PKCS#7** (`.p7b`, `.p7c`) draagt een of meer certificaten, typisch een certificaat plus zijn keten, maar geen privésleutel. Het wordt vaak gebruikt om iemand een volledige keten in één bestand te overhandigen.
+- **PKCS#12** (`.pfx`, `.p12`), gedefinieerd door RFC 7292, bundelt een certificaat, zijn keten en de bijbehorende privésleutel in één wachtwoordbeschermd blob. Dit is wat je exporteert uit een Windows-certificaatopslag of importeert in een load balancer wanneer je wilt dat de sleutel en het certificaat samen reizen. Omdat het de privésleutel bevat, is een PKCS#12-bestand gevoelig en is het wachtwoord het enige wat het beschermt.
+
+## Privésleutel-coderingen
+
+Privésleutels hebben hun eigen kleine dierentuin. **PKCS#1** (`RSA PRIVATE KEY`) is het oorspronkelijke alleen-RSA-formaat. **SEC1** (`EC PRIVATE KEY`) is het equivalent voor elliptische-curve-sleutels. **PKCS#8** (`PRIVATE KEY`, optioneel `ENCRYPTED PRIVATE KEY`) is het moderne, algoritme-neutrale omhulsel dat elk kan houden, en is wat de meeste huidige tooling uitzendt. Een certificaatdecoder heeft nooit de privésleutel nodig, en je zou nooit een privésleutel moeten plakken in een tool die je niet beheert; de X.509-tool is voor certificaten, die per ontwerp publiek zijn.
+
+## Converteren tussen hen
+
+Omdat de innerlijke structuur identiek is, is conversie verliesvrij en routinematig. Met OpenSSL is PEM naar DER `openssl x509 -in cert.pem -outform der -out cert.der`, en het omgekeerde wisselt de in- en out-vormen. Een PKCS#12 bouwen uit een apart certificaat en sleutel is `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`. Geen van deze verandert het certificaat zelf; ze herverpakken het alleen.
+
+## Verpakking, niet substantie
+
+De les is dat PEM versus DER, en `.crt` versus `.pfx`, kwesties van transport en bundeling zijn, niet van wat het certificaat zegt. Strip de armering, decodeer van Base64 en negeer de container, en onder elk van deze ligt dezelfde ondertekende ASN.1-verklaring die een publieke sleutel aan een naam bindt. De taak van de tool is die verpakking in je browser af te pellen en je de structuur erbinnen te tonen, zonder dat ooit een bestand de pagina verlaat.

@@ -1,0 +1,62 @@
+---
+slug: certificate-formats
+title: "PEM, DER, dan format fail sijil"
+summary: "Mengapa sijil sama datang dalam begitu banyak bentuk fail, apa sebenarnya PEM dan DER, dan apa yang .crt, .pem, .pfx, dan .p12 benar-benar pegang."
+concepts: ["x509", "pem", "der", "pkcs12", "pkcs7", "encoding"]
+relatedTools: ["x509"]
+relatedArticles: ["x509-anatomy", "certificate-signing-request", "base64"]
+category: pki
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Satu sijil, banyak pembalut
+
+Sumber kekeliruan biasa ialah sijil tunggal boleh tiba sebagai `.crt`, `.cer`, `.pem`, `.der`, atau terkubur di dalam `.pfx`, dan orang menganggap ini ialah benda berbeza. Ia biasanya bukan. Sijil ialah satu struktur tetap (susun atur ASN.1 diterangkan dalam [artikel anatomi](/learn/x509-anatomy)); apa yang berubah ialah bagaimana bait itu dikodkan dan apa lagi yang dibungkus bersamanya. Mengetahui segelintir format sebenar membuat sambungan fail berhenti menjadi misteri.
+
+## DER: binari berkanun
+
+Di bawah sekali ialah DER, Distinguished Encoding Rules daripada ITU-T X.690. DER ialah siri penyusunan binari sebenar bagi pokok ASN.1 sijil: jujukan rekod tag-length-value, dengan tepat satu pengekodan sah bagi mana-mana nilai diberi. Determinisme ini penting, kerana tandatangan pengeluar dikira ke atas bait tepat ini. Fail `.der` (dan selalunya fail `.cer`) ialah DER mentah tanpa pembalut teks. Alat X.509 menyahkod binari ini secara terus.
+
+## PEM: DER dibalut dalam teks
+
+PEM ialah DER yang telah dikodkan Base64 dan dibalut dalam baris perisai, ditakrifkan oleh RFC 7468:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIELDCCAxSgAwIBAgIG...   (Base64 of the DER)
+-----END CERTIFICATE-----
+```
+
+PEM wujud kerana binari tidak terus hidup apabila ditampal ke dalam e-mel, fail konfigurasi, atau terminal, manakala teks Base64 terus hidup. Label pada baris `BEGIN`/`END` memberitahu anda apa badan itu, dan ada beberapa:
+
+- `CERTIFICATE` ialah sijil X.509.
+- `CERTIFICATE REQUEST` ialah CSR (lihat [artikel permintaan tandatangan](/learn/certificate-signing-request)).
+- `PRIVATE KEY` ialah kunci persendirian PKCS#8; `RSA PRIVATE KEY` dan `EC PRIVATE KEY` ialah format khusus-kunci yang lebih lama.
+- `PUBLIC KEY` ialah SubjectPublicKeyInfo bogel.
+- `X509 CRL` ialah senarai pembatalan sijil.
+
+Satu fail PEM boleh memegang beberapa blok berturut-turut, yang ialah bagaimana sijil daun pelayan tambah rantaian perantaranya dihantar dalam satu `fullchain.pem`. Untuk pengekodan di bawahnya, lihat [artikel Base64](/learn/base64).
+
+## Sambungan fail bukan format
+
+Inilah bahagian yang menjatuhkan orang: `.crt`, `.cer`, `.pem`, dan `.key` menerangkan niat, bukan pengekodan. `.crt` mungkin PEM atau DER. `.cer` selalunya DER pada Windows tetapi PEM di tempat lain. `.key` ialah kunci persendirian, tetapi boleh jadi PKCS#1, PKCS#8, atau SEC1, dalam sama ada PEM atau DER. Satu-satunya cara boleh dipercayai untuk mengetahui apa yang anda ada ialah melihat bait pertama: PEM bermula dengan baris kelihatan `-----BEGIN`, manakala DER bermula dengan bait tag SEQUENCE `0x30`. Alat menerima mana-mana, jadi anda boleh menampal blok PEM atau memuat naik DER mentah tanpa menukar dahulu.
+
+## Bekas yang membungkus lebih daripada satu benda
+
+Dua format PKCS membungkus pelbagai objek bersama:
+
+- **PKCS#7** (`.p7b`, `.p7c`) membawa satu atau lebih sijil, biasanya sijil tambah rantaiannya, tetapi tiada kunci persendirian. Ia selalunya digunakan untuk menyerahkan seseorang rantaian penuh dalam satu fail.
+- **PKCS#12** (`.pfx`, `.p12`), ditakrifkan oleh RFC 7292, membungkus sijil, rantaiannya, dan kunci persendirian yang sepadan ke dalam satu blob dilindungi kata laluan. Ini ialah apa yang anda eksport daripada stor sijil Windows atau import ke pengimbang beban apabila anda mahu kunci dan sijil mengembara bersama. Kerana ia mengandungi kunci persendirian, fail PKCS#12 sensitif dan kata laluan ialah satu-satunya benda yang melindunginya.
+
+## Pengekodan kunci persendirian
+
+Kunci persendirian mempunyai zoo kecilnya sendiri. **PKCS#1** (`RSA PRIVATE KEY`) ialah format asal hanya-RSA. **SEC1** (`EC PRIVATE KEY`) ialah setara bagi kunci lengkung eliptik. **PKCS#8** (`PRIVATE KEY`, secara pilihan `ENCRYPTED PRIVATE KEY`) ialah pembalut moden, neutral-algoritma yang boleh memegang mana-mana, dan ialah apa yang kebanyakan perkakasan semasa keluarkan. Penyahkod sijil tidak pernah memerlukan kunci persendirian, dan anda tidak sepatutnya menampal kunci persendirian ke dalam alat yang anda tidak kawal; alat X.509 adalah untuk sijil, yang awam secara reka bentuk.
+
+## Menukar antara mereka
+
+Kerana struktur dalaman adalah serupa, penukaran adalah tanpa kehilangan dan rutin. Dengan OpenSSL, PEM ke DER ialah `openssl x509 -in cert.pem -outform der -out cert.der`, dan songsangannya menukar bentuk in dan out. Membina PKCS#12 daripada sijil dan kunci berasingan ialah `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`. Tiada satu pun daripada ini mengubah sijil itu sendiri; ia hanya membungkus semula ia.
+
+## Pembungkusan, bukan inti
+
+Pengajarannya ialah PEM lawan DER, dan `.crt` lawan `.pfx`, ialah soal pengangkutan dan pembungkusan, bukan tentang apa yang sijil katakan. Tanggalkan perisai, nyahkod Base64, dan abaikan bekas, dan di bawah setiap satu daripada ini ialah kenyataan ASN.1 bertandatangan yang sama yang mengikat kunci awam kepada nama. Tugas alat ialah mengupas pembungkusan itu dalam pelayar anda dan menunjukkan anda struktur di dalam, tanpa sebarang fail pernah meninggalkan halaman.

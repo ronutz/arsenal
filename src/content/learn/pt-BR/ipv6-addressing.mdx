@@ -1,0 +1,77 @@
+---
+slug: ipv6-addressing
+title: "Entendendo o endereçamento IPv6"
+summary: "Como um endereço IPv6 de 128 bits é estruturado e escrito, as regras para comprimi-lo canonicamente, o que os tipos de endereço e escopos significam, e como identificadores de interface e DNS reverso funcionam."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Por que o IPv6 existe
+
+O IPv4 tem cerca de 4,3 bilhões de endereços (2^32). Isso parecia inesgotável nos anos 1980 e está agora há muito esgotado nos registros. O IPv6, definido para endereçamento na RFC 4291, alarga o endereço de 32 bits para **128 bits**, que são 2^128 endereços, um número grande o bastante para que a escassez deixe de ser a restrição de design. O efeito prático é que as sub-redes se tornam enormes e truques de conservação de endereços como o NAT não são mais necessários para conectividade básica.
+
+## A estrutura de 128 bits
+
+Um endereço IPv6 tem 128 bits, escrito como **oito grupos de quatro dígitos hexadecimais** separados por dois-pontos. Cada grupo é um valor de 16 bits:
+
+```
+2001:0db8:0000:0000:0008:0800:200c:417a
+```
+
+Essa forma totalmente escrita é a representação **expandida**. Por ser longa e cheia de zeros, a forma de texto tem regras de compressão.
+
+## Escrevendo um endereço: as regras de compressão
+
+Duas regras encurtam o texto, e a RFC 5952 torna o resultado canônico (um endereço, uma grafia preferida):
+
+- **Suprima zeros à esquerda** em cada grupo: `0db8` torna-se `db8`, `0000` torna-se `0`.
+- **Substitua uma sequência de grupos consecutivos todos-zero por `::`**. O duplo dois-pontos pode aparecer **no máximo uma vez**, e ele representa um ou mais grupos de 16 bits de zeros. Quando existem várias sequências de igual comprimento, a primeira é comprimida.
+
+Aplicar ambas ao endereço acima dá sua forma canônica:
+
+```
+2001:db8::8:800:200c:417a
+```
+
+A RFC 5952 adiciona algumas regras finais para que as ferramentas concordem: os dígitos hex são minúsculos, e `::` não é usado para "comprimir" um único grupo de zeros (isso não encurtaria nada significativo). A ferramenta IPv6 mostra tanto a forma comprimida canônica quanto a forma totalmente expandida lado a lado, para que você possa ver exatamente o que `::` representa.
+
+Um caso especial: um endereço pode carregar uma cauda **IPv4 embutida** em seus últimos 32 bits, escrita em decimal pontilhado. A mais comum é a forma **IPv4-mapeada**, onde a RFC 5952 recomenda a notação mista `::ffff:192.0.2.128` em vez de hex puro.
+
+## Prefixos e aritmética de prefixo
+
+Como o CIDR do IPv4, um prefixo IPv6 é escrito `endereço/comprimento`, onde o comprimento conta os bits de rede iniciais:
+
+```
+2001:db8::/64
+```
+
+Um `/64` significa que os primeiros 64 bits são a rede e os 64 restantes são o identificador de interface. `/64` é o tamanho padrão para uma única LAN, e ele sozinho contém 2^64 endereços, cerca de 18 quintilhões. A ferramenta computa o endereço de rede (primeiro), o último endereço, e a contagem para qualquer prefixo que você lhe der, mascarando os bits de host para zero para achar a rede mesmo se você digitou um endereço com bits de host definidos.
+
+## Tipos de endereço e escopos
+
+Os bits altos de um endereço o colocam em uma categoria. Os mais importantes, da RFC 4291 e do registro IANA:
+
+- **Unicast global (2000::/3)** é o espaço público roteável, o equivalente IPv6 de um endereço IPv4 público.
+- **Único local, ou ULA (fc00::/7)** é o espaço de uso privado (RFC 4193), análogo à RFC 1918 no IPv4. Ele não é roteado na internet pública.
+- **Unicast link-local (fe80::/10)** é válido apenas em um único enlace e é configurado automaticamente em toda interface IPv6. Os roteadores nunca o encaminham. Seu escopo é o enlace local.
+- **Multicast (ff00::/8)** endereça um grupo em vez de um único host. Um campo de escopo dentro do endereço diz quão longe ele alcança: interface-local, link-local, admin-local, site-local, organization-local, ou global. Por exemplo `ff02::1` é o grupo todos-os-nós link-local.
+- **Loopback (::1/128)** é o equivalente IPv6 de 127.0.0.1, e o **endereço não especificado (::/128)** significa "nenhum endereço", usado como espaço reservado durante a configuração.
+- **Documentação (2001:db8::/32)** é reservado pela RFC 3849 para exemplos e escrita, que é por que quase todo exemplo IPv6 que você vê, incluindo o canônico na própria RFC 4291, o usa.
+
+A ferramenta IPv6 relata o tipo correspondente e o prefixo específico que ela correspondeu, mais o escopo para endereços multicast e link-local.
+
+## Identificadores de interface e EUI-64
+
+Em um `/64` típico, os 64 bits inferiores são o **identificador de interface**. Uma forma histórica de construí-lo era o **EUI-64 modificado** (RFC 4291, Apêndice A): tome o endereço MAC de 48 bits, insira os bytes `ff:fe` no meio, e inverta o sétimo bit (o bit universal/local). Isso fazia o id de interface derivável do endereço de hardware. Quando a ferramenta vê o revelador `ff:fe` no meio do id de interface, ela inverte o processo e lhe mostra o MAC original. Sistemas modernos frequentemente preferem identificadores de interface randomizados ou de privacidade em vez disso, precisamente porque derivar o id de um MAC vaza o endereço de hardware.
+
+## DNS reverso: ip6.arpa
+
+Buscas reversas (endereço para nome) para IPv6 vivem sob o domínio **ip6.arpa**. O endereço é expandido aos seus 32 nibbles hex, esses nibbles são invertidos, e cada um torna-se um rótulo. Então `2001:db8::1` torna-se um nome terminando em `...8.b.d.0.1.0.0.2.ip6.arpa`. A ferramenta gera esse nome para qualquer endereço, que é o valor exato que você colocaria em um registro `PTR`.
+
+## Uma nota sobre o que a ferramenta faz
+
+A ferramenta IPv6 é uma calculadora determinística e local. Ela analisa, canoniza, classifica, e computa, tudo no seu navegador, sem nenhuma busca contra a rede ao vivo. Ela lhe diz o que um endereço **é** estruturalmente. Ela não lhe diz se aquele endereço é alcançável, alocado, ou em uso, que são perguntas separadas que requerem consultar a rede ou um registro.

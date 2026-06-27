@@ -1,0 +1,44 @@
+---
+slug: verifying-hmac
+title: "Bezpieczna weryfikacja HMAC: stały czas i powtórzenie"
+summary: "Dlaczego porównywanie podpisów za pomocą == wycieka kanał boczny czasu i dlaczego sam ważny podpis nie powstrzymuje powtórzonego żądania."
+concepts: ["hmac", "constant-time", "timing-attack", "replay", "nonce"]
+relatedTools: ["hmac"]
+relatedArticles: ["hmac", "hmac-api-signing", "why-hmac"]
+category: hashing
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Obliczenie znacznika to łatwa część
+
+Poprawne wytworzenie HMAC jest dobrze rozumiane. Błędy gromadzą się po stronie *weryfikacji*, gdzie dwa problemy łapią tych, którzy dobrze wykonali kryptografię, ale źle logikę wokół: jak porównujesz znaczniki i co naprawdę dowodzi ważny znacznik.
+
+## Porównuj w stałym czasie
+
+Aby zweryfikować, odbiorca ponownie oblicza HMAC z wiadomości i porównuje go ze znacznikiem dostarczonym przez nadawcę. Naturalny sposób porównania dwóch ciągów, zwykłe `==`, kończy się, gdy tylko znajdzie pierwszy różniący się bajt. To wczesne wyjście wycieka czas: znacznik, którego pierwszy bajt jest poprawny, odrzucany jest odrobinę dłużej niż ten błędny od razu. Mierząc czasy odpowiedzi w wielu próbach, atakujący może odtworzyć poprawny znacznik bajt po bajcie, **atak czasowy**.
+
+Obroną jest **porównanie w stałym czasie**, które zawsze bada wszystkie bajty, niezależnie od tego, gdzie leży pierwsza różnica, tak by potrzebny czas nie zdradzał niczego o tym, jak blisko była próba. Większość języków oferuje takie:
+
+- Node.js: `crypto.timingSafeEqual(a, b)`
+- Python: `hmac.compare_digest(a, b)`
+- Go: `hmac.Equal(a, b)`
+
+Nigdy nie weryfikuj podpisu zwykłym porównaniem ciągów.
+
+## Ważny podpis to nie świeże żądanie
+
+Nawet doskonale zweryfikowany HMAC dowodzi jedynie, że wiadomość została wytworzona przez kogoś z kluczem i nie została zmieniona. Nic nie mówi o tym, *kiedy*. Atakujący, który przechwyci legalne podpisane żądanie, może wysłać dokładnie te same bajty ponownie, a podpis nadal się zweryfikuje. To **atak powtórzeniowy** i ma znaczenie dla wszystkiego, co wywołuje skutek: płatności, zmiany stanu, polecenia.
+
+Powstrzymanie powtórzenia wymaga czegoś w podpisanych danych, co czyni każde żądanie unikalnym i sprawdzalnym:
+
+- **Znacznika czasu** w podpisanym ładunku, gdzie serwer odrzuca żądania poza krótkim oknem (uwzględniając dryf zegara).
+- **Nonce**, unikalnej dla żądania wartości, którą serwer odnotowuje i odmawia zaakceptowania dwukrotnie.
+
+Oba muszą znajdować się *wewnątrz* podpisanej treści, by atakujący nie mógł ich zmienić bez złamania podpisu.
+
+## Reguła dwuczęściowa
+
+Żądanie jest godne zaufania tylko wtedy, gdy jego HMAC jest zweryfikowany w stałym czasie **i** jest świeże. Pomyl się w którymkolwiek, a podpis daje fałszywe poczucie bezpieczeństwa. To strona weryfikacji tej samej dyscypliny co podpisywanie żądań.
+
+[Narzędzie HMAC](/tools/hmac) pozwala obliczać i porównywać znaczniki dla wiadomości i klucza wprost w przeglądarce, bez wysyłania czegokolwiek, byś mógł sprawdzić podpis ręcznie podczas pracy lub debugowania.

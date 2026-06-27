@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Tilgangstoken, fornyelsestoken og ID-token"
+summary: "Tre OAuth- og OpenID Connect-token som stadig forveksles, hva hver især faktisk er til, og hvorfor å sende feil token til feil sted er en reell feil."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tre token, tre oppgaver
+
+Etter at autorisasjonskodeflyten er fullført (se artikkelen [kodeflyt](/learn/oauth-code-flow)), kan en klient ende opp med å holde tre forskjellige token, og å blande dem sammen er en av de vanligste feilene i OAuth og OpenID Connect. En tilgangstoken, en fornyelsestoken og en ID-token ser overflatisk like ut, særlig når alle tre tilfeldigvis er JWT-er, men de har forskjellige målgrupper og forskjellige formål. Å treffe riktig med dem er stort sett et spørsmål om for hver token å spørre hvem den er til og hva den autoriserer.
+
+## Tilgangstoken: en nøkkel til et API
+
+Tilgangstoken er det klienten sender til en ressurstjener (et API) for å bevise at den har lov til å stille en forespørsel. Det er det nærmeste OAuth har en øktnøkkel for maskin-til-maskin-tilgang, definert av OAuth 2.0 (RFC 6749). To egenskaper betyr noe. Den er **kortlivd**, ofte minutter til en time, slik at en lekket token bare er nyttig kort. Og den er en **bearer**-token (innehaver): den som holder den kan bruke den, uten ytterligere identitetsbevis, noe som er grunnen til at tilgangstoken bare må reise over TLS og aldri logges eller legges i en URL. API-et validerer token og scopene den bærer, og betjener eller nekter deretter forespørselen.
+
+## Fornyelsestoken: å få nye tilgangstoken
+
+Fordi tilgangstoken utløper raskt, ville det være uutholdelig å tvinge brukeren til å logge inn igjen hvert par minutter. Fornyelsestoken løser dette: det er en langlivd legitimasjon som klienten bytter hos autorisasjonstjeneren mot en fersk tilgangstoken, uten brukerinteraksjon. Den er langt mer følsom enn en tilgangstoken nettopp fordi den er langlivd, så den må bli på bakkanalen (tjenersiden, eller i beskyttet lagring) og aldri eksponeres for en nettleser-frontend. God praksis er **fornyelsestokenrotasjon**: hver bruk utsteder en ny fornyelsestoken og ugyldiggjør den gamle, slik at en stjålet token oppdages i det øyeblikket den legitime klienten prøver å bruke den nå tilbakekalte kopien. Token kan også tilbakekalles eksplisitt (RFC 7009).
+
+## ID-token: et utsagn om brukeren
+
+ID-token er delen OpenID Connect legger oppå OAuth, og det er den som oftest misbrukes. Den er alltid en JWT (se artikkelen [JWT-anatomi](/learn/jwt-anatomy)), og den beskriver autentiseringshendelsen: hvem brukeren er, når de autentiserte, og hvilken autorisasjonstjener som innestår for det. Avgjørende: **ID-token er til klienten, ikke til et API**. Den svarer på "hvem logget nettopp inn" slik at applikasjonen kan etablere en brukerøkt. Å sende en ID-token til en ressurstjener som om den var en tilgangstoken er en klassisk feil: API-et bør avvise den, fordi ID-tokenets målgruppe er klienten, og å bruke den til autorisasjon forveksler identitet med tillatelse.
+
+## Bearer-token og fristelsen til å stole på dem
+
+De fleste tilgangstoken er bearer-token, noe som gjør dem lette å bruke og lette å misbruke. Håndteringsreglene følger direkte: alltid TLS, korte levetider, aldri i logger eller spørringsstrenger, og aldri i nettlesertilgjengelig lagring hvis et mer beskyttet alternativ finnes. Der bearer-modellen er for risikabel, binder **avsenderbegrensede** (sender-constrained) token en token til en spesifikk klientnøkkel (mekanismer som DPoP eller gjensidig TLS), slik at en stjålet token ikke kan spilles av igjen av noen andre. For de fleste applikasjoner er kortlivde bearer-tilgangstoken over TLS det fungerende grunnlaget.
+
+## Opake versus JWT-tilgangstoken
+
+En tilgangstoken kan være opak (en tilfeldig streng som API-et kontrollerer ved å kalle autorisasjonstjenerens introspeksjonsendepunkt, RFC 7662) eller en JWT som API-et validerer selv. JWT-formen er selvstendig og unngår en nettverkstur-retur, men kan ikke tilbakekalles før den utløper, noe som er enda en grunn til at tilgangstokens levetider holdes korte. En ID-token er derimot alltid en JWT, fordi hele dens oppgave er å formidle verifiserbare claims til klienten. Om en token er en JWT forteller deg hvordan den valideres, ikke hva den er til.
+
+## Match token til målgruppen
+
+Den ene regelen som forhindrer de fleste tokenfeil er å matche hver token til dens tiltenkte målgruppe. **ID-token** er til applikasjonen, for å lære hvem som logget inn. **Tilgangstoken** er til API-et, for å autorisere en forespørsel. **Fornyelsestoken** er til autorisasjonstjeneren, for å prege nye tilgangstoken uten å bry brukeren. Hold de tre målgruppene fra hverandre, hold den langlivde fornyelsestoken på bakkanalen, og behandle enhver bearer-token som en kortlivd hemmelighet, og resten av OAuths tokenhåndtering faller på plass.

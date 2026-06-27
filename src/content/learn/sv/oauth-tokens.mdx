@@ -1,0 +1,39 @@
+---
+slug: oauth-tokens
+title: "Åtkomsttoken, uppdateringstoken och ID-token"
+summary: "Tre OAuth- och OpenID Connect-token som ständigt förväxlas, vad var och en faktiskt är till för, och varför att skicka fel token till fel plats är en verklig bugg."
+concepts: ["oauth", "oidc", "access-token", "refresh-token", "id-token", "jwt"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["oauth-code-flow", "jwt-anatomy", "pkce"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tre token, tre uppgifter
+
+Efter att auktoriseringskodflödet slutförts (se artikeln [kodflöde](/learn/oauth-code-flow)) kan en klient sluta med att hålla tre olika token, och att blanda ihop dem är ett av de vanligaste misstagen i OAuth och OpenID Connect. En åtkomsttoken, en uppdateringstoken och en ID-token ser ytligt lika ut, särskilt när alla tre råkar vara JWT:er, men de har olika målgrupper och olika syften. Att träffa rätt med dem är mestadels en fråga om att, för varje token, fråga vem den är till för och vad den auktoriserar.
+
+## Åtkomsttoken: en nyckel till ett API
+
+Åtkomsttoken är det klienten skickar till en resursserver (ett API) för att bevisa att den får göra en begäran. Det är det närmaste OAuth har en sessionsnyckel för maskin-till-maskin-åtkomst, definierad av OAuth 2.0 (RFC 6749). Två egenskaper spelar roll. Den är **kortlivad**, ofta minuter till en timme, så att en läckt token bara är användbar kort. Och den är en **bearer**-token (innehavare): den som håller den kan använda den, utan ytterligare identitetsbevis, vilket är varför åtkomsttoken bara får färdas över TLS och aldrig loggas eller läggas i en URL. API:t validerar token och de omfång den bär, och betjänar eller nekar sedan begäran.
+
+## Uppdateringstoken: att få nya åtkomsttoken
+
+Eftersom åtkomsttoken löper ut snabbt vore det outhärdligt att tvinga användaren att logga in igen var par minuter. Uppdateringstoken löser detta: det är en långlivad referens som klienten byter hos auktoriseringsservern mot en färsk åtkomsttoken, utan användarinteraktion. Den är långt känsligare än en åtkomsttoken just för att den är långlivad, så den måste stanna på bakkanalen (serversidan, eller i skyddad lagring) och aldrig exponeras för en webbläsarfrontend. God praxis är **uppdateringstokenrotation**: varje användning utfärdar en ny uppdateringstoken och ogiltigförklarar den gamla, så att en stulen token upptäcks i samma stund som den legitima klienten försöker använda den nu återkallade kopian. Token kan också uttryckligen återkallas (RFC 7009).
+
+## ID-token: ett påstående om användaren
+
+ID-token är den del OpenID Connect lägger ovanpå OAuth, och det är den som oftast missbrukas. Den är alltid en JWT (se artikeln [JWT-anatomi](/learn/jwt-anatomy)), och den beskriver autentiseringshändelsen: vem användaren är, när de autentiserade och vilken auktoriseringsserver som går i god för det. Avgörande: **ID-token är för klienten, inte för ett API**. Den svarar på "vem loggade just in" så att applikationen kan upprätta en användarsession. Att skicka en ID-token till en resursserver som om den vore en åtkomsttoken är en klassisk bugg: API:t bör avvisa den, eftersom ID-tokens målgrupp är klienten, och att använda den för auktorisering förväxlar identitet med behörighet.
+
+## Bearer-token och frestelsen att lita på dem
+
+De flesta åtkomsttoken är bearer-token, vilket gör dem lätta att använda och lätta att missbruka. Hanteringsreglerna följer direkt: alltid TLS, korta livslängder, aldrig i loggar eller frågesträngar, och aldrig i webbläsartillgänglig lagring om ett mer skyddat alternativ finns. Där bearer-modellen är för riskabel binder **avsändarbegränsade** (sender-constrained) token en token till en specifik klientnyckel (mekanismer som DPoP eller ömsesidig TLS), så att en stulen token inte kan spelas upp igen av någon annan. För de flesta applikationer är kortlivade bearer-åtkomsttoken över TLS den fungerande grunden.
+
+## Opaka kontra JWT-åtkomsttoken
+
+En åtkomsttoken kan vara opak (en slumpsträng som API:t kontrollerar genom att anropa auktoriseringsserverns introspektionsslutpunkt, RFC 7662) eller en JWT som API:t validerar själv. JWT-formen är fristående och undviker en nätverkstur och retur, men kan inte återkallas innan den löper ut, vilket är ännu en anledning att hålla åtkomsttokens livslängder korta. En ID-token, däremot, är alltid en JWT, eftersom dess hela uppgift är att förmedla verifierbara claims till klienten. Om en token är en JWT säger dig hur den valideras, inte vad den är till för.
+
+## Matcha token till målgruppen
+
+Den enda regel som förhindrar de flesta tokenbuggar är att matcha varje token till sin avsedda målgrupp. **ID-token** är för applikationen, för att få veta vem som loggade in. **Åtkomsttoken** är för API:t, för att auktorisera en begäran. **Uppdateringstoken** är för auktoriseringsservern, för att prägla nya åtkomsttoken utan att besvära användaren. Håll dessa tre målgrupper isär, håll den långlivade uppdateringstoken på bakkanalen, och behandla varje bearer-token som en kortlivad hemlighet, så faller resten av OAuths tokenhantering på plats.

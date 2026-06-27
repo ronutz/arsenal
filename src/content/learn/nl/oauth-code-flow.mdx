@@ -1,0 +1,38 @@
+---
+slug: oauth-code-flow
+title: "De OAuth 2.0-autorisatiecodeflow"
+summary: "De vier rollen, de redirect-en-ruil-dans, en waarom de code op het achterkanaal wordt geruild voor een token."
+concepts: ["oauth", "authorization-code", "oidc", "access-token", "redirect"]
+relatedTools: ["pkce", "jwt"]
+relatedArticles: ["pkce", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Waar de flow voor is
+
+OAuth 2.0 (RFC 6749) laat een applicatie namens een gebruiker handelen zonder ooit het wachtwoord van de gebruiker te zien. "Inloggen met Google" is het alledaagse voorbeeld: de app krijgt toestemming om iets te benaderen, maar Google, niet de app, behandelt de inloggegevens. De **autorisatiecodeflow** is de meest gangbare en meest veilige manier om dit te regelen, en het is de flow die PKCE beschermt.
+
+## De vier rollen
+
+- De **resource-eigenaar** (resource owner) is de gebruiker die de data bezit en de toegang verleent.
+- De **client** is de applicatie die de toegang aanvraagt.
+- De **autorisatieserver** (authorization server) authenticeert de gebruiker en geeft tokens uit (Google, een identiteitsprovider, je eigen auth-dienst).
+- De **resourceserver** (resource server) is de API die de beschermde data houdt en het token accepteert.
+
+## De dans, stap voor stap
+
+1. **Doorverwijzen om te autoriseren.** De client zendt de browser van de gebruiker naar het autorisatie-endpoint van de autorisatieserver, met zijn `client_id`, een `redirect_uri`, de gewenste `scope`, een willekeurige `state`-waarde en (met PKCE) een code-challenge. De client behandelt het wachtwoord nooit.
+2. **Authenticeren en toestemmen.** De autorisatieserver logt de gebruiker in en vraagt hem de gevraagde scopes goed te keuren.
+3. **Terugverwijzen met een code.** De server verwijst de browser terug naar de `redirect_uri` van de client met een kortlevende **autorisatiecode** en de oorspronkelijke `state`. De client controleert dat de `state` overeenkomt, wat verdedigt tegen cross-site request forgery bij de callback.
+4. **De code ruilen voor tokens.** Nu op het achterkanaal (een directe server-naar-server-oproep, niet de browser), zendt de client de code naar het token-endpoint samen met zijn inloggegevens (een clientgeheim, of de PKCE-codeverifier) en ontvangt een **toegangstoken**, vaak een **verniewingstoken**, en voor OpenID Connect een **ID-token**.
+5. **De API aanroepen.** De client legt het toegangstoken voor aan de resourceserver, die het valideert en de data retourneert.
+
+## Waarom een code, en niet het token rechtstreeks?
+
+De omweg via een autorisatiecode bestaat zodat het token nooit door de adresbalk of geschiedenis van de browser reist, waar het zou kunnen lekken. De code die daar *wel* reist is op zichzelf nutteloos: hem inwisselen vereist de achterkanaaloproep met het clientgeheim of de PKCE-verifier. Die scheiding, een wegwerpcode op het voorkanaal en het echte token op het achterkanaal, is de kernbeveiligingseigenschap van de flow.
+
+Dit is ook precies het gat dat PKCE vult voor clients die geen geheim kunnen bewaren (single-page- en mobiele apps): het bindt de code aan een eenmalige verifier zodat een onderschepte code toch niet kan worden geruild. De tokens die de flow retourneert zijn heel vaak JWT's.
+
+De [PKCE-tool](/tools/pkce) genereert en controleert de verifier en challenge waarop deze flow steunt, en de [JWT-tool](/tools/jwt) decodeert de tokens die hij retourneert, beide lokaal in je browser.

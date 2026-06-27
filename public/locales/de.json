@@ -51,7 +51,8 @@
     "toolPreview": {
       "title": "Probieren Sie jetzt ein Werkzeug aus.",
       "body": "Der CIDR-Rechner unten läuft lokal. Geben Sie ein Netzwerk und einen Präfix ein, um den Adressbereich, die Hostanzahl und die Maske zu sehen. Es wird nichts irgendwohin gesendet.",
-      "learnHeading": "Die Konzepte lernen"
+      "learnHeading": "Die Konzepte lernen",
+      "toolboxCta": "Den vollständigen Werkzeugkasten öffnen"
     },
     "provenance": {
       "title": "Credits und Quellen",
@@ -87,21 +88,302 @@
       "errors": {
         "empty": "Geben Sie einen CIDR-Block zur Berechnung ein.",
         "invalid": "Das sieht nicht nach einem gültigen CIDR-Block aus. Versuchen Sie ein Format wie 192.168.1.0/24."
-      }
+      },
+      "name": "CIDR-/Subnetz-Rechner",
+      "blurb": "Zerlegen Sie einen beliebigen IPv4-CIDR-Block in Netzwerk- und Broadcast-Adressen, den nutzbaren Host-Bereich, die Host-Anzahl und die Netzmaske. Läuft vollständig in Ihrem Browser."
     },
     "title": "Werkzeuge",
     "lede": "Kleine, schnelle, datenschutzfreundliche Dienstprogramme, die vollständig in Ihrem Browser laufen. Nichts, was Sie eingeben, wird irgendwohin gesendet. Weitere sind in Arbeit.",
     "open": "Öffnen",
     "comingSoon": "Demnächst",
-    "note": "Dieser Werkzeugkasten wächst. Neue Werkzeuge werden hier hinzugefügt, sobald sie fertig sind, jedes Local-First und kostenlos nutzbar."
+    "note": "Dieser Werkzeugkasten wächst. Neue Werkzeuge werden hier hinzugefügt, sobald sie fertig sind, jedes Local-First und kostenlos nutzbar.",
+    "learnHeading": "Die Konzepte lernen",
+    "backToTools": "Werkzeuge",
+    "references": "Referenzen",
+    "categories": {
+      "identity": "Identität & Tokens",
+      "encoding": "Kodierung & Daten",
+      "hashing": "Hashing & Krypto",
+      "identifiers": "Bezeichner",
+      "pki": "Zertifikate & PKI",
+      "networking": "Netzwerk"
+    },
+    "hash": {
+      "name": "Hash-Generator (SHA-1/256/384/512)",
+      "blurb": "Berechnen Sie SHA-1-, SHA-256-, SHA-384- und SHA-512-Digests eines beliebigen Textes, dargestellt als Hex und Base64, mit dem nativen Web Crypto des Browsers. Läuft vollständig in Ihrem Browser.",
+      "algorithmLabel": "Hash-Algorithmus",
+      "inputLabel": "Zu hashender Text",
+      "inputPlaceholder": "The quick brown fox jumps over the lazy dog",
+      "runsLocally": "Das Hashing läuft lokal über Web Crypto. Nichts, was Sie eingeben, verlässt Ihren Browser.",
+      "bits": "{bits} Bit ({bytes} Byte)",
+      "sha1Note": "SHA-1 ist hinsichtlich der Kollisionsresistenz gebrochen und für Sicherheit (Signaturen, Zertifikate) ungeeignet. Es taugt nur für sicherheitsunkritische Prüfsummen und Legacy-Interoperabilität.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopieren",
+      "copied": "Kopiert"
+    },
+    "hmac": {
+      "name": "HMAC-Generator (SHA-256/384/512)",
+      "blurb": "Berechnen Sie einen schlüsselbasierten HMAC über eine Nachricht mit Ihrem geheimen Schlüssel, dargestellt als Hex und Base64, über das native Web Crypto des Browsers. Dieselbe Konstruktion, die der JWT-Verifizierer für HS256 verwendet. Ihr Schlüssel verlässt nie Ihren Browser.",
+      "algorithmLabel": "HMAC-Algorithmus",
+      "messageLabel": "Nachricht",
+      "messagePlaceholder": "Die zu authentifizierende Nachricht",
+      "keyLabel": "Geheimer Schlüssel",
+      "keyPlaceholder": "Ihr gemeinsames Geheimnis",
+      "runsLocally": "HMAC läuft lokal über Web Crypto. Ihre Nachricht und Ihr Schlüssel verlassen nie Ihren Browser.",
+      "hex": "Hex",
+      "base64": "Base64",
+      "copy": "Kopieren",
+      "copied": "Kopiert"
+    },
+    "base64": {
+      "name": "Base64-/Base64URL-Kodierer und -Dekodierer",
+      "blurb": "Kodieren Sie Text in standardmäßiges oder URL-sicheres Base64 oder dekodieren Sie beide Varianten zurück in Text. Toleriert fehlendes Padding und kennzeichnet binäre (nicht UTF-8-)Ergebnisse. Läuft vollständig in Ihrem Browser.",
+      "directionLabel": "Richtung",
+      "variantLabel": "Base64-Variante",
+      "direction": {
+        "encode": "Kodieren (Text zu Base64)",
+        "decode": "Dekodieren (Base64 zu Text)"
+      },
+      "variant": {
+        "standard": "Standard",
+        "urlsafe": "URL-sicher"
+      },
+      "inputLabelEncode": "Zu kodierender Text",
+      "inputLabelDecode": "Zu dekodierendes Base64",
+      "placeholderEncode": "Hello, World!",
+      "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
+      "runsLocally": "Kodierung und Dekodierung laufen lokal. Nichts, was Sie einfügen, verlässt Ihren Browser.",
+      "decodeErrors": {
+        "invalid-characters": "Das ist kein gültiges Base64. Es enthält Zeichen außerhalb des Base64-Alphabets.",
+        "invalid-length": "Das ist kein gültiges Base64. Seine Länge ist keine gültige Base64-Länge."
+      },
+      "outputEncode": "Base64",
+      "outputDecode": "Dekodierter Text",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "emptyOutput": "(leer)",
+      "decodedBytes": "{bytes, plural, one {# Byte dekodiert} other {# Bytes dekodiert}}.",
+      "notUtf8": "{bytes, plural, one {# Byte dekodiert} other {# Bytes dekodiert}}, aber das Ergebnis ist kein gültiger UTF-8-Text (wahrscheinlich binär)."
+    },
+    "pkce": {
+      "name": "OAuth-PKCE-Verifizierer und -Challenge",
+      "blurb": "Erzeugen Sie einen OAuth-2.0-code_verifier und leiten Sie dessen S256-code_challenge ab, oder fügen Sie Ihren eigenen ein und prüfen Sie ihn gegen die Längen- und Zeichensatzregeln von RFC 7636. Dieselbe SHA-256-base64url-Ableitung, die Ihr Autorisierungsserver erwartet. Läuft vollständig in Ihrem Browser.",
+      "verifierLabel": "Code-Verifier",
+      "verifierPlaceholder": "code_verifier einfügen oder einen erzeugen",
+      "generate": "Erzeugen",
+      "runsLocally": "Erzeugung und Ableitung laufen lokal. Ihr Verifier verlässt nie Ihren Browser.",
+      "lengthBadge": "Länge {length} (43-128)",
+      "charsetOk": "Unreservierter Zeichensatz",
+      "charsetBad": "Ungültige Zeichen",
+      "s256Title": "Code-Challenge · S256",
+      "plainTitle": "Code-Challenge · plain",
+      "plainNote": "Von der plain-Methode wird abgeraten. Verwenden Sie S256, wo immer der Client SHA-256 berechnen kann.",
+      "encodingLabel": "base64url",
+      "plainValueLabel": "= code_verifier",
+      "copy": "Kopieren",
+      "copied": "Kopiert"
+    },
+    "uuid": {
+      "name": "UUID-Generator und -Inspektor (v4 / v7)",
+      "blurb": "Erzeugen Sie zufällige v4- oder zeitgeordnete v7-UUIDs oder fügen Sie eine beliebige UUID ein, um ihre Version, Variante und (bei v7) den eingebetteten Erstellungszeitstempel zu lesen. Die Erzeugung nutzt die sichere Zufallsquelle des Browsers. Läuft vollständig in Ihrem Browser.",
+      "versionLabel": "UUID-Version",
+      "generate": "Erzeugen",
+      "clear": "Leeren",
+      "emptyHint": "Wählen Sie eine Version und erzeugen Sie.",
+      "runsLocally": "Erzeugung und Inspektion laufen lokal. Nichts wird irgendwohin gesendet.",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "inspectLabel": "Eine UUID inspizieren",
+      "inspectPlaceholder": "Beliebige UUID einfügen, um sie zu dekodieren",
+      "valid": "Gültige UUID",
+      "invalid": "Keine gültige UUID",
+      "versionField": "Version",
+      "variantField": "Variante",
+      "timestampField": "Zeitstempel (v7)",
+      "versionValue": "Version {version}"
+    },
+    "jwt": {
+      "name": "JWT-Decoder und -Verifizierer",
+      "blurb": "Dekodieren Sie Header und Claims eines JSON Web Token, lesen Sie Ablauf und Zeitangaben in Klartext und verifizieren Sie eine HS256/384/512-Signatur mit einem eingefügten Geheimnis. Läuft vollständig in Ihrem Browser.",
+      "inputLabel": "JSON Web Token",
+      "inputPlaceholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+      "runsLocally": "Dekodierung und Signaturprüfungen laufen lokal. Token und Geheimnis verlassen nie Ihren Browser.",
+      "errors": {
+        "empty": "Fügen Sie einen JSON Web Token zum Dekodieren ein.",
+        "format": "Das sieht nicht nach einem JWT aus. Ein Token hat drei base64url-Teile, getrennt durch Punkte: header.payload.signature.",
+        "header": "Der Header ist nicht gültig. Er sollte base64url-kodiertes JSON sein.",
+        "payload": "Die Payload ist nicht gültig. Sie sollte base64url-kodiertes JSON sein."
+      },
+      "panels": {
+        "header": "Header",
+        "payload": "Payload",
+        "signature": "Signatur",
+        "noSignature": "Kein Signatursegment (ungesicherter Token)."
+      },
+      "claims": {
+        "iss": "Aussteller (iss)",
+        "sub": "Subjekt (sub)",
+        "aud": "Zielgruppe (aud)",
+        "jti": "JWT-ID (jti)",
+        "iat": "Ausgestellt am (iat)",
+        "nbf": "Nicht vor (nbf)",
+        "exp": "Läuft ab (exp)"
+      },
+      "status": {
+        "expired": "Abgelaufen {rel}",
+        "expiresIn": "Gültig, läuft ab {rel}",
+        "notYetValid": "Noch nicht gültig, beginnt {rel}",
+        "noExpiry": "Kein Ablauf-Claim (exp)"
+      },
+      "verify": {
+        "label": "HMAC-Signatur verifizieren (HS256/384/512)",
+        "placeholder": "gemeinsames Geheimnis",
+        "button": "Verifizieren",
+        "valid": "Signatur für dieses Geheimnis gültig.",
+        "invalid": "Signatur passt nicht zu diesem Geheimnis.",
+        "algNone": "Dieser Token ist ungesichert (alg: none), daher gibt es keine Signatur zu verifizieren.",
+        "unsupportedAlg": "Die Verifizierung im Browser deckt nur HS256/384/512 ab. {alg} ist asymmetrisch und benötigt einen öffentlichen Schlüssel.",
+        "hint": "Das Geheimnis wird nur zur Berechnung eines HMAC in Ihrem Browser verwendet. Es wird nie irgendwohin gesendet."
+      }
+    },
+    "x509": {
+      "name": "X.509-Zertifikat-Decoder",
+      "blurb": "Fügen Sie ein Zertifikat als PEM, base64 oder hex ein, um Inhaber, Aussteller, Gültigkeitsfenster, öffentlichen Schlüssel und v3-Erweiterungen zu lesen, mit SHA-256- und SHA-1-Fingerabdrücken. Läuft vollständig in Ihrem Browser.",
+      "inputLabel": "X.509-Zertifikat",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE-----\nMIIB...\n-----END CERTIFICATE-----",
+      "runsLocally": "Dekodierung und Fingerabdrücke laufen lokal. Das Zertifikat verlässt nie Ihren Browser.",
+      "errors": {
+        "empty": "Fügen Sie ein X.509-Zertifikat zum Dekodieren ein.",
+        "format": "Das sieht nicht nach einem Zertifikat aus. Fügen Sie PEM (-----BEGIN CERTIFICATE-----), base64 oder hex ein.",
+        "der": "Die Bytes sind kein gültiges DER. Prüfen Sie, ob das ganze Zertifikat eingefügt wurde, einschließlich der END-Zeile.",
+        "structure": "Dies dekodiert als ASN.1, ist aber kein X.509-Zertifikat. Ein Zertifikat ist eine SEQUENCE aus TBSCertificate, signatureAlgorithm und signatureValue."
+      },
+      "status": {
+        "valid": "Gültig, läuft ab {rel}",
+        "expired": "Abgelaufen {rel}",
+        "notYetValid": "Noch nicht gültig, beginnt {rel}"
+      },
+      "panels": {
+        "subject": "Inhaber",
+        "issuer": "Aussteller",
+        "details": "Details",
+        "publicKey": "Öffentlicher Schlüssel",
+        "extensions": "Erweiterungen",
+        "fingerprints": "Fingerabdrücke"
+      },
+      "fields": {
+        "version": "Version",
+        "serial": "Seriennummer",
+        "notBefore": "Nicht vor",
+        "notAfter": "Nicht nach",
+        "signatureAlgorithm": "Signaturalgorithmus",
+        "algorithm": "Algorithmus",
+        "keySize": "Schlüsselgröße",
+        "exponent": "Exponent",
+        "curve": "Kurve",
+        "bits": "{n} Bit",
+        "selfSigned": "Selbstausgestellt"
+      },
+      "ext": {
+        "san": "Alternative Antragstellernamen",
+        "keyUsage": "Schlüsselverwendung",
+        "extKeyUsage": "Erweiterte Schlüsselverwendung",
+        "basicConstraints": "Basiseinschränkungen",
+        "subjectKeyId": "Schlüsselkennung des Inhabers",
+        "authorityKeyId": "Schlüsselkennung der Zertifizierungsstelle",
+        "caTrue": "Zertifizierungsstelle (CA: true)",
+        "caFalse": "Keine CA (CA: false)",
+        "pathLen": "Pfadlänge {n}",
+        "critical": "kritisch"
+      },
+      "fp": {
+        "sha256": "SHA-256",
+        "sha1": "SHA-1",
+        "computing": "Fingerabdrücke werden berechnet..."
+      }
+    },
+    "ipv6": {
+      "name": "IPv6-Toolkit",
+      "blurb": "Parsen Sie eine IPv6-Adresse oder ein Präfix, um die kanonische (RFC 5952) und vollständig expandierte Form, die Klassifizierung als Sonderverwendung, die Präfix-Arithmetik, eine EUI-64-MAC (falls vorhanden) und den ip6.arpa-Reverse-DNS-Namen zu sehen. Läuft vollständig in Ihrem Browser.",
+      "inputLabel": "IPv6-Adresse oder -Präfix",
+      "inputPlaceholder": "2001:db8::1/64",
+      "runsLocally": "Das Parsen läuft lokal. Die Adresse verlässt nie Ihren Browser.",
+      "errors": {
+        "empty": "Geben Sie eine IPv6-Adresse oder ein Präfix zum Dekodieren ein.",
+        "format": "Das ist keine gültige IPv6-Adresse. Verwenden Sie acht Hex-Gruppen, optional einmal mit :: komprimiert (zum Beispiel 2001:db8::1).",
+        "prefix": "Die Präfixlänge ist nicht gültig. Für IPv6 muss sie zwischen 0 und 128 liegen."
+      },
+      "panels": {
+        "forms": "Kanonische Formen",
+        "classification": "Klassifizierung",
+        "prefix": "Präfix",
+        "identifiers": "Bezeichner"
+      },
+      "fields": {
+        "compressed": "Komprimiert (RFC 5952)",
+        "expanded": "Expandiert",
+        "type": "Typ",
+        "scope": "Geltungsbereich",
+        "embeddedIpv4": "Eingebettete IPv4",
+        "network": "Netzwerk",
+        "firstAddress": "Erste Adresse",
+        "lastAddress": "Letzte Adresse",
+        "count": "Adressen",
+        "hostBits": "Host-Bits",
+        "eui64": "EUI-64-MAC",
+        "reverseDns": "Reverse-DNS (ip6.arpa)"
+      },
+      "badges": {
+        "multicast": "Multicast"
+      }
+    }
+  },
+  "privacy_page": {
+    "eyebrow": "Datenschutz",
+    "title": "Ihre Daten, und was diese Website damit tut",
+    "lede": "Eine Darstellung in klarer Sprache, was genau diese Website mit Ihren Informationen tut und was nicht. Sie ist darauf ausgelegt, genau statt bloß beruhigend zu sein, denn unter Regelwerken wie der GDPR und der brasilianischen LGPD ist es die genaue Offenlegung, die zählt.",
+    "shortTitle": "Die Kurzfassung",
+    "short1": "Diese Website setzt keine Cookies, führt keine Analytik aus, verwendet keine Werbung und enthält keine Tracker von Drittanbietern und kein Fingerprinting. Nichts folgt Ihnen durch das Web.",
+    "short2": "Sie verkauft, teilt oder erstellt keine Profile ihrer Besucher und verlangt nichts von Ihnen, damit Sie sie lesen können.",
+    "short3": "Die interaktiven Werkzeuge laufen vollständig in Ihrem Browser. Was Sie hineinfügen oder eintippen, bleibt auf Ihrem Gerät und wird nirgendwohin übertragen.",
+    "short4": "Nur drei Dinge betreffen überhaupt Daten, und jedes wird unten erklärt: eine einzige Theme-Einstellung, die in Ihrem eigenen Browser gespeichert wird, die standardmäßigen Verbindungsprotokolle, die jeder Website-Besuch auf der Hosting-Ebene erzeugt, und jede Nachricht, die Sie per E-Mail zu senden wählen.",
+    "controllerTitle": "Wer verantwortlich ist",
+    "controllerBody": "Dies ist die persönliche Website von Rodolfo Nützmann (ronutz.com). Für jede Datenschutzfrage oder zur Ausübung eines der unten beschriebenen Rechte schreiben Sie an hello@ronutz.com. Anfragen werden direkt von Rodolfo Nützmann als dem Verantwortlichen bearbeitet.",
+    "noTrackTitle": "Keine Cookies, kein Tracking, keine Analytik",
+    "noTrackBody": "Diese Website setzt keinerlei Cookies. Sie verwendet keinen Analysedienst (wie Google Analytics oder Plausible), kein Werbenetzwerk, keine Social-Media-Tracking-Pixel und kein Geräte-Fingerprinting. Ihr Besuch wird zu diesen Zwecken nicht gemessen, profiliert oder mit irgendjemandem geteilt.",
+    "browserTitle": "Was in Ihrem Browser gespeichert wird",
+    "browserBody": "Eine einzige Kleinigkeit: Ihr gewähltes visuelles Theme, gespeichert im lokalen Speicher (Local Storage) Ihres Browsers, damit die Website es sich beim nächsten Besuch merken kann. Es ist eine Komforteinstellung, die auf Ihrem eigenen Gerät bleibt, niemals an diese Website oder an irgendjemanden gesendet wird und jederzeit über Ihren Browser gelöscht werden kann. Keine anderen Daten über Sie werden auf Ihrem Gerät gespeichert.",
+    "hostingTitle": "Hosting und Serverprotokolle",
+    "hostingBody": "Die Website wird über Cloudflare ausgeliefert, das ihr Hosting und die Inhaltsauslieferung bereitstellt. Wie bei jeder Website bedeutet das Laden einer Seite, dass sich Ihr Gerät mit einem Server verbindet, und Cloudflare verarbeitet als Hosting-Anbieter grundlegende Verbindungsdaten – einschließlich Ihrer IP-Adresse und üblicher Anfragedetails – um Ihnen die Seiten auszuliefern und die Website vor Missbrauch und Angriffen zu schützen. Diese Verarbeitung ist zum Betrieb und zur Absicherung der Website erforderlich (ein berechtigtes Interesse nach Artikel 6(1)(f) der GDPR und den entsprechenden Grundlagen der Artikel 7 und 10 der LGPD). Sie wird vom Anbieter nur kurz aufbewahrt und hier nicht verwendet, um Sie zu identifizieren oder zu verfolgen.",
+    "toolsTitle": "Die Werkzeuge laufen in Ihrem Browser",
+    "toolsBody": "Die Decoder und Rechner auf dieser Website – für JWTs, IP-Adressen, Zertifikate und den Rest – rechnen vollständig in Ihrem Browser. Die von Ihnen eingegebenen Werte werden auf Ihrem eigenen Gerät verarbeitet und niemals an einen Server gesendet. Eine separate programmatische Schnittstelle (eine API) wird für Automatisierung und Integrationen angeboten; sie ist von Grund auf zustandslos und protokolliert keine der an sie gesendeten Abfragen oder Anfrageinhalte.",
+    "contactTitle": "Wenn Sie mich kontaktieren",
+    "contactBody": "Das Kontaktformular übermittelt nichts an einen Server. Stattdessen öffnet es eine vorausgefüllte Nachricht in Ihrer eigenen E-Mail-Anwendung, die Sie dann selbst von Ihrem eigenen Konto aus senden, sodass nichts über einen Dritten läuft. Wenn Sie schreiben, sei es über das Formular oder direkt, erhalte ich die Informationen, die Sie angeben, etwa Ihren Namen, Ihre E-Mail-Adresse und Ihre Nachricht, und verwende sie nur, um Ihnen zu antworten. Ich bewahre sie nur so lange auf, wie es zur Bearbeitung Ihrer Anfrage nötig ist, verwende sie nicht für Marketing und gebe sie nicht weiter.",
+    "intlTitle": "Verarbeitung außerhalb Ihres Landes",
+    "intlBody": "Da Cloudflare ein globales Netzwerk betreibt, kann die oben beschriebene Verarbeitung auf Verbindungsebene auf Servern außerhalb Ihres eigenen Landes stattfinden, einschließlich außerhalb Brasiliens und des Europäischen Wirtschaftsraums. Wo personenbezogene Daten auf diese Weise international verarbeitet werden, geschieht dies unter den vom jeweiligen Anbieter gebotenen Schutzmaßnahmen.",
+    "childrenTitle": "Kinder",
+    "childrenBody": "Diese Website richtet sich an ein berufliches, allgemeines Publikum. Sie ist nicht an Kinder gerichtet und erhebt wissentlich keine personenbezogenen Daten von ihnen.",
+    "rightsTitle": "Ihre Rechte",
+    "rightsBody": "Je nachdem, wo Sie leben, haben Sie Rechte an Ihren personenbezogenen Daten, einschließlich des Rechts, auf sie zuzugreifen, sie berichtigen oder löschen zu lassen, ihrer Verarbeitung zu widersprechen oder sie einzuschränken, eine Kopie in einem übertragbaren Format anzufordern und darüber informiert zu werden, wie sie verarbeitet werden. Um eines davon auszuüben, schreiben Sie einfach an hello@ronutz.com. Da hier so wenige personenbezogene Daten verarbeitet werden, gibt es in der Praxis meist sehr wenig zu tun, aber der Kanal ist stets offen.",
+    "rightsGdpr": "Wenn Sie sich im Europäischen Wirtschaftsraum oder im Vereinigten Königreich befinden, haben Sie außerdem das Recht, eine Beschwerde bei Ihrer örtlichen Datenschutzaufsichtsbehörde einzureichen.",
+    "rightsLgpd": "Wenn Sie sich in Brasilien befinden, stehen Ihnen die in Artikel 18 der LGPD genannten Rechte zu, und Sie können sich auch an die nationale Datenschutzbehörde (die ANPD) wenden.",
+    "changesTitle": "Änderungen an diesem Hinweis",
+    "changesBody": "Wenn sich dieser Hinweis ändert, wird die überarbeitete Fassung auf dieser Seite veröffentlicht und das Datum unten aktualisiert. Wesentliche Änderungen werden nicht rückwirkend angewendet.",
+    "updated": "Zuletzt aktualisiert: 28. Juni 2026",
+    "backHome": "Zurück zur Startseite"
   },
   "footer": {
+    "redEducation": "Offizielles Training mit Red Education buchen",
+    "privacy": "Datenschutz",
     "builtWith": "Von Rodolfo Nützmann mit CONCORD gebaut",
     "colophon": "Wie dies gebaut wurde",
     "openSource": "Die Engine ist Open Source",
     "rights": "Verfügbar zu offenen und kommerziellen Bedingungen.",
     "contribute": "Übersetzungen verbessern",
-    "feedback": "Feedback senden"
+    "feedback": "Feedback senden",
+    "api": "API-Referenz",
+    "contributeTools": "Ein Werkzeug beitragen"
   },
   "search": {
     "label": "Suche",
@@ -390,13 +672,16 @@
     "emailLabel": "E-Mail",
     "channels": {
       "linkedin": {
-        "description": "Beruflich vernetzen"
+        "description": "Beruflich vernetzen",
+        "label": "LinkedIn"
       },
       "youtube": {
-        "description": "Videos und Anleitungen"
+        "description": "Videos und Anleitungen",
+        "label": "YouTube"
       },
       "instagram": {
-        "description": "Hinter den Kulissen"
+        "description": "Hinter den Kulissen",
+        "label": "Instagram"
       },
       "training": {
         "label": "Offizielle Schulung",
@@ -431,7 +716,7 @@
     "concordBody1": "Diese Website wurde durch ein Protokoll namens CONCORD entworfen und gebaut: eine strukturierte Zusammenarbeit zwischen einer Person und drei verschiedenen KI-Systemen, jedes in einer eigenen Rolle. Es ist kein Gimmick. Es ist eine funktionierende Methode, mit eigener Governance, eigenem Entscheidungsprotokoll und einem einzigen Menschen, der für jede ausgelieferte Wahl verantwortlich ist.",
     "concordBody2": "Die Prämisse ist einfach. Verschiedene KI-Modelle haben verschiedene Stärken, und ein schweres Problem profitiert von mehr als einer Perspektive, in Spannung gehalten. Also wurde die Arbeit nach Rollen aufgeteilt, und eine Person saß im Zentrum, vermittelte zwischen ihnen, bestätigte, was solide war, und verwarf, was es nicht war.",
     "concordBody3": "CONCORD wurde nirgendwo übernommen. Es wurde von Rodolfo Nützmann für dieses Projekt entworfen, aus einem praktischen Bedürfnis heraus: wie man mehrere KI-Systeme zugleich nutzt, von denen jedes in etwas anderem wirklich stark ist, ohne den einen Faden menschlicher Verantwortung aufzugeben, den echte Arbeit verlangt. Die Antwort war, jedem System einen festen Sitz zu geben, sie am Verhandeln untereinander zu hindern und jeden Austausch über eine einzige Person zu leiten, die das Ganze im Blick behielt. Diese Anordnung trägt einen älteren Namen. Die KI-Systeme sind Agenten: Sie handeln auf Anweisung und im Auftrag eines anderen. PRIME ist der Auftraggeber: derjenige, der tatsächlich entscheidet, der das Urteil fällt und der sowohl die Folgen als auch den Namen trägt.",
-    "concordBody4": "Es begann informell, als eine Art, die Arbeit aufzuteilen, und verfestigte sich im Lauf des Aufbaus zu einer benannten Methode: feste Sitze, eine einzige übergeordnete Regel, dass nichts live geht, ohne dass PRIME es bestätigt, und eine schriftliche Aufzeichnung, warum jede Entscheidung getroffen wurde. Der Name nennt das Ziel: Eintracht, eine bewusst durch ein Verfahren erzielte Übereinkunft, nicht das, was ein unbeaufsichtigtes Werkzeug zufällig hervorbringt.",
+    "concordBody4": "Es begann informell – als eine Art, die Arbeit aufzuteilen – und verfestigte sich im Lauf des Aufbaus zu einer benannten Methode: feste Sitze, eine einzige übergeordnete Regel, dass nichts live geht, ohne dass PRIME es bestätigt, und eine schriftliche Aufzeichnung, warum jede Entscheidung getroffen wurde. Der Name nennt das Ziel: Eintracht, eine bewusst durch ein Verfahren erzielte Übereinkunft, nicht das, was ein unbeaufsichtigtes Werkzeug zufällig hervorbringt.",
     "concordPrincipal": "Die Hebelwirkung liegt bei den Agenten. Die Verantwortung liegt beim Auftraggeber, und sie geht nicht über.",
     "concordMechTitle": "Die Mechanik, klar gesagt",
     "mech1Label": "Vorschlagen",
@@ -551,5 +836,50 @@
     "referenceTag": "Referenz",
     "emailHeading": "Senden Sie Ihren Beitrag",
     "backHome": "Zurück zu den Werkzeugen"
+  },
+  "contributeTools": {
+    "eyebrow": "Offener Werkzeugkasten",
+    "title": "Ein Werkzeug beitragen",
+    "lede": "Der Werkzeugkasten ist auf Wachstum ausgelegt. Jedes Werkzeug ist ein kleines, selbstbeschreibendes Modul auf der offenen Engine, und die Website lädt es auf dieselbe Weise, wie es jeder andere könnte. Wenn Sie ein passendes Werkzeug haben, schlagen Sie es vor.",
+    "shapeTitle": "Was ein Werkzeug ist",
+    "shapeBody": "Ein Werkzeug ist dreierlei zugleich: ein Manifest, das es beschreibt (was es ist, welche Eingabe es annimmt, woher seine Korrektheit stammt), eine einzige reine Ausführungsfunktion, die die Arbeit verrichtet, und ein Satz von Referenzvektoren, festen Ein-und-Ausgabe-Paaren, die belegen, dass die Funktion korrekt ist. Die Engine lädt ein Werkzeug aus seinem Manifest, sodass sich ein wohlgeformtes Modul einfügt, ohne den Rest der Website zu berühren.",
+    "principlesTitle": "Woran ein Werkzeug sich halten muss",
+    "principlesBody": "Die Berechnung läuft lokal und ist deterministisch: dieselbe Eingabe ergibt stets dieselbe Ausgabe, ohne Uhr, Netzwerk oder Zufall im Ergebnis. Alles Sensible bleibt standardmäßig auf dem Gerät. Die Korrektheit ist an Referenzvektoren und an zitierte Quellen – etwa ein RFC oder einen veröffentlichten Standard – gebunden, nicht an Meinung. Der Code erscheint unter einer permissiven Lizenz, sodass die Website und alle anderen darauf aufbauen können.",
+    "proposeTitle": "Schlagen Sie eines vor",
+    "proposeBody": "Senden Sie einen kurzen Vorschlag per E-Mail: was das Werkzeug berechnet, eine Beispieleingabe mit der genauen Ausgabe, die es erzeugen soll, und die Quelle, auf der seine Korrektheit beruht. Eine Skizze des Manifests und ein paar Referenzvektoren sind willkommen, aber nicht erforderlich. Wenn es passt, wird es in die Engine und den Werkzeugkasten eingebaut.",
+    "emailLabel": "E-Mail",
+    "backToTools": "Zurück zum Werkzeugkasten"
+  },
+  "api": {
+    "title": "API",
+    "lede": "Die Werkzeuge auf dieser Website laufen in Ihrem Browser und halten Ihre Daten auf Ihrem Gerät. Für die Automatisierung – Skripte, Pipelines und Integrationen – stehen dieselben deterministischen Berechnungen als kleine HTTP-API zur Verfügung. Sie ist das programmatische Gegenstück zu den Browser-Werkzeugen, kein Ersatz für sie.",
+    "privacyTitle": "Was das für Ihre Daten bedeutet",
+    "privacyBody": "Die API erhält nur die Eingabe, die Sie ihr senden, berechnet ein Ergebnis und gibt es zurück. Sie ist zustandslos und protokolliert keine Abfragewerte oder Anfragekörper. Wenn Sie garantiert keinen Datenabfluss benötigen, nutzen Sie die Browser-Werkzeuge oder betreiben Sie die offene Engine selbst.",
+    "engineTitle": "Dieselbe Engine wie der Browser",
+    "engineBody": "Jeder Endpunkt ruft dieselbe Engine-Funktion auf wie das Werkzeug im Browser, sodass die API und der Browser Byte-identische Ergebnisse liefern. Diese Engine, @ronutz/netcore, ist quelloffen unter einer permissiven Lizenz.",
+    "specTitle": "Die Spezifikation",
+    "specBody": "Der vollständige Vertrag ist als OpenAPI 3.1 veröffentlicht. Laden Sie ihn herunter, richten Sie Ihre eigenen Werkzeuge darauf aus oder lesen Sie die Referenz unten.",
+    "downloadSpec": "openapi.yaml herunterladen",
+    "baseUrlLabel": "Basis-URL",
+    "authLabel": "Authentifizierung",
+    "authValue": "Keine. Dies ist eine öffentliche, schreibgeschützte API.",
+    "referenceTitle": "Referenz",
+    "loading": "Spezifikation wird geladen.",
+    "loadError": "Die Spezifikation konnte nicht geladen werden.",
+    "tryItTitle": "Ausprobieren",
+    "tryItSend": "Senden",
+    "tryItRunning": "Wird ausgeführt.",
+    "tryItHint": "Läuft gegen die Live-API auf diesem Origin. Ihre Eingabe wird an den Endpunkt gesendet.",
+    "paramsTitle": "Parameter",
+    "responsesTitle": "Antworten",
+    "schemasTitle": "Schemata",
+    "exampleLabel": "Beispiel",
+    "requiredLabel": "erforderlich",
+    "fieldLabel": "Feld",
+    "typeLabel": "Typ",
+    "descriptionLabel": "Beschreibung",
+    "viewReference": "Referenz",
+    "viewSwagger": "Swagger UI",
+    "swaggerLoadError": "Swagger UI konnte nicht geladen werden."
   }
 }

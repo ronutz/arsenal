@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "Algoritma tandatangan JWT: HMAC, RSA, dan ECDSA"
+summary: "Mengapa pengepala alg sesuatu JWT penting, perbezaan antara tandatangan simetri dan asimetri, dan cara memilih."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Pengepala alg memutuskan segalanya
+
+Pengepala sesuatu JWT menamakan algoritma yang digunakan untuk menandatanganinya, contohnya `"alg": "HS256"`. Nilai tunggal itu menentukan jenis kunci yang pengesah perlukan dan apa yang sebenarnya dibuktikan oleh tandatangan. Algoritma terbahagi kepada dua keluarga, simetri dan asimetri, dan pilihan antara keduanya sebenarnya satu pilihan tentang *siapa yang perlu mengesahkan token*.
+
+## Simetri: keluarga HMAC (HS256/384/512)
+
+`HS256`, `HS384`, dan `HS512` ialah HMAC dengan SHA-256, SHA-384, atau SHA-512. Mereka menggunakan **satu rahsia kongsi** untuk kedua-dua tandatangan dan pengesahan. Sesiapa yang boleh mengesahkan token HS256 juga boleh memalsukan satu, kerana mencipta dan menyemak tandatangan menggunakan kunci yang sama.
+
+Itu menjadikan keluarga HMAC pilihan yang baik apabila **pihak yang sama** mengeluarkan dan mengesahkan token, atau apabila pengeluar dan pengesah sudah berkongsi rahsia dipercayai, satu bahagian belakang menandatangani token sesinya sendiri, contohnya. Ia pantas dan ringkas. Hadnya ialah pengagihan: setiap pengesah memerlukan rahsia itu, dan semakin banyak tempat rahsia itu menetap, semakin besar jejari letupan jika satu bocor.
+
+## Asimetri: RSA dan ECDSA (RS256, ES256, dan lebih)
+
+`RS256` (RSASSA-PKCS1-v1_5 dengan SHA-256), `PS256` (RSA-PSS), dan `ES256` (ECDSA dengan lengkung P-256) menggunakan satu **pasangan kunci**: kunci persendirian menandatangani, dan kunci awam yang sepadan mengesahkan. Kunci persendirian tidak pernah meninggalkan pengeluar; kunci awam boleh diserahkan kepada sesiapa.
+
+Inilah yang anda mahu apabila **banyak perkhidmatan bebas** mesti mengesahkan token daripada satu pengeluar. Pembekal identiti menandatangani dengan kunci persendiriannya dan menerbitkan kunci awamnya (lazimnya sebagai titik akhir JWKS); setiap perkhidmatan hiliran mengesahkan dengan kunci awam dan tiada satu pun daripadanya boleh mencipta token. Inilah sebabnya pembekal OpenID Connect mengeluarkan token ID RS256 atau ES256 secara lalai.
+
+Antara RSA dan ECDSA, pertukarannya ialah saiz dan kelajuan: kunci dan tandatangan ECDSA jauh lebih kecil untuk keselamatan setara, manakala RSA lebih lama dan disokong lebih sejagat. `EdDSA` (Ed25519) ialah alternatif moden dan pantas yang sedang mendapat penerimaan.
+
+## Memilih
+
+- **Satu pihak menandatangani dan mengesahkan, atau rahsia sudah dikongsi** → HMAC (HS256). Ringkas dan pantas.
+- **Satu penandatangan, banyak pengesah bebas** → asimetri (RS256 atau ES256). Kunci awam boleh diagihkan secara bebas; hanya pemegang kunci persendirian boleh menandatangani.
+
+Apa pun yang anda pilih, pengesah mesti **menetapkan algoritma yang boleh diterima** dan bukannya mempercayai pengepala `alg` token itu sendiri. Menerima apa sahaja yang token dakwa membuka pintu kepada serangan `alg: none` dan kekeliruan algoritma yang diterangkan dalam artikel anatomi JWT.
+
+[Alat JWT](/tools/jwt) menyahkod pengepala supaya anda boleh melihat algoritma yang diisytiharkan oleh sesuatu token, dan mengesahkan keluarga HMAC (HS256/384/512) terhadap rahsia yang anda tampal, secara setempat dalam pelayar anda.

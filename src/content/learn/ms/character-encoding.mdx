@@ -1,0 +1,40 @@
+---
+slug: character-encoding
+title: "Bait, titik kod dan UTF-8"
+summary: "Perbezaan antara aksara dan bait, mengapa Unicode dan UTF-8 wujud, dan apa kaitannya dengan Base64."
+concepts: ["encoding", "unicode", "utf-8", "ascii", "bytes"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hashing-encryption-encoding"]
+category: encoding
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Aksara bukan bait
+
+Komputer menyimpan bait, nilai dari 0 hingga 255. Manusia membaca aksara: huruf, digit, tanda baca, emoji. Satu **pengekodan aksara** ialah pemetaan yang dipersetujui antara kedua-duanya. Salah memetakan dan anda lihat teks rosak yang klasik (`café` menjadi `cafÃ©`), yang hampir selalu ketakpadanan antara pengekodan yang digunakan untuk menulis bait dan yang digunakan untuk membacanya.
+
+## ASCII: 128 yang asal
+
+Pengekodan terawal yang digunakan secara meluas ialah **ASCII**, yang menetapkan nombor 0 hingga 127 kepada huruf Inggeris asas, digit dan simbol biasa. Tujuh bit, 128 aksara. ASCII ringkas dan masih mendasari kebanyakan pengkomputeran, tetapi 128 aksara tidak dapat mewakili huruf beraksen, tulisan bukan Latin atau simbol, jadi ia tidak pernah memadai untuk teks dunia.
+
+## Unicode: satu nombor setiap aksara
+
+**Unicode** menyelesaikan masalah liputan dengan memberi setiap aksara satu nombor unik yang dipanggil **titik kod**, ditulis seperti `U+0041` (huruf A) atau `U+2615` (minuman panas). Unicode ialah katalog gergasi aksara dan titik kodnya, jauh melebihi seratus ribu, meliputi pada dasarnya setiap tulisan yang digunakan.
+
+Yang penting, Unicode menyatakan *nombor yang mana* dimiliki setiap aksara, tetapi bukan *cara menyimpan nombor itu sebagai bait*. Tugas kedua itu milik satu bentuk pengekodan.
+
+## UTF-8: bagaimana titik kod menjadi bait
+
+**UTF-8** ialah cara dominan untuk menjadikan titik kod Unicode sebagai bait, dan ia ialah lalai di seluruh web moden. Ia berpanjangan **berubah-ubah**: satu aksara mengambil satu hingga empat bait bergantung pada titik kodnya.
+
+- Julat ASCII (U+0000 hingga U+007F) dikodkan sebagai satu bait, serupa dengan ASCII. Itulah sebab UTF-8 serasi ke belakang: sebarang teks ASCII tulen sudah pun UTF-8 yang sah.
+- Aksara di luar ASCII menggunakan dua, tiga atau empat bait. Maka `é` ialah dua bait dan `☕` ialah tiga, walaupun setiap satu ialah satu aksara.
+
+Perkara terakhir itu ialah kejutan biasa: **satu aksara tidak selalu satu bait.** Mengira bait dan mengira aksara memberi jawapan berbeza bagi sebarang teks bukan ASCII. (UTF-16 dan UTF-32 ialah pengekodan alternatif bagi titik kod yang sama; UTF-8 memenangi web kerana keserasian ASCIInya dan kepadatan untuk teks Latin.)
+
+## Di mana Base64 masuk
+
+Ini penting bagi Base64 kerana **Base64 beroperasi pada bait, bukan aksara.** Untuk mengekod Base64 satu rentetan, rentetan itu mesti dahulu dijadikan bait dengan pengekodan aksara, dan pengekodan itu pada dasarnya sentiasa UTF-8. Kod aksara yang sama dengan skema berbeza dan anda dapat bait berbeza, dan oleh itu Base64 berbeza. Maka talian penuh untuk teks ialah: aksara menjadi bait (UTF-8), kemudian bait menjadi teks selamat (Base64). Apabila anda menyahkod, anda menyongsangkan kedua-dua langkah.
+
+[Alat Base64](/tools/base64) mengekod teks sebagai bait UTF-8 sebelum mengekod Base64, dan menandakan apabila hasil yang dinyahkod bukan UTF-8 yang sah, semuanya dalam pelayar anda.

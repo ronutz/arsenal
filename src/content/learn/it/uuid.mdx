@@ -1,0 +1,37 @@
+---
+slug: uuid
+title: "UUID: v4 casuale e v7 ordinato nel tempo"
+summary: "Come un identificatore a 128 bit resta univoco senza un'autorità centrale, e perché v7 sta diventando il valore predefinito per le chiavi di database."
+concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Cos'è un UUID
+
+Un UUID (Universally Unique Identifier, chiamato anche GUID) è un valore a 128 bit usato per etichettare qualcosa, una riga, una richiesta, un file, senza coordinarsi con nessun altro. La promessa nel nome è che due UUID generati indipendentemente, a tutti gli effetti pratici, non sono mai uguali. Questo permette a servizi separati, dispositivi offline e processi paralleli di coniare identificatori che non collideranno quando i dati verranno poi uniti, senza un allocatore centrale che distribuisce numeri.
+
+Un UUID si scrive come 32 cifre esadecimali in cinque gruppi separati da trattino: `8-4-4-4-12`, per esempio `550e8400-e29b-41d4-a716-446655440000`. Due posizioni specifiche non sono casuali: un nibble di **versione** identifica come l'UUID è stato generato, e un campo di **variante** segna lo standard di disposizione (quello moderno è RFC 4122 / RFC 9562).
+
+## Versione 4: casuale
+
+Di gran lunga la forma più comune, la **versione 4** è quasi interamente casuale: 122 dei 128 bit provengono da una fonte casuale sicura, con i bit rimanenti fissati per segnare la versione e la variante. Con così tanta entropia, la probabilità che due UUID v4 collidano è trascurabile per qualsiasi volume realistico di identificatori.
+
+La sua debolezza non è l'univocità ma l'**ordinamento**. Poiché i valori v4 sono casuali, inserimenti consecutivi si disperdono per tutto lo spazio delle chiavi. Quando un UUID v4 è usato come chiave primaria di database, quella casualità combatte contro l'indice B-tree: le nuove righe finiscono in punti arbitrari, danneggiando la località della cache e frammentando l'indice nel tempo.
+
+## Versione 7: ordinata nel tempo
+
+La **versione 7**, standardizzata nella RFC 9562 (2024), è stata progettata per correggere esattamente questo. Colloca un **timestamp Unix a 48 bit in millisecondi** nei bit più significativi, seguito da bit casuali per l'univocità all'interno dello stesso millisecondo. Poiché il timestamp è in testa, gli UUID v7 **si ordinano nell'ordine di creazione** quando confrontati come testo o byte.
+
+Quella singola proprietà rende v7 una chiave primaria molto migliore: le nuove righe si aggiungono vicino alla fine dell'indice anziché disperdersi, ripristinando la località di cui godono le chiavi intere sequenziali, pur mantenendo l'univocità decentralizzata di un UUID. Un valore v7 porta anche il proprio momento di creazione, che puoi leggere direttamente da quei bit iniziali, lo [strumento UUID](/tools/uuid) lo fa quando ne ispezioni uno.
+
+## Le altre versioni, in breve
+
+Per completezza: la **versione 1** combina un timestamp con l'indirizzo MAC della macchina generatrice, il che divulga l'identità dell'hardware e il momento di creazione e quindi solleva preoccupazioni di privacy. Le **versioni 3 e 5** sono basate sul nome, fanno l'hash di uno spazio dei nomi più un nome (con MD5 e SHA-1 rispettivamente) per produrre un UUID deterministico, utile quando lo stesso input deve sempre mappare sullo stesso identificatore. La **versione 6** riordina i campi della versione 1 per renderli ordinabili, ma per i nuovi sistemi v7 è la scelta consigliata ordinata nel tempo.
+
+## Sceglierne uno
+
+Ricorri a **v4** quando ti serve solo un identificatore casuale e opaco e l'ordinamento non conta. Ricorri a **v7** quando l'UUID sarà una chiave di database o qualsiasi altra cosa che benefici dell'ordinamento per momento di creazione, che è sempre più la raccomandazione predefinita. Lo [strumento UUID](/tools/uuid) genera entrambi e decodifica la versione, la variante e il timestamp incorporato di qualsiasi UUID che incolli, interamente nel tuo browser.

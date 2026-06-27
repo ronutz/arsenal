@@ -1,0 +1,43 @@
+---
+slug: ipv6-transition
+title: "IPv6 ve IPv4'ü birlikte çalıştırmak: dual-stack ve çeviri"
+summary: "İnternetin iki uyumsuz adres ailesi arasında nasıl köprü kurduğu: dual-stack, Happy Eyeballs, NAT64, ve bunu işler kılan IPv4-gömülü adresler."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bir kerede iki internet
+
+IPv6 ve IPv4 telde uyumlu değildir: yalnızca-IPv6 bir ana bilgisayar yalnızca-IPv4 bir sunucuyla doğrudan konuşamaz, çünkü paketler farklı adres boyutları ve başlıklar kullanır. Herkesin gece yarısı geçiş yapacağı bir karar günü asla olmayacaktı, dolayısıyla internet yıllarını her iki protokolü yan yana çalıştırarak ve aralarında köprü kurarak geçirdi. Geçiş teknolojileri, eski protokol yavaşça emekliye ayrılırken o birlikte var oluşu kullanıcılara görünmez kılmak için vardır.
+
+## Dual-stack: yalnızca her ikisini çalıştır
+
+En basit yaklaşım dual-stack'tir: bir ana bilgisayar, yönlendirici veya sunucu, her birinde bir adresle, IPv4 ve IPv6'yı aynı anda çalıştırır. Bir adın DNS'te hem bir A kaydı (IPv4) hem de bir AAAA kaydı (IPv6) olduğunda, bir dual-stack istemci ona her ikisi üzerinden ulaşabilir. Geçerli tercih, mevcut olduğunda IPv6 kullanmak ve aksi takdirde IPv4'e geri düşmektir. Dual-stack çoğu ağın önce aldığı yoldur, çünkü hiçbir şeyin çevrilmesi gerekmez; her protokol basitçe yerel olarak çalışır.
+
+## Happy Eyeballs: başarısızlıkları gizle
+
+IPv6'yı tercih etmek yalnızca bozuk bir IPv6 yolu kullanıcıyı bekletmezse hoştur. Happy Eyeballs (RFC 8305) bunu ikisini yarıştırarak çözer: istemci bir IPv6 bağlantısı başlatır ve çok kısa bir avans sonrası bir IPv4 de başlatır, sonra hangisi önce tamamlanırsa onu kullanır ve diğerini sessizce bırakır. Etki, kullanıcıların sağlıklı olduğunda IPv6 ve olmadığında IPv4'e anlık, fark edilmeyen bir geri düşüş almasıdır. Bu algoritma, IPv6'yı etkinleştirmenin nadiren bir şeyi daha yavaş hissettirmesinin büyük bir parçasıdır.
+
+## IPv6 içine gömülü IPv4 adresleri
+
+Birkaç mekanizma, bir IPv6 adresinin içinde bir IPv4 adresi taşıyarak çalışır ve araç bu biçimleri tanır. IPv4-eşlenmiş aralık `::ffff:0:0/96`, bir dual-stack sokete bir IPv4 adresini temsil eder, dolayısıyla `::ffff:192.0.2.1`, IPv4 ana bilgisayarı 192.0.2.1'in bir IPv6 API'sinde nasıl göründüğüdür. Çeviri sistemleri, bir IPv4 hedefini bir çeviriciye yönlendirilebilen bir IPv6 adresine gömmek için iyi bilinen önek `64:ff9b::/96`'yı (RFC 6052) kullanır. Gömülü bir IPv4 adresini tanımak, bir IPv6 hedefi gibi görünenin gerçekte IPv4 internetinde bir şeye giden bir yol olduğunu size söyler.
+
+## NAT64 ve DNS64: yalnızca-IPv6'nın IPv4'e ulaşması
+
+Yalnızca-IPv6'ya geçmiş ağlar için, NAT64 (RFC 6146) ve DNS64 (RFC 6147), o istemcilerin yalnızca-IPv4 sunuculara hâlâ ulaşmasına izin verir. DNS64, bir yalnızca-IPv4 adı için IPv4 adresini iyi bilinen öneke gömerek bir AAAA kaydı sentezler, dolayısıyla istemci bağlanacağı bir IPv6 hedefi alır. NAT64 ardından sınırda oturur ve o IPv6 paketlerini çıkış yolunda IPv4'e, giriş yolunda geri çevirir. Birlikte, modern bir yalnızca-IPv6 ağının, tüm internet IPv6 üzerinden ulaşılabilirmiş gibi davranmasına izin verirler.
+
+## İnatçı IPv4 uygulamaları için 464XLAT
+
+Bazı uygulamalar hâlâ düz IPv4 adresleri elden ele dolaştırır ve NAT64 mevcut olsa bile yalnızca-IPv6 bir ağda bozulur. Mobil operatörlerde geniş çapta dağıtılmış 464XLAT (RFC 6877), istemcide yerel olarak özel bir IPv4 adresi sunan ve onu yalnızca-IPv6 ağı üzerinden bir NAT64 ağ geçidine tünelleyen küçük bir çeviri ekler. Yalnızca-IPv6 mobil ağların, kullanıcı fark etmeden hâlâ yalnızca-IPv4 uygulamalar çalıştırabilmesinin nedeni budur.
+
+## Yerel IPv6'da neden NAT olmadığı
+
+IPv4 yöneticilerinden sık bir soru, NAT'ın nereye gittiğidir. Yerel IPv6 her ana bilgisayara genel olarak yönlendirilebilir bir adres verir, dolayısıyla IPv4 ev ve ofis ağlarını tanımlayan adres paylaşan NAT basitçe gereksizdir; bağlantı uçtan uca olur ve sınırı adres çevirisi değil, durumsal bir güvenlik duvarı sağlar. Özel, yönlendirilmeyen adreslemenin gerçekten istendiği yerde, IPv6 `fc00::/7` içinde Benzersiz Yerel Adresler (Unique Local Addresses) sunar, aracın tanımladığı ULA türü. IPv6 kenarlarında görülen çeviri, kıt bir adres alanını germek için değil, *eski* protokole ulaşmak içindir.
+
+## İskele, varış noktası değil
+
+Tüm bu makine, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, geçiş iskelesidir. Son durum her yerde yerel IPv6'dır, çeviri yalnızca geriye kalan IPv4'e ulaşmak için gereklidir. Bu arada, gömülü-IPv4 biçimlerini tanımak ve hangi köprünün oyunda olduğunu anlamak, iki internet arasında sessizce geçebilen bir yol hakkında akıl yürütmenize yardımcı olur. Araç bir adresi IPv4-eşlenmiş veya çeviri önekinde oturuyor olarak işaretlediğinde, bu sizin için bir IPv4 uç noktasının bir IPv6 adresinin içinde saklandığının işaretidir.

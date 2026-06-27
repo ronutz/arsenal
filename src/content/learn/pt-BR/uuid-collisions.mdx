@@ -1,0 +1,44 @@
+---
+slug: uuid-collisions
+title: "UUIDs vão colidir? Probabilidade e o limite do aniversário"
+summary: "Quantos bits aleatórios um UUID realmente tem, a matemática do aniversário para uma colisão e quando você quer UUIDs determinísticos."
+concepts: ["uuid", "collision", "birthday-bound", "uuidv4", "randomness"]
+relatedTools: ["uuid"]
+relatedArticles: ["uuid", "uuid-versions", "uuid-database-keys"]
+category: identifiers
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## A pergunta por trás de todo UUID
+
+Um UUID tem 128 bits, normalmente gerados de forma aleatória (versão 4) para que qualquer pessoa, em qualquer lugar, possa cunhar um sem coordenação e esperar que seja único. A preocupação razoável é: se todo mundo está só jogando dados, dois não vão acabar coincidindo? A resposta é sim em princípio e efetivamente nunca na prática, e a matemática diz exatamente por quê.
+
+## Quantos bits aleatórios realmente existem
+
+Um UUID versão 4 não tem 128 bits aleatórios. Quatro bits são fixos para marcar a versão e mais dois para marcar a variante, deixando **122 bits aleatórios**. Isso ainda é um espaço enorme: 2¹²², cerca de 5,3 undecilhões (5,3 × 10³⁶) de valores possíveis.
+
+## O limite do aniversário, aplicado
+
+A probabilidade de colisão não depende de preencher o espaço; depende do número de *pares*, que cresce com o quadrado de quantos você gera. É o paradoxo do aniversário de novo. Para um espaço de 2¹²² valores, a chance de qualquer colisão entre `n` UUIDs é de aproximadamente:
+
+```
+p ≈ n² / (2 × 2¹²²)
+```
+
+Uma chance de 50% de uma única colisão só chega depois de cerca de **2⁶¹** UUIDs, o que é por volta de 2,3 quintilhões. Para tornar isso concreto: gerando um bilhão de UUIDs versão 4 por segundo, você precisaria da ordem de *85 anos* só para alcançar uma chance de 50% de uma colisão. Em qualquer volume realista de aplicação, a probabilidade é tão pequena que é ofuscada pela chance de uma falha de hardware corromper os dados de qualquer forma.
+
+A única ressalva real é a **qualidade da aleatoriedade**. A matemática só vale se o gerador for uma fonte criptograficamente segura adequada. Uma fonte aleatória fraca ou mal semeada pode produzir repetições muito mais cedo, então o risco prático é um RNG ruim, não o design do UUID.
+
+## Quando você não quer aleatoriedade
+
+Às vezes uma colisão não é a preocupação, a repetibilidade é:
+
+- **UUIDs de namespace (versões 3 e 5)** são determinísticos: eles fazem hash de um namespace mais um nome (MD5 para v3, SHA-1 para v5), então a *mesma* entrada sempre gera o *mesmo* UUID. Útil quando você quer um identificador estável derivado de dados existentes, em vez de um novo aleatório.
+- **UUIDs ordenados por tempo (versão 7)** mantêm a aleatoriedade, mas prefixam um timestamp, então os IDs ordenam por hora de criação. Isso ajuda a localidade de índice no banco de dados mantendo o risco de colisão desprezível.
+
+## A lição
+
+Para identificadores únicos em qualquer escala normal, um UUID versão 4 de uma boa fonte aleatória não vai colidir, e você não precisa de uma autoridade central para garantir isso. Escolha v3/v5 quando precisar que a mesma entrada mapeie para o mesmo ID, e v7 quando quiser ordenação por tempo.
+
+A [ferramenta UUID](/tools/uuid) gera UUIDs versão 4 (e outras) e analisa qualquer UUID para mostrar sua versão e variante, tudo no seu navegador, sem nada enviado.

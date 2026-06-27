@@ -1,0 +1,43 @@
+---
+slug: pkce
+title: "PKCE: den OAuth-Autorisierungscode-Flow absichern"
+summary: "Der Abfangangriff, den PKCE abwehrt, wie Verifier und Challenge zusammenpassen und warum S256 verpflichtend ist."
+concepts: ["pkce", "oauth", "oidc", "code-verifier", "code-challenge", "s256"]
+relatedTools: ["pkce"]
+relatedArticles: ["oauth-client-types", "oauth-tokens", "oauth-code-flow", "jwt-anatomy"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Der Angriff, den PKCE abwehrt
+
+Im OAuth-2.0-Autorisierungscode-Flow übergibt der Autorisierungsserver dem Client einen kurzlebigen **Autorisierungscode**, den der Client dann gegen Token tauscht. Vertrauliche Clients schützen diesen Tausch mit einem Client-Geheimnis. Aber **öffentliche Clients**, Single-Page-Apps und mobile Apps, können kein Geheimnis hüten: Alles, was an den Browser oder das Gerät ausgeliefert wird, kann extrahiert werden. Das lässt ein Loch. Fängt ein Angreifer den Autorisierungscode ab (durch eine bösartige App, die für dieselbe Weiterleitung registriert ist, ein durchgesickertes Log oder eine gefälschte URL), könnte er ihn selbst gegen Token einlösen.
+
+PKCE, Proof Key for Code Exchange (RFC 7636, ausgesprochen „pixy"), stopft dieses Loch, ohne ein vorab geteiltes Geheimnis zu verlangen. Es bindet den Autorisierungscode an ein Einmal-Geheimnis, das nur der echte Client kennt.
+
+## Wie Verifier und Challenge zusammenpassen
+
+Der Flow fügt zwei Werte hinzu:
+
+- Der **code_verifier** ist eine hochentropische Zufallszeichenkette, die der Client erzeugt und behält. RFC 7636 verlangt 43 bis 128 Zeichen aus dem unreservierten Satz (Buchstaben, Ziffern und `- . _ ~`).
+- Die **code_challenge** wird aus dem Verifier abgeleitet. Für die S256-Methode ist sie `BASE64URL(SHA256(ASCII(code_verifier)))`.
+
+Die Abfolge ist:
+
+1. Der Client erzeugt einen frischen `code_verifier`, leitet die `code_challenge` ab und sendet **nur die Challenge** in der Autorisierungsanfrage.
+2. Der Autorisierungsserver speichert die Challenge und gibt wie üblich einen Autorisierungscode zurück.
+3. Bei der Token-Anfrage sendet der Client den **Verifier**.
+4. Der Server hasht den Verifier auf dieselbe Weise und prüft ihn gegen die gespeicherte Challenge. Keine Übereinstimmung, keine Token.
+
+Die Sicherheit ruht auf einer Tatsache: Die Challenge ist ein Einweg-Hash des Verifiers. Ein Angreifer, der den Autorisierungscode abfängt, kann den Tausch dennoch nicht abschließen, weil er den Verifier nie sah und ihn nicht aus der Challenge rückwärts erschließen kann.
+
+## Warum S256, nicht plain
+
+RFC 7636 definiert zwei Methoden. Die `plain`-Methode setzt die Challenge gleich dem Verifier, was keinen Schutz bietet, wenn die Autorisierungsanfrage selbst beobachtet wird. Die `S256`-Methode sendet nur den SHA-256-Hash, sodass der Verifier bis zum finalen, TLS-geschützten Token-Aufruf verborgen bleibt. **S256 ist überall dort vorgeschrieben, wo der Client SHA-256 berechnen kann**, was überall ist, wo es zählt; `plain` existiert nur für das seltene eingeschränkte Gerät, das nicht hashen kann.
+
+## Von optional zu verpflichtend
+
+PKCE begann als Erweiterung für öffentliche Clients, aber die Leitlinie hat sich entschieden verschoben. Die OAuth 2.0 Security Best Current Practice (RFC 9700) verlangt nun PKCE bei **allen** Autorisierungscode-Clients, die vertraulichen eingeschlossen, weil es auch gegen bestimmte Code-Injection-Angriffe schützt. Wenn Sie heute eine OAuth- oder OpenID-Connect-Integration bauen oder testen, behandeln Sie PKCE als die Vorgabe, nicht als Zusatz.
+
+Das [PKCE-Werkzeug](/tools/pkce) erzeugt einen konformen Verifier, leitet seine S256-Challenge mit Web Crypto ab und prüft jeden Verifier gegen die Längen- und Zeichensatzregeln der RFC, alles lokal. Der Verifier verlässt nie Ihren Browser.

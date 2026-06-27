@@ -1,0 +1,43 @@
+---
+slug: ipv6-transition
+title: "Uruchamianie IPv6 i IPv4 razem: dual-stack i translacja"
+summary: "Jak internet łączy dwie niekompatybilne rodziny adresów: dual-stack, Happy Eyeballs, NAT64, oraz adresy z osadzonym IPv4, które sprawiają, że to działa."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
+relatedTools: ["ipv6"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Dwa internety naraz
+
+IPv6 i IPv4 nie są kompatybilne na łączu: host tylko-IPv6 nie może rozmawiać bezpośrednio z serwerem tylko-IPv4, bo pakiety używają różnych rozmiarów adresów i nagłówków. Nigdy nie miało być dnia decydującego, w którym wszyscy przełączyliby się o północy, więc internet spędził lata uruchamiając oba protokoły obok siebie i łącząc między nimi. Technologie przejściowe istnieją, by uczynić to współistnienie niewidzialnym dla użytkowników, podczas gdy stary protokół jest powoli wycofywany.
+
+## Dual-stack: po prostu uruchom oba
+
+Najprostszym podejściem jest dual-stack: host, router, lub serwer uruchamia IPv4 i IPv6 jednocześnie, z adresem w każdym. Gdy nazwa ma zarówno rekord A (IPv4), jak i rekord AAAA (IPv6) w DNS, klient dual-stack może ją dosięgnąć przez którykolwiek. Obowiązująca preferencja to używać IPv6, gdy jest dostępny, i wycofać się do IPv4 w przeciwnym razie. Dual-stack to ścieżka, którą większość sieci bierze pierwszą, bo nic nie musi być tłumaczone; każdy protokół po prostu działa natywnie.
+
+## Happy Eyeballs: ukryj awarie
+
+Preferowanie IPv6 jest przyjemne tylko, jeśli zepsuta ścieżka IPv6 nie każe użytkownikowi czekać. Happy Eyeballs (RFC 8305) rozwiązuje to, ścigając oba: klient zaczyna połączenie IPv6 i, po bardzo krótkiej przewadze, zaczyna też IPv4, następnie używa tego, które zakończy się pierwsze, i po cichu porzuca drugie. Skutkiem jest to, że użytkownicy dostają IPv6, gdy jest zdrowe, i natychmiastowe, niezauważone wycofanie do IPv4, gdy nie jest. Ten algorytm to duża część powodu, dla którego włączenie IPv6 rzadko sprawia, że coś wydaje się wolniejsze.
+
+## Adresy IPv4 osadzone w IPv6
+
+Kilka mechanizmów działa, niosąc adres IPv4 wewnątrz adresu IPv6, a narzędzie rozpoznaje te formy. Zakres IPv4-mapowany `::ffff:0:0/96` reprezentuje adres IPv4 wobec gniazda dual-stack, więc `::ffff:192.0.2.1` to sposób, w jaki host IPv4 192.0.2.1 pojawia się w API IPv6. Systemy translacji używają dobrze znanego prefiksu `64:ff9b::/96` (RFC 6052), by osadzić cel IPv4 w adresie IPv6, który może być routowany do translatora. Rozpoznanie osadzonego adresu IPv4 mówi ci, że to, co wygląda na cel IPv6, jest w rzeczywistości ścieżką do czegoś w internecie IPv4.
+
+## NAT64 i DNS64: tylko-IPv6 dosięgające IPv4
+
+Dla sieci, które przeszły na tylko-IPv6, NAT64 (RFC 6146) i DNS64 (RFC 6147) pozwalają tym klientom wciąż dosięgać serwerów tylko-IPv4. DNS64 syntetyzuje rekord AAAA dla nazwy tylko-IPv4, osadzając jej adres IPv4 w dobrze znanym prefiksie, więc klient dostaje cel IPv6, z którym się połączyć. NAT64 następnie siedzi na granicy i tłumaczy te pakiety IPv6 na IPv4 w drodze na zewnątrz, i z powrotem w drodze do wewnątrz. Razem pozwalają nowoczesnej sieci tylko-IPv6 zachowywać się, jakby cały internet był osiągalny przez IPv6.
+
+## 464XLAT dla upartych aplikacji IPv4
+
+Niektóre aplikacje wciąż przekazują dosłowne adresy IPv4 i psują się w sieci tylko-IPv6 nawet z obecnym NAT64. 464XLAT (RFC 6877), szeroko wdrożony u operatorów komórkowych, dodaje małą translację na kliencie, która przedstawia prywatny adres IPv4 lokalnie i tuneluje go przez sieć tylko-IPv6 do bramy NAT64. To powód, dla którego sieci komórkowe tylko-IPv6 wciąż mogą uruchamiać aplikacje tylko-IPv4 bez zauważenia przez użytkownika.
+
+## Dlaczego nie ma NAT w natywnym IPv6
+
+Częstym pytaniem administratorów IPv4 jest, dokąd poszedł NAT. Natywny IPv6 daje każdemu hostowi globalnie routowalny adres, więc NAT współdzielący adresy, który zdefiniował sieci domowe i biurowe IPv4, jest po prostu niepotrzebny; łączność jest koniec-do-końca, a zaporowa zapora stanowa, nie translacja adresów, zapewnia granicę. Tam, gdzie prywatne, nieroutowane adresowanie jest naprawdę pożądane, IPv6 oferuje Unikatowe Adresy Lokalne (Unique Local Addresses) w `fc00::/7`, typ ULA, który narzędzie identyfikuje. Translacja widziana na krawędziach IPv6 służy dosięgnięciu *starego* protokołu, nie rozciąganiu skąpej przestrzeni adresowej.
+
+## Rusztowanie, nie cel
+
+Cała ta maszyneria, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, to przejściowe rusztowanie. Stanem końcowym jest natywne IPv6 wszędzie, z translacją potrzebną tylko, by dosięgnąć tego, co z IPv4 pozostaje. Tymczasem rozpoznawanie form osadzonego-IPv4 i rozumienie, który most jest w grze, pomaga ci rozumować o ścieżce, która może po cichu przeciąć się między dwoma internetami. Gdy narzędzie oznacza adres jako IPv4-mapowany lub siedzący w prefiksie translacji, to twoja wskazówka, że punkt końcowy IPv4 ukrywa się wewnątrz adresu IPv6.

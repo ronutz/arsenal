@@ -1,0 +1,38 @@
+---
+slug: jwt-signing-algorithms
+title: "JWT-ondertekenalgoritmen: HMAC, RSA en ECDSA"
+summary: "Waarom de alg-header van een JWT ertoe doet, het verschil tussen symmetrisch en asymmetrisch ondertekenen, en hoe te kiezen."
+concepts: ["jwt", "hs256", "rs256", "es256", "signing", "asymmetric"]
+relatedTools: ["jwt"]
+relatedArticles: ["jwt-anatomy", "hmac"]
+category: identity
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## De alg-header beslist alles
+
+De header van een JWT noemt het algoritme dat is gebruikt om hem te ondertekenen, bijvoorbeeld `"alg": "HS256"`. Die ene waarde bepaalt welk soort sleutel de verifieerder nodig heeft en wat de handtekening werkelijk bewijst. De algoritmen vallen in twee families, symmetrisch en asymmetrisch, en de keuze daartussen is eigenlijk een keuze over *wie het token moet verifiëren*.
+
+## Symmetrisch: de HMAC-familie (HS256/384/512)
+
+`HS256`, `HS384` en `HS512` zijn HMAC met SHA-256, SHA-384 of SHA-512. Ze gebruiken **één gedeeld geheim** voor zowel ondertekenen als verifiëren. Wie een HS256-token kan verifiëren, kan er ook een vervalsen, omdat het maken en het controleren van de handtekening dezelfde sleutel gebruiken.
+
+Dat maakt de HMAC-familie een goede keuze wanneer **dezelfde partij** het token uitgeeft en verifieert, of wanneer uitgever en verifieerder al een vertrouwd geheim delen, een enkele backend die zijn eigen sessietokens ondertekent, bijvoorbeeld. Het is snel en eenvoudig. Zijn grens is distributie: elke verifieerder heeft het geheim nodig, en hoe meer plaatsen het geheim bewoont, hoe groter de schadestraal als er één lekt.
+
+## Asymmetrisch: RSA en ECDSA (RS256, ES256 en meer)
+
+`RS256` (RSASSA-PKCS1-v1_5 met SHA-256), `PS256` (RSA-PSS) en `ES256` (ECDSA met de P-256-curve) gebruiken een **sleutelpaar**: een privésleutel ondertekent, en de bijbehorende publieke sleutel verifieert. De privésleutel verlaat nooit de uitgever; de publieke sleutel kan aan iedereen worden overhandigd.
+
+Dit is wat je wilt wanneer **veel onafhankelijke diensten** tokens van één uitgever moeten verifiëren. Een identiteitsprovider ondertekent met zijn privésleutel en publiceert zijn publieke sleutels (gewoonlijk als een JWKS-endpoint); elke downstreamdienst verifieert met de publieke sleutel en geen ervan kan tokens slaan. Daarom geven OpenID Connect-providers standaard RS256- of ES256-ID-tokens uit.
+
+Tussen RSA en ECDSA is de afweging grootte en snelheid: ECDSA-sleutels en -handtekeningen zijn veel kleiner voor gelijkwaardige beveiliging, terwijl RSA ouder en universeler ondersteund is. `EdDSA` (Ed25519) is een modern, snel alternatief dat aan adoptie wint.
+
+## Kiezen
+
+- **Eén partij ondertekent en verifieert, of een geheim is al gedeeld** → HMAC (HS256). Eenvoudig en snel.
+- **Eén ondertekenaar, veel onafhankelijke verifieerders** → asymmetrisch (RS256 of ES256). De publieke sleutel kan vrij worden gedistribueerd; alleen de houder van de privésleutel kan ondertekenen.
+
+Wat je ook kiest, de verifieerder moet **het acceptabele algoritme vastzetten** in plaats van de eigen `alg`-header van het token te vertrouwen. Accepteren wat het token ook beweert opent de deur naar de `alg: none`- en algoritme-verwarringsaanvallen beschreven in het JWT-anatomieartikel.
+
+De [JWT-tool](/tools/jwt) decodeert de header zodat je ziet welk algoritme een token declareert, en verifieert de HMAC-familie (HS256/384/512) tegen een geheim dat je plakt, lokaal in je browser.

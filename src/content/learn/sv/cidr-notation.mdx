@@ -1,0 +1,52 @@
+---
+slug: cidr-notation
+title: "CIDR-notation förklarad"
+summary: "Vad snedstrecket i 192.168.1.0/24 faktiskt betyder, och hur en prefixlängd definierar ett block av IP-adresser."
+concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "ipv4-addressing"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Problemet som CIDR löser
+
+Varje enhet på ett IP-nätverk behöver en adress. I IPv4 är den adressen 32 bitar, vanligen skriven som fyra tal från 0 till 255 åtskilda av punkter, som `192.168.1.10`. Den svåra frågan är aldrig "vad är en adress" utan "hur beskriver jag ett *intervall* av adresser som hör samman", ett enskilt kontor, ett subnät, en kundtilldelning. **CIDR-notation** är det kompakta sättet att skriva det intervallet.
+
+CIDR står för Classless Inter-Domain Routing. Den "klasslösa" delen spelar roll: äldre adressering tvingade in intervall i fasta storlekar (de gamla Klass A-, B- och C-blocken). CIDR tog bort den stelheten och lät ett intervall ha *vilken* tvåpotens-storlek som helst, vilket är varför det är standarden idag.
+
+## Att läsa snedstrecket
+
+Ett CIDR-block ser ut som `192.168.1.0/24`. Delen efter snedstrecket, **prefixlängden**, är det enskilt viktigaste talet. Den säger: *de första N bitarna av adressen är fasta, och resten är fria att variera.*
+
+- `/24` betyder att de första 24 bitarna är den fasta nätverksdelen. De återstående 8 bitarna (32 − 24) identifierar enskilda värdar.
+- 8 fria bitar ger 2⁸ = 256 möjliga kombinationer, så `192.168.1.0/24` beskriver de 256 adresserna från `192.168.1.0` till `192.168.1.255`.
+
+Ändra prefixet och blockstorleken ändras med det. Ett mindre prefix betyder *fler* fria bitar och ett *större* block:
+
+- `/16` fixerar 16 bitar, lämnar 16 fria → 65 536 adresser.
+- `/25` fixerar 25 bitar, lämnar 7 fria → 128 adresser.
+- `/30` fixerar 30 bitar, lämnar 2 fria → 4 adresser.
+
+Varje steg om ett i prefixlängden **halverar eller fördubblar** blocket. Den enda regeln är hela intuitionen.
+
+## Nätverk, broadcast och användbara värdar
+
+Inom de flesta block är två adresser särskilda och inte tilldelbara till en värd:
+
+- **Nätverksadressen** är den första adressen i blocket, alla värdbitar satta till 0 (`192.168.1.0` för ett `/24`). Den namnger blocket självt.
+- **Broadcast-adressen** är den sista adressen, alla värdbitar satta till 1 (`192.168.1.255`). Trafik som skickas hit når varje värd i blocket.
+
+Så ett `/24` har 256 adresser totalt men **254 användbara** för faktiska värdar. Siffran "användbara värdar" är helt enkelt totalen minus dessa två reserverade adresser.
+
+Två gränsfall bryter detta mönster, båda avsiktligt:
+
+- Ett **/31** (RFC 3021) används för punkt-till-punkt-länkar mellan två routrar. Det har bara 2 adresser och, genom design, är båda användbara, det finns inget utrymme för en separat nätverks- och broadcast-adress, och ingen behövs för en länk med exakt två ändar.
+- Ett **/32** är en enskild adress, en värdrutt. Det beskriver exakt en maskin.
+
+## Varför detta är värt att förstå
+
+Prefixlängden styr hur nätverk utformas, hur rutter sammanfattas, och hur adressutrymme delas ut. När du ser `10.0.0.0/8` i en routningstabell eller `0.0.0.0/0` som en standardrutt läser du samma notation: en basadress plus en prefixlängd som säger hur mycket av den som är fast. Aritmetiken ändras aldrig, bara talen.
+
+Du kan prova vilket block som helst i [CIDR-kalkylatorn](/learn) för att se dess nätverksadress, broadcast-adress, mask och antal användbara värdar beräknade omedelbart, helt i din webbläsare.
