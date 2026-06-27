@@ -43,9 +43,25 @@ export default async function ToolsPage({
             </div>
           </section>
 
+          {/* Category jump-nav */}
+          {categories.length > 1 && (
+            <nav className="category-nav" aria-label={t("jumpTo")}>
+              <span className="category-nav-label">{t("jumpTo")}</span>
+              <ul className="category-nav-list">
+                {categories.map((category) => (
+                  <li key={category}>
+                    <a href={`#${category}`} className="category-nav-link">
+                      {t(`categories.${category}`)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+
           {/* One block per category */}
           {categories.map((category) => (
-            <section className="section" key={category}>
+            <section className="section category-section" id={category} key={category}>
               <div className="container certs-container">
                 <h2 className="tools-category">{t(`categories.${category}`)}</h2>
                 <ul className="tools-grid">

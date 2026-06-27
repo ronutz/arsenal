@@ -102,6 +102,7 @@
     "learnHeading": "Kavramları öğren",
     "backToTools": "Araçlar",
     "references": "Kaynaklar",
+    "jumpTo": "Şuraya geç",
     "categories": {
       "identity": "Kimlik ve token'lar",
       "encoding": "Kodlama ve veri",
@@ -695,6 +696,12 @@
     "representativeNote": "Bu katalog temsilidir, kapsayıcı değil. Kurs başlıkları, süreleri ve içerikleri güncel kamuya açık bilgileri yansıtır ve resmi açıklamalara göre düzenlenir.",
     "allPlatforms": "Tüm platformlar",
     "authorizedSince": "{year} yılından beri yetkili eğitmen",
+    "workingSince": "{year} yılından beri {platform} ile çalışıyor",
+    "tech": {
+      "switchesRouters": "kurumsal anahtarlar ve yönlendiriciler",
+      "firewalls": "güvenlik duvarları",
+      "webCloudSecurity": "web ve bulut güvenliği"
+    },
     "coursesHeading": "{count} kurs",
     "duration": "Süre",
     "delivery": "Sunum",

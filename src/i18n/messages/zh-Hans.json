@@ -102,6 +102,7 @@
     "learnHeading": "学习概念",
     "backToTools": "工具",
     "references": "参考",
+    "jumpTo": "跳转到",
     "categories": {
       "identity": "身份与令牌",
       "encoding": "编码与数据",
@@ -695,6 +696,12 @@
     "representativeNote": "本目录具有代表性，并非详尽无遗。课程标题、时长和内容反映当前的公开信息，并根据官方说明加以完善。",
     "allPlatforms": "所有平台",
     "authorizedSince": "自 {year} 年起的授权讲师",
+    "workingSince": "自 {year} 年起从事 {platform} 相关工作",
+    "tech": {
+      "switchesRouters": "企业交换机和路由器",
+      "firewalls": "防火墙",
+      "webCloudSecurity": "Web 和云安全"
+    },
     "coursesHeading": "{count} 门课程",
     "duration": "时长",
     "delivery": "交付方式",

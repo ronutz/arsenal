@@ -35,8 +35,16 @@ export interface CatalogueEntry {
   vectors?: number | true;
   /** F5-priority (moves to the front of the build queue). */
   f5?: boolean;
+  /** Fortinet-platform tool. */
+  fortinet?: boolean;
+  /** Netskope-platform tool. */
+  netskope?: boolean;
+  /** Extreme Networks-platform tool. */
+  extreme?: boolean;
   /** Marks a brand-new addition this revision (UDP set). */
   isNew?: boolean;
+  /** LIVE tool that still needs consolidation work (a ratified merge is unbuilt). */
+  consolidationPending?: boolean;
   /** Consolidation / merge / priority note. */
   note?: string;
 }
@@ -44,6 +52,15 @@ export interface CatalogueEntry {
 /** Family display order. */
 export const FAMILIES: string[] = [
   "Security & WAF",
+  "F5 LTM, iRules & platform",
+  "F5 GTM, AFM & APM",
+  "F5 automation (AS3 / DO)",
+  "Fortinet FortiGate & FortiOS",
+  "Fortinet security, VPN & SD-WAN",
+  "Fortinet ecosystem & identity",
+  "Netskope SSE / SASE",
+  "Extreme switching & fabric (EXOS / VOSS / SPB)",
+  "Extreme NAC & cloud (ExtremeControl / Platform ONE)",
   "Identity & tokens",
   "PKI",
   "Protocol & packet decoders",
@@ -63,8 +80,8 @@ export const CATALOGUE: CatalogueEntry[] = [
   { slug: "x509", name: "X.509 inspector", family: "PKI", status: "live", posture: "decode / explain", disposition: "built", specs: ["RFC 5280"], vectors: true },
   { slug: "cipher", name: "Cipher-suite decoder", family: "TLS & transport", status: "live", posture: "decode / rate", disposition: "built", specs: ["IANA TLS Cipher Suites", "RFC 8446", "RFC 5246", "RFC 8447", "RFC 7465"], vectors: 15 },
   { slug: "ipv6", name: "IPv6 toolkit", family: "Networking & addressing", status: "live", posture: "expand / compress / explain", disposition: "built", specs: ["RFC 4291", "RFC 5952"], vectors: true },
-  { slug: "cidr", name: "CIDR / subnetting", family: "Networking & addressing", status: "live", posture: "calculate / explain", disposition: "built", specs: ["RFC 4632"], vectors: true, note: "Now full subnetting: single-subnet + VLSM + supernet + overlap/gap (M1 absorbed vlsm-supernet)." },
-  { slug: "base64", name: "Base64 / codec", family: "Encoding", status: "live", posture: "encode / decode", disposition: "built", specs: ["RFC 4648", "RFC 3986"], vectors: true, note: "Unified codec: Base64/32/16 + hex + percent-encoding (M5 absorbed hex-url)." },
+  { slug: "cidr", name: "CIDR / subnetting", family: "Networking & addressing", status: "live", posture: "calculate / explain", disposition: "built", specs: ["RFC 4632"], vectors: true, consolidationPending: true, note: "M1 PENDING: ships single-subnet today; VLSM + supernet/aggregate + overlap/gap detection still to be built. Build BEFORE new queue tools." },
+  { slug: "base64", name: "Base64 / codec", family: "Encoding", status: "live", posture: "encode / decode", disposition: "built", specs: ["RFC 4648", "RFC 3986"], vectors: true, consolidationPending: true, note: "M5 PENDING: ships standard + URL-safe Base64 today; Base32/Base16 + hex + percent-encoding still to be built. Build BEFORE new queue tools." },
   { slug: "hash", name: "Hash", family: "Hashing", status: "live", posture: "compute", disposition: "built", specs: ["FIPS 180-4", "FIPS 202"], vectors: true },
   { slug: "hmac", name: "HMAC", family: "Hashing", status: "live", posture: "compute / verify", disposition: "built", specs: ["RFC 2104", "FIPS 198-1"], vectors: true },
   { slug: "uuid", name: "UUID", family: "Identifiers & time", status: "live", posture: "generate / parse", disposition: "built", specs: ["RFC 9562"], vectors: true },
@@ -125,6 +142,116 @@ export const CATALOGUE: CatalogueEntry[] = [
   { slug: "diff", name: "Diff", family: "Text & utilities", status: "queued", posture: "compare", disposition: "accept", note: "Carried from consolidation (compliant)." },
   { slug: "password-entropy", name: "Password entropy", family: "Text & utilities", status: "queued", posture: "analyze (analyzer-only)", disposition: "accept", note: "Analyzer only; never a cracker or wordlist." },
 
+  // ============================================================================
+  // QUEUED — RATIFIED F5 EXPANSION (28 tools, 27/06/2026)
+  // All decode / explain / convert / validate; deterministic; local; public-docs
+  // anchored. No forge / crack / evade / defeat. Version-dependent data (cipher
+  // DB, signature metadata, model specs) ships as vendored, dated snapshots.
+  // ============================================================================
+
+  // ---- F5 LTM, iRules & platform -----------------------------------------
+  { slug: "irules-event-order", name: "iRules event-order explainer", family: "F5 LTM, iRules & platform", status: "queued", posture: "explain (deterministic)", disposition: "accept", specs: ["F5 iRules / TMOS event model"], f5: true, note: "Given a profile set + flow, renders the exact event firing sequence. The #1 iRules learning hurdle." },
+  { slug: "virtual-server-match-order", name: "Virtual-server match-order explainer", family: "F5 LTM, iRules & platform", status: "queued", posture: "explain (deterministic)", disposition: "accept", specs: ["F5 LTM virtual server selection"], f5: true, note: "Most-specific destination/port/source precedence: which VIP wins for a given packet." },
+  { slug: "health-monitor-timing", name: "Health-monitor timing calculator", family: "F5 LTM, iRules & platform", status: "queued", posture: "calculate / explain", disposition: "accept", specs: ["F5 LTM monitors"], f5: true, note: "interval / timeout / up-interval math (timeout >= 3*interval + 1); send/recv explainer." },
+  { slug: "f5-tcpdump-syntax", name: "F5 tcpdump syntax builder", family: "F5 LTM, iRules & platform", status: "queued", posture: "build / explain (never captures)", disposition: "accept", specs: ["F5 tcpdump -i 0.0:nnn syntax"], f5: true, note: "The F5-only interface syntax + :p/:n/:h flow flags + --f5 knobs. Builds the command; no capture." },
+  { slug: "snat-port-exhaustion", name: "SNAT port-exhaustion calculator", family: "F5 LTM, iRules & platform", status: "queued", posture: "calculate / explain", disposition: "accept", specs: ["F5 SNAT automap / SNAT pool"], f5: true, note: "N SNAT addresses -> max concurrent flows to one destination; automap vs SNAT pool." },
+  { slug: "persistence-method-explainer", name: "Persistence-method explainer", family: "F5 LTM, iRules & platform", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 LTM persistence"], f5: true, note: "cookie / source-address / SSL / universal / hash + fallback. Complements bigip-persistence-cookie." },
+  { slug: "tmsh-config-explainer", name: "tmsh config explainer", family: "F5 LTM, iRules & platform", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["F5 tmsh reference"], f5: true, note: "Paste a bigip.conf snippet -> plain-English breakdown + structure tree." },
+  { slug: "irules-command-context", name: "iRules command / context reference", family: "F5 LTM, iRules & platform", status: "queued", posture: "reference / validate", disposition: "accept", specs: ["F5 iRules command reference"], f5: true, note: "Which commands are valid in which events; flags CMP-demoting constructs (table/session/persist)." },
+  { slug: "route-domain-partition-decoder", name: "Route-domain / partition decoder", family: "F5 LTM, iRules & platform", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["F5 route domains / partitions"], f5: true, note: "Unpacks the %RD suffix and /partition/ folder notation in object names and IPs." },
+  { slug: "lb-method-chooser", name: "LB-method chooser", family: "F5 LTM, iRules & platform", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 LTM load-balancing methods"], f5: true, note: "round robin / least-conn / ratio / observed / predictive / dynamic ratio, with when-to-use." },
+  { slug: "tmsh-irest-mapper", name: "tmsh <-> iControl REST path mapper", family: "F5 LTM, iRules & platform", status: "queued", posture: "convert / explain", disposition: "accept", specs: ["F5 iControl REST"], f5: true, note: "ltm pool /Common/web <-> /mgmt/tm/ltm/pool/~Common~web. Automation aid." },
+  { slug: "ha-model-explainer", name: "HA / failover explainer", family: "F5 LTM, iRules & platform", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 device service clustering"], f5: true, note: "Device groups, traffic groups, MAC masquerade, connection mirroring, failover triggers." },
+  { slug: "irules-vs-ltm-policy", name: "iRules vs LTM Policy guidance", family: "F5 LTM, iRules & platform", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 LTM policies / iRules"], f5: true, note: "When a match->action belongs in a CMP-friendly LTM Policy vs a real iRule." },
+  { slug: "oneconnect-source-mask", name: "OneConnect source-mask explainer", family: "F5 LTM, iRules & platform", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 OneConnect profile"], f5: true, note: "What 255.255.255.255 vs 0.0.0.0 masks do to connection reuse." },
+
+  // ---- F5 GTM, AFM & APM --------------------------------------------------
+  { slug: "afm-rule-context", name: "AFM rule-context & match explainer", family: "F5 GTM, AFM & APM", status: "queued", posture: "explain (deterministic)", disposition: "accept", specs: ["F5 BIG-IP AFM"], f5: true, note: "Enforcement hierarchy (global -> route-domain -> virtual -> self-IP) + which rule matches a packet." },
+  { slug: "gslb-decision-flow", name: "GSLB decision-flow explainer", family: "F5 GTM, AFM & APM", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 BIG-IP DNS / GTM"], f5: true, note: "Pool LB -> preferred / alternate / fallback; methods (global availability, topology, ratio, QoS, ...)." },
+  { slug: "topology-longest-match", name: "GTM topology longest-match scorer", family: "F5 GTM, AFM & APM", status: "queued", posture: "explain (deterministic)", disposition: "accept", specs: ["F5 GTM topology records"], f5: true, note: "Given topology records + a source, computes the winning record by longest-match weight." },
+  { slug: "apm-sso-explainer", name: "APM SSO method explainer", family: "F5 GTM, AFM & APM", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 BIG-IP APM"], f5: true, note: "forms / Kerberos-constrained-delegation / NTLM / header / SAML / OAuth-bearer; per-request vs per-session." },
+  { slug: "apm-session-variable-reference", name: "APM session-variable reference", family: "F5 GTM, AFM & APM", status: "queued", posture: "reference (vendored)", disposition: "accept", specs: ["F5 APM session variables"], f5: true, note: "Searchable map of session.* variables. Vendored snapshot." },
+  { slug: "dos-vector-explainer", name: "AFM DoS-vector / profile explainer", family: "F5 GTM, AFM & APM", status: "queued", posture: "explain (defensive config only)", disposition: "accept", specs: ["F5 AFM DoS profiles"], f5: true, note: "Explains vectors + detection/mitigation thresholds. Never generates attack traffic." },
+
+  // ---- F5 automation (AS3 / DO) ------------------------------------------
+  { slug: "as3-explainer-validator", name: "AS3 declaration explainer + validator", family: "F5 automation (AS3 / DO)", status: "queued", posture: "validate / explain (schema)", disposition: "accept", specs: ["F5 AS3 schema"], f5: true, note: "Schema-validate + tenant->app->service tree + objects created. Flags TLS_Server=client-ssl gotcha. AS3 covers LTM/GTM/APM/AFM/ASM/PEM." },
+  { slug: "do-explainer-validator", name: "DO declaration explainer + validator", family: "F5 automation (AS3 / DO)", status: "queued", posture: "validate / explain (schema)", disposition: "accept", specs: ["F5 Declarative Onboarding schema"], f5: true, note: "System/VLAN/self-IP/route/license/provision; makes the DO-vs-AS3 boundary explicit." },
+  { slug: "ts-explainer", name: "Telemetry Streaming explainer", family: "F5 automation (AS3 / DO)", status: "queued", posture: "explain (schema)", disposition: "accept", specs: ["F5 Telemetry Streaming schema"], f5: true, note: "What stats/events a TS declaration forwards and where (Splunk/ELK/Grafana)." },
+  { slug: "iapps-legacy-pointer", name: "iApps legacy pointer", family: "F5 automation (AS3 / DO)", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 iApps / AS3 / FAST"], f5: true, note: "iApps are legacy; AS3 + FAST is the modern declarative path." },
+
+  // ---- F5 ASM additions (Security & WAF family) --------------------------
+  { slug: "asm-violation-signature-explainer", name: "ASM violation / signature explainer", family: "Security & WAF", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["F5 BIG-IP ASM / Advanced WAF"], f5: true, note: "Explains violations / signature categories (not evasion). Vendored signature-metadata snapshot." },
+  { slug: "asm-support-id-decoder", name: "ASM support-ID decoder", family: "Security & WAF", status: "queued", posture: "decode", disposition: "accept", specs: ["F5 BIG-IP ASM"], f5: true, note: "Unpacks an ASM support ID for log correlation." },
+
+  // ---- F5 TLS additions (TLS & transport family) ------------------------
+  { slug: "f5-cipher-string-expander", name: "F5 cipher-string expander", family: "TLS & transport", status: "queued", posture: "expand / explain", disposition: "accept", specs: ["F5 cipher rules/groups", "tmm --clientciphers"], f5: true, note: "Expands an F5 cipher string to the ordered suite list. Vendored, dated per-TMOS cipher DB. Pairs with the live cipher tool." },
+  { slug: "f5-ssl-profile-explainer", name: "F5 SSL profile explainer", family: "TLS & transport", status: "queued", posture: "explain", disposition: "accept", specs: ["F5 client-ssl / server-ssl profiles"], f5: true, note: "Chain building, SNI, renegotiation, OCSP stapling; client-ssl vs server-ssl." },
+
+  // ============================================================================
+  // QUEUED — RATIFIED FORTINET EXPANSION (21 tools, 27/06/2026)
+  // Same posture: decode / explain / convert / validate; deterministic; local;
+  // public-docs anchored (FortiOS 7.6.x). No forge / crack / evade / decrypt.
+  // Version-dependent data (FortiGuard categories, signature metadata, model
+  // specs, log-IDs) ships as vendored, dated snapshots pinned to a FortiOS line.
+  // ============================================================================
+
+  // ---- Fortinet FortiGate & FortiOS --------------------------------------
+  { slug: "fortigate-policy-match-order", name: "FortiGate policy match-order explainer", family: "Fortinet FortiGate & FortiOS", status: "queued", posture: "explain (deterministic)", disposition: "accept", specs: ["FortiOS firewall policy"], fortinet: true, note: "Top-down first-match + implicit deny; sequence-based vs NGFW/policy-based modes. Which rule wins for a packet." },
+  { slug: "fortios-cli-config-explainer", name: "FortiOS CLI config explainer", family: "Fortinet FortiGate & FortiOS", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["FortiOS CLI reference"], fortinet: true, note: "Paste a config/edit/set/next/end block -> plain-English breakdown + structure tree." },
+  { slug: "fortigate-session-decoder", name: "FortiGate session-table decoder", family: "Fortinet FortiGate & FortiOS", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["FortiOS diag sys session list"], fortinet: true, note: "Decode a session entry: proto, src->dst, state, NAT, expiry, helper, hook, gateway, policy id, NPU flags." },
+  { slug: "fortigate-vdom-explainer", name: "FortiGate VDOM explainer", family: "Fortinet FortiGate & FortiOS", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiOS VDOMs"], fortinet: true, note: "VDOMs, inter-VDOM links, management VDOM, split-task vs multi-VDOM." },
+  { slug: "fortios-routing-explainer", name: "FortiOS route-lookup explainer", family: "Fortinet FortiGate & FortiOS", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiOS routing"], fortinet: true, note: "Routing table + policy routes (PBR) precedence, ECMP, distance/priority, SD-WAN interaction." },
+  { slug: "fortios-npu-offload", name: "FortiGate NP7 / SOC offload explainer", family: "Fortinet FortiGate & FortiOS", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiGate NP7 / SOC4"], fortinet: true, note: "What gets hardware-offloaded vs punted to CPU, and what breaks offload (IPS, proxy mode)." },
+
+  // ---- Fortinet security, VPN & SD-WAN -----------------------------------
+  { slug: "fortios-security-profiles", name: "Security-profile / inspection-mode explainer", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiOS security profiles"], fortinet: true, note: "flow vs proxy inspection + the profile stack (AV / IPS / web filter / app control / DNS filter / file filter / DLP)." },
+  { slug: "fortigate-ssl-inspection", name: "SSL/SSH inspection explainer", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "explain (config only)", disposition: "accept", specs: ["FortiOS SSL/SSH inspection"], fortinet: true, note: "certificate-inspection vs deep-inspection, CA cert, exemptions. Explains config; never decrypts." },
+  { slug: "fortigate-ipsec-p1p2", name: "IPsec phase1/phase2 mismatch checker", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "explain / compare (deterministic)", disposition: "accept", specs: ["RFC 7296", "FortiOS IPsec VPN"], fortinet: true, note: "Paste both peers' proposals -> find the mismatch. Note 7.6.1 IKE-over-TCP default port 443." },
+  { slug: "fortigate-sdwan-rule", name: "SD-WAN rule / SLA explainer", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "explain (deterministic)", disposition: "accept", specs: ["FortiOS SD-WAN"], fortinet: true, note: "Rule strategy (manual / best-quality / lowest-cost / maximize-bandwidth), Performance SLA thresholds, rule match order." },
+  { slug: "fortigate-sdwan-sla-calc", name: "SD-WAN SLA target calculator", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "calculate", disposition: "accept", specs: ["FortiOS SD-WAN health-check"], fortinet: true, note: "Given thresholds + measured latency/jitter/loss, which members are in or out of SLA." },
+  { slug: "fortigate-sslvpn-explainer", name: "SSL-VPN / Agentless-VPN explainer", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiOS SSL-VPN"], fortinet: true, note: "Modes + the deprecation (SSL-VPN web mode is now 'Agentless VPN', unsupported on some models)." },
+  { slug: "fortigate-ztna-explainer", name: "ZTNA tag / posture explainer", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiOS ZTNA"], fortinet: true, note: "ZTNA tags, access proxy, posture checks." },
+  { slug: "fortiguard-category-lookup", name: "FortiGuard category lookup", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "lookup (vendored)", disposition: "accept", specs: ["FortiGuard web-filter / app-control categories"], fortinet: true, note: "Category ID -> name/group. Vendored snapshot. (Live URL classification is egress -> deferred.)" },
+  { slug: "fortigate-log-decoder", name: "FortiGate log decoder", family: "Fortinet security, VPN & SD-WAN", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["FortiOS log reference"], fortinet: true, note: "Decode a log line by logid + field reference (type/subtype, srcip/dstip/policyid/action). Vendored log-ID snapshot." },
+
+  // ---- Fortinet ecosystem & identity -------------------------------------
+  { slug: "fortiweb-policy-explainer", name: "FortiWeb policy / signature explainer", family: "Fortinet ecosystem & identity", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["FortiWeb"], fortinet: true, note: "Server policies, protection profiles, ML anomaly detection. The Fortinet parallel to asm-waf-inspector. Vendored signature metadata." },
+  { slug: "fortiadc-lb-explainer", name: "FortiADC LB-method / health-check explainer", family: "Fortinet ecosystem & identity", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiADC"], fortinet: true, note: "Virtual servers, real servers, methods, persistence, health checks. Parallel to the F5 LTM LB tools." },
+  { slug: "fortimanager-adom-explainer", name: "FortiManager ADOM / policy-package explainer", family: "Fortinet ecosystem & identity", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiManager"], fortinet: true, note: "ADOMs, policy packages, device DB vs ADOM DB, install targets." },
+  { slug: "fortisase-explainer", name: "FortiSASE component explainer", family: "Fortinet ecosystem & identity", status: "queued", posture: "explain", disposition: "accept", specs: ["FortiSASE"], fortinet: true, note: "SWG / ZTNA / CASB / FWaaS architecture." },
+  { slug: "fortigate-scim-explainer", name: "SCIM 2.0 provisioning explainer", family: "Fortinet ecosystem & identity", status: "queued", posture: "explain", disposition: "accept", specs: ["SCIM 2.0", "RFC 7644"], fortinet: true, note: "FortiOS 7.6 SCIM server: auto-provision users/groups from an IdP. Pairs with the queued SAML/OIDC decoders." },
+  { slug: "totp-hotp", name: "TOTP / HOTP explainer + validator", family: "Fortinet ecosystem & identity", status: "queued", posture: "explain / validate (deterministic)", disposition: "accept", specs: ["RFC 6238", "RFC 4226"], fortinet: true, note: "The OTP algorithms FortiToken uses. RFC-anchored; cross-platform (also a generally useful tool)." },
+
+  // ============================================================================
+  // QUEUED — RATIFIED NETSKOPE + EXTREME EXPANSION (18 tools, 27/06/2026)
+  // Same posture: decode / explain / convert / validate; deterministic; local;
+  // public-docs anchored. No forge / crack / evade / decrypt. Version-dependent
+  // data (categories, CCI, classifier lists, log/event IDs, model/OS maps) ships
+  // as vendored, dated snapshots.
+  // ============================================================================
+
+  // ---- Netskope SSE / SASE (build-first 4 + 4 others) --------------------
+  { slug: "pac-file-explainer", name: "PAC file explainer + validator", family: "Netskope SSE / SASE", status: "queued", posture: "parse / validate", disposition: "accept", specs: ["PAC (FindProxyForURL)"], netskope: true, note: "Parses FindProxyForURL logic (isInNet, dnsDomainIs, ...). Netskope steering aid; cross-platform standard." },
+  { slug: "sse-architecture-explainer", name: "SSE / SASE single-pass architecture explainer", family: "Netskope SSE / SASE", status: "queued", posture: "explain", disposition: "accept", specs: ["Netskope One platform"], netskope: true, note: "Zero Trust Engine, single-pass inspection order, the SSE stack (SWG/CASB/ZTNA/DLP/FWaaS/RBI/DNSaaS)." },
+  { slug: "netskope-steering-explainer", name: "Netskope steering-method explainer", family: "Netskope SSE / SASE", status: "queued", posture: "explain", disposition: "accept", specs: ["Netskope One steering"], netskope: true, note: "Client vs IPsec vs GRE vs proxy-chaining vs DNS steering to NewEdge; when each applies." },
+  { slug: "netskope-dlp-concepts", name: "Netskope DLP concept explainer", family: "Netskope SSE / SASE", status: "queued", posture: "explain", disposition: "accept", specs: ["Netskope One DLP"], netskope: true, note: "Rules, classifiers, file types, EDM, fingerprinting. Explains concepts; never builds classifiers or extracts data." },
+  { slug: "netskope-cci-explainer", name: "Cloud Confidence Index (CCI) explainer", family: "Netskope SSE / SASE", status: "queued", posture: "reference (vendored)", disposition: "accept", specs: ["Netskope Cloud Confidence Index"], netskope: true, note: "App-risk scoring model + attributes. Vendored reference. (Non-build-first: queued at end.)" },
+  { slug: "netskope-ztna-explainer", name: "Netskope Private Access (ZTNA) explainer", family: "Netskope SSE / SASE", status: "queued", posture: "explain", disposition: "accept", specs: ["Netskope One Private Access"], netskope: true, note: "Publishers, app definitions, ZTNA-vs-VPN, bi-directional ZTNA Next. (Non-build-first: queued at end.)" },
+  { slug: "netskope-log-fields", name: "Netskope log / event field reference", family: "Netskope SSE / SASE", status: "queued", posture: "decode / reference (vendored)", disposition: "accept", specs: ["Netskope SkopeIT events"], netskope: true, note: "Decode a page/application event's fields. Vendored field map. (Non-build-first: queued at end.)" },
+  { slug: "netskope-sso-explainer", name: "Netskope SSO / SCIM integration explainer", family: "Netskope SSE / SASE", status: "queued", posture: "explain", disposition: "accept", specs: ["SAML 2.0", "OIDC", "SCIM 2.0"], netskope: true, note: "Netskope as SP + SCIM provisioning. Shares standards with the queued saml/oidc decoders. (Non-build-first: queued at end.)" },
+
+  // ---- Extreme switching & fabric (EXOS / VOSS / SPB) --------------------
+  { slug: "exos-config-explainer", name: "EXOS (Switch Engine) config explainer", family: "Extreme switching & fabric (EXOS / VOSS / SPB)", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["ExtremeXOS / Switch Engine CLI"], extreme: true, note: "Paste an EXOS config -> plain-English + structure tree." },
+  { slug: "fabric-connect-spb-explainer", name: "Fabric Connect / SPB explainer", family: "Extreme switching & fabric (EXOS / VOSS / SPB)", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["IEEE 802.1aq (SPB)", "IS-IS"], extreme: true, note: "Shortest Path Bridging + IS-IS: BVLANs, I-SIDs, B-MAC, L2VSN/L3VSN. Extreme's signature tech; rare tooling." },
+  { slug: "voss-config-explainer", name: "VOSS (Fabric Engine) config explainer", family: "Extreme switching & fabric (EXOS / VOSS / SPB)", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["VOSS / Fabric Engine ACLI"], extreme: true, note: "Same for the Avaya-lineage ACLI syntax (distinct grammar from EXOS)." },
+  { slug: "extremecontrol-nac-explainer", name: "ExtremeControl NAC policy explainer", family: "Extreme NAC & cloud (ExtremeControl / Platform ONE)", status: "queued", posture: "explain", disposition: "accept", specs: ["ExtremeControl"], extreme: true, note: "Roles, contextual identity; policies combine VLAN/L2VSN/L3VSN/L2-L7 ACL+QoS and convert to dACLs." },
+  { slug: "isid-vsn-decoder", name: "I-SID / VSN decoder", family: "Extreme switching & fabric (EXOS / VOSS / SPB)", status: "queued", posture: "decode", disposition: "accept", specs: ["SPBM I-SID / VSN"], extreme: true, note: "Decode a Service Instance Identifier + its L2VSN/L3VSN mapping." },
+  { slug: "extreme-switch-os-mapper", name: "Universal switch OS-name mapper", family: "Extreme switching & fabric (EXOS / VOSS / SPB)", status: "queued", posture: "reference (vendored)", disposition: "accept", specs: ["Extreme Universal switches"], extreme: true, note: "EXOS<->Switch Engine / VOSS<->Fabric Engine, by model. Timely (image file names are still EXOS/VOSS)." },
+  { slug: "extreme-dacl-explainer", name: "Downloadable ACL (dACL) explainer", family: "Extreme NAC & cloud (ExtremeControl / Platform ONE)", status: "queued", posture: "decode / explain", disposition: "accept", specs: ["ExtremeControl dACL"], extreme: true, note: "The downloadable-ACL structure ExtremeControl pushes to switches and routers." },
+  { slug: "exos-voss-mapper", name: "EXOS <-> VOSS concept mapper", family: "Extreme switching & fabric (EXOS / VOSS / SPB)", status: "queued", posture: "convert / explain", disposition: "accept", specs: ["ExtremeXOS", "VOSS"], extreme: true, note: "VLAN vs VSN and friends, for shops running both OSes." },
+  { slug: "fabric-attach-explainer", name: "Fabric Attach explainer", family: "Extreme switching & fabric (EXOS / VOSS / SPB)", status: "queued", posture: "explain", disposition: "accept", specs: ["Extreme Fabric Attach"], extreme: true, note: "Auto edge-to-fabric provisioning." },
+  { slug: "extreme-platform-map", name: "Platform ONE / XIQ / Site Engine map", family: "Extreme NAC & cloud (ExtremeControl / Platform ONE)", status: "queued", posture: "explain", disposition: "accept", specs: ["Extreme Platform ONE", "ExtremeCloud IQ"], extreme: true, note: "The cloud-vs-on-prem management split and where ExtremeControl/Analytics live." },
+
   // ---- DEFERRED (egress / extended tiers — gating model reserved) ---------
   { slug: "dns-lookup", name: "DNS lookup (egress)", family: "Networking & addressing", status: "deferred", posture: "egress (single / bulk / monitor)", disposition: "defer", note: "Egress; deferred until the gating model is ratified." },
   { slug: "asn-live", name: "ASN live (egress)", family: "Networking & addressing", status: "deferred", posture: "egress (live BGP / IRR)", disposition: "defer", note: "Live egress; deferred." },
@@ -170,11 +297,141 @@ export const counts = () => ({
   dropped: byStatus("dropped").length,
   total: CATALOGUE.length,
   f5Queued: CATALOGUE.filter((t) => t.status === "queued" && t.f5).length,
+  fortinetQueued: CATALOGUE.filter((t) => t.status === "queued" && t.fortinet).length,
+  netskopeQueued: CATALOGUE.filter((t) => t.status === "queued" && t.netskope).length,
+  extremeQueued: CATALOGUE.filter((t) => t.status === "queued" && t.extreme).length,
   udp: CATALOGUE.filter((t) => t.isNew).length,
 });
-/** Build queue: queued only, F5 first, then alphabetical. */
+/** LIVE tools with a ratified-but-unbuilt merge — build BEFORE any new queue tool. */
+export const consolidationBacklog = () => CATALOGUE.filter((t) => t.consolidationPending);
+/**
+ * VALUE_RANK — build-queue priority (higher = build sooner).
+ *
+ * The five F5 tools already in the queue are pinned at the very top (100–96).
+ * Everything below is ordered strictly by value, so the highest-value new F5
+ * tools sit just beneath the pinned set and lower-value F5 tools fall naturally
+ * among the general tools (value-ranked interleave, per PRIME 27/06/2026).
+ * Slugs not present default to 0 and sort last (alphabetically).
+ */
+export const VALUE_RANK: Record<string, number> = {
+  // Pinned: F5 tools already queued
+  "asm-waf-inspector": 100,
+  "bigip-persistence-cookie": 99,
+  oidc: 98,
+  "saml-decoder": 97,
+  "waf-evasion-normalizer": 96,
+  // Value-ranked interleave (new F5 + general)
+  "irules-event-order": 95,
+  "as3-explainer-validator": 94,
+  "virtual-server-match-order": 92,
+  "f5-cipher-string-expander": 90,
+  "do-explainer-validator": 89,
+  "afm-rule-context": 88,
+  "health-monitor-timing": 86,
+  "f5-tcpdump-syntax": 85,
+  regex: 82,
+  "snat-port-exhaustion": 80,
+  "persistence-method-explainer": 78,
+  "gslb-decision-flow": 76,
+  "secure-headers": 75,
+  "topology-longest-match": 74,
+  epoch: 72,
+  "apm-sso-explainer": 70,
+  "tmsh-config-explainer": 68,
+  "xml-decoder": 66,
+  "f5-ssl-profile-explainer": 65,
+  "tcp-decoder": 64,
+  "asm-violation-signature-explainer": 63,
+  "udp-decoder": 62,
+  "irules-command-context": 61,
+  "layered-packet-decoder": 60,
+  "http-methods-comparison": 59,
+  "route-domain-partition-decoder": 58,
+  "log-parser": 57,
+  "mtu-mss": 56,
+  "lb-method-chooser": 55,
+  "http-request-translator": 54,
+  "dns-message-decoder": 53,
+  "tmsh-irest-mapper": 52,
+  "asn-prefix": 51,
+  diff: 50,
+  "apm-session-variable-reference": 49,
+  "ipsec-decoder": 48,
+  "dhcp-decoder": 47,
+  "bits-bytes": 46,
+  "ha-model-explainer": 45,
+  "vxlan-decoder": 44,
+  "mac-oui": 43,
+  "dos-vector-explainer": 42,
+  "geneve-decoder": 41,
+  "network-number-registries": 40,
+  "icmp-decoder": 39,
+  "irules-vs-ltm-policy": 38,
+  "quic-header-decoder": 37,
+  "ip-multicast-group": 36,
+  "ntp-packet-decoder": 35,
+  "oneconnect-source-mask": 34,
+  "charset-equivalency": 33,
+  "layers-nest-explainer": 32,
+  "bpdu-stp-decoder": 31,
+  "ts-explainer": 30,
+  "lldp-cdp-decoder": 29,
+  "http-method-override": 28,
+  "ospf-decoder": 27,
+  "password-entropy": 26,
+  "asm-support-id-decoder": 25,
+  "pppoe-decoder": 24,
+  "iapps-legacy-pointer": 16,
+  // Fortinet expansion (value-ranked interleave)
+  "fortigate-policy-match-order": 84,
+  "fortios-cli-config-explainer": 83,
+  "fortigate-ipsec-p1p2": 81,
+  "fortigate-session-decoder": 79,
+  "fortios-security-profiles": 77,
+  "fortigate-sdwan-rule": 73,
+  "fortigate-log-decoder": 71,
+  "totp-hotp": 69,
+  "fortigate-ssl-inspection": 67,
+  "fortiguard-category-lookup": 60,
+  "fortiweb-policy-explainer": 56,
+  "fortiadc-lb-explainer": 52,
+  "fortigate-sdwan-sla-calc": 47,
+  "fortigate-scim-explainer": 43,
+  "fortios-routing-explainer": 41,
+  "fortigate-vdom-explainer": 39,
+  "fortios-npu-offload": 35,
+  "fortimanager-adom-explainer": 33,
+  "fortigate-sslvpn-explainer": 31,
+  "fortigate-ztna-explainer": 28,
+  "fortisase-explainer": 23,
+  // Extreme Networks (distributed by value, below the F5 build-first tier)
+  "exos-config-explainer": 83,
+  "fabric-connect-spb-explainer": 81,
+  "voss-config-explainer": 79,
+  "extremecontrol-nac-explainer": 75,
+  "isid-vsn-decoder": 71,
+  "extreme-switch-os-mapper": 67,
+  "extreme-dacl-explainer": 57,
+  "exos-voss-mapper": 49,
+  "fabric-attach-explainer": 42,
+  "extreme-platform-map": 34,
+  // Netskope build-first (distributed by value)
+  "pac-file-explainer": 65,
+  "sse-architecture-explainer": 59,
+  "netskope-steering-explainer": 53,
+  "netskope-dlp-concepts": 45,
+  // Netskope non-build-first (queued at the END, below all others)
+  "netskope-ztna-explainer": 15,
+  "netskope-cci-explainer": 14,
+  "netskope-log-fields": 13,
+  "netskope-sso-explainer": 12,
+};
+
+/** Build queue: queued only, ordered by value (desc), tie-break alphabetical. */
 export const buildQueue = () =>
   byStatus("queued").sort((a, b) => {
-    if (!!a.f5 !== !!b.f5) return a.f5 ? -1 : 1;
+    const va = VALUE_RANK[a.slug] ?? 0;
+    const vb = VALUE_RANK[b.slug] ?? 0;
+    if (vb !== va) return vb - va;
     return a.name.localeCompare(b.name);
   });

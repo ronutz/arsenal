@@ -102,6 +102,7 @@
     "learnHeading": "Poznaj koncepcje",
     "backToTools": "Narzędzia",
     "references": "Źródła",
+    "jumpTo": "Przejdź do",
     "categories": {
       "identity": "Tożsamość i tokeny",
       "encoding": "Kodowanie i dane",
@@ -695,6 +696,12 @@
     "representativeNote": "Ten katalog jest reprezentatywny, nie wyczerpujący. Nazwy kursów, czasy trwania i treści odzwierciedlają aktualne informacje publiczne i są dopracowane na podstawie oficjalnych kart danych.",
     "allPlatforms": "Wszystkie platformy",
     "authorizedSince": "Autoryzowany instruktor od {year}",
+    "workingSince": "Pracuje z {platform} od {year}",
+    "tech": {
+      "switchesRouters": "przełącznikami i routerami dla firm",
+      "firewalls": "zaporami sieciowymi",
+      "webCloudSecurity": "bezpieczeństwem web i chmury"
+    },
     "coursesHeading": "{count} kursów",
     "duration": "Czas trwania",
     "delivery": "Forma",

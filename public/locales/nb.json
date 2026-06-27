@@ -102,6 +102,7 @@
     "learnHeading": "Lær konseptene",
     "backToTools": "Verktøy",
     "references": "Referanser",
+    "jumpTo": "Hopp til",
     "categories": {
       "identity": "Identitet og tokens",
       "encoding": "Koding og data",
@@ -695,6 +696,12 @@
     "representativeNote": "Denne katalogen er representativ, ikke uttømmende. Kursnavn, varigheter og innhold gjenspeiler aktuell offentlig informasjon og er finjustert ut fra offisielle datablader.",
     "allPlatforms": "Alle plattformer",
     "authorizedSince": "Autorisert instruktør siden {year}",
+    "workingSince": "Jobber med {platform} siden {year}",
+    "tech": {
+      "switchesRouters": "switcher og rutere for bedrifter",
+      "firewalls": "brannmurer",
+      "webCloudSecurity": "web- og skysikkerhet"
+    },
     "coursesHeading": "{count} kurs",
     "duration": "Varighet",
     "delivery": "Levering",

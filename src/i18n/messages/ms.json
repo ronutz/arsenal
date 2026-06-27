@@ -102,6 +102,7 @@
     "learnHeading": "Pelajari konsepnya",
     "backToTools": "Alat",
     "references": "Rujukan",
+    "jumpTo": "Lompat ke",
     "categories": {
       "identity": "Identiti & token",
       "encoding": "Pengekodan & data",
@@ -695,6 +696,12 @@
     "representativeNote": "Katalog ini mewakili, bukan menyeluruh. Tajuk kursus, tempoh dan kandungan mencerminkan maklumat awam semasa dan diperhalusi berdasarkan huraian rasmi.",
     "allPlatforms": "Semua platform",
     "authorizedSince": "Jurulatih diberi kuasa sejak {year}",
+    "workingSince": "Bekerja dengan {platform} sejak {year}",
+    "tech": {
+      "switchesRouters": "suis dan penghala perusahaan",
+      "firewalls": "firewall",
+      "webCloudSecurity": "keselamatan web dan awan"
+    },
     "coursesHeading": "{count} kursus",
     "duration": "Tempoh",
     "delivery": "Penyampaian",

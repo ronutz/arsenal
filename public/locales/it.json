@@ -102,6 +102,7 @@
     "learnHeading": "Impara i concetti",
     "backToTools": "Strumenti",
     "references": "Riferimenti",
+    "jumpTo": "Vai a",
     "categories": {
       "identity": "Identità e token",
       "encoding": "Codifica e dati",
@@ -695,6 +696,12 @@
     "representativeNote": "Questo catalogo è rappresentativo, non esaustivo. Nomi dei corsi, durate e contenuti riflettono le informazioni pubbliche attuali e sono affinati a partire dai datasheet ufficiali.",
     "allPlatforms": "Tutte le piattaforme",
     "authorizedSince": "Istruttore autorizzato dal {year}",
+    "workingSince": "Lavora con {platform} dal {year}",
+    "tech": {
+      "switchesRouters": "switch e router aziendali",
+      "firewalls": "firewall",
+      "webCloudSecurity": "sicurezza web e cloud"
+    },
     "coursesHeading": "{count} corsi",
     "duration": "Durata",
     "delivery": "Erogazione",

@@ -57,6 +57,14 @@ export default async function PlatformPage({
               </Link>
               <h1 className="platform-name">{p.name}</h1>
               <p className="platform-tagline">{p.tagline}</p>
+              {p.workingSince && (
+                <p className="platform-authorization mono">
+                  {t("workingSince", {
+                    platform: p.workingTechKey ? t(`tech.${p.workingTechKey}`) : p.name,
+                    year: p.workingSince,
+                  })}
+                </p>
+              )}
               <p className="platform-authorization mono">
                 {t("authorizedSince", { year: p.since })}
               </p>

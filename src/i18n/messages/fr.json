@@ -102,6 +102,7 @@
     "learnHeading": "Apprendre les concepts",
     "backToTools": "Outils",
     "references": "Références",
+    "jumpTo": "Aller à",
     "categories": {
       "identity": "Identité et jetons",
       "encoding": "Encodage et données",
@@ -695,6 +696,12 @@
     "representativeNote": "Ce catalogue est représentatif, non exhaustif. Les noms des cours, les durées et les contenus reflètent les informations publiques actuelles et sont affinés à partir des fiches techniques officielles.",
     "allPlatforms": "Toutes les plateformes",
     "authorizedSince": "Formateur agréé depuis {year}",
+    "workingSince": "Travaille avec {platform} depuis {year}",
+    "tech": {
+      "switchesRouters": "commutateurs et routeurs d'entreprise",
+      "firewalls": "pare-feu",
+      "webCloudSecurity": "sécurité web et cloud"
+    },
     "coursesHeading": "{count} cours",
     "duration": "Durée",
     "delivery": "Format",

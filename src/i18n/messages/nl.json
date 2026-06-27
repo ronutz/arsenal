@@ -102,6 +102,7 @@
     "learnHeading": "Leer de concepten",
     "backToTools": "Tools",
     "references": "Referenties",
+    "jumpTo": "Ga naar",
     "categories": {
       "identity": "Identiteit & tokens",
       "encoding": "Codering & data",
@@ -695,6 +696,12 @@
     "representativeNote": "Deze catalogus is representatief, niet uitputtend. Cursusnamen, duur en inhoud weerspiegelen actuele openbare informatie en zijn verfijnd op basis van officiële datasheets.",
     "allPlatforms": "Alle platforms",
     "authorizedSince": "Geautoriseerd trainer sinds {year}",
+    "workingSince": "Werkt sinds {year} met {platform}",
+    "tech": {
+      "switchesRouters": "zakelijke switches en routers",
+      "firewalls": "firewalls",
+      "webCloudSecurity": "web- en cloudbeveiliging"
+    },
     "coursesHeading": "{count} cursussen",
     "duration": "Duur",
     "delivery": "Vorm",

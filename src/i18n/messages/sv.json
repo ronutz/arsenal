@@ -102,6 +102,7 @@
     "learnHeading": "Lär dig koncepten",
     "backToTools": "Verktyg",
     "references": "Referenser",
+    "jumpTo": "Hoppa till",
     "categories": {
       "identity": "Identitet och tokens",
       "encoding": "Kodning och data",
@@ -695,6 +696,12 @@
     "representativeNote": "Den här katalogen är representativ, inte uttömmande. Kursnamn, längder och innehåll speglar aktuell offentlig information och är förfinade utifrån officiella datablad.",
     "allPlatforms": "Alla plattformar",
     "authorizedSince": "Auktoriserad instruktör sedan {year}",
+    "workingSince": "Arbetar med {platform} sedan {year}",
+    "tech": {
+      "switchesRouters": "switchar och routrar för företag",
+      "firewalls": "brandväggar",
+      "webCloudSecurity": "webb- och molnsäkerhet"
+    },
     "coursesHeading": "{count} kurser",
     "duration": "Längd",
     "delivery": "Leverans",

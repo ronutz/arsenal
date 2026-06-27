@@ -50,9 +50,25 @@ export default async function LearnIndexPage({
               build genuine understanding, not just to define a term.
             </p>
 
+            {/* Category jump-nav */}
+            {groups.length > 1 && (
+              <nav className="category-nav" aria-label={tTools("jumpTo")}>
+                <span className="category-nav-label">{tTools("jumpTo")}</span>
+                <ul className="category-nav-list">
+                  {groups.map((group) => (
+                    <li key={group.category}>
+                      <a href={`#${group.category}`} className="category-nav-link">
+                        {tTools(`categories.${group.category}`)}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+
             {/* One block per category, mirroring the tools index taxonomy. */}
             {groups.map((group) => (
-              <section key={group.category} style={{ marginBottom: "2.5rem" }}>
+              <section className="category-section" id={group.category} key={group.category} style={{ marginBottom: "2.5rem" }}>
                 <h2 className="tools-category">{tTools(`categories.${group.category}`)}</h2>
                 <ul className="learn-grid">
                   {group.articles.map((a) => (

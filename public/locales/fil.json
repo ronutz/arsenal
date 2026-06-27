@@ -102,6 +102,7 @@
     "learnHeading": "Alamin ang mga konsepto",
     "backToTools": "Mga tool",
     "references": "Mga reperensya",
+    "jumpTo": "Pumunta sa",
     "categories": {
       "identity": "Identity at tokens",
       "encoding": "Encoding at data",
@@ -695,6 +696,12 @@
     "representativeNote": "Ang catalog na ito ay kinatawan, hindi kabuuan. Ang mga pamagat, tagal, at nilalaman ng kurso ay sumasalamin sa kasalukuyang pampublikong impormasyon at pinipino ayon sa opisyal na mga deskripsyon.",
     "allPlatforms": "Lahat ng platform",
     "authorizedSince": "Awtorisadong instructor mula {year}",
+    "workingSince": "Nagtatrabaho sa {platform} mula {year}",
+    "tech": {
+      "switchesRouters": "enterprise switches at routers",
+      "firewalls": "firewalls",
+      "webCloudSecurity": "web at cloud security"
+    },
     "coursesHeading": "{count} na kurso",
     "duration": "Tagal",
     "delivery": "Paghahatid",

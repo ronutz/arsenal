@@ -47,8 +47,12 @@ export interface Platform {
   tagline: string;
   /** Platform-level description, original wording. */
   intro: string;
-  /** Since when Rodolfo has taught / worked with this platform. */
+  /** Year Rodolfo became an authorized instructor for this platform. */
   since: string;
+  /** Year Rodolfo began working hands-on with this technology (depth beyond the instructor years). Optional. */
+  workingSince?: string;
+  /** i18n key (under training.tech.*) for the underlying-technology label, used instead of the vendor name. Optional; falls back to the platform name. */
+  workingTechKey?: string;
   /** The authorized courses for this platform. */
   courses: Course[];
 }
@@ -63,7 +67,8 @@ const f5: Platform = {
   tagline: "Application delivery and application security, on BIG-IP.",
   intro:
     "F5 BIG-IP sits in front of applications, controlling how traffic reaches them and protecting them as it does. The platform spans load balancing and traffic management, web application firewalling, access control, DNS, network firewalling, and SSL visibility. These courses build the operational skill to deploy and run BIG-IP across that full range, from first setup through advanced, module-specific configuration.",
-  since: "2013",
+  since: "2020",
+  workingSince: "2013",
   courses: [
     {
       slug: "administering-big-ip",
@@ -315,6 +320,8 @@ const extreme: Platform = {
   intro:
     "Extreme Networks builds the switching, routing, and cloud-managed networking that runs enterprise campuses. These courses follow the Professional Program across two tracks, ExtremeSwitching on ExtremeXOS / Switch Engine, and ExtremeCloud SD-WAN, each progressing from installation and configuration through management, advanced configuration, and troubleshooting, plus a dedicated course on API and automation for ExtremeCloud IQ. The lineage runs back to Enterasys and Cabletron, where this career began.",
   since: "2021",
+  workingSince: "1996",
+  workingTechKey: "switchesRouters",
   courses: [
     {
       slug: "switching-installation-configuration",
@@ -490,6 +497,8 @@ const fortinet: Platform = {
   intro:
     "Fortinet's FortiGate is one of the most widely deployed network security platforms, and its training centers on operating FortiGate effectively, firewall policy, secure connectivity, and the security profiles that inspect and control traffic. These courses follow the Fortinet Certified Professional path in Secure Networking, from foundational operation through administration and into the management and analytics tools of the Security Fabric. Fortinet recently restructured its certification program; the courses below reflect that path and will be refined to the exact current titles.",
   since: "2024",
+  workingSince: "1998",
+  workingTechKey: "firewalls",
   courses: [
     {
       slug: "fortigate-operator",
@@ -608,6 +617,8 @@ const netskope: Platform = {
   intro:
     "Netskope secures how organizations use the cloud, the web, and private applications, bringing visibility and control to traffic that traditional perimeters never saw. Its instructor-led training centers on the Netskope One platform: administering the core security controls, then implementing and integrating the platform into an enterprise environment. These two courses form a clear path, from operating the platform day to day to deploying it end to end. Rodolfo added Netskope to his delivery in 2025.",
   since: "2025",
+  workingSince: "2008",
+  workingTechKey: "webCloudSecurity",
   courses: [
     {
       slug: "netskope-one-administrator",
