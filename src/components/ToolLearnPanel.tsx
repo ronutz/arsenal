@@ -20,11 +20,15 @@ export default function ToolLearnPanel({
   toolSlug,
   locale,
   heading,
+  seeAll,
 }: {
   toolSlug: string;
   locale: string;
   /** Localized heading (passed in so the panel stays presentation-only). */
   heading: string;
+  /** Optional "see all articles" link to the full Learn library. When omitted
+      (the default, e.g. on tool pages) no link renders. */
+  seeAll?: { href: string; label: string };
 }) {
   const articles = getArticlesForTool(toolSlug, locale);
 
@@ -44,6 +48,11 @@ export default function ToolLearnPanel({
           </li>
         ))}
       </ul>
+      {seeAll && (
+        <Link href={seeAll.href} className="tool-learn-all">
+          {seeAll.label} →
+        </Link>
+      )}
     </aside>
   );
 }

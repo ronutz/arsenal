@@ -3746,3 +3746,55 @@ a.tools-card:hover {
 .ipv6-wrap {
   word-break: break-all;
 }
+
+/* ===========================================================================
+   HOMEPAGE link affordances (added 2026-06-29)
+   - .pillar-link makes the WHOLE pillar box clickable (whole-card link via the
+     negative-margin trick), preserving the existing .pillar:hover border.
+   - .section-cta(-link) is the standalone accent arrow-link used at the end of
+     the credibility section ("more about who builds this" -> /about); mirrors
+     the existing .tool-toolbox-link treatment.
+   - .tool-learn-all is the optional "see all articles" link at the foot of the
+     in-tool Learn panel (homepage -> /learn).
+   =========================================================================== */
+.pillar-link {
+  display: block;
+  margin: -1.5rem -1rem;          /* cancel the .pillar padding so the link fills the box */
+  padding: 1.5rem 1rem;           /* restore the visual padding inside the link */
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+}
+.pillar-link:hover {
+  color: var(--accent-primary);
+}
+.pillar-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.section-cta {
+  margin-top: 1.25rem;
+}
+.section-cta-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.section-cta-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.tool-learn-all {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.tool-learn-all:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}

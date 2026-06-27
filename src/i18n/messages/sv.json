@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Byggt av någon som har gjort jobbet sedan 1996.",
-      "body": "Trettio år inom företagsnätverk och säkerhet, levererat av en aktiv instruktör och inte av en marknadsföringssida. Certifierad på fyra plattformar, så att jämförelserna här görs ärligt, inte för att sälja."
+      "body": "Trettio år inom företagsnätverk och säkerhet, levererat av en aktiv instruktör och inte av en marknadsföringssida. Certifierad på fyra plattformar, så att jämförelserna här görs ärligt, inte för att sälja.",
+      "aboutCta": "Mer om personen bakom"
     },
     "pillars": {
       "title": "Fyra plattformar, undervisade och hållna aktuella.",
@@ -52,7 +53,8 @@
       "title": "Prova ett verktyg nu.",
       "body": "CIDR-kalkylatorn nedan körs lokalt. Ange ett nät och ett prefix för att se adressintervallet, antalet värdar och masken. Ingenting skickas någonstans.",
       "learnHeading": "Lär dig koncepten",
-      "toolboxCta": "Öppna hela verktygslådan"
+      "toolboxCta": "Öppna hela verktygslådan",
+      "seeAllArticles": "Se alla artiklar"
     },
     "provenance": {
       "title": "Erkännanden och källor",

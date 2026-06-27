@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Bygd av en som har gjort jobben siden 1996.",
-      "body": "Tretti år innen bedriftsnettverk og sikkerhet, levert av en aktiv instruktør og ikke av en markedsføringsside. Sertifisert på fire plattformer, så sammenligningene her er gjort ærlig, ikke for å selge."
+      "body": "Tretti år innen bedriftsnettverk og sikkerhet, levert av en aktiv instruktør og ikke av en markedsføringsside. Sertifisert på fire plattformer, så sammenligningene her er gjort ærlig, ikke for å selge.",
+      "aboutCta": "Mer om personen bak"
     },
     "pillars": {
       "title": "Fire plattformer, undervist og holdt oppdatert.",
@@ -52,7 +53,8 @@
       "title": "Prøv et verktøy nå.",
       "body": "CIDR-kalkulatoren nedenfor kjører lokalt. Skriv inn et nett og et prefiks for å se adresseområdet, antall verter og masken. Ingenting sendes noe sted.",
       "learnHeading": "Lær begrepene",
-      "toolboxCta": "Åpne hele verktøykassen"
+      "toolboxCta": "Åpne hele verktøykassen",
+      "seeAllArticles": "Se alle artikler"
     },
     "provenance": {
       "title": "Takk og kilder",

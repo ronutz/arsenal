@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Ginawa ng taong gumagawa nito mula pa noong 1996.",
-      "body": "Tatlumpung taon sa enterprise networking at security, inihahatid ng isang aktibong instructor, hindi ng isang marketing page. Certified sa apat na platform, kaya ang mga paghahambing dito ay tapat, hindi para magbenta."
+      "body": "Tatlumpung taon sa enterprise networking at security, inihahatid ng isang aktibong instructor, hindi ng isang marketing page. Certified sa apat na platform, kaya ang mga paghahambing dito ay tapat, hindi para magbenta.",
+      "aboutCta": "Higit pa tungkol sa gumagawa nito"
     },
     "pillars": {
       "title": "Apat na platform, itinuturo at pinapanatiling updated.",
@@ -52,7 +53,8 @@
       "title": "Subukan ang tool ngayon.",
       "body": "Ang CIDR calculator sa ibaba ay tumatakbo nang local. Maglagay ng network at prefix, at makikita mo ang address range, bilang ng host, at ang mask. Walang ipinapadala kahit saan.",
       "learnHeading": "Pag-aralan ang mga konsepto",
-      "toolboxCta": "Buksan ang buong toolbox"
+      "toolboxCta": "Buksan ang buong toolbox",
+      "seeAllArticles": "Tingnan ang lahat ng artikulo"
     },
     "provenance": {
       "title": "Mga kredito at pinagmulan",

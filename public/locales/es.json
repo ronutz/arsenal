@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Creado por alguien que hace este trabajo desde 1996.",
-      "body": "Treinta años en redes y seguridad empresarial, de la mano de un instructor en activo y no de una página de marketing. Certificado en cuatro plataformas, así que las comparaciones aquí se hacen con honestidad, no para vender."
+      "body": "Treinta años en redes y seguridad empresarial, de la mano de un instructor en activo y no de una página de marketing. Certificado en cuatro plataformas, así que las comparaciones aquí se hacen con honestidad, no para vender.",
+      "aboutCta": "Más sobre quién está detrás"
     },
     "pillars": {
       "title": "Cuatro plataformas, enseñadas y mantenidas al día.",
@@ -52,7 +53,8 @@
       "title": "Prueba una herramienta ahora mismo.",
       "body": "La calculadora CIDR de abajo se ejecuta de forma local. Escribe una red y un prefijo para ver el rango de direcciones, la cantidad de hosts y la máscara. No se envía nada a ningún sitio.",
       "learnHeading": "Aprende los conceptos",
-      "toolboxCta": "Abrir la caja de herramientas completa"
+      "toolboxCta": "Abrir la caja de herramientas completa",
+      "seeAllArticles": "Ver todos los artículos"
     },
     "provenance": {
       "title": "Créditos y fuentes",

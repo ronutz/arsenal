@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Stworzone przez kogoś, kto robi tę robotę od 1996 roku.",
-      "body": "Trzydzieści lat w sieciach i bezpieczeństwie korporacyjnym, dostarczone przez aktywnego instruktora, a nie przez stronę marketingową. Certyfikowany na czterech platformach, więc porównania tutaj są robione uczciwie, a nie po to, żeby sprzedać."
+      "body": "Trzydzieści lat w sieciach i bezpieczeństwie korporacyjnym, dostarczone przez aktywnego instruktora, a nie przez stronę marketingową. Certyfikowany na czterech platformach, więc porównania tutaj są robione uczciwie, a nie po to, żeby sprzedać.",
+      "aboutCta": "Więcej o twórcy"
     },
     "pillars": {
       "title": "Cztery platformy, nauczane i utrzymywane na bieżąco.",
@@ -52,7 +53,8 @@
       "title": "Wypróbuj narzędzie teraz.",
       "body": "Kalkulator CIDR poniżej działa lokalnie. Wpisz sieć i prefiks, aby zobaczyć zakres adresów, liczbę hostów i maskę. Nic nie jest nigdzie wysyłane.",
       "learnHeading": "Poznaj koncepcje",
-      "toolboxCta": "Otwórz pełny zestaw narzędzi"
+      "toolboxCta": "Otwórz pełny zestaw narzędzi",
+      "seeAllArticles": "Zobacz wszystkie artykuły"
     },
     "provenance": {
       "title": "Podziękowania i źródła",

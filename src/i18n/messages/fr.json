@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Conçu par quelqu'un qui fait le travail depuis 1996.",
-      "body": "Trente ans dans les réseaux et la sécurité d'entreprise, livrés par un formateur en exercice plutôt que par une page marketing. Certifié sur quatre plateformes, de sorte que les comparaisons ici sont faites honnêtement, pas vendues."
+      "body": "Trente ans dans les réseaux et la sécurité d'entreprise, livrés par un formateur en exercice plutôt que par une page marketing. Certifié sur quatre plateformes, de sorte que les comparaisons ici sont faites honnêtement, pas vendues.",
+      "aboutCta": "En savoir plus sur la personne derrière"
     },
     "pillars": {
       "title": "Quatre plateformes, enseignées et tenues à jour.",
@@ -52,7 +53,8 @@
       "title": "Essayez un outil dès maintenant.",
       "body": "Le calculateur CIDR ci-dessous s'exécute localement. Saisissez un réseau et un préfixe pour voir la plage d'adresses, le nombre d'hôtes et le masque. Rien n'est envoyé où que ce soit.",
       "learnHeading": "Apprendre les concepts",
-      "toolboxCta": "Ouvrir la boîte à outils complète"
+      "toolboxCta": "Ouvrir la boîte à outils complète",
+      "seeAllArticles": "Voir tous les articles"
     },
     "provenance": {
       "title": "Crédits et sources",

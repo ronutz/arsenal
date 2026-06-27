@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Built by someone who has done the work since 1996.",
-      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. Certified across four platforms, so the comparisons here are made honestly, not sold."
+      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. Certified across four platforms, so the comparisons here are made honestly, not sold.",
+      "aboutCta": "More about who builds this"
     },
     "pillars": {
       "title": "Four platforms, taught and held current.",
@@ -52,7 +53,8 @@
       "title": "Try a tool right now.",
       "body": "The CIDR calculator below runs locally. Type a network and prefix to see the address range, host count, and mask. Nothing is sent anywhere.",
       "learnHeading": "Learn the concepts",
-      "toolboxCta": "Open the full toolbox"
+      "toolboxCta": "Open the full toolbox",
+      "seeAllArticles": "See all articles"
     },
     "provenance": {
       "title": "Credits & sources",

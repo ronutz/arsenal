@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Creato da chi mette le mani in pasta dal 1996.",
-      "body": "Trent'anni in reti e sicurezza aziendale, offerti da un istruttore in attività e non da una pagina di marketing. Certificato su quattro piattaforme, così i confronti qui si fanno con onestà, non per vendere."
+      "body": "Trent'anni in reti e sicurezza aziendale, offerti da un istruttore in attività e non da una pagina di marketing. Certificato su quattro piattaforme, così i confronti qui si fanno con onestà, non per vendere.",
+      "aboutCta": "Scopri di più su chi c'è dietro"
     },
     "pillars": {
       "title": "Quattro piattaforme, insegnate e tenute aggiornate.",
@@ -52,7 +53,8 @@
       "title": "Prova subito uno strumento.",
       "body": "Il calcolatore CIDR qui sotto gira in locale. Inserisci una rete e un prefisso per vedere l'intervallo di indirizzi, il numero di host e la maschera. Non viene inviato nulla da nessuna parte.",
       "learnHeading": "Impara i concetti",
-      "toolboxCta": "Apri la cassetta degli strumenti completa"
+      "toolboxCta": "Apri la cassetta degli strumenti completa",
+      "seeAllArticles": "Vedi tutti gli articoli"
     },
     "provenance": {
       "title": "Crediti e fonti",

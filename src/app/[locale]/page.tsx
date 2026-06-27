@@ -17,6 +17,7 @@
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
+import SiteFooter from "@/components/SiteFooter";
 import CidrTool from "@/components/CidrTool";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
 import ToolProvenance from "@/components/ToolProvenance";
@@ -25,7 +26,6 @@ import { provenanceFor } from "@/config/toolProvenance";
 import ToolFunding from "@/components/ToolFunding";
 import { fundingFor, hasFunding, fundingLinksFor } from "@/config/toolFunding";
 import { Link } from "@/i18n/navigation";
-import { redEducationUrl, externalRel } from "@/config/redEducation";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   // Next.js 15: route params are async. Await before use.
@@ -37,9 +37,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // NOT the useTranslations hook (which is for client/sync components).
   const t = await getTranslations("home");
   const tNav = await getTranslations("nav");
-  const tFooter = await getTranslations("footer");
-  // Honoring Red Education in the homepage footer (lead-attributed, referrer-preserving).
-  const reduUrl = redEducationUrl("footer");
 
   return (
     <>
@@ -73,6 +70,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="container section-narrow">
             <h2 className="section-title">{t("credibility.title")}</h2>
             <p className="section-body">{t("credibility.body")}</p>
+            <p className="section-cta">
+              <Link href="/about" className="section-cta-link">
+                {t("credibility.aboutCta")} →
+              </Link>
+            </p>
           </div>
         </section>
 
@@ -81,10 +83,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="container">
             <h2 className="section-title">{t("pillars.title")}</h2>
             <ul className="pillars">
-              <li className="pillar">{t("pillars.f5")}</li>
-              <li className="pillar">{t("pillars.fortinet")}</li>
-              <li className="pillar">{t("pillars.extreme")}</li>
-              <li className="pillar">{t("pillars.netskope")}</li>
+              <li className="pillar">
+                <Link href="/training/f5" className="pillar-link">{t("pillars.f5")}</Link>
+              </li>
+              <li className="pillar">
+                <Link href="/training/fortinet" className="pillar-link">{t("pillars.fortinet")}</Link>
+              </li>
+              <li className="pillar">
+                <Link href="/training/extreme" className="pillar-link">{t("pillars.extreme")}</Link>
+              </li>
+              <li className="pillar">
+                <Link href="/training/netskope" className="pillar-link">{t("pillars.netskope")}</Link>
+              </li>
             </ul>
           </div>
         </section>
@@ -116,6 +126,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 toolSlug="cidr"
                 locale={locale}
                 heading={t("toolPreview.learnHeading")}
+                seeAll={{ href: "/learn", label: t("toolPreview.seeAllArticles") }}
               />
               {/* Credits & Sources (provenance): gated by the toolProvenance
                   flag; shows the standards the tool implements. */}
@@ -147,55 +158,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       </main>
 
-      {/* --- FOOTER --- */}
-      <footer className="site-footer">
-        <div className="container site-footer-inner">
-          {/* Red Education callout — honoring the authorized training center;
-              lead-attributed (utm_campaign=footer) + referrer-preserving. */}
-          <p className="footer-built footer-redu">
-            <a
-              href={reduUrl}
-              target="_blank"
-              rel={externalRel(reduUrl)}
-              className="footer-built-link"
-            >
-              {tFooter("redEducation")} →
-            </a>
-          </p>
-          <p className="footer-built">
-            <Link href="/colophon" className="footer-built-link">
-              {tFooter("builtWith")}
-            </Link>
-          </p>
-          <p className="footer-meta">{tFooter("rights")}</p>
-          {/* Link to the translation contribution page (mirrors SiteFooter). */}
-          <p className="footer-contribute">
-            <Link href="/contribute" className="footer-contribute-link">
-              {tFooter("contribute")}
-            </Link>
-          </p>
-          <p className="footer-contribute">
-            <Link href="/api" className="footer-contribute-link">
-              {tFooter("api")}
-            </Link>
-          </p>
-          <p className="footer-contribute">
-            <Link href="/contribute/tools" className="footer-contribute-link">
-              {tFooter("contributeTools")}
-            </Link>
-          </p>
-          <p className="footer-contribute">
-            <Link href="/contact" className="footer-contribute-link">
-              {tFooter("feedback")}
-            </Link>
-          </p>
-          <p className="footer-contribute">
-            <Link href="/privacy" className="footer-contribute-link">
-              {tFooter("privacy")}
-            </Link>
-          </p>
-        </div>
-      </footer>
+      {/* --- FOOTER (shared component; single source of truth) --- */}
+      <SiteFooter />
     </>
   );
 }

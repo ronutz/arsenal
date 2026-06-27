@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "1996'dan beri bu işi yapan biri tarafından yapıldı.",
-      "body": "Kurumsal ağ ve güvenlikte otuz yıl, bir pazarlama sayfası tarafından değil, sahada aktif bir eğitmen tarafından sunuluyor. Dört platformda sertifikalı, yani buradaki karşılaştırmalar bir satış yapmak için değil, dürüstçe yapılıyor."
+      "body": "Kurumsal ağ ve güvenlikte otuz yıl, bir pazarlama sayfası tarafından değil, sahada aktif bir eğitmen tarafından sunuluyor. Dört platformda sertifikalı, yani buradaki karşılaştırmalar bir satış yapmak için değil, dürüstçe yapılıyor.",
+      "aboutCta": "Arkasındaki kişi hakkında daha fazlası"
     },
     "pillars": {
       "title": "Dört platform, öğretiliyor ve güncel tutuluyor.",
@@ -52,7 +53,8 @@
       "title": "Aracı şimdi dene.",
       "body": "Aşağıdaki CIDR hesaplayıcı yerel olarak çalışır. Bir ağ ve önek gir, adres aralığını, ana bilgisayar sayısını ve maskeyi gör. Hiçbir şey hiçbir yere gönderilmez.",
       "learnHeading": "Kavramları öğren",
-      "toolboxCta": "Tüm araç kutusunu aç"
+      "toolboxCta": "Tüm araç kutusunu aç",
+      "seeAllArticles": "Tüm makaleleri gör"
     },
     "provenance": {
       "title": "Katkılar ve kaynaklar",

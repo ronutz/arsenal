@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Gebaut von jemandem, der die Arbeit seit 1996 macht.",
-      "body": "Dreißig Jahre in Unternehmensnetzwerken und Sicherheit, geliefert als praktizierender Trainer statt als Marketingseite. Auf vier Plattformen zertifiziert, sodass die Vergleiche hier ehrlich gemacht und nicht verkauft werden."
+      "body": "Dreißig Jahre in Unternehmensnetzwerken und Sicherheit, geliefert als praktizierender Trainer statt als Marketingseite. Auf vier Plattformen zertifiziert, sodass die Vergleiche hier ehrlich gemacht und nicht verkauft werden.",
+      "aboutCta": "Mehr über die Person dahinter"
     },
     "pillars": {
       "title": "Vier Plattformen, unterrichtet und aktuell gehalten.",
@@ -52,7 +53,8 @@
       "title": "Probieren Sie jetzt ein Werkzeug aus.",
       "body": "Der CIDR-Rechner unten läuft lokal. Geben Sie ein Netzwerk und einen Präfix ein, um den Adressbereich, die Hostanzahl und die Maske zu sehen. Es wird nichts irgendwohin gesendet.",
       "learnHeading": "Die Konzepte lernen",
-      "toolboxCta": "Den vollständigen Werkzeugkasten öffnen"
+      "toolboxCta": "Den vollständigen Werkzeugkasten öffnen",
+      "seeAllArticles": "Alle Artikel ansehen"
     },
     "provenance": {
       "title": "Credits und Quellen",

@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Bygget af en, der har gjort arbejdet siden 1996.",
-      "body": "Tredive år inden for virksomhedsnetværk og sikkerhed, leveret af en aktiv instruktør og ikke af en marketingside. Certificeret på fire platforme, så sammenligningerne her er lavet ærligt, ikke for at sælge."
+      "body": "Tredive år inden for virksomhedsnetværk og sikkerhed, leveret af en aktiv instruktør og ikke af en marketingside. Certificeret på fire platforme, så sammenligningerne her er lavet ærligt, ikke for at sælge.",
+      "aboutCta": "Mere om personen bag"
     },
     "pillars": {
       "title": "Fire platforme, undervist og holdt aktuelle.",
@@ -52,7 +53,8 @@
       "title": "Prøv et værktøj nu.",
       "body": "CIDR-beregneren nedenfor kører lokalt. Indtast et net og et præfiks for at se adresseintervallet, antallet af værter og masken. Intet sendes nogen steder hen.",
       "learnHeading": "Lær begreberne",
-      "toolboxCta": "Åbn hele værktøjskassen"
+      "toolboxCta": "Åbn hele værktøjskassen",
+      "seeAllArticles": "Se alle artikler"
     },
     "provenance": {
       "title": "Tak og kilder",

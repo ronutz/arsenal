@@ -29,8 +29,15 @@ export default async function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="container site-footer-inner">
+        <p className="footer-built">
+          {/* The whole line links to the colophon; simple and reliable. */}
+          <Link href="/colophon" className="footer-built-link">
+            {t("builtWith")}
+          </Link>
+        </p>
         {/* Red Education callout — book official training with the authorized
-            training center. Prominent, honoring, and lead-attributed. */}
+            training center. Honoring and lead-attributed; positioned as the
+            second line, just after the "Built by" line. */}
         <p className="footer-built footer-redu">
           <a
             href={reduUrl}
@@ -41,12 +48,9 @@ export default async function SiteFooter() {
             {t("redEducation")} →
           </a>
         </p>
-        <p className="footer-built">
-          {/* The whole line links to the colophon; simple and reliable. */}
-          <Link href="/colophon" className="footer-built-link">
-            {t("builtWith")}
-          </Link>
-        </p>
+        {/* Rights / licensing line — lifted here from the homepage's former
+            inline footer so it now renders site-wide. */}
+        <p className="footer-meta">{t("rights")}</p>
         {/* Quiet link to the translation contribution page, so speakers of any
             language can find it (the in-page notice only shows on machine-draft
             locales). */}

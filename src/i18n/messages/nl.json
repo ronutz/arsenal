@@ -35,7 +35,8 @@
     },
     "credibility": {
       "title": "Gebouwd door iemand die het werk al sinds 1996 doet.",
-      "body": "Dertig jaar in enterprise-netwerken en -beveiliging, geleverd door een actieve trainer in plaats van een marketingpagina. Gecertificeerd op vier platforms, zodat de vergelijkingen hier eerlijk worden gemaakt, niet verkocht."
+      "body": "Dertig jaar in enterprise-netwerken en -beveiliging, geleverd door een actieve trainer in plaats van een marketingpagina. Gecertificeerd op vier platforms, zodat de vergelijkingen hier eerlijk worden gemaakt, niet verkocht.",
+      "aboutCta": "Meer over de persoon erachter"
     },
     "pillars": {
       "title": "Vier platforms, onderwezen en actueel gehouden.",
@@ -52,7 +53,8 @@
       "title": "Probeer nu een tool.",
       "body": "De CIDR-calculator hieronder draait lokaal. Voer een netwerk en een prefix in om het adresbereik, het aantal hosts en het masker te zien. Er wordt niets ergens naartoe gestuurd.",
       "learnHeading": "Leer de concepten",
-      "toolboxCta": "Open de volledige toolbox"
+      "toolboxCta": "Open de volledige toolbox",
+      "seeAllArticles": "Alle artikelen bekijken"
     },
     "provenance": {
       "title": "Credits en bronnen",
