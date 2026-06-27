@@ -50,6 +50,9 @@ export default async function ColophonPage({
     ["stackSearch", "stackSearchV"],
   ];
 
+  // Standards section: a lede plus five labeled parts.
+  const standards = ["specs", "vectors", "owasp", "redblue", "local"];
+
   return (
     <>
       <a href="#main" className="skip-link">
@@ -149,6 +152,24 @@ export default async function ColophonPage({
                   </div>
                 ))}
               </dl>
+            </div>
+          </section>
+
+          {/* Standards and frameworks — what the tools are built on: the
+              specifications, golden vectors, OWASP, the red/blue posture, and
+              the local/deterministic guarantee. */}
+          <section className="section">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("standardsTitle")}</h2>
+              <p className="colophon-body">{t("standardsLede")}</p>
+              <div className="colophon-principles">
+                {standards.map((s) => (
+                  <div className="colophon-principle" key={s}>
+                    <h3 className="colophon-principle-title">{t(`${s}Label`)}</h3>
+                    <p className="colophon-principle-body">{t(`${s}Body`)}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
 

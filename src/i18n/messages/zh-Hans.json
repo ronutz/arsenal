@@ -863,7 +863,19 @@
     "vibeBody3": "最要紧的部分则要遵循另一套标准。凡是计算你数据的，都经过验证，而非凭感觉：每件工具的核心都对照其所实现的公开标准、相关的 RFC 与规范来核查，其输出在发布前还要对照独立的参考来源加以确认。正如程序员 Simon Willison 一句被广泛引用的话所说，你已审阅、测试并理解过的代码，根本不是 vibe coding。Karpathy 本人如今把这种有纪律的版本称为 agentic engineering：既保留 AI 的杠杆，又不让结果的质量打折。这正是本项目所划定的界线。在速度免费之处求快，在紧要之处从严，并由一个人对这一切负责。",
     "closingTitle": "关于方法的说明",
     "closingBody": "与 AI 合作者一起构建软件还足够新，以至于坦诚相告是公平的。这里没有任何内容是在没有一位人类决定它值得发布的情况下发布的。AI 是工具，是有能力的工具，但终究是工具。这项工作上的判断、责任和署名都属于人类。",
-    "backHome": "返回工具"
+    "backHome": "返回工具",
+    "standardsTitle": "标准与框架",
+    "standardsLede": "这里的每个工具都实现一份已发布的规范，而非凭空猜测。解码器与计算器都依据定义其格式的文档来构建，并固定到这些文档所发布的测试向量上，因此每个结果都是对照事实来源核验，而不是对照自身。",
+    "specsLabel": "规范",
+    "specsBody": "JSON Web Tokens 遵循 RFC 7519，签名与算法见 RFC 7515 与 7518；PKCE 是 RFC 7636；Base64 及其同类是 RFC 4648；UUID 是 RFC 9562（于 2024 年取代 RFC 4122，并自带测试向量）；HMAC 是 RFC 2104，基于在 FIPS 180-4 与 FIPS 202 中标准化的 SHA 系列；X.509 证书是 RFC 5280；IPv4 与 CIDR 记法是 RFC 4632；IPv6 寻址及其规范文本形式是 RFC 4291 与 RFC 5952；而 cipher suite 解码器以官方 IANA TLS Cipher Suites 注册表为依据，并与 TLS 1.3 与 1.2 规范（RFC 8446 与 5246）、设定“Recommended”列的注册表更新规则（RFC 8447）以及 RC4 禁用规定（RFC 7465）交叉比对。凡是以注册表为权威之处，其数据均直接内置，而非重新录入。",
+    "vectorsLabel": "黄金向量",
+    "vectorsBody": "每个工具都附带一组黄金向量：已知的输入与已知正确的输出相配对，取自相关 RFC 与标准机构。它们在每次构建时运行，因此任何悄然改变结果的重构都会让构建失败，而不会发布出去。",
+    "owaspLabel": "OWASP",
+    "owaspBody": "安全工具依据 OWASP 的框架来定义，而非临时拼凑。密码学与 TLS 工具对应 OWASP Top 10 中的 Cryptographic Failures 与 Security Misconfiguration 领域，以及 Application Security Verification Standard 中相应的核查项；令牌工具遵循 OWASP 关于检查与验证 JWT 的指南。OWASP 的 prevention cheat sheets 也为接下来要构建的内容设定了硬性规则：此处新增的任何 XML 或 SAML 处理，发布前都必须针对 XXE 加固。",
+    "redblueLabel": "红队与蓝队",
+    "redblueBody": "同样的解码与解释，既让红队成员读懂截获的令牌，也让蓝队成员理解自己的技术栈在发出什么。本平台有意站在这条线的分析一侧：它识别、解码、转换并解释，而不会走到伪造、注入或攻破控制的地步。这条边界是设计决策，而非疏忽；这些工具是为了教学与诊断，而不是为了成为武器。",
+    "localLabel": "本地且确定",
+    "localBody": "一切都在浏览器中运行。页面上的工具所调用的纯函数与 API 调用的是同一个；相同输入返回相同输出，不保存状态，也不向服务器发送任何内容。没有 Cookie，没有分析统计，正如隐私页面所完整说明的那样。"
   },
   "support": {
     "title": "支持这个项目",
