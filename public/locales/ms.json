@@ -558,6 +558,9 @@
     "coffee": "Belanja saya kopi"
   },
   "search": {
+    "kindTool": "Alat",
+    "kindArticle": "Artikel",
+    "kindPage": "Halaman",
     "label": "Cari",
     "placeholder": "Cari laman ini…",
     "close": "Tutup",

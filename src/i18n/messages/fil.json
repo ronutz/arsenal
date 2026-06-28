@@ -558,6 +558,9 @@
     "coffee": "Ibili mo ako ng kape"
   },
   "search": {
+    "kindTool": "Tool",
+    "kindArticle": "Artikulo",
+    "kindPage": "Pahina",
     "label": "Maghanap",
     "placeholder": "Maghanap sa site…",
     "close": "Isara",

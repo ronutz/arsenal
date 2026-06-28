@@ -558,6 +558,9 @@
     "coffee": "Buy me a coffee"
   },
   "search": {
+    "kindTool": "Tool",
+    "kindArticle": "Article",
+    "kindPage": "Page",
     "label": "Search",
     "placeholder": "Search the site…",
     "close": "Close",

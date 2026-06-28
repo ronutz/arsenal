@@ -558,6 +558,9 @@
     "coffee": "Kjøp meg en kaffe"
   },
   "search": {
+    "kindTool": "Verktøy",
+    "kindArticle": "Artikkel",
+    "kindPage": "Side",
     "label": "Søk",
     "placeholder": "Søk på nettstedet…",
     "close": "Lukk",

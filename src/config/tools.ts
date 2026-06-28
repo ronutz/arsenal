@@ -19,7 +19,7 @@ export interface ToolEntry {
   /** Stable id. Also the in-page anchor / route segment AND the i18n key
    *  segment: the index resolves tools.<id>.name and tools.<id>.blurb. */
   id: string;
-  /** Where the tool lives (an in-page anchor for cidr, a route otherwise). */
+  /** Where the tool lives (a route under /tools/, like every tool). */
   href: string;
   /** Category KEY, resolved to a label through tools.categories.<key>. */
   category: string;
@@ -37,7 +37,7 @@ export const tools: ToolEntry[] = [
   { id: "x509", href: "/tools/x509", category: "pki", available: true },
   { id: "cipher", href: "/tools/cipher", category: "transport", available: true },
   { id: "ipv6", href: "/tools/ipv6", category: "networking", available: true },
-  { id: "cidr", href: "/#cidr", category: "networking", available: true },
+  { id: "cidr", href: "/tools/cidr", category: "networking", available: true },
 ];
 
 /** Tools that are live and linkable. */

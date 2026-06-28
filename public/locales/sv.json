@@ -558,6 +558,9 @@
     "coffee": "Bjud mig på en kaffe"
   },
   "search": {
+    "kindTool": "Verktyg",
+    "kindArticle": "Artikel",
+    "kindPage": "Sida",
     "label": "Sök",
     "placeholder": "Sök på webbplatsen…",
     "close": "Stäng",

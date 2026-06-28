@@ -558,6 +558,9 @@
     "coffee": "Invítame a un café"
   },
   "search": {
+    "kindTool": "Herramienta",
+    "kindArticle": "Artículo",
+    "kindPage": "Página",
     "label": "Buscar",
     "placeholder": "Buscar en el sitio…",
     "close": "Cerrar",

@@ -920,6 +920,37 @@
   color: var(--accent-primary);
   font-weight: 600;
 }
+/* Result type badge (TOOL / ARTICLE / PAGE): a leading indicator. Results are
+   grouped tools -> articles -> pages in the component; the badge names the type. */
+.search-result-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.search-result-kind {
+  flex: none;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.14));
+  color: var(--text-secondary);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.search-result-kind--tool {
+  color: var(--accent-primary);
+  border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+}
+.search-result-kind--article {
+  color: var(--text-secondary);
+}
+.search-result-kind--page {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
 
 /* ============================================================================
    ABOUT / INSTRUCTOR PAGE

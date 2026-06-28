@@ -74,6 +74,32 @@ export const LOCALES: readonly LocaleMeta[] = [
   // the Arabic CONTENT is a stub until a real pack lands, at which point RTL "just works".
   { code: "ar",         nativeName: "العربية",            englishName: "Arabic",                  dir: "rtl", status: "stub" },
   { code: "sw",         nativeName: "Kiswahili",          englishName: "Swahili",                 dir: "ltr", status: "stub" },
+
+  // --- Expansion stubs (PRIME-approved 2026-06-28): registered + routable now,
+  //     English-fallback until the post-queue translation campaign fills them.
+  //     Grouped by region; full translation-priority ranking lives in the plan. ---
+  // East / Southeast Asia (large engineer bases, lower English-at-work share -> high marginal value)
+  { code: "vi",         nativeName: "Tiếng Việt",         englishName: "Vietnamese",              dir: "ltr", status: "stub" },
+  { code: "id",         nativeName: "Bahasa Indonesia",   englishName: "Indonesian",              dir: "ltr", status: "stub" },
+  { code: "th",         nativeName: "ไทย",                englishName: "Thai",                    dir: "ltr", status: "stub" },
+  // MENA (Arabic already registered above; Persian + Hebrew are RTL like Arabic)
+  { code: "fa",         nativeName: "فارسی",              englishName: "Persian",                 dir: "rtl", status: "stub" },
+  { code: "he",         nativeName: "עברית",              englishName: "Hebrew",                  dir: "rtl", status: "stub" },
+  // Central & Eastern Europe (strong IT-outsourcing markets)
+  { code: "uk",         nativeName: "Українська",         englishName: "Ukrainian",               dir: "ltr", status: "stub" },
+  { code: "ro",         nativeName: "Română",             englishName: "Romanian",                dir: "ltr", status: "stub" },
+  { code: "cs",         nativeName: "Čeština",            englishName: "Czech",                   dir: "ltr", status: "stub" },
+  { code: "hu",         nativeName: "Magyar",             englishName: "Hungarian",               dir: "ltr", status: "stub" },
+  { code: "el",         nativeName: "Ελληνικά",           englishName: "Greek",                   dir: "ltr", status: "stub" },
+  { code: "bg",         nativeName: "Български",           englishName: "Bulgarian",               dir: "ltr", status: "stub" },
+  { code: "sr-Latn",    nativeName: "Srpskohrvatski",     englishName: "Serbo-Croatian (Latin)",  dir: "ltr", status: "stub" },
+  { code: "sk",         nativeName: "Slovenčina",         englishName: "Slovak",                  dir: "ltr", status: "stub" },
+  { code: "sl",         nativeName: "Slovenščina",        englishName: "Slovenian",               dir: "ltr", status: "stub" },
+  { code: "fi",         nativeName: "Suomi",              englishName: "Finnish",                 dir: "ltr", status: "stub" },
+  // South Asia (Hindi + Tamil already registered above; Urdu is RTL)
+  { code: "te",         nativeName: "తెలుగు",             englishName: "Telugu",                  dir: "ltr", status: "stub" },
+  { code: "bn",         nativeName: "বাংলা",              englishName: "Bengali",                 dir: "ltr", status: "stub" },
+  { code: "ur",         nativeName: "اردو",               englishName: "Urdu",                    dir: "rtl", status: "stub" },
 ] as const;
 
 /** The default + source language. All stubs fall back to this. */

@@ -558,6 +558,9 @@
     "coffee": "Me pague um café"
   },
   "search": {
+    "kindTool": "Ferramenta",
+    "kindArticle": "Artigo",
+    "kindPage": "Página",
     "label": "Buscar",
     "placeholder": "Buscar no site…",
     "close": "Fechar",

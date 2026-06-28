@@ -558,6 +558,9 @@
     "coffee": "Купите мне кофе"
   },
   "search": {
+    "kindTool": "Инструмент",
+    "kindArticle": "Статья",
+    "kindPage": "Страница",
     "label": "Поиск",
     "placeholder": "Искать по сайту…",
     "close": "Закрыть",

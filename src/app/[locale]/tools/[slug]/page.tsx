@@ -4,9 +4,9 @@
 // PER-TOOL PAGE - the detail view for a single tool, statically generated for
 // every (locale, slug). The registry (src/config/tools.ts) supplies the name
 // and blurb; the local tool module supplies the live component and its RFC
-// sources (rendered as a References block). The CIDR tool intentionally stays
-// on the home page (#cidr), so it is not in the slug map here - new tools live
-// at /tools/<slug>.
+// sources (rendered as a References block). Every tool, CIDR included, lives at
+// /tools/<slug>; the home page additionally embeds the CIDR widget as a live
+// demo, but /tools/cidr is its canonical page.
 //
 // Adding a tool page = drop one entry in TOOL_PAGES below; generateStaticParams
 // expands it across every locale automatically.
@@ -39,6 +39,11 @@ import Ipv6Tool from "@/components/Ipv6Tool";
 import { manifest as ipv6Manifest } from "@/lib/tools/ipv6";
 import CipherTool from "@/components/CipherTool";
 import { manifest as cipherManifest } from "@/lib/tools/cipher";
+import CidrTool from "@/components/CidrTool";
+// CIDR's single-subnet engine + manifest live in @ronutz/netcore; the local
+// src/lib/tools/cidr module adds the extended modes and exports no manifest of
+// its own, so the References block sources come from the netcore manifest.
+import { cidrTool as cidrNetcore } from "@ronutz/netcore";
 
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
@@ -54,7 +59,8 @@ interface ToolPage {
 }
 
 // The slug map. Each entry pairs a route segment with its live component and
-// the references to surface. cidr is deliberately absent (it lives on /#cidr).
+// the references to surface. CIDR is included here (canonical /tools/cidr) and
+// also appears as a live demo on the home page.
 const TOOL_PAGES: Record<string, ToolPage> = {
   jwt: {
     Component: JwtTool,
@@ -91,6 +97,13 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   cipher: {
     Component: CipherTool,
     sources: cipherManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  cidr: {
+    Component: CidrTool,
+    // netcore types manifest.sources as unknown; narrow to the fields we render.
+    sources: (
+      cidrNetcore.manifest.sources as { id: string; label: string; url?: string }[]
+    ).map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
 };
 

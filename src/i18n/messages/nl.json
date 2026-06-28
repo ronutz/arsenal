@@ -558,6 +558,9 @@
     "coffee": "Trakteer me op een koffie"
   },
   "search": {
+    "kindTool": "Tool",
+    "kindArticle": "Artikel",
+    "kindPage": "Pagina",
     "label": "Zoeken",
     "placeholder": "Doorzoek de site…",
     "close": "Sluiten",

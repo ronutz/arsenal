@@ -558,6 +558,9 @@
     "coffee": "请我喝杯咖啡"
   },
   "search": {
+    "kindTool": "工具",
+    "kindArticle": "文章",
+    "kindPage": "页面",
     "label": "搜索",
     "placeholder": "搜索本站…",
     "close": "关闭",

@@ -558,6 +558,9 @@
     "coffee": "Offrimi un caffè"
   },
   "search": {
+    "kindTool": "Strumento",
+    "kindArticle": "Articolo",
+    "kindPage": "Pagina",
     "label": "Cerca",
     "placeholder": "Cerca nel sito…",
     "close": "Chiudi",

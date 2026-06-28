@@ -558,6 +558,9 @@
     "coffee": "Giv mig en kaffe"
   },
   "search": {
+    "kindTool": "Værktøj",
+    "kindArticle": "Artikel",
+    "kindPage": "Side",
     "label": "Søg",
     "placeholder": "Søg på sitet…",
     "close": "Luk",

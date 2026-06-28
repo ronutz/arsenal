@@ -30,7 +30,7 @@
 // degrades gracefully to a "search unavailable in dev" state.
 // ============================================================================
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
 // Minimal shapes for the parts of the Pagefind API we use (it ships no types).
@@ -73,6 +73,27 @@ function sanitizeExcerpt(raw: string): string {
     .replace(/&lt;\/mark&gt;/g, "</mark>");
 }
 
+/**
+ * Result kind — classified purely from the result URL, so each hit can show a
+ * type badge. Tool pages live under /tools/, Learn articles under /learn/;
+ * everything else (home, about, training, ...) is a "page". This is URL
+ * classification only — no Pagefind index or metadata changes — so it cannot
+ * affect or break the existing relevance-ranked search; it only labels results.
+ * (CIDR now has its own /tools/cidr page, so it badges as a tool; the home page
+ * also embeds the CIDR widget, and that home-page hit simply reads as a page.)
+ */
+type ResultKind = "tool" | "article" | "page";
+function classifyKind(url: string): ResultKind {
+  if (url.includes("/tools/")) return "tool";
+  if (url.includes("/learn/")) return "article";
+  return "page";
+}
+const KIND_LABEL_KEY: Record<ResultKind, "kindTool" | "kindArticle" | "kindPage"> = {
+  tool: "kindTool",
+  article: "kindArticle",
+  page: "kindPage",
+};
+
 export default function Search() {
   const t = useTranslations("search");
 
@@ -88,6 +109,15 @@ export default function Search() {
   const pagefindRef = useRef<PagefindApi | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Classify each hit by URL so we can badge its type. Order is left exactly as
+  // Pagefind ranked it — most relevant first, regardless of type — because the
+  // badge already conveys the type, and grouping would risk burying a more
+  // relevant result beneath a less relevant one of a "preferred" type.
+  const ordered = useMemo(
+    () => results.map((r) => ({ ...r, kind: classifyKind(r.url) })),
+    [results],
+  );
 
   // Lazily load the Pagefind runtime the first time search opens.
   const loadPagefind = useCallback(async () => {
@@ -248,12 +278,19 @@ export default function Search() {
               {!unavailable && !loading && query.trim() && results.length === 0 && (
                 <p className="search-message">{t("noResults", { query: query.trim() })}</p>
               )}
-              {!unavailable && results.length > 0 && (
+              {!unavailable && ordered.length > 0 && (
                 <ul className="search-result-list">
-                  {results.map((r, i) => (
+                  {ordered.map((r, i) => (
                     <li key={`${r.url}-${i}`}>
                       <a className="search-result" href={r.url}>
-                        <span className="search-result-title">{r.title}</span>
+                        <span className="search-result-head">
+                          <span
+                            className={`search-result-kind search-result-kind--${r.kind}`}
+                          >
+                            {t(KIND_LABEL_KEY[r.kind])}
+                          </span>
+                          <span className="search-result-title">{r.title}</span>
+                        </span>
                         {/* Excerpt with highlights. Sanitized to allow ONLY
                             <mark> tags — no content markup can reach the DOM. */}
                         <span

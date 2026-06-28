@@ -558,6 +558,9 @@
     "coffee": "Bana bir kahve ısmarla"
   },
   "search": {
+    "kindTool": "Araç",
+    "kindArticle": "Makale",
+    "kindPage": "Sayfa",
     "label": "Ara",
     "placeholder": "Sitede ara…",
     "close": "Kapat",

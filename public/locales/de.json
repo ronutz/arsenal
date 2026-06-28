@@ -558,6 +558,9 @@
     "coffee": "Spendier mir einen Kaffee"
   },
   "search": {
+    "kindTool": "Werkzeug",
+    "kindArticle": "Artikel",
+    "kindPage": "Seite",
     "label": "Suche",
     "placeholder": "Website durchsuchen…",
     "close": "Schließen",

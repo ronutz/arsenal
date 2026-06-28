@@ -558,6 +558,9 @@
     "coffee": "Postaw mi kawę"
   },
   "search": {
+    "kindTool": "Narzędzie",
+    "kindArticle": "Artykuł",
+    "kindPage": "Strona",
     "label": "Szukaj",
     "placeholder": "Szukaj w witrynie…",
     "close": "Zamknij",
