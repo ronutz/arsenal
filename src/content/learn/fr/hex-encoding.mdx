@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Codage hexadécimal (Base16), expliqué"
+summary: "Comment l'hexadécimal représente chaque octet par deux caractères, pourquoi c'est la manière par défaut d'imprimer des octets bruts, et comment il se compare à Base64 et Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Un octet, deux caractères
+
+L'hexadécimal, ou **hex**, c'est la base 16 : seize chiffres, `0`-`9` puis `A`-`F`, où `A` à `F` représentent les valeurs de 10 à 15. La RFC 4648 nomme ce codage **Base16**. Sa propriété déterminante est simple et utile : un octet fait toujours exactement **deux caractères hexadécimaux**. Un octet contient une valeur de 0 à 255, et deux chiffres hexadécimaux couvrent exactement cette plage (16 × 16 = 256). Les quatre bits de poids fort (le *quartet*) deviennent le premier caractère, et les quatre bits de poids faible le second.
+
+Ainsi, l'octet `0x48` est la lettre `H` en ASCII, et en hex il s'écrit `48`. Le mot `foobar` fait six octets, soit en hex les douze caractères `666F6F626172`. Pas de remplissage ni d'alignement de blocs à gérer : chaque octet correspond indépendamment à sa propre paire de caractères.
+
+## Pourquoi l'hex est le choix par défaut pour les octets bruts
+
+L'hex est le moins dense des codages courants, car il double exactement la taille de son entrée, donc on l'utilise rarement pour *transmettre* des données quand la taille compte. Sa valeur tient à la **lisibilité pour une personne qui inspecte des octets**. Comme chaque octet est une paire autonome, vous pouvez aligner une chaîne hex avec les données qu'elle représente et la lire position par position, ce que fait exactement un vidage hexadécimal : les octets à gauche en hex, leurs caractères imprimables à droite.
+
+Cette correspondance directe est la raison pour laquelle l'hex est la notation universelle des choses qui sont fondamentalement des valeurs d'octets : un condensat SHA-256 imprimé en 64 caractères hexadécimaux (32 octets), une adresse MAC, une couleur RVB comme `#1A2B3C`, une adresse mémoire dans un débogueur, ou les octets d'une clé de chiffrement. Dans chaque cas vous ne cherchez pas à économiser de la place, vous cherchez à lire ou comparer des valeurs d'octets exactes, et l'hex rend cela simple.
+
+## Casse et validité
+
+L'hex est insensible à la casse : `ff`, `FF` et `Ff` désignent tous le même octet, 255. Par convention la sortie est en majuscules, mais les décodeurs acceptent l'une ou l'autre. La seule règle structurelle, c'est qu'une chaîne hex doit avoir un nombre **pair** de chiffres, car chaque octet a besoin d'une paire complète. Une chaîne de longueur impaire comme `ABC` est malformée : il reste un quartet seul sans partenaire. Et tout caractère hors de `0`-`9` et `A`-`F` n'est tout simplement pas de l'hex.
+
+## Comment il se compare
+
+Les trois codages de la RFC 4648 échangent la densité contre la taille de l'alphabet. Base64 est le plus compact, quatre caractères pour trois octets, mais il utilise un grand alphabet sensible à la casse avec `+` et `/`. Base32 se situe au milieu, huit caractères pour cinq octets, avec un alphabet plus petit, insensible à la casse et sans ambiguïté. L'hex est le plus grand, deux caractères par octet, mais le plus facile à lire, avec les limites d'octets les plus claires de tous. Vous vous tournez vers l'hex quand une personne doit voir les octets, et vers Base64 quand une machine doit les déplacer.
+
+## Essayez
+
+Sélectionnez **Hex** dans l'[outil de codec](/tools/base64) pour transformer du texte en ses octets hexadécimaux ou décoder une chaîne hex en texte, le tout dans votre navigateur. Il ignore les espaces, accepte les majuscules ou les minuscules, et signale un résultat qui est binaire plutôt que du texte lisible.

@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Pengekodan peratus (pengekodan URL), diterangkan"
+summary: "Mengapa URL meng-escape aksara tertentu sebagai %XX, aksara mana yang selamat dibiarkan seperti sedia ada, dan bagaimana pengekodan peratus berbeza daripada Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Untuk apa pengekodan peratus
+
+URL ialah tatabahasa yang kecil dan ketat. Segelintir aksara mempunyai makna struktur: `/` memisahkan segmen laluan, `?` memulakan pertanyaan, `&` memisahkan parameter, `#` menanda serpihan, `:` dan `@` mempunyai peranan dalam pihak berkuasa. Jadi apa yang berlaku apabila salah satu aksara itu perlu muncul sebagai *data* biasa, contohnya istilah carian yang secara harfiah mengandungi `&`, atau segmen laluan dengan ruang? Anda tidak boleh meletakkannya mentah, kerana penghurai URL akan membacanya sebagai struktur dan rosak. **Pengekodan peratus**, ditakrifkan dalam RFC 3986 dan sering dipanggil pengekodan URL, ialah mekanisme escape yang menyelesaikan ini: ia menulis semula aksara tidak selamat sebagai `%` diikuti dua digit heksadesimal nilai baitnya.
+
+Satu ruang menjadi `%20`, satu garis miring menjadi `%2F`, satu ampersand menjadi `%26`. Teks `a b/c` dikodkan sebagai `a%20b%2Fc`. Penyahkod menyongsangkannya: setiap `%XX` menjadi bait `XX` semula, dan aksara asal kembali.
+
+## Set tidak terpelihara: apa yang kekal sama
+
+Pengekodan peratus tidak menyentuh segala-galanya. RFC 3986 menakrifkan set **tidak terpelihara** kecil bagi aksara yang sentiasa selamat dibiarkan secara harfiah dalam URL dan yang tidak sepatutnya di-escape:
+
+- huruf `A`-`Z` dan `a`-`z`
+- digit `0`-`9`
+- empat tanda `-`, `.`, `_` dan `~`
+
+Segala yang lain, termasuk aksara struktur terpelihara dan apa-apa di luar ASCII, dikodkan peratus apabila ia muncul sebagai data. Bait melebihi 127 dikendalikan dengan mengekod teks sebagai UTF-8 dahulu dan kemudian mengekod peratus setiap bait yang terhasil, sebab itulah satu huruf beraksen atau satu emoji menjadi satu siri beberapa pasangan `%XX`, satu bagi setiap bait UTF-8.
+
+## Mengapa %XX ialah dua digit heksadesimal
+
+`%` ialah penanda escape; dua aksara selepasnya ialah bait dalam heksadesimal, tepat [pengekodan heksadesimal](/learn/hex-encoding) sesuatu bait. Itulah keseluruhan sebab escape yang sah sentiasa `%` campur dua digit heksadesimal dan tiada apa-apa lagi. Satu `%` yang diikuti sesuatu selain dua digit heksadesimal, seperti `%2G`, atau satu `%` terbiar di hujung rentetan, adalah cacat, dan penyahkod yang berhati-hati melaporkannya dan bukannya meneka.
+
+## Bagaimana ia berbeza daripada Base64
+
+Menggoda untuk mencampuradukkan pengekodan peratus dengan Base64, tetapi keduanya menjawab soalan yang berbeza. Base64 mengambil *binari sewenang-wenang* dan menjadikannya selamat sepenuhnya untuk saluran teks, mengembang setiap input kira-kira satu pertiga. Pengekodan peratus membiarkan *majoriti teks yang sudah selamat* tidak tersentuh dan hanya meng-escape segelintir aksara yang akan menimbulkan masalah. Untuk teks biasa yang kebanyakannya huruf dan digit, pengekodan peratus jauh lebih padat dan kekal boleh dibaca oleh manusia; untuk binari mentah, di mana hampir setiap bait perlu di-escape, ia amat tidak cekap dan Base64, atau [varian selamat URLnya](/learn/base64url), ialah alat yang betul.
+
+Ringkasnya: pengekodan peratus ialah escape terpilih untuk teks yang masuk ke dalam URL; Base64 ialah pengekodan semula penuh untuk bait yang pergi ke mana-mana sahaja yang hanya menerima teks.
+
+## Cubalah
+
+Pilih **Percent** dalam [alat codec](/tools/base64) untuk mengekod peratus teks atau menyahkod rentetan `%XX` kembali, semuanya dalam pelayar anda. Ia mengekod kandungan bukan ASCII sebagai bait UTF-8, menandakan escape yang cacat, dan memberitahu anda apabila keputusan yang dinyahkod adalah binari dan bukan teks boleh baca.

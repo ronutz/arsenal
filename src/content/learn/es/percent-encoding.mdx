@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Codificación porcentual (codificación de URL), explicada"
+summary: "Por qué las URL escapan ciertos caracteres como %XX, qué caracteres es seguro dejar tal cual, y en qué se diferencia la codificación porcentual de Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Para qué sirve la codificación porcentual
+
+Una URL es una gramática pequeña y estricta. Un puñado de caracteres tienen un significado estructural: `/` separa segmentos de ruta, `?` inicia la consulta, `&` separa parámetros, `#` marca un fragmento, `:` y `@` tienen funciones en la autoridad. Entonces, ¿qué pasa cuando uno de esos caracteres necesita aparecer como *dato* corriente, por ejemplo un término de búsqueda que contiene literalmente un `&`, o un segmento de ruta con un espacio? No puedes ponerlo en bruto, porque el analizador de URL lo leería como estructura y se rompería. La **codificación porcentual**, definida en RFC 3986 y a menudo llamada codificación de URL, es el mecanismo de escape que resuelve esto: reescribe un carácter no seguro como un `%` seguido de los dos dígitos hexadecimales de su valor de byte.
+
+Un espacio se convierte en `%20`, una barra en `%2F`, un ampersand en `%26`. El texto `a b/c` se codifica como `a%20b%2Fc`. El decodificador lo invierte: cada `%XX` vuelve a convertirse en el byte `XX`, y el carácter original regresa.
+
+## El conjunto no reservado: lo que se queda igual
+
+La codificación porcentual no toca todo. RFC 3986 define un pequeño conjunto **no reservado** de caracteres que siempre es seguro dejar literalmente en una URL y que nunca deberían escaparse:
+
+- las letras `A`-`Z` y `a`-`z`
+- los dígitos `0`-`9`
+- las cuatro marcas `-`, `.`, `_` y `~`
+
+Todo lo demás, incluidos los caracteres estructurales reservados y cualquier cosa fuera de ASCII, se codifica con porcentaje cuando aparece como dato. Los bytes por encima de 127 se manejan codificando primero el texto como UTF-8 y luego codificando con porcentaje cada byte resultante, por eso una sola letra acentuada o un emoji se convierte en una serie de varios pares `%XX`, uno por cada byte UTF-8.
+
+## Por qué %XX son dos dígitos hexadecimales
+
+El `%` es un marcador de escape; los dos caracteres que le siguen son el byte en hexadecimal, exactamente la [codificación hexadecimal](/learn/hex-encoding) de un byte. Esa es toda la razón por la que un escape válido siempre es `%` más dos dígitos hexadecimales y nada más. Un `%` seguido de algo que no son dos dígitos hexadecimales, como `%2G`, o un `%` suelto al final de la cadena, está mal formado, y un decodificador cuidadoso lo informa en lugar de adivinar.
+
+## En qué se diferencia de Base64
+
+Es tentador meter la codificación porcentual en el mismo saco que Base64, pero responden a preguntas distintas. Base64 toma *binario arbitrario* y lo hace todo seguro para un canal de texto, expandiendo cada entrada en aproximadamente un tercio. La codificación porcentual deja intacta la *mayoría ya segura* del texto y escapa solo los pocos caracteres que causarían problemas. Para texto corriente que es en su mayoría letras y dígitos, la codificación porcentual es mucho más compacta y sigue siendo legible para humanos; para binario en bruto, donde casi todos los bytes necesitarían escaparse, es tremendamente ineficiente y Base64, o su [variante segura para URL](/learn/base64url), es la herramienta adecuada.
+
+Dicho de forma sencilla: la codificación porcentual es un escape selectivo para texto que va dentro de una URL; Base64 es una recodificación completa para bytes que van a cualquier lugar que solo admite texto.
+
+## Pruébalo
+
+Selecciona **Percent** en la [herramienta de códec](/tools/base64) para codificar texto con porcentaje o decodificar una cadena `%XX` de vuelta, todo en tu navegador. Codifica el contenido no ASCII como bytes UTF-8, señala un escape mal formado, y te dice cuándo un resultado decodificado es binario en lugar de texto legible.

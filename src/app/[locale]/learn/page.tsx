@@ -28,8 +28,15 @@ export default async function LearnIndexPage({
   const tNav = await getTranslations("nav");
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
-  // Articles, grouped + ordered by the loader (English fallback handled inside).
-  const groups = getArticlesByCategory(locale);
+  // Articles, grouped by the loader (within each group: curated order; English
+  // fallback handled inside). Category groups themselves are sorted A->Z by
+  // resolved label, locale-aware, to mirror the Tools index taxonomy.
+  const groups = getArticlesByCategory(locale).sort((a, b) =>
+    tTools(`categories.${a.category}`).localeCompare(
+      tTools(`categories.${b.category}`),
+      locale,
+    ),
+  );
 
   return (
     <>

@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 i kodowanie procentowe w porównaniu"
+summary: "Zestawienie obok siebie czterech kodowań tekstu: ich alfabetów, narzutu rozmiaru, czytelności i kiedy sięgać po każde z nich."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Cztery sposoby zapisu bajtów jako tekstu
+
+Base16 (hex), Base32, Base64 i kodowanie procentowe rozwiązują jeden problem: reprezentację danych za pomocą znaków, które kanał wyłącznie tekstowy przeniesie bezpiecznie. Różnią się dwiema osiami, które się równoważą, **rozmiarem alfabetu** i **narzutem rozmiaru**. Większy alfabet pakuje więcej bitów na znak, więc wyjście jest krótsze; mniejszy lub bardziej restrykcyjny alfabet jest łatwiejszy do odczytania lub bezpieczniejszy w danym kontekście, ale wyjście jest dłuższe. Trzy pierwsze są zdefiniowane razem w RFC 4648; kodowanie procentowe pochodzi z RFC 3986 i działa inaczej niż pozostałe.
+
+## Narzut rozmiaru w skrócie
+
+Dla surowego wejścia binarnego rozszerzenie trzech kodowań z RFC 4648 jest stałe i przewidywalne:
+
+```
+kodowanie      bit/znak   stosunek           narzut
+Base16         4          2 znaki / bajt     +100%
+Base32         5          8 znaków / 5 bajtów +60%
+Base64         6          4 znaki / 3 bajty  +33%
+```
+
+Base64 jest najbardziej zwarty, Base16 najmniej. Kodowanie procentowe to wyjątek: to wcale nie jest stały stosunek. Zostawia niezarezerwowane znaki w spokoju i rozszerza tylko resztę do trzech znaków każdy, więc jego narzut zależy całkowicie od *treści*. Dla tekstu złożonego głównie z liter i cyfr jest niemal darmowe; dla surowych danych binarnych, gdzie niemal każdy bajt musi być poddany escape, skacze do około +200%, gorzej niż wszystkie inne.
+
+## Alfabet i czytelność
+
+- **Base16 / hex** używa `0`-`9` i `A`-`F`. Bajt to zawsze dwa znaki, więc granice bajtów są doskonale wyraźne. Jest najłatwiejszy do odczytania i porównania okiem, dlatego skróty, klucze i zrzuty szesnastkowe go używają.
+- **Base32** używa `A`-`Z` i `2`-`7`, niewrażliwy na wielkość liter, z usuniętymi mylącymi znakami `0`, `1` i `8`. Jest stworzony dla wartości, które osoba wpisze, podyktuje lub przechowa bez rozróżniania wielkości liter, jak sekrety TOTP i adresy onion.
+- **Base64** używa `A`-`Z`, `a`-`z`, `0`-`9`, `+` i `/`, wrażliwy na wielkość liter. Jest najgęstszy z trzech, ale `+` i `/` nie są bezpieczne w adresach URL i nazwach plików, co naprawia [wariant bezpieczny dla URL](/learn/base64url).
+- **Kodowanie procentowe** utrzymuje czytelny tekst czytelnym i stosuje escape tylko do tego, czego URL nie może przenieść dosłownie. To schemat escape, a nie pełne przekodowanie.
+
+## Które wybrać
+
+Wybór zależy od kanału i odbiorcy. Jeśli **osoba** musi odczytać, wpisać lub porównać wartość, wybierz hex (aby badać bajty) lub Base32 (aby wpisywać lub dyktować). Jeśli **maszyna** musi przenieść dowolne bajty przez kanał tekstowy, a rozmiar ma znaczenie, użyj Base64 lub Base64URL, gdy wartość podróżuje w URL, nazwie pliku lub tokenie. Jeśli umieszczasz **tekst w URL** i tylko kilka znaków jest niebezpiecznych, zakoduj go procentowo zamiast przekodowywać wszystko.
+
+Szybka reguła: Base64 dla zwartości, Base32 do wpisywania, hex do czytania, kodowanie procentowe dla adresów URL.
+
+## Wypróbuj je
+
+[Narzędzie codec](/tools/base64) uruchamia wszystkie cztery. Wklej dowolny tekst, przełącz kodowanie i porównaj wyjście obok siebie, z dekodowaniem dla każdego, w całości w Twojej przeglądarce.

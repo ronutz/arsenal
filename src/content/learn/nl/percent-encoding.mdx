@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Procentcodering (URL-codering), uitgelegd"
+summary: "Waarom URL's bepaalde tekens als %XX escapen, welke tekens je veilig zo kunt laten, en waarin procentcodering verschilt van Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Waar procentcodering voor dient
+
+Een URL is een kleine, strikte grammatica. Een handvol tekens heeft structurele betekenis: `/` scheidt padsegmenten, `?` opent de query, `&` scheidt parameters, `#` markeert een fragment, `:` en `@` hebben rollen in de autoriteit. Wat gebeurt er dan wanneer een van die tekens als gewone *gegevens* moet verschijnen, bijvoorbeeld een zoekterm die letterlijk een `&` bevat, of een padsegment met een spatie? Je kunt het niet rauw plaatsen, want de URL-parser zou het als structuur lezen en vastlopen. **Procentcodering**, gedefinieerd in RFC 3986 en vaak URL-codering genoemd, is het escape-mechanisme dat dit oplost: het herschrijft een onveilig teken als een `%` gevolgd door de twee hexadecimale cijfers van zijn byte-waarde.
+
+Een spatie wordt `%20`, een schuine streep wordt `%2F`, een ampersand wordt `%26`. De tekst `a b/c` wordt gecodeerd als `a%20b%2Fc`. De decodeerder keert dit om: elke `%XX` wordt weer de byte `XX`, en het oorspronkelijke teken keert terug.
+
+## De niet-gereserveerde set: wat hetzelfde blijft
+
+Procentcodering raakt niet alles aan. RFC 3986 definieert een kleine **niet-gereserveerde** set tekens die je altijd veilig letterlijk in een URL kunt laten en die nooit zouden moeten worden geëscaped:
+
+- de letters `A`-`Z` en `a`-`z`
+- de cijfers `0`-`9`
+- de vier tekens `-`, `.`, `_` en `~`
+
+Al het andere, inclusief de gereserveerde structuurtekens en alles buiten ASCII, wordt procentgecodeerd wanneer het als gegevens verschijnt. Bytes boven 127 worden afgehandeld door de tekst eerst als UTF-8 te coderen en daarna elke resulterende byte procent te coderen, daarom wordt één letter met een accent of een emoji een reeks van meerdere `%XX`-paren, één per UTF-8-byte.
+
+## Waarom %XX twee hexadecimale cijfers zijn
+
+De `%` is een escape-markering; de twee tekens erna zijn de byte in hexadecimaal, precies de [hexadecimale codering](/learn/hex-encoding) van een byte. Dat is de hele reden waarom een geldige escape altijd `%` plus twee hexadecimale cijfers is en niets meer. Een `%` gevolgd door iets anders dan twee hexadecimale cijfers, zoals `%2G`, of een losse `%` aan het einde van de tekenreeks, is misvormd, en een zorgvuldige decodeerder meldt dat in plaats van te gokken.
+
+## Waarin het verschilt van Base64
+
+Het is verleidelijk om procentcodering op één hoop te gooien met Base64, maar ze beantwoorden verschillende vragen. Base64 neemt *willekeurig binair* en maakt het volledig veilig voor een tekstkanaal, waarbij elke invoer met ongeveer een derde wordt opgeblazen. Procentcodering laat het *al veilige grootste deel* van de tekst onaangeroerd en escapet alleen de paar tekens die problemen zouden geven. Voor gewone tekst die voornamelijk uit letters en cijfers bestaat, is procentcodering veel compacter en blijft voor een mens leesbaar; voor ruw binair, waar bijna elke byte zou moeten worden geëscaped, is het verschrikkelijk inefficiënt en is Base64, of de [URL-veilige variant](/learn/base64url), het juiste hulpmiddel.
+
+Kort gezegd: procentcodering is een selectieve escape voor tekst die in een URL gaat; Base64 is een volledige hercodering voor bytes die overal heen gaan waar alleen tekst wordt geaccepteerd.
+
+## Probeer het
+
+Selecteer **Percent** in het [codec-hulpmiddel](/tools/base64) om tekst procent te coderen of een `%XX`-tekenreeks terug te decoderen, allemaal in je browser. Het codeert niet-ASCII-inhoud als UTF-8-bytes, markeert een misvormde escape, en vertelt je wanneer een gedecodeerd resultaat binair is in plaats van leesbare tekst.

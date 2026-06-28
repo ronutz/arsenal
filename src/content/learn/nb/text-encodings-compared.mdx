@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 og prosentkoding sammenlignet"
+summary: "Et sammenstilt blikk på de fire tekstkodingene: alfabetene deres, størrelsestillegget deres, lesbarheten deres, og når man griper til hver enkelt."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Fire måter å skrive byte som tekst
+
+Base16 (hex), Base32, Base64 og prosentkoding løser alle ett problem: å representere data med tegn som en ren tekstkanal transporterer trygt. De skiller seg på to akser som veies mot hverandre, **alfabetstørrelsen** og **størrelsestillegget**. Et større alfabet pakker flere bit per tegn, så utdataene er kortere; et mindre eller mer restriktivt alfabet er lettere å lese eller tryggere i en gitt sammenheng, men utdataene er lengre. De tre første defineres sammen i RFC 4648; prosentkoding kommer fra RFC 3986 og fungerer annerledes enn de øvrige.
+
+## Størrelsestillegget med et blikk
+
+For rå binær inndata er utvidelsen for de tre kodingene i RFC 4648 fast og forutsigbar:
+
+```
+koding         bit/tgn    forhold            tillegg
+Base16         4          2 tgn / byte       +100%
+Base32         5          8 tgn / 5 byte     +60%
+Base64         6          4 tgn / 3 byte     +33%
+```
+
+Base64 er den mest kompakte, Base16 den minst. Prosentkoding er unntaket: det er slett ikke et fast forhold. Det lar de ikke-reserverte tegnene være i fred og utvider bare resten til tre tegn hver, så tillegget avhenger helt av *innholdet*. For tekst som mest er bokstaver og sifre, er det nesten gratis; for rå binær, der nesten hver byte må escapes, skyter det opp til omtrent +200%, verre enn alle andre.
+
+## Alfabet og lesbarhet
+
+- **Base16 / hex** bruker `0`-`9` og `A`-`F`. En byte er alltid to tegn, så byte-grensene er fullkomment tydelige. Det er lettest å lese og sammenligne med øyet, derfor bruker hasher, nøkler og hex-dumper det.
+- **Base32** bruker `A`-`Z` og `2`-`7`, uavhengig av store og små bokstaver, med de forvekslelige tegnene `0`, `1` og `8` fjernet. Det er laget for verdier som en person vil skrive, diktere eller lagre uten å skille mellom store og små bokstaver, som TOTP-hemmeligheter og onion-adresser.
+- **Base64** bruker `A`-`Z`, `a`-`z`, `0`-`9`, `+` og `/`, avhengig av store og små bokstaver. Det er det tetteste av de tre, men `+` og `/` er ikke trygge i URL-er og filnavn, som den [URL-trygge varianten](/learn/base64url) retter.
+- **Prosentkoding** holder lesbar tekst lesbar og escaper bare det en URL ikke kan transportere bokstavelig. Det er et escape-skjema snarere enn en fullstendig omkoding.
+
+## Hvilken du skal velge
+
+Valget følger kanalen og publikummet. Hvis en **person** må lese, skrive eller sammenligne verdien, foretrekk hex (for å inspisere byte) eller Base32 (for å skrive eller diktere). Hvis en **maskin** må flytte vilkårlige byte gjennom en tekstkanal og størrelsen betyr noe, bruk Base64, eller Base64URL når verdien reiser inne i en URL, et filnavn eller et token. Hvis du plasserer **tekst i en URL** og bare noen få tegn er utrygge, prosentkod den i stedet for å kode om alt.
+
+En rask regel: Base64 for kompakthet, Base32 for å skrive, hex for å lese, prosentkoding for URL-er.
+
+## Prøv dem
+
+[Codec-verktøyet](/tools/base64) kjører alle fire. Lim inn vilkårlig tekst, bytt koding, og sammenlign utdataene side om side, med dekoding for hver enkelt, helt i nettleseren din.

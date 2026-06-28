@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, forklart"
+summary: "Hvorfor Base32 bytter størrelse mot et entydig, store/små-bokstav-uavhengig alfabet, hvordan grupperingen på 5 bit fungerer, og hvor det dukker opp (TOTP-hemmeligheter, onion-adresser, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Hva Base32 er til for
+
+Base32 løser det samme grunnleggende problemet som Base64: det skriver om vilkårlige byte med et lite sett skrivbare tegn slik at de overlever kanaler som bare godtar tekst. Det som skiller det, er *formen* på alfabetet. Base32 bruker bare de 26 store bokstavene `A`-`Z` og sifrene `2`-`7`, 32 symboler i alt. Det utelater bevisst `0`, `1` og `8`, og det er uavhengig av store og små bokstaver. Det gjør det vanskelig å lese feil og trygt å skrive, diktere på telefon eller trykke på en etikett uten å forveksle `O` med `0` eller `l` med `1`.
+
+Prisen for den robustheten er størrelsen. Der Base64 pakker data i forholdet fire tegn per tre byte, er Base32 mindre tett, så utdataene er merkbart lengre for samme inndata.
+
+## Hvordan grupperingen på 5 bit fungerer
+
+Base64 arbeider i grupper på 6 bit fordi 2⁶ = 64. Base32 arbeider i **grupper på 5 bit** fordi 2⁵ = 32. Hvert 5-bit-stykke er et tall fra 0 til 31, og hver verdi tilsvarer et tegn i alfabetet (`A`=0 til `Z`=25, deretter `2`=26 til `7`=31).
+
+Det ubekvemme er at 5 ikke går opp i 8. Base64s vindu på 24 bit (3 byte som 4 grupper) går glatt opp; Base32s minste glatte vindu er **40 bit**, altså 5 byte kodet som 8 tegn. Base32 leser derfor inndata fem byte om gangen og sender ut åtte tegn per blokk.
+
+## Utfylling opp til blokken på 8 tegn
+
+Siden den naturlige blokken er åtte tegn, fyller koderen den siste blokken med `=` opp til åtte tegn når inndataene ikke slutter på en grense på 5 byte. Bare visse gjenstående størrelser er gyldige: en siste blokk av lengde 2, 4, 5 eller 7 før utfyllingen tilsvarer et helt antall byte, mens lengdene 1, 3 og 6 ikke kan det og signaliserer en feilformet streng. Som i Base64 er `=` ikke data; det gjenoppretter bare blokklengden slik at dekoderen kan gjenvinne de nøyaktige opprinnelige bytene.
+
+Ta inndataene `foobar`. Base32-kodingen av dem er `MZXW6YTBOI======`: åtte datategn etterfulgt av seks utfyllingstegn som fullfører den andre blokken. Dekod det, og de seks opprinnelige bytene kommer tilbake.
+
+## Hvor du støter på det
+
+Base32 dukker opp der en person håndterer den kodede verdien direkte. Tofaktorhemmeligheter for **TOTP og HOTP** deles som Base32-strenger, derfor består en oppsettsnøkkel til en autentiseringsapp helt av store bokstaver og sifrene 2 til 7. Tors **onion-adresser** er offentlige nøkler kodet i Base32. Noen DNS-poster og filsynkroniseringssystemer bruker det av samme grunn: verdien kan leses høyt, skrives for hånd eller lagres uten å skille mellom store og små bokstaver, og Base32 tåler alle tre.
+
+Når en streng består helt av store bokstaver `A`-`Z` og `2`-`7`, kanskje slutter på `=`, er Base32 en god gjetning.
+
+## Prøv det
+
+Velg **Base32** i [codec-verktøyet](/tools/base64) for å kode tekst til Base32 eller dekode en Base32-streng, alt i nettleseren din. Det tåler inndata med små bokstaver og manglende utfylling, og markerer et resultat som er binært i stedet for lesbar tekst.

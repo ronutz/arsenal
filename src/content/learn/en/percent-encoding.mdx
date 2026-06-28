@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Percent-encoding (URL encoding), explained"
+summary: "Why URLs escape certain characters as %XX, which characters are safe to leave alone, and how percent-encoding differs from Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: reviewed
+updated: "2026-06-28"
+---
+
+## What percent-encoding is for
+
+A URL is a small, strict grammar. A handful of characters carry structural meaning: `/` separates path segments, `?` starts the query, `&` separates parameters, `#` marks a fragment, `:` and `@` have roles in the authority. So what happens when one of those characters needs to appear as ordinary *data*, say a search term that literally contains an `&`, or a path segment with a space? You cannot drop it in raw, because the URL parser would read it as structure and break. **Percent-encoding**, defined in RFC 3986 and often called URL encoding, is the escape mechanism that solves this: it rewrites an unsafe character as a `%` followed by the two hex digits of its byte value.
+
+A space becomes `%20`, a slash becomes `%2F`, an ampersand becomes `%26`. The text `a b/c` encodes to `a%20b%2Fc`. The decoder reverses it: every `%XX` turns back into the byte `XX`, and the original character returns.
+
+## The unreserved set: what stays as-is
+
+Percent-encoding does not touch everything. RFC 3986 defines a small **unreserved** set of characters that are always safe to leave literally in a URL and should never be escaped:
+
+- the letters `A`-`Z` and `a`-`z`
+- the digits `0`-`9`
+- the four marks `-`, `.`, `_`, and `~`
+
+Everything else, including the reserved structural characters and anything outside ASCII, gets percent-encoded when it appears as data. Bytes above 127 are handled by first encoding the text as UTF-8 and then percent-encoding each resulting byte, which is why a single accented letter or emoji becomes a run of several `%XX` pairs, one per UTF-8 byte.
+
+## Why %XX is two hex digits
+
+The `%` is an escape marker; the two characters after it are the byte in hexadecimal, exactly the [hex encoding](/learn/hex-encoding) of one byte. That is the whole reason a valid escape is always `%` plus two hex digits and nothing else. A `%` followed by anything that is not two hex digits, like `%2G`, or a stray `%` at the end of the string, is malformed, and a careful decoder reports it rather than guessing.
+
+## How it differs from Base64
+
+It is tempting to lump percent-encoding in with Base64, but they answer different questions. Base64 takes *arbitrary binary* and makes all of it safe for a text channel, expanding every input by about a third. Percent-encoding leaves the *already-safe majority* of text untouched and escapes only the few characters that would cause trouble. For ordinary text that is mostly letters and digits, percent-encoding is far more compact and stays human-readable; for raw binary, where almost every byte would need escaping, it is wildly inefficient and Base64, or its [URL-safe variant](/learn/base64url), is the right tool.
+
+Put simply: percent-encoding is a targeted escape for text going into a URL; Base64 is a full re-encoding for bytes going anywhere that only trusts text.
+
+## Try it
+
+Select **Percent** in the [codec tool](/tools/base64) to percent-encode text or decode a `%XX` string back, all in your browser. It encodes non-ASCII as UTF-8 bytes, flags a malformed escape, and tells you when a decoded result is binary rather than readable text.

@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Percent-encoding (URL encoding), ipinaliwanag"
+summary: "Kung bakit ineescape ng mga URL ang ilang character bilang %XX, kung aling mga character ang ligtas iwanan kung ano sila, at kung paano naiiba ang percent-encoding sa Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Para saan ang percent-encoding
+
+Ang isang URL ay isang maliit at mahigpit na grammar. May ilang character na may structural na kahulugan: hinahati ng `/` ang mga path segment, sinisimulan ng `?` ang query, hinahati ng `&` ang mga parameter, minamarkahan ng `#` ang isang fragment, may mga papel ang `:` at `@` sa authority. Kaya ano ang nangyayari kapag ang isa sa mga character na iyon ay kailangang lumitaw bilang ordinaryong *data*, halimbawa isang search term na literal na naglalaman ng `&`, o isang path segment na may space? Hindi mo ito maaaring ilagay nang hilaw, dahil babasahin ito ng URL parser bilang structure at mabe-break. Ang **percent-encoding**, na nakatakda sa RFC 3986 at madalas tawaging URL encoding, ang escape mechanism na lumulutas dito: muli nitong isinusulat ang isang hindi ligtas na character bilang isang `%` na sinusundan ng dalawang hexadecimal na digit ng halaga ng byte nito.
+
+Ang isang space ay nagiging `%20`, ang isang slash ay nagiging `%2F`, ang isang ampersand ay nagiging `%26`. Ang text na `a b/c` ay naka-encode bilang `a%20b%2Fc`. Binabaligtad ito ng decoder: ang bawat `%XX` ay nagiging byte na `XX` muli, at bumabalik ang orihinal na character.
+
+## Ang unreserved set: kung ano ang nananatiling pareho
+
+Hindi hinihipo ng percent-encoding ang lahat. Tinutukoy ng RFC 3986 ang isang maliit na **unreserved** na set ng mga character na palaging ligtas iwanan nang literal sa isang URL at hindi kailanman dapat i-escape:
+
+- ang mga titik na `A`-`Z` at `a`-`z`
+- ang mga digit na `0`-`9`
+- ang apat na marka na `-`, `.`, `_` at `~`
+
+Ang lahat ng iba pa, kasama ang mga reserved na structural character at anumang nasa labas ng ASCII, ay naka-percent-encode kapag lumitaw ito bilang data. Ang mga byte na lampas sa 127 ay hinahawakan sa pamamagitan ng pag-encode muna sa text bilang UTF-8 at saka pag-percent-encode sa bawat resulting byte, kaya ang isang titik na may accent o isang emoji ay nagiging isang serye ng maramihang `%XX` na pares, isa bawat UTF-8 byte.
+
+## Bakit ang %XX ay dalawang hexadecimal na digit
+
+Ang `%` ay isang escape marker; ang dalawang character pagkatapos nito ay ang byte sa hexadecimal, eksaktong [hexadecimal encoding](/learn/hex-encoding) ng isang byte. Iyon ang buong dahilan kung bakit ang isang valid na escape ay palaging `%` plus dalawang hexadecimal na digit at wala nang iba. Ang isang `%` na sinusundan ng iba sa dalawang hexadecimal na digit, tulad ng `%2G`, o isang nakaiwang `%` sa dulo ng string, ay malformed, at iniuulat ito ng isang maingat na decoder sa halip na manghula.
+
+## Paano ito naiiba sa Base64
+
+Nakatutuksong isama ang percent-encoding sa iisang grupo kasama ang Base64, ngunit sumasagot sila sa magkaibang tanong. Kinukuha ng Base64 ang *arbitrary na binary* at ginagawang ligtas ang lahat para sa isang text channel, na pinalalaki ang bawat input ng humigit-kumulang isang-katlo. Iniiwan ng percent-encoding ang *nakararami at ligtas nang* bahagi ng text na hindi nagagalaw at ineescape lang ang ilang character na magdudulot ng problema. Para sa ordinaryong text na karamihan ay mga titik at digit, ang percent-encoding ay mas compact at nananatiling nababasa ng tao; para sa raw na binary, kung saan halos bawat byte ay kailangang i-escape, ito ay napakahirap na hindi mahusay at ang Base64, o ang [URL-safe variant](/learn/base64url) nito, ang tamang tool.
+
+Sa madaling salita: ang percent-encoding ay isang selektibong escape para sa text na pumapasok sa isang URL; ang Base64 ay isang buong re-encoding para sa mga byte na pumupunta saanman na tumatanggap lamang ng text.
+
+## Subukan ito
+
+Piliin ang **Percent** sa [codec tool](/tools/base64) para i-percent-encode ang text o i-decode ang isang `%XX` string pabalik, lahat sa iyong browser. Ineencode nito ang non-ASCII na content bilang UTF-8 byte, minamarkahan ang isang malformed na escape, at sinasabi sa iyo kung kailan ang isang naka-decode na resulta ay binary sa halip na nababasang text.

@@ -224,34 +224,38 @@
       "copied": "Kopierad"
     },
     "base64": {
-      "name": "Base64-/Base64URL-kodare och -avkodare",
-      "blurb": "Koda text till standard- eller URL-säker Base64, eller avkoda endera varianten tillbaka till text. Tolerar saknad utfyllnad och flaggar binära (icke-UTF-8-)resultat. Körs helt i din webbläsare.",
+      "name": "Base64-, Base32-, Hex- och procent-codec",
+      "blurb": "Koda text till Base64, URL-säker Base64, Base32, hexadecimalt eller procentkodning, och avkoda vilken som helst av dem tillbaka. Tolererar saknad utfyllnad och blanksteg, och flaggar binära (icke-UTF-8) resultat. Körs helt i din webbläsare.",
       "directionLabel": "Riktning",
-      "variantLabel": "Base64-variant",
       "direction": {
-        "encode": "Koda (text till Base64)",
-        "decode": "Avkoda (Base64 till text)"
-      },
-      "variant": {
-        "standard": "Standard",
-        "urlsafe": "URL-säker"
+        "encode": "Koda",
+        "decode": "Avkoda"
       },
       "inputLabelEncode": "Text att koda",
-      "inputLabelDecode": "Base64 att avkoda",
+      "inputLabelDecode": "Kodad text att avkoda",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Kodning och avkodning körs lokalt. Inget du klistrar in lämnar din webbläsare.",
       "decodeErrors": {
-        "invalid-characters": "Det är inte giltig Base64. Den innehåller tecken utanför Base64-alfabetet.",
-        "invalid-length": "Det är inte giltig Base64. Dess längd är inte en giltig Base64-längd."
+        "invalid-characters": "Den här inmatningen innehåller tecken utanför den valda codecens alfabet.",
+        "invalid-length": "Den här inmatningen har inte en giltig längd för den valda codecen.",
+        "invalid-escape": "Den här inmatningen har en felaktig procent-escape (ett % som inte följs av två hexadecimala siffror)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Kodat",
       "outputDecode": "Avkodad text",
       "copy": "Kopiera",
       "copied": "Kopierad",
       "emptyOutput": "(tom)",
       "decodedBytes": "{bytes, plural, one {# byte avkodad} other {# byte avkodade}}.",
-      "notUtf8": "{bytes, plural, one {# byte avkodad} other {# byte avkodade}}, men resultatet är inte giltig UTF-8-text (troligen binärt)."
+      "notUtf8": "{bytes, plural, one {# byte avkodad} other {# byte avkodade}}, men resultatet är inte giltig UTF-8-text (troligen binärt).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "OAuth-PKCE-verifierare och -challenge",

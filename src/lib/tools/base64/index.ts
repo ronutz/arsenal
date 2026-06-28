@@ -1,17 +1,18 @@
 // ============================================================================
 // src/lib/tools/base64/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING BASE64 MODULE - a netcore {manifest, run, vectors} triple
+// THE SELF-DESCRIBING CODEC MODULE - a netcore {manifest, run, vectors} triple
 // (same shape as the cidr reference and the jwt module), ready to graduate into
-// @ronutz/netcore unchanged.
+// @ronutz/netcore unchanged. Merge M5 generalized it from base64/base64url to a
+// unified codec over base64, base64url, base32, base16/hex, and percent-encoding.
 //
-// A base64 string very often carries credentials (HTTP Basic auth is
+// An encoded string very often carries credentials (HTTP Basic auth is
 // base64(user:pass)), tokens, or keys, so this tool is a sensitiveArtifact:
 // the manifest declares shareSafetyDefault: "fragment" (the validator requires
 // fragment-or-stricter for sensitive tools) and secret-redaction.
 // ============================================================================
 
-import { analyzeBase64, type Base64Result } from "./compute";
+import { analyzeCodec, type CodecResult } from "./compute";
 import {
   GOLDEN_VECTOR_SET_ID,
   BASE64_GOLDEN_VECTORS,
@@ -23,11 +24,13 @@ export {
   BASE64_GOLDEN_VECTORS,
   BASE64_REJECT_VECTORS,
 } from "./golden-vectors";
+export { CODECS } from "./compute";
 export type {
-  Base64Result,
-  Base64Decoded,
-  Base64DecodeFailure,
-  Base64DecodeReason,
+  Codec,
+  CodecResult,
+  CodecDecoded,
+  CodecDecodeFailure,
+  CodecDecodeReason,
 } from "./compute";
 
 /** The D-49 declarative manifest for the Base64 tool. */
@@ -35,7 +38,7 @@ export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "Encoding & Data",
   toolSlug: "base64",
-  canonicalAliases: ["b64", "base64url", "base64-decode", "base64-encode"],
+  canonicalAliases: ["b64", "base64url", "base32", "base16", "hex", "hex-encode", "hex-decode", "percent-encode", "percent-decode", "url-encode", "url-decode", "base64-decode", "base64-encode"],
   inputDetectors: [
     {
       // base64-ish: base64 / base64url alphabet with optional trailing padding.
@@ -45,6 +48,14 @@ export const manifest = Object.freeze({
       pattern: "^[A-Za-z0-9+/_-]+={0,2}$",
       priority: 3,
       example: "SGVsbG8gV29ybGQ=",
+    },
+    {
+      // hex / Base16: pairs of hex digits, even length enforced by the group.
+      // Low confidence (also matches the base64 alphabet). Linear, ReDoS-safe.
+      kind: "regex",
+      pattern: "^([0-9A-Fa-f]{2})+$",
+      priority: 3,
+      example: "666F6F626172",
     },
   ],
 
@@ -59,15 +70,24 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // required for sensitiveArtifact
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/base64"],
+  learnLinks: ["learn/base64", "learn/base64url", "learn/base32", "learn/hex-encoding", "learn/percent-encoding", "learn/text-encodings-compared"],
   sources: [
     {
       id: "rfc4648",
-      label: "RFC 4648 - Base16, Base32, Base64 Data Encodings",
+      label: "RFC 4648 - The Base16, Base32, and Base64 Data Encodings",
       type: "rfc",
       url: "https://www.rfc-editor.org/rfc/rfc4648",
-      access_date: "2026-06-26",
-      scope: "base64 (section 4) + base64url (section 5) alphabets and padding",
+      access_date: "2026-06-28",
+      scope: "base64 (section 4), base64url (section 5), base32 (section 6), base16/hex (section 8) alphabets and padding",
+      status: "active",
+    },
+    {
+      id: "rfc3986",
+      label: "RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax",
+      type: "rfc",
+      url: "https://www.rfc-editor.org/rfc/rfc3986",
+      access_date: "2026-06-28",
+      scope: "percent-encoding (section 2.1) and the unreserved set (section 2.3)",
       status: "active",
     },
     {
@@ -89,10 +109,10 @@ export const manifest = Object.freeze({
 /**
  * run - the registry-facing entry point. Deterministic; encodes and attempts to
  * decode the input. Never throws (a failed decode is reported in the result).
- * @param input arbitrary text (to encode) or a base64 string (to decode)
+ * @param input arbitrary text (to encode) or an encoded string (to decode)
  */
-export function run(input: string): Base64Result {
-  return analyzeBase64(input);
+export function run(input: string): CodecResult {
+  return analyzeCodec(input);
 }
 
 export const goldenVectors = BASE64_GOLDEN_VECTORS;

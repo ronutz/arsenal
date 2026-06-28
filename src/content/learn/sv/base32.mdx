@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, förklarat"
+summary: "Varför Base32 byter storlek mot ett entydigt, skiftlägesokänsligt alfabet, hur dess gruppering om 5 bitar fungerar, och var det dyker upp (TOTP-hemligheter, onion-adresser, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Vad Base32 är till för
+
+Base32 löser samma grundproblem som Base64: det skriver om godtyckliga byte med en liten uppsättning skrivbara tecken så att de överlever kanaler som bara accepterar text. Det som skiljer det åt är *formen* på dess alfabet. Base32 använder bara de 26 versalerna `A`-`Z` och siffrorna `2`-`7`, 32 symboler totalt. Det utelämnar medvetet `0`, `1` och `8`, och är okänsligt för stora och små bokstäver. Det gör det svårt att läsa fel och säkert att skriva, diktera i telefon eller trycka på en etikett utan att förväxla `O` med `0` eller `l` med `1`.
+
+Priset för den robustheten är storleken. Där Base64 packar data i takten fyra tecken per tre byte är Base32 mindre tätt, så dess utdata är märkbart längre för samma indata.
+
+## Hur grupperingen om 5 bitar fungerar
+
+Base64 arbetar i grupper om 6 bitar eftersom 2⁶ = 64. Base32 arbetar i **grupper om 5 bitar** eftersom 2⁵ = 32. Varje 5-bitarsbit är ett tal från 0 till 31, och varje värde motsvarar ett tecken i alfabetet (`A`=0 till `Z`=25, sedan `2`=26 till `7`=31).
+
+Det obekväma är att 5 inte delar 8 jämnt. Base64:s fönster om 24 bitar (3 byte som 4 grupper) går jämnt upp; Base32:s minsta jämna fönster är **40 bitar**, alltså 5 byte kodade som 8 tecken. Base32 läser alltså indata fem byte i taget och ger ut åtta tecken per block.
+
+## Utfyllnad upp till blocket om 8 tecken
+
+Eftersom det naturliga blocket är åtta tecken fyller kodaren ut det sista blocket med `=` upp till åtta tecken när indata inte slutar vid en gräns om 5 byte. Bara vissa återstående storlekar är giltiga: ett sista block av längd 2, 4, 5 eller 7 före utfyllnaden motsvarar ett helt antal byte, medan längderna 1, 3 och 6 inte kan det och signalerar en felformad sträng. Precis som i Base64 är `=` inte data; det återställer bara blocklängden så att avkodaren kan återvinna de exakta ursprungliga byten.
+
+Ta indata `foobar`. Dess Base32-kodning är `MZXW6YTBOI======`: åtta datatecken följt av sex utfyllnadstecken som kompletterar det andra blocket. Avkoda det och de sex ursprungliga byten kommer tillbaka.
+
+## Var du stöter på det
+
+Base32 dyker upp där en person hanterar det kodade värdet direkt. Tvåfaktorshemligheter för **TOTP och HOTP** delas som Base32-strängar, därför består en konfigureringsnyckel för en autentiseringsapp helt av versaler och siffrorna 2 till 7. Tors **onion-adresser** är offentliga nycklar kodade i Base32. Vissa DNS-poster och filsynkroniseringssystem använder det av samma skäl: värdet kan läsas högt, skrivas för hand eller lagras utan att skilja på stora och små bokstäver, och Base32 tål alla tre.
+
+När en sträng består helt av versaler `A`-`Z` och `2`-`7`, kanske slutar på `=`, är Base32 en god gissning.
+
+## Prova det
+
+Välj **Base32** i [codec-verktyget](/tools/base64) för att koda text till Base32 eller avkoda en Base32-sträng, allt i din webbläsare. Det tål indata med små bokstäver och saknad utfyllnad, och markerar ett resultat som är binärt i stället för läsbar text.

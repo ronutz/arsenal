@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 en procentcodering vergeleken"
+summary: "Een vergelijking naast elkaar van de vier tekstcoderingen: hun alfabetten, hun groottetoeslag, hun leesbaarheid, en wanneer je naar elke grijpt."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Vier manieren om bytes als tekst te schrijven
+
+Base16 (hex), Base32, Base64 en procentcodering lossen allemaal één probleem op: gegevens weergeven met tekens die een tekstkanaal veilig vervoert. Ze verschillen op twee assen die tegen elkaar worden afgewogen, **de alfabetgrootte** en **de groottetoeslag**. Een groter alfabet pakt meer bits per teken, dus de uitvoer is korter; een kleiner of beperkter alfabet is gemakkelijker te lezen of veiliger in een bepaalde context, maar de uitvoer is langer. De eerste drie zijn samen gedefinieerd in RFC 4648; procentcodering komt uit RFC 3986 en werkt anders dan de rest.
+
+## De groottetoeslag in één oogopslag
+
+Voor ruwe binaire invoer is de uitbreiding van de drie coderingen van RFC 4648 vast en voorspelbaar:
+
+```
+codering       bits/tkn   verhouding         toeslag
+Base16         4          2 tkn / byte       +100%
+Base32         5          8 tkn / 5 bytes    +60%
+Base64         6          4 tkn / 3 bytes    +33%
+```
+
+Base64 is de compactste, Base16 de minst compacte. Procentcodering is het buitenbeentje: het is helemaal geen vaste verhouding. Het laat de niet-gereserveerde tekens met rust en breidt alleen de rest uit tot drie tekens elk, dus de toeslag hangt volledig af van de *inhoud*. Voor tekst die voornamelijk uit letters en cijfers bestaat, is het bijna gratis; voor ruw binair, waar bijna elke byte moet worden geëscaped, schiet het omhoog tot ongeveer +200%, slechter dan alle andere.
+
+## Alfabet en leesbaarheid
+
+- **Base16 / hex** gebruikt `0`-`9` en `A`-`F`. Eén byte is altijd twee tekens, dus de bytegrenzen zijn volkomen duidelijk. Het is het best met het oog te lezen en te vergelijken, daarom gebruiken hashes, sleutels en hex-dumps het.
+- **Base32** gebruikt `A`-`Z` en `2`-`7`, hoofdletterongevoelig, met de verwarbare tekens `0`, `1` en `8` verwijderd. Het is gemaakt voor waarden die een persoon zal typen, dicteren of opslaan zonder onderscheid tussen hoofd- en kleine letters, zoals TOTP-geheimen en onion-adressen.
+- **Base64** gebruikt `A`-`Z`, `a`-`z`, `0`-`9`, `+` en `/`, hoofdlettergevoelig. Het is de dichtste van de drie, maar `+` en `/` zijn niet veilig in URL's en bestandsnamen, wat de [URL-veilige variant](/learn/base64url) verhelpt.
+- **Procentcodering** houdt leesbare tekst leesbaar en escapet alleen wat een URL niet letterlijk kan vervoeren. Het is een escape-schema in plaats van een volledige hercodering.
+
+## Welke je moet kiezen
+
+De keuze volgt het kanaal en het publiek. Als een **persoon** de waarde moet lezen, typen of vergelijken, geef dan de voorkeur aan hex (om bytes te inspecteren) of Base32 (om te typen of te dicteren). Als een **machine** willekeurige bytes door een tekstkanaal moet verplaatsen en de grootte telt, gebruik dan Base64, of Base64URL wanneer de waarde in een URL, bestandsnaam of token reist. Als je **tekst in een URL** plaatst en slechts een paar tekens onveilig zijn, codeer het dan procent in plaats van alles opnieuw te coderen.
+
+Een snelle regel: Base64 voor compactheid, Base32 om te typen, hex om te lezen, procentcodering voor URL's.
+
+## Probeer ze
+
+Het [codec-hulpmiddel](/tools/base64) voert alle vier uit. Plak willekeurige tekst, wissel de codering, en vergelijk de uitvoer naast elkaar, met decodering voor elke, volledig in je browser.

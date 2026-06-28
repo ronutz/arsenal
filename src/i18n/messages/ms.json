@@ -224,34 +224,38 @@
       "copied": "Disalin"
     },
     "base64": {
-      "name": "Pengekod dan Penyahkod Base64 / Base64URL",
-      "blurb": "Kodkan teks kepada Base64 standard atau selamat-URL, atau nyahkodkan mana-mana varian kembali kepada teks. Bertolak ansur dengan padding yang tiada, dan ia menandakan hasil perduaan (bukan UTF-8). Berjalan sepenuhnya dalam pelayar anda.",
+      "name": "Codec Base64, Base32, Hex & Peratus",
+      "blurb": "Kodkan teks ke Base64, Base64 selamat URL, Base32, heksadesimal atau pengekodan peratus, dan nyahkod mana-mana daripadanya semula. Bertolak ansur dengan padding dan ruang putih yang hilang, dan menandakan hasil binari (bukan UTF-8). Berjalan sepenuhnya dalam pelayar anda.",
       "directionLabel": "Arah",
-      "variantLabel": "Varian Base64",
       "direction": {
-        "encode": "Kod (teks ke Base64)",
-        "decode": "Nyahkod (Base64 ke teks)"
-      },
-      "variant": {
-        "standard": "Standard",
-        "urlsafe": "Selamat-URL"
+        "encode": "Kod",
+        "decode": "Nyahkod"
       },
       "inputLabelEncode": "Teks untuk dikodkan",
-      "inputLabelDecode": "Base64 untuk dinyahkodkan",
+      "inputLabelDecode": "Teks berkod untuk dinyahkod",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Pengekodan dan penyahkodan berjalan secara setempat. Tiada apa yang anda tampal keluar dari pelayar anda.",
       "decodeErrors": {
-        "invalid-characters": "Itu bukan Base64 yang sah. Ia mengandungi aksara di luar abjad Base64.",
-        "invalid-length": "Itu bukan Base64 yang sah. Panjangnya bukan panjang Base64 yang sah."
+        "invalid-characters": "Input itu mengandungi aksara di luar abjad codec yang dipilih.",
+        "invalid-length": "Input itu tiada panjang yang sah untuk codec yang dipilih.",
+        "invalid-escape": "Input itu mempunyai escape peratus yang cacat (satu % tanpa dua digit heksadesimal selepasnya)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Berkod",
       "outputDecode": "Teks dinyahkod",
       "copy": "Salin",
       "copied": "Disalin",
       "emptyOutput": "(kosong)",
       "decodedBytes": "{bytes, plural, other {Menyahkod # bait.}}",
-      "notUtf8": "{bytes, plural, other {Menyahkod # bait,}} tetapi hasilnya bukan teks UTF-8 yang sah (berkemungkinan perduaan)."
+      "notUtf8": "{bytes, plural, other {Menyahkod # bait,}} tetapi hasilnya bukan teks UTF-8 yang sah (berkemungkinan perduaan).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "Pengesah dan Challenge OAuth PKCE",

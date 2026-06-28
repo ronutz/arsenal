@@ -224,34 +224,38 @@
       "copied": "Copiado"
     },
     "base64": {
-      "name": "Codificador y decodificador Base64 / Base64URL",
-      "blurb": "Codifica texto a Base64 estándar o seguro para URL, o decodifica cualquiera de las dos variantes de vuelta a texto. Tolera el relleno faltante y señala los resultados binarios (no UTF-8). Se ejecuta por completo en tu navegador.",
+      "name": "Códec Base64, Base32, Hex y porcentaje",
+      "blurb": "Codifica texto a Base64, Base64 seguro para URL, Base32, hexadecimal o codificación porcentual, y decodifica cualquiera de ellos. Tolera el relleno y los espacios en blanco que falten, y señala los resultados binarios (no UTF-8). Se ejecuta por completo en tu navegador.",
       "directionLabel": "Dirección",
-      "variantLabel": "Variante de Base64",
       "direction": {
-        "encode": "Codificar (texto a Base64)",
-        "decode": "Decodificar (Base64 a texto)"
-      },
-      "variant": {
-        "standard": "Estándar",
-        "urlsafe": "Seguro para URL"
+        "encode": "Codificar",
+        "decode": "Decodificar"
       },
       "inputLabelEncode": "Texto para codificar",
-      "inputLabelDecode": "Base64 para decodificar",
+      "inputLabelDecode": "Texto codificado a decodificar",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "La codificación y la decodificación se ejecutan localmente. Nada de lo que pegas sale de tu navegador.",
       "decodeErrors": {
-        "invalid-characters": "Eso no es Base64 válido. Contiene caracteres fuera del alfabeto de Base64.",
-        "invalid-length": "Eso no es Base64 válido. Su longitud no es una longitud válida de Base64."
+        "invalid-characters": "Esa entrada contiene caracteres fuera del alfabeto del códec seleccionado.",
+        "invalid-length": "Esa entrada no tiene una longitud válida para el códec seleccionado.",
+        "invalid-escape": "Esa entrada tiene un escape de porcentaje mal formado (un % no seguido de dos dígitos hexadecimales)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Codificado",
       "outputDecode": "Texto decodificado",
       "copy": "Copiar",
       "copied": "Copiado",
       "emptyOutput": "(vacío)",
       "decodedBytes": "{bytes, plural, one {Se decodificó # byte} other {Se decodificaron # bytes}}.",
-      "notUtf8": "{bytes, plural, one {Se decodificó # byte} other {Se decodificaron # bytes}}, pero el resultado no es texto UTF-8 válido (probablemente binario)."
+      "notUtf8": "{bytes, plural, one {Se decodificó # byte} other {Se decodificaron # bytes}}, pero el resultado no es texto UTF-8 válido (probablemente binario).",
+      "codecLabel": "Códec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "Verificador y challenge de OAuth PKCE",

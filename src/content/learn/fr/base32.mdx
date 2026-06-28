@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, expliqué"
+summary: "Pourquoi Base32 échange la taille contre un alphabet sans ambiguïté et insensible à la casse, comment fonctionne son regroupement par 5 bits, et où il apparaît (secrets TOTP, adresses onion, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## À quoi sert Base32
+
+Base32 résout le même problème de fond que Base64 : il réécrit des octets arbitraires à l'aide d'un petit jeu de caractères imprimables pour qu'ils survivent à des canaux qui n'acceptent que du texte. Ce qui le distingue, c'est la *forme* de son alphabet. Base32 n'utilise que les 26 lettres majuscules `A`-`Z` et les chiffres `2`-`7`, soit 32 symboles en tout. Il laisse délibérément de côté le `0`, le `1` et le `8`, et il est insensible à la casse. Cela le rend difficile à mal lire et sûr à saisir, à dicter au téléphone ou à imprimer sur une étiquette sans confondre `O` avec `0` ou `l` avec `1`.
+
+Le prix de cette robustesse, c'est la taille. Là où Base64 empaquette les données à raison de quatre caractères pour trois octets, Base32 est moins dense, donc sa sortie est nettement plus longue pour la même entrée.
+
+## Comment fonctionne le regroupement par 5 bits
+
+Base64 travaille par groupes de 6 bits parce que 2⁶ = 64. Base32 travaille par **groupes de 5 bits** parce que 2⁵ = 32. Chaque fragment de 5 bits est un nombre de 0 à 31, et chaque valeur correspond à un caractère de l'alphabet (`A`=0 jusqu'à `Z`=25, puis `2`=26 jusqu'à `7`=31).
+
+La partie délicate, c'est que 5 ne divise pas 8 de façon exacte. La fenêtre de 24 bits de Base64 (3 octets en 4 groupes) tombe juste ; la plus petite fenêtre propre de Base32 fait **40 bits**, soit 5 octets codés en 8 caractères. Base32 lit donc l'entrée cinq octets à la fois et émet huit caractères par bloc.
+
+## Remplissage jusqu'au bloc de 8 caractères
+
+Comme le bloc naturel fait huit caractères, lorsque l'entrée ne se termine pas sur une limite de 5 octets le codeur complète le bloc final jusqu'à huit caractères avec `=`. Seules certaines tailles restantes sont valides : un bloc final de longueur 2, 4, 5 ou 7 avant le remplissage correspond à un nombre entier d'octets, tandis que les longueurs 1, 3 et 6 ne le peuvent pas et signalent une chaîne malformée. Comme dans Base64, le `=` n'est pas une donnée ; il ne fait que rétablir la longueur du bloc pour que le décodeur puisse récupérer les octets d'origine exacts.
+
+Prenez l'entrée `foobar`. Son codage Base32 est `MZXW6YTBOI======` : huit caractères de données suivis de six caractères de remplissage qui complètent le second bloc. Décodez-la et les six octets d'origine reviennent.
+
+## Où vous le rencontrez
+
+Base32 apparaît là où une personne manipule directement la valeur codée. Les secrets à double facteur **TOTP et HOTP** se partagent sous forme de chaînes Base32, c'est pourquoi une clé de configuration d'application d'authentification est entièrement en lettres majuscules et en chiffres de 2 à 7. Les **adresses onion** de Tor sont des clés publiques codées en Base32. Certains enregistrements DNS et systèmes de synchronisation de fichiers l'utilisent pour la même raison : la valeur pourrait être lue à voix haute, saisie à la main ou stockée sans tenir compte de la casse, et Base32 tolère les trois.
+
+Quand une chaîne est entièrement en majuscules `A`-`Z` et `2`-`7`, se terminant peut-être par `=`, Base32 est une bonne hypothèse.
+
+## Essayez
+
+Sélectionnez **Base32** dans l'[outil de codec](/tools/base64) pour coder du texte en Base32 ou décoder une chaîne Base32, le tout dans votre navigateur. Il tolère l'entrée en minuscules et le remplissage manquant, et signale un résultat qui est binaire plutôt que du texte lisible.

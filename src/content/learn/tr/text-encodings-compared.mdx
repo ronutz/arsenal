@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 ve yüzde kodlama karşılaştırıldı"
+summary: "Dört metin kodlamasına yan yana bir bakış: alfabeleri, boyut ek yükü, okunabilirlikleri ve her birine ne zaman başvurulacağı."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Baytları metin olarak yazmanın dört yolu
+
+Base16 (hex), Base32, Base64 ve yüzde kodlama hepsi tek bir sorunu çözer: yalnızca metin olan bir kanalın güvenle taşıyacağı karakterlerle veriyi temsil etmek. Birbirine karşı tartılan iki eksende farklılaşırlar, **alfabe boyutu** ve **boyut ek yükü**. Daha büyük bir alfabe karakter başına daha çok bit paketler, dolayısıyla çıktı daha kısadır; daha küçük ya da daha kısıtlayıcı bir alfabe okumayı kolaylaştırır ya da belirli bir bağlamda daha güvenlidir, ama çıktı daha uzundur. İlk üçü RFC 4648'de birlikte tanımlanır; yüzde kodlama RFC 3986'dan gelir ve diğerlerinden farklı çalışır.
+
+## Boyut ek yükü bir bakışta
+
+Ham ikili girdi için, RFC 4648'in üç kodlamasının genişlemesi sabit ve öngörülebilirdir:
+
+```
+kodlama        bit/krk    oran               ek yük
+Base16         4          2 krk / bayt       +100%
+Base32         5          8 krk / 5 bayt     +60%
+Base64         6          4 krk / 3 bayt     +33%
+```
+
+Base64 en derli toplu olanıdır, Base16 en az. Yüzde kodlama istisnadır: hiç de sabit bir oran değildir. Ayrılmamış karakterleri rahat bırakır ve yalnızca geri kalanı her biri üç karaktere genişletir, dolayısıyla ek yükü tümüyle *içeriğe* bağlıdır. Çoğunlukla harf ve rakamlardan oluşan metin için neredeyse bedavadır; ham ikili için, neredeyse her baytın escape edilmesi gerektiği yerde, yaklaşık +200%'e fırlar, hepsinden kötü.
+
+## Alfabe ve okunabilirlik
+
+- **Base16 / hex** `0`-`9` ve `A`-`F` kullanır. Bir bayt her zaman iki karakterdir, dolayısıyla bayt sınırları kusursuzca nettir. Gözle okuması ve karşılaştırması en kolayıdır, bu yüzden özetler, anahtarlar ve hex dökümleri onu kullanır.
+- **Base32** `A`-`Z` ve `2`-`7` kullanır, büyük/küçük harfe duyarsız, karıştırılabilir karakterler `0`, `1` ve `8` kaldırılmış. Bir kişinin yazacağı, dikte edeceği ya da büyük/küçük harf ayrımı olmadan saklayacağı değerler için yapılmıştır, TOTP gizleri ve onion adresleri gibi.
+- **Base64** `A`-`Z`, `a`-`z`, `0`-`9`, `+` ve `/` kullanır, büyük/küçük harfe duyarlı. Üçünün en yoğunudur, ama `+` ve `/` URL'lerde ve dosya adlarında güvenli değildir, ki [URL'ye güvenli varyant](/learn/base64url) bunu düzeltir.
+- **Yüzde kodlama** okunabilir metni okunabilir tutar ve yalnızca bir URL'nin tam anlamıyla taşıyamayacağı şeyi escape eder. Tam bir yeniden kodlamadan çok bir escape şemasıdır.
+
+## Hangisini seçmeli
+
+Seçim kanalı ve hedef kitleyi izler. Bir **kişi** değeri okuyacak, yazacak ya da karşılaştıracaksa, hex'i (baytları incelemek için) ya da Base32'yi (yazmak ya da dikte etmek için) tercih edin. Bir **makine** keyfi baytları bir metin kanalından taşıyacaksa ve boyut önemliyse, Base64'ü kullanın ya da değer bir URL, dosya adı veya token içinde yolculuk ettiğinde Base64URL'yi. **URL'ye metin** koyuyorsanız ve yalnızca birkaç karakter güvensizse, her şeyi yeniden kodlamak yerine onu yüzde kodlayın.
+
+Hızlı bir kural: derli topluluk için Base64, yazmak için Base32, okumak için hex, URL'ler için yüzde kodlama.
+
+## Onları deneyin
+
+[Codec aracı](/tools/base64) dördünü de çalıştırır. Herhangi bir metni yapıştırın, kodlamayı değiştirin ve çıktıyı yan yana karşılaştırın, her biri için kod çözmeyle, tümüyle tarayıcınızda.

@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64, and percent-encoding compared"
+summary: "A side-by-side look at the four text encodings: their alphabets, size overhead, readability, and when to reach for each."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: reviewed
+updated: "2026-06-28"
+---
+
+## Four ways to write bytes as text
+
+Base16 (hex), Base32, Base64, and percent-encoding all solve one problem: representing data using characters a text-only channel will carry safely. They differ along two axes that trade off against each other, **alphabet size** and **size overhead**. A larger alphabet packs more bits per character, so the output is shorter; a smaller or more restrictive alphabet is easier to read or safer in a given context, but the output is longer. The first three are defined together in RFC 4648; percent-encoding comes from RFC 3986 and works differently from the others.
+
+## Size overhead at a glance
+
+For raw binary input, the expansion of the three RFC 4648 encodings is fixed and predictable:
+
+```
+encoding   bits/char   ratio              overhead
+Base16     4           2 chars / byte     +100%
+Base32     5           8 chars / 5 bytes  +60%
+Base64     6           4 chars / 3 bytes  +33%
+```
+
+Base64 is the most compact, Base16 the least. Percent-encoding is the odd one out: it is not a fixed ratio at all. It leaves unreserved characters alone and expands only the rest to three characters each, so its overhead depends entirely on the *content*. For text that is mostly letters and digits it is nearly free; for raw binary, where almost every byte needs escaping, it balloons to roughly +200%, worse than any of the others.
+
+## Alphabet and readability
+
+- **Base16 / hex** uses `0`-`9` and `A`-`F`. One byte is always two characters, so byte boundaries are perfectly clear. It is the easiest to read and compare by eye, which is why hashes, keys, and hex dumps use it.
+- **Base32** uses `A`-`Z` and `2`-`7`, case-insensitive, with the confusable characters `0`, `1`, and `8` removed. It is built for values a human will type, dictate, or store case-insensitively, like TOTP secrets and onion addresses.
+- **Base64** uses `A`-`Z`, `a`-`z`, `0`-`9`, `+`, and `/`, case-sensitive. It is the densest of the three, but `+` and `/` are unsafe in URLs and filenames, which is what the [URL-safe variant](/learn/base64url) fixes.
+- **Percent-encoding** keeps readable text readable and escapes only what a URL cannot carry literally. It is an escape scheme rather than a full re-encoding.
+
+## Which to reach for
+
+The choice follows the channel and the audience. If a **person** must read, type, or compare the value, prefer hex (to inspect bytes) or Base32 (to type or dictate). If a **machine** must move arbitrary bytes through a text channel and size matters, use Base64, or Base64URL when the value rides inside a URL, filename, or token. If you are putting **text into a URL** and only a few characters are unsafe, percent-encode it rather than re-encoding the whole thing.
+
+A quick rule of thumb: Base64 for compactness, Base32 for typing, hex for reading, percent-encoding for URLs.
+
+## Try them
+
+The [codec tool](/tools/base64) runs all four. Paste any text, switch the codec, and compare the output side by side, with decoding for each, entirely in your browser.

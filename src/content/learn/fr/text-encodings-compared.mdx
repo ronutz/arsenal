@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 et codage pour cent comparés"
+summary: "Un regard côte à côte sur les quatre codages de texte : leurs alphabets, leur surcoût de taille, leur lisibilité, et quand recourir à chacun."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Quatre façons d'écrire des octets comme du texte
+
+Base16 (hex), Base32, Base64 et le codage pour cent résolvent tous un problème : représenter des données à l'aide de caractères qu'un canal uniquement textuel transportera sans risque. Ils diffèrent sur deux axes qui se compensent, **la taille de l'alphabet** et **le surcoût de taille**. Un alphabet plus grand empaquette plus de bits par caractère, donc la sortie est plus courte ; un alphabet plus petit ou plus restrictif est plus facile à lire ou plus sûr dans un contexte donné, mais la sortie est plus longue. Les trois premiers sont définis ensemble dans la RFC 4648 ; le codage pour cent vient de la RFC 3986 et fonctionne autrement que les autres.
+
+## Le surcoût de taille en un coup d'œil
+
+Pour une entrée binaire brute, l'expansion des trois codages de la RFC 4648 est fixe et prévisible :
+
+```
+codage         bits/car   ratio              surcoût
+Base16         4          2 car / octet      +100%
+Base32         5          8 car / 5 octets   +60%
+Base64         6          4 car / 3 octets   +33%
+```
+
+Base64 est le plus compact, Base16 le moins. Le codage pour cent est le cas à part : ce n'est pas du tout un ratio fixe. Il laisse tranquilles les caractères non réservés et n'étend que le reste à trois caractères chacun, donc son surcoût dépend entièrement du *contenu*. Pour du texte fait surtout de lettres et de chiffres, c'est presque gratuit ; pour du binaire brut, où presque chaque octet doit être échappé, il grimpe jusqu'à environ +200%, pire que tous les autres.
+
+## Alphabet et lisibilité
+
+- **Base16 / hex** utilise `0`-`9` et `A`-`F`. Un octet fait toujours deux caractères, donc les limites d'octets sont parfaitement claires. C'est le plus facile à lire et à comparer à l'œil, c'est pourquoi les condensats, les clés et les vidages hexadécimaux l'emploient.
+- **Base32** utilise `A`-`Z` et `2`-`7`, insensible à la casse, avec les caractères confondables `0`, `1` et `8` retirés. Il est fait pour les valeurs qu'une personne va saisir, dicter ou stocker sans tenir compte de la casse, comme les secrets TOTP et les adresses onion.
+- **Base64** utilise `A`-`Z`, `a`-`z`, `0`-`9`, `+` et `/`, sensible à la casse. C'est le plus dense des trois, mais `+` et `/` ne sont pas sûrs dans les URL et les noms de fichiers, ce que corrige la [variante sûre pour URL](/learn/base64url).
+- **Le codage pour cent** garde lisible le texte lisible et n'échappe que ce qu'une URL ne peut pas transporter littéralement. C'est un schéma d'échappement plutôt qu'un recodage complet.
+
+## Lequel choisir
+
+Le choix suit le canal et le public. Si une **personne** doit lire, saisir ou comparer la valeur, préférez l'hex (pour inspecter des octets) ou Base32 (pour saisir ou dicter). Si une **machine** doit déplacer des octets arbitraires par un canal de texte et que la taille compte, utilisez Base64, ou Base64URL quand la valeur voyage dans une URL, un nom de fichier ou un jeton. Si vous placez **du texte dans une URL** et que seuls quelques caractères ne sont pas sûrs, codez-le pour cent au lieu de tout recoder.
+
+Une règle rapide : Base64 pour la compacité, Base32 pour la saisie, l'hex pour la lecture, le codage pour cent pour les URL.
+
+## Essayez-les
+
+L'[outil de codec](/tools/base64) exécute les quatre. Collez n'importe quel texte, changez de codage, et comparez la sortie côte à côte, avec décodage pour chacun, entièrement dans votre navigateur.

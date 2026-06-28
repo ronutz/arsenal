@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Codifica esadecimale (Base16), spiegata"
+summary: "Come l'esadecimale rappresenta ogni byte con due caratteri, perché è il modo predefinito di stampare byte grezzi, e come si confronta con Base64 e Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Un byte, due caratteri
+
+L'esadecimale, o **hex**, è base 16: sedici cifre, `0`-`9` e poi `A`-`F`, dove `A` fino a `F` rappresentano i valori da 10 a 15. La RFC 4648 chiama questa codifica **Base16**. La sua proprietà distintiva è semplice e utile: un byte è sempre esattamente **due caratteri esadecimali**. Un byte contiene un valore da 0 a 255, e due cifre esadecimali coprono esattamente quell'intervallo (16 × 16 = 256). I quattro bit alti (il *nibble*) diventano il primo carattere, e i quattro bit bassi il secondo.
+
+Così il byte `0x48` è la lettera `H` in ASCII, e in hex si scrive `48`. La parola `foobar` è sei byte, che in hex sono i dodici caratteri `666F6F626172`. Non c'è riempimento né allineamento di blocchi di cui preoccuparsi: ogni byte corrisponde in modo indipendente alla propria coppia di caratteri.
+
+## Perché l'hex è la scelta predefinita per i byte grezzi
+
+L'hex è la meno densa delle codifiche comuni, poiché raddoppia esattamente la dimensione del suo input, quindi è raramente usata per *trasmettere* dati quando la dimensione conta. Il suo valore sta nella **leggibilità per una persona che ispeziona byte**. Poiché ogni byte è una coppia autonoma, puoi allineare una stringa hex con i dati che rappresenta e leggerla posizione per posizione, che è esattamente ciò che fa un dump esadecimale: i byte a sinistra in hex, i loro caratteri stampabili a destra.
+
+Questa corrispondenza diretta è il motivo per cui l'hex è la notazione universale per cose che sono fondamentalmente valori di byte: un hash SHA-256 stampato come 64 caratteri esadecimali (32 byte), un indirizzo MAC, un colore RGB come `#1A2B3C`, un indirizzo di memoria in un debugger, o i byte di una chiave di cifratura. In ogni caso non stai cercando di risparmiare spazio, stai cercando di leggere o confrontare valori di byte esatti, e l'hex rende tutto questo semplice.
+
+## Maiuscole e validità
+
+L'hex è insensibile alle maiuscole: `ff`, `FF` e `Ff` indicano tutti lo stesso byte, 255. Per convenzione l'output è in maiuscolo, ma i decodificatori accettano entrambi. L'unica regola strutturale è che una stringa hex deve avere un numero **pari** di cifre, perché ogni byte richiede una coppia completa. Una stringa di lunghezza dispari come `ABC` è malformata: resta un nibble spaiato senza partner. E qualsiasi carattere fuori da `0`-`9` e `A`-`F` semplicemente non è hex.
+
+## Come si confronta
+
+Le tre codifiche della RFC 4648 barattano densità per dimensione dell'alfabeto. Base64 è la più compatta, quattro caratteri ogni tre byte, ma usa un alfabeto grande e sensibile alle maiuscole con `+` e `/`. Base32 sta nel mezzo, otto caratteri ogni cinque byte, con un alfabeto più piccolo, insensibile alle maiuscole e senza ambiguità. L'hex è la più grande, due caratteri per byte, ma la più facile da leggere, con i confini di byte più chiari di tutte. Ricorri all'hex quando una persona deve vedere i byte, e a Base64 quando una macchina deve spostarli.
+
+## Provalo
+
+Seleziona **Hex** nello [strumento di codec](/tools/base64) per trasformare testo nei suoi byte esadecimali o decodificare una stringa hex di nuovo in testo, tutto nel tuo browser. Ignora gli spazi, accetta maiuscole o minuscole, e segnala un risultato che è binario anziché testo leggibile.

@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, erklärt"
+summary: "Warum Base32 Größe gegen ein eindeutiges, von Groß- und Kleinschreibung unabhängiges Alphabet eintauscht, wie seine 5-Bit-Gruppierung funktioniert und wo es auftaucht (TOTP-Geheimnisse, Onion-Adressen, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Wofür Base32 da ist
+
+Base32 löst dasselbe Grundproblem wie Base64: Es schreibt beliebige Bytes mit einem kleinen Satz druckbarer Zeichen neu, damit sie Kanäle überstehen, die nur Text akzeptieren. Was es unterscheidet, ist die *Form* seines Alphabets. Base32 verwendet nur die 26 Großbuchstaben `A`-`Z` und die Ziffern `2`-`7`, insgesamt 32 Symbole. Es lässt absichtlich die `0`, die `1` und die `8` weg und ist unabhängig von Groß- und Kleinschreibung. Das macht es schwer falsch zu lesen und sicher zu tippen, am Telefon zu diktieren oder auf ein Etikett zu drucken, ohne `O` mit `0` oder `l` mit `1` zu verwechseln.
+
+Der Preis für diese Robustheit ist die Größe. Wo Base64 Daten im Verhältnis von vier Zeichen pro drei Bytes packt, ist Base32 weniger dicht, sodass seine Ausgabe für dieselbe Eingabe merklich länger ist.
+
+## Wie die 5-Bit-Gruppierung funktioniert
+
+Base64 arbeitet in 6-Bit-Gruppen, weil 2⁶ = 64. Base32 arbeitet in **5-Bit-Gruppen**, weil 2⁵ = 32. Jedes 5-Bit-Stück ist eine Zahl von 0 bis 31, und jeder Wert entspricht einem Zeichen des Alphabets (`A`=0 bis `Z`=25, dann `2`=26 bis `7`=31).
+
+Der unbequeme Teil ist, dass 5 nicht glatt durch 8 teilbar ist. Das 24-Bit-Fenster von Base64 (3 Bytes als 4 Gruppen) passt sauber; das kleinste saubere Fenster von Base32 ist **40 Bit**, also 5 Bytes, codiert als 8 Zeichen. Base32 liest die Eingabe also fünf Bytes auf einmal und gibt acht Zeichen pro Block aus.
+
+## Auffüllen bis zum 8-Zeichen-Block
+
+Da der natürliche Block acht Zeichen umfasst, füllt der Codierer den letzten Block mit `=` auf acht Zeichen auf, wenn die Eingabe nicht an einer 5-Byte-Grenze endet. Nur bestimmte Restgrößen sind gültig: Ein letzter Block der Länge 2, 4, 5 oder 7 vor dem Auffüllen entspricht einer ganzen Zahl von Bytes, während die Längen 1, 3 und 6 das nicht können und eine fehlerhafte Zeichenkette signalisieren. Wie bei Base64 ist das `=` keine Nutzdate; es stellt nur die Blocklänge wieder her, damit der Decodierer die exakten ursprünglichen Bytes zurückgewinnen kann.
+
+Nimm die Eingabe `foobar`. Ihre Base32-Codierung ist `MZXW6YTBOI======`: acht Datenzeichen, gefolgt von sechs Auffüllzeichen, die den zweiten Block vervollständigen. Decodiere sie, und die sechs ursprünglichen Bytes kommen zurück.
+
+## Wo es dir begegnet
+
+Base32 taucht dort auf, wo eine Person den codierten Wert direkt handhabt. Zwei-Faktor-Geheimnisse für **TOTP und HOTP** werden als Base32-Zeichenketten geteilt, deshalb besteht ein Einrichtungsschlüssel einer Authentifizierungs-App ganz aus Großbuchstaben und den Ziffern 2 bis 7. Die **Onion-Adressen** von Tor sind in Base32 codierte öffentliche Schlüssel. Manche DNS-Einträge und Dateisynchronisierungssysteme verwenden es aus demselben Grund: Der Wert könnte vorgelesen, von Hand getippt oder ohne Beachtung der Groß- und Kleinschreibung gespeichert werden, und Base32 verträgt alle drei.
+
+Wenn eine Zeichenkette ganz aus Großbuchstaben `A`-`Z` und `2`-`7` besteht, vielleicht mit `=` am Ende, ist Base32 eine gute Vermutung.
+
+## Probier es aus
+
+Wähle **Base32** im [Codec-Werkzeug](/tools/base64), um Text in Base32 zu codieren oder eine Base32-Zeichenkette zu decodieren, alles in deinem Browser. Es verträgt Eingabe in Kleinbuchstaben und fehlendes Auffüllen und kennzeichnet ein Ergebnis, das binär statt lesbarer Text ist.

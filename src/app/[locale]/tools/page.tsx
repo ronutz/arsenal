@@ -24,7 +24,11 @@ export default async function ToolsPage({
   const t = await getTranslations("tools");
   const tNav = await getTranslations("nav");
 
-  const categories = toolCategories();
+  // Alphabetical (locale-aware) by the resolved category label, so each
+  // language sees its categories in its own A->Z order.
+  const categories = [...toolCategories()].sort((a, b) =>
+    t(`categories.${a}`).localeCompare(t(`categories.${b}`), locale),
+  );
 
   return (
     <>
@@ -45,7 +49,7 @@ export default async function ToolsPage({
 
           {/* Category jump-nav */}
           {categories.length > 1 && (
-            <div className="container certs-container" style={{ marginTop: "2rem" }}>
+            <div className="container certs-container tools-jumpnav" style={{ marginTop: "2rem" }}>
               <nav className="category-nav" aria-label={t("jumpTo")}>
                 <span className="category-nav-label">{t("jumpTo")}</span>
                 <ul className="category-nav-list">
@@ -69,6 +73,9 @@ export default async function ToolsPage({
                 <ul className="tools-grid">
                   {tools
                     .filter((tool) => tool.category === category)
+                    .sort((a, b) =>
+                      t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale),
+                    )
                     .map((tool) =>
                       tool.available ? (
                         <li key={tool.id}>

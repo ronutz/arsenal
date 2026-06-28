@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Codificação por porcentagem (codificação de URL), explicada"
+summary: "Por que as URLs escapam certos caracteres como %XX, quais caracteres é seguro deixar como estão, e em que a codificação por porcentagem difere do Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Para que serve a codificação por porcentagem
+
+Uma URL é uma gramática pequena e estrita. Um punhado de caracteres tem significado estrutural: `/` separa segmentos de caminho, `?` inicia a consulta, `&` separa parâmetros, `#` marca um fragmento, `:` e `@` têm funções na autoridade. Então o que acontece quando um desses caracteres precisa aparecer como *dado* comum, por exemplo um termo de busca que contém literalmente um `&`, ou um segmento de caminho com um espaço? Você não pode colocá-lo cru, porque o analisador de URL o leria como estrutura e quebraria. A **codificação por porcentagem**, definida na RFC 3986 e muitas vezes chamada de codificação de URL, é o mecanismo de escape que resolve isso: reescreve um caractere não seguro como um `%` seguido dos dois dígitos hexadecimais do seu valor de byte.
+
+Um espaço vira `%20`, uma barra vira `%2F`, um e-comercial vira `%26`. O texto `a b/c` é codificado como `a%20b%2Fc`. O decodificador inverte isso: cada `%XX` volta a ser o byte `XX`, e o caractere original retorna.
+
+## O conjunto não reservado: o que permanece igual
+
+A codificação por porcentagem não mexe em tudo. A RFC 3986 define um pequeno conjunto **não reservado** de caracteres que é sempre seguro deixar literalmente em uma URL e que nunca deveriam ser escapados:
+
+- as letras `A`-`Z` e `a`-`z`
+- os dígitos `0`-`9`
+- as quatro marcas `-`, `.`, `_` e `~`
+
+Todo o resto, incluindo os caracteres estruturais reservados e qualquer coisa fora do ASCII, é codificado por porcentagem quando aparece como dado. Os bytes acima de 127 são tratados codificando primeiro o texto como UTF-8 e depois codificando por porcentagem cada byte resultante, por isso uma única letra acentuada ou um emoji vira uma sequência de vários pares `%XX`, um por byte UTF-8.
+
+## Por que %XX são dois dígitos hexadecimais
+
+O `%` é um marcador de escape; os dois caracteres que o seguem são o byte em hexadecimal, exatamente a [codificação hexadecimal](/learn/hex-encoding) de um byte. Esse é todo o motivo de um escape válido ser sempre `%` mais dois dígitos hexadecimais e nada mais. Um `%` seguido de algo que não são dois dígitos hexadecimais, como `%2G`, ou um `%` solto no fim da cadeia, está malformado, e um decodificador cuidadoso o reporta em vez de adivinhar.
+
+## Como difere do Base64
+
+É tentador colocar a codificação por porcentagem no mesmo balaio que o Base64, mas elas respondem a perguntas diferentes. O Base64 pega *binário arbitrário* e o torna todo seguro para um canal de texto, expandindo cada entrada em cerca de um terço. A codificação por porcentagem deixa intacta a *maioria já segura* do texto e escapa apenas os poucos caracteres que causariam problemas. Para texto comum que é em sua maioria letras e dígitos, a codificação por porcentagem é muito mais compacta e continua legível para humanos; para binário bruto, onde quase todos os bytes precisariam ser escapados, ela é extremamente ineficiente e o Base64, ou sua [variante segura para URL](/learn/base64url), é a ferramenta certa.
+
+Em poucas palavras: a codificação por porcentagem é um escape seletivo para texto que vai dentro de uma URL; o Base64 é uma recodificação completa para bytes que vão a qualquer lugar que só aceita texto.
+
+## Experimente
+
+Selecione **Percent** na [ferramenta de códec](/tools/base64) para codificar texto por porcentagem ou decodificar uma cadeia `%XX` de volta, tudo no seu navegador. Ela codifica o conteúdo não ASCII como bytes UTF-8, sinaliza um escape malformado, e informa quando um resultado decodificado é binário em vez de texto legível.

@@ -1321,6 +1321,23 @@ export const TESTIMONIALS: Testimonial[] = [
   }
 ];
 
+// ----------------------------------------------------------------------------
+// FEATURED ORDERING — presentation only; the verbatim dataset above is NOT
+// altered. One Portuguese entry is pinned to 3rd position so visitors see at a
+// glance that non-English endorsements exist. Applied once at module load; the
+// derived counts and filters below are order-independent and so are unaffected.
+// The display order is otherwise the dataset order, identical across locales
+// and across the translate toggle.
+// ----------------------------------------------------------------------------
+{
+  const PINNED_THIRD_ID = "41"; // Andrey Tavares (PT) — instructor endorsement
+  const i = TESTIMONIALS.findIndex((t) => t.id === PINNED_THIRD_ID);
+  if (i > 2) {
+    const [entry] = TESTIMONIALS.splice(i, 1);
+    TESTIMONIALS.splice(2, 0, entry);
+  }
+}
+
 /** Total count of unique, displayable testimonials. */
 export const TESTIMONIAL_COUNT = TESTIMONIALS.length;
 

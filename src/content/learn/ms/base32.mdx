@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, diterangkan"
+summary: "Mengapa Base32 menukar saiz dengan abjad yang tidak samar dan tidak sensitif huruf besar/kecil, bagaimana pengumpulan 5-bitnya berfungsi, dan di mana ia muncul (rahsia TOTP, alamat onion, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Untuk apa Base32
+
+Base32 menyelesaikan masalah asas yang sama seperti Base64: ia menulis semula bait sewenang-wenang menggunakan satu set kecil aksara boleh cetak supaya ia bertahan melalui saluran yang hanya menerima teks. Apa yang membezakannya ialah *bentuk* abjadnya. Base32 hanya menggunakan 26 huruf besar `A`-`Z` dan digit `2`-`7`, 32 simbol kesemuanya. Ia sengaja meninggalkan `0`, `1` dan `8`, dan ia tidak sensitif huruf besar/kecil. Itu menjadikannya sukar dibaca salah dan selamat untuk ditaip, didikte melalui telefon atau dicetak pada label tanpa mengelirukan `O` dengan `0` atau `l` dengan `1`.
+
+Harga keteguhan itu ialah saiz. Di mana Base64 membungkus data pada kadar empat aksara bagi setiap tiga bait, Base32 kurang padat, jadi outputnya jauh lebih panjang untuk input yang sama.
+
+## Bagaimana pengumpulan 5-bit berfungsi
+
+Base64 bekerja dalam kumpulan 6 bit kerana 2⁶ = 64. Base32 bekerja dalam **kumpulan 5 bit** kerana 2⁵ = 32. Setiap cebisan 5-bit ialah nombor dari 0 hingga 31, dan setiap nilai sepadan dengan satu aksara dalam abjad (`A`=0 hingga `Z`=25, kemudian `2`=26 hingga `7`=31).
+
+Bahagian yang menyusahkan ialah 5 tidak membahagi 8 dengan tepat. Tetingkap 24-bit Base64 (3 bait sebagai 4 kumpulan) muat dengan kemas; tetingkap kemas terkecil Base32 ialah **40 bit**, iaitu 5 bait dikodkan sebagai 8 aksara. Jadi Base32 membaca input lima bait pada satu masa dan mengeluarkan lapan aksara setiap blok.
+
+## Pengisian sehingga blok 8 aksara
+
+Oleh kerana blok semula jadi ialah lapan aksara, apabila input tidak berakhir pada sempadan 5 bait, pengekod mengisi blok terakhir dengan `=` sehingga lapan aksara. Hanya saiz baki tertentu yang sah: blok terakhir dengan panjang 2, 4, 5 atau 7 sebelum pengisian sepadan dengan bilangan bait yang penuh, manakala panjang 1, 3 dan 6 tidak boleh dan menandakan rentetan yang cacat. Seperti dalam Base64, `=` bukan data; ia hanya memulihkan panjang blok supaya penyahkod boleh memperoleh semula bait asal yang tepat.
+
+Ambil input `foobar`. Pengekodan Base32nya ialah `MZXW6YTBOI======`: lapan aksara data diikuti enam aksara pengisian yang melengkapkan blok kedua. Nyahkodkannya dan enam bait asal kembali.
+
+## Di mana anda menemuinya
+
+Base32 muncul di mana seseorang mengendalikan nilai yang dikodkan secara langsung. Rahsia dua faktor untuk **TOTP dan HOTP** dikongsi sebagai rentetan Base32, sebab itulah kunci persediaan aplikasi pengesahan terdiri sepenuhnya daripada huruf besar dan digit 2 hingga 7. **Alamat onion** Tor ialah kunci awam yang dikodkan dalam Base32. Sesetengah rekod DNS dan sistem penyegerakan fail menggunakannya atas sebab yang sama: nilai itu mungkin dibaca dengan kuat, ditaip dengan tangan atau disimpan tanpa membezakan huruf besar/kecil, dan Base32 bertolak ansur dengan ketiga-tiganya.
+
+Apabila sesuatu rentetan terdiri sepenuhnya daripada huruf besar `A`-`Z` dan `2`-`7`, mungkin berakhir dengan `=`, Base32 ialah tekaan yang baik.
+
+## Cubalah
+
+Pilih **Base32** dalam [alat codec](/tools/base64) untuk mengekod teks ke Base32 atau menyahkod rentetan Base32, semuanya dalam pelayar anda. Ia bertolak ansur dengan input huruf kecil dan pengisian yang hilang, dan menandakan keputusan yang binari dan bukan teks boleh baca.

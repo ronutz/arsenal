@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Hexadecimal kodning (Base16), förklarad"
+summary: "Hur hexadecimal representerar varje byte med två tecken, varför det är standardsättet att skriva ut rådata-byte, och hur det förhåller sig till Base64 och Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## En byte, två tecken
+
+Hexadecimal, eller **hex**, är bas 16: sexton siffror, `0`-`9` och sedan `A`-`F`, där `A` till `F` representerar värdena 10 till 15. RFC 4648 kallar denna kodning **Base16**. Dess utmärkande egenskap är enkel och användbar: en byte är alltid exakt **två hexadecimala tecken**. En byte innehåller ett värde från 0 till 255, och två hexadecimala siffror täcker exakt det intervallet (16 × 16 = 256). De fyra höga bitarna (*nibbeln*) blir det första tecknet, och de fyra låga bitarna det andra.
+
+Så är byten `0x48` bokstaven `H` i ASCII, och i hex skrivs den `48`. Ordet `foobar` är sex byte, vilket i hex är de tolv tecknen `666F6F626172`. Det finns ingen utfyllnad eller blockjustering att oroa sig för: varje byte motsvarar oberoende sitt eget par tecken.
+
+## Varför hex är standard för rådata-byte
+
+Hex är den minst täta av de vanliga kodningarna, eftersom den fördubblar storleken på sin indata exakt, så den används sällan för att *överföra* data där storleken spelar roll. Dess värde ligger i **läsbarheten för en person som granskar byte**. Eftersom varje byte är ett fristående par kan du rada upp en hex-sträng mot de data den representerar och läsa den position för position, vilket är precis vad en hex-dump gör: byten till vänster i hex, deras skrivbara tecken till höger.
+
+Den direkta avbildningen är skälet till att hex är den universella notationen för saker som i grunden är byte-värden: en SHA-256-hash utskriven som 64 hexadecimala tecken (32 byte), en MAC-adress, en RGB-färg som `#1A2B3C`, en minnesadress i en avlusare, eller byten i en krypteringsnyckel. I varje fall försöker du inte spara plats, du försöker läsa eller jämföra exakta byte-värden, och hex gör det enkelt.
+
+## Skiftläge och giltighet
+
+Hex är skiftlägesokänsligt: `ff`, `FF` och `Ff` betecknar alla samma byte, 255. Enligt konvention är utdata med versaler, men avkodare accepterar båda. Den enda strukturella regeln är att en hex-sträng måste ha ett **jämnt** antal siffror, eftersom varje byte behöver ett komplett par. En sträng av udda längd som `ABC` är felformad: det blir en lös nibbel utan partner över. Och varje tecken utanför `0`-`9` och `A`-`F` är helt enkelt inte hex.
+
+## Hur det förhåller sig
+
+De tre kodningarna i RFC 4648 byter täthet mot alfabetstorlek. Base64 är den mest kompakta, fyra tecken per tre byte, men använder ett stort, skiftlägeskänsligt alfabet med `+` och `/`. Base32 ligger i mitten, åtta tecken per fem byte, med ett mindre, skiftlägesokänsligt och entydigt alfabet. Hex är den största, två tecken per byte, men den mest lättlästa, med de tydligaste byte-gränserna av alla. Du tar till hex när en person behöver se byten, och Base64 när en maskin behöver flytta dem.
+
+## Prova det
+
+Välj **Hex** i [codec-verktyget](/tools/base64) för att förvandla text till dess hexadecimala byte eller avkoda en hex-sträng tillbaka till text, allt i din webbläsare. Det struntar i blanksteg, accepterar stora eller små bokstäver, och markerar ett resultat som är binärt i stället för läsbar text.

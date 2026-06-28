@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Codifica percentuale (codifica URL), spiegata"
+summary: "Perché gli URL effettuano l'escape di certi caratteri come %XX, quali caratteri è sicuro lasciare così come sono, e in cosa la codifica percentuale differisce da Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## A cosa serve la codifica percentuale
+
+Un URL è una piccola grammatica rigida. Una manciata di caratteri ha un significato strutturale: `/` separa i segmenti del percorso, `?` apre la query, `&` separa i parametri, `#` segna un frammento, `:` e `@` hanno ruoli nell'autorità. Cosa succede allora quando uno di quei caratteri deve apparire come *dato* ordinario, per esempio un termine di ricerca che contiene letteralmente un `&`, o un segmento di percorso con uno spazio? Non puoi inserirlo grezzo, perché l'analizzatore di URL lo leggerebbe come struttura e si romperebbe. La **codifica percentuale**, definita nella RFC 3986 e spesso chiamata codifica URL, è il meccanismo di escape che risolve questo: riscrive un carattere non sicuro come un `%` seguito dalle due cifre esadecimali del suo valore di byte.
+
+Uno spazio diventa `%20`, una barra diventa `%2F`, una e commerciale diventa `%26`. Il testo `a b/c` viene codificato come `a%20b%2Fc`. Il decodificatore inverte l'operazione: ogni `%XX` torna a essere il byte `XX`, e il carattere originale ritorna.
+
+## L'insieme non riservato: ciò che resta invariato
+
+La codifica percentuale non tocca tutto. La RFC 3986 definisce un piccolo insieme **non riservato** di caratteri che è sempre sicuro lasciare letteralmente in un URL e che non dovrebbero mai subire l'escape:
+
+- le lettere `A`-`Z` e `a`-`z`
+- le cifre `0`-`9`
+- i quattro segni `-`, `.`, `_` e `~`
+
+Tutto il resto, inclusi i caratteri strutturali riservati e qualsiasi cosa fuori dall'ASCII, viene codificato in percentuale quando appare come dato. I byte oltre 127 sono gestiti codificando prima il testo come UTF-8 e poi codificando in percentuale ogni byte risultante, ecco perché una singola lettera accentata o un emoji diventa una serie di più coppie `%XX`, una per byte UTF-8.
+
+## Perché %XX sono due cifre esadecimali
+
+Il `%` è un marcatore di escape; i due caratteri che lo seguono sono il byte in esadecimale, esattamente la [codifica esadecimale](/learn/hex-encoding) di un byte. È tutto qui il motivo per cui un escape valido è sempre `%` più due cifre esadecimali e nient'altro. Un `%` seguito da qualcosa che non sono due cifre esadecimali, come `%2G`, o un `%` isolato alla fine della stringa, è malformato, e un decodificatore attento lo segnala invece di indovinare.
+
+## In cosa differisce da Base64
+
+È allettante mettere la codifica percentuale nello stesso calderone di Base64, ma rispondono a domande diverse. Base64 prende *binario arbitrario* e lo rende interamente sicuro per un canale di testo, espandendo ogni input di circa un terzo. La codifica percentuale lascia intatta la *maggior parte già sicura* del testo ed effettua l'escape solo dei pochi caratteri che creerebbero problemi. Per testo ordinario fatto perlopiù di lettere e cifre, la codifica percentuale è molto più compatta e resta leggibile da un umano; per binario grezzo, dove quasi ogni byte dovrebbe subire l'escape, è terribilmente inefficiente e Base64, o la sua [variante sicura per URL](/learn/base64url), è lo strumento giusto.
+
+In breve: la codifica percentuale è un escape selettivo per testo che va dentro un URL; Base64 è una ricodifica completa per byte che vanno ovunque accetti solo testo.
+
+## Provalo
+
+Seleziona **Percent** nello [strumento di codec](/tools/base64) per codificare testo in percentuale o decodificare una stringa `%XX`, tutto nel tuo browser. Codifica il contenuto non ASCII come byte UTF-8, segnala un escape malformato, e ti dice quando un risultato decodificato è binario anziché testo leggibile.

@@ -224,34 +224,38 @@
       "copied": "Kopyalandı"
     },
     "base64": {
-      "name": "Base64 / Base64URL Kodlayıcı ve Çözücü",
-      "blurb": "Metni standart ya da URL için güvenli Base64'e kodla veya iki varyanttan birini metne geri çöz. Eksik dolguya toleranslıdır ve ikili (UTF-8 olmayan) sonuçları işaretler. Tamamen tarayıcında çalışır.",
+      "name": "Base64, Base32, Hex ve yüzde codec'i",
+      "blurb": "Metni Base64, URL güvenli Base64, Base32, onaltılık veya yüzde kodlamasına kodlayın ve bunlardan herhangi birini geri çözün. Eksik dolguya ve boşluklara toleranslıdır ve ikili (UTF-8 olmayan) sonuçları işaretler. Tamamen tarayıcınızda çalışır.",
       "directionLabel": "Yön",
-      "variantLabel": "Base64 varyantı",
       "direction": {
-        "encode": "Kodla (metinden Base64'e)",
-        "decode": "Çöz (Base64'ten metne)"
-      },
-      "variant": {
-        "standard": "Standart",
-        "urlsafe": "URL için güvenli"
+        "encode": "Kodla",
+        "decode": "Çöz"
       },
       "inputLabelEncode": "Kodlanacak metin",
-      "inputLabelDecode": "Çözülecek Base64",
+      "inputLabelDecode": "Çözülecek kodlanmış metin",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Kodlama ve çözme yerel olarak çalışır. Yapıştırdığın hiçbir şey tarayıcından çıkmaz.",
       "decodeErrors": {
-        "invalid-characters": "Bu geçerli bir Base64 değil. Base64 alfabesi dışında karakterler içeriyor.",
-        "invalid-length": "Bu geçerli bir Base64 değil. Uzunluğu geçerli bir Base64 uzunluğu değil."
+        "invalid-characters": "Bu girdi, seçili codec'in alfabesi dışında karakterler içeriyor.",
+        "invalid-length": "Bu girdi, seçili codec için geçerli bir uzunlukta değil.",
+        "invalid-escape": "Bu girdide hatalı biçimlendirilmiş bir yüzde kaçışı var (iki onaltılık rakamla takip edilmeyen bir %)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Kodlanmış",
       "outputDecode": "Çözülmüş metin",
       "copy": "Kopyala",
       "copied": "Kopyalandı",
       "emptyOutput": "(boş)",
       "decodedBytes": "{bytes, plural, one {# bayt çözüldü} other {# bayt çözüldü}}.",
-      "notUtf8": "{bytes, plural, one {# bayt çözüldü} other {# bayt çözüldü}}, ancak sonuç geçerli UTF-8 metni değil (büyük olasılıkla ikili)."
+      "notUtf8": "{bytes, plural, one {# bayt çözüldü} other {# bayt çözüldü}}, ancak sonuç geçerli UTF-8 metni değil (büyük olasılıkla ikili).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "OAuth PKCE Doğrulayıcı ve Challenge",

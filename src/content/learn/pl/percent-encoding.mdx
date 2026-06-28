@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Kodowanie procentowe (kodowanie URL), wyjaśnione"
+summary: "Dlaczego adresy URL stosują escape dla pewnych znaków jako %XX, które znaki można bezpiecznie zostawić bez zmian i czym kodowanie procentowe różni się od Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Do czego służy kodowanie procentowe
+
+URL to mała, ścisła gramatyka. Garść znaków ma znaczenie strukturalne: `/` oddziela segmenty ścieżki, `?` rozpoczyna zapytanie, `&` oddziela parametry, `#` oznacza fragment, `:` i `@` pełnią role w autorytecie. Co się więc dzieje, gdy jeden z tych znaków musi pojawić się jako zwykłe *dane*, na przykład wyszukiwany termin zawierający dosłownie `&`, lub segment ścieżki ze spacją? Nie możesz umieścić go surowo, ponieważ parser URL odczytałby go jako strukturę i uległby awarii. **Kodowanie procentowe**, zdefiniowane w RFC 3986 i często nazywane kodowaniem URL, to mechanizm escape, który to rozwiązuje: zapisuje niebezpieczny znak jako `%`, po którym następują dwie cyfry szesnastkowe jego wartości bajtu.
+
+Spacja staje się `%20`, ukośnik staje się `%2F`, ampersand staje się `%26`. Tekst `a b/c` jest kodowany jako `a%20b%2Fc`. Dekoder odwraca to: każde `%XX` znów staje się bajtem `XX`, a pierwotny znak wraca.
+
+## Zbiór niezarezerwowany: to, co pozostaje bez zmian
+
+Kodowanie procentowe nie dotyka wszystkiego. RFC 3986 definiuje mały **niezarezerwowany** zbiór znaków, które zawsze można bezpiecznie zostawić dosłownie w URL i które nigdy nie powinny być poddawane escape:
+
+- litery `A`-`Z` i `a`-`z`
+- cyfry `0`-`9`
+- cztery znaki `-`, `.`, `_` i `~`
+
+Wszystko inne, w tym zarezerwowane znaki strukturalne i wszystko spoza ASCII, jest kodowane procentowo, gdy pojawia się jako dane. Bajty powyżej 127 są obsługiwane przez zakodowanie tekstu najpierw jako UTF-8, a następnie zakodowanie procentowe każdego wynikowego bajtu, dlatego pojedyncza litera z akcentem lub emoji staje się serią kilku par `%XX`, po jednej na bajt UTF-8.
+
+## Dlaczego %XX to dwie cyfry szesnastkowe
+
+`%` to znacznik escape; dwa znaki po nim to bajt w postaci szesnastkowej, dokładnie [kodowanie szesnastkowe](/learn/hex-encoding) bajtu. To cały powód, dla którego prawidłowy escape to zawsze `%` plus dwie cyfry szesnastkowe i nic więcej. `%`, po którym następuje coś innego niż dwie cyfry szesnastkowe, jak `%2G`, lub samotny `%` na końcu ciągu, jest zniekształcony, a staranny dekoder zgłasza to, zamiast zgadywać.
+
+## Czym różni się od Base64
+
+Kuszące jest wrzucanie kodowania procentowego do jednego worka z Base64, ale odpowiadają one na różne pytania. Base64 bierze *dowolne dane binarne* i czyni je w całości bezpiecznymi dla kanału tekstowego, powiększając każde wejście o około jedną trzecią. Kodowanie procentowe pozostawia *już bezpieczną większość* tekstu nietkniętą i stosuje escape tylko do tych kilku znaków, które sprawiałyby kłopoty. Dla zwykłego tekstu złożonego głównie z liter i cyfr kodowanie procentowe jest znacznie bardziej zwarte i pozostaje czytelne dla człowieka; dla surowych danych binarnych, gdzie niemal każdy bajt wymagałby escape, jest okropnie nieefektywne, a Base64, lub jego [wariant bezpieczny dla URL](/learn/base64url), to właściwe narzędzie.
+
+Krótko mówiąc: kodowanie procentowe to selektywny escape dla tekstu wchodzącego do URL; Base64 to pełne przekodowanie dla bajtów trafiających wszędzie tam, gdzie akceptowany jest tylko tekst.
+
+## Wypróbuj
+
+Wybierz **Percent** w [narzędziu codec](/tools/base64), aby zakodować tekst procentowo lub zdekodować ciąg `%XX` z powrotem, wszystko w Twojej przeglądarce. Koduje treść spoza ASCII jako bajty UTF-8, oznacza zniekształcony escape i informuje, kiedy zdekodowany wynik jest binarny zamiast czytelnego tekstu.

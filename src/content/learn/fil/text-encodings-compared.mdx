@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 at percent-encoding, inihambing"
+summary: "Isang magkatabing tingin sa apat na text encoding: ang kanilang mga alpabeto, size overhead, pagiging nababasa, at kung kailan lalapit sa bawat isa."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Apat na paraan ng pagsulat ng byte bilang text
+
+Ang Base16 (hex), Base32, Base64 at percent-encoding ay pawang lumulutas ng iisang problema: ang kumatawan sa data gamit ang mga character na ligtas na dadalhin ng isang text-only na channel. Nagkakaiba sila sa dalawang axis na pinagtitimbang sa isa't isa, ang **laki ng alpabeto** at ang **size overhead**. Ang mas malaking alpabeto ay nagpapako ng mas maraming bit bawat character, kaya mas maikli ang output; ang mas maliit o mas mahigpit na alpabeto ay mas madaling basahin o mas ligtas sa isang partikular na konteksto, ngunit mas mahaba ang output. Ang unang tatlo ay magkasamang tinukoy sa RFC 4648; ang percent-encoding ay nanggaling sa RFC 3986 at gumagana nang iba sa iba pa.
+
+## Ang size overhead sa isang sulyap
+
+Para sa raw na binary input, ang pagpalaki ng tatlong encoding ng RFC 4648 ay fixed at predictable:
+
+```
+encoding       bit/char   ratio              overhead
+Base16         4          2 char / byte      +100%
+Base32         5          8 char / 5 byte    +60%
+Base64         6          4 char / 3 byte    +33%
+```
+
+Ang Base64 ang pinaka-compact, ang Base16 ang pinakahindi. Ang percent-encoding ang eksepsiyon: hindi ito fixed ratio kahit kailan. Iniiwan nito ang unreserved na character at pinalalaki lang ang iba sa tatlong character bawat isa, kaya ang overhead nito ay ganap na nakadepende sa *content*. Para sa text na karamihan ay mga titik at digit ito ay halos libre; para sa raw na binary, kung saan halos bawat byte ay kailangang i-escape, ito ay tumataas hanggang humigit-kumulang +200%, mas masahol kaysa lahat ng iba.
+
+## Alpabeto at pagiging nababasa
+
+- **Base16 / hex** ay gumagamit ng `0`-`9` at `A`-`F`. Ang isang byte ay palaging dalawang character, kaya ganap na malinaw ang mga hangganan ng byte. Ito ang pinakamadaling basahin at ihambing sa mata, kaya ginagamit ito ng mga hash, key at hex dump.
+- **Base32** ay gumagamit ng `A`-`Z` at `2`-`7`, case-insensitive, na may inalis na mga nakalilitong character na `0`, `1` at `8`. Ginawa ito para sa mga halaga na ita-type, ididikta o iimbak ng isang tao nang hindi tinitingnan ang malaki/maliit na titik, tulad ng mga TOTP secret at onion address.
+- **Base64** ay gumagamit ng `A`-`Z`, `a`-`z`, `0`-`9`, `+` at `/`, case-sensitive. Ito ang pinaka-siksik sa tatlo, ngunit ang `+` at `/` ay hindi ligtas sa mga URL at file name, na inaayos ng [URL-safe variant](/learn/base64url).
+- **Ang percent-encoding** ay pinananatiling nababasa ang nababasang text at ineescape lang ang hindi madala nang literal ng isang URL. Ito ay isang escape scheme sa halip na isang buong re-encoding.
+
+## Alin ang dapat piliin
+
+Sumusunod ang pagpili sa channel at sa audience. Kung ang isang **tao** ay kailangang magbasa, mag-type o maghambing ng halaga, piliin ang hex (para suriin ang mga byte) o ang Base32 (para mag-type o magdikta). Kung ang isang **makina** ay kailangang maglipat ng arbitrary na byte sa isang text channel at mahalaga ang laki, gamitin ang Base64, o ang Base64URL kapag ang halaga ay naglalakbay sa loob ng isang URL, file name o token. Kung naglalagay ka ng **text sa isang URL** at ilan lang na character ang hindi ligtas, i-percent-encode ito sa halip na i-re-encode ang lahat.
+
+Isang mabilis na panuntunan: Base64 para sa compactness, Base32 para sa pag-type, hex para sa pagbabasa, percent-encoding para sa mga URL.
+
+## Subukan silang lahat
+
+Pinapatakbo ng [codec tool](/tools/base64) ang lahat ng apat. I-paste ang anumang text, palitan ang encoding, at ihambing ang output nang magkatabi, na may decoding para sa bawat isa, ganap sa iyong browser.

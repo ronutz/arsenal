@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Prozentcodierung (URL-Codierung), erklärt"
+summary: "Warum URLs bestimmte Zeichen als %XX maskieren, welche Zeichen man gefahrlos so lassen kann und worin sich die Prozentcodierung von Base64 unterscheidet."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Wofür die Prozentcodierung da ist
+
+Eine URL ist eine kleine, strenge Grammatik. Eine Handvoll Zeichen hat strukturelle Bedeutung: `/` trennt Pfadsegmente, `?` leitet die Abfrage ein, `&` trennt Parameter, `#` markiert ein Fragment, `:` und `@` haben Rollen in der Autorität. Was passiert also, wenn eines dieser Zeichen als gewöhnliche *Daten* erscheinen muss, etwa ein Suchbegriff, der buchstäblich ein `&` enthält, oder ein Pfadsegment mit einem Leerzeichen? Du kannst es nicht roh einsetzen, denn der URL-Parser würde es als Struktur lesen und scheitern. Die **Prozentcodierung**, definiert in der RFC 3986 und oft URL-Codierung genannt, ist der Maskierungsmechanismus, der das löst: Er schreibt ein unsicheres Zeichen als ein `%` um, gefolgt von den zwei Hexadezimalziffern seines Byte-Werts.
+
+Ein Leerzeichen wird zu `%20`, ein Schrägstrich zu `%2F`, ein kaufmännisches Und zu `%26`. Der Text `a b/c` wird als `a%20b%2Fc` codiert. Der Decodierer kehrt das um: Jedes `%XX` wird wieder zum Byte `XX`, und das ursprüngliche Zeichen kommt zurück.
+
+## Die nicht reservierte Menge: was unverändert bleibt
+
+Die Prozentcodierung fasst nicht alles an. Die RFC 3986 definiert eine kleine **nicht reservierte** Menge von Zeichen, die man immer gefahrlos buchstäblich in einer URL lassen kann und die niemals maskiert werden sollten:
+
+- die Buchstaben `A`-`Z` und `a`-`z`
+- die Ziffern `0`-`9`
+- die vier Zeichen `-`, `.`, `_` und `~`
+
+Alles andere, einschließlich der reservierten Strukturzeichen und allem außerhalb von ASCII, wird prozentcodiert, wenn es als Daten erscheint. Bytes über 127 werden behandelt, indem der Text zuerst als UTF-8 codiert und dann jedes resultierende Byte prozentcodiert wird, deshalb wird ein einzelner Akzentbuchstabe oder ein Emoji zu einer Reihe mehrerer `%XX`-Paare, eines pro UTF-8-Byte.
+
+## Warum %XX zwei Hexadezimalziffern sind
+
+Das `%` ist ein Maskierungszeichen; die zwei Zeichen danach sind das Byte in Hexadezimal, genau die [hexadezimale Codierung](/learn/hex-encoding) eines Bytes. Das ist der ganze Grund, warum eine gültige Maskierung immer `%` plus zwei Hexadezimalziffern ist und nichts weiter. Ein `%`, gefolgt von etwas anderem als zwei Hexadezimalziffern, wie `%2G`, oder ein einzelnes `%` am Ende der Zeichenkette, ist fehlerhaft, und ein sorgfältiger Decodierer meldet das, statt zu raten.
+
+## Worin es sich von Base64 unterscheidet
+
+Es ist verlockend, die Prozentcodierung in denselben Topf wie Base64 zu werfen, aber sie beantworten verschiedene Fragen. Base64 nimmt *beliebiges Binär* und macht es vollständig sicher für einen Textkanal, indem es jede Eingabe um etwa ein Drittel aufbläht. Die Prozentcodierung lässt den *bereits sicheren Großteil* des Textes unangetastet und maskiert nur die wenigen Zeichen, die Probleme machen würden. Für gewöhnlichen Text, der überwiegend aus Buchstaben und Ziffern besteht, ist die Prozentcodierung weit kompakter und bleibt für einen Menschen lesbar; für rohes Binär, wo fast jedes Byte maskiert werden müsste, ist sie schrecklich ineffizient, und Base64, oder seine [URL-sichere Variante](/learn/base64url), ist das richtige Werkzeug.
+
+Kurz gesagt: Die Prozentcodierung ist eine selektive Maskierung für Text, der in eine URL geht; Base64 ist eine vollständige Neucodierung für Bytes, die überallhin gehen, wo nur Text akzeptiert wird.
+
+## Probier es aus
+
+Wähle **Percent** im [Codec-Werkzeug](/tools/base64), um eine Prozentcodierung auf Text anzuwenden oder eine `%XX`-Zeichenkette zurück zu decodieren, alles in deinem Browser. Es codiert Nicht-ASCII-Inhalt als UTF-8-Bytes, kennzeichnet eine fehlerhafte Maskierung und sagt dir, wann ein decodiertes Ergebnis binär statt lesbarer Text ist.

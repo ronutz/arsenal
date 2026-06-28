@@ -224,34 +224,38 @@
       "copied": "Nakopya"
     },
     "base64": {
-      "name": "Base64 / Base64URL Encoder at Decoder",
-      "blurb": "I-encode ang teksto sa standard o URL-safe na Base64, o i-decode ang alinmang variant pabalik sa teksto. Mapagparaya sa nawawalang padding, at minamarkahan nito ang binary (hindi UTF-8) na mga resulta. Tumatakbo nang buo sa iyong browser.",
+      "name": "Base64, Base32, Hex & Percent Codec",
+      "blurb": "I-encode ang teksto sa Base64, URL-safe na Base64, Base32, hexadecimal, o percent-encoding, at i-decode ang alinman sa mga ito pabalik. Pasensya sa kulang na padding at whitespace, at minamarkahan nito ang mga resultang binary (hindi UTF-8). Tumatakbo nang buo sa iyong browser.",
       "directionLabel": "Direksyon",
-      "variantLabel": "Variant ng Base64",
       "direction": {
-        "encode": "I-encode (teksto patungong Base64)",
-        "decode": "I-decode (Base64 patungong teksto)"
-      },
-      "variant": {
-        "standard": "Standard",
-        "urlsafe": "URL-safe"
+        "encode": "I-encode",
+        "decode": "I-decode"
       },
       "inputLabelEncode": "Teksto na ie-encode",
-      "inputLabelDecode": "Base64 na ide-decode",
+      "inputLabelDecode": "Naka-encode na teksto na ide-decode",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Tumatakbo nang lokal ang encoding at decoding. Walang ipinapaste mo na umaalis sa iyong browser.",
       "decodeErrors": {
-        "invalid-characters": "Hindi iyan wastong Base64. Naglalaman ito ng mga karakter na wala sa Base64 alphabet.",
-        "invalid-length": "Hindi iyan wastong Base64. Ang haba nito ay hindi wastong haba ng Base64."
+        "invalid-characters": "Ang input na iyon ay naglalaman ng mga karakter na wala sa alpabeto ng napiling codec.",
+        "invalid-length": "Ang input na iyon ay walang wastong haba para sa napiling codec.",
+        "invalid-escape": "Ang input na iyon ay may maling percent-escape (isang % na hindi sinusundan ng dalawang hex digit)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Naka-encode",
       "outputDecode": "Na-decode na teksto",
       "copy": "Kopyahin",
       "copied": "Nakopya",
       "emptyOutput": "(walang laman)",
       "decodedBytes": "{bytes, plural, one {Na-decode ang # byte.} other {Na-decode ang # byte.}}",
-      "notUtf8": "{bytes, plural, one {Na-decode ang # byte,} other {Na-decode ang # byte,}} ngunit ang resulta ay hindi wastong UTF-8 na teksto (malamang binary)."
+      "notUtf8": "{bytes, plural, one {Na-decode ang # byte,} other {Na-decode ang # byte,}} ngunit ang resulta ay hindi wastong UTF-8 na teksto (malamang binary).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "OAuth PKCE Verifier at Challenge",

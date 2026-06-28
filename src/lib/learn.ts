@@ -41,6 +41,14 @@ export interface ArticleFrontmatter {
   /** Translation/quality status, mirroring the i18n + credential model. */
   status: "reviewed" | "machine-draft" | "stub";
   updated: string;
+  /**
+   * Curated position within its category (1-based, foundational -> advanced).
+   * Drives the Learn index order WITHIN a category, because Learn articles have
+   * prerequisites and read best in sequence (unlike the Tools index, which is
+   * alphabetical). Synced identically across locales, like relatedArticles.
+   * Optional: an article without it sorts after ordered ones, by title.
+   */
+  order?: number;
 }
 
 /** A loaded article: its frontmatter plus the raw MDX body. */
@@ -149,9 +157,14 @@ export interface CategoryGroup {
  */
 export function getArticlesByCategory(locale: string = SOURCE_LOCALE): CategoryGroup[] {
   const articles = getAllArticles(locale);
+  // Within a category, curated progression order wins; title is the tiebreak
+  // for any article that has not been assigned an order yet.
+  const byOrder = (a: Article, b: Article) =>
+    (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER) ||
+    a.title.localeCompare(b.title);
   const known: CategoryGroup[] = LEARN_CATEGORY_ORDER.map((category) => ({
     category,
-    articles: articles.filter((a) => a.category === category),
+    articles: articles.filter((a) => a.category === category).sort(byOrder),
   })).filter((g) => g.articles.length > 0);
 
   // Safety net: surface any unexpected categories rather than hiding them.
@@ -166,6 +179,7 @@ export function getArticlesByCategory(locale: string = SOURCE_LOCALE): CategoryG
     }
     g.articles.push(a);
   }
+  for (const g of orphanGroups) g.articles.sort(byOrder);
 
   return [...known, ...orphanGroups];
 }

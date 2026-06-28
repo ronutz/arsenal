@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Hexadecimal encoding (Base16), ipinaliwanag"
+summary: "Kung paano kinakatawan ng hexadecimal ang bawat byte gamit ang dalawang character, kung bakit ito ang default na paraan ng pag-print ng raw na byte, at kung paano ito kumukumpara sa Base64 at Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Isang byte, dalawang character
+
+Ang hexadecimal, o **hex**, ay base 16: labing-anim na digit, `0`-`9` at saka `A`-`F`, kung saan ang `A` hanggang `F` ay kumakatawan sa mga halagang 10 hanggang 15. Tinatawag ng RFC 4648 ang encoding na ito na **Base16**. Ang nagtatakdang katangian nito ay simple at kapaki-pakinabang: ang isang byte ay palaging eksaktong **dalawang hexadecimal na character**. Ang isang byte ay naglalaman ng halaga mula 0 hanggang 255, at ang dalawang hexadecimal na digit ay eksaktong sumasaklaw sa range na iyon (16 × 16 = 256). Ang apat na mataas na bit (ang *nibble*) ay nagiging unang character, at ang apat na mababang bit ang pangalawa.
+
+Kaya ang byte na `0x48` ay ang titik na `H` sa ASCII, at sa hex ito ay isinusulat na `48`. Ang salitang `foobar` ay anim na byte, na sa hex ay ang labindalawang character na `666F6F626172`. Walang padding o block alignment na dapat ikabahala: ang bawat byte ay tumutugma nang independyente sa sarili nitong pares ng character.
+
+## Bakit ang hex ang default para sa raw na byte
+
+Ang hex ang pinakahindi siksik sa mga karaniwang encoding, dahil eksakto nitong dinodoble ang laki ng input nito, kaya bihira itong gamitin para *magpadala* ng data kung saan mahalaga ang laki. Ang halaga nito ay nasa **pagiging nababasa para sa isang taong sumusuri ng byte**. Dahil ang bawat byte ay isang pares na nakatayo nang mag-isa, maaari mong i-align ang isang hex string sa data na kinakatawan nito at basahin ito nang posisyon-bawat-posisyon, na siyang eksaktong ginagawa ng isang hex dump: ang mga byte sa kaliwa sa hex, ang kanilang mga printable na character sa kanan.
+
+Ang direktang pagmamapa na iyon ang dahilan kung bakit ang hex ang pangkalahatang notasyon para sa mga bagay na sa esensya ay mga halaga ng byte: isang SHA-256 hash na naka-print bilang 64 hexadecimal na character (32 byte), isang MAC address, isang RGB color tulad ng `#1A2B3C`, isang memory address sa isang debugger, o ang mga byte ng isang encryption key. Sa bawat kaso hindi mo sinusubukang magtipid ng espasyo, sinusubukan mong basahin o ihambing ang eksaktong mga halaga ng byte, at pinapadali iyon ng hex.
+
+## Malaki/maliit na titik at validity
+
+Ang hex ay case-insensitive: ang `ff`, `FF` at `Ff` ay pawang nagsasaad ng parehong byte, 255. Ayon sa kombensyon ang output ay nasa malalaking titik, ngunit tinatanggap ng mga decoder ang dalawa. Ang tanging structural na panuntunan ay ang isang hex string ay dapat may **even** na bilang ng digit, dahil ang bawat byte ay nangangailangan ng kumpletong pares. Ang isang string na may odd na haba tulad ng `ABC` ay malformed: may natitirang isang nakaiwang nibble na walang kapares. At ang anumang character sa labas ng `0`-`9` at `A`-`F` ay simpleng hindi hex.
+
+## Paano ito kumukumpara
+
+Ang tatlong encoding ng RFC 4648 ay ipinagpapalit ang density sa laki ng alpabeto. Ang Base64 ang pinaka-compact, apat na character bawat tatlong byte, ngunit gumagamit ng isang malaki at case-sensitive na alpabeto na may `+` at `/`. Ang Base32 ay nasa gitna, walong character bawat limang byte, na may mas maliit, case-insensitive at hindi malabong alpabeto. Ang hex ang pinakamalaki, dalawang character bawat byte, ngunit ang pinaka-nababasa, na may pinakamalinaw na mga hangganan ng byte sa lahat. Lumalapit ka sa hex kapag kailangang makita ng isang tao ang mga byte, at sa Base64 kapag kailangang ilipat ng isang makina ang mga ito.
+
+## Subukan ito
+
+Piliin ang **Hex** sa [codec tool](/tools/base64) para gawing hexadecimal na byte ang text o i-decode ang isang hex string pabalik sa text, lahat sa iyong browser. Hindi nito pinapansin ang whitespace, tinatanggap ang malalaki o maliliit na titik, at minamarkahan ang isang resulta na binary sa halip na nababasang text.

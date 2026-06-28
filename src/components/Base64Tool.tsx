@@ -3,29 +3,29 @@
 // ============================================================================
 // src/components/Base64Tool.tsx
 // ----------------------------------------------------------------------------
-// THE LIVE BASE64 / BASE64URL TOOL.
+// THE LIVE UNIFIED-CODEC TOOL (base64, base64url, base32, base16/hex, percent).
 //
 // PRIVACY/SECURITY: encoding and decoding run ENTIRELY IN THE BROWSER via the
-// local base64 module - no fetch, no API, no server. The single run() computes
-// both directions, so flipping the Encode/Decode or Standard/URL-safe toggle
-// just re-reads the result (no recompute, nothing re-sent). Output is rendered
-// as escaped text through React; copy uses the local Clipboard API only.
+// local codec module - no fetch, no API, no server. The single run() computes
+// every codec in BOTH directions at once, so flipping the Encode/Decode toggle
+// or switching codec just re-reads the one result (no recompute, nothing
+// re-sent). Output is rendered as escaped text through React; copy uses the
+// local Clipboard API only.
 // ============================================================================
 
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, type Base64Result } from "@/lib/tools/base64";
+import { run, CODECS, type Codec, type CodecResult } from "@/lib/tools/base64";
 
 type Direction = "encode" | "decode";
-type Variant = "standard" | "urlsafe";
 
 export default function Base64Tool() {
   const t = useTranslations("tools.base64");
 
   const [direction, setDirection] = useState<Direction>("encode");
-  const [variant, setVariant] = useState<Variant>("standard");
+  const [codec, setCodec] = useState<Codec>("base64");
   const [value, setValue] = useState("");
-  const [result, setResult] = useState<Base64Result | null>(null);
+  const [result, setResult] = useState<CodecResult | null>(null);
   const [copied, setCopied] = useState(false);
 
   // Whitespace is meaningful when ENCODING, so the raw value is passed through;
@@ -37,15 +37,13 @@ export default function Base64Tool() {
   }, []);
 
   // What to display, derived from the one result plus the current toggles.
-  const decodeFailed =
-    direction === "decode" && result !== null && !result.decoded.ok;
+  const decoded = result ? result.decoded[codec] : null;
+  const decodeFailed = direction === "decode" && decoded !== null && !decoded.ok;
   const output: string | null = result
     ? direction === "encode"
-      ? variant === "standard"
-        ? result.encoded.standard
-        : result.encoded.urlSafe
-      : result.decoded.ok
-        ? result.decoded.text
+      ? result.encoded[codec]
+      : decoded && decoded.ok
+        ? decoded.text
         : null
     : null;
 
@@ -62,53 +60,41 @@ export default function Base64Tool() {
 
   return (
     <div className="cidr-tool jwt-tool">
-      {/* Direction + variant controls */}
+      {/* Direction + codec controls */}
       <div className="seg-group">
         <div className="seg" role="group" aria-label={t("directionLabel")}>
-          <button
-            type="button"
-            className={`seg-btn${direction === "encode" ? " seg-btn--active" : ""}`}
-            aria-pressed={direction === "encode"}
-            onClick={() => {
-              setDirection("encode");
-              setCopied(false);
-            }}
-          >
-            {t("direction.encode")}
-          </button>
-          <button
-            type="button"
-            className={`seg-btn${direction === "decode" ? " seg-btn--active" : ""}`}
-            aria-pressed={direction === "decode"}
-            onClick={() => {
-              setDirection("decode");
-              setCopied(false);
-            }}
-          >
-            {t("direction.decode")}
-          </button>
+          {(["encode", "decode"] as Direction[]).map((d) => (
+            <button
+              key={d}
+              type="button"
+              className={`seg-btn${direction === d ? " seg-btn--active" : ""}`}
+              aria-pressed={direction === d}
+              onClick={() => {
+                setDirection(d);
+                setCopied(false);
+              }}
+            >
+              {t(`direction.${d}`)}
+            </button>
+          ))}
         </div>
 
-        {direction === "encode" && (
-          <div className="seg" role="group" aria-label={t("variantLabel")}>
+        <div className="seg seg--codec" role="group" aria-label={t("codecLabel")}>
+          {CODECS.map((c) => (
             <button
+              key={c}
               type="button"
-              className={`seg-btn${variant === "standard" ? " seg-btn--active" : ""}`}
-              aria-pressed={variant === "standard"}
-              onClick={() => setVariant("standard")}
+              className={`seg-btn${codec === c ? " seg-btn--active" : ""}`}
+              aria-pressed={codec === c}
+              onClick={() => {
+                setCodec(c);
+                setCopied(false);
+              }}
             >
-              {t("variant.standard")}
+              {t(`codec.${c}`)}
             </button>
-            <button
-              type="button"
-              className={`seg-btn${variant === "urlsafe" ? " seg-btn--active" : ""}`}
-              aria-pressed={variant === "urlsafe"}
-              onClick={() => setVariant("urlsafe")}
-            >
-              {t("variant.urlsafe")}
-            </button>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
       <div className="cidr-input-row">
@@ -138,9 +124,9 @@ export default function Base64Tool() {
         </p>
       </div>
 
-      {decodeFailed && result !== null && !result.decoded.ok && (
+      {decodeFailed && decoded !== null && !decoded.ok && (
         <p className="cidr-error" role="alert">
-          {t(`decodeErrors.${result.decoded.reason}`)}
+          {t(`decodeErrors.${decoded.reason}`)}
         </p>
       )}
 
@@ -158,15 +144,15 @@ export default function Base64Tool() {
             <pre className="jwt-json">
               <code>{output || t("emptyOutput")}</code>
             </pre>
-            {direction === "decode" && result?.decoded.ok && (
+            {direction === "decode" && decoded && decoded.ok && (
               <p
                 className={
-                  result.decoded.isUtf8 ? "jwt-verify-hint" : "jwt-badge jwt-badge--warn"
+                  decoded.isUtf8 ? "jwt-verify-hint" : "jwt-badge jwt-badge--warn"
                 }
               >
-                {result.decoded.isUtf8
-                  ? t("decodedBytes", { bytes: result.decoded.byteLength })
-                  : t("notUtf8", { bytes: result.decoded.byteLength })}
+                {decoded.isUtf8
+                  ? t("decodedBytes", { bytes: decoded.byteLength })
+                  : t("notUtf8", { bytes: decoded.byteLength })}
               </p>
             )}
           </section>

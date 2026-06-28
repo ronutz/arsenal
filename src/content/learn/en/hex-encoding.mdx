@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Hexadecimal encoding (Base16), explained"
+summary: "How hex represents each byte as two characters, why it is the default way to print raw bytes, and how it compares to Base64 and Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: reviewed
+updated: "2026-06-28"
+---
+
+## One byte, two characters
+
+Hexadecimal, or **hex**, is base-16: sixteen digits, `0`-`9` then `A`-`F`, where `A` through `F` stand for the values 10 through 15. RFC 4648 calls this encoding **Base16**. Its defining property is simple and useful: one byte is always exactly **two hex characters**. A byte holds a value from 0 to 255, and two hex digits cover exactly that range (16 × 16 = 256). The high four bits (the *nibble*) become the first character, the low four bits the second.
+
+So the byte `0x48` is the letter `H` in ASCII, and in hex it is written `48`. The word `foobar` is six bytes, which in hex is the twelve characters `666F6F626172`. There is no padding and no block alignment to worry about: every byte maps independently to its own pair of characters.
+
+## Why hex is the default for raw bytes
+
+Hex is the least dense of the common encodings, exactly doubling the size of its input, so it is rarely used to *transmit* data where size matters. Its value is **readability for a human inspecting bytes**. Because each byte is a self-contained pair, you can line a hex string up against the data it represents and read it position by position, which is exactly what a hex dump does: bytes on the left in hex, their printable characters on the right.
+
+That direct mapping is why hex is the universal notation for things that are fundamentally byte values: a SHA-256 hash printed as 64 hex characters (32 bytes), a MAC address, an RGB color like `#1A2B3C`, a memory address in a debugger, or the bytes of an encryption key. In each case you are not trying to save space, you are trying to read or compare exact byte values, and hex makes that effortless.
+
+## Case and validity
+
+Hex is case-insensitive: `ff`, `FF`, and `Ff` all mean the same byte, 255. Conventionally output is uppercase, but decoders accept either. The one structural rule is that a hex string must have an **even** number of digits, because each byte needs a complete pair. An odd-length string like `ABC` is malformed: there is a dangling nibble with no partner. And any character outside `0`-`9` and `A`-`F` is simply not hex.
+
+## How it compares
+
+The three RFC 4648 encodings trade density for alphabet size. Base64 is the most compact, four characters per three bytes, but uses a large case-sensitive alphabet with `+` and `/`. Base32 is in the middle, eight characters per five bytes, with a smaller case-insensitive, unambiguous alphabet. Hex is the largest, two characters per byte, but the easiest to read, with the clearest byte boundaries of all. You reach for hex when a person needs to see the bytes, and for Base64 when a machine needs to move them.
+
+## Try it
+
+Select **Hex** in the [codec tool](/tools/base64) to turn text into its hexadecimal bytes or decode a hex string back to text, all in your browser. It ignores whitespace, accepts upper or lower case, and flags a result that is binary rather than readable text.

@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, ipinaliwanag"
+summary: "Kung bakit ipinagpapalit ng Base32 ang laki para sa isang hindi malabo at case-insensitive na alpabeto, kung paano gumagana ang 5-bit na paggrupo nito, at kung saan ito lumilitaw (mga TOTP secret, onion address, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Para saan ang Base32
+
+Nilulutas ng Base32 ang parehong pangunahing problema gaya ng Base64: muli nitong isinusulat ang mga arbitrary na byte gamit ang isang maliit na set ng mga printable na character para mabuhay ang mga ito sa mga channel na tumatanggap lamang ng text. Ang nagpapaiba rito ay ang *hugis* ng alpabeto nito. Gumagamit lang ang Base32 ng 26 na malalaking titik na `A`-`Z` at ang mga digit na `2`-`7`, 32 simbolo lahat-lahat. Sinasadya nitong iwanan ang `0`, `1` at `8`, at ito ay case-insensitive. Dahil dito mahirap itong mabasa nang mali at ligtas itong i-type, idikta sa telepono o i-print sa isang label nang hindi pinagkakamalan ang `O` sa `0` o ang `l` sa `1`.
+
+Ang presyo ng katatagang iyon ay ang laki. Kung saan ang Base64 ay nagpapako ng data sa rate na apat na character bawat tatlong byte, ang Base32 ay hindi gaanong siksik, kaya kapansin-pansing mas mahaba ang output nito para sa parehong input.
+
+## Paano gumagana ang 5-bit na paggrupo
+
+Gumagana ang Base64 sa mga grupo ng 6 na bit dahil 2⁶ = 64. Gumagana ang Base32 sa **mga grupo ng 5 bit** dahil 2⁵ = 32. Ang bawat 5-bit na piraso ay isang numero mula 0 hanggang 31, at ang bawat halaga ay tumutugma sa isang character sa alpabeto (`A`=0 hanggang `Z`=25, tapos `2`=26 hanggang `7`=31).
+
+Ang hindi maginhawang bahagi ay hindi eksaktong nahahati ng 5 ang 8. Ang 24-bit na window ng Base64 (3 byte bilang 4 na grupo) ay umaakma nang malinis; ang pinakamaliit na malinis na window ng Base32 ay **40 bit**, na 5 byte na naka-encode bilang 8 character. Kaya binabasa ng Base32 ang input nang limang byte sa bawat pagkakataon at naglalabas ng walong character bawat block.
+
+## Pagpuno hanggang sa block na 8 character
+
+Dahil ang natural na block ay walong character, kapag ang input ay hindi nagtatapos sa isang 5-byte na hangganan, pinupunan ng encoder ang huling block ng `=` hanggang walong character. Tanging ilang natitirang laki ang valid: ang huling block na may haba na 2, 4, 5 o 7 bago ang pagpuno ay tumutugma sa isang buong bilang ng byte, samantalang ang mga haba na 1, 3 at 6 ay hindi kaya at naghuhudyat ng isang malformed na string. Tulad sa Base64, ang `=` ay hindi data; ibinabalik lang nito ang haba ng block para mabawi ng decoder ang eksaktong orihinal na mga byte.
+
+Kunin ang input na `foobar`. Ang Base32 encoding nito ay `MZXW6YTBOI======`: walong data character na sinusundan ng anim na padding character na bumubuo sa pangalawang block. I-decode ito at babalik ang anim na orihinal na byte.
+
+## Saan mo ito makikita
+
+Lumilitaw ang Base32 kung saan direktang pinangangasiwaan ng isang tao ang naka-encode na halaga. Ang mga two-factor secret para sa **TOTP at HOTP** ay ibinabahagi bilang mga Base32 string, kaya ang setup key ng isang authenticator app ay buong-buong malalaking titik at mga digit na 2 hanggang 7. Ang mga **onion address** ng Tor ay mga public key na naka-encode sa Base32. Ginagamit ito ng ilang DNS record at file synchronization system sa parehong dahilan: maaaring basahin nang malakas ang halaga, i-type nang manu-mano o i-store nang hindi tinitingnan ang malaki/maliit na titik, at kinakaya ng Base32 ang lahat ng tatlo.
+
+Kapag ang isang string ay buong-buong malalaking titik na `A`-`Z` at `2`-`7`, marahil nagtatapos sa `=`, ang Base32 ay isang magandang hula.
+
+## Subukan ito
+
+Piliin ang **Base32** sa [codec tool](/tools/base64) para i-encode ang text sa Base32 o i-decode ang isang Base32 string, lahat sa iyong browser. Kinakaya nito ang input na maliliit na titik at nawawalang padding, at minamarkahan ang isang resulta na binary sa halip na nababasang text.

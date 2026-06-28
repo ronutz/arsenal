@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, uitgelegd"
+summary: "Waarom Base32 grootte inruilt voor een ondubbelzinnig, hoofdletterongevoelig alfabet, hoe de groepering per 5 bits werkt, en waar het opduikt (TOTP-geheimen, onion-adressen, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Waar Base32 voor dient
+
+Base32 lost hetzelfde basisprobleem op als Base64: het herschrijft willekeurige bytes met een kleine set afdrukbare tekens zodat ze kanalen overleven die alleen tekst accepteren. Wat het onderscheidt, is de *vorm* van zijn alfabet. Base32 gebruikt alleen de 26 hoofdletters `A`-`Z` en de cijfers `2`-`7`, 32 symbolen in totaal. Het laat bewust de `0`, de `1` en de `8` weg en is ongevoelig voor hoofd- en kleine letters. Dat maakt het moeilijk verkeerd te lezen en veilig om te typen, door te bellen of op een etiket te drukken zonder `O` met `0` of `l` met `1` te verwarren.
+
+De prijs van die robuustheid is de grootte. Waar Base64 gegevens inpakt met vier tekens per drie bytes, is Base32 minder dicht, dus de uitvoer is merkbaar langer voor dezelfde invoer.
+
+## Hoe de groepering per 5 bits werkt
+
+Base64 werkt in groepen van 6 bits omdat 2⁶ = 64. Base32 werkt in **groepen van 5 bits** omdat 2⁵ = 32. Elk stuk van 5 bits is een getal van 0 tot 31, en elke waarde komt overeen met een teken uit het alfabet (`A`=0 tot `Z`=25, dan `2`=26 tot `7`=31).
+
+Het lastige is dat 5 niet netjes in 8 deelt. Het venster van 24 bits van Base64 (3 bytes als 4 groepen) past schoon; het kleinste schone venster van Base32 is **40 bits**, oftewel 5 bytes gecodeerd als 8 tekens. Base32 leest de invoer dus vijf bytes tegelijk en geeft acht tekens per blok uit.
+
+## Opvullen tot het blok van 8 tekens
+
+Omdat het natuurlijke blok acht tekens is, vult de codeerder het laatste blok met `=` aan tot acht tekens wanneer de invoer niet op een grens van 5 bytes eindigt. Slechts bepaalde resterende groottes zijn geldig: een laatste blok van lengte 2, 4, 5 of 7 vóór het opvullen komt overeen met een geheel aantal bytes, terwijl de lengtes 1, 3 en 6 dat niet kunnen en een misvormde tekenreeks signaleren. Net als in Base64 is de `=` geen gegeven; het herstelt alleen de bloklengte zodat de decodeerder de exacte oorspronkelijke bytes kan terughalen.
+
+Neem de invoer `foobar`. De Base32-codering ervan is `MZXW6YTBOI======`: acht gegevenstekens gevolgd door zes opvultekens die het tweede blok aanvullen. Decodeer het en de zes oorspronkelijke bytes komen terug.
+
+## Waar je het tegenkomt
+
+Base32 duikt op waar een persoon de gecodeerde waarde rechtstreeks hanteert. Tweefactorgeheimen voor **TOTP en HOTP** worden gedeeld als Base32-tekenreeksen, daarom bestaat een instelsleutel van een authenticatie-app helemaal uit hoofdletters en de cijfers 2 tot 7. De **onion-adressen** van Tor zijn in Base32 gecodeerde openbare sleutels. Sommige DNS-records en bestandssynchronisatiesystemen gebruiken het om dezelfde reden: de waarde kan worden voorgelezen, met de hand getypt of opgeslagen zonder onderscheid tussen hoofd- en kleine letters, en Base32 verdraagt alle drie.
+
+Wanneer een tekenreeks helemaal uit hoofdletters `A`-`Z` en `2`-`7` bestaat, misschien eindigend op `=`, is Base32 een goede gok.
+
+## Probeer het
+
+Selecteer **Base32** in het [codec-hulpmiddel](/tools/base64) om tekst naar Base32 te coderen of een Base32-tekenreeks te decoderen, allemaal in je browser. Het verdraagt invoer in kleine letters en ontbrekende opvulling, en markeert een resultaat dat binair is in plaats van leesbare tekst.

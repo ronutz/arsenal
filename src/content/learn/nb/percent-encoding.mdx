@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Prosentkoding (URL-koding), forklart"
+summary: "Hvorfor URL-er escaper visse tegn som %XX, hvilke tegn det er trygt å la være som de er, og hvordan prosentkoding skiller seg fra Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Hva prosentkoding er til for
+
+En URL er en liten, streng grammatikk. En håndfull tegn har strukturell betydning: `/` skiller stisegmenter, `?` innleder spørringen, `&` skiller parametere, `#` markerer et fragment, `:` og `@` har roller i autoriteten. Hva skjer da når et av de tegnene må vises som vanlige *data*, for eksempel et søkeord som bokstavelig inneholder et `&`, eller et stisegment med et mellomrom? Du kan ikke plassere det rått, for URL-parseren ville lese det som struktur og bryte sammen. **Prosentkoding**, definert i RFC 3986 og ofte kalt URL-koding, er escape-mekanismen som løser dette: den skriver om et utrygt tegn som et `%` etterfulgt av de to heksadesimale sifrene i byte-verdien.
+
+Et mellomrom blir `%20`, en skråstrek blir `%2F`, et og-tegn blir `%26`. Teksten `a b/c` kodes som `a%20b%2Fc`. Dekoderen reverserer det: hvert `%XX` blir igjen byten `XX`, og det opprinnelige tegnet kommer tilbake.
+
+## Det ikke-reserverte settet: det som forblir uendret
+
+Prosentkoding rører ikke alt. RFC 3986 definerer et lite **ikke-reservert** sett med tegn som det alltid er trygt å la stå bokstavelig i en URL, og som aldri bør escapes:
+
+- bokstavene `A`-`Z` og `a`-`z`
+- sifrene `0`-`9`
+- de fire tegnene `-`, `.`, `_` og `~`
+
+Alt annet, inkludert de reserverte strukturtegnene og alt utenfor ASCII, prosentkodes når det vises som data. Byte over 127 håndteres ved først å kode teksten som UTF-8 og deretter prosentkode hver resulterende byte, derfor blir en enkelt bokstav med aksent eller en emoji til en rekke av flere `%XX`-par, ett per UTF-8-byte.
+
+## Hvorfor %XX er to heksadesimale sifre
+
+`%` er en escape-markør; de to tegnene etter er byten i heksadesimal, nøyaktig [heksadesimal koding](/learn/hex-encoding) av en byte. Det er hele grunnen til at en gyldig escape alltid er `%` pluss to heksadesimale sifre og ikke noe mer. Et `%` etterfulgt av noe annet enn to heksadesimale sifre, som `%2G`, eller et ensomt `%` på slutten av strengen, er feilformet, og en nøye dekoder rapporterer det i stedet for å gjette.
+
+## Hvordan det skiller seg fra Base64
+
+Det er fristende å slå prosentkoding sammen med Base64, men de besvarer forskjellige spørsmål. Base64 tar *vilkårlig binær* og gjør alt trygt for en tekstkanal, ved å blåse opp hver inndata med omtrent en tredjedel. Prosentkoding lar den *allerede trygge størstedelen* av teksten være urørt og escaper bare de få tegnene som ville gi problemer. For vanlig tekst som mest er bokstaver og sifre, er prosentkoding langt mer kompakt og forblir lesbar for et menneske; for rå binær, der nesten hver byte ville måtte escapes, er den fryktelig ineffektiv, og Base64, eller dens [URL-trygge variant](/learn/base64url), er det rette verktøyet.
+
+Kort sagt: prosentkoding er en selektiv escape for tekst som går inn i en URL; Base64 er en fullstendig omkoding for byte som går hvor som helst som bare godtar tekst.
+
+## Prøv det
+
+Velg **Percent** i [codec-verktøyet](/tools/base64) for å prosentkode tekst eller dekode en `%XX`-streng tilbake, alt i nettleseren din. Det koder ikke-ASCII-innhold som UTF-8-byte, markerer en feilformet escape, og forteller deg når et dekodet resultat er binært i stedet for lesbar tekst.

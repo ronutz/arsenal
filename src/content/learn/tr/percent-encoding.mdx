@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Yüzde kodlama (URL kodlama), açıklandı"
+summary: "URL'lerin neden belirli karakterleri %XX olarak escape ettiği, hangi karakterleri olduğu gibi bırakmanın güvenli olduğu ve yüzde kodlamanın Base64'ten nasıl farklılaştığı."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Yüzde kodlama ne işe yarar
+
+Bir URL küçük, katı bir dilbilgisidir. Bir avuç karakterin yapısal anlamı vardır: `/` yol bölümlerini ayırır, `?` sorguyu başlatır, `&` parametreleri ayırır, `#` bir parçayı işaretler, `:` ve `@` yetkide roller üstlenir. Peki bu karakterlerden biri sıradan *veri* olarak görünmesi gerektiğinde ne olur, örneğin tam anlamıyla bir `&` içeren bir arama terimi ya da boşluk içeren bir yol bölümü? Onu ham olarak yerleştiremezsiniz, çünkü URL çözümleyici onu yapı olarak okur ve çöker. RFC 3986'da tanımlanan ve sıklıkla URL kodlama denen **yüzde kodlama**, bunu çözen escape mekanizmasıdır: güvensiz bir karakteri, bayt değerinin iki onaltılık rakamının izlediği bir `%` olarak yeniden yazar.
+
+Bir boşluk `%20` olur, bir bölü işareti `%2F` olur, bir ve işareti `%26` olur. `a b/c` metni `a%20b%2Fc` olarak kodlanır. Kod çözücü bunu tersine çevirir: her `%XX` yeniden `XX` baytı olur ve özgün karakter geri döner.
+
+## Ayrılmamış küme: aynı kalan şey
+
+Yüzde kodlama her şeye dokunmaz. RFC 3986, bir URL'de tam anlamıyla bırakılması her zaman güvenli olan ve asla escape edilmemesi gereken küçük bir **ayrılmamış** karakter kümesi tanımlar:
+
+- `A`-`Z` ve `a`-`z` harfleri
+- `0`-`9` rakamları
+- dört işaret `-`, `.`, `_` ve `~`
+
+Geri kalan her şey, ayrılmış yapısal karakterler ve ASCII dışındaki her şey dahil, veri olarak göründüğünde yüzde kodlanır. 127'nin üzerindeki baytlar, metin önce UTF-8 olarak kodlanıp ardından her sonuç baytı yüzde kodlanarak işlenir, bu yüzden tek bir aksanlı harf ya da bir emoji, her UTF-8 baytı için bir tane olmak üzere birden çok `%XX` çiftinden oluşan bir diziye dönüşür.
+
+## %XX neden iki onaltılık rakamdır
+
+`%` bir escape işaretidir; onu izleyen iki karakter onaltılık biçimdeki bayttır, tam olarak bir baytın [onaltılık kodlaması](/learn/hex-encoding). Geçerli bir escape'in her zaman `%` artı iki onaltılık rakam ve başka bir şey olmamasının bütün nedeni budur. İki onaltılık rakamdan başka bir şeyin izlediği bir `%`, `%2G` gibi, ya da dizgenin sonundaki başıboş bir `%`, bozuktur ve dikkatli bir kod çözücü tahmin etmek yerine bunu bildirir.
+
+## Base64'ten nasıl farklıdır
+
+Yüzde kodlamayı Base64 ile aynı kefeye koymak cazip, ama farklı sorulara yanıt verirler. Base64 *keyfi ikili* alır ve her girdiyi yaklaşık üçte bir oranında şişirerek bir metin kanalı için tümüyle güvenli kılar. Yüzde kodlama metnin *zaten güvenli olan büyük kısmını* dokunulmadan bırakır ve yalnızca sorun çıkaracak az sayıdaki karakteri escape eder. Çoğunlukla harf ve rakamlardan oluşan sıradan metin için yüzde kodlama çok daha derli topludur ve bir insan için okunabilir kalır; ham ikili için, neredeyse her baytın escape edilmesi gerektiği yerde, korkunç derecede verimsizdir ve Base64 ya da [URL'ye güvenli varyantı](/learn/base64url) doğru araçtır.
+
+Kısacası: yüzde kodlama bir URL'ye giren metin için seçici bir escape'tir; Base64 yalnızca metin kabul eden her yere giden baytlar için tam bir yeniden kodlamadır.
+
+## Deneyin
+
+Metni yüzde kodlamak veya bir `%XX` dizgesinin kodunu geri çözmek için [codec aracında](/tools/base64) **Percent**'i seçin, hepsi tarayıcınızda. ASCII olmayan içeriği UTF-8 baytları olarak kodlar, bozuk bir escape'i işaretler ve kodu çözülmüş bir sonucun okunabilir metin yerine ne zaman ikili olduğunu söyler.

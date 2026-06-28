@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Pengekodan heksadesimal (Base16), diterangkan"
+summary: "Bagaimana heksadesimal mewakili setiap bait dengan dua aksara, mengapa ia cara lalai untuk mencetak bait mentah, dan bagaimana ia berbanding dengan Base64 dan Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Satu bait, dua aksara
+
+Heksadesimal, atau **hex**, ialah asas 16: enam belas digit, `0`-`9` dan kemudian `A`-`F`, di mana `A` hingga `F` mewakili nilai 10 hingga 15. RFC 4648 memanggil pengekodan ini **Base16**. Sifat penentunya mudah dan berguna: satu bait sentiasa tepat **dua aksara heksadesimal**. Satu bait mengandungi nilai dari 0 hingga 255, dan dua digit heksadesimal meliputi tepat julat itu (16 × 16 = 256). Empat bit tinggi (*nibble*) menjadi aksara pertama, dan empat bit rendah menjadi yang kedua.
+
+Jadi bait `0x48` ialah huruf `H` dalam ASCII, dan dalam hex ia ditulis `48`. Perkataan `foobar` ialah enam bait, yang dalam hex ialah dua belas aksara `666F6F626172`. Tiada pengisian atau penjajaran blok yang perlu dirisaukan: setiap bait sepadan secara bebas dengan pasangan aksaranya sendiri.
+
+## Mengapa hex ialah lalai untuk bait mentah
+
+Hex ialah yang paling kurang padat antara pengekodan biasa, kerana ia menggandakan saiz inputnya dengan tepat, jadi ia jarang digunakan untuk *menghantar* data apabila saiz penting. Nilainya terletak pada **kebolehbacaan untuk seseorang yang memeriksa bait**. Oleh kerana setiap bait ialah pasangan yang berdiri sendiri, anda boleh menjajarkan rentetan hex dengan data yang diwakilinya dan membacanya kedudukan demi kedudukan, iaitu tepat apa yang dilakukan oleh longgokan heksadesimal: bait di kiri dalam hex, aksara boleh cetaknya di kanan.
+
+Pemetaan langsung itu ialah sebab hex menjadi notasi sejagat untuk perkara yang pada asasnya ialah nilai bait: cincangan SHA-256 yang dicetak sebagai 64 aksara heksadesimal (32 bait), alamat MAC, warna RGB seperti `#1A2B3C`, alamat memori dalam penyahpepijat, atau bait kunci penyulitan. Dalam setiap kes anda tidak cuba menjimatkan ruang, anda cuba membaca atau membandingkan nilai bait yang tepat, dan hex menjadikannya mudah.
+
+## Huruf besar/kecil dan kesahihan
+
+Hex tidak sensitif huruf besar/kecil: `ff`, `FF` dan `Ff` semuanya menandakan bait yang sama, 255. Mengikut konvensyen output dalam huruf besar, tetapi penyahkod menerima kedua-duanya. Satu-satunya peraturan struktur ialah rentetan hex mesti mempunyai bilangan digit **genap**, kerana setiap bait memerlukan pasangan yang lengkap. Rentetan dengan panjang ganjil seperti `ABC` adalah cacat: ada satu nibble terbiar tanpa pasangan. Dan sebarang aksara di luar `0`-`9` dan `A`-`F` semata-mata bukan hex.
+
+## Bagaimana ia berbanding
+
+Tiga pengekodan RFC 4648 menukar kepadatan dengan saiz abjad. Base64 ialah yang paling padat, empat aksara bagi setiap tiga bait, tetapi menggunakan abjad yang besar dan sensitif huruf besar/kecil dengan `+` dan `/`. Base32 berada di tengah, lapan aksara bagi setiap lima bait, dengan abjad yang lebih kecil, tidak sensitif huruf besar/kecil dan tidak samar. Hex ialah yang paling besar, dua aksara bagi setiap bait, tetapi yang paling mudah dibaca, dengan sempadan bait paling jelas antara semua. Anda beralih kepada hex apabila seseorang perlu melihat bait, dan kepada Base64 apabila mesin perlu memindahkannya.
+
+## Cubalah
+
+Pilih **Hex** dalam [alat codec](/tools/base64) untuk menukar teks kepada bait heksadesimalnya atau menyahkod rentetan hex kembali kepada teks, semuanya dalam pelayar anda. Ia mengabaikan ruang putih, menerima huruf besar atau kecil, dan menandakan keputusan yang binari dan bukan teks boleh baca.

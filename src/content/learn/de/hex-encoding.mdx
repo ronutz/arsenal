@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Hexadezimale Codierung (Base16), erklärt"
+summary: "Wie Hexadezimal jedes Byte mit zwei Zeichen darstellt, warum es die Standardart ist, rohe Bytes auszugeben, und wie es sich mit Base64 und Base32 vergleicht."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Ein Byte, zwei Zeichen
+
+Hexadezimal, oder **Hex**, ist Basis 16: sechzehn Ziffern, `0`-`9` und dann `A`-`F`, wobei `A` bis `F` die Werte 10 bis 15 darstellen. Die RFC 4648 nennt diese Codierung **Base16**. Ihre prägende Eigenschaft ist einfach und nützlich: Ein Byte sind immer genau **zwei Hexadezimalzeichen**. Ein Byte enthält einen Wert von 0 bis 255, und zwei Hexadezimalziffern decken genau diesen Bereich ab (16 × 16 = 256). Die vier oberen Bits (das *Nibble*) werden zum ersten Zeichen, die vier unteren Bits zum zweiten.
+
+So ist das Byte `0x48` der Buchstabe `H` in ASCII, und in Hex wird es `48` geschrieben. Das Wort `foobar` sind sechs Bytes, in Hex die zwölf Zeichen `666F6F626172`. Es gibt kein Auffüllen und keine Blockausrichtung, um die man sich kümmern müsste: Jedes Byte entspricht unabhängig seinem eigenen Zeichenpaar.
+
+## Warum Hex der Standard für rohe Bytes ist
+
+Hex ist die am wenigsten dichte der gängigen Codierungen, da sie die Größe ihrer Eingabe exakt verdoppelt, daher wird sie selten zum *Übertragen* von Daten verwendet, wo die Größe zählt. Ihr Wert liegt in der **Lesbarkeit für eine Person, die Bytes inspiziert**. Da jedes Byte ein eigenständiges Paar ist, kannst du eine Hex-Zeichenkette mit den Daten ausrichten, die sie darstellt, und sie Position für Position lesen, genau das tut ein Hex-Dump: die Bytes links in Hex, ihre druckbaren Zeichen rechts.
+
+Diese direkte Zuordnung ist der Grund, warum Hex die universelle Notation für Dinge ist, die im Grunde Byte-Werte sind: ein SHA-256-Hash, gedruckt als 64 Hexadezimalzeichen (32 Bytes), eine MAC-Adresse, eine RGB-Farbe wie `#1A2B3C`, eine Speicheradresse in einem Debugger oder die Bytes eines Verschlüsselungsschlüssels. In jedem Fall versuchst du nicht, Platz zu sparen, sondern exakte Byte-Werte zu lesen oder zu vergleichen, und Hex macht das einfach.
+
+## Groß- und Kleinschreibung und Gültigkeit
+
+Hex ist unabhängig von Groß- und Kleinschreibung: `ff`, `FF` und `Ff` bezeichnen alle dasselbe Byte, 255. Per Konvention ist die Ausgabe in Großbuchstaben, aber Decodierer akzeptieren beides. Die einzige strukturelle Regel ist, dass eine Hex-Zeichenkette eine **gerade** Anzahl von Ziffern haben muss, weil jedes Byte ein vollständiges Paar braucht. Eine Zeichenkette ungerader Länge wie `ABC` ist fehlerhaft: Es bleibt ein einzelnes Nibble ohne Partner übrig. Und jedes Zeichen außerhalb von `0`-`9` und `A`-`F` ist schlicht kein Hex.
+
+## Wie es sich vergleicht
+
+Die drei Codierungen der RFC 4648 tauschen Dichte gegen Alphabetgröße. Base64 ist die kompakteste, vier Zeichen pro drei Bytes, verwendet aber ein großes, von Groß- und Kleinschreibung abhängiges Alphabet mit `+` und `/`. Base32 liegt in der Mitte, acht Zeichen pro fünf Bytes, mit einem kleineren, von der Schreibung unabhängigen und eindeutigen Alphabet. Hex ist die größte, zwei Zeichen pro Byte, aber die am leichtesten lesbare, mit den klarsten Byte-Grenzen von allen. Du greifst zu Hex, wenn eine Person die Bytes sehen muss, und zu Base64, wenn eine Maschine sie bewegen muss.
+
+## Probier es aus
+
+Wähle **Hex** im [Codec-Werkzeug](/tools/base64), um Text in seine Hexadezimal-Bytes zu verwandeln oder eine Hex-Zeichenkette zurück in Text zu decodieren, alles in deinem Browser. Es ignoriert Leerzeichen, akzeptiert Groß- oder Kleinbuchstaben und kennzeichnet ein Ergebnis, das binär statt lesbarer Text ist.

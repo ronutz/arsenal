@@ -128,34 +128,38 @@
       }
     },
     "base64": {
-      "name": "Base64 / Base64URL Encoder & Decoder",
-      "blurb": "Encode text to standard or URL-safe Base64, or decode either variant back to text. Tolerant of missing padding, and it flags binary (non-UTF-8) results. Runs entirely in your browser.",
+      "name": "Base64, Base32, Hex & Percent Codec",
+      "blurb": "Encode text to Base64, URL-safe Base64, Base32, hexadecimal, or percent-encoding, and decode any of them back. Tolerant of missing padding and whitespace, and it flags binary (non-UTF-8) results. Runs entirely in your browser.",
       "directionLabel": "Direction",
-      "variantLabel": "Base64 variant",
       "direction": {
-        "encode": "Encode (text to Base64)",
-        "decode": "Decode (Base64 to text)"
-      },
-      "variant": {
-        "standard": "Standard",
-        "urlsafe": "URL-safe"
+        "encode": "Encode",
+        "decode": "Decode"
       },
       "inputLabelEncode": "Text to encode",
-      "inputLabelDecode": "Base64 to decode",
+      "inputLabelDecode": "Encoded text to decode",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Encoding and decoding run locally. Nothing you paste leaves your browser.",
       "decodeErrors": {
-        "invalid-characters": "That is not valid Base64. It contains characters outside the Base64 alphabet.",
-        "invalid-length": "That is not valid Base64. Its length is not a valid Base64 length."
+        "invalid-characters": "That input contains characters outside the selected codec's alphabet.",
+        "invalid-length": "That input is not a valid length for the selected codec.",
+        "invalid-escape": "That input has a malformed percent-escape (a % not followed by two hex digits)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Encoded",
       "outputDecode": "Decoded text",
       "copy": "Copy",
       "copied": "Copied",
       "emptyOutput": "(empty)",
       "decodedBytes": "Decoded {bytes, plural, one {# byte} other {# bytes}}.",
-      "notUtf8": "Decoded {bytes, plural, one {# byte} other {# bytes}}, but the result is not valid UTF-8 text (likely binary)."
+      "notUtf8": "Decoded {bytes, plural, one {# byte} other {# bytes}}, but the result is not valid UTF-8 text (likely binary).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "hash": {
       "name": "Hash Generator (SHA-1/256/384/512)",

@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Onaltılık kodlama (Base16), açıklandı"
+summary: "Onaltılığın her baytı iki karakterle nasıl temsil ettiği, ham baytları yazdırmanın neden varsayılan yolu olduğu ve Base64 ile Base32'ye kıyasla nasıl durduğu."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Bir bayt, iki karakter
+
+Onaltılık, ya da **hex**, taban 16'dır: on altı rakam, `0`-`9` ve ardından `A`-`F`, burada `A`'dan `F`'ye 10'dan 15'e kadar olan değerleri temsil eder. RFC 4648 bu kodlamayı **Base16** olarak adlandırır. Tanımlayıcı özelliği basit ve kullanışlıdır: bir bayt her zaman tam olarak **iki onaltılık karakterdir**. Bir bayt 0'dan 255'e kadar bir değer içerir ve iki onaltılık rakam tam olarak bu aralığı kapsar (16 × 16 = 256). Dört yüksek bit (*nibble*) ilk karakter olur, dört düşük bit ise ikinci.
+
+Böylece `0x48` baytı ASCII'de `H` harfidir ve hex'te `48` yazılır. `foobar` sözcüğü altı bayttır, hex'te ise on iki karakter `666F6F626172`'dır. Endişelenecek doldurma ya da blok hizalaması yoktur: her bayt bağımsız olarak kendi karakter çiftine karşılık gelir.
+
+## Ham baytlar için hex neden varsayılandır
+
+Hex, yaygın kodlamaların en az yoğun olanıdır, çünkü girdisinin boyutunu tam olarak ikiye katlar, bu yüzden boyutun önemli olduğu durumlarda veri *iletmek* için nadiren kullanılır. Değeri **baytları inceleyen bir kişi için okunabilirliğindedir**. Her bayt kendi başına bir çift olduğundan, bir hex dizgesini temsil ettiği verilerle hizalayabilir ve onu konum konum okuyabilirsiniz, ki bu tam olarak bir hex dökümünün yaptığı şeydir: baytlar solda hex'te, yazdırılabilir karakterleri sağda.
+
+Bu doğrudan eşleme, hex'in temelde bayt değerleri olan şeyler için evrensel gösterim olmasının nedenidir: 64 onaltılık karakter (32 bayt) olarak yazdırılan bir SHA-256 özeti, bir MAC adresi, `#1A2B3C` gibi bir RGB rengi, bir hata ayıklayıcıdaki bir bellek adresi ya da bir şifreleme anahtarının baytları. Her durumda yer kazanmaya çalışmıyorsunuz, tam bayt değerlerini okumaya veya karşılaştırmaya çalışıyorsunuz ve hex bunu basitleştirir.
+
+## Büyük/küçük harf ve geçerlilik
+
+Hex büyük/küçük harfe duyarsızdır: `ff`, `FF` ve `Ff` hepsi aynı baytı, 255'i belirtir. Geleneğe göre çıktı büyük harftir, ama kod çözücüler ikisini de kabul eder. Tek yapısal kural, bir hex dizgesinin **çift** sayıda rakama sahip olması gerektiğidir, çünkü her bayt tam bir çift gerektirir. `ABC` gibi tek uzunluktaki bir dizge bozuktur: eşi olmayan başıboş bir nibble kalır. Ve `0`-`9` ile `A`-`F` dışındaki herhangi bir karakter basitçe hex değildir.
+
+## Nasıl durur
+
+RFC 4648'in üç kodlaması yoğunluğu alfabe boyutuyla takas eder. Base64 en derli toplu olanıdır, üç bayta dört karakter, ama `+` ve `/` ile büyük, büyük/küçük harfe duyarlı bir alfabe kullanır. Base32 ortadadır, beş bayta sekiz karakter, daha küçük, büyük/küçük harfe duyarsız ve belirsizliği olmayan bir alfabeyle. Hex en büyüğüdür, bayt başına iki karakter, ama en okunabilir olanıdır, hepsinin en net bayt sınırlarıyla. Bir kişinin baytları görmesi gerektiğinde hex'e, bir makinenin onları taşıması gerektiğinde Base64'e başvurursunuz.
+
+## Deneyin
+
+Metni onaltılık baytlarına dönüştürmek veya bir hex dizgesini tekrar metne kodçözmek için [codec aracında](/tools/base64) **Hex**'i seçin, hepsi tarayıcınızda. Boşlukları yok sayar, büyük veya küçük harfleri kabul eder ve okunabilir metin yerine ikili olan bir sonucu işaretler.

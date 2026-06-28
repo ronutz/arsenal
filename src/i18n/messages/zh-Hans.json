@@ -224,34 +224,38 @@
       "copied": "已复制"
     },
     "base64": {
-      "name": "Base64 / Base64URL 编码器与解码器",
-      "blurb": "将文本编码为标准或 URL 安全的 Base64，或将任一变体解码回文本。容忍缺失的填充，并标记二进制（非 UTF-8）结果。完全在你的浏览器中运行。",
+      "name": "Base64、Base32、十六进制和百分号编解码器",
+      "blurb": "将文本编码为 Base64、URL 安全 Base64、Base32、十六进制或百分号编码，并将其中任意一种解码回来。容忍缺失的填充和空白，并标记二进制（非 UTF-8）结果。完全在你的浏览器中运行。",
       "directionLabel": "方向",
-      "variantLabel": "Base64 变体",
       "direction": {
-        "encode": "编码（文本到 Base64）",
-        "decode": "解码（Base64 到文本）"
-      },
-      "variant": {
-        "standard": "标准",
-        "urlsafe": "URL 安全"
+        "encode": "编码",
+        "decode": "解码"
       },
       "inputLabelEncode": "要编码的文本",
-      "inputLabelDecode": "要解码的 Base64",
+      "inputLabelDecode": "要解码的已编码文本",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "编码和解码在本地运行。你粘贴的内容不会离开你的浏览器。",
       "decodeErrors": {
-        "invalid-characters": "这不是有效的 Base64。它包含 Base64 字母表之外的字符。",
-        "invalid-length": "这不是有效的 Base64。它的长度不是有效的 Base64 长度。"
+        "invalid-characters": "该输入包含所选编解码器字母表之外的字符。",
+        "invalid-length": "该输入的长度对所选编解码器无效。",
+        "invalid-escape": "该输入有一个格式错误的百分号转义（一个 % 后面没有跟两个十六进制数字）。"
       },
-      "outputEncode": "Base64",
+      "outputEncode": "已编码",
       "outputDecode": "解码后的文本",
       "copy": "复制",
       "copied": "已复制",
       "emptyOutput": "（空）",
       "decodedBytes": "{bytes, plural, other {已解码 # 字节。}}",
-      "notUtf8": "{bytes, plural, other {已解码 # 字节，}}但结果不是有效的 UTF-8 文本（很可能是二进制）。"
+      "notUtf8": "{bytes, plural, other {已解码 # 字节，}}但结果不是有效的 UTF-8 文本（很可能是二进制）。",
+      "codecLabel": "编解码器",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "OAuth PKCE 验证器与 challenge",

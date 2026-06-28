@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 dan pengekodan peratus dibandingkan"
+summary: "Pandangan bersebelahan tentang empat pengekodan teks: abjadnya, lebihan saiz, kebolehbacaan, dan bila hendak beralih kepada setiap satu."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Empat cara menulis bait sebagai teks
+
+Base16 (hex), Base32, Base64 dan pengekodan peratus semuanya menyelesaikan satu masalah: mewakili data menggunakan aksara yang akan diangkut dengan selamat oleh saluran teks sahaja. Ia berbeza pada dua paksi yang saling mengimbangi, **saiz abjad** dan **lebihan saiz**. Abjad yang lebih besar membungkus lebih banyak bit setiap aksara, jadi output lebih pendek; abjad yang lebih kecil atau lebih terhad lebih mudah dibaca atau lebih selamat dalam konteks tertentu, tetapi output lebih panjang. Tiga yang pertama ditakrifkan bersama dalam RFC 4648; pengekodan peratus datang daripada RFC 3986 dan berfungsi berbeza daripada yang lain.
+
+## Lebihan saiz sepintas lalu
+
+Untuk input binari mentah, pengembangan tiga pengekodan RFC 4648 adalah tetap dan boleh diramal:
+
+```
+pengekodan     bit/aksara nisbah             lebihan
+Base16         4          2 aksara / bait    +100%
+Base32         5          8 aksara / 5 bait  +60%
+Base64         6          4 aksara / 3 bait  +33%
+```
+
+Base64 ialah yang paling padat, Base16 yang paling kurang. Pengekodan peratus ialah pengecualian: ia bukan nisbah tetap langsung. Ia membiarkan aksara tidak terpelihara dan hanya mengembang yang lain kepada tiga aksara setiap satu, jadi lebihannya bergantung sepenuhnya pada *kandungan*. Untuk teks yang kebanyakannya huruf dan digit ia hampir percuma; untuk binari mentah, di mana hampir setiap bait perlu di-escape, ia melonjak ke kira-kira +200%, lebih teruk daripada yang lain.
+
+## Abjad dan kebolehbacaan
+
+- **Base16 / hex** menggunakan `0`-`9` dan `A`-`F`. Satu bait sentiasa dua aksara, jadi sempadan bait amat jelas. Ia paling mudah dibaca dan dibandingkan dengan mata, sebab itulah cincangan, kunci dan longgokan heksadesimal menggunakannya.
+- **Base32** menggunakan `A`-`Z` dan `2`-`7`, tidak sensitif huruf besar/kecil, dengan aksara yang mengelirukan `0`, `1` dan `8` dibuang. Ia dibuat untuk nilai yang seseorang akan taip, dikte atau simpan tanpa membezakan huruf besar/kecil, seperti rahsia TOTP dan alamat onion.
+- **Base64** menggunakan `A`-`Z`, `a`-`z`, `0`-`9`, `+` dan `/`, sensitif huruf besar/kecil. Ia paling padat antara tiga, tetapi `+` dan `/` tidak selamat dalam URL dan nama fail, yang dibetulkan oleh [varian selamat URL](/learn/base64url).
+- **Pengekodan peratus** mengekalkan teks boleh baca kekal boleh baca dan hanya meng-escape apa yang URL tidak boleh angkut secara harfiah. Ia ialah skema escape dan bukan pengekodan semula penuh.
+
+## Yang mana hendak dipilih
+
+Pilihan mengikut saluran dan khalayak. Jika **seseorang** mesti membaca, menaip atau membandingkan nilai, utamakan hex (untuk memeriksa bait) atau Base32 (untuk menaip atau dikte). Jika **mesin** mesti memindahkan bait sewenang-wenang melalui saluran teks dan saiz penting, gunakan Base64, atau Base64URL apabila nilai itu mengembara dalam URL, nama fail atau token. Jika anda meletakkan **teks dalam URL** dan hanya beberapa aksara tidak selamat, kodkan peratus ia dan bukannya mengekod semula segala-galanya.
+
+Satu peraturan pantas: Base64 untuk kepadatan, Base32 untuk menaip, hex untuk membaca, pengekodan peratus untuk URL.
+
+## Cuba semuanya
+
+[Alat codec](/tools/base64) menjalankan keempat-empatnya. Tampal sebarang teks, tukar pengekodan, dan bandingkan output bersebelahan, dengan penyahkodan untuk setiap satu, sepenuhnya dalam pelayar anda.

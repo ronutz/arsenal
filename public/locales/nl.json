@@ -224,34 +224,38 @@
       "copied": "Gekopieerd"
     },
     "base64": {
-      "name": "Base64-/Base64URL-encoder en -decoder",
-      "blurb": "Codeer tekst naar standaard- of URL-veilig Base64, of decodeer beide varianten terug naar tekst. Tolerant voor ontbrekende padding en het markeert binaire (niet-UTF-8-)resultaten. Draait volledig in je browser.",
+      "name": "Base64-, Base32-, Hex- en procent-codec",
+      "blurb": "Codeer tekst naar Base64, URL-veilig Base64, Base32, hexadecimaal of procentcodering, en decodeer ze allemaal terug. Tolerant voor ontbrekende opvulling en witruimte, en het markeert binaire (niet-UTF-8) resultaten. Draait volledig in je browser.",
       "directionLabel": "Richting",
-      "variantLabel": "Base64-variant",
       "direction": {
-        "encode": "Coderen (tekst naar Base64)",
-        "decode": "Decoderen (Base64 naar tekst)"
-      },
-      "variant": {
-        "standard": "Standaard",
-        "urlsafe": "URL-veilig"
+        "encode": "Coderen",
+        "decode": "Decoderen"
       },
       "inputLabelEncode": "Te coderen tekst",
-      "inputLabelDecode": "Te decoderen Base64",
+      "inputLabelDecode": "Gecodeerde tekst om te decoderen",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Coderen en decoderen draaien lokaal. Niets van wat je plakt verlaat je browser.",
       "decodeErrors": {
-        "invalid-characters": "Dat is geen geldige Base64. Het bevat tekens buiten het Base64-alfabet.",
-        "invalid-length": "Dat is geen geldige Base64. De lengte is geen geldige Base64-lengte."
+        "invalid-characters": "Deze invoer bevat tekens buiten het alfabet van de geselecteerde codec.",
+        "invalid-length": "Deze invoer heeft geen geldige lengte voor de geselecteerde codec.",
+        "invalid-escape": "Deze invoer heeft een onjuiste procent-escape (een % zonder twee hexadecimale cijfers erachter)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Gecodeerd",
       "outputDecode": "Gedecodeerde tekst",
       "copy": "Kopiëren",
       "copied": "Gekopieerd",
       "emptyOutput": "(leeg)",
       "decodedBytes": "{bytes, plural, one {# byte gedecodeerd} other {# bytes gedecodeerd}}.",
-      "notUtf8": "{bytes, plural, one {# byte gedecodeerd} other {# bytes gedecodeerd}}, maar het resultaat is geen geldige UTF-8-tekst (waarschijnlijk binair)."
+      "notUtf8": "{bytes, plural, one {# byte gedecodeerd} other {# bytes gedecodeerd}}, maar het resultaat is geen geldige UTF-8-tekst (waarschijnlijk binair).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "OAuth-PKCE-verificateur en -challenge",

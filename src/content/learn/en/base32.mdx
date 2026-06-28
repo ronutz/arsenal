@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, explained"
+summary: "Why Base32 trades size for a case-insensitive, unambiguous alphabet, how its 5-bit grouping works, and where it shows up (TOTP secrets, onion addresses, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: reviewed
+updated: "2026-06-28"
+---
+
+## What Base32 is for
+
+Base32 solves the same basic problem as Base64: it rewrites arbitrary bytes using a small set of printable characters so they survive channels that only trust text. What sets it apart is the *shape* of its alphabet. Base32 uses only the 26 uppercase letters `A`-`Z` and the digits `2`-`7`, 32 symbols in all. It deliberately leaves out `0`, `1`, and `8`, and it is case-insensitive. That makes it hard to misread and safe to type, dictate over the phone, or print on a label without confusing `O` for `0` or `l` for `1`.
+
+The cost of that robustness is size. Where Base64 packs data at four characters per three bytes, Base32 is less dense, so its output is noticeably longer for the same input.
+
+## How the 5-bit grouping works
+
+Base64 works in 6-bit groups because 2⁶ = 64. Base32 works in **5-bit groups** because 2⁵ = 32. Each 5-bit chunk is a number from 0 to 31, and each value maps to one character of the alphabet (`A`=0 through `Z`=25, then `2`=26 through `7`=31).
+
+The awkward part is that 5 does not divide evenly into 8. Base64's 24-bit window (3 bytes as 4 groups) lines up cleanly; Base32's smallest clean window is **40 bits**, which is 5 bytes encoded as 8 characters. So Base32 reads input five bytes at a time and emits eight characters per block.
+
+## Padding to the 8-character block
+
+Because the natural block is eight characters, when the input does not end on a 5-byte boundary the encoder pads the final block out to eight characters with `=`. Only certain leftover sizes are valid: a final block of length 2, 4, 5, or 7 before padding corresponds to a whole number of bytes, while lengths 1, 3, and 6 cannot and signal a malformed string. As with Base64, the `=` is not data; it just restores the block length so the decoder can recover the exact original bytes.
+
+Take the input `foobar`. Its Base32 encoding is `MZXW6YTBOI======`: eight characters of data followed by six pad characters that fill out the second block. Decode it and the six original bytes come back.
+
+## Where you meet it
+
+Base32 shows up wherever a human handles the encoded value directly. **TOTP and HOTP** two-factor secrets are shared as Base32 strings, which is why an authenticator-app setup key is all uppercase letters and the digits 2 through 7. Tor **onion addresses** are Base32-encoded public keys. Some DNS records and file-sync systems use it for the same reason: the value might be read aloud, typed by hand, or stored case-insensitively, and Base32 tolerates all three.
+
+When a string is all uppercase `A`-`Z` and `2`-`7`, possibly ending in `=`, Base32 is a good guess.
+
+## Try it
+
+Select **Base32** in the [codec tool](/tools/base64) to encode text to Base32 or decode a Base32 string back, entirely in your browser. It is tolerant of lowercase input and missing padding, and it flags a result that is binary rather than readable text.

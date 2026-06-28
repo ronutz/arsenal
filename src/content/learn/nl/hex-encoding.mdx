@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Hexadecimale codering (Base16), uitgelegd"
+summary: "Hoe hexadecimaal elke byte met twee tekens weergeeft, waarom het de standaardmanier is om ruwe bytes af te drukken, en hoe het zich verhoudt tot Base64 en Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Eén byte, twee tekens
+
+Hexadecimaal, of **hex**, is basis 16: zestien cijfers, `0`-`9` en dan `A`-`F`, waarbij `A` tot `F` de waarden 10 tot 15 voorstellen. RFC 4648 noemt deze codering **Base16**. De bepalende eigenschap is eenvoudig en nuttig: één byte is altijd precies **twee hexadecimale tekens**. Een byte bevat een waarde van 0 tot 255, en twee hexadecimale cijfers dekken precies dat bereik (16 × 16 = 256). De vier hoge bits (de *nibble*) worden het eerste teken, en de vier lage bits het tweede.
+
+Zo is de byte `0x48` de letter `H` in ASCII, en in hex wordt die geschreven als `48`. Het woord `foobar` is zes bytes, in hex de twaalf tekens `666F6F626172`. Er is geen opvulling of blokuitlijning om je zorgen over te maken: elke byte komt onafhankelijk overeen met zijn eigen paar tekens.
+
+## Waarom hex de standaard is voor ruwe bytes
+
+Hex is de minst dichte van de gangbare coderingen, want het verdubbelt de grootte van zijn invoer precies, dus het wordt zelden gebruikt om gegevens te *verzenden* waar de grootte telt. De waarde ervan ligt in de **leesbaarheid voor een persoon die bytes inspecteert**. Omdat elke byte een op zichzelf staand paar is, kun je een hex-tekenreeks uitlijnen met de gegevens die hij voorstelt en hem positie voor positie lezen, precies wat een hex-dump doet: de bytes links in hex, hun afdrukbare tekens rechts.
+
+Die directe toewijzing is de reden waarom hex de universele notatie is voor dingen die in wezen byte-waarden zijn: een SHA-256-hash afgedrukt als 64 hexadecimale tekens (32 bytes), een MAC-adres, een RGB-kleur zoals `#1A2B3C`, een geheugenadres in een debugger, of de bytes van een versleutelingssleutel. In elk geval probeer je geen ruimte te besparen, je probeert exacte byte-waarden te lezen of te vergelijken, en hex maakt dat eenvoudig.
+
+## Hoofdletters en geldigheid
+
+Hex is ongevoelig voor hoofdletters: `ff`, `FF` en `Ff` duiden allemaal dezelfde byte aan, 255. Volgens afspraak is de uitvoer in hoofdletters, maar decodeerders accepteren beide. De enige structurele regel is dat een hex-tekenreeks een **even** aantal cijfers moet hebben, omdat elke byte een volledig paar nodig heeft. Een tekenreeks van oneven lengte zoals `ABC` is misvormd: er blijft een losse nibble zonder partner over. En elk teken buiten `0`-`9` en `A`-`F` is gewoonweg geen hex.
+
+## Hoe het zich verhoudt
+
+De drie coderingen van RFC 4648 ruilen dichtheid in voor alfabetgrootte. Base64 is de compactste, vier tekens per drie bytes, maar gebruikt een groot, hoofdlettergevoelig alfabet met `+` en `/`. Base32 zit ertussenin, acht tekens per vijf bytes, met een kleiner, hoofdletterongevoelig en ondubbelzinnig alfabet. Hex is de grootste, twee tekens per byte, maar het best leesbaar, met de duidelijkste bytegrenzen van allemaal. Je grijpt naar hex wanneer een persoon de bytes moet zien, en naar Base64 wanneer een machine ze moet verplaatsen.
+
+## Probeer het
+
+Selecteer **Hex** in het [codec-hulpmiddel](/tools/base64) om tekst om te zetten in zijn hexadecimale bytes of een hex-tekenreeks terug naar tekst te decoderen, allemaal in je browser. Het negeert witruimte, accepteert hoofd- of kleine letters, en markeert een resultaat dat binair is in plaats van leesbare tekst.

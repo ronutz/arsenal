@@ -224,34 +224,38 @@
       "copied": "Kopiert"
     },
     "base64": {
-      "name": "Base64-/Base64URL-Kodierer und -Dekodierer",
-      "blurb": "Kodieren Sie Text in standardmäßiges oder URL-sicheres Base64 oder dekodieren Sie beide Varianten zurück in Text. Toleriert fehlendes Padding und kennzeichnet binäre (nicht UTF-8-)Ergebnisse. Läuft vollständig in Ihrem Browser.",
+      "name": "Base64-, Base32-, Hex- und Prozent-Codec",
+      "blurb": "Kodieren Sie Text in Base64, URL-sicheres Base64, Base32, Hexadezimal oder Prozentkodierung, und dekodieren Sie jedes davon zurück. Toleriert fehlende Auffüllung und Leerzeichen und kennzeichnet binäre (nicht UTF-8) Ergebnisse. Läuft vollständig in Ihrem Browser.",
       "directionLabel": "Richtung",
-      "variantLabel": "Base64-Variante",
       "direction": {
-        "encode": "Kodieren (Text zu Base64)",
-        "decode": "Dekodieren (Base64 zu Text)"
-      },
-      "variant": {
-        "standard": "Standard",
-        "urlsafe": "URL-sicher"
+        "encode": "Kodieren",
+        "decode": "Dekodieren"
       },
       "inputLabelEncode": "Zu kodierender Text",
-      "inputLabelDecode": "Zu dekodierendes Base64",
+      "inputLabelDecode": "Zu dekodierender kodierter Text",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Kodierung und Dekodierung laufen lokal. Nichts, was Sie einfügen, verlässt Ihren Browser.",
       "decodeErrors": {
-        "invalid-characters": "Das ist kein gültiges Base64. Es enthält Zeichen außerhalb des Base64-Alphabets.",
-        "invalid-length": "Das ist kein gültiges Base64. Seine Länge ist keine gültige Base64-Länge."
+        "invalid-characters": "Diese Eingabe enthält Zeichen außerhalb des Alphabets des ausgewählten Codecs.",
+        "invalid-length": "Diese Eingabe hat keine gültige Länge für den ausgewählten Codec.",
+        "invalid-escape": "Diese Eingabe enthält eine fehlerhafte Prozent-Escape-Sequenz (ein % ohne zwei folgende Hexadezimalziffern)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Kodiert",
       "outputDecode": "Dekodierter Text",
       "copy": "Kopieren",
       "copied": "Kopiert",
       "emptyOutput": "(leer)",
       "decodedBytes": "{bytes, plural, one {# Byte dekodiert} other {# Bytes dekodiert}}.",
-      "notUtf8": "{bytes, plural, one {# Byte dekodiert} other {# Bytes dekodiert}}, aber das Ergebnis ist kein gültiger UTF-8-Text (wahrscheinlich binär)."
+      "notUtf8": "{bytes, plural, one {# Byte dekodiert} other {# Bytes dekodiert}}, aber das Ergebnis ist kein gültiger UTF-8-Text (wahrscheinlich binär).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "OAuth-PKCE-Verifizierer und -Challenge",

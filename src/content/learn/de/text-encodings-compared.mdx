@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 und Prozentcodierung im Vergleich"
+summary: "Ein direkter Vergleich der vier Textcodierungen: ihre Alphabete, ihr Größen-Mehraufwand, ihre Lesbarkeit und wann man zu welcher greift."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Vier Wege, Bytes als Text zu schreiben
+
+Base16 (Hex), Base32, Base64 und die Prozentcodierung lösen alle ein Problem: Daten mit Zeichen darzustellen, die ein reiner Textkanal sicher transportiert. Sie unterscheiden sich auf zwei Achsen, die sich gegeneinander abwägen: **die Alphabetgröße** und **der Größen-Mehraufwand**. Ein größeres Alphabet packt mehr Bits pro Zeichen, also ist die Ausgabe kürzer; ein kleineres oder restriktiveres Alphabet ist leichter zu lesen oder in einem gegebenen Kontext sicherer, aber die Ausgabe ist länger. Die ersten drei sind zusammen in der RFC 4648 definiert; die Prozentcodierung stammt aus der RFC 3986 und funktioniert anders als die übrigen.
+
+## Der Größen-Mehraufwand auf einen Blick
+
+Für rohe Binäreingabe ist die Ausdehnung der drei Codierungen der RFC 4648 fest und vorhersehbar:
+
+```
+Codierung      Bit/Zch    Verhältnis         Mehraufwand
+Base16         4          2 Zch / Byte       +100%
+Base32         5          8 Zch / 5 Byte     +60%
+Base64         6          4 Zch / 3 Byte     +33%
+```
+
+Base64 ist die kompakteste, Base16 die am wenigsten kompakte. Die Prozentcodierung ist die Ausnahme: Sie ist überhaupt kein festes Verhältnis. Sie lässt die nicht reservierten Zeichen in Ruhe und dehnt nur den Rest auf je drei Zeichen aus, also hängt ihr Mehraufwand vollständig vom *Inhalt* ab. Für Text, der überwiegend aus Buchstaben und Ziffern besteht, ist sie fast gratis; für rohes Binär, wo fast jedes Byte maskiert werden muss, schießt sie auf etwa +200% hoch, schlechter als alle anderen.
+
+## Alphabet und Lesbarkeit
+
+- **Base16 / Hex** verwendet `0`-`9` und `A`-`F`. Ein Byte sind immer zwei Zeichen, also sind die Byte-Grenzen vollkommen klar. Sie ist die am leichtesten mit dem Auge lesbare und vergleichbare, deshalb verwenden Hashes, Schlüssel und Hex-Dumps sie.
+- **Base32** verwendet `A`-`Z` und `2`-`7`, unabhängig von der Schreibung, mit den verwechselbaren Zeichen `0`, `1` und `8` entfernt. Sie ist für Werte gemacht, die eine Person tippt, diktiert oder ohne Beachtung der Groß- und Kleinschreibung speichert, wie TOTP-Geheimnisse und Onion-Adressen.
+- **Base64** verwendet `A`-`Z`, `a`-`z`, `0`-`9`, `+` und `/`, abhängig von der Schreibung. Sie ist die dichteste der drei, aber `+` und `/` sind in URLs und Dateinamen nicht sicher, was die [URL-sichere Variante](/learn/base64url) behebt.
+- **Die Prozentcodierung** hält lesbaren Text lesbar und maskiert nur, was eine URL nicht buchstäblich transportieren kann. Sie ist ein Maskierungsschema statt einer vollständigen Neucodierung.
+
+## Welche du wählen solltest
+
+Die Wahl folgt dem Kanal und dem Publikum. Wenn eine **Person** den Wert lesen, tippen oder vergleichen muss, bevorzuge Hex (um Bytes zu inspizieren) oder Base32 (um zu tippen oder zu diktieren). Wenn eine **Maschine** beliebige Bytes durch einen Textkanal bewegen muss und die Größe zählt, verwende Base64, oder Base64URL, wenn der Wert in einer URL, einem Dateinamen oder einem Token reist. Wenn du **Text in eine URL** setzt und nur wenige Zeichen unsicher sind, codiere ihn prozentual, statt alles neu zu codieren.
+
+Eine schnelle Regel: Base64 für Kompaktheit, Base32 zum Tippen, Hex zum Lesen, die Prozentcodierung für URLs.
+
+## Probier sie aus
+
+Das [Codec-Werkzeug](/tools/base64) führt alle vier aus. Füge beliebigen Text ein, wechsle die Codierung und vergleiche die Ausgabe nebeneinander, mit Decodierung für jede, vollständig in deinem Browser.

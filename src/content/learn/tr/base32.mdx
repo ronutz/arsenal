@@ -1,0 +1,40 @@
+---
+slug: base32
+title: "Base32, açıklandı"
+summary: "Base32'nin boyutu neden belirsizliği olmayan, büyük/küçük harfe duyarsız bir alfabeyle takas ettiği, 5 bitlik gruplamasının nasıl çalıştığı ve nerede ortaya çıktığı (TOTP gizleri, onion adresleri, DNS)."
+concepts: ["base32", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "hex-encoding", "text-encodings-compared", "character-encoding", "base64url"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Base32 ne işe yarar
+
+Base32, Base64 ile aynı temel sorunu çözer: yalnızca metin kabul eden kanalları atlatabilmeleri için keyfi baytları küçük bir yazdırılabilir karakter kümesiyle yeniden yazar. Onu ayıran şey alfabesinin *biçimidir*. Base32 yalnızca 26 büyük harf `A`-`Z` ve `2`-`7` rakamlarını, toplam 32 sembol kullanır. `0`, `1` ve `8`'i bilerek dışarıda bırakır ve büyük/küçük harfe duyarsızdır. Bu, `O`'yu `0` ile veya `l`'yi `1` ile karıştırmadan yanlış okunmasını zorlaştırır ve yazmayı, telefonda dikte etmeyi ya da bir etikete basmayı güvenli kılar.
+
+Bu sağlamlığın bedeli boyuttur. Base64 verileri üç bayta dört karakter oranında paketlerken, Base32 daha az yoğundur, dolayısıyla aynı girdi için çıktısı belirgin biçimde daha uzundur.
+
+## 5 bitlik gruplama nasıl çalışır
+
+Base64, 2⁶ = 64 olduğu için 6 bitlik gruplarla çalışır. Base32, 2⁵ = 32 olduğu için **5 bitlik gruplarla** çalışır. Her 5 bitlik parça 0 ile 31 arası bir sayıdır ve her değer alfabeden bir karaktere karşılık gelir (`A`=0'dan `Z`=25'e, ardından `2`=26'dan `7`=31'e).
+
+Rahatsız edici kısım, 5'in 8'i tam bölmemesidir. Base64'ün 24 bitlik penceresi (4 grup olarak 3 bayt) düzgün oturur; Base32'nin en küçük düzgün penceresi **40 bittir**, yani 8 karakter olarak kodlanan 5 bayt. Bu yüzden Base32 girdiyi beşer bayt okur ve blok başına sekiz karakter verir.
+
+## 8 karakterlik bloğa kadar doldurma
+
+Doğal blok sekiz karakter olduğundan, girdi 5 baytlık bir sınırda bitmediğinde kodlayıcı son bloğu `=` ile sekiz karaktere tamamlar. Yalnızca belirli artık boyutlar geçerlidir: doldurmadan önce 2, 4, 5 veya 7 uzunluğundaki son blok tam sayıda bayta karşılık gelir, oysa 1, 3 ve 6 uzunlukları karşılık gelemez ve bozuk bir dizgeye işaret eder. Base64'te olduğu gibi `=` veri değildir; yalnızca blok uzunluğunu geri yükler ki kod çözücü tam olarak özgün baytları geri kazanabilsin.
+
+`foobar` girdisini alın. Base32 kodlaması `MZXW6YTBOI======`'dır: ikinci bloğu tamamlayan altı doldurma karakteriyle takip edilen sekiz veri karakteri. Kodunu çözün, altı özgün bayt geri gelir.
+
+## Onunla nerede karşılaşırsınız
+
+Base32, bir kişinin kodlanmış değeri doğrudan kullandığı yerlerde ortaya çıkar. **TOTP ve HOTP** için iki faktörlü gizler Base32 dizgeleri olarak paylaşılır, bu yüzden bir kimlik doğrulama uygulamasının kurulum anahtarı tümüyle büyük harflerden ve 2 ile 7 arası rakamlardan oluşur. Tor'un **onion adresleri** Base32'de kodlanmış açık anahtarlardır. Bazı DNS kayıtları ve dosya eşitleme sistemleri aynı nedenle onu kullanır: değer yüksek sesle okunabilir, elle yazılabilir veya büyük/küçük harf ayrımı olmadan saklanabilir ve Base32 üçüne de dayanır.
+
+Bir dizge tümüyle büyük harf `A`-`Z` ve `2`-`7`'den oluştuğunda, belki `=` ile bittiğinde, Base32 iyi bir tahmindir.
+
+## Deneyin
+
+Metni Base32'ye kodlamak veya bir Base32 dizgesinin kodunu çözmek için [codec aracında](/tools/base64) **Base32**'yi seçin, hepsi tarayıcınızda. Küçük harf girdisine ve eksik doldurmaya tahammül eder ve okunabilir metin yerine ikili olan bir sonucu işaretler.

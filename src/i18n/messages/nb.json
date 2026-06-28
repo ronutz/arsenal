@@ -224,34 +224,38 @@
       "copied": "Kopiert"
     },
     "base64": {
-      "name": "Base64-/Base64URL-koder og -dekoder",
-      "blurb": "Kod tekst til standard eller URL-sikker Base64, eller dekod begge variantene tilbake til tekst. Tolererer manglende utfylling og flagger binære (ikke-UTF-8-)resultater. Kjører helt i nettleseren din.",
+      "name": "Base64-, Base32-, Hex- og prosent-codec",
+      "blurb": "Kod tekst til Base64, URL-sikker Base64, Base32, heksadesimal eller prosentkoding, og dekod hvilken som helst av dem tilbake. Tolererer manglende utfylling og mellomrom, og merker binære (ikke-UTF-8) resultater. Kjører helt i nettleseren din.",
       "directionLabel": "Retning",
-      "variantLabel": "Base64-variant",
       "direction": {
-        "encode": "Kod (tekst til Base64)",
-        "decode": "Dekod (Base64 til tekst)"
-      },
-      "variant": {
-        "standard": "Standard",
-        "urlsafe": "URL-sikker"
+        "encode": "Kod",
+        "decode": "Dekod"
       },
       "inputLabelEncode": "Tekst som skal kodes",
-      "inputLabelDecode": "Base64 som skal dekodes",
+      "inputLabelDecode": "Kodet tekst som skal dekodes",
       "placeholderEncode": "Hello, World!",
       "placeholderDecode": "SGVsbG8sIFdvcmxkIQ==",
       "runsLocally": "Koding og dekoding kjører lokalt. Ingenting av det du limer inn, forlater nettleseren din.",
       "decodeErrors": {
-        "invalid-characters": "Det er ikke gyldig Base64. Den inneholder tegn utenfor Base64-alfabetet.",
-        "invalid-length": "Det er ikke gyldig Base64. Lengden er ikke en gyldig Base64-lengde."
+        "invalid-characters": "Denne inndataen inneholder tegn utenfor alfabetet til den valgte codecen.",
+        "invalid-length": "Denne inndataen har ikke en gyldig lengde for den valgte codecen.",
+        "invalid-escape": "Denne inndataen har en feilformet prosent-escape (en % som ikke følges av to heksadesimale sifre)."
       },
-      "outputEncode": "Base64",
+      "outputEncode": "Kodet",
       "outputDecode": "Dekodet tekst",
       "copy": "Kopier",
       "copied": "Kopiert",
       "emptyOutput": "(tom)",
       "decodedBytes": "{bytes, plural, one {# byte dekodet} other {# byte dekodet}}.",
-      "notUtf8": "{bytes, plural, one {# byte dekodet} other {# byte dekodet}}, men resultatet er ikke gyldig UTF-8-tekst (sannsynligvis binært)."
+      "notUtf8": "{bytes, plural, one {# byte dekodet} other {# byte dekodet}}, men resultatet er ikke gyldig UTF-8-tekst (sannsynligvis binært).",
+      "codecLabel": "Codec",
+      "codec": {
+        "base64": "Base64",
+        "base64url": "Base64URL",
+        "base32": "Base32",
+        "base16": "Hex",
+        "percent": "Percent"
+      }
     },
     "pkce": {
       "name": "OAuth-PKCE-verifikator og -challenge",

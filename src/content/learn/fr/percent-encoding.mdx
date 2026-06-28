@@ -1,0 +1,42 @@
+---
+slug: percent-encoding
+title: "Codage pour cent (codage d'URL), expliqué"
+summary: "Pourquoi les URL échappent certains caractères en %XX, quels caractères on peut laisser tels quels sans risque, et en quoi le codage pour cent diffère de Base64."
+concepts: ["percent-encoding", "url-encoding", "encoding", "rfc3986"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base64url", "text-encodings-compared", "character-encoding", "hex-encoding"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## À quoi sert le codage pour cent
+
+Une URL est une petite grammaire stricte. Une poignée de caractères ont un sens structurel : `/` sépare les segments de chemin, `?` ouvre la requête, `&` sépare les paramètres, `#` marque un fragment, `:` et `@` ont des rôles dans l'autorité. Que se passe-t-il alors lorsqu'un de ces caractères doit apparaître comme *donnée* ordinaire, par exemple un terme de recherche qui contient littéralement un `&`, ou un segment de chemin avec une espace ? Vous ne pouvez pas le placer tel quel, car l'analyseur d'URL le lirait comme de la structure et planterait. Le **codage pour cent**, défini dans la RFC 3986 et souvent appelé codage d'URL, est le mécanisme d'échappement qui résout cela : il réécrit un caractère non sûr sous la forme d'un `%` suivi des deux chiffres hexadécimaux de sa valeur d'octet.
+
+Une espace devient `%20`, une barre oblique devient `%2F`, une esperluette devient `%26`. Le texte `a b/c` se code en `a%20b%2Fc`. Le décodeur inverse l'opération : chaque `%XX` redevient l'octet `XX`, et le caractère d'origine revient.
+
+## L'ensemble non réservé : ce qui reste tel quel
+
+Le codage pour cent ne touche pas à tout. La RFC 3986 définit un petit ensemble **non réservé** de caractères qu'il est toujours sûr de laisser littéralement dans une URL et qui ne devraient jamais être échappés :
+
+- les lettres `A`-`Z` et `a`-`z`
+- les chiffres `0`-`9`
+- les quatre marques `-`, `.`, `_` et `~`
+
+Tout le reste, y compris les caractères structurels réservés et tout ce qui sort de l'ASCII, est codé pour cent lorsqu'il apparaît comme donnée. Les octets au-delà de 127 sont traités en codant d'abord le texte en UTF-8 puis en codant pour cent chaque octet résultant, c'est pourquoi une seule lettre accentuée ou un emoji devient une série de plusieurs paires `%XX`, une par octet UTF-8.
+
+## Pourquoi %XX, deux chiffres hexadécimaux
+
+Le `%` est un marqueur d'échappement ; les deux caractères qui le suivent sont l'octet en hexadécimal, exactement le [codage hexadécimal](/learn/hex-encoding) d'un octet. C'est toute la raison pour laquelle un échappement valide est toujours `%` plus deux chiffres hexadécimaux et rien d'autre. Un `%` suivi d'autre chose que deux chiffres hexadécimaux, comme `%2G`, ou un `%` seul à la fin de la chaîne, est malformé, et un décodeur soigneux le signale au lieu de deviner.
+
+## En quoi il diffère de Base64
+
+Il est tentant de ranger le codage pour cent dans le même panier que Base64, mais ils répondent à des questions différentes. Base64 prend du *binaire arbitraire* et le rend entièrement sûr pour un canal de texte, en gonflant chaque entrée d'environ un tiers. Le codage pour cent laisse intacte la *majeure partie déjà sûre* du texte et n'échappe que les quelques caractères qui poseraient problème. Pour du texte ordinaire fait surtout de lettres et de chiffres, le codage pour cent est bien plus compact et reste lisible par un humain ; pour du binaire brut, où presque chaque octet devrait être échappé, il est terriblement inefficace, et Base64, ou sa [variante sûre pour URL](/learn/base64url), est le bon outil.
+
+En bref : le codage pour cent est un échappement sélectif pour du texte qui va dans une URL ; Base64 est un recodage complet pour des octets qui vont partout où seul le texte est accepté.
+
+## Essayez
+
+Sélectionnez **Percent** dans l'[outil de codec](/tools/base64) pour coder du texte en pour cent ou décoder une chaîne `%XX`, le tout dans votre navigateur. Il code le contenu non ASCII en octets UTF-8, signale un échappement malformé, et vous indique quand un résultat décodé est binaire plutôt que du texte lisible.

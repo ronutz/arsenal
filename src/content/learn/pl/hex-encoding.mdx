@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Kodowanie szesnastkowe (Base16), wyjaśnione"
+summary: "Jak szesnastkowy reprezentuje każdy bajt dwoma znakami, dlaczego jest domyślnym sposobem drukowania surowych bajtów i jak wypada w porównaniu z Base64 i Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Jeden bajt, dwa znaki
+
+Szesnastkowy, czyli **hex**, to podstawa 16: szesnaście cyfr, `0`-`9`, a następnie `A`-`F`, gdzie `A` do `F` reprezentują wartości od 10 do 15. RFC 4648 nazywa to kodowanie **Base16**. Jego cecha definiująca jest prosta i przydatna: bajt to zawsze dokładnie **dwa znaki szesnastkowe**. Bajt zawiera wartość od 0 do 255, a dwie cyfry szesnastkowe pokrywają dokładnie ten zakres (16 × 16 = 256). Cztery starsze bity (*półbajt*) stają się pierwszym znakiem, a cztery młodsze bity drugim.
+
+Tak więc bajt `0x48` to litera `H` w ASCII, a w hex zapisuje się go `48`. Słowo `foobar` to sześć bajtów, czyli w hex dwanaście znaków `666F6F626172`. Nie ma wypełnienia ani wyrównania bloków, którymi trzeba by się martwić: każdy bajt odpowiada niezależnie własnej parze znaków.
+
+## Dlaczego hex jest domyślny dla surowych bajtów
+
+Hex jest najmniej gęstym z popularnych kodowań, ponieważ dokładnie podwaja rozmiar swojego wejścia, więc rzadko używa się go do *przesyłania* danych, gdy rozmiar ma znaczenie. Jego wartość leży w **czytelności dla osoby badającej bajty**. Ponieważ każdy bajt jest samodzielną parą, możesz wyrównać ciąg hex z danymi, które reprezentuje, i czytać go pozycja po pozycji, dokładnie tak, jak robi to zrzut szesnastkowy: bajty po lewej w hex, ich drukowalne znaki po prawej.
+
+To bezpośrednie odwzorowanie jest powodem, dla którego hex jest uniwersalną notacją dla rzeczy, które są zasadniczo wartościami bajtów: skrót SHA-256 wydrukowany jako 64 znaki szesnastkowe (32 bajty), adres MAC, kolor RGB jak `#1A2B3C`, adres pamięci w debugerze lub bajty klucza szyfrującego. W każdym przypadku nie próbujesz oszczędzić miejsca, próbujesz odczytać lub porównać dokładne wartości bajtów, a hex to ułatwia.
+
+## Wielkość liter i poprawność
+
+Hex jest niewrażliwy na wielkość liter: `ff`, `FF` i `Ff` oznaczają ten sam bajt, 255. Zgodnie z konwencją wyjście jest wielkimi literami, ale dekodery akceptują obie. Jedyna reguła strukturalna jest taka, że ciąg hex musi mieć **parzystą** liczbę cyfr, ponieważ każdy bajt potrzebuje pełnej pary. Ciąg o nieparzystej długości jak `ABC` jest zniekształcony: zostaje luźny półbajt bez partnera. A każdy znak spoza `0`-`9` i `A`-`F` po prostu nie jest hex.
+
+## Jak wypada w porównaniu
+
+Trzy kodowania z RFC 4648 wymieniają gęstość na rozmiar alfabetu. Base64 jest najbardziej zwarty, cztery znaki na trzy bajty, ale używa dużego, wrażliwego na wielkość liter alfabetu z `+` i `/`. Base32 jest pośrodku, osiem znaków na pięć bajtów, z mniejszym, niewrażliwym na wielkość liter i jednoznacznym alfabetem. Hex jest największy, dwa znaki na bajt, ale najłatwiejszy do odczytania, z najwyraźniejszymi granicami bajtów ze wszystkich. Sięgasz po hex, gdy osoba musi zobaczyć bajty, a po Base64, gdy maszyna musi je przenieść.
+
+## Wypróbuj
+
+Wybierz **Hex** w [narzędziu codec](/tools/base64), aby zamienić tekst na jego szesnastkowe bajty lub zdekodować ciąg hex z powrotem na tekst, wszystko w Twojej przeglądarce. Ignoruje białe znaki, akceptuje wielkie lub małe litery oraz oznacza wynik, który jest binarny zamiast czytelnego tekstu.

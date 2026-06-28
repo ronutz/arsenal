@@ -1,0 +1,36 @@
+---
+slug: hex-encoding
+title: "Heksadesimal koding (Base16), forklart"
+summary: "Hvordan heksadesimal representerer hver byte med to tegn, hvorfor det er standardmåten å skrive ut rå byte på, og hvordan det forholder seg til Base64 og Base32."
+concepts: ["base16", "hex", "encoding", "binary-to-text", "rfc4648"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "text-encodings-compared", "character-encoding", "hashing"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Én byte, to tegn
+
+Heksadesimal, eller **hex**, er base 16: seksten sifre, `0`-`9` og deretter `A`-`F`, der `A` til `F` representerer verdiene 10 til 15. RFC 4648 kaller denne kodingen **Base16**. Den definerende egenskapen er enkel og nyttig: en byte er alltid nøyaktig **to heksadesimale tegn**. En byte inneholder en verdi fra 0 til 255, og to heksadesimale sifre dekker nøyaktig det intervallet (16 × 16 = 256). De fire høye bitene (*nibbelen*) blir det første tegnet, og de fire lave bitene det andre.
+
+Så er byten `0x48` bokstaven `H` i ASCII, og i hex skrives den `48`. Ordet `foobar` er seks byte, som i hex er de tolv tegnene `666F6F626172`. Det er ingen utfylling eller blokkjustering å bekymre seg om: hver byte tilsvarer uavhengig sitt eget par tegn.
+
+## Hvorfor hex er standarden for rå byte
+
+Hex er den minst tette av de vanlige kodingene, siden den dobler størrelsen på inndataene nøyaktig, så den brukes sjelden til å *overføre* data der størrelsen betyr noe. Verdien ligger i **lesbarheten for en person som inspiserer byte**. Siden hver byte er et selvstendig par, kan du stille en hex-streng på linje med dataene den representerer og lese den posisjon for posisjon, som er nøyaktig det en hex-dump gjør: bytene til venstre i hex, de skrivbare tegnene deres til høyre.
+
+Den direkte avbildningen er grunnen til at hex er den universelle notasjonen for ting som grunnleggende er byte-verdier: en SHA-256-hash skrevet ut som 64 heksadesimale tegn (32 byte), en MAC-adresse, en RGB-farge som `#1A2B3C`, en minneadresse i en feilsøker, eller bytene i en krypteringsnøkkel. I hvert tilfelle prøver du ikke å spare plass, du prøver å lese eller sammenligne nøyaktige byte-verdier, og hex gjør det enkelt.
+
+## Store/små bokstaver og gyldighet
+
+Hex er uavhengig av store og små bokstaver: `ff`, `FF` og `Ff` betegner alle den samme byten, 255. Etter konvensjon er utdataene med store bokstaver, men dekodere godtar begge. Den eneste strukturelle regelen er at en hex-streng må ha et **partall** av sifre, fordi hver byte trenger et fullstendig par. En streng av oddetallslengde som `ABC` er feilformet: det er en løs nibbel uten makker igjen. Og ethvert tegn utenfor `0`-`9` og `A`-`F` er rett og slett ikke hex.
+
+## Hvordan det forholder seg
+
+De tre kodingene i RFC 4648 bytter tetthet mot alfabetstørrelse. Base64 er den mest kompakte, fire tegn per tre byte, men bruker et stort alfabet som er avhengig av store og små bokstaver, med `+` og `/`. Base32 ligger i midten, åtte tegn per fem byte, med et mindre alfabet som er uavhengig av store og små bokstaver og entydig. Hex er den største, to tegn per byte, men den mest lesbare, med de tydeligste byte-grensene av alle. Du griper til hex når en person må se bytene, og til Base64 når en maskin må flytte dem.
+
+## Prøv det
+
+Velg **Hex** i [codec-verktøyet](/tools/base64) for å forvandle tekst til de heksadesimale bytene eller dekode en hex-streng tilbake til tekst, alt i nettleseren din. Det ignorerer mellomrom, godtar store eller små bokstaver, og markerer et resultat som er binært i stedet for lesbar tekst.

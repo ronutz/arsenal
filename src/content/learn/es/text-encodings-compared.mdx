@@ -1,0 +1,46 @@
+---
+slug: text-encodings-compared
+title: "Base16, Base32, Base64 y codificación porcentual comparadas"
+summary: "Una mirada lado a lado a las cuatro codificaciones de texto: sus alfabetos, sobrecarga de tamaño, legibilidad, y cuándo recurrir a cada una."
+concepts: ["encoding", "base64", "base32", "base16", "percent-encoding"]
+relatedTools: ["base64"]
+relatedArticles: ["base64", "base32", "hex-encoding", "percent-encoding", "base64url", "character-encoding"]
+category: encoding
+order: 8
+status: machine-draft
+updated: "2026-06-28"
+---
+
+## Cuatro formas de escribir bytes como texto
+
+Base16 (hex), Base32, Base64 y la codificación porcentual resuelven todas un problema: representar datos usando caracteres que un canal de solo texto transportará de forma segura. Se diferencian en dos ejes que se compensan entre sí, **el tamaño del alfabeto** y **la sobrecarga de tamaño**. Un alfabeto más grande empaqueta más bits por carácter, así que la salida es más corta; un alfabeto más pequeño o más restrictivo es más fácil de leer o más seguro en un contexto dado, pero la salida es más larga. Las tres primeras se definen juntas en RFC 4648; la codificación porcentual viene de RFC 3986 y funciona de forma diferente a las demás.
+
+## Sobrecarga de tamaño de un vistazo
+
+Para entrada binaria en bruto, la expansión de las tres codificaciones de RFC 4648 es fija y predecible:
+
+```
+codificación   bits/car   proporción         sobrecarga
+Base16         4          2 car / byte       +100%
+Base32         5          8 car / 5 bytes    +60%
+Base64         6          4 car / 3 bytes    +33%
+```
+
+Base64 es la más compacta, Base16 la menos. La codificación porcentual es la rara: no es una proporción fija en absoluto. Deja en paz los caracteres no reservados y expande solo el resto a tres caracteres cada uno, así que su sobrecarga depende por completo del *contenido*. Para texto que es en su mayoría letras y dígitos es casi gratis; para binario en bruto, donde casi todos los bytes necesitan escaparse, se dispara hasta aproximadamente +200%, peor que cualquiera de las otras.
+
+## Alfabeto y legibilidad
+
+- **Base16 / hex** usa `0`-`9` y `A`-`F`. Un byte siempre son dos caracteres, así que los límites de byte son perfectamente claros. Es la más fácil de leer y comparar a simple vista, por eso los hashes, las claves y los volcados hexadecimales la usan.
+- **Base32** usa `A`-`Z` y `2`-`7`, insensible a mayúsculas, con los caracteres confundibles `0`, `1` y `8` eliminados. Está hecha para valores que una persona escribirá, dictará o almacenará sin distinguir mayúsculas, como los secretos TOTP y las direcciones onion.
+- **Base64** usa `A`-`Z`, `a`-`z`, `0`-`9`, `+` y `/`, sensible a mayúsculas. Es la más densa de las tres, pero `+` y `/` no son seguros en URL y nombres de archivo, que es lo que arregla la [variante segura para URL](/learn/base64url).
+- **La codificación porcentual** mantiene legible el texto legible y escapa solo lo que una URL no puede transportar literalmente. Es un esquema de escape en lugar de una recodificación completa.
+
+## Cuál elegir
+
+La elección sigue al canal y a la audiencia. Si una **persona** debe leer, escribir o comparar el valor, prefiere hex (para inspeccionar bytes) o Base32 (para escribir o dictar). Si una **máquina** debe mover bytes arbitrarios a través de un canal de texto y el tamaño importa, usa Base64, o Base64URL cuando el valor viaja dentro de una URL, un nombre de archivo o un token. Si estás poniendo **texto en una URL** y solo unos pocos caracteres no son seguros, codifícalo con porcentaje en lugar de recodificar todo.
+
+Una regla rápida: Base64 para compacidad, Base32 para escribir, hex para leer, codificación porcentual para URL.
+
+## Pruébalas
+
+La [herramienta de códec](/tools/base64) ejecuta las cuatro. Pega cualquier texto, cambia la codificación, y compara la salida lado a lado, con decodificación para cada una, completamente en tu navegador.
