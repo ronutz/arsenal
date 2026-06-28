@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Rumusan laluan"
+summary: "Mengapa satu laluan rumusan boleh menggantikan banyak laluan khusus, umpukan bersebelahan dan terjajar yang ia bergantung kepadanya, dan risiko lubang hitam apabila merumuskan julat yang tidak anda miliki sepenuhnya."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Satu laluan menggantikan banyak
+
+Penghala yang mencapai `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` dan `10.1.3.0/24` melalui hop seterusnya yang sama tidak perlu mengiklankan empat laluan. Ia boleh mengiklankan satu rumusan, `10.1.0.0/22`, yang meliputi keempat-empatnya. Setiap jiran kemudian membawa satu entri dan bukan empat. **Rumusan laluan** ialah amalan ini yang diterapkan pada sempadan sesebuah rangkaian: mengagregat apa yang anda tahu ke dalam awalan terpendek yang masih menggambarkannya dengan tepat.
+
+Manfaatnya terkumpul. Lebih sedikit laluan bermakna lebih sedikit memori pada setiap peranti hiliran, kemas kini yang lebih kecil dan lebih pantas, dan yang paling penting, *kestabilan*. Jika salah satu daripada empat rangkaian komponen gagal, rumusan tidak berubah, jadi kegagalan itu tidak merebak ke seluruh rangkaian.
+
+## Prasyarat: bersebelahan dan terjajar
+
+Rumusan hanya kemas apabila awalan asas diumpukkan sebagai satu blok bersebelahan yang terjajar. Empat `/24` di atas dirumuskan dengan anggun kerana bersama-sama ia tepat `10.1.0.0/22`. Jika empat rangkaian yang sama bertaburan sebagai `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` dan `10.7.0.0/24`, tiada awalan pendek akan menggambarkan hanya mereka, dan sebarang rumusan yang anda iklankan juga akan menuntut ruang alamat yang tidak anda halakan.
+
+Sebab itulah perancangan alamat penting sebelum anda mengkonfigurasi peranti pertama. Mengumpukkan tapak dan jabatan daripada blok terjajar, disiplin yang sama yang [VLSM](/learn/vlsm) kuatkuasakan dalam satu blok, ialah yang menjadikan rumusan mungkin kemudian. Rumusan ialah ganjaran untuk umpukan yang sesuai untuk [supernet](/learn/supernetting-and-aggregation).
+
+## Di mana ia berlaku
+
+Rumusan hidup di sempadan. Dalam OSPF, ia dikonfigurasi pada penghala sempadan kawasan dan pada penghala sempadan sistem autonomi, kerana dalam sesebuah kawasan topologi keadaan pautan penuh dibanjiri dan tidak boleh dirumuskan. EIGRP boleh merumuskan pada hampir mana-mana antara muka. Dalam BGP, pengagregatan menggabungkan awalan khusus menjadi satu laluan merangkumi sebelum mengiklankannya kepada sistem autonomi lain, yang sebahagian besarnya menjelaskan mengapa jadual penghalaan global jauh lebih kecil daripada bilangan rangkaian yang diumpukkan.
+
+## Perangkap lubang hitam
+
+Merumuskan julat yang tidak anda kawal sepenuhnya adalah berbahaya. Jika anda mengiklankan `10.0.0.0/16` tetapi sebenarnya hanya menghalakan `10.0.1.0/24`, trafik daripada mana-mana alamat lain dalam /16 itu ditarik ke arah anda dan kemudian dibuang, kerana anda telah memberitahu rangkaian bahawa anda boleh mencapai alamat yang anda tidak boleh capai. Kegagalan songsang juga wujud: rumusan yang terlalu sempit menjadikan sebahagian rangkaian sebenar anda tidak boleh dicapai.
+
+Audit satu rumusan sebelum mengiklankannya. Sahkan bahawa awalan yang anda miliki adalah bersebelahan, bahawa ia terjajar dengan sempadan rumusan, dan bahawa rumusan tidak melangkaui mereka. [Kalkulator CIDR](/#cidr) membantu dengan kedua-dua bahagian: agregat senarai awalan dalam mod Supernet dan dedahkan pertindihan atau jurang yang tidak terisi dalam mod Pertindihan / jurang.

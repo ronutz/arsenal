@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Eine VLSM-Vergabe, von Anfang bis Ende durchgerechnet"
+summary: "Eine vollständige Vergabe von Subnetzen variabler Länge für ein realistisches Netz: jedes Segment dimensionieren, vom größten zum kleinsten sortieren, die echten Adressen vergeben und den verbleibenden Raum erfassen."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Das Szenario
+
+Du bekommst `172.16.0.0/22` und musst vier Segmente darin unterbringen:
+
+- **Vertrieb**: 500 Hosts
+- **Technik**: 200 Hosts
+- **Link A**: eine Punkt-zu-Punkt-Verbindung zwischen Routern, 2 Hosts
+- **Link B**: eine zweite Punkt-zu-Punkt-Verbindung, 2 Hosts
+
+Ein `/22` enthält 1024 Adressen (`172.16.0.0` bis `172.16.3.255`). Die konzeptionellen Regeln werden in [VLSM](/learn/vlsm) behandelt; hier gehen wir sie bis zum Ende durch.
+
+## Schritt 1: jedes Segment dimensionieren
+
+Finde den kleinsten Block, der jede Host-Zahl enthält, und denke an die zwei reservierten Adressen (Netz und Broadcast) in jedem gewöhnlichen Block:
+
+- 500 Hosts brauchen 9 Host-Bits (2⁹ − 2 = 510 nutzbar), ein `/23`.
+- 200 Hosts brauchen 8 Host-Bits (254 nutzbar), ein `/24`.
+- 2 Hosts brauchen 2 Host-Bits (2 nutzbar), ein `/30`.
+- 2 Hosts brauchen ein weiteres `/30`.
+
+Runde auf die nächste Zweierpotenz auf: 500 passt nicht in ein `/24` (254 nutzbar), also nimmt es ein `/23`.
+
+## Schritt 2: vom größten zum kleinsten sortieren
+
+Sortiere die Segmente nach Blockgröße, das größte zuerst, damit jedes an einer sauberen Grenze landet:
+
+1. Vertrieb, `/23` (512 Adressen)
+2. Technik, `/24` (256)
+3. Link A, `/30` (4)
+4. Link B, `/30` (4)
+
+## Schritt 3: die Adressen vergeben
+
+Vergib in dieser Reihenfolge, jeder Block beginnt dort, wo der vorige endete:
+
+```
+/23  172.16.0.0  – .1.255   (510 nutzbar)  ← Vertrieb
+/24  172.16.2.0  – .2.255   (254 nutzbar)  ← Technik
+/30  172.16.3.0  – .3.3     (2 nutzbar)    ← Link A
+/30  172.16.3.4  – .3.7     (2 nutzbar)    ← Link B
+```
+
+Vertrieb füllt die erste Hälfte des Blocks. Technik nimmt das nächste `/24`. Die zwei Verbindungen zwischen Routern nehmen je vier Adressen am Anfang des letzten `/24`.
+
+## Schritt 4: erfassen, was übrig bleibt
+
+Die vier Segmente verbrauchen 512 + 256 + 4 + 4 = 776 Adressen und lassen 248 frei, von `172.16.3.8` bis `172.16.3.255`. Das sind 75.8% Auslastung, mit einem zusammenhängenden Rest an freiem Raum für die nächste Verbindung oder ein kleines Subnetz, weiterhin ausgerichtet für eine künftige Zusammenfassung.
+
+## Deine Arbeit prüfen
+
+Das ist genau die Vergabe, die der [CIDR-Rechner](/#cidr) im VLSM-Modus erzeugt: Gib `172.16.0.0/22` als übergeordneten Block und die vier Host-Zahlen ein, und er liefert dieselben Netze, Masken, Bereiche und die 75.8%-Auslastungszahl, vollständig in deinem Browser berechnet. Passt ein Segment nicht, wird es separat aufgeführt, statt stillschweigend verworfen zu werden.

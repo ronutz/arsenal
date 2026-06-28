@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Chevauchements et vides de sous-réseaux"
+summary: "Ce que signifie le chevauchement ou l'inclusion de deux préfixes, pourquoi la correspondance du préfixe le plus long rend certains chevauchements intentionnels, et comment trouver les vides non attribués d'un plan d'adressage."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trois choses qui tournent mal dans un plan d'adressage
+
+À mesure qu'un plan d'adressage grandit, trois problèmes s'y glissent : deux préfixes qui **se chevauchent**, un préfixe qui en **contient** un autre, et des **vides** d'espace d'adressage que personne n'a attribués. Les deux premiers concernent des préfixes qui revendiquent les mêmes adresses ; le troisième, des adresses qu'aucun préfixe ne revendique. Un bon audit trouve les trois.
+
+## Chevauchement et inclusion
+
+Deux préfixes se chevauchent lorsqu'ils partagent au moins une adresse. Il y a plusieurs formes distinctes :
+
+- **Identique** : le même bloc listé deux fois, souvent une erreur de copier-coller.
+- **Inclusion** : un bloc est entièrement à l'intérieur d'un autre. `10.0.0.0/24` contient `10.0.0.128/25`, car le /25 est la moitié supérieure du /24.
+- **Partiel** : deux plages partagent certaines adresses mais aucune ne contient l'autre. Deux blocs CIDR corrects ne se chevauchent jamais ainsi. Deux blocs alignés de puissance de deux quelconques sont soit disjoints, soit totalement imbriqués, l'un entièrement dans l'autre, ce qui explique précisément pourquoi l'adressage CIDR forme une hiérarchie propre. Un chevauchement partiel n'apparaît que lorsqu'une entrée n'est pas un bloc aligné.
+
+L'inclusion n'est pas toujours une erreur. Les routeurs acheminent selon la **correspondance du préfixe le plus long** : la route la plus spécifique qui correspond à une destination l'emporte. Un `/25` spécifique annoncé à l'intérieur d'un `/24` résumé est un schéma délibéré et courant, utilisé pour diriger une partie du trafic différemment. Le danger, c'est le chevauchement *non intentionnel*, où deux parties de votre réseau croient toutes deux posséder les mêmes adresses et le trafic atterrit au mauvais endroit.
+
+## Vides
+
+Un vide est une portion d'un bloc parent qu'aucun sous-réseau ne couvre. Supposons que vous ayez découpé `10.0.0.0/26` et `10.0.0.128/26` dans `10.0.0.0/24`. Entre eux et après, `10.0.0.64/26` et `10.0.0.192/26` restent non attribués. Ces deux blocs sont vos vides : un espace d'adressage que vous pouvez encore attribuer, revendiquer ou simplement comptabiliser.
+
+Trouver les vides compte pour deux raisons. Cela montre où il y a de la place pour grandir sans renuméroter, et confirme qu'un bloc que vous comptez résumer est réellement utilisé en entier, car un résumé annoncé sur un vide revendique des adresses que vous n'avez pas attribuées.
+
+## Auditer un plan
+
+Pour réviser un plan, listez chaque préfixe que vous avez attribué et donnez le bloc parent comme portée. Un rapport de chevauchements indique quels préfixes entrent en collision et comment ; un rapport de vides indique exactement quels blocs CIDR à l'intérieur du parent sont encore libres. La [calculatrice CIDR](/#cidr) fait les deux en mode Chevauchement / vide, en étiquetant chaque chevauchement comme identique, inclus ou partiel, et en exprimant chaque vide comme les plus grands blocs alignés qui le comblent.
+
+Les deux moitiés renvoient au [supernetting](/learn/supernetting-and-aggregation) : un plan d'adressage sans chevauchements non intentionnels et sans vides à l'intérieur d'un bloc est exactement le plan qui se résume proprement.

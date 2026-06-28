@@ -335,6 +335,89 @@
       "errors": {
         "empty": "Enter a CIDR block to calculate.",
         "invalid": "That does not look like a valid CIDR block. Try a format like 192.168.1.0/24."
+      },
+      "modes": {
+        "subnet": "Subnet",
+        "vlsm": "VLSM",
+        "supernet": "Supernet",
+        "overlap": "Overlap / gap"
+      },
+      "modeDesc": {
+        "subnet": "Analyze a single IPv4 CIDR block: network, broadcast, mask, and host range.",
+        "vlsm": "Carve variable-length subnets from a parent block to fit a list of host counts.",
+        "supernet": "Summarize a list of prefixes into the smallest set of covering blocks.",
+        "overlap": "Find overlaps and containment between prefixes, plus gaps within an optional scope."
+      },
+      "vlsm": {
+        "parentLabel": "Parent block",
+        "parentPlaceholder": "10.0.0.0/24",
+        "reqsLabel": "Subnet requirements",
+        "namePlaceholder": "Name (optional)",
+        "hostsPlaceholder": "Hosts",
+        "addRow": "Add subnet",
+        "remove": "Remove",
+        "run": "Allocate",
+        "th": {
+          "name": "Name",
+          "hosts": "Hosts",
+          "network": "Network",
+          "prefix": "Prefix",
+          "netmask": "Netmask",
+          "range": "Usable range",
+          "broadcast": "Broadcast",
+          "usable": "Usable hosts"
+        },
+        "stat": {
+          "parent": "Parent",
+          "used": "Used",
+          "free": "Free",
+          "utilization": "Utilization"
+        },
+        "unfit": "Did not fit"
+      },
+      "supernet": {
+        "label": "Prefixes to aggregate",
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24",
+        "run": "Aggregate",
+        "minimal": "Minimal covering set",
+        "single": "Single supernet",
+        "singleExtra": "Adds {extra} extra addresses beyond the inputs.",
+        "stat": {
+          "inputs": "Input prefixes",
+          "addresses": "Addresses",
+          "blocks": "Aggregated blocks"
+        }
+      },
+      "overlap": {
+        "label": "Prefixes to check",
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopeLabel": "Scope (optional, enables gap detection)",
+        "scopePlaceholder": "10.0.0.0/16",
+        "run": "Check",
+        "overlapsTitle": "Overlaps",
+        "noOverlaps": "No overlaps found.",
+        "gapsTitle": "Gaps in scope",
+        "noGaps": "No gaps in the given scope.",
+        "kind": {
+          "identical": "identical to",
+          "contains": "contains",
+          "contained": "is inside",
+          "partial": "partially overlaps"
+        },
+        "addresses": "addresses",
+        "stat": {
+          "covered": "Covered",
+          "scope": "Scope"
+        }
+      },
+      "err": {
+        "ipv4": "Not a valid IPv4 address. Use four octets 0-255, like 192.168.1.0.",
+        "octet": "An octet is out of range (each must be 0-255).",
+        "format": "Expected the form A.B.C.D/prefix, like 192.168.1.0/24.",
+        "prefix": "The prefix length must be between 0 and 32.",
+        "tooMany": "Too many entries. Trim the list and try again.",
+        "noReqs": "Add at least one subnet requirement with a host count.",
+        "noPrefixes": "Enter at least one prefix, one per line."
       }
     },
     "title": "Tools",

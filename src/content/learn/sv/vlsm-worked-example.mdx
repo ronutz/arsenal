@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "En VLSM-tilldelning, löst från början till slut"
+summary: "En fullständig tilldelning av subnät med variabel längd för ett realistiskt nätverk: dimensionera varje segment, sortera från störst till minst, tilldela de verkliga adresserna och bokföra det utrymme som blir kvar."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Scenariot
+
+Du får `172.16.0.0/22` och måste få plats med fyra segment:
+
+- **Försäljning**: 500 värdar
+- **Teknik**: 200 värdar
+- **Länk A**: en punkt-till-punkt-länk mellan routrar, 2 värdar
+- **Länk B**: en andra punkt-till-punkt-länk, 2 värdar
+
+Ett `/22` innehåller 1024 adresser (`172.16.0.0` till `172.16.3.255`). De konceptuella reglerna tas upp i [VLSM](/learn/vlsm); här går vi igenom dem hela vägen.
+
+## Steg 1: dimensionera varje segment
+
+Hitta det minsta block som innehåller varje antal värdar, och kom ihåg de två reserverade adresserna (nät och broadcast) i varje vanligt block:
+
+- 500 värdar kräver 9 värdbitar (2⁹ − 2 = 510 användbara), ett `/23`.
+- 200 värdar kräver 8 värdbitar (254 användbara), ett `/24`.
+- 2 värdar kräver 2 värdbitar (2 användbara), ett `/30`.
+- 2 värdar kräver ytterligare ett `/30`.
+
+Avrunda upp till nästa tvåpotens: 500 får inte plats i ett `/24` (254 användbara), så det tar ett `/23`.
+
+## Steg 2: sortera från störst till minst
+
+Sortera segmenten efter blockstorlek, störst först, så att varje landar på en ren gräns:
+
+1. Försäljning, `/23` (512 adresser)
+2. Teknik, `/24` (256)
+3. Länk A, `/30` (4)
+4. Länk B, `/30` (4)
+
+## Steg 3: tilldela adresserna
+
+Tilldela i den ordningen, varje block börjar där det föregående slutade:
+
+```
+/23  172.16.0.0  – .1.255   (510 användbara)  ← Försäljning
+/24  172.16.2.0  – .2.255   (254 användbara)  ← Teknik
+/30  172.16.3.0  – .3.3     (2 användbara)    ← Länk A
+/30  172.16.3.4  – .3.7     (2 användbara)    ← Länk B
+```
+
+Försäljning fyller blockets första halva. Teknik tar nästa `/24`. De två länkarna mellan routrar tar fyra adresser var i början av det sista `/24`.
+
+## Steg 4: bokföra det som blir kvar
+
+De fyra segmenten använder 512 + 256 + 4 + 4 = 776 adresser, vilket lämnar 248 lediga, från `172.16.3.8` till `172.16.3.255`. Det är 75.8% utnyttjande, med en sammanhängande svans av ledigt utrymme för nästa länk eller ett litet subnät, fortfarande justerad för en framtida sammanfattning.
+
+## Kontrollera ditt arbete
+
+Det här är exakt den tilldelning som [CIDR-kalkylatorn](/#cidr) producerar i VLSM-läget: ange `172.16.0.0/22` som överordnat block och de fyra antalen värdar, så returnerar den samma nät, masker, intervall och siffran 75.8% utnyttjande, helt beräknad i din webbläsare. Om ett segment inte får plats listas det separat i stället för att kastas tyst.

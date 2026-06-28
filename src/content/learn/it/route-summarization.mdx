@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Sommarizzazione di rotte"
+summary: "Perché una singola rotta di riepilogo può sostituire molte rotte specifiche, l'assegnazione contigua e allineata da cui dipende, e il rischio di buco nero quando si sommarizza un intervallo che non si possiede per intero."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Una rotta al posto di molte
+
+Un router che raggiunge `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` e `10.1.3.0/24` attraverso lo stesso hop successivo non ha bisogno di annunciare quattro rotte. Può annunciare un unico riepilogo, `10.1.0.0/22`, che copre tutte e quattro. Ogni vicino porta allora una sola voce invece di quattro. La **sommarizzazione di rotte** è questa pratica applicata ai confini di una rete: aggregare ciò che conosci nel prefisso più corto che lo descrive ancora con precisione.
+
+Il vantaggio si accumula. Meno rotte significano meno memoria su ogni dispositivo a valle, aggiornamenti più piccoli e più rapidi e, soprattutto, *stabilità*. Se una delle quattro reti componenti cade, il riepilogo non cambia, quindi il guasto non si propaga al resto della rete.
+
+## Il prerequisito: contigua e allineata
+
+La sommarizzazione è pulita solo quando i prefissi sottostanti sono stati assegnati come un blocco contiguo e allineato. I quattro `/24` qui sopra si sommarizzano con eleganza perché insieme sono esattamente `10.1.0.0/22`. Se le stesse quattro reti fossero state sparse come `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` e `10.7.0.0/24`, nessun prefisso corto descriverebbe solo loro, e qualsiasi riepilogo annunciassi rivendicherebbe anche spazio di indirizzi che non instradi.
+
+Ecco perché la pianificazione degli indirizzi conta prima di configurare il primo dispositivo. Assegnare sedi e reparti a partire da blocchi allineati, la stessa disciplina che [VLSM](/learn/vlsm) impone all'interno di un singolo blocco, è ciò che rende possibile la sommarizzazione in seguito. La sommarizzazione è la ricompensa per un'assegnazione adatta al [supernetting](/learn/supernetting-and-aggregation).
+
+## Dove avviene
+
+La sommarizzazione vive ai confini. In OSPF si configura sui router di confine di area e sui router di confine di sistema autonomo, poiché all'interno di un'area la topologia completa a stato di collegamento viene inondata e non può essere sommarizzata. EIGRP può sommarizzare su quasi qualsiasi interfaccia. In BGP, l'aggregazione combina prefissi specifici in una rotta avvolgente prima di annunciarli ad altri sistemi autonomi, il che spiega in gran parte perché la tabella di routing globale è molto più piccola del numero di reti assegnate.
+
+## La trappola del buco nero
+
+Sommarizzare un intervallo che non controlli per intero è pericoloso. Se annunci `10.0.0.0/16` ma instradi davvero solo `10.0.1.0/24`, il traffico di qualsiasi altro indirizzo di quel /16 viene attirato verso di te e poi scartato, perché hai detto alla rete che puoi raggiungere indirizzi che non puoi. Esiste anche il guasto inverso: un riepilogo troppo stretto rende alcune delle tue reti reali irraggiungibili.
+
+Verifica un riepilogo prima di annunciarlo. Conferma che i prefissi che possiedi sono contigui, che si allineano al confine del riepilogo e che il riepilogo non si estende oltre di essi. La [calcolatrice CIDR](/#cidr) aiuta con entrambe le metà: aggrega un elenco di prefissi in modalità Superrete ed espone sovrapposizioni o vuoti non riempiti in modalità Sovrapposizione / vuoto.

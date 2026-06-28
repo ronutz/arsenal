@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Sovrapposizioni e vuoti di sottoreti"
+summary: "Cosa significa che due prefissi si sovrappongono o uno contiene l'altro, perché la corrispondenza del prefisso più lungo rende alcune sovrapposizioni intenzionali, e come trovare i vuoti non assegnati di un piano di indirizzi."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tre cose che vanno storte in un piano di indirizzi
+
+Man mano che un piano di indirizzi cresce, si insinuano tre problemi: due prefissi che **si sovrappongono**, un prefisso che ne **contiene** un altro, e **vuoti** di spazio di indirizzi che nessuno ha assegnato. I primi due riguardano prefissi che rivendicano gli stessi indirizzi; il terzo, indirizzi che nessun prefisso rivendica. Una buona verifica trova tutti e tre.
+
+## Sovrapposizione e contenimento
+
+Due prefissi si sovrappongono quando condividono almeno un indirizzo. Ci sono alcune forme distinte:
+
+- **Identico**: lo stesso blocco elencato due volte, spesso un errore di copia e incolla.
+- **Contenimento**: un blocco è interamente all'interno di un altro. `10.0.0.0/24` contiene `10.0.0.128/25`, perché il /25 è la metà superiore del /24.
+- **Parziale**: due intervalli condividono alcuni indirizzi ma nessuno contiene l'altro. Due blocchi CIDR corretti non si sovrappongono mai così. Due qualsiasi blocchi allineati di potenza di due sono disgiunti oppure totalmente annidati, uno interamente dentro l'altro, il che spiega esattamente perché l'indirizzamento CIDR forma una gerarchia pulita. Una sovrapposizione parziale appare solo quando un input non è un blocco allineato.
+
+Il contenimento non è sempre un errore. I router inoltrano usando la **corrispondenza del prefisso più lungo**: vince la rotta più specifica che corrisponde a una destinazione. Un `/25` specifico annunciato dentro un `/24` sommarizzato è uno schema deliberato e comune, usato per indirizzare una parte del traffico in modo diverso. Il pericolo è la sovrapposizione *non intenzionale*, in cui due parti della tua rete credono entrambe di possedere gli stessi indirizzi e il traffico atterra nel posto sbagliato.
+
+## Vuoti
+
+Un vuoto è un tratto di un blocco padre che nessuna sottorete copre. Supponi di aver ritagliato `10.0.0.0/26` e `10.0.0.128/26` da `10.0.0.0/24`. Tra di essi e dopo, `10.0.0.64/26` e `10.0.0.192/26` restano non assegnati. Quei due blocchi sono i tuoi vuoti: spazio di indirizzi che puoi ancora assegnare, rivendicare o semplicemente contabilizzare.
+
+Trovare i vuoti conta per due ragioni. Mostra dove c'è spazio per crescere senza rinumerare, e conferma che un blocco che intendi sommarizzare è davvero in uso per intero, poiché un riepilogo annunciato su un vuoto rivendica indirizzi che non hai assegnato.
+
+## Verificare un piano
+
+Per rivedere un piano, elenca ogni prefisso che hai assegnato e indica il blocco padre come ambito. Un rapporto di sovrapposizioni dice quali prefissi entrano in conflitto e come; un rapporto di vuoti dice esattamente quali blocchi CIDR all'interno del padre sono ancora liberi. La [calcolatrice CIDR](/#cidr) fa entrambe le cose in modalità Sovrapposizione / vuoto, etichettando ogni sovrapposizione come identica, contenuta o parziale, ed esprimendo ogni vuoto come i più grandi blocchi allineati che lo riempiono.
+
+Entrambe le metà si ricollegano al [supernetting](/learn/supernetting-and-aggregation): un piano di indirizzi senza sovrapposizioni non intenzionali e senza vuoti all'interno di un blocco è esattamente il piano che si sommarizza in modo pulito.

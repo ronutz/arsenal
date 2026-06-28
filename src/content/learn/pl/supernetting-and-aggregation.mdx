@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting i agregacja tras"
+summary: "Jak sąsiadujące prefiksy łączą się w jeden krótszy, reguła wyrównania decydująca, czy dwa bloki mogą się scalić, oraz różnica między dokładną agregacją a pojedynczą supersiecią, która je pokrywa."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Supernetting to dzielenie na podsieci na odwrót
+
+Dzielenie na podsieci ustala więcej bitów, aby uzyskać mniejszy blok. Supernetting robi odwrotnie: ustala mniej bitów, aby pojedynczy prefiks pokrywał kilka mniejszych. Weźmy dwa sąsiadujące bloki, `192.168.0.0/24` i `192.168.1.0/24`. Razem rozciągają się od `192.168.0.0` do `192.168.1.255`, co jest dokładnie zakresem `192.168.0.0/23`. Usuń jeden bit prefiksu, z /24 na /23, a jedna trasa opisuje teraz oba bloki.
+
+To jest mechanizm stojący za **agregacją tras**, zwaną też sumaryzacją: zastąpienie listy konkretnych prefiksów pojedynczym krótszym prefiksem, który pokrywa je wszystkie.
+
+## Reguła łączenia dwóch bloków
+
+Dwa bloki scalają się w jeden, gdy tworzą *parę bliźniaczą*: tego samego rozmiaru, sąsiadujące i z dolnym blokiem umieszczonym na granicy połączonego bloku. `192.168.0.0/24` i `192.168.1.0/24` spełniają to, ponieważ `192.168.0.0` jest prawidłową siecią `/23`. Ale `192.168.1.0/24` i `192.168.2.0/24` **nie** łączą się, mimo że wyglądają na sąsiadujące. `192.168.1.0` nie jest granicą `/23` (zawierające go /23 zaczyna się od `192.168.0.0`), więc nie istnieje pojedyncza /23 zawierająca dokładnie te dwa bloki i nic więcej.
+
+Wyrównanie, a nie samo sąsiedztwo, jest tym, co sprawia, że agregacja działa. To ta sama reguła granic potęgi dwójki, która rządzi dzieleniem na podsieci, odczytana wstecz.
+
+## Dokładna agregacja a pojedyncza supersieć
+
+Gdy twoje prefiksy nie są wszystkie sąsiadujące, istnieją dwie różne odpowiedzi i nie są one tym samym.
+
+**Minimalny zestaw pokrywający** to najkrótsza lista prefiksów, która pokrywa dokładnie twoje dane wejściowe i nic więcej. Przy `10.0.0.0/24` i `10.0.2.0/24` jest luka przy `10.0.1.0/24`, więc nie mogą się scalić: minimalny zestaw pozostaje dwoma blokami `/24`.
+
+**Pojedyncza supersieć** to jeden najmniejszy prefiks, który zawiera każde dane wejściowe, nawet jeśli wciąga adresy, których nie wymieniłeś. Dla tych samych dwóch bloków jest to `10.0.0.0/22`, rozciągająca się od `10.0.0.0` do `10.0.3.255`. Pokrywa oba wejścia, ale dodaje też `10.0.1.0/24` i `10.0.3.0/24`, 512 dodatkowych adresów, które mogą do ciebie nie należeć.
+
+Rozgłaszaj pojedynczą supersieć tylko wtedy, gdy faktycznie kontrolujesz cały zakres. W przeciwnym razie sumaryzujesz przestrzeń adresową należącą do kogoś innego.
+
+## Dlaczego to ważne
+
+Agregacja jest tym, co utrzymuje małe tablice routingu. Trasa zbiorcza zamiast dziesiątek konkretnych oznacza mniej pamięci na każdym routerze, który jej słucha, i znacznie mniej niestabilności, gdy pojedyncze składowe łącze zawiedzie. Haczyk polega na tym, że działa to tylko wtedy, gdy adresy zostały przydzielone w sposób ciągły i na wyrównanych granicach od początku, dlatego zdyscyplinowane dzielenie na podsieci i [VLSM](/learn/vlsm) przynoszą owoce później jako czysta [sumaryzacja tras](/learn/route-summarization).
+
+Możesz wypróbować obie odpowiedzi w [kalkulatorze CIDR](/#cidr): jego tryb Supersieć pokazuje minimalny zestaw pokrywający i otaczającą pojedynczą supersieć, z dokładną liczbą dodatkowych adresów, które dodałaby supersieć.

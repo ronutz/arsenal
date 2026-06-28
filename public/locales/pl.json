@@ -92,7 +92,90 @@
         "invalid": "To nie wygląda na prawidłowy blok CIDR. Spróbuj formatu takiego jak 192.168.1.0/24."
       },
       "name": "Kalkulator CIDR / podsieci",
-      "blurb": "Rozłóż dowolny blok CIDR IPv4 na adresy sieci i rozgłoszeniowy, użyteczny zakres hostów, liczbę hostów i maskę sieci. Działa w całości w twojej przeglądarce."
+      "blurb": "Rozłóż dowolny blok CIDR IPv4 na adresy sieci i rozgłoszeniowy, użyteczny zakres hostów, liczbę hostów i maskę sieci. Działa w całości w twojej przeglądarce.",
+      "modes": {
+        "subnet": "Podsieć",
+        "vlsm": "VLSM",
+        "supernet": "Supersieć",
+        "overlap": "Nakładanie / luka"
+      },
+      "modeDesc": {
+        "subnet": "Analizuje pojedynczy blok CIDR IPv4: sieć, rozgłoszenie, maskę i zakres hostów.",
+        "vlsm": "Dzieli blok nadrzędny na podsieci o zmiennej długości według listy liczby hostów.",
+        "supernet": "Łączy listę prefiksów w najmniejszy zestaw bloków, które je pokrywają.",
+        "overlap": "Wykrywa nakładanie i zawieranie między prefiksami oraz luki w opcjonalnym zakresie."
+      },
+      "vlsm": {
+        "parentLabel": "Blok nadrzędny",
+        "reqsLabel": "Wymagania podsieci",
+        "namePlaceholder": "Nazwa (opcjonalnie)",
+        "hostsPlaceholder": "Hosty",
+        "addRow": "Dodaj podsieć",
+        "remove": "Usuń",
+        "run": "Przydziel",
+        "th": {
+          "name": "Nazwa",
+          "hosts": "Hosty",
+          "network": "Sieć",
+          "prefix": "Prefiks",
+          "netmask": "Maska sieci",
+          "range": "Zakres używalny",
+          "broadcast": "Rozgłoszenie",
+          "usable": "Używalne hosty"
+        },
+        "stat": {
+          "parent": "Nadrzędny",
+          "used": "Użyte",
+          "free": "Wolne",
+          "utilization": "Wykorzystanie"
+        },
+        "unfit": "Nie zmieściły się",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Prefiksy do agregacji",
+        "run": "Agreguj",
+        "minimal": "Minimalny zestaw pokrywający",
+        "single": "Pojedyncza supersieć",
+        "singleExtra": "Dodaje {extra} dodatkowych adresów poza danymi wejściowymi.",
+        "stat": {
+          "inputs": "Prefiksy wejściowe",
+          "addresses": "Adresy",
+          "blocks": "Zagregowane bloki"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Prefiksy do sprawdzenia",
+        "scopeLabel": "Zakres (opcjonalnie, włącza wykrywanie luk)",
+        "run": "Sprawdź",
+        "overlapsTitle": "Nakładania",
+        "noOverlaps": "Nie znaleziono nakładań.",
+        "gapsTitle": "Luki w zakresie",
+        "noGaps": "Brak luk w podanym zakresie.",
+        "kind": {
+          "identical": "identyczny z",
+          "contains": "zawiera",
+          "contained": "zawiera się w",
+          "partial": "częściowo nakłada się na"
+        },
+        "addresses": "adresów",
+        "stat": {
+          "covered": "Pokryte",
+          "scope": "Zakres"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Nieprawidłowy adres IPv4. Użyj czterech oktetów od 0 do 255, np. 192.168.1.0.",
+        "octet": "Oktet jest poza zakresem (każdy musi być od 0 do 255).",
+        "format": "Oczekiwano formatu A.B.C.D/prefiks, np. 192.168.1.0/24.",
+        "prefix": "Długość prefiksu musi mieścić się w zakresie od 0 do 32.",
+        "tooMany": "Zbyt wiele pozycji. Skróć listę i spróbuj ponownie.",
+        "noReqs": "Dodaj co najmniej jedno wymaganie podsieci z liczbą hostów.",
+        "noPrefixes": "Wprowadź co najmniej jeden prefiks, po jednym w wierszu."
+      }
     },
     "title": "Narzędzia",
     "lede": "Małe, szybkie i dbające o prywatność narzędzia, które działają w całości w twojej przeglądarce. Nic z tego, co wpisujesz, nie jest nigdzie wysyłane. Kolejne są w drodze.",

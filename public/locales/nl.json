@@ -92,7 +92,90 @@
         "invalid": "Dat ziet er niet uit als een geldig CIDR-blok. Probeer een formaat zoals 192.168.1.0/24."
       },
       "name": "CIDR-/subnetcalculator",
-      "blurb": "Splits een willekeurig IPv4-CIDR-blok uit in netwerk- en broadcastadressen, bruikbaar hostbereik, aantal hosts en netmasker. Draait volledig in je browser."
+      "blurb": "Splits een willekeurig IPv4-CIDR-blok uit in netwerk- en broadcastadressen, bruikbaar hostbereik, aantal hosts en netmasker. Draait volledig in je browser.",
+      "modes": {
+        "subnet": "Subnet",
+        "vlsm": "VLSM",
+        "supernet": "Supernet",
+        "overlap": "Overlap / gat"
+      },
+      "modeDesc": {
+        "subnet": "Analyseert één IPv4-CIDR-blok: netwerk, broadcast, masker en hostbereik.",
+        "vlsm": "Verdeelt een bovenliggend blok in subnetten van variabele lengte op basis van een lijst met hostaantallen.",
+        "supernet": "Vat een lijst met prefixes samen tot de kleinste set dekkende blokken.",
+        "overlap": "Vindt overlappingen en insluiting tussen prefixes, plus gaten binnen een optioneel bereik."
+      },
+      "vlsm": {
+        "parentLabel": "Bovenliggend blok",
+        "reqsLabel": "Subneteisen",
+        "namePlaceholder": "Naam (optioneel)",
+        "hostsPlaceholder": "Hosts",
+        "addRow": "Subnet toevoegen",
+        "remove": "Verwijderen",
+        "run": "Toewijzen",
+        "th": {
+          "name": "Naam",
+          "hosts": "Hosts",
+          "network": "Netwerk",
+          "prefix": "Prefix",
+          "netmask": "Netmasker",
+          "range": "Bruikbaar bereik",
+          "broadcast": "Broadcast",
+          "usable": "Bruikbare hosts"
+        },
+        "stat": {
+          "parent": "Bovenliggend",
+          "used": "Gebruikt",
+          "free": "Vrij",
+          "utilization": "Benutting"
+        },
+        "unfit": "Pasten niet",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Te aggregeren prefixes",
+        "run": "Aggregeren",
+        "minimal": "Minimale dekkende set",
+        "single": "Enkel supernet",
+        "singleExtra": "Voegt {extra} extra adressen toe boven op de invoer.",
+        "stat": {
+          "inputs": "Invoerprefixes",
+          "addresses": "Adressen",
+          "blocks": "Geaggregeerde blokken"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Te controleren prefixes",
+        "scopeLabel": "Bereik (optioneel, schakelt gatdetectie in)",
+        "run": "Controleren",
+        "overlapsTitle": "Overlappingen",
+        "noOverlaps": "Geen overlappingen gevonden.",
+        "gapsTitle": "Gaten in bereik",
+        "noGaps": "Geen gaten in het opgegeven bereik.",
+        "kind": {
+          "identical": "identiek aan",
+          "contains": "bevat",
+          "contained": "zit in",
+          "partial": "overlapt gedeeltelijk met"
+        },
+        "addresses": "adressen",
+        "stat": {
+          "covered": "Gedekt",
+          "scope": "Bereik"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Geen geldig IPv4-adres. Gebruik vier octetten van 0 tot 255, zoals 192.168.1.0.",
+        "octet": "Een octet ligt buiten bereik (elk moet tussen 0 en 255 liggen).",
+        "format": "Verwacht wordt de vorm A.B.C.D/prefix, zoals 192.168.1.0/24.",
+        "prefix": "De prefixlengte moet tussen 0 en 32 liggen.",
+        "tooMany": "Te veel items. Kort de lijst in en probeer opnieuw.",
+        "noReqs": "Voeg ten minste één subneteis met een aantal hosts toe.",
+        "noPrefixes": "Voer ten minste één prefix in, één per regel."
+      }
     },
     "title": "Tools",
     "lede": "Kleine, snelle, privacyvriendelijke hulpprogramma's die volledig in je browser draaien. Niets van wat je typt wordt ergens naartoe gestuurd. Er komen er meer aan.",

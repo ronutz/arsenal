@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Rota özetleme"
+summary: "Tek bir özet rotanın neden birçok belirli rotanın yerini alabileceği, bağlı olduğu bitişik ve hizalanmış atama ve tam sahip olmadığınız bir aralığı özetlerken kara delik riski."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Çoğu yerine tek bir rota
+
+`10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` ve `10.1.3.0/24`'e aynı sonraki atlamadan ulaşan bir yönlendiricinin dört rota duyurması gerekmez. Dördünü de kapsayan tek bir özet, `10.1.0.0/22` duyurabilir. Her komşu o zaman dört yerine tek bir girdi taşır. **Rota özetleme**, bir ağın sınırlarında uygulanan bu uygulamadır: bildiğinizi, onu hâlâ tam olarak tanımlayan en kısa önekte toplamak.
+
+Fayda birikir. Daha az rota, akıştaki her cihazda daha az bellek, daha küçük ve daha hızlı güncellemeler ve en önemlisi *kararlılık* anlamına gelir. Dört bileşen ağdan biri arızalanırsa özet değişmez, bu yüzden arıza ağın geri kalanına yayılmaz.
+
+## Ön koşul: bitişik ve hizalı
+
+Özetleme yalnızca temel önekler bitişik, hizalanmış bir blok olarak atandığında temizdir. Yukarıdaki dört `/24` zarif şekilde özetlenir çünkü birlikte tam olarak `10.1.0.0/22`'dir. Aynı dört ağ `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` ve `10.7.0.0/24` olarak dağılmış olsaydı, hiçbir kısa önek yalnızca onları tanımlamazdı ve duyuracağınız herhangi bir özet, yönlendirmediğiniz adres alanını da talep ederdi.
+
+İşte bu yüzden adres planlaması ilk cihazı yapılandırmadan önce önemlidir. Konumları ve departmanları hizalanmış bloklardan atamak, [VLSM](/learn/vlsm)'nin tek bir blok içinde uyguladığı aynı disiplin, daha sonra özetlemeyi mümkün kılan şeydir. Özetleme, [üst ağ oluşturmaya](/learn/supernetting-and-aggregation) uygun bir atamanın ödülüdür.
+
+## Nerede gerçekleşir
+
+Özetleme sınırlarda yaşar. OSPF'te, alan sınır yönlendiricilerinde ve otonom sistem sınır yönlendiricilerinde yapılandırılır, çünkü bir alan içinde tam bağlantı durumu topolojisi sel gibi yayılır ve özetlenemez. EIGRP neredeyse herhangi bir arayüzde özetleyebilir. BGP'de toplama, belirli önekleri diğer otonom sistemlere duyurmadan önce çevreleyen bir rotada birleştirir, ki bu büyük ölçüde küresel yönlendirme tablosunun atanmış ağ sayısından çok daha küçük olmasının nedenidir.
+
+## Kara delik tuzağı
+
+Tam kontrol etmediğiniz bir aralığı özetlemek tehlikelidir. `10.0.0.0/16` duyurur ama gerçekte yalnızca `10.0.1.0/24` yönlendirirseniz, o /16'daki diğer herhangi bir adresten gelen trafik size çekilir ve sonra atılır, çünkü ağa ulaşamayacağınız adreslere ulaşabileceğinizi söylediniz. Ters arıza da vardır: çok dar bir özet, gerçek ağlarınızdan bazılarını ulaşılamaz kılar.
+
+Bir özeti duyurmadan önce denetleyin. Sahip olduğunuz öneklerin bitişik olduğunu, özetin sınırına hizalandığını ve özetin onların ötesine geçmediğini doğrulayın. [CIDR hesaplayıcısı](/#cidr) her iki yarımla da yardımcı olur: bir önek listesini Üst ağ modunda toplayın ve Çakışma / boşluk modunda çakışmaları veya doldurulmamış boşlukları ortaya çıkarın.

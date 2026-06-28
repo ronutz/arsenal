@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Résumé de routes"
+summary: "Pourquoi une seule route de résumé peut remplacer de nombreuses routes spécifiques, l'attribution contiguë et alignée dont elle dépend, et le risque de trou noir lorsqu'on résume une plage qu'on ne possède pas entièrement."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Une route au lieu de plusieurs
+
+Un routeur qui atteint `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` et `10.1.3.0/24` via le même saut suivant n'a pas besoin d'annoncer quatre routes. Il peut annoncer un seul résumé, `10.1.0.0/22`, qui couvre les quatre. Chaque voisin ne porte alors qu'une seule entrée au lieu de quatre. Le **résumé de routes** est cette pratique appliquée aux frontières d'un réseau : agréger ce que vous connaissez dans le préfixe le plus court qui le décrit encore précisément.
+
+Le bénéfice s'accumule. Moins de routes, c'est moins de mémoire sur chaque équipement en aval, des mises à jour plus petites et plus rapides et, surtout, de la *stabilité*. Si l'un des quatre réseaux composants tombe, le résumé ne change pas, donc la panne ne se propage pas au reste du réseau.
+
+## Le prérequis : contiguë et alignée
+
+Le résumé n'est propre que lorsque les préfixes sous-jacents ont été attribués comme un bloc contigu et aligné. Les quatre `/24` ci-dessus se résument élégamment parce qu'ensemble ils valent exactement `10.1.0.0/22`. Si les quatre mêmes réseaux avaient été dispersés comme `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` et `10.7.0.0/24`, aucun préfixe court ne les décrirait seuls, et tout résumé que vous annonceriez revendiquerait aussi un espace d'adressage que vous ne routez pas.
+
+C'est pourquoi la planification d'adressage compte avant de configurer le premier équipement. Attribuer sites et services à partir de blocs alignés, la même discipline que [VLSM](/learn/vlsm) impose à l'intérieur d'un seul bloc, est ce qui rend le résumé possible ensuite. Le résumé est la récompense d'une attribution apte au [supernetting](/learn/supernetting-and-aggregation).
+
+## Où il se produit
+
+Le résumé vit aux frontières. Dans OSPF, il se configure sur les routeurs de bordure de zone et sur les routeurs de bordure de système autonome, car à l'intérieur d'une zone la topologie d'état de liens complète est inondée et ne peut pas être résumée. EIGRP peut résumer sur presque n'importe quelle interface. Dans BGP, l'agrégation combine des préfixes spécifiques en une route englobante avant de les annoncer à d'autres systèmes autonomes, ce qui explique en grande partie pourquoi la table de routage globale est bien plus petite que le nombre de réseaux attribués.
+
+## Le piège du trou noir
+
+Résumer une plage que vous ne contrôlez pas entièrement est dangereux. Si vous annoncez `10.0.0.0/16` mais ne routez réellement que `10.0.1.0/24`, le trafic de toute autre adresse de ce /16 est attiré vers vous puis abandonné, parce que vous avez dit au réseau que vous pouviez atteindre des adresses que vous ne pouvez pas. La panne inverse existe aussi : un résumé trop étroit rend certains de vos vrais réseaux inaccessibles.
+
+Auditez un résumé avant de l'annoncer. Vérifiez que les préfixes que vous possédez sont contigus, qu'ils s'alignent sur la limite du résumé et que le résumé ne s'étend pas au-delà d'eux. La [calculatrice CIDR](/#cidr) aide pour les deux moitiés : agrégez une liste de préfixes en mode Super-réseau et révélez les chevauchements ou les vides non comblés en mode Chevauchement / vide.

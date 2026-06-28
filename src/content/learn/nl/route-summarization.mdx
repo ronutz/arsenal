@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Route-samenvatting"
+summary: "Waarom één samenvattende route veel specifieke kan vervangen, de aaneengesloten en uitgelijnde toewijzing waarvan ze afhangt, en het blackhole-risico bij het samenvatten van een bereik dat je niet volledig bezit."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Eén route in plaats van vele
+
+Een router die `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` en `10.1.3.0/24` via dezelfde volgende hop bereikt, hoeft geen vier routes aan te kondigen. Hij kan één samenvatting aankondigen, `10.1.0.0/22`, die alle vier dekt. Elke buur draagt dan één enkele vermelding in plaats van vier. **Route-samenvatting** is deze praktijk toegepast op de grenzen van een netwerk: samenvoegen wat je kent in het kortste prefix dat het nog nauwkeurig beschrijft.
+
+Het voordeel stapelt op. Minder routes betekent minder geheugen op elk stroomafwaarts apparaat, kleinere en snellere updates en, het belangrijkst, *stabiliteit*. Als een van de vier samenstellende netwerken uitvalt, verandert de samenvatting niet, dus de storing verspreidt zich niet naar de rest van het netwerk.
+
+## De voorwaarde: aaneengesloten en uitgelijnd
+
+De samenvatting is alleen netjes wanneer de onderliggende prefixes als een aaneengesloten, uitgelijnd blok zijn toegewezen. De vier `/24` hierboven vatten elegant samen omdat ze samen precies `10.1.0.0/22` zijn. Waren diezelfde vier netwerken verspreid als `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` en `10.7.0.0/24`, dan zou geen kort prefix alleen hen beschrijven, en elke samenvatting die je aankondigt zou ook adresruimte claimen die je niet routeert.
+
+Daarom doet adresplanning ertoe vóór je het eerste apparaat configureert. Locaties en afdelingen toewijzen vanuit uitgelijnde blokken, dezelfde discipline die [VLSM](/learn/vlsm) binnen één enkel blok afdwingt, is wat de samenvatting later mogelijk maakt. De samenvatting is de beloning voor een [supernetting](/learn/supernetting-and-aggregation)-geschikte toewijzing.
+
+## Waar ze gebeurt
+
+De samenvatting leeft op de grenzen. In OSPF wordt ze geconfigureerd op area-border-routers en op autonomous-system-border-routers, omdat binnen een area de volledige link-state-topologie wordt overstroomd en niet kan worden samengevat. EIGRP kan op vrijwel elke interface samenvatten. In BGP combineert aggregatie specifieke prefixes tot een omhullende route voordat ze aan andere autonome systemen worden aangekondigd, wat een groot deel is van waarom de mondiale routeringstabel veel kleiner is dan het aantal toegewezen netwerken.
+
+## De blackhole-val
+
+Een bereik samenvatten dat je niet volledig beheert is gevaarlijk. Als je `10.0.0.0/16` aankondigt maar werkelijk alleen `10.0.1.0/24` routeert, wordt het verkeer van elk ander adres in dat /16 naar je toe getrokken en dan weggegooid, omdat je het netwerk hebt verteld dat je adressen kunt bereiken die je niet kunt bereiken. De omgekeerde fout bestaat ook: een te smalle samenvatting maakt sommige van je echte netwerken onbereikbaar.
+
+Controleer een samenvatting voordat je ze aankondigt. Bevestig dat de prefixes die je bezit aaneengesloten zijn, dat ze uitlijnen op de grens van de samenvatting en dat de samenvatting niet verder reikt dan zij. De [CIDR-calculator](/#cidr) helpt bij beide helften: aggregeer een lijst prefixes in de Supernet-modus en leg overlappingen of ongevulde gaten bloot in de modus Overlap / gat.

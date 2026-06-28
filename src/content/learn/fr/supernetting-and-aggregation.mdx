@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting et agrégation de routes"
+summary: "Comment des préfixes contigus se combinent en un seul plus court, la règle d'alignement qui décide si deux blocs peuvent fusionner, et la différence entre l'agrégation exacte et un seul super-réseau qui les couvre."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Le supernetting, c'est le découpage en sous-réseaux à l'envers
+
+Le découpage en sous-réseaux fixe plus de bits pour obtenir un bloc plus petit. Le supernetting fait l'inverse : il fixe moins de bits pour qu'un seul préfixe couvre plusieurs blocs plus petits. Prenons deux blocs adjacents, `192.168.0.0/24` et `192.168.1.0/24`. Ensemble ils s'étendent de `192.168.0.0` à `192.168.1.255`, ce qui est exactement la plage de `192.168.0.0/23`. Retirez un bit de préfixe, de /24 à /23, et une seule route décrit désormais les deux blocs.
+
+C'est le moteur derrière l'**agrégation de routes**, aussi appelée résumé : remplacer une liste de préfixes spécifiques par un seul préfixe plus court qui les couvre tous.
+
+## La règle pour combiner deux blocs
+
+Deux blocs fusionnent en un seul lorsqu'ils forment une *paire jumelle* : de même taille, adjacents, et avec le bloc inférieur situé sur la limite du bloc combiné. `192.168.0.0/24` et `192.168.1.0/24` conviennent, car `192.168.0.0` est un réseau `/23` valide. Mais `192.168.1.0/24` et `192.168.2.0/24` **ne** se combinent **pas**, même s'ils semblent adjacents. `192.168.1.0` n'est pas une limite `/23` (le /23 qui le contient commence à `192.168.0.0`), donc il n'existe aucun /23 unique contenant exactement ces deux blocs et rien d'autre.
+
+L'alignement, et non la simple adjacence, est ce qui fait fonctionner l'agrégation. C'est la même règle de limites de puissance de deux qui régit le découpage en sous-réseaux, lue à l'envers.
+
+## Agrégation exacte ou super-réseau unique
+
+Lorsque vos préfixes ne sont pas tous contigus, il y a deux réponses distinctes, et ce ne sont pas les mêmes.
+
+L'**ensemble couvrant minimal** est la liste la plus courte de préfixes qui couvre exactement vos entrées et rien de plus. Avec `10.0.0.0/24` et `10.0.2.0/24`, il y a un vide en `10.0.1.0/24`, donc ils ne peuvent pas fusionner : l'ensemble minimal reste les deux blocs `/24`.
+
+Le **super-réseau unique** est le seul préfixe le plus petit qui contient chaque entrée, même s'il entraîne des adresses que vous n'avez pas listées. Pour ces deux mêmes blocs c'est `10.0.0.0/22`, qui s'étend de `10.0.0.0` à `10.0.3.255`. Il couvre les deux entrées mais ajoute aussi `10.0.1.0/24` et `10.0.3.0/24`, 512 adresses supplémentaires que vous ne possédez peut-être pas.
+
+N'annoncez le super-réseau unique que si vous contrôlez réellement toute la plage. Sinon, vous résumez sur un espace d'adressage qui appartient à quelqu'un d'autre.
+
+## Pourquoi c'est important
+
+L'agrégation est ce qui garde les tables de routage petites. Une route de résumé au lieu de dizaines de routes spécifiques, c'est moins de mémoire sur chaque routeur qui l'écoute, et bien moins d'instabilité quand un seul lien composant tombe. Le revers, c'est que cela ne fonctionne que si les adresses ont été attribuées de façon contiguë et sur des limites alignées dès le départ, ce qui explique pourquoi un découpage en sous-réseaux discipliné et [VLSM](/learn/vlsm) portent leurs fruits plus tard sous la forme d'un [résumé de routes](/learn/route-summarization) propre.
+
+Vous pouvez tester les deux réponses dans la [calculatrice CIDR](/#cidr) : son mode Super-réseau affiche l'ensemble couvrant minimal et le super-réseau englobant unique, avec le décompte exact des adresses supplémentaires que le super-réseau ajouterait.

@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting und Routenaggregation"
+summary: "Wie zusammenhängende Präfixe sich zu einem kürzeren verbinden, die Ausrichtungsregel, die entscheidet, ob zwei Blöcke verschmelzen können, und der Unterschied zwischen exakter Aggregation und einem einzelnen Supernetz, das sie abdeckt."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Supernetting ist Subnetting rückwärts
+
+Subnetting legt mehr Bits fest, um einen kleineren Block zu erhalten. Supernetting macht das Gegenteil: Es legt weniger Bits fest, damit ein einzelnes Präfix mehrere kleinere abdeckt. Nehmen wir zwei benachbarte Blöcke, `192.168.0.0/24` und `192.168.1.0/24`. Zusammen reichen sie von `192.168.0.0` bis `192.168.1.255`, was genau dem Bereich von `192.168.0.0/23` entspricht. Entferne ein Präfix-Bit, von /24 auf /23, und eine einzige Route beschreibt nun beide Blöcke.
+
+Das ist der Motor hinter der **Routenaggregation**, auch Zusammenfassung genannt: eine Liste spezifischer Präfixe durch ein einzelnes kürzeres Präfix ersetzen, das sie alle abdeckt.
+
+## Die Regel zum Kombinieren zweier Blöcke
+
+Zwei Blöcke verschmelzen zu einem, wenn sie ein *Geschwisterpaar* bilden: gleich groß, benachbart und mit dem unteren Block an der Grenze des kombinierten Blocks. `192.168.0.0/24` und `192.168.1.0/24` erfüllen das, weil `192.168.0.0` ein gültiges `/23`-Netz ist. Aber `192.168.1.0/24` und `192.168.2.0/24` lassen sich **nicht** kombinieren, auch wenn sie benachbart wirken. `192.168.1.0` ist keine `/23`-Grenze (das /23, das es enthält, beginnt bei `192.168.0.0`), also gibt es kein einzelnes /23, das genau diese beiden Blöcke und sonst nichts enthält.
+
+Die Ausrichtung, nicht die bloße Nachbarschaft, ist das, was die Aggregation funktionieren lässt. Es ist dieselbe Zweierpotenz-Grenzregel, die das Subnetting bestimmt, nur rückwärts gelesen.
+
+## Exakte Aggregation oder ein einzelnes Supernetz
+
+Wenn deine Präfixe nicht alle zusammenhängend sind, gibt es zwei verschiedene Antworten, und sie sind nicht dasselbe.
+
+Die **minimale abdeckende Menge** ist die kürzeste Liste von Präfixen, die genau deine Eingaben und sonst nichts abdeckt. Bei `10.0.0.0/24` und `10.0.2.0/24` gibt es eine Lücke bei `10.0.1.0/24`, sie können also nicht verschmelzen: Die minimale Menge bleibt die beiden `/24`-Blöcke.
+
+Das **einzelne Supernetz** ist das eine kleinste Präfix, das jede Eingabe enthält, auch wenn es Adressen mitzieht, die du nicht aufgelistet hast. Für dieselben beiden Blöcke ist das `10.0.0.0/22`, das von `10.0.0.0` bis `10.0.3.255` reicht. Es deckt beide Eingaben ab, fügt aber auch `10.0.1.0/24` und `10.0.3.0/24` hinzu, 512 zusätzliche Adressen, die dir vielleicht nicht gehören.
+
+Kündige das einzelne Supernetz nur an, wenn du den gesamten Bereich tatsächlich kontrollierst. Andernfalls fasst du über Adressraum zusammen, der jemand anderem gehört.
+
+## Warum das wichtig ist
+
+Aggregation ist das, was Routing-Tabellen klein hält. Eine zusammenfassende Route statt Dutzender spezifischer bedeutet weniger Speicher auf jedem Router, der sie hört, und weit weniger Instabilität, wenn ein einzelnes beteiligtes Glied ausfällt. Der Haken ist, dass das nur funktioniert, wenn die Adressen von Anfang an zusammenhängend und an ausgerichteten Grenzen vergeben wurden, weshalb diszipliniertes Subnetting und [VLSM](/learn/vlsm) sich später als saubere [Routenzusammenfassung](/learn/route-summarization) auszahlen.
+
+Du kannst beide Antworten im [CIDR-Rechner](/#cidr) ausprobieren: Sein Supernetz-Modus zeigt die minimale abdeckende Menge und das umschließende einzelne Supernetz, mit der genauen Anzahl zusätzlicher Adressen, die das Supernetz hinzufügen würde.

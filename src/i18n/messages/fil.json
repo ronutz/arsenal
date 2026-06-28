@@ -92,7 +92,90 @@
         "invalid": "Mukhang hindi ito wastong CIDR block. Sumubok ng format na tulad ng 192.168.1.0/24."
       },
       "name": "CIDR / Subnet Calculator",
-      "blurb": "Hatiin ang anumang IPv4 CIDR block sa network at broadcast na mga address, magagamit na host range, bilang ng host, at netmask. Tumatakbo nang buo sa iyong browser."
+      "blurb": "Hatiin ang anumang IPv4 CIDR block sa network at broadcast na mga address, magagamit na host range, bilang ng host, at netmask. Tumatakbo nang buo sa iyong browser.",
+      "modes": {
+        "subnet": "Subnet",
+        "vlsm": "VLSM",
+        "supernet": "Supernet",
+        "overlap": "Overlap / gap"
+      },
+      "modeDesc": {
+        "subnet": "Sinusuri ang isang IPv4 CIDR block: network, broadcast, mask, at host range.",
+        "vlsm": "Hinahati ang parent block sa mga subnet na iba't ibang laki ayon sa listahan ng bilang ng host.",
+        "supernet": "Binubuod ang listahan ng mga prefix sa pinakamaliit na set ng mga covering block.",
+        "overlap": "Naghahanap ng overlap at containment sa pagitan ng mga prefix, at mga gap sa loob ng opsyonal na scope."
+      },
+      "vlsm": {
+        "parentLabel": "Parent block",
+        "reqsLabel": "Mga subnet requirement",
+        "namePlaceholder": "Pangalan (opsyonal)",
+        "hostsPlaceholder": "Mga host",
+        "addRow": "Magdagdag ng subnet",
+        "remove": "Alisin",
+        "run": "Maglaan",
+        "th": {
+          "name": "Pangalan",
+          "hosts": "Mga host",
+          "network": "Network",
+          "prefix": "Prefix",
+          "netmask": "Network mask",
+          "range": "Usable range",
+          "broadcast": "Broadcast",
+          "usable": "Usable na host"
+        },
+        "stat": {
+          "parent": "Parent",
+          "used": "Nagamit",
+          "free": "Libre",
+          "utilization": "Paggamit"
+        },
+        "unfit": "Hindi kasya",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Mga prefix na i-aggregate",
+        "run": "I-aggregate",
+        "minimal": "Pinakamaliit na covering set",
+        "single": "Iisang supernet",
+        "singleExtra": "Nagdaragdag ng {extra} dagdag na address higit sa input.",
+        "stat": {
+          "inputs": "Mga input prefix",
+          "addresses": "Mga address",
+          "blocks": "Mga na-aggregate na block"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Mga prefix na susuriin",
+        "scopeLabel": "Scope (opsyonal, pinagana ang gap detection)",
+        "run": "Suriin",
+        "overlapsTitle": "Mga overlap",
+        "noOverlaps": "Walang nakitang overlap.",
+        "gapsTitle": "Mga gap sa scope",
+        "noGaps": "Walang gap sa ibinigay na scope.",
+        "kind": {
+          "identical": "kapareho ng",
+          "contains": "naglalaman ng",
+          "contained": "nasa loob ng",
+          "partial": "bahagyang nag-o-overlap sa"
+        },
+        "addresses": "na address",
+        "stat": {
+          "covered": "Saklaw",
+          "scope": "Scope"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Hindi valid na IPv4 address. Gumamit ng apat na octet na 0-255, gaya ng 192.168.1.0.",
+        "octet": "May octet na wala sa range (dapat 0-255 ang bawat isa).",
+        "format": "Inaasahan ang format na A.B.C.D/prefix, gaya ng 192.168.1.0/24.",
+        "prefix": "Ang haba ng prefix ay dapat nasa pagitan ng 0 at 32.",
+        "tooMany": "Masyadong maraming entry. Paikliin ang listahan at subukan ulit.",
+        "noReqs": "Magdagdag ng kahit isang subnet requirement na may bilang ng host.",
+        "noPrefixes": "Maglagay ng kahit isang prefix, isa kada linya."
+      }
     },
     "title": "Mga Tool",
     "lede": "Maliliit, mabibilis, at gumagalang-sa-privacy na mga tool na tumatakbo nang buo sa iyong browser. Ang ini-input mo ay hindi ipinapadala kahit saan. May darating pang iba.",

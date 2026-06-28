@@ -92,7 +92,90 @@
         "invalid": "Das sieht nicht nach einem gültigen CIDR-Block aus. Versuchen Sie ein Format wie 192.168.1.0/24."
       },
       "name": "CIDR-/Subnetz-Rechner",
-      "blurb": "Zerlegen Sie einen beliebigen IPv4-CIDR-Block in Netzwerk- und Broadcast-Adressen, den nutzbaren Host-Bereich, die Host-Anzahl und die Netzmaske. Läuft vollständig in Ihrem Browser."
+      "blurb": "Zerlegen Sie einen beliebigen IPv4-CIDR-Block in Netzwerk- und Broadcast-Adressen, den nutzbaren Host-Bereich, die Host-Anzahl und die Netzmaske. Läuft vollständig in Ihrem Browser.",
+      "modes": {
+        "subnet": "Subnetz",
+        "vlsm": "VLSM",
+        "supernet": "Supernetz",
+        "overlap": "Überschneidung / Lücke"
+      },
+      "modeDesc": {
+        "subnet": "Analysiert einen einzelnen IPv4-CIDR-Block: Netz, Broadcast, Maske und Host-Bereich.",
+        "vlsm": "Teilt einen übergeordneten Block in Subnetze variabler Länge passend zu einer Liste von Host-Zahlen.",
+        "supernet": "Fasst eine Liste von Präfixen zur kleinsten Menge abdeckender Blöcke zusammen.",
+        "overlap": "Findet Überschneidungen und Verschachtelungen zwischen Präfixen sowie Lücken innerhalb eines optionalen Bereichs."
+      },
+      "vlsm": {
+        "parentLabel": "Übergeordneter Block",
+        "reqsLabel": "Subnetz-Anforderungen",
+        "namePlaceholder": "Name (optional)",
+        "hostsPlaceholder": "Hosts",
+        "addRow": "Subnetz hinzufügen",
+        "remove": "Entfernen",
+        "run": "Zuweisen",
+        "th": {
+          "name": "Name",
+          "hosts": "Hosts",
+          "network": "Netz",
+          "prefix": "Präfix",
+          "netmask": "Netzmaske",
+          "range": "Nutzbarer Bereich",
+          "broadcast": "Broadcast",
+          "usable": "Nutzbare Hosts"
+        },
+        "stat": {
+          "parent": "Übergeordnet",
+          "used": "Belegt",
+          "free": "Frei",
+          "utilization": "Auslastung"
+        },
+        "unfit": "Nicht passend",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Zu aggregierende Präfixe",
+        "run": "Aggregieren",
+        "minimal": "Minimale abdeckende Menge",
+        "single": "Einzelnes Supernetz",
+        "singleExtra": "Fügt {extra} zusätzliche Adressen über die Eingaben hinaus hinzu.",
+        "stat": {
+          "inputs": "Eingabepräfixe",
+          "addresses": "Adressen",
+          "blocks": "Aggregierte Blöcke"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Zu prüfende Präfixe",
+        "scopeLabel": "Bereich (optional, aktiviert die Lückenerkennung)",
+        "run": "Prüfen",
+        "overlapsTitle": "Überschneidungen",
+        "noOverlaps": "Keine Überschneidungen gefunden.",
+        "gapsTitle": "Lücken im Bereich",
+        "noGaps": "Keine Lücken im angegebenen Bereich.",
+        "kind": {
+          "identical": "identisch mit",
+          "contains": "enthält",
+          "contained": "liegt in",
+          "partial": "überschneidet teilweise"
+        },
+        "addresses": "Adressen",
+        "stat": {
+          "covered": "Abgedeckt",
+          "scope": "Bereich"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Keine gültige IPv4-Adresse. Verwende vier Oktette von 0 bis 255, etwa 192.168.1.0.",
+        "octet": "Ein Oktett liegt außerhalb des Bereichs (jedes muss zwischen 0 und 255 liegen).",
+        "format": "Erwartet wird die Form A.B.C.D/Präfix, etwa 192.168.1.0/24.",
+        "prefix": "Die Präfixlänge muss zwischen 0 und 32 liegen.",
+        "tooMany": "Zu viele Einträge. Kürze die Liste und versuche es erneut.",
+        "noReqs": "Füge mindestens eine Subnetz-Anforderung mit einer Host-Zahl hinzu.",
+        "noPrefixes": "Gib mindestens ein Präfix ein, eines pro Zeile."
+      }
     },
     "title": "Werkzeuge",
     "lede": "Kleine, schnelle, datenschutzfreundliche Dienstprogramme, die vollständig in Ihrem Browser laufen. Nichts, was Sie eingeben, wird irgendwohin gesendet. Weitere sind in Arbeit.",

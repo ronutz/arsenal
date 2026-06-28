@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Sobreposições e lacunas de sub-redes"
+summary: "O que significa dois prefixos se sobreporem ou um conter o outro, por que a correspondência de prefixo mais longo torna algumas sobreposições intencionais, e como encontrar as lacunas não atribuídas de um plano de endereços."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Três coisas que dão errado em um plano de endereços
+
+À medida que um plano de endereços cresce, três problemas se infiltram: dois prefixos que **se sobrepõem**, um prefixo que **contém** outro, e **lacunas** de espaço de endereços que ninguém atribuiu. Os dois primeiros tratam de prefixos que reivindicam os mesmos endereços; o terceiro, de endereços que nenhum prefixo reivindica. Uma boa auditoria encontra os três.
+
+## Sobreposição e contenção
+
+Dois prefixos se sobrepõem quando compartilham ao menos um endereço. Há algumas formas distintas:
+
+- **Idêntico**: o mesmo bloco listado duas vezes, muitas vezes um erro de copiar e colar.
+- **Contenção**: um bloco está inteiramente dentro de outro. `10.0.0.0/24` contém `10.0.0.128/25`, porque o /25 é a metade superior do /24.
+- **Parcial**: dois intervalos compartilham alguns endereços mas nenhum contém o outro. Dois blocos CIDR corretos nunca se sobrepõem assim. Dois blocos alinhados de potência de dois quaisquer são disjuntos ou totalmente aninhados, um inteiramente dentro do outro, que é exatamente por que o endereçamento CIDR forma uma hierarquia limpa. Uma sobreposição parcial só aparece quando uma entrada não é um bloco alinhado.
+
+A contenção nem sempre é um erro. Os roteadores encaminham usando a **correspondência de prefixo mais longo**: vence a rota mais específica que corresponde a um destino. Um `/25` específico anunciado dentro de um `/24` sumarizado é um padrão deliberado e comum, usado para direcionar uma parte do tráfego de forma diferente. O perigo é a sobreposição *não intencional*, em que duas partes da sua rede acreditam ambas possuir os mesmos endereços e o tráfego aterrissa no lugar errado.
+
+## Lacunas
+
+Uma lacuna é um trecho de um bloco pai que nenhuma sub-rede cobre. Suponha que você recortou `10.0.0.0/26` e `10.0.0.128/26` de `10.0.0.0/24`. Entre eles e depois, `10.0.0.64/26` e `10.0.0.192/26` ficam não atribuídos. Esses dois blocos são suas lacunas: espaço de endereços que você ainda pode atribuir, reivindicar ou simplesmente contabilizar.
+
+Encontrar lacunas importa por dois motivos. Mostra onde há espaço para crescer sem renumerar, e confirma que um bloco que você pretende sumarizar está de fato em uso por completo, já que um resumo anunciado sobre uma lacuna reivindica endereços que você não atribuiu.
+
+## Auditar um plano
+
+Para revisar um plano, liste cada prefixo que você atribuiu e dê o bloco pai como escopo. Um relatório de sobreposições diz quais prefixos colidem e como; um relatório de lacunas diz exatamente quais blocos CIDR dentro do pai continuam livres. A [calculadora CIDR](/#cidr) faz ambos no modo Sobreposição / lacuna, rotulando cada sobreposição como idêntica, contida ou parcial, e expressando cada lacuna como os maiores blocos alinhados que a preenchem.
+
+Ambas as metades se conectam de volta ao [supernetting](/learn/supernetting-and-aggregation): um plano de endereços sem sobreposições não intencionais e sem lacunas dentro de um bloco é exatamente o plano que sumariza de forma limpa.

@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting e aggregazione di rotte"
+summary: "Come prefissi contigui si combinano in uno più corto, la regola di allineamento che decide se due blocchi possono fondersi, e la differenza tra l'aggregazione esatta e un'unica superrete che li copra."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Il supernetting è il subnetting al contrario
+
+Il subnetting fissa più bit per ottenere un blocco più piccolo. Il supernetting fa l'opposto: fissa meno bit affinché un unico prefisso copra diversi blocchi più piccoli. Prendiamo due blocchi adiacenti, `192.168.0.0/24` e `192.168.1.0/24`. Insieme coprono da `192.168.0.0` a `192.168.1.255`, che è esattamente l'intervallo di `192.168.0.0/23`. Togli un bit di prefisso, da /24 a /23, e una sola rotta descrive ora entrambi i blocchi.
+
+Questo è il motore dietro l'**aggregazione di rotte**, detta anche sommarizzazione: sostituire un elenco di prefissi specifici con un unico prefisso più corto che li copra tutti.
+
+## La regola per combinare due blocchi
+
+Due blocchi si fondono in uno solo quando formano una *coppia gemella*: della stessa dimensione, adiacenti e con il blocco inferiore posto sul confine del blocco combinato. `192.168.0.0/24` e `192.168.1.0/24` soddisfano la regola, perché `192.168.0.0` è una rete `/23` valida. Ma `192.168.1.0/24` e `192.168.2.0/24` **non** si combinano, pur sembrando adiacenti. `192.168.1.0` non è un confine `/23` (il /23 che lo contiene inizia a `192.168.0.0`), quindi non esiste un unico /23 che contenga esattamente quei due blocchi e nient'altro.
+
+L'allineamento, non la semplice adiacenza, è ciò che fa funzionare l'aggregazione. È la stessa regola dei confini di potenza di due che governa il subnetting, letta al contrario.
+
+## Aggregazione esatta o un'unica superrete
+
+Quando i tuoi prefissi non sono tutti contigui, ci sono due risposte distinte, e non sono la stessa cosa.
+
+L'**insieme di copertura minimo** è l'elenco più corto di prefissi che copre esattamente i tuoi input e nient'altro. Dati `10.0.0.0/24` e `10.0.2.0/24`, c'è un vuoto in `10.0.1.0/24`, quindi non possono fondersi: l'insieme minimo resta i due blocchi `/24`.
+
+La **superrete unica** è l'unico prefisso più piccolo che contiene ogni input, anche se trascina indirizzi che non hai elencato. Per quegli stessi due blocchi è `10.0.0.0/22`, che copre da `10.0.0.0` a `10.0.3.255`. Copre entrambi gli input ma aggiunge anche `10.0.1.0/24` e `10.0.3.0/24`, 512 indirizzi aggiuntivi che potresti non possedere.
+
+Annuncia la superrete unica solo quando controlli davvero l'intero intervallo. Altrimenti, stai sommarizzando su uno spazio di indirizzi che appartiene a qualcun altro.
+
+## Perché è importante
+
+L'aggregazione è ciò che mantiene piccole le tabelle di routing. Una rotta di riepilogo al posto di decine di rotte specifiche significa meno memoria su ogni router che la ascolta, e molta meno instabilità quando un singolo collegamento componente cade. Lo svantaggio è che funziona solo se gli indirizzi sono stati assegnati in modo contiguo e su confini allineati fin dall'inizio, motivo per cui un subnetting disciplinato e [VLSM](/learn/vlsm) danno frutti più tardi sotto forma di una [sommarizzazione di rotte](/learn/route-summarization) pulita.
+
+Puoi provare entrambe le risposte nella [calcolatrice CIDR](/#cidr): la sua modalità Superrete mostra l'insieme di copertura minimo e la superrete avvolgente unica, con il conteggio esatto degli indirizzi aggiuntivi che la superrete aggiungerebbe.

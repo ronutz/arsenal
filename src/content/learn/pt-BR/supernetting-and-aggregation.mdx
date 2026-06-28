@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting e agregação de rotas"
+summary: "Como prefixos contíguos se combinam em um mais curto, a regra de alinhamento que decide se dois blocos podem se fundir, e a diferença entre a agregação exata e uma única super-rede que os cubra."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## O supernetting é o sub-redeamento ao contrário
+
+O sub-redeamento fixa mais bits para tornar um bloco menor. O supernetting faz o oposto: fixa menos bits para que um único prefixo cubra vários menores. Tome dois blocos adjacentes, `192.168.0.0/24` e `192.168.1.0/24`. Juntos abrangem de `192.168.0.0` a `192.168.1.255`, que é exatamente a faixa de `192.168.0.0/23`. Remova um bit de prefixo, de /24 para /23, e uma única rota descreve agora ambos os blocos.
+
+Este é o motor por trás da **agregação de rotas**, também chamada de sumarização: substituir uma lista de prefixos específicos por um único prefixo mais curto que cubra todos eles.
+
+## A regra para combinar dois blocos
+
+Dois blocos se fundem em um só quando formam um *par irmão*: do mesmo tamanho, adjacentes e com o bloco inferior posicionado no limite do bloco combinado. `192.168.0.0/24` e `192.168.1.0/24` atendem, porque `192.168.0.0` é uma rede `/23` válida. Mas `192.168.1.0/24` e `192.168.2.0/24` **não** se combinam, mesmo parecendo adjacentes. `192.168.1.0` não é um limite `/23` (o /23 que o contém começa em `192.168.0.0`), então não há um único /23 que contenha exatamente esses dois blocos e nada mais.
+
+O alinhamento, não a mera adjacência, é o que faz a agregação funcionar. É a mesma regra de limites de potência de dois que rege o sub-redeamento, lida no sentido inverso.
+
+## Agregação exata versus uma única super-rede
+
+Quando seus prefixos não são todos contíguos, há duas respostas distintas, e elas não são a mesma coisa.
+
+O **conjunto mínimo de cobertura** é a lista mais curta de prefixos que cobre exatamente suas entradas e nada mais. Dados `10.0.0.0/24` e `10.0.2.0/24`, há uma lacuna em `10.0.1.0/24`, então eles não podem se fundir: o conjunto mínimo continua sendo os dois blocos `/24`.
+
+A **super-rede única** é o único prefixo menor que contém cada entrada, mesmo que arraste endereços que você não listou. Para esses mesmos dois blocos é `10.0.0.0/22`, que abrange de `10.0.0.0` a `10.0.3.255`. Cobre ambas as entradas mas também adiciona `10.0.1.0/24` e `10.0.3.0/24`, 512 endereços adicionais que você talvez não possua.
+
+Anuncie a super-rede única apenas quando você de fato controla a faixa inteira. Caso contrário, você sumariza sobre espaço de endereços que pertence a outra pessoa.
+
+## Por que isso importa
+
+A agregação é o que mantém as tabelas de roteamento pequenas. Uma rota resumo no lugar de dezenas de específicas significa menos memória em cada roteador que a escuta, e muito menos instabilidade quando um único enlace componente falha. O porém é que isso só funciona se os endereços foram atribuídos de forma contígua e em limites alinhados desde o início, razão pela qual um sub-redeamento disciplinado e [VLSM](/learn/vlsm) dão frutos mais tarde como uma [sumarização de rotas](/learn/route-summarization) limpa.
+
+Você pode testar ambas as respostas na [calculadora CIDR](/#cidr): seu modo Super-rede mostra o conjunto mínimo de cobertura e a super-rede envolvente única, com a contagem exata de endereços adicionais que a super-rede acrescentaria.

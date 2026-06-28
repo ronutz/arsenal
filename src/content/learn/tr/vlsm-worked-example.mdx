@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Baştan sona çözülmüş bir VLSM ataması"
+summary: "Gerçekçi bir ağ için değişken uzunluklu alt ağların eksiksiz bir ataması: her segmenti boyutlandırma, en büyükten en küçüğe sıralama, gerçek adresleri atama ve geriye kalan alanı hesaba katma."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Senaryo
+
+Size `172.16.0.0/22` verilir ve içine dört segment sığdırmanız gerekir:
+
+- **Satış**: 500 ana bilgisayar
+- **Mühendislik**: 200 ana bilgisayar
+- **Bağlantı A**: yönlendiriciler arası noktadan noktaya bir bağlantı, 2 ana bilgisayar
+- **Bağlantı B**: ikinci bir noktadan noktaya bağlantı, 2 ana bilgisayar
+
+Bir `/22`, 1024 adres içerir (`172.16.0.0`'dan `172.16.3.255`'e). Kavramsal kurallar [VLSM](/learn/vlsm)'de ele alınır; burada onları sonuna kadar adım adım uygularız.
+
+## Adım 1: her segmenti boyutlandırın
+
+Her sıradan blokta iki ayrılmış adresi (ağ ve yayın) hatırlayarak, her ana bilgisayar sayısını içeren en küçük bloğu bulun:
+
+- 500 ana bilgisayar 9 ana bilgisayar biti gerektirir (2⁹ − 2 = 510 kullanılabilir), bir `/23`.
+- 200 ana bilgisayar 8 ana bilgisayar biti gerektirir (254 kullanılabilir), bir `/24`.
+- 2 ana bilgisayar 2 ana bilgisayar biti gerektirir (2 kullanılabilir), bir `/30`.
+- 2 ana bilgisayar başka bir `/30` gerektirir.
+
+Bir sonraki ikinin kuvvetine yuvarlayın: 500 bir `/24`'e sığmaz (254 kullanılabilir), bu yüzden bir `/23` alır.
+
+## Adım 2: en büyükten en küçüğe sıralayın
+
+Segmentleri blok boyutuna göre sıralayın, en büyük önce, böylece her biri temiz bir sınıra iner:
+
+1. Satış, `/23` (512 adres)
+2. Mühendislik, `/24` (256)
+3. Bağlantı A, `/30` (4)
+4. Bağlantı B, `/30` (4)
+
+## Adım 3: adresleri atayın
+
+Bu sırayla atayın, her blok bir öncekinin bittiği yerde başlar:
+
+```
+/23  172.16.0.0  – .1.255   (510 kullanılabilir)  ← Satış
+/24  172.16.2.0  – .2.255   (254 kullanılabilir)  ← Mühendislik
+/30  172.16.3.0  – .3.3     (2 kullanılabilir)    ← Bağlantı A
+/30  172.16.3.4  – .3.7     (2 kullanılabilir)    ← Bağlantı B
+```
+
+Satış, bloğun ilk yarısını doldurur. Mühendislik sonraki `/24`'ü alır. Yönlendiriciler arası iki bağlantı, son `/24`'ün başında dörder adres alır.
+
+## Adım 4: geriye kalanı hesaba katın
+
+Dört segment 512 + 256 + 4 + 4 = 776 adres kullanır, `172.16.3.8`'den `172.16.3.255`'e kadar 248 boş bırakır. Bu 75.8% kullanımdır, bir sonraki bağlantı veya küçük bir alt ağ için bitişik bir boş alan kuyruğuyla, hâlâ gelecekteki bir özetleme için hizalı.
+
+## Çalışmanızı kontrol edin
+
+Bu, [CIDR hesaplayıcısının](/#cidr) VLSM modunda ürettiği atamanın tam olarak kendisidir: `172.16.0.0/22`'yi üst blok olarak ve dört ana bilgisayar sayısını girin, aynı ağları, maskeleri, aralıkları ve 75.8% kullanım rakamını tamamen tarayıcınızda hesaplanmış olarak döndürür. Bir segment sığmazsa, sessizce atılmak yerine ayrı olarak listelenir.

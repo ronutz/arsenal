@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Subnätsöverlapp och -luckor"
+summary: "Vad det betyder att två prefix överlappar eller att det ena innehåller det andra, varför longest-prefix-match gör vissa överlapp avsiktliga, och hur man hittar de otilldelade luckorna i en adressplan."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tre saker som går fel i en adressplan
+
+När en adressplan växer smyger sig tre problem in: två prefix som **överlappar**, ett prefix som **innehåller** ett annat, och **luckor** i adressutrymmet som ingen tilldelade. De två första handlar om prefix som gör anspråk på samma adresser; det tredje om adresser som inget prefix gör anspråk på. En bra granskning hittar alla tre.
+
+## Överlapp och inneslutning
+
+Två prefix överlappar när de delar minst en adress. Det finns några olika former:
+
+- **Identiskt**: samma block listat två gånger, ofta ett kopiera-klistra-fel.
+- **Inneslutning**: ett block ligger helt inuti ett annat. `10.0.0.0/24` innehåller `10.0.0.128/25`, eftersom /25 är den övre halvan av /24.
+- **Partiellt**: två intervall delar vissa adresser men inget innehåller det andra. Två korrekta CIDR-block överlappar aldrig så. Vilka två justerade tvåpotensblock som helst är antingen disjunkta eller helt nästlade, det ena helt inuti det andra, vilket är exakt varför CIDR-adressering bildar en ren hierarki. Ett partiellt överlapp uppstår bara när en indata inte är ett justerat block.
+
+Inneslutning är inte alltid ett fel. Routrar vidarebefordrar med **longest prefix match**: den mest specifika rutten som matchar en destination vinner. Ett specifikt `/25` som annonseras inom ett sammanfattat `/24` är ett avsiktligt och vanligt mönster, använt för att styra en del av trafiken annorlunda. Faran är det *oavsiktliga* överlappet, där två delar av ditt nätverk båda tror att de äger samma adresser och trafiken hamnar på fel plats.
+
+## Luckor
+
+En lucka är en del av ett överordnat block som inget subnät täcker. Anta att du skar ut `10.0.0.0/26` och `10.0.0.128/26` ur `10.0.0.0/24`. Mellan dem och efter förblir `10.0.0.64/26` och `10.0.0.192/26` otilldelade. Dessa två block är dina luckor: adressutrymme du fortfarande kan tilldela, göra anspråk på eller helt enkelt bokföra.
+
+Att hitta luckor spelar roll av två skäl. Det visar var det finns plats att växa utan att numrera om, och bekräftar att ett block du tänker sammanfatta verkligen används helt, eftersom en sammanfattning som annonseras över en lucka gör anspråk på adresser du inte tilldelat.
+
+## Granska en plan
+
+För att granska en plan, lista varje prefix du har tilldelat och ange det överordnade blocket som omfång. En överlapprapport talar om vilka prefix som krockar och hur; en luckrapport talar om exakt vilka CIDR-block inom det överordnade blocket som fortfarande är lediga. [CIDR-kalkylatorn](/#cidr) gör båda i läget Överlapp / lucka, märker varje överlapp som identiskt, inneslutet eller partiellt, och uttrycker varje lucka som de största justerade block som fyller den.
+
+Båda halvorna leder tillbaka till [supernätning](/learn/supernetting-and-aggregation): en adressplan utan oavsiktliga överlapp och utan luckor inom ett block är exakt den plan som sammanfattas rent.

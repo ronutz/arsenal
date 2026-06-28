@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Isang VLSM allocation, nalutas mula simula hanggang dulo"
+summary: "Isang kumpletong allocation ng variable-length subnet para sa isang makatotohanang network: pagsukat sa bawat segment, pag-aayos mula pinakamalaki hanggang pinakamaliit, paglalaan ng tunay na address, at pagtatala sa natitirang espasyo."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang senaryo
+
+Binigyan ka ng `172.16.0.0/22` at kailangan mong magkasya ng apat na segment sa loob:
+
+- **Sales**: 500 host
+- **Engineering**: 200 host
+- **Link A**: isang point-to-point link sa pagitan ng mga router, 2 host
+- **Link B**: pangalawang point-to-point link, 2 host
+
+Ang isang `/22` ay naglalaman ng 1024 address (`172.16.0.0` hanggang `172.16.3.255`). Saklaw ang mga konseptong patakaran sa [VLSM](/learn/vlsm); dito ay dinadaanan natin ang mga ito hanggang dulo.
+
+## Hakbang 1: sukatin ang bawat segment
+
+Hanapin ang pinakamaliit na block na naglalaman ng bawat bilang ng host, habang naaalala ang dalawang nakareserbang address (network at broadcast) sa bawat ordinaryong block:
+
+- 500 host ay nangangailangan ng 9 host bit (2⁹ − 2 = 510 na magagamit), isang `/23`.
+- 200 host ay nangangailangan ng 8 host bit (254 na magagamit), isang `/24`.
+- 2 host ay nangangailangan ng 2 host bit (2 na magagamit), isang `/30`.
+- 2 host ay nangangailangan ng isa pang `/30`.
+
+I-round up sa susunod na power of two: hindi kasya ang 500 sa isang `/24` (254 na magagamit), kaya kumukuha ito ng isang `/23`.
+
+## Hakbang 2: ayusin mula pinakamalaki hanggang pinakamaliit
+
+Ayusin ang mga segment ayon sa laki ng block, pinakamalaki muna, para mapunta ang bawat isa sa malinis na boundary:
+
+1. Sales, `/23` (512 address)
+2. Engineering, `/24` (256)
+3. Link A, `/30` (4)
+4. Link B, `/30` (4)
+
+## Hakbang 3: ilaan ang mga address
+
+Ilaan sa pagkakasunod-sunod na iyon, ang bawat block ay nagsisimula kung saan natapos ang nauna:
+
+```
+/23  172.16.0.0  – .1.255   (510 magagamit)  ← Sales
+/24  172.16.2.0  – .2.255   (254 magagamit)  ← Engineering
+/30  172.16.3.0  – .3.3     (2 magagamit)    ← Link A
+/30  172.16.3.4  – .3.7     (2 magagamit)    ← Link B
+```
+
+Pinupuno ng Sales ang unang kalahati ng block. Kinukuha ng Engineering ang susunod na `/24`. Ang dalawang link sa pagitan ng mga router ay kumukuha ng apat na address bawat isa sa simula ng huling `/24`.
+
+## Hakbang 4: itala ang natitira
+
+Gumagamit ang apat na segment ng 512 + 256 + 4 + 4 = 776 address, nag-iiwan ng 248 na malaya, mula `172.16.3.8` hanggang `172.16.3.255`. Iyon ay 75.8% na paggamit, na may magkadikit na buntot ng malayang espasyo para sa susunod na link o isang maliit na subnet, aligned pa rin para sa hinaharap na summarization.
+
+## Suriin ang iyong trabaho
+
+Ito mismo ang allocation na ginagawa ng [CIDR calculator](/#cidr) sa VLSM mode: ilagay ang `172.16.0.0/22` bilang parent block at ang apat na bilang ng host, at ibabalik nito ang parehong network, mask, range at ang 75.8% na paggamit na pigura, na ganap na kinakalkula sa iyong browser. Kung hindi kasya ang isang segment, nililista ito nang hiwalay sa halip na tahimik na itinatapon.

@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Route summarization"
+summary: "Why one summary route can replace many specific ones, the contiguous and aligned allocation it depends on, and the black-hole risk of summarizing a range you do not fully own."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## One route instead of many
+
+A router that reaches `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24`, and `10.1.3.0/24` through the same next hop does not need to advertise four routes. It can advertise one summary, `10.1.0.0/22`, that covers all four. Every neighbor then carries a single entry instead of four. **Route summarization** is this practice applied at the boundaries of a network: aggregate what you know into the shortest prefix that still describes it accurately.
+
+The benefit compounds. Fewer routes means less memory in every device downstream, smaller and faster updates, and, most importantly, *stability*. If one of the four component networks goes down, the summary does not change, so the failure is not propagated to the rest of the network.
+
+## The prerequisite: contiguous and aligned
+
+Summarization is only clean when the underlying prefixes were allocated as a contiguous, aligned block. The four `/24`s above summarize neatly because together they are exactly `10.1.0.0/22`. Had the same four networks been scattered as `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24`, and `10.7.0.0/24`, no short prefix would describe just them, and any summary you advertised would also claim address space you do not route.
+
+This is why address planning matters before the first device is configured. Allocating sites and departments from aligned blocks, the same discipline [VLSM](/learn/vlsm) enforces inside a single block, is what makes summarization possible later. Summarization is the payoff for [supernetting](/learn/supernetting-and-aggregation)-friendly allocation.
+
+## Where it happens
+
+Summarization lives at boundaries. In OSPF it is configured on area border routers and AS boundary routers, since within an area the full link-state topology is flooded and cannot be summarized. EIGRP can summarize on almost any interface. In BGP, aggregation combines specific prefixes into a covering route before advertising them to other autonomous systems, which is a large part of why the global routing table is far smaller than the number of allocated networks.
+
+## The black-hole trap
+
+Summarizing a range you do not fully control is dangerous. If you advertise `10.0.0.0/16` but only actually route `10.0.1.0/24`, traffic for every other address in that /16 is drawn toward you and then dropped, because you have told the network you can reach addresses you cannot. The reverse failure also exists: a summary that is too narrow leaves some of your real networks unreachable.
+
+Audit a summary before you advertise it. Confirm that the prefixes you own are contiguous, that they align to the summary boundary, and that the summary does not reach beyond them. The [CIDR calculator](/#cidr) helps with both halves: aggregate a prefix list in Supernet mode, and expose overlaps or unfilled gaps in Overlap / gap mode.

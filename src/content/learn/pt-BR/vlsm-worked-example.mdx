@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Uma atribuição VLSM, resolvida do início ao fim"
+summary: "Uma atribuição completa de sub-redes de comprimento variável para uma rede realista: dimensionar cada segmento, ordenar do maior para o menor, atribuir os endereços reais e contabilizar o espaço que sobra."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## O cenário
+
+Você recebe `172.16.0.0/22` e precisa encaixar quatro segmentos dentro:
+
+- **Vendas**: 500 hosts
+- **Engenharia**: 200 hosts
+- **Enlace A**: um enlace ponto a ponto entre roteadores, 2 hosts
+- **Enlace B**: um segundo enlace ponto a ponto, 2 hosts
+
+Um `/22` contém 1024 endereços (`172.16.0.0` a `172.16.3.255`). As regras conceituais são cobertas em [VLSM](/learn/vlsm); aqui as percorremos até o fim.
+
+## Passo 1: dimensionar cada segmento
+
+Encontre o menor bloco que contém cada quantidade de hosts, lembrando dos dois endereços reservados (rede e broadcast) em todo bloco comum:
+
+- 500 hosts precisam de 9 bits de host (2⁹ − 2 = 510 utilizáveis), um `/23`.
+- 200 hosts precisam de 8 bits de host (254 utilizáveis), um `/24`.
+- 2 hosts precisam de 2 bits de host (2 utilizáveis), um `/30`.
+- 2 hosts precisam de outro `/30`.
+
+Arredonde para a próxima potência de dois: 500 não cabe em um `/24` (254 utilizáveis), então pega um `/23`.
+
+## Passo 2: ordenar do maior para o menor
+
+Ordene os segmentos por tamanho de bloco, o maior primeiro, para que cada um aterrisse em um limite limpo:
+
+1. Vendas, `/23` (512 endereços)
+2. Engenharia, `/24` (256)
+3. Enlace A, `/30` (4)
+4. Enlace B, `/30` (4)
+
+## Passo 3: atribuir os endereços
+
+Atribua nessa ordem, cada bloco começando onde o anterior terminou:
+
+```
+/23  172.16.0.0  – .1.255   (510 utilizáveis)  ← Vendas
+/24  172.16.2.0  – .2.255   (254 utilizáveis)  ← Engenharia
+/30  172.16.3.0  – .3.3     (2 utilizáveis)    ← Enlace A
+/30  172.16.3.4  – .3.7     (2 utilizáveis)    ← Enlace B
+```
+
+Vendas preenche a primeira metade do bloco. Engenharia pega o `/24` seguinte. Os dois enlaces entre roteadores pegam quatro endereços cada no início do `/24` final.
+
+## Passo 4: contabilizar o que sobra
+
+Os quatro segmentos usam 512 + 256 + 4 + 4 = 776 endereços, deixando 248 livres, de `172.16.3.8` a `172.16.3.255`. Isso é 75.8% de utilização, com uma cauda contígua de espaço livre para o próximo enlace ou uma sub-rede pequena, ainda alinhada para uma futura sumarização.
+
+## Conferir seu trabalho
+
+Esta é exatamente a atribuição que a [calculadora CIDR](/#cidr) produz no modo VLSM: informe `172.16.0.0/22` como bloco pai e as quatro quantidades de hosts, e ela devolve as mesmas redes, máscaras, faixas e a cifra de 75.8% de utilização, calculada inteiramente no seu navegador. Se um segmento não couber, ele é listado separadamente em vez de ser descartado silenciosamente.

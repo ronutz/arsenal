@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Alt ağ çakışmaları ve boşlukları"
+summary: "İki önekin çakışmasının veya birinin diğerini içermesinin ne anlama geldiği, en uzun önek eşleşmesinin bazı çakışmaları neden kasıtlı kıldığı ve bir adres planının atanmamış boşluklarının nasıl bulunacağı."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Bir adres planında yanlış giden üç şey
+
+Bir adres planı büyüdükçe üç sorun sızar: **çakışan** iki önek, başka birini **içeren** bir önek ve kimsenin atamadığı adres alanındaki **boşluklar**. İlk ikisi aynı adresleri talep eden öneklerle ilgilidir; üçüncüsü hiçbir önekin talep etmediği adreslerle. İyi bir denetim üçünü de bulur.
+
+## Çakışma ve içerme
+
+İki önek, en az bir adresi paylaştığında çakışır. Birkaç farklı biçim vardır:
+
+- **Özdeş**: aynı blok iki kez listelenir, çoğu zaman bir kopyala-yapıştır hatası.
+- **İçerme**: bir blok tamamen başka birinin içinde yer alır. `10.0.0.0/24`, `10.0.0.128/25`'i içerir, çünkü /25, /24'ün üst yarısıdır.
+- **Kısmi**: iki aralık bazı adresleri paylaşır ama hiçbiri diğerini içermez. İki doğru CIDR bloğu asla böyle çakışmaz. Herhangi iki hizalanmış ikinin kuvveti bloğu ya ayrıktır ya da tamamen iç içe geçmiştir, biri tamamen diğerinin içinde, ki bu tam olarak CIDR adreslemesinin neden temiz bir hiyerarşi oluşturduğunun nedenidir. Kısmi bir çakışma yalnızca bir girdi hizalanmış bir blok olmadığında ortaya çıkar.
+
+İçerme her zaman bir hata değildir. Yönlendiriciler **en uzun önek eşleşmesini** kullanarak iletir: bir hedefle eşleşen en belirli rota kazanır. Özetlenmiş bir `/24` içinde duyurulan belirli bir `/25`, trafiğin bir kısmını farklı yönlendirmek için kullanılan kasıtlı ve yaygın bir kalıptır. Tehlike, *kasıtsız* çakışmadır, burada ağınızın iki parçası da aynı adreslere sahip olduğunu düşünür ve trafik yanlış yere iner.
+
+## Boşluklar
+
+Boşluk, hiçbir alt ağın kapsamadığı bir üst bloğun bir parçasıdır. Diyelim ki `10.0.0.0/26` ve `10.0.0.128/26`'yı `10.0.0.0/24`'ten kestiniz. Aralarında ve sonrasında `10.0.0.64/26` ve `10.0.0.192/26` atanmamış kalır. Bu iki blok sizin boşluklarınızdır: hâlâ atayabileceğiniz, talep edebileceğiniz veya yalnızca hesaba katabileceğiniz adres alanı.
+
+Boşlukları bulmak iki nedenle önemlidir. Yeniden numaralandırmadan büyümek için nerede yer olduğunu gösterir ve özetlemeyi düşündüğünüz bir bloğun gerçekten tamamen kullanımda olduğunu doğrular, çünkü bir boşluk üzerinde duyurulan bir özet, atamadığınız adresleri talep eder.
+
+## Bir planı denetleme
+
+Bir planı gözden geçirmek için atadığınız her öneki listeleyin ve üst bloğu kapsam olarak verin. Bir çakışma raporu hangi öneklerin çarpıştığını ve nasıl olduğunu söyler; bir boşluk raporu üst blok içinde hangi CIDR bloklarının hâlâ boş olduğunu tam olarak söyler. [CIDR hesaplayıcısı](/#cidr) her ikisini de Çakışma / boşluk modunda yapar, her çakışmayı özdeş, içerilen veya kısmi olarak etiketler ve her boşluğu onu dolduran en büyük hizalanmış bloklar olarak ifade eder.
+
+Her iki yarım da [üst ağ oluşturmaya](/learn/supernetting-and-aggregation) geri bağlanır: kasıtsız çakışmalar ve bir blok içinde boşluklar olmadan bir adres planı, tam olarak temiz şekilde özetlenen plandır.

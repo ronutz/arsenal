@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting y agregación de rutas"
+summary: "Cómo se combinan prefijos contiguos en uno más corto, la regla de alineación que decide si dos bloques pueden fusionarse, y la diferencia entre la agregación exacta y una única superred que los cubra."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## El supernetting es la división en subredes al revés
+
+La división en subredes fija más bits para hacer un bloque más pequeño. El supernetting hace lo contrario: fija menos bits para que un único prefijo cubra varios más pequeños. Tomemos dos bloques adyacentes, `192.168.0.0/24` y `192.168.1.0/24`. Juntos abarcan de `192.168.0.0` a `192.168.1.255`, que es exactamente el rango de `192.168.0.0/23`. Quita un bit de prefijo, de /24 a /23, y una sola ruta describe ahora ambos bloques.
+
+Este es el motor detrás de la **agregación de rutas**, también llamada sumarización: reemplazar una lista de prefijos específicos por un único prefijo más corto que los cubra a todos.
+
+## La regla para combinar dos bloques
+
+Dos bloques se fusionan en uno solo cuando forman un *par hermano*: del mismo tamaño, adyacentes y con el bloque inferior situado en el límite del bloque combinado. `192.168.0.0/24` y `192.168.1.0/24` cumplen, porque `192.168.0.0` es una red `/23` válida. Pero `192.168.1.0/24` y `192.168.2.0/24` **no** se combinan, aunque parezcan adyacentes. `192.168.1.0` no es un límite `/23` (el /23 que lo contiene empieza en `192.168.0.0`), así que no hay un único /23 que contenga exactamente esos dos bloques y nada más.
+
+La alineación, no la mera adyacencia, es lo que hace que la agregación funcione. Es la misma regla de límites de potencia de dos que rige la división en subredes, leída en sentido inverso.
+
+## Agregación exacta frente a una única superred
+
+Cuando tus prefijos no son todos contiguos, hay dos respuestas distintas, y no son lo mismo.
+
+El **conjunto mínimo de cobertura** es la lista más corta de prefijos que cubre exactamente tus entradas y nada más. Dados `10.0.0.0/24` y `10.0.2.0/24`, hay un hueco en `10.0.1.0/24`, así que no pueden fusionarse: el conjunto mínimo sigue siendo los dos bloques `/24`.
+
+La **superred única** es el único prefijo más pequeño que contiene cada entrada, aunque arrastre direcciones que no listaste. Para esos mismos dos bloques es `10.0.0.0/22`, que abarca de `10.0.0.0` a `10.0.3.255`. Cubre ambas entradas pero también añade `10.0.1.0/24` y `10.0.3.0/24`, 512 direcciones adicionales que quizá no poseas.
+
+Anuncia la superred única solo cuando controles realmente todo el rango. De lo contrario, sumarizas sobre espacio de direcciones que pertenece a otra persona.
+
+## Por qué importa
+
+La agregación es lo que mantiene pequeñas las tablas de enrutamiento. Una ruta resumen en lugar de docenas de específicas significa menos memoria en cada router que la escucha, y mucha menos inestabilidad cuando un único enlace componente falla. La pega es que solo funciona si las direcciones se asignaron de forma contigua y en límites alineados desde el principio, razón por la cual una división en subredes disciplinada y [VLSM](/learn/vlsm) dan frutos más tarde como una [sumarización de rutas](/learn/route-summarization) limpia.
+
+Puedes probar ambas respuestas en la [calculadora CIDR](/#cidr): su modo Superred muestra el conjunto mínimo de cobertura y la superred envolvente única, con el recuento exacto de direcciones adicionales que añadiría la superred.

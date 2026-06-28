@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Subnet overlap at mga gap"
+summary: "Ano ang ibig sabihin kapag nag-o-overlap ang dalawang prefix o naglalaman ang isa sa isa pa, bakit ginagawang sinadya ng longest-prefix-match ang ilang overlap, at paano hanapin ang mga hindi inilaang gap ng isang address plan."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tatlong bagay na nagkakamali sa isang address plan
+
+Habang lumalaki ang isang address plan, tatlong problema ang gumagapang papasok: dalawang prefix na **nag-o-overlap**, isang prefix na **naglalaman** ng isa pa, at mga **gap** sa address space na walang naglaan. Ang unang dalawa ay tungkol sa mga prefix na nag-aangkin ng parehong address; ang pangatlo ay tungkol sa mga address na walang prefix na nag-aangkin. Nahahanap ng isang mahusay na audit ang lahat ng tatlo.
+
+## Overlap at containment
+
+Nag-o-overlap ang dalawang prefix kapag nagbabahagi sila ng kahit isang address. May ilang magkakaibang anyo:
+
+- **Magkapareho**: ang parehong block na nakalista nang dalawang beses, madalas na isang copy-paste error.
+- **Containment**: ang isang block ay buong-buong nasa loob ng isa pa. Naglalaman ang `10.0.0.0/24` ng `10.0.0.128/25`, dahil ang /25 ay ang itaas na kalahati ng /24.
+- **Bahagyang**: dalawang range na nagbabahagi ng ilang address ngunit walang naglalaman sa isa pa. Dalawang tamang CIDR block ay hindi kailanman nag-o-overlap nang ganito. Anumang dalawang aligned na power-of-two block ay alinman sa magkahiwalay o lubusang nakapaloob, isa nang buong-buo sa loob ng isa pa, na siyang eksaktong dahilan kung bakit bumubuo ang CIDR addressing ng malinis na hierarchy. Lumilitaw lamang ang bahagyang overlap kapag ang isang input ay hindi aligned na block.
+
+Hindi laging error ang containment. Nagpapasa ang mga router gamit ang **longest prefix match**: nananalo ang pinakapartikular na route na tumutugma sa isang destinasyon. Ang partikular na `/25` na ina-advertise sa loob ng na-summarize na `/24` ay isang sinadya at karaniwang pattern, ginagamit para idirekta ang isang bahagi ng trapiko nang iba. Ang panganib ay ang *hindi sinadyang* overlap, kung saan ang dalawang bahagi ng iyong network ay parehong naniniwalang nagmamay-ari ng parehong address at ang trapiko ay napupunta sa maling lugar.
+
+## Mga gap
+
+Ang gap ay isang bahagi ng parent block na walang subnet na sumasaklaw. Ipagpalagay na ginupit mo ang `10.0.0.0/26` at `10.0.0.128/26` mula sa `10.0.0.0/24`. Sa pagitan ng mga ito at pagkatapos, ang `10.0.0.64/26` at `10.0.0.192/26` ay nananatiling hindi inilaan. Ang dalawang block na iyon ang iyong mga gap: address space na maaari mo pa ring ilaan, angkinin o basta itala.
+
+Mahalaga ang paghahanap ng mga gap sa dalawang dahilan. Ipinapakita nito kung saan may espasyo para lumago nang hindi nirenumero, at kinukumpirma na ang block na balak mong i-summarize ay talagang ganap na ginagamit, dahil ang summary na ina-advertise sa ibabaw ng gap ay nag-aangkin ng mga address na hindi mo inilaan.
+
+## Pag-audit ng isang plan
+
+Para suriin ang isang plan, ilista ang bawat prefix na inilaan mo at ibigay ang parent block bilang scope. Sinasabi ng overlap report kung aling mga prefix ang nagbabanggaan at paano; sinasabi ng gap report nang eksakto kung aling mga CIDR block sa loob ng parent ang malaya pa. Ginagawa ng [CIDR calculator](/#cidr) ang pareho sa Overlap / gap mode, nilalagyan ng label ang bawat overlap bilang magkapareho, contained o bahagyang, at ipinapahayag ang bawat gap bilang ang pinakamalaking aligned na block na pumupuno dito.
+
+Ang parehong bahagi ay kumokonekta pabalik sa [supernetting](/learn/supernetting-and-aggregation): ang address plan na walang hindi sinadyang overlap at walang gap sa loob ng isang block ay eksaktong ang plan na nagsa-summarize nang malinis.

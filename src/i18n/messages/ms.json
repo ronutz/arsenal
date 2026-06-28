@@ -92,7 +92,90 @@
         "invalid": "Itu tidak kelihatan seperti blok CIDR yang sah. Cuba format seperti 192.168.1.0/24."
       },
       "name": "Kalkulator CIDR / Subnet",
-      "blurb": "Pecahkan mana-mana blok CIDR IPv4 kepada alamat rangkaian dan siaran, julat hos yang boleh digunakan, bilangan hos dan netmask. Berjalan sepenuhnya dalam pelayar anda."
+      "blurb": "Pecahkan mana-mana blok CIDR IPv4 kepada alamat rangkaian dan siaran, julat hos yang boleh digunakan, bilangan hos dan netmask. Berjalan sepenuhnya dalam pelayar anda.",
+      "modes": {
+        "subnet": "Subnet",
+        "vlsm": "VLSM",
+        "supernet": "Supernet",
+        "overlap": "Pertindihan / jurang"
+      },
+      "modeDesc": {
+        "subnet": "Menganalisis satu blok CIDR IPv4: rangkaian, siaran, topeng dan julat hos.",
+        "vlsm": "Membahagikan blok induk kepada subnet panjang berubah mengikut senarai bilangan hos.",
+        "supernet": "Meringkaskan senarai awalan kepada set blok terkecil yang meliputinya.",
+        "overlap": "Mencari pertindihan dan pembendungan antara awalan, serta jurang dalam skop pilihan."
+      },
+      "vlsm": {
+        "parentLabel": "Blok induk",
+        "reqsLabel": "Keperluan subnet",
+        "namePlaceholder": "Nama (pilihan)",
+        "hostsPlaceholder": "Hos",
+        "addRow": "Tambah subnet",
+        "remove": "Buang",
+        "run": "Peruntukkan",
+        "th": {
+          "name": "Nama",
+          "hosts": "Hos",
+          "network": "Rangkaian",
+          "prefix": "Awalan",
+          "netmask": "Topeng rangkaian",
+          "range": "Julat boleh guna",
+          "broadcast": "Siaran",
+          "usable": "Hos boleh guna"
+        },
+        "stat": {
+          "parent": "Induk",
+          "used": "Diguna",
+          "free": "Bebas",
+          "utilization": "Penggunaan"
+        },
+        "unfit": "Tidak muat",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Awalan untuk diagregat",
+        "run": "Agregat",
+        "minimal": "Set liputan minimum",
+        "single": "Supernet tunggal",
+        "singleExtra": "Menambah {extra} alamat tambahan melebihi input.",
+        "stat": {
+          "inputs": "Awalan input",
+          "addresses": "Alamat",
+          "blocks": "Blok teragregat"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Awalan untuk diperiksa",
+        "scopeLabel": "Skop (pilihan, mengaktifkan pengesanan jurang)",
+        "run": "Periksa",
+        "overlapsTitle": "Pertindihan",
+        "noOverlaps": "Tiada pertindihan ditemui.",
+        "gapsTitle": "Jurang dalam skop",
+        "noGaps": "Tiada jurang dalam skop yang diberikan.",
+        "kind": {
+          "identical": "serupa dengan",
+          "contains": "mengandungi",
+          "contained": "berada dalam",
+          "partial": "bertindih sebahagian dengan"
+        },
+        "addresses": "alamat",
+        "stat": {
+          "covered": "Diliputi",
+          "scope": "Skop"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Bukan alamat IPv4 yang sah. Gunakan empat oktet 0-255, seperti 192.168.1.0.",
+        "octet": "Satu oktet di luar julat (setiap satu mesti 0-255).",
+        "format": "Format A.B.C.D/awalan dijangka, seperti 192.168.1.0/24.",
+        "prefix": "Panjang awalan mesti antara 0 dan 32.",
+        "tooMany": "Terlalu banyak entri. Pendekkan senarai dan cuba lagi.",
+        "noReqs": "Tambah sekurang-kurangnya satu keperluan subnet dengan bilangan hos.",
+        "noPrefixes": "Masukkan sekurang-kurangnya satu awalan, satu setiap baris."
+      }
     },
     "title": "Alat",
     "lede": "Alat yang kecil, pantas dan menghormati privasi yang berjalan sepenuhnya dalam pelayar anda. Tiada apa yang anda masukkan dihantar ke mana-mana. Lebih banyak akan datang.",

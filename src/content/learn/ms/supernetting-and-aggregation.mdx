@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernet dan pengagregatan laluan"
+summary: "Bagaimana awalan bersebelahan bergabung menjadi satu yang lebih pendek, peraturan penjajaran yang menentukan sama ada dua blok boleh bercantum, dan perbezaan antara pengagregatan tepat dan satu supernet tunggal yang meliputinya."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Supernet ialah subnet secara terbalik
+
+Subnet menetapkan lebih banyak bit untuk mendapatkan blok yang lebih kecil. Supernet melakukan sebaliknya: ia menetapkan lebih sedikit bit supaya satu awalan meliputi beberapa yang lebih kecil. Ambil dua blok bersebelahan, `192.168.0.0/24` dan `192.168.1.0/24`. Bersama-sama ia terbentang dari `192.168.0.0` hingga `192.168.1.255`, iaitu tepat julat `192.168.0.0/23`. Buang satu bit awalan, daripada /24 kepada /23, dan satu laluan kini menggambarkan kedua-dua blok.
+
+Inilah enjin di sebalik **pengagregatan laluan**, juga dipanggil rumusan: menggantikan senarai awalan khusus dengan satu awalan lebih pendek yang meliputi kesemuanya.
+
+## Peraturan untuk menggabungkan dua blok
+
+Dua blok bercantum menjadi satu apabila ia membentuk *pasangan adik-beradik*: saiz sama, bersebelahan, dan dengan blok bawah terletak pada sempadan blok gabungan. `192.168.0.0/24` dan `192.168.1.0/24` memenuhi syarat ini, kerana `192.168.0.0` ialah rangkaian `/23` yang sah. Tetapi `192.168.1.0/24` dan `192.168.2.0/24` **tidak** bergabung, walaupun kelihatan bersebelahan. `192.168.1.0` bukan sempadan `/23` (/23 yang mengandunginya bermula pada `192.168.0.0`), jadi tiada satu /23 yang mengandungi tepat kedua-dua blok ini dan tiada apa-apa lagi.
+
+Penjajaran, bukan sekadar kebersebelahan, ialah yang membuatkan pengagregatan berfungsi. Ia adalah peraturan sempadan kuasa dua yang sama yang mengawal subnet, dibaca secara terbalik.
+
+## Pengagregatan tepat atau satu supernet tunggal
+
+Apabila awalan anda tidak semuanya bersebelahan, terdapat dua jawapan berbeza, dan ia bukan perkara yang sama.
+
+**Set liputan minimum** ialah senarai awalan terpendek yang meliputi tepat input anda dan tiada apa-apa lagi. Diberi `10.0.0.0/24` dan `10.0.2.0/24`, terdapat jurang pada `10.0.1.0/24`, jadi ia tidak boleh bercantum: set minimum kekal sebagai dua blok `/24`.
+
+**Supernet tunggal** ialah satu awalan terkecil yang mengandungi setiap input, walaupun ia menyeret masuk alamat yang tidak anda senaraikan. Untuk dua blok yang sama itu, ia adalah `10.0.0.0/22`, yang terbentang dari `10.0.0.0` hingga `10.0.3.255`. Ia meliputi kedua-dua input tetapi juga menambah `10.0.1.0/24` dan `10.0.3.0/24`, iaitu 512 alamat tambahan yang mungkin bukan milik anda.
+
+Iklankan supernet tunggal hanya apabila anda benar-benar mengawal keseluruhan julat. Jika tidak, anda merumuskan ruang alamat milik orang lain.
+
+## Mengapa ia penting
+
+Pengagregatan ialah yang memastikan jadual penghalaan kecil. Satu laluan rumusan menggantikan berpuluh laluan khusus bermakna lebih sedikit memori pada setiap penghala yang mendengarnya, dan jauh lebih sedikit ketidakstabilan apabila satu pautan komponen gagal. Halangannya ialah ia hanya berfungsi jika alamat diumpukkan secara bersebelahan dan pada sempadan terjajar dari mula, sebab itulah subnet berdisiplin dan [VLSM](/learn/vlsm) membuahkan hasil kemudian sebagai [rumusan laluan](/learn/route-summarization) yang kemas.
+
+Anda boleh mencuba kedua-dua jawapan dalam [kalkulator CIDR](/#cidr): mod Supernet menunjukkan set liputan minimum dan supernet tunggal yang merangkumi, dengan bilangan tepat alamat tambahan yang akan ditambah oleh supernet.

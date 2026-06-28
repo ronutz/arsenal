@@ -92,7 +92,90 @@
         "invalid": "Questo non sembra un blocco CIDR valido. Prova un formato come 192.168.1.0/24."
       },
       "name": "Calcolatore CIDR / di sottoreti",
-      "blurb": "Scomponi qualsiasi blocco CIDR IPv4 in indirizzi di rete e di broadcast, intervallo di host utilizzabili, numero di host e maschera di rete. Gira interamente nel tuo browser."
+      "blurb": "Scomponi qualsiasi blocco CIDR IPv4 in indirizzi di rete e di broadcast, intervallo di host utilizzabili, numero di host e maschera di rete. Gira interamente nel tuo browser.",
+      "modes": {
+        "subnet": "Sottorete",
+        "vlsm": "VLSM",
+        "supernet": "Superrete",
+        "overlap": "Sovrapposizione / vuoto"
+      },
+      "modeDesc": {
+        "subnet": "Analizza un singolo blocco CIDR IPv4: rete, broadcast, maschera e intervallo di host.",
+        "vlsm": "Suddivide un blocco padre in sottoreti di lunghezza variabile in base a un elenco di conteggi di host.",
+        "supernet": "Riassume un elenco di prefissi nel più piccolo insieme di blocchi che li copre.",
+        "overlap": "Rileva sovrapposizioni e inclusioni tra prefissi, oltre ai vuoti all'interno di un ambito facoltativo."
+      },
+      "vlsm": {
+        "parentLabel": "Blocco padre",
+        "reqsLabel": "Requisiti delle sottoreti",
+        "namePlaceholder": "Nome (facoltativo)",
+        "hostsPlaceholder": "Host",
+        "addRow": "Aggiungi sottorete",
+        "remove": "Rimuovi",
+        "run": "Assegna",
+        "th": {
+          "name": "Nome",
+          "hosts": "Host",
+          "network": "Rete",
+          "prefix": "Prefisso",
+          "netmask": "Maschera di rete",
+          "range": "Intervallo utilizzabile",
+          "broadcast": "Broadcast",
+          "usable": "Host utilizzabili"
+        },
+        "stat": {
+          "parent": "Padre",
+          "used": "Usati",
+          "free": "Liberi",
+          "utilization": "Utilizzo"
+        },
+        "unfit": "Non hanno trovato spazio",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Prefissi da aggregare",
+        "run": "Aggrega",
+        "minimal": "Insieme di copertura minimo",
+        "single": "Superrete singola",
+        "singleExtra": "Aggiunge {extra} indirizzi in più rispetto agli input.",
+        "stat": {
+          "inputs": "Prefissi in input",
+          "addresses": "Indirizzi",
+          "blocks": "Blocchi aggregati"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Prefissi da controllare",
+        "scopeLabel": "Ambito (facoltativo, abilita il rilevamento dei vuoti)",
+        "run": "Controlla",
+        "overlapsTitle": "Sovrapposizioni",
+        "noOverlaps": "Nessuna sovrapposizione trovata.",
+        "gapsTitle": "Vuoti nell'ambito",
+        "noGaps": "Nessun vuoto nell'ambito indicato.",
+        "kind": {
+          "identical": "identico a",
+          "contains": "contiene",
+          "contained": "è dentro",
+          "partial": "si sovrappone in parte a"
+        },
+        "addresses": "indirizzi",
+        "stat": {
+          "covered": "Coperti",
+          "scope": "Ambito"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Indirizzo IPv4 non valido. Usa quattro ottetti da 0 a 255, come 192.168.1.0.",
+        "octet": "Un ottetto è fuori intervallo (ognuno deve essere tra 0 e 255).",
+        "format": "È previsto il formato A.B.C.D/prefisso, come 192.168.1.0/24.",
+        "prefix": "La lunghezza del prefisso deve essere compresa tra 0 e 32.",
+        "tooMany": "Troppe voci. Riduci l'elenco e riprova.",
+        "noReqs": "Aggiungi almeno un requisito di sottorete con un numero di host.",
+        "noPrefixes": "Inserisci almeno un prefisso, uno per riga."
+      }
     },
     "title": "Strumenti",
     "lede": "Piccole utility veloci e rispettose della privacy, che girano interamente nel tuo browser. Niente di ciò che digiti viene inviato da nessuna parte. Altri strumenti sono in arrivo.",

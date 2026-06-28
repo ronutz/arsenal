@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Satu umpukan VLSM, diselesaikan dari mula hingga akhir"
+summary: "Satu umpukan lengkap subnet panjang berubah untuk rangkaian realistik: menyaiz setiap segmen, mengisih dari terbesar ke terkecil, mengumpukkan alamat sebenar, dan mengambil kira ruang yang tinggal."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Senario
+
+Anda diberi `172.16.0.0/22` dan perlu memuatkan empat segmen di dalamnya:
+
+- **Jualan**: 500 hos
+- **Kejuruteraan**: 200 hos
+- **Pautan A**: satu pautan titik-ke-titik antara penghala, 2 hos
+- **Pautan B**: satu pautan titik-ke-titik kedua, 2 hos
+
+Satu `/22` mengandungi 1024 alamat (`172.16.0.0` hingga `172.16.3.255`). Peraturan konsep diliputi dalam [VLSM](/learn/vlsm); di sini kita menjalaninya hingga akhir.
+
+## Langkah 1: saiz setiap segmen
+
+Cari blok terkecil yang mengandungi setiap bilangan hos, sambil mengingati dua alamat terpelihara (rangkaian dan siaran) dalam setiap blok biasa:
+
+- 500 hos memerlukan 9 bit hos (2⁹ − 2 = 510 boleh guna), satu `/23`.
+- 200 hos memerlukan 8 bit hos (254 boleh guna), satu `/24`.
+- 2 hos memerlukan 2 bit hos (2 boleh guna), satu `/30`.
+- 2 hos memerlukan satu lagi `/30`.
+
+Bundarkan ke atas kepada kuasa dua seterusnya: 500 tidak muat dalam satu `/24` (254 boleh guna), jadi ia mengambil satu `/23`.
+
+## Langkah 2: isih dari terbesar ke terkecil
+
+Isih segmen mengikut saiz blok, terbesar dahulu, supaya setiap satu mendarat pada sempadan yang bersih:
+
+1. Jualan, `/23` (512 alamat)
+2. Kejuruteraan, `/24` (256)
+3. Pautan A, `/30` (4)
+4. Pautan B, `/30` (4)
+
+## Langkah 3: umpukkan alamat
+
+Umpukkan dalam susunan itu, setiap blok bermula di tempat yang sebelumnya tamat:
+
+```
+/23  172.16.0.0  – .1.255   (510 boleh guna)  ← Jualan
+/24  172.16.2.0  – .2.255   (254 boleh guna)  ← Kejuruteraan
+/30  172.16.3.0  – .3.3     (2 boleh guna)    ← Pautan A
+/30  172.16.3.4  – .3.7     (2 boleh guna)    ← Pautan B
+```
+
+Jualan mengisi separuh pertama blok. Kejuruteraan mengambil `/24` seterusnya. Dua pautan antara penghala mengambil empat alamat setiap satu pada permulaan `/24` terakhir.
+
+## Langkah 4: ambil kira yang tinggal
+
+Empat segmen menggunakan 512 + 256 + 4 + 4 = 776 alamat, meninggalkan 248 bebas, dari `172.16.3.8` hingga `172.16.3.255`. Itu 75.8% penggunaan, dengan ekor ruang bebas bersebelahan untuk pautan seterusnya atau subnet kecil, masih terjajar untuk rumusan masa depan.
+
+## Semak kerja anda
+
+Inilah tepat umpukan yang [kalkulator CIDR](/#cidr) hasilkan dalam mod VLSM: masukkan `172.16.0.0/22` sebagai blok induk dan empat bilangan hos, dan ia mengembalikan rangkaian, topeng, julat yang sama dan angka 75.8% penggunaan, dikira sepenuhnya dalam pelayar anda. Jika satu segmen tidak muat, ia disenaraikan secara berasingan dan bukannya dibuang secara senyap.

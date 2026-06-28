@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Subnett-overlapp og -hull"
+summary: "Hva det betyr at to prefikser overlapper eller at det ene inneholder det andre, hvorfor longest-prefix-match gjør noen overlapp tilsiktet, og hvordan man finner de ikke-tildelte hullene i en adresseplan."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tre ting som går galt i en adresseplan
+
+Etter hvert som en adresseplan vokser, sniker det seg inn tre problemer: to prefikser som **overlapper**, et prefiks som **inneholder** et annet, og **hull** i adresserommet som ingen har tildelt. De to første handler om prefikser som gjør krav på de samme adressene; det tredje om adresser som ingen prefiks gjør krav på. En god gjennomgang finner alle tre.
+
+## Overlapp og innkapsling
+
+To prefikser overlapper når de deler minst én adresse. Det finnes noen forskjellige former:
+
+- **Identisk**: den samme blokken oppført to ganger, ofte en kopier-lim-feil.
+- **Innkapsling**: en blokk ligger helt inni en annen. `10.0.0.0/24` inneholder `10.0.0.128/25`, fordi /25 er den øvre halvdelen av /24.
+- **Delvis**: to intervaller deler noen adresser, men ingen av dem inneholder den andre. To korrekte CIDR-blokker overlapper aldri slik. Hvilke som helst to justerte topotensblokker er enten disjunkte eller helt nestet, den ene helt inni den andre, noe som er nøyaktig grunnen til at CIDR-adressering danner et rent hierarki. Et delvis overlapp oppstår bare når en inndata ikke er en justert blokk.
+
+Innkapsling er ikke alltid en feil. Rutere videresender ved hjelp av **longest prefix match**: den mest spesifikke ruten som matcher en destinasjon, vinner. Et spesifikt `/25` som annonseres inni et oppsummert `/24` er et bevisst og vanlig mønster, brukt for å styre en del av trafikken annerledes. Faren er det *utilsiktede* overlappet, der to deler av nettverket ditt begge tror at de eier de samme adressene, og trafikken havner på feil sted.
+
+## Hull
+
+Et hull er et stykke av en overordnet blokk som ingen subnett dekker. Anta at du skar `10.0.0.0/26` og `10.0.0.128/26` ut av `10.0.0.0/24`. Mellom dem og etter forblir `10.0.0.64/26` og `10.0.0.192/26` ikke-tildelte. Disse to blokkene er hullene dine: adresserom du fortsatt kan tildele, gjøre krav på eller rett og slett bokføre.
+
+Å finne hull er viktig av to grunner. Det viser hvor det er plass til å vokse uten å nummerere om, og bekrefter at en blokk du har til hensikt å oppsummere, faktisk er fullt i bruk, siden en oppsummering som annonseres over et hull gjør krav på adresser du ikke har tildelt.
+
+## Gjennomgå en plan
+
+For å gjennomgå en plan, list opp hvert prefiks du har tildelt, og oppgi den overordnede blokken som omfang. En overlapprapport forteller hvilke prefikser som kolliderer og hvordan; en hullrapport forteller nøyaktig hvilke CIDR-blokker innenfor den overordnede blokken som fortsatt er ledige. [CIDR-kalkulatoren](/#cidr) gjør begge deler i modusen Overlapp / hull, merker hvert overlapp som identisk, innkapslet eller delvis, og uttrykker hvert hull som de største justerte blokkene som fyller det.
+
+Begge halvdeler fører tilbake til [supernetting](/learn/supernetting-and-aggregation): en adresseplan uten utilsiktede overlapp og uten hull innenfor en blokk er nøyaktig den planen som oppsummeres rent.

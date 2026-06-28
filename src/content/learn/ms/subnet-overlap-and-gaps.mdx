@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Pertindihan dan jurang subnet"
+summary: "Apa maksudnya dua awalan bertindih atau satu mengandungi yang lain, mengapa padanan awalan terpanjang menjadikan sesetengah pertindihan disengajakan, dan cara mencari jurang tidak diumpukkan dalam perancangan alamat."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tiga perkara yang menjadi silap dalam perancangan alamat
+
+Apabila perancangan alamat berkembang, tiga masalah menyusup masuk: dua awalan yang **bertindih**, satu awalan yang **mengandungi** yang lain, dan **jurang** dalam ruang alamat yang tiada sesiapa umpukkan. Dua yang pertama berkenaan awalan yang menuntut alamat yang sama; yang ketiga berkenaan alamat yang tiada awalan menuntutnya. Audit yang baik menemui ketiga-tiganya.
+
+## Pertindihan dan pembendungan
+
+Dua awalan bertindih apabila ia berkongsi sekurang-kurangnya satu alamat. Terdapat beberapa bentuk berbeza:
+
+- **Serupa**: blok yang sama disenaraikan dua kali, selalunya ralat salin-tampal.
+- **Pembendungan**: satu blok terletak sepenuhnya dalam blok lain. `10.0.0.0/24` mengandungi `10.0.0.128/25`, kerana /25 ialah separuh atas /24.
+- **Separa**: dua julat berkongsi sebahagian alamat tetapi tiada yang mengandungi yang lain. Dua blok CIDR yang betul tidak pernah bertindih sebegitu. Mana-mana dua blok kuasa dua terjajar adalah sama ada terpisah atau bersarang sepenuhnya, satu sepenuhnya dalam yang lain, yang tepat sebabnya pengalamatan CIDR membentuk hierarki yang kemas. Pertindihan separa hanya muncul apabila satu input bukan blok terjajar.
+
+Pembendungan tidak selalu satu ralat. Penghala memajukan menggunakan **padanan awalan terpanjang**: laluan paling khusus yang sepadan dengan destinasi menang. `/25` khusus yang diiklankan dalam `/24` yang dirumuskan ialah corak yang disengajakan dan biasa, digunakan untuk menghala sebahagian trafik secara berbeza. Bahayanya ialah pertindihan *tidak disengajakan*, di mana dua bahagian rangkaian anda kedua-duanya menyangka memiliki alamat yang sama dan trafik mendarat di tempat yang salah.
+
+## Jurang
+
+Jurang ialah sebahagian daripada blok induk yang tiada subnet meliputinya. Andaikan anda memotong `10.0.0.0/26` dan `10.0.0.128/26` daripada `10.0.0.0/24`. Antara keduanya dan selepasnya, `10.0.0.64/26` dan `10.0.0.192/26` kekal tidak diumpukkan. Dua blok itu ialah jurang anda: ruang alamat yang masih boleh anda umpukkan, tuntut atau sekadar ambil kira.
+
+Mencari jurang penting atas dua sebab. Ia menunjukkan di mana ada ruang untuk berkembang tanpa menomborkan semula, dan mengesahkan bahawa blok yang anda berhasrat untuk merumuskan benar-benar digunakan sepenuhnya, kerana rumusan yang diiklankan di atas jurang menuntut alamat yang tidak anda umpukkan.
+
+## Mengaudit perancangan
+
+Untuk menyemak perancangan, senaraikan setiap awalan yang anda umpukkan dan berikan blok induk sebagai skop. Laporan pertindihan memberitahu awalan mana yang berlanggar dan bagaimana; laporan jurang memberitahu dengan tepat blok CIDR mana dalam induk yang masih bebas. [Kalkulator CIDR](/#cidr) melakukan kedua-duanya dalam mod Pertindihan / jurang, melabel setiap pertindihan sebagai serupa, terbendung atau separa, dan menyatakan setiap jurang sebagai blok terjajar terbesar yang mengisinya.
+
+Kedua-dua bahagian berhubung semula kepada [supernet](/learn/supernetting-and-aggregation): perancangan alamat tanpa pertindihan tidak disengajakan dan tanpa jurang dalam satu blok ialah tepat perancangan yang dirumuskan dengan kemas.

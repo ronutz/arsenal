@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Sumaryzacja tras"
+summary: "Dlaczego pojedyncza trasa zbiorcza może zastąpić wiele konkretnych, ciągły i wyrównany przydział, od którego zależy, oraz ryzyko czarnej dziury przy sumaryzacji zakresu, którego nie posiadasz w całości."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Jedna trasa zamiast wielu
+
+Router, który osiąga `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` i `10.1.3.0/24` przez ten sam następny przeskok, nie musi rozgłaszać czterech tras. Może rozgłosić jedną zbiorczą, `10.1.0.0/22`, która pokrywa wszystkie cztery. Każdy sąsiad niesie wtedy jeden wpis zamiast czterech. **Sumaryzacja tras** to ta praktyka stosowana na granicach sieci: agregowanie tego, co znasz, w najkrótszy prefiks, który nadal opisuje to dokładnie.
+
+Korzyść się kumuluje. Mniej tras oznacza mniej pamięci na każdym urządzeniu w dół strumienia, mniejsze i szybsze aktualizacje oraz, co najważniejsze, *stabilność*. Jeśli jedna z czterech sieci składowych zawiedzie, trasa zbiorcza się nie zmienia, więc awaria nie rozprzestrzenia się na resztę sieci.
+
+## Warunek wstępny: ciągły i wyrównany
+
+Sumaryzacja jest czysta tylko wtedy, gdy bazowe prefiksy zostały przydzielone jako ciągły, wyrównany blok. Cztery `/24` powyżej sumaryzują się elegancko, ponieważ razem są dokładnie `10.1.0.0/22`. Gdyby te same cztery sieci były rozproszone jako `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` i `10.7.0.0/24`, żaden krótki prefiks nie opisałby tylko ich, a każda trasa zbiorcza, którą byś rozgłosił, rościłaby sobie też prawo do przestrzeni adresowej, której nie routujesz.
+
+Dlatego planowanie adresacji ma znaczenie przed skonfigurowaniem pierwszego urządzenia. Przydzielanie lokalizacji i działów z wyrównanych bloków, ta sama dyscyplina, którą [VLSM](/learn/vlsm) wymusza wewnątrz pojedynczego bloku, jest tym, co umożliwia sumaryzację później. Sumaryzacja to nagroda za przydział nadający się do [supernettingu](/learn/supernetting-and-aggregation).
+
+## Gdzie zachodzi
+
+Sumaryzacja żyje na granicach. W OSPF konfiguruje się ją na routerach granicznych obszaru i na routerach granicznych systemu autonomicznego, ponieważ wewnątrz obszaru pełna topologia stanu łączy jest zalewana i nie może być sumaryzowana. EIGRP może sumaryzować na niemal dowolnym interfejsie. W BGP agregacja łączy konkretne prefiksy w otaczającą trasę przed rozgłoszeniem ich do innych systemów autonomicznych, co w dużej mierze jest powodem, dla którego globalna tablica routingu jest znacznie mniejsza niż liczba przydzielonych sieci.
+
+## Pułapka czarnej dziury
+
+Sumaryzacja zakresu, którego nie kontrolujesz w całości, jest niebezpieczna. Jeśli rozgłaszasz `10.0.0.0/16`, ale faktycznie routujesz tylko `10.0.1.0/24`, ruch z każdego innego adresu w tej /16 jest przyciągany do ciebie, a następnie odrzucany, ponieważ powiedziałeś sieci, że możesz osiągnąć adresy, których nie możesz. Istnieje też odwrotna awaria: zbyt wąska trasa zbiorcza czyni niektóre z twoich rzeczywistych sieci nieosiągalnymi.
+
+Zweryfikuj trasę zbiorczą przed jej rozgłoszeniem. Potwierdź, że prefiksy, które posiadasz, są ciągłe, że wyrównują się do granicy trasy zbiorczej i że trasa zbiorcza nie wykracza poza nie. [Kalkulator CIDR](/#cidr) pomaga z obiema połowami: zagreguj listę prefiksów w trybie Supersieć i ujawnij nakładania lub niewypełnione luki w trybie Nakładanie / luka.

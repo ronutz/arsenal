@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting en route-aggregatie"
+summary: "Hoe aaneengesloten prefixes samenvloeien tot één korter prefix, de uitlijnregel die bepaalt of twee blokken kunnen samensmelten, en het verschil tussen exacte aggregatie en één enkel supernet dat ze dekt."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Supernetting is subnetting achterstevoren
+
+Subnetting legt meer bits vast om een kleiner blok te krijgen. Supernetting doet het tegenovergestelde: het legt minder bits vast zodat één prefix meerdere kleinere dekt. Neem twee aangrenzende blokken, `192.168.0.0/24` en `192.168.1.0/24`. Samen lopen ze van `192.168.0.0` tot `192.168.1.255`, wat precies het bereik van `192.168.0.0/23` is. Haal één prefixbit weg, van /24 naar /23, en één enkele route beschrijft nu beide blokken.
+
+Dit is de motor achter **route-aggregatie**, ook samenvatting genoemd: een lijst specifieke prefixes vervangen door één korter prefix dat ze allemaal dekt.
+
+## De regel om twee blokken te combineren
+
+Twee blokken smelten samen tot één wanneer ze een *broederpaar* vormen: even groot, aangrenzend, en met het onderste blok op de grens van het gecombineerde blok. `192.168.0.0/24` en `192.168.1.0/24` voldoen, want `192.168.0.0` is een geldig `/23`-netwerk. Maar `192.168.1.0/24` en `192.168.2.0/24` combineren **niet**, ook al lijken ze aangrenzend. `192.168.1.0` is geen `/23`-grens (de /23 die het bevat begint bij `192.168.0.0`), dus is er geen enkele /23 die precies die twee blokken en niets anders bevat.
+
+Uitlijning, niet louter aangrenzendheid, is wat aggregatie laat werken. Het is dezelfde regel van machten-van-twee-grenzen die subnetting bepaalt, achterstevoren gelezen.
+
+## Exacte aggregatie of één enkel supernet
+
+Wanneer je prefixes niet allemaal aaneengesloten zijn, zijn er twee verschillende antwoorden, en ze zijn niet hetzelfde.
+
+De **minimale dekkende set** is de kortste lijst prefixes die precies je invoer dekt en niets meer. Bij `10.0.0.0/24` en `10.0.2.0/24` zit er een gat bij `10.0.1.0/24`, dus kunnen ze niet samensmelten: de minimale set blijft de twee `/24`-blokken.
+
+Het **enkele supernet** is het ene kleinste prefix dat elke invoer bevat, ook al sleept het adressen mee die je niet hebt opgegeven. Voor diezelfde twee blokken is dat `10.0.0.0/22`, dat loopt van `10.0.0.0` tot `10.0.3.255`. Het dekt beide invoeren maar voegt ook `10.0.1.0/24` en `10.0.3.0/24` toe, 512 extra adressen die mogelijk niet van jou zijn.
+
+Kondig het enkele supernet alleen aan wanneer je werkelijk het hele bereik beheert. Anders vat je samen over adresruimte die aan iemand anders toebehoort.
+
+## Waarom het ertoe doet
+
+Aggregatie is wat routeringstabellen klein houdt. Eén samenvattende route in plaats van tientallen specifieke betekent minder geheugen op elke router die ernaar luistert, en veel minder instabiliteit wanneer één enkele samenstellende verbinding uitvalt. Het nadeel is dat het alleen werkt als de adressen van begin af aan aaneengesloten en op uitgelijnde grenzen zijn toegewezen, en daarom werpen gedisciplineerd subnetting en [VLSM](/learn/vlsm) later vruchten af als een nette [route-samenvatting](/learn/route-summarization).
+
+Je kunt beide antwoorden uitproberen in de [CIDR-calculator](/#cidr): de Supernet-modus toont de minimale dekkende set en het omhullende enkele supernet, met het exacte aantal extra adressen dat het supernet zou toevoegen.

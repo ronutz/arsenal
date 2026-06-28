@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Routenzusammenfassung"
+summary: "Warum eine einzelne zusammenfassende Route viele spezifische ersetzen kann, die zusammenhängende und ausgerichtete Vergabe, von der sie abhängt, und das Blackhole-Risiko beim Zusammenfassen eines Bereichs, den man nicht vollständig besitzt."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Eine Route statt vieler
+
+Ein Router, der `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` und `10.1.3.0/24` über denselben nächsten Hop erreicht, muss nicht vier Routen ankündigen. Er kann eine einzelne Zusammenfassung ankündigen, `10.1.0.0/22`, die alle vier abdeckt. Jeder Nachbar trägt dann einen einzelnen Eintrag statt vier. Die **Routenzusammenfassung** ist diese Praxis, angewendet an den Grenzen eines Netzes: das, was du kennst, in das kürzeste Präfix aggregieren, das es noch genau beschreibt.
+
+Der Nutzen summiert sich. Weniger Routen bedeuten weniger Speicher auf jedem nachgelagerten Gerät, kleinere und schnellere Updates und vor allem *Stabilität*. Fällt eines der vier beteiligten Netze aus, ändert sich die Zusammenfassung nicht, sodass der Ausfall sich nicht auf den Rest des Netzes ausbreitet.
+
+## Die Voraussetzung: zusammenhängend und ausgerichtet
+
+Die Zusammenfassung ist nur dann sauber, wenn die zugrunde liegenden Präfixe als zusammenhängender, ausgerichteter Block vergeben wurden. Die vier `/24` oben fassen sich elegant zusammen, weil sie zusammen genau `10.1.0.0/22` sind. Wären dieselben vier Netze als `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` und `10.7.0.0/24` verstreut, würde kein kurzes Präfix nur sie beschreiben, und jede Zusammenfassung, die du ankündigst, würde auch Adressraum beanspruchen, den du nicht routest.
+
+Deshalb ist Adressplanung wichtig, bevor das erste Gerät konfiguriert wird. Standorte und Abteilungen aus ausgerichteten Blöcken zu vergeben, dieselbe Disziplin, die [VLSM](/learn/vlsm) innerhalb eines einzelnen Blocks durchsetzt, ist das, was die Zusammenfassung später möglich macht. Die Zusammenfassung ist die Belohnung für eine [supernetting](/learn/supernetting-and-aggregation)-fähige Vergabe.
+
+## Wo sie geschieht
+
+Die Zusammenfassung lebt an den Grenzen. In OSPF wird sie an Area-Border-Routern und an Autonomous-System-Border-Routern konfiguriert, da innerhalb einer Area die vollständige Link-State-Topologie geflutet wird und nicht zusammengefasst werden kann. EIGRP kann an fast jeder Schnittstelle zusammenfassen. In BGP kombiniert die Aggregation spezifische Präfixe zu einer umschließenden Route, bevor sie an andere autonome Systeme angekündigt werden, was ein großer Teil des Grundes ist, warum die globale Routing-Tabelle viel kleiner ist als die Zahl der vergebenen Netze.
+
+## Die Blackhole-Falle
+
+Einen Bereich zusammenzufassen, den du nicht vollständig kontrollierst, ist gefährlich. Kündigst du `10.0.0.0/16` an, routest aber tatsächlich nur `10.0.1.0/24`, wird der Verkehr jeder anderen Adresse dieses /16 zu dir gezogen und dann verworfen, weil du dem Netz gesagt hast, du könntest Adressen erreichen, die du nicht erreichen kannst. Der umgekehrte Fehler existiert ebenfalls: Eine zu enge Zusammenfassung macht einige deiner echten Netze unerreichbar.
+
+Prüfe eine Zusammenfassung, bevor du sie ankündigst. Bestätige, dass die Präfixe, die du besitzt, zusammenhängend sind, dass sie sich an der Grenze der Zusammenfassung ausrichten und dass die Zusammenfassung nicht über sie hinausgeht. Der [CIDR-Rechner](/#cidr) hilft bei beiden Hälften: Aggregiere eine Liste von Präfixen im Supernetz-Modus und decke Überschneidungen oder ungefüllte Lücken im Modus Überschneidung / Lücke auf.

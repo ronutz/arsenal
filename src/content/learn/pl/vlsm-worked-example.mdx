@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Przydział VLSM rozwiązany od początku do końca"
+summary: "Pełny przydział podsieci o zmiennej długości dla realistycznej sieci: wymiarowanie każdego segmentu, sortowanie od największego do najmniejszego, przydzielanie rzeczywistych adresów i rozliczanie pozostałej przestrzeni."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Scenariusz
+
+Dostajesz `172.16.0.0/22` i musisz zmieścić w nim cztery segmenty:
+
+- **Sprzedaż**: 500 hostów
+- **Inżynieria**: 200 hostów
+- **Łącze A**: łącze punkt-punkt między routerami, 2 hosty
+- **Łącze B**: drugie łącze punkt-punkt, 2 hosty
+
+`/22` zawiera 1024 adresy (`172.16.0.0` do `172.16.3.255`). Reguły koncepcyjne omówiono w [VLSM](/learn/vlsm); tutaj przechodzimy je do końca.
+
+## Krok 1: wymiaruj każdy segment
+
+Znajdź najmniejszy blok zawierający każdą liczbę hostów, pamiętając o dwóch zarezerwowanych adresach (sieć i rozgłoszenie) w każdym zwykłym bloku:
+
+- 500 hostów wymaga 9 bitów hosta (2⁹ − 2 = 510 używalnych), `/23`.
+- 200 hostów wymaga 8 bitów hosta (254 używalne), `/24`.
+- 2 hosty wymagają 2 bitów hosta (2 używalne), `/30`.
+- 2 hosty wymagają kolejnego `/30`.
+
+Zaokrąglij w górę do następnej potęgi dwójki: 500 nie mieści się w `/24` (254 używalne), więc bierze `/23`.
+
+## Krok 2: sortuj od największego do najmniejszego
+
+Posortuj segmenty według rozmiaru bloku, największy pierwszy, aby każdy wylądował na czystej granicy:
+
+1. Sprzedaż, `/23` (512 adresów)
+2. Inżynieria, `/24` (256)
+3. Łącze A, `/30` (4)
+4. Łącze B, `/30` (4)
+
+## Krok 3: przydziel adresy
+
+Przydzielaj w tej kolejności, każdy blok zaczyna się tam, gdzie skończył się poprzedni:
+
+```
+/23  172.16.0.0  – .1.255   (510 używalnych)  ← Sprzedaż
+/24  172.16.2.0  – .2.255   (254 używalne)    ← Inżynieria
+/30  172.16.3.0  – .3.3     (2 używalne)      ← Łącze A
+/30  172.16.3.4  – .3.7     (2 używalne)      ← Łącze B
+```
+
+Sprzedaż wypełnia pierwszą połowę bloku. Inżynieria bierze następne `/24`. Dwa łącza między routerami biorą po cztery adresy każde na początku ostatniego `/24`.
+
+## Krok 4: rozlicz to, co zostało
+
+Cztery segmenty używają 512 + 256 + 4 + 4 = 776 adresów, pozostawiając 248 wolnych, od `172.16.3.8` do `172.16.3.255`. To 75.8% wykorzystania, z ciągłym ogonem wolnej przestrzeni na następne łącze lub małą podsieć, wciąż wyrównanym do przyszłej sumaryzacji.
+
+## Sprawdź swoją pracę
+
+To jest dokładnie ten przydział, który [kalkulator CIDR](/#cidr) tworzy w trybie VLSM: wprowadź `172.16.0.0/22` jako blok nadrzędny i cztery liczby hostów, a zwróci te same sieci, maski, zakresy i wartość 75.8% wykorzystania, obliczoną w całości w twojej przeglądarce. Jeśli segment się nie mieści, jest wymieniany osobno zamiast być po cichu odrzucony.

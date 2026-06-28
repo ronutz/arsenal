@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Sumarización de rutas"
+summary: "Por qué una única ruta resumen puede reemplazar muchas específicas, la asignación contigua y alineada de la que depende, y el riesgo de agujero negro al sumarizar un rango que no posees por completo."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Una ruta en lugar de muchas
+
+Un router que alcanza `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` y `10.1.3.0/24` a través del mismo siguiente salto no necesita anunciar cuatro rutas. Puede anunciar un único resumen, `10.1.0.0/22`, que cubre las cuatro. Cada vecino lleva entonces una sola entrada en lugar de cuatro. La **sumarización de rutas** es esta práctica aplicada en los límites de una red: agregar lo que conoces en el prefijo más corto que aún lo describa con precisión.
+
+El beneficio se acumula. Menos rutas significan menos memoria en cada dispositivo aguas abajo, actualizaciones más pequeñas y rápidas y, lo más importante, *estabilidad*. Si una de las cuatro redes componentes cae, el resumen no cambia, así que el fallo no se propaga al resto de la red.
+
+## El requisito previo: contigua y alineada
+
+La sumarización solo es limpia cuando los prefijos subyacentes se asignaron como un bloque contiguo y alineado. Los cuatro `/24` anteriores se sumarizan con elegancia porque juntos son exactamente `10.1.0.0/22`. Si las mismas cuatro redes hubieran estado dispersas como `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` y `10.7.0.0/24`, ningún prefijo corto las describiría solo a ellas, y cualquier resumen que anunciaras reclamaría también espacio de direcciones que no enrutas.
+
+Por eso la planificación de direcciones importa antes de configurar el primer dispositivo. Asignar sedes y departamentos desde bloques alineados, la misma disciplina que [VLSM](/learn/vlsm) impone dentro de un único bloque, es lo que hace posible la sumarización después. La sumarización es la recompensa por una asignación apta para el [supernetting](/learn/supernetting-and-aggregation).
+
+## Dónde ocurre
+
+La sumarización vive en los límites. En OSPF se configura en los routers de borde de área y en los routers de borde de sistema autónomo, ya que dentro de un área la topología de estado de enlace completa se inunda y no puede sumarizarse. EIGRP puede sumarizar en casi cualquier interfaz. En BGP, la agregación combina prefijos específicos en una ruta envolvente antes de anunciarlos a otros sistemas autónomos, lo cual es gran parte de por qué la tabla de enrutamiento global es mucho más pequeña que el número de redes asignadas.
+
+## La trampa del agujero negro
+
+Sumarizar un rango que no controlas por completo es peligroso. Si anuncias `10.0.0.0/16` pero solo enrutas realmente `10.0.1.0/24`, el tráfico de cualquier otra dirección de ese /16 es atraído hacia ti y luego descartado, porque has dicho a la red que puedes alcanzar direcciones que no puedes. El fallo inverso también existe: un resumen demasiado estrecho deja algunas de tus redes reales inalcanzables.
+
+Audita un resumen antes de anunciarlo. Confirma que los prefijos que posees son contiguos, que se alinean con el límite del resumen y que el resumen no se extiende más allá de ellos. La [calculadora CIDR](/#cidr) ayuda con ambas mitades: agrega una lista de prefijos en modo Superred y expón solapamientos o huecos sin rellenar en modo Solapamiento / hueco.

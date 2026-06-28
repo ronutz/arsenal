@@ -288,6 +288,242 @@
   font-weight: 500;
 }
 
+/* --- CIDR multi-mode (tabs, VLSM, supernet, overlap) --- */
+.cidr-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.cidr-input-row .cidr-label {
+  margin-bottom: 0;
+}
+.cidr-reqs-label {
+  margin-top: 0.4rem;
+}
+.cidr-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.cidr-mode-tab {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.cidr-mode-tab:hover {
+  color: var(--text-primary);
+}
+.cidr-mode-tab.is-active {
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+}
+.cidr-textarea {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: 1.5;
+  width: 100%;
+}
+.cidr-reqs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.cidr-req-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.cidr-req-name {
+  flex: 1;
+  min-width: 6rem;
+}
+.cidr-req-hosts {
+  flex: 0 0 7rem;
+  min-width: 5rem;
+}
+.cidr-req-remove {
+  flex: 0 0 auto;
+  width: 2.2rem;
+  height: 2.2rem;
+  line-height: 1;
+  background: var(--canvas-primary);
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.cidr-req-remove:hover:not(:disabled) {
+  color: #fca5a5;
+  border-color: color-mix(in srgb, #f87171 50%, transparent);
+}
+.cidr-req-remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.cidr-vlsm-actions {
+  margin-top: 0.4rem;
+}
+.cidr-output {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.cidr-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cidr-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  min-width: 7rem;
+}
+.cidr-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.cidr-stat-value {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.cidr-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.cidr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.cidr-table th,
+.cidr-table td {
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  white-space: nowrap;
+}
+.cidr-table thead th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  background: var(--surface-base);
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 600;
+}
+.cidr-table tbody tr {
+  border-top: 1px solid var(--border-subtle);
+}
+.cidr-table tbody tr:first-child {
+  border-top: none;
+}
+.cidr-table td {
+  color: var(--text-primary);
+}
+.cidr-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.cidr-block-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0;
+}
+.cidr-block {
+  padding: 0.3rem 0.6rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+.cidr-note {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.cidr-empty {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+}
+.cidr-unfit-list {
+  margin: 0.3rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.cidr-overlap-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+}
+.cidr-overlap-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+}
+.cidr-overlap-meta {
+  width: 100%;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+.cidr-badge {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.cidr-badge--identical {
+  background: color-mix(in srgb, #818cf8 18%, transparent);
+  color: #a5b4fc;
+}
+.cidr-badge--contains,
+.cidr-badge--contained {
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+  color: #fcd34d;
+}
+.cidr-badge--partial {
+  background: color-mix(in srgb, #f87171 18%, transparent);
+  color: #fca5a5;
+}
+
 /* --- Footer --- */
 .site-footer {
   padding-block: 2.5rem;
@@ -3428,7 +3664,7 @@ a.tools-card:hover {
 .footer-redu .footer-built-link {
   color: color-mix(in srgb, var(--text-secondary) 67%, var(--text-tertiary) 33%);
 }
-.footer-redu .footer-built-link:hover { color: var(--text-secondary); text-decoration: underline; }
+.footer-redu .footer-built-link:hover { color: var(--text-secondary); text-decoration: underline; text-decoration-color: #a8605f; }
 .footer-redu .brand {
   color: #a8605f;
   font-weight: 600;

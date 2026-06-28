@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting and route aggregation"
+summary: "How contiguous prefixes combine into a shorter one, the alignment rule that decides whether two blocks can merge, and the difference between exact aggregation and a single covering supernet."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## Supernetting is subnetting in reverse
+
+Subnetting fixes more bits to make a block smaller. Supernetting does the opposite: it fixes fewer bits so a single prefix covers several smaller ones. Take two adjacent blocks, `192.168.0.0/24` and `192.168.1.0/24`. Together they span `192.168.0.0` through `192.168.1.255`, which is exactly the range of `192.168.0.0/23`. Drop one bit of prefix, from /24 to /23, and one route now describes both blocks.
+
+This is the engine behind **route aggregation**, also called summarization: replacing a list of specific prefixes with one shorter prefix that covers them all.
+
+## The rule for combining two blocks
+
+Two blocks merge into one only when they form a *sibling pair*: same size, adjacent, and with the lower block sitting on the boundary of the combined block. `192.168.0.0/24` and `192.168.1.0/24` qualify, because `192.168.0.0` is a valid `/23` network. But `192.168.1.0/24` and `192.168.2.0/24` do **not** combine, even though they look adjacent. `192.168.1.0` is not a `/23` boundary (the /23 containing it starts at `192.168.0.0`), so there is no single /23 that holds exactly those two blocks and nothing else.
+
+Alignment, not mere adjacency, is what makes aggregation work. It is the same power-of-two boundary rule that governs subnetting, read from the other direction.
+
+## Exact aggregation versus a single supernet
+
+When your prefixes are not all contiguous, there are two different answers, and they are not the same thing.
+
+The **minimal covering set** is the shortest list of prefixes that covers exactly your inputs and nothing more. Given `10.0.0.0/24` and `10.0.2.0/24`, there is a gap at `10.0.1.0/24`, so they cannot be merged: the minimal set is still the two `/24` blocks.
+
+The **single supernet** is the one smallest prefix that contains every input, even if it pulls in addresses you did not list. For the same two blocks that is `10.0.0.0/22`, which spans `10.0.0.0` to `10.0.3.255`. It covers both inputs but also adds `10.0.1.0/24` and `10.0.3.0/24`, 512 extra addresses you may not own.
+
+Advertise the single supernet only when you actually control the whole range. Otherwise you summarize across address space that belongs to someone else.
+
+## Why it matters
+
+Aggregation is what keeps routing tables small. One summary route in place of dozens of specifics means less memory on every router that hears it, and far less churn when a single component link flaps. The catch is that it only works if addresses were allocated contiguously and on aligned boundaries in the first place, which is why disciplined subnetting and [VLSM](/learn/vlsm) pay off later as clean [route summarization](/learn/route-summarization).
+
+You can try both answers in the [CIDR calculator](/#cidr). Its Supernet mode shows the minimal covering set and the single enclosing supernet, with the exact count of extra addresses the supernet would add.

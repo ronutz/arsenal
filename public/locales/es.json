@@ -92,7 +92,90 @@
         "invalid": "Esto no parece un bloque CIDR válido. Prueba con un formato como 192.168.1.0/24."
       },
       "name": "Calculadora CIDR / de subredes",
-      "blurb": "Descompón cualquier bloque CIDR de IPv4 en direcciones de red y de difusión, rango de hosts utilizables, número de hosts y máscara de red. Se ejecuta por completo en tu navegador."
+      "blurb": "Descompón cualquier bloque CIDR de IPv4 en direcciones de red y de difusión, rango de hosts utilizables, número de hosts y máscara de red. Se ejecuta por completo en tu navegador.",
+      "modes": {
+        "subnet": "Subred",
+        "vlsm": "VLSM",
+        "supernet": "Superred",
+        "overlap": "Solapamiento / hueco"
+      },
+      "modeDesc": {
+        "subnet": "Analiza un único bloque CIDR de IPv4: red, difusión, máscara y rango de hosts.",
+        "vlsm": "Divide un bloque padre en subredes de longitud variable según una lista de cantidades de hosts.",
+        "supernet": "Resume una lista de prefijos en el menor conjunto de bloques que los cubren.",
+        "overlap": "Detecta solapamientos y contención entre prefijos, además de huecos dentro de un ámbito opcional."
+      },
+      "vlsm": {
+        "parentLabel": "Bloque padre",
+        "reqsLabel": "Requisitos de subred",
+        "namePlaceholder": "Nombre (opcional)",
+        "hostsPlaceholder": "Hosts",
+        "addRow": "Añadir subred",
+        "remove": "Eliminar",
+        "run": "Asignar",
+        "th": {
+          "name": "Nombre",
+          "hosts": "Hosts",
+          "network": "Red",
+          "prefix": "Prefijo",
+          "netmask": "Máscara de red",
+          "range": "Rango utilizable",
+          "broadcast": "Difusión",
+          "usable": "Hosts utilizables"
+        },
+        "stat": {
+          "parent": "Padre",
+          "used": "Usadas",
+          "free": "Libres",
+          "utilization": "Utilización"
+        },
+        "unfit": "No cupieron",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Prefijos a agregar",
+        "run": "Agregar",
+        "minimal": "Conjunto mínimo de cobertura",
+        "single": "Superred única",
+        "singleExtra": "Añade {extra} direcciones adicionales más allá de las entradas.",
+        "stat": {
+          "inputs": "Prefijos de entrada",
+          "addresses": "Direcciones",
+          "blocks": "Bloques agregados"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Prefijos a comprobar",
+        "scopeLabel": "Ámbito (opcional, habilita la detección de huecos)",
+        "run": "Comprobar",
+        "overlapsTitle": "Solapamientos",
+        "noOverlaps": "No se encontraron solapamientos.",
+        "gapsTitle": "Huecos en el ámbito",
+        "noGaps": "No hay huecos en el ámbito indicado.",
+        "kind": {
+          "identical": "idéntico a",
+          "contains": "contiene",
+          "contained": "está dentro de",
+          "partial": "se solapa parcialmente con"
+        },
+        "addresses": "direcciones",
+        "stat": {
+          "covered": "Cubiertas",
+          "scope": "Ámbito"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "No es una dirección IPv4 válida. Usa cuatro octetos de 0 a 255, como 192.168.1.0.",
+        "octet": "Un octeto está fuera de rango (cada uno debe estar entre 0 y 255).",
+        "format": "Se esperaba el formato A.B.C.D/prefijo, como 192.168.1.0/24.",
+        "prefix": "La longitud del prefijo debe estar entre 0 y 32.",
+        "tooMany": "Demasiadas entradas. Reduce la lista e inténtalo de nuevo.",
+        "noReqs": "Añade al menos un requisito de subred con un número de hosts.",
+        "noPrefixes": "Introduce al menos un prefijo, uno por línea."
+      }
     },
     "title": "Herramientas",
     "lede": "Pequeñas utilidades rápidas y respetuosas con la privacidad que se ejecutan por completo en tu navegador. Nada de lo que escribes se envía a ningún sitio. Vienen más en camino.",

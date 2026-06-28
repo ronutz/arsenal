@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "En VLSM-tildeling, løst fra start til slut"
+summary: "En fuldstændig tildeling af subnet med variabel længde for et realistisk netværk: dimensionér hvert segment, sortér fra størst til mindst, tildel de reelle adresser, og bogfør den plads, der er tilbage."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Scenariet
+
+Du får `172.16.0.0/22` og skal få plads til fire segmenter:
+
+- **Salg**: 500 værter
+- **Teknik**: 200 værter
+- **Link A**: et punkt-til-punkt-link mellem routere, 2 værter
+- **Link B**: et andet punkt-til-punkt-link, 2 værter
+
+Et `/22` indeholder 1024 adresser (`172.16.0.0` til `172.16.3.255`). De konceptuelle regler dækkes i [VLSM](/learn/vlsm); her gennemgår vi dem hele vejen.
+
+## Trin 1: dimensionér hvert segment
+
+Find den mindste blok, der indeholder hvert antal værter, og husk de to reserverede adresser (net og broadcast) i hver almindelig blok:
+
+- 500 værter kræver 9 værtsbit (2⁹ − 2 = 510 anvendelige), et `/23`.
+- 200 værter kræver 8 værtsbit (254 anvendelige), et `/24`.
+- 2 værter kræver 2 værtsbit (2 anvendelige), et `/30`.
+- 2 værter kræver endnu et `/30`.
+
+Rund op til næste topotens: 500 kan ikke være i et `/24` (254 anvendelige), så det tager et `/23`.
+
+## Trin 2: sortér fra størst til mindst
+
+Sortér segmenterne efter blokstørrelse, størst først, så hvert lander på en ren grænse:
+
+1. Salg, `/23` (512 adresser)
+2. Teknik, `/24` (256)
+3. Link A, `/30` (4)
+4. Link B, `/30` (4)
+
+## Trin 3: tildel adresserne
+
+Tildel i den rækkefølge, hver blok begynder, hvor den foregående sluttede:
+
+```
+/23  172.16.0.0  – .1.255   (510 anvendelige)  ← Salg
+/24  172.16.2.0  – .2.255   (254 anvendelige)  ← Teknik
+/30  172.16.3.0  – .3.3     (2 anvendelige)    ← Link A
+/30  172.16.3.4  – .3.7     (2 anvendelige)    ← Link B
+```
+
+Salg fylder blokkens første halvdel. Teknik tager det næste `/24`. De to links mellem routere tager fire adresser hver i begyndelsen af det sidste `/24`.
+
+## Trin 4: bogfør det, der er tilbage
+
+De fire segmenter bruger 512 + 256 + 4 + 4 = 776 adresser, hvilket efterlader 248 ledige, fra `172.16.3.8` til `172.16.3.255`. Det er 75.8% udnyttelse, med en sammenhængende hale af ledig plads til det næste link eller et lille subnet, stadig justeret til en fremtidig opsummering.
+
+## Kontrollér dit arbejde
+
+Dette er præcis den tildeling, som [CIDR-beregneren](/#cidr) producerer i VLSM-tilstanden: indtast `172.16.0.0/22` som overordnet blok og de fire antal værter, og den returnerer de samme net, masker, intervaller og tallet 75.8% udnyttelse, beregnet helt i din browser. Hvis et segment ikke kan være der, angives det separat i stedet for at blive kasseret i stilhed.

@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Nakładania i luki podsieci"
+summary: "Co oznacza, że dwa prefiksy się nakładają lub jeden zawiera drugi, dlaczego dopasowanie najdłuższego prefiksu czyni niektóre nakładania zamierzonymi, oraz jak znaleźć nieprzydzielone luki planu adresacji."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Trzy rzeczy, które idą źle w planie adresacji
+
+W miarę jak plan adresacji rośnie, wkradają się trzy problemy: dwa prefiksy, które się **nakładają**, prefiks, który **zawiera** inny, oraz **luki** w przestrzeni adresowej, których nikt nie przydzielił. Pierwsze dwa dotyczą prefiksów roszczących sobie prawo do tych samych adresów; trzeci adresów, do których żaden prefiks nie rości sobie prawa. Dobra weryfikacja znajduje wszystkie trzy.
+
+## Nakładanie i zawieranie
+
+Dwa prefiksy nakładają się, gdy dzielą co najmniej jeden adres. Istnieje kilka różnych form:
+
+- **Identyczne**: ten sam blok wymieniony dwukrotnie, często błąd kopiuj-wklej.
+- **Zawieranie**: jeden blok leży w całości wewnątrz innego. `10.0.0.0/24` zawiera `10.0.0.128/25`, ponieważ /25 jest górną połową /24.
+- **Częściowe**: dwa zakresy dzielą niektóre adresy, ale żaden nie zawiera drugiego. Dwa poprawne bloki CIDR nigdy się tak nie nakładają. Dowolne dwa wyrównane bloki potęgi dwójki są albo rozłączne, albo całkowicie zagnieżdżone, jeden w całości wewnątrz drugiego, co jest dokładnie powodem, dla którego adresacja CIDR tworzy czystą hierarchię. Częściowe nakładanie pojawia się tylko wtedy, gdy dane wejściowe nie są wyrównanym blokiem.
+
+Zawieranie nie zawsze jest błędem. Routery przekazują, używając **dopasowania najdłuższego prefiksu**: wygrywa najbardziej szczegółowa trasa pasująca do celu. Konkretne `/25` rozgłaszane wewnątrz zsumaryzowanej `/24` to celowy i powszechny wzorzec, używany do kierowania częścią ruchu inaczej. Niebezpieczeństwem jest *niezamierzone* nakładanie, w którym dwie części twojej sieci uważają obie, że posiadają te same adresy, a ruch trafia w niewłaściwe miejsce.
+
+## Luki
+
+Luka to fragment bloku nadrzędnego, którego żadna podsieć nie pokrywa. Załóżmy, że wyciąłeś `10.0.0.0/26` i `10.0.0.128/26` z `10.0.0.0/24`. Pomiędzy nimi i po nich `10.0.0.64/26` i `10.0.0.192/26` pozostają nieprzydzielone. Te dwa bloki to twoje luki: przestrzeń adresowa, którą wciąż możesz przydzielić, do której możesz rościć prawo lub którą po prostu możesz rozliczyć.
+
+Znajdowanie luk ma znaczenie z dwóch powodów. Pokazuje, gdzie jest miejsce na wzrost bez renumeracji, i potwierdza, że blok, który zamierzasz sumaryzować, jest naprawdę w pełni używany, ponieważ trasa zbiorcza rozgłoszona nad luką rości sobie prawo do adresów, których nie przydzieliłeś.
+
+## Weryfikacja planu
+
+Aby przejrzeć plan, wymień każdy przydzielony prefiks i podaj blok nadrzędny jako zakres. Raport nakładań mówi, które prefiksy kolidują i jak; raport luk mówi dokładnie, które bloki CIDR wewnątrz nadrzędnego są wciąż wolne. [Kalkulator CIDR](/#cidr) robi obie rzeczy w trybie Nakładanie / luka, oznaczając każde nakładanie jako identyczne, zawarte lub częściowe i wyrażając każdą lukę jako największe wyrównane bloki, które ją wypełniają.
+
+Obie połowy łączą się z powrotem z [supernettingiem](/learn/supernetting-and-aggregation): plan adresacji bez niezamierzonych nakładań i bez luk wewnątrz bloku to dokładnie ten plan, który sumaryzuje się czysto.

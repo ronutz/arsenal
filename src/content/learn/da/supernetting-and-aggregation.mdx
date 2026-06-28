@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting og ruteaggregering"
+summary: "Hvordan sammenhængende præfikser smelter sammen til ét kortere, justeringsreglen der afgør om to blokke kan smelte sammen, og forskellen mellem eksakt aggregering og et enkelt supernet der dækker dem."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Supernetting er subnetting baglæns
+
+Subnetting låser flere bit for at få en mindre blok. Supernetting gør det modsatte: den låser færre bit, så ét enkelt præfiks dækker flere mindre. Tag to tilstødende blokke, `192.168.0.0/24` og `192.168.1.0/24`. Tilsammen strækker de sig fra `192.168.0.0` til `192.168.1.255`, hvilket er præcis intervallet for `192.168.0.0/23`. Fjern én præfiksbit, fra /24 til /23, og én enkelt rute beskriver nu begge blokke.
+
+Dette er motoren bag **ruteaggregering**, også kaldet opsummering: at erstatte en liste over specifikke præfikser med ét enkelt kortere præfiks, der dækker dem alle.
+
+## Reglen for at kombinere to blokke
+
+To blokke smelter sammen til én, når de danner et *søskendepar*: lige store, tilstødende, og med den nederste blok på den kombinerede bloks grænse. `192.168.0.0/24` og `192.168.1.0/24` opfylder dette, fordi `192.168.0.0` er et gyldigt `/23`-net. Men `192.168.1.0/24` og `192.168.2.0/24` kan **ikke** kombineres, selvom de virker tilstødende. `192.168.1.0` er ingen `/23`-grænse (det /23, der indeholder det, begynder ved `192.168.0.0`), så der findes intet enkelt /23, der indeholder præcis disse to blokke og intet andet.
+
+Justering, ikke blot naboskab, er det, der får aggregeringen til at fungere. Det er den samme regel om topotensgrænser, der styrer subnetting, læst baglæns.
+
+## Eksakt aggregering eller et enkelt supernet
+
+Når dine præfikser ikke alle er sammenhængende, er der to forskellige svar, og de er ikke det samme.
+
+Det **mindste dækkende sæt** er den korteste liste over præfikser, der dækker præcis dine input og intet andet. Givet `10.0.0.0/24` og `10.0.2.0/24` er der et hul ved `10.0.1.0/24`, så de kan ikke smelte sammen: det mindste sæt forbliver de to `/24`-blokke.
+
+Det **enkelte supernet** er det ene mindste præfiks, der indeholder hvert input, selv om det trækker adresser med, du ikke har angivet. For de samme to blokke er det `10.0.0.0/22`, der strækker sig fra `10.0.0.0` til `10.0.3.255`. Det dækker begge input, men tilføjer også `10.0.1.0/24` og `10.0.3.0/24`, 512 ekstra adresser, der måske ikke tilhører dig.
+
+Annoncér kun det enkelte supernet, når du reelt kontrollerer hele intervallet. Ellers opsummerer du over adresserum, der tilhører en anden.
+
+## Hvorfor det er vigtigt
+
+Aggregering er det, der holder routingtabellerne små. En opsummerende rute i stedet for snesevis af specifikke betyder mindre hukommelse på hver router, der lytter, og langt mindre ustabilitet, når et enkelt indgående link falder. Hagen er, at det kun virker, hvis adresserne blev tildelt sammenhængende og på justerede grænser fra starten, hvilket er grunden til, at disciplineret subnetting og [VLSM](/learn/vlsm) bærer frugt senere som en ren [ruteopsummering](/learn/route-summarization).
+
+Du kan prøve begge svar i [CIDR-beregneren](/#cidr): dens Supernet-tilstand viser det mindste dækkende sæt og det omsluttende enkelte supernet, med det præcise antal ekstra adresser, supernettet ville tilføje.

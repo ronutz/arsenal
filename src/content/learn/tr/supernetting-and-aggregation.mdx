@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Üst ağ oluşturma ve rota toplama"
+summary: "Bitişik öneklerin nasıl tek bir daha kısa önekte birleştiği, iki bloğun birleşip birleşemeyeceğini belirleyen hizalama kuralı ve tam toplama ile bunları kapsayan tek bir üst ağ arasındaki fark."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Üst ağ oluşturma, alt ağ oluşturmanın tersidir
+
+Alt ağ oluşturma, daha küçük bir blok elde etmek için daha fazla bit sabitler. Üst ağ oluşturma bunun tersini yapar: tek bir önek birkaç küçüğü kapsasın diye daha az bit sabitler. İki bitişik blok alalım, `192.168.0.0/24` ve `192.168.1.0/24`. Birlikte `192.168.0.0`'dan `192.168.1.255`'e uzanırlar, bu da tam olarak `192.168.0.0/23` aralığıdır. Bir önek bitini kaldırın, /24'ten /23'e, ve artık tek bir rota her iki bloğu da tanımlar.
+
+Bu, **rota toplamanın** ardındaki motordur, özetleme olarak da adlandırılır: belirli öneklerin listesini, hepsini kapsayan tek bir daha kısa önekle değiştirmek.
+
+## İki bloğu birleştirme kuralı
+
+İki blok, bir *kardeş çift* oluşturduğunda tek bir bloğa birleşir: aynı boyutta, bitişik ve alt blok birleşik bloğun sınırında konumlanmış. `192.168.0.0/24` ve `192.168.1.0/24` bunu karşılar, çünkü `192.168.0.0` geçerli bir `/23` ağıdır. Ama `192.168.1.0/24` ve `192.168.2.0/24`, bitişik görünseler de **birleşmez**. `192.168.1.0` bir `/23` sınırı değildir (onu içeren /23, `192.168.0.0`'dan başlar), bu yüzden tam olarak bu iki bloğu ve başka hiçbir şeyi içeren tek bir /23 yoktur.
+
+Toplamayı çalıştıran şey, salt komşuluk değil, hizalamadır. Bu, alt ağ oluşturmayı yöneten aynı ikinin kuvveti sınır kuralının tersten okunmuş halidir.
+
+## Tam toplama mı yoksa tek bir üst ağ mı
+
+Önekleriniz hepsi bitişik değilse, iki farklı yanıt vardır ve bunlar aynı şey değildir.
+
+**Asgari kapsayan küme**, tam olarak girdilerinizi ve başka hiçbir şeyi kapsayan en kısa önek listesidir. `10.0.0.0/24` ve `10.0.2.0/24` verildiğinde `10.0.1.0/24`'te bir boşluk vardır, bu yüzden birleşemezler: asgari küme iki `/24` bloğu olarak kalır.
+
+**Tek üst ağ**, her girdiyi içeren tek en küçük önektir, listelemediğiniz adresleri sürüklese bile. Aynı iki blok için bu, `10.0.0.0`'dan `10.0.3.255`'e uzanan `10.0.0.0/22`'dir. Her iki girdiyi de kapsar ama ayrıca `10.0.1.0/24` ve `10.0.3.0/24`, size ait olmayabilecek 512 ek adres de ekler.
+
+Tek üst ağı yalnızca tüm aralığı gerçekten kontrol ettiğinizde duyurun. Aksi takdirde, başkasına ait adres alanı üzerinde özetleme yaparsınız.
+
+## Bu neden önemli
+
+Toplama, yönlendirme tablolarını küçük tutan şeydir. Onlarca belirli rota yerine bir özet rota, onu dinleyen her yönlendiricide daha az bellek ve tek bir bileşen bağlantı arızalandığında çok daha az kararsızlık anlamına gelir. İşin püf noktası, bunun yalnızca adresler en baştan bitişik ve hizalanmış sınırlarda atandıysa işe yaramasıdır, bu yüzden disiplinli alt ağ oluşturma ve [VLSM](/learn/vlsm) daha sonra temiz bir [rota özetleme](/learn/route-summarization) olarak meyve verir.
+
+Her iki yanıtı da [CIDR hesaplayıcısında](/#cidr) deneyebilirsiniz: Üst ağ modu, asgari kapsayan kümeyi ve çevreleyen tek üst ağı, üst ağın ekleyeceği tam ek adres sayısıyla birlikte gösterir.

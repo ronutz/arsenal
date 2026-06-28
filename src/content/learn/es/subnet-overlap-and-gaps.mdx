@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Solapamientos y huecos de subredes"
+summary: "Qué significa que dos prefijos se solapen o se contengan, por qué la coincidencia de prefijo más largo hace que algunos solapamientos sean intencionados, y cómo encontrar los huecos no asignados de un plan de direcciones."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Tres cosas que salen mal en un plan de direcciones
+
+A medida que un plan de direcciones crece, se cuelan tres problemas: dos prefijos que **se solapan**, un prefijo que **contiene** a otro, y **huecos** de espacio de direcciones que nadie asignó. Los dos primeros tratan de prefijos que reclaman las mismas direcciones; el tercero, de direcciones que ningún prefijo reclama. Una buena auditoría encuentra los tres.
+
+## Solapamiento y contención
+
+Dos prefijos se solapan cuando comparten al menos una dirección. Hay unas cuantas formas distintas:
+
+- **Idéntico**: el mismo bloque listado dos veces, a menudo un error de copiar y pegar.
+- **Contención**: un bloque está enteramente dentro de otro. `10.0.0.0/24` contiene `10.0.0.128/25`, porque el /25 es la mitad superior del /24.
+- **Parcial**: dos rangos comparten algunas direcciones pero ninguno contiene al otro. Dos bloques CIDR correctos nunca se solapan así. Dos bloques alineados de potencia de dos cualesquiera son disjuntos o están totalmente anidados, uno enteramente dentro del otro, que es exactamente por qué el direccionamiento CIDR forma una jerarquía limpia. Un solapamiento parcial solo aparece cuando una entrada no es un bloque alineado.
+
+La contención no siempre es un error. Los routers reenvían usando la **coincidencia de prefijo más largo**: gana la ruta más específica que coincide con un destino. Un `/25` específico anunciado dentro de un `/24` sumarizado es un patrón deliberado y común, usado para dirigir una parte del tráfico de forma diferente. El peligro es el solapamiento *no intencionado*, donde dos partes de tu red creen ambas que poseen las mismas direcciones y el tráfico aterriza en el lugar equivocado.
+
+## Huecos
+
+Un hueco es un tramo de un bloque padre que ninguna subred cubre. Supón que recortaste `10.0.0.0/26` y `10.0.0.128/26` de `10.0.0.0/24`. Entre ellos y después, `10.0.0.64/26` y `10.0.0.192/26` quedan sin asignar. Esos dos bloques son tus huecos: espacio de direcciones que aún puedes asignar, reclamar o simplemente contabilizar.
+
+Encontrar huecos importa por dos razones. Te muestra dónde hay sitio para crecer sin renumerar, y confirma que un bloque que pretendes sumarizar está realmente en uso por completo, ya que un resumen anunciado sobre un hueco reclama direcciones que no has asignado.
+
+## Auditar un plan
+
+Para revisar un plan, lista cada prefijo que hayas asignado y da el bloque padre como ámbito. Un informe de solapamientos te dice qué prefijos colisionan y cómo; un informe de huecos te dice exactamente qué bloques CIDR dentro del padre siguen libres. La [calculadora CIDR](/#cidr) hace ambas cosas en modo Solapamiento / hueco, etiquetando cada solapamiento como idéntico, contenido o parcial, y expresando cada hueco como los mayores bloques alineados que lo rellenan.
+
+Ambas mitades conectan de vuelta con el [supernetting](/learn/supernetting-and-aggregation): un plan de direcciones sin solapamientos no intencionados y sin huecos dentro de un bloque es exactamente el plan que se sumariza limpiamente.

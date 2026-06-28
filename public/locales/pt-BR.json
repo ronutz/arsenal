@@ -92,7 +92,90 @@
         "invalid": "Isto não parece um bloco CIDR válido. Tente um formato como 192.168.1.0/24."
       },
       "name": "Calculadora CIDR / de sub-redes",
-      "blurb": "Decomponha qualquer bloco CIDR de IPv4 em endereços de rede e de broadcast, faixa de hosts utilizáveis, contagem de hosts e máscara de rede. Roda inteiramente no seu navegador."
+      "blurb": "Decomponha qualquer bloco CIDR de IPv4 em endereços de rede e de broadcast, faixa de hosts utilizáveis, contagem de hosts e máscara de rede. Roda inteiramente no seu navegador.",
+      "modes": {
+        "subnet": "Sub-rede",
+        "vlsm": "VLSM",
+        "supernet": "Super-rede",
+        "overlap": "Sobreposição / lacuna"
+      },
+      "modeDesc": {
+        "subnet": "Analisa um único bloco CIDR IPv4: rede, broadcast, máscara e faixa de hosts.",
+        "vlsm": "Divide um bloco pai em sub-redes de tamanho variável conforme uma lista de quantidades de hosts.",
+        "supernet": "Resume uma lista de prefixos no menor conjunto de blocos que os cobre.",
+        "overlap": "Detecta sobreposições e contenção entre prefixos, além de lacunas dentro de um escopo opcional."
+      },
+      "vlsm": {
+        "parentLabel": "Bloco pai",
+        "reqsLabel": "Requisitos de sub-rede",
+        "namePlaceholder": "Nome (opcional)",
+        "hostsPlaceholder": "Hosts",
+        "addRow": "Adicionar sub-rede",
+        "remove": "Remover",
+        "run": "Alocar",
+        "th": {
+          "name": "Nome",
+          "hosts": "Hosts",
+          "network": "Rede",
+          "prefix": "Prefixo",
+          "netmask": "Máscara de rede",
+          "range": "Faixa utilizável",
+          "broadcast": "Broadcast",
+          "usable": "Hosts utilizáveis"
+        },
+        "stat": {
+          "parent": "Pai",
+          "used": "Usados",
+          "free": "Livres",
+          "utilization": "Utilização"
+        },
+        "unfit": "Não couberam",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Prefixos a agregar",
+        "run": "Agregar",
+        "minimal": "Conjunto mínimo de cobertura",
+        "single": "Super-rede única",
+        "singleExtra": "Adiciona {extra} endereços extras além das entradas.",
+        "stat": {
+          "inputs": "Prefixos de entrada",
+          "addresses": "Endereços",
+          "blocks": "Blocos agregados"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Prefixos a verificar",
+        "scopeLabel": "Escopo (opcional, habilita a detecção de lacunas)",
+        "run": "Verificar",
+        "overlapsTitle": "Sobreposições",
+        "noOverlaps": "Nenhuma sobreposição encontrada.",
+        "gapsTitle": "Lacunas no escopo",
+        "noGaps": "Nenhuma lacuna no escopo informado.",
+        "kind": {
+          "identical": "idêntico a",
+          "contains": "contém",
+          "contained": "está dentro de",
+          "partial": "sobrepõe parcialmente"
+        },
+        "addresses": "endereços",
+        "stat": {
+          "covered": "Cobertos",
+          "scope": "Escopo"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Não é um endereço IPv4 válido. Use quatro octetos de 0 a 255, como 192.168.1.0.",
+        "octet": "Um octeto está fora do intervalo (cada um deve estar entre 0 e 255).",
+        "format": "Era esperado o formato A.B.C.D/prefixo, como 192.168.1.0/24.",
+        "prefix": "O comprimento do prefixo deve estar entre 0 e 32.",
+        "tooMany": "Entradas demais. Reduza a lista e tente novamente.",
+        "noReqs": "Adicione ao menos um requisito de sub-rede com uma quantidade de hosts.",
+        "noPrefixes": "Insira ao menos um prefixo, um por linha."
+      }
     },
     "title": "Ferramentas",
     "lede": "Utilitários pequenos, rápidos e que respeitam a privacidade, rodando inteiramente no seu navegador. Nada do que você digita é enviado a lugar nenhum. Mais ferramentas a caminho.",

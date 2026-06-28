@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Subnet-overlappingen en -gaten"
+summary: "Wat het betekent als twee prefixes overlappen of de een de ander bevat, waarom longest-prefix-match sommige overlappingen bedoeld maakt, en hoe je de niet-toegewezen gaten van een adresplan vindt."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Drie dingen die misgaan in een adresplan
+
+Naarmate een adresplan groeit, sluipen er drie problemen in: twee prefixes die **overlappen**, een prefix dat een ander **bevat**, en **gaten** in de adresruimte die niemand heeft toegewezen. De eerste twee gaan over prefixes die dezelfde adressen claimen; het derde over adressen die geen enkel prefix claimt. Een goede controle vindt alle drie.
+
+## Overlapping en insluiting
+
+Twee prefixes overlappen wanneer ze ten minste één adres delen. Er zijn enkele verschillende vormen:
+
+- **Identiek**: hetzelfde blok twee keer vermeld, vaak een kopieer-plakfout.
+- **Insluiting**: een blok ligt volledig binnen een ander. `10.0.0.0/24` bevat `10.0.0.128/25`, want de /25 is de bovenste helft van de /24.
+- **Gedeeltelijk**: twee bereiken delen sommige adressen maar geen van beide bevat het andere. Twee correcte CIDR-blokken overlappen nooit zo. Twee willekeurige uitgelijnde machten-van-twee-blokken zijn ofwel disjunct ofwel volledig genest, de een geheel binnen de ander, wat precies de reden is waarom CIDR-adressering een nette hiërarchie vormt. Een gedeeltelijke overlapping verschijnt alleen wanneer een invoer geen uitgelijnd blok is.
+
+Insluiting is niet altijd een fout. Routers sturen door op basis van **longest prefix match**: de meest specifieke route die overeenkomt met een bestemming wint. Een specifiek `/25` dat binnen een samengevat `/24` wordt aangekondigd is een bewust en gangbaar patroon, gebruikt om een deel van het verkeer anders te sturen. Het gevaar is de *onbedoelde* overlapping, waarbij twee delen van je netwerk beide denken dezelfde adressen te bezitten en het verkeer op de verkeerde plek belandt.
+
+## Gaten
+
+Een gat is een stuk van een bovenliggend blok dat geen enkel subnet dekt. Stel dat je `10.0.0.0/26` en `10.0.0.128/26` uit `10.0.0.0/24` hebt gesneden. Daartussen en daarna blijven `10.0.0.64/26` en `10.0.0.192/26` niet-toegewezen. Die twee blokken zijn je gaten: adresruimte die je nog kunt toewijzen, claimen of gewoon administreren.
+
+Gaten vinden doet er om twee redenen toe. Het laat zien waar ruimte is om te groeien zonder te hernummeren, en bevestigt dat een blok dat je wilt samenvatten werkelijk volledig in gebruik is, omdat een over een gat aangekondigde samenvatting adressen claimt die je niet hebt toegewezen.
+
+## Een plan controleren
+
+Om een plan te herzien, vermeld elk prefix dat je hebt toegewezen en geef het bovenliggende blok als bereik op. Een overlapprapport vertelt welke prefixes botsen en hoe; een gatenrapport vertelt precies welke CIDR-blokken binnen het bovenliggende blok nog vrij zijn. De [CIDR-calculator](/#cidr) doet beide in de modus Overlap / gat, labelt elke overlapping als identiek, ingesloten of gedeeltelijk, en drukt elk gat uit als de grootste uitgelijnde blokken die het vullen.
+
+Beide helften leiden terug naar [supernetting](/learn/supernetting-and-aggregation): een adresplan zonder onbedoelde overlappingen en zonder gaten binnen een blok is precies het plan dat netjes samenvat.

@@ -92,7 +92,90 @@
         "invalid": "Bu geçerli bir CIDR bloğu gibi görünmüyor. 192.168.1.0/24 gibi bir biçim dene."
       },
       "name": "CIDR / Alt Ağ Hesaplayıcı",
-      "blurb": "Herhangi bir IPv4 CIDR bloğunu ağ ve yayın adreslerine, kullanılabilir ana bilgisayar aralığına, ana bilgisayar sayısına ve ağ maskesine ayır. Tamamen tarayıcında çalışır."
+      "blurb": "Herhangi bir IPv4 CIDR bloğunu ağ ve yayın adreslerine, kullanılabilir ana bilgisayar aralığına, ana bilgisayar sayısına ve ağ maskesine ayır. Tamamen tarayıcında çalışır.",
+      "modes": {
+        "subnet": "Alt ağ",
+        "vlsm": "VLSM",
+        "supernet": "Üst ağ",
+        "overlap": "Çakışma / boşluk"
+      },
+      "modeDesc": {
+        "subnet": "Tek bir IPv4 CIDR bloğunu analiz eder: ağ, yayın, maske ve ana bilgisayar aralığı.",
+        "vlsm": "Bir üst bloğu, ana bilgisayar sayıları listesine göre değişken uzunlukta alt ağlara böler.",
+        "supernet": "Bir önek listesini, onları kapsayan en küçük blok kümesinde özetler.",
+        "overlap": "Önekler arasındaki çakışmaları ve iç içe geçmeleri, ayrıca isteğe bağlı bir kapsam içindeki boşlukları bulur."
+      },
+      "vlsm": {
+        "parentLabel": "Üst blok",
+        "reqsLabel": "Alt ağ gereksinimleri",
+        "namePlaceholder": "Ad (isteğe bağlı)",
+        "hostsPlaceholder": "Ana bilgisayar",
+        "addRow": "Alt ağ ekle",
+        "remove": "Kaldır",
+        "run": "Tahsis et",
+        "th": {
+          "name": "Ad",
+          "hosts": "Ana bilgisayar",
+          "network": "Ağ",
+          "prefix": "Önek",
+          "netmask": "Ağ maskesi",
+          "range": "Kullanılabilir aralık",
+          "broadcast": "Yayın",
+          "usable": "Kullanılabilir ana bilgisayar"
+        },
+        "stat": {
+          "parent": "Üst",
+          "used": "Kullanılan",
+          "free": "Boş",
+          "utilization": "Kullanım"
+        },
+        "unfit": "Sığmadı",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Toplanacak önekler",
+        "run": "Topla",
+        "minimal": "En küçük kapsayan küme",
+        "single": "Tek üst ağ",
+        "singleExtra": "Girişlerin ötesinde {extra} ek adres ekler.",
+        "stat": {
+          "inputs": "Giriş önekleri",
+          "addresses": "Adresler",
+          "blocks": "Toplanan bloklar"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Kontrol edilecek önekler",
+        "scopeLabel": "Kapsam (isteğe bağlı, boşluk algılamayı etkinleştirir)",
+        "run": "Kontrol et",
+        "overlapsTitle": "Çakışmalar",
+        "noOverlaps": "Çakışma bulunamadı.",
+        "gapsTitle": "Kapsamdaki boşluklar",
+        "noGaps": "Belirtilen kapsamda boşluk yok.",
+        "kind": {
+          "identical": "aynı",
+          "contains": "içerir",
+          "contained": "içinde",
+          "partial": "kısmen çakışır"
+        },
+        "addresses": "adres",
+        "stat": {
+          "covered": "Kapsanan",
+          "scope": "Kapsam"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Geçerli bir IPv4 adresi değil. 0-255 arası dört oktet kullanın, örneğin 192.168.1.0.",
+        "octet": "Bir oktet aralık dışında (her biri 0-255 arasında olmalı).",
+        "format": "A.B.C.D/önek biçimi bekleniyor, örneğin 192.168.1.0/24.",
+        "prefix": "Önek uzunluğu 0 ile 32 arasında olmalı.",
+        "tooMany": "Çok fazla giriş. Listeyi kısaltıp tekrar deneyin.",
+        "noReqs": "Ana bilgisayar sayısı olan en az bir alt ağ gereksinimi ekleyin.",
+        "noPrefixes": "En az bir önek girin, her satıra bir tane."
+      }
     },
     "title": "Araçlar",
     "lede": "Tamamen tarayıcında çalışan küçük, hızlı, gizliliğe saygılı araçlar. Girdiğin hiçbir şey hiçbir yere gönderilmez. Dahası geliyor.",

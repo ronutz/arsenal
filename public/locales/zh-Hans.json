@@ -92,7 +92,90 @@
         "invalid": "这看起来不是有效的 CIDR 块。请尝试类似 192.168.1.0/24 的格式。"
       },
       "name": "CIDR / 子网计算器",
-      "blurb": "将任意 IPv4 CIDR 块拆解为网络地址和广播地址、可用主机范围、主机数量和子网掩码。完全在你的浏览器中运行。"
+      "blurb": "将任意 IPv4 CIDR 块拆解为网络地址和广播地址、可用主机范围、主机数量和子网掩码。完全在你的浏览器中运行。",
+      "modes": {
+        "subnet": "子网",
+        "vlsm": "VLSM",
+        "supernet": "超网",
+        "overlap": "重叠 / 空隙"
+      },
+      "modeDesc": {
+        "subnet": "分析单个 IPv4 CIDR 块：网络、广播、掩码和主机范围。",
+        "vlsm": "根据主机数量列表，将父块划分为可变长度的子网。",
+        "supernet": "将前缀列表汇总为覆盖它们的最小块集合。",
+        "overlap": "查找前缀之间的重叠与包含关系，以及可选范围内的空隙。"
+      },
+      "vlsm": {
+        "parentLabel": "父块",
+        "reqsLabel": "子网需求",
+        "namePlaceholder": "名称（可选）",
+        "hostsPlaceholder": "主机数",
+        "addRow": "添加子网",
+        "remove": "移除",
+        "run": "分配",
+        "th": {
+          "name": "名称",
+          "hosts": "主机数",
+          "network": "网络",
+          "prefix": "前缀",
+          "netmask": "网络掩码",
+          "range": "可用范围",
+          "broadcast": "广播",
+          "usable": "可用主机数"
+        },
+        "stat": {
+          "parent": "父块",
+          "used": "已用",
+          "free": "空闲",
+          "utilization": "利用率"
+        },
+        "unfit": "无法容纳",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "要聚合的前缀",
+        "run": "聚合",
+        "minimal": "最小覆盖集合",
+        "single": "单一超网",
+        "singleExtra": "比输入多出 {extra} 个地址。",
+        "stat": {
+          "inputs": "输入前缀",
+          "addresses": "地址",
+          "blocks": "聚合块"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "要检查的前缀",
+        "scopeLabel": "范围（可选，启用空隙检测）",
+        "run": "检查",
+        "overlapsTitle": "重叠",
+        "noOverlaps": "未发现重叠。",
+        "gapsTitle": "范围内的空隙",
+        "noGaps": "指定范围内没有空隙。",
+        "kind": {
+          "identical": "相同",
+          "contains": "包含",
+          "contained": "位于",
+          "partial": "部分重叠"
+        },
+        "addresses": "个地址",
+        "stat": {
+          "covered": "已覆盖",
+          "scope": "范围"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "不是有效的 IPv4 地址。请使用 0-255 的四个八位组，例如 192.168.1.0。",
+        "octet": "某个八位组超出范围（每个必须为 0-255）。",
+        "format": "应为 A.B.C.D/前缀 格式，例如 192.168.1.0/24。",
+        "prefix": "前缀长度必须介于 0 和 32 之间。",
+        "tooMany": "条目过多。请缩短列表后重试。",
+        "noReqs": "请至少添加一个带主机数量的子网需求。",
+        "noPrefixes": "请至少输入一个前缀，每行一个。"
+      }
     },
     "title": "工具",
     "lede": "小巧、快速、尊重隐私的工具，完全在您的浏览器中运行。您输入的内容不会被发送到任何地方。更多工具即将推出。",

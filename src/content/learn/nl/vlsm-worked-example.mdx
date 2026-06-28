@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Een VLSM-toewijzing, van begin tot eind uitgewerkt"
+summary: "Een volledige toewijzing van subnetten met variabele lengte voor een realistisch netwerk: elk segment dimensioneren, van groot naar klein sorteren, de echte adressen toewijzen en de overgebleven ruimte administreren."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Het scenario
+
+Je krijgt `172.16.0.0/22` en moet er vier segmenten in passen:
+
+- **Verkoop**: 500 hosts
+- **Engineering**: 200 hosts
+- **Link A**: een punt-tot-punt-verbinding tussen routers, 2 hosts
+- **Link B**: een tweede punt-tot-punt-verbinding, 2 hosts
+
+Een `/22` bevat 1024 adressen (`172.16.0.0` tot `172.16.3.255`). De conceptuele regels komen aan bod in [VLSM](/learn/vlsm); hier lopen we ze tot het einde door.
+
+## Stap 1: elk segment dimensioneren
+
+Vind het kleinste blok dat elk aantal hosts bevat, en denk aan de twee gereserveerde adressen (netwerk en broadcast) in elk gewoon blok:
+
+- 500 hosts vereisen 9 hostbits (2⁹ − 2 = 510 bruikbaar), een `/23`.
+- 200 hosts vereisen 8 hostbits (254 bruikbaar), een `/24`.
+- 2 hosts vereisen 2 hostbits (2 bruikbaar), een `/30`.
+- 2 hosts vereisen nog een `/30`.
+
+Rond af naar de volgende macht van twee: 500 past niet in een `/24` (254 bruikbaar), dus neemt het een `/23`.
+
+## Stap 2: van groot naar klein sorteren
+
+Sorteer de segmenten op blokgrootte, het grootste eerst, zodat elk op een nette grens landt:
+
+1. Verkoop, `/23` (512 adressen)
+2. Engineering, `/24` (256)
+3. Link A, `/30` (4)
+4. Link B, `/30` (4)
+
+## Stap 3: de adressen toewijzen
+
+Wijs toe in die volgorde, elk blok begint waar het vorige eindigde:
+
+```
+/23  172.16.0.0  – .1.255   (510 bruikbaar)  ← Verkoop
+/24  172.16.2.0  – .2.255   (254 bruikbaar)  ← Engineering
+/30  172.16.3.0  – .3.3     (2 bruikbaar)    ← Link A
+/30  172.16.3.4  – .3.7     (2 bruikbaar)    ← Link B
+```
+
+Verkoop vult de eerste helft van het blok. Engineering neemt de volgende `/24`. De twee verbindingen tussen routers nemen elk vier adressen aan het begin van de laatste `/24`.
+
+## Stap 4: administreren wat overblijft
+
+De vier segmenten gebruiken 512 + 256 + 4 + 4 = 776 adressen, wat 248 vrij laat, van `172.16.3.8` tot `172.16.3.255`. Dat is 75.8% benutting, met een aaneengesloten staart vrije ruimte voor de volgende verbinding of een klein subnet, nog steeds uitgelijnd voor een toekomstige samenvatting.
+
+## Je werk controleren
+
+Dit is precies de toewijzing die de [CIDR-calculator](/#cidr) in de VLSM-modus produceert: voer `172.16.0.0/22` in als bovenliggend blok en de vier aantallen hosts, en hij geeft dezelfde netwerken, maskers, bereiken en het cijfer van 75.8% benutting terug, volledig in je browser berekend. Past een segment niet, dan wordt het apart vermeld in plaats van stilzwijgend weggegooid.

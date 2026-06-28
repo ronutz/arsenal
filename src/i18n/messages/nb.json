@@ -92,7 +92,90 @@
         "invalid": "Dette ser ikke ut som en gyldig CIDR-blokk. Prøv et format som 192.168.1.0/24."
       },
       "name": "CIDR-/subnettkalkulator",
-      "blurb": "Bryt ned en vilkårlig IPv4-CIDR-blokk i nettverks- og kringkastingsadresser, brukbart vertsintervall, antall verter og nettmaske. Kjører helt i nettleseren din."
+      "blurb": "Bryt ned en vilkårlig IPv4-CIDR-blokk i nettverks- og kringkastingsadresser, brukbart vertsintervall, antall verter og nettmaske. Kjører helt i nettleseren din.",
+      "modes": {
+        "subnet": "Subnett",
+        "vlsm": "VLSM",
+        "supernet": "Supernett",
+        "overlap": "Overlapp / hull"
+      },
+      "modeDesc": {
+        "subnet": "Analyserer en enkelt IPv4-CIDR-blokk: nett, kringkasting, maske og vertsområde.",
+        "vlsm": "Deler en overordnet blokk i subnett av variabel lengde etter en liste over antall verter.",
+        "supernet": "Oppsummerer en liste med prefikser til det minste settet med dekkende blokker.",
+        "overlap": "Finner overlapp og innkapsling mellom prefikser, samt hull innenfor et valgfritt område."
+      },
+      "vlsm": {
+        "parentLabel": "Overordnet blokk",
+        "reqsLabel": "Subnettkrav",
+        "namePlaceholder": "Navn (valgfritt)",
+        "hostsPlaceholder": "Verter",
+        "addRow": "Legg til subnett",
+        "remove": "Fjern",
+        "run": "Tildel",
+        "th": {
+          "name": "Navn",
+          "hosts": "Verter",
+          "network": "Nett",
+          "prefix": "Prefiks",
+          "netmask": "Nettmaske",
+          "range": "Brukbart område",
+          "broadcast": "Kringkasting",
+          "usable": "Brukbare verter"
+        },
+        "stat": {
+          "parent": "Overordnet",
+          "used": "Brukt",
+          "free": "Ledig",
+          "utilization": "Utnyttelse"
+        },
+        "unfit": "Fikk ikke plass",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Prefikser som skal aggregeres",
+        "run": "Aggreger",
+        "minimal": "Minste dekkende sett",
+        "single": "Enkelt supernett",
+        "singleExtra": "Legger til {extra} ekstra adresser utover inndataene.",
+        "stat": {
+          "inputs": "Inndataprefikser",
+          "addresses": "Adresser",
+          "blocks": "Aggregerte blokker"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Prefikser som skal kontrolleres",
+        "scopeLabel": "Område (valgfritt, aktiverer hulldeteksjon)",
+        "run": "Kontroller",
+        "overlapsTitle": "Overlapp",
+        "noOverlaps": "Ingen overlapp funnet.",
+        "gapsTitle": "Hull i området",
+        "noGaps": "Ingen hull i det angitte området.",
+        "kind": {
+          "identical": "identisk med",
+          "contains": "inneholder",
+          "contained": "ligger i",
+          "partial": "overlapper delvis"
+        },
+        "addresses": "adresser",
+        "stat": {
+          "covered": "Dekket",
+          "scope": "Område"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Ingen gyldig IPv4-adresse. Bruk fire oktetter fra 0 til 255, som 192.168.1.0.",
+        "octet": "En oktett er utenfor området (hver må være mellom 0 og 255).",
+        "format": "Forventet format er A.B.C.D/prefiks, som 192.168.1.0/24.",
+        "prefix": "Prefikslengden må være mellom 0 og 32.",
+        "tooMany": "For mange oppføringer. Forkort listen og prøv igjen.",
+        "noReqs": "Legg til minst ett subnettkrav med et antall verter.",
+        "noPrefixes": "Skriv inn minst ett prefiks, ett per linje."
+      }
     },
     "title": "Verktøy",
     "lede": "Små, raske og personvernvennlige verktøy som kjører helt i nettleseren din. Ingenting av det du skriver, sendes noe sted. Flere er på vei.",

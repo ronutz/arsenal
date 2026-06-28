@@ -92,7 +92,90 @@
         "invalid": "Cela ne ressemble pas à un bloc CIDR valide. Essayez un format comme 192.168.1.0/24."
       },
       "name": "Calculateur CIDR / de sous-réseaux",
-      "blurb": "Décomposez n'importe quel bloc CIDR IPv4 en adresses de réseau et de diffusion, plage d'hôtes utilisables, nombre d'hôtes et masque de réseau. S'exécute entièrement dans votre navigateur."
+      "blurb": "Décomposez n'importe quel bloc CIDR IPv4 en adresses de réseau et de diffusion, plage d'hôtes utilisables, nombre d'hôtes et masque de réseau. S'exécute entièrement dans votre navigateur.",
+      "modes": {
+        "subnet": "Sous-réseau",
+        "vlsm": "VLSM",
+        "supernet": "Super-réseau",
+        "overlap": "Chevauchement / vide"
+      },
+      "modeDesc": {
+        "subnet": "Analyse un seul bloc CIDR IPv4 : réseau, diffusion, masque et plage d'hôtes.",
+        "vlsm": "Découpe un bloc parent en sous-réseaux de taille variable selon une liste de nombres d'hôtes.",
+        "supernet": "Résume une liste de préfixes en le plus petit ensemble de blocs qui les couvrent.",
+        "overlap": "Détecte les chevauchements et l'inclusion entre préfixes, ainsi que les vides dans une portée facultative."
+      },
+      "vlsm": {
+        "parentLabel": "Bloc parent",
+        "reqsLabel": "Besoins en sous-réseaux",
+        "namePlaceholder": "Nom (facultatif)",
+        "hostsPlaceholder": "Hôtes",
+        "addRow": "Ajouter un sous-réseau",
+        "remove": "Supprimer",
+        "run": "Allouer",
+        "th": {
+          "name": "Nom",
+          "hosts": "Hôtes",
+          "network": "Réseau",
+          "prefix": "Préfixe",
+          "netmask": "Masque de réseau",
+          "range": "Plage utilisable",
+          "broadcast": "Diffusion",
+          "usable": "Hôtes utilisables"
+        },
+        "stat": {
+          "parent": "Parent",
+          "used": "Utilisées",
+          "free": "Libres",
+          "utilization": "Utilisation"
+        },
+        "unfit": "N'ont pas tenu",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Préfixes à agréger",
+        "run": "Agréger",
+        "minimal": "Ensemble couvrant minimal",
+        "single": "Super-réseau unique",
+        "singleExtra": "Ajoute {extra} adresses supplémentaires au-delà des entrées.",
+        "stat": {
+          "inputs": "Préfixes d'entrée",
+          "addresses": "Adresses",
+          "blocks": "Blocs agrégés"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Préfixes à vérifier",
+        "scopeLabel": "Portée (facultatif, active la détection des vides)",
+        "run": "Vérifier",
+        "overlapsTitle": "Chevauchements",
+        "noOverlaps": "Aucun chevauchement trouvé.",
+        "gapsTitle": "Vides dans la portée",
+        "noGaps": "Aucun vide dans la portée indiquée.",
+        "kind": {
+          "identical": "identique à",
+          "contains": "contient",
+          "contained": "est inclus dans",
+          "partial": "chevauche partiellement"
+        },
+        "addresses": "adresses",
+        "stat": {
+          "covered": "Couvertes",
+          "scope": "Portée"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Adresse IPv4 non valide. Utilisez quatre octets de 0 à 255, comme 192.168.1.0.",
+        "octet": "Un octet est hors plage (chacun doit être compris entre 0 et 255).",
+        "format": "Le format attendu est A.B.C.D/préfixe, comme 192.168.1.0/24.",
+        "prefix": "La longueur du préfixe doit être comprise entre 0 et 32.",
+        "tooMany": "Trop d'entrées. Réduisez la liste et réessayez.",
+        "noReqs": "Ajoutez au moins un besoin de sous-réseau avec un nombre d'hôtes.",
+        "noPrefixes": "Saisissez au moins un préfixe, un par ligne."
+      }
     },
     "title": "Outils",
     "lede": "De petits utilitaires rapides et respectueux de la vie privée qui s'exécutent entièrement dans votre navigateur. Rien de ce que vous saisissez n'est envoyé où que ce soit. D'autres arrivent.",

@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernätning och ruttaggregering"
+summary: "Hur sammanhängande prefix slås samman till ett kortare, justeringsregeln som avgör om två block kan smälta ihop, och skillnaden mellan exakt aggregering och ett enda supernät som täcker dem."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Supernätning är subnätning baklänges
+
+Subnätning låser fler bitar för att få ett mindre block. Supernätning gör tvärtom: den låser färre bitar så att ett enda prefix täcker flera mindre. Ta två angränsande block, `192.168.0.0/24` och `192.168.1.0/24`. Tillsammans sträcker de sig från `192.168.0.0` till `192.168.1.255`, vilket är exakt intervallet för `192.168.0.0/23`. Ta bort en prefixbit, från /24 till /23, och en enda rutt beskriver nu båda blocken.
+
+Det här är motorn bakom **ruttaggregering**, även kallad sammanfattning: att ersätta en lista med specifika prefix med ett enda kortare prefix som täcker dem alla.
+
+## Regeln för att kombinera två block
+
+Två block smälter ihop till ett när de bildar ett *syskonpar*: lika stora, angränsande, och med det nedre blocket på det kombinerade blockets gräns. `192.168.0.0/24` och `192.168.1.0/24` uppfyller detta, eftersom `192.168.0.0` är ett giltigt `/23`-nät. Men `192.168.1.0/24` och `192.168.2.0/24` kan **inte** kombineras, även om de verkar angränsande. `192.168.1.0` är ingen `/23`-gräns (det /23 som innehåller det börjar vid `192.168.0.0`), så det finns inget enda /23 som innehåller exakt dessa två block och inget annat.
+
+Justering, inte enbart angränsning, är det som får aggregering att fungera. Det är samma regel om tvåpotensgränser som styr subnätning, läst baklänges.
+
+## Exakt aggregering eller ett enda supernät
+
+När dina prefix inte alla är sammanhängande finns det två olika svar, och de är inte detsamma.
+
+Den **minsta täckande uppsättningen** är den kortaste listan med prefix som täcker exakt dina indata och inget annat. Givet `10.0.0.0/24` och `10.0.2.0/24` finns en lucka vid `10.0.1.0/24`, så de kan inte smälta ihop: den minsta uppsättningen förblir de två `/24`-blocken.
+
+Det **enda supernätet** är det enda minsta prefix som innehåller varje indata, även om det drar med adresser du inte listade. För samma två block är det `10.0.0.0/22`, som sträcker sig från `10.0.0.0` till `10.0.3.255`. Det täcker båda indata men lägger också till `10.0.1.0/24` och `10.0.3.0/24`, 512 extra adresser som kanske inte tillhör dig.
+
+Annonsera det enda supernätet endast när du verkligen kontrollerar hela intervallet. Annars sammanfattar du över adressutrymme som tillhör någon annan.
+
+## Varför det spelar roll
+
+Aggregering är det som håller routingtabellerna små. En sammanfattande rutt i stället för dussintals specifika innebär mindre minne på varje router som lyssnar, och mycket mindre instabilitet när en enda ingående länk faller. Haken är att det bara fungerar om adresserna tilldelades sammanhängande och på justerade gränser från början, vilket är varför disciplinerad subnätning och [VLSM](/learn/vlsm) ger frukt senare som en ren [ruttsammanfattning](/learn/route-summarization).
+
+Du kan prova båda svaren i [CIDR-kalkylatorn](/#cidr): dess läge Supernät visar den minsta täckande uppsättningen och det omslutande enda supernätet, med det exakta antalet extra adresser som supernätet skulle lägga till.

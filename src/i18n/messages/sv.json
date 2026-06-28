@@ -92,7 +92,90 @@
         "invalid": "Det här ser inte ut som ett giltigt CIDR-block. Prova ett format som 192.168.1.0/24."
       },
       "name": "CIDR-/subnätskalkylator",
-      "blurb": "Dela upp ett valfritt IPv4-CIDR-block i nätverks- och broadcastadresser, användbart värdintervall, antal värdar och nätmask. Körs helt i din webbläsare."
+      "blurb": "Dela upp ett valfritt IPv4-CIDR-block i nätverks- och broadcastadresser, användbart värdintervall, antal värdar och nätmask. Körs helt i din webbläsare.",
+      "modes": {
+        "subnet": "Subnät",
+        "vlsm": "VLSM",
+        "supernet": "Supernät",
+        "overlap": "Överlapp / lucka"
+      },
+      "modeDesc": {
+        "subnet": "Analyserar ett enskilt IPv4-CIDR-block: nät, broadcast, mask och värdintervall.",
+        "vlsm": "Delar upp ett överordnat block i subnät av variabel längd efter en lista med antal värdar.",
+        "supernet": "Sammanfattar en lista med prefix till minsta möjliga uppsättning täckande block.",
+        "overlap": "Hittar överlapp och inneslutning mellan prefix, samt luckor inom ett valfritt område."
+      },
+      "vlsm": {
+        "parentLabel": "Överordnat block",
+        "reqsLabel": "Subnätskrav",
+        "namePlaceholder": "Namn (valfritt)",
+        "hostsPlaceholder": "Värdar",
+        "addRow": "Lägg till subnät",
+        "remove": "Ta bort",
+        "run": "Tilldela",
+        "th": {
+          "name": "Namn",
+          "hosts": "Värdar",
+          "network": "Nät",
+          "prefix": "Prefix",
+          "netmask": "Nätmask",
+          "range": "Användbart intervall",
+          "broadcast": "Broadcast",
+          "usable": "Användbara värdar"
+        },
+        "stat": {
+          "parent": "Överordnat",
+          "used": "Använt",
+          "free": "Ledigt",
+          "utilization": "Utnyttjande"
+        },
+        "unfit": "Fick inte plats",
+        "parentPlaceholder": "10.0.0.0/24"
+      },
+      "supernet": {
+        "label": "Prefix att aggregera",
+        "run": "Aggregera",
+        "minimal": "Minsta täckande uppsättning",
+        "single": "Enskilt supernät",
+        "singleExtra": "Lägger till {extra} extra adresser utöver indata.",
+        "stat": {
+          "inputs": "Indataprefix",
+          "addresses": "Adresser",
+          "blocks": "Aggregerade block"
+        },
+        "placeholder": "192.168.0.0/24\n192.168.1.0/24"
+      },
+      "overlap": {
+        "label": "Prefix att kontrollera",
+        "scopeLabel": "Område (valfritt, aktiverar luckdetektering)",
+        "run": "Kontrollera",
+        "overlapsTitle": "Överlapp",
+        "noOverlaps": "Inga överlapp hittades.",
+        "gapsTitle": "Luckor i området",
+        "noGaps": "Inga luckor i det angivna området.",
+        "kind": {
+          "identical": "identiskt med",
+          "contains": "innehåller",
+          "contained": "ligger i",
+          "partial": "överlappar delvis"
+        },
+        "addresses": "adresser",
+        "stat": {
+          "covered": "Täckt",
+          "scope": "Område"
+        },
+        "placeholder": "10.0.0.0/24\n10.0.0.128/25",
+        "scopePlaceholder": "10.0.0.0/16"
+      },
+      "err": {
+        "ipv4": "Ingen giltig IPv4-adress. Använd fyra oktetter från 0 till 255, som 192.168.1.0.",
+        "octet": "En oktett ligger utanför intervallet (varje måste vara mellan 0 och 255).",
+        "format": "Förväntat format är A.B.C.D/prefix, som 192.168.1.0/24.",
+        "prefix": "Prefixlängden måste vara mellan 0 och 32.",
+        "tooMany": "För många poster. Korta ner listan och försök igen.",
+        "noReqs": "Lägg till minst ett subnätskrav med ett antal värdar.",
+        "noPrefixes": "Ange minst ett prefix, ett per rad."
+      }
     },
     "title": "Verktyg",
     "lede": "Små, snabba och integritetsvänliga verktyg som körs helt i din webbläsare. Inget du skriver skickas någonstans. Fler är på väg.",

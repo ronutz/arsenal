@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "Un'assegnazione VLSM, risolta dall'inizio alla fine"
+summary: "Un'assegnazione completa di sottoreti a lunghezza variabile per una rete realistica: dimensionare ogni segmento, ordinare dal più grande al più piccolo, assegnare gli indirizzi reali e contabilizzare lo spazio rimanente."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Lo scenario
+
+Ti viene dato `172.16.0.0/22` e devi far stare quattro segmenti al suo interno:
+
+- **Vendite**: 500 host
+- **Ingegneria**: 200 host
+- **Collegamento A**: un collegamento punto-punto tra router, 2 host
+- **Collegamento B**: un secondo collegamento punto-punto, 2 host
+
+Un `/22` contiene 1024 indirizzi (`172.16.0.0` a `172.16.3.255`). Le regole concettuali sono trattate in [VLSM](/learn/vlsm); qui le percorriamo fino in fondo.
+
+## Passo 1: dimensionare ogni segmento
+
+Trova il blocco più piccolo che contiene ogni numero di host, ricordando i due indirizzi riservati (rete e broadcast) in ogni blocco ordinario:
+
+- 500 host richiedono 9 bit di host (2⁹ − 2 = 510 utilizzabili), un `/23`.
+- 200 host richiedono 8 bit di host (254 utilizzabili), un `/24`.
+- 2 host richiedono 2 bit di host (2 utilizzabili), un `/30`.
+- 2 host richiedono un altro `/30`.
+
+Arrotonda alla potenza di due successiva: 500 non sta in un `/24` (254 utilizzabili), quindi prende un `/23`.
+
+## Passo 2: ordinare dal più grande al più piccolo
+
+Ordina i segmenti per dimensione del blocco, il più grande per primo, in modo che ognuno atterri su un confine pulito:
+
+1. Vendite, `/23` (512 indirizzi)
+2. Ingegneria, `/24` (256)
+3. Collegamento A, `/30` (4)
+4. Collegamento B, `/30` (4)
+
+## Passo 3: assegnare gli indirizzi
+
+Assegna in quest'ordine, ogni blocco iniziando dove è finito il precedente:
+
+```
+/23  172.16.0.0  – .1.255   (510 utilizzabili)  ← Vendite
+/24  172.16.2.0  – .2.255   (254 utilizzabili)  ← Ingegneria
+/30  172.16.3.0  – .3.3     (2 utilizzabili)    ← Collegamento A
+/30  172.16.3.4  – .3.7     (2 utilizzabili)    ← Collegamento B
+```
+
+Vendite riempie la prima metà del blocco. Ingegneria prende il `/24` successivo. I due collegamenti tra router prendono quattro indirizzi ciascuno all'inizio del `/24` finale.
+
+## Passo 4: contabilizzare ciò che rimane
+
+I quattro segmenti usano 512 + 256 + 4 + 4 = 776 indirizzi, lasciando 248 liberi, da `172.16.3.8` a `172.16.3.255`. È il 75.8% di utilizzo, con una coda contigua di spazio libero per il prossimo collegamento o una piccola sottorete, ancora allineata per una futura sommarizzazione.
+
+## Verificare il tuo lavoro
+
+Questa è esattamente l'assegnazione che la [calcolatrice CIDR](/#cidr) produce in modalità VLSM: inserisci `172.16.0.0/22` come blocco padre e i quattro numeri di host, e restituisce le stesse reti, maschere, intervalli e la cifra del 75.8% di utilizzo, calcolata interamente nel tuo browser. Se un segmento non sta, viene elencato separatamente invece di essere scartato silenziosamente.

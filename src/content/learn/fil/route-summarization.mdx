@@ -1,0 +1,33 @@
+---
+slug: route-summarization
+title: "Route summarization"
+summary: "Bakit kayang palitan ng iisang summary route ang maraming partikular, ang magkadikit at aligned na paglalaan na pinagbabatayan nito, at ang panganib ng black hole kapag nagsa-summarize ng range na hindi mo ganap na pag-aari."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Isang route sa halip na marami
+
+Ang router na umaabot sa `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` at `10.1.3.0/24` sa pamamagitan ng parehong next hop ay hindi kailangang mag-advertise ng apat na route. Maaari itong mag-advertise ng iisang summary, `10.1.0.0/22`, na sumasaklaw sa lahat ng apat. Ang bawat kapitbahay ay nagdadala na lamang ng iisang entry sa halip na apat. Ang **route summarization** ay ang kasanayang ito na inilalapat sa mga hangganan ng isang network: ang pag-aggregate ng alam mo sa pinakamaikling prefix na naglalarawan pa rin dito nang eksakto.
+
+Naiipon ang benepisyo. Ang mas kaunting route ay nangangahulugang mas kaunting memory sa bawat downstream na device, mas maliit at mas mabilis na update, at higit sa lahat, *katatagan*. Kung mabigo ang isa sa apat na component network, hindi nagbabago ang summary, kaya hindi kumakalat ang pagkabigo sa iba pang bahagi ng network.
+
+## Ang prerequisite: magkadikit at aligned
+
+Malinis lamang ang summarization kapag ang mga pinagbabatayang prefix ay inilaan bilang magkadikit, aligned na block. Ang apat na `/24` sa itaas ay nag-su-summarize nang eleganteng dahil magkasama silang eksaktong `10.1.0.0/22`. Kung ang parehong apat na network ay nakakalat bilang `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` at `10.7.0.0/24`, walang maikling prefix na maglalarawan lamang sa kanila, at anumang summary na i-advertise mo ay maa-angkin din ang address space na hindi mo niri-route.
+
+Kaya naman mahalaga ang address planning bago mo i-configure ang unang device. Ang paglalaan ng mga site at department mula sa mga aligned block, ang parehong disiplina na ipinapatupad ng [VLSM](/learn/vlsm) sa loob ng iisang block, ang nagbibigay-daan sa summarization sa bandang huli. Ang summarization ay ang gantimpala para sa paglalaan na angkop sa [supernetting](/learn/supernetting-and-aggregation).
+
+## Saan ito nangyayari
+
+Nananahan ang summarization sa mga hangganan. Sa OSPF, kino-configure ito sa mga area border router at sa mga autonomous system border router, dahil sa loob ng isang area ang kumpletong link-state topology ay binabaha at hindi maaaring i-summarize. Kayang mag-summarize ng EIGRP sa halos anumang interface. Sa BGP, pinagsasama ng aggregation ang mga partikular na prefix sa isang nakapaloob na route bago i-advertise ang mga ito sa ibang autonomous system, na siyang malaking dahilan kung bakit mas maliit nang husto ang global routing table kaysa sa bilang ng mga inilaang network.
+
+## Ang black hole trap
+
+Mapanganib ang pag-summarize ng range na hindi mo ganap na kontrolado. Kung i-a-advertise mo ang `10.0.0.0/16` ngunit ang aktwal na niri-route mo lang ay `10.0.1.0/24`, ang trapiko mula sa anumang ibang address sa /16 na iyon ay nahihila patungo sa iyo at pagkatapos ay itinatapon, dahil sinabi mo sa network na kaya mong abutin ang mga address na hindi mo kaya. Umiiral din ang baligtad na pagkabigo: ang masyadong makitid na summary ay ginagawang hindi maabot ang ilan sa iyong tunay na network.
+
+I-audit ang isang summary bago ito i-advertise. Kumpirmahin na ang mga prefix na pag-aari mo ay magkadikit, na ang mga ito ay aligned sa boundary ng summary, at na hindi lumalampas ang summary sa kanila. Tumutulong ang [CIDR calculator](/#cidr) sa parehong bahagi: i-aggregate ang listahan ng mga prefix sa Supernet mode at ilantad ang mga overlap o hindi napunong gap sa Overlap / gap mode.

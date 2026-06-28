@@ -1,0 +1,37 @@
+---
+slug: subnet-overlap-and-gaps
+title: "Subnetz-Überschneidungen und -Lücken"
+summary: "Was es bedeutet, wenn zwei Präfixe sich überschneiden oder eines das andere enthält, warum die Longest-Prefix-Match-Regel manche Überschneidungen beabsichtigt macht, und wie man die nicht vergebenen Lücken eines Adressplans findet."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
+relatedTools: ["cidr"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Drei Dinge, die in einem Adressplan schiefgehen
+
+Wenn ein Adressplan wächst, schleichen sich drei Probleme ein: zwei Präfixe, die sich **überschneiden**, ein Präfix, das ein anderes **enthält**, und **Lücken** im Adressraum, die niemand vergeben hat. Die ersten beiden betreffen Präfixe, die dieselben Adressen beanspruchen; das dritte Adressen, die kein Präfix beansprucht. Eine gute Prüfung findet alle drei.
+
+## Überschneidung und Verschachtelung
+
+Zwei Präfixe überschneiden sich, wenn sie mindestens eine Adresse teilen. Es gibt mehrere verschiedene Formen:
+
+- **Identisch**: derselbe Block zweimal aufgeführt, oft ein Kopier-Einfüge-Fehler.
+- **Verschachtelung**: ein Block liegt vollständig innerhalb eines anderen. `10.0.0.0/24` enthält `10.0.0.128/25`, weil das /25 die obere Hälfte des /24 ist.
+- **Teilweise**: zwei Bereiche teilen einige Adressen, aber keiner enthält den anderen. Zwei korrekte CIDR-Blöcke überschneiden sich nie so. Zwei beliebige ausgerichtete Zweierpotenz-Blöcke sind entweder disjunkt oder vollständig verschachtelt, einer ganz im anderen, was genau der Grund ist, warum die CIDR-Adressierung eine saubere Hierarchie bildet. Eine teilweise Überschneidung tritt nur auf, wenn eine Eingabe kein ausgerichteter Block ist.
+
+Verschachtelung ist nicht immer ein Fehler. Router leiten anhand des **Longest Prefix Match** weiter: Die spezifischste Route, die zu einem Ziel passt, gewinnt. Ein spezifisches `/25`, das innerhalb eines zusammengefassten `/24` angekündigt wird, ist ein bewusstes und übliches Muster, um einen Teil des Verkehrs anders zu lenken. Die Gefahr ist die *unbeabsichtigte* Überschneidung, bei der zwei Teile deines Netzes beide glauben, dieselben Adressen zu besitzen, und der Verkehr am falschen Ort landet.
+
+## Lücken
+
+Eine Lücke ist ein Abschnitt eines übergeordneten Blocks, den kein Subnetz abdeckt. Angenommen, du hast `10.0.0.0/26` und `10.0.0.128/26` aus `10.0.0.0/24` herausgeschnitten. Zwischen ihnen und danach bleiben `10.0.0.64/26` und `10.0.0.192/26` unvergeben. Diese beiden Blöcke sind deine Lücken: Adressraum, den du noch vergeben, beanspruchen oder einfach erfassen kannst.
+
+Lücken zu finden ist aus zwei Gründen wichtig. Es zeigt, wo Platz zum Wachsen ist, ohne umzunummerieren, und bestätigt, dass ein Block, den du zusammenfassen willst, tatsächlich vollständig genutzt wird, da eine über einer Lücke angekündigte Zusammenfassung Adressen beansprucht, die du nicht vergeben hast.
+
+## Einen Plan prüfen
+
+Um einen Plan zu überprüfen, liste jedes Präfix auf, das du vergeben hast, und gib den übergeordneten Block als Bereich an. Ein Überschneidungsbericht sagt dir, welche Präfixe kollidieren und wie; ein Lückenbericht sagt dir genau, welche CIDR-Blöcke innerhalb des übergeordneten Blocks noch frei sind. Der [CIDR-Rechner](/#cidr) tut beides im Modus Überschneidung / Lücke, kennzeichnet jede Überschneidung als identisch, verschachtelt oder teilweise und drückt jede Lücke als die größten ausgerichteten Blöcke aus, die sie füllen.
+
+Beide Hälften führen zurück zum [Supernetting](/learn/supernetting-and-aggregation): Ein Adressplan ohne unbeabsichtigte Überschneidungen und ohne Lücken innerhalb eines Blocks ist genau der Plan, der sich sauber zusammenfasst.

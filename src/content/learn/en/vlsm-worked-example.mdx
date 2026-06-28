@@ -1,0 +1,63 @@
+---
+slug: vlsm-worked-example
+title: "A VLSM allocation, worked end to end"
+summary: "A full variable-length subnet allocation for a realistic network: sizing each segment, sorting largest-first, assigning the actual addresses, and accounting for the space left over."
+concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+category: networking
+status: reviewed
+updated: "2026-06-27"
+---
+
+## The scenario
+
+You are given `172.16.0.0/22` and have to fit four segments inside it:
+
+- **Sales**: 500 hosts
+- **Engineering**: 200 hosts
+- **Link A**: a point-to-point router link, 2 hosts
+- **Link B**: a second point-to-point link, 2 hosts
+
+A `/22` holds 1024 addresses (`172.16.0.0` to `172.16.3.255`). The conceptual rules are covered in [VLSM](/learn/vlsm); here we run them all the way through.
+
+## Step 1: size each segment
+
+Find the smallest block that holds each host count, remembering the two reserved addresses (network and broadcast) in every ordinary block:
+
+- 500 hosts needs 9 host bits (2⁹ − 2 = 510 usable), a `/23`.
+- 200 hosts needs 8 host bits (254 usable), a `/24`.
+- 2 hosts needs 2 host bits (2 usable), a `/30`.
+- 2 hosts needs another `/30`.
+
+Round up to the next power of two: 500 does not fit a `/24` (254 usable), so it takes a `/23`.
+
+## Step 2: sort largest first
+
+Order the segments by block size, biggest first, so each lands on a clean boundary:
+
+1. Sales, `/23` (512 addresses)
+2. Engineering, `/24` (256)
+3. Link A, `/30` (4)
+4. Link B, `/30` (4)
+
+## Step 3: assign the addresses
+
+Allocate in that order, each block starting where the previous one ended:
+
+```
+/23  172.16.0.0  – .1.255   (510 usable)  ← Sales
+/24  172.16.2.0  – .2.255   (254 usable)  ← Engineering
+/30  172.16.3.0  – .3.3     (2 usable)    ← Link A
+/30  172.16.3.4  – .3.7     (2 usable)    ← Link B
+```
+
+Sales fills the first half of the block. Engineering takes the next `/24`. The two router links take four addresses each at the start of the final `/24`.
+
+## Step 4: account for what is left
+
+The four segments use 512 + 256 + 4 + 4 = 776 addresses, leaving 248 free, from `172.16.3.8` to `172.16.3.255`. That is 75.8% utilization, with a contiguous tail of free space for the next link or a small subnet, still aligned for future summarization.
+
+## Checking your work
+
+This is exactly the allocation the [CIDR calculator](/#cidr) produces in VLSM mode: enter `172.16.0.0/22` as the parent and the four host counts, and it returns the same networks, masks, ranges, and the 75.8% utilization figure, computed entirely in your browser. If a segment does not fit, it is listed separately rather than silently dropped.

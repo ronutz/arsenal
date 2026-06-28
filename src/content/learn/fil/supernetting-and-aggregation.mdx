@@ -1,0 +1,39 @@
+---
+slug: supernetting-and-aggregation
+title: "Supernetting at route aggregation"
+summary: "Kung paano nagsasama ang magkadikit na prefix sa iisang mas maikli, ang alignment rule na nagpapasya kung maaaring pagsamahin ang dalawang block, at ang pagkakaiba ng eksaktong aggregation at iisang supernet na sumasaklaw sa kanila."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
+relatedTools: ["cidr"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+category: networking
+status: machine-draft
+updated: "2026-06-27"
+---
+
+## Ang supernetting ay baligtad na subnetting
+
+Inaayos ng subnetting ang mas maraming bit para makakuha ng mas maliit na block. Ginagawa ng supernetting ang kabaligtaran: inaayos nito ang mas kaunting bit para sumaklaw ang iisang prefix sa ilang mas maliit. Kunin ang dalawang magkadikit na block, `192.168.0.0/24` at `192.168.1.0/24`. Magkasama, umaabot ang mga ito mula `192.168.0.0` hanggang `192.168.1.255`, na siyang eksaktong range ng `192.168.0.0/23`. Tanggalin ang isang prefix bit, mula /24 patungong /23, at iisang route na ang naglalarawan sa parehong block.
+
+Ito ang makina sa likod ng **route aggregation**, na tinatawag ding summarization: ang pagpapalit sa listahan ng mga partikular na prefix ng iisang mas maikling prefix na sumasaklaw sa lahat ng ito.
+
+## Ang patakaran sa pagsasama ng dalawang block
+
+Nagsasama ang dalawang block sa iisa kapag bumubuo sila ng *sibling pair*: pareho ang laki, magkadikit, at nasa boundary ng pinagsamang block ang mas mababang block. Natutugunan ito ng `192.168.0.0/24` at `192.168.1.0/24`, dahil ang `192.168.0.0` ay wastong `/23` network. Ngunit ang `192.168.1.0/24` at `192.168.2.0/24` ay **hindi** nagsasama, kahit mukhang magkadikit. Ang `192.168.1.0` ay hindi `/23` boundary (ang /23 na naglalaman dito ay nagsisimula sa `192.168.0.0`), kaya walang iisang /23 na naglalaman nang eksakto sa dalawang block na ito at wala nang iba.
+
+Ang alignment, hindi ang basta pagkakadikit, ang nagpapagana sa aggregation. Ito ang parehong patakaran ng power-of-two boundary na namamahala sa subnetting, na binabasa nang paatras.
+
+## Eksaktong aggregation o iisang supernet
+
+Kapag hindi lahat ng iyong prefix ay magkadikit, may dalawang magkaibang sagot, at hindi sila pareho.
+
+Ang **minimal covering set** ay ang pinakamaikling listahan ng mga prefix na sumasaklaw nang eksakto sa iyong input at wala nang iba. Sa `10.0.0.0/24` at `10.0.2.0/24`, may gap sa `10.0.1.0/24`, kaya hindi sila maaaring pagsamahin: nananatiling dalawang `/24` block ang minimal set.
+
+Ang **iisang supernet** ay ang iisang pinakamaliit na prefix na naglalaman sa bawat input, kahit nakakahatak ito ng mga address na hindi mo inilista. Para sa parehong dalawang block na iyon, ito ay `10.0.0.0/22`, na umaabot mula `10.0.0.0` hanggang `10.0.3.255`. Sumasaklaw ito sa parehong input ngunit nagdaragdag din ng `10.0.1.0/24` at `10.0.3.0/24`, 512 karagdagang address na maaaring hindi sa iyo.
+
+I-advertise ang iisang supernet lamang kapag talagang kontrolado mo ang buong range. Kung hindi, nagsa-summarize ka sa address space na pag-aari ng iba.
+
+## Bakit ito mahalaga
+
+Ang aggregation ang nagpapanatiling maliit sa mga routing table. Ang isang summary route sa halip na dose-dosenang partikular ay nangangahulugang mas kaunting memory sa bawat router na nakikinig dito, at mas kaunting kawalang-katatagan kapag nabigo ang iisang component link. Ang hamon ay gumagana lamang ito kung ang mga address ay inilaan nang magkadikit at sa mga aligned boundary mula sa simula, kaya naman ang disiplinadong subnetting at [VLSM](/learn/vlsm) ay namumunga sa bandang huli bilang malinis na [route summarization](/learn/route-summarization).
+
+Maaari mong subukan ang parehong sagot sa [CIDR calculator](/#cidr): ipinapakita ng Supernet mode nito ang minimal covering set at ang nakapaloob na iisang supernet, kasama ang eksaktong bilang ng karagdagang address na idaragdag ng supernet.
