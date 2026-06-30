@@ -32,7 +32,7 @@ import { cidrAnalyze as computeCidr } from "../src/lib/tools/cidr/compute";
 // via a relative path because the Worker is outside src/ and the "@/" alias is
 // not in scope for wrangler's bundler. locales.ts has no runtime deps, so it
 // bundles cleanly into the Worker.
-import { LOCALE_CODES, DEFAULT_LOCALE } from "../src/i18n/locales";
+import { LOCALE_CODES, LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "../src/i18n/locales";
 
 interface Env {
   // Static assets binding. Present so future /api routes could serve assets;
@@ -130,9 +130,22 @@ export default {
     //     the default locale, since the static export (localePrefix "always")
     //     has no page there.
     const seg = url.pathname.split("/")[1] ?? "";
-    const isLocalePrefixed = LOCALE_CODES.includes(seg);
+    const isLiveLocale = LIVE_LOCALE_CODES.includes(seg);
+    const isStubLocale = !isLiveLocale && LOCALE_CODES.includes(seg);
     const looksLikeFile = /\.[a-z0-9]+$/i.test(url.pathname); // has a file extension
-    if (!isLocalePrefixed && !looksLikeFile) {
+
+    // A locale we no longer build. Permanently redirect to the English
+    // equivalent by swapping out the locale segment (/ar/tools/jwt/ ->
+    // /en/tools/jwt/), so old links and crawlers land on real content instead
+    // of a 404.
+    if (isStubLocale) {
+      const rest = url.pathname.slice(seg.length + 1) || "/"; // strip "/ar", keep the rest
+      let dest = `/${DEFAULT_LOCALE}${rest}`;
+      if (!looksLikeFile && !dest.endsWith("/")) dest += "/";
+      return Response.redirect(new URL(`${dest}${url.search}`, url.origin).toString(), 301);
+    }
+
+    if (!isLiveLocale && !looksLikeFile) {
       // The static export uses trailingSlash:true, so canonical pages end in
       // "/". Add it here so the redirect lands on the canonical URL in a single
       // hop (otherwise the asset layer's auto-trailing-slash adds a 2nd redirect).

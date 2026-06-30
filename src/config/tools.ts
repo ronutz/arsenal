@@ -57,6 +57,7 @@ export const tools: ToolEntry[] = [
   { id: "syslog-pri-decoder", href: "/tools/syslog-pri-decoder", category: "networking", available: true },
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
+  { id: "diff", href: "/tools/diff", category: "text", available: true },
 ];
 
 /** Tools that are live and linkable. */

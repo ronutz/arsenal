@@ -1,0 +1,44 @@
+---
+slug: how-diff-works
+title: "Como funciona o diff de texto"
+summary: "Um diff encontra o menor conjunto de inserções e remoções que transforma um texto em outro. Por baixo está a maior subsequência comum: as linhas que as duas versões compartilham, na mesma ordem, formam a espinha dorsal inalterada, e todo o resto é uma adição ou uma remoção."
+concepts: ["diff", "lcs", "longest-common-subsequence", "edit-script", "myers", "text-comparison"]
+relatedTools: ["diff"]
+relatedArticles: ["reading-a-diff"]
+category: encoding
+order: 9
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## O que um diff realmente calcula
+
+Um diff não compara a posição um do primeiro texto com a posição um do segundo. Se fizesse isso, inserir uma única linha no topo faria todas as linhas abaixo parecerem alteradas. Em vez disso, um diff encontra um **alinhamento**: ele casa as partes que as duas versões têm em comum, na ordem original, e trata apenas o que sobra como inserções e remoções. O objetivo é o *menor* conjunto possível de edições, porque o menor roteiro de edição é o que melhor corresponde à forma como uma pessoa descreveria a mudança.
+
+## A maior subsequência comum
+
+A espinha dorsal desse alinhamento é a **maior subsequência comum**, ou LCS (longest common subsequence). Uma subsequência é o que se obtém ao remover zero ou mais elementos de uma sequência sem reordenar o restante. Não é o mesmo que uma substring: os elementos não precisam ser adjacentes, apenas estar em ordem. Para dois textos comparados linha a linha, a LCS é a maior lista de linhas que aparece em ambos, na mesma ordem relativa, possivelmente com lacunas.
+
+Veja três linhas de cada lado:
+
+```
+A:  foo      B:  foo
+    bar          qux
+    baz          baz
+```
+
+A LCS é `foo, baz`: ambas aparecem nos dois textos, em ordem. Tudo fora da LCS é uma edição. `bar` está em A mas não na espinha dorsal comum, então é uma **remoção**. `qux` está em B mas não na espinha dorsal, então é uma **inserção**. O resultado é uma linha removida e uma linha adicionada, que é exatamente a descrição mínima da mudança.
+
+## Da subsequência ao roteiro de edição
+
+Encontrar a maior subsequência comum e encontrar o menor roteiro de edição são duas visões do mesmo problema. Eugene Myers mostrou em 1986 que ambos equivalem a encontrar o caminho mais curto em um "grafo de edição," o que é o que torna possível um algoritmo eficiente. A forma clássica de calcular a LCS é uma tabela de programação dinâmica sobre os dois vetores de tokens; percorrer essa tabela de volta produz o roteiro de edição diretamente, rotulando cada token como `equal`, `delete` ou `insert`.
+
+Um detalhe importa para uma ferramenta: às vezes uma remoção e uma inserção são igualmente boas naquele ponto do percurso, e o roteiro continua mínimo de qualquer jeito. Escolher sempre a mesma direção (aqui, "prefira a remoção") torna a saída **determinística**, de modo que as mesmas duas entradas sempre produzem o mesmo diff. Essa estabilidade é o que permite fixar o resultado com vetores de teste.
+
+## Linhas, depois palavras
+
+A mesma maquinaria roda em dois níveis de zoom. A visão por linhas tokeniza cada lado em linhas inteiras e roda a LCS sobre elas. Quando uma linha é removida e outra é adicionada em seu lugar, a ferramenta roda o *mesmo* algoritmo de novo sobre as **sequências de palavras** dessas duas linhas, para destacar exatamente quais palavras mudaram dentro da linha, em vez de marcar a linha inteira como diferente. Dividir em sequências de palavras, espaços e pontuação (em vez de caracteres isolados) mantém o destaque legível e faz com que as partes se juntem de volta ao texto original com exatidão.
+
+## Uma nota sobre custo
+
+A tabela de programação dinâmica é proporcional ao produto das duas contagens de tokens: comparar um texto de n linhas com um de m linhas preenche cerca de n por m células. Para as entradas interativas que um diff vê (um arquivo de configuração, uma política, um trecho de código) isso é confortavelmente rápido. Acima de um teto generoso, o cálculo cresceria o suficiente para travar o navegador, então o motor para e pede entradas menores em vez de congelar. Ferramentas de diff de produção vão além com refinamentos do mesmo artigo de Myers (em especial uma variante de espaço linear), mas a ideia da LCS no centro permanece a mesma.

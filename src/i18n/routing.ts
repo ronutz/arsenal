@@ -22,11 +22,16 @@
 // ============================================================================
 
 import { defineRouting } from "next-intl/routing";
-import { LOCALE_CODES, DEFAULT_LOCALE } from "./locales";
+import { LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "./locales";
 
 export const routing = defineRouting({
-  // All 18 registered locales are valid URL locales.
-  locales: LOCALE_CODES,
+  // Only locales with a real translation are valid URL locales and get built.
+  // Stub locales are intentionally excluded (see LIVE_LOCALE_CODES): building
+  // ~26 English-fallback locales tripled the static asset count past
+  // Cloudflare's deploy limit and created duplicate-content URLs. They return
+  // a 301 to the English equivalent at the edge (worker/index.ts) and rejoin
+  // the build the moment their status is lifted above "stub".
+  locales: LIVE_LOCALE_CODES,
 
   // English is the default locale.
   defaultLocale: DEFAULT_LOCALE,

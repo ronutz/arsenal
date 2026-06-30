@@ -1,0 +1,41 @@
+---
+slug: reading-a-diff
+title: "Como ler um diff"
+summary: "Como ler um diff linha a linha: linhas inalteradas, adicionadas e removidas, os marcadores de mais e menos, os números de linha dos dois lados, o destaque palavra a palavra e o que ignorar espaços e ignorar maiúsculas realmente mudam. Mais o que um diff não consegue dizer."
+concepts: ["diff", "unified-diff", "hunks", "ignore-whitespace", "code-review", "text-comparison"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works"]
+category: encoding
+order: 10
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Três tipos de linha
+
+Toda linha de um diff está em um de três estados. Uma linha **inalterada** aparece nas duas versões e é mostrada de forma simples. Uma linha **removida** estava no original e sumiu na versão modificada; por convenção é marcada com um menos e tingida de vermelho. Uma linha **adicionada** é nova na versão modificada; é marcada com um mais e tingida de verde. Uma linha que foi editada aparece como uma linha removida seguida de uma linha adicionada, porque, do ponto de vista do diff, a linha antiga foi retirada e uma nova foi colocada.
+
+## Números de linha dos dois lados
+
+Como as linhas adicionadas e removidas existem em apenas um dos lados, um diff geralmente traz **duas colunas de números de linha**: onde a linha fica no original e onde fica na versão modificada. Uma linha removida tem número no original, mas não na versão modificada; uma linha adicionada é o contrário. Ler as duas colunas de cima a baixo mostra como os dois arquivos entram e saem de alinhamento à medida que as edições se acumulam.
+
+## Destaque palavra a palavra
+
+Quando uma linha é editada em vez de substituída por inteiro, marcar a linha toda como removida-e-adicionada esconde o ponto. O destaque embutido resolve isso: dentro do par de linhas removida e adicionada, apenas as **palavras que de fato mudaram** são realçadas. Se um único valor de uma linha longa foi atualizado, você vê esse valor destacado de cada lado e o resto da linha mostrado como contexto. É o mesmo algoritmo de diff aplicado às palavras da linha (veja [como funciona o diff de texto](/learn/how-diff-works)).
+
+## Ignorar espaços e ignorar maiúsculas
+
+Duas opções de comparação mudam o que conta como "a mesma linha," sem mudar o texto mostrado:
+
+- **Ignorar espaços** colapsa sequências de espaços e tabulações e apara as pontas antes de comparar. Esconde diferenças que são só reindentação, espaços ao final, ou tabulações contra espaços, o que é útil quando uma reformatação afogaria a mudança real em ruído.
+- **Ignorar maiúsculas** trata letras que diferem apenas em maiúsculas e minúsculas como iguais.
+
+Ambas afetam apenas a *comparação*. As linhas que você vê são sempre as originais, então ligar "ignorar espaços" não reescreve seu texto, apenas impede que mudanças só de espaçamento sejam reportadas.
+
+## Unificado e lado a lado
+
+Esta ferramenta mostra uma visão **unificada**: uma coluna com as linhas removidas e adicionadas intercaladas no lugar, que se lê bem em espaço estreito e mantém as mudanças junto ao seu contexto. O outro layout comum é o **lado a lado**, com o original à esquerda e a versão modificada à direita. O diff clássico de linha de comando também agrupa as mudanças em **hunks**, cada um introduzido por um cabeçalho `@@` e cercado por algumas linhas de "contexto" inalteradas, para que um patch possa ser aplicado a um arquivo mesmo depois de ele ter se deslocado. A visão alinhada aqui mostra o texto completo em vez de hunks separados.
+
+## O que um diff não diz
+
+Um diff é preciso sobre *o que* mudou e silencioso sobre todo o resto. Ele não sabe se uma mudança está correta, foi intencional ou é segura, apenas que os bytes diferem. Ele também não tem noção de bloco movido: recorte um parágrafo do topo e cole no fim e um diff de linha reporta isso como uma remoção em um lugar e uma inserção sem relação em outro, porque a espinha dorsal da subsequência comum não atravessa a movimentação. Saber disso mantém a ferramenta honesta: ela é uma forma rápida e exata de *ver* a diferença entre dois textos, e um ponto de partida para o julgamento que precisa vir de você.

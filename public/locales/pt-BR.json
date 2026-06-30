@@ -821,7 +821,8 @@
       "networking": "Redes",
       "web": "Web e HTTP",
       "transport": "TLS e transporte",
-      "security": "Segurança e WAF"
+      "security": "Segurança e WAF",
+      "text": "Texto e utilitários"
     },
     "hash": {
       "name": "Gerador de hash (SHA-1/256/384/512)",
@@ -891,6 +892,20 @@
       "explainOffset": "Deslocamento de truncamento",
       "explainTruncated": "Valor truncado para o código",
       "explainNote": "Aplica-se HMAC ao fator móvel de 8 bytes com o seu segredo, toma-se o nibble inferior do último byte como deslocamento, leem-se 4 bytes ali como um número de 31 bits e calcula-se o módulo 10^dígitos. É o truncamento dinâmico do RFC 4226; o TOTP apenas usa o intervalo de tempo como contador."
+    },
+    "diff": {
+      "name": "Diff de texto",
+      "blurb": "Compare dois blocos de texto e veja exatamente o que mudou, linha a linha, com destaque em nível de palavra nas linhas editadas. Opcionalmente, ignore espaços em branco ou maiúsculas e minúsculas. Tudo é calculado no seu navegador; seu texto nunca é enviado a lugar nenhum.",
+      "originalLabel": "Original",
+      "originalPlaceholder": "Cole o texto original",
+      "changedLabel": "Modificado",
+      "changedPlaceholder": "Cole o texto modificado",
+      "ignoreWhitespace": "Ignorar espaços em branco",
+      "ignoreCase": "Ignorar maiúsculas/minúsculas",
+      "resultHeading": "Diferenças",
+      "emptyState": "Cole texto nas duas caixas para compará-las.",
+      "noChanges": "Nenhuma diferença encontrada.",
+      "tooLarge": "Estas entradas são grandes demais para comparar no navegador. Tente comparar trechos menores."
     },
     "base64": {
       "name": "Códec Base64, Base32, Hex e Porcentual",

@@ -88,7 +88,8 @@
       "networking": "Networking",
       "web": "Web & HTTP",
       "transport": "TLS & transport",
-      "security": "Security & WAF"
+      "security": "Security & WAF",
+      "text": "Text & utilities"
     },
     "jwt": {
       "name": "JWT Decoder & Verifier",
@@ -241,6 +242,20 @@
       "explainOffset": "Truncation offset",
       "explainTruncated": "Truncated value to code",
       "explainNote": "HMAC the 8-byte moving factor under your secret, take the low nibble of the last byte as an offset, read 4 bytes there as a 31-bit number, then take that modulo 10^digits. That is RFC 4226 dynamic truncation; TOTP just feeds the time step in as the counter."
+    },
+    "diff": {
+      "name": "Text Diff",
+      "blurb": "Compare two blocks of text and see exactly what changed, line by line, with inline word-level highlighting on edited lines. Optionally ignore whitespace or case. Everything is computed in your browser; your text is never sent anywhere.",
+      "originalLabel": "Original",
+      "originalPlaceholder": "Paste the original text",
+      "changedLabel": "Changed",
+      "changedPlaceholder": "Paste the changed text",
+      "ignoreWhitespace": "Ignore whitespace",
+      "ignoreCase": "Ignore case",
+      "resultHeading": "Differences",
+      "emptyState": "Paste text in both boxes to compare them.",
+      "noChanges": "No differences found.",
+      "tooLarge": "These inputs are too large to diff in the browser. Try comparing smaller sections."
     },
     "pkce": {
       "name": "OAuth PKCE Verifier & Challenge",

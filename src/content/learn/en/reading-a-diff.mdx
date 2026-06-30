@@ -1,0 +1,41 @@
+---
+slug: reading-a-diff
+title: "Reading a diff"
+summary: "How to read a line-by-line diff: unchanged, added, and removed lines, the plus and minus markers, both sides' line numbers, inline word highlighting, and what ignore-whitespace and ignore-case actually change. Plus the things a diff cannot tell you."
+concepts: ["diff", "unified-diff", "hunks", "ignore-whitespace", "code-review", "text-comparison"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works"]
+category: encoding
+order: 10
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Three kinds of line
+
+Every line in a diff is in one of three states. An **unchanged** line appears in both versions and is shown plainly. A **removed** line was in the original and is gone from the changed version; by convention it is marked with a minus and tinted red. An **added** line is new in the changed version; it is marked with a plus and tinted green. A line that was edited shows up as a removed line followed by an added line, because from the diff's point of view the old line was taken out and a new one put in.
+
+## Line numbers on both sides
+
+Because added and removed lines exist on only one side, a diff usually carries **two columns of line numbers**: where the line sits in the original, and where it sits in the changed version. A removed line has an original number but no changed number; an added line is the reverse. Reading down the two columns shows how the two files drift in and out of alignment as edits accumulate.
+
+## Inline word highlighting
+
+When a line is edited rather than replaced wholesale, marking the entire line as removed-then-added hides the point. Inline highlighting fixes this: within the paired removed and added lines, only the **words that actually changed** are emphasised. If a single value in a long line was updated, you see that one value highlighted on each side and the rest of the line shown as context. This is the same diff algorithm applied to the words of the line (see [how text diff works](/learn/how-diff-works)).
+
+## Ignore whitespace and ignore case
+
+Two comparison options change what counts as "the same line," without changing the text shown:
+
+- **Ignore whitespace** collapses runs of spaces and tabs and trims the ends before comparing. It hides differences that are only reindentation, trailing spaces, or tabs-versus-spaces, which is useful when reformatting would otherwise drown the real change in noise.
+- **Ignore case** treats letters that differ only in upper or lower case as equal.
+
+Both affect the *comparison* only. The lines you see are always the originals, so turning on ignore-whitespace does not rewrite your text, it just stops whitespace-only changes from being reported.
+
+## Unified and side-by-side
+
+This tool shows a **unified** view: one column with removed and added lines interleaved in place, which reads well in a narrow space and keeps changes next to their context. The other common layout is **side-by-side**, with the original on the left and the changed version on the right. Classic command-line diff also groups changes into **hunks**, each introduced by an `@@` header and surrounded by a few unchanged "context" lines, so a patch can be applied to a file even after it has shifted. The aligned view here shows the full text rather than separate hunks.
+
+## What a diff does not tell you
+
+A diff is precise about *what* changed and silent about everything else. It does not know whether a change is correct, intentional, or safe, only that the bytes differ. It also has no concept of a moved block: cut a paragraph from the top and paste it at the bottom and a line diff reports it as a deletion in one place and an unrelated insertion in another, because the common-subsequence backbone does not span the move. Knowing this keeps the tool honest: it is a fast, exact way to *see* the difference between two texts, and a starting point for the judgement that has to come from you.

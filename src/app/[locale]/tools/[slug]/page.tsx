@@ -31,6 +31,8 @@ import HmacTool from "@/components/HmacTool";
 import { manifest as hmacManifest } from "@/lib/tools/hmac";
 import TotpHotpTool from "@/components/TotpHotpTool";
 import { manifest as totpHotpManifest } from "@/lib/tools/totp-hotp";
+import DiffTool from "@/components/DiffTool";
+import { manifest as diffManifest } from "@/lib/tools/diff";
 import PkceTool from "@/components/PkceTool";
 import { manifest as pkceManifest } from "@/lib/tools/pkce";
 import UuidTool from "@/components/UuidTool";
@@ -119,6 +121,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "totp-hotp": {
     Component: TotpHotpTool,
     sources: totpHotpManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  diff: {
+    Component: DiffTool,
+    sources: diffManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   pkce: {
     Component: PkceTool,

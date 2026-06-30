@@ -108,10 +108,17 @@ export const DEFAULT_LOCALE = "en";
 /** Convenience: just the codes, derived (never hand-maintain a second list). */
 export const LOCALE_CODES = LOCALES.map((l) => l.code);
 
-/** The locales we actually offer in the UI: everything with a real translation
- *  (reviewed or machine-draft). Stubs are registered for routing/fallback but
- *  are NOT advertised in the language switcher — we only claim what we have. */
+/** The locales with a real translation (reviewed or machine-draft): the set we
+ *  BUILD. Stub locales are excluded here, so they generate no pages, but they
+ *  are still LISTED in the language switcher, marked unavailable and routed to
+ *  the English fallback, so the full roadmap stays visible. */
 export const LIVE_LOCALES = LOCALES.filter((l) => l.status !== "stub");
+
+/** Just the codes for the live locales. This is the set we actually BUILD and
+ *  route: routing.locales and the worker locale gate both derive from it, so a
+ *  stub locale is neither statically generated nor advertised. Promote a locale
+ *  by lifting its status above "stub" and it joins the build automatically. */
+export const LIVE_LOCALE_CODES = LIVE_LOCALES.map((l) => l.code);
 
 /** How many locales carry real translations. Derived from LIVE_LOCALES so the
  *  colophon's language count is always accurate and never hand-edited. */

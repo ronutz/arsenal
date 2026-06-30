@@ -35,7 +35,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { LOCALES, getLocale, isWesternScript, type LocaleMeta } from "@/i18n/locales";
+import { LOCALES, DEFAULT_LOCALE, getLocale, isWesternScript, type LocaleMeta } from "@/i18n/locales";
 import { LOCALE_COVERAGE } from "@/i18n/locale-coverage";
 
 // A locale's display status for the switcher cue:
@@ -114,13 +114,22 @@ export default function LanguageSwitcher() {
     );
   }, [query]);
 
-  // Switch language: navigate to the same page in the chosen locale.
+  // Switch language: navigate to the same page in the chosen locale. Stub
+  // locales are not built (they consume no pages), so selecting one routes to
+  // the English version of the current page in a single hop. (The worker also
+  // 301s /[stub]/… -> /en/…, and routing only knows live locales, so we leave
+  // next-intl's router and navigate plainly here.)
   const selectLocale = useCallback(
-    (code: string) => {
+    (l: LocaleMeta) => {
       setOpen(false);
       setQuery("");
+      if (l.status === "stub") {
+        const rest = pathname === "/" ? "/" : pathname.endsWith("/") ? pathname : `${pathname}/`;
+        window.location.assign(`/${DEFAULT_LOCALE}${rest}`);
+        return;
+      }
       // next-intl's router keeps the current pathname, swaps the locale.
-      router.replace(pathname, { locale: code });
+      router.replace(pathname, { locale: l.code });
     },
     [router, pathname]
   );
@@ -168,7 +177,7 @@ export default function LanguageSwitcher() {
     } else if (e.key === "Enter") {
       e.preventDefault();
       const choice = filtered[highlightedIndex];
-      if (choice) selectLocale(choice.code);
+      if (choice) selectLocale(choice);
     }
   }
 
@@ -230,7 +239,7 @@ export default function LanguageSwitcher() {
                       (isActive ? " ls-item--active" : "") +
                       (statusTier(l) === "stub" ? " ls-item--stub" : "")
                     }
-                    onClick={() => selectLocale(l.code)}
+                    onClick={() => selectLocale(l)}
                     onMouseEnter={() => setHighlightedIndex(i)}
                   >
                     <span className={`ls-status ls-status--${statusTier(l)}`} title={tStatus(statusTier(l))} />

@@ -6358,3 +6358,111 @@ a.tools-card:hover {
 .otp-explain-row dt { color: var(--text-secondary); font-size: 0.85rem; min-width: 13rem; }
 .otp-explain-row dd { margin: 0; font-size: 0.9rem; }
 .otp-explain-hmac { word-break: break-all; font-size: 0.8rem; color: var(--text-tertiary); }
+
+/* ============================================================================
+   TEXT DIFF  —  src/components/DiffTool.tsx
+   ----------------------------------------------------------------------------
+   Two inputs side by side (stacking on narrow screens), then a unified line
+   view carrying BOTH sides' line numbers, a +/-/blank marker, and the line
+   content. Paired changed lines get inline word-level highlighting. The add /
+   remove hues are the fixed traffic-light tokens (#34D399 / #EF4444): they are
+   intentionally skin-independent so a diff reads identically in every theme.
+   ========================================================================== */
+.diff-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.diff-input-col {
+  flex: 1 1 18rem;     /* two columns when wide, single column when narrow */
+  min-width: 0;        /* let the column shrink instead of overflowing */
+  flex-direction: column;
+  align-items: stretch;
+}
+.diff-textarea {
+  width: 100%;
+  min-height: 9rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+.diff-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin: 1rem 0 0.25rem;
+}
+.diff-empty {
+  margin: 1.25rem 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Summary (+added / -removed) */
+.diff-summary {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+.diff-summary--add { color: #34D399; font-weight: 600; }
+.diff-summary--del { color: #EF4444; font-weight: 600; }
+
+/* The unified line view */
+.diff-view {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  overflow: auto;
+  max-height: 34rem;   /* long diffs scroll inside the panel */
+}
+.diff-row {
+  display: flex;
+  align-items: flex-start;
+}
+.diff-gutter {
+  flex: 0 0 auto;
+  min-width: 2.75rem;
+  padding: 0.1rem 0.5rem;
+  text-align: right;
+  color: var(--text-tertiary);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.diff-marker {
+  flex: 0 0 auto;
+  width: 1.4rem;
+  padding: 0.1rem 0;
+  text-align: center;
+  color: var(--text-tertiary);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.diff-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.1rem 0.65rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-primary);
+}
+.diff-row--delete { background: rgba(239, 68, 68, 0.10); }
+.diff-row--delete .diff-marker { color: #EF4444; font-weight: 700; }
+.diff-row--insert { background: rgba(52, 211, 153, 0.12); }
+.diff-row--insert .diff-marker { color: #34D399; font-weight: 700; }
+
+/* Inline word-level highlight inside a paired changed line */
+.diff-word {
+  border-radius: 3px;
+  padding: 0 1px;
+  color: inherit;
+}
+.diff-word--del {
+  background: rgba(239, 68, 68, 0.32);
+  text-decoration: line-through;
+  text-decoration-color: rgba(239, 68, 68, 0.7);
+}
+.diff-word--ins {
+  background: rgba(52, 211, 153, 0.34);
+}

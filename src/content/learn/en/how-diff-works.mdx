@@ -1,0 +1,44 @@
+---
+slug: how-diff-works
+title: "How text diff works"
+summary: "A diff finds the smallest set of insertions and deletions that turns one text into another. Underneath is the longest common subsequence: the lines both versions share, in order, form the unchanged backbone, and everything else is an add or a remove."
+concepts: ["diff", "lcs", "longest-common-subsequence", "edit-script", "myers", "text-comparison"]
+relatedTools: ["diff"]
+relatedArticles: ["reading-a-diff"]
+category: encoding
+order: 9
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## What a diff actually computes
+
+A diff does not compare position one of the first text against position one of the second. If it did, inserting a single line at the top would make every line below it look changed. Instead a diff finds an **alignment**: it matches up the parts the two versions have in common, in their original order, and treats only the leftovers as insertions and deletions. The goal is the *smallest* such set of edits, because the smallest edit script is the one that best matches how a human would describe the change.
+
+## The longest common subsequence
+
+The backbone of that alignment is the **longest common subsequence**, or LCS. A subsequence is what you get by deleting zero or more elements from a sequence without reordering the rest. It is not the same as a substring: the elements need not be adjacent, only in order. For two texts compared line by line, the LCS is the longest list of lines that appears in both, in the same relative order, possibly with gaps.
+
+Take three lines on each side:
+
+```
+A:  foo      B:  foo
+    bar          qux
+    baz          baz
+```
+
+The LCS is `foo, baz`: both appear in both texts, in order. Everything outside the LCS is an edit. `bar` is in A but not in the common backbone, so it is a **deletion**. `qux` is in B but not in the backbone, so it is an **insertion**. The result is one line removed and one line added, which is exactly the minimal description of the change.
+
+## From subsequence to edit script
+
+Finding the longest common subsequence and finding the shortest edit script are two views of the same problem. Eugene Myers showed in 1986 that both are equivalent to finding a shortest path across an "edit graph," which is what makes an efficient algorithm possible. The classic way to compute the LCS is a dynamic-programming table over the two token arrays; walking back through that table yields the edit script directly, labelling each token as `equal`, `delete`, or `insert`.
+
+One detail matters for a tool: sometimes a deletion and an insertion are equally good at that point in the walk, and the script is still minimal either way. Picking the same direction every time (here, "prefer the deletion") makes the output **deterministic**, so the same two inputs always produce the same diff. That stability is what lets the result be pinned with fixed test vectors.
+
+## Lines, then words
+
+The same machinery runs at two zoom levels. The line view tokenises each side into whole lines and runs the LCS over those. When a line is removed and another is added in its place, the tool runs the *same* algorithm again over the **word runs** of those two lines, so it can highlight exactly which words changed inside the line rather than flagging the whole line as different. Splitting on word, whitespace, and punctuation runs (instead of single characters) keeps the highlighting readable and lets the pieces rejoin to the original text exactly.
+
+## A note on cost
+
+The dynamic-programming table is proportional to the product of the two token counts: comparing an n-line text with an m-line text fills roughly n by m cells. For the interactive inputs a diff tool sees (a config file, a policy, a snippet of code) that is comfortably fast. Past a generous ceiling the computation would grow large enough to stall the browser, so the engine stops and asks for smaller inputs rather than freezing. Production diff tools push further with refinements from the same Myers paper (notably a linear-space variant), but the LCS idea at the centre is unchanged.
