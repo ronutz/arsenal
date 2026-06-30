@@ -1,0 +1,46 @@
+---
+slug: f5-ssl-cert-key-chain
+title: "Certificates, Keys, and Chain Building in an SSL Profile"
+summary: "A client-ssl profile binds a server certificate to its private key and, crucially, to a chain bundle that lets clients build a path to a trusted root. The modern cert-key-chain construct also lets one profile serve several certificate types, picked per client — the foundation of RSA-plus-ECDSA and SNI deployments."
+concepts: ["f5", "cert-key-chain", "chain building", "intermediate ca", "sni", "pki"]
+relatedTools: ["f5-ssl-profile-explainer"]
+relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-client-auth-mtls"]
+category: pki
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+The single most common production TLS failure is not a weak cipher or an expired certificate — it is a **missing chain**. The site works in your browser, fails on someone else's, and the difference is whether that client already happened to have the intermediate certificate cached. The fix lives in how an SSL profile binds its identity.
+
+## cert, key, and chain
+
+A `client-ssl` profile presents three related things:
+
+- **cert** — the server (leaf) certificate, the one with your hostname in it.
+- **key** — the matching private key. It never leaves the BIG-IP.
+- **chain** — a bundle of the **intermediate** CA certificates that sit between your leaf and a trusted root.
+
+Older profiles set these as three top-level fields. Modern BIG-IP groups them in a `cert-key-chain`:
+
+```
+cert-key-chain {
+    rsa {
+        cert /Common/www.example.com.crt
+        key /Common/www.example.com.key
+        chain /Common/intermediate-ca.crt
+    }
+}
+```
+
+## Why the chain is not optional
+
+A client trusts a small set of **root** CAs. Your certificate is almost never signed directly by a root; it is signed by an intermediate, which is signed by the root. To validate your certificate, the client must build a path leaf → intermediate → root. It already has the root, but it does **not** have the intermediate unless you send it — and you send it via the `chain`. Omit the chain and clients that lack the intermediate cannot complete the path, producing the classic "works for me, fails for them" report. The SSL profile explainer flags a `client-ssl` profile that has no chain configured for exactly this reason.
+
+## One profile, several certificates
+
+A single `cert-key-chain` block can hold **multiple** named entries — for example one RSA and one ECDSA certificate. During the handshake the BIG-IP picks the entry that matches the client's advertised capabilities, so modern clients get the smaller, faster ECDSA certificate while older clients still get RSA. This is also how a profile can carry distinct certificates for different hostnames.
+
+## Where SNI fits
+
+When several SSL profiles are attached to one virtual server, the BIG-IP chooses which profile to use from the client's **SNI** (the hostname in the TLS ClientHello). Each profile's `server-name` declares the hostname it serves, one profile is marked `sni-default` as the fallback, and the right certificate is presented per request. Chain building and SNI selection together are what let a single virtual server host many secure sites correctly.

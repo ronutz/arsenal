@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 // TLS CIPHER SUITE DECODE - the pure compute core for the cipher-suite tool.
 //
-// netcore tool contract: a tool is a {manifest, run, vectors} triple and `run`
+// the tool contract: a tool is a {manifest, run, vectors} triple and `run`
 // must be DETERMINISTIC so its golden vectors are stable. This is that core.
 //
 // Two halves:

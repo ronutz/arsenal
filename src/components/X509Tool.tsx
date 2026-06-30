@@ -47,6 +47,19 @@ function relativeTime(deltaSeconds: number, locale: string): string {
   return rtf.format(0, "second");
 }
 
+type ChainTier = "root" | "intermediate" | "leaf";
+const CHAIN_TIERS: { key: ChainTier; labelKey: string; roleKey: string }[] = [
+  { key: "root", labelKey: "tierRoot", roleKey: "roleRoot" },
+  { key: "intermediate", labelKey: "tierIntermediate", roleKey: "roleIntermediate" },
+  { key: "leaf", labelKey: "tierLeaf", roleKey: "roleLeaf" },
+];
+function cnOf(dn: { attributes: { type: string; value: string }[]; text: string }): string {
+  return dn.attributes.find((a) => a.type === "CN")?.value ?? dn.text;
+}
+function truncateLabel(s: string, n = 46): string {
+  return s.length > n ? s.slice(0, n - 1) + "\u2026" : s;
+}
+
 export default function X509Tool() {
   const t = useTranslations("tools.x509");
   const locale = useLocale();
@@ -169,6 +182,76 @@ export default function X509Tool() {
             {decoded.selfIssued && <span className="jwt-badge jwt-badge--warn">{t("fields.selfSigned")}</span>}
             {ext?.basicConstraints?.ca && <span className="jwt-badge jwt-badge--warn">{t("ext.caTrue")}</span>}
           </div>
+
+          {/* Chain of trust */}
+          <section className="jwt-panel x509-chain-panel">
+            <h4 className="jwt-panel-title">{t("chainHeading")}</h4>
+            {(() => {
+              const ca = !!ext?.basicConstraints?.ca;
+              const certTier: ChainTier = decoded.selfIssued ? "root" : ca ? "intermediate" : "leaf";
+              const subjCN = truncateLabel(cnOf(decoded.subject));
+              const issCN = truncateLabel(cnOf(decoded.issuer));
+              const boxH = 70;
+              const gap = 30;
+              const top = 8;
+              const boxX = 60;
+              const boxW = 560;
+              const H = top + 3 * boxH + 2 * gap + 8;
+              const yOf = (i: number) => top + i * (boxH + gap);
+              return (
+                <svg
+                  className="x509-chain-svg"
+                  viewBox={`0 0 680 ${H}`}
+                  role="img"
+                  aria-label={t("chainHeading")}
+                >
+                  {CHAIN_TIERS.map((tier, i) => {
+                    const by = yOf(i);
+                    const active = tier.key === certTier;
+                    const accent = "var(--accent-primary)";
+                    return (
+                      <g key={tier.key}>
+                        {i < 2 && (
+                          <g>
+                            <line x1="340" y1={by + boxH} x2="340" y2={by + boxH + gap} stroke="var(--border-strong)" strokeWidth="2" />
+                            <path d={`M335 ${by + boxH + gap - 7} L340 ${by + boxH + gap} L345 ${by + boxH + gap - 7}`} fill="none" stroke="var(--border-strong)" strokeWidth="2" />
+                            <text x="352" y={by + boxH + gap / 2 + 4} className="x509-chain-arrowlabel">{t("signs")}</text>
+                          </g>
+                        )}
+                        <rect
+                          x={boxX}
+                          y={by}
+                          width={boxW}
+                          height={boxH}
+                          rx="8"
+                          fill={active ? "var(--surface-elevated)" : "var(--surface-base)"}
+                          stroke={active ? accent : "var(--border-subtle)"}
+                          strokeWidth={active ? "1.5" : "1"}
+                          strokeDasharray={active ? undefined : "5 4"}
+                        />
+                        {active && <rect x={boxX} y={by} width="4" height={boxH} fill={accent} />}
+                        <text x={boxX + 20} y={by + 24} className={active ? "x509-chain-tier x509-chain-tier-on" : "x509-chain-tier"}>
+                          {t(tier.labelKey)}
+                          {active ? `  \u00b7  ${t("thisCert")}` : ""}
+                        </text>
+                        {active ? (
+                          <g>
+                            <text x={boxX + 20} y={by + 44} className="x509-chain-cn">{subjCN}</text>
+                            <text x={boxX + 20} y={by + 60} className="x509-chain-iss">
+                              {decoded.selfIssued ? t("fields.selfSigned") : `${t("issuedBy")}: ${issCN}`}
+                            </text>
+                          </g>
+                        ) : (
+                          <text x={boxX + 20} y={by + 45} className="x509-chain-role">{t(tier.roleKey)}</text>
+                        )}
+                      </g>
+                    );
+                  })}
+                </svg>
+              );
+            })()}
+            <p className="x509-chain-note">{t("trustNote")}</p>
+          </section>
 
           {/* Subject */}
           <section className="jwt-panel">
@@ -310,6 +393,76 @@ export default function X509Tool() {
                   </div>
                 ))}
               </dl>
+            </section>
+          )}
+
+          {/* Certificate Transparency SCTs (RFC 6962), decoded structurally */}
+          {ext && ext.signedCertificateTimestamps && ext.signedCertificateTimestamps.length > 0 && (
+            <section className="jwt-panel">
+              <h4 className="jwt-panel-title">{t("panels.sct")}</h4>
+              <p className="x509-sct-intro">{t("sct.intro", { n: ext.signedCertificateTimestamps.length })}</p>
+              <dl className="jwt-claims">
+                {ext.signedCertificateTimestamps.map((s, i) => (
+                  <div className="jwt-claim-row" key={`sct-${i}`}>
+                    <dt className="jwt-claim-label">{t("sct.entry", { i: i + 1 })}</dt>
+                    <dd className="jwt-claim-value mono">
+                      <span className="x509-sct-line">
+                        {t("sct.logId")}: {s.logIdHex}
+                      </span>
+                      <span className="x509-sct-line">
+                        {t("sct.timestamp")}: {s.timestamp}
+                      </span>
+                      <span className="x509-sct-line">
+                        {t("sct.signature")}: {s.signatureAlgorithm} / {s.hashAlgorithm}
+                      </span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="saml-note saml-note--verify">{t("sct.note")}</p>
+            </section>
+          )}
+
+          {/* Revocation pointers (extracted from the cert; never a live lookup) */}
+          {ext && (
+            <section className="jwt-panel">
+              <h4 className="jwt-panel-title">{t("panels.revocation")}</h4>
+              <dl className="jwt-claims">
+                {ext.revocation.crlUrls.length > 0 && (
+                  <div className="jwt-claim-row">
+                    <dt className="jwt-claim-label">{t("rev.crl")}</dt>
+                    <dd className="jwt-claim-value mono">{ext.revocation.crlUrls.join(" · ")}</dd>
+                  </div>
+                )}
+                {ext.revocation.ocspUrls.length > 0 && (
+                  <div className="jwt-claim-row">
+                    <dt className="jwt-claim-label">{t("rev.ocsp")}</dt>
+                    <dd className="jwt-claim-value mono">{ext.revocation.ocspUrls.join(" · ")}</dd>
+                  </div>
+                )}
+                {ext.revocation.caIssuerUrls.length > 0 && (
+                  <div className="jwt-claim-row">
+                    <dt className="jwt-claim-label">{t("rev.caIssuers")}</dt>
+                    <dd className="jwt-claim-value mono">{ext.revocation.caIssuerUrls.join(" · ")}</dd>
+                  </div>
+                )}
+                {ext.revocation.mustStaple && (
+                  <div className="jwt-claim-row">
+                    <dt className="jwt-claim-label">{t("rev.mustStaple")}</dt>
+                    <dd className="jwt-claim-value mono">{t("rev.mustStapleYes")}</dd>
+                  </div>
+                )}
+                {ext.revocation.crlUrls.length === 0 &&
+                  ext.revocation.ocspUrls.length === 0 &&
+                  ext.revocation.caIssuerUrls.length === 0 &&
+                  !ext.revocation.mustStaple && (
+                    <div className="jwt-claim-row">
+                      <dt className="jwt-claim-label">{t("rev.none")}</dt>
+                      <dd className="jwt-claim-value">{t("rev.noneDetail")}</dd>
+                    </div>
+                  )}
+              </dl>
+              <p className="saml-note saml-note--verify">{t("rev.note")}</p>
             </section>
           )}
 

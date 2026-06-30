@@ -1,0 +1,28 @@
+---
+slug: json-vs-yaml
+title: "JSON vs YAML: O Que Converte Limpo e o Que Não Converte"
+summary: "O YAML foi projetado para que todo documento JSON também seja YAML válido, e é por isso que a conversão entre eles geralmente simplesmente funciona. A parte interessante são as bordas: comentários, âncoras, múltiplos documentos e tipos exclusivos do YAML que não têm equivalente em JSON."
+concepts: ["json", "yaml", "data model", "conversion", "superset", "interoperability"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["yaml-type-coercion", "config-formats-in-practice", "json-grammar"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Um modelo de dados compartilhado
+
+JSON e YAML descrevem o mesmo formato de dados: mapeamentos de chaves para valores, sequências ordenadas e escalares como strings, números, booleanos e null. O YAML foi deliberadamente definido como um superconjunto do JSON, então qualquer documento JSON válido também é YAML válido, e um conversor pode mover entre eles analisando para esse modelo compartilhado e imprimindo na outra sintaxe. Para a esmagadora maioria dos documentos reais, uma resposta de API, um arquivo de configuração, uma declaração, a conversão é sem perdas e faz round-trip limpo. As diferenças que importam não estão no caso comum, mas nas bordas, e conhecê-las diz quando uma conversão vai perder algo.
+
+## O que o YAML tem que o JSON não tem
+
+A primeira coisa que o JSON não consegue carregar são comentários. O YAML permite anotar um arquivo com comentários `#`, e esses são pura apresentação: existem para o humano lendo o arquivo e são descartados no momento em que o documento é analisado. Converter YAML para JSON, portanto, sempre descarta todo comentário, porque não há onde colocá-los. O YAML também tem âncoras e aliases, uma forma de definir um valor uma vez e referenciá-lo em outro lugar, que um conversor resolve expandindo cada referência em uma cópia completa do valor. E um único arquivo YAML pode conter múltiplos documentos separados por `---`, um fluxo que não tem contrapartida em JSON.
+
+## Tipos exclusivos do YAML
+
+Além da estrutura, o sistema de tipos mais completo do YAML pode expressar coisas que o JSON não pode. O YAML padrão pode marcar um valor como um timestamp, como dados binários, ou usar uma coleção inteira como chave, nada do que o JSON permite, já que as chaves JSON precisam ser strings e o JSON não tem tipo de data nem binário. Um conversor voltado para saída JSON contorna isso lendo o YAML sob um esquema compatível com JSON: uma string que parece data permanece string em vez de virar um objeto de data, então o resultado é sempre algo que o JSON pode representar. O custo é honestidade sobre o limite, e por isso esta ferramenta lê YAML com exatamente esse esquema restrito.
+
+## O que o JSON tem que tropeça o YAML
+
+O tráfego não é todo de mão única. A permissividade do JSON sobre strings, onde um valor é string apenas se estiver entre aspas, colide com o hábito do YAML de adivinhar tipos a partir de texto sem aspas. Uma string JSON como `"NO"` ou `"1.0"` precisa permanecer string após a conversão, mas escrita sem aspas em YAML seria lida como booleano ou número. Um conversor JSON-para-YAML correto, portanto, coloca aspas em qualquer string que o YAML interpretaria mal, um comportamento importante o bastante para ter [o próprio artigo](/learn/yaml-type-coercion). Acerte essas aspas e o round-trip é fiel; erre e os dados mudam de tipo silenciosamente.

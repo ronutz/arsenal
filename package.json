@@ -1,10 +1,10 @@
 {
   "//": "================================================================",
   "//1": "ARSENAL: the ronutz.com application (private). This repo BECOMES the",
-  "//2": "deployable site. It CONSUMES @ronutz/netcore (the public Engine) from the",
-  "//3": "published npm package (^0.1.1). The dependency direction is one-way and",
-  "//4": "unchanged: arsenal -> netcore, never the reverse (C-73). Was file:../netcore",
-  "//5": "during dev; graduated to npm once netcore 0.1.1 published.",
+  "//2": "deployable site. As of 2026-06-29 it is SELF-CONTAINED: it no longer",
+  "//3": "consumes @ronutz/netcore at runtime. The single-subnet CIDR logic that",
+  "//4": "still did was brought in-house (cidrAnalyze). This reverses C-73's premise:",
+  "//5": "netcore is now a future curation TARGET, not an upstream dependency.",
   "//6": "================================================================",
   "name": "@ronutz/arsenal",
   "version": "0.1.0",
@@ -19,16 +19,15 @@
     "build": "next build && pagefind --site out",
     "start": "next start",
     "lint": "next lint",
-    "prebuild": "node scripts/copy-locales.mjs && node scripts/build-openapi.mjs",
+    "prebuild": "node scripts/copy-locales.mjs && node scripts/build-openapi.mjs && node scripts/gen-locale-coverage.mjs",
     "update-swagger-ui": "node scripts/update-swagger-ui.mjs"
   },
-  "//7": "Consumes @ronutz/netcore ^0.1.1 from npm (the public Engine).",
+  "//7": "No runtime dependency on @ronutz/netcore; modules curate OUT to it later.",
   "//overrides": "postcss pinned to >=8.5.10 to clear GHSA-qx2v-qp2m-jg93 (XSS in CSS stringify); build-time tooling only.",
   "overrides": {
     "postcss": "^8.5.10"
   },
   "dependencies": {
-    "@ronutz/netcore": "^0.1.1",
     "gray-matter": "^4.0.3",
     "js-yaml": "^4.2.0",
     "next": "^15.1.0",
@@ -39,6 +38,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

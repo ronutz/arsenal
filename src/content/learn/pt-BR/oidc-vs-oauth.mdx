@@ -1,0 +1,34 @@
+---
+slug: oidc-vs-oauth
+title: "OIDC vs OAuth 2.0: Autenticação vs Autorização"
+summary: "Por que o OAuth 2.0 é sobre autorização e o OpenID Connect é sobre autenticação, a diferença entre um access token e um ID token, por que usar OAuth puro como mecanismo de login é um antipadrão conhecido, e como saber qual token é qual."
+concepts: ["oauth 2.0", "openid connect", "authentication", "authorization", "access token", "id token", "scopes"]
+relatedTools: ["oidc", "jwt"]
+relatedArticles: ["oidc-overview", "id-token-claims", "oidc-discovery"]
+category: identity
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Duas perguntas, não uma
+
+OAuth 2.0 e OpenID Connect são constantemente confundidos, em parte porque o OIDC é construído sobre o OAuth e eles compartilham endpoints e terminologia. A forma mais limpa de separá-los é notar que eles respondem a perguntas diferentes. O OAuth 2.0 responde a uma pergunta de autorização: esta aplicação tem permissão para acessar aquele recurso em nome do usuário. O OpenID Connect responde a uma pergunta de autenticação: quem é o usuário que acabou de entrar. Um é sobre permissão para agir; o outro é sobre identidade. O OIDC coloca a resposta de identidade sobre a maquinaria de permissão do OAuth.
+
+## Access token versus ID token
+
+A expressão mais clara da diferença são os dois tipos de token, e tratá-los como intercambiáveis é o erro mais comum e mais perigoso.
+
+Um access token é uma credencial para chamar uma API. Ele representa uma permissão delegada, e a aplicação deve enviá-lo a um servidor de recursos, que o verifica e atende à requisição. Para a aplicação cliente, um access token é frequentemente opaco: o cliente não é a audiência pretendida e não deveria interpretá-lo nem tomar decisões a partir de seu conteúdo. Seu significado pertence ao servidor de recursos.
+
+Um ID token é uma declaração sobre o usuário, emitida pelo provedor para o cliente. O cliente é a audiência pretendida, e o cliente deve lê-lo, validá-lo e descobrir quem é o usuário. É sempre um JWT com um conjunto definido de claims. A claim de audiência é o indício: a audiência de um ID token é o cliente, enquanto a audiência de um access token (quando ele tem uma) é o servidor de recursos. Usar um access token para decidir quem é o usuário, ou entregar um ID token a uma API como se fosse um access token, são ambos erros de categoria que levam a vulnerabilidades reais.
+
+## Por que OAuth puro não é um protocolo de login
+
+Antes de o OIDC existir, muitas aplicações implementaram "entrar com o provedor X" usando OAuth 2.0 puro, e o padrão persiste em alguns lugares. A aplicação obtinha um access token e tratava a capacidade de obtê-lo, ou o resultado de chamar alguma API de informações de usuário com ele, como prova de quem o usuário era. Isto é um antipadrão conhecido, e a razão é sutil mas importante: um access token não diz nada confiável sobre quem o solicitou nem para quem foi emitido. Um token obtido por uma aplicação pode, em algumas configurações, ser apresentado por outra, e uma aplicação que infere identidade pela mera posse de um access token pode ser enganada e fazer login com o usuário errado. Isso às vezes é chamado de problema do delegado confuso.
+
+O OIDC foi projetado para fechar exatamente essa lacuna. O ID token é endereçado explicitamente a um cliente específico por sua claim de audiência, é vinculado a uma tentativa de login específica por seu nonce, e é assinado pelo provedor para que não possa ser forjado. Essas são precisamente as propriedades que faltam a um access token e que a autenticação exige. A regra prática é simples: não construa login sobre OAuth puro. Se você precisa saber quem é o usuário, use o OpenID Connect e valide o ID token.
+
+## Distinguindo-os na prática
+
+Quando você tem um token em mãos e não sabe ao certo qual é, alguns sinais ajudam. Se ele decodifica como um JWT com iss, sub, aud, exp e iat, e a audiência é o seu identificador de cliente, é um ID token; o [decodificador OIDC](/tools/oidc) o reconhecerá e interpretará as claims. Um access token pode ser opaco (não um JWT de forma alguma), ou pode ser um JWT cuja audiência é um servidor de recursos e cujas claims descrevem escopos e permissões em vez de identidade do usuário. A presença do escopo openid na requisição original é o que fez com que um ID token fosse emitido em primeiro lugar. Na dúvida, decodifique o token e olhe a audiência e as claims: elas dizem para que o token serve, e portanto como ele deve ser usado.

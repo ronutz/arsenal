@@ -46,7 +46,7 @@ export interface LocaleMeta {
 export const LOCALES: readonly LocaleMeta[] = [
   // --- Languages with real, human-reviewed content shipping day-one ---
   { code: "en",         nativeName: "English",            englishName: "English",                 dir: "ltr", status: "reviewed" },
-  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "machine-draft" },
+  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "reviewed" },
   { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "machine-draft" },
 
   // --- Registered + selectable day-one; stubs falling back to English until translated ---
@@ -130,4 +130,31 @@ export function isValidLocale(code: string): code is string {
 /** Text direction for a locale, defaulting to ltr for anything unknown. */
 export function dirFor(code: string): "ltr" | "rtl" {
   return getLocale(code)?.dir ?? "ltr";
+}
+
+// ----------------------------------------------------------------------------
+// WRITING-SYSTEM GROUPING (for the language-switcher ordering).
+//
+// We split locales coarsely into "western" (Latin script) vs "other" (every
+// non-Latin script: Cyrillic, CJK, Arabic, Indic, Greek, Hebrew, Thai...).
+// The switcher groups western-script languages — which a reader on a Latin
+// keyboard scans fastest — before other scripts inside each translation-status
+// band, then sorts alphabetically. Listing the (smaller) non-Latin set is less
+// error-prone than tagging all 42 entries; anything not in it is treated as
+// Latin/western. This is intentionally a two-bucket split, not a full
+// script taxonomy.
+// ----------------------------------------------------------------------------
+const NON_LATIN_SCRIPT_CODES = new Set<string>([
+  "ru", "uk", "bg",                                   // Cyrillic
+  "zh-Hans", "zh-Hant-TW", "zh-Hant-HK", "ja", "ko",  // CJK (Han / Kana / Hangul)
+  "hi", "ta", "te", "bn",                             // Indic (Devanagari / Tamil / Telugu / Bengali)
+  "ar", "fa", "ur",                                   // Arabic script (incl. Persian, Urdu)
+  "he",                                               // Hebrew
+  "th",                                               // Thai
+  "el",                                               // Greek
+]);
+
+/** True if a locale is written in a Latin ("western") script. Drives switcher grouping. */
+export function isWesternScript(code: string): boolean {
+  return !NON_LATIN_SCRIPT_CODES.has(code);
 }

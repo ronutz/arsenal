@@ -67,6 +67,11 @@
       "title": "Sokong alat ini",
       "pitch": "Alat ini percuma dan dimaksudkan untuk kekal begitu. Jika ia mendapat tempat dalam aliran kerja anda, anda boleh membantu membiayai penyelenggaraannya dan apa yang akan datang.",
       "purposeLabel": "Dibiayai sekarang"
+    },
+    "stats": {
+      "tools": "Alat",
+      "articles": "Artikel",
+      "sectionLabel": "Kotak alat sepintas lalu"
     }
   },
   "tools": {
@@ -77,6 +82,11 @@
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Kira",
       "runsLocally": "Berjalan secara setempat, tiada apa yang dihantar ke mana-mana pelayan.",
+      "prefixSlider": "Panjang prefiks",
+      "bitsHeading": "Bit alamat",
+      "bitsNetwork": "Rangkaian",
+      "bitsHost": "Hos",
+      "bitsNote": "Bit yang diserlahkan mengenal pasti rangkaian — selebihnya mengalamatkan hos di dalamnya.",
       "results": {
         "network": "Alamat rangkaian",
         "broadcast": "Alamat siaran",
@@ -175,7 +185,11 @@
         "tooMany": "Terlalu banyak entri. Pendekkan senarai dan cuba lagi.",
         "noReqs": "Tambah sekurang-kurangnya satu keperluan subnet dengan bilangan hos.",
         "noPrefixes": "Masukkan sekurang-kurangnya satu awalan, satu setiap baris."
-      }
+      },
+      "rangeHeading": "Susun atur alamat",
+      "usableShort": "boleh guna",
+      "rfcNote": "/31 dan /32 tidak menyimpan apa-apa: setiap alamat boleh digunakan (RFC 3021).",
+      "reservedNote": "Alamat pertama ialah rangkaian dan yang terakhir ialah broadcast; kedua-duanya disimpan, jadi boleh guna = jumlah − 2."
     },
     "title": "Alat",
     "lede": "Alat yang kecil, pantas dan menghormati privasi yang berjalan sepenuhnya dalam pelayar anda. Tiada apa yang anda masukkan dihantar ke mana-mana. Lebih banyak akan datang.",
@@ -221,7 +235,12 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Salin",
-      "copied": "Disalin"
+      "copied": "Disalin",
+      "struct": {
+        "heading": "Bagaimana HMAC dibina",
+        "innerHash": "hash dalaman",
+        "note": "HMAC menghash mesej dua kali. Kunci digabungkan dengan XOR dengan pad dalaman tetap sebelum hash pertama dan dengan pad luaran sebelum yang kedua, dan binaan dua pad ini yang menghalang serangan length-extension. Kunci mula-mula dikecilkan kepada saiz blok hash."
+      }
     },
     "base64": {
       "name": "Codec Base64, Base32, Hex & Peratus",
@@ -273,7 +292,18 @@
       "encodingLabel": "base64url",
       "plainValueLabel": "= code_verifier",
       "copy": "Salin",
-      "copied": "Disalin"
+      "copied": "Disalin",
+      "flowHeading": "Cara PKCE berfungsi",
+      "laneClient": "Apl / Klien",
+      "laneServer": "Pelayan kebenaran",
+      "s1": "Jana code_verifier rawak",
+      "s2": "Terbitkan code_challenge",
+      "s3": "Permintaan kebenaran membawa challenge",
+      "s4": "Pelayan menyimpan challenge",
+      "s5": "Kod kebenaran dikembalikan",
+      "s6": "Permintaan token membawa verifier",
+      "s7": "Pelayan menerbitkan semula dan membandingkan",
+      "s8": "Token akses dan segar semula dikeluarkan"
     },
     "uuid": {
       "name": "Penjana dan Pemeriksa UUID (v4 / v7)",
@@ -336,6 +366,11 @@
         "algNone": "Token ini tidak terjamin (alg: none), jadi tiada tandatangan untuk disahkan.",
         "unsupportedAlg": "Pengesahan dalam pelayar hanya merangkumi HS256/384/512. {alg} adalah tak simetri dan memerlukan kunci awam.",
         "hint": "Rahsia hanya digunakan untuk mengira HMAC dalam pelayar anda. Ia tidak pernah dihantar ke mana-mana."
+      },
+      "struct": {
+        "heading": "Anatomi JWT",
+        "signingInput": "Input tandatangan",
+        "note": "Header dan payload hanya dikodkan base64url, tidak disulitkan, jadi sesiapa sahaja boleh membacanya. Tandatangan dikira berdasarkan header dan payload yang digabungkan dengan titik, dan itulah yang disemak oleh pengesah."
       }
     },
     "x509": {
@@ -361,7 +396,8 @@
         "details": "Butiran",
         "publicKey": "Kunci awam",
         "extensions": "Sambungan",
-        "fingerprints": "Cap jari"
+        "fingerprints": "Cap jari",
+        "sct": "Certificate Transparency"
       },
       "fields": {
         "version": "Versi",
@@ -392,6 +428,25 @@
         "sha256": "SHA-256",
         "sha1": "SHA-1",
         "computing": "Mengira cap jari..."
+      },
+      "chainHeading": "Rantaian kepercayaan",
+      "tierRoot": "CA akar",
+      "tierIntermediate": "CA perantaraan",
+      "tierLeaf": "Sijil entiti akhir",
+      "roleRoot": "Sauh kepercayaan tandatangan sendiri",
+      "roleIntermediate": "Ditandatangani oleh akar; menandatangani sijil daun",
+      "roleLeaf": "Mengenal pasti pelayan atau klien",
+      "thisCert": "sijil ini",
+      "issuedBy": "Dikeluarkan oleh",
+      "signs": "menandatangani",
+      "trustNote": "Kepercayaan mengalir ke bawah: setiap sijil ditandatangani oleh yang di atasnya, sehingga ke akar yang sistem anda sudah percaya.",
+      "sct": {
+        "intro": "SCT terbenam: {n}. Setiap satu ialah bukti bertandatangan log CT bahawa ia telah merekodkan sijil ini; pelayar memerlukan bilangan minimum agar sijil itu dipercayai.",
+        "entry": "SCT {i}",
+        "logId": "ID log",
+        "timestamp": "Direkodkan pada",
+        "signature": "Tandatangan",
+        "note": "Tandatangan ditunjukkan tetapi tidak disahkan di sini; mengesahkan SCT memerlukan kunci awam log dan prasijil."
       }
     },
     "ipv6": {
@@ -427,7 +482,13 @@
       },
       "badges": {
         "multicast": "multicast"
-      }
+      },
+      "segHeading": "Struktur alamat",
+      "networkSeg": "Awalan rangkaian",
+      "ifaceId": "ID antara muka",
+      "hostBits": "Bit hos",
+      "prefixNote": "Bit di sebelah kiri sempadan ditetapkan oleh awalan; bit di sebelah kanan mengenal pasti hos di dalamnya.",
+      "conventionNote": "Tiada awalan diberikan, jadi garis putus-putus menandakan pembahagian /64 lazim: awalan penghalaan dan subrangkaian di sebelah kiri, pengecam antara muka 64-bit di sebelah kanan."
     },
     "cipher": {
       "name": "Penyahkod suite sifer",
@@ -508,6 +569,265 @@
         "ianaD": "IANA menandakan suite ini sebagai \"D\" (dinasihatkan elak): ia TIDAK SEPATUTNYA atau TIDAK BOLEH digunakan, bergantung pada situasi.",
         "ianaN": "IANA tidak menandakan suite ini sebagai \"Disarankan\": ia mempunyai kebolehgunaan terhad atau tidak melalui proses konsensus IETF.",
         "signalling": "Suite isyarat (SCSV): bukan sifer sebenar, ia membawa isyarat protokol seperti perlindungan penurunan taraf atau maklumat perundingan semula."
+      },
+      "groups": {
+        "title": "Kumpulan pertukaran kunci",
+        "intro": "TLS merundingkan kumpulan persetujuan kunci secara berasingan daripada suite sifer, dalam sambungan supported_groups. Memandangkan \"harvest now, decrypt later\" mendorong peralihan kepada pertukaran kunci pasca-kuantum, kumpulan hibrid di bawah menggabungkan lengkung klasik dengan ML-KEM.",
+        "kind": {
+          "ecdhe": "Lengkung ECDHE",
+          "ffdhe": "DH medan terhingga",
+          "pq-hybrid": "Hibrid PQ"
+        },
+        "pq": {
+          "classical": "Klasik",
+          "hybrid-pq": "Hibrid PQ"
+        },
+        "recommended": "Disyorkan",
+        "obsolete": "Usang",
+        "legacy": "Lama",
+        "combines": "Menggabungkan {classical} dengan {pq}",
+        "foot": "X25519MLKEM768 ialah kumpulan hibrid yang kini dihantar secara lalai oleh kebanyakan pelayar."
+      }
+    },
+    "f5-ssl-profile-explainer": {
+      "name": "Penerang profil SSL F5",
+      "blurb": "Tampal profil client-ssl atau server-ssl tmsh dan dapatkan peranannya, matriks protokol TLS dan penilaian keselamatan meliputi rantai, perundingan semula, SNI, OCSP dan TLS bersama — semuanya dalam pelayar anda.",
+      "inputLabel": "Profil SSL (tmsh)",
+      "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
+      "runsLocally": "Diproses dalam pelayar anda. Tiada apa-apa dihantar ke mana-mana.",
+      "scopeNote": "Menyahkod blok profil yang ditampal. Tidak pernah menghubungi BIG-IP.",
+      "errorTitle": "Tidak dapat membaca profil",
+      "err_empty": "Tampal profil SSL untuk bermula.",
+      "err_noHeader": "Baris seperti ini dijangka: ltm profile client-ssl /Common/name ...",
+      "err_noBody": "Tiada kurungan dakap pembuka ditemui dalam profil.",
+      "err_tooLong": "Input ini terlalu besar untuk dihurai.",
+      "err_invalid": "Ini tidak kelihatan seperti profil client-ssl atau server-ssl.",
+      "protocolsHeading": "Versi protokol TLS",
+      "permitted": "dibenarkan",
+      "disabled": "dilumpuhkan",
+      "findingsHeading": "Penilaian keselamatan",
+      "settingsHeading": "Tetapan dijelaskan",
+      "topoHeading": "Dalam laluan data",
+      "nodeClient": "Klien",
+      "nodeBigip": "BIG-IP",
+      "nodePool": "Ahli pool",
+      "clientLeg": "TLS sebelah klien",
+      "serverLeg": "Sebelah pelayan",
+      "thisProfile": "profil ini",
+      "clientNote": "Profil client-ssl menamatkan TLS klien pada BIG-IP. Sambungan ke ahli pool hanya disulitkan semula jika profil server-ssl digunakan; tanpanya, bahagian itu ialah teks biasa (SSL offload).",
+      "serverNote": "Profil server-ssl membenarkan BIG-IP membuka sambungan TLS baharu ke ahli pool (penyulitan semula). Sebelah klien dikendalikan oleh profil client-ssl berasingan."
+    },
+    "epoch": {
+      "name": "Penukar masa Unix",
+      "blurb": "Taip cap masa Unix — saat, milisaat, mikrosaat atau nanosaat, dikesan secara automatik — atau tarikh ISO-8601, dan baca semula dalam semua format biasa. Semuanya dalam pelayar anda.",
+      "inputLabel": "Cap masa atau tarikh",
+      "inputPlaceholder": "1700000000  atau  2023-11-14T22:13:20Z",
+      "runsLocally": "Ditukar dalam pelayar anda. Tiada apa-apa dihantar ke mana-mana.",
+      "scopeNote": "Matematik tarikh tulen. Unit disimpulkan daripada saiz nombor; betulkan jika perlu.",
+      "nowButton": "Sekarang",
+      "errorTitle": "Tidak dapat membaca itu",
+      "err_empty": "Masukkan cap masa atau tarikh untuk bermula.",
+      "err_invalid": "Itu bukan cap masa Unix mahupun tarikh ISO-8601.",
+      "err_tooLong": "Input ini terlalu panjang.",
+      "err_outOfRange": "Cap masa itu di luar julat tarikh yang boleh diwakili.",
+      "utcHeading": "Tarikh dan masa UTC",
+      "formatsHeading": "Semua format",
+      "dayOfYearLabel": "hari dalam tahun",
+      "relativeNote": "relatif kepada jam peranti anda"
+    },
+    "irules-event-order": {
+      "name": "Susunan acara iRule",
+      "blurb": "Pilih timbunan profil pelayan maya BIG-IP — Client-SSL, HTTP, Server-SSL, pool — dan lihat susunan acara iRule biasa dicetuskan, dari CLIENT_ACCEPTED ke CLIENT_CLOSED, sebagai garis masa dan senarai. Semuanya dalam pelayar anda.",
+      "stackLabel": "Timbunan profil pelayan maya",
+      "tog_clientssl": "Profil Client-SSL",
+      "tog_http": "Profil HTTP",
+      "tog_serverssl": "Profil Server-SSL",
+      "tog_pool": "Pool (pengimbangan beban)",
+      "tog_fastl4": "FastL4 (laluan pantas paket)",
+      "presetsLabel": "Pratetap:",
+      "preset_https": "HTTPS penyulitan semula",
+      "preset_offload": "Pemunggahan SSL",
+      "preset_http": "HTTP",
+      "preset_tcp": "TCP tulen",
+      "runsLocally": "Dikira dalam pelayar anda. Tiada apa-apa dihantar ke mana-mana.",
+      "scopeNote": "Model tingkah laku F5 yang didokumenkan untuk pelayan maya Standard. Ia tidak pernah menghubungi BIG-IP.",
+      "diagramHeading": "Urutan acara",
+      "listHeading": "Acara mengikut susunan",
+      "conditionalHeading": "Acara bersyarat",
+      "conditionalNote": "Ini dicetuskan hanya dalam keadaan tertentu: TCP::collect atau HTTP::collect, kegagalan pengimbangan beban, atau respons 100 Continue.",
+      "sideClient": "sisi klien",
+      "sideServer": "sisi pelayan",
+      "sideGlobal": "global"
+    },
+    "cert-renewal-planner": {
+      "name": "Perancang pembaharuan sijil",
+      "blurb": "Kira kesahihan sijil TLS, sama ada ia mematuhi jadual 47 hari CA/Browser Forum, dan kadar pembaharuan yang berkaitan; semuanya luar talian.",
+      "notBeforeLabel": "Dikeluarkan (notBefore)",
+      "notAfterLabel": "Tamat tempoh (notAfter)",
+      "runsLocally": "Semuanya berjalan dalam pelayar anda; tiada apa-apa dimuat naik.",
+      "exampleLabel": "Cuba contoh 90 hari",
+      "summaryHeading": "Sijil ini",
+      "validity": "Kesahihan {days} hari",
+      "compliantBadge": "Dalam had",
+      "overCapBadge": "Melebihi had",
+      "maxForPhase": "Maksimum untuk tarikh pengeluarannya: {max} hari.",
+      "overByText": "{days} hari melebihi maksimum {max} hari untuk tarikh pengeluarannya; CA awam tidak akan mengeluarkannya.",
+      "renewalsValue": "Kira-kira {n} pembaharuan setahun pada kesahihan ini.",
+      "remainingHeading": "Mengikut jam peranti anda",
+      "daysRemaining": "{days} hari sebelum tamat tempoh.",
+      "expiredText": "Tamat tempoh {days} hari lalu.",
+      "renewByText": "Baharui sebelum {date} (kira-kira {lead} hari sebelum tamat tempoh)",
+      "renewByDue": "{days} hari dari sekarang",
+      "reuseHeading": "Penggunaan semula pengesahan (era pengeluaran)",
+      "dcvText": "Data pengesahan domain (DCV) boleh digunakan semula selama {days} hari.",
+      "siiText": "Identiti organisasi (SII OV/EV) boleh digunakan semula selama {days} hari.",
+      "scheduleHeading": "Jadual SC-081v3",
+      "scheduleIntro": "Maksimum TLS awam bergantung pada tarikh pengeluaran sijil:",
+      "colPeriod": "Dikeluarkan dari",
+      "colValidity": "Kesahihan maks (hari)",
+      "colDcv": "Guna semula DCV (hari)",
+      "colSii": "Guna semula SII (hari)",
+      "phaseP0": "Sebelum 15 Mac 2026",
+      "phaseP1": "15 Mac 2026",
+      "phaseP2": "15 Mac 2027",
+      "phaseP3": "15 Mac 2029",
+      "yourPhase": "← sijil ini",
+      "projectionHeading": "Beban pembaharuan pada setiap had",
+      "projectionIntro": "Pembaharuan setiap sijil setahun, apabila had semakin ketat:",
+      "perYearShort": "tahun",
+      "note_overCap": "Kesahihan ini melebihi maksimum {max} hari untuk tarikh pengeluarannya.",
+      "note_future47": "Mematuhi hari ini, tetapi lebih panjang daripada had 47 hari yang akan datang; jangkakan pembaharuan lebih kerap apabila jadual berjalan.",
+      "note_publicOnly": "Had ini terpakai hanya pada sijil TLS yang dipercayai secara awam. PKI persendirian atau dalaman tidak dikawal oleh SC-081v3.",
+      "note_automate": "Pada kadar ini, automasikan pengeluaran dan pembaharuan dengan ACME (RFC 8555) dan ARI (RFC 9773); pembaharuan manual tidak berskala.",
+      "err_empty": "Masukkan kedua-dua tarikh, pengeluaran dan tamat tempoh.",
+      "err_invalidDate": "Gunakan tarikh yang sah (YYYY-MM-DD).",
+      "err_order": "Tarikh tamat tempoh mesti selepas tarikh pengeluaran.",
+      "err_tooLong": "Input ini terlalu panjang.",
+      "err_invalid": "Tidak dapat membaca tarikh tersebut."
+    },
+    "csr-decoder": {
+      "name": "Penyahkod CSR",
+      "blurb": "Nyahkod permintaan menandatangani sijil PKCS#10 untuk membaca subjek, kunci awam, SAN dan sambungan yang diminta, serta atributnya; semuanya dalam pelayar anda.",
+      "inputLabel": "Permintaan menandatangani sijil (PEM, base64 atau heks)",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
+      "exampleLabel": "Muatkan CSR contoh",
+      "runsLocally": "Semuanya berjalan dalam pelayar anda; CSR tidak pernah dimuat naik.",
+      "notCertNote": "CSR ialah permintaan, bukan sijil. Ia tiada nombor siri, pengeluar atau tarikh kesahihan; hanya apa yang pemohon minta untuk disahkan oleh CA.",
+      "subjectHeading": "Subjek",
+      "colAttr": "Atribut",
+      "colValue": "Nilai",
+      "noSubject": "Tiada nama subjek (CSR ini bergantung pada SAN yang diminta).",
+      "keyHeading": "Kunci awam",
+      "keyAlgorithmLabel": "Algoritma",
+      "keySizeLabel": "Saiz",
+      "keySizeValue": "{bits} bit",
+      "keyCurveLabel": "Lengkung",
+      "keyExponentLabel": "Eksponen",
+      "keyExponentValue": "{exp}",
+      "requestedHeading": "Sambungan yang diminta",
+      "sanLabel": "Subject Alternative Names",
+      "keyUsageLabel": "Penggunaan kunci",
+      "ekuLabel": "Penggunaan kunci lanjutan",
+      "basicConstraintsLabel": "Kekangan asas",
+      "caYes": "CA: ya",
+      "caNo": "CA: tidak",
+      "pathLenValue": "panjang laluan {n}",
+      "noRequested": "Tiada sambungan diminta.",
+      "attributesHeading": "Atribut",
+      "challengePasswordLabel": "Kata laluan challenge",
+      "unstructuredNameLabel": "Nama tidak berstruktur",
+      "signatureHeading": "Tandatangan sendiri",
+      "signatureAlgLabel": "Algoritma",
+      "signatureBitsLabel": "Panjang",
+      "signatureBitsValue": "{bits} bit",
+      "versionValue": "Versi: v1 ({v})",
+      "derLengthValue": "DER: {bytes} bait",
+      "err_empty": "Tampal permintaan menandatangani sijil untuk dinyahkod.",
+      "err_format": "Ini tidak kelihatan seperti CSR dalam PEM, base64 atau heks.",
+      "err_der": "Struktur DER tidak dapat dihuraikan.",
+      "err_structure": "Ini dihuraikan sebagai DER tetapi bukan permintaan pensijilan PKCS#10."
+    },
+    "oidc": {
+      "name": "Penyahkod OIDC",
+      "blurb": "Tampal token identiti OpenID Connect atau dokumen .well-known/openid-configuration dan nyahkodkannya: claim teras, claim profil, endpoint dan keupayaan, dengan pemeriksaan untuk claim yang diperlukan, algoritma tandatangan, nonce dan PKCE.",
+      "inputLabel": "Token identiti (JWT) atau JSON openid-configuration",
+      "inputPlaceholder": "Tampal token identiti, atau dokumen JSON discovery OIDC",
+      "runsLocally": "Penyahkodan berjalan secara setempat dalam pelayar anda. Ia tidak pernah memanggil jwks_uri atau mana-mana endpoint, dan tiada apa-apa dihantar ke mana-mana.",
+      "notVerifiedNote": "Alat ini menyahkod dan menerangkan. Ia tidak mengesahkan tandatangan token, tidak mengambil kunci tandatangan, dan tidak menyemak tamat tempoh terhadap jam.",
+      "errors": {
+        "empty": "Tampal token identiti atau dokumen openid-configuration untuk dinyahkod.",
+        "malformed-json": "Ini bermula seperti JSON tetapi tidak dapat dihuraikan. Periksa sama ada terdapat kurungan, koma atau petikan yang tertinggal.",
+        "json-not-oidc": "Ini ialah JSON, tetapi bukan dokumen discovery OpenID Connect. Tampal token identiti, atau dokumen .well-known/openid-configuration.",
+        "not-jwt": "Ini tidak kelihatan seperti JWT atau dokumen OIDC. Tampal token identiti atau dokumen discovery.",
+        "jwt-header": "Pengepala token tidak dapat dinyahkod. JWT ialah tiga bahagian base64url yang dipisahkan oleh titik.",
+        "jwt-payload": "Muatan token tidak dapat dinyahkod sebagai JSON."
+      },
+      "badges": {
+        "idToken": "ID Token",
+        "discovery": "Discovery",
+        "signed": "Ditandatangani",
+        "unsigned": "Tidak ditandatangani",
+        "algNone": "alg: none",
+        "algUnknown": "alg: ?"
+      },
+      "panels": {
+        "header": "Pengepala",
+        "coreClaims": "Claim teras token ID",
+        "metadata": "Penyedia",
+        "endpoints": "Endpoint",
+        "capabilities": "Keupayaan"
+      },
+      "categories": {
+        "binding": "Pengikatan token",
+        "profile": "Claim profil",
+        "email": "E-mel",
+        "address": "Alamat",
+        "phone": "Telefon",
+        "oauth": "OAuth / sesi",
+        "other": "Claim lain"
+      },
+      "fields": {
+        "alg": "Algoritma",
+        "typ": "Jenis",
+        "kid": "ID kunci",
+        "iss": "Pengeluar (iss)",
+        "sub": "Subjek (sub)",
+        "aud": "Khalayak (aud)",
+        "azp": "Pihak dibenarkan (azp)",
+        "nonce": "Nonce",
+        "acr": "Konteks auth (acr)",
+        "amr": "Kaedah auth (amr)",
+        "authTime": "Masa auth",
+        "iat": "Dikeluarkan (iat)",
+        "nbf": "Tidak sebelum (nbf)",
+        "exp": "Tamat tempoh (exp)",
+        "issuer": "Pengeluar"
+      },
+      "reasons": {
+        "MISSING_REQUIRED_CLAIM": "Claim diperlukan {value} tiada. Token ID mesti mengandungi iss, sub, aud, exp dan iat.",
+        "ALG_NONE": "Token menggunakan alg none, bermakna ia tidak ditandatangani. Token ID yang tidak ditandatangani tidak membuktikan apa-apa dan mesti ditolak.",
+        "ALG_SYMMETRIC": "Ditandatangani dengan {value}, algoritma simetri (HMAC). Token ID daripada penyedia awam biasanya menggunakan algoritma asimetri seperti RS256 atau ES256, supaya Relying Party boleh mengesahkan dengan kunci awam.",
+        "ALG_UNKNOWN": "Ditandatangani dengan {value}, algoritma yang tidak dikenali oleh alat ini. Sahkan bahawa ia algoritma yang dijangka dan kukuh.",
+        "SIGNED_ASYMMETRIC": "Ditandatangani dengan {value}, algoritma asimetri. Relying Party mengesahkannya terhadap kunci awam penyedia daripada JWKS.",
+        "NO_NONCE": "Tiada claim nonce. Nonce mengikat token kepada permintaan pengesahan dan melindungi daripada main semula. Ia sepatutnya hadir apabila permintaan menghantarnya.",
+        "MULTI_AUD_NO_AZP": "Token mempunyai berbilang khalayak tetapi tiada azp (pihak dibenarkan). Dengan lebih daripada satu khalayak, azp sepatutnya menamakan klien yang token itu ditujukan.",
+        "DISCOVERY_MISSING_FIELD": "Medan discovery diperlukan {value} tiada.",
+        "DISCOVERY_ALG_NONE": "Penyedia mengiklankan algoritma tandatangan none untuk token ID, yang akan membenarkan token tidak ditandatangani. Ini tidak sepatutnya ditawarkan.",
+        "DISCOVERY_NO_PKCE": "Tiada code_challenge_methods_supported. Penyedia tidak mengiklankan PKCE, yang disyorkan untuk aliran authorization code.",
+        "DISCOVERY_NO_PKCE_S256": "PKCE diiklankan tetapi tanpa kaedah S256. S256 ialah kaedah code challenge yang disyorkan."
+      },
+      "flow": {
+        "heading": "Aliran authorization code",
+        "laneRp": "Relying Party",
+        "laneOp": "Penyedia OpenID",
+        "s1": "Ubah hala pengguna ke penyedia dengan scope=openid",
+        "s2": "Penyedia mengesahkan pengguna dan mendapatkan kebenaran",
+        "s3": "Penyedia mengubah hala kembali dengan authorization code",
+        "s4": "Relying Party menukar kod di endpoint token",
+        "s5": "Penyedia mengembalikan token ID dan access token",
+        "s6": "Relying Party mengesahkan tandatangan token ID terhadap JWKS",
+        "s7": "Relying Party boleh memanggil UserInfo dengan access token",
+        "s8": "Penyedia mengembalikan claim pengguna"
       }
     }
   },
@@ -521,7 +841,7 @@
     "short3": "Alat interaktif berjalan sepenuhnya dalam pelayar anda. Apa yang anda tampal atau taip ke dalamnya kekal pada peranti anda dan tidak dihantar ke mana-mana.",
     "short4": "Hanya tiga perkara yang melibatkan data langsung, dan setiap satu dijelaskan di bawah: satu tetapan tema yang disimpan dalam pelayar anda sendiri, log sambungan standard yang setiap lawatan laman cipta pada lapisan pengehosan, dan sebarang mesej yang anda pilih untuk hantar melalui e-mel.",
     "controllerTitle": "Siapa yang bertanggungjawab",
-    "controllerBody": "Ini ialah laman web peribadi Rodolfo Nützmann (ronutz.com). Untuk sebarang persoalan privasi, atau untuk melaksanakan mana-mana hak yang diterangkan di bawah, tulis kepada hello@ronutz.com. Pertanyaan dikendalikan secara langsung oleh Rodolfo Nützmann, sebagai pengawal data.",
+    "controllerBody": "Ini ialah laman web peribadi Rodolfo Nützmann (ronutz.com). Untuk sebarang persoalan privasi, atau untuk melaksanakan mana-mana hak yang diterangkan di bawah, tulis kepada {email}. Pertanyaan dikendalikan secara langsung oleh Rodolfo Nützmann, sebagai pengawal data.",
     "noTrackTitle": "Tiada kuki, tiada penjejakan, tiada analitik",
     "noTrackBody": "Laman ini tidak menetapkan sebarang kuki. Ia tidak menggunakan sebarang perkhidmatan analitik (seperti Google Analytics atau Plausible), sebarang rangkaian pengiklanan, sebarang piksel penjejakan media sosial dan sebarang cap jari peranti. Lawatan anda tidak diukur, diprofil atau dikongsi dengan sesiapa untuk tujuan tersebut.",
     "browserTitle": "Apa yang disimpan dalam pelayar anda",
@@ -537,12 +857,12 @@
     "childrenTitle": "Kanak-kanak",
     "childrenBody": "Laman ini ditujukan untuk khalayak profesional dan umum. Ia tidak ditujukan kepada kanak-kanak dan tidak mengumpul data peribadi mereka secara sedar.",
     "rightsTitle": "Hak anda",
-    "rightsBody": "Bergantung pada tempat anda tinggal, anda mempunyai hak ke atas data peribadi anda, termasuk untuk mengaksesnya, membetulkan atau memadamnya, membantah atau menyekat pemprosesannya, meminta salinan dalam bentuk mudah alih, dan dimaklumkan tentang cara ia dikendalikan. Untuk melaksanakan mana-mana satu, hanya tulis kepada hello@ronutz.com. Oleh sebab begitu sedikit data peribadi yang pernah diproses di sini, pada praktiknya biasanya terdapat sangat sedikit untuk dilakukan, tetapi saluran sentiasa terbuka.",
+    "rightsBody": "Bergantung pada tempat anda tinggal, anda mempunyai hak ke atas data peribadi anda, termasuk untuk mengaksesnya, membetulkan atau memadamnya, membantah atau menyekat pemprosesannya, meminta salinan dalam bentuk mudah alih, dan dimaklumkan tentang cara ia dikendalikan. Untuk melaksanakan mana-mana satu, hanya tulis kepada {email}. Oleh sebab begitu sedikit data peribadi yang pernah diproses di sini, pada praktiknya biasanya terdapat sangat sedikit untuk dilakukan, tetapi saluran sentiasa terbuka.",
     "rightsGdpr": "Jika anda berada di Kawasan Ekonomi Eropah atau United Kingdom, anda juga berhak untuk mengemukakan aduan kepada pihak berkuasa penyeliaan perlindungan data tempatan anda.",
     "rightsLgpd": "Jika anda berada di Brazil, anda memegang hak yang ditetapkan dalam Perkara 18 LGPD, dan juga boleh menghubungi pihak berkuasa perlindungan data kebangsaan (ANPD).",
     "changesTitle": "Perubahan pada notis ini",
     "changesBody": "Jika notis ini berubah, versi yang disemak akan diterbitkan pada halaman ini dan tarikh di bawah akan dikemas kini. Perubahan material tidak akan dikuatkuasakan secara retroaktif.",
-    "updated": "Kemas kini terakhir: 28 Jun 2026",
+    "updated": "Kemas kini terakhir: 30 Jun 2026",
     "backHome": "Kembali ke laman utama"
   },
   "footer": {
@@ -553,7 +873,7 @@
     "contribute": "Bantu perbaiki terjemahan",
     "feedback": "Hantar maklum balas",
     "api": "Rujukan API",
-    "contributeTools": "Sumbangkan satu alat",
+    "contributeTools": "Kongsi idea",
     "license": "Lesen",
     "coffee": "Belanja saya kopi"
   },
@@ -868,7 +1188,9 @@
         "label": "Latihan rasmi",
         "description": "Tempah kursus melalui Red Education"
       }
-    }
+    },
+    "feedbackNote": "Menemui bug, kesilapan, atau ketidaktepatan di laman ini?",
+    "feedbackLink": "Kongsikan di halaman idea"
   },
   "certs": {
     "title": "Pensijilan dan kelayakan",
@@ -935,7 +1257,6 @@
     "p1Title": "Kira, jangan teka",
     "p1Body": "Alat di laman ini mengira jawapan secara setempat dan deterministik. Ia tidak menghubungi pelayan dengan data anda dan tidak menganggar. Apa yang berjalan dalam pelayar anda kekal dalam pelayar anda.",
     "p2Title": "Terbuka di terasnya",
-    "p2Body": "Enjin di sebalik alat ialah sumber terbuka, dikeluarkan di bawah lesen permisif. Laman ini dibina di atasnya sama seperti orang lain boleh lakukan. Keterbukaan di sini bukan frasa pemasaran; ia seni bina.",
     "p3Title": "Didokumenkan secara pembinaan",
     "p3Body": "Setiap bahagian asas kod diberi komen dan didokumenkan, bukan sebagai sesuatu yang ditambah kemudian, tetapi sebagai peraturan tetap. Pembinaan ini dimaksudkan untuk boleh dibaca, untuk orang yang menyelenggarakannya, dan untuk orang yang mewarisinya.",
     "p4Title": "Dibina untuk berkhidmat dan mengembara",
@@ -951,7 +1272,7 @@
     "stackType": "Tipografi",
     "stackTypeV": "Inter untuk teks, JetBrains Mono untuk data dan kod",
     "stackEngine": "Enjin alat",
-    "stackEngineV": "Enjin teras terbuka, dikeluarkan di bawah lesen permisif",
+    "stackEngineV": "Lapisan pengiraan deterministik yang berjalan sepenuhnya dalam pelayar",
     "stackSearch": "Carian",
     "stackSearchV": "Carian teks penuh statik di pihak pelanggan; tiada pelayan carian",
     "vibeTitle": "Adakah ini vibe coding?",
@@ -972,7 +1293,10 @@
     "redblueLabel": "Merah dan biru",
     "redblueBody": "Penyahkodan-dan-penjelasan yang sama yang membolehkan red-teamer membaca token yang ditangkap turut membolehkan blue-teamer memahami apa yang dipancarkan oleh timbunan mereka sendiri. Platform ini sengaja berada di sebelah analisis garisan itu: ia mengenal pasti, menyahkod, menukar dan menjelaskan, dan tidak sampai memalsukan, menysuntik atau mengalahkan kawalan. Sempadan itu ialah keputusan reka bentuk, bukan terlepas pandang; alat ini wujud untuk mengajar dan mendiagnosis, bukan untuk menjadi senjata.",
     "localLabel": "Setempat dan deterministik",
-    "localBody": "Semuanya berjalan dalam pelayar. Fungsi tulen yang dipanggil oleh alat pada halaman ialah fungsi yang sama yang dipanggil oleh API; dengan input yang sama ia memulangkan output yang sama, tidak menyimpan keadaan, dan tidak menghantar apa-apa ke pelayan. Tiada kuki, tiada analitik, sebagaimana yang dihuraikan sepenuhnya oleh halaman Privasi."
+    "localBody": "Segala-galanya berjalan dalam pelayar. Alat ini memanggil fungsi tulen: dengan input yang sama ia mengembalikan output yang sama, tidak menyimpan keadaan dan tidak menghantar apa-apa ke pelayan. Tiada kuki, tiada analitis, sebagaimana yang dihuraikan sepenuhnya oleh halaman Privasi.",
+    "thanksTitle": "Penghargaan khas",
+    "p2Body": "Logik deterministik yang dijalankan oleh setiap alat ialah keseluruhan alat itu: tiada langkah pelayan tersembunyi, tiada akaun, dan tiada telemetri. Segala-galanya berjalan dalam pelayar anda.",
+    "changelogLink": "Log perubahan"
   },
   "support": {
     "title": "Sokong projek ini",
@@ -1030,26 +1354,12 @@
     "accessRoleLabel": "Peranan",
     "accessPermsLabel": "Kebenaran pemilik"
   },
-  "contributeTools": {
-    "eyebrow": "Kotak alat terbuka",
-    "title": "Sumbangkan satu alat",
-    "lede": "Kotak alat dibina untuk berkembang. Setiap alat ialah modul kecil yang menerangkan dirinya sendiri pada enjin terbuka, dan laman ini memuatkannya dengan cara yang sama seperti yang boleh dilakukan oleh sesiapa sahaja. Jika anda ada alat yang sesuai, cadangkanlah.",
-    "shapeTitle": "Apa itu alat",
-    "shapeBody": "Sesuatu alat ialah tiga perkara serentak: satu manifes yang menerangkannya (apa ia, input yang diterimanya, dari mana ketepatannya berasal), satu fungsi pelaksanaan tulen yang melakukan kerja itu, dan satu set vektor rujukan, iaitu pasangan input dan output tetap yang membuktikan fungsi itu betul. Enjin memuatkan alat daripada manifesnya, jadi modul yang terbentuk dengan baik masuk tanpa menyentuh bahagian lain laman ini.",
-    "principlesTitle": "Apa yang mesti dipatuhi oleh alat",
-    "principlesBody": "Pengiraan berjalan secara setempat dan bersifat berketentuan: input yang sama sentiasa menghasilkan output yang sama, tanpa jam, rangkaian atau kerawakan dalam hasilnya. Apa-apa yang sensitif kekal pada peranti secara lalai. Ketepatan ditambat pada vektor rujukan dan pada sumber yang dipetik, seperti sesuatu RFC atau standard yang diterbitkan, bukan pada pendapat. Kod dikeluarkan di bawah lesen yang permisif, supaya laman ini dan sesiapa sahaja boleh membina di atasnya.",
-    "proposeTitle": "Cadangkan satu",
-    "proposeBody": "Hantar cadangan ringkas melalui e-mel: apa yang dikira oleh alat itu, contoh input dengan output tepat yang sepatutnya dihasilkannya, dan sumber yang menjadi sandaran ketepatannya. Lakaran manifes dan beberapa vektor rujukan dialu-alukan, tetapi tidak diwajibkan. Jika sesuai, ia dibina ke dalam enjin dan kotak alat.",
-    "emailLabel": "E-mel",
-    "backToTools": "Kembali ke kotak alat"
-  },
   "api": {
     "title": "API",
     "lede": "Alat di laman ini berjalan dalam pelayar anda dan mengekalkan data anda pada peranti anda. Untuk automasi, seperti skrip, pipelines dan penyepaduan, pengiraan berketentuan yang sama tersedia sebagai API HTTP yang kecil. Ia ialah pasangan beraturcara bagi alat pelayar, bukan penggantinya.",
     "privacyTitle": "Apa maksudnya bagi data anda",
     "privacyBody": "API hanya menerima input yang anda hantar kepadanya, mengira satu hasil, dan memulangkannya. Ia tanpa keadaan dan tidak mencatat sebarang nilai pertanyaan atau badan permintaan. Jika anda perlukan jaminan sifar pengaliran data keluar, gunakan alat pelayar, atau jalankan enjin terbuka itu sendiri.",
     "engineTitle": "Enjin yang sama seperti pelayar",
-    "engineBody": "Setiap titik akhir memanggil fungsi enjin yang sama seperti yang dipanggil oleh alat dalam pelayar, jadi API dan pelayar memulangkan hasil yang seiras bait demi bait. Enjin itu, @ronutz/netcore, ialah sumber terbuka di bawah lesen yang permisif.",
     "specTitle": "Spesifikasi",
     "specBody": "Kontrak penuh diterbitkan sebagai OpenAPI 3.1. Muat turunkannya, halakan perkakas anda sendiri kepadanya, atau baca rujukan di bawah.",
     "downloadSpec": "Muat turun openapi.yaml",
@@ -1073,17 +1383,57 @@
     "descriptionLabel": "Penerangan",
     "viewReference": "Rujukan",
     "viewSwagger": "Swagger UI",
-    "swaggerLoadError": "Swagger UI tidak dapat dimuatkan."
+    "swaggerLoadError": "Swagger UI tidak dapat dimuatkan.",
+    "engineBody": "Setiap endpoint menjalankan fungsi tulen yang sama seperti yang dijalankan oleh alat dalam pelayar, jadi API dan pelayar memulangkan hasil yang identik bait demi bait."
   },
   "license_page": {
-    "eyebrow": "Teras terbuka",
+    "eyebrow": "Terma",
     "title": "Lesen",
-    "lede": "ronutz.com berteras terbuka: enjin yang menggerakkan setiap alat adalah sumber terbuka, manakala tapak web yang dibina di atasnya tidak.",
-    "openHeading": "Sumber terbuka, enjin",
-    "openBody": "@ronutz/netcore, enjin di sebalik setiap alat dan setiap respons API di tapak ini, dikeluarkan di bawah Apache License 2.0. Fungsi yang sama yang dipanggil oleh alat dalam pelayar ialah fungsi yang dipanggil oleh API, jadi anda bebas menggunakannya, mengubah suainya dan membina di atasnya di bawah lesen tersebut.",
     "closedHeading": "Sumber tertutup, tapak web ini",
     "closedBody": "Tapak web itu sendiri ialah sumber tertutup. Reka bentuk, antara muka, kandungan bertulisnya (termasuk setiap artikel Learn), penjenamaan dan cara khusus alat-alat ini disusun serta dipersembahkan di sini adalah hak milik eksklusif, semua hak terpelihara. Tiada kebenaran diberikan untuk menyalin, menghasilkan semula, mengubah suai, mengedar semula atau mencipta karya terbitan daripada tapak atau kandungannya tanpa kebenaran bertulis terlebih dahulu.",
     "contact": "Ada soalan tentang lesen? <a>Hubungi kami.</a>",
-    "backHome": "Kembali ke alat"
+    "backHome": "Kembali ke alat",
+    "thirdHeading": "Komponen sumber terbuka",
+    "lede": "ronutz.com ialah karya proprietari, semua hak terpelihara. Terma ini meliputi laman web dan kandungannya. Laman ini dibina atas perisian sumber terbuka, yang digunakan dan diedarkan semula di bawah terma lesennya sendiri, dikreditkan di bawah.",
+    "thirdBody": "Laman ini berdiri di atas kerja sumber terbuka. Laman itu sendiri dibina dengan Next.js dan React dan dihantar sebagai eksport statik; pengantarabangsaan menggunakan next-intl; kandungan Learn dipaparkan dengan next-mdx-remote, gray-matter, remark-gfm, dan js-yaml; dan carian dikuasakan oleh Pagefind. Komponen ini disediakan di bawah MIT License, kecuali next-mdx-remote (Mozilla Public License 2.0). Rujukan API membenamkan Swagger UI, di bawah Apache License 2.0. Setiap komponen kekal di bawah lesennya sendiri, dan notis penuh dihantar bersama kod sumber."
+  },
+  "contributeIdeas": {
+    "eyebrow": "Idea dialu-alukan",
+    "title": "Kongsi satu idea",
+    "lede": "Kotak alat ini dibina untuk berkembang, dan isyarat paling jelas tentang ke mana ia patut menuju datang daripada mereka yang menggunakannya. Menemui bug, kesilapan, atau ketidaktepatan? Mahukan alat yang belum ada di sini? Nampak cara yang lebih baik untuk mengendalikan sesuatu, atau hasil yang anda akan ungkapkan secara berbeza? Hantarkannya; segala jenis maklum balas dialu-alukan.",
+    "sendTitle": "Apa yang boleh anda hantar",
+    "sendBody": "Bug, kesilapan, dan ketidaktepatan dalam apa jua bentuk: alat yang berkelakuan salah, hasil yang salah, kesilapan dalam artikel Learn, atau apa sahaja yang nampak tidak kena. Permintaan ciri untuk alat yang sedia ada. Idea untuk alat baharu yang patut ada dalam kotak alat ini. Pembetulan dan tambahan kepada artikel Learn, seperti penjelasan yang lebih jelas, sumber yang lebih baik, atau topik yang tiada. Atau sekadar sudut pandangan yang berbeza terhadap sesuatu masalah. Kasar pun tidak mengapa; satu ayat sudah cukup untuk memulakan perbualan.",
+    "toolTitle": "Jika anda mencadangkan alat baharu",
+    "toolBody": "Alat di sini ialah modul kecil yang menjelaskan dirinya sendiri: satu manifest yang menyatakan apa itu alat tersebut dan dari mana ketepatannya datang, satu fungsi tulen yang melakukan kerja, dan satu set golden vector, iaitu pasangan input-output tetap yang membuktikannya. Calon yang baik mengira secara setempat dan deterministik (input yang sama sentiasa menghasilkan output yang sama, tanpa jam, rangkaian, atau kerawakan dalam hasil), menyimpan segala yang sensitif pada peranti, dan menyandarkan ketepatannya pada sumber yang dipetik seperti RFC dan bukan pada pendapat. Anda tidak perlu membina semua itu untuk mencadangkan satu: cukup terangkan apa yang patut dikiranya, satu contoh, dan sumber yang menjadi sandarannya.",
+    "fitRule": "Satu ujian mudah menentukannya. Setiap alat di sini berjalan sepenuhnya dalam pelayar anda dan tidak menghantar apa-apa ke mana-mana, jadi alat baharu mesti sesuatu yang boleh dikira oleh komputer hanya daripada apa yang anda taip, dengan mengikut peraturan tetap yang diterbitkan. Jika ia perlu dalam talian, menyemak sesuatu secara langsung, melog masuk anda, atau mengingati anda, ia tiada tempat di sini.",
+    "fitYes": "Sesuai:",
+    "fitYesBody": "menyahkod atau menerangkan sesuatu yang anda tampal (token, sijil, konfigurasi, output perintah), menukar antara format, mengira daripada piawai atau formula, atau menjana daripada peraturan, seperti UUID, cincang, atau baris perintah.",
+    "fitNo": "Tidak sesuai:",
+    "fitNoBody": "apa-apa yang perlu dalam talian atau menyemak sesuatu secara langsung (menguji laman web sebenar, menanya pelayan DNS langsung, mengimbas alamat), apa-apa yang memerlukan akaun, log masuk, atau data tersimpan, atau apa-apa yang jawapannya tidak ditetapkan oleh piawai yang diterbitkan.",
+    "fitUnsure": "Tidak pasti di sebelah mana idea anda? Hantar juga dan nyatakan apa yang sepatutnya dilakukannya. Saya akan beritahu dengan jujur sama ada ia sesuai, dan mengapa.",
+    "emailTitle": "Cara menghubungi saya",
+    "emailBody": "E-mel ialah salurannya. Beritahu saya apa yang anda temui atau apa yang anda mahukan, dengan butiran yang cukup untuk bertindak: satu contoh, satu pautan, ungkapan yang tepat, apa sahaja yang sesuai. Jika ia menjadikan kotak alat ini lebih baik, ia akan dibina.",
+    "emailLabel": "E-mel",
+    "backToTools": "Kembali ke kotak alat"
+  },
+  "languageStatus": {
+    "title": "Status terjemahan",
+    "reviewed": "Disemak oleh manusia",
+    "complete": "Mesin, lengkap",
+    "partial": "Mesin, sedang berjalan",
+    "explainTitle": "Cara terjemahan ditandai",
+    "explainBody": "Bahasa Inggeris dan Portugis Brazil ditulis dan disemak oleh seseorang. Kebanyakan bahasa lain diterjemahkan oleh mesin dan ditandakan mengikut tahap kemajuannya: ambar apabila sesuatu bahasa meliputi keseluruhan tapak, kuning sementara kandungan yang lebih baharu masih dalam bahasa Inggeris dan sedang mengejar. Bahasa yang ditanda merah belum mempunyai terjemahan dan ditunjukkan dalam bahasa Inggeris buat masa ini. Halaman yang diterjemahkan oleh mesin turut membawa notis ringkas, dan anda dialu-alukan untuk membantu menambah baik mana-mana daripadanya.",
+    "stub": "Belum diterjemahkan"
+  },
+  "changelog": {
+    "eyebrow": "Log Perubahan",
+    "title": "Apa yang baharu",
+    "lede": "Rekod berterusan tentang alat baharu, artikel Learn baharu dan perubahan penting pada tapak ini. Terdapat {count} alat tersedia hari ini.",
+    "kindLaunch": "Pelancaran",
+    "kindTool": "Alat baharu",
+    "kindFeature": "Ciri",
+    "kindI18n": "Penyetempatan",
+    "kindContent": "Kandungan",
+    "kindInfra": "Infrastruktur"
   }
 }

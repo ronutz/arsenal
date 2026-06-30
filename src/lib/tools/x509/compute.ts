@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 // X.509 CERTIFICATE DECODE - the pure compute core for the X.509 tool.
 //
-// netcore tool contract: a tool is a {manifest, run, vectors} triple and `run`
+// the tool contract: a tool is a {manifest, run, vectors} triple and `run`
 // must be DETERMINISTIC so its golden vectors are stable. This file is that
 // deterministic core: it accepts a PEM, base64, or hex certificate, parses the
 // DER (ASN.1) by hand, and walks the RFC 5280 TBSCertificate structure into a
@@ -20,7 +20,7 @@
 //
 // Runs identically in the browser and in Node: `atob`, `TextDecoder`, and
 // typed arrays are global in both, so the same module powers the UI today and
-// can be promoted into @ronutz/netcore unchanged.
+// could be lifted into an open library unchanged.
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -75,6 +75,25 @@ export interface BasicConstraints {
   pathLen?: number;
 }
 
+/**
+ * One Signed Certificate Timestamp (RFC 6962). An SCT is a CT log's signed
+ * promise that it has logged this certificate; browsers require a minimum
+ * number of them for a certificate to be trusted. We decode the structure
+ * only - the signature is not cryptographically verified here.
+ */
+export interface SctEntry {
+  /** SCT version; 0 means v1. */
+  version: number;
+  /** Log ID (SHA-256 of the log's public key), colon-grouped upper-case hex. */
+  logIdHex: string;
+  /** Issuance timestamp the log recorded, as an ISO-8601 UTC string. */
+  timestamp: string;
+  /** TLS hash algorithm of the SCT signature (e.g. sha256). */
+  hashAlgorithm: string;
+  /** TLS signature algorithm of the SCT signature (e.g. ecdsa). */
+  signatureAlgorithm: string;
+}
+
 /** The structured, known v3 extensions plus a list of any unrecognized ones. */
 export interface CertExtensions {
   keyUsage?: { critical: boolean; usages: string[] };
@@ -83,8 +102,28 @@ export interface CertExtensions {
   subjectAltName?: { critical: boolean; entries: SanEntry[] };
   subjectKeyId?: { critical: boolean; keyId: string };
   authorityKeyId?: { critical: boolean; keyId: string };
+  /** Embedded Signed Certificate Timestamps (RFC 6962), decoded structurally. */
+  signedCertificateTimestamps?: SctEntry[];
+  /** Revocation pointers carried in the certificate (not a live lookup). */
+  revocation: RevocationInfo;
   /** Extensions we recognize the OID of but only summarize. */
   other: { oid: string; name: string; critical: boolean }[];
+}
+
+/**
+ * The certificate's own revocation configuration, extracted from its extensions.
+ * These are the URLs and flags a verifier would USE to check revocation; this
+ * tool never contacts them (it runs entirely in the browser, zero egress).
+ */
+export interface RevocationInfo {
+  /** CRL Distribution Point URLs (extension 2.5.29.31). */
+  crlUrls: string[];
+  /** OCSP responder URLs from Authority Information Access (1.3.6.1.5.5.7.48.1). */
+  ocspUrls: string[];
+  /** CA Issuers URLs from Authority Information Access (1.3.6.1.5.5.7.48.2). */
+  caIssuerUrls: string[];
+  /** True if the TLS Feature extension requires a stapled OCSP response (Must-Staple). */
+  mustStaple: boolean;
 }
 
 /** The deterministic result of decoding an X.509 certificate. */
@@ -487,9 +526,116 @@ function parseSan(seq: Asn1Node): SanEntry[] {
   return out;
 }
 
+// ----------------------------------------------------------------------------
+// Signed Certificate Timestamp list (RFC 6962) decoding
+// ----------------------------------------------------------------------------
+
+// TLS SignatureAndHashAlgorithm code points (RFC 5246 §7.4.1.4.1, extended for EdDSA).
+const TLS_HASH_ALG: Record<number, string> = {
+  0: "none",
+  1: "md5",
+  2: "sha1",
+  3: "sha224",
+  4: "sha256",
+  5: "sha384",
+  6: "sha512",
+  8: "intrinsic",
+};
+const TLS_SIG_ALG: Record<number, string> = {
+  0: "anonymous",
+  1: "rsa",
+  2: "dsa",
+  3: "ecdsa",
+  7: "ed25519",
+  8: "ed448",
+};
+
+/** Read a big-endian unsigned integer of `len` bytes from `buf` at `off`. */
+function readUint(buf: Uint8Array, off: number, len: number): number {
+  let v = 0;
+  for (let i = 0; i < len; i++) v = v * 256 + buf[off + i];
+  return v;
+}
+
+/**
+ * Decode a TLS SignedCertificateTimestampList - the bytes carried inside the
+ * SCT extension's inner OCTET STRING. Returns one entry per embedded SCT.
+ *
+ * This is a STRUCTURAL decode: each SCT's signature bytes are skipped, never
+ * verified (verification would need the CT log's public key and the precert).
+ *
+ *   SignedCertificateTimestampList = uint16 total_len, then repeated:
+ *     uint16 sct_len, SignedCertificateTimestamp {
+ *       version  (1 byte, v1 = 0),
+ *       LogID    (32 bytes, SHA-256 of the log key),
+ *       timestamp(8 bytes, ms since the Unix epoch),
+ *       CtExtensions (uint16 len + bytes),
+ *       digitally-signed { hashAlg(1), sigAlg(1), uint16 sig_len + sig } }
+ */
+export function parseSctList(buf: Uint8Array): SctEntry[] {
+  const out: SctEntry[] = [];
+  if (buf.length < 2) return out;
+  const totalLen = readUint(buf, 0, 2);
+  let p = 2;
+  const end = Math.min(2 + totalLen, buf.length);
+  let guard = 0;
+  while (p + 2 <= end && guard++ < 64) {
+    const sctLen = readUint(buf, p, 2);
+    p += 2;
+    const sctEnd = p + sctLen;
+    if (sctEnd > end || sctLen < 43) break; // 1 + 32 + 8 + 2 minimum before the signature
+    try {
+      let q = p;
+      const version = buf[q];
+      q += 1;
+      const logId = buf.subarray(q, q + 32);
+      q += 32;
+      const tsMs = readUint(buf, q, 8);
+      q += 8;
+      const extLen = readUint(buf, q, 2);
+      q += 2 + extLen; // skip CT extensions (almost always empty)
+      const hashAlg = buf[q] ?? 0;
+      const sigAlg = buf[q + 1] ?? 0;
+      let iso: string;
+      try {
+        iso = new Date(tsMs).toISOString();
+      } catch {
+        iso = String(tsMs);
+      }
+      out.push({
+        version,
+        logIdHex: bytesToHex(logId, ":"),
+        timestamp: iso,
+        hashAlgorithm: TLS_HASH_ALG[hashAlg] ?? String(hashAlg),
+        signatureAlgorithm: TLS_SIG_ALG[sigAlg] ?? String(sigAlg),
+      });
+    } catch {
+      // skip a malformed SCT but keep any well-formed ones already collected
+    }
+    p = sctEnd;
+  }
+  return out;
+}
+
+// Authority Information Access access-method OIDs (RFC 5280 §4.2.2.1).
+const OID_AIA_OCSP = "1.3.6.1.5.5.7.48.1";
+const OID_AIA_CA_ISSUERS = "1.3.6.1.5.5.7.48.2";
+
+/** Recursively collect uniformResourceIdentifier (GeneralName [6]) values. */
+function collectUris(node: Asn1Node, out: string[]): void {
+  if (node.tagClass === 2 && node.tagNumber === 6 && !node.constructed) {
+    out.push(new TextDecoder().decode(node.content));
+    return;
+  }
+  for (const c of node.children) collectUris(c, out);
+}
+
 /** Decode the value bytes of each extension we recognize. */
 function parseExtensions(extSeq: Asn1Node): CertExtensions {
-  const ext: CertExtensions = { other: [] };
+  const ext: CertExtensions = {
+    revocation: { crlUrls: [], ocspUrls: [], caIssuerUrls: [], mustStaple: false },
+    other: [],
+  };
   for (const e of extSeq.children) {
     // Extension ::= SEQUENCE { extnID OID, critical BOOLEAN DEFAULT FALSE, extnValue OCTET STRING }
     const oid = decodeOid(e.children[0].content);
@@ -551,6 +697,35 @@ function parseExtensions(extSeq: Asn1Node): CertExtensions {
       // authorityKeyIdentifier: SEQUENCE { [0] keyIdentifier OCTET STRING OPTIONAL, ... }.
       const kid = inner.children.find((c) => c.tagNumber === 0 && c.tagClass === 2);
       ext.authorityKeyId = { critical, keyId: kid ? bytesToHex(kid.content, ":") : "" };
+    } else if (oid === "2.5.29.31" && inner) {
+      // cRLDistributionPoints: SEQUENCE OF DistributionPoint. Collect every URI
+      // GeneralName found within (robust to the nested [0] DistributionPointName).
+      collectUris(inner, ext.revocation.crlUrls);
+    } else if (oid === "1.3.6.1.5.5.7.1.1" && inner) {
+      // authorityInfoAccess: SEQUENCE OF AccessDescription { accessMethod OID, accessLocation GeneralName }.
+      for (const ad of inner.children) {
+        if (ad.children.length < 2) continue;
+        const method = decodeOid(ad.children[0].content);
+        const uris: string[] = [];
+        collectUris(ad.children[1], uris);
+        if (method === OID_AIA_OCSP) ext.revocation.ocspUrls.push(...uris);
+        else if (method === OID_AIA_CA_ISSUERS) ext.revocation.caIssuerUrls.push(...uris);
+      }
+    } else if (oid === "1.3.6.1.5.5.7.1.24" && inner) {
+      // TLS Feature (RFC 7633): SEQUENCE OF INTEGER. status_request (5) => Must-Staple.
+      for (const f of inner.children) {
+        if (f.tagNumber === 0x02) {
+          let v = 0;
+          for (let i = 0; i < f.content.length; i++) v = v * 256 + f.content[i];
+          if (v === 5) ext.revocation.mustStaple = true;
+        }
+      }
+    } else if (oid === "1.3.6.1.4.1.11129.2.4.2" && inner) {
+      // signedCertificateTimestampList (RFC 6962). The extension's inner OCTET
+      // STRING content is a TLS SignedCertificateTimestampList; decode the SCTs.
+      const scts = parseSctList(inner.content);
+      if (scts.length) ext.signedCertificateTimestamps = scts;
+      else ext.other.push({ oid, name, critical });
     } else {
       ext.other.push({ oid, name, critical });
     }
@@ -657,7 +832,7 @@ export function decodeCertificate(input: string): DecodedCertificate {
 
     // The remaining optional fields: [1] issuerUniqueID, [2] subjectUniqueID,
     // [3] EXPLICIT extensions. We only want [3].
-    let extensions: CertExtensions = { other: [] };
+    let extensions: CertExtensions = { revocation: { crlUrls: [], ocspUrls: [], caIssuerUrls: [], mustStaple: false }, other: [] };
     for (let i = idx; i < tbs.children.length; i++) {
       const c = tbs.children[i];
       if (c.tagClass === 2 && c.tagNumber === 3) {

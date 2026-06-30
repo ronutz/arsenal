@@ -1,0 +1,32 @@
+---
+slug: f5-cipher-rules-and-groups
+title: "Cipher Rules, Cipher Groups do F5 e Por Que a Expansão É Específica de Versão"
+summary: "O BIG-IP v13 substituiu as cipher strings editadas à mão por cipher rules e cipher groups, um modelo mais legível onde as rules guardam strings e os groups as combinam com permitir, restringir e excluir. A lista final e ordenada de suites ainda vem da base de cifras específica de cada TMOS, e é por isso que a mesma string expande de forma diferente entre versões."
+concepts: ["f5", "cipher rules", "cipher groups", "tmos", "tmm", "compat"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords"]
+category: transport
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+Editar uma cipher string longa à mão é propenso a erros, e um único operador fora do lugar pode mudar uma postura de segurança sem nenhum sintoma óbvio. O BIG-IP v13 introduziu um modelo mais estruturado para gerenciar essa complexidade: cipher rules e cipher groups.
+
+## Rules e groups
+
+Uma **cipher rule** é um objeto nomeado que guarda uma cipher string, junto com metadados opcionais. O BIG-IP vem com várias rules pré-definidas, e suas strings valem a pena conhecer: `f5-default` é a palavra-chave `DEFAULT`, `f5-ecc` é `ECDHE:ECDHE_ECDSA`, e `f5-secure` é `ECDHE:RSA:!SSLV3:!RC4:!EXP:!DES`. Essas rules pré-definidas são somente leitura e servem como modelos de partida.
+
+Um **cipher group** combina uma ou mais rules com instruções de como aplicá-las: quais rules permitir, a quais restringir o resultado e quais excluir. Um group pode construir sua string final a partir de uma rule personalizada mais a `f5-default`, ao mesmo tempo em que exclui tudo de outra rule como `f5-hw_keys`. O group então exibe uma prévia da cipher string final, e você atribui o group, ou uma string crua, a um perfil Client SSL ou Server SSL. A F5 desaconselha depender apenas das rules pré-definidas, porque seu conteúdo muda conforme a F5 atualiza seus requisitos criptográficos, o que pode silenciosamente derrubar clientes mais antigos.
+
+## COMPAT acabou
+
+Uma palavra-chave histórica merece um aviso. `COMPAT` costumava trazer cipher suites do OpenSSL que o TMM não implementava nativamente. Ela foi removida no TMOS 13.0. Se uma configuração ainda referencia `COMPAT`, o BIG-IP a substitui por `NONE`, e qualquer conexão que dependesse dessas suites falhará. Ver `COMPAT` em uma cipher string em uma versão moderna é um bug a corrigir, não uma configuração a manter.
+
+## Por que a expansão exata é específica de versão
+
+Uma cipher string é um conjunto de instruções, e transformar essas instruções na lista real e ordenada de suites exige conhecer cada suite que a plataforma suporta. Esse catálogo é a base de cifras específica da versão do TMOS, e ele muda entre releases conforme a F5 adiciona e aposenta suites. É por isso que a F5 documenta que a lista DEFAULT "varia conforme a versão do TMOS", e por que a única forma autoritativa de ver a saída real de uma string é executar `tmm --clientciphers` em uma máquina daquela versão exata. O comando avalia a string contra a base daquela máquina e imprime as suites resultantes, cada uma marcada com seu protocolo, sem alterar nenhuma configuração.
+
+## O que o explicador faz
+
+Por essa razão, o [explicador de cipher string do F5](/tools/f5-cipher-string-expander) deliberadamente não inventa uma lista de suites. Ele interpreta a string, expande os nomes de rules pré-definidas que reconhece, explica cada palavra-chave e operador, e relata a postura de segurança, deixando a expansão exata e ordenada para o `tmm` na versão alvo. Para a gramática, veja [lendo uma cipher string do F5](/learn/f5-cipher-string-syntax); para o significado de segurança das palavras-chave, veja [palavras-chave de segurança de cifras TLS](/learn/tls-cipher-security-keywords).

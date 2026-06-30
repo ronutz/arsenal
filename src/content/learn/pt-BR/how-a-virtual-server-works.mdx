@@ -1,0 +1,34 @@
+---
+slug: how-a-virtual-server-works
+title: "Como Funciona um Virtual Server do BIG-IP"
+summary: "Um virtual server é a porta de entrada de um BIG-IP. Ele vincula um IP e uma porta de escuta, aplica uma pilha de perfis, decide a persistência, escolhe um membro do pool e traduz o endereço de origem em direção ao backend. Ler essas partes em ordem mostra exatamente como uma conexão será tratada."
+concepts: ["virtual server", "ltm", "balanceamento de carga", "perfis", "snat", "f5"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "ltm-health-monitors"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Um virtual server, em termos de BIG-IP, é o objeto ao qual os clientes de fato se conectam. Ele é definido por um `destination` (um endereço IP e uma porta) e por um conjunto de recursos que decidem o que acontece com o tráfego que chega ali. Todo o resto de uma configuração de tráfego local existe para ser referenciado por um virtual server.
+
+## O ouvinte
+
+O campo `destination` define o endereço e a porta em que o virtual server responde, por exemplo `10.0.0.80:443`. A `mask` decide se este é um ouvinte de host único ou de uma rede inteira, e `ip-protocol` fixa o protocolo de camada 4, normalmente `tcp`. Juntos, eles determinam quais pacotes o virtual server reivindica. Um virtual que escuta na porta 443 é convencionalmente HTTPS, mas o número da porta sozinho não o torna assim; o que acontece com o TLS depende dos perfis, descritos a seguir.
+
+## A pilha de perfis
+
+O bloco `profiles` é o coração do comportamento de um virtual server. Os perfis são empilhados: um perfil TCP governa o transporte, um perfil HTTP acrescenta a análise de camada 7, e os perfis SSL terminam ou originam o TLS. Um perfil client-SSL significa que o TLS é descriptografado no BIG-IP; sem ele, um virtual com aparência de HTTPS simplesmente repassa os bytes criptografados direto ao backend. Se nenhum perfil estiver anexado, o virtual recai para o padrão FastL4 e se comporta como um encaminhador puro de camada 4, sem consciência de HTTP ou TLS. Ler a lista de perfis é, portanto, a forma mais rápida de saber se um virtual é um repasse L4 ou um proxy L7 completo.
+
+## Persistência e o pool
+
+Depois que o tráfego é analisado, o virtual decide para onde enviá-lo. Um perfil `persist` mantém um determinado cliente fixado ao mesmo membro do pool entre conexões, o que importa para aplicações com estado. O campo `pool` nomeia o pool padrão de membros de backend. O modo de balanceamento e o monitor de saúde do próprio pool então escolhem um membro específico e saudável para receber a conexão; essa seleção é abordada em [o artigo sobre monitores de saúde](/learn/ltm-health-monitors). Um virtual server sem pool não está necessariamente quebrado: o tráfego pode ser direcionado inteiramente por uma iRule, por uma policy de tráfego local ou por uma configuração de encaminhamento.
+
+## Tradução de endereço de origem
+
+A última decisão é qual endereço de origem o backend enxerga. O bloco `source-address-translation` controla isso. Com `automap` ou um SNAT pool, o BIG-IP substitui o IP de origem do cliente por um dos seus próprios, de modo que o tráfego de retorno volta naturalmente por ele. Com `type none`, o membro do pool enxerga o IP real do cliente, o que às vezes é exigido para registro ou geolocalização, mas força a rota padrão do membro, ou uma rota específica, a apontar de volta para o BIG-IP. Errar nisso é uma causa clássica de roteamento assimétrico, em que as requisições chegam mas as respostas nunca retornam.
+
+## Lendo como um caminho
+
+Em conjunto, um virtual server descreve um caminho: um cliente alcança o `destination`, a pilha de perfis analisa e possivelmente descriptografa a conexão, a persistência e o pool selecionam um membro, e a tradução de origem reescreve a origem de saída. O [explicador de configuração tmsh](/tools/tmsh-config-explainer) dispõe esses campos e destaca os que têm mais chance de surpreender, como uma porta HTTPS sem perfil client-SSL ou uma configuração de SNAT igual a none. Para a gramática em que esses objetos são escritos, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).

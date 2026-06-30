@@ -1,11 +1,10 @@
 // ============================================================================
 // src/lib/tools/cipher/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING CIPHER-SUITE MODULE - a netcore {manifest, run, vectors}
-// triple, mirroring the jwt / x509 / cidr reference modules so it can be
-// promoted into @ronutz/netcore unchanged (copy the folder into
-// netcore/src/tools/cipher, add it to the package exports + registry, cut a
-// minor bump). Until then it lives here and powers the cipher-suite tool UI.
+// THE SELF-DESCRIBING CIPHER-SUITE MODULE - a self-contained {manifest, run, vectors}
+// triple, mirroring the jwt / x509 / cidr reference modules, written so the
+// whole folder could be lifted into an open library unchanged if the project
+// is ever opened. For now it lives here and powers the cipher-suite tool UI.
 //
 // The manifest is a real D-49 manifest: https-only sources, anchored (ReDoS-safe)
 // inputDetectors[] that would let an omnibox route a pasted "TLS_..." name or a
@@ -42,6 +41,23 @@ export {
   verifyVectors,
 } from "./golden-vectors";
 export { CIPHER_SUITES, type CipherSuiteRecord } from "./registry-data";
+// Named groups (TLS supported_groups): classical ECDHE/FFDHE + the PQ hybrids.
+export {
+  NAMED_GROUPS,
+  NAMED_GROUPS_SNAPSHOT,
+  decodeNamedGroup,
+  formatCodepoint,
+  isGreaseGroup,
+  NAMED_GROUP_VECTORS,
+  verifyNamedGroupVectors,
+} from "./named-groups";
+export type {
+  NamedGroupRecord,
+  NamedGroupKind,
+  PqStatus,
+  NamedGroupLookup,
+  NamedGroupVector,
+} from "./named-groups";
 
 /** The D-49 declarative manifest for the cipher-suite tool. */
 export const manifest = Object.freeze({
@@ -141,6 +157,42 @@ export const manifest = Object.freeze({
       status: "active",
     },
     {
+      id: "iana-tls-supported-groups",
+      label: "IANA TLS Supported Groups registry",
+      type: "registry",
+      url: "https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8",
+      access_date: "2026-06-30",
+      scope: "authoritative code point ↔ name mapping for named groups, including the ML-KEM hybrids and the obsolete pre-standard groups",
+      status: "active",
+    },
+    {
+      id: "draft-ietf-tls-ecdhe-mlkem",
+      label: "draft-ietf-tls-ecdhe-mlkem - Post-quantum hybrid ECDHE-MLKEM Key Agreement for TLS 1.3",
+      type: "draft",
+      url: "https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-mlkem",
+      access_date: "2026-06-30",
+      scope: "defines X25519MLKEM768, SecP256r1MLKEM768, SecP384r1MLKEM1024; their code points, share sizes, and Recommended flags",
+      status: "active",
+    },
+    {
+      id: "rfc7919",
+      label: "RFC 7919 - Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for TLS",
+      type: "rfc",
+      url: "https://www.rfc-editor.org/rfc/rfc7919",
+      access_date: "2026-06-30",
+      scope: "the ffdhe2048..ffdhe8192 named groups and their code points",
+      status: "active",
+    },
+    {
+      id: "nist-fips-203",
+      label: "NIST FIPS 203 - Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM)",
+      type: "standard",
+      url: "https://csrc.nist.gov/pubs/fips/203/final",
+      access_date: "2026-06-30",
+      scope: "the ML-KEM standard (2024) that the hybrid groups embed; basis for the post-quantum status",
+      status: "active",
+    },
+    {
       id: "ciphersuite-info",
       label: "ciphersuite.info - cipher suite catalogue",
       type: "dataset",
@@ -153,7 +205,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

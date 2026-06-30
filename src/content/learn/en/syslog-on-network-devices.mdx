@@ -1,0 +1,37 @@
+---
+slug: syslog-on-network-devices
+title: "Syslog on Network Devices: Which Facility Does What"
+summary: "Firewalls, load balancers, and switches almost all log to the local facilities, but each vendor picks a different default. Knowing that FortiGate defaults to local7, Cisco ASA to local4, and F5 BIG-IP to local0 turns a wall of PRI numbers into a map of which box said what."
+concepts: ["syslog", "fortigate", "f5", "cisco", "facility", "network devices"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-pri-facility-severity", "syslog-facilities-and-severities"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+The local facilities (`local0` through `local7`, facilities 16 to 23) exist precisely so that appliances can log without stepping on the system facilities. The catch is that every vendor chose a different default, so the same facility number means a different box depending on whose gear sent it. When you are staring at a mixed syslog feed, those defaults are the key to telling sources apart.
+
+## The common defaults
+
+A few defaults are worth committing to memory:
+
+- **FortiGate** defaults to `local7` (facility 23). FortiOS also lets you choose the format, including RFC 5424, in its syslog settings.
+- **Cisco ASA** firewalls default to `local4` (facility 20).
+- **Cisco switches and routers** are very commonly configured for `local7` (facility 23).
+- **F5 BIG-IP** logs its LTM traffic to `local0` (facility 16) by default.
+
+These are conventions and starting points, not laws: every one of these devices lets you change the facility, and in a well-run estate you often do, precisely so that each platform lands on a distinct facility and can be routed separately at the collector.
+
+## Putting it to work
+
+This is where decoding a PRI pays off operationally. Suppose a central collector shows a burst of `<189>` messages. Decode it: 189 divided by 8 is 23 with a remainder of 5, so that is `local7` at severity 5 (notice). On a network where FortiGate owns `local7`, that immediately narrows the source to a FortiGate, at a routine notice level. Change the facility assignment per platform and the PRI alone tells you both the device class and the urgency before you have read a single word of the message body.
+
+## Severity thresholds in practice
+
+The same logic applies to severity. Most appliances let you set a logging threshold, and production devices commonly sit at notice (5) or informational (6); dropping to warning (4) or error (3) cuts volume when a device is noisy, while debug (7) is reserved for active troubleshooting because of the flood it produces. Pairing a facility filter with a severity threshold, for example local7 at severity 3 or worse, is a precise way to surface only the events that matter from a specific class of device.
+
+## Decode it yourself
+
+The [syslog PRI decoder](/tools/syslog-pri-decoder) turns any PRI into its facility and severity instantly, and notes the common device defaults next to the local facilities. For the underlying arithmetic, see [the syslog PRI](/learn/syslog-pri-facility-severity); for the full list of what every facility and severity means, see [syslog facilities and severities](/learn/syslog-facilities-and-severities).

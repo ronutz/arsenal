@@ -1,0 +1,36 @@
+---
+slug: f5-clientssl-vs-serverssl
+title: "Client SSL vs Server SSL Profiles on BIG-IP"
+summary: "A BIG-IP can sit in the middle of a TLS connection and decrypt it. A client-ssl profile makes the BIG-IP the TLS server to the client; a server-ssl profile makes it the TLS client to the pool. Knowing which side each profile owns is the key to offload, bridging, and re-encryption designs."
+concepts: ["f5", "client-ssl", "server-ssl", "tls termination", "ssl bridging", "offload"]
+relatedTools: ["f5-ssl-profile-explainer"]
+relatedArticles: ["f5-ssl-profile-protocol-options", "f5-ssl-cert-key-chain"]
+category: transport
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+A BIG-IP virtual server can do something a plain router cannot: terminate a TLS connection, look inside the cleartext, and open a fresh TLS connection to the backend. Two different profile types govern the two halves of that picture, and they play opposite roles.
+
+## Client SSL: the BIG-IP is the server
+
+A `client-ssl` profile faces the **client**. With it attached, the BIG-IP acts as the TLS *server*: it presents a certificate, completes the handshake the browser started, and decrypts the client's traffic. This is the profile that holds your public-facing certificate and private key. Everything the client sees about your site's TLS — the certificate, the negotiated version, the cipher — comes from here.
+
+## Server SSL: the BIG-IP is the client
+
+A `server-ssl` profile faces the **pool member**. With it attached, the BIG-IP acts as the TLS *client* toward the backend: it opens a new TLS connection to the server and, if configured, validates the server's certificate against a trusted CA. The backend sees the BIG-IP as just another TLS client.
+
+## Three common shapes
+
+These two profiles combine into the patterns you will actually deploy:
+
+- **SSL offload** — a `client-ssl` profile only. The BIG-IP terminates client TLS and talks **cleartext** to the pool. Simplest and fastest, but the server leg is unencrypted, so it is only safe on a trusted internal segment.
+- **SSL bridging (re-encryption)** — **both** a `client-ssl` and a `server-ssl` profile. The BIG-IP decrypts from the client, can inspect or modify the traffic, then re-encrypts to the pool. This is what you need when policy or compliance requires encryption end to end while still allowing layer 7 processing.
+- **SSL pass-through** — **neither** profile. The BIG-IP forwards the encrypted bytes untouched. No certificate, no inspection, no layer 7 features.
+
+## Why the distinction matters
+
+A surprising number of TLS tickets come down to attaching the wrong profile to the wrong side, or expecting the backend to be validated when only a `client-ssl` profile is present. Validation of the *backend* server certificate is a `server-ssl` concern (`peer-cert-mode` plus `ca-file`); validation of a *client* certificate is a `client-ssl` concern. When you read a profile, the first question to settle is always: which side does this one own?
+
+Paste either profile into the SSL profile explainer and it will tell you its role, the protocol versions it permits, and what each setting does.

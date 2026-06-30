@@ -1,0 +1,42 @@
+---
+slug: saml-signatures
+title: "SAML Signatures and XML-DSig"
+summary: "How a SAML message is signed with XML Signature: the enveloped ds:Signature, the SignatureMethod and DigestMethod algorithms, why SHA-1 is weak, the difference between signing the Response and signing the Assertion, and how XML signature wrapping attacks work."
+concepts: ["xml signature", "xml-dsig", "signaturemethod", "digestmethod", "sha-1", "signature wrapping", "canonicalization"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-assertions-and-conditions", "xxe-and-xml-security"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Why the signature is everything
+
+A SAML assertion is a claim that a user is who it says. The only thing that makes that claim trustworthy is the digital signature: it proves the assertion came from the expected IdP and was not altered in transit. Strip the signature, or fail to verify it, and an assertion is just a piece of XML anyone could have written. This is why an unsigned SAML message is a serious finding, and why a decoder reports the signing posture prominently even though it does not perform verification itself.
+
+## The shape of an XML signature
+
+SAML uses XML Signature (XML-DSig). The signature appears as a `ds:Signature` element placed inside the element it protects, which is called an enveloped signature. Three algorithm declarations inside it describe how the signature was produced, and a decoder reads each.
+
+The CanonicalizationMethod names how the XML was normalized before hashing. XML that means the same thing can be written different ways, with different whitespace, attribute order, or namespace declarations, so both signer and verifier must canonicalize to a single byte form first or the hashes would never match. Exclusive Canonicalization is the usual choice for SAML.
+
+The DigestMethod names the hash applied to the canonicalized content, producing the value that is actually signed. The SignatureMethod names the algorithm that signs that digest with the IdP's private key, for example RSA with SHA-256. The verifier recomputes the digest and checks the signature against the IdP's public certificate from metadata.
+
+## Weak algorithms
+
+The algorithms are not all equally safe, and the decoder flags the weak ones. SHA-1, as both a digest and inside RSA-SHA1 signatures, is broken: practical collisions exist, and it should not be used to sign anything you rely on. MD5 is worse and long dead. The modern baseline is SHA-256 or stronger for the digest, and RSA-SHA256, an ECDSA variant over SHA-256, or RSA-PSS for the signature. Seeing RSA-SHA1 or a SHA-1 digest in a current SAML deployment is a signal to upgrade the federation, which is why those carry a weak marker.
+
+## Sign the Response, the Assertion, or both
+
+A signature can sit at two levels, and which is signed has real consequences. The Response can be signed as a whole, the individual Assertion can be signed, or both. What matters is that the part the SP actually trusts, the assertion, falls under a signature the SP verifies. If only the Response is signed but the SP extracts and trusts the assertion, or the reverse, there is room for confusion. The safest deployments sign the assertion, and many sign both. A decoder shows you where each signature sits so you can confirm the trusted content is covered.
+
+## Signature wrapping
+
+The most important attack class against XML signatures is XML Signature Wrapping (XSW). The idea is to keep a validly signed element in the document so signature verification still passes, while moving or duplicating content so that the part the application reads is a different, attacker-controlled element. The signature check succeeds on the original, but the business logic processes the forgery.
+
+This is why multiple assertions in one response deserve a second look, and why the decoder flags that case: an attacker performing wrapping often injects a second assertion alongside the legitimate signed one, betting the SP will validate one and consume the other. Robust SP libraries defend against this by verifying that the signature covers exactly the element being used, resolving references strictly, and rejecting documents with unexpected structure. Decoding the message lets you see how many assertions are present and where the signatures point, which is the visibility you need to reason about wrapping.
+
+## The decoder's boundary
+
+This decoder reports whether each part is signed and with which algorithms, and flags weak algorithms and structural smells like multiple assertions. It deliberately does not verify the signature. Verification requires the IdP's certificate, faithful canonicalization, and strict reference resolution, and getting any of that subtly wrong produces a tool that says valid when it is not, which is worse than no tool. Verification belongs in the SP, against a real trusted key. Decoding is for understanding; verifying is for trusting.

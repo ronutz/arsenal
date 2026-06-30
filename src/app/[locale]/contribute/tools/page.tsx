@@ -1,16 +1,21 @@
 // ============================================================================
 // src/app/[locale]/contribute/tools/page.tsx
 // ----------------------------------------------------------------------------
-// CONTRIBUTE A TOOL PAGE.
+// SHARE AN IDEA PAGE.
 //
-// Where someone with a tool that fits the toolbox can propose it. It explains
-// the real engine model (a {manifest, run, vectors} triple), the principles a
-// tool must hold to (deterministic, local, golden-vector-checked, sourced,
-// permissively licensed), and routes proposals through the existing email
-// channel (ObfuscatedEmail + the contact config), the same way the translations
-// contribute page does. Reuses the contribute-* styles since it is the same
-// visual family. Statically generated; English-first (the 'contributeTools'
-// namespace lives only in en.json, so every locale falls back to it).
+// The open channel for any input that could improve the toolbox: bug reports,
+// feature requests for existing tools, ideas for new tools, or a different
+// angle on a problem (a clearer explanation, an edge case, a better source).
+// It keeps one section of guidance for the specific case of proposing a new
+// tool — the {manifest, run, vectors} module shape and the principles a tool
+// must hold to (deterministic, local, golden-vector-checked, sourced) - and a
+// plain "fits / doesn't fit" test up front so off-topic ideas self-filter. It
+// routes everything through the existing email channel (ObfuscatedEmail + the
+// contact config), the same way the translations contribute page does. Reuses
+// the contribute-* styles since it is the same visual family. Statically
+// generated. The 'contributeIdeas' namespace is fully localized across all live
+// locales; per the propagation rule, any wording change here must be mirrored
+// into every locale pack in the same commit.
 // ============================================================================
 
 import type { Metadata } from "next";
@@ -26,7 +31,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "contributeTools" });
+  const t = await getTranslations({ locale, namespace: "contributeIdeas" });
   return { title: t("title") };
 }
 
@@ -38,7 +43,7 @@ export default async function ContributeToolsPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("contributeTools");
+  const t = await getTranslations("contributeIdeas");
   const tNav = await getTranslations("nav");
 
   // Split the address so ObfuscatedEmail assembles it at runtime (anti-harvest).
@@ -59,18 +64,37 @@ export default async function ContributeToolsPage({
             <p className="contribute-lede">{t("lede")}</p>
 
             <div className="contribute-block">
-              <h2 className="contribute-h2">{t("shapeTitle")}</h2>
-              <p className="contribute-body">{t("shapeBody")}</p>
+              <h2 className="contribute-h2">{t("sendTitle")}</h2>
+              <p className="contribute-body">{t("sendBody")}</p>
             </div>
 
             <div className="contribute-block">
-              <h2 className="contribute-h2">{t("principlesTitle")}</h2>
-              <p className="contribute-body">{t("principlesBody")}</p>
+              <h2 className="contribute-h2">{t("toolTitle")}</h2>
+              <p className="contribute-body">{t("fitRule")}</p>
+              {/* Plain, scannable yes/no so even a distracted or non-technical
+                  reader can tell at a glance whether their idea belongs here -
+                  the point is to prevent off-topic tool proposals. */}
+              <div className="contribute-fit">
+                <div className="contribute-fit-row contribute-fit-row--yes">
+                  <span className="contribute-fit-mark" aria-hidden="true">✓</span>
+                  <p className="contribute-fit-text">
+                    <span className="contribute-fit-label">{t("fitYes")}</span> {t("fitYesBody")}
+                  </p>
+                </div>
+                <div className="contribute-fit-row contribute-fit-row--no">
+                  <span className="contribute-fit-mark" aria-hidden="true">✗</span>
+                  <p className="contribute-fit-text">
+                    <span className="contribute-fit-label">{t("fitNo")}</span> {t("fitNoBody")}
+                  </p>
+                </div>
+              </div>
+              <p className="contribute-body">{t("fitUnsure")}</p>
+              <p className="contribute-body">{t("toolBody")}</p>
             </div>
 
             <div className="contribute-block">
-              <h2 className="contribute-h2">{t("proposeTitle")}</h2>
-              <p className="contribute-body">{t("proposeBody")}</p>
+              <h2 className="contribute-h2">{t("emailTitle")}</h2>
+              <p className="contribute-body">{t("emailBody")}</p>
               <div className="contribute-email">
                 <ObfuscatedEmail
                   label={t("emailLabel")}

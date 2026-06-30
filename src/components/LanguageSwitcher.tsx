@@ -14,9 +14,16 @@
 //   - COMMAND-PALETTE pattern: a trigger showing the current language + its
 //     BCP-47 code (mono), opening a panel with type-to-filter. This reads as a
 //     practitioner tool, not a consumer widget — matching the site's authority.
-//   - LIVE LANGUAGES ONLY: the panel lists only locales with real translations.
-//     Stubs stay registered for routing and English fallback but are never
-//     advertised here — we claim only what is actually translated.
+//   - ALL LANGUAGES, HONESTLY STATUSED: the panel lists every registered locale
+//     and marks each with a colored status dot. Languages with no pack yet are
+//     shown with a RED dot (they fall back to English) rather than hidden — the
+//     full roadmap is visible, and the dot makes the "shown in English for now"
+//     promise explicit instead of silently dropping the language.
+//   - ORDER (modern-picker best practice, PRIME spec): English first, pt-BR
+//     second (the source + reviewed languages, pinned), then the remaining
+//     locales banded by translation status (reviewed -> machine -> stub) and,
+//     inside each band, western (Latin) scripts before other scripts, alphabetical
+//     by English name. See ORDERED_LOCALES below.
 //   - Fully keyboard-navigable (arrow keys, Enter, Escape) and Obsidian-themed.
 //
 // SECURITY: renders only registry data (endonyms/codes are static, trusted
@@ -28,10 +35,56 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { LOCALES, LIVE_LOCALES, getLocale, type LocaleMeta } from "@/i18n/locales";
+import { LOCALES, getLocale, isWesternScript, type LocaleMeta } from "@/i18n/locales";
+import { LOCALE_COVERAGE } from "@/i18n/locale-coverage";
+
+// A locale's display status for the switcher cue:
+//   "reviewed" — written and reviewed by a person (English, pt-BR) -> green
+//   "complete" — machine-translated and covering the whole site   -> amber
+//   "partial"  — machine-translated, newer content still catching up -> yellow
+//   "stub"     — no pack yet, so the page falls back to English     -> red
+// Completeness (amber vs yellow) comes from the build-time coverage map. The
+// 0.98 floor tolerates a tool or two briefly in flight (the D-56 "EN + pt-BR
+// first" cadence) before a locale is flagged "in progress", rather than flipping
+// on a single missing key.
+const COMPLETE_THRESHOLD = 0.98;
+type StatusTier = "reviewed" | "complete" | "partial" | "stub";
+function statusTier(l: LocaleMeta): StatusTier {
+  if (l.status === "stub") return "stub";
+  if (l.status === "reviewed") return "reviewed";
+  const cov = LOCALE_COVERAGE[l.code] ?? 0;
+  return cov >= COMPLETE_THRESHOLD ? "complete" : "partial";
+}
+
+// -----------------------------------------------------------------------------
+// SWITCHER ORDER (PRIME spec, computed once at module load since the registry is
+// static). English is pinned first and pt-BR second; everything else is banded
+// by translation status, then by script (western/Latin before other), then
+// alphabetically by English name. statusBand returns the band index; the two
+// pinned languages get negative sentinels so they always lead.
+// -----------------------------------------------------------------------------
+function statusBand(l: LocaleMeta): number {
+  if (l.code === "en") return -2;       // always first
+  if (l.code === "pt-BR") return -1;    // always second
+  if (l.status === "reviewed") return 0; // any other human-reviewed locale (green)
+  if (l.status === "stub") return 2;     // no pack yet (red)
+  return 1;                              // machine-draft: amber + yellow, one band
+}
+
+const ORDERED_LOCALES: readonly LocaleMeta[] = [...LOCALES].sort((a, b) => {
+  const band = statusBand(a) - statusBand(b);
+  if (band !== 0) return band;
+  // western (Latin) scripts before other scripts, inside a status band
+  const wa = isWesternScript(a.code) ? 0 : 1;
+  const wb = isWesternScript(b.code) ? 0 : 1;
+  if (wa !== wb) return wa - wb;
+  // alphabetical by English name within (band, script)
+  return a.englishName.localeCompare(b.englishName, "en");
+});
 
 export default function LanguageSwitcher() {
   const t = useTranslations("languageSwitcher");
+  const tStatus = useTranslations("languageStatus");
   const activeLocale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -47,12 +100,13 @@ export default function LanguageSwitcher() {
 
   // Filter languages by query — matches against BOTH the native name and the
   // English name and the code, so a user can find their language however they
-  // think of it (type "japan", "日本", or "ja" — all find Japanese). Only LIVE
-  // locales are listed; stubs are never offered, so we only claim what we have.
+  // think of it (type "japan", "日本", or "ja" — all find Japanese). The base
+  // list is ORDERED_LOCALES (every registered locale, in the banded order);
+  // filtering only narrows it and preserves that order.
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return LIVE_LOCALES;
-    return LIVE_LOCALES.filter(
+    if (!q) return ORDERED_LOCALES;
+    return ORDERED_LOCALES.filter(
       (l) =>
         l.nativeName.toLowerCase().includes(q) ||
         l.englishName.toLowerCase().includes(q) ||
@@ -142,6 +196,7 @@ export default function LanguageSwitcher() {
           <circle cx="12" cy="12" r="9" />
           <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
         </svg>
+        <span className={`ls-status ls-status--${statusTier(active)}`} title={tStatus(statusTier(active))} />
         <span className="ls-trigger-name">{active.nativeName}</span>
         <span className="ls-trigger-code mono">{active.code}</span>
       </button>
@@ -172,11 +227,13 @@ export default function LanguageSwitcher() {
                     className={
                       "ls-item" +
                       (isHighlighted ? " ls-item--highlighted" : "") +
-                      (isActive ? " ls-item--active" : "")
+                      (isActive ? " ls-item--active" : "") +
+                      (statusTier(l) === "stub" ? " ls-item--stub" : "")
                     }
                     onClick={() => selectLocale(l.code)}
                     onMouseEnter={() => setHighlightedIndex(i)}
                   >
+                    <span className={`ls-status ls-status--${statusTier(l)}`} title={tStatus(statusTier(l))} />
                     <span className="ls-item-native">{l.nativeName}</span>
                     <span className="ls-item-code mono">{l.code}</span>
                     {isActive && (
@@ -199,6 +256,27 @@ export default function LanguageSwitcher() {
             })}
             {filtered.length === 0 && <li className="ls-empty">—</li>}
           </ul>
+          {/* Legend: what the per-language status dots mean. Links to the fuller
+              explanation on the colophon (where the i18n stack is described). */}
+          <div className="ls-legend">
+            <span className="ls-legend-title">{tStatus("title")}</span>
+            <span className="ls-legend-row">
+              <span className="ls-status ls-status--reviewed" />
+              {tStatus("reviewed")}
+            </span>
+            <span className="ls-legend-row">
+              <span className="ls-status ls-status--complete" />
+              {tStatus("complete")}
+            </span>
+            <span className="ls-legend-row">
+              <span className="ls-status ls-status--partial" />
+              {tStatus("partial")}
+            </span>
+            <span className="ls-legend-row">
+              <span className="ls-status ls-status--stub" />
+              {tStatus("stub")}
+            </span>
+          </div>
         </div>
       )}
     </div>

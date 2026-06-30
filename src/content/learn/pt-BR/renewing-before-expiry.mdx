@@ -1,0 +1,36 @@
+---
+slug: renewing-before-expiry
+title: "Renovar antes da expiração: antecedência, ACME e ARI"
+summary: "Por que a renovação tardia causa quedas, como o ACME automatiza a emissão e a renovação, como a extensão ARI permite que uma AC guie a janela de renovação, e como escolher uma antecedência que deixe espaço para tentar de novo."
+concepts: ["renewal", "acme", "ari", "rfc8555", "rfc9773", "automation", "lead-time"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["tls-certificate-lifetimes", "dcv-and-sii-reuse", "certificate-validity-windows", "certificate-revocation"]
+category: pki
+order: 11
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## A assimetria de renovar tarde
+
+Renovar um certificado cedo não custa quase nada; renová-lo tarde arrisca uma queda que derruba um site, uma API ou um servidor de e-mail até alguém perceber. Essa assimetria deveria governar toda decisão de renovação. Uma renovação pode falhar por motivos comuns, um soluço de DNS, um limite de taxa, uma chave de conta expirada, e recuperar-se de uma falha precisa de tempo antes que o certificado atual morra. O propósito inteiro de uma antecedência é colocar essa folga de forma deliberada, em vez de descobrir que você não tem nenhuma. O planejador informa uma data concreta para renovar justamente para que a folga seja uma data no calendário, e não uma esperança.
+
+## ACME, a espinha dorsal da automação
+
+O Automatic Certificate Management Environment, definido na RFC 8555, é o protocolo que torna possível a renovação sem supervisão; é o que o Let's Encrypt e a maioria das ACs modernas falam. Um cliente busca o diretório da AC, mantém uma chave de conta, faz um pedido para os nomes que deseja, e recebe autorizações a cumprir. Ele prova o controle por meio de um desafio, HTTP-01 (servir um token em uma URL conhecida), DNS-01 (publicar um token como um registro TXT), ou TLS-ALPN-01 (responder em um handshake TLS especial), e então finaliza o pedido com um CSR e baixa o certificado. Como cada etapa é conduzida por máquina, o mesmo fluxo pode rodar em um agendamento sem nenhum humano no circuito, que é a única forma de as cadências do [artigo sobre tempos de vida](/learn/tls-certificate-lifetimes) se tornarem gerenciáveis.
+
+## ARI: deixar a AC guiar a janela
+
+Um companheiro mais novo, o ACME Renewal Information (RFC 9773), fecha uma lacuna importante. Com o ARI, a AC publica uma janela de renovação sugerida para cada certificado, e o cliente a consulta e renova quando aconselhado, em vez de seguir um cronômetro local fixo. Isso faz duas coisas úteis. Permite que a AC distribua a carga de renovação ao longo do tempo, em vez de fazer todos os clientes renovarem no mesmo momento nominal, e, de forma crítica, permite que a AC sinalize uma renovação *antecipada* quando um certificado precisa ser substituído fora do cronograma, por exemplo durante uma reemissão em massa ou um evento de revogação iminente. Em um mundo de certificados muito curtos e incidentes ocasionais que atingem toda uma AC, o ARI transforma "renove no cronômetro" em "renove quando o emissor disser que é hora".
+
+## Quanta antecedência deixar
+
+Uma regra prática durável é renovar quando resta cerca de um terço do tempo de vida, ou mais ou menos 30 dias antes, o que vier primeiro, a convenção que ferramentas como o certbot seguem. O planejador aplica a mesma ideia, recomendando uma antecedência de cerca de um terço da validade limitada a 30 dias, e informando a data de renovação resultante e a que distância ela está do relógio do seu dispositivo. Certificados mais curtos simplesmente oferecem menos espaço: um certificado de 47 dias dá apenas cerca de 16 dias de antecedência, que é mais um motivo para suas renovações serem automatizadas e monitoradas, em vez de tratadas à mão.
+
+## A dianteira do Let's Encrypt
+
+O Let's Encrypt anunciou certificados de 45 dias até fevereiro de 2028, um ano antes de a obrigatoriedade dos 47 dias do CA/Browser Forum entrar em vigor. Para equipes que já usam ACME, essa mudança antecipada é um ensaio gratuito: ela revela automação frágil, suposições sobre limites de taxa e lacunas de monitoramento enquanto ainda há folga no prazo mais amplo. Trate qualquer migração para certificados mais curtos como uma chance de provar o pipeline de ponta a ponta antes que ela se torne obrigatória.
+
+## O que o planejador oferece
+
+O planejador transforma as duas datas de um certificado em um alvo de renovação e em um número de renovações por ano, para que você dimensione a automação de que vai precisar antes que os limites apertem. Certificados de vida curta também são a resposta preferida da indústria às fraquezas da revogação; o [artigo sobre revogação](/learn/certificate-revocation) explica por que um certificado que vive apenas semanas mal precisa ser revogado.

@@ -160,6 +160,52 @@ export default function HmacTool() {
           </section>
         </div>
       )}
+
+      {/* HMAC construction (always shown; educational; theme-aware SVG). The
+          two-pass nested hash: the key is XORed with a fixed inner pad (ipad)
+          around the message, hashed, then XORed with an outer pad (opad) around
+          that result and hashed again. Notation (K ⊕ ipad, ∥, H, HMAC) is kept
+          verbatim, language-neutral; the word labels and note are localized. */}
+      <section className="jwt-panel hmac-build-panel">
+        <h4 className="jwt-panel-title">{t("struct.heading")}</h4>
+        <svg
+          className="hmac-build-svg"
+          viewBox="0 0 680 216"
+          role="img"
+          aria-label={t("struct.heading")}
+        >
+          {/* Band 1 — inner inputs: (K ⊕ ipad) ∥ message */}
+          <rect x={160} y={18} width={170} height={32} rx={6} fill="var(--accent-primary)" fillOpacity={0.12} stroke="var(--accent-primary)" strokeWidth={1.5} />
+          <text x={245} y={39} textAnchor="middle" className="hmac-build-label">K ⊕ ipad</text>
+          <text x={340} y={42} textAnchor="middle" className="hmac-build-concat">∥</text>
+          <rect x={350} y={18} width={170} height={32} rx={6} fill="var(--accent-amber)" fillOpacity={0.12} stroke="var(--accent-amber)" strokeWidth={1.5} />
+          <text x={435} y={39} textAnchor="middle" className="hmac-build-label">{t("messageLabel")}</text>
+          {/* Arrow 1 → first hash */}
+          <line x1={340} y1={52} x2={340} y2={64} stroke="var(--border-strong)" strokeWidth={1.5} />
+          <path d="M336 63 L340 69 L344 63 Z" fill="var(--border-strong)" />
+          <text x={350} y={65} className="hmac-build-hlabel">H</text>
+          {/* Band 2 — inner hash */}
+          <rect x={255} y={70} width={170} height={32} rx={6} fill="var(--surface-base)" stroke="var(--border-subtle)" strokeWidth={1} />
+          <text x={340} y={91} textAnchor="middle" className="hmac-build-label">{t("struct.innerHash")}</text>
+          {/* Arrow 2 → outer inputs */}
+          <line x1={340} y1={104} x2={340} y2={116} stroke="var(--border-strong)" strokeWidth={1.5} />
+          <path d="M336 115 L340 121 L344 115 Z" fill="var(--border-strong)" />
+          {/* Band 3 — outer inputs: (K ⊕ opad) ∥ inner hash */}
+          <rect x={160} y={122} width={170} height={32} rx={6} fill="var(--accent-primary)" fillOpacity={0.12} stroke="var(--accent-primary)" strokeWidth={1.5} />
+          <text x={245} y={143} textAnchor="middle" className="hmac-build-label">K ⊕ opad</text>
+          <text x={340} y={146} textAnchor="middle" className="hmac-build-concat">∥</text>
+          <rect x={350} y={122} width={170} height={32} rx={6} fill="var(--surface-base)" stroke="var(--border-subtle)" strokeWidth={1} />
+          <text x={435} y={143} textAnchor="middle" className="hmac-build-label">{t("struct.innerHash")}</text>
+          {/* Arrow 3 → second hash */}
+          <line x1={340} y1={156} x2={340} y2={168} stroke="var(--border-strong)" strokeWidth={1.5} />
+          <path d="M336 167 L340 173 L344 167 Z" fill="var(--border-strong)" />
+          <text x={350} y={169} className="hmac-build-hlabel">H</text>
+          {/* Band 4 — HMAC output */}
+          <rect x={255} y={174} width={170} height={32} rx={6} fill="var(--accent-green)" fillOpacity={0.12} stroke="var(--accent-green)" strokeWidth={1.5} />
+          <text x={340} y={195} textAnchor="middle" className="hmac-build-label">HMAC</text>
+        </svg>
+        <p className="hmac-build-note">{t("struct.note")}</p>
+      </section>
     </div>
   );
 }

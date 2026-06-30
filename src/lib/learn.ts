@@ -141,6 +141,7 @@ export const LEARN_CATEGORY_ORDER = [
   "pki",
   "transport",
   "networking",
+  "security",
 ] as const;
 
 /** A category group: its KEY (label resolved in the page) plus its articles. */

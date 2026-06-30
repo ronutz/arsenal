@@ -1,0 +1,30 @@
+---
+slug: bigip-cookie-encryption
+title: "Closing the Leak: BIG-IP Cookie Encryption"
+summary: "How to stop a BIG-IP persistence cookie from disclosing internal addresses by encrypting it, what the encrypted value looks like, the related cookie hashing and naming options, and the trade-offs of each."
+concepts: ["cookie encryption", "bigip", "persistence cookie", "mitigation", "aes", "f5 ltm"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-disclosure"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+## The fix is a setting, not a redesign
+
+The information disclosure in a default persistence cookie is closed by encrypting the cookie, which is a property of the cookie persistence profile on the BIG-IP. F5 documents this in article K7784. When encryption is enabled, the BIG-IP encrypts the encoded address and port with AES before writing the cookie, and decrypts it on the way back in. The client still gets a working persistence cookie; it just can no longer read what is inside.
+
+You do not change how persistence works or how clients behave. The same client still returns the same cookie and still lands on the same pool member. The only difference is that the value is now ciphertext.
+
+## What the encrypted cookie looks like
+
+An encrypted persistence cookie begins with an exclamation mark and is roughly eighty characters of base64, ending in the `=` padding, for example `!VPyexJn...HwA=`. There is nothing to decode without the BIG-IP's key, which is the point. A decoder, including the one on this page, can recognize the form and confirm that it is encrypted, but it cannot and should not be able to recover the address. If you decode your cookies and see this shape, the leak is already closed.
+
+## Related options
+
+Encryption addresses the value. Two related settings address the name. Cookie hashing replaces the readable encoding with a hash, which obscures the value differently, though encryption is the stronger and more common choice. The cookie name itself, `BIGipServer` followed by the pool name, can also disclose your pool naming convention; BIG-IP can be configured to use a less revealing cookie name if that naming is sensitive. These are smaller concerns than the address disclosure, but they are part of the same hardening conversation.
+
+## The trade-off
+
+Encryption costs a small amount of processing per request to encrypt and decrypt the cookie, which is negligible on modern hardware against the value of not publishing your internal addressing. There is a key to manage, set on the profile, and as with any key it should be chosen well and rotated according to your policy. For nearly every deployment the calculation is straightforward: enable cookie encryption on persistence profiles that face untrusted clients, and reserve the unencrypted form for cases where the encoded address is genuinely not sensitive. When in doubt, decode one of your own cookies first and look at what it reveals.

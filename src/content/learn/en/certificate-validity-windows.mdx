@@ -1,0 +1,36 @@
+---
+slug: certificate-validity-windows
+title: "Certificate validity windows: notBefore, notAfter, and renewal lead time"
+summary: "How a certificate's lifetime is defined by two timestamps, how that length is measured against the cap, why validity is not the same as time remaining, and how to choose a renewal lead time."
+concepts: ["x509", "validity", "notbefore", "notafter", "rfc5280", "renewal", "clock-skew"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["tls-certificate-lifetimes", "certificate-validation", "x509-anatomy", "renewing-before-expiry"]
+category: pki
+order: 9
+status: reviewed
+updated: "2026-06-30"
+---
+
+## Two timestamps define the lifetime
+
+Every X.509 certificate carries a validity field with exactly two values: `notBefore` and `notAfter`, defined in RFC 5280. They are absolute instants, expressed in UTC, and together they mark the window during which the certificate is meant to be honoured. A TLS client checks the current time against this window for every certificate in the chain, not just the leaf — a certificate that is expired, or not yet valid, fails validation regardless of how sound everything else is. The planner on this page takes these two dates as its only input, because everything else it tells you is derived from them.
+
+## How a lifetime is measured
+
+The certificate's *validity period* is simply the span from `notBefore` to `notAfter`. The CA/Browser Forum's caps — 398, 200, 100, 47 days — apply to this span, measured by the issuance date as the [lifetimes article](/learn/tls-certificate-lifetimes) describes. The planner computes the span in whole days and compares it against the maximum for the certificate's issuance phase, then tells you whether it is within the cap and, if not, by how many days it overshoots. A public CA will refuse to issue a certificate whose requested validity exceeds the cap, so an over-cap result usually means a misconfigured internal CA or a hand-built test certificate.
+
+## Validity is not "time remaining"
+
+These are two different numbers, and conflating them causes a lot of confusion. The *validity* is fixed the moment the certificate is issued and never changes. The *time remaining* shrinks every day and depends on what "now" is. A 90-day certificate that was issued 80 days ago is still a 90-day certificate, but it has only 10 days left. The planner keeps these strictly separate: the validity length comes from the deterministic core that depends only on the two dates, while the "days until it expires" line is a convenience computed from your own device clock and clearly labelled as such.
+
+## Choosing a renewal lead time
+
+Renewing at the last second is how outages happen: a failed renewal needs slack to retry before the old certificate dies. The common convention, used by tools like certbot, is to renew when about a third of the lifetime remains, or with a fixed buffer of around 30 days, whichever comes first. The planner applies a version of this rule — roughly one third of the validity, capped at 30 days — and reports a concrete "renew by" date so you have a target rather than a vague intention. For a 90-day certificate that is a 30-day lead; for a 47-day certificate it is about 16 days, which is all the slack such a short certificate affords.
+
+## A note on clock skew
+
+CAs frequently set `notBefore` a little in the past — often by an hour or so — so that a certificate is accepted by clients whose clocks run slightly behind. This backdating means the measured window can be marginally longer than the "intended" validity, and it is the reason a brand-new certificate still validates on a device whose clock is a few minutes off. The flip side is that a badly wrong clock breaks validation outright: a device set far in the future will see live certificates as expired, and one set in the past will reject certificates as not-yet-valid. The validity check is only as reliable as the clock it runs against.
+
+## What the planner computes from the dates
+
+From `notBefore` and `notAfter` alone, the planner derives the validity length, the governing phase and cap, compliance, the implied renewal frequency, and the renew-by date — all deterministically. To see the actual `notBefore` and `notAfter` inside a real certificate, paste it into the [X.509 inspector](/tools/x509), which decodes the bytes; this planner then turns those two dates into a renewal plan.

@@ -1,0 +1,28 @@
+---
+slug: url-encoding-and-idn
+title: "URL Encoding and Internationalized Hosts"
+summary: "URLs are restricted to a small set of ASCII characters, so everything else is encoded. Percent-encoding handles paths and queries; punycode handles non-ASCII host names. How both work, and why internationalized hosts are a phishing concern."
+concepts: ["percent-encoding", "punycode", "idn", "homograph", "url", "internationalized domain name", "rfc 3492"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "query-strings", "percent-encoding"]
+category: encoding
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Two encodings for two parts of the URL
+
+A URL may only contain a limited set of ASCII characters, so anything outside that set has to be represented some other way. Two different encodings do this for two different parts of the URL, and it helps to keep them separate. Percent-encoding handles the path, query, and other components below the host. Punycode handles the host name itself. They look nothing alike and solve the problem in different ways.
+
+## Percent-encoding below the host
+
+Percent-encoding replaces a character with a percent sign followed by the two hex digits of each byte. A space becomes `%20`, an at sign becomes `%40`, and a non-ASCII character becomes the percent-encoded form of its UTF-8 bytes, so an accented letter turns into two or three percent groups. The rule of thumb is that the characters with structural meaning in a URL, such as the slash, question mark, ampersand, and hash, must be encoded when they appear inside a value rather than as separators. The full mechanics, including which characters are reserved and which are safe, are covered in [percent-encoding](/learn/percent-encoding). The inspector decodes these escapes in the path and in each query parameter so you can read the real content.
+
+## Punycode for the host
+
+The host name cannot use percent-encoding, because the systems that resolve names, such as DNS, expect ASCII. Internationalized domain names solve this with punycode, defined in RFC 3492. A label with non-ASCII characters is transformed into an ASCII string that starts with the prefix `xn--`, followed by an encoding of the original characters. For example, the host `münchen.de` is represented on the wire as `xn--mnchen-3ya.de`. The transformation is reversible, and the inspector decodes any `xn--` label back to its Unicode form so you can see what the host really says.
+
+## Why internationalized hosts are a security concern
+
+Internationalized hosts introduce a phishing risk called a homograph attack. Many characters in different scripts look almost identical to common Latin letters: a Cyrillic letter can be visually indistinguishable from a Latin one. An attacker can register a name that, when displayed in Unicode, looks exactly like a well-known domain but is actually a different name underneath, encoded with a different `xn--` label. This is why browsers sometimes show the raw punycode instead of the pretty Unicode for suspicious names, and why seeing both forms matters. When the inspector shows a host in punycode alongside its decoded Unicode, a mismatch between what a link appears to say and what it resolves to becomes visible, which is exactly the moment to be careful.

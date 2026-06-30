@@ -1,0 +1,42 @@
+---
+slug: saml-signatures
+title: "Assinaturas SAML e XML-DSig"
+summary: "Como uma mensagem SAML é assinada com XML Signature: o ds:Signature envelopado, os algoritmos SignatureMethod e DigestMethod, por que o SHA-1 é fraco, a diferença entre assinar a Response e assinar a Assertion, e como funcionam os ataques de signature wrapping em XML."
+concepts: ["xml signature", "xml-dsig", "signaturemethod", "digestmethod", "sha-1", "signature wrapping", "canonicalization"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-assertions-and-conditions", "xxe-and-xml-security"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Por que a assinatura é tudo
+
+Uma asserção SAML é uma alegação de que um usuário é quem diz ser. A única coisa que torna essa alegação confiável é a assinatura digital: ela prova que a asserção veio do IdP esperado e não foi alterada em trânsito. Remova a assinatura, ou deixe de verificá-la, e uma asserção é apenas um pedaço de XML que qualquer um poderia ter escrito. É por isso que uma mensagem SAML sem assinatura é um achado sério, e por que um decodificador relata a postura de assinatura com destaque, mesmo sem realizar a verificação ele próprio.
+
+## O formato de uma assinatura XML
+
+O SAML usa XML Signature (XML-DSig). A assinatura aparece como um elemento `ds:Signature` colocado dentro do elemento que protege, o que se chama assinatura envelopada. Três declarações de algoritmo dentro dela descrevem como a assinatura foi produzida, e um decodificador lê cada uma.
+
+O CanonicalizationMethod nomeia como o XML foi normalizado antes do hash. Um XML que significa a mesma coisa pode ser escrito de formas diferentes, com espaços, ordem de atributos ou declarações de namespace diferentes, então tanto quem assina quanto quem verifica deve canonicalizar para uma única forma em bytes primeiro, ou os hashes nunca bateriam. A Canonicalização Exclusiva é a escolha usual no SAML.
+
+O DigestMethod nomeia o hash aplicado ao conteúdo canonicalizado, produzindo o valor que de fato é assinado. O SignatureMethod nomeia o algoritmo que assina esse digest com a chave privada do IdP, por exemplo RSA com SHA-256. Quem verifica recalcula o digest e checa a assinatura contra o certificado público do IdP obtido dos metadados.
+
+## Algoritmos fracos
+
+Os algoritmos não são todos igualmente seguros, e o decodificador sinaliza os fracos. O SHA-1, tanto como digest quanto dentro de assinaturas RSA-SHA1, está quebrado: colisões práticas existem, e ele não deve ser usado para assinar nada em que você confie. O MD5 é pior e morto há muito tempo. A linha de base moderna é SHA-256 ou mais forte para o digest, e RSA-SHA256, uma variante ECDSA sobre SHA-256, ou RSA-PSS para a assinatura. Ver RSA-SHA1 ou um digest SHA-1 em uma implantação SAML atual é um sinal para atualizar a federação, e por isso esses recebem um marcador de fraqueza.
+
+## Assinar a Response, a Assertion ou ambas
+
+Uma assinatura pode ficar em dois níveis, e qual é assinado tem consequências reais. A Response pode ser assinada como um todo, a Assertion individual pode ser assinada, ou ambas. O que importa é que a parte em que o SP de fato confia, a asserção, esteja sob uma assinatura que o SP verifica. Se só a Response é assinada mas o SP extrai e confia na asserção, ou o contrário, há espaço para confusão. As implantações mais seguras assinam a asserção, e muitas assinam ambas. Um decodificador mostra onde cada assinatura fica para você confirmar que o conteúdo confiável está coberto.
+
+## Signature wrapping
+
+A classe de ataque mais importante contra assinaturas XML é o XML Signature Wrapping (XSW). A ideia é manter um elemento validamente assinado no documento para que a verificação da assinatura ainda passe, enquanto se move ou duplica conteúdo de modo que a parte que a aplicação lê seja um elemento diferente, controlado pelo atacante. A verificação da assinatura tem êxito no original, mas a lógica de negócio processa a falsificação.
+
+É por isso que múltiplas asserções em uma resposta merecem um segundo olhar, e por que o decodificador sinaliza esse caso: um atacante que executa wrapping muitas vezes injeta uma segunda asserção ao lado da legítima assinada, apostando que o SP validará uma e consumirá a outra. Bibliotecas de SP robustas se defendem disso verificando que a assinatura cobre exatamente o elemento que está sendo usado, resolvendo referências de forma estrita e rejeitando documentos com estrutura inesperada. Decodificar a mensagem permite ver quantas asserções estão presentes e para onde as assinaturas apontam, que é a visibilidade necessária para raciocinar sobre wrapping.
+
+## O limite do decodificador
+
+Este decodificador relata se cada parte está assinada e com quais algoritmos, e sinaliza algoritmos fracos e sinais estruturais como múltiplas asserções. Ele deliberadamente não verifica a assinatura. A verificação exige o certificado do IdP, canonicalização fiel e resolução estrita de referências, e errar qualquer parte disso de forma sutil produz uma ferramenta que diz válido quando não está, o que é pior do que nenhuma ferramenta. A verificação pertence ao SP, contra uma chave confiável real. Decodificar é para entender; verificar é para confiar.

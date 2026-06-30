@@ -1,0 +1,28 @@
+---
+slug: config-formats-in-practice
+title: "JSON and YAML in Practice: APIs, Declarations, and Orchestration"
+summary: "The split is not random: APIs and machine-to-machine declarations tend to be JSON, while human-authored orchestration and pipeline files tend to be YAML. Understanding why each domain chose what it did explains when converting between them is useful."
+concepts: ["json", "yaml", "configuration", "as3", "kubernetes", "infrastructure"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["json-vs-yaml", "yaml-type-coercion", "json-grammar"]
+category: encoding
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Two formats, two audiences
+
+JSON and YAML carry the same kind of data, yet different domains gravitate to different ones, and the pattern is consistent enough to be worth understanding. JSON tends to win wherever software is talking to software: REST and HTTP APIs, message payloads, and declarative configuration that a program generates and consumes. YAML tends to win wherever a human writes and maintains the file directly: orchestration manifests, automation playbooks, and continuous-integration pipelines. The reason is a difference in priorities, and once you see it the conversion question becomes clearer.
+
+## Why machine interfaces lean JSON
+
+JSON's strengths are exactly what a machine interface wants. It is strict, with one obvious way to write a given value, so parsers agree and there is little room for ambiguity. It has no comments and no alternate styles, which makes it compact and predictable to generate and parse. In the networking and application-delivery world, declarative models like F5's Application Services 3 and Declarative Onboarding are expressed as JSON for these reasons: they are produced and consumed by tooling, posted to APIs, and validated against schemas, where strictness is a feature rather than a limitation.
+
+## Why human configuration leans YAML
+
+YAML optimizes for the person editing the file. It allows comments, which lets a configuration explain itself; it uses indentation instead of braces, which many find easier to scan; and it carries less punctuation overall. This is why Kubernetes manifests, Ansible playbooks, and most CI pipeline definitions are YAML: they are written and reviewed by people, and the ability to leave a note next to a setting is genuinely useful. The same flexibility that makes YAML pleasant to write is also what makes it trickier to parse safely, which is the trade it accepts.
+
+## When converting helps
+
+Because the two formats describe the same data, moving between them is a practical, everyday operation. You might take a JSON declaration that a tool emitted and convert it to YAML to read it more easily, comment on it, or drop it into a templating system that expects YAML. You might take a YAML manifest and convert it to JSON to post to an API, feed to a schema validator, or embed in code. The conversion preserves the structure and values; what it cannot preserve are the format-specific extras, the comments on the YAML side and nothing on the JSON side, which is why a converter that tells you what it dropped is more trustworthy than one that silently changes the data.

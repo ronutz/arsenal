@@ -1,0 +1,36 @@
+---
+slug: public-vs-private-pki
+title: "PKI pública e privada: quais certificados a SC-081v3 governa"
+summary: "O cronograma dos 47 dias vincula apenas certificados TLS publicamente confiáveis. O que separa a PKI pública da privada, por que as ACs internas estão isentas, e como ler o veredito de conformidade do planejador para um certificado interno."
+concepts: ["pki", "public-pki", "private-pki", "internal-ca", "sc-081v3", "root-program", "mtls"]
+relatedTools: ["cert-renewal-planner", "csr-decoder"]
+relatedArticles: ["tls-certificate-lifetimes", "dcv-and-sii-reuse", "certificate-validation", "certificate-validity-windows"]
+category: pki
+order: 12
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Duas PKIs, dois conjuntos de regras
+
+Nem todo certificado segue as mesmas regras, e a diferença importa muito aqui. Um certificado *publicamente confiável* encadeia até uma raiz em que navegadores e sistemas operacionais já confiam de fábrica. Um certificado *privado* encadeia até uma raiz que você mesmo opera e instala nas máquinas que precisam confiar nele. O cronograma SC-081v3 do CA/Browser Forum, a marcha rumo aos 47 dias, governa apenas o primeiro tipo. O planejador modela essas regras públicas, então ler o seu veredito corretamente significa saber de qual tipo de certificado você está olhando.
+
+## O que "publicamente confiável" significa de fato
+
+Um certificado é publicamente confiável quando é emitido por uma AC incluída nos principais programas de raiz, da Apple, do Google, da Mozilla e da Microsoft. Essas ACs concordam em seguir os Baseline Requirements de TLS como condição para permanecer nos programas, e os cortes de validade e de reutilização de validação estão escritos nesses requisitos. O motivo pelo qual as regras podem ser impostas é justamente essa participação: um navegador pode simplesmente deixar de confiar em uma AC que não cumpra. Assim, o limite de 47 dias, a janela de DCV cada vez menor e a redução de SII aplicam-se a certificados dessas ACs, e uma AC pública se recusará a emitir qualquer coisa que quebre essas regras.
+
+## O que a PKI privada pode fazer
+
+Uma PKI privada ou interna são os certificados que uma organização emite para si mesma: uma AC interna para serviços corporativos, certificados de dispositivo gravados em hardware, certificados de serviço para serviço dentro de um cluster, ou simples certificados autoassinados para testes. Como nada fora do seu ambiente é solicitado a confiar neles, o CA/Browser Forum não tem jurisdição, e você define a política de validade. A SC-081v3 não se aplica. Você pode emitir uma raiz interna de cinco anos ou um certificado de serviço de uma hora; as regras são suas.
+
+## Por que você ainda poderia encurtar certificados internos
+
+A isenção não é motivo para ignorar a lógica. Os argumentos a favor de certificados públicos curtos, limitar o dano de uma chave vazada e manter a frota ágil o bastante para girar algoritmos depressa, valem igualmente dentro das suas próprias paredes. Malhas de serviço e sistemas de TLS mútuo já se apoiam em certificados de vida muito curta, muitas vezes medida em horas, justamente porque são automatizados de ponta a ponta. Muitas organizações estão alinhando voluntariamente os tempos de vida internos com a direção pública, tanto pelo benefício de segurança quanto para que um único conjunto de hábitos e ferramentas cubra tudo.
+
+## Como o planejador trata um certificado interno
+
+O planejador sempre compara com os limites públicos da SC-081v3, porque essa é a regra com datas firmes. Para um certificado publicamente confiável, um resultado acima do limite é um problema real. Para um certificado interno, o mesmo resultado significa apenas que a validade é mais longa que o máximo público para sua data de emissão, o que uma AC privada está perfeitamente autorizada a emitir. O tamanho da validade, a cadência de renovação e a data de renovação que o planejador informa continuam significativos e úteis para um certificado interno; apenas o veredito de conformidade é enquadrado em torno da regra pública.
+
+## Lendo o veredito corretamente
+
+Então, quando o planejador sinaliza um certificado interno como acima do limite, não leia isso como um erro no certificado. Leia como: "mais longo do que uma AC pública emitiria hoje". Se o certificado é interno e a sua política pretende aquele tamanho, o sinal é informação, não uma falha. Se você achava que era um certificado público, o sinal é um aviso útil de que nenhuma AC pública o teria assinado. O [artigo sobre validação](/learn/certificate-validation) cobre a questão separada de se um certificado é confiável afinal; este planejador trata apenas de quanto tempo ele vive e com que frequência precisa ser substituído.

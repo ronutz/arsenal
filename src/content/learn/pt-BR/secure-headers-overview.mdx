@@ -1,0 +1,63 @@
+---
+slug: secure-headers-overview
+title: "Cabeçalhos de Segurança HTTP: a Camada de Defesa em Profundidade"
+summary: "O que são os cabeçalhos de segurança HTTP, por que formam uma camada de defesa sobre o código seguro em vez de substituí-lo, quais cabeçalhos têm mais peso e como ler a postura de uma resposta rapidamente."
+concepts: ["security headers", "defense in depth", "csp", "hsts", "clickjacking", "cors", "cookies"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["content-security-policy", "hsts-and-https", "cookie-security-flags", "clickjacking-and-framing"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O que são os cabeçalhos de segurança
+
+Cabeçalhos de segurança HTTP são cabeçalhos de resposta que o servidor envia para dizer ao navegador como tratar uma página: quais origens podem carregar scripts, se a página pode ser enquadrada, se deve forçar HTTPS, quanto da URL vazar no `Referer`, quais recursos sensíveis a página pode usar. São instruções para o navegador, aplicadas pelo navegador. O servidor faz o opt-in; um navegador que entende o cabeçalho aplica a restrição.
+
+Eles importam porque é no navegador que cai a maior parte do estrago de uma vulnerabilidade web. Um cross-site scripting roda no navegador. O clickjacking acontece no navegador. Um cookie de sessão roubado é reproduzido a partir de um navegador. Os cabeçalhos de segurança deixam o servidor limitar o que o navegador vai fazer, de modo que, mesmo quando algo escapa, o raio de impacto seja menor.
+
+## Defesa em profundidade, não substituto
+
+Uma leitura comum e equivocada é achar que adicionar cabeçalhos torna a aplicação segura. Não torna. Cabeçalhos são uma segunda camada. Se o seu código concatena entrada não confiável dentro do HTML, você tem um bug de cross-site scripting, e uma Content-Security-Policy existe para conter o estrago, não para corrigir o bug. Corrija o bug; mantenha o cabeçalho como rede de proteção para o bug que você ainda não encontrou.
+
+O modelo mental correto é o de camadas que falham de forma independente. O tratamento da entrada é a primeira camada. Uma Content-Security-Policy forte é a segunda. As flags de cookie são uma terceira. O HSTS elimina toda uma classe de downgrade de transporte. Nenhuma é suficiente sozinha, e o valor vem de empilhá-las para que uma fraqueza não vire um comprometimento completo.
+
+## Os cabeçalhos que têm mais peso
+
+Um punhado de cabeçalhos faz a maior parte do trabalho, e o analisador os pondera de acordo:
+
+**Strict-Transport-Security (HSTS)** força o navegador a usar HTTPS para o host, eliminando a janela de downgrade em que um atacante na rede transforma uma requisição `https://` em HTTP puro. É o controle de transporte de maior impacto. Veja [HSTS e a exigência de HTTPS](/learn/hsts-and-https).
+
+**Content-Security-Policy (CSP)** é o principal controle de defesa em profundidade contra cross-site scripting e injeção de conteúdo. Uma boa política restringe de onde scripts, estilos e outros recursos podem vir, e uma política forte remove o `'unsafe-inline'`. Veja [Content Security Policy, diretiva por diretiva](/learn/content-security-policy).
+
+**X-Content-Type-Options: nosniff** impede o navegador de adivinhar o tipo de uma resposta e executar, por exemplo, uma imagem enviada como se fosse script. É um cabeçalho curto e sem desvantagens, então a sua ausência sempre vale ser sinalizada.
+
+**X-Frame-Options e CSP frame-ancestors** decidem se outros sites podem colocar a sua página dentro de um iframe, que é a base do clickjacking. O controle moderno é o `frame-ancestors`; o cabeçalho legado é o `X-Frame-Options`. Veja [Clickjacking e controle de enquadramento](/learn/clickjacking-and-framing).
+
+**Referrer-Policy** controla quanto da URL atual é enviado quando o usuário navega para outro lugar, o que é uma questão de privacidade e vazamento de informação quando as URLs contêm identificadores ou tokens.
+
+**Permissions-Policy** restringe o acesso a recursos sensíveis do navegador, como câmera, microfone e geolocalização, para que um script comprometido ou incorporado não os alcance silenciosamente.
+
+**Atributos de cookie** (`Secure`, `HttpOnly`, `SameSite` e os prefixos `__Host-` e `__Secure-`) protegem os cookies de sessão de roubo e de uso indevido entre sites. Eles viajam no `Set-Cookie`, não em um cabeçalho próprio, mas fazem parte da mesma postura. Veja [Flags de segurança de cookies](/learn/cookie-security-flags).
+
+**Cabeçalhos de origem cruzada (CORS)** decidem quais outros sites podem ler uma resposta. O caso perigoso é uma origem curinga combinada com credenciais, que expõe dados autenticados a qualquer site.
+
+## Como a nota é calculada
+
+O analisador pontua os cabeçalhos de proteção que consegue avaliar, pondera por importância e então aplica um pequeno conjunto de travas que refletem como o risco funciona de verdade, em vez de deixar um monte de pequenos ganhos encobrir uma falha crítica:
+
+- Se o HSTS estiver ausente ou fraco, ou a CSP estiver ausente, a nota é limitada, porque cada um deixa toda uma classe de ataque aberta. Se ambos estiverem ausentes, o limite é menor.
+- Um cookie com atributos fracos limita a nota, porque um cookie de sessão roubável mina o resto.
+- Uma política de CORS que combina origem curinga com credenciais limita a nota, porque expõe dados diretamente.
+- Cabeçalhos que revelam versões de servidor ou framework custam uma pequena penalidade cada. Não quebram nada, mas dão vantagem ao atacante.
+
+A nota em letra é um resumo. As constatações abaixo dela são a substância: cada cabeçalho é marcado como forte, adequado, fraco, ausente ou informativo, com o motivo explicado.
+
+## Lendo uma resposta
+
+Cole uma resposta completa (a linha de status mais os cabeçalhos) ou apenas um bloco de cabeçalhos. Você pode copiá-los do painel de rede do navegador, de `curl -I` ou de um scanner. A ferramenta analisa os cabeçalhos, avalia cada um, lista os cookies à parte com a higiene de suas flags e revela a postura de origem cruzada. Itens ausentes e fracos são ordenados para o topo, então as falhas são a primeira coisa que você vê, e cada cabeçalho de proteção ausente mostra um valor recomendado que você pode adotar.
+
+## O que isto não verifica
+
+O analisador lê uma resposta. Ele não vê cabeçalhos de requisição (como `Origin` ou o conjunto `Sec-Fetch-*`), porque esses são enviados pelo navegador, não retornados pelo servidor. Ele não avalia a sua configuração de TLS, certificado ou cipher suites; esses são temas separados, com ferramentas próprias. E ele não consegue dizer se uma configuração permissiva é um problema real ou uma escolha intencional para um endpoint público e sem credenciais. Ele sinaliza a postura e explica o trade-off; a decisão sobre a intenção é sua.

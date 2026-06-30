@@ -1,0 +1,36 @@
+---
+slug: public-vs-private-pki
+title: "Public vs private PKI: which certificates SC-081v3 governs"
+summary: "The 47-day schedule binds publicly trusted TLS certificates only. What separates public from private PKI, why internal CAs are exempt, and how to read the planner's compliance verdict for an internal certificate."
+concepts: ["pki", "public-pki", "private-pki", "internal-ca", "sc-081v3", "root-program", "mtls"]
+relatedTools: ["cert-renewal-planner", "csr-decoder"]
+relatedArticles: ["tls-certificate-lifetimes", "dcv-and-sii-reuse", "certificate-validation", "certificate-validity-windows"]
+category: pki
+order: 12
+status: reviewed
+updated: "2026-06-30"
+---
+
+## Two PKIs, two rule sets
+
+Not every certificate plays by the same rules, and the difference matters a great deal here. A *publicly trusted* certificate chains up to a root that browsers and operating systems already trust out of the box. A *private* certificate chains to a root you run yourself and install on the machines that need to trust it. The CA/Browser Forum's SC-081v3 schedule — the march to 47 days — governs only the first kind. The planner models those public rules, so reading its verdict correctly means knowing which kind of certificate you are looking at.
+
+## What "publicly trusted" actually means
+
+A certificate is publicly trusted when it is issued by a CA included in the major root programs — Apple, Google, Mozilla, and Microsoft. Those CAs agree to follow the TLS Baseline Requirements as a condition of staying in the programs, and the validity and validation-reuse cuts are written into those requirements. The reason the rules can be imposed at all is this membership: a browser can simply distrust a CA that does not comply. So the 47-day cap, the shrinking DCV window, and the SII reduction all apply to certificates from these CAs, and a public CA will refuse to issue anything that breaks them.
+
+## What private PKI is free to do
+
+A private or internal PKI is the certificates an organization issues for itself: an internal CA for corporate services, device certificates baked into hardware, service-to-service certificates inside a cluster, or plain self-signed certificates for testing. Because nothing outside your environment is asked to trust them, the CA/Browser Forum has no jurisdiction, and you set the validity policy. SC-081v3 does not apply. You can issue a five-year internal root or a one-hour service certificate; the rules are yours.
+
+## Why you might shorten internal certificates anyway
+
+Exemption is not a reason to ignore the logic. The arguments for short public certificates — limiting the damage from a leaked key, and keeping the fleet agile enough to rotate algorithms quickly — apply just as well inside your own walls. Service meshes and mutual-TLS systems already lean on very short-lived certificates, often measured in hours, precisely because they are automated end to end. Many organizations are voluntarily aligning internal lifetimes with the public direction, both for the security benefit and so that one set of habits and tooling covers everything.
+
+## How the planner treats an internal certificate
+
+The planner always compares against the public SC-081v3 caps, because that is the rule with hard dates. For a publicly trusted certificate, an over-cap result is a real problem. For an internal certificate, the same result simply means the validity is longer than the public maximum for its issuance date — which a private CA is perfectly entitled to issue. The validity length, renewal cadence, and renew-by date the planner reports are still meaningful and useful for an internal certificate; only the compliance verdict is framed around the public rule.
+
+## Reading the verdict correctly
+
+So when the planner flags an internal certificate as over the cap, do not read it as an error in the certificate. Read it as: "longer than a public CA would issue today." If the certificate is internal and your policy intends that length, the flag is information, not a fault. If you thought it was a public certificate, the flag is a useful warning that no public CA would have signed it. The [validation article](/learn/certificate-validation) covers the separate question of whether a certificate is trusted at all; this planner is only about how long it lives and how often it must be replaced.

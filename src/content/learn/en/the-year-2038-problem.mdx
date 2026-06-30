@@ -1,0 +1,28 @@
+---
+slug: the-year-2038-problem
+title: "The Year 2038 Problem"
+summary: "A signed 32-bit integer can count seconds only up to 2147483647, which falls on 2038-01-19T03:14:07Z. One second later it overflows and wraps to a negative number, throwing affected systems back to 1901. It is Y2K's quieter successor, and the fix is a wider integer."
+concepts: ["year 2038", "32-bit", "time_t", "integer overflow", "unix time"]
+relatedTools: ["epoch"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds", "unix-time-explained"]
+category: encoding
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+For decades, the C type that held a Unix timestamp — `time_t` — was commonly a **signed 32-bit integer**. A signed 32-bit integer can represent values up to `2147483647`. Count seconds from the 1970 epoch and that ceiling arrives at a very specific moment: **2038-01-19T03:14:07Z**.
+
+## What happens at the boundary
+
+One second after `2147483647`, a 32-bit signed counter overflows. Instead of incrementing, it wraps around to the most negative value it can hold, `-2147483648` — which, interpreted as seconds before the epoch, lands on **1901-12-13**. A system that trusts that clock suddenly believes it is over a century in the past. Depending on the software, that can mean anything from a cosmetic wrong date to expired certificates, broken scheduling, failed comparisons, or crashes.
+
+## Why it is like Y2K, and why it is not
+
+Like the Year 2000 problem, Y2038 is a representational limit baked into a lot of old assumptions, and like Y2K it is being addressed quietly and ahead of time rather than in a panic. The difference is the fix. Y2K was about how years were *written* (two digits versus four); Y2038 is about how time is *stored* (the width of an integer). The remedy is to widen `time_t` to **64 bits**, which pushes the overflow roughly 292 billion years out — comfortably past any practical concern.
+
+## Where it still bites
+
+Most modern 64-bit operating systems and languages already use a 64-bit (or larger) time type, so a current laptop or server is fine. The risk concentrates in places that are hard to update: **embedded systems**, industrial controllers, older file formats and protocols that hard-code a 32-bit timestamp field, and long-lived data that stored time in 32 bits. Anything computing an expiry far in the future can trip the boundary *today* — a 20-year certificate or token issued now already reaches past 2038.
+
+This converter flags timestamps near the boundary for exactly that reason: if you are generating a far-future expiry, it is worth knowing you are in 2038 territory before a 32-bit consumer somewhere reads it back as 1901.

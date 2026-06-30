@@ -1,7 +1,7 @@
 // ============================================================================
 // src/lib/tools/hmac/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING HMAC MODULE - a netcore {manifest, run, vectors} triple.
+// THE SELF-DESCRIBING HMAC MODULE - a self-contained {manifest, run, vectors} triple.
 //
 // Two divergences from the single-string tools, both inherent to HMAC:
 //   - run() is async (Web Crypto), like the hash tool.
@@ -87,7 +87,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

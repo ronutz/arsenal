@@ -17,6 +17,26 @@ import { useCallback, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, generateVerifier, type PkceResult } from "@/lib/tools/pkce";
 
+type FlowActor = "client" | "server";
+const ACTOR_COLOR: Record<FlowActor, string> = {
+  client: "var(--accent-primary)",
+  server: "var(--accent-amber)",
+};
+
+// The canonical PKCE (S256) authorization-code flow. Static and educational:
+// it describes the protocol, independent of the verifier the tool generates.
+// `code` is a protocol token (kept verbatim); `labelKey` is localized chrome.
+const FLOW: { actor: FlowActor; labelKey: string; code: string }[] = [
+  { actor: "client", labelKey: "s1", code: "code_verifier" },
+  { actor: "client", labelKey: "s2", code: "code_challenge" },
+  { actor: "client", labelKey: "s3", code: "/authorize" },
+  { actor: "server", labelKey: "s4", code: "" },
+  { actor: "server", labelKey: "s5", code: "authorization_code" },
+  { actor: "client", labelKey: "s6", code: "/token" },
+  { actor: "server", labelKey: "s7", code: "S256(verifier) == challenge" },
+  { actor: "server", labelKey: "s8", code: "access + refresh" },
+];
+
 export default function PkceTool() {
   const t = useTranslations("tools.pkce");
 
@@ -145,6 +165,58 @@ export default function PkceTool() {
           </section>
         </div>
       )}
+
+      <section className="jwt-panel pkce-flow-panel">
+        <h4 className="hash-algo-title">{t("flowHeading")}</h4>
+        <div className="pkce-flow-legend">
+          <span className="pkce-flow-leg">
+            <span className="pkce-flow-swatch" style={{ background: ACTOR_COLOR.client }} />
+            {t("laneClient")}
+          </span>
+          <span className="pkce-flow-leg">
+            <span className="pkce-flow-swatch" style={{ background: ACTOR_COLOR.server }} />
+            {t("laneServer")}
+          </span>
+        </div>
+        <svg
+          className="pkce-flow-svg"
+          viewBox={`0 0 680 ${22 + (FLOW.length - 1) * 58 + 16 + 24}`}
+          role="img"
+          aria-label={t("flowHeading")}
+        >
+          <line
+            x1="92"
+            y1={22 + 16}
+            x2="92"
+            y2={22 + (FLOW.length - 1) * 58 + 16}
+            stroke="var(--border-strong)"
+            strokeWidth="2"
+          />
+          {FLOW.map((step, i) => {
+            const cy = 22 + i * 58 + 16;
+            const color = ACTOR_COLOR[step.actor];
+            return (
+              <g key={step.labelKey}>
+                <text x="74" y={cy + 4} textAnchor="end" className="pkce-flow-num">
+                  {i + 1}
+                </text>
+                <line x1="99" y1={cy} x2="118" y2={cy} stroke="var(--border-strong)" strokeWidth="2" />
+                <circle cx="92" cy={cy} r="6" fill={color} stroke="var(--canvas-primary)" strokeWidth="2" />
+                <rect x="118" y={cy - 19} width="552" height="38" rx="6" fill="var(--surface-base)" stroke="var(--border-subtle)" />
+                <rect x="118" y={cy - 19} width="3" height="38" fill={color} />
+                <text x="132" y={cy - 3} className="pkce-flow-label">
+                  {t(step.labelKey)}
+                </text>
+                {step.code && (
+                  <text x="132" y={cy + 12} className="pkce-flow-code">
+                    {step.code}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+      </section>
     </div>
   );
 }

@@ -1,0 +1,36 @@
+---
+slug: tls-certificate-lifetimes
+title: "The 47-day era: how TLS certificate lifetimes are shrinking"
+summary: "The CA/Browser Forum's SC-081v3 schedule takes maximum public TLS validity from 398 days down to 47 by 2029, in three steps. What the phases are, why 47, and what it does to renewal volume."
+concepts: ["tls", "pki", "certificate", "validity", "sc-081v3", "ca-browser-forum", "automation"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["certificate-validation", "certificate-revocation", "dcv-and-sii-reuse", "renewing-before-expiry", "public-vs-private-pki"]
+category: pki
+order: 8
+status: reviewed
+updated: "2026-06-30"
+---
+
+## A one-way trend toward shorter certificates
+
+Public TLS certificates have been getting shorter-lived for over a decade. Maximum validity fell from five years to three, then to 825 days, and in September 2020 to 398 days. In April 2025 the CA/Browser Forum approved Ballot SC-081v3 — proposed by Apple and passed with broad consensus among certificate authorities and browser vendors — which continues the trend all the way down to 47 days. It is not a proposal or a recommendation; it is written into the TLS Baseline Requirements that publicly trusted CAs must follow. The planner on this page exists because once certificates live this briefly, working out a renewal rhythm by hand stops being practical.
+
+## The schedule, phase by phase
+
+The reduction happens in three steps, each keyed to a certificate's **issuance date** rather than to any existing certificate. Until 15 March 2026 the maximum is 398 days. From 15 March 2026 it drops to 200 days, from 15 March 2027 to 100 days, and from 15 March 2029 to 47 days. A certificate issued the day before a cutoff keeps the older, longer maximum for its whole life; one issued the day after is bound by the new one. This is exactly the test the planner runs: it looks at the issue date you enter, finds the phase that governs it, and tells you whether the validity you entered is within that phase's cap.
+
+## Why the number is 47
+
+The figure looks arbitrary but is deliberately chosen. Forty-seven days is roughly a calendar month plus about two weeks, with a day of slack — short enough that manual renewal at scale becomes untenable, but long enough that an automated system can renew comfortably without running on the edge. The designers specifically avoided a number near 30, so that renewal would not be forced to land on the same calendar day every month. The intermediate steps follow the same logic: each is a few maximal months plus a fraction, plus a day of wiggle room.
+
+## Why shorten lifetimes at all
+
+A certificate is a standing assertion about a key and a name, and the longer it stands, the longer a problem with it persists. If a private key leaks, a shorter-lived certificate limits how long the leaked key remains usable. Shorter lifetimes also force *crypto-agility*: the whole ecosystem rotates often enough that deprecating a weak algorithm, or responding to a CA distrust event, can actually take effect in weeks rather than years. The looming arrival of quantum computers — and "harvest now, decrypt later" collection of today's traffic — adds urgency to building that agility now, which is part of why the industry chose this moment to push lifetimes down hard.
+
+## What it does to renewal volume
+
+The operational consequence is the whole point. An organization that renews a certificate roughly once a year today will renew it about eight times a year at 47 days. Industry analysis puts a fleet of 1,000 certificates at roughly 48,000 renewal-hours per year under the 47-day regime — about a twelvefold increase over current volumes. Add that machine identities already outnumber human ones many times over and are still growing, and manual renewal simply does not scale. The planner makes this concrete: for any validity you enter it shows the renewals-per-year that cadence implies, and projects the figure at each future cap so you can see the escalation before it arrives.
+
+## What the planner shows
+
+Enter a certificate's issue and expiry dates and the planner reports its validity length, the phase its issuance date falls under, whether that length is within the cap, the renewal frequency it implies, and a recommended renew-by date. It runs entirely in your browser and models publicly trusted TLS certificates; the [public-vs-private article](/learn/public-vs-private-pki) explains why internal PKI plays by different rules, and the companion tool, the [X.509 inspector](/tools/x509), decodes the certificate bytes themselves.

@@ -25,6 +25,8 @@ export default async function ColophonPage({
 
   const t = await getTranslations("colophon_page");
   const tNav = await getTranslations("nav");
+  // Shared with the language switcher: the translation-status legend copy.
+  const tStatus = await getTranslations("languageStatus");
 
   // The four seats, rendered as a set.
   const seats = [
@@ -152,6 +154,36 @@ export default async function ColophonPage({
                   </div>
                 ))}
               </dl>
+              {/* Translation-status explainer: the same green/amber/yellow
+                  legend the language switcher shows, spelled out where the
+                  i18n stack is described. The status dots reuse the .ls-status
+                  classes so the colors match the switcher exactly. */}
+              <div className="colophon-langstatus">
+                <h3 className="colophon-langstatus-title">
+                  {tStatus("explainTitle")}
+                </h3>
+                <p className="colophon-langstatus-body">
+                  {tStatus("explainBody")}
+                </p>
+                <ul className="colophon-langstatus-legend">
+                  <li>
+                    <span className="ls-status ls-status--reviewed" />
+                    {tStatus("reviewed")}
+                  </li>
+                  <li>
+                    <span className="ls-status ls-status--complete" />
+                    {tStatus("complete")}
+                  </li>
+                  <li>
+                    <span className="ls-status ls-status--partial" />
+                    {tStatus("partial")}
+                  </li>
+                  <li>
+                    <span className="ls-status ls-status--stub" />
+                    {tStatus("stub")}
+                  </li>
+                </ul>
+              </div>
             </div>
           </section>
 
@@ -184,14 +216,31 @@ export default async function ColophonPage({
             </div>
           </section>
 
+          {/* Special thanks — the people (and cats) behind and around the work. */}
+          <section className="section colophon-thanks-section">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("thanksTitle")}</h2>
+              <p className="colophon-thanks-names">
+                Mariana, Ulli, Richard, Ocyrema, Felisberto, Regine, Eduardo, Ricardo, Pedro, Liliane, Miu, Nina, Luna &amp; kids.
+              </p>
+            </div>
+          </section>
+
           {/* Closing */}
           <section className="section">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("closingTitle")}</h2>
               <p className="colophon-body">{t("closingBody")}</p>
-              <Link href="/" className="btn btn-secondary colophon-back">
-                {t("backHome")} →
-              </Link>
+              <div className="colophon-closing-actions">
+                <Link href="/" className="btn btn-secondary colophon-back">
+                  {t("backHome")} →
+                </Link>
+                {/* Changelog is localized like every other page now, so link
+                    in the current locale (no forced English, no redirect hop). */}
+                <Link href="/changelog" className="btn btn-secondary colophon-back">
+                  {t("changelogLink")} →
+                </Link>
+              </div>
             </div>
           </section>
         </article>

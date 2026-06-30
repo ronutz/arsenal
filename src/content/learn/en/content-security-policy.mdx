@@ -1,0 +1,86 @@
+---
+slug: content-security-policy
+title: "Content Security Policy, Directive by Directive"
+summary: "How CSP works as a control against cross-site scripting and injection: the shape of a policy, why default-src matters, what 'unsafe-inline' and 'unsafe-eval' give away, how nonces and hashes allow specific inline code safely, and what report-only mode is for."
+concepts: ["csp", "xss", "default-src", "script-src", "frame-ancestors", "nonce", "hash", "report-only"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "clickjacking-and-framing", "hsts-and-https"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## What CSP is for
+
+A Content-Security-Policy tells the browser which sources of content are allowed for a page: where scripts may load from, where styles may come from, what may be framed, and so on. Its main job is to contain cross-site scripting. If an attacker manages to inject a `<script>` tag or an inline event handler, a good policy means the browser refuses to run it, because the injected code does not match an allowed source.
+
+CSP does not find or fix the injection. It is the layer that makes a successful injection far less useful. That is why it belongs in the defense-in-depth picture from the [security headers overview](/learn/secure-headers-overview), and why a policy that still permits arbitrary inline script is only doing part of the job.
+
+## The shape of a policy
+
+A policy is a list of directives separated by semicolons. Each directive names a resource type and a list of allowed sources:
+
+```
+content-security-policy:
+  default-src 'self';
+  script-src 'self' https://cdn.example.com;
+  object-src 'none';
+  base-uri 'self';
+  frame-ancestors 'none'
+```
+
+Sources can be the keyword `'self'` (the page's own origin), a host such as `https://cdn.example.com`, the keyword `'none'` (nothing is allowed), or a scheme. Two keywords change the security meaning sharply and are covered below: `'unsafe-inline'` and `'unsafe-eval'`.
+
+## default-src: the safety net
+
+`default-src` is the fallback for any resource type that does not have its own directive. With `default-src 'self'`, images, fonts, scripts, styles, and the rest are all limited to the page's origin unless a more specific directive overrides it. Without a `default-src`, every resource type that you did not explicitly name is unrestricted, which is a common way a policy looks strict but leaks.
+
+Set `default-src` first, then open up specific types only as needed. A policy that starts from `default-src 'self'` and adds a known CDN to `script-src` is far easier to reason about than one that lists a dozen directives with no fallback.
+
+## script-src and the cost of 'unsafe-inline'
+
+`script-src` controls where JavaScript may come from. The most important thing a strong policy does is avoid `'unsafe-inline'` in this directive. `'unsafe-inline'` permits inline `<script>` blocks and inline event handlers such as `onclick`, which is exactly the vector an injected script uses. With `'unsafe-inline'` present, an attacker who injects `<script>steal()</script>` has their script run, and the policy provided no protection against the one thing it exists to stop.
+
+Removing `'unsafe-inline'` usually means moving inline scripts into external files, or allowing specific inline blocks with a nonce or hash (below). It is the single highest-value change you can make to a CSP, and the analyzer flags `'unsafe-inline'` as a weakness for that reason.
+
+## 'unsafe-eval' and dynamic code
+
+`'unsafe-eval'` permits `eval()`, `new Function()`, and similar ways of turning a string into executable code. Some older libraries rely on it. It widens the attack surface because injected data that reaches one of those sinks becomes code. Prefer libraries that do not need it, and drop the keyword when you can.
+
+## Nonces and hashes: allowing specific inline code safely
+
+If you genuinely need an inline script, you do not have to fall back to `'unsafe-inline'`. CSP offers two precise mechanisms:
+
+A **nonce** is a random value generated per response. You put it on the policy and on the script tag, and the browser runs only inline scripts carrying the matching nonce:
+
+```
+content-security-policy: script-src 'nonce-r4nd0m'
+```
+```
+<script nonce="r4nd0m"> /* allowed */ </script>
+```
+
+A **hash** lets you allow a specific inline block by its content digest, with no per-request value:
+
+```
+content-security-policy: script-src 'sha256-BASE64DIGEST'
+```
+
+Both let you keep specific inline code while still refusing the attacker's injected code, which does not carry the nonce or match a known hash. A fresh, unpredictable nonce per response is essential; a reused or guessable nonce defeats the purpose.
+
+## frame-ancestors: the modern anti-framing control
+
+`frame-ancestors` decides who may put your page in an iframe. It is the modern replacement for `X-Frame-Options` and is more expressive. `frame-ancestors 'none'` forbids all framing; `frame-ancestors 'self'` allows only same-origin framing. This is the control covered in [clickjacking and frame control](/learn/clickjacking-and-framing); when present, it supersedes the older header in browsers that support it.
+
+## object-src and base-uri
+
+Two smaller directives close real gaps. `object-src 'none'` blocks legacy plugin content such as Flash and Java objects, which are a historic injection vector. `base-uri 'self'` (or `'none'`) prevents an injected `<base>` tag from rewriting where the page's relative URLs resolve, which an attacker can otherwise use to redirect script loads. Both are cheap to add and worth having.
+
+## Report-Only: staging a policy
+
+`Content-Security-Policy-Report-Only` applies a policy without enforcing it: the browser reports what it would have blocked but does not block anything. This is how you roll out or tighten a policy on a live site without breaking it. The important caveat is that report-only does not protect the page. If you ship only the report-only header and no enforced `Content-Security-Policy`, you have monitoring, not a defense, and the analyzer marks that case as a weakness.
+
+## Common mistakes
+
+The recurring failures are: shipping a policy that keeps `'unsafe-inline'` and so provides little real protection; omitting `default-src`, which leaves unnamed resource types open; relying on report-only as if it enforced anything; and using a wildcard `*` source, which allows any origin and undoes the restriction. A good policy is restrictive by default, names its sources explicitly, allows specific inline code by nonce or hash rather than by `'unsafe-inline'`, and is enforced rather than merely reported.

@@ -1,0 +1,38 @@
+---
+slug: regex-quantifiers-and-classes
+title: "Regex Quantifiers and Character Classes"
+summary: "A regular expression is built from two questions: what character do I want, and how many of them? Character classes answer the first, quantifiers answer the second. Get these two right and most of regex falls into place."
+concepts: ["regex", "character class", "quantifier", "greedy", "lazy"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-groups-and-backreferences", "regex-catastrophic-backtracking"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Almost every regular expression is assembled from two ideas: **what kind of character** to match, and **how many times** to match it. Character classes answer the first question; quantifiers answer the second. Once those click, the rest is mostly punctuation.
+
+## Character classes: what to match
+
+The shorthand classes cover the cases you reach for constantly. `\d` is any digit, `\w` is any word character (a letter, digit, or underscore), and `\s` is any whitespace. Each has an uppercase negation: `\D` is any non-digit, `\W` any non-word character, `\S` any non-whitespace. A bare dot `.` matches any character at all — except a line break, unless you set the `s` (dotAll) flag.
+
+When the shorthands are too broad, build your own class with square brackets. `[aeiou]` matches one vowel; `[a-z]` matches one lowercase letter using a range; `[A-Za-z0-9]` combines several ranges. Put a caret first to invert it: `[^0-9]` matches any single character that is *not* a digit. Inside a class most metacharacters lose their special meaning, so `[.+*]` matches a literal dot, plus, or asterisk — no escaping needed.
+
+A class always matches exactly **one** character. To match more than one, you need a quantifier.
+
+## Quantifiers: how many
+
+The three short quantifiers do most of the work. `*` means zero or more, `+` means one or more, and `?` means optional — zero or one. So `\d*` matches an empty string or any run of digits, while `\d+` insists on at least one digit.
+
+When you need a specific count, use braces. `\d{4}` matches exactly four digits, `\d{2,}` matches two or more, and `\d{2,4}` matches between two and four. A US-style phone fragment might be `\d{3}-\d{4}`, and a simple email shape is `\w+@\w+\.\w+` — note the `\.` there, an escaped dot that matches a literal period rather than "any character".
+
+## Greedy versus lazy
+
+By default quantifiers are **greedy**: they grab as much as they can and only give characters back if the rest of the pattern fails. Add a trailing `?` to make a quantifier **lazy**, so it grabs as little as possible. The difference matters the moment you try to match delimited content. Against the text `[one][two]`, the greedy `\[.+\]` matches the whole string in one go, because `.+` swallows everything up to the final bracket. The lazy `\[.+?\]` stops at the first closing bracket and matches just `[one]`. Choosing greedy versus lazy is one of the most common fixes when a pattern "matches too much".
+
+## Anchors, briefly
+
+Anchors match a position rather than a character. `^` is the start of the string (or the start of a line with the `m` flag), `$` is the end, and `\b` is a word boundary — the seam between a word character and a non-word character. Wrapping a pattern in `^...$` forces it to match the *entire* input, which is exactly what you want when validating a whole field rather than finding a fragment inside it.
+
+Paste any of these into the [Regex Toolkit](/tools/regex) to watch the matches light up as you type, then read on about [groups and backreferences](/learn/regex-groups-and-backreferences) to capture and reuse the parts you match.

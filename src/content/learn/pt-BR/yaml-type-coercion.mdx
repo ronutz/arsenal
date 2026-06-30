@@ -1,0 +1,28 @@
+---
+slug: yaml-type-coercion
+title: "Coerção de Tipos no YAML e o Problema da Noruega"
+summary: "O YAML adivinha o tipo de todo escalar sem aspas, e seus palpites são surpreendentes: o código de país NO vira false, uma versão como 1.0 vira número, e um código com zeros à esquerda perde os zeros. Conhecer a regra é a chave para uma conversão segura."
+concepts: ["yaml", "type coercion", "norway problem", "implicit typing", "quoting", "conversion"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["json-vs-yaml", "config-formats-in-practice", "json-grammar"]
+category: encoding
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Por que um escalar sem aspas é perigoso
+
+No YAML, um escalar que não está entre aspas tem seu tipo inferido a partir de como ele se parece. Escreva `count: 3` e você obtém o inteiro três; escreva `ratio: 1.5` e obtém um float; escreva `enabled: true` e obtém um booleano. Isso é conveniente até a inferência adivinhar errado, e como o mesmo texto pode ser uma string em um contexto e um valor tipado em outro, os erros são fáceis de não notar. A correção é sempre a mesma, colocar aspas no escalar, mas você precisa saber quais valores precisam disso.
+
+## O problema da Noruega
+
+O exemplo mais famoso é conhecido como o problema da Noruega. No YAML mais antigo, as palavras sem aspas `yes`, `no`, `true`, `false`, `on` e `off`, em várias capitalizações, são todas booleanos. Então uma lista de códigos de país que inclui a Noruega, escrita como um `NO` sem aspas, silenciosamente vira o booleano false. A mesma armadilha pega `ON` para Ontário e qualquer campo onde uma string real por acaso soletra uma palavra-chave booleana. O YAML 1.2 estreitou o conjunto de grafias booleanas para apenas `true` e `false`, mas uma grande quantidade de software ainda segue as regras mais antigas e mais amplas do YAML 1.1, então a suposição segura é que `no` e `yes` sem aspas são perigosos.
+
+## Números, versões e zeros à esquerda
+
+A coerção numérica é igualmente afiada. Uma versão de software como `1.0` vira o número um e perde seu zero final, então `1.0` e `1.00` colapsam para o mesmo valor e o texto original se foi. Um CEP americano ou qualquer identificador com um zero à esquerda, como `01234`, pode ser lido como número e perder o zero, ou ser interpretado como octal em alguns parsers. Uma string numérica longa como um número de telefone ou de conta pode exceder a faixa de inteiros seguros e ser arredondada. Em cada um desses casos o valor deveria ter sido uma string, e a única forma de mantê-lo assim é colocar aspas.
+
+## Como um conversor se mantém seguro
+
+É por isso que converter JSON para YAML não é apenas uma questão de trocar a pontuação. Toda string JSON que, escrita sem aspas, seria lida de volta como booleano, número, null ou data precisa ser emitida entre aspas, ou o YAML significaria algo diferente do JSON. Um conversor correto aplica essas regras de aspas automaticamente, que é exatamente o que esta ferramenta faz: uma string permanece string. Quando você lê a saída YAML dela e vê aspas em torno de algo como `"NO"` ou `"1.0"`, essas aspas não são ruído; são o conversor protegendo o valor da adivinhação de tipos do YAML.

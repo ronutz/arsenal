@@ -1,0 +1,28 @@
+---
+slug: authority-information-access
+title: "Authority Information Access: As URLs de OCSP e CA Issuers"
+summary: "A extensão AIA carrega dois tipos de ponteiro: onde perguntar se um certificado foi revogado (OCSP) e onde buscar o certificado do próprio emissor (CA Issuers). Para que serve cada um, por que são fáceis de confundir e o que o inspetor mostra."
+concepts: ["x509", "authority information access", "aia", "ocsp", "ca issuers", "chain building", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-revocation", "ocsp-must-staple", "certificate-validation"]
+category: pki
+order: 6
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O que é o AIA
+
+Authority Information Access é uma extensão de certificado, definida na RFC 5280, que informa a uma parte confiante onde encontrar serviços e dados relacionados à CA emissora. É uma lista de descrições de acesso, e cada uma associa um método de acesso (um OID que diz que tipo de ponteiro é esse) a uma localização (quase sempre uma URL HTTP). O inspetor X.509 extrai essas entradas e as mostra, porque juntas elas cobrem dois trabalhos bem diferentes que são fáceis de confundir.
+
+## OCSP: onde perguntar sobre revogação
+
+O primeiro método de acesso é o OCSP, o Online Certificate Status Protocol. Sua URL aponta para o respondedor OCSP da CA, um serviço que responde a uma pergunta simples sobre um certificado: válido, revogado ou desconhecido. Um cliente que quer checar revogação em tempo real pega a URL de OCSP desta extensão, envia o número de série do certificado a esse respondedor e lê a resposta assinada. Esta é a alternativa ao vivo a baixar uma CRL inteira, e é detalhada no [artigo de revogação](/learn/certificate-revocation). A fraqueza de consultar o respondedor diretamente, e a extensão que a reforça, são o tema do [OCSP Must-Staple](/learn/ocsp-must-staple).
+
+## CA Issuers: onde buscar o certificado do emissor
+
+O segundo método de acesso, CA Issuers, não tem a ver com revogação, e essa é a confusão comum. Sua URL aponta para uma cópia do certificado do próprio emissor. Ela existe para a construção da cadeia. Para verificar um certificado, um cliente precisa da cadeia completa até uma raiz confiável, mas um servidor mal configurado às vezes envia apenas a folha e omite os intermediários. Quando isso acontece, um cliente pode seguir a URL de CA Issuers para buscar o certificado do emissor que falta e continuar montando a cadeia. Esse comportamento é às vezes chamado de AIA chasing. É um mecanismo de recuperação para cadeias incompletas, não uma checagem de revogação.
+
+## Por que a distinção importa
+
+Ao ver as duas URLs no inspetor, é tentador lê-las como dois endpoints de revogação. Não são. A URL de OCSP é um serviço de revogação; a URL de CA Issuers é um lugar para baixar um certificado e assim completar a cadeia. Um certificado pode carregar uma, ambas ou nenhuma. Lê-las corretamente diz como um cliente checaria o status deste certificado e como ele se recuperaria se o seu servidor esquecesse de enviar o intermediário. Como sempre, o inspetor apenas lê esses ponteiros do certificado; ele nunca os contata.

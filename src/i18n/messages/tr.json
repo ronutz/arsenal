@@ -67,6 +67,11 @@
       "title": "Bu araçları destekle",
       "pitch": "Bu araçlar ücretsiz ve öyle kalması amaçlanıyor. İş akışında yer ediniyorsa, bakımını ve bundan sonrasını finanse etmeye yardım edebilirsin.",
       "purposeLabel": "Şu an finanse edilen"
+    },
+    "stats": {
+      "tools": "Araçlar",
+      "articles": "Makaleler",
+      "sectionLabel": "Araç kutusuna genel bakış"
     }
   },
   "tools": {
@@ -77,6 +82,11 @@
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Hesapla",
       "runsLocally": "Yerel olarak çalışır, hiçbir sunucuya hiçbir şey gönderilmez.",
+      "prefixSlider": "Önek uzunluğu",
+      "bitsHeading": "Adres bitleri",
+      "bitsNetwork": "Ağ",
+      "bitsHost": "Host",
+      "bitsNote": "Vurgulanan bitler ağı tanımlar — geri kalanlar içindeki host'ları adresler.",
       "results": {
         "network": "Ağ adresi",
         "broadcast": "Yayın adresi",
@@ -175,7 +185,11 @@
         "tooMany": "Çok fazla giriş. Listeyi kısaltıp tekrar deneyin.",
         "noReqs": "Ana bilgisayar sayısı olan en az bir alt ağ gereksinimi ekleyin.",
         "noPrefixes": "En az bir önek girin, her satıra bir tane."
-      }
+      },
+      "rangeHeading": "Adres düzeni",
+      "usableShort": "kullanılabilir",
+      "rfcNote": "/31 ve /32 hiçbir şey ayırmaz: her adres kullanılabilir (RFC 3021).",
+      "reservedNote": "İlk adres ağ, sonuncusu yayın adresidir; ikisi de ayrılmıştır, yani kullanılabilir = toplam − 2."
     },
     "title": "Araçlar",
     "lede": "Tamamen tarayıcında çalışan küçük, hızlı, gizliliğe saygılı araçlar. Girdiğin hiçbir şey hiçbir yere gönderilmez. Dahası geliyor.",
@@ -221,7 +235,12 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Kopyala",
-      "copied": "Kopyalandı"
+      "copied": "Kopyalandı",
+      "struct": {
+        "heading": "HMAC nasıl oluşturulur",
+        "innerHash": "iç hash",
+        "note": "HMAC mesajı iki kez hash'ler. Anahtar, ilk hash'ten önce sabit bir iç pad ile ve ikinciden önce bir dış pad ile XOR'lanır ve iki pad'li bu yapı, uzunluk uzatma saldırılarını engelleyen şeydir. Anahtar önce hash'in blok boyutuna indirgenir."
+      }
     },
     "base64": {
       "name": "Base64, Base32, Hex ve yüzde codec'i",
@@ -273,7 +292,18 @@
       "encodingLabel": "base64url",
       "plainValueLabel": "= code_verifier",
       "copy": "Kopyala",
-      "copied": "Kopyalandı"
+      "copied": "Kopyalandı",
+      "flowHeading": "PKCE nasıl çalışır",
+      "laneClient": "Uygulama / İstemci",
+      "laneServer": "Yetkilendirme sunucusu",
+      "s1": "Rastgele bir code_verifier üret",
+      "s2": "code_challenge türet",
+      "s3": "Yetkilendirme isteği challenge taşır",
+      "s4": "Sunucu challenge'ı saklar",
+      "s5": "Yetkilendirme kodu döndürüldü",
+      "s6": "Token isteği verifier taşır",
+      "s7": "Sunucu yeniden türetir ve karşılaştırır",
+      "s8": "Erişim ve yenileme tokenları verildi"
     },
     "uuid": {
       "name": "UUID Üreteci ve İnceleyici (v4 / v7)",
@@ -336,6 +366,11 @@
         "algNone": "Bu token güvenli değil (alg: none), bu yüzden doğrulanacak bir imza yok.",
         "unsupportedAlg": "Tarayıcıdaki doğrulama yalnızca HS256/384/512 kapsar. {alg} asimetriktir ve bir açık anahtara ihtiyaç duyar.",
         "hint": "Sır yalnızca tarayıcında bir HMAC hesaplamak için kullanılır. Asla hiçbir yere gönderilmez."
+      },
+      "struct": {
+        "heading": "Bir JWT'nin yapısı",
+        "signingInput": "İmza girdisi",
+        "note": "Başlık ve yük yalnızca base64url ile kodlanmıştır, şifrelenmemiştir, bu yüzden herkes onları okuyabilir. İmza, bir noktayla birleştirilen başlık ve yük üzerinden hesaplanır ve bir doğrulayıcının kontrol ettiği şey budur."
       }
     },
     "x509": {
@@ -361,7 +396,8 @@
         "details": "Ayrıntılar",
         "publicKey": "Açık anahtar",
         "extensions": "Uzantılar",
-        "fingerprints": "Parmak izleri"
+        "fingerprints": "Parmak izleri",
+        "sct": "Certificate Transparency"
       },
       "fields": {
         "version": "Sürüm",
@@ -392,6 +428,25 @@
         "sha256": "SHA-256",
         "sha1": "SHA-1",
         "computing": "Parmak izleri hesaplanıyor..."
+      },
+      "chainHeading": "Güven zinciri",
+      "tierRoot": "Kök CA",
+      "tierIntermediate": "Ara CA",
+      "tierLeaf": "Son varlık sertifikası",
+      "roleRoot": "Kendinden imzalı güven çıpası",
+      "roleIntermediate": "Bir kök tarafından imzalanır; uç sertifikaları imzalar",
+      "roleLeaf": "Bir sunucuyu veya istemciyi tanımlar",
+      "thisCert": "bu sertifika",
+      "issuedBy": "Veren",
+      "signs": "imzalar",
+      "trustNote": "Güven aşağı doğru akar: her sertifika üstündeki tarafından imzalanır, sisteminizin zaten güvendiği bir köke kadar.",
+      "sct": {
+        "intro": "Gömülü SCT'ler: {n}. Her biri, bir CT günlüğünün bu sertifikayı kaydettiğine dair imzalı kanıtıdır; tarayıcılar, sertifikanın güvenilir olması için asgari bir sayı ister.",
+        "entry": "SCT {i}",
+        "logId": "Günlük kimliği",
+        "timestamp": "Kaydedilme",
+        "signature": "İmza",
+        "note": "İmzalar gösterilir ancak burada doğrulanmaz; bir SCT'yi doğrulamak için günlüğün açık anahtarı ve ön sertifika gerekir."
       }
     },
     "ipv6": {
@@ -427,7 +482,13 @@
       },
       "badges": {
         "multicast": "çok noktaya yayın"
-      }
+      },
+      "segHeading": "Adres yapısı",
+      "networkSeg": "Ağ ön eki",
+      "ifaceId": "Arabirim kimliği",
+      "hostBits": "Ana makine bitleri",
+      "prefixNote": "Sınırın solundaki bitler ön ek tarafından sabitlenir; sağdaki bitler içindeki ana makineyi tanımlar.",
+      "conventionNote": "Ön ek verilmedi, bu yüzden kesik çizgi alışılmış /64 bölünmesini gösterir: solda yönlendirme ön eki ve alt ağ, sağda 64 bitlik arabirim tanımlayıcısı."
     },
     "cipher": {
       "name": "Şifre paketi çözücü",
@@ -508,6 +569,265 @@
         "ianaD": "IANA bu paketi \"D\" (sakıncalı) olarak işaretler: duruma göre KULLANILMAMALIDIR veya KULLANILMAMALIDIR.",
         "ianaN": "IANA bu paketi \"Önerilen\" olarak işaretlemez: sınırlı uygulanabilirliği vardır veya IETF uzlaşı sürecinden geçmemiştir.",
         "signalling": "Sinyalleşme paketi (SCSV): gerçek bir şifre değildir, sürüm düşürme koruması veya yeniden müzakere bilgisi gibi bir protokol sinyali taşır."
+      },
+      "groups": {
+        "title": "Anahtar değişim grupları",
+        "intro": "TLS, gerçek anahtar anlaşma grubunu şifre takımından ayrı olarak supported_groups uzantısında müzakere eder. \"harvest now, decrypt later\" kuantum sonrası anahtar değişimine geçişi hızlandırdığından, aşağıdaki hibrit gruplar klasik bir eğriyi ML-KEM ile birleştirir.",
+        "kind": {
+          "ecdhe": "ECDHE eğrisi",
+          "ffdhe": "Sonlu cisim DH",
+          "pq-hybrid": "PQ hibrit"
+        },
+        "pq": {
+          "classical": "Klasik",
+          "hybrid-pq": "Hibrit PQ"
+        },
+        "recommended": "Önerilen",
+        "obsolete": "Eskimiş",
+        "legacy": "Eski",
+        "combines": "{classical} ile {pq} kombinasyonu",
+        "foot": "X25519MLKEM768, çoğu tarayıcının artık varsayılan olarak gönderdiği hibrit gruptur."
+      }
+    },
+    "f5-ssl-profile-explainer": {
+      "name": "F5 SSL profil açıklayıcı",
+      "blurb": "Bir tmsh client-ssl veya server-ssl profili yapıştırın; rolünü, TLS protokol matrisini ve zincir, yeniden anlaşma, SNI, OCSP ve karşılıklı TLS'yi kapsayan bir güvenlik değerlendirmesini alın — hepsi tarayıcınızda.",
+      "inputLabel": "SSL profili (tmsh)",
+      "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
+      "runsLocally": "Tarayıcınızda işlenir. Hiçbir yere hiçbir şey gönderilmez.",
+      "scopeNote": "Yapıştırılan bir profil bloğunu çözümler. Hiçbir zaman bir BIG-IP'ye bağlanmaz.",
+      "errorTitle": "Profil okunamadı",
+      "err_empty": "Başlamak için bir SSL profili yapıştırın.",
+      "err_noHeader": "Şuna benzer bir satır bekleniyordu: ltm profile client-ssl /Common/name ...",
+      "err_noBody": "Profilde açılış küme parantezi bulunamadı.",
+      "err_tooLong": "Bu girdi ayrıştırılamayacak kadar büyük.",
+      "err_invalid": "Bu bir client-ssl veya server-ssl profiline benzemiyor.",
+      "protocolsHeading": "TLS protokol sürümleri",
+      "permitted": "izin verilen",
+      "disabled": "devre dışı",
+      "findingsHeading": "Güvenlik değerlendirmesi",
+      "settingsHeading": "Ayarlar açıklandı",
+      "topoHeading": "Veri yolunda",
+      "nodeClient": "İstemci",
+      "nodeBigip": "BIG-IP",
+      "nodePool": "Havuz üyesi",
+      "clientLeg": "İstemci tarafı TLS",
+      "serverLeg": "Sunucu tarafı",
+      "thisProfile": "bu profil",
+      "clientNote": "Bir client-ssl profili istemcinin TLS bağlantısını BIG-IP üzerinde sonlandırır. Havuz üyesine giden bağlantı yalnızca bir server-ssl profili uygulanırsa yeniden şifrelenir; yoksa o bölüm düz metindir (SSL offload).",
+      "serverNote": "Bir server-ssl profili BIG-IP'nin havuz üyesine yeni bir TLS bağlantısı açmasını sağlar (yeniden şifreleme). İstemci tarafı ayrı bir client-ssl profili tarafından yönetilir."
+    },
+    "epoch": {
+      "name": "Unix zaman dönüştürücü",
+      "blurb": "Bir Unix zaman damgası — saniye, milisaniye, mikrosaniye veya nanosaniye, otomatik algılanır — ya da bir ISO-8601 tarihi girin ve onu tüm yaygın biçimlerde okuyun. Hepsi tarayıcınızda.",
+      "inputLabel": "Zaman damgası veya tarih",
+      "inputPlaceholder": "1700000000  veya  2023-11-14T22:13:20Z",
+      "runsLocally": "Tarayıcınızda dönüştürülür. Hiçbir yere hiçbir şey gönderilmez.",
+      "scopeNote": "Saf tarih aritmetiği. Birim, sayının büyüklüğünden çıkarılır; gerekirse düzeltin.",
+      "nowButton": "Şimdi",
+      "errorTitle": "Bu okunamadı",
+      "err_empty": "Başlamak için bir zaman damgası veya tarih girin.",
+      "err_invalid": "Bu bir Unix zaman damgası veya ISO-8601 tarihi değil.",
+      "err_tooLong": "Bu girdi çok uzun.",
+      "err_outOfRange": "Bu zaman damgası temsil edilebilir tarih aralığının dışında.",
+      "utcHeading": "UTC tarih ve saat",
+      "formatsHeading": "Tüm biçimler",
+      "dayOfYearLabel": "yılın günü",
+      "relativeNote": "cihazınızın saatine göre"
+    },
+    "irules-event-order": {
+      "name": "iRule olay sırası",
+      "blurb": "Bir BIG-IP virtual server'ının profil yığınını seçin — Client-SSL, HTTP, Server-SSL, havuz — ve yaygın iRule olaylarının CLIENT_ACCEPTED'tan CLIENT_CLOSED'a hangi sırayla tetiklendiğini zaman çizelgesi ve liste olarak görün. Hepsi tarayıcınızda.",
+      "stackLabel": "Virtual server profil yığını",
+      "tog_clientssl": "Client-SSL profili",
+      "tog_http": "HTTP profili",
+      "tog_serverssl": "Server-SSL profili",
+      "tog_pool": "Havuz (yük dengeleme)",
+      "tog_fastl4": "FastL4 (paket hızlı yolu)",
+      "presetsLabel": "Hazır ayarlar:",
+      "preset_https": "HTTPS yeniden şifreleme",
+      "preset_offload": "SSL offload",
+      "preset_http": "HTTP",
+      "preset_tcp": "Saf TCP",
+      "runsLocally": "Tarayıcınızda hesaplanır. Hiçbir yere hiçbir şey gönderilmez.",
+      "scopeNote": "Standard bir virtual server için belgelenmiş F5 davranışının bir modeli. Asla bir BIG-IP'ye bağlanmaz.",
+      "diagramHeading": "Olay dizisi",
+      "listHeading": "Sırayla olaylar",
+      "conditionalHeading": "Koşullu olaylar",
+      "conditionalNote": "Bunlar yalnızca belirli koşullarda tetiklenir: bir TCP::collect veya HTTP::collect, bir yük dengeleme hatası ya da bir 100 Continue yanıtı.",
+      "sideClient": "istemci tarafı",
+      "sideServer": "sunucu tarafı",
+      "sideGlobal": "genel"
+    },
+    "cert-renewal-planner": {
+      "name": "Sertifika yenileme planlayıcısı",
+      "blurb": "Bir TLS sertifikasının geçerliliğini, CA/Browser Forum'un 47 günlük takvimine uyup uymadığını ve bunun gerektirdiği yenileme sıklığını hesaplayın; tümü çevrimdışı.",
+      "notBeforeLabel": "Verildi (notBefore)",
+      "notAfterLabel": "Sona erer (notAfter)",
+      "runsLocally": "Her şey tarayıcınızda çalışır; hiçbir şey yüklenmez.",
+      "exampleLabel": "90 günlük bir örnek deneyin",
+      "summaryHeading": "Bu sertifika",
+      "validity": "{days} günlük geçerlilik",
+      "compliantBadge": "Sınır içinde",
+      "overCapBadge": "Sınırın üzerinde",
+      "maxForPhase": "Verilme tarihi için azami: {max} gün.",
+      "overByText": "Verilme tarihi için {max} günlük azaminin {days} gün üzerinde; herkese açık bir CA bunu vermezdi.",
+      "renewalsValue": "Bu geçerlilikte yılda yaklaşık {n} yenileme.",
+      "remainingHeading": "Cihazınızın saatine göre",
+      "daysRemaining": "Sona ermesine {days} gün.",
+      "expiredText": "{days} gün önce sona erdi.",
+      "renewByText": "{date} tarihine kadar yenileyin (sona ermeden yaklaşık {lead} gün önce)",
+      "renewByDue": "{days} gün sonra",
+      "reuseHeading": "Doğrulamanın yeniden kullanımı (verilme dönemi)",
+      "dcvText": "Alan adı doğrulama (DCV) verileri {days} gün yeniden kullanılabilir.",
+      "siiText": "Kuruluş kimliği (OV/EV SII) {days} gün yeniden kullanılabilir.",
+      "scheduleHeading": "SC-081v3 takvimi",
+      "scheduleIntro": "Herkese açık TLS azamileri sertifikanın verilme tarihine bağlıdır:",
+      "colPeriod": "Şu tarihten itibaren",
+      "colValidity": "Azami geçerlilik (gün)",
+      "colDcv": "DCV yeniden kullanımı (gün)",
+      "colSii": "SII yeniden kullanımı (gün)",
+      "phaseP0": "15 Mar 2026 öncesi",
+      "phaseP1": "15 Mar 2026",
+      "phaseP2": "15 Mar 2027",
+      "phaseP3": "15 Mar 2029",
+      "yourPhase": "← bu sertifika",
+      "projectionHeading": "Her sınırda yenileme yükü",
+      "projectionIntro": "Sınırlar sıkılaştıkça sertifika başına yıllık yenileme:",
+      "perYearShort": "yıl",
+      "note_overCap": "Bu geçerlilik, verilme tarihi için {max} günlük azamiyi aşıyor.",
+      "note_future47": "Bugün uyumlu, ancak nihai 47 günlük sınırdan daha uzun; takvim ilerledikçe daha sık yenileme bekleyin.",
+      "note_publicOnly": "Bu sınırlar yalnızca herkese açık güvenilir TLS sertifikaları için geçerlidir. Özel veya dahili PKI, SC-081v3 kapsamında değildir.",
+      "note_automate": "Bu sıklıklarda, sertifika verme ve yenilemeyi ACME (RFC 8555) ve ARI (RFC 9773) ile otomatikleştirin; el ile yenileme ölçeklenmez.",
+      "err_empty": "Her iki tarihi de girin, verilme ve sona erme.",
+      "err_invalidDate": "Geçerli bir tarih kullanın (YYYY-AA-GG).",
+      "err_order": "Sona erme tarihi, verilme tarihinden sonra olmalıdır.",
+      "err_tooLong": "Bu girdi çok uzun.",
+      "err_invalid": "Bu tarihler okunamadı."
+    },
+    "csr-decoder": {
+      "name": "CSR kod çözücü",
+      "blurb": "Bir PKCS#10 sertifika imzalama isteğini kod çözerek konusunu, açık anahtarını, istenen SAN'ları ve uzantıları ve özniteliklerini okuyun; tümü tarayıcınızda.",
+      "inputLabel": "Sertifika imzalama isteği (PEM, base64 veya hex)",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
+      "exampleLabel": "Örnek bir CSR yükle",
+      "runsLocally": "Her şey tarayıcınızda çalışır; CSR asla yüklenmez.",
+      "notCertNote": "CSR bir istektir, sertifika değildir. Seri numarası, veren makam veya geçerlilik tarihleri yoktur; yalnızca isteyenin bir CA'dan onaylamasını istediği şeydir.",
+      "subjectHeading": "Konu",
+      "colAttr": "Öznitelik",
+      "colValue": "Değer",
+      "noSubject": "Konu adı yok (bu CSR istenen SAN'lara dayanır).",
+      "keyHeading": "Açık anahtar",
+      "keyAlgorithmLabel": "Algoritma",
+      "keySizeLabel": "Boyut",
+      "keySizeValue": "{bits} bit",
+      "keyCurveLabel": "Eğri",
+      "keyExponentLabel": "Üs",
+      "keyExponentValue": "{exp}",
+      "requestedHeading": "İstenen uzantılar",
+      "sanLabel": "Subject Alternative Names",
+      "keyUsageLabel": "Anahtar kullanımı",
+      "ekuLabel": "Genişletilmiş anahtar kullanımı",
+      "basicConstraintsLabel": "Temel kısıtlamalar",
+      "caYes": "CA: evet",
+      "caNo": "CA: hayır",
+      "pathLenValue": "yol uzunluğu {n}",
+      "noRequested": "Hiçbir uzantı istenmedi.",
+      "attributesHeading": "Öznitelikler",
+      "challengePasswordLabel": "Challenge parolası",
+      "unstructuredNameLabel": "Yapılandırılmamış ad",
+      "signatureHeading": "Öz imza",
+      "signatureAlgLabel": "Algoritma",
+      "signatureBitsLabel": "Uzunluk",
+      "signatureBitsValue": "{bits} bit",
+      "versionValue": "Sürüm: v1 ({v})",
+      "derLengthValue": "DER: {bytes} bayt",
+      "err_empty": "Kod çözmek için bir sertifika imzalama isteği yapıştırın.",
+      "err_format": "Bu PEM, base64 veya hex bir CSR'ye benzemiyor.",
+      "err_der": "DER yapısı ayrıştırılamadı.",
+      "err_structure": "Bu DER olarak ayrıştırılıyor ancak bir PKCS#10 sertifikasyon isteği değil."
+    },
+    "oidc": {
+      "name": "OIDC Çözücü",
+      "blurb": "Bir OpenID Connect ID token'ı veya bir .well-known/openid-configuration belgesi yapıştırıp çözün: temel claim'ler, profil claim'leri, endpoint'ler ve yetenekler; gerekli claim'ler, imza algoritması, nonce ve PKCE denetimleriyle.",
+      "inputLabel": "ID token (JWT) veya openid-configuration JSON",
+      "inputPlaceholder": "Bir ID token veya bir OIDC discovery JSON belgesi yapıştırın",
+      "runsLocally": "Çözme işlemi tarayıcınızda yerel olarak çalışır. jwks_uri'yi veya herhangi bir endpoint'i asla çağırmaz ve hiçbir şey hiçbir yere gönderilmez.",
+      "notVerifiedNote": "Bu araç çözer ve açıklar. Token imzasını doğrulamaz, imza anahtarlarını getirmez ve geçerlilik süresini saate göre denetlemez.",
+      "errors": {
+        "empty": "Çözmek için bir ID token veya bir openid-configuration belgesi yapıştırın.",
+        "malformed-json": "Bu JSON gibi başlıyor ama ayrıştırılamadı. Eksik bir küme parantezi, virgül veya tırnak işareti olup olmadığını kontrol edin.",
+        "json-not-oidc": "Bu JSON, ancak bir OpenID Connect discovery belgesi değil. Bir ID token veya bir .well-known/openid-configuration belgesi yapıştırın.",
+        "not-jwt": "Bu bir JWT veya OIDC belgesi gibi görünmüyor. Bir ID token veya bir discovery belgesi yapıştırın.",
+        "jwt-header": "Token başlığı çözülemedi. Bir JWT, noktalarla ayrılmış üç base64url bölümünden oluşur.",
+        "jwt-payload": "Token yükü JSON olarak çözülemedi."
+      },
+      "badges": {
+        "idToken": "ID Token",
+        "discovery": "Discovery",
+        "signed": "İmzalı",
+        "unsigned": "İmzasız",
+        "algNone": "alg: none",
+        "algUnknown": "alg: ?"
+      },
+      "panels": {
+        "header": "Başlık",
+        "coreClaims": "ID token temel claim'leri",
+        "metadata": "Sağlayıcı",
+        "endpoints": "Endpoint'ler",
+        "capabilities": "Yetenekler"
+      },
+      "categories": {
+        "binding": "Token bağlama",
+        "profile": "Profil claim'leri",
+        "email": "E-posta",
+        "address": "Adres",
+        "phone": "Telefon",
+        "oauth": "OAuth / oturum",
+        "other": "Diğer claim'ler"
+      },
+      "fields": {
+        "alg": "Algoritma",
+        "typ": "Tür",
+        "kid": "Anahtar kimliği",
+        "iss": "Veren (iss)",
+        "sub": "Özne (sub)",
+        "aud": "Hedef kitle (aud)",
+        "azp": "Yetkili taraf (azp)",
+        "nonce": "Nonce",
+        "acr": "Auth bağlamı (acr)",
+        "amr": "Auth yöntemleri (amr)",
+        "authTime": "Auth zamanı",
+        "iat": "Verildi (iat)",
+        "nbf": "Şundan önce değil (nbf)",
+        "exp": "Sona erer (exp)",
+        "issuer": "Veren"
+      },
+      "reasons": {
+        "MISSING_REQUIRED_CLAIM": "Gerekli claim {value} eksik. Bir ID token iss, sub, aud, exp ve iat içermelidir.",
+        "ALG_NONE": "Token alg none kullanıyor, yani imzasız. İmzasız bir ID token hiçbir şey kanıtlamaz ve reddedilmelidir.",
+        "ALG_SYMMETRIC": "{value} ile imzalandı, simetrik (HMAC) bir algoritma. Genel bir sağlayıcının ID token'ları, Relying Party'nin açık anahtarla doğrulayabilmesi için normalde RS256 veya ES256 gibi asimetrik bir algoritma kullanır.",
+        "ALG_UNKNOWN": "{value} ile imzalandı, bu aracın tanımadığı bir algoritma. Bunun beklenen, güçlü bir algoritma olduğunu doğrulayın.",
+        "SIGNED_ASYMMETRIC": "{value} ile imzalandı, asimetrik bir algoritma. Relying Party bunu JWKS'deki sağlayıcının açık anahtarına göre doğrular.",
+        "NO_NONCE": "nonce claim'i yok. Nonce, token'ı kimlik doğrulama isteğine bağlar ve yeniden oynatmaya karşı korur. İstek bir tane gönderdiyse mevcut olmalıdır.",
+        "MULTI_AUD_NO_AZP": "Token'ın birden çok hedef kitlesi var ama azp (yetkili taraf) yok. Birden fazla hedef kitleyle azp, token'ın hangi istemci için olduğunu belirtmelidir.",
+        "DISCOVERY_MISSING_FIELD": "Gerekli discovery alanı {value} eksik.",
+        "DISCOVERY_ALG_NONE": "Sağlayıcı, ID token'lar için none imza algoritmasını duyuruyor; bu, imzasız token'lara izin verir. Bu sunulmamalıdır.",
+        "DISCOVERY_NO_PKCE": "code_challenge_methods_supported yok. Sağlayıcı, authorization code akışı için önerilen PKCE'yi duyurmuyor.",
+        "DISCOVERY_NO_PKCE_S256": "PKCE duyuruluyor ama S256 yöntemi olmadan. S256, önerilen code challenge yöntemidir."
+      },
+      "flow": {
+        "heading": "Authorization code akışı",
+        "laneRp": "Relying Party",
+        "laneOp": "OpenID Sağlayıcısı",
+        "s1": "Kullanıcıyı scope=openid ile sağlayıcıya yönlendir",
+        "s2": "Sağlayıcı kullanıcının kimliğini doğrular ve onay alır",
+        "s3": "Sağlayıcı bir authorization code ile geri yönlendirir",
+        "s4": "Relying Party kodu token endpoint'inde takas eder",
+        "s5": "Sağlayıcı bir ID token ve bir access token döndürür",
+        "s6": "Relying Party ID token imzasını JWKS'ye göre doğrular",
+        "s7": "Relying Party access token ile UserInfo'yu çağırabilir",
+        "s8": "Sağlayıcı kullanıcının claim'lerini döndürür"
       }
     }
   },
@@ -521,7 +841,7 @@
     "short3": "Etkileşimli araçlar tamamen tarayıcınızda çalışır. İçlerine yapıştırdığınız veya yazdığınız şey cihazınızda kalır ve hiçbir yere iletilmez.",
     "short4": "Verilerle ilgili yalnızca üç şey vardır ve her biri aşağıda açıklanmıştır: kendi tarayıcınızda kaydedilen tek bir tema ayarı, her site ziyaretinin barındırma katmanında oluşturduğu standart bağlantı günlükleri ve e-posta ile göndermeyi seçtiğiniz herhangi bir mesaj.",
     "controllerTitle": "Sorumlu kim",
-    "controllerBody": "Burası Rodolfo Nützmann'ın kişisel web sitesidir (ronutz.com). Herhangi bir gizlilik sorusu için veya aşağıda açıklanan haklardan herhangi birini kullanmak için hello@ronutz.com adresine yazın. Talepler doğrudan, veri sorumlusu sıfatıyla Rodolfo Nützmann tarafından ele alınır.",
+    "controllerBody": "Burası Rodolfo Nützmann'ın kişisel web sitesidir (ronutz.com). Herhangi bir gizlilik sorusu için veya aşağıda açıklanan haklardan herhangi birini kullanmak için {email} adresine yazın. Talepler doğrudan, veri sorumlusu sıfatıyla Rodolfo Nützmann tarafından ele alınır.",
     "noTrackTitle": "Çerez yok, izleme yok, analitik yok",
     "noTrackBody": "Bu site hiçbir türde çerez yerleştirmez. Hiçbir analitik hizmeti (Google Analytics veya Plausible gibi), hiçbir reklam ağı, hiçbir sosyal medya izleme pikseli ve hiçbir cihaz parmak izi kullanmaz. Ziyaretiniz bu amaçlarla ölçülmez, profillenmez veya kimseyle paylaşılmaz.",
     "browserTitle": "Tarayıcınızda ne saklanır",
@@ -537,12 +857,12 @@
     "childrenTitle": "Çocuklar",
     "childrenBody": "Bu site profesyonel, genel bir kitleye yöneliktir. Çocuklara yönelik değildir ve bilerek onlardan kişisel veri toplamaz.",
     "rightsTitle": "Haklarınız",
-    "rightsBody": "Yaşadığınız yere bağlı olarak, kişisel verileriniz üzerinde haklara sahipsiniz; bunlara erişmek, düzeltilmelerini veya silinmelerini sağlamak, işlenmelerine itiraz etmek veya kısıtlamak, taşınabilir bir biçimde bir kopya istemek ve nasıl işlendikleri hakkında bilgilendirilmek dahil. Bunlardan herhangi birini kullanmak için yalnızca hello@ronutz.com adresine yazın. Burada çok az kişisel veri işlendiği için, pratikte genellikle yapılacak çok az şey vardır, ancak kanal her zaman açıktır.",
+    "rightsBody": "Yaşadığınız yere bağlı olarak, kişisel verileriniz üzerinde haklara sahipsiniz; bunlara erişmek, düzeltilmelerini veya silinmelerini sağlamak, işlenmelerine itiraz etmek veya kısıtlamak, taşınabilir bir biçimde bir kopya istemek ve nasıl işlendikleri hakkında bilgilendirilmek dahil. Bunlardan herhangi birini kullanmak için yalnızca {email} adresine yazın. Burada çok az kişisel veri işlendiği için, pratikte genellikle yapılacak çok az şey vardır, ancak kanal her zaman açıktır.",
     "rightsGdpr": "Avrupa Ekonomik Alanı'nda veya Birleşik Krallık'ta iseniz, yerel veri koruma denetim makamınıza şikayette bulunma hakkına da sahipsiniz.",
     "rightsLgpd": "Brezilya'da iseniz, LGPD'nin 18. Maddesinde belirtilen haklara sahipsiniz ve ulusal veri koruma makamına (ANPD) da başvurabilirsiniz.",
     "changesTitle": "Bu bildirimde değişiklikler",
     "changesBody": "Bu bildirim değişirse, gözden geçirilmiş sürüm bu sayfada yayınlanacak ve aşağıdaki tarih güncellenecektir. Esaslı değişiklikler geriye dönük olarak uygulanmayacaktır.",
-    "updated": "Son güncelleme: 28 Haziran 2026",
+    "updated": "Son güncelleme: 30 Haziran 2026",
     "backHome": "Ana sayfaya dön"
   },
   "footer": {
@@ -553,7 +873,7 @@
     "contribute": "Çevirileri iyileştirmeye yardım et",
     "feedback": "Geri bildirim gönder",
     "api": "API referansı",
-    "contributeTools": "Bir araç katkıla",
+    "contributeTools": "Bir fikir paylaş",
     "license": "Lisans",
     "coffee": "Bana bir kahve ısmarla"
   },
@@ -868,7 +1188,9 @@
         "label": "Resmi eğitim",
         "description": "Red Education aracılığıyla kurs ayırtın"
       }
-    }
+    },
+    "feedbackNote": "Sitede bir bug, bir hata ya da bir yanlışlık mı buldunuz?",
+    "feedbackLink": "Bunu fikirler sayfasında paylaşın"
   },
   "certs": {
     "title": "Sertifikalar ve nitelikler",
@@ -935,7 +1257,6 @@
     "p1Title": "Tahmin etme, hesapla",
     "p1Body": "Bu sitedeki araçlar yanıtları yerel ve belirleyici biçimde hesaplar. Verilerinle bir sunucuya başvurmazlar ve tahmin yürütmezler. Tarayıcında çalışan, tarayıcında kalır.",
     "p2Title": "Çekirdeği açık",
-    "p2Body": "Araçların ardındaki motor açık kaynaktır, izin verici bir lisansla yayımlanır. Bu site, tıpkı başka birinin yapabileceği gibi onun üzerine kuruludur. Buradaki açıklık bir pazarlama ifadesi değil; mimaridir.",
     "p3Title": "Kurulurken belgelenmiş",
     "p3Body": "Kod tabanının her temel parçası yorumlanır ve belgelenir; sonradan eklenen bir şey olarak değil, sabit bir kural olarak. Bu yapı okunabilir olmak için tasarlandı; onu sürdürecek kişi için ve ona sahip çıkacak kişi için.",
     "p4Title": "Hizmet etmek ve dolaşmak için yapıldı",
@@ -951,7 +1272,7 @@
     "stackType": "Tipografi",
     "stackTypeV": "Metin için Inter, veri ve kod için JetBrains Mono",
     "stackEngine": "Araç motoru",
-    "stackEngineV": "Açık çekirdek motor, izin verici bir lisansla yayımlandı",
+    "stackEngineV": "Tamamen tarayıcıda çalışan deterministik bir hesaplama katmanı",
     "stackSearch": "Arama",
     "stackSearchV": "İstemci tarafında statik tam metin arama; arama sunucusu yok",
     "vibeTitle": "Bu vibe coding mi?",
@@ -972,7 +1293,10 @@
     "redblueLabel": "Kırmızı ve mavi",
     "redblueBody": "Bir red-teamer'ın yakalanmış bir token'ı okumasını sağlayan aynı kod çözme ve açıklama, bir blue-teamer'ın kendi yığınının ne yaydığını anlamasını sağlar. Platform bilinçli olarak bu çizginin analiz tarafında durur: tanımlar, kod çözer, dönüştürür ve açıklar; sahteleme, enjeksiyon veya kontrolleri aşma noktasına gelmez. Bu sınır bir tasarım kararıdır, bir gözden kaçırma değil; bu araçlar öğretmek ve teşhis etmek için vardır, silah olmak için değil.",
     "localLabel": "Yerel ve belirlenimci",
-    "localBody": "Her şey tarayıcıda çalışır. Sayfadaki aracın çağırdığı saf işlev, API'nin çağırdığıyla aynıdır; aynı girdiyle aynı çıktıyı döndürür, durum tutmaz ve bir sunucuya hiçbir şey göndermez. Çerez yok, analitik yok; Gizlilik sayfasının tam olarak açıkladığı gibi."
+    "localBody": "Her şey tarayıcıda çalışır. Araç saf bir işlev çağırır: aynı girdiyle aynı çıktıyı verir, durum tutmaz ve bir sunucuya hiçbir şey göndermez. Çerez yok, analitik yok; Gizlilik sayfasının ayrıntılı olarak açıkladığı gibi.",
+    "thanksTitle": "Özel teşekkür",
+    "p2Body": "Her aracın çalıştırdığı deterministik mantık, aracın bütünüdür: gizli bir sunucu adımı, hesap veya telemetri yoktur. Her şey tarayıcınızda çalışır.",
+    "changelogLink": "Değişiklik günlüğü"
   },
   "support": {
     "title": "Bu projeyi destekle",
@@ -1030,26 +1354,12 @@
     "accessRoleLabel": "Rol",
     "accessPermsLabel": "Sahip izinleri"
   },
-  "contributeTools": {
-    "eyebrow": "Açık araç kutusu",
-    "title": "Bir araç katkıla",
-    "lede": "Araç kutusu büyümek için tasarlandı. Her araç, açık motor üzerinde küçük, kendini tanımlayan bir modüldür ve site onu başka herkesin yükleyebileceği şekilde yükler. Uygun bir aracın varsa, öner.",
-    "shapeTitle": "Bir araç nedir",
-    "shapeBody": "Bir araç bir arada üç şeydir: onu tanımlayan bir manifest (ne olduğu, kabul ettiği girdi, doğruluğunun nereden geldiği), işi yapan tek bir saf çalıştırma işlevi ve işlevin doğru olduğunu kanıtlayan sabit girdi-çıktı çiftlerinden oluşan bir referans vektörleri kümesi. Motor bir aracı manifestinden yükler, böylece iyi biçimlendirilmiş bir modül sitenin geri kalanına dokunmadan yerine oturur.",
-    "principlesTitle": "Bir aracın uyması gerekenler",
-    "principlesBody": "Hesaplama yerel olarak çalışır ve belirlenimcidir: aynı girdi her zaman aynı çıktıyı verir; sonuçta saat, ağ ya da rastgelelik yoktur. Hassas olan her şey varsayılan olarak cihazda kalır. Doğruluk, görüşe değil, referans vektörlerine ve bir RFC ya da yayımlanmış bir standart gibi belirtilen kaynaklara dayanır. Kod, izin verici bir lisansla yayımlanır; böylece site ve başka herkes onun üzerine inşa edebilir.",
-    "proposeTitle": "Bir tane öner",
-    "proposeBody": "E-posta ile kısa bir öneri gönder: aracın ne hesapladığı, üretmesi gereken tam çıktıyla birlikte örnek bir girdi ve doğruluğunun dayandığı kaynak. Manifestin bir taslağı ve birkaç referans vektörü hoş karşılanır ama zorunlu değildir. Uyuyorsa, motora ve araç kutusuna eklenir.",
-    "emailLabel": "E-posta",
-    "backToTools": "Araç kutusuna dön"
-  },
   "api": {
     "title": "API",
     "lede": "Bu sitedeki araçlar tarayıcında çalışır ve verilerini cihazında tutar. Otomasyon için (betikler, pipeline'lar ve entegrasyonlar) aynı belirlenimci hesaplamalar küçük bir HTTP API olarak sunulur. Bu, tarayıcı araçlarının programatik karşılığıdır, onların yerine geçen bir şey değil.",
     "privacyTitle": "Bunun verilerin için anlamı",
     "privacyBody": "API yalnızca ona gönderdiğin girdiyi alır, bir sonuç hesaplar ve onu döndürür. Durumsuzdur ve hiçbir sorgu değerini veya istek gövdesini günlüğe yazmaz. Garantili sıfır veri çıkışına ihtiyacın varsa, tarayıcı araçlarını kullan ya da açık motoru kendin çalıştır.",
     "engineTitle": "Tarayıcıyla aynı motor",
-    "engineBody": "Her uç nokta, tarayıcıdaki aracın çağırdığı motor işlevinin aynısını çağırır; böylece API ve tarayıcı bayt bayt aynı sonuçları döndürür. O motor, @ronutz/netcore, izin verici bir lisansla açık kaynaklıdır.",
     "specTitle": "Spesifikasyon",
     "specBody": "Tam sözleşme OpenAPI 3.1 olarak yayımlanır. İndir, kendi araçlarını ona yönelt ya da aşağıdaki referansı oku.",
     "downloadSpec": "openapi.yaml indir",
@@ -1073,17 +1383,57 @@
     "descriptionLabel": "Açıklama",
     "viewReference": "Referans",
     "viewSwagger": "Swagger UI",
-    "swaggerLoadError": "Swagger UI yüklenemedi."
+    "swaggerLoadError": "Swagger UI yüklenemedi.",
+    "engineBody": "Her uç nokta, tarayıcıdaki aracın çalıştırdığı saf fonksiyonun aynısını çalıştırır; böylece API ve tarayıcı bayt bayt aynı sonuçları döndürür."
   },
   "license_page": {
-    "eyebrow": "Açık çekirdek",
+    "eyebrow": "Koşullar",
     "title": "Lisans",
-    "lede": "ronutz.com açık çekirdeklidir: her aracı çalıştıran motor açık kaynaktır, ancak üzerine kurulu web sitesi değildir.",
-    "openHeading": "Açık kaynak, motor",
-    "openBody": "Bu sitedeki her aracın ve her API yanıtının arkasındaki motor olan @ronutz/netcore, Apache License 2.0 altında yayımlanır. Tarayıcıdaki araçların çağırdığı işlevin aynısını API de çağırır, dolayısıyla onu bu lisans kapsamında özgürce kullanabilir, değiştirebilir ve üzerine geliştirme yapabilirsiniz.",
     "closedHeading": "Kapalı kaynak, bu web sitesi",
     "closedBody": "Web sitesinin kendisi kapalı kaynaktır. Tasarımı, arayüzü, yazılı içeriği (her Learn makalesi dahil), markası ve bu araçların burada bir araya getirilip sunulma biçimi özel mülktür, tüm hakları saklıdır. Önceden yazılı izin olmadan sitenin veya içeriğinin kopyalanmasına, çoğaltılmasına, değiştirilmesine, yeniden dağıtılmasına ya da bunlardan türev çalışmalar oluşturulmasına izin verilmez.",
     "contact": "Lisansla ilgili sorularınız mı var? <a>İletişime geçin.</a>",
-    "backHome": "Araçlara dön"
+    "backHome": "Araçlara dön",
+    "thirdHeading": "Açık kaynak bileşenler",
+    "lede": "ronutz.com tescilli bir çalışmadır, tüm hakları saklıdır. Bu koşullar web sitesini ve içeriğini kapsar. Site, kendi lisans koşulları altında kullanılan ve yeniden dağıtılan açık kaynaklı yazılımlar üzerine kuruludur; aşağıda anılmıştır.",
+    "thirdBody": "Bu site açık kaynaklı çalışmaya dayanır. Sitenin kendisi Next.js ve React ile oluşturulmuş ve statik dışa aktarma olarak yayımlanmıştır; uluslararasılaştırma next-intl kullanır; Learn içeriği next-mdx-remote, gray-matter, remark-gfm ve js-yaml ile işlenir; ve arama Pagefind tarafından sağlanır. Bu bileşenler, next-mdx-remote (Mozilla Public License 2.0) dışında MIT License altında sunulur. API referansı, Apache License 2.0 altında Swagger UI'yi gömer. Her bileşen kendi lisansı altında kalır ve tüm bildirimler kaynak kodla birlikte gelir."
+  },
+  "contributeIdeas": {
+    "eyebrow": "Fikirlere açık",
+    "title": "Bir fikir paylaşın",
+    "lede": "Bu araç kutusu büyümek için kuruldu ve nereye gitmesi gerektiğine dair en net sinyal, onu kullananlardan gelir. Bir bug, bir hata ya da bir yanlışlık mı buldunuz? Henüz burada olmayan bir araç mı eksik? Bir şeyi ele almanın daha iyi bir yolunu ya da farklı ifade edeceğiniz bir sonucu mu gördünüz? Gönderin; her türlü katkı memnuniyetle karşılanır.",
+    "sendTitle": "Neler gönderebilirsiniz",
+    "sendBody": "Her türden bug, hata ve yanlışlık: yanlış davranan bir araç, hatalı bir sonuç, bir Learn makalesindeki bir yanlış ya da yalnızca tuhaf görünen bir şey. Halihazırda var olan araçlar için özellik istekleri. Araç kutusunda olması gereken yeni araç fikirleri. Learn makalelerine düzeltmeler ve eklemeler, örneğin daha net bir açıklama, daha iyi bir kaynak ya da eksik bir konu. Ya da yalnızca bir soruna farklı bir bakış açısı. Kabataslak olması sorun değil; bir cümle bir sohbeti başlatmaya yeter.",
+    "toolTitle": "Yeni bir araç öneriyorsanız",
+    "toolBody": "Buradaki araçlar küçük, kendini tanımlayan modüllerdir: aracın ne olduğunu ve doğruluğunun nereden geldiğini söyleyen bir manifest, işi yapan tek bir saf fonksiyon ve bunu kanıtlayan sabit girdi-çıktı çiftleri olan bir golden vector kümesi. İyi bir aday yerel ve deterministik olarak hesaplar (aynı girdi her zaman aynı çıktıyı verir; sonuçta saat, ağ veya rastgelelik yoktur), hassas olan her şeyi cihazda tutar ve doğruluğunu bir görüşe değil, RFC gibi alıntılanmış bir kaynağa dayandırır. Bir tane önermek için bunların hiçbirini inşa etmeniz gerekmez: yalnızca neyi hesaplaması gerektiğini, bir örneği ve dayandığı kaynağı tarif edin.",
+    "fitRule": "Basit bir test karar verir. Buradaki her araç tamamen tarayıcınızda çalışır ve hiçbir yere bir şey göndermez; bu yüzden yeni bir araç, bir bilgisayarın yalnızca yazdıklarınızdan, sabit ve yayımlanmış bir kurala uyarak çözebileceği bir şey olmalıdır. İnternete çıkması, bir şeyi canlı sorgulaması, sizi oturum açtırması ya da sizi hatırlaması gerekiyorsa, burada yeri yoktur.",
+    "fitYes": "Uygun:",
+    "fitYesBody": "yapıştırdığınız bir şeyi çözme veya açıklama (bir token, bir sertifika, bir yapılandırma, bir komut çıktısı), biçimler arasında dönüştürme, bir standart ya da formülden hesaplama veya bir kurala göre üretme; örneğin bir UUID, bir karma ya da bir komut satırı.",
+    "fitNo": "Uygun değil:",
+    "fitNoBody": "internete çıkması veya bir şeyi canlı kontrol etmesi gereken her şey (gerçek bir web sitesini test etmek, canlı bir DNS sunucusunu sorgulamak, bir adresi taramak), bir hesap, oturum açma ya da kayıtlı veri gerektiren her şey veya yanıtı yayımlanmış bir standartla belirlenmemiş her şey.",
+    "fitUnsure": "Fikrinizin hangi tarafta olduğundan emin değil misiniz? Yine de gönderin ve ne yapması gerektiğini söyleyin. Uygun olup olmadığını ve nedenini dürüstçe söyleyeceğim.",
+    "emailTitle": "Bana nasıl ulaşırsınız",
+    "emailBody": "Kanal e-postadır. Ne bulduğunuzu ya da ne istediğinizi, üzerinde işlem yapılabilecek kadar ayrıntıyla anlatın: bir örnek, bir bağlantı, tam ifade, ne uygunsa. Araç kutusunu daha iyi hale getiriyorsa, yapılır.",
+    "emailLabel": "E-posta",
+    "backToTools": "Araç kutusuna dön"
+  },
+  "languageStatus": {
+    "title": "Çeviri durumu",
+    "reviewed": "Bir kişi tarafından gözden geçirildi",
+    "complete": "Makine, tamamlandı",
+    "partial": "Makine, sürüyor",
+    "explainTitle": "Çeviriler nasıl işaretlenir",
+    "explainBody": "İngilizce ve Brezilya Portekizcesi bir kişi tarafından yazılır ve gözden geçirilir. Diğer dillerin çoğu makine çevirisidir ve ne kadar ilerlediğine göre işaretlenir: bir dil tüm siteyi kapsadığında kehribar, daha yeni içerik hâlâ İngilizceyken ve aradaki farkı kapatırken sarı. Kırmızıyla işaretlenen dillerin henüz çevirisi yoktur ve şimdilik İngilizce gösterilir. Makine çevirisi sayfalarda kısa bir not da bulunur ve bunların herhangi birini iyileştirmeye yardımcı olabilirsiniz.",
+    "stub": "Henüz çevrilmedi"
+  },
+  "changelog": {
+    "eyebrow": "Değişiklik günlüğü",
+    "title": "Yenilikler",
+    "lede": "Yeni araçların, yeni Learn makalelerinin ve bu sitedeki önemli değişikliklerin sürekli bir kaydı. Bugün {count} araç kullanımda.",
+    "kindLaunch": "Lansman",
+    "kindTool": "Yeni araç",
+    "kindFeature": "Özellik",
+    "kindI18n": "Yerelleştirme",
+    "kindContent": "İçerik",
+    "kindInfra": "Altyapı"
   }
 }

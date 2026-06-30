@@ -1,0 +1,47 @@
+---
+slug: irule-events-modules-and-profiles
+title: "O Que Faz um Evento Disparar: Provisionamento e Perfis"
+summary: "Um evento de iRule só está disponível se duas coisas se alinharem: o módulo ao qual ele pertence está provisionado, e o perfil que o produz está anexado ao virtual server. Alguns eventos precisam de um terceiro ingrediente — um comando collect explícito. Especifique um evento cujos pré-requisitos faltam e não há erro; ele simplesmente nunca dispara."
+concepts: ["irules", "module provisioning", "profiles", "tmos", "event availability"]
+relatedTools: ["irules-event-order"]
+relatedArticles: ["irule-event-order-explained", "irule-fastl4-vs-standard-events"]
+category: networking
+order: 6
+status: reviewed
+updated: "2026-06-29"
+---
+
+A ordem dos eventos é só metade da história. Antes de um evento poder assumir seu lugar na sequência, ele precisa *existir* para aquele virtual server — e se existe depende do que está provisionado e do que está anexado. Erre nisso e a falha é silenciosa: o BIG-IP não rejeita uma iRule que escuta um evento indisponível; o handler apenas nunca roda.
+
+## Portão um: provisionamento de módulo
+
+Muitos eventos pertencem a um módulo específico do TMOS, e esse módulo precisa estar **provisionado** (e licenciado) para o evento disparar. Os eventos de acesso do APM, os eventos de requisição e resposta do ASM/Advanced WAF, os eventos de bot-defense e outros vêm cada um do seu módulo. Escreva `when ASM_REQUEST_BLOCKING { ... }` em um equipamento onde o ASM não está provisionado e nada acontece — sem erro, sem disparo. Os eventos centrais de conexão do LTM (`CLIENT_ACCEPTED`, `LB_SELECTED`, os eventos de encerramento da conexão) são a exceção: fazem parte do LTM base e estão sempre disponíveis.
+
+## Portão dois: seleção de perfil
+
+Dentro do LTM, os eventos L7 e SSL são produzidos por **perfis** anexados ao virtual server. Essa é a dependência que esta ferramenta modela, e a regra é consistente:
+
+- `HTTP_REQUEST` e `HTTP_RESPONSE` exigem um **perfil HTTP**. Sem perfil HTTP, sem eventos HTTP — o BIG-IP não está analisando HTTP, então não há nada em que disparar.
+- `CLIENTSSL_HANDSHAKE` e os outros eventos TLS do lado cliente exigem um **perfil Client-SSL**; os eventos TLS do lado servidor exigem um **perfil Server-SSL**.
+- `CLIENT_DATA` e `SERVER_DATA` são os eventos de payload bruto. São mais relevantes em um virtual server TCP puro **sem** perfil de serviço L7 — quando não há perfil HTTP para analisar o fluxo, é assim que uma iRule inspeciona os bytes diretamente.
+
+Ou seja, o mesmo virtual server lhe dá eventos completamente diferentes dependendo do seu conjunto. Adicione um perfil HTTP e `HTTP_REQUEST` aparece enquanto o caminho bruto de `CLIENT_DATA` recua; remova-o e ocorre o inverso.
+
+## Portão três: um collect explícito
+
+Alguns eventos não disparam por conta própria mesmo com o perfil presente — eles esperam a sua iRule pedir. `CLIENT_DATA` e `SERVER_DATA` exigem um `TCP::collect`; `HTTP_REQUEST_DATA` e `HTTP_RESPONSE_DATA` exigem um `HTTP::collect`. Até você emitir o collect, o payload é repassado adiante e o evento de dados nunca dispara:
+
+```
+when CLIENT_ACCEPTED {
+  TCP::collect
+}
+when CLIENT_DATA {
+  # só alcançado por causa do collect acima
+}
+```
+
+É por isso que esta ferramenta lista esses como eventos condicionais, e não como parte do fluxo automático.
+
+## A lista prática
+
+Quando um evento "não dispara", percorra os três portões em ordem: o **módulo** está provisionado, o **perfil** está anexado, e o evento precisa de um **collect** que você não emitiu? Quase todo caso de "minha iRule não faz nada" é um desses três, não um bug na lógica — e nenhum deles produz uma mensagem de erro para apontar a causa.

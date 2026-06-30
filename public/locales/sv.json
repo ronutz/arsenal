@@ -67,6 +67,11 @@
       "title": "Stöd det här verktyget",
       "pitch": "Det här verktyget är gratis och byggt för att förbli så. Om det förtjänar en plats i ditt arbetsflöde kan du hjälpa till att finansiera underhållet och det som kommer härnäst.",
       "purposeLabel": "Finansieras nu"
+    },
+    "stats": {
+      "tools": "Verktyg",
+      "articles": "Artiklar",
+      "sectionLabel": "Verktygslådan i korthet"
     }
   },
   "tools": {
@@ -77,6 +82,11 @@
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Beräkna",
       "runsLocally": "Körs lokalt, ingenting skickas till någon server.",
+      "prefixSlider": "Prefixlängd",
+      "bitsHeading": "Adressbitar",
+      "bitsNetwork": "Nätverk",
+      "bitsHost": "Värd",
+      "bitsNote": "De markerade bitarna anger nätverket — resten adresserar värdar i det.",
       "results": {
         "network": "Nätadress",
         "broadcast": "Broadcastadress",
@@ -175,7 +185,11 @@
         "tooMany": "För många poster. Korta ner listan och försök igen.",
         "noReqs": "Lägg till minst ett subnätskrav med ett antal värdar.",
         "noPrefixes": "Ange minst ett prefix, ett per rad."
-      }
+      },
+      "rangeHeading": "Adresslayout",
+      "usableShort": "användbara",
+      "rfcNote": "/31 och /32 reserverar inget: varje adress är användbar (RFC 3021).",
+      "reservedNote": "Den första adressen är nätverket och den sista är broadcast; båda är reserverade, så användbara = totalt − 2."
     },
     "title": "Verktyg",
     "lede": "Små, snabba och integritetsvänliga verktyg som körs helt i din webbläsare. Inget du skriver skickas någonstans. Fler är på väg.",
@@ -221,7 +235,12 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Kopiera",
-      "copied": "Kopierad"
+      "copied": "Kopierad",
+      "struct": {
+        "heading": "Så är HMAC uppbyggt",
+        "innerHash": "inre hash",
+        "note": "HMAC hashar meddelandet två gånger. Nyckeln kombineras med XOR med en fast inre pad före den första hashen och med en yttre pad före den andra, och denna konstruktion med två pads är det som förhindrar length-extension-attacker. Nyckeln reduceras först till hashens blockstorlek."
+      }
     },
     "base64": {
       "name": "Base64-, Base32-, Hex- och procent-codec",
@@ -273,7 +292,18 @@
       "encodingLabel": "base64url",
       "plainValueLabel": "= code_verifier",
       "copy": "Kopiera",
-      "copied": "Kopierad"
+      "copied": "Kopierad",
+      "flowHeading": "Så fungerar PKCE",
+      "laneClient": "App / Klient",
+      "laneServer": "Auktoriseringsserver",
+      "s1": "Generera en slumpmässig code_verifier",
+      "s2": "Härled code_challenge",
+      "s3": "Auktoriseringsbegäran bär challenge",
+      "s4": "Servern lagrar challenge",
+      "s5": "Auktoriseringskod returnerad",
+      "s6": "Tokenbegäran bär verifier",
+      "s7": "Servern härleder om och jämför",
+      "s8": "Access- och refresh-token utfärdade"
     },
     "uuid": {
       "name": "UUID-generator och -inspektör (v4 / v7)",
@@ -336,6 +366,11 @@
         "algNone": "Denna token är osäkrad (alg: none), så det finns ingen signatur att verifiera.",
         "unsupportedAlg": "Verifiering i webbläsaren täcker endast HS256/384/512. {alg} är asymmetrisk och behöver en publik nyckel.",
         "hint": "Hemligheten används bara för att beräkna en HMAC i din webbläsare. Den skickas aldrig någonstans."
+      },
+      "struct": {
+        "heading": "Ett JWT:s uppbyggnad",
+        "signingInput": "Signaturindata",
+        "note": "Header och payload är bara base64url-kodade, inte krypterade, så vem som helst kan läsa dem. Signaturen beräknas över header och payload sammanfogade med en punkt, och är det som en verifierare kontrollerar."
       }
     },
     "x509": {
@@ -361,7 +396,8 @@
         "details": "Detaljer",
         "publicKey": "Publik nyckel",
         "extensions": "Tillägg",
-        "fingerprints": "Fingeravtryck"
+        "fingerprints": "Fingeravtryck",
+        "sct": "Certificate Transparency"
       },
       "fields": {
         "version": "Version",
@@ -392,6 +428,25 @@
         "sha256": "SHA-256",
         "sha1": "SHA-1",
         "computing": "Beräknar fingeravtryck..."
+      },
+      "chainHeading": "Förtroendekedja",
+      "tierRoot": "Rot-CA",
+      "tierIntermediate": "Mellanliggande CA",
+      "tierLeaf": "Slutentitetscertifikat",
+      "roleRoot": "Självsignerat förtroendeankare",
+      "roleIntermediate": "Signerat av en rot; signerar slutcertifikat",
+      "roleLeaf": "Identifierar en server eller klient",
+      "thisCert": "detta certifikat",
+      "issuedBy": "Utfärdat av",
+      "signs": "signerar",
+      "trustNote": "Förtroende flödar nedåt: varje certifikat signeras av det ovanför, ända upp till en rot som ditt system redan litar på.",
+      "sct": {
+        "intro": "Inbäddade SCT:er: {n}. Var och en är en CT-loggs signerade bevis på att den registrerade detta certifikat; webbläsare kräver ett minimiantal för att certifikatet ska vara betrott.",
+        "entry": "SCT {i}",
+        "logId": "Logg-ID",
+        "timestamp": "Loggat den",
+        "signature": "Signatur",
+        "note": "Signaturer visas men verifieras inte här; att verifiera en SCT kräver loggens publika nyckel och förcertifikatet."
       }
     },
     "ipv6": {
@@ -427,7 +482,13 @@
       },
       "badges": {
         "multicast": "multicast"
-      }
+      },
+      "segHeading": "Adressstruktur",
+      "networkSeg": "Nätverksprefix",
+      "ifaceId": "Gränssnitts-ID",
+      "hostBits": "Värdbitar",
+      "prefixNote": "Bitarna till vänster om gränsen fastställs av prefixet; bitarna till höger identifierar värden inom det.",
+      "conventionNote": "Inget prefix angavs, så den streckade linjen markerar den konventionella /64-delningen: routingprefix och subnät till vänster, den 64-bitars gränssnittsidentifieraren till höger."
     },
     "cipher": {
       "name": "Avkodare för chiffersviter",
@@ -508,6 +569,265 @@
         "ianaD": "IANA markerar denna svit som \"D\" (avrådd): den BÖR INTE eller FÅR INTE användas, beroende på situationen.",
         "ianaN": "IANA markerar inte denna svit som \"Rekommenderad\": begränsad tillämpbarhet eller har inte gått igenom IETF:s konsensusprocess.",
         "signalling": "Signaleringssvit (SCSV): inget riktigt chiffer, utan bär en protokollsignal som nedgraderingsskydd eller omförhandlingsinfo."
+      },
+      "groups": {
+        "title": "Nyckelutbytesgrupper",
+        "intro": "TLS förhandlar själva nyckelöverenskommelsegruppen separat från chiffersviten, i tillägget supported_groups. Eftersom \"harvest now, decrypt later\" driver övergången till post-kvant-nyckelutbyte, kombinerar hybridgrupperna nedan en klassisk kurva med ML-KEM.",
+        "kind": {
+          "ecdhe": "ECDHE-kurva",
+          "ffdhe": "Ändlig-kropp-DH",
+          "pq-hybrid": "PQ-hybrid"
+        },
+        "pq": {
+          "classical": "Klassisk",
+          "hybrid-pq": "Hybrid PQ"
+        },
+        "recommended": "Rekommenderas",
+        "obsolete": "Föråldrad",
+        "legacy": "Äldre",
+        "combines": "Kombinerar {classical} med {pq}",
+        "foot": "X25519MLKEM768 är den hybridgrupp som de flesta webbläsare nu skickar som standard."
+      }
+    },
+    "f5-ssl-profile-explainer": {
+      "name": "F5 SSL-profilförklarare",
+      "blurb": "Klistra in en tmsh client-ssl- eller server-ssl-profil och få dess roll, TLS-protokollmatrisen och en säkerhetsbedömning av kedja, omförhandling, SNI, OCSP och ömsesidig TLS — allt i din webbläsare.",
+      "inputLabel": "SSL-profil (tmsh)",
+      "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
+      "runsLocally": "Bearbetas i din webbläsare. Inget skickas någonstans.",
+      "scopeNote": "Avkodar ett inklistrat profilblock. Kontaktar aldrig en BIG-IP.",
+      "errorTitle": "Det gick inte att läsa profilen",
+      "err_empty": "Klistra in en SSL-profil för att börja.",
+      "err_noHeader": "En rad som denna förväntades: ltm profile client-ssl /Common/name ...",
+      "err_noBody": "Ingen inledande klammerparentes hittades i profilen.",
+      "err_tooLong": "Den här inmatningen är för stor att tolka.",
+      "err_invalid": "Detta ser inte ut som en client-ssl- eller server-ssl-profil.",
+      "protocolsHeading": "TLS-protokollversioner",
+      "permitted": "tillåten",
+      "disabled": "inaktiverad",
+      "findingsHeading": "Säkerhetsbedömning",
+      "settingsHeading": "Inställningar förklarade",
+      "topoHeading": "I datavägen",
+      "nodeClient": "Klient",
+      "nodeBigip": "BIG-IP",
+      "nodePool": "Poolmedlem",
+      "clientLeg": "TLS på klientsidan",
+      "serverLeg": "Serversidan",
+      "thisProfile": "denna profil",
+      "clientNote": "En client-ssl-profil avslutar klientens TLS i BIG-IP. Anslutningen vidare till poolmedlemmen krypteras om endast om en server-ssl-profil tillämpas; utan en sådan är det avsnittet klartext (SSL-offload).",
+      "serverNote": "En server-ssl-profil låter BIG-IP öppna en ny TLS-anslutning till poolmedlemmen (omkryptering). Klientsidan hanteras av en separat client-ssl-profil."
+    },
+    "epoch": {
+      "name": "Unix-tidsomvandlare",
+      "blurb": "Skriv en Unix-tidsstämpel — sekunder, millisekunder, mikrosekunder eller nanosekunder, identifieras automatiskt — eller ett ISO-8601-datum, och läs det i alla vanliga format. Allt i din webbläsare.",
+      "inputLabel": "Tidsstämpel eller datum",
+      "inputPlaceholder": "1700000000  eller  2023-11-14T22:13:20Z",
+      "runsLocally": "Omvandlat i din webbläsare. Inget skickas någonstans.",
+      "scopeNote": "Ren datumaritmetik. Enheten härleds från talets storlek; korrigera vid behov.",
+      "nowButton": "Nu",
+      "errorTitle": "Kunde inte läsa det",
+      "err_empty": "Ange en tidsstämpel eller ett datum för att börja.",
+      "err_invalid": "Det är varken en Unix-tidsstämpel eller ett ISO-8601-datum.",
+      "err_tooLong": "Denna inmatning är för lång.",
+      "err_outOfRange": "Den tidsstämpeln ligger utanför det representerbara datumintervallet.",
+      "utcHeading": "UTC-datum och -tid",
+      "formatsHeading": "Alla format",
+      "dayOfYearLabel": "dag på året",
+      "relativeNote": "i förhållande till din enhets klocka"
+    },
+    "irules-event-order": {
+      "name": "iRule-händelseordning",
+      "blurb": "Välj profilstacken på en BIG-IP-virtuell server — Client-SSL, HTTP, Server-SSL, pool — och se ordningen som de vanliga iRule-händelserna utlöses i, från CLIENT_ACCEPTED till CLIENT_CLOSED, som tidslinje och lista. Allt i din webbläsare.",
+      "stackLabel": "Den virtuella serverns profilstack",
+      "tog_clientssl": "Client-SSL-profil",
+      "tog_http": "HTTP-profil",
+      "tog_serverssl": "Server-SSL-profil",
+      "tog_pool": "Pool (lastbalansering)",
+      "tog_fastl4": "FastL4 (paketsnabbväg)",
+      "presetsLabel": "Förinställningar:",
+      "preset_https": "HTTPS med omkryptering",
+      "preset_offload": "SSL-avlastning",
+      "preset_http": "HTTP",
+      "preset_tcp": "Ren TCP",
+      "runsLocally": "Beräknat i din webbläsare. Inget skickas någonstans.",
+      "scopeNote": "En modell av dokumenterat F5-beteende för en Standard-virtuell server. Den kontaktar aldrig en BIG-IP.",
+      "diagramHeading": "Händelsesekvens",
+      "listHeading": "Händelser i ordning",
+      "conditionalHeading": "Villkorliga händelser",
+      "conditionalNote": "Dessa utlöses bara under särskilda villkor: en TCP::collect eller HTTP::collect, ett lastbalanseringsfel, eller ett 100 Continue-svar.",
+      "sideClient": "klientsidan",
+      "sideServer": "serversidan",
+      "sideGlobal": "globalt"
+    },
+    "cert-renewal-planner": {
+      "name": "Planerare för certifikatsförnyelse",
+      "blurb": "Beräkna ett TLS-certifikats giltighet, om det passar in i CA/Browser Forums 47-dagarsschema, och förnyelsekadensen det medför; allt offline.",
+      "notBeforeLabel": "Utfärdat (notBefore)",
+      "notAfterLabel": "Upphör (notAfter)",
+      "runsLocally": "Allt körs i din webbläsare; inget laddas upp.",
+      "exampleLabel": "Prova ett exempel på 90 dagar",
+      "summaryHeading": "Detta certifikat",
+      "validity": "{days} dagars giltighet",
+      "compliantBadge": "Inom gränsen",
+      "overCapBadge": "Över gränsen",
+      "maxForPhase": "Maximum för utfärdandedatumet: {max} dagar.",
+      "overByText": "{days} dagar över maximum på {max} dagar för utfärdandedatumet; en offentlig CA skulle inte utfärda det.",
+      "renewalsValue": "Ungefär {n} förnyelser per år vid denna giltighet.",
+      "remainingHeading": "Enligt din enhets klocka",
+      "daysRemaining": "{days} dagar tills det upphör.",
+      "expiredText": "Upphörde för {days} dagar sedan.",
+      "renewByText": "Förnya senast {date} (ungefär {lead} dagar före utgång)",
+      "renewByDue": "om {days} dagar",
+      "reuseHeading": "Återanvändning av validering (utfärdandeera)",
+      "dcvText": "Domänvalideringsdata (DCV) kan återanvändas i {days} dagar.",
+      "siiText": "Organisationsidentitet (OV/EV SII) kan återanvändas i {days} dagar.",
+      "scheduleHeading": "SC-081v3-schemat",
+      "scheduleIntro": "Offentliga TLS-maxima beror på certifikatets utfärdandedatum:",
+      "colPeriod": "Utfärdat från",
+      "colValidity": "Max giltighet (dagar)",
+      "colDcv": "DCV-återanvändning (dagar)",
+      "colSii": "SII-återanvändning (dagar)",
+      "phaseP0": "Före 15 mar 2026",
+      "phaseP1": "15 mar 2026",
+      "phaseP2": "15 mar 2027",
+      "phaseP3": "15 mar 2029",
+      "yourPhase": "← detta certifikat",
+      "projectionHeading": "Förnyelsebelastning vid varje gräns",
+      "projectionIntro": "Förnyelser per certifikat per år, allteftersom gränserna stramas åt:",
+      "perYearShort": "år",
+      "note_overCap": "Denna giltighet överskrider maximum på {max} dagar för utfärdandedatumet.",
+      "note_future47": "Uppfyller kraven idag, men längre än den kommande gränsen på 47 dagar; förvänta dig tätare förnyelser allteftersom schemat fortskrider.",
+      "note_publicOnly": "Dessa gränser gäller endast offentligt betrodda TLS-certifikat. Privat eller intern PKI omfattas inte av SC-081v3.",
+      "note_automate": "Vid dessa kadenser bör utfärdande och förnyelse automatiseras med ACME (RFC 8555) och ARI (RFC 9773); manuell förnyelse skalar inte.",
+      "err_empty": "Ange båda datumen, utfärdande och utgång.",
+      "err_invalidDate": "Använd ett giltigt datum (ÅÅÅÅ-MM-DD).",
+      "err_order": "Utgångsdatumet måste vara efter utfärdandedatumet.",
+      "err_tooLong": "Denna inmatning är för lång.",
+      "err_invalid": "Kunde inte läsa de datumen."
+    },
+    "csr-decoder": {
+      "name": "CSR-avkodare",
+      "blurb": "Avkoda en PKCS#10-begäran om certifikatsignering för att läsa dess ämne, publika nyckel, begärda SAN och tillägg samt attribut; allt i din webbläsare.",
+      "inputLabel": "Begäran om certifikatsignering (PEM, base64 eller hex)",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
+      "exampleLabel": "Läs in en exempel-CSR",
+      "runsLocally": "Allt körs i din webbläsare; CSR:en laddas aldrig upp.",
+      "notCertNote": "En CSR är en begäran, inte ett certifikat. Den har inget serienummer, ingen utfärdare och inga giltighetsdatum; bara det som begäraren ber en CA att certifiera.",
+      "subjectHeading": "Ämne",
+      "colAttr": "Attribut",
+      "colValue": "Värde",
+      "noSubject": "Inget ämnesnamn (denna CSR bygger på begärda SAN).",
+      "keyHeading": "Publik nyckel",
+      "keyAlgorithmLabel": "Algoritm",
+      "keySizeLabel": "Storlek",
+      "keySizeValue": "{bits} bitar",
+      "keyCurveLabel": "Kurva",
+      "keyExponentLabel": "Exponent",
+      "keyExponentValue": "{exp}",
+      "requestedHeading": "Begärda tillägg",
+      "sanLabel": "Subject Alternative Names",
+      "keyUsageLabel": "Nyckelanvändning",
+      "ekuLabel": "Utökad nyckelanvändning",
+      "basicConstraintsLabel": "Grundläggande begränsningar",
+      "caYes": "CA: ja",
+      "caNo": "CA: nej",
+      "pathLenValue": "sökvägslängd {n}",
+      "noRequested": "Inga tillägg begärda.",
+      "attributesHeading": "Attribut",
+      "challengePasswordLabel": "Challenge-lösenord",
+      "unstructuredNameLabel": "Ostrukturerat namn",
+      "signatureHeading": "Självsignatur",
+      "signatureAlgLabel": "Algoritm",
+      "signatureBitsLabel": "Längd",
+      "signatureBitsValue": "{bits} bitar",
+      "versionValue": "Version: v1 ({v})",
+      "derLengthValue": "DER: {bytes} byte",
+      "err_empty": "Klistra in en begäran om certifikatsignering för att avkoda.",
+      "err_format": "Det här ser inte ut som en CSR i PEM, base64 eller hex.",
+      "err_der": "DER-strukturen kunde inte parsas.",
+      "err_structure": "Detta parsas som DER men är inte en PKCS#10-certifieringsbegäran."
+    },
+    "oidc": {
+      "name": "OIDC-avkodare",
+      "blurb": "Klistra in ett OpenID Connect ID-token eller ett .well-known/openid-configuration-dokument och avkoda det: kärn-claims, profil-claims, endpoints och funktioner, med kontroller för obligatoriska claims, signeringsalgoritm, nonce och PKCE.",
+      "inputLabel": "ID-token (JWT) eller openid-configuration-JSON",
+      "inputPlaceholder": "Klistra in ett ID-token, eller ett OIDC-discovery-JSON-dokument",
+      "runsLocally": "Avkodningen körs lokalt i din webbläsare. Den anropar aldrig jwks_uri eller någon endpoint, och inget skickas någonstans.",
+      "notVerifiedNote": "Det här verktyget avkodar och förklarar. Det verifierar inte token-signaturen, hämtar inte signeringsnycklarna och kontrollerar inte utgång mot klockan.",
+      "errors": {
+        "empty": "Klistra in ett ID-token eller ett openid-configuration-dokument för att avkoda.",
+        "malformed-json": "Detta börjar som JSON men kunde inte parsas. Kontrollera om det saknas en klammerparentes, ett kommatecken eller ett citattecken.",
+        "json-not-oidc": "Detta är JSON, men inte ett OpenID Connect-discovery-dokument. Klistra in ett ID-token, eller ett .well-known/openid-configuration-dokument.",
+        "not-jwt": "Detta ser inte ut som ett JWT eller ett OIDC-dokument. Klistra in ett ID-token eller ett discovery-dokument.",
+        "jwt-header": "Token-headern kunde inte avkodas. Ett JWT består av tre base64url-delar åtskilda med punkter.",
+        "jwt-payload": "Token-nyttolasten kunde inte avkodas som JSON."
+      },
+      "badges": {
+        "idToken": "ID Token",
+        "discovery": "Discovery",
+        "signed": "Signerad",
+        "unsigned": "Osignerad",
+        "algNone": "alg: none",
+        "algUnknown": "alg: ?"
+      },
+      "panels": {
+        "header": "Header",
+        "coreClaims": "Kärn-claims i ID-tokenet",
+        "metadata": "Leverantör",
+        "endpoints": "Endpoints",
+        "capabilities": "Funktioner"
+      },
+      "categories": {
+        "binding": "Token-bindning",
+        "profile": "Profil-claims",
+        "email": "E-post",
+        "address": "Adress",
+        "phone": "Telefon",
+        "oauth": "OAuth / session",
+        "other": "Andra claims"
+      },
+      "fields": {
+        "alg": "Algoritm",
+        "typ": "Typ",
+        "kid": "Nyckel-ID",
+        "iss": "Utfärdare (iss)",
+        "sub": "Subjekt (sub)",
+        "aud": "Målgrupp (aud)",
+        "azp": "Auktoriserad part (azp)",
+        "nonce": "Nonce",
+        "acr": "Auth-kontext (acr)",
+        "amr": "Auth-metoder (amr)",
+        "authTime": "Auth-tid",
+        "iat": "Utfärdad (iat)",
+        "nbf": "Inte före (nbf)",
+        "exp": "Går ut (exp)",
+        "issuer": "Utfärdare"
+      },
+      "reasons": {
+        "MISSING_REQUIRED_CLAIM": "Saknar obligatorisk claim {value}. Ett ID-token måste innehålla iss, sub, aud, exp och iat.",
+        "ALG_NONE": "Tokenet använder alg none, vilket innebär att det är osignerat. Ett osignerat ID-token bevisar ingenting och måste avvisas.",
+        "ALG_SYMMETRIC": "Signerat med {value}, en symmetrisk (HMAC) algoritm. ID-tokens från en offentlig leverantör använder normalt en asymmetrisk algoritm som RS256 eller ES256, så att relying party kan verifiera med den publika nyckeln.",
+        "ALG_UNKNOWN": "Signerat med {value}, en algoritm som det här verktyget inte känner igen. Bekräfta att det är en förväntad, stark algoritm.",
+        "SIGNED_ASYMMETRIC": "Signerat med {value}, en asymmetrisk algoritm. Relying party verifierar det mot leverantörens publika nyckel från JWKS.",
+        "NO_NONCE": "Ingen nonce-claim. Nonce binder tokenet till autentiseringsbegäran och skyddar mot replay. Den bör finnas när begäran skickade en.",
+        "MULTI_AUD_NO_AZP": "Tokenet har flera målgrupper men ingen azp (auktoriserad part). Med mer än en målgrupp bör azp namnge klienten som tokenet är avsett för.",
+        "DISCOVERY_MISSING_FIELD": "Saknar obligatoriskt discovery-fält {value}.",
+        "DISCOVERY_ALG_NONE": "Leverantören annonserar signeringsalgoritmen none för ID-tokens, vilket skulle tillåta osignerade tokens. Detta bör inte erbjudas.",
+        "DISCOVERY_NO_PKCE": "Inget code_challenge_methods_supported. Leverantören annonserar inte PKCE, som rekommenderas för authorization code-flödet.",
+        "DISCOVERY_NO_PKCE_S256": "PKCE annonseras men utan S256-metoden. S256 är den rekommenderade code challenge-metoden."
+      },
+      "flow": {
+        "heading": "Authorization code-flöde",
+        "laneRp": "Relying Party",
+        "laneOp": "OpenID-leverantör",
+        "s1": "Omdirigera användaren till leverantören med scope=openid",
+        "s2": "Leverantören autentiserar användaren och inhämtar samtycke",
+        "s3": "Leverantören omdirigerar tillbaka med en authorization code",
+        "s4": "Relying party växlar in koden vid token-endpointen",
+        "s5": "Leverantören returnerar ett ID-token plus ett access token",
+        "s6": "Relying party validerar ID-token-signaturen mot JWKS",
+        "s7": "Relying party kan anropa UserInfo med access token",
+        "s8": "Leverantören returnerar användarens claims"
       }
     }
   },
@@ -521,7 +841,7 @@
     "short3": "De interaktiva verktygen körs helt i din webbläsare. Det du klistrar in eller skriver i dem stannar på din enhet och överförs ingenstans.",
     "short4": "Endast tre saker rör data alls, och var och en förklaras nedan: en enda temainställning som sparas i din egen webbläsare, de standardmässiga anslutningsloggar som varje webbplatsbesök skapar på värdnivån, och varje meddelande du väljer att skicka via e-post.",
     "controllerTitle": "Vem som är ansvarig",
-    "controllerBody": "Detta är Rodolfo Nützmanns personliga webbplats (ronutz.com). För alla integritetsfrågor, eller för att utöva någon av rättigheterna som beskrivs nedan, skriv till hello@ronutz.com. Förfrågningar hanteras direkt av Rodolfo Nützmann, i egenskap av personuppgiftsansvarig.",
+    "controllerBody": "Detta är Rodolfo Nützmanns personliga webbplats (ronutz.com). För alla integritetsfrågor, eller för att utöva någon av rättigheterna som beskrivs nedan, skriv till {email}. Förfrågningar hanteras direkt av Rodolfo Nützmann, i egenskap av personuppgiftsansvarig.",
     "noTrackTitle": "Inga cookies, ingen spårning, ingen analys",
     "noTrackBody": "Den här webbplatsen sätter inga cookies av något slag. Den använder ingen analystjänst (såsom Google Analytics eller Plausible), inget annonsnätverk, inga spårningspixlar för sociala medier och ingen enhetsfingeravtryck. Ditt besök mäts, profileras eller delas inte med någon för dessa ändamål.",
     "browserTitle": "Vad som lagras i din webbläsare",
@@ -537,12 +857,12 @@
     "childrenTitle": "Barn",
     "childrenBody": "Den här webbplatsen är avsedd för en professionell, allmän publik. Den riktar sig inte till barn och samlar inte medvetet in personuppgifter från dem.",
     "rightsTitle": "Dina rättigheter",
-    "rightsBody": "Beroende på var du bor har du rättigheter över dina personuppgifter, inklusive att få tillgång till dem, att få dem rättade eller raderade, att invända mot eller begränsa deras behandling, att begära en kopia i ett portabelt format och att få veta hur de hanteras. För att utöva någon av dem, skriv helt enkelt till hello@ronutz.com. Eftersom så få personuppgifter någonsin behandlas här finns det i praktiken oftast väldigt lite att göra, men kanalen är alltid öppen.",
+    "rightsBody": "Beroende på var du bor har du rättigheter över dina personuppgifter, inklusive att få tillgång till dem, att få dem rättade eller raderade, att invända mot eller begränsa deras behandling, att begära en kopia i ett portabelt format och att få veta hur de hanteras. För att utöva någon av dem, skriv helt enkelt till {email}. Eftersom så få personuppgifter någonsin behandlas här finns det i praktiken oftast väldigt lite att göra, men kanalen är alltid öppen.",
     "rightsGdpr": "Om du befinner dig i Europeiska ekonomiska samarbetsområdet eller Storbritannien har du också rätt att lämna in ett klagomål till din lokala tillsynsmyndighet för dataskydd.",
     "rightsLgpd": "Om du befinner dig i Brasilien har du de rättigheter som anges i Artikel 18 i LGPD, och du kan även kontakta den nationella dataskyddsmyndigheten (ANPD).",
     "changesTitle": "Ändringar i detta meddelande",
     "changesBody": "Om detta meddelande ändras kommer den reviderade versionen att publiceras på den här sidan och datumet nedan att uppdateras. Väsentliga ändringar tillämpas inte retroaktivt.",
-    "updated": "Senast uppdaterad: 28 juni 2026",
+    "updated": "Senast uppdaterad: 30 juni 2026",
     "backHome": "Tillbaka till startsidan"
   },
   "footer": {
@@ -553,7 +873,7 @@
     "contribute": "Hjälp till att förbättra översättningarna",
     "feedback": "Skicka feedback",
     "api": "API-referens",
-    "contributeTools": "Bidra med ett verktyg",
+    "contributeTools": "Dela en idé",
     "license": "Licens",
     "coffee": "Bjud mig på en kaffe"
   },
@@ -868,7 +1188,9 @@
         "label": "Officiell utbildning",
         "description": "Boka en kurs via Red Education"
       }
-    }
+    },
+    "feedbackNote": "Hittade du en bugg, ett fel eller en felaktighet på sajten?",
+    "feedbackLink": "Dela det på idésidan"
   },
   "certs": {
     "title": "Certifieringar och meriter",
@@ -935,7 +1257,6 @@
     "p1Title": "Beräkna, aldrig gissa",
     "p1Body": "Verktygen på den här webbplatsen beräknar svar lokalt och deterministiskt. De anropar ingen server med dina indata, och de approximerar inte. Det som körs i din webbläsare stannar i din webbläsare.",
     "p2Title": "Öppen i kärnan",
-    "p2Body": "Motorn bakom verktygen är öppen källkod, släppt under en tillåtande licens. Webbplatsen är byggd på den på samma sätt som vem som helst annan skulle kunna. Öppenheten här är ingen marknadsföringsfras; det är arkitekturen.",
     "p3Title": "Dokumenterad genom konstruktion",
     "p3Body": "Varje del av kodbasen är kommenterad och dokumenterad, inte som en eftertanke utan som en stående regel. Bygget är tänkt att vara läsbart, för den som underhåller det och för den som ärver det.",
     "p4Title": "Byggd för att bestå och resa",
@@ -951,7 +1272,7 @@
     "stackType": "Typografi",
     "stackTypeV": "Inter för text, JetBrains Mono för data och koder",
     "stackEngine": "Verktygsmotor",
-    "stackEngineV": "En öppen kärnmotor, släppt under en tillåtande licens",
+    "stackEngineV": "Ett deterministiskt beräkningslager som körs helt i webbläsaren",
     "stackSearch": "Sökning",
     "stackSearchV": "Statisk fulltextsökning på klientsidan; ingen sökserver",
     "vibeTitle": "Är det här vibe coding?",
@@ -972,7 +1293,10 @@
     "redblueLabel": "Rött och blått",
     "redblueBody": "Samma avkoda-och-förklara som låter en red-teamer läsa ett fångat token låter en blue-teamer förstå vad den egna stacken sänder ut. Plattformen står medvetet på analyssidan av den linjen: den identifierar, avkodar, konverterar och förklarar, och går inte så långt som att förfalska, injicera eller kringgå kontroller. Den gränsen är ett designval, inte ett förbiseende; dessa verktyg finns för att lära ut och diagnostisera, inte för att bli ett vapen.",
     "localLabel": "Lokalt och deterministiskt",
-    "localBody": "Allt körs i webbläsaren. Den rena funktion som verktyget på sidan anropar är densamma som API:et anropar; med samma indata ger den samma utdata, håller inget tillstånd och skickar inget till en server. Inga cookies, ingen analys, som integritetssidan redogör för i sin helhet."
+    "localBody": "Allt körs i webbläsaren. Verktyget anropar en ren funktion: med samma indata ger den samma utdata, håller inget tillstånd och skickar ingenting till en server. Inga cookies, ingen analys, som integritetssidan beskriver i sin helhet.",
+    "thanksTitle": "Särskilt tack",
+    "p2Body": "Den deterministiska logik som varje verktyg kör är hela verktyget: det finns inget dolt serversteg, inget konto och ingen telemetri. Allt körs i din webbläsare.",
+    "changelogLink": "Ändringslogg"
   },
   "support": {
     "title": "Stöd projektet",
@@ -1030,26 +1354,12 @@
     "emailHeading": "Skicka ditt bidrag",
     "backHome": "Tillbaka till verktygen"
   },
-  "contributeTools": {
-    "eyebrow": "Öppen verktygslåda",
-    "title": "Bidra med ett verktyg",
-    "lede": "Verktygslådan är byggd för att växa. Varje verktyg är en liten, självbeskrivande modul på den öppna motorn, och webbplatsen laddar det på samma sätt som vem som helst annan skulle kunna. Har du ett verktyg som passar, föreslå det.",
-    "shapeTitle": "Vad ett verktyg är",
-    "shapeBody": "Ett verktyg är tre saker på en gång: ett manifest som beskriver det (vad det är, indata det tar emot, var dess korrekthet kommer ifrån), en enda ren körningsfunktion som gör arbetet, och en uppsättning referensvektorer, fasta indata-och-utdata-par som bevisar att funktionen är korrekt. Motorn laddar ett verktyg från dess manifest, så en välformad modul faller på plats utan att röra resten av webbplatsen.",
-    "principlesTitle": "Vad ett verktyg måste hålla sig till",
-    "principlesBody": "Beräkningen körs lokalt och är deterministisk: samma indata ger alltid samma utdata, utan klocka, nätverk eller slump i resultatet. Allt känsligt stannar på enheten som standard. Korrektheten är förankrad i referensvektorer och i citerade källor – såsom en RFC eller en publicerad standard –, inte i åsikt. Koden ges ut under en tillåtande licens, så att webbplatsen och vem som helst annan kan bygga vidare på den.",
-    "proposeTitle": "Föreslå ett",
-    "proposeBody": "Skicka ett kort förslag via e-post: vad verktyget beräknar, en exempelindata med exakt den utdata det ska ge, och källan som dess korrekthet vilar på. En skiss av manifestet och några referensvektorer är välkomna, men inte obligatoriska. Om det passar byggs det in i motorn och verktygslådan.",
-    "emailLabel": "E-post",
-    "backToTools": "Tillbaka till verktygslådan"
-  },
   "api": {
     "title": "API",
     "lede": "Verktygen på den här webbplatsen körs i din webbläsare och håller dina data på din enhet. För automatisering – skript, pipelines och integrationer – finns samma deterministiska beräkningar tillgängliga som ett litet HTTP-API. Det är den programmatiska motsvarigheten till webbläsarverktygen, inte en ersättning för dem.",
     "privacyTitle": "Vad detta betyder för dina data",
     "privacyBody": "API:et tar bara emot den indata du skickar, beräknar ett resultat och returnerar det. Det är tillståndslöst och loggar inga frågevärden eller begärandekroppar. Om du behöver garanterat noll datautflöde, använd webbläsarverktygen eller kör den öppna motorn själv.",
     "engineTitle": "Samma motor som webbläsaren",
-    "engineBody": "Varje slutpunkt anropar samma motorfunktion som verktyget i webbläsaren anropar, så att API:et och webbläsaren returnerar byte-identiska resultat. Den motorn, @ronutz/netcore, är öppen källkod under en tillåtande licens.",
     "specTitle": "Specifikationen",
     "specBody": "Hela kontraktet publiceras som OpenAPI 3.1. Ladda ner det, rikta dina egna verktyg mot det eller läs referensen nedan.",
     "downloadSpec": "Ladda ner openapi.yaml",
@@ -1073,17 +1383,57 @@
     "descriptionLabel": "Beskrivning",
     "viewReference": "Referens",
     "viewSwagger": "Swagger UI",
-    "swaggerLoadError": "Swagger UI kunde inte laddas."
+    "swaggerLoadError": "Swagger UI kunde inte laddas.",
+    "engineBody": "Varje endpoint kör samma rena funktion som verktyget i webbläsaren, så API:et och webbläsaren returnerar byte-identiska resultat."
   },
   "license_page": {
-    "eyebrow": "Öppen kärna",
+    "eyebrow": "Villkor",
     "title": "Licens",
-    "lede": "ronutz.com har en öppen kärna: motorn bakom varje verktyg är öppen källkod, men webbplatsen som byggts på den är det inte.",
-    "openHeading": "Öppen källkod – motorn",
-    "openBody": "@ronutz/netcore, motorn bakom varje verktyg och varje API-svar på den här webbplatsen, släpps under Apache License 2.0. Samma funktion som verktygen i webbläsaren anropar är den som API:et anropar, så du är fri att använda den, ändra den och bygga vidare på den enligt den licensen.",
     "closedHeading": "Sluten källkod – den här webbplatsen",
     "closedBody": "Själva webbplatsen är sluten källkod. Dess design, gränssnitt, skrivna innehåll (inklusive varje Learn-artikel), varumärke och det särskilda sättet som dessa verktyg sätts samman och presenteras på här är skyddat, med ensamrätt. Inget tillstånd ges att kopiera, mångfaldiga, ändra, vidaredistribuera eller skapa härledda verk av webbplatsen eller dess innehåll utan föregående skriftligt medgivande.",
     "contact": "Frågor om licensen? <a>Hör av dig.</a>",
-    "backHome": "Tillbaka till verktygen"
+    "backHome": "Tillbaka till verktygen",
+    "thirdHeading": "Komponenter med öppen källkod",
+    "lede": "ronutz.com är ett proprietärt verk, med ensamrätt. Dessa villkor omfattar webbplatsen och dess innehåll. Webbplatsen bygger på programvara med öppen källkod, som används och vidaredistribueras enligt sina egna licensvillkor, angivna nedan.",
+    "thirdBody": "Den här webbplatsen vilar på arbete med öppen källkod. Själva webbplatsen är byggd med Next.js och React och levereras som en statisk export; internationaliseringen använder next-intl; Learn-innehållet renderas med next-mdx-remote, gray-matter, remark-gfm och js-yaml; och sökningen drivs av Pagefind. Dessa komponenter tillhandahålls under MIT License, utom next-mdx-remote (Mozilla Public License 2.0). API-referensen bäddar in Swagger UI under Apache License 2.0. Varje komponent förblir under sin egen licens, och de fullständiga meddelandena levereras tillsammans med källkoden."
+  },
+  "contributeIdeas": {
+    "eyebrow": "Idéer välkomna",
+    "title": "Dela en idé",
+    "lede": "Den här verktygslådan är byggd för att växa, och den tydligaste signalen om vart den bör gå kommer från dem som använder den. Har du hittat en bug, ett fel eller en felaktighet? Saknar du ett verktyg som inte finns här än? Ser du ett bättre sätt att hantera något, eller ett resultat du skulle formulera annorlunda? Skicka det; alla slags synpunkter är välkomna.",
+    "sendTitle": "Vad du kan skicka",
+    "sendBody": "Buggar, fel och felaktigheter av alla slag: ett verktyg som beter sig fel, ett felaktigt resultat, ett fel i en Learn-artikel, eller bara något som ser snett ut. Funktionsönskemål för verktyg som redan finns. Idéer till nya verktyg som lådan borde ha. Rättelser och tillägg till Learn-artiklarna, som en tydligare förklaring, en bättre källa, eller ett ämne som saknas. Eller bara en annan vinkel på ett problem. Grovt går bra; en mening räcker för att starta ett samtal.",
+    "toolTitle": "Om du föreslår ett nytt verktyg",
+    "toolBody": "Verktygen här är små, självbeskrivande moduler: ett manifest som säger vad verktyget är och varifrån dess korrekthet kommer, en ren funktion som gör jobbet, och en uppsättning golden vectors, de fasta in- och utdataparen som bevisar det. En bra kandidat räknar lokalt och deterministiskt (samma indata ger alltid samma utdata, utan klocka, nätverk eller slump i resultatet), håller allt känsligt på enheten, och förankrar sin korrekthet i en citerad källa som en RFC snarare än i en åsikt. Du behöver inte bygga något av det för att föreslå ett: beskriv bara vad det ska beräkna, ett exempel, och källan det vilar på.",
+    "fitRule": "Ett enkelt test avgör. Varje verktyg här körs helt i din webbläsare och skickar ingenting någonstans, så ett nytt verktyg måste vara något en dator kan räkna ut enbart utifrån det du skriver, genom att följa en fast, publicerad regel. Om det måste gå online, slå upp något i realtid, logga in dig eller komma ihåg dig, hör det inte hemma här.",
+    "fitYes": "Passar:",
+    "fitYesBody": "avkoda eller förklara något du klistrar in (en token, ett certifikat, en konfiguration, kommandoutdata), konvertera mellan format, beräkna utifrån en standard eller formel, eller generera utifrån en regel, som ett UUID, en hash eller en kommandorad.",
+    "fitNo": "Passar inte:",
+    "fitNoBody": "allt som måste gå online eller kontrollera något i realtid (testa en riktig webbplats, fråga en live-DNS-server, skanna en adress), allt som kräver ett konto, en inloggning eller sparade data, eller allt vars svar inte är fastställt av en publicerad standard.",
+    "fitUnsure": "Osäker på vilken sida din idé hamnar på? Skicka den ändå och beskriv vad den ska göra. Jag säger ärligt om den passar, och varför.",
+    "emailTitle": "Så når du mig",
+    "emailBody": "E-post är kanalen. Berätta vad du hittade eller vad du önskar, med tillräckligt med detaljer för att agera: ett exempel, en länk, den exakta formuleringen, vad som passar. Om det gör verktygslådan bättre byggs det.",
+    "emailLabel": "E-post",
+    "backToTools": "Tillbaka till verktygslådan"
+  },
+  "languageStatus": {
+    "title": "Översättningsstatus",
+    "reviewed": "Granskad av en människa",
+    "complete": "Maskinell, fullständig",
+    "partial": "Maskinell, pågår",
+    "explainTitle": "Hur översättningar märks",
+    "explainBody": "Engelska och brasiliansk portugisiska skrivs och granskas av en person. De flesta andra språk är maskinöversatta och märkta efter hur långt de har kommit: bärnstensgul när ett språk täcker hela webbplatsen, gul medan nyare innehåll fortfarande är på engelska och håller på att komma ikapp. Språk markerade med rött har ännu ingen översättning och visas på engelska tills vidare. Maskinöversatta sidor har också en kort notis, och du är välkommen att hjälpa till att förbättra dem.",
+    "stub": "Inte översatt ännu"
+  },
+  "changelog": {
+    "eyebrow": "Ändringslogg",
+    "title": "Vad är nytt",
+    "lede": "En löpande förteckning över nya verktyg, nya Learn-artiklar och viktiga ändringar på den här webbplatsen. Det finns {count} verktyg tillgängliga i dag.",
+    "kindLaunch": "Lansering",
+    "kindTool": "Nytt verktyg",
+    "kindFeature": "Funktion",
+    "kindI18n": "Lokalisering",
+    "kindContent": "Innehåll",
+    "kindInfra": "Infrastruktur"
   }
 }

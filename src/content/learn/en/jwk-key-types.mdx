@@ -1,0 +1,32 @@
+---
+slug: jwk-key-types
+title: "JWK Key Types: RSA, EC, OKP, and oct"
+summary: "Every JSON Web Key declares a kty, and that one field decides which parameters the key carries. Four types cover almost everything you will meet: RSA, elliptic curve, the Edwards and Montgomery curves, and the symmetric octet sequence. The crucial split in all of them is public versus private."
+concepts: ["jwk", "kty", "rsa", "elliptic curve", "okp", "oct"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["jwks-and-key-rotation", "verifying-a-jwt-with-jwks"]
+category: identity
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+The `kty` (key type) parameter is the first thing to read on any JSON Web Key, because it determines every other parameter the key is allowed to have. RFC 7518 and RFC 8037 define four types you will see in practice.
+
+## The four types
+
+**RSA** (`kty` of `RSA`) is the classic public-key type. Its public half is the modulus `n` and the public exponent `e` (almost always `AQAB`, which is 65537). Its private half adds `d` and the prime factors `p` and `q` along with the precomputed `dp`, `dq`, and `qi`. The key size is the bit length of `n`, and 2048 bits is the modern floor.
+
+**EC** (`kty` of `EC`) is an elliptic-curve key on a named curve given by `crv`, such as `P-256`, `P-384`, or `P-521`. The public half is the point coordinates `x` and `y`; the private half adds the scalar `d`. EC keys are much smaller than RSA keys for equivalent strength, which is why `ES256` is popular.
+
+**OKP** (`kty` of `OKP`, from RFC 8037) is the octet key pair, used for the modern Edwards and Montgomery curves. `Ed25519` and `Ed448` are signing curves used by `EdDSA`; `X25519` and `X448` are key-agreement curves. The public half is `x` only; the private half adds `d`.
+
+**oct** (`kty` of `oct`) is a symmetric key: a single shared secret `k`. The same secret both creates and verifies a signature, as with `HS256`. Because there is no public and private split, an oct key is sensitive in its entirety.
+
+## Public versus private is the safety line
+
+The single most important habit when reading a JWK is to check whether it contains private material. For RSA that means `d`, `p`, or `q`; for EC and OKP it means `d`; for oct the whole key `k` is secret. A JWKS is meant to be fetched by anyone, so it must contain only public keys. If you ever see a `d` or a `k` in a set that is served publicly, the corresponding private key should be considered exposed and rotated immediately. The [JWKS explainer](/tools/jwks-explainer) marks each private parameter it finds and warns when a published set should never have contained it.
+
+## Reading them at a glance
+
+The explainer lists each key's type, use, algorithm, and size, and separates the public parameters from the private ones for you. For where these keys come from and how they rotate, see [JWKS and key rotation](/learn/jwks-and-key-rotation); for how one of them is chosen to verify a token, see [verifying a JWT with a JWKS](/learn/verifying-a-jwt-with-jwks).

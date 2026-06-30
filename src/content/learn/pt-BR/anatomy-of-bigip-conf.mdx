@@ -1,0 +1,44 @@
+---
+slug: anatomy-of-bigip-conf
+title: "A Anatomia de um Arquivo bigip.conf"
+summary: "Todo objeto de uma configuração BIG-IP segue a mesma forma: um módulo, um componente, um tipo opcional, um nome e um corpo delimitado por chaves. Quando você enxerga esse padrão, uma parede de configuração tmsh vira uma árvore legível de virtual servers, pools, monitores e perfis."
+concepts: ["tmsh", "bigip.conf", "configuração", "f5", "ltm", "sintaxe"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["how-a-virtual-server-works", "ltm-health-monitors"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Um BIG-IP guarda sua configuração em execução como texto, em arquivos como `/config/bigip.conf`, escritos na mesma linguagem de objetos que o Traffic Management Shell (tmsh) usa. Quando você executa `tmsh list ltm virtual`, está vendo exatamente esse formato. Aprender a lê-lo diretamente é mais rápido do que navegar pela interface gráfica, e é a única forma prática de revisar uma configuração em uma solicitação de mudança ou em um backup.
+
+## Uma forma, repetida
+
+Quase todo objeto segue o mesmo modelo:
+
+```
+<módulo> <componente> [<tipo>] <nome> {
+    <chave> <valor>
+    <chave> { <corpo aninhado> }
+    <item-de-lista-simples>
+}
+```
+
+A primeira palavra é o **módulo**: `ltm` para tráfego local, `net` para rede, `sys` para configurações de sistema, e outros como `auth`, `security`, `gtm`, `apm`, `asm` e `pem`. A palavra seguinte é o **componente** dentro daquele módulo, por exemplo `virtual`, `pool`, `node`, `monitor` ou `profile`. Alguns componentes acrescentam um **tipo**: `ltm monitor http` e `ltm profile client-ssl` trazem uma palavra de tipo depois do componente. A última palavra antes da chave de abertura é sempre o **nome** do objeto.
+
+Assim, em `ltm pool web_pool { ... }`, o caminho de tipo é `ltm pool` e o nome é `web_pool`. Em `ltm monitor http my_http { ... }`, o caminho de tipo é `ltm monitor http` e o nome é `my_http`. A regra é consistente: o nome é o último token antes da chave, e tudo o que vem antes descreve que tipo de objeto é esse.
+
+## O que existe dentro de um corpo
+
+Dentro das chaves, as entradas vêm em três formas. Uma **chave com valor** é uma única configuração, como `destination 10.0.0.80:443` ou `load-balancing-mode round-robin`. Uma **chave com bloco aninhado** agrupa configurações relacionadas ou uma lista, como o `members { ... }` de um pool ou o `profiles { ... }` de um virtual server. E um **item de lista simples** é um nome sozinho em sua própria linha, como cada iRule listada dentro do bloco `rules { ... }` de um virtual server.
+
+Quebras de linha separam as entradas, e as chaves podem aninhar tão profundamente quanto o objeto precisar. Comentários começam com `#`. Strings entre aspas, usadas em descrições e dentro de iRules, podem conter espaços. Essa é toda a gramática. Depois de internalizá-la, você consegue percorrer uma configuração grande e identificar a estrutura sem analisar cada valor.
+
+## A única exceção: iRules
+
+Existe um único tipo de objeto cujo corpo não é configuração tmsh. Um `ltm rule` contém uma iRule, que é um programa escrito em Tcl. Seu corpo também usa chaves, mas elas pertencem a estruturas de controle do Tcl como `when { ... }` e `if { ... }`, não à linguagem de configuração. Por isso o corpo de uma iRule deve ser lido na íntegra como código, não interpretado como configurações. O [explicador de configuração tmsh](/tools/tmsh-config-explainer) trata os corpos de iRule exatamente assim: captura-os intactos e nunca tenta executá-los ou reescrevê-los.
+
+## Por que ler dessa forma
+
+Uma revisão de configuração é, na verdade, uma revisão de estrutura. Quais virtual servers existem, para qual pool cada um envia, quais perfis estão anexados, se há um monitor de saúde presente e como os endereços de origem são traduzidos são todas perguntas que você responde lendo a árvore, não memorizando cada campo. Os artigos companheiros detalham dois dos objetos mais importantes: [como um virtual server une tudo](/learn/how-a-virtual-server-works) e [como os monitores de saúde decidem quais membros recebem tráfego](/learn/ltm-health-monitors).

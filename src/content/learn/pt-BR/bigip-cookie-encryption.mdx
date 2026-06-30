@@ -1,0 +1,30 @@
+---
+slug: bigip-cookie-encryption
+title: "Fechando o Vazamento: Criptografia de Cookie no BIG-IP"
+summary: "Como impedir que um cookie de persistência do BIG-IP divulgue endereços internos criptografando-o, como fica o valor criptografado, as opções relacionadas de hash e nome de cookie, e os compromissos de cada uma."
+concepts: ["cookie encryption", "bigip", "persistence cookie", "mitigation", "aes", "f5 ltm"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-disclosure"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+## A correção é um ajuste, não um redesenho
+
+A divulgação de informação em um cookie de persistência padrão é fechada criptografando o cookie, que é uma propriedade do perfil de persistência por cookie no BIG-IP. A F5 documenta isso no artigo K7784. Quando a criptografia está ativada, o BIG-IP criptografa o endereço e a porta codificados com AES antes de escrever o cookie, e os descriptografa no caminho de volta. O cliente ainda recebe um cookie de persistência funcional; ele apenas não consegue mais ler o que está dentro.
+
+Você não muda como a persistência funciona nem como os clientes se comportam. O mesmo cliente ainda devolve o mesmo cookie e ainda cai no mesmo membro do pool. A única diferença é que o valor agora é texto cifrado.
+
+## Como fica o cookie criptografado
+
+Um cookie de persistência criptografado começa com um ponto de exclamação e tem cerca de oitenta caracteres em base64, terminando no preenchimento `=`, por exemplo `!VPyexJn...HwA=`. Não há nada a decodificar sem a chave do BIG-IP, e esse é o objetivo. Um decodificador, incluindo o desta página, consegue reconhecer a forma e confirmar que está criptografada, mas não consegue, e não deveria conseguir, recuperar o endereço. Se você decodificar seus cookies e ver esse formato, o vazamento já está fechado.
+
+## Opções relacionadas
+
+A criptografia trata do valor. Dois ajustes relacionados tratam do nome. O hash de cookie substitui a codificação legível por um hash, que obscurece o valor de outra forma, embora a criptografia seja a escolha mais forte e mais comum. O próprio nome do cookie, `BIGipServer` seguido do nome do pool, também pode revelar a sua convenção de nomes de pool; o BIG-IP pode ser configurado para usar um nome de cookie menos revelador, caso essa nomenclatura seja sensível. Essas são preocupações menores do que a divulgação do endereço, mas fazem parte da mesma conversa de endurecimento.
+
+## O compromisso
+
+A criptografia custa uma pequena quantidade de processamento por requisição para criptografar e descriptografar o cookie, o que é desprezível em hardware moderno diante do valor de não publicar o seu endereçamento interno. Há uma chave a gerenciar, definida no perfil, e como qualquer chave ela deve ser bem escolhida e rotacionada conforme a sua política. Para quase toda implantação o cálculo é direto: ative a criptografia de cookie em perfis de persistência que enfrentam clientes não confiáveis, e reserve a forma sem criptografia para casos em que o endereço codificado realmente não seja sensível. Na dúvida, decodifique um dos seus próprios cookies primeiro e veja o que ele revela.

@@ -1,0 +1,32 @@
+---
+slug: irule-fastl4-vs-standard-events
+title: "FastL4 vs Standard: Quais Eventos de iRule Você Tem"
+summary: "Um virtual server Standard é um proxy TCP completo e expõe o conjunto rico de eventos de iRule L7 e SSL. Um virtual server FastL4 é um caminho rápido baseado em pacotes, otimizado para throughput, e deliberadamente abre mão da maioria desses eventos. Escolher o perfil é escolher quais eventos existem."
+concepts: ["fastl4", "standard virtual server", "full proxy", "irules", "performance"]
+relatedTools: ["irules-event-order"]
+relatedArticles: ["irule-event-order-explained", "irule-clientside-vs-serverside"]
+category: networking
+order: 5
+status: reviewed
+updated: "2026-06-29"
+---
+
+O tipo do virtual server decide quanto da conexão o BIG-IP de fato inspeciona, e isso, por sua vez, decide quais eventos de iRule estão disponíveis para você. As duas escolhas comuns ficam em extremos opostos.
+
+## Standard: o proxy completo
+
+Um virtual server **Standard** termina a conexão TCP do cliente e abre uma separada ao membro do pool. Como ele remonta e entende totalmente os fluxos, pode expor todo o catálogo de eventos: os eventos de handshake SSL, `HTTP_REQUEST` e `HTTP_RESPONSE`, eventos de coleta de dados, e os eventos de conexão do lado cliente e do lado servidor. `CLIENT_ACCEPTED` dispara quando o handshake TCP de três vias conclui. Esse é o tipo a usar sempre que você precisar olhar ou alterar dados da aplicação.
+
+## FastL4: o caminho rápido
+
+Um virtual server **FastL4** é feito para throughput bruto. Ele processa o tráfego em grande parte no nível de pacote e pode descarregar fluxos para o hardware, mas paga por essa velocidade não sendo um proxy completo. Como resultado:
+
+- `CLIENT_ACCEPTED` dispara no **SYN inicial**, não após um handshake concluído.
+- Os eventos HTTP não disparam — não há análise de HTTP.
+- Os eventos de handshake SSL não disparam — o TLS não é terminado.
+
+Você ainda tem eventos básicos de conexão, mas os ganchos L7 e SSL dos quais uma iRule HTTP depende simplesmente não existem. Especificar um desses eventos em um virtual server FastL4 não é um erro; o evento apenas nunca dispara — uma forma confusa de descobrir a incompatibilidade.
+
+## Escolhendo deliberadamente
+
+O trade-off é throughput contra visibilidade. FastL4 é a escolha certa para balanceamento L4 de alto volume em que você não precisa tocar no conteúdo da aplicação. No momento em que você precisa ler um cabeçalho, direcionar por SNI ou rodar qualquer lógica HTTP ou SSL, você precisa de um virtual server Standard. Esta ferramenta modela a sequência Standard; quando a opção FastL4 está ligada, trate as linhas HTTP e SSL como não aplicáveis, porque em um virtual server FastL4 real esses eventos nunca disparariam.

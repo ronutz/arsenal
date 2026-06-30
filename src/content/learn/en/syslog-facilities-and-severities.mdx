@@ -1,0 +1,32 @@
+---
+slug: syslog-facilities-and-severities
+title: "Syslog Facilities and Severities, Explained"
+summary: "Syslog defines 24 facilities and 8 severities. The severities are a clean urgency scale from emergency down to debug; the facilities are a mix of genuinely useful categories and historical Unix leftovers, plus eight local slots that network devices lean on heavily."
+concepts: ["syslog", "facility", "severity", "rfc5424", "logging"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-pri-facility-severity", "syslog-on-network-devices"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+The numbers inside a syslog PRI map to named facilities and severities. The numbers are normative; the short keyword names (`auth`, `local0`, `crit`) are the common BSD convention and are informational. Here is what they mean.
+
+## The eight severities
+
+Severity is the easy half: a single digit from 0 to 7, where **lower is more urgent**. The scale runs emergency (0, the system is unusable), alert (1, act immediately), critical (2), error (3), warning (4), notice (5, normal but significant), informational (6), and debug (7). Two practical notes: you rarely see emergency in practice, because a system broken that badly often cannot send anything, and you usually do not want debug in production because the volume drowns everything else. Most production devices are set to log at notice or informational, which is severity 5 or 6.
+
+## The 24 facilities, in groups
+
+Facility is the messier half, because it carries decades of Unix history. It helps to read it in groups.
+
+The **system facilities** cover classic Unix subsystems: kernel (0), user-level (1), mail (2), system daemons (3), security and authorization (4, commonly `auth`), messages from syslogd itself (5), the line printer (6), network news (7), UUCP (8), the clock daemon (9, commonly `cron`), private security and authorization (10, commonly `authpriv`), FTP (11), and NTP (12). Several of these, like UUCP and network news, are essentially historical today.
+
+The **audit and clock band**, facilities 13 (log audit), 14 (log alert), and 15 (a second clock daemon), is worth a caution: facilities 12 to 15 are not consistently standardized, and different implementations assign them differently, so treat a message in this band carefully. The decoder flags this for you.
+
+The **local facilities**, 16 through 23, are named `local0` through `local7`. They have no fixed meaning, which is exactly why they are useful: appliances and network devices claim them for their own logs without colliding with the system facilities. This is where most of the messages from your firewalls, load balancers, and switches actually live.
+
+## Why the split matters
+
+Facility and severity together drive how a collector or SIEM routes and prioritizes. You can send authentication facilities to one stream and kernel messages to another, alert on severity 0 through 2 while archiving severity 5 through 7, or separate one tenant's appliance logs from another's by assigning them different local facilities. The [syslog PRI decoder](/tools/syslog-pri-decoder) lists every facility and severity with its meaning as you decode. For the arithmetic that combines them, see [the syslog PRI](/learn/syslog-pri-facility-severity); for the specific facilities your gear uses, see [syslog on network devices](/learn/syslog-on-network-devices).

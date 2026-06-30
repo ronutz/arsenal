@@ -6,7 +6,7 @@
    WHY these specific values: the canon brand design system pins the Obsidian
    theme — #020617 canvas, #22D3EE cyan accent, #F59E0B amber, Inter for prose,
    JetBrains Mono for data. These are SEMANTIC tokens (named by role) so a future
-   theme swap changes values, not component code (matches the netcore token model).
+   theme swap changes values, not component code (a pure design-token model).
 
    RTL: we use CSS LOGICAL PROPERTIES (margin-inline, padding-inline, inset-inline)
    instead of physical left/right wherever direction matters, so the layout mirrors

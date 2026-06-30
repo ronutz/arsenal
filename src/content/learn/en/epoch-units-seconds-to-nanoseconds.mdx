@@ -1,0 +1,38 @@
+---
+slug: epoch-units-seconds-to-nanoseconds
+title: "Seconds, Milliseconds, Microseconds, Nanoseconds: Telling Epoch Units Apart"
+summary: "The same instant can be written as 1700000000, 1700000000000, or larger, depending on whether the timestamp counts seconds, milliseconds, microseconds, or nanoseconds. Mixing them up is a classic bug. You can almost always tell which is which from the number's magnitude."
+concepts: ["unix time", "milliseconds", "nanoseconds", "epoch", "precision"]
+relatedTools: ["epoch"]
+relatedArticles: ["unix-time-explained", "the-year-2038-problem"]
+category: encoding
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+A Unix timestamp is a count of time units since the epoch — but *which* unit is not part of the number itself, and different ecosystems pick different ones. The same moment in late 2023 can be written four ways:
+
+- seconds: `1700000000`
+- milliseconds: `1700000000000`
+- microseconds: `1700000000000000`
+- nanoseconds: `1700000000000000000`
+
+## Who uses what
+
+The convention depends on where the timestamp came from. The Unix shell `date +%s`, most databases, and JWT `exp` claims use **seconds**. JavaScript's `Date.now()` and most of the JS ecosystem use **milliseconds**. Many tracing and metrics systems, and Go's `time.UnixNano()`, reach for **nanoseconds**. Python's `time.time()` returns fractional seconds. There is no universal default, so a bare number is genuinely ambiguous.
+
+## The off-by-1000 bug
+
+Confusing units is one of the most common timestamp bugs, and it fails loudly. Feed a milliseconds value into something expecting seconds and you land roughly 50,000 years in the future. Feed a seconds value into something expecting milliseconds and your "recent" event collapses back toward 1970. Neither is subtle once you see the date — which is exactly why converting and *looking* at the result is the fastest way to catch it.
+
+## Telling them apart by size
+
+For any timestamp in the current era you can read the unit straight off the magnitude, because each unit is three orders larger than the last:
+
+- a seconds value sits around 10 digits (`1.7 × 10⁹`)
+- milliseconds around 13 digits (`1.7 × 10¹²`)
+- microseconds around 16 digits (`1.7 × 10¹⁵`)
+- nanoseconds around 19 digits (`1.7 × 10¹⁸`)
+
+This converter uses exactly that heuristic: it reads the unit from the number's size and tells you which it assumed, so if a value happens to fall on a boundary you can see the assumption and correct it. The heuristic is reliable for any realistic present-day timestamp; it only gets murky for instants very close to the epoch, where the numbers are small enough that a seconds value and a milliseconds value can look alike.

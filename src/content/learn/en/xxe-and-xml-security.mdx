@@ -1,0 +1,52 @@
+---
+slug: xxe-and-xml-security
+title: "XXE and Why a SAML Parser Rejects DOCTYPE"
+summary: "How XML External Entity (XXE) attacks work, the billion-laughs denial-of-service, why both depend on a DTD, and why a hardened SAML decoder rejects any DOCTYPE or entity declaration outright rather than trying to parse it safely."
+concepts: ["xxe", "xml external entity", "doctype", "dtd", "billion laughs", "entity expansion", "xml security"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-assertions-and-conditions", "saml-signatures"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+## XML carries a loaded feature
+
+SAML is XML, and XML has a feature that turns parsing untrusted input into a security problem: the Document Type Definition (DTD), and the entities it can declare. An entity is a named substitution, like a macro. Most are harmless, but a DTD can define entities that pull in external content or expand explosively, and a parser that processes them does the attacker's bidding while merely reading the document. Because a SAML message arrives from outside and is processed by a server, this is exactly the dangerous situation.
+
+## XML External Entity (XXE)
+
+An XML External Entity attack defines an entity whose value points at a resource the parser will fetch. A classic payload declares an entity that references a local file, then uses that entity in the document body so the file's contents are pulled into the parsed result:
+
+```
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
+<foo>&xxe;</foo>
+```
+
+If the parser resolves external entities, it reads the file and substitutes its contents where the entity appears, and the application may then return or log that data, handing the attacker a local file. The same trick can target internal network URLs to make the server issue requests to systems it can reach but the attacker cannot, a server-side request forgery. XXE has been one of the most damaging classes of vulnerability in XML-processing applications, and SAML endpoints, which parse attacker-supplied XML by design, are a prime target.
+
+## The billion-laughs denial of service
+
+A related attack needs no external reference at all. It defines small entities that reference each other, each expanding into several copies of the one below, so that a handful of nested definitions balloon into gigabytes when expanded:
+
+```
+<!DOCTYPE lolz [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<lolz>&lol3;</lolz>
+```
+
+A parser that expands these entities exhausts memory and CPU trying to materialize the result, taking the service down. This is the billion-laughs attack, and like XXE it lives entirely in the DTD: the entities that do the damage are declared there.
+
+## The hardened response: reject the DTD
+
+Both attacks share a single prerequisite: a DTD that declares entities. A SAML message has no legitimate need for one. The standard does not require a DOCTYPE, real IdPs do not emit one, and the only reason a SAML message would carry an entity declaration is to attack the parser. That makes the safest defense the simplest one: refuse any document that contains a DOCTYPE or an entity declaration, before parsing its content.
+
+This decoder does exactly that. If the input contains a `<!DOCTYPE` or `<!ENTITY`, it is rejected outright with a clear reason, never parsed. Beyond that kill switch, the parser only ever substitutes the five predefined XML entities and numeric character references; an unknown named entity is left as literal text rather than resolved, so even a reference that slipped through expands to nothing dangerous. Input size, nesting depth, and element count are all capped as further backstops. The result is a parser that cannot be made to read a local file, reach into your network, or blow up on a crafted document.
+
+## Why rejecting beats sanitizing
+
+It would be possible to try to parse a DTD and carefully disable only the dangerous parts, and many libraries offer flags to do so. The trouble is that those flags are easy to set wrong, vary across parser versions, and have repeatedly failed in ways that reopened XXE. Refusing the DTD entirely removes the whole category of mistake: there is nothing to configure and nothing to get subtly wrong. For input that should never contain a DTD in the first place, outright rejection is not a limitation, it is the correct and strongest posture, and it is the one this tool takes.

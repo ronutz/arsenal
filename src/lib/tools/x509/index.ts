@@ -1,15 +1,14 @@
 // ============================================================================
 // src/lib/tools/x509/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING X.509 MODULE - a netcore {manifest, run, vectors} triple.
+// THE SELF-DESCRIBING X.509 MODULE - a self-contained {manifest, run, vectors} triple.
 //
-// Mirrors the jwt / cidr reference modules exactly so it can be promoted into
-// @ronutz/netcore unchanged (copy the folder into netcore/src/tools/x509, add
-// it to the package exports + registry, cut a minor bump). Until then it lives
-// here and is consumed by the X.509 tool UI.
+// Mirrors the jwt / cidr reference modules, written so the whole folder could
+// be lifted into an open library unchanged if the project is ever opened. For
+// now it lives here and is consumed by the X.509 tool UI.
 //
-// The manifest is a real D-49 manifest: validateManifest() from @ronutz/netcore
-// accepts it (https-only sources, no raw HTML), the inputDetectors[] regex is
+// The manifest is a real D-49 manifest, checked against the D-49 contract
+// (https-only sources, no raw HTML); the inputDetectors[] regex is
 // what would let an omnibox route a pasted PEM block to this tool, and although
 // a certificate is public by nature it can still reveal internal hostnames via
 // its SANs, so the manifest declares shareSafetyDefault: "fragment" to keep a
@@ -108,11 +107,28 @@ export const manifest = Object.freeze({
       scope: "named-curve OIDs (P-256/P-384/P-521) in the key info",
       status: "active",
     },
+    {
+      id: "rfc6960",
+      label: "RFC 6960 - X.509 Internet PKI Online Certificate Status Protocol",
+      type: "rfc",
+      url: "https://www.rfc-editor.org/rfc/rfc6960",
+      access_date: "2026-06-29",
+      scope: "OCSP responder location, surfaced from Authority Information Access",
+      status: "active",
+    },
+    {
+      id: "rfc7633",
+      label: "RFC 7633 - X.509 TLS Feature Extension (Must-Staple)",
+      type: "rfc",
+      url: "https://www.rfc-editor.org/rfc/rfc7633",
+      access_date: "2026-06-29",
+      scope: "the TLS Feature extension and the status_request (Must-Staple) flag",
+      status: "active",
+    },
   ],
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

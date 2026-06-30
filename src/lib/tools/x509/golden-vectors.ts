@@ -12,7 +12,13 @@
 // (used by the build/CI check and runnable standalone).
 // ============================================================================
 
-import { decodeCertificate, X509DecodeError, type X509DecodeErrorCode } from "./compute";
+import {
+  decodeCertificate,
+  parseSctList,
+  X509DecodeError,
+  type X509DecodeErrorCode,
+  type SctEntry,
+} from "./compute";
 
 export const GOLDEN_VECTOR_SET_ID = "x509-golden-v1";
 
@@ -34,6 +40,10 @@ export interface X509Expectation {
   ca?: boolean;
   pathLen?: number;
   selfIssued: boolean;
+  crlUrls?: string[];
+  ocspUrls?: string[];
+  caIssuerUrls?: string[];
+  mustStaple?: boolean;
 }
 
 export interface X509GoldenVector {
@@ -85,6 +95,26 @@ AiEAg1pTWt9GSnsyn03xdIhoJvlvqI+FXN8p5jenUf4ctSsCIQDx/stJQP0ZYBvU
 Qv8UuJv2xJN1yNSVSgrInpj1de6xTw==
 -----END CERTIFICATE-----`;
 
+// --- Vector 3: leaf with CRL DP + AIA (OCSP + CA Issuers) + Must-Staple -------
+// Self-signed EC P-256 fixture generated with openssl specifically to carry the
+// revocation pointers; values cross-checked against `openssl x509 -text`.
+const REV_PEM = `-----BEGIN CERTIFICATE-----
+MIICjjCCAjWgAwIBAgIUD/vK8HkIHF78bsv7XdcC2S8tfc4wCgYIKoZIzj0EAwIw
+PTEkMCIGA1UEAwwbcmV2b2NhdGlvbi10ZXN0LmV4YW1wbGUuY29tMRUwEwYDVQQK
+DAxBUlNFTkFMIFRlc3QwHhcNMjYwNjI5MDUwMzA3WhcNMzYwNjI2MDUwMzA3WjA9
+MSQwIgYDVQQDDBtyZXZvY2F0aW9uLXRlc3QuZXhhbXBsZS5jb20xFTATBgNVBAoM
+DEFSU0VOQUwgVGVzdDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABAnE4Z967Uzq
+6UA66OKgw9J+lnviQ7DICK9ufi9t/khQ6oqv+gtd0AYleJn7oDWBPxt+vLi0hcLy
+wetovDptGdijggERMIIBDTAMBgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIFoDAm
+BgNVHREEHzAdghtyZXZvY2F0aW9uLXRlc3QuZXhhbXBsZS5jb20wMAYDVR0fBCkw
+JzAloCOgIYYfaHR0cDovL2NybC5leGFtcGxlLmNvbS90ZXN0LmNybDBhBggrBgEF
+BQcBAQRVMFMwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLmV4YW1wbGUuY29tMCwG
+CCsGAQUFBzAChiBodHRwOi8vY2EuZXhhbXBsZS5jb20vaXNzdWVyLmNydDARBggr
+BgEFBQcBGAQFMAMCAQUwHQYDVR0OBBYEFOl3kHS5tM+WXseAAgMEB5Ihzwz8MAoG
+CCqGSM49BAMCA0cAMEQCIDeuzJo9rPzUQKhxaxQN01HhX8MKBO7QuXx5fF5wMg0g
+AiAlwd3nBAJGLoaSIdXzHTnt4eyz05iiTR9Q3Fa5/McU/A==
+-----END CERTIFICATE-----`;
+
 export const X509_GOLDEN_VECTORS: X509GoldenVector[] = [
   {
     id: "rsa-leaf",
@@ -127,6 +157,30 @@ export const X509_GOLDEN_VECTORS: X509GoldenVector[] = [
       selfIssued: true,
     },
   },
+  {
+    id: "revocation-pointers",
+    description: "Leaf carrying CRL Distribution Point, AIA OCSP + CA Issuers, and Must-Staple",
+    pem: REV_PEM,
+    expect: {
+      version: 3,
+      serialNumberHex: "0F:FB:CA:F0:79:08:1C:5E:FC:6E:CB:FB:5D:D7:02:D9:2F:2D:7D:CE",
+      subjectText: "O=ARSENAL Test, CN=revocation-test.example.com",
+      issuerText: "O=ARSENAL Test, CN=revocation-test.example.com",
+      notBefore: "2026-06-29T05:03:07Z",
+      notAfter: "2036-06-26T05:03:07Z",
+      signatureAlgorithm: "ecdsa-with-SHA256",
+      keyAlgorithm: "EC",
+      curve: "P-256",
+      san: ["DNS:revocation-test.example.com"],
+      keyUsage: ["digitalSignature", "keyEncipherment"],
+      ca: false,
+      selfIssued: true,
+      crlUrls: ["http://crl.example.com/test.crl"],
+      ocspUrls: ["http://ocsp.example.com"],
+      caIssuerUrls: ["http://ca.example.com/issuer.crt"],
+      mustStaple: true,
+    },
+  },
 ];
 
 export interface X509RejectVector {
@@ -141,6 +195,98 @@ export const X509_REJECT_VECTORS: X509RejectVector[] = [
   { id: "garbage", description: "neither PEM, base64, nor hex", input: "this is not a certificate !!!", code: "format" },
   { id: "bad-der", description: "valid base64 but the DER length overruns", input: "AQID", code: "der" },
   { id: "not-a-cert", description: "valid DER but a bare INTEGER, not a Certificate", input: "AgEF", code: "structure" },
+];
+
+// ----------------------------------------------------------------------------
+// SCT (RFC 6962) decode vectors
+// ----------------------------------------------------------------------------
+// Each `bytes` is a hand-built TLS SignedCertificateTimestampList assembled
+// from documented field values; `expect` is what parseSctList must return.
+// The byte assembly (encode) and parseSctList (decode) are independent code
+// paths, so a match validates the decoder.
+
+/** uint16 big-endian as a byte pair. */
+function u16(n: number): number[] {
+  return [(n >> 8) & 0xff, n & 0xff];
+}
+/** uint64 big-endian as 8 bytes (timestamps fit comfortably under 2^53). */
+function u64(n: number): number[] {
+  const b: number[] = [];
+  let v = n;
+  for (let i = 0; i < 8; i++) {
+    b.unshift(v & 0xff);
+    v = Math.floor(v / 256);
+  }
+  return b;
+}
+/** Serialize one SignedCertificateTimestamp (empty CT extensions). */
+function buildSct(
+  version: number,
+  logId: number[],
+  tsMs: number,
+  hashAlg: number,
+  sigAlg: number,
+  sig: number[],
+): number[] {
+  return [version, ...logId, ...u64(tsMs), ...u16(0), hashAlg, sigAlg, ...u16(sig.length), ...sig];
+}
+/** Serialize a SignedCertificateTimestampList from a set of SCT bodies. */
+function buildSctList(scts: number[][]): number[] {
+  const inner: number[] = [];
+  for (const s of scts) inner.push(...u16(s.length), ...s);
+  return [...u16(inner.length), ...inner];
+}
+
+const SCT_LOGID_A = Array.from({ length: 32 }, (_, i) => i);
+const SCT_LOGID_B = Array.from({ length: 32 }, (_, i) => 0xff - i);
+const hex = (bytes: number[]) => bytes.map((b) => b.toString(16).padStart(2, "0").toUpperCase()).join(":");
+
+export interface SctVector {
+  id: string;
+  description: string;
+  bytes: number[];
+  expect: SctEntry[];
+}
+
+export const X509_SCT_VECTORS: SctVector[] = [
+  {
+    id: "single-sct-sha256-ecdsa",
+    description: "one v1 SCT, sha256/ecdsa, timestamp 1700000000000 ms",
+    bytes: buildSctList([buildSct(0, SCT_LOGID_A, 1700000000000, 4, 3, [0xde, 0xad, 0xbe, 0xef])]),
+    expect: [
+      {
+        version: 0,
+        logIdHex: hex(SCT_LOGID_A),
+        timestamp: "2023-11-14T22:13:20.000Z",
+        hashAlgorithm: "sha256",
+        signatureAlgorithm: "ecdsa",
+      },
+    ],
+  },
+  {
+    id: "two-scts-mixed-algs",
+    description: "two v1 SCTs; second uses sha384/rsa and a different log",
+    bytes: buildSctList([
+      buildSct(0, SCT_LOGID_A, 1700000000000, 4, 3, [0x01, 0x02]),
+      buildSct(0, SCT_LOGID_B, 1710000000000, 5, 1, [0x03, 0x04, 0x05]),
+    ]),
+    expect: [
+      {
+        version: 0,
+        logIdHex: hex(SCT_LOGID_A),
+        timestamp: "2023-11-14T22:13:20.000Z",
+        hashAlgorithm: "sha256",
+        signatureAlgorithm: "ecdsa",
+      },
+      {
+        version: 0,
+        logIdHex: hex(SCT_LOGID_B),
+        timestamp: "2024-03-09T16:00:00.000Z",
+        hashAlgorithm: "sha384",
+        signatureAlgorithm: "rsa",
+      },
+    ],
+  },
 ];
 
 /** A single failure from the self-check. */
@@ -188,6 +334,10 @@ export function verifyVectors(): { passed: number; failed: number; failures: Vec
       eq(v.id, "extendedKeyUsage", x.extendedKeyUsage, d.extensions.extendedKeyUsage?.purposes ?? []);
     if (x.ca !== undefined) eq(v.id, "ca", x.ca, d.extensions.basicConstraints?.ca);
     if (x.pathLen !== undefined) eq(v.id, "pathLen", x.pathLen, d.extensions.basicConstraints?.pathLen);
+    if (x.crlUrls !== undefined) eq(v.id, "crlUrls", x.crlUrls, d.extensions.revocation.crlUrls);
+    if (x.ocspUrls !== undefined) eq(v.id, "ocspUrls", x.ocspUrls, d.extensions.revocation.ocspUrls);
+    if (x.caIssuerUrls !== undefined) eq(v.id, "caIssuerUrls", x.caIssuerUrls, d.extensions.revocation.caIssuerUrls);
+    if (x.mustStaple !== undefined) eq(v.id, "mustStaple", x.mustStaple, d.extensions.revocation.mustStaple);
     eq(v.id, "selfIssued", x.selfIssued, d.selfIssued);
   }
 
@@ -201,7 +351,12 @@ export function verifyVectors(): { passed: number; failed: number; failures: Vec
     }
   }
 
+  for (const v of X509_SCT_VECTORS) {
+    const got = parseSctList(new Uint8Array(v.bytes));
+    eq(v.id, "sctList", v.expect, got);
+  }
+
   const total =
-    X509_GOLDEN_VECTORS.length * 1 + X509_REJECT_VECTORS.length; // coarse pass counter
+    X509_GOLDEN_VECTORS.length + X509_REJECT_VECTORS.length + X509_SCT_VECTORS.length; // coarse pass counter
   return { passed: total - failures.length, failed: failures.length, failures };
 }

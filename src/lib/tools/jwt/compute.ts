@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 // JWT DECODE - the pure compute core for the JWT tool.
 //
-// netcore tool contract: a tool is a {manifest, run, vectors} triple and `run`
+// the tool contract: a tool is a {manifest, run, vectors} triple and `run`
 // must be DETERMINISTIC so its golden vectors are stable. This file is that
 // deterministic core: it decodes a compact JWS (header.payload.signature),
 // parses the header and payload JSON, and converts the standard NumericDate
@@ -15,7 +15,7 @@
 //
 // Runs identically in the browser and in Node (atob + TextDecoder are global in
 // both modern runtimes), so the same module powers the UI today and can be
-// promoted into @ronutz/netcore unchanged.
+// lifted into an open library unchanged.
 // ============================================================================
 
 /** A NumericDate claim rendered both as its raw epoch and an ISO-8601 string. */

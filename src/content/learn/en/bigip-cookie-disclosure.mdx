@@ -1,0 +1,30 @@
+---
+slug: bigip-cookie-disclosure
+title: "What a BIG-IP Cookie Tells an Attacker"
+summary: "The persistence cookie is a textbook information disclosure: it reveals internal IP addresses, ports, pool size, and route domains to any client. Why that matters for reconnaissance, how scanners harvest it, and how to think about the risk."
+concepts: ["information disclosure", "reconnaissance", "internal topology", "bigip", "persistence cookie", "security testing"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## A small leak with real value
+
+An unencrypted BIG-IP persistence cookie is one of the cleanest examples of information disclosure on the web. The server is not tricked and nothing is broken; the cookie simply contains the internal address and port of a backend server, and it is handed to every client as a matter of normal operation. On its own that is rarely catastrophic, but reconnaissance is cumulative, and this is a free, reliable data point that an attacker would otherwise have to work for.
+
+## What the cookie reveals
+
+Decoding a single cookie gives an internal IP address and a port. If that address is in RFC 1918 space, it confirms the internal addressing scheme behind the load balancer, which a remote attacker cannot normally see. The port tells you what the backend actually listens on, which is not always the port the virtual server presents to the world.
+
+Collecting several cookies reveals more. Because the cookie names the pool and encodes each member, hitting a site repeatedly and gathering the distinct decoded values shows how many members the pool has and how they are numbered. Sequential addresses suggest a predictable layout; a route domain number exposes part of the BIG-IP's internal segmentation. None of this is an exploit by itself, but it shortens the path to one by mapping the inside of the network for free.
+
+## How it gets harvested
+
+This is well-trodden ground in security tooling. Nmap ships an `http-bigip-cookie` script that decodes these cookies automatically, the Metasploit framework has a module for it, and the encoding is documented in F5 K6917 so anyone can write a decoder in a few lines. The decoder on this page is one such implementation. The practical consequence is that you should assume any unencrypted persistence cookie your BIG-IP emits is already being read and decoded by automated scanners.
+
+## How to think about the risk
+
+Treat the unencrypted cookie as public information, because it is. If the internal addresses it exposes are genuinely sensitive, or if you are subject to a standard that flags internal IP disclosure, the cookie is worth closing. The fix is not to stop using cookie persistence; it is to encrypt the cookie so the value becomes opaque, which is covered in the [cookie encryption](/learn/bigip-cookie-encryption) article. Decoding your own cookies first, with this tool or a scanner, is a quick way to see exactly what you are exposing before you decide.

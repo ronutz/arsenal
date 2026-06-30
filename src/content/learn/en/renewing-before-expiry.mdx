@@ -1,0 +1,36 @@
+---
+slug: renewing-before-expiry
+title: "Renewing before expiry: lead time, ACME, and ARI"
+summary: "Why late renewal causes outages, how ACME automates issuance and renewal, how the ARI extension lets a CA steer the renewal window, and how to pick a lead time that leaves room to retry."
+concepts: ["renewal", "acme", "ari", "rfc8555", "rfc9773", "automation", "lead-time"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["tls-certificate-lifetimes", "dcv-and-sii-reuse", "certificate-validity-windows", "certificate-revocation"]
+category: pki
+order: 11
+status: reviewed
+updated: "2026-06-30"
+---
+
+## The asymmetry of renewing late
+
+Renewing a certificate early costs almost nothing; renewing it late risks an outage that takes down a site, an API, or a mail server until someone notices. That asymmetry should govern every renewal decision. A renewal can fail for ordinary reasons — a DNS hiccup, a rate limit, an expired account key — and recovering from a failure needs time before the current certificate dies. The whole purpose of a lead time is to put that slack in deliberately rather than discovering you have none. The planner reports a concrete renew-by date precisely so the slack is a date on a calendar, not a hope.
+
+## ACME, the automation backbone
+
+The Automatic Certificate Management Environment, defined in RFC 8555, is the protocol that makes unattended renewal possible; it is what Let's Encrypt and most modern CAs speak. A client fetches the CA's directory, holds an account key, places an order for the names it wants, and is handed authorizations to satisfy. It proves control through a challenge — HTTP-01 (serve a token at a well-known URL), DNS-01 (publish a token as a TXT record), or TLS-ALPN-01 (answer on a special TLS handshake) — then finalizes the order with a CSR and downloads the certificate. Because every step is machine-driven, the same flow can run on a schedule with no human in the loop, which is the only way the cadences in the [lifetimes article](/learn/tls-certificate-lifetimes) become manageable.
+
+## ARI: letting the CA steer the window
+
+A newer companion, ACME Renewal Information (RFC 9773), closes an important gap. With ARI, the CA publishes a suggested renewal window for each certificate, and the client checks it and renews when advised rather than on a fixed local timer. This does two useful things. It lets the CA spread renewal load across time instead of having every client renew at the same nominal moment, and — critically — it lets the CA signal an *early* renewal when a certificate needs to be replaced ahead of schedule, for instance during a mass reissuance or an imminent revocation event. In a world of very short certificates and occasional CA-wide incidents, ARI turns "renew on a timer" into "renew when the issuer says it is time."
+
+## How much lead time to leave
+
+A durable rule of thumb is to renew when about a third of the lifetime remains, or roughly 30 days out, whichever comes first — the convention tools like certbot follow. The planner applies the same idea, recommending a lead of about one third of the validity capped at 30 days, and reporting the resulting renew-by date and how far away it is from your device clock. Shorter certificates simply afford less room: a 47-day certificate gives only about a 16-day lead, which is one more reason its renewals must be automated and monitored rather than handled by hand.
+
+## Let's Encrypt's head start
+
+Let's Encrypt has announced 45-day certificates by February 2028 — a year before the CA/Browser Forum's 47-day mandate takes effect. For teams already using ACME, that earlier shift is a free rehearsal: it surfaces brittle automation, rate-limit assumptions, and monitoring gaps while there is still slack in the wider deadline. Treat any move to shorter certificates as a chance to prove the pipeline end to end before it becomes mandatory.
+
+## What the planner gives you
+
+The planner turns a certificate's two dates into a renew-by target and a renewals-per-year figure, so you can size the automation you will need before the caps tighten. Short-lived certificates are also the industry's preferred answer to the weaknesses of revocation; the [revocation article](/learn/certificate-revocation) explains why a certificate that lives only weeks barely needs to be revoked at all.

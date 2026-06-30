@@ -1,0 +1,50 @@
+---
+slug: hsts-and-https
+title: "HSTS and HTTPS Enforcement"
+summary: "How Strict-Transport-Security closes the HTTP downgrade window, what max-age, includeSubDomains, and preload each do, the trust-on-first-use gap that preloading removes, and the configuration mistakes that quietly disable it."
+concepts: ["hsts", "https", "tls", "downgrade", "preload", "includeSubDomains"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "content-security-policy", "cookie-security-flags"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## The problem HSTS solves
+
+Serving a site over HTTPS is necessary but not sufficient. The gap is the first request. A user types `example.com`, the browser tries `http://example.com`, and the server responds with a redirect to `https://`. An attacker positioned on the network can intercept that initial plain-HTTP request and either strip the upgrade or sit in the middle. The encrypted site is fine; the unencrypted hop in front of it is the weakness.
+
+`Strict-Transport-Security` (HSTS) tells the browser to never use plain HTTP for this host again. After the browser has seen the header once, it rewrites every `http://` request to `https://` itself, before anything goes on the wire, for as long as the policy lasts. The downgrade window closes.
+
+## Reading the header
+
+A typical strong value looks like this:
+
+```
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+```
+
+**max-age** is the lifetime of the policy in seconds, and it is the part that matters most. It is how long the browser will keep forcing HTTPS for the host after the most recent time it saw the header. Each visit that includes the header refreshes the clock. The value above is two years.
+
+**includeSubDomains** extends the policy to every subdomain. Without it, `example.com` is protected but `app.example.com` is not, which leaves a path for an attacker to target a subdomain that was never visited directly.
+
+**preload** is a request to be included in the browser preload list, described below.
+
+## How long is long enough
+
+The analyzer treats `max-age` in bands. A value of one year or more is the recommended baseline and is marked strong. A value under roughly six months is flagged as low, because a short lifetime means the protection lapses quickly for a user who does not return often. A `max-age` of `0` is a special case: it does not set a short policy, it disables HSTS and tells the browser to forget any existing policy for the host. That is the correct value only when you are deliberately turning HSTS off; otherwise it is a misconfiguration that removes the protection entirely.
+
+## Trust on first use, and what preload fixes
+
+HSTS as described still has one gap: the very first visit, before the browser has ever seen the header, is unprotected. This is trust on first use. For most sites the window is one request and acceptable. For sites that want it closed completely, the browser preload list removes it.
+
+The preload list is a set of hosts hard-coded into browsers as HTTPS-only, so the browser forces HTTPS from the first request, with no prior visit required. To be eligible a site serves a policy with a long `max-age`, `includeSubDomains`, and the `preload` directive, and then submits the host to the list. Two cautions matter. Preloading applies to the whole domain and its subdomains, so every one of them must be able to serve HTTPS. And removal from the list is slow, so a site preloads only once it is confident it will stay HTTPS-only indefinitely.
+
+## Configuration mistakes that disable it
+
+The recurring failures are quiet because the header is present but not doing its job. A `max-age` of `0` left in place after testing disables the policy. A very low `max-age` lets it lapse between visits. Omitting `includeSubDomains` leaves subdomains exposed. Setting the header only on the HTTPS site but serving the `preload` directive without meeting the preload requirements is harmless but pointless. And, importantly, HSTS only takes effect once the browser has seen it over a valid HTTPS connection, so it must be sent on the secure responses, not buried somewhere the browser never reaches over HTTPS.
+
+## Where HSTS sits in the stack
+
+HSTS removes a transport-level attack class: the forced downgrade to plain HTTP. It pairs naturally with the `Secure` flag on cookies, which keeps cookies off any plain-HTTP request in the first place (see [cookie security flags](/learn/cookie-security-flags)), and with a Content-Security-Policy that controls what runs once the page loads. None of these substitutes for the others; together they cover transport, session, and content.

@@ -1,0 +1,32 @@
+---
+slug: unix-time-and-leap-seconds
+title: "Por Que o Tempo Unix Ignora os Segundos Bissextos"
+summary: "O UTC ocasionalmente insere um segundo bissexto para se manter alinhado com a rotação da Terra, mas o tempo Unix finge que todo dia tem exatamente 86.400 segundos. Essa simplificação deliberada significa que um timestamp Unix não é uma contagem verdadeira de segundos decorridos desde a época — e é a escolha certa para o tempo civil."
+concepts: ["leap seconds", "utc", "tai", "posix", "unix time"]
+relatedTools: ["epoch"]
+relatedArticles: ["unix-time-explained", "iso-8601-and-rfc-3339"]
+category: encoding
+order: 5
+status: reviewed
+updated: "2026-06-29"
+---
+
+É tentador ler "segundos desde 1970" como uma contagem precisa dos segundos físicos que se passaram. Não é, e a razão são os segundos bissextos.
+
+## O que é um segundo bissexto
+
+A rotação da Terra é levemente irregular e, em média, está desacelerando lentamente. Para manter o tempo do relógio (UTC) alinhado com a posição real do Sol, os responsáveis pela medição do tempo ocasionalmente inserem um **segundo bissexto** — um segundo `:60` extra acrescentado ao último minuto de um dia, anunciado alguns meses antes. Desde 1972, mais de duas dúzias foram adicionados.
+
+## O tempo Unix desvia o olhar
+
+Eis o fato-chave: **o tempo Unix não conta os segundos bissextos.** O padrão POSIX define um dia como exatamente **86.400 segundos**, ponto final. Quando um segundo bissexto acontece, o tempo Unix não ganha um `:60`; em vez disso o mesmo valor de timestamp é efetivamente usado duas vezes (ou o relógio é ajustado), de modo que a meia-noite sempre cai em um múltiplo redondo de 86.400. O calendário fica arrumado ao custo da exatidão estrita.
+
+A consequência é precisa e um pouco surpreendente: um timestamp Unix **não** é o número verdadeiro de segundos SI decorridos desde a época. Ele está atrasado pelo número de segundos bissextos inseridos no meio do caminho — cerca de 27 segundos no fim da década de 2010. A escala de tempo atômico que *de fato* conta cada segundo, o TAI, se distanciou tanto à frente do UTC.
+
+## Por que essa é a escolha certa
+
+Contar segundos bissextos faria todo timestamp Unix depender de uma tabela de inserções históricas que também teria de prever as futuras — transformando uma divisão trivial em uma consulta, e quebrando a propriedade limpa de que um dia tem sempre 86.400 segundos. Para a medição de tempo **civil** — logs, agendas, "quando isto aconteceu" — essa simplicidade vale muito mais do que a exatidão de sub-segundo. Sistemas que genuinamente precisam de cada segundo (física de alta precisão, alguns sistemas financeiros e de navegação) usam TAI ou tempo GPS e convertem deliberadamente.
+
+## Um alvo móvel, em breve congelado
+
+Os segundos bissextos sempre foram um incômodo para a computação, e o mundo decidiu parar: uma resolução de 2022 vai aposentar o segundo bissexto até **2035**, deixando o UTC e o tempo atômico se distanciarem lentamente em vez de sacudir os relógios. Até lá, a lição prática permanece — trate um timestamp Unix como tempo civil, exato ao segundo para propósitos cotidianos, mas não como a leitura de um cronômetro desde 1970.

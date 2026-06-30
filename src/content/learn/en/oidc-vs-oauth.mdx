@@ -1,0 +1,34 @@
+---
+slug: oidc-vs-oauth
+title: "OIDC vs OAuth 2.0: Authentication vs Authorization"
+summary: "Why OAuth 2.0 is about authorization and OpenID Connect is about authentication, the difference between an access token and an ID token, why using plain OAuth as a login mechanism is a known antipattern, and how to tell which token is which."
+concepts: ["oauth 2.0", "openid connect", "authentication", "authorization", "access token", "id token", "scopes"]
+relatedTools: ["oidc", "jwt"]
+relatedArticles: ["oidc-overview", "id-token-claims", "oidc-discovery"]
+category: identity
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Two questions, not one
+
+OAuth 2.0 and OpenID Connect are constantly confused, partly because OIDC is built on OAuth and they share endpoints and terminology. The cleanest way to keep them apart is to notice that they answer different questions. OAuth 2.0 answers an authorization question: is this application allowed to access that resource on the user's behalf. OpenID Connect answers an authentication question: who is the user that just signed in. One is about permission to act; the other is about identity. OIDC layers the identity answer on top of OAuth's permission machinery.
+
+## Access token versus ID token
+
+The clearest expression of the difference is the two kinds of token, and treating them interchangeably is the most common and most dangerous mistake.
+
+An access token is a credential for calling an API. It represents a delegated permission, and the application is meant to send it to a resource server, which checks it and serves the request. To the client application, an access token is frequently opaque: the client is not the intended audience and is not supposed to parse it or make decisions from its contents. Its meaning belongs to the resource server.
+
+An ID token is a statement about the user, issued by the provider to the client. The client is the intended audience, and the client is supposed to read it, validate it, and learn who the user is. It is always a JWT with a defined set of claims. The audience claim is the tell: an ID token's audience is the client, while an access token's audience (when it has one) is the resource server. Using an access token to decide who the user is, or feeding an ID token to an API as if it were an access token, are both category errors that lead to real vulnerabilities.
+
+## Why plain OAuth is not a login protocol
+
+Before OIDC existed, many applications implemented "log in with provider X" using raw OAuth 2.0, and the pattern persists in places. The application would obtain an access token and treat the ability to obtain it, or the result of calling some user-info API with it, as proof of who the user is. This is a known antipattern, and the reason is subtle but important: an access token says nothing reliable about who requested it or who it was issued to. A token obtained by one application can, in some configurations, be presented by another, and an application that infers identity from mere possession of an access token can be fooled into logging in the wrong user. This is sometimes called the confused deputy problem.
+
+OIDC was designed to close exactly this gap. The ID token is explicitly addressed to a specific client through its audience claim, is bound to a specific login attempt through its nonce, and is signed by the provider so it cannot be forged. Those are precisely the properties an access token lacks and that authentication requires. The practical rule is simple: do not build login on raw OAuth. If you need to know who the user is, use OpenID Connect and validate the ID token.
+
+## Telling them apart in practice
+
+When you have a token in hand and are not sure which it is, a few signals help. If it decodes as a JWT with iss, sub, aud, exp, and iat, and the audience is your client identifier, it is an ID token; the [OIDC decoder](/tools/oidc) will recognize it and interpret the claims. An access token may be opaque (not a JWT at all), or it may be a JWT whose audience is a resource server and whose claims describe scopes and permissions rather than user identity. The presence of the openid scope in the original request is what caused an ID token to be issued in the first place. When in doubt, decode the token and look at the audience and the claims: they tell you what the token is for, and therefore how it should be used.

@@ -1,0 +1,42 @@
+---
+slug: oidc-overview
+title: "OpenID Connect: An Identity Layer on OAuth 2.0"
+summary: "What OpenID Connect adds to OAuth 2.0, the ID token at the center of it, the relying party and provider roles, how the authorization code flow delivers an ID token, and why an ID token is just a JWT you can decode and read."
+concepts: ["openid connect", "oidc", "id token", "relying party", "openid provider", "authorization code flow", "oauth 2.0"]
+relatedTools: ["oidc", "jwt"]
+relatedArticles: ["id-token-claims", "oidc-vs-oauth", "oidc-discovery"]
+category: identity
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## What OpenID Connect is
+
+OpenID Connect (OIDC) is a thin identity layer built on top of OAuth 2.0. OAuth 2.0 by itself answers a question about authorization: may this application access that resource on the user's behalf. It does not, on its own, tell the application who the user is. OIDC adds exactly that missing piece, a standard way for an application to learn the identity of the user who just authenticated, in the form of a signed token it can read and trust. It is the protocol behind the "Sign in with..." buttons across the modern web, and it is increasingly common in enterprise federation, including F5 BIG-IP APM acting as either a relying party or a provider.
+
+The single most important thing OIDC introduces is the ID token. Where OAuth 2.0 hands back an access token (an opaque permission to call an API), OIDC additionally hands back an ID token: a structured, signed statement that says who the user is, who issued the statement, who it is for, and when it is valid. The access token is for calling resources; the ID token is for knowing the user. Keeping those two straight is the single biggest source of confusion in OIDC, and it gets its own article on [OIDC versus OAuth](/learn/oidc-vs-oauth).
+
+## The two roles
+
+OIDC has two parties. The OpenID Provider (OP), also called the identity provider, authenticates the user and issues tokens: Google, Microsoft Entra ID, Okta, Auth0, Ping, and Keycloak are common providers. The Relying Party (RP), also called the client, is the application that wants to know who the user is and relies on the provider to tell it. The RP is registered with the provider ahead of time, which gives it a client identifier and establishes which redirect URIs are allowed.
+
+The trust between them rests on a signature. The provider signs the ID token with its private key, and the relying party verifies that signature against the provider's public key. The provider publishes those public keys at a well-known location so the relying party can fetch them, which is the subject of the [discovery and JWKS](/learn/oidc-discovery) article.
+
+## The authorization code flow
+
+The most common and most secure way to obtain an ID token is the authorization code flow. It keeps tokens off the browser URL and delivers them through a direct back-channel call, and with PKCE it is safe even for public clients like single-page and mobile apps.
+
+The flow runs roughly like this. The relying party redirects the browser to the provider's authorization endpoint, including its client identifier, the requested scopes (with openid among them, which is what makes the request an OIDC request), a redirect URI, a state value, and a nonce. The provider authenticates the user and asks for any needed consent, then redirects the browser back to the relying party's redirect URI carrying a short-lived authorization code. The relying party then makes a direct, server-to-server call to the provider's token endpoint, exchanging that code for tokens. The response contains an ID token, usually an access token, and often a refresh token. The relying party validates the ID token and now knows who the user is.
+
+The scope value openid is the switch that turns an ordinary OAuth request into an OIDC one. Without it, the provider runs a plain OAuth authorization and returns no ID token; with it, the provider returns an ID token alongside the access token.
+
+## An ID token is a JWT
+
+Here is the part that connects directly to the rest of this toolkit: an ID token is a JSON Web Token. It has the same three-part structure as any JWT, a header, a payload of claims, and a signature, and it is encoded the same base64url way. That means you can decode an ID token with the [JWT decoder](/tools/jwt) to see its raw structure, and decode it with the [OIDC decoder](/tools/oidc) to additionally interpret the OIDC-specific claims and run the OIDC checks.
+
+What the OIDC decoder adds over a plain JWT view is meaning. It recognizes the core ID token claims (iss, sub, aud, exp, iat, and the rest), groups the standard profile and email claims, labels the authentication method references, and flags the things a relying party would reject, like a missing required claim or the unsigned alg none. The detail of those claims is the next article, [the ID token claims](/learn/id-token-claims).
+
+## What the decoder does and does not do
+
+Decoding an ID token lets you read it. It does not make it trustworthy. A relying party that receives an ID token must verify the signature against the provider's key, confirm the issuer is the expected provider, confirm its own client identifier is in the audience, check the token has not expired, and confirm the nonce matches the one it sent. This tool deliberately stops at decoding and explaining: it never fetches the provider's keys, never verifies the signature, and never compares the expiry to the clock. Reading the token is for understanding it; verifying it, against real keys, is what a relying party does to trust it.

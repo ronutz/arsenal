@@ -1,0 +1,30 @@
+---
+slug: ltm-health-monitors
+title: "Como os Monitores de Saúde do LTM Decidem Ativo ou Inativo"
+summary: "Um monitor de saúde é a sondagem que um BIG-IP usa para decidir se um membro de backend pode receber tráfego. Suas strings de envio e recebimento, seu intervalo e timeout, e onde ele está anexado determinam juntos com que rapidez uma falha é percebida e como um membro é marcado como inativo."
+concepts: ["monitor de saúde", "ltm", "pool", "disponibilidade", "f5", "balanceamento de carga"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+O balanceamento de carga só é tão bom quanto o conhecimento do BIG-IP sobre quais backends estão vivos. Esse conhecimento vem dos monitores de saúde: sondagens pequenas e repetidas anexadas a pools, membros ou nodes. A tarefa de um monitor é binária, marcar um alvo como ativo ou inativo, mas a forma como ele chega a essa decisão merece atenção, porque governa tanto os alarmes falsos quanto a detecção lenta.
+
+## O que uma sondagem verifica
+
+Os monitores mais simples verificam a alcançabilidade. Um monitor `icmp` faz ping no endereço do membro; um monitor `gateway-icmp` é comumente usado para observar o próximo salto. Um monitor `tcp` confirma que uma porta aceita uma conexão. Os monitores mais úteis vão mais fundo na aplicação. Um monitor `http` ou `https` envia uma requisição e inspeciona a resposta: o campo `send` guarda a string da requisição, como um `GET` para uma URL de verificação de saúde, e o campo `recv` guarda o texto que a resposta deve conter, como uma linha de status ou uma string conhecida no corpo. Um membro está saudável apenas quando os dados recebidos correspondem; um servidor que aceita a conexão mas devolve uma página de erro será corretamente marcado como inativo por uma string `recv` bem escrita.
+
+## Intervalo e timeout
+
+Dois campos de tempo decidem com que rapidez uma falha é percebida. O `interval` é a frequência com que a sondagem é executada, em segundos. O `timeout` é quanto tempo o BIG-IP espera, sem uma sondagem bem-sucedida, antes de declarar o membro inativo. A relação convencional é `timeout = 3 * interval + 1`, então o padrão de interval 5 e timeout 16 significa que um membro precisa perder cerca de três sondagens consecutivas antes de ser retirado de rotação. Encurtar esses valores detecta falhas mais rápido, mas aumenta o risco de oscilação em um membro que está apenas lento; alongá-los é mais tolerante, mas deixa um membro com falha em serviço por mais tempo. Não há um ajuste universalmente correto, apenas um compromisso a ser feito de forma deliberada.
+
+## Onde o monitor está anexado
+
+O mesmo monitor se comporta de forma diferente dependendo de onde fica. Anexado a um pool, ele sonda cada membro do pool no endereço e na porta daquele membro; o destino especial `*:*` significa exatamente isso, o próprio endereço e serviço do membro. Anexado a um node, ele julga o host de backend inteiro, independentemente da porta, de modo que uma única sondagem com falha pode retirar de serviço, de uma só vez, todos os membros de pool naquele host. Um pool também pode exigir um número mínimo de membros saudáveis por meio de `min-active-members`, abaixo do qual o próprio pool é considerado inativo. E um pool sem nenhum monitor assume que todo membro está sempre ativo, o que significa que um servidor morto continuará recebendo conexões até que algo mais perceba.
+
+## Lendo monitores em uma configuração
+
+Quando você revisa uma configuração, um monitor ausente ou mal configurado é uma das coisas de maior valor a se identificar. Um pool sem monitor, um pool de membro único sem redundância, ou um monitor HTTP cuja string `recv` não corresponde mais à resposta da aplicação são todos riscos silenciosos de disponibilidade. O [explicador de configuração tmsh](/tools/tmsh-config-explainer) revela esses pontos diretamente, indicando quando um pool não tem monitor de saúde ou tem apenas um membro. Para ver como o pool e seu monitor se encaixam no caminho maior da requisição, leia [como funciona um virtual server](/learn/how-a-virtual-server-works); para a própria gramática de configuração, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).

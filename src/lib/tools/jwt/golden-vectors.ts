@@ -5,7 +5,7 @@
 //
 // These are GENERATED from the reference decode algorithm and then frozen, so
 // they match decodeJwt() exactly and serve as a regression bind: when this tool
-// graduates into @ronutz/netcore, the golden-vector CI runner replays each
+// is lifted into an open library, the golden-vector CI runner replays each
 // input through run() and asserts deep-equality with `expected`. Reject vectors
 // assert that malformed input throws with the documented JwtDecodeError code.
 //

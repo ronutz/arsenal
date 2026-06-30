@@ -26,6 +26,9 @@ import { provenanceFor } from "@/config/toolProvenance";
 import ToolFunding from "@/components/ToolFunding";
 import { fundingFor, hasFunding, fundingLinksFor } from "@/config/toolFunding";
 import { Link } from "@/i18n/navigation";
+import HomeStats from "@/components/HomeStats";
+import { CATALOGUE } from "@/content/catalogue/catalogue";
+import { getAllArticles } from "@/lib/learn";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   // Next.js 15: route params are async. Await before use.
@@ -37,6 +40,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // NOT the useTranslations hook (which is for client/sync components).
   const t = await getTranslations("home");
   const tNav = await getTranslations("nav");
+
+  // Toolbox totals, derived from the canonical sources (canon rule D-63): live
+  // tools from the catalogue, articles from the EN Learn corpus. These are never
+  // hand-written, so any tool or article added or removed updates the figures
+  // automatically on the next build — they cannot drift out of date.
+  const toolCount = CATALOGUE.filter((tool) => tool.status === "live").length;
+  const articleCount = getAllArticles().length;
 
   return (
     <>
@@ -64,6 +74,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
           </div>
         </section>
+
+        {/* --- TOOLBOX TOTALS: derived live counts, count-up on scroll (D-63) --- */}
+        <HomeStats tools={toolCount} articles={articleCount} />
 
         {/* --- CREDIBILITY --- */}
         <section className="section" id="who">

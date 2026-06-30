@@ -1,0 +1,28 @@
+---
+slug: the-year-2038-problem
+title: "O Problema do Ano 2038"
+summary: "Um inteiro de 32 bits com sinal só consegue contar segundos até 2147483647, que cai em 2038-01-19T03:14:07Z. Um segundo depois ele transborda e dá a volta para um número negativo, jogando os sistemas afetados de volta a 1901. É o sucessor mais silencioso do Y2K, e a correção é um inteiro mais largo."
+concepts: ["year 2038", "32-bit", "time_t", "integer overflow", "unix time"]
+relatedTools: ["epoch"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds", "unix-time-explained"]
+category: encoding
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+Por décadas, o tipo de C que guardava um timestamp Unix — `time_t` — foi comumente um **inteiro de 32 bits com sinal**. Um inteiro de 32 bits com sinal pode representar valores até `2147483647`. Conte segundos a partir da época de 1970 e esse teto chega em um momento bem específico: **2038-01-19T03:14:07Z**.
+
+## O que acontece na fronteira
+
+Um segundo depois de `2147483647`, um contador de 32 bits com sinal transborda. Em vez de incrementar, ele dá a volta para o valor mais negativo que consegue guardar, `-2147483648` — que, interpretado como segundos antes da época, cai em **1901-12-13**. Um sistema que confia nesse relógio de repente acredita estar mais de um século no passado. Dependendo do software, isso pode significar desde uma data cosmeticamente errada até certificados expirados, agendamento quebrado, comparações que falham ou travamentos.
+
+## Por que é como o Y2K, e por que não é
+
+Como o problema do Ano 2000, o Y2038 é um limite de representação embutido em muitas suposições antigas, e como o Y2K está sendo tratado com calma e antecedência, não em pânico. A diferença é a correção. O Y2K era sobre como os anos eram *escritos* (dois dígitos versus quatro); o Y2038 é sobre como o tempo é *armazenado* (a largura de um inteiro). O remédio é alargar o `time_t` para **64 bits**, o que empurra o transbordamento cerca de 292 bilhões de anos à frente — confortavelmente além de qualquer preocupação prática.
+
+## Onde ainda morde
+
+A maioria dos sistemas operacionais e linguagens modernas de 64 bits já usa um tipo de tempo de 64 bits (ou maior), então um laptop ou servidor atual está bem. O risco se concentra em lugares difíceis de atualizar: **sistemas embarcados**, controladores industriais, formatos e protocolos antigos que fixam um campo de timestamp de 32 bits, e dados de longa vida que armazenaram tempo em 32 bits. Qualquer coisa que calcule uma expiração distante no futuro pode tropeçar na fronteira *hoje* — um certificado ou token de 20 anos emitido agora já alcança além de 2038.
+
+Este conversor sinaliza timestamps perto da fronteira exatamente por isso: se você está gerando uma expiração distante no futuro, vale saber que está em território de 2038 antes que algum consumidor de 32 bits, em algum lugar, leia de volta como 1901.

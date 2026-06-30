@@ -1,0 +1,56 @@
+---
+slug: clickjacking-and-framing
+title: "Clickjacking and Frame Control"
+summary: "What clickjacking is, how framing makes it possible, the difference between the legacy X-Frame-Options header and the modern CSP frame-ancestors directive, why ALLOW-FROM is obsolete, and how the two controls interact."
+concepts: ["clickjacking", "framing", "x-frame-options", "frame-ancestors", "csp", "ui redress"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "content-security-policy", "cookie-security-flags"]
+category: security
+order: 5
+status: reviewed
+updated: "2026-06-29"
+---
+
+## What clickjacking is
+
+Clickjacking is an attack where a malicious page loads your site inside an invisible or disguised iframe and tricks the user into clicking something on it without realizing. The user thinks they are interacting with the attacker's page; the click actually lands on your page, which is layered on top at full transparency. Because the user is logged in to your site in the same browser, the click carries their session. A hidden "delete account" button or a one-click action is the classic target. The technique is also called UI redress, because it dresses one interface up as another.
+
+The enabling condition is simple: your page can be framed by another site. If you forbid framing, the attack has nowhere to stand. The two controls below do exactly that.
+
+## X-Frame-Options: the legacy control
+
+`X-Frame-Options` was the first widely supported anti-framing header. It has two values worth using:
+
+```
+x-frame-options: DENY
+```
+
+**DENY** forbids framing by any site, including your own. **SAMEORIGIN** allows framing only by pages on the same origin, which is what you want if your own application legitimately frames its own pages. A third value, `ALLOW-FROM`, was meant to permit a single named origin, but it was inconsistently implemented and is now obsolete: modern browsers ignore it. If you need to allow specific origins to frame your page, the modern directive below is the way to do it, and the analyzer flags `ALLOW-FROM` as deprecated.
+
+`X-Frame-Options` is a whole-header switch with no expressiveness beyond those values. It is still worth sending for older clients, but it is not the primary control anymore.
+
+## frame-ancestors: the modern control
+
+The current control is the `frame-ancestors` directive inside a Content-Security-Policy. It does the same job with more precision:
+
+```
+content-security-policy: frame-ancestors 'none'
+```
+
+`frame-ancestors 'none'` forbids all framing, the equivalent of `DENY`. `frame-ancestors 'self'` allows only same-origin framing, the equivalent of `SAMEORIGIN`. Unlike the obsolete `ALLOW-FROM`, `frame-ancestors` can list several specific origins that are allowed to frame the page, and that actually works in browsers:
+
+```
+content-security-policy: frame-ancestors 'self' https://partner.example.com
+```
+
+Because it lives in CSP, `frame-ancestors` is part of the same policy that controls scripts and other content, which is why it appears alongside the CSP directives in [Content Security Policy, directive by directive](/learn/content-security-policy).
+
+## How the two interact
+
+When both are present, browsers that support `frame-ancestors` use it and ignore `X-Frame-Options`. So the practical approach is to set `frame-ancestors` as the real control and optionally keep `X-Frame-Options: DENY` or `SAMEORIGIN` as a fallback for any old client that does not understand CSP. The two should agree; a page that denies framing in one and allows it in the other is a configuration smell.
+
+The analyzer treats `frame-ancestors` as the authoritative framing control and notes `X-Frame-Options` as the legacy companion. A page with neither is flagged, because it can be framed and is therefore exposed to clickjacking.
+
+## Beyond the headers
+
+Frame control headers stop the framing that clickjacking depends on, which is the right layer for the attack. For actions with real consequences, defense in depth still applies: a confirmation step, re-authentication for sensitive operations, or a check that the request is intentional all reduce the value of a click that does slip through. But the foundation is refusing to be framed in the first place, and that is a header away.

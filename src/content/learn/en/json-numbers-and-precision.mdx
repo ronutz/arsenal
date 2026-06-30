@@ -1,0 +1,28 @@
+---
+slug: json-numbers-and-precision
+title: "JSON Numbers and the Precision Trap"
+summary: "JSON puts no limit on the size or precision of a number, but most parsers quietly convert every number to a 64-bit float. That mismatch silently corrupts large integers and exact decimals, which is why a formatter should preserve the original digits."
+concepts: ["json", "numbers", "ieee 754", "precision", "floating point", "big integers"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-duplicate-keys", "hashing"]
+category: encoding
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## The grammar is generous; the parsers are not
+
+In the JSON grammar, a number is just a sequence of digits with an optional fraction and exponent. The specification places no limit on how many digits it may have, so `12345678901234567890` and a decimal with fifty places after the point are both perfectly valid JSON. The trap is that the grammar's generosity is not matched by the parsers. RFC 8259 explicitly warns that software differs in how it handles numbers, and in practice the most common behavior, inherited from JavaScript, is to convert every number to an IEEE 754 double-precision float.
+
+## What a double can and cannot hold
+
+A double-precision float has 52 bits of fraction, which gives it about fifteen to sixteen significant decimal digits and exact integers only up to 2 to the 53rd power, roughly nine quadrillion. Beyond that, integers start to round: the parser cannot tell certain large values apart, so two different numbers in the source can become the same number after parsing. Decimals fare no better, because most finite decimal fractions, such as 0.1, have no exact binary representation and are stored as the nearest available value. The number you read back is close, but it is not always the number that was written.
+
+## Where this actually bites
+
+This is not a theoretical concern. Database identifiers and Twitter-style snowflake IDs routinely exceed 2 to the 53rd, so a 19-digit ID round-tripped through a careless JSON library can come back altered by one or two at the end, pointing at the wrong record. Monetary values stored as decimals can drift by a fraction of a cent, which is unacceptable in financial data. The standard defenses are to carry such values as strings, or to use a parser that preserves them, precisely because the default float conversion is lossy.
+
+## Preserving the literal
+
+The safe approach for a tool that reformats JSON is to never convert a number to a float at all. The formatter keeps each number exactly as its original literal text and emits it unchanged, so reformatting a document with a 20-digit ID or a high-precision decimal returns the same digits you started with. Pretty-printing and minifying change the whitespace around a number, never the number itself. When you need to know whether a value is at risk, the rule of thumb is simple: any integer beyond about sixteen digits, or any decimal where the exact value matters, should be treated as something a naive parser will round.

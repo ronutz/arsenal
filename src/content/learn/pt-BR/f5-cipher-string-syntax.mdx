@@ -1,0 +1,37 @@
+---
+slug: f5-cipher-string-syntax
+title: "Lendo uma Cipher String do F5"
+summary: "Uma cipher string do F5 é uma lista ordenada de conjuntos de cifras separados por dois-pontos, onde cada conjunto combina palavras-chave com um sinal de mais e um operador inicial pode excluir, remover ou rebaixar a prioridade. Quando você consegue ler a gramática, uma string densa como ECDHE:RSA:!SSLv3:@STRENGTH torna-se um conjunto claro de instruções."
+concepts: ["f5", "cipher string", "tls", "tmm", "palavras-chave", "operadores"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["tls-cipher-security-keywords", "f5-cipher-rules-and-groups"]
+category: transport
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Uma cipher string do BIG-IP controla quais cipher suites TLS um perfil SSL oferecerá e em que ordem. Você a encontra no campo `cipher` de uma `ltm cipher rule`, ou digitada diretamente em um perfil SSL. Parece enigmática à primeira vista, mas segue uma gramática pequena e consistente.
+
+## Conjuntos, separados e ordenados
+
+Uma cipher string é uma lista de **conjuntos**, separados por dois-pontos `:`, vírgula `,` ou espaço. A ordem importa: um servidor percorre sua lista de cima para baixo e escolhe a primeira suite que o cliente também suporta, então os conjuntos próximos do início são os que você prefere. `ECDHE:RSA:AES` são três conjuntos, avaliados nessa ordem.
+
+## Palavras-chave combinadas com mais
+
+Dentro de um conjunto, as **palavras-chave** são unidas com um sinal de mais `+` para estreitar a seleção. Cada palavra-chave restringe uma parte diferente de uma cipher suite: a versão de protocolo (`TLSv1_2`), a troca de chaves e autenticação (`ECDHE`, `RSA`, `ECDHE_ECDSA`), a cifra de bloco (`AES-GCM`, `3DES`) e o MAC ou hash (`SHA256`). Então `TLSv1_2+ECDHE+AES-GCM+SHA384` significa exatamente as suites que são TLS 1.2, usam ECDHE, usam AES-GCM e usam SHA-384. Uma palavra-chave isolada como `AES` sem nenhum mais é ampla, correspondendo a todas as suites AES. As palavras-chave não diferenciam maiúsculas de minúsculas, então `tlsv1_2+ecdhe` e `TLSv1_2+ECDHE` são idênticas.
+
+## Operadores
+
+Um conjunto pode carregar um operador inicial que muda o que o BIG-IP faz com ele:
+
+- `!` **exclui** o conjunto permanentemente. `!SSLv3` remove todas as suites SSL 3.0, e nada mais adiante na string pode adicioná-las de volta. Essa é a forma segura de proibir cifras fracas.
+- `-` **remove** o conjunto da lista construída até ali, mas um conjunto posterior pode readicioná-lo. É mais fraco que `!`.
+- Um `+` inicial **rebaixa a prioridade** do conjunto, movendo suas suites para o fim da lista em vez de removê-las. Note que isso é diferente do `+` que une palavras-chave dentro de um conjunto.
+- `@STRENGTH` não é um conjunto, mas uma diretiva: reordena tudo o que foi selecionado até ali por comprimento de chave, do mais forte primeiro. `@SPEED` ordena por velocidade de criptografia em vez disso.
+
+Então `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` lê-se como: prefira ECDHE, depois RSA, nunca permita SSL 3.0 ou RC4, depois ordene o que resta por força.
+
+## O que a string não diz diretamente
+
+A gramática diz as instruções, mas não a lista final de suites que essas instruções produzem. Essa lista depende de quais suites uma dada versão do TMOS de fato suporta, então a mesma string pode expandir de forma diferente entre versões do BIG-IP. O [explicador de cipher string do F5](/tools/f5-cipher-string-expander) interpreta a gramática e explica cada palavra-chave e operador; para ver as suites exatas e ordenadas, execute `tmm --clientciphers` na máquina alvo. Para saber quais palavras-chave são seguras e quais não são, veja [palavras-chave de segurança de cifras TLS](/learn/tls-cipher-security-keywords); para como rules e groups montam essas strings, veja [cipher rules e groups do F5](/learn/f5-cipher-rules-and-groups).

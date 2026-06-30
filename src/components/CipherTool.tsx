@@ -19,7 +19,13 @@
 
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run, CipherDecodeError, type DecodedCipherSuite } from "@/lib/tools/cipher";
+import {
+  run,
+  CipherDecodeError,
+  NAMED_GROUPS,
+  formatCodepoint,
+  type DecodedCipherSuite,
+} from "@/lib/tools/cipher";
 
 // Which reason codes read as positive / negative / informational, for the
 // colour-coded markers. (The text itself is localized in the message pack.)
@@ -236,6 +242,63 @@ export default function CipherTool() {
           </section>
         </div>
       )}
+
+      {/* Key-exchange groups reference (always shown; educational + PQ focus). */}
+      <section className="jwt-panel cipher-groups-panel">
+        <h4 className="jwt-panel-title">{t("groups.title")}</h4>
+        <p className="cipher-groups-intro">{t("groups.intro")}</p>
+        <ul className="cipher-groups-list">
+          {NAMED_GROUPS.map((g) => {
+            const classes =
+              "cipher-group" +
+              (g.pq === "hybrid-pq" ? " cipher-group--pq" : "") +
+              (g.obsolete ? " cipher-group--obsolete" : "") +
+              (g.legacy ? " cipher-group--legacy" : "");
+            return (
+              <li key={g.name} className={classes}>
+                <div className="cipher-group-head">
+                  <span className="cipher-group-name mono">{g.name}</span>
+                  <span className="cipher-group-code mono">{formatCodepoint(g.codepoint)}</span>
+                </div>
+                <div className="cipher-group-tags">
+                  <span className="cipher-group-tag">{t(`groups.kind.${g.kind}`)}</span>
+                  <span
+                    className={`cipher-group-tag cipher-group-tag--${
+                      g.pq === "hybrid-pq" ? "pq" : "classical"
+                    }`}
+                  >
+                    {t(`groups.pq.${g.pq}`)}
+                  </span>
+                  {g.recommended && (
+                    <span className="cipher-group-tag cipher-group-tag--rec">
+                      {t("groups.recommended")}
+                    </span>
+                  )}
+                  {g.obsolete && (
+                    <span className="cipher-group-tag cipher-group-tag--obsolete">
+                      {t("groups.obsolete")}
+                    </span>
+                  )}
+                  {g.legacy && (
+                    <span className="cipher-group-tag cipher-group-tag--legacy">
+                      {t("groups.legacy")}
+                    </span>
+                  )}
+                </div>
+                {g.combines && (
+                  <p className="cipher-group-note">
+                    {t("groups.combines", {
+                      classical: g.combines.classical,
+                      pq: g.combines.pq,
+                    })}
+                  </p>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+        <p className="cipher-groups-foot">{t("groups.foot")}</p>
+      </section>
     </div>
   );
 }

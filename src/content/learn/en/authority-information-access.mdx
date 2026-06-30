@@ -1,0 +1,28 @@
+---
+slug: authority-information-access
+title: "Authority Information Access: The OCSP and CA Issuers URLs"
+summary: "The AIA extension carries two kinds of pointer: where to ask whether a certificate is revoked (OCSP) and where to fetch the issuer's own certificate (CA Issuers). What each is for, why they are easy to confuse, and what the inspector shows."
+concepts: ["x509", "authority information access", "aia", "ocsp", "ca issuers", "chain building", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["certificate-revocation", "ocsp-must-staple", "certificate-validation"]
+category: pki
+order: 6
+status: reviewed
+updated: "2026-06-29"
+---
+
+## What AIA is
+
+Authority Information Access is a certificate extension, defined in RFC 5280, that tells a relying party where to find services and data related to the issuing CA. It is a list of access descriptions, and each one pairs an access method (an OID that says what kind of pointer this is) with a location (almost always an HTTP URL). The X.509 inspector extracts these and shows them, because between them they cover two very different jobs that are easy to mix up.
+
+## OCSP: where to ask about revocation
+
+The first access method is OCSP, the Online Certificate Status Protocol. Its URL points to the CA's OCSP responder, a service that answers a simple question about one certificate: good, revoked, or unknown. A client that wants to check revocation in real time takes the OCSP URL from this extension, sends the certificate's serial number to that responder, and reads the signed answer. This is the live alternative to downloading a whole CRL, and it is covered in depth in the [revocation article](/learn/certificate-revocation). The weakness of querying the responder directly, and the extension that hardens it, is the subject of [OCSP Must-Staple](/learn/ocsp-must-staple).
+
+## CA Issuers: where to fetch the issuer certificate
+
+The second access method, CA Issuers, is not about revocation at all, and this is the common confusion. Its URL points to a copy of the issuer's own certificate. It exists for chain building. To verify a certificate, a client needs the full chain up to a trusted root, but a misconfigured server sometimes sends only the leaf and omits the intermediates. When that happens, a client can follow the CA Issuers URL to fetch the missing issuer certificate and continue building the chain. This behavior is sometimes called AIA chasing. It is a recovery mechanism for incomplete chains, not a revocation check.
+
+## Why the distinction matters
+
+Seeing both URLs in the inspector, it is tempting to read them as two revocation endpoints. They are not. The OCSP URL is a revocation service; the CA Issuers URL is a place to download a certificate so the chain can be completed. A certificate may carry one, both, or neither. Reading them correctly tells you how a client would check this certificate's status and how it would recover if your server forgot to send the intermediate. As always, the inspector only reads these pointers from the certificate; it never contacts them.

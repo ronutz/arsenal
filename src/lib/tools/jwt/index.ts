@@ -1,15 +1,15 @@
 // ============================================================================
 // src/lib/tools/jwt/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING JWT MODULE - a netcore {manifest, run, vectors} triple.
+// THE SELF-DESCRIBING JWT MODULE - a self-contained {manifest, run, vectors} triple.
 //
-// This mirrors the reference cidr module in @ronutz/netcore exactly, so it can
-// be promoted into the published engine unchanged (copy the folder into
-// netcore/src/tools/jwt, add it to the package exports + registry, cut a minor
-// bump). Until then it lives here and is consumed locally by the JWT tool UI.
+// It follows the same module shape as the other tools here, written so the
+// whole folder could be lifted into an open library unchanged if the project
+// is ever opened (the standing internal design principle). For now it lives
+// here and is consumed locally by the JWT tool UI.
 //
-// The manifest is a real D-49 manifest: validateManifest() from @ronutz/netcore
-// accepts it (asserted in the build step), the inputDetectors[] regex is what
+// The manifest is a real D-49 manifest, checked against the D-49 contract in
+// the build step; the inputDetectors[] regex is what
 // would let an omnibox route a pasted token to this tool, and because a JWT is a
 // sensitiveArtifact (it carries claims and often secrets) the manifest declares
 // shareSafetyDefault: "fragment" - the validator REQUIRES fragment-or-stricter
@@ -104,7 +104,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

@@ -1,0 +1,52 @@
+---
+slug: xxe-and-xml-security
+title: "XXE e Por Que um Parser SAML Rejeita DOCTYPE"
+summary: "Como funcionam os ataques de Entidade Externa de XML (XXE), a negação de serviço billion laughs, por que ambos dependem de uma DTD, e por que um decodificador SAML reforçado rejeita qualquer DOCTYPE ou declaração de entidade de imediato em vez de tentar interpretá-lo com segurança."
+concepts: ["xxe", "xml external entity", "doctype", "dtd", "billion laughs", "entity expansion", "xml security"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-assertions-and-conditions", "saml-signatures"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O XML carrega um recurso perigoso
+
+O SAML é XML, e o XML tem um recurso que transforma a interpretação de entradas não confiáveis em um problema de segurança: a Definição de Tipo de Documento (DTD) e as entidades que ela pode declarar. Uma entidade é uma substituição nomeada, como uma macro. A maioria é inofensiva, mas uma DTD pode definir entidades que puxam conteúdo externo ou expandem de forma explosiva, e um parser que as processa faz o trabalho do atacante enquanto apenas lê o documento. Como uma mensagem SAML chega de fora e é processada por um servidor, essa é exatamente a situação perigosa.
+
+## Entidade Externa de XML (XXE)
+
+Um ataque de Entidade Externa de XML define uma entidade cujo valor aponta para um recurso que o parser irá buscar. Um payload clássico declara uma entidade que referencia um arquivo local e depois a usa no corpo do documento para que o conteúdo do arquivo seja puxado para o resultado interpretado:
+
+```
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>
+<foo>&xxe;</foo>
+```
+
+Se o parser resolve entidades externas, ele lê o arquivo e substitui o conteúdo onde a entidade aparece, e a aplicação pode então retornar ou registrar esses dados, entregando ao atacante um arquivo local. O mesmo truque pode mirar URLs de rede interna para fazer o servidor emitir requisições a sistemas que ele alcança mas o atacante não, uma falsificação de requisição do lado do servidor. O XXE tem sido uma das classes de vulnerabilidade mais danosas em aplicações que processam XML, e endpoints SAML, que interpretam XML fornecido pelo atacante por natureza, são um alvo de primeira.
+
+## A negação de serviço billion laughs
+
+Um ataque relacionado não precisa de referência externa alguma. Ele define pequenas entidades que se referenciam mutuamente, cada uma expandindo em várias cópias da de baixo, de modo que um punhado de definições aninhadas incha em gigabytes quando expandido:
+
+```
+<!DOCTYPE lolz [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<lolz>&lol3;</lolz>
+```
+
+Um parser que expande essas entidades esgota memória e CPU tentando materializar o resultado, derrubando o serviço. Este é o ataque billion laughs e, como o XXE, vive inteiramente na DTD: as entidades que causam o dano são declaradas ali.
+
+## A resposta reforçada: rejeitar a DTD
+
+Os dois ataques compartilham um único pré-requisito: uma DTD que declara entidades. Uma mensagem SAML não tem necessidade legítima de uma. O padrão não exige um DOCTYPE, IdPs reais não emitem um, e o único motivo para uma mensagem SAML carregar uma declaração de entidade é atacar o parser. Isso torna a defesa mais segura também a mais simples: recusar qualquer documento que contenha um DOCTYPE ou uma declaração de entidade, antes de interpretar o seu conteúdo.
+
+Este decodificador faz exatamente isso. Se a entrada contém um `<!DOCTYPE` ou `<!ENTITY`, ela é rejeitada de imediato com um motivo claro, nunca interpretada. Além desse interruptor de segurança, o parser só substitui as cinco entidades XML predefinidas e referências numéricas de caractere; uma entidade nomeada desconhecida fica como texto literal em vez de ser resolvida, então mesmo uma referência que passasse expande para nada perigoso. Tamanho da entrada, profundidade de aninhamento e contagem de elementos são todos limitados como salvaguardas adicionais. O resultado é um parser que não pode ser levado a ler um arquivo local, alcançar a sua rede ou explodir com um documento forjado.
+
+## Por que rejeitar é melhor do que sanitizar
+
+Seria possível tentar interpretar uma DTD e desabilitar com cuidado apenas as partes perigosas, e muitas bibliotecas oferecem flags para isso. O problema é que essas flags são fáceis de configurar errado, variam entre versões de parser e falharam repetidamente de formas que reabriram o XXE. Recusar a DTD por inteiro remove a categoria inteira de erro: não há nada para configurar e nada para errar de forma sutil. Para uma entrada que nunca deveria conter uma DTD, a rejeição de imediato não é uma limitação, é a postura correta e mais forte, e é a que esta ferramenta adota.

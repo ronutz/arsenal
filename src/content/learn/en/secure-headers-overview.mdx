@@ -1,0 +1,63 @@
+---
+slug: secure-headers-overview
+title: "HTTP Security Headers: The Defense-in-Depth Layer"
+summary: "What HTTP security headers are, why they form a layer of defense on top of secure code rather than a replacement for it, the headers that carry the most weight, and how to read a response's posture at a glance."
+concepts: ["security headers", "defense in depth", "csp", "hsts", "clickjacking", "cors", "cookies"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["content-security-policy", "hsts-and-https", "cookie-security-flags", "clickjacking-and-framing"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## What security headers are
+
+HTTP security headers are response headers a server sends to tell the browser how to treat a page: which origins may load scripts, whether the page may be framed, whether to force HTTPS, how much of the URL to leak in the `Referer`, which powerful features the page is allowed to use. They are instructions to the browser, enforced by the browser. The server opts in; a browser that understands the header applies the restriction.
+
+They matter because the browser is where most of the damage from a web vulnerability actually lands. A cross-site scripting flaw runs in the browser. Clickjacking happens in the browser. A stolen session cookie is replayed from a browser. Security headers let the server constrain what the browser will do, so that even when something slips through, the blast radius is smaller.
+
+## Defense in depth, not a substitute
+
+A common misreading is that adding headers makes an application secure. It does not. Headers are a second layer. If your code concatenates untrusted input into HTML, you have a cross-site scripting bug, and a Content-Security-Policy is there to blunt it, not to fix it. Fix the bug; keep the header as the safety net for the bug you have not found yet.
+
+The right mental model is layers that each fail independently. Input handling is the first layer. A strong Content-Security-Policy is the second. Cookie flags are a third. HSTS removes a whole class of transport downgrade. None of them is sufficient alone, and the value comes from stacking them so that one weakness does not become a full compromise.
+
+## The headers that carry the most weight
+
+A handful of headers do most of the work, and the analyzer weights them accordingly:
+
+**Strict-Transport-Security (HSTS)** forces the browser to use HTTPS for the host, removing the downgrade window where an attacker on the network turns an `https://` request into plain HTTP. It is the single most impactful transport control. See [HSTS and HTTPS enforcement](/learn/hsts-and-https).
+
+**Content-Security-Policy (CSP)** is the main defense-in-depth control against cross-site scripting and content injection. A good policy restricts where scripts, styles, and other resources may come from, and a strong one removes `'unsafe-inline'`. See [Content Security Policy, directive by directive](/learn/content-security-policy).
+
+**X-Content-Type-Options: nosniff** stops the browser from guessing a response's type and running, for example, an uploaded image as a script. It is one short header with no downside, so its absence is always worth flagging.
+
+**X-Frame-Options and CSP frame-ancestors** decide whether other sites may put your page inside an iframe, which is the basis of clickjacking. The modern control is `frame-ancestors`; the legacy header is `X-Frame-Options`. See [Clickjacking and frame control](/learn/clickjacking-and-framing).
+
+**Referrer-Policy** governs how much of the current URL is sent when the user navigates away, which is a privacy and information-leak concern when URLs contain identifiers or tokens.
+
+**Permissions-Policy** restricts access to powerful browser features such as camera, microphone, and geolocation, so a compromised or embedded script cannot silently reach them.
+
+**Cookie attributes** (`Secure`, `HttpOnly`, `SameSite`, and the `__Host-` and `__Secure-` prefixes) protect session cookies from theft and cross-site misuse. They travel on `Set-Cookie`, not in a dedicated header, but they are part of the same posture. See [Cookie security flags](/learn/cookie-security-flags).
+
+**Cross-origin (CORS) headers** decide which other sites may read a response. The dangerous case is a wildcard origin combined with credentials, which exposes authenticated data to any site.
+
+## How the grade is reached
+
+The analyzer scores the protective headers it can evaluate, weights them by importance, and then applies a small set of gates that reflect how real risk works rather than letting a pile of minor wins paper over a critical gap:
+
+- If HSTS is missing or weak, or CSP is missing, the grade is capped, because each leaves a whole attack class open. If both are absent, the cap is lower.
+- A cookie with weak attributes caps the grade, because a stealable session cookie undermines the rest.
+- A CORS policy that combines a wildcard origin with credentials caps the grade, because it directly exposes data.
+- Headers that disclose server or framework versions cost a small penalty each. They do not break anything, but they hand an attacker a head start.
+
+The letter grade is a summary. The findings under it are the substance: each header is marked strong, adequate, weak, missing, or informational, with the reason spelled out.
+
+## Reading a response
+
+Paste a full response (the status line plus headers) or just a block of headers. You can copy these from your browser's network panel, from `curl -I`, or from a scanner. The tool parses the headers, evaluates each one, lists cookies separately with their flag hygiene, and surfaces the cross-origin posture. Missing and weak items are sorted to the top so the gaps are the first thing you see, and each missing protective header shows a recommended value you can adopt.
+
+## What this does not check
+
+The analyzer reads a response. It does not see request headers (such as `Origin` or the `Sec-Fetch-*` set), because those are sent by the browser, not returned by the server. It does not evaluate your TLS configuration, certificate, or cipher suites; those are separate concerns with their own tools. And it cannot tell whether a permissive setting is a real problem or an intentional choice for a public, credential-free endpoint. It flags the posture and explains the trade-off; the decision about intent is yours.

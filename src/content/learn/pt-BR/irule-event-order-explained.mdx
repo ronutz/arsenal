@@ -1,0 +1,42 @@
+---
+slug: irule-event-order-explained
+title: "Ordem de Eventos de iRule: O Ciclo de Vida da Conexão"
+summary: "iRules são orientadas a eventos, e os eventos disparam em uma ordem fixa conforme o BIG-IP processa uma conexão: aceitar o cliente, concluir o handshake TLS do cliente, analisar a requisição, escolher um membro do pool, conectar a ele, concluir o handshake TLS do servidor, enviar a requisição, ler a resposta, encerrar. Conhecer essa ordem é a diferença entre uma iRule que funciona e uma que dá erro."
+concepts: ["irules", "event order", "connection lifecycle", "big-ip", "ltm"]
+relatedTools: ["irules-event-order"]
+relatedArticles: ["irule-clientside-vs-serverside", "irule-priority-and-event-order"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Uma iRule é um conjunto de handlers de eventos. Você escreve blocos como `when HTTP_REQUEST { ... }`, e o BIG-IP executa cada bloco quando o evento dele dispara. Os eventos não são arbitrários — eles disparam em uma sequência específica que espelha como uma conexão é de fato processada, e quais eventos aparecem depende de quais perfis estão anexados ao virtual server.
+
+## O caminho feliz, de ponta a ponta
+
+Para um virtual server HTTPS completo que recriptografa para o pool (um perfil Client-SSL, um perfil HTTP, um perfil Server-SSL e um pool), os eventos comuns disparam nesta ordem:
+
+```
+CLIENT_ACCEPTED        conexão TCP do cliente estabelecida
+CLIENTSSL_CLIENTHELLO  ClientHello TLS do cliente recebido
+CLIENTSSL_HANDSHAKE    handshake TLS do lado cliente concluído
+HTTP_REQUEST           cabeçalhos completos da requisição analisados
+LB_SELECTED            membro do pool escolhido
+SERVER_CONNECTED       conexão ao membro estabelecida
+SERVERSSL_HANDSHAKE    handshake TLS do lado servidor concluído
+HTTP_REQUEST_SEND      prestes a enviar a requisição ao servidor
+HTTP_RESPONSE          status e cabeçalhos da resposta analisados
+SERVER_CLOSED          conexão do lado servidor encerrada
+CLIENT_CLOSED          conexão do lado cliente encerrada
+```
+
+Remova um perfil e os eventos relacionados simplesmente somem. Tire o perfil HTTP e você fica com um fluxo TCP puro: `CLIENT_ACCEPTED`, `LB_SELECTED`, `SERVER_CONNECTED`, `SERVER_CLOSED`, `CLIENT_CLOSED`. Tire o pool e não há para onde balancear, então `LB_SELECTED` e todos os eventos do lado servidor desaparecem.
+
+## Por que a ordem importa
+
+A ordem não é trivialidade — ela dita quais dados estão disponíveis e quando. `HTTP::header` funciona em `HTTP_REQUEST` porque os cabeçalhos já foram analisados àquela altura; chamá-lo em `CLIENT_ACCEPTED` dá erro, porque nesse ponto o BIG-IP tem uma conexão TCP e nada mais. Comandos de seleção de pool pertencem antes de `LB_SELECTED`; comandos de resposta só fazem sentido de `HTTP_RESPONSE` em diante. Boa parte dos erros de execução de iRule é, na verdade, um erro de ordem de evento — tocar em algo que ainda não existe.
+
+## Um mapa, não o território
+
+Esta ferramenta modela a ordem documentada para um virtual server Standard (full-proxy), que cobre a grande maioria dos casos de uso de LTM. O conjunto exato também depende de módulos (APM, ASM e outros adicionam seus próprios eventos) e de a sua iRule coletar dados explicitamente. Use-a para raciocinar sobre *onde* no fluxo a sua lógica deve viver, e depois confirme contra uma configuração real para qualquer coisa incomum.

@@ -1,0 +1,40 @@
+---
+slug: tls-cipher-security-keywords
+title: "Quais Palavras-Chave de Cifra TLS São Seguras e Quais Não São"
+summary: "A diferença entre uma cipher string robusta e uma perigosa é um punhado de palavras-chave. A forward secrecy vem de ECDHE e DHE; os riscos vêm de RC4, 3DES, SSLv3, EXPORT, NULL e DH anônimo. Conhecer a lista curta permite ler a segurança de uma cipher string num relance."
+concepts: ["tls", "cifra", "forward secrecy", "rc4", "3des", "segurança"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "f5-cipher-rules-and-groups"]
+category: transport
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Uma cipher string pode ser lida quanto à sua postura de segurança quase tão rápido quanto quanto à sua sintaxe, porque apenas um pequeno conjunto de palavras-chave carrega peso real. Elas se dividem em três grupos: as que você quer, as que você quer fora e as versões de protocolo que decidem o resto.
+
+## As palavras-chave que você quer
+
+A **forward secrecy** é a propriedade mais importante, e vem de uma troca de chaves efêmera: `ECDHE` (curva elíptica) ou `DHE` (campo finito). Com forward secrecy, capturar a chave privada de um servidor não permite a um atacante descriptografar sessões passadas, porque cada sessão usou uma chave descartável. O ECDHE é preferido por ser mais rápido que o DHE. Para a criptografia de bloco, as cifras **AEAD** `AES-GCM` e `CHACHA20-POLY1305` são as escolhas fortes, combinando criptografia e integridade em uma única construção. A F5 recomenda incluir o alias `HIGH` e, ao servir um certificado ECDSA, incluir `ECDHE_ECDSA` para que as suites certas estejam disponíveis.
+
+## As palavras-chave que você quer fora
+
+Uma lista negra curta cobre a maior parte do perigo:
+
+- `RC4`: uma cifra de fluxo com vieses conhecidos, proibida pela RFC 7465.
+- `DES`: DES simples, quebrável por força bruta; e `3DES`, lenta e vulnerável ao ataque de aniversário Sweet32.
+- `EXPORT` (ou `EXP`): cifras de grau de exportação deliberadamente enfraquecidas, por trás de FREAK e Logjam.
+- `NULL`: nenhuma criptografia.
+- `MD5`: um hash quebrado para autenticação de mensagem.
+- `ADH` e `AECDH`: trocas de chave anônimas sem certificado e, portanto, sem proteção contra um intermediário.
+- `LOW`: o alias para suites de chave curta e baixa força.
+
+A forma segura de proibi-las é o operador `!`, que as exclui permanentemente. Uma string que diz `!RC4:!SSLv3:!EXP:!DES` está fazendo exatamente a coisa certa. A F5 recomenda especificamente desabilitar o DH anônimo mantendo a força alta, escrito como `!ADH:HIGH`.
+
+## As versões de protocolo
+
+As palavras-chave de protocolo controlam tudo acima delas. `TLSv1_2` e `TLSv1_3` são atuais e seguras. `TLSv1` (TLS 1.0) e `TLSv1_1` estão obsoletas e agora falham na maioria das verificações de conformidade, e `SSLv3` (vulnerável ao POODLE) e `SSLv2` estão mortas há muito tempo. Permitir uma versão de protocolo antiga reabre classes inteiras de suites fracas, então desabilitá-las é muitas vezes a mudança isolada de maior impacto em uma cipher string.
+
+## Lendo a postura num relance
+
+O [explicador de cipher string do F5](/tools/f5-cipher-string-expander) aplica exatamente essa lente: relata se a forward secrecy está presente, lista as palavras-chave fracas que uma string habilita e credita as palavras-chave fracas que ela exclui explicitamente. Para a gramática em que essas palavras-chave se inserem, veja [lendo uma cipher string do F5](/learn/f5-cipher-string-syntax); para como o F5 as empacota em rules reutilizáveis, veja [cipher rules e groups do F5](/learn/f5-cipher-rules-and-groups).

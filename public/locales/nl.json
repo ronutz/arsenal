@@ -67,6 +67,11 @@
       "title": "Steun deze tool",
       "pitch": "Deze tool is gratis en is gebouwd om dat te blijven. Als hij een plek verdient in je workflow, kun je helpen het onderhoud en wat erna komt te financieren.",
       "purposeLabel": "Wordt nu gefinancierd"
+    },
+    "stats": {
+      "tools": "Tools",
+      "articles": "Artikelen",
+      "sectionLabel": "De toolbox in het kort"
     }
   },
   "tools": {
@@ -77,6 +82,11 @@
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Berekenen",
       "runsLocally": "Draait lokaal. Er wordt niets naar een server gestuurd.",
+      "prefixSlider": "Prefixlengte",
+      "bitsHeading": "Adresbits",
+      "bitsNetwork": "Netwerk",
+      "bitsHost": "Host",
+      "bitsNote": "De gemarkeerde bits bepalen het netwerk — de rest adresseert hosts daarbinnen.",
       "results": {
         "network": "Netwerkadres",
         "broadcast": "Broadcastadres",
@@ -175,7 +185,11 @@
         "tooMany": "Te veel items. Kort de lijst in en probeer opnieuw.",
         "noReqs": "Voeg ten minste één subneteis met een aantal hosts toe.",
         "noPrefixes": "Voer ten minste één prefix in, één per regel."
-      }
+      },
+      "rangeHeading": "Adresindeling",
+      "usableShort": "bruikbaar",
+      "rfcNote": "/31 en /32 reserveren niets: elk adres is bruikbaar (RFC 3021).",
+      "reservedNote": "Het eerste adres is het netwerk en het laatste is de broadcast; beide zijn gereserveerd, dus bruikbaar = totaal − 2."
     },
     "title": "Tools",
     "lede": "Kleine, snelle, privacyvriendelijke hulpprogramma's die volledig in je browser draaien. Niets van wat je typt wordt ergens naartoe gestuurd. Er komen er meer aan.",
@@ -221,7 +235,12 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Kopiëren",
-      "copied": "Gekopieerd"
+      "copied": "Gekopieerd",
+      "struct": {
+        "heading": "Hoe HMAC is opgebouwd",
+        "innerHash": "interne hash",
+        "note": "HMAC hasht het bericht twee keer. De sleutel wordt via XOR gecombineerd met een vaste binnenste pad vóór de eerste hash en met een buitenste pad vóór de tweede, en deze constructie met twee pads voorkomt length-extension-aanvallen. De sleutel wordt eerst teruggebracht tot de blokgrootte van de hash."
+      }
     },
     "base64": {
       "name": "Base64-, Base32-, Hex- en procent-codec",
@@ -273,7 +292,18 @@
       "encodingLabel": "base64url",
       "plainValueLabel": "= code_verifier",
       "copy": "Kopiëren",
-      "copied": "Gekopieerd"
+      "copied": "Gekopieerd",
+      "flowHeading": "Hoe PKCE werkt",
+      "laneClient": "App / Client",
+      "laneServer": "Autorisatieserver",
+      "s1": "Genereer een willekeurige code_verifier",
+      "s2": "Leid de code_challenge af",
+      "s3": "Autorisatieverzoek draagt de challenge",
+      "s4": "Server bewaart de challenge",
+      "s5": "Autorisatiecode geretourneerd",
+      "s6": "Tokenverzoek draagt de verifier",
+      "s7": "Server leidt opnieuw af en vergelijkt",
+      "s8": "Access- en refresh-tokens uitgegeven"
     },
     "uuid": {
       "name": "UUID-generator en -inspecteur (v4 / v7)",
@@ -336,6 +366,11 @@
         "algNone": "Dit token is onbeveiligd (alg: none), dus er is geen handtekening om te verifiëren.",
         "unsupportedAlg": "Verificatie in de browser dekt alleen HS256/384/512. {alg} is asymmetrisch en heeft een openbare sleutel nodig.",
         "hint": "Het geheim wordt alleen gebruikt om een HMAC in je browser te berekenen. Het wordt nooit ergens naartoe gestuurd."
+      },
+      "struct": {
+        "heading": "Anatomie van een JWT",
+        "signingInput": "Handtekeninginvoer",
+        "note": "De header en payload zijn alleen base64url-gecodeerd, niet versleuteld, dus iedereen kan ze lezen. De handtekening wordt berekend over de header en payload, samengevoegd met een punt, en is wat een verifier controleert."
       }
     },
     "x509": {
@@ -361,7 +396,8 @@
         "details": "Details",
         "publicKey": "Openbare sleutel",
         "extensions": "Extensies",
-        "fingerprints": "Vingerafdrukken"
+        "fingerprints": "Vingerafdrukken",
+        "sct": "Certificate Transparency"
       },
       "fields": {
         "version": "Versie",
@@ -392,6 +428,25 @@
         "sha256": "SHA-256",
         "sha1": "SHA-1",
         "computing": "Vingerafdrukken berekenen..."
+      },
+      "chainHeading": "Vertrouwensketen",
+      "tierRoot": "Root-CA",
+      "tierIntermediate": "Tussenliggende CA",
+      "tierLeaf": "Eindentiteitscertificaat",
+      "roleRoot": "Zelfondertekend vertrouwensanker",
+      "roleIntermediate": "Ondertekend door een root; ondertekent eindcertificaten",
+      "roleLeaf": "Identificeert een server of client",
+      "thisCert": "dit certificaat",
+      "issuedBy": "Uitgegeven door",
+      "signs": "ondertekent",
+      "trustNote": "Vertrouwen stroomt naar beneden: elk certificaat is ondertekend door het bovenliggende, tot aan een root die je systeem al vertrouwt.",
+      "sct": {
+        "intro": "Ingebedde SCT's: {n}. Elk is het ondertekende bewijs van een CT-log dat het dit certificaat heeft vastgelegd; browsers vereisen een minimumaantal om het certificaat te vertrouwen.",
+        "entry": "SCT {i}",
+        "logId": "Log-ID",
+        "timestamp": "Vastgelegd op",
+        "signature": "Handtekening",
+        "note": "Handtekeningen worden getoond maar hier niet geverifieerd; het verifiëren van een SCT vereist de openbare sleutel van het log en het precertificaat."
       }
     },
     "ipv6": {
@@ -427,7 +482,13 @@
       },
       "badges": {
         "multicast": "multicast"
-      }
+      },
+      "segHeading": "Adresstructuur",
+      "networkSeg": "Netwerkprefix",
+      "ifaceId": "Interface-ID",
+      "hostBits": "Host-bits",
+      "prefixNote": "Bits links van de grens liggen vast door de prefix; bits rechts identificeren de host daarbinnen.",
+      "conventionNote": "Geen prefix opgegeven, dus de stippellijn markeert de conventionele /64-splitsing: routeringsprefix en subnet links, de 64-bits interface-identifier rechts."
     },
     "cipher": {
       "name": "Cipher suite-decoder",
@@ -508,6 +569,265 @@
         "ianaD": "IANA markeert deze suite als \"D\" (afgeraden): hij ZOU NIET of MAG NIET gebruikt worden, afhankelijk van de situatie.",
         "ianaN": "IANA markeert deze suite niet als \"Aanbevolen\": beperkte toepasbaarheid of niet door het IETF-consensusproces gegaan.",
         "signalling": "Signaleringssuite (SCSV): geen echte versleuteling, maar draagt een protocolsignaal zoals downgradebescherming of heronderhandelingsinfo."
+      },
+      "groups": {
+        "title": "Sleuteluitwisselingsgroepen",
+        "intro": "TLS onderhandelt de eigenlijke sleutelovereenkomstgroep los van de cipher suite, in de extensie supported_groups. Omdat \"harvest now, decrypt later\" de overstap naar post-quantum sleuteluitwisseling aandrijft, combineren de hybride groepen hieronder een klassieke curve met ML-KEM.",
+        "kind": {
+          "ecdhe": "ECDHE-curve",
+          "ffdhe": "Eindig-veld-DH",
+          "pq-hybrid": "PQ-hybride"
+        },
+        "pq": {
+          "classical": "Klassiek",
+          "hybrid-pq": "Hybride PQ"
+        },
+        "recommended": "Aanbevolen",
+        "obsolete": "Verouderd",
+        "legacy": "Legacy",
+        "combines": "Combineert {classical} met {pq}",
+        "foot": "X25519MLKEM768 is de hybride groep die de meeste browsers nu standaard versturen."
+      }
+    },
+    "f5-ssl-profile-explainer": {
+      "name": "F5 SSL-profiel-uitlegger",
+      "blurb": "Plak een tmsh client-ssl- of server-ssl-profiel en krijg de rol, de TLS-protocolmatrix en een beveiligingsbeoordeling van keten, heronderhandeling, SNI, OCSP en wederzijdse TLS — allemaal in je browser.",
+      "inputLabel": "SSL-profiel (tmsh)",
+      "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
+      "runsLocally": "Verwerkt in je browser. Er wordt niets verzonden.",
+      "scopeNote": "Decodeert een geplakt profielblok. Neemt nooit contact op met een BIG-IP.",
+      "errorTitle": "Kon het profiel niet lezen",
+      "err_empty": "Plak een SSL-profiel om te beginnen.",
+      "err_noHeader": "Een regel als deze werd verwacht: ltm profile client-ssl /Common/name ...",
+      "err_noBody": "Geen openingsaccolade gevonden in het profiel.",
+      "err_tooLong": "Deze invoer is te groot om te verwerken.",
+      "err_invalid": "Dit lijkt geen client-ssl- of server-ssl-profiel.",
+      "protocolsHeading": "TLS-protocolversies",
+      "permitted": "toegestaan",
+      "disabled": "uitgeschakeld",
+      "findingsHeading": "Beveiligingsbeoordeling",
+      "settingsHeading": "Instellingen uitgelegd",
+      "topoHeading": "In het datapad",
+      "nodeClient": "Client",
+      "nodeBigip": "BIG-IP",
+      "nodePool": "Poollid",
+      "clientLeg": "TLS aan clientzijde",
+      "serverLeg": "Serverzijde",
+      "thisProfile": "dit profiel",
+      "clientNote": "Een client-ssl-profiel beëindigt het TLS van de client op de BIG-IP. De verbinding naar het poollid wordt alleen opnieuw versleuteld als er een server-ssl-profiel is toegepast; zonder dat is dat traject leesbare tekst (SSL-offload).",
+      "serverNote": "Een server-ssl-profiel laat de BIG-IP een nieuwe TLS-verbinding naar het poollid openen (herversleuteling). De clientzijde wordt door een apart client-ssl-profiel afgehandeld."
+    },
+    "epoch": {
+      "name": "Unix-tijd-omzetter",
+      "blurb": "Typ een Unix-tijdstempel — seconden, milliseconden, microseconden of nanoseconden, automatisch gedetecteerd — of een ISO-8601-datum, en lees het terug in alle gangbare formaten. Allemaal in je browser.",
+      "inputLabel": "Tijdstempel of datum",
+      "inputPlaceholder": "1700000000  of  2023-11-14T22:13:20Z",
+      "runsLocally": "Omgezet in je browser. Er wordt niets verzonden.",
+      "scopeNote": "Pure datumberekening. De eenheid wordt afgeleid uit de grootte van het getal; corrigeer indien nodig.",
+      "nowButton": "Nu",
+      "errorTitle": "Kon dat niet lezen",
+      "err_empty": "Voer een tijdstempel of datum in om te beginnen.",
+      "err_invalid": "Dat is geen Unix-tijdstempel of ISO-8601-datum.",
+      "err_tooLong": "Deze invoer is te lang.",
+      "err_outOfRange": "Die tijdstempel valt buiten het weergeefbare datumbereik.",
+      "utcHeading": "UTC-datum en -tijd",
+      "formatsHeading": "Alle formaten",
+      "dayOfYearLabel": "dag van het jaar",
+      "relativeNote": "ten opzichte van de klok van je apparaat"
+    },
+    "irules-event-order": {
+      "name": "iRule-gebeurtenisvolgorde",
+      "blurb": "Kies de profielstack van een BIG-IP-virtual-server — Client-SSL, HTTP, Server-SSL, pool — en zie de volgorde waarin de gangbare iRule-gebeurtenissen afgaan, van CLIENT_ACCEPTED tot CLIENT_CLOSED, als tijdlijn en lijst. Allemaal in je browser.",
+      "stackLabel": "Profielstack van de virtual server",
+      "tog_clientssl": "Client-SSL-profiel",
+      "tog_http": "HTTP-profiel",
+      "tog_serverssl": "Server-SSL-profiel",
+      "tog_pool": "Pool (load balancing)",
+      "tog_fastl4": "FastL4 (pakket-snelpad)",
+      "presetsLabel": "Voorinstellingen:",
+      "preset_https": "HTTPS met herversleuteling",
+      "preset_offload": "SSL-offload",
+      "preset_http": "HTTP",
+      "preset_tcp": "Kaal TCP",
+      "runsLocally": "Berekend in je browser. Er wordt niets verzonden.",
+      "scopeNote": "Een model van gedocumenteerd F5-gedrag voor een Standard-virtual-server. Het contacteert nooit een BIG-IP.",
+      "diagramHeading": "Gebeurtenisvolgorde",
+      "listHeading": "Gebeurtenissen op volgorde",
+      "conditionalHeading": "Voorwaardelijke gebeurtenissen",
+      "conditionalNote": "Deze gaan alleen af onder specifieke voorwaarden: een TCP::collect of HTTP::collect, een load-balancingfout, of een 100 Continue-antwoord.",
+      "sideClient": "clientzijde",
+      "sideServer": "serverzijde",
+      "sideGlobal": "globaal"
+    },
+    "cert-renewal-planner": {
+      "name": "Certificaatvernieuwingsplanner",
+      "blurb": "Bereken de geldigheid van een TLS-certificaat, of het binnen het 47-dagenschema van het CA/Browser Forum past, en de vernieuwingscadans die daaruit volgt; allemaal offline.",
+      "notBeforeLabel": "Uitgegeven (notBefore)",
+      "notAfterLabel": "Verloopt (notAfter)",
+      "runsLocally": "Alles draait in je browser; er wordt niets geüpload.",
+      "exampleLabel": "Probeer een voorbeeld van 90 dagen",
+      "summaryHeading": "Dit certificaat",
+      "validity": "Geldigheid van {days} dagen",
+      "compliantBadge": "Binnen de limiet",
+      "overCapBadge": "Boven de limiet",
+      "maxForPhase": "Maximum voor de uitgiftedatum: {max} dagen.",
+      "overByText": "{days} dagen boven het maximum van {max} dagen voor de uitgiftedatum; een openbare CA zou het niet uitgeven.",
+      "renewalsValue": "Ongeveer {n} vernieuwingen per jaar bij deze geldigheid.",
+      "remainingHeading": "Volgens de klok van je apparaat",
+      "daysRemaining": "{days} dagen tot het verloopt.",
+      "expiredText": "{days} dagen geleden verlopen.",
+      "renewByText": "Vernieuw vóór {date} (ongeveer {lead} dagen voordat het verloopt)",
+      "renewByDue": "over {days} dagen",
+      "reuseHeading": "Hergebruik van validatie (uitgiftetijdperk)",
+      "dcvText": "Domeinvalidatiegegevens (DCV) kunnen {days} dagen worden hergebruikt.",
+      "siiText": "Organisatie-identiteit (OV/EV SII) kan {days} dagen worden hergebruikt.",
+      "scheduleHeading": "Het SC-081v3-schema",
+      "scheduleIntro": "Openbare TLS-maxima hangen af van de uitgiftedatum van het certificaat:",
+      "colPeriod": "Uitgegeven vanaf",
+      "colValidity": "Max. geldigheid (dagen)",
+      "colDcv": "DCV-hergebruik (dagen)",
+      "colSii": "SII-hergebruik (dagen)",
+      "phaseP0": "Vóór 15 mrt 2026",
+      "phaseP1": "15 mrt 2026",
+      "phaseP2": "15 mrt 2027",
+      "phaseP3": "15 mrt 2029",
+      "yourPhase": "← dit certificaat",
+      "projectionHeading": "Vernieuwingslast bij elke limiet",
+      "projectionIntro": "Vernieuwingen per certificaat per jaar, naarmate de limieten dalen:",
+      "perYearShort": "jaar",
+      "note_overCap": "Deze geldigheid overschrijdt het maximum van {max} dagen voor de uitgiftedatum.",
+      "note_future47": "Vandaag conform, maar langer dan de uiteindelijke limiet van 47 dagen; verwacht vaker vernieuwen naarmate het schema vordert.",
+      "note_publicOnly": "Deze limieten gelden alleen voor openbaar vertrouwde TLS-certificaten. Private of interne PKI valt niet onder SC-081v3.",
+      "note_automate": "Bij deze cadansen kun je uitgifte en vernieuwing automatiseren met ACME (RFC 8555) en ARI (RFC 9773); handmatig vernieuwen schaalt niet.",
+      "err_empty": "Voer beide datums in, uitgifte en verloop.",
+      "err_invalidDate": "Gebruik een geldige datum (JJJJ-MM-DD).",
+      "err_order": "De verloopdatum moet na de uitgiftedatum liggen.",
+      "err_tooLong": "Deze invoer is te lang.",
+      "err_invalid": "Kon die datums niet lezen."
+    },
+    "csr-decoder": {
+      "name": "CSR-decoder",
+      "blurb": "Decodeer een PKCS#10-aanvraag voor certificaatondertekening om het subject, de openbare sleutel, de aangevraagde SAN's en extensies en de attributen te lezen; volledig in je browser.",
+      "inputLabel": "Aanvraag voor certificaatondertekening (PEM, base64 of hex)",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
+      "exampleLabel": "Een voorbeeld-CSR laden",
+      "runsLocally": "Alles draait in je browser; de CSR wordt nooit geüpload.",
+      "notCertNote": "Een CSR is een aanvraag, geen certificaat. Het heeft geen serienummer, geen uitgever en geen geldigheidsdatums; alleen wat de aanvrager door een CA wil laten certificeren.",
+      "subjectHeading": "Subject",
+      "colAttr": "Attribuut",
+      "colValue": "Waarde",
+      "noSubject": "Geen subjectnaam (deze CSR steunt op aangevraagde SAN's).",
+      "keyHeading": "Openbare sleutel",
+      "keyAlgorithmLabel": "Algoritme",
+      "keySizeLabel": "Grootte",
+      "keySizeValue": "{bits} bits",
+      "keyCurveLabel": "Curve",
+      "keyExponentLabel": "Exponent",
+      "keyExponentValue": "{exp}",
+      "requestedHeading": "Aangevraagde extensies",
+      "sanLabel": "Subject Alternative Names",
+      "keyUsageLabel": "Sleutelgebruik",
+      "ekuLabel": "Uitgebreid sleutelgebruik",
+      "basicConstraintsLabel": "Basisbeperkingen",
+      "caYes": "CA: ja",
+      "caNo": "CA: nee",
+      "pathLenValue": "padlengte {n}",
+      "noRequested": "Geen extensies aangevraagd.",
+      "attributesHeading": "Attributen",
+      "challengePasswordLabel": "Challenge-wachtwoord",
+      "unstructuredNameLabel": "Ongestructureerde naam",
+      "signatureHeading": "Zelfondertekening",
+      "signatureAlgLabel": "Algoritme",
+      "signatureBitsLabel": "Lengte",
+      "signatureBitsValue": "{bits} bits",
+      "versionValue": "Versie: v1 ({v})",
+      "derLengthValue": "DER: {bytes} bytes",
+      "err_empty": "Plak een aanvraag voor certificaatondertekening om te decoderen.",
+      "err_format": "Dit lijkt niet op een CSR in PEM, base64 of hex.",
+      "err_der": "De DER-structuur kon niet worden geparseerd.",
+      "err_structure": "Dit wordt geparseerd als DER, maar is geen PKCS#10-certificeringsaanvraag."
+    },
+    "oidc": {
+      "name": "OIDC-decoder",
+      "blurb": "Plak een OpenID Connect ID-token of een .well-known/openid-configuration-document en decodeer het: de kern-claims, profiel-claims, endpoints en mogelijkheden, met controles op vereiste claims, ondertekeningsalgoritme, nonce en PKCE.",
+      "inputLabel": "ID-token (JWT) of openid-configuration-JSON",
+      "inputPlaceholder": "Plak een ID-token, of een OIDC-discovery-JSON-document",
+      "runsLocally": "Het decoderen gebeurt lokaal in je browser. Het roept nooit de jwks_uri of een endpoint aan, en er wordt niets ergens naartoe gestuurd.",
+      "notVerifiedNote": "Deze tool decodeert en legt uit. Het verifieert de tokenhandtekening niet, haalt de ondertekeningssleutels niet op en controleert de vervaltijd niet tegen de klok.",
+      "errors": {
+        "empty": "Plak een ID-token of een openid-configuration-document om te decoderen.",
+        "malformed-json": "Dit begint als JSON maar kon niet worden geparseerd. Controleer op een ontbrekende accolade, komma of aanhalingsteken.",
+        "json-not-oidc": "Dit is JSON, maar geen OpenID Connect-discovery-document. Plak een ID-token, of een .well-known/openid-configuration-document.",
+        "not-jwt": "Dit lijkt niet op een JWT of een OIDC-document. Plak een ID-token of een discovery-document.",
+        "jwt-header": "De tokenheader kon niet worden gedecodeerd. Een JWT bestaat uit drie door punten gescheiden base64url-delen.",
+        "jwt-payload": "De tokenpayload kon niet als JSON worden gedecodeerd."
+      },
+      "badges": {
+        "idToken": "ID-token",
+        "discovery": "Discovery",
+        "signed": "Ondertekend",
+        "unsigned": "Niet ondertekend",
+        "algNone": "alg: none",
+        "algUnknown": "alg: ?"
+      },
+      "panels": {
+        "header": "Header",
+        "coreClaims": "Kern-claims van het ID-token",
+        "metadata": "Provider",
+        "endpoints": "Endpoints",
+        "capabilities": "Mogelijkheden"
+      },
+      "categories": {
+        "binding": "Tokenbinding",
+        "profile": "Profiel-claims",
+        "email": "E-mail",
+        "address": "Adres",
+        "phone": "Telefoon",
+        "oauth": "OAuth / sessie",
+        "other": "Overige claims"
+      },
+      "fields": {
+        "alg": "Algoritme",
+        "typ": "Type",
+        "kid": "Sleutel-ID",
+        "iss": "Uitgever (iss)",
+        "sub": "Subject (sub)",
+        "aud": "Doelgroep (aud)",
+        "azp": "Geautoriseerde partij (azp)",
+        "nonce": "Nonce",
+        "acr": "Auth-context (acr)",
+        "amr": "Auth-methoden (amr)",
+        "authTime": "Auth-tijd",
+        "iat": "Uitgegeven op (iat)",
+        "nbf": "Niet vóór (nbf)",
+        "exp": "Verloopt (exp)",
+        "issuer": "Uitgever"
+      },
+      "reasons": {
+        "MISSING_REQUIRED_CLAIM": "Ontbrekende vereiste claim {value}. Een ID-token moet iss, sub, aud, exp en iat bevatten.",
+        "ALG_NONE": "Het token gebruikt alg none, wat betekent dat het niet ondertekend is. Een niet-ondertekend ID-token bewijst niets en moet worden geweigerd.",
+        "ALG_SYMMETRIC": "Ondertekend met {value}, een symmetrisch (HMAC) algoritme. ID-tokens van een openbare provider gebruiken normaal een asymmetrisch algoritme zoals RS256 of ES256, zodat de relying party met de openbare sleutel kan verifiëren.",
+        "ALG_UNKNOWN": "Ondertekend met {value}, een algoritme dat deze tool niet herkent. Bevestig dat het een verwacht, sterk algoritme is.",
+        "SIGNED_ASYMMETRIC": "Ondertekend met {value}, een asymmetrisch algoritme. De relying party verifieert het met de openbare sleutel van de provider uit de JWKS.",
+        "NO_NONCE": "Geen nonce-claim. De nonce bindt het token aan het authenticatieverzoek en beschermt tegen replay. Het zou aanwezig moeten zijn wanneer het verzoek er een heeft verzonden.",
+        "MULTI_AUD_NO_AZP": "Het token heeft meerdere doelgroepen maar geen azp (geautoriseerde partij). Bij meer dan één doelgroep zou azp de client moeten benoemen waarvoor het token bedoeld is.",
+        "DISCOVERY_MISSING_FIELD": "Ontbrekend vereist discovery-veld {value}.",
+        "DISCOVERY_ALG_NONE": "De provider adverteert het ondertekeningsalgoritme none voor ID-tokens, wat niet-ondertekende tokens zou toestaan. Dit zou niet aangeboden moeten worden.",
+        "DISCOVERY_NO_PKCE": "Geen code_challenge_methods_supported. De provider adverteert geen PKCE, wat wordt aanbevolen voor de authorization-code-flow.",
+        "DISCOVERY_NO_PKCE_S256": "PKCE wordt geadverteerd maar zonder de S256-methode. S256 is de aanbevolen code-challenge-methode."
+      },
+      "flow": {
+        "heading": "Authorization-code-flow",
+        "laneRp": "Relying Party",
+        "laneOp": "OpenID-provider",
+        "s1": "Stuur de gebruiker met scope=openid door naar de provider",
+        "s2": "De provider authenticeert de gebruiker en verkrijgt toestemming",
+        "s3": "De provider stuurt terug met een authorization code",
+        "s4": "De relying party wisselt de code in bij het token-endpoint",
+        "s5": "De provider retourneert een ID-token plus een access token",
+        "s6": "De relying party valideert de ID-token-handtekening tegen de JWKS",
+        "s7": "De relying party kan UserInfo aanroepen met het access token",
+        "s8": "De provider retourneert de claims van de gebruiker"
       }
     }
   },
@@ -521,7 +841,7 @@
     "short3": "De interactieve tools draaien volledig in je browser. Wat je erin plakt of typt blijft op je apparaat en wordt nergens naartoe verzonden.",
     "short4": "Slechts drie dingen raken gegevens, en elk wordt hieronder uitgelegd: één thema-instelling die in je eigen browser wordt opgeslagen, de standaard verbindingslogboeken die elk bezoek aan een site op de hostinglaag genereert, en elk bericht dat je per e-mail kiest te verzenden.",
     "controllerTitle": "Wie verantwoordelijk is",
-    "controllerBody": "Dit is de persoonlijke website van Rodolfo Nützmann (ronutz.com). Voor elke privacyvraag, of om een van de hieronder beschreven rechten uit te oefenen, schrijf naar hello@ronutz.com. Verzoeken worden rechtstreeks afgehandeld door Rodolfo Nützmann, als verwerkingsverantwoordelijke.",
+    "controllerBody": "Dit is de persoonlijke website van Rodolfo Nützmann (ronutz.com). Voor elke privacyvraag, of om een van de hieronder beschreven rechten uit te oefenen, schrijf naar {email}. Verzoeken worden rechtstreeks afgehandeld door Rodolfo Nützmann, als verwerkingsverantwoordelijke.",
     "noTrackTitle": "Geen cookies, geen tracking, geen analytics",
     "noTrackBody": "Deze site plaatst geen enkele cookie. Ze gebruikt geen analysedienst (zoals Google Analytics of Plausible), geen advertentienetwerk, geen tracking-pixels van sociale media en geen apparaat-fingerprinting. Je bezoek wordt voor die doeleinden niet gemeten, geprofileerd of met iemand gedeeld.",
     "browserTitle": "Wat in je browser wordt opgeslagen",
@@ -537,12 +857,12 @@
     "childrenTitle": "Kinderen",
     "childrenBody": "Deze site is bedoeld voor een professioneel, algemeen publiek. Ze is niet gericht op kinderen en verzamelt niet bewust persoonsgegevens van hen.",
     "rightsTitle": "Je rechten",
-    "rightsBody": "Afhankelijk van waar je woont, heb je rechten over je persoonsgegevens, waaronder het recht op inzage, op correctie of verwijdering, om bezwaar te maken tegen of de verwerking te beperken, om een kopie in een overdraagbare vorm te vragen en om geïnformeerd te worden over hoe ze worden verwerkt. Om er een uit te oefenen, schrijf eenvoudig naar hello@ronutz.com. Omdat hier zo weinig persoonsgegevens worden verwerkt, valt er in de praktijk meestal heel weinig te doen, maar het kanaal staat altijd open.",
+    "rightsBody": "Afhankelijk van waar je woont, heb je rechten over je persoonsgegevens, waaronder het recht op inzage, op correctie of verwijdering, om bezwaar te maken tegen of de verwerking te beperken, om een kopie in een overdraagbare vorm te vragen en om geïnformeerd te worden over hoe ze worden verwerkt. Om er een uit te oefenen, schrijf eenvoudig naar {email}. Omdat hier zo weinig persoonsgegevens worden verwerkt, valt er in de praktijk meestal heel weinig te doen, maar het kanaal staat altijd open.",
     "rightsGdpr": "Als je je in de Europese Economische Ruimte of het Verenigd Koninkrijk bevindt, heb je ook het recht om een klacht in te dienen bij je lokale toezichthoudende autoriteit voor gegevensbescherming.",
     "rightsLgpd": "Als je je in Brazilië bevindt, heb je de rechten uiteengezet in Artikel 18 van de LGPD, en kun je ook contact opnemen met de nationale autoriteit voor gegevensbescherming (de ANPD).",
     "changesTitle": "Wijzigingen in deze kennisgeving",
     "changesBody": "Als deze kennisgeving verandert, wordt de herziene versie op deze pagina gepubliceerd en wordt de datum hieronder bijgewerkt. Wezenlijke wijzigingen worden niet met terugwerkende kracht toegepast.",
-    "updated": "Laatst bijgewerkt: 28 juni 2026",
+    "updated": "Laatst bijgewerkt: 30 juni 2026",
     "backHome": "Terug naar home"
   },
   "footer": {
@@ -553,7 +873,7 @@
     "contribute": "Help de vertalingen verbeteren",
     "feedback": "Feedback geven",
     "api": "API-referentie",
-    "contributeTools": "Een tool bijdragen",
+    "contributeTools": "Deel een idee",
     "license": "Licentie",
     "coffee": "Trakteer me op een koffie"
   },
@@ -868,7 +1188,9 @@
         "label": "Officiële training",
         "description": "Boek een cursus via Red Education"
       }
-    }
+    },
+    "feedbackNote": "Een bug, fout of onnauwkeurigheid op de site gevonden?",
+    "feedbackLink": "Deel het op de ideeënpagina"
   },
   "certs": {
     "title": "Certificeringen en kwalificaties",
@@ -935,7 +1257,6 @@
     "p1Title": "Berekenen, nooit gokken",
     "p1Body": "De tools op deze site berekenen antwoorden lokaal en deterministisch. Ze roepen geen server aan met je invoer, en ze benaderen niets. Wat in je browser draait, blijft in je browser.",
     "p2Title": "Open in de kern",
-    "p2Body": "De engine achter de tools is open source, uitgebracht onder een permissieve licentie. De site is erop gebouwd op dezelfde manier als ieder ander zou kunnen. Openheid is hier geen marketingzin; het is de architectuur.",
     "p3Title": "Gedocumenteerd door constructie",
     "p3Body": "Elk deel van de codebase is becommentarieerd en gedocumenteerd, niet als bijzaak maar als staande regel. De build is bedoeld om leesbaar te zijn, voor zijn onderhouder en voor iedereen die hem erft.",
     "p4Title": "Gebouwd om te blijven en te reizen",
@@ -951,7 +1272,7 @@
     "stackType": "Typografie",
     "stackTypeV": "Inter voor tekst, JetBrains Mono voor data en codes",
     "stackEngine": "Tool-engine",
-    "stackEngineV": "Een open-core-engine, uitgebracht onder een permissieve licentie",
+    "stackEngineV": "Een deterministische rekenlaag die volledig in de browser draait",
     "stackSearch": "Zoeken",
     "stackSearchV": "Statische full-text-zoekfunctie aan de clientzijde; geen zoekserver",
     "vibeTitle": "Is dit vibe coding?",
@@ -972,7 +1293,10 @@
     "redblueLabel": "Rood en blauw",
     "redblueBody": "Hetzelfde decoderen-en-uitleggen waarmee een red-teamer een onderschept token leest, laat een blue-teamer begrijpen wat de eigen stack uitzendt. Het platform staat bewust aan de analysekant van die lijn: het identificeert, decodeert, converteert en legt uit, en gaat niet zover om te vervalsen, te injecteren of controles te omzeilen. Die grens is een ontwerpkeuze, geen vergissing; deze tools bestaan om te onderwijzen en te diagnosticeren, niet om een wapen te worden.",
     "localLabel": "Lokaal en deterministisch",
-    "localBody": "Alles draait in de browser. De pure functie die het tool op de pagina aanroept, is dezelfde die de API aanroept; bij dezelfde invoer geeft ze dezelfde uitvoer, houdt geen toestand bij en stuurt niets naar een server. Geen cookies, geen analytics, zoals de Privacypagina volledig uiteenzet."
+    "localBody": "Alles draait in de browser. De tool roept een pure functie aan: bij dezelfde invoer geeft die dezelfde uitvoer, houdt geen toestand bij en stuurt niets naar een server. Geen cookies, geen analytics, zoals de Privacypagina volledig uiteenzet.",
+    "thanksTitle": "Speciale dank",
+    "p2Body": "De deterministische logica die elke tool uitvoert, is de hele tool: er is geen verborgen serverstap, geen account en geen telemetrie. Alles draait in je browser.",
+    "changelogLink": "Wijzigingslog"
   },
   "support": {
     "title": "Steun het project",
@@ -1030,26 +1354,12 @@
     "emailHeading": "Stuur je bijdrage",
     "backHome": "Terug naar de tools"
   },
-  "contributeTools": {
-    "eyebrow": "Open toolbox",
-    "title": "Een tool bijdragen",
-    "lede": "De toolbox is gemaakt om te groeien. Elke tool is een kleine, zelfbeschrijvende module op de open engine, en de site laadt hem op dezelfde manier als ieder ander dat zou kunnen. Heb je een tool die past, draag hem dan voor.",
-    "shapeTitle": "Wat een tool is",
-    "shapeBody": "Een tool is drie dingen tegelijk: een manifest dat hem beschrijft (wat hij is, de invoer die hij accepteert, waar zijn juistheid vandaan komt), een enkele pure uitvoeringsfunctie die het werk doet, en een set referentievectoren, vaste invoer-en-uitvoerparen die bewijzen dat de functie correct is. De engine laadt een tool vanuit zijn manifest, zodat een goed gevormde module past zonder de rest van de site aan te raken.",
-    "principlesTitle": "Waaraan een tool zich moet houden",
-    "principlesBody": "De berekening draait lokaal en is deterministisch: dezelfde invoer levert altijd dezelfde uitvoer op, zonder klok, netwerk of toeval in het resultaat. Alles wat gevoelig is, blijft standaard op het apparaat. De juistheid is verankerd aan referentievectoren en aan geciteerde bronnen – zoals een RFC of een gepubliceerde standaard –, niet aan mening. De code verschijnt onder een permissieve licentie, zodat de site en ieder ander erop kunnen voortbouwen.",
-    "proposeTitle": "Stel er een voor",
-    "proposeBody": "Stuur een kort voorstel per e-mail: wat de tool berekent, een voorbeeldinvoer met de exacte uitvoer die hij moet produceren, en de bron waarop zijn juistheid berust. Een schets van het manifest en een paar referentievectoren zijn welkom, maar niet vereist. Als hij past, wordt hij in de engine en de toolbox ingebouwd.",
-    "emailLabel": "E-mail",
-    "backToTools": "Terug naar de toolbox"
-  },
   "api": {
     "title": "API",
     "lede": "De tools op deze site draaien in je browser en houden je gegevens op je apparaat. Voor automatisering – scripts, pipelines en integraties – zijn dezelfde deterministische berekeningen beschikbaar als een kleine HTTP-API. Het is de programmatische tegenhanger van de browsertools, geen vervanging ervan.",
     "privacyTitle": "Wat dit betekent voor je gegevens",
     "privacyBody": "De API ontvangt alleen de invoer die je verstuurt, berekent een resultaat en geeft het terug. Hij is stateless en logt geen query-waarden of request-bodies. Heb je gegarandeerd nul data-uitgang nodig, gebruik dan de browsertools of draai de open engine zelf.",
     "engineTitle": "Dezelfde engine als de browser",
-    "engineBody": "Elk endpoint roept dezelfde engine-functie aan die de tool in de browser aanroept, zodat de API en de browser byte-identieke resultaten teruggeven. Die engine, @ronutz/netcore, is opensource onder een permissieve licentie.",
     "specTitle": "De specificatie",
     "specBody": "Het volledige contract is gepubliceerd als OpenAPI 3.1. Download het, richt je eigen tooling erop of lees de referentie hieronder.",
     "downloadSpec": "openapi.yaml downloaden",
@@ -1073,17 +1383,57 @@
     "descriptionLabel": "Beschrijving",
     "viewReference": "Referentie",
     "viewSwagger": "Swagger UI",
-    "swaggerLoadError": "Swagger UI kon niet worden geladen."
+    "swaggerLoadError": "Swagger UI kon niet worden geladen.",
+    "engineBody": "Elk endpoint voert dezelfde pure functie uit als de tool in de browser, zodat de API en de browser byte-identieke resultaten teruggeven."
   },
   "license_page": {
-    "eyebrow": "Open core",
+    "eyebrow": "Voorwaarden",
     "title": "Licentie",
-    "lede": "ronutz.com is open core: de engine achter elke tool is opensource, en de website die erop is gebouwd niet.",
-    "openHeading": "Opensource – de engine",
-    "openBody": "@ronutz/netcore, de engine achter elke tool en elke API-respons op deze site, wordt uitgebracht onder de Apache License 2.0. Dezelfde functie die de tools in de browser aanroepen, roept ook de API aan, dus je bent vrij om die te gebruiken, aan te passen en erop voort te bouwen onder die licentie.",
     "closedHeading": "Closed source – deze website",
     "closedBody": "De website zelf is closed source. Het ontwerp, de interface, de geschreven inhoud (waaronder elk Learn-artikel), de merkidentiteit en de specifieke manier waarop deze tools hier zijn samengesteld en gepresenteerd zijn eigendom, alle rechten voorbehouden. Er wordt geen toestemming verleend om de site of de inhoud ervan te kopiëren, te verveelvoudigen, te wijzigen, te herdistribueren of er afgeleide werken van te maken zonder voorafgaande schriftelijke toestemming.",
     "contact": "Vragen over de licentie? <a>Neem contact op.</a>",
-    "backHome": "Terug naar de tools"
+    "backHome": "Terug naar de tools",
+    "thirdHeading": "Opensource-componenten",
+    "lede": "ronutz.com is een propriëtair werk, alle rechten voorbehouden. Deze voorwaarden gelden voor de website en de inhoud ervan. De site is gebouwd op opensourcesoftware, die wordt gebruikt en herverdeeld onder haar eigen licentievoorwaarden, hieronder vermeld.",
+    "thirdBody": "Deze site steunt op opensourcewerk. De site zelf is gebouwd met Next.js en React en wordt geleverd als een statische export; de internationalisatie gebruikt next-intl; de Learn-inhoud wordt gerenderd met next-mdx-remote, gray-matter, remark-gfm en js-yaml; en het zoeken wordt verzorgd door Pagefind. Deze componenten worden geleverd onder de MIT License, behalve next-mdx-remote (Mozilla Public License 2.0). De API-referentie bevat Swagger UI, onder de Apache License 2.0. Elke component blijft onder zijn eigen licentie, en de volledige kennisgevingen worden samen met de broncode geleverd."
+  },
+  "contributeIdeas": {
+    "eyebrow": "Ideeën welkom",
+    "title": "Deel een idee",
+    "lede": "Deze toolbox is gemaakt om te groeien, en het duidelijkste signaal voor waar hij heen moet komt van de mensen die hem gebruiken. Een bug, een fout of een onnauwkeurigheid gevonden? Mis je een tool die er nog niet is? Zie je een betere aanpak, of een resultaat dat je anders zou verwoorden? Stuur het op; elke vorm van input is welkom.",
+    "sendTitle": "Wat je kunt sturen",
+    "sendBody": "Bugs, fouten en onnauwkeurigheden van allerlei aard: een tool die zich misdraagt, een verkeerd resultaat, een fout in een Learn-artikel, of gewoon iets dat niet klopt. Functieverzoeken voor tools die er al zijn. Ideeën voor nieuwe tools die de toolbox zou moeten hebben. Correcties en aanvullingen op de Learn-artikelen, zoals een duidelijkere uitleg, een betere bron, of een ontbrekend onderwerp. Of gewoon een andere kijk op een probleem. Ruw mag; één zin is genoeg om een gesprek te beginnen.",
+    "toolTitle": "Als je een nieuwe tool voorstelt",
+    "toolBody": "Tools zijn hier kleine, zelfbeschrijvende modules: een manifest dat zegt wat de tool is en waar zijn juistheid vandaan komt, één pure functie die het werk doet, en een set golden vectors, de vaste invoer-uitvoerparen die het bewijzen. Een goede kandidaat rekent lokaal en deterministisch (dezelfde invoer geeft altijd dezelfde uitvoer, zonder klok, netwerk of toeval in het resultaat), houdt alles wat gevoelig is op het apparaat, en verankert zijn juistheid in een geciteerde bron zoals een RFC in plaats van in een mening. Je hoeft dat allemaal niet te bouwen om er een voor te stellen: beschrijf gewoon wat het moet berekenen, een voorbeeld, en de bron waarop het rust.",
+    "fitRule": "Eén eenvoudige test bepaalt het. Elke tool hier draait volledig in je browser en stuurt niets ergens heen, dus een nieuwe tool moet iets zijn dat een computer alleen uit jouw invoer kan afleiden, door een vaste, gepubliceerde regel te volgen. Als het online moet, iets live moet opzoeken, je moet aanmelden of je moet onthouden, hoort het hier niet thuis.",
+    "fitYes": "Past:",
+    "fitYesBody": "iets decoderen of uitleggen dat je plakt (een token, een certificaat, een config, commando-uitvoer), tussen formaten converteren, berekenen op basis van een standaard of formule, of genereren volgens een regel, zoals een UUID, een hash of een opdrachtregel.",
+    "fitNo": "Past niet:",
+    "fitNoBody": "alles wat online moet of iets live moet controleren (een echte website testen, een live DNS-server bevragen, een adres scannen), alles wat een account, een aanmelding of opgeslagen gegevens nodig heeft, of alles waarvan het antwoord niet door een gepubliceerde standaard vastligt.",
+    "fitUnsure": "Weet je niet aan welke kant je idee valt? Stuur het toch en zeg wat het zou moeten doen. Ik vertel je eerlijk of het past, en waarom.",
+    "emailTitle": "Hoe je me bereikt",
+    "emailBody": "E-mail is het kanaal. Vertel me wat je vond of wat je wilt, met genoeg detail om mee aan de slag te gaan: een voorbeeld, een link, de exacte formulering, wat past. Als het de toolbox beter maakt, wordt het gebouwd.",
+    "emailLabel": "E-mail",
+    "backToTools": "Terug naar de toolbox"
+  },
+  "languageStatus": {
+    "title": "Vertaalstatus",
+    "reviewed": "Door een mens nagekeken",
+    "complete": "Machinaal, compleet",
+    "partial": "Machinaal, in uitvoering",
+    "explainTitle": "Hoe vertalingen worden gemarkeerd",
+    "explainBody": "Engels en Braziliaans Portugees worden door een persoon geschreven en gecontroleerd. De meeste andere talen zijn machinaal vertaald en gemarkeerd op basis van hoe ver ze zijn: amber zodra een taal de hele site dekt, geel zolang nieuwere inhoud nog in het Engels is en wordt bijgewerkt. Talen die rood zijn gemarkeerd, hebben nog geen vertaling en worden voorlopig in het Engels getoond. Machinaal vertaalde pagina's bevatten ook een korte melding, en je bent welkom om ze te helpen verbeteren.",
+    "stub": "Nog niet vertaald"
+  },
+  "changelog": {
+    "eyebrow": "Wijzigingslogboek",
+    "title": "Wat is er nieuw",
+    "lede": "Een doorlopend overzicht van nieuwe tools, nieuwe Learn-artikelen en belangrijke wijzigingen op deze site. Er zijn vandaag {count} tools beschikbaar.",
+    "kindLaunch": "Lancering",
+    "kindTool": "Nieuwe tool",
+    "kindFeature": "Functie",
+    "kindI18n": "Lokalisatie",
+    "kindContent": "Inhoud",
+    "kindInfra": "Infrastructuur"
   }
 }

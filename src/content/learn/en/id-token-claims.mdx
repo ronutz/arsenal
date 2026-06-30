@@ -1,0 +1,44 @@
+---
+slug: id-token-claims
+title: "The ID Token Claims, and What a Relying Party Checks"
+summary: "The claims inside an OIDC ID token: the required iss, sub, aud, exp, and iat; the nonce that stops replay; azp when there are multiple audiences; acr and amr for authentication strength; auth_time; and the at_hash and c_hash binding claims, with the validation a relying party performs on each."
+concepts: ["id token", "claims", "nonce", "audience", "azp", "acr", "amr", "at_hash", "c_hash", "auth_time"]
+relatedTools: ["oidc", "jwt"]
+relatedArticles: ["oidc-overview", "oidc-vs-oauth", "oidc-discovery"]
+category: identity
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## The ID token is a set of claims
+
+An ID token's payload is a set of claims about an authentication event: who the user is, who vouched for them, who the statement is for, when it is valid, and how the user proved themselves. Decoding the token means reading each of these, and each is something a relying party validates before it trusts the token. This article walks the claims the OIDC decoder surfaces and explains what the relying party does with each.
+
+## The required claims
+
+OpenID Connect Core requires five claims in every ID token: iss, sub, aud, exp, and iat. A token missing any of them is not a valid ID token, which is why the decoder flags each absence.
+
+The iss (issuer) claim identifies the provider that issued the token, as a URL. The relying party must confirm it exactly matches the provider it expects; accepting a token from an unexpected issuer is how a token from one provider could be used to impersonate a login at another. The sub (subject) claim is the stable, unique identifier for the user within that issuer. It is the value an application should key its account records on, not the email, because email addresses change and can be reassigned while sub does not.
+
+The aud (audience) claim names who the token is for, and it must contain the relying party's own client identifier. A relying party must reject a token whose audience does not include it, otherwise a token minted for one application could be replayed against another. The exp (expiration) and iat (issued-at) claims bound the token in time: exp is the instant after which it must not be accepted, and iat is when it was issued. The decoder shows both as readable timestamps but, by design, never compares them to the current clock; whether a token is expired is a decision the relying party makes with its own trusted time.
+
+## The nonce
+
+The nonce claim is the relying party's defense against replay. At the start of the flow the relying party generates a random nonce, sends it in the authentication request, and the provider copies it into the ID token. When the token comes back, the relying party checks that the nonce matches the one it sent. This binds the token to this specific login attempt, so a token captured from one exchange cannot be injected into another. A missing nonce is worth noticing, and the decoder flags it, because it removes that binding when the request asked for one.
+
+## azp and multiple audiences
+
+Usually aud contains a single client identifier. When a token is deliberately issued for more than one audience, OpenID Connect requires an azp (authorized party) claim naming the client that the token was actually issued to, the one that requested it. A relying party that sees multiple audiences should check azp to confirm the token is meant for it as the requesting party. The decoder flags the combination of multiple audiences with no azp, because it leaves that intent unstated.
+
+## acr, amr, and auth_time
+
+Three claims describe how and when the user authenticated. The acr (authentication context class reference) claim states the level or class of authentication that was performed, which a relying party can compare against a policy that demands a certain strength. The amr (authentication methods references) claim lists the methods used, as an array of short codes: pwd for a password, otp for a one-time code, mfa to indicate multiple factors, hwk for a hardware key, and so on. The decoder labels these so the array is readable rather than cryptic. The auth_time claim records when the user actually authenticated, which matters when the relying party set a max_age and needs to know whether to force a fresh login.
+
+## at_hash and c_hash
+
+In flows that return an access token or authorization code alongside the ID token, OIDC can bind them together with hash claims. The at_hash claim is a hash of the access token, and the c_hash is a hash of the authorization code. By recomputing the hash and comparing, a relying party can confirm that the access token or code it received belongs with this ID token and was not swapped in by an attacker. The decoder shows these under token binding when present; their absence is flow-dependent and not flagged, since not every flow includes them.
+
+## Reading versus validating
+
+Every claim here is a checkpoint. Decoding lets you see the issuer, subject, audience, validity window, nonce, authentication context, and binding hashes, so you can reason about whether a relying party's checks would pass. That is the diagnostic half. The enforcing half, verifying the signature against the provider's key and applying these checks with a real clock, happens in the relying party. The decoder reads and explains; it does not verify.

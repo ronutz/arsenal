@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 // IPv6 ADDRESS TOOLKIT - the pure compute core for the IPv6 tool.
 //
-// netcore tool contract: a tool is a {manifest, run, vectors} triple and `run`
+// the tool contract: a tool is a {manifest, run, vectors} triple and `run`
 // must be DETERMINISTIC so its golden vectors are stable. This file is that
 // deterministic core. It parses an IPv6 address or prefix (RFC 4291 textual
 // forms, including `::` compression and an embedded IPv4 tail), and returns a

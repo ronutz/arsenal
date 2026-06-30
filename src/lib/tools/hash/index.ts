@@ -1,7 +1,7 @@
 // ============================================================================
 // src/lib/tools/hash/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING HASH MODULE - a netcore {manifest, run, vectors} triple.
+// THE SELF-DESCRIBING HASH MODULE - a self-contained {manifest, run, vectors} triple.
 // run() is async here (Web Crypto digest is a Promise); the manifest is
 // otherwise the same D-49 shape as the other tools.
 //
@@ -78,7 +78,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

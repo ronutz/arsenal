@@ -1,0 +1,34 @@
+---
+slug: choosing-a-persistence-method
+title: "Choosing a Persistence Method (and Its Failure Modes)"
+summary: "Most persistence requirements are met by source address affinity or cookie persistence, but both have well-known failure modes: source affinity collapses behind NAT, and cookies need HTTP. Knowing where each method breaks is what turns a default choice into a deliberate one."
+concepts: ["persistence", "ltm", "nat", "tls", "f5", "design"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "fallback-persistence-and-match-across"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Source address affinity and cookie persistence together cover most needs, which is why they are the usual defaults. But a default is only a good choice when you know its failure mode, and each method has one that matters.
+
+## Source address affinity: the NAT problem
+
+Source affinity is simple and protocol-agnostic, but it keys on the client IP, and that assumption breaks whenever many users share one address. Behind a NAT gateway, a corporate proxy, or a VPN concentrator, hundreds of clients can arrive with the same source IP. Source affinity will pin all of them to a single pool member, and load distribution quietly collapses onto one server. It also consumes memory on BIG-IP: with the default `255.255.255.255` mask, every distinct client address gets its own persistence record. A coarser mask reduces the record count but groups more clients together, which trades one problem for another. Source affinity is a good fit only when clients have stable, genuinely distinct addresses.
+
+## Cookie persistence: the HTTP requirement
+
+Cookie persistence avoids the shared-address problem by identifying each client uniquely at the HTTP layer. Its cost is that it only works for HTTP, or for HTTPS that BIG-IP decrypts, because it needs an HTTP profile to insert or read the cookie. It also depends on the client cooperating: a client that strips cookies will not persist at all. That single dependency is the most common reason to configure a fallback method, so clients that refuse cookies still land somewhere consistent.
+
+## SSL persistence: the TLS 1.3 cliff
+
+When traffic is encrypted and not decrypted on BIG-IP, neither cookie nor application-layer methods can see anything, and SSL persistence becomes attractive because it keys on the SSL session ID exchanged in the clear during the handshake. It even survives a change of client IP. The catch is protocol version. The session ID mechanism was effectively retired in TLS 1.3, so SSL persistence cannot be relied on there, and even on TLS 1.2 some clients do not reuse the session ID consistently. This is exactly why SSL persistence is so often paired with a source-address fallback.
+
+## Universal persistence: when you need control
+
+When the right key is none of the above, an application token in a header or payload, universal persistence lets an iRule extract precisely that value. It is the most flexible method, but it shifts the work onto an iRule you must write and maintain, and it requires BIG-IP to see the value, so encrypted traffic must be terminated first. Reach for it when the application's notion of a session does not map onto a cookie or an address.
+
+## Letting the tool surface the trade-offs
+
+The [persistence-method explainer](/tools/persistence-method-explainer) prints each method's failure modes alongside its configuration, so a source-address profile shows the NAT caveat and an SSL profile shows the TLS 1.3 caveat directly next to the settings. For the full catalog of methods, see [BIG-IP persistence methods](/learn/ltm-persistence-methods); for how a primary and fallback combine, see [fallback persistence and match-across](/learn/fallback-persistence-and-match-across).

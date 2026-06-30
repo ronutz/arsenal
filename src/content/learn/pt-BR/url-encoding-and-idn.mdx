@@ -1,0 +1,28 @@
+---
+slug: url-encoding-and-idn
+title: "Codificação de URL e Hosts Internacionalizados"
+summary: "URLs são restritas a um pequeno conjunto de caracteres ASCII, então todo o resto é codificado. A codificação percent cuida de caminhos e queries; o punycode cuida de nomes de host não-ASCII. Como ambos funcionam, e por que hosts internacionalizados são uma preocupação de phishing."
+concepts: ["percent-encoding", "punycode", "idn", "homograph", "url", "internationalized domain name", "rfc 3492"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "query-strings", "percent-encoding"]
+category: encoding
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Duas codificações para duas partes da URL
+
+Uma URL só pode conter um conjunto limitado de caracteres ASCII, então qualquer coisa fora desse conjunto precisa ser representada de outra forma. Duas codificações diferentes fazem isso para duas partes diferentes da URL, e ajuda mantê-las separadas. A codificação percent cuida do caminho, da query e de outros componentes abaixo do host. O punycode cuida do próprio nome do host. Elas não se parecem em nada e resolvem o problema de formas diferentes.
+
+## Codificação percent abaixo do host
+
+A codificação percent substitui um caractere por um sinal de porcentagem seguido dos dois dígitos hexadecimais de cada byte. Um espaço vira `%20`, um arroba vira `%40`, e um caractere não-ASCII vira a forma codificada em percent dos seus bytes UTF-8, então uma letra acentuada se transforma em dois ou três grupos percent. A regra prática é que os caracteres com significado estrutural em uma URL, como a barra, o ponto de interrogação, o e-comercial e a cerquilha, precisam ser codificados quando aparecem dentro de um valor em vez de como separadores. A mecânica completa, incluindo quais caracteres são reservados e quais são seguros, é coberta em [percent-encoding](/learn/percent-encoding). O inspetor decodifica esses escapes no caminho e em cada parâmetro de query para que você leia o conteúdo real.
+
+## Punycode para o host
+
+O nome do host não pode usar codificação percent, porque os sistemas que resolvem nomes, como o DNS, esperam ASCII. Nomes de domínio internacionalizados resolvem isso com punycode, definido na RFC 3492. Um rótulo com caracteres não-ASCII é transformado em uma string ASCII que começa com o prefixo `xn--`, seguido de uma codificação dos caracteres originais. Por exemplo, o host `münchen.de` é representado na rede como `xn--mnchen-3ya.de`. A transformação é reversível, e o inspetor decodifica qualquer rótulo `xn--` de volta para a sua forma Unicode para que você veja o que o host realmente diz.
+
+## Por que hosts internacionalizados são uma preocupação de segurança
+
+Hosts internacionalizados introduzem um risco de phishing chamado ataque de homógrafos. Muitos caracteres em diferentes alfabetos parecem quase idênticos a letras latinas comuns: uma letra cirílica pode ser visualmente indistinguível de uma latina. Um atacante pode registrar um nome que, quando exibido em Unicode, parece exatamente um domínio conhecido mas na verdade é um nome diferente por baixo, codificado com um rótulo `xn--` diferente. É por isso que navegadores às vezes mostram o punycode bruto em vez do Unicode bonito para nomes suspeitos, e por que ver ambas as formas importa. Quando o inspetor mostra um host em punycode ao lado do seu Unicode decodificado, uma divergência entre o que um link parece dizer e o que ele resolve se torna visível, que é exatamente o momento de ter cuidado.

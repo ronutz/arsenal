@@ -1,0 +1,28 @@
+---
+slug: json-vs-yaml
+title: "JSON vs YAML: What Converts Cleanly and What Does Not"
+summary: "YAML was designed so that every JSON document is also valid YAML, which is why conversion between them usually just works. The interesting part is the edges: comments, anchors, multiple documents, and YAML-only types that have no JSON equivalent."
+concepts: ["json", "yaml", "data model", "conversion", "superset", "interoperability"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["yaml-type-coercion", "config-formats-in-practice", "json-grammar"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## A shared data model
+
+JSON and YAML describe the same shape of data: mappings of keys to values, ordered sequences, and scalars like strings, numbers, booleans, and null. YAML was deliberately defined as a superset of JSON, so any valid JSON document is also valid YAML, and a converter can move between them by parsing into that shared model and printing it in the other syntax. For the overwhelming majority of real documents, an API response, a configuration file, a declaration, conversion is lossless and round-trips cleanly. The differences that matter are not in the common case but at the edges, and knowing them tells you when a conversion will lose something.
+
+## What YAML has that JSON does not
+
+The first thing JSON cannot carry is comments. YAML lets you annotate a file with `#` comments, and those are pure presentation: they exist for the human reading the file and are discarded the moment the document is parsed. Converting YAML to JSON therefore always drops every comment, because there is nowhere to put them. YAML also has anchors and aliases, a way to define a value once and reference it elsewhere, which a converter resolves by expanding each reference into a full copy of the value. And a single YAML file can hold multiple documents separated by `---`, a stream that has no JSON counterpart.
+
+## YAML-only types
+
+Beyond structure, YAML's fuller type system can express things JSON cannot. Standard YAML can tag a value as a timestamp, as binary data, or use a whole collection as a key, none of which JSON allows, since JSON keys must be strings and JSON has no date or binary type. A converter aimed at JSON output sidesteps this by reading YAML under a JSON-compatible schema: a date-looking string stays a string rather than becoming a date object, so the result is always something JSON can represent. The cost is honesty about the boundary, which is why this tool reads YAML with exactly that restricted schema.
+
+## What JSON has that trips YAML
+
+The traffic is not all one way. JSON's permissiveness about strings, where a value is a string only if it is quoted, collides with YAML's habit of guessing types from unquoted text. A JSON string like `"NO"` or `"1.0"` must stay a string after conversion, but written bare in YAML it would be read as a boolean or a number. A correct JSON-to-YAML converter therefore quotes any string that YAML would otherwise misinterpret, a behavior important enough to have [its own article](/learn/yaml-type-coercion). Get that quoting right and the round trip is faithful; get it wrong and the data quietly changes type.

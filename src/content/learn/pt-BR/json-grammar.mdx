@@ -1,0 +1,28 @@
+---
+slug: json-grammar
+title: "A Gramática JSON: Seis Tipos e Algumas Regras Estritas"
+summary: "JSON é menor do que parece. O formato inteiro são seis tipos de valor e um punhado de caracteres estruturais, governados por regras mais estritas do que a maioria lembra: sem comentários, sem vírgulas finais e chaves que precisam ser strings entre aspas."
+concepts: ["json", "grammar", "rfc 8259", "data types", "validation", "syntax"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-numbers-and-precision", "json-duplicate-keys", "url-anatomy"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Um formato deliberadamente pequeno
+
+O JSON foi projetado para ser o menor formato de dados que ainda é útil, e essa pequenez é o ponto central: é fácil escrever um parser, fácil de ler e difícil de discordar. A gramática é definida de forma idêntica pela RFC 8259 e pela ECMA-404, e cabe em um cartão postal. Um documento JSON é exatamente um valor, e um valor é uma de seis coisas: um objeto, um array, uma string, um número, um booleano ou null. Todo o resto é construído a partir disso.
+
+## Os seis tipos de valor
+
+Um objeto é um conjunto não ordenado de membros entre chaves, onde cada membro é uma chave string, dois pontos e um valor: `{"name": "Ada", "active": true}`. Um array é uma lista ordenada de valores entre colchetes: `[1, 2, 3]`. Uma string é texto entre aspas duplas, com um conjunto fixo de escapes com barra invertida para caracteres especiais. Um número é um literal decimal, que tem sutilezas que merecem [o próprio artigo](/learn/json-numbers-and-precision). Um booleano é `true` ou `false`, em minúsculas. E null é o literal `null`. Objetos e arrays se aninham livremente, e esse aninhamento é o que permite a uma gramática plana descrever dados arbitrariamente complexos.
+
+## As regras que as pessoas esquecem
+
+O JSON é mais estrito do que os literais de objeto JavaScript com os quais se parece, e as diferenças são onde a validação falha. Chaves precisam ser strings entre aspas duplas: `{name: 1}` é inválido, e `{'name': 1}` também, porque aspas simples não são permitidas em lugar nenhum. Não há comentários em JSON, por mais que as pessoas os queiram. Não há vírgulas finais, então `[1, 2,]` é um erro. Números não podem ter um zero à esquerda ou um mais à esquerda, e não podem ser `NaN` nem `Infinity`, porque esses não são representáveis na gramática. Um documento precisa conter um único valor e nada depois dele, então dois valores em sequência, ou texto sobrando, é inválido.
+
+## Por que um validador aponta uma localização
+
+Como a gramática é tão rígida, todo erro tem uma localização precisa: o parser sabe exatamente qual caractere violou qual regra. Um bom validador reporta não apenas que o documento é inválido mas onde, por linha e coluna, e qual caminho estrutural ele estava lendo no momento. Esse caminho, escrito como um JSON Pointer, transforma um vago "erro de sintaxe" em "o valor em /users/2/email está malformado", que é a diferença entre minutos e segundos de depuração. O formatador analisa contra essa gramática e reporta falhas exatamente assim.

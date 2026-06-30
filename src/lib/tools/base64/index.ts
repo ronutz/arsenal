@@ -1,9 +1,9 @@
 // ============================================================================
 // src/lib/tools/base64/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING CODEC MODULE - a netcore {manifest, run, vectors} triple
-// (same shape as the cidr reference and the jwt module), ready to graduate into
-// @ronutz/netcore unchanged. Merge M5 generalized it from base64/base64url to a
+// THE SELF-DESCRIBING CODEC MODULE - a self-contained {manifest, run, vectors} triple
+// (same shape as the cidr reference and the jwt module), liftable into an open
+// library unchanged. Merge M5 generalized it from base64/base64url to a
 // unified codec over base64, base64url, base32, base16/hex, and percent-encoding.
 //
 // An encoded string very often carries credentials (HTTP Basic auth is
@@ -103,7 +103,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

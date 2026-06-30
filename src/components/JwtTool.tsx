@@ -22,6 +22,21 @@ import { useCallback, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { run, JwtDecodeError, type DecodedJwt } from "@/lib/tools/jwt";
 
+// ----------------------------------------------------------------------------
+// JWT anatomy diagram (always shown beneath the decoder). A JWT is three
+// base64url segments joined by dots: header . payload . signature. The diagram
+// colour-codes the three parts, shows what each carries (field names kept
+// verbatim, language-neutral, so the diagram and the decoded panels share one
+// vocabulary), and brackets header+payload as the "signing input" — the exact
+// bytes the signature is computed over. It is educational and does not depend
+// on the pasted token, since every JWT has this same shape. The label keys
+// reuse the existing, already-localized panel titles (Header/Payload/Signature).
+const JWT_SEGMENTS: { labelKey: string; desc: string; color: string; x: number; w: number }[] = [
+  { labelKey: "panels.header", desc: "alg · typ", color: "var(--accent-primary)", x: 16, w: 192 },
+  { labelKey: "panels.payload", desc: "iss · sub · exp", color: "var(--accent-amber)", x: 240, w: 224 },
+  { labelKey: "panels.signature", desc: "HMAC · RSA · ECDSA", color: "var(--accent-green)", x: 488, w: 176 },
+];
+
 /** HMAC algorithms we can verify in-browser, mapped to their Web Crypto hash. */
 const HMAC_HASHES: Record<string, string> = {
   HS256: "SHA-256",
@@ -289,6 +304,61 @@ export default function JwtTool() {
           </section>
         </div>
       )}
+
+      {/* JWT anatomy (always shown; educational; theme-aware SVG). Three
+          colour-coded base64url segments joined by dots, with header+payload
+          bracketed as the signing input. Descriptors are verbatim field names. */}
+      <section className="jwt-panel jwt-struct-panel">
+        <h4 className="jwt-panel-title">{t("struct.heading")}</h4>
+        <svg
+          className="jwt-struct-svg"
+          viewBox="0 0 680 128"
+          role="img"
+          aria-label={t("struct.heading")}
+        >
+          {/* Three colour-coded segments (header / payload / signature) */}
+          {JWT_SEGMENTS.map((s) => (
+            <g key={s.labelKey}>
+              <rect
+                x={s.x}
+                y={30}
+                width={s.w}
+                height={48}
+                rx={6}
+                fill={s.color}
+                fillOpacity={0.1}
+                stroke={s.color}
+                strokeWidth={1.5}
+              />
+              <text
+                x={s.x + s.w / 2}
+                y={52}
+                textAnchor="middle"
+                className="jwt-struct-seg-label"
+                style={{ fill: s.color }}
+              >
+                {t(s.labelKey)}
+              </text>
+              <text x={s.x + s.w / 2} y={69} textAnchor="middle" className="jwt-struct-seg-desc">
+                {s.desc}
+              </text>
+            </g>
+          ))}
+          {/* Dot separators, mirroring the literal "." that joins the segments */}
+          <text x={224} y={60} textAnchor="middle" className="jwt-struct-dot">
+            .
+          </text>
+          <text x={476} y={60} textAnchor="middle" className="jwt-struct-dot">
+            .
+          </text>
+          {/* Bracket grouping header+payload as the signing input */}
+          <path d="M16 92 L16 100 L464 100 L464 92" fill="none" stroke="var(--border-strong)" strokeWidth="1.5" />
+          <text x={240} y={117} textAnchor="middle" className="jwt-struct-bracket">
+            {t("struct.signingInput")}
+          </text>
+        </svg>
+        <p className="jwt-struct-note">{t("struct.note")}</p>
+      </section>
     </div>
   );
 }

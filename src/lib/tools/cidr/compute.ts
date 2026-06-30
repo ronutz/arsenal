@@ -1,18 +1,18 @@
 // ============================================================================
 // src/lib/tools/cidr/compute.ts
 // ----------------------------------------------------------------------------
-// CIDR — extended subnetting compute (arsenal-local, pure, deterministic).
+// CIDR — subnetting compute (arsenal-local, pure, deterministic).
 //
-// Single-subnet analysis stays on @ronutz/netcore (cidrTool.run), which carries
-// the RFC 1918 / RFC 6890 classification. This module adds the three planning
-// modes the M1 consolidation calls for:
+// Single-subnet analysis (cidrAnalyze) is now in-house too; arsenal carries no
+// runtime dependency on an external engine. This module covers every CIDR mode:
+//   • cidrAnalyze      — single-subnet facts (network, mask, hosts, RFC 3021)
 //   • allocateVlsm     — variable-length subnets carved from a parent block
 //   • aggregate        — summarize a prefix list into the minimal covering set
 //   • analyzeOverlapGap — overlaps / containment, and (optionally) gaps in scope
 //
 // PURE: only integer arithmetic on uint32. No Date, no Math.random, no I/O,
 // no DOM. Same input -> same output in any JS runtime. Written so the logic is
-// cleanly promotable into @ronutz/netcore later (the Apache-2.0 engine).
+// cleanly liftable into an open library later.
 // ============================================================================
 
 const U32 = 0xffffffff;
@@ -98,6 +98,63 @@ export function parseCidrList(text: string): string[] {
     throw new CidrInputError("tooMany", `too many entries (max ${MAX_ENTRIES})`);
   }
   return tokens;
+}
+
+// ---- single-subnet analysis ------------------------------------------------
+// Brought in-house (previously an external dependency) so arsenal carries
+// no runtime dependency on an outside engine. The arithmetic is identical — same uint32
+// math, same RFC 3021 handling of /31 and /32 — but errors are CidrInputError
+// (stable codes for i18n), so subnet mode now reports the same specific errors
+// the VLSM and overlap modes already do, instead of a single generic message.
+
+/** The single-subnet facts surfaced by the Subnet mode. */
+export interface SubnetAnalysis {
+  input: string;
+  network: string;
+  broadcast: string;
+  netmask: string;
+  wildcard: string;
+  firstHost: string;
+  lastHost: string;
+  totalAddresses: number;
+  usableHosts: number;
+}
+
+/**
+ * Analyze a single "A.B.C.D/prefix" block. Pure; throws CidrInputError on
+ * malformed input. /31 and /32 follow RFC 3021: every address is usable.
+ */
+export function cidrAnalyze(input: string): SubnetAnalysis {
+  const { prefix, network, broadcast, size } = parseCidr(input);
+  const mask = maskForPrefix(prefix);
+  const wildcard = ~mask >>> 0;
+
+  let firstHost: number;
+  let lastHost: number;
+  let usableHosts: number;
+  if (prefix >= 31) {
+    // RFC 3021: a /31 is a point-to-point link with two usable addresses;
+    // a /32 is a single host. In both, there is no network/broadcast to reserve.
+    firstHost = network;
+    lastHost = broadcast;
+    usableHosts = size;
+  } else {
+    firstHost = (network + 1) >>> 0;
+    lastHost = (broadcast - 1) >>> 0;
+    usableHosts = size - 2;
+  }
+
+  return {
+    input: input.trim(),
+    network: intToIp(network),
+    broadcast: intToIp(broadcast),
+    netmask: intToIp(mask),
+    wildcard: intToIp(wildcard),
+    firstHost: intToIp(firstHost),
+    lastHost: intToIp(lastHost),
+    totalAddresses: size,
+    usableHosts,
+  };
 }
 
 // ---- VLSM ------------------------------------------------------------------

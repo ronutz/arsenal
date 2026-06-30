@@ -1,0 +1,41 @@
+---
+slug: jwks-and-key-rotation
+title: "JWKS e Rotação de Chaves: Como os Provedores Publicam suas Chaves"
+summary: "Um JWKS é a lista pública de chaves de assinatura que um provedor de identidade publica para que qualquer um possa verificar seus tokens. Entender o array keys, o kid que nomeia cada chave e por que um provedor mantém mais de uma chave ao mesmo tempo é a base da verificação de tokens."
+concepts: ["jwks", "jwk", "kid", "rotação de chaves", "oidc"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["jwk-key-types", "verifying-a-jwt-with-jwks"]
+category: identity
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Quando um provedor de identidade assina um token, a parte que o recebe precisa da chave pública correspondente para verificar a assinatura. O provedor não pode enviar a chave dentro de cada token, então em vez disso publica um pequeno documento JSON, o JSON Web Key Set, em uma URL bem conhecida. Qualquer um pode buscá-lo, e esse é justamente o objetivo: as chaves nele são públicas.
+
+## O formato de um JWKS
+
+Um JWKS (RFC 7517) é um objeto JSON com um único membro obrigatório, um array `keys`, onde cada elemento é uma JSON Web Key:
+
+```json
+{
+  "keys": [
+    { "kty": "RSA", "use": "sig", "kid": "a1b2", "alg": "RS256", "n": "...", "e": "AQAB" },
+    { "kty": "EC",  "use": "sig", "kid": "c3d4", "alg": "ES256", "crv": "P-256", "x": "...", "y": "..." }
+  ]
+}
+```
+
+Cada chave carrega um `kty` (tipo de chave), frequentemente um `use` (`sig` para assinatura, `enc` para criptografia), um `alg` opcional e os parâmetros específicos do tipo. O membro que amarra tudo é o `kid`, o id da chave.
+
+## O kid é a chave de busca
+
+O `kid` existe para que um verificador possa escolher a chave certa sem adivinhar. O cabeçalho de um token assinado nomeia a chave que o assinou, e o verificador procura esse mesmo `kid` no JWKS. A RFC 7517 recomenda que chaves distintas em um conjunto usem valores de `kid` distintos, justamente para que essa busca seja inequívoca. Uma chave sem `kid` não pode ser selecionada dessa forma, e é por isso que o [explicador de JWKS](/tools/jwks-explainer) sinaliza qualquer chave sem id.
+
+## Onde ele vive, e por que há mais de uma
+
+Para o OpenID Connect, a URL do JWKS é anunciada no documento de descoberta do provedor e fica convencionalmente em `/.well-known/jwks.json`. Os principais provedores (Auth0, Okta, Keycloak, AWS Cognito) expõem um.
+
+Você quase sempre verá mais de uma chave no conjunto, e isso é saudável. É assim que a **rotação de chaves** funciona sem tempo de inatividade. Quando um provedor rotaciona sua chave de assinatura, ele não troca uma chave por outra instantaneamente; ele publica a nova chave ao lado da antiga, começa a assinar novos tokens com o novo `kid` e mantém a chave antiga no conjunto até que todos os tokens assinados por ela tenham expirado. Durante essa sobreposição, ambas as chaves verificam, e nada quebra. É também por isso que os verificadores devem buscar o JWKS por `kid` sob demanda e armazená-lo em cache, em vez de fixar uma única chave no código.
+
+Para ver exatamente o que cada chave de um conjunto contém, cole-o no [explicador de JWKS](/tools/jwks-explainer). Para os parâmetros que compõem cada tipo de chave, veja [tipos de chave JWK](/learn/jwk-key-types); para como um verificador realmente usa o conjunto, veja [verificando um JWT com um JWKS](/learn/verifying-a-jwt-with-jwks).

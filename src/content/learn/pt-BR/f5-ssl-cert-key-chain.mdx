@@ -1,0 +1,46 @@
+---
+slug: f5-ssl-cert-key-chain
+title: "Certificados, Chaves e Construção de Cadeia num Perfil SSL"
+summary: "Um perfil client-ssl vincula um certificado de servidor à sua chave privada e, de forma crucial, a um bundle de cadeia que permite aos clientes construir um caminho até uma raiz confiável. O construto moderno cert-key-chain também permite que um perfil sirva vários tipos de certificado, escolhidos por cliente — a base de implantações RSA-mais-ECDSA e SNI."
+concepts: ["f5", "cert-key-chain", "chain building", "intermediate ca", "sni", "pki"]
+relatedTools: ["f5-ssl-profile-explainer"]
+relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-client-auth-mtls"]
+category: pki
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+A falha de TLS em produção mais comum não é uma cifra fraca nem um certificado expirado — é uma **cadeia faltando**. O site funciona no seu navegador, falha no de outra pessoa, e a diferença é se aquele cliente já tinha o certificado intermediário em cache. A correção está em como um perfil SSL vincula sua identidade.
+
+## cert, key e chain
+
+Um perfil `client-ssl` apresenta três coisas relacionadas:
+
+- **cert** — o certificado de servidor (folha), aquele com o seu nome de host.
+- **key** — a chave privada correspondente. Ela nunca sai do BIG-IP.
+- **chain** — um bundle dos certificados de CA **intermediária** que ficam entre a sua folha e uma raiz confiável.
+
+Perfis antigos definiam isso como três campos de topo. O BIG-IP moderno os agrupa num `cert-key-chain`:
+
+```
+cert-key-chain {
+    rsa {
+        cert /Common/www.example.com.crt
+        key /Common/www.example.com.key
+        chain /Common/intermediate-ca.crt
+    }
+}
+```
+
+## Por que a cadeia não é opcional
+
+Um cliente confia num pequeno conjunto de CAs **raiz**. Seu certificado quase nunca é assinado diretamente por uma raiz; ele é assinado por uma intermediária, que é assinada pela raiz. Para validar seu certificado, o cliente precisa construir um caminho folha → intermediária → raiz. Ele já tem a raiz, mas **não** tem a intermediária a menos que você a envie — e você a envia pelo `chain`. Omita a cadeia e os clientes que não têm a intermediária não conseguem completar o caminho, gerando o clássico relato "funciona pra mim, falha pra eles". O explicador de perfis SSL sinaliza um perfil `client-ssl` sem cadeia configurada exatamente por isso.
+
+## Um perfil, vários certificados
+
+Um único bloco `cert-key-chain` pode conter **várias** entradas nomeadas — por exemplo, um certificado RSA e um ECDSA. Durante o handshake, o BIG-IP escolhe a entrada que combina com as capacidades anunciadas pelo cliente, de modo que clientes modernos recebem o certificado ECDSA, menor e mais rápido, enquanto os mais antigos ainda recebem RSA. É também assim que um perfil pode carregar certificados distintos para nomes de host diferentes.
+
+## Onde o SNI se encaixa
+
+Quando vários perfis SSL estão anexados a um virtual server, o BIG-IP escolhe qual perfil usar a partir do **SNI** do cliente (o nome de host no ClientHello do TLS). O `server-name` de cada perfil declara o host que ele serve, um perfil é marcado como `sni-default` (o fallback), e o certificado certo é apresentado por requisição. A construção de cadeia e a seleção por SNI, juntas, são o que permite a um único virtual server hospedar muitos sites seguros corretamente.

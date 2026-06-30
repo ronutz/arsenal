@@ -1,0 +1,39 @@
+---
+slug: regex-catastrophic-backtracking
+title: "Catastrophic Backtracking and ReDoS"
+summary: "Some innocent-looking patterns can take seconds, minutes, or effectively forever on a short string. The cause is catastrophic backtracking, and when an attacker controls the input it becomes a denial-of-service bug. Here is why it happens and how to write patterns that cannot."
+concepts: ["regex", "ReDoS", "catastrophic backtracking", "denial of service", "security"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferences"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+A regular expression that works perfectly on your test data can, on a slightly different input, take a very long time to fail. The pattern is fine; the *input* just happens to push the engine into exploring an enormous number of dead ends. This is **catastrophic backtracking**, and when the input comes from a user it turns into a denial-of-service weakness known as **ReDoS**.
+
+## Why backtracking explodes
+
+The standard regex engines used by JavaScript, Python, Java, and most others are *backtracking* engines. When a match fails, they back up and try a different way to divide the input among the quantifiers. Usually that is a handful of attempts. The trouble starts when two quantifiers can match the same characters, so the engine has many equivalent ways to split the work.
+
+The textbook example is `(a+)+$`. Both the inner `+` and the outer `+` want the run of `a`s, and there are exponentially many ways to partition a string of `a`s between them. On the input `aaaaaaaaaaaaaaaaaaaaaaaa!`, which cannot match because of the trailing `!`, the engine tries every partition before giving up — and each extra `a` roughly *doubles* the work. Two dozen characters can already take seconds; a few more and it is effectively forever. The same shape hides in `(.*)*`, `(\d+)*`, and `(\w+\s?)+`.
+
+## How to recognize the danger
+
+The warning sign is a **quantifier applied to a group that itself contains an unbounded quantifier** over something the outer one could also match. `(a+)+`, `(a*)*`, and `(?:\d+)+` all fit. Alternation with overlap is the other classic source: `(a|a)*` or `(\w|\d)*`, where both branches can match the same character, multiplies the paths the same way.
+
+The Regex Toolkit on this site runs a static check for the nested-quantifier shape and warns before it lets a flagged pattern run against your text, precisely so a single keystroke cannot freeze the page. The check is deliberately conservative — it would rather warn on a safe pattern than miss a dangerous one — so treat a warning as "look closer", not "this is definitely broken".
+
+## How to write patterns that cannot blow up
+
+A few habits remove almost all of the risk:
+
+- **Do not nest unbounded quantifiers.** If you find yourself writing a `+` or `*` on a group that already contains a `+` or `*`, rewrite it. Often the outer quantifier is simply unnecessary.
+- **Be specific instead of using `.*`.** Matching "everything up to a quote" is safer as `[^"]*` than `.*`, because a negated class cannot overlap the delimiter and so cannot backtrack into it.
+- **Anchor your pattern.** A leading `^` (and a trailing `$` when validating a whole field) stops the engine from retrying the match at every position in the string.
+- **Bound your repetition.** `\d{1,9}` cannot run away the way `\d+` can on adversarial input; an explicit upper bound caps the search.
+
+JavaScript does not offer atomic groups or possessive quantifiers, the features other engines use to forbid backtracking outright, so in JS the answer is structural: write the pattern so the ambiguity never exists. For untrusted input at scale, the most robust option is a non-backtracking engine such as RE2, which guarantees linear time but drops backreferences and lookarounds.
+
+ReDoS is listed by OWASP as a real attack class, not a theoretical one — a single crafted request can pin a CPU. Build the patterns in the [Regex Toolkit](/tools/regex), heed the warning when it fires, and revisit the [quantifiers and classes](/learn/regex-quantifiers-and-classes) that make a pattern specific enough to stay fast.

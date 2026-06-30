@@ -1,0 +1,32 @@
+---
+slug: unix-time-explained
+title: "What Unix Time Actually Is"
+summary: "Unix time is a single integer: the number of seconds since 1970-01-01T00:00:00Z, the epoch. It is time-zone independent, compact, and sortable, which is why it underpins almost every system clock, log line, and API timestamp. Converting it to a calendar date is pure arithmetic."
+concepts: ["unix time", "epoch", "utc", "timestamp", "posix"]
+relatedTools: ["epoch"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds", "iso-8601-and-rfc-3339"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Almost every timestamp you have ever seen in a log file, a database row, or an API response is, underneath, the same thing: a count of seconds. Unix time is the number of seconds that have elapsed since **1970-01-01T00:00:00Z**, a moment known as the **epoch**.
+
+## One number, no time zone
+
+The defining feature of Unix time is that it is a single integer with **no time zone attached**. The instant "1700000000" is the same instant everywhere on Earth; it is only when you want to *display* it to a human that a time zone enters the picture. That property is exactly why it is so widely used: two systems on opposite sides of the world can compare, sort, and store timestamps without ever negotiating a zone. A larger number is always later; subtraction gives a duration in seconds.
+
+## Before the epoch
+
+Time did not begin in 1970, so Unix time simply goes **negative** for earlier moments. `-86400` is exactly one day before the epoch, 1969-12-31T00:00:00Z. Most systems handle negative timestamps cleanly, though some older code assumed time was unsigned and breaks before 1970.
+
+## Converting to a date is arithmetic
+
+Turning a Unix timestamp into a calendar date needs no clock and no network — it is pure arithmetic over the proleptic Gregorian calendar. You divide and modulo your way from seconds to days, account for leap years, and arrive at a year, month, day, and time. Because the rules are fixed, the same timestamp always yields the same date, which is what lets a converter like this one run entirely in your browser and produce identical output every time.
+
+## Why it won
+
+Unix time beat the alternatives for boringly practical reasons: it is compact (one number), trivially comparable, lexically irrelevant (no string parsing to compare two instants), and unambiguous (no "is this 3 PM in London or Tokyo?"). The cost is that the raw number is unreadable to humans — `1700000000` means nothing at a glance — which is the entire reason date formats and converters exist.
+
+Two subtleties are worth knowing before you trust a raw timestamp: which **unit** it is in (seconds, milliseconds, or smaller), and the fact that Unix time quietly **ignores leap seconds**. Both have their own articles.

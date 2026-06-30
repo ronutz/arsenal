@@ -1,0 +1,44 @@
+---
+slug: id-token-claims
+title: "As Claims do ID Token, e o Que uma Relying Party Verifica"
+summary: "As claims dentro de um ID token OIDC: as obrigatórias iss, sub, aud, exp e iat; o nonce que impede repetição; azp quando há múltiplas audiências; acr e amr para a força da autenticação; auth_time; e as claims de vínculo at_hash e c_hash, com a validação que uma relying party realiza em cada uma."
+concepts: ["id token", "claims", "nonce", "audience", "azp", "acr", "amr", "at_hash", "c_hash", "auth_time"]
+relatedTools: ["oidc", "jwt"]
+relatedArticles: ["oidc-overview", "oidc-vs-oauth", "oidc-discovery"]
+category: identity
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O ID token é um conjunto de claims
+
+O payload de um ID token é um conjunto de claims sobre um evento de autenticação: quem é o usuário, quem o atestou, para quem a declaração serve, quando é válida e como o usuário se provou. Decodificar o token significa ler cada uma delas, e cada uma é algo que uma relying party valida antes de confiar no token. Este artigo percorre as claims que o decodificador OIDC expõe e explica o que a relying party faz com cada uma.
+
+## As claims obrigatórias
+
+O OpenID Connect Core exige cinco claims em todo ID token: iss, sub, aud, exp e iat. Um token sem qualquer uma delas não é um ID token válido, e é por isso que o decodificador sinaliza cada ausência.
+
+A claim iss (issuer) identifica o provedor que emitiu o token, como uma URL. A relying party deve confirmar que ela corresponde exatamente ao provedor que espera; aceitar um token de um emissor inesperado é como um token de um provedor poderia ser usado para personificar um login em outro. A claim sub (subject) é o identificador estável e único do usuário dentro daquele emissor. É o valor sobre o qual uma aplicação deveria indexar seus registros de conta, não o e-mail, porque endereços de e-mail mudam e podem ser reatribuídos, enquanto o sub não.
+
+A claim aud (audience) nomeia para quem o token serve, e ela deve conter o próprio identificador de cliente da relying party. Uma relying party deve rejeitar um token cuja audiência não a inclua, caso contrário um token cunhado para uma aplicação poderia ser repetido contra outra. As claims exp (expiration) e iat (issued-at) delimitam o token no tempo: exp é o instante após o qual ele não deve ser aceito, e iat é quando foi emitido. O decodificador mostra ambos como carimbos de tempo legíveis mas, por princípio, nunca os compara ao relógio atual; se um token está expirado é uma decisão que a relying party toma com seu próprio tempo confiável.
+
+## O nonce
+
+A claim nonce é a defesa da relying party contra repetição. No início do fluxo, a relying party gera um nonce aleatório, envia-o na requisição de autenticação, e o provedor o copia para dentro do ID token. Quando o token volta, a relying party verifica que o nonce corresponde ao que ela enviou. Isso vincula o token a essa tentativa de login específica, de modo que um token capturado de uma troca não pode ser injetado em outra. Um nonce ausente vale ser notado, e o decodificador o sinaliza, porque remove esse vínculo quando a requisição o solicitou.
+
+## azp e múltiplas audiências
+
+Normalmente aud contém um único identificador de cliente. Quando um token é deliberadamente emitido para mais de uma audiência, o OpenID Connect exige uma claim azp (authorized party) nomeando o cliente para o qual o token foi de fato emitido, aquele que o solicitou. Uma relying party que vê múltiplas audiências deve checar o azp para confirmar que o token se destina a ela como parte solicitante. O decodificador sinaliza a combinação de múltiplas audiências sem azp, porque ela deixa essa intenção não declarada.
+
+## acr, amr e auth_time
+
+Três claims descrevem como e quando o usuário se autenticou. A claim acr (authentication context class reference) declara o nível ou a classe de autenticação realizada, que uma relying party pode comparar com uma política que exige certa força. A claim amr (authentication methods references) lista os métodos usados, como um array de códigos curtos: pwd para senha, otp para um código de uso único, mfa para indicar múltiplos fatores, hwk para uma chave de hardware, e assim por diante. O decodificador rotula esses valores para que o array fique legível em vez de enigmático. A claim auth_time registra quando o usuário de fato se autenticou, o que importa quando a relying party definiu um max_age e precisa saber se deve forçar um novo login.
+
+## at_hash e c_hash
+
+Em fluxos que retornam um access token ou um código de autorização ao lado do ID token, o OIDC pode vinculá-los com claims de hash. A claim at_hash é um hash do access token, e a c_hash é um hash do código de autorização. Recalculando o hash e comparando, uma relying party pode confirmar que o access token ou código que recebeu pertence a este ID token e não foi trocado por um atacante. O decodificador mostra esses valores sob vínculo de token quando presentes; a ausência deles depende do fluxo e não é sinalizada, já que nem todo fluxo os inclui.
+
+## Ler versus validar
+
+Toda claim aqui é um ponto de verificação. Decodificar permite ver o emissor, o sujeito, a audiência, a janela de validade, o nonce, o contexto de autenticação e os hashes de vínculo, para que você raciocine sobre se as verificações de uma relying party passariam. Essa é a metade diagnóstica. A metade que impõe, verificar a assinatura contra a chave do provedor e aplicar essas verificações com um relógio real, acontece na relying party. O decodificador lê e explica; ele não verifica.

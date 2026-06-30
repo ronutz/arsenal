@@ -1,0 +1,43 @@
+---
+slug: syslog-pri-facility-severity
+title: "The Syslog PRI: One Number, Two Meanings"
+summary: "Every syslog message starts with a PRI, a number in angle brackets that packs a facility and a severity into a single value. The formula is small and the arithmetic is easy once you have seen it: PRI equals facility times eight plus severity."
+concepts: ["syslog", "pri", "facility", "severity", "rfc5424"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-facilities-and-severities", "syslog-on-network-devices"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Open any syslog stream and the first thing on each line is a number in angle brackets: `<134>`, `<34>`, `<165>`. That number is the PRI — short for priority — and it carries two pieces of information at once. Reading it is one of the most useful small skills in log handling.
+
+## The formula
+
+A PRI combines a **facility**, which names the subsystem that produced the message, and a **severity**, which rates how urgent it is. RFC 5424 defines the packing:
+
+```
+PRI = Facility * 8 + Severity
+```
+
+To go the other way, you split it back apart with integer division and a remainder:
+
+```
+Facility = PRI / 8   (whole number)
+Severity = PRI % 8   (remainder)
+```
+
+That is the whole rule. The multiplier is eight because there are exactly eight severity levels (0 through 7), so each facility occupies a block of eight consecutive PRI values.
+
+## Worked examples
+
+Take `<134>`, the most common default you will see. Divide: 134 divided by 8 is 16 with a remainder of 6. Facility 16 is `local0` and severity 6 is informational, so this is a routine informational message on local0. RFC 5424's own examples work the same way: `<34>` is facility 4 (security and authorization, often called `auth`) at severity 2 (critical), and `<165>` is facility 20 (`local4`) at severity 5 (notice).
+
+## The wire format
+
+On the wire the PRI is wrapped in angle brackets and sits at the very front of the message, immediately followed by the version digit in RFC 5424. The valid range is 0 to 191, because the largest facility is 23 and the largest severity is 7, and 23 times 8 plus 7 is 191. One small rule catches people out: leading zeros are not allowed, so a severity-0 kernel message is written `<0>`, never `<00>`, and the only PRI that may begin with a zero is the value zero itself.
+
+## Reading and writing it instantly
+
+The [syslog PRI decoder](/tools/syslog-pri-decoder) does this arithmetic both ways: paste a PRI and it splits out the facility and severity with their names, or pick a facility and severity and it gives you the PRI and its bracketed form. To learn what each facility and severity actually means, see [syslog facilities and severities](/learn/syslog-facilities-and-severities); to see which ones your devices use, see [syslog on network devices](/learn/syslog-on-network-devices).

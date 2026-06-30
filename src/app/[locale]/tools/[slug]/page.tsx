@@ -40,10 +40,46 @@ import { manifest as ipv6Manifest } from "@/lib/tools/ipv6";
 import CipherTool from "@/components/CipherTool";
 import { manifest as cipherManifest } from "@/lib/tools/cipher";
 import CidrTool from "@/components/CidrTool";
-// CIDR's single-subnet engine + manifest live in @ronutz/netcore; the local
+// CIDR's single-subnet engine + manifest are now arsenal-local; the
 // src/lib/tools/cidr module adds the extended modes and exports no manifest of
-// its own, so the References block sources come from the netcore manifest.
-import { cidrTool as cidrNetcore } from "@ronutz/netcore";
+// its own, so the References block sources come from the tool's manifest.
+import { manifest as cidrManifest } from "@/lib/tools/cidr";
+import SecureHeadersTool from "@/components/SecureHeadersTool";
+import { manifest as secureHeadersManifest } from "@/lib/tools/secure-headers";
+import SamlDecoderTool from "@/components/SamlDecoderTool";
+import { manifest as samlDecoderManifest } from "@/lib/tools/saml-decoder";
+import OidcTool from "@/components/OidcTool";
+import { manifest as oidcManifest } from "@/lib/tools/oidc";
+import BigipCookieTool from "@/components/BigipCookieTool";
+import { manifest as bigipManifest } from "@/lib/tools/bigip-persistence-cookie";
+import UrlInspectorTool from "@/components/UrlInspectorTool";
+import { manifest as urlManifest } from "@/lib/tools/url-inspector";
+import JsonFormatterTool from "@/components/JsonFormatterTool";
+import { manifest as jsonManifest } from "@/lib/tools/json-formatter";
+import JsonYamlConvertTool from "@/components/JsonYamlConvertTool";
+import { manifest as jsonYamlManifest } from "@/lib/tools/json-yaml-convert";
+import TmshConfigExplainerTool from "@/components/TmshConfigExplainerTool";
+import { manifest as tmshManifest } from "@/lib/tools/tmsh-config-explainer";
+import PersistenceMethodExplainerTool from "@/components/PersistenceMethodExplainerTool";
+import { manifest as persistManifest } from "@/lib/tools/persistence-method-explainer";
+import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
+import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
+import F5SslProfileExplainerTool from "@/components/F5SslProfileExplainerTool";
+import { manifest as sslProfileManifest } from "@/lib/tools/f5-ssl-profile-explainer";
+import EpochTool from "@/components/EpochTool";
+import { manifest as epochManifest } from "@/lib/tools/epoch";
+import CertRenewalPlannerTool from "@/components/CertRenewalPlannerTool";
+import { manifest as certRenewalManifest } from "@/lib/tools/cert-renewal-planner";
+import CsrDecoderTool from "@/components/CsrDecoderTool";
+import { manifest as csrManifest } from "@/lib/tools/csr-decoder";
+import IrulesEventOrderTool from "@/components/IrulesEventOrderTool";
+import { manifest as irevManifest } from "@/lib/tools/irules-event-order";
+import SyslogPriDecoderTool from "@/components/SyslogPriDecoderTool";
+import { manifest as syslogPriManifest } from "@/lib/tools/syslog-pri-decoder";
+import JwksExplainerTool from "@/components/JwksExplainerTool";
+import { manifest as jwksManifest } from "@/lib/tools/jwks-explainer";
+import RegexTool from "@/components/RegexTool";
+import { manifest as regexManifest } from "@/lib/tools/regex";
 
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
@@ -100,10 +136,82 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   },
   cidr: {
     Component: CidrTool,
-    // netcore types manifest.sources as unknown; narrow to the fields we render.
+    // the manifest types sources as unknown; narrow to the fields we render.
     sources: (
-      cidrNetcore.manifest.sources as { id: string; label: string; url?: string }[]
+      cidrManifest.sources as { id: string; label: string; url?: string }[]
     ).map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "secure-headers": {
+    Component: SecureHeadersTool,
+    sources: secureHeadersManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "saml-decoder": {
+    Component: SamlDecoderTool,
+    sources: samlDecoderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  oidc: {
+    Component: OidcTool,
+    sources: oidcManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "bigip-persistence-cookie": {
+    Component: BigipCookieTool,
+    sources: bigipManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "url-inspector": {
+    Component: UrlInspectorTool,
+    sources: urlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "json-formatter": {
+    Component: JsonFormatterTool,
+    sources: jsonManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "json-yaml-convert": {
+    Component: JsonYamlConvertTool,
+    sources: jsonYamlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "tmsh-config-explainer": {
+    Component: TmshConfigExplainerTool,
+    sources: tmshManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "persistence-method-explainer": {
+    Component: PersistenceMethodExplainerTool,
+    sources: persistManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-cipher-string-expander": {
+    Component: F5CipherStringExpanderTool,
+    sources: cipherStrManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-ssl-profile-explainer": {
+    Component: F5SslProfileExplainerTool,
+    sources: sslProfileManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  epoch: {
+    Component: EpochTool,
+    sources: epochManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "cert-renewal-planner": {
+    Component: CertRenewalPlannerTool,
+    sources: certRenewalManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "csr-decoder": {
+    Component: CsrDecoderTool,
+    sources: csrManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "irules-event-order": {
+    Component: IrulesEventOrderTool,
+    sources: irevManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "syslog-pri-decoder": {
+    Component: SyslogPriDecoderTool,
+    sources: syslogPriManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "jwks-explainer": {
+    Component: JwksExplainerTool,
+    sources: jwksManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  regex: {
+    Component: RegexTool,
+    sources: regexManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
 };
 

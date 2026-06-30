@@ -1,0 +1,37 @@
+---
+slug: f5-ssl-client-auth-mtls
+title: "Mutual TLS with peer-cert-mode"
+summary: "Most TLS proves the server to the client. Mutual TLS also proves the client to the server, and on a BIG-IP that is the job of peer-cert-mode plus a trusted-CA bundle. The gap to watch is the difference between requesting a client certificate and actually requiring and validating one."
+concepts: ["f5", "mutual tls", "mtls", "peer-cert-mode", "client certificate", "ca-file"]
+relatedTools: ["f5-ssl-profile-explainer"]
+relatedArticles: ["f5-ssl-cert-key-chain", "f5-clientssl-vs-serverssl"]
+category: pki
+order: 5
+status: reviewed
+updated: "2026-06-29"
+---
+
+Ordinary TLS is one-directional authentication: the server proves who it is, the client stays anonymous. Plenty of systems — internal APIs, partner integrations, zero-trust designs — need the reverse as well, so the server can be sure *who is connecting*. That is mutual TLS, and on a BIG-IP it is configured with `peer-cert-mode`.
+
+## The three modes
+
+On a `client-ssl` profile, `peer-cert-mode` decides whether the BIG-IP asks the client for a certificate, and how hard it insists:
+
+- **ignore** — the default. No client certificate is requested. This is ordinary one-way TLS.
+- **request** — the BIG-IP asks for a client certificate, but the handshake **completes even if none is presented**. The result (present / absent / valid / invalid) is available for an iRule or an APM policy to act on. Use this when you want a soft check or conditional logic rather than a hard wall.
+- **require** — the BIG-IP demands a valid client certificate. No acceptable certificate, no connection. This is enforced mutual TLS.
+
+## Requesting is not validating
+
+The subtle trap is assuming that `request` or `require` is enough on its own. To *validate* a presented certificate, the BIG-IP needs a trust anchor: the **trusted-CA bundle**, set with `ca-file`. Without it, there is nothing to check the client certificate against, and the configuration is incomplete. The SSL profile explainer flags exactly this combination — a `peer-cert-mode` of `request` or `require` with no `ca-file` — because it looks like client authentication but cannot actually anchor trust.
+
+A complete enforced-mTLS block therefore pairs the mode with the bundle:
+
+```
+peer-cert-mode require
+ca-file /Common/client-ca-bundle.crt
+```
+
+## A note on the server side
+
+`peer-cert-mode` also exists on `server-ssl` profiles, where it governs whether the BIG-IP validates the **backend** server's certificate before trusting the pool member. A `server-ssl` profile with `peer-cert-mode ignore` and no `ca-file` encrypts to the backend but does not authenticate it — the leg is private but not verified. Whether that is acceptable depends on how much you trust the path to your pool, but it is worth seeing clearly, which is why the explainer calls it out.

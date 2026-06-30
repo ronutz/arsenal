@@ -1,0 +1,40 @@
+---
+slug: f5-ssl-profile-protocol-options
+title: "Habilitando e Desabilitando Versões do TLS com o Campo options"
+summary: "O campo options de um perfil SSL é uma lista de flags, e as flags de protocolo funcionam por SUBTRAÇÃO: uma versão do TLS é oferecida a menos que uma flag no- correspondente a desabilite. Essa lógica de 'desabilitar, não habilitar' é uma fonte frequente de surpresa, e é onde mora a higiene de TLS 1.0/1.1."
+concepts: ["f5", "options", "tls versions", "no-tlsv1", "rfc 8996", "ssl profile"]
+relatedTools: ["f5-ssl-profile-explainer"]
+relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-renegotiation-and-ocsp"]
+category: transport
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Quando você quer desligar uma versão antiga do TLS num BIG-IP, não procura uma caixa de seleção "habilitar TLS 1.2". Você adiciona uma flag que *desabilita* as versões que não quer. O controle fica no campo `options` do perfil SSL, e inverter a lógica dele é uma das configurações SSL mais comumente erradas.
+
+## Subtração, não adição
+
+O campo `options` é uma lista de flags entre chaves. As flags de protocolo têm todas a forma `no-<versão>`: `no-sslv3`, `no-tlsv1`, `no-tlsv1.1`, `no-tlsv1.2`, `no-tlsv1.3`. A regra é simples quando dita com clareza:
+
+> Uma versão de protocolo é **permitida** a menos que sua flag `no-` esteja presente.
+
+Então um perfil cujas options contêm `no-tlsv1 no-tlsv1.1` permite TLS 1.2 e TLS 1.3, mas bloqueia TLS 1.0 e 1.1. Uma lista de options vazia permite *tudo o que a plataforma suporta* — por isso "não configurei nada" não é o mesmo que "protocolos antigos estão desligados".
+
+Uma lista de options endurecida típica é assim:
+
+```
+options { dont-insert-empty-fragments no-sslv3 no-tlsv1 no-tlsv1.1 }
+```
+
+## O que desabilitar, e por quê
+
+- **SSLv3** — quebrado pelo POODLE (CVE-2014-3566). Sempre inclua `no-sslv3`. No TMOS atual ele costuma já estar bloqueado no nível do sistema, mas torne isso explícito no perfil para que a intenção fique visível.
+- **TLS 1.0 e TLS 1.1** — formalmente descontinuados pela RFC 8996 e reprovados por praticamente toda base de conformidade (PCI DSS, políticas modernas de navegador). Desabilite ambos a menos que você tenha um cliente legado específico que realmente não consiga algo melhor.
+- **TLS 1.3** — deixe permitido. Se `no-tlsv1.3` estiver presente numa versão que suporta 1.3, você está abrindo mão de um handshake mais rápido e seguro sem motivo.
+
+## Duas flags não relacionadas a protocolo que vale conhecer
+
+`dont-insert-empty-fragments` desliga a antiga divisão de registro 1/n−1 que foi uma mitigação inicial do BEAST; aparece na maioria dos conjuntos de options padrão e hoje é em grande parte histórica. `cipher-server-preference` diz ao BIG-IP para escolher a cifra a partir da **sua própria** lista ordenada, em vez de honrar a ordem de preferência do cliente — geralmente o que você quer, para que suas suites com sigilo futuro, cuidadosamente ordenadas, prevaleçam.
+
+Como a matriz de protocolos é derivada puramente de quais flags `no-` estão presentes, o explicador de perfis SSL mostra, versão por versão, exatamente o que uma linha `options` colada permite — e sinaliza as descontinuadas que ela deixa abertas.

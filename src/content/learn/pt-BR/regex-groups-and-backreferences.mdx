@@ -1,0 +1,43 @@
+---
+slug: regex-groups-and-backreferences
+title: "Grupos, Retrorreferências e Lookarounds em Regex"
+summary: "Os parênteses fazem muito mais do que definir precedência em uma regex. Eles capturam texto para você reutilizar, nomeiam as partes que importam e — com um prefixo de interrogação — permitem afirmar o que vem antes ou depois sem consumir."
+concepts: ["regex", "grupo de captura", "grupo nomeado", "retrorreferência", "lookahead", "lookbehind"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-catastrophic-backtracking"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Os parênteses são onde a regex deixa de ser uma string de busca e passa a ser um pequeno parser. Eles agrupam subpadrões, capturam o que esses subpadrões corresponderam e — com um prefixo `?` — mudam para modos especiais que afirmam em vez de consumir.
+
+## Grupos de captura
+
+Envolva parte de um padrão em parênteses e você obtém um **grupo de captura**: o texto correspondido é reservado sob um número, contando os grupos da esquerda para a direita pelo parêntese de abertura. Em `(\d{4})-(\d{2})`, o grupo 1 captura o ano e o grupo 2 o mês, então contra `2026-06` você recebe `2026` e `06` separadamente. A captura é o que permite a uma ferramenta entregar a você as *partes* de uma correspondência, não apenas o todo.
+
+Às vezes você quer apenas o agrupamento — para aplicar um quantificador a vários caracteres de uma vez — sem pagar por uma captura. Um **grupo de não captura** `(?:...)` faz exatamente isso. `(?:ab)+` repete o par `ab` uma ou mais vezes, mas não cria nenhuma captura numerada, o que mantém seus números de grupo significativos e a correspondência um pouco mais enxuta.
+
+## Grupos nomeados
+
+Contar parênteses fica frágil à medida que os padrões crescem. Um **grupo nomeado** `(?<year>\d{4})` dá um rótulo à captura, então você lê `year` em vez de lembrar que era o grupo 1. Grupos nomeados são mais claros de manter e sobrevivem a edições que deslocariam posições numéricas. A maioria dos motores modernos, incluindo o JavaScript, oferece suporte a eles.
+
+## Retrorreferências
+
+Uma **retrorreferência** corresponde ao mesmo texto que um grupo já capturou. `\1` refere-se ao primeiro grupo; `\k<year>` refere-se a um grupo nomeado. É assim que você captura repetição: `(\w+)\s+\1` encontra uma palavra duplicada como "the the", porque `\1` precisa corresponder ao que `(\w+)` acabou de corresponder. Uma retrorreferência corresponde ao *texto* capturado, não ao padrão de novo — uma distinção sutil, mas importante.
+
+## Lookarounds: afirmar sem consumir
+
+Um **lookaround** verifica que algo está ou não está por perto e então devolve a posição, de modo que os caracteres inspecionados continuam disponíveis para o resto do padrão. Há quatro:
+
+- `(?=...)` — lookahead positivo: *seguido por*. `\d+(?= USD)` corresponde a um número apenas quando ` USD` vem em seguida, mas a correspondência em si são só os dígitos.
+- `(?!...)` — lookahead negativo: *não seguido por*.
+- `(?<=...)` — lookbehind positivo: *precedido por*. `(?<=\$)\d+` corresponde a dígitos que ficam logo após um cifrão.
+- `(?<!...)` — lookbehind negativo: *não precedido por*.
+
+Como os lookarounds não consomem nada, você pode empilhar vários em uma posição — um truque comum para regras de senha, em que cada regra ("contém um dígito", "contém uma letra maiúscula") vira seu próprio lookahead ancorado no início.
+
+## Uma palavra sobre alternância
+
+A barra vertical `|` é alternância — *qualquer um dos lados*. Tem precedência muito baixa, então `cat|dog` significa "cat" ou "dog", mas `^cat|dog$` provavelmente não significa o que você espera; ela é lida como "começa com cat" ou "termina com dog". Envolva as alternativas em um grupo, `^(cat|dog)$`, para delimitá-las. Teste tudo isso ao vivo no [Kit de Regex](/tools/regex), e quando um padrão esperto começar a rodar devagar, descubra o porquê em [backtracking catastrófico](/learn/regex-catastrophic-backtracking).

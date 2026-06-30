@@ -1,0 +1,30 @@
+---
+slug: bigip-cookie-disclosure
+title: "O Que um Cookie do BIG-IP Conta a um Atacante"
+summary: "O cookie de persistência é um caso clássico de divulgação de informação: revela endereços IP internos, portas, tamanho do pool e route domains a qualquer cliente. Por que isso importa para reconhecimento, como scanners coletam o cookie e como pensar sobre o risco."
+concepts: ["information disclosure", "reconnaissance", "internal topology", "bigip", "persistence cookie", "security testing"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Um vazamento pequeno com valor real
+
+Um cookie de persistência do BIG-IP sem criptografia é um dos exemplos mais limpos de divulgação de informação na web. O servidor não é enganado e nada é quebrado; o cookie simplesmente contém o endereço interno e a porta de um servidor de backend, e é entregue a todo cliente como parte da operação normal. Por si só, isso raramente é catastrófico, mas reconhecimento é cumulativo, e este é um dado gratuito e confiável que um atacante de outra forma teria que se esforçar para obter.
+
+## O que o cookie revela
+
+Decodificar um único cookie dá um endereço IP interno e uma porta. Se esse endereço estiver no espaço RFC 1918, confirma o esquema de endereçamento interno por trás do balanceador, que um atacante remoto normalmente não consegue ver. A porta diz o que o backend realmente escuta, que nem sempre é a porta que o virtual server apresenta ao mundo.
+
+Coletar vários cookies revela mais. Como o cookie nomeia o pool e codifica cada membro, acessar um site repetidamente e juntar os valores distintos decodificados mostra quantos membros o pool tem e como estão numerados. Endereços sequenciais sugerem um layout previsível; um número de route domain expõe parte da segmentação interna do BIG-IP. Nada disso é uma exploração por si só, mas encurta o caminho até uma, mapeando o interior da rede de graça.
+
+## Como ele é coletado
+
+Este é um terreno bem conhecido nas ferramentas de segurança. O Nmap inclui um script `http-bigip-cookie` que decodifica esses cookies automaticamente, o framework Metasploit tem um módulo para isso, e a codificação está documentada no K6917 da F5, de modo que qualquer um pode escrever um decodificador em poucas linhas. O decodificador desta página é uma dessas implementações. A consequência prática é que você deve presumir que qualquer cookie de persistência sem criptografia que seu BIG-IP emite já está sendo lido e decodificado por scanners automatizados.
+
+## Como pensar sobre o risco
+
+Trate o cookie sem criptografia como informação pública, porque é exatamente isso. Se os endereços internos que ele expõe forem realmente sensíveis, ou se você estiver sujeito a uma norma que sinaliza divulgação de IP interno, vale a pena fechar o cookie. A correção não é parar de usar persistência por cookie; é criptografar o cookie para que o valor fique opaco, o que é coberto no artigo sobre [criptografia de cookie](/learn/bigip-cookie-encryption). Decodificar seus próprios cookies primeiro, com esta ferramenta ou com um scanner, é uma forma rápida de ver exatamente o que você está expondo antes de decidir.

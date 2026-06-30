@@ -1,0 +1,39 @@
+---
+slug: regex-catastrophic-backtracking
+title: "Backtracking Catastrófico e ReDoS"
+summary: "Alguns padrões de aparência inocente podem levar segundos, minutos ou praticamente uma eternidade em uma string curta. A causa é o backtracking catastrófico, e quando um atacante controla a entrada ele vira uma falha de negação de serviço. Eis por que acontece e como escrever padrões que não podem travar."
+concepts: ["regex", "ReDoS", "backtracking catastrófico", "negação de serviço", "segurança"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferences"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+Uma expressão regular que funciona perfeitamente nos seus dados de teste pode, em uma entrada ligeiramente diferente, levar muito tempo para falhar. O padrão está certo; é a *entrada* que por acaso empurra o motor a explorar um número enorme de becos sem saída. Isso é **backtracking catastrófico**, e quando a entrada vem de um usuário, vira uma fraqueza de negação de serviço conhecida como **ReDoS**.
+
+## Por que o backtracking explode
+
+Os motores de regex usados por JavaScript, Python, Java e a maioria dos outros são motores de *backtracking*. Quando uma correspondência falha, eles voltam e tentam outra forma de dividir a entrada entre os quantificadores. Normalmente isso são poucas tentativas. O problema começa quando dois quantificadores podem corresponder aos mesmos caracteres, dando ao motor muitas formas equivalentes de repartir o trabalho.
+
+O exemplo clássico é `(a+)+$`. Tanto o `+` interno quanto o `+` externo querem a sequência de `a`s, e há exponencialmente muitas formas de particionar uma string de `a`s entre eles. Na entrada `aaaaaaaaaaaaaaaaaaaaaaaa!`, que não pode corresponder por causa do `!` final, o motor tenta todas as partições antes de desistir — e cada `a` extra praticamente *dobra* o trabalho. Duas dúzias de caracteres já podem levar segundos; mais alguns e é praticamente uma eternidade. O mesmo formato se esconde em `(.*)*`, `(\d+)*` e `(\w+\s?)+`.
+
+## Como reconhecer o perigo
+
+O sinal de alerta é um **quantificador aplicado a um grupo que já contém um quantificador ilimitado** sobre algo que o externo também poderia corresponder. `(a+)+`, `(a*)*` e `(?:\d+)+` se encaixam. Alternância com sobreposição é a outra fonte clássica: `(a|a)*` ou `(\w|\d)*`, em que ambos os ramos podem corresponder ao mesmo caractere, multiplica os caminhos da mesma forma.
+
+O Kit de Regex deste site faz uma verificação estática do formato de quantificador aninhado e avisa antes de deixar um padrão sinalizado rodar contra o seu texto, justamente para que uma única tecla não congele a página. A verificação é deliberadamente conservadora — prefere avisar sobre um padrão seguro a deixar passar um perigoso — então trate um aviso como "olhe com mais atenção", não como "isto está definitivamente quebrado".
+
+## Como escrever padrões que não podem explodir
+
+Alguns hábitos removem quase todo o risco:
+
+- **Não aninhe quantificadores ilimitados.** Se você se pegar escrevendo um `+` ou `*` em um grupo que já contém um `+` ou `*`, reescreva. Muitas vezes o quantificador externo é simplesmente desnecessário.
+- **Seja específico em vez de usar `.*`.** Corresponder a "tudo até uma aspa" é mais seguro como `[^"]*` do que como `.*`, porque uma classe negada não pode sobrepor o delimitador e, portanto, não pode voltar para dentro dele.
+- **Ancore seu padrão.** Um `^` inicial (e um `$` final ao validar um campo inteiro) impede o motor de tentar a correspondência em cada posição da string.
+- **Limite sua repetição.** `\d{1,9}` não pode disparar como `\d+` em entrada adversária; um limite superior explícito restringe a busca.
+
+O JavaScript não oferece grupos atômicos nem quantificadores possessivos, os recursos que outros motores usam para proibir o backtracking de vez, então em JS a resposta é estrutural: escreva o padrão de forma que a ambiguidade nunca exista. Para entrada não confiável em escala, a opção mais robusta é um motor sem backtracking como o RE2, que garante tempo linear mas abre mão de retrorreferências e lookarounds.
+
+O ReDoS é listado pela OWASP como uma classe de ataque real, não teórica — uma única requisição forjada pode prender uma CPU. Construa os padrões no [Kit de Regex](/tools/regex), preste atenção ao aviso quando ele disparar, e revisite os [quantificadores e classes](/learn/regex-quantifiers-and-classes) que tornam um padrão específico o bastante para continuar rápido.

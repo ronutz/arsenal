@@ -1,0 +1,37 @@
+---
+slug: f5-cipher-string-syntax
+title: "Reading an F5 Cipher String"
+summary: "An F5 cipher string is an ordered list of cipher sets separated by colons, where each set combines keywords with a plus sign and a leading operator can exclude, delete, or de-prioritize. Once you can read the grammar, a dense string like ECDHE:RSA:!SSLv3:@STRENGTH becomes a clear set of instructions."
+concepts: ["f5", "cipher string", "tls", "tmm", "keywords", "operators"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["tls-cipher-security-keywords", "f5-cipher-rules-and-groups"]
+category: transport
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+A BIG-IP cipher string controls which TLS cipher suites an SSL profile will offer and in what order. You will find it as the `cipher` field of an `ltm cipher rule`, or typed directly into an SSL profile. It looks cryptic at first, but it follows a small, consistent grammar.
+
+## Sets, separated and ordered
+
+A cipher string is a list of **sets**, separated by a colon `:`, a comma `,`, or whitespace. Order matters: a server walks its list top to bottom and picks the first suite the client also supports, so the sets near the front are the ones you prefer. `ECDHE:RSA:AES` is three sets, evaluated in that order.
+
+## Keywords combined with plus
+
+Within a set, **keywords** are joined with a plus sign `+` to narrow the selection. Each keyword constrains a different part of a cipher suite: the protocol version (`TLSv1_2`), the key exchange and authentication (`ECDHE`, `RSA`, `ECDHE_ECDSA`), the bulk cipher (`AES-GCM`, `3DES`), and the MAC or hash (`SHA256`). So `TLSv1_2+ECDHE+AES-GCM+SHA384` means exactly the suites that are TLS 1.2, use ECDHE, use AES-GCM, and use SHA-384. A bare keyword like `AES` with no pluses is broad, matching every AES suite. Keywords are case-insensitive, so `tlsv1_2+ecdhe` and `TLSv1_2+ECDHE` are identical.
+
+## Operators
+
+A set can carry a leading operator that changes what BIG-IP does with it:
+
+- `!` **excludes** the set permanently. `!SSLv3` removes every SSL 3.0 suite, and nothing later in the string can add them back. This is the safe way to forbid weak ciphers.
+- `-` **deletes** the set from the list built so far, but a later set may re-add it. It is weaker than `!`.
+- A leading `+` **lowers the priority** of the set, moving its suites toward the end of the list rather than removing them. Note this is different from the `+` that joins keywords inside a set.
+- `@STRENGTH` is not a set but a directive: it re-sorts everything selected so far by key length, strongest first. `@SPEED` sorts by encryption speed instead.
+
+So `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` reads as: prefer ECDHE, then RSA, never allow SSL 3.0 or RC4, then sort what remains by strength.
+
+## What the string does not tell you directly
+
+The grammar tells you the instructions, but not the final list of suites those instructions produce. That list depends on which suites a given TMOS version actually supports, so the same string can expand differently across BIG-IP versions. The [F5 cipher-string explainer](/tools/f5-cipher-string-expander) parses the grammar and explains every keyword and operator; to see the exact ordered suites, run `tmm --clientciphers` on the target box. For which keywords are safe and which are not, see [TLS cipher security keywords](/learn/tls-cipher-security-keywords); for how rules and groups assemble these strings, see [F5 cipher rules and groups](/learn/f5-cipher-rules-and-groups).

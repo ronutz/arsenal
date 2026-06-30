@@ -102,6 +102,64 @@ export default function Ipv6Tool() {
             </dl>
           </section>
 
+          {/* Address structure */}
+          <section className="jwt-panel ipv6-struct-panel">
+            <h4 className="jwt-panel-title">{t("segHeading")}</h4>
+            {(() => {
+              const hextets = decoded.expanded.split(":");
+              const hasPrefix = decoded.prefixLength != null;
+              const bp = decoded.prefixLength ?? 64;
+              const x0 = 24;
+              const x1 = 656;
+              const W = x1 - x0;
+              const cellW = W / 8;
+              const sy = 40;
+              const sh = 40;
+              const bitToX = (b: number) => x0 + (b / 128) * W;
+              const bx = bitToX(bp);
+              const ticks = [0, 16, 32, 48, 64, 80, 96, 112, 128];
+              const hostLabel = bp === 64 ? t("ifaceId") : t("hostBits");
+              const showNet = bx - x0 > 48;
+              const showHost = x1 - bx > 48;
+              return (
+                <svg className="ipv6-struct-svg" viewBox="0 0 680 116" role="img" aria-label={t("segHeading")}>
+                  {bx > x0 && (
+                    <rect x={x0} y={sy} width={bx - x0} height={sh} fill="var(--accent-primary)" fillOpacity="0.12" />
+                  )}
+                  {showNet && (
+                    <text x={(x0 + bx) / 2} y={30} textAnchor="middle" className="ipv6-struct-seg">{t("networkSeg")}</text>
+                  )}
+                  {showHost && (
+                    <text x={(bx + x1) / 2} y={30} textAnchor="middle" className="ipv6-struct-seg">{hostLabel}</text>
+                  )}
+                  {hextets.map((h, i) => {
+                    const cx = x0 + i * cellW;
+                    return (
+                      <g key={i}>
+                        <rect x={cx} y={sy} width={cellW} height={sh} fill="none" stroke="var(--border-subtle)" strokeWidth="1" />
+                        <text x={cx + cellW / 2} y={sy + 25} textAnchor="middle" className="ipv6-struct-hex">{h}</text>
+                      </g>
+                    );
+                  })}
+                  <line x1={bx} y1={sy - 5} x2={bx} y2={sy + sh + 6} stroke="var(--accent-primary)" strokeWidth="2" strokeDasharray={hasPrefix ? undefined : "5 4"} />
+                  <text x={bx} y={16} textAnchor="middle" className="ipv6-struct-bound">/{bp}</text>
+                  {ticks.map((b) => {
+                    const tx = bitToX(b);
+                    return (
+                      <g key={`t${b}`}>
+                        <line x1={tx} y1={sy + sh} x2={tx} y2={sy + sh + 5} stroke="var(--border-strong)" strokeWidth="1" />
+                        <text x={tx} y={sy + sh + 17} textAnchor="middle" className="ipv6-struct-tick">{b}</text>
+                      </g>
+                    );
+                  })}
+                </svg>
+              );
+            })()}
+            <p className="ipv6-struct-note">
+              {decoded.prefixLength != null ? t("prefixNote") : t("conventionNote")}
+            </p>
+          </section>
+
           {/* Classification */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("panels.classification")}</h4>

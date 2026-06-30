@@ -1,7 +1,7 @@
 // ============================================================================
 // src/lib/tools/uuid/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING UUID MODULE - a netcore {manifest, run, vectors} triple.
+// THE SELF-DESCRIBING UUID MODULE - a self-contained {manifest, run, vectors} triple.
 //
 // run() is SYNC here (inspectUuid is pure string parsing - no Web Crypto), and
 // single-input. A UUID is an identifier, not a secret, so executionClass is
@@ -74,7 +74,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

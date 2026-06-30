@@ -1,0 +1,36 @@
+---
+slug: certificate-validity-windows
+title: "Janelas de validade: notBefore, notAfter e a antecedência da renovação"
+summary: "Como o tempo de vida de um certificado é definido por dois carimbos de tempo, como esse tamanho é medido contra o limite, por que validade não é o mesmo que tempo restante, e como escolher uma antecedência para a renovação."
+concepts: ["x509", "validity", "notbefore", "notafter", "rfc5280", "renewal", "clock-skew"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["tls-certificate-lifetimes", "certificate-validation", "x509-anatomy", "renewing-before-expiry"]
+category: pki
+order: 9
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Dois carimbos de tempo definem o tempo de vida
+
+Todo certificado X.509 carrega um campo de validade com exatamente dois valores: `notBefore` e `notAfter`, definidos na RFC 5280. São instantes absolutos, expressos em UTC, e juntos marcam a janela durante a qual o certificado deve ser honrado. Um cliente TLS compara o horário atual com essa janela para cada certificado da cadeia, não apenas o de ponta: um certificado expirado, ou ainda não válido, falha na validação independentemente de quão sólido seja todo o resto. O planejador desta página toma essas duas datas como sua única entrada, porque tudo o mais que ele informa é derivado delas.
+
+## Como um tempo de vida é medido
+
+O *período de validade* do certificado é simplesmente o intervalo de `notBefore` a `notAfter`. Os limites do CA/Browser Forum, 398, 200, 100 e 47 dias, aplicam-se a esse intervalo, medido pela data de emissão como descreve o [artigo sobre tempos de vida](/learn/tls-certificate-lifetimes). O planejador calcula o intervalo em dias inteiros e o compara com o máximo da fase de emissão do certificado, e então informa se está dentro do limite e, em caso negativo, por quantos dias ele excede. Uma AC pública se recusará a emitir um certificado cuja validade solicitada exceda o limite, então um resultado acima do limite geralmente indica uma AC interna mal configurada ou um certificado de teste montado à mão.
+
+## Validade não é "tempo restante"
+
+São dois números diferentes, e confundi-los causa muita confusão. A *validade* é fixada no instante em que o certificado é emitido e nunca muda. O *tempo restante* encolhe a cada dia e depende do que é "agora". Um certificado de 90 dias emitido há 80 dias ainda é um certificado de 90 dias, mas restam apenas 10. O planejador mantém os dois estritamente separados: o tamanho da validade vem do núcleo determinístico que depende apenas das duas datas, enquanto a linha "dias até expirar" é uma conveniência calculada a partir do relógio do seu próprio dispositivo e claramente identificada como tal.
+
+## Escolhendo uma antecedência para a renovação
+
+Renovar no último segundo é como surgem as quedas: uma renovação que falha precisa de folga para tentar de novo antes que o certificado antigo morra. A convenção comum, usada por ferramentas como o certbot, é renovar quando resta cerca de um terço do tempo de vida, ou com uma margem fixa de aproximadamente 30 dias, o que vier primeiro. O planejador aplica uma versão dessa regra, mais ou menos um terço da validade, limitado a 30 dias, e informa uma data concreta para renovar, para que você tenha um alvo em vez de uma intenção vaga. Para um certificado de 90 dias isso é uma antecedência de 30 dias; para um certificado de 47 dias são cerca de 16 dias, que é toda a folga que um certificado tão curto oferece.
+
+## Uma nota sobre o desvio de relógio
+
+As ACs frequentemente definem `notBefore` um pouco no passado, em geral por uma hora ou mais, para que um certificado seja aceito por clientes cujos relógios estejam ligeiramente atrasados. Esse recuo significa que a janela medida pode ser marginalmente mais longa que a validade "pretendida", e é o motivo de um certificado recém-emitido ainda validar em um dispositivo cujo relógio esteja alguns minutos errado. O outro lado é que um relógio muito errado quebra a validação por completo: um dispositivo ajustado muito no futuro verá certificados ativos como expirados, e um ajustado no passado rejeitará certificados como ainda não válidos. A verificação de validade é tão confiável quanto o relógio contra o qual ela roda.
+
+## O que o planejador calcula a partir das datas
+
+Apenas de `notBefore` e `notAfter`, o planejador deriva o tamanho da validade, a fase e o limite que governam, a conformidade, a frequência de renovação implícita e a data de renovação, tudo de forma determinística. Para ver os `notBefore` e `notAfter` reais dentro de um certificado de verdade, cole-o no [inspetor X.509](/tools/x509), que decodifica os bytes; este planejador então transforma essas duas datas em um plano de renovação.

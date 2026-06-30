@@ -1,0 +1,38 @@
+---
+slug: oidc-discovery
+title: "OIDC Discovery: The openid-configuration Document"
+summary: "How the .well-known/openid-configuration document lets a relying party learn a provider's endpoints and capabilities automatically, what the issuer, jwks_uri, and signing-algorithm fields mean, why advertising the none algorithm is dangerous, and why PKCE S256 support matters."
+concepts: ["discovery", "openid-configuration", "jwks_uri", "jwks", "signing algorithms", "pkce", "well-known"]
+relatedTools: ["oidc"]
+relatedArticles: ["oidc-overview", "id-token-claims", "oidc-vs-oauth"]
+category: identity
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+## What discovery is for
+
+A relying party needs to know a lot about a provider before it can use it: where to send the user to authenticate, where to exchange a code for tokens, where to fetch the keys that verify a token's signature, and what the provider actually supports. OpenID Connect Discovery lets the relying party learn all of this automatically instead of having it hard-coded. The provider publishes a JSON document at a fixed path, /.well-known/openid-configuration under its issuer URL, and the relying party reads it to configure itself. The OIDC decoder reads this same document and summarizes it into the issuer, the endpoints, and the capabilities, with a few checks on the security-relevant fields.
+
+## The metadata and endpoints
+
+The issuer field is the provider's identifier, and it must exactly match the iss claim that appears in tokens the provider issues. This linkage matters: a relying party confirms a token came from the provider it configured by comparing the token's iss against the discovered issuer.
+
+The document then lists the endpoints the relying party will use. The authorization_endpoint is where the user is sent to authenticate. The token_endpoint is where the relying party exchanges an authorization code for tokens. The userinfo_endpoint returns additional claims about the user when called with an access token. The jwks_uri is the most security-critical endpoint: it is where the provider publishes its public signing keys, as a JWK Set. A relying party fetches the keys from there and uses them to verify the signature on every ID token, selecting the right key by the kid in the token header. Other endpoints may appear too, such as end_session_endpoint for logout and introspection or revocation endpoints for token management.
+
+## The capabilities
+
+Several fields advertise what the provider supports, each an array. response_types_supported and grant_types_supported describe which flows are available. subject_types_supported says whether sub values are public or pairwise (pairwise gives each relying party a different sub for the same user, for privacy). scopes_supported and claims_supported list what a relying party can request and expect. Two capability fields carry particular security weight, and the decoder checks them.
+
+## Why the none algorithm is dangerous
+
+The id_token_signing_alg_values_supported field lists the algorithms the provider will use to sign ID tokens. A healthy provider lists asymmetric algorithms such as RS256 or ES256, which let a relying party verify with a public key from the JWKS. If this list includes none, the provider is advertising that it will issue unsigned ID tokens, and the decoder flags it. An unsigned ID token carries no proof of who issued it, so anyone could forge one; a relying party that accepted an alg none token would be trusting an unauthenticated statement. The none algorithm has been the basis of real authentication-bypass vulnerabilities, where an attacker strips the signature and changes the alg to none hoping the verifier accepts it. A provider should not offer it, and a relying party should never accept it.
+
+## Why PKCE S256 matters
+
+The code_challenge_methods_supported field says whether the provider supports PKCE (Proof Key for Code Exchange), and which methods. PKCE protects the authorization code flow against code interception by binding the code to a secret the client generates, and it is essential for public clients like single-page and mobile applications that cannot keep a client secret. The recommended method is S256, which sends a SHA-256 hash of the secret rather than the secret itself. The decoder flags a provider that advertises no PKCE methods at all, and separately flags one that offers PKCE but without S256, since S256 is the method to prefer.
+
+## Discovery plus JWKS is how verification works
+
+Putting it together: discovery tells the relying party the issuer to expect and the jwks_uri to fetch keys from, and the JWKS provides the public keys. With those, the relying party can do the verification this decoder deliberately does not: fetch the provider's current keys, select the one matching the token's kid, and check the ID token's signature, then confirm the issuer and audience and the rest. The decoder reads the discovery document so you can inspect and reason about a provider's configuration; the relying party uses that same document, plus the live keys, to actually establish trust.

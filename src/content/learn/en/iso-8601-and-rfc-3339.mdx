@@ -1,0 +1,32 @@
+---
+slug: iso-8601-and-rfc-3339
+title: "ISO 8601, RFC 3339, and the HTTP Date"
+summary: "Once a Unix timestamp is turned back into a human date, it gets written in one of a few standard text formats. ISO 8601 is the broad standard, RFC 3339 is its strict internet profile, and the HTTP date is the odd one out. Knowing the difference saves a lot of parsing grief."
+concepts: ["iso 8601", "rfc 3339", "http date", "timestamp format", "utc offset"]
+relatedTools: ["epoch"]
+relatedArticles: ["unix-time-explained", "unix-time-and-leap-seconds"]
+category: encoding
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+A Unix timestamp is unreadable, so for display and interchange it is written as text — and there are a few standard ways to do that. Three matter in practice, and they are easy to confuse.
+
+## ISO 8601
+
+ISO 8601 is the broad international standard for writing dates and times. Its hallmark is the shape `YYYY-MM-DDThh:mm:ss`: a four-digit year, the `T` that separates the date from the time, and 24-hour time. A trailing `Z` (for "Zulu") means UTC; otherwise an offset like `+05:30` or `-08:00` states the zone. ISO 8601 is permissive — it allows week dates, ordinal dates, and various reduced forms — which makes it expressive but a little risky to parse blindly.
+
+## RFC 3339
+
+RFC 3339 is a **strict profile** of ISO 8601, written specifically for timestamps on the internet. It nails down the ambiguities: a full date and time, a mandatory separator, and a required offset (`Z` or `±hh:mm`). Most things that say "ISO 8601" in an API context actually mean RFC 3339. The two overlap heavily, but not perfectly — a valid ISO 8601 string is not always valid RFC 3339, and vice versa in edge cases — so when a spec says one, take it literally.
+
+## The sortability bonus
+
+There is a quiet superpower in the `YYYY-MM-DD` ordering: because the most significant component comes first and every field is zero-padded to a fixed width, sorting these strings **lexicographically** sorts them **chronologically**. `2023-01-09` comes before `2023-11-14` as plain text, no date parsing required. This is why log files and object keys so often use ISO-style timestamps.
+
+## The HTTP date is different
+
+One format refuses to follow the pattern: the date in HTTP headers like `Last-Modified` and `Date`. Defined by RFC 9110 (the IMF-fixdate format), it looks like `Tue, 14 Nov 2023 22:13:20 GMT` — day name, day, English month abbreviation, time, and the literal `GMT`. It is fixed-width and always UTC, but it sorts as nonsense and needs its own parser. When you see that shape, you are looking at an HTTP date, not ISO 8601.
+
+This converter shows all three side by side for any instant, so you can copy the exact form a given system expects.

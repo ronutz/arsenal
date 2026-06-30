@@ -1,0 +1,28 @@
+---
+slug: yaml-type-coercion
+title: "YAML Type Coercion and the Norway Problem"
+summary: "YAML guesses the type of every unquoted scalar, and its guesses are surprising: the country code NO becomes false, a version like 1.0 becomes a number, and a zero-padded code loses its zeros. Knowing the rule is the key to safe conversion."
+concepts: ["yaml", "type coercion", "norway problem", "implicit typing", "quoting", "conversion"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["json-vs-yaml", "config-formats-in-practice", "json-grammar"]
+category: encoding
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Why an unquoted scalar is dangerous
+
+In YAML, a scalar that is not quoted has its type inferred from how it looks. Write `count: 3` and you get the integer three; write `ratio: 1.5` and you get a float; write `enabled: true` and you get a boolean. This is convenient until the inference guesses wrong, and because the same text can be a string in one context and a typed value in another, the mistakes are easy to miss. The fix is always the same, quote the scalar, but you have to know which values need it.
+
+## The Norway problem
+
+The most famous example is known as the Norway problem. In older YAML, the unquoted words `yes`, `no`, `true`, `false`, `on`, and `off`, in several capitalizations, are all booleans. So a list of country codes that includes Norway, written as a bare `NO`, silently becomes the boolean false. The same trap catches `ON` for Ontario and any field where a real string happens to spell a boolean keyword. YAML 1.2 narrowed the set of boolean spellings to just `true` and `false`, but a great deal of software still follows the older, broader YAML 1.1 rules, so the safe assumption is that bare `no` and `yes` are hazardous.
+
+## Numbers, versions, and leading zeros
+
+Numeric coercion is just as sharp. A software version like `1.0` becomes the number one and loses its trailing zero, so `1.0` and `1.00` both collapse to the same value and the original text is gone. A US ZIP code or any identifier with a leading zero, such as `01234`, can be read as a number and lose the zero, or be interpreted as octal in some parsers. A long numeric string like a phone number or an account number can exceed the safe integer range and be rounded. In every one of these cases the value should have been a string, and the only way to keep it one is to quote it.
+
+## How a converter stays safe
+
+This is why converting JSON to YAML is not just a matter of changing the punctuation. Every JSON string that, written bare, would be read back as a boolean, a number, a null, or a date has to be emitted in quotes, or the YAML would mean something different from the JSON. A correct converter applies these quoting rules automatically, which is exactly what this tool does: a string stays a string. When you read its YAML output and see quotes around something like `"NO"` or `"1.0"`, those quotes are not noise; they are the converter protecting the value from YAML's type guessing.

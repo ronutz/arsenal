@@ -1,0 +1,43 @@
+---
+slug: regex-groups-and-backreferences
+title: "Regex Groups, Backreferences, and Lookarounds"
+summary: "Parentheses do far more than set precedence in a regex. They capture text for you to reuse, name the pieces you care about, and — with a question mark prefix — let you assert what comes before or after without consuming it."
+concepts: ["regex", "capturing group", "named group", "backreference", "lookahead", "lookbehind"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-catastrophic-backtracking"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Parentheses are where regex stops being a search string and starts being a small parser. They group sub-patterns, capture what those sub-patterns matched, and — with a `?` prefix — switch into special modes that assert rather than consume.
+
+## Capturing groups
+
+Wrap part of a pattern in parentheses and you get a **capturing group**: the matched text is set aside under a number, counting groups left to right by their opening parenthesis. In `(\d{4})-(\d{2})`, group 1 captures the year and group 2 the month, so against `2026-06` you get `2026` and `06` back separately. Capturing is what lets a tool hand you the *parts* of a match, not just the whole thing.
+
+Sometimes you only want the grouping — to apply a quantifier to several characters at once — without paying for a capture. A **non-capturing group** `(?:...)` does exactly that. `(?:ab)+` repeats the pair `ab` one or more times but creates no numbered capture, which keeps your group numbers meaningful and your matching a touch leaner.
+
+## Named groups
+
+Counting parentheses gets fragile as patterns grow. A **named group** `(?<year>\d{4})` gives the capture a label, so you read `year` instead of remembering it was group 1. Named groups are clearer to maintain and survive edits that would shift numeric positions. Most modern engines, including JavaScript, support them.
+
+## Backreferences
+
+A **backreference** matches the same text a group already captured. `\1` refers to the first group; `\k<year>` refers to a named one. This is how you catch repetition: `(\w+)\s+\1` finds a doubled word like "the the", because `\1` must match whatever `(\w+)` just matched. A backreference matches the captured *text*, not the pattern again — a subtle but important distinction.
+
+## Lookarounds: asserting without consuming
+
+A **lookaround** checks that something is or is not nearby, then throws the position back so the characters it inspected are still available to the rest of the pattern. There are four:
+
+- `(?=...)` — a positive lookahead: *followed by*. `\d+(?= USD)` matches a number only when ` USD` comes next, but the match itself is just the digits.
+- `(?!...)` — a negative lookahead: *not followed by*.
+- `(?<=...)` — a positive lookbehind: *preceded by*. `(?<=\$)\d+` matches digits that sit right after a dollar sign.
+- `(?<!...)` — a negative lookbehind: *not preceded by*.
+
+Because lookarounds consume nothing, you can stack several at one position — a common trick for password rules, where each rule ("contains a digit", "contains an uppercase letter") becomes its own lookahead anchored at the start.
+
+## A word on alternation
+
+The pipe `|` is alternation — *either side*. It has very low precedence, so `cat|dog` means "cat" or "dog", but `^cat|dog$` probably does not mean what you expect; it reads as "starts with cat" or "ends with dog". Wrap the alternatives in a group, `^(cat|dog)$`, to bound them. Test these live in the [Regex Toolkit](/tools/regex), and when a clever pattern starts running slowly, read why in [catastrophic backtracking](/learn/regex-catastrophic-backtracking).

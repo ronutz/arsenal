@@ -1,0 +1,50 @@
+---
+slug: hsts-and-https
+title: "HSTS e a Exigência de HTTPS"
+summary: "Como o Strict-Transport-Security fecha a janela de downgrade para HTTP, o que max-age, includeSubDomains e preload fazem, a brecha de confiança no primeiro uso que o preload remove e os erros de configuração que silenciosamente o desativam."
+concepts: ["hsts", "https", "tls", "downgrade", "preload", "includeSubDomains"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "content-security-policy", "cookie-security-flags"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O problema que o HSTS resolve
+
+Servir um site por HTTPS é necessário, mas não suficiente. A brecha é a primeira requisição. O usuário digita `example.com`, o navegador tenta `http://example.com`, e o servidor responde com um redirecionamento para `https://`. Um atacante posicionado na rede pode interceptar essa requisição inicial em HTTP puro e, ou remover o upgrade, ou se colocar no meio. O site criptografado está bem; o salto não criptografado na frente dele é a fraqueza.
+
+`Strict-Transport-Security` (HSTS) diz ao navegador para nunca mais usar HTTP puro para este host. Depois que o navegador viu o cabeçalho uma vez, ele reescreve toda requisição `http://` para `https://` por conta própria, antes que qualquer coisa vá para a rede, por todo o tempo que a política durar. A janela de downgrade se fecha.
+
+## Lendo o cabeçalho
+
+Um valor forte típico tem esta cara:
+
+```
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+```
+
+**max-age** é o tempo de vida da política em segundos, e é a parte que mais importa. É por quanto tempo o navegador continuará forçando HTTPS para o host após a última vez que viu o cabeçalho. Cada visita que inclui o cabeçalho renova o relógio. O valor acima é de dois anos.
+
+**includeSubDomains** estende a política a todos os subdomínios. Sem ele, `example.com` está protegido, mas `app.example.com` não, o que deixa um caminho para um atacante mirar um subdomínio que nunca foi visitado diretamente.
+
+**preload** é um pedido para ser incluído na lista de preload do navegador, descrita abaixo.
+
+## Quanto tempo é o suficiente
+
+O analisador trata o `max-age` em faixas. Um valor de um ano ou mais é a referência recomendada e é marcado como forte. Um valor abaixo de cerca de seis meses é sinalizado como baixo, porque um tempo de vida curto significa que a proteção expira rápido para um usuário que não volta com frequência. Um `max-age` de `0` é um caso especial: ele não define uma política curta, ele desativa o HSTS e diz ao navegador para esquecer qualquer política existente para o host. Esse é o valor correto apenas quando você está deliberadamente desligando o HSTS; do contrário, é uma configuração incorreta que remove a proteção por completo.
+
+## Confiança no primeiro uso e o que o preload corrige
+
+O HSTS, como descrito, ainda tem uma brecha: a primeira visita, antes de o navegador ter visto o cabeçalho, fica desprotegida. Isso é confiança no primeiro uso. Para a maioria dos sites, a janela é de uma requisição e é aceitável. Para sites que querem fechá-la por completo, a lista de preload do navegador a remove.
+
+A lista de preload é um conjunto de hosts embutidos nos navegadores como somente-HTTPS, então o navegador força HTTPS já na primeira requisição, sem exigir visita prévia. Para ser elegível, um site serve uma política com `max-age` longo, `includeSubDomains` e a diretiva `preload`, e então submete o host à lista. Duas ressalvas importam. O preload se aplica ao domínio inteiro e a seus subdomínios, então cada um deles precisa conseguir servir HTTPS. E a remoção da lista é lenta, então um site só faz preload quando tem confiança de que permanecerá somente-HTTPS por tempo indefinido.
+
+## Erros de configuração que o desativam
+
+As falhas recorrentes são silenciosas porque o cabeçalho está presente, mas não está fazendo o seu trabalho. Um `max-age` de `0` deixado no lugar depois de um teste desativa a política. Um `max-age` muito baixo a deixa expirar entre visitas. Omitir o `includeSubDomains` deixa os subdomínios expostos. Definir o cabeçalho apenas no site HTTPS, mas servir a diretiva `preload` sem atender aos requisitos de preload, é inofensivo, mas inútil. E, importante, o HSTS só entra em vigor depois que o navegador o viu por uma conexão HTTPS válida, então ele precisa ser enviado nas respostas seguras, não em algum lugar que o navegador nunca alcança por HTTPS.
+
+## Onde o HSTS se encaixa na pilha
+
+O HSTS remove uma classe de ataque no nível de transporte: o downgrade forçado para HTTP puro. Ele combina naturalmente com a flag `Secure` nos cookies, que mantém os cookies fora de qualquer requisição em HTTP puro logo de início (veja [flags de segurança de cookies](/learn/cookie-security-flags)), e com uma Content-Security-Policy que controla o que roda depois que a página carrega. Nenhum substitui os outros; juntos, eles cobrem transporte, sessão e conteúdo.

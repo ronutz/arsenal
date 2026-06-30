@@ -124,6 +124,19 @@
 .ls-item--active {
   color: var(--accent-primary);
 }
+/* Stub languages (no pack yet → English fallback) are dimmed slightly so the eye
+   reads them as "not ready" without hiding them. Hovering/arrowing onto a row,
+   or the active language, restores full opacity since the row is still usable
+   (it just shows English). transition keeps the brighten from feeling abrupt. */
+.ls-item--stub {
+  opacity: 0.6;
+  transition: background 0.1s ease, opacity 0.1s ease;
+}
+.ls-item--stub.ls-item--highlighted,
+.ls-item--stub.ls-item--active,
+.ls-item--stub:hover {
+  opacity: 1;
+}
 .ls-item-native {
   flex: 1;
   font-weight: 500;
@@ -131,14 +144,6 @@
 .ls-item-code {
   font-size: 0.7rem;
   color: var(--text-secondary);
-}
-/* Status dot for stub (untranslated → English) languages. Amber = "not yet". */
-.ls-item-status {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-amber);
-  flex-shrink: 0;
 }
 .ls-item-check {
   color: var(--accent-primary);
@@ -149,4 +154,53 @@
   padding: 0.75rem;
   text-align: center;
   color: var(--text-tertiary);
+}
+
+/* ==========================================================================
+   TRANSLATION-STATUS CUE — per-language dots + panel legend.
+   Green = written/reviewed by a person (English, pt-BR); amber = machine-
+   translated and covering the whole site; yellow = machine-translated with
+   newer content still catching up. Status colours are fixed (traffic-light
+   semantics) so they read identically across themes; a faint ring keeps them
+   legible on both dark and light surfaces.
+   ========================================================================== */
+.ls-status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+.ls-status--reviewed { background: #34D399; } /* green  */
+.ls-status--complete { background: #F59E0B; } /* amber  */
+.ls-status--partial  { background: #FACC15; } /* yellow */
+.ls-status--stub     { background: #EF4444; } /* red — no pack yet (English fallback) */
+
+/* The check mark sits to the right of the dot on the active row; nudge spacing. */
+.ls-trigger .ls-status { margin-inline-end: 0.05rem; }
+
+/* --- Panel legend --- */
+.ls-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.85rem;
+  margin-top: 0.45rem;
+  padding: 0.5rem 0.45rem 0.2rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+}
+.ls-legend-title {
+  flex-basis: 100%;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.05rem;
+}
+.ls-legend-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
 }

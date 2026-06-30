@@ -10,18 +10,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
 
-----------------------------------------------------------------------------
-INTENDED FUTURE LICENSING
-
-This project is intended to be released, if and when it is made public, under:
-  - the Apache License, Version 2.0, for source code; and
-  - the Creative Commons Attribution 4.0 International license, for content.
-
-This mirrors the licensing of the companion engine @ronutz/netcore. Until that
-release, the proprietary terms above govern. Replacing this file with the
-corresponding Apache-2.0 and CC-BY-4.0 license texts (and updating the README
-"License" section) is the single step that opens the project.
-----------------------------------------------------------------------------
-
-Third-party components redistributed with this project are licensed separately;
-see the NOTICE file in this repository.
+Third-party components used or redistributed with this project are licensed
+separately under their own terms; see the NOTICE file in this repository for
+the required attributions and license texts.

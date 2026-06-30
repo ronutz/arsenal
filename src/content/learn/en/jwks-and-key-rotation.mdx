@@ -1,0 +1,41 @@
+---
+slug: jwks-and-key-rotation
+title: "JWKS and Key Rotation: How Providers Publish Their Keys"
+summary: "A JWKS is the public phone book of signing keys that an identity provider publishes so anyone can verify its tokens. Understanding the keys array, the kid that names each key, and why a provider keeps more than one key at a time is the foundation of token verification."
+concepts: ["jwks", "jwk", "kid", "key rotation", "oidc"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["jwk-key-types", "verifying-a-jwt-with-jwks"]
+category: identity
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+When an identity provider signs a token, the relying party that receives it needs the matching public key to check the signature. The provider cannot send the key inside every token, so instead it publishes a small JSON document — the JSON Web Key Set — at a well-known URL. Anyone can fetch it, and that is the point: the keys in it are public.
+
+## The shape of a JWKS
+
+A JWKS (RFC 7517) is a JSON object with a single required member, a `keys` array, where each element is one JSON Web Key:
+
+```json
+{
+  "keys": [
+    { "kty": "RSA", "use": "sig", "kid": "a1b2", "alg": "RS256", "n": "...", "e": "AQAB" },
+    { "kty": "EC",  "use": "sig", "kid": "c3d4", "alg": "ES256", "crv": "P-256", "x": "...", "y": "..." }
+  ]
+}
+```
+
+Each key carries a `kty` (key type), often a `use` (`sig` for signing, `enc` for encryption), an optional `alg`, and the type-specific parameters. The member that ties everything together is `kid`, the key id.
+
+## The kid is the lookup key
+
+The `kid` exists so a verifier can pick the right key without guessing. A signed token's header names the key that signed it, and the verifier looks up that same `kid` in the JWKS. RFC 7517 recommends that distinct keys in a set use distinct `kid` values, precisely so this lookup is unambiguous. A key with no `kid` cannot be selected this way, which is why the [JWKS explainer](/tools/jwks-explainer) flags any keyless-id key.
+
+## Where it lives, and why there is more than one
+
+For OpenID Connect, the JWKS URL is advertised in the provider's discovery document and conventionally sits at `/.well-known/jwks.json`. Major providers (Auth0, Okta, Keycloak, AWS Cognito) all expose one.
+
+You will almost always see more than one key in the set, and that is healthy. It is how **key rotation** works without downtime. When a provider rotates its signing key, it does not swap one key for another instantly; it publishes the new key alongside the old one, starts signing new tokens with the new `kid`, and keeps the old key in the set until every token signed by it has expired. During that overlap, both keys verify, and nothing breaks. This is also why verifiers should fetch the JWKS by `kid` on demand and cache it, rather than hardcoding a single key.
+
+To see exactly what each key in a set contains, paste it into the [JWKS explainer](/tools/jwks-explainer). For the parameters that make up each key type, see [JWK key types](/learn/jwk-key-types); for how a verifier actually uses the set, see [verifying a JWT with a JWKS](/learn/verifying-a-jwt-with-jwks).

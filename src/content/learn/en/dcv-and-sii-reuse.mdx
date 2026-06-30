@@ -1,0 +1,36 @@
+---
+slug: dcv-and-sii-reuse
+title: "DCV and SII reuse: the validation cadence behind the renewal cadence"
+summary: "Issuing a certificate means proving domain control and, for OV/EV, organization identity. SC-081v3 shrinks how long those proofs can be reused — DCV to 10 days by 2029 — which reshapes renewal as much as validity does."
+concepts: ["dcv", "sii", "domain-validation", "ov", "ev", "dv", "sc-081v3", "acme"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["tls-certificate-lifetimes", "certificate-validity-windows", "renewing-before-expiry", "public-vs-private-pki"]
+category: pki
+order: 10
+status: reviewed
+updated: "2026-06-30"
+---
+
+## Issuing a certificate means proving things
+
+Before a CA signs a certificate it must verify two kinds of fact: that the applicant controls the domain names being certified, and — for Organization Validated and Extended Validation certificates — that the named organization is real and is the applicant. Re-running those checks on every single issuance would be heavy, so the Baseline Requirements let a CA *reuse* a recent successful validation for a limited time. SC-081v3 does not only shorten certificates; it shortens how long those reused proofs stay good. The planner reports both reuse windows for a certificate's issuance era, because they shape your renewal rhythm as firmly as the validity does.
+
+## Domain control validation, and its shrinking reuse
+
+Domain Control Validation (DCV) is the proof that you control a name — demonstrated by serving a token over HTTP, publishing a DNS record, or an email challenge. The window during which a CA may reuse a passed DCV is collapsing in lockstep with validity: 398 days today, 200 from 15 March 2026, 100 from 15 March 2027, and just 10 days from 15 March 2029. At that final figure, with 47-day certificates, domain control must be re-proved roughly every renewal — on the order of thirty-odd times a year for a single domain. The "set it and forget it" era of yearly domain validation is what this number ends.
+
+## Subject identity information, and annual re-checks
+
+Subject Identity Information (SII) is the organization data inside an OV or EV certificate — the legal name and related details, everything beyond the domain itself. Its reuse window drops from 825 days to 398 days starting 15 March 2026, meaning a business must effectively re-validate its identity once a year rather than once every couple of years. This affects only OV and EV certificates; Domain Validated certificates carry no SII and are untouched by this particular change, though they are fully subject to the DCV and validity reductions.
+
+## Why the two windows interact
+
+Your real renewal cadence is bounded by the *shorter* of the certificate's validity and the relevant reuse window. While DCV reuse stayed far longer than validity, you could renew a certificate several times on one domain validation. As the windows converge — and especially once DCV reuse falls to 10 days — that slack disappears, and a fresh domain validation is needed at almost every renewal. The planner surfaces the DCV and SII windows for the issuance era next to the validity, so you can see at a glance whether a re-validation will be needed mid-life or only at renewal.
+
+## What short reuse windows kill
+
+A 10-day DCV reuse window quietly retires whole workflows. Email-based validation and hand-placing an HTTP file are fine once a year; they are unworkable thirty-five times a year across a fleet. The practical answer is automation that can re-prove control without a human: ACME using the DNS-01 or HTTP-01 challenge, which a client can run unattended on every renewal. The [renewing-before-expiry article](/learn/renewing-before-expiry) covers how that automation fits together; the takeaway here is that the reuse cuts, not just the validity cuts, are what make automation non-optional.
+
+## What the planner shows
+
+For the issuance date you enter, the planner reports the DCV reuse window and the SII reuse window that apply, alongside the validity and renewal cadence. Read together, they tell you not just how often the certificate must be replaced, but how often you must re-prove who you are and what you control — which, by 2029, is nearly the same thing.

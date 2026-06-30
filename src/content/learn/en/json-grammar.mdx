@@ -1,0 +1,28 @@
+---
+slug: json-grammar
+title: "The JSON Grammar: Six Types and a Few Strict Rules"
+summary: "JSON is smaller than it looks. The whole format is six value types and a handful of structural characters, governed by rules that are stricter than most people remember: no comments, no trailing commas, and keys that must be quoted strings."
+concepts: ["json", "grammar", "rfc 8259", "data types", "validation", "syntax"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-numbers-and-precision", "json-duplicate-keys", "url-anatomy"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## A deliberately small format
+
+JSON was designed to be the smallest data format that is still useful, and that smallness is the whole point: it is easy to write a parser, easy to read, and hard to disagree about. The grammar is defined identically by RFC 8259 and ECMA-404, and it fits on a postcard. A JSON document is exactly one value, and a value is one of six things: an object, an array, a string, a number, a boolean, or null. Everything else is built from those.
+
+## The six value types
+
+An object is an unordered set of members wrapped in curly braces, where each member is a string key, a colon, and a value: `{"name": "Ada", "active": true}`. An array is an ordered list of values in square brackets: `[1, 2, 3]`. A string is text in double quotes, with a fixed set of backslash escapes for special characters. A number is a decimal literal, which has subtleties worth [its own article](/learn/json-numbers-and-precision). A boolean is `true` or `false`, lowercase. And null is the literal `null`. Objects and arrays nest freely, and that nesting is what lets a flat grammar describe arbitrarily complex data.
+
+## The rules people forget
+
+JSON is stricter than the JavaScript object literals it resembles, and the differences are where validation fails. Keys must be double-quoted strings: `{name: 1}` is invalid, and so is `{'name': 1}`, because single quotes are not allowed anywhere. There are no comments in JSON, despite how often people want them. There are no trailing commas, so `[1, 2,]` is an error. Numbers cannot have a leading zero or a leading plus, and they cannot be `NaN` or `Infinity`, because those are not representable in the grammar. A document must contain a single value and nothing after it, so two values in a row, or trailing text, is invalid.
+
+## Why a validator points to a location
+
+Because the grammar is so rigid, every error has a precise location: the parser knows exactly which character violated which rule. A good validator reports not just that the document is invalid but where, by line and column, and which structural path it was reading at the time. That path, written as a JSON Pointer, turns a vague "syntax error" into "the value at /users/2/email is malformed," which is the difference between minutes and seconds of debugging. The formatter parses against this grammar and reports failures exactly that way.

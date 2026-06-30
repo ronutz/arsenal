@@ -1,0 +1,32 @@
+---
+slug: unix-time-and-leap-seconds
+title: "Why Unix Time Ignores Leap Seconds"
+summary: "UTC occasionally inserts a leap second to stay aligned with the Earth's rotation, but Unix time pretends every day is exactly 86,400 seconds long. That deliberate simplification means a Unix timestamp is not a true count of elapsed seconds since the epoch — and it is the right trade-off for civil time."
+concepts: ["leap seconds", "utc", "tai", "posix", "unix time"]
+relatedTools: ["epoch"]
+relatedArticles: ["unix-time-explained", "iso-8601-and-rfc-3339"]
+category: encoding
+order: 5
+status: reviewed
+updated: "2026-06-29"
+---
+
+It is tempting to read "seconds since 1970" as a precise count of physical seconds that have ticked by. It is not, and the reason is leap seconds.
+
+## What a leap second is
+
+The Earth's rotation is slightly irregular and, on average, slowly slowing. To keep clock time (UTC) aligned with the Sun's actual position, timekeepers occasionally insert a **leap second** — an extra `:60` second added to the last minute of a day, announced a few months ahead. Since 1972, more than two dozen have been added.
+
+## Unix time looks away
+
+Here is the key fact: **Unix time does not count leap seconds.** The POSIX standard defines a day as exactly **86,400 seconds**, full stop. When a leap second happens, Unix time does not get a `:60`; instead the same timestamp value is effectively used twice (or the clock is nudged), so that midnight always lands on a round multiple of 86,400. The calendar stays tidy at the cost of strict accuracy.
+
+The consequence is precise and a little surprising: a Unix timestamp is **not** the true number of SI seconds elapsed since the epoch. It is short by the number of leap seconds inserted in between — around 27 seconds as of the late 2010s. The atomic-time scale that *does* count every second, TAI, has drifted that far ahead of UTC.
+
+## Why this is the right choice
+
+Counting leap seconds would make every Unix timestamp depend on a table of historical insertions that also has to predict future ones — turning a trivial division into a lookup, and breaking the clean property that a day is always 86,400 seconds. For **civil** timekeeping — logs, schedules, "when did this happen" — that simplicity is worth far more than sub-second exactness. Systems that genuinely need every second (high-precision physics, some financial and navigation systems) use TAI or GPS time instead and convert deliberately.
+
+## A moving target, soon frozen
+
+Leap seconds have always been a nuisance for computing, and the world has decided to stop: a 2022 resolution will retire the leap second by **2035**, letting UTC and atomic time drift apart slowly rather than jolting clocks. Until then, the practical takeaway stands — treat a Unix timestamp as civil time, accurate to the second for everyday purposes, but not as a stopwatch reading since 1970.

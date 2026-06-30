@@ -9,8 +9,9 @@
 // the rest of the site). The page itself is statically generated; the reference
 // hydrates on the client.
 //
-// English-first by design: API references are conventionally English, and the
-// 'api' namespace lives only in en.json, so every locale falls back to it.
+// The page chrome (eyebrow, title, lede, section copy) is localized via the
+// 'api' namespace in every live locale pack. The OpenAPI document and the
+// interactive reference it drives are English by convention.
 // ============================================================================
 
 import type { Metadata } from "next";

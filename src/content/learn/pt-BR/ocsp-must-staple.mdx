@@ -1,0 +1,28 @@
+---
+slug: ocsp-must-staple
+title: "OCSP Must-Staple: Fechando a Brecha do Soft-Fail"
+summary: "A checagem OCSP em tempo real tem uma fraqueza fatal: quando o respondedor está inacessível, os clientes geralmente prosseguem mesmo assim. O OCSP stapling e o sinalizador Must-Staple são a correção. O que a extensão TLS Feature declara, e o risco operacional que ela carrega."
+concepts: ["ocsp", "must-staple", "tls feature", "ocsp stapling", "soft-fail", "x509", "pki"]
+relatedTools: ["x509"]
+relatedArticles: ["authority-information-access", "certificate-revocation", "certificate-validation"]
+category: pki
+order: 7
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O problema do soft-fail
+
+A checagem OCSP ao vivo parece tranquilizadora: antes de confiar em um certificado, o cliente pergunta ao respondedor da CA se ele foi revogado. O problema é o que acontece quando essa pergunta não pode ser respondida. Respondedores OCSP às vezes estão lentos, sobrecarregados ou bloqueados, e um navegador não pode travar cada carregamento de página esperando por um. Então, na prática, os clientes fazem soft-fail: se o respondedor não responde, eles assumem que o certificado está em ordem e prosseguem. Essa decisão silenciosamente derrota todo o mecanismo, porque um atacante usando um certificado roubado mas revogado só precisa bloquear o acesso da vítima ao respondedor, o que é fácil quando o atacante já controla o caminho de rede.
+
+## O stapling move a prova para o servidor
+
+O OCSP stapling resolve o lado do desempenho e da privacidade. Em vez de cada cliente consultar o respondedor, o servidor busca periodicamente uma resposta OCSP nova e assinada para o seu próprio certificado e a anexa (staple) ao handshake TLS. O cliente recebe a prova de não revogação diretamente na conexão, sem requisição separada, sem atraso e sem vazar para a CA quais sites o usuário está visitando. O stapling é uma melhoria clara, mas por si só é opcional: se o servidor simplesmente omitir o staple, um cliente que faz soft-fail ainda prossegue.
+
+## O que o Must-Staple declara
+
+O Must-Staple é a peça que torna o stapling obrigatório. Ele é carregado na extensão TLS Feature, definida na RFC 7633, e o inspetor o reporta quando presente. Um certificado com essa extensão declara que uma resposta OCSP anexada e válida é exigida para ele. Um cliente que entende a extensão deve então rejeitar qualquer handshake que apresente esse certificado sem um staple novo, transformando o antigo soft-fail em hard-fail. Um atacante não pode mais remover o staple e contar com o cliente dando de ombros e continuando, porque o próprio certificado proíbe isso.
+
+## O compromisso operacional
+
+A razão pela qual o Must-Staple não é universal é que o hard-fail corta dos dois lados. Se o seu pipeline de stapling quebrar, talvez o servidor não consiga alcançar o respondedor para renovar o staple, então os clientes que honram o sinalizador se recusarão a conectar, e o site fica fora do ar até o stapling ser restaurado. Esse é um risco real de disponibilidade, e exige um monitoramento sólido do caminho de stapling antes de ativar o sinalizador. A resposta mais ampla da indústria às fraquezas da revogação tem sido encurtar a validade dos certificados, para que um certificado revogado expire por conta própria em pouco tempo, o que o [artigo de revogação](/learn/certificate-revocation) cobre. O Must-Staple continua sendo a forma por certificado mais forte de tornar o OCSP realmente vinculante, e ver o sinalizador no inspetor diz que um certificado optou por esse contrato mais rígido.

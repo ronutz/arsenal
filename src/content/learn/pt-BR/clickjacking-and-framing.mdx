@@ -1,0 +1,56 @@
+---
+slug: clickjacking-and-framing
+title: "Clickjacking e Controle de Enquadramento"
+summary: "O que é clickjacking, como o enquadramento o torna possível, a diferença entre o cabeçalho legado X-Frame-Options e a diretiva moderna CSP frame-ancestors, por que ALLOW-FROM é obsoleto e como os dois controles interagem."
+concepts: ["clickjacking", "framing", "x-frame-options", "frame-ancestors", "csp", "ui redress"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "content-security-policy", "cookie-security-flags"]
+category: security
+order: 5
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O que é clickjacking
+
+Clickjacking é um ataque em que uma página maliciosa carrega o seu site dentro de um iframe invisível ou disfarçado e engana o usuário para clicar em algo nele sem perceber. O usuário acha que está interagindo com a página do atacante; o clique, na verdade, cai na sua página, que está sobreposta no topo, totalmente transparente. Como o usuário está logado no seu site no mesmo navegador, o clique carrega a sessão dele. Um botão escondido de "excluir conta" ou uma ação de um clique são os alvos clássicos. A técnica também é chamada de UI redress, porque veste uma interface com a aparência de outra.
+
+A condição que torna isso possível é simples: a sua página pode ser enquadrada por outro site. Se você proíbe o enquadramento, o ataque não tem onde se apoiar. Os dois controles abaixo fazem exatamente isso.
+
+## X-Frame-Options: o controle legado
+
+`X-Frame-Options` foi o primeiro cabeçalho contra enquadramento amplamente suportado. Ele tem dois valores que valem a pena usar:
+
+```
+x-frame-options: DENY
+```
+
+**DENY** proíbe o enquadramento por qualquer site, inclusive o seu. **SAMEORIGIN** permite o enquadramento apenas por páginas de mesma origem, que é o que você quer se a sua própria aplicação legitimamente enquadra as próprias páginas. Um terceiro valor, `ALLOW-FROM`, deveria permitir uma única origem nomeada, mas foi implementado de forma inconsistente e hoje é obsoleto: os navegadores modernos o ignoram. Se você precisa permitir que origens específicas enquadrem a sua página, a diretiva moderna abaixo é o caminho, e o analisador sinaliza o `ALLOW-FROM` como obsoleto.
+
+`X-Frame-Options` é um interruptor de cabeçalho inteiro, sem expressividade além desses valores. Ainda vale enviá-lo para clientes mais antigos, mas não é mais o controle principal.
+
+## frame-ancestors: o controle moderno
+
+O controle atual é a diretiva `frame-ancestors` dentro de uma Content-Security-Policy. Ela faz o mesmo trabalho com mais precisão:
+
+```
+content-security-policy: frame-ancestors 'none'
+```
+
+`frame-ancestors 'none'` proíbe todo enquadramento, o equivalente ao `DENY`. `frame-ancestors 'self'` permite apenas enquadramento de mesma origem, o equivalente ao `SAMEORIGIN`. Diferente do obsoleto `ALLOW-FROM`, o `frame-ancestors` pode listar várias origens específicas que têm permissão para enquadrar a página, e isso de fato funciona nos navegadores:
+
+```
+content-security-policy: frame-ancestors 'self' https://parceiro.example.com
+```
+
+Por viver na CSP, o `frame-ancestors` faz parte da mesma política que controla scripts e outros conteúdos, e é por isso que ele aparece ao lado das diretivas de CSP em [Content Security Policy, diretiva por diretiva](/learn/content-security-policy).
+
+## Como os dois interagem
+
+Quando ambos estão presentes, os navegadores que suportam o `frame-ancestors` usam ele e ignoram o `X-Frame-Options`. Então a abordagem prática é definir o `frame-ancestors` como o controle de verdade e, opcionalmente, manter o `X-Frame-Options: DENY` ou `SAMEORIGIN` como fallback para qualquer cliente antigo que não entenda CSP. Os dois devem concordar; uma página que nega enquadramento em um e permite no outro é um sinal de configuração suspeita.
+
+O analisador trata o `frame-ancestors` como o controle de enquadramento autoritativo e registra o `X-Frame-Options` como o companheiro legado. Uma página sem nenhum dos dois é sinalizada, porque pode ser enquadrada e, portanto, está exposta ao clickjacking.
+
+## Além dos cabeçalhos
+
+Os cabeçalhos de controle de enquadramento impedem o enquadramento de que o clickjacking depende, que é a camada certa para o ataque. Para ações com consequências reais, a defesa em profundidade ainda se aplica: um passo de confirmação, a reautenticação para operações sensíveis ou uma verificação de que a requisição é intencional reduzem o valor de um clique que de fato escapa. Mas a base é se recusar a ser enquadrado já de início, e isso está a um cabeçalho de distância.

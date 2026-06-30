@@ -1,0 +1,32 @@
+---
+slug: f5-ssl-renegotiation-and-ocsp
+title: "Renegotiation, Secure Renegotiation, and OCSP Stapling"
+summary: "Three SSL profile settings shape the handshake's safety after the first message: renegotiation decides whether a connection may renegotiate at all, secure-renegotiation enforces the RFC 5746 protection, and ocsp-stapling lets the BIG-IP attach a fresh revocation proof so clients need not phone the CA."
+concepts: ["f5", "renegotiation", "secure-renegotiation", "rfc 5746", "ocsp stapling", "rfc 6066"]
+relatedTools: ["f5-ssl-profile-explainer"]
+relatedArticles: ["f5-ssl-profile-protocol-options", "f5-ssl-cert-key-chain"]
+category: transport
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+A TLS handshake is not always a single event. Connections can renegotiate mid-stream, and revocation has to be checked somehow. Three SSL profile settings decide how the BIG-IP handles both — and the safe defaults are not always the ones already in place.
+
+## renegotiation: should it happen at all?
+
+The `renegotiation` field is simply `enabled` or `disabled`. When **disabled**, the BIG-IP refuses client-initiated mid-connection renegotiation. That is a deliberate and common hardening choice: it removes a class of denial-of-service amplification (renegotiation is cheap for the client, expensive for the server) and sidesteps the insecure-renegotiation problem entirely. Most public virtual servers run perfectly well with renegotiation disabled.
+
+## secure-renegotiation: the RFC 5746 guard
+
+If renegotiation *is* allowed, it must be the **secure** kind. The original TLS renegotiation had a flaw that let an attacker splice traffic across a renegotiation boundary; RFC 5746 fixed it with an extension that binds each renegotiation to the connection it belongs to. The `secure-renegotiation` field chooses how strictly the BIG-IP enforces that extension:
+
+- **require-strict** — the strongest. The peer must support RFC 5746 even on the **initial** handshake; peers without it are rejected outright.
+- **require** — the peer must support RFC 5746 to *renegotiate*, but the first handshake is still allowed from peers that lack it. A reasonable default.
+- **request** — the extension is requested but **not** enforced; a peer without it may still renegotiate. This is the weak setting, and the SSL profile explainer flags it.
+
+The clean posture is therefore one of two things: disable renegotiation, or require secure renegotiation.
+
+## OCSP stapling: revocation without the round trip
+
+A certificate can be revoked before it expires, and clients are supposed to check. Classic OCSP makes the **client** contact the CA's responder — slow, and it leaks which sites the user visits to the CA. **OCSP stapling** (the `status_request` extension in RFC 6066) flips this: the BIG-IP itself fetches a signed, time-stamped OCSP response and *staples* it into the handshake. The client gets the revocation proof for free, with no extra round trip and no privacy leak. Enabling `ocsp-stapling` (it needs an OCSP Stapling profile to point at the responder) is a small win for both speed and privacy, which is why the explainer marks it as a positive when present.

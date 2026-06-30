@@ -1,0 +1,64 @@
+---
+slug: cookie-security-flags
+title: "Cookie Security Flags"
+summary: "How Secure, HttpOnly, and SameSite protect session cookies, what each SameSite value means, why SameSite=None requires Secure, and how the __Host- and __Secure- prefixes enforce those guarantees at the browser level."
+concepts: ["cookies", "secure", "httponly", "samesite", "csrf", "session", "cookie prefixes"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "hsts-and-https", "clickjacking-and-framing"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Why cookie flags matter
+
+A session cookie is a credential. Whoever holds it is the user for the length of the session. That makes the attributes on `Set-Cookie` security controls, not formatting details: they decide whether the cookie can be stolen by a script, sent over plain HTTP, or attached to a request the user did not intend to make. A well-built application can still be compromised through a session cookie that lacks the right flags.
+
+These attributes travel on the `Set-Cookie` response header, so they are part of the same posture the analyzer grades for the rest of the response.
+
+```
+set-cookie: session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
+```
+
+## Secure
+
+`Secure` tells the browser to send the cookie only over HTTPS. Without it, the cookie is attached to any plain-HTTP request to the host, including the first request before an HSTS upgrade takes effect, where a network attacker can read it. `Secure` is the baseline for any cookie that carries a session or any sensitive value, and it pairs directly with HSTS: HSTS removes the plain-HTTP request, and `Secure` ensures the cookie was never going to ride on one anyway. See [HSTS and HTTPS enforcement](/learn/hsts-and-https).
+
+## HttpOnly
+
+`HttpOnly` hides the cookie from JavaScript. `document.cookie` cannot read it. This is the control that turns a cross-site scripting bug from session theft into something less severe: even if an attacker runs script on the page, an `HttpOnly` session cookie is not readable, so it cannot simply be exfiltrated. Session cookies should be `HttpOnly` almost without exception. The handful of cookies a front-end genuinely needs to read should never be the ones that authenticate the user.
+
+## SameSite
+
+`SameSite` controls whether the cookie is sent on requests that originate from other sites, which is the lever against cross-site request forgery. It has three values:
+
+**SameSite=Strict** sends the cookie only on requests originating from the same site. It is the strongest setting. The trade-off is that following a link from another site into your application arrives without the cookie, so the user looks logged out on that first navigation.
+
+**SameSite=Lax** sends the cookie on same-site requests and on top-level navigations that use a safe method, such as clicking a link. It blocks the cookie on cross-site subrequests and form posts, which covers the common forgery cases while keeping inbound links working. It is the practical default for session cookies, and modern browsers treat it as the default when no `SameSite` is specified.
+
+**SameSite=None** sends the cookie on all cross-site requests. It exists for cookies that legitimately need cross-site context, such as some embedded or federated flows. It comes with a hard requirement, described next.
+
+## SameSite=None requires Secure
+
+A cookie set with `SameSite=None` must also be marked `Secure`. Browsers reject a `SameSite=None` cookie that is not `Secure`, so the cookie silently fails to set. Beyond the mechanics, sending a cross-site cookie without `Secure` would mean a credential that travels everywhere and over plain HTTP, which is the worst combination. The analyzer flags `SameSite=None` without `Secure` as a weakness for both reasons: it is insecure, and it does not even work.
+
+## The __Host- and __Secure- prefixes
+
+A cookie name can start with a special prefix that the browser enforces, which prevents a weaker or attacker-set cookie from masquerading as a hardened one.
+
+**__Secure-** requires the cookie to be set with `Secure` and over HTTPS. If those conditions are not met, the browser rejects the cookie. It guarantees that any cookie with this prefix is a `Secure` cookie.
+
+**__Host-** is stricter. It requires `Secure`, requires `Path=/`, and forbids a `Domain` attribute, which pins the cookie to the exact host that set it. This closes subdomain-based cookie attacks, where a cookie set on a sibling or parent domain is sent to your host. A `__Host-` session cookie is the strongest standard form a session cookie can take.
+
+The analyzer checks that a prefixed cookie actually meets its prefix's requirements, because a cookie named `__Host-session` that lacks `Secure` or carries a `Domain` is a contradiction the browser will reject, and a sign the configuration is not doing what its name implies.
+
+## A strong session cookie
+
+Putting it together, a hardened session cookie looks like this:
+
+```
+set-cookie: __Host-session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
+```
+
+It cannot be read by script, never travels over plain HTTP, is not sent on cross-site subrequests, is pinned to the exact host, and announces all of that through a prefix the browser enforces. That is the target the analyzer grades cookies against.

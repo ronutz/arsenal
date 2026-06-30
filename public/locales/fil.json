@@ -67,6 +67,11 @@
       "title": "Suportahan ang mga tool na ito",
       "pitch": "Libre ang mga tool na ito at nilalayong manatiling libre. Kung may lugar ang mga ito sa iyong workflow, matutulungan mong pondohan ang pagpapanatili at ang susunod na gagawin.",
       "purposeLabel": "Pinopondohan ngayon"
+    },
+    "stats": {
+      "tools": "Mga tool",
+      "articles": "Mga artikulo",
+      "sectionLabel": "Ang toolbox sa isang sulyap"
     }
   },
   "tools": {
@@ -77,6 +82,11 @@
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Kalkulahin",
       "runsLocally": "Tumatakbo nang local, walang ipinapadala sa anumang server.",
+      "prefixSlider": "Haba ng prefix",
+      "bitsHeading": "Mga bit ng address",
+      "bitsNetwork": "Network",
+      "bitsHost": "Host",
+      "bitsNote": "Tinutukoy ng mga naka-highlight na bit ang network — ang natitira ay nag-a-address ng mga host dito.",
       "results": {
         "network": "Network address",
         "broadcast": "Broadcast address",
@@ -175,7 +185,11 @@
         "tooMany": "Masyadong maraming entry. Paikliin ang listahan at subukan ulit.",
         "noReqs": "Magdagdag ng kahit isang subnet requirement na may bilang ng host.",
         "noPrefixes": "Maglagay ng kahit isang prefix, isa kada linya."
-      }
+      },
+      "rangeHeading": "Layout ng address",
+      "usableShort": "magagamit",
+      "rfcNote": "Walang inilalaan ang /31 at /32: bawat address ay magagamit (RFC 3021).",
+      "reservedNote": "Ang unang address ay ang network at ang huli ay ang broadcast; pareho silang nakalaan, kaya magagamit = kabuuan − 2."
     },
     "title": "Mga Tool",
     "lede": "Maliliit, mabibilis, at gumagalang-sa-privacy na mga tool na tumatakbo nang buo sa iyong browser. Ang ini-input mo ay hindi ipinapadala kahit saan. May darating pang iba.",
@@ -221,7 +235,12 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Kopyahin",
-      "copied": "Nakopya"
+      "copied": "Nakopya",
+      "struct": {
+        "heading": "Paano binubuo ang HMAC",
+        "innerHash": "panloob na hash",
+        "note": "Hina-hash ng HMAC ang mensahe nang dalawang beses. Ang susi ay pinagsasama gamit ang XOR sa isang nakapirming panloob na pad bago ang unang hash at sa isang panlabas na pad bago ang pangalawa, at ang dalawang-pad na konstruksyong ito ang pumipigil sa mga length-extension attack. Ang susi ay unang binabawasan sa laki ng block ng hash."
+      }
     },
     "base64": {
       "name": "Base64, Base32, Hex & Percent Codec",
@@ -273,7 +292,18 @@
       "encodingLabel": "base64url",
       "plainValueLabel": "= code_verifier",
       "copy": "Kopyahin",
-      "copied": "Nakopya"
+      "copied": "Nakopya",
+      "flowHeading": "Paano gumagana ang PKCE",
+      "laneClient": "App / Client",
+      "laneServer": "Authorization server",
+      "s1": "Gumawa ng random na code_verifier",
+      "s2": "I-derive ang code_challenge",
+      "s3": "Dala ng authorization request ang challenge",
+      "s4": "Iniimbak ng server ang challenge",
+      "s5": "Ibinalik ang authorization code",
+      "s6": "Dala ng token request ang verifier",
+      "s7": "Muling ide-derive ng server at ikinukumpara",
+      "s8": "Inilabas ang access at refresh tokens"
     },
     "uuid": {
       "name": "UUID Generator at Inspector (v4 / v7)",
@@ -336,6 +366,11 @@
         "algNone": "Hindi secured ang token na ito (alg: none), kaya walang signature na ive-verify.",
         "unsupportedAlg": "Ang verification sa browser ay sumasaklaw lamang sa HS256/384/512. Ang {alg} ay asymmetric at nangangailangan ng public key.",
         "hint": "Ginagamit lamang ang secret upang mag-compute ng HMAC sa iyong browser. Hindi ito kailanman ipinapadala kahit saan."
+      },
+      "struct": {
+        "heading": "Anatomya ng isang JWT",
+        "signingInput": "Input ng lagda",
+        "note": "Ang header at payload ay base64url-encoded lamang, hindi naka-encrypt, kaya kahit sino ay makakabasa nito. Ang lagda ay kinakalkula batay sa header at payload na pinagdugtong ng tuldok, at ito ang sinusuri ng isang verifier."
       }
     },
     "x509": {
@@ -361,7 +396,8 @@
         "details": "Mga detalye",
         "publicKey": "Public key",
         "extensions": "Mga extension",
-        "fingerprints": "Mga fingerprint"
+        "fingerprints": "Mga fingerprint",
+        "sct": "Certificate Transparency"
       },
       "fields": {
         "version": "Bersyon",
@@ -392,6 +428,25 @@
         "sha256": "SHA-256",
         "sha1": "SHA-1",
         "computing": "Kinukuwenta ang mga fingerprint..."
+      },
+      "chainHeading": "Chain of trust",
+      "tierRoot": "Root CA",
+      "tierIntermediate": "Intermediate CA",
+      "tierLeaf": "End-entity certificate",
+      "roleRoot": "Self-signed na trust anchor",
+      "roleIntermediate": "Nilagdaan ng root; lumalagda ng mga leaf certificate",
+      "roleLeaf": "Kinikilala ang isang server o client",
+      "thisCert": "ang sertipikong ito",
+      "issuedBy": "Inisyu ng",
+      "signs": "lumalagda",
+      "trustNote": "Ang tiwala ay dumadaloy pababa: bawat sertipiko ay nilagdaan ng nasa itaas nito, hanggang sa isang root na pinagkakatiwalaan na ng iyong system.",
+      "sct": {
+        "intro": "Mga naka-embed na SCT: {n}. Ang bawat isa ay nilagdaang patunay ng isang CT log na naitala nito ang sertipikong ito; nangangailangan ang mga browser ng minimum na bilang upang mapagkatiwalaan ang sertipiko.",
+        "entry": "SCT {i}",
+        "logId": "Log ID",
+        "timestamp": "Naitala noong",
+        "signature": "Lagda",
+        "note": "Ipinapakita ang mga lagda ngunit hindi vine-verify dito; ang pag-verify ng SCT ay nangangailangan ng public key ng log at ng precertificate."
       }
     },
     "ipv6": {
@@ -427,7 +482,13 @@
       },
       "badges": {
         "multicast": "multicast"
-      }
+      },
+      "segHeading": "Istruktura ng address",
+      "networkSeg": "Network prefix",
+      "ifaceId": "Interface ID",
+      "hostBits": "Host bits",
+      "prefixNote": "Ang mga bit sa kaliwa ng hangganan ay nakatakda ng prefix; ang mga bit sa kanan ay tumutukoy sa host sa loob nito.",
+      "conventionNote": "Walang ibinigay na prefix, kaya minamarkahan ng putol-putol na linya ang kombensyonal na /64 split: routing prefix at subnet sa kaliwa, ang 64-bit na interface identifier sa kanan."
     },
     "cipher": {
       "name": "Cipher suite decoder",
@@ -508,6 +569,265 @@
         "ianaD": "Minarkahan ng IANA ang suite na ito bilang \"D\" (iniiwasan): HINDI DAPAT o HINDI MAAARING gamitin, depende sa sitwasyon.",
         "ianaN": "Hindi minarkahan ng IANA ang suite na ito bilang \"Inirerekomenda\": limitado ang pagkakagamit nito o hindi dumaan sa proseso ng konsensus ng IETF.",
         "signalling": "Signalling suite (SCSV): hindi tunay na cipher, nagdadala ito ng signal ng protocol gaya ng proteksyon sa downgrade o impormasyon ng renegotiation."
+      },
+      "groups": {
+        "title": "Mga pangkat ng key exchange",
+        "intro": "Hiwalay na pinag-uusapan ng TLS ang aktwal na pangkat ng key agreement mula sa cipher suite, sa extension na supported_groups. Dahil itinutulak ng \"harvest now, decrypt later\" ang paglipat sa post-quantum na key exchange, pinagsasama ng mga hybrid na pangkat sa ibaba ang isang klasikong curve sa ML-KEM.",
+        "kind": {
+          "ecdhe": "ECDHE curve",
+          "ffdhe": "Finite-field DH",
+          "pq-hybrid": "PQ hybrid"
+        },
+        "pq": {
+          "classical": "Klasiko",
+          "hybrid-pq": "Hybrid PQ"
+        },
+        "recommended": "Inirerekomenda",
+        "obsolete": "Luma na",
+        "legacy": "Legacy",
+        "combines": "Pinagsasama ang {classical} sa {pq}",
+        "foot": "Ang X25519MLKEM768 ang hybrid na pangkat na ipinapadala na ngayon ng karamihan ng browser bilang default."
+      }
+    },
+    "f5-ssl-profile-explainer": {
+      "name": "F5 SSL profile explainer",
+      "blurb": "Mag-paste ng tmsh client-ssl o server-ssl profile at makuha ang papel nito, ang TLS protocol matrix, at isang security read na sumasaklaw sa chain, renegotiation, SNI, OCSP, at mutual TLS — lahat sa iyong browser.",
+      "inputLabel": "SSL profile (tmsh)",
+      "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
+      "runsLocally": "Pinoproseso sa iyong browser. Walang ipinapadala kahit saan.",
+      "scopeNote": "Dini-decode ang isang na-paste na profile block. Hindi ito kailanman kumokontak sa isang BIG-IP.",
+      "errorTitle": "Hindi mabasa ang profile",
+      "err_empty": "Mag-paste ng SSL profile para magsimula.",
+      "err_noHeader": "Inaasahan ang linyang tulad nito: ltm profile client-ssl /Common/name ...",
+      "err_noBody": "Walang nakitang pambukas na brace sa profile.",
+      "err_tooLong": "Masyadong malaki ang input na ito para i-parse.",
+      "err_invalid": "Mukhang hindi ito isang client-ssl o server-ssl profile.",
+      "protocolsHeading": "Mga bersyon ng TLS protocol",
+      "permitted": "pinapayagan",
+      "disabled": "naka-disable",
+      "findingsHeading": "Pagtatasa ng seguridad",
+      "settingsHeading": "Ipinaliwanag na mga setting",
+      "topoHeading": "Sa daanan ng data",
+      "nodeClient": "Client",
+      "nodeBigip": "BIG-IP",
+      "nodePool": "Pool member",
+      "clientLeg": "TLS sa panig ng client",
+      "serverLeg": "Panig ng server",
+      "thisProfile": "ang profile na ito",
+      "clientNote": "Tinatapos ng client-ssl profile ang TLS ng client sa BIG-IP. Muling ine-encrypt ang koneksyon papunta sa pool member kung may inilapat na server-ssl profile; kung wala, plaintext ang bahaging iyon (SSL offload).",
+      "serverNote": "Hinahayaan ng server-ssl profile ang BIG-IP na magbukas ng bagong TLS connection papunta sa pool member (muling pag-encrypt). Ang panig ng client ay hinahawakan ng hiwalay na client-ssl profile."
+    },
+    "epoch": {
+      "name": "Unix time converter",
+      "blurb": "Mag-type ng Unix timestamp — segundo, milliseconds, microseconds, o nanoseconds, awtomatikong natutukoy — o isang ISO-8601 na petsa, at basahin ito sa lahat ng karaniwang format. Lahat sa iyong browser.",
+      "inputLabel": "Timestamp o petsa",
+      "inputPlaceholder": "1700000000  o  2023-11-14T22:13:20Z",
+      "runsLocally": "Kino-convert sa iyong browser. Walang ipinapadala kahit saan.",
+      "scopeNote": "Purong date math. Ang unit ay hinuhulaan mula sa laki ng numero; itama kung kailangan.",
+      "nowButton": "Ngayon",
+      "errorTitle": "Hindi mabasa iyon",
+      "err_empty": "Maglagay ng timestamp o petsa para magsimula.",
+      "err_invalid": "Hindi iyon Unix timestamp o ISO-8601 na petsa.",
+      "err_tooLong": "Masyadong mahaba ang input na ito.",
+      "err_outOfRange": "Ang timestamp na iyon ay nasa labas ng nairerepresentang saklaw ng petsa.",
+      "utcHeading": "UTC na petsa at oras",
+      "formatsHeading": "Lahat ng format",
+      "dayOfYearLabel": "araw ng taon",
+      "relativeNote": "kaugnay sa orasan ng iyong device"
+    },
+    "irules-event-order": {
+      "name": "iRule event order",
+      "blurb": "Piliin ang profile stack ng isang BIG-IP virtual server — Client-SSL, HTTP, Server-SSL, pool — at tingnan ang pagkakasunod-sunod ng pag-trigger ng karaniwang iRule events, mula CLIENT_ACCEPTED hanggang CLIENT_CLOSED, bilang timeline at listahan. Lahat sa iyong browser.",
+      "stackLabel": "Profile stack ng virtual server",
+      "tog_clientssl": "Client-SSL profile",
+      "tog_http": "HTTP profile",
+      "tog_serverssl": "Server-SSL profile",
+      "tog_pool": "Pool (load balancing)",
+      "tog_fastl4": "FastL4 (packet fast path)",
+      "presetsLabel": "Mga preset:",
+      "preset_https": "HTTPS re-encrypt",
+      "preset_offload": "SSL offload",
+      "preset_http": "HTTP",
+      "preset_tcp": "Raw TCP",
+      "runsLocally": "Kinakalkula sa iyong browser. Walang ipinapadala kahit saan.",
+      "scopeNote": "Isang modelo ng dokumentadong gawi ng F5 para sa isang Standard virtual server. Hindi ito kailanman kumokonekta sa isang BIG-IP.",
+      "diagramHeading": "Pagkakasunod-sunod ng event",
+      "listHeading": "Mga event ayon sa pagkakasunod",
+      "conditionalHeading": "Mga conditional event",
+      "conditionalNote": "Nagti-trigger lang ang mga ito sa ilang partikular na kondisyon: isang TCP::collect o HTTP::collect, isang load-balancing failure, o isang 100 Continue na tugon.",
+      "sideClient": "client side",
+      "sideServer": "server side",
+      "sideGlobal": "global"
+    },
+    "cert-renewal-planner": {
+      "name": "Tagaplano ng pag-renew ng sertipiko",
+      "blurb": "Tukuyin ang bisa ng isang TLS certificate, kung umaangkop ito sa 47-araw na iskedyul ng CA/Browser Forum, at ang dalas ng pag-renew na kaakibat nito; lahat ay offline.",
+      "notBeforeLabel": "Inisyu (notBefore)",
+      "notAfterLabel": "Mag-e-expire (notAfter)",
+      "runsLocally": "Lahat ay tumatakbo sa iyong browser; walang ina-upload.",
+      "exampleLabel": "Subukan ang 90-araw na halimbawa",
+      "summaryHeading": "Ang sertipikong ito",
+      "validity": "{days} araw na bisa",
+      "compliantBadge": "Nasa loob ng limitasyon",
+      "overCapBadge": "Lampas sa limitasyon",
+      "maxForPhase": "Maximum para sa petsa ng pag-isyu nito: {max} araw.",
+      "overByText": "{days} araw lampas sa maximum na {max} araw para sa petsa ng pag-isyu nito; hindi ito ibibigay ng pampublikong CA.",
+      "renewalsValue": "Humigit-kumulang {n} pag-renew kada taon sa bisang ito.",
+      "remainingHeading": "Ayon sa orasan ng iyong device",
+      "daysRemaining": "{days} araw bago mag-expire.",
+      "expiredText": "Nag-expire {days} araw na ang nakalipas.",
+      "renewByText": "I-renew bago ang {date} (humigit-kumulang {lead} araw bago mag-expire)",
+      "renewByDue": "{days} araw mula ngayon",
+      "reuseHeading": "Paggamit muli ng validation (panahon ng pag-isyu)",
+      "dcvText": "Ang data ng domain validation (DCV) ay magagamit muli sa loob ng {days} araw.",
+      "siiText": "Ang pagkakakilanlan ng organisasyon (OV/EV SII) ay magagamit muli sa loob ng {days} araw.",
+      "scheduleHeading": "Ang iskedyul ng SC-081v3",
+      "scheduleIntro": "Ang pampublikong TLS maximum ay nakabatay sa petsa ng pag-isyu ng sertipiko:",
+      "colPeriod": "Inisyu mula",
+      "colValidity": "Max na bisa (araw)",
+      "colDcv": "Paggamit muli ng DCV (araw)",
+      "colSii": "Paggamit muli ng SII (araw)",
+      "phaseP0": "Bago ang 15 Mar 2026",
+      "phaseP1": "15 Mar 2026",
+      "phaseP2": "15 Mar 2027",
+      "phaseP3": "15 Mar 2029",
+      "yourPhase": "← ang sertipikong ito",
+      "projectionHeading": "Pasanin sa pag-renew sa bawat limitasyon",
+      "projectionIntro": "Pag-renew kada sertipiko kada taon, habang humihigpit ang mga limitasyon:",
+      "perYearShort": "taon",
+      "note_overCap": "Lumalampas ang bisang ito sa maximum na {max} araw para sa petsa ng pag-isyu nito.",
+      "note_future47": "Sumusunod ngayon, ngunit mas mahaba kaysa sa magiging 47-araw na limitasyon; umasa ng mas madalas na pag-renew habang umuusad ang iskedyul.",
+      "note_publicOnly": "Nalalapat lang ang mga limitasyong ito sa mga pampublikong pinagkakatiwalaang TLS certificate. Ang pribado o panloob na PKI ay hindi saklaw ng SC-081v3.",
+      "note_automate": "Sa ganitong mga dalas, i-automate ang pag-isyu at pag-renew gamit ang ACME (RFC 8555) at ARI (RFC 9773); hindi nag-i-scale ang manu-manong pag-renew.",
+      "err_empty": "Ilagay ang parehong petsa, pag-isyu at pag-expire.",
+      "err_invalidDate": "Gumamit ng wastong petsa (YYYY-MM-DD).",
+      "err_order": "Ang petsa ng pag-expire ay dapat mas huli sa petsa ng pag-isyu.",
+      "err_tooLong": "Masyadong mahaba ang input na ito.",
+      "err_invalid": "Hindi mabasa ang mga petsang iyon."
+    },
+    "csr-decoder": {
+      "name": "CSR decoder",
+      "blurb": "I-decode ang isang PKCS#10 certificate signing request upang basahin ang subject, public key, hiniling na mga SAN at extension, at mga attribute nito; lahat ay sa iyong browser.",
+      "inputLabel": "Certificate signing request (PEM, base64, o hex)",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
+      "exampleLabel": "Mag-load ng halimbawang CSR",
+      "runsLocally": "Lahat ay tumatakbo sa iyong browser; hindi kailanman ina-upload ang CSR.",
+      "notCertNote": "Ang CSR ay isang kahilingan, hindi isang sertipiko. Wala itong serial number, tagapagbigay, o mga petsa ng bisa; tanging ang hinihiling ng humihiling na patotohanan ng isang CA.",
+      "subjectHeading": "Subject",
+      "colAttr": "Attribute",
+      "colValue": "Halaga",
+      "noSubject": "Walang subject name (umaasa ang CSR na ito sa hiniling na mga SAN).",
+      "keyHeading": "Public key",
+      "keyAlgorithmLabel": "Algorithm",
+      "keySizeLabel": "Laki",
+      "keySizeValue": "{bits} bits",
+      "keyCurveLabel": "Curve",
+      "keyExponentLabel": "Exponent",
+      "keyExponentValue": "{exp}",
+      "requestedHeading": "Mga hiniling na extension",
+      "sanLabel": "Subject Alternative Names",
+      "keyUsageLabel": "Key usage",
+      "ekuLabel": "Extended key usage",
+      "basicConstraintsLabel": "Basic constraints",
+      "caYes": "CA: oo",
+      "caNo": "CA: hindi",
+      "pathLenValue": "haba ng path {n}",
+      "noRequested": "Walang hiniling na extension.",
+      "attributesHeading": "Mga attribute",
+      "challengePasswordLabel": "Challenge password",
+      "unstructuredNameLabel": "Unstructured name",
+      "signatureHeading": "Self-signature",
+      "signatureAlgLabel": "Algorithm",
+      "signatureBitsLabel": "Haba",
+      "signatureBitsValue": "{bits} bits",
+      "versionValue": "Bersyon: v1 ({v})",
+      "derLengthValue": "DER: {bytes} bytes",
+      "err_empty": "Mag-paste ng certificate signing request para i-decode.",
+      "err_format": "Hindi ito mukhang CSR sa PEM, base64, o hex.",
+      "err_der": "Hindi ma-parse ang DER structure.",
+      "err_structure": "Na-parse ito bilang DER ngunit hindi ito PKCS#10 certification request."
+    },
+    "oidc": {
+      "name": "OIDC Decoder",
+      "blurb": "I-paste ang isang OpenID Connect ID token o isang .well-known/openid-configuration na dokumento at i-decode ito: ang mga pangunahing claim, mga claim ng profile, mga endpoint, at mga kakayahan, na may mga pagsusuri para sa mga kinakailangang claim, signing algorithm, nonce, at PKCE.",
+      "inputLabel": "ID token (JWT) o openid-configuration JSON",
+      "inputPlaceholder": "Mag-paste ng ID token, o isang OIDC discovery JSON na dokumento",
+      "runsLocally": "Lokal na tumatakbo ang pag-decode sa iyong browser. Hindi nito kailanman tinatawag ang jwks_uri o anumang endpoint, at walang ipinapadala kahit saan.",
+      "notVerifiedNote": "Nagde-decode at nagpapaliwanag ang tool na ito. Hindi nito vine-verify ang lagda ng token, hindi kinukuha ang mga signing key, at hindi sinusuri ang expiry laban sa orasan.",
+      "errors": {
+        "empty": "Mag-paste ng ID token o openid-configuration na dokumento para i-decode.",
+        "malformed-json": "Nagsisimula ito na parang JSON ngunit hindi ma-parse. Tingnan kung may kulang na brace, kuwit, o panipi.",
+        "json-not-oidc": "JSON ito, ngunit hindi isang OpenID Connect discovery na dokumento. Mag-paste ng ID token, o isang .well-known/openid-configuration na dokumento.",
+        "not-jwt": "Hindi ito mukhang JWT o OIDC na dokumento. Mag-paste ng ID token o discovery na dokumento.",
+        "jwt-header": "Hindi ma-decode ang header ng token. Ang JWT ay tatlong base64url na bahagi na pinaghihiwalay ng mga tuldok.",
+        "jwt-payload": "Hindi ma-decode bilang JSON ang payload ng token."
+      },
+      "badges": {
+        "idToken": "ID Token",
+        "discovery": "Discovery",
+        "signed": "Nilagdaan",
+        "unsigned": "Hindi nilagdaan",
+        "algNone": "alg: none",
+        "algUnknown": "alg: ?"
+      },
+      "panels": {
+        "header": "Header",
+        "coreClaims": "Mga pangunahing claim ng ID token",
+        "metadata": "Provider",
+        "endpoints": "Mga endpoint",
+        "capabilities": "Mga kakayahan"
+      },
+      "categories": {
+        "binding": "Token binding",
+        "profile": "Mga claim ng profile",
+        "email": "Email",
+        "address": "Address",
+        "phone": "Telepono",
+        "oauth": "OAuth / session",
+        "other": "Iba pang claim"
+      },
+      "fields": {
+        "alg": "Algorithm",
+        "typ": "Uri",
+        "kid": "Key ID",
+        "iss": "Issuer (iss)",
+        "sub": "Subject (sub)",
+        "aud": "Audience (aud)",
+        "azp": "Authorized party (azp)",
+        "nonce": "Nonce",
+        "acr": "Auth context (acr)",
+        "amr": "Mga auth method (amr)",
+        "authTime": "Auth time",
+        "iat": "Inilabas (iat)",
+        "nbf": "Hindi bago (nbf)",
+        "exp": "Mag-e-expire (exp)",
+        "issuer": "Issuer"
+      },
+      "reasons": {
+        "MISSING_REQUIRED_CLAIM": "Nawawalang kinakailangang claim {value}. Dapat maglaman ang ID token ng iss, sub, aud, exp, at iat.",
+        "ALG_NONE": "Gumagamit ang token ng alg none, ibig sabihin hindi ito nilagdaan. Walang pinapatunayan ang hindi nilagdaang ID token at dapat itong tanggihan.",
+        "ALG_SYMMETRIC": "Nilagdaan gamit ang {value}, isang symmetric (HMAC) na algorithm. Karaniwang gumagamit ang mga ID token mula sa pampublikong provider ng asymmetric na algorithm tulad ng RS256 o ES256, para ma-verify ng Relying Party gamit ang public key.",
+        "ALG_UNKNOWN": "Nilagdaan gamit ang {value}, isang algorithm na hindi nakikilala ng tool na ito. Kumpirmahin na ito ay isang inaasahan at malakas na algorithm.",
+        "SIGNED_ASYMMETRIC": "Nilagdaan gamit ang {value}, isang asymmetric na algorithm. Vine-verify ito ng Relying Party laban sa public key ng provider mula sa JWKS.",
+        "NO_NONCE": "Walang nonce claim. Iniuugnay ng nonce ang token sa authentication request at nagpoprotekta laban sa replay. Dapat itong naroroon kapag nagpadala ng isa ang request.",
+        "MULTI_AUD_NO_AZP": "May maraming audience ang token ngunit walang azp (authorized party). Sa higit sa isang audience, dapat pangalanan ng azp ang client kung kanino ang token.",
+        "DISCOVERY_MISSING_FIELD": "Nawawalang kinakailangang discovery field {value}.",
+        "DISCOVERY_ALG_NONE": "Ina-advertise ng provider ang none signing algorithm para sa mga ID token, na magpapahintulot ng mga hindi nilagdaang token. Hindi ito dapat ialok.",
+        "DISCOVERY_NO_PKCE": "Walang code_challenge_methods_supported. Hindi ina-advertise ng provider ang PKCE, na inirerekomenda para sa authorization code flow.",
+        "DISCOVERY_NO_PKCE_S256": "Ina-advertise ang PKCE ngunit walang S256 method. Ang S256 ang inirerekomendang code challenge method."
+      },
+      "flow": {
+        "heading": "Authorization code flow",
+        "laneRp": "Relying Party",
+        "laneOp": "OpenID Provider",
+        "s1": "I-redirect ang user sa provider gamit ang scope=openid",
+        "s2": "Ina-authenticate ng provider ang user at kumukuha ng consent",
+        "s3": "Nagre-redirect pabalik ang provider gamit ang authorization code",
+        "s4": "Ipinapalit ng Relying Party ang code sa token endpoint",
+        "s5": "Nagbabalik ang provider ng ID token at access token",
+        "s6": "Vine-validate ng Relying Party ang lagda ng ID token laban sa JWKS",
+        "s7": "Maaaring tawagan ng Relying Party ang UserInfo gamit ang access token",
+        "s8": "Ibinabalik ng provider ang mga claim ng user"
       }
     }
   },
@@ -521,7 +841,7 @@
     "short3": "Ang mga interactive na tool ay ganap na tumatakbo sa iyong browser. Ang ini-paste o tina-type mo sa mga ito ay nananatili sa iyong device at hindi ipinapadala kahit saan.",
     "short4": "Tatlong bagay lamang ang may kinalaman sa data, at bawat isa ay ipinapaliwanag sa ibaba: isang setting ng tema na nakaimbak sa iyong sariling browser, ang mga karaniwang connection log na nililikha ng bawat pagbisita sa site sa antas ng hosting, at anumang mensaheng pipiliin mong ipadala sa pamamagitan ng email.",
     "controllerTitle": "Sino ang may pananagutan",
-    "controllerBody": "Ito ang personal na website ni Rodolfo Nützmann (ronutz.com). Para sa anumang tanong tungkol sa privacy, o upang gamitin ang alinman sa mga karapatang inilarawan sa ibaba, sumulat sa hello@ronutz.com. Ang mga katanungan ay direktang hinahawakan ni Rodolfo Nützmann, bilang data controller.",
+    "controllerBody": "Ito ang personal na website ni Rodolfo Nützmann (ronutz.com). Para sa anumang tanong tungkol sa privacy, o upang gamitin ang alinman sa mga karapatang inilarawan sa ibaba, sumulat sa {email}. Ang mga katanungan ay direktang hinahawakan ni Rodolfo Nützmann, bilang data controller.",
     "noTrackTitle": "Walang cookie, walang pagsubaybay, walang analytics",
     "noTrackBody": "Ang site na ito ay hindi naglalagay ng anumang uri ng cookie. Hindi ito gumagamit ng anumang analytics service (tulad ng Google Analytics o Plausible), anumang advertising network, anumang social-media tracking pixel, at anumang device fingerprinting. Ang iyong pagbisita ay hindi sinusukat, pinoprofile, o ibinabahagi sa kahit sino para sa mga layuning iyon.",
     "browserTitle": "Ano ang nakaimbak sa iyong browser",
@@ -537,12 +857,12 @@
     "childrenTitle": "Mga bata",
     "childrenBody": "Ang site na ito ay para sa isang propesyonal, pangkalahatang madla. Hindi ito nakatuon sa mga bata at hindi sinasadyang nangongolekta ng personal na data mula sa kanila.",
     "rightsTitle": "Ang iyong mga karapatan",
-    "rightsBody": "Depende sa kung saan ka nakatira, may mga karapatan ka sa iyong personal na data, kabilang ang pag-access dito, pagpapaayos o pagbura nito, pagtutol sa o paghihigpit sa pagpoproseso nito, paghiling ng kopya sa isang portable na anyo, at pagiging may-alam kung paano ito hinahawakan. Upang gamitin ang alinman sa mga ito, sumulat lamang sa hello@ronutz.com. Dahil napakakaunting personal na data ang napoproseso dito, sa praktika ay kadalasang napakaliit ang magagawa, ngunit laging bukas ang channel.",
+    "rightsBody": "Depende sa kung saan ka nakatira, may mga karapatan ka sa iyong personal na data, kabilang ang pag-access dito, pagpapaayos o pagbura nito, pagtutol sa o paghihigpit sa pagpoproseso nito, paghiling ng kopya sa isang portable na anyo, at pagiging may-alam kung paano ito hinahawakan. Upang gamitin ang alinman sa mga ito, sumulat lamang sa {email}. Dahil napakakaunting personal na data ang napoproseso dito, sa praktika ay kadalasang napakaliit ang magagawa, ngunit laging bukas ang channel.",
     "rightsGdpr": "Kung ikaw ay nasa European Economic Area o United Kingdom, may karapatan ka ring maghain ng reklamo sa iyong lokal na awtoridad sa pangangasiwa ng proteksyon ng data.",
     "rightsLgpd": "Kung ikaw ay nasa Brazil, taglay mo ang mga karapatang nakasaad sa Article 18 ng LGPD, at maaari ka ring makipag-ugnayan sa pambansang awtoridad sa proteksyon ng data (ang ANPD).",
     "changesTitle": "Mga pagbabago sa abisong ito",
     "changesBody": "Kung magbago ang abisong ito, ang binagong bersyon ay ilalathala sa page na ito at ia-update ang petsa sa ibaba. Ang mahahalagang pagbabago ay hindi ilalapat nang paatras.",
-    "updated": "Huling na-update: 28 Hunyo 2026",
+    "updated": "Huling na-update: 30 Hunyo 2026",
     "backHome": "Bumalik sa home"
   },
   "footer": {
@@ -553,7 +873,7 @@
     "contribute": "Tumulong na pahusayin ang mga pagsasalin",
     "feedback": "Magpadala ng feedback",
     "api": "Reperensya ng API",
-    "contributeTools": "Mag-ambag ng tool",
+    "contributeTools": "Magbahagi ng ideya",
     "license": "Lisensya",
     "coffee": "Ibili mo ako ng kape"
   },
@@ -868,7 +1188,9 @@
         "label": "Opisyal na pagsasanay",
         "description": "Mag-book ng kurso sa pamamagitan ng Red Education"
       }
-    }
+    },
+    "feedbackNote": "May natagpuang bug, mali, o kamalian sa site?",
+    "feedbackLink": "Ibahagi ito sa pahina ng mga ideya"
   },
   "certs": {
     "title": "Mga Sertipiko at Kwalipikasyon",
@@ -935,7 +1257,6 @@
     "p1Title": "Huwag manghula, kalkulahin",
     "p1Body": "Ang mga tool sa site na ito ay kinakalkula ang mga sagot nang local at deterministiko. Hindi sila kumokontak sa server gamit ang iyong data, at hindi sila tumatantya. Ang tumatakbo sa iyong browser ay nananatili sa iyong browser.",
     "p2Title": "Bukas ang kaibuturan",
-    "p2Body": "Ang engine sa likod ng mga tool ay open source, inilabas sa ilalim ng permissive license. Ang site na ito ay itinayo sa ibabaw nito, tulad ng maaari ring gawin ng iba. Ang openness dito ay hindi isang termino sa marketing; ito ay arkitektura.",
     "p3Title": "Idinokumento habang ginagawa",
     "p3Body": "Bawat pundasyong bahagi ng codebase ay may komento at dokumentasyon, hindi isang bagay na idinagdag kalaunan kundi isang nakatakdang panuntunan. Ang paggawang ito ay dinisenyo para maging nababasa, para sa taong magpapanatili nito at para sa taong magmamana nito.",
     "p4Title": "Ginawa para maglingkod at maglakbay",
@@ -951,7 +1272,7 @@
     "stackType": "Typography",
     "stackTypeV": "Inter para sa teksto, JetBrains Mono para sa datos at code",
     "stackEngine": "Tool engine",
-    "stackEngineV": "Open core engine, inilabas sa ilalim ng permissive license",
+    "stackEngineV": "Isang deterministikong compute layer na tumatakbo nang buo sa browser",
     "stackSearch": "Paghahanap",
     "stackSearchV": "Client-side static full-text search; walang search server",
     "vibeTitle": "Vibe coding ba ito?",
@@ -972,7 +1293,10 @@
     "redblueLabel": "Pula at asul",
     "redblueBody": "Ang parehong pag-decode-at-pagpapaliwanag na nagbibigay-daan sa isang red-teamer na basahin ang isang nakuhang token ay nagbibigay-daan sa isang blue-teamer na maunawaan kung ano ang inilalabas ng sarili nilang stack. Sinasadya ng platform na manatili sa panig ng pagsusuri ng linyang iyon: tinutukoy, dinedecode, kino-convert, at ipinapaliwanag nito, at hindi umaabot sa pamemeke, pag-iniksyon, o pagtalo sa mga kontrol. Ang hangganang iyon ay isang desisyon sa disenyo, hindi isang pagkaligta; umiiral ang mga tool na ito upang magturo at mag-diagnose, hindi upang maging sandata.",
     "localLabel": "Lokal at deterministiko",
-    "localBody": "Lahat ay tumatakbo sa browser. Ang purong function na tinatawag ng tool sa pahina ay siya ring tinatawag ng API; sa parehong input ay ibinabalik nito ang parehong output, walang itinatabing estado, at walang ipinapadala sa isang server. Walang cookies, walang analytics, gaya ng buong inilalahad ng pahina ng Privacy."
+    "localBody": "Lahat ay tumatakbo sa browser. Tumatawag ang tool ng isang purong function: sa parehong input ay ibinabalik nito ang parehong output, walang itinatagong estado, at walang ipinapadala sa isang server. Walang cookies, walang analytics, gaya ng buong inilalahad ng pahina ng Privacy.",
+    "thanksTitle": "Natatanging pasasalamat",
+    "p2Body": "Ang deterministikong lohika na pinapatakbo ng bawat tool ang buong tool: walang nakatagong hakbang sa server, walang account, at walang telemetry. Lahat ay tumatakbo sa iyong browser.",
+    "changelogLink": "Talaan ng mga pagbabago"
   },
   "support": {
     "title": "Suportahan ang proyektong ito",
@@ -1030,26 +1354,12 @@
     "accessRoleLabel": "Papel",
     "accessPermsLabel": "Mga pahintulot ng may-ari"
   },
-  "contributeTools": {
-    "eyebrow": "Bukas na toolbox",
-    "title": "Mag-ambag ng tool",
-    "lede": "Ang toolbox ay binuo para lumago. Ang bawat tool ay isang maliit, self-describing na module sa bukas na engine, at niloload ito ng site sa parehong paraan na magagawa ng kahit sino. Kung may tool kang akma, imungkahi ito.",
-    "shapeTitle": "Ano ang isang tool",
-    "shapeBody": "Ang isang tool ay tatlong bagay nang sabay: isang manifest na naglalarawan dito (kung ano ito, ang input na tinatanggap nito, kung saan nagmumula ang katumpakan nito), isang nag-iisang purong run function na gumagawa ng trabaho, at isang set ng reference vectors, mga nakapirming input-at-output pair na nagpapatunay na tama ang function. Niloload ng engine ang tool mula sa manifest nito, kaya ang isang maayos na module ay pumapasok nang hindi ginagalaw ang iba pang bahagi ng site.",
-    "principlesTitle": "Ano ang dapat sundin ng isang tool",
-    "principlesBody": "Lokal na tumatakbo ang computation at deterministic ito: ang parehong input ay palaging nagbubunga ng parehong output, nang walang orasan, network, o randomness sa resulta. Ang anumang sensitibo ay nananatili sa device bilang default. Ang katumpakan ay nakaangkla sa reference vectors at sa mga sinipi na pinagmulan, gaya ng isang RFC o isang nailathalang pamantayan, hindi sa opinyon. Inilalabas ang code sa ilalim ng isang permissive na lisensya, kaya ang site at kahit sino pa ay maaaring magtayo dito.",
-    "proposeTitle": "Magmungkahi ng isa",
-    "proposeBody": "Magpadala ng maikling panukala sa pamamagitan ng email: kung ano ang kinukuwenta ng tool, isang halimbawang input kasama ang eksaktong output na dapat itong magbunga, at ang pinagmulan na pinagbabatayan ng katumpakan nito. Ang isang balangkas ng manifest at ilang reference vector ay malugod na tinatanggap, ngunit hindi kailangan. Kung akma, isinasama ito sa engine at sa toolbox.",
-    "emailLabel": "Email",
-    "backToTools": "Bumalik sa toolbox"
-  },
   "api": {
     "title": "API",
     "lede": "Ang mga tool sa site na ito ay tumatakbo sa iyong browser at pinananatili ang iyong data sa iyong device. Para sa automation, gaya ng mga script, pipeline, at integration, ang parehong deterministic na mga kuwenta ay makukuha bilang isang maliit na HTTP API. Ito ang programmatic na katapat ng mga tool sa browser, hindi isang kapalit ng mga ito.",
     "privacyTitle": "Ano ang ibig sabihin nito para sa iyong data",
     "privacyBody": "Tinatanggap lamang ng API ang input na ipinadala mo rito, kinukuwenta ang isang resulta, at ibinabalik ito. Wala itong estado at hindi nagtatala ng anumang query value o request body. Kung kailangan mo ng garantisadong zero data egress, gamitin ang mga tool sa browser, o patakbuhin ang bukas na engine mismo.",
     "engineTitle": "Ang parehong engine ng browser",
-    "engineBody": "Ang bawat endpoint ay tumatawag sa parehong engine function na tinatawag ng tool sa browser, kaya nagbabalik ang API at ang browser ng magkaparehong resulta byte por byte. Ang engine na iyon, @ronutz/netcore, ay open source sa ilalim ng isang permissive na lisensya.",
     "specTitle": "Ang espesipikasyon",
     "specBody": "Ang buong kontrata ay nailathala bilang OpenAPI 3.1. I-download ito, ituro dito ang sarili mong mga kasangkapan, o basahin ang reperensya sa ibaba.",
     "downloadSpec": "I-download ang openapi.yaml",
@@ -1073,17 +1383,57 @@
     "descriptionLabel": "Paglalarawan",
     "viewReference": "Reperensya",
     "viewSwagger": "Swagger UI",
-    "swaggerLoadError": "Hindi maload ang Swagger UI."
+    "swaggerLoadError": "Hindi maload ang Swagger UI.",
+    "engineBody": "Ang bawat endpoint ay nagpapatakbo ng parehong pure function na pinapatakbo ng tool sa browser, kaya ang API at ang browser ay nagbabalik ng byte-identical na mga resulta."
   },
   "license_page": {
-    "eyebrow": "Bukás na ubod",
+    "eyebrow": "Mga tuntunin",
     "title": "Lisensya",
-    "lede": "Ang ronutz.com ay may bukás na ubod: ang makina sa likod ng bawat tool ay open source, ngunit ang website na nakabuo rito ay hindi.",
-    "openHeading": "Open source, ang makina",
-    "openBody": "Ang @ronutz/netcore, ang makina sa likod ng bawat tool at bawat tugon ng API sa site na ito, ay inilalabas sa ilalim ng Apache License 2.0. Ang parehong function na tinatawag ng mga tool sa browser ang tinatawag din ng API, kaya malaya mong magagamit, mababago, at mapagbubuhatan ito sa ilalim ng lisensyang iyon.",
     "closedHeading": "Closed source, ang website na ito",
     "closedBody": "Ang website mismo ay closed source. Ang disenyo, interface, nakasulat na nilalaman nito (kasama ang bawat artikulo ng Learn), branding, at ang partikular na paraan ng pagkakabuo at pagkakapakita ng mga tool dito ay pag-aaring eksklusibo, nakalaan ang lahat ng karapatan. Walang ipinagkakaloob na pahintulot na kopyahin, kopyahing muli, baguhin, muling ipamahagi, o lumikha ng mga akdang hango mula sa site o nilalaman nito nang walang naunang nakasulat na pahintulot.",
     "contact": "May tanong tungkol sa lisensya? <a>Makipag-ugnayan.</a>",
-    "backHome": "Bumalik sa mga tool"
+    "backHome": "Bumalik sa mga tool",
+    "thirdHeading": "Mga open-source na bahagi",
+    "lede": "Ang ronutz.com ay isang proprietary na akda, nakalaan ang lahat ng karapatan. Saklaw ng mga tuntuning ito ang website at ang nilalaman nito. Ang site ay binuo sa open-source na software, na ginagamit at muling ipinamamahagi sa ilalim ng sarili nitong mga tuntunin ng lisensya, na nakalista sa ibaba.",
+    "thirdBody": "Nakatayo ang site na ito sa open-source na gawa. Ang site mismo ay binuo gamit ang Next.js at React at inihahatid bilang isang static export; ang internationalization ay gumagamit ng next-intl; ang nilalaman ng Learn ay nire-render gamit ang next-mdx-remote, gray-matter, remark-gfm, at js-yaml; at ang paghahanap ay pinapagana ng Pagefind. Ang mga ito ay ibinibigay sa ilalim ng MIT License, maliban sa next-mdx-remote (Mozilla Public License 2.0). Ang sanggunian ng API ay naglalaman ng Swagger UI, sa ilalim ng Apache License 2.0. Ang bawat component ay nananatili sa ilalim ng sarili nitong lisensya, at ang buong mga abiso ay inihahatid kasama ng source code."
+  },
+  "contributeIdeas": {
+    "eyebrow": "Bukas sa mga ideya",
+    "title": "Magbahagi ng ideya",
+    "lede": "Ang toolbox na ito ay ginawa para lumago, at ang pinakamalinaw na hudyat kung saan ito dapat patungo ay nagmumula sa mga gumagamit nito. May natagpuang bug, mali, o kamalian? May tool ka bang gusto na wala pa rito? May nakita ka bang mas magandang paraan para gawin ang isang bagay, o resulta na iba ang pagkakasabi mo? Ipadala mo; malugod na tinatanggap ang lahat ng uri ng input.",
+    "sendTitle": "Ano ang maaari mong ipadala",
+    "sendBody": "Mga bug, mali, at kamalian ng anumang uri: isang tool na hindi tama ang kilos, isang maling resulta, isang mali sa isang Learn article, o anumang bagay na mukhang hindi tama. Mga kahilingan sa feature para sa mga tool na mayroon na. Mga ideya para sa mga bagong tool na dapat mayroon ang toolbox. Mga pagwawasto at karagdagan sa mga Learn article, tulad ng mas malinaw na paliwanag, mas magandang sanggunian, o isang paksang nawawala. O isang iba't ibang anggulo lang sa isang problema. Okay lang kung magaspang; sapat na ang isang pangungusap para magsimula ng usapan.",
+    "toolTitle": "Kung nagmumungkahi ka ng bagong tool",
+    "toolBody": "Ang mga tool dito ay maliliit at self-describing na module: isang manifest na nagsasabi kung ano ang tool at kung saan nanggagaling ang kawastuhan nito, isang pure function na gumagawa ng trabaho, at isang set ng golden vectors, ang mga nakapirming pares ng input at output na nagpapatunay nito. Ang isang magandang kandidato ay nagkakalkula nang lokal at deterministiko (ang parehong input ay laging nagbibigay ng parehong output, na walang orasan, network, o randomness sa resulta), pinananatili sa device ang anumang sensitibo, at iniaangkla ang kawastuhan nito sa isang sinipi na sanggunian tulad ng isang RFC sa halip na sa opinyon. Hindi mo kailangang gawin ang alinman doon para magmungkahi ng isa: ilarawan lang kung ano ang dapat nitong kalkulahin, isang halimbawa, at ang sangguniang pinagbabatayan nito.",
+    "fitRule": "Isang simpleng pagsusulit ang magpapasya. Bawat tool dito ay tumatakbo nang buo sa iyong browser at walang ipinapadala kahit saan, kaya ang bagong tool ay dapat na isang bagay na makukuwenta ng kompyuter mula lang sa iyong i-type, sa pagsunod sa isang nakapirming, nakalathalang panuntunan. Kung kailangan nitong mag-online, tumingin ng isang bagay nang live, mag-log in sa iyo, o tandaan ka, wala itong lugar dito.",
+    "fitYes": "Bagay:",
+    "fitYesBody": "pag-decode o pagpapaliwanag ng isang bagay na ipinaste mo (isang token, isang sertipiko, isang config, output ng utos), pag-convert sa pagitan ng mga format, pagkuwenta mula sa isang pamantayan o pormula, o paglikha mula sa isang panuntunan, tulad ng UUID, hash, o command line.",
+    "fitNo": "Hindi bagay:",
+    "fitNoBody": "anumang kailangang mag-online o magsuri ng isang bagay nang live (pagsubok ng totoong website, pagtatanong sa isang live na DNS server, pag-scan ng address), anumang nangangailangan ng account, login, o naka-save na data, o anumang sagot na hindi nakatakda ng isang nakalathalang pamantayan.",
+    "fitUnsure": "Hindi sigurado kung saang panig nahuhulog ang iyong ideya? Ipadala pa rin ito at sabihin kung ano ang dapat nitong gawin. Sasabihin ko nang tapat kung bagay ito, at kung bakit.",
+    "emailTitle": "Paano mo ako maaabot",
+    "emailBody": "Ang email ang channel. Sabihin mo kung ano ang natagpuan mo o kung ano ang gusto mo, na may sapat na detalye para makilos: isang halimbawa, isang link, ang eksaktong pananalita, kung ano ang akma. Kung mas magiging maganda nito ang toolbox, gagawin ito.",
+    "emailLabel": "Email",
+    "backToTools": "Bumalik sa toolbox"
+  },
+  "languageStatus": {
+    "title": "Katayuan ng pagsasalin",
+    "reviewed": "Sinuri ng tao",
+    "complete": "Makina, kumpleto",
+    "partial": "Makina, isinasagawa",
+    "explainTitle": "Paano minamarkahan ang mga pagsasalin",
+    "explainBody": "Ang Ingles at Brazilian Portuguese ay isinusulat at sinusuri ng isang tao. Karamihan sa ibang mga wika ay isinalin ng makina at minarkahan ayon sa kung gaano na kalayo ang narating: amber kapag saklaw na ng isang wika ang buong site, dilaw habang ang mas bagong nilalaman ay nasa Ingles pa at humahabol. Ang mga wikang minarkahan ng pula ay wala pang salin at ipinapakita muna sa Ingles. Ang mga pahinang isinalin ng makina ay may maikling paunawa rin, at malugod kang makakatulong na pagbutihin ang alinman sa mga ito.",
+    "stub": "Hindi pa naisasalin"
+  },
+  "changelog": {
+    "eyebrow": "Talaan ng mga Pagbabago",
+    "title": "Ano ang bago",
+    "lede": "Isang patuloy na talaan ng mga bagong tool, bagong artikulo sa Learn, at mahahalagang pagbabago sa site na ito. May {count} na tool na live ngayon.",
+    "kindLaunch": "Paglulunsad",
+    "kindTool": "Bagong tool",
+    "kindFeature": "Tampok",
+    "kindI18n": "Lokalisasyon",
+    "kindContent": "Nilalaman",
+    "kindInfra": "Imprastraktura"
   }
 }

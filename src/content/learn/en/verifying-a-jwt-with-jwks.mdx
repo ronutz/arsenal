@@ -1,0 +1,40 @@
+---
+slug: verifying-a-jwt-with-jwks
+title: "Verifying a JWT with a JWKS: From kid to Signature"
+summary: "Verifying a signed token is a short, strict sequence: read the header, find the key whose kid matches in the provider's JWKS, confirm the algorithm, and check the signature. Each step has a classic pitfall, and skipping the strictness is how verification bypasses happen."
+concepts: ["jwt", "jwks", "kid", "verification", "alg confusion"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["jwks-and-key-rotation", "jwk-key-types"]
+category: identity
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+A JWKS is only useful at the moment you verify a token. The verification itself is a small pipeline, and getting each step exactly right is what separates a secure verifier from a bypassable one.
+
+## The sequence
+
+First, read the token's header — its first segment — which is base64url-encoded JSON. The header tells you two things you need: the `alg` the token claims to be signed with, and the `kid` of the key that signed it.
+
+Second, fetch the provider's JWKS (cached, refreshed on a `kid` miss) and find the key whose `kid` matches the header. If no key matches, stop: there is no key to verify with. If exactly one matches, that is your key.
+
+Third, confirm the algorithm. The key's `alg`, or its type, must be one your application expects. You should pin the acceptable algorithms in advance rather than trusting whatever the token asks for.
+
+Fourth, run the signature check with that key and that algorithm over the header-and-payload. Only if it passes do you then validate the claims (issuer, audience, expiry).
+
+The [JWKS explainer](/tools/jwks-explainer) carries out the first two steps for you: paste a JWKS and a JWT, and it reads the header and reports which key the `kid` selects, or that none does.
+
+## The pitfalls that matter
+
+Three classic mistakes turn this pipeline into a vulnerability.
+
+The first is **algorithm confusion**. If a verifier trusts the header's `alg` blindly, an attacker can change it. The notorious case swaps an `RS256` (asymmetric) token for `HS256` (symmetric) and signs it with the provider's public key as if it were an HMAC secret; a verifier that does not pin the algorithm accepts it. Always decide the acceptable algorithm from the key, not from the attacker-controlled header.
+
+The second is **accepting `alg` of `none`**. The JWS spec defines an unsecured `none` algorithm with an empty signature. A verifier must never accept it for tokens that are supposed to be signed.
+
+The third is **selecting by the wrong field**. If the header has no `kid`, some libraries fall back to matching by `alg`, which is fragile and can match the wrong key. A well-formed provider always sets a `kid`; the explainer flags a missing one and shows the fragile alg fallback when it has to use it.
+
+## See it end to end
+
+To follow a key from a header to its match, use the [JWKS explainer](/tools/jwks-explainer). For the document that holds those keys, see [JWKS and key rotation](/learn/jwks-and-key-rotation); for what each key is made of, see [JWK key types](/learn/jwk-key-types).

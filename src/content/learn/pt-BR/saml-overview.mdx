@@ -1,0 +1,42 @@
+---
+slug: saml-overview
+title: "SAML 2.0: Como Funciona o SSO no Navegador"
+summary: "O que é uma asserção SAML, os papéis do provedor de identidade e do provedor de serviço, o fluxo de Web Browser SSO iniciado pelo SP de ponta a ponta, e a diferença entre os bindings HTTP-POST e HTTP-Redirect que transportam as mensagens."
+concepts: ["saml", "sso", "identity provider", "service provider", "assertion", "bindings", "web browser sso"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-assertions-and-conditions", "saml-signatures", "xxe-and-xml-security"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O que o SAML resolve
+
+O SAML 2.0 (Security Assertion Markup Language) é o padrão XML que permite a um sistema atestar a identidade de um usuário para outro. É o protocolo por trás da maior parte do single sign-on corporativo: você faz login uma vez em um provedor de identidade central, e esse provedor emite uma declaração assinada que as outras aplicações aceitam em vez de pedir um novo login. Essa declaração assinada é chamada de asserção, e ela é o coração do SAML.
+
+Dois papéis fazem todo o trabalho. O provedor de identidade (IdP) autentica o usuário e emite asserções: Okta, Microsoft Entra ID, PingFederate, Shibboleth e Keycloak são exemplos comuns. O provedor de serviço (SP) é a aplicação que o usuário quer acessar, que confia em asserções de um IdP conhecido em vez de gerenciar senhas por conta própria. A confiança entre eles é estabelecida com antecedência pela troca de metadados, que incluem o identificador de entidade de cada lado, os endpoints e o certificado de assinatura.
+
+## O fluxo de Web Browser SSO
+
+O perfil SAML mais comum é o Web Browser SSO iniciado pelo SP, e o navegador é o mensageiro que carrega cada mensagem entre os dois servidores. Nada flui diretamente do IdP para o SP; o navegador do usuário transmite cada etapa.
+
+O fluxo funciona assim. O usuário acessa o SP e ainda não está autenticado. O SP monta um AuthnRequest e redireciona o navegador para o IdP com ele. O IdP autentica o usuário, por senha, um segundo fator, uma sessão existente, ou o que exigir. O IdP então monta uma Response contendo uma asserção sobre o usuário e a envia de volta, pelo navegador, a um endpoint fixo do SP chamado Assertion Consumer Service (ACS). O SP valida a Response e, se tudo estiver correto, cria uma sessão local e o usuário entra.
+
+O AuthnRequest diz o que o SP quer. A Response carrega a resposta: um Status (a autenticação teve êxito?) e, em caso de sucesso, uma Assertion declarando quem é o usuário, quando a declaração é válida, para qual audiência ela serve e como ele se autenticou. O artigo complementar sobre [asserções e condições](/learn/saml-assertions-and-conditions) percorre essa estrutura campo a campo.
+
+## Os dois bindings
+
+Um binding é a regra de como uma mensagem SAML viaja sobre o HTTP. Dois são usados no SSO de navegador, e diferem em como a mensagem é empacotada.
+
+O binding HTTP-Redirect carrega a mensagem como um parâmetro de query na URL. Como URLs têm limite de tamanho, o XML é comprimido com DEFLATE e depois codificado em base64 para deixá-lo pequeno. Esse binding é típico do AuthnRequest que vai ao IdP, já que requisições são curtas.
+
+O binding HTTP-POST carrega a mensagem como um campo de formulário oculto, codificado em base64, que o navegador envia automaticamente com um POST. Não há compressão: o campo contém o base64 puro do XML. Esse binding é típico da Response que volta, já que uma asserção com atributos e uma assinatura é grande demais para uma URL.
+
+Essa distinção importa quando você decodifica uma mensagem capturada na mão. Um valor de formulário `SAMLResponse` de um POST é base64 que decodifica direto para XML. Um valor de query `SAMLRequest` de um redirect é base64 que decodifica para bytes comprimidos com DEFLATE, que precisam ser descomprimidos antes de você ver qualquer XML. O decodificador deste kit lê XML bruto e a forma base64 do POST diretamente; um valor de redirect comprimido precisa ser descomprimido primeiro.
+
+## O que o SP deve verificar
+
+Receber uma asserção não é o mesmo que confiar nela. Um SP correto verifica a assinatura contra o certificado conhecido do IdP, confirma que a asserção é endereçada a ele pela restrição de audiência, checa a janela de validade, confirma que a resposta corresponde a uma requisição que ele de fato enviou, e se protege contra repetição. Pular qualquer uma dessas etapas transforma o SSO em um buraco, porque um atacante capaz de forjar ou repetir uma asserção poderia entrar como qualquer pessoa. A assinatura é tratada em [assinaturas SAML e XML-DSig](/learn/saml-signatures), e as verificações estruturais no artigo de asserções.
+
+Um decodificador ajuda você a ver o que está dentro de uma mensagem para raciocinar sobre essas verificações. Ele não as executa. Ler a estrutura é o primeiro passo; verificar a assinatura contra uma chave real, no SP, é o que de fato estabelece a confiança.

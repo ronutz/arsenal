@@ -1,0 +1,42 @@
+---
+slug: bigip-cookie-formats
+title: "As Quatro Codificações de Cookie do BIG-IP, Byte a Byte"
+summary: "Um passo a passo preciso pelas quatro formas sem criptografia do cookie de persistência do BIG-IP: IPv4 padrão com seus bytes de endereço invertidos e porta com bytes trocados, IPv4 e IPv6 em route domains, e a forma IPv6, cada uma com uma decodificação resolvida."
+concepts: ["bigip", "persistence cookie", "encoding", "ipv4", "ipv6", "route domain", "byte order"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-disclosure", "bigip-cookie-encryption"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Quatro formatos, uma ideia
+
+Um cookie de persistência do BIG-IP sempre codifica a mesma coisa: o endereço e a porta de um membro do pool. Como ele é organizado depende de o membro ser IPv4 ou IPv6 e de estar ou não em um route domain não padrão. Os quatro formatos estão documentados no artigo K6917 da F5. O detalhe traiçoeiro, e o que mais confunde, é que a ordem dos bytes não é a mesma em todos os formatos.
+
+## IPv4 padrão
+
+Este é o caso comum: um valor como `1677787402.20480.0000`, três campos decimais separados por ponto. O primeiro campo é o endereço, o segundo é a porta, e o terceiro é um `0000` fixo.
+
+Para decodificar o endereço, escreva o decimal como um número hexadecimal de 32 bits e leia seus bytes ao contrário. `1677787402` é `0x6401010A`. Seus bytes são `64 01 01 0A`, e invertidos ficam `0A 01 01 64`, que é `10.1.1.100`. A inversão é a parte que surpreende: o endereço é armazenado em little-endian.
+
+A porta tem os bytes trocados, e não invertidos, o que para um valor de dois bytes equivale a trocar o byte alto pelo baixo. `20480` é `0x5000`; troque os bytes para obter `0x0050`, que é `80`. Então `1677787402.20480.0000` decodifica para `10.1.1.100:80`. Como segunda verificação, um campo de porta `36895` é `0x901F`, trocado para `0x1F90`, que é `8080`.
+
+## IPv4 em um route domain
+
+Quando o membro do pool está em um route domain não padrão, o formato muda completamente: `rd5o00000000000000000000ffffc0000201o80`. Leia como `rd`, o número do route domain (`5`), a letra `o`, um prefixo IPv6 mapeado em IPv4 (`00000000000000000000ffff`), o endereço em hexadecimal direto (`c0000201`), outro `o` e a porta em decimal simples (`80`).
+
+Aqui o endereço não é invertido. `c0 00 02 01` é simplesmente `192.0.2.1`, lido da esquerda para a direita. A porta é decimal simples, sem troca de bytes. Então este cookie é `192.0.2.1` no route domain `5` na porta `80`.
+
+## IPv6
+
+Um membro IPv6 usa o prefixo `vi`: `vi20010112000000000000000000000030.20480`. Depois de `vi` vêm 32 caracteres hexadecimais, o endereço IPv6 completo lido direto, e então um ponto e a porta. Os 32 caracteres hex `2001 0112 0000 0000 0000 0000 0000 0030` são o endereço, que comprime para `2001:112::30`. A porta após o ponto tem os bytes trocados exatamente como na forma IPv4 padrão, então `20480` é novamente `80`. Este cookie é `[2001:112::30]:80`.
+
+## IPv6 em um route domain
+
+O último formato combina o layout de route domain com um endereço IPv6: `rd3o20010112000000000000000000000030o80`. Leia `rd`, o route domain (`3`), `o`, o endereço IPv6 de 32 hex lido direto, `o` e a porta em decimal simples. O endereço comprime para `2001:112::30` e a porta é `80`, resultando em `[2001:112::30]` no route domain `3` na porta `80`. Como na forma IPv4 em route domain, aqui a porta é decimal simples, sem troca de bytes.
+
+## A forma criptografada
+
+Se a criptografia de cookie estiver ativada, nada do que foi dito acima se aplica. O valor começa com `!` e tem cerca de oitenta caracteres em base64, por exemplo `!VPyexJn...HwA=`. Isso é texto cifrado em AES e não pode ser decodificado sem a chave do BIG-IP. O decodificador reconhece a forma e informa, em vez de adivinhar. Por que você desejaria essa forma é tratado no artigo sobre [criptografia de cookie](/learn/bigip-cookie-encryption).

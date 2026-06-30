@@ -1,0 +1,28 @@
+---
+slug: query-strings
+title: "Query Strings: Parameters, Plus Signs, and Repeated Keys"
+summary: "The part of a URL after the question mark looks simple but hides real ambiguity: how parameters are separated, why a plus sign sometimes means a space, how repeated keys behave, and why there is no single governing standard."
+concepts: ["query string", "url", "parameters", "form-urlencoded", "percent-encoding", "rfc 3986"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "url-encoding-and-idn", "percent-encoding"]
+category: encoding
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## What the query actually is
+
+The query is everything between the question mark and the fragment. RFC 3986 defines where it starts and ends, but it says almost nothing about what is inside: to the URI grammar, the query is just a string of allowed characters. The familiar `key=value&key=value` structure is a separate convention, inherited from HTML form submission (the application/x-www-form-urlencoded format), that the whole web has settled on. A parser splits the query on the ampersand to get pairs, then splits each pair on the first equals sign to get a key and a value.
+
+## The plus-sign ambiguity
+
+Here is the trap that catches people. In the form-urlencoded convention, a space is encoded as a plus sign, so `q=hello+world` means the two words separated by a space. But under strict RFC 3986, the plus sign is just a literal plus with no special meaning, and a space would be percent-encoded as `%20`. So the same bytes, `a+b`, mean "a space b" to a form decoder and "a plus b" to a strict URI reader. Most web frameworks treat the query as form-encoded and turn the plus into a space, but not all do, and the disagreement is a real source of bugs. The inspector decodes percent-escapes but keeps the plus literal, and flags its presence so you can decide which interpretation your code applies.
+
+## Repeated keys and structure
+
+A query can list the same key more than once: `tag=red&tag=blue`. There is no universal rule for what that means. Some servers keep the first occurrence, some keep the last, and many collect them into a list, which is how checkboxes and multi-select fields are submitted. Other conventions layer structure on top of the flat format, such as `items[]=red&items[]=blue` or dotted names like `filter.color=red`, but these are framework choices, not part of any URL standard. When you see repeated or bracketed keys, the meaning depends entirely on the application reading them.
+
+## Why values must be encoded
+
+Because the ampersand and equals sign are structural, any real ampersand or equals inside a value has to be percent-encoded, or the parser will split in the wrong place. The same is true for spaces, the hash that would otherwise start the fragment, and any non-ASCII text. This is why query values are so often full of percent escapes. Decoding each value back to its real content, after the structural split, is the job the inspector does for every parameter, and the mechanics of that encoding are covered in [percent-encoding](/learn/percent-encoding).

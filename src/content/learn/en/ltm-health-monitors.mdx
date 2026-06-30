@@ -1,0 +1,30 @@
+---
+slug: ltm-health-monitors
+title: "How LTM Health Monitors Decide Up or Down"
+summary: "A health monitor is the probe a BIG-IP uses to decide whether a backend member can receive traffic. Its send and receive strings, its interval and timeout, and where it is attached together determine how quickly a failure is noticed and how a member is marked down."
+concepts: ["health monitor", "ltm", "pool", "availability", "f5", "load balancing"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+Load balancing is only as good as the BIG-IP's knowledge of which backends are alive. That knowledge comes from health monitors: small, repeating probes attached to pools, members, or nodes. A monitor's job is binary, to mark a target up or down, but the way it reaches that decision is worth understanding because it governs both false alarms and slow detection.
+
+## What a probe checks
+
+The simplest monitors check reachability. An `icmp` monitor pings the member's address; a `gateway-icmp` monitor is commonly used to watch a next hop. A `tcp` monitor confirms that a port accepts a connection. The most useful monitors go further into the application. An `http` or `https` monitor sends a request and inspects the reply: the `send` field holds the request string, such as a `GET` for a health-check URL, and the `recv` field holds the text the response must contain, such as a status line or a known string in the body. A member is healthy only when the received data matches; a server that accepts the connection but returns an error page will correctly be marked down by a well-written `recv` string.
+
+## Interval and timeout
+
+Two timing fields decide how fast a failure is noticed. The `interval` is how often the probe runs, in seconds. The `timeout` is how long the BIG-IP waits, without a successful probe, before declaring the member down. The conventional relationship is `timeout = 3 * interval + 1`, so the default of interval 5 and timeout 16 means a member must miss roughly three consecutive probes before it is taken out of rotation. Shortening these values detects failures faster but raises the risk of flapping on a member that is merely slow; lengthening them is more forgiving but leaves a failed member in service longer. There is no universally correct setting, only a trade-off to make deliberately.
+
+## Where the monitor is attached
+
+The same monitor behaves differently depending on where it sits. Attached to a pool, it probes each pool member at that member's address and port; the special destination `*:*` means exactly that, the member's own address and service. Attached to a node, it judges the whole backend host regardless of port, so one failed probe can pull every pool member on that host out of service at once. A pool can also require a minimum number of healthy members through `min-active-members`, below which the pool itself is considered down. And a pool with no monitor at all assumes every member is always up, which means a dead server will keep receiving connections until something else notices.
+
+## Reading monitors in a config
+
+When you review a configuration, a missing or mismatched monitor is one of the highest-value things to catch. A pool without a monitor, a single-member pool with no redundancy, or an HTTP monitor whose `recv` string no longer matches the application's response are all silent availability risks. The [tmsh config explainer](/tools/tmsh-config-explainer) surfaces these directly, noting when a pool has no health monitor or only one member. To see how the pool and its monitor fit into the larger request path, read [how a virtual server works](/learn/how-a-virtual-server-works); for the configuration grammar itself, see [the anatomy of a bigip.conf file](/learn/anatomy-of-bigip-conf).

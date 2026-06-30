@@ -3,10 +3,12 @@
 // ----------------------------------------------------------------------------
 // LICENSE — the licensing terms for ronutz.com.
 //
-// Open-core, stated plainly: the engine (@ronutz/netcore) is open source under
-// Apache-2.0; the website itself — its design, content, branding, and the way
-// the tools are assembled here — is closed source, all rights reserved. Linked
-// from the footer's "License". Reuses the colophon's layout classes. Statically
+// Two parts: the site itself is proprietary — its design, content, branding,
+// and the particular way the tools are assembled here are closed source, all
+// rights reserved — and a third-party section credits the open-source software
+// the site is built on, under each component's own license (the required
+// attribution; the full notices live in the repo's NOTICE file). Linked from
+// the footer's "License". Reuses the colophon's layout classes. Statically
 // generated; localized across all live locales.
 // ============================================================================
 
@@ -44,19 +46,19 @@ export default async function LicensePage({
             </div>
           </section>
 
-          {/* Open source — the engine */}
-          <section className="section">
-            <div className="container colophon-container">
-              <h2 className="colophon-h2">{t("openHeading")}</h2>
-              <p className="colophon-body">{t("openBody")}</p>
-            </div>
-          </section>
-
-          {/* Closed source — the website */}
+          {/* The website — proprietary */}
           <section className="section">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("closedHeading")}</h2>
               <p className="colophon-body">{t("closedBody")}</p>
+            </div>
+          </section>
+
+          {/* Third-party software — required attribution */}
+          <section className="section">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("thirdHeading")}</h2>
+              <p className="colophon-body">{t("thirdBody")}</p>
             </div>
           </section>
 

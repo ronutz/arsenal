@@ -1,0 +1,38 @@
+---
+slug: epoch-units-seconds-to-nanoseconds
+title: "Segundos, Milissegundos, Microssegundos, Nanossegundos: Distinguindo Unidades de Época"
+summary: "O mesmo instante pode ser escrito como 1700000000, 1700000000000 ou maior, dependendo de o timestamp contar segundos, milissegundos, microssegundos ou nanossegundos. Confundi-los é um bug clássico. Quase sempre dá para saber qual é qual pela magnitude do número."
+concepts: ["unix time", "milliseconds", "nanoseconds", "epoch", "precision"]
+relatedTools: ["epoch"]
+relatedArticles: ["unix-time-explained", "the-year-2038-problem"]
+category: encoding
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Um timestamp Unix é uma contagem de unidades de tempo desde a época — mas *qual* unidade não faz parte do número em si, e ecossistemas diferentes escolhem unidades diferentes. O mesmo momento no fim de 2023 pode ser escrito de quatro formas:
+
+- segundos: `1700000000`
+- milissegundos: `1700000000000`
+- microssegundos: `1700000000000000`
+- nanossegundos: `1700000000000000000`
+
+## Quem usa o quê
+
+A convenção depende de onde o timestamp veio. O `date +%s` do shell Unix, a maioria dos bancos de dados e os claims `exp` de JWT usam **segundos**. O `Date.now()` do JavaScript e a maior parte do ecossistema JS usam **milissegundos**. Muitos sistemas de tracing e métricas, e o `time.UnixNano()` do Go, recorrem a **nanossegundos**. O `time.time()` do Python retorna segundos fracionários. Não há padrão universal, então um número solto é genuinamente ambíguo.
+
+## O bug do fator 1000
+
+Confundir unidades é um dos bugs de timestamp mais comuns, e ele falha de forma barulhenta. Passe um valor em milissegundos para algo que espera segundos e você aterrissa cerca de 50.000 anos no futuro. Passe um valor em segundos para algo que espera milissegundos e seu evento "recente" colapsa de volta para perto de 1970. Nenhum dos dois é sutil quando você vê a data — que é exatamente por que converter e *olhar* o resultado é a forma mais rápida de pegar o erro.
+
+## Distinguindo pelo tamanho
+
+Para qualquer timestamp da era atual você lê a unidade direto da magnitude, porque cada unidade é três ordens de grandeza maior que a anterior:
+
+- um valor em segundos tem cerca de 10 dígitos (`1,7 × 10⁹`)
+- milissegundos, cerca de 13 dígitos (`1,7 × 10¹²`)
+- microssegundos, cerca de 16 dígitos (`1,7 × 10¹⁵`)
+- nanossegundos, cerca de 19 dígitos (`1,7 × 10¹⁸`)
+
+Este conversor usa exatamente essa heurística: lê a unidade pelo tamanho do número e diz qual assumiu, então se um valor cair em uma fronteira você vê a suposição e corrige. A heurística é confiável para qualquer timestamp realista de hoje; só fica nebulosa para instantes muito próximos da época, onde os números são pequenos o bastante para um valor em segundos e um em milissegundos parecerem iguais.

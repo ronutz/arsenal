@@ -1,7 +1,7 @@
 // ============================================================================
 // src/lib/tools/pkce/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING PKCE MODULE - a netcore {manifest, run, vectors} triple.
+// THE SELF-DESCRIBING PKCE MODULE - a self-contained {manifest, run, vectors} triple.
 //
 // run() is async (Web Crypto SHA-256) but single-input (a code_verifier), so it
 // fits the standard contract. The verifier is exchanged for tokens, so it is a
@@ -85,7 +85,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

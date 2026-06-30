@@ -1,0 +1,32 @@
+---
+slug: f5-cipher-rules-and-groups
+title: "F5 Cipher Rules, Cipher Groups, and Why Expansion Is Version-Specific"
+summary: "BIG-IP v13 replaced hand-edited cipher strings with cipher rules and cipher groups, a more readable model where rules hold strings and groups combine them with allow, restrict, and exclude. The final ordered suite list still comes from the per-TMOS cipher database, which is why the same string expands differently across versions."
+concepts: ["f5", "cipher rules", "cipher groups", "tmos", "tmm", "compat"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords"]
+category: transport
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+Editing a long raw cipher string by hand is error-prone, and a single misplaced operator can change a security posture without any obvious symptom. BIG-IP v13 introduced a more structured model to manage that complexity: cipher rules and cipher groups.
+
+## Rules and groups
+
+A **cipher rule** is a named object that holds a cipher string, along with optional metadata. BIG-IP ships several pre-built rules, and their strings are worth knowing: `f5-default` is the keyword `DEFAULT`, `f5-ecc` is `ECDHE:ECDHE_ECDSA`, and `f5-secure` is `ECDHE:RSA:!SSLV3:!RC4:!EXP:!DES`. These pre-built rules are read-only and meant as starting templates.
+
+A **cipher group** combines one or more rules with instructions for how to apply them: which rules to allow, which to restrict the result to, and which to exclude. A group might build its final string from a custom rule plus `f5-default`, while excluding everything in another rule such as `f5-hw_keys`. The group then displays a preview of the final cipher string, and you assign the group, or a raw string, to a Client SSL or Server SSL profile. F5 advises against relying solely on the pre-built rules, because their contents change as F5 updates its cryptographic requirements, which can quietly drop older clients.
+
+## COMPAT is gone
+
+One historical keyword deserves a warning. `COMPAT` used to pull in OpenSSL cipher suites that TMM did not implement natively. It was removed in TMOS 13.0. If a configuration still references `COMPAT`, BIG-IP replaces it with `NONE`, and any connection that depended on those suites will fail. Seeing `COMPAT` in a cipher string on a modern version is a bug to fix, not a setting to keep.
+
+## Why exact expansion is version-specific
+
+A cipher string is a set of instructions, and turning those instructions into the actual ordered list of suites requires knowing every suite the platform supports. That catalog is the per-TMOS-version cipher database, and it changes between releases as F5 adds and retires suites. This is why F5 documents that the DEFAULT list "will vary depending on TMOS version," and why the only authoritative way to see a string's real output is to run `tmm --clientciphers` on a box of that exact version. The command evaluates the string against that box's database and prints the resulting suites, each tagged with its protocol, without changing any configuration.
+
+## What the explainer does
+
+For that reason, the [F5 cipher-string explainer](/tools/f5-cipher-string-expander) deliberately does not invent a suite list. It parses the string, expands the pre-built rule names it recognizes, explains every keyword and operator, and reports the security posture, while leaving the exact ordered expansion to `tmm` on the target version. For the grammar, see [reading an F5 cipher string](/learn/f5-cipher-string-syntax); for the security meaning of the keywords, see [TLS cipher security keywords](/learn/tls-cipher-security-keywords).

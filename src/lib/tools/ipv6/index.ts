@@ -1,12 +1,11 @@
 // ============================================================================
 // src/lib/tools/ipv6/index.ts
 // ----------------------------------------------------------------------------
-// THE SELF-DESCRIBING IPv6 MODULE - a netcore {manifest, run, vectors} triple.
+// THE SELF-DESCRIBING IPv6 MODULE - a self-contained {manifest, run, vectors} triple.
 //
-// Mirrors the cidr / x509 reference modules so it can be promoted into
-// @ronutz/netcore unchanged (copy the folder into netcore/src/tools/ipv6, add
-// it to the package exports + registry, cut a minor bump). It is the IPv6
-// counterpart to the IPv4-oriented cidr tool.
+// Mirrors the cidr / x509 reference modules, written so the whole folder could
+// be lifted into an open library unchanged if the project is ever opened. It is
+// the IPv6 counterpart to the IPv4-oriented cidr tool.
 //
 // The manifest is a real D-49 manifest (ArchSpec §9.1): https-only sources, no
 // raw HTML, an `inputDetectors[]` regex an omnibox would use to route a pasted
@@ -108,7 +107,6 @@ export const manifest = Object.freeze({
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
   ],
-  license: { code: "Apache-2.0", content: "CC-BY-4.0" },
 });
 
 /**

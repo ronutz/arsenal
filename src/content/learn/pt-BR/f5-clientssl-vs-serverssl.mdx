@@ -1,0 +1,36 @@
+---
+slug: f5-clientssl-vs-serverssl
+title: "Perfis Client SSL e Server SSL no BIG-IP"
+summary: "Um BIG-IP pode ficar no meio de uma conexão TLS e descriptografá-la. Um perfil client-ssl faz o BIG-IP ser o servidor TLS para o cliente; um perfil server-ssl o faz ser o cliente TLS para o pool. Saber qual lado cada perfil controla é a chave para designs de offload, bridging e recriptografia."
+concepts: ["f5", "client-ssl", "server-ssl", "tls termination", "ssl bridging", "offload"]
+relatedTools: ["f5-ssl-profile-explainer"]
+relatedArticles: ["f5-ssl-profile-protocol-options", "f5-ssl-cert-key-chain"]
+category: transport
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Um virtual server do BIG-IP faz algo que um roteador comum não faz: termina uma conexão TLS, olha o conteúdo em claro e abre uma nova conexão TLS para o backend. Dois tipos de perfil distintos governam as duas metades dessa imagem, e eles desempenham papéis opostos.
+
+## Client SSL: o BIG-IP é o servidor
+
+Um perfil `client-ssl` está voltado para o **cliente**. Com ele anexado, o BIG-IP age como *servidor* TLS: apresenta um certificado, conclui o handshake que o navegador iniciou e descriptografa o tráfego do cliente. É o perfil que guarda o seu certificado público e a chave privada. Tudo o que o cliente vê do TLS do seu site — o certificado, a versão negociada, a cifra — vem daqui.
+
+## Server SSL: o BIG-IP é o cliente
+
+Um perfil `server-ssl` está voltado para o **membro do pool**. Com ele anexado, o BIG-IP age como *cliente* TLS em direção ao backend: abre uma nova conexão TLS para o servidor e, se configurado, valida o certificado do servidor contra uma CA confiável. O backend enxerga o BIG-IP como mais um cliente TLS.
+
+## Três formatos comuns
+
+Esses dois perfis se combinam nos padrões que você realmente implanta:
+
+- **SSL offload** — apenas um perfil `client-ssl`. O BIG-IP termina o TLS do cliente e fala **texto claro** com o pool. Mais simples e rápido, mas a perna do servidor fica sem criptografia, então só é seguro em um segmento interno confiável.
+- **SSL bridging (recriptografia)** — **ambos** os perfis, `client-ssl` e `server-ssl`. O BIG-IP descriptografa o cliente, pode inspecionar ou modificar o tráfego e então recriptografa para o pool. É o que você precisa quando política ou conformidade exigem criptografia de ponta a ponta sem abrir mão do processamento de camada 7.
+- **SSL pass-through** — **nenhum** perfil. O BIG-IP encaminha os bytes criptografados intactos. Sem certificado, sem inspeção, sem recursos de camada 7.
+
+## Por que a distinção importa
+
+Um número surpreendente de chamados de TLS se resume a anexar o perfil errado no lado errado, ou esperar que o backend seja validado quando só há um perfil `client-ssl`. A validação do certificado do servidor *backend* é assunto de `server-ssl` (`peer-cert-mode` mais `ca-file`); a validação de um certificado de *cliente* é assunto de `client-ssl`. Ao ler um perfil, a primeira pergunta a resolver é sempre: qual lado este perfil controla?
+
+Cole qualquer um dos perfis no explicador de perfis SSL e ele dirá o papel dele, as versões de protocolo que permite e o que cada configuração faz.

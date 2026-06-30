@@ -3,7 +3,7 @@ slug: certificate-validation
 title: "Como a validação de certificados de fato funciona"
 summary: "Os passos que um cliente executa para decidir que um certificado é confiável: construir a cadeia, checar assinaturas e datas, casar o nome e impor restrições."
 concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
-relatedTools: ["x509"]
+relatedTools: ["x509", "csr-decoder"]
 relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certificate-signing-request"]
 category: pki
 order: 4
@@ -37,7 +37,7 @@ As extensões v3 não são decoração; são regras que o cliente impõe. Basic 
 
 ## Passo 6: checar a revogação
 
-Por fim, um certificado que era válido quando emitido pode ter sido revogado desde então, por exemplo porque sua chave privada vazou. O cliente pode consultar uma CRL ou um respondedor OCSP para descobrir. Na prática este é o passo mais fraco e mais inconsistente, e a indústria está se movendo na direção de certificados de vida curta em vez disso, que o [artigo de revogação](/learn/certificate-revocation) cobre por completo.
+Por fim, um certificado que era válido quando emitido pode ter sido revogado desde então, por exemplo porque sua chave privada vazou. O cliente pode consultar uma CRL ou um respondedor OCSP para descobrir. O inspetor desta página extrai os endpoints de revogação que o certificado anuncia, seus pontos de distribuição de CRL e seu respondedor OCSP, para que você veja como um cliente o verificaria; ele lê esses ponteiros, mas nunca os contata. Na prática este é o passo mais fraco e mais inconsistente, e a indústria está se movendo na direção de certificados de vida curta em vez disso, que o [artigo de revogação](/learn/certificate-revocation) cobre por completo.
 
 ## A validação é um E, não um OU
 

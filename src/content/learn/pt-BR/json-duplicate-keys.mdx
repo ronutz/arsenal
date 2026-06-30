@@ -1,0 +1,28 @@
+---
+slug: json-duplicate-keys
+title: "Chaves Duplicadas em JSON: Legais, Perigosas e Dignas de Detecção"
+summary: "A sintaxe JSON permite que a mesma chave apareça mais de uma vez em um objeto, mas a especificação não diz o que isso significa. Parsers diferentes resolvem isso de formas diferentes, o que torna chaves duplicadas uma fonte silenciosa de bugs e até de problemas de segurança."
+concepts: ["json", "duplicate keys", "rfc 8259", "interoperability", "security", "validation"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-numbers-and-precision", "url-anatomy"]
+category: encoding
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## A especificação deixa uma lacuna
+
+A gramática JSON diz que um objeto é um conjunto de membros, mas a sintaxe na verdade não proíbe a mesma chave de aparecer duas vezes: `{"role": "user", "role": "admin"}` analisa sem erro de sintaxe. A RFC 8259 reconhece isso diretamente. Ela diz que os nomes dentro de um objeto deveriam ser únicos, e avisa que, quando não são, o comportamento do software que recebe o objeto é imprevisível. Em outras palavras, chaves duplicadas são sintaticamente legais mas semanticamente indefinidas, e essa lacuna é onde mora o problema.
+
+## Os parsers discordam
+
+Como o padrão não exige uma resolução, as implementações fizeram suas próprias escolhas. A mais comum, e o comportamento do próprio parser do JavaScript, é o último-vence: a ocorrência final da chave sobrescreve as anteriores, então o exemplo acima se torna `admin`. Mas outros parsers mantêm a primeira ocorrência, alguns coletam todos os valores em uma lista, e uns poucos rejeitam o documento de imediato. Os mesmos bytes, portanto, significam coisas diferentes para sistemas diferentes, o que quebra a promessa básica de um formato de intercâmbio.
+
+## O ângulo de segurança
+
+Essa discordância não é apenas desorganizada; ela já foi a raiz de vulnerabilidades reais. Quando dois componentes em um pipeline analisam o mesmo JSON com regras diferentes de chave duplicada, um atacante pode forjar uma mensagem que um componente lê de um jeito e outro lê do jeito oposto. Uma requisição que uma camada de validação vê como `{"amount": 10}` e uma camada de processamento vê como `{"amount": 10000}` é um exemplo clássico desse tipo de ataque de confusão de parser. Em qualquer lugar onde o JSON cruza uma fronteira de confiança e é analisado mais de uma vez, chaves duplicadas são um risco.
+
+## Detectando-as cedo
+
+Como chaves duplicadas nunca levantam um erro normal de análise, elas são invisíveis a menos que uma ferramenta vá procurá-las. O formatador procura: ele percorre cada objeto e reporta cada chave repetida junto com o caminho JSON Pointer onde ela ocorre, então uma duplicata enterrada no fundo de um documento grande aparece imediatamente. A saída formatada mantém o último valor, acompanhando o parser mais comum, mas o aviso é a parte importante, porque diz que o documento é ambíguo antes que essa ambiguidade vire o incidente de alguém.

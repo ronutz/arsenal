@@ -3,7 +3,7 @@ slug: certificate-validation
 title: "How certificate validation actually works"
 summary: "The steps a client runs to decide a certificate is trustworthy: building the chain, checking signatures and dates, matching the name, and enforcing constraints."
 concepts: ["x509", "validation", "chain-of-trust", "rfc5280", "san", "tls"]
-relatedTools: ["x509"]
+relatedTools: ["x509", "csr-decoder"]
 relatedArticles: ["x509-anatomy", "certificate-revocation", "hashing", "certificate-signing-request"]
 category: pki
 order: 4
@@ -37,7 +37,7 @@ The v3 extensions are not decoration; they are rules the client enforces. Basic 
 
 ## Step 6: check revocation
 
-Finally, a certificate that was valid when issued may have been revoked since, for instance because its private key leaked. The client may consult a CRL or an OCSP responder to find out. In practice this is the weakest and most inconsistent step, and the industry is moving toward short-lived certificates instead, which the [revocation article](/learn/certificate-revocation) covers in full.
+Finally, a certificate that was valid when issued may have been revoked since, for instance because its private key leaked. The client may consult a CRL or an OCSP responder to find out. The inspector on this page extracts the revocation endpoints the certificate advertises, its CRL distribution points and its OCSP responder, so you can see how a client would check it; it reads those pointers but never contacts them. In practice this is the weakest and most inconsistent step, and the industry is moving toward short-lived certificates instead, which the [revocation article](/learn/certificate-revocation) covers in full.
 
 ## Validation is an AND, not an OR
 

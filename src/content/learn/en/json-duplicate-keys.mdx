@@ -1,0 +1,28 @@
+---
+slug: json-duplicate-keys
+title: "Duplicate Keys in JSON: Legal, Dangerous, and Worth Catching"
+summary: "JSON syntax allows the same key to appear more than once in an object, but the specification does not say what that means. Different parsers resolve it differently, which makes duplicate keys a quiet source of bugs and even security issues."
+concepts: ["json", "duplicate keys", "rfc 8259", "interoperability", "security", "validation"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-numbers-and-precision", "url-anatomy"]
+category: encoding
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+## The specification leaves a gap
+
+The JSON grammar says an object is a set of members, but the syntax does not actually forbid the same key from appearing twice: `{"role": "user", "role": "admin"}` parses without a syntax error. RFC 8259 acknowledges this directly. It says the names within an object should be unique, and it warns that when they are not, the behavior of software that receives the object is unpredictable. In other words, duplicate keys are syntactically legal but semantically undefined, and that gap is where trouble lives.
+
+## Parsers disagree
+
+Because the standard does not mandate a resolution, implementations made their own choices. The most common, and the behavior of JavaScript's own parser, is last-wins: the final occurrence of the key overwrites the earlier ones, so the example above becomes `admin`. But other parsers keep the first occurrence, some collect all values into a list, and a few reject the document outright. The same bytes therefore mean different things to different systems, which breaks the basic promise of an interchange format.
+
+## The security angle
+
+This disagreement is not just untidy; it has been the root of real vulnerabilities. When two components in a pipeline parse the same JSON with different duplicate-key rules, an attacker can craft a message that one component reads one way and another reads the opposite way. A request that a validation layer sees as `{"amount": 10}` and a processing layer sees as `{"amount": 10000}` is a classic example of this kind of parser-confusion attack. Anywhere JSON crosses a trust boundary and is parsed more than once, duplicate keys are a liability.
+
+## Catching them early
+
+Since duplicate keys never raise a normal parse error, they are invisible unless a tool goes looking. The formatter does: it walks every object and reports each repeated key together with the JSON Pointer path where it occurs, so a duplicate buried deep in a large document surfaces immediately. The formatted output keeps the last value, matching the most common parser, but the warning is the important part, because it tells you the document is ambiguous before that ambiguity becomes someone's incident.

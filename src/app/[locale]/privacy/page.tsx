@@ -22,6 +22,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import { contactEmail } from "@/config/contact";
 
 export default async function PrivacyPage({
   params,
@@ -33,6 +34,13 @@ export default async function PrivacyPage({
 
   const t = await getTranslations("privacy_page");
   const tNav = await getTranslations("nav");
+
+  // The contact address must never reach the served HTML or the locale JSON in
+  // harvestable form. The privacy copy carries an {email} placeholder instead of
+  // the literal address; we fill it here with a "user [at] domain" form (no "@",
+  // no mailto:), matching the obfuscation the Contact page uses pre-hydration.
+  const [emailUser, emailDomain] = contactEmail().split("@");
+  const obfuscatedEmail = `${emailUser} [at] ${emailDomain}`;
 
   // The "short version" points, rendered as a set of lead paragraphs.
   const short = ["short1", "short2", "short3", "short4"];
@@ -87,7 +95,7 @@ export default async function PrivacyPage({
             <section className="section" key={titleKey}>
               <div className="container colophon-container">
                 <h2 className="colophon-h2">{t(titleKey)}</h2>
-                <p className="colophon-body">{t(bodyKey)}</p>
+                <p className="colophon-body">{t(bodyKey, { email: obfuscatedEmail })}</p>
               </div>
             </section>
           ))}
@@ -96,7 +104,7 @@ export default async function PrivacyPage({
           <section className="section">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("rightsTitle")}</h2>
-              <p className="colophon-body">{t("rightsBody")}</p>
+              <p className="colophon-body">{t("rightsBody", { email: obfuscatedEmail })}</p>
               <p className="colophon-body">{t("rightsGdpr")}</p>
               <p className="colophon-body">{t("rightsLgpd")}</p>
             </div>

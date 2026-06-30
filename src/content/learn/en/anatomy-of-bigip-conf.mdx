@@ -1,0 +1,44 @@
+---
+slug: anatomy-of-bigip-conf
+title: "The Anatomy of a bigip.conf File"
+summary: "Every object in a BIG-IP configuration follows the same shape: a module, a component, an optional type, a name, and a brace-delimited body. Once you can see that pattern, a wall of tmsh config becomes a readable tree of virtual servers, pools, monitors, and profiles."
+concepts: ["tmsh", "bigip.conf", "configuration", "f5", "ltm", "syntax"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["how-a-virtual-server-works", "ltm-health-monitors"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+A BIG-IP stores its running configuration as text, in files such as `/config/bigip.conf`, written in the same object language the Traffic Management Shell (tmsh) uses. When you run `tmsh list ltm virtual`, you are looking at exactly this format. Learning to read it directly is faster than clicking through the GUI, and it is the only practical way to review a configuration in a change request or a backup.
+
+## One shape, repeated
+
+Almost every object follows the same template:
+
+```
+<module> <component> [<type>] <name> {
+    <key> <value>
+    <key> { <nested body> }
+    <bare-list-item>
+}
+```
+
+The first word is the **module**: `ltm` for local traffic, `net` for networking, `sys` for system settings, and others such as `auth`, `security`, `gtm`, `apm`, `asm`, and `pem`. The next word is the **component** within that module, for example `virtual`, `pool`, `node`, `monitor`, or `profile`. Some components add a **type**: `ltm monitor http` and `ltm profile client-ssl` both carry a type word after the component. The final word before the opening brace is always the object **name**.
+
+So in `ltm pool web_pool { ... }`, the type path is `ltm pool` and the name is `web_pool`. In `ltm monitor http my_http { ... }`, the type path is `ltm monitor http` and the name is `my_http`. The rule is consistent: the name is the last token before the brace, and everything before it describes what kind of object this is.
+
+## What lives inside a body
+
+Inside the braces, entries come in three forms. A **key with a value** is a single setting, such as `destination 10.0.0.80:443` or `load-balancing-mode round-robin`. A **key with a nested block** groups related settings or a list, such as a pool's `members { ... }` or a virtual server's `profiles { ... }`. And a **bare list item** is a name on its own line, such as each iRule listed inside a virtual server's `rules { ... }` block.
+
+Newlines separate entries, and braces can nest as deeply as the object needs. Comments begin with `#`. Quoted strings, used for descriptions and inside iRules, may contain spaces. That is the whole grammar. Once you internalize it, you can scan a large configuration and pick out the structure without parsing every value.
+
+## The one exception: iRules
+
+There is a single object type whose body is not tmsh configuration at all. An `ltm rule` contains an iRule, which is a program written in Tcl. Its body uses braces too, but those braces belong to Tcl control structures like `when { ... }` and `if { ... }`, not to the configuration language. For that reason an iRule body should be read verbatim as code, not interpreted as settings. The [tmsh config explainer](/tools/tmsh-config-explainer) treats iRule bodies exactly this way: it captures them untouched and never tries to execute or rewrite them.
+
+## Why read it this way
+
+A configuration review is really a structure review. Which virtual servers exist, which pool each one sends to, which profiles are attached, whether a health monitor is present, and how source addresses are translated are all questions you answer by reading the tree, not by memorizing every field. The companion articles walk through two of the most important objects in detail: [how a virtual server ties everything together](/learn/how-a-virtual-server-works) and [how health monitors decide which members receive traffic](/learn/ltm-health-monitors).

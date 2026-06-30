@@ -1,0 +1,38 @@
+---
+slug: regex-quantifiers-and-classes
+title: "Quantificadores e Classes de Caracteres em Regex"
+summary: "Uma expressão regular é construída a partir de duas perguntas: qual caractere eu quero e quantos deles? As classes de caracteres respondem à primeira, os quantificadores respondem à segunda. Acerte essas duas e a maior parte das regex se encaixa."
+concepts: ["regex", "classe de caracteres", "quantificador", "guloso", "preguiçoso"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-groups-and-backreferences", "regex-catastrophic-backtracking"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Quase toda expressão regular é montada a partir de duas ideias: **que tipo de caractere** corresponder e **quantas vezes** corresponder a ele. As classes de caracteres respondem à primeira pergunta; os quantificadores respondem à segunda. Quando essas duas se encaixam, o resto é quase só pontuação.
+
+## Classes de caracteres: o que corresponder
+
+As classes abreviadas cobrem os casos que você usa o tempo todo. `\d` é qualquer dígito, `\w` é qualquer caractere de palavra (uma letra, dígito ou sublinhado) e `\s` é qualquer espaço em branco. Cada uma tem uma negação em maiúscula: `\D` é qualquer não dígito, `\W` qualquer não caractere de palavra, `\S` qualquer não espaço. Um ponto isolado `.` corresponde a qualquer caractere — exceto uma quebra de linha, a menos que você ative a flag `s` (dotAll).
+
+Quando as abreviações são amplas demais, construa sua própria classe com colchetes. `[aeiou]` corresponde a uma vogal; `[a-z]` corresponde a uma letra minúscula usando um intervalo; `[A-Za-z0-9]` combina vários intervalos. Coloque um circunflexo no início para invertê-la: `[^0-9]` corresponde a qualquer caractere que *não* seja um dígito. Dentro de uma classe, a maioria dos metacaracteres perde o significado especial, então `[.+*]` corresponde a um ponto, mais ou asterisco literal — sem necessidade de escape.
+
+Uma classe sempre corresponde a exatamente **um** caractere. Para corresponder a mais de um, você precisa de um quantificador.
+
+## Quantificadores: quantos
+
+Os três quantificadores curtos fazem a maior parte do trabalho. `*` significa zero ou mais, `+` significa um ou mais e `?` significa opcional — zero ou um. Assim `\d*` corresponde a uma string vazia ou a qualquer sequência de dígitos, enquanto `\d+` exige pelo menos um dígito.
+
+Quando você precisa de uma contagem específica, use chaves. `\d{4}` corresponde a exatamente quatro dígitos, `\d{2,}` corresponde a dois ou mais e `\d{2,4}` corresponde a entre dois e quatro. Um fragmento de telefone no estilo dos EUA pode ser `\d{3}-\d{4}`, e um formato simples de e-mail é `\w+@\w+\.\w+` — repare no `\.` ali, um ponto escapado que corresponde a um ponto literal em vez de "qualquer caractere".
+
+## Guloso versus preguiçoso
+
+Por padrão, os quantificadores são **gulosos**: pegam o máximo que conseguem e só devolvem caracteres se o restante do padrão falhar. Acrescente um `?` ao final para tornar um quantificador **preguiçoso**, fazendo-o pegar o mínimo possível. A diferença importa no instante em que você tenta corresponder a conteúdo delimitado. Contra o texto `[one][two]`, o guloso `\[.+\]` corresponde à string inteira de uma vez, porque `.+` engole tudo até o último colchete. O preguiçoso `\[.+?\]` para no primeiro colchete de fechamento e corresponde apenas a `[one]`. Escolher entre guloso e preguiçoso é uma das correções mais comuns quando um padrão "corresponde demais".
+
+## Âncoras, rapidamente
+
+As âncoras correspondem a uma posição, não a um caractere. `^` é o início da string (ou o início de uma linha com a flag `m`), `$` é o fim e `\b` é um limite de palavra — a junção entre um caractere de palavra e um não caractere de palavra. Envolver um padrão em `^...$` força a correspondência com a entrada *inteira*, que é exatamente o que você quer ao validar um campo completo em vez de encontrar um fragmento dentro dele.
+
+Cole qualquer um desses no [Kit de Regex](/tools/regex) para ver as correspondências se acenderem enquanto você digita, e depois leia sobre [grupos e retrorreferências](/learn/regex-groups-and-backreferences) para capturar e reutilizar as partes que você corresponde.

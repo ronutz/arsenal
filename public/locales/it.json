@@ -67,6 +67,11 @@
       "title": "Sostieni questo strumento",
       "pitch": "Questo strumento è gratuito ed è fatto per restarlo. Se si guadagna un posto nel tuo flusso di lavoro, puoi contribuire a finanziarne la manutenzione e ciò che verrà dopo.",
       "purposeLabel": "In finanziamento ora"
+    },
+    "stats": {
+      "tools": "Strumenti",
+      "articles": "Articoli",
+      "sectionLabel": "La cassetta degli attrezzi in breve"
     }
   },
   "tools": {
@@ -77,6 +82,11 @@
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "Calcola",
       "runsLocally": "Gira in locale, non viene inviato nulla a nessun server.",
+      "prefixSlider": "Lunghezza del prefisso",
+      "bitsHeading": "Bit dell'indirizzo",
+      "bitsNetwork": "Rete",
+      "bitsHost": "Host",
+      "bitsNote": "I bit evidenziati identificano la rete — i restanti indirizzano gli host al suo interno.",
       "results": {
         "network": "Indirizzo di rete",
         "broadcast": "Indirizzo di broadcast",
@@ -175,7 +185,11 @@
         "tooMany": "Troppe voci. Riduci l'elenco e riprova.",
         "noReqs": "Aggiungi almeno un requisito di sottorete con un numero di host.",
         "noPrefixes": "Inserisci almeno un prefisso, uno per riga."
-      }
+      },
+      "rangeHeading": "Distribuzione degli indirizzi",
+      "usableShort": "utilizzabili",
+      "rfcNote": "/31 e /32 non riservano nulla: ogni indirizzo è utilizzabile (RFC 3021).",
+      "reservedNote": "Il primo indirizzo è la rete e l'ultimo è il broadcast; entrambi sono riservati, quindi utilizzabili = totale − 2."
     },
     "title": "Strumenti",
     "lede": "Piccole utility veloci e rispettose della privacy, che girano interamente nel tuo browser. Niente di ciò che digiti viene inviato da nessuna parte. Altri strumenti sono in arrivo.",
@@ -221,7 +235,12 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Copia",
-      "copied": "Copiato"
+      "copied": "Copiato",
+      "struct": {
+        "heading": "Come è costruito HMAC",
+        "innerHash": "hash interno",
+        "note": "HMAC calcola l'hash del messaggio due volte. La chiave viene combinata in XOR con un pad interno fisso prima del primo hash e con un pad esterno prima del secondo, e questa costruzione a due pad è ciò che impedisce gli attacchi di estensione della lunghezza. La chiave viene prima ridotta alla dimensione del blocco dell'hash."
+      }
     },
     "base64": {
       "name": "Codec Base64, Base32, Hex e percento",
@@ -273,7 +292,18 @@
       "encodingLabel": "base64url",
       "plainValueLabel": "= code_verifier",
       "copy": "Copia",
-      "copied": "Copiato"
+      "copied": "Copiato",
+      "flowHeading": "Come funziona PKCE",
+      "laneClient": "App / Client",
+      "laneServer": "Server di autorizzazione",
+      "s1": "Genera un code_verifier casuale",
+      "s2": "Deriva il code_challenge",
+      "s3": "La richiesta di autorizzazione porta il challenge",
+      "s4": "Il server memorizza il challenge",
+      "s5": "Codice di autorizzazione restituito",
+      "s6": "La richiesta di token porta il verifier",
+      "s7": "Il server rideriva e confronta",
+      "s8": "Token di accesso e refresh emessi"
     },
     "uuid": {
       "name": "Generatore e ispettore di UUID (v4 / v7)",
@@ -336,6 +366,11 @@
         "algNone": "Questo token non è protetto (alg: none), quindi non c'è alcuna firma da verificare.",
         "unsupportedAlg": "La verifica nel browser copre solo HS256/384/512. {alg} è asimmetrico e richiede una chiave pubblica.",
         "hint": "Il segreto è usato solo per calcolare un HMAC nel tuo browser. Non viene mai inviato da nessuna parte."
+      },
+      "struct": {
+        "heading": "Anatomia di un JWT",
+        "signingInput": "Input della firma",
+        "note": "L'header e il payload sono solo codificati in base64url, non cifrati, quindi chiunque può leggerli. La firma è calcolata sull'header e sul payload uniti da un punto, ed è ciò che un verificatore controlla."
       }
     },
     "x509": {
@@ -361,7 +396,8 @@
         "details": "Dettagli",
         "publicKey": "Chiave pubblica",
         "extensions": "Estensioni",
-        "fingerprints": "Impronte"
+        "fingerprints": "Impronte",
+        "sct": "Certificate Transparency"
       },
       "fields": {
         "version": "Versione",
@@ -392,6 +428,25 @@
         "sha256": "SHA-256",
         "sha1": "SHA-1",
         "computing": "Calcolo delle impronte..."
+      },
+      "chainHeading": "Catena di fiducia",
+      "tierRoot": "CA radice",
+      "tierIntermediate": "CA intermedia",
+      "tierLeaf": "Certificato di entità finale",
+      "roleRoot": "Àncora di fiducia autofirmata",
+      "roleIntermediate": "Firmata da una radice; firma i certificati finali",
+      "roleLeaf": "Identifica un server o un client",
+      "thisCert": "questo certificato",
+      "issuedBy": "Emesso da",
+      "signs": "firma",
+      "trustNote": "La fiducia scende verso il basso: ogni certificato è firmato da quello superiore, fino a una radice di cui il tuo sistema già si fida.",
+      "sct": {
+        "intro": "SCT incorporati: {n}. Ciascuno è la prova firmata da un log CT di aver registrato questo certificato; i browser ne richiedono un numero minimo affinché il certificato sia attendibile.",
+        "entry": "SCT {i}",
+        "logId": "ID del log",
+        "timestamp": "Registrato il",
+        "signature": "Firma",
+        "note": "Le firme sono mostrate ma non verificate qui; verificare un SCT richiede la chiave pubblica del log e il precertificato."
       }
     },
     "ipv6": {
@@ -427,7 +482,13 @@
       },
       "badges": {
         "multicast": "multicast"
-      }
+      },
+      "segHeading": "Struttura dell'indirizzo",
+      "networkSeg": "Prefisso di rete",
+      "ifaceId": "ID interfaccia",
+      "hostBits": "Bit host",
+      "prefixNote": "I bit a sinistra del confine sono fissati dal prefisso; quelli a destra identificano l'host al suo interno.",
+      "conventionNote": "Nessun prefisso fornito, quindi la linea tratteggiata segna la divisione /64 convenzionale: prefisso di routing e sottorete a sinistra, l'identificatore di interfaccia a 64 bit a destra."
     },
     "cipher": {
       "name": "Decodificatore di suite di cifratura",
@@ -508,6 +569,265 @@
         "ianaD": "IANA segna questa suite come \"D\" (sconsigliata): NON DOVREBBE o NON DEVE essere usata, a seconda della situazione.",
         "ianaN": "IANA non segna questa suite come \"Consigliata\": ha applicabilità limitata o non ha attraversato il processo di consenso IETF.",
         "signalling": "Suite di segnalazione (SCSV): non è un cifrario reale, trasporta un segnale di protocollo come la protezione dal downgrade o le informazioni di rinegoziazione."
+      },
+      "groups": {
+        "title": "Gruppi di scambio chiavi",
+        "intro": "TLS negozia il gruppo di accordo sulle chiavi separatamente dalla suite di cifratura, nell'estensione supported_groups. Poiché \"harvest now, decrypt later\" spinge verso lo scambio di chiavi post-quantistico, i gruppi ibridi seguenti combinano una curva classica con ML-KEM.",
+        "kind": {
+          "ecdhe": "Curva ECDHE",
+          "ffdhe": "DH a campo finito",
+          "pq-hybrid": "Ibrido PQ"
+        },
+        "pq": {
+          "classical": "Classico",
+          "hybrid-pq": "PQ ibrido"
+        },
+        "recommended": "Consigliato",
+        "obsolete": "Obsoleto",
+        "legacy": "Legacy",
+        "combines": "Combina {classical} con {pq}",
+        "foot": "X25519MLKEM768 è il gruppo ibrido che la maggior parte dei browser ora invia per impostazione predefinita."
+      }
+    },
+    "f5-ssl-profile-explainer": {
+      "name": "Spiegatore di profili SSL F5",
+      "blurb": "Incolla un profilo client-ssl o server-ssl di tmsh e ottieni il suo ruolo, la matrice dei protocolli TLS e un'analisi di sicurezza su catena, rinegoziazione, SNI, OCSP e TLS reciproco — tutto nel tuo browser.",
+      "inputLabel": "Profilo SSL (tmsh)",
+      "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
+      "runsLocally": "Elaborato nel tuo browser. Niente viene inviato.",
+      "scopeNote": "Decodifica un blocco di profilo incollato. Non contatta mai un BIG-IP.",
+      "errorTitle": "Impossibile leggere il profilo",
+      "err_empty": "Incolla un profilo SSL per iniziare.",
+      "err_noHeader": "Era attesa una riga come: ltm profile client-ssl /Common/name ...",
+      "err_noBody": "Nessuna parentesi graffa di apertura trovata nel profilo.",
+      "err_tooLong": "Questo input è troppo grande da analizzare.",
+      "err_invalid": "Questo non sembra un profilo client-ssl o server-ssl.",
+      "protocolsHeading": "Versioni del protocollo TLS",
+      "permitted": "consentito",
+      "disabled": "disabilitato",
+      "findingsHeading": "Valutazione di sicurezza",
+      "settingsHeading": "Impostazioni spiegate",
+      "topoHeading": "Nel percorso dei dati",
+      "nodeClient": "Client",
+      "nodeBigip": "BIG-IP",
+      "nodePool": "Membro del pool",
+      "clientLeg": "TLS lato client",
+      "serverLeg": "Lato server",
+      "thisProfile": "questo profilo",
+      "clientNote": "Un profilo client-ssl termina il TLS del client sul BIG-IP. La connessione verso il membro del pool viene ricifrata solo se è applicato un profilo server-ssl; senza, quel tratto è in chiaro (SSL offload).",
+      "serverNote": "Un profilo server-ssl consente al BIG-IP di aprire una nuova connessione TLS verso il membro del pool (ricifratura). Il lato client è gestito da un profilo client-ssl separato."
+    },
+    "epoch": {
+      "name": "Convertitore di tempo Unix",
+      "blurb": "Digita un timestamp Unix — secondi, millisecondi, microsecondi o nanosecondi, rilevato automaticamente — o una data ISO-8601, e rileggilo in tutti i formati comuni. Tutto nel tuo browser.",
+      "inputLabel": "Timestamp o data",
+      "inputPlaceholder": "1700000000  o  2023-11-14T22:13:20Z",
+      "runsLocally": "Convertito nel tuo browser. Niente viene inviato.",
+      "scopeNote": "Matematica delle date pura. L'unità è dedotta dalla dimensione del numero; correggila se serve.",
+      "nowButton": "Adesso",
+      "errorTitle": "Impossibile leggere",
+      "err_empty": "Inserisci un timestamp o una data per iniziare.",
+      "err_invalid": "Questo non è un timestamp Unix né una data ISO-8601.",
+      "err_tooLong": "Questo input è troppo lungo.",
+      "err_outOfRange": "Questo timestamp è fuori dall'intervallo di date rappresentabile.",
+      "utcHeading": "Data e ora UTC",
+      "formatsHeading": "Tutti i formati",
+      "dayOfYearLabel": "giorno dell'anno",
+      "relativeNote": "relativo all'orologio del tuo dispositivo"
+    },
+    "irules-event-order": {
+      "name": "Ordine degli eventi iRule",
+      "blurb": "Scegli lo stack di profili di un virtual server BIG-IP — Client-SSL, HTTP, Server-SSL, pool — e guarda l'ordine in cui scattano gli eventi iRule comuni, da CLIENT_ACCEPTED a CLIENT_CLOSED, come timeline ed elenco. Tutto nel tuo browser.",
+      "stackLabel": "Stack di profili del virtual server",
+      "tog_clientssl": "Profilo Client-SSL",
+      "tog_http": "Profilo HTTP",
+      "tog_serverssl": "Profilo Server-SSL",
+      "tog_pool": "Pool (bilanciamento)",
+      "tog_fastl4": "FastL4 (percorso rapido a pacchetti)",
+      "presetsLabel": "Preset:",
+      "preset_https": "HTTPS con ri-cifratura",
+      "preset_offload": "SSL offload",
+      "preset_http": "HTTP",
+      "preset_tcp": "TCP puro",
+      "runsLocally": "Calcolato nel tuo browser. Niente viene inviato.",
+      "scopeNote": "Un modello del comportamento documentato di F5 per un virtual server Standard. Non contatta mai un BIG-IP.",
+      "diagramHeading": "Sequenza degli eventi",
+      "listHeading": "Eventi in ordine",
+      "conditionalHeading": "Eventi condizionali",
+      "conditionalNote": "Questi scattano solo a condizioni specifiche: un TCP::collect o HTTP::collect, un fallimento del bilanciamento, o una risposta 100 Continue.",
+      "sideClient": "lato client",
+      "sideServer": "lato server",
+      "sideGlobal": "globale"
+    },
+    "cert-renewal-planner": {
+      "name": "Pianificatore di rinnovo dei certificati",
+      "blurb": "Calcola la validità di un certificato TLS, se rispetta il calendario dei 47 giorni del CA/Browser Forum e la cadenza di rinnovo che ne deriva; tutto offline.",
+      "notBeforeLabel": "Emesso (notBefore)",
+      "notAfterLabel": "Scade (notAfter)",
+      "runsLocally": "Tutto viene eseguito nel tuo browser; nulla viene caricato.",
+      "exampleLabel": "Prova un esempio di 90 giorni",
+      "summaryHeading": "Questo certificato",
+      "validity": "Validità di {days} giorni",
+      "compliantBadge": "Entro il limite",
+      "overCapBadge": "Oltre il limite",
+      "maxForPhase": "Massimo per la sua data di emissione: {max} giorni.",
+      "overByText": "{days} giorni oltre il massimo di {max} giorni per la sua data di emissione; una CA pubblica non lo emetterebbe.",
+      "renewalsValue": "Circa {n} rinnovi all'anno con questa validità.",
+      "remainingHeading": "In base all'orologio del tuo dispositivo",
+      "daysRemaining": "{days} giorni alla scadenza.",
+      "expiredText": "Scaduto {days} giorni fa.",
+      "renewByText": "Rinnova entro il {date} (circa {lead} giorni prima della scadenza)",
+      "renewByDue": "tra {days} giorni",
+      "reuseHeading": "Riutilizzo della convalida (era di emissione)",
+      "dcvText": "I dati di convalida del dominio (DCV) sono riutilizzabili per {days} giorni.",
+      "siiText": "L'identità dell'organizzazione (SII OV/EV) è riutilizzabile per {days} giorni.",
+      "scheduleHeading": "Il calendario SC-081v3",
+      "scheduleIntro": "I massimi TLS pubblici dipendono dalla data di emissione del certificato:",
+      "colPeriod": "Emesso dal",
+      "colValidity": "Validità max (giorni)",
+      "colDcv": "Riutilizzo DCV (giorni)",
+      "colSii": "Riutilizzo SII (giorni)",
+      "phaseP0": "Prima del 15 mar 2026",
+      "phaseP1": "15 mar 2026",
+      "phaseP2": "15 mar 2027",
+      "phaseP3": "15 mar 2029",
+      "yourPhase": "← questo certificato",
+      "projectionHeading": "Carico di rinnovo a ogni limite",
+      "projectionIntro": "Rinnovi per certificato all'anno, man mano che i limiti si riducono:",
+      "perYearShort": "anno",
+      "note_overCap": "Questa validità supera il massimo di {max} giorni per la sua data di emissione.",
+      "note_future47": "Conforme oggi, ma più lungo del futuro limite di 47 giorni; aspettati rinnovi più frequenti con l'avanzare del calendario.",
+      "note_publicOnly": "Questi limiti si applicano solo ai certificati TLS pubblicamente attendibili. La PKI privata o interna non è regolata dalla SC-081v3.",
+      "note_automate": "Con queste cadenze, automatizza emissione e rinnovo con ACME (RFC 8555) e ARI (RFC 9773); il rinnovo manuale non è scalabile.",
+      "err_empty": "Inserisci entrambe le date, emissione e scadenza.",
+      "err_invalidDate": "Usa una data valida (AAAA-MM-GG).",
+      "err_order": "La data di scadenza deve essere successiva a quella di emissione.",
+      "err_tooLong": "Questo input è troppo lungo.",
+      "err_invalid": "Impossibile leggere queste date."
+    },
+    "csr-decoder": {
+      "name": "Decodificatore di CSR",
+      "blurb": "Decodifica una richiesta di firma del certificato PKCS#10 per leggerne il soggetto, la chiave pubblica, i SAN e le estensioni richiesti e gli attributi; tutto nel browser.",
+      "inputLabel": "Richiesta di firma del certificato (PEM, base64 o esadecimale)",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
+      "exampleLabel": "Carica una CSR di esempio",
+      "runsLocally": "Tutto viene eseguito nel browser; la CSR non viene mai caricata.",
+      "notCertNote": "Una CSR è una richiesta, non un certificato. Non ha numero di serie, emittente né date di validità; solo ciò che il richiedente chiede di certificare a una CA.",
+      "subjectHeading": "Soggetto",
+      "colAttr": "Attributo",
+      "colValue": "Valore",
+      "noSubject": "Nessun nome del soggetto (questa CSR si basa sui SAN richiesti).",
+      "keyHeading": "Chiave pubblica",
+      "keyAlgorithmLabel": "Algoritmo",
+      "keySizeLabel": "Dimensione",
+      "keySizeValue": "{bits} bit",
+      "keyCurveLabel": "Curva",
+      "keyExponentLabel": "Esponente",
+      "keyExponentValue": "{exp}",
+      "requestedHeading": "Estensioni richieste",
+      "sanLabel": "Subject Alternative Names",
+      "keyUsageLabel": "Utilizzo della chiave",
+      "ekuLabel": "Utilizzo esteso della chiave",
+      "basicConstraintsLabel": "Vincoli di base",
+      "caYes": "CA: sì",
+      "caNo": "CA: no",
+      "pathLenValue": "lunghezza percorso {n}",
+      "noRequested": "Nessuna estensione richiesta.",
+      "attributesHeading": "Attributi",
+      "challengePasswordLabel": "Password di challenge",
+      "unstructuredNameLabel": "Nome non strutturato",
+      "signatureHeading": "Autofirma",
+      "signatureAlgLabel": "Algoritmo",
+      "signatureBitsLabel": "Lunghezza",
+      "signatureBitsValue": "{bits} bit",
+      "versionValue": "Versione: v1 ({v})",
+      "derLengthValue": "DER: {bytes} byte",
+      "err_empty": "Incolla una richiesta di firma del certificato da decodificare.",
+      "err_format": "Non sembra una CSR in PEM, base64 o esadecimale.",
+      "err_der": "Impossibile analizzare la struttura DER.",
+      "err_structure": "Viene analizzata come DER ma non è una richiesta di certificazione PKCS#10."
+    },
+    "oidc": {
+      "name": "Decodificatore OIDC",
+      "blurb": "Incolla un ID token OpenID Connect o un documento .well-known/openid-configuration e decodificalo: i claim principali, i claim di profilo, gli endpoint e le capacità, con controlli sui claim richiesti, sull'algoritmo di firma, sul nonce e su PKCE.",
+      "inputLabel": "ID token (JWT) o JSON openid-configuration",
+      "inputPlaceholder": "Incolla un ID token, o un documento JSON di discovery OIDC",
+      "runsLocally": "La decodifica viene eseguita localmente nel tuo browser. Non chiama mai il jwks_uri né alcun endpoint, e nulla viene inviato da nessuna parte.",
+      "notVerifiedNote": "Questo strumento decodifica e spiega. Non verifica la firma del token, non recupera le chiavi di firma e non controlla la scadenza rispetto all'orologio.",
+      "errors": {
+        "empty": "Incolla un ID token o un documento openid-configuration da decodificare.",
+        "malformed-json": "Inizia come JSON ma non è stato possibile analizzarlo. Controlla se manca una parentesi graffa, una virgola o una virgoletta.",
+        "json-not-oidc": "Questo è JSON, ma non un documento di discovery OpenID Connect. Incolla un ID token, o un documento .well-known/openid-configuration.",
+        "not-jwt": "Questo non sembra un JWT né un documento OIDC. Incolla un ID token o un documento di discovery.",
+        "jwt-header": "Non è stato possibile decodificare l'header del token. Un JWT è composto da tre parti base64url separate da punti.",
+        "jwt-payload": "Non è stato possibile decodificare il payload del token come JSON."
+      },
+      "badges": {
+        "idToken": "ID Token",
+        "discovery": "Discovery",
+        "signed": "Firmato",
+        "unsigned": "Non firmato",
+        "algNone": "alg: none",
+        "algUnknown": "alg: ?"
+      },
+      "panels": {
+        "header": "Header",
+        "coreClaims": "Claim principali dell'ID token",
+        "metadata": "Provider",
+        "endpoints": "Endpoint",
+        "capabilities": "Capacità"
+      },
+      "categories": {
+        "binding": "Binding del token",
+        "profile": "Claim di profilo",
+        "email": "E-mail",
+        "address": "Indirizzo",
+        "phone": "Telefono",
+        "oauth": "OAuth / sessione",
+        "other": "Altri claim"
+      },
+      "fields": {
+        "alg": "Algoritmo",
+        "typ": "Tipo",
+        "kid": "ID chiave",
+        "iss": "Emittente (iss)",
+        "sub": "Soggetto (sub)",
+        "aud": "Destinatario (aud)",
+        "azp": "Parte autorizzata (azp)",
+        "nonce": "Nonce",
+        "acr": "Contesto di auth (acr)",
+        "amr": "Metodi di auth (amr)",
+        "authTime": "Ora di auth",
+        "iat": "Emesso il (iat)",
+        "nbf": "Non prima di (nbf)",
+        "exp": "Scade (exp)",
+        "issuer": "Emittente"
+      },
+      "reasons": {
+        "MISSING_REQUIRED_CLAIM": "Claim richiesto mancante {value}. Un ID token deve contenere iss, sub, aud, exp e iat.",
+        "ALG_NONE": "Il token usa alg none, quindi non è firmato. Un ID token non firmato non prova nulla e deve essere rifiutato.",
+        "ALG_SYMMETRIC": "Firmato con {value}, un algoritmo simmetrico (HMAC). Gli ID token di un provider pubblico usano normalmente un algoritmo asimmetrico come RS256 o ES256, così la relying party può verificare con la chiave pubblica.",
+        "ALG_UNKNOWN": "Firmato con {value}, un algoritmo che questo strumento non riconosce. Conferma che sia un algoritmo previsto e robusto.",
+        "SIGNED_ASYMMETRIC": "Firmato con {value}, un algoritmo asimmetrico. La relying party lo verifica con la chiave pubblica del provider dal JWKS.",
+        "NO_NONCE": "Nessun claim nonce. Il nonce lega il token alla richiesta di autenticazione e protegge dal replay. Dovrebbe essere presente quando la richiesta ne ha inviato uno.",
+        "MULTI_AUD_NO_AZP": "Il token ha più destinatari ma nessun azp (parte autorizzata). Con più di un destinatario, azp dovrebbe indicare il client a cui il token è destinato.",
+        "DISCOVERY_MISSING_FIELD": "Campo di discovery richiesto mancante {value}.",
+        "DISCOVERY_ALG_NONE": "Il provider pubblicizza l'algoritmo di firma none per gli ID token, il che consentirebbe token non firmati. Non dovrebbe essere offerto.",
+        "DISCOVERY_NO_PKCE": "Nessun code_challenge_methods_supported. Il provider non pubblicizza PKCE, che è consigliato per il flusso di codice di autorizzazione.",
+        "DISCOVERY_NO_PKCE_S256": "PKCE è pubblicizzato ma senza il metodo S256. S256 è il metodo di code challenge consigliato."
+      },
+      "flow": {
+        "heading": "Flusso di codice di autorizzazione",
+        "laneRp": "Relying Party",
+        "laneOp": "Provider OpenID",
+        "s1": "Reindirizza l'utente al provider con scope=openid",
+        "s2": "Il provider autentica l'utente e ottiene il consenso",
+        "s3": "Il provider reindirizza indietro con un codice di autorizzazione",
+        "s4": "La relying party scambia il codice all'endpoint del token",
+        "s5": "Il provider restituisce un ID token e un access token",
+        "s6": "La relying party valida la firma dell'ID token con il JWKS",
+        "s7": "La relying party può chiamare UserInfo con l'access token",
+        "s8": "Il provider restituisce i claim dell'utente"
       }
     }
   },
@@ -521,7 +841,7 @@
     "short3": "Gli strumenti interattivi funzionano interamente nel tuo browser. Ciò che incolli o digiti in essi rimane sul tuo dispositivo e non è trasmesso da nessuna parte.",
     "short4": "Solo tre cose coinvolgono dati, e ognuna è spiegata sotto: una singola impostazione del tema salvata nel tuo browser, i registri (log) di connessione standard che ogni visita a un sito genera a livello di hosting, e qualsiasi messaggio che scegli di inviare via e-mail.",
     "controllerTitle": "Chi è il responsabile",
-    "controllerBody": "Questo è il sito web personale di Rodolfo Nützmann (ronutz.com). Per qualsiasi questione di privacy, o per esercitare uno dei diritti descritti sotto, scrivi a hello@ronutz.com. Le richieste sono gestite direttamente da Rodolfo Nützmann, in qualità di titolare del trattamento dei dati.",
+    "controllerBody": "Questo è il sito web personale di Rodolfo Nützmann (ronutz.com). Per qualsiasi questione di privacy, o per esercitare uno dei diritti descritti sotto, scrivi a {email}. Le richieste sono gestite direttamente da Rodolfo Nützmann, in qualità di titolare del trattamento dei dati.",
     "noTrackTitle": "Niente cookie, niente tracciamento, niente analitiche",
     "noTrackBody": "Questo sito non usa cookie di alcun tipo. Non usa alcun servizio di analitica (come Google Analytics o Plausible), nessuna rete pubblicitaria, nessun pixel di tracciamento dei social media e nessun fingerprinting del dispositivo. La tua visita non è misurata, profilata né condivisa con nessuno per tali fini.",
     "browserTitle": "Cosa è memorizzato nel tuo browser",
@@ -537,12 +857,12 @@
     "childrenTitle": "Minori",
     "childrenBody": "Questo sito è destinato a un pubblico professionale e generale. Non è rivolto ai minori e non raccoglie consapevolmente dati personali da essi.",
     "rightsTitle": "I tuoi diritti",
-    "rightsBody": "A seconda di dove vivi, hai diritti sui tuoi dati personali, incluso accedervi, farli correggere o cancellare, opporti al loro trattamento o limitarlo, richiedere una copia in formato portabile ed essere informato su come sono trattati. Per esercitarne uno qualsiasi, basta scrivere a hello@ronutz.com. Poiché qui sono trattati pochissimi dati personali, in pratica di solito c'è ben poco su cui agire, ma il canale è sempre aperto.",
+    "rightsBody": "A seconda di dove vivi, hai diritti sui tuoi dati personali, incluso accedervi, farli correggere o cancellare, opporti al loro trattamento o limitarlo, richiedere una copia in formato portabile ed essere informato su come sono trattati. Per esercitarne uno qualsiasi, basta scrivere a {email}. Poiché qui sono trattati pochissimi dati personali, in pratica di solito c'è ben poco su cui agire, ma il canale è sempre aperto.",
     "rightsGdpr": "Se ti trovi nello Spazio Economico Europeo o nel Regno Unito, hai anche il diritto di presentare un reclamo alla tua autorità locale per la protezione dei dati.",
     "rightsLgpd": "Se ti trovi in Brasile, possiedi i diritti previsti dall'Articolo 18 della LGPD, e puoi anche contattare l'autorità nazionale per la protezione dei dati (l'ANPD).",
     "changesTitle": "Modifiche a questo avviso",
     "changesBody": "Se questo avviso cambia, la versione rivista sarà pubblicata su questa pagina e la data sotto sarà aggiornata. Le modifiche sostanziali non saranno applicate retroattivamente.",
-    "updated": "Ultimo aggiornamento: 28 giugno 2026",
+    "updated": "Ultimo aggiornamento: 30 giugno 2026",
     "backHome": "Torna alla home"
   },
   "footer": {
@@ -553,7 +873,7 @@
     "contribute": "Migliora le traduzioni",
     "feedback": "Invia un feedback",
     "api": "Riferimento dell'API",
-    "contributeTools": "Proponi uno strumento",
+    "contributeTools": "Proponi un'idea",
     "license": "Licenza",
     "coffee": "Offrimi un caffè"
   },
@@ -868,7 +1188,9 @@
         "label": "Formazione ufficiale",
         "description": "Prenota un corso tramite Red Education"
       }
-    }
+    },
+    "feedbackNote": "Hai trovato un bug, un errore o un'inesattezza nel sito?",
+    "feedbackLink": "Condividilo nella pagina delle idee"
   },
   "certs": {
     "title": "Certificazioni e qualifiche",
@@ -935,7 +1257,6 @@
     "p1Title": "Calcolare, mai indovinare",
     "p1Body": "Gli strumenti di questo sito calcolano le risposte in locale e in modo deterministico. Non chiamano un server con le tue informazioni, e non approssimano. Ciò che gira nel tuo browser, resta nel tuo browser.",
     "p2Title": "Aperto nel nucleo",
-    "p2Body": "Il motore dietro gli strumenti è open source, rilasciato sotto una licenza permissiva. Il sito è costruito su di esso nello stesso modo in cui chiunque altro potrebbe. L'apertura qui non è una frase di marketing; è l'architettura.",
     "p3Title": "Documentato per costruzione",
     "p3Body": "Ogni parte del codice è commentata e documentata, non come un ripensamento, ma come regola fissa. La build è pensata per essere leggibile, per chi la mantiene e per chiunque la erediti.",
     "p4Title": "Costruito per durare e per viaggiare",
@@ -951,7 +1272,7 @@
     "stackType": "Tipografia",
     "stackTypeV": "Inter per il testo, JetBrains Mono per dati e codici",
     "stackEngine": "Motore degli strumenti",
-    "stackEngineV": "Un motore a nucleo aperto, rilasciato sotto una licenza permissiva",
+    "stackEngineV": "Un livello di calcolo deterministico che gira interamente nel browser",
     "stackSearch": "Ricerca",
     "stackSearchV": "Ricerca full-text statica, lato client; nessun server di ricerca",
     "vibeTitle": "È vibe coding, questo?",
@@ -972,7 +1293,10 @@
     "redblueLabel": "Rosso e blu",
     "redblueBody": "Lo stesso decodifica-e-spiega che consente a un red-teamer di leggere un token catturato consente a un blue-teamer di capire cosa emette il proprio stack. La piattaforma sta deliberatamente dal lato dell'analisi di quella linea: identifica, decodifica, converte e spiega, e non arriva a falsificare, iniettare o aggirare controlli. Quel confine è una scelta di progettazione, non una svista; questi strumenti esistono per insegnare e diagnosticare, non per diventare un'arma.",
     "localLabel": "Locale e deterministico",
-    "localBody": "Tutto gira nel browser. La funzione pura che lo strumento nella pagina richiama è la stessa che richiama l'API; a parità di input restituisce lo stesso output, non mantiene stato e non invia nulla a un server. Niente cookie, niente analytics, come la pagina Privacy spiega per intero."
+    "localBody": "Tutto viene eseguito nel browser. Lo strumento chiama una funzione pura: dato lo stesso input restituisce lo stesso output, non conserva stato e non invia nulla a un server. Niente cookie, niente analitiche, come la pagina Privacy illustra per intero.",
+    "thanksTitle": "Ringraziamenti speciali",
+    "p2Body": "La logica deterministica che ogni strumento esegue è l'intero strumento: non c'è alcun passaggio nascosto sul server, né account, né telemetria. Tutto viene eseguito nel tuo browser.",
+    "changelogLink": "Registro delle modifiche"
   },
   "support": {
     "title": "Sostieni il progetto",
@@ -1030,26 +1354,12 @@
     "emailHeading": "Invia il tuo contributo",
     "backHome": "Torna agli strumenti"
   },
-  "contributeTools": {
-    "eyebrow": "Cassetta degli strumenti aperta",
-    "title": "Proponi uno strumento",
-    "lede": "La cassetta degli strumenti è fatta per crescere. Ogni strumento è un piccolo modulo autodescrittivo sul motore aperto, e il sito lo carica nello stesso modo in cui potrebbe farlo chiunque altro. Se hai uno strumento adatto, proponilo.",
-    "shapeTitle": "Che cos'è uno strumento",
-    "shapeBody": "Uno strumento è tre cose insieme: un manifesto che lo descrive (che cos'è, l'input che accetta, da dove proviene la sua correttezza), un'unica funzione pura di esecuzione che svolge il lavoro, e un insieme di vettori di riferimento, coppie fisse di input e output che dimostrano che la funzione è corretta. Il motore carica uno strumento dal suo manifesto, così un modulo ben formato si inserisce senza toccare il resto del sito.",
-    "principlesTitle": "A che cosa deve attenersi uno strumento",
-    "principlesBody": "Il calcolo viene eseguito localmente ed è deterministico: lo stesso input produce sempre lo stesso output, senza orologio, rete o casualità nel risultato. Tutto ciò che è sensibile resta sul dispositivo in modo predefinito. La correttezza è ancorata a vettori di riferimento e a fonti citate — come un RFC o uno standard pubblicato —, non all'opinione. Il codice esce sotto una licenza permissiva, così il sito e chiunque altro possono costruirci sopra.",
-    "proposeTitle": "Proponine uno",
-    "proposeBody": "Invia una breve proposta via e-mail: che cosa calcola lo strumento, un input di esempio con l'output esatto che dovrebbe produrre, e la fonte su cui poggia la sua correttezza. Una bozza del manifesto e qualche vettore di riferimento sono benvenuti, ma non obbligatori. Se è adatto, viene integrato nel motore e nella cassetta degli strumenti.",
-    "emailLabel": "E-mail",
-    "backToTools": "Torna alla cassetta degli strumenti"
-  },
   "api": {
     "title": "API",
     "lede": "Gli strumenti di questo sito vengono eseguiti nel tuo browser e mantengono i tuoi dati sul tuo dispositivo. Per l'automazione — script, pipeline e integrazioni —, gli stessi calcoli deterministici sono disponibili come una piccola API HTTP. È la controparte programmatica degli strumenti del browser, non un loro sostituto.",
     "privacyTitle": "Che cosa significa per i tuoi dati",
     "privacyBody": "L'API riceve solo l'input che le invii, calcola un risultato e lo restituisce. È priva di stato e non registra valori di query né corpi di richiesta. Se ti serve la garanzia di zero uscita di dati, usa gli strumenti del browser oppure esegui tu stesso il motore aperto.",
     "engineTitle": "Lo stesso motore del browser",
-    "engineBody": "Ogni endpoint chiama la stessa funzione del motore che chiama lo strumento nel browser, così l'API e il browser restituiscono risultati identici byte per byte. Quel motore, @ronutz/netcore, è open source sotto una licenza permissiva.",
     "specTitle": "La specifica",
     "specBody": "Il contratto completo è pubblicato come OpenAPI 3.1. Scaricalo, puntaci i tuoi strumenti o leggi il riferimento qui sotto.",
     "downloadSpec": "Scarica openapi.yaml",
@@ -1073,17 +1383,57 @@
     "descriptionLabel": "Descrizione",
     "viewReference": "Riferimento",
     "viewSwagger": "Swagger UI",
-    "swaggerLoadError": "Impossibile caricare Swagger UI."
+    "swaggerLoadError": "Impossibile caricare Swagger UI.",
+    "engineBody": "Ogni endpoint esegue la stessa funzione pura dello strumento nel browser, così l'API e il browser restituiscono risultati identici byte per byte."
   },
   "license_page": {
-    "eyebrow": "Nucleo aperto",
+    "eyebrow": "Termini",
     "title": "Licenza",
-    "lede": "ronutz.com ha un nucleo aperto: il motore che alimenta ogni strumento è open source, mentre il sito web costruito su di esso non lo è.",
-    "openHeading": "Open source — il motore",
-    "openBody": "@ronutz/netcore, il motore dietro ogni strumento e ogni risposta dell'API su questo sito, è pubblicato sotto la Apache License 2.0. La stessa funzione che gli strumenti nel browser richiamano è quella che richiama l'API, quindi sei libero di usarlo, modificarlo e costruirci sopra secondo quella licenza.",
     "closedHeading": "Codice chiuso — questo sito web",
     "closedBody": "Il sito web in sé è a codice chiuso. Il suo design, la sua interfaccia, i suoi contenuti scritti (compreso ogni articolo di Learn), il suo marchio e il modo particolare in cui questi strumenti sono assemblati e presentati qui sono di proprietà esclusiva, tutti i diritti riservati. Non viene concessa alcuna autorizzazione a copiare, riprodurre, modificare, ridistribuire o creare opere derivate dal sito o dai suoi contenuti senza previo consenso scritto.",
     "contact": "Domande sulla licenza? <a>Mettiti in contatto.</a>",
-    "backHome": "Torna agli strumenti"
+    "backHome": "Torna agli strumenti",
+    "thirdHeading": "Componenti open source",
+    "lede": "ronutz.com è un'opera proprietaria, tutti i diritti riservati. Questi termini riguardano il sito web e i suoi contenuti. Il sito è costruito su software open source, usato e ridistribuito secondo i propri termini di licenza, accreditati di seguito.",
+    "thirdBody": "Questo sito si basa su lavoro open source. Il sito stesso è costruito con Next.js e React e distribuito come esportazione statica; l'internazionalizzazione usa next-intl; i contenuti di Learn sono renderizzati con next-mdx-remote, gray-matter, remark-gfm e js-yaml; e la ricerca è fornita da Pagefind. Questi componenti sono forniti sotto la MIT License, tranne next-mdx-remote (Mozilla Public License 2.0). Il riferimento dell'API incorpora Swagger UI, sotto la Apache License 2.0. Ogni componente resta sotto la propria licenza, e gli avvisi completi vengono distribuiti insieme al codice sorgente."
+  },
+  "contributeIdeas": {
+    "eyebrow": "Idee benvenute",
+    "title": "Condividi un'idea",
+    "lede": "Questa cassetta degli attrezzi è fatta per crescere, e il segnale più chiaro su dove debba andare viene da chi la usa. Hai trovato un bug, un errore o un'inesattezza? Manca uno strumento che qui non c'è ancora? Vedi un modo migliore di gestire qualcosa, o un risultato che formuleresti diversamente? Mandalo; ogni tipo di contributo è benvenuto.",
+    "sendTitle": "Cosa puoi inviare",
+    "sendBody": "Bug, errori e inesattezze di ogni tipo: uno strumento che si comporta male, un risultato sbagliato, un errore in un articolo Learn, o semplicemente qualcosa che sembra storto. Richieste di funzionalità per strumenti che già esistono. Idee per nuovi strumenti che la cassetta dovrebbe avere. Correzioni e aggiunte agli articoli Learn, come una spiegazione più chiara, una fonte migliore, o un argomento mancante. Oppure semplicemente un punto di vista diverso su un problema. Va bene anche grezzo; una frase basta per avviare una conversazione.",
+    "toolTitle": "Se proponi un nuovo strumento",
+    "toolBody": "Gli strumenti qui sono piccoli moduli autodescrittivi: un manifesto che dice cos'è lo strumento e da dove viene la sua correttezza, una funzione pura che fa il lavoro, e un insieme di golden vector, le coppie fisse di input e output che lo dimostrano. Un buon candidato calcola in locale e in modo deterministico (lo stesso input produce sempre lo stesso output, senza orologio, rete o casualità nel risultato), tiene sul dispositivo tutto ciò che è sensibile, e àncora la sua correttezza a una fonte citata come una RFC anziché a un'opinione. Non devi costruire nulla di tutto questo per proporne uno: descrivi solo cosa dovrebbe calcolare, un esempio, e la fonte su cui si basa.",
+    "fitRule": "Un test semplice decide. Ogni strumento qui funziona interamente nel tuo browser e non invia nulla da nessuna parte, quindi un nuovo strumento deve essere qualcosa che un computer può ricavare solo da ciò che digiti, seguendo una regola fissa e pubblicata. Se deve andare online, controllare qualcosa in tempo reale, farti accedere o ricordarsi di te, non ha posto qui.",
+    "fitYes": "Adatto:",
+    "fitYesBody": "decodificare o spiegare qualcosa che incolli (un token, un certificato, una configurazione, l'output di un comando), convertire tra formati, calcolare da uno standard o una formula, o generare da una regola, come un UUID, un hash o una riga di comando.",
+    "fitNo": "Non adatto:",
+    "fitNoBody": "tutto ciò che deve andare online o controllare qualcosa in tempo reale (testare un sito web reale, interrogare un server DNS in tempo reale, scansionare un indirizzo), tutto ciò che richiede un account, un accesso o dati salvati, o tutto ciò la cui risposta non è fissata da uno standard pubblicato.",
+    "fitUnsure": "Non sai da quale parte stia la tua idea? Inviala comunque e di' cosa dovrebbe fare. Ti dirò onestamente se è adatta, e perché.",
+    "emailTitle": "Come contattarmi",
+    "emailBody": "L'e-mail è il canale. Dimmi cosa hai trovato o cosa vorresti, con abbastanza dettagli per agire: un esempio, un link, la formulazione esatta, quel che serve. Se migliora la cassetta degli attrezzi, viene costruito.",
+    "emailLabel": "E-mail",
+    "backToTools": "Torna alla cassetta degli attrezzi"
+  },
+  "languageStatus": {
+    "title": "Stato della traduzione",
+    "reviewed": "Revisionato da una persona",
+    "complete": "Automatica, completa",
+    "partial": "Automatica, in corso",
+    "explainTitle": "Come sono contrassegnate le traduzioni",
+    "explainBody": "L'inglese e il portoghese brasiliano sono scritti e revisionati da una persona. La maggior parte delle altre lingue è tradotta automaticamente e contrassegnata in base al suo avanzamento: ambra quando una lingua copre l'intero sito, giallo finché i contenuti più recenti sono ancora in inglese e in fase di aggiornamento. Le lingue contrassegnate in rosso non hanno ancora una traduzione e per ora sono mostrate in inglese. Le pagine tradotte automaticamente riportano anche un breve avviso e sei invitato a migliorarle.",
+    "stub": "Non ancora tradotto"
+  },
+  "changelog": {
+    "eyebrow": "Registro modifiche",
+    "title": "Novità",
+    "lede": "Un registro continuo di nuovi strumenti, nuovi articoli Learn e modifiche significative a questo sito. Oggi sono disponibili {count} strumenti.",
+    "kindLaunch": "Lancio",
+    "kindTool": "Nuovo strumento",
+    "kindFeature": "Funzionalità",
+    "kindI18n": "Localizzazione",
+    "kindContent": "Contenuto",
+    "kindInfra": "Infrastruttura"
   }
 }

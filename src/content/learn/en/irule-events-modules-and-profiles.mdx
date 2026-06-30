@@ -1,0 +1,47 @@
+---
+slug: irule-events-modules-and-profiles
+title: "What Makes an Event Fire: Provisioning and Profiles"
+summary: "An iRule event is only available if two things line up: the module it belongs to is provisioned, and the profile that produces it is attached to the virtual server. Some events need a third ingredient — an explicit collect command. Specify an event whose prerequisites are missing and there is no error; it simply never fires."
+concepts: ["irules", "module provisioning", "profiles", "tmos", "event availability"]
+relatedTools: ["irules-event-order"]
+relatedArticles: ["irule-event-order-explained", "irule-fastl4-vs-standard-events"]
+category: networking
+order: 6
+status: reviewed
+updated: "2026-06-29"
+---
+
+The event order is only half the story. Before an event can take its place in the sequence, it has to *exist* for that virtual server at all — and whether it does depends on what is provisioned and what is attached. Get this wrong and the failure is silent: BIG-IP does not reject an iRule that listens for an unavailable event; the handler just never runs.
+
+## Gate one: module provisioning
+
+Many events belong to a specific TMOS module, and that module must be **provisioned** (and licensed) for the event to fire. The APM access events, the ASM/Advanced WAF request and response events, the bot-defense events, and others each come from their module. Write `when ASM_REQUEST_BLOCKING { ... }` on a box where ASM is not provisioned and nothing happens — no error, no trigger. The core LTM connection events (`CLIENT_ACCEPTED`, `LB_SELECTED`, the connection teardown events) are the exception: they are part of base LTM and are always available.
+
+## Gate two: profile selection
+
+Within LTM, the L7 and SSL events are produced by **profiles** attached to the virtual server. This is the dependency this tool models, and the rule is consistent:
+
+- `HTTP_REQUEST` and `HTTP_RESPONSE` require an **HTTP profile**. No HTTP profile, no HTTP events — the BIG-IP is not parsing HTTP, so there is nothing to fire on.
+- `CLIENTSSL_HANDSHAKE` and the other client-side TLS events require a **client-SSL profile**; the server-side TLS events require a **server-SSL profile**.
+- `CLIENT_DATA` and `SERVER_DATA` are the raw-payload events. They are most relevant on a plain TCP virtual server with **no** L7 service profile — when there is no HTTP profile to parse the stream, these are how an iRule inspects the bytes directly.
+
+So the same virtual server gives you completely different events depending on its stack. Add an HTTP profile and `HTTP_REQUEST` appears while the raw `CLIENT_DATA` path recedes; remove it and the reverse happens.
+
+## Gate three: an explicit collect
+
+A few events do not fire on their own even when their profile is present — they wait for your iRule to ask. `CLIENT_DATA` and `SERVER_DATA` require a `TCP::collect`; `HTTP_REQUEST_DATA` and `HTTP_RESPONSE_DATA` require an `HTTP::collect`. Until you issue the collect, the payload is streamed through and the data event never triggers:
+
+```
+when CLIENT_ACCEPTED {
+  TCP::collect
+}
+when CLIENT_DATA {
+  # only reached because of the collect above
+}
+```
+
+That is why this tool lists those as conditional events rather than part of the automatic flow.
+
+## The practical checklist
+
+When an event "isn't firing," walk the three gates in order: is the **module** provisioned, is the **profile** attached, and does the event need a **collect** you have not issued? Almost every "my iRule does nothing" case is one of these three, not a bug in the logic — and none of them produces an error message to point you at the cause.

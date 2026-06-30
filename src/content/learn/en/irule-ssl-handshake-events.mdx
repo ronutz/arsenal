@@ -1,0 +1,39 @@
+---
+slug: irule-ssl-handshake-events
+title: "iRule SSL Handshake Events"
+summary: "The client-SSL and server-SSL profiles add their own iRule events around the TLS handshake. CLIENTSSL_CLIENTHELLO fires before the handshake completes, which is what makes SNI-based profile and pool selection possible; CLIENTSSL_HANDSHAKE fires after. The server-SSL side mirrors them on the connection to the pool."
+concepts: ["irules", "clientssl", "serverssl", "tls handshake", "sni"]
+relatedTools: ["irules-event-order"]
+relatedArticles: ["irule-clientside-vs-serverside", "irule-event-order-explained"]
+category: transport
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+When a virtual server has a client-SSL profile, the BIG-IP terminates TLS from the client, and that adds events to the iRule flow around the handshake. A server-SSL profile does the same on the connection out to the pool member.
+
+## The client-side handshake events
+
+Two events matter most on the client side, and the order between them is the whole point:
+
+- `CLIENTSSL_CLIENTHELLO` fires when the client's TLS **ClientHello** has arrived, *before* the BIG-IP processes the handshake. This is early enough to read the SNI server name and other ClientHello fields and make a decision.
+- `CLIENTSSL_HANDSHAKE` fires *after* the client-side handshake has completed successfully. By here, the negotiated cipher and protocol are settled.
+
+Because `CLIENTSSL_CLIENTHELLO` runs before the handshake finishes, it is the hook for SNI-based selection — choosing a client-SSL profile or a pool based on the hostname the client asked for:
+
+```
+when CLIENTSSL_CLIENTHELLO {
+  if { [SSL::extensions exists -type 0] } {
+    # inspect SNI and select a profile or pool
+  }
+}
+```
+
+## The server-side mirror
+
+On the connection to the pool member, the server-SSL profile contributes its own handshake events — `SERVERSSL_CLIENTHELLO_SEND` as the BIG-IP sends its ClientHello to the server, and `SERVERSSL_HANDSHAKE` once that handshake completes. In the overall flow these land after `SERVER_CONNECTED`: the TCP connection to the member comes first, then TLS is negotiated on top of it.
+
+## Where they sit in the order
+
+Putting it together, an HTTPS virtual server that re-encrypts runs `CLIENT_ACCEPTED`, then the client handshake events, then `HTTP_REQUEST`, then load balancing, then `SERVER_CONNECTED`, then `SERVERSSL_HANDSHAKE`, and only then sends the request. The two handshakes are independent: the client can negotiate TLS 1.3 with one cipher while the BIG-IP negotiates something entirely different with the server. That independence is the reason SSL events exist on both sides — each handshake is a separate negotiation you may want to inspect or steer.

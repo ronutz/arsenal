@@ -1,0 +1,64 @@
+---
+slug: cookie-security-flags
+title: "Flags de Segurança de Cookies"
+summary: "Como Secure, HttpOnly e SameSite protegem os cookies de sessão, o que cada valor de SameSite significa, por que SameSite=None exige Secure e como os prefixos __Host- e __Secure- impõem essas garantias no nível do navegador."
+concepts: ["cookies", "secure", "httponly", "samesite", "csrf", "session", "cookie prefixes"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "hsts-and-https", "clickjacking-and-framing"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Por que as flags de cookie importam
+
+Um cookie de sessão é uma credencial. Quem o tem é o usuário pelo tempo que a sessão durar. Isso faz dos atributos no `Set-Cookie` controles de segurança, não detalhes de formatação: eles decidem se o cookie pode ser roubado por um script, enviado por HTTP puro ou anexado a uma requisição que o usuário não quis fazer. Uma aplicação bem construída ainda pode ser comprometida por um cookie de sessão sem as flags certas.
+
+Esses atributos viajam no cabeçalho de resposta `Set-Cookie`, então fazem parte da mesma postura que o analisador avalia para o resto da resposta.
+
+```
+set-cookie: session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
+```
+
+## Secure
+
+`Secure` diz ao navegador para enviar o cookie apenas por HTTPS. Sem ele, o cookie é anexado a qualquer requisição em HTTP puro para o host, inclusive a primeira requisição antes de um upgrade de HSTS entrar em vigor, onde um atacante na rede pode lê-lo. `Secure` é a base para qualquer cookie que carrega uma sessão ou qualquer valor sensível, e ele combina diretamente com o HSTS: o HSTS remove a requisição em HTTP puro, e o `Secure` garante que o cookie nunca iria viajar em uma de qualquer forma. Veja [HSTS e a exigência de HTTPS](/learn/hsts-and-https).
+
+## HttpOnly
+
+`HttpOnly` esconde o cookie do JavaScript. O `document.cookie` não consegue lê-lo. Esse é o controle que transforma um bug de cross-site scripting de roubo de sessão em algo menos grave: mesmo que um atacante rode script na página, um cookie de sessão `HttpOnly` não é legível, então não pode ser simplesmente exfiltrado. Cookies de sessão devem ser `HttpOnly` quase sem exceção. O punhado de cookies que um front-end realmente precisa ler nunca deve ser o que autentica o usuário.
+
+## SameSite
+
+`SameSite` controla se o cookie é enviado em requisições que se originam de outros sites, que é a alavanca contra a falsificação de requisição entre sites (CSRF). Ele tem três valores:
+
+**SameSite=Strict** envia o cookie apenas em requisições originadas do mesmo site. É a configuração mais forte. O custo é que seguir um link de outro site para a sua aplicação chega sem o cookie, então o usuário parece deslogado nessa primeira navegação.
+
+**SameSite=Lax** envia o cookie em requisições de mesmo site e em navegações de nível superior que usam um método seguro, como clicar em um link. Ele bloqueia o cookie em subrequisições e envios de formulário entre sites, o que cobre os casos comuns de falsificação mantendo os links de entrada funcionando. É o padrão prático para cookies de sessão, e os navegadores modernos o tratam como padrão quando nenhum `SameSite` é especificado.
+
+**SameSite=None** envia o cookie em todas as requisições entre sites. Existe para cookies que legitimamente precisam de contexto entre sites, como alguns fluxos incorporados ou federados. Vem com uma exigência rígida, descrita a seguir.
+
+## SameSite=None exige Secure
+
+Um cookie definido com `SameSite=None` também precisa ser marcado como `Secure`. Os navegadores rejeitam um cookie `SameSite=None` que não seja `Secure`, então o cookie silenciosamente deixa de ser definido. Além da mecânica, enviar um cookie entre sites sem `Secure` significaria uma credencial que viaja por toda parte e por HTTP puro, que é a pior combinação. O analisador sinaliza `SameSite=None` sem `Secure` como fraqueza pelos dois motivos: é inseguro e nem funciona.
+
+## Os prefixos __Host- e __Secure-
+
+O nome de um cookie pode começar com um prefixo especial que o navegador impõe, o que evita que um cookie mais fraco ou definido por um atacante se passe por um cookie reforçado.
+
+**__Secure-** exige que o cookie seja definido com `Secure` e por HTTPS. Se essas condições não forem atendidas, o navegador rejeita o cookie. Ele garante que qualquer cookie com esse prefixo é um cookie `Secure`.
+
+**__Host-** é mais rígido. Exige `Secure`, exige `Path=/` e proíbe um atributo `Domain`, o que fixa o cookie ao host exato que o definiu. Isso fecha ataques de cookie baseados em subdomínio, em que um cookie definido em um domínio irmão ou pai é enviado ao seu host. Um cookie de sessão `__Host-` é a forma padrão mais forte que um cookie de sessão pode ter.
+
+O analisador verifica se um cookie com prefixo realmente atende aos requisitos do seu prefixo, porque um cookie chamado `__Host-session` que não tem `Secure` ou que carrega um `Domain` é uma contradição que o navegador vai rejeitar, e um sinal de que a configuração não está fazendo o que o nome dela sugere.
+
+## Um cookie de sessão forte
+
+Juntando tudo, um cookie de sessão reforçado tem esta cara:
+
+```
+set-cookie: __Host-session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
+```
+
+Ele não pode ser lido por script, nunca viaja por HTTP puro, não é enviado em subrequisições entre sites, está fixado ao host exato e anuncia tudo isso por um prefixo que o navegador impõe. Esse é o alvo contra o qual o analisador avalia os cookies.

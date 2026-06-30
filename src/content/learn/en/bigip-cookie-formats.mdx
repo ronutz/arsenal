@@ -1,0 +1,42 @@
+---
+slug: bigip-cookie-formats
+title: "The Four BIG-IP Cookie Encodings, Byte by Byte"
+summary: "A precise walk through the four unencrypted BIG-IP persistence cookie formats: default IPv4 with its reversed address bytes and byte-swapped port, IPv4 and IPv6 in route domains, and the IPv6 form, each with a worked decode."
+concepts: ["bigip", "persistence cookie", "encoding", "ipv4", "ipv6", "route domain", "byte order"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-disclosure", "bigip-cookie-encryption"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Four formats, one idea
+
+A BIG-IP persistence cookie always encodes the same thing: a pool member's address and port. How it is laid out depends on whether the member is IPv4 or IPv6 and whether it sits in a non-default route domain. The four shapes are documented in F5 article K6917. The tricky detail, and the one that trips people up, is that the byte order is not the same in every format.
+
+## Default IPv4
+
+This is the common case: a value like `1677787402.20480.0000`, three dot-separated decimal fields. The first field is the address, the second is the port, and the third is a fixed `0000`.
+
+To decode the address, write the decimal as a 32-bit hexadecimal number, then read its bytes in reverse. `1677787402` is `0x6401010A`. Its bytes are `64 01 01 0A`, and reversed that is `0A 01 01 64`, which is `10.1.1.100`. The reversal is the part that surprises people: the address is stored little-endian.
+
+The port is byte-swapped rather than reversed, which for a two-byte value amounts to swapping the high and low byte. `20480` is `0x5000`; swap the bytes to get `0x0050`, which is `80`. So `1677787402.20480.0000` decodes to `10.1.1.100:80`. As a second check, a port field of `36895` is `0x901F`, swapped to `0x1F90`, which is `8080`.
+
+## IPv4 in a route domain
+
+When the pool member lives in a non-default route domain, the format changes completely: `rd5o00000000000000000000ffffc0000201o80`. Read it as `rd`, the route domain number (`5`), the letter `o`, an IPv4-mapped IPv6 prefix (`00000000000000000000ffff`), the address in straight hexadecimal (`c0000201`), another `o`, and the port in plain decimal (`80`).
+
+Here the address is not reversed. `c0 00 02 01` is simply `192.0.2.1`, read left to right. The port is plain decimal, not byte-swapped. So this cookie is `192.0.2.1` in route domain `5` on port `80`.
+
+## IPv6
+
+An IPv6 member uses a `vi` prefix: `vi20010112000000000000000000000030.20480`. After `vi` come 32 hexadecimal characters, the full IPv6 address read straight, then a dot and the port. The 32 hex characters `2001 0112 0000 0000 0000 0000 0000 0030` are the address, which compresses to `2001:112::30`. The port after the dot is byte-swapped exactly as in the default IPv4 form, so `20480` is again `80`. This cookie is `[2001:112::30]:80`.
+
+## IPv6 in a route domain
+
+The last format combines the route domain layout with an IPv6 address: `rd3o20010112000000000000000000000030o80`. Read `rd`, the route domain (`3`), `o`, the 32-hex IPv6 address read straight, `o`, and the port in plain decimal. The address compresses to `2001:112::30` and the port is `80`, giving `[2001:112::30]` in route domain `3` on port `80`. As with the IPv4 route domain form, the port here is plain decimal, not byte-swapped.
+
+## The encrypted form
+
+If cookie encryption is enabled, none of the above applies. The value begins with `!` and is roughly eighty characters of base64, for example `!VPyexJn...HwA=`. This is AES ciphertext and cannot be decoded without the BIG-IP's key. The decoder recognizes it and says so rather than guessing. Why you would want this form is covered in the [cookie encryption](/learn/bigip-cookie-encryption) article.

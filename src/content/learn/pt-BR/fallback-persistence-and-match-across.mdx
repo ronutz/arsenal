@@ -1,0 +1,32 @@
+---
+slug: fallback-persistence-and-match-across
+title: "Fallback de Persistência e as Configurações Match-Across"
+summary: "Um virtual server pode carregar dois métodos de persistência, um primário e um fallback usado quando o primário não encontra registro, e três configurações match-across que decidem quão amplamente um registro de persistência é compartilhado. Ambos são fáceis de configurar errado de formas que só aparecem sob carga."
+concepts: ["persistência", "fallback", "match-across", "ltm", "f5", "virtual server"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+Um único método de persistência muitas vezes não basta sozinho. O BIG-IP permite que um virtual server combine um método primário com um fallback, e permite que um perfil de persistência controle quão amplamente seus registros são compartilhados entre virtuals e pools. Ambos os mecanismos são poderosos e ambos são silenciosamente fáceis de errar.
+
+## Primário e fallback
+
+Em um virtual server, o perfil de persistência padrão é o método primário, e `fallback-persistence` nomeia um segundo método usado quando o primário não produz registro. O exemplo clássico é um primário de persistência por cookie com um fallback de afinidade de endereço de origem: clientes que aceitam cookies persistem por cookie, e clientes que removem cookies ainda chegam de forma consistente por IP de origem. Outra combinação comum é a persistência SSL como primário com a afinidade de endereço de origem como fallback, para que um cliente que não apresenta um ID de sessão reutilizável, no TLS 1.3 ou simplesmente não reutilizando sua sessão, ainda seja capturado por seu endereço.
+
+Para um fallback ser significativo, ele precisa usar um método diferente do primário. Um primário e um fallback que resolvem para o mesmo método não acrescentam resiliência; eles simplesmente fazem a mesma coisa duas vezes. O [explicador de métodos de persistência](/tools/persistence-method-explainer) resolve as duas pontas da cadeia e sinaliza esse caso, além de reconhecer as combinações recomendadas.
+
+## Match Across Services
+
+A primeira das três configurações de compartilhamento, Match Across Services, permite que um cliente mantenha o mesmo membro em virtual servers que compartilham o mesmo endereço virtual. Se `v1:http` e `v1:ssl` ambos a usam, um cliente persistido em um é enviado ao mesmo node no outro, porque compartilham o endereço virtual `v1`. Uma conexão a um virtual com endereço diferente, digamos `v2`, inicia uma nova sessão de persistência. Para que isso funcione, os virtuals envolvidos precisam mapear para os mesmos endereços de node. Observe que, para perfis de cookie, essa configuração se aplica apenas ao método Cookie Hash.
+
+## Match Across Virtual Servers e Match Across Pools
+
+Match Across Virtual Servers é mais amplo: mantém um cliente no mesmo node independentemente de qual virtual hospeda a conexão, mesmo entre endereços virtuais diferentes. Match Across Pools é ainda mais amplo, e o mais perigoso: permite que o BIG-IP use qualquer pool que contenha um dado registro de persistência, o que significa que o tráfego pode ser direcionado a um pool diferente daquele que o virtual server especifica. A F5 documenta isso explicitamente como um aviso, porque pode enviar clientes para algum lugar que a configuração não pretendia obviamente. Habilite as configurações mais amplas apenas quando a topologia genuinamente exigir persistência compartilhada, e confirme que os virtuals e pools envolvidos contêm os mesmos membros.
+
+## Lendo a cadeia
+
+Como essas configurações interagem, lê-las a olho nu entre vários perfis e virtuals é propenso a erros. O [explicador de métodos de persistência](/tools/persistence-method-explainer) dispõe o primário e o fallback de cada virtual junto com as observações que se aplicam, e mostra as configurações match-across em cada perfil com o que elas fazem. Para os próprios métodos, veja [métodos de persistência do BIG-IP](/learn/ltm-persistence-methods); para escolher entre eles, veja [escolhendo um método de persistência](/learn/choosing-a-persistence-method).

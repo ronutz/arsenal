@@ -1,0 +1,32 @@
+---
+slug: syslog-facilities-and-severities
+title: "Facilities e Severities do Syslog, Explicadas"
+summary: "O syslog define 24 facilities e 8 severities. As severities são uma escala limpa de urgência, de emergency até debug; as facilities são uma mistura de categorias genuinamente úteis e resquícios históricos do Unix, mais oito slots locais nos quais os dispositivos de rede se apoiam bastante."
+concepts: ["syslog", "facility", "severity", "rfc5424", "logging"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-pri-facility-severity", "syslog-on-network-devices"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Os números dentro de um PRI de syslog mapeiam para facilities e severities nomeadas. Os números são normativos; os nomes-chave curtos (`auth`, `local0`, `crit`) são a convenção BSD comum e são informativos. Eis o que eles significam.
+
+## As oito severities
+
+A severity é a metade fácil: um único dígito de 0 a 7, onde **menor é mais urgente**. A escala vai de emergency (0, o sistema está inutilizável), alert (1, aja imediatamente), critical (2), error (3), warning (4), notice (5, normal mas significativo), informational (6) e debug (7). Duas notas práticas: você raramente vê emergency na prática, porque um sistema quebrado a esse ponto muitas vezes não consegue enviar nada, e geralmente você não quer debug em produção porque o volume afoga todo o resto. A maioria dos dispositivos de produção é configurada para registrar em notice ou informational, que é severity 5 ou 6.
+
+## As 24 facilities, em grupos
+
+A facility é a metade mais bagunçada, porque carrega décadas de história do Unix. Ajuda lê-la em grupos.
+
+As **facilities de sistema** cobrem subsistemas clássicos do Unix: kernel (0), user-level (1), mail (2), system daemons (3), segurança e autorização (4, comumente `auth`), mensagens do próprio syslogd (5), a impressora de linha (6), network news (7), UUCP (8), o clock daemon (9, comumente `cron`), segurança e autorização privadas (10, comumente `authpriv`), FTP (11) e NTP (12). Várias destas, como UUCP e network news, são essencialmente históricas hoje.
+
+A **banda de auditoria e relógio**, facilities 13 (log audit), 14 (log alert) e 15 (um segundo clock daemon), merece uma cautela: as facilities 12 a 15 não são consistentemente padronizadas, e diferentes implementações as atribuem de formas diferentes, então trate uma mensagem nessa banda com cuidado. O decodificador sinaliza isso para você.
+
+As **facilities locais**, 16 a 23, são chamadas `local0` a `local7`. Elas não têm significado fixo, o que é exatamente o motivo de serem úteis: appliances e dispositivos de rede as reivindicam para seus próprios logs sem colidir com as facilities de sistema. É aqui que a maioria das mensagens dos seus firewalls, balanceadores de carga e switches de fato vive.
+
+## Por que a divisão importa
+
+Facility e severity juntas determinam como um coletor ou SIEM roteia e prioriza. Você pode enviar as facilities de autenticação para um fluxo e as mensagens de kernel para outro, alertar sobre severity 0 a 2 enquanto arquiva severity 5 a 7, ou separar os logs de appliance de um tenant dos de outro atribuindo a eles facilities locais diferentes. O [decodificador de PRI syslog](/tools/syslog-pri-decoder) lista cada facility e severity com seu significado conforme você decodifica. Para a aritmética que as combina, veja [o PRI do syslog](/learn/syslog-pri-facility-severity); para as facilities específicas que seu equipamento usa, veja [syslog em dispositivos de rede](/learn/syslog-on-network-devices).

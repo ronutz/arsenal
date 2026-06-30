@@ -15,6 +15,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ContactForm from "@/components/ContactForm";
 import ObfuscatedEmail from "@/components/ObfuscatedEmail";
+import { Link } from "@/i18n/navigation";
 import { externalRel } from "@/config/redEducation";
 import {
   contactEmail,
@@ -75,6 +76,12 @@ export default async function ContactPage({
             <div className="container contact-container">
               <h1 className="contact-title">{t("title")}</h1>
               <p className="contact-lede">{t("lede")}</p>
+              {/* Site feedback (bugs, mistakes, inaccuracies) is a different
+                  channel from booking/consulting: point it to the ideas page. */}
+              <p className="contact-feedback">
+                {t("feedbackNote")}{" "}
+                <Link href="/contribute/tools">{t("feedbackLink")}</Link>.
+              </p>
             </div>
           </section>
 

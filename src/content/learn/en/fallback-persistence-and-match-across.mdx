@@ -1,0 +1,32 @@
+---
+slug: fallback-persistence-and-match-across
+title: "Fallback Persistence and the Match-Across Settings"
+summary: "A virtual server can carry two persistence methods, a primary and a fallback used when the primary finds no record, and three match-across settings that decide how widely a persistence record is shared. Both are easy to misconfigure in ways that only show up under load."
+concepts: ["persistence", "fallback", "match-across", "ltm", "f5", "virtual server"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+A single persistence method is often not enough on its own. BIG-IP lets a virtual server combine a primary method with a fallback, and lets a persistence profile control how widely its records are shared across virtuals and pools. Both mechanisms are powerful and both are quietly easy to get wrong.
+
+## Primary and fallback
+
+On a virtual server, the default persistence profile is the primary method, and `fallback-persistence` names a second method used when the primary yields no record. The classic example is a primary of cookie persistence with a fallback of source address affinity: clients that accept cookies persist by cookie, and clients that strip cookies still land consistently by source IP. Another common pairing is SSL persistence as the primary with source address affinity as the fallback, so a client that presents no reusable session ID, on TLS 1.3, or simply not reusing its session, is still caught by its address.
+
+For a fallback to be meaningful it must use a different method from the primary. A primary and fallback that resolve to the same method add no resilience; they simply do the same thing twice. The [persistence-method explainer](/tools/persistence-method-explainer) resolves both ends of the chain and flags this case, as well as recognizing the recommended pairings.
+
+## Match Across Services
+
+The first of the three sharing settings, Match Across Services, lets a client keep the same member across virtual servers that share the same virtual address. If `v1:http` and `v1:ssl` both use it, a client persisted on one is sent to the same node on the other, because they share virtual address `v1`. A connection to a virtual with a different address, say `v2`, starts a fresh persistence session. For this to work, the virtuals involved must map to the same node addresses. Note that for cookie profiles this setting applies to the Cookie Hash method only.
+
+## Match Across Virtual Servers and Match Across Pools
+
+Match Across Virtual Servers is broader: it keeps a client on the same node regardless of which virtual hosts the connection, even across different virtual addresses. Match Across Pools is broader still, and the most dangerous: it lets BIG-IP use any pool that holds a given persistence record, which means traffic can be directed to a pool other than the one the virtual server specifies. F5 documents this explicitly as a warning, because it can send clients somewhere the configuration did not obviously intend. Enable the wider settings only when the topology genuinely calls for shared persistence, and confirm that the virtuals and pools involved contain the same members.
+
+## Reading the chain
+
+Because these settings interact, reading them by eye across several profiles and virtuals is error-prone. The [persistence-method explainer](/tools/persistence-method-explainer) lays out each virtual's primary and fallback together with the notes that apply, and shows the match-across settings on each profile with what they do. For the methods themselves, see [BIG-IP persistence methods](/learn/ltm-persistence-methods); for choosing among them, see [choosing a persistence method](/learn/choosing-a-persistence-method).

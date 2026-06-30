@@ -1,0 +1,41 @@
+---
+slug: irule-clientside-vs-serverside
+title: "Lado Cliente vs Lado Servidor em iRules"
+summary: "Um virtual server do BIG-IP é um proxy completo: ele mantém uma conexão separada com o cliente e com o membro do pool. Os eventos de iRule rodam em um contexto ou no outro, e comandos como IP::remote_addr retornam coisas diferentes dependendo do lado em que você está. Conhecer essa fronteira evita toda uma classe de bugs confusos."
+concepts: ["irules", "clientside", "serverside", "full proxy", "context"]
+relatedTools: ["irules-event-order"]
+relatedArticles: ["irule-event-order-explained", "irule-ssl-handshake-events"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+Um virtual server Standard do BIG-IP é um **proxy completo**. Esse é o fato mais importante para entender iRules. Existem duas conexões TCP independentes: uma entre o cliente e o BIG-IP, e outra entre o BIG-IP e o membro do pool escolhido. Elas têm endereços diferentes, portas diferentes e até sessões TLS diferentes.
+
+## Eventos pertencem a um lado
+
+Cada evento de iRule roda no contexto do **lado cliente** ou do **lado servidor**, dependendo de onde no fluxo ele se encontra:
+
+- `CLIENT_ACCEPTED`, `CLIENTSSL_HANDSHAKE`, `HTTP_REQUEST`, `CLIENT_CLOSED` rodam no lado cliente.
+- `SERVER_CONNECTED`, `SERVERSSL_HANDSHAKE`, `HTTP_REQUEST_SEND`, `SERVER_CLOSED` rodam no lado servidor.
+
+A travessia acontece no balanceamento: tudo até e incluindo `HTTP_REQUEST` é do lado cliente, o membro do pool é selecionado em `LB_SELECTED`, e de `SERVER_CONNECTED` em diante você está no lado servidor até a resposta voltar.
+
+## O mesmo comando, duas respostas
+
+É aqui que dói. `IP::remote_addr` retorna o *peer* da conexão atual. Em `CLIENT_ACCEPTED` esse é o endereço do cliente; em `SERVER_CONNECTED` é o endereço do membro do pool. O comando não mudou — o contexto mudou. O mesmo vale para `TCP::remote_port`, detalhes de SSL e mais.
+
+Você também pode forçar um contexto explicitamente. Os comandos `clientside` e `serverside` avaliam uma expressão contra a outra conexão:
+
+```
+when SERVER_CONNECTED {
+  log local0. "cliente era [clientside {IP::remote_addr}]"
+}
+```
+
+Isso registra o endereço do cliente mesmo com o evento rodando no lado servidor.
+
+## Por que é projetado assim
+
+O modelo de proxy completo é o que torna o BIG-IP poderoso: ele pode terminar o TLS do cliente com um certificado e abrir uma sessão TLS completamente diferente com o servidor, reescrever requisições, reutilizar conexões com OneConnect e proteger servidores de peculiaridades do lado cliente. O custo é que você, autor da iRule, precisa controlar em que lado está pisando. Quando um valor parece errado, a primeira pergunta é quase sempre: em qual contexto este evento está rodando?

@@ -1,0 +1,34 @@
+---
+slug: choosing-a-persistence-method
+title: "Escolhendo um Método de Persistência (e Seus Modos de Falha)"
+summary: "A maioria das necessidades de persistência é atendida pela afinidade de endereço de origem ou pela persistência por cookie, mas ambas têm modos de falha bem conhecidos: a afinidade de origem desmorona atrás de NAT, e os cookies precisam de HTTP. Saber onde cada método falha é o que transforma uma escolha padrão em uma escolha deliberada."
+concepts: ["persistência", "ltm", "nat", "tls", "f5", "design"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "fallback-persistence-and-match-across"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+A afinidade de endereço de origem e a persistência por cookie juntas cobrem a maioria das necessidades, e é por isso que são os padrões usuais. Mas um padrão só é uma boa escolha quando você conhece seu modo de falha, e cada método tem um que importa.
+
+## Afinidade de endereço de origem: o problema do NAT
+
+A afinidade de origem é simples e independente de protocolo, mas baseia-se no IP do cliente, e essa suposição quebra sempre que muitos usuários compartilham um endereço. Atrás de um gateway NAT, um proxy corporativo ou um concentrador de VPN, centenas de clientes podem chegar com o mesmo IP de origem. A afinidade de origem fixará todos eles em um único membro do pool, e a distribuição de carga desmorona silenciosamente sobre um servidor. Ela também consome memória no BIG-IP: com a máscara padrão `255.255.255.255`, cada endereço de cliente distinto recebe seu próprio registro de persistência. Uma máscara mais ampla reduz a contagem de registros, mas agrupa mais clientes, o que troca um problema por outro. A afinidade de origem só é adequada quando os clientes têm endereços estáveis e genuinamente distintos.
+
+## Persistência por cookie: a exigência de HTTP
+
+A persistência por cookie evita o problema do endereço compartilhado identificando cada cliente de forma única na camada HTTP. Seu custo é que só funciona para HTTP, ou para HTTPS que o BIG-IP descriptografa, porque precisa de um perfil HTTP para inserir ou ler o cookie. Ela também depende da cooperação do cliente: um cliente que remove cookies não persistirá de forma alguma. Essa única dependência é o motivo mais comum para configurar um método de fallback, para que clientes que recusam cookies ainda cheguem a algum lugar consistente.
+
+## Persistência SSL: o precipício do TLS 1.3
+
+Quando o tráfego é criptografado e não descriptografado no BIG-IP, nem cookie nem métodos de camada de aplicação conseguem ver nada, e a persistência SSL torna-se atraente porque se baseia no ID de sessão SSL trocado em texto claro durante o handshake. Ela até sobrevive a uma mudança no IP do cliente. O problema é a versão do protocolo. O mecanismo de ID de sessão foi efetivamente aposentado no TLS 1.3, então a persistência SSL não pode ser usada de forma confiável ali, e mesmo no TLS 1.2 alguns clientes não reutilizam o ID de sessão de forma consistente. É exatamente por isso que a persistência SSL é tão frequentemente combinada com um fallback de endereço de origem.
+
+## Persistência universal: quando você precisa de controle
+
+Quando a chave certa não é nenhuma das anteriores, um token de aplicação em um cabeçalho ou payload, a persistência universal permite que uma iRule extraia precisamente esse valor. É o método mais flexível, mas transfere o trabalho para uma iRule que você deve escrever e manter, e exige que o BIG-IP veja o valor, então o tráfego criptografado precisa ser terminado primeiro. Recorra a ela quando a noção de sessão da aplicação não corresponder a um cookie ou a um endereço.
+
+## Deixando a ferramenta revelar os trade-offs
+
+O [explicador de métodos de persistência](/tools/persistence-method-explainer) imprime os modos de falha de cada método ao lado de sua configuração, então um perfil de endereço de origem mostra a ressalva do NAT e um perfil SSL mostra a ressalva do TLS 1.3 diretamente ao lado das configurações. Para o catálogo completo de métodos, veja [métodos de persistência do BIG-IP](/learn/ltm-persistence-methods); para como um primário e um fallback se combinam, veja [fallback de persistência e match-across](/learn/fallback-persistence-and-match-across).

@@ -1,0 +1,28 @@
+---
+slug: query-strings
+title: "Query Strings: Parâmetros, Sinais de Mais e Chaves Repetidas"
+summary: "A parte de uma URL após o ponto de interrogação parece simples mas esconde ambiguidade real: como os parâmetros são separados, por que um sinal de mais às vezes significa espaço, como chaves repetidas se comportam e por que não há um único padrão governante."
+concepts: ["query string", "url", "parameters", "form-urlencoded", "percent-encoding", "rfc 3986"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "url-encoding-and-idn", "percent-encoding"]
+category: encoding
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## O que a query realmente é
+
+A query é tudo entre o ponto de interrogação e o fragmento. A RFC 3986 define onde ela começa e termina, mas não diz quase nada sobre o que há dentro: para a gramática de URI, a query é apenas uma cadeia de caracteres permitidos. A estrutura familiar `key=value&key=value` é uma convenção separada, herdada do envio de formulários HTML (o formato application/x-www-form-urlencoded), com a qual toda a web concordou. Um parser divide a query no e-comercial para obter pares, depois divide cada par no primeiro sinal de igual para obter uma chave e um valor.
+
+## A ambiguidade do sinal de mais
+
+Aqui está a armadilha que pega as pessoas. Na convenção form-urlencoded, um espaço é codificado como um sinal de mais, então `q=hello+world` significa as duas palavras separadas por um espaço. Mas sob a RFC 3986 estrita, o sinal de mais é apenas um mais literal sem significado especial, e um espaço seria codificado em percent como `%20`. Então os mesmos bytes, `a+b`, significam "a espaço b" para um decodificador de formulário e "a mais b" para um leitor estrito de URI. A maioria dos frameworks web trata a query como form-encoded e transforma o mais em espaço, mas nem todos fazem isso, e a divergência é uma fonte real de bugs. O inspetor decodifica escapes percent mas mantém o mais literal, e sinaliza sua presença para que você decida qual interpretação o seu código aplica.
+
+## Chaves repetidas e estrutura
+
+Uma query pode listar a mesma chave mais de uma vez: `tag=red&tag=blue`. Não há regra universal para o que isso significa. Alguns servidores mantêm a primeira ocorrência, alguns mantêm a última, e muitos as coletam em uma lista, que é como caixas de seleção e campos de múltipla escolha são enviados. Outras convenções adicionam estrutura sobre o formato plano, como `items[]=red&items[]=blue` ou nomes com ponto como `filter.color=red`, mas essas são escolhas de framework, não parte de nenhum padrão de URL. Quando você vê chaves repetidas ou com colchetes, o significado depende inteiramente da aplicação que as lê.
+
+## Por que os valores precisam ser codificados
+
+Como o e-comercial e o sinal de igual são estruturais, qualquer e-comercial ou igual real dentro de um valor precisa ser codificado em percent, ou o parser vai dividir no lugar errado. O mesmo vale para espaços, para a cerquilha que de outra forma iniciaria o fragmento, e para qualquer texto não-ASCII. É por isso que valores de query são tão frequentemente cheios de escapes percent. Decodificar cada valor de volta ao seu conteúdo real, após a divisão estrutural, é o trabalho que o inspetor faz para cada parâmetro, e a mecânica dessa codificação é coberta em [percent-encoding](/learn/percent-encoding).

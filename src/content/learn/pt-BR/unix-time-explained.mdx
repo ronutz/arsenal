@@ -1,0 +1,32 @@
+---
+slug: unix-time-explained
+title: "O Que o Tempo Unix Realmente É"
+summary: "O tempo Unix é um único inteiro: o número de segundos desde 1970-01-01T00:00:00Z, a época (epoch). É independente de fuso horário, compacto e ordenável, e por isso sustenta quase todo relógio de sistema, linha de log e timestamp de API. Convertê-lo em uma data de calendário é pura aritmética."
+concepts: ["unix time", "epoch", "utc", "timestamp", "posix"]
+relatedTools: ["epoch"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds", "iso-8601-and-rfc-3339"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+Quase todo timestamp que você já viu em um arquivo de log, uma linha de banco de dados ou uma resposta de API é, por baixo, a mesma coisa: uma contagem de segundos. O tempo Unix é o número de segundos decorridos desde **1970-01-01T00:00:00Z**, um momento conhecido como **época** (epoch).
+
+## Um número, sem fuso horário
+
+A característica definidora do tempo Unix é que ele é um único inteiro **sem fuso horário anexado**. O instante "1700000000" é o mesmo em todo lugar da Terra; o fuso só entra na história quando você quer *exibi-lo* para um humano. É exatamente essa propriedade que o torna tão usado: dois sistemas em lados opostos do mundo podem comparar, ordenar e armazenar timestamps sem nunca negociar um fuso. Um número maior é sempre mais tarde; a subtração dá uma duração em segundos.
+
+## Antes da época
+
+O tempo não começou em 1970, então o tempo Unix simplesmente fica **negativo** para momentos anteriores. `-86400` é exatamente um dia antes da época, 1969-12-31T00:00:00Z. A maioria dos sistemas lida bem com timestamps negativos, embora código mais antigo às vezes assumisse que o tempo era sem sinal e quebre antes de 1970.
+
+## Converter para data é aritmética
+
+Transformar um timestamp Unix em uma data de calendário não precisa de relógio nem de rede — é pura aritmética sobre o calendário gregoriano proléptico. Você divide e tira o resto de segundos até dias, considera os anos bissextos e chega a um ano, mês, dia e hora. Como as regras são fixas, o mesmo timestamp sempre produz a mesma data, o que permite que um conversor como este rode inteiramente no seu navegador e gere uma saída idêntica todas as vezes.
+
+## Por que venceu
+
+O tempo Unix venceu as alternativas por razões tediosamente práticas: é compacto (um número), trivialmente comparável, irrelevante lexicalmente (sem análise de strings para comparar dois instantes) e inequívoco (sem "isto é 15h em Londres ou em Tóquio?"). O custo é que o número bruto é ilegível para humanos — `1700000000` não significa nada à primeira vista — que é toda a razão pela qual formatos de data e conversores existem.
+
+Vale conhecer duas sutilezas antes de confiar em um timestamp bruto: em qual **unidade** ele está (segundos, milissegundos ou menor) e o fato de que o tempo Unix silenciosamente **ignora os segundos bissextos**. Ambos têm seus próprios artigos.

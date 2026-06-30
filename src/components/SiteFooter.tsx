@@ -65,8 +65,8 @@ export default async function SiteFooter() {
             {t("privacy")}
           </Link>
         </p>
-        {/* Licensing terms: the open-core engine (open source) vs the
-            closed-source site. Replaces the former one-line rights statement. */}
+        {/* Licensing terms: the proprietary site plus the required third-party
+            attributions. Replaces the former one-line rights statement. */}
         <p className="footer-contribute">
           <Link href="/license" className="footer-contribute-link">
             {t("license")}

@@ -1,0 +1,30 @@
+---
+slug: bigip-persistence-cookies
+title: "BIG-IP Persistence Cookies: What They Are and Why They Leak"
+summary: "Why an F5 BIG-IP inserts a BIGipServer cookie, what cookie persistence does, what the cookie value actually encodes, and why the default unencrypted form hands an internal address and port to anyone who reads the response."
+concepts: ["bigip", "persistence cookie", "cookie persistence", "pool member", "load balancing", "f5 ltm"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-cookie-formats", "bigip-cookie-disclosure", "bigip-cookie-encryption"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Why the cookie exists
+
+When an F5 BIG-IP load balances HTTP traffic across a pool of backend servers, it often needs the same client to keep landing on the same server for the life of a session. A shopping cart, a login session, or any state held in one server's memory breaks if the next request is sent somewhere else. Cookie persistence is the BIG-IP feature that solves this. The first time a client is balanced to a pool member, the BIG-IP inserts a Set-Cookie header into the response, and the client returns that cookie on every subsequent request. The BIG-IP reads it and sends the client straight back to the same pool member.
+
+The cookie is named after the pool it belongs to: `BIGipServer` followed by the pool name, for example `BIGipServerweb_pool`. The value is the interesting part. Rather than store server state on the BIG-IP, the default cookie persistence method encodes the chosen pool member's address and port directly into the cookie value, so the BIG-IP can read the destination back out of the cookie with no table lookup.
+
+## What the value encodes
+
+A default cookie value looks like `1677787402.20480.0000`. That is not random: it is the pool member's IPv4 address and port, encoded as decimal numbers. The first number is the address with its bytes reversed; the second is the port with its two bytes swapped; the trailing `0000` is a fixed field. Decoded, `1677787402.20480.0000` is `10.1.1.100:80`. There are also encodings for IPv4 in a route domain, for IPv6 members, and for IPv6 in a route domain, each laid out differently. The companion article on [cookie formats](/learn/bigip-cookie-formats) walks through all four with worked examples.
+
+The key point is that the encoding is not encryption. It is a reversible transformation documented publicly by F5 in article K6917. Anyone who can read the cookie, which is anyone who receives the HTTP response, can reverse it.
+
+## Why that matters
+
+By default, the cookie hands out the private IP address and port of a server inside your network. That is a small but real information disclosure: it confirms internal addressing, and collecting several cookies from a site can reveal how many members a pool has and how they are numbered. Security scanners decode these cookies automatically for exactly this reason. The [information disclosure](/learn/bigip-cookie-disclosure) article covers what an attacker learns and why it is worth closing.
+
+None of this means cookie persistence is unsafe to use. It means the default, unencrypted cookie should usually be encrypted. BIG-IP can encrypt the persistence cookie so its value becomes opaque ciphertext that cannot be decoded without the BIG-IP's key. That single setting is the fix, and it is the subject of the [cookie encryption](/learn/bigip-cookie-encryption) article. The decoder on this page works on the unencrypted forms and will tell you plainly when a cookie is already encrypted.

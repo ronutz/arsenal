@@ -1,0 +1,32 @@
+---
+slug: irule-fastl4-vs-standard-events
+title: "FastL4 vs Standard: Which iRule Events You Get"
+summary: "A Standard virtual server is a full TCP proxy and exposes the rich set of L7 and SSL iRule events. A FastL4 virtual server is a packet-based fast path optimized for throughput, and it deliberately gives up most of those events. Choosing the profile is choosing which events exist."
+concepts: ["fastl4", "standard virtual server", "full proxy", "irules", "performance"]
+relatedTools: ["irules-event-order"]
+relatedArticles: ["irule-event-order-explained", "irule-clientside-vs-serverside"]
+category: networking
+order: 5
+status: reviewed
+updated: "2026-06-29"
+---
+
+The virtual server type decides how much of the connection the BIG-IP actually inspects, and that in turn decides which iRule events are available to you. The two common choices sit at opposite ends.
+
+## Standard: the full proxy
+
+A **Standard** virtual server terminates the client's TCP connection and opens a separate one to the pool member. Because it fully reassembles and understands the streams, it can expose the whole catalogue of events: the SSL handshake events, `HTTP_REQUEST` and `HTTP_RESPONSE`, data-collection events, and the client-side and server-side connection events. `CLIENT_ACCEPTED` fires when the TCP three-way handshake completes. This is the type to use whenever you need to look at or change application data.
+
+## FastL4: the fast path
+
+A **FastL4** virtual server is built for raw throughput. It processes traffic largely at the packet level and can offload flows to hardware, but it pays for that speed by not being a full proxy. As a result:
+
+- `CLIENT_ACCEPTED` fires on the **initial SYN**, not after a completed handshake.
+- The HTTP events do not fire — there is no HTTP parsing.
+- The SSL handshake events do not fire — TLS is not terminated.
+
+You still get basic connection events, but the L7 and SSL hooks an HTTP iRule relies on are simply absent. Specifying one of those events on a FastL4 virtual server is not an error; the event just never triggers — which is a confusing way to discover the mismatch.
+
+## Choosing deliberately
+
+The trade-off is throughput against visibility. FastL4 is the right call for high-volume L4 load balancing where you do not need to touch application content. The moment you need to read a header, steer on SNI, or run any HTTP or SSL logic, you need a Standard virtual server. This tool models the Standard sequence; when the FastL4 toggle is on, treat the HTTP and SSL rows as not applicable, because on a real FastL4 virtual server those events would never fire.

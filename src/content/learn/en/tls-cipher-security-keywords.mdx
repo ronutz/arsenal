@@ -1,0 +1,40 @@
+---
+slug: tls-cipher-security-keywords
+title: "Which TLS Cipher Keywords Are Safe, and Which Are Not"
+summary: "The difference between a hardened cipher string and a dangerous one is a handful of keywords. Forward secrecy comes from ECDHE and DHE; the risks come from RC4, 3DES, SSLv3, EXPORT, NULL, and anonymous DH. Knowing the short list lets you read a cipher string's security at a glance."
+concepts: ["tls", "cipher", "forward secrecy", "rc4", "3des", "security"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "f5-cipher-rules-and-groups"]
+category: transport
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+A cipher string can be read for its security posture almost as quickly as for its syntax, because only a small set of keywords carries real weight. They fall into three groups: the ones you want, the ones you want gone, and the protocol versions that decide the rest.
+
+## The keywords you want
+
+**Forward secrecy** is the single most important property, and it comes from an ephemeral key exchange: `ECDHE` (elliptic curve) or `DHE` (finite field). With forward secrecy, capturing a server's private key does not let an attacker decrypt past sessions, because each session used a throwaway key. ECDHE is preferred for being faster than DHE. For bulk encryption, the **AEAD** ciphers `AES-GCM` and `CHACHA20-POLY1305` are the strong choices, combining encryption and integrity in one construction. F5 recommends including the `HIGH` alias and, when serving an ECDSA certificate, including `ECDHE_ECDSA` so the right suites are available.
+
+## The keywords you want gone
+
+A short blacklist covers most of the danger:
+
+- `RC4`: a stream cipher with known biases, prohibited by RFC 7465.
+- `DES`: single DES, breakable by brute force; and `3DES`, slow and vulnerable to the Sweet32 birthday attack.
+- `EXPORT` (or `EXP`): deliberately weakened export-grade ciphers behind FREAK and Logjam.
+- `NULL`: no encryption at all.
+- `MD5`: a broken hash for message authentication.
+- `ADH` and `AECDH`: anonymous key exchanges with no certificate and therefore no protection against a man in the middle.
+- `LOW`: the alias for short-key, low-strength suites.
+
+The safe way to forbid these is the `!` operator, which excludes them permanently. A string that says `!RC4:!SSLv3:!EXP:!DES` is doing exactly the right thing. F5 specifically recommends disabling anonymous DH while keeping strength high, written as `!ADH:HIGH`.
+
+## The protocol versions
+
+Protocol keywords gate everything above them. `TLSv1_2` and `TLSv1_3` are current and secure. `TLSv1` (TLS 1.0) and `TLSv1_1` are deprecated and now fail most compliance checks, and `SSLv3` (vulnerable to POODLE) and `SSLv2` are long dead. Allowing an old protocol version reopens whole classes of weak suites, so disabling them is often the highest-impact single change in a cipher string.
+
+## Reading the posture at a glance
+
+The [F5 cipher-string explainer](/tools/f5-cipher-string-expander) applies exactly this lens: it reports whether forward secrecy is present, lists the weak keywords a string enables, and credits the weak keywords it explicitly excludes. For the grammar these keywords sit in, see [reading an F5 cipher string](/learn/f5-cipher-string-syntax); for how F5 packages them into reusable rules, see [F5 cipher rules and groups](/learn/f5-cipher-rules-and-groups).

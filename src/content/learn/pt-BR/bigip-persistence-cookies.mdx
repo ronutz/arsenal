@@ -1,0 +1,30 @@
+---
+slug: bigip-persistence-cookies
+title: "Cookies de Persistência do BIG-IP: O Que São e Por Que Vazam"
+summary: "Por que um F5 BIG-IP insere um cookie BIGipServer, o que a persistência por cookie faz, o que o valor do cookie realmente codifica e por que a forma padrão, sem criptografia, entrega um endereço interno e uma porta a qualquer um que leia a resposta."
+concepts: ["bigip", "persistence cookie", "cookie persistence", "pool member", "load balancing", "f5 ltm"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-cookie-formats", "bigip-cookie-disclosure", "bigip-cookie-encryption"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Por que o cookie existe
+
+Quando um F5 BIG-IP balanceia tráfego HTTP entre um pool de servidores de backend, ele muitas vezes precisa que o mesmo cliente continue caindo no mesmo servidor durante toda a sessão. Um carrinho de compras, uma sessão de login ou qualquer estado mantido na memória de um servidor quebra se a próxima requisição for enviada para outro lugar. A persistência por cookie é o recurso do BIG-IP que resolve isso. Na primeira vez que um cliente é balanceado para um membro do pool, o BIG-IP insere um cabeçalho Set-Cookie na resposta, e o cliente devolve esse cookie em cada requisição seguinte. O BIG-IP o lê e envia o cliente de volta ao mesmo membro do pool.
+
+O cookie recebe o nome do pool ao qual pertence: `BIGipServer` seguido do nome do pool, por exemplo `BIGipServerweb_pool`. O valor é a parte interessante. Em vez de guardar estado no BIG-IP, o método padrão de persistência por cookie codifica o endereço e a porta do membro escolhido diretamente no valor do cookie, de modo que o BIG-IP consegue extrair o destino do próprio cookie sem nenhuma consulta a tabela.
+
+## O que o valor codifica
+
+Um valor de cookie padrão se parece com `1677787402.20480.0000`. Isso não é aleatório: é o endereço IPv4 e a porta do membro do pool, codificados como números decimais. O primeiro número é o endereço com os bytes invertidos; o segundo é a porta com seus dois bytes trocados; o `0000` final é um campo fixo. Decodificado, `1677787402.20480.0000` é `10.1.1.100:80`. Há também codificações para IPv4 em um route domain, para membros IPv6 e para IPv6 em um route domain, cada uma com um layout diferente. O artigo complementar sobre os [formatos de cookie](/learn/bigip-cookie-formats) percorre os quatro com exemplos resolvidos.
+
+O ponto central é que a codificação não é criptografia. É uma transformação reversível documentada publicamente pela F5 no artigo K6917. Qualquer um que consiga ler o cookie, ou seja, qualquer um que receba a resposta HTTP, consegue revertê-la.
+
+## Por que isso importa
+
+Por padrão, o cookie entrega o endereço IP privado e a porta de um servidor dentro da sua rede. Isso é uma divulgação de informação pequena, mas real: confirma o endereçamento interno e, juntando vários cookies de um site, é possível revelar quantos membros um pool tem e como estão numerados. Scanners de segurança decodificam esses cookies automaticamente justamente por isso. O artigo sobre [divulgação de informação](/learn/bigip-cookie-disclosure) cobre o que um atacante aprende e por que vale a pena fechar essa brecha.
+
+Nada disso significa que a persistência por cookie seja insegura de usar. Significa que o cookie padrão, sem criptografia, geralmente deveria ser criptografado. O BIG-IP pode criptografar o cookie de persistência para que o valor vire um texto cifrado opaco, impossível de decodificar sem a chave do BIG-IP. Esse único ajuste é a correção, e é o tema do artigo sobre [criptografia de cookie](/learn/bigip-cookie-encryption). O decodificador desta página funciona nas formas sem criptografia e avisa claramente quando um cookie já está criptografado.

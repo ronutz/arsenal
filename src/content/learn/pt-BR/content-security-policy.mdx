@@ -1,0 +1,86 @@
+---
+slug: content-security-policy
+title: "Content Security Policy, Diretiva por Diretiva"
+summary: "Como a CSP funciona como controle contra cross-site scripting e injeção: a forma de uma política, por que default-src importa, o que 'unsafe-inline' e 'unsafe-eval' entregam, como nonces e hashes permitem código inline específico com segurança e para que serve o modo report-only."
+concepts: ["csp", "xss", "default-src", "script-src", "frame-ancestors", "nonce", "hash", "report-only"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["secure-headers-overview", "clickjacking-and-framing", "hsts-and-https"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Para que serve a CSP
+
+Uma Content-Security-Policy diz ao navegador quais fontes de conteúdo são permitidas para uma página: de onde scripts podem carregar, de onde estilos podem vir, o que pode ser enquadrado, e assim por diante. Sua principal função é conter o cross-site scripting. Se um atacante consegue injetar uma tag `<script>` ou um manipulador de evento inline, uma boa política faz o navegador se recusar a executá-lo, porque o código injetado não corresponde a uma fonte permitida.
+
+A CSP não encontra nem corrige a injeção. Ela é a camada que torna uma injeção bem-sucedida muito menos útil. É por isso que ela faz parte do quadro de defesa em profundidade da [visão geral dos cabeçalhos de segurança](/learn/secure-headers-overview), e por isso uma política que ainda permite script inline arbitrário está cumprindo só parte do trabalho.
+
+## A forma de uma política
+
+Uma política é uma lista de diretivas separadas por ponto e vírgula. Cada diretiva nomeia um tipo de recurso e uma lista de fontes permitidas:
+
+```
+content-security-policy:
+  default-src 'self';
+  script-src 'self' https://cdn.example.com;
+  object-src 'none';
+  base-uri 'self';
+  frame-ancestors 'none'
+```
+
+As fontes podem ser a palavra-chave `'self'` (a própria origem da página), um host como `https://cdn.example.com`, a palavra-chave `'none'` (nada é permitido) ou um esquema. Duas palavras-chave mudam o significado de segurança de forma acentuada e são tratadas abaixo: `'unsafe-inline'` e `'unsafe-eval'`.
+
+## default-src: a rede de proteção
+
+`default-src` é o fallback para qualquer tipo de recurso que não tenha diretiva própria. Com `default-src 'self'`, imagens, fontes, scripts, estilos e o resto ficam limitados à origem da página, a menos que uma diretiva mais específica sobreponha isso. Sem um `default-src`, todo tipo de recurso que você não nomeou explicitamente fica sem restrição, o que é uma forma comum de uma política parecer rígida e vazar.
+
+Defina o `default-src` primeiro e depois abra tipos específicos só quando necessário. Uma política que parte de `default-src 'self'` e adiciona uma CDN conhecida ao `script-src` é muito mais fácil de raciocinar do que uma com uma dezena de diretivas e nenhum fallback.
+
+## script-src e o custo do 'unsafe-inline'
+
+`script-src` controla de onde o JavaScript pode vir. A coisa mais importante que uma política forte faz é evitar o `'unsafe-inline'` nesta diretiva. O `'unsafe-inline'` permite blocos `<script>` inline e manipuladores de evento inline como `onclick`, que é exatamente o vetor que um script injetado usa. Com o `'unsafe-inline'` presente, um atacante que injeta `<script>roubar()</script>` tem o seu script executado, e a política não ofereceu proteção alguma contra a única coisa que ela existe para impedir.
+
+Remover o `'unsafe-inline'` geralmente significa mover scripts inline para arquivos externos, ou permitir blocos inline específicos com um nonce ou hash (abaixo). É a mudança de maior valor que você pode fazer em uma CSP, e o analisador sinaliza o `'unsafe-inline'` como fraqueza por isso.
+
+## 'unsafe-eval' e código dinâmico
+
+`'unsafe-eval'` permite `eval()`, `new Function()` e formas semelhantes de transformar uma string em código executável. Algumas bibliotecas antigas dependem disso. Ele aumenta a superfície de ataque porque dados injetados que chegam a um desses pontos viram código. Prefira bibliotecas que não precisam dele e descarte a palavra-chave quando puder.
+
+## Nonces e hashes: permitir código inline específico com segurança
+
+Se você realmente precisa de um script inline, não precisa recorrer ao `'unsafe-inline'`. A CSP oferece dois mecanismos precisos:
+
+Um **nonce** é um valor aleatório gerado por resposta. Você o coloca na política e na tag de script, e o navegador executa apenas scripts inline que carregam o nonce correspondente:
+
+```
+content-security-policy: script-src 'nonce-r4nd0m'
+```
+```
+<script nonce="r4nd0m"> /* permitido */ </script>
+```
+
+Um **hash** permite liberar um bloco inline específico pelo digest do seu conteúdo, sem um valor por requisição:
+
+```
+content-security-policy: script-src 'sha256-DIGESTBASE64'
+```
+
+Ambos deixam você manter código inline específico e ainda recusar o código injetado pelo atacante, que não carrega o nonce nem corresponde a um hash conhecido. Um nonce novo e imprevisível por resposta é essencial; um nonce reutilizado ou adivinhável anula o propósito.
+
+## frame-ancestors: o controle moderno contra enquadramento
+
+`frame-ancestors` decide quem pode colocar a sua página em um iframe. É o substituto moderno do `X-Frame-Options` e é mais expressivo. `frame-ancestors 'none'` proíbe todo enquadramento; `frame-ancestors 'self'` permite apenas enquadramento de mesma origem. Esse é o controle tratado em [Clickjacking e controle de enquadramento](/learn/clickjacking-and-framing); quando presente, ele sobrepõe o cabeçalho antigo nos navegadores que o suportam.
+
+## object-src e base-uri
+
+Duas diretivas menores fecham brechas reais. `object-src 'none'` bloqueia conteúdo de plugins legados, como objetos Flash e Java, que são um vetor de injeção histórico. `base-uri 'self'` (ou `'none'`) impede que uma tag `<base>` injetada reescreva onde as URLs relativas da página são resolvidas, o que um atacante pode usar para redirecionar carregamentos de script. Ambas são baratas de adicionar e valem a pena.
+
+## Report-Only: testando uma política
+
+`Content-Security-Policy-Report-Only` aplica uma política sem reforçá-la: o navegador relata o que teria bloqueado, mas não bloqueia nada. É assim que você implanta ou aperta uma política em um site em produção sem quebrá-lo. A ressalva importante é que o report-only não protege a página. Se você publicar apenas o cabeçalho report-only e nenhuma `Content-Security-Policy` aplicada, você tem monitoramento, não uma defesa, e o analisador marca esse caso como fraqueza.
+
+## Erros comuns
+
+As falhas recorrentes são: publicar uma política que mantém o `'unsafe-inline'` e, portanto, oferece pouca proteção real; omitir o `default-src`, o que deixa tipos de recurso não nomeados abertos; depender do report-only como se ele reforçasse algo; e usar uma fonte curinga `*`, que permite qualquer origem e desfaz a restrição. Uma boa política é restritiva por padrão, nomeia suas fontes explicitamente, permite código inline específico por nonce ou hash em vez de por `'unsafe-inline'`, e é reforçada em vez de apenas relatada.

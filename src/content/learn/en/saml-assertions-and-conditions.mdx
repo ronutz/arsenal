@@ -1,0 +1,46 @@
+---
+slug: saml-assertions-and-conditions
+title: "Inside a SAML Assertion: Subject, Conditions, and Audience"
+summary: "The anatomy of a SAML assertion: the Subject and NameID formats, bearer SubjectConfirmation and the NotOnOrAfter / Recipient / InResponseTo checks, the Conditions validity window, the AudienceRestriction, and the AuthnStatement, with the validation a service provider must perform on each."
+concepts: ["assertion", "subject", "nameid", "conditions", "audience restriction", "bearer", "authnstatement", "attributes"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-signatures", "xxe-and-xml-security"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+## The assertion is a set of statements
+
+A SAML assertion is a signed package of statements about one subject, issued by one IdP, valid for one audience, within one time window. Decoding it means reading each of those parts and understanding what the service provider is supposed to check before it trusts any of them. Every field below is something a real SP validates, which is why a decoder surfaces them.
+
+## Subject and NameID
+
+The Subject says who the assertion is about. Inside it, the NameID is the actual identifier, and its Format attribute says what kind of identifier it is. The format changes how the SP should treat the value.
+
+An emailAddress format is a human-readable address. A persistent format is a stable, opaque pseudonym that is the same on every login, suitable as a durable account key without revealing anything. A transient format is a throwaway identifier that differs on each login, used when the SP needs only a session and no lasting handle on the user. An unspecified format leaves interpretation to prior agreement. Recognizing the format tells you whether the value is meant to be a permanent key, a one-time token, or an address, which is why the decoder labels it.
+
+## SubjectConfirmation: how the holder is confirmed
+
+The SubjectConfirmation says how the SP can confirm the presenter really is the subject. Its Method matters. The overwhelmingly common method in browser SSO is bearer, which means whoever bears the assertion is treated as the subject, exactly like a bearer token. That convenience is also the risk: a stolen bearer assertion is a stolen identity, so the surrounding data exists to keep the window of theft small.
+
+The SubjectConfirmationData carries that protective data, and a correct SP enforces all of it. NotOnOrAfter caps how long the confirmation is good for, so a captured assertion expires quickly. Recipient pins the assertion to the exact ACS URL it was meant for, so it cannot be replayed at a different endpoint. InResponseTo ties the assertion back to the specific AuthnRequest the SP sent, which defeats unsolicited injected assertions. A bearer confirmation missing NotOnOrAfter or Recipient is a real weakness, because it removes one of these limits, and the decoder flags those cases.
+
+## Conditions and the audience
+
+The Conditions element sets when and for whom the assertion is valid. NotBefore and NotOnOrAfter define the validity window. A decoder shows these timestamps but should not, and this one does not, compare them to the current clock; whether an assertion is expired is for the validating system to decide with its own trusted time, and a decoder has no trustworthy clock and no business asserting validity.
+
+The AudienceRestriction is the most important condition. Its Audience value names the SP the assertion is intended for, usually that SP's entity identifier. The receiving SP must confirm its own identifier is in the audience and reject the assertion otherwise. Without this check, an assertion minted for one service could be replayed against another that trusts the same IdP. An assertion with Conditions but no AudienceRestriction, or with no Conditions at all, is therefore worth flagging, which the decoder does.
+
+## AuthnStatement
+
+The AuthnStatement records how and when the user authenticated. AuthnInstant is when authentication happened. The AuthnContextClassRef names the method, for example PasswordProtectedTransport for a password over TLS, or a stronger multi-factor class. An SP that requires strong authentication can inspect this class and refuse a context weaker than its policy. The SessionIndex links the assertion to an IdP session, which is what makes single logout possible later.
+
+## Attributes
+
+Many assertions also carry an AttributeStatement: a list of Attributes such as email, display name, group memberships, or roles, each with one or more AttributeValue entries. This is how the SP learns more about the user than the bare identifier, and how role and group claims drive authorization. A decoder lists these so you can confirm the IdP is releasing the attributes the SP expects, with the names and values it expects.
+
+## Reading versus trusting
+
+Every field here is a checkpoint. Decoding lets you see the subject, the confirmation data, the window, the audience, the authentication context, and the attributes, so you can reason about whether the SP's checks would pass. It is the diagnostic half. The enforcing half, verifying the signature and applying these checks, happens in the SP, and is the subject of the [signatures article](/learn/saml-signatures).

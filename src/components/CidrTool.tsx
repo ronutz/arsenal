@@ -5,8 +5,8 @@
 // ----------------------------------------------------------------------------
 // THE CIDR / SUBNETTING TOOLKIT — four modes over one address-math core.
 //
-//   • Subnet   — single CIDR analysis, via @ronutz/netcore (cidrTool.run),
-//                which carries the RFC 1918 / RFC 6890 classification.
+//   • Subnet   — single CIDR analysis via cidrAnalyze (arsenal-local, pure;
+//                identical math to the engine it replaced, RFC 3021 for /31).
 //   • VLSM     — variable-length subnets carved from a parent block.
 //   • Supernet — summarize a prefix list into the minimal covering set.
 //   • Overlap  — overlaps / containment between prefixes, gaps within a scope.
@@ -21,9 +21,8 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-// The Engine (published package): single-subnet analysis with RFC classification.
-import { cidrTool } from "@ronutz/netcore";
-// Arsenal-local extended compute (pure; promotable to netcore later).
+import { cidrAnalyze } from "@/lib/tools/cidr";
+// Arsenal-local extended compute (pure; structured so it could be lifted into an open library later).
 import {
   allocateVlsm,
   aggregate,
@@ -38,7 +37,7 @@ import {
 type Mode = "subnet" | "vlsm" | "supernet" | "overlap";
 const MODES: Mode[] = ["subnet", "vlsm", "supernet", "overlap"];
 
-/** The shape cidrTool.run returns (single-subnet). */
+/** The shape cidrAnalyze returns (single-subnet). */
 interface SubnetResult {
   network: string;
   broadcast: string;
@@ -63,6 +62,89 @@ function Stat({ label, value, mono }: { label: string; value: string; mono?: boo
     <div className="cidr-stat">
       <span className="cidr-stat-label">{label}</span>
       <span className={"cidr-stat-value" + (mono ? " mono" : "")}>{value}</span>
+    </div>
+  );
+}
+
+// ---- address-bit helpers (pure) -------------------------------------------
+/** Parse the prefix length from a CIDR string; null when absent or invalid. */
+function parsePrefix(input: string): number | null {
+  const m = input.trim().match(/\/(\d{1,2})\s*$/);
+  if (!m) return null;
+  const p = parseInt(m[1], 10);
+  return p >= 0 && p <= 32 ? p : null;
+}
+
+/** The address portion of a CIDR string, before any slash. */
+function parseIpPart(input: string): string {
+  return input.trim().split("/")[0].trim();
+}
+
+/** A dotted netmask to its prefix length, or null when not a contiguous mask. */
+function maskToPrefix(netmask: string): number | null {
+  const octs = netmask.split(".");
+  if (octs.length !== 4) return null;
+  let bits = "";
+  for (const o of octs) {
+    if (!/^\d{1,3}$/.test(o)) return null;
+    const n = Number(o);
+    if (n > 255) return null;
+    bits += n.toString(2).padStart(8, "0");
+  }
+  const m = bits.match(/^(1*)(0*)$/);
+  return m ? m[1].length : null;
+}
+
+/** Dotted IPv4 to its four octet values, or null when malformed. */
+function ipToOctets(ip: string): number[] | null {
+  const parts = ip.split(".");
+  if (parts.length !== 4) return null;
+  const out: number[] = [];
+  for (const p of parts) {
+    if (!/^\d{1,3}$/.test(p)) return null;
+    const n = Number(p);
+    if (n > 255) return null;
+    out.push(n);
+  }
+  return out;
+}
+
+/**
+ * The 32-bit octet grid: each octet's eight bits with its decimal value, the
+ * network bits (index below the prefix) highlighted apart from the host bits.
+ */
+function OctetBits({ octets, prefix }: { octets: number[]; prefix: number }) {
+  return (
+    <div className="cidr-bits-grid">
+      {octets.map((oct, oi) => (
+        <div className="cidr-bits-octet" key={oi}>
+          <div className="cidr-bits-cells">
+            {oct
+              .toString(2)
+              .padStart(8, "0")
+              .split("")
+              .map((b, bi) => {
+                const globalBit = oi * 8 + bi;
+                const isNetwork = globalBit < prefix;
+                const boundary = globalBit === prefix - 1 && prefix > 0 && prefix < 32;
+                return (
+                  <span
+                    key={bi}
+                    className={
+                      "cidr-bit " +
+                      (isNetwork ? "cidr-bit--net" : "cidr-bit--host") +
+                      (b === "1" ? " cidr-bit--on" : "") +
+                      (boundary ? " cidr-bit--boundary" : "")
+                    }
+                  >
+                    {b}
+                  </span>
+                );
+              })}
+          </div>
+          <span className="cidr-bits-dec mono">{oct}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -92,13 +174,30 @@ export default function CidrTool() {
       return;
     }
     try {
-      setSubnet(cidrTool.run(trimmed) as SubnetResult);
+      setSubnet(cidrAnalyze(trimmed));
       setError(null);
     } catch (e) {
       setError(mapError(e));
       setSubnet(null);
     }
   }, [value, t, mapError]);
+
+  // Slider: rewrite the prefix of the current address and recompute at once.
+  const onPrefixChange = useCallback(
+    (p: number) => {
+      const ip = parseIpPart(value) || "192.168.1.0";
+      const next = `${ip}/${p}`;
+      setValue(next);
+      try {
+        setSubnet(cidrAnalyze(next));
+        setError(null);
+      } catch (e) {
+        setError(mapError(e));
+        setSubnet(null);
+      }
+    },
+    [value, mapError],
+  );
 
   // ---- vlsm mode ----
   const [parent, setParent] = useState("");
@@ -188,6 +287,13 @@ export default function CidrTool() {
       ]
     : [];
 
+  // Current prefix the slider reflects: from the input, else the result mask, else /24.
+  const sliderPrefix = parsePrefix(value) ?? (subnet ? maskToPrefix(subnet.netmask) : null) ?? 24;
+
+  // Octets + prefix for the bit grid, derived from the computed network address.
+  const bitOctets = subnet ? ipToOctets(subnet.network) : null;
+  const bitPrefix = subnet ? maskToPrefix(subnet.netmask) : null;
+
   return (
     <div className="cidr-tool">
       <div className="cidr-head">
@@ -237,6 +343,22 @@ export default function CidrTool() {
             <button type="button" className="cidr-button" onClick={runSubnet}>
               {t("compute")}
             </button>
+          </div>
+          <div className="cidr-slider-row">
+            <label className="cidr-label cidr-slider-label" htmlFor="cidr-prefix-slider">
+              {t("prefixSlider")}
+              <span className="cidr-slider-value mono">/{sliderPrefix}</span>
+            </label>
+            <input
+              id="cidr-prefix-slider"
+              className="cidr-slider"
+              type="range"
+              min={0}
+              max={32}
+              value={sliderPrefix}
+              onChange={(e) => onPrefixChange(Number(e.target.value))}
+              aria-label={t("prefixSlider")}
+            />
           </div>
         </div>
       )}
@@ -385,6 +507,86 @@ export default function CidrTool() {
             </div>
           ))}
         </dl>
+      )}
+
+      {mode === "subnet" && subnet && bitOctets && bitPrefix !== null && (
+        <div className="cidr-bits">
+          <div className="cidr-bits-head">
+            <span className="cidr-bits-title">{t("bitsHeading")}</span>
+            <span className="cidr-bits-caption">
+              <span className="cidr-bits-legend cidr-bits-legend--net">
+                {bitPrefix} {t("bitsNetwork")}
+              </span>
+              <span className="cidr-bits-legend cidr-bits-legend--host">
+                {32 - bitPrefix} {t("bitsHost")}
+              </span>
+            </span>
+          </div>
+          <OctetBits octets={bitOctets} prefix={bitPrefix} />
+          <p className="cidr-bits-note">{t("bitsNote")}</p>
+        </div>
+      )}
+
+      {mode === "subnet" && subnet && (
+        <div className="cidr-range">
+          <div className="cidr-bits-head">
+            <span className="cidr-bits-title">{t("rangeHeading")}</span>
+          </div>
+          {(() => {
+            const allUsable = subnet.usableHosts === subnet.totalAddresses;
+            const usableStr = subnet.usableHosts.toLocaleString();
+            const rangeStr =
+              subnet.network === subnet.broadcast
+                ? subnet.network
+                : `${subnet.firstHost} \u2013 ${subnet.lastHost}`;
+            const x0 = 24;
+            const x1 = 656;
+            const W = x1 - x0;
+            const barY = 24;
+            const barH = 46;
+            if (allUsable) {
+              return (
+                <svg className="cidr-range-svg" viewBox="0 0 680 116" role="img" aria-label={t("rangeHeading")}>
+                  <rect x={x0} y={barY} width={W} height={barH} rx="6" fill="var(--accent-primary)" fillOpacity="0.16" stroke="var(--accent-primary)" />
+                  <text x={(x0 + x1) / 2} y={barY + 20} textAnchor="middle" className="cidr-range-usable-in">
+                    {usableStr} {t("usableShort")}
+                  </text>
+                  <text x={(x0 + x1) / 2} y={barY + 36} textAnchor="middle" className="cidr-range-span">
+                    {subnet.network === subnet.broadcast ? subnet.network : `${subnet.network} \u2013 ${subnet.broadcast}`}
+                  </text>
+                </svg>
+              );
+            }
+            const netW = 72;
+            const bcW = 72;
+            const usX = x0 + netW;
+            const usW = W - netW - bcW;
+            const bcX = x1 - bcW;
+            const netC = x0 + netW / 2;
+            const bcC = bcX + bcW / 2;
+            const usC = usX + usW / 2;
+            return (
+              <svg className="cidr-range-svg" viewBox="0 0 680 116" role="img" aria-label={t("rangeHeading")}>
+                <rect x={x0} y={barY} width={netW} height={barH} rx="6" className="cidr-range-rsv" />
+                <rect x={usX} y={barY} width={usW} height={barH} fill="var(--accent-primary)" fillOpacity="0.16" stroke="var(--accent-primary)" />
+                <rect x={bcX} y={barY} width={bcW} height={barH} rx="6" className="cidr-range-rsv" />
+                <text x={usC} y={barY + 20} textAnchor="middle" className="cidr-range-usable-in">
+                  {usableStr} {t("usableShort")}
+                </text>
+                <text x={usC} y={barY + 36} textAnchor="middle" className="cidr-range-span">
+                  {rangeStr}
+                </text>
+                <text x={netC} y={barY + barH + 20} textAnchor="middle" className="cidr-range-name">{t("results.network")}</text>
+                <text x={netC} y={barY + barH + 35} textAnchor="middle" className="cidr-range-addr">{subnet.network}</text>
+                <text x={bcC} y={barY + barH + 20} textAnchor="middle" className="cidr-range-name">{t("results.broadcast")}</text>
+                <text x={bcC} y={barY + barH + 35} textAnchor="middle" className="cidr-range-addr">{subnet.broadcast}</text>
+              </svg>
+            );
+          })()}
+          <p className="cidr-bits-note">
+            {subnet.usableHosts === subnet.totalAddresses ? t("rfcNote") : t("reservedNote")}
+          </p>
+        </div>
       )}
 
       {/* ---------- RESULTS: vlsm ---------- */}

@@ -67,6 +67,11 @@
       "title": "支持这些工具",
       "pitch": "这些工具是免费的，并且意在保持免费。如果它们在您的工作流程中占有一席之地，您可以帮助为它们的维护以及后续开发提供资金。",
       "purposeLabel": "当前资助方向"
+    },
+    "stats": {
+      "tools": "工具",
+      "articles": "文章",
+      "sectionLabel": "工具箱一览"
     }
   },
   "tools": {
@@ -77,6 +82,11 @@
       "inputPlaceholder": "192.168.1.0/24",
       "compute": "计算",
       "runsLocally": "本地运行，不向任何服务器发送任何内容。",
+      "prefixSlider": "前缀长度",
+      "bitsHeading": "地址位",
+      "bitsNetwork": "网络",
+      "bitsHost": "主机",
+      "bitsNote": "高亮的位用于标识网络，其余的位用于寻址网络内的主机。",
       "results": {
         "network": "网络地址",
         "broadcast": "广播地址",
@@ -175,7 +185,11 @@
         "tooMany": "条目过多。请缩短列表后重试。",
         "noReqs": "请至少添加一个带主机数量的子网需求。",
         "noPrefixes": "请至少输入一个前缀，每行一个。"
-      }
+      },
+      "rangeHeading": "地址布局",
+      "usableShort": "可用",
+      "rfcNote": "/31 和 /32 不保留任何地址：每个地址都可用（RFC 3021）。",
+      "reservedNote": "第一个地址是网络地址，最后一个是广播地址；两者都被保留，因此可用 = 总数 − 2。"
     },
     "title": "工具",
     "lede": "小巧、快速、尊重隐私的工具，完全在您的浏览器中运行。您输入的内容不会被发送到任何地方。更多工具即将推出。",
@@ -221,7 +235,12 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "复制",
-      "copied": "已复制"
+      "copied": "已复制",
+      "struct": {
+        "heading": "HMAC 是如何构建的",
+        "innerHash": "内层哈希",
+        "note": "HMAC 对消息进行两次哈希。密钥先与固定的内层填充进行 XOR 后做第一次哈希，再与外层填充进行 XOR 后做第二次哈希，正是这种双填充结构防止了长度扩展攻击。密钥会先被调整到哈希的分组大小。"
+      }
     },
     "base64": {
       "name": "Base64、Base32、十六进制和百分号编解码器",
@@ -273,7 +292,18 @@
       "encodingLabel": "base64url",
       "plainValueLabel": "= code_verifier",
       "copy": "复制",
-      "copied": "已复制"
+      "copied": "已复制",
+      "flowHeading": "PKCE 的工作原理",
+      "laneClient": "应用 / 客户端",
+      "laneServer": "授权服务器",
+      "s1": "生成随机 code_verifier",
+      "s2": "推导 code_challenge",
+      "s3": "授权请求携带 challenge",
+      "s4": "服务器存储 challenge",
+      "s5": "返回授权码",
+      "s6": "令牌请求携带 verifier",
+      "s7": "服务器重新推导并比较",
+      "s8": "签发访问和刷新令牌"
     },
     "uuid": {
       "name": "UUID 生成器与检查器（v4 / v7）",
@@ -336,6 +366,11 @@
         "algNone": "此令牌未签名（alg: none），因此没有可验证的签名。",
         "unsupportedAlg": "浏览器内验证仅涵盖 HS256/384/512。{alg} 是非对称的，需要公钥。",
         "hint": "密钥仅用于在你的浏览器中计算 HMAC。它绝不会被发送到任何地方。"
+      },
+      "struct": {
+        "heading": "JWT 的结构",
+        "signingInput": "签名输入",
+        "note": "头部和负载只是经过 base64url 编码，并未加密，因此任何人都能读取它们。签名是基于用点连接的头部和负载计算得出的，也是验证方所校验的内容。"
       }
     },
     "x509": {
@@ -361,7 +396,8 @@
         "details": "详情",
         "publicKey": "公钥",
         "extensions": "扩展",
-        "fingerprints": "指纹"
+        "fingerprints": "指纹",
+        "sct": "证书透明度"
       },
       "fields": {
         "version": "版本",
@@ -392,6 +428,25 @@
         "sha256": "SHA-256",
         "sha1": "SHA-1",
         "computing": "正在计算指纹……"
+      },
+      "chainHeading": "信任链",
+      "tierRoot": "根 CA",
+      "tierIntermediate": "中间 CA",
+      "tierLeaf": "终端实体证书",
+      "roleRoot": "自签名的信任锚",
+      "roleIntermediate": "由根签发；签发叶证书",
+      "roleLeaf": "标识服务器或客户端",
+      "thisCert": "此证书",
+      "issuedBy": "签发者",
+      "signs": "签发",
+      "trustNote": "信任自上而下流动：每个证书都由其上一级签发，直到你的系统已经信任的根。",
+      "sct": {
+        "intro": "嵌入的 SCT：{n} 个。每个都是 CT 日志已记录此证书的签名证明；浏览器要求达到最低数量，证书才会被信任。",
+        "entry": "SCT {i}",
+        "logId": "日志 ID",
+        "timestamp": "记录时间",
+        "signature": "签名",
+        "note": "此处显示签名但不验证；验证 SCT 需要日志的公钥和预证书。"
       }
     },
     "ipv6": {
@@ -427,7 +482,13 @@
       },
       "badges": {
         "multicast": "组播"
-      }
+      },
+      "segHeading": "地址结构",
+      "networkSeg": "网络前缀",
+      "ifaceId": "接口 ID",
+      "hostBits": "主机位",
+      "prefixNote": "边界左侧的位由前缀固定；右侧的位标识其中的主机。",
+      "conventionNote": "未提供前缀，因此虚线标记惯用的 /64 划分：左侧为路由前缀和子网，右侧为 64 位接口标识符。"
     },
     "cipher": {
       "name": "密码套件解码器",
@@ -508,6 +569,265 @@
         "ianaD": "IANA 将此套件标记为“D”（不建议）：视情况而定，不应或不得使用。",
         "ianaN": "IANA 未将此套件标记为“推荐”：适用范围有限，或未经过 IETF 共识流程。",
         "signalling": "信令套件（SCSV）：并非真正的密码，而是携带协议信号，例如降级保护或重新协商信息。"
+      },
+      "groups": {
+        "title": "密钥交换组",
+        "intro": "TLS 在 supported_groups 扩展中协商实际的密钥协商组，与密码套件分开。由于\"先收割，后解密\"（harvest now, decrypt later）推动向后量子密钥交换迁移，下面的混合组将经典曲线与 ML-KEM 相结合。",
+        "kind": {
+          "ecdhe": "ECDHE 曲线",
+          "ffdhe": "有限域 DH",
+          "pq-hybrid": "PQ 混合"
+        },
+        "pq": {
+          "classical": "经典",
+          "hybrid-pq": "混合 PQ"
+        },
+        "recommended": "推荐",
+        "obsolete": "已废弃",
+        "legacy": "旧版",
+        "combines": "组合 {classical} 与 {pq}",
+        "foot": "X25519MLKEM768 是大多数浏览器现在默认发送的混合组。"
+      }
+    },
+    "f5-ssl-profile-explainer": {
+      "name": "F5 SSL 配置文件解释器",
+      "blurb": "粘贴一个 tmsh client-ssl 或 server-ssl 配置文件，即可获得其角色、TLS 协议矩阵，以及涵盖证书链、重新协商、SNI、OCSP 和双向 TLS 的安全评估——全部在你的浏览器中完成。",
+      "inputLabel": "SSL 配置文件（tmsh）",
+      "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
+      "runsLocally": "在你的浏览器中处理，不向任何地方发送数据。",
+      "scopeNote": "解码粘贴的配置文件块，绝不联系 BIG-IP。",
+      "errorTitle": "无法读取配置文件",
+      "err_empty": "粘贴一个 SSL 配置文件以开始。",
+      "err_noHeader": "期望这样的一行：ltm profile client-ssl /Common/name ...",
+      "err_noBody": "在配置文件中未找到起始花括号。",
+      "err_tooLong": "该输入过大，无法解析。",
+      "err_invalid": "这看起来不像 client-ssl 或 server-ssl 配置文件。",
+      "protocolsHeading": "TLS 协议版本",
+      "permitted": "允许",
+      "disabled": "已禁用",
+      "findingsHeading": "安全评估",
+      "settingsHeading": "设置说明",
+      "topoHeading": "在数据路径中",
+      "nodeClient": "客户端",
+      "nodeBigip": "BIG-IP",
+      "nodePool": "池成员",
+      "clientLeg": "客户端侧 TLS",
+      "serverLeg": "服务器侧",
+      "thisProfile": "此配置文件",
+      "clientNote": "client-ssl 配置文件在 BIG-IP 上终结客户端的 TLS。仅当应用了 server-ssl 配置文件时，到池成员的连接才会重新加密；否则该段为明文（SSL 卸载）。",
+      "serverNote": "server-ssl 配置文件让 BIG-IP 向池成员打开新的 TLS 连接（重新加密）。客户端侧由单独的 client-ssl 配置文件处理。"
+    },
+    "epoch": {
+      "name": "Unix 时间转换器",
+      "blurb": "输入一个 Unix 时间戳——秒、毫秒、微秒或纳秒，自动识别——或一个 ISO-8601 日期，即可读取它的所有常见格式。全部在你的浏览器中完成。",
+      "inputLabel": "时间戳或日期",
+      "inputPlaceholder": "1700000000  或  2023-11-14T22:13:20Z",
+      "runsLocally": "在你的浏览器中转换，不向任何地方发送数据。",
+      "scopeNote": "纯日期运算。单位根据数字大小推断；如有需要请更正。",
+      "nowButton": "现在",
+      "errorTitle": "无法读取",
+      "err_empty": "请输入时间戳或日期以开始。",
+      "err_invalid": "这不是 Unix 时间戳，也不是 ISO-8601 日期。",
+      "err_tooLong": "该输入过长。",
+      "err_outOfRange": "该时间戳超出可表示的日期范围。",
+      "utcHeading": "UTC 日期和时间",
+      "formatsHeading": "所有格式",
+      "dayOfYearLabel": "一年中的第几天",
+      "relativeNote": "相对于你的设备时钟"
+    },
+    "irules-event-order": {
+      "name": "iRule 事件顺序",
+      "blurb": "选择 BIG-IP 虚拟服务器的配置栈——Client-SSL、HTTP、Server-SSL、池——查看常见 iRule 事件从 CLIENT_ACCEPTED 到 CLIENT_CLOSED 的触发顺序，以时间线和列表呈现。全部在你的浏览器中完成。",
+      "stackLabel": "虚拟服务器配置栈",
+      "tog_clientssl": "Client-SSL 配置文件",
+      "tog_http": "HTTP 配置文件",
+      "tog_serverssl": "Server-SSL 配置文件",
+      "tog_pool": "池（负载均衡）",
+      "tog_fastl4": "FastL4（数据包快速路径）",
+      "presetsLabel": "预设：",
+      "preset_https": "HTTPS 重新加密",
+      "preset_offload": "SSL 卸载",
+      "preset_http": "HTTP",
+      "preset_tcp": "纯 TCP",
+      "runsLocally": "在你的浏览器中计算，不向任何地方发送数据。",
+      "scopeNote": "针对 Standard 虚拟服务器的、F5 已记录行为的模型。它从不连接 BIG-IP。",
+      "diagramHeading": "事件序列",
+      "listHeading": "按顺序排列的事件",
+      "conditionalHeading": "条件事件",
+      "conditionalNote": "这些仅在特定条件下触发：TCP::collect 或 HTTP::collect、负载均衡失败，或 100 Continue 响应。",
+      "sideClient": "客户端侧",
+      "sideServer": "服务器端",
+      "sideGlobal": "全局"
+    },
+    "cert-renewal-planner": {
+      "name": "证书续期规划器",
+      "blurb": "计算 TLS 证书的有效期、是否符合 CA/Browser Forum 的 47 天时间表，以及由此带来的续期频率；全部离线运行。",
+      "notBeforeLabel": "签发 (notBefore)",
+      "notAfterLabel": "过期 (notAfter)",
+      "runsLocally": "一切都在您的浏览器中运行；不会上传任何内容。",
+      "exampleLabel": "试试 90 天的示例",
+      "summaryHeading": "此证书",
+      "validity": "{days} 天有效期",
+      "compliantBadge": "在上限之内",
+      "overCapBadge": "超过上限",
+      "maxForPhase": "其签发日期的上限：{max} 天。",
+      "overByText": "比其签发日期的 {max} 天上限多 {days} 天；公共 CA 不会签发它。",
+      "renewalsValue": "在此有效期下每年约 {n} 次续期。",
+      "remainingHeading": "根据您设备的时钟",
+      "daysRemaining": "距过期还有 {days} 天。",
+      "expiredText": "已于 {days} 天前过期。",
+      "renewByText": "请在 {date} 前续期（约在过期前 {lead} 天）",
+      "renewByDue": "{days} 天后",
+      "reuseHeading": "验证复用（签发时期）",
+      "dcvText": "域名验证 (DCV) 数据可复用 {days} 天。",
+      "siiText": "组织身份 (OV/EV SII) 可复用 {days} 天。",
+      "scheduleHeading": "SC-081v3 时间表",
+      "scheduleIntro": "公共 TLS 上限取决于证书的签发日期：",
+      "colPeriod": "签发于此日期或之后",
+      "colValidity": "最大有效期（天）",
+      "colDcv": "DCV 复用（天）",
+      "colSii": "SII 复用（天）",
+      "phaseP0": "2026 年 3 月 15 日之前",
+      "phaseP1": "2026 年 3 月 15 日",
+      "phaseP2": "2027 年 3 月 15 日",
+      "phaseP3": "2029 年 3 月 15 日",
+      "yourPhase": "← 此证书",
+      "projectionHeading": "每个上限下的续期负担",
+      "projectionIntro": "随着上限收紧，每张证书每年的续期次数：",
+      "perYearShort": "年",
+      "note_overCap": "此有效期超过其签发日期的 {max} 天上限。",
+      "note_future47": "今天合规，但长于最终的 47 天上限；随着时间表推进，预计续期会更频繁。",
+      "note_publicOnly": "这些上限仅适用于公共信任的 TLS 证书。私有或内部 PKI 不受 SC-081v3 约束。",
+      "note_automate": "在这些频率下，请使用 ACME (RFC 8555) 和 ARI (RFC 9773) 自动化签发与续期；手动续期无法扩展。",
+      "err_empty": "请输入签发和过期两个日期。",
+      "err_invalidDate": "请使用有效日期 (YYYY-MM-DD)。",
+      "err_order": "过期日期必须晚于签发日期。",
+      "err_tooLong": "输入过长。",
+      "err_invalid": "无法读取这些日期。"
+    },
+    "csr-decoder": {
+      "name": "CSR 解码器",
+      "blurb": "在浏览器中完整解码 PKCS#10 证书签名请求，读取其主题、公钥、请求的 SAN 和扩展，以及属性。",
+      "inputLabel": "证书签名请求（PEM、base64 或十六进制）",
+      "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
+      "exampleLabel": "加载示例 CSR",
+      "runsLocally": "一切都在您的浏览器中运行；CSR 永远不会上传。",
+      "notCertNote": "CSR 是一个请求，而非证书。它没有序列号、颁发者或有效期；只有请求者要求 CA 认证的内容。",
+      "subjectHeading": "主题",
+      "colAttr": "属性",
+      "colValue": "值",
+      "noSubject": "没有主题名称（此 CSR 依赖于请求的 SAN）。",
+      "keyHeading": "公钥",
+      "keyAlgorithmLabel": "算法",
+      "keySizeLabel": "大小",
+      "keySizeValue": "{bits} 位",
+      "keyCurveLabel": "曲线",
+      "keyExponentLabel": "指数",
+      "keyExponentValue": "{exp}",
+      "requestedHeading": "请求的扩展",
+      "sanLabel": "Subject Alternative Names",
+      "keyUsageLabel": "密钥用法",
+      "ekuLabel": "扩展密钥用法",
+      "basicConstraintsLabel": "基本约束",
+      "caYes": "CA：是",
+      "caNo": "CA：否",
+      "pathLenValue": "路径长度 {n}",
+      "noRequested": "未请求任何扩展。",
+      "attributesHeading": "属性",
+      "challengePasswordLabel": "质询口令",
+      "unstructuredNameLabel": "非结构化名称",
+      "signatureHeading": "自签名",
+      "signatureAlgLabel": "算法",
+      "signatureBitsLabel": "长度",
+      "signatureBitsValue": "{bits} 位",
+      "versionValue": "版本：v1（{v}）",
+      "derLengthValue": "DER：{bytes} 字节",
+      "err_empty": "粘贴证书签名请求以进行解码。",
+      "err_format": "这看起来不像 PEM、base64 或十六进制的 CSR。",
+      "err_der": "无法解析 DER 结构。",
+      "err_structure": "这可解析为 DER，但不是 PKCS#10 证书签名请求。"
+    },
+    "oidc": {
+      "name": "OIDC 解码器",
+      "blurb": "粘贴 OpenID Connect ID token 或 .well-known/openid-configuration 文档并解码：核心声明、个人资料声明、端点和能力，并检查必需声明、签名算法、nonce 和 PKCE。",
+      "inputLabel": "ID token (JWT) 或 openid-configuration JSON",
+      "inputPlaceholder": "粘贴 ID token，或 OIDC discovery JSON 文档",
+      "runsLocally": "解码在你的浏览器中本地运行。它从不调用 jwks_uri 或任何端点，也不会向任何地方发送内容。",
+      "notVerifiedNote": "此工具进行解码和解释。它不验证 token 签名，不获取签名密钥，也不根据时钟检查过期。",
+      "errors": {
+        "empty": "粘贴 ID token 或 openid-configuration 文档以进行解码。",
+        "malformed-json": "这看起来像 JSON，但无法解析。请检查是否缺少花括号、逗号或引号。",
+        "json-not-oidc": "这是 JSON，但不是 OpenID Connect discovery 文档。请粘贴 ID token，或 .well-known/openid-configuration 文档。",
+        "not-jwt": "这看起来不像 JWT 或 OIDC 文档。请粘贴 ID token 或 discovery 文档。",
+        "jwt-header": "无法解码 token 头部。JWT 由三个以点分隔的 base64url 部分组成。",
+        "jwt-payload": "无法将 token 负载解码为 JSON。"
+      },
+      "badges": {
+        "idToken": "ID Token",
+        "discovery": "Discovery",
+        "signed": "已签名",
+        "unsigned": "未签名",
+        "algNone": "alg: none",
+        "algUnknown": "alg: ?"
+      },
+      "panels": {
+        "header": "头部",
+        "coreClaims": "ID token 核心声明",
+        "metadata": "提供方",
+        "endpoints": "端点",
+        "capabilities": "能力"
+      },
+      "categories": {
+        "binding": "Token 绑定",
+        "profile": "个人资料声明",
+        "email": "电子邮件",
+        "address": "地址",
+        "phone": "电话",
+        "oauth": "OAuth / 会话",
+        "other": "其他声明"
+      },
+      "fields": {
+        "alg": "算法",
+        "typ": "类型",
+        "kid": "密钥 ID",
+        "iss": "颁发者 (iss)",
+        "sub": "主体 (sub)",
+        "aud": "受众 (aud)",
+        "azp": "授权方 (azp)",
+        "nonce": "Nonce",
+        "acr": "认证上下文 (acr)",
+        "amr": "认证方法 (amr)",
+        "authTime": "认证时间",
+        "iat": "颁发时间 (iat)",
+        "nbf": "生效时间 (nbf)",
+        "exp": "过期时间 (exp)",
+        "issuer": "颁发者"
+      },
+      "reasons": {
+        "MISSING_REQUIRED_CLAIM": "缺少必需声明 {value}。ID token 必须包含 iss、sub、aud、exp 和 iat。",
+        "ALG_NONE": "该 token 使用 alg none，即未签名。未签名的 ID token 不能证明任何内容，必须被拒绝。",
+        "ALG_SYMMETRIC": "使用 {value} 签名，这是一种对称 (HMAC) 算法。来自公共提供方的 ID token 通常使用 RS256 或 ES256 等非对称算法，以便依赖方可以用公钥验证。",
+        "ALG_UNKNOWN": "使用 {value} 签名，这是此工具无法识别的算法。请确认它是预期的强算法。",
+        "SIGNED_ASYMMETRIC": "使用 {value} 签名，这是一种非对称算法。依赖方使用来自 JWKS 的提供方公钥进行验证。",
+        "NO_NONCE": "没有 nonce 声明。Nonce 将 token 与认证请求绑定，并防止重放。当请求发送了 nonce 时，它应当存在。",
+        "MULTI_AUD_NO_AZP": "该 token 有多个受众但没有 azp（授权方）。当受众多于一个时，azp 应指明该 token 面向的客户端。",
+        "DISCOVERY_MISSING_FIELD": "缺少必需的 discovery 字段 {value}。",
+        "DISCOVERY_ALG_NONE": "提供方为 ID token 公布了 none 签名算法，这将允许未签名的 token。不应提供此选项。",
+        "DISCOVERY_NO_PKCE": "没有 code_challenge_methods_supported。提供方未公布 PKCE，而 PKCE 是 authorization code 流程的推荐做法。",
+        "DISCOVERY_NO_PKCE_S256": "已公布 PKCE 但没有 S256 方法。S256 是推荐的 code challenge 方法。"
+      },
+      "flow": {
+        "heading": "授权码流程",
+        "laneRp": "依赖方",
+        "laneOp": "OpenID 提供方",
+        "s1": "使用 scope=openid 将用户重定向到提供方",
+        "s2": "提供方对用户进行认证并获取同意",
+        "s3": "提供方携带授权码重定向回来",
+        "s4": "依赖方在 token 端点用授权码交换",
+        "s5": "提供方返回 ID token 和 access token",
+        "s6": "依赖方根据 JWKS 验证 ID token 签名",
+        "s7": "依赖方可以用 access token 调用 UserInfo",
+        "s8": "提供方返回用户的声明"
       }
     }
   },
@@ -521,7 +841,7 @@
     "short3": "交互式工具完全在您的浏览器中运行。您粘贴或输入其中的内容留在您的设备上，不会被传输到任何地方。",
     "short4": "只有三件事会涉及数据，每一件都在下文说明：保存在您自己浏览器中的单一主题设置、每次网站访问在托管层产生的标准连接日志，以及您选择通过电子邮件发送的任何消息。",
     "controllerTitle": "谁负责",
-    "controllerBody": "这是 Rodolfo Nützmann 的个人网站（ronutz.com）。如有任何隐私问题，或要行使下文所述的任何权利，请写信至 hello@ronutz.com。请求由 Rodolfo Nützmann 作为数据控制者直接处理。",
+    "controllerBody": "这是 Rodolfo Nützmann 的个人网站（ronutz.com）。如有任何隐私问题，或要行使下文所述的任何权利，请写信至 {email}。请求由 Rodolfo Nützmann 作为数据控制者直接处理。",
     "noTrackTitle": "无 cookie、无追踪、无分析",
     "noTrackBody": "本站不设置任何类型的 cookie。它不使用任何分析服务（如 Google Analytics 或 Plausible）、任何广告网络、任何社交媒体追踪像素，也不使用任何设备指纹识别。您的访问不会为这些目的被测量、画像或与任何人共享。",
     "browserTitle": "您的浏览器中存储了什么",
@@ -537,12 +857,12 @@
     "childrenTitle": "儿童",
     "childrenBody": "本站面向专业的、一般的受众。它不面向儿童，也不会在知情的情况下收集儿童的个人数据。",
     "rightsTitle": "您的权利",
-    "rightsBody": "视您居住地而定，您对自己的个人数据享有权利，包括访问、更正或删除、反对或限制处理、以可携格式请求副本，以及被告知它们如何被处理。要行使其中任何一项，只需写信至 hello@ronutz.com。由于此处所处理的个人数据极少，实际上通常几乎无事可办，但渠道始终开放。",
+    "rightsBody": "视您居住地而定，您对自己的个人数据享有权利，包括访问、更正或删除、反对或限制处理、以可携格式请求副本，以及被告知它们如何被处理。要行使其中任何一项，只需写信至 {email}。由于此处所处理的个人数据极少，实际上通常几乎无事可办，但渠道始终开放。",
     "rightsGdpr": "如果您位于欧洲经济区或英国，您还有权向您当地的数据保护监管机构提出投诉。",
     "rightsLgpd": "如果您位于巴西，您拥有 LGPD 第 18 条所规定的权利，也可以联系国家数据保护机构（ANPD）。",
     "changesTitle": "本声明的变更",
     "changesBody": "如果本声明发生变更，修订后的版本将发布在本页面，并更新下方的日期。重大变更不会追溯适用。",
-    "updated": "最后更新：2026年6月28日",
+    "updated": "最后更新：2026年6月30日",
     "backHome": "返回首页"
   },
   "footer": {
@@ -553,7 +873,7 @@
     "contribute": "帮助改进翻译",
     "feedback": "提交反馈",
     "api": "API 参考",
-    "contributeTools": "贡献一个工具",
+    "contributeTools": "分享想法",
     "license": "许可",
     "coffee": "请我喝杯咖啡"
   },
@@ -868,7 +1188,9 @@
         "label": "官方培训",
         "description": "通过 Red Education 预订课程"
       }
-    }
+    },
+    "feedbackNote": "在网站上发现了 bug、错误或不准确之处？",
+    "feedbackLink": "在想法页面上分享"
   },
   "certs": {
     "title": "认证与资质",
@@ -935,7 +1257,6 @@
     "p1Title": "计算，而非猜测",
     "p1Body": "本站的工具在本地、以确定性的方式计算答案。它们不会带着您的数据联系服务器，也不会估算。在您浏览器中运行的，留在您的浏览器中。",
     "p2Title": "内核开放",
-    "p2Body": "工具背后的引擎是开源的，以宽松许可证发布。本站建立在它之上，正如其他人也可以这样做。这里的开放不是一句市场用语；它是架构。",
     "p3Title": "以构建方式记录文档",
     "p3Body": "代码库的每个基础部分都有注释和文档，不是事后补上的东西，而是一条固定的规则。这次构建意在可读，为维护它的人，也为继承它的人。",
     "p4Title": "为服务与远行而打造",
@@ -951,7 +1272,7 @@
     "stackType": "排版",
     "stackTypeV": "正文使用 Inter，数据与代码使用 JetBrains Mono",
     "stackEngine": "工具引擎",
-    "stackEngineV": "开放的核心引擎，以宽松许可证发布",
+    "stackEngineV": "完全在浏览器中运行的确定性计算层",
     "stackSearch": "搜索",
     "stackSearchV": "客户端静态全文搜索；无搜索服务器",
     "vibeTitle": "这是 vibe coding 吗？",
@@ -972,7 +1293,10 @@
     "redblueLabel": "红队与蓝队",
     "redblueBody": "同样的解码与解释，既让红队成员读懂截获的令牌，也让蓝队成员理解自己的技术栈在发出什么。本平台有意站在这条线的分析一侧：它识别、解码、转换并解释，而不会走到伪造、注入或攻破控制的地步。这条边界是设计决策，而非疏忽；这些工具是为了教学与诊断，而不是为了成为武器。",
     "localLabel": "本地且确定",
-    "localBody": "一切都在浏览器中运行。页面上的工具所调用的纯函数与 API 调用的是同一个；相同输入返回相同输出，不保存状态，也不向服务器发送任何内容。没有 Cookie，没有分析统计，正如隐私页面所完整说明的那样。"
+    "localBody": "一切都在浏览器中运行。工具调用一个纯函数：相同的输入返回相同的输出，不保存任何状态，也不向服务器发送任何内容。没有 Cookie，没有分析统计，正如隐私页面所完整说明的那样。",
+    "thanksTitle": "特别鸣谢",
+    "p2Body": "每个工具运行的确定性逻辑就是工具的全部：没有隐藏的服务器步骤，没有账户，也没有遥测。一切都在你的浏览器中运行。",
+    "changelogLink": "更新日志"
   },
   "support": {
     "title": "支持这个项目",
@@ -1030,26 +1354,12 @@
     "accessRoleLabel": "角色",
     "accessPermsLabel": "所有者权限"
   },
-  "contributeTools": {
-    "eyebrow": "开放的工具箱",
-    "title": "贡献一个工具",
-    "lede": "工具箱为成长而生。每个工具都是开放引擎上一个小巧、自描述的模块，本站加载它的方式与任何人都一样。如果你有合适的工具，欢迎提议。",
-    "shapeTitle": "工具是什么",
-    "shapeBody": "一个工具由三部分组成：一份描述它的清单（它是什么、接受何种输入、其正确性来自何处）、一个完成工作的纯执行函数，以及一组参考向量，即证明该函数正确的固定输入输出对。引擎依据清单加载工具，因此一个格式良好的模块无需触碰本站其余部分即可接入。",
-    "principlesTitle": "工具必须遵守什么",
-    "principlesBody": "计算在本地运行且是确定性的：相同的输入始终产生相同的输出，结果中没有时钟、网络或随机性。任何敏感内容默认都留在设备上。正确性锚定于参考向量与所引用的来源（例如某个 RFC 或一项已发布的标准），而非观点。代码以宽松许可发布，因此本站和其他任何人都可以在其上构建。",
-    "proposeTitle": "提议一个",
-    "proposeBody": "通过电子邮件发送一份简短的提议：该工具计算什么、一个示例输入及它应当产生的确切输出，以及其正确性所依据的来源。清单的草图和几个参考向量值得欢迎，但并非必需。如果合适，它便会被构建进引擎和工具箱。",
-    "emailLabel": "电子邮件",
-    "backToTools": "返回工具箱"
-  },
   "api": {
     "title": "API",
     "lede": "本站的工具在你的浏览器中运行，并把你的数据留在你的设备上。对于自动化（脚本、流水线和集成），同样的确定性计算以一个小型 HTTP API 的形式提供。它是浏览器工具的程序化对应物，而非其替代品。",
     "privacyTitle": "这对你的数据意味着什么",
     "privacyBody": "该 API 只接收你发送给它的输入，计算出结果并返回。它是无状态的，不记录任何查询值或请求体。如果你需要有保证的零数据外发，请使用浏览器工具，或自行运行开放引擎。",
     "engineTitle": "与浏览器相同的引擎",
-    "engineBody": "每个端点调用的引擎函数都与浏览器中工具所调用的相同，因此 API 与浏览器返回逐字节一致的结果。该引擎 @ronutz/netcore 以宽松许可开源。",
     "specTitle": "规范",
     "specBody": "完整契约以 OpenAPI 3.1 发布。下载它、让你自己的工具指向它，或阅读下方的参考。",
     "downloadSpec": "下载 openapi.yaml",
@@ -1073,17 +1383,57 @@
     "descriptionLabel": "说明",
     "viewReference": "参考",
     "viewSwagger": "Swagger UI",
-    "swaggerLoadError": "无法加载 Swagger UI。"
+    "swaggerLoadError": "无法加载 Swagger UI。",
+    "engineBody": "每个端点都运行与浏览器内工具相同的纯函数，因此 API 和浏览器返回逐字节一致的结果。"
   },
   "license_page": {
-    "eyebrow": "开放内核",
+    "eyebrow": "条款",
     "title": "许可",
-    "lede": "ronutz.com 采用开放内核：驱动每个工具的引擎是开源的，而在其之上构建的网站则不是。",
-    "openHeading": "开源：引擎",
-    "openBody": "@ronutz/netcore 是本站每个工具和每个 API 响应背后的引擎，依据 Apache License 2.0 发布。浏览器内工具调用的函数与 API 调用的是同一个，因此你可以在该许可下自由使用、修改并在其基础上构建。",
     "closedHeading": "闭源：本网站",
     "closedBody": "网站本身是闭源的。其设计、界面、文字内容（包括每一篇 Learn 文章）、品牌，以及这些工具在此处被组合与呈现的特定方式，均为专有财产，保留所有权利。未经事先书面同意，不得复制、再现、修改、再分发本网站或其内容，或据此创作衍生作品。",
     "contact": "对许可有疑问？<a>请联系我们。</a>",
-    "backHome": "返回工具"
+    "backHome": "返回工具",
+    "thirdHeading": "开源组件",
+    "lede": "ronutz.com 是一件专有作品，保留所有权利。这些条款涵盖本网站及其内容。本网站构建于开源软件之上，这些软件在其各自的许可条款下使用和再分发，下方已注明。",
+    "thirdBody": "本网站建立在开源工作之上。网站本身使用 Next.js 和 React 构建，并以静态导出方式发布；国际化使用 next-intl；Learn 内容通过 next-mdx-remote、gray-matter、remark-gfm 和 js-yaml 渲染；搜索由 Pagefind 提供支持。这些组件在 MIT License 下提供，next-mdx-remote 除外（Mozilla Public License 2.0）。API 参考嵌入了 Swagger UI，采用 Apache License 2.0。每个组件都保留在其各自的许可证下，完整的声明随源代码一同提供。"
+  },
+  "contributeIdeas": {
+    "eyebrow": "欢迎你的想法",
+    "title": "分享一个想法",
+    "lede": "这个工具箱是为成长而打造的，而关于它该往哪里走，最清晰的信号来自使用它的人。发现了 bug、错误或不准确之处？想要一个这里还没有的工具？看到了处理某件事的更好方式，或一个你会用不同措辞表述的结果？把它发过来，任何形式的反馈都欢迎。",
+    "sendTitle": "你可以发送什么",
+    "sendBody": "任何形式的 bug、错误和不准确之处：行为异常的工具、错误的结果、Learn 文章中的差错，或任何看起来不对劲的东西。对已有工具的功能请求。工具箱应当拥有的新工具的想法。对 Learn 文章的更正和补充，比如更清晰的解释、更好的来源，或缺失的主题。或者只是看待某个问题的不同角度。粗略也没关系，一句话就足以开启一段对话。",
+    "toolTitle": "如果你要提议一个新工具",
+    "toolBody": "这里的工具是小巧、自描述的模块：一个说明工具是什么、其正确性从何而来的清单（manifest），一个完成工作的纯函数，以及一组 golden vectors，即证明它的固定输入输出对。一个好的候选会在本地以确定性方式计算（相同的输入总是产生相同的输出，结果中没有时钟、网络或随机性），把一切敏感内容保留在设备上，并把其正确性锚定在被引用的来源（如某个 RFC）而非观点上。你无需构建这些就能提议一个：只需描述它应当计算什么、一个示例，以及它所依据的来源。",
+    "fitRule": "一个简单的判断标准即可决定。这里的每个工具都完全在你的浏览器中运行，不会把任何内容发送到任何地方，因此新工具必须是计算机仅凭你输入的内容、依照固定且公开的规则就能算出的东西。如果它需要联网、实时查询、让你登录或记住你，就不适合放在这里。",
+    "fitYes": "适合：",
+    "fitYesBody": "解码或解释你粘贴的内容（令牌、证书、配置、命令输出），在格式之间转换，依据标准或公式计算，或按规则生成，例如 UUID、哈希或命令行。",
+    "fitNo": "不适合：",
+    "fitNoBody": "任何需要联网或实时检查的东西（测试真实网站、查询在线 DNS 服务器、扫描地址），任何需要账户、登录或已保存数据的东西，或任何答案并非由公开标准确定的东西。",
+    "fitUnsure": "不确定你的想法属于哪一边？还是发过来，并说明它应该做什么。我会诚实地告诉你它是否适合，以及原因。",
+    "emailTitle": "如何联系我",
+    "emailBody": "电子邮件就是渠道。告诉我你发现了什么或想要什么，并提供足够的细节以便采取行动：一个示例、一个链接、确切的措辞，凡是合适的都行。只要它能让工具箱变得更好，就会被构建出来。",
+    "emailLabel": "电子邮件",
+    "backToTools": "返回工具箱"
+  },
+  "languageStatus": {
+    "title": "翻译状态",
+    "reviewed": "由人工审校",
+    "complete": "机器翻译，完整",
+    "partial": "机器翻译，进行中",
+    "explainTitle": "翻译如何标记",
+    "explainBody": "英语和巴西葡萄牙语由人工撰写和审校。大多数其他语言为机器翻译，并按完成进度标记：当某种语言覆盖整个网站时显示琥珀色，当较新的内容仍为英语、尚在补充时显示黄色。标记为红色的语言尚无翻译，目前以英语显示。机器翻译的页面还会带有简短提示，欢迎你帮助改进其中任何一个。",
+    "stub": "尚未翻译"
+  },
+  "changelog": {
+    "eyebrow": "更新日志",
+    "title": "最新动态",
+    "lede": "持续记录本站的新工具、新的 Learn 文章以及重要变更。目前已上线 {count} 个工具。",
+    "kindLaunch": "发布",
+    "kindTool": "新工具",
+    "kindFeature": "功能",
+    "kindI18n": "本地化",
+    "kindContent": "内容",
+    "kindInfra": "基础设施"
   }
 }

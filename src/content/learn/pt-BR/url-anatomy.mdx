@@ -1,0 +1,36 @@
+---
+slug: url-anatomy
+title: "A Anatomia de uma URL"
+summary: "Toda URL é construída a partir do mesmo punhado de partes definidas pela RFC 3986: esquema, autoridade (userinfo, host, porta), caminho, query e fragmento. O que cada parte significa, como um parser as distingue e onde os limites realmente caem."
+concepts: ["url", "uri", "rfc 3986", "scheme", "authority", "host", "path", "query", "fragment"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["query-strings", "url-encoding-and-idn", "percent-encoding"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## Uma gramática para toda URL
+
+Uma URL parece texto livre, mas tem uma gramática estrita, definida pela RFC 3986 como um Uniform Resource Identifier. Uma vez que você conhece as cinco partes de nível superior, toda URL fica fácil de ler, e um parser consegue separar qualquer uma delas com um único padrão. Tome este exemplo e mantenha-o em mente conforme as partes são apresentadas:
+
+`https://user@host.example.com:8443/path/to/page?q=hello&lang=en#section`
+
+As cinco partes, em ordem, são o esquema, a autoridade, o caminho, a query e o fragmento. A pontuação entre elas é o que um parser usa como referência: os dois pontos após o esquema, a barra dupla que introduz a autoridade, o ponto de interrogação que inicia a query e a cerquilha que inicia o fragmento.
+
+## Esquema
+
+O esquema vem primeiro, antes dos dois pontos: `https`. Ele nomeia o protocolo ou a interpretação para o resto da URL, e é insensível a maiúsculas, então `HTTPS` e `https` significam a mesma coisa e normalmente são escritos em minúsculas. Esquemas comuns incluem http e https, mas também ftp, ssh, mailto e tel. Alguns esquemas usam uma autoridade e outros não: `mailto:someone@example.com` tem um esquema e então pula direto para um caminho sem host.
+
+## Autoridade: userinfo, host e porta
+
+Se a URL tem uma barra dupla após o esquema, o que vem em seguida até a próxima barra, interrogação ou cerquilha é a autoridade. Ela se divide em três pedaços. O userinfo, antes de um arroba, pode carregar um usuário e opcionalmente uma senha: `user@` aqui, ou `user:password@` quando há uma senha. Embutir uma senha dessa forma é desencorajado, porque URLs são registradas e compartilhadas. O host é a máquina: um nome de domínio como `host.example.com`, um literal IPv4, ou um literal IPv6 entre colchetes como `[2001:db8::1]`. A porta, após dois pontos, é a porta TCP: `8443`. Quando a porta é omitida, o cliente usa o padrão do esquema, como 443 para https ou 80 para http.
+
+## Caminho, query e fragmento
+
+O caminho identifica o recurso no host: `/path/to/page`. É uma sequência de segmentos separados por barras, e um inspetor pode listar esses segmentos individualmente. A query, introduzida por um ponto de interrogação, carrega parâmetros: `q=hello&lang=en`. Sua estrutura interna é uma convenção que merece o próprio artigo sobre [query strings](/learn/query-strings). O fragmento, introduzido por uma cerquilha, aponta dentro do recurso: `section`. O fragmento é especial em um aspecto importante: ele é tratado inteiramente pelo cliente e nunca é enviado ao servidor, e por isso é um bom lugar para manter dados que você não quer nos logs do servidor.
+
+## Lendo-as separadamente
+
+O valor de ver uma URL dividida nessas partes nomeadas é que erros sutis se tornam óbvios. Uma senha escondida no userinfo, uma porta não padrão, um host que na verdade é um endereço IP, um parâmetro enterrado em uma query longa: todos eles se destacam quando a URL é decomposta. O inspetor de URL faz exatamente essa decomposição, fielmente e sem normalizar a URL, então o que você vê é o que a URL realmente diz.

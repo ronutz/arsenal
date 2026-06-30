@@ -1,21 +1,63 @@
-@ronutz/arsenal
+ronutz.com (ARSENAL)
 Copyright (c) 2026 Rodolfo Nützmann.
 
-This repository redistributes third-party software components, each governed by
-its own license, listed below.
+This project is built on, and in part redistributes, third-party open-source
+software. Each component remains the property of its respective authors and is
+used under its own license, attributed below. Attributions are required by
+those licenses; the proprietary terms in LICENSE apply only to this project's
+own code and content, not to the components named here.
 
 ============================================================================
+BUNDLED / REDISTRIBUTED
+============================================================================
+
 Swagger UI
-----------------------------------------------------------------------------
   Bundled files:
     public/vendor/swagger-ui/swagger-ui-bundle.js
     public/vendor/swagger-ui/swagger-ui.css
   Copyright SmartBear Software and the Swagger UI contributors.
-  Licensed under the Apache License, Version 2.0.
+  Licensed under the Apache License, Version 2.0:
     https://www.apache.org/licenses/LICENSE-2.0
   Source: https://github.com/swagger-api/swagger-ui
+
+============================================================================
+COMPILED INTO THE STATIC BUILD
 ============================================================================
 
-The application's tools execute via the @ronutz/netcore engine, which is
-distributed separately (not vendored in this repository) under the Apache
-License 2.0 for code and CC-BY-4.0 for content.
+The following packages are compiled into the site. The copyright notice for
+each is reproduced as its license requires.
+
+MIT License (full text below):
+  Next.js            Copyright (c) 2025 Vercel, Inc.
+  React              Copyright (c) Meta Platforms, Inc. and affiliates.
+  React DOM          Copyright (c) Meta Platforms, Inc. and affiliates.
+  next-intl          Copyright (c) 2024 Jan Amann
+  gray-matter        Copyright (c) 2014-2018, Jon Schlinkert
+  js-yaml            Copyright (C) 2011-2015 by Vitaly Puzrin
+  remark-gfm         Copyright (c) Titus Wormer
+  Pagefind           Copyright (c) CloudCannon and the Pagefind contributors
+
+Mozilla Public License 2.0 ( https://www.mozilla.org/MPL/2.0/ ):
+  next-mdx-remote    Copyright (c) 2020 HashiCorp, Inc.
+
+----------------------------------------------------------------------------
+The MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+----------------------------------------------------------------------------

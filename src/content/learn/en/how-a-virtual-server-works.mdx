@@ -1,0 +1,34 @@
+---
+slug: how-a-virtual-server-works
+title: "How a BIG-IP Virtual Server Works"
+summary: "A virtual server is the front door of a BIG-IP. It binds a listening IP and port, applies a stack of profiles, decides persistence, picks a pool member, and translates the source address toward the backend. Reading those pieces in order tells you exactly how a connection will be handled."
+concepts: ["virtual server", "ltm", "load balancing", "profiles", "snat", "f5"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "ltm-health-monitors"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-06-29"
+---
+
+A virtual server, in BIG-IP terms, is the object clients actually connect to. It is defined by a `destination` (an IP address and port) and a set of resources that decide what happens to traffic arriving there. Everything else in a local-traffic configuration exists to be referenced by a virtual server.
+
+## The listener
+
+The `destination` field sets the address and port the virtual server answers on, for example `10.0.0.80:443`. The `mask` decides whether this is a single host or a whole network listener, and `ip-protocol` fixes the layer-4 protocol, usually `tcp`. Together these determine which packets the virtual server claims. A virtual that listens on port 443 is conventionally HTTPS, but the port number alone does not make it so; what happens to the TLS depends on the profiles, described next.
+
+## The profile stack
+
+The `profiles` block is the heart of a virtual server's behavior. Profiles are layered: a TCP profile governs the transport, an HTTP profile adds layer-7 parsing, and SSL profiles terminate or originate TLS. A client-SSL profile means TLS is decrypted at the BIG-IP; without one, an HTTPS-looking virtual simply passes encrypted bytes straight through to the backend. If no profiles are attached at all, the virtual falls back to the FastL4 default and behaves as a pure layer-4 forwarder, with no awareness of HTTP or TLS. Reading the profile list is therefore the quickest way to tell whether a virtual is an L4 pass-through or a full L7 proxy.
+
+## Persistence and the pool
+
+Once traffic is parsed, the virtual decides where to send it. A `persist` profile keeps a given client pinned to the same pool member across connections, which matters for stateful applications. The `pool` field names the default pool of backend members. The pool's own load-balancing mode and health monitor then choose a specific, healthy member to receive the connection; that selection is covered in [the health monitors article](/learn/ltm-health-monitors). A virtual server with no pool is not necessarily broken: traffic may be steered entirely by an iRule, a local-traffic policy, or a forwarding configuration instead.
+
+## Source address translation
+
+The last decision is what source address the backend sees. The `source-address-translation` block controls this. With `automap` or a SNAT pool, the BIG-IP replaces the client's source IP with one of its own, so return traffic naturally comes back through it. With `type none`, the pool member sees the real client IP, which is sometimes required for logging or geolocation but forces the member's default route, or a specific route, to point back through the BIG-IP. Getting this wrong is a classic cause of asymmetric routing, where requests arrive but replies never return.
+
+## Reading it as a path
+
+Put together, a virtual server describes a path: a client reaches the `destination`, the profile stack parses and possibly decrypts the connection, persistence and the pool select a member, and source translation rewrites the outbound source. The [tmsh config explainer](/tools/tmsh-config-explainer) lays these fields out and flags the ones most likely to surprise you, such as an HTTPS port with no client-SSL profile or a SNAT setting of none. For the grammar these objects are written in, see [the anatomy of a bigip.conf file](/learn/anatomy-of-bigip-conf).

@@ -1,0 +1,36 @@
+---
+slug: dcv-and-sii-reuse
+title: "Reutilização de DCV e SII: a cadência de validação por trás da renovação"
+summary: "Emitir um certificado significa provar o controle do domínio e, para OV/EV, a identidade da organização. A SC-081v3 encurta por quanto tempo essas provas podem ser reutilizadas, o DCV para 10 dias até 2029, o que remodela a renovação tanto quanto a validade."
+concepts: ["dcv", "sii", "domain-validation", "ov", "ev", "dv", "sc-081v3", "acme"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["tls-certificate-lifetimes", "certificate-validity-windows", "renewing-before-expiry", "public-vs-private-pki"]
+category: pki
+order: 10
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Emitir um certificado significa provar coisas
+
+Antes de uma AC assinar um certificado, ela precisa verificar dois tipos de fato: que o solicitante controla os nomes de domínio sendo certificados e, para certificados Organization Validated e Extended Validation, que a organização nomeada é real e é o solicitante. Refazer essas verificações em cada emissão seria pesado, então os Baseline Requirements permitem que uma AC *reutilize* uma validação bem-sucedida recente por um tempo limitado. A SC-081v3 não apenas encurta os certificados; ela encurta por quanto tempo essas provas reutilizadas permanecem válidas. O planejador informa ambas as janelas de reutilização para a era de emissão de um certificado, porque elas moldam o seu ritmo de renovação com a mesma firmeza que a validade.
+
+## Validação de controle de domínio, e sua reutilização cada vez menor
+
+A Validação de Controle de Domínio (DCV) é a prova de que você controla um nome, demonstrada ao servir um token por HTTP, publicar um registro DNS, ou um desafio por e-mail. A janela durante a qual uma AC pode reutilizar uma DCV aprovada está encolhendo em sincronia com a validade: 398 dias hoje, 200 a partir de 15 de março de 2026, 100 a partir de 15 de março de 2027, e apenas 10 dias a partir de 15 de março de 2029. Nesse valor final, com certificados de 47 dias, o controle do domínio precisa ser reprovado a cada renovação, na ordem de cerca de trinta vezes por ano para um único domínio. A era do "configure e esqueça" da validação anual de domínio é o que esse número encerra.
+
+## Informação de identidade do titular, e reverificações anuais
+
+A Informação de Identidade do Titular (SII) são os dados da organização dentro de um certificado OV ou EV, o nome legal e os detalhes relacionados, tudo além do próprio domínio. Sua janela de reutilização cai de 825 dias para 398 dias a partir de 15 de março de 2026, o que significa que uma empresa terá de revalidar sua identidade efetivamente uma vez por ano, em vez de uma vez a cada dois anos. Isso afeta apenas certificados OV e EV; certificados Domain Validated não carregam SII e ficam intocados por essa mudança específica, embora estejam plenamente sujeitos às reduções de DCV e de validade.
+
+## Por que as duas janelas interagem
+
+Sua cadência de renovação real é limitada pela *menor* entre a validade do certificado e a janela de reutilização relevante. Enquanto a reutilização de DCV permaneceu muito mais longa que a validade, você podia renovar um certificado várias vezes com uma única validação de domínio. À medida que as janelas convergem, e especialmente quando a reutilização de DCV cai para 10 dias, essa folga desaparece, e uma validação de domínio nova passa a ser necessária em quase toda renovação. O planejador expõe as janelas de DCV e SII da era de emissão ao lado da validade, para que você veja num relance se uma revalidação será necessária no meio da vida ou apenas na renovação.
+
+## O que janelas de reutilização curtas eliminam
+
+Uma janela de reutilização de DCV de 10 dias aposenta silenciosamente fluxos de trabalho inteiros. A validação por e-mail e a colocação manual de um arquivo HTTP são adequadas uma vez por ano; são impraticáveis trinta e cinco vezes por ano em uma frota. A resposta prática é a automação capaz de reprovar o controle sem um humano: ACME usando o desafio DNS-01 ou HTTP-01, que um cliente pode executar sem supervisão a cada renovação. O [artigo sobre renovar antes da expiração](/learn/renewing-before-expiry) cobre como essa automação se encaixa; o ponto aqui é que são os cortes de reutilização, não só os de validade, que tornam a automação não opcional.
+
+## O que o planejador mostra
+
+Para a data de emissão que você informa, o planejador relata a janela de reutilização de DCV e a de SII que se aplicam, ao lado da validade e da cadência de renovação. Lidas em conjunto, elas dizem não apenas com que frequência o certificado precisa ser substituído, mas com que frequência você precisa reprovar quem é e o que controla, o que, até 2029, é quase a mesma coisa.

@@ -1,0 +1,36 @@
+---
+slug: tls-certificate-lifetimes
+title: "A era dos 47 dias: como os tempos de vida dos certificados TLS estão encolhendo"
+summary: "O cronograma SC-081v3 do CA/Browser Forum reduz a validade máxima de certificados TLS públicos de 398 para 47 dias até 2029, em três etapas. Quais são as fases, por que 47, e o que isso faz com o volume de renovações."
+concepts: ["tls", "pki", "certificate", "validity", "sc-081v3", "ca-browser-forum", "automation"]
+relatedTools: ["cert-renewal-planner"]
+relatedArticles: ["certificate-validation", "certificate-revocation", "dcv-and-sii-reuse", "renewing-before-expiry", "public-vs-private-pki"]
+category: pki
+order: 8
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Uma tendência de mão única rumo a certificados mais curtos
+
+Os certificados TLS públicos vêm tendo vidas cada vez mais curtas há mais de uma década. A validade máxima caiu de cinco anos para três, depois para 825 dias, e em setembro de 2020 para 398 dias. Em abril de 2025 o CA/Browser Forum aprovou a Cédula SC-081v3, proposta pela Apple e aprovada com amplo consenso entre autoridades certificadoras e fornecedores de navegadores, que continua a tendência até os 47 dias. Não é uma proposta nem uma recomendação: está escrito nos Baseline Requirements de TLS que as ACs publicamente confiáveis precisam seguir. O planejador desta página existe porque, uma vez que os certificados vivem tão pouco, definir um ritmo de renovação na mão deixa de ser prático.
+
+## O cronograma, fase por fase
+
+A redução acontece em três etapas, cada uma vinculada à **data de emissão** de um certificado, e não a qualquer certificado já existente. Até 15 de março de 2026 o máximo é 398 dias. A partir de 15 de março de 2026 cai para 200 dias, a partir de 15 de março de 2027 para 100 dias, e a partir de 15 de março de 2029 para 47 dias. Um certificado emitido no dia anterior a um corte mantém o máximo antigo e mais longo por toda a sua vida; um emitido no dia seguinte fica preso ao novo. É exatamente esse o teste que o planejador executa: ele observa a data de emissão que você informa, encontra a fase que a governa, e diz se a validade informada está dentro do limite dessa fase.
+
+## Por que o número é 47
+
+O valor parece arbitrário, mas foi escolhido de propósito. Quarenta e sete dias são, aproximadamente, um mês de calendário mais cerca de duas semanas, com um dia de folga: curto o bastante para que a renovação manual em escala se torne inviável, mas longo o suficiente para que um sistema automatizado renove com tranquilidade, sem operar no limite. Os projetistas evitaram deliberadamente um número próximo de 30, para que a renovação não fosse forçada a cair no mesmo dia do calendário todo mês. As etapas intermediárias seguem a mesma lógica: cada uma é alguns meses cheios mais uma fração, mais um dia de margem.
+
+## Por que encurtar os tempos de vida afinal
+
+Um certificado é uma afirmação permanente sobre uma chave e um nome, e quanto mais tempo ela permanece de pé, mais tempo dura qualquer problema com ela. Se uma chave privada vaza, um certificado de vida mais curta limita por quanto tempo a chave vazada continua utilizável. Tempos de vida menores também forçam a *agilidade criptográfica*: o ecossistema inteiro passa a girar com frequência suficiente para que descontinuar um algoritmo fraco, ou responder a um evento de desconfiança de uma AC, realmente surta efeito em semanas e não em anos. A chegada iminente dos computadores quânticos, e a coleta no estilo "colher agora, descriptografar depois" do tráfego de hoje, adiciona urgência a construir essa agilidade agora, o que é parte do motivo de a indústria ter escolhido este momento para empurrar os tempos de vida para baixo com força.
+
+## O que isso faz com o volume de renovações
+
+A consequência operacional é o ponto central. Uma organização que hoje renova um certificado mais ou menos uma vez por ano passará a renová-lo cerca de oito vezes por ano com 47 dias. Análises do setor colocam uma frota de 1.000 certificados em aproximadamente 48.000 horas de renovação por ano sob o regime de 47 dias, cerca de doze vezes os volumes atuais. Some a isso o fato de que as identidades de máquina já superam em muitas vezes as humanas e ainda estão crescendo, e a renovação manual simplesmente não escala. O planejador torna isso concreto: para qualquer validade que você informe, ele mostra as renovações por ano que aquele ritmo implica, e projeta o número em cada limite futuro para que você veja a escalada antes que ela chegue.
+
+## O que o planejador mostra
+
+Informe as datas de emissão e expiração de um certificado e o planejador relata o tamanho da sua validade, a fase em que cai sua data de emissão, se esse tamanho está dentro do limite, a frequência de renovação que ele implica, e uma data recomendada para renovar. Ele roda inteiramente no seu navegador e modela certificados TLS publicamente confiáveis; o [artigo sobre PKI pública e privada](/learn/public-vs-private-pki) explica por que a PKI interna segue regras diferentes, e a ferramenta companheira, o [inspetor X.509](/tools/x509), decodifica os próprios bytes do certificado.

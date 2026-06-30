@@ -1,0 +1,37 @@
+---
+slug: syslog-on-network-devices
+title: "Syslog em Dispositivos de Rede: Qual Facility Faz o Quê"
+summary: "Firewalls, balanceadores de carga e switches quase sempre registram nas facilities locais, mas cada fabricante escolhe um padrão diferente. Saber que o FortiGate usa local7 por padrão, o Cisco ASA usa local4 e o F5 BIG-IP usa local0 transforma uma parede de números de PRI em um mapa de qual caixa disse o quê."
+concepts: ["syslog", "fortigate", "f5", "cisco", "facility", "dispositivos de rede"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-pri-facility-severity", "syslog-facilities-and-severities"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+As facilities locais (`local0` a `local7`, facilities 16 a 23) existem precisamente para que os appliances possam registrar sem pisar nas facilities de sistema. O detalhe é que cada fabricante escolheu um padrão diferente, então o mesmo número de facility significa uma caixa diferente dependendo de quem enviou. Quando você está olhando para um feed de syslog misto, esses padrões são a chave para distinguir as fontes.
+
+## Os padrões comuns
+
+Alguns padrões valem a pena memorizar:
+
+- O **FortiGate** usa `local7` (facility 23) por padrão. O FortiOS também permite escolher o formato, incluindo RFC 5424, em suas configurações de syslog.
+- Os firewalls **Cisco ASA** usam `local4` (facility 20) por padrão.
+- Os **switches e roteadores Cisco** são muito comumente configurados para `local7` (facility 23).
+- O **F5 BIG-IP** registra o tráfego LTM em `local0` (facility 16) por padrão.
+
+Estes são convenções e pontos de partida, não leis: cada um desses dispositivos permite mudar a facility, e em um ambiente bem administrado você frequentemente o faz, justamente para que cada plataforma caia em uma facility distinta e possa ser roteada separadamente no coletor.
+
+## Colocando em prática
+
+É aqui que decodificar um PRI compensa operacionalmente. Suponha que um coletor central mostre uma rajada de mensagens `<189>`. Decodifique: 189 dividido por 8 é 23 com resto 5, então isso é `local7` na severity 5 (notice). Em uma rede onde o FortiGate é dono de `local7`, isso imediatamente restringe a fonte a um FortiGate, em um nível de notice rotineiro. Mude a atribuição de facility por plataforma e o PRI sozinho diz tanto a classe do dispositivo quanto a urgência antes de você ler uma única palavra do corpo da mensagem.
+
+## Limiares de severity na prática
+
+A mesma lógica se aplica à severity. A maioria dos appliances permite definir um limiar de log, e os dispositivos de produção comumente ficam em notice (5) ou informational (6); descer para warning (4) ou error (3) corta o volume quando um dispositivo está barulhento, enquanto debug (7) fica reservado para troubleshooting ativo por causa da enxurrada que produz. Combinar um filtro de facility com um limiar de severity, por exemplo local7 na severity 3 ou pior, é uma forma precisa de fazer aparecer apenas os eventos que importam de uma classe específica de dispositivo.
+
+## Decodifique você mesmo
+
+O [decodificador de PRI syslog](/tools/syslog-pri-decoder) transforma qualquer PRI em sua facility e severity na hora, e nota os padrões comuns dos dispositivos ao lado das facilities locais. Para a aritmética subjacente, veja [o PRI do syslog](/learn/syslog-pri-facility-severity); para a lista completa do que cada facility e severity significa, veja [facilities e severities do syslog](/learn/syslog-facilities-and-severities).

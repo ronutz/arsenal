@@ -1,0 +1,36 @@
+---
+slug: url-anatomy
+title: "The Anatomy of a URL"
+summary: "Every URL is built from the same handful of parts defined by RFC 3986: scheme, authority (userinfo, host, port), path, query, and fragment. What each part means, how a parser tells them apart, and where the boundaries actually fall."
+concepts: ["url", "uri", "rfc 3986", "scheme", "authority", "host", "path", "query", "fragment"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["query-strings", "url-encoding-and-idn", "percent-encoding"]
+category: encoding
+order: 1
+status: reviewed
+updated: "2026-06-29"
+---
+
+## One grammar for every URL
+
+A URL looks like free-form text, but it has a strict grammar, defined by RFC 3986 as a Uniform Resource Identifier. Once you know the five top-level parts, every URL becomes easy to read, and a parser can split any of them apart with a single pattern. Take this example and keep it in mind as the parts are introduced:
+
+`https://user@host.example.com:8443/path/to/page?q=hello&lang=en#section`
+
+The five parts, in order, are the scheme, the authority, the path, the query, and the fragment. The punctuation between them is what a parser keys on: the colon after the scheme, the double slash that introduces the authority, the question mark that begins the query, and the hash that begins the fragment.
+
+## Scheme
+
+The scheme comes first, before the colon: `https`. It names the protocol or interpretation for the rest of the URL, and it is case-insensitive, so `HTTPS` and `https` mean the same thing and are normally written in lowercase. Common schemes include http and https, but also ftp, ssh, mailto, and tel. Some schemes use an authority and some do not: `mailto:someone@example.com` has a scheme and then jumps straight to a path with no host.
+
+## Authority: userinfo, host, and port
+
+If the URL has a double slash after the scheme, what follows up to the next slash, question mark, or hash is the authority. It breaks into three pieces. The userinfo, before an at sign, can carry a username and optionally a password: `user@` here, or `user:password@` when a password is present. Embedding a password this way is discouraged, because URLs are logged and shared. The host is the machine: a domain name like `host.example.com`, an IPv4 literal, or an IPv6 literal in square brackets such as `[2001:db8::1]`. The port, after a colon, is the TCP port: `8443`. When the port is omitted, the client uses the scheme's default, such as 443 for https or 80 for http.
+
+## Path, query, and fragment
+
+The path identifies the resource on the host: `/path/to/page`. It is a sequence of segments separated by slashes, and an inspector can list those segments individually. The query, introduced by a question mark, carries parameters: `q=hello&lang=en`. Its internal structure is a convention worth its own article on [query strings](/learn/query-strings). The fragment, introduced by a hash, points within the resource: `section`. The fragment is special in one important way: it is handled entirely by the client and is never sent to the server, which is why it is a good place to keep data you do not want in server logs.
+
+## Reading them apart
+
+The value of seeing a URL split into these named parts is that subtle mistakes become obvious. A password hiding in the userinfo, a non-default port, a host that is really an IP address, a parameter buried in a long query: all of them stand out once the URL is decomposed. The URL inspector does exactly this decomposition, faithfully and without normalizing the URL, so what you see is what the URL actually says.

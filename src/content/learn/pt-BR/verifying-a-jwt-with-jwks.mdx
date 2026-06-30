@@ -1,0 +1,40 @@
+---
+slug: verifying-a-jwt-with-jwks
+title: "Verificando um JWT com um JWKS: do kid à Assinatura"
+summary: "Verificar um token assinado é uma sequência curta e rigorosa: ler o cabeçalho, encontrar a chave cujo kid corresponde no JWKS do provedor, confirmar o algoritmo e checar a assinatura. Cada passo tem uma armadilha clássica, e pular o rigor é como acontecem os bypasses de verificação."
+concepts: ["jwt", "jwks", "kid", "verificação", "confusão de alg"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["jwks-and-key-rotation", "jwk-key-types"]
+category: identity
+order: 3
+status: reviewed
+updated: "2026-06-29"
+---
+
+Um JWKS só é útil no momento em que você verifica um token. A verificação em si é um pequeno pipeline, e acertar cada passo exatamente é o que separa um verificador seguro de um contornável.
+
+## A sequência
+
+Primeiro, leia o cabeçalho do token, seu primeiro segmento, que é JSON codificado em base64url. O cabeçalho diz duas coisas de que você precisa: o `alg` com o qual o token afirma estar assinado, e o `kid` da chave que o assinou.
+
+Segundo, busque o JWKS do provedor (em cache, atualizado quando há um `kid` ausente) e encontre a chave cujo `kid` corresponde ao cabeçalho. Se nenhuma chave corresponder, pare: não há chave para verificar. Se exatamente uma corresponder, essa é a sua chave.
+
+Terceiro, confirme o algoritmo. O `alg` da chave, ou seu tipo, deve ser um que sua aplicação espera. Você deve fixar os algoritmos aceitáveis com antecedência, em vez de confiar no que o token pedir.
+
+Quarto, execute a checagem de assinatura com essa chave e esse algoritmo sobre o cabeçalho e o payload. Somente se passar é que você então valida as reivindicações (emissor, audiência, expiração).
+
+O [explicador de JWKS](/tools/jwks-explainer) realiza os dois primeiros passos para você: cole um JWKS e um JWT, e ele lê o cabeçalho e informa qual chave o `kid` seleciona, ou que nenhuma o faz.
+
+## As armadilhas que importam
+
+Três erros clássicos transformam esse pipeline em uma vulnerabilidade.
+
+O primeiro é a **confusão de algoritmo**. Se um verificador confia cegamente no `alg` do cabeçalho, um atacante pode mudá-lo. O caso notório troca um token `RS256` (assimétrico) por `HS256` (simétrico) e o assina com a chave pública do provedor como se fosse um segredo HMAC; um verificador que não fixa o algoritmo o aceita. Sempre decida o algoritmo aceitável a partir da chave, não a partir do cabeçalho controlado pelo atacante.
+
+O segundo é **aceitar `alg` igual a `none`**. A especificação JWS define um algoritmo não seguro `none` com uma assinatura vazia. Um verificador nunca deve aceitá-lo para tokens que deveriam estar assinados.
+
+O terceiro é **selecionar pelo campo errado**. Se o cabeçalho não tem `kid`, algumas bibliotecas recorrem à correspondência por `alg`, o que é frágil e pode corresponder à chave errada. Um provedor bem formado sempre define um `kid`; o explicador sinaliza um ausente e mostra o frágil fallback por alg quando precisa usá-lo.
+
+## Veja de ponta a ponta
+
+Para seguir uma chave de um cabeçalho até sua correspondência, use o [explicador de JWKS](/tools/jwks-explainer). Para o documento que guarda essas chaves, veja [JWKS e rotação de chaves](/learn/jwks-and-key-rotation); para o que cada chave contém, veja [tipos de chave JWK](/learn/jwk-key-types).
