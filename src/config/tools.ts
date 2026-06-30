@@ -31,6 +31,7 @@ export const tools: ToolEntry[] = [
   { id: "jwt", href: "/tools/jwt", category: "identity", available: true },
   { id: "pkce", href: "/tools/pkce", category: "identity", available: true },
   { id: "oidc", href: "/tools/oidc", category: "identity", available: true },
+  { id: "totp-hotp", href: "/tools/totp-hotp", category: "identity", available: true },
   { id: "base64", href: "/tools/base64", category: "encoding", available: true },
   { id: "hash", href: "/tools/hash", category: "hashing", available: true },
   { id: "hmac", href: "/tools/hmac", category: "hashing", available: true },

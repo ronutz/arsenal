@@ -12,9 +12,11 @@
 // for /api/* and for bare-route redirects.
 //
 // For the API, this Worker is the PROGRAMMATIC
-// counterpart to the in-browser tools: it calls the EXACT SAME @ronutz/netcore
-// function the browser calls, so hosted and in-browser output are byte-identical
-// (the Seam-1 invariant, proven by netcore's golden vectors).
+// counterpart to the in-browser tools: it calls the EXACT SAME arsenal-local
+// engine (src/lib/tools/cidr) the browser calls, so hosted and in-browser
+// output are byte-identical (the Seam-1 invariant, proven by the CIDR module's
+// golden vectors). Arsenal carries no runtime dependency on @ronutz/netcore;
+// the single-subnet engine is in-house, so the Worker imports it directly.
 //
 // PRIVACY (deliberate, consistent with the rest of the site): stateless. It
 // reads only the input on the request, computes, and returns. It logs no query
@@ -25,7 +27,7 @@
 // no effect on `npm run build`; wrangler bundles it at deploy time.
 // ============================================================================
 
-import { run as computeCidr } from "@ronutz/netcore/tools/cidr";
+import { cidrAnalyze as computeCidr } from "../src/lib/tools/cidr/compute";
 // Locale registry is the single source of truth (src/i18n/locales.ts). Imported
 // via a relative path because the Worker is outside src/ and the "@/" alias is
 // not in scope for wrangler's bundler. locales.ts has no runtime deps, so it

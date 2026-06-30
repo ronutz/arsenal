@@ -29,6 +29,8 @@ import HashTool from "@/components/HashTool";
 import { manifest as hashManifest } from "@/lib/tools/hash";
 import HmacTool from "@/components/HmacTool";
 import { manifest as hmacManifest } from "@/lib/tools/hmac";
+import TotpHotpTool from "@/components/TotpHotpTool";
+import { manifest as totpHotpManifest } from "@/lib/tools/totp-hotp";
 import PkceTool from "@/components/PkceTool";
 import { manifest as pkceManifest } from "@/lib/tools/pkce";
 import UuidTool from "@/components/UuidTool";
@@ -113,6 +115,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   hmac: {
     Component: HmacTool,
     sources: hmacManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "totp-hotp": {
+    Component: TotpHotpTool,
+    sources: totpHotpManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   pkce: {
     Component: PkceTool,

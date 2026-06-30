@@ -1,0 +1,58 @@
+---
+slug: totp-and-hotp
+title: "Como funcionam as senhas de uso único TOTP e HOTP"
+summary: "Ambas transformam um segredo compartilhado em um código curto que prova posse sem transmitir o segredo. O HOTP conta eventos; o TOTP conta tempo. O motor por baixo é o mesmo HMAC mais uma etapa de truncamento."
+concepts: ["totp", "hotp", "otp", "2fa", "hmac", "dynamic-truncation", "rfc6238", "rfc4226"]
+relatedTools: ["totp-hotp"]
+relatedArticles: ["validating-totp-codes", "base32", "hmac", "why-hmac"]
+category: identity
+order: 30
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Um segredo, muitos códigos curtos
+
+Uma senha de uso único prova que quem a apresenta conhece um **segredo compartilhado** sem jamais transmiti-lo. Os dois lados, o aplicativo autenticador e o servidor, guardam o mesmo segredo depois que ele é provisionado. A partir desse segredo, cada lado consegue derivar um código numérico curto sob demanda e, como ambos o derivam da mesma forma a partir das mesmas entradas, os códigos coincidem. Quem observa um código aprende quase nada: são seis a oito dígitos sem estrutura aproveitável, e ele é válido apenas por um curto período.
+
+Dois RFCs definem isso. O HOTP (RFC 4226) é o bloco básico; o TOTP (RFC 6238) é o HOTP com o relógio embutido.
+
+## HOTP: um código por evento
+
+O HOTP deriva um código a partir do segredo e de um **contador** C, um valor de 8 bytes que os dois lados combinam. Os passos são:
+
+1. Codificar C como 8 bytes, big-endian.
+2. Calcular `HMAC-SHA-1(segredo, C)`. O resultado tem 20 bytes.
+3. Reduzir esses 20 bytes a um número curto com **truncamento dinâmico** (abaixo).
+4. Tomar esse número módulo `10^dígitos` e completar com zeros à esquerda. Seis dígitos é o padrão.
+
+Cada vez que um código é usado, o contador avança em um nos dois lados, de modo que o próximo código é diferente. O detalhe é que os dois contadores precisam permanecer alinhados; se eles se afastam, a validação falha até que sejam ressincronizados.
+
+## Truncamento dinâmico: de 20 bytes para 6 dígitos
+
+Não dá para simplesmente pegar os primeiros bytes do HMAC, porque isso desperdiçaria a maior parte da saída e poderia introduzir viés. Em vez disso, o RFC 4226 escolhe um ponto de partida que depende do próprio HMAC:
+
+- Tomar os **4 bits menos significativos do último byte** como deslocamento (um valor de 0 a 15).
+- Ler os 4 bytes a partir desse deslocamento como um número big-endian.
+- Zerar o bit mais alto, deixando um valor positivo de 31 bits. Isso evita diferenças de sinal entre plataformas.
+- Tomar esse valor módulo `10^dígitos`.
+
+Como o deslocamento é derivado do próprio MAC, qual janela de bytes vira o código também é imprevisível, e cada código continua sendo uma função determinística do segredo e do contador.
+
+## TOTP: deixe o relógio ser o contador
+
+O TOTP elimina a necessidade de manter contadores sincronizados ao derivar o contador do tempo. O fator móvel é um **intervalo de tempo**:
+
+```
+T = floor((tempoUnix - T0) / X)
+```
+
+com `T0 = 0` e um intervalo `X` de 30 segundos por padrão. Alimente o `T` na construção do HOTP e você obtém o código baseado em tempo. Como os dois lados leem o mesmo relógio, o `T` avança sozinho a cada 30 segundos e não há contador por uso a manter. O custo é que os dois relógios precisam estar razoavelmente próximos, o que a janela de aceitação resolve no lado validador.
+
+O TOTP também admite SHA-256 e SHA-512 no lugar do SHA-1, e códigos de 7 ou 8 dígitos. O SHA-1 continua sendo o padrão comum e é seguro aqui: a segurança do HMAC se apoia no hash se comportar como uma função pseudoaleatória, não na resistência a colisões, então os ataques de colisão conhecidos contra o SHA-1 não se traduzem em um ataque contra o HMAC-SHA-1.
+
+## De onde vem o segredo
+
+O segredo é gerado uma única vez no cadastro e entregue ao autenticador, quase sempre como uma string **Base32** transportada em uma URI `otpauth://` e exibida como um QR code. O alfabeto sem ambiguidade e indiferente a maiúsculas do Base32 é o que torna esse segredo seguro de exibir e digitar. Daí em diante, o segredo não se move; só os códigos derivados se movem.
+
+A ferramenta TOTP / HOTP calcula exatamente isso: escolha o modo, cole o segredo, e ela mostra o código junto com o HMAC intermediário, o deslocamento e o truncamento, para que a derivação fique visível em vez de parecer mágica.

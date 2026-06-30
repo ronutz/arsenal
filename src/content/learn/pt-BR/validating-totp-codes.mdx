@@ -1,0 +1,42 @@
+---
+slug: validating-totp-codes
+title: "Validando senhas de uso único: desvio, janelas e repetição"
+summary: "Gerar um código é a metade fácil. Aceitar um exige tolerar o desvio de relógio, limitar a janela, rejeitar a reutilização e conter as tentativas, cada um um compromisso entre usabilidade e segurança."
+concepts: ["totp", "hotp", "clock-drift", "validation-window", "replay", "rate-limiting", "2fa"]
+relatedTools: ["totp-hotp"]
+relatedArticles: ["totp-and-hotp", "base32", "verifying-hmac"]
+category: identity
+order: 31
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Aceitar um código é a metade difícil
+
+Calcular uma senha de uso único é determinístico e bem compreendido. O julgamento vive no lado validador, onde um servidor precisa decidir se um código que chega agora é aceitável, considerando que relógios desviam, que redes adicionam atraso e que atacantes repetem tentativas. Cada decisão troca usabilidade por segurança.
+
+## Desvio de relógio e a janela de aceitação
+
+Um código TOTP está atrelado a um intervalo de tempo, mas o relógio do dispositivo do usuário e o relógio do servidor nunca estão perfeitamente alinhados, e o código leva tempo para ser lido e digitado. Se o servidor verificasse apenas o intervalo atual `T`, um celular alguns segundos adiantado ou atrasado falharia.
+
+A solução é uma **janela de aceitação**: o servidor calcula os códigos para `T`, `T-1` e `T+1` e aceita uma correspondência com qualquer um deles. Uma janela de mais ou menos um intervalo tolera cerca de 30 segundos de desvio em cada direção, o que cobre o desvio normal e o tempo de digitação. Alargar a janela melhora a usabilidade, mas amplia o conjunto de códigos válidos no momento, então ela deve ser mantida pequena. Desvio persistente é melhor resolvido corrigindo o relógio do que alargando a janela.
+
+## Desvio do contador HOTP e ressincronização
+
+O HOTP não tem relógio, então tem o problema oposto: os contadores podem se afastar quando um usuário gera códigos que nunca chegam ao servidor (apertando o botão de um token físico, por exemplo). Os servidores lidam com isso usando uma **janela de antecipação**, testando os próximos valores de contador e, ao encontrar correspondência, avançando o contador armazenado para acompanhar. A janela é limitada para que um atacante não consiga varrer um intervalo grande. Um código adiantado demais força uma etapa explícita de ressincronização.
+
+## Um código é reutilizável até você impedir
+
+Dentro de sua janela, um código TOTP permanece válido pelo intervalo inteiro, muitas vezes cerca de 30 segundos. Isso significa que o mesmo código pode ser apresentado mais de uma vez. Se um atacante captura um código em trânsito, nada no algoritmo o impede de repeti-lo antes que expire.
+
+A defesa não está na matemática, e sim no servidor: registrar quais códigos `(segredo, intervalo)` já foram aceitos e **rejeitar qualquer reutilização**. Uma segunda apresentação corretamente validada do mesmo código precisa ser recusada mesmo sendo aritmeticamente válida. É isso que transforma uma senha de uso único em algo de fato usado uma só vez.
+
+## Contenha as tentativas
+
+Um código de seis dígitos é um entre 1.000.000 de valores, e uma janela de aceitação torna vários deles válidos a cada instante. Sem limites, um atacante pode simplesmente enviar tentativas. **Limitação de taxa** e bloqueios após falhas repetidas são essenciais, e importam ainda mais quando a janela é mais larga. Senhas de uso único são um segundo fator, não um fator único, justamente porque o espaço de códigos é pequeno.
+
+## O segredo é tão sensível quanto uma senha
+
+Tudo isso pressupõe que o próprio segredo compartilhado esteja protegido. Um servidor que armazena segredos OTP em texto claro entrega a quem lê esse armazenamento a capacidade de gerar códigos válidos para todos os usuários indefinidamente. Trate o segredo como material de nível credencial: armazene-o cifrado, restrinja quem pode lê-lo e provisione-o por um canal que não o vaze. Validar o código derivado com cuidado é esforço desperdiçado se o segredo por trás dele estiver exposto.
+
+Você pode ver a lógica da janela diretamente na ferramenta TOTP / HOTP: o validador dela aceita os intervalos adjacentes, que é exatamente a tolerância de mais ou menos um intervalo que um servidor real aplica.

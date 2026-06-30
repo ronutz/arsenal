@@ -10,7 +10,7 @@
   // (worker/index.ts) — the API is served, and bare non-localized routes are
   // redirected to the default locale; the heavy asset directories are served
   // straight from assets, untouched. This is canon C-04 / C-68
-  // ("Seam 1"): the hosted endpoint calls the same @ronutz/netcore function the
+  // ("Seam 1"): the hosted endpoint calls the same arsenal-local engine the
   // browser calls, so output is byte-identical. The ASSETS binding lets the
   // Worker fall back to static assets for any non-API path that reaches it.
   //
@@ -24,7 +24,7 @@
 
   // The Worker script that handles /api/* (see assets.run_worker_first below).
   // Lives outside src/ and is excluded from the Next tsconfig, so it has no
-  // effect on the static build; wrangler bundles it (and @ronutz/netcore) here.
+  // effect on the static build; wrangler bundles it here.
   "main": "worker/index.ts",
 
   // Runtime compatibility baseline. Set to the deploy date.

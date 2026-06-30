@@ -6310,3 +6310,51 @@ a.tools-card:hover {
 .syslogpri-split-val { fill: var(--text-primary); font-size: 18px; font-weight: 700; font-family: var(--font-mono); }
 .syslogpri-split-op { fill: var(--text-tertiary); font-size: 12px; font-family: var(--font-mono); font-weight: 600; }
 .syslogpri-split-note { color: var(--text-tertiary); font-size: 0.8rem; line-height: 1.5; margin: 0.6rem 0 0; }
+
+/* ==========================================================================
+   TOTP / HOTP TOOL  (src/components/TotpHotpTool.tsx)
+   One-time-password generator + validator. Reuses the cidr/jwt input and panel
+   classes; the rules below cover only the OTP-specific bits: the sub-toggle for
+   secret encoding, the parameter row, the live time controls, the large code
+   readout with its countdown, the validation verdict, and the explain list.
+   Match/no-match use the fixed traffic-light hexes (theme-independent, D-19).
+   ========================================================================== */
+
+/* secret-encoding sub-toggle sits just under the secret field */
+.seg--sub { margin-top: 0.6rem; }
+
+/* parameter row: digits next to step (TOTP) or counter (HOTP) */
+.otp-params { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
+.otp-param { display: flex; flex-direction: column; gap: 0.5rem; }
+.otp-num { max-width: 14rem; }
+
+/* live time controls (TOTP) */
+.otp-time-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.otp-now-toggle { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer; }
+.otp-now-toggle input { cursor: pointer; }
+
+/* the generated code, shown large and letter-spaced, with a tabular figure
+   so the digits do not shift width as the live code changes */
+.otp-code {
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  letter-spacing: 0.18em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  padding: 0.75rem 0.5rem;
+}
+.otp-countdown { color: var(--text-tertiary); font-size: 0.85rem; text-align: center; margin: 0.4rem 0 0; }
+
+/* bad-secret error */
+.otp-error { color: #EF4444; font-size: 0.9rem; margin: 0.75rem 0 0; }
+
+/* validation verdict */
+.otp-check-result { font-size: 0.95rem; font-weight: 600; margin: 0.6rem 0 0; }
+.otp-check-result--match { color: #34D399; }
+.otp-check-result--nomatch { color: #EF4444; }
+
+/* explain panel: a definition list of the intermediate values */
+.otp-explain { display: flex; flex-direction: column; gap: 0.6rem; margin: 0.25rem 0 0; }
+.otp-explain-row { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; align-items: baseline; }
+.otp-explain-row dt { color: var(--text-secondary); font-size: 0.85rem; min-width: 13rem; }
+.otp-explain-row dd { margin: 0; font-size: 0.9rem; }
+.otp-explain-hmac { word-break: break-all; font-size: 0.8rem; color: var(--text-tertiary); }

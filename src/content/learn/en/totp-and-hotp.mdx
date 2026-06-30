@@ -1,0 +1,58 @@
+---
+slug: totp-and-hotp
+title: "How TOTP and HOTP one-time passwords work"
+summary: "Both turn a shared secret into a short code that proves possession without sending the secret. HOTP counts events; TOTP counts time. The engine underneath is the same HMAC plus a truncation step."
+concepts: ["totp", "hotp", "otp", "2fa", "hmac", "dynamic-truncation", "rfc6238", "rfc4226"]
+relatedTools: ["totp-hotp"]
+relatedArticles: ["validating-totp-codes", "base32", "hmac", "why-hmac"]
+category: identity
+order: 30
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## One secret, many short codes
+
+A one-time password proves that the holder knows a **shared secret** without ever transmitting it. Both sides, the authenticator app and the server, hold the same secret once it is provisioned. From that secret each side can derive a short numeric code on demand, and because both derive it the same way from the same inputs, the codes match. An observer who sees a code learns almost nothing: it is six to eight digits with no usable structure, and it is valid only briefly.
+
+Two RFCs define this. HOTP (RFC 4226) is the building block; TOTP (RFC 6238) is HOTP with the clock wired into it.
+
+## HOTP: a code per event
+
+HOTP derives a code from the secret and a **counter** C, an 8-byte value both sides agree on. The steps are:
+
+1. Encode C as 8 bytes, big-endian.
+2. Compute `HMAC-SHA-1(secret, C)`. The result is 20 bytes.
+3. Reduce those 20 bytes to a short number with **dynamic truncation** (below).
+4. Take that number modulo `10^digits` and zero-pad. Six digits is the default.
+
+Every time a code is used, the counter advances by one on both sides, so the next code is different. The catch is that the two counters must stay aligned; if they drift apart, validation fails until they are resynchronised.
+
+## Dynamic truncation: 20 bytes to 6 digits
+
+You cannot just take the first few bytes of the HMAC, because that would waste most of the output and could introduce bias. RFC 4226 instead picks a starting point that depends on the HMAC itself:
+
+- Take the **low 4 bits of the last byte** as an offset (a value from 0 to 15).
+- Read the 4 bytes starting at that offset as a big-endian number.
+- Clear the top bit, leaving a positive 31-bit value. This avoids sign-related differences across platforms.
+- Take that value modulo `10^digits`.
+
+Because the offset is derived from the MAC, which byte window becomes the code is itself unpredictable, and every code remains a deterministic function of the secret and counter.
+
+## TOTP: let the clock be the counter
+
+TOTP removes the need to keep counters in sync by deriving the counter from time. The moving factor is a **time step**:
+
+```
+T = floor((unixTime - T0) / X)
+```
+
+with `T0 = 0` and a step `X` of 30 seconds by default. Feed `T` into the HOTP construction and you get the time-based code. Because both sides read the same wall clock, `T` advances on its own every 30 seconds and there is no per-use counter to maintain. The cost is that the two clocks must be reasonably close, which is what the acceptance window handles on the validating side.
+
+TOTP also allows SHA-256 and SHA-512 in place of SHA-1, and 7 or 8 digit codes. SHA-1 remains the common default and is sound here: HMAC's security rests on the hash behaving as a pseudo-random function, not on collision resistance, so the known SHA-1 collision attacks do not translate into an attack on HMAC-SHA-1.
+
+## Where the secret comes from
+
+The secret is generated once at enrolment and handed to the authenticator, almost always as a **Base32** string carried in an `otpauth://` URI and shown as a QR code. Base32's case-insensitive, unambiguous alphabet is what makes that secret safe to display and retype. From then on the secret never moves; only the derived codes do.
+
+The TOTP / HOTP tool computes exactly this: pick the mode, paste the secret, and it shows the code along with the intermediate HMAC, offset, and truncation so the derivation is visible rather than magic.

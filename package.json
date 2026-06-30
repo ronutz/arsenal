@@ -19,7 +19,7 @@
     "build": "next build && pagefind --site out",
     "start": "next start",
     "lint": "next lint",
-    "prebuild": "node scripts/copy-locales.mjs && node scripts/build-openapi.mjs && node scripts/gen-locale-coverage.mjs",
+    "prebuild": "node scripts/check-tool-articles.mjs && node scripts/copy-locales.mjs && node scripts/build-openapi.mjs && node scripts/gen-locale-coverage.mjs",
     "update-swagger-ui": "node scripts/update-swagger-ui.mjs"
   },
   "//7": "No runtime dependency on @ronutz/netcore; modules curate OUT to it later.",

@@ -1,0 +1,42 @@
+---
+slug: validating-totp-codes
+title: "Validating one-time passwords: drift, windows, and replay"
+summary: "Generating a code is the easy half. Accepting one means tolerating clock drift, bounding the window, rejecting reuse, and throttling guesses, each a tradeoff between usability and security."
+concepts: ["totp", "hotp", "clock-drift", "validation-window", "replay", "rate-limiting", "2fa"]
+relatedTools: ["totp-hotp"]
+relatedArticles: ["totp-and-hotp", "base32", "verifying-hmac"]
+category: identity
+order: 31
+status: machine-draft
+updated: "2026-06-30"
+---
+
+## Accepting a code is the hard half
+
+Computing a one-time password is deterministic and well understood. The judgement lives on the validating side, where a server must decide whether a code that arrives now is acceptable, given that clocks drift, networks add delay, and attackers retry. Each decision trades usability against security.
+
+## Clock drift and the acceptance window
+
+A TOTP code is tied to a time step, but the user's device clock and the server's clock are never perfectly aligned, and the code takes time to read and type. If the server checked only the current step `T`, a phone running a few seconds fast or slow would fail.
+
+The fix is an **acceptance window**: the server computes the codes for `T`, `T-1`, and `T+1` and accepts a match against any of them. A window of plus or minus one step tolerates up to roughly 30 seconds of skew in each direction, which covers normal drift and typing time. Widening the window improves usability but enlarges the set of currently-valid codes, so it should be kept small. Persistent drift is better solved by correcting the clock than by widening the window.
+
+## HOTP counter drift and resync
+
+HOTP has no clock, so it has the opposite problem: the counters can drift apart when a user generates codes that never reach the server (pressing the button on a hardware token, for example). Servers handle this with a **look-ahead window**, trying the next several counter values and, on a match, advancing the stored counter to catch up. The window is bounded so an attacker cannot search a large range. A code too far ahead forces an explicit resynchronisation step.
+
+## A code is reusable until you stop it
+
+Within its window a TOTP code stays valid for the whole step, often around 30 seconds. That means the same code can be presented more than once. If an attacker captures a code in transit, nothing in the algorithm prevents them from replaying it before it expires.
+
+The defence is not in the math but in the server: record which `(secret, step)` codes have already been accepted and **reject any reuse**. A correctly validated second presentation of the same code must be refused even though it is arithmetically valid. This turns a one-time password into something actually used once.
+
+## Throttle the guesses
+
+A six-digit code is one of 1,000,000 values, and an acceptance window makes several of them valid at any instant. Without limits, an attacker can simply submit guesses. **Rate limiting** and lockouts after repeated failures are essential, and they matter more as the window widens. One-time passwords are a second factor, not a sole factor, precisely because the code space is small.
+
+## The secret is as sensitive as a password
+
+All of this assumes the shared secret is itself protected. A server that stores OTP secrets in the clear hands an attacker who reads that store the ability to generate valid codes for every user indefinitely. Treat the secret as credential-grade material: store it encrypted, limit who can read it, and provision it over a channel that does not leak it. Verifying the derived code carefully is wasted effort if the secret behind it is exposed.
+
+You can see the window logic directly in the TOTP / HOTP tool: its validator accepts the adjacent steps, which is exactly the plus or minus one step tolerance a real server applies.
