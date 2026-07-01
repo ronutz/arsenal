@@ -1,0 +1,36 @@
+---
+slug: cvss-base-metrics-explained
+title: "The CVSS Base Metrics, Explained"
+summary: "The Base score comes from eight metrics in two families. Four exploitability metrics (Attack Vector, Attack Complexity, Privileges Required, User Interaction) describe how hard the attack is, and four impact metrics (Scope, plus Confidentiality, Integrity, Availability) describe the damage. Scope is the subtle one: it is what lets a score exceed the vulnerable component's own boundary."
+concepts: ["cvss", "base metrics", "attack vector", "scope", "cia impact"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-vector-string-format"]
+category: security
+order: 71
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A complete Base vector always carries eight metrics. Four feed the Exploitability sub-score and four feed Impact (Scope sits with the impact side because it changes how impact is calculated).
+
+## Exploitability metrics
+
+**Attack Vector (AV)** is how close the attacker must be: `N` Network (reachable from anywhere), `A` Adjacent (same local network segment), `L` Local (needs local access or a logged-in session), or `P` Physical (needs to touch the device). Network scores highest.
+
+**Attack Complexity (AC)** is whether conditions outside the attacker's control must line up: `L` Low (repeatable at will) or `H` High (needs a race, a specific configuration, or reconnaissance). Low scores higher.
+
+**Privileges Required (PR)** is what access the attacker must already have: `N` None, `L` Low (an ordinary user), or `H` High (administrative). None scores highest.
+
+**User Interaction (UI)** is whether a victim must do something: `N` None or `R` Required. None scores higher.
+
+## Scope
+
+**Scope (S)** is the most misunderstood metric and the only one that changes the shape of the formula. It is `U` Unchanged or `C` Changed. Scope is Changed when a successful exploit affects resources beyond the security authority of the vulnerable component, for example a flaw in a sandboxed process that lets the attacker act on the host, or an injection in one virtual host that reaches another. A scope change raises the score and is what allows a vector to reach 10.0. Importantly, when Scope is Changed the Privileges Required weights also increase, because crossing a trust boundary is more serious.
+
+## Impact metrics
+
+**Confidentiality (C)**, **Integrity (I)**, and **Availability (A)** each take `H` High, `L` Low, or `N` None. High means total loss (all data disclosed, or the system fully unavailable); Low means limited or constrained loss; None means no effect on that property. These three are symmetric in the formula, and the impact sub-score rises steeply as more of them move to High.
+
+## Reading the balance
+
+The Base score is a tension between the two families. A flaw can be trivially reachable but score low because it barely touches confidentiality, integrity, or availability, and a flaw with total impact can score moderately if it needs high privileges, physical access, or a difficult race. Decoding a vector metric by metric, rather than reading only the final number, is what makes a score defensible when someone challenges it.

@@ -14,6 +14,20 @@
    ============================================================================ */
 
 :root {
+  /* Semantic status tokens (D-71). Generic base = dark defaults, inherited by the
+     18 dark themes; the 8 light themes override the generics below. */
+  --color-neutral: #94a3b8;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-orange: #fb923c;
+  --color-danger: #f87171;
+  --color-info: #38bdf8;
+  /* Domain-specific severity aliases resolve through the generics per active theme. */
+  --sev-none: var(--color-neutral);
+  --sev-low: var(--color-success);
+  --sev-medium: var(--color-warning);
+  --sev-high: var(--color-orange);
+  --sev-critical: var(--color-danger);
   /* --- Obsidian palette (canon) --- */
   --canvas-primary: #020617;     /* deepest background */
   --surface-base: #0f172a;       /* cards, panels */
@@ -97,6 +111,14 @@
 
 /* Emerald — light, green accent. (nods to Jade) */
 :root[data-theme="emerald"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #f5faf7;
   --surface-base: #ffffff;
   --surface-elevated: #eef5f0;
@@ -112,6 +134,14 @@
 
 /* Slate — light, blue accent. (nods to Graphite) */
 :root[data-theme="slate"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #f5f7fa;
   --surface-base: #ffffff;
   --surface-elevated: #eef2f7;
@@ -127,6 +157,14 @@
 
 /* Photon — light, indigo-navy accent. (nods to Neutrino) */
 :root[data-theme="photon"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #f6f8fc;
   --surface-base: #ffffff;
   --surface-elevated: #eef1f8;
@@ -142,6 +180,14 @@
 
 /* Kevlar — light, red accent. (nods to Security Fabric) */
 :root[data-theme="kevlar"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #faf7f6;
   --surface-base: #ffffff;
   --surface-elevated: #f6efee;
@@ -311,6 +357,14 @@
    a proportional face (Chicago/Geneva spirit). The one retro theme that stays
    proportional and rounded, true to the Mac GUI. Light. */
 :root[data-theme="retro-mac"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #d8d8d8;   /* desktop grey */
   --surface-base: #ffffff;     /* windows */
   --surface-elevated: #ffffff;
@@ -391,6 +445,14 @@
 
 /* Web · Slashdot — light grey with the Slashdot green; boxy. */
 :root[data-theme="web-slashdot"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #f3f4ef;
   --surface-base: #ffffff;
   --surface-elevated: #ffffff;
@@ -407,6 +469,14 @@
 
 /* Web · Reddit — light grey with OrangeRed; softly rounded. */
 :root[data-theme="web-reddit"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #f6f7f8;
   --surface-base: #ffffff;
   --surface-elevated: #ffffff;
@@ -427,6 +497,14 @@
    Proportional face, gentle rounding, like the real Swagger UI.
    ========================================================================== */
 :root[data-theme="swagger"] {
+  /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
+     aliases inherited from :root resolve through these. */
+  --color-neutral: #475569;
+  --color-success: #166534;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
   --canvas-primary: #fafafa;   /* Swagger UI background */
   --surface-base: #ffffff;
   --surface-elevated: #ffffff;

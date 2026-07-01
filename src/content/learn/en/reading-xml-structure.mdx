@@ -1,0 +1,30 @@
+---
+slug: reading-xml-structure
+title: "Reading XML Structure"
+summary: "XML is a tree of elements built from a handful of parts: an optional declaration, elements with attributes, text, and a few special constructs. Once you can name each part and see how they nest, reading an unfamiliar document top to bottom becomes routine rather than a guessing game."
+concepts: ["xml", "elements", "attributes", "tree", "declaration"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["xml-namespaces-explained", "xml-well-formedness", "cdata-comments-and-processing-instructions"]
+category: encoding
+order: 60
+status: machine-draft
+updated: "2026-07-01"
+---
+
+XML looks intimidating in bulk, but every document is built from the same small set of pieces. Learn the pieces and any document becomes readable.
+
+## The parts
+
+At the very top there may be an **XML declaration**: `<?xml version="1.0" encoding="UTF-8"?>`. It is not an element; it just states the version and how the bytes are encoded. It is optional, but when present it must be the first thing in the file.
+
+The body is **elements**. An element is a start tag, some content, and a matching end tag: `<title>XML Guide</title>`. Elements can contain text, other elements, or nothing. An element with no content can be written as a self-closing tag: `<break/>` means the same as `<break></break>`. Every document has exactly one outermost element, the **root**, and everything else nests inside it, which is what makes XML a tree.
+
+Elements carry **attributes** in their start tag, as name and quoted value pairs: `<book id="bk101" lang="en">`. Attributes describe the element; the values are always quoted. Between tags sits **text content**, the actual data: the `XML Guide` inside the title.
+
+## Reading top to bottom
+
+To read a document, start at the root and walk inward. Each start tag opens a branch; its matching end tag closes it; indentation usually mirrors the nesting depth. Ask three questions of each element: what is it called, what attributes does it carry, and what does it contain, whether that is text or more elements. That is enough to reconstruct the whole shape.
+
+A few characters are special and appear as escapes rather than literally: `&lt;` for a less-than sign, `&amp;` for an ampersand, `&gt;`, `&quot;`, and `&apos;`. These are the built-in entities, and they exist because a bare `<` or `&` would otherwise be read as the start of a tag or an entity.
+
+Beyond elements and attributes there are three special constructs, comments, CDATA sections, and processing instructions, each covered in its own article. And when the same element names could clash between vocabularies, namespaces disambiguate them. But the backbone is always the same: a single root, elements nesting inside elements, attributes on the tags, and text at the leaves.

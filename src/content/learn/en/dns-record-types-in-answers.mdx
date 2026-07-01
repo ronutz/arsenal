@@ -1,0 +1,37 @@
+---
+slug: dns-record-types-in-answers
+title: "Reading the Records in a dig Answer"
+summary: "Every record in a dig section is five columns: name, TTL, class, type, and rdata. This walks the columns and then the rdata of the record types you actually meet, from A and CNAME to MX, SOA, SRV, and CAA, so a wall of records reads as plain facts."
+concepts: ["a record", "aaaa", "cname", "mx", "soa", "txt", "srv", "caa", "ttl", "rdata"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
+category: networking
+order: 42
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Inside the ANSWER, AUTHORITY, and ADDITIONAL sections, every line is one resource record with the same five columns:
+
+```
+example.com.		3600	IN	A	93.184.216.34
+```
+
+That is **name** (`example.com.`), **TTL** in seconds (`3600`, how long it may be cached), **class** (`IN` for Internet, essentially always), **type** (`A`), and **rdata** (`93.184.216.34`, the type-specific payload). Question records are the exception: they start with a `;`, carry no TTL, and have no rdata, because a question only names what you asked.
+
+## The types you meet, and their rdata
+
+- **A** and **AAAA**: an IPv4 or IPv6 address. The rdata is just the address.
+- **CNAME**: an alias. The rdata is another name, and the real records live under that target. A CNAME in an answer is why you sometimes see two records: the alias, then the address of what it points to.
+- **NS**: a name server that is authoritative for the zone. The rdata is the server's name.
+- **MX**: a mail exchanger. The rdata is two fields, a preference number and a hostname; lower preference wins.
+- **SOA**: the zone apex record, and the densest rdata you will read. Its seven fields are the primary server, the admin mailbox (with the first dot standing in for `@`), the serial, and the refresh, retry, expire, and minimum timers. The minimum doubles as the negative-cache TTL, so it governs how long an NXDOMAIN for this zone is remembered.
+- **TXT**: free-form text, quoted. It carries SPF policies, DKIM keys, and domain-verification tokens.
+- **PTR**: the reverse record, mapping an address back to a name. You see it when you look up an address under `in-addr.arpa` or `ip6.arpa`.
+- **SRV**: a service locator. The rdata is four fields: priority, weight, port, and target host.
+- **CAA**: which certificate authorities may issue for the domain. The rdata is a flags byte, a tag (`issue`, `issuewild`, `iodef`), and a value.
+- **HTTPS** and **SVCB**: newer service-binding records that carry connection hints (ALPN, port, address hints) for an origin.
+
+## TTL is a clock, not a constant
+
+The TTL you see from a recursive resolver counts down as the record ages in its cache, so the same query a minute later can show a smaller number. Query the authoritative server directly (the one in an NS record, with `@`) and you see the zone's configured TTL instead. That difference is often the fastest way to tell a caching problem from a zone problem.

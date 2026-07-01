@@ -1,0 +1,26 @@
+---
+slug: regex-flags-and-modes
+title: "Regex Flags and Modes"
+summary: "A flag changes how the whole pattern matches: case sensitivity, whether ^ and $ see lines, whether the dot crosses newlines, and whether whitespace in the pattern is ignored. The same regex can match completely different things depending on its flags, so knowing them prevents a lot of confusion."
+concepts: ["regex", "flags", "case-insensitive", "dotall", "multiline", "verbose"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-anchors-and-boundaries", "regex-catastrophic-backtracking"]
+category: security
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Two people can write the same pattern and get different results, because a regex is only half the story: its **flags** decide how it behaves. A handful of them cover almost everything.
+
+## The flags that matter
+
+- **`i` (case-insensitive):** `abc` also matches `ABC` and `Abc`. Simple, and usually what you want for matching words in mixed-case text.
+- **`m` (multiline):** makes `^` and `$` match at the start and end of every line rather than only the whole string. Essential for scanning line-oriented text.
+- **`s` (dotall / single-line):** makes the dot `.` match newlines too. Normally `.` matches any character *except* a newline, so a pattern meant to span multiple lines silently fails until you set this. This is the flag people most often forget.
+- **`x` (extended / verbose):** ignores unescaped whitespace in the pattern and allows comments, so you can lay a complex regex out over several lines with notes. It makes long patterns readable without changing what they match.
+- **`g` (global):** find *all* matches rather than stopping at the first. In many languages this lives on the operation (replace-all, find-all) rather than the pattern, but the idea is the same.
+
+## The pair that gets confused
+
+`m` and `s` sound alike and do different things. `m` is about **anchors**: where `^` and `$` land. `s` is about **the dot**: whether `.` crosses newlines. You can want either, both, or neither. A frequent bug is reaching for multiline when you actually needed dotall: you wanted `.` to span lines, but you enabled the flag that only moved the anchors, and the match still stops at the first newline. When a multi-line match is not working, ask which of the two behaviors you actually need before adding a flag.

@@ -1,0 +1,26 @@
+---
+slug: nslookup-vs-dig
+title: "nslookup vs dig: Which to Use"
+summary: "nslookup and dig both query DNS, but nslookup is terser and hides the header flags and TTLs that dig shows in full. This maps one output onto the other and gives a simple rule for which to reach for."
+concepts: ["nslookup", "dig", "dns", "troubleshooting", "ttl", "flags"]
+relatedTools: ["nslookup-output-explainer", "dig-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "reading-dig-output", "dns-message-header-and-flags"]
+category: networking
+order: 46
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Both tools ask a DNS server a question and print the answer. The difference is how much they show you.
+
+## What nslookup shows, and what it hides
+
+nslookup optimises for a quick, readable answer. It prints the resolver, whether the answer is non-authoritative, and the records in a friendly prose format. What it does not show is almost everything dig puts front and centre: the header flags (aa, tc, rd, ra, ad), the exact TTL on each record, the EDNS OPT pseudo-section, and the section structure (answer vs authority vs additional). For a lot of everyday questions ("what does this name resolve to?") that is fine, and nslookup is faster to read.
+
+dig shows the whole message. When you need the TTL to diagnose a caching issue, the aa flag to confirm you reached an authoritative server, the tc flag to catch a truncated answer, or the DNSSEC records, dig is the tool. Its output is denser, but nothing is hidden.
+
+## A rule of thumb
+
+Reach for nslookup for a fast "what is this name" check, especially when you just want the address or the MX. Reach for dig when you are actually troubleshooting: anything involving TTLs, authority, truncation, EDNS, or DNSSEC. Many engineers keep both and switch based on how much detail the question needs.
+
+One practical mapping: nslookup's `Non-authoritative answer:` marker corresponds to dig's **absence** of the `aa` flag, and querying the authoritative server directly (with `@server` in dig, or `server` then the name in nslookup) is how you get an authoritative result from either.

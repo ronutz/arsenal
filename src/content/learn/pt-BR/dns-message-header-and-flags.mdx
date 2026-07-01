@@ -1,0 +1,48 @@
+---
+slug: dns-message-header-and-flags
+title: "O cabeçalho DNS: opcode, status e flags"
+summary: "Duas linhas carregam todo o estado de uma mensagem DNS: que tipo de consulta é, se ela teve sucesso e sete flags de um único bit (qr, aa, tc, rd, ra, ad, cd) que dizem quem respondeu e como. Lê-las corretamente é a diferença entre um diagnóstico de dois minutos e uma hora de adivinhação."
+concepts: ["dns header", "rcode", "status", "flags", "nxdomain", "servfail", "aa", "rd", "ra"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-records-in-dig"]
+category: networking
+order: 41
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Duas linhas carregam todo o estado de uma mensagem DNS: a linha `->>HEADER<<-` e a linha `flags:` logo abaixo.
+
+## A linha do cabeçalho
+
+```
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321
+```
+
+O **opcode** é quase sempre `QUERY`. Você verá `NOTIFY` (um primário avisando um secundário de que a zona mudou) e `UPDATE` (DNS dinâmico) em cenários específicos, mas uma consulta normal é `QUERY`.
+
+O **status** é o RCODE, e é o campo mais útil. `NOERROR` significa que a consulta foi processada normalmente. `NXDOMAIN` significa que o nome não existe. `SERVFAIL` significa que o servidor não conseguiu concluir a consulta, o que na prática aponta para uma delegação quebrada, uma validação DNSSEC que falhou ou um upstream que deu timeout. `NOTIMP` significa que o servidor não implementa o tipo ou opcode pedido. `REFUSED` significa que o servidor recusou, geralmente por controle de acesso ou porque a recursão está desabilitada para você.
+
+O **id** é o id de transação de 16 bits que associa uma resposta à sua consulta. Em um `dig` manual isolado, é apenas um identificador; ele importa quando você está correlacionando capturas.
+
+## As flags
+
+```
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+```
+
+Sete flags podem aparecer, e cada uma é um único bit:
+
+- **qr** (Query Response): definida em uma resposta. Se estiver ausente, você está olhando uma consulta, não uma resposta.
+- **aa** (Authoritative Answer): o servidor que respondeu é autoritativo para o nome, então o dado vem da própria zona, não de um cache.
+- **tc** (Truncated): a mensagem não coube e foi cortada. O dig normalmente tenta de novo por TCP; uma resposta UDP truncada está incompleta.
+- **rd** (Recursion Desired): o cliente pediu ao servidor para resolver o nome inteiro por ele. É uma cópia do bit da consulta refletido de volta.
+- **ra** (Recursion Available): o servidor está disposto e apto a recursar.
+- **ad** (Authentic Data): o resolvedor validou a resposta com DNSSEC e ela conferiu.
+- **cd** (Checking Disabled): o cliente pediu ao resolvedor para pular a validação DNSSEC.
+
+Os quatro números após as flags são as contagens de registros das seções QUESTION, ANSWER, AUTHORITY e ADDITIONAL. Elas devem bater com o que você conta em cada seção; uma divergência é sinal de que a mensagem foi truncada ou corrompida.
+
+## Lendo tudo junto
+
+A combinação conta uma história. `qr aa` com uma resposta é um servidor autoritativo entregando dados de zona diretamente. `qr rd ra` com uma resposta é um resolvedor recursivo retornando um resultado (possivelmente em cache). `qr rd ra` com status `NXDOMAIN` e um SOA em AUTHORITY é um resolvedor dizendo que o nome realmente não existe e por quanto tempo ele vai lembrar disso. `qr rd` sem `ra` significa que você pediu a um servidor para recursar que não vai, o que costuma aparecer como `REFUSED`.

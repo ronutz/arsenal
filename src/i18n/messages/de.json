@@ -69,6 +69,7 @@
       "purposeLabel": "Aktuell finanziert"
     },
     "stats": {
+      "headline": "Jetzt verfügbar",
       "tools": "Werkzeuge",
       "articles": "Artikel",
       "sectionLabel": "Das Toolkit auf einen Blick"
@@ -871,7 +872,7 @@
     "builtWith": "Von Rodolfo Nützmann mit CONCORD gebaut",
     "colophon": "Wie dies gebaut wurde",
     "contribute": "Übersetzungen verbessern",
-    "feedback": "Feedback senden",
+    "feedback": "Kontakt",
     "api": "API-Referenz",
     "contributeTools": "Teile eine Idee",
     "license": "Lizenz",

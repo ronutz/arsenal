@@ -1,0 +1,28 @@
+---
+slug: authoritative-vs-non-authoritative-answers
+title: "Respostas autoritativas vs não autoritativas"
+summary: "O marcador Non-authoritative answer no nslookup significa que o resultado veio do cache de um resolvedor, não de um servidor que de fato mantém a zona. Este artigo explica a diferença, por que ela normalmente não é problema, e como obter uma resposta autoritativa quando você precisa."
+concepts: ["authoritative", "non-authoritative", "dns cache", "resolver", "nslookup"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
+category: networking
+order: 48
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Quando o nslookup imprime `Non-authoritative answer:` antes de um resultado, ele está lhe dizendo algo específico sobre de onde essa resposta veio.
+
+## Dois tipos de servidor
+
+O DNS tem servidores autoritativos e resolvedores recursivos. Um servidor **autoritativo** mantém os dados reais da zona de um domínio; ele é a fonte da verdade. Um **resolvedor recursivo** (como 1.1.1.1 ou 8.8.8.8, ou o do seu provedor) não é dono de nenhuma zona. Ele responde por você perguntando aos servidores autoritativos e depois guardando o resultado em **cache** pelo tempo do TTL.
+
+Quando você consulta um resolvedor recursivo e ele responde a partir desse cache, a resposta é **não autoritativa**: correta, mas uma cópia, possivelmente com alguns segundos ou minutos de idade. É isso que o marcador significa. Quando o marcador está **ausente**, você alcançou um servidor autoritativo para o nome, e o dado veio diretamente da zona.
+
+## Por que não autoritativa normalmente está ótimo
+
+Para consultas do dia a dia, uma resposta não autoritativa é exatamente o que você quer: é rápida, e o TTL a mantém fresca o suficiente. O cache é a razão inteira de o DNS escalar. Você só se importa com a distinção quando o cache pode estar desatualizado, que é precisamente quando você acabou de mudar um registro e está esperando o mundo se atualizar.
+
+## Obtendo uma resposta autoritativa
+
+Se você precisa da verdade atual, contorne o cache e pergunte a um servidor autoritativo diretamente. Encontre os servidores de nomes da zona (uma consulta NS), depois consulte um deles: no nslookup, execute `server ns1.example.com.` e então o nome; no dig, use `dig @ns1.example.com example.com`. A resposta virá sem o marcador não autoritativo (e no dig, com a flag `aa` definida), dizendo que você está olhando para a própria zona, e não para a cópia em cache de alguém.

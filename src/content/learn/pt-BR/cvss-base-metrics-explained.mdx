@@ -1,0 +1,36 @@
+---
+slug: cvss-base-metrics-explained
+title: "As Métricas Base do CVSS, Explicadas"
+summary: "A pontuação Base vem de oito métricas em duas famílias. Quatro métricas de explorabilidade (Vetor de Ataque, Complexidade do Ataque, Privilégios Necessários, Interação do Usuário) descrevem quão difícil é o ataque, e quatro métricas de impacto (Escopo, mais Confidencialidade, Integridade e Disponibilidade) descrevem o dano. O Escopo é a sutil: é o que permite que uma pontuação ultrapasse a fronteira do próprio componente vulnerável."
+concepts: ["cvss", "métricas base", "vetor de ataque", "escopo", "impacto cia"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-vector-string-format"]
+category: security
+order: 71
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um vetor Base completo sempre carrega oito métricas. Quatro alimentam a subpontuação de Explorabilidade e quatro alimentam o Impacto (o Escopo fica do lado do impacto porque muda a forma como o impacto é calculado).
+
+## Métricas de explorabilidade
+
+**Vetor de Ataque (AV)** é quão perto o atacante precisa estar: `N` Rede (acessível de qualquer lugar), `A` Adjacente (mesmo segmento de rede local), `L` Local (precisa de acesso local ou de uma sessão autenticada) ou `P` Físico (precisa tocar o dispositivo). Rede pontua mais alto.
+
+**Complexidade do Ataque (AC)** é se condições fora do controle do atacante precisam se alinhar: `L` Baixa (repetível à vontade) ou `H` Alta (precisa de uma condição de corrida, uma configuração específica ou reconhecimento). Baixa pontua mais alto.
+
+**Privilégios Necessários (PR)** é o acesso que o atacante já precisa ter: `N` Nenhum, `L` Baixo (um usuário comum) ou `H` Alto (administrativo). Nenhum pontua mais alto.
+
+**Interação do Usuário (UI)** é se uma vítima precisa fazer algo: `N` Nenhuma ou `R` Necessária. Nenhuma pontua mais alto.
+
+## Escopo
+
+**Escopo (S)** é a métrica mais mal compreendida e a única que muda a forma da fórmula. É `U` Inalterado ou `C` Alterado. O Escopo é Alterado quando uma exploração bem-sucedida afeta recursos além da autoridade de segurança do componente vulnerável, por exemplo uma falha em um processo em sandbox que permite ao atacante agir sobre o host, ou uma injeção em um virtual host que alcança outro. Uma mudança de escopo eleva a pontuação e é o que permite que um vetor chegue a 10.0. É importante notar que, quando o Escopo é Alterado, os pesos de Privilégios Necessários também aumentam, porque cruzar uma fronteira de confiança é mais grave.
+
+## Métricas de impacto
+
+**Confidencialidade (C)**, **Integridade (I)** e **Disponibilidade (A)** assumem cada uma `H` Alto, `L` Baixo ou `N` Nenhum. Alto significa perda total (todos os dados divulgados, ou o sistema totalmente indisponível); Baixo significa perda limitada ou restrita; Nenhum significa nenhum efeito naquela propriedade. As três são simétricas na fórmula, e a subpontuação de impacto sobe acentuadamente à medida que mais delas vão para Alto.
+
+## Lendo o equilíbrio
+
+A pontuação Base é uma tensão entre as duas famílias. Uma falha pode ser trivialmente acessível mas pontuar baixo porque mal toca a confidencialidade, a integridade ou a disponibilidade, e uma falha com impacto total pode pontuar de forma moderada se exigir privilégios altos, acesso físico ou uma condição de corrida difícil. Decodificar um vetor métrica por métrica, em vez de ler apenas o número final, é o que torna uma pontuação defensável quando alguém a questiona.

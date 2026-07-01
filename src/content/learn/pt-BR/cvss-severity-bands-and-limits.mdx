@@ -1,0 +1,34 @@
+---
+slug: cvss-severity-bands-and-limits
+title: "Faixas de Severidade do CVSS, e o Que a Pontuação Não Diz"
+summary: "O número de 0 a 10 é mapeado para cinco faixas qualitativas, de Nenhuma a Crítica. Esse mapeamento é útil para triagem, mas uma pontuação Base do CVSS mede severidade, não risco. Ela não diz nada sobre uma falha estar sendo explorada, quão valioso é o ativo, ou quais controles você tem. Tratar o número base como uma fila de prioridade é a forma mais comum de as equipes usarem mal o CVSS."
+concepts: ["cvss", "severidade", "faixas qualitativas", "risco", "epss"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-v3-vs-v4"]
+category: security
+order: 74
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O CVSS define uma escala qualitativa para que uma pontuação numérica possa ser falada em palavras. As faixas são fixas:
+
+- **Nenhuma**: 0.0
+- **Baixa**: 0.1 a 3.9
+- **Média**: 4.0 a 6.9
+- **Alta**: 7.0 a 8.9
+- **Crítica**: 9.0 a 10.0
+
+Esses limites fazem parte da especificação, então uma pontuação de 6.9 é Média e 7.0 é Alta, mesmo sendo quase o mesmo número. Essa borda nítida vale a pena lembrar quando uma pontuação fica perto de um limite.
+
+## Severidade não é risco
+
+A coisa mais importante a entender sobre uma pontuação Base do CVSS é o que ela deliberadamente deixa de fora. A base mede a **severidade intrínseca** de uma falha sob uma premissa razoável de pior caso. Ela não mede o seu risco. Em particular, a pontuação Base não sabe nada sobre:
+
+- **Exploração na prática.** Se uma exploração existe ou está sendo usada ativamente é uma questão Temporal ou de inteligência de ameaças. Um esforço separado da FIRST.org, o EPSS, estima a probabilidade de exploração e é uma entrada melhor para essa dimensão.
+- **Valor do ativo.** Uma falha Crítica em uma máquina de teste descartável e em um sistema de pagamento compartilham o mesmo número base. Apenas a pontuação Ambiental, ou o seu próprio contexto de ativos, as distingue.
+- **Controles compensatórios.** Uma mitigação apenas de rede, uma regra de WAF, ou o fato de um serviço ser inacessível pela internet não muda a base em nada.
+
+## Usando bem as faixas
+
+As faixas são boas para triagem grosseira e para comunicação, e Crítica realmente merece atenção. Mas ordenar um backlog puramente por pontuação Base decrescente vai levar você a falhas acessíveis porém inofensivas antes de falhas silenciosas e de alto valor. Uma ordem mais defensável combina a severidade Base com a probabilidade de exploração (por exemplo o EPSS ou catálogos de vulnerabilidades exploradas conhecidas) e com o seu próprio valor de ativos e controles, que é exatamente o que a pontuação Temporal e Ambiental existem para capturar. O número Base é onde a priorização começa, não onde termina.

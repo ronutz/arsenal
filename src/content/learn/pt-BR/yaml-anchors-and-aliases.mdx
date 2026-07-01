@@ -1,0 +1,30 @@
+---
+slug: yaml-anchors-and-aliases
+title: "Âncoras, aliases e merge keys em YAML"
+summary: "O YAML pode definir um valor uma vez e reutilizá-lo com uma âncora e um alias, e mesclar um mapping em outro com uma merge key. Nada disso existe em JSON, então a conversão expande e duplica tudo. Este artigo cobre a sintaxe, o que acontece na conversão, e a armadilha de negação de serviço que eles habilitam."
+concepts: ["yaml", "anchor", "alias", "merge key", "json conversion"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["json-vs-yaml", "yaml-type-coercion", "yaml-block-scalars"]
+category: encoding
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O YAML tem um recurso que o JSON simplesmente não tem: você pode nomear um valor e reutilizá-lo, em vez de repeti-lo. É uma das maiores razões de um arquivo YAML e seu equivalente em JSON não se parecerem.
+
+## A sintaxe
+
+- Uma **âncora** `&nome` rotula um nó.
+- Um **alias** `*nome` se refere de volta a ele, inserindo o mesmo valor.
+- Uma **merge key** `<<: *nome` mescla as chaves de um mapping ancorado no mapping atual, uma forma comum de compartilhar padrões (defaults).
+
+Então um conjunto base de configurações pode ser definido uma vez com uma âncora e puxado para vários lugares com aliases, mantendo o arquivo DRY. Isso é muito usado em configs de CI e em ferramentas próximas do Kubernetes.
+
+## O que a conversão faz com eles
+
+O JSON não tem âncoras, aliases nem merge keys, então um conversor os **desreferencia**: cada alias é substituído por uma cópia completa do valor para o qual apontava, e cada merge key é expandida nas chaves mescladas de fato. O JSON resultante é correto mas maior, e o compartilhamento se foi. Converter de volta para YAML não reconstrói as âncoras, então um round-trip pelo JSON silenciosamente achata a reutilização em duplicação. Se a compactação importava, isso é uma perda real, não apenas cosmética.
+
+## A armadilha de segurança
+
+Como um alias pode apontar para algo que ele próprio contém aliases, o YAML permite expansão exponencial. O clássico ataque "billion laughs" aninha âncoras de modo que um arquivo minúsculo expande para gigabytes ao ser resolvido, esgotando a memória. É por isso que um parser YAML cuidadoso limita a expansão de aliases, e por que converter YAML não confiável não é grátis: a expansão acontece durante a conversão. É a mesma classe de risco de uma expansão de entidade XML, e uma razão para tratar YAML de fontes desconhecidas com a mesma cautela que qualquer outra entrada não confiável.

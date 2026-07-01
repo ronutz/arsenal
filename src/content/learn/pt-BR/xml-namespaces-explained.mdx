@@ -1,0 +1,36 @@
+---
+slug: xml-namespaces-explained
+title: "Namespaces XML explicados"
+summary: "Quando dois vocabulários XML usam o mesmo nome de elemento para coisas diferentes, namespaces os mantêm separados vinculando um prefixo a uma URI única. O prefixo é apenas um atalho local; a URI é a identidade real. Entender essa divisão resolve a maior parte da confusão com namespaces."
+concepts: ["xml", "namespaces", "xmlns", "prefix", "uri"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["reading-xml-structure", "xml-well-formedness", "saml-signatures"]
+category: encoding
+order: 61
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Namespaces existem para resolver um problema: colisões de nome. Um `<title>` em um vocabulário de livros e um `<title>` em uma página HTML significam coisas diferentes, e um documento que mistura vocabulários precisa de uma forma de dizer qual é qual. Namespaces a fornecem.
+
+## Prefixo e URI
+
+Um namespace vincula um **prefixo** a uma **URI** usando uma declaração `xmlns`:
+
+```
+<catalog xmlns:meta="http://example.com/meta">
+  <meta:rating>5</meta:rating>
+</catalog>
+```
+
+Aqui `meta` é o prefixo e `http://example.com/meta` é a URI do namespace. O elemento `meta:rating` pertence a esse namespace. O ponto crucial é que a **URI é a identidade real**, não o prefixo. O prefixo é apenas um atalho local escolhido neste documento; outro documento poderia usar `m:` ou `x:` para a mesma URI e significar exatamente a mesma coisa. A URI, apesar de parecer um endereço web, é apenas uma string única; nada é buscado a partir dela.
+
+## O namespace padrão
+
+Você também pode declarar um **namespace padrão** sem prefixo: `xmlns="http://example.com/cat"`. Todo elemento sem prefixo dentro daquele escopo então pertence a esse namespace. Então em um documento com um namespace padrão, um simples `<book>` não está em "nenhum namespace"; ele está no padrão. Atributos são diferentes: um atributo sem prefixo não está no namespace padrão, ele é simplesmente não qualificado.
+
+## Escopo e resolução
+
+Uma declaração de namespace se aplica ao elemento em que aparece e a tudo aninhado dentro dele, até que um elemento aninhado a sobrescreva. Para resolver qualquer elemento ou atributo, você olha o seu prefixo, então caminha para fora pelos elementos envolventes para achar onde aquele prefixo foi declarado, e lê a URI. É exatamente isso que um parser faz, e é por que o mesmo prefixo pode mapear para URIs diferentes em partes diferentes de um documento se for redeclarado.
+
+O hábito prático ao ler XML com namespaces é substituir mentalmente cada prefixo pela sua URI. Dois elementos são o "mesmo" elemento apenas se seus nomes locais e suas URIs de namespace ambos coincidem, independentemente de os prefixos parecerem iguais. Essa única regra, identidade é nome mais URI, é a totalidade dos namespaces.

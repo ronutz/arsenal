@@ -1,0 +1,26 @@
+---
+slug: jwt-algorithm-confusion
+title: "Ataques de confusão de algoritmo em JWT"
+summary: "Duas falhas clássicas de verificação de JWT vêm de confiar no algoritmo declarado pelo próprio token: aceitar alg none, e ser enganado a verificar um token RS256 como HS256 usando a chave pública como segredo. Ambas são derrotadas fixando o algoritmo esperado no servidor em vez de lê-lo do token."
+concepts: ["jwt", "algorithm confusion", "alg none", "rs256 hs256", "security"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["verifying-a-jwt-with-jwks", "jwk-key-types", "jwk-parameters-and-thumbprints"]
+category: identity
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um JWT carrega seu próprio algoritmo no header (`alg`). O perigo é que um verificador que *confia* nesse campo deixa o atacante escolher como seu token é checado, e há duas formas bem conhecidas de abusar disso.
+
+## alg: none
+
+A especificação do JWT inclui `none`, significando um token não assinado. Se um verificador o honra, um atacante pode remover a assinatura, definir `alg` como `none`, mudar as claims para qualquer coisa que quiser, e o token é aceito porque "nenhuma assinatura" é tratada como "válido". A correção é simplesmente nunca aceitar `none` para tokens que deveriam ser assinados. Qualquer biblioteca que faça o contrário por padrão é perigosa.
+
+## Confusão de RS256 para HS256
+
+Esta é mais sutil e é por que a JWKS é relevante. Com **RS256**, o servidor mantém um par de chaves RSA e verifica assinaturas com a chave *pública*, que por design não é secreta. Com **HS256**, a verificação usa um *segredo* compartilhado com HMAC. O ataque: o atacante pega um token, define `alg` como `HS256`, e o assina usando a **chave pública do servidor como o segredo HMAC**. Se o servidor lê `alg` do token e troca para HS256, ele verificará via HMAC usando essa mesma chave pública, que o atacante também tem, então a assinatura confere. A chave pública, feita para ser compartilhada livremente, vira o segredo compartilhado.
+
+## A única defesa
+
+Ambos os ataques compartilham uma causa raiz: o verificador deixou o token ditar o algoritmo. A defesa é **fixar o algoritmo esperado no servidor** e ignorar o `alg` do token, ou ao menos rejeitar qualquer valor que não corresponda ao que a chave serve. Um verificador que espera RS256 deve verificar apenas RS256 com a chave pública RSA, e nunca recorrer a um algoritmo simétrico. Isso se conecta diretamente à prática de JWKS: como a chave de verificação é *publicada* na JWKS, ela está disponível para atacantes, então o servidor precisa tratar o algoritmo como uma propriedade fixa da sua própria configuração, não como algo lido de um token não confiável.

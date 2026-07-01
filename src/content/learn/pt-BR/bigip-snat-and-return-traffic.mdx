@@ -1,0 +1,26 @@
+---
+slug: bigip-snat-and-return-traffic
+title: "SNAT e o problema do tráfego de retorno"
+summary: "Para uma conexão balanceada funcionar, a resposta do pool member precisa voltar pelo BIG-IP. Se o member roteia seu tráfego de retorno direto para o cliente, a conexão quebra. O SNAT resolve isso tornando o BIG-IP o endereço de origem ao qual o member responde, ao custo de esconder o IP real do cliente."
+concepts: ["big-ip", "snat", "asymmetric routing", "source nat", "x-forwarded-for"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "bigip-pools-and-load-balancing"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Quando o BIG-IP balanceia uma conexão, por padrão ele preserva o IP de origem do cliente em direção ao pool member. O member vê o endereço real do cliente, o que frequentemente é o que você quer, mas isso cria um requisito de roteamento fácil de deixar passar.
+
+## A armadilha do roteamento assimétrico
+
+Uma conexão TCP só funciona se ambas as direções fluírem pelo mesmo dispositivo que está rastreando seu estado. O BIG-IP está rastreando a conexão, então a resposta do member precisa voltar pelo BIG-IP. Se a rota padrão do próprio member aponta para o roteador da rede em vez de para o BIG-IP, o member enviará sua resposta *diretamente* em direção ao IP do cliente, contornando o BIG-IP por completo. O cliente então recebe um pacote de um endereço para o qual ele nunca abriu uma conexão, e o descarta. Isso é **roteamento assimétrico**: a requisição foi por um caminho, a resposta tentou ir por outro, e a conexão trava. É uma das causas mais comuns de "o virtual server está up mas nada funciona".
+
+## O que o SNAT faz
+
+O **SNAT** (source network address translation) resolve isso mudando o endereço de origem que o BIG-IP usa em direção ao member. Em vez do IP do cliente, o member vê um endereço pertencente ao BIG-IP, seja um self IP escolhido automaticamente (**SNAT automap**) ou um endereço de um **SNAT pool** definido. Agora a resposta do member é naturalmente endereçada de volta ao BIG-IP, que a encaminha ao cliente, e o caminho fica simétrico não importa como o roteamento do member esteja configurado.
+
+## O custo e sua mitigação
+
+O SNAT abre mão do IP real do cliente: como o member agora vê um endereço do BIG-IP como origem, ele não pode mais logar ou tomar decisões com base no endereço verdadeiro do cliente. Para HTTP isso normalmente é tratado inserindo um header `X-Forwarded-For` carregando o IP original do cliente, para que a aplicação ainda possa vê-lo. No `bigip.conf` isso aparece como um `snat-type automap` no virtual server ou um `snatpool` anexado. A regra prática é que o SNAT é o que você usa quando não pode garantir que os members roteiam o tráfego de retorno de volta pelo BIG-IP, o que na maioria das redes reais é exatamente a situação.

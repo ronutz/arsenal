@@ -1,0 +1,25 @@
+---
+slug: deceptive-urls
+title: "Deceptive URLs: Reading Past the Tricks"
+summary: "URLs are a favorite tool for phishing because the real destination is easy to disguise. The userinfo trick, redirect parameters, and look-alike characters all make a hostile link look friendly. This shows the common disguises and the one reliable habit for finding the real host."
+concepts: ["url", "phishing", "userinfo", "open redirect", "homograph", "security"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "url-encoding-and-idn", "relative-urls-and-resolution"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A URL looks authoritative, which is exactly why attackers dress hostile links up as trustworthy ones. The tricks are not sophisticated; they rely on people reading a URL left to right and stopping too early.
+
+## The common disguises
+
+- **The userinfo trick.** Everything between `://` and an `@` is userinfo, not the host. In `https://www.paypal.com@evil.example/login`, the real host is `evil.example`; `www.paypal.com` is just a username the server ignores. The familiar name up front is bait.
+- **Open redirects.** A legitimate site that takes a URL in a parameter, like `https://trusted.example/out?url=https://evil.example`, can be used to launch you at the attacker's site while the visible domain is the trusted one. The trusted host is real; it is being used as a springboard.
+- **Look-alike characters.** A host can use letters from other scripts that look identical, such as a Cyrillic `а` in place of a Latin `a`, so `pаypal.com` reads correctly but is a different name entirely. The same idea covers `rn` posing as `m` and digits posing as letters. The internationalized-hosts article covers the punycode mechanics underneath.
+- **Padding and subdomains.** `https://www.apple.com.security-check.example/` puts a real-looking name on the *left*, but the actual registered domain is `security-check.example`. A long string of reassuring subdomains is a warning sign, not a reassurance.
+
+## The one reliable habit
+
+All of these fail against a single rule: find the **host** and read it right to left. The host is the part right after the `://` (and after any `@`), up to the next `/`, `?`, or `#`. Within it, the meaningful part is the registered domain at the *end*: the last two labels for most domains. Ignore the userinfo, ignore the path, ignore the query, and look at what sits immediately to the left of the first single slash. If that is not who you expected, nothing earlier in the URL changes it. Decoding a suspicious URL into its parts, rather than skimming it, is what turns these tricks back into plain text.

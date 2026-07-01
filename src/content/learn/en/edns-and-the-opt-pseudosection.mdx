@@ -1,0 +1,33 @@
+---
+slug: edns-and-the-opt-pseudosection
+title: "EDNS and the OPT Pseudo-Section"
+summary: "The OPT pseudo-section is not a record and not something you queried: it is EDNS(0) metadata that dig surfaces near the top of an answer. It carries the UDP payload size, the DO flag that requests DNSSEC, and options like COOKIE, and it quietly explains a whole class of resolution failures."
+concepts: ["edns", "opt", "udp payload", "do flag", "cookie", "fragmentation", "rfc 6891"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
+category: networking
+order: 43
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Classic DNS had a 512-byte limit on UDP answers and no room in the header for new options. EDNS(0), defined in RFC 6891, fixes both by adding a pseudo-record of type OPT. dig prints it as its own block:
+
+```
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+```
+
+It is called a pseudo-section because OPT is not real zone data. It exists only on the wire to carry EDNS parameters, so it never appears in a zone file and you never query for it directly.
+
+## What the fields mean
+
+**version** is the EDNS version, effectively always `0`. **udp** is the largest UDP response the sender is willing to receive, advertised so the responder can send bigger answers without falling back to TCP. Modern resolvers commonly advertise `1232` bytes, a deliberately conservative value chosen to stay under the point where IP fragmentation tends to cause trouble. **flags** carries EDNS flag bits; the one you will see is `do`, DNSSEC OK, which is how a client says "send me the DNSSEC records too."
+
+Below the EDNS line, dig may print further options such as `COOKIE` (a lightweight anti-spoofing token) or `NSID` (a server identifier). These are informational and vary by resolver.
+
+## Why it matters for troubleshooting
+
+EDNS is where several confusing failures live. If a large answer plus a large advertised UDP size produces a fragmented UDP packet that a firewall or a broken path drops, the query appears to hang or fail even though the server answered. That is exactly why the advertised size trended down to values like 1232: smaller answers fit in one packet and survive more paths. When you see intermittent `SERVFAIL` on names with big answers (many addresses, or DNSSEC signatures), the OPT line and the UDP size are the first place to look, and forcing TCP with `+tcp` is a fast way to confirm it.
+
+The `do` flag ties directly into DNSSEC: without it, a resolver will not return the signature records, so if you are trying to inspect DNSSEC and see none, check that the OPT line shows `do` set.

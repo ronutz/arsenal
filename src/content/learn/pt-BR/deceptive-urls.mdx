@@ -1,0 +1,25 @@
+---
+slug: deceptive-urls
+title: "URLs enganosas: lendo além dos truques"
+summary: "URLs são uma ferramenta favorita para phishing porque o destino real é fácil de disfarçar. O truque do userinfo, os parâmetros de redirecionamento e os caracteres parecidos, todos fazem um link hostil parecer amigável. Este artigo mostra os disfarces comuns e o único hábito confiável para encontrar o host real."
+concepts: ["url", "phishing", "userinfo", "open redirect", "homograph", "security"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "url-encoding-and-idn", "relative-urls-and-resolution"]
+category: encoding
+order: 7
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma URL parece autoritativa, que é exatamente por que atacantes vestem links hostis como confiáveis. Os truques não são sofisticados; eles se apoiam nas pessoas lerem uma URL da esquerda para a direita e pararem cedo demais.
+
+## Os disfarces comuns
+
+- **O truque do userinfo.** Tudo entre `://` e um `@` é userinfo, não o host. Em `https://www.paypal.com@evil.example/login`, o host real é `evil.example`; `www.paypal.com` é só um nome de usuário que o servidor ignora. O nome familiar na frente é a isca.
+- **Redirecionamentos abertos (open redirects).** Um site legítimo que recebe uma URL em um parâmetro, como `https://trusted.example/out?url=https://evil.example`, pode ser usado para lançar você ao site do atacante enquanto o domínio visível é o confiável. O host confiável é real; ele está sendo usado como trampolim.
+- **Caracteres parecidos.** Um host pode usar letras de outros scripts que parecem idênticas, como um `а` cirílico no lugar de um `a` latino, então `pаypal.com` lê corretamente, mas é um nome inteiramente diferente. A mesma ideia cobre `rn` se passando por `m` e dígitos se passando por letras. O artigo sobre hosts internacionalizados cobre a mecânica do punycode por baixo.
+- **Preenchimento e subdomínios.** `https://www.apple.com.security-check.example/` coloca um nome de aparência real à *esquerda*, mas o domínio registrado de fato é `security-check.example`. Uma longa sequência de subdomínios tranquilizadores é um sinal de alerta, não uma garantia.
+
+## O único hábito confiável
+
+Todos esses falham contra uma única regra: encontre o **host** e leia-o da direita para a esquerda. O host é a parte logo após o `://` (e depois de qualquer `@`), até a próxima `/`, `?` ou `#`. Dentro dele, a parte significativa é o domínio registrado no *fim*: os dois últimos rótulos para a maioria dos domínios. Ignore o userinfo, ignore o caminho, ignore a query, e olhe para o que está imediatamente à esquerda da primeira barra simples. Se aquilo não é quem você esperava, nada antes na URL muda isso. Decodificar uma URL suspeita em suas partes, em vez de dar uma olhada rápida, é o que transforma esses truques de volta em texto claro.

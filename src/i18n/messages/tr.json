@@ -69,6 +69,7 @@
       "purposeLabel": "Şu an finanse edilen"
     },
     "stats": {
+      "headline": "Şu anda mevcut",
       "tools": "Araçlar",
       "articles": "Makaleler",
       "sectionLabel": "Araç kutusuna genel bakış"
@@ -871,7 +872,7 @@
     "builtWith": "Rodolfo Nützmann tarafından CONCORD ile yapıldı",
     "colophon": "Nasıl yapıldı",
     "contribute": "Çevirileri iyileştirmeye yardım et",
-    "feedback": "Geri bildirim gönder",
+    "feedback": "İletişim",
     "api": "API referansı",
     "contributeTools": "Bir fikir paylaş",
     "license": "Lisans",

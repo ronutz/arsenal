@@ -1,0 +1,29 @@
+---
+slug: nslookup-record-types
+title: "How nslookup Prints Each Record Type"
+summary: "Instead of dig's fixed columns, nslookup labels each record in prose: mail exchanger =, canonical name =, nameserver =, and a multi-line block for SOA. A short guide to reading each type's line."
+concepts: ["nslookup", "mx", "cname", "ns", "soa", "srv", "txt", "ptr"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-record-types-in-answers"]
+category: networking
+order: 47
+status: machine-draft
+updated: "2026-07-01"
+---
+
+dig prints every record in the same five columns. nslookup does something different: it labels each record type in words, which is friendlier to read but means the format changes from type to type.
+
+## The per-type formats
+
+- **A / AAAA** (addresses): a `Name:` line, then one or more `Address:` lines. An IPv6 answer sits on an Address line too; you tell it apart by the colons.
+- **MX** (mail): `example.com  mail exchanger = 10 mail.example.com.` The number is the preference (lower is preferred) and the rest is the mail host.
+- **NS** (name servers): `example.com  nameserver = a.iana-servers.net.`
+- **CNAME** (aliases): `www.example.com  canonical name = example.com.` The name on the left is an alias for the target on the right.
+- **TXT**: `example.com  text = "v=spf1 -all"`, with the value quoted.
+- **PTR** (reverse): `34.216.184.93.in-addr.arpa  name = example.com.` Note the label is `name =`, not `canonical name =`.
+- **SRV** (services): `service = 1 10 5060 sip.example.com.`, which is priority, weight, port, and target in that order.
+- **SOA**: unlike the others, this spans several indented lines under a bare name, one field per line: `origin`, `mail addr`, `serial`, and the `refresh`, `retry`, `expire`, and `minimum` timers.
+
+## The one to watch
+
+SOA is the odd one out, because it is the only type nslookup breaks across multiple lines. The `mail addr` field is a mailbox with the first dot standing in for the `@`, and `minimum` doubles as the negative-cache TTL, so it governs how long a "does not exist" answer for the zone is remembered. If you want the same fields laid out the classic way, dig prints them on a single SOA record line instead.

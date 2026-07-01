@@ -1,0 +1,50 @@
+---
+slug: xc-matcher-case-sensitivity-and-transformers
+title: "Case Sensitivity and Transformers in XC Matchers"
+summary: "In an XC service policy, header names are case-insensitive but header values, query keys, and cookie names are case-sensitive. Exact matches compare byte for byte unless you apply a transformer like LOWER_CASE first. This is the single most common reason a rule that looks right fails to match."
+concepts: ["f5 xc", "case sensitivity", "transformers", "lower_case", "normalize_path"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["xc-service-policy-predicates-and-logic", "how-xc-service-policies-match", "xc-service-policy-vs-irules"]
+category: security
+order: 67
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A rule can read correctly and still never fire, and the usual culprit is case. XC matchers are precise about which parts of a request are compared case-insensitively and which are not, and exact-value matching is literal by default.
+
+## What is case-insensitive, what is not
+
+From the schema, the rules are specific:
+
+HTTP **header names** are case-insensitive. `Accept-Encoding` and `accept-encoding` refer to the same header. This follows the HTTP standard.
+
+Header **values**, however, are case-sensitive. A header matcher whose `exact_values` contains `gzip` will not match a header value of `GZIP`.
+
+Query parameter **keys** are case-sensitive. Cookie **names** are case-sensitive. Argument names (JSON paths into the body) are case-sensitive.
+
+So the name of a header is forgiving, but almost everything else you compare against is exact.
+
+## Exact matches are literal
+
+An `exact_values` list compares the input byte for byte. `/Admin` does not match `/admin`. There is no implicit case folding, no trimming of whitespace, no URL decoding. If the real traffic can vary in case or encoding, an exact matcher on a single spelling will miss the variants.
+
+This is where the explainer flags a **case-sensitive** matcher: when a rule uses exact values with no case-normalizing transformer, it is warning you that spelling and case must match precisely.
+
+## Transformers
+
+**Transformers** are the tool for taming that. A matcher can carry an ordered list of transformers that are applied to the input before comparison. The available ones include:
+
+`LOWER_CASE` and `UPPER_CASE` fold case, so you can match regardless of how the client capitalized the value. `URL_DECODE` decodes percent-encoding (per RFC 1738). `BASE64_DECODE` decodes base64. `NORMALIZE_PATH` collapses `/a/b/../c` to `/a/c`. `REMOVE_WHITESPACE` strips spaces. `TRIM`, `TRIM_LEFT`, and `TRIM_RIGHT` remove surrounding whitespace.
+
+```
+path:
+  exact_values: ["/admin"]
+  transformers: ["LOWER_CASE"]
+```
+
+With `LOWER_CASE` applied, that matcher matches `/admin`, `/Admin`, and `/ADMIN` alike, because the input is lowercased before the comparison. The transformers are ordered: index 0 runs first, then index 1, and so on, which matters when you combine, say, `URL_DECODE` then `LOWER_CASE`.
+
+## Why this matters for security rules
+
+Case and encoding gaps are not cosmetic. A deny rule meant to block `/admin` that omits `LOWER_CASE` can be trivially bypassed with `/Admin`. An evasion-conscious rule normalizes first (decode, normalize path, fold case) and then compares. When you audit a policy, the presence or absence of transformers on a matcher tells you whether it holds up against a client that varies case or encoding on purpose. The explainer surfaces the transformer list on each matcher and flags exact matchers that lack case folding.

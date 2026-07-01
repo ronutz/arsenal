@@ -1,0 +1,30 @@
+---
+slug: oidc-authorization-code-flow
+title: "O fluxo authorization code do OIDC"
+summary: "O fluxo authorization code é a forma recomendada de um app obter um ID token: o usuário é redirecionado ao provedor de identidade para logar, o app recebe um código de curta duração, e o troca em um token endpoint de back-channel pelos tokens. Manter o token fora do navegador é o objetivo inteiro."
+concepts: ["oidc", "authorization code", "pkce", "state", "nonce"]
+relatedTools: ["oidc"]
+relatedArticles: ["oidc-overview", "id-token-claims", "oidc-vs-oauth"]
+category: identity
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O OpenID Connect define como uma aplicação de fato obtém um ID token, e o fluxo para o qual ele o direciona é o **fluxo authorization code**. É uma dança de redirects com uma divisão deliberada entre o que viaja pelo navegador e o que não viaja.
+
+## Os passos
+
+1. A aplicação (o relying party) redireciona o usuário ao **authorization endpoint** do provedor de identidade, com parâmetros: `client_id`, um `redirect_uri`, `scope=openid` (mais quaisquer outros), `response_type=code`, um valor `state`, e um `nonce`.
+2. O usuário se autentica no provedor e consente. A aplicação não se envolve nisso; ela nunca vê as credenciais.
+3. O provedor redireciona o navegador de volta para o `redirect_uri` com um **código de autorização** de curta duração na URL.
+4. A aplicação pega esse código e, por uma chamada de back-channel direta ao **token endpoint**, o troca (autenticando-se com um client secret ou PKCE) por um **ID token** e normalmente um access token.
+5. A aplicação valida o ID token: sua assinatura, issuer, audience, expiração, e que o `nonce` corresponde ao que ela enviou.
+
+## Por que o código, e não o token, volta
+
+A razão para a troca em duas etapas é que o código de autorização é quase inútil sozinho. Mesmo que alguém o intercepte da URL, não consegue resgatá-lo sem a chamada de back-channel e a autenticação do cliente. Compare com o antigo **fluxo implicit**, que retornava o token diretamente na URL do navegador, onde ele poderia vazar por histórico, referrers ou logs. O implicit agora é desencorajado exatamente por isso, e o fluxo code é preferido em todo lugar.
+
+## state, nonce e PKCE
+
+Três parâmetros fazem o trabalho pesado de segurança. O **`state`** amarra a resposta de volta à requisição que a aplicação iniciou, derrotando cross-site request forgery no callback. O **`nonce`** é ecoado dentro do ID token para que a aplicação possa confirmar que o token responde à *sua* requisição e não é um replay. O **PKCE** adiciona uma prova de uso único para que até um cliente público sem segredo (um app single-page ou mobile) possa provar que é a mesma parte que iniciou o fluxo. Juntos eles tornam a dança de redirects segura para rodar em um navegador, que é por que o fluxo authorization code com PKCE é o padrão moderno.

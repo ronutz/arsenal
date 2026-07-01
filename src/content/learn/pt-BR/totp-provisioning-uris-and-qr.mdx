@@ -1,0 +1,38 @@
+---
+slug: totp-provisioning-uris-and-qr
+title: "Provisionando autenticadores: URIs otpauth e QR codes"
+summary: "Antes de um app autenticador poder gerar códigos, ele precisa do segredo compartilhado e dos parâmetros que o acompanham. Isso é carregado em uma URI otpauth, normalmente mostrada como um QR code para escanear. Conhecer os campos da URI explica o que o QR code de fato contém e por que o segredo está em base32."
+concepts: ["totp", "otpauth", "provisioning", "qr code", "base32"]
+relatedTools: ["totp-hotp"]
+relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32"]
+category: identity
+order: 32
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um app TOTP e um servidor só concordam sobre códigos se partirem do mesmo segredo e das mesmas configurações. Colocar esse segredo e essas configurações no app é o **provisionamento**, e ele roda sobre um pequeno padrão de fato: a URI otpauth.
+
+## A URI otpauth
+
+O enrollment é carregado em uma URI da forma `otpauth://TIPO/LABEL?PARÂMETROS`. Uma TOTP típica se parece com:
+
+```
+otpauth://totp/Example:alice@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&algorithm=SHA1&digits=6&period=30
+```
+
+As partes são:
+
+- **tipo**: `totp` para baseado em tempo, ou `hotp` para baseado em contador.
+- **label**: a conta a que isto se refere, normalmente `Issuer:conta`, para que o app possa exibir um nome significativo.
+- **secret**: a chave compartilhada, em **base32**. Este é o único campo que precisa ser mantido em segredo.
+- **issuer**: o nome do serviço, exibido no app e usado para desambiguar contas.
+- **algorithm**, **digits**, **period**: o hash HMAC, o comprimento do código e o passo de tempo. Precisam coincidir em ambos os lados ou os códigos nunca vão concordar. Para HOTP, um parâmetro **counter** aparece no lugar de `period`.
+
+## Por que base32, e por que um QR code
+
+O segredo é base32 em vez de bytes crus ou base64 porque o base32 usa apenas letras maiúsculas e dígitos, evitando caracteres que são ambíguos ou incômodos, o que importa na rara ocasião em que alguém digita a chave à mão em vez de escanear. O QR code é simplesmente essa URI inteira codificada como imagem: escaneá-lo entrega ao app cada campo de uma vez, que é por que a configuração é normalmente "escaneie este código" em vez de copiar uma string. A chave de entrada manual que um site oferece como alternativa é o mesmo segredo base32 da URI, digitado à mão.
+
+## A pegadinha do provisionamento
+
+Como `algorithm`, `digits` e `period` são todos parte da URI, uma incompatibilidade é uma falha clássica de configuração: um servidor usando SHA-256 ou um código de 8 dígitos ou um period fora do padrão só interoperará com um app que recebeu esses parâmetros exatos. A maioria dos apps assume os padrões comuns (SHA-1, 6 dígitos, 30 segundos) quando um campo é omitido, então se um servidor silenciosamente usa algo diferente sem colocá-lo na URI, o app gera códigos que nunca validam. Quando o enrollment "tem sucesso" mas todo código é rejeitado, um parâmetro que não chegou à URI de provisionamento é a causa usual.

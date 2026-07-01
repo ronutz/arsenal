@@ -1,0 +1,34 @@
+---
+slug: cvss-severity-bands-and-limits
+title: "CVSS Severity Bands, and What the Score Does Not Tell You"
+summary: "The 0 to 10 number maps to five qualitative bands from None to Critical. That mapping is useful for triage, but a CVSS Base score measures severity, not risk. It says nothing about whether a flaw is being exploited, how valuable the asset is, or what controls you have. Treating the base number as a priority queue is the most common way teams misuse CVSS."
+concepts: ["cvss", "severity", "qualitative bands", "risk", "epss"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-v3-vs-v4"]
+category: security
+order: 74
+status: machine-draft
+updated: "2026-07-01"
+---
+
+CVSS defines a qualitative scale so a numeric score can be spoken about in words. The bands are fixed:
+
+- **None**: 0.0
+- **Low**: 0.1 to 3.9
+- **Medium**: 4.0 to 6.9
+- **High**: 7.0 to 8.9
+- **Critical**: 9.0 to 10.0
+
+These boundaries are part of the specification, so a score of 6.9 is Medium and 7.0 is High even though they are almost the same number. That sharp edge is worth remembering when a score sits near a boundary.
+
+## Severity is not risk
+
+The most important thing to understand about a CVSS Base score is what it deliberately leaves out. The base measures the **intrinsic severity** of a flaw under a reasonable worst-case assumption. It does not measure your risk. In particular, the Base score knows nothing about:
+
+- **Exploitation in the wild.** Whether an exploit exists or is being used actively is a Temporal or threat-intelligence question. A separate FIRST.org effort, EPSS, estimates the probability of exploitation and is a better input for that dimension.
+- **Asset value.** A Critical flaw on a disposable test box and on a payment system share the same base number. Only Environmental scoring, or your own asset context, distinguishes them.
+- **Compensating controls.** A network-only mitigation, a WAF rule, or the fact that a service is unreachable from the internet does not change the base at all.
+
+## Using the bands well
+
+The bands are good for coarse triage and for communication, and Critical genuinely deserves attention. But ranking a backlog purely by descending Base score will send you to reachable-but-harmless flaws before quiet, high-value ones. A more defensible order combines the Base severity with exploitation likelihood (for example EPSS or known-exploited catalogues) and with your own asset value and controls, which is exactly what Temporal and Environmental scoring exist to capture. The Base number is where prioritisation starts, not where it ends.

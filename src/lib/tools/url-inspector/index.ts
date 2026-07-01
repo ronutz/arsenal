@@ -71,7 +71,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // a URL may carry credentials or tokens
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/url-anatomy", "learn/query-strings", "learn/url-encoding-and-idn"],
+  learnLinks: ["learn/url-anatomy", "learn/query-strings", "learn/url-encoding-and-idn", "learn/relative-urls-and-resolution", "learn/deceptive-urls"],
   sources: [
     {
       id: "rfc3986",

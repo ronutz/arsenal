@@ -1,0 +1,29 @@
+---
+slug: bigip-profiles-on-a-virtual-server
+title: "Profiles on a Virtual Server"
+summary: "A BIG-IP virtual server does not have a fixed behavior; it is assembled from profiles, each one configuring a layer of the connection. Protocol, application, SSL, and persistence profiles stack together to define how traffic is handled, and they inherit settings from parent profiles, which is the key to how BIG-IP config stays manageable."
+concepts: ["big-ip", "profiles", "virtual server", "ssl offload", "inheritance"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["how-a-virtual-server-works", "anatomy-of-bigip-conf", "bigip-pools-and-load-balancing"]
+category: networking
+order: 6
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Two virtual servers can point at the same pool and behave completely differently, because a virtual server's behavior is not built in; it is composed from **profiles**. Each profile configures one aspect of how a connection is handled, and a virtual server attaches as many as it needs.
+
+## The layers
+
+Profiles line up roughly with the layers of the connection:
+
+- **Protocol profiles** set transport behavior: a `tcp` profile (or `udp`, or `fastl4` for accelerated L4 forwarding) tunes timeouts, buffering, and options.
+- **Application profiles** understand the protocol on top: an `http` profile lets BIG-IP parse and act on HTTP, which is what enables header insertion, redirects, and content switching.
+- **SSL profiles** handle encryption: a **client SSL** profile terminates TLS from the client (offload), and a **server SSL** profile re-encrypts to the pool member, so you can offload, inspect, or re-encrypt as needed.
+- **Persistence profiles** attach the stickiness method, and others cover compression, caching, and more.
+
+A typical HTTPS virtual server stacks a tcp profile, an http profile, and a client SSL profile, and each contributes its slice of behavior.
+
+## Inheritance and how it reads
+
+Profiles use **parent-child inheritance**: a custom profile is created from a parent (often a system default) and overrides only the settings it needs, inheriting the rest. Change the parent and every child that did not override a value follows along, which is what keeps large configurations from becoming thousands of unrelated settings. In `bigip.conf`, a virtual server carries a `profiles { }` block listing the profiles attached to it, and each profile is defined in its own stanza with a `defaults-from` pointing at its parent. Reading the virtual server's profile list tells you, at a glance, what layers are in play: whether TLS is terminated, whether HTTP is understood, and how the connection is tuned, all without changing the pool it serves.

@@ -1,0 +1,52 @@
+---
+slug: how-xc-service-policies-match
+title: "How F5 XC Service Policies Match a Request"
+summary: "An F5 Distributed Cloud service_policy has two moving parts: a set of predicates that scope which requests the policy even applies to, and a list of rules that decide what happens. A request matches only when every policy-level predicate is true and it matches one of the rules. This is the model everything else builds on."
+concepts: ["f5 xc", "service policy", "distributed cloud", "waf", "access policy"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["xc-rule-combining-algorithms", "xc-service-policy-predicates-and-logic", "xc-service-policy-actions-and-default-deny"]
+category: security
+order: 64
+status: machine-draft
+updated: "2026-07-01"
+---
+
+An F5 Distributed Cloud (XC) **service_policy** decides which client requests to an application are allowed and which are denied. If you come from BIG-IP, it sits in roughly the place an access policy or a set of iRules would, but its shape is declarative rather than procedural.
+
+## Two parts: scope and rules
+
+A service_policy spec has two independent choices.
+
+The **server choice** scopes which servers the policy protects. It is one of `any_server`, a literal `server_name`, a `server_name_matcher` (exact or regex values), or a `server_selector` (a label selector). The server name is derived from the HTTP Host header and the virtual host the request is directed to.
+
+The **rule choice** decides the disposition. It is one of `allow_all_requests`, `deny_all_requests`, an `allow_list` or `deny_list` of sources, a `rule_list` of inline rules, or a `legacy_rule_list` of references to standalone rule objects. Most interesting policies use `rule_list`.
+
+## The matching sentence
+
+The whole model fits in one sentence from the API description: a request matches a policy if **all predicates in the policy evaluate to true and the request matches one of the rules in the policy**.
+
+There are two layers of predicate here. The policy itself can carry predicates (the server choice is one). Then each rule inside a `rule_list` carries its own predicates. Within a single rule, the predicates are combined with AND, and any predicate you do not specify is implicitly true. So an empty rule with an ALLOW action matches everything.
+
+## What a rule looks like
+
+A rule in a `rule_list` is a small object with `metadata` (a `name`, optionally a `description`) and a `spec`. The spec holds the `action` (ALLOW, DENY, or NEXT_POLICY) plus any number of predicate fields: `path`, `http_method`, `headers`, `client_selector`, `ip_prefix_list`, `asn_list`, `tls_fingerprint_matcher`, and many more. Each predicate that is present must be satisfied for the rule to match.
+
+```
+rule_list:
+  rules:
+    - metadata: { name: allow-api-get }
+      spec:
+        action: ALLOW
+        path: { prefix_values: ["/api/"] }
+        http_method: { methods: ["GET"] }
+```
+
+That rule matches a GET whose path starts with `/api/`, and allows it. A GET to `/admin` does not match (wrong path). A POST to `/api/x` does not match (wrong method). Nothing partial happens: either every predicate is true and the rule matches, or it does not.
+
+## Where the policy sits
+
+A service_policy is never evaluated in isolation. It is one entry in an ordered list inside one or more **service policy sets**. If a request matches the policy, the action from the matching rule is the result. If the request does not match the policy at all, evaluation moves on to the next policy in the set. If it reaches the end without an allow, the request is denied.
+
+That last point is the safety net worth remembering: the system is deny-by-default. A service_policy is a set of reasons to allow (or explicitly deny) a request, evaluated in order, and silence means no.
+
+The explainer on this site takes a pasted policy and lays out exactly this structure: the server scope, the disposition, and for a `rule_list` every rule with its action and its decoded predicates.

@@ -54,7 +54,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // persistence config carries pool, virtual, and cookie names
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/ltm-persistence-methods", "learn/choosing-a-persistence-method", "learn/fallback-persistence-and-match-across"],
+  learnLinks: ["learn/ltm-persistence-methods", "learn/choosing-a-persistence-method", "learn/fallback-persistence-and-match-across", "learn/source-address-persistence-and-mega-proxy", "learn/persistence-mirroring-and-ha"],
   sources: [
     {
       id: "k26898044",

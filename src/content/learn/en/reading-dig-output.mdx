@@ -1,0 +1,46 @@
+---
+slug: reading-dig-output
+title: "Reading dig Output From Top to Bottom"
+summary: "A dig answer has a fixed shape: a version line, the header, the flags line, the OPT pseudo-section, the four sections, and the query stats. Once you know what each block is, you can read any response at a glance and spot the one line that explains a resolution problem."
+concepts: ["dig", "dns", "resolver", "troubleshooting", "query", "sections"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["dns-message-header-and-flags", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "dnssec-records-in-dig"]
+category: networking
+order: 40
+status: machine-draft
+updated: "2026-06-30"
+---
+
+`dig` prints a DNS message in a stable, top-to-bottom layout. Learning that layout is most of the skill: every answer, whether a clean lookup or a puzzling failure, uses the same blocks in the same order.
+
+## The blocks, in order
+
+A typical answer looks like this:
+
+```
+; <<>> DiG 9.18.1 <<>> example.com A
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;example.com.			IN	A
+
+;; ANSWER SECTION:
+example.com.		3600	IN	A	93.184.216.34
+
+;; Query time: 12 msec
+;; SERVER: 1.1.1.1#53(1.1.1.1) (UDP)
+;; MSG SIZE  rcvd: 56
+```
+
+Reading down: the first line echoes the dig version and the query you ran. The `->>HEADER<<-` line carries the opcode, the status (the RCODE), and the message id. The flags line lists which header bits are set and gives the record count in each of the four sections. The OPT pseudo-section is EDNS metadata, not a real record. Then come the sections themselves: QUESTION (what you asked), ANSWER (the records that answer it), AUTHORITY (which servers are authoritative, or the SOA for a negative answer), and ADDITIONAL (helper records). The `;;` lines at the bottom are the query statistics.
+
+## Where to look first
+
+For a failure, start at the status. `NOERROR` with an answer record is the happy path. `NXDOMAIN` means the name does not exist. `SERVFAIL` usually means a broken delegation, a DNSSEC validation failure, or an upstream timeout. `REFUSED` is almost always policy. If the status is `NOERROR` but the ANSWER count is zero, the name exists but not for the type you asked (this is NODATA), and the SOA in the AUTHORITY section tells you how long that negative result will be cached.
+
+The other early tell is the flags line. `aa` means the answering server is authoritative. `ra` tells you the server offers recursion. `tc` means the UDP answer was truncated and dig will normally retry over TCP; if you see it, the UDP result you are reading is incomplete.
+
+The rest of this series takes each block in turn: the header and flags, the record types you see in answers, the EDNS OPT pseudo-section, and the DNSSEC records.

@@ -46,7 +46,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "ephemeral", // the test text may be sensitive
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/regex-quantifiers-and-classes", "learn/regex-groups-and-backreferences", "learn/regex-catastrophic-backtracking"],
+  learnLinks: ["learn/regex-quantifiers-and-classes", "learn/regex-groups-and-backreferences", "learn/regex-catastrophic-backtracking", "learn/regex-anchors-and-boundaries", "learn/regex-flags-and-modes"],
   sources: [
     {
       id: "mdn-regex",

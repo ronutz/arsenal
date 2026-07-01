@@ -1,0 +1,30 @@
+---
+slug: oidc-authorization-code-flow
+title: "The OIDC Authorization Code Flow"
+summary: "The authorization code flow is the recommended way an app gets an ID token: the user is redirected to the identity provider to log in, the app receives a short-lived code, and it exchanges that code at a back-channel token endpoint for the tokens. Keeping the token out of the browser is the whole point."
+concepts: ["oidc", "authorization code", "pkce", "state", "nonce"]
+relatedTools: ["oidc"]
+relatedArticles: ["oidc-overview", "id-token-claims", "oidc-vs-oauth"]
+category: identity
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+OpenID Connect defines how an application actually obtains an ID token, and the flow it steers you toward is the **authorization code flow**. It is a redirect dance with a deliberate split between what travels through the browser and what does not.
+
+## The steps
+
+1. The application (the relying party) redirects the user to the identity provider's **authorization endpoint**, with parameters: `client_id`, a `redirect_uri`, `scope=openid` (plus any others), `response_type=code`, a `state` value, and a `nonce`.
+2. The user authenticates at the provider and consents. The application is not involved in that; it never sees the credentials.
+3. The provider redirects the browser back to the `redirect_uri` with a short-lived **authorization code** in the URL.
+4. The application takes that code and, over a direct back-channel call to the **token endpoint**, exchanges it (authenticating itself with a client secret or PKCE) for an **ID token** and usually an access token.
+5. The application validates the ID token: its signature, issuer, audience, expiry, and that the `nonce` matches the one it sent.
+
+## Why the code, and not the token, comes back
+
+The reason for the two-step exchange is that the authorization code is nearly useless on its own. Even if someone intercepts it from the URL, they cannot redeem it without the back-channel call and the client's authentication. Contrast that with the old **implicit flow**, which returned the token directly in the browser URL, where it could leak through history, referrers, or logs. Implicit is now discouraged for exactly that reason, and the code flow is preferred everywhere.
+
+## state, nonce, and PKCE
+
+Three parameters do the security heavy lifting. **`state`** ties the response back to the request the application started, defeating cross-site request forgery on the callback. **`nonce`** is echoed inside the ID token so the application can confirm the token answers *its* request and is not a replay. **PKCE** adds a one-time proof so that even a public client with no secret (a single-page or mobile app) can prove it is the same party that began the flow. Together they make the redirect dance safe to run in a browser, which is why the authorization code flow with PKCE is the modern default.

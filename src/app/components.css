@@ -20,8 +20,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  height: 4rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  min-height: 4rem;
 }
 .wordmark {
   display: inline-flex;
@@ -42,8 +43,9 @@
   align-self: center;
 }
 .site-nav {
-  display: none;
-  gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
 }
 .site-nav-link {
   color: var(--text-secondary);
@@ -53,9 +55,15 @@
 .site-nav-link:hover {
   color: var(--text-primary);
 }
-@media (min-width: 48rem) {
+/* Narrow / constrained windows: NEVER hide the nav. Drop it onto its own row
+   below the wordmark + actions and let its links wrap, so every nav item stays
+   visible at any width (no hamburger, nothing disappears). */
+@media (max-width: 48rem) {
   .site-nav {
-    display: flex;
+    order: 1;
+    flex-basis: 100%;
+    justify-content: center;
+    padding-bottom: 0.35rem;
   }
 }
 
@@ -6212,9 +6220,42 @@ a.tools-card:hover {
   flex: 0 0 auto;
 }
 
+/* Headline shown above the two figures. */
+.stats-headline {
+  text-align: center;
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+/* Each figure is a link to its index page (Tools -> /tools, Articles -> /learn).
+   Keep the inherited type colour and give clear hover/focus feedback on the big
+   number; the negative margin absorbs the padding so spacing is unchanged. */
+.stat-link {
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.9rem;
+  margin: -0.4rem -0.9rem;
+}
+.stat-link:hover .stat-value,
+.stat-link:focus-visible .stat-value {
+  color: var(--accent-hover);
+}
+.stat-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
 @media (max-width: 560px) {
   .stats-band {
     padding: 2rem 0;
+  }
+  .stats-headline {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
   }
   .stats-band-inner {
     gap: 1.75rem;
@@ -6466,3 +6507,374 @@ a.tools-card:hover {
 .diff-word--ins {
   background: rgba(52, 211, 153, 0.34);
 }
+
+/* ==========================================================================
+   BIG-IP TCPDUMP BUILDER
+   --------------------------------------------------------------------------
+   A form-style tool: bordered fieldsets, segmented controls that wrap, a live
+   monospace command, and an advisories list. Reuses the cidr/jwt tool classes
+   for inputs and the results panel; only the tcpdump-specific bits are here.
+   ========================================================================== */
+.tcpdump-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.tcpdump-group {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem 1.1rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+.tcpdump-legend {
+  padding: 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+.tcpdump-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+/* The segmented control must wrap on narrow windows, never clip (everything
+   stays visible at any width). */
+.seg.tcpdump-seg {
+  flex-wrap: wrap;
+}
+.tcpdump-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+.tcpdump-hint--check {
+  margin-left: 1.6rem;
+}
+.tcpdump-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.tcpdump-check input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+}
+.tcpdump-num {
+  max-width: 12rem;
+}
+.tcpdump-command {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--accent-primary);
+}
+.tcpdump-warnings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.tcpdump-warning {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.tcpdump-warning-mark {
+  flex: 0 0 auto;
+  color: #d8a657; /* caution amber, theme-independent like the traffic-light cues */
+}
+
+/* ============================================================
+   dig-output-explainer  (added 2026-06-30)
+   Reuses the .cidr-tool / .jwt-tool scaffolding; these are the
+   dig-specific pieces. Monospace + text tokens carry fallbacks.
+   ============================================================ */
+.dig-input-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
+.dig-input-actions { display: flex; gap: 0.5rem; }
+.dig-textarea {
+  font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-size: 0.82rem; line-height: 1.5; white-space: pre; overflow-x: auto; min-height: 12rem;
+}
+.dig-notdig {
+  margin-top: 1rem; padding: 0.8rem 1rem;
+  border: 1px solid var(--border-strong); border-left: 3px solid #d8a657;
+  border-radius: var(--radius-sm); color: var(--text-secondary); font-size: 0.88rem;
+}
+.dig-results { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.dig-warnings { border-top-color: #d8a657; }
+.dig-warning-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.dig-warning-list li { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45; }
+.dig-warn-mark { color: #d8a657; margin-right: 0.35rem; }
+.dig-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.22rem 0; font-size: 0.87rem; }
+.dig-row-label { color: var(--text-tertiary); flex: 0 0 auto; }
+.dig-row-value { color: var(--text-primary, var(--text-secondary)); text-align: right; word-break: break-word; }
+.dig-mono { font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace); }
+.dig-record {
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+  padding: 0.7rem 0.85rem; margin-bottom: 0.6rem; background: var(--surface-elevated);
+}
+.dig-record:last-child { margin-bottom: 0; }
+.dig-record-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.dig-type-badge {
+  font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-size: 0.72rem; font-weight: 600; padding: 0.12rem 0.45rem; border-radius: var(--radius-sm);
+  background: var(--accent-primary); color: #fff; letter-spacing: 0.02em;
+}
+.dig-record-name { flex: 1 1 auto; font-size: 0.85rem; word-break: break-all; color: var(--text-primary, var(--text-secondary)); }
+.dig-ttl, .dig-class { font-size: 0.74rem; color: var(--text-tertiary); }
+.dig-rdata { margin-top: 0.45rem; font-size: 0.82rem; word-break: break-all; color: var(--text-secondary); }
+.dig-rdata-fields { margin-top: 0.45rem; border-top: 1px dashed var(--border-subtle); padding-top: 0.35rem; }
+.dig-meaning { margin: 0.5rem 0 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-tertiary); }
+.dig-flag-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+.dig-flag-chip {
+  font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-size: 0.78rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: var(--radius-sm);
+  border: 1px solid var(--accent-primary); color: var(--accent-primary);
+}
+.dig-counts { margin-top: 0.5rem; border-top: 1px dashed var(--border-subtle); padding-top: 0.4rem; }
+.dig-sec-count { color: var(--text-tertiary); font-weight: 400; text-transform: none; }
+
+/* ============================================================
+   xml-decoder  (structural XML view + security analysis)
+   Reuses cidr-/dig-/jwt-/b64- classes; these add the tree +
+   entity + security-emphasis pieces. Semantic tokens only.
+   ============================================================ */
+.xml-security { border-top-color: var(--accent-amber); background: color-mix(in srgb, var(--accent-amber) 5%, transparent); }
+
+.xml-tree {
+  font-size: 0.84rem; line-height: 1.6; overflow-x: auto;
+  padding: 0.2rem 0; color: var(--text-secondary);
+}
+.xml-node { white-space: pre-wrap; word-break: break-word; }
+.xml-children {
+  margin-left: 1.1rem; padding-left: 0.6rem;
+  border-left: 1px solid var(--border-subtle);
+}
+.xml-tag { color: var(--text-tertiary); }
+.xml-el-name { color: var(--accent-primary); font-weight: 600; }
+.xml-attr-name { color: var(--accent-amber); }
+.xml-attr-val { color: var(--accent-green); }
+.xml-attr-ns { font-style: italic; opacity: 0.75; }
+.xml-attr-ns .xml-attr-name { color: var(--text-tertiary); }
+.xml-text { color: var(--text-primary); }
+.xml-comment { color: var(--text-tertiary); font-style: italic; }
+.xml-cdata { color: var(--accent-cyan, var(--accent-primary)); }
+.xml-pi { color: var(--text-secondary); }
+.xml-nodetag {
+  display: inline-block; font-size: 0.66rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-tertiary); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm); padding: 0 0.3rem; margin-right: 0.3rem;
+  vertical-align: 1px;
+}
+
+.xml-entities { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.xml-entity {
+  display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap;
+  font-size: 0.82rem; padding: 0.3rem 0.4rem;
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+}
+.xml-ent-badge {
+  font-size: 0.64rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; padding: 0.08rem 0.36rem; border-radius: var(--radius-sm);
+  color: var(--text-tertiary); border: 1px solid var(--border-subtle); flex: 0 0 auto;
+}
+.xml-ent-danger {
+  color: var(--accent-amber); border-color: var(--accent-amber);
+  background: color-mix(in srgb, var(--accent-amber) 10%, transparent);
+}
+.xml-ent-name { color: var(--accent-primary); font-weight: 600; flex: 0 0 auto; }
+.xml-ent-val { color: var(--text-secondary); word-break: break-all; }
+
+/* ============================================================================
+   f5xc-service-policy-explainer - F5 XC service_policy decode surface.
+   Reuses the dig/jwt panel shell; these classes style the rule cards, action
+   badges, predicate lines, and match criteria. Semantic tokens only; the
+   green/red literals (#34d399 / #f87171) match the established allow/deny
+   palette used elsewhere in this sheet.
+   ========================================================================== */
+.f5xc-results { gap: 1rem; }
+
+/* structural hints */
+.f5xc-any { color: #34d399; font-weight: 600; font-size: 0.85rem; }
+.f5xc-hint { color: var(--text-tertiary); font-size: 0.8rem; font-style: italic; }
+
+/* a single match criterion line */
+.f5xc-line {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem;
+  padding: 0.15rem 0; line-height: 1.5;
+}
+.f5xc-subject {
+  color: var(--accent-primary); font-weight: 600; font-size: 0.85rem;
+}
+.f5xc-op { color: var(--text-tertiary); font-size: 0.82rem; }
+.f5xc-vals { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; }
+.f5xc-val {
+  color: var(--text-primary); font-size: 0.82rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm); padding: 0.05rem 0.4rem;
+  word-break: break-all;
+}
+.f5xc-orhint { color: var(--text-tertiary); font-size: 0.72rem; font-style: italic; }
+
+/* predicate block */
+.f5xc-pred { margin: 0.5rem 0; }
+.f5xc-pred-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.f5xc-pred-label { color: var(--accent-hover); font-weight: 600; font-size: 0.9rem; }
+.f5xc-pred-lines { padding-left: 0.9rem; border-left: 1px solid var(--border-subtle); }
+
+/* small inline badges */
+.f5xc-badge {
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.02em;
+  text-transform: uppercase; padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-sm); border: 1px solid transparent;
+}
+.f5xc-badge-invert {
+  color: var(--accent-amber); border-color: var(--accent-amber);
+  background: color-mix(in srgb, var(--accent-amber) 12%, transparent);
+}
+.f5xc-badge-case {
+  color: var(--accent-amber); border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 8%, transparent);
+}
+.f5xc-badge-expired {
+  color: #f87171; border-color: #f87171;
+  background: color-mix(in srgb, #f87171 12%, transparent);
+}
+
+/* action badges (allow green / deny red / next amber) */
+.f5xc-act {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em;
+  text-transform: uppercase; padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-sm); border: 1px solid transparent; white-space: nowrap;
+}
+.f5xc-act-allow {
+  color: #34d399; border-color: color-mix(in srgb, #34d399 50%, transparent);
+  background: color-mix(in srgb, #34d399 14%, var(--surface-base));
+}
+.f5xc-act-deny {
+  color: #f87171; border-color: color-mix(in srgb, #f87171 50%, transparent);
+  background: color-mix(in srgb, #f87171 14%, var(--surface-base));
+}
+.f5xc-act-next {
+  color: var(--accent-amber); border-color: color-mix(in srgb, var(--accent-amber) 50%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 12%, var(--surface-base));
+}
+
+/* rule card */
+.f5xc-rules { display: flex; flex-direction: column; gap: 0.75rem; }
+.f5xc-rule {
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem; background: color-mix(in srgb, var(--surface-elevated) 40%, transparent);
+}
+.f5xc-rule-expired { opacity: 0.6; }
+.f5xc-rule-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.f5xc-rule-idx {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 1.4rem; height: 1.4rem; font-size: 0.75rem; font-weight: 700;
+  color: var(--surface-base); background: var(--accent-primary);
+  border-radius: var(--radius-sm);
+}
+.f5xc-rule-name { color: var(--text-primary); font-weight: 600; font-size: 0.9rem; }
+.f5xc-rule-desc { color: var(--text-secondary); font-size: 0.82rem; font-style: italic; margin-top: 0.3rem; }
+.f5xc-rule-anymatch { color: #34d399; font-size: 0.82rem; margin-top: 0.4rem; }
+.f5xc-rule-andnote { color: var(--text-tertiary); font-size: 0.78rem; margin: 0.4rem 0 0.2rem; }
+.f5xc-preds { margin-top: 0.2rem; }
+
+/* action modifiers (side effects that fire on match) */
+.f5xc-mods {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+  margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px dashed var(--border-subtle);
+}
+.f5xc-mods-label { color: var(--text-tertiary); font-size: 0.78rem; }
+.f5xc-mod {
+  color: var(--accent-amber); font-size: 0.78rem;
+  background: color-mix(in srgb, var(--accent-amber) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 35%, transparent);
+  border-radius: var(--radius-sm); padding: 0.05rem 0.4rem;
+}
+
+/* rule combining algorithm panel */
+.f5xc-algo-name { color: var(--accent-hover); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+.f5xc-algo-desc { color: var(--text-secondary); font-size: 0.85rem; margin: 0.2rem 0; }
+.f5xc-algo-note { color: var(--text-tertiary); font-size: 0.8rem; margin-top: 0.3rem; }
+
+/* server scope / source list lines */
+.f5xc-scope-lines { margin-top: 0.4rem; padding-left: 0.9rem; border-left: 1px solid var(--border-subtle); }
+
+/* ============================================================================
+   CVSS vector decoder
+   Severity ramp reads green -> amber -> orange -> red on the dark canvas.
+   Structure uses semantic tokens; the five band colors follow the existing
+   status-color convention (literal hex inside color-mix), matching NVD's ramp.
+   ============================================================================ */
+.cvss-tool .b64-input { min-height: 3.1rem; }
+
+.cvss-scores { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.6rem; }
+.cvss-score-card {
+  flex: 1 1 8rem; min-width: 8rem;
+  padding: 0.7rem 0.9rem; border-radius: 0.5rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-left-width: 3px;
+}
+.cvss-score-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); }
+.cvss-score-value { font-size: 1.85rem; font-weight: 700; line-height: 1.1; margin-top: 0.15rem; }
+.cvss-score-sev { font-size: 0.8rem; font-weight: 600; margin-top: 0.1rem; }
+
+.cvss-sev-none     { border-left-color: var(--sev-none); }
+.cvss-sev-none .cvss-score-value, .cvss-sev-none .cvss-score-sev { color: var(--sev-none); }
+.cvss-sev-low      { border-left-color: var(--sev-low); background: color-mix(in srgb, var(--sev-low) 4%, var(--surface-elevated)); }
+.cvss-sev-low .cvss-score-value, .cvss-sev-low .cvss-score-sev { color: var(--sev-low); }
+.cvss-sev-medium   { border-left-color: var(--sev-medium); background: color-mix(in srgb, var(--sev-medium) 4%, var(--surface-elevated)); }
+.cvss-sev-medium .cvss-score-value, .cvss-sev-medium .cvss-score-sev { color: var(--sev-medium); }
+.cvss-sev-high     { border-left-color: var(--sev-high); background: color-mix(in srgb, var(--sev-high) 5%, var(--surface-elevated)); }
+.cvss-sev-high .cvss-score-value, .cvss-sev-high .cvss-score-sev { color: var(--sev-high); }
+.cvss-sev-critical { border-left-color: var(--sev-critical); background: color-mix(in srgb, var(--sev-critical) 6%, var(--surface-elevated)); }
+.cvss-sev-critical .cvss-score-value, .cvss-sev-critical .cvss-score-sev { color: var(--sev-critical); }
+
+.cvss-sub-panel { margin-top: 0.6rem; }
+.cvss-sub-grid { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+.cvss-sub { display: flex; flex-direction: column; gap: 0.1rem; }
+.cvss-sub-label { font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.03em; }
+.cvss-sub-value { font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); }
+
+.cvss-group { margin-top: 0.6rem; }
+.cvss-metric-list { display: flex; flex-direction: column; }
+.cvss-metric {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(9rem, 1.4fr) 1.8rem minmax(6rem, 1fr);
+  gap: 0.5rem; align-items: baseline;
+  padding: 0.28rem 0; border-top: 1px solid var(--border-subtle);
+}
+.cvss-metric:first-child { border-top: none; }
+.cvss-metric-code { color: var(--accent-primary); font-size: 0.85rem; }
+.cvss-metric-label { color: var(--text-secondary); font-size: 0.85rem; }
+.cvss-metric-value { color: var(--text-tertiary); font-size: 0.85rem; text-align: right; }
+.cvss-metric-vlabel { color: var(--text-primary); font-size: 0.85rem; font-weight: 500; }
+
+.cvss-warn-panel { border-left: 2px solid var(--accent-amber); }
+.cvss-warn-list { margin: 0.3rem 0 0; padding-left: 1.1rem; color: var(--accent-amber); font-size: 0.85rem; }
+.cvss-warn-list li { margin: 0.15rem 0; }

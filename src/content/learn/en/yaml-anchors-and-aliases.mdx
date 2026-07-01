@@ -1,0 +1,30 @@
+---
+slug: yaml-anchors-and-aliases
+title: "YAML Anchors, Aliases, and Merge Keys"
+summary: "YAML can define a value once and reuse it with an anchor and alias, and merge one mapping into another with a merge key. None of this exists in JSON, so converting expands and duplicates it. This covers the syntax, what happens on conversion, and the denial-of-service trap they enable."
+concepts: ["yaml", "anchor", "alias", "merge key", "json conversion"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["json-vs-yaml", "yaml-type-coercion", "yaml-block-scalars"]
+category: encoding
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+YAML has a feature JSON simply does not: you can name a value and reuse it, instead of repeating it. It is one of the biggest reasons a YAML file and its JSON equivalent do not look alike.
+
+## The syntax
+
+- An **anchor** `&name` labels a node.
+- An **alias** `*name` refers back to it, inserting the same value.
+- A **merge key** `<<: *name` merges the keys of an anchored mapping into the current one, a common way to share defaults.
+
+So a base set of settings can be defined once with an anchor and pulled into several places with aliases, keeping the file DRY. This is heavily used in CI configs and Kubernetes-adjacent tooling.
+
+## What conversion does to them
+
+JSON has no anchors, aliases, or merge keys, so a converter **dereferences** them: every alias is replaced with a full copy of the value it pointed at, and every merge key is expanded into the actual merged keys. The resulting JSON is correct but larger, and the sharing is gone. Converting back to YAML does not reconstruct the anchors, so a round-trip through JSON silently flattens the reuse into duplication. If the compactness mattered, that is a real loss, not just a cosmetic one.
+
+## The safety trap
+
+Because an alias can point at something that itself contains aliases, YAML allows exponential expansion. The classic "billion laughs" attack nests anchors so that a tiny file expands to gigabytes when resolved, exhausting memory. This is why a careful YAML parser limits alias expansion, and why converting untrusted YAML is not free: the expansion happens during conversion. It is the same class of risk as an XML entity expansion, and a reason to treat YAML from unknown sources with the same caution as any other untrusted input.

@@ -1,0 +1,26 @@
+---
+slug: diff-minimal-edits
+title: "Edições mínimas: por que um diff pode parecer errado"
+summary: "Um diff mostra o menor conjunto de inserções e remoções que transforma um texto no outro. Como o menor conjunto não é único e o algoritmo precisa escolher, um diff pode alinhar linhas de formas contraintuitivas, culpando o bloco errado ou dividindo uma seção movida. Saber disso torna diffs estranhos legíveis."
+concepts: ["diff", "minimal edit", "longest common subsequence", "alignment", "readability"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works", "reading-a-diff", "diff-three-way-and-merge-conflicts"]
+category: encoding
+order: 13
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O diff não sabe o que você *fez* com um arquivo. Ele só vê o antes e o depois, e descobre um conjunto de inserções e remoções que transformaria um no outro. Especificamente, ele procura a **maior subsequência comum**, o maior conjunto de linhas que aparecem em ambos na mesma ordem, e trata todo o resto como inserido ou removido.
+
+## Por que o resultado pode surpreender
+
+O detalhe é que o menor conjunto de edições frequentemente não é único. Quando duas regiões se parecem, pode haver várias formas igualmente curtas de explicar a mudança, e o algoritmo simplesmente escolhe uma por suas regras internas. É por isso que um diff às vezes:
+
+- **Culpa o bloco errado.** Se você adiciona uma função que termina com uma chave de fechamento, o diff pode parear sua chave nova com uma existente e mostrar a mudança começando uma linha antes de onde você pensa.
+- **Divide uma seção movida.** Mova um bloco de código e um diff de linha não vê um movimento algum; ele vê uma remoção em um lugar e uma inserção em outro, às vezes quebrada em pedaços que se alinham com linhas correspondentes não relacionadas.
+- **Anexa linhas em branco ou boilerplate de forma estranha.** Linhas repetidas como linhas em branco ou `}` são intercambiáveis para o algoritmo, então ele pode agrupá-las de um jeito que parece estranho.
+
+## Lendo mesmo assim
+
+Nada disso significa que o diff está errado; é uma explicação mínima correta, apenas não a que corresponde ao seu modelo mental da edição. A solução não é brigar com ele, mas lê-lo como "uma forma válida de ir de A a B". Quando um diff parece estranho, uma visão de palavra ou caractere frequentemente torna a mudança real óbvia, e para código movido, comparar os dois blocos diretamente é mais claro do que confiar no alinhamento. A lição é que um diff descreve uma transformação entre dois estados, não a história de como você chegou lá.

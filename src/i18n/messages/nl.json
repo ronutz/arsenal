@@ -69,6 +69,7 @@
       "purposeLabel": "Wordt nu gefinancierd"
     },
     "stats": {
+      "headline": "Nu beschikbaar",
       "tools": "Tools",
       "articles": "Artikelen",
       "sectionLabel": "De toolbox in het kort"
@@ -871,7 +872,7 @@
     "builtWith": "Gebouwd door Rodolfo Nützmann met CONCORD",
     "colophon": "Hoe dit is gebouwd",
     "contribute": "Help de vertalingen verbeteren",
-    "feedback": "Feedback geven",
+    "feedback": "Contact",
     "api": "API-referentie",
     "contributeTools": "Deel een idee",
     "license": "Licentie",

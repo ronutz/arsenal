@@ -1,0 +1,28 @@
+---
+slug: regex-anchors-and-boundaries
+title: "Âncoras e limites em regex"
+summary: "Âncoras casam uma posição, não um caractere: o início ou o fim da string, ou a borda de uma palavra. São a diferença entre um padrão que casa em qualquer lugar e um que casa só onde você quer. Este artigo cobre ^, $, \\b e seu comportamento em modo multilinha, além dos erros que causam."
+concepts: ["regex", "anchors", "word boundary", "multiline", "matching"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferences", "regex-flags-and-modes"]
+category: security
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A maior parte de um regex casa caracteres. Âncoras são diferentes: elas casam uma **posição entre caracteres**, e não consomem nada. É isso que permite dizer "no início da linha" ou "na borda de uma palavra" em vez de apenas "em algum lugar".
+
+## As âncoras comuns
+
+- **`^`** casa o início da string, e **`$`** casa o fim. `^abc$` casa apenas a string exata `abc`, não `xabcx`. Sem elas, um padrão pode casar qualquer substring, que é a causa mais comum de um regex casar mais do que o pretendido.
+- **`\b`** casa um **limite de palavra**, a posição entre um caractere de palavra e um caractere que não é de palavra (ou o início ou o fim da string). `\bcat\b` casa `cat` como palavra inteira, mas não o `cat` dentro de `category`. **`\B`** é o oposto: uma posição que *não* é um limite de palavra.
+- Alguns dialetos também oferecem **`\A`** e **`\z`** para o início e o fim absolutos da string, que passam a importar quando o modo multilinha entra em cena.
+
+## Multilinha muda o que ^ e $ significam
+
+Por padrão `^` e `$` ancoram na string inteira. Ligue o **modo multilinha** (a flag `m`) e eles ancoram no início e no fim de cada *linha*, casando em cada quebra de linha. É isso que você quer ao varrer um bloco de texto linha a linha, e uma surpresa quando você não esperava, porque um padrão que casava uma vez agora casa em cada linha.
+
+## Onde elas mordem
+
+Dois erros se repetem. Primeiro, colocar `^` ou `$` no meio de um padrão por acidente, o que só pode casar em uma borda de linha e por isso normalmente não casa nada. Segundo, presumir que `\b` entende o seu alfabeto: em muitos motores, um caractere de palavra é só ASCII, então `\b` cai no lugar errado em torno de letras acentuadas ou outros scripts, a menos que você habilite o modo Unicode. Quando um casamento de "palavra inteira" se comporta de forma estranha com texto que não é inglês, a definição de limite de palavra é a primeira coisa a verificar.

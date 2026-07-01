@@ -1,0 +1,40 @@
+---
+slug: xxe-and-external-entities
+title: "XXE and External Entities"
+summary: "XML lets a document declare entities, and an external entity can point at a file or URL. A parser that resolves one can be tricked into reading local files or making server-side requests, the XXE vulnerability. The fix is blunt and effective: do not process a DOCTYPE at all."
+concepts: ["xml", "xxe", "external entity", "doctype", "ssrf"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["billion-laughs-and-entity-expansion", "xml-well-formedness", "reading-xml-structure"]
+category: security
+order: 60
+status: machine-draft
+updated: "2026-07-01"
+---
+
+XML External Entity injection, XXE, is one of the most damaging XML vulnerabilities, and it grows out of a legitimate feature: entities.
+
+## Entities and the DOCTYPE
+
+An **entity** is a named shorthand you can reference in a document. Beyond the five built-in ones (`&lt;`, `&amp;`, and so on), a document can declare its own inside a **DOCTYPE**:
+
+```
+<!DOCTYPE foo [
+  <!ENTITY company "Acme Corp">
+]>
+```
+
+Then `&company;` expands to `Acme Corp`. That is an **internal entity**, harmless enough. The danger is the **external entity**, which points somewhere instead of holding a value:
+
+```
+<!ENTITY xxe SYSTEM "file:///etc/passwd">
+```
+
+When a parser configured to resolve entities encounters `&xxe;`, it will fetch whatever the `SYSTEM` identifier names and substitute the contents. Point it at a local file and the file's contents get read into the document; point it at an internal URL and the parser makes a request from the server's position on the network.
+
+## What an attacker gets
+
+The consequences follow directly. Pointing an external entity at a file path lets an attacker **read local files**: configuration, credentials, key material. Pointing it at a URL turns the parser into a request engine on the internal network, a **server-side request forgery** that can reach services a remote attacker could not otherwise touch. More advanced variants use parameter entities and external DTDs to exfiltrate data out of band even when the response is not directly visible. The common thread is that the attacker supplies XML and the trusting parser does the dangerous work.
+
+## The defense
+
+The fix is refreshingly simple: **do not process the DOCTYPE**. Nearly every XML parser has a setting to disable DOCTYPE declarations and external entity resolution entirely, and for input you did not author, that setting should be on. If a DOCTYPE is disallowed, external entities cannot be declared, and the whole class of attack disappears. This is why a security-minded XML tool inspects a document without ever resolving its entities: it reports that a DOCTYPE or an external entity is present, and treats that as a finding to flag, not an instruction to follow. Seeing a `SYSTEM` or `PUBLIC` entity in untrusted XML is a red flag on its own.

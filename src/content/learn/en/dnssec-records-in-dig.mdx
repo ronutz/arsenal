@@ -1,0 +1,29 @@
+---
+slug: dnssec-records-in-dig
+title: "DNSSEC Records in dig Output"
+summary: "Add +dnssec and a dig answer grows a new family of records: RRSIG, DNSKEY, DS, and the NSEC or NSEC3 denial records. This explains what each one is, how they chain from the root down to a zone, and what the ad flag really certifies."
+concepts: ["dnssec", "rrsig", "dnskey", "ds", "nsec", "nsec3", "ad flag", "chain of trust"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "edns-and-the-opt-pseudosection"]
+category: networking
+order: 44
+status: machine-draft
+updated: "2026-06-30"
+---
+
+DNSSEC signs DNS data so a resolver can prove an answer was not tampered with. When you query with `+dnssec` (which sets the EDNS `do` flag), the extra records appear alongside the normal ones.
+
+## The record types
+
+- **RRSIG** is a signature over a set of records of one type (an RRset). Its rdata leads with the type it covers, the algorithm number, a label count, the original TTL, a signature expiration and inception time, a key tag, and the signer's name, followed by the signature itself. The validity window matters operationally: an expired RRSIG makes a validating resolver return `SERVFAIL`, and expired signatures are a common cause of a domain that "suddenly stopped resolving" for some users but not others.
+- **DNSKEY** is a public key for the zone. A validator uses it to check the RRSIGs in that zone. Its rdata is a flags field, a protocol byte (always 3), an algorithm, and the key material.
+- **DS** (Delegation Signer) is the link between a parent zone and a child. It is a hash of the child's DNSKEY, published in the parent. Its rdata is a key tag, an algorithm, a digest type, and the digest. This is the record you give your registrar to turn DNSSEC on for a delegation.
+- **NSEC** and **NSEC3** provide authenticated denial of existence. Instead of simply saying "no such name," a signed zone proves the gap: NSEC points to the next existing name, and NSEC3 does the same over hashed names to make walking the zone harder. This is how a validated `NXDOMAIN` or NODATA is itself trustworthy.
+
+## The chain of trust
+
+Validation is a chain from the root down. A resolver trusts the root's key (the single configured trust anchor), uses the root's DS to vouch for the top-level domain's DNSKEY, uses that to validate the TLD's DS for the next zone, and so on down to the name you asked about. Each hop is a DS in the parent matching a DNSKEY in the child, and each RRset is covered by an RRSIG. A break anywhere, a missing DS at a delegation, a key rollover that removed the wrong key, an expired signature, snaps the chain and the resolver returns `SERVFAIL`.
+
+## What ad actually means
+
+The `ad` (Authentic Data) flag in the header is the resolver's verdict: it means this particular resolver validated the chain and it held. It is not proof you can independently trust unless you trust the resolver and the path to it, and it does not mean the client validated anything. If you asked with `do` set and got real data back but `ad` is not set, the resolver either did not validate or the data is unsigned; that gap is usually the thing worth chasing.

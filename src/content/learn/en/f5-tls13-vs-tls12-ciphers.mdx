@@ -1,0 +1,26 @@
+---
+slug: f5-tls13-vs-tls12-ciphers
+title: "TLS 1.3 and TLS 1.2 Ciphers on BIG-IP"
+summary: "TLS 1.3 changed what a cipher suite even is, and BIG-IP treats 1.3 and 1.2 differently as a result. A 1.2 suite bundles key exchange, authentication, and the bulk cipher; a 1.3 suite names only the bulk cipher and hash. Knowing that explains why old cipher-string keywords do not steer 1.3."
+concepts: ["f5", "tls 1.3", "tls 1.2", "cipher suite", "big-ip"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "f5-cipher-rules-and-groups", "f5-cipher-ordering-and-negotiation"]
+category: transport
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A cipher string that worked for years suddenly seems to have no effect on TLS 1.3, and the reason is that 1.3 redefined the cipher suite.
+
+## Two different notions of a suite
+
+A **TLS 1.2** cipher suite is a bundle: it names the key-exchange method, the authentication method, the bulk encryption cipher, and the MAC all at once, which is why names like `ECDHE-RSA-AES128-GCM-SHA256` are so long. The keyword-based cipher string exists to select and filter across all those dimensions.
+
+A **TLS 1.3** cipher suite names only two things: the AEAD bulk cipher and its hash. The full set is tiny and fixed, essentially AES-GCM and ChaCha20-Poly1305 variants (for example `TLS_AES_128_GCM_SHA256`). Key exchange and authentication are no longer part of the suite; 1.3 always uses ephemeral Diffie-Hellman for forward secrecy and negotiates the group and the signature algorithm separately. There is nothing to "select" for key exchange in a 1.3 suite because it is not encoded there.
+
+## What this means on BIG-IP
+
+Because the two versions carry different information, BIG-IP handles them on separate tracks. The cipher-string keywords that filter 1.2 by key exchange or authentication (things like requiring ECDHE, or excluding RSA key exchange) have no 1.3 suite to act on, so they simply do not constrain 1.3. The 1.3 suites are their own small group, enabled when TLS 1.3 is enabled on the profile, and BIG-IP's cipher rules understand 1.3 keywords for the cases where you do want to include or exclude them.
+
+The practical takeaway is to stop thinking of one cipher list as governing everything. For 1.2 and earlier, the keyword string does the heavy lifting across key exchange, authentication, and bulk cipher. For 1.3, the bulk-cipher choice is a short fixed menu, and the security properties you used to select with keywords (forward secrecy, strong authentication) are built into the protocol or negotiated through separate group and signature settings. When a keyword seems ignored, check whether the connection is actually 1.3, where that keyword may have nothing to bind to.

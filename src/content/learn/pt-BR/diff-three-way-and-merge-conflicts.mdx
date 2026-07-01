@@ -1,0 +1,38 @@
+---
+slug: diff-three-way-and-merge-conflicts
+title: "Diffs de três vias e conflitos de merge"
+summary: "Um diff normal compara duas versões e não consegue dizer qual delas mudou. Um diff de três vias adiciona um ancestral comum, que é o que torna o merge automático possível e o que produz os marcadores de conflito <<<<<<< ======= >>>>>>>. Este artigo explica o terceiro insumo e como ler e resolver um conflito."
+concepts: ["diff", "three-way merge", "merge conflict", "ancestor", "version control"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works", "reading-a-diff", "diff-word-and-character-level"]
+category: encoding
+order: 12
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um diff de duas vias compara a versão A com a versão B. Ele consegue mostrar que uma linha difere, mas não consegue dizer *quem* a mudou, porque não tem ponto de referência. Essa limitação é exatamente o que desmorona quando duas pessoas editam o mesmo arquivo.
+
+## Adicionando o ancestral
+
+Um diff de **três vias** recebe três insumos: as duas versões editadas e seu **ancestral** comum, a versão da qual ambas partiram. Com o ancestral como referência, a lógica de merge consegue raciocinar sobre cada mudança:
+
+- Se apenas um lado mudou uma região, use a versão desse lado. O ancestral prova que o outro lado a deixou intacta.
+- Se ambos os lados mudaram a mesma região da mesma forma, use-a uma vez.
+- Se ambos os lados mudaram a mesma região de formas diferentes, não há resposta automática segura. Isso é um **conflito**.
+
+É por isso que o controle de versão consegue fazer merge da maioria das mudanças sem perguntar: a maioria das edições toca regiões diferentes, e o ancestral torna isso demonstrável.
+
+## Lendo um conflito
+
+Quando um merge não consegue decidir, ele escreve ambas as versões no arquivo, entre marcadores:
+
+```
+<<<<<<< ours
+a versão do seu lado
+=======
+a versão do outro lado
+>>>>>>> theirs
+```
+
+O texto acima de `=======` é um lado, o texto abaixo é o outro, e os rótulos dizem qual é qual. Resolver o conflito significa editar essa região até a versão final correta, depois apagar as três linhas de marcador. A disciplina importante é olhar para o ancestral, ou ao menos pensar sobre o que cada lado pretendia, em vez de cegamente manter um lado: um conflito significa que ambos os lados tiveram um motivo para mexer naquele ponto, e a resposta certa frequentemente combina os dois.

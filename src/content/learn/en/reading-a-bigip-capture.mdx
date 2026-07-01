@@ -1,0 +1,40 @@
+---
+slug: reading-a-bigip-capture
+title: "Reading a BIG-IP Capture: The F5 Trailer in Wireshark"
+summary: "A capture taken with the TMM detail suffix carries extra bytes after each packet. On its own that looks like noise. With the f5ethtrailer dissector, Wireshark turns it into readable fields that tell you exactly how BIG-IP handled each flow."
+concepts: ["tcpdump", "f5", "big-ip", "wireshark", "f5ethtrailer", "peer flow", "analysis"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["tmm-detail-and-peer-flows", "bigip-tcpdump-syntax"]
+category: networking
+order: 34
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Capturing the packets is half the job; reading them is the other half. A BIG-IP capture taken with a detail suffix (`:n`, `:nn`, or `:nnn`) contains the standard frames plus an F5 Ethernet trailer on each one. This article is about turning that trailer into answers. You build the capture itself with the [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder).
+
+## Open it in Wireshark
+
+Write the capture to a file with `-w` and transfer it off the box, then open it in Wireshark. Modern Wireshark ships with the `f5ethtrailer` dissector, which recognises the trailer's magic marker and decodes it automatically. If you do not see the F5 fields, confirm the dissector is enabled in the protocol preferences.
+
+## What the trailer tells you
+
+Depending on the detail level you captured with, the decoded trailer can show:
+
+- Direction: whether BIG-IP saw the packet ingress or egress.
+- Slot and TMM: which blade and which TMM instance processed it, which matters on multi-TMM and chassis platforms.
+- Virtual server: the name of the virtual that owns the flow (at medium and high detail).
+- Flow and peer-flow IDs: the internal identifiers that let you tie the client-side and server-side halves of a connection together.
+- Reset cause: at high detail, the reason BIG-IP reset a connection, which is often the single most useful field when a connection dies unexpectedly.
+
+## Tying the two flows together
+
+This is where peer flows pay off. If you captured with the `p` modifier, both halves of the connection are in the file. Using the flow and peer-flow identifiers from the trailer, you can follow a request from the client, through the BIG-IP, to the chosen pool member, and back, even though the addresses change at the proxy boundary. The [detail levels and peer flows](/learn/tmm-detail-and-peer-flows) article explains how those halves relate.
+
+## Filtering inside Wireshark
+
+Once open, ordinary Wireshark display filters apply: filter by `ip.addr`, `tcp.port`, `tcp.flags.reset`, and so on. The F5 trailer adds its own filterable fields under the `f5ethtrailer` namespace, so you can, for example, isolate every packet a specific TMM handled, or every flow that ended in a reset. Combining a tight capture filter on the box with a focused display filter in Wireshark is how you go from a large file to the three packets that explain the problem.
+
+## A note on the keylog
+
+The F5 trailer mechanism is diagnostic metadata only. Reading it does not expose TLS session secrets; decrypting application payload is a separate, deliberate step that requires its own key material. The trailer alone tells you how BIG-IP routed and handled a flow, not what was inside an encrypted payload.

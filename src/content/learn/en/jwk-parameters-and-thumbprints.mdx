@@ -1,0 +1,28 @@
+---
+slug: jwk-parameters-and-thumbprints
+title: "JWK Parameters and Thumbprints"
+summary: "A JWK is a JSON object describing one key, and its parameters say what the key is for and how to identify it. Beyond the key material, kid names it and an RFC 7638 thumbprint gives it a stable, computed identifier. This covers the common parameters and how a thumbprint is derived and used."
+concepts: ["jwk", "kid", "thumbprint", "rfc 7638", "key identification"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["jwk-key-types", "jwks-and-key-rotation", "verifying-a-jwt-with-jwks"]
+category: identity
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A JWK (JSON Web Key) describes a single key as a JSON object. Alongside the raw key material are metadata parameters that tell a consumer what the key is and how to refer to it.
+
+## The common parameters
+
+- **`kty`** (key type) is the one required member: RSA, EC, OKP, or oct. It determines which other members are present.
+- **`use`** says whether the key is for signatures (`sig`) or encryption (`enc`), and **`key_ops`** can list specific operations. A verifier should honor these and not, say, encrypt with a signing key.
+- **`alg`** names the intended algorithm, such as RS256 or ES256.
+- **`kid`** (key ID) is a label used to pick the right key from a set. When a JWT header carries a `kid`, the verifier matches it against the `kid` in the JWKS.
+- Type-specific members carry the actual key: `n` and `e` for RSA, `crv`/`x`/`y` for EC, `crv`/`x` for OKP. Optional `x5c` and `x5t` embed or fingerprint an X.509 certificate for the key.
+
+## Thumbprints
+
+A `kid` is just a chosen string, so two systems might label the same key differently. A **JWK thumbprint** (RFC 7638) solves this by *computing* an identifier from the key itself: it takes the required members for the key type, in a fixed order with no whitespace (a canonical JSON form), and hashes them, usually with SHA-256. Because the input is canonical, the same key always yields the same thumbprint, regardless of member order or extra metadata.
+
+That makes thumbprints useful as stable, collision-resistant key identifiers: many systems set `kid` to the thumbprint so the label is derived from the key rather than assigned by hand. It also lets you confirm that a key in one place is the same key as in another by comparing thumbprints rather than comparing every field. The key point is that a thumbprint is content-derived and deterministic, which is exactly what a canonical serialization buys you.

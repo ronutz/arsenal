@@ -69,6 +69,7 @@
       "purposeLabel": "Financiando agora"
     },
     "stats": {
+      "headline": "Disponíveis agora",
       "tools": "Ferramentas",
       "articles": "Artigos",
       "sectionLabel": "O conjunto de ferramentas em números"
@@ -1422,6 +1423,620 @@
       "err_format": "Isso não parece uma CSR em PEM, base64 ou hex.",
       "err_der": "Não foi possível analisar a estrutura DER.",
       "err_structure": "Isso é analisado como DER, mas não é uma solicitação de certificação PKCS#10."
+    },
+    "bigip-tcpdump-builder": {
+      "name": "Construtor de tcpdump para BIG-IP",
+      "blurb": "Monta um comando tcpdump correto para o BIG-IP a partir de opções estruturadas: a sintaxe de interface da TMM, o nível de detalhe de fluxo, o snaplen, a gravação em arquivo e um filtro BPF. Ele formata o comando para você executar; não captura nada.",
+      "runsLocally": "O comando é montado no seu navegador. Nada é capturado, executado ou enviado para lugar nenhum.",
+      "groupInterface": "Interface e fluxo",
+      "ifaceLabel": "Interface ou VLAN",
+      "ifacePlaceholder": "0.0",
+      "ifaceHint": "0.0 captura em todas as TMMs. Você também pode informar uma VLAN, um túnel ou um self-IP.",
+      "detailLabel": "Detalhe de fluxo da TMM",
+      "detailNone": "Nenhum",
+      "detailLow": ":n  baixo",
+      "detailMed": ":nn  médio",
+      "detailHigh": ":nnn  alto",
+      "detailHint": "Adiciona o trailer de ruído/fluxo da F5 a cada pacote. Quanto maior o detalhe, mais informações de fluxo e de peer-flow são exibidas.",
+      "bothSidesLabel": "Ambos os lados (:p)",
+      "bothSidesHint": "Captura os fluxos do lado cliente e do lado servidor da mesma conexão.",
+      "groupResolution": "Resolução de nomes",
+      "nameResLabel": "Consultas de DNS e de nomes de porta",
+      "nameResDefault": "Resolver",
+      "nameResNoDns": "-n  sem DNS",
+      "nameResNoDnsPort": "-nn  sem DNS nem portas",
+      "nameResHint": "-n e -nn mantêm a captura rápida e evitam buscas reversas que podem travá-la.",
+      "groupCapture": "Snaplen e limites",
+      "snaplenLabel": "Snap length",
+      "snaplenDefault": "Padrão",
+      "snaplenFull": "-s0  pacote inteiro",
+      "snaplenCustom": "Personalizado",
+      "snaplenValueLabel": "Bytes",
+      "snaplenValuePlaceholder": "96",
+      "countLabel": "Parar após N pacotes (-c)",
+      "countPlaceholder": "1000",
+      "countHint": "Opcional. Deixe em branco para capturar até interromper com Ctrl-C.",
+      "groupFormat": "Formato de saída",
+      "verbosityLabel": "Verbosidade",
+      "verbNone": "Nenhuma",
+      "verbV": "-v",
+      "verbVv": "-vv",
+      "verbVvv": "-vvv",
+      "etherLabel": "Cabeçalho de enlace (-e)",
+      "hexLabel": "Conteúdo em hex e ASCII (-X)",
+      "groupFile": "Gravar em arquivo",
+      "writeFileLabel": "Gravar um arquivo pcap (-w)",
+      "fileNameLabel": "Caminho do arquivo",
+      "fileNamePlaceholder": "/var/tmp/capture.pcap",
+      "fileNameHint": "Obrigatório ao enviar uma captura para o F5 Support. Salve em /var/tmp ou /shared/tmp.",
+      "groupFilter": "Filtro",
+      "filterLabel": "Expressão de filtro BPF",
+      "filterPlaceholder": "host 10.1.1.1 and port 443",
+      "filterHint": "Sintaxe padrão tcpdump/BPF: host, net, port, src/dst, tcp/udp, and / or / not.",
+      "commandHeading": "Comando",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "warningsHeading": "Avisos",
+      "warnings": {
+        "unfiltered-all-tmm": "A captura em 0.0 não tem limite de taxa. Adicione um filtro (host ou port) ou uma contagem de pacotes (-c) para manter o arquivo de captura limitado.",
+        "snaplen-zero-modern": "No BIG-IP 15.x e posteriores, -s0 corresponde ao snaplen padrão de 262144 bytes (mantido por compatibilidade), então ainda captura os pacotes inteiros.",
+        "hex-with-writefile": "-X afeta apenas a saída na tela. Não tem efeito quando você também grava um arquivo binário com -w.",
+        "colon-in-iface-name": "Um nome de interface não pode conter dois-pontos no BIG-IP. Os dois-pontos são reservados para o sufixo de detalhe da TMM."
+      }
+    },
+    "dig-output-explainer": {
+      "name": "explicador de saída do dig",
+      "blurb": "Cole a saída real do dig e obtenha um detalhamento decodificado e explicado: o cabeçalho e as flags, a pseudo-seção OPT do EDNS, cada registro em cada seção e as estatísticas da consulta. Analisado inteiramente no seu navegador, nada é resolvido nem enviado a lugar algum.",
+      "input": {
+        "label": "Cole a saída do dig",
+        "placeholder": "; <<>> DiG 9.18.1 <<>> example.com A\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: ...",
+        "example": "Carregar exemplo",
+        "clear": "Limpar"
+      },
+      "privacy": "Analisado inteiramente no seu navegador. Nada é resolvido nem enviado a lugar algum.",
+      "notDig": "Isto não parece ser saída do dig. Cole o texto completo que o dig imprime, incluindo a linha ;; ->>HEADER<<-.",
+      "warnings": {
+        "title": "Vale observar",
+        "nonzero-rcode": "O status não é NOERROR, então esta não é uma resposta bem-sucedida normal. Veja o significado do status acima.",
+        "truncated-tc": "O flag TC (truncado) está definido: a resposta em UDP não coube e está incompleta. O dig normalmente tenta de novo por TCP.",
+        "noerror-nodata": "O status é NOERROR mas não há registros de resposta (NODATA): o nome existe, mas não para este tipo de registro.",
+        "looks-like-query": "O flag QR não está definido, então isto parece uma consulta, e não uma resposta.",
+        "dnssec-requested-not-validated": "O DNSSEC foi solicitado (o flag DO está definido), mas o flag AD não está, então o resolvedor não retornou dados validados."
+      },
+      "header": {
+        "title": "Cabeçalho",
+        "opcode": "Opcode",
+        "status": "Status (RCODE)",
+        "id": "ID da mensagem",
+        "version": "versão do dig",
+        "query": "Consulta"
+      },
+      "flags": {
+        "title": "Flags e contagens",
+        "question": "Perguntas",
+        "answer": "Respostas",
+        "authority": "Autoridade",
+        "additional": "Adicional"
+      },
+      "opt": {
+        "title": "EDNS (pseudo-seção OPT)",
+        "version": "Versão do EDNS",
+        "flags": "Flags do EDNS",
+        "udp": "Tamanho do payload UDP",
+        "help": "O EDNS(0) estende o DNS sobre UDP: anuncia um tamanho maior de payload UDP e carrega flags como DO (DNSSEC OK) e opções como COOKIE."
+      },
+      "section": {
+        "question": "Seção de pergunta",
+        "answer": "Seção de resposta",
+        "authority": "Seção de autoridade",
+        "additional": "Seção adicional",
+        "empty": "Nenhum registro nesta seção."
+      },
+      "footer": {
+        "title": "Estatísticas da consulta",
+        "queryTime": "Tempo da consulta",
+        "server": "Servidor",
+        "when": "Quando",
+        "msgSize": "Tamanho da mensagem"
+      }
+    },
+    "nslookup-output-explainer": {
+      "name": "explicador de saída do nslookup",
+      "blurb": "Cole a saída real do nslookup e obtenha um detalhamento decodificado e explicado: o resolvedor usado, se a resposta é autoritativa, cada registro (com breakdown de campos de MX / SRV / SOA) e quaisquer falhas. Analisado inteiramente no seu navegador, nada é resolvido nem enviado a lugar algum.",
+      "input": {
+        "label": "Cole a saída do nslookup",
+        "placeholder": "Server:\t1.1.1.1\nAddress:\t1.1.1.1#53\n\nNon-authoritative answer:\nName:\texample.com\nAddress: 93.184.216.34",
+        "example": "Carregar exemplo",
+        "clear": "Limpar"
+      },
+      "privacy": "Analisado inteiramente no seu navegador. Nada é resolvido nem enviado a lugar algum.",
+      "notNslookup": "Isto não parece ser saída do nslookup. Cole o texto completo que o nslookup imprime, incluindo a linha Server:.",
+      "warnings": {
+        "title": "Vale observar",
+        "nxdomain": "O servidor informa que o nome não existe (NXDOMAIN).",
+        "servfail": "O servidor não conseguiu concluir a consulta (SERVFAIL), frequentemente uma delegação quebrada, uma falha de DNSSEC ou um timeout upstream.",
+        "refused": "O servidor recusou a consulta (REFUSED), normalmente uma decisão de política ou de controle de acesso.",
+        "no-servers": "Nenhum servidor pôde ser alcançado (um timeout). Verifique o endereço do resolvedor e a conectividade.",
+        "non-authoritative": "Esta resposta é não autoritativa: veio do cache do resolvedor, não diretamente de um servidor autoritativo para a zona. Isso é normal em uma consulta recursiva."
+      },
+      "errors": {
+        "title": "Falha"
+      },
+      "server": {
+        "title": "Resolvedor usado",
+        "server": "Server",
+        "address": "Address",
+        "help": "Este é o servidor DNS que o nslookup consultou, não a resposta. O endereço inclui a porta (#53)."
+      },
+      "authority": {
+        "title": "Autoridade da resposta",
+        "authoritative": "Autoritativa",
+        "nonAuthoritative": "Não autoritativa",
+        "unknown": "Não indicada",
+        "nonAuthHelp": "A resposta veio do cache do resolvedor. Para obter uma resposta autoritativa, consulte diretamente um servidor listado nos registros NS da zona."
+      },
+      "records": {
+        "title": "Registros"
+      },
+      "referral": {
+        "note": "O nslookup listou os servidores autoritativos aos quais ele o encaminharia para uma resposta definitiva."
+      }
+    },
+    "xml-decoder": {
+      "name": "Decodificador XML",
+      "blurb": "Cole XML e leia sua estrutura: a declaração, o DOCTYPE e quaisquer entidades, a árvore de elementos com namespaces e atributos, mais uma verificação de segurança da superfície de ataque XML. Nada é buscado ou resolvido.",
+      "input": {
+        "label": "XML",
+        "placeholder": "Cole o XML aqui...",
+        "example": "Exemplo",
+        "clear": "Limpar"
+      },
+      "privacy": "Parseado inteiramente no seu navegador. Nenhuma entidade é resolvida, nenhuma referência externa é buscada, e nada é enviado.",
+      "notXml": "Isto não parece XML. Cole um documento que comece com um elemento ou uma declaração XML.",
+      "security": {
+        "title": "Análise de segurança",
+        "doctype-present": "Há um DOCTYPE presente. O DOCTYPE é a porta de entrada para ataques de entidade XML; um parser endurecido o desabilita por completo.",
+        "external-dtd": "O DOCTYPE referencia um DTD externo. Um parser que o busca pode ser direcionado a conteúdo controlado por um atacante.",
+        "external-entity": "Uma entidade externa é declarada (SYSTEM ou PUBLIC). Resolvê-la leria um arquivo local ou faria uma requisição de rede: o clássico vetor XXE.",
+        "parameter-entity": "Uma entidade de parâmetro é declarada. Entidades de parâmetro são usadas para montar payloads de XXE cego e fora de banda.",
+        "entity-expansion": "Entidades referenciam outras entidades. A expansão encadeada pode crescer exponencialmente e exaurir a memória, a negação de serviço billion laughs."
+      },
+      "wellFormed": {
+        "title": "Boa formação",
+        "yes": "Bem formado",
+        "no": "Mal formado"
+      },
+      "errors": {
+        "mismatched-tag": "Tag incompatível: {detail}",
+        "unexpected-close": "Tag de fechamento sem abertura correspondente: {detail}",
+        "unclosed-tag": "Tag nunca foi fechada: {detail}",
+        "no-root": "Nenhum elemento raiz encontrado.",
+        "multiple-roots": "Múltiplos elementos raiz ({detail}). XML precisa ter exatamente um.",
+        "malformed-tag": "Tag malformada perto de: {detail}",
+        "unquoted-attribute": "Valor de atributo sem aspas em: {detail}",
+        "unterminated-comment": "Um comentário nunca foi fechado.",
+        "unterminated-cdata": "Uma seção CDATA nunca foi fechada."
+      },
+      "declaration": {
+        "title": "Declaração XML",
+        "version": "Versão",
+        "encoding": "Codificação",
+        "standalone": "Standalone"
+      },
+      "doctype": {
+        "title": "DOCTYPE",
+        "name": "Nome raiz",
+        "externalId": "Identificador externo",
+        "entities": "Entidades declaradas",
+        "entityExternal": "externa",
+        "entityInternal": "interna",
+        "entityParameter": "parâmetro"
+      },
+      "namespaces": {
+        "title": "Namespaces",
+        "default": "(padrão)"
+      },
+      "stats": {
+        "title": "Estrutura",
+        "elements": "Elementos",
+        "depth": "Profundidade máx",
+        "attributes": "Atributos",
+        "comments": "Comentários",
+        "cdata": "Seções CDATA",
+        "pis": "Instruções de processamento"
+      },
+      "tree": {
+        "title": "Árvore de elementos"
+      },
+      "node": {
+        "cdata": "CDATA",
+        "comment": "comentário",
+        "pi": "PI"
+      }
+    },
+    "f5xc-service-policy-explainer": {
+      "name": "Explicador de Service Policy do F5 XC",
+      "blurb": "Cole uma service_policy do F5 Distributed Cloud e veja exatamente como ela casa: o escopo de servidor, a ordem das regras e a ação e as condições de cada regra. iRules para o XC, decodificado.",
+      "input": {
+        "label": "JSON de service_policy do F5 XC",
+        "example": "Exemplo",
+        "clear": "Limpar",
+        "placeholder": "Cole uma spec de service_policy (formato Create, Replace ou Get, ou uma spec pura)..."
+      },
+      "privacy": "Decodificado localmente no seu navegador. Nada é enviado a lugar nenhum, e a política nunca é avaliada contra tráfego real.",
+      "notPolicy": "Isto não parece uma service_policy do F5 XC. Era esperada uma spec com uma escolha de regra (rule_list, allow_all_requests, allow_list, deny_list, ...) ou uma escolha de servidor.",
+      "parseError": "Não foi possível interpretar o JSON: {detail}",
+      "warnings": {
+        "title": "Vale a atenção",
+        "allow-all-policy": "Esta política permite todas as requisições. Toda requisição que chega até ela é permitida, sem nenhuma verificação adicional.",
+        "allow-all-rule": "Uma regra permite todas as requisições (ALLOW sem nenhuma condição). Ela casa com tudo que chega até ela, então qualquer regra abaixo nunca é avaliada. Este é o padrão comum de captura geral, mas confirme se é intencional.",
+        "no-rules": "A lista de regras está vazia. Sem regras para casar, as requisições passam direto e o padrão é negar.",
+        "expired-rule": "Uma regra tem um timestamp de expiração no passado. Ela ainda existe na configuração, mas não é mais aplicada.",
+        "case-sensitive-exact": "Um comparador de valor exato não tem transformador LOWER_CASE nem UPPER_CASE, então a comparação diferencia maiúsculas de minúsculas. '/Admin' não vai casar com '/admin'.",
+        "inverted-matcher": "Um comparador está invertido (invert_matcher). Ele casa quando a condição NÃO é atendida, o que é fácil de ler errado."
+      },
+      "overview": {
+        "title": "Visão geral",
+        "name": "Política",
+        "appliesTo": "Aplica-se a",
+        "disposition": "Disposição"
+      },
+      "serverScope": {
+        "any_server": "Qualquer servidor",
+        "server_name": "Um nome de servidor específico",
+        "server_name_matcher": "Servidores que casam com um padrão",
+        "server_selector": "Servidores que casam com um seletor de rótulos"
+      },
+      "disposition": {
+        "allow_all": "Permitir todas as requisições",
+        "deny_all": "Negar todas as requisições",
+        "allow_list": "Permitir uma lista de origens",
+        "deny_list": "Negar uma lista de origens",
+        "rule_list": "Avaliar uma lista de regras",
+        "legacy_rule_list": "Avaliar objetos de regra referenciados (legado)",
+        "unknown": "Nenhuma escolha de regra definida"
+      },
+      "algorithm": {
+        "title": "Como as regras são avaliadas",
+        "FIRST_MATCH": "Primeiro casamento: as regras são avaliadas de cima para baixo até uma casar. A ação dessa regra é aplicada e a avaliação para.",
+        "DENY_OVERRIDES": "Negação prevalece: todas as regras DENY são avaliadas antes de qualquer regra ALLOW, então um DENY que casa vence um ALLOW que casa.",
+        "ALLOW_OVERRIDES": "Permissão prevalece: todas as regras ALLOW são avaliadas antes de qualquer regra DENY, então um ALLOW que casa vence um DENY que casa.",
+        "defaultDeny": "Se nenhuma regra casar, a requisição não casa com esta política e a próxima política do conjunto é avaliada. Se nada permitir, a requisição é negada."
+      },
+      "rules": {
+        "title": "Regras ({count})"
+      },
+      "rule": {
+        "unnamed": "(regra sem nome)",
+        "action": {
+          "allow": "Permitir",
+          "deny": "Negar",
+          "nextPolicy": "Próxima política",
+          "other": "Ação"
+        },
+        "expired": "Expirada",
+        "matchesEverything": "Sem condições: esta regra casa com toda requisição que chega até ela.",
+        "modifiers": "Ao casar, também:"
+      },
+      "logic": {
+        "orInline": "(qualquer um destes)",
+        "inverted": "invertido",
+        "caseSensitive": "diferencia maiúsc./minúsc.",
+        "andAll": "Tudo o que segue precisa ser verdadeiro (E):"
+      },
+      "op": {
+        "exact": "é exatamente",
+        "regex": "casa com a regex",
+        "prefix": "começa com",
+        "suffix": "termina com",
+        "methods": "o método é",
+        "present": "está presente",
+        "absent": "está ausente",
+        "asn": "o número de AS é",
+        "prefixes": "o IP está dentro de",
+        "refs": "referencia",
+        "classes": "a classe de fingerprint TLS é",
+        "excluded": "excluindo",
+        "keys": "tem as chaves de rótulo",
+        "selector": "casa com o seletor de rótulos",
+        "ports": "a porta está dentro de",
+        "categories": "é",
+        "literal": "é igual a",
+        "transformers": "após aplicar",
+        "any": "Qualquer (sem restrição)",
+        "encodedPath": "comparado com o caminho codificado",
+        "raw": "tem os campos definidos"
+      },
+      "predicate": {
+        "any_client": "Cliente",
+        "any_ip": "IP de origem",
+        "any_asn": "ASN de origem",
+        "any_server": "Servidor",
+        "client_name": "Nome do cliente",
+        "client_name_matcher": "Nome do cliente",
+        "client_selector": "Seletor de cliente (rótulos)",
+        "client_role": "Papel do cliente",
+        "ip_threat_category_list": "Categorias de ameaça de IP",
+        "ip_prefix_list": "Prefixos de IP de origem",
+        "ip_matcher": "Conjuntos de prefixos de IP de origem",
+        "dst_ip_prefix_list": "Prefixos de IP de destino",
+        "dst_ip_matcher": "Conjuntos de prefixos de IP de destino",
+        "asn_list": "ASNs de origem",
+        "asn_matcher": "Conjuntos de ASN de origem",
+        "dst_asn_list": "ASNs de destino",
+        "dst_asn_matcher": "Conjuntos de ASN de destino",
+        "api_group_matcher": "Grupo de API",
+        "additional_api_group_matchers": "Grupo de API (adicional)",
+        "arg_matchers": "Argumentos POST",
+        "body_matcher": "Corpo da requisição",
+        "cookie_matchers": "Cookies",
+        "domain_matcher": "Domínio",
+        "headers": "Cabeçalhos HTTP",
+        "http_method": "Método HTTP",
+        "ja4_tls_fingerprint": "Fingerprint TLS JA4",
+        "jwt_claims": "Claims de JWT",
+        "label_matcher": "Chaves de rótulo",
+        "path": "Caminho HTTP",
+        "port_matcher": "Porta",
+        "query_params": "Parâmetros de query HTTP",
+        "tls_fingerprint_matcher": "Fingerprint TLS (JA3)",
+        "user_identity_matcher": "Identidade do usuário",
+        "request_constraints": "Restrições da requisição",
+        "segment_policy": "Segmentos",
+        "scheme": "Esquema",
+        "url_matcher": "URL",
+        "virtual_host_matcher": "Virtual host",
+        "server_name": "Nome do servidor",
+        "server_name_matcher": "Nome do servidor",
+        "server_selector": "Seletor de servidor (rótulos)"
+      },
+      "sourceList": {
+        "title": "Lista de origens",
+        "allow_list": "Uma requisição é permitida se sua origem casar com qualquer um dos seguintes:",
+        "deny_list": "Uma requisição é negada se sua origem casar com qualquer um dos seguintes:",
+        "defaultAction": "Ação padrão (sem casamento)"
+      },
+      "legacy": {
+        "title": "Regras referenciadas (legado)",
+        "note": "Esta política aponta para objetos service_policy_rule separados em vez de definir regras inline. O conteúdo deles não faz parte desta spec."
+      }
+    },
+    "cvss-vector-decoder": {
+      "name": "Decodificador de vetor CVSS",
+      "blurb": "Cole um vetor CVSS v3.1 ou v3.0 e veja a pontuação calculada e mapeada para uma severidade, com cada métrica explicada. Local e offline; nada é enviado a lugar nenhum.",
+      "input": {
+        "label": "String de vetor CVSS",
+        "example": "Exemplo",
+        "clear": "Limpar",
+        "placeholder": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "privacy": "O vetor é pontuado no seu navegador. Nada é enviado.",
+      "notCvss": "Cole uma string de vetor CVSS v3.0 ou v3.1 para decodificá-la.",
+      "parseError": "Isso não é reconhecido como um vetor CVSS ({detail}).",
+      "unsupportedVersion": "Este é um vetor CVSS {version}. Este decodificador calcula apenas CVSS v3.0 e v3.1. O CVSS v4.0 usa um modelo de pontuação diferente, e o CVSS v2 está descontinuado.",
+      "scores": {
+        "base": "Base",
+        "temporal": "Temporal",
+        "environmental": "Ambiental"
+      },
+      "severity": {
+        "none": "Nenhuma",
+        "low": "Baixa",
+        "medium": "Média",
+        "high": "Alta",
+        "critical": "Crítica"
+      },
+      "meta": {
+        "version": "Versão",
+        "scope": "Escopo",
+        "scopeChanged": "Alterado",
+        "scopeUnchanged": "Inalterado"
+      },
+      "subScores": {
+        "impact": "Subpontuação de impacto",
+        "exploitability": "Subpontuação de explorabilidade"
+      },
+      "groups": {
+        "base": "Métricas base",
+        "temporal": "Métricas temporais",
+        "environmental": "Métricas ambientais"
+      },
+      "warnings": {
+        "title": "Observações",
+        "no-version-prefix": "Nenhum prefixo de versão CVSS foi encontrado. Pontuado como CVSS v3.1; adicione um prefixo CVSS:3.1/ ou CVSS:3.0/ para ser explícito.",
+        "duplicate-metric": "Uma métrica aparece mais de uma vez. O último valor informado foi usado.",
+        "incomplete-base": "Faltam métricas base obrigatórias, então nenhuma pontuação pode ser calculada. Todas as oito (AV, AC, PR, UI, S, C, I e A) são obrigatórias."
+      },
+      "metrics": {
+        "AV": {
+          "label": "Vetor de Ataque",
+          "v": {
+            "N": "Rede",
+            "A": "Adjacente",
+            "L": "Local",
+            "P": "Físico"
+          }
+        },
+        "AC": {
+          "label": "Complexidade do Ataque",
+          "v": {
+            "L": "Baixa",
+            "H": "Alta"
+          }
+        },
+        "PR": {
+          "label": "Privilégios Necessários",
+          "v": {
+            "N": "Nenhum",
+            "L": "Baixo",
+            "H": "Alto"
+          }
+        },
+        "UI": {
+          "label": "Interação do Usuário",
+          "v": {
+            "N": "Nenhuma",
+            "R": "Necessária"
+          }
+        },
+        "S": {
+          "label": "Escopo",
+          "v": {
+            "U": "Inalterado",
+            "C": "Alterado"
+          }
+        },
+        "C": {
+          "label": "Impacto na Confidencialidade",
+          "v": {
+            "H": "Alto",
+            "L": "Baixo",
+            "N": "Nenhum"
+          }
+        },
+        "I": {
+          "label": "Impacto na Integridade",
+          "v": {
+            "H": "Alto",
+            "L": "Baixo",
+            "N": "Nenhum"
+          }
+        },
+        "A": {
+          "label": "Impacto na Disponibilidade",
+          "v": {
+            "H": "Alto",
+            "L": "Baixo",
+            "N": "Nenhum"
+          }
+        },
+        "E": {
+          "label": "Maturidade do Código de Exploração",
+          "v": {
+            "X": "Não Definido",
+            "H": "Alta",
+            "F": "Funcional",
+            "P": "Prova de Conceito",
+            "U": "Não Comprovado"
+          }
+        },
+        "RL": {
+          "label": "Nível de Remediação",
+          "v": {
+            "X": "Não Definido",
+            "U": "Indisponível",
+            "W": "Contorno",
+            "T": "Correção Temporária",
+            "O": "Correção Oficial"
+          }
+        },
+        "RC": {
+          "label": "Confiança no Relatório",
+          "v": {
+            "X": "Não Definido",
+            "C": "Confirmado",
+            "R": "Razoável",
+            "U": "Desconhecido"
+          }
+        },
+        "CR": {
+          "label": "Requisito de Confidencialidade",
+          "v": {
+            "X": "Não Definido",
+            "H": "Alto",
+            "M": "Médio",
+            "L": "Baixo"
+          }
+        },
+        "IR": {
+          "label": "Requisito de Integridade",
+          "v": {
+            "X": "Não Definido",
+            "H": "Alto",
+            "M": "Médio",
+            "L": "Baixo"
+          }
+        },
+        "AR": {
+          "label": "Requisito de Disponibilidade",
+          "v": {
+            "X": "Não Definido",
+            "H": "Alto",
+            "M": "Médio",
+            "L": "Baixo"
+          }
+        },
+        "MAV": {
+          "label": "Vetor de Ataque Modificado",
+          "v": {
+            "X": "Não Definido",
+            "N": "Rede",
+            "A": "Adjacente",
+            "L": "Local",
+            "P": "Físico"
+          }
+        },
+        "MAC": {
+          "label": "Complexidade do Ataque Modificada",
+          "v": {
+            "X": "Não Definido",
+            "L": "Baixa",
+            "H": "Alta"
+          }
+        },
+        "MPR": {
+          "label": "Privilégios Necessários Modificados",
+          "v": {
+            "X": "Não Definido",
+            "N": "Nenhum",
+            "L": "Baixo",
+            "H": "Alto"
+          }
+        },
+        "MUI": {
+          "label": "Interação do Usuário Modificada",
+          "v": {
+            "X": "Não Definido",
+            "N": "Nenhuma",
+            "R": "Necessária"
+          }
+        },
+        "MS": {
+          "label": "Escopo Modificado",
+          "v": {
+            "X": "Não Definido",
+            "U": "Inalterado",
+            "C": "Alterado"
+          }
+        },
+        "MC": {
+          "label": "Impacto na Confidencialidade Modificado",
+          "v": {
+            "X": "Não Definido",
+            "H": "Alto",
+            "L": "Baixo",
+            "N": "Nenhum"
+          }
+        },
+        "MI": {
+          "label": "Impacto na Integridade Modificado",
+          "v": {
+            "X": "Não Definido",
+            "H": "Alto",
+            "L": "Baixo",
+            "N": "Nenhum"
+          }
+        },
+        "MA": {
+          "label": "Impacto na Disponibilidade Modificado",
+          "v": {
+            "X": "Não Definido",
+            "H": "Alto",
+            "L": "Baixo",
+            "N": "Nenhum"
+          }
+        }
+      }
     }
   },
   "privacy_page": {
@@ -1463,7 +2078,7 @@
     "builtWith": "Feito por Rodolfo Nützmann com CONCORD",
     "colophon": "Como isto foi construído",
     "contribute": "Ajude a melhorar as traduções",
-    "feedback": "Enviar feedback",
+    "feedback": "Contato",
     "privacy": "Privacidade",
     "api": "Referência da API",
     "contributeTools": "Compartilhe uma ideia",

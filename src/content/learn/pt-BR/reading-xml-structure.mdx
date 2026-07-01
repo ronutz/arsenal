@@ -1,0 +1,30 @@
+---
+slug: reading-xml-structure
+title: "Lendo a estrutura do XML"
+summary: "XML é uma árvore de elementos construída a partir de um punhado de partes: uma declaração opcional, elementos com atributos, texto e algumas construções especiais. Uma vez que você consegue nomear cada parte e ver como elas se aninham, ler um documento desconhecido de cima a baixo vira rotina em vez de um jogo de adivinhação."
+concepts: ["xml", "elements", "attributes", "tree", "declaration"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["xml-namespaces-explained", "xml-well-formedness", "cdata-comments-and-processing-instructions"]
+category: encoding
+order: 60
+status: machine-draft
+updated: "2026-07-01"
+---
+
+XML parece intimidante em volume, mas todo documento é construído a partir do mesmo pequeno conjunto de peças. Aprenda as peças e qualquer documento se torna legível.
+
+## As partes
+
+No topo pode haver uma **declaração XML**: `<?xml version="1.0" encoding="UTF-8"?>`. Ela não é um elemento; apenas informa a versão e como os bytes estão codificados. É opcional, mas quando presente precisa ser a primeira coisa no arquivo.
+
+O corpo são **elementos**. Um elemento é uma tag de abertura, algum conteúdo e uma tag de fechamento correspondente: `<title>Guia XML</title>`. Elementos podem conter texto, outros elementos, ou nada. Um elemento sem conteúdo pode ser escrito como uma tag de auto-fechamento: `<break/>` significa o mesmo que `<break></break>`. Todo documento tem exatamente um elemento mais externo, a **raiz**, e todo o resto se aninha dentro dele, que é o que torna o XML uma árvore.
+
+Elementos carregam **atributos** na sua tag de abertura, como pares de nome e valor entre aspas: `<book id="bk101" lang="en">`. Atributos descrevem o elemento; os valores são sempre entre aspas. Entre as tags fica o **conteúdo de texto**, o dado de fato: o `Guia XML` dentro do title.
+
+## Lendo de cima a baixo
+
+Para ler um documento, comece na raiz e caminhe para dentro. Cada tag de abertura abre um ramo; sua tag de fechamento correspondente o fecha; a indentação normalmente espelha a profundidade do aninhamento. Faça três perguntas a cada elemento: como ele se chama, quais atributos carrega, e o que contém, seja texto ou mais elementos. Isso basta para reconstruir a forma inteira.
+
+Alguns caracteres são especiais e aparecem como escapes em vez de literalmente: `&lt;` para um sinal de menor-que, `&amp;` para um E comercial, `&gt;`, `&quot;` e `&apos;`. Estas são as entidades embutidas, e existem porque um `<` ou `&` cru seria de outra forma lido como o início de uma tag ou de uma entidade.
+
+Além de elementos e atributos há três construções especiais, comentários, seções CDATA e instruções de processamento, cada uma coberta em seu próprio artigo. E quando os mesmos nomes de elemento poderiam colidir entre vocabulários, namespaces os desambiguam. Mas a espinha dorsal é sempre a mesma: uma única raiz, elementos aninhando dentro de elementos, atributos nas tags, e texto nas folhas.

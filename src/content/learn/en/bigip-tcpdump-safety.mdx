@@ -1,0 +1,38 @@
+---
+slug: bigip-tcpdump-safety
+title: "Capturing Safely on a Production BIG-IP"
+summary: "tcpdump on a BIG-IP touches the data plane and the file system of a device that is carrying live traffic. A few habits, bounding the capture, watching disk space, and being deliberate about detail, keep a troubleshooting capture from becoming an incident."
+concepts: ["tcpdump", "f5", "big-ip", "operations", "safety", "disk space", "tmm"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["bigip-tcpdump-syntax", "capturing-on-vlans-and-trunks"]
+category: networking
+order: 35
+status: machine-draft
+updated: "2026-06-30"
+---
+
+A packet capture is a read-only operation, but on a production BIG-IP it is not free. It consumes CPU, it writes to a file system that other processes need, and an unbounded capture on a busy device can grow alarmingly fast. None of this is a reason to avoid capturing; it is a reason to capture deliberately. The [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder) nudges you toward the safe defaults.
+
+## Always bound the capture
+
+A capture on `0.0` is not rate-limited. On a device handling tens of thousands of connections per second, an unfiltered capture can write gigabytes in seconds. Bound it two ways: with a Berkeley Packet Filter so only relevant packets are recorded (`host`, `net`, `port`), and optionally with a packet count (`-c`) so it stops on its own. A capture you have to remember to stop is a capture that fills a disk while you are distracted.
+
+## Watch the file system
+
+Write captures to `/var/tmp` or `/shared/tmp`, which have room, rather than to a location that shares space with logs or configuration. Check free space before a long capture and remove the file when you are done. A full `/var` partition can affect more than your capture; it can disrupt logging and other services on the device.
+
+## Be deliberate about detail and snap length
+
+High detail (`:nnn`) attaches a larger trailer to every packet, and `-s0` keeps whole frames. Both are usually correct, but both increase the bytes written per packet. On an extremely busy box, consider a tighter filter, a lower detail level, or a smaller snap length if you only need headers. The goal is the smallest capture that still answers the question.
+
+## The -s0 behaviour on modern versions
+
+On BIG-IP 15.x and later, `-s0` is treated as the default snap length of 262144 bytes, retained for backward compatibility, so it still captures full packets. You do not need a different flag on newer versions; the familiar `-s0` continues to mean capture the whole frame.
+
+## Hex output versus files
+
+The `-X` option prints payload as hex and ASCII on screen, which is handy for a quick look, but it has no effect on a binary file written with `-w`. If you are saving a pcap to analyse later, skip `-X`; if you are eyeballing a few packets live, skip `-w`. Mixing them wastes effort without adding information.
+
+## Clean up
+
+When the capture is finished, stop it, transfer the file off the device for analysis, and delete it from the BIG-IP. Treating cleanup as part of the procedure, rather than an afterthought, is what keeps ad hoc captures from quietly accumulating on production hardware.

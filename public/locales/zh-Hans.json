@@ -69,6 +69,7 @@
       "purposeLabel": "当前资助方向"
     },
     "stats": {
+      "headline": "现已上线",
       "tools": "工具",
       "articles": "文章",
       "sectionLabel": "工具箱一览"
@@ -871,7 +872,7 @@
     "builtWith": "由 Rodolfo Nützmann 使用 CONCORD 打造",
     "colophon": "如何打造",
     "contribute": "帮助改进翻译",
-    "feedback": "提交反馈",
+    "feedback": "联系",
     "api": "API 参考",
     "contributeTools": "分享想法",
     "license": "许可",

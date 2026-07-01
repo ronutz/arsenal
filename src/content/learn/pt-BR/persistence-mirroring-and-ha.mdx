@@ -1,0 +1,26 @@
+---
+slug: persistence-mirroring-and-ha
+title: "Espelhamento de persistência em um par HA"
+summary: "Os registros de persistência vivem na memória do BIG-IP ativo. Em um failover, o standby assume as conexões, mas a menos que a persistência tenha sido espelhada para ele, ele não conhece os mapeamentos cliente-member existentes, e clientes podem ser rebalanceados no meio da sessão. O espelhamento troca um pouco de overhead por sessões grudentas que sobrevivem ao failover."
+concepts: ["persistence", "high availability", "mirroring", "failover", "big-ip"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "source-address-persistence-and-mega-proxy"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A persistência funciona lembrando para qual pool member um cliente foi enviado. Essa memória é uma tabela de registros mantida na memória da unidade ativa, e isso levanta uma questão no momento em que você opera um par redundante: o que acontece com esses registros quando a unidade ativa falha?
+
+## A lacuna do failover
+
+Em um par ativo/standby, o standby está pronto para assumir endereços IP e conexões quase instantaneamente. Mas assumir o tráfego não é o mesmo que conhecer o *histórico* desse tráfego. Por padrão, os registros de persistência acumulados na unidade ativa não estão no standby. Então após um failover, um cliente que retorna cujo registro só existia na antiga unidade ativa não tem entrada correspondente na nova, e o método de persistência escolhe um member do zero, que pode não ser o member que o cliente estava usando. Para uma aplicação com estado, isso significa que o estado de sessão do qual o cliente dependia está de repente no servidor errado.
+
+## O que o espelhamento faz
+
+O **espelhamento de persistência** fecha essa lacuna sincronizando os registros de persistência para o par conforme são criados, então ambas as unidades mantêm a mesma tabela. Quando o failover acontece, a nova unidade ativa já conhece os mapeamentos cliente-member existentes e continua enviando clientes que retornam aos mesmos members, então as sessões sobrevivem ao evento em vez de serem espalhadas.
+
+## O trade-off e quando usar
+
+O espelhamento não é grátis: cada registro de persistência agora precisa ser replicado para o par, o que adiciona trabalho e um pouco de latência, e em virtual servers de altíssimo volume esse custo vale ser ponderado. Ele é habilitado por profile de persistência, então você pode ligá-lo só onde importa. O julgamento é sobre consequência: se um failover que rebalanceia clientes fosse apenas um pequeno soluço, o espelhamento pode não valer o overhead. Se ele derrubasse carrinhos de compras, deslogasse usuários ou corrompesse fluxos de trabalho em andamento, o espelhamento é o que impede um failover de hardware ou software de virar uma interrupção visível ao usuário. Ele combina naturalmente com o espelhamento de conexões para aplicações que não toleram nenhum tipo de reset.

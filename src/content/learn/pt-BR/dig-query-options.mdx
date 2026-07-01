@@ -1,0 +1,33 @@
+---
+slug: dig-query-options
+title: "Opções de consulta e controle de saída do dig"
+summary: "O verdadeiro poder do dig está em suas opções: escolher qual servidor perguntar, o tipo de registro e exatamente quanto da resposta imprimir. Este artigo cobre o punhado que você realmente usará todo dia, de @servidor e -t a +short e a combinação +noall +answer que reduz o dig a apenas os registros."
+concepts: ["dig", "dns", "query options", "short", "troubleshooting"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dig-trace-and-delegation", "nslookup-vs-dig"]
+category: networking
+order: 52
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Por padrão o dig imprime a mensagem DNS inteira, que é exatamente o que você quer ao fazer troubleshooting e muito mais do que você quer ao escrever scripts. Algumas opções cobrem quase todos os casos.
+
+## Escolhendo o que perguntar
+
+- **`dig example.com`** consulta um registro A usando o resolvedor do seu sistema.
+- **`-t TIPO`** (ou apenas colocar o tipo na linha) muda o tipo de registro: `dig -t MX example.com`, ou `dig example.com AAAA`. Tipos comuns são A, AAAA, MX, NS, TXT, SOA, CNAME e ANY.
+- **`@servidor`** pergunta a um servidor específico em vez do seu resolvedor padrão: `dig @1.1.1.1 example.com`, ou `dig @ns1.example.com example.com` para ir direto a um servidor autoritativo.
+- **`-x ENDEREÇO`** faz uma consulta reversa, construindo o nome in-addr.arpa para você: `dig -x 93.184.216.34`.
+
+## Controlando a saída
+
+- **`+short`** reduz a resposta a apenas os valores essenciais, um por linha. `dig +short example.com` imprime só o endereço. Esta é a opção para usar em scripts.
+- **`+noall +answer`** é o meio-termo: suprime todas as seções exceto a answer, então você vê os registros de fato com seus TTLs e tipos, mas nenhum ruído de header, question ou stats. Muita gente cria um alias para isso.
+- **`+norecurse`** (ou `+norec`) pede ao servidor para não recursar, então você vê apenas o que aquele servidor sabe localmente. Enviado a um servidor autoritativo, mostra o dado autoritativo; enviado a um resolvedor, mostra apenas o que já está em cache.
+- **`+tcp`** força a consulta por TCP em vez de UDP, útil quando uma resposta UDP voltou truncada (a flag tc).
+- **`+dnssec`** pede os registros DNSSEC (RRSIG e companhia) e define o bit DO, para que você possa ver as assinaturas.
+
+## Combinando-as
+
+As opções se compõem. `dig @1.1.1.1 example.com MX +short` pergunta ao resolvedor da Cloudflare pelos registros MX e imprime apenas os valores. `dig example.com +noall +answer +dnssec` mostra os registros da answer mais suas assinaturas e nada mais. Comece pela saída completa padrão quando estiver diagnosticando, e recorra a `+short` ou `+noall +answer` quando souber exatamente o que quer ver. Para seguir o caminho de resolução a partir da raiz em vez de confiar em um resolvedor, veja o artigo companheiro sobre `+trace`.

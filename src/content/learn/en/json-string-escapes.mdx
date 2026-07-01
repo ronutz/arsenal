@@ -1,0 +1,30 @@
+---
+slug: json-string-escapes
+title: "JSON String Escapes and Unicode"
+summary: "Inside a JSON string, a few characters must be written as escapes, and any character at all can be written as \\uXXXX. The rules are small but strict, and the one that catches people is how characters beyond the basic plane, like emoji, need a surrogate pair."
+concepts: ["json", "string", "escape", "unicode", "surrogate pair"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-numbers-and-precision", "json-formatting-and-canonical"]
+category: encoding
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A JSON string is text between double quotes, but not every character is allowed to appear literally. The rules are short, and a formatter applies them for you.
+
+## What must be escaped
+
+Three things cannot appear raw in a JSON string: the double quote `"`, the backslash `\\`, and any control character (anything below U+0020, such as a literal newline or tab). Each has a short escape:
+
+- `\\"` for a quote and `\\\\` for a backslash.
+- `\\n`, `\\t`, `\\r`, `\\b`, `\\f` for newline, tab, carriage return, backspace, and form feed.
+- `\\/` for a forward slash, which is *optional* (a slash is legal raw) but sometimes used so the sequence `</` cannot appear when JSON is embedded in HTML.
+
+A literal newline inside a string is the most common invalid-JSON mistake: it must be written `\\n`, not an actual line break.
+
+## \\uXXXX and the surrogate trap
+
+Any character can also be written as `\\u` followed by four hex digits, giving its Unicode code point: `\\u00e9` is é. This is how you encode characters a transport cannot carry safely, and it is always valid.
+
+The catch is that `\\uXXXX` only reaches U+FFFF. Characters above that, including most emoji and many CJK extensions, live outside the basic plane and must be written as a **surrogate pair**: two `\\uXXXX` escapes together. A grinning face (U+1F600) becomes `\\ud83d\\ude00`. This mirrors how UTF-16 represents those characters. If you see two escapes in the D800 to DFFF range next to each other, that is one character, not two, and splitting them produces invalid text. Modern JSON is UTF-8 and can usually carry these characters directly, but the escaped form is still legal and still appears, so a formatter has to pair them correctly when it reads and displays the value.

@@ -64,7 +64,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // JSON often embeds secrets
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/json-grammar", "learn/json-numbers-and-precision", "learn/json-duplicate-keys"],
+  learnLinks: ["learn/json-grammar", "learn/json-numbers-and-precision", "learn/json-duplicate-keys", "learn/json-string-escapes", "learn/json-comments-and-trailing-commas", "learn/json-formatting-and-canonical"],
   sources: [
     {
       id: "rfc8259",

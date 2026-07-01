@@ -1,0 +1,50 @@
+---
+slug: xc-matcher-case-sensitivity-and-transformers
+title: "Sensibilidade a Maiúsculas e Transformadores em Comparadores do XC"
+summary: "Em uma service policy do XC, nomes de cabeçalho não diferenciam maiúsculas de minúsculas, mas valores de cabeçalho, chaves de query e nomes de cookie diferenciam. Comparações exatas comparam byte a byte a menos que você aplique um transformador como LOWER_CASE antes. Esta é a razão mais comum de uma regra que parece certa não casar."
+concepts: ["f5 xc", "case sensitivity", "transformers", "lower_case", "normalize_path"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["xc-service-policy-predicates-and-logic", "how-xc-service-policies-match", "xc-service-policy-vs-irules"]
+category: security
+order: 67
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma regra pode estar correta e ainda assim nunca disparar, e o culpado de sempre é a diferenciação de maiúsculas. Os comparadores do XC são precisos sobre quais partes de uma requisição são comparadas sem diferenciar maiúsculas e quais não são, e a comparação de valor exato é literal por padrão.
+
+## O que não diferencia maiúsculas, e o que diferencia
+
+Pelo schema, as regras são específicas:
+
+**Nomes de cabeçalho** HTTP não diferenciam maiúsculas de minúsculas. `Accept-Encoding` e `accept-encoding` se referem ao mesmo cabeçalho. Isso segue o padrão HTTP.
+
+Os **valores** de cabeçalho, porém, diferenciam maiúsculas. Um comparador de cabeçalho cujo `exact_values` contém `gzip` não vai casar com um valor de cabeçalho `GZIP`.
+
+**Chaves** de parâmetro de query diferenciam maiúsculas. **Nomes** de cookie diferenciam maiúsculas. Nomes de argumento (caminhos JSON no corpo) diferenciam maiúsculas.
+
+Então o nome de um cabeçalho é tolerante, mas quase todo o resto que você compara é exato.
+
+## Comparações exatas são literais
+
+Uma lista `exact_values` compara a entrada byte a byte. `/Admin` não casa com `/admin`. Não há dobra de maiúsculas implícita, nenhuma remoção de espaços, nenhuma decodificação de URL. Se o tráfego real pode variar em maiúsculas ou codificação, um comparador exato de uma única grafia vai perder as variantes.
+
+É aqui que o explicador sinaliza um comparador que **diferencia maiúsculas**: quando uma regra usa valores exatos sem um transformador que normalize maiúsculas, ele avisa que grafia e caixa precisam casar precisamente.
+
+## Transformadores
+
+**Transformadores** são a ferramenta para domar isso. Um comparador pode carregar uma lista ordenada de transformadores que são aplicados à entrada antes da comparação. Os disponíveis incluem:
+
+`LOWER_CASE` e `UPPER_CASE` dobram a caixa, então você pode casar independentemente de como o cliente capitalizou o valor. `URL_DECODE` decodifica a codificação percentual (conforme RFC 1738). `BASE64_DECODE` decodifica base64. `NORMALIZE_PATH` colapsa `/a/b/../c` em `/a/c`. `REMOVE_WHITESPACE` remove espaços. `TRIM`, `TRIM_LEFT` e `TRIM_RIGHT` removem espaços ao redor.
+
+```
+path:
+  exact_values: ["/admin"]
+  transformers: ["LOWER_CASE"]
+```
+
+Com `LOWER_CASE` aplicado, esse comparador casa com `/admin`, `/Admin` e `/ADMIN` igualmente, porque a entrada é convertida para minúsculas antes da comparação. Os transformadores são ordenados: o índice 0 roda primeiro, depois o índice 1, e assim por diante, o que importa quando você combina, digamos, `URL_DECODE` e depois `LOWER_CASE`.
+
+## Por que isso importa para regras de segurança
+
+Lacunas de caixa e codificação não são cosméticas. Uma regra de negação destinada a bloquear `/admin` que omite `LOWER_CASE` pode ser trivialmente contornada com `/Admin`. Uma regra consciente de evasão normaliza primeiro (decodifica, normaliza o caminho, dobra a caixa) e então compara. Quando você audita uma política, a presença ou ausência de transformadores em um comparador diz se ela se sustenta contra um cliente que varia caixa ou codificação de propósito. O explicador mostra a lista de transformadores em cada comparador e sinaliza comparadores exatos que não têm dobra de caixa.

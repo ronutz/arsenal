@@ -1,0 +1,40 @@
+---
+slug: bigip-tcpdump-syntax
+title: "tcpdump no BIG-IP: como ele difere do tcpdump padrão"
+summary: "Em um BIG-IP, o tcpdump é o mesmo binário que você conhece do Linux, mas a interface em que você captura não é uma NIC. A interface especial 0.0 e os sufixos de detalhe exclusivos da F5 mudam como você monta o comando. Esta é a base para todo o resto."
+concepts: ["tcpdump", "f5", "big-ip", "packet capture", "tmm", "0.0 interface"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["tmm-detail-and-peer-flows", "capturing-on-vlans-and-trunks", "bigip-tcpdump-safety"]
+category: networking
+order: 31
+status: machine-draft
+updated: "2026-06-30"
+---
+
+O `tcpdump` em um BIG-IP é a ferramenta comum baseada em libpcap. O que muda é onde ele captura. Em um host Linux comum você indica uma NIC física ou virtual, como `eth0`. Em um BIG-IP, o tráfego é processado pelo Traffic Management Microkernel (TMM), e a interface que você normalmente quer não é uma NIC. O [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder) monta um comando correto a partir dessas escolhas, para você não precisar memorizar a sintaxe sob pressão.
+
+## A interface 0.0
+
+A diferença mais importante é a interface `0.0`. Capturar com `-i 0.0` diz ao BIG-IP para capturar em todas as interfaces da TMM ao mesmo tempo, vendo o tráfego como a TMM o vê após o processamento interno. É o que você quer na maior parte do tempo, porque uma conexão através de um BIG-IP é, na verdade, duas conexões (lado cliente e lado servidor), e `0.0` permite observar as duas sem adivinhar qual interface física um fluxo usou.
+
+```
+tcpdump -nn -i 0.0 -s0 -w /var/tmp/cap.pcap host 10.1.1.1 and port 443
+```
+
+Você ainda pode indicar uma VLAN, um túnel ou um self-IP específico no lugar de `0.0` para reduzir o escopo. Isso é tratado em [capturando em VLANs, self-IPs e trunks](/learn/capturing-on-vlans-and-trunks).
+
+## Os sufixos de detalhe são exclusivos da F5
+
+Acrescentados à interface, dois-pontos e de um a três caracteres `n` elevam o nível de detalhe interno que o BIG-IP registra em cada pacote: `0.0:n` é baixo, `0.0:nn` médio e `0.0:nnn` alto. Um `p` ao final (por exemplo `0.0:nnnp`) captura os dois fluxos, do lado cliente e do lado servidor, da mesma conexão. Nada disso existe no tcpdump padrão; é o BIG-IP acrescentando metadados através do seu próprio trailer Ethernet. O significado de cada nível é explicado em [níveis de detalhe da TMM e peer flows](/learn/tmm-detail-and-peer-flows).
+
+## -s0 e o snap length
+
+Como em qualquer lugar, `-s0` pede ao tcpdump para capturar pacotes inteiros, em vez de truncá-los. No BIG-IP moderno (15.x e posteriores), `-s0` é interpretado como o snap length padrão de 262144 bytes, mantido por compatibilidade, então ainda captura os quadros inteiros. Sem ele, padrões mais antigos poderiam truncar os dados e tornar a captura inútil para solução de problemas de aplicação.
+
+## Sempre filtre
+
+Uma captura em `0.0` não tem limite de taxa, então em um dispositivo ocupado uma captura sem filtro pode encher um disco rapidamente. Adicione um Berkeley Packet Filter (uma expressão `host`, `net` ou `port`) ou uma contagem de pacotes com `-c`. A disciplina de filtrar é a diferença entre uma captura útil de cinco megabytes e uma inútil de cinco gigabytes. Veja [capturando com segurança em um BIG-IP de produção](/learn/bigip-tcpdump-safety).
+
+## Onde gravar
+
+Use `-w <arquivo>` para gravar um pcap binário que você pode abrir no Wireshark, o que é obrigatório ao enviar uma captura para o F5 Support. Salve em `/var/tmp` ou `/shared/tmp`, onde há espaço, e remova-o quando terminar.

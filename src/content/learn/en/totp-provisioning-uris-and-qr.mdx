@@ -1,0 +1,38 @@
+---
+slug: totp-provisioning-uris-and-qr
+title: "Provisioning Authenticators: otpauth URIs and QR Codes"
+summary: "Before an authenticator app can generate codes, it needs the shared secret and the parameters that go with it. That is carried in an otpauth URI, usually shown as a QR code to scan. Knowing the URI's fields explains what the QR code actually contains and why the secret is in base32."
+concepts: ["totp", "otpauth", "provisioning", "qr code", "base32"]
+relatedTools: ["totp-hotp"]
+relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32"]
+category: identity
+order: 32
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A TOTP app and a server only agree on codes if they start from the same secret and the same settings. Getting that secret and those settings into the app is **provisioning**, and it runs on a small de-facto standard: the otpauth URI.
+
+## The otpauth URI
+
+Enrollment is carried in a URI of the form `otpauth://TYPE/LABEL?PARAMETERS`. A typical TOTP one looks like:
+
+```
+otpauth://totp/Example:alice@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&algorithm=SHA1&digits=6&period=30
+```
+
+The pieces are:
+
+- **type**: `totp` for time-based, or `hotp` for counter-based.
+- **label**: the account this is for, usually `Issuer:account`, so the app can show a meaningful name.
+- **secret**: the shared key, in **base32**. This is the one field that must be kept secret.
+- **issuer**: the service name, shown in the app and used to disambiguate accounts.
+- **algorithm**, **digits**, **period**: the HMAC hash, the code length, and the time step. These must match on both sides or the codes will never agree. For HOTP, a **counter** parameter appears instead of `period`.
+
+## Why base32, and why a QR code
+
+The secret is base32 rather than raw bytes or base64 because base32 uses only uppercase letters and digits, avoiding characters that are ambiguous or awkward, which matters on the rare occasion someone types the key by hand instead of scanning. The QR code is simply this whole URI encoded as an image: scanning it hands the app every field at once, which is why setup is usually "scan this code" rather than copying a string. The manual-entry key a site offers as a fallback is the same base32 secret from the URI, entered by hand.
+
+## The provisioning gotcha
+
+Because `algorithm`, `digits`, and `period` are all part of the URI, a mismatch is a classic setup failure: a server using SHA-256 or an 8-digit code or a non-default period will only interoperate with an app that received those exact parameters. Most apps assume the common defaults (SHA-1, 6 digits, 30 seconds) when a field is omitted, so if a server quietly uses something else without putting it in the URI, the app generates codes that never validate. When enrollment "succeeds" but every code is rejected, a parameter that did not make it into the provisioning URI is the usual cause.

@@ -1,0 +1,52 @@
+---
+slug: how-xc-service-policies-match
+title: "Como uma Service Policy do F5 XC Casa com uma Requisição"
+summary: "Uma service_policy do F5 Distributed Cloud tem duas partes: um conjunto de predicados que definem a quais requisições a política se aplica, e uma lista de regras que decidem o que acontece. Uma requisição casa apenas quando todos os predicados no nível da política são verdadeiros e ela casa com uma das regras. Este é o modelo sobre o qual todo o resto se apoia."
+concepts: ["f5 xc", "service policy", "distributed cloud", "waf", "access policy"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["xc-rule-combining-algorithms", "xc-service-policy-predicates-and-logic", "xc-service-policy-actions-and-default-deny"]
+category: security
+order: 64
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma **service_policy** do F5 Distributed Cloud (XC) decide quais requisições de cliente para uma aplicação são permitidas e quais são negadas. Se você vem do BIG-IP, ela ocupa aproximadamente o lugar de uma access policy ou de um conjunto de iRules, mas seu formato é declarativo em vez de procedural.
+
+## Duas partes: escopo e regras
+
+Uma spec de service_policy tem duas escolhas independentes.
+
+A **escolha de servidor** define quais servidores a política protege. É uma de `any_server`, um `server_name` literal, um `server_name_matcher` (valores exatos ou regex) ou um `server_selector` (um seletor de rótulos). O nome do servidor é derivado do cabeçalho HTTP Host e do virtual host para o qual a requisição é direcionada.
+
+A **escolha de regra** decide a disposição. É uma de `allow_all_requests`, `deny_all_requests`, um `allow_list` ou `deny_list` de origens, um `rule_list` de regras inline, ou um `legacy_rule_list` de referências a objetos de regra independentes. A maioria das políticas interessantes usa `rule_list`.
+
+## A frase do casamento
+
+O modelo inteiro cabe em uma frase da descrição da API: uma requisição casa com uma política se **todos os predicados na política forem verdadeiros e a requisição casar com uma das regras da política**.
+
+Há duas camadas de predicado aqui. A própria política pode carregar predicados (a escolha de servidor é um). Depois cada regra dentro de um `rule_list` carrega seus próprios predicados. Dentro de uma única regra, os predicados são combinados com E (AND), e qualquer predicado que você não especifica é implicitamente verdadeiro. Então uma regra vazia com ação ALLOW casa com tudo.
+
+## Como uma regra se parece
+
+Uma regra em um `rule_list` é um pequeno objeto com `metadata` (um `name`, opcionalmente uma `description`) e um `spec`. O spec guarda a `action` (ALLOW, DENY ou NEXT_POLICY) além de qualquer número de campos de predicado: `path`, `http_method`, `headers`, `client_selector`, `ip_prefix_list`, `asn_list`, `tls_fingerprint_matcher` e muitos outros. Cada predicado presente precisa ser satisfeito para a regra casar.
+
+```
+rule_list:
+  rules:
+    - metadata: { name: allow-api-get }
+      spec:
+        action: ALLOW
+        path: { prefix_values: ["/api/"] }
+        http_method: { methods: ["GET"] }
+```
+
+Essa regra casa com um GET cujo caminho começa com `/api/`, e o permite. Um GET para `/admin` não casa (caminho errado). Um POST para `/api/x` não casa (método errado). Nada parcial acontece: ou todo predicado é verdadeiro e a regra casa, ou não.
+
+## Onde a política fica
+
+Uma service_policy nunca é avaliada isoladamente. Ela é uma entrada em uma lista ordenada dentro de um ou mais **service policy sets**. Se uma requisição casa com a política, a ação da regra que casou é o resultado. Se a requisição não casa de forma alguma com a política, a avaliação segue para a próxima política do conjunto. Se chegar ao fim sem um allow, a requisição é negada.
+
+Esse último ponto é a rede de segurança que vale lembrar: o sistema é negar-por-padrão. Uma service_policy é um conjunto de razões para permitir (ou explicitamente negar) uma requisição, avaliadas em ordem, e o silêncio significa não.
+
+O explicador neste site pega uma política colada e expõe exatamente essa estrutura: o escopo de servidor, a disposição e, para um `rule_list`, cada regra com sua ação e seus predicados decodificados.

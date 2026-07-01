@@ -1,0 +1,26 @@
+---
+slug: nslookup-vs-dig
+title: "nslookup vs dig: qual usar"
+summary: "O nslookup e o dig ambos consultam DNS, mas o nslookup é mais enxuto e esconde as flags do cabeçalho e os TTLs que o dig mostra por completo. Este artigo mapeia uma saída sobre a outra e dá uma regra simples para saber qual usar."
+concepts: ["nslookup", "dig", "dns", "troubleshooting", "ttl", "flags"]
+relatedTools: ["nslookup-output-explainer", "dig-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "reading-dig-output", "dns-message-header-and-flags"]
+category: networking
+order: 46
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Ambas as ferramentas fazem uma pergunta a um servidor DNS e imprimem a resposta. A diferença é quanto elas mostram.
+
+## O que o nslookup mostra, e o que esconde
+
+O nslookup otimiza para uma resposta rápida e legível. Ele imprime o resolvedor, se a resposta é não autoritativa, e os registros em um formato de prosa amigável. O que ele não mostra é quase tudo que o dig coloca em primeiro plano: as flags do cabeçalho (aa, tc, rd, ra, ad), o TTL exato de cada registro, a pseudo-seção OPT do EDNS e a estrutura de seções (answer vs authority vs additional). Para muitas perguntas do dia a dia ("para que este nome resolve?") isso está ótimo, e o nslookup é mais rápido de ler.
+
+O dig mostra a mensagem inteira. Quando você precisa do TTL para diagnosticar um problema de cache, da flag aa para confirmar que alcançou um servidor autoritativo, da flag tc para pegar uma resposta truncada, ou dos registros DNSSEC, o dig é a ferramenta. Sua saída é mais densa, mas nada fica escondido.
+
+## Uma regra prática
+
+Use o nslookup para uma verificação rápida de "o que é este nome", especialmente quando você só quer o endereço ou o MX. Use o dig quando estiver realmente fazendo troubleshooting: qualquer coisa envolvendo TTLs, autoridade, truncamento, EDNS ou DNSSEC. Muitos engenheiros mantêm as duas e alternam conforme o nível de detalhe que a pergunta exige.
+
+Um mapeamento prático: o marcador `Non-authoritative answer:` do nslookup corresponde à **ausência** da flag `aa` no dig, e consultar o servidor autoritativo diretamente (com `@servidor` no dig, ou `server` seguido do nome no nslookup) é como você obtém um resultado autoritativo em qualquer um dos dois.

@@ -42,7 +42,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "param", // a PRI is a non-sensitive integer
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/syslog-pri-facility-severity", "learn/syslog-facilities-and-severities", "learn/syslog-on-network-devices"],
+  learnLinks: ["learn/syslog-pri-facility-severity", "learn/syslog-facilities-and-severities", "learn/syslog-on-network-devices", "learn/syslog-message-formats", "learn/syslog-transport"],
   sources: [
     {
       id: "rfc5424",

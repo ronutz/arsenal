@@ -1,0 +1,36 @@
+---
+slug: cdata-comments-and-processing-instructions
+title: "CDATA, comentários e instruções de processamento"
+summary: "Nem tudo em XML é um elemento. Seções CDATA guardam texto cru que de outra forma precisaria de escape, comentários anotam sem afetar o conteúdo, e instruções de processamento carregam direções para uma aplicação. Reconhecer estas três impede que pareçam ruído misterioso."
+concepts: ["xml", "cdata", "comments", "processing instructions", "escaping"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["reading-xml-structure", "xml-well-formedness", "xml-namespaces-explained"]
+category: encoding
+order: 63
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A maior parte de um documento XML são elementos e texto, mas três outras construções aparecem regularmente, e cada uma tem um trabalho específico. Conhecê-las de imediato impede que sejam lidas como ruído.
+
+## Seções CDATA
+
+Uma **seção CDATA** guarda texto que deve ser tomado literalmente, sem o parser interpretar `<` e `&` como marcação. Ela é escrita `<![CDATA[ ... ]]>`, e tudo entre os colchetes é dado de caractere cru:
+
+```
+<summary><![CDATA[Usa <tags> & símbolos livremente]]></summary>
+```
+
+Sem CDATA, esse conteúdo teria que ser escapado como `Usa &lt;tags&gt; &amp; símbolos`. CDATA é uma conveniência para blocos que contêm muitos caracteres que de outra forma precisariam de escape, como código embutido ou amostras de marcação. A única coisa que não pode conter é a sequência `]]>`, já que é isso que a fecha. Importante: CDATA muda apenas como o texto é escrito, não o que significa: o conteúdo parseado é idêntico à versão escapada.
+
+## Comentários
+
+Um **comentário** é escrito `<!-- ... -->` e é ignorado como conteúdo. Ele existe para leitores humanos, para anotar ou desabilitar temporariamente parte de um documento. Comentários não podem ser aninhados e não podem conter um hífen duplo `--` dentro deles. Como um comentário não é dado, um consumidor bem comportado nunca trata seu texto como parte da informação do documento.
+
+## Instruções de processamento
+
+Uma **instrução de processamento** (PI) carrega uma diretiva para uma aplicação que consome o XML, escrita `<?target data?>`. O target nomeia para quem a instrução se destina, e o data é o que quer que aquela aplicação entenda. O exemplo clássico é uma associação de folha de estilo: `<?xml-stylesheet type="text/css" href="style.css"?>`. A declaração XML no topo de um arquivo parece uma PI mas é tecnicamente um caso especial, não uma.
+
+## Por que elas são agrupadas
+
+Estas três compartilham um traço comum: nenhuma delas é um elemento, então nenhuma aparece na árvore de elementos como um nó com filhos. Elas ficam ao lado dos elementos como uma espécie de irmãos, anotações e instruções e escapes de texto literal tecidos pelo documento. Quando você está mapeando a estrutura de um documento, ajuda separá-las da hierarquia de elementos: os elementos carregam o modelo de dados, enquanto comentários, PIs e CDATA são, respectivamente, notas, direções e uma conveniência de escrita.

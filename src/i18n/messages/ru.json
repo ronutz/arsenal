@@ -69,6 +69,7 @@
       "purposeLabel": "Финансируется сейчас"
     },
     "stats": {
+      "headline": "Уже доступно",
       "tools": "Инструменты",
       "articles": "Статьи",
       "sectionLabel": "Набор инструментов вкратце"
@@ -871,7 +872,7 @@
     "builtWith": "Создано Rodolfo Nützmann с CONCORD",
     "colophon": "Как это было создано",
     "contribute": "Помочь улучшить переводы",
-    "feedback": "Оставить отзыв",
+    "feedback": "Контакты",
     "api": "Справочник по API",
     "contributeTools": "Поделиться идеей",
     "license": "Лицензия",

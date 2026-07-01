@@ -69,6 +69,7 @@
       "purposeLabel": "Finansieras nu"
     },
     "stats": {
+      "headline": "Tillgängliga nu",
       "tools": "Verktyg",
       "articles": "Artiklar",
       "sectionLabel": "Verktygslådan i korthet"
@@ -871,7 +872,7 @@
     "builtWith": "Byggt av Rodolfo Nützmann med CONCORD",
     "colophon": "Hur det här byggdes",
     "contribute": "Hjälp till att förbättra översättningarna",
-    "feedback": "Skicka feedback",
+    "feedback": "Kontakt",
     "api": "API-referens",
     "contributeTools": "Dela en idé",
     "license": "Licens",

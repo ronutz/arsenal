@@ -1,0 +1,34 @@
+---
+slug: capturing-on-vlans-and-trunks
+title: "Capturando em VLANs, self-IPs e trunks"
+summary: "0.0 captura em todas as interfaces da TMM, mas às vezes você quer restringir a captura a um segmento. O BIG-IP permite indicar uma VLAN, um self-IP ou outros especificadores de interface no lugar de 0.0, e cada escolha muda o que você vê."
+concepts: ["tcpdump", "f5", "big-ip", "vlan", "self-ip", "trunk", "tmm"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["bigip-tcpdump-syntax", "bigip-tcpdump-safety"]
+category: networking
+order: 33
+status: machine-draft
+updated: "2026-06-30"
+---
+
+A interface `0.0` é o padrão certo porque mostra o tráfego em todas as interfaces da TMM ao mesmo tempo. Mas quando um dispositivo está ocupado, ou você já sabe em qual segmento um problema está, indicar uma interface específica restringe a captura e reduz o ruído. O [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder) aceita qualquer uma dessas no campo de interface.
+
+## 0.0 versus uma VLAN nomeada
+
+`-i 0.0` captura em todas as interfaces da TMM. `-i internal` (ou o nome da sua VLAN) captura apenas o tráfego naquela VLAN. Restringir a uma VLAN é útil quando você quer confirmar se o tráfego está chegando, ou saindo, pelo segmento esperado. Se um pacote aparece em `0.0` mas não na VLAN em que você imaginava que ele passaria, essa divergência já é a pista.
+
+```
+tcpdump -nn -i internal:nnn -s0 -w /var/tmp/internal.pcap host 10.1.20.5
+```
+
+## Self-IPs e gerenciamento
+
+Um self-IP é o endereço do próprio BIG-IP em uma VLAN. Capturar com escopo de VLAN ou self-IP é a forma de observar o tráfego que o próprio BIG-IP origina ou termina, como monitores de saúde para pool members ou tráfego do plano de controle. Note que a interface de gerenciamento é separada da TMM. O tráfego na porta de gerenciamento não faz parte de uma captura `0.0` da TMM, e é capturado indicando a interface de gerenciamento explicitamente quando é disso que você precisa.
+
+## Os dois-pontos são reservados
+
+Como os dois-pontos introduzem o sufixo de detalhe da TMM, um nome de interface não pode conter dois-pontos no BIG-IP. Se o nome da sua VLAN entrar em conflito, o padrão seguro é colocar entre aspas os nomes qualificados por partição, para que o shell e o tcpdump enxerguem o limite pretendido, e manter o sufixo de detalhe fora das aspas.
+
+## Escolhendo o escopo
+
+Recorra a `0.0` primeiro, porque é a visão mais completa e a menos propensa a perder um fluxo. Restrinja a uma VLAN ou self-IP quando `0.0` for volume demais em um dispositivo ocupado, ou quando a pergunta for especificamente sobre um segmento. Em todos os casos, mantenha um filtro no comando para que o arquivo fique limitado, como descrito em [capturando com segurança em um BIG-IP de produção](/learn/bigip-tcpdump-safety).

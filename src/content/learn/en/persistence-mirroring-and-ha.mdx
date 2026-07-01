@@ -1,0 +1,26 @@
+---
+slug: persistence-mirroring-and-ha
+title: "Persistence Mirroring Across an HA Pair"
+summary: "Persistence records live in memory on the active BIG-IP. On failover, the standby takes over connections, but unless persistence has been mirrored to it, it does not know the existing client-to-member mappings, and clients can be rebalanced mid-session. Mirroring trades a little overhead for sticky sessions that survive failover."
+concepts: ["persistence", "high availability", "mirroring", "failover", "big-ip"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "source-address-persistence-and-mega-proxy"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Persistence works by remembering which pool member a client was sent to. That memory is a table of records held in the active unit's memory, and that raises a question the moment you run a redundant pair: what happens to those records when the active unit fails?
+
+## The failover gap
+
+In an active/standby pair, the standby is ready to take over IP addresses and connections almost instantly. But taking over the traffic is not the same as knowing the *history* of that traffic. By default, the persistence records built up on the active unit are not on the standby. So after a failover, a returning client whose record only existed on the old active unit has no matching entry on the new one, and the persistence method chooses a member fresh, which may not be the member the client was using. For a stateful application, that means the session state the client relied on is suddenly on the wrong server.
+
+## What mirroring does
+
+**Persistence mirroring** closes that gap by syncing persistence records to the peer as they are created, so both units hold the same table. When failover happens, the new active unit already knows the existing client-to-member mappings and keeps sending returning clients to the same members, so sessions survive the event rather than being scattered.
+
+## The tradeoff and when to use it
+
+Mirroring is not free: every persistence record now has to be replicated to the peer, which adds work and a little latency, and on very high-volume virtual servers that cost is worth weighing. It is enabled per persistence profile, so you can turn it on only where it matters. The judgment is about consequence: if a failover that rebalances clients would merely be a minor blip, mirroring may not be worth the overhead. If it would drop shopping carts, log users out, or corrupt in-flight workflows, mirroring is what keeps a hardware or software failover from becoming a user-visible outage. It pairs naturally with connection mirroring for applications that cannot tolerate either kind of reset.

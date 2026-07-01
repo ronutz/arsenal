@@ -1,0 +1,5030 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "F5 Distributed Cloud Web App Scanning - Public API",
+    "description": "Public API for customers using API key authentication.\n\n**Authentication:** A valid API key must be included in the `Authorization` header—e.g., `Authorization: WAS vPhAHspjbWMXaiyJfAXjFHAEzpRQaYuG` or `Authorization: Heyhack vPhAHspjbWMXaiyJfAXjFHAEzpRQaYuG`. You can create an API key on [the Settings page](https://app.heyhack.com/settings).",
+    "termsOfService": "https://app.heyhack.com/terms",
+    "contact": {
+      "name": "F5 Distributed Cloud Web App Scanning Support",
+      "email": "support@cloud.f5.com"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://app.heyhack.com"
+    }
+  ],
+  "paths": {
+    "/api/accounts/application": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Internal web use only. Returns the application name.",
+        "operationId": "GET_api/accounts/application",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/accounts": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Internal web use only. Creates a new user account.",
+        "operationId": "POST_api/accounts",
+        "requestBody": {
+          "description": "The account object containing the user's information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/accounts/direct": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Internal web use only. Creates a new user account directly without the need for an invitation.",
+        "operationId": "POST_api/accounts/direct",
+        "requestBody": {
+          "description": "The direct account object containing the user's information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DirectAccount"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DirectAccount"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DirectAccount"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/accounts/connect": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Internal use only. This API lets users log into Heyhack directly from the F5 Distributed Cloud console.",
+        "operationId": "POST_api/accounts/connect",
+        "requestBody": {
+          "description": "An object containing the tenant ID, user ID, and user email address.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TenantDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TenantDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TenantDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/accounts/usage": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Internal web use only. Exports an overview of all completed penetration tests using the Scan service in Web App Scanning.",
+        "operationId": "GET_api/accounts/usage",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported services. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompletedScan"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompletedScan"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompletedScan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/applications/scan": {
+      "post": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Creates a new application and starts a penetration test.",
+        "operationId": "POST_api/applications/scan",
+        "requestBody": {
+          "description": "An object containing the application's information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApplicationDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApplicationDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/findings": {
+      "post": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Scanner use only. Register a new finding for a specific test report.",
+        "operationId": "POST_api/findings",
+        "requestBody": {
+          "description": "The finding object formatted as JSON.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindingDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindingDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Retrieves all vulnerabilities found by Heyhack. You can choose to filter the vulnerabilities by the application they are related to, whether they're accepted, and their CVSS score.",
+        "operationId": "GET_api/findings",
+        "parameters": [
+          {
+            "name": "application_id",
+            "in": "query",
+            "description": "Optional. Provide the ID of the application to filter vulnerabilities.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accepted",
+            "in": "query",
+            "description": "Optional. Accepted or not.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "cvss_score",
+            "in": "query",
+            "description": "Optional. CVSS 3.0 score threshold.",
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/findings/api": {
+      "post": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Scanner use only. Register a new API endpoint for a specific test report.",
+        "operationId": "POST_api/findings/api",
+        "requestBody": {
+          "description": "The finding object formatted as JSON.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiEndpointDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiEndpointDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiEndpointDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/findings/big-ip": {
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Internal web use only. Retrieves all vulnerabilities in a format compatible with BIG-IP Application Security Manager.",
+        "operationId": "GET_api/findings/big-ip",
+        "parameters": [
+          {
+            "name": "application_id",
+            "in": "query",
+            "description": "Optional. Provide the ID of the application to filter vulnerabilities.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "test_report_id",
+            "in": "query",
+            "description": "Optional. Provide the ID of the test report to filter vulnerabilities.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/recon": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Scanner use only. Fetches one Recon job from the queue.",
+        "operationId": "GET_api/recon",
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Starts a Recon job.",
+        "operationId": "POST_api/recon",
+        "requestBody": {
+          "description": "An object containing the Recon job's information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconJobDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconJobDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconJobDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/recon/{id}": {
+      "patch": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Scanner use only. Completes a Recon job.",
+        "operationId": "PATCH_api/recon/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Recon job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Object containing information on the finished Recon job.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinishedReconJobDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinishedReconJobDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinishedReconJobDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/recon/domains": {
+      "post": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Scanner use only. Creates or updates a domain found by Recon.",
+        "operationId": "POST_api/recon/domains",
+        "requestBody": {
+          "description": "Body of the found domain.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconDomainDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconDomainDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconDomainDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/recon/services": {
+      "post": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Scanner use only. Creates or updates a service found by Recon.",
+        "operationId": "POST_api/recon/services",
+        "requestBody": {
+          "description": "Body of the found service.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconServiceDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconServiceDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Internal web use only. Exports all services of all Recon jobs associated with a specific customer.",
+        "operationId": "GET_api/recon/services",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported services. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recon/findings": {
+      "post": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Scanner use only. Creates or updates a finding for a service found by Recon.",
+        "operationId": "POST_api/recon/findings",
+        "requestBody": {
+          "description": "Body of the finding.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconFindingDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconFindingDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconFindingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Internal web use only. Exports all findings of all Recon jobs associated with a specific customer.",
+        "operationId": "GET_api/recon/findings",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported findings. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recon/{id}/services": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Internal web use only. Exports the services of a specific Recon job.",
+        "operationId": "GET_api/recon/{id}/services",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Recon job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported services. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recon/{id}/findings": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Internal web use only. Exports the findings of a specific Recon job.",
+        "operationId": "GET_api/recon/{id}/findings",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Recon job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported findings. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recon/{id}/fetch": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Checks the status of a Recon job. If it's complete, the results are returned.",
+        "operationId": "GET_api/recon/{id}/fetch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Recon job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported services. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          },
+          {
+            "name": "delete",
+            "in": "query",
+            "description": "Set to `true` if the Recon job should be deleted after the job has completed and the results are returned.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "418": {
+            "description": "I'm a teapot"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedReconServiceDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedReconServiceDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedReconServiceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scanjobs/calculate": {
+      "post": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. Calculates Security Scores for all customers.",
+        "operationId": "POST_api/scanjobs/calculate",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/scanjobs": {
+      "get": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. Fetches one test job from the queue and marks it as started.",
+        "operationId": "GET_api/scanjobs",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Starts a new penetration test.",
+        "description": "You must provide either a test profile ID (to start a penetration test using a specific test profile) or\nan application ID (to start a penetration test using the Default Profile of the application).",
+        "operationId": "POST_api/scanjobs",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "query",
+            "description": "ID of the test profile.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "application_id",
+            "in": "query",
+            "description": "ID of the web application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/scanjobs/{id}": {
+      "patch": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. Completes a test job.",
+        "operationId": "PATCH_api/scanjobs/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "A dictionary of vulnerabilities and how many succeeded test cases and failed test cases each vulnerability has. The key of the dictionary must be a key in `vulnerabilities.json` (e.g., `DOM_BASED_XSS`).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/TestCaseSummary"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/TestCaseSummary"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/TestCaseSummary"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. Checks if a test report is supposed to keep running.",
+        "operationId": "GET_api/scanjobs/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test report.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "418": {
+            "description": "I'm a teapot",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/scanjobs/{id}/foundpages": {
+      "post": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. Provides information on page round-trip times in the scanned application.",
+        "operationId": "POST_api/scanjobs/{id}/foundpages",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "A list of the found pages with round-trip times and other relevant information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PageDto"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PageDto"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PageDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/scanjobs/{id}/loginpages": {
+      "post": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. Provides information on login page URLs found during the scan.",
+        "operationId": "POST_api/scanjobs/{id}/loginpages",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "A list of the URLs of the login pages found.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/scanjobs/{id}/timeout": {
+      "post": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. To report if a scan has timed out.",
+        "operationId": "POST_api/scanjobs/{id}/timeout",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/scanjobs/{id}/users": {
+      "post": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Scanner use only. Provides information on user logins during the scan.",
+        "operationId": "POST_api/scanjobs/{id}/users",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "A dictionary of the users and their status codes.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/UserLoginStatus"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/UserLoginStatus"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/UserLoginStatus"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/scanjobs/{id}/fetch": {
+      "get": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Checks the status of a Scan job. If it's complete, the results are returned and the app is deleted.",
+        "operationId": "GET_api/scanjobs/{id}/fetch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test report.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "wib_format",
+            "in": "query",
+            "description": "Set to `true` if the results should be returned in Wib's format.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "418": {
+            "description": "I'm a teapot"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/storage/upload": {
+      "post": {
+        "tags": [
+          "Storage"
+        ],
+        "summary": "Scanner use only. Uploads a file to storage.",
+        "operationId": "POST_storage/upload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "FileDetails",
+                  "FileName"
+                ],
+                "type": "object",
+                "properties": {
+                  "FileDetails": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "FileName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "FileDetails": {
+                  "style": "form"
+                },
+                "FileName": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/storage/files/{key}": {
+      "get": {
+        "tags": [
+          "Storage"
+        ],
+        "summary": "Internal web use only. Retrieves a file from storage by key.",
+        "operationId": "GET_storage/files/{key}",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "The file key/path.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "findingId",
+            "in": "query",
+            "description": "Optional finding ID for authorization.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "reportId",
+            "in": "query",
+            "description": "Optional report ID for authorization.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/accounts/audit": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Exports a list of actions conducted by users or via API requests in Web App Scanning (using header-based authentication). The total number of available entries matching the filters will be return in the X-Total-Count response header.",
+        "operationId": "GET_api/accounts/audit",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "From date (yyyy-MM-dd).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "To date (yyyy-MM-dd).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search query.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Entries to skip.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Number of entries to return. Maximum 1,000.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1000
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditLogEntry"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/accounts/usage/export": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Exports an overview of all completed penetration tests using the Scan service in Web App Scanning (using header-based authentication).",
+        "operationId": "GET_api/accounts/usage/export",
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CompletedScan"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/accounts/groups": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Creates a new group in the tenant of a specific customer. Returns the ID of the group after it's been created.",
+        "operationId": "POST_api/accounts/groups",
+        "requestBody": {
+          "description": "An object containing the desired name of the group.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/accounts/groups/{id}/members": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Adds a member to a group.",
+        "operationId": "POST_api/accounts/groups/{id}/members",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the group.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "An object containing the member's email address and their role within the group (0 = Monitor, 1 = User, 2 = Admin).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupMemberDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupMemberDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroupMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/applications": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Retrieves all applications associated with a specific customer.",
+        "operationId": "GET_api/applications",
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Creates a new application for a specific customer.",
+        "operationId": "POST_api/applications",
+        "requestBody": {
+          "description": "An object containing the application's information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApplicationDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApplicationDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/applications/{id}": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Retrieve the details of a specific application.",
+        "operationId": "GET_api/applications/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the application to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Deletes an existing application for a specific customer.",
+        "operationId": "DELETE_api/applications/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the application to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/applications/{id}/profiles": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Retrieve the test profiles associated with a specific application.",
+        "operationId": "GET_api/applications/{id}/profiles",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the application to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/applications/profiles": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "Retrieves all test profiles associated with a specific customer.",
+        "operationId": "GET_api/applications/profiles",
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/findings/all": {
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Retrieves all vulnerabilities found by Heyhack. You can choose to filter the vulnerabilities by the application they are related to.",
+        "operationId": "GET_api/findings/all",
+        "parameters": [
+          {
+            "name": "application_id",
+            "in": "query",
+            "description": "Optional. Provide the ID of the application to filter vulnerabilities.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/findings/endpoints": {
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Retrieves all API endpoints found by Heyhack. You can choose to filter the API endpoints by the application they are related to.",
+        "operationId": "GET_api/findings/endpoints",
+        "parameters": [
+          {
+            "name": "application_id",
+            "in": "query",
+            "description": "Optional. Provide the ID of the application to filter API endpoints.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wib_format",
+            "in": "query",
+            "description": "Set to `true` if the results should be returned in Wib's format.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/findings/big-ip/key": {
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Retrieves all vulnerabilities in a format compatible with BIG-IP Application Security Manager. You can choose to filter the vulnerabilities by the application or the test report they are related to.",
+        "operationId": "GET_api/findings/big-ip/key",
+        "parameters": [
+          {
+            "name": "application_id",
+            "in": "query",
+            "description": "Optional. Provide the ID of the application to filter vulnerabilities.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "test_report_id",
+            "in": "query",
+            "description": "Optional. Provide the ID of the test report to filter vulnerabilities.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/findings/{issue_id}": {
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Retrieves a single issue with detailed vulnerability metadata and the most recent finding.",
+        "operationId": "GET_api/findings/{issue_id}",
+        "parameters": [
+          {
+            "name": "issue_id",
+            "in": "path",
+            "description": "Required. The ID of the issue to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDetailDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDetailDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/findings/report/{report_id}": {
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Retrieves all issues for a specific test report, enriched with vulnerability metadata and the most recent finding for each issue.",
+        "operationId": "GET_api/findings/report/{report_id}",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "description": "Required. The ID of the test report.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IssueDetailDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IssueDetailDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IssueDetailDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/findings/report/{report_id}/markdown": {
+      "get": {
+        "tags": [
+          "Findings"
+        ],
+        "summary": "Generates and returns a Markdown report for a specific test report. The Markdown is optimized for consumption by AI agents.",
+        "operationId": "GET_api/findings/report/{report_id}/markdown",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "description": "Required. The ID of the test report.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/services/key": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Exports all services of all Recon jobs associated with a specific customer (using an API key).",
+        "operationId": "GET_api/recon/services/key",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported services. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/findings/key": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Exports all findings of all Recon jobs associated with a specific customer (using an API key).",
+        "operationId": "GET_api/recon/findings/key",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported findings. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/{id}/services/key": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Exports the services of a specific Recon job using an API key.",
+        "operationId": "GET_api/recon/{id}/services/key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Recon job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported services. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconService"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/{id}/findings/key": {
+      "get": {
+        "tags": [
+          "Recon"
+        ],
+        "summary": "Exports the findings of a specific Recon job using an API key.",
+        "operationId": "GET_api/recon/{id}/findings/key",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Recon job.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format of the exported findings. Can be \"json\" or \"csv\". Default is \"json\".",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconFinding"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/scanjobs/{id}/status": {
+      "get": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Checks the status of a Scan job.",
+        "operationId": "GET_api/scanjobs/{id}/status",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test report.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/scanjobs/{id}/video": {
+      "get": {
+        "tags": [
+          "Scan Jobs"
+        ],
+        "summary": "Generates a link to download the video of a Scan job. The link is valid for 12 hours after generation.",
+        "operationId": "GET_api/scanjobs/{id}/video",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the test report.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/test": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "operationId": "GET_api/test",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/vulnerabilities": {
+      "get": {
+        "tags": [
+          "Vulnerabilities"
+        ],
+        "summary": "Retrieves the full vulnerability dictionary, including CWE IDs and OWASP Top Ten categories.",
+        "operationId": "GET_api/vulnerabilities",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Optional. Filter vulnerabilities by name, abbreviation, or CWE ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VulnerabilityInfoDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VulnerabilityInfoDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VulnerabilityInfoDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/assets/{id}/schedule": {
+      "get": {
+        "tags": [
+          "Recon Asset Schedules"
+        ],
+        "summary": "Retrieves all schedules for a specific Recon asset.",
+        "operationId": "GET_api/recon/assets/{id}/schedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The asset ID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconAssetScheduleResponseDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconAssetScheduleResponseDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconAssetScheduleResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Recon Asset Schedules"
+        ],
+        "summary": "Creates or updates a schedule for a specific Recon asset.",
+        "description": "If the asset already has schedules, they will be replaced.",
+        "operationId": "PUT_api/recon/assets/{id}/schedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The asset ID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The schedule configuration.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetScheduleDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetScheduleDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetScheduleResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetScheduleResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetScheduleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Recon Asset Schedules"
+        ],
+        "summary": "Deletes all schedules for a specific Recon asset.",
+        "operationId": "DELETE_api/recon/assets/{id}/schedule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The asset ID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/assets/schedules": {
+      "put": {
+        "tags": [
+          "Recon Asset Schedules"
+        ],
+        "summary": "Bulk set schedules for multiple Recon assets.",
+        "description": "The `conflictBehavior` parameter controls what happens when an asset already has a schedule:\n- `Replace`: Remove existing schedules and set the new one (default)\n- `Add`: Add the new schedule alongside existing ones\n- `Fail`: Fail for assets that already have schedules",
+        "operationId": "PUT_api/recon/assets/schedules",
+        "requestBody": {
+          "description": "The bulk schedule request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetBulkScheduleRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetBulkScheduleRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetBulkScheduleRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetBulkScheduleResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetBulkScheduleResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetBulkScheduleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Recon Asset Schedules"
+        ],
+        "summary": "Bulk delete schedules from multiple Recon assets.",
+        "operationId": "DELETE_api/recon/assets/schedules",
+        "requestBody": {
+          "description": "The bulk delete request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetBulkDeleteScheduleRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetBulkDeleteScheduleRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetBulkDeleteScheduleRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetBulkDeleteScheduleResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetBulkDeleteScheduleResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetBulkDeleteScheduleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/assets": {
+      "get": {
+        "tags": [
+          "Recon Assets"
+        ],
+        "summary": "Retrieves all Recon assets for the authenticated customer.",
+        "operationId": "GET_api/recon/assets",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconAssetResponseDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconAssetResponseDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReconAssetResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Recon Assets"
+        ],
+        "summary": "Creates a new Recon asset.",
+        "operationId": "POST_api/recon/assets",
+        "parameters": [
+          {
+            "name": "startScan",
+            "in": "query",
+            "description": "If true, immediately queue a scan for the new asset.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The asset configuration.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    },
+    "/api/recon/assets/{id}": {
+      "get": {
+        "tags": [
+          "Recon Assets"
+        ],
+        "summary": "Retrieves a specific Recon asset by ID.",
+        "operationId": "GET_api/recon/assets/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The asset ID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Recon Assets"
+        ],
+        "summary": "Updates an existing Recon asset.",
+        "operationId": "PUT_api/recon/assets/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The asset ID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The updated asset configuration.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconAssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Recon Assets"
+        ],
+        "summary": "Deletes a Recon asset and all associated jobs and schedules.",
+        "operationId": "DELETE_api/recon/assets/{id}",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The asset ID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "ApiToken": [
+              "ApiToken"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccessLevel": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Monitor, `1` = User, `2` = Admin",
+        "format": "int32",
+        "x-enumNames": [
+          "Monitor",
+          "User",
+          "Admin"
+        ]
+      },
+      "Account": {
+        "required": [
+          "email",
+          "first",
+          "last",
+          "organization",
+          "password",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "first": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "last": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "organization": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string",
+            "format": "password"
+          },
+          "token": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "utm": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ActionType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Create, `1` = Update, `2` = Delete, `3` = InviteUser, `4` = DeleteUser, `5` = UpdateUserProfile, `6` = ResetPassword, `7` = EnrollMfa, `8` = DeleteMfa, `9` = ResendInviteEmail",
+        "format": "int32",
+        "x-enumNames": [
+          "Create",
+          "Update",
+          "Delete",
+          "InviteUser",
+          "DeleteUser",
+          "UpdateUserProfile",
+          "ResetPassword",
+          "EnrollMfa",
+          "DeleteMfa",
+          "ResendInviteEmail"
+        ]
+      },
+      "ApiEndpointDto": {
+        "required": [
+          "host",
+          "httpMethod",
+          "path",
+          "reportId",
+          "requestHeader",
+          "responseCode",
+          "responseHeader"
+        ],
+        "type": "object",
+        "properties": {
+          "host": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "httpMethod": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorizationInfo": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestHeader": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "requestBody": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "responseHeader": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "responseBody": {
+            "type": "string",
+            "nullable": true
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ApiEndpointParameter"
+            },
+            "nullable": true
+          },
+          "reportId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiEndpointParameter": {
+        "type": "object",
+        "properties": {
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "isPathParameter": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuditLogEntry": {
+        "required": [
+          "entityName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userAccessLevel": {
+            "$ref": "#/components/schemas/AccessLevel"
+          },
+          "apiKeyId": {
+            "type": "string",
+            "nullable": true
+          },
+          "actionType": {
+            "$ref": "#/components/schemas/ActionType"
+          },
+          "entityName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "primaryKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "oldValues": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "newValues": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "nullable": true
+          },
+          "changedColumns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BulkDeleteScheduleSuccessItem": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "The asset ID.",
+            "format": "uuid"
+          },
+          "schedulesDeleted": {
+            "type": "integer",
+            "description": "Number of schedules deleted.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Success item in bulk delete schedule response."
+      },
+      "BulkScheduleFailureItem": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "The asset ID.",
+            "format": "uuid"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for the failure.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Failure item in bulk schedule response."
+      },
+      "BulkScheduleSuccessItem": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "description": "The asset ID.",
+            "format": "uuid"
+          },
+          "scheduleId": {
+            "type": "string",
+            "description": "The created/updated schedule ID.",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Success item in bulk schedule response."
+      },
+      "CompletedScan": {
+        "required": [
+          "applicationId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "applicationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "distributedCloudTenantId": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicationTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "groupId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "groupName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DayOfWeek": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Sunday, `1` = Monday, `2` = Tuesday, `3` = Wednesday, `4` = Thursday, `5` = Friday, `6` = Saturday",
+        "format": "int32",
+        "x-enumNames": [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday"
+        ]
+      },
+      "DirectAccount": {
+        "required": [
+          "address",
+          "email",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "address": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "token": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "utm": {
+            "type": "string",
+            "nullable": true
+          },
+          "recon": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExtendedReconServiceDto": {
+        "type": "object",
+        "properties": {
+          "parentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "host": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "port": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "service": {
+            "type": "string",
+            "nullable": true
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "netblock": {
+            "type": "string",
+            "nullable": true
+          },
+          "wafs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "wafDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WafDetectionResult"
+            },
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FindingDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this finding.",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "description": "When this finding was created.",
+            "format": "date-time"
+          },
+          "reportId": {
+            "type": "string",
+            "description": "The ID of the test report this finding belongs to.",
+            "format": "uuid"
+          },
+          "vulnerableParameterValue": {
+            "type": "string",
+            "description": "The value of the vulnerable parameter that triggered the finding.",
+            "nullable": true
+          },
+          "fromUrl": {
+            "type": "string",
+            "description": "The URL from which the request was made.",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the finding.",
+            "nullable": true
+          },
+          "remediationAdvice": {
+            "type": "string",
+            "description": "Recommended remediation steps for this finding.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "A specific finding instance tied to a test report."
+      },
+      "FindingDto": {
+        "required": [
+          "hash",
+          "reportId",
+          "vulnerability"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "vulnerability": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "vulnerableParameter": {
+            "type": "string",
+            "nullable": true
+          },
+          "vulnerableParameterValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvssVectorString": {
+            "type": "string",
+            "nullable": true
+          },
+          "fromUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "toUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "httpMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "hash": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "remediationAdvice": {
+            "type": "string",
+            "nullable": true
+          },
+          "reportId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FinishedReconJobDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/ReconJobStatus"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GroupDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GroupMemberDto": {
+        "required": [
+          "emailAddress"
+        ],
+        "type": "object",
+        "properties": {
+          "emailAddress": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/AccessLevel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IssueDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this issue.",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "description": "When this issue was first discovered.",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the issue.",
+            "nullable": true
+          },
+          "cvssScore": {
+            "type": "number",
+            "description": "CVSS 3.0 base score (0.0–10.0).",
+            "format": "double"
+          },
+          "cvssVectorString": {
+            "type": "string",
+            "description": "CVSS 3.0 vector string.",
+            "nullable": true
+          },
+          "severity": {
+            "type": "string",
+            "description": "Severity level derived from the CVSS score: Info, Low, Medium, or High.",
+            "nullable": true
+          },
+          "toUrl": {
+            "type": "string",
+            "description": "The URL where the vulnerability was found.",
+            "nullable": true
+          },
+          "httpMethod": {
+            "type": "string",
+            "description": "The HTTP method used to trigger the vulnerability.",
+            "nullable": true
+          },
+          "vulnerableParameter": {
+            "type": "string",
+            "description": "The name of the vulnerable parameter.",
+            "nullable": true
+          },
+          "vulnerabilityKey": {
+            "type": "string",
+            "description": "Internal vulnerability key (e.g., \"SQL_INJECTION\").",
+            "nullable": true
+          },
+          "resolved": {
+            "type": "boolean",
+            "description": "Whether this issue has been resolved."
+          },
+          "rejected": {
+            "type": "boolean",
+            "description": "Whether this issue has been rejected (false positive)."
+          },
+          "accepted": {
+            "type": "boolean",
+            "description": "Whether this issue has been accepted (risk accepted)."
+          },
+          "notes": {
+            "type": "string",
+            "description": "User-provided notes about this issue.",
+            "nullable": true
+          },
+          "applicationId": {
+            "type": "string",
+            "description": "The ID of the application this issue belongs to.",
+            "format": "uuid"
+          },
+          "remediationDeadline": {
+            "type": "string",
+            "description": "Remediation deadline, if set.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "vulnerability": {
+            "$ref": "#/components/schemas/VulnerabilityInfoDto"
+          },
+          "latestFinding": {
+            "$ref": "#/components/schemas/FindingDetailDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Detailed view of a vulnerability issue, including the most recent finding and vulnerability metadata."
+      },
+      "PageDto": {
+        "required": [
+          "httpMethod",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "minLength": 1,
+            "type": "string",
+            "format": "uri"
+          },
+          "roundTripTimeInMilliseconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requestSizeInBytes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "responseSizeInBytes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "httpMethod": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "httpRequest": {
+            "type": "string",
+            "nullable": true
+          },
+          "httpResponse": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "ReconAssetBulkDeleteScheduleRequestDto": {
+        "required": [
+          "assetIds"
+        ],
+        "type": "object",
+        "properties": {
+          "assetIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "List of asset IDs to delete schedules from."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request DTO for bulk deleting schedules from Recon assets."
+      },
+      "ReconAssetBulkDeleteScheduleResponseDto": {
+        "type": "object",
+        "properties": {
+          "succeeded": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkDeleteScheduleSuccessItem"
+            },
+            "description": "List of assets where schedules were deleted.",
+            "nullable": true
+          },
+          "failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkScheduleFailureItem"
+            },
+            "description": "List of assets where the operation failed.",
+            "nullable": true
+          },
+          "totalProcessed": {
+            "type": "integer",
+            "description": "Total number of assets processed.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "successCount": {
+            "type": "integer",
+            "description": "Number of successful operations.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "failureCount": {
+            "type": "integer",
+            "description": "Number of failed operations.",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response DTO for bulk delete schedule operations."
+      },
+      "ReconAssetBulkScheduleRequestDto": {
+        "required": [
+          "assetIds",
+          "conflictBehavior",
+          "schedule"
+        ],
+        "type": "object",
+        "properties": {
+          "assetIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "List of asset IDs to apply the schedule to."
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ReconAssetScheduleDto"
+          },
+          "conflictBehavior": {
+            "$ref": "#/components/schemas/ScheduleConflictBehavior"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request DTO for bulk schedule operations on Recon assets."
+      },
+      "ReconAssetBulkScheduleResponseDto": {
+        "type": "object",
+        "properties": {
+          "succeeded": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkScheduleSuccessItem"
+            },
+            "description": "List of assets where the operation succeeded.",
+            "nullable": true
+          },
+          "failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkScheduleFailureItem"
+            },
+            "description": "List of assets where the operation failed.",
+            "nullable": true
+          },
+          "totalProcessed": {
+            "type": "integer",
+            "description": "Total number of assets processed.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "successCount": {
+            "type": "integer",
+            "description": "Number of successful operations.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "failureCount": {
+            "type": "integer",
+            "description": "Number of failed operations.",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response DTO for bulk schedule operations."
+      },
+      "ReconAssetDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The domain or IP address (CIDR notation supported) of the asset.\nRequired for creation.",
+            "example": "example.com"
+          },
+          "ports": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "List of ports to scan. If not provided, defaults to standard ports.",
+            "nullable": true,
+            "example": [
+              80,
+              443,
+              8080
+            ]
+          },
+          "discoverDomains": {
+            "type": "boolean",
+            "description": "Enable automatic discovery of related domains/IP ranges.",
+            "default": false,
+            "example": false
+          },
+          "assumeNonPublic": {
+            "type": "boolean",
+            "description": "Assume the asset is non-public. If services respond, alerts will be created.",
+            "default": false,
+            "example": false
+          },
+          "assumedHostnames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of expected hostnames for this asset. Only applicable when AssumeNonPublic is true.",
+            "nullable": true,
+            "example": [
+              "internal.example.com",
+              "admin.example.com"
+            ]
+          },
+          "autoCreateAppsInScan": {
+            "type": "boolean",
+            "description": "Automatically create web applications in Scan when services are found.",
+            "default": false,
+            "example": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request DTO for creating or updating a Recon asset."
+      },
+      "ReconAssetLatestJobDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Job ID.",
+            "format": "uuid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReconJobStatus"
+          },
+          "created": {
+            "type": "string",
+            "description": "When the job was created.",
+            "format": "date-time"
+          },
+          "completed": {
+            "type": "string",
+            "description": "When the job completed (if completed).",
+            "format": "date-time",
+            "nullable": true
+          },
+          "serviceCount": {
+            "type": "integer",
+            "description": "Number of services found.",
+            "format": "int32"
+          },
+          "findingCount": {
+            "type": "integer",
+            "description": "Number of findings/issues found.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Latest job status for an asset."
+      },
+      "ReconAssetResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the asset.",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "The domain or IP address of the asset.",
+            "nullable": true
+          },
+          "ports": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "List of ports being scanned.",
+            "nullable": true
+          },
+          "discoverDomains": {
+            "type": "boolean",
+            "description": "Whether automatic domain discovery is enabled."
+          },
+          "assumeNonPublic": {
+            "type": "boolean",
+            "description": "Whether the asset is assumed non-public."
+          },
+          "assumedHostnames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of expected hostnames for this asset. Only populated when AssumeNonPublic is true.",
+            "nullable": true
+          },
+          "autoCreateAppsInScan": {
+            "type": "boolean",
+            "description": "Whether apps are automatically created in Scan."
+          },
+          "isRoot": {
+            "type": "boolean",
+            "description": "Whether this asset was added by a user (true) or auto-discovered (false)."
+          },
+          "created": {
+            "type": "string",
+            "description": "When the asset was created.",
+            "format": "date-time"
+          },
+          "latestJob": {
+            "$ref": "#/components/schemas/ReconAssetLatestJobDto"
+          },
+          "scheduleSummary": {
+            "$ref": "#/components/schemas/ReconAssetScheduleSummaryDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response DTO for a Recon asset, including latest job status and schedule summary."
+      },
+      "ReconAssetScheduleDto": {
+        "required": [
+          "timeOfDay",
+          "timeZoneId",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ScheduleType"
+          },
+          "frequency": {
+            "$ref": "#/components/schemas/ScheduleFrequency"
+          },
+          "timeOfDay": {
+            "type": "string",
+            "description": "Time of day to run the scan (HH:mm format).",
+            "format": "time",
+            "example": "09:00"
+          },
+          "timeZoneId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "IANA timezone identifier (e.g., \"America/New_York\", \"Europe/London\", \"UTC\").",
+            "example": "UTC"
+          },
+          "dayOfWeeks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfWeek"
+            },
+            "description": "Days of the week for weekly schedules.",
+            "nullable": true
+          },
+          "dayOfMonth": {
+            "maximum": 31,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Day of the month for monthly schedules (1-31).",
+            "format": "int32",
+            "nullable": true,
+            "example": 1
+          },
+          "scheduledDate": {
+            "type": "string",
+            "description": "Scheduled date for one-time schedules.",
+            "format": "date",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request DTO for creating or updating a schedule for a Recon asset."
+      },
+      "ReconAssetScheduleResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Schedule ID.",
+            "format": "uuid"
+          },
+          "assetId": {
+            "type": "string",
+            "description": "Asset ID this schedule belongs to.",
+            "format": "uuid"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ScheduleType"
+          },
+          "frequency": {
+            "$ref": "#/components/schemas/ScheduleFrequency"
+          },
+          "timeOfDay": {
+            "type": "string",
+            "description": "Time of day.",
+            "format": "time",
+            "example": "13:45:42.0000000"
+          },
+          "timeZoneId": {
+            "type": "string",
+            "description": "Timezone ID.",
+            "nullable": true
+          },
+          "dayOfWeeks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayOfWeek"
+            },
+            "description": "Days of the week (for weekly).",
+            "nullable": true
+          },
+          "dayOfMonth": {
+            "type": "integer",
+            "description": "Day of the month (for monthly).",
+            "format": "int32",
+            "nullable": true
+          },
+          "scheduledDate": {
+            "type": "string",
+            "description": "Scheduled date (for one-time).",
+            "format": "date",
+            "nullable": true
+          },
+          "nextRun": {
+            "type": "string",
+            "description": "Next scheduled run time (UTC).",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response DTO for a schedule."
+      },
+      "ReconAssetScheduleSummaryDto": {
+        "type": "object",
+        "properties": {
+          "hasSchedule": {
+            "type": "boolean",
+            "description": "Whether the asset has any schedules configured."
+          },
+          "scheduleCount": {
+            "type": "integer",
+            "description": "Number of schedules configured.",
+            "format": "int32"
+          },
+          "nextScheduledScan": {
+            "type": "string",
+            "description": "Next scheduled scan time (UTC).",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Schedule summary for an asset."
+      },
+      "ReconDomainDto": {
+        "type": "object",
+        "properties": {
+          "parentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "host": {
+            "type": "string",
+            "nullable": true
+          },
+          "ports": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "isDemo": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReconFinding": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hash": {
+            "type": "string",
+            "nullable": true
+          },
+          "cveId": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvssScore": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "exploitUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "explanation": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/Severity"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReconFindingDto": {
+        "type": "object",
+        "properties": {
+          "parentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hash": {
+            "type": "string",
+            "nullable": true
+          },
+          "cveId": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvssScore": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "exploitUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReconJobDto": {
+        "required": [
+          "domain"
+        ],
+        "type": "object",
+        "properties": {
+          "domain": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReconJobStatus": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Queued, `1` = Scanning, `2` = Completed, `3` = Error",
+        "format": "int32",
+        "x-enumNames": [
+          "Queued",
+          "Scanning",
+          "Completed",
+          "Error"
+        ]
+      },
+      "ReconService": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "host": {
+            "type": "string",
+            "nullable": true
+          },
+          "isDemo": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "isRoot": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "discoverDomains": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "port": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "service": {
+            "type": "string",
+            "nullable": true
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "netblock": {
+            "type": "string",
+            "nullable": true
+          },
+          "wafs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "wafDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WafDetectionResult"
+            },
+            "nullable": true
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReconServiceDto": {
+        "type": "object",
+        "properties": {
+          "parentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "host": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "port": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "service": {
+            "type": "string",
+            "nullable": true
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "netblock": {
+            "type": "string",
+            "nullable": true
+          },
+          "wafs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "wafDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WafDetectionResult"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ScheduleConflictBehavior": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "description": "Behavior when setting a schedule on an asset that already has one.\n\nPossible values: `0` = Replace, `1` = Add, `2` = Fail",
+        "format": "int32",
+        "x-enumNames": [
+          "Replace",
+          "Add",
+          "Fail"
+        ]
+      },
+      "ScheduleFrequency": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Daily, `1` = Weekly, `2` = Monthly",
+        "format": "int32",
+        "x-enumNames": [
+          "Daily",
+          "Weekly",
+          "Monthly"
+        ]
+      },
+      "ScheduleType": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Scheduled, `1` = Recurring",
+        "format": "int32",
+        "x-enumNames": [
+          "Scheduled",
+          "Recurring"
+        ]
+      },
+      "Severity": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Info, `1` = Low, `2` = Medium, `3` = High",
+        "format": "int32",
+        "x-enumNames": [
+          "Info",
+          "Low",
+          "Medium",
+          "High"
+        ]
+      },
+      "TenantDto": {
+        "required": [
+          "tenantId",
+          "userEmailAddress"
+        ],
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userEmailAddress": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "userFirstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userLastName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestCaseSummary": {
+        "type": "object",
+        "properties": {
+          "succeeded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failed": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserLoginStatus": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "description": "Possible values: `0` = Successful, `1` = LoginFormNotFound, `2` = UsernameInvalid, `3` = PasswordInvalid, `4` = TwoFactorAuthenticationInvalid, `5` = TimedOut, `6` = UnknownError",
+        "format": "int32",
+        "x-enumNames": [
+          "Successful",
+          "LoginFormNotFound",
+          "UsernameInvalid",
+          "PasswordInvalid",
+          "TwoFactorAuthenticationInvalid",
+          "TimedOut",
+          "UnknownError"
+        ]
+      },
+      "VulnerabilityInfoDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Internal vulnerability key (e.g., \"SQL_INJECTION\", \"REFLECTED_XSS\").",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name of the vulnerability.",
+            "nullable": true
+          },
+          "abbreviation": {
+            "type": "string",
+            "description": "Short abbreviation for the vulnerability type.",
+            "nullable": true
+          },
+          "cweId": {
+            "type": "integer",
+            "description": "CWE (Common Weakness Enumeration) identifier, if available.",
+            "format": "int32",
+            "nullable": true
+          },
+          "owaspTopTen2021": {
+            "type": "string",
+            "description": "OWASP Top Ten 2021 category name, if applicable.",
+            "nullable": true
+          },
+          "owaspTopTenApi2023": {
+            "type": "string",
+            "description": "OWASP Top Ten API 2023 category name, if applicable.",
+            "nullable": true
+          },
+          "owaspTopTenLlmV11": {
+            "type": "string",
+            "description": "OWASP Top Ten LLM v1.1 category name, if applicable.",
+            "nullable": true
+          },
+          "owaspResourceUrl": {
+            "type": "string",
+            "description": "Link to the relevant OWASP resource, if available.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Vulnerability metadata from the known vulnerability dictionary."
+      },
+      "WafDetectionResult": {
+        "type": "object",
+        "properties": {
+          "firewall": {
+            "type": "string",
+            "nullable": true
+          },
+          "manufacturer": {
+            "type": "string",
+            "nullable": true
+          },
+          "detected": {
+            "type": "boolean"
+          },
+          "triggerUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WebApplicationDto": {
+        "required": [
+          "address",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "address": {
+            "minLength": 1,
+            "type": "string",
+            "format": "uri"
+          },
+          "useKnownIpAddress": {
+            "type": "boolean"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebApplicationUserDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WebApplicationUserDto": {
+        "required": [
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sharedSecret": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "ApiToken": {
+        "type": "apiKey",
+        "description": "Enter the token with the `WAS` prefix, e.g. `WAS vPhAHspjbWMXaiyJfAXjFHAEzpRQaYuG`.You can create an API key on the Settings page in the F5 Distributed Cloud Web App Scanning console.",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Accounts",
+      "description": "Accounts"
+    },
+    {
+      "name": "Applications",
+      "description": "Applications"
+    },
+    {
+      "name": "Findings",
+      "description": "Findings"
+    },
+    {
+      "name": "Recon",
+      "description": "Recon"
+    },
+    {
+      "name": "Recon Asset Schedules",
+      "description": "API endpoints for managing schedules on Recon assets."
+    },
+    {
+      "name": "Recon Assets",
+      "description": "API endpoints for managing Recon assets."
+    },
+    {
+      "name": "Scan Jobs",
+      "description": "Scan  Jobs"
+    },
+    {
+      "name": "Storage",
+      "description": "Storage"
+    },
+    {
+      "name": "Test",
+      "description": "Test"
+    },
+    {
+      "name": "Vulnerabilities",
+      "description": "Vulnerabilities"
+    }
+  ]
+}

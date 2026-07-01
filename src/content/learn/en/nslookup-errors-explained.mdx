@@ -1,0 +1,29 @@
+---
+slug: nslookup-errors-explained
+title: "nslookup Errors and What They Mean"
+summary: "When a lookup fails, nslookup prints a line like ** server can't find NAME: CODE. The code is the whole diagnosis. This covers NXDOMAIN, SERVFAIL, REFUSED, and timeouts, what each one tells you, and the first thing to check for each."
+concepts: ["nslookup", "nxdomain", "servfail", "refused", "timeout", "troubleshooting"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
+category: networking
+order: 49
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A failed nslookup does not print an answer. It prints a single line, and the code at the end tells you what went wrong:
+
+```
+** server can't find example.com: NXDOMAIN
+```
+
+## The codes
+
+- **NXDOMAIN** (non-existent domain): the name genuinely does not exist. If you expected it to, check for a typo, a missing record, or a delegation that was never set up. This is an answer, not a network problem: a server told you the name is not there.
+- **SERVFAIL** (server failure): the server could not complete the query. In practice this points at a broken delegation, a DNSSEC validation failure, or an upstream authoritative server that timed out. Try a different resolver: if one resolver gives SERVFAIL and another answers, the problem is likely DNSSEC or a specific broken path rather than the name itself.
+- **REFUSED**: the server declined to answer, almost always for policy reasons, such as an access-control list that does not include you, or a resolver that does not offer recursion to your address. Check that you are allowed to use the resolver you are querying.
+- **timed out** / **no servers could be reached**: nslookup never got a reply. This is a connectivity problem, not a DNS answer: the resolver address is wrong or unreachable, a firewall is dropping port 53, or the server is down. Confirm the resolver address and that you can reach it at all.
+
+## Reading the distinction
+
+The useful split is between an **answer that says no** and **no answer at all**. NXDOMAIN and NODATA are the server telling you something definite, so the fix is in the zone or the query. SERVFAIL, REFUSED, and timeouts are the server failing to give you a usable answer, so the fix is in the resolver, the path, or the delegation. Knowing which of the two you are looking at points you at the right half of the problem immediately.

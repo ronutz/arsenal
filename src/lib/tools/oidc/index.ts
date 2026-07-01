@@ -96,6 +96,7 @@ export const manifest = Object.freeze({
     "learn/id-token-claims",
     "learn/oidc-vs-oauth",
     "learn/oidc-discovery",
+    "learn/oidc-authorization-code-flow",
   ],
   sources: [
     {

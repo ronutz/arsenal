@@ -104,6 +104,7 @@ export const manifest = Object.freeze({
     "learn/bigip-cookie-formats",
     "learn/bigip-cookie-disclosure",
     "learn/bigip-cookie-encryption",
+    "learn/bigip-cookie-persistence-methods",
   ],
   sources: [
     {

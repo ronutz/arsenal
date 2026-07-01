@@ -62,7 +62,7 @@ export const manifest = Object.freeze({
   ],
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/f5-cipher-string-syntax", "learn/tls-cipher-security-keywords", "learn/f5-cipher-rules-and-groups"],
+  learnLinks: ["learn/f5-cipher-string-syntax", "learn/tls-cipher-security-keywords", "learn/f5-cipher-rules-and-groups", "learn/f5-tls13-vs-tls12-ciphers", "learn/f5-cipher-ordering-and-negotiation"],
   sources: [
     {
       id: "ssl-administration",

@@ -1,0 +1,29 @@
+---
+slug: nslookup-record-types
+title: "Como o nslookup imprime cada tipo de registro"
+summary: "Em vez das colunas fixas do dig, o nslookup rotula cada registro em prosa: mail exchanger =, canonical name =, nameserver = e um bloco de várias linhas para o SOA. Um guia curto para ler a linha de cada tipo."
+concepts: ["nslookup", "mx", "cname", "ns", "soa", "srv", "txt", "ptr"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-record-types-in-answers"]
+category: networking
+order: 47
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O dig imprime todo registro nas mesmas cinco colunas. O nslookup faz algo diferente: ele rotula cada tipo de registro em palavras, o que é mais amigável de ler, mas significa que o formato muda de tipo para tipo.
+
+## Os formatos por tipo
+
+- **A / AAAA** (endereços): uma linha `Name:`, depois uma ou mais linhas `Address:`. Uma resposta IPv6 também fica em uma linha Address; você a distingue pelos dois-pontos.
+- **MX** (e-mail): `example.com  mail exchanger = 10 mail.example.com.` O número é a preferência (menor é preferido) e o resto é o host de e-mail.
+- **NS** (servidores de nomes): `example.com  nameserver = a.iana-servers.net.`
+- **CNAME** (aliases): `www.example.com  canonical name = example.com.` O nome à esquerda é um alias para o alvo à direita.
+- **TXT**: `example.com  text = "v=spf1 -all"`, com o valor entre aspas.
+- **PTR** (reverso): `34.216.184.93.in-addr.arpa  name = example.com.` Note que o rótulo é `name =`, não `canonical name =`.
+- **SRV** (serviços): `service = 1 10 5060 sip.example.com.`, que é prioridade, peso, porta e alvo, nessa ordem.
+- **SOA**: diferente dos outros, este se estende por várias linhas indentadas sob um nome isolado, um campo por linha: `origin`, `mail addr`, `serial` e os timers `refresh`, `retry`, `expire` e `minimum`.
+
+## O que observar
+
+O SOA é o ponto fora da curva, porque é o único tipo que o nslookup quebra em várias linhas. O campo `mail addr` é uma caixa postal com o primeiro ponto substituindo o `@`, e o `minimum` também serve como TTL de cache negativo, então ele governa por quanto tempo uma resposta de "não existe" da zona é lembrada. Se você quiser os mesmos campos dispostos da maneira clássica, o dig os imprime em uma única linha de registro SOA.

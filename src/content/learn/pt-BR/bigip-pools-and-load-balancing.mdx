@@ -1,0 +1,32 @@
+---
+slug: bigip-pools-and-load-balancing
+title: "Pools e métodos de balanceamento no BIG-IP"
+summary: "Um pool é o grupo de members de backend para o qual um virtual server envia tráfego, e o método de balanceamento decide qual member recebe cada conexão. Os métodos se dividem em estáticos, que seguem um padrão fixo, e dinâmicos, que reagem à carga ao vivo, e a escolha molda quão uniforme e quão inteligentemente o tráfego se espalha."
+concepts: ["big-ip", "pool", "load balancing", "round robin", "least connections"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-health-monitors"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um virtual server raramente fala com um único backend; ele fala com um **pool**. Um pool é um grupo nomeado de **members**, cada um um node e porta de backend (por exemplo `10.0.0.10:443`), e o virtual server entrega cada conexão ao pool, que usa seu **método de balanceamento** para escolher um member.
+
+## Estático versus dinâmico
+
+Os métodos se dividem em duas famílias. Os métodos **estáticos** seguem um padrão fixo independentemente do que os members estão de fato fazendo:
+
+- **Round Robin** rotaciona pelos members em turnos, o padrão simples.
+- **Ratio** envia tráfego em proporção a um peso em cada member, então um servidor maior pode receber uma fatia maior.
+
+Os métodos **dinâmicos** reagem a condições ao vivo:
+
+- **Least Connections** envia a próxima conexão ao member com o menor número de conexões ativas, o que se autonivela quando as requisições variam em duração.
+- **Fastest** favorece o member que responde mais rápido, e **Observed** e **Predictive** combinam contagens de conexões e tendências de resposta ao longo do tempo.
+
+Least Connections e seus parentes distribuem melhor quando as requisições são desiguais, ao custo de rastrear estado por member; Round Robin é previsível e barato mas assume que toda requisição custa mais ou menos o mesmo.
+
+## Como isso aparece na config
+
+No `bigip.conf` um pool aparece como uma stanza `ltm pool` listando seus members e um `load-balancing-mode`, e frequentemente um `monitor`. O monitor é o que torna o pool seguro: o monitoramento de saúde marca members como up ou down, e o método de balanceamento só escolhe entre members atualmente marcados como up. Então a definição do pool amarra três ideias, quais members existem, como o tráfego é espalhado entre os saudáveis, e como a saúde é julgada. Lê-la de cima a baixo diz para onde o tráfego de um virtual server pode ir e como o BIG-IP decide entre as opções.

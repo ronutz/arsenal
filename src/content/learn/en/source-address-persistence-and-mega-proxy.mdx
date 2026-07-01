@@ -1,0 +1,26 @@
+---
+slug: source-address-persistence-and-mega-proxy
+title: "Source-Address Persistence and the Mega-Proxy Problem"
+summary: "Source-address persistence pins a client to a pool member by its IP, which is simple and protocol-agnostic but fragile on the modern internet. Large NATs make many clients look like one, and mobile clients change address mid-session. Both break the assumption the method depends on."
+concepts: ["persistence", "source address", "nat", "mega-proxy", "big-ip"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "persistence-mirroring-and-ha"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Source-address persistence (also called simple persistence) keys entirely on the client's IP address: the first connection from an address picks a pool member, and every later connection from that same address goes to the same member. It needs nothing from the application, which is its appeal, and it rests on one assumption, which is its weakness: that one IP means one client.
+
+## When many clients share one address
+
+That assumption fails behind a large NAT or proxy, the classic **mega-proxy** case. When thousands of users sit behind one corporate NAT, a carrier-grade NAT, or a big proxy farm, they all arrive with the same source IP. Source-address persistence sees one address and pins every one of those users to a single pool member. The result is the opposite of load balancing: one member is buried while the others sit idle, and if that member fails, a huge block of users is affected at once. Carrier-grade NAT has made this common enough that source-address persistence can quietly wreck the distribution you expected.
+
+## When one client changes address
+
+The mirror-image failure is a client whose address changes during a session. A mobile device roaming between networks, or a client behind a *pool* of proxies that rotates its outbound IP, presents a new source address partway through and loses its persistence, landing on a different member and dropping whatever session state lived on the first one. The persistence timeout does not help here; the key itself moved.
+
+## What to do about it
+
+Source-address persistence is still fine where the assumption holds: internal traffic with known, stable, one-per-client addresses, or protocols where there is nothing better to key on. Where clients are behind shared NATs or change address, a method that keys on something tied to the actual session is more reliable, cookie persistence for HTTP being the usual choice, since it identifies the client rather than the address it happens to arrive from. The decision comes down to whether IP address is a trustworthy stand-in for identity in your traffic, and increasingly, on the public internet, it is not.

@@ -1,0 +1,33 @@
+---
+slug: edns-and-the-opt-pseudosection
+title: "O EDNS e a pseudo-seção OPT"
+summary: "A pseudo-seção OPT não é um registro e não é algo que você consultou: é metadado do EDNS(0) que o dig mostra perto do topo de uma resposta. Ela carrega o tamanho do payload UDP, a flag DO que solicita DNSSEC e opções como COOKIE, e explica silenciosamente toda uma classe de falhas de resolução."
+concepts: ["edns", "opt", "udp payload", "do flag", "cookie", "fragmentation", "rfc 6891"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
+category: networking
+order: 43
+status: machine-draft
+updated: "2026-06-30"
+---
+
+O DNS clássico tinha um limite de 512 bytes para respostas em UDP e nenhum espaço no cabeçalho para novas opções. O EDNS(0), definido na RFC 6891, resolve os dois problemas adicionando um pseudo-registro do tipo OPT. O dig o imprime como seu próprio bloco:
+
+```
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+```
+
+Ele é chamado de pseudo-seção porque OPT não é dado real de zona. Existe apenas no fio para carregar parâmetros do EDNS, então nunca aparece em um arquivo de zona e você nunca consulta por ele diretamente.
+
+## O que os campos significam
+
+**version** é a versão do EDNS, na prática sempre `0`. **udp** é a maior resposta UDP que quem envia está disposto a receber, anunciada para que o respondente possa enviar respostas maiores sem cair para TCP. Resolvedores modernos costumam anunciar `1232` bytes, um valor deliberadamente conservador escolhido para ficar abaixo do ponto em que a fragmentação IP tende a causar problemas. **flags** carrega os bits de flag do EDNS; o que você verá é `do`, DNSSEC OK, que é como um cliente diz "me envie também os registros DNSSEC".
+
+Abaixo da linha do EDNS, o dig pode imprimir outras opções como `COOKIE` (um token leve contra spoofing) ou `NSID` (um identificador de servidor). Elas são informativas e variam por resolvedor.
+
+## Por que isso importa no diagnóstico
+
+O EDNS é onde vivem várias falhas confusas. Se uma resposta grande somada a um tamanho UDP grande anunciado produz um pacote UDP fragmentado que um firewall ou um caminho quebrado descarta, a consulta parece travar ou falhar mesmo que o servidor tenha respondido. É exatamente por isso que o tamanho anunciado tendeu a diminuir para valores como 1232: respostas menores cabem em um pacote e sobrevivem a mais caminhos. Quando você vê `SERVFAIL` intermitente em nomes com respostas grandes (muitos endereços, ou assinaturas DNSSEC), a linha OPT e o tamanho UDP são o primeiro lugar para olhar, e forçar TCP com `+tcp` é uma forma rápida de confirmar isso.
+
+A flag `do` se liga diretamente ao DNSSEC: sem ela, um resolvedor não retornará os registros de assinatura, então se você está tentando inspecionar DNSSEC e não vê nenhum, verifique se a linha OPT mostra `do` definido.

@@ -1,0 +1,29 @@
+---
+slug: relative-urls-and-resolution
+title: "URLs relativas e como elas resolvem"
+summary: "Uma URL relativa deixa de fora o esquema e o host e é completada contra uma URL base. As regras de como um navegador preenche o resto, e como ./ e ../ e uma barra inicial mudam o resultado, explicam muitos links quebrados e algumas surpresas de segurança."
+concepts: ["url", "relative url", "base url", "resolution", "rfc 3986"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "query-strings", "deceptive-urls"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma URL absoluta carrega tudo: esquema, host, caminho e o resto. Uma URL **relativa** deixa partes de fora e espera que sejam preenchidas a partir de uma **URL base**, normalmente o endereço da página em que ela aparece. É isso que permite a um site linkar para `about.html` sem repetir o próprio domínio em todo lugar.
+
+## Os tipos de referência relativa
+
+Quanto é preenchido depende da forma da referência:
+
+- **Caminho absoluto** (`/help/index.html`): mantém o esquema e o host da base, substitui o caminho inteiro. A barra inicial significa "a partir da raiz do site".
+- **Caminho relativo** (`page.html`, `./page.html`, `../page.html`): resolvido em relação ao *diretório* da página atual. `./` significa o diretório atual, e cada `../` sobe um nível antes de o resto do caminho ser aplicado.
+- **Relativo ao esquema** (`//cdn.example.com/lib.js`): mantém apenas o esquema da base e assume um novo host. Em uma página https ele carrega por https; em http, por http.
+- **Apenas query** (`?page=2`) e **apenas fragmento** (`#section`): mantêm tudo e mudam apenas a query ou o fragmento.
+
+## Por que isso importa
+
+As regras de resolução (definidas na RFC 3986) são exatas, o que é bom, porque pequenos enganos produzem links quebrados: uma barra inicial ausente torna um link relativo ao diretório errado, e um `../` a mais sobe acima de onde você queria. Uma página também pode definir uma base explícita com uma tag `<base>`, que muda silenciosamente como *cada* link relativo da página resolve, uma fonte clássica de "por que este link está apontando para lá".
+
+Há também um ângulo de segurança. Como `../` sobe pelo caminho, e como referências relativas ao esquema e ao caminho se comportam de formas diferentes, uma URL construída colando entrada de usuário em um caminho pode às vezes ser direcionada a algum lugar não intencional. Quando uma URL é montada a partir de partes em vez de escrita inteira, vale resolvê-la por completo para ver onde ela realmente cai.

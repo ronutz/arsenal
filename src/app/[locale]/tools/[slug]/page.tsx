@@ -64,6 +64,14 @@ import JsonYamlConvertTool from "@/components/JsonYamlConvertTool";
 import { manifest as jsonYamlManifest } from "@/lib/tools/json-yaml-convert";
 import TmshConfigExplainerTool from "@/components/TmshConfigExplainerTool";
 import { manifest as tmshManifest } from "@/lib/tools/tmsh-config-explainer";
+import DigOutputExplainerTool from "@/components/DigOutputExplainerTool";
+import { manifest as digManifest } from "@/lib/tools/dig-output-explainer";
+import NslookupOutputExplainerTool from "@/components/NslookupOutputExplainerTool";
+import { manifest as nslookupManifest } from "@/lib/tools/nslookup-output-explainer";
+import XmlDecoderTool from "@/components/XmlDecoderTool";
+import { manifest as xmlManifest } from "@/lib/tools/xml-decoder";
+import F5xcServicePolicyExplainerTool from "@/components/F5xcServicePolicyExplainerTool";
+import { manifest as f5xcServicePolicyManifest } from "@/lib/tools/f5xc-service-policy-explainer";
 import PersistenceMethodExplainerTool from "@/components/PersistenceMethodExplainerTool";
 import { manifest as persistManifest } from "@/lib/tools/persistence-method-explainer";
 import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
@@ -84,6 +92,10 @@ import JwksExplainerTool from "@/components/JwksExplainerTool";
 import { manifest as jwksManifest } from "@/lib/tools/jwks-explainer";
 import RegexTool from "@/components/RegexTool";
 import { manifest as regexManifest } from "@/lib/tools/regex";
+import BigipTcpdumpBuilderTool from "@/components/BigipTcpdumpBuilderTool";
+import { manifest as tcpdumpManifest } from "@/lib/tools/bigip-tcpdump-builder";
+import CvssVectorDecoderTool from "@/components/CvssVectorDecoderTool";
+import { manifest as cvssManifest } from "@/lib/tools/cvss-vector-decoder";
 
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
@@ -184,6 +196,30 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "tmsh-config-explainer": {
     Component: TmshConfigExplainerTool,
     sources: tmshManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "dig-output-explainer": {
+    Component: DigOutputExplainerTool,
+    sources: digManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "nslookup-output-explainer": {
+    Component: NslookupOutputExplainerTool,
+    sources: nslookupManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "xml-decoder": {
+    Component: XmlDecoderTool,
+    sources: xmlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-service-policy-explainer": {
+    Component: F5xcServicePolicyExplainerTool,
+    sources: f5xcServicePolicyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "cvss-vector-decoder": {
+    Component: CvssVectorDecoderTool,
+    sources: cvssManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "bigip-tcpdump-builder": {
+    Component: BigipTcpdumpBuilderTool,
+    sources: tcpdumpManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "persistence-method-explainer": {
     Component: PersistenceMethodExplainerTool,

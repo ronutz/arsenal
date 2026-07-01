@@ -1,0 +1,34 @@
+---
+slug: capturing-on-vlans-and-trunks
+title: "Capturing on VLANs, Self-IPs, and Trunks"
+summary: "0.0 captures on every TMM interface, but sometimes you want to scope a capture to one segment. BIG-IP lets you name a VLAN, a self-IP, or other interface specifiers in place of 0.0, and each choice changes what you see."
+concepts: ["tcpdump", "f5", "big-ip", "vlan", "self-ip", "trunk", "tmm"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["bigip-tcpdump-syntax", "bigip-tcpdump-safety"]
+category: networking
+order: 33
+status: machine-draft
+updated: "2026-06-30"
+---
+
+The `0.0` interface is the right default because it shows traffic on every TMM interface at once. But when a device is busy, or you already know which segment a problem lives on, naming a specific interface narrows the capture and reduces the noise. The [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder) accepts any of these in the interface field.
+
+## 0.0 versus a named VLAN
+
+`-i 0.0` captures across all TMM interfaces. `-i internal` (or whatever your VLAN is named) captures only the traffic on that VLAN. Scoping to a VLAN is useful when you want to confirm whether traffic is arriving on, or leaving through, the segment you expect. If a packet shows up on `0.0` but not on the VLAN you thought it would use, that mismatch is itself the clue.
+
+```
+tcpdump -nn -i internal:nnn -s0 -w /var/tmp/internal.pcap host 10.1.20.5
+```
+
+## Self-IPs and management
+
+A self-IP is the BIG-IP's own address on a VLAN. Capturing with a VLAN or self-IP scope is the way to watch traffic the BIG-IP itself originates or terminates, such as health monitors to pool members or control-plane traffic. Note that the management interface is separate from TMM. Traffic on the management port is not part of a TMM `0.0` capture, and is captured by naming the management interface explicitly when that is what you need.
+
+## The colon is reserved
+
+Because the colon introduces the TMM detail suffix, an interface name itself must not contain a colon on BIG-IP. If your VLAN name would collide, the safe pattern is to quote partition-qualified names so the shell and tcpdump see the intended boundary, and keep the detail suffix outside the quotes.
+
+## Choosing the scope
+
+Reach for `0.0` first, because it is the most complete view and the least likely to miss a flow. Narrow to a VLAN or self-IP when `0.0` is too much volume on a busy box, or when the question is specifically about one segment. In every case, keep a filter on the command so the file stays bounded, as covered in [capturing safely on a production BIG-IP](/learn/bigip-tcpdump-safety).

@@ -1,0 +1,38 @@
+---
+slug: cvss-temporal-and-environmental
+title: "Pontuações Temporal e Ambiental do CVSS"
+summary: "A pontuação Base é apenas o ponto de partida. As métricas Temporais a reduzem conforme os fatos surgem, como o lançamento de um patch, e só podem diminuir a pontuação. As métricas Ambientais permitem que uma organização recalcule a falha para seus próprios sistemas, elevando ou reduzindo a importância de confidencialidade, integridade e disponibilidade e sobrescrevendo métricas base. Ambas são opcionais, mas produzem um número mais honesto."
+concepts: ["cvss", "pontuação temporal", "pontuação ambiental", "requisitos de segurança", "métricas modificadas"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-base-metrics-explained", "cvss-severity-bands-and-limits"]
+category: security
+order: 72
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A maioria das pontuações CVSS publicadas é apenas Base, porque a base é constante. Mas o framework foi projetado para ser refinado, e os dois grupos opcionais são onde uma pontuação se torna específica a um momento no tempo e a um ambiente particular.
+
+## Métricas temporais
+
+O grupo Temporal tem três métricas, cada uma um multiplicador de no máximo 1,0, então a pontuação Temporal só pode ser igual ou menor que a pontuação Base:
+
+- **Maturidade do Código de Exploração (E)**: quão pronta está uma exploração, de `U` Não Comprovado passando por `P` Prova de Conceito e `F` Funcional até `H` Alta (confiável, amplamente disponível).
+- **Nível de Remediação (RL)**: que correção existe, de `U` Indisponível passando por `W` Contorno e `T` Correção Temporária até `O` Correção Oficial.
+- **Confiança no Relatório (RC)**: quão confirmada está a falha, de `U` Desconhecido passando por `R` Razoável até `C` Confirmado.
+
+A pontuação Temporal é simplesmente a pontuação Base multiplicada pelos três e arredondada para cima:
+
+`Temporal = Roundup(PontuaçãoBase x E x RL x RC)`
+
+Uma correção oficial (`RL:O`) e uma exploração não comprovada (`E:U`) puxam a pontuação para baixo, que é a forma do framework dizer que uma falha corrigida e difícil de explorar é menos urgente do que sua base bruta sugere.
+
+## Métricas ambientais
+
+O grupo Ambiental faz duas coisas. Primeiro, os **Requisitos de Segurança** (`CR`, `IR`, `AR`) permitem declarar quanto a confidencialidade, a integridade ou a disponibilidade importa para o sistema afetado, em `L` Baixo, `M` Médio ou `H` Alto. Um requisito de integridade alto eleva a pontuação de uma falha que afeta a integridade em um sistema onde a integridade é crítica. Segundo, as **Métricas Base Modificadas** (`MAV`, `MAC`, `MPR`, `MUI`, `MS`, `MC`, `MI`, `MA`) permitem sobrescrever qualquer métrica base para refletir sua implantação, por exemplo mudando o Vetor de Ataque de Rede para Adjacente porque o serviço só é acessível internamente.
+
+A matemática ambiental espelha a matemática base, mas usa as métricas modificadas e os requisitos, e a subpontuação de impacto modificada é limitada a `0,915`. O resultado é uma pontuação que reflete a falha como ela realmente está no seu ambiente, o que muitas vezes é materialmente diferente do número de destaque.
+
+## Quando usar
+
+A pontuação Temporal e Ambiental é opcional, mas recomendada quando você está priorizando trabalho real. Um fornecedor não pode conhecer o seu ambiente, então uma pontuação Base é deliberadamente o pior caso. Recalcular com as métricas que você de fato conhece, um serviço apenas interno, um controle compensatório, um patch disponível, frequentemente move uma falha para uma faixa mais baixa e muda o que você corrige primeiro.

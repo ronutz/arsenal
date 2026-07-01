@@ -1,0 +1,26 @@
+---
+slug: bigip-snat-and-return-traffic
+title: "SNAT and the Return-Traffic Problem"
+summary: "For a load-balanced connection to work, the pool member's reply must come back through BIG-IP. If the member routes its return traffic straight to the client instead, the connection breaks. SNAT solves this by making BIG-IP the source address the member replies to, at the cost of hiding the real client IP."
+concepts: ["big-ip", "snat", "asymmetric routing", "source nat", "x-forwarded-for"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "bigip-pools-and-load-balancing"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+When BIG-IP load-balances a connection, by default it preserves the client's source IP toward the pool member. The member sees the real client address, which is often what you want, but it creates a routing requirement that is easy to miss.
+
+## The asymmetric-routing trap
+
+A TCP connection only works if both directions flow through the same device that is tracking its state. BIG-IP is tracking the connection, so the member's reply has to come back through BIG-IP. If the member's own default route points at the network's router rather than at BIG-IP, the member will send its reply *directly* toward the client's IP, bypassing BIG-IP entirely. The client then receives a packet from an address it never opened a connection to, and drops it. This is **asymmetric routing**: the request went one way, the response tried to go another, and the connection stalls. It is one of the most common "the virtual server is up but nothing works" causes.
+
+## What SNAT does
+
+**SNAT** (source network address translation) fixes this by changing the source address BIG-IP uses toward the member. Instead of the client's IP, the member sees a BIG-IP-owned address, either an automatically chosen self IP (**SNAT automap**) or an address from a defined **SNAT pool**. Now the member's reply is naturally addressed back to BIG-IP, which forwards it to the client, and the path is symmetric no matter how the member's routing is set up.
+
+## The cost and its mitigation
+
+SNAT trades away the real client IP: because the member now sees a BIG-IP address as the source, it can no longer log or make decisions based on the true client address. For HTTP this is usually handled by inserting an `X-Forwarded-For` header carrying the original client IP, so the application can still see it. In `bigip.conf` this shows up as a `snat-type automap` on the virtual server or an attached `snatpool`. The rule of thumb is that SNAT is what you reach for when you cannot guarantee the members route return traffic back through BIG-IP, which on most real networks is exactly the situation.

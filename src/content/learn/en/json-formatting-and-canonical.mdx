@@ -1,0 +1,24 @@
+---
+slug: json-formatting-and-canonical
+title: "Formatting, Minifying, and Canonical JSON"
+summary: "Whitespace does not change what JSON means, so pretty-printed and minified JSON are the same data. But when JSON is signed or hashed, the exact bytes matter, and that is where canonical JSON comes in: a deterministic way to serialize the same data to exactly the same string every time."
+concepts: ["json", "minify", "pretty print", "canonical json", "signing"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-duplicate-keys", "json-string-escapes"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Between any two tokens, JSON allows any amount of whitespace, and it carries no meaning. That single fact is what makes formatting safe: pretty-printing and minifying rearrange spaces and newlines without changing the data at all.
+
+## Pretty versus minified
+
+**Pretty-printing** adds indentation and line breaks so a human can read the structure. **Minifying** removes every optional space and newline to make the payload as small as possible for transport. They are two views of identical data; you can go back and forth losslessly, which is exactly what a formatter does.
+
+Key **order** is a related non-difference. JSON objects are defined as unordered, so `{"a":1,"b":2}` and `{"b":2,"a":1}` hold the same data. Sorting keys does not change meaning, but it makes two JSON documents far easier to diff, which is why many formatters offer a sort option.
+
+## When the bytes suddenly matter
+
+All of that changes the moment JSON is **signed or hashed**. A signature is computed over exact bytes, so if the sender pretty-prints and the receiver minifies, the bytes differ and the signature fails, even though the data is identical. To make signing work, both sides must agree on one exact serialization. That is **canonical JSON**: a deterministic form with fixed rules for key order (sorted), whitespace (none), number formatting, and string escaping, so the same data always produces the same string. RFC 8785 (JSON Canonicalization Scheme) defines one such form. This is why systems that sign JSON, or use it as a hash input, canonicalize first: it turns "the same data" into "the same bytes," which is what a signature actually needs. For ordinary interchange none of this matters, but the moment cryptography is involved, formatting stops being cosmetic.

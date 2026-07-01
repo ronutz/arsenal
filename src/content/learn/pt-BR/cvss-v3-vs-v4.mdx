@@ -1,0 +1,33 @@
+---
+slug: cvss-v3-vs-v4
+title: "CVSS v3.0, v3.1 e v4.0: O Que Mudou"
+summary: "Este decodificador calcula CVSS v3.0 e v3.1. As duas versões v3 compartilham uma fórmula mas diferem no arredondamento e em um termo ambiental, então as pontuações podem diferir em um décimo. O CVSS v4.0, lançado em 2023, é um redesenho maior, com novos grupos de métricas e sem a métrica Escopo, e seus vetores não são compatíveis com ferramentas v3. O CVSS v2 está descontinuado."
+concepts: ["cvss", "cvss v3.1", "cvss v4.0", "versões", "roundup"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-severity-bands-and-limits", "cvss-vector-string-format"]
+category: security
+order: 75
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O CVSS teve várias versões, e um vetor só significa algo no contexto da sua versão. Esta ferramenta calcula **v3.0 e v3.1**, que são as versões que a grande maioria dos comunicados publicados e dos feeds de vulnerabilidade ainda usa.
+
+## v3.0 versus v3.1
+
+As duas versões v3 usam as mesmas métricas e as mesmas equações gerais, então a maioria dos vetores pontua de forma idêntica. Há duas diferenças deliberadas:
+
+- **Roundup.** A v3.0 arredondava por um método que podia, em entradas raras, produzir últimos dígitos diferentes em plataformas diferentes por causa da aritmética de ponto flutuante. A v3.1 redefine a função `Roundup` em termos inteiros para que toda implementação concorde. É por isso que um pequeno número de vetores pontua, por exemplo, 2.5 em uma versão e ligeiramente diferente na outra.
+- **Impacto modificado.** A equação ambiental de impacto modificado para escopo alterado foi ajustada na v3.1 (o expoente mudou e um fator `0,9731` foi introduzido), o que pode deslocar algumas pontuações ambientais em um décimo.
+
+Como as duas versões podem discordar, um vetor deve sempre carregar seu prefixo `CVSS:3.0` ou `CVSS:3.1`, e um decodificador deve respeitá-lo em vez de presumir.
+
+## A v4.0 é um redesenho, não um ajuste
+
+O CVSS **v4.0** (2023) é uma mudança maior e não é compatível em vetores com a v3. As principais diferenças:
+
+- Os grupos de métricas são reorganizados em **Base, Ameaça (Threat), Ambiental e Suplementar**.
+- A métrica única de **Escopo** desaparece. O impacto agora é dividido entre o **sistema vulnerável** (`VC`, `VI`, `VA`) e os **sistemas subsequentes** (`SC`, `SI`, `SA`), o que expressa a mesma ideia de forma mais precisa.
+- Uma nova métrica de **Requisitos de Ataque (AT)** junta-se à Complexidade do Ataque, e a nomenclatura para pontuações combinadas (CVSS-B, CVSS-BT, CVSS-BTE) é formalizada.
+
+Um vetor v4.0 começa com `CVSS:4.0` e não pode ser pontuado pela matemática v3. Este decodificador reconhece um prefixo v4.0 e avisa que ele está fora de escopo, em vez de produzir um número errado. O **CVSS v2**, que usava um conjunto de métricas totalmente diferente, está descontinuado e também não é calculado aqui.

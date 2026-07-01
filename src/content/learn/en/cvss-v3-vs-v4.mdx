@@ -1,0 +1,33 @@
+---
+slug: cvss-v3-vs-v4
+title: "CVSS v3.0, v3.1, and v4.0: What Changed"
+summary: "This decoder computes CVSS v3.0 and v3.1. The two v3 releases share a formula but differ in rounding and one environmental term, so scores can differ by a tenth. CVSS v4.0, released in 2023, is a larger redesign with new metric groups and no Scope metric, and its vectors are not compatible with v3 tooling. CVSS v2 is retired."
+concepts: ["cvss", "cvss v3.1", "cvss v4.0", "versions", "roundup"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-severity-bands-and-limits", "cvss-vector-string-format"]
+category: security
+order: 75
+status: machine-draft
+updated: "2026-07-01"
+---
+
+CVSS has had several versions, and a vector only means something in the context of its version. This tool computes **v3.0 and v3.1**, which are the versions the great majority of published advisories and vulnerability feeds still use.
+
+## v3.0 versus v3.1
+
+The two v3 releases use the same metrics and the same overall equations, so most vectors score identically. There are two deliberate differences:
+
+- **Roundup.** v3.0 rounded by a method that could, on rare inputs, produce different last digits on different platforms because of floating-point arithmetic. v3.1 redefines the `Roundup` function in integer terms so every implementation agrees. This is why a small number of vectors score, for example, 2.5 in one version and slightly differently in the other.
+- **Modified impact.** The Environmental modified-impact equation for a changed scope was adjusted in v3.1 (the exponent changed and a `0.9731` factor was introduced), which can shift some environmental scores by a tenth.
+
+Because the two versions can disagree, a vector should always carry its `CVSS:3.0` or `CVSS:3.1` prefix, and a decoder should honour it rather than assume.
+
+## v4.0 is a redesign, not a tweak
+
+CVSS **v4.0** (2023) is a larger change and is not vector-compatible with v3. The headline differences:
+
+- The metric groups are reorganised into **Base, Threat, Environmental, and Supplemental**.
+- The single **Scope** metric is gone. Impact is now split between the **vulnerable system** (`VC`, `VI`, `VA`) and **subsequent systems** (`SC`, `SI`, `SA`), which expresses the same idea more precisely.
+- A new **Attack Requirements (AT)** metric joins Attack Complexity, and the nomenclature for combined scores (CVSS-B, CVSS-BT, CVSS-BTE) is formalised.
+
+A v4.0 vector begins with `CVSS:4.0` and cannot be scored by v3 math. This decoder recognises a v4.0 prefix and tells you it is out of scope rather than producing a wrong number. **CVSS v2**, which used a different metric set entirely, is retired and is likewise not computed here.

@@ -1,0 +1,32 @@
+---
+slug: cvss-vector-string-format
+title: "Lendo uma String de Vetor CVSS"
+summary: "Um vetor CVSS é uma string compacta e autodescritiva: um prefixo de versão seguido de pares métrica:valor separados por barras. Aprender a lê-la diretamente, em vez de confiar em uma pontuação renderizada, permite detectar erros de transcrição e entender exatamente o que um fornecedor afirmou. As métricas Base são obrigatórias e o resto é opcional."
+concepts: ["cvss", "string de vetor", "notação", "abreviações"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["cvss-base-metrics-explained", "cvss-temporal-and-environmental", "how-cvss-scoring-works"]
+category: security
+order: 73
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma string de vetor CVSS foi projetada para viajar junto com a pontuação, de modo que qualquer um possa ver como ela foi derivada. Ela se parece com isto:
+
+`CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H`
+
+## Estrutura
+
+A string começa com um **prefixo de versão**, `CVSS:3.1` ou `CVSS:3.0`, seguido de uma barra. Depois vêm os **pares métrica:valor**, cada um uma abreviação, dois-pontos e um valor de uma letra, separados por barras. A ordem é convencional (base primeiro, depois temporal, depois ambiental), mas um parser correto não depende da ordem; depende dos nomes das métricas.
+
+As oito **métricas Base** são obrigatórias: `AV` Vetor de Ataque, `AC` Complexidade do Ataque, `PR` Privilégios Necessários, `UI` Interação do Usuário, `S` Escopo, `C` Confidencialidade, `I` Integridade, `A` Disponibilidade. Se qualquer uma das oito faltar, o vetor não pode ser pontuado.
+
+Os pares **Temporais** (`E`, `RL`, `RC`) e **Ambientais** (`CR`, `IR`, `AR`, e as métricas modificadas de `MAV` a `MA`) são opcionais. Onde aparecem, um valor `X` significa **Não Definido**, o que diz à fórmula para ignorar aquela métrica.
+
+## Exemplo comentado
+
+Lendo o exemplo acima da esquerda para a direita: versão 3.1; Vetor de Ataque Rede; Complexidade do Ataque Baixa; Privilégios Necessários Nenhum; Interação do Usuário Nenhuma; Escopo Inalterado; e impacto Alto em Confidencialidade, Integridade e Disponibilidade. Esse é o perfil de uma execução remota de código não autenticada e acessível pela rede, e pontua 9.8 (Crítica). Troque `S:U` por `S:C` e a mesma falha pontua 10.0, porque uma mudança de escopo permite ultrapassar a fórmula limitada do escopo inalterado.
+
+## Por que ler à mão
+
+Uma pontuação renderizada esconde erros. Uma única letra errada, `PR:L` em vez de `PR:N`, muda o número silenciosamente, e uma métrica ausente pode fazer uma ferramenta se recusar a pontuar um vetor que outra ferramenta pontua adivinhando um padrão. Ler os pares você mesmo, ou decodificá-los com uma ferramenta que mostra cada métrica por extenso, é como você detecta um comunicado de fornecedor pontuado de forma inconsistente, ou confirma que duas fontes descrevem a mesma falha da mesma maneira.

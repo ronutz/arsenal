@@ -1,0 +1,27 @@
+---
+slug: json-comments-and-trailing-commas
+title: "Trailing Commas, Comments, and the JSON5 Family"
+summary: "Strict JSON has no comments and no trailing commas, which surprises people whose editor accepts both. The reason is that JSON is a minimal interchange format, and the tolerant variants (JSONC, JSON5) are separate things. Knowing which is which avoids config files that break in another tool."
+concepts: ["json", "comments", "trailing comma", "json5", "jsonc"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-string-escapes", "json-formatting-and-canonical"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Two things that feel like they should be allowed in JSON are not: comments, and a comma after the last item in an array or object. `{"a": 1,}` and `// note` are both invalid JSON.
+
+## Why the standard forbids them
+
+JSON (RFC 8259) is deliberately a data-interchange format, not a configuration language. Its author left comments out on purpose, partly to keep parsers simple and partly because comments were being abused to carry parsing directives. Trailing commas are excluded for the same minimalism: the grammar says items are comma-*separated*, so a comma with nothing after it is a syntax error. A strict parser will reject both, and a good formatter will flag them.
+
+## The tolerant variants
+
+The friction is that many places people write JSON accept more:
+
+- **JSONC** (JSON with Comments) adds `//` and `/* */` comments. This is what powers editor settings files and `tsconfig.json`, which is why those accept comments even though they look like JSON.
+- **JSON5** goes further: comments, trailing commas, unquoted object keys, single-quoted strings, hex numbers, and more. It is a superset aimed at hand-written config.
+
+These are genuinely different formats that happen to look like JSON. The trap is portability: a config file with comments is fine in the tool that expects JSONC, and a hard error the moment another program parses it as strict JSON. The safe rule is to keep comments and trailing commas out of any JSON meant to be consumed by something you do not control, and to strip them (which a formatter can do) before sending JSON across a boundary.

@@ -1,0 +1,34 @@
+---
+slug: dig-trace-and-delegation
+title: "Seguindo a delegação com dig +trace"
+summary: "O dig +trace resolve um nome da forma como a internet de fato faz: começando na raiz, seguindo a delegação para o TLD e então para os próprios servidores autoritativos do domínio, imprimindo cada salto. É a melhor forma de ver onde a resolução quebra e de entender como o DNS é costurado."
+concepts: ["dig", "trace", "delegation", "iterative resolution", "root servers", "dns"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["dig-query-options", "reading-dig-output", "dns-record-types-in-answers"]
+category: networking
+order: 53
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um `dig` normal pergunta a um resolvedor e confia na resposta dele. O `dig +trace` faz algo diferente e bem mais revelador: ele realiza a resolução por conta própria, salto a salto, como um resolvedor recursivo faria.
+
+## O que o +trace realmente faz
+
+O DNS é um sistema delegado e hierárquico. Nenhum servidor sozinho sabe tudo; cada nível aponta para o próximo. O `dig +trace example.com` percorre essa cadeia e a imprime:
+
+1. Ele começa perguntando a um **servidor raiz** sobre o nome. A raiz não conhece `example.com`, mas sabe quem opera o `.com`, então retorna os registros NS dos servidores do `.com` (um referral).
+2. O dig então pergunta a um desses **servidores do `.com`**, que também não mantém `example.com`, mas sabe quais servidores são autoritativos para ele, e retorna outro referral.
+3. Por fim o dig pergunta a um dos próprios **servidores autoritativos** do domínio, que retorna a resposta de fato.
+
+Cada passo aparece como um conjunto de registros NS (a delegação) seguido da consulta ao nível seguinte. O último bloco é a resposta autoritativa.
+
+## Por que é tão útil
+
+Como o +trace segue a cadeia real em vez de uma cópia em cache, ele mostra exatamente onde um problema mora. Se os servidores do `.com` devolverem os registros NS errados para o seu domínio, você tem um problema de delegação no registrador. Se a delegação está certa mas os servidores autoritativos dão timeout ou discordam, o problema está no seu provedor de DNS. Uma consulta simples apenas mostraria um SERVFAIL ou uma resposta desatualizada; o +trace mostra qual salto falhou.
+
+É também a forma mais clara de *entender* o DNS. Ver um nome resolver da raiz para baixo, referral por referral, torna a hierarquia concreta de um jeito que uma única resposta nunca faz.
+
+## Lendo bem
+
+Algumas coisas a ter em mente: o +trace faz sua própria resolução iterativa, então contorna o seu resolvedor configurado por completo, e é por isso que seu resultado pode diferir de uma consulta normal quando o cache do seu resolvedor está desatualizado. E cada referral é um conjunto de registros NS, não a resposta final, então leia até o último bloco para obter o dado de fato. Se um nível retornar registros que você não esperava, é nesse nível que se deve olhar primeiro.

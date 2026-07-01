@@ -1,0 +1,29 @@
+---
+slug: yaml-block-scalars
+title: "YAML Block Scalars and Multiline Strings"
+summary: "YAML has two ways to write a multiline string, and they treat newlines differently: literal style keeps them, folded style turns them into spaces. Chomping indicators then decide what happens to the trailing newline. Getting these wrong is why an embedded script or certificate comes out subtly mangled."
+concepts: ["yaml", "block scalar", "literal", "folded", "chomping"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["json-vs-yaml", "yaml-anchors-and-aliases", "yaml-type-coercion"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Writing a multiline string in JSON means one line with `\\n` escapes. YAML instead has **block scalars**, which let the text sit naturally across several lines, and it offers two styles that handle line breaks in opposite ways.
+
+## Literal versus folded
+
+- **Literal** style, introduced with `|`, keeps newlines exactly as written. Every line break in the block becomes a line break in the value. This is what you want for embedded scripts, config snippets, or PEM certificates, where the line structure is meaningful.
+- **Folded** style, introduced with `>`, *folds* single line breaks into spaces, so wrapped text becomes one long line, while blank lines are preserved as paragraph breaks. This is for prose you want to wrap in the file but store as flowing text.
+
+The difference is easy to mix up: use folded style for a script and every line gets joined into one, breaking it.
+
+## Chomping the final newline
+
+After the `|` or `>` you can add a **chomping indicator** for the trailing newline: the default (clip) keeps a single final newline, `-` (strip) removes it, and `+` (keep) preserves all trailing blank lines. So `|-` gives you the block with no newline at the end, which matters when the value is compared byte for byte, such as a key or a token.
+
+## On conversion to JSON
+
+Whichever style you use, JSON has only ordinary strings, so a block scalar converts to a single string with embedded `\\n` (for literal) or folded spaces (for folded), and the chomping choice determines whether a trailing `\\n` is present. The visual block layout disappears entirely. This is worth remembering when a converted certificate or script stops working: the content is usually intact, but a stray or missing trailing newline from the chomping rule is a common culprit.

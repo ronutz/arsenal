@@ -1,0 +1,41 @@
+---
+slug: reverse-dns-lookups-with-nslookup
+title: "Consultas DNS reversas com o nslookup"
+summary: "O DNS reverso mapeia um endereço IP de volta para um nome por meio de registros PTR que ficam sob in-addr.arpa para IPv4 e ip6.arpa para IPv6. O nslookup faz isso automaticamente quando você lhe passa um endereço. Este artigo cobre como o nome reverso especial é construído, por que os servidores de e-mail se importam, e por que o direto e o reverso podem legitimamente discordar."
+concepts: ["reverse dns", "ptr", "in-addr.arpa", "ip6.arpa", "mail", "nslookup"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-record-types", "nslookup-vs-dig"]
+category: networking
+order: 50
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O DNS direto transforma um nome em um endereço. O DNS reverso faz o caminho inverso, e o nslookup é a ferramenta que a maioria das pessoas usa para isso.
+
+## Basta passar um endereço
+
+Dê ao nslookup um IP em vez de um nome e ele realiza uma consulta reversa para você:
+
+```
+Server:		1.1.1.1
+Address:	1.1.1.1#53
+
+34.216.184.93.in-addr.arpa	name = example.com.
+```
+
+A resposta é um registro **PTR**, impresso com o rótulo `name =`. Note o nome de consulta de aparência estranha: o DNS reverso não é um protocolo especial, é uma consulta comum de um nome construído de forma especial.
+
+## Como o nome reverso é construído
+
+Para IPv4, você inverte os quatro octetos e acrescenta `in-addr.arpa`. Assim `93.184.216.34` vira `34.216.184.93.in-addr.arpa`. Inverter os octetos coloca a parte mais geral (a rede) à direita, alinhando-se com a forma como o resto do DNS é estruturado.
+
+Para IPv6 a mesma ideia se aplica no nível do nibble: cada um dos 32 dígitos hexadecimais é invertido e separado por pontos, com `ip6.arpa` no final. É longo e tedioso à mão, que é exatamente por que você deixa a ferramenta construí-lo.
+
+## Por que isso importa
+
+O maior consumidor de DNS reverso é o e-mail. Servidores de e-mail receptores rotineiramente verificam se o IP remetente tem um registro PTR, e se esse nome PTR resolve de volta (no sentido direto) para o mesmo IP. Um PTR ausente ou divergente é um motivo comum de e-mail legítimo ser marcado como spam. O DNS reverso também aparece em logs de servidores, allowlists e diagnósticos, onde um nome é bem mais legível do que um endereço nu.
+
+## Direto e reverso podem discordar
+
+O direto e o reverso são **zonas separadas controladas por partes diferentes**. O dono do domínio controla o registro direto (nome para IP); quem é dono do bloco de IP controla o PTR (IP para nome). Não há nada que os obrigue a coincidir, e frequentemente eles não coincidem, o que é normal para hospedagem compartilhada ou IPs de nuvem. Quando ambos os sentidos concordam (o nome PTR resolve de volta para o IP original), isso é chamado de DNS reverso confirmado pelo direto (forward-confirmed reverse DNS), e é o que os sistemas de e-mail estão de fato testando.

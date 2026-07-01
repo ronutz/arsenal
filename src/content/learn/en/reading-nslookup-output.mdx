@@ -1,0 +1,37 @@
+---
+slug: reading-nslookup-output
+title: "Reading nslookup Output"
+summary: "nslookup prints a Server / Address header for the resolver it used, an optional Non-authoritative answer marker, and then the answer in a per-type prose format. Knowing that shape lets you read any result quickly and see at a glance whether it succeeded, where it came from, and what it means."
+concepts: ["nslookup", "dns", "resolver", "troubleshooting", "non-authoritative"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["nslookup-vs-dig", "nslookup-record-types", "authoritative-vs-non-authoritative-answers", "nslookup-errors-explained"]
+category: networking
+order: 45
+status: machine-draft
+updated: "2026-07-01"
+---
+
+nslookup is the DNS query tool most people meet first, and its output has a simple, stable shape once you know what the pieces are.
+
+## The layout
+
+A normal lookup looks like this:
+
+```
+Server:		1.1.1.1
+Address:	1.1.1.1#53
+
+Non-authoritative answer:
+Name:	example.com
+Address: 93.184.216.34
+```
+
+The first two lines are the header, and they describe the **resolver**, not the answer. `Server:` is the DNS server nslookup asked, and the `Address:` right below it is that server's address with its port (`#53`). This trips people up constantly: the first Address line is the resolver you queried, not the address you looked up.
+
+After a blank line comes the answer. The `Non-authoritative answer:` marker, when present, tells you the result came from the resolver's cache rather than straight from a server authoritative for the zone. Then the records themselves: for an address lookup, a `Name:` line followed by one or more `Address:` lines (an IPv6 answer is on an Address line too, told apart by its colons).
+
+## Where to look first
+
+If the lookup failed, nslookup does not print an answer; it prints a line like `** server can't find example.com: NXDOMAIN`. The code at the end is the whole story: `NXDOMAIN` means the name does not exist, `SERVFAIL` means the server could not complete the query, and `REFUSED` means it declined.
+
+If it succeeded, the two questions worth asking are which resolver answered (the Server line, in case you are testing a specific one) and whether the answer is authoritative (the marker). The rest of this series covers how nslookup formats each record type, how it compares to dig, what authoritative really means, and how to read its errors.

@@ -38,7 +38,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "ephemeral", // a pasted JWKS may contain private key material
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/jwks-and-key-rotation", "learn/jwk-key-types", "learn/verifying-a-jwt-with-jwks"],
+  learnLinks: ["learn/jwks-and-key-rotation", "learn/jwk-key-types", "learn/verifying-a-jwt-with-jwks", "learn/jwk-parameters-and-thumbprints", "learn/jwt-algorithm-confusion"],
   sources: [
     {
       id: "rfc7517",

@@ -63,7 +63,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // keep the secret out of indexable URLs
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/totp-and-hotp", "learn/validating-totp-codes"],
+  learnLinks: ["learn/totp-and-hotp", "learn/validating-totp-codes", "learn/totp-provisioning-uris-and-qr"],
   sources: [
     {
       id: "rfc6238",

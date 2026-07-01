@@ -1,0 +1,32 @@
+---
+slug: cvss-vector-string-format
+title: "Reading a CVSS Vector String"
+summary: "A CVSS vector is a compact, self-describing string: a version prefix followed by slash-separated metric:value pairs. Learning to read it directly, rather than trusting a rendered score, lets you spot transcription errors and understand exactly what a vendor claimed. The Base metrics are mandatory and the rest are optional."
+concepts: ["cvss", "vector string", "notation", "abbreviations"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["cvss-base-metrics-explained", "cvss-temporal-and-environmental", "how-cvss-scoring-works"]
+category: security
+order: 73
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A CVSS vector string is designed to travel with the score so anyone can see how it was derived. It looks like this:
+
+`CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H`
+
+## Structure
+
+The string starts with a **version prefix**, `CVSS:3.1` or `CVSS:3.0`, followed by a slash. After that come **metric:value pairs**, each an abbreviation, a colon, and a single-letter value, separated by slashes. Order is conventional (base first, then temporal, then environmental) but a correct parser does not depend on order; it depends on the metric names.
+
+The eight **Base metrics** are mandatory: `AV` Attack Vector, `AC` Attack Complexity, `PR` Privileges Required, `UI` User Interaction, `S` Scope, `C` Confidentiality, `I` Integrity, `A` Availability. If any of the eight is missing, the vector cannot be scored.
+
+**Temporal** (`E`, `RL`, `RC`) and **Environmental** (`CR`, `IR`, `AR`, and the modified metrics `MAV` through `MA`) pairs are optional. Where they appear, a value of `X` means **Not Defined**, which tells the formula to ignore that metric.
+
+## Worked example
+
+Reading the example above left to right: version 3.1; Attack Vector Network; Attack Complexity Low; Privileges Required None; User Interaction None; Scope Unchanged; and High impact to Confidentiality, Integrity, and Availability. That is the profile of an unauthenticated, network-reachable remote code execution, and it scores 9.8 (Critical). Change `S:U` to `S:C` and the same flaw scores 10.0, because a scope change lets it exceed the cap-limited unchanged formula.
+
+## Why read it by hand
+
+A rendered score hides mistakes. A single wrong letter, `PR:L` instead of `PR:N`, quietly changes the number, and a missing metric can make one tool refuse to score a vector that another tool scores by guessing a default. Reading the pairs yourself, or decoding them with a tool that shows every metric in words, is how you catch a vendor advisory that was scored inconsistently, or confirm that two sources are describing the same flaw the same way.

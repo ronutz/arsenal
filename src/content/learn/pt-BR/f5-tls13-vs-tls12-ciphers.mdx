@@ -1,0 +1,26 @@
+---
+slug: f5-tls13-vs-tls12-ciphers
+title: "Ciphers TLS 1.3 e TLS 1.2 no BIG-IP"
+summary: "O TLS 1.3 mudou o que é uma cipher suite, e por isso o BIG-IP trata 1.3 e 1.2 de formas diferentes. Uma suite 1.2 agrupa troca de chaves, autenticação e a cifra em massa; uma suite 1.3 nomeia apenas a cifra em massa e o hash. Saber disso explica por que keywords antigas de cipher string não direcionam o 1.3."
+concepts: ["f5", "tls 1.3", "tls 1.2", "cipher suite", "big-ip"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "f5-cipher-rules-and-groups", "f5-cipher-ordering-and-negotiation"]
+category: transport
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma cipher string que funcionou por anos de repente parece não ter efeito no TLS 1.3, e a razão é que o 1.3 redefiniu a cipher suite.
+
+## Duas noções diferentes de suite
+
+Uma cipher suite **TLS 1.2** é um pacote: ela nomeia o método de troca de chaves, o método de autenticação, a cifra de criptografia em massa e o MAC, tudo de uma vez, que é por que nomes como `ECDHE-RSA-AES128-GCM-SHA256` são tão longos. A cipher string baseada em keywords existe para selecionar e filtrar por todas essas dimensões.
+
+Uma cipher suite **TLS 1.3** nomeia apenas duas coisas: a cifra em massa AEAD e seu hash. O conjunto completo é minúsculo e fixo, essencialmente variantes de AES-GCM e ChaCha20-Poly1305 (por exemplo `TLS_AES_128_GCM_SHA256`). Troca de chaves e autenticação não fazem mais parte da suite; o 1.3 sempre usa Diffie-Hellman efêmero para forward secrecy e negocia o grupo e o algoritmo de assinatura separadamente. Não há nada a "selecionar" para troca de chaves em uma suite 1.3 porque isso não está codificado lá.
+
+## O que isso significa no BIG-IP
+
+Como as duas versões carregam informações diferentes, o BIG-IP as trata em trilhas separadas. As keywords de cipher string que filtram o 1.2 por troca de chaves ou autenticação (coisas como exigir ECDHE, ou excluir troca de chaves RSA) não têm uma suite 1.3 sobre a qual agir, então simplesmente não restringem o 1.3. As suites 1.3 são seu próprio grupo pequeno, habilitadas quando o TLS 1.3 é habilitado no profile, e as cipher rules do BIG-IP entendem keywords de 1.3 para os casos em que você de fato quer incluí-las ou excluí-las.
+
+A lição prática é parar de pensar em uma lista de ciphers como governando tudo. Para 1.2 e anteriores, a string de keywords faz o trabalho pesado por troca de chaves, autenticação e cifra em massa. Para 1.3, a escolha da cifra em massa é um menu fixo e curto, e as propriedades de segurança que você costumava selecionar com keywords (forward secrecy, autenticação forte) estão embutidas no protocolo ou negociadas por configurações separadas de grupo e assinatura. Quando uma keyword parece ignorada, verifique se a conexão é de fato 1.3, onde essa keyword pode não ter a que se ligar.

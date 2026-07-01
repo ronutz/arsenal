@@ -1,0 +1,38 @@
+---
+slug: bigip-tcpdump-safety
+title: "Capturando com segurança em um BIG-IP de produção"
+summary: "O tcpdump em um BIG-IP toca o plano de dados e o sistema de arquivos de um dispositivo que está carregando tráfego ao vivo. Alguns hábitos, limitar a captura, observar o espaço em disco e ser deliberado quanto ao detalhe, evitam que uma captura de diagnóstico vire um incidente."
+concepts: ["tcpdump", "f5", "big-ip", "operations", "safety", "disk space", "tmm"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["bigip-tcpdump-syntax", "capturing-on-vlans-and-trunks"]
+category: networking
+order: 35
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Uma captura de pacotes é uma operação somente leitura, mas em um BIG-IP de produção ela não é gratuita. Consome CPU, grava em um sistema de arquivos de que outros processos precisam, e uma captura sem limites em um dispositivo ocupado pode crescer de forma alarmante. Nada disso é motivo para evitar capturar; é motivo para capturar de forma deliberada. O [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder) o conduz aos padrões seguros.
+
+## Sempre limite a captura
+
+Uma captura em `0.0` não tem limite de taxa. Em um dispositivo que trata dezenas de milhares de conexões por segundo, uma captura sem filtro pode gravar gigabytes em segundos. Limite-a de duas formas: com um Berkeley Packet Filter para que só os pacotes relevantes sejam gravados (`host`, `net`, `port`), e, opcionalmente, com uma contagem de pacotes (`-c`) para que ela pare sozinha. Uma captura que você precisa lembrar de parar é uma captura que enche um disco enquanto você está distraído.
+
+## Observe o sistema de arquivos
+
+Grave as capturas em `/var/tmp` ou `/shared/tmp`, que têm espaço, em vez de em um local que compartilha espaço com logs ou configuração. Verifique o espaço livre antes de uma captura longa e remova o arquivo quando terminar. Uma partição `/var` cheia pode afetar mais do que a sua captura; pode atrapalhar o logging e outros serviços do dispositivo.
+
+## Seja deliberado quanto ao detalhe e ao snap length
+
+O detalhe alto (`:nnn`) anexa um trailer maior a cada pacote, e `-s0` mantém os quadros inteiros. Ambos costumam estar corretos, mas ambos aumentam os bytes gravados por pacote. Em um dispositivo extremamente ocupado, considere um filtro mais restrito, um nível de detalhe menor ou um snap length menor se você só precisa dos cabeçalhos. O objetivo é a menor captura que ainda responda à pergunta.
+
+## O comportamento do -s0 nas versões modernas
+
+No BIG-IP 15.x e posteriores, `-s0` é tratado como o snap length padrão de 262144 bytes, mantido por compatibilidade, então ainda captura os pacotes inteiros. Você não precisa de um flag diferente nas versões mais novas; o familiar `-s0` continua significando capturar o quadro inteiro.
+
+## Saída em hex versus arquivos
+
+A opção `-X` imprime o conteúdo em hex e ASCII na tela, o que é prático para um olhar rápido, mas não tem efeito em um arquivo binário gravado com `-w`. Se você está salvando um pcap para analisar depois, dispense o `-X`; se está olhando alguns pacotes ao vivo, dispense o `-w`. Misturar os dois desperdiça esforço sem acrescentar informação.
+
+## Faça a limpeza
+
+Quando a captura terminar, pare-a, transfira o arquivo para fora do dispositivo para análise e apague-o do BIG-IP. Tratar a limpeza como parte do procedimento, e não como algo a se pensar depois, é o que evita que capturas pontuais se acumulem silenciosamente em hardware de produção.

@@ -1,0 +1,46 @@
+---
+slug: how-cvss-scoring-works
+title: "How CVSS Scoring Works"
+summary: "CVSS turns a short vector string into a 0 to 10 severity number using a fixed formula. The Base score is built from two sub-scores: Exploitability (how reachable and easy the flaw is) and Impact (how bad the outcome is). Everything else refines that base. This is arithmetic, not opinion, which is why a calculator can reproduce any published score exactly."
+concepts: ["cvss", "vulnerability scoring", "base score", "exploitability", "impact"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["cvss-base-metrics-explained", "cvss-vector-string-format", "cvss-severity-bands-and-limits"]
+category: security
+order: 70
+status: machine-draft
+updated: "2026-07-01"
+---
+
+The Common Vulnerability Scoring System (CVSS) is an open framework, owned by FIRST.org, for describing the severity of a software vulnerability. Its most visible output is a number from 0.0 to 10.0, but that number is derived from a vector string by a fixed formula. Nothing about the score is subjective once the metrics are chosen, so any correct implementation produces the same result for the same vector.
+
+## Three metric groups
+
+CVSS v3.1 has three groups. The **Base** group captures the intrinsic properties of the flaw that do not change over time or across environments, and it is the only group that is usually published. The **Temporal** group adjusts the base for things that change over time, such as whether exploit code exists. The **Environmental** group lets a specific organization re-score the flaw for its own systems. Base metrics are mandatory; the other two are optional refinements.
+
+## The Base score is two sub-scores
+
+The Base score is assembled from two pieces.
+
+**Exploitability** measures how reachable and how easy the attack is. It is the product of four metric weights, scaled by a constant:
+
+`Exploitability = 8.22 x AttackVector x AttackComplexity x PrivilegesRequired x UserInteraction`
+
+A flaw reachable over the network, with low complexity, needing no privileges and no user interaction, maximises this term.
+
+**Impact** measures how bad a successful attack is. It starts from an impact sub-score built from the Confidentiality, Integrity, and Availability metrics:
+
+`ISS = 1 - [(1 - Confidentiality) x (1 - Integrity) x (1 - Availability)]`
+
+That sub-score is then turned into an Impact value in a way that depends on **Scope** (described in the base-metrics article).
+
+## Putting them together
+
+If the impact sub-score is zero, the whole Base score is zero: a vulnerability with no confidentiality, integrity, or availability impact scores 0.0 regardless of how reachable it is. Otherwise the Base score combines the two sub-scores and rounds up to one decimal place:
+
+`BaseScore = Roundup(min(Impact + Exploitability, 10))`
+
+when Scope is unchanged, or with an extra `1.08` multiplier when Scope has changed. The `Roundup` step is defined precisely in the specification so that different languages and platforms cannot disagree on the last digit.
+
+The resulting number maps to a qualitative band (None, Low, Medium, High, Critical). Those bands, and the important caveats about what the score does and does not mean, are covered in the severity article.
+
+Because every step is deterministic, pasting a vector into a calculator should reproduce the vendor's or NVD's published score exactly. If it does not, the vector was transcribed wrong, or the two tools disagree on the CVSS version.

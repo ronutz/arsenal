@@ -69,6 +69,7 @@
       "purposeLabel": "Currently funding"
     },
     "stats": {
+      "headline": "Currently serving",
       "tools": "Tools",
       "articles": "Articles",
       "sectionLabel": "The toolbox at a glance"
@@ -1422,6 +1423,620 @@
       "err_format": "That does not look like a PEM, base64, or hex CSR.",
       "err_der": "The DER structure could not be parsed.",
       "err_structure": "This parses as DER but is not a PKCS#10 certification request."
+    },
+    "bigip-tcpdump-builder": {
+      "name": "BIG-IP tcpdump builder",
+      "blurb": "Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax, flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run; it captures nothing.",
+      "runsLocally": "The command is assembled in your browser. Nothing is captured, run, or sent anywhere.",
+      "groupInterface": "Interface and flow",
+      "ifaceLabel": "Interface or VLAN",
+      "ifacePlaceholder": "0.0",
+      "ifaceHint": "0.0 captures on every TMM. You can also name a VLAN, a tunnel, or a self-IP.",
+      "detailLabel": "TMM flow detail",
+      "detailNone": "None",
+      "detailLow": ":n  low",
+      "detailMed": ":nn  medium",
+      "detailHigh": ":nnn  high",
+      "detailHint": "Adds the F5 noise/flow trailer to each packet. Higher detail prints flow and peer-flow information.",
+      "bothSidesLabel": "Both sides (:p)",
+      "bothSidesHint": "Capture the client-side and server-side flows of the same connection.",
+      "groupResolution": "Name resolution",
+      "nameResLabel": "DNS and port-name lookups",
+      "nameResDefault": "Resolve",
+      "nameResNoDns": "-n  no DNS",
+      "nameResNoDnsPort": "-nn  no DNS or ports",
+      "nameResHint": "-n and -nn keep the capture fast and avoid reverse lookups that can stall it.",
+      "groupCapture": "Snap length and limits",
+      "snaplenLabel": "Snap length",
+      "snaplenDefault": "Default",
+      "snaplenFull": "-s0  whole packet",
+      "snaplenCustom": "Custom",
+      "snaplenValueLabel": "Bytes",
+      "snaplenValuePlaceholder": "96",
+      "countLabel": "Stop after N packets (-c)",
+      "countPlaceholder": "1000",
+      "countHint": "Optional. Leave blank to capture until you stop it with Ctrl-C.",
+      "groupFormat": "Output format",
+      "verbosityLabel": "Verbosity",
+      "verbNone": "None",
+      "verbV": "-v",
+      "verbVv": "-vv",
+      "verbVvv": "-vvv",
+      "etherLabel": "Link-level header (-e)",
+      "hexLabel": "Hex and ASCII payload (-X)",
+      "groupFile": "Write to file",
+      "writeFileLabel": "Write a pcap file (-w)",
+      "fileNameLabel": "File path",
+      "fileNamePlaceholder": "/var/tmp/capture.pcap",
+      "fileNameHint": "Required when sending a capture to F5 Support. Save under /var/tmp or /shared/tmp.",
+      "groupFilter": "Filter",
+      "filterLabel": "BPF filter expression",
+      "filterPlaceholder": "host 10.1.1.1 and port 443",
+      "filterHint": "Standard tcpdump/BPF syntax: host, net, port, src/dst, tcp/udp, and / or / not.",
+      "commandHeading": "Command",
+      "copy": "Copy",
+      "copied": "Copied",
+      "warningsHeading": "Advisories",
+      "warnings": {
+        "unfiltered-all-tmm": "Capturing on 0.0 is not rate-limited. Add a filter (host or port) or a packet count (-c) so the capture file stays bounded.",
+        "snaplen-zero-modern": "On BIG-IP 15.x and later, -s0 maps to the default snap length of 262144 bytes (kept for compatibility), so it still captures whole packets.",
+        "hex-with-writefile": "-X only affects on-screen output. It has no effect when you also write a binary file with -w.",
+        "colon-in-iface-name": "An interface name must not contain a colon on BIG-IP. The colon is reserved for the TMM detail suffix."
+      }
+    },
+    "dig-output-explainer": {
+      "name": "dig output explainer",
+      "blurb": "Paste real dig output and get a decoded, explained breakdown: the header and flags, the EDNS OPT pseudo-section, every record in each section, and the query stats. Parsed entirely in your browser, nothing is resolved or sent anywhere.",
+      "input": {
+        "label": "Paste dig output",
+        "placeholder": "; <<>> DiG 9.18.1 <<>> example.com A\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: ...",
+        "example": "Load example",
+        "clear": "Clear"
+      },
+      "privacy": "Parsed entirely in your browser. Nothing is resolved or sent anywhere.",
+      "notDig": "This does not look like dig output. Paste the full text dig prints, including the ;; ->>HEADER<<- line.",
+      "warnings": {
+        "title": "Worth noticing",
+        "nonzero-rcode": "The status is not NOERROR, so this is not a normal successful answer. See the status meaning above.",
+        "truncated-tc": "The TC (truncated) flag is set: the UDP answer did not fit and is incomplete. dig normally retries over TCP.",
+        "noerror-nodata": "Status is NOERROR but there are no answer records (NODATA): the name exists, but not for this record type.",
+        "looks-like-query": "The QR flag is not set, so this looks like a query rather than a response.",
+        "dnssec-requested-not-validated": "DNSSEC was requested (the DO flag is set) but the AD flag is not, so the resolver did not return validated data."
+      },
+      "header": {
+        "title": "Header",
+        "opcode": "Opcode",
+        "status": "Status (RCODE)",
+        "id": "Message ID",
+        "version": "dig version",
+        "query": "Query"
+      },
+      "flags": {
+        "title": "Flags & counts",
+        "question": "Questions",
+        "answer": "Answers",
+        "authority": "Authority",
+        "additional": "Additional"
+      },
+      "opt": {
+        "title": "EDNS (OPT pseudo-section)",
+        "version": "EDNS version",
+        "flags": "EDNS flags",
+        "udp": "UDP payload size",
+        "help": "EDNS(0) extends DNS over UDP: it advertises a larger UDP payload size and carries flags such as DO (DNSSEC OK) and options like COOKIE."
+      },
+      "section": {
+        "question": "Question section",
+        "answer": "Answer section",
+        "authority": "Authority section",
+        "additional": "Additional section",
+        "empty": "No records in this section."
+      },
+      "footer": {
+        "title": "Query statistics",
+        "queryTime": "Query time",
+        "server": "Server",
+        "when": "When",
+        "msgSize": "Message size"
+      }
+    },
+    "nslookup-output-explainer": {
+      "name": "nslookup output explainer",
+      "blurb": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere.",
+      "input": {
+        "label": "Paste nslookup output",
+        "placeholder": "Server:\t1.1.1.1\nAddress:\t1.1.1.1#53\n\nNon-authoritative answer:\nName:\texample.com\nAddress: 93.184.216.34",
+        "example": "Load example",
+        "clear": "Clear"
+      },
+      "privacy": "Parsed entirely in your browser. Nothing is resolved or sent anywhere.",
+      "notNslookup": "This does not look like nslookup output. Paste the full text nslookup prints, including the Server: line.",
+      "warnings": {
+        "title": "Worth noticing",
+        "nxdomain": "The server reports the name does not exist (NXDOMAIN).",
+        "servfail": "The server could not complete the query (SERVFAIL), often a broken delegation, a DNSSEC failure, or an upstream timeout.",
+        "refused": "The server refused the query (REFUSED), usually a policy or access-control decision.",
+        "no-servers": "No server could be reached (a timeout). Check the resolver address and connectivity.",
+        "non-authoritative": "This answer is non-authoritative: it came from the resolver's cache, not directly from a server authoritative for the zone. That is normal for a recursive lookup."
+      },
+      "errors": {
+        "title": "Failure"
+      },
+      "server": {
+        "title": "Resolver used",
+        "server": "Server",
+        "address": "Address",
+        "help": "This is the DNS server nslookup queried, not the answer. Its address includes the port (#53)."
+      },
+      "authority": {
+        "title": "Answer authority",
+        "authoritative": "Authoritative",
+        "nonAuthoritative": "Non-authoritative",
+        "unknown": "Not indicated",
+        "nonAuthHelp": "The answer came from the resolver's cache. To get an authoritative answer, query a server listed in the zone's NS records directly."
+      },
+      "records": {
+        "title": "Records"
+      },
+      "referral": {
+        "note": "nslookup listed the authoritative servers it would refer you to for a definitive answer."
+      }
+    },
+    "xml-decoder": {
+      "name": "XML Decoder",
+      "blurb": "Paste XML and read its structure: the declaration, the DOCTYPE and any entities, the element tree with namespaces and attributes, plus a security check of the XML attack surface. Nothing is fetched or resolved.",
+      "input": {
+        "label": "XML",
+        "placeholder": "Paste XML here...",
+        "example": "Example",
+        "clear": "Clear"
+      },
+      "privacy": "Parsed entirely in your browser. No entity is resolved, no external reference is fetched, and nothing is uploaded.",
+      "notXml": "This does not look like XML. Paste a document that starts with an element or an XML declaration.",
+      "security": {
+        "title": "Security analysis",
+        "doctype-present": "A DOCTYPE is present. The DOCTYPE is the gateway to XML entity attacks; a hardened parser disables it entirely.",
+        "external-dtd": "The DOCTYPE references an external DTD. A parser that fetches it can be steered to attacker-controlled content.",
+        "external-entity": "An external entity is declared (SYSTEM or PUBLIC). Resolving it would read a local file or make a network request: the classic XXE vector.",
+        "parameter-entity": "A parameter entity is declared. Parameter entities are used to build blind and out-of-band XXE payloads.",
+        "entity-expansion": "Entities reference other entities. Chained expansion can grow exponentially and exhaust memory, the billion laughs denial of service."
+      },
+      "wellFormed": {
+        "title": "Well-formedness",
+        "yes": "Well-formed",
+        "no": "Not well-formed"
+      },
+      "errors": {
+        "mismatched-tag": "Mismatched tag: {detail}",
+        "unexpected-close": "Closing tag with no matching open: {detail}",
+        "unclosed-tag": "Tag was never closed: {detail}",
+        "no-root": "No root element found.",
+        "multiple-roots": "Multiple root elements ({detail}). XML must have exactly one.",
+        "malformed-tag": "Malformed tag near: {detail}",
+        "unquoted-attribute": "Unquoted attribute value in: {detail}",
+        "unterminated-comment": "A comment was never closed.",
+        "unterminated-cdata": "A CDATA section was never closed."
+      },
+      "declaration": {
+        "title": "XML declaration",
+        "version": "Version",
+        "encoding": "Encoding",
+        "standalone": "Standalone"
+      },
+      "doctype": {
+        "title": "DOCTYPE",
+        "name": "Root name",
+        "externalId": "External identifier",
+        "entities": "Declared entities",
+        "entityExternal": "external",
+        "entityInternal": "internal",
+        "entityParameter": "parameter"
+      },
+      "namespaces": {
+        "title": "Namespaces",
+        "default": "(default)"
+      },
+      "stats": {
+        "title": "Structure",
+        "elements": "Elements",
+        "depth": "Max depth",
+        "attributes": "Attributes",
+        "comments": "Comments",
+        "cdata": "CDATA sections",
+        "pis": "Processing instructions"
+      },
+      "tree": {
+        "title": "Element tree"
+      },
+      "node": {
+        "cdata": "CDATA",
+        "comment": "comment",
+        "pi": "PI"
+      }
+    },
+    "f5xc-service-policy-explainer": {
+      "name": "F5 XC Service Policy Explainer",
+      "blurb": "Paste an F5 Distributed Cloud service_policy and see exactly how it matches: the server scope, the rule order, and every rule's action and conditions. iRules for XC, decoded.",
+      "input": {
+        "label": "F5 XC service_policy JSON",
+        "example": "Example",
+        "clear": "Clear",
+        "placeholder": "Paste a service_policy spec (Create, Replace, or Get form, or a bare spec)..."
+      },
+      "privacy": "Decoded locally in your browser. Nothing is sent anywhere, and the policy is never evaluated against live traffic.",
+      "notPolicy": "This does not look like an F5 XC service_policy. Expected a spec with a rule choice (rule_list, allow_all_requests, allow_list, deny_list, ...) or a server choice.",
+      "parseError": "Could not parse JSON: {detail}",
+      "warnings": {
+        "title": "Worth a look",
+        "allow-all-policy": "This policy allows all requests. Every request that reaches it is permitted, with no further checks.",
+        "allow-all-rule": "A rule allows every request (ALLOW with no conditions). It matches everything that reaches it, so any rule below it is never evaluated. This is the common catch-all pattern, but confirm it is intentional.",
+        "no-rules": "The rule list is empty. With no rules to match, requests fall through and the default is to deny.",
+        "expired-rule": "A rule has an expiration timestamp in the past. It still exists in the config but is no longer applied.",
+        "case-sensitive-exact": "An exact-value matcher has no LOWER_CASE or UPPER_CASE transformer, so the comparison is case-sensitive. '/Admin' will not match '/admin'.",
+        "inverted-matcher": "A matcher is inverted (invert_matcher). It matches when the condition is NOT met, which is easy to misread."
+      },
+      "overview": {
+        "title": "Overview",
+        "name": "Policy",
+        "appliesTo": "Applies to",
+        "disposition": "Disposition"
+      },
+      "serverScope": {
+        "any_server": "Any server",
+        "server_name": "A specific server name",
+        "server_name_matcher": "Servers matching a pattern",
+        "server_selector": "Servers matching a label selector"
+      },
+      "disposition": {
+        "allow_all": "Allow all requests",
+        "deny_all": "Deny all requests",
+        "allow_list": "Allow a list of sources",
+        "deny_list": "Deny a list of sources",
+        "rule_list": "Evaluate a list of rules",
+        "legacy_rule_list": "Evaluate referenced rule objects (legacy)",
+        "unknown": "No rule choice set"
+      },
+      "algorithm": {
+        "title": "How the rules are evaluated",
+        "FIRST_MATCH": "First match: rules are evaluated top to bottom until one matches. That rule's action is applied and evaluation stops.",
+        "DENY_OVERRIDES": "Deny overrides: all DENY rules are evaluated before any ALLOW rule, so a matching DENY wins over a matching ALLOW.",
+        "ALLOW_OVERRIDES": "Allow overrides: all ALLOW rules are evaluated before any DENY rule, so a matching ALLOW wins over a matching DENY.",
+        "defaultDeny": "If no rule matches, the request does not match this policy and the next policy in the set is evaluated. If nothing allows it, the request is denied."
+      },
+      "rules": {
+        "title": "Rules ({count})"
+      },
+      "rule": {
+        "unnamed": "(unnamed rule)",
+        "action": {
+          "allow": "Allow",
+          "deny": "Deny",
+          "nextPolicy": "Next policy",
+          "other": "Action"
+        },
+        "expired": "Expired",
+        "matchesEverything": "No conditions: this rule matches every request that reaches it.",
+        "modifiers": "On match, also:"
+      },
+      "logic": {
+        "orInline": "(any of these)",
+        "inverted": "inverted",
+        "caseSensitive": "case-sensitive",
+        "andAll": "All of the following must be true (AND):"
+      },
+      "op": {
+        "exact": "is exactly",
+        "regex": "matches regex",
+        "prefix": "starts with",
+        "suffix": "ends with",
+        "methods": "method is",
+        "present": "is present",
+        "absent": "is absent",
+        "asn": "AS number is",
+        "prefixes": "IP is within",
+        "refs": "references",
+        "classes": "TLS fingerprint class is",
+        "excluded": "excluding",
+        "keys": "has label keys",
+        "selector": "matches label selector",
+        "ports": "port is within",
+        "categories": "is",
+        "literal": "equals",
+        "transformers": "after applying",
+        "any": "Any (no constraint)",
+        "encodedPath": "matched against the encoded path",
+        "raw": "has fields set"
+      },
+      "predicate": {
+        "any_client": "Client",
+        "any_ip": "Source IP",
+        "any_asn": "Source ASN",
+        "any_server": "Server",
+        "client_name": "Client name",
+        "client_name_matcher": "Client name",
+        "client_selector": "Client selector (labels)",
+        "client_role": "Client role",
+        "ip_threat_category_list": "IP threat categories",
+        "ip_prefix_list": "Source IP prefixes",
+        "ip_matcher": "Source IP prefix sets",
+        "dst_ip_prefix_list": "Destination IP prefixes",
+        "dst_ip_matcher": "Destination IP prefix sets",
+        "asn_list": "Source ASNs",
+        "asn_matcher": "Source ASN sets",
+        "dst_asn_list": "Destination ASNs",
+        "dst_asn_matcher": "Destination ASN sets",
+        "api_group_matcher": "API group",
+        "additional_api_group_matchers": "API group (additional)",
+        "arg_matchers": "POST arguments",
+        "body_matcher": "Request body",
+        "cookie_matchers": "Cookies",
+        "domain_matcher": "Domain",
+        "headers": "HTTP headers",
+        "http_method": "HTTP method",
+        "ja4_tls_fingerprint": "JA4 TLS fingerprint",
+        "jwt_claims": "JWT claims",
+        "label_matcher": "Label keys",
+        "path": "HTTP path",
+        "port_matcher": "Port",
+        "query_params": "HTTP query parameters",
+        "tls_fingerprint_matcher": "TLS fingerprint (JA3)",
+        "user_identity_matcher": "User identity",
+        "request_constraints": "Request constraints",
+        "segment_policy": "Segments",
+        "scheme": "Scheme",
+        "url_matcher": "URL",
+        "virtual_host_matcher": "Virtual host",
+        "server_name": "Server name",
+        "server_name_matcher": "Server name",
+        "server_selector": "Server selector (labels)"
+      },
+      "sourceList": {
+        "title": "Source list",
+        "allow_list": "A request is allowed if its source matches any of the following:",
+        "deny_list": "A request is denied if its source matches any of the following:",
+        "defaultAction": "Default action (no match)"
+      },
+      "legacy": {
+        "title": "Referenced rules (legacy)",
+        "note": "This policy points to separate service_policy_rule objects rather than defining rules inline. Their contents are not part of this spec."
+      }
+    },
+    "cvss-vector-decoder": {
+      "name": "CVSS vector decoder",
+      "blurb": "Paste a CVSS v3.1 or v3.0 vector and get the score computed and mapped to a severity, with every metric spelled out. Local and offline; nothing is sent anywhere.",
+      "input": {
+        "label": "CVSS vector string",
+        "example": "Example",
+        "clear": "Clear",
+        "placeholder": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "privacy": "The vector is scored in your browser. Nothing is uploaded.",
+      "notCvss": "Paste a CVSS v3.0 or v3.1 vector string to decode it.",
+      "parseError": "That does not parse as a CVSS vector ({detail}).",
+      "unsupportedVersion": "This is a CVSS {version} vector. This decoder computes CVSS v3.0 and v3.1 only. CVSS v4.0 uses a different scoring model, and CVSS v2 is retired.",
+      "scores": {
+        "base": "Base",
+        "temporal": "Temporal",
+        "environmental": "Environmental"
+      },
+      "severity": {
+        "none": "None",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "meta": {
+        "version": "Version",
+        "scope": "Scope",
+        "scopeChanged": "Changed",
+        "scopeUnchanged": "Unchanged"
+      },
+      "subScores": {
+        "impact": "Impact sub-score",
+        "exploitability": "Exploitability sub-score"
+      },
+      "groups": {
+        "base": "Base metrics",
+        "temporal": "Temporal metrics",
+        "environmental": "Environmental metrics"
+      },
+      "warnings": {
+        "title": "Notes",
+        "no-version-prefix": "No CVSS version prefix was found. Scored as CVSS v3.1; add a CVSS:3.1/ or CVSS:3.0/ prefix to be explicit.",
+        "duplicate-metric": "A metric appears more than once. The last value given was used.",
+        "incomplete-base": "Some mandatory base metrics are missing, so no score can be computed. All eight of AV, AC, PR, UI, S, C, I, and A are required."
+      },
+      "metrics": {
+        "AV": {
+          "label": "Attack Vector",
+          "v": {
+            "N": "Network",
+            "A": "Adjacent",
+            "L": "Local",
+            "P": "Physical"
+          }
+        },
+        "AC": {
+          "label": "Attack Complexity",
+          "v": {
+            "L": "Low",
+            "H": "High"
+          }
+        },
+        "PR": {
+          "label": "Privileges Required",
+          "v": {
+            "N": "None",
+            "L": "Low",
+            "H": "High"
+          }
+        },
+        "UI": {
+          "label": "User Interaction",
+          "v": {
+            "N": "None",
+            "R": "Required"
+          }
+        },
+        "S": {
+          "label": "Scope",
+          "v": {
+            "U": "Unchanged",
+            "C": "Changed"
+          }
+        },
+        "C": {
+          "label": "Confidentiality Impact",
+          "v": {
+            "H": "High",
+            "L": "Low",
+            "N": "None"
+          }
+        },
+        "I": {
+          "label": "Integrity Impact",
+          "v": {
+            "H": "High",
+            "L": "Low",
+            "N": "None"
+          }
+        },
+        "A": {
+          "label": "Availability Impact",
+          "v": {
+            "H": "High",
+            "L": "Low",
+            "N": "None"
+          }
+        },
+        "E": {
+          "label": "Exploit Code Maturity",
+          "v": {
+            "X": "Not Defined",
+            "H": "High",
+            "F": "Functional",
+            "P": "Proof-of-Concept",
+            "U": "Unproven"
+          }
+        },
+        "RL": {
+          "label": "Remediation Level",
+          "v": {
+            "X": "Not Defined",
+            "U": "Unavailable",
+            "W": "Workaround",
+            "T": "Temporary Fix",
+            "O": "Official Fix"
+          }
+        },
+        "RC": {
+          "label": "Report Confidence",
+          "v": {
+            "X": "Not Defined",
+            "C": "Confirmed",
+            "R": "Reasonable",
+            "U": "Unknown"
+          }
+        },
+        "CR": {
+          "label": "Confidentiality Requirement",
+          "v": {
+            "X": "Not Defined",
+            "H": "High",
+            "M": "Medium",
+            "L": "Low"
+          }
+        },
+        "IR": {
+          "label": "Integrity Requirement",
+          "v": {
+            "X": "Not Defined",
+            "H": "High",
+            "M": "Medium",
+            "L": "Low"
+          }
+        },
+        "AR": {
+          "label": "Availability Requirement",
+          "v": {
+            "X": "Not Defined",
+            "H": "High",
+            "M": "Medium",
+            "L": "Low"
+          }
+        },
+        "MAV": {
+          "label": "Modified Attack Vector",
+          "v": {
+            "X": "Not Defined",
+            "N": "Network",
+            "A": "Adjacent",
+            "L": "Local",
+            "P": "Physical"
+          }
+        },
+        "MAC": {
+          "label": "Modified Attack Complexity",
+          "v": {
+            "X": "Not Defined",
+            "L": "Low",
+            "H": "High"
+          }
+        },
+        "MPR": {
+          "label": "Modified Privileges Required",
+          "v": {
+            "X": "Not Defined",
+            "N": "None",
+            "L": "Low",
+            "H": "High"
+          }
+        },
+        "MUI": {
+          "label": "Modified User Interaction",
+          "v": {
+            "X": "Not Defined",
+            "N": "None",
+            "R": "Required"
+          }
+        },
+        "MS": {
+          "label": "Modified Scope",
+          "v": {
+            "X": "Not Defined",
+            "U": "Unchanged",
+            "C": "Changed"
+          }
+        },
+        "MC": {
+          "label": "Modified Confidentiality Impact",
+          "v": {
+            "X": "Not Defined",
+            "H": "High",
+            "L": "Low",
+            "N": "None"
+          }
+        },
+        "MI": {
+          "label": "Modified Integrity Impact",
+          "v": {
+            "X": "Not Defined",
+            "H": "High",
+            "L": "Low",
+            "N": "None"
+          }
+        },
+        "MA": {
+          "label": "Modified Availability Impact",
+          "v": {
+            "X": "Not Defined",
+            "H": "High",
+            "L": "Low",
+            "N": "None"
+          }
+        }
+      }
     }
   },
   "privacy_page": {
@@ -1465,7 +2080,7 @@
     "contribute": "Improve the translations",
     "api": "API reference",
     "contributeTools": "Share an idea",
-    "feedback": "Submit feedback",
+    "feedback": "Contact",
     "privacy": "Privacy",
     "license": "License",
     "coffee": "Buy me a coffee"

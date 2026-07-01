@@ -37,15 +37,25 @@ build if skipped.
   `globals.css`. Match/no-match use the fixed traffic-light hexes.
 
 ## 6. Related Learn articles — EN + pt-BR **[enforced]**
-- Write at least one **new** article specific to the tool, in BOTH `en/` and
+- **AIM for FIVE articles per tool (PRIME), not two.** Five is a TARGET, not a
+  hard floor or ceiling:
+  - **Never pad.** Do not invent filler articles just to reach five. If the
+    tool's topic genuinely warrants only 3 or 4 substantive articles, ship that
+    many — quality over count (warrant-based, per D-57).
+  - **Exceed five** when the topic warrants more (e.g. `jwt` has 6).
+  - Tools shipped earlier at ~2 (`diff`, `totp-hotp`, and any others) are
+    under-served and should be brought up to ~5 warranted articles over time.
+- Each article is **new** and specific to the tool, written in BOTH `en/` and
   `pt-BR/` under `src/content/learn/`, with frontmatter `relatedTools: ["<slug>"]`.
   Articles I author are `status: machine-draft` until PRIME reviews them.
 - Cross-tag genuinely-related **existing** articles by adding `<slug>` to their
   `relatedTools` (en + pt-BR at minimum).
 - Point the tool manifest `learnLinks` at the new article slugs.
-- Guard: `scripts/check-tool-articles.mjs` (runs first in `prebuild`) fails the
-  build if any built tool lacks an en or pt-BR article. This step is the reason
-  the guard exists — totp-hotp once shipped without articles.
+- Guard: `scripts/check-tool-articles.mjs` (runs first in `prebuild`) enforces
+  only the **≥1 EN + pt-BR minimum** — the five-aim cannot be hard-enforced
+  because padding is forbidden, so it is a quality bar applied when authoring,
+  not a build gate. The guard exists because totp-hotp once shipped without any
+  articles.
 
 ## 7. Indexes & panels
 - The Learn index (`/learn`), the `[slug]` article routes, and the in-tool Learn

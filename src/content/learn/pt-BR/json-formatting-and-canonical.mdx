@@ -1,0 +1,24 @@
+---
+slug: json-formatting-and-canonical
+title: "Formatação, minificação e JSON canônico"
+summary: "O espaço em branco não muda o que o JSON significa, então JSON identado e minificado são o mesmo dado. Mas quando o JSON é assinado ou hasheado, os bytes exatos importam, e é aí que entra o JSON canônico: uma forma determinística de serializar o mesmo dado exatamente na mesma string toda vez."
+concepts: ["json", "minify", "pretty print", "canonical json", "signing"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-duplicate-keys", "json-string-escapes"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Entre quaisquer dois tokens, o JSON permite qualquer quantidade de espaço em branco, e ele não carrega significado. Esse único fato é o que torna a formatação segura: identar e minificar rearranjam espaços e quebras de linha sem mudar o dado em nada.
+
+## Identado versus minificado
+
+**Identar** adiciona indentação e quebras de linha para que um humano leia a estrutura. **Minificar** remove todo espaço e quebra de linha opcional para deixar o payload o menor possível para transporte. São duas visões de dados idênticos; você pode ir e voltar sem perdas, que é exatamente o que um formatador faz.
+
+A **ordem** das chaves é uma não-diferença relacionada. Objetos JSON são definidos como não ordenados, então `{"a":1,"b":2}` e `{"b":2,"a":1}` guardam o mesmo dado. Ordenar as chaves não muda o significado, mas torna dois documentos JSON muito mais fáceis de comparar (diff), que é por que muitos formatadores oferecem uma opção de ordenação.
+
+## Quando os bytes de repente importam
+
+Tudo isso muda no momento em que o JSON é **assinado ou hasheado**. Uma assinatura é computada sobre bytes exatos, então se o remetente identa e o destinatário minifica, os bytes diferem e a assinatura falha, mesmo que o dado seja idêntico. Para o signing funcionar, ambos os lados precisam concordar em uma serialização exata. Isso é o **JSON canônico**: uma forma determinística com regras fixas para ordem de chaves (ordenadas), espaço em branco (nenhum), formatação de números e escape de strings, para que o mesmo dado sempre produza a mesma string. A RFC 8785 (JSON Canonicalization Scheme) define uma dessas formas. É por isso que sistemas que assinam JSON, ou o usam como entrada de hash, canonicalizam primeiro: isso transforma "o mesmo dado" em "os mesmos bytes", que é o que uma assinatura de fato precisa. Para interchange comum nada disso importa, mas no momento em que a criptografia se envolve, a formatação deixa de ser cosmética.

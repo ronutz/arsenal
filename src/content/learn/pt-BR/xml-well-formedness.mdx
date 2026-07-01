@@ -1,0 +1,34 @@
+---
+slug: xml-well-formedness
+title: "XML bem formado vs válido"
+summary: "Boa formação é a linha de base do XML: uma raiz, tags aninhadas e correspondidas corretamente, atributos entre aspas e especiais escapados. Validade é uma afirmação mais forte e separada de que um documento também segue um schema. Um parser rejeita XML mal formado de imediato, que é por que estas regras vêm primeiro."
+concepts: ["xml", "well-formed", "valid", "schema", "parsing"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["reading-xml-structure", "xml-namespaces-explained", "cdata-comments-and-processing-instructions"]
+category: encoding
+order: 62
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Duas palavras diferentes são usadas para XML "correto", e elas significam coisas diferentes. Confundi-las leva a muito debugging desperdiçado.
+
+## Bem formado
+
+**Bem formado** é a linha de base que todo documento XML precisa cumprir para ser XML afinal. As regras são sintáticas:
+
+- Há exatamente um **elemento raiz** contendo todo o resto.
+- Todo elemento tem uma tag de fechamento correspondente, ou é de auto-fechamento. `<b>` precisa ser fechado por `</b>`.
+- Elementos são **aninhados corretamente**: `<a><b></b></a>` está certo, `<a><b></a></b>` não está, porque o elemento interno precisa fechar antes do externo.
+- **Valores de atributo são entre aspas**, com aspas simples ou duplas, e um elemento não pode repetir um nome de atributo.
+- Os caracteres especiais `<` e `&` são **escapados** no texto (como `&lt;` e `&amp;`), porque crus eles iniciariam uma tag ou uma entidade.
+
+Um documento que quebra qualquer uma destas **não é bem formado**, e um parser XML conforme precisa rejeitá-lo em vez de adivinhar a intenção do autor. Essa rigidez é deliberada: é a diferença entre XML e a recuperação de erros tolerante do HTML.
+
+## Válido
+
+**Válido** é uma afirmação mais forte e inteiramente separada. Um documento é válido quando, além de bem formado, ele está em conformidade com um **schema**, um conjunto de regras descrevendo quais elementos são permitidos, em que ordem, com quais atributos e tipos de dados. Schemas vêm em vários sabores: o mais antigo DTD, e o mais expressivo XML Schema (XSD) e RELAX NG. Validação é o que pega "este documento é sintaticamente correto mas um `<book>` está sem seu `<title>` obrigatório".
+
+## Por que a distinção importa
+
+A relação chave é que validade pressupõe boa formação mas não o contrário. Um documento pode ser perfeitamente bem formado e ainda inválido contra um schema, e a maioria das ferramentas que "parseiam" XML só verifica boa formação a menos que você peça explicitamente para validar. Então quando algo rejeita seu XML, a primeira pergunta é qual barra ele falhou: um erro de boa formação é um erro de sintaxe no próprio documento, enquanto um erro de validade significa que a sintaxe está correta mas o conteúdo não corresponde ao schema contra o qual foi verificado. Eles são corrigidos em lugares diferentes.

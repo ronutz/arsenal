@@ -1,0 +1,32 @@
+---
+slug: syslog-message-formats
+title: "Syslog Message Formats: RFC 3164 vs RFC 5424"
+summary: "The PRI is the same everywhere, but what follows it is not. Legacy BSD syslog (RFC 3164) has a loose, year-less format, while the modern format (RFC 5424) is precise and structured. Knowing which one you are looking at explains missing timestamps, ambiguous fields, and why parsers disagree."
+concepts: ["syslog", "rfc 3164", "rfc 5424", "structured data", "timestamp"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-pri-facility-severity", "syslog-facilities-and-severities", "syslog-transport"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Every syslog message starts with the same `<PRI>`, but the text after it comes in two very different formats, and a lot of parsing pain comes from not knowing which you have.
+
+## RFC 3164: the BSD format
+
+The original format was documented, after the fact, in RFC 3164. It is loose: after the PRI comes a timestamp like `Oct  1 14:23:05`, a hostname, and then a free-form tag and message. The weaknesses are real:
+
+- The timestamp has **no year and no timezone**, so a stored message is ambiguous about when it actually happened.
+- The structure is only loosely specified, so the boundary between the tag and the message varies by sender.
+- It predates any notion of structured fields, so everything interesting is buried in free text.
+
+It is still extremely common on network gear and older systems, which is why parsers must handle it, quirks and all.
+
+## RFC 5424: the modern format
+
+RFC 5424 replaced it with a precise, parseable structure: `<PRI>` then a **version** number, an **ISO 8601 timestamp** with timezone and fractional seconds, then hostname, **app-name**, **procid**, and **msgid** as distinct fields, optional **structured data** (typed key-value elements in brackets), and finally the message, which is UTF-8 with a byte-order mark when needed. The gains matter: unambiguous time, clear fields, machine-readable structured data, and proper Unicode.
+
+## Telling them apart and why it matters
+
+The quickest tell is right after the PRI: a digit and a space (the version, almost always `1`) means RFC 5424; a three-letter month means RFC 3164. This matters because the two carry different information. A 3164 message cannot tell you the year or timezone, so a collector has to add them and may get them wrong across a reboot or a zone change. A 5424 message carries that itself. When timestamps look wrong or fields land in the wrong place, the format mismatch is usually why, and modern deployments prefer 5424 precisely to avoid that ambiguity.

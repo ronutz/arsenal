@@ -61,7 +61,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment",
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/how-diff-works", "learn/reading-a-diff"],
+  learnLinks: ["learn/how-diff-works", "learn/reading-a-diff", "learn/diff-word-and-character-level", "learn/diff-three-way-and-merge-conflicts", "learn/diff-minimal-edits"],
   sources: [
     {
       id: "myers1986",

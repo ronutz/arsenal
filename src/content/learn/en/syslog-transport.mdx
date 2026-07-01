@@ -1,0 +1,24 @@
+---
+slug: syslog-transport
+title: "How Syslog Travels: UDP, TCP, and TLS"
+summary: "Syslog can ride over plain UDP, over TCP, or over TLS, and the choice decides whether messages can be silently lost, reordered, or read in transit. This covers the three transports, the ports involved, and why anything you rely on for audit should not be sent over UDP."
+concepts: ["syslog", "udp", "tcp", "tls", "reliability"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-pri-facility-severity", "syslog-message-formats", "syslog-on-network-devices"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A syslog message is just text, but how it gets from the device to the collector varies a lot, and the transport determines whether you can trust that everything arrived.
+
+## The three transports
+
+- **UDP, port 514** is the traditional default. It is fire-and-forget: the sender emits a datagram and never learns whether it arrived (RFC 5426). It is simple and cheap, but under load, across a congested link, or through a busy firewall, messages are **silently dropped**, and there is no retransmission and no ordering guarantee.
+- **TCP** (commonly RFC 6587) adds a connection, so messages are acknowledged, retransmitted if lost, and delivered in order. The main subtlety is **framing**: because TCP is a byte stream, senders either prefix each message with its length (octet counting) or delimit messages with a newline, and both ends must agree.
+- **TLS, port 6514** (RFC 5425) wraps the TCP stream in encryption and authentication, so messages cannot be read or tampered with in transit, and the collector can verify the sender.
+
+## Why the choice matters
+
+The tradeoff is reliability and confidentiality against simplicity. UDP loses messages exactly when you most want them, during an incident or an attack, because that is when volume spikes. It also sends everything in clear text, so logs, which often contain sensitive detail, are exposed on the wire. For casual operational logging on a trusted network, UDP is fine and still ubiquitous. For anything used as an **audit trail**, for compliance, or across an untrusted network, TCP gives you delivery you can count on and TLS adds confidentiality and sender authentication. A practical rule: if losing a message would matter, do not send it over UDP.

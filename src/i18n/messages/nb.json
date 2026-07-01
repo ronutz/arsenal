@@ -69,6 +69,7 @@
       "purposeLabel": "Finansieres nå"
     },
     "stats": {
+      "headline": "Tilgjengelige nå",
       "tools": "Verktøy",
       "articles": "Artikler",
       "sectionLabel": "Verktøykassen kort fortalt"
@@ -871,7 +872,7 @@
     "builtWith": "Bygd av Rodolfo Nützmann med CONCORD",
     "colophon": "Hvordan dette ble bygd",
     "contribute": "Hjelp til å forbedre oversettelsene",
-    "feedback": "Send tilbakemelding",
+    "feedback": "Kontakt",
     "api": "API-referanse",
     "contributeTools": "Del en idé",
     "license": "Lisens",

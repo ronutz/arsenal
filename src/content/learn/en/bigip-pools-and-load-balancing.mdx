@@ -1,0 +1,32 @@
+---
+slug: bigip-pools-and-load-balancing
+title: "BIG-IP Pools and Load-Balancing Methods"
+summary: "A pool is the group of backend members a virtual server sends traffic to, and the load-balancing method decides which member gets each connection. The methods split into static ones that follow a fixed pattern and dynamic ones that react to live load, and the choice shapes how evenly and how smartly traffic spreads."
+concepts: ["big-ip", "pool", "load balancing", "round robin", "least connections"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "ltm-health-monitors"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A virtual server rarely talks to one backend; it talks to a **pool**. A pool is a named group of **members**, each a backend node and port (for example `10.0.0.10:443`), and the virtual server hands each connection to the pool, which uses its **load-balancing method** to choose a member.
+
+## Static versus dynamic methods
+
+The methods fall into two families. **Static** methods follow a fixed pattern regardless of what the members are actually doing:
+
+- **Round Robin** rotates through members in turn, the simple default.
+- **Ratio** sends traffic in proportion to a weight on each member, so a bigger server can be given a larger share.
+
+**Dynamic** methods react to live conditions:
+
+- **Least Connections** sends the next connection to the member with the fewest active connections, which self-levels when requests vary in length.
+- **Fastest** favors the member responding quickest, and **Observed** and **Predictive** blend connection counts and response trends over time.
+
+Least Connections and its relatives distribute better when requests are uneven, at the cost of tracking per-member state; Round Robin is predictable and cheap but assumes every request costs about the same.
+
+## How it reads in the config
+
+In `bigip.conf` a pool appears as an `ltm pool` stanza listing its members and a `load-balancing-mode`, and often a `monitor`. The monitor is what makes the pool safe: health monitoring marks members up or down, and the load-balancing method only ever chooses among members currently marked up. So the pool definition ties together three ideas, which members exist, how traffic is spread among the healthy ones, and how health is judged. Reading it top to bottom tells you where a virtual server's traffic can go and how BIG-IP decides between the options.

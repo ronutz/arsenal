@@ -1,0 +1,40 @@
+---
+slug: xxe-and-external-entities
+title: "XXE e entidades externas"
+summary: "XML permite que um documento declare entidades, e uma entidade externa pode apontar para um arquivo ou URL. Um parser que resolve uma pode ser enganado a ler arquivos locais ou fazer requisições no lado do servidor, a vulnerabilidade XXE. A correção é direta e eficaz: não processar um DOCTYPE de forma alguma."
+concepts: ["xml", "xxe", "external entity", "doctype", "ssrf"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["billion-laughs-and-entity-expansion", "xml-well-formedness", "reading-xml-structure"]
+category: security
+order: 60
+status: machine-draft
+updated: "2026-07-01"
+---
+
+XML External Entity injection, XXE, é uma das vulnerabilidades XML mais danosas, e ela cresce a partir de um recurso legítimo: entidades.
+
+## Entidades e o DOCTYPE
+
+Uma **entidade** é um atalho nomeado que você pode referenciar em um documento. Além das cinco embutidas (`&lt;`, `&amp;` e assim por diante), um documento pode declarar as suas próprias dentro de um **DOCTYPE**:
+
+```
+<!DOCTYPE foo [
+  <!ENTITY company "Acme Corp">
+]>
+```
+
+Então `&company;` expande para `Acme Corp`. Essa é uma **entidade interna**, inofensiva o bastante. O perigo é a **entidade externa**, que aponta para algum lugar em vez de guardar um valor:
+
+```
+<!ENTITY xxe SYSTEM "file:///etc/passwd">
+```
+
+Quando um parser configurado para resolver entidades encontra `&xxe;`, ele buscará o que quer que o identificador `SYSTEM` nomeie e substituirá pelo conteúdo. Aponte-o para um arquivo local e o conteúdo do arquivo é lido para dentro do documento; aponte-o para uma URL interna e o parser faz uma requisição a partir da posição do servidor na rede.
+
+## O que um atacante obtém
+
+As consequências seguem diretamente. Apontar uma entidade externa para um caminho de arquivo permite a um atacante **ler arquivos locais**: configuração, credenciais, material de chave. Apontá-la para uma URL transforma o parser em um motor de requisições na rede interna, uma **server-side request forgery** que pode alcançar serviços que um atacante remoto não poderia tocar de outra forma. Variantes mais avançadas usam entidades de parâmetro e DTDs externos para exfiltrar dados fora de banda mesmo quando a resposta não é diretamente visível. O fio comum é que o atacante fornece o XML e o parser confiante faz o trabalho perigoso.
+
+## A defesa
+
+A correção é refrescantemente simples: **não processe o DOCTYPE**. Quase todo parser XML tem uma configuração para desabilitar declarações DOCTYPE e resolução de entidades externas por completo, e para entrada que você não escreveu, essa configuração deve estar ligada. Se um DOCTYPE é proibido, entidades externas não podem ser declaradas, e toda a classe de ataque desaparece. É por isso que uma ferramenta XML consciente de segurança inspeciona um documento sem nunca resolver suas entidades: ela relata que um DOCTYPE ou uma entidade externa está presente, e trata isso como um achado a sinalizar, não uma instrução a seguir. Ver uma entidade `SYSTEM` ou `PUBLIC` em XML não confiável é um sinal de alerta por si só.

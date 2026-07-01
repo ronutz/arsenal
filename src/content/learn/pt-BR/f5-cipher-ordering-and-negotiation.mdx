@@ -1,0 +1,26 @@
+---
+slug: f5-cipher-ordering-and-negotiation
+title: "Ordenação e negociação de ciphers no BIG-IP"
+summary: "Uma cipher string expandida é uma lista ordenada, e a ordem não é cosmética: com preferência de servidor, o BIG-IP escolhe o primeiro cipher da sua própria lista que o cliente também suporta. Isso torna a posição de cada cipher um controle de segurança real, que é por que a expansão os mostra em ordem."
+concepts: ["f5", "cipher order", "negotiation", "server preference", "big-ip"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords", "f5-tls13-vs-tls12-ciphers"]
+category: transport
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Quando uma cipher string expande em uma lista concreta, a ordem dessa lista importa tanto quanto seu conteúdo, porque a ordem é o que decide qual cipher uma conexão de fato usa.
+
+## Como um cipher é escolhido
+
+Em um handshake TLS o cliente oferece os ciphers que suporta e o servidor escolhe um. Há duas filosofias para a escolha. Com **preferência de cliente**, o servidor escolhe o cipher mais preferido do cliente que ele também suporta. Com **preferência de servidor**, o servidor percorre a sua *própria* lista ordenada e escolhe a primeira entrada que o cliente suporta, ignorando o ranking do cliente. A maioria das configurações endurecidas, incluindo o BIG-IP, usa preferência de servidor, porque isso deixa o operador, não o cliente, decidir a prioridade.
+
+Sob preferência de servidor, a posição de um cipher na lista expandida é um botão de controle. Coloque um cipher AEAD forte com forward secrecy primeiro, e qualquer cliente razoavelmente moderno cai nele. Deixe um cipher mais fraco mas ainda habilitado perto do topo, e clientes que o suportam serão direcionados a ele mesmo quando algo melhor estava disponível mais abaixo. É por isso que simplesmente *incluir* bons ciphers não basta; eles precisam estar *à frente* dos mais fracos.
+
+## Por que a expansão mostra a ordem
+
+Uma cipher string usa keywords e modificadores que reordenam além de incluir, então a prioridade final não é óbvia só pela string. Expandi-la resolve cada keyword na lista de suites de fato, ordenada, do jeito que o BIG-IP a apresentará, que é exatamente a ordem que a preferência de servidor percorrerá. Ler essa lista de cima a baixo diz o que um cliente moderno negociará, para o que um cliente mais antigo recorrerá, e se algo indesejável está posicionado alto o suficiente para ser escolhido.
+
+O hábito prático é ler a lista expandida como um ranking de prioridade, não um conjunto. Confirme que as entradas do topo são os ciphers que você quer que a maioria dos clientes use, que suites com forward secrecy e AEAD ficam acima de qualquer coisa legada, e que nada que você ficaria infeliz de ver negociado está posicionado onde um cliente poderia alcançá-lo antes de uma opção melhor.

@@ -1,0 +1,33 @@
+---
+slug: bigip-cookie-persistence-methods
+title: "BIG-IP Cookie Persistence Methods and Settings"
+summary: "Beyond what a BIG-IP persistence cookie contains, there is the question of how it gets there. BIG-IP offers four cookie methods, insert, rewrite, passive, and hash, and a set of profile options for the cookie's name, lifetime, and safety flags. These decide the cookie's operational behavior, separate from its encoded value."
+concepts: ["big-ip", "cookie persistence", "insert", "httponly", "secure"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
+category: security
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+The value inside a BIG-IP persistence cookie is one topic; how BIG-IP places and manages that cookie is another, and it is governed by the cookie method and the profile settings.
+
+## The four methods
+
+BIG-IP can produce the persistence cookie in four ways:
+
+- **Insert** is the default and most common. BIG-IP adds its own `Set-Cookie` to the server's response and reads it back on later requests. The backend does not need to know anything about it.
+- **Rewrite** has the server send a cookie with a blank value, and BIG-IP fills in the persistence information. This needs cooperation from the application and is rarely used.
+- **Passive** has BIG-IP *read* a cookie the server itself sets, without inserting one. The application owns the cookie; BIG-IP only interprets it.
+- **Hash** keys persistence on a hash of an existing cookie's value, useful when an application cookie already identifies the session.
+
+Insert covers the large majority of deployments because it works without touching the backend.
+
+## The settings that matter
+
+A cookie persistence profile also controls the cookie's operational properties. The **cookie name** can be customized. The **expiration** decides whether it is a session cookie (gone when the browser closes) or a timed cookie that persists for a set duration. Most importantly for safety, the profile can set the **httponly** and **secure** flags: httponly keeps the cookie out of reach of page scripts, and secure stops it being sent over plain HTTP. Together with the encryption option, these are what turn a cookie that would otherwise leak backend details into one that is safe to hand a browser.
+
+## Why it is worth setting deliberately
+
+The default insert method with an unencrypted, unflagged cookie is exactly the configuration that exposes pool-member information, as the disclosure and encoding articles describe. The operational settings are the other half of closing that gap: enabling encryption protects the value, and setting httponly and secure protects the cookie in transit and in the browser. Choosing the method and the flags on purpose, rather than accepting the defaults, is what makes cookie persistence both work correctly and stay safe.

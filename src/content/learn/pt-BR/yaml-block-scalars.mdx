@@ -1,0 +1,29 @@
+---
+slug: yaml-block-scalars
+title: "Block scalars e strings multilinha em YAML"
+summary: "O YAML tem duas formas de escrever uma string multilinha, e elas tratam quebras de linha de modo diferente: o estilo literal as mantém, o estilo folded as transforma em espaços. Indicadores de chomping então decidem o que acontece com a quebra de linha final. Errar isso é por que um script ou certificado embutido sai sutilmente corrompido."
+concepts: ["yaml", "block scalar", "literal", "folded", "chomping"]
+relatedTools: ["json-yaml-convert"]
+relatedArticles: ["json-vs-yaml", "yaml-anchors-and-aliases", "yaml-type-coercion"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Escrever uma string multilinha em JSON significa uma linha com escapes `\\n`. O YAML, em vez disso, tem **block scalars**, que deixam o texto ficar naturalmente em várias linhas, e oferece dois estilos que lidam com quebras de linha de formas opostas.
+
+## Literal versus folded
+
+- O estilo **literal**, introduzido com `|`, mantém as quebras de linha exatamente como escritas. Toda quebra de linha no bloco vira uma quebra de linha no valor. É isso que você quer para scripts embutidos, trechos de config ou certificados PEM, onde a estrutura de linhas é significativa.
+- O estilo **folded**, introduzido com `>`, *dobra* quebras de linha simples em espaços, então texto quebrado vira uma linha longa, enquanto linhas em branco são preservadas como quebras de parágrafo. É para prosa que você quer quebrar no arquivo mas armazenar como texto corrido.
+
+A diferença é fácil de confundir: use o estilo folded para um script e cada linha se junta em uma só, quebrando-o.
+
+## Fazendo o chomping da quebra de linha final
+
+Depois do `|` ou `>` você pode adicionar um **indicador de chomping** para a quebra de linha final: o padrão (clip) mantém uma única quebra de linha final, `-` (strip) a remove, e `+` (keep) preserva todas as linhas em branco finais. Então `|-` te dá o bloco sem quebra de linha no fim, o que importa quando o valor é comparado byte a byte, como uma chave ou um token.
+
+## Na conversão para JSON
+
+Qualquer que seja o estilo usado, o JSON só tem strings comuns, então um block scalar converte para uma única string com `\\n` embutido (para literal) ou espaços dobrados (para folded), e a escolha de chomping determina se uma quebra de linha `\\n` final está presente. O layout visual em bloco desaparece por completo. Vale lembrar disso quando um certificado ou script convertido para de funcionar: o conteúdo normalmente está intacto, mas uma quebra de linha final perdida ou faltante pela regra de chomping é uma causa comum.

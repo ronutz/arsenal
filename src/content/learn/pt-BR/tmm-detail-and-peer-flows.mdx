@@ -1,0 +1,38 @@
+---
+slug: tmm-detail-and-peer-flows
+title: "Níveis de detalhe da TMM e peer flows (:n, :nn, :nnn, :p)"
+summary: "O sufixo com dois-pontos na interface de captura do BIG-IP é a parte mais confusa e mais útil da sintaxe. Ele controla quanto metadado interno da TMM é anexado a cada pacote e se você captura um lado da conexão ou os dois."
+concepts: ["tcpdump", "f5", "big-ip", "tmm", "peer flow", "f5ethtrailer", "noise flags"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["bigip-tcpdump-syntax", "reading-a-bigip-capture"]
+category: networking
+order: 32
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Quando você escreve `-i 0.0:nnnp`, a parte `:nnnp` é puramente do BIG-IP. Ela faz duas coisas distintas: define um nível de detalhe e pede os dois fluxos de uma conexão. Entendê-la é o que torna uma captura no BIG-IP muito mais poderosa do que uma comum. O [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder) expõe isso como interruptores simples.
+
+## O que os níveis de detalhe acrescentam
+
+Os caracteres `n` ao final elevam a quantidade de informação interna que o BIG-IP anexa a cada pacote capturado, através de um trailer Ethernet especial da F5:
+
+- `:n` (baixo) acrescenta a direção de ingresso ou egresso, a instância da TMM e a identidade básica do fluxo.
+- `:nn` (médio) acrescenta mais, incluindo o nome do virtual server associado ao fluxo.
+- `:nnn` (alto) acrescenta o máximo, incluindo identificadores de fluxo e de peer-flow e, em resets, o motivo pelo qual uma conexão foi encerrada.
+
+Mais detalhe é mais útil para diagnosticar como o BIG-IP tratou um fluxo, ao custo de um trailer maior em cada pacote. Para a maioria das análises de LTM, `:nnn` é o nível ao qual recorrer.
+
+## Por que "ruído"
+
+Esses detalhes às vezes são chamados de noise flags (sinalizadores de ruído), porque, para uma ferramenta que não entende o trailer da F5, parecem bytes extras acrescentados após o pacote real. O Wireshark com o dissecador `f5ethtrailer` os decodifica em campos legíveis, o que é o assunto de [lendo uma captura do BIG-IP](/learn/reading-a-bigip-capture).
+
+## Peer flows e o modificador p
+
+Uma conexão através de um BIG-IP são dois fluxos: o fluxo do lado cliente (cliente para BIG-IP) e o fluxo do lado servidor (BIG-IP para o pool member). Eles têm endereços e portas de origem e destino diferentes, porque o BIG-IP é um proxy completo. Sem o modificador `p`, você captura apenas o fluxo que corresponde ao seu filtro. Com `p` (por exemplo `0.0:nnnp`), o BIG-IP também captura o peer flow, a outra metade da mesma conexão, mesmo que seus endereços não correspondam ao seu filtro.
+
+Isso é extremamente útil. Você pode filtrar pelo endereço do cliente que conhece e ainda ver a conversa do lado servidor que o cliente nunca vê, incluindo qual pool member foi escolhido e o que ele respondeu.
+
+## Um padrão prático
+
+Uma captura como `-i 0.0:nnnp` com um filtro de host é um excelente ponto de partida para a maioria dos casos de LTM: detalhe alto, os dois lados, restrito a um cliente. A partir daí você pode reduzir o detalhe se o trailer ficar grande demais, ou remover o `p` se só importar um lado.

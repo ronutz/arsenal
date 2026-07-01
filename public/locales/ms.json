@@ -69,6 +69,7 @@
       "purposeLabel": "Dibiayai sekarang"
     },
     "stats": {
+      "headline": "Tersedia sekarang",
       "tools": "Alat",
       "articles": "Artikel",
       "sectionLabel": "Kotak alat sepintas lalu"
@@ -871,7 +872,7 @@
     "builtWith": "Dibina oleh Rodolfo Nützmann dengan CONCORD",
     "colophon": "Cara ia dibina",
     "contribute": "Bantu perbaiki terjemahan",
-    "feedback": "Hantar maklum balas",
+    "feedback": "Hubungi",
     "api": "Rujukan API",
     "contributeTools": "Kongsi idea",
     "license": "Lesen",

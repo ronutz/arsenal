@@ -22,8 +22,8 @@
 //   - ORDER (modern-picker best practice, PRIME spec): English first, pt-BR
 //     second (the source + reviewed languages, pinned), then the remaining
 //     locales banded by translation status (reviewed -> machine -> stub) and,
-//     inside each band, western (Latin) scripts before other scripts, alphabetical
-//     by English name. See ORDERED_LOCALES below.
+//     inside each band, ordered alphabetically by the native name shown in the
+//     row. See ORDERED_LOCALES below.
 //   - Fully keyboard-navigable (arrow keys, Enter, Escape) and Obsidian-themed.
 //
 // SECURITY: renders only registry data (endonyms/codes are static, trusted
@@ -35,7 +35,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { LOCALES, DEFAULT_LOCALE, getLocale, isWesternScript, type LocaleMeta } from "@/i18n/locales";
+import { LOCALES, DEFAULT_LOCALE, getLocale, type LocaleMeta } from "@/i18n/locales";
 import { LOCALE_COVERAGE } from "@/i18n/locale-coverage";
 
 // A locale's display status for the switcher cue:
@@ -59,8 +59,8 @@ function statusTier(l: LocaleMeta): StatusTier {
 // -----------------------------------------------------------------------------
 // SWITCHER ORDER (PRIME spec, computed once at module load since the registry is
 // static). English is pinned first and pt-BR second; everything else is banded
-// by translation status, then by script (western/Latin before other), then
-// alphabetically by English name. statusBand returns the band index; the two
+// by translation status, then alphabetically by their native name (the endonym
+// shown in the row). statusBand returns the band index; the two
 // pinned languages get negative sentinels so they always lead.
 // -----------------------------------------------------------------------------
 function statusBand(l: LocaleMeta): number {
@@ -74,12 +74,12 @@ function statusBand(l: LocaleMeta): number {
 const ORDERED_LOCALES: readonly LocaleMeta[] = [...LOCALES].sort((a, b) => {
   const band = statusBand(a) - statusBand(b);
   if (band !== 0) return band;
-  // western (Latin) scripts before other scripts, inside a status band
-  const wa = isWesternScript(a.code) ? 0 : 1;
-  const wb = isWesternScript(b.code) ? 0 : 1;
-  if (wa !== wb) return wa - wb;
-  // alphabetical by English name within (band, script)
-  return a.englishName.localeCompare(b.englishName, "en");
+  // Alphabetical by the ENDONYM (the native name actually shown in the row),
+  // so each band reads in order on screen. Latin-script names sort A->Z; the
+  // non-Latin scripts (Cyrillic, CJK) collate after them, which is simply the
+  // natural result of ordering by the name as displayed. No western/other
+  // split - that broke the single alphabetical run within each band.
+  return a.nativeName.localeCompare(b.nativeName, "en");
 });
 
 export default function LanguageSwitcher() {

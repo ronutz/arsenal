@@ -1,0 +1,48 @@
+---
+slug: dns-message-header-and-flags
+title: "The DNS Header: Opcode, Status, and Flags"
+summary: "The header line and the flags line hold the message-level facts: what kind of query this is, whether it succeeded, and seven single-bit flags (qr, aa, tc, rd, ra, ad, cd) that tell you who answered and how. Reading them correctly is the difference between a two-minute diagnosis and an hour of guessing."
+concepts: ["dns header", "rcode", "status", "flags", "nxdomain", "servfail", "aa", "rd", "ra"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-records-in-dig"]
+category: networking
+order: 41
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Two lines carry the whole state of a DNS message: the `->>HEADER<<-` line and the `flags:` line beneath it.
+
+## The header line
+
+```
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321
+```
+
+The **opcode** is almost always `QUERY`. You will see `NOTIFY` (a primary telling a secondary the zone changed) and `UPDATE` (dynamic DNS) in specific setups, but a normal lookup is `QUERY`.
+
+The **status** is the RCODE, and it is the single most useful field. `NOERROR` means the query was processed normally. `NXDOMAIN` means the name does not exist. `SERVFAIL` means the server could not complete the query, which in practice points at a broken delegation, a failed DNSSEC validation, or an upstream that timed out. `NOTIMP` means the server does not implement the requested type or opcode. `REFUSED` means the server declined, usually because of access control or because recursion is disabled for you.
+
+The **id** is the 16-bit transaction id that pairs a response with its query. On a single manual `dig` it is just an identifier; it matters when you are correlating captures.
+
+## The flags
+
+```
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+```
+
+Seven flags can appear, and each is a single bit:
+
+- **qr** (Query Response): set on a response. If it is missing, you are looking at a query, not an answer.
+- **aa** (Authoritative Answer): the answering server is authoritative for the name, so the data comes from the zone itself, not from a cache.
+- **tc** (Truncated): the message did not fit and was cut short. dig normally retries over TCP; a truncated UDP answer is incomplete.
+- **rd** (Recursion Desired): the client asked the server to resolve the whole name on its behalf. It is a copy of the query bit reflected back.
+- **ra** (Recursion Available): the server is willing and able to recurse.
+- **ad** (Authentic Data): the resolver validated the answer with DNSSEC and it checked out.
+- **cd** (Checking Disabled): the client asked the resolver to skip DNSSEC validation.
+
+The four numbers after the flags are the record counts for the QUESTION, ANSWER, AUTHORITY, and ADDITIONAL sections. They should match what you count in each section; a mismatch is a sign the message was truncated or mangled.
+
+## Reading them together
+
+The combination tells a story. `qr aa` with an answer is an authoritative server giving you zone data directly. `qr rd ra` with an answer is a recursive resolver returning a (possibly cached) result. `qr rd ra` with status `NXDOMAIN` and an SOA in AUTHORITY is a resolver telling you the name genuinely does not exist and how long it will remember that. `qr rd` without `ra` means you asked a server to recurse that will not, which usually surfaces as `REFUSED`.

@@ -1,0 +1,29 @@
+---
+slug: bigip-profiles-on-a-virtual-server
+title: "Profiles em um virtual server"
+summary: "Um virtual server do BIG-IP não tem um comportamento fixo; ele é montado a partir de profiles, cada um configurando uma camada da conexão. Profiles de protocolo, de aplicação, de SSL e de persistência se empilham para definir como o tráfego é tratado, e herdam configurações de profiles pais, que é a chave de como a config do BIG-IP se mantém gerenciável."
+concepts: ["big-ip", "profiles", "virtual server", "ssl offload", "inheritance"]
+relatedTools: ["tmsh-config-explainer"]
+relatedArticles: ["how-a-virtual-server-works", "anatomy-of-bigip-conf", "bigip-pools-and-load-balancing"]
+category: networking
+order: 6
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Dois virtual servers podem apontar para o mesmo pool e se comportar de formas completamente diferentes, porque o comportamento de um virtual server não é embutido; ele é composto a partir de **profiles**. Cada profile configura um aspecto de como uma conexão é tratada, e um virtual server anexa quantos precisar.
+
+## As camadas
+
+Os profiles se alinham grosseiramente com as camadas da conexão:
+
+- **Profiles de protocolo** definem o comportamento de transporte: um profile `tcp` (ou `udp`, ou `fastl4` para encaminhamento L4 acelerado) ajusta timeouts, buffering e opções.
+- **Profiles de aplicação** entendem o protocolo em cima: um profile `http` permite ao BIG-IP parsear e agir sobre HTTP, que é o que habilita inserção de headers, redirects e content switching.
+- **Profiles de SSL** tratam a criptografia: um profile **client SSL** termina o TLS do cliente (offload), e um profile **server SSL** recriptografa até o pool member, para que você possa fazer offload, inspecionar ou recriptografar conforme necessário.
+- **Profiles de persistência** anexam o método de stickiness, e outros cobrem compressão, cache e mais.
+
+Um virtual server HTTPS típico empilha um profile tcp, um profile http e um profile client SSL, e cada um contribui com sua fatia de comportamento.
+
+## Herança e como isso aparece
+
+Os profiles usam **herança pai-filho**: um profile customizado é criado a partir de um pai (frequentemente um default do sistema) e sobrescreve apenas as configurações de que precisa, herdando o resto. Mude o pai e todo filho que não sobrescreveu um valor o acompanha, que é o que impede grandes configurações de virarem milhares de configurações não relacionadas. No `bigip.conf`, um virtual server carrega um bloco `profiles { }` listando os profiles anexados a ele, e cada profile é definido em sua própria stanza com um `defaults-from` apontando para seu pai. Ler a lista de profiles do virtual server diz, num relance, quais camadas estão em jogo: se o TLS é terminado, se o HTTP é entendido, e como a conexão é ajustada, tudo sem mudar o pool que ele serve.

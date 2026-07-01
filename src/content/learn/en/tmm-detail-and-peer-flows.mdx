@@ -1,0 +1,38 @@
+---
+slug: tmm-detail-and-peer-flows
+title: "TMM Detail Levels and Peer Flows (:n, :nn, :nnn, :p)"
+summary: "The colon suffix on a BIG-IP capture interface is the most confusing and most useful part of the syntax. It controls how much internal TMM metadata is attached to each packet, and whether you capture one side of a connection or both."
+concepts: ["tcpdump", "f5", "big-ip", "tmm", "peer flow", "f5ethtrailer", "noise flags"]
+relatedTools: ["bigip-tcpdump-builder"]
+relatedArticles: ["bigip-tcpdump-syntax", "reading-a-bigip-capture"]
+category: networking
+order: 32
+status: machine-draft
+updated: "2026-06-30"
+---
+
+When you write `-i 0.0:nnnp`, the `:nnnp` part is pure BIG-IP. It does two separate things: it sets a detail level, and it asks for both flows of a connection. Understanding it is what makes a BIG-IP capture far more powerful than a plain one. The [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder) exposes these as simple toggles.
+
+## What the detail levels add
+
+The trailing `n` characters raise the amount of internal information BIG-IP appends to each captured packet, through a special F5 Ethernet trailer:
+
+- `:n` (low) adds the ingress or egress direction, the TMM instance, and basic flow identity.
+- `:nn` (medium) adds more, including the name of the virtual server associated with the flow.
+- `:nnn` (high) adds the most, including flow and peer-flow identifiers and, on resets, the reason a connection was torn down.
+
+Higher detail is more useful for diagnosing how BIG-IP handled a flow, at the cost of a larger trailer on every packet. For most LTM troubleshooting, `:nnn` is the level to reach for.
+
+## Why "noise"
+
+These details are sometimes called noise flags, because to a tool that does not understand the F5 trailer they look like extra bytes appended after the real packet. Wireshark with the `f5ethtrailer` dissector decodes them into readable fields, which is the subject of [reading a BIG-IP capture](/learn/reading-a-bigip-capture).
+
+## Peer flows and the p modifier
+
+A connection through a BIG-IP is two flows: the client-side flow (client to BIG-IP) and the server-side flow (BIG-IP to pool member). They have different source and destination addresses and ports, because the BIG-IP is a full proxy. Without the `p` modifier you capture only the flow that matches your filter. With `p` (for example `0.0:nnnp`), BIG-IP also captures the peer flow, the other half of the same connection, even though its addresses do not match your filter.
+
+This is enormously useful. You can filter on the client address you know, and still see the server-side conversation that the client never sees, including which pool member was chosen and what it sent back.
+
+## A practical default
+
+A capture like `-i 0.0:nnnp` with a host filter is a strong starting point for most LTM cases: high detail, both sides, scoped to one client. From there you can lower the detail if the trailer is too large, or drop `p` if you only care about one side.

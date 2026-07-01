@@ -1,0 +1,30 @@
+---
+slug: json-string-escapes
+title: "Escapes de string e Unicode em JSON"
+summary: "Dentro de uma string JSON, alguns caracteres precisam ser escritos como escapes, e qualquer caractere pode ser escrito como \\uXXXX. As regras são poucas mas estritas, e a que pega as pessoas é como caracteres além do plano básico, como emoji, precisam de um par substituto (surrogate pair)."
+concepts: ["json", "string", "escape", "unicode", "surrogate pair"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-numbers-and-precision", "json-formatting-and-canonical"]
+category: encoding
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma string JSON é texto entre aspas duplas, mas nem todo caractere pode aparecer literalmente. As regras são curtas, e um formatador as aplica por você.
+
+## O que precisa ser escapado
+
+Três coisas não podem aparecer cruas em uma string JSON: a aspa dupla `"`, a barra invertida `\\`, e qualquer caractere de controle (qualquer coisa abaixo de U+0020, como uma quebra de linha ou tabulação literal). Cada uma tem um escape curto:
+
+- `\\"` para uma aspa e `\\\\` para uma barra invertida.
+- `\\n`, `\\t`, `\\r`, `\\b`, `\\f` para nova linha, tabulação, retorno de carro, backspace e form feed.
+- `\\/` para uma barra, que é *opcional* (uma barra é legal crua), mas às vezes usada para que a sequência `</` não possa aparecer quando o JSON é embutido em HTML.
+
+Uma quebra de linha literal dentro de uma string é o erro de JSON inválido mais comum: ela precisa ser escrita `\\n`, não uma quebra de linha de fato.
+
+## \\uXXXX e a armadilha do surrogate
+
+Qualquer caractere também pode ser escrito como `\\u` seguido de quatro dígitos hexadecimais, dando seu code point Unicode: `\\u00e9` é é. É assim que você codifica caracteres que um transporte não carrega com segurança, e é sempre válido.
+
+O detalhe é que `\\uXXXX` só alcança U+FFFF. Caracteres acima disso, incluindo a maioria dos emoji e muitas extensões CJK, vivem fora do plano básico e precisam ser escritos como um **par substituto** (surrogate pair): dois escapes `\\uXXXX` juntos. Uma carinha sorridente (U+1F600) vira `\\ud83d\\ude00`. Isso espelha como o UTF-16 representa esses caracteres. Se você vê dois escapes na faixa D800 a DFFF um ao lado do outro, isso é um caractere, não dois, e separá-los produz texto inválido. O JSON moderno é UTF-8 e normalmente pode carregar esses caracteres diretamente, mas a forma escapada ainda é legal e ainda aparece, então um formatador precisa pareá-los corretamente ao ler e exibir o valor.

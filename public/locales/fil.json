@@ -69,6 +69,7 @@
       "purposeLabel": "Pinopondohan ngayon"
     },
     "stats": {
+      "headline": "Magagamit na ngayon",
       "tools": "Mga tool",
       "articles": "Mga artikulo",
       "sectionLabel": "Ang toolbox sa isang sulyap"
@@ -871,7 +872,7 @@
     "builtWith": "Ginawa ni Rodolfo Nützmann gamit ang CONCORD",
     "colophon": "Paano ito ginawa",
     "contribute": "Tumulong na pahusayin ang mga pagsasalin",
-    "feedback": "Magpadala ng feedback",
+    "feedback": "Kontak",
     "api": "Reperensya ng API",
     "contributeTools": "Magbahagi ng ideya",
     "license": "Lisensya",

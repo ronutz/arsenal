@@ -1,0 +1,48 @@
+---
+slug: xc-service-policy-predicates-and-logic
+title: "Predicados e Lógica Booleana em Regras de Service Policy do XC"
+summary: "Dentro de uma regra, todo predicado que você define é combinado com E (AND), e um predicado não definido é implicitamente verdadeiro. Dentro de um comparador, múltiplos valores são combinados com OU (OR). Entender esses dois níveis é a diferença entre uma regra que casa com o que você quis dizer e uma que silenciosamente casa demais ou de menos."
+concepts: ["f5 xc", "predicates", "boolean logic", "matcher", "and or"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["how-xc-service-policies-match", "xc-matcher-case-sensitivity-and-transformers", "xc-rule-combining-algorithms"]
+category: security
+order: 66
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma regra de service policy pode carregar muitos predicados de uma vez: um caminho, um método, alguns cabeçalhos, um seletor de cliente, uma lista de IP. A lógica que os une é simples de enunciar e fácil de errar, porque funciona em dois níveis.
+
+## E (AND) entre predicados
+
+Todo predicado que você especifica em uma regra precisa ser verdadeiro para a regra casar. Os predicados são combinados com **E (AND)**. Uma regra com um predicado de caminho e um predicado de método casa apenas com uma requisição que satisfaz ambos.
+
+Igualmente importante: qualquer predicado que você **não** especifica é implicitamente verdadeiro. Uma regra com apenas um predicado `http_method` não impõe nenhuma restrição sobre caminho, cabeçalhos ou origem; ela casa com qualquer requisição com aquele método. É por isso que uma regra sem predicado nenhum casa com tudo, e por que adicionar predicados sempre estreita, nunca amplia.
+
+## OU (OR) dentro de um comparador
+
+A maioria dos comparadores guarda uma lista de valores, e dentro dessa lista a lógica é **OU (OR)**. Um comparador de caminho com três `prefix_values` casa com um caminho que começa com qualquer um deles. Um `item` de cabeçalho com três `exact_values` casa se o cabeçalho for igual a qualquer um deles. Uma lista `http_method` de `["GET", "POST"]` casa com qualquer um dos métodos.
+
+Então o modelo mental é: OU dentro de um campo, E entre campos.
+
+## A armadilha dos múltiplos comparadores
+
+O lugar onde isso morde as pessoas é nos cabeçalhos (e parâmetros de query, e cookies), porque cada um é uma lista de objetos comparadores, e há uma diferença entre colocar vários valores em um comparador e colocar vários comparadores na lista.
+
+```
+headers:
+  - name: partner-name
+    item: { exact_values: ["GOOGLE"] }
+  - name: User-Agent
+    item: { exact_values: ["GoogleMobile-9.1.76", "GoogleMobile-9.1.77"] }
+```
+
+As duas entradas de cabeçalho são combinadas com E: a requisição precisa carregar um `partner-name` que casa **e** um `User-Agent` que casa. Mas dentro do comparador `User-Agent`, os dois valores são OU: qualquer uma das strings de user-agent o satisfaz.
+
+Uma armadilha relacionada é que uma única string de valor de cabeçalho é comparada literalmente, vírgulas incluídas. Se você escrever uma entrada `exact_values` de `"GOOGLE,BING"` esperando que signifique dois parceiros, ela só vai casar com um cabeçalho cujo valor seja literalmente os onze caracteres `GOOGLE,BING`. Para casar com qualquer um, você precisa de duas entradas em `exact_values`, não de uma string unida por vírgula.
+
+## Presença, ausência e inversão
+
+Comparadores de cabeçalho, cookie, argumento e claim de JWT também suportam `check_present` e `check_not_present`, que testam apenas se o campo está lá ou não, sem comparação de valor. E a maioria dos comparadores suporta `invert_matcher`, que inverte o resultado: o predicado casa quando a condição **não** é atendida. Um comparador de método invertido em `["GET"]` casa com todo método exceto GET. A inversão é poderosa e fácil de ler errado, então vale destacá-la explicitamente sempre que aparece.
+
+O explicador neste site renderiza cada predicado com seus valores, marca as listas OU e sinaliza comparadores invertidos, de modo que os dois níveis de lógica ficam visíveis num relance em vez de inferidos do aninhamento.

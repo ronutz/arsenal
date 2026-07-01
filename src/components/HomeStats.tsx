@@ -41,6 +41,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 interface HomeStatsProps {
   /** Number of live tools — derived in page.tsx from the catalogue. */
@@ -121,35 +122,40 @@ export default function HomeStats({ tools, articles }: HomeStatsProps) {
       className="stats-band"
       aria-label={t("stats.sectionLabel")}
     >
-      <div className="container stats-band-inner">
-        {/* Tools */}
-        <div className="stat">
-          {/* True value for assistive tech — announced regardless of animation. */}
-          <span className="sr-only">
-            {tools} {t("stats.tools")}
-          </span>
-          <span className="stat-value" aria-hidden="true">
-            {shownTools}
-          </span>
-          <span className="stat-label" aria-hidden="true">
-            {t("stats.tools")}
-          </span>
-        </div>
+      <div className="container">
+        {/* Headline above the figures. */}
+        <p className="stats-headline">{t("stats.headline")}</p>
 
-        {/* Visual divider between the two figures. */}
-        <span className="stat-sep" aria-hidden="true" />
+        <div className="stats-band-inner">
+          {/* Tools — the whole figure links to the Tools index. */}
+          <Link href="/tools" className="stat stat-link">
+            {/* True value for assistive tech — announced regardless of animation. */}
+            <span className="sr-only">
+              {tools} {t("stats.tools")}
+            </span>
+            <span className="stat-value" aria-hidden="true">
+              {shownTools}
+            </span>
+            <span className="stat-label" aria-hidden="true">
+              {t("stats.tools")}
+            </span>
+          </Link>
 
-        {/* Articles */}
-        <div className="stat">
-          <span className="sr-only">
-            {articles} {t("stats.articles")}
-          </span>
-          <span className="stat-value" aria-hidden="true">
-            {shownArticles}
-          </span>
-          <span className="stat-label" aria-hidden="true">
-            {t("stats.articles")}
-          </span>
+          {/* Visual divider between the two figures. */}
+          <span className="stat-sep" aria-hidden="true" />
+
+          {/* Articles — the whole figure links to the Learn (articles) index. */}
+          <Link href="/learn" className="stat stat-link">
+            <span className="sr-only">
+              {articles} {t("stats.articles")}
+            </span>
+            <span className="stat-value" aria-hidden="true">
+              {shownArticles}
+            </span>
+            <span className="stat-label" aria-hidden="true">
+              {t("stats.articles")}
+            </span>
+          </Link>
         </div>
       </div>
     </section>

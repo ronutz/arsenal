@@ -1,0 +1,34 @@
+---
+slug: xml-well-formedness
+title: "Well-Formed vs Valid XML"
+summary: "Well-formedness is XML's baseline: one root, properly nested and matched tags, quoted attributes, and escaped specials. Validity is a stronger, separate claim that a document also follows a schema. A parser rejects ill-formed XML outright, which is why these rules come first."
+concepts: ["xml", "well-formed", "valid", "schema", "parsing"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["reading-xml-structure", "xml-namespaces-explained", "cdata-comments-and-processing-instructions"]
+category: encoding
+order: 62
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Two different words get used for "correct" XML, and they mean different things. Confusing them leads to a lot of wasted debugging.
+
+## Well-formed
+
+**Well-formed** is the baseline every XML document must meet to be XML at all. The rules are syntactic:
+
+- There is exactly one **root element** containing everything else.
+- Every element has a matching end tag, or is self-closing. `<b>` must be closed by `</b>`.
+- Elements are **properly nested**: `<a><b></b></a>` is fine, `<a><b></a></b>` is not, because the inner element must close before the outer one.
+- **Attribute values are quoted**, with single or double quotes, and an element cannot repeat an attribute name.
+- The special characters `<` and `&` are **escaped** in text (as `&lt;` and `&amp;`), because bare they would start a tag or an entity.
+
+A document that breaks any of these is **not well-formed**, and a conforming XML parser must reject it rather than guess at the author's intent. This strictness is deliberate: it is the difference between XML and the forgiving error-recovery of HTML.
+
+## Valid
+
+**Valid** is a stronger and entirely separate claim. A document is valid when, in addition to being well-formed, it conforms to a **schema**, a set of rules describing which elements are allowed, in what order, with which attributes and data types. Schemas come in several flavours: the older DTD, and the more expressive XML Schema (XSD) and RELAX NG. Validation is what catches "this document is syntactically fine but a `<book>` is missing its required `<title>`".
+
+## Why the distinction matters
+
+The key relationship is that validity presupposes well-formedness but not the reverse. A document can be perfectly well-formed and still invalid against a schema, and most tools that "parse" XML only check well-formedness unless you explicitly ask them to validate. So when something rejects your XML, the first question is which bar it failed: a well-formedness error is a syntax mistake in the document itself, while a validity error means the syntax is fine but the content does not match the schema it was checked against. They are fixed in different places.

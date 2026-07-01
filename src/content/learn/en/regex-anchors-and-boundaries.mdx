@@ -1,0 +1,28 @@
+---
+slug: regex-anchors-and-boundaries
+title: "Regex Anchors and Boundaries"
+summary: "Anchors match a position, not a character: the start or end of the string, or the edge of a word. They are the difference between a pattern that matches anywhere and one that matches only where you mean. This covers ^, $, \\b, and their multiline behavior, plus the mistakes they cause."
+concepts: ["regex", "anchors", "word boundary", "multiline", "matching"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferences", "regex-flags-and-modes"]
+category: security
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Most of a regex matches characters. Anchors are different: they match a **position between characters**, and they consume nothing. That is what lets you say "at the start of the line" or "at the edge of a word" instead of just "somewhere."
+
+## The common anchors
+
+- **`^`** matches the start of the string, and **`$`** matches the end. `^abc$` matches only the exact string `abc`, not `xabcx`. Without them, a pattern is allowed to match any substring, which is the single most common cause of a regex matching more than intended.
+- **`\b`** matches a **word boundary**, the position between a word character and a non-word character (or the start or end of the string). `\bcat\b` matches `cat` as a whole word but not the `cat` inside `category`. **`\B`** is the opposite: a position that is *not* a word boundary.
+- Some flavors also offer **`\A`** and **`\z`** for the absolute start and end of the string, which matter once multiline mode is involved.
+
+## Multiline changes what ^ and $ mean
+
+By default `^` and `$` anchor to the whole string. Turn on **multiline mode** (the `m` flag) and they anchor to the start and end of each *line* instead, matching at every newline. This is what you want when scanning a block of text line by line, and a surprise when you did not expect it, because a pattern that matched once now matches on every line.
+
+## Where they bite
+
+Two mistakes recur. First, putting `^` or `$` in the middle of a pattern by accident, which can only match at a line edge and so usually matches nothing. Second, assuming `\b` understands your alphabet: in many engines a word character is ASCII only, so `\b` lands in the wrong place around accented letters or other scripts unless you enable Unicode mode. When a "whole word" match behaves oddly on non-English text, the word-boundary definition is the first thing to check.

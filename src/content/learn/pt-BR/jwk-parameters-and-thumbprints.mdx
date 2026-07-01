@@ -1,0 +1,28 @@
+---
+slug: jwk-parameters-and-thumbprints
+title: "Parâmetros e thumbprints de JWK"
+summary: "Uma JWK é um objeto JSON que descreve uma chave, e seus parâmetros dizem para que a chave serve e como identificá-la. Além do material da chave, kid a nomeia e um thumbprint (RFC 7638) dá a ela um identificador estável e computado. Este artigo cobre os parâmetros comuns e como um thumbprint é derivado e usado."
+concepts: ["jwk", "kid", "thumbprint", "rfc 7638", "key identification"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["jwk-key-types", "jwks-and-key-rotation", "verifying-a-jwt-with-jwks"]
+category: identity
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma JWK (JSON Web Key) descreve uma única chave como um objeto JSON. Ao lado do material bruto da chave estão parâmetros de metadados que dizem a um consumidor o que a chave é e como se referir a ela.
+
+## Os parâmetros comuns
+
+- **`kty`** (key type) é o único membro obrigatório: RSA, EC, OKP ou oct. Ele determina quais outros membros estão presentes.
+- **`use`** diz se a chave é para assinaturas (`sig`) ou criptografia (`enc`), e **`key_ops`** pode listar operações específicas. Um verificador deve honrá-los e não, digamos, criptografar com uma chave de assinatura.
+- **`alg`** nomeia o algoritmo pretendido, como RS256 ou ES256.
+- **`kid`** (key ID) é um rótulo usado para escolher a chave certa de um conjunto. Quando um header de JWT carrega um `kid`, o verificador o compara com o `kid` na JWKS.
+- Membros específicos do tipo carregam a chave de fato: `n` e `e` para RSA, `crv`/`x`/`y` para EC, `crv`/`x` para OKP. Os opcionais `x5c` e `x5t` embutem ou dão fingerprint de um certificado X.509 para a chave.
+
+## Thumbprints
+
+Um `kid` é apenas uma string escolhida, então dois sistemas podem rotular a mesma chave de formas diferentes. Um **thumbprint de JWK** (RFC 7638) resolve isso *computando* um identificador a partir da própria chave: ele pega os membros obrigatórios para o tipo da chave, em uma ordem fixa e sem espaço em branco (uma forma canônica de JSON), e os hasheia, normalmente com SHA-256. Como a entrada é canônica, a mesma chave sempre produz o mesmo thumbprint, independentemente da ordem dos membros ou de metadados extras.
+
+Isso torna os thumbprints úteis como identificadores de chave estáveis e resistentes a colisão: muitos sistemas definem `kid` como o thumbprint para que o rótulo seja derivado da chave em vez de atribuído à mão. Também permite confirmar que uma chave em um lugar é a mesma de outro comparando thumbprints em vez de comparar cada campo. O ponto-chave é que um thumbprint é derivado do conteúdo e determinístico, que é exatamente o que uma serialização canônica compra.

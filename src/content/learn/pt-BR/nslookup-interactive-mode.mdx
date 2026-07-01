@@ -1,0 +1,30 @@
+---
+slug: nslookup-interactive-mode
+title: "Modo interativo do nslookup"
+summary: "Execute o nslookup sem argumentos e ele entra em um prompt interativo onde você pode trocar de resolvedor, mudar o tipo de registro, ligar a saída de debug e consultar vários nomes em uma única sessão. Este artigo cobre o punhado de comandos que vale a pena conhecer e quando o interativo vence uma consulta única."
+concepts: ["nslookup", "interactive", "set type", "server", "debug"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "nslookup-record-types"]
+category: networking
+order: 51
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A maioria das pessoas usa o nslookup como um comando único: `nslookup example.com` e pronto. Mas execute-o sem argumentos e ele vira uma sessão interativa, o que é útil quando uma consulta não basta.
+
+## O prompt
+
+Digite `nslookup` sozinho e você obtém um prompt `>`. A partir daqui você digita nomes para consultá-los, e um pequeno conjunto de comandos para mudar como as consultas se comportam. Digite `exit` (ou Ctrl-D) para sair.
+
+## Os comandos que valem a pena
+
+- **`server 8.8.8.8`** troca o resolvedor usado em cada consulta seguinte da sessão. Esta é a forma mais limpa de comparar como dois resolvedores respondem ao mesmo nome: defina um servidor, consulte o nome, defina o outro, consulte de novo.
+- **`set type=MX`** (ou a forma curta `set q=MX`) muda o tipo de registro. Depois disso, você apenas digita nomes e recebe registros MX de volta. Defina como `NS`, `TXT`, `SOA`, `AAAA` ou `ANY` conforme a necessidade. Isso substitui a flag `-type=` que você passaria na linha de comando.
+- **`set debug`** (ou `set d2` para ainda mais) liga uma saída detalhada que mostra o pacote DNS completo, incluindo as flags do cabeçalho e a estrutura de seções que o nslookup normalmente esconde. É o mais perto que o nslookup chega do que o dig mostra por padrão.
+
+## Quando o interativo é a escolha certa
+
+O modo interativo compensa quando você está explorando: verificando vários nomes em sequência, comparando o mesmo nome entre resolvedores, ou iterando sobre o tipo de registro sem redigitar o comando inteiro. Para uma verificação única, ou qualquer coisa que você queira colocar em um script, a forma de comando único (`nslookup -type=MX example.com 8.8.8.8`) é mais simples.
+
+Uma ressalva para automação: o código de saída do nslookup não reflete de forma confiável se a consulta teve sucesso, então para scripting o dig ou o host são as ferramentas melhores. O nslookup interativo é para um humano no teclado, trabalhando um problema.

@@ -1,0 +1,46 @@
+---
+slug: how-cvss-scoring-works
+title: "Como Funciona a Pontuação CVSS"
+summary: "O CVSS transforma uma string de vetor curta em um número de severidade de 0 a 10 usando uma fórmula fixa. A pontuação Base é construída a partir de duas subpontuações: Explorabilidade (quão acessível e fácil é a falha) e Impacto (quão grave é o resultado). Todo o resto refina essa base. Isso é aritmética, não opinião, e por isso uma calculadora reproduz exatamente qualquer pontuação publicada."
+concepts: ["cvss", "pontuação de vulnerabilidade", "pontuação base", "explorabilidade", "impacto"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["cvss-base-metrics-explained", "cvss-vector-string-format", "cvss-severity-bands-and-limits"]
+category: security
+order: 70
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O Common Vulnerability Scoring System (CVSS) é um framework aberto, mantido pela FIRST.org, para descrever a severidade de uma vulnerabilidade de software. Sua saída mais visível é um número de 0.0 a 10.0, mas esse número é derivado de uma string de vetor por uma fórmula fixa. Nada na pontuação é subjetivo depois que as métricas são escolhidas, então qualquer implementação correta produz o mesmo resultado para o mesmo vetor.
+
+## Três grupos de métricas
+
+O CVSS v3.1 tem três grupos. O grupo **Base** captura as propriedades intrínsecas da falha, que não mudam ao longo do tempo nem entre ambientes, e é o único grupo normalmente publicado. O grupo **Temporal** ajusta a base para coisas que mudam com o tempo, como a existência de código de exploração. O grupo **Ambiental** permite que uma organização específica recalcule a falha para seus próprios sistemas. As métricas base são obrigatórias; os outros dois grupos são refinamentos opcionais.
+
+## A pontuação Base são duas subpontuações
+
+A pontuação Base é montada a partir de duas partes.
+
+A **Explorabilidade** mede quão acessível e quão fácil é o ataque. É o produto de quatro pesos de métricas, escalado por uma constante:
+
+`Explorabilidade = 8,22 x VetorDeAtaque x ComplexidadeDoAtaque x PrivilégiosNecessários x InteraçãoDoUsuário`
+
+Uma falha acessível pela rede, com baixa complexidade, sem privilégios e sem interação do usuário, maximiza esse termo.
+
+O **Impacto** mede quão grave é um ataque bem-sucedido. Começa por uma subpontuação de impacto construída a partir das métricas de Confidencialidade, Integridade e Disponibilidade:
+
+`ISS = 1 - [(1 - Confidencialidade) x (1 - Integridade) x (1 - Disponibilidade)]`
+
+Essa subpontuação é então convertida em um valor de Impacto de um modo que depende do **Escopo** (descrito no artigo sobre métricas base).
+
+## Juntando tudo
+
+Se a subpontuação de impacto for zero, toda a pontuação Base é zero: uma vulnerabilidade sem impacto em confidencialidade, integridade ou disponibilidade recebe 0.0 por mais acessível que seja. Caso contrário, a pontuação Base combina as duas subpontuações e arredonda para cima com uma casa decimal:
+
+`PontuaçãoBase = Roundup(min(Impacto + Explorabilidade, 10))`
+
+quando o Escopo é inalterado, ou com um multiplicador extra de `1,08` quando o Escopo mudou. O passo `Roundup` é definido com precisão na especificação para que linguagens e plataformas diferentes não discordem do último dígito.
+
+O número resultante é mapeado para uma faixa qualitativa (Nenhuma, Baixa, Média, Alta, Crítica). Essas faixas, e as ressalvas importantes sobre o que a pontuação significa, estão no artigo sobre severidade.
+
+Como cada passo é determinístico, colar um vetor em uma calculadora deve reproduzir exatamente a pontuação publicada pelo fornecedor ou pelo NVD. Se não reproduzir, o vetor foi transcrito errado, ou as duas ferramentas discordam sobre a versão do CVSS.

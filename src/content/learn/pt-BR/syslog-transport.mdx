@@ -1,0 +1,24 @@
+---
+slug: syslog-transport
+title: "Como o syslog viaja: UDP, TCP e TLS"
+summary: "O syslog pode trafegar sobre UDP puro, sobre TCP, ou sobre TLS, e a escolha decide se as mensagens podem ser silenciosamente perdidas, reordenadas ou lidas em trânsito. Este artigo cobre os três transportes, as portas envolvidas, e por que qualquer coisa da qual você depende para auditoria não deveria ser enviada sobre UDP."
+concepts: ["syslog", "udp", "tcp", "tls", "reliability"]
+relatedTools: ["syslog-pri-decoder"]
+relatedArticles: ["syslog-pri-facility-severity", "syslog-message-formats", "syslog-on-network-devices"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Uma mensagem syslog é apenas texto, mas como ela vai do dispositivo ao coletor varia bastante, e o transporte determina se você pode confiar que tudo chegou.
+
+## Os três transportes
+
+- **UDP, porta 514** é o padrão tradicional. É fire-and-forget: o remetente emite um datagrama e nunca fica sabendo se ele chegou (RFC 5426). É simples e barato, mas sob carga, através de um enlace congestionado, ou por um firewall ocupado, as mensagens são **silenciosamente descartadas**, e não há retransmissão nem garantia de ordem.
+- **TCP** (comumente RFC 6587) adiciona uma conexão, então as mensagens são reconhecidas, retransmitidas se perdidas, e entregues em ordem. A sutileza principal é o **framing**: como o TCP é um fluxo de bytes, os remetentes ou prefixam cada mensagem com seu tamanho (octet counting) ou delimitam mensagens com uma quebra de linha, e ambos os lados precisam concordar.
+- **TLS, porta 6514** (RFC 5425) envolve o fluxo TCP em criptografia e autenticação, então as mensagens não podem ser lidas ou adulteradas em trânsito, e o coletor pode verificar o remetente.
+
+## Por que a escolha importa
+
+O trade-off é confiabilidade e confidencialidade contra simplicidade. O UDP perde mensagens exatamente quando você mais as quer, durante um incidente ou um ataque, porque é quando o volume dispara. Ele também envia tudo em texto claro, então logs, que frequentemente contêm detalhes sensíveis, ficam expostos no fio. Para logging operacional casual em uma rede confiável, o UDP está bom e ainda é onipresente. Para qualquer coisa usada como **trilha de auditoria**, para conformidade, ou através de uma rede não confiável, o TCP te dá uma entrega com a qual você pode contar e o TLS adiciona confidencialidade e autenticação do remetente. Uma regra prática: se perder uma mensagem importasse, não a envie sobre UDP.

@@ -1,0 +1,26 @@
+---
+slug: diff-minimal-edits
+title: "Minimal Edits: Why a Diff Can Look Wrong"
+summary: "A diff shows the smallest set of insertions and deletions that turns one text into the other. Because the smallest set is not unique and the algorithm has to choose, a diff can align lines in ways that look counterintuitive, blaming the wrong block or splitting a moved section. Knowing this makes odd diffs readable."
+concepts: ["diff", "minimal edit", "longest common subsequence", "alignment", "readability"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works", "reading-a-diff", "diff-three-way-and-merge-conflicts"]
+category: encoding
+order: 13
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Diff does not know what you *did* to a file. It only sees the before and the after, and works out a set of insertions and deletions that would turn one into the other. Specifically, it looks for the **longest common subsequence**, the largest set of lines that appear in both in the same order, and treats everything else as inserted or deleted.
+
+## Why the result can surprise you
+
+The catch is that the smallest set of edits is often not unique. When two regions look similar, there can be several equally short ways to explain the change, and the algorithm simply picks one by its internal rules. That is why a diff sometimes:
+
+- **Blames the wrong block.** If you add a function that ends with a closing brace, the diff may pair your new brace with an existing one and show the change starting a line off from where you think it did.
+- **Splits a moved section.** Move a block of code and a line diff does not see a move at all; it sees a deletion in one place and an insertion in another, sometimes broken into pieces that align with unrelated matching lines.
+- **Attaches blank or boilerplate lines oddly.** Repeated lines like blank lines or `}` are interchangeable to the algorithm, so it may group them in a way that reads strangely.
+
+## Reading them anyway
+
+None of this means the diff is wrong; it is a correct minimal explanation, just not the one that matches your mental model of the edit. The fix is not to fight it but to read it as "one valid way to get from A to B." When a diff looks off, a word or character level view often makes the real change obvious, and for moved code, comparing the two blocks directly is clearer than trusting the alignment. The takeaway is that a diff describes a transformation between two states, not the story of how you got there.

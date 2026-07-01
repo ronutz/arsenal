@@ -1,0 +1,30 @@
+---
+slug: nslookup-interactive-mode
+title: "nslookup Interactive Mode"
+summary: "Run nslookup with no arguments and it drops into an interactive prompt where you can switch resolvers, change the record type, turn on debug output, and look up many names in one session. This covers the handful of commands worth knowing and when interactive beats a one-shot query."
+concepts: ["nslookup", "interactive", "set type", "server", "debug"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "nslookup-record-types"]
+category: networking
+order: 51
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Most people use nslookup as a one-shot command: `nslookup example.com` and done. But run it with no arguments and it becomes an interactive session, which is handy when one lookup is not enough.
+
+## The prompt
+
+Type `nslookup` alone and you get a `>` prompt. From here you type names to look them up, and a small set of commands to change how the lookups behave. Type `exit` (or Ctrl-D) to leave.
+
+## The commands worth knowing
+
+- **`server 8.8.8.8`** switches the resolver used for every subsequent query in the session. This is the cleanest way to compare how two resolvers answer the same name: set one server, look up the name, set the other, look it up again.
+- **`set type=MX`** (or the shorthand `set q=MX`) changes the record type. After it, you just type names and get MX records back. Set it to `NS`, `TXT`, `SOA`, `AAAA`, or `ANY` as needed. This replaces the `-type=` flag you would pass on the command line.
+- **`set debug`** (or `set d2` for even more) turns on verbose output that shows the full DNS packet, including the header flags and the section structure that nslookup normally hides. It is the closest nslookup gets to what dig shows by default.
+
+## When interactive is the right choice
+
+Interactive mode pays off when you are exploring: checking many names in a row, comparing the same name across resolvers, or iterating on the record type without retyping the whole command. For a single check, or anything you want to put in a script, the one-shot form (`nslookup -type=MX example.com 8.8.8.8`) is simpler.
+
+One caveat for automation: nslookup's exit status does not reliably reflect whether the lookup succeeded, so for scripting, dig or host are the better tools. Interactive nslookup is for a human at a keyboard, working a problem.

@@ -69,6 +69,7 @@
       "purposeLabel": "In finanziamento ora"
     },
     "stats": {
+      "headline": "Disponibili ora",
       "tools": "Strumenti",
       "articles": "Articoli",
       "sectionLabel": "La cassetta degli attrezzi in breve"
@@ -871,7 +872,7 @@
     "builtWith": "Creato da Rodolfo Nützmann con CONCORD",
     "colophon": "Come è stato costruito",
     "contribute": "Migliora le traduzioni",
-    "feedback": "Invia un feedback",
+    "feedback": "Contatti",
     "api": "Riferimento dell'API",
     "contributeTools": "Proponi un'idea",
     "license": "Licenza",

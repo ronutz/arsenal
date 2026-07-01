@@ -66,7 +66,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // configuration often embeds secrets
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/json-vs-yaml", "learn/yaml-type-coercion", "learn/config-formats-in-practice"],
+  learnLinks: ["learn/json-vs-yaml", "learn/yaml-type-coercion", "learn/config-formats-in-practice", "learn/yaml-anchors-and-aliases", "learn/yaml-block-scalars"],
   sources: [
     {
       id: "yaml-1-2-2",

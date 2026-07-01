@@ -1,0 +1,33 @@
+---
+slug: bigip-cookie-persistence-methods
+title: "Métodos e configurações de persistência por cookie no BIG-IP"
+summary: "Além do que um cookie de persistência do BIG-IP contém, há a questão de como ele chega lá. O BIG-IP oferece quatro métodos de cookie, insert, rewrite, passive e hash, e um conjunto de opções de profile para o nome, o tempo de vida e as flags de segurança do cookie. Elas decidem o comportamento operacional do cookie, separado do seu valor codificado."
+concepts: ["big-ip", "cookie persistence", "insert", "httponly", "secure"]
+relatedTools: ["bigip-persistence-cookie"]
+relatedArticles: ["bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
+category: security
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O valor dentro de um cookie de persistência do BIG-IP é um tópico; como o BIG-IP coloca e gerencia esse cookie é outro, e é governado pelo método de cookie e pelas configurações do profile.
+
+## Os quatro métodos
+
+O BIG-IP pode produzir o cookie de persistência de quatro formas:
+
+- **Insert** é o padrão e o mais comum. O BIG-IP adiciona seu próprio `Set-Cookie` à resposta do servidor e o lê de volta em requisições posteriores. O backend não precisa saber nada sobre isso.
+- **Rewrite** faz o servidor enviar um cookie com valor em branco, e o BIG-IP preenche a informação de persistência. Isso precisa de cooperação da aplicação e é raramente usado.
+- **Passive** faz o BIG-IP *ler* um cookie que o próprio servidor define, sem inserir um. A aplicação é dona do cookie; o BIG-IP apenas o interpreta.
+- **Hash** chaveia a persistência em um hash do valor de um cookie existente, útil quando um cookie da aplicação já identifica a sessão.
+
+O insert cobre a grande maioria das implantações porque funciona sem tocar no backend.
+
+## As configurações que importam
+
+Um profile de persistência por cookie também controla as propriedades operacionais do cookie. O **nome do cookie** pode ser customizado. A **expiração** decide se ele é um cookie de sessão (some quando o navegador fecha) ou um cookie temporizado que persiste por uma duração definida. Mais importante para a segurança, o profile pode definir as flags **httponly** e **secure**: httponly mantém o cookie fora do alcance de scripts da página, e secure impede que ele seja enviado por HTTP puro. Junto com a opção de criptografia, essas são o que transforma um cookie que de outra forma vazaria detalhes do backend em um que é seguro entregar a um navegador.
+
+## Por que vale configurar deliberadamente
+
+O método insert padrão com um cookie não criptografado e sem flags é exatamente a configuração que expõe informação de pool member, como os artigos de divulgação e codificação descrevem. As configurações operacionais são a outra metade de fechar essa lacuna: habilitar a criptografia protege o valor, e definir httponly e secure protege o cookie em trânsito e no navegador. Escolher o método e as flags de propósito, em vez de aceitar os padrões, é o que faz a persistência por cookie funcionar corretamente e permanecer segura.

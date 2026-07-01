@@ -1,0 +1,37 @@
+---
+slug: dns-record-types-in-answers
+title: "Lendo os registros em uma resposta do dig"
+summary: "Todo registro em uma seção do dig são cinco colunas: nome, TTL, classe, tipo e rdata. Este artigo percorre as colunas e depois o rdata dos tipos de registro que você realmente encontra, de A e CNAME a MX, SOA, SRV e CAA, para que uma parede de registros se leia como fatos simples."
+concepts: ["a record", "aaaa", "cname", "mx", "soa", "txt", "srv", "caa", "ttl", "rdata"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
+category: networking
+order: 42
+status: machine-draft
+updated: "2026-06-30"
+---
+
+Dentro das seções ANSWER, AUTHORITY e ADDITIONAL, cada linha é um resource record com as mesmas cinco colunas:
+
+```
+example.com.		3600	IN	A	93.184.216.34
+```
+
+Isto é **nome** (`example.com.`), **TTL** em segundos (`3600`, por quanto tempo pode ficar em cache), **classe** (`IN` para Internet, essencialmente sempre), **tipo** (`A`) e **rdata** (`93.184.216.34`, o payload específico do tipo). Os registros de pergunta são a exceção: começam com `;`, não carregam TTL e não têm rdata, porque uma pergunta apenas nomeia o que você pediu.
+
+## Os tipos que você encontra, e seu rdata
+
+- **A** e **AAAA**: um endereço IPv4 ou IPv6. O rdata é apenas o endereço.
+- **CNAME**: um alias. O rdata é outro nome, e os registros reais ficam sob esse alvo. Um CNAME em uma resposta é o motivo de você às vezes ver dois registros: o alias e, em seguida, o endereço para o qual ele aponta.
+- **NS**: um servidor de nomes autoritativo para a zona. O rdata é o nome do servidor.
+- **MX**: um mail exchanger. O rdata são dois campos, um número de preferência e um hostname; a menor preferência vence.
+- **SOA**: o registro do ápice da zona, e o rdata mais denso que você vai ler. Seus sete campos são o servidor primário, a caixa postal do administrador (com o primeiro ponto substituindo o `@`), o serial e os timers de refresh, retry, expire e minimum. O minimum também serve como TTL de cache negativo, então ele governa por quanto tempo um NXDOMAIN dessa zona é lembrado.
+- **TXT**: texto livre, entre aspas. Carrega políticas SPF, chaves DKIM e tokens de verificação de domínio.
+- **PTR**: o registro reverso, mapeando um endereço de volta para um nome. Você o vê ao consultar um endereço sob `in-addr.arpa` ou `ip6.arpa`.
+- **SRV**: um localizador de serviço. O rdata são quatro campos: prioridade, peso, porta e host alvo.
+- **CAA**: quais autoridades certificadoras podem emitir para o domínio. O rdata é um byte de flags, uma tag (`issue`, `issuewild`, `iodef`) e um valor.
+- **HTTPS** e **SVCB**: registros de service binding mais novos que carregam dicas de conexão (ALPN, porta, dicas de endereço) para uma origem.
+
+## O TTL é um relógio, não uma constante
+
+O TTL que você vê de um resolvedor recursivo decrementa conforme o registro envelhece no cache dele, então a mesma consulta um minuto depois pode mostrar um número menor. Consulte o servidor autoritativo diretamente (aquele em um registro NS, com `@`) e você verá o TTL configurado na zona. Essa diferença costuma ser a forma mais rápida de distinguir um problema de cache de um problema de zona.

@@ -1,0 +1,31 @@
+---
+slug: saml-bindings-and-sso-initiation
+title: "SAML Bindings and SP vs IdP Initiation"
+summary: "A SAML flow can start at the service or at the identity provider, and the messages can travel by two different bindings: an HTTP redirect with the message packed into the URL, or an auto-submitting HTML form that POSTs it. Which binding carries which message, and where the flow begins, explains a lot of SSO behavior."
+concepts: ["saml", "http-redirect", "http-post", "sp-initiated", "idp-initiated"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-assertions-and-conditions", "saml-signatures"]
+category: security
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Two practical questions shape any SAML single sign-on: where the flow starts, and how each message physically moves between the parties.
+
+## Where it starts
+
+**SP-initiated** SSO begins at the service provider. The user tries to reach the application, the application generates an `AuthnRequest`, and the user is sent to the identity provider to authenticate. Because the SP created a request, it can correlate the eventual response to it, which makes this the more robust and more secure pattern.
+
+**IdP-initiated** SSO begins at the identity provider, typically a portal of apps. The user is already logged in there, clicks the app, and the IdP sends an unsolicited assertion straight to the service provider with no prior request from the SP. It is convenient, but the missing request means there is nothing to correlate the assertion against, which removes a layer of protection and is why SP-initiated is generally preferred.
+
+## How the messages travel: bindings
+
+A **binding** is the transport rule for a SAML message. Two dominate browser SSO:
+
+- **HTTP-Redirect** carries the message in the URL: the XML is deflate-compressed, base64-encoded, and URL-encoded into a query parameter, then the browser is redirected. It is compact but size-limited, which suits the small `AuthnRequest`.
+- **HTTP-POST** carries the message in an auto-submitting HTML form: the base64-encoded XML sits in a hidden field and a scrap of JavaScript submits it to the destination. There is no practical size limit, which is why the **Response** carrying the assertion, which is large and signed, almost always uses POST.
+
+## Reading a flow
+
+Put together, a typical SP-initiated login is: the SP builds an `AuthnRequest` and sends it via HTTP-Redirect; the user authenticates; the IdP returns a signed `Response` via HTTP-POST to the SP's assertion consumer service. When you decode a SAML message and want to know what you are looking at, the binding tells you where it came from, redirect-style parameters point to a request, a POSTed form body points to a response, and whether it was SP- or IdP-initiated tells you whether a correlating request should exist at all.

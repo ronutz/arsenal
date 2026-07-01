@@ -1,0 +1,26 @@
+---
+slug: f5-cipher-ordering-and-negotiation
+title: "Cipher Ordering and Negotiation on BIG-IP"
+summary: "An expanded cipher string is an ordered list, and the order is not cosmetic: with server preference, BIG-IP picks the first cipher in its own list that the client also supports. That makes the position of each cipher a real security control, which is why expansion shows them in order."
+concepts: ["f5", "cipher order", "negotiation", "server preference", "big-ip"]
+relatedTools: ["f5-cipher-string-expander"]
+relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords", "f5-tls13-vs-tls12-ciphers"]
+category: transport
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+When a cipher string expands into a concrete list, the order of that list matters as much as its contents, because order is what decides which cipher a connection actually uses.
+
+## How a cipher gets chosen
+
+In a TLS handshake the client offers the ciphers it supports and the server picks one. There are two philosophies for the pick. With **client preference**, the server chooses the client's most-preferred cipher that it also supports. With **server preference**, the server walks its *own* ordered list and picks the first entry the client supports, ignoring the client's ranking. Most hardened configurations, BIG-IP included, use server preference, because it lets the operator, not the client, decide the priority.
+
+Under server preference, the position of a cipher in the expanded list is a control knob. Put a strong AEAD cipher with forward secrecy first, and any reasonably modern client lands on it. Leave a weaker but still-enabled cipher near the top, and clients that support it will be steered there even when something better was available further down. This is why simply *including* good ciphers is not enough; they have to be *ahead* of the weaker ones.
+
+## Why expansion shows the order
+
+A cipher string uses keywords and modifiers that reorder as well as include, so the final priority is not obvious from the string alone. Expanding it resolves every keyword into the actual, ordered suite list the way BIG-IP will present it, which is exactly the order that server preference will walk. Reading that list top to bottom tells you what a modern client will negotiate, what an older client will fall back to, and whether anything undesirable is sitting high enough to be chosen.
+
+The practical habit is to read the expanded list as a priority ranking, not a set. Confirm that the top entries are the ciphers you want the majority of clients to use, that forward-secret and AEAD suites sit above anything legacy, and that nothing you would be unhappy to see negotiated is positioned where a client could reach it before a better option.

@@ -1,0 +1,26 @@
+---
+slug: regex-flags-and-modes
+title: "Flags e modos em regex"
+summary: "Uma flag muda como o padrão inteiro casa: sensibilidade a maiúsculas, se ^ e $ enxergam linhas, se o ponto cruza quebras de linha e se o espaço em branco no padrão é ignorado. O mesmo regex pode casar coisas completamente diferentes dependendo de suas flags, então conhecê-las evita muita confusão."
+concepts: ["regex", "flags", "case-insensitive", "dotall", "multiline", "verbose"]
+relatedTools: ["regex"]
+relatedArticles: ["regex-quantifiers-and-classes", "regex-anchors-and-boundaries", "regex-catastrophic-backtracking"]
+category: security
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Duas pessoas podem escrever o mesmo padrão e obter resultados diferentes, porque um regex é só metade da história: suas **flags** decidem como ele se comporta. Um punhado delas cobre quase tudo.
+
+## As flags que importam
+
+- **`i` (insensível a maiúsculas):** `abc` também casa `ABC` e `Abc`. Simples, e normalmente o que você quer para casar palavras em texto de caixa mista.
+- **`m` (multilinha):** faz `^` e `$` casarem no início e no fim de cada linha, em vez de apenas na string inteira. Essencial para varrer texto orientado a linhas.
+- **`s` (dotall / single-line):** faz o ponto `.` casar também quebras de linha. Normalmente `.` casa qualquer caractere *exceto* uma quebra de linha, então um padrão que deveria abranger várias linhas falha silenciosamente até você ligar isto. Esta é a flag que as pessoas mais esquecem.
+- **`x` (extended / verbose):** ignora espaço em branco não escapado no padrão e permite comentários, para que você possa dispor um regex complexo em várias linhas com anotações. Torna padrões longos legíveis sem mudar o que eles casam.
+- **`g` (global):** encontra *todos* os casamentos em vez de parar no primeiro. Em muitas linguagens isso vive na operação (substituir-tudo, encontrar-tudo) e não no padrão, mas a ideia é a mesma.
+
+## O par que confunde
+
+`m` e `s` soam parecidos e fazem coisas diferentes. `m` é sobre **âncoras**: onde `^` e `$` caem. `s` é sobre **o ponto**: se `.` cruza quebras de linha. Você pode querer uma, ambas ou nenhuma. Um bug frequente é recorrer a multilinha quando na verdade você precisava de dotall: você queria que `.` abrangesse linhas, mas ligou a flag que só moveu as âncoras, e o casamento ainda para na primeira quebra de linha. Quando um casamento de várias linhas não está funcionando, pergunte qual dos dois comportamentos você realmente precisa antes de adicionar uma flag.

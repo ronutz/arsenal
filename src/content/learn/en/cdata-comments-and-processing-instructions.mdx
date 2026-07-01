@@ -1,0 +1,36 @@
+---
+slug: cdata-comments-and-processing-instructions
+title: "CDATA, Comments, and Processing Instructions"
+summary: "Not everything in XML is an element. CDATA sections hold raw text that would otherwise need escaping, comments annotate without affecting content, and processing instructions carry directions for an application. Recognizing these three keeps them from looking like mysterious noise."
+concepts: ["xml", "cdata", "comments", "processing instructions", "escaping"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["reading-xml-structure", "xml-well-formedness", "xml-namespaces-explained"]
+category: encoding
+order: 63
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Most of an XML document is elements and text, but three other constructs show up regularly, and each has a specific job. Knowing them on sight stops them from reading as noise.
+
+## CDATA sections
+
+A **CDATA section** holds text that should be taken literally, without the parser interpreting `<` and `&` as markup. It is written `<![CDATA[ ... ]]>`, and everything between the brackets is raw character data:
+
+```
+<summary><![CDATA[Uses <tags> & symbols freely]]></summary>
+```
+
+Without CDATA, that content would have to be escaped as `Uses &lt;tags&gt; &amp; symbols`. CDATA is a convenience for blocks that contain a lot of characters that would otherwise need escaping, such as embedded code or markup samples. The one thing it cannot contain is the sequence `]]>`, since that is what closes it. Importantly, CDATA changes only how the text is written, not what it means: the parsed content is identical to the escaped version.
+
+## Comments
+
+A **comment** is written `<!-- ... -->` and is ignored as content. It exists for human readers, to annotate or temporarily disable part of a document. Comments cannot be nested and cannot contain a double hyphen `--` inside them. Because a comment is not data, a well-behaved consumer never treats its text as part of the document's information.
+
+## Processing instructions
+
+A **processing instruction** (PI) carries a directive for an application that consumes the XML, written `<?target data?>`. The target names who the instruction is for, and the data is whatever that application understands. The classic example is a stylesheet association: `<?xml-stylesheet type="text/css" href="style.css"?>`. The XML declaration at the top of a file looks like a PI but is technically a special case, not one.
+
+## Why they are grouped
+
+These three share a common trait: none of them is an element, so none of them appears in the element tree as a node with children. They sit alongside elements as siblings of a sort, annotations and instructions and literal-text escapes woven through the document. When you are mapping out a document's structure, it helps to set them aside from the element hierarchy: the elements carry the data model, while comments, PIs, and CDATA are, respectively, notes, directions, and a writing convenience.

@@ -1,0 +1,48 @@
+---
+slug: xc-service-policy-predicates-and-logic
+title: "Predicates and Boolean Logic in XC Service Policy Rules"
+summary: "Inside one rule, every predicate you set is combined with AND, and an unset predicate is implicitly true. Inside one matcher, multiple values are combined with OR. Getting these two levels straight is the difference between a rule that matches what you meant and one that quietly matches too much or too little."
+concepts: ["f5 xc", "predicates", "boolean logic", "matcher", "and or"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["how-xc-service-policies-match", "xc-matcher-case-sensitivity-and-transformers", "xc-rule-combining-algorithms"]
+category: security
+order: 66
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A service policy rule can carry many predicates at once: a path, a method, some headers, a client selector, an IP list. The logic that ties them together is simple to state and easy to get wrong, because it works at two levels.
+
+## AND across predicates
+
+Every predicate you specify in a rule must be true for the rule to match. The predicates are combined with **AND**. A rule with a path predicate and a method predicate matches only a request that satisfies both.
+
+Just as important: any predicate you do **not** specify is implicitly true. A rule with only an `http_method` predicate places no constraint on path, headers, or source; it matches any request with that method. This is why a rule with no predicates at all matches everything, and why adding predicates always narrows, never widens.
+
+## OR within a matcher
+
+Most matchers hold a list of values, and within that list the logic is **OR**. A path matcher with three `prefix_values` matches a path that starts with any one of them. A header `item` with three `exact_values` matches if the header equals any one of them. An `http_method` list of `["GET", "POST"]` matches either method.
+
+So the mental model is: OR inside a field, AND across fields.
+
+## The multiple-matcher trap
+
+The place this bites people is headers (and query parameters, and cookies), because each is a list of matcher objects, and there is a difference between putting several values in one matcher and putting several matchers in the list.
+
+```
+headers:
+  - name: partner-name
+    item: { exact_values: ["GOOGLE"] }
+  - name: User-Agent
+    item: { exact_values: ["GoogleMobile-9.1.76", "GoogleMobile-9.1.77"] }
+```
+
+The two header entries are combined with AND: the request must carry a matching `partner-name` **and** a matching `User-Agent`. But inside the `User-Agent` matcher, the two values are OR: either user-agent string satisfies it.
+
+A related trap is that a single header value string is matched literally, commas included. If you write one `exact_values` entry of `"GOOGLE,BING"` expecting it to mean two partners, it will only match a header whose value is literally the eight characters `GOOGLE,BING`. To match either, you need two entries in `exact_values`, not one comma-joined string.
+
+## Presence, absence, and inversion
+
+Header, cookie, argument, and JWT-claim matchers also support `check_present` and `check_not_present`, which test only for the field being there or not, with no value comparison. And most matchers support `invert_matcher`, which flips the result: the predicate matches when the condition is **not** met. An inverted method matcher on `["GET"]` matches every method except GET. Inversion is powerful and easy to misread, so it is worth calling out explicitly whenever it appears.
+
+The explainer on this site renders each predicate with its values, marks OR lists, and flags inverted matchers, so the two levels of logic are visible at a glance rather than inferred from nesting.

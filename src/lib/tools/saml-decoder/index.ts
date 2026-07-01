@@ -102,6 +102,7 @@ export const manifest = Object.freeze({
     "learn/saml-assertions-and-conditions",
     "learn/saml-signatures",
     "learn/xxe-and-xml-security",
+    "learn/saml-bindings-and-sso-initiation",
   ],
   sources: [
     {

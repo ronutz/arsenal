@@ -1,0 +1,26 @@
+---
+slug: jwt-algorithm-confusion
+title: "JWT Algorithm Confusion Attacks"
+summary: "Two classic JWT verification failures come from trusting the token's own algorithm header: accepting alg none, and being tricked into verifying an RS256 token as HS256 using the public key as the secret. Both are defeated by pinning the expected algorithm on the server instead of reading it from the token."
+concepts: ["jwt", "algorithm confusion", "alg none", "rs256 hs256", "security"]
+relatedTools: ["jwks-explainer"]
+relatedArticles: ["verifying-a-jwt-with-jwks", "jwk-key-types", "jwk-parameters-and-thumbprints"]
+category: identity
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A JWT carries its own algorithm in the header (`alg`). The danger is that a verifier which *trusts* that field lets the attacker choose how their token is checked, and there are two well-known ways to abuse it.
+
+## alg: none
+
+The JWT spec includes `none`, meaning an unsigned token. If a verifier honors it, an attacker can strip the signature, set `alg` to `none`, change the claims to anything they like, and the token is accepted because "no signature" is treated as "valid." The fix is simply to never accept `none` for tokens that are supposed to be signed. Any library that does otherwise by default is dangerous.
+
+## RS256 to HS256 confusion
+
+This one is subtler and is why JWKS is relevant. With **RS256**, the server holds an RSA key pair and verifies signatures with the *public* key, which by design is not secret. With **HS256**, verification uses a shared *secret* with HMAC. The attack: the attacker takes a token, sets `alg` to `HS256`, and signs it using the server's **public key as the HMAC secret**. If the server reads `alg` from the token and switches to HS256, it will HMAC-verify using that same public key, which the attacker also has, so the signature checks out. The public key, meant to be shared freely, becomes the shared secret.
+
+## The single defense
+
+Both attacks share a root cause: the verifier let the token dictate the algorithm. The defense is to **pin the expected algorithm on the server** and ignore the token's `alg`, or at least reject any value that does not match what the key is for. A verifier that expects RS256 should verify only RS256 with the RSA public key, and never fall back to a symmetric algorithm. This connects directly to JWKS practice: because the verification key is *published* in the JWKS, it is available to attackers, so the server must treat the algorithm as a fixed property of its own configuration, not as something read from an untrusted token.

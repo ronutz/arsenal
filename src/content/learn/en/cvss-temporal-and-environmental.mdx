@@ -1,0 +1,38 @@
+---
+slug: cvss-temporal-and-environmental
+title: "CVSS Temporal and Environmental Scores"
+summary: "The Base score is only the starting point. Temporal metrics lower it as facts emerge, such as a patch being released, and can only reduce the score. Environmental metrics let an organization re-score the flaw for its own systems by raising or lowering the importance of confidentiality, integrity, and availability and by overriding base metrics. Both are optional but produce a more honest number."
+concepts: ["cvss", "temporal score", "environmental score", "security requirements", "modified metrics"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["how-cvss-scoring-works", "cvss-base-metrics-explained", "cvss-severity-bands-and-limits"]
+category: security
+order: 72
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Most published CVSS scores are Base only, because the base is constant. But the framework was designed to be refined, and the two optional groups are where a score becomes specific to a moment in time and to a particular environment.
+
+## Temporal metrics
+
+The Temporal group has three metrics, each a multiplier that is at most 1.0, so the Temporal score can only be equal to or lower than the Base score:
+
+- **Exploit Code Maturity (E)**: how ready an exploit is, from `U` Unproven through `P` Proof-of-Concept and `F` Functional to `H` High (reliable, widely available).
+- **Remediation Level (RL)**: what fix exists, from `U` Unavailable through `W` Workaround and `T` Temporary Fix to `O` Official Fix.
+- **Report Confidence (RC)**: how confirmed the flaw is, from `U` Unknown through `R` Reasonable to `C` Confirmed.
+
+The Temporal score is simply the Base score multiplied by all three and rounded up:
+
+`Temporal = Roundup(BaseScore x E x RL x RC)`
+
+An official fix (`RL:O`) and an unproven exploit (`E:U`) pull a score down, which is the framework's way of saying a patched, hard-to-exploit flaw is less urgent than its raw base suggests.
+
+## Environmental metrics
+
+The Environmental group does two things. First, **Security Requirements** (`CR`, `IR`, `AR`) let you declare how much confidentiality, integrity, or availability matters for the affected system, at `L` Low, `M` Medium, or `H` High. A high integrity requirement raises the score of an integrity-affecting flaw on a system where integrity is critical. Second, **Modified Base Metrics** (`MAV`, `MAC`, `MPR`, `MUI`, `MS`, `MC`, `MI`, `MA`) let you override any base metric to reflect your deployment, for example changing Attack Vector from Network to Adjacent because the service is only reachable internally.
+
+The environmental math mirrors the base math but uses the modified metrics and the requirements, and the modified impact sub-score is capped at `0.915`. The result is a score that reflects the flaw as it actually sits in your environment, which is often materially different from the headline number.
+
+## When to use them
+
+Temporal and Environmental scoring is optional but recommended when you are prioritising real work. A vendor cannot know your environment, so a Base score is deliberately worst-case. Re-scoring with the metrics you do know, an internal-only service, a compensating control, an available patch, frequently moves a flaw down a band and changes what you fix first.

@@ -1,0 +1,26 @@
+---
+slug: diff-word-and-character-level
+title: "Diffs em nível de palavra e de caractere"
+summary: "Um diff de linha marca a linha inteira como alterada mesmo quando um único caractere mudou. Diffs em nível de palavra e de caractere destacam exatamente a parte da linha que mudou, o que é muito mais fácil de ler para prosa, linhas longas e edições pequenas. Este artigo cobre a diferença e quando cada lente é a certa."
+concepts: ["diff", "word diff", "character diff", "intra-line", "readability"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works", "reading-a-diff", "diff-minimal-edits"]
+category: encoding
+order: 11
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O diff clássico trabalha com linhas inteiras. Se você muda uma palavra em um parágrafo, um diff de linha mostra a linha antiga inteira como removida e a linha nova inteira como adicionada, e deixa você localizar a diferença de fato a olho. Para código isso normalmente está bom. Para prosa, linhas longas de configuração, ou uma correção de um caractere, é frustrante.
+
+## Dando zoom
+
+Um diff em **nível de palavra** primeiro alinha as linhas alteradas, depois as compara de novo na granularidade de palavras, destacando apenas as palavras que diferem. Um diff em **nível de caractere** vai ainda mais fino, marcando os caracteres exatos que mudaram. Ambos mantêm o texto inalterado da linha visível, então uma correção como mudar `recieve` para `receive` mostra apenas essas duas letras se movendo em vez de a frase inteira piscar.
+
+Este é um segundo passo em cima do diff de linha, não um algoritmo diferente: a ferramenta decide quais linhas correspondem, depois compara o interior de cada par.
+
+## Quando usar qual
+
+Diffs de linha são melhores para código-fonte, onde uma linha é uma unidade significativa e você se importa com quais linhas mudaram. Diffs em nível de palavra brilham para linguagem natural: documentação, artigos, traduções, onde as frases são longas e as edições, pequenas. Diffs em nível de caractere são a ferramenta para strings compactadas, hashes, URLs e valores de configuração de uma linha, onde a diferença pode ser um dígito.
+
+Um hábito prático é ler o diff de linha primeiro para ver *quais* linhas mudaram, depois trocar para uma visão de palavra ou caractere em uma linha que mudou de um jeito que você não consegue ver de imediato. A visão mais fina responde "o que exatamente está diferente aqui" sem fazer você comparar duas strings longas à mão.

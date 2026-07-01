@@ -1,0 +1,29 @@
+---
+slug: relative-urls-and-resolution
+title: "Relative URLs and How They Resolve"
+summary: "A relative URL leaves out the scheme and host and is completed against a base URL. The rules for how a browser fills in the rest, and how ./ and ../ and a leading slash change the result, explain a lot of broken links and a few security surprises."
+concepts: ["url", "relative url", "base url", "resolution", "rfc 3986"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "query-strings", "deceptive-urls"]
+category: encoding
+order: 6
+status: machine-draft
+updated: "2026-07-01"
+---
+
+An absolute URL carries everything: scheme, host, path, and the rest. A **relative** URL leaves parts out and expects them to be filled in from a **base URL**, usually the address of the page it appears on. This is what lets a site link to `about.html` without repeating its own domain everywhere.
+
+## The kinds of relative reference
+
+How much gets filled in depends on the shape of the reference:
+
+- **Absolute-path** (`/help/index.html`): keeps the base's scheme and host, replaces the whole path. The leading slash means "from the root of the site."
+- **Relative-path** (`page.html`, `./page.html`, `../page.html`): resolved relative to the *directory* of the current page. `./` means the current directory, and each `../` climbs one level up before the rest of the path is applied.
+- **Scheme-relative** (`//cdn.example.com/lib.js`): keeps only the base's scheme and takes a new host. On an https page it loads over https; on http, over http.
+- **Query-only** (`?page=2`) and **fragment-only** (`#section`): keep everything and change only the query or the fragment.
+
+## Why it matters
+
+The resolution rules (defined in RFC 3986) are exact, which is good, because small mistakes produce broken links: a missing leading slash makes a link relative to the wrong directory, and an extra `../` climbs above where you meant. A page can also set an explicit base with a `<base>` tag, which quietly changes how *every* relative link on the page resolves, a classic source of "why is this link pointing there."
+
+There is a security angle too. Because `../` walks up the path, and because scheme-relative and path-relative references behave differently, a URL that is built by pasting user input into a path can sometimes be steered somewhere unintended. When a URL is assembled from parts rather than written whole, it is worth resolving it fully to see where it actually lands.

@@ -1,0 +1,37 @@
+---
+slug: billion-laughs-and-entity-expansion
+title: "Billion laughs e expansão de entidades"
+summary: "Entidades podem referenciar outras entidades, e se cada uma multiplica a anterior, um documento minúsculo pode expandir para gigabytes e exaurir a memória. O ataque billion laughs transforma isso em uma negação de serviço. A defesa é limitar a expansão ou recusar o DOCTYPE de imediato."
+concepts: ["xml", "billion laughs", "entity expansion", "denial of service", "doctype"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["xxe-and-external-entities", "xml-well-formedness", "reading-xml-structure"]
+category: security
+order: 61
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Nem todo ataque XML tenta ler seus arquivos. Alguns apenas tentam derrubar o parser, e a forma clássica de fazer isso é a expansão de entidades, mais conhecida como o ataque **billion laughs**.
+
+## O truque da multiplicação
+
+Entidades internas podem referenciar outras entidades internas. Isso parece inofensivo até você encadeá-las de modo que cada camada multiplica a de baixo:
+
+```
+<!DOCTYPE lolz [
+  <!ENTITY lol "lol">
+  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+  <!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+]>
+<lolz>&lol3;</lolz>
+```
+
+Cada entidade expande para dez da anterior. Com um punhado de níveis, um documento de algumas centenas de bytes expande para bilhões de caracteres, que é de onde vem o nome. Um parser que resolve obedientemente cada referência tenta construir essa string inteira na memória, e o processo fica sem memória ou CPU e cai. É uma **negação de serviço**: o payload é minúsculo, o efeito é enorme, e nenhum arquivo é lido ou rede tocada.
+
+## Por que funciona
+
+O ataque explora o mesmo mecanismo de entidades por trás do XXE, mas uma propriedade diferente dele. XXE abusa de entidades *externas* para alcançar e buscar coisas. Billion laughs abusa de entidades *internas* e do fato de que a expansão é **recursiva e multiplicativa**, então o custo cresce exponencialmente com a profundidade enquanto o texto de origem cresce apenas linearmente. Tudo que é necessário está dentro do documento, que é por que desabilitar entidades externas sozinho não o detém.
+
+## A defesa
+
+Duas defesas se aplicam, e a mais forte é familiar. Parsers podem impor **limites de expansão**, limitando o número total de expansões de entidade ou o tamanho resultante e abortando quando o limite é atingido, o que muitos parsers modernos agora fazem por padrão. Mas a resposta mais limpa é a mesma do XXE: **recusar processar o DOCTYPE de forma alguma**. Entidades só podem ser declaradas em um DOCTYPE, então um parser que rejeita declarações DOCTYPE para entrada não confiável não pode receber uma bomba de expansão em primeiro lugar. É por isso que um inspetor XML seguro sinaliza qualquer documento que declara entidades referenciando outras entidades como um risco de expansão, e o relata sem nunca realizar a expansão. O sinal a observar é entidades definidas em termos de outras entidades, encadeadas mais de um nível de profundidade.

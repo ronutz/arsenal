@@ -1,0 +1,29 @@
+---
+slug: nslookup-errors-explained
+title: "Erros do nslookup e o que significam"
+summary: "Quando uma consulta falha, o nslookup imprime uma linha como ** server can't find NAME: CODE. O código é o diagnóstico inteiro. Este artigo cobre NXDOMAIN, SERVFAIL, REFUSED e timeouts, o que cada um diz, e a primeira coisa a verificar para cada."
+concepts: ["nslookup", "nxdomain", "servfail", "refused", "timeout", "troubleshooting"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
+category: networking
+order: 49
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um nslookup que falha não imprime uma resposta. Ele imprime uma única linha, e o código no final diz o que deu errado:
+
+```
+** server can't find example.com: NXDOMAIN
+```
+
+## Os códigos
+
+- **NXDOMAIN** (domínio inexistente): o nome realmente não existe. Se você esperava que existisse, verifique um erro de digitação, um registro ausente ou uma delegação que nunca foi configurada. Isto é uma resposta, não um problema de rede: um servidor lhe disse que o nome não está lá.
+- **SERVFAIL** (falha do servidor): o servidor não conseguiu concluir a consulta. Na prática isso aponta para uma delegação quebrada, uma falha de validação DNSSEC ou um servidor autoritativo upstream que deu timeout. Tente outro resolvedor: se um resolvedor dá SERVFAIL e outro responde, o problema provavelmente é DNSSEC ou um caminho quebrado específico, e não o nome em si.
+- **REFUSED**: o servidor recusou-se a responder, quase sempre por razões de política, como uma lista de controle de acesso que não inclui você, ou um resolvedor que não oferece recursão para o seu endereço. Verifique se você tem permissão para usar o resolvedor que está consultando.
+- **timed out** / **no servers could be reached**: o nslookup nunca recebeu resposta. Isto é um problema de conectividade, não uma resposta DNS: o endereço do resolvedor está errado ou inacessível, um firewall está descartando a porta 53, ou o servidor está fora do ar. Confirme o endereço do resolvedor e se você consegue alcançá-lo.
+
+## Lendo a distinção
+
+A separação útil é entre uma **resposta que diz não** e **nenhuma resposta**. NXDOMAIN e NODATA são o servidor lhe dizendo algo definitivo, então a correção está na zona ou na consulta. SERVFAIL, REFUSED e timeouts são o servidor falhando em lhe dar uma resposta utilizável, então a correção está no resolvedor, no caminho ou na delegação. Saber qual dos dois você está vendo aponta imediatamente para a metade certa do problema.

@@ -1,0 +1,37 @@
+---
+slug: reading-nslookup-output
+title: "Lendo a saída do nslookup"
+summary: "O nslookup imprime um cabeçalho Server / Address para o resolvedor usado, um marcador opcional Non-authoritative answer, e então a resposta em um formato de prosa por tipo. Conhecer essa forma permite ler qualquer resultado rapidamente e ver num relance se ele teve sucesso, de onde veio e o que significa."
+concepts: ["nslookup", "dns", "resolver", "troubleshooting", "non-authoritative"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["nslookup-vs-dig", "nslookup-record-types", "authoritative-vs-non-authoritative-answers", "nslookup-errors-explained"]
+category: networking
+order: 45
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O nslookup é a ferramenta de consulta DNS que a maioria das pessoas encontra primeiro, e sua saída tem uma forma simples e estável quando você sabe quais são as partes.
+
+## O layout
+
+Uma consulta normal se parece com isto:
+
+```
+Server:		1.1.1.1
+Address:	1.1.1.1#53
+
+Non-authoritative answer:
+Name:	example.com
+Address: 93.184.216.34
+```
+
+As duas primeiras linhas são o cabeçalho, e descrevem o **resolvedor**, não a resposta. `Server:` é o servidor DNS que o nslookup consultou, e o `Address:` logo abaixo é o endereço desse servidor com a porta (`#53`). Isto confunde as pessoas constantemente: a primeira linha Address é o resolvedor que você consultou, não o endereço que você buscou.
+
+Depois de uma linha em branco vem a resposta. O marcador `Non-authoritative answer:`, quando presente, diz que o resultado veio do cache do resolvedor, e não diretamente de um servidor autoritativo para a zona. Em seguida os registros em si: para uma consulta de endereço, uma linha `Name:` seguida de uma ou mais linhas `Address:` (uma resposta IPv6 também fica em uma linha Address, distinguida pelos dois-pontos).
+
+## Onde olhar primeiro
+
+Se a consulta falhou, o nslookup não imprime uma resposta; ele imprime uma linha como `** server can't find example.com: NXDOMAIN`. O código no final é a história toda: `NXDOMAIN` significa que o nome não existe, `SERVFAIL` significa que o servidor não conseguiu concluir a consulta, e `REFUSED` significa que ele recusou.
+
+Se teve sucesso, as duas perguntas que valem a pena são qual resolvedor respondeu (a linha Server, caso você esteja testando um específico) e se a resposta é autoritativa (o marcador). O restante desta série cobre como o nslookup formata cada tipo de registro, como ele se compara ao dig, o que autoritativo realmente significa e como ler seus erros.

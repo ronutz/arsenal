@@ -1,0 +1,41 @@
+---
+slug: reverse-dns-lookups-with-nslookup
+title: "Reverse DNS Lookups with nslookup"
+summary: "Reverse DNS maps an IP address back to a name through PTR records that live under in-addr.arpa for IPv4 and ip6.arpa for IPv6. nslookup does this automatically when you hand it an address. This covers how the special reverse name is built, why mail servers care, and why the forward and reverse can legitimately disagree."
+concepts: ["reverse dns", "ptr", "in-addr.arpa", "ip6.arpa", "mail", "nslookup"]
+relatedTools: ["nslookup-output-explainer"]
+relatedArticles: ["reading-nslookup-output", "nslookup-record-types", "nslookup-vs-dig"]
+category: networking
+order: 50
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Forward DNS turns a name into an address. Reverse DNS goes the other way, and nslookup is the tool most people use for it.
+
+## Just give it an address
+
+Hand nslookup an IP instead of a name and it performs a reverse lookup for you:
+
+```
+Server:		1.1.1.1
+Address:	1.1.1.1#53
+
+34.216.184.93.in-addr.arpa	name = example.com.
+```
+
+The answer is a **PTR** record, printed with the `name =` label. Notice the odd-looking query name: reverse DNS is not a special protocol, it is an ordinary lookup of a specially constructed name.
+
+## How the reverse name is built
+
+For IPv4, you reverse the four octets and append `in-addr.arpa`. So `93.184.216.34` becomes `34.216.184.93.in-addr.arpa`. Reversing the octets puts the most general part (the network) on the right, matching how the rest of DNS is structured.
+
+For IPv6 the same idea applies at the nibble level: each of the 32 hex digits is reversed and dot-separated, with `ip6.arpa` on the end. It is long and tedious by hand, which is exactly why you let the tool build it.
+
+## Why it matters
+
+The biggest consumer of reverse DNS is email. Receiving mail servers routinely check whether the sending IP has a PTR record, and whether that PTR name forward-resolves back to the same IP. A missing or mismatched PTR is a common reason legitimate mail gets flagged as spam. Reverse DNS also shows up in server logs, allowlists, and diagnostics, where a name is far more readable than a bare address.
+
+## Forward and reverse can disagree
+
+Forward and reverse are **separate zones controlled by different parties**. The domain owner controls the forward record (name to IP); whoever owns the IP block controls the PTR (IP to name). There is nothing forcing them to match, and often they do not, which is normal for shared hosting or cloud IPs. When both directions agree (the PTR name forward-resolves back to the original IP), that is called forward-confirmed reverse DNS, and it is what mail systems are really testing for.

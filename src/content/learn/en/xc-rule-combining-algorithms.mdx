@@ -1,0 +1,38 @@
+---
+slug: xc-rule-combining-algorithms
+title: "XC Rule Combining Algorithms: FIRST_MATCH, ALLOW_OVERRIDES, DENY_OVERRIDES"
+summary: "When a service policy holds a list of rules, the rule combining algorithm decides the order they are evaluated in. FIRST_MATCH walks top to bottom and stops at the first hit. ALLOW_OVERRIDES and DENY_OVERRIDES reorder by action first. The choice changes which rule wins when several could match."
+concepts: ["f5 xc", "rule combining algorithm", "first match", "allow overrides", "deny overrides"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["how-xc-service-policies-match", "xc-service-policy-actions-and-default-deny", "xc-service-policy-predicates-and-logic"]
+category: security
+order: 65
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A service policy with a `rule_list` holds an ordered list of rules. The **rule combining algorithm** decides how that list is walked, and therefore which rule's action wins when more than one rule could match a request.
+
+## The three algorithms
+
+**FIRST_MATCH** is the default and the one most people reason about. Rules are evaluated sequentially from top to bottom until one matches. That rule's action is applied and evaluation stops. Order in the list is everything: a broad rule near the top can shadow a more specific rule below it, which never gets a chance to run.
+
+**ALLOW_OVERRIDES** evaluates all rules with an ALLOW action before any rule with a DENY action. The practical effect is that if any ALLOW rule matches, the request is allowed, even if a DENY rule would also have matched. Allow wins ties.
+
+**DENY_OVERRIDES** is the mirror image: all DENY rules are evaluated before any ALLOW rule. If any DENY rule matches, the request is denied, regardless of a matching ALLOW. Deny wins ties.
+
+## Why the order matters
+
+Consider two rules: one denies a specific bad ASN, and one allows everything from a partner country. Under FIRST_MATCH, whichever appears first decides. Under DENY_OVERRIDES, the deny is considered first, so a request from the bad ASN is blocked even if it also comes from the partner country. Under ALLOW_OVERRIDES, the same request is allowed, because the allow is considered first.
+
+Same rules, three different outcomes for the overlapping request. This is why reading a policy without knowing its algorithm can mislead you.
+
+## The App Firewall constraint
+
+There is one hard rule to know. If any rule in the policy is configured with an App Firewall (WAF) action, the combining algorithm **must** be FIRST_MATCH. The overrides modes are not permitted alongside WAF actions, because WAF processing is tied to sequential evaluation. If you see WAF actions on rules, you can assume FIRST_MATCH.
+
+## Where the algorithm lives
+
+A subtle point: in the service_policy object schema, the rule combining algorithm is not a field on the policy spec itself. It is defined at the service policy **set** level, which is the ordered container the policy belongs to. The `rule_list` inside a policy documents that its rules are evaluated from top to bottom, which is the FIRST_MATCH behavior, and that is the safe default to assume when you are reading a single policy in isolation.
+
+For that reason the explainer on this site defaults to explaining top-to-bottom FIRST_MATCH evaluation, and surfaces an explicit algorithm only if the pasted JSON carries one. When you are auditing a real deployment, check the enclosing policy set to confirm the algorithm in force.

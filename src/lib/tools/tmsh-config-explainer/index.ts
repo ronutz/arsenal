@@ -54,7 +54,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "fragment", // configs carry internal IPs, hostnames, and key paths
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/anatomy-of-bigip-conf", "learn/how-a-virtual-server-works", "learn/ltm-health-monitors"],
+  learnLinks: ["learn/anatomy-of-bigip-conf", "learn/how-a-virtual-server-works", "learn/ltm-health-monitors", "learn/bigip-pools-and-load-balancing", "learn/bigip-snat-and-return-traffic", "learn/bigip-profiles-on-a-virtual-server"],
   sources: [
     {
       id: "tmsh-reference",

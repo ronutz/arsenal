@@ -1,0 +1,36 @@
+---
+slug: xc-service-policy-vs-irules
+title: "XC Service Policy vs BIG-IP iRules: A Mental Model"
+summary: "iRules are event-driven scripts that run procedural code as a request is processed. An XC service policy is a declarative list of rules with predicates and actions. If you think in iRules, this maps the concepts across so you can read XC policies without hunting for the equivalent of a when-HTTP_REQUEST block."
+concepts: ["f5 xc", "irules", "big-ip", "declarative", "migration"]
+relatedTools: ["f5xc-service-policy-explainer"]
+relatedArticles: ["how-xc-service-policies-match", "xc-service-policy-predicates-and-logic", "xc-service-policy-actions-and-default-deny"]
+category: security
+order: 68
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Engineers who know BIG-IP often reach for iRules to express request-time logic, and then look for the same thing in F5 Distributed Cloud and do not find it. XC service policies solve a large part of what iRules are used for, but the model is different enough that a direct translation helps.
+
+## Procedural versus declarative
+
+An iRule is **procedural**. It hooks an event such as `HTTP_REQUEST`, then runs Tcl: you inspect `[HTTP::path]`, branch with `if`, and call `HTTP::respond` or `drop`. You control the flow.
+
+A service policy is **declarative**. You do not write control flow. You list rules, each with predicates (conditions) and an action (ALLOW, DENY, NEXT_POLICY). The platform evaluates them for you according to the rule combining algorithm. There is no `if`, no variables, no early `return` you author yourself.
+
+## Concept mapping
+
+The condition side maps fairly cleanly. `[HTTP::path]` checks become a `path` predicate with prefix, exact, regex, or suffix values. `[HTTP::header]` checks become `headers` matchers. `[HTTP::method]` becomes `http_method`. Source-address logic becomes `ip_prefix_list` or `ip_matcher`. Where an iRule would use `string tolower`, a matcher uses a `LOWER_CASE` transformer.
+
+The action side is narrower and that is deliberate. An iRule can do almost anything; a service policy rule chooses among a fixed set of actions and modifiers. ALLOW and DENY are the core. NEXT_POLICY hands off to the next policy in the set. Beyond the verdict, a rule can attach modifiers such as a WAF action, a bot action, or a rate limiter, which is how you compose behavior that an iRule would have scripted inline.
+
+## What does not translate
+
+Some iRule patterns have no direct equivalent, and that is the point of the redesign. Stateful logic across requests, arbitrary payload rewriting, and custom response generation are not things a single service policy rule expresses. Those move to other XC constructs (routes, WAF policies, service policy rule modifiers) or are simply not part of the access decision. If you find yourself looking for the `HTTP::respond` equivalent inside a service policy, that is usually a sign the behavior belongs somewhere else in the XC configuration.
+
+## Reading order
+
+One habit worth keeping from iRules: order matters. In a `FIRST_MATCH` policy, rules are evaluated top to bottom and the first match wins, exactly like the first `return` in a procedural block short-circuits the rest. A broad allow near the top shadows the specific rules under it. When you read an XC policy, read it the way you would read an iRule top to bottom, and the evaluation will feel familiar even though the syntax does not.
+
+The explainer on this site is built for exactly this reading: paste the policy, and it lays out the rules in order with their conditions and actions, so the shape of the decision is visible without decoding nested JSON by hand.

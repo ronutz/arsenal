@@ -1,0 +1,26 @@
+---
+slug: source-address-persistence-and-mega-proxy
+title: "Persistência por endereço de origem e o problema do mega-proxy"
+summary: "A persistência por endereço de origem fixa um cliente a um pool member pelo seu IP, o que é simples e agnóstico de protocolo mas frágil na internet moderna. NATs grandes fazem muitos clientes parecerem um só, e clientes móveis mudam de endereço no meio da sessão. Ambos quebram a premissa da qual o método depende."
+concepts: ["persistence", "source address", "nat", "mega-proxy", "big-ip"]
+relatedTools: ["persistence-method-explainer"]
+relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "persistence-mirroring-and-ha"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A persistência por endereço de origem (também chamada de persistência simples) chaveia inteiramente no endereço IP do cliente: a primeira conexão de um endereço escolhe um pool member, e toda conexão posterior desse mesmo endereço vai para o mesmo member. Ela não precisa de nada da aplicação, que é seu atrativo, e se apoia em uma premissa, que é sua fraqueza: que um IP significa um cliente.
+
+## Quando muitos clientes compartilham um endereço
+
+Essa premissa falha atrás de um NAT grande ou proxy, o clássico caso **mega-proxy**. Quando milhares de usuários ficam atrás de um NAT corporativo, um carrier-grade NAT, ou uma grande fazenda de proxies, todos chegam com o mesmo IP de origem. A persistência por endereço de origem vê um endereço e fixa cada um desses usuários em um único pool member. O resultado é o oposto do balanceamento de carga: um member fica soterrado enquanto os outros ficam ociosos, e se esse member falha, um enorme bloco de usuários é afetado de uma vez. O carrier-grade NAT tornou isso comum o suficiente para que a persistência por endereço de origem possa silenciosamente arruinar a distribuição que você esperava.
+
+## Quando um cliente muda de endereço
+
+A falha espelhada é um cliente cujo endereço muda durante uma sessão. Um dispositivo móvel migrando entre redes, ou um cliente atrás de um *pool* de proxies que rotaciona seu IP de saída, apresenta um novo endereço de origem no meio do caminho e perde sua persistência, caindo em um member diferente e descartando qualquer estado de sessão que vivia no primeiro. O timeout de persistência não ajuda aqui; a própria chave se moveu.
+
+## O que fazer a respeito
+
+A persistência por endereço de origem ainda está boa onde a premissa se sustenta: tráfego interno com endereços conhecidos, estáveis e um por cliente, ou protocolos onde não há nada melhor para chavear. Onde os clientes estão atrás de NATs compartilhados ou mudam de endereço, um método que chaveia em algo ligado à sessão de fato é mais confiável, sendo a persistência por cookie para HTTP a escolha usual, já que ela identifica o cliente em vez do endereço do qual ele por acaso chega. A decisão se resume a se o endereço IP é um substituto confiável para identidade no seu tráfego, e cada vez mais, na internet pública, não é.

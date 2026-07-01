@@ -1,0 +1,34 @@
+---
+slug: dig-trace-and-delegation
+title: "Following Delegation with dig +trace"
+summary: "dig +trace resolves a name the way the internet actually does it: starting at the root, following the delegation to the TLD, and then to the domain's own authoritative servers, printing each hop. It is the single best way to see where resolution breaks and to understand how DNS is stitched together."
+concepts: ["dig", "trace", "delegation", "iterative resolution", "root servers", "dns"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["dig-query-options", "reading-dig-output", "dns-record-types-in-answers"]
+category: networking
+order: 53
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A normal `dig` asks one resolver and trusts its answer. `dig +trace` does something different and far more revealing: it performs the resolution itself, hop by hop, the way a recursive resolver would.
+
+## What +trace actually does
+
+DNS is a delegated, hierarchical system. No single server knows everything; each level points you at the next. `dig +trace example.com` walks that chain and prints it:
+
+1. It starts by asking a **root server** about the name. The root does not know `example.com`, but it knows who runs `.com`, so it returns the NS records for the `.com` servers (a referral).
+2. dig then asks one of those **`.com` servers**, which likewise does not hold `example.com` but knows which servers are authoritative for it, and returns another referral.
+3. Finally dig asks one of the domain's own **authoritative servers**, which returns the actual answer.
+
+Each step shows up as a set of NS records (the delegation) followed by the query to the next level down. The last block is the authoritative answer.
+
+## Why it is so useful
+
+Because +trace follows the real chain instead of a cached copy, it shows you exactly where a problem lives. If the `.com` servers hand back the wrong NS records for your domain, you have a delegation problem at the registrar. If the delegation is right but the authoritative servers time out or disagree, the problem is at your DNS host. A plain lookup would just show a SERVFAIL or a stale answer; +trace shows which hop failed.
+
+It is also the clearest way to *understand* DNS. Watching a name resolve from the root down, referral by referral, makes the hierarchy concrete in a way that a single answer never does.
+
+## Reading it well
+
+A couple of things to keep in mind: +trace does its own iterative resolution, so it bypasses your configured resolver entirely, which is why its result can differ from a normal lookup when your resolver's cache is stale. And each referral is a set of NS records, not the final answer, so read down to the last block for the actual data. If a level returns records you did not expect, that level is where to look first.

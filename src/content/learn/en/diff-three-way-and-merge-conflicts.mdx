@@ -1,0 +1,38 @@
+---
+slug: diff-three-way-and-merge-conflicts
+title: "Three-Way Diffs and Merge Conflicts"
+summary: "A normal diff compares two versions and cannot tell which one changed. A three-way diff adds a common ancestor, which is what makes automatic merging possible and what produces the <<<<<<< ======= >>>>>>> conflict markers. This explains the third input and how to read and resolve a conflict."
+concepts: ["diff", "three-way merge", "merge conflict", "ancestor", "version control"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works", "reading-a-diff", "diff-word-and-character-level"]
+category: encoding
+order: 12
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A two-way diff compares version A with version B. It can show you that a line differs, but it cannot tell you *who* changed it, because it has no reference point. That limitation is exactly what breaks down when two people edit the same file.
+
+## Adding the ancestor
+
+A **three-way** diff takes three inputs: the two edited versions and their common **ancestor**, the version both started from. With the ancestor as a reference, the merge logic can reason about each change:
+
+- If only one side changed a region, take that side's version. The ancestor proves the other side left it alone.
+- If both sides changed the same region in the same way, take it once.
+- If both sides changed the same region in different ways, there is no safe automatic answer. That is a **conflict**.
+
+This is why version control can merge most changes without asking: most edits touch different regions, and the ancestor makes that provable.
+
+## Reading a conflict
+
+When a merge cannot decide, it writes both versions into the file between markers:
+
+```
+<<<<<<< ours
+the version on your side
+=======
+the version from the other side
+>>>>>>> theirs
+```
+
+The text above `=======` is one side, the text below is the other, and the labels tell you which is which. Resolving the conflict means editing that region into the correct final version, then deleting all three marker lines. The important discipline is to look at the ancestor, or at least think about what each side intended, rather than blindly keeping one side: a conflict means both sides had a reason to touch that spot, and the right answer often combines them.

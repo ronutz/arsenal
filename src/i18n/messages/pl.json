@@ -69,6 +69,7 @@
       "purposeLabel": "Obecnie finansowane"
     },
     "stats": {
+      "headline": "Już dostępne",
       "tools": "Narzędzia",
       "articles": "Artykuły",
       "sectionLabel": "Zestaw narzędzi w skrócie"
@@ -871,7 +872,7 @@
     "builtWith": "Stworzone przez Rodolfo Nützmanna z CONCORD",
     "colophon": "Jak to zostało zbudowane",
     "contribute": "Pomóż ulepszyć tłumaczenia",
-    "feedback": "Prześlij opinię",
+    "feedback": "Kontakt",
     "api": "Dokumentacja API",
     "contributeTools": "Podziel się pomysłem",
     "license": "Licencja",

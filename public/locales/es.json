@@ -69,6 +69,7 @@
       "purposeLabel": "Financiando ahora"
     },
     "stats": {
+      "headline": "Disponibles ahora",
       "tools": "Herramientas",
       "articles": "Artículos",
       "sectionLabel": "La caja de herramientas en breve"
@@ -871,7 +872,7 @@
     "builtWith": "Creado por Rodolfo Nützmann con CONCORD",
     "colophon": "Cómo se construyó esto",
     "contribute": "Ayuda a mejorar las traducciones",
-    "feedback": "Enviar comentarios",
+    "feedback": "Contacto",
     "api": "Referencia de la API",
     "contributeTools": "Comparte una idea",
     "license": "Licencia",

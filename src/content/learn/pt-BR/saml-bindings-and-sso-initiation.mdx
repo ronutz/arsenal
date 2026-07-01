@@ -1,0 +1,31 @@
+---
+slug: saml-bindings-and-sso-initiation
+title: "Bindings SAML e iniciação por SP vs IdP"
+summary: "Um fluxo SAML pode começar no serviço ou no provedor de identidade, e as mensagens podem viajar por dois bindings diferentes: um redirect HTTP com a mensagem compactada na URL, ou um formulário HTML de auto-submit que a envia por POST. Qual binding carrega qual mensagem, e onde o fluxo começa, explica muito do comportamento do SSO."
+concepts: ["saml", "http-redirect", "http-post", "sp-initiated", "idp-initiated"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-assertions-and-conditions", "saml-signatures"]
+category: security
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Duas questões práticas moldam qualquer single sign-on SAML: onde o fluxo começa, e como cada mensagem fisicamente se move entre as partes.
+
+## Onde começa
+
+O SSO **iniciado por SP** (SP-initiated) começa no service provider. O usuário tenta alcançar a aplicação, a aplicação gera um `AuthnRequest`, e o usuário é enviado ao provedor de identidade para se autenticar. Como o SP criou uma requisição, ele pode correlacionar a resposta eventual a ela, o que faz deste o padrão mais robusto e mais seguro.
+
+O SSO **iniciado por IdP** (IdP-initiated) começa no provedor de identidade, tipicamente um portal de apps. O usuário já está logado ali, clica no app, e o IdP envia uma assertion não solicitada direto ao service provider sem nenhuma requisição prévia do SP. É conveniente, mas a requisição ausente significa que não há nada para correlacionar a assertion, o que remove uma camada de proteção e é por que o SP-initiated é geralmente preferido.
+
+## Como as mensagens viajam: bindings
+
+Um **binding** é a regra de transporte para uma mensagem SAML. Dois dominam o SSO por navegador:
+
+- O **HTTP-Redirect** carrega a mensagem na URL: o XML é comprimido com deflate, codificado em base64, e URL-encoded em um parâmetro de query, e então o navegador é redirecionado. É compacto mas limitado em tamanho, o que serve ao pequeno `AuthnRequest`.
+- O **HTTP-POST** carrega a mensagem em um formulário HTML de auto-submit: o XML codificado em base64 fica em um campo oculto e um trecho de JavaScript o envia ao destino. Não há limite prático de tamanho, que é por que o **Response** carregando a assertion, que é grande e assinada, quase sempre usa POST.
+
+## Lendo um fluxo
+
+Juntando, um login SP-initiated típico é: o SP monta um `AuthnRequest` e o envia via HTTP-Redirect; o usuário se autentica; o IdP retorna um `Response` assinado via HTTP-POST ao assertion consumer service do SP. Quando você decodifica uma mensagem SAML e quer saber o que está vendo, o binding diz de onde ela veio, parâmetros estilo redirect apontam para uma requisição, um corpo de formulário POSTado aponta para uma resposta, e se foi iniciado por SP ou por IdP diz se uma requisição correlacionadora deveria existir afinal.

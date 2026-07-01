@@ -1,0 +1,36 @@
+---
+slug: xml-namespaces-explained
+title: "XML Namespaces Explained"
+summary: "When two XML vocabularies use the same element name for different things, namespaces keep them apart by binding a prefix to a unique URI. The prefix is just a local shorthand; the URI is the real identity. Understanding that split resolves most namespace confusion."
+concepts: ["xml", "namespaces", "xmlns", "prefix", "uri"]
+relatedTools: ["xml-decoder"]
+relatedArticles: ["reading-xml-structure", "xml-well-formedness", "saml-signatures"]
+category: encoding
+order: 61
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Namespaces exist to solve one problem: name collisions. A `<title>` in a book vocabulary and a `<title>` in an HTML page mean different things, and a document that mixes vocabularies needs a way to say which is which. Namespaces provide it.
+
+## Prefix and URI
+
+A namespace binds a **prefix** to a **URI** using an `xmlns` declaration:
+
+```
+<catalog xmlns:meta="http://example.com/meta">
+  <meta:rating>5</meta:rating>
+</catalog>
+```
+
+Here `meta` is the prefix and `http://example.com/meta` is the namespace URI. The element `meta:rating` belongs to that namespace. The crucial point is that the **URI is the real identity**, not the prefix. The prefix is only a local shorthand chosen in this document; another document could use `m:` or `x:` for the same URI and mean exactly the same thing. The URI, despite looking like a web address, is just a unique string; nothing is fetched from it.
+
+## The default namespace
+
+You can also declare a **default namespace** with no prefix: `xmlns="http://example.com/cat"`. Every unprefixed element inside that scope then belongs to that namespace. So in a document with a default namespace, a plain `<book>` is not in "no namespace"; it is in the default one. Attributes are different: an unprefixed attribute is not in the default namespace, it is simply unqualified.
+
+## Scope and resolution
+
+A namespace declaration applies to the element it appears on and everything nested inside it, until a nested element overrides it. To resolve any element or attribute, you look at its prefix, then walk outward through the enclosing elements to find where that prefix was declared, and read off the URI. That is exactly what a parser does, and it is why the same prefix can map to different URIs in different parts of a document if it is redeclared.
+
+The practical habit when reading namespaced XML is to mentally replace each prefix with its URI. Two elements are the "same" element only if their local names and their namespace URIs both match, regardless of whether the prefixes look alike. That single rule, identity is name plus URI, is the whole of namespaces.

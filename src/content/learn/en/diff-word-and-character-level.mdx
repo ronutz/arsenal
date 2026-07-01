@@ -1,0 +1,26 @@
+---
+slug: diff-word-and-character-level
+title: "Word and Character Level Diffs"
+summary: "A line diff marks a whole line as changed even when a single character moved. Word-level and character-level diffs highlight the exact part of the line that changed, which is far easier to read for prose, long lines, and small edits. This covers the difference and when each is the right lens."
+concepts: ["diff", "word diff", "character diff", "intra-line", "readability"]
+relatedTools: ["diff"]
+relatedArticles: ["how-diff-works", "reading-a-diff", "diff-minimal-edits"]
+category: encoding
+order: 11
+status: machine-draft
+updated: "2026-07-01"
+---
+
+The classic diff works on whole lines. If you change one word in a paragraph, a line diff shows the entire old line as removed and the entire new line as added, and leaves you to spot the actual difference by eye. For code that is usually fine. For prose, long configuration lines, or a one-character fix, it is frustrating.
+
+## Zooming in
+
+A **word-level** diff first lines up the changed lines, then diffs them again at the granularity of words, highlighting only the words that differ. A **character-level** diff goes finer still, marking the exact characters that changed. Both keep the unchanged text of the line visible, so a fix like changing `recieve` to `receive` shows just those two letters moving rather than the whole sentence flashing.
+
+This is a second pass layered on top of the line diff, not a different algorithm: the tool decides which lines correspond, then compares the insides of each pair.
+
+## When to use which
+
+Line diffs are best for source code, where a line is a meaningful unit and you care about which lines changed. Word-level diffs shine for natural language: documentation, articles, translations, where sentences are long and edits are small. Character-level diffs are the tool for tightly packed strings, hashes, URLs, and single-line configuration values, where the difference might be one digit.
+
+A practical habit is to read the line diff first to see *which* lines changed, then switch to a word or character view on a line that changed in a way you cannot immediately see. The finer view answers "what exactly is different here" without making you compare two long strings by hand.

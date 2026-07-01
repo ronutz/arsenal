@@ -1,0 +1,46 @@
+---
+slug: reading-dig-output
+title: "Lendo a saída do dig de cima a baixo"
+summary: "Uma resposta do dig tem uma forma fixa: uma linha de versão, o cabeçalho, a linha de flags, a pseudo-seção OPT, as quatro seções e as estatísticas da consulta. Depois que você conhece cada bloco, consegue ler qualquer resposta num relance e identificar a única linha que explica um problema de resolução."
+concepts: ["dig", "dns", "resolver", "troubleshooting", "query", "sections"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["dns-message-header-and-flags", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "dnssec-records-in-dig"]
+category: networking
+order: 40
+status: machine-draft
+updated: "2026-06-30"
+---
+
+O `dig` imprime uma mensagem DNS em um layout estável, de cima para baixo. Aprender esse layout é a maior parte da habilidade: toda resposta, seja uma consulta limpa ou uma falha intrigante, usa os mesmos blocos na mesma ordem.
+
+## Os blocos, em ordem
+
+Uma resposta típica se parece com isto:
+
+```
+; <<>> DiG 9.18.1 <<>> example.com A
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;example.com.			IN	A
+
+;; ANSWER SECTION:
+example.com.		3600	IN	A	93.184.216.34
+
+;; Query time: 12 msec
+;; SERVER: 1.1.1.1#53(1.1.1.1) (UDP)
+;; MSG SIZE  rcvd: 56
+```
+
+Lendo de cima a baixo: a primeira linha ecoa a versão do dig e a consulta que você executou. A linha `->>HEADER<<-` carrega o opcode, o status (o RCODE) e o id da mensagem. A linha de flags lista quais bits do cabeçalho estão definidos e informa a contagem de registros em cada uma das quatro seções. A pseudo-seção OPT é metadado do EDNS, não um registro real. Depois vêm as próprias seções: QUESTION (o que você perguntou), ANSWER (os registros que respondem), AUTHORITY (quais servidores são autoritativos, ou o SOA de uma resposta negativa) e ADDITIONAL (registros auxiliares). As linhas `;;` no rodapé são as estatísticas da consulta.
+
+## Onde olhar primeiro
+
+Para uma falha, comece pelo status. `NOERROR` com um registro de resposta é o caminho feliz. `NXDOMAIN` significa que o nome não existe. `SERVFAIL` normalmente indica uma delegação quebrada, uma falha de validação DNSSEC ou um timeout upstream. `REFUSED` é quase sempre política. Se o status for `NOERROR` mas a contagem de ANSWER for zero, o nome existe mas não para o tipo que você pediu (isto é NODATA), e o SOA na seção AUTHORITY diz por quanto tempo esse resultado negativo será mantido em cache.
+
+O outro sinal precoce é a linha de flags. `aa` significa que o servidor que respondeu é autoritativo. `ra` diz que o servidor oferece recursão. `tc` significa que a resposta em UDP foi truncada e o dig normalmente tentará de novo por TCP; se você o vê, o resultado UDP que está lendo está incompleto.
+
+O restante desta série pega cada bloco por vez: o cabeçalho e as flags, os tipos de registro que você vê nas respostas, a pseudo-seção OPT do EDNS e os registros DNSSEC.

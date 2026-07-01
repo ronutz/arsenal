@@ -1,0 +1,33 @@
+---
+slug: dig-query-options
+title: "dig Query Options and Output Control"
+summary: "dig's real power is its options: choosing the server to ask, the record type, and exactly how much of the answer to print. This covers the handful you will actually use every day, from @server and -t to +short and the +noall +answer combination that trims dig down to just the records."
+concepts: ["dig", "dns", "query options", "short", "troubleshooting"]
+relatedTools: ["dig-output-explainer"]
+relatedArticles: ["reading-dig-output", "dig-trace-and-delegation", "nslookup-vs-dig"]
+category: networking
+order: 52
+status: machine-draft
+updated: "2026-07-01"
+---
+
+By default dig prints the whole DNS message, which is exactly what you want when troubleshooting and far more than you want when scripting. A few options cover almost every case.
+
+## Choosing what to ask
+
+- **`dig example.com`** looks up an A record using your system resolver.
+- **`-t TYPE`** (or just putting the type on the line) changes the record type: `dig -t MX example.com`, or `dig example.com AAAA`. Common types are A, AAAA, MX, NS, TXT, SOA, CNAME, and ANY.
+- **`@server`** asks a specific server instead of your default resolver: `dig @1.1.1.1 example.com`, or `dig @ns1.example.com example.com` to go straight to an authoritative server.
+- **`-x ADDRESS`** does a reverse lookup, building the in-addr.arpa name for you: `dig -x 93.184.216.34`.
+
+## Controlling the output
+
+- **`+short`** collapses the answer to just the essential values, one per line. `dig +short example.com` prints only the address. This is the option to reach for in scripts.
+- **`+noall +answer`** is the middle ground: it suppresses every section except the answer, so you see the actual records with their TTLs and types but none of the header, question, or stats noise. Many people alias this.
+- **`+norecurse`** (or `+norec`) asks the server not to recurse, so you see only what that server knows locally. Sent to an authoritative server it shows the authoritative data; sent to a resolver it shows only what is already cached.
+- **`+tcp`** forces the query over TCP instead of UDP, useful when a UDP answer came back truncated (the tc flag).
+- **`+dnssec`** asks for the DNSSEC records (RRSIG and friends) and sets the DO bit, so you can see the signatures.
+
+## Putting them together
+
+The options compose. `dig @1.1.1.1 example.com MX +short` asks Cloudflare's resolver for the MX records and prints only the values. `dig example.com +noall +answer +dnssec` shows the answer records plus their signatures and nothing else. Start from the default full output when you are diagnosing, and reach for `+short` or `+noall +answer` once you know exactly what you want to see. For following the resolution path from the root rather than trusting a resolver, see the companion article on `+trace`.

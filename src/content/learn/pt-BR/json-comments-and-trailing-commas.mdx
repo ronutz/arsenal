@@ -1,0 +1,27 @@
+---
+slug: json-comments-and-trailing-commas
+title: "Vírgulas finais, comentários e a família JSON5"
+summary: "O JSON estrito não tem comentários nem vírgulas finais, o que surpreende quem usa um editor que aceita ambos. A razão é que o JSON é um formato mínimo de interchange, e as variantes tolerantes (JSONC, JSON5) são coisas separadas. Saber qual é qual evita arquivos de config que quebram em outra ferramenta."
+concepts: ["json", "comments", "trailing comma", "json5", "jsonc"]
+relatedTools: ["json-formatter"]
+relatedArticles: ["json-grammar", "json-string-escapes", "json-formatting-and-canonical"]
+category: encoding
+order: 5
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Duas coisas que parecem que deveriam ser permitidas em JSON não são: comentários, e uma vírgula depois do último item de um array ou objeto. `{"a": 1,}` e `// nota` são ambos JSON inválido.
+
+## Por que o padrão os proíbe
+
+O JSON (RFC 8259) é deliberadamente um formato de interchange de dados, não uma linguagem de configuração. Seu autor deixou os comentários de fora de propósito, em parte para manter os parsers simples e em parte porque comentários estavam sendo abusados para carregar diretivas de parsing. Vírgulas finais são excluídas pelo mesmo minimalismo: a gramática diz que itens são *separados* por vírgula, então uma vírgula sem nada depois é um erro de sintaxe. Um parser estrito rejeitará ambos, e um bom formatador os sinalizará.
+
+## As variantes tolerantes
+
+O atrito é que muitos lugares onde as pessoas escrevem JSON aceitam mais:
+
+- **JSONC** (JSON com Comentários) adiciona comentários `//` e `/* */`. É isso que alimenta arquivos de configuração de editores e o `tsconfig.json`, que é por que esses aceitam comentários mesmo parecendo JSON.
+- **JSON5** vai além: comentários, vírgulas finais, chaves de objeto sem aspas, strings com aspas simples, números hexadecimais e mais. É um superconjunto voltado para config escrita à mão.
+
+Esses são formatos genuinamente diferentes que por acaso se parecem com JSON. A armadilha é a portabilidade: um arquivo de config com comentários está bom na ferramenta que espera JSONC, e é um erro imediato no momento em que outro programa o parseia como JSON estrito. A regra segura é manter comentários e vírgulas finais fora de qualquer JSON destinado a ser consumido por algo que você não controla, e removê-los (o que um formatador pode fazer) antes de enviar JSON através de uma fronteira.
