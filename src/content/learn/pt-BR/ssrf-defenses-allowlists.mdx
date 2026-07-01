@@ -1,0 +1,30 @@
+---
+slug: ssrf-defenses-allowlists
+title: "Defendendo-se de SSRF com Allow-Lists"
+summary: "A defesa durável contra SSRF é uma allow-list de destinos pretendidos, combinada com resolver o endereço antes de confiar nele e reverificar após redirecionamentos. Block-lists de faixas internas ajudam, mas perdem para ofuscação e DNS rebinding. Esta é a abordagem em camadas que se sustenta."
+concepts: ["allowlist", "dns rebinding", "resolver-depois-verificar", "filtragem de saída"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes"]
+category: security
+order: 92
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Não existe um único botão que pare o SSRF. As defesas que funcionam são em camadas, e compartilham um tema: decida com base no destino real, não no texto da URL.
+
+## Prefira uma allow-list
+
+Se o recurso só precisa alcançar um conjunto conhecido de hosts, permita exatamente esses e rejeite todo o resto. Uma allow-list falha de forma segura: uma grafia que o atacante inventa simplesmente não está na lista. Uma block-list falha de forma aberta, porque só pode barrar os endereços e formas internas que você pensou em listar, e os truques de ofuscação dão ao atacante grafias novas sem fim.
+
+## Resolva, verifique, depois fixe
+
+Se você precisa aceitar URLs arbitrárias, resolva o hostname para um IP, classifique esse IP contra as faixas internas e rejeite resultados internos. Depois use o endereço que você validou para a conexão real. Verificar o nome e então conectar pelo nome de novo abre uma janela de tempo-de-verificação para tempo-de-uso chamada DNS rebinding, na qual o nome resolve para um endereço seguro durante a validação e para um interno um instante depois. Valide e conecte-se ao mesmo endereço resolvido.
+
+## Trate redirecionamentos e esquemas
+
+Uma primeira URL segura pode redirecionar para `http://169.254.169.254/`. Ou desabilite redirecionamentos na busca, ou reexecute a classificação completa a cada salto. Restrinja o esquema a http e https para que `file://`, `gopher://` e similares não possam ser usados para escalar.
+
+## Adicione controles na camada de rede
+
+Defesa em profundidade significa não depender apenas da aplicação. Bloqueie o tráfego de saída do serviço que faz a busca para faixas internas e para o endereço de metadados na camada de rede ou de firewall, para que um erro de lógica não vire uma invasão. Na AWS, aplique o IMDSv2. O classificador na camada da aplicação, a etapa de resolver-depois-verificar e as regras de saída cada um pega o que os outros deixam passar.

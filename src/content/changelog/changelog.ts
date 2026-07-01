@@ -42,6 +42,137 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    date: "2026-07-01",
+    time: "16:05",
+    kind: "tool",
+    title: "New tool: SSRF URL classifier",
+    tools: ["ssrf-url-classifier"],
+    body:
+      "Paste a URL and see where it actually points: loopback, private (RFC 1918), link-local, cloud metadata (169.254.169.254 and the IPv6 and vendor equivalents), CGNAT, reserved, or public, with an SSRF risk level and plain-language reasons. It decodes the IP-obfuscation tricks that hide an internal address from a naive filter (decimal, octal, hex, short-form, and IPv4-mapped IPv6) and flags dangerous non-HTTP schemes and embedded credentials. It classifies purely from the string and never resolves DNS or issues the request (D-53). Grounded in RFC 1918/3927/6598/3986 and the OWASP SSRF cheat sheet, verified against 26 golden vectors, with six Learn articles in English and Portuguese.",
+  },
+  {
+    date: "2026-07-01",
+    time: "16:00",
+    kind: "feature",
+    title: "Public roadmap page",
+    body:
+      "A public roadmap at /roadmap, generated from the live build catalogue so it is always current: every planned tool grouped by family, plus a running count of what has already shipped. Linked from the footer and the Share-an-idea page so proposals can check what is already planned and avoid duplicates.",
+  },
+  {
+    date: "2026-07-01",
+    time: "15:57",
+    kind: "feature",
+    title: "Footer shows a last-modified timestamp",
+    body:
+      "The footer now shows a Last modified date and time, in UTC, written on every build so the site's currency is always visible at a glance.",
+  },
+  {
+    date: "2026-07-01",
+    time: "15:40",
+    kind: "feature",
+    title: "Navigation and credibility restructure",
+    body:
+      "The main navigation now leads with what you use (Tools and Learn) alongside About, Training, and Contact. Certifications and Endorsements moved out of the top bar and now lead the About page as featured cards, and the Training page opens with the instructor and links to those credentials, so the professional showcase is cleanly separate from the tools.",
+  },
+  {
+    date: "2026-07-01",
+    time: "14:00",
+    kind: "tool",
+    title: "New tool: hash preimage finder",
+    tools: ["hash-preimage-finder"],
+    body:
+      "Paste an MD5, SHA-1, or SHA-256 hash, choose an alphabet and length, and watch a bounded local brute-force search either recover a weak input in milliseconds or run out of keyspace on anything with real entropy. No dictionary, no wordlist, no precomputed table: pure local enumeration and hashing, capped so it only ever recovers trivially weak inputs. A teaching tool for why fast, unsalted hashes fail, pairing every result with the defenses (salting, slow KDFs, and algorithm choice). MD5, SHA-1, and SHA-256 are verified against published test vectors, and it runs only in the browser.",
+  },
+  {
+    date: "2026-07-01",
+    time: "13:30",
+    kind: "feature",
+    title: "Every tool now has an HTTP API endpoint",
+    body:
+      "Every deterministic tool is now reachable over a simple HTTP API at /api/v1/&lt;tool&gt;, driven by a single registry so the API and its published OpenAPI specification stay in lockstep with the toolbox as tools are added. Capabilities that would be abused as an unbounded search on shared infrastructure are explicitly excluded and remain browser-only. The API reference page lists what is available.",
+  },
+  {
+    date: "2026-07-01",
+    time: "12:00",
+    kind: "tool",
+    title: "New tool: HTTP request translator",
+    tools: ["http-request-translator"],
+    body:
+      "Paste a curl command and get it both explained (method, URL, every header, the body with its real Content-Type, auth, cookies, and each flag) and translated to fetch, a raw HTTP/1.1 request, HTTPie, and Python requests. A single local parse drives both views. It gets curl's -d Content-Type default right (form-encoded, not JSON) and warns on --insecure, plaintext http, and credentials in the URL. Local and offline.",
+  },
+  {
+    date: "2026-07-01",
+    time: "11:30",
+    kind: "tool",
+    title: "New tool: CVSS vector decoder",
+    tools: ["cvss-vector-decoder"],
+    body:
+      "Paste a CVSS v3.1 vector and get the Base score computed and mapped to None through Critical, with Temporal and Environmental scores when those metrics are present and every metric spelled out. Pure scoring math implemented from the FIRST.org specification and validated against officially published reference scores. Local and offline.",
+  },
+  {
+    date: "2026-07-01",
+    time: "11:00",
+    kind: "tool",
+    title: "New tool: F5XC service policy explainer",
+    tools: ["f5xc-service-policy-explainer"],
+    body:
+      "Decode an F5 Distributed Cloud service policy and get its rules explained in evaluation order: the match criteria, the action, and the first-match logic that determines allow or deny. Decode-only and offline.",
+  },
+  {
+    date: "2026-07-01",
+    time: "10:30",
+    kind: "tool",
+    title: "New tool: nslookup output explainer",
+    tools: ["nslookup-output-explainer"],
+    body:
+      "Paste nslookup output and get it explained: the server and port queried, whether the answer is authoritative, each record returned, and the common warnings. A companion to the dig output explainer. Local and offline.",
+  },
+  {
+    date: "2026-07-01",
+    time: "10:00",
+    kind: "tool",
+    title: "New tool: XML decoder",
+    tools: ["xml-decoder"],
+    body:
+      "Paste XML and get a structural tree view plus a security analysis: entities are surfaced and the parser is XXE-safe, flagging external-entity and billion-laughs patterns without ever resolving them. Decode-only and offline.",
+  },
+  {
+    date: "2026-06-30",
+    time: "05:30",
+    kind: "tool",
+    title: "New tool: dig output explainer",
+    tools: ["dig-output-explainer"],
+    body:
+      "Paste dig output and get every section explained: the header and flags, the question, and each answer, authority, and additional record, along with the query timing. Local and offline.",
+  },
+  {
+    date: "2026-06-30",
+    time: "05:20",
+    kind: "tool",
+    title: "New tool: text diff",
+    tools: ["diff"],
+    body:
+      "Compare two blocks of text and get a line-by-line diff with additions, removals, and unchanged context. Runs entirely in the browser; nothing is uploaded.",
+  },
+  {
+    date: "2026-06-30",
+    time: "05:10",
+    kind: "tool",
+    title: "New tool: TOTP / HOTP",
+    tools: ["totp-hotp"],
+    body:
+      "Generate and verify TOTP and HOTP one-time codes (RFC 6238 and RFC 4226) from a shared secret, with the time step, counter, and digit count shown. Golden-vector tested; local and offline.",
+  },
+  {
+    date: "2026-06-30",
+    time: "05:00",
+    kind: "tool",
+    title: "New tool: BIG-IP tcpdump builder",
+    tools: ["bigip-tcpdump-builder"],
+    body:
+      "Build a correct F5 BIG-IP tcpdump command from a plain description: the right interface syntax (including the :nnn peer-flow form), host and port filters, and capture options, with each part explained. Local and offline.",
+  },
   // ---- 2026-06-30 : static pages reach full locale parity -------------------
   {
     date: "2026-06-30",

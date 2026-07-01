@@ -18,6 +18,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { redEducationUrl, externalRel } from "@/config/redEducation";
+import { BUILD_TIME } from "@/generated/build-info";
 
 // Buy Me a Coffee support link.
 const COFFEE_URL = "https://buymeacoffee.com/ronutz";
@@ -51,6 +52,11 @@ export default async function SiteFooter() {
           </Link>
         </p>
         <p className="footer-contribute">
+          <Link href="/roadmap" className="footer-contribute-link">
+            {t("roadmap")}
+          </Link>
+        </p>
+        <p className="footer-contribute">
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
           </Link>
@@ -71,6 +77,14 @@ export default async function SiteFooter() {
           <Link href="/license" className="footer-contribute-link">
             {t("license")}
           </Link>
+        </p>
+
+        {/* Build stamp: one timestamp per build (scripts/gen-build-info.mjs),
+            rendered in UTC so it is unambiguous across locales. */}
+        <p className="footer-modified">
+          {t("lastModified", {
+            stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
+          })}
         </p>
 
         {/* Quiet support link. The cup is forced to monochrome (U+FE0E) so it

@@ -1,0 +1,30 @@
+---
+slug: private-vs-public-ip-ranges
+title: "Faixas de IP Privadas, Reservadas e Públicas"
+summary: "Um filtro de SSRF precisa saber quais endereços são internos. Este é o mapa: espaço privado RFC 1918, loopback, link-local, NAT de operadora, as faixas de documentação e todo o resto que é público e roteável. Conhecer as faixas é o que transforma um endereço bruto em uma decisão de seguro-ou-não."
+concepts: ["rfc 1918", "loopback", "link-local", "cgnat", "ip público"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "ssrf-defenses-allowlists"]
+category: security
+order: 89
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Nem todo endereço IP é alcançável a partir da internet pública, e uma verificação de SSRF existe para distinguir os dois. Estas são as faixas que importam.
+
+## Espaço de endereços privados (RFC 1918)
+
+Três blocos são reservados para redes privadas e nunca são roteados na internet pública: `10.0.0.0/8`, `172.16.0.0/12` e `192.168.0.0/16`. Dentro de uma rede corporativa ou de uma VPC de nuvem, é onde vivem os serviços internos, então um SSRF que os alcança pode falar com bancos de dados, caches e painéis administrativos.
+
+## Loopback e link-local
+
+`127.0.0.0/8` é loopback: sempre significa "esta máquina", então `http://127.0.0.1/` ou `http://localhost/` mira serviços vinculados ao próprio servidor. `169.254.0.0/16` é link-local (RFC 3927), atribuído automaticamente em um segmento. O único endereço `169.254.169.254` dentro desse bloco é o endpoint de metadados de nuvem, e por isso o link-local recebe atenção especial.
+
+## NAT de operadora e faixas de documentação
+
+`100.64.0.0/10` (RFC 6598) é espaço de endereços compartilhado usado por provedores para NAT de operadora (carrier-grade NAT); não é público, mas também não é o espaço privado clássico, então merece uma classificação intermediária e cautelosa. Os blocos TEST-NET `192.0.2.0/24`, `198.51.100.0/24` e `203.0.113.0/24` (RFC 5737) existem apenas para documentação e nunca deveriam aparecer como destino real.
+
+## Todo o resto é público
+
+Um endereço que não cai em nenhum bloco reservado é público e roteável. Destinos públicos ainda carregam algum risco de SSRF, pois um atacante pode apontar o servidor para um host que ele controla, mas não alcançam sua rede interna. É por isso que um classificador reporta um nível de risco em vez de um simples sim ou não: a categoria do destino decide o quanto se preocupar.

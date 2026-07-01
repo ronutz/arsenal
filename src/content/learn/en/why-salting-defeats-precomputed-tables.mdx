@@ -1,0 +1,32 @@
+---
+slug: why-salting-defeats-precomputed-tables
+title: "Why Salting Defeats Precomputed Tables"
+summary: "A salt is a unique random value stored with each password hash and mixed in before hashing. It makes identical passwords hash differently, which destroys the economics of precomputed tables: an attacker would need a separate table for every salt. Salting is the specific defense that neutralizes lookup services and rainbow tables."
+concepts: ["salt", "precomputed tables", "rainbow tables", "password storage"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["brute-force-vs-lookup-tables", "slow-kdfs-bcrypt-scrypt-argon2", "choosing-a-password-hash"]
+category: hashing
+order: 84
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Precomputed tables and rainbow tables work because an unsalted hash of a given input is always the same value. Salting removes exactly that assumption.
+
+## What goes wrong without a salt
+
+If passwords are hashed raw, `hash("password")` is the same everywhere. One precomputed table cracks that account on every site at once, and two users who chose the same password have the same stored hash, which is visible in a database leak.
+
+## What a salt is
+
+A salt is a per-password random value, typically 16 bytes or more, generated when the password is set and stored in the clear next to the hash. The stored record is effectively `hash(salt + password)` together with the salt itself.
+
+## Why tables stop working
+
+To use a precomputed table against a salted hash, the attacker would have to have built the table using **this specific salt**. With a unique salt per row, no table can be reused across accounts, and precomputation buys nothing: the attacker is forced back to computing hashes for one target at a time.
+
+## What salting does not do
+
+Salting does not slow down an attack against a single known salt. Once the attacker has the salt (it is not secret), they can still guess-and-check against that one target as fast as the hash allows. Defeating that is the job of a slow KDF, not the salt.
+
+A salt is not a secret and is not a substitute for a slow password hash. Correct password storage needs both: a unique salt to kill precomputation, and a deliberately slow function to make each guess expensive.

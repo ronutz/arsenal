@@ -1,0 +1,20 @@
+---
+slug: curl-method-inference
+title: "How curl Infers the HTTP Method"
+summary: "curl does not always need -X to choose a method. Body data implies POST, -I implies HEAD, -G forces GET, and an explicit -X always wins. Knowing the rules tells you at a glance what a request will do."
+concepts: ["curl", "http methods", "post", "method inference"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-data-flags-and-content-type", "reading-a-curl-command", "curl-to-fetch"]
+category: networking
+order: 80
+status: machine-draft
+updated: "2026-07-01"
+---
+
+curl often knows the HTTP method without `-X`, and guessing wrong about it is a frequent bug.
+
+The rules are simple. If `-X` / `--request` is given, that method wins, always. Otherwise curl infers one. Attaching body data with `-d` or `-F` implies POST. Asking for headers only with `-I` / `--head` implies HEAD. Forcing `-G` / `--get` implies GET and moves any `-d` data into the query string instead of the body. With none of these, the method is GET.
+
+The subtle case is combining an explicit method with a body: `-X PUT -d ...` sends PUT with that body, because the stated method overrides the POST that `-d` alone would have implied.
+
+When a tool marks the method as inferred rather than stated, it is applying exactly these rules. Seeing that label lets you confirm the request does what you meant, instead of discovering later that a missing `-X` turned an intended PUT into a POST.

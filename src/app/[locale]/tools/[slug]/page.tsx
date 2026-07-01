@@ -96,6 +96,12 @@ import BigipTcpdumpBuilderTool from "@/components/BigipTcpdumpBuilderTool";
 import { manifest as tcpdumpManifest } from "@/lib/tools/bigip-tcpdump-builder";
 import CvssVectorDecoderTool from "@/components/CvssVectorDecoderTool";
 import { manifest as cvssManifest } from "@/lib/tools/cvss-vector-decoder";
+import HttpRequestTranslatorTool from "@/components/HttpRequestTranslatorTool";
+import { manifest as curlManifest } from "@/lib/tools/http-request-translator";
+import HashPreimageFinderTool from "@/components/HashPreimageFinderTool";
+import { manifest as hpfManifest } from "@/lib/tools/hash-preimage-finder";
+import SsrfUrlClassifierTool from "@/components/SsrfUrlClassifierTool";
+import { manifest as ssrfManifest } from "@/lib/tools/ssrf-url-classifier";
 
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
@@ -216,6 +222,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "cvss-vector-decoder": {
     Component: CvssVectorDecoderTool,
     sources: cvssManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "http-request-translator": {
+    Component: HttpRequestTranslatorTool,
+    sources: curlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "hash-preimage-finder": {
+    Component: HashPreimageFinderTool,
+    sources: hpfManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "ssrf-url-classifier": {
+    Component: SsrfUrlClassifierTool,
+    sources: ssrfManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "bigip-tcpdump-builder": {
     Component: BigipTcpdumpBuilderTool,

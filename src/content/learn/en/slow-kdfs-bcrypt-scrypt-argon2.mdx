@@ -1,0 +1,34 @@
+---
+slug: slow-kdfs-bcrypt-scrypt-argon2
+title: "Slow KDFs: bcrypt, scrypt, and Argon2"
+summary: "Salting defeats precomputation but not a targeted guess-and-check attack; a fast hash still lets an attacker try billions of candidates per second. Slow key derivation functions fix that by making each guess deliberately expensive and tunable, cutting an attacker's rate by many orders of magnitude. These are what you should store passwords with."
+concepts: ["kdf", "bcrypt", "scrypt", "argon2", "pbkdf2", "work factor"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["why-salting-defeats-precomputed-tables", "choosing-a-password-hash", "keyspace-entropy-and-crack-time"]
+category: hashing
+order: 85
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Salting kills precomputed tables, but it does nothing about raw speed. A fast hash like SHA-256 can be computed billions of times per second on a GPU, so a weak password still falls to a targeted brute-force attack even when salted.
+
+## The idea
+
+Replace the fast hash with a **key derivation function** that has a tunable work factor. Making a single guess cost, say, 10 milliseconds instead of 10 nanoseconds is roughly a million-fold slowdown for the attacker, while adding an unnoticeable delay to a legitimate login.
+
+## The options
+
+**bcrypt** has a cost factor that sets the number of iterations. It is mature and widely supported, though it truncates long inputs.
+
+**scrypt** adds a memory-hardness parameter, so an attacker using custom hardware or GPUs gains less, because memory is expensive to parallelize.
+
+**Argon2**, specifically Argon2id, is the current recommendation and the winner of the Password Hashing Competition. It lets you tune time, memory, and parallelism independently.
+
+**PBKDF2** is iteration-based and acceptable where FIPS compliance is required, but it is not memory-hard, so it resists GPUs less well than the others.
+
+## Tuning
+
+Choose a target wall-clock cost per hash on your own hardware and set the parameters to hit it, then raise the work factor over time as hardware gets faster. OWASP publishes current starting parameters for each algorithm.
+
+The combination is what matters: a unique salt to defeat precomputation, plus a slow, tuned KDF to make every remaining guess expensive.

@@ -1,0 +1,22 @@
+---
+slug: curl-data-flags-and-content-type
+title: "Sinalizadores de dados do curl e a armadilha do Content-Type"
+summary: "O curl tem várias formas de anexar um corpo, e elas diferem na codificação e no Content-Type padrão. A grande surpresa é que -d usa codificação de formulário por padrão, não JSON, então um corpo JSON pode ser rotulado errado e recusado."
+concepts: ["curl", "corpo da requisição", "content-type", "multipart", "codificação de formulário"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["reading-a-curl-command", "curl-to-fetch", "curl-method-inference"]
+category: networking
+order: 77
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O curl pode anexar um corpo de requisição de várias formas, e elas não são intercambiáveis.
+
+`-d` / `--data` envia o valor e, importante, define `Content-Type: application/x-www-form-urlencoded` por padrão. Esta é a surpresa mais comum do curl: `curl -d '{"name":"Alice"}'` envia texto JSON mas o rotula como formulário, então uma API JSON pode recusá-lo. A correção é declarar o tipo: acrescente `-H "Content-Type: application/json"`.
+
+`--data-urlencode` codifica o valor em percent-encoding, que é o que você quer para campos de formulário com espaços ou símbolos. `--data-binary` envia os bytes exatamente, sem a remoção de quebras de linha que o `-d` faz. Vários `-d` são unidos com `&`.
+
+`-F` / `--form` monta um corpo `multipart/form-data`. Cada `-F nome=valor` é um campo, e `-F nome=@arquivo` anexa um arquivo. O curl escolhe o limite (boundary) do multipart por você, então você nunca o define à mão.
+
+Ao traduzir um comando curl para outra linguagem, leve o Content-Type que o curl realmente envia, não o que você adivinharia pela forma do corpo. Esse único detalhe é onde a maioria das conversões manuais erra.

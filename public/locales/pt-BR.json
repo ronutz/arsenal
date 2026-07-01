@@ -2037,6 +2037,212 @@
           }
         }
       }
+    },
+    "http-request-translator": {
+      "name": "Tradutor de requisições HTTP",
+      "blurb": "Cole um comando curl e veja-o explicado sinalizador por sinalizador, depois traduzido para fetch, uma requisição HTTP crua, HTTPie e Python requests. Local e offline; o comando é decodificado no seu navegador e nada é enviado ou executado.",
+      "input": "Comando curl",
+      "example": "Carregar exemplo",
+      "clear": "Limpar",
+      "privacy": "Analisado localmente no seu navegador. Um comando curl pode conter tokens, cookies ou senhas, então nada do que você cola é enviado a lugar algum nem executado.",
+      "err": {
+        "empty": "Cole um comando curl para começar.",
+        "notCurl": "Isto não parece um comando curl. Cole um comando que comece com curl.",
+        "noUrl": "Nenhuma URL encontrada. O curl precisa de uma URL de destino."
+      },
+      "methodInferred": "inferido",
+      "tab": {
+        "explain": "Explicar",
+        "translate": "Traduzir"
+      },
+      "url": "URL",
+      "scheme": "Esquema",
+      "host": "Host",
+      "port": "Porta",
+      "path": "Caminho",
+      "headers": "Cabeçalhos",
+      "noHeaders": "Nenhum cabeçalho definido.",
+      "auth": "Autenticação",
+      "body": "Corpo",
+      "noBody": "Sem corpo na requisição.",
+      "cookies": "Cookies",
+      "optionsLabel": "Opções",
+      "ctImplicit": "padrão do curl",
+      "bodyKind": {
+        "urlencoded": "Formulário URL-encoded",
+        "form": "Formulário multipart",
+        "binary": "Dados binários"
+      },
+      "authKind": {
+        "basic": "HTTP Basic",
+        "bearer": "Token Bearer",
+        "other": "Cabeçalho Authorization"
+      },
+      "opt": {
+        "location": "Segue redirecionamentos (3xx).",
+        "insecure": "Ignora a verificação do certificado TLS.",
+        "head": "Envia uma requisição HEAD (apenas cabeçalhos, sem corpo).",
+        "get": "Força GET e move os dados para a query string.",
+        "compressed": "Solicita uma resposta comprimida (gzip/deflate).",
+        "include": "Inclui os cabeçalhos da resposta na saída.",
+        "silent": "Modo silencioso (sem medidor de progresso).",
+        "verbose": "Saída detalhada (mostra a requisição e a resposta).",
+        "user-agent": "Define o cabeçalho User-Agent:",
+        "referer": "Define o cabeçalho Referer:",
+        "proxy": "Envia a requisição por um proxy:",
+        "output": "Grava o corpo da resposta em um arquivo:",
+        "max-time": "Tempo máximo para toda a operação, em segundos:",
+        "connect-timeout": "Tempo máximo permitido para a conexão, em segundos:",
+        "range": "Solicita apenas parte do recurso (intervalo de bytes):",
+        "retry": "Repete a requisição em falhas transitórias, até:",
+        "http1": "Usa HTTP/1.1.",
+        "http10": "Usa HTTP/1.0.",
+        "http2": "Usa HTTP/2.",
+        "remote-name": "Salva a resposta com o nome de arquivo remoto.",
+        "fail": "Falha silenciosamente em erros do servidor (sem corpo de página de erro).",
+        "unknown": "Opção não reconhecida (repassada como escrita)."
+      },
+      "warnings": {
+        "insecureTls": "-k / --insecure desativa a verificação do certificado TLS. A conexão é criptografada, mas não autenticada, ficando exposta a interceptação (man-in-the-middle). Use apenas com hosts que você controla.",
+        "plaintextHttp": "Esta requisição usa http:// (não https://). Cabeçalhos, corpo e quaisquer credenciais são enviados em texto puro.",
+        "credsInUrl": "Há credenciais embutidas na URL (usuário:senha@host). Elas podem vazar em logs e no histórico; prefira um cabeçalho ou -u.",
+        "jsonButFormCt": "O corpo parece JSON, mas -d não define um Content-Type de JSON. O curl envia application/x-www-form-urlencoded por padrão, então o servidor pode não interpretá-lo como JSON. Acrescente -H \"Content-Type: application/json\"."
+      },
+      "lang": {
+        "fetch": "fetch (JavaScript)",
+        "http": "HTTP/1.1 cru",
+        "httpie": "HTTPie",
+        "python": "Python (requests)"
+      },
+      "copy": "Copiar",
+      "copied": "Copiado"
+    },
+    "hash-preimage-finder": {
+      "name": "Localizador de Pré-imagem de Hash",
+      "blurb": "Veja uma busca local por força bruta, limitada, recuperar em segundos a entrada de um hash fraco — ou esgotar o espaço de chaves diante de qualquer coisa com entropia real. Sem wordlist, sem tabela, apenas o seu navegador. Uma demonstração de por que hashes rápidos e sem sal falham.",
+      "hashLabel": "Hash a reverter",
+      "hashPlaceholder": "Cole um hash MD5, SHA-1 ou SHA-256",
+      "detectHint": "Cole um hash em hexadecimal; o algoritmo é detectado pelo comprimento.",
+      "notDetected": "Não é um hash reconhecido. Esperado 32 (MD5), 40 (SHA-1) ou 64 (SHA-256) caracteres hexadecimais.",
+      "brokenNote": "criptograficamente quebrado; nunca use em trabalhos novos",
+      "charsetLabel": "Alfabeto de candidatos",
+      "charset": {
+        "digits": "Dígitos",
+        "lower": "a-z",
+        "lower-digits": "a-z 0-9",
+        "mixed-alpha": "a-z A-Z",
+        "mixed-alnum": "a-z A-Z 0-9"
+      },
+      "maxLengthLabel": "Comprimento máx.",
+      "lengthCap": "até {max}",
+      "keyspacePreview": "Espaço de chaves: {n} candidatos",
+      "keyspaceBeyond": "(a busca para em {cap}; espaços maiores são justamente o ponto — são inviáveis)",
+      "start": "Iniciar busca",
+      "cancel": "Cancelar",
+      "attemptsStat": "{a} testados",
+      "rateStat": "{r}/s",
+      "found": "Pré-imagem encontrada",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "foundIn": "Recuperada em {attempts} tentativas, {ms} ms. Um segredo tão fraco não oferece proteção alguma quando o hash vaza.",
+      "notFoundExhausted": "Nenhuma pré-imagem neste espaço de chaves",
+      "notFoundBudget": "Parou em {cap} candidatos",
+      "exhaustedSub": "Todo o espaço de chaves foi percorrido sem correspondência. Amplie o alfabeto ou o comprimento — ou, mais provável, a entrada tem mais entropia do que uma força bruta curta alcança.",
+      "budgetSub": "A busca atingiu seu limite com muito mais espaço de chaves restante (este alfabeto e comprimento somam {n} candidatos). É exatamente por isso que comprimento e aleatoriedade derrotam a força bruta: o trabalho cresce mais rápido do que qualquer atacante consegue acompanhar.",
+      "teach": {
+        "head": "Por que hashes fracos caem, e como o armazenamento é realmente protegido",
+        "intro": "Um hash rápido de uma entrada de baixa entropia é trivialmente reversível por enumeração, como você acabou de ver. O armazenamento real de senhas se defende disso em três camadas.",
+        "salt": {
+          "title": "Salt derrota tabelas pré-computadas",
+          "body": "Um salt aleatório único por senha torna cada hash armazenado diferente, mesmo para senhas idênticas. É isso que inutiliza serviços de consulta como o CrackStation: uma tabela pré-computada precisaria ser refeita para cada salt, tornando-se inútil."
+        },
+        "kdf": {
+          "title": "KDFs lentas derrotam a força bruta",
+          "body": "bcrypt, scrypt, Argon2 e PBKDF2 são deliberadamente lentas e ajustáveis. Fazer cada tentativa custar milissegundos em vez de nanossegundos reduz a taxa do atacante em seis ordens de grandeza ou mais, transformando uma quebra de segundos em milênios."
+        },
+        "algo": {
+          "title": "Algoritmo e comprimento importam",
+          "body": "MD5 e SHA-1 têm colisões quebradas e, como o SHA-256, são rápidos demais para guardar segredos. Use um hash de senha dedicado e dê aos segredos comprimento e aleatoriedade suficientes para que nenhuma busca no espaço de chaves os alcance."
+        }
+      },
+      "disclaimer": "Tudo roda localmente no seu navegador. Nada do que você cola é enviado. Esta ferramenta existe para demonstrar a fragilidade de hashes e é limitada para só recuperar entradas trivialmente fracas."
+    },
+    "ssrf-url-classifier": {
+      "name": "Classificador de URL para SSRF",
+      "blurb": "Cole uma URL e veja para onde ela realmente aponta: loopback, uma faixa privada ou link-local, um endpoint de metadados de nuvem, CGNAT, espaço reservado ou a internet pública. Ofuscação de IP em decimal, octal e hexadecimal é decodificada, esquemas perigosos e credenciais embutidas são sinalizados, e um nível de risco de SSRF é exibido. Nunca resolve DNS e nunca envia a requisição.",
+      "input": {
+        "label": "URL ou host",
+        "placeholder": "http://169.254.169.254/latest/meta-data/",
+        "example": "Exemplo",
+        "clear": "Limpar"
+      },
+      "privacy": "Tudo é calculado no seu navegador. Esta ferramenta nunca resolve DNS e nunca envia a requisição; ela classifica o endereço apenas a partir do texto que você cola.",
+      "verdict": {
+        "riskLabel": "Risco de SSRF"
+      },
+      "risk": {
+        "high": "Alto",
+        "medium": "Médio",
+        "low": "Baixo",
+        "unknown": "Desconhecido"
+      },
+      "category": {
+        "loopback": "Loopback",
+        "private": "Rede privada",
+        "link-local": "Link-local",
+        "cloud-metadata": "Metadados de nuvem",
+        "cgnat": "CGNAT (NAT de operadora)",
+        "reserved": "Reservado",
+        "public": "Público",
+        "internal-name": "Nome interno",
+        "unresolved": "Resolvido em tempo de execução"
+      },
+      "categoryDesc": {
+        "loopback": "O próprio host (127.0.0.0/8 ou ::1). Um servidor que busca isso alcança os próprios serviços locais.",
+        "private": "Uma faixa privada RFC 1918 (10/8, 172.16/12, 192.168/16) ou ULA IPv6. Normalmente infraestrutura interna.",
+        "link-local": "Um endereço link-local (169.254.0.0/16 ou fe80::/10), acessível apenas no segmento local.",
+        "cloud-metadata": "Um endpoint de metadados de instância de nuvem (IMDS). Alcançá-lo pode expor credenciais e dados da instância.",
+        "cgnat": "Espaço de endereços compartilhado de CGNAT (100.64.0.0/10). Não é público, mas também não é o privado clássico.",
+        "reserved": "Uma faixa reservada ou de uso especial (documentação, benchmarking, multicast, broadcast, uso futuro).",
+        "public": "Um endereço público e roteável na internet.",
+        "internal-name": "Um hostname com sufixo interno (.internal, .local, .corp). Não é um nome público.",
+        "unresolved": "Um hostname cujo endereço só é conhecido após uma consulta DNS, que esta ferramenta não realiza."
+      },
+      "facts": {
+        "title": "O que você colou",
+        "scheme": "Esquema",
+        "host": "Host como escrito",
+        "canonicalIp": "Endereço decodificado",
+        "ipVersion": "Versão de IP",
+        "port": "Porta",
+        "path": "Caminho"
+      },
+      "flags": {
+        "title": "Sinalizações",
+        "obfuscated": "O host está escrito em forma {form}, que decodifica para {ip}. É uma maneira comum de passar um endereço interno por um filtro que só bloqueia o formato decimal com pontos.",
+        "scheme": "O esquema {scheme}:// é uma busca não-HTTP que escala o SSRF, por exemplo leitura de arquivo local ou contrabando de protocolo para outro serviço.",
+        "userinfo": "Há credenciais embutidas na URL (user:pass@host). O host real pode ignorá-las enquanto um filtro ingênuo é enganado e lê a parte errada como host."
+      },
+      "form": {
+        "decimal": "decimal",
+        "octal": "octal",
+        "hex": "hexadecimal",
+        "short": "curta (octetos omitidos)",
+        "mixed": "base mista",
+        "dotted": "decimal com pontos"
+      },
+      "defenses": {
+        "title": "Defesas",
+        "allowlist": "Prefira uma lista de permissões de hosts exatos em vez de uma lista de bloqueios; listas de bloqueio deixam passar codificações e faixas novas.",
+        "blockRanges": "Rejeite faixas de loopback, privadas, link-local, CGNAT e de metadados, tanto para IPv4 quanto para IPv6.",
+        "resolveThenCheck": "Resolva o hostname primeiro e então verifique cada endereço resultante, para pegar DNS que aponta para um IP interno.",
+        "noRedirects": "Desative ou revalide redirecionamentos; uma URL pública pode fazer 302 para uma interna.",
+        "schemes": "Permita apenas http e https; rejeite file, gopher, dict, ftp e esquemas semelhantes."
+      },
+      "classifierNote": "Este é um classificador para aprendizado e projeto de listas de permissão. Ele nunca resolve o hostname e nunca envia a requisição, então um hostname público é indicado como resolvido em tempo de execução, e não adivinhado.",
+      "legend": {
+        "title": "Categorias de destino"
+      }
     }
   },
   "privacy_page": {
@@ -2083,7 +2289,9 @@
     "api": "Referência da API",
     "contributeTools": "Compartilhe uma ideia",
     "license": "Licença",
-    "coffee": "Me pague um café"
+    "coffee": "Me pague um café",
+    "lastModified": "Última modificação {stamp}",
+    "roadmap": "Roadmap"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -2155,6 +2363,16 @@
     "recognition": {
       "title": "Reconhecimento",
       "body": "Reconhecido como F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024, pelas contribuições à comunidade técnica da F5."
+    },
+    "credibility": {
+      "certsEyebrow": "Verificado",
+      "certsTitle": "Certificações",
+      "certsDesc": "A lista completa das credenciais atuais F5, Fortinet, Extreme Networks e Netskope, cada uma com seu emissor e data.",
+      "certsCta": "Ver todas as certificações",
+      "endorsementsEyebrow": "Nas palavras deles",
+      "endorsementsTitle": "Depoimentos",
+      "endorsementsDesc": "Recomendações de colegas, parceiros e alunos ao longo de duas décadas de treinamento, citadas na íntegra.",
+      "endorsementsCta": "Ler os depoimentos"
     }
   },
   "endorsements": {
@@ -2357,7 +2575,14 @@
     "ctaTitle": "Vamos trabalhar juntos",
     "ctaBody": "Seja para contratar um treinamento oficial, montar um programa sob medida para a sua equipe, ou trazer uma consultoria experiente para um problema difícil, a porta está aberta.",
     "ctaButton": "Entre em contato",
-    "coursesButton": "Ver todos os cursos"
+    "coursesButton": "Ver todos os cursos",
+    "instructor": {
+      "eyebrow": "Seu instrutor",
+      "body": "Estes cursos são ministrados por Rodolfo Nützmann, instrutor técnico sênior que entrega treinamentos oficiais F5, Fortinet, Extreme Networks e Netskope no mundo todo desde 1996. As credenciais, e o que dizem alunos anteriores, estão a um clique.",
+      "about": "Sobre o Rodolfo",
+      "certs": "Certificações",
+      "endorsements": "Depoimentos"
+    }
   },
   "contact": {
     "title": "Entre em contato",
@@ -2622,7 +2847,9 @@
     "emailTitle": "Como falar comigo",
     "emailBody": "O e-mail é o canal. Conte o que você encontrou ou o que gostaria, com detalhes suficientes para agir: um exemplo, um link, a redação exata, o que fizer sentido. Se tornar o conjunto de ferramentas melhor, será construído.",
     "emailLabel": "E-mail",
-    "backToTools": "Voltar para as ferramentas"
+    "backToTools": "Voltar para as ferramentas",
+    "roadmapCheck": "Vale consultar o roadmap primeiro, para ver o que já está planejado ou publicado e evitar duplicatas:",
+    "roadmapLink": "ver o roadmap"
   },
   "languageStatus": {
     "title": "Status da tradução",
@@ -2643,5 +2870,15 @@
     "kindI18n": "Localização",
     "kindContent": "Conteúdo",
     "kindInfra": "Infraestrutura"
+  },
+  "roadmap": {
+    "eyebrow": "Roadmap",
+    "title": "O que está no roadmap",
+    "lede": "As ferramentas que estamos planejando e considerando para a caixa de ferramentas. Esta página é gerada a partir do catálogo de build ativo, então está sempre atual: uma ferramenta aparece aqui no momento em que entra na fila e passa para a contagem de entregues no momento em que é publicada. Sem datas, apenas direção e prioridade aproximada.",
+    "shippedLabel": "entregues",
+    "plannedLabel": "planejadas",
+    "ideaTitle": "Tem uma ideia?",
+    "ideaBody": "A caixa de ferramentas é open-core e movida pela comunidade. Se falta uma ferramenta determinística e local, proponha. Consultar este roadmap antes ajuda a evitar duplicatas.",
+    "ideaCta": "Sugerir uma ferramenta"
   }
 }

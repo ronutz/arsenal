@@ -1,0 +1,30 @@
+---
+slug: dangerous-url-schemes
+title: "Dangerous URL Schemes in SSRF"
+summary: "SSRF is not limited to http. Schemes like file, gopher, dict, and ftp let an attacker read local files or craft raw bytes to internal services such as Redis and SMTP. A URL fetcher that does not restrict the scheme hands an attacker a far more powerful primitive than a plain web request."
+concepts: ["url schemes", "gopher", "file scheme", "protocol smuggling"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "ssrf-defenses-allowlists", "cloud-metadata-endpoints-and-ssrf"]
+category: security
+order: 93
+status: machine-draft
+updated: "2026-07-01"
+---
+
+An SSRF that can only make http requests is dangerous enough. One that also honors other URL schemes is worse, because those schemes reach beyond the web and can turn a fetch into file disclosure or arbitrary traffic to internal services.
+
+## file:// reads the local disk
+
+The `file://` scheme addresses the local filesystem rather than a network host. If a fetcher follows it, a request for `file:///etc/passwd` or a configuration file becomes local file disclosure, with no network involved at all. There is no destination IP to classify; the danger is the scheme itself.
+
+## gopher:// crafts raw bytes
+
+The `gopher://` scheme is the most abused, because it lets an attacker place nearly arbitrary bytes into a TCP stream to a chosen host and port. That turns SSRF into a way to speak other protocols: a crafted gopher URL can send commands to a Redis instance, forge an SMTP message, or drive any simple line-based service listening on the internal network. It is protocol smuggling through a URL fetcher.
+
+## The others
+
+`dict://` can probe and interact with services and leak banners. `ftp://`, `tftp://`, `ldap://`, `sftp://`, and `jar://` each reach services a plain web request cannot, and several have been used to move from a fetch to an internal action.
+
+## The defense is a scheme allow-list
+
+Because these schemes provide capabilities far beyond fetching a web page, the fix is simple and strict: allow only `http` and `https`, and reject every other scheme before the request is built. This tool flags a dangerous scheme as soon as it sees one, raising the risk to high regardless of the host, because the scheme alone is enough to matter.

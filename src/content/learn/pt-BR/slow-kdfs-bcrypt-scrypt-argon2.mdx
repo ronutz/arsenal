@@ -1,0 +1,34 @@
+---
+slug: slow-kdfs-bcrypt-scrypt-argon2
+title: "KDFs Lentas: bcrypt, scrypt e Argon2"
+summary: "O salt derrota a pré-computação, mas não um ataque direcionado de tentar e verificar; um hash rápido ainda permite bilhões de candidatos por segundo. Funções de derivação de chave lentas resolvem isso tornando cada tentativa deliberadamente cara e ajustável, cortando a taxa do atacante em muitas ordens de grandeza. É com elas que você deve armazenar senhas."
+concepts: ["kdf", "bcrypt", "scrypt", "argon2", "pbkdf2", "work factor"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["why-salting-defeats-precomputed-tables", "choosing-a-password-hash", "keyspace-entropy-and-crack-time"]
+category: hashing
+order: 85
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O salt mata tabelas pré-computadas, mas nada faz quanto à velocidade bruta. Um hash rápido como o SHA-256 pode ser calculado bilhões de vezes por segundo numa GPU, então uma senha fraca ainda cai por força bruta direcionada mesmo com sal.
+
+## A ideia
+
+Substitua o hash rápido por uma **função de derivação de chave** com um fator de trabalho ajustável. Fazer uma única tentativa custar, digamos, 10 milissegundos em vez de 10 nanossegundos é uma desaceleração de cerca de um milhão de vezes para o atacante, adicionando um atraso imperceptível a um login legítimo.
+
+## As opções
+
+**bcrypt** tem um fator de custo que define o número de iterações. É maduro e amplamente suportado, embora trunque entradas longas.
+
+**scrypt** adiciona um parâmetro de dureza de memória, então um atacante com hardware dedicado ou GPUs ganha menos, porque memória é cara de paralelizar.
+
+**Argon2**, especificamente o Argon2id, é a recomendação atual e vencedor da Password Hashing Competition. Permite ajustar tempo, memória e paralelismo de forma independente.
+
+**PBKDF2** é baseado em iterações e aceitável onde há exigência de conformidade FIPS, mas não é resistente a memória, então resiste menos a GPUs que os demais.
+
+## Ajuste
+
+Escolha um custo-alvo de tempo real por hash no seu próprio hardware e defina os parâmetros para atingi-lo, elevando o fator de trabalho ao longo do tempo conforme o hardware acelera. A OWASP publica parâmetros iniciais atuais para cada algoritmo.
+
+A combinação é o que importa: um salt único para derrotar a pré-computação, mais uma KDF lenta e ajustada para tornar cada tentativa restante cara.

@@ -30,7 +30,7 @@ export type { HashResult, HashDigest, HashAlgorithm } from "./compute";
 /** The D-49 declarative manifest for the Hash tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Hashing & Crypto",
+  toolFamily: "Hashing",
   toolSlug: "hash",
   canonicalAliases: ["sha256", "sha", "digest", "checksum", "sha512"],
   inputDetectors: [

@@ -30,7 +30,7 @@ export type { HmacInput, HmacResult, HmacAlgorithm } from "./compute";
 /** The D-49 declarative manifest for the HMAC tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Hashing & Crypto",
+  toolFamily: "Hashing",
   toolSlug: "hmac",
   canonicalAliases: ["hmac-sha256", "hmac-sha512", "keyed-hash", "mac"],
   inputDetectors: [

@@ -1,0 +1,22 @@
+---
+slug: curl-security-flags
+title: "Sinalizadores do curl que mudam a postura de segurança"
+summary: "Alguns sinalizadores do curl mudam o quão segura é uma requisição: -k desativa a verificação TLS, http envia tudo em texto puro, e credenciais na URL podem vazar. Nenhum torna uma requisição maliciosa, mas cada um vale a leitura antes de executar ou compartilhar um comando."
+concepts: ["curl", "tls", "insecure", "https", "credenciais"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-headers-auth-and-cookies", "reading-a-curl-command", "curl-data-flags-and-content-type"]
+category: networking
+order: 81
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um punhado de sinalizadores do curl muda a postura de segurança de uma requisição, e vale reconhecê-los de imediato.
+
+`-k` / `--insecure` desativa a verificação do certificado TLS. A conexão continua criptografada, mas o curl não verifica mais que o certificado pertence ao host, o que remove a proteção contra um man-in-the-middle. É comum em testes rápidos contra certificados autoassinados e arriscado em qualquer outro lugar.
+
+Usar `http://` em vez de `https://` envia tudo, incluindo cabeçalhos e quaisquer credenciais, em texto puro pela rede.
+
+Credenciais embutidas na URL como `usuário:senha@host` podem vazar no histórico do shell, em logs do servidor e em cabeçalhos referer, então um cabeçalho ou `-u` é mais seguro.
+
+Nenhum desses torna uma requisição maliciosa por si só, mas cada um é um sinal. Um bom tradutor os expõe como avisos em vez de carregá-los silenciosamente, para que você decida com o risco à frente.

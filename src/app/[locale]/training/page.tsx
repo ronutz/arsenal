@@ -51,6 +51,32 @@ export default async function TrainingLandingPage({
             </div>
           </section>
 
+          {/* Instructor — who teaches these courses; links to the professional
+              showcase so a prospective client can verify credentials before
+              booking. */}
+          <section className="section teach-instructor">
+            <div className="container teach-container">
+              <div className="teach-instructor-card">
+                <div className="teach-instructor-text">
+                  <p className="teach-instructor-eyebrow">{t("instructor.eyebrow")}</p>
+                  <h2 className="teach-instructor-name">Rodolfo Nützmann</h2>
+                  <p className="teach-instructor-body">{t("instructor.body")}</p>
+                </div>
+                <div className="teach-instructor-links">
+                  <Link href="/about" className="teach-instructor-link teach-instructor-link--primary">
+                    {t("instructor.about")}
+                  </Link>
+                  <Link href="/certifications" className="teach-instructor-link">
+                    {t("instructor.certs")}
+                  </Link>
+                  <Link href="/endorsements" className="teach-instructor-link">
+                    {t("instructor.endorsements")}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Why it matters / complex made clear / hands-on */}
           <section className="section">
             <div className="container teach-container">

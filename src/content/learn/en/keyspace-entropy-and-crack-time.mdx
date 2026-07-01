@@ -1,0 +1,32 @@
+---
+slug: keyspace-entropy-and-crack-time
+title: "Keyspace, Entropy, and Crack Time"
+summary: "Whether brute force can reverse a hash comes down to keyspace size versus the attacker's hashing rate. Keyspace grows exponentially with length and alphabet, so a few extra characters move a secret from cracked in seconds to infeasible for millennia. This is the arithmetic behind why length and randomness matter most."
+concepts: ["keyspace", "entropy", "crack time", "password length", "brute force"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["why-hashes-are-one-way", "brute-force-vs-lookup-tables", "choosing-a-password-hash"]
+category: hashing
+order: 86
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Brute force succeeds or fails on one comparison: the size of the keyspace against how fast the attacker can hash. Everything else is detail.
+
+## Keyspace and entropy
+
+The keyspace is the number of possible inputs: roughly `(alphabet size) ^ length`, summed over the lengths in range. A 4-digit PIN is 10^4 = 10,000. An 8-character password over the 95 printable ASCII characters is 95^8, about 6.6 x 10^15.
+
+**Entropy** in bits is `log2(keyspace)`. Because each extra character multiplies the space by the alphabet size, entropy grows by a fixed amount per character while the keyspace itself grows exponentially.
+
+## Crack time
+
+Crack time is approximately keyspace divided by rate. At a fast unsalted rate of 1,000,000,000 hashes per second on a GPU, 10,000 candidates fall instantly, while 6.6 x 10^15 takes on the order of months on average. Now change the hash: with a slow KDF tuned to 10,000 guesses per second, that same keyspace would take millions of years.
+
+## Why length beats complexity
+
+Adding one random character over a 95-symbol alphabet multiplies the keyspace by 95. That is far more than swapping one letter for a symbol under a composition rule. Length and randomness dominate; complexity theater does not.
+
+## The takeaway
+
+Use long, random secrets, a generated password or a multi-word passphrase, and let a slow KDF multiply the cost of every guess. This is exactly what the demonstrator shows: small keyspaces fall in milliseconds, while realistic ones simply exhaust the budget.

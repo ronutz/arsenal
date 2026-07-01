@@ -83,6 +83,16 @@ const PROVENANCE: Record<string, ToolProvenance> = {
       { label: "NVD: CVSS v3.1 Equations", url: "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator/v31/equations", note: "The base and environmental equations as published by NVD" },
     ],
   },
+  "http-request-translator": {
+    basis:
+      "The command is tokenized and decoded entirely in your browser, the way a shell reads it: single and double quotes, backslash escapes, line continuations, clustered short flags (-sSL), and attached values (-XPOST). From the parsed request the tool derives both the explanation and every translation. It never sends the request or contacts the host (zero egress). Content-Type is resolved the way curl actually behaves, where -d defaults to application/x-www-form-urlencoded rather than JSON, which is a common source of confusion the tool flags.",
+    sources: [
+      { label: "curl: man page", url: "https://curl.se/docs/manpage.html", note: "The command options and their exact behavior" },
+      { label: "RFC 9110: HTTP Semantics", url: "https://www.rfc-editor.org/rfc/rfc9110", note: "Methods, headers, and message semantics" },
+      { label: "MDN: Using the Fetch API", url: "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch", note: "The fetch translation target" },
+      { label: "Requests: Quickstart", url: "https://requests.readthedocs.io/en/latest/user/quickstart/", note: "The Python translation target" },
+    ],
+  },
   cidr: {
     basis:
       "All results are computed locally from the address and prefix you enter, using standard IPv4 addressing arithmetic. Nothing is looked up remotely and nothing is sent anywhere.",
@@ -138,6 +148,28 @@ const PROVENANCE: Record<string, ToolProvenance> = {
         url: "https://ciphersuite.info/",
         note: "OpenSSL and GnuTLS cross-names",
       },
+    ],
+  },
+  "ssrf-url-classifier": {
+    basis:
+      "The classifier decides purely from the URL string and never touches the network: it does not resolve DNS and never issues the request (D-53). It extracts the host from the raw input (not from a normalizing URL parser, which would erase the obfuscation), decodes the inet_aton spellings of an IPv4 address (decimal, octal, hex, short-form) and IPv4-mapped IPv6, and classifies the resulting address against the reserved ranges: loopback 127.0.0.0/8, RFC 1918 private space, link-local 169.254.0.0/16, the cloud metadata addresses (169.254.169.254, metadata.google.internal, fd00:ec2::254, 100.100.100.200), CGNAT 100.64.0.0/10, and the documentation ranges. Dangerous non-HTTP schemes (file, gopher, dict, ftp, ldap, and similar) and embedded credentials are flagged. The range definitions and the SSRF guidance are grounded in the source RFCs and the OWASP SSRF prevention cheat sheet; behavior is pinned by 26 golden vectors.",
+    sources: [
+      { label: "RFC 1918: Address Allocation for Private Internets", url: "https://www.rfc-editor.org/rfc/rfc1918", note: "private IPv4 ranges" },
+      { label: "RFC 3927: Dynamic Configuration of IPv4 Link-Local Addresses", url: "https://www.rfc-editor.org/rfc/rfc3927", note: "169.254.0.0/16 link-local" },
+      { label: "RFC 6598: IANA-Reserved IPv4 Prefix for Shared Address Space", url: "https://www.rfc-editor.org/rfc/rfc6598", note: "100.64.0.0/10 CGNAT" },
+      { label: "RFC 3986: Uniform Resource Identifier (URI): Generic Syntax", url: "https://www.rfc-editor.org/rfc/rfc3986", note: "URL structure" },
+      { label: "OWASP: Server Side Request Forgery Prevention Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html", note: "SSRF defenses" },
+    ],
+  },
+  "hash-preimage-finder": {
+    basis:
+      "The search runs entirely in your browser: candidates are enumerated over the alphabet and length you choose, each one is hashed locally, and the first match is returned. There is no dictionary, no wordlist, and no precomputed table (unlike lookup services such as CrackStation), so nothing is stored and nothing is fetched. The MD5, SHA-1, and SHA-256 implementations are verified against their published test vectors. The keyspace is capped, so the tool only ever recovers trivially weak inputs, which is exactly the point: it demonstrates why fast, unsalted hashes fall for low-entropy secrets and hold for anything with real entropy, and it pairs every result with the defenses (salting, slow KDFs, algorithm choice).",
+    sources: [
+      { label: "RFC 1321: The MD5 Message-Digest Algorithm", url: "https://www.rfc-editor.org/rfc/rfc1321", note: "MD5 definition and test vectors" },
+      { label: "RFC 3174: US Secure Hash Algorithm 1 (SHA1)", url: "https://www.rfc-editor.org/rfc/rfc3174", note: "SHA-1 definition and test vectors" },
+      { label: "FIPS 180-4: Secure Hash Standard", url: "https://csrc.nist.gov/pubs/fips/180-4/upd1/final", note: "SHA-256 definition and test vectors" },
+      { label: "OWASP: Password Storage Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html", note: "Why salting and slow KDFs are required" },
+      { label: "NIST SP 800-63B: Digital Identity Guidelines", url: "https://pages.nist.gov/800-63-3/sp800-63b.html", note: "Authenticator and memorized-secret guidance" },
     ],
   },
   "bigip-tcpdump-builder": {

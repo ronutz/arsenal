@@ -40,7 +40,7 @@ export { Ipv6DecodeError } from "./compute";
 /** The D-49 declarative manifest for the IPv6 tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Networking & IP",
+  toolFamily: "Networking & addressing",
   toolSlug: "ipv6",
   canonicalAliases: ["ipv6-calculator", "ipv6-subnet", "ip6", "ipv6-expand"],
   inputDetectors: [

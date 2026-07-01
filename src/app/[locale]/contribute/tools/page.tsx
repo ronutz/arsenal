@@ -90,6 +90,12 @@ export default async function ContributeToolsPage({
               </div>
               <p className="contribute-body">{t("fitUnsure")}</p>
               <p className="contribute-body">{t("toolBody")}</p>
+              <p className="contribute-body">
+                {t("roadmapCheck")}{" "}
+                <a href={`/${locale}/roadmap`} className="contribute-inline-link">
+                  {t("roadmapLink")}
+                </a>
+              </p>
             </div>
 
             <div className="contribute-block">

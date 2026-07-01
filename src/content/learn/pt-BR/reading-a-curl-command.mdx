@@ -1,0 +1,20 @@
+---
+slug: reading-a-curl-command
+title: "Lendo um comando curl"
+summary: "Um comando curl é um comando de shell: a palavra curl, um conjunto de opções e uma URL. Lê-lo é ver como o shell primeiro divide a linha (aspas, contrabarras, continuações de linha) e depois como o curl lê sinalizadores curtos, longos e agrupados."
+concepts: ["curl", "aspas de shell", "sinalizadores de linha de comando", "requisições http"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-data-flags-and-content-type", "curl-method-inference", "curl-headers-auth-and-cookies"]
+category: networking
+order: 76
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um comando curl tem três partes: o nome do programa (`curl`), zero ou mais opções e uma URL de destino. Antes de o curl vê-las, o shell divide a linha em palavras e remove uma camada de aspas.
+
+As aspas importam porque corpos e cabeçalhos contêm espaços e caracteres especiais. Aspas simples são literais: tudo entre elas é passado sem alteração, e por isso corpos JSON costumam ser envolvidos em aspas simples. Aspas duplas permitem que o shell expanda variáveis e interprete algumas sequências de escape. Uma contrabarra no fim da linha é uma continuação de linha, unindo a linha seguinte, que é como o "Copiar como cURL" gera comandos legíveis em várias linhas.
+
+As opções vêm em formas curta e longa. Sinalizadores curtos são um traço e uma letra (`-X`, `-H`, `-d`); os longos são dois traços e uma palavra (`--request`, `--header`, `--data`). Sinalizadores curtos podem ser agrupados: `-sSL` é `-s -S -L`. Um sinalizador que recebe um valor pode tê-lo anexado sem espaço, então `-XPOST` significa `-X POST`, o que confunde leituras apressadas.
+
+Tudo que não é uma opção nem o valor de uma opção é a URL. O curl acrescenta `https://` quando o esquema está ausente.

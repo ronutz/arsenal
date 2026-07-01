@@ -41,12 +41,6 @@ export default async function Header() {
           <Link href="/training" className="site-nav-link">
             {t("training")}
           </Link>
-          <Link href="/certifications" className="site-nav-link">
-            {t("certs")}
-          </Link>
-          <Link href="/endorsements" className="site-nav-link">
-            {t("endorsements")}
-          </Link>
           <Link href="/contact" className="site-nav-link">
             {t("contact")}
           </Link>

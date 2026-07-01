@@ -1,0 +1,30 @@
+---
+slug: what-is-ssrf
+title: "O Que É Server-Side Request Forgery (SSRF)"
+summary: "SSRF é uma vulnerabilidade em que um atacante faz o servidor emitir uma requisição HTTP para um destino escolhido por ele. Como a requisição parte de dentro da rede do servidor, ela alcança serviços internos, metadados de nuvem e endereços de loopback que o atacante jamais alcançaria diretamente. A correção é validar o destino, não o texto da URL."
+concepts: ["ssrf", "requisição server-side", "fronteira de confiança", "metadados de nuvem"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["private-vs-public-ip-ranges", "cloud-metadata-endpoints-and-ssrf", "ssrf-defenses-allowlists"]
+category: security
+order: 88
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Server-Side Request Forgery é uma vulnerabilidade na qual uma aplicação recebe uma URL (ou um hostname, ou um endereço) da entrada do usuário e a busca no servidor. Se a aplicação não verifica para onde essa URL aponta, um atacante pode fornecer um destino interno e fazer o servidor requisitá-lo em seu nome.
+
+## Por que a origem da requisição importa
+
+O perigo não é a busca em si — é quem a faz. Uma requisição vinda da internet pública não alcança um banco de dados em `10.0.0.5`, um painel administrativo em `localhost`, ou um serviço de metadados de nuvem em `169.254.169.254`. Uma requisição vinda do servidor da aplicação normalmente alcança, porque esse servidor está dentro da fronteira de confiança. O SSRF permite ao atacante tomar emprestada a posição de rede do servidor.
+
+## Onde aparece
+
+Qualquer recurso que busca uma URL fornecida pelo usuário é candidato: envio de webhooks, serviços de pré-visualização de links, proxies de imagem e documento, geradores de PDF ou captura de tela, ferramentas de importação e RSS, e sondas de saúde do tipo "verifique esta URL". Todos aceitam um endereço e fazem uma requisição, exatamente a primitiva que o SSRF abusa.
+
+## O que o atacante ganha
+
+Alcançar serviços internos pode expor interfaces administrativas, APIs internas sem autenticação e portas de gerência. O alvo de maior valor costuma ser o endpoint de metadados da instância, que pode devolver credenciais temporárias do papel do servidor. O SSRF também é usado para varredura de portas internas, já que o tempo e os erros da busca revelam quais hosts e portas internas estão vivos.
+
+## A forma da correção
+
+Como o mesmo endereço pode ser escrito de muitas maneiras, filtrar o texto da URL não basta. A abordagem confiável é resolver o destino e classificar o IP resultante contra as faixas conhecidas como internas, permitir apenas os endereços que você pretende alcançar e restringir o esquema a http e https. Essa classificação de destino é exatamente o que esta ferramenta faz, localmente e sem nunca emitir a requisição.

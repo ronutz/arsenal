@@ -1,0 +1,20 @@
+---
+slug: curl-method-inference
+title: "Como o curl infere o método HTTP"
+summary: "O curl nem sempre precisa de -X para escolher um método. Dados no corpo implicam POST, -I implica HEAD, -G força GET, e um -X explícito sempre vence. Conhecer as regras diz num relance o que uma requisição fará."
+concepts: ["curl", "métodos http", "post", "inferência de método"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-data-flags-and-content-type", "reading-a-curl-command", "curl-to-fetch"]
+category: networking
+order: 80
+status: machine-draft
+updated: "2026-07-01"
+---
+
+O curl muitas vezes sabe o método HTTP sem `-X`, e adivinhar errado sobre isso é um erro frequente.
+
+As regras são simples. Se `-X` / `--request` for fornecido, esse método vence, sempre. Caso contrário, o curl infere um. Anexar dados de corpo com `-d` ou `-F` implica POST. Pedir apenas cabeçalhos com `-I` / `--head` implica HEAD. Forçar `-G` / `--get` implica GET e move quaisquer dados `-d` para a query string em vez do corpo. Sem nenhum desses, o método é GET.
+
+O caso sutil é combinar um método explícito com um corpo: `-X PUT -d ...` envia PUT com esse corpo, porque o método declarado sobrepõe o POST que o `-d` sozinho teria implicado.
+
+Quando uma ferramenta marca o método como inferido em vez de declarado, ela está aplicando exatamente essas regras. Ver esse rótulo permite confirmar que a requisição faz o que você quis, em vez de descobrir depois que um `-X` ausente transformou um PUT pretendido num POST.

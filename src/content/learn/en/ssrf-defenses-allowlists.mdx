@@ -1,0 +1,30 @@
+---
+slug: ssrf-defenses-allowlists
+title: "Defending Against SSRF with Allow-Lists"
+summary: "The durable SSRF defense is an allow-list of intended destinations, combined with resolving the address before you trust it and re-checking after redirects. Block-lists of internal ranges help, but they lose to obfuscation and DNS rebinding. This is the layered approach that holds up."
+concepts: ["allowlist", "dns rebinding", "resolve-then-check", "egress filtering"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes"]
+category: security
+order: 92
+status: machine-draft
+updated: "2026-07-01"
+---
+
+There is no single switch that stops SSRF. The defenses that work are layered, and they share one theme: decide based on the real destination, not the text of the URL.
+
+## Prefer an allow-list
+
+If the feature only needs to reach a known set of hosts, allow exactly those and reject everything else. An allow-list fails safe: a spelling the attacker invents is simply not on the list. A block-list fails open, because it can only stop the internal addresses and forms you thought to list, and the obfuscation tricks give an attacker endless new spellings.
+
+## Resolve, then check, then pin
+
+If you must accept arbitrary URLs, resolve the hostname to an IP, classify that IP against the internal ranges, and reject internal results. Then use the address you validated for the actual connection. Checking the name and then connecting by name again opens a time-of-check to time-of-use gap called DNS rebinding, where the name resolves to a safe address during validation and to an internal one a moment later. Validate and connect to the same resolved address.
+
+## Handle redirects and schemes
+
+A safe first URL can redirect to `http://169.254.169.254/`. Either disable redirects on the fetch, or re-run the full classification on every hop. Restrict the scheme to http and https so that `file://`, `gopher://`, and similar cannot be used to escalate.
+
+## Add network-layer controls
+
+Defense in depth means not relying on the application alone. Block outbound traffic from the fetching service to internal ranges and to the metadata address at the network or firewall layer, so a logic bug does not become a breach. On AWS, enforce IMDSv2. The application-layer classifier, the resolve-then-check step, and the egress rules each catch what the others miss.

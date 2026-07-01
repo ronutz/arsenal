@@ -1,0 +1,30 @@
+---
+slug: dangerous-url-schemes
+title: "Esquemas de URL Perigosos em SSRF"
+summary: "SSRF não se limita a http. Esquemas como file, gopher, dict e ftp permitem a um atacante ler arquivos locais ou forjar bytes brutos para serviços internos como Redis e SMTP. Um buscador de URL que não restringe o esquema entrega ao atacante uma primitiva muito mais poderosa do que uma simples requisição web."
+concepts: ["esquemas de url", "gopher", "esquema file", "smuggling de protocolo"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "ssrf-defenses-allowlists", "cloud-metadata-endpoints-and-ssrf"]
+category: security
+order: 93
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um SSRF que só faz requisições http já é perigoso o bastante. Um que também honra outros esquemas de URL é pior, porque esses esquemas alcançam além da web e podem transformar uma busca em divulgação de arquivos ou tráfego arbitrário para serviços internos.
+
+## file:// lê o disco local
+
+O esquema `file://` endereça o sistema de arquivos local em vez de um host de rede. Se um buscador o segue, uma requisição por `file:///etc/passwd` ou por um arquivo de configuração vira divulgação de arquivo local, sem nenhuma rede envolvida. Não há IP de destino para classificar; o perigo é o próprio esquema.
+
+## gopher:// forja bytes brutos
+
+O esquema `gopher://` é o mais abusado, porque permite ao atacante colocar bytes quase arbitrários em um fluxo TCP para um host e porta escolhidos. Isso transforma o SSRF em uma forma de falar outros protocolos: uma URL gopher forjada pode enviar comandos a uma instância Redis, forjar uma mensagem SMTP ou conduzir qualquer serviço simples baseado em linhas ouvindo na rede interna. É smuggling de protocolo através de um buscador de URL.
+
+## Os demais
+
+`dict://` pode sondar e interagir com serviços e vazar banners. `ftp://`, `tftp://`, `ldap://`, `sftp://` e `jar://` cada um alcança serviços que uma simples requisição web não alcança, e vários já foram usados para ir de uma busca a uma ação interna.
+
+## A defesa é uma allow-list de esquemas
+
+Como esses esquemas fornecem capacidades muito além de buscar uma página web, a correção é simples e rígida: permita apenas `http` e `https`, e rejeite todo outro esquema antes de a requisição ser construída. Esta ferramenta sinaliza um esquema perigoso assim que o vê, elevando o risco para alto independentemente do host, porque o esquema sozinho já basta para importar.

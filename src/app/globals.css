@@ -28,6 +28,9 @@
   --sev-medium: var(--color-warning);
   --sev-high: var(--color-orange);
   --sev-critical: var(--color-danger);
+  /* Reconcile the legacy --accent-* status vocabulary onto the generic layer (D-71). */
+  --accent-red: var(--color-danger);
+  --accent-green: var(--color-success);
   /* --- Obsidian palette (canon) --- */
   --canvas-primary: #020617;     /* deepest background */
   --surface-base: #0f172a;       /* cards, panels */

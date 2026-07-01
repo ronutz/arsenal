@@ -1,0 +1,32 @@
+---
+slug: keyspace-entropy-and-crack-time
+title: "Espaço de Chaves, Entropia e Tempo de Quebra"
+summary: "Se a força bruta pode reverter um hash se resume ao tamanho do espaço de chaves versus a taxa de hash do atacante. O espaço de chaves cresce exponencialmente com comprimento e alfabeto, então alguns caracteres a mais levam um segredo de quebrado em segundos a inviável por milênios. É a aritmética por trás de por que comprimento e aleatoriedade importam mais."
+concepts: ["keyspace", "entropy", "crack time", "password length", "brute force"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["why-hashes-are-one-way", "brute-force-vs-lookup-tables", "choosing-a-password-hash"]
+category: hashing
+order: 86
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A força bruta tem sucesso ou fracasso em uma comparação: o tamanho do espaço de chaves contra quão rápido o atacante consegue aplicar hash. Todo o resto é detalhe.
+
+## Espaço de chaves e entropia
+
+O espaço de chaves é o número de entradas possíveis: aproximadamente `(tamanho do alfabeto) ^ comprimento`, somado sobre os comprimentos no intervalo. Um PIN de 4 dígitos é 10^4 = 10.000. Uma senha de 8 caracteres sobre os 95 caracteres ASCII imprimíveis é 95^8, cerca de 6,6 x 10^15.
+
+A **entropia** em bits é `log2(espaço de chaves)`. Como cada caractere extra multiplica o espaço pelo tamanho do alfabeto, a entropia cresce um valor fixo por caractere enquanto o espaço em si cresce exponencialmente.
+
+## Tempo de quebra
+
+O tempo de quebra é aproximadamente o espaço de chaves dividido pela taxa. A uma taxa rápida e sem sal de 1.000.000.000 de hashes por segundo numa GPU, 10.000 candidatos caem instantaneamente, enquanto 6,6 x 10^15 leva da ordem de meses em média. Agora troque o hash: com uma KDF lenta ajustada para 10.000 tentativas por segundo, esse mesmo espaço levaria milhões de anos.
+
+## Por que comprimento vence complexidade
+
+Adicionar um caractere aleatório sobre um alfabeto de 95 símbolos multiplica o espaço de chaves por 95. É muito mais do que trocar uma letra por um símbolo sob uma regra de composição. Comprimento e aleatoriedade dominam; teatro de complexidade não.
+
+## A conclusão
+
+Use segredos longos e aleatórios, uma senha gerada ou uma frase-senha de várias palavras, e deixe uma KDF lenta multiplicar o custo de cada tentativa. É exatamente o que o demonstrador mostra: espaços pequenos caem em milissegundos, enquanto os realistas simplesmente esgotam o orçamento.

@@ -1,0 +1,30 @@
+---
+slug: cloud-metadata-endpoints-and-ssrf
+title: "Cloud Metadata Endpoints and SSRF"
+summary: "Every major cloud gives an instance a metadata service at a fixed link-local address, and it can return temporary credentials for the instance's role. That makes it the single highest-value SSRF target. Knowing the endpoints, and the IMDSv2-style defenses, is essential for both attack understanding and defense."
+concepts: ["imds", "169.254.169.254", "instance metadata", "imdsv2"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "private-vs-public-ip-ranges", "ssrf-defenses-allowlists"]
+category: security
+order: 91
+status: machine-draft
+updated: "2026-07-01"
+---
+
+When an SSRF can reach the cloud instance metadata service, the impact jumps from "internal access" to "credential theft." This is the endpoint attackers reach for first.
+
+## The fixed address
+
+AWS, Google Cloud, and Azure all expose an Instance Metadata Service (IMDS) at the link-local address `169.254.169.254`. It returns information about the running instance, and on AWS it can return temporary security credentials for the IAM role attached to the instance. Because the address is fixed and unauthenticated by default, any code that can make the server fetch a URL can potentially read it.
+
+## The endpoints to know
+
+The IPv4 address `169.254.169.254` is shared across providers. Google Cloud also answers to the hostname `metadata.google.internal`, which resolves to that address. AWS offers an IPv6 metadata endpoint at `fd00:ec2::254`. Alibaba Cloud uses `100.100.100.200`. A classifier should recognize all of these, since each is a direct route to instance secrets.
+
+## Why it is so damaging
+
+Stolen role credentials let an attacker act as the instance against the cloud provider's API, within whatever permissions the role has. From a single SSRF, this can escalate to reading storage buckets, launching resources, or moving laterally, without ever breaking into the host operating system.
+
+## The defense: IMDSv2 and network rules
+
+AWS IMDSv2 requires a session token obtained with a PUT request and sets a low IP hop limit, which blocks the naive one-shot GET that most SSRF exploits use and stops the response from being routed off the instance. Enforcing IMDSv2, scoping instance roles to the minimum needed, and blocking outbound requests to the metadata address from application code are the layered defenses. Classifying a destination as a metadata endpoint, before any request is made, is the first checkpoint.

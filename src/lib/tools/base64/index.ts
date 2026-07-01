@@ -36,7 +36,7 @@ export type {
 /** The D-49 declarative manifest for the Base64 tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Encoding & Data",
+  toolFamily: "Encoding",
   toolSlug: "base64",
   canonicalAliases: ["b64", "base64url", "base32", "base16", "hex", "hex-encode", "hex-decode", "percent-encode", "percent-decode", "url-encode", "url-decode", "base64-decode", "base64-encode"],
   inputDetectors: [

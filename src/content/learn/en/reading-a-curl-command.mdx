@@ -1,0 +1,20 @@
+---
+slug: reading-a-curl-command
+title: "Reading a curl Command"
+summary: "A curl command is a shell command: the word curl, a set of options, and a URL. Reading it means seeing how the shell splits the line first (quotes, backslashes, line continuations) and then how curl reads short, long, and clustered flags."
+concepts: ["curl", "shell quoting", "command-line flags", "http requests"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-data-flags-and-content-type", "curl-method-inference", "curl-headers-auth-and-cookies"]
+category: networking
+order: 76
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A curl command has three parts: the program name (`curl`), zero or more options, and a target URL. Before curl ever sees them, the shell splits the line into words and removes one layer of quoting.
+
+Quoting matters because bodies and headers contain spaces and special characters. Single quotes are literal: everything between them is passed through untouched, which is why JSON bodies are usually wrapped in single quotes. Double quotes let the shell expand variables and interpret a few backslash escapes. A backslash at the end of a line is a line continuation, joining the next line, which is how "Copy as cURL" produces readable multi-line commands.
+
+Options come in short and long forms. Short flags are one dash and a letter (`-X`, `-H`, `-d`); long flags are two dashes and a word (`--request`, `--header`, `--data`). Short flags can be clustered: `-sSL` is `-s -S -L`. A flag that takes a value can have the value attached with no space, so `-XPOST` means `-X POST`, which trips up quick readers.
+
+Anything that is not an option and not an option's value is the URL. curl adds `https://` when the scheme is missing.

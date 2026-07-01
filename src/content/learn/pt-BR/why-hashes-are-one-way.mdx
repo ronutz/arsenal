@@ -1,0 +1,30 @@
+---
+slug: why-hashes-are-one-way
+title: "Por Que Hashes Criptográficos São de Mão Única"
+summary: "Um hash criptográfico mapeia qualquer entrada para um resumo de tamanho fixo e é projetado para que recuperar a entrada a partir do resumo seja inviável. Essa propriedade, resistência à pré-imagem, é o motivo pelo qual você não pode descriptografar um hash. Só há duas formas de revertê-lo: consultar uma tabela ou tentar e verificar — ambas são busca, não inversão."
+concepts: ["hashing", "preimage resistance", "one-way function", "md5", "sha-256"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["brute-force-vs-lookup-tables", "keyspace-entropy-and-crack-time", "choosing-a-password-hash"]
+category: hashing
+order: 82
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um hash criptográfico é uma função determinística que transforma uma entrada de qualquer tamanho em uma saída de tamanho fixo: o MD5 produz 128 bits, o SHA-1 produz 160, o SHA-256 produz 256. A mesma entrada sempre gera o mesmo resumo, e mudar um único bit da entrada produz um resumo completamente diferente.
+
+## Três propriedades de segurança
+
+Um bom hash resiste a três coisas. **Resistência à pré-imagem**: dado um resumo `h`, é inviável encontrar qualquer entrada `m` com `hash(m) = h`. **Resistência à segunda pré-imagem**: dada uma entrada, é inviável achar outra diferente com o mesmo resumo. **Resistência a colisões**: é inviável achar duas entradas que compartilhem um resumo.
+
+Ser de mão única é a primeira delas. A função mistura e descarta estrutura de propósito, então não existe fórmula que a execute ao contrário.
+
+## Hash não é criptografia
+
+"Descriptografar este hash" é um erro de categoria. A criptografia tem uma chave e um inverso definido; o hash não tem nenhum dos dois. Não há nada para descriptografar, porque a operação nunca foi projetada para ser desfeita.
+
+## Então como as pessoas revertem hashes
+
+Elas não invertem a função. Elas **buscam**. Há dois caminhos: manter uma tabela pré-computada de pares entrada-para-hash e consultar o resumo, ou gerar entradas candidatas, aplicar o hash em cada uma e comparar. Ambos encontram uma correspondência testando entradas, não revertendo matemática.
+
+Essa é a ideia central que este demonstrador torna concreta. Um hash protege um segredo apenas na medida em que esse segredo é difícil de adivinhar. Uma entrada fraca, como um PIN curto, é recuperável por busca em instantes, mesmo que o hash em si continue matematicamente de mão única. A força nunca esteve no hash; esteve na entropia daquilo que você forneceu.

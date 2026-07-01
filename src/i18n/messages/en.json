@@ -2037,6 +2037,212 @@
           }
         }
       }
+    },
+    "http-request-translator": {
+      "name": "HTTP request translator",
+      "blurb": "Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP request, HTTPie, and Python requests. Local and offline; the command is decoded in your browser and nothing is sent or run.",
+      "input": "curl command",
+      "example": "Load example",
+      "clear": "Clear",
+      "privacy": "Parsed locally in your browser. A curl command can carry tokens, cookies, or passwords, so nothing you paste is sent anywhere or executed.",
+      "err": {
+        "empty": "Paste a curl command to begin.",
+        "notCurl": "This does not look like a curl command. Paste a command that starts with curl.",
+        "noUrl": "No URL found. curl needs a target URL."
+      },
+      "methodInferred": "inferred",
+      "tab": {
+        "explain": "Explain",
+        "translate": "Translate"
+      },
+      "url": "URL",
+      "scheme": "Scheme",
+      "host": "Host",
+      "port": "Port",
+      "path": "Path",
+      "headers": "Headers",
+      "noHeaders": "No headers set.",
+      "auth": "Authentication",
+      "body": "Body",
+      "noBody": "No request body.",
+      "cookies": "Cookies",
+      "optionsLabel": "Options",
+      "ctImplicit": "curl default",
+      "bodyKind": {
+        "urlencoded": "URL-encoded form",
+        "form": "Multipart form",
+        "binary": "Binary data"
+      },
+      "authKind": {
+        "basic": "HTTP Basic",
+        "bearer": "Bearer token",
+        "other": "Authorization header"
+      },
+      "opt": {
+        "location": "Follow redirects (3xx).",
+        "insecure": "Skip TLS certificate verification.",
+        "head": "Send a HEAD request (headers only, no body).",
+        "get": "Force GET and move data into the query string.",
+        "compressed": "Request a compressed response (gzip/deflate).",
+        "include": "Include the response headers in the output.",
+        "silent": "Silent mode (no progress meter).",
+        "verbose": "Verbose output (show the request and response).",
+        "user-agent": "Set the User-Agent header:",
+        "referer": "Set the Referer header:",
+        "proxy": "Send the request through a proxy:",
+        "output": "Write the response body to a file:",
+        "max-time": "Maximum time for the whole operation, in seconds:",
+        "connect-timeout": "Maximum time allowed for the connection, in seconds:",
+        "range": "Request only part of the resource (byte range):",
+        "retry": "Retry the request on transient failures, up to:",
+        "http1": "Use HTTP/1.1.",
+        "http10": "Use HTTP/1.0.",
+        "http2": "Use HTTP/2.",
+        "remote-name": "Save the response using the remote file name.",
+        "fail": "Fail silently on server errors (no error-page body).",
+        "unknown": "Unrecognized option (passed through as written)."
+      },
+      "warnings": {
+        "insecureTls": "-k / --insecure disables TLS certificate verification. The connection is encrypted but not authenticated, so it is exposed to man-in-the-middle interception. Use it only against hosts you control.",
+        "plaintextHttp": "This request uses http:// (not https://). Headers, body, and any credentials are sent in clear text.",
+        "credsInUrl": "Credentials are embedded in the URL (user:pass@host). These can leak into logs and history; prefer a header or -u.",
+        "jsonButFormCt": "The body looks like JSON, but -d does not set a JSON Content-Type. curl sends application/x-www-form-urlencoded by default, so the server may not parse it as JSON. Add -H \"Content-Type: application/json\"."
+      },
+      "lang": {
+        "fetch": "fetch (JavaScript)",
+        "http": "Raw HTTP/1.1",
+        "httpie": "HTTPie",
+        "python": "Python (requests)"
+      },
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "hash-preimage-finder": {
+      "name": "Hash Preimage Finder",
+      "blurb": "Watch a bounded, local brute-force search recover a weak hash input in seconds, or run out of keyspace on anything with real entropy. No wordlist, no table, just your browser. A demonstration of why fast, unsalted hashes fail.",
+      "hashLabel": "Hash to reverse",
+      "hashPlaceholder": "Paste an MD5, SHA-1, or SHA-256 hash",
+      "detectHint": "Paste a hex hash; the algorithm is detected from its length.",
+      "notDetected": "Not a recognized hash. Expected 32 (MD5), 40 (SHA-1), or 64 (SHA-256) hex characters.",
+      "brokenNote": "cryptographically broken; never use for new work",
+      "charsetLabel": "Candidate alphabet",
+      "charset": {
+        "digits": "Digits",
+        "lower": "a-z",
+        "lower-digits": "a-z 0-9",
+        "mixed-alpha": "a-z A-Z",
+        "mixed-alnum": "a-z A-Z 0-9"
+      },
+      "maxLengthLabel": "Max length",
+      "lengthCap": "up to {max}",
+      "keyspacePreview": "Keyspace: {n} candidates",
+      "keyspaceBeyond": "(search stops at {cap}; larger keyspaces are the point, they are infeasible)",
+      "start": "Start search",
+      "cancel": "Cancel",
+      "attemptsStat": "{a} tried",
+      "rateStat": "{r}/sec",
+      "found": "Preimage found",
+      "copy": "Copy",
+      "copied": "Copied",
+      "foundIn": "Recovered in {attempts} attempts, {ms} ms. A secret this weak offers no protection once the hash leaks.",
+      "notFoundExhausted": "No preimage in this keyspace",
+      "notFoundBudget": "Stopped at {cap} candidates",
+      "exhaustedSub": "The entire keyspace was searched with no match. Widen the alphabet or length, or, more likely, the input has more entropy than a short brute force can reach.",
+      "budgetSub": "The search hit its budget with far more keyspace remaining (this alphabet and length span {n} candidates). This is exactly why length and randomness defeat brute force: the work grows faster than any attacker can keep up with.",
+      "teach": {
+        "head": "This is why weak hashes fall, and how storage is actually protected",
+        "intro": "A fast hash of a low-entropy input is trivially reversible by enumeration, as you just saw. Real password storage defends against this in three layers.",
+        "salt": {
+          "title": "Salting defeats precomputed tables",
+          "body": "A unique random salt per password makes every stored hash different, even for identical passwords. That is what breaks lookup services like CrackStation: a precomputed table would need rebuilding for every salt, so it becomes useless."
+        },
+        "kdf": {
+          "title": "Slow KDFs defeat brute force",
+          "body": "bcrypt, scrypt, Argon2, and PBKDF2 are deliberately slow and tunable. Making each guess cost milliseconds instead of nanoseconds cuts an attacker's rate by six orders of magnitude or more, turning a seconds-long crack into millennia."
+        },
+        "algo": {
+          "title": "Algorithm and length matter",
+          "body": "MD5 and SHA-1 are collision-broken and, like SHA-256, far too fast for storing secrets. Use a purpose-built password hash, and give secrets enough length and randomness that no keyspace search can reach them."
+        }
+      },
+      "disclaimer": "Everything runs locally in your browser. Nothing you paste is uploaded. This tool exists to demonstrate hash weakness and is bounded so it can only recover trivially weak inputs."
+    },
+    "ssrf-url-classifier": {
+      "name": "SSRF URL classifier",
+      "blurb": "Paste a URL and see where it actually points: loopback, a private or link-local range, a cloud metadata endpoint, CGNAT, reserved space, or the public internet. Decimal, octal, and hex IP obfuscation is decoded, dangerous schemes and embedded credentials are flagged, and an SSRF risk level is shown. It never resolves DNS and never sends the request.",
+      "input": {
+        "label": "URL or host",
+        "placeholder": "http://169.254.169.254/latest/meta-data/",
+        "example": "Example",
+        "clear": "Clear"
+      },
+      "privacy": "Everything is computed in your browser. This tool never resolves DNS and never sends the request; it classifies the address purely from the text you paste.",
+      "verdict": {
+        "riskLabel": "SSRF risk"
+      },
+      "risk": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "unknown": "Unknown"
+      },
+      "category": {
+        "loopback": "Loopback",
+        "private": "Private network",
+        "link-local": "Link-local",
+        "cloud-metadata": "Cloud metadata",
+        "cgnat": "Carrier-grade NAT",
+        "reserved": "Reserved",
+        "public": "Public",
+        "internal-name": "Internal name",
+        "unresolved": "Resolves at runtime"
+      },
+      "categoryDesc": {
+        "loopback": "The host itself (127.0.0.0/8 or ::1). A server fetching this reaches its own local services.",
+        "private": "An RFC 1918 private range (10/8, 172.16/12, 192.168/16) or IPv6 ULA. Typically internal infrastructure.",
+        "link-local": "A link-local address (169.254.0.0/16 or fe80::/10), reachable only on the local segment.",
+        "cloud-metadata": "A cloud instance metadata endpoint (IMDS). Reaching it can expose credentials and instance data.",
+        "cgnat": "Carrier-grade NAT shared address space (100.64.0.0/10). Not public, but not classic private either.",
+        "reserved": "A reserved or special-use range (documentation, benchmarking, multicast, broadcast, future use).",
+        "public": "A public, routable address on the internet.",
+        "internal-name": "A hostname with an internal suffix (.internal, .local, .corp). Not a public name.",
+        "unresolved": "A hostname whose address is only known after a DNS lookup, which this tool does not perform."
+      },
+      "facts": {
+        "title": "What you pasted",
+        "scheme": "Scheme",
+        "host": "Host as written",
+        "canonicalIp": "Decoded address",
+        "ipVersion": "IP version",
+        "port": "Port",
+        "path": "Path"
+      },
+      "flags": {
+        "title": "Flags",
+        "obfuscated": "The host is written in {form} form, which decodes to {ip}. This is a common way to slip an internal address past a filter that only blocks dotted-decimal.",
+        "scheme": "The {scheme}:// scheme is a non-HTTP fetch that escalates SSRF, for example local-file read or protocol smuggling to another service.",
+        "userinfo": "Credentials are embedded in the URL (user:pass@host). The real host may ignore them while a naive filter is fooled into reading the wrong part as the host."
+      },
+      "form": {
+        "decimal": "decimal",
+        "octal": "octal",
+        "hex": "hexadecimal",
+        "short": "short (missing octets)",
+        "mixed": "mixed-radix",
+        "dotted": "dotted-decimal"
+      },
+      "defenses": {
+        "title": "Defenses",
+        "allowlist": "Prefer an allow-list of exact hosts over a block-list; block-lists miss encodings and new ranges.",
+        "blockRanges": "Reject loopback, private, link-local, CGNAT, and metadata ranges for both IPv4 and IPv6.",
+        "resolveThenCheck": "Resolve the hostname first, then check every resulting address, to catch DNS that points at an internal IP.",
+        "noRedirects": "Disable or re-validate redirects; a public URL can 302 to an internal one.",
+        "schemes": "Allow only http and https; reject file, gopher, dict, ftp, and similar schemes."
+      },
+      "classifierNote": "This is a classifier for learning and allow-list design. It never resolves the hostname and never sends the request, so a public hostname is reported as resolving at runtime rather than guessed.",
+      "legend": {
+        "title": "Destination categories"
+      }
     }
   },
   "privacy_page": {
@@ -2083,7 +2289,9 @@
     "feedback": "Contact",
     "privacy": "Privacy",
     "license": "License",
-    "coffee": "Buy me a coffee"
+    "coffee": "Buy me a coffee",
+    "lastModified": "Last modified {stamp}",
+    "roadmap": "Roadmap"
   },
   "search": {
     "kindTool": "Tool",
@@ -2155,6 +2363,16 @@
     "recognition": {
       "title": "Recognition",
       "body": "Recognized as an F5 DevCentral MVP for three consecutive years, in 2022, 2023, and 2024, for contributions to the F5 technical community."
+    },
+    "credibility": {
+      "certsEyebrow": "Verified",
+      "certsTitle": "Certifications",
+      "certsDesc": "The full list of current F5, Fortinet, Extreme Networks, and Netskope credentials, each with its issuing body and date.",
+      "certsCta": "View all certifications",
+      "endorsementsEyebrow": "In their words",
+      "endorsementsTitle": "Endorsements",
+      "endorsementsDesc": "Recommendations from colleagues, partners, and students across two decades of training, quoted verbatim.",
+      "endorsementsCta": "Read the endorsements"
     }
   },
   "endorsements": {
@@ -2357,7 +2575,14 @@
     "ctaTitle": "Let's work together",
     "ctaBody": "Whether you are looking to book official training, build a custom program for your team, or bring in experienced counsel on a hard problem, the door is open.",
     "ctaButton": "Get in touch",
-    "coursesButton": "Browse all courses"
+    "coursesButton": "Browse all courses",
+    "instructor": {
+      "eyebrow": "Your instructor",
+      "body": "These courses are taught by Rodolfo Nützmann, a senior technical instructor delivering authorized F5, Fortinet, Extreme Networks, and Netskope training worldwide since 1996. The credentials, and what past students say, are a click away.",
+      "about": "About Rodolfo",
+      "certs": "Certifications",
+      "endorsements": "Endorsements"
+    }
   },
   "contact": {
     "title": "Get in touch",
@@ -2611,7 +2836,9 @@
     "emailTitle": "How to reach me",
     "emailBody": "Email is the channel. Tell me what you found or what you'd like, with enough detail to act on: an example, a link, the exact wording, whatever fits. If it makes the toolbox better, it gets built.",
     "emailLabel": "Email",
-    "backToTools": "Back to the toolbox"
+    "backToTools": "Back to the toolbox",
+    "roadmapCheck": "It's worth checking the roadmap first, to see what's already planned or shipped and avoid duplicates:",
+    "roadmapLink": "see the roadmap"
   },
   "license_page": {
     "eyebrow": "Terms",
@@ -2643,5 +2870,15 @@
     "kindI18n": "Localization",
     "kindContent": "Content",
     "kindInfra": "Infrastructure"
+  },
+  "roadmap": {
+    "eyebrow": "Roadmap",
+    "title": "What's on the roadmap",
+    "lede": "The tools we're planning and considering for the toolbox. This page is generated from the live build catalogue, so it's always current: a tool appears here the moment it's queued and moves into the shipped count the moment it ships. No dates, just direction and rough priority.",
+    "shippedLabel": "shipped",
+    "plannedLabel": "planned",
+    "ideaTitle": "Have an idea?",
+    "ideaBody": "The toolbox is open-core and community-driven. If a deterministic, local tool is missing, propose it. Checking this roadmap first helps avoid duplicates.",
+    "ideaCta": "Suggest a tool"
   }
 }

@@ -1,0 +1,20 @@
+---
+slug: curl-headers-auth-and-cookies
+title: "Cabeçalhos, autenticação e cookies no curl"
+summary: "Cabeçalhos, autenticação e cookies são como uma requisição se identifica e se autoriza. -H adiciona cabeçalhos, -u é HTTP Basic, um token bearer é apenas um cabeçalho, e -b/-c cuidam de cookies. Todos são sensíveis."
+concepts: ["curl", "cabeçalhos http", "autenticação", "token bearer", "cookies"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-to-fetch", "reading-a-curl-command", "curl-security-flags"]
+category: networking
+order: 79
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Cabeçalhos, autenticação e cookies são como uma requisição se apresenta a um servidor.
+
+`-H "Nome: valor"` adiciona um cabeçalho; repita para vários. A autenticação tem duas formas comuns. `-u usuário:senha` é HTTP Basic: o curl codifica o par em base64 num cabeçalho `Authorization`. Um token bearer é simplesmente um cabeçalho: `-H "Authorization: Bearer TOKEN"`. Ambos são credenciais, então qualquer comando que os inclua deve ser tratado como sensível.
+
+Cookies chegam com `-b` / `--cookie` (enviar um cookie, ou lê-los de um arquivo) e são salvos com `-c` / `--cookie-jar`.
+
+Ao traduzir a requisição, o HTTP Basic vira o mecanismo de autenticação da linguagem de destino, por exemplo a tupla `auth=(usuário, senha)` no Python requests, enquanto um token bearer permanece um cabeçalho simples em qualquer linguagem. Como esta ferramenta nunca envia a requisição, qualquer token, senha ou cookie que você cola é decodificado apenas no seu navegador e não vai a lugar algum.

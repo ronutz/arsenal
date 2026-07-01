@@ -1,0 +1,30 @@
+---
+slug: brute-force-vs-lookup-tables
+title: "Brute Force vs Lookup Tables: Two Ways to Reverse a Hash"
+summary: "Since a hash cannot be inverted, reversing one means searching, and there are two families. Precompute a giant table of input-to-hash pairs and look the hash up (what CrackStation does), or generate candidates on the fly and hash each until one matches (brute force). They trade storage for compute in opposite directions."
+concepts: ["brute force", "rainbow tables", "lookup tables", "dictionary attack", "crackstation"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["why-hashes-are-one-way", "why-salting-defeats-precomputed-tables", "keyspace-entropy-and-crack-time"]
+category: hashing
+order: 83
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A hash cannot be run backward, so every reversal technique is really a search for an input that hashes to the target. The techniques split into two families with opposite costs.
+
+## Lookup tables
+
+Precompute the hashes of billions of likely inputs (dictionary words, leaked passwords, common patterns), store them indexed by digest, and a reversal becomes a fast database lookup. This is what services like CrackStation do. The costs are enormous storage, the fact that it only works for inputs already in the table, and, crucially, that it only works on **unsalted** hashes.
+
+**Rainbow tables** are a space-optimized variant. Instead of storing every pair, they store the endpoints of chains built with reduction functions, trading much less storage for more compute per lookup. Same core limitation: unsalted hashes only.
+
+## Brute force
+
+Store nothing. Enumerate candidates over an alphabet, hash each one, and compare to the target. The cost is compute that grows with the size of the keyspace. It works for any input within reach, but only reaches small keyspaces. A **dictionary attack** is the same idea with candidates drawn from a wordlist rather than exhaustive enumeration, which is far smarter for real passwords.
+
+## The trade-off
+
+Lookup tables are space-heavy, near-instant, and unsalted-only. Brute force is compute-heavy, needs no storage, and reaches only small keyspaces.
+
+This toolbox's demonstrator is deliberately pure brute force, with no wordlist and a capped keyspace. That choice keeps it honest: it stores nothing, recovers only trivially weak inputs, and shows plainly where a search becomes infeasible.

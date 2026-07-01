@@ -1,0 +1,30 @@
+---
+slug: why-hashes-are-one-way
+title: "Why Cryptographic Hashes Are One-Way"
+summary: "A cryptographic hash maps any input to a fixed-size digest and is designed so that recovering the input from the digest is infeasible. That property, preimage resistance, is why you cannot decrypt a hash. The only ways to reverse one are to look it up or to guess-and-check, both of which are search, not inversion."
+concepts: ["hashing", "preimage resistance", "one-way function", "md5", "sha-256"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["brute-force-vs-lookup-tables", "keyspace-entropy-and-crack-time", "choosing-a-password-hash"]
+category: hashing
+order: 82
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A cryptographic hash is a deterministic function that turns an input of any length into a fixed-size output: MD5 produces 128 bits, SHA-1 produces 160, SHA-256 produces 256. The same input always yields the same digest, and even a one-bit change to the input produces a completely different one.
+
+## Three security properties
+
+A good hash is built to resist three things. **Preimage resistance**: given a digest `h`, it is infeasible to find any input `m` with `hash(m) = h`. **Second-preimage resistance**: given one input, it is infeasible to find a different input with the same digest. **Collision resistance**: it is infeasible to find any two inputs that share a digest.
+
+Being one-way is the first of these. The function deliberately mixes and discards structure, so there is no formula that runs it backward.
+
+## Hashing is not encryption
+
+"Decrypt this hash" is a category error. Encryption has a key and a defined inverse; hashing has neither. There is nothing to decrypt, because the operation was never designed to be undone.
+
+## So how do people reverse hashes at all
+
+They do not invert the function. They **search**. There are two ways: keep a precomputed table of input-to-hash pairs and look the digest up, or generate candidate inputs, hash each, and compare. Both find a match by trying inputs, not by reversing math.
+
+That is the key insight this demonstrator makes concrete. A hash protects a secret only as far as that secret is hard to guess. A weak input, like a short PIN, is recoverable by search in moments even though the hash itself remains mathematically one-way. The strength was never in the hash; it was in the entropy of what you fed it.

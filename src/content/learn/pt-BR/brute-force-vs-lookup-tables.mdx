@@ -1,0 +1,30 @@
+---
+slug: brute-force-vs-lookup-tables
+title: "Força Bruta vs Tabelas de Consulta: Duas Formas de Reverter um Hash"
+summary: "Como um hash não pode ser invertido, revertê-lo significa buscar, e há duas famílias. Pré-computar uma tabela gigante de pares entrada-para-hash e consultar o resumo (o que o CrackStation faz), ou gerar candidatos em tempo real e aplicar hash em cada um até um coincidir (força bruta). Elas trocam armazenamento por processamento em direções opostas."
+concepts: ["brute force", "rainbow tables", "lookup tables", "dictionary attack", "crackstation"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["why-hashes-are-one-way", "why-salting-defeats-precomputed-tables", "keyspace-entropy-and-crack-time"]
+category: hashing
+order: 83
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Um hash não pode ser executado ao contrário, então toda técnica de reversão é, na verdade, uma busca por uma entrada cujo hash resulte no alvo. As técnicas se dividem em duas famílias com custos opostos.
+
+## Tabelas de consulta
+
+Pré-compute os hashes de bilhões de entradas prováveis (palavras de dicionário, senhas vazadas, padrões comuns), armazene-os indexados pelo resumo, e a reversão vira uma consulta rápida a um banco de dados. É o que serviços como o CrackStation fazem. Os custos são armazenamento enorme, o fato de só funcionar para entradas já presentes na tabela e, crucialmente, só funcionar em hashes **sem sal**.
+
+**Tabelas rainbow** são uma variante otimizada em espaço. Em vez de guardar cada par, guardam os extremos de cadeias construídas com funções de redução, trocando muito menos armazenamento por mais processamento por consulta. Mesma limitação central: apenas hashes sem sal.
+
+## Força bruta
+
+Não armazena nada. Enumere candidatos sobre um alfabeto, aplique hash em cada um e compare com o alvo. O custo é processamento que cresce com o tamanho do espaço de chaves. Funciona para qualquer entrada ao alcance, mas só alcança espaços pequenos. Um **ataque de dicionário** é a mesma ideia com candidatos vindos de uma wordlist em vez de enumeração exaustiva, o que é bem mais inteligente para senhas reais.
+
+## O trade-off
+
+Tabelas de consulta são pesadas em espaço, quase instantâneas e só para hashes sem sal. Força bruta é pesada em processamento, não precisa de armazenamento e só alcança espaços pequenos.
+
+O demonstrador desta caixa de ferramentas é deliberadamente força bruta pura, sem wordlist e com espaço de chaves limitado. Essa escolha o mantém honesto: não armazena nada, recupera apenas entradas trivialmente fracas e mostra com clareza onde uma busca se torna inviável.

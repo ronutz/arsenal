@@ -1,0 +1,30 @@
+---
+slug: private-vs-public-ip-ranges
+title: "Private, Reserved, and Public IP Ranges"
+summary: "An SSRF filter has to know which addresses are internal. This is the map: RFC 1918 private space, loopback, link-local, carrier-grade NAT, the documentation ranges, and everything else that is public and routable. Knowing the ranges is what turns a raw address into a safe-or-not decision."
+concepts: ["rfc 1918", "loopback", "link-local", "cgnat", "public ip"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "ssrf-defenses-allowlists"]
+category: security
+order: 89
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Not every IP address is reachable from the public internet, and an SSRF check exists to tell the two apart. These are the ranges that matter.
+
+## Private address space (RFC 1918)
+
+Three blocks are set aside for private networks and are never routed on the public internet: `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. Inside a corporate network or a cloud VPC, these are where internal services live, so an SSRF that reaches them can talk to databases, caches, and admin panels.
+
+## Loopback and link-local
+
+`127.0.0.0/8` is loopback: it always means "this machine," so `http://127.0.0.1/` or `http://localhost/` targets services bound to the server itself. `169.254.0.0/16` is link-local (RFC 3927), assigned automatically on a segment. The single address `169.254.169.254` inside that block is the cloud metadata endpoint, which is why link-local gets special attention.
+
+## Carrier-grade NAT and documentation ranges
+
+`100.64.0.0/10` (RFC 6598) is shared address space used by ISPs for carrier-grade NAT; it is not public but not classic private space either, so it deserves a cautious middle classification. The TEST-NET blocks `192.0.2.0/24`, `198.51.100.0/24`, and `203.0.113.0/24` (RFC 5737) exist only for documentation and should never appear as a real destination.
+
+## Everything else is public
+
+An address that falls in none of the reserved blocks is public and routable. Public destinations still carry some SSRF risk, since an attacker can point the server at a host they control, but they cannot reach your internal network. That is why a classifier reports a level of risk rather than a simple yes or no: the category of the destination decides how much to worry.

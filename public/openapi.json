@@ -2,9 +2,9 @@
   "openapi": "3.1.0",
   "info": {
     "title": "ronutz tools API",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "summary": "Deterministic network and security computations over HTTP.",
-    "description": "The programmatic counterpart to the in-browser tools at ronutz.com.\n\nEvery operation here is a pure function: the same input always yields the\nsame output, nothing is stored, and no request bodies or query values are\nlogged. The browser tools remain the zero-egress default for sensitive work;\nthis API exists for automation (scripts, pipelines, integrations).\n\nThe surface grows as the toolbox grows. Today it exposes the CIDR / subnet\ncalculator. Only live operations are listed.\n",
+    "description": "The programmatic counterpart to the in-browser tools at ronutz.com.\n\nEvery operation here is a pure function: the same input always yields the\nsame output, nothing is stored, and no request bodies or query values are\nlogged. The browser tools remain the zero-egress default for sensitive work;\nthis API exists for automation (scripts, pipelines, integrations).\n\nThe surface grows with the toolbox: every shipped tool is exposed here and\ndocumented from the same registry, so the served endpoints and this document\ncannot drift apart. Only shipped tools are listed (no vaporware). Each\noperation accepts its input via GET (?input=) or POST (the request body) and\nreturns a JSON result.\n",
     "contact": {
       "name": "ronutz",
       "url": "https://ronutz.com/contact"
@@ -22,15 +22,404 @@
   ],
   "tags": [
     {
-      "name": "Networking",
+      "name": "Encoding"
+    },
+    {
+      "name": "F5 Distributed Cloud (XC)"
+    },
+    {
+      "name": "F5 LTM, iRules & platform"
+    },
+    {
+      "name": "HTTP & web"
+    },
+    {
+      "name": "Hashing"
+    },
+    {
+      "name": "Identifiers & time"
+    },
+    {
+      "name": "Identity & tokens"
+    },
+    {
+      "name": "Networking & addressing",
       "description": "IP addressing and subnet computations."
+    },
+    {
+      "name": "PKI"
+    },
+    {
+      "name": "Protocol & packet decoders"
+    },
+    {
+      "name": "Security & WAF"
+    },
+    {
+      "name": "TLS & transport"
+    },
+    {
+      "name": "Text & utilities"
     }
   ],
   "paths": {
+    "/base64": {
+      "get": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_base64",
+        "summary": "Base64, Base32, Hex & Percent Codec",
+        "description": "Encode text to Base64, URL-safe Base64, Base32, hexadecimal, or percent-encoding, and decode any of them back. Tolerant of missing padding and whitespace, and it flags binary (non-UTF-8) results. Runs entirely in your browser. Standards: RFC 4648, RFC 3986. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "SGVsbG8gV29ybGQ="
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_base64_post",
+        "summary": "Base64, Base32, Hex & Percent Codec (POST)",
+        "description": "Encode text to Base64, URL-safe Base64, Base32, hexadecimal, or percent-encoding, and decode any of them back. Tolerant of missing padding and whitespace, and it flags binary (non-UTF-8) results. Runs entirely in your browser. Standards: RFC 4648, RFC 3986. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "SGVsbG8gV29ybGQ="
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bigip-persistence-cookie": {
+      "get": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_bigip_persistence_cookie",
+        "summary": "BIG-IP Persistence Cookie Decoder",
+        "description": "Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5 K7784, RFC 1918, RFC 5952. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "BIGipServerWEB=1677787402.20480.0000"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_bigip_persistence_cookie_post",
+        "summary": "BIG-IP Persistence Cookie Decoder (POST)",
+        "description": "Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5 K7784, RFC 1918, RFC 5952. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "BIGipServerWEB=1677787402.20480.0000"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bigip-tcpdump-builder": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_bigip_tcpdump_builder",
+        "summary": "BIG-IP tcpdump builder",
+        "description": "Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax, flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run; it captures nothing. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: tcpdump, F5 TMM :nnn capture syntax. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "interface 0.0, high detail, both sides, filtered by host"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_bigip_tcpdump_builder_post",
+        "summary": "BIG-IP tcpdump builder (POST)",
+        "description": "Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax, flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run; it captures nothing. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: tcpdump, F5 TMM :nnn capture syntax. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cert-renewal-planner": {
+      "get": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_cert_renewal_planner",
+        "summary": "Certificate renewal planner",
+        "description": "Work out a TLS certificate's validity, whether it fits the CA/Browser Forum 47-day schedule, and the renewal cadence it implies — all offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: CA/Browser Forum SC-081v3, RFC 5280, RFC 8555. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_cert_renewal_planner_post",
+        "summary": "Certificate renewal planner (POST)",
+        "description": "Work out a TLS certificate's validity, whether it fits the CA/Browser Forum 47-day schedule, and the renewal cadence it implies — all offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: CA/Browser Forum SC-081v3, RFC 5280, RFC 8555. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/cidr": {
       "get": {
         "tags": [
-          "Networking"
+          "Networking & addressing"
         ],
         "operationId": "computeCidr",
         "summary": "Break down an IPv4 CIDR block",
@@ -97,6 +486,2947 @@
                 "example": {
                   "error": "invalid_cidr",
                   "message": "Not a valid IPv4 CIDR block. Expected something like 192.168.1.0/24."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cipher": {
+      "get": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_cipher",
+        "summary": "Cipher Suite Decoder",
+        "description": "Enter a TLS cipher suite, as an IANA name, an OpenSSL or GnuTLS name, or a hex code point, to break it into its key exchange, authentication, cipher, mode, and MAC, with a plain-language security read-out and the official IANA recommendation. Runs entirely in your browser against a bundled copy of the IANA registry. Standards: IANA TLS Cipher Suites, RFC 8446, RFC 5246, RFC 8447, RFC 7465. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "TLS_AES_128_GCM_SHA256"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_cipher_post",
+        "summary": "Cipher Suite Decoder (POST)",
+        "description": "Enter a TLS cipher suite, as an IANA name, an OpenSSL or GnuTLS name, or a hex code point, to break it into its key exchange, authentication, cipher, mode, and MAC, with a plain-language security read-out and the official IANA recommendation. Runs entirely in your browser against a bundled copy of the IANA registry. Standards: IANA TLS Cipher Suites, RFC 8446, RFC 5246, RFC 8447, RFC 7465. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "TLS_AES_128_GCM_SHA256"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/csr-decoder": {
+      "get": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_csr_decoder",
+        "summary": "CSR decoder",
+        "description": "Decode a PKCS#10 certificate signing request to read its subject, public key, requested SANs and extensions, and attributes — entirely in your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: PKCS#10 / RFC 2986, RFC 5280. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_csr_decoder_post",
+        "summary": "CSR decoder (POST)",
+        "description": "Decode a PKCS#10 certificate signing request to read its subject, public key, requested SANs and extensions, and attributes — entirely in your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: PKCS#10 / RFC 2986, RFC 5280. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cvss-vector-decoder": {
+      "get": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_cvss_vector_decoder",
+        "summary": "CVSS vector decoder",
+        "description": "Paste a CVSS v3.1 or v3.0 vector and get the score computed and mapped to a severity, with every metric spelled out. Local and offline; nothing is sent anywhere. Standards: CVSS v3.1 (FIRST.org). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_cvss_vector_decoder_post",
+        "summary": "CVSS vector decoder (POST)",
+        "description": "Paste a CVSS v3.1 or v3.0 vector and get the score computed and mapped to a severity, with every metric spelled out. Local and offline; nothing is sent anywhere. Standards: CVSS v3.1 (FIRST.org). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/diff": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_diff",
+        "summary": "Text Diff",
+        "description": "Compare two blocks of text and see exactly what changed, line by line, with inline word-level highlighting on edited lines. Optionally ignore whitespace or case. Everything is computed in your browser; your text is never sent anywhere. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "original text vs revised text"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_diff_post",
+        "summary": "Text Diff (POST)",
+        "description": "Compare two blocks of text and see exactly what changed, line by line, with inline word-level highlighting on edited lines. Optionally ignore whitespace or case. Everything is computed in your browser; your text is never sent anywhere. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dig-output-explainer": {
+      "get": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_dig_output_explainer",
+        "summary": "dig output explainer",
+        "description": "Paste real dig output and get a decoded, explained breakdown: the header and flags, the EDNS OPT pseudo-section, every record in each section, and the query stats. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 6891, RFC 2308, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                ";; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_dig_output_explainer_post",
+        "summary": "dig output explainer (POST)",
+        "description": "Paste real dig output and get a decoded, explained breakdown: the header and flags, the EDNS OPT pseudo-section, every record in each section, and the query stats. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 6891, RFC 2308, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  ";; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/epoch": {
+      "get": {
+        "tags": [
+          "Identifiers & time"
+        ],
+        "operationId": "run_epoch",
+        "summary": "Unix time converter",
+        "description": "Type a Unix timestamp — seconds, milliseconds, microseconds, or nanoseconds, detected automatically — or an ISO-8601 date, and read it back in every common format. All in your browser. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Identifiers & time"
+        ],
+        "operationId": "run_epoch_post",
+        "summary": "Unix time converter (POST)",
+        "description": "Type a Unix timestamp — seconds, milliseconds, microseconds, or nanoseconds, detected automatically — or an ISO-8601 date, and read it back in every common format. All in your browser. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-cipher-string-expander": {
+      "get": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_f5_cipher_string_expander",
+        "summary": "F5 cipher-string explainer",
+        "description": "Paste an F5 BIG-IP cipher string and get every keyword and operator explained plus a security read, all in your browser. Standards: F5 cipher rules/groups, tmm --clientciphers. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "f5-secure"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_f5_cipher_string_expander_post",
+        "summary": "F5 cipher-string explainer (POST)",
+        "description": "Paste an F5 BIG-IP cipher string and get every keyword and operator explained plus a security read, all in your browser. Standards: F5 cipher rules/groups, tmm --clientciphers. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "f5-secure"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-ssl-profile-explainer": {
+      "get": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_f5_ssl_profile_explainer",
+        "summary": "F5 SSL profile explainer",
+        "description": "Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS — all in your browser. Standards: F5 client-ssl / server-ssl profiles. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_f5_ssl_profile_explainer_post",
+        "summary": "F5 SSL profile explainer (POST)",
+        "description": "Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS — all in your browser. Standards: F5 client-ssl / server-ssl profiles. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5xc-service-policy-explainer": {
+      "get": {
+        "tags": [
+          "F5 Distributed Cloud (XC)"
+        ],
+        "operationId": "run_f5xc_service_policy_explainer",
+        "summary": "F5 XC Service Policy Explainer",
+        "description": "Paste an F5 Distributed Cloud service_policy and see exactly how it matches: the server scope, the rule order, and every rule's action and conditions. iRules for XC, decoded. Standards: ves.io.schema.service_policy. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{ \"spec\": { \"rule_list\": { \"rules\": [ ... ] } } }"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 Distributed Cloud (XC)"
+        ],
+        "operationId": "run_f5xc_service_policy_explainer_post",
+        "summary": "F5 XC Service Policy Explainer (POST)",
+        "description": "Paste an F5 Distributed Cloud service_policy and see exactly how it matches: the server scope, the rule order, and every rule's action and conditions. iRules for XC, decoded. Standards: ves.io.schema.service_policy. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "{ \"spec\": { \"rule_list\": { \"rules\": [ ... ] } } }"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hash": {
+      "get": {
+        "tags": [
+          "Hashing"
+        ],
+        "operationId": "run_hash",
+        "summary": "Hash Generator (SHA-1/256/384/512)",
+        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser. Standards: FIPS 180-4, FIPS 202. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "hash this text"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Hashing"
+        ],
+        "operationId": "run_hash_post",
+        "summary": "Hash Generator (SHA-1/256/384/512) (POST)",
+        "description": "Compute SHA-1, SHA-256, SHA-384, and SHA-512 digests of any text, shown as hex and Base64, using the browser's native Web Crypto. Runs entirely in your browser. Standards: FIPS 180-4, FIPS 202. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "hash this text"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hmac": {
+      "get": {
+        "tags": [
+          "Hashing"
+        ],
+        "operationId": "run_hmac",
+        "summary": "HMAC Generator (SHA-256/384/512)",
+        "description": "Compute a keyed HMAC over a message with your secret key, shown as hex and Base64, via the browser's native Web Crypto. The same construction the JWT verifier uses for HS256. Your key never leaves your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 2104, FIPS 198-1. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "message to authenticate"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Hashing"
+        ],
+        "operationId": "run_hmac_post",
+        "summary": "HMAC Generator (SHA-256/384/512) (POST)",
+        "description": "Compute a keyed HMAC over a message with your secret key, shown as hex and Base64, via the browser's native Web Crypto. The same construction the JWT verifier uses for HS256. Your key never leaves your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 2104, FIPS 198-1. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/http-request-translator": {
+      "get": {
+        "tags": [
+          "HTTP & web"
+        ],
+        "operationId": "run_http_request_translator",
+        "summary": "HTTP request translator",
+        "description": "Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP request, HTTPie, and Python requests. Local and offline; the command is decoded in your browser and nothing is sent or run. Standards: curl manual, RFC 9110. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "curl -X POST https://api.example.com -d '{\"a\":1}'"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HTTP & web"
+        ],
+        "operationId": "run_http_request_translator_post",
+        "summary": "HTTP request translator (POST)",
+        "description": "Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP request, HTTPie, and Python requests. Local and offline; the command is decoded in your browser and nothing is sent or run. Standards: curl manual, RFC 9110. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "curl -X POST https://api.example.com -d '{\"a\":1}'"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ipv6": {
+      "get": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_ipv6",
+        "summary": "IPv6 Toolkit",
+        "description": "Parse an IPv6 address or prefix to see its canonical (RFC 5952) and fully expanded forms, special-use classification, prefix math, an EUI-64 MAC if present, and its ip6.arpa reverse-DNS name. Runs entirely in your browser. Standards: RFC 4291, RFC 5952. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "2001:db8::1/64"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_ipv6_post",
+        "summary": "IPv6 Toolkit (POST)",
+        "description": "Parse an IPv6 address or prefix to see its canonical (RFC 5952) and fully expanded forms, special-use classification, prefix math, an EUI-64 MAC if present, and its ip6.arpa reverse-DNS name. Runs entirely in your browser. Standards: RFC 4291, RFC 5952. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "2001:db8::1/64"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/irules-event-order": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_irules_event_order",
+        "summary": "iRule event order",
+        "description": "Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_irules_event_order_post",
+        "summary": "iRule event order (POST)",
+        "description": "Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/json-formatter": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_json_formatter",
+        "summary": "JSON Formatter & Validator",
+        "description": "Validate, pretty-print, minify, and sort JSON. Parse errors point to the exact line, column, and path; duplicate keys are flagged; and large numbers are preserved exactly. Runs entirely in your browser. Standards: RFC 8259, ECMA-404, RFC 6901. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"name\":\"value\",\"list\":[1,2,3]}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_json_formatter_post",
+        "summary": "JSON Formatter & Validator (POST)",
+        "description": "Validate, pretty-print, minify, and sort JSON. Parse errors point to the exact line, column, and path; duplicate keys are flagged; and large numbers are preserved exactly. Runs entirely in your browser. Standards: RFC 8259, ECMA-404, RFC 6901. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "{\"name\":\"value\",\"list\":[1,2,3]}"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/json-yaml-convert": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_json_yaml_convert",
+        "summary": "JSON ↔ YAML Converter",
+        "description": "Convert JSON to block-style YAML or YAML back to JSON, entirely in your browser. Parse errors point to the exact line and column, and conversion notes flag the lossy edges like dropped comments and expanded anchors. Standards: YAML 1.2.2, RFC 8259. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"class\":\"ADC\",\"schemaVersion\":\"3.45.0\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_json_yaml_convert_post",
+        "summary": "JSON ↔ YAML Converter (POST)",
+        "description": "Convert JSON to block-style YAML or YAML back to JSON, entirely in your browser. Parse errors point to the exact line and column, and conversion notes flag the lossy edges like dropped comments and expanded anchors. Standards: YAML 1.2.2, RFC 8259. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "{\"class\":\"ADC\",\"schemaVersion\":\"3.45.0\"}"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jwks-explainer": {
+      "get": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_jwks_explainer",
+        "summary": "JWKS explainer + key matcher",
+        "description": "Paste a JSON Web Key Set to break down every key, flag any private material, and match a JWT to its key by kid. Nothing leaves your browser. Standards: RFC 7517, RFC 7518, RFC 8037. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{ \"keys\": [ ... ] }"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_jwks_explainer_post",
+        "summary": "JWKS explainer + key matcher (POST)",
+        "description": "Paste a JSON Web Key Set to break down every key, flag any private material, and match a JWT to its key by kid. Nothing leaves your browser. Standards: RFC 7517, RFC 7518, RFC 8037. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "{ \"keys\": [ ... ] }"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jwt": {
+      "get": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_jwt",
+        "summary": "JWT Decoder & Verifier",
+        "description": "Decode a JSON Web Token's header and claims, read its expiry and timing in plain language, and verify an HS256/384/512 signature with a pasted secret. Runs entirely in your browser. Standards: RFC 7519, RFC 7515, RFC 7518. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_jwt_post",
+        "summary": "JWT Decoder & Verifier (POST)",
+        "description": "Decode a JSON Web Token's header and claims, read its expiry and timing in plain language, and verify an HS256/384/512 signature with a pasted secret. Runs entirely in your browser. Standards: RFC 7519, RFC 7515, RFC 7518. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nslookup-output-explainer": {
+      "get": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_nslookup_output_explainer",
+        "summary": "nslookup output explainer",
+        "description": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 2308, RFC 2782, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "Non-authoritative answer:"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_nslookup_output_explainer_post",
+        "summary": "nslookup output explainer (POST)",
+        "description": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 2308, RFC 2782, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "Non-authoritative answer:"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oidc": {
+      "get": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_oidc",
+        "summary": "OIDC Decoder",
+        "description": "Paste an OpenID Connect ID token or a .well-known/openid-configuration document and decode it: the core claims, profile claims, endpoints, and capabilities, with checks for required claims, signing algorithm, nonce, and PKCE. Standards: OpenID Connect Core 1.0, OpenID Connect Discovery 1.0, RFC 6749, RFC 7519. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"issuer\":\"https://idp.example.com\",\"authorization_endpoint\":\"...\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_oidc_post",
+        "summary": "OIDC Decoder (POST)",
+        "description": "Paste an OpenID Connect ID token or a .well-known/openid-configuration document and decode it: the core claims, profile claims, endpoints, and capabilities, with checks for required claims, signing algorithm, nonce, and PKCE. Standards: OpenID Connect Core 1.0, OpenID Connect Discovery 1.0, RFC 6749, RFC 7519. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "{\"issuer\":\"https://idp.example.com\",\"authorization_endpoint\":\"...\"}"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/persistence-method-explainer": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_persistence_method_explainer",
+        "summary": "Persistence-method explainer",
+        "description": "Paste BIG-IP persistence profiles and virtual servers and get the method behind each, its failure modes, and the primary-to-fallback chain, all in your browser. Standards: F5 LTM persistence. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "ltm persistence cookie my_cookie { method insert }"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_persistence_method_explainer_post",
+        "summary": "Persistence-method explainer (POST)",
+        "description": "Paste BIG-IP persistence profiles and virtual servers and get the method behind each, its failure modes, and the primary-to-fallback chain, all in your browser. Standards: F5 LTM persistence. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "ltm persistence cookie my_cookie { method insert }"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pkce": {
+      "get": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_pkce",
+        "summary": "OAuth PKCE Verifier & Challenge",
+        "description": "Generate an OAuth 2.0 code_verifier and derive its S256 code_challenge, or paste your own and check it against RFC 7636's length and charset rules. The same SHA-256 base64url derivation your authorization server expects. Runs entirely in your browser. Standards: RFC 7636, RFC 6749. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_pkce_post",
+        "summary": "OAuth PKCE Verifier & Challenge (POST)",
+        "description": "Generate an OAuth 2.0 code_verifier and derive its S256 code_challenge, or paste your own and check it against RFC 7636's length and charset rules. The same SHA-256 base64url derivation your authorization server expects. Runs entirely in your browser. Standards: RFC 7636, RFC 6749. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/regex": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_regex",
+        "summary": "Regex Toolkit",
+        "description": "Test, explain, and debug regular expressions with live matches and a backtracking-risk check. Standards: ECMAScript regular expressions. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "\\d{3}-(?:\\d{4})"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_regex_post",
+        "summary": "Regex Toolkit (POST)",
+        "description": "Test, explain, and debug regular expressions with live matches and a backtracking-risk check. Standards: ECMAScript regular expressions. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "\\d{3}-(?:\\d{4})"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/saml-decoder": {
+      "get": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_saml_decoder",
+        "summary": "SAML Decoder",
+        "description": "Paste a SAML Response or assertion (raw, base64, or URL-encoded) and decode its issuer, status, subject, conditions, audience, and attributes, with signature and weak-algorithm checks. Hardened against XXE. Standards: OASIS SAML 2.0, W3C XML-DSig, OWASP XXE. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ...>"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_saml_decoder_post",
+        "summary": "SAML Decoder (POST)",
+        "description": "Paste a SAML Response or assertion (raw, base64, or URL-encoded) and decode its issuer, status, subject, conditions, audience, and attributes, with signature and weak-algorithm checks. Hardened against XXE. Standards: OASIS SAML 2.0, W3C XML-DSig, OWASP XXE. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ...>"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/secure-headers": {
+      "get": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_secure_headers",
+        "summary": "Secure Headers Analyzer",
+        "description": "Paste an HTTP response and get a graded breakdown of its security headers, cookie flags, and cross-origin policy, checked against OWASP, RFC 6797, CSP Level 3, and RFC 6265bis. Standards: OWASP Secure Headers Project, RFC 6797, CSP Level 3, RFC 6265bis. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "Strict-Transport-Security: max-age=63072000; includeSubDomains"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_secure_headers_post",
+        "summary": "Secure Headers Analyzer (POST)",
+        "description": "Paste an HTTP response and get a graded breakdown of its security headers, cookie flags, and cross-origin policy, checked against OWASP, RFC 6797, CSP Level 3, and RFC 6265bis. Standards: OWASP Secure Headers Project, RFC 6797, CSP Level 3, RFC 6265bis. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "Strict-Transport-Security: max-age=63072000; includeSubDomains"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ssrf-url-classifier": {
+      "get": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_ssrf_url_classifier",
+        "summary": "SSRF URL classifier",
+        "description": "Paste a URL and see where it actually points: loopback, a private or link-local range, a cloud metadata endpoint, CGNAT, reserved space, or the public internet. Decimal, octal, and hex IP obfuscation is decoded, dangerous schemes and embedded credentials are flagged, and an SSRF risk level is shown. It never resolves DNS and never sends the request. Standards: RFC 1918, RFC 3986. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "http://169.254.169.254/latest/meta-data/"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_ssrf_url_classifier_post",
+        "summary": "SSRF URL classifier (POST)",
+        "description": "Paste a URL and see where it actually points: loopback, a private or link-local range, a cloud metadata endpoint, CGNAT, reserved space, or the public internet. Decimal, octal, and hex IP obfuscation is decoded, dangerous schemes and embedded credentials are flagged, and an SSRF risk level is shown. It never resolves DNS and never sends the request. Standards: RFC 1918, RFC 3986. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "http://169.254.169.254/latest/meta-data/"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/syslog-pri-decoder": {
+      "get": {
+        "tags": [
+          "Protocol & packet decoders"
+        ],
+        "operationId": "run_syslog_pri_decoder",
+        "summary": "Syslog PRI decoder + encoder",
+        "description": "Decode a syslog PRI such as 134 into its facility and severity, or encode them back, all in your browser. Standards: RFC 5424, RFC 3164. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "<134>"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Protocol & packet decoders"
+        ],
+        "operationId": "run_syslog_pri_decoder_post",
+        "summary": "Syslog PRI decoder + encoder (POST)",
+        "description": "Decode a syslog PRI such as 134 into its facility and severity, or encode them back, all in your browser. Standards: RFC 5424, RFC 3164. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "<134>"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tmsh-config-explainer": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_tmsh_config_explainer",
+        "summary": "tmsh config explainer",
+        "description": "Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "ltm virtual vip { destination 10.0.0.1:80 pool web_pool }"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_tmsh_config_explainer_post",
+        "summary": "tmsh config explainer (POST)",
+        "description": "Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "ltm virtual vip { destination 10.0.0.1:80 pool web_pool }"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/totp-hotp": {
+      "get": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_totp_hotp",
+        "summary": "TOTP / HOTP Generator & Validator",
+        "description": "Generate and check time-based (TOTP, RFC 6238) and counter-based (HOTP, RFC 4226) one-time passwords - the codes behind authenticator apps and hardware tokens such as FortiToken. SHA-1/256/512, configurable digits and step. Computed locally with Web Crypto; your secret never leaves your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 6238, RFC 4226. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "JBSWY3DPEHPK3PXP"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Identity & tokens"
+        ],
+        "operationId": "run_totp_hotp_post",
+        "summary": "TOTP / HOTP Generator & Validator (POST)",
+        "description": "Generate and check time-based (TOTP, RFC 6238) and counter-based (HOTP, RFC 4226) one-time passwords - the codes behind authenticator apps and hardware tokens such as FortiToken. SHA-1/256/512, configurable digits and step. Computed locally with Web Crypto; your secret never leaves your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 6238, RFC 4226. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url-inspector": {
+      "get": {
+        "tags": [
+          "HTTP & web"
+        ],
+        "operationId": "run_url_inspector",
+        "summary": "URL Inspector",
+        "description": "Dissect any URL into its named parts: scheme, host, port, path, query parameters, and fragment. Decodes percent-escapes and internationalized hosts, and flags credentials and other issues. Runs entirely in your browser. Standards: RFC 3986, WHATWG URL, RFC 3492. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "https://user@host.example.com:8443/p?a=1#f"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HTTP & web"
+        ],
+        "operationId": "run_url_inspector_post",
+        "summary": "URL Inspector (POST)",
+        "description": "Dissect any URL into its named parts: scheme, host, port, path, query parameters, and fragment. Decodes percent-escapes and internationalized hosts, and flags credentials and other issues. Runs entirely in your browser. Standards: RFC 3986, WHATWG URL, RFC 3492. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "https://user@host.example.com:8443/p?a=1#f"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uuid": {
+      "get": {
+        "tags": [
+          "Identifiers & time"
+        ],
+        "operationId": "run_uuid",
+        "summary": "UUID Generator & Inspector (v4 / v7)",
+        "description": "Generate random v4 or time-ordered v7 UUIDs, or paste any UUID to read its version, variant, and (for v7) the embedded creation timestamp. Generation uses the browser's secure random source. Runs entirely in your browser. Standards: RFC 9562. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "550e8400-e29b-41d4-a716-446655440000"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Identifiers & time"
+        ],
+        "operationId": "run_uuid_post",
+        "summary": "UUID Generator & Inspector (v4 / v7) (POST)",
+        "description": "Generate random v4 or time-ordered v7 UUIDs, or paste any UUID to read its version, variant, and (for v7) the embedded creation timestamp. Generation uses the browser's secure random source. Runs entirely in your browser. Standards: RFC 9562. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "550e8400-e29b-41d4-a716-446655440000"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/x509": {
+      "get": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_x509",
+        "summary": "X.509 Certificate Decoder",
+        "description": "Paste a PEM, base64, or hex certificate to read its subject, issuer, validity window, public key, and v3 extensions, with SHA-256 and SHA-1 fingerprints. Runs entirely in your browser. Standards: RFC 5280, RFC 6960, RFC 7633. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "-----BEGIN CERTIFICATE-----\\nMIIB...\\n-----END CERTIFICATE-----"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_x509_post",
+        "summary": "X.509 Certificate Decoder (POST)",
+        "description": "Paste a PEM, base64, or hex certificate to read its subject, issuer, validity window, public key, and v3 extensions, with SHA-256 and SHA-1 fingerprints. Runs entirely in your browser. Standards: RFC 5280, RFC 6960, RFC 7633. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "-----BEGIN CERTIFICATE-----\\nMIIB...\\n-----END CERTIFICATE-----"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/xml-decoder": {
+      "get": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_xml_decoder",
+        "summary": "XML Decoder",
+        "description": "Paste XML and read its structure: the declaration, the DOCTYPE and any entities, the element tree with namespaces and attributes, plus a security check of the XML attack surface. Nothing is fetched or resolved. Standards: W3C XML 1.0, W3C Namespaces, OWASP XXE. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "<?xml version=\"1.0\"?>"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Security & WAF"
+        ],
+        "operationId": "run_xml_decoder_post",
+        "summary": "XML Decoder (POST)",
+        "description": "Paste XML and read its structure: the declaration, the DOCTYPE and any entities, the element tree with namespaces and attributes, plus a security check of the XML attack surface. Nothing is fetched or resolved. Standards: W3C XML 1.0, W3C Namespaces, OWASP XXE. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "<?xml version=\"1.0\"?>"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -212,6 +3542,11 @@
             ]
           }
         }
+      },
+      "ToolResult": {
+        "type": "object",
+        "description": "The tool's computed result as a JSON object. The exact fields depend on the tool; see the tool's page at https://ronutz.com for the full shape. The result is a pure function of the input, so the same input always yields the same output.\n",
+        "additionalProperties": true
       }
     }
   }

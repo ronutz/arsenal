@@ -1,0 +1,30 @@
+---
+slug: ip-address-obfuscation-tricks
+title: "IP Address Obfuscation Tricks"
+summary: "One IP address can be written in many forms: plain decimal, octal, hexadecimal, short-hand, and IPv4-mapped IPv6. Each form parses back to the same address, which is how attackers slip an internal target past a filter that only blocks the dotted-decimal spelling. This is why SSRF checks must decode, not string-match."
+concepts: ["inet_aton", "decimal ip", "octal", "hexadecimal", "ipv4-mapped"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["private-vs-public-ip-ranges", "what-is-ssrf", "ssrf-defenses-allowlists"]
+category: security
+order: 90
+status: machine-draft
+updated: "2026-07-01"
+---
+
+`127.0.0.1` is only the most familiar way to write loopback. The classic C function `inet_aton`, and the address parsers that follow its rules, accept several other spellings, and browsers and many HTTP libraries quietly normalize them. A blocklist that contains the string `127.0.0.1` misses every one of them.
+
+## The main forms
+
+**Decimal**: an address is just a 32-bit number, so `127.0.0.1` can be written as the single integer `2130706433`. **Hexadecimal**: the same value is `0x7f000001`, and each octet can also be hex, as in `0x7f.0x0.0x0.0x1`. **Octal**: a leading zero makes an octet octal, so `0177.0.0.1` is `127.0.0.1` because `0177` octal is `127`. **Short-hand**: with fewer than four parts, the last part fills the remaining octets, so `127.1` expands to `127.0.0.1`.
+
+## Mixing and IPv6
+
+These notations can be mixed in one address, combining octal, hex, and decimal parts. IPv6 adds another route: an IPv4-mapped address such as `::ffff:127.0.0.1` embeds the IPv4 loopback inside an IPv6 literal, and some stacks will follow it straight to `127.0.0.1`.
+
+## Why string filters fail
+
+Every form above resolves to the same internal address, but each is a different string. A filter that compares text can only block the exact spellings it was told about, and there are far too many to enumerate. The address `169.254.169.254` has the same problem: written as a decimal or hex integer, it sails past a filter looking for the dotted form.
+
+## Decode first, then classify
+
+The reliable move is to parse the host into its numeric value and classify that value against the reserved ranges, exactly as this tool does. Once `2130706433`, `0x7f000001`, and `127.1` are all reduced to the same 32-bit number, they all land in `127.0.0.0/8` and are flagged together. Normalization removes the attacker's freedom to respell the target.

@@ -11,12 +11,15 @@
 // `assets.run_worker_first` excludes them), so the Worker only does real work
 // for /api/* and for bare-route redirects.
 //
-// For the API, this Worker is the PROGRAMMATIC
-// counterpart to the in-browser tools: it calls the EXACT SAME arsenal-local
-// engine (src/lib/tools/cidr) the browser calls, so hosted and in-browser
-// output are byte-identical (the Seam-1 invariant, proven by the CIDR module's
-// golden vectors). Arsenal carries no runtime dependency on @ronutz/netcore;
-// the single-subnet engine is in-house, so the Worker imports it directly.
+// For the API, this Worker is the PROGRAMMATIC counterpart to the in-browser
+// tools. It routes /api/v1/<slug> GENERICALLY from the single tool registry
+// (src/lib/tools/registry.ts), calling the EXACT SAME arsenal-local engine the
+// browser calls, so hosted and in-browser output are byte-identical (the Seam-1
+// invariant, proven by each engine's golden vectors). Because the registry is
+// also what the OpenAPI generator reads, the served endpoints and the documented
+// endpoints cannot drift (D-72). Every run() is awaited, so sync and async
+// engines are handled identically. Arsenal carries no runtime dependency on
+// @ronutz/netcore; the engines are in-house and imported directly.
 //
 // PRIVACY (deliberate, consistent with the rest of the site): stateless. It
 // reads only the input on the request, computes, and returns. It logs no query
@@ -24,19 +27,17 @@
 // this endpoint exists for automation (scripts, pipelines, integrations).
 //
 // This file lives OUTSIDE src/ and is excluded from the Next tsconfig, so it has
-// no effect on `npm run build`; wrangler bundles it at deploy time.
+// no effect on `npm run build`; wrangler bundles it (and, transitively, every
+// engine the registry imports) at deploy time.
 // ============================================================================
 
-import { cidrAnalyze as computeCidr } from "../src/lib/tools/cidr/compute";
+import { API_TOOL_MAP } from "../src/lib/tools/registry";
 // Locale registry is the single source of truth (src/i18n/locales.ts). Imported
 // via a relative path because the Worker is outside src/ and the "@/" alias is
-// not in scope for wrangler's bundler. locales.ts has no runtime deps, so it
-// bundles cleanly into the Worker.
+// not in scope for wrangler's bundler.
 import { LOCALE_CODES, LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "../src/i18n/locales";
 
 interface Env {
-  // Static assets binding. Present so future /api routes could serve assets;
-  // today, unmatched /api/* paths return a structured JSON 404 instead.
   ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
@@ -44,7 +45,7 @@ interface Env {
 // so it is safe to call from any origin (browser scripts, dashboards, etc.).
 const CORS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
@@ -64,6 +65,8 @@ function json(
   });
 }
 
+const API_PREFIX = "/api/v1/";
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -73,41 +76,66 @@ export default {
       return new Response(null, { status: 204, headers: CORS });
     }
 
-    // ---- GET /api/v1/cidr?block=<cidr> ------------------------------------
-    if (url.pathname === "/api/v1/cidr") {
-      if (request.method !== "GET") {
+    // ---- /api/v1/<slug> : generic tool dispatch ----------------------------
+    if (url.pathname.startsWith(API_PREFIX)) {
+      const slug = url.pathname.slice(API_PREFIX.length);
+      const tool = API_TOOL_MAP.get(slug);
+
+      if (!tool) {
         return json(
-          { error: "method_not_allowed", message: "Use GET." },
-          405,
-          { Allow: "GET, OPTIONS" },
+          {
+            error: "not_found",
+            message: `No API tool named '${slug}'. See https://ronutz.com/en/api for the list of operations.`,
+          },
+          404,
         );
       }
 
-      const block = url.searchParams.get("block");
-      if (!block) {
+      if (request.method !== "GET" && request.method !== "POST") {
         return json(
           {
-            error: "missing_parameter",
+            error: "method_not_allowed",
+            message: "Use GET with ?input=<value>, or POST with the value in the request body.",
+          },
+          405,
+          { Allow: "GET, POST, OPTIONS" },
+        );
+      }
+
+      // The input string: a query parameter on GET, the raw body on POST.
+      // (For the six structured tools the input is a JSON object, passed as a
+      // JSON string.) The legacy /api/v1/cidr?block= alias is still honored.
+      let input: string | null = null;
+      if (request.method === "GET") {
+        input = url.searchParams.get("input");
+        if (input === null && slug === "cidr") input = url.searchParams.get("block");
+      } else {
+        input = (await request.text()) || null;
+      }
+
+      if (input === null || input === "") {
+        return json(
+          {
+            error: "missing_input",
             message:
-              "Provide a CIDR block in the 'block' query parameter, e.g. ?block=192.168.1.0/24.",
+              "Provide input: GET with ?input=<value>, or POST the value in the request body." +
+              (tool.structured ? " This tool expects a JSON object." : ""),
           },
           400,
         );
       }
 
       try {
-        // The single source of truth, shared with the in-browser tool.
-        const result = computeCidr(block);
-        // Output is a pure function of the input → safe to cache at the edge.
+        // The single source of truth, shared with the in-browser tool. Awaited
+        // unconditionally so sync and async engines behave the same. Output is a
+        // pure function of the input -> safe to cache at the edge.
+        const result = await tool.run(input);
         return json(result, 200, { "Cache-Control": "public, max-age=86400" });
       } catch (err) {
         return json(
           {
-            error: "invalid_cidr",
-            message:
-              err instanceof Error
-                ? err.message
-                : "Not a valid IPv4 CIDR block. Expected something like 192.168.1.0/24.",
+            error: "invalid_input",
+            message: err instanceof Error ? err.message : "The input could not be processed.",
           },
           400,
         );
@@ -123,42 +151,25 @@ export default {
     }
 
     // ---- Non-API path: the LOCALE GATE -------------------------------------
-    // run_worker_first now routes non-asset page paths here too. Three cases:
-    //   • locale-prefixed page (/en/…, /fr/…)   -> serve from assets
-    //   • root-level static file (/favicon.ico) -> serve from assets
-    //   • bare, non-localized route (/colophon) or the apex (/) -> redirect to
-    //     the default locale, since the static export (localePrefix "always")
-    //     has no page there.
     const seg = url.pathname.split("/")[1] ?? "";
     const isLiveLocale = LIVE_LOCALE_CODES.includes(seg);
     const isStubLocale = !isLiveLocale && LOCALE_CODES.includes(seg);
-    const looksLikeFile = /\.[a-z0-9]+$/i.test(url.pathname); // has a file extension
+    const looksLikeFile = /\.[a-z0-9]+$/i.test(url.pathname);
 
-    // A locale we no longer build. Permanently redirect to the English
-    // equivalent by swapping out the locale segment (/ar/tools/jwt/ ->
-    // /en/tools/jwt/), so old links and crawlers land on real content instead
-    // of a 404.
     if (isStubLocale) {
-      const rest = url.pathname.slice(seg.length + 1) || "/"; // strip "/ar", keep the rest
+      const rest = url.pathname.slice(seg.length + 1) || "/";
       let dest = `/${DEFAULT_LOCALE}${rest}`;
       if (!looksLikeFile && !dest.endsWith("/")) dest += "/";
       return Response.redirect(new URL(`${dest}${url.search}`, url.origin).toString(), 301);
     }
 
     if (!isLiveLocale && !looksLikeFile) {
-      // The static export uses trailingSlash:true, so canonical pages end in
-      // "/". Add it here so the redirect lands on the canonical URL in a single
-      // hop (otherwise the asset layer's auto-trailing-slash adds a 2nd redirect).
-      let rest = url.pathname === "/" ? "/" : url.pathname; // preserve the deep path
+      let rest = url.pathname === "/" ? "/" : url.pathname;
       if (!rest.endsWith("/")) rest += "/";
       const dest = `/${DEFAULT_LOCALE}${rest}${url.search}`;
-      // 302 (temporary), matching public/_redirects: leaves the door open for
-      // future Accept-Language detection without browsers hard-caching /en/.
       return Response.redirect(new URL(dest, url.origin).toString(), 302);
     }
 
-    // Locale-prefixed page or root-level asset: hand back to static assets
-    // (which applies not_found_handling = 404-page for a genuine miss).
     return env.ASSETS.fetch(request);
   },
 };

@@ -1,0 +1,30 @@
+---
+slug: cloud-metadata-endpoints-and-ssrf
+title: "Endpoints de Metadados de Nuvem e SSRF"
+summary: "Toda nuvem grande dá a uma instância um serviço de metadados em um endereço link-local fixo, e ele pode devolver credenciais temporárias do papel da instância. Isso o torna o alvo de SSRF de maior valor. Conhecer os endpoints, e as defesas no estilo IMDSv2, é essencial tanto para entender o ataque quanto para a defesa."
+concepts: ["imds", "169.254.169.254", "metadados de instância", "imdsv2"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["what-is-ssrf", "private-vs-public-ip-ranges", "ssrf-defenses-allowlists"]
+category: security
+order: 91
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Quando um SSRF alcança o serviço de metadados da instância na nuvem, o impacto salta de "acesso interno" para "roubo de credenciais". Este é o endpoint que os atacantes buscam primeiro.
+
+## O endereço fixo
+
+AWS, Google Cloud e Azure expõem um Instance Metadata Service (IMDS) no endereço link-local `169.254.169.254`. Ele retorna informações sobre a instância em execução e, na AWS, pode retornar credenciais de segurança temporárias do papel IAM associado à instância. Como o endereço é fixo e, por padrão, sem autenticação, qualquer código que consiga fazer o servidor buscar uma URL pode potencialmente lê-lo.
+
+## Os endpoints a conhecer
+
+O endereço IPv4 `169.254.169.254` é compartilhado entre provedores. O Google Cloud também responde pelo hostname `metadata.google.internal`, que resolve para esse endereço. A AWS oferece um endpoint de metadados IPv6 em `fd00:ec2::254`. A Alibaba Cloud usa `100.100.100.200`. Um classificador deve reconhecer todos esses, já que cada um é uma rota direta aos segredos da instância.
+
+## Por que é tão danoso
+
+Credenciais de papel roubadas permitem ao atacante agir como a instância contra a API do provedor de nuvem, dentro das permissões que o papel tem. A partir de um único SSRF, isso pode escalar para ler buckets de armazenamento, lançar recursos ou mover-se lateralmente, sem nunca invadir o sistema operacional do host.
+
+## A defesa: IMDSv2 e regras de rede
+
+O IMDSv2 da AWS exige um token de sessão obtido com uma requisição PUT e define um limite baixo de saltos IP, o que bloqueia o GET ingênuo de um único disparo que a maioria dos exploits de SSRF usa e impede que a resposta seja roteada para fora da instância. Aplicar o IMDSv2, restringir os papéis das instâncias ao mínimo necessário e bloquear requisições de saída ao endereço de metadados a partir do código da aplicação são as defesas em camadas. Classificar um destino como endpoint de metadados, antes de qualquer requisição, é o primeiro ponto de controle.

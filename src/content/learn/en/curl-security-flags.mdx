@@ -1,0 +1,22 @@
+---
+slug: curl-security-flags
+title: "curl Flags That Change Security Posture"
+summary: "A few curl flags change how safe a request is: -k disables TLS verification, http sends everything in clear text, and credentials in the URL can leak. None make a request malicious, but each is worth reading before you run or share a command."
+concepts: ["curl", "tls", "insecure", "https", "credentials"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-headers-auth-and-cookies", "reading-a-curl-command", "curl-data-flags-and-content-type"]
+category: networking
+order: 81
+status: machine-draft
+updated: "2026-07-01"
+---
+
+A handful of curl flags change the security posture of a request, and they are worth recognizing on sight.
+
+`-k` / `--insecure` disables TLS certificate verification. The connection is still encrypted, but curl no longer checks that the certificate belongs to the host, which removes the protection against a man-in-the-middle. It is common in quick tests against self-signed certificates and risky anywhere else.
+
+Using `http://` instead of `https://` sends everything, including headers and any credentials, in clear text over the network.
+
+Credentials embedded in the URL as `user:pass@host` can leak into shell history, server logs, and referrer headers, so a header or `-u` is safer.
+
+None of these make a request malicious on its own, but each is a signal. A good translator surfaces them as warnings rather than silently carrying them across, so you decide with the risk in front of you.

@@ -79,6 +79,34 @@ export default async function AboutPage({
           </div>
         </section>
 
+        {/* --- CREDENTIALS & ENDORSEMENTS (featured; the credibility signals
+            that used to sit in the primary nav now lead the About page, where
+            they read as a professional showcase rather than utility nav). --- */}
+        <section className="section about-credibility">
+          <div className="container">
+            <div className="about-cred-grid">
+              <Link href="/certifications" className="about-cred-card">
+                <span className="about-cred-eyebrow">{t("credibility.certsEyebrow")}</span>
+                <span className="about-cred-title">{t("credibility.certsTitle")}</span>
+                <span className="about-cred-desc">{t("credibility.certsDesc")}</span>
+                <span className="about-cred-cta">
+                  {t("credibility.certsCta")}
+                  <span aria-hidden="true"> →</span>
+                </span>
+              </Link>
+              <Link href="/endorsements" className="about-cred-card">
+                <span className="about-cred-eyebrow">{t("credibility.endorsementsEyebrow")}</span>
+                <span className="about-cred-title">{t("credibility.endorsementsTitle")}</span>
+                <span className="about-cred-desc">{t("credibility.endorsementsDesc")}</span>
+                <span className="about-cred-cta">
+                  {t("credibility.endorsementsCta")}
+                  <span aria-hidden="true"> →</span>
+                </span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* --- WHAT I DO NOW --- */}
         <section className="section">
           <div className="container section-narrow">

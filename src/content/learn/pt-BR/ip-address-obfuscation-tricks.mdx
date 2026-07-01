@@ -1,0 +1,30 @@
+---
+slug: ip-address-obfuscation-tricks
+title: "Truques de Ofuscação de Endereço IP"
+summary: "Um endereço IP pode ser escrito de muitas formas: decimal simples, octal, hexadecimal, forma abreviada e IPv6 mapeado em IPv4. Cada forma volta a apontar para o mesmo endereço, e é assim que atacantes passam um alvo interno por um filtro que só bloqueia a grafia decimal pontuada. Por isso verificações de SSRF precisam decodificar, não comparar texto."
+concepts: ["inet_aton", "ip decimal", "octal", "hexadecimal", "ipv4-mapped"]
+relatedTools: ["ssrf-url-classifier"]
+relatedArticles: ["private-vs-public-ip-ranges", "what-is-ssrf", "ssrf-defenses-allowlists"]
+category: security
+order: 90
+status: machine-draft
+updated: "2026-07-01"
+---
+
+`127.0.0.1` é apenas a forma mais familiar de escrever loopback. A clássica função C `inet_aton`, e os parsers de endereço que seguem suas regras, aceitam várias outras grafias, e navegadores e muitas bibliotecas HTTP as normalizam silenciosamente. Uma blocklist que contém a string `127.0.0.1` perde todas elas.
+
+## As principais formas
+
+**Decimal**: um endereço é apenas um número de 32 bits, então `127.0.0.1` pode ser escrito como o inteiro único `2130706433`. **Hexadecimal**: o mesmo valor é `0x7f000001`, e cada octeto também pode ser hex, como em `0x7f.0x0.0x0.0x1`. **Octal**: um zero à esquerda torna o octeto octal, então `0177.0.0.1` é `127.0.0.1` porque `0177` em octal é `127`. **Forma abreviada**: com menos de quatro partes, a última parte preenche os octetos restantes, então `127.1` expande para `127.0.0.1`.
+
+## Misturando e IPv6
+
+Essas notações podem ser misturadas em um único endereço, combinando partes octal, hex e decimal. O IPv6 adiciona outra rota: um endereço mapeado em IPv4 como `::ffff:127.0.0.1` embute o loopback IPv4 dentro de um literal IPv6, e algumas pilhas o seguem direto até `127.0.0.1`.
+
+## Por que filtros de texto falham
+
+Toda forma acima resolve para o mesmo endereço interno, mas cada uma é uma string diferente. Um filtro que compara texto só pode bloquear as grafias exatas que lhe foram informadas, e há grafias demais para enumerar. O endereço `169.254.169.254` tem o mesmo problema: escrito como inteiro decimal ou hex, ele passa direto por um filtro que procura a forma pontuada.
+
+## Decodifique primeiro, depois classifique
+
+O movimento confiável é analisar o host até seu valor numérico e classificar esse valor contra as faixas reservadas, exatamente como esta ferramenta faz. Uma vez que `2130706433`, `0x7f000001` e `127.1` são todos reduzidos ao mesmo número de 32 bits, todos caem em `127.0.0.0/8` e são sinalizados juntos. A normalização remove a liberdade do atacante de reescrever o alvo.

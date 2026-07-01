@@ -1,0 +1,32 @@
+---
+slug: why-salting-defeats-precomputed-tables
+title: "Por Que o Salt Derrota Tabelas Pré-computadas"
+summary: "Um salt é um valor aleatório único armazenado com cada hash de senha e misturado antes de aplicar o hash. Ele faz senhas idênticas gerarem hashes diferentes, o que destrói a economia das tabelas pré-computadas: um atacante precisaria de uma tabela separada para cada salt. O salt é a defesa específica que neutraliza serviços de consulta e tabelas rainbow."
+concepts: ["salt", "precomputed tables", "rainbow tables", "password storage"]
+relatedTools: ["hash-preimage-finder"]
+relatedArticles: ["brute-force-vs-lookup-tables", "slow-kdfs-bcrypt-scrypt-argon2", "choosing-a-password-hash"]
+category: hashing
+order: 84
+status: machine-draft
+updated: "2026-07-01"
+---
+
+Tabelas pré-computadas e tabelas rainbow funcionam porque o hash sem sal de uma dada entrada é sempre o mesmo valor. O salt remove exatamente essa premissa.
+
+## O que dá errado sem salt
+
+Se as senhas são hasheadas de forma crua, `hash("senha")` é o mesmo em todo lugar. Uma única tabela pré-computada quebra essa conta em todos os sites de uma vez, e dois usuários que escolheram a mesma senha têm o mesmo hash armazenado, visível num vazamento de banco de dados.
+
+## O que é um salt
+
+Um salt é um valor aleatório por senha, tipicamente de 16 bytes ou mais, gerado quando a senha é definida e armazenado às claras junto ao hash. O registro armazenado é, na prática, `hash(salt + senha)` junto com o próprio salt.
+
+## Por que as tabelas param de funcionar
+
+Para usar uma tabela pré-computada contra um hash com sal, o atacante teria que tê-la construído usando **este salt específico**. Com um salt único por linha, nenhuma tabela pode ser reaproveitada entre contas, e a pré-computação não rende nada: o atacante é forçado a voltar a calcular hashes para um alvo de cada vez.
+
+## O que o salt não faz
+
+O salt não desacelera um ataque contra um único salt conhecido. Uma vez que o atacante tem o salt (ele não é secreto), ainda pode tentar e verificar contra aquele alvo tão rápido quanto o hash permitir. Derrotar isso é tarefa de uma KDF lenta, não do salt.
+
+Um salt não é secreto e não substitui um hash de senha lento. O armazenamento correto de senhas precisa dos dois: um salt único para matar a pré-computação e uma função deliberadamente lenta para tornar cada tentativa cara.

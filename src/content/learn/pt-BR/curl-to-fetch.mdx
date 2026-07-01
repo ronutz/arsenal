@@ -1,0 +1,20 @@
+---
+slug: curl-to-fetch
+title: "Traduzindo curl para fetch()"
+summary: "A API fetch do navegador e o curl descrevem a mesma requisição de formas diferentes. Método, cabeçalhos e corpo se mapeiam de forma limpa, mas algumas diferenças (Content-Type de formulário implícito, cookies e verificação TLS) exigem cuidado."
+concepts: ["curl", "fetch", "javascript", "requisições http"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["curl-data-flags-and-content-type", "curl-headers-auth-and-cookies", "reading-a-curl-command"]
+category: networking
+order: 78
+status: machine-draft
+updated: "2026-07-01"
+---
+
+`fetch()` e curl expressam a mesma requisição em formatos diferentes, e o mapeamento é quase todo mecânico.
+
+O método vira a opção `method`; GET é o padrão e pode ser omitido. Cada cabeçalho `-H` vira uma entrada no objeto `headers`. O corpo vira `body`: uma string `-d` vai direto, mas como o `-d` do curl implica `application/x-www-form-urlencoded`, o fetch precisa desse Content-Type declarado explicitamente, a menos que o comando tenha definido outro. Um upload multipart `-F` vira um objeto `FormData` montado campo a campo; o navegador define o limite do multipart, então você não define o Content-Type.
+
+Duas diferenças pegam as pessoas. Primeiro, o fetch não leva cookies por padrão como uma sessão de shell poderia; enviá-los exige `credentials: "include"`. Segundo, o fetch não pode desativar a verificação do certificado TLS, então um comando `-k` não tem equivalente fiel no navegador.
+
+Todo o resto é uma tradução direta da requisição analisada, e é por isso que uma ferramenta que já analisou o comando curl consegue gerar a chamada fetch para você.

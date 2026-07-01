@@ -44,7 +44,7 @@ export { X509DecodeError } from "./compute";
 /** The D-49 declarative manifest for the X.509 tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Certificates & PKI",
+  toolFamily: "PKI",
   toolSlug: "x509",
   canonicalAliases: ["x509-decode", "certificate-decode", "cert-decode", "pem-decode"],
   inputDetectors: [

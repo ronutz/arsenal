@@ -28,7 +28,7 @@ export type { PkceResult } from "./compute";
 /** The D-49 declarative manifest for the PKCE tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Identity & Tokens",
+  toolFamily: "Identity & tokens",
   toolSlug: "pkce",
   canonicalAliases: ["code-verifier", "code-challenge", "oauth-pkce", "s256"],
   inputDetectors: [

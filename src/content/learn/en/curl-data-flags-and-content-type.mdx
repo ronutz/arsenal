@@ -1,0 +1,22 @@
+---
+slug: curl-data-flags-and-content-type
+title: "curl Data Flags and the Content-Type Trap"
+summary: "curl has several ways to attach a body, and they differ in encoding and default Content-Type. The big surprise is that -d defaults to form encoding, not JSON, so a JSON body can be mislabeled and rejected."
+concepts: ["curl", "request body", "content-type", "multipart", "form encoding"]
+relatedTools: ["http-request-translator"]
+relatedArticles: ["reading-a-curl-command", "curl-to-fetch", "curl-method-inference"]
+category: networking
+order: 77
+status: machine-draft
+updated: "2026-07-01"
+---
+
+curl can attach a request body in several ways, and they are not interchangeable.
+
+`-d` / `--data` sends the value and, importantly, sets `Content-Type: application/x-www-form-urlencoded` by default. This is the most common curl surprise: `curl -d '{"name":"Alice"}'` sends JSON text but labels it as a form, so a JSON API may reject it. The fix is to state the type: add `-H "Content-Type: application/json"`.
+
+`--data-urlencode` percent-encodes its value, which is what you want for form fields that contain spaces or symbols. `--data-binary` sends the bytes exactly, without the newline stripping that `-d` performs. Multiple `-d` flags are joined with `&`.
+
+`-F` / `--form` builds a `multipart/form-data` body. Each `-F name=value` is a field, and `-F name=@file` attaches a file. curl chooses the multipart boundary for you, so you never set it by hand.
+
+When you translate a curl command to another language, carry the Content-Type curl actually sends, not the one you would guess from the body's shape. That single detail is where most hand conversions go wrong.

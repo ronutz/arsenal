@@ -27,7 +27,7 @@ export type { UuidInfo } from "./compute";
 /** The D-49 declarative manifest for the UUID tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Identifiers",
+  toolFamily: "Identifiers & time",
   toolSlug: "uuid",
   canonicalAliases: ["guid", "uuidv4", "uuidv7", "unique-id"],
   inputDetectors: [

@@ -36,7 +36,7 @@ export { JwtDecodeError } from "./compute";
 /** The D-49 declarative manifest for the JWT tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
-  toolFamily: "Identity & Tokens",
+  toolFamily: "Identity & tokens",
   toolSlug: "jwt",
   canonicalAliases: ["jwt-decode", "jws", "token-decode"],
   inputDetectors: [
