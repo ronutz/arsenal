@@ -1,0 +1,38 @@
+---
+slug: awaf-data-guard-response-masking
+title: "Data Guard: Masking Sensitive Data in Responses"
+summary: "Data Guard is Advanced WAF's response-side protection. It scans server responses for sensitive information, such as credit-card numbers, US Social Security numbers, and custom patterns, and masks it before it reaches the client. Unlike most WAF checks, which inspect the request, Data Guard guards what leaks out."
+concepts: ["f5", "awaf", "waf", "asm", "data guard", "response masking", "sensitive data", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "awaf-enforcement-mode-blocking-vs-transparent"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-07-02"
+---
+
+Most of a WAF policy inspects what comes *in*. Data Guard is different: it inspects what goes *out*. It is Advanced WAF's defense against sensitive data leaking in a server response.
+
+## What it does
+
+F5 describes it plainly: Data Guard prevents responses from exposing sensitive information by masking the data. When a response passes through the BIG-IP, Data Guard scans the body for the patterns it is configured to protect, and replaces the matched value (typically with asterisks) so the client never sees the real data.
+
+## What it protects
+
+Out of the box, Data Guard can detect and mask **credit-card numbers** and **US Social Security numbers**. Beyond those built-in detectors, you can add your own **custom patterns**, expressed as regular expressions, for anything else that is sensitive to your application, such as internal account numbers or record IDs.
+
+In a declarative policy the section looks like this:
+
+```json
+{ "policy": { "data-guard": { "enabled": true, "creditCardNumbers": true, "usSocialSecurityNumbers": true, "customPatterns": [] } } }
+```
+
+`enabled` turns the feature on; `creditCardNumbers` and `usSocialSecurityNumbers` toggle the built-in detectors; `customPatterns` carries your own expressions. Data Guard can also be scoped so that it applies to, or is ignored on, a specific list of URLs.
+
+## Reading it in a policy
+
+Because a declarative policy is a delta on its template, an absent `data-guard` section means the template's default applies, not that masking is off. Only an explicit `"enabled": false` tells you masking is deliberately disabled in this policy. That distinction is a real finding: "Data Guard not mentioned" and "Data Guard turned off" are two different states, and only the second is a decision the policy author made.
+
+## Why it matters
+
+Data Guard is a compliance and defense-in-depth control. A backend that returns a full card number or an SSN in an error page is a genuine exposure, and Data Guard catches it at the edge, masking the value even when the application itself does not. It does not fix the underlying leak, but it stops the sensitive value from reaching the client, which is often the difference between an incident and a near miss.

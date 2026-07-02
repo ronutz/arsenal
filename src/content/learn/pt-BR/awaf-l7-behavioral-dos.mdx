@@ -1,0 +1,48 @@
+---
+slug: awaf-l7-behavioral-dos
+title: "L7 Behavioral DoS (BaDoS): como o Advanced WAF aprende o normal e mitiga o resto"
+summary: "O L7 Behavioral DoS é a defesa por machine learning do Advanced WAF contra DDoS na camada de aplicação. Ele aprende uma baseline de tráfego normal, observa o estresse do servidor e, quando o servidor sofre, constrói assinaturas dinâmicas e isola os IPs bad-actor, mitigando com medidas escalonadas. Veja como funciona, os dois modos de detecção e os cuidados que importam."
+concepts: ["f5", "awaf", "asm", "behavioral dos", "bados", "l7 dos", "ddos", "bad actor detection", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-content-profiles", "awaf-declarative-policy-structure"]
+category: security
+order: 7
+status: reviewed
+updated: "2026-07-02"
+---
+
+O rate limiting bloqueia tráfego acima de um limiar fixo, o que ou deixa passar ataques lentos ou pune picos legítimos. O L7 Behavioral DoS (BaDoS) adota uma abordagem diferente: ele aprende como é o normal e então mitiga o que se desvia, apenas quando o servidor está de fato sob estresse.
+
+## O que é o BaDoS e onde ele vive
+
+A F5 descreve diretamente: o BaDoS fornece proteção automática contra DDoS na camada de aplicação analisando o comportamento do tráfego com machine learning. Ele examina o tráfego entre clientes e servidores, estabelece automaticamente uma baseline de fluxo normal, então constrói assinaturas dinamicamente e aplica proteções com base no comportamento tanto da aplicação quanto dos atacantes, reduzindo falsos positivos e acelerando o tempo até a mitigação.
+
+Um detalhe de posicionamento importa: o BaDoS é configurado em um **DoS profile** (Security > DoS Protection > DoS Profiles), não na política de segurança do WAF, e o profile é associado ao virtual server. A seção `behavioral-enforcement` da política declarativa de WAF é uma peça relacionada, mas separada; o mecanismo completo de behavioral DoS vive no DoS profile.
+
+## Dois modos de detecção
+
+Um DoS profile do ASM oferece duas abordagens. A **detecção baseada em TPS** é o método clássico de taxa: conta transações por segundo e mitiga acima de um limiar. A **detecção Behavioral & Stress-based** é a mais inteligente: combina o monitoramento de tráfego de longo prazo com a medição de estresse do servidor, e declara um ataque apenas quando o servidor está de fato sob pressão. Para proteção puramente comportamental, defina o Operation Mode da detecção baseada em TPS como Off e configure a Behavioral & Stress-based.
+
+## O estresse é o gatilho
+
+Esta é a ideia central, e o primeiro cuidado. A mitigação stress-based só entra em ação quando o backend apresenta latência significativa, ou seja, quando o servidor está sob estresse. Isso é uma característica: o BaDoS não pune um pico de tráfego legítimo que o servidor aguenta com folga. Mas também é uma limitação. Um ataque que inunda sem estressar o servidor pode não disparar a detecção stress-based, e, inversamente, um pico de CPU não relacionado no backend pode disparar o stress-based DoS sem nenhum ataque presente. Leia os timestamps dos eventos em relação à latência do servidor para distinguir os dois.
+
+## Assinaturas dinâmicas e detecção de bad actors
+
+Quando o BaDoS decide que um ataque está em curso, ele responde de duas formas complementares:
+
+- As **Dynamic Request Signatures** caracterizam o tráfego de ataque e descartam as requisições L7 correspondentes. Isso captura o *padrão* do ataque, independentemente da origem.
+- A **Bad Actor Detection**, habilitada em Behavioral Detection and Mitigation, identifica os IPs ofensores individuais e os mitiga nas camadas 3 e 4. Como descarta o ator em vez de inspecionar cada requisição, é mais barata, e uma vez identificados os bad actors, o bloqueio por request signatures em L7 diminui.
+
+Os próprios labs da F5 mostram os dois trabalhando em conjunto: as assinaturas capturam o padrão, e então a bad-actor detection isola as origens e sustenta a mitigação.
+
+## Greylist, quarentena e escalonamento
+
+Os IPs atacantes vão para uma greylist. Antes de liberar um IP, o Advanced WAF o coloca em quarentena por um período; durante a quarentena, os métodos de TCP slowdown param e o HTTP rate limiting assume. Se o IP produzir mais tráfego de ataque durante a quarentena, ele é puxado de volta para a greylist. A mitigação, portanto, escalona e desescalona com o comportamento do ator, em vez de aplicar uma única ação contundente.
+
+## Boas práticas e cuidados
+
+- **Dê tempo ao BaDoS para construir uma baseline.** Ele precisa aprender o normal antes de identificar o anormal; habilitá-lo esperando proteção instantânea é interpretar mal como ele funciona.
+- **Comece em Transparent, verifique, depois Blocking**, exatamente como no modo de enforcement de uma política de WAF. O Thresholds Mode pode ser Automatic (recomendado) ou Manual; a mitigação varia de conservadora a agressiva.
+- **Lembre que o estresse é o gatilho.** Combine o BaDoS com outros controles, como rate limiting e IP intelligence, para ataques que não estressam o servidor.
+- **Fique atento a falsos disparos.** Um pico de CPU no backend não relacionado ao tráfego pode parecer um ataque; correlacione com a latência do servidor antes de concluir que há um em curso.

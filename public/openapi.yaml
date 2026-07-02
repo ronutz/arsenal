@@ -758,6 +758,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5-awaf-declarative-policy-explainer:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_declarative_policy_explainer
+      summary: F5 Advanced WAF declarative-policy explainer
+      description: >-
+        Paste a BIG-IP Advanced WAF declarative security policy (JSON) and get a section-by-section,
+        plain-language reading grounded in F5's published schema, with security callouts that read
+        the values: transparent enforcement means monitor-only, plus signature staging, Data Guard
+        off, and cookies missing Secure or HttpOnly. Runs entirely in your browser. Standards: F5
+        BIG-IP Advanced WAF declarative policy (schema v17.1). Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - '{ "policy": { "template": { "name": "POLICY_TEMPLATE_RAPID_DEPLOYMENT" } } }'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_declarative_policy_explainer_post
+      summary: F5 Advanced WAF declarative-policy explainer (POST)
+      description: >-
+        Paste a BIG-IP Advanced WAF declarative security policy (JSON) and get a section-by-section,
+        plain-language reading grounded in F5's published schema, with security callouts that read
+        the values: transparent enforcement means monitor-only, plus signature staging, Data Guard
+        off, and cookies missing Secure or HttpOnly. Runs entirely in your browser. Standards: F5
+        BIG-IP Advanced WAF declarative policy (schema v17.1). Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - '{ "policy": { "template": { "name": "POLICY_TEMPLATE_RAPID_DEPLOYMENT" } } }'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5-cipher-string-expander:
     get:
       tags:

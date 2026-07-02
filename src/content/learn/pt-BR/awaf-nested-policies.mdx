@@ -1,0 +1,38 @@
+---
+slug: awaf-nested-policies
+title: "Políticas aninhadas no Advanced WAF: herança pai/filho e microsserviços de política"
+summary: "O Advanced WAF oferece duas formas de estruturar a configuração de política em camadas em vez de escrever uma política plana: políticas pai e filho, em que os filhos herdam elementos obrigatórios de um pai, e microsserviços de política de segurança, em que uma única política carrega subconfigurações aninhadas correspondidas por hostname e URL. Veja como cada uma funciona e quando usá-la."
+concepts: ["f5", "awaf", "asm", "nested policies", "parent child policy", "microservices", "policy inheritance", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "awaf-enforcement-mode-blocking-vs-transparent"]
+category: security
+order: 9
+status: reviewed
+updated: "2026-07-02"
+---
+
+Quando uma política de segurança plana não basta, o Advanced WAF oferece duas formas distintas de estruturar a configuração de política, e elas resolvem problemas diferentes. Vale ser preciso, porque "políticas aninhadas" pode significar qualquer uma das duas.
+
+## Dois tipos de aninhamento
+
+As **políticas pai e filho** permitem compartilhar e impor configurações comuns em muitas políticas separadas. Os **microsserviços de política de segurança** permitem que uma única política se comporte de forma diferente para fatias específicas de tráfego. Ambos são aninhados no sentido de que a configuração é em camadas em vez de plana, mas não são o mesmo recurso e compõem de formas diferentes.
+
+## Políticas pai e filho (em camadas)
+
+Introduzida no BIG-IP 13.0, esta é uma hierarquia de herança entre políticas separadas. Uma política pai contém elementos obrigatórios, e as políticas filho herdam esses atributos; quando o pai é atualizado, as políticas filho associadas são atualizadas automaticamente. O valor é a centralização: mantenha as configurações comuns uma vez, imponha elementos obrigatórios a cada filho e envie uma única mudança para muitas políticas de uma vez, enquanto cada filho ainda atende às suas necessidades próprias.
+
+A herança é por configuração. Nas configurações do pai você marca cada uma como **Mandatory Inheritance** (o filho herda e não pode alterar), **Optional Inheritance** (o filho decide) ou **No Inheritance**. Um filho é criado apontando as suas Inheritance Settings para uma política pai. Duas regras importam na prática: um filho pode trocar de pai, mas não pode ficar órfão; e uma política sem pai e sem filhos é simplesmente uma política standalone.
+
+## Microsserviços de política de segurança
+
+Este é o outro tipo de aninhamento, e vive dentro de uma única política em vez de entre políticas. Um microsserviço é uma combinação de **Hostname e URL**, e permite dar a uma fatia específica de tráfego uma resposta diferente do resto da política. Os próprios exemplos da F5 deixam o padrão claro: uma política em modo Blocking com um microsserviço em modo Transparent, uma política em modo Blocking com overrides de blocking-settings para um microsserviço, ou uma política em modo Transparent com um microsserviço em modo Blocking.
+
+Cada microsserviço pode sobrescrever o modo de enforcement e violações específicas, como a detecção de técnicas de evasão. A correspondência é ordenada: os microsserviços são avaliados na ordem da lista, você arrasta e solta para reordená-los, e o **Default microservice**, que representa o enforcement da política base, não pode ser movido. Como o ajuste é por microsserviço, você também recebe sugestões de aprendizado por microsserviço, de modo que pode promover uma fatia de transparent para blocking independentemente do resto.
+
+## Correspondência por wildcard, a aresta
+
+O hostname e a URL de um microsserviço podem cada um ser um wildcard puro ou não puro, mas não podem ambos ser wildcards puros ao mesmo tempo. E há uma armadilha específica: a opção **"URL Wildcard Match Includes Slashes"** vem habilitada por padrão, e um wildcard que começa com `*` precisa mantê-la habilitada, ou não corresponderá a nada, porque o wildcard de outra forma rejeitaria a barra inicial presente em toda URL.
+
+## Qual usar
+
+Recorra a **pai/filho** quando você opera muitas políticas e precisa impor padrões de segurança comuns a todas elas de um único lugar. Recorra a **microsserviços** quando uma aplicação, atrás de uma política, tem partes que precisam de tratamento diferente, um novo endpoint que você quer rodar em transparent enquanto o resto bloqueia, ou um caminho específico que precisa de overrides mais rígidos. Os dois compõem: uma política filho pode, ela mesma, usar microsserviços internamente.

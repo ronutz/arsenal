@@ -1,0 +1,39 @@
+---
+slug: f5-datasafe-application-layer-encryption
+title: "F5 DataSafe: Client-Side Application-Layer Encryption, and Its Sharp Edges"
+summary: "DataSafe is F5's fraud-protection layer that encrypts sensitive fields inside the browser, before an in-browser Trojan or key logger can read them. It injects JavaScript that encrypts data client-side with a per-session public key, decrypted on the BIG-IP with the private key. Here is how it works, what each feature does, and the caveats that catch people."
+concepts: ["f5", "awaf", "asm", "datasafe", "fraud protection", "application layer encryption", "client-side", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-client-side-signals-and-challenges", "awaf-content-profiles"]
+category: security
+order: 5
+status: reviewed
+updated: "2026-07-02"
+---
+
+Most of an Advanced WAF policy inspects the request after it reaches the BIG-IP. DataSafe defends a different place entirely: inside the user's browser, before the data is ever submitted. It is F5's answer to client-side fraud, the Trojans, man-in-the-browser malware, and key loggers that read data in the browser before your WAF can see it.
+
+## What DataSafe is
+
+F5 describes it plainly: DataSafe protects against Trojan attacks by encrypting data at the application layer on the client side. Encryption is performed in the browser with a public key the BIG-IP generates uniquely per session, and the BIG-IP decrypts it with a private key kept server-side. This is not TLS. TLS protects data in transit; DataSafe protects data *inside the browser*, so that malware sitting in the page sees only ciphertext.
+
+DataSafe is part of **Fraud Protection Service (FPS)**, which must be provisioned. You create a DataSafe profile, attach it to a virtual server (usually an SSL virtual server), and DataSafe injects its **Main JavaScript** into the protected pages. Injection is on by default, its location is configurable relative to a tag you choose, and it can be disabled on pages that only receive data from a protected page rather than collecting it.
+
+## Application Layer Encryption
+
+Everything at the URL or single-page-application view level sits under Application Layer Encryption (ALE), which must be enabled first. F5 states ALE protects against credential theft from man-in-the-middle and MITM-browser attacks, verifies whether a user is trying to use a fabricated password, validates the client-side password, and encrypts credentials in real time on submission.
+
+Under ALE sit the individual protections. **Real-Time Encryption** encrypts passwords as the user types, defeating in-browser key loggers. **HTML Field Obfuscation** encrypts the `name` attribute of input fields and decrypts it back on the BIG-IP, so field names are not stable targets. **Add Decoy Inputs** continuously generates and removes fake input fields, making it harder for an attacker to pick the real one out by script or proxy. **Full AJAX Encryption** covers JSON and AJAX submissions. **Identify Stolen Credentials** checks whether a submitted password was stolen from a substitute-value parameter.
+
+## The caveats that catch people
+
+These are grounded in F5's own configuration guide, and they are the details that turn a smooth rollout into a support case:
+
+- **Real-Time Encryption and a custom encryption function are mutually exclusive.** If you supply your own encryption function on a URL, you cannot enable Real-Time Encryption on it.
+- **Remove Event Listeners is a blunt instrument.** It strips JavaScript event listeners from parameters to keep attackers from reading them, but F5 warns it removes *all* event listeners, including the non-malicious ones your application relies on for functionality. Test the page before you enable it.
+- **Wildcard parameters need BIG-IP 14.0 or later.** On 13.x and earlier, you must use explicit parameter names only.
+- **Inheritance is not uniform.** In parent-child profiles, undefined properties inherit from the parent and track future parent changes, but URL properties are not inherited. A cloned profile or URL, by contrast, has no ongoing dependency: changes to the original after cloning are not picked up.
+
+## Where it fits
+
+DataSafe is defense-in-depth for high-value logins, forms, and payment pages, aimed at the in-browser threat a WAF's request inspection cannot see. It is not a replacement for the WAF policy; it runs alongside it. Because it injects and executes JavaScript in the client, roll it out page by page with testing, especially where Remove Event Listeners or heavy obfuscation might collide with the application's own scripts.

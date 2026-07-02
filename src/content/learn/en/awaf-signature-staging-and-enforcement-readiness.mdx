@@ -1,0 +1,36 @@
+---
+slug: awaf-signature-staging-and-enforcement-readiness
+title: "Signature Staging and the Enforcement Readiness Period"
+summary: "Staging is how Advanced WAF lets a new or updated attack signature match and log without blocking, so you can review it before it can reject traffic. Combined with the enforcement readiness period, it means a policy can be in blocking mode and still not block a staged signature. Here is how to read that state."
+concepts: ["f5", "awaf", "waf", "asm", "signature staging", "enforcement readiness", "attack signatures", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-declarative-policy-structure"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-07-02"
+---
+
+There is a second reason, beyond enforcement mode, why a policy that looks protective might not block a given attack yet: staging. It is a deliberate safety feature, and reading it correctly keeps you from either trusting a policy too early or ripping out protection you think is broken.
+
+## What staging does
+
+When a signature is **in staging**, Advanced WAF matches it against traffic and logs the match, but it does not act on it. Nothing is blocked; the match is recorded so you can review it. The point is to let a new or updated attack signature prove itself against real traffic before it is allowed to reject a request, so a noisy or false-positive-prone signature cannot take down legitimate traffic the moment it is added.
+
+In a declarative policy, the global toggle sits in `signature-settings`:
+
+```json
+{ "policy": { "signature-settings": { "signatureStaging": true } } }
+```
+
+With `signatureStaging` set to `true`, newly added and updated signatures go into staging. With it `false`, they are enforced immediately, subject to the policy's enforcement mode.
+
+## The enforcement readiness period
+
+Staging is not indefinite. The **enforcement readiness period**, set in the `general` section as `enforcementReadinessPeriod` (a number of days), is how long a new entity stays in staging before it becomes eligible to be enforced. During that window the system watches the entity; only after the period, and after it has behaved, is it ready to move out of staging and start blocking.
+
+## The trap: blocking mode plus staging
+
+Here is the state that trips people up. A policy can be in blocking mode, with a signature clearly present and set to block, and still not block, because that signature is in staging. Staging sits above the block flag: a staged signature logs but does not act, regardless of enforcement mode. So "blocking + staging on" for a signature means it is being observed, not enforced.
+
+When you read a policy, treat signature staging the same way you treat transparent mode: it is a reason a configured protection is not yet live. The safe sequence is the intended one, run signatures in staging, review what they catch, and take them out of staging once you trust them.

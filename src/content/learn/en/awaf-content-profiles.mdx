@@ -1,0 +1,41 @@
+---
+slug: awaf-content-profiles
+title: "Advanced WAF Content Profiles: Parsing JSON, XML, GraphQL, and GWT Safely"
+summary: "A content profile tells Advanced WAF how to parse a structured payload, JSON, XML, GraphQL, GWT, or plain text, so it can apply attack signatures to individual fields and enforce structural limits that stop parser abuse and denial-of-service. Here is what each profile type does, the defense attributes that matter, and the best practices and caveats."
+concepts: ["f5", "awaf", "asm", "content profiles", "json", "xml", "graphql", "gwt", "api security", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "f5-datasafe-application-layer-encryption"]
+category: security
+order: 6
+status: reviewed
+updated: "2026-07-02"
+---
+
+A WAF that treats a request body as one opaque blob cannot tell a legitimate JSON document from a malicious one, and it cannot apply a signature to a single field without drowning in false positives. A content profile fixes that: it tells Advanced WAF how to parse the payload for a given content type, so the WAF can walk the structure, apply attack signatures to each value, and enforce limits on the shape of the data. Advanced WAF ships profile types for JSON, XML, GWT (Google Web Toolkit), GraphQL, and plain text, and you attach a profile to the URLs or parameters that carry that content.
+
+## JSON
+
+A JSON profile lets Advanced WAF parse a JSON body and apply signatures per field. Its defense attributes cap the shape of the data, maximum structure depth, maximum array length, maximum value length, and maximum total length, so a deeply nested or oversized document cannot exhaust the parser. This is how you stop JSON-based denial-of-service, and it is why an API endpoint should carry an explicit JSON profile rather than being treated as a bag of generic parameters.
+
+## XML and SOAP
+
+An XML profile inspects document structure and detects XML injection, XXE, and malformed-schema attacks. For SOAP, you control which methods the policy allows; disable a SOAP method and a request that uses it raises the "SOAP method not allowed" violation and is blocked in blocking mode. XML profiles also gate antivirus: if a policy contains XML profiles, SOAP attachments can be sent to an ICAP server for virus scanning. You can validate documents against a schema (WSDL or XSD) using validation files.
+
+## GraphQL
+
+GraphQL is the profile type worth dwelling on, because its flexible query model is its own attack surface. F5's GraphQL profile, driven in a declarative policy by the `graphql-profiles` section, carries defense attributes that map directly to GraphQL's risks: `allowIntrospectionQueries` (turn introspection off in production so attackers cannot read your schema), `maximumStructureDepth` (block deeply nested queries that exhaust resources), `maximumBatchedQueries` (limit query batching), `maximumTotalLength` and `maximumValueLength`, and `tolerateParsingWarnings`. Native parsing lets the WAF apply attack signatures to each JSON field with a low false-positive rate, and GraphQL travels as JSON over a POST body or a GET parameter. F5 ships a GraphQL policy template and profile so you can turn this on quickly, then tune.
+
+## GWT and plain text
+
+A GWT profile understands Google Web Toolkit's binary serialization format, which generic WAFs often fail to parse, so signatures can reach the decoded fields of those legacy enterprise applications. Plain-text profiles cover free-form text bodies.
+
+## Meta characters and tuning
+
+Across JSON, XML, and GWT profiles you can check for allowed or disallowed meta characters in the content, and override the policy so the system skips meta-character checks on particular content, a useful escape hatch when a field legitimately contains characters the policy would otherwise flag.
+
+## Best practices and caveats
+
+- **Give every API endpoint the right content profile.** A JSON API left as generic parameters loses per-field signatures and structural limits.
+- **For GraphQL, disable introspection in production** and set a sane nesting depth and batch limit; those two defaults are the difference between protected and trivially DoS-able.
+- **Structural limits are your DoS control** for structured payloads. Set them to match your real API, not to the maximums.
+- **Remember the template-delta rule.** These profiles live in the policy's content-profile sections, and in a declarative policy they are optional adjustments, so an absent profile means the template's default parsing applies, not that a payload is unprotected.

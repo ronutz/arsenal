@@ -73,6 +73,7 @@ export const tools: ToolEntry[] = [
   { id: "hash-preimage-finder", href: "/tools/hash-preimage-finder", category: "hashing", available: true },
   { id: "http-request-translator", href: "/tools/http-request-translator", category: "web", available: true },
   { id: "ssrf-url-classifier", href: "/tools/ssrf-url-classifier", category: "security", available: true },
+  { id: "f5-awaf-declarative-policy-explainer", href: "/tools/f5-awaf-declarative-policy-explainer", category: "security", vendors: ["f5"], available: true },
 ];
 
 /** Tools that are live and linkable. */

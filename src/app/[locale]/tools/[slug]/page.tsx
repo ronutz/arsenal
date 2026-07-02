@@ -83,6 +83,8 @@ import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool"
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
 import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
 import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check-date";
+import F5AwafDeclarativePolicyExplainerTool from "@/components/F5AwafDeclarativePolicyExplainerTool";
+import { manifest as f5AwafManifest } from "@/lib/tools/f5-awaf-declarative-policy-explainer";
 import F5SslProfileExplainerTool from "@/components/F5SslProfileExplainerTool";
 import { manifest as sslProfileManifest } from "@/lib/tools/f5-ssl-profile-explainer";
 import EpochTool from "@/components/EpochTool";
@@ -229,6 +231,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5xc-service-policy-explainer": {
     Component: F5xcServicePolicyExplainerTool,
     sources: f5xcServicePolicyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-awaf-declarative-policy-explainer": {
+    Component: F5AwafDeclarativePolicyExplainerTool,
+    sources: f5AwafManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "cvss-vector-decoder": {
     Component: CvssVectorDecoderTool,

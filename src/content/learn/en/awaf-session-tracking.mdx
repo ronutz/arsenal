@@ -1,0 +1,47 @@
+---
+slug: awaf-session-tracking
+title: "Advanced WAF Session Tracking: Finding and Stopping the Client Behind the Requests"
+summary: "Session tracking lets Advanced WAF identify the user, session, device, or IP behind a stream of requests, and act on that identity, logging, delaying blocking, or blocking everything, once a client crosses a violation threshold. Here is how session awareness works, the three actions, and why username tracking beats session-ID tracking."
+concepts: ["f5", "awaf", "asm", "session tracking", "session awareness", "login pages", "device id", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-l7-behavioral-dos"]
+category: security
+order: 8
+status: reviewed
+updated: "2026-07-02"
+---
+
+A WAF policy blocks individual bad requests. Session tracking answers a different question: which client is behind the bad requests, and what should we do about that client? It is how Advanced WAF moves from stopping a request to stopping an actor.
+
+## What session tracking does
+
+F5 puts it plainly: you use session tracking to track, enforce, and report on user sessions and IP addresses. You enable session awareness, tell ASM how to identify the user, and it then counts violations per user, session, device ID, or IP address and acts when a threshold is crossed. It lives under Security > Application Security > Sessions and Logins > Session Tracking.
+
+## How ASM identifies the client
+
+ASM identifies a session with its own ASM cookie, which carries the session ID it generates when a client first arrives. For the username, you have three choices: **use login pages** configured in ASM, **use APM usernames and session ID** when APM authenticates the user, or **none**, for applications without a login page, tracking by session or IP only. Login pages define the URLs, parameters, and validation criteria for logging in, and they are what make username tracking possible.
+
+## The three actions
+
+When you enable "Track Violations and Perform Actions", ASM counts violations over a sliding **Violation Detection Period** (default 900 seconds). If a client crosses a threshold, ASM triggers one or more of three actions:
+
+- **Block All** blocks all activity from that user, session, or IP.
+- **Log All Requests** logs everything from that client, so you can investigate.
+- **Delay Blocking** is the more tolerant option, meant for violations prone to false positives; it blocks more cautiously rather than immediately.
+
+A grounded dependency ties this to enforcement mode: for Block All to actually block, the policy's enforcement mode must be blocking *and* the specific violations must be set to block. Session tracking rides on top of the enforcement mode; it does not override it.
+
+## Why username tracking beats session-ID tracking
+
+This is the practical insight. If you track only by session ID, an attacker evades you by starting a new session, a fresh browser gives a new session ID and a clean slate. **Username tracking follows the user across sessions and browsers**: the same username stays blocked no matter how many new sessions it opens. F5's own walkthrough shows exactly this, blocking by session is dodged with a second browser, blocking by username is not. If you can identify users, through login pages or APM, track by username.
+
+## Acting on a single session by hand
+
+Session tracking is not only automatic. From the event logs, when you spot a user misbehaving, you can select that specific session and apply Log All Requests, Delay Blocking, or Block All to it directly, then watch it in Reporting > Application > Session Tracking Status.
+
+## Caveats
+
+- **Block All depends on blocking enforcement** and on the violations being set to block. In transparent mode it will not block.
+- **Device ID tracking requires JavaScript.** F5 warns that a client which does not accept JavaScript is blocked even in transparent mode when device-ID tracking is on, so account for legitimate non-JS clients before you enable it.
+- **The Violation Detection Period is a sliding window.** Set it to match how bursty your real abuse looks, not so short it misses slow abuse nor so long it reacts sluggishly.
+- **In a declarative policy this is the `session-tracking` section.** As always, an absent section means the template default, not "off".

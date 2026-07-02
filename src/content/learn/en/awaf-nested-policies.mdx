@@ -1,0 +1,38 @@
+---
+slug: awaf-nested-policies
+title: "Nested Policies in Advanced WAF: Parent/Child Inheritance and Policy Microservices"
+summary: "Advanced WAF gives you two ways to layer policy configuration rather than write one flat policy: parent and child policies, where children inherit mandatory elements from a parent, and security policy microservices, where a single policy carries nested sub-configurations matched by hostname and URL. Here is how each works and when to use it."
+concepts: ["f5", "awaf", "asm", "nested policies", "parent child policy", "microservices", "policy inheritance", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "awaf-enforcement-mode-blocking-vs-transparent"]
+category: security
+order: 9
+status: reviewed
+updated: "2026-07-02"
+---
+
+When one flat security policy is not enough, Advanced WAF offers two distinct ways to structure policy configuration, and they solve different problems. It is worth being precise, because "nested policies" can mean either one.
+
+## Two kinds of nesting
+
+**Parent and child policies** let you share and enforce common settings across many separate policies. **Security policy microservices** let one policy behave differently for specific slices of traffic. Both are nested in the sense that configuration is layered rather than flat, but they are not the same feature and they compose differently.
+
+## Parent and child (layered) policies
+
+Introduced in BIG-IP 13.0, this is an inheritance hierarchy across separate policies. A parent policy holds mandatory elements, and child policies inherit those attributes; when the parent is updated, the associated child policies update automatically. The value is centralization: maintain common settings once, impose mandatory elements on every child, and push a single change to many policies at once, while each child still addresses its own unique requirements.
+
+Inheritance is per setting. On the parent's settings you mark each as **Mandatory Inheritance** (the child inherits it and cannot change it), **Optional Inheritance** (the child decides), or **No Inheritance**. A child is created by pointing its Inheritance Settings at a parent policy. Two rules matter in practice: a child can switch parents, but it cannot be orphaned; and a policy with no parent and no children is simply a standalone policy.
+
+## Security policy microservices
+
+This is the other kind of nesting, and it lives inside a single policy rather than across policies. A microservice is a combination of **Hostname and URL**, and it lets you give a specific slice of traffic a different response from the rest of the policy. F5's own examples make the pattern clear: a policy in Blocking mode with a microservice in Transparent mode, a policy in Blocking mode with blocking-settings overrides for a microservice, or a policy in Transparent mode with a microservice in Blocking mode.
+
+Each microservice can override the enforcement mode and specific violations, such as evasion-technique detection. The matching is ordered: microservices are evaluated in list order, you drag and drop to reorder them, and the **Default microservice**, which represents the base policy enforcement, cannot be moved. Because tuning is per-microservice, you also get per-microservice learning suggestions, so you can promote one slice from transparent to blocking independently of the rest.
+
+## Wildcard matching, the sharp edge
+
+A microservice's hostname and URL can each be a pure or non-pure wildcard, but they cannot both be pure wildcards at once. And there is a specific trap: the **"URL Wildcard Match Includes Slashes"** option is enabled by default, and a wildcard that starts with `*` must keep it enabled, or it will match nothing, because the wildcard would otherwise reject the leading slash present in every URL.
+
+## Which to use
+
+Reach for **parent/child** when you run many policies and need to enforce common security standards across all of them from one place. Reach for **microservices** when one application, behind one policy, has parts that need different handling, a new endpoint you want to run in transparent while the rest blocks, or a specific path that needs stricter overrides. The two compose: a child policy can itself use microservices internally.

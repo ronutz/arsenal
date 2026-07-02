@@ -1,0 +1,47 @@
+---
+slug: awaf-session-tracking
+title: "Session Tracking do Advanced WAF: encontrando e detendo o cliente por trás das requisições"
+summary: "O session tracking permite que o Advanced WAF identifique o usuário, sessão, dispositivo ou IP por trás de um fluxo de requisições, e aja sobre essa identidade, registrando, adiando o bloqueio ou bloqueando tudo, quando um cliente cruza um limiar de violações. Veja como funciona a session awareness, as três ações e por que o rastreamento por usuário supera o rastreamento por session ID."
+concepts: ["f5", "awaf", "asm", "session tracking", "session awareness", "login pages", "device id", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-l7-behavioral-dos"]
+category: security
+order: 8
+status: reviewed
+updated: "2026-07-02"
+---
+
+Uma política de WAF bloqueia requisições ruins individuais. O session tracking responde a uma pergunta diferente: qual cliente está por trás das requisições ruins, e o que fazer com esse cliente? É como o Advanced WAF passa de deter uma requisição a deter um ator.
+
+## O que o session tracking faz
+
+A F5 coloca de forma simples: você usa o session tracking para rastrear, impor e reportar sobre sessões de usuário e endereços IP. Você habilita a session awareness, diz ao ASM como identificar o usuário, e ele então conta violações por usuário, sessão, device ID ou endereço IP e age quando um limiar é cruzado. Fica em Security > Application Security > Sessions and Logins > Session Tracking.
+
+## Como o ASM identifica o cliente
+
+O ASM identifica uma sessão com o seu próprio cookie ASM, que carrega o session ID gerado quando um cliente chega pela primeira vez. Para o nome de usuário, você tem três opções: **usar login pages** configuradas no ASM, **usar nomes de usuário e session ID do APM** quando o APM autentica o usuário, ou **none**, para aplicações sem página de login, rastreando apenas por sessão ou IP. As login pages definem as URLs, parâmetros e critérios de validação para fazer login, e são o que torna possível o rastreamento por usuário.
+
+## As três ações
+
+Ao habilitar "Track Violations and Perform Actions", o ASM conta violações ao longo de um **Violation Detection Period** deslizante (padrão 900 segundos). Se um cliente cruza um limiar, o ASM dispara uma ou mais de três ações:
+
+- **Block All** bloqueia toda a atividade daquele usuário, sessão ou IP.
+- **Log All Requests** registra tudo daquele cliente, para que você possa investigar.
+- **Delay Blocking** é a opção mais tolerante, destinada a violações propensas a falsos positivos; bloqueia com mais cautela em vez de imediatamente.
+
+Uma dependência fundamentada liga isso ao modo de enforcement: para que o Block All de fato bloqueie, o modo de enforcement da política precisa ser blocking *e* as violações específicas precisam estar configuradas para bloquear. O session tracking roda em cima do modo de enforcement; não o sobrepõe.
+
+## Por que o rastreamento por usuário supera o por session ID
+
+Esta é a percepção prática. Se você rastreia apenas por session ID, um atacante escapa iniciando uma nova sessão, um navegador novo dá um novo session ID e uma folha em branco. O **rastreamento por usuário segue o usuário entre sessões e navegadores**: o mesmo nome de usuário permanece bloqueado por mais sessões que ele abra. O próprio passo a passo da F5 mostra exatamente isso, o bloqueio por sessão é driblado com um segundo navegador, o bloqueio por usuário não é. Se você consegue identificar usuários, por login pages ou APM, rastreie por usuário.
+
+## Agindo sobre uma única sessão manualmente
+
+O session tracking não é apenas automático. A partir dos event logs, quando você identifica um usuário se comportando mal, você pode selecionar aquela sessão específica e aplicar Log All Requests, Delay Blocking ou Block All diretamente a ela, e então acompanhá-la em Reporting > Application > Session Tracking Status.
+
+## Cuidados
+
+- **O Block All depende do enforcement em blocking** e de as violações estarem configuradas para bloquear. Em modo transparent, ele não bloqueia.
+- **O rastreamento por device ID exige JavaScript.** A F5 avisa que um cliente que não aceita JavaScript é bloqueado mesmo em modo transparent quando o rastreamento por device ID está ligado, então considere clientes legítimos sem JS antes de habilitá-lo.
+- **O Violation Detection Period é uma janela deslizante.** Ajuste-o para o quão intermitente é o abuso real, nem tão curto que perca abuso lento, nem tão longo que reaja de forma lenta.
+- **Em uma política declarativa, esta é a seção `session-tracking`.** Como sempre, uma seção ausente significa o padrão do template, não "desligado".

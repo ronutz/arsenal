@@ -51,6 +51,16 @@ const PROVENANCE: Record<string, ToolProvenance> = {
     ],
     disclaimer: "vendor-docs",
   },
+  "f5-awaf-declarative-policy-explainer": {
+    basis:
+      "The decode runs entirely in your browser. Paste a declarative WAF policy JSON and it explains each recognized section in plain language, grounded in F5's published declarative-policy schema, and raises security callouts derived only from values the policy explicitly sets. It is decode-only: it never validates against a live BIG-IP, never evaluates the policy against traffic, and never fetches anything. It honors the template-delta rule, so an absent section is reported as the template default, never as disabled.",
+    sources: [
+      { label: "F5 BIG-IP WAF Declarative Policy (index)", url: "https://clouddocs.f5.com/products/waf-declarative-policy/", note: "The published schema versions: v16.0, v16.1, v17.0, v17.1, and v17.5" },
+      { label: "F5 Declarative WAF v17.1 Schema", url: "https://clouddocs.f5.com/products/waf-declarative-policy/schema_v17_1.html", note: "The field structure and F5's own per-field descriptions; the latest version with a complete published schema" },
+      { label: "F5 Declarative WAF v17.1 Schema Description", url: "https://clouddocs.f5.com/products/waf-declarative-policy/declarative_policy_v17_1.html", note: "F5's prose descriptions of each policy section" },
+    ],
+    disclaimer: "vendor-docs",
+  },
   "dig-output-explainer": {
     basis:
       "The breakdown is parsed entirely in your browser from the dig output you paste. Nothing is resolved and nothing is sent anywhere; the parser only reads the text and labels each part against the DNS message format.",

@@ -1,0 +1,41 @@
+---
+slug: awaf-content-profiles
+title: "Content Profiles do Advanced WAF: analisando JSON, XML, GraphQL e GWT com segurança"
+summary: "Um content profile diz ao Advanced WAF como analisar um payload estruturado, JSON, XML, GraphQL, GWT ou texto simples, para que ele possa aplicar assinaturas de ataque a campos individuais e impor limites estruturais que barram abuso do parser e negação de serviço. Veja o que cada tipo de profile faz, os atributos de defesa que importam e as boas práticas e cuidados."
+concepts: ["f5", "awaf", "asm", "content profiles", "json", "xml", "graphql", "gwt", "api security", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "f5-datasafe-application-layer-encryption"]
+category: security
+order: 6
+status: reviewed
+updated: "2026-07-02"
+---
+
+Um WAF que trata o corpo de uma requisição como um bloco opaco não consegue distinguir um documento JSON legítimo de um malicioso, e não consegue aplicar uma assinatura a um único campo sem se afogar em falsos positivos. Um content profile resolve isso: ele diz ao Advanced WAF como analisar o payload de um determinado tipo de conteúdo, para que o WAF percorra a estrutura, aplique assinaturas de ataque a cada valor e imponha limites sobre o formato dos dados. O Advanced WAF fornece tipos de profile para JSON, XML, GWT (Google Web Toolkit), GraphQL e texto simples, e você associa um profile às URLs ou parâmetros que carregam aquele conteúdo.
+
+## JSON
+
+Um JSON profile permite que o Advanced WAF analise um corpo JSON e aplique assinaturas por campo. Seus atributos de defesa limitam o formato dos dados, profundidade máxima da estrutura, comprimento máximo de array, comprimento máximo de valor e comprimento total máximo, para que um documento profundamente aninhado ou excessivamente grande não esgote o parser. É assim que você barra negação de serviço baseada em JSON, e é por isso que um endpoint de API deve carregar um JSON profile explícito em vez de ser tratado como um saco de parâmetros genéricos.
+
+## XML e SOAP
+
+Um XML profile inspeciona a estrutura do documento e detecta injeção de XML, XXE e ataques de esquema malformado. Para SOAP, você controla quais métodos a política permite; desabilite um método SOAP e uma requisição que o utilize dispara a violação "SOAP method not allowed" e é bloqueada em modo blocking. Os XML profiles também controlam o antivírus: se uma política contém XML profiles, anexos SOAP podem ser enviados a um servidor ICAP para verificação de vírus. Você pode validar documentos contra um schema (WSDL ou XSD) usando validation files.
+
+## GraphQL
+
+O GraphQL é o tipo de profile que merece atenção, porque seu modelo de consulta flexível é uma superfície de ataque própria. O GraphQL profile da F5, controlado em uma política declarativa pela seção `graphql-profiles`, carrega atributos de defesa que mapeiam diretamente para os riscos do GraphQL: `allowIntrospectionQueries` (desligue a introspecção em produção para que atacantes não leiam o seu schema), `maximumStructureDepth` (bloqueie consultas profundamente aninhadas que esgotam recursos), `maximumBatchedQueries` (limite o batching de consultas), `maximumTotalLength` e `maximumValueLength`, e `tolerateParsingWarnings`. A análise nativa permite que o WAF aplique assinaturas de ataque a cada campo JSON com baixa taxa de falsos positivos, e o GraphQL trafega como JSON em um corpo POST ou um parâmetro GET. A F5 fornece um template de política e um profile de GraphQL para que você ligue isso rapidamente e depois ajuste.
+
+## GWT e texto simples
+
+Um GWT profile entende o formato de serialização binária do Google Web Toolkit, que WAFs genéricos muitas vezes não conseguem analisar, para que as assinaturas alcancem os campos decodificados dessas aplicações corporativas legadas. Os profiles de texto simples cobrem corpos de texto livre.
+
+## Meta caracteres e ajuste
+
+Nos profiles de JSON, XML e GWT você pode verificar meta caracteres permitidos ou não permitidos no conteúdo, e sobrescrever a política para que o sistema pule a verificação de meta caracteres em determinado conteúdo, uma válvula de escape útil quando um campo contém, legitimamente, caracteres que a política de outra forma sinalizaria.
+
+## Boas práticas e cuidados
+
+- **Dê a cada endpoint de API o content profile correto.** Uma API JSON deixada como parâmetros genéricos perde as assinaturas por campo e os limites estruturais.
+- **Para GraphQL, desabilite a introspecção em produção** e defina uma profundidade de aninhamento e um limite de batch sensatos; esses dois padrões são a diferença entre protegido e trivialmente vulnerável a DoS.
+- **Os limites estruturais são o seu controle de DoS** para payloads estruturados. Ajuste-os para a sua API real, não para os máximos.
+- **Lembre da regra do delta sobre o template.** Esses profiles ficam nas seções de content-profile da política e, em uma política declarativa, são ajustes opcionais, então um profile ausente significa que a análise padrão do template se aplica, não que um payload esteja desprotegido.

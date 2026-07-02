@@ -44,6 +44,15 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-02",
+    time: "16:45",
+    kind: "tool",
+    title: "New tool: F5 Advanced WAF declarative-policy explainer",
+    tools: ["f5-awaf-declarative-policy-explainer"],
+    body:
+      "Paste a BIG-IP Advanced WAF (ASM) declarative policy (JSON) and get a section-by-section, plain-language reading grounded in F5's published schema, with security callouts that read the values: transparent enforcement means monitor-only, plus signature staging, X-Forwarded-For trust, Data Guard off, and cookies missing Secure or HttpOnly. Covers about 55 policy sections and honors the template-delta rule (an absent section means template default, not disabled). Decode-only, grounded in the F5 v17.1 declarative-policy schema (published versions v16.0 to v17.5), verified against 6 golden vectors built from F5's own example policies, with four Learn articles in English and Portuguese.",
+  },
+  {
+    date: "2026-07-02",
     time: "11:14",
     kind: "tool",
     title: "New tool: F5 service check date",

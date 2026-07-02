@@ -1,0 +1,36 @@
+---
+slug: awaf-signature-staging-and-enforcement-readiness
+title: "Staging de assinaturas e o período de prontidão para enforcement"
+summary: "Staging é como o Advanced WAF permite que uma assinatura de ataque nova ou atualizada corresponda e registre sem bloquear, para que você a revise antes que ela possa rejeitar tráfego. Combinado com o período de prontidão para enforcement, isso significa que uma política pode estar em modo blocking e ainda assim não bloquear uma assinatura em staging. Veja como ler esse estado."
+concepts: ["f5", "awaf", "waf", "asm", "signature staging", "enforcement readiness", "attack signatures", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-declarative-policy-structure"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-07-02"
+---
+
+Há uma segunda razão, além do modo de enforcement, pela qual uma política que parece protetora pode ainda não bloquear um determinado ataque: o staging. É um recurso de segurança deliberado, e lê-lo corretamente evita tanto confiar na política cedo demais quanto remover uma proteção que você acha que está quebrada.
+
+## O que o staging faz
+
+Quando uma assinatura está **em staging**, o Advanced WAF a compara com o tráfego e registra a correspondência, mas não age sobre ela. Nada é bloqueado; a correspondência é registrada para que você a revise. O objetivo é permitir que uma assinatura de ataque nova ou atualizada se prove contra tráfego real antes de ter permissão para rejeitar uma requisição, para que uma assinatura ruidosa ou propensa a falsos positivos não derrube tráfego legítimo no momento em que é adicionada.
+
+Em uma política declarativa, o interruptor global fica em `signature-settings`:
+
+```json
+{ "policy": { "signature-settings": { "signatureStaging": true } } }
+```
+
+Com `signatureStaging` definido como `true`, as assinaturas recém-adicionadas e atualizadas entram em staging. Com ele em `false`, elas são impostas imediatamente, sujeitas ao modo de enforcement da política.
+
+## O período de prontidão para enforcement
+
+O staging não é indefinido. O **período de prontidão para enforcement**, definido na seção `general` como `enforcementReadinessPeriod` (um número de dias), é por quanto tempo uma nova entidade permanece em staging antes de se tornar elegível para ser imposta. Durante essa janela o sistema observa a entidade; somente após o período, e depois de ela ter se comportado, ela fica pronta para sair do staging e começar a bloquear.
+
+## A armadilha: modo blocking com staging
+
+Aqui está o estado que confunde as pessoas. Uma política pode estar em modo blocking, com uma assinatura claramente presente e configurada para bloquear, e ainda assim não bloquear, porque essa assinatura está em staging. O staging fica acima da flag de block: uma assinatura em staging registra mas não age, independentemente do modo de enforcement. Então "blocking + staging ligado" para uma assinatura significa que ela está sendo observada, não imposta.
+
+Ao ler uma política, trate o staging de assinaturas da mesma forma que trata o modo transparent: é uma razão pela qual uma proteção configurada ainda não está ativa. A sequência segura é a pretendida: rode as assinaturas em staging, revise o que elas capturam e retire-as do staging quando você confiar nelas.

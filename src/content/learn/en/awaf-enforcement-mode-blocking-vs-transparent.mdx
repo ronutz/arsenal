@@ -1,0 +1,36 @@
+---
+slug: awaf-enforcement-mode-blocking-vs-transparent
+title: "Blocking vs Transparent: What Advanced WAF Enforcement Mode Really Does"
+summary: "A WAF policy's enforcementMode decides whether it protects or merely watches. In blocking mode, requests that trigger a block-configured violation are rejected. In transparent mode, nothing is blocked even when a violation fires, so the policy is monitor-only. Confusing the two is one of the most common WAF mistakes."
+concepts: ["f5", "awaf", "waf", "asm", "enforcement mode", "blocking", "transparent", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "awaf-signature-staging-and-enforcement-readiness"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-07-02"
+---
+
+Every BIG-IP Advanced WAF policy has an `enforcementMode`, and it is the first thing to check when you read one, because it decides whether the policy actually *protects* the application or only *watches* it.
+
+## The two modes
+
+F5 defines the behavior precisely. In **blocking** mode, traffic is blocked when it causes a violation that is configured for blocking. In **transparent** mode, traffic is not blocked even when a violation is triggered.
+
+```json
+{ "policy": { "enforcementMode": "blocking" } }
+```
+
+So a policy can be full of carefully configured signatures, brute-force protection, and Data Guard, and still block nothing at all, simply because it is in transparent mode. Transparent is effectively monitor-only: violations are detected and logged, which is exactly what you want during tuning, but no request is ever rejected.
+
+## Why the per-violation "block" flag is not enough
+
+Inside `blocking-settings`, each violation carries its own block, alarm, and learn flags. It is tempting to read those and conclude the policy blocks a given attack. But those per-violation block flags only take effect when the policy as a whole is in blocking mode. A violation marked to block in a transparent policy still will not block. The policy-level `enforcementMode` gates everything beneath it.
+
+## The related trap: passive mode
+
+There is a second way a policy can end up unable to block. `enablePassiveMode` attaches the policy to a Performance L4 (FastL4) virtual server, where traffic is analyzed but not modified in any way. A passive policy inspects and logs, but it cannot reject a request inline, no matter what `enforcementMode` says.
+
+## Reading it in practice
+
+When you inspect a policy, resolve the enforcement posture before anything else. If `enforcementMode` is `transparent`, treat every "block" you see below it as aspirational, not active. The safe migration path is deliberate: run transparent while you tune out false positives, confirm the violations you care about are set to block, and only then flip to blocking, so the switch enforces exactly what you have already validated.

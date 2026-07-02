@@ -2283,6 +2283,24 @@
         "blockedHint": "Cada um precisa que a service check date da licença seja igual ou posterior à data mostrada. Reative a licença primeiro.",
         "needsDate": "precisa de uma service check date de {date} ou posterior"
       }
+    },
+    "f5-awaf-declarative-policy-explainer": {
+      "name": "Explicador de política declarativa do F5 Advanced WAF",
+      "blurb": "Cole uma política de segurança declarativa do BIG-IP Advanced WAF (JSON) e receba uma leitura seção por seção, em linguagem clara e fundamentada no schema publicado pela F5, com alertas de segurança que interpretam os valores: enforcement transparent significa somente monitoramento, além de staging de assinaturas, Data Guard desligado e cookies sem Secure ou HttpOnly. Roda inteiramente no seu navegador.",
+      "inputLabel": "Política declarativa de WAF (JSON)",
+      "inputPlaceholder": "{\n  \"policy\": {\n    \"name\": \"my-app-policy\",\n    \"template\": { \"name\": \"POLICY_TEMPLATE_RAPID_DEPLOYMENT\" },\n    \"enforcementMode\": \"blocking\",\n    \"signature-settings\": { \"signatureStaging\": false }\n  }\n}",
+      "runsLocally": "Roda inteiramente no seu navegador. Nada do que você cola é enviado ou sai da página.",
+      "empty": "Cole uma política declarativa de WAF acima para vê-la explicada.",
+      "parseError": "Isso não é um JSON válido",
+      "notRecognized": "Isso não parece ser uma política declarativa de WAF",
+      "overviewHeading": "Visão geral",
+      "securityHeading": "Notas de segurança",
+      "sectionsHeading": "O que a política configura",
+      "unknownHeading": "Outras seções presentes (não explicadas)",
+      "labelTemplate": "Template",
+      "labelEnforcement": "Enforcement",
+      "example": "Exemplo",
+      "clear": "Limpar"
     }
   },
   "privacy_page": {

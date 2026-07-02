@@ -2283,6 +2283,24 @@
         "blockedHint": "Each needs the license's service check date to be on or after the date shown. Reactivate the license first.",
         "needsDate": "needs a service check date of {date} or later"
       }
+    },
+    "f5-awaf-declarative-policy-explainer": {
+      "name": "F5 Advanced WAF declarative-policy explainer",
+      "blurb": "Paste a BIG-IP Advanced WAF declarative security policy (JSON) and get a section-by-section, plain-language reading grounded in F5's published schema, with security callouts that read the values: transparent enforcement means monitor-only, plus signature staging, Data Guard off, and cookies missing Secure or HttpOnly. Runs entirely in your browser.",
+      "inputLabel": "Declarative WAF policy (JSON)",
+      "inputPlaceholder": "{\n  \"policy\": {\n    \"name\": \"my-app-policy\",\n    \"template\": { \"name\": \"POLICY_TEMPLATE_RAPID_DEPLOYMENT\" },\n    \"enforcementMode\": \"blocking\",\n    \"signature-settings\": { \"signatureStaging\": false }\n  }\n}",
+      "runsLocally": "Runs entirely in your browser. Nothing you paste is uploaded or leaves the page.",
+      "empty": "Paste a declarative WAF policy above to see it explained.",
+      "parseError": "That is not valid JSON",
+      "notRecognized": "This does not look like a declarative WAF policy",
+      "overviewHeading": "Overview",
+      "securityHeading": "Security notes",
+      "sectionsHeading": "What the policy configures",
+      "unknownHeading": "Other sections present (not explained)",
+      "labelTemplate": "Template",
+      "labelEnforcement": "Enforcement",
+      "example": "Example",
+      "clear": "Clear"
     }
   },
   "privacy_page": {

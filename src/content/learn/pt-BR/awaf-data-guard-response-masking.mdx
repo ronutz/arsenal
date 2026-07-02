@@ -1,0 +1,38 @@
+---
+slug: awaf-data-guard-response-masking
+title: "Data Guard: mascarando dados sensíveis nas respostas"
+summary: "O Data Guard é a proteção do lado da resposta do Advanced WAF. Ele examina as respostas do servidor em busca de informações sensíveis, como números de cartão de crédito, números de Seguro Social dos EUA e padrões personalizados, e as mascara antes que cheguem ao cliente. Diferente da maioria das verificações de WAF, que inspecionam a requisição, o Data Guard protege o que vaza para fora."
+concepts: ["f5", "awaf", "waf", "asm", "data guard", "response masking", "sensitive data", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "awaf-enforcement-mode-blocking-vs-transparent"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-07-02"
+---
+
+A maior parte de uma política de WAF inspeciona o que *entra*. O Data Guard é diferente: ele inspeciona o que *sai*. É a defesa do Advanced WAF contra o vazamento de dados sensíveis em uma resposta do servidor.
+
+## O que ele faz
+
+A F5 descreve de forma simples: o Data Guard impede que as respostas exponham informações sensíveis mascarando os dados. Quando uma resposta passa pelo BIG-IP, o Data Guard examina o corpo em busca dos padrões que está configurado para proteger e substitui o valor correspondente (tipicamente por asteriscos), de modo que o cliente nunca veja o dado real.
+
+## O que ele protege
+
+Por padrão, o Data Guard consegue detectar e mascarar **números de cartão de crédito** e **números de Seguro Social dos EUA**. Além desses detectores integrados, você pode adicionar seus próprios **padrões personalizados**, expressos como expressões regulares, para qualquer outra coisa sensível à sua aplicação, como números de conta internos ou IDs de registro.
+
+Em uma política declarativa, a seção fica assim:
+
+```json
+{ "policy": { "data-guard": { "enabled": true, "creditCardNumbers": true, "usSocialSecurityNumbers": true, "customPatterns": [] } } }
+```
+
+`enabled` liga o recurso; `creditCardNumbers` e `usSocialSecurityNumbers` alternam os detectores integrados; `customPatterns` carrega suas próprias expressões. O Data Guard também pode ser delimitado para se aplicar a, ou ser ignorado em, uma lista específica de URLs.
+
+## Lendo em uma política
+
+Como uma política declarativa é um delta sobre o seu template, uma seção `data-guard` ausente significa que o padrão do template se aplica, não que o mascaramento está desligado. Somente um `"enabled": false` explícito indica que o mascaramento foi deliberadamente desativado nesta política. Essa distinção é um achado real: "Data Guard não mencionado" e "Data Guard desligado" são dois estados diferentes, e apenas o segundo é uma decisão tomada pelo autor da política.
+
+## Por que importa
+
+O Data Guard é um controle de conformidade e de defesa em profundidade. Um backend que retorna um número completo de cartão ou um SSN em uma página de erro é uma exposição genuína, e o Data Guard a intercepta na borda, mascarando o valor mesmo quando a própria aplicação não o faz. Ele não corrige o vazamento subjacente, mas impede que o valor sensível chegue ao cliente, o que muitas vezes é a diferença entre um incidente e um quase-incidente.

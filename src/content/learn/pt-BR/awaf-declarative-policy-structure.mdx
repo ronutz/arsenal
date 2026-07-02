@@ -1,0 +1,40 @@
+---
+slug: awaf-declarative-policy-structure
+title: "Como uma política declarativa do BIG-IP Advanced WAF é estruturada"
+summary: "Uma política declarativa de WAF é um arquivo JSON que descreve uma política de segurança como um conjunto de ajustes sobre um template base. A chave para lê-la é o modelo de template e ajustes: tudo o que a política não menciona mantém o padrão do template, então uma seção ausente significa padrão, não desativado."
+concepts: ["f5", "awaf", "waf", "asm", "declarative policy", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-signature-staging-and-enforcement-readiness", "awaf-data-guard-response-masking"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-07-02"
+---
+
+O F5 BIG-IP Advanced WAF (antigo ASM) pode definir uma política de segurança de forma declarativa, como um arquivo JSON que você mantém em controle de versão e importa no BIG-IP. Como a política é apenas um arquivo, ela se encaixa naturalmente em um pipeline de CI/CD: puxe do Git, ajuste e envie de volta para o dispositivo.
+
+## O envelope
+
+Toda a política vive sob um único objeto `policy`:
+
+```json
+{ "policy": { "name": "my-app-policy", "template": { "name": "POLICY_TEMPLATE_FUNDAMENTAL" } } }
+```
+
+Dois campos são obrigatórios: `name` e `template`. Todo o resto é opcional.
+
+## Primeiro o template, depois os ajustes
+
+O **template** é o ponto de partida. A F5 fornece vários, incluindo `POLICY_TEMPLATE_RAPID_DEPLOYMENT`, `POLICY_TEMPLATE_FUNDAMENTAL`, `POLICY_TEMPLATE_COMPREHENSIVE` e `POLICY_TEMPLATE_API_SECURITY`, cada um oferecendo um nível diferente de proteção padrão. O template faz o trabalho pesado; o resto da política apenas descreve o que deve diferir dele.
+
+Sobre o template, a F5 distingue duas camadas de ajuste fino. A seção de **ajustes** (adjustments) contém atributos que sobrescrevem ou adicionam ao template, como tecnologias de servidor, URLs e parâmetros. As **modificações** (modifications) são o ajuste granular e frequente, como reduzir falsos positivos ou corrigir uma vulnerabilidade específica.
+
+## A regra que mais importa: ausente significa padrão
+
+Todo ajuste é opcional, e esta é a coisa mais importante a entender ao ler uma política declarativa: **se a política não inclui uma seção, os valores dessa seção vêm do template.** Uma seção ausente não significa que uma proteção está desligada. Você não pode concluir que o Data Guard está desativado só porque `data-guard` está ausente; você só pode concluir isso se a política o desativar explicitamente. Leia uma política declarativa como um *delta sobre o seu template*, nunca como o quadro completo por si só.
+
+## As seções lógicas
+
+A política é organizada em seções lógicas, cada uma com um propósito definido: enforcement (`enforcementMode`, `signature-settings`, `policy-builder`), contexto da aplicação (`applicationLanguage`, `caseInsensitive`, `server-technologies`), a superfície de tráfego (`urls`, `parameters`, `filetypes`, `methods`, `headers`, `cookies`) e proteções (`blocking-settings`, `data-guard`, `brute-force-attack-preventions`, `csrf-protection` e outras).
+
+A F5 publica o schema completo, versionado da v16.0 à v17.5, no clouddocs. Ler uma política bem significa percorrer essas seções uma a uma, sempre lembrando que o que não está escrito é herdado.

@@ -1,0 +1,40 @@
+---
+slug: awaf-declarative-policy-structure
+title: "How a BIG-IP Advanced WAF Declarative Policy Is Structured"
+summary: "A declarative WAF policy is a JSON file that describes a security policy as a set of adjustments on top of a base template. The key to reading one is the template-and-adjustments model: anything the policy does not mention keeps the template's default, so an absent section means default, not disabled."
+concepts: ["f5", "awaf", "waf", "asm", "declarative policy", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-signature-staging-and-enforcement-readiness", "awaf-data-guard-response-masking"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-07-02"
+---
+
+F5 BIG-IP Advanced WAF (formerly ASM) can define a security policy declaratively, as a JSON file you keep in source control and import into the BIG-IP. Because the policy is just a file, it fits naturally into a CI/CD pipeline: pull it from Git, adjust it, and push it back to the device.
+
+## The envelope
+
+The whole policy lives under a single `policy` object:
+
+```json
+{ "policy": { "name": "my-app-policy", "template": { "name": "POLICY_TEMPLATE_FUNDAMENTAL" } } }
+```
+
+Two fields are mandatory: `name` and `template`. Everything else is optional.
+
+## Template first, then adjustments
+
+The **template** is the starting point. F5 ships several, including `POLICY_TEMPLATE_RAPID_DEPLOYMENT`, `POLICY_TEMPLATE_FUNDAMENTAL`, `POLICY_TEMPLATE_COMPREHENSIVE`, and `POLICY_TEMPLATE_API_SECURITY`, each providing a different level of default protection. The template does the heavy lifting; the rest of the policy only describes what should differ from it.
+
+On top of the template, F5 distinguishes two tuning layers. The **adjustments** section holds attributes that override or add to the template, such as server technologies, URLs, and parameters. The **modifications** are the granular, frequent tuning, such as reducing false positives or patching a specific vulnerability.
+
+## The rule that matters most: absent means default
+
+Every adjustment is optional, and this is the single most important thing to understand when reading a declarative policy: **if the policy does not include a section, that section's values come from the template.** An absent section does not mean a protection is turned off. You cannot conclude that Data Guard is disabled just because `data-guard` is missing; you can only conclude it if the policy explicitly sets it off. Read a declarative policy as a *delta on its template*, never as the complete picture on its own.
+
+## The logical sections
+
+The policy is organized into logical sections, each with a defined purpose: enforcement (`enforcementMode`, `signature-settings`, `policy-builder`), application context (`applicationLanguage`, `caseInsensitive`, `server-technologies`), the traffic surface (`urls`, `parameters`, `filetypes`, `methods`, `headers`, `cookies`), and protections (`blocking-settings`, `data-guard`, `brute-force-attack-preventions`, `csrf-protection`, and more).
+
+F5 publishes the full schema, versioned from v16.0 through v17.5, on clouddocs. Reading a policy well means walking those sections in turn, always remembering that what is not written is inherited.

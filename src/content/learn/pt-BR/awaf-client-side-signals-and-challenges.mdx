@@ -1,0 +1,48 @@
+---
+slug: awaf-client-side-signals-and-challenges
+title: "Sinais e desafios no lado do cliente: como o Advanced WAF distingue um navegador de um bot"
+summary: "Para separar navegadores reais de automação, o Advanced WAF injeta JavaScript nas respostas e lê o que retorna, uma verificação de integridade do cliente, uma sondagem de capacidades, um fingerprint de dispositivo e, em último caso, um CAPTCHA. Veja o que cada artefato coleta, a ordem em que escalam e os cuidados que os quebram."
+concepts: ["f5", "awaf", "asm", "bot defense", "proactive bot defense", "javascript challenge", "device id", "captcha", "fingerprint", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["f5-datasafe-application-layer-encryption", "awaf-l7-behavioral-dos"]
+category: security
+order: 10
+status: reviewed
+updated: "2026-07-02"
+---
+
+A inspeção no lado do servidor consegue ler os cabeçalhos e o corpo de uma requisição, mas não consegue dizer se foi um navegador real ou um script que a enviou. Para responder a isso, o Advanced WAF injeta JavaScript na resposta e lê o que o cliente faz com ele. Esta é a análise de sinais por trás do bot defense: o WAF faz ao cliente perguntas que só um navegador real consegue responder, e pontua as respostas.
+
+## Por que injetar algo
+
+Uma string de User-Agent é a forma ingênua de identificar um cliente, e a F5 permite compará-la com um banco de assinaturas de bots, mas isso é trivialmente driblado alterando o cabeçalho. Tudo o que é mais confiável exige fazer o cliente *executar* algo e observar o resultado, o que significa rodar código no cliente. Esse é o propósito dos artefatos injetados abaixo.
+
+## A escada de escalonamento
+
+As defesas do Advanced WAF no lado do cliente escalam do silencioso e barato ao visível e disruptivo:
+
+- As **bot signatures** comparam o User-Agent com o banco da F5. Rápido, mas driblado ao forjar o cabeçalho.
+- O **Client-Side Integrity Defense (CSID)** é o desafio de navegador que o ASM injeta desde 2008. Quando uma requisição chega ao DoS profile, ela é *retida* e um script JavaScript é enviado à origem, testando se ela consegue fazer coisas de navegador, como rodar JavaScript e aceitar cookies. A resposta é pontuada; um cliente que se qualifica como navegador tem a sua requisição retida reconstruída e encaminhada, e um que falha é descartado. O CSID é silencioso, nenhum usuário o vê, então é a ferramenta quando você quer permitir apenas navegadores sem atrito para o usuário.
+- Um **capabilities script** vai além, perguntando "você é quem diz ser?" e comparando a resposta do navegador com o que o mecanismo de fato observa.
+- O **Device ID (fingerprint)** coleta características do navegador e do dispositivo, renderização de canvas, timing do motor JavaScript, fingerprint de TCP/TLS, para atribuir um identificador estável e detectar automação headless como Puppeteer, Playwright e Selenium. Também pega bots atrás de um IP NATeado compartilhado, onde a contagem por IP de origem falha.
+- O **CAPTCHA** é o último recurso, o teste explícito de humano ou bot. O anti-bot engine da F5 pontua uma origem: aproximadamente 0 a 59 é tratado como navegador e passa, 60 a 99 é desconhecido e recebe um CAPTCHA, um CAPTCHA resolvido é permitido, e um que falha reseta a conexão. O CAPTCHA é disruptivo, então é um desafio secundário, não de linha de frente.
+
+## Proactive Bot Defense e o cookie assinado
+
+O Proactive Bot Defense amarra tudo isso no DoS profile e, como o Bot Defense, não precisa de política de segurança. Na primeira visita de um cliente, o sistema envia um desafio JavaScript; se o cliente o avalia e reenvia com um cookie válido, assinado e com carimbo de tempo, é permitido, e as requisições futuras carregam esse cookie e pulam o desafio. É por isso que todo o esquema depende de o cliente rodar JavaScript.
+
+O **Grace Period** (padrão 300 segundos) é a válvula de segurança: durante ele o sistema não bloqueia, dando a uma página completa, imagens, scripts e folhas de estilo, tempo para carregar e ao cliente tempo para conquistar o seu cookie. Ajuste-o o mais baixo possível, ainda permitindo que uma página completa carregue.
+
+## Os cuidados que o quebram
+
+Cada um destes está fundamentado na própria documentação da F5, e cada um afeta implantações reais:
+
+- **Sem JavaScript, sem passagem.** Um cliente que não roda JavaScript falha no desafio e é bloqueado, então considere clientes legítimos que não são navegadores.
+- **O modo Transparent pula os desafios.** Se a política está em modo Transparent, os desafios de verificação de navegador não são executados, então você não pode confiar neles enquanto ajusta em transparent.
+- **A injeção de JS pode bloquear clientes legítimos não-navegadores mesmo em modo blocking**, que é exatamente por que a F5 oferece a opção de desativar a injeção dos desafios de verificação e de Device-ID em modo transparent.
+- **Aplicações móveis não conseguem rodar o JavaScript.** É para isso que existe o F5 Anti-Bot Mobile SDK: ele valida a própria aplicação móvel, por meio de uma integração de parceiro, em vez de injetar JavaScript, para que clientes móveis não sejam bloqueados indevidamente.
+- **Iframes cross-domain quebram os desafios.** Se uma página carrega um iframe de um domínio diferente com os desafios habilitados, o desafio pode falhar; a F5 documenta isso (bug ID 519612), e a correção envolve as configurações de cross-domain request mais uma iRule para que o desafio rode na página principal.
+
+## Lendo de volta
+
+Quando isso está ligado, os event logs de Bot Defense mostram a ação de verificação, o status do desafio e o DeviceID atribuído a cada cliente, para que você veja exatamente qual sinal classificou uma dada requisição. Essa visibilidade é o ponto: o JavaScript injetado transforma um opaco "isto é um bot?" em uma decisão pontuada e registrada.

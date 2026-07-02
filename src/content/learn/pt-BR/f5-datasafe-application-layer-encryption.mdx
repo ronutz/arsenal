@@ -1,0 +1,39 @@
+---
+slug: f5-datasafe-application-layer-encryption
+title: "F5 DataSafe: criptografia de camada de aplicação no lado do cliente, e suas arestas"
+summary: "O DataSafe é a camada de proteção contra fraude da F5 que criptografa campos sensíveis dentro do navegador, antes que um Trojan ou key logger no navegador consiga lê-los. Ele injeta JavaScript que criptografa os dados no lado do cliente com uma chave pública por sessão, decifrada no BIG-IP com a chave privada. Veja como funciona, o que cada recurso faz e os cuidados que pegam as pessoas."
+concepts: ["f5", "awaf", "asm", "datasafe", "fraud protection", "application layer encryption", "client-side", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-client-side-signals-and-challenges", "awaf-content-profiles"]
+category: security
+order: 5
+status: reviewed
+updated: "2026-07-02"
+---
+
+A maior parte de uma política de Advanced WAF inspeciona a requisição depois que ela chega ao BIG-IP. O DataSafe defende um lugar totalmente diferente: dentro do navegador do usuário, antes de os dados serem enviados. É a resposta da F5 à fraude no lado do cliente, os Trojans, o malware man-in-the-browser e os key loggers que leem os dados no navegador antes que o seu WAF consiga vê-los.
+
+## O que é o DataSafe
+
+A F5 descreve de forma simples: o DataSafe protege contra ataques de Trojan criptografando os dados na camada de aplicação no lado do cliente. A criptografia é feita no navegador com uma chave pública que o BIG-IP gera de forma única por sessão, e o BIG-IP a decifra com uma chave privada mantida no lado do servidor. Isso não é TLS. O TLS protege os dados em trânsito; o DataSafe protege os dados *dentro do navegador*, de modo que um malware presente na página veja apenas texto cifrado.
+
+O DataSafe faz parte do **Fraud Protection Service (FPS)**, que precisa ser provisionado. Você cria um perfil DataSafe, o associa a um virtual server (geralmente um virtual server SSL), e o DataSafe injeta o seu **Main JavaScript** nas páginas protegidas. A injeção vem ligada por padrão, sua localização é configurável em relação a uma tag que você escolhe, e pode ser desativada em páginas que apenas recebem dados de uma página protegida em vez de coletá-los.
+
+## Application Layer Encryption
+
+Tudo no nível de URL ou de view de single-page application fica sob o Application Layer Encryption (ALE), que precisa ser ativado primeiro. A F5 afirma que o ALE protege contra roubo de credenciais em ataques man-in-the-middle e MITM no navegador, verifica se um usuário está tentando usar uma senha fabricada, valida a senha no lado do cliente e criptografa as credenciais em tempo real no envio.
+
+Sob o ALE ficam as proteções individuais. A **Real-Time Encryption** criptografa as senhas conforme o usuário digita, derrotando key loggers no navegador. A **HTML Field Obfuscation** criptografa o atributo `name` dos campos de entrada e o decifra de volta no BIG-IP, de modo que os nomes dos campos não sejam alvos estáveis. **Add Decoy Inputs** gera e remove continuamente campos de entrada falsos, dificultando que um atacante escolha o campo real por script ou proxy. A **Full AJAX Encryption** cobre envios em JSON e AJAX. **Identify Stolen Credentials** verifica se uma senha enviada foi roubada de um parâmetro com substitute value.
+
+## Os cuidados que pegam as pessoas
+
+Estes estão fundamentados no próprio guia de configuração da F5, e são os detalhes que transformam uma implantação tranquila em um chamado de suporte:
+
+- **Real-Time Encryption e uma função de criptografia personalizada são mutuamente exclusivas.** Se você fornecer sua própria função de criptografia em uma URL, não poderá ativar a Real-Time Encryption nela.
+- **Remove Event Listeners é um instrumento contundente.** Ele retira os event listeners de JavaScript dos parâmetros para impedir que atacantes os leiam, mas a F5 avisa que ele remove *todos* os event listeners, incluindo os não maliciosos dos quais a sua aplicação depende para funcionar. Teste a página antes de ativá-lo.
+- **Parâmetros com wildcard exigem BIG-IP 14.0 ou posterior.** Em 13.x e anteriores, você deve usar apenas nomes de parâmetro explícitos.
+- **A herança não é uniforme.** Em perfis pai-filho, propriedades indefinidas são herdadas do pai e acompanham mudanças futuras do pai, mas as propriedades de URL não são herdadas. Um perfil ou URL clonado, por outro lado, não tem dependência contínua: mudanças no original após a clonagem não são incorporadas.
+
+## Onde se encaixa
+
+O DataSafe é defesa em profundidade para logins, formulários e páginas de pagamento de alto valor, voltado para a ameaça no navegador que a inspeção de requisições de um WAF não consegue ver. Não é um substituto da política de WAF; roda ao lado dela. Como injeta e executa JavaScript no cliente, implante-o página por página com testes, especialmente onde Remove Event Listeners ou uma ofuscação pesada possam colidir com os próprios scripts da aplicação.

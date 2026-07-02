@@ -1,0 +1,36 @@
+---
+slug: awaf-enforcement-mode-blocking-vs-transparent
+title: "Blocking vs Transparent: o que o modo de enforcement do Advanced WAF realmente faz"
+summary: "O enforcementMode de uma política de WAF decide se ela protege ou apenas observa. Em modo blocking, requisições que disparam uma violação configurada para bloquear são rejeitadas. Em modo transparent, nada é bloqueado mesmo quando uma violação dispara, então a política é somente monitoramento. Confundir os dois é um dos erros mais comuns em WAF."
+concepts: ["f5", "awaf", "waf", "asm", "enforcement mode", "blocking", "transparent", "security", "bigip"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-declarative-policy-structure", "awaf-signature-staging-and-enforcement-readiness"]
+category: security
+order: 2
+status: reviewed
+updated: "2026-07-02"
+---
+
+Toda política do BIG-IP Advanced WAF tem um `enforcementMode`, e ele é a primeira coisa a verificar ao lê-la, porque decide se a política de fato *protege* a aplicação ou apenas a *observa*.
+
+## Os dois modos
+
+A F5 define o comportamento com precisão. Em modo **blocking**, o tráfego é bloqueado quando causa uma violação que está configurada para bloquear. Em modo **transparent**, o tráfego não é bloqueado mesmo quando uma violação é disparada.
+
+```json
+{ "policy": { "enforcementMode": "blocking" } }
+```
+
+Então uma política pode estar repleta de assinaturas cuidadosamente configuradas, proteção contra força bruta e Data Guard, e ainda assim não bloquear absolutamente nada, simplesmente por estar em modo transparent. Transparent é, na prática, somente monitoramento: as violações são detectadas e registradas, que é exatamente o que se quer durante o ajuste, mas nenhuma requisição é rejeitada.
+
+## Por que a flag "block" por violação não é suficiente
+
+Dentro de `blocking-settings`, cada violação carrega suas próprias flags de block, alarm e learn. É tentador ler essas flags e concluir que a política bloqueia um determinado ataque. Mas essas flags de block por violação só têm efeito quando a política como um todo está em modo blocking. Uma violação marcada para bloquear em uma política transparent ainda assim não bloqueará. O `enforcementMode` no nível da política controla tudo abaixo dele.
+
+## A armadilha relacionada: modo passivo
+
+Há uma segunda forma de uma política acabar sem conseguir bloquear. `enablePassiveMode` associa a política a um virtual server Performance L4 (FastL4), onde o tráfego é analisado mas não é modificado de forma alguma. Uma política passiva inspeciona e registra, mas não consegue rejeitar uma requisição em linha, não importa o que o `enforcementMode` diga.
+
+## Lendo na prática
+
+Ao inspecionar uma política, resolva a postura de enforcement antes de qualquer outra coisa. Se o `enforcementMode` for `transparent`, trate todo "block" que você vê abaixo dele como aspiracional, não ativo. O caminho seguro de migração é deliberado: rode em transparent enquanto elimina falsos positivos, confirme que as violações que importam estão configuradas para bloquear, e só então mude para blocking, de modo que a virada passe a impor exatamente o que você já validou.
