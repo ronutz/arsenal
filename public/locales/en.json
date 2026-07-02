@@ -2880,5 +2880,17 @@
     "ideaTitle": "Have an idea?",
     "ideaBody": "The toolbox is open-core and community-driven. If a deterministic, local tool is missing, propose it. Checking this roadmap first helps avoid duplicates.",
     "ideaCta": "Suggest a tool"
+  },
+  "apiAffordance": {
+    "label": "Also available as an API",
+    "tagline": "Run this tool from your terminal, scripts, or CI. Same deterministic result, no page needed.",
+    "endpointLabel": "Endpoint",
+    "curlLabel": "Example",
+    "docsLabel": "API reference",
+    "tryItLabel": "Try it",
+    "copy": "Copy",
+    "copied": "Copied",
+    "previewBadge": "preview",
+    "privacyNote": "This tool runs locally in your browser. The API is a stateless edge endpoint for automation; it keeps no logs and stores no input."
   }
 }

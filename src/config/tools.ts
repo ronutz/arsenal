@@ -63,6 +63,12 @@ export const tools: ToolEntry[] = [
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
+  // The four below were built but never registered here (drift caught and
+  // guarded by scripts/check-tools-registry.mjs in the prebuild chain).
+  { id: "cvss-vector-decoder", href: "/tools/cvss-vector-decoder", category: "security", available: true },
+  { id: "hash-preimage-finder", href: "/tools/hash-preimage-finder", category: "hashing", available: true },
+  { id: "http-request-translator", href: "/tools/http-request-translator", category: "web", available: true },
+  { id: "ssrf-url-classifier", href: "/tools/ssrf-url-classifier", category: "security", available: true },
 ];
 
 /** Tools that are live and linkable. */

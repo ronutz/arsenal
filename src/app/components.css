@@ -7066,3 +7066,189 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 }
 .ssrf-legend-cat { flex: 0 0 9rem; font-weight: 600; color: var(--text-primary); }
 .ssrf-legend-desc { flex: 1 1 14rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; }
+
+/* ==========================================================================
+   API affordance ("Also available as an API")
+   Rendered by src/components/ApiAffordance.tsx, driven by src/config/apiSurface.
+   Deliberately quiet: a collapsed, muted disclosure that sits below the tool and
+   only expands on intent. Semantic tokens only, so themes restyle it for free.
+   ========================================================================== */
+.api-affordance {
+  margin-top: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-surface) 55%, transparent);
+}
+.api-affordance-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  list-style: none;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  user-select: none;
+}
+.api-affordance-summary::-webkit-details-marker {
+  display: none;
+}
+.api-affordance-summary:hover {
+  color: var(--color-text);
+}
+.api-affordance[open] .api-affordance-summary {
+  border-bottom: 1px solid var(--color-border);
+}
+.api-affordance-glyph {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  color: var(--color-accent);
+  font-size: 0.85rem;
+}
+.api-affordance-label {
+  letter-spacing: 0.01em;
+}
+.api-affordance-preview {
+  margin-left: auto;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-warning) 22%, transparent);
+  color: var(--color-warning);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.api-affordance-body {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.api-affordance-tagline {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.api-affordance-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.api-affordance-rowlabel {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.api-affordance-endpoint {
+  color: var(--color-accent);
+  text-decoration: none;
+  word-break: break-all;
+}
+.api-affordance-endpoint:hover {
+  color: var(--color-accent-active);
+  text-decoration: underline;
+}
+.api-affordance-endpoint code,
+.api-affordance-pre code {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.82rem;
+}
+.api-affordance-curl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.api-affordance-curlhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.api-affordance-copy {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-muted);
+  border-radius: 6px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.api-affordance-copy:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+.api-affordance-pre {
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-canvas);
+  overflow-x: auto;
+  white-space: pre;
+}
+.api-affordance-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.api-affordance-doclink {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: 0.82rem;
+}
+.api-affordance-doclink:hover {
+  color: var(--color-accent-active);
+  text-decoration: underline;
+}
+.api-affordance-privacy {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.74rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   Family (category) color tags
+   Rendered by src/components/FamilyChip.tsx; hues from src/config/categoryColors.
+   The hue lives in --chip-color per chip; label text uses theme tokens so
+   contrast is WCAG-AA on every theme. Color is supplementary to the label.
+   ========================================================================== */
+.family-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--chip-color) 38%, var(--color-border));
+  background: color-mix(in srgb, var(--chip-color) 10%, transparent);
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.family-chip-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--chip-color);
+  flex: none;
+}
+.family-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+}
+/* Category section headings get the same dot, tying heading <-> chips <-> cards. */
+.category-dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--chip-color);
+  margin-right: 0.5rem;
+  vertical-align: 0.05em;
+}

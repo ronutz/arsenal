@@ -12,6 +12,8 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
+import FamilyChip from "@/components/FamilyChip";
+import { categoryColor } from "@/config/categoryColors";
 
 export default async function ToolsPage({
   params,
@@ -69,7 +71,14 @@ export default async function ToolsPage({
           {categories.map((category) => (
             <section className="section category-section" id={category} key={category}>
               <div className="container certs-container">
-                <h2 className="tools-category">{t(`categories.${category}`)}</h2>
+                <h2 className="tools-category">
+                  <span
+                    className="category-dot"
+                    style={{ "--chip-color": categoryColor(category) } as React.CSSProperties}
+                    aria-hidden="true"
+                  />
+                  {t(`categories.${category}`)}
+                </h2>
                 <ul className="tools-grid">
                   {tools
                     .filter((tool) => tool.category === category)
@@ -82,6 +91,12 @@ export default async function ToolsPage({
                           <Link href={tool.href} className="tools-card">
                             <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
                             <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
+                            <span className="family-chip-row">
+                              <FamilyChip
+                                category={tool.category}
+                                label={t(`categories.${tool.category}`)}
+                              />
+                            </span>
                             <span className="tools-card-go" aria-hidden="true">
                               {t("open")} →
                             </span>
@@ -92,6 +107,12 @@ export default async function ToolsPage({
                           <div className="tools-card tools-card--soon" aria-disabled="true">
                             <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
                             <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
+                            <span className="family-chip-row">
+                              <FamilyChip
+                                category={tool.category}
+                                label={t(`categories.${tool.category}`)}
+                              />
+                            </span>
                             <span className="tools-card-soon">{t("comingSoon")}</span>
                           </div>
                         </li>

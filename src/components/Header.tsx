@@ -41,9 +41,8 @@ export default async function Header() {
           <Link href="/training" className="site-nav-link">
             {t("training")}
           </Link>
-          <Link href="/contact" className="site-nav-link">
-            {t("contact")}
-          </Link>
+          {/* Contact intentionally lives in the footer (nav option (a), sleek
+              4-item explore bar); /contact remains fully reachable. */}
         </nav>
 
         <div className="site-header-actions">

@@ -2880,5 +2880,17 @@
     "ideaTitle": "Tem uma ideia?",
     "ideaBody": "A caixa de ferramentas é open-core e movida pela comunidade. Se falta uma ferramenta determinística e local, proponha. Consultar este roadmap antes ajuda a evitar duplicatas.",
     "ideaCta": "Sugerir uma ferramenta"
+  },
+  "apiAffordance": {
+    "label": "Também disponível como API",
+    "tagline": "Use esta ferramenta a partir do seu terminal, scripts ou CI. O mesmo resultado determinístico, sem abrir a página.",
+    "endpointLabel": "Endpoint",
+    "curlLabel": "Exemplo",
+    "docsLabel": "Referência da API",
+    "tryItLabel": "Testar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "previewBadge": "prévia",
+    "privacyNote": "Esta ferramenta roda localmente no seu navegador. A API é um endpoint stateless na edge para automação; não guarda logs nem armazena entradas."
   }
 }

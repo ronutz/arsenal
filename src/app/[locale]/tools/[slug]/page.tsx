@@ -20,6 +20,8 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
+import ApiAffordance from "@/components/ApiAffordance";
+import FamilyChip from "@/components/FamilyChip";
 import { tools } from "@/config/tools";
 import JwtTool from "@/components/JwtTool";
 import { manifest as jwtManifest } from "@/lib/tools/jwt";
@@ -318,10 +320,20 @@ export default async function ToolDetailPage({
             </Link>
             {entry && <h1 className="article-title">{tTools(`${slug}.name`)}</h1>}
             {entry && <p className="article-summary">{tTools(`${slug}.blurb`)}</p>}
+            {entry && (
+              <span className="family-chip-row">
+                <FamilyChip
+                  category={entry.category}
+                  label={tTools(`categories.${entry.category}`)}
+                />
+              </span>
+            )}
 
             <Component />
 
             <ToolLearnPanel toolSlug={slug} locale={locale} heading={tTools("learnHeading")} />
+
+            <ApiAffordance slug={slug} />
 
             {page.sources.length > 0 && (
               <section className="tool-sources" aria-label={tTools("references")}>

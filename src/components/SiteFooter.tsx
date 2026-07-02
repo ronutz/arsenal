@@ -46,11 +46,8 @@ export default async function SiteFooter() {
             {t("contribute")}
           </Link>
         </p>
-        <p className="footer-contribute">
-          <Link href="/api" className="footer-contribute-link">
-            {t("api")}
-          </Link>
-        </p>
+        {/* /api link intentionally desurfaced while access control matures;
+            the page, docs, and spec remain built and reachable by direct URL. */}
         <p className="footer-contribute">
           <Link href="/roadmap" className="footer-contribute-link">
             {t("roadmap")}

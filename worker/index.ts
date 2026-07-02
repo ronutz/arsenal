@@ -32,6 +32,8 @@
 // ============================================================================
 
 import { API_TOOL_MAP } from "../src/lib/tools/registry";
+import { API_SURFACE, gateForApiFeature } from "../src/config/apiSurface";
+import { evaluateGate, type GateContext } from "../src/lib/api-gates";
 // Locale registry is the single source of truth (src/i18n/locales.ts). Imported
 // via a relative path because the Worker is outside src/ and the "@/" alias is
 // not in scope for wrangler's bundler.
@@ -46,7 +48,12 @@ interface Env {
 const CORS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  // Authorization and X-API-Key are accepted now so browser clients can send
+  // them without a preflight rejection, but the server ignores their values
+  // until a gate policy is assigned (see src/lib/api-gates). Any value (e.g. a
+  // placeholder like "foo" / "bar") is read into the gate context and, with all
+  // gates open, has no effect.
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Key",
 };
 
 /** Build a JSON response with CORS headers applied. */
@@ -100,6 +107,45 @@ export default {
           405,
           { Allow: "GET, POST, OPTIONS" },
         );
+      }
+
+      // ---- Authorization gate ------------------------------------------------
+      // Optional, model-agnostic gate resolved from the API surface config and
+      // evaluated by the gate engine. Every tool's gate id is currently null, so
+      // this resolves to "open" and changes nothing; assigning a policy id in the
+      // config (and defining it in the engine registry) turns enforcement on.
+      // API AVAILABILITY is governed by the tool registry, not here, so this only
+      // ever adds optional authorization. The request body is not read here (only
+      // headers and the URL), leaving the POST body intact for input parsing.
+      {
+        const authz = request.headers.get("authorization") ?? "";
+        const bearer =
+          authz.slice(0, 7).toLowerCase() === "bearer " ? authz.slice(7).trim() : undefined;
+        const rawToken =
+          bearer ?? request.headers.get("x-api-key") ?? url.searchParams.get("key");
+        const headers: Record<string, string> = {};
+        request.headers.forEach((value, key) => {
+          headers[key.toLowerCase()] = value;
+        });
+        const ctx: GateContext = {
+          tool: slug,
+          feature: "endpoint",
+          token: rawToken ? rawToken : undefined,
+          headers,
+          ip: request.headers.get("cf-connecting-ip") ?? undefined,
+        };
+        const decision = await evaluateGate(
+          gateForApiFeature(API_SURFACE, slug, "endpoint"),
+          ctx,
+        );
+        if (!decision.allow) {
+          const status = decision.status ?? 403;
+          const errorCode =
+            status === 401 ? "unauthorized" : status === 429 ? "rate_limited" : "forbidden";
+          const extra: Record<string, string> = { "X-Gate-Reason": decision.reason };
+          if (status === 401) extra["WWW-Authenticate"] = "Bearer";
+          return json({ error: errorCode, message: decision.reason }, status, extra);
+        }
       }
 
       // The input string: a query parameter on GET, the raw body on POST.

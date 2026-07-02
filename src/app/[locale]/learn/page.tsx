@@ -13,6 +13,8 @@
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getArticlesByCategory } from "@/lib/learn";
+import FamilyChip from "@/components/FamilyChip";
+import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -76,13 +78,25 @@ export default async function LearnIndexPage({
             {/* One block per category, mirroring the tools index taxonomy. */}
             {groups.map((group) => (
               <section className="category-section" id={group.category} key={group.category} style={{ marginBottom: "2.5rem" }}>
-                <h2 className="tools-category">{tTools(`categories.${group.category}`)}</h2>
+                <h2 className="tools-category">
+                  <span
+                    className="category-dot"
+                    style={{ "--chip-color": categoryColor(group.category) } as React.CSSProperties}
+                    aria-hidden="true"
+                  />
+                  {tTools(`categories.${group.category}`)}
+                </h2>
                 <ul className="learn-grid">
                   {group.articles.map((a) => (
                     <li key={a.slug}>
                       <Link href={`/learn/${a.slug}`} className="learn-card">
                         <h3 className="learn-card-title">{a.title}</h3>
                         <p className="learn-card-summary">{a.summary}</p>
+                        <span className="family-chip-row">
+                          {articleCategories(a).map((cat) => (
+                            <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
+                          ))}
+                        </span>
                         <span className="learn-card-cta">Read</span>
                       </Link>
                     </li>
