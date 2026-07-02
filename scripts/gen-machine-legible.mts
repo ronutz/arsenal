@@ -159,6 +159,7 @@ function toolMarkdown(
   href: string,
   locale: string,
   sources: Source[],
+  authoredBody: string | null,
 ): string {
   const url = `${ORIGIN}/${locale}${href}`;
   const related = (articlesByLocale[locale] ?? [])
@@ -168,12 +169,19 @@ function toolMarkdown(
   const blurb = toolBlurb(locale, id);
   if (blurb) out.push(`> ${blurb}`, "");
   out.push(`- Tool: ${url}`, `- Family: ${categoryLabel(locale, category)}`, "", "---", "");
-  out.push(
-    "## How to use it",
-    "",
-    `Open ${url} and enter your input. The tool computes entirely in your browser; your input never leaves your device, and the result is deterministic.`,
-    "",
-  );
+  if (authoredBody) {
+    // Rich, reviewed, authored documentation (D-77). Links inside it are
+    // absolutized like article bodies so they work off-site.
+    out.push(absolutize(authoredBody, locale), "");
+  } else {
+    // Derived fallback (a tracked D-77 gap until an authored doc exists).
+    out.push(
+      "## How to use it",
+      "",
+      `Open ${url} and enter your input. The tool computes entirely in your browser; your input never leaves your device, and the result is deterministic.`,
+      "",
+    );
+  }
   if (sources.length) {
     out.push("## Standards and references", "");
     for (const s of sources) {
@@ -194,6 +202,15 @@ function toolMarkdown(
   return out.join("\n");
 }
 
+// Authored, reviewed rich tool documentation (D-77). Optional per (locale, slug).
+const TOOLDOCS = path.join(process.cwd(), "src", "content", "tool-docs");
+function readToolDoc(locale: string, slug: string): string | null {
+  const p = path.join(TOOLDOCS, locale, `${slug}.md`);
+  if (!fs.existsSync(p)) return null;
+  const { content } = matter(fs.readFileSync(p, "utf8"));
+  return content.trim() || null;
+}
+
 // Preload each tool's provenance sources from its manifest (dynamic import so
 // this stays generic; failures degrade to no Standards section for that tool).
 const toolSources: Record<string, Source[]> = {};
@@ -209,17 +226,28 @@ for (const t of liveTools) {
 }
 
 let toolDocCount = 0;
+const authoredCoverage: Record<string, number> = {};
 for (const locale of DOC_LOCALES) {
+  authoredCoverage[locale] = 0;
   for (const t of liveTools) {
+    const authored = readToolDoc(locale, t.id);
+    if (authored) authoredCoverage[locale]++;
     const dir = path.join(OUT, locale, "tools");
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(
       path.join(dir, `${t.id}.md`),
-      toolMarkdown(t.id, t.category, t.href, locale, toolSources[t.id] ?? []),
+      toolMarkdown(t.id, t.category, t.href, locale, toolSources[t.id] ?? [], authored),
       "utf8",
     );
     toolDocCount++;
   }
+}
+// D-77 coverage report: how many tool siblings carry rich authored docs.
+for (const locale of DOC_LOCALES) {
+  const n = authoredCoverage[locale];
+  const total = liveTools.length;
+  const note = n < total ? " — authoring required (D-77 gap)" : " — complete";
+  console.log(`[gen-machine-legible] D-77 authored tool-doc coverage (${locale}): ${n}/${total}${note}`);
 }
 
 // ---- 3. RSS 2.0 feed (English, most recent by `updated`) ------------------
