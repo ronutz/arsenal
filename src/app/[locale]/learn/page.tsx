@@ -12,10 +12,12 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getArticlesByCategory } from "@/lib/learn";
+import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
+import { browseVendors } from "@/config/vendors";
+import ToolVendorFilter from "@/components/ToolVendorFilter";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -40,6 +42,18 @@ export default async function LearnIndexPage({
     ),
   );
 
+  // Browse-by-vendor: offer only vendors that actually have articles here
+  // (derived, not hardcoded), intersected with the public browse set. Articles
+  // are tagged below with data-vendors; the SAME island that filters the Tools
+  // index filters these cards, keyed off ".learn-grid-item".
+  const articleVendorSet = new Set<string>();
+  for (const group of groups) {
+    for (const article of group.articles) {
+      for (const vendor of getArticleVendors(article)) articleVendorSet.add(vendor);
+    }
+  }
+  const vendorKeys = browseVendors().filter((v) => articleVendorSet.has(v));
+
   return (
     <>
       <a href="#main" className="skip-link">
@@ -59,13 +73,23 @@ export default async function LearnIndexPage({
               build genuine understanding, not just to define a term.
             </p>
 
+            {vendorKeys.length > 0 && (
+              <ToolVendorFilter
+                vendors={vendorKeys}
+                labels={Object.fromEntries(vendorKeys.map((v) => [v, tTools(`vendors.${v}`)]))}
+                allLabel={tTools("vendorFilterAll")}
+                legend={tTools("vendorFilterLabel")}
+                cardSelector=".learn-grid-item"
+              />
+            )}
+
             {/* Category jump-nav */}
             {groups.length > 1 && (
               <nav className="category-nav" aria-label={tTools("jumpTo")}>
                 <span className="category-nav-label">{tTools("jumpTo")}</span>
                 <ul className="category-nav-list">
                   {groups.map((group) => (
-                    <li key={group.category}>
+                    <li key={group.category} data-jumpnav={group.category}>
                       <a href={`#${group.category}`} className="category-nav-link">
                         {tTools(`categories.${group.category}`)}
                       </a>
@@ -90,7 +114,7 @@ export default async function LearnIndexPage({
                 </h2>
                 <ul className="learn-grid">
                   {group.articles.map((a) => (
-                    <li key={a.slug}>
+                    <li key={a.slug} className="learn-grid-item" data-vendors={getArticleVendors(a).join(" ")}>
                       <Link href={`/learn/${a.slug}`} className="learn-card">
                         <h3 className="learn-card-title">{a.title}</h3>
                         <p className="learn-card-summary">{a.summary}</p>

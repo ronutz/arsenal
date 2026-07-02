@@ -28,6 +28,7 @@ export default function ToolVendorFilter({
   labels,
   allLabel,
   legend,
+  cardSelector = ".tools-grid-item",
 }: {
   /** Vendor keys to offer as filters, in order (e.g. ["f5"]). */
   vendors: string[];
@@ -37,13 +38,16 @@ export default function ToolVendorFilter({
   allLabel: string;
   /** Group label announced to assistive tech. */
   legend: string;
+  /** CSS selector for the filterable cards (default the tools grid items).
+   *  /learn passes ".learn-grid-item" so the same island filters articles. */
+  cardSelector?: string;
 }) {
   // null = no filter (show all); otherwise the active vendor key.
   const [active, setActive] = useState<string | null>(null);
 
   useEffect(() => {
     // Show / hide tool cards by vendor membership.
-    const cards = document.querySelectorAll<HTMLElement>(".tools-grid-item");
+    const cards = document.querySelectorAll<HTMLElement>(cardSelector);
     cards.forEach((card) => {
       const owned = (card.dataset.vendors ?? "").split(/\s+/).filter(Boolean);
       card.hidden = active !== null && !owned.includes(active);
@@ -51,7 +55,7 @@ export default function ToolVendorFilter({
     // Hide category sections (and their jump-nav links) that have nothing left.
     const sections = document.querySelectorAll<HTMLElement>(".category-section");
     sections.forEach((section) => {
-      const visible = section.querySelectorAll(".tools-grid-item:not([hidden])").length;
+      const visible = section.querySelectorAll(`${cardSelector}:not([hidden])`).length;
       const empty = active !== null && visible === 0;
       section.hidden = empty;
       const cat = section.id;

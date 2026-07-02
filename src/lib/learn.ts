@@ -19,6 +19,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import { tools } from "@/config/tools";
+import { isVendor } from "@/config/vendors";
 
 /** Article frontmatter contract — every MDX file declares these fields. */
 export interface ArticleFrontmatter {
@@ -183,4 +185,31 @@ export function getArticlesByCategory(locale: string = SOURCE_LOCALE): CategoryG
   for (const g of orphanGroups) g.articles.sort(byOrder);
 
   return [...known, ...orphanGroups];
+}
+
+
+// ============================================================================
+// getArticleVendors — the vendor families an article belongs to, for the
+// /learn browse-by-vendor filter. TWO signals, unioned, because the "f5"
+// concept tag is applied INCONSISTENTLY across the corpus:
+//   1. any vendor KEY that appears directly in the article's concepts, and
+//   2. the vendors of every tool the article relates to (relatedTools ->
+//      tool.vendors).
+// Signal 2 is what makes this correct: it catches the F5 articles (BIG-IP
+// cookies, iRules, F5 XC service policies, etc.) that link to an F5 tool but
+// were never tagged "f5" in concepts. Validated: union = 47 F5 articles vs 24
+// by concept alone. Pure function of the article + tool registry, no state.
+// ============================================================================
+export function getArticleVendors(article: Article): string[] {
+  const set = new Set<string>();
+  for (const concept of article.concepts) {
+    if (isVendor(concept)) set.add(concept);
+  }
+  for (const slug of article.relatedTools) {
+    const tool = tools.find((t) => t.id === slug);
+    if (tool?.vendors) {
+      for (const vendor of tool.vendors) set.add(vendor);
+    }
+  }
+  return Array.from(set);
 }
