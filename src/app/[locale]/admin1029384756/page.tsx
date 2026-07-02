@@ -26,6 +26,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import AdminPanel, { type AdminData, type AdminCopy } from "@/components/AdminPanel";
+import PrivPreviewOnly from "@/components/PrivPreviewOnly";
 import { allFlags } from "@/config/features";
 import { routeForPlatform } from "@/config/leadRouting";
 import { contactEmail, contactFormEndpoint } from "@/config/contact";
@@ -56,12 +57,14 @@ export function generateStaticParams() {
   return [{ locale: "en" }];
 }
 
-/** Mask an email for display (e.g. r****@gmail.com). */
+/** Mask an email for display, hiding BOTH the local-part and the domain so no
+ *  real address or business domain can leak, even in the page's hydration data.
+ *  The identity provider is shown separately (idp), which is context enough. */
 function maskEmail(email: string): string {
-  const [user, domain] = email.split("@");
-  if (!domain) return "****";
+  const [user] = email.split("@");
+  if (!user) return "*****@*****";
   const head = user.slice(0, 1);
-  return `${head}${"*".repeat(Math.max(user.length - 1, 3))}@${domain}`;
+  return `${head}${"*".repeat(Math.max(user.length - 1, 3))}@*****`;
 }
 
 export default async function AdminConsolePage({
@@ -143,6 +146,7 @@ export default async function AdminConsolePage({
       </a>
       <Header />
 
+      <PrivPreviewOnly>
       <main id="main" data-pagefind-ignore="all">
         {/* ===== Config-backed control surface ===== */}
         <section className="section">
@@ -285,6 +289,7 @@ export default async function AdminConsolePage({
           </div>
         </section>
       </main>
+      </PrivPreviewOnly>
 
       <SiteFooter />
     </div>

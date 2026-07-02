@@ -5,8 +5,10 @@
 #
 # WHY here and not in next.config: a static-export site has no Next.js server to
 # run the headers() function, so security headers are applied by the HOST. This
-# file is read by Cloudflare Pages (and Netlify) and applies these headers to
-# every response. It is the static-export equivalent of the canon Red/Blue
+# file is honored by Cloudflare Workers Static Assets (the mechanism that serves
+# this site) as well as by Cloudflare Pages and Netlify, applying these headers
+# to every asset response. Verified live: every header below is present on
+# production responses. It is the static-export equivalent of the canon Red/Blue
 # (RB-01…RB-07) hardening — the protection is identical, just applied at the edge.
 #
 # When deployed to a different host, port these headers to that host's mechanism.
