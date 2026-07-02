@@ -221,7 +221,7 @@ export default async function ColophonPage({
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("thanksTitle")}</h2>
               <p className="colophon-thanks-names">
-                Mariana, Ulli, Richard, Ocyrema, Felisberto, Regine, Eduardo, Ricardo, Pedro, Liliane, Miu, Nina, Luna &amp; kids.
+                Mariana, Ulli, Richard, Ocyrema, Felisberto, Regine, Eduardo, Ricardo, Pedro, Liliane, Miu, Nina, Luna, Tux, Kiki, Greg and Theo.
               </p>
             </div>
           </section>

@@ -186,7 +186,7 @@ function toolMarkdown(
     out.push("## Standards and references", "");
     for (const s of sources) {
       const link = s.url ? `[${s.label}](${s.url})` : s.label;
-      out.push(`- ${link}${s.scope ? ` — ${s.scope}` : ""}`);
+      out.push(`- ${link}${s.scope ? ` - ${s.scope}` : ""}`);
     }
     out.push("");
   }
