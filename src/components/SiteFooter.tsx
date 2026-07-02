@@ -40,15 +40,14 @@ export default async function SiteFooter() {
           </Link>
         </p>
 
-        {/* Utility links. */}
+        {/* Utility links, grouped into three compact rows with dimmed-middot
+            separators. The /api link stays desurfaced while access control
+            matures; its page, docs, and spec remain reachable by direct URL. */}
         <p className="footer-contribute">
           <Link href="/contribute" className="footer-contribute-link">
             {t("contribute")}
           </Link>
-        </p>
-        {/* /api link intentionally desurfaced while access control matures;
-            the page, docs, and spec remain built and reachable by direct URL. */}
-        <p className="footer-contribute">
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
           </Link>
@@ -57,32 +56,28 @@ export default async function SiteFooter() {
           <Link href="/contact" className="footer-contribute-link">
             {t("feedback")}
           </Link>
-        </p>
-        <p className="footer-contribute">
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/privacy" className="footer-contribute-link">
             {t("privacy")}
           </Link>
-        </p>
-        {/* Licensing terms: the proprietary site plus the required third-party
-            attributions. Replaces the former one-line rights statement. */}
-        <p className="footer-contribute">
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/license" className="footer-contribute-link">
             {t("license")}
           </Link>
         </p>
-        {/* Machine-readable surface: an llms.txt map for AI agents and an RSS
-            feed for the Learn section. Plain anchors (static files, not routes). */}
+        {/* Machine-readable surface (monospace): the llms.txt map for AI agents,
+            robots.txt, and the Learn RSS feed. Plain anchors (static files). */}
         <p className="footer-contribute footer-machine">
           <a href="/llms.txt" className="footer-contribute-link">
             llms.txt
           </a>
-          {" | "}
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <a href="/robots.txt" className="footer-contribute-link">
             robots.txt
           </a>
-          {" | "}
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <a href="/feed.xml" className="footer-contribute-link">
-            RSS
+            feed.xml
           </a>
         </p>
 
