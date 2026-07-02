@@ -16,7 +16,7 @@
     "dev": "next dev",
     "build:next": "next build",
     "build:search": "pagefind --site out",
-    "build": "next build && pagefind --site out",
+    "build": "next build && pagefind --site out && tsx scripts/gen-machine-legible.mts",
     "start": "next start",
     "lint": "next lint",
     "prebuild": "node scripts/check-tool-articles.mjs && node scripts/check-changelog.mjs && node scripts/check-tools-registry.mjs && node scripts/copy-locales.mjs && tsx scripts/build-openapi.mts && node scripts/gen-locale-coverage.mjs && node scripts/gen-build-info.mjs",

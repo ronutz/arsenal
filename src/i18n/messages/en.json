@@ -2358,7 +2358,8 @@
       "title": "Start with the concepts",
       "body": "The Learn section explains the ideas behind the tools, and the tools let you work with them directly, all in your browser.",
       "learnButton": "Read the Learn section",
-      "toolsButton": "Open the tools"
+      "toolsButton": "Open the tools",
+      "contactButton": "Get in touch"
     },
     "recognition": {
       "title": "Recognition",

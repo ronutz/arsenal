@@ -320,6 +320,13 @@ export default async function ToolDetailPage({
             </Link>
             {entry && <h1 className="article-title">{tTools(`${slug}.name`)}</h1>}
             {entry && <p className="article-summary">{tTools(`${slug}.blurb`)}</p>}
+            {entry && (locale === "en" || locale === "pt-BR") && (
+              <p className="doc-md-link">
+                <a href={`/${locale}/tools/${slug}.md`}>
+                  {locale === "pt-BR" ? "Documentação (Markdown)" : "Documentation (Markdown)"}
+                </a>
+              </p>
+            )}
             {entry && (
               <span className="family-chip-row">
                 <FamilyChip

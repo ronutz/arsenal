@@ -75,6 +75,18 @@ export default async function SiteFooter() {
             {t("license")}
           </Link>
         </p>
+        {/* Machine-readable surface: an llms.txt map for AI agents and an RSS
+            feed for the Learn section. Plain anchors (static files, not routes). */}
+        <p className="footer-contribute">
+          <a href="/llms.txt" className="footer-contribute-link">
+            llms.txt
+          </a>
+        </p>
+        <p className="footer-contribute">
+          <a href="/feed.xml" className="footer-contribute-link">
+            RSS
+          </a>
+        </p>
 
         {/* Build stamp: one timestamp per build (scripts/gen-build-info.mjs),
             rendered in UTC so it is unambiguous across locales. */}

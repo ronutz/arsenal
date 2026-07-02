@@ -1,7 +1,7 @@
 # Security contact for ronutz.com
 # https://www.rfc-editor.org/rfc/rfc9116
 
-Contact: mailto:hello@ronutz.com
+Contact: mailto:sec@ronutz.com
 Expires: 2027-07-01T00:00:00.000Z
 Preferred-Languages: en, pt-BR
 Canonical: https://ronutz.com/.well-known/security.txt

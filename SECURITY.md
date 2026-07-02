@@ -2,7 +2,7 @@
 
 This document records the security posture of the ronutz.com site and the one
 accepted tradeoff in its Content-Security-Policy. Report issues per
-`/.well-known/security.txt` (mailto:hello@ronutz.com).
+`/.well-known/security.txt` (mailto:sec@ronutz.com).
 
 ## Architecture (why the attack surface is small)
 

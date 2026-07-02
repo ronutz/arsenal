@@ -7252,3 +7252,20 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   margin-right: 0.5rem;
   vertical-align: 0.05em;
 }
+
+/* "View as Markdown" / "Documentation (Markdown)" link under article & tool titles.
+   Quiet and small; points to the generated .md twin/sibling (machine-legible). */
+.doc-md-link {
+  margin: -0.4rem 0 1rem;
+  font-size: 0.8rem;
+}
+.doc-md-link a {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  color: var(--color-muted, var(--text-secondary));
+  text-decoration: none;
+  border-bottom: 1px dotted var(--color-border, currentColor);
+}
+.doc-md-link a:hover {
+  color: var(--color-accent, var(--accent-primary));
+  border-bottom-color: currentColor;
+}

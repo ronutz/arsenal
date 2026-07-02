@@ -2358,7 +2358,8 @@
       "title": "Comece pelos conceitos",
       "body": "A seção Aprender explica as ideias por trás das ferramentas, e as ferramentas permitem que você trabalhe com elas diretamente, tudo no seu navegador.",
       "learnButton": "Ler a seção Aprender",
-      "toolsButton": "Abrir as ferramentas"
+      "toolsButton": "Abrir as ferramentas",
+      "contactButton": "Fale comigo"
     },
     "recognition": {
       "title": "Reconhecimento",

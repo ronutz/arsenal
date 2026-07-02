@@ -73,6 +73,11 @@ export async function generateMetadata({
       apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
     },
     manifest: "/manifest.webmanifest",
+    alternates: {
+      types: {
+        "application/rss+xml": [{ url: "/feed.xml", title: `${t("name")} — Learn` }],
+      },
+    },
   };
 }
 

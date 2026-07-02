@@ -57,6 +57,13 @@ export default async function ArticlePage({
             </Link>
             <h1 className="article-title">{article.title}</h1>
             <p className="article-summary">{article.summary}</p>
+            {(locale === "en" || locale === "pt-BR") && (
+              <p className="doc-md-link">
+                <a href={`/${locale}/learn/${slug}.md`}>
+                  {locale === "pt-BR" ? "Ver em Markdown" : "View as Markdown"}
+                </a>
+              </p>
+            )}
 
             {/* The MDX body, compiled to React. Content is trusted (authored by
                 us / reviewed contributors), rendered through MDX, not raw HTML.

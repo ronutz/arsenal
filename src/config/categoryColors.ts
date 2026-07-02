@@ -15,8 +15,8 @@
 // dot and a soft color-mixed border. Mid-luminance hues below are visible as
 // dots on both the darkest (#020617) and lightest canvases.
 //
-// The mapping is a PRIME-reviewable design choice; edit freely, one line per
-// family. Keys MUST match the category keys used by tools.ts and article
+// The mapping was RATIFIED by PRIME (2026-07-01). Edit via this map, one line
+// per family. Keys MUST match the category keys used by tools.ts and article
 // frontmatter (and the tools.categories.* i18n labels).
 // ============================================================================
 
