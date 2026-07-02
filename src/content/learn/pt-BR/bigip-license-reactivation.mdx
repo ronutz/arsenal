@@ -1,0 +1,35 @@
+---
+slug: bigip-license-reactivation
+title: "Recuperando um BIG-IP que não carrega a config após uma atualização"
+summary: "Quando um BIG-IP atualizado inicializa mas sua configuração nunca carrega, a causa usual é uma service check date mais antiga do que a nova versão exige. A correção é reativar a licença, o que redefine a data. Aqui está como reconhecer, como reativar com segurança e como evitar da próxima vez."
+concepts: ["f5", "bigip", "license reactivation", "service check date", "upgrade recovery", "troubleshooting"]
+relatedTools: ["f5-service-check-date"]
+relatedArticles: ["bigip-service-check-date", "bigip-upgrade-vs-update"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-07-01"
+---
+
+Um BIG-IP atualizado que inicializa normalmente mas nunca carrega sua configuração é uma falha específica e reconhecível, e uma vez que você a viu uma vez, é fácil identificá-la de novo. A Configuration utility mostra uma mensagem na linha de "The configuration has not yet loaded. If this message persists, it may indicate a configuration problem." O sistema é acessível pela interface web e pelo `tmsh`, mas não processa tráfego.
+
+## Confirmando a causa
+
+A causa mais comum é uma incompatibilidade de datas de licenciamento: a Service Check Date da licença é mais antiga do que a License Check Date da versão para a qual você acabou de atualizar. Para confirmar, leia a Service Check Date do arquivo de licença:
+
+```
+cd /config
+grep "Service check date" bigip.license
+```
+
+A saída se parece com `Service check date : 20230125`, em ordem ano-mês-dia. Compare isso com a License Check Date da versão que você está rodando agora, que você pode encontrar no `/etc/version_date` ou na tabela K7727 da F5. Se a Service Check Date for a mais antiga das duas, esse é o problema. A [ferramenta de service check date do F5](/tools/f5-service-check-date) faz essa comparação diretamente, e o mecanismo completo é descrito em [a service check date](/learn/bigip-service-check-date).
+
+## Reativando a licença
+
+A correção é reativar a licença, o que redefine a Service Check Date, desde que o dispositivo tenha um contrato de serviço vigente. Na Configuration utility, vá em System, depois License, depois Re-activate, e escolha ativação Automatic ou Manual. A Automatic exige que o BIG-IP alcance o servidor de licenças da F5; se ele não tiver acesso à internet, use a Manual. Você precisa estar logado como usuário `admin` para relicenciar o sistema.
+
+Há uma ressalva importante. Reativar a licença dispara um recarregamento da configuração, o que interrompe brevemente todo o processamento de tráfego, e em uma unidade ativa de um par de alta disponibilidade pode disparar um failover inesperado. Trate uma reativação como uma ação de manutenção: planeje a interrupção, e verifique erros de configuração existentes antes de começar.
+
+## Prevenindo da próxima vez
+
+A forma confiável de evitar essa falha é reativar a licença antes de atualizar, não depois. A F5 recomenda reativar antes de qualquer upgrade ou update justamente porque isso redefine a Service Check Date e revela qualquer problema de licenciamento enquanto o sistema ainda está saudável, em vez de depois de ele ter inicializado em uma versão que não consegue rodar. Melhor ainda, verifique a data primeiro: confirme que a Service Check Date é igual ou posterior à License Check Date da versão de destino, e só então prossiga. Não atualize um sistema cuja Service Check Date já é anterior à License Check Date do destino; reative-o primeiro. A [ferramenta de service check date](/tools/f5-service-check-date) e o artigo [upgrade versus update](/learn/bigip-upgrade-vs-update) juntos cobrem o que verificar antes de começar.

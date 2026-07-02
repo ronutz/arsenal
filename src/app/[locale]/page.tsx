@@ -152,6 +152,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   hide: t("provenance.hide"),
                   basisLabel: t("provenance.basisLabel"),
                   sourcesLabel: t("provenance.sourcesLabel"),
+                  disclaimer: t("provenance.disclaimer"),
                 }}
               />
               {/* Per-tool funding (support this tool): gated by the toolFunding

@@ -193,7 +193,7 @@
       "reservedNote": "İlk adres ağ, sonuncusu yayın adresidir; ikisi de ayrılmıştır, yani kullanılabilir = toplam − 2."
     },
     "title": "Araçlar",
-    "lede": "Tamamen tarayıcında çalışan küçük, hızlı, gizliliğe saygılı araçlar. Girdiğin hiçbir şey hiçbir yere gönderilmez. Dahası geliyor.",
+    "lede": "Tamamen tarayıcınızda çalışan, küçük, hızlı ve gizliliği önceleyen araçlar. Yazdığınız hiçbir şey hiçbir yere gönderilmez.",
     "open": "Aç",
     "comingSoon": "Yakında",
     "note": "Bu araç seti büyüyor. Yeni araçlar hazır olduğunda buraya eklenir, her biri yerel olarak çalışır ve kullanımı ücretsizdir.",
@@ -901,7 +901,7 @@
     "lede": "Kariyerinin çoğunu sadece slaytların önünde değil, uygulama tarafında geçirmiş bir uygulayıcı tarafından sunulan ağ ve güvenlik eğitimi. São Paulo merkezli, dünya genelinde, Portekizce ve İngilizce öğretiyor.",
     "now": {
       "title": "Şu an ne yapıyorum",
-      "body": "Güvenlik ve ağ alanında dört platformda resmi, sertifikalı, eğitmen liderliğindeki eğitimler veriyorum. Bu iş uygulamalı ve laboratuvar temellidir: amaç her zaman katılımcıların bir görevi sadece anlatabilecek değil, yapabilecek şekilde ayrılmasıdır. 1996'dan beri yetkili bir eğitmenim ve eğitim ile teknik destek, doksanların sonundan beri işimin bir parçası oldu.",
+      "body": "Dört güvenlik ve ağ platformunda resmi, sertifikalı, eğitmen liderliğinde eğitimler veriyorum. Gerçek sistemler üzerinde uygulamalı laboratuvarlar var ve temelleri zaten bilip pratik yapmaya gelenler için asıl mesele tam da bu: içinde çalışılacak gerçek ortamlar. Bir teknolojide daha yeni olan gruplar için zaman önce konunun dayandığı temelleri kurmaya gider; böylece uygulamalı çalışma anlam kazanır ve insanlar yalnızca hangi düğmelere basacaklarını değil, işlerin neden öyle davrandığını anlayarak ayrılır. İkisi de eşit derecede değerlidir ve denge, odada kimin olduğuna göre değişir. Öğretim ve teknik yetkinlik kazandırma, 1996'da uygulama tarafında başlayan bir kariyerin üzerine, 1990'ların sonundan beri işimin bir parçası.",
       "basedLabel": "Merkez",
       "basedValue": "São Paulo, Brezilya",
       "teachesLabel": "Öğretiyor",
@@ -1094,7 +1094,7 @@
       "s1Title": "Kanal danışmanlığı ve eğitimi, 2013'ten 2015'e",
       "s1Body": "TDec Network Group'ta Palo Alto, sistem mühendisliği, çözüm mimarisi, uygulama desteği, uygulama, denetim ve sorun gidermeyi kapsayan çok satıcılı danışmanlık ve eğitim pratiğine katıldı. Bağlantı, satış öncesi ve satış sonrası iş için 2015'te Cipher Security üzerinden sürdü. Teknik vurgu, yeni nesil güvenlik duvarları ve Panorama yönetim platformuydu; bunlar o zaman Palo Alto'nun kurumsal güvenlik sunumunun çekirdeğiydi.",
       "s2Title": "PAN-OS eğitimi",
-      "s2Body": "Bu dönem, resmi eğitimin sunumunu içeriyordu: PAN-OS 6.0 eğitim kursu; bugünkü öğretim pratiğini tanımlayan aynı laboratuvar temelli uygulamalı eğitimin üzerine kuruluydu. 2014'te kazanılan sertifikalarla birlikte bu, kariyerin sonraki odağı başka teknolojilerde yoğunlaşsa da, platformda gerçek bir derinlik oluşturdu.",
+      "s2Body": "Bu dönem, resmi eğitim sunumunu da içeriyordu: bir PAN-OS 6.0 bootcamp'i; bugün de süren, uygulayıcı liderliğindeki aynı öğretimin erken bir örneği. 2014'te kazanılan sertifikalarla birlikte bu, kariyerin odağı sonradan başka teknolojilere kaysa da platformda gerçek bir derinlik oluşturdu.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Not: bu sertifikalar tarihseldir ve güncel olarak korunmamaktadır."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Bu sistemleri öğretmeden önce kuran eğitmen.",
     "lede": "Çoğu teknik eğitim, bir konuyu öğretmek için onu öğrenen kişiler tarafından sunulur. Burada tam tersi: gerçek ağ ve güvenlik sistemlerini kurmak, bozmak ve onarmakla geçen otuz yıl, her kavramı üretimde gerçekte nasıl davrandığına bağlayan bir eğitime damıtılmış.",
     "s1Title": "Sınıfta neden önemli",
-    "s1Body": "Bir işlevin nasıl çalışması gerektiğini anlatmakla, kritik bir şey çalışmadığında, sabahın üçünde, neden öyle davrandığını anlatmak arasında bir fark vardır. Birincisi kılavuzdan gelir. İkincisi, orada bulunmuş olmaktan gelir. 1996'dan beri iş uygulamaydı: ağ tasarlamak, onları çalıştırmak ve bozulduğunda aranan kişi olmak; hem satıcılar için hem de Brezilya'nın en büyük kuruluşlarından bazıları için. Her katılımcının aldığı derinlik işte budur: slayt okuyan bir konuşmacı değil, bu sistemlerin içinde yaşamış ve onların gerçekte nasıl çalıştığını anlatan bir mühendis.",
+    "s1Body": "Bir özelliğin nasıl çalışması gerektiğini açıklamakla, kritik bir şeyin çöktüğü gece üçünde neden öyle davrandığını açıklamak arasında fark vardır. İlki bir kılavuzdan gelir. İkincisi ise orada bulunmuş olmaktan gelir. 1996'dan bu yana iş, uygulamaydı: ağları tasarlamak ve devreye almak, ardından baskı altında sorunlarını gidermek ve bir işi durma noktasına getiren kritik erişilebilirlik ve güvenlik olaylarını çözmek için çağrılan kişi olmak; hem üreticiler hem de Brezilya'nın en büyük kuruluşlarından bazıları için. Her katılımcının aldığı şey bu derinliktir: slaytları okuyan bir sunucu değil, bu sistemlerin içinde yaşamış ve gerçekte nasıl çalıştıklarını anlatan bir mühendis.",
     "s2Title": "Karmaşığı anlaşılır kılmak",
     "s2Body": "Derin teknik bilgi gereklidir ama yeterli değildir. Daha nadir olan beceri onu çevirmektir: gerçekten karmaşık bir şeyi, Web uygulama güvenlik duvarı, kimlik federasyonu, trafik yönetimi, SD-WAN, alıp onunla ilk kez karşılaşan birinde tutunur hale getirmek. Katılımcılar tutarlı biçimde gerçek dünyadan örneklerden ve net, yapılandırılmış yöntemden söz eder; her kavramı gerçekten yaptıkları işin bağlamına yerleştirme yeteneğinden. Eğitim, bu kariyer boyunca uzanan bir çizgidir; 1997'den beri neredeyse her rolde vardır ve 2020'den beri tam zamanlı odaktır.",
     "s3Title": "Uygulamalı, muğlak değil",
-    "s3Body": "Teknik ustalık, izleyerek değil, uygulayarak kurulur. Her kurs, gerçek sistemler üzerinde uygulamalı laboratuvarlar etrafında inşa edilir ve yönetilen bir laboratuvar ortamıyla desteklenir, böylece eğitimin her zaman gerçek bir yapacağı yer olur. Bu biçim katılımcı kitlesine göre uyarlanır: dünya genelinde eğitmen liderliğinde sanal eğitim, daha uygun olduğunda yüz yüze, İngilizce ya da Portekizce. Her dersin amacı aynıdır: katılımcıların bir görevi sadece anlatabilecek değil, yapabilecek şekilde ayrılması.",
+    "s3Body": "Teknik beceri yaparak gelişir; bu yüzden her kursta gerçek sistemler üzerinde uygulamalı laboratuvarlar vardır ve bunlar, pratiğin daima gerçek bir yerde gerçekleşmesini sağlayan yönetilen laboratuvar ortamlarıyla desteklenir. Temelleri zaten bilen ve teknolojiye eli dokunsun diye gelenler için tam da burada bulunma sebepleri budur ve iyi harcanmış bir zamandır. Konuya daha yeni olanlar için zaman önce laboratuvarların dayandığı temellere gider; böylece uygulamalı çalışma ezberden takip edilmek yerine anlam kazanır. İkisi de eşit derecede değerlidir ve denge yalnızca sınıfa göre değişir. Biçim, katılımcılara göre uyarlanır: dünya çapında sunulan, eğitmen liderliğinde canlı eğitim; daha uygun olduğunda yüz yüze; İngilizce veya Portekizce. Her hâlükârda insanlar elinde gerçek ve işe yarar bir şeyle ve bunun neden işe yaradığına dair gerçek bir anlayışla ayrılmalıdır.",
     "s4Title": "Tanınan, sertifikalı ve güncel",
     "s4Body": "Bu eğitim, resmi tanınma temeli üzerinde durur. Üst üste üç yıl F5 DevCentral MVP, 2022, 2023 ve 2024'te. 2015'ten beri korunan F5 sertifikaları ve dört platformda eğitmen yetkisi: F5, Extreme Networks, Fortinet ve Netskope. Sunum, yetkili bir eğitim merkezi olan Red Education aracılığıyla Avustralya'ya, Singapur'a, Hindistan'a, Orta Avrupa'ya, ABD'ye ve Brezilya'ya ulaşır. Belgeler önemlidir, ama onların altındaki şeye giden bir kısayoldur: teknolojiye gerçek ve güncel hâkimiyet.",
     "platformsTitle": "Ne öğretiyorum",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Birlikte çalışalım",
     "ctaBody": "İster resmi eğitim rezerve et, ister ekibin için özel bir program oluştur, ister zorlu bir soruna deneyimli danışmanlık getir; kapı açık.",
     "ctaButton": "İletişim",
-    "coursesButton": "Tüm kursları gör"
+    "coursesButton": "Tüm kursları gör",
+    "instructor": {
+      "body": "Bu kurslar, dünya çapında yetkili F5, Fortinet, Extreme Networks ve Netskope eğitimleri veren kıdemli teknik eğitmen Rodolfo Nützmann tarafından verilmektedir; bunun temelinde 1996'da uygulama tarafında başlayan bir ağ ve güvenlik kariyeri yatıyor. Sertifikalar ve eski katılımcıların söyledikleri bir tık uzağınızda."
+    }
   },
   "contact": {
     "title": "İletişim",
@@ -1297,7 +1300,8 @@
     "localBody": "Her şey tarayıcıda çalışır. Araç saf bir işlev çağırır: aynı girdiyle aynı çıktıyı verir, durum tutmaz ve bir sunucuya hiçbir şey göndermez. Çerez yok, analitik yok; Gizlilik sayfasının ayrıntılı olarak açıkladığı gibi.",
     "thanksTitle": "Özel teşekkür",
     "p2Body": "Her aracın çalıştırdığı deterministik mantık, aracın bütünüdür: gizli bir sunucu adımı, hesap veya telemetri yoktur. Her şey tarayıcınızda çalışır.",
-    "changelogLink": "Değişiklik günlüğü"
+    "changelogLink": "Değişiklik günlüğü",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Bu projeyi destekle",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Bana nasıl ulaşırsınız",
     "emailBody": "Kanal e-postadır. Ne bulduğunuzu ya da ne istediğinizi, üzerinde işlem yapılabilecek kadar ayrıntıyla anlatın: bir örnek, bir bağlantı, tam ifade, ne uygunsa. Araç kutusunu daha iyi hale getiriyorsa, yapılır.",
     "emailLabel": "E-posta",
-    "backToTools": "Araç kutusuna dön"
+    "backToTools": "Araç kutusuna dön",
+    "disclaimerTitle": "Yeni araçlar nasıl geliştirilir ve finanse edilir",
+    "disclaimerBody": "Tam bir dürüstlük adına: buradaki her yeni araç, Anthropic'in en yüksek kullanım kademesi olan Claude Max ile geliştiriliyor ve bu abonelik ucuz değil. 5x planı ayda yaklaşık 100 USD, 20x planı yaklaşık 200 USD. Finanse edildiğinde araçlar geliştirilir. Edilmediğinde geliştirme, finanse edilene kadar duraklar; bu yüzden yeni araçlar sabit bir takvime göre değil, dalgalar hâlinde gelme eğilimindedir.",
+    "disclaimerBody2": "İlerlemesine yardım etmek isterseniz, altbilgideki Buy Me a Coffee bağlantısı bunun yoludur. Her katkı, yalnızca o aylık Claude Max aboneliği için harcanan tek bir rezerve gider. Başka masraf yok, pay yok, sürpriz yok.",
+    "disclaimerStatus": "Şu anda: abonelik finanse edildi ve yeni araçlar etkin biçimde geliştiriliyor."
   },
   "languageStatus": {
     "title": "Çeviri durumu",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Yerelleştirme",
     "kindContent": "İçerik",
     "kindInfra": "Altyapı"
+  },
+  "roadmap": {
+    "ideaBody": "Buradaki her araç aynı şekilde başladı: birinin küçük, belirli bir şeye ihtiyacı oldu ve onu mümkün olan en kötü anda bulamadı; bakım penceresi kapanırken sabahın ikisinde bir konsol kablosunun eksik olmasının dijital kuzeni. Uzandığın şey henüz burada yoksa, öner. Yine de önce listeye bir göz atmakta fayda var, belki de tam o adaptör çoktan yarısı bitmiş hâlde tezgâhımda duruyordur.",
+    "intentTitle": "Bir tarayıcı sekmesinden fazlası için tasarlandı",
+    "intentIntro": "Bu araç kutusunun arkasında iki yön var; ikisi de sözden çok niyet ve hiçbirinin bir tarihi yok.",
+    "intentApi": "İlki API erişimidir. Araçlar zaten küçük, sürümlenmiş bir dahili API'nin arkasında çalışıyor; böylece bir gün aynı deterministik motorlar yalnızca bir tarayıcı sekmesini doldurmakla kalmayıp bir isteğe de yanıt verebilir.",
+    "intentOpen": "İkincisi motorun kendisini açmaktır. Her araç, kendi kendine barındırılmak üzere yayımlanabilecek ve doğrudan kendi derleme ve CI hattınıza yerleştirilebilecek şekilde tasarlanmış, bağımsız ve belgelenmiş bir modüldür; kendi ortamınızda, hiçbir şey dışarı çıkmadan çalışır.",
+    "intentClose": "Hiçbiri taahhüt değil. Onları mümkün kılan şey, her şeyin baştan bunlar öngörülerek inşa edilmiş olmasıdır: deterministik çekirdekler, gizli durum yok, temiz bir API yüzeyi, makinece okunabilir belgeler. Yani zamanı geldiğinde bunları açmak bir adımdır, yeniden yazım değil."
+  },
+  "category": {
+    "eyebrow": "Kategori",
+    "lede": "Bu kategorideki tüm araçlar ve makaleler, tek bir yerde toplandı.",
+    "toolsHeading": "Araçlar",
+    "articlesHeading": "Makaleler",
+    "read": "Oku",
+    "backToTools": "Tüm araçlar"
   }
 }

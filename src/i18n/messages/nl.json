@@ -193,7 +193,7 @@
       "reservedNote": "Het eerste adres is het netwerk en het laatste is de broadcast; beide zijn gereserveerd, dus bruikbaar = totaal − 2."
     },
     "title": "Tools",
-    "lede": "Kleine, snelle, privacyvriendelijke hulpprogramma's die volledig in je browser draaien. Niets van wat je typt wordt ergens naartoe gestuurd. Er komen er meer aan.",
+    "lede": "Kleine, snelle, privacygerichte hulpmiddelen die volledig in je browser draaien. Niets van wat je typt wordt ergens naartoe gestuurd.",
     "open": "Openen",
     "comingSoon": "Binnenkort",
     "note": "Deze toolbox groeit. Nieuwe tools worden hier toegevoegd zodra ze klaar zijn, elk local-first en gratis te gebruiken.",
@@ -901,7 +901,7 @@
     "lede": "Netwerk- en beveiligingstrainingen, gegeven door een vakman die zijn loopbaan aan de implementatiekant heeft doorgebracht, niet alleen bij de slides. Gevestigd in São Paulo, wereldwijd lesgevend, in het Portugees en Engels.",
     "now": {
       "title": "Wat ik nu doe",
-      "body": "Ik geef officiële, gecertificeerde, door een trainer geleide trainingen op vier beveiligings- en netwerkplatforms. Het werk is praktijkgericht en lab-gedreven: het doel is altijd dat deelnemers vertrekken met het vermogen om het te doen, niet alleen om het te beschrijven. Ik ben sinds 1996 een geautoriseerde trainer, en training en technische enablement maken sinds eind jaren negentig deel uit van mijn werk.",
+      "body": "Ik geef officiële, gecertificeerde, door een instructeur geleide trainingen op vier beveiligings- en netwerkplatforms. Er zijn hands-on labs op echte systemen, en voor mensen die de basis al kennen en kwamen om te oefenen, is dat precies het punt: echte omgevingen om in te werken. Voor groepen die nieuwer zijn met een technologie gaat de tijd eerst naar het bouwen van de fundamenten waarop het onderwerp rust, zodat het praktische werk logisch is en mensen vertrekken met begrip van waarom dingen zich gedragen zoals ze doen, en niet alleen welke knoppen ze moeten indrukken. Beide zijn even waardevol, en de balans verschuift met wie er in de ruimte zit. Lesgeven en technische ondersteuning maken sinds eind jaren negentig deel uit van mijn werk, op een loopbaan die in 1996 aan de implementatiekant begon.",
       "basedLabel": "Gevestigd in",
       "basedValue": "São Paulo, Brazilië",
       "teachesLabel": "Geeft les",
@@ -1094,7 +1094,7 @@
       "s1Title": "Channeladvies en -training, 2013 tot 2015",
       "s1Body": "Bij TDec Network Group sloot Palo Alto zich aan bij een multi-vendor advies- en trainingspraktijk die systems engineering, solution-architectuur, applicatie-enablement, implementatie, audits en troubleshooting besloeg. De relatie zette zich voort via Cipher Security in 2015 voor pre-sales- en post-sales-werk. De technische focus lag op next-generation firewalls en het Panorama-beheerplatform, de kern van Palo Alto's enterprise-beveiligingsaanbod destijds.",
       "s2Title": "PAN-OS-onderwijs",
-      "s2Body": "Deze periode omvatte formeel trainingsonderwijs: een PAN-OS 6.0-bootcamp, dat hetzelfde hands-on, lab-gedreven onderwijs opbouwde dat de lespraktijk van vandaag bepaalt. Gecombineerd met de in 2014 behaalde certificeringen vestigde dit echte diepgang in het platform, ook al concentreerde de focus van de loopbaan zich later op andere technologieën.",
+      "s2Body": "Deze periode omvatte formele trainingsverzorging: een PAN-OS 6.0-bootcamp, een vroeg voorbeeld van hetzelfde door een practitioner geleide onderwijs dat vandaag nog voortduurt. Samen met de in 2014 behaalde certificeringen legde dit een oprechte diepgang in het platform vast, ook al richtte de loopbaan zich later op andere technologieën.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Let op: deze certificeringen zijn historisch en worden niet als actueel onderhouden."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Een trainer die deze systemen bouwde voordat hij ze onderwees.",
     "lede": "De meeste technische training wordt gegeven door mensen die de stof hebben geleerd om die te onderwijzen. Dit is het tegenovergestelde: drie decennia van het bouwen, kapotmaken en repareren van echte netwerken en beveiligingssystemen, gedistilleerd tot training die elk concept verbindt met hoe het zich werkelijk gedraagt in productie.",
     "s1Title": "Waarom dit telt in een leslokaal",
-    "s1Body": "Er is een verschil tussen uitleggen hoe een functie verondersteld wordt te werken en uitleggen waarom hij zich gedraagt zoals hij doet om drie uur 's nachts wanneer iets kritieks uitligt. Het eerste komt uit een handleiding. Het tweede komt van er geweest zijn. Sinds 1996 was het werk implementatie: netwerken ontwerpen, ze opzetten, en de persoon zijn die wordt gebeld als ze kapotgingen, voor leveranciers en voor enkele van de grootste organisaties van Brazilië. Die diepte is wat elke deelnemer ontvangt, geen presentator die slides voorleest, maar een engineer die in deze systemen heeft geleefd en uitlegt hoe ze werkelijk werken.",
+    "s1Body": "Er is een verschil tussen uitleggen hoe een functie hoort te werken en uitleggen waarom ze zich gedraagt zoals ze doet om drie uur 's nachts, wanneer er iets kritieks plat ligt. Het eerste komt uit een handleiding. Het tweede komt van erbij te zijn geweest. Sinds 1996 was het werk implementatie: netwerken ontwerpen en opzetten, ze vervolgens onder druk oplossen en de persoon zijn die wordt gebeld om de kritieke beschikbaarheids- en beveiligingsincidenten op te lossen die een bedrijf lamleggen, voor leveranciers en voor enkele van de grootste organisaties in Brazilië. Die diepgang krijgt elke cursist: geen presentator die dia's voorleest, maar een ingenieur die binnen deze systemen heeft geleefd en uitlegt hoe ze echt werken.",
     "s2Title": "Het complexe helder gemaakt",
     "s2Body": "Diepgaande technische kennis is noodzakelijk maar niet voldoende. De zeldzamere vaardigheid is het vertalen ervan: iets werkelijk complex nemen, web application firewalls, identiteitsfederatie, traffic management, SD-WAN, en het laten klikken voor iemand die het voor het eerst tegenkomt. Deelnemers benoemen consequent de praktijkvoorbeelden en de heldere, gestructureerde didactiek, het vermogen om elk concept in de context te plaatsen van het werk dat ze daadwerkelijk doen. Lesgeven is een rode draad geweest door deze hele loopbaan, aanwezig in vrijwel elke rol sinds 1997, en de voltijdse focus sinds 2020.",
     "s3Title": "Hands-on, niet vaag",
-    "s3Body": "Technische vaardigheid wordt opgebouwd door te doen, niet door te kijken. Elke cursus is opgebouwd rond hands-on labs op echte systemen, versterkt met beheerde labomgevingen zodat oefening altijd een echte plek heeft om plaats te vinden. De vorm past zich aan de doelgroep aan: virtuele door een trainer geleide training wereldwijd, in persoon wanneer dat beter past, in het Engels of Portugees. Het doel van elke sessie is hetzelfde, dat deelnemers vertrekken met het vermogen om het te doen, niet alleen om het te beschrijven.",
+    "s3Body": "Technische vaardigheid ontstaat door te doen, dus elke cursus heeft hands-on labs op echte systemen, ondersteund door beheerde labomgevingen waar oefening altijd ergens echt kan plaatsvinden. Voor mensen die de basis al kennen en kwamen om de technologie zelf aan te raken, is dat precies waarvoor ze hier zijn, en het is goed bestede tijd. Voor wie er nieuwer in is, gaat de tijd eerst naar de fundamenten waarop de labs rusten, zodat het praktische werk logisch is in plaats van uit het hoofd te worden gevolgd. Beide zijn even waardevol, en de balans verschuift gewoon met de groep. Het formaat past zich aan het publiek aan: virtuele, door een instructeur geleide training wereldwijd, in persoon wanneer dat beter uitkomt, in het Engels of Portugees. Hoe dan ook zouden mensen moeten vertrekken met iets echts en nuttigs in handen en een echt begrip van waarom het werkt.",
     "s4Title": "Erkend, gecertificeerd en actueel",
     "s4Body": "Het onderwijs rust op een fundament van formele erkenning. F5 DevCentral MVP drie opeenvolgende jaren, in 2022, 2023 en 2024. F5-certificeringen aangehouden sinds 2015, en trainerautorisatie over vier platforms: F5, Extreme Networks, Fortinet en Netskope. De levering bereikt Australië, Singapore, India, Centraal-Europa, de Verenigde Staten en Brazilië, via Red Education, een geautoriseerd trainingscentrum. De kwalificaties tellen, maar ze zijn een afkorting voor wat eronder ligt: een oprechte, actuele beheersing van de technologie.",
     "platformsTitle": "Wat ik onderwijs",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Laten we samenwerken",
     "ctaBody": "Of je nu officiële training wilt boeken, een maatwerkprogramma voor je team wilt opbouwen, of ervaren advies wilt inschakelen voor een moeilijk probleem, de deur staat open.",
     "ctaButton": "Neem contact op",
-    "coursesButton": "Blader door alle cursussen"
+    "coursesButton": "Blader door alle cursussen",
+    "instructor": {
+      "body": "Deze cursussen worden gegeven door Rodolfo Nützmann, een senior technisch instructeur die wereldwijd officiële F5-, Fortinet-, Extreme Networks- en Netskope-trainingen verzorgt, gebouwd op een loopbaan in netwerken en beveiliging die in 1996 aan de implementatiekant begon. De certificeringen, en wat oud-cursisten zeggen, zijn één klik verwijderd."
+    }
   },
   "contact": {
     "title": "Neem contact op",
@@ -1297,7 +1300,8 @@
     "localBody": "Alles draait in de browser. De tool roept een pure functie aan: bij dezelfde invoer geeft die dezelfde uitvoer, houdt geen toestand bij en stuurt niets naar een server. Geen cookies, geen analytics, zoals de Privacypagina volledig uiteenzet.",
     "thanksTitle": "Speciale dank",
     "p2Body": "De deterministische logica die elke tool uitvoert, is de hele tool: er is geen verborgen serverstap, geen account en geen telemetrie. Alles draait in je browser.",
-    "changelogLink": "Wijzigingslog"
+    "changelogLink": "Wijzigingslog",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Steun het project",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Hoe je me bereikt",
     "emailBody": "E-mail is het kanaal. Vertel me wat je vond of wat je wilt, met genoeg detail om mee aan de slag te gaan: een voorbeeld, een link, de exacte formulering, wat past. Als het de toolbox beter maakt, wordt het gebouwd.",
     "emailLabel": "E-mail",
-    "backToTools": "Terug naar de toolbox"
+    "backToTools": "Terug naar de toolbox",
+    "disclaimerTitle": "Hoe nieuwe hulpmiddelen worden gebouwd en gefinancierd",
+    "disclaimerBody": "In het belang van volledige eerlijkheid: elk nieuw hulpmiddel hier wordt gebouwd met Claude Max, het hoogste gebruiksniveau van Anthropic, en dat abonnement is niet goedkoop. Het 5x-abonnement kost ongeveer 100 USD per maand, het 20x-abonnement ongeveer 200. Als het gefinancierd is, worden er hulpmiddelen gebouwd. Als dat niet zo is, pauzeert het bouwen gewoon totdat het weer kan, en daarom komen nieuwe hulpmiddelen eerder in golven dan volgens een vast schema.",
+    "disclaimerBody2": "Als je wilt helpen, is de Buy Me a Coffee-link in de voettekst de manier. Elke bijdrage gaat naar één enkele reserve die uitsluitend wordt besteed aan dat maandelijkse Claude Max-abonnement. Geen andere kosten, geen commissie, geen verrassingen.",
+    "disclaimerStatus": "Op dit moment: het abonnement is gefinancierd en er worden actief nieuwe hulpmiddelen gebouwd."
   },
   "languageStatus": {
     "title": "Vertaalstatus",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Lokalisatie",
     "kindContent": "Inhoud",
     "kindInfra": "Infrastructuur"
+  },
+  "roadmap": {
+    "ideaBody": "Elk gereedschap hier begon op dezelfde manier: iemand had iets kleins en specifieks nodig en kon het op het slechtst denkbare moment niet vinden, de digitale neef van één consolekabel tekortkomen om 2 uur 's nachts terwijl het onderhoudsvenster dichtgaat. Als datgene waar je naar grijpt er nog niet is, stel het voor. Al is het de moeite waard om eerst de lijst door te scrollen, voor het geval precies die adapter al halfafgebouwd op mijn werkbank ligt.",
+    "intentTitle": "Gebouwd voor meer dan een browsertabblad",
+    "intentIntro": "Achter deze gereedschapskist zitten twee richtingen, beide eerder bedoelingen dan beloften, en geen van beide met een datum.",
+    "intentApi": "De eerste is API-toegang. De hulpmiddelen draaien al achter een kleine, geversioneerde interne API, zodat dezelfde deterministische engines op een dag een verzoek zouden kunnen beantwoorden, en niet alleen een browsertabblad vullen.",
+    "intentOpen": "De tweede is het openstellen van de engine zelf. Elk hulpmiddel is een op zichzelf staande, gedocumenteerde module, gebouwd om te kunnen worden vrijgegeven voor zelfhosting en rechtstreeks in je eigen build- en CI-pipelines te worden opgenomen, draaiend in je eigen omgeving zonder dat er iets uit weggaat.",
+    "intentClose": "Geen van beide is toegezegd. Wat ze mogelijk maakt, is dat alles vanaf de basis is gebouwd met het oog daarop: deterministische kernen, geen verborgen toestand, een schoon API-oppervlak, machineleesbare documentatie. Dus als het moment komt, is dit openstellen een stap, geen herschrijving."
+  },
+  "category": {
+    "eyebrow": "Categorie",
+    "lede": "Alle hulpmiddelen en artikelen in deze categorie, op één plek verzameld.",
+    "toolsHeading": "Hulpmiddelen",
+    "articlesHeading": "Artikelen",
+    "read": "Lezen",
+    "backToTools": "Alle hulpmiddelen"
   }
 }

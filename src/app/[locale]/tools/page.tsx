@@ -14,6 +14,8 @@ import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
 import FamilyChip from "@/components/FamilyChip";
 import { categoryColor } from "@/config/categoryColors";
+import { vendorColor, browseVendors } from "@/config/vendors";
+import ToolVendorFilter from "@/components/ToolVendorFilter";
 
 export default async function ToolsPage({
   params,
@@ -25,6 +27,9 @@ export default async function ToolsPage({
 
   const t = await getTranslations("tools");
   const tNav = await getTranslations("nav");
+
+  // Vendor families to offer in the browse-by-vendor filter (populated + always-show).
+  const vendorKeys = browseVendors();
 
   // Alphabetical (locale-aware) by the resolved category label, so each
   // language sees its categories in its own A->Z order.
@@ -49,6 +54,18 @@ export default async function ToolsPage({
             </div>
           </section>
 
+          {/* Browse by vendor (client-side filter; progressive enhancement) */}
+          {vendorKeys.length > 0 && (
+            <div className="container certs-container tools-jumpnav" style={{ marginTop: "2rem" }}>
+              <ToolVendorFilter
+                vendors={vendorKeys}
+                labels={Object.fromEntries(vendorKeys.map((v) => [v, t(`vendors.${v}`)]))}
+                allLabel={t("vendorFilterAll")}
+                legend={t("vendorFilterLabel")}
+              />
+            </div>
+          )}
+
           {/* Category jump-nav */}
           {categories.length > 1 && (
             <div className="container certs-container tools-jumpnav" style={{ marginTop: "2rem" }}>
@@ -56,7 +73,7 @@ export default async function ToolsPage({
                 <span className="category-nav-label">{t("jumpTo")}</span>
                 <ul className="category-nav-list">
                   {categories.map((category) => (
-                    <li key={category}>
+                    <li key={category} data-jumpnav={category}>
                       <a href={`#${category}`} className="category-nav-link">
                         {t(`categories.${category}`)}
                       </a>
@@ -77,7 +94,9 @@ export default async function ToolsPage({
                     style={{ "--chip-color": categoryColor(category) } as React.CSSProperties}
                     aria-hidden="true"
                   />
-                  {t(`categories.${category}`)}
+                  <Link href={`/category/${category}`} className="tools-category-link">
+                    {t(`categories.${category}`)}
+                  </Link>
                 </h2>
                 <ul className="tools-grid">
                   {tools
@@ -87,7 +106,7 @@ export default async function ToolsPage({
                     )
                     .map((tool) =>
                       tool.available ? (
-                        <li key={tool.id}>
+                        <li key={tool.id} className="tools-grid-item" data-vendors={(tool.vendors ?? []).join(" ")}>
                           <Link href={tool.href} className="tools-card">
                             <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
                             <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
@@ -96,6 +115,14 @@ export default async function ToolsPage({
                                 category={tool.category}
                                 label={t(`categories.${tool.category}`)}
                               />
+                              {(tool.vendors ?? []).map((v) => (
+                                <FamilyChip
+                                  key={v}
+                                  category={v}
+                                  color={vendorColor(v)}
+                                  label={t(`vendors.${v}`)}
+                                />
+                              ))}
                             </span>
                             <span className="tools-card-go" aria-hidden="true">
                               {t("open")} →
@@ -103,7 +130,7 @@ export default async function ToolsPage({
                           </Link>
                         </li>
                       ) : (
-                        <li key={tool.id}>
+                        <li key={tool.id} className="tools-grid-item" data-vendors={(tool.vendors ?? []).join(" ")}>
                           <div className="tools-card tools-card--soon" aria-disabled="true">
                             <h3 className="tools-card-name">{t(`${tool.id}.name`)}</h3>
                             <p className="tools-card-blurb">{t(`${tool.id}.blurb`)}</p>
@@ -112,6 +139,14 @@ export default async function ToolsPage({
                                 category={tool.category}
                                 label={t(`categories.${tool.category}`)}
                               />
+                              {(tool.vendors ?? []).map((v) => (
+                                <FamilyChip
+                                  key={v}
+                                  category={v}
+                                  color={vendorColor(v)}
+                                  label={t(`vendors.${v}`)}
+                                />
+                              ))}
                             </span>
                             <span className="tools-card-soon">{t("comingSoon")}</span>
                           </div>

@@ -193,7 +193,7 @@
       "reservedNote": "Alamat pertama ialah rangkaian dan yang terakhir ialah broadcast; kedua-duanya disimpan, jadi boleh guna = jumlah − 2."
     },
     "title": "Alat",
-    "lede": "Alat yang kecil, pantas dan menghormati privasi yang berjalan sepenuhnya dalam pelayar anda. Tiada apa yang anda masukkan dihantar ke mana-mana. Lebih banyak akan datang.",
+    "lede": "Utiliti kecil, pantas dan mengutamakan privasi yang berjalan sepenuhnya dalam pelayar anda. Tiada apa yang anda taip dihantar ke mana-mana.",
     "open": "Buka",
     "comingSoon": "Akan datang",
     "note": "Set alat ini sedang berkembang. Alat baharu ditambah di sini apabila siap, setiap satu berjalan secara setempat dan percuma untuk digunakan.",
@@ -901,7 +901,7 @@
     "lede": "Latihan rangkaian dan keselamatan yang dibawa oleh seorang pengamal yang menghabiskan kerjayanya di pihak pelaksanaan, bukan hanya di hadapan slaid. Berpangkalan di São Paulo, mengajar di seluruh dunia, dalam bahasa Portugis dan Inggeris.",
     "now": {
       "title": "Apa yang saya lakukan sekarang",
-      "body": "Saya menyampaikan latihan rasmi dan diperakui yang dipimpin jurulatih merentasi empat platform dalam keselamatan dan rangkaian. Kerja ini bersifat praktikal dan berasaskan makmal: matlamatnya sentiasa agar peserta pulang dengan keupayaan melaksanakan tugas, bukan hanya menerangkannya. Saya seorang jurulatih yang diberi kuasa sejak 1996, dan latihan serta sokongan teknikal telah menjadi sebahagian daripada kerja saya sejak akhir 1990-an.",
+      "body": "Saya menyampaikan latihan rasmi bertauliah yang dikendalikan pengajar merentas empat platform keselamatan dan rangkaian. Ada makmal amali pada sistem sebenar, dan bagi mereka yang sudah tahu asasnya dan datang untuk berlatih, itulah tepatnya intinya: persekitaran sebenar untuk bekerja. Bagi kumpulan yang lebih baharu dalam sesuatu teknologi, masa pergi dahulu untuk membina asas yang menjadi sandaran topik itu, supaya kerja amali masuk akal dan orang pulang dengan memahami mengapa sesuatu berkelakuan sedemikian, bukan sekadar butang mana yang perlu ditekan. Kedua-duanya sama berharga, dan keseimbangan beralih mengikut siapa yang ada dalam bilik. Pengajaran dan pemerkasaan teknikal telah menjadi sebahagian daripada kerja saya sejak akhir 1990-an, atas kerjaya yang bermula di sisi pelaksanaan pada 1996.",
       "basedLabel": "Berpangkalan di",
       "basedValue": "São Paulo, Brazil",
       "teachesLabel": "Mengajar",
@@ -1094,7 +1094,7 @@
       "s1Title": "Perundingan dan latihan saluran, 2013 hingga 2015",
       "s1Body": "Di TDec Network Group, Palo Alto menyertai amalan perundingan dan latihan berbilang vendor yang merangkumi kejuruteraan sistem, seni bina penyelesaian, sokongan aplikasi, pelaksanaan, audit dan penyelesaian masalah. Hubungan diteruskan melalui Cipher Security pada 2015 untuk kerja prajualan dan selepas jualan. Penekanan teknikalnya ialah tembok api generasi baharu dan platform pengurusan Panorama, teras tawaran keselamatan perusahaan Palo Alto ketika itu.",
       "s2Title": "Latihan PAN-OS",
-      "s2Body": "Tempoh ini termasuk penyampaian latihan formal: kursus latihan PAN-OS 6.0, yang membina latihan praktikal berasaskan makmal yang sama yang mentakrifkan amalan pengajaran hari ini. Digabungkan dengan sijil yang diperoleh pada 2014, ini menetapkan kedalaman sebenar dalam platform, walaupun tumpuan kerjaya kemudiannya tertumpu pada teknologi lain.",
+      "s2Body": "Tempoh ini termasuk penyampaian latihan formal: sebuah bootcamp PAN-OS 6.0, satu contoh awal pengajaran dipacu pengamal yang sama yang berterusan hingga kini. Digabungkan dengan pensijilan yang diperoleh pada 2014, ini mewujudkan kedalaman yang tulen dalam platform itu, walaupun fokus kerjaya kemudiannya tertumpu pada teknologi lain.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Nota: sijil ini bersifat sejarah dan tidak dikekalkan sebagai semasa."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Jurulatih yang membina sistem ini sebelum mengajarnya.",
     "lede": "Kebanyakan latihan teknikal disampaikan oleh mereka yang mempelajari subjek untuk mengajarnya. Di sini sebaliknya: tiga dekad membina, merosakkan dan membaiki sistem rangkaian dan keselamatan sebenar, diperah menjadi latihan yang mengaitkan setiap konsep dengan cara ia benar-benar berkelakuan dalam pengeluaran.",
     "s1Title": "Mengapa ia penting di bilik darjah",
-    "s1Body": "Ada perbezaan antara menerangkan cara fungsi sepatutnya berfungsi dan menerangkan mengapa ia berkelakuan begitu, pada pukul tiga pagi, apabila sesuatu yang kritikal tidak berfungsi. Yang pertama datang daripada manual. Yang kedua datang daripada pernah berada di sana. Sejak 1996, kerjanya ialah pelaksanaan: mereka bentuk rangkaian, menjalankannya, dan menjadi orang yang dihubungi apabila ia rosak, untuk vendor dan untuk beberapa organisasi terbesar Brazil. Kedalaman itulah yang diterima oleh setiap peserta, bukan penceramah yang membaca slaid, tetapi jurutera yang hidup di dalam sistem ini dan menerangkan cara ia benar-benar berfungsi.",
+    "s1Body": "Ada perbezaan antara menjelaskan bagaimana sesuatu ciri sepatutnya berfungsi dan menjelaskan mengapa ia berkelakuan sedemikian pada pukul tiga pagi apabila sesuatu yang kritikal tergendala. Yang pertama datang daripada manual. Yang kedua datang daripada pernah berada di sana. Sejak 1996, kerjanya ialah pelaksanaan: mereka bentuk rangkaian dan menyiapkannya, kemudian menyelesaikan masalahnya di bawah tekanan dan menjadi orang yang dipanggil untuk menangani insiden ketersediaan dan keselamatan kritikal yang melumpuhkan sesebuah perniagaan, bagi vendor dan bagi sebahagian daripada organisasi terbesar di Brazil. Kedalaman itulah yang diterima oleh setiap peserta: bukan penyampai yang membaca slaid, tetapi seorang jurutera yang pernah hidup di dalam sistem-sistem ini dan menjelaskan cara ia benar-benar berfungsi.",
     "s2Title": "Yang rumit dijadikan jelas",
     "s2Body": "Pengetahuan teknikal yang mendalam perlu, tetapi tidak mencukupi. Kemahiran yang lebih jarang ialah menterjemahkannya: mengambil sesuatu yang benar-benar rumit, tembok api aplikasi web, persekutuan identiti, pengurusan trafik, SD-WAN, dan membuatnya melekat pada seseorang yang menemuinya buat kali pertama. Peserta secara konsisten menyebut contoh dunia sebenar dan kaedah yang jelas dan berstruktur, keupayaan meletakkan setiap konsep dalam konteks kerja yang mereka benar-benar lakukan. Latihan ialah benang sepanjang kerjaya ini, hadir dalam hampir setiap peranan sejak 1997, dan tumpuan sepenuh masa sejak 2020.",
     "s3Title": "Praktikal, bukan kabur",
-    "s3Body": "Penguasaan teknikal dibina melalui amalan, bukan pemerhatian. Setiap kursus dibina sekitar makmal praktikal pada sistem sebenar, diperkukuh oleh persekitaran makmal terurus, supaya latihan sentiasa mempunyai tempat sebenar untuk berlaku. Format ini menyesuaikan diri dengan khalayak: latihan maya dipimpin jurulatih di seluruh dunia, secara bersemuka apabila ia lebih sesuai, dalam bahasa Inggeris atau Portugis. Matlamat setiap kelas adalah sama, agar peserta pulang dengan keupayaan melaksanakan tugas, bukan hanya menerangkannya.",
+    "s3Body": "Kemahiran teknikal dibina dengan melakukan, jadi setiap kursus mempunyai makmal amali pada sistem sebenar, disokong oleh persekitaran makmal terurus di mana latihan sentiasa ada tempat sebenar untuk berlaku. Bagi mereka yang sudah tahu asasnya dan datang untuk menyentuh teknologi itu sendiri, itulah sebenarnya tujuan mereka di sini, dan ia masa yang digunakan dengan baik. Bagi yang lebih baharu, masa pergi dahulu kepada asas yang menjadi sandaran makmal, supaya kerja amali itu masuk akal dan bukannya diikut secara hafalan. Kedua-duanya sama berharga, dan keseimbangan cuma beralih mengikut kelas. Formatnya menyesuaikan diri dengan hadirin: latihan langsung dikendalikan pengajar dan disampaikan ke seluruh dunia, secara bersemuka apabila itu lebih sesuai, dalam bahasa Inggeris atau Portugis. Apa pun, orang seharusnya pulang dengan sesuatu yang nyata dan berguna di tangan serta pemahaman sebenar tentang sebab ia berfungsi.",
     "s4Title": "Diiktiraf, diperakui dan semasa",
     "s4Body": "Latihan ini berdiri di atas asas pengiktirafan formal. F5 DevCentral MVP tiga tahun berturut-turut, pada 2022, 2023 dan 2024. Sijil F5 dikekalkan sejak 2015, dan kuasa jurulatih merentasi empat platform: F5, Extreme Networks, Fortinet dan Netskope. Penyampaian mencapai Australia, Singapura, India, Eropah Tengah, AS dan Brazil, melalui Red Education, sebuah pusat latihan yang diberi kuasa. Kelayakan penting, tetapi ia jalan pintas kepada apa yang ada di bawahnya: penguasaan teknologi yang nyata dan semasa.",
     "platformsTitle": "Apa yang saya ajar",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Mari bekerjasama",
     "ctaBody": "Sama ada menempah latihan rasmi, membina program tersuai untuk pasukan anda, atau membawa perundingan berpengalaman kepada masalah yang sukar, pintu terbuka.",
     "ctaButton": "Hubungi",
-    "coursesButton": "Lihat semua kursus"
+    "coursesButton": "Lihat semua kursus",
+    "instructor": {
+      "body": "Kursus-kursus ini diajar oleh Rodolfo Nützmann, seorang jurulatih teknikal kanan yang menyampaikan latihan rasmi F5, Fortinet, Extreme Networks dan Netskope di seluruh dunia, dibina atas kerjaya dalam rangkaian dan keselamatan yang bermula pada 1996 di sisi pelaksanaan. Persijilan, dan apa yang dikatakan bekas peserta, hanya satu klik sahaja."
+    }
   },
   "contact": {
     "title": "Hubungi",
@@ -1297,7 +1300,8 @@
     "localBody": "Segala-galanya berjalan dalam pelayar. Alat ini memanggil fungsi tulen: dengan input yang sama ia mengembalikan output yang sama, tidak menyimpan keadaan dan tidak menghantar apa-apa ke pelayan. Tiada kuki, tiada analitis, sebagaimana yang dihuraikan sepenuhnya oleh halaman Privasi.",
     "thanksTitle": "Penghargaan khas",
     "p2Body": "Logik deterministik yang dijalankan oleh setiap alat ialah keseluruhan alat itu: tiada langkah pelayan tersembunyi, tiada akaun, dan tiada telemetri. Segala-galanya berjalan dalam pelayar anda.",
-    "changelogLink": "Log perubahan"
+    "changelogLink": "Log perubahan",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Sokong projek ini",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Cara menghubungi saya",
     "emailBody": "E-mel ialah salurannya. Beritahu saya apa yang anda temui atau apa yang anda mahukan, dengan butiran yang cukup untuk bertindak: satu contoh, satu pautan, ungkapan yang tepat, apa sahaja yang sesuai. Jika ia menjadikan kotak alat ini lebih baik, ia akan dibina.",
     "emailLabel": "E-mel",
-    "backToTools": "Kembali ke kotak alat"
+    "backToTools": "Kembali ke kotak alat",
+    "disclaimerTitle": "Bagaimana alat baharu dibina dan dibiayai",
+    "disclaimerBody": "Demi kejujuran sepenuhnya: setiap alat baharu di sini dibina dengan Claude Max, tahap penggunaan tertinggi Anthropic, dan langganan itu tidak murah. Pelan 5x berharga kira-kira 100 USD sebulan, pelan 20x kira-kira 200. Apabila dibiayai, alat dibina. Apabila tidak, pembinaan hanya dijeda sehingga ia dibiayai, itulah sebabnya alat baharu cenderung muncul secara berkelompok dan bukannya mengikut jadual tetap.",
+    "disclaimerBody2": "Jika anda ingin membantu, pautan Buy Me a Coffee di pengaki ialah caranya. Setiap sumbangan masuk ke satu rizab tunggal yang dibelanjakan semata-mata untuk langganan bulanan Claude Max itu. Tiada kos lain, tiada potongan, tiada kejutan.",
+    "disclaimerStatus": "Buat masa ini: langganan telah dibiayai dan alat baharu sedang dibina secara aktif."
   },
   "languageStatus": {
     "title": "Status terjemahan",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Penyetempatan",
     "kindContent": "Kandungan",
     "kindInfra": "Infrastruktur"
+  },
+  "roadmap": {
+    "ideaBody": "Setiap alat di sini bermula dengan cara yang sama: seseorang memerlukan sesuatu yang kecil dan khusus tetapi tidak dapat menemuinya pada saat yang paling teruk, sepupu digital kepada kekurangan satu kabel konsol pada pukul 2 pagi sementara tetingkap penyelenggaraan hampir ditutup. Jika yang anda cari belum ada di sini, cadangkanlah. Namun, berbaloi menatal senarai ini dahulu, kalau-kalau penyesuai itulah yang sudah separuh siap di atas meja kerja saya.",
+    "intentTitle": "Dibina untuk lebih daripada sekadar tab pelayar",
+    "intentIntro": "Di sebalik kotak alat ini terdapat dua hala tuju, kedua-duanya niat dan bukan janji, dan tiada satu pun yang mempunyai tarikh.",
+    "intentApi": "Yang pertama ialah akses API. Alat-alat ini sudah pun berjalan di sebalik API dalaman kecil yang berversi, jadi suatu hari nanti enjin deterministik yang sama boleh menjawab permintaan, bukan sekadar mengisi tab pelayar.",
+    "intentOpen": "Yang kedua ialah membuka enjin itu sendiri. Setiap alat ialah modul kendiri yang berdokumentasi, dibina supaya boleh dikeluarkan untuk hos sendiri dan dimasukkan terus ke dalam saluran binaan dan CI anda sendiri, berjalan dalam persekitaran anda tanpa apa-apa keluar daripadanya.",
+    "intentClose": "Tiada satu pun yang dimuktamadkan. Apa yang menjadikannya mungkin ialah semuanya dibina dari asas dengan menjangkakannya: teras deterministik, tiada keadaan tersembunyi, permukaan API yang bersih, dokumentasi boleh dibaca mesin. Jadi apabila tiba masanya, membuka semua ini ialah satu langkah, bukan penulisan semula."
+  },
+  "category": {
+    "eyebrow": "Kategori",
+    "lede": "Semua alat dan artikel dalam kategori ini, dikumpulkan di satu tempat.",
+    "toolsHeading": "Alat",
+    "articlesHeading": "Artikel",
+    "read": "Baca",
+    "backToTools": "Semua alat"
   }
 }

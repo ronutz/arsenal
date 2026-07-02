@@ -193,7 +193,7 @@
       "reservedNote": "Den første adresse er netværket og den sidste er broadcast; begge er reserveret, så anvendelige = i alt − 2."
     },
     "title": "Værktøjer",
-    "lede": "Små, hurtige og privatlivsvenlige værktøjer, der kører helt i din browser. Intet af det, du skriver, sendes nogen steder hen. Flere er på vej.",
+    "lede": "Små, hurtige, privatlivsfokuserede værktøjer, der kører helt i din browser. Intet af det, du skriver, sendes nogen steder hen.",
     "open": "Åbn",
     "comingSoon": "Kommer snart",
     "note": "Denne værktøjskasse vokser. Nye værktøjer tilføjes her, efterhånden som de bliver klar, hver med lokal kørsel og gratis at bruge.",
@@ -901,7 +901,7 @@
     "lede": "Undervisning i netværk og sikkerhed, leveret af en fagperson, der har tilbragt karrieren på implementeringssiden, ikke kun ved slidesene. Baseret i São Paulo, underviser i hele verden, på portugisisk og engelsk.",
     "now": {
       "title": "Hvad jeg laver nu",
-      "body": "Jeg leverer officiel, certificeret instruktørledet undervisning på fire platforme inden for sikkerhed og netværk. Arbejdet er praktisk og labbaseret: målet er altid, at deltagerne går derfra i stand til at udføre opgaven, ikke kun til at beskrive den. Jeg har været autoriseret instruktør siden 1996, og undervisning og teknisk enablement har været en del af mit arbejde siden slutningen af 1990'erne.",
+      "body": "Jeg holder officiel, certificeret, instruktørledet undervisning på fire sikkerheds- og netværksplatforme. Der er praktiske labs på rigtige systemer, og for dem, der allerede kan det grundlæggende og kom for at øve sig, er det præcis pointen: rigtige miljøer at arbejde i. For hold, der er nyere i en teknologi, går tiden først til at bygge det fundament, emnet hviler på, så det praktiske giver mening, og folk går derfra med forståelse for, hvorfor ting opfører sig, som de gør, ikke bare hvilke knapper de skal trykke på. Begge dele er lige værdifulde, og balancen skifter med, hvem der er i lokalet. Undervisning og teknisk enablement har været en del af mit arbejde siden slutningen af 1990'erne, på en karriere, der begyndte på implementeringssiden i 1996.",
       "basedLabel": "Baseret i",
       "basedValue": "São Paulo, Brasilien",
       "teachesLabel": "Underviser",
@@ -1094,7 +1094,7 @@
       "s1Title": "Kanalrådgivning og -undervisning, 2013 til 2015",
       "s1Body": "Hos TDec Network Group tilsluttede Palo Alto sig en multileverandørpraksis for rådgivning og undervisning, der omfattede systemteknik, løsningsarkitektur, applikationsenablement, implementering, gennemgange og fejlfinding. Relationen fortsatte gennem Cipher Security i 2015 for presales- og eftersalgsarbejde. Det tekniske fokus lå på næste generations firewalls og administrationsplatformen Panorama, kernen i Palo Altos virksomhedssikkerhedstilbud på det tidspunkt.",
       "s2Title": "PAN-OS-undervisning",
-      "s2Body": "Denne periode omfattede formel undervisningslevering: et PAN-OS 6.0-bootcamp, der byggede den samme praktiske, labbaserede undervisning, som definerer dagens undervisningspraksis. Kombineret med certificeringerne taget i 2014 etablerede dette en ægte dybde i platformen, selvom karrierens fokus senere koncentrerede sig om andre teknologier.",
+      "s2Body": "Denne periode omfattede formel undervisningslevering: et PAN-OS 6.0-bootcamp, et tidligt eksempel på den samme praktikerledede undervisning, der fortsætter i dag. Sammen med de certificeringer, der blev opnået i 2014, gav dette en ægte dybde i platformen, selv om karrierens fokus senere koncentrerede sig om andre teknologier.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Bemærk: disse certificeringer er historiske og vedligeholdes ikke som aktuelle."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "En instruktør, der byggede disse systemer, før han underviste i dem.",
     "lede": "Det meste tekniske undervisning leveres af folk, der lærte emnet for at undervise i det. Det her er omvendt: tre årtier med at bygge, ødelægge og reparere rigtige netværks- og sikkerhedssystemer, destilleret til en undervisning, der forbinder hvert begreb med, hvordan det virkelig opfører sig i produktion.",
     "s1Title": "Hvorfor det her betyder noget i et undervisningslokale",
-    "s1Body": "Der er forskel på at forklare, hvordan en funktion skal fungere, og at forklare, hvorfor den opfører sig, som den gør, klokken tre om natten, når noget kritisk er nede. Det første kommer fra en manual. Det andet kommer fra at have været der. Siden 1996 var arbejdet implementering: at designe net, sætte dem i drift og være den person, man ringer til, når de gik i stykker, for leverandører og for nogle af Brasiliens største organisationer. Den dybde er, hvad hver deltager får, ikke en oplægsholder, der læser slides, men en ingeniør, der har levet inde i disse systemer og forklarer, hvordan de virkelig fungerer.",
+    "s1Body": "Der er forskel på at forklare, hvordan en funktion er tænkt at virke, og at forklare, hvorfor den opfører sig, som den gør, klokken tre om natten, når noget kritisk er nede. Det første kommer fra en manual. Det andet kommer af at have været der. Siden 1996 har arbejdet været implementering: at designe netværk og sætte dem i drift, derefter fejlfinde dem under pres og være den, der ringes til for at løse de kritiske tilgængeligheds- og sikkerhedshændelser, der lammer en virksomhed, for leverandører og for nogle af de største organisationer i Brasilien. Den dybde får hver deltager: ikke en oplægsholder, der læser op fra slides, men en ingeniør, der har levet inde i disse systemer og forklarer, hvordan de virkelig fungerer.",
     "s2Title": "Det komplekse gjort klart",
     "s2Body": "Dyb teknisk viden er nødvendig, men ikke tilstrækkelig. Den sjældnere evne er at oversætte den: at tage noget virkelig komplekst, firewalls til webapplikationer, identitetsføderation, trafikstyring, SD-WAN, og få det til at falde på plads for en, der støder på det for første gang. Deltagere fremhæver konsekvent eksemplerne fra den virkelige verden og den klare, strukturerede didaktik, evnen til at sætte hvert begreb i sammenhæng med det arbejde, de faktisk udfører. Undervisningen har været en tråd gennem hele denne karriere, til stede i næsten hver rolle siden 1997, og fuldtidsfokus siden 2020.",
     "s3Title": "Praktisk, ikke svævende",
-    "s3Body": "Teknisk dygtighed bygges gennem at gøre, ikke gennem at se på. Hvert kursus er bygget op omkring praktiske labs på rigtige systemer, forstærket med administrerede labmiljøer, så øvelsen altid har et rigtigt sted at finde sted. Formatet tilpasser sig publikum: virtuel instruktørledet undervisning i hele verden, på stedet, når det passer bedre, på engelsk eller portugisisk. Målet for hver session er det samme, at deltagerne går derfra i stand til at udføre opgaven, ikke kun til at beskrive den.",
+    "s3Body": "Teknisk kunnen bygges ved at gøre, så hvert kursus har praktiske labs på rigtige systemer, understøttet af administrerede labmiljøer, hvor øvelse altid har et virkeligt sted at foregå. For dem, der allerede kan det grundlæggende og kom for at få hænderne på teknologien, er det præcis derfor, de er her, og det er tid, der er givet godt ud. For dem, der er nyere, går tiden først til det fundament, labbene hviler på, så det praktiske giver mening i stedet for at følges udenad. Begge dele er lige værdifulde, og balancen skifter ganske enkelt med holdet. Formatet tilpasses publikum: virtuel, instruktørledet undervisning over hele verden, fysisk når det passer bedre, på engelsk eller portugisisk. Uanset hvad bør folk gå derfra med noget ægte og brugbart i hånden og en reel forståelse af, hvorfor det virker.",
     "s4Title": "Anerkendt, certificeret og aktuel",
     "s4Body": "Undervisningen hviler på et fundament af formel anerkendelse. F5 DevCentral MVP tre år i træk, i 2022, 2023 og 2024. F5-certificeringer holdt siden 2015 og instruktørautorisation på fire platforme: F5, Extreme Networks, Fortinet og Netskope. Leveringen når Australien, Singapore, Indien, Centraleuropa, USA og Brasilien, gennem Red Education, et autoriseret uddannelsescenter. Kvalifikationerne betyder noget, men de er en genvej til det, der ligger under: en ægte, aktuel beherskelse af teknologien.",
     "platformsTitle": "Hvad jeg underviser i",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Lad os arbejde sammen",
     "ctaBody": "Hvad enten det gælder at bestille officiel undervisning, bygge et skræddersyet program til dit team eller hente erfaren rådgivning til et svært problem, står døren åben.",
     "ctaButton": "Tag kontakt",
-    "coursesButton": "Gennemse alle kurser"
+    "coursesButton": "Gennemse alle kurser",
+    "instructor": {
+      "body": "Disse kurser undervises af Rodolfo Nützmann, en senior teknisk instruktør, der leverer autoriseret undervisning i F5, Fortinet, Extreme Networks og Netskope over hele verden, bygget på en karriere inden for netværk og sikkerhed, der begyndte i 1996 på implementeringssiden. Certificeringerne, og hvad tidligere deltagere siger, er kun ét klik væk."
+    }
   },
   "contact": {
     "title": "Tag kontakt",
@@ -1297,7 +1300,8 @@
     "localBody": "Alt kører i browseren. Værktøjet kalder en ren funktion: med samme input giver den samme output, holder ingen tilstand og sender intet til en server. Ingen cookies, ingen analytics, som Privatlivssiden beskriver fuldt ud.",
     "thanksTitle": "Særlig tak",
     "p2Body": "Den deterministiske logik, hvert værktøj kører, er hele værktøjet: der er intet skjult servertrin, ingen konto og ingen telemetri. Alt kører i din browser.",
-    "changelogLink": "Ændringslog"
+    "changelogLink": "Ændringslog",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Støt projektet",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Sådan får du fat i mig",
     "emailBody": "E-mail er kanalen. Fortæl mig, hvad du fandt, eller hvad du gerne vil have, med nok detaljer til at handle på: et eksempel, et link, den præcise ordlyd, hvad der passer. Hvis det gør værktøjskassen bedre, bliver det bygget.",
     "emailLabel": "E-mail",
-    "backToTools": "Tilbage til værktøjskassen"
+    "backToTools": "Tilbage til værktøjskassen",
+    "disclaimerTitle": "Hvordan nye værktøjer bygges og finansieres",
+    "disclaimerBody": "For fuld ærligheds skyld: hvert nyt værktøj her bygges med Claude Max, Anthropics højeste brugsniveau, og det abonnement er ikke billigt. 5x-planen koster omkring 100 USD om måneden, 20x-planen omkring 200. Når det er finansieret, bygges der værktøjer. Når det ikke er, sættes byggeriet blot på pause, indtil det er, og derfor har nye værktøjer en tendens til at komme i bølger snarere end efter en fast tidsplan.",
+    "disclaimerBody2": "Hvis du vil hjælpe det på vej, er Buy Me a Coffee-linket i sidefoden vejen. Hvert bidrag går til en enkelt reserve, der udelukkende bruges til det månedlige Claude Max-abonnement. Ingen andre omkostninger, ingen andel, ingen overraskelser.",
+    "disclaimerStatus": "Lige nu: abonnementet er finansieret, og der bygges aktivt nye værktøjer."
   },
   "languageStatus": {
     "title": "Oversættelsesstatus",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Lokalisering",
     "kindContent": "Indhold",
     "kindInfra": "Infrastruktur"
+  },
+  "roadmap": {
+    "ideaBody": "Hvert værktøj her startede på samme måde: nogen havde brug for en lille, specifik ting og kunne ikke finde den i det værst tænkelige øjeblik, den digitale fætter til at mangle ét konsolkabel klokken to om natten, mens vedligeholdelsesvinduet er ved at lukke. Hvis det, du rækker ud efter, ikke er her endnu, så foreslå det. Det er dog værd at scrolle listen igennem først, i tilfælde af at præcis den adapter allerede ligger halvbygget på mit værksted.",
+    "intentTitle": "Bygget til mere end en browserfane",
+    "intentIntro": "Bag denne værktøjskasse ligger to retninger, begge hensigter snarere end løfter, og ingen med en dato.",
+    "intentApi": "Det første er API-adgang. Værktøjerne kører allerede bag et lille, versioneret internt API, så de samme deterministiske motorer en dag kunne svare på en forespørgsel, ikke bare fylde en browserfane.",
+    "intentOpen": "Det andet er at åbne selve motoren. Hvert værktøj er et selvstændigt, dokumenteret modul, bygget så det kunne udgives til selv-hosting og sættes direkte ind i dine egne build- og CI-pipelines, kørende i dit eget miljø uden at noget forlader det.",
+    "intentClose": "Ingen er forpligtet. Det, der gør dem mulige, er, at alt er bygget fra bunden med dem for øje: deterministiske kerner, ingen skjult tilstand, en ren API-flade, maskinlæsbar dokumentation. Så hvis tiden kommer, er det at åbne dette et skridt, ikke en omskrivning."
+  },
+  "category": {
+    "eyebrow": "Kategori",
+    "lede": "Alle værktøjer og artikler i denne kategori, samlet ét sted.",
+    "toolsHeading": "Værktøjer",
+    "articlesHeading": "Artikler",
+    "read": "Læs",
+    "backToTools": "Alle værktøjer"
   }
 }

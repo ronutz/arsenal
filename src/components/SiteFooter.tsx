@@ -49,11 +49,6 @@ export default async function SiteFooter() {
         {/* /api link intentionally desurfaced while access control matures;
             the page, docs, and spec remain built and reachable by direct URL. */}
         <p className="footer-contribute">
-          <Link href="/roadmap" className="footer-contribute-link">
-            {t("roadmap")}
-          </Link>
-        </p>
-        <p className="footer-contribute">
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
           </Link>
@@ -77,23 +72,18 @@ export default async function SiteFooter() {
         </p>
         {/* Machine-readable surface: an llms.txt map for AI agents and an RSS
             feed for the Learn section. Plain anchors (static files, not routes). */}
-        <p className="footer-contribute">
+        <p className="footer-contribute footer-machine">
           <a href="/llms.txt" className="footer-contribute-link">
             llms.txt
           </a>
-        </p>
-        <p className="footer-contribute">
+          {" | "}
+          <a href="/robots.txt" className="footer-contribute-link">
+            robots.txt
+          </a>
+          {" | "}
           <a href="/feed.xml" className="footer-contribute-link">
             RSS
           </a>
-        </p>
-
-        {/* Build stamp: one timestamp per build (scripts/gen-build-info.mjs),
-            rendered in UTC so it is unambiguous across locales. */}
-        <p className="footer-modified">
-          {t("lastModified", {
-            stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
-          })}
         </p>
 
         {/* Quiet support link. The cup is forced to monochrome (U+FE0E) so it
@@ -124,6 +114,14 @@ export default async function SiteFooter() {
             })}
             {"\u00A0🎓"}
           </a>
+        </p>
+
+        {/* Build stamp, last line, dimmed. One timestamp per build
+            (scripts/gen-build-info.mjs), in UTC so it is unambiguous. */}
+        <p className="footer-modified">
+          {t("lastModified", {
+            stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
+          })}
         </p>
       </div>
     </footer>

@@ -22,6 +22,9 @@ import SiteFooter from "@/components/SiteFooter";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
 import ApiAffordance from "@/components/ApiAffordance";
 import FamilyChip from "@/components/FamilyChip";
+import ToolProvenance from "@/components/ToolProvenance";
+import { provenanceFor } from "@/config/toolProvenance";
+import { isEnabled } from "@/config/features";
 import { tools } from "@/config/tools";
 import JwtTool from "@/components/JwtTool";
 import { manifest as jwtManifest } from "@/lib/tools/jwt";
@@ -78,6 +81,8 @@ import PersistenceMethodExplainerTool from "@/components/PersistenceMethodExplai
 import { manifest as persistManifest } from "@/lib/tools/persistence-method-explainer";
 import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
+import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
+import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check-date";
 import F5SslProfileExplainerTool from "@/components/F5SslProfileExplainerTool";
 import { manifest as sslProfileManifest } from "@/lib/tools/f5-ssl-profile-explainer";
 import EpochTool from "@/components/EpochTool";
@@ -122,6 +127,10 @@ interface ToolPage {
 // the references to surface. CIDR is included here (canonical /tools/cidr) and
 // also appears as a live demo on the home page.
 const TOOL_PAGES: Record<string, ToolPage> = {
+  "f5-service-check-date": {
+    Component: F5ServiceCheckDateTool,
+    sources: f5ServiceCheckManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   jwt: {
     Component: JwtTool,
     sources: jwtManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -303,7 +312,9 @@ export default async function ToolDetailPage({
   const entry = tools.find((tool) => tool.id === slug);
   const tNav = await getTranslations("nav");
   const tTools = await getTranslations("tools");
+  const tHome = await getTranslations("home");
   const Component = page.Component;
+  const prov = isEnabled("toolProvenance") ? provenanceFor(slug) : null;
 
   return (
     <>
@@ -342,28 +353,43 @@ export default async function ToolDetailPage({
 
             <ApiAffordance slug={slug} />
 
-            {page.sources.length > 0 && (
-              <section className="tool-sources" aria-label={tTools("references")}>
-                <h2 className="tool-sources-title">{tTools("references")}</h2>
-                <ul className="tool-sources-list">
-                  {page.sources.map((source) => (
-                    <li key={source.id}>
-                      {source.url ? (
-                        <a
-                          href={source.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="tool-sources-link"
-                        >
-                          {source.label}
-                        </a>
-                      ) : (
-                        source.label
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </section>
+            {prov ? (
+              <ToolProvenance
+                enabled
+                data={prov}
+                copy={{
+                  title: tHome("provenance.title"),
+                  show: tHome("provenance.show"),
+                  hide: tHome("provenance.hide"),
+                  basisLabel: tHome("provenance.basisLabel"),
+                  sourcesLabel: tHome("provenance.sourcesLabel"),
+                  disclaimer: tHome("provenance.disclaimer"),
+                }}
+              />
+            ) : (
+              page.sources.length > 0 && (
+                <section className="tool-sources" aria-label={tTools("references")}>
+                  <h2 className="tool-sources-title">{tTools("references")}</h2>
+                  <ul className="tool-sources-list">
+                    {page.sources.map((source) => (
+                      <li key={source.id}>
+                        {source.url ? (
+                          <a
+                            href={source.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="tool-sources-link"
+                          >
+                            {source.label}
+                          </a>
+                        ) : (
+                          source.label
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )
             )}
           </div>
         </article>

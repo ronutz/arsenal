@@ -84,6 +84,17 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
           </div>
         </section>
 
+        {/* --- INTENTIONS (non-committed: API access + open engine) --- */}
+        <section className="section">
+          <div className="container section-narrow">
+            <h2 className="section-title">{t("intentTitle")}</h2>
+            <p className="section-body">{t("intentIntro")}</p>
+            <p className="section-body">{t("intentApi")}</p>
+            <p className="section-body">{t("intentOpen")}</p>
+            <p className="section-body">{t("intentClose")}</p>
+          </div>
+        </section>
+
         {/* --- PLANNED, BY FAMILY (generated) --- */}
         <section className="section">
           <div className="container">

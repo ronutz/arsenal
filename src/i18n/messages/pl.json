@@ -193,7 +193,7 @@
       "reservedNote": "Pierwszy adres to sieć, a ostatni to broadcast; oba są zarezerwowane, więc użyteczne = łącznie − 2."
     },
     "title": "Narzędzia",
-    "lede": "Małe, szybkie i dbające o prywatność narzędzia, które działają w całości w twojej przeglądarce. Nic z tego, co wpisujesz, nie jest nigdzie wysyłane. Kolejne są w drodze.",
+    "lede": "Małe, szybkie narzędzia stawiające prywatność na pierwszym miejscu, działające w całości w Twojej przeglądarce. Nic, co wpisujesz, nie jest nigdzie wysyłane.",
     "open": "Otwórz",
     "comingSoon": "Wkrótce",
     "note": "Ten zestaw narzędzi się rozrasta. Nowe narzędzia są dodawane tutaj, gdy są gotowe, każde z lokalnym przetwarzaniem i darmowe w użyciu.",
@@ -901,7 +901,7 @@
     "lede": "Szkolenia z sieci i bezpieczeństwa prowadzone przez praktyka, który spędził karierę po stronie wdrożeń, a nie tylko przy slajdach. Z siedzibą w São Paulo, ucząc na całym świecie, po portugalsku i angielsku.",
     "now": {
       "title": "Czym się teraz zajmuję",
-      "body": "Prowadzę oficjalne, certyfikowane szkolenia z instruktorem na czterech platformach z zakresu bezpieczeństwa i sieci. Praca jest praktyczna i oparta na laboratoriach: celem zawsze jest to, żeby uczestnicy wyszli zdolni wykonać zadanie, a nie tylko je opisać. Jestem autoryzowanym instruktorem od 1996 roku, a szkolenia i wsparcie techniczne są częścią mojej pracy od końca lat 90.",
+      "body": "Prowadzę oficjalne, certyfikowane szkolenia prowadzone przez instruktora na czterech platformach bezpieczeństwa i sieci. Są praktyczne laboratoria na prawdziwych systemach, a dla tych, którzy znają już podstawy i przyszli poćwiczyć, o to właśnie chodzi: prawdziwe środowiska do pracy. Dla grup nowszych w danej technologii czas idzie najpierw w budowanie fundamentów, na których opiera się temat, aby praca praktyczna miała sens, a ludzie wychodzili, rozumiejąc, dlaczego rzeczy zachowują się tak, jak się zachowują, a nie tylko które przyciski nacisnąć. Oba są tak samo cenne, a równowaga przesuwa się w zależności od tego, kto jest na sali. Nauczanie i wsparcie techniczne są częścią mojej pracy od końca lat 90., w oparciu o karierę, która zaczęła się po stronie wdrożeń w 1996 roku.",
       "basedLabel": "Siedziba",
       "basedValue": "São Paulo, Brazylia",
       "teachesLabel": "Uczy",
@@ -1094,7 +1094,7 @@
       "s1Title": "Doradztwo i szkolenia kanałowe, od 2013 do 2015",
       "s1Body": "W TDec Network Group Palo Alto dołączył do wieloproducenckiej praktyki doradczej i szkoleniowej, która obejmowała inżynierię systemów, architekturę rozwiązań, wsparcie aplikacji, wdrożenia, audyty i rozwiązywanie problemów. Relacja była kontynuowana przez Cipher Security w 2015 roku dla pracy przedsprzedażowej i posprzedażowej. Nacisk techniczny kładziono na zapory nowej generacji i platformę zarządzania Panorama, rdzeń oferty bezpieczeństwa korporacyjnego Palo Alto w tamtym czasie.",
       "s2Title": "Nauczanie PAN-OS",
-      "s2Body": "Ten okres obejmował formalne świadczenie szkoleń: bootcamp PAN-OS 6.0, który budował to samo praktyczne, oparte na laboratoriach nauczanie, które definiuje dzisiejszą praktykę nauczania. W połączeniu z certyfikatami zdobytymi w 2014 roku ustanowiło to prawdziwą głębię w platformie, nawet jeśli skupienie kariery później skoncentrowało się na innych technologiach.",
+      "s2Body": "Ten okres obejmował formalne prowadzenie szkoleń: bootcamp z PAN-OS 6.0, wczesny przykład tego samego nauczania prowadzonego przez praktyka, które trwa do dziś. W połączeniu z certyfikatami zdobytymi w 2014 roku ustanowiło to prawdziwą głębię w platformie, nawet gdy fokus kariery skupił się później na innych technologiach.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Uwaga: te certyfikaty są historyczne i nie są utrzymywane jako aktualne."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Instruktor, który zbudował te systemy, zanim zaczął ich uczyć.",
     "lede": "Większość szkoleń technicznych prowadzą osoby, które nauczyły się tematu, żeby go uczyć. Tutaj jest odwrotnie: trzy dekady budowania, psucia i naprawiania prawdziwych sieci i systemów bezpieczeństwa, zdestylowane w szkolenie, które łączy każde pojęcie z tym, jak naprawdę zachowuje się na produkcji.",
     "s1Title": "Dlaczego to ma znaczenie w sali wykładowej",
-    "s1Body": "Jest różnica między wyjaśnianiem, jak funkcja ma działać, a wyjaśnianiem, dlaczego zachowuje się tak, jak się zachowuje, o trzeciej nad ranem, gdy coś krytycznego nie działa. Pierwsze pochodzi z instrukcji. Drugie pochodzi z bycia tam. Od 1996 roku praca polegała na wdrożeniach: projektowaniu sieci, uruchamianiu ich i byciu osobą, do której się dzwoni, gdy się psuły, dla producentów i dla niektórych z największych organizacji Brazylii. Ta głębia jest tym, co otrzymuje każdy uczestnik, nie prezenterem czytającym slajdy, ale inżynierem, który żył wewnątrz tych systemów i wyjaśnia, jak naprawdę działają.",
+    "s1Body": "Jest różnica między wyjaśnianiem, jak funkcja powinna działać, a wyjaśnianiem, dlaczego zachowuje się tak, jak się zachowuje, o trzeciej nad ranem, gdy coś krytycznego przestaje działać. To pierwsze pochodzi z instrukcji. To drugie bierze się z bycia na miejscu. Od 1996 roku praca to wdrażanie: projektowanie sieci i uruchamianie ich, a następnie rozwiązywanie problemów pod presją i bycie osobą wzywaną do usuwania krytycznych incydentów dostępności i bezpieczeństwa, które paraliżują firmę, dla producentów i dla niektórych z największych organizacji w Brazylii. Tę głębię otrzymuje każdy kursant: nie prelegenta czytającego slajdy, lecz inżyniera, który żył wewnątrz tych systemów i wyjaśnia, jak naprawdę działają.",
     "s2Title": "Złożoność uczyniona jasną",
     "s2Body": "Głęboka wiedza techniczna jest konieczna, ale niewystarczająca. Rzadszą umiejętnością jest jej przekładanie: wziąć coś naprawdę złożonego, zapory aplikacji webowych, federację tożsamości, zarządzanie ruchem, SD-WAN, i sprawić, żeby zaskoczyło u kogoś, kto styka się z tym po raz pierwszy. Uczestnicy konsekwentnie wskazują przykłady z prawdziwego świata i jasną, ustrukturyzowaną dydaktykę, zdolność umieszczania każdego pojęcia w kontekście pracy, którą faktycznie wykonują. Nauczanie było nicią przez całą tę karierę, obecną w niemal każdej roli od 1997 roku, a pełnoetatowym skupieniem od 2020 roku.",
     "s3Title": "Praktycznie, nie mgliście",
-    "s3Body": "Umiejętność techniczną buduje się przez działanie, nie przez patrzenie. Każdy kurs jest zbudowany wokół praktycznych laboratoriów na prawdziwych systemach, wzmocnionych zarządzanymi środowiskami laboratoryjnymi, żeby ćwiczenia zawsze miały prawdziwe miejsce, w którym mogą się odbywać. Forma dostosowuje się do odbiorców: wirtualne szkolenia z instruktorem na całym świecie, stacjonarne, gdy to lepiej pasuje, po angielsku lub portugalsku. Cel każdej sesji jest ten sam, żeby uczestnicy wyszli zdolni wykonać zadanie, a nie tylko je opisać.",
+    "s3Body": "Umiejętności techniczne buduje się przez działanie, dlatego każde szkolenie ma praktyczne laboratoria na prawdziwych systemach, wsparte zarządzanymi środowiskami laboratoryjnymi, gdzie ćwiczenie zawsze ma gdzie realnie się odbyć. Dla tych, którzy znają już podstawy i przyszli, by dotknąć technologii, to właśnie po to tu są, i to dobrze spożytkowany czas. Dla nowszych czas idzie najpierw w fundamenty, na których opierają się laboratoria, aby praktyka miała sens, a nie była odtwarzana z pamięci. Oba są tak samo cenne, a równowaga po prostu przesuwa się wraz z grupą. Format dostosowuje się do odbiorców: szkolenie na żywo prowadzone przez instruktora, dostarczane globalnie, stacjonarnie, gdy to lepiej służy, po angielsku lub portugalsku. Tak czy inaczej ludzie powinni wychodzić z czymś realnym i użytecznym w ręku oraz prawdziwym zrozumieniem, dlaczego to działa.",
     "s4Title": "Uznany, certyfikowany i aktualny",
     "s4Body": "Nauczanie opiera się na fundamencie formalnego uznania. F5 DevCentral MVP przez trzy kolejne lata, w 2022, 2023 i 2024. Certyfikaty F5 utrzymywane od 2015 roku oraz autoryzacja instruktora na czterech platformach: F5, Extreme Networks, Fortinet i Netskope. Świadczenie usług sięga Australii, Singapuru, Indii, Europy Środkowej, Stanów Zjednoczonych i Brazylii, przez Red Education, autoryzowane centrum szkoleniowe. Kwalifikacje mają znaczenie, ale są skrótem do tego, co jest pod spodem: prawdziwego, aktualnego opanowania technologii.",
     "platformsTitle": "Czego uczę",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Pracujmy razem",
     "ctaBody": "Czy chodzi o zamówienie oficjalnego szkolenia, zbudowanie programu na miarę dla twojego zespołu, czy wniesienie doświadczonego doradztwa do trudnego problemu, drzwi są otwarte.",
     "ctaButton": "Skontaktuj się",
-    "coursesButton": "Przeglądaj wszystkie kursy"
+    "coursesButton": "Przeglądaj wszystkie kursy",
+    "instructor": {
+      "body": "Te szkolenia prowadzi Rodolfo Nützmann, starszy instruktor techniczny, który prowadzi autoryzowane szkolenia z F5, Fortinet, Extreme Networks i Netskope na całym świecie, w oparciu o karierę w sieciach i bezpieczeństwie, która rozpoczęła się w 1996 roku po stronie wdrożeń. Certyfikaty oraz opinie byłych uczestników są o jedno kliknięcie."
+    }
   },
   "contact": {
     "title": "Skontaktuj się",
@@ -1297,7 +1300,8 @@
     "localBody": "Wszystko działa w przeglądarce. Narzędzie wywołuje funkcję czystą: dla tych samych danych zwraca ten sam wynik, nie przechowuje stanu i nie wysyła niczego na serwer. Bez ciasteczek, bez analityki, jak w pełni opisuje strona Prywatności.",
     "thanksTitle": "Specjalne podziękowania",
     "p2Body": "Deterministyczna logika, którą wykonuje każde narzędzie, jest całym narzędziem: nie ma ukrytego kroku na serwerze, konta ani telemetrii. Wszystko działa w Twojej przeglądarce.",
-    "changelogLink": "Dziennik zmian"
+    "changelogLink": "Dziennik zmian",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Wesprzyj projekt",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Jak się ze mną skontaktować",
     "emailBody": "E-mail to kanał. Napisz, co znalazłeś lub czego byś chciał, z wystarczającą ilością szczegółów, by można było działać: przykład, link, dokładne sformułowanie, co pasuje. Jeśli to ulepszy zestaw narzędzi, zostanie zbudowane.",
     "emailLabel": "E-mail",
-    "backToTools": "Powrót do zestawu narzędzi"
+    "backToTools": "Powrót do zestawu narzędzi",
+    "disclaimerTitle": "Jak powstają i są finansowane nowe narzędzia",
+    "disclaimerBody": "W trosce o pełną szczerość: każde nowe narzędzie tutaj powstaje przy użyciu Claude Max, najwyższego poziomu użytkowania Anthropic, a ta subskrypcja nie jest tania. Plan 5x kosztuje około 100 USD miesięcznie, plan 20x około 200. Gdy jest sfinansowany, powstają narzędzia. Gdy nie jest, tworzenie po prostu się zatrzymuje, dopóki nie będzie, dlatego nowe narzędzia pojawiają się raczej falami niż według stałego harmonogramu.",
+    "disclaimerBody2": "Jeśli chcesz pomóc, link Buy Me a Coffee w stopce to sposób. Każdy wkład trafia do jednej rezerwy przeznaczonej wyłącznie na tę miesięczną subskrypcję Claude Max. Żadnych innych kosztów, żadnej prowizji, żadnych niespodzianek.",
+    "disclaimerStatus": "W tej chwili: subskrypcja jest sfinansowana, a nowe narzędzia są aktywnie tworzone."
   },
   "languageStatus": {
     "title": "Status tłumaczenia",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Lokalizacja",
     "kindContent": "Treść",
     "kindInfra": "Infrastruktura"
+  },
+  "roadmap": {
+    "ideaBody": "Każde narzędzie tutaj zaczęło się tak samo: ktoś potrzebował małej, konkretnej rzeczy i nie mógł jej znaleźć w najgorszym możliwym momencie, cyfrowy kuzyn sytuacji, gdy o drugiej w nocy brakuje jednego kabla konsolowego, a okno serwisowe właśnie się zamyka. Jeśli tego, po co sięgasz, jeszcze tu nie ma, zaproponuj to. Warto jednak najpierw przewinąć listę, na wypadek gdyby dokładnie ta przejściówka była już w połowie zmontowana na moim warsztacie.",
+    "intentTitle": "Stworzone do czegoś więcej niż karta przeglądarki",
+    "intentIntro": "Za tą skrzynką narzędziową kryją się dwa kierunki, oba raczej intencje niż obietnice, i żaden bez ustalonej daty.",
+    "intentApi": "Pierwszy to dostęp przez API. Narzędzia już działają za niewielkim, wersjonowanym wewnętrznym API, więc pewnego dnia te same deterministyczne silniki mogłyby odpowiadać na żądanie, a nie tylko wypełniać kartę przeglądarki.",
+    "intentOpen": "Drugi to otwarcie samego silnika. Każde narzędzie to samodzielny, udokumentowany moduł, zbudowany tak, aby można go było udostępnić do samodzielnego hostowania i wpiąć bezpośrednio w Twoje własne potoki kompilacji i CI, działający w Twoim środowisku, z którego nic nie wychodzi.",
+    "intentClose": "Żaden nie jest zobowiązaniem. Możliwymi czynią je to, że wszystko zbudowano od podstaw z myślą o nich: deterministyczne rdzenie, brak ukrytego stanu, czysta powierzchnia API, dokumentacja czytelna maszynowo. Więc jeśli nadejdzie czas, otwarcie tego to krok, a nie przepisywanie od nowa."
+  },
+  "category": {
+    "eyebrow": "Kategoria",
+    "lede": "Wszystkie narzędzia i artykuły z tej kategorii, zebrane w jednym miejscu.",
+    "toolsHeading": "Narzędzia",
+    "articlesHeading": "Artykuły",
+    "read": "Czytaj",
+    "backToTools": "Wszystkie narzędzia"
   }
 }

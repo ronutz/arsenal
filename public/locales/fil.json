@@ -193,7 +193,7 @@
       "reservedNote": "Ang unang address ay ang network at ang huli ay ang broadcast; pareho silang nakalaan, kaya magagamit = kabuuan − 2."
     },
     "title": "Mga Tool",
-    "lede": "Maliliit, mabibilis, at gumagalang-sa-privacy na mga tool na tumatakbo nang buo sa iyong browser. Ang ini-input mo ay hindi ipinapadala kahit saan. May darating pang iba.",
+    "lede": "Maliliit, mabilis, at nauunang-privacy na mga kagamitang gumagana nang buo sa iyong browser. Walang anuman sa ini-type mo ang ipinapadala kahit saan.",
     "open": "Buksan",
     "comingSoon": "Malapit na",
     "note": "Lumalago ang toolkit na ito. Ang mga bagong tool ay idinaragdag dito kapag handa na, bawat isa ay tumatakbo nang local at libreng gamitin.",
@@ -901,7 +901,7 @@
     "lede": "Pagsasanay sa network at security, inihahatid ng isang practitioner na ginugol ang malaking bahagi ng kaniyang karera sa panig ng implementasyon, hindi lamang sa harap ng mga slide. Nakabase sa São Paulo, nagtuturo sa buong mundo, sa Portuges at Ingles.",
     "now": {
       "title": "Ano ang ginagawa ko ngayon",
-      "body": "Naghahatid ako ng opisyal, certified, instructor-led na pagsasanay sa apat na platform sa security at networking. Hands-on at lab-based ang gawaing ito: ang layunin palagi ay umalis ang mga kalahok na kayang gawin ang isang gawain, hindi lang mailarawan ito. Awtorisadong instructor ako mula pa noong 1996, at ang pagsasanay at teknikal na suporta ay bahagi na ng aking trabaho mula pa noong huling bahagi ng dekada nobenta.",
+      "body": "Nagtuturo ako ng opisyal, sertipikadong pagsasanay na pinamumunuan ng instructor sa apat na plataporma ng seguridad at networking. May hands-on na lab sa totoong mga sistema, at para sa mga nakakaalam na ng mga pundasyon at pumunta para magsanay, iyon mismo ang punto: totoong mga kapaligiran na mapagtatrabahuhan. Para sa mga pangkat na mas baguhan sa isang teknolohiya, ang panahon ay unang napupunta sa pagbuo ng mga pundasyong pinagbabatayan ng paksa, para maging makabuluhan ang hands-on na gawain at umalis ang mga tao na nauunawaan kung bakit kumikilos nang ganoon ang mga bagay, hindi lang kung aling mga buton ang pipindutin. Pareho silang may pantay na halaga, at ang balanse ay lumilipat ayon sa kung sino ang nasa silid. Ang pagtuturo at teknikal na enablement ay bahagi na ng aking trabaho mula noong huling bahagi ng dekada 1990, sa isang karerang nagsimula sa panig ng implementasyon noong 1996.",
       "basedLabel": "Nakabase sa",
       "basedValue": "São Paulo, Brazil",
       "teachesLabel": "Nagtuturo",
@@ -1094,7 +1094,7 @@
       "s1Title": "Channel consulting at training, 2013 hanggang 2015",
       "s1Body": "Sa TDec Network Group, sumali ang Palo Alto sa multi-vendor consulting at training practice na sumasaklaw sa systems engineering, solution architecture, application support, implementation, audit, at troubleshooting. Nagpatuloy ang koneksyon sa pamamagitan ng Cipher Security noong 2015 para sa presales at post-sales na trabaho. Ang teknikal na diin ay nasa next-generation firewall at Panorama management platform, na noon ay ang kaibuturan ng enterprise security offering ng Palo Alto.",
       "s2Title": "PAN-OS training",
-      "s2Body": "Kasama sa panahong ito ang paghahatid ng pormal na pagsasanay: ang PAN-OS 6.0 training course, na itinayo sa ibabaw ng parehong lab-based na hands-on na pagsasanay na tumutukoy sa kasalukuyang gawain sa pagtuturo. Kasama ang mga sertipikong nakuha noong 2014, nagtatag ito ng tunay na lalim sa platform, kahit na nagtuon kalaunan ang karera sa ibang teknolohiya.",
+      "s2Body": "Kasama sa panahong ito ang pormal na paghahatid ng pagsasanay: isang PAN-OS 6.0 bootcamp, isang maagang halimbawa ng parehong pagtuturong pinamumunuan ng praktisyoner na nagpapatuloy hanggang ngayon. Kaakibat ng mga sertipikasyong nakamit noong 2014, nagtatag ito ng tunay na lalim sa plataporma, kahit na ang pokus ng karera ay nakatuon nang huli sa ibang mga teknolohiya.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Tala: ang mga sertipikong ito ay historical at hindi pinananatili bilang kasalukuyan."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Ang instructor na nagtayo ng mga sistemang ito bago ituro ang mga ito.",
     "lede": "Karamihan ng technical training ay inihahatid ng mga taong nag-aral ng paksa para ituro ito. Dito ay kabaligtaran: tatlumpung taon ng pagbuo, pagsira, at pag-ayos ng tunay na network at security system, na dinistilo sa isang pagsasanay na nag-uugnay sa bawat konsepto sa kung paano talaga ito umaasal sa production.",
     "s1Title": "Bakit mahalaga ito sa silid-aralan",
-    "s1Body": "May pagkakaiba sa pagitan ng pagpapaliwanag kung paano dapat gumana ang isang feature, at pagpapaliwanag kung bakit ganoon ang asal nito sa ikatlo ng madaling-araw kapag may kritikal na hindi gumagana. Ang una ay nanggagaling sa manwal. Ang pangalawa ay nanggagaling sa pagiging naroon. Mula 1996, ang trabaho ay implementasyon: pagdidisenyo ng network, pagpapatakbo ng mga ito, at pagiging taong tinatawagan kapag nasira ito, para sa mga vendor at para sa ilan sa pinakamalalaking organisasyon ng Brazil. Ito ang lalim na natatanggap ng bawat kalahok: hindi isang taga-pagsalita na nagbabasa ng slide, kundi isang inhinyero na nabuhay sa loob ng mga sistemang ito at kayang ipaliwanag kung paano talaga ang mga ito gumagana.",
+    "s1Body": "May pagkakaiba sa pagitan ng pagpapaliwanag kung paano dapat gumana ang isang feature at pagpapaliwanag kung bakit ito kumikilos nang ganoon nang alas-tres ng umaga kapag may kritikal na bumagsak. Ang una ay galing sa manwal. Ang pangalawa ay galing sa karanasang naroon talaga. Mula 1996, ang trabaho ay implementasyon: magdisenyo ng mga network at patakbuhin ang mga ito, pagkatapos ay i-troubleshoot ang mga ito sa ilalim ng pressure at maging ang taong tinatawagan para lutasin ang mga kritikal na insidente ng availability at seguridad na nagpapatigil sa isang negosyo, para sa mga vendor at para sa ilan sa pinakamalalaking organisasyon sa Brazil. Ang lalim na iyon ang natatanggap ng bawat estudyante: hindi isang tagapagsalita na binabasa lang ang mga slide, kundi isang inhinyero na namuhay sa loob ng mga sistemang ito at nagpapaliwanag kung paano talaga gumagana ang mga ito.",
     "s2Title": "Paggawang malinaw ang masalimuot",
     "s2Body": "Kailangan ang malalim na teknikal na kaalaman ngunit hindi sapat. Ang mas bihirang kasanayan ay isalin ito: kunin ang isang bagay na talagang masalimuot, web application firewall, identity federation, traffic management, SD-WAN, at gawing kapit-kapit sa isang taong unang nakaharap nito. Patuloy na binabanggit ng mga kalahok ang mga halimbawa mula sa totoong mundo at ang malinaw, nakabalangkas na paraan, ang kakayahang ilagay ang bawat konsepto sa konteksto ng trabahong talagang ginagawa nila. Ang pagsasanay ay isang sinulid na umaabot sa buong karerang ito, naroon sa halos bawat papel mula 1997, at full-time na pokus mula 2020.",
     "s3Title": "Hands-on, hindi malabo",
-    "s3Body": "Ang teknikal na kahusayan ay itinatayo sa pamamagitan ng paggawa, hindi panonood. Bawat kurso ay binuo sa paligid ng hands-on na lab sa tunay na mga sistema, at sinusuportahan ng managed na lab environment, para palaging may tunay na pagsasagawaan ang pagsasanay. Ang anyo na ito ay iniaakma sa hanay ng kalahok: instructor-led na virtual training sa buong mundo, harapan kapag mas angkop, sa Ingles o Portuges. Pareho ang layunin ng bawat klase: umalis ang mga kalahok na kayang gawin ang isang gawain, hindi lang mailarawan ito.",
+    "s3Body": "Ang teknikal na kasanayan ay nabubuo sa paggawa, kaya bawat kurso ay may hands-on na lab sa totoong mga sistema, suportado ng mga pinamamahalaang lab environment kung saan ang pagsasanay ay laging may totoong lugar na mapaglalaruan. Para sa mga nakakaalam na ng mga pundasyon at pumunta para mahawakan ang teknolohiya, iyon mismo ang dahilan ng kanilang pagpunta, at panahong maganda ang pagkakagamit. Para sa mga mas baguhan, ang panahon ay unang napupunta sa mga pundasyong pinagbabatayan ng mga lab, para maging makabuluhan ang hands-on na gawain sa halip na sundin nang paulit-ulit. Pareho silang may pantay na halaga, at ang balanse ay basta lumilipat ayon sa mga nasa silid. Ang format ay umaangkop sa madla: live na pagsasanay na pinamumunuan ng instructor at inihahatid sa buong mundo, personal kapag mas mainam iyon, sa Ingles o Portuges. Alinman doon, dapat umalis ang mga tao na may totoo at kapaki-pakinabang na dala at tunay na pag-unawa kung bakit ito gumagana.",
     "s4Title": "Kinikilala, certified, at updated",
     "s4Body": "Ang pagsasanay na ito ay nakatindig sa pundasyon ng pormal na pagkilala. F5 DevCentral MVP nang tatlong magkakasunod na taon, noong 2022, 2023, at 2024. F5 certifications na pinananatili mula 2015, at instructor authorization sa apat na platform: F5, Extreme Networks, Fortinet, at Netskope. Umaabot ang paghahatid sa Australia, Singapore, India, Central Europe, Estados Unidos, at Brazil, sa pamamagitan ng awtorisadong training center na Red Education. Mahalaga ang mga kredensyal, ngunit ang mga ito ay isang shortcut patungo sa nasa ilalim nito: tunay at kasalukuyang husay sa teknolohiya.",
     "platformsTitle": "Ano ang itinuturo ko",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Magtrabaho tayo nang sama-sama",
     "ctaBody": "Maging ito man ay pag-book ng opisyal na pagsasanay, pagbuo ng custom na programa para sa iyong koponan, o pagdadala ng may-karanasang konsultasyon sa isang mahirap na problema, bukas ang pinto.",
     "ctaButton": "Kontak",
-    "coursesButton": "Tingnan ang lahat ng kurso"
+    "coursesButton": "Tingnan ang lahat ng kurso",
+    "instructor": {
+      "body": "Itinuturo ang mga kursong ito ni Rodolfo Nützmann, isang senior technical instructor na naghahatid ng awtorisadong pagsasanay sa F5, Fortinet, Extreme Networks, at Netskope sa buong mundo, nakabatay sa isang karera sa networking at seguridad na nagsimula noong 1996 sa panig ng implementasyon. Ang mga kredensyal, at kung ano ang sinasabi ng mga dating estudyante, ay isang klik na lang ang layo."
+    }
   },
   "contact": {
     "title": "Kontak",
@@ -1297,7 +1300,8 @@
     "localBody": "Lahat ay tumatakbo sa browser. Tumatawag ang tool ng isang purong function: sa parehong input ay ibinabalik nito ang parehong output, walang itinatagong estado, at walang ipinapadala sa isang server. Walang cookies, walang analytics, gaya ng buong inilalahad ng pahina ng Privacy.",
     "thanksTitle": "Natatanging pasasalamat",
     "p2Body": "Ang deterministikong lohika na pinapatakbo ng bawat tool ang buong tool: walang nakatagong hakbang sa server, walang account, at walang telemetry. Lahat ay tumatakbo sa iyong browser.",
-    "changelogLink": "Talaan ng mga pagbabago"
+    "changelogLink": "Talaan ng mga pagbabago",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Suportahan ang proyektong ito",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Paano mo ako maaabot",
     "emailBody": "Ang email ang channel. Sabihin mo kung ano ang natagpuan mo o kung ano ang gusto mo, na may sapat na detalye para makilos: isang halimbawa, isang link, ang eksaktong pananalita, kung ano ang akma. Kung mas magiging maganda nito ang toolbox, gagawin ito.",
     "emailLabel": "Email",
-    "backToTools": "Bumalik sa toolbox"
+    "backToTools": "Bumalik sa toolbox",
+    "disclaimerTitle": "Paano ginagawa at pinopondohan ang mga bagong kagamitan",
+    "disclaimerBody": "Alang-alang sa lubos na katapatan: bawat bagong kagamitan dito ay ginawa gamit ang Claude Max, ang pinakamataas na antas ng paggamit ng Anthropic, at hindi mura ang subscription na iyon. Ang 5x plan ay nagkakahalaga ng humigit-kumulang 100 USD kada buwan, ang 20x plan ay humigit-kumulang 200. Kapag pinondohan, may nagagawang kagamitan. Kapag hindi, ang paggawa ay pansamantalang humihinto hanggang sa mapondohan, kaya naman ang mga bagong kagamitan ay may hilig na dumating nang paunti-unti sa halip na sa isang nakapirming iskedyul.",
+    "disclaimerBody2": "Kung nais mong tumulong, ang link na Buy Me a Coffee sa footer ang paraan. Bawat kontribusyon ay napupunta sa iisang reserba na ginagastos lamang para sa buwanang subscription na iyon sa Claude Max. Walang ibang gastos, walang kaltas, walang sorpresa.",
+    "disclaimerStatus": "Sa ngayon: pinondohan na ang subscription at aktibong ginagawa ang mga bagong kagamitan."
   },
   "languageStatus": {
     "title": "Katayuan ng pagsasalin",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Lokalisasyon",
     "kindContent": "Nilalaman",
     "kindInfra": "Imprastraktura"
+  },
+  "roadmap": {
+    "ideaBody": "Bawat kagamitan dito ay nagsimula sa parehong paraan: may nangailangan ng maliit at tiyak na bagay ngunit hindi ito makita sa pinakamasamang posibleng sandali, ang digital na pinsan ng pagkukulang ng isang console cable nang alas-dos ng madaling-araw habang malapit nang magsara ang maintenance window. Kung wala pa rito ang inaabot mo, imungkahi ito. Bagaman sulit munang i-scroll ang listahan, baka nga ang eksaktong adapter na iyon ay kalahati nang tapos sa aking workbench.",
+    "intentTitle": "Ginawa para sa higit pa sa isang browser tab",
+    "intentIntro": "May dalawang direksiyon sa likod ng toolbox na ito, kapwa mga layunin sa halip na mga pangako, at wala ni isa man ang may petsa.",
+    "intentApi": "Ang una ay API access. Ang mga kagamitan ay tumatakbo na sa likod ng maliit, may-bersyong internal na API, kaya balang araw ang mga deterministikong engine ring iyon ay maaaring tumugon sa isang request, hindi lang pumuno ng browser tab.",
+    "intentOpen": "Ang pangalawa ay ang pagbubukas ng mismong engine. Ang bawat kagamitan ay isang self-contained at may-dokumentasyong module, ginawa upang maaaring ilabas para sa self-hosting at direktang isaksak sa iyong sariling build at CI pipelines, tumatakbo sa loob ng iyong sariling kapaligiran nang walang anumang lumalabas dito.",
+    "intentClose": "Wala ni isa man dito ang nakatali. Ang nagpapaposible sa mga ito ay ang lahat ay itinayo mula sa simula na inaasahan ang mga ito: mga deterministikong core, walang nakatagong state, isang malinis na API surface, dokumentasyong nababasa ng makina. Kaya kapag dumating ang panahon, ang pagbubukas ng mga ito ay isang hakbang, hindi isang muling pagsusulat."
+  },
+  "category": {
+    "eyebrow": "Kategorya",
+    "lede": "Lahat ng kagamitan at artikulo sa kategoryang ito, tinipon sa isang lugar.",
+    "toolsHeading": "Mga Kagamitan",
+    "articlesHeading": "Mga Artikulo",
+    "read": "Basahin",
+    "backToTools": "Lahat ng kagamitan"
   }
 }

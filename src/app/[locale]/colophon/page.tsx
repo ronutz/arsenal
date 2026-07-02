@@ -240,6 +240,9 @@ export default async function ColophonPage({
                 <Link href="/changelog" className="btn btn-secondary colophon-back">
                   {t("changelogLink")} →
                 </Link>
+                <Link href="/roadmap" className="btn btn-secondary colophon-back">
+                  {t("roadmapLink")} →
+                </Link>
               </div>
             </div>
           </section>

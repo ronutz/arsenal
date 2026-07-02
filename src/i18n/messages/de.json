@@ -193,7 +193,7 @@
       "reservedNote": "Die erste Adresse ist das Netz, die letzte der Broadcast; beide sind reserviert, also nutzbar = gesamt − 2."
     },
     "title": "Werkzeuge",
-    "lede": "Kleine, schnelle, datenschutzfreundliche Dienstprogramme, die vollständig in Ihrem Browser laufen. Nichts, was Sie eingeben, wird irgendwohin gesendet. Weitere sind in Arbeit.",
+    "lede": "Kleine, schnelle, datenschutzorientierte Werkzeuge, die vollständig in Ihrem Browser laufen. Nichts, was Sie eingeben, wird irgendwohin gesendet.",
     "open": "Öffnen",
     "comingSoon": "Demnächst",
     "note": "Dieser Werkzeugkasten wächst. Neue Werkzeuge werden hier hinzugefügt, sobald sie fertig sind, jedes Local-First und kostenlos nutzbar.",
@@ -901,7 +901,7 @@
     "lede": "Netzwerk- und Sicherheitsschulungen, geliefert von einem Praktiker, der seine Laufbahn auf der Umsetzungsseite verbracht hat, nicht nur bei den Folien. Ansässig in São Paulo, weltweit unterrichtend, auf Portugiesisch und Englisch.",
     "now": {
       "title": "Was ich heute mache",
-      "body": "Ich liefere offizielle, zertifizierte, von Trainern geleitete Schulungen auf vier Sicherheits- und Netzwerkplattformen. Die Arbeit ist praxisnah und laborgetrieben: Das Ziel ist immer, dass die Teilnehmer in der Lage sind, die Sache zu tun, nicht sie nur zu beschreiben. Ich bin seit 1996 autorisierter Trainer, und Schulung und technische Befähigung sind seit den späten 1990er Jahren Teil meiner Arbeit.",
+      "body": "Ich halte offizielle, zertifizierte, von einem Trainer geleitete Schulungen zu vier Sicherheits- und Netzwerkplattformen. Es gibt praktische Labore an echten Systemen, und für Menschen, die die Grundlagen bereits kennen und zum Üben gekommen sind, ist genau das der Punkt: echte Umgebungen zum Arbeiten. Für Gruppen, die neu in einer Technologie sind, fließt die Zeit zuerst in den Aufbau der Grundlagen, auf denen das Thema beruht, damit die praktische Arbeit Sinn ergibt und die Leute gehen und verstehen, warum sich Dinge so verhalten, wie sie es tun, statt nur zu wissen, welche Knöpfe zu drücken sind. Beides ist gleich wertvoll, und das Gleichgewicht verschiebt sich je nachdem, wer im Raum ist. Lehre und technische Befähigung sind seit Ende der 1990er Jahre Teil meiner Arbeit, aufbauend auf einer Laufbahn, die 1996 auf der Implementierungsseite begann.",
       "basedLabel": "Ansässig in",
       "basedValue": "São Paulo, Brasilien",
       "teachesLabel": "Unterrichtet",
@@ -1094,7 +1094,7 @@
       "s1Title": "Channel-Beratung und -Schulung, 2013 bis 2015",
       "s1Body": "Bei TDec Network Group gesellte sich Palo Alto zu einer Multi-Vendor-Beratungs- und Schulungspraxis, die Systems Engineering, Lösungsarchitektur, Anwendungsbefähigung, Implementierung, Audits und Troubleshooting umfasste. Die Beziehung setzte sich 2015 über Cipher Security für Pre-Sales- und Post-Sales-Arbeit fort. Der technische Fokus lag auf Next-Generation-Firewalls und der Panorama-Verwaltungsplattform, dem Kern von Palo Altos damaligem Unternehmenssicherheitsangebot.",
       "s2Title": "PAN-OS-Unterweisung",
-      "s2Body": "Diese Zeit umfasste formale Schulungslieferung: ein PAN-OS-6.0-Bootcamp, das dieselbe praktische, laborgetriebene Unterweisung aufbaute, die die heutige Schulungspraxis definiert. Zusammen mit den 2014 erworbenen Zertifizierungen begründete dies echte Tiefe in der Plattform, auch wenn sich der Fokus der Laufbahn später auf andere Technologien konzentrierte.",
+      "s2Body": "Dieser Zeitraum umfasste formale Schulungstätigkeit: ein PAN-OS-6.0-Bootcamp, ein frühes Beispiel derselben praxisgeprägten Lehre, die bis heute fortbesteht. Zusammen mit den 2014 erworbenen Zertifizierungen begründete dies eine echte Tiefe in der Plattform, auch wenn sich der Fokus der Laufbahn später auf andere Technologien konzentrierte.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Hinweis: Diese Zertifizierungen sind historisch und werden nicht als aktuell aufrechterhalten."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Ein Trainer, der diese Systeme gebaut hat, bevor er sie unterrichtete.",
     "lede": "Die meisten technischen Schulungen werden von Menschen gehalten, die den Stoff gelernt haben, um ihn zu unterrichten. Dies ist das Gegenteil: drei Jahrzehnte Bauen, Kaputtmachen und Reparieren echter Netzwerke und Sicherheitssysteme, destilliert zu Schulungen, die jedes Konzept damit verbinden, wie es sich im Produktivbetrieb tatsächlich verhält.",
     "s1Title": "Warum das im Klassenzimmer zählt",
-    "s1Body": "Es gibt einen Unterschied zwischen dem Erklären, wie eine Funktion funktionieren soll, und dem Erklären, warum sie sich so verhält, wie sie es um drei Uhr morgens tut, wenn etwas Kritisches ausgefallen ist. Das Erste kommt aus einem Handbuch. Das Zweite kommt daher, dabei gewesen zu sein. Seit 1996 war die Arbeit Umsetzung: Netzwerke entwerfen, sie aufbauen und die Person sein, die gerufen wird, wenn sie kaputtgingen, für Anbieter und für einige der größten Organisationen Brasiliens. Diese Tiefe ist das, was jeder Teilnehmer erhält, kein Vortragender, der Folien abliest, sondern ein Ingenieur, der in diesen Systemen gelebt hat und erklärt, wie sie wirklich funktionieren.",
+    "s1Body": "Es gibt einen Unterschied zwischen der Erklärung, wie eine Funktion arbeiten soll, und der Erklärung, warum sie sich um drei Uhr morgens so verhält, wie sie es tut, wenn etwas Kritisches ausgefallen ist. Das Erste stammt aus einem Handbuch. Das Zweite stammt daher, dass man dabei war. Seit 1996 war die Arbeit Implementierung: Netzwerke entwerfen und in Betrieb nehmen, sie dann unter Druck beheben und die Person sein, die gerufen wird, um die kritischen Verfügbarkeits- und Sicherheitsvorfälle zu lösen, die ein Unternehmen lahmlegen, für Hersteller und für einige der größten Organisationen Brasiliens. Diese Tiefe erhält jeder Teilnehmer: kein Vortragender, der Folien vorliest, sondern ein Ingenieur, der in diesen Systemen gelebt hat und erklärt, wie sie wirklich funktionieren.",
     "s2Title": "Komplexes klar gemacht",
     "s2Body": "Tiefes technisches Wissen ist notwendig, aber nicht hinreichend. Die seltenere Fähigkeit ist, es zu übersetzen: etwas wirklich Komplexes zu nehmen, Web Application Firewalls, Identitätsföderation, Traffic Management, SD-WAN, und es für jemanden zum Klicken zu bringen, der ihm zum ersten Mal begegnet. Teilnehmer heben durchweg die Beispiele aus der Praxis und die klare, strukturierte Didaktik hervor, die Fähigkeit, jedes Konzept in den Kontext der Arbeit zu stellen, die sie tatsächlich tun. Unterrichten war ein roter Faden durch diese gesamte Laufbahn, präsent in nahezu jeder Rolle seit 1997, und der Vollzeitfokus seit 2020.",
     "s3Title": "Praxisnah, nicht vage",
-    "s3Body": "Technische Fähigkeit wird durch Tun aufgebaut, nicht durch Zuschauen. Jeder Kurs ist um praktische Labore an echten Systemen herum aufgebaut, verstärkt durch verwaltete Laborumgebungen, sodass Übung immer einen echten Ort zum Stattfinden hat. Das Format passt sich der Zielgruppe an: virtuelle, von Trainern geleitete Schulung weltweit, vor Ort, wenn das besser dient, auf Englisch oder Portugiesisch. Das Ziel jeder Sitzung ist dasselbe, dass die Teilnehmer in der Lage sind, die Sache zu tun, nicht sie nur zu beschreiben.",
+    "s3Body": "Technisches Können entsteht durch Tun, deshalb hat jeder Kurs praktische Labore an echten Systemen, gestützt auf verwaltete Laborumgebungen, in denen die Praxis immer einen realen Ort hat. Für Menschen, die die Grundlagen bereits kennen und gekommen sind, um die Technik selbst anzufassen, ist genau das der Grund ihres Hierseins, und es ist gut investierte Zeit. Für Neueinsteiger fließt die Zeit zuerst in die Grundlagen, auf denen die Labore beruhen, damit die praktische Arbeit Sinn ergibt, statt nur auswendig nachvollzogen zu werden. Beides ist gleich wertvoll, und das Gleichgewicht verschiebt sich einfach je nach Gruppe. Das Format passt sich dem Publikum an: virtuelle, von einem Trainer geleitete Schulungen weltweit, in Präsenz, wenn das besser passt, auf Englisch oder Portugiesisch. So oder so sollten die Teilnehmer mit etwas Echtem und Nützlichem in der Hand und einem echten Verständnis dafür gehen, warum es funktioniert.",
     "s4Title": "Anerkannt, zertifiziert und aktuell",
     "s4Body": "Die Schulung ruht auf einem Fundament formaler Anerkennung. F5 DevCentral MVP in drei aufeinanderfolgenden Jahren, 2022, 2023 und 2024. F5-Zertifizierungen seit 2015 gehalten, und Trainer-Autorisierung über vier Plattformen: F5, Extreme Networks, Fortinet und Netskope. Die Lieferung erreicht Australien, Singapur, Indien, Mitteleuropa, die Vereinigten Staaten und Brasilien, über Red Education, ein autorisiertes Schulungszentrum. Die Qualifikationen zählen, aber sie sind Kurzform für das Darunterliegende: ein echtes, aktuelles Beherrschen der Technologie.",
     "platformsTitle": "Was ich unterrichte",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Lassen Sie uns zusammenarbeiten",
     "ctaBody": "Ob Sie offizielle Schulungen buchen, ein maßgeschneidertes Programm für Ihr Team aufbauen oder erfahrene Beratung bei einem schweren Problem hinzuziehen möchten, die Tür steht offen.",
     "ctaButton": "Kontakt aufnehmen",
-    "coursesButton": "Alle Kurse durchsuchen"
+    "coursesButton": "Alle Kurse durchsuchen",
+    "instructor": {
+      "body": "Diese Kurse werden von Rodolfo Nützmann unterrichtet, einem leitenden technischen Trainer, der weltweit autorisierte Schulungen zu F5, Fortinet, Extreme Networks und Netskope hält, aufbauend auf einer Laufbahn in Netzwerk und Sicherheit, die 1996 auf der Implementierungsseite begann. Die Zertifizierungen und die Stimmen früherer Teilnehmer sind nur einen Klick entfernt."
+    }
   },
   "contact": {
     "title": "Kontakt aufnehmen",
@@ -1297,7 +1300,8 @@
     "localBody": "Alles läuft im Browser. Das Werkzeug ruft eine reine Funktion auf: bei gleicher Eingabe liefert sie die gleiche Ausgabe, hält keinen Zustand und sendet nichts an einen Server. Keine Cookies, keine Analytics, wie die Datenschutzseite vollständig darlegt.",
     "thanksTitle": "Besonderer Dank",
     "p2Body": "Die deterministische Logik, die jedes Werkzeug ausführt, ist das gesamte Werkzeug: Es gibt keinen verborgenen Serverschritt, kein Konto und keine Telemetrie. Alles läuft in deinem Browser.",
-    "changelogLink": "Änderungsprotokoll"
+    "changelogLink": "Änderungsprotokoll",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Das Projekt unterstützen",
@@ -1415,7 +1419,11 @@
     "emailTitle": "So erreichst du mich",
     "emailBody": "E-Mail ist der Kanal. Sag mir, was du gefunden hast oder dir wünschst, mit genug Details zum Handeln: ein Beispiel, ein Link, der genaue Wortlaut, was eben passt. Wenn es das Toolkit besser macht, wird es gebaut.",
     "emailLabel": "E-Mail",
-    "backToTools": "Zurück zum Werkzeugkasten"
+    "backToTools": "Zurück zum Werkzeugkasten",
+    "disclaimerTitle": "Wie neue Werkzeuge gebaut und finanziert werden",
+    "disclaimerBody": "Im Sinne völliger Ehrlichkeit: Jedes neue Werkzeug hier wird mit Claude Max gebaut, der höchsten Nutzungsstufe von Anthropic, und dieses Abonnement ist nicht billig. Der 5x-Plan kostet etwa 100 USD pro Monat, der 20x-Plan etwa 200. Wenn es finanziert ist, entstehen Werkzeuge. Wenn nicht, pausiert die Entwicklung einfach, bis es so weit ist, weshalb neue Werkzeuge eher schubweise als nach einem festen Zeitplan erscheinen.",
+    "disclaimerBody2": "Wenn Sie es voranbringen möchten, ist der Link \"Buy Me a Coffee\" in der Fußzeile der Weg. Jeder Beitrag fließt in eine einzige Rücklage, die ausschließlich für das monatliche Abonnement von Claude Max verwendet wird. Keine weiteren Kosten, kein Anteil, keine Überraschungen.",
+    "disclaimerStatus": "Aktuell: Das Abonnement ist finanziert und es werden aktiv neue Werkzeuge gebaut."
   },
   "languageStatus": {
     "title": "Übersetzungsstatus",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Lokalisierung",
     "kindContent": "Inhalt",
     "kindInfra": "Infrastruktur"
+  },
+  "roadmap": {
+    "ideaBody": "Jedes Werkzeug hier begann auf dieselbe Weise: Jemand brauchte eine kleine, bestimmte Sache und fand sie im denkbar ungünstigsten Moment nicht, der digitale Verwandte davon, um 2 Uhr morgens ein Konsolenkabel zu wenig zu haben, während sich das Wartungsfenster schließt. Wenn das, wonach Sie greifen, noch nicht hier ist, schlagen Sie es vor. Ein Blick in die Liste lohnt sich aber zuerst, falls genau dieser Adapter schon halb fertig auf meiner Werkbank liegt.",
+    "intentTitle": "Für mehr als einen Browser-Tab gebaut",
+    "intentIntro": "Hinter diesem Werkzeugkasten stehen zwei Richtungen, beide eher Absichten als Versprechen, und keine mit einem Datum.",
+    "intentApi": "Die erste ist der API-Zugriff. Die Werkzeuge laufen bereits hinter einer kleinen, versionierten internen API, sodass eines Tages dieselben deterministischen Engines auf eine Anfrage antworten könnten, statt nur einen Browser-Tab zu füllen.",
+    "intentOpen": "Die zweite ist das Öffnen der Engine selbst. Jedes Werkzeug ist ein eigenständiges, dokumentiertes Modul, das so gebaut ist, dass es zum Selbst-Hosten veröffentlicht und direkt in Ihre eigenen Build- und CI-Pipelines eingebunden werden könnte, ausgeführt in Ihrer eigenen Umgebung, ohne dass etwas sie verlässt.",
+    "intentClose": "Keine ist zugesagt. Möglich werden sie dadurch, dass alles von Grund auf im Hinblick darauf gebaut wurde: deterministische Kerne, kein verborgener Zustand, eine saubere API-Oberfläche, maschinenlesbare Dokumentation. Wenn also die Zeit kommt, ist das Öffnen ein Schritt, keine Neuentwicklung."
+  },
+  "category": {
+    "eyebrow": "Kategorie",
+    "lede": "Alle Werkzeuge und Artikel dieser Kategorie, an einem Ort versammelt.",
+    "toolsHeading": "Werkzeuge",
+    "articlesHeading": "Artikel",
+    "read": "Lesen",
+    "backToTools": "Alle Werkzeuge"
   }
 }

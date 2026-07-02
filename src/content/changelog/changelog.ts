@@ -43,6 +43,15 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-02",
+    time: "11:14",
+    kind: "tool",
+    title: "New tool: F5 service check date",
+    tools: ["f5-service-check-date"],
+    body:
+      "Enter a BIG-IP version for the minimum service check date its license must carry, or enter a service check date for the newest version you can upgrade to and the newer branches you cannot reach yet. It encodes F5's published License Check Date table (K7727) and does the comparison entirely in the browser, with no clock and no network. Grounded in F5 K7727 and K8986, verified against 14 golden vectors, with three Learn articles in English and Portuguese.",
+  },
+  {
     date: "2026-07-01",
     time: "16:05",
     kind: "tool",

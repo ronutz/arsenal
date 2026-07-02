@@ -39,6 +39,7 @@ import { run as epochRun } from "./epoch";
 import { run as f5CipherStringExpanderRun } from "./f5-cipher-string-expander";
 import { run as f5SslProfileExplainerRun } from "./f5-ssl-profile-explainer";
 import { run as f5xcServicePolicyExplainerRun } from "./f5xc-service-policy-explainer";
+import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as hashRun } from "./hash";
 import { run as hmacRun } from "./hmac";
 import { run as httpRequestTranslatorRun } from "./http-request-translator";
@@ -89,6 +90,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-cipher-string-expander", run: f5CipherStringExpanderRun },
   { slug: "f5-ssl-profile-explainer", run: f5SslProfileExplainerRun },
   { slug: "f5xc-service-policy-explainer", run: f5xcServicePolicyExplainerRun },
+  { slug: "f5-service-check-date", run: f5ServiceCheckDateRun },
   { slug: "hash", run: hashRun },
   { slug: "hmac", structured: true, run: (input) => hmacRun(JSON.parse(input)) },
   { slug: "http-request-translator", run: httpRequestTranslatorRun },

@@ -61,7 +61,8 @@
       "show": "Mostrar",
       "hide": "Ocultar",
       "basisLabel": "Como funciona",
-      "sourcesLabel": "Normas e fontes"
+      "sourcesLabel": "Normas e fontes",
+      "disclaimer": "Esta ferramenta é construída a partir de documentação pública do fabricante e pode não estar totalmente precisa ou atual. Para uso em produção, sempre verifique na documentação oficial do fabricante."
     },
     "funding": {
       "title": "Apoie esta ferramenta",
@@ -805,7 +806,7 @@
       "runsLocally": "Executa inteiramente no seu navegador."
     },
     "title": "Ferramentas",
-    "lede": "Utilitários pequenos, rápidos e que respeitam a privacidade, rodando inteiramente no seu navegador. Nada do que você digita é enviado a lugar nenhum. Mais ferramentas a caminho.",
+    "lede": "Utilitários pequenos, rápidos e que respeitam a privacidade, rodando inteiramente no seu navegador. Nada do que você digita é enviado a lugar nenhum.",
     "open": "Abrir",
     "comingSoon": "Em breve",
     "note": "Esta caixa de ferramentas está crescendo. Novas ferramentas são adicionadas aqui à medida que ficam prontas, cada uma com processamento local e de uso gratuito.",
@@ -825,6 +826,14 @@
       "security": "Segurança e WAF",
       "text": "Texto e utilitários"
     },
+    "vendors": {
+      "f5": "F5",
+      "fortinet": "Fortinet",
+      "netskope": "Netskope",
+      "extreme": "Extreme Networks"
+    },
+    "vendorFilterLabel": "Filtrar por fabricante",
+    "vendorFilterAll": "Todos",
     "hash": {
       "name": "Gerador de hash (SHA-1/256/384/512)",
       "blurb": "Calcule resumos SHA-1, SHA-256, SHA-384 e SHA-512 de qualquer texto, mostrados em hex e Base64, usando o Web Crypto nativo do navegador. Roda inteiramente no seu navegador.",
@@ -2243,6 +2252,37 @@
       "legend": {
         "title": "Categorias de destino"
       }
+    },
+    "f5-service-check-date": {
+      "name": "Service check date do F5",
+      "blurb": "Informe uma versão do BIG-IP para obter a service check date mínima que a licença precisa ter, ou informe uma service check date para ver a versão mais recente para a qual você pode atualizar. Baseado na tabela pública de License Check Date da F5 (K7727); roda inteiramente no seu navegador.",
+      "inputLabel": "Versão ou service check date",
+      "inputPlaceholder": "17.1.3, 21.1 ou 20230611",
+      "runsLocally": "Isto roda localmente contra uma cópia embutida da tabela de License Check Date da F5 (K7727). Nada é enviado a lugar nenhum.",
+      "verifyNote": "Para planejamento de atualização em produção, sempre confirme na F5 K7727 ou no arquivo /etc/version_date do sistema de destino.",
+      "errors": {
+        "empty": "Informe uma versão do BIG-IP ou uma service check date.",
+        "format": "Isto não é uma versão do BIG-IP nem uma service check date. Informe uma versão como 17.1.3 ou uma data como 20230611.",
+        "unknownVersion": "Essa versão não está na tabela de License Check Date da F5."
+      },
+      "version": {
+        "heading": "Service check date mínima",
+        "forVersion": "Para atualizar para {label}, a service check date da licença precisa ser:",
+        "orLater": "ou posterior",
+        "compactLabel": "No formato do bigip.license",
+        "majorMinorNote": "A verificação se aplica ao branch major.minor, então toda release de manutenção e point release dentro de {label} compartilha esta data.",
+        "consequence": "Se a service check date for anterior a esta, o sistema ainda inicializa após a atualização, mas não carrega sua configuração até você reativar a licença."
+      },
+      "date": {
+        "heading": "Elegibilidade para atualização",
+        "newestReachable": "Versão mais recente para a qual você pode atualizar",
+        "withinNote": "Qualquer release de manutenção ou point release dentro de {label} está incluída.",
+        "none": "Nenhuma versão na tabela é alcançável com esta service check date. Reative a licença para obter uma service check date mais recente.",
+        "allReachable": "Esta service check date alcança a versão mais recente da tabela; nada está bloqueado.",
+        "blockedHeading": "Branches mais novos que você ainda não pode alcançar",
+        "blockedHint": "Cada um precisa que a service check date da licença seja igual ou posterior à data mostrada. Reative a licença primeiro.",
+        "needsDate": "precisa de uma service check date de {date} ou posterior"
+      }
     }
   },
   "privacy_page": {
@@ -2316,7 +2356,7 @@
     "lede": "Treinamentos de rede e segurança ministrados por quem passou a carreira no lado da implementação, e não apenas nos slides. Com base em São Paulo, ensinando para o mundo todo, em português e inglês.",
     "now": {
       "title": "O que faço agora",
-      "body": "Ministro treinamentos oficiais e certificados, conduzidos por instrutor, em quatro plataformas de segurança e redes. O trabalho é prático e baseado em laboratórios: o objetivo é sempre que as pessoas saiam capazes de executar a tarefa, não apenas de descrevê-la. Sou instrutor autorizado desde 1996, e o treinamento e a capacitação técnica fazem parte do meu trabalho desde o fim dos anos 1990.",
+      "body": "Ministro treinamentos oficiais e certificados, conduzidos por instrutor, em quatro plataformas de segurança e redes. Há laboratórios práticos em sistemas reais e, para quem já conhece os fundamentos e veio para praticar, é exatamente esse o ponto: ambientes reais para trabalhar. Para turmas mais novas em uma tecnologia, o tempo vai primeiro para construir as fundações sobre as quais o tema se apoia, de modo que a parte prática faça sentido e as pessoas saiam entendendo por que as coisas se comportam como se comportam, não apenas quais botões apertar. Ambos têm igual valor, e o equilíbrio muda conforme quem está na sala. O ensino e a capacitação técnica fazem parte do meu trabalho desde o fim dos anos 1990, sobre uma carreira que começou no lado da implementação em 1996.",
       "basedLabel": "Com base em",
       "basedValue": "São Paulo, Brasil",
       "teachesLabel": "Ensina",
@@ -2520,7 +2560,7 @@
       "s1Title": "Consultoria e treinamento de canal, 2013 a 2015",
       "s1Body": "Na TDec Network Group, a Palo Alto se somou a uma prática de consultoria e treinamento multifabricante que abrangia engenharia de sistemas, arquitetura de soluções, habilitação de aplicações, implementação, auditorias e troubleshooting. A relação continuou através da Cipher Security em 2015 para trabalho de pré-vendas e pós-venda. O foco técnico eram os firewalls de próxima geração e a plataforma de gerenciamento Panorama, o núcleo da oferta de segurança corporativa da Palo Alto à época.",
       "s2Title": "Instrução de PAN-OS",
-      "s2Body": "Esse período incluiu entrega de treinamento formal: um bootcamp de PAN-OS 6.0, que construía a mesma instrução prática e baseada em laboratórios que define a prática de ensino de hoje. Combinado com as certificações conquistadas em 2014, isso estabeleceu uma profundidade genuína na plataforma, mesmo que o foco da carreira mais tarde tenha se concentrado em outras tecnologias.",
+      "s2Body": "Esse período incluiu entrega formal de treinamento: um bootcamp de PAN-OS 6.0, uma instância inicial do mesmo ensino conduzido por praticante que continua até hoje. Combinado com as certificações obtidas em 2014, isso estabeleceu profundidade genuína na plataforma, mesmo com o foco da carreira concentrando-se depois em outras tecnologias.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Observação: estas certificações são históricas e não são mantidas como vigentes."
     }
   },
@@ -2556,11 +2596,11 @@
     "title": "Um instrutor que construiu esses sistemas antes de ensiná-los.",
     "lede": "A maior parte do treinamento técnico é ministrada por pessoas que aprenderam o assunto para ensiná-lo. Aqui é o contrário: três décadas construindo, quebrando e consertando redes e sistemas de segurança de verdade, destiladas em um treinamento que conecta cada conceito ao modo como ele se comporta de fato em produção.",
     "s1Title": "Por que isso importa em uma sala de aula",
-    "s1Body": "Há uma diferença entre explicar como um recurso deveria funcionar e explicar por que ele se comporta como se comporta às três da manhã quando algo crítico está fora do ar. O primeiro vem de um manual. O segundo vem de ter estado lá. Desde 1996, o trabalho foi implementação: projetar redes, colocá-las no ar, e ser a pessoa que recebe a ligação quando elas quebravam, para fabricantes e para algumas das maiores organizações do Brasil. Essa profundidade é o que cada aluno recebe, não um apresentador lendo slides, mas um engenheiro que viveu dentro desses sistemas explicando como eles funcionam de verdade.",
+    "s1Body": "Há uma diferença entre explicar como um recurso deveria funcionar e explicar por que ele se comporta como se comporta às três da manhã quando algo crítico está fora do ar. O primeiro vem de um manual. O segundo vem de ter estado lá. Desde 1996, o trabalho foi implementação: projetar redes e colocá-las no ar, e então diagnosticá-las sob pressão e ser a pessoa chamada para resolver os incidentes críticos de disponibilidade e segurança que paralisam um negócio, para fabricantes e para algumas das maiores organizações do Brasil. Essa profundidade é o que cada aluno recebe, não um apresentador lendo slides, mas um engenheiro que viveu dentro desses sistemas explicando como eles funcionam de verdade.",
     "s2Title": "O complexo tornado claro",
     "s2Body": "Conhecimento técnico profundo é necessário, mas não suficiente. A habilidade mais rara é traduzi-lo: pegar algo realmente complexo, firewalls de aplicação web, federação de identidade, gerenciamento de tráfego, SD-WAN, e fazer com que faça sentido para quem topa com aquilo pela primeira vez. Os alunos destacam de forma constante os exemplos do mundo real e a didática clara e estruturada, a capacidade de colocar cada conceito no contexto do trabalho que de fato realizam. O ensino foi um fio ao longo de toda esta carreira, presente em quase todo cargo desde 1997, e o foco em tempo integral desde 2020.",
     "s3Title": "Mão na massa, não vago",
-    "s3Body": "A habilidade técnica se constrói fazendo, não assistindo. Cada curso é construído em torno de laboratórios práticos em sistemas de verdade, reforçados com ambientes de laboratório gerenciados para que a prática sempre tenha um lugar de verdade para acontecer. O formato se adapta à audiência: treinamento conduzido por instrutor virtual para o mundo todo, presencial quando isso serve melhor, em inglês ou português. O objetivo de cada sessão é o mesmo, que os participantes saiam capazes de executar a tarefa, não apenas de descrevê-la.",
+    "s3Body": "A habilidade técnica se constrói fazendo, então todo curso tem laboratórios práticos em sistemas reais, apoiados por ambientes de laboratório gerenciados onde a prática sempre tem um lugar real para acontecer. Para quem já conhece os fundamentos e veio para colocar a mão na tecnologia, é exatamente isso que essas pessoas buscam, e é tempo bem gasto. Para quem é mais novo no assunto, o tempo vai primeiro para as fundações sobre as quais os laboratórios se apoiam, de modo que a parte prática faça sentido em vez de ser seguida de forma mecânica. Ambos têm igual valor, e o equilíbrio simplesmente muda conforme a turma. O formato se adapta ao público: treinamento ao vivo conduzido por instrutor e entregue globalmente, presencial quando isso for melhor, em inglês ou português. De um jeito ou de outro, as pessoas devem sair com algo real e útil em mãos e uma compreensão real de por que aquilo funciona.",
     "s4Title": "Reconhecido, certificado e atualizado",
     "s4Body": "O ensino se apoia em uma base de reconhecimento formal. F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024. Certificações F5 mantidas desde 2015, e autorização de instrutor em quatro plataformas: F5, Extreme Networks, Fortinet e Netskope. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil, através da Red Education, um centro de treinamento autorizado. As credenciais importam, mas são um atalho para o que está por baixo: um domínio genuíno e atual da tecnologia.",
     "platformsTitle": "O que eu ensino",
@@ -2579,7 +2619,7 @@
     "coursesButton": "Ver todos os cursos",
     "instructor": {
       "eyebrow": "Seu instrutor",
-      "body": "Estes cursos são ministrados por Rodolfo Nützmann, instrutor técnico sênior que entrega treinamentos oficiais F5, Fortinet, Extreme Networks e Netskope no mundo todo desde 1996. As credenciais, e o que dizem alunos anteriores, estão a um clique.",
+      "body": "Estes cursos são ministrados por Rodolfo Nützmann, instrutor técnico sênior que entrega treinamentos oficiais F5, Fortinet, Extreme Networks e Netskope no mundo todo, apoiado em uma carreira em redes e segurança iniciada em 1996 no lado da implementação. As credenciais, e o que dizem alunos anteriores, estão a um clique.",
       "about": "Sobre o Rodolfo",
       "certs": "Certificações",
       "endorsements": "Depoimentos"
@@ -2717,6 +2757,7 @@
     "closingBody": "Construir software com colaboradores de IA é novo o bastante para que o honesto seja ser transparente a respeito. Nada aqui foi publicado sem que uma pessoa decidisse que deveria ser. As IAs foram instrumentos, instrumentos capazes, mas instrumentos. O julgamento, a responsabilidade e o nome no trabalho são humanos.",
     "backHome": "Voltar para as ferramentas",
     "changelogLink": "Registro de alterações",
+    "roadmapLink": "Roadmap",
     "standardsTitle": "Padrões e frameworks",
     "standardsLede": "Cada ferramenta aqui implementa uma especificação publicada, não um palpite. Os decodificadores e as calculadoras são construídos sobre os documentos que definem seus formatos e fixados aos vetores de teste que esses documentos publicam, de modo que cada resposta é conferida contra a fonte da verdade, e não contra si mesma.",
     "specsLabel": "As especificações",
@@ -2850,7 +2891,11 @@
     "emailLabel": "E-mail",
     "backToTools": "Voltar para as ferramentas",
     "roadmapCheck": "Vale consultar o roadmap primeiro, para ver o que já está planejado ou publicado e evitar duplicatas:",
-    "roadmapLink": "ver o roadmap"
+    "roadmapLink": "ver o roadmap",
+    "disclaimerTitle": "Como as novas ferramentas são construídas e financiadas",
+    "disclaimerBody": "Em nome da total transparência: cada nova ferramenta aqui é construída com o Claude Max, o nível de uso mais alto da Anthropic, e essa assinatura não é barata. O plano 5x custa cerca de USD 100 por mês, o plano 20x cerca de USD 200. Quando está financiado, ferramentas são construídas. Quando não está, a construção simplesmente pausa até que esteja, e é por isso que novas ferramentas tendem a chegar em ondas, e não em um cronograma fixo.",
+    "disclaimerBody2": "Se você quiser ajudar, o link Buy Me a Coffee no rodapé é o caminho. Cada contribuição vai para uma única reserva gasta em nada além dessa assinatura mensal do Claude Max. Sem outros custos, sem parte para ninguém, sem surpresas.",
+    "disclaimerStatus": "Agora: a assinatura está financiada e novas ferramentas estão sendo construídas ativamente."
   },
   "languageStatus": {
     "title": "Status da tradução",
@@ -2878,8 +2923,13 @@
     "lede": "As ferramentas que estamos planejando e considerando para a caixa de ferramentas. Esta página é gerada a partir do catálogo de build ativo, então está sempre atual: uma ferramenta aparece aqui no momento em que entra na fila e passa para a contagem de entregues no momento em que é publicada. Sem datas, apenas direção e prioridade aproximada.",
     "shippedLabel": "entregues",
     "plannedLabel": "planejadas",
+    "intentTitle": "Feito para mais do que uma aba de navegador",
+    "intentIntro": "Duas direções estão por trás desta caixa de ferramentas, ambas intenções e não promessas, e nenhuma com data.",
+    "intentApi": "A primeira é o acesso via API. As ferramentas já rodam por trás de uma pequena API interna versionada, então um dia os mesmos motores determinísticos poderiam responder a uma requisição, não apenas preencher uma aba de navegador.",
+    "intentOpen": "A segunda é abrir o próprio motor. Cada ferramenta é um módulo autocontido e documentado, feito para poder ser liberado para hospedagem própria e encaixado diretamente nos seus pipelines de build e CI, rodando dentro do seu próprio ambiente sem nada saindo dele.",
+    "intentClose": "Nenhuma está comprometida. O que as torna possíveis é que a ferramentaria foi construída desde a base já esperando por elas: motores determinísticos, sem estado oculto, uma superfície de API limpa, documentação legível por máquina. Então, se a hora chegar, abrir isso é um passo, não uma reescrita.",
     "ideaTitle": "Tem uma ideia?",
-    "ideaBody": "A caixa de ferramentas é open-core e movida pela comunidade. Se falta uma ferramenta determinística e local, proponha. Consultar este roadmap antes ajuda a evitar duplicatas.",
+    "ideaBody": "Toda ferramenta aqui começou do mesmo jeito: alguém precisou de algo pequeno e específico e não encontrou no pior momento possível, o primo digital de estar com um cabo de console a menos às 2 da manhã com a janela de manutenção se fechando. Se a que você está procurando ainda não está aqui, proponha. Vale uma olhada na lista antes, caso esse adaptador exato já esteja na minha bancada, metade pronto.",
     "ideaCta": "Sugerir uma ferramenta"
   },
   "apiAffordance": {
@@ -2893,5 +2943,13 @@
     "copied": "Copiado",
     "previewBadge": "prévia",
     "privacyNote": "Esta ferramenta roda localmente no seu navegador. A API é um endpoint stateless na edge para automação; não guarda logs nem armazena entradas."
+  },
+  "category": {
+    "eyebrow": "Categoria",
+    "lede": "Todas as ferramentas e artigos desta categoria, reunidos em um só lugar.",
+    "toolsHeading": "Ferramentas",
+    "articlesHeading": "Artigos",
+    "read": "Ler",
+    "backToTools": "Todas as ferramentas"
   }
 }

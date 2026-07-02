@@ -1,0 +1,34 @@
+---
+slug: bigip-upgrade-vs-update
+title: "Upgrade vs Update no BIG-IP: por que a distinção decide se a data de licença é verificada"
+summary: "A F5 traça uma linha precisa entre um upgrade e um update, com base em qual parte do número de versão muda. Não é só terminologia: a service check date só é imposta em um upgrade, então saber qual dos dois você está fazendo diz se uma data de licenciamento pode te bloquear."
+concepts: ["f5", "bigip", "upgrade", "update", "versioning", "maintenance release", "point release"]
+relatedTools: ["f5-service-check-date"]
+relatedArticles: ["bigip-service-check-date", "bigip-license-reactivation"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-01"
+---
+
+"Upgrade" e "update" são frequentemente usados de forma solta, mas no BIG-IP eles significam duas coisas específicas, e a F5 os define por qual dígito do número de versão muda. A distinção importa para mais do que organização: a service check date de licenciamento é imposta em um e não no outro.
+
+## O número de versão
+
+Uma versão do BIG-IP tem até quatro partes: `<major>.<minor>.<maintenance>.<point>`. Então 15.1.2.1 é major 15, minor 1, maintenance 2, point 1. O formato de quatro dígitos incluindo o point release foi introduzido em dezembro de 2017; antes disso, correções em nível de point eram entregues como hotfixes. A F5 estabelece o schema de versão completo na K8986.
+
+## As duas operações
+
+A F5 define um **system upgrade** como mover-se de um major release para outro, ou de um minor release para outro: uma mudança no primeiro ou segundo número. Dois exemplos da própria documentação da F5: mover-se de 15.1.0 para 16.0.0 é um upgrade porque o número major mudou, e mover-se de 14.0.0 para 14.1.0 é um upgrade porque o número minor mudou.
+
+A F5 define um **system update** como mover-se de um maintenance ou point release para outro dentro da mesma versão major e minor: uma mudança apenas no terceiro ou quarto número. Mover-se de 15.0.1 para 15.0.2 é um update (um novo maintenance release), e mover-se de 15.1.2 para 15.1.2.1 é um update (um novo point release).
+
+## Por que isso muda a verificação de licenciamento
+
+Esta é a parte que pega as pessoas de surpresa. Quando você faz um update, nenhuma verificação de service ou license check date acontece, e a configuração carrega normalmente. Quando você faz um upgrade, o sistema de licenciamento compara sim a License Check Date da versão de destino com a Service Check Date da licença, e se a Service Check Date for mais antiga, o sistema inicializa mas não carrega sua configuração. A mecânica dessa verificação é coberta em [a service check date](/learn/bigip-service-check-date).
+
+Como a trava é atrelada aos números major e minor, todo maintenance e point release dentro de um branch compartilha a mesma License Check Date. Em outras palavras, uma vez que sua Service Check Date é recente o suficiente para alcançar, digamos, o 17.1.x, ela é recente o suficiente para o 17.1.0, o 17.1.3 e todo outro release naquele branch. A [ferramenta de service check date do F5](/tools/f5-service-check-date) reflete isso: ela reporta a data para todo o branch major.minor, não por maintenance release.
+
+## O ponto prático
+
+Antes de um movimento entre branches (um upgrade), verifique a data de licenciamento; antes de um movimento dentro de um branch (um update), você não precisa, ao menos não por esse motivo. De qualquer forma, a F5 recomenda reativar a licença primeiro: isso redefine a Service Check Date e confirma que não há problemas de licenciamento antes de você começar. Se um upgrade já deixou um sistema incapaz de carregar sua configuração, veja [recuperando de um problema de service check date](/learn/bigip-license-reactivation).

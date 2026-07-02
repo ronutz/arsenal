@@ -2534,6 +2534,16 @@
 .footer-built-link:hover {
   color: var(--accent-primary);
 }
+/* The credits line ("Built by ... with CONCORD") in amber, the footer hero.
+   Scoped with :not(.footer-redu) so the Red Education line keeps its own
+   muted color (styled by the more specific .footer-redu rule below). */
+.footer-built:not(.footer-redu) .footer-built-link {
+  color: var(--accent-amber);
+}
+.footer-built:not(.footer-redu) .footer-built-link:hover {
+  color: var(--accent-amber);
+  text-decoration: underline;
+}
 
 .colophon-container {
   max-width: 46rem;
@@ -3155,6 +3165,14 @@
 .provenance-source-link:hover { text-decoration: underline; }
 .provenance-source-label { font-size: 0.9rem; color: var(--text-primary); }
 .provenance-source-note { font-size: 0.8rem; color: var(--text-tertiary); }
+.provenance-disclaimer {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+}
 
 /* ============================================================================
    PER-TOOL FUNDING — contextual "support this tool" panel.
@@ -3561,6 +3579,47 @@
   color: var(--accent-amber);
   border-color: color-mix(in srgb, var(--accent-amber) 45%, transparent);
   background: color-mix(in srgb, var(--accent-amber) 8%, var(--surface-base));
+}
+/* Browse-by-vendor filter chips (client island: ToolVendorFilter.tsx). Styled to
+   match the category jump-nav; the active chip uses the site's amber accent. */
+.vendor-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0 0 1.25rem;
+}
+.vendor-filter-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.vendor-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.vendor-filter-chip:hover,
+.vendor-filter-chip:focus-visible {
+  color: var(--accent-amber);
+  border-color: color-mix(in srgb, var(--accent-amber) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 8%, var(--surface-base));
+}
+.vendor-filter-chip[aria-pressed="true"] {
+  color: var(--accent-amber);
+  border-color: color-mix(in srgb, var(--accent-amber) 60%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 14%, var(--surface-base));
 }
 .category-section { scroll-margin-top: 2rem; }
 /* Tools index: the first category sits directly under the jump-nav. Without
@@ -6950,7 +7009,7 @@ a.tools-card:hover {
 .about-cred-desc { font-size: 0.9rem; line-height: 1.55; color: var(--text-secondary); flex: 1; }
 .about-cred-cta { font-size: 0.86rem; font-weight: 600; color: var(--accent-primary); margin-top: 0.35rem; }
 
-.footer-modified { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-tertiary); margin: 0 0 0.45rem; }
+.footer-modified { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-tertiary); opacity: 0.55; margin: 0.9rem 0 0; }
 
 /* ============================================================
    Roadmap page (generated from the catalogue) + Training-page
@@ -7269,3 +7328,22 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   color: var(--color-accent, var(--accent-primary));
   border-bottom-color: currentColor;
 }
+
+/* Contribute page: the funding/pace disclaimer, set apart with a top rule; the
+   current-availability line picks up the amber accent so it reads at a glance. */
+.contribute-disclaimer {
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+.contribute-disclaimer-status {
+  font-weight: 600;
+  color: var(--accent-amber);
+}
+
+/* Category headings on the Tools and Learn indexes link to the per-category
+   page (tools + articles gathered). Inherits the heading color; the pointer
+   cursor plus hover reveal that it is interactive. */
+.tools-category-link { color: inherit; text-decoration: none; transition: color 0.15s ease; }
+.tools-category-link:hover,
+.tools-category-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }

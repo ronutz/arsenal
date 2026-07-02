@@ -84,7 +84,9 @@ export default async function LearnIndexPage({
                     style={{ "--chip-color": categoryColor(group.category) } as React.CSSProperties}
                     aria-hidden="true"
                   />
-                  {tTools(`categories.${group.category}`)}
+                  <Link href={`/category/${group.category}`} className="tools-category-link">
+                    {tTools(`categories.${group.category}`)}
+                  </Link>
                 </h2>
                 <ul className="learn-grid">
                   {group.articles.map((a) => (

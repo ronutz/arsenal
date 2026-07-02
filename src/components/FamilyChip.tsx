@@ -13,16 +13,19 @@ import { categoryColor } from "@/config/categoryColors";
 export default function FamilyChip({
   category,
   label,
+  color,
 }: {
-  /** Category key (drives the hue). */
+  /** Category (or vendor) key; drives the hue when `color` is not given. */
   category: string;
-  /** Localized label (from tools.categories.*). */
+  /** Localized label (from tools.categories.* or tools.vendors.*). */
   label: string;
+  /** Explicit hue override, used by vendor chips via vendorColor(). */
+  color?: string;
 }) {
   return (
     <span
       className="family-chip"
-      style={{ "--chip-color": categoryColor(category) } as React.CSSProperties}
+      style={{ "--chip-color": color ?? categoryColor(category) } as React.CSSProperties}
     >
       <span className="family-chip-dot" aria-hidden="true" />
       {label}

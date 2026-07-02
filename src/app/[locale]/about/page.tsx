@@ -250,14 +250,14 @@ export default async function AboutPage({
               {t("cta.body")}
             </p>
             <div className="hero-cta">
-              <Link href="/contact" className="btn btn-primary">
-                {t("cta.contactButton")}
-              </Link>
-              <Link href="/learn" className="btn btn-secondary">
+              <Link href="/learn" className="btn btn-primary">
                 {t("cta.learnButton")}
               </Link>
               <Link href="/tools" className="btn btn-secondary">
                 {t("cta.toolsButton")}
+              </Link>
+              <Link href="/contact" className="btn btn-secondary">
+                {t("cta.contactButton")}
               </Link>
             </div>
           </div>

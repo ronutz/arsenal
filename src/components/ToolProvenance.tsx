@@ -24,6 +24,8 @@ export interface ProvenanceCopy {
   hide: string;
   basisLabel: string;
   sourcesLabel: string;
+  /** Vendor-documentation disclaimer sentence (shown only for vendor-doc tools). */
+  disclaimer?: string;
 }
 
 interface ToolProvenanceProps {
@@ -75,6 +77,12 @@ export default function ToolProvenance({ enabled, data, copy }: ToolProvenancePr
               ))}
             </ul>
           </div>
+
+          {/* Vendor-documentation disclaimer: only when the tool's provenance
+              marks it as vendor-doc AND the caller supplied the localized copy. */}
+          {data.disclaimer === "vendor-docs" && copy.disclaimer && (
+            <p className="provenance-disclaimer">{copy.disclaimer}</p>
+          )}
         </div>
       )}
     </section>

@@ -28,6 +28,13 @@ export interface ToolProvenance {
   basis: string;
   /** Standards, algorithms, and data sources. */
   sources: ProvenanceSource[];
+  /**
+   * If set, the panel shows a standard notice that this tool is built from vendor
+   * documentation (which changes with each release) rather than a fixed standard,
+   * and that production use should verify against the vendor's own docs. Set on
+   * the vendor-doc tools (the F5 family); omitted for standards-based tools.
+   */
+  disclaimer?: "vendor-docs";
 }
 
 // ----------------------------------------------------------------------------
@@ -35,6 +42,15 @@ export interface ToolProvenance {
 // / subnet tool (the live one), with real, citable standards.
 // ----------------------------------------------------------------------------
 const PROVENANCE: Record<string, ToolProvenance> = {
+  "f5-service-check-date": {
+    basis:
+      "The comparison runs entirely in your browser against a vendored copy of F5's License Check Date table. Enter a version and it returns the minimum service check date that version's license must carry; enter a service check date and it returns the newest version you can upgrade to and the newer branches you cannot reach yet. It is pure date arithmetic with no clock and no network: the version's License Check Date and the service check date are both inputs, so the same inputs always give the same answer.",
+    sources: [
+      { label: "F5 K7727", url: "https://my.f5.com/manage/s/article/K7727", note: "The License Check Date table, the Service Check Date definition, and the boot-time enforcement behaviour" },
+      { label: "F5 K8986", url: "https://my.f5.com/manage/s/article/K8986", note: "The BIG-IP version schema that fixes the upgrade-vs-update boundary the check applies to" },
+    ],
+    disclaimer: "vendor-docs",
+  },
   "dig-output-explainer": {
     basis:
       "The breakdown is parsed entirely in your browser from the dig output you paste. Nothing is resolved and nothing is sent anywhere; the parser only reads the text and labels each part against the DNS message format.",
@@ -73,6 +89,7 @@ const PROVENANCE: Record<string, ToolProvenance> = {
       { label: "F5 Distributed Cloud API: ves.io.schema.service_policy_rule", url: "https://docs.cloud.f5.com/docs-v2/api/service-policy-rule", note: "The rule spec: action, predicates, matchers, transformers, and expiration" },
       { label: "F5 Distributed Cloud: Service Policy how-to", url: "https://docs.cloud.f5.com/docs-v2/multi-cloud-app-connect/how-to/app-security/service-policy", note: "Creating and applying service policies, rule combining, and default deny" },
     ],
+    disclaimer: "vendor-docs",
   },
   "cvss-vector-decoder": {
     basis:
@@ -187,6 +204,7 @@ const PROVENANCE: Record<string, ToolProvenance> = {
         note: "The :n / :nn / :nnn TMM detail suffix and the :p both-sides modifier",
       },
     ],
+    disclaimer: "vendor-docs",
   },
 };
 

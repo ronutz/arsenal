@@ -61,7 +61,8 @@
       "show": "Show",
       "hide": "Hide",
       "basisLabel": "How it works",
-      "sourcesLabel": "Standards & sources"
+      "sourcesLabel": "Standards & sources",
+      "disclaimer": "This tool is built from public vendor documentation and may not be fully accurate or current. For production use, always verify against the vendor's official documentation."
     },
     "funding": {
       "title": "Support this tool",
@@ -92,6 +93,14 @@
       "security": "Security & WAF",
       "text": "Text & utilities"
     },
+    "vendors": {
+      "f5": "F5",
+      "fortinet": "Fortinet",
+      "netskope": "Netskope",
+      "extreme": "Extreme Networks"
+    },
+    "vendorFilterLabel": "Browse by vendor",
+    "vendorFilterAll": "All",
     "jwt": {
       "name": "JWT Decoder & Verifier",
       "blurb": "Decode a JSON Web Token's header and claims, read its expiry and timing in plain language, and verify an HS256/384/512 signature with a pasted secret. Runs entirely in your browser.",
@@ -1163,7 +1172,7 @@
       "runsLocally": "Runs entirely in your browser."
     },
     "title": "Tools",
-    "lede": "Small, fast, privacy-first utilities that run entirely in your browser. Nothing you type is sent anywhere. More are on the way.",
+    "lede": "Small, fast, privacy-first utilities that run entirely in your browser. Nothing you type is sent anywhere.",
     "open": "Open",
     "comingSoon": "Coming soon",
     "note": "This toolbox is growing. New tools are added here as they ship, each one local-first and free to use.",
@@ -2243,6 +2252,37 @@
       "legend": {
         "title": "Destination categories"
       }
+    },
+    "f5-service-check-date": {
+      "name": "F5 service check date",
+      "blurb": "Enter a BIG-IP version to get the minimum service check date its license must carry, or enter a service check date to see the newest version you can upgrade to. Based on F5's published License Check Date table (K7727); runs entirely in your browser.",
+      "inputLabel": "Version or service check date",
+      "inputPlaceholder": "17.1.3, 21.1, or 20230611",
+      "runsLocally": "This runs locally against a bundled copy of F5's License Check Date table (K7727). Nothing is sent anywhere.",
+      "verifyNote": "For production upgrade planning, always confirm against F5 K7727 or the target system's /etc/version_date file.",
+      "errors": {
+        "empty": "Enter a BIG-IP version or a service check date.",
+        "format": "That is not a BIG-IP version or a service check date. Enter a version like 17.1.3 or a date like 20230611.",
+        "unknownVersion": "That version is not in F5's License Check Date table."
+      },
+      "version": {
+        "heading": "Minimum service check date",
+        "forVersion": "To upgrade to {label}, the license's service check date must be:",
+        "orLater": "or later",
+        "compactLabel": "In bigip.license form",
+        "majorMinorNote": "The check applies to the major.minor branch, so every maintenance and point release within {label} shares this date.",
+        "consequence": "If the service check date is earlier than this, the system still boots after the upgrade but does not load its configuration until you reactivate the license."
+      },
+      "date": {
+        "heading": "Upgrade eligibility",
+        "newestReachable": "Newest version you can upgrade to",
+        "withinNote": "Any maintenance or point release within {label} is included.",
+        "none": "No version in the table is reachable with this service check date. Reactivate the license to obtain a newer service check date.",
+        "allReachable": "This service check date reaches the newest version in the table; nothing is blocked.",
+        "blockedHeading": "Newer branches you cannot reach yet",
+        "blockedHint": "Each needs the license's service check date to be on or after the date shown. Reactivate the license first.",
+        "needsDate": "needs a service check date of {date} or later"
+      }
     }
   },
   "privacy_page": {
@@ -2316,7 +2356,7 @@
     "lede": "Network and security training delivered by a practitioner who has spent his career on the implementation side, not just the slides. Based in São Paulo, teaching globally, in Portuguese and English.",
     "now": {
       "title": "What I do now",
-      "body": "I deliver official, certified instructor-led training across four security and networking platforms. The work is hands-on and lab-driven: the goal is always that people leave able to do the thing, not just describe it. I have been an authorized instructor since 1996, and training and technical enablement have been part of my work since the late 1990s.",
+      "body": "I deliver official, certified instructor-led training across four security and networking platforms. There are hands-on labs on real systems, and for people who already know the fundamentals and came to practice, that is exactly the point: real environments to work in. For groups newer to a technology, the time goes first into building the foundations the topic rests on, so the hands-on work makes sense and people leave understanding why things behave the way they do, not just which buttons to press. Both are equally valuable, and the balance shifts with who is in the room. Teaching and technical enablement have been part of my work since the late 1990s, on a career that began on the implementation side in 1996.",
       "basedLabel": "Based in",
       "basedValue": "São Paulo, Brazil",
       "teachesLabel": "Teaches",
@@ -2520,7 +2560,7 @@
       "s1Title": "Channel consulting and training, 2013 to 2015",
       "s1Body": "At TDec Network Group, Palo Alto joined a multi-vendor consulting and training practice spanning systems engineering, solutions architecture, application enablement, implementation, audits, and troubleshooting. The relationship continued through Cipher Security in 2015 for pre-sales and post-sales work. The technical focus was next-generation firewalls and the Panorama management platform, the core of Palo Alto's enterprise security offering at the time.",
       "s2Title": "PAN-OS instruction",
-      "s2Body": "This period included formal training delivery: a PAN-OS 6.0 bootcamp, building the same hands-on, lab-driven instruction that defines the teaching practice today. Combined with the certifications earned in 2014, this established genuine depth in the platform, even as the career's focus later concentrated on other technologies.",
+      "s2Body": "This period included formal training delivery: a PAN-OS 6.0 bootcamp, an early instance of the same practitioner-led teaching that continues today. Combined with the certifications earned in 2014, this established genuine depth in the platform, even as the career's focus later concentrated on other technologies.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Note: these certifications are historical and are not maintained as current."
     }
   },
@@ -2556,11 +2596,11 @@
     "title": "An instructor who built these systems before teaching them.",
     "lede": "Most technical training is delivered by people who learned the material to teach it. This is the opposite: three decades of building, breaking, and fixing real networks and security systems, distilled into training that connects every concept to how it actually behaves in production.",
     "s1Title": "Why this matters in a classroom",
-    "s1Body": "There is a difference between explaining how a feature is supposed to work and explaining why it behaves the way it does at three in the morning when something critical is down. The first comes from a manual. The second comes from having been there. Since 1996, the work was implementation: designing networks, standing them up, and being the person called when they broke, for vendors and for some of the largest organizations in Brazil. That depth is what every student receives, not a presenter reading slides, but an engineer who has lived inside these systems explaining how they truly work.",
+    "s1Body": "There is a difference between explaining how a feature is supposed to work and explaining why it behaves the way it does at three in the morning when something critical is down. The first comes from a manual. The second comes from having been there. Since 1996, the work was implementation: designing networks and standing them up, then troubleshooting them under pressure and being the person called to resolve the critical availability and security incidents that halt a business, for vendors and for some of the largest organizations in Brazil. That depth is what every student receives, not a presenter reading slides, but an engineer who has lived inside these systems explaining how they truly work.",
     "s2Title": "Complex made clear",
     "s2Body": "Deep technical knowledge is necessary but not sufficient. The rarer skill is translating it: taking something genuinely complex, web application firewalls, identity federation, traffic management, SD-WAN, and making it click for someone encountering it for the first time. Students consistently single out the real-world examples and the clear, structured didactics, the ability to put each concept in the context of the work they actually do. Teaching has been a thread through this entire career, present in nearly every role since 1997, and the full-time focus since 2020.",
     "s3Title": "Hands-on, not hand-wavy",
-    "s3Body": "Technical skill is built by doing, not by watching. Every course is built around hands-on labs on real systems, reinforced with managed lab environments so that practice always has somewhere real to happen. The format adapts to the audience: virtual instructor-led training delivered globally, in-person when that serves better, in English or Portuguese. The goal of every session is the same, that participants leave able to do the thing, not just describe it.",
+    "s3Body": "Technical skill is built by doing, so every course has hands-on labs on real systems, backed by managed lab environments where practice always has somewhere real to happen. For people who already know the fundamentals and came to get their hands on the technology, that is exactly what they are here for, and it is time well spent. For those newer to it, the time goes first into the foundations the labs rest on, so the hands-on work makes sense rather than being followed by rote. Both are equally valuable, and the balance simply shifts with the room. The format adapts to the audience: virtual instructor-led training delivered globally, in-person when that serves better, in English or Portuguese. Either way, people should leave with something real and useful in hand and a real understanding of why it works.",
     "s4Title": "Recognized, certified, and current",
     "s4Body": "The teaching rests on a foundation of formal recognition. F5 DevCentral MVP for three consecutive years, in 2022, 2023, and 2024. F5 certifications held since 2015, and instructor authorization across four platforms: F5, Extreme Networks, Fortinet, and Netskope. Delivery reaches Australia, Singapore, India, Central Europe, the United States, and Brazil, through Red Education, an authorized training center. The credentials matter, but they are shorthand for the thing underneath: a genuine, current command of the technology.",
     "platformsTitle": "What I teach",
@@ -2579,7 +2619,7 @@
     "coursesButton": "Browse all courses",
     "instructor": {
       "eyebrow": "Your instructor",
-      "body": "These courses are taught by Rodolfo Nützmann, a senior technical instructor delivering authorized F5, Fortinet, Extreme Networks, and Netskope training worldwide since 1996. The credentials, and what past students say, are a click away.",
+      "body": "These courses are taught by Rodolfo Nützmann, a senior technical instructor delivering authorized F5, Fortinet, Extreme Networks, and Netskope training worldwide, built on a networking and security career that began in 1996 on the implementation side. The credentials, and what past students say, are a click away.",
       "about": "About Rodolfo",
       "certs": "Certifications",
       "endorsements": "Endorsements"
@@ -2718,6 +2758,7 @@
     "closingBody": "Building software with AI collaborators is new enough that the honest thing is to be transparent about it. Nothing here was published without a human deciding it should be. The AIs were instruments, capable ones, but instruments. The judgment, the accountability, and the name on the work are human.",
     "backHome": "Back to the tools",
     "changelogLink": "Changelog",
+    "roadmapLink": "Roadmap",
     "standardsTitle": "Standards and frameworks",
     "standardsLede": "Every tool here implements a published specification, not a guess. The decoders and calculators are built against the documents that define their formats, and pinned to the test vectors those documents publish, so each answer is checked against the source of truth rather than against itself.",
     "specsLabel": "The specifications",
@@ -2839,7 +2880,11 @@
     "emailLabel": "Email",
     "backToTools": "Back to the toolbox",
     "roadmapCheck": "It's worth checking the roadmap first, to see what's already planned or shipped and avoid duplicates:",
-    "roadmapLink": "see the roadmap"
+    "roadmapLink": "see the roadmap",
+    "disclaimerTitle": "How new tools get built and funded",
+    "disclaimerBody": "In the interest of total honesty: every new tool here is built with Claude Max, Anthropic's highest usage tier, and that subscription is not cheap. The 5x plan runs about USD 100 a month, the 20x plan about USD 200. When it is funded, tools get built. When it is not, building simply pauses until it is, which is why new tools tend to arrive in bursts rather than on a fixed schedule.",
+    "disclaimerBody2": "If you would like to help it along, the Buy Me a Coffee link in the footer is the way. Every contribution goes into a single reserve spent on nothing but that monthly Claude Max subscription. No other costs, no cut, no surprises.",
+    "disclaimerStatus": "Right now: the subscription is funded and new tools are actively being built."
   },
   "license_page": {
     "eyebrow": "Terms",
@@ -2878,8 +2923,13 @@
     "lede": "The tools we're planning and considering for the toolbox. This page is generated from the live build catalogue, so it's always current: a tool appears here the moment it's queued and moves into the shipped count the moment it ships. No dates, just direction and rough priority.",
     "shippedLabel": "shipped",
     "plannedLabel": "planned",
+    "intentTitle": "Built for more than a browser tab",
+    "intentIntro": "Two directions sit behind this toolbox, both intentions rather than promises, and neither with a date.",
+    "intentApi": "The first is API access. The tools already run behind a small, versioned internal API, so one day the same deterministic engines could answer a request, not just fill a browser tab.",
+    "intentOpen": "The second is opening the engine itself. Each tool is a self-contained, documented module, built so it could be released to self-host and dropped straight into your own build and CI pipelines, running inside your own environment with nothing leaving it.",
+    "intentClose": "Neither is committed. What makes them possible is that the tooling has been built from the ground up expecting them: deterministic cores, no hidden state, a clean API surface, machine-readable docs. So if the time comes, opening these up is a step, not a rewrite.",
     "ideaTitle": "Have an idea?",
-    "ideaBody": "The toolbox is open-core and community-driven. If a deterministic, local tool is missing, propose it. Checking this roadmap first helps avoid duplicates.",
+    "ideaBody": "Every tool here started the same way: someone needed a small, specific thing and could not find it at the worst possible moment, the digital cousin of being one console cable short at 2am with the maintenance window closing. If the one you are reaching for is not here yet, propose it. Worth a scroll through the list first, though, in case that exact adapter is already on my bench half-built.",
     "ideaCta": "Suggest a tool"
   },
   "apiAffordance": {
@@ -2893,5 +2943,13 @@
     "copied": "Copied",
     "previewBadge": "preview",
     "privacyNote": "This tool runs locally in your browser. The API is a stateless edge endpoint for automation; it keeps no logs and stores no input."
+  },
+  "category": {
+    "eyebrow": "Category",
+    "lede": "Every tool and article in this category, gathered in one place.",
+    "toolsHeading": "Tools",
+    "articlesHeading": "Articles",
+    "read": "Read",
+    "backToTools": "All tools"
   }
 }

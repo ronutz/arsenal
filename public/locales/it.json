@@ -193,7 +193,7 @@
       "reservedNote": "Il primo indirizzo è la rete e l'ultimo è il broadcast; entrambi sono riservati, quindi utilizzabili = totale − 2."
     },
     "title": "Strumenti",
-    "lede": "Piccole utility veloci e rispettose della privacy, che girano interamente nel tuo browser. Niente di ciò che digiti viene inviato da nessuna parte. Altri strumenti sono in arrivo.",
+    "lede": "Utilità piccole, veloci e attente alla privacy, che funzionano interamente nel tuo browser. Nulla di ciò che digiti viene inviato da nessuna parte.",
     "open": "Apri",
     "comingSoon": "Prossimamente",
     "note": "Questa cassetta degli strumenti cresce. Nuovi strumenti vengono aggiunti qui man mano che sono pronti, ciascuno con elaborazione in locale e gratuito da usare.",
@@ -901,7 +901,7 @@
     "lede": "Formazione su reti e sicurezza tenuta da chi ha trascorso la carriera sul fronte dell'implementazione, non solo sulle slide. Con base a São Paulo, insegnando in tutto il mondo, in portoghese e inglese.",
     "now": {
       "title": "Cosa faccio adesso",
-      "body": "Tengo corsi di formazione ufficiali e certificati, condotti da istruttore, su quattro piattaforme di sicurezza e reti. Il lavoro è pratico e basato su laboratori: l'obiettivo è sempre che le persone escano capaci di eseguire il compito, non solo di descriverlo. Sono istruttore autorizzato dal 1996, e la formazione e l'abilitazione tecnica fanno parte del mio lavoro dalla fine degli anni Novanta.",
+      "body": "Tengo corsi ufficiali e certificati, condotti da un istruttore, su quattro piattaforme di sicurezza e networking. Ci sono laboratori pratici su sistemi reali e, per chi conosce già i fondamenti ed è venuto a esercitarsi, è esattamente questo il punto: ambienti reali in cui lavorare. Per gruppi più nuovi a una tecnologia, il tempo va prima a costruire le fondamenta su cui poggia l'argomento, così che la parte pratica abbia senso e le persone escano capendo perché le cose si comportano come si comportano, non solo quali pulsanti premere. Entrambi hanno pari valore, e l'equilibrio cambia in base a chi c'è in aula. L'insegnamento e l'abilitazione tecnica fanno parte del mio lavoro dalla fine degli anni Novanta, su una carriera iniziata sul lato dell'implementazione nel 1996.",
       "basedLabel": "Con base a",
       "basedValue": "São Paulo, Brasile",
       "teachesLabel": "Insegna",
@@ -1094,7 +1094,7 @@
       "s1Title": "Consulenza e formazione di canale, dal 2013 al 2015",
       "s1Body": "In TDec Network Group, Palo Alto si aggiunse a una pratica di consulenza e formazione multifornitore che comprendeva systems engineering, architettura delle soluzioni, abilitazione delle applicazioni, implementazione, audit e troubleshooting. Il rapporto proseguì attraverso Cipher Security nel 2015 per lavoro di prevendita e post-vendita. Il focus tecnico era sui firewall di nuova generazione e sulla piattaforma di gestione Panorama, il nucleo dell'offerta di sicurezza aziendale di Palo Alto all'epoca.",
       "s2Title": "Istruzione PAN-OS",
-      "s2Body": "Questo periodo comprese erogazione di formazione formale: un bootcamp PAN-OS 6.0, che costruiva la stessa istruzione pratica e basata su laboratori che definisce la pratica di insegnamento di oggi. Combinato con le certificazioni conseguite nel 2014, questo stabilì una profondità genuina nella piattaforma, anche se il focus della carriera si concentrò in seguito su altre tecnologie.",
+      "s2Body": "Questo periodo ha incluso attività formativa formale: un bootcamp su PAN-OS 6.0, una prima istanza dello stesso insegnamento guidato da un professionista che continua ancora oggi. Insieme alle certificazioni ottenute nel 2014, questo ha stabilito una profondità genuina sulla piattaforma, anche se il focus della carriera si è poi concentrato su altre tecnologie.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Nota: queste certificazioni sono storiche e non sono mantenute come valide."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Un istruttore che ha costruito questi sistemi prima di insegnarli.",
     "lede": "La maggior parte della formazione tecnica è tenuta da persone che hanno imparato la materia per insegnarla. Qui è il contrario: tre decenni a costruire, rompere e riparare reti e sistemi di sicurezza veri, distillati in una formazione che collega ogni concetto a come si comporta davvero in produzione.",
     "s1Title": "Perché questo conta in un'aula",
-    "s1Body": "C'è una differenza tra spiegare come una funzione dovrebbe funzionare e spiegare perché si comporta come si comporta alle tre del mattino quando qualcosa di critico è fuori uso. La prima viene da un manuale. La seconda viene dall'esserci stati. Dal 1996, il lavoro fu implementazione: progettare reti, metterle in funzione, ed essere la persona che riceve la chiamata quando si rompevano, per fornitori e per alcune delle maggiori organizzazioni del Brasile. Quella profondità è ciò che ogni partecipante riceve, non un presentatore che legge le slide, ma un ingegnere che ha vissuto dentro questi sistemi e spiega come funzionano davvero.",
+    "s1Body": "C'è una differenza tra spiegare come una funzione dovrebbe funzionare e spiegare perché si comporta così alle tre del mattino, quando qualcosa di critico è fuori uso. La prima viene da un manuale. La seconda viene dall'esserci stati. Dal 1996 il lavoro è stato implementazione: progettare reti e metterle in funzione, poi risolverne i problemi sotto pressione ed essere la persona chiamata a risolvere gli incidenti critici di disponibilità e sicurezza che paralizzano un'azienda, per i vendor e per alcune delle più grandi organizzazioni del Brasile. Questa profondità è ciò che riceve ogni studente: non un relatore che legge slide, ma un ingegnere che ha vissuto dentro questi sistemi e spiega come funzionano davvero.",
     "s2Title": "Il complesso reso chiaro",
     "s2Body": "Una conoscenza tecnica profonda è necessaria, ma non sufficiente. L'abilità più rara è tradurla: prendere qualcosa di davvero complesso, web application firewall, federazione delle identità, gestione del traffico, SD-WAN, e farlo quadrare per chi ci si imbatte per la prima volta. I partecipanti citano costantemente gli esempi del mondo reale e la didattica chiara e strutturata, la capacità di mettere ogni concetto nel contesto del lavoro che svolgono davvero. L'insegnamento è stato un filo lungo tutta questa carriera, presente in quasi ogni ruolo dal 1997, e il focus a tempo pieno dal 2020.",
     "s3Title": "Mani in pasta, non vago",
-    "s3Body": "L'abilità tecnica si costruisce facendo, non guardando. Ogni corso è costruito attorno a laboratori pratici su sistemi veri, rafforzati con ambienti di laboratorio gestiti così che la pratica abbia sempre un posto vero in cui svolgersi. Il formato si adatta alla platea: formazione condotta da istruttore virtuale in tutto il mondo, in presenza quando questo serve meglio, in inglese o portoghese. L'obiettivo di ogni sessione è lo stesso, che i partecipanti escano capaci di eseguire il compito, non solo di descriverlo.",
+    "s3Body": "La competenza tecnica si costruisce facendo, quindi ogni corso ha laboratori pratici su sistemi reali, sostenuti da ambienti di laboratorio gestiti dove la pratica ha sempre un luogo reale in cui svolgersi. Per chi conosce già i fondamenti ed è venuto a mettere le mani sulla tecnologia, è esattamente ciò per cui è qui, ed è tempo ben speso. Per chi è più nuovo, il tempo va prima alle fondamenta su cui poggiano i laboratori, così che la parte pratica abbia senso anziché essere seguita a memoria. Entrambi hanno pari valore, e l'equilibrio semplicemente cambia in base all'aula. Il formato si adatta al pubblico: formazione dal vivo con istruttore ed erogata a livello globale, in presenza quando serve meglio, in inglese o portoghese. In ogni caso, le persone dovrebbero uscire con qualcosa di reale e utile in mano e una reale comprensione del perché funziona.",
     "s4Title": "Riconosciuto, certificato e aggiornato",
     "s4Body": "L'insegnamento poggia su una base di riconoscimento formale. F5 DevCentral MVP per tre anni consecutivi, nel 2022, 2023 e 2024. Certificazioni F5 mantenute dal 2015, e autorizzazione come istruttore su quattro piattaforme: F5, Extreme Networks, Fortinet e Netskope. L'erogazione raggiunge Australia, Singapore, India, Europa centrale, Stati Uniti e Brasile, attraverso Red Education, un centro di formazione autorizzato. Le qualifiche contano, ma sono una scorciatoia per ciò che c'è sotto: una padronanza genuina e attuale della tecnologia.",
     "platformsTitle": "Cosa insegno",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Lavoriamo insieme",
     "ctaBody": "Che si tratti di ingaggiare formazione ufficiale, costruire un programma su misura per il tuo team, o portare una consulenza esperta su un problema difficile, la porta è aperta.",
     "ctaButton": "Mettiti in contatto",
-    "coursesButton": "Sfoglia tutti i corsi"
+    "coursesButton": "Sfoglia tutti i corsi",
+    "instructor": {
+      "body": "Questi corsi sono tenuti da Rodolfo Nützmann, istruttore tecnico senior che eroga formazione ufficiale F5, Fortinet, Extreme Networks e Netskope in tutto il mondo, basata su una carriera in networking e sicurezza iniziata nel 1996 sul lato dell'implementazione. Le certificazioni, e ciò che dicono gli ex studenti, sono a un clic di distanza."
+    }
   },
   "contact": {
     "title": "Mettiti in contatto",
@@ -1297,7 +1300,8 @@
     "localBody": "Tutto viene eseguito nel browser. Lo strumento chiama una funzione pura: dato lo stesso input restituisce lo stesso output, non conserva stato e non invia nulla a un server. Niente cookie, niente analitiche, come la pagina Privacy illustra per intero.",
     "thanksTitle": "Ringraziamenti speciali",
     "p2Body": "La logica deterministica che ogni strumento esegue è l'intero strumento: non c'è alcun passaggio nascosto sul server, né account, né telemetria. Tutto viene eseguito nel tuo browser.",
-    "changelogLink": "Registro delle modifiche"
+    "changelogLink": "Registro delle modifiche",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Sostieni il progetto",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Come contattarmi",
     "emailBody": "L'e-mail è il canale. Dimmi cosa hai trovato o cosa vorresti, con abbastanza dettagli per agire: un esempio, un link, la formulazione esatta, quel che serve. Se migliora la cassetta degli attrezzi, viene costruito.",
     "emailLabel": "E-mail",
-    "backToTools": "Torna alla cassetta degli attrezzi"
+    "backToTools": "Torna alla cassetta degli attrezzi",
+    "disclaimerTitle": "Come vengono costruiti e finanziati i nuovi strumenti",
+    "disclaimerBody": "Per amore di totale onestà: ogni nuovo strumento qui è costruito con Claude Max, il livello d'uso più alto di Anthropic, e quell'abbonamento non è economico. Il piano 5x costa circa 100 USD al mese, il piano 20x circa 200. Quando è finanziato, gli strumenti vengono costruiti. Quando non lo è, lo sviluppo semplicemente si ferma finché non lo è, ed è per questo che i nuovi strumenti tendono ad arrivare a ondate anziché secondo un calendario fisso.",
+    "disclaimerBody2": "Se vuoi dare una mano, il link Buy Me a Coffee nel piè di pagina è la via. Ogni contributo confluisce in un'unica riserva destinata esclusivamente a quell'abbonamento mensile a Claude Max. Nessun altro costo, nessuna trattenuta, nessuna sorpresa.",
+    "disclaimerStatus": "In questo momento: l'abbonamento è finanziato e si stanno costruendo attivamente nuovi strumenti."
   },
   "languageStatus": {
     "title": "Stato della traduzione",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Localizzazione",
     "kindContent": "Contenuto",
     "kindInfra": "Infrastruttura"
+  },
+  "roadmap": {
+    "ideaBody": "Ogni strumento qui è nato allo stesso modo: qualcuno aveva bisogno di una cosa piccola e specifica e non la trovava nel momento peggiore possibile, il cugino digitale del ritrovarsi senza un cavo console alle 2 di notte mentre la finestra di manutenzione si chiude. Se quello che cerchi non c'è ancora, proponilo. Vale però una scorsa all'elenco prima, casomai quell'esatto adattatore fosse già a metà sul mio banco.",
+    "intentTitle": "Costruito per qualcosa di più di una scheda del browser",
+    "intentIntro": "Dietro questa cassetta degli attrezzi ci sono due direzioni, entrambe intenzioni più che promesse, e nessuna con una data.",
+    "intentApi": "La prima è l'accesso via API. Gli strumenti funzionano già dietro una piccola API interna con versioni, così un giorno gli stessi motori deterministici potrebbero rispondere a una richiesta, non solo riempire una scheda del browser.",
+    "intentOpen": "La seconda è aprire il motore stesso. Ogni strumento è un modulo autonomo e documentato, costruito per poter essere rilasciato in self-hosting e inserito direttamente nelle tue pipeline di build e CI, in esecuzione nel tuo ambiente senza che nulla ne esca.",
+    "intentClose": "Nessuna è impegnata. Ciò che le rende possibili è che tutto è stato costruito da zero prevedendole: nuclei deterministici, nessuno stato nascosto, una superficie API pulita, documentazione leggibile dalle macchine. Quindi, se arriva il momento, aprire tutto questo è un passo, non una riscrittura."
+  },
+  "category": {
+    "eyebrow": "Categoria",
+    "lede": "Tutti gli strumenti e gli articoli di questa categoria, riuniti in un unico posto.",
+    "toolsHeading": "Strumenti",
+    "articlesHeading": "Articoli",
+    "read": "Leggi",
+    "backToTools": "Tutti gli strumenti"
   }
 }

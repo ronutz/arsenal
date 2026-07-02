@@ -1,0 +1,49 @@
+---
+slug: bigip-service-check-date
+title: "A Service Check Date do BIG-IP, e por que uma atualização pode se recusar a carregar"
+summary: "Toda versão do BIG-IP carrega uma License Check Date estática, e toda licença carrega uma Service Check Date. Se a data da licença for anterior à data da versão, o sistema atualizado inicializa mas silenciosamente se recusa a carregar sua configuração. Aqui está o que é cada data, de onde ela vem e como a verificação funciona."
+concepts: ["f5", "bigip", "licensing", "service check date", "license check date", "upgrade"]
+relatedTools: ["f5-service-check-date"]
+relatedArticles: ["bigip-upgrade-vs-update", "bigip-license-reactivation"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-01"
+---
+
+Uma das formas mais surpreendentes de uma atualização do BIG-IP dar errado não tem nada a ver com a configuração em si. Você instala uma nova versão, reinicia nela, e o sistema sobe, mas a configuração nunca carrega. A causa é quase sempre uma incompatibilidade de datas de licenciamento, e é totalmente previsível uma vez que você conhece as duas datas envolvidas.
+
+## As duas datas
+
+Toda versão de software do BIG-IP tem uma **License Check Date**: uma data fixa, embutida no software, que representa a Service Check Date mínima que uma licença precisa carregar para ter permissão de rodar aquela versão. Ela fica no arquivo `/etc/version_date` em um sistema em execução, e a F5 também publica a tabela completa de versões atuais e passadas na K7727. Por exemplo, o BIG-IP 16.1.x tem uma License Check Date de 11 de junho de 2021, e o 17.1.x tem 8 de fevereiro de 2023.
+
+Toda licença do BIG-IP, por sua vez, carrega uma **Service Check Date**. Esta não é a data em que você instalou o equipamento. É a mais antiga entre duas coisas: a data em que a licença foi ativada pela última vez, e a data em que o contrato de serviço do dispositivo expira. O próprio exemplo da F5 torna a regra concreta: se o seu contrato de serviço vai até 31 de dezembro de 2020 e você licencia o dispositivo em 30 de junho de 2020, a Service Check Date é definida como 30 de junho de 2020. E se o contrato já venceu, reativar não move a data para além do vencimento do contrato. Esse é o ponto do mecanismo: ele vincula a capacidade de rodar software mais novo a ter um contrato de suporte vigente.
+
+## Como a verificação funciona
+
+Quando você atualiza para uma nova versão major ou minor e inicializa nela, o sistema de licenciamento compara a License Check Date da versão com a Service Check Date da licença. Se a Service Check Date estiver ausente, ou for anterior à License Check Date, o sistema falha ao carregar sua configuração. O dispositivo ainda inicializa e é acessível pela interface web ou pelo `tmsh`, mas não processa tráfego, porque a configuração não carregou. A Configuration utility normalmente mostra uma mensagem como "The configuration has not yet loaded."
+
+A mesma comparação roda novamente em toda inicialização subsequente, não apenas na primeira após a atualização. Então um sistema cujo contrato venceu depois pode estar bem até que uma reinicialização traga a verificação de volta.
+
+Um limite importante: essa trava se aplica apenas a uma atualização (upgrade), ou seja, uma mudança no número de versão major ou minor. Mover-se entre releases de manutenção ou point releases dentro do mesmo branch é um update, e nenhuma verificação de service check date acontece então. O artigo complementar sobre [upgrade versus update](/learn/bigip-upgrade-vs-update) cobre essa distinção por completo.
+
+## Encontrando as datas você mesmo
+
+Para ler a Service Check Date de um sistema em execução, olhe no arquivo de licença:
+
+```
+cd /config
+grep "Service check date" bigip.license
+```
+
+o que imprime algo como `Service check date : 20230125`. O formato é ano-mês-dia, então isso é 25 de janeiro de 2023. O mesmo valor está disponível pelo tmsh:
+
+```
+tmsh show sys license | grep "Service Check Date"
+```
+
+Para ler a License Check Date da versão em que você está, verifique o `/etc/version_date`, ou consulte qualquer versão na tabela K7727 da F5. Note que a "Licensed Date" que você também pode ver no arquivo de licença é um campo diferente, de uso interno da F5, e não é usado para esta verificação.
+
+## Planejando em torno disso
+
+A regra prática é simples: antes de atualizar, confirme que a Service Check Date da licença é igual ou posterior à License Check Date da versão de destino. Se for anterior, reative a licença primeiro, como descrito em [recuperando de um problema de service check date](/learn/bigip-license-reactivation). A [ferramenta de service check date do F5](/tools/f5-service-check-date) faz essa comparação para você: informe uma versão para ver a data que ela exige, ou informe uma service check date para ver a versão mais recente que ela permite. Como sempre, confirme na K7727 ou no `/etc/version_date` do sistema de destino antes de uma mudança em produção.

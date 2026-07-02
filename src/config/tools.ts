@@ -23,6 +23,9 @@ export interface ToolEntry {
   href: string;
   /** Category KEY, resolved to a label through tools.categories.<key>. */
   category: string;
+  /** Optional vendor-family memberships (e.g. ["f5"]); additive second
+   *  grouping dimension resolved via src/config/vendors.ts. */
+  vendors?: string[];
   /** False renders a muted "coming soon" card with no link. */
   available: boolean;
 }
@@ -47,18 +50,19 @@ export const tools: ToolEntry[] = [
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
   { id: "saml-decoder", href: "/tools/saml-decoder", category: "security", available: true },
   { id: "xml-decoder", href: "/tools/xml-decoder", category: "security", available: true },
-  { id: "f5xc-service-policy-explainer", href: "/tools/f5xc-service-policy-explainer", category: "security", available: true },
-  { id: "bigip-persistence-cookie", href: "/tools/bigip-persistence-cookie", category: "security", available: true },
+  { id: "f5xc-service-policy-explainer", href: "/tools/f5xc-service-policy-explainer", category: "security", vendors: ["f5"], available: true },
+  { id: "bigip-persistence-cookie", href: "/tools/bigip-persistence-cookie", category: "security", vendors: ["f5"], available: true },
   { id: "url-inspector", href: "/tools/url-inspector", category: "web", available: true },
   { id: "json-formatter", href: "/tools/json-formatter", category: "encoding", available: true },
   { id: "json-yaml-convert", href: "/tools/json-yaml-convert", category: "encoding", available: true },
-  { id: "tmsh-config-explainer", href: "/tools/tmsh-config-explainer", category: "networking", available: true },
-  { id: "bigip-tcpdump-builder", href: "/tools/bigip-tcpdump-builder", category: "networking", available: true },
-  { id: "persistence-method-explainer", href: "/tools/persistence-method-explainer", category: "networking", available: true },
-  { id: "f5-cipher-string-expander", href: "/tools/f5-cipher-string-expander", category: "transport", available: true },
-  { id: "f5-ssl-profile-explainer", href: "/tools/f5-ssl-profile-explainer", category: "transport", available: true },
+  { id: "tmsh-config-explainer", href: "/tools/tmsh-config-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "bigip-tcpdump-builder", href: "/tools/bigip-tcpdump-builder", category: "networking", vendors: ["f5"], available: true },
+  { id: "persistence-method-explainer", href: "/tools/persistence-method-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-service-check-date", href: "/tools/f5-service-check-date", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-cipher-string-expander", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
+  { id: "f5-ssl-profile-explainer", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
   { id: "epoch", href: "/tools/epoch", category: "encoding", available: true },
-  { id: "irules-event-order", href: "/tools/irules-event-order", category: "networking", available: true },
+  { id: "irules-event-order", href: "/tools/irules-event-order", category: "networking", vendors: ["f5"], available: true },
   { id: "syslog-pri-decoder", href: "/tools/syslog-pri-decoder", category: "networking", available: true },
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },

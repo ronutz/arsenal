@@ -193,7 +193,7 @@
       "reservedNote": "La première adresse est le réseau et la dernière le broadcast ; les deux sont réservées, donc utilisables = total − 2."
     },
     "title": "Outils",
-    "lede": "De petits utilitaires rapides et respectueux de la vie privée qui s'exécutent entièrement dans votre navigateur. Rien de ce que vous saisissez n'est envoyé où que ce soit. D'autres arrivent.",
+    "lede": "Des utilitaires petits, rapides et respectueux de la vie privée, qui s'exécutent entièrement dans votre navigateur. Rien de ce que vous saisissez n'est envoyé où que ce soit.",
     "open": "Ouvrir",
     "comingSoon": "Bientôt disponible",
     "note": "Cette boîte à outils s'enrichit. De nouveaux outils sont ajoutés ici au fur et à mesure de leur publication, chacun local-first et gratuit.",
@@ -901,7 +901,7 @@
     "lede": "Formations réseau et sécurité dispensées par un praticien qui a passé sa carrière du côté de la mise en œuvre, pas seulement des diapositives. Basé à São Paulo, enseignant dans le monde entier, en portugais et en anglais.",
     "now": {
       "title": "Ce que je fais aujourd'hui",
-      "body": "Je dispense des formations officielles et certifiées animées par un formateur sur quatre plateformes de sécurité et de réseau. Le travail est pratique et axé sur les laboratoires : l'objectif est toujours que les participants repartent capables de faire la chose, pas seulement de la décrire. Je suis formateur agréé depuis 1996, et la formation et l'habilitation technique font partie de mon travail depuis la fin des années 1990.",
+      "body": "Je dispense des formations officielles et certifiées, animées par un instructeur, sur quatre plateformes de sécurité et de réseau. Il y a des travaux pratiques sur des systèmes réels, et pour ceux qui connaissent déjà les fondamentaux et sont venus pratiquer, c'est exactement l'objectif : de vrais environnements où travailler. Pour les groupes plus novices sur une technologie, le temps va d'abord à bâtir les fondations sur lesquelles repose le sujet, afin que la pratique ait du sens et que les gens repartent en comprenant pourquoi les choses se comportent ainsi, et pas seulement sur quels boutons appuyer. Les deux ont une valeur égale, et l'équilibre change selon qui est dans la salle. L'enseignement et l'habilitation technique font partie de mon travail depuis la fin des années 1990, sur une carrière qui a commencé du côté de l'implémentation en 1996.",
       "basedLabel": "Basé à",
       "basedValue": "São Paulo, Brésil",
       "teachesLabel": "Enseigne",
@@ -1094,7 +1094,7 @@
       "s1Title": "Conseil et formation channel, 2013 à 2015",
       "s1Body": "Chez TDec Network Group, Palo Alto a rejoint une pratique de conseil et de formation multi-fournisseurs couvrant l'ingénierie systèmes, l'architecture de solutions, l'habilitation applicative, l'implémentation, les audits et le dépannage. La relation s'est poursuivie via Cipher Security en 2015 pour des travaux d'avant-vente et d'après-vente. L'accent technique était mis sur les pare-feu de nouvelle génération et la plateforme de gestion Panorama, le cœur de l'offre de sécurité d'entreprise de Palo Alto à l'époque.",
       "s2Title": "Formation PAN-OS",
-      "s2Body": "Cette période a inclus une prestation de formation formelle : un bootcamp PAN-OS 6.0, bâtissant la même formation pratique et axée sur les laboratoires qui définit la pratique d'enseignement d'aujourd'hui. Combinée aux certifications obtenues en 2014, elle a établi une véritable profondeur dans la plateforme, même si l'orientation de la carrière s'est ensuite concentrée sur d'autres technologies.",
+      "s2Body": "Cette période a inclus de la formation formelle : un bootcamp PAN-OS 6.0, une première instance du même enseignement mené par un praticien qui se poursuit aujourd'hui. Combiné aux certifications obtenues en 2014, cela a établi une réelle profondeur sur la plateforme, même si l'orientation de la carrière s'est ensuite concentrée sur d'autres technologies.",
       "certs": "Palo Alto Certified Network Security Engineer (CNSE 5.1), 2014. Palo Alto Networks Accredited Configuration Engineer (ACE), 2014. Palo Alto Networks Accredited Sales Expert (ASE), 2014. Remarque : ces certifications sont historiques et ne sont pas maintenues à jour."
     }
   },
@@ -1130,11 +1130,11 @@
     "title": "Un formateur qui a construit ces systèmes avant de les enseigner.",
     "lede": "La plupart des formations techniques sont dispensées par des personnes qui ont appris la matière pour l'enseigner. Ceci est l'inverse : trois décennies à construire, casser et réparer de vrais réseaux et systèmes de sécurité, distillées en une formation qui relie chaque concept à la façon dont il se comporte réellement en production.",
     "s1Title": "Pourquoi cela compte dans une salle de classe",
-    "s1Body": "Il y a une différence entre expliquer comment une fonctionnalité est censée fonctionner et expliquer pourquoi elle se comporte comme elle le fait à trois heures du matin quand quelque chose de critique est en panne. Le premier vient d'un manuel. Le second vient d'y avoir été. Depuis 1996, le travail était la mise en œuvre : concevoir des réseaux, les déployer, et être la personne appelée quand ils tombaient en panne, pour des fournisseurs et pour certaines des plus grandes organisations du Brésil. C'est cette profondeur que reçoit chaque participant, non pas un présentateur lisant des diapositives, mais un ingénieur qui a vécu au sein de ces systèmes expliquant comment ils fonctionnent vraiment.",
+    "s1Body": "Il y a une différence entre expliquer comment une fonctionnalité est censée fonctionner et expliquer pourquoi elle se comporte comme elle le fait à trois heures du matin, quand quelque chose de critique est en panne. La première vient d'un manuel. La seconde vient d'y avoir été. Depuis 1996, le travail a été l'implémentation : concevoir des réseaux et les mettre en service, puis les dépanner sous pression et être la personne appelée pour résoudre les incidents critiques de disponibilité et de sécurité qui paralysent une entreprise, pour des fournisseurs et pour certaines des plus grandes organisations du Brésil. Cette profondeur, c'est ce que reçoit chaque participant : non pas un présentateur lisant des diapositives, mais un ingénieur qui a vécu à l'intérieur de ces systèmes et qui explique comment ils fonctionnent vraiment.",
     "s2Title": "Le complexe rendu clair",
     "s2Body": "Une connaissance technique approfondie est nécessaire mais pas suffisante. La compétence plus rare est de la traduire : prendre quelque chose de réellement complexe, pare-feu applicatifs, fédération d'identité, gestion du trafic, SD-WAN, et le rendre limpide pour quelqu'un qui le rencontre pour la première fois. Les participants soulignent systématiquement les exemples concrets et la didactique claire et structurée, la capacité à placer chaque concept dans le contexte du travail qu'ils accomplissent réellement. L'enseignement a été un fil conducteur tout au long de cette carrière, présent dans presque chaque rôle depuis 1997, et l'objet à temps plein depuis 2020.",
     "s3Title": "Pratique, pas approximatif",
-    "s3Body": "La compétence technique se construit en faisant, pas en regardant. Chaque cours est bâti autour de laboratoires pratiques sur de vrais systèmes, renforcés par des environnements de laboratoire gérés pour que la pratique ait toujours un lieu réel où se dérouler. Le format s'adapte au public : formation animée par un formateur à distance dans le monde entier, en présentiel quand cela convient mieux, en anglais ou en portugais. L'objectif de chaque session est le même, que les participants repartent capables de faire la chose, pas seulement de la décrire.",
+    "s3Body": "La compétence technique se construit en faisant, c'est pourquoi chaque cours comporte des travaux pratiques sur des systèmes réels, soutenus par des environnements de laboratoire gérés où la pratique a toujours un lieu réel où se dérouler. Pour ceux qui connaissent déjà les fondamentaux et sont venus mettre la main sur la technologie, c'est exactement ce pour quoi ils sont là, et c'est du temps bien employé. Pour les plus novices, le temps va d'abord aux fondations sur lesquelles reposent les travaux pratiques, afin que la pratique ait du sens plutôt que d'être suivie par cœur. Les deux ont une valeur égale, et l'équilibre change simplement selon le groupe. Le format s'adapte au public : formation en direct animée par un instructeur et dispensée dans le monde entier, en présentiel quand cela convient mieux, en anglais ou en portugais. Dans tous les cas, les participants devraient repartir avec quelque chose de réel et d'utile en main et une réelle compréhension de son fonctionnement.",
     "s4Title": "Reconnu, certifié et à jour",
     "s4Body": "L'enseignement repose sur un socle de reconnaissance formelle. F5 DevCentral MVP trois années consécutives, en 2022, 2023 et 2024. Certifications F5 détenues depuis 2015, et habilitation de formateur sur quatre plateformes : F5, Extreme Networks, Fortinet et Netskope. La prestation atteint l'Australie, Singapour, l'Inde, l'Europe centrale, les États-Unis et le Brésil, via Red Education, un centre de formation agréé. Les qualifications comptent, mais elles sont un raccourci pour ce qui se trouve en dessous : une maîtrise authentique et actuelle de la technologie.",
     "platformsTitle": "Ce que j'enseigne",
@@ -1150,7 +1150,10 @@
     "ctaTitle": "Travaillons ensemble",
     "ctaBody": "Que vous cherchiez à réserver une formation officielle, à concevoir un programme sur mesure pour votre équipe, ou à faire appel à un conseil expérimenté sur un problème difficile, la porte est ouverte.",
     "ctaButton": "Prendre contact",
-    "coursesButton": "Parcourir tous les cours"
+    "coursesButton": "Parcourir tous les cours",
+    "instructor": {
+      "body": "Ces cours sont dispensés par Rodolfo Nützmann, instructeur technique senior qui propose des formations officielles F5, Fortinet, Extreme Networks et Netskope dans le monde entier, fondées sur une carrière en réseau et sécurité commencée en 1996 du côté de l'implémentation. Les certifications, et ce que disent d'anciens participants, sont à un clic."
+    }
   },
   "contact": {
     "title": "Prendre contact",
@@ -1297,7 +1300,8 @@
     "localBody": "Tout s'exécute dans le navigateur. L'outil appelle une fonction pure : pour une même entrée, elle renvoie la même sortie, ne conserve aucun état et n'envoie rien à un serveur. Pas de cookies, pas d'analytique, comme la page Confidentialité l'expose en détail.",
     "thanksTitle": "Remerciements particuliers",
     "p2Body": "La logique déterministe qu'exécute chaque outil constitue l'outil tout entier : il n'y a pas d'étape serveur cachée, pas de compte et pas de télémétrie. Tout s'exécute dans votre navigateur.",
-    "changelogLink": "Journal des modifications"
+    "changelogLink": "Journal des modifications",
+    "roadmapLink": "Roadmap"
   },
   "support": {
     "title": "Soutenir le projet",
@@ -1415,7 +1419,11 @@
     "emailTitle": "Comment me joindre",
     "emailBody": "L'e-mail est le canal. Dites-moi ce que vous avez trouvé ou ce que vous souhaitez, avec assez de détails pour agir : un exemple, un lien, la formulation exacte, ce qui convient. Si cela améliore la boîte à outils, ce sera construit.",
     "emailLabel": "E-mail",
-    "backToTools": "Retour à la boîte à outils"
+    "backToTools": "Retour à la boîte à outils",
+    "disclaimerTitle": "Comment les nouveaux outils sont conçus et financés",
+    "disclaimerBody": "Par souci de totale honnêteté : chaque nouvel outil ici est conçu avec Claude Max, le niveau d'utilisation le plus élevé d'Anthropic, et cet abonnement n'est pas bon marché. Le forfait 5x coûte environ 100 USD par mois, le forfait 20x environ 200. Quand c'est financé, des outils sont créés. Quand ça ne l'est pas, la création se met simplement en pause jusqu'à ce que ça le soit, ce qui explique pourquoi les nouveaux outils arrivent par vagues plutôt que selon un calendrier fixe.",
+    "disclaimerBody2": "Si vous souhaitez y contribuer, le lien Buy Me a Coffee en pied de page est la voie. Chaque contribution va dans une réserve unique consacrée uniquement à cet abonnement mensuel Claude Max. Aucun autre coût, aucune commission, aucune surprise.",
+    "disclaimerStatus": "En ce moment : l'abonnement est financé et de nouveaux outils sont activement en cours de création."
   },
   "languageStatus": {
     "title": "Statut de la traduction",
@@ -1436,5 +1444,21 @@
     "kindI18n": "Localisation",
     "kindContent": "Contenu",
     "kindInfra": "Infrastructure"
+  },
+  "roadmap": {
+    "ideaBody": "Chaque outil ici a commencé de la même façon : quelqu'un avait besoin d'une petite chose précise et ne la trouvait pas au pire moment possible, le cousin numérique du fait de manquer d'un câble console à 2 h du matin alors que la fenêtre de maintenance se referme. Si celui que vous cherchez n'est pas encore là, proposez-le. Un coup d'œil à la liste d'abord ne fait pas de mal, au cas où cet adaptateur précis serait déjà à moitié monté sur mon établi.",
+    "intentTitle": "Conçu pour plus qu'un onglet de navigateur",
+    "intentIntro": "Deux directions se cachent derrière cette boîte à outils, toutes deux des intentions plutôt que des promesses, et aucune avec une date.",
+    "intentApi": "La première est l'accès via API. Les outils fonctionnent déjà derrière une petite API interne versionnée, de sorte qu'un jour les mêmes moteurs déterministes pourraient répondre à une requête, et non seulement remplir un onglet de navigateur.",
+    "intentOpen": "La seconde est l'ouverture du moteur lui-même. Chaque outil est un module autonome et documenté, conçu pour pouvoir être publié en auto-hébergement et intégré directement dans vos propres pipelines de build et de CI, s'exécutant dans votre propre environnement sans que rien n'en sorte.",
+    "intentClose": "Aucune n'est engagée. Ce qui les rend possibles, c'est que tout a été bâti dès le départ en les anticipant : des cœurs déterministes, aucun état caché, une surface d'API propre, une documentation lisible par machine. Alors, le moment venu, ouvrir tout cela est une étape, pas une réécriture."
+  },
+  "category": {
+    "eyebrow": "Catégorie",
+    "lede": "Tous les outils et articles de cette catégorie, rassemblés au même endroit.",
+    "toolsHeading": "Outils",
+    "articlesHeading": "Articles",
+    "read": "Lire",
+    "backToTools": "Tous les outils"
   }
 }

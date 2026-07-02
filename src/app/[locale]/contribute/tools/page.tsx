@@ -110,6 +110,13 @@ export default async function ContributeToolsPage({
               </div>
             </div>
 
+            <div className="contribute-block contribute-disclaimer">
+              <h2 className="contribute-h2">{t("disclaimerTitle")}</h2>
+              <p className="contribute-body">{t("disclaimerBody")}</p>
+              <p className="contribute-body">{t("disclaimerBody2")}</p>
+              <p className="contribute-body contribute-disclaimer-status">{t("disclaimerStatus")}</p>
+            </div>
+
             <a
               href={`/${locale}/tools`}
               className="btn btn-secondary contribute-back"
