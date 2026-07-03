@@ -44,6 +44,30 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "10:35",
+    kind: "content",
+    title: "On building new tools, easier to read",
+    body:
+      "The funding story on the contribute page is the same text, now set for comfortable reading: a short intro, the three seats as a compact list, the infrastructure line, and the monthly total on its own line so the number is easy to find. Not a word changed in English or Portuguese, only the presentation.",
+  },
+  {
+    date: "2026-07-03",
+    time: "10:33",
+    kind: "feature",
+    title: "Clearer API error messages",
+    body:
+      "When a tools API call fails validation, the error now tells you something useful. Deliberate validation messages from the tool engines pass through unchanged, while internal runtime errors, like a missing field in a JSON body, map to a stable hint that points at the request schema in openapi.json instead of leaking implementation details.",
+  },
+  {
+    date: "2026-07-03",
+    time: "10:31",
+    kind: "infra",
+    title: "Permanent redirects for locale-less URLs",
+    body:
+      "Bare URLs without a language prefix, like /f5 or /colophon, now answer with a permanent 301 to their English page instead of a temporary 302. The site ships English as its default and performs no header-based language negotiation, so the target never varies and search engines can safely consolidate on the localized address. Deep links keep working exactly as before.",
+  },
+  {
+    date: "2026-07-03",
     time: "09:19",
     kind: "content",
     title: "Funding transparency, updated",

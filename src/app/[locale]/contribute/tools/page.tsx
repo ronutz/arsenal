@@ -114,16 +114,28 @@ export default async function ContributeToolsPage({
             {/* Funding transparency block. Copy ratified via PRIME hand-off,
                 2026-07-03: three CONCORD seats (ANVIL/Claude, SCOUT/ChatGPT,
                 PRISM/Google AI), hosting, and domains; range rounded to
-                USD 150-250 per PRIME. The heading was retitled the same day
-                ("On building new tools"); the "Right now:" status line below
-                is intentionally untouched (out of hand-off scope). The
-                colophon link is authored inside the i18n value as a
-                <colophon> rich tag and rendered here with the locale-aware
-                Link, the site-wide internal-link form. */}
+                USD 150-250 per PRIME. Re-chunked for readability the same day
+                (PRIME direction): the single disclaimerBody value was split
+                into disclaimerIntro + three disclaimerSeat* list items +
+                disclaimerInfra + disclaimerTotal + disclaimerCadence, with a
+                reassembly assertion proving the ratified wording survived
+                byte-identical in EN and the PRIME-signed pt-BR. The "Right
+                now:" status line stays untouched. The colophon link is
+                authored inside the disclaimerCadence value as a <colophon>
+                rich tag and rendered with the locale-aware Link, the
+                site-wide internal-link form. */}
             <div className="contribute-block contribute-disclaimer">
               <h2 className="contribute-h2">{t("disclaimerTitle")}</h2>
+              <p className="contribute-body">{t("disclaimerIntro")}</p>
+              <ul className="contribute-seats">
+                <li>{t("disclaimerSeatAnvil")}</li>
+                <li>{t("disclaimerSeatScout")}</li>
+                <li>{t("disclaimerSeatPrism")}</li>
+              </ul>
+              <p className="contribute-body">{t("disclaimerInfra")}</p>
+              <p className="contribute-body contribute-total">{t("disclaimerTotal")}</p>
               <p className="contribute-body">
-                {t.rich("disclaimerBody", {
+                {t.rich("disclaimerCadence", {
                   colophon: (chunks) => (
                     <Link href="/colophon" className="contribute-inline-link">
                       {chunks}

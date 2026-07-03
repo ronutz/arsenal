@@ -202,13 +202,25 @@ export default {
         const result = await tool.run(input);
         return json(result, 200, { "Cache-Control": "public, max-age=86400" });
       } catch (err) {
-        return json(
-          {
-            error: "invalid_input",
-            message: err instanceof Error ? err.message : "The input could not be processed.",
-          },
-          400,
-        );
+        // Engines signal bad input DELIBERATELY by throwing plain Error or one
+        // of their custom subclasses (CidrInputError, JwtDecodeError, ...) with
+        // a message written for humans - those pass through verbatim. NATIVE
+        // error types (TypeError from a missing field, SyntaxError from a body
+        // that is not valid JSON, RangeError, ...) are runtime accidents whose
+        // messages leak internals ("Cannot read properties of undefined ...",
+        // observed live 03/07/2026), so they map to one stable, useful hint
+        // pointing at the machine-readable schema instead.
+        const native =
+          err instanceof TypeError ||
+          err instanceof SyntaxError ||
+          err instanceof RangeError ||
+          err instanceof ReferenceError ||
+          err instanceof URIError;
+        const message =
+          err instanceof Error && !native
+            ? err.message
+            : `The request body is missing required fields or is not valid JSON for this tool. See the request schema for /api/v1/${slug} at https://ronutz.com/openapi.json.`;
+        return json({ error: "invalid_input", message }, 400);
       }
     }
 
@@ -237,7 +249,12 @@ export default {
       let rest = url.pathname === "/" ? "/" : url.pathname;
       if (!rest.endsWith("/")) rest += "/";
       const dest = `/${DEFAULT_LOCALE}${rest}${url.search}`;
-      return Response.redirect(new URL(dest, url.origin).toString(), 302);
+      // 301 (not 302): production performs no Accept-Language negotiation -
+      // the static export ships English as the de-facto default and this gate
+      // always targets DEFAULT_LOCALE - so the redirect is permanent by
+      // construction. Ratified by PRIME in-chat 03/07/2026 after live
+      // verification that the header is ignored (/f5 + pt-BR still -> /en/f5/).
+      return Response.redirect(new URL(dest, url.origin).toString(), 301);
     }
 
     return env.ASSETS.fetch(request);

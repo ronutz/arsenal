@@ -3816,6 +3816,43 @@ a.tools-card:hover {
   color: var(--text-secondary);
   max-width: 66ch;
 }
+
+/* Contribute > "On building new tools" - the D-81 funding story re-chunked for
+   readability (PRIME 03/07/2026). Wording is byte-identical to the ratified
+   payload; this is presentation only. The three seat sentences render as a
+   compact list with a small accent tick, and the all-in monthly figure gets
+   text-primary so the number the reader is asked to help with is the easiest
+   line to find. Self-sufficient block margins (no reliance on sibling p
+   selectors); RTL-safe via logical properties. */
+.contribute-seats {
+  list-style: none;
+  margin-block: 0.95rem;
+  margin-inline: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+  max-width: 66ch;
+}
+.contribute-seats li {
+  position: relative;
+  padding-inline-start: 1.15rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.contribute-seats li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.72em;
+  width: 0.5rem;
+  height: 2px;
+  background: var(--accent-primary);
+  opacity: 0.55;
+}
+.contribute-total {
+  color: var(--text-primary);
+}
 /* The plain "fits / doesn't fit" filter on the Share-an-idea page. Two rows with
    a green check and a red cross so the distinction reads at a glance, before any
    prose is parsed. Status hexes are fixed traffic-light cues (theme-independent),
@@ -3891,7 +3928,11 @@ a.tools-card:hover {
 .contribute-back { margin-top: 2.5rem; display: inline-block; }
 
 /* Footer contribute link */
-.footer-contribute { margin-top: 0.4rem; }
+/* Row 1 (CONCORD line) to row 2 (utility row): the column gap (0.5rem)
+   minus 0.05rem = 0.45rem, half the previous 0.9rem (gap + the old 0.4rem
+   margin). The negative margin offsets the flex gap for this pair only,
+   leaving every other row's rhythm untouched. PRIME 03/07/2026. */
+.footer-contribute { margin-top: -0.05rem; }
 .footer-contribute-link {
   font-size: 0.85rem;
   color: var(--text-tertiary);
