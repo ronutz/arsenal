@@ -3118,7 +3118,8 @@
     "kindFeature": "Feature",
     "kindI18n": "Localization",
     "kindContent": "Content",
-    "kindInfra": "Infrastructure"
+    "kindInfra": "Infrastructure",
+    "roadmapNote": "Looking for what comes next instead? The <roadmap>roadmap</roadmap> tracks what is planned and queued; this page records what has already shipped."
   },
   "roadmap": {
     "eyebrow": "Roadmap",

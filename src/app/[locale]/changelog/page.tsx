@@ -89,6 +89,17 @@ export default async function ChangelogPage({ params }: { params: Promise<{ loca
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede", { count: toolCount })}</p>
+              {/* Where things are GOING lives on the roadmap; this page is
+                  where they LANDED. One line up front makes the split clear. */}
+              <p className="page-hero-lede changelog-roadmap-note">
+                {t.rich("roadmapNote", {
+                  roadmap: (chunks) => (
+                    <Link href="/roadmap" className="footer-contribute-link">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
             </div>
           </section>
 

@@ -44,6 +44,22 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "14:47",
+    kind: "feature",
+    title: "Three small touches: the stamp, the roadmap pointer, and a heart",
+    body:
+      "The build stamp in the footer's machine row now links here, to the changelog, since that is the natural question a build stamp raises. This page opens with a one-line pointer to the roadmap, separating what is planned from what has shipped. And the special-thanks line on the colophon now ends with a small monochromatic heart, as it always should have.",
+  },
+  {
+    date: "2026-07-03",
+    time: "14:47",
+    kind: "content",
+    title: "Certification record corrected against the certificate itself",
+    body:
+      "The Extreme Networks switching credential listed as Certified Administrator (2026) is, per the certificate document now hosted alongside it, the Extreme Certified Associate, issued August 2023 with no expiry. The entry was corrected to match the document and the certificate PDF is served with it.",
+  },
+  {
+    date: "2026-07-03",
     time: "13:36",
     kind: "feature",
     title: "Calmer page headers across the site",

@@ -112,9 +112,13 @@ export default async function SiteFooter() {
             action. File links are plain anchors (static files, not locale
             routes). */}
         <p className="footer-machine">
-          {t("lastModified", {
-            stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
-          })}
+          {/* The stamp doubles as the door to the changelog: the natural
+              "what changed?" affordance for anyone who reads build stamps. */}
+          <Link href="/changelog" className="footer-contribute-link">
+            {t("lastModified", {
+              stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
+            })}
+          </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           <a href="/llms.txt" className="footer-contribute-link">
             llms.txt

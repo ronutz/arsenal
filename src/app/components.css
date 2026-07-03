@@ -7622,3 +7622,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .tlm-winner-chip { font-weight: 700; }
 .tlm-winner-score { color: var(--text-secondary); }
 .tlm-region-members { font-size: 0.82rem; color: var(--text-secondary); }
+
+/* The changelog's one-line pointer to the roadmap: same lede scale, a touch
+   of separation from the count line above it. */
+.changelog-roadmap-note { margin-top: 0.5rem; }

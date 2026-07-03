@@ -3118,7 +3118,8 @@
     "kindFeature": "Recurso",
     "kindI18n": "Localização",
     "kindContent": "Conteúdo",
-    "kindInfra": "Infraestrutura"
+    "kindInfra": "Infraestrutura",
+    "roadmapNote": "Procurando o que vem a seguir? O <roadmap>roadmap</roadmap> acompanha o que está planejado e na fila; esta página registra o que já foi entregue."
   },
   "roadmap": {
     "eyebrow": "Roadmap",
