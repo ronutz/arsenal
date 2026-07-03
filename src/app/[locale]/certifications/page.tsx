@@ -55,8 +55,8 @@ export default async function CertificationsPage({
           {/* Hero */}
           <section className="certs-hero">
             <div className="container certs-container">
-              <h1 className="certs-title">{t("title")}</h1>
-              <p className="certs-lede">{t("lede")}</p>
+              <h1 className="page-hero-title">{t("title")}</h1>
+              <p className="page-hero-lede">{t("lede")}</p>
               <div className="certs-hero-links">
                 <a href="#historical" className="certs-jump">
                   {t("jumpToHistorical")} ↓

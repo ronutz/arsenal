@@ -170,7 +170,7 @@ export default function F5xcServicePolicyExplainerTool() {
       </div>
       <textarea
         id="f5xc-in"
-        className="cidr-input dig-textarea"
+        className="cidr-input mono saml-textarea json-input tmsh-input"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder={t("input.placeholder")}

@@ -1,0 +1,56 @@
+---
+slug: ltm-load-balancing-methods
+title: "BIG-IP Load-Balancing Methods, and What Each One Weighs"
+summary: "A pool's load-balancing-mode decides who gets the next connection, and BIG-IP documents 19 of them. They differ along two axes: whether they react to live server state at all, and what exactly they weigh when they do, connections, sessions, response speed, or monitor-fed measurements."
+concepts: ["load balancing", "ltm", "pool", "f5", "round robin", "least connections"]
+relatedTools: ["f5-lb-method-chooser", "f5-tmsh-config-explainer"]
+relatedArticles: ["ltm-virtual-server-types", "ltm-persistence-methods"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+Every pool has a load-balancing-mode, even when the config does not show one: the documented default is Round Robin. The tmsh reference lists 19 modes, and the practical way to keep them straight is two questions. Does the mode react to live server state, or decide from configuration alone? And when it reacts, what does it weigh?
+
+## The static pair
+
+**Round Robin** passes each new connection to the next server in line, distributing connections evenly across the pool. F5's own guidance is refreshingly plain: it works well in most configurations, especially when the machines are roughly equal in processing speed and memory, and it is the default. Its blind spot is just as plain: an even distribution of connections is not an even distribution of load when requests differ wildly in cost.
+
+**Ratio** distributes connections in proportion to a weight you declare per member, or per node. It fits known, stable capacity differences, a four-CPU box next to two-CPU boxes, where you can state the proportion once. Being static, it never notices a member struggling, and K11870 adds a footnote worth knowing: the ratio method costs more CPU than Round Robin.
+
+## Member or node
+
+Most dynamic modes come in two scopes, and the suffix matters. A **member** mode counts a server's work inside this pool only. A **node** mode counts it across every pool the server belongs to, which is the fair count when the same machines back several pools: a server drowning in another pool's traffic should not look idle here.
+
+## The connection counters
+
+**Least Connections** passes the new connection to whoever has the fewest open right now, measured at the moment the request arrives, per K6406. That makes it the vendor's stated fit for servers of similar capability, and it naturally absorbs uneven connection durations that skew Round Robin. Two footnotes from K6406 and the reference: with OneConnect enabled, idle connections are excluded from the count, and a member that just came up has zero connections, so the reference singles out slow-ramp-time as particularly useful with exactly this mode. The default ramp is 10 seconds.
+
+**Observed** smooths the instant count into something steadier: every second, the system turns recent Layer 4 connection counts into a ratio and balances by it, preferring the member with the best balance of fewest connections. K6406 states the contrast directly: Least Connections measures only at the moment of load balancing, Observed tracks over time.
+
+**Predictive** takes the Observed ranking and adds its trend, preferring members whose ranking is improving over those declining. The reference's own words: this mode works well in any environment.
+
+## The capacity-aware counters
+
+**Weighted Least Connections** reads each member's connection-limit as its capacity statement and sends the new connection to whoever is at the lowest percentage of theirs. The reference is explicit about the prerequisite: every member (or, for the node form, every node) needs a connection-limit, and the default of 0 breaks the arithmetic.
+
+**Ratio Least Connections**, available since LTM 11.0.0 per K6406, combines the ratio you declared with the live connection count, and an unset ratio counts as 1.
+
+**Dynamic Ratio** takes the proportion out of your hands entirely: the weights come from continuous monitoring of the servers and are therefore continually changing, in the reference's words. K14129 shows where to see the weight the system computed.
+
+## Sessions and speed
+
+**Least Sessions** balances by persistence-table entries instead of connections, and it carries a prerequisite from K42275060 that catches people: the virtual server must reference a persistence profile of a type that tracks persistence connections, or there is nothing to count. **Ratio (session)** proportions sessions by declared weights, with one sharp detail from the same article: pending sessions count as active.
+
+**Fastest** follows response speed, and K6406 names the actual signal: the number of outstanding Layer 7 requests to a member. That means the virtual has to be processing traffic at Layer 7 for the count to mean anything. F5 suggests it especially where nodes sit on different logical networks, so path speed differs as much as server speed.
+
+## The rule that catches people
+
+K6406 states it as a note, but it explains half the surprises in the field: members configured with a ratio must reference a ratio load-balancing method for the ratios to apply. Ratio weights under Least Connections do nothing. The one exception is Ratio Least Connections, which consumes ratios by definition.
+
+## Reading a real pool
+
+Two pool settings shape whichever mode you pick. **slow-ramp-time** eases a just-recovered member back to a full share of new traffic, and pairs best with Least Connections for the zero-connections reason above. **min-active-members** arms priority-group activation: traffic stays confined to the highest-priority group while at least that many of its members are active, an active member being one that is up and below its connection limit. Members can carry priority-group values all day, but with min-active-members at the default 0, no activation threshold is in force.
+
+The [LB-method chooser](/tools/f5-lb-method-chooser) does this reading for you: paste a pool and it explains the mode in the vendor's terms and runs exactly these cross-checks, or answer two questions and it walks the decision table with sources shown.

@@ -54,6 +54,9 @@ import { run as jwtRun } from "./jwt";
 import { run as nslookupOutputExplainerRun } from "./nslookup-output-explainer";
 import { run as oidcRun } from "./oidc";
 import { run as persistenceMethodExplainerRun } from "./f5-persistence-method-explainer";
+import { run as lbMethodChooserRun } from "./f5-lb-method-chooser";
+import { run as gslbDecisionFlowRun } from "./f5-gslb-decision-flow";
+import { run as topologyLongestMatchRun } from "./f5-topology-longest-match";
 import { run as pkceRun } from "./pkce";
 import { run as regexRun } from "./regex";
 import { run as samlDecoderRun } from "./saml-decoder";
@@ -107,6 +110,9 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "nslookup-output-explainer", run: nslookupOutputExplainerRun },
   { slug: "oidc", run: oidcRun },
   { slug: "f5-persistence-method-explainer", run: persistenceMethodExplainerRun },
+  { slug: "f5-lb-method-chooser", run: lbMethodChooserRun },
+  { slug: "f5-gslb-decision-flow", run: gslbDecisionFlowRun },
+  { slug: "f5-topology-longest-match", run: topologyLongestMatchRun },
   { slug: "pkce", run: pkceRun },
   { slug: "regex", run: regexRun },
   { slug: "saml-decoder", run: samlDecoderRun },

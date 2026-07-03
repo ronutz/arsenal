@@ -78,7 +78,7 @@ export default function F5AwafDeclarativePolicyExplainerTool() {
       </div>
       <textarea
         id="awaf-in"
-        className="cidr-input dig-textarea"
+        className="cidr-input mono saml-textarea json-input tmsh-input"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder={inputPlaceholder}

@@ -61,8 +61,8 @@ export default async function ContributePage({
         <section className="section">
           <div className="container contribute-container">
             <p className="hero-eyebrow">{t("eyebrow")}</p>
-            <h1 className="contribute-title">{t("title")}</h1>
-            <p className="contribute-lede">{t("lede")}</p>
+            <h1 className="page-hero-title">{t("title")}</h1>
+            <p className="page-hero-lede">{t("lede")}</p>
 
             {/* How it works */}
             <div className="contribute-block">

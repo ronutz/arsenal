@@ -1,0 +1,48 @@
+---
+slug: gtm-load-balancing-methods
+title: "BIG-IP DNS Load Balancing: the Wide IP, the Pool, and the Three-Step Chain"
+summary: "A GSLB answer is decided twice: the wide IP picks a pool, then the pool picks a member through a preferred, alternate and fallback chain. The chain carries the rules people trip over: the alternate can only be static, the fallback ignores availability on purpose, and None cascades all the way to a BIND aggregate."
+concepts: ["gslb", "gtm", "big-ip dns", "f5", "wide ip", "load balancing", "topology"]
+relatedTools: ["f5-gslb-decision-flow", "f5-topology-longest-match"]
+relatedArticles: ["gtm-topology-records-and-longest-match", "ltm-load-balancing-methods"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+A BIG-IP DNS name resolution answer is decided twice. The wide IP receives the query and selects one of its pools; the selected pool then selects a member, a virtual server, whose address becomes the answer. The two tiers use different method sets and different rules, and most GSLB surprises live in the second one.
+
+## The wide-IP tier: pool-lb-mode
+
+The wide IP's `pool-lb-mode` selects among the attached pools, and the tmsh reference scopes it plainly: the option is relevant only when multiple pools are configured. Four methods are in the current grammar, defaulting to Round Robin. Round Robin selects pools sequentially. Ratio follows the per-pool ratio values set on the wide IP. Topology consults the topology records (the subject of the companion article). Global Availability is the ordered-list method: the system repeatedly selects the first pool in the list for as long as it is available, and only its unavailability promotes the next pool, which makes it the natural expression of "primary site, then DR site."
+
+Older reference text also describes a fifth value, `random`, absent from the current syntax line; treat it as version-dependent and verify on your version before designing around it.
+
+The wide IP carries the answer-shaping settings too: `persistence` (pin an LDNS to its previous answer, `ttl-persistence` seconds, default 3600), `last-resort-pool` (the pool used when every configured pool is exhausted), and `failure-rcode-response` (answer failures with a DNS RCODE such as NXDOMAIN instead of falling through). When the flow does something unexpected, `load-balancing-decision-log-verbosity` exists precisely to narrate it: pool-selection, pool-traversal, pool-member-selection, pool-member-traversal.
+
+## The pool tier: the three-step chain
+
+Inside the selected pool, member selection walks a chain of up to three methods, one per tmsh attribute. The `load-balancing-mode` is the preferred method, tried first, and it may be static or dynamic; the default is Round Robin. If it fails to return a valid resource, the manual explains why that usually happens: the system was likely unable to acquire the proper metrics to perform load balancing. Which is exactly why the second step, `alternate-mode` (default Round Robin), can be only static, in the manual's words. The tmsh grammar expresses the same rule as a token list: twelve methods are admitted as alternate, and every measured method among them, Packet Rate, Virtual Server Capacity, Virtual Server Score, draws its numbers from server-side statistics rather than from probing the path to the requesting LDNS. The methods that need path metrics, Round Trip Time, Completion Rate, Fewest Hops, Quality of Service, are the ones the alternate grammar keeps out, because they would fail for the same reason the preferred method just did.
+
+The third step is the one to memorize. If the alternate also fails, `fallback-mode` runs, and the manual states its defining property without hedging: to ensure that BIG-IP DNS returns a response to a request, the fallback method ignores the availability status of a resource. An answer produced by the fallback tier can point at a member that every monitor considers down. That is not a bug; it is the documented design, trading correctness for the guarantee of an answer. The default fallback is Return to DNS, which hands the query back to the local DNS for resolution, and the pool's `verify-member-availability` setting (default enabled) plus the GUI's Respect Fallback Dependency option exist for administrators who want availability checked even at this tier.
+
+## None, and the cascade
+
+`None` is not a method so much as a routing instruction through the chain. As the alternate, it skips straight to the fallback. As the fallback, it sends the request to the next available pool; and if there are no more pools, the result is the same as Return to DNS. The manual completes the cascade with the sentence that surprises people in packet captures: if all pools are unavailable, BIG-IP DNS returns an aggregate of the IP addresses of all pool members using BIND. The all-None pattern is also the idiomatic pool failover: configure only the preferred method and set alternate and fallback to None, and a pool whose preferred method fails simply yields to the next pool.
+
+Two more special methods belong to this part of the story. Drop Packet does nothing with the request and drops it; the manual notes it is most often selected as the alternate, to make sure the system does not hand out an address for an unavailable resource. Fallback IP returns the address configured in the pool's `fallback-ip` attribute, unmonitored, as a disaster-recovery answer; a chain that selects the method while `fallback-ip` still holds the `::` default has configured an empty answer, which is exactly the kind of wiring the decision-flow tool flags.
+
+## The dynamic methods, and dynamic-ratio
+
+The dynamic family reads measurements: Round Trip Time, Completion Rate and Fewest Hops measure the path between a data center and the requesting LDNS; CPU, Kilobytes/Second, Least Connections and Packet Rate read server-side statistics; Quality of Service blends weighted factors into one score, using the pool's `qos-*` coefficients (defaults: rtt 50, link capacity 30, hit ratio 5, kilobytes/second 3, packet rate 1, the rest 0), with ties falling to Round Robin.
+
+By default a dynamic method is winner-take-all: the single member with the best metric receives the traffic. The pool's `dynamic-ratio` option changes the arithmetic, and the manual's example makes it concrete: with round trip times of 50 and 100 microseconds and dynamic-ratio disabled, every request goes to the faster member; enabled, the values become ratios and the faster member merely answers twice as often. The tmsh reference scopes the option to eight modes (completion-rate, fewest-hops, kilobytes-per-second, least-connections, lowest-round-trip-time, quality-of-service, virtual-server-capacity, virtual-server-score); enabled under anything else, it has no documented effect.
+
+## The rules that pair methods with settings
+
+Three pairings from the manual round out the operational picture. Global Availability at the pool tier walks its ordered list to the next resource only when the fallback method is None; any other fallback intercepts the exhaustion. Static Persist consistently maps an LDNS address to the same available member for the duration of a session, the wide-IP `persistence` setting's method-shaped cousin. And when Topology runs at both tiers, wide IP selecting pools and pools selecting members, the manual's instruction is to set each pool's fallback to None: otherwise the system can send a request to a pool with no available members and fall back to BIND, whereas None lets an empty pool pass the request to another pool.
+
+The [GSLB decision-flow explainer](/tools/f5-gslb-decision-flow) renders all of this from a pasted configuration: the resolved chain with the defaults labeled, each tier's semantics, and the cross-checks above applied deterministically. For what happens inside the Topology method, the [longest-match scorer](/tools/f5-topology-longest-match) and its companion article pick up the story.
+
+All method semantics, defaults and grammar in this article come from the tmsh `gtm pool a` and `gtm wideip a` references and the BIG-IP DNS Load Balancing manual's chapter on load balancing and resource availability, as linked from the tools' source lists.

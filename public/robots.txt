@@ -1,0 +1,8 @@
+# ronutz.com - tools that compute, never guess
+# Every page here is static and public; crawl freely.
+
+User-agent: *
+Allow: /
+
+# Machine-readable index of every tool and article:
+# https://ronutz.com/llms.txt

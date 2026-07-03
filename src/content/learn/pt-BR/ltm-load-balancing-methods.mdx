@@ -1,0 +1,56 @@
+---
+slug: ltm-load-balancing-methods
+title: "Métodos de balanceamento do BIG-IP, e o que cada um pondera"
+summary: "O load-balancing-mode de um pool decide quem recebe a próxima conexão, e o BIG-IP documenta 19 deles. Eles diferem em dois eixos: se reagem ao estado dos servidores, e o que exatamente ponderam quando reagem, conexões, sessões, velocidade de resposta ou medições de monitores."
+concepts: ["load balancing", "ltm", "pool", "f5", "round robin", "least connections"]
+relatedTools: ["f5-lb-method-chooser", "f5-tmsh-config-explainer"]
+relatedArticles: ["ltm-virtual-server-types", "ltm-persistence-methods"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+Todo pool tem um load-balancing-mode, mesmo quando a configuração não mostra um: o padrão documentado é Round Robin. A referência tmsh lista 19 modos, e o jeito prático de organizá-los são duas perguntas. O modo reage ao estado dos servidores, ou decide apenas pela configuração? E quando reage, o que pondera?
+
+## O par estático
+
+**Round Robin** passa cada nova conexão ao próximo servidor da fila, distribuindo conexões uniformemente pelo pool. A orientação da própria F5 é direta: funciona bem na maioria das configurações, especialmente quando as máquinas são praticamente iguais em processamento e memória, e é o padrão. Seu ponto cego é igualmente direto: distribuição uniforme de conexões não é distribuição uniforme de carga quando as requisições variam muito de custo.
+
+**Ratio** distribui conexões em proporção a um peso que você declara por member, ou por node. Serve para diferenças de capacidade conhecidas e estáveis, uma máquina de quatro CPUs ao lado de máquinas de duas, onde a proporção pode ser declarada uma vez. Sendo estático, nunca percebe um member em dificuldade, e o K11870 acrescenta uma nota que vale conhecer: o método ratio custa mais CPU que Round Robin.
+
+## Member ou node
+
+A maioria dos modos dinâmicos vem em dois escopos, e o sufixo importa. Um modo **member** conta o trabalho do servidor apenas dentro deste pool. Um modo **node** conta através de todos os pools a que o servidor pertence, que é a contagem justa quando as mesmas máquinas sustentam vários pools: um servidor afogado no tráfego de outro pool não deveria parecer ocioso aqui.
+
+## Os contadores de conexões
+
+**Least Connections** passa a nova conexão a quem tem menos conexões abertas naquele instante, medido no momento em que a requisição chega, pelo K6406. Isso o torna a escolha declarada do fabricante para servidores de capacidade semelhante, e ele absorve naturalmente durações desiguais de conexão que distorcem o Round Robin. Duas notas do K6406 e da referência: com OneConnect habilitado, conexões ociosas ficam fora da contagem, e um member que acabou de subir tem zero conexões, razão pela qual a referência destaca slow-ramp-time como particularmente útil justamente com este modo. O ramp padrão é 10 segundos.
+
+**Observed** suaviza a contagem instantânea em algo mais estável: a cada segundo, o sistema transforma as contagens recentes de conexões Layer 4 em um ratio e balanceia por ele, preferindo o member com o melhor equilíbrio de menos conexões. O K6406 põe o contraste em palavras: Least Connections mede apenas no momento do balanceamento, Observed acompanha ao longo do tempo.
+
+**Predictive** toma o ranking do Observed e adiciona a tendência, preferindo members cujo ranking está melhorando em vez de piorando. Nas palavras da própria referência: este modo funciona bem em qualquer ambiente.
+
+## Os contadores cientes de capacidade
+
+**Weighted Least Connections** lê o connection-limit de cada member como sua declaração de capacidade e envia a nova conexão a quem está no menor percentual do seu. A referência é explícita sobre o pré-requisito: todo member (ou, na forma node, todo node) precisa de um connection-limit, e o padrão 0 quebra a aritmética.
+
+**Ratio Least Connections**, disponível desde o LTM 11.0.0 pelo K6406, combina o ratio que você declarou com a contagem de conexões ao vivo, e um ratio não definido conta como 1.
+
+**Dynamic Ratio** tira a proporção das suas mãos por completo: os pesos vêm de monitoramento contínuo dos servidores e por isso mudam continuamente, nas palavras da referência. O K14129 mostra onde ver o peso que o sistema calculou.
+
+## Sessões e velocidade
+
+**Least Sessions** balanceia por entradas na tabela de persistência em vez de conexões, e carrega um pré-requisito do K42275060 que pega muita gente: o virtual server precisa referenciar um perfil de persistência de um tipo que rastreie conexões de persistência, ou não há o que contar. **Ratio (session)** proporciona sessões por pesos declarados, com um detalhe afiado do mesmo artigo: sessões pendentes contam como ativas.
+
+**Fastest** segue a velocidade de resposta, e o K6406 nomeia o sinal real: o número de requisições Layer 7 pendentes para um member. Isso significa que o virtual precisa processar tráfego em Layer 7 para a contagem significar algo. A F5 o sugere especialmente onde os nodes ficam em redes lógicas diferentes, de modo que a velocidade do caminho varia tanto quanto a do servidor.
+
+## A regra que pega as pessoas
+
+O K6406 a declara como uma nota, mas ela explica metade das surpresas em campo: members configurados com ratio precisam referenciar um método de balanceamento de ratio para que os ratios se apliquem. Pesos de ratio sob Least Connections não fazem nada. A única exceção é o Ratio Least Connections, que consome ratios por definição.
+
+## Lendo um pool de verdade
+
+Duas configurações de pool moldam qualquer modo escolhido. **slow-ramp-time** reconduz um member recém-recuperado gradualmente à sua fatia plena de tráfego novo, e combina melhor com Least Connections pela razão das zero conexões acima. **min-active-members** arma a ativação por priority group: o tráfego fica confinado ao grupo de maior prioridade enquanto pelo menos esse número de members estiver ativo, sendo ativo um member que está up e abaixo do seu connection limit. Members podem carregar valores de priority-group o dia inteiro, mas com min-active-members no padrão 0, nenhum limiar de ativação está em vigor.
+
+O [seletor de métodos de balanceamento](/tools/f5-lb-method-chooser) faz essa leitura por você: cole um pool e ele explica o modo nos termos do fabricante e roda exatamente essas verificações, ou responda duas perguntas e ele percorre a tabela de decisão com as fontes à vista.

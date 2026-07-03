@@ -47,7 +47,7 @@ export default async function HistoryIndexPage({
             </Link>
 
             <p className="hero-eyebrow">{t("indexTitle")}</p>
-            <h1 className="section-title" style={{ fontSize: "clamp(1.75rem, 5vw, 2.75rem)" }}>
+            <h1 className="page-hero-title">
               {t("indexLede")}
             </h1>
 

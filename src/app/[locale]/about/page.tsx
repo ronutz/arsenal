@@ -73,9 +73,9 @@ export default async function AboutPage({
         <section className="about-hero">
           <div className="container">
             <p className="hero-eyebrow">{t("eyebrow")}</p>
-            <h1 className="about-name">Rodolfo Nützmann</h1>
+            <h1 className="page-hero-title">Rodolfo Nützmann</h1>
             <p className="about-role">{t("role")}</p>
-            <p className="about-lede">{t("lede")}</p>
+            <p className="page-hero-lede">{t("lede")}</p>
           </div>
         </section>
 

@@ -1,0 +1,42 @@
+---
+slug: gtm-topology-records-and-longest-match
+title: "GTM Topology Records: Longest Match Is a Sort, Not the Pick"
+summary: "Topology load balancing scores candidates from an ordered record list, and the ordering is what Longest Match actually does. The first record to match a candidate scores it, later records are shadowed, and the highest score wins, which is why a heavy wildcard really can beat a light /32."
+concepts: ["gslb", "gtm", "big-ip dns", "f5", "topology", "longest match", "ldns"]
+relatedTools: ["f5-topology-longest-match", "f5-gslb-decision-flow"]
+relatedArticles: ["gtm-load-balancing-methods"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+Topology load balancing answers a proximity question: given where the query came from, which destination should serve it? The mechanism is a list of topology records, and the single most useful thing to understand about it is what Longest Match actually does. The folklore version says the most specific matching record wins. The documentation says something sharper, and the difference decides real traffic.
+
+## The record
+
+A topology record maps an origin to a destination and gives the mapping a weight. The request source statement describes the origin LDNS: an IP subnet in CIDR form, a user-defined region, an ISP, a country, a continent. The destination statement names where the weight lands: a pool, a data center, a subnet, a region. And the weight is the number the load balancing will compare; the manual notes that in tmsh the weight parameter is called `score`. Either side can be negated with `not`, and one practical asymmetry is worth knowing early: records with a data center destination apply at the pool tier (choosing among virtual servers), not at the wide-IP tier (choosing among pools), because pools are not themselves located in a data center.
+
+Since a query's origin is an LDNS address, the non-subnet source types depend on classification: the built-in geolocation data for country, continent and ISP, and your own `gtm region` definitions for regions, which can contain subnets, countries, continents, ISPs and other regions, nesting included. A note for modern deployments: by default the classified address is the LDNS itself, and the `topology-prefer-edns0-client-subnet` setting (globally or per wide IP) switches matching to the EDNS0 Client Subnet the resolver forwarded, falling back to the source address when the query carries none.
+
+## Longest Match sorts the list
+
+With Longest Match enabled, which is the default, the system re-sorts the record list every time the configuration loads, and the sort keys are, in the manual's words, the LDNS request source statement, the destination statement, and the weight of the record. Within the source key, types have a verified ladder, demonstrated in K10721's worked examples: IP subnets come first, ordered among themselves by longest mask (a /32 above a /24 above a /16); then data centers and pools; then user-defined regions; then ISPs; then countries; then continents. The same ladder orders the destination side when source statements tie. K10721 adds the bucket rules around the ladder: records containing a negation sort below plain records but above wildcards, with a server-side negation sorting above an LDNS-side negation, and wildcard records (`0.0.0.0/0`) sort to the bottom of the list.
+
+One subtlety the ladder implies: a region is a single entity in the sort. A region matched through one of its subnets does not borrow the subnet's specificity; it sorts at region rank, whatever its members look like.
+
+Disable Longest Match and the automatic sort disappears: the list order you maintain, and the weights, govern which record applies.
+
+## The scores decide
+
+Here is the part the folklore misses. The sorted list is not scanned for one winning record; it is used, in the manual's phrasing, to assign scores to the pools or pool members. The system walks the sorted records, and each candidate destination receives its score from the first record that matches it. Any later record naming an already-scored candidate is simply never used, shadowed by the earlier one. When the walk is done, the candidate with the highest assigned score wins, and equal top scores round-robin.
+
+Two consequences follow, and both show up in production. First, a wildcard record carrying weight 100 beats a /32 record carrying weight 5: specificity decided only which record scored each candidate, and then 100 beat 5. Longest Match is not a specificity-wins rule; it is the tie-breaker that decides which of several matching records gets to speak for a candidate. Second, shadowing produces genuinely counter-intuitive outcomes: a candidate with a heavy-weight record late in the sorted list can lose because a lighter record earlier in the list already scored it. Sort position controls which weight applies; the weights control who wins.
+
+A worked example, the same one the [longest-match scorer](/tools/f5-topology-longest-match) loads as its one-click demo. Three records: a /24 subnet scoring POOL1 at 30, a region (containing the /16 around that subnet) scoring POOL2 at 20, and a wildcard scoring POOL2 at 40. A query from inside the /24 matches all three. The sort puts the subnet record first, the region record second, the wildcard last. POOL1 takes 30 from the subnet record; POOL2 takes 20 from the region record, and the 40-point wildcard is shadowed, never consulted. POOL1 wins, 30 to 20, despite a 40 sitting in the list. Delete the region record and POOL2's score comes from the wildcard instead: 40 beats 30 and the answer flips.
+
+## Using it without surprises
+
+The operational habits follow directly from the mechanics. Keep the record set small, prefer regions over long subnet lists (the manual's own efficiency tip), and avoid overlapping sources for the same application, because overlaps are where shadowing does its quiet work. Give every deliberate record an explicit score; a record created without one carries the GUI default weight of 1, which is almost never the intent in a weighted design. And when Topology runs at both tiers, the wide IP choosing pools and the pools choosing members, set each pool's fallback method to None, per the Load Balancing manual: otherwise a request can land on a pool with no available members and fall through to BIND, while None lets the empty pool pass the request to another pool. The [GSLB decision-flow explainer](/tools/f5-gslb-decision-flow) checks that pairing, and this tool shows the sort, the scores and the shadowing for any record set you paste.
+
+The sorting rules, the score-assignment model and the worked behaviors in this article come from the BIG-IP GTM Load Balancing manual's Topology chapter and F5's K10721, as linked from the tool's source list; the ladder is implemented exactly as far as those sources verify it, and the tool flags rather than guesses anything outside it.

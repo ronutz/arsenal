@@ -46,8 +46,8 @@ export default async function TrainingLandingPage({
           <section className="teach-hero">
             <div className="container teach-container">
               <p className="hero-eyebrow">{t("eyebrow")}</p>
-              <h1 className="teach-title">{t("title")}</h1>
-              <p className="teach-lede">{t("lede")}</p>
+              <h1 className="page-hero-title">{t("title")}</h1>
+              <p className="page-hero-lede">{t("lede")}</p>
             </div>
           </section>
 

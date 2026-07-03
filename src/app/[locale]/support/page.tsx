@@ -52,8 +52,8 @@ export default async function SupportPage({
       <main id="main">
         <section className="section">
           <div className="container support-container">
-            <h1 className="support-title">{t("title")}</h1>
-            <p className="support-lede">{t("lede")}</p>
+            <h1 className="page-hero-title">{t("title")}</h1>
+            <p className="page-hero-lede">{t("lede")}</p>
 
             {tipJarLive ? (
               <TipJar copy={tipJarCopy} />

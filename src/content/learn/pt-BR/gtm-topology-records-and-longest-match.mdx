@@ -1,0 +1,42 @@
+---
+slug: gtm-topology-records-and-longest-match
+title: "Registros de Topologia do GTM: Longest Match É uma Ordenação, Não a Escolha"
+summary: "O balanceamento por topologia pontua candidatos a partir de uma lista ordenada de registros, e a ordenação é o que o Longest Match de fato faz. O primeiro registro a corresponder a um candidato o pontua, os posteriores ficam sombreados, e a maior pontuação vence, e é por isso que um curinga pesado realmente pode vencer um /32 leve."
+concepts: ["gslb", "gtm", "big-ip dns", "f5", "topology", "longest match", "ldns"]
+relatedTools: ["f5-topology-longest-match", "f5-gslb-decision-flow"]
+relatedArticles: ["gtm-load-balancing-methods"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+O balanceamento por topologia responde a uma pergunta de proximidade: dado de onde veio a consulta, qual destino deve atendê-la? O mecanismo é uma lista de registros de topologia, e a coisa mais útil a entender sobre ele é o que o Longest Match realmente faz. A versão do folclore diz que o registro correspondente mais específico vence. A documentação diz algo mais afiado, e a diferença decide tráfego de verdade.
+
+## O registro
+
+Um registro de topologia mapeia uma origem a um destino e dá um peso ao mapeamento. A declaração de origem descreve o LDNS solicitante: um subnet IP em forma CIDR, uma região definida pelo usuário, um ISP, um país, um continente. A declaração de destino nomeia onde o peso cai: um pool, um data center, um subnet, uma região. E o peso é o número que o balanceamento vai comparar; o manual nota que no tmsh o parâmetro de peso se chama `score`. Qualquer um dos lados pode ser negado com `not`, e uma assimetria prática vale conhecer cedo: registros com destino em data center se aplicam na camada de pool (escolhendo entre virtual servers), não na camada de wide IP (escolhendo entre pools), porque pools não ficam, eles mesmos, em um data center.
+
+Como a origem de uma consulta é um endereço de LDNS, os tipos de origem que não são subnet dependem de classificação: os dados de geolocalização embutidos para país, continente e ISP, e as suas próprias definições `gtm region` para regiões, que podem conter subnets, países, continentes, ISPs e outras regiões, aninhamento incluído. Uma nota para implantações modernas: por padrão o endereço classificado é o próprio LDNS, e a configuração `topology-prefer-edns0-client-subnet` (global ou por wide IP) muda a correspondência para o EDNS0 Client Subnet que o resolvedor encaminhou, voltando ao endereço de origem quando a consulta não o carrega.
+
+## O Longest Match ordena a lista
+
+Com o Longest Match habilitado, que é o padrão, o sistema reordena a lista de registros toda vez que a configuração carrega, e as chaves de ordenação são, nas palavras do manual, a declaração de origem LDNS, a declaração de destino e o peso do registro. Dentro da chave de origem, os tipos têm uma escada verificada, demonstrada nos exemplos do K10721: subnets IP vêm primeiro, ordenados entre si pela máscara mais longa (um /32 acima de um /24 acima de um /16); depois data centers e pools; depois regiões definidas pelo usuário; depois ISPs; depois países; depois continentes. A mesma escada ordena o lado de destino quando as origens empatam. O K10721 acrescenta as regras de balde ao redor da escada: registros contendo uma negação ordenam abaixo dos registros simples mas acima dos curingas, com uma negação do lado servidor acima de uma negação do lado LDNS, e registros curinga (`0.0.0.0/0`) descem ao fundo da lista.
+
+Uma sutileza que a escada implica: uma região é uma entidade única na ordenação. Uma região correspondida através de um de seus subnets não herda a especificidade do subnet; ela ordena no nível de região, sejam quais forem seus membros.
+
+Desabilite o Longest Match e a ordenação automática desaparece: a ordem da lista que você mantém, e os pesos, governam qual registro se aplica.
+
+## As pontuações decidem
+
+Aqui está a parte que o folclore perde. A lista ordenada não é varrida em busca de um único registro vencedor; ela é usada, na formulação do manual, para atribuir pontuações aos pools ou membros de pool. O sistema caminha pelos registros ordenados, e cada destino candidato recebe sua pontuação do primeiro registro que o corresponde. Qualquer registro posterior nomeando um candidato já pontuado simplesmente nunca é usado, sombreado pelo anterior. Terminada a caminhada, o candidato com a maior pontuação atribuída vence, e pontuações máximas iguais fazem round robin.
+
+Duas consequências seguem, e ambas aparecem em produção. Primeira: um registro curinga carregando peso 100 vence um registro /32 carregando peso 5: a especificidade decidiu apenas qual registro pontuou cada candidato, e então 100 venceu 5. Longest Match não é uma regra de especificidade-vence; é o desempate que decide qual de vários registros correspondentes fala por um candidato. Segunda: o sombreamento produz resultados genuinamente contraintuitivos: um candidato com um registro de peso alto tarde na lista ordenada pode perder porque um registro mais leve, mais cedo na lista, já o pontuou. A posição na ordenação controla qual peso se aplica; os pesos controlam quem vence.
+
+Um exemplo resolvido, o mesmo que o [pontuador longest-match](/tools/f5-topology-longest-match) carrega como demonstração de um clique. Três registros: um subnet /24 pontuando POOL1 com 30, uma região (contendo o /16 ao redor daquele subnet) pontuando POOL2 com 20, e um curinga pontuando POOL2 com 40. Uma consulta de dentro do /24 corresponde aos três. A ordenação põe o registro de subnet primeiro, o de região em segundo, o curinga por último. POOL1 leva 30 do registro de subnet; POOL2 leva 20 do registro de região, e o curinga de 40 pontos fica sombreado, nunca consultado. POOL1 vence, 30 a 20, apesar de um 40 estar na lista. Apague o registro de região e a pontuação de POOL2 vem do curinga: 40 vence 30 e a resposta vira.
+
+## Usando sem surpresas
+
+Os hábitos operacionais seguem direto da mecânica. Mantenha o conjunto de registros pequeno, prefira regiões a listas longas de subnets (a dica de eficiência do próprio manual) e evite origens sobrepostas para a mesma aplicação, porque as sobreposições são onde o sombreamento faz seu trabalho silencioso. Dê a todo registro deliberado uma pontuação explícita; um registro criado sem uma carrega o peso padrão da GUI, 1, que quase nunca é a intenção em um projeto ponderado. E quando Topology roda nas duas camadas, o wide IP escolhendo pools e os pools escolhendo membros, deixe o método de fallback de cada pool em None, conforme o manual de Load Balancing: caso contrário uma requisição pode cair em um pool sem membros disponíveis e escorrer para o BIND, enquanto None deixa o pool vazio passar a requisição a outro pool. O [explicador do fluxo de decisão GSLB](/tools/f5-gslb-decision-flow) verifica esse pareamento, e esta ferramenta mostra a ordenação, as pontuações e o sombreamento para qualquer conjunto de registros que você colar.
+
+As regras de ordenação, o modelo de atribuição de pontuações e os comportamentos resolvidos deste artigo vêm do capítulo de Topologia do manual de Load Balancing do BIG-IP GTM e do K10721 da F5, conforme vinculado na lista de fontes da ferramenta; a escada é implementada exatamente até onde essas fontes verificam, e a ferramenta sinaliza, em vez de adivinhar, qualquer coisa fora dela.

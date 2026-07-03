@@ -1,0 +1,38 @@
+---
+slug: ltm-virtual-server-types
+title: "BIG-IP Virtual Server Types, and What Each One Actually Does"
+summary: "A BIG-IP drops traffic by default; a virtual server is the listener that accepts it, and its type decides the processing model, from a full proxy that terminates and re-originates connections to a packet-by-packet forwarder that behaves like a router. Choosing the type is choosing how much the box is allowed to understand."
+concepts: ["virtual server", "ltm", "f5", "fastl4", "full proxy", "forwarding"]
+relatedTools: ["f5-tmsh-config-explainer", "f5-lb-method-chooser"]
+relatedArticles: ["ltm-load-balancing-methods", "ltm-persistence-methods"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+Out of the box, a BIG-IP is a deny-by-default device: traffic that reaches it is dropped until a listener claims it. The listener people mean most of the time is a virtual server, and its **type** is not a cosmetic label. It decides whether the box terminates connections or passes packets, which profiles and iRules events are even possible, and what the TCP handshake looks like on each side. The K93100324 operations guide and K8082 describe each type; K55185917 keeps the current enumeration.
+
+## Standard, the full proxy
+
+A Standard virtual server with a TCP profile implements the full-proxy architecture: the client completes a three-way handshake with the BIG-IP, and the BIG-IP opens its own, independent connection to the pool member. Two connections, two TCP stacks, and a box in the middle that fully understands the stream. That understanding is the point. The operations guide's use-case criteria for Standard read like a checklist of L7 features: SSL profiles, any Layer 7 profile, Layer 7 iRules events, Layer 7 persistence methods, protocol enforcement, and inspecting or modifying data in the stream. One handshake subtlety from K8082: with Layer 7 functionality configured, the BIG-IP waits for the client's first data packet before opening the server side, except for protocols like FTP where the client expects a greeting first.
+
+## Performance (Layer 4), the FastL4 path
+
+A Performance (Layer 4) virtual server carries a FastL4 profile and processes connections packet by packet rather than as a terminated proxy. On hardware platforms that have it, flows can be offloaded to the ePVA, which the guide credits with higher throughput and lower latency; the PVA acceleration mode can be full, assisted, or none, and platforms without the chip do all FastL4 processing in TMM. The fit, in the guide's words, is when little or no Layer 4 to Layer 7 processing is required: no SSL handling, no L7 profiles or persistence, forwarding decisions from Layer 4 information, and only Layer 1 to 4 iRules events. Address and port translation still work, but load-balancing decisions are limited because minimal Layer 7 information exists.
+
+## Forwarding (IP), the router impression
+
+A Forwarding (IP) virtual server has no pool at all. It forwards packets to the destination address the client asked for, using the routing table for the server side, which is why the guide describes using it to forward IP traffic the way any router would. It shares FastL4 machinery with Performance (Layer 4), and the guide draws the line between them precisely: Performance (Layer 4) can have a pool and act as a gateway pool, the classic firewall load-balancing pattern, while Forwarding (IP) has none and follows routes.
+
+## Forwarding (Layer 2), Stateless, and Reject
+
+Forwarding (Layer 2) is the Forwarding idea one layer down: it typically shares an IP address with a node in an associated VLAN and requires a VLAN group, forwarding packet by packet based on the routing decision within it. Stateless does minimal packet processing, creates no connection flows, supports only UDP, and the guide recommends it only in specific, limited situations. K13675 names them: one-way UDP at very high throughput, such as load balancing syslog, or DNS queries whose responses do not return through the BIG-IP. The same article adds a constraint worth memorizing: for stateless connections the system supports only Round Robin load balancing, whatever the pool's mode says. Reject is the explicit no: it rejects any packet that would create a new connection flow, useful for carving exceptions out of broader listeners.
+
+## Performance (HTTP) and the rest
+
+Performance (HTTP) uses a FastHTTP-style fast path with a behavior worth knowing from K8082: it can maintain idle server-side flows, so a client connection may be paired with a pre-existing server connection rather than a fresh one, or run with no idle flows, opening the server side only after the client handshake. The remaining types are specialists. DHCP Relay listens for client broadcasts and relays them to DHCP servers. Internal virtual servers receive traffic from other virtual servers, the request-adapt and response-adapt pattern used for ICAP-style content adaptation. Message Routing virtual servers use the message-routing framework to route individual messages, SIP being the canonical protocol.
+
+## Choosing, in one breath
+
+If the box must understand, terminate, or modify the application conversation, Standard. If it must move packets fast and understand little, Performance (Layer 4). If it should behave like a router, Forwarding (IP), or Layer 2 within a VLAN group. If it must refuse, Reject. The [tmsh config explainer](/tools/f5-tmsh-config-explainer) reads the type off a pasted virtual server, and once the type is settled, the pool behind it still needs a method: that decision has [its own article](/learn/ltm-load-balancing-methods) and [its own tool](/tools/f5-lb-method-chooser).

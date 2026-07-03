@@ -67,10 +67,10 @@ export default async function EndorsementsPage({
         <section className="section">
           <div className="container">
             <p className="hero-eyebrow">{t("eyebrow")}</p>
-            <h1 className="section-title" style={{ fontSize: "clamp(1.75rem, 5vw, 2.75rem)" }}>
+            <h1 className="page-hero-title">
               {t("title")}
             </h1>
-            <p className="section-body" style={{ marginBottom: "1rem" }}>
+            <p className="page-hero-lede" style={{ marginBottom: "1rem" }}>
               {t("intro", { count: TESTIMONIAL_COUNT })}
             </p>
             <p className="section-body" style={{ fontSize: "0.9rem", color: "var(--text-tertiary)" }}>

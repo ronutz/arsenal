@@ -74,8 +74,8 @@ export default async function ContactPage({
           {/* Hero */}
           <section className="contact-hero">
             <div className="container contact-container">
-              <h1 className="contact-title">{t("title")}</h1>
-              <p className="contact-lede">{t("lede")}</p>
+              <h1 className="page-hero-title">{t("title")}</h1>
+              <p className="page-hero-lede">{t("lede")}</p>
               {/* Site feedback (bugs, mistakes, inaccuracies) is a different
                   channel from booking/consulting: point it to the ideas page. */}
               <p className="contact-feedback">

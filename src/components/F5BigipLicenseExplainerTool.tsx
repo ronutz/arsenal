@@ -87,7 +87,7 @@ export default function F5BigipLicenseExplainerTool() {
       </div>
       <textarea
         id="lic-in"
-        className="cidr-input dig-textarea"
+        className="cidr-input mono saml-textarea json-input tmsh-input"
         value={input}
         onChange={onChange}
         placeholder={t("inputPlaceholder")}

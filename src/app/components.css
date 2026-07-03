@@ -155,6 +155,26 @@
   max-width: 60ch;
 }
 
+/* ---- Page hero: the shared top-of-page header standard ---------------------
+   The /learn header, promoted from a thrice-copied inline override to the
+   house class (PRIME, 03/07/2026): titles cap at 2.75rem instead of the
+   3rem-4.5rem the section pages ran, and ledes read at body scale. Reading
+   comfort over spectacle. Every top-level page's h1/lede pair uses these;
+   the homepage landing hero intentionally keeps its own scale. */
+.page-hero-title {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  max-width: 24ch;
+}
+.page-hero-lede {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 60ch;
+}
+
 /* --- Pillars --- */
 .pillars {
   list-style: none;
@@ -7525,3 +7545,80 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .tools-category-link { color: inherit; text-decoration: none; transition: color 0.15s ease; }
 .tools-category-link:hover,
 .tools-category-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+
+/* ---------------------------------------------------------------------------
+   f5-lb-method-chooser (lbm-*): method cards, the pool settings list, the
+   member/catalogue tables, and the two-select chooser panel. Semantic tokens
+   only, per the design system.
+--------------------------------------------------------------------------- */
+.lbm-chip {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  margin-right: 0.35rem;
+}
+.lbm-family-dynamic { border-color: var(--accent); color: var(--accent); }
+.lbm-family-static { border-color: var(--border-strong); }
+.lbm-facts { margin: 0.6rem 0 0.2rem; display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 0.8rem; }
+.lbm-facts dt { color: var(--text-secondary); font-size: 0.8rem; white-space: nowrap; }
+.lbm-facts dd { margin: 0; font-size: 0.88rem; }
+.lbm-subhead { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); margin: 0.7rem 0 0.25rem; }
+.lbm-caveats ul, .lbm-observations ul, .lbm-alternatives ul { margin: 0.2rem 0 0.4rem 1.1rem; padding: 0; }
+.lbm-caveats li, .lbm-observations li { font-size: 0.85rem; margin-bottom: 0.3rem; }
+.lbm-observations li { border-left: 2px solid var(--warning); padding-left: 0.55rem; list-style: none; margin-left: -1.1rem; }
+.lbm-settings { margin: 0.5rem 0; }
+.lbm-setting { display: flex; gap: 0.6rem; font-size: 0.85rem; margin-bottom: 0.2rem; flex-wrap: wrap; }
+.lbm-setting dt { color: var(--text-secondary); min-width: 12rem; }
+.lbm-setting dd { margin: 0; }
+.lbm-setting-note { color: var(--text-secondary); }
+.lbm-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin: 0.3rem 0 0.6rem; }
+.lbm-table th { text-align: left; color: var(--text-secondary); font-weight: 500; padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--border); }
+.lbm-table td { padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+.lbm-catalog td:last-child { color: var(--text-secondary); }
+.lbm-chooser { margin-top: 1.4rem; border-top: 1px solid var(--border); padding-top: 0.9rem; }
+.lbm-chooser-row { display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+.lbm-chooser-label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: var(--text-secondary); }
+.lbm-select { background: var(--surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.88rem; min-width: 16rem; }
+.lbm-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.lbm-why { font-size: 0.9rem; margin: 0.5rem 0; }
+.lbm-alt-when { font-size: 0.85rem; color: var(--text-secondary); }
+.lbm-recommendation { margin-top: 0.6rem; }
+
+/* ---- f5-gslb-decision-flow ---------------------------------------------- */
+.gdf-chain { list-style: none; margin: 0.9rem 0 0; padding: 0; display: grid; gap: 0.7rem; }
+.gdf-step { border: 1px solid var(--border-strong); border-left: 3px solid var(--color-accent); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; }
+.gdf-step-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+.gdf-step-tier { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); }
+.gdf-step-behavior { margin: 0.45rem 0 0; font-size: 0.9rem; }
+.gdf-step-tiernote { margin: 0.35rem 0 0; font-size: 0.82rem; color: var(--text-secondary); }
+.gdf-default { border-style: dashed; }
+.gdf-tiers { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.gdf-tier-no { opacity: 0.42; text-decoration: line-through; }
+.gdf-metric { color: var(--text-secondary); }
+.gdf-pools-line { margin: 0.55rem 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+.gdf-wip-catalog { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.9rem; }
+.gdf-obs { margin-top: 0.8rem; }
+
+/* ---- f5-topology-longest-match ------------------------------------------ */
+.tlm-records { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.65rem; counter-reset: none; }
+.tlm-record { border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; }
+.tlm-record-nomatch { opacity: 0.62; }
+.tlm-record-shadowed { border-left: 3px solid var(--color-warning); }
+.tlm-record-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.88rem; }
+.tlm-not { color: var(--color-warning); font-weight: 600; }
+.tlm-bucket { color: var(--text-secondary); }
+.tlm-sortnote { margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-secondary); }
+.tlm-matchnote { margin: 0.35rem 0 0; font-size: 0.84rem; }
+.tlm-matched { color: var(--color-accent); }
+.tlm-scored, .tlm-shadow { color: var(--text-secondary); }
+.tlm-candidates, .tlm-regions { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.9rem; }
+.tlm-candidates li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; }
+.tlm-score { font-weight: 700; }
+.tlm-cand-note { color: var(--text-secondary); font-size: 0.82rem; }
+.tlm-winner-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.3rem 0 0; }
+.tlm-winner-chip { font-weight: 700; }
+.tlm-winner-score { color: var(--text-secondary); }
+.tlm-region-members { font-size: 0.82rem; color: var(--text-secondary); }

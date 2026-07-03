@@ -69,8 +69,8 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
         <section className="section roadmap-hero">
           <div className="container section-narrow">
             <p className="hero-eyebrow">{t("eyebrow")}</p>
-            <h1 className="roadmap-title">{t("title")}</h1>
-            <p className="roadmap-lede">{t("lede")}</p>
+            <h1 className="page-hero-title">{t("title")}</h1>
+            <p className="page-hero-lede">{t("lede")}</p>
             <div className="roadmap-stats">
               <Link href="/tools" className="roadmap-stat">
                 <span className="roadmap-stat-num">{liveCount}</span>

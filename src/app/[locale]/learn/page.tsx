@@ -67,10 +67,10 @@ export default async function LearnIndexPage({
         <section className="section">
           <div className="container">
             <p className="hero-eyebrow">Learn</p>
-            <h1 className="section-title" style={{ fontSize: "clamp(1.75rem, 5vw, 2.75rem)" }}>
+            <h1 className="page-hero-title">
               Network and security concepts, explained clearly.
             </h1>
-            <p className="section-body" style={{ marginBottom: "2.5rem" }}>
+            <p className="page-hero-lede" style={{ marginBottom: "2.5rem" }}>
               Practical explanations of the concepts behind the tools. Each article is written to
               build genuine understanding, not just to define a term.
             </p>

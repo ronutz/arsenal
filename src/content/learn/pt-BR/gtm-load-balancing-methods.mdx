@@ -1,0 +1,48 @@
+---
+slug: gtm-load-balancing-methods
+title: "Load Balancing no BIG-IP DNS: o Wide IP, o Pool e a Cadeia de Três Passos"
+summary: "Uma resposta GSLB é decidida duas vezes: o wide IP escolhe um pool, e o pool escolhe um membro através de uma cadeia preferred, alternate e fallback. A cadeia carrega as regras em que as pessoas tropeçam: o alternate só pode ser estático, o fallback ignora disponibilidade de propósito, e None cascateia até um agregado via BIND."
+concepts: ["gslb", "gtm", "big-ip dns", "f5", "wide ip", "load balancing", "topology"]
+relatedTools: ["f5-gslb-decision-flow", "f5-topology-longest-match"]
+relatedArticles: ["gtm-topology-records-and-longest-match", "ltm-load-balancing-methods"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+Uma resposta de resolução de nomes do BIG-IP DNS é decidida duas vezes. O wide IP recebe a consulta e seleciona um de seus pools; o pool selecionado então seleciona um membro, um virtual server, cujo endereço vira a resposta. As duas camadas usam conjuntos de métodos diferentes e regras diferentes, e a maioria das surpresas de GSLB mora na segunda.
+
+## A camada wide-IP: pool-lb-mode
+
+O `pool-lb-mode` do wide IP seleciona entre os pools anexados, e a referência tmsh delimita com clareza: a opção é relevante apenas quando múltiplos pools estão configurados. Quatro métodos estão na gramática atual, com Round Robin como padrão. Round Robin seleciona pools sequencialmente. Ratio segue os valores de ratio por pool definidos no wide IP. Topology consulta os registros de topologia (assunto do artigo companheiro). Global Availability é o método da lista ordenada: o sistema seleciona repetidamente o primeiro pool da lista enquanto ele estiver disponível, e só a indisponibilidade promove o próximo, o que faz dele a expressão natural de "site primário, depois site de DR".
+
+Textos mais antigos da referência também descrevem um quinto valor, `random`, ausente da linha de sintaxe atual; trate-o como dependente de versão e verifique na sua antes de projetar em cima dele.
+
+O wide IP também carrega as configurações que moldam a resposta: `persistence` (fixa um LDNS na resposta anterior por `ttl-persistence` segundos, padrão 3600), `last-resort-pool` (o pool usado quando todos os pools configurados se esgotam) e `failure-rcode-response` (responde falhas com um RCODE DNS como NXDOMAIN em vez de deixar cair adiante). Quando o fluxo faz algo inesperado, `load-balancing-decision-log-verbosity` existe exatamente para narrá-lo: pool-selection, pool-traversal, pool-member-selection, pool-member-traversal.
+
+## A camada de pool: a cadeia de três passos
+
+Dentro do pool selecionado, a escolha do membro percorre uma cadeia de até três métodos, um por atributo tmsh. O `load-balancing-mode` é o método preferred, tentado primeiro, e pode ser estático ou dinâmico; o padrão é Round Robin. Se ele falha em retornar um recurso válido, o manual explica por que isso geralmente acontece: o sistema provavelmente não conseguiu adquirir as métricas adequadas para balancear. E é exatamente por isso que o segundo passo, `alternate-mode` (padrão Round Robin), só pode ser estático, nas palavras do manual. A gramática tmsh expressa a mesma regra como uma lista de tokens: doze métodos são admitidos como alternate, e todo método medido entre eles, Packet Rate, Virtual Server Capacity, Virtual Server Score, tira seus números de estatísticas do lado servidor, nunca de sondar o caminho até o LDNS solicitante. Os métodos que precisam de métricas de caminho, Round Trip Time, Completion Rate, Fewest Hops, Quality of Service, são os que a gramática do alternate deixa de fora, porque falhariam pelo mesmo motivo que o preferred acabou de falhar.
+
+O terceiro passo é o que se deve memorizar. Se o alternate também falha, roda o `fallback-mode`, e o manual declara sua propriedade definidora sem rodeios: para garantir que o BIG-IP DNS retorne uma resposta à requisição, o método de fallback ignora o status de disponibilidade do recurso. Uma resposta produzida pela camada de fallback pode apontar para um membro que todos os monitores consideram fora. Isso não é um bug; é o projeto documentado, trocando correção pela garantia de uma resposta. O fallback padrão é Return to DNS, que devolve a consulta ao DNS local para resolução, e a configuração `verify-member-availability` do pool (padrão habilitada), junto da opção Respect Fallback Dependency da GUI, existe para administradores que querem disponibilidade verificada mesmo nessa camada.
+
+## None, e a cascata
+
+`None` é menos um método e mais uma instrução de roteamento pela cadeia. Como alternate, pula direto para o fallback. Como fallback, envia a requisição ao próximo pool disponível; e se não há mais pools, o resultado é o mesmo de Return to DNS. O manual completa a cascata com a frase que surpreende gente em capturas de pacote: se todos os pools estão indisponíveis, o BIG-IP DNS retorna um agregado dos endereços IP de todos os membros de todos os pools usando BIND. O padrão todo-None também é o failover de pool idiomático: configure só o método preferred e deixe alternate e fallback em None, e um pool cujo preferred falha simplesmente cede ao próximo pool.
+
+Dois métodos especiais a mais pertencem a essa parte da história. Drop Packet não faz nada com a requisição e a descarta; o manual nota que ele é mais frequentemente escolhido como alternate, para garantir que o sistema não entregue um endereço de um recurso indisponível. Fallback IP retorna o endereço configurado no atributo `fallback-ip` do pool, sem monitoração, como resposta de disaster recovery; uma cadeia que seleciona o método enquanto `fallback-ip` ainda guarda o padrão `::` configurou uma resposta vazia, exatamente o tipo de fiação que a ferramenta de fluxo de decisão sinaliza.
+
+## Os métodos dinâmicos, e o dynamic-ratio
+
+A família dinâmica lê medições: Round Trip Time, Completion Rate e Fewest Hops medem o caminho entre um data center e o LDNS solicitante; CPU, Kilobytes/Second, Least Connections e Packet Rate leem estatísticas do lado servidor; Quality of Service combina fatores ponderados em uma pontuação, usando os coeficientes `qos-*` do pool (padrões: rtt 50, capacidade de link 30, hit ratio 5, kilobytes/segundo 3, packet rate 1, o resto 0), com empates caindo em Round Robin.
+
+Por padrão um método dinâmico é vencedor-leva-tudo: o único membro com a melhor métrica recebe o tráfego. A opção `dynamic-ratio` do pool muda a aritmética, e o exemplo do manual torna isso concreto: com round trip times de 50 e 100 microssegundos e dynamic-ratio desabilitado, toda requisição vai ao membro mais rápido; habilitado, os valores viram razões e o membro mais rápido apenas responde duas vezes mais. A referência tmsh delimita a opção a oito modos (completion-rate, fewest-hops, kilobytes-per-second, least-connections, lowest-round-trip-time, quality-of-service, virtual-server-capacity, virtual-server-score); habilitada sob qualquer outro, não tem efeito documentado.
+
+## As regras que pareiam métodos com configurações
+
+Três pareamentos do manual completam o quadro operacional. Global Availability na camada de pool caminha sua lista ordenada até o próximo recurso apenas quando o método de fallback é None; qualquer outro fallback intercepta o esgotamento. Static Persist mapeia consistentemente um endereço LDNS ao mesmo membro disponível pela duração de uma sessão, o primo em forma de método da configuração `persistence` do wide IP. E quando Topology roda nas duas camadas, wide IP escolhendo pools e pools escolhendo membros, a instrução do manual é deixar o fallback de cada pool em None: caso contrário o sistema pode enviar uma requisição a um pool sem membros disponíveis e cair no BIND, enquanto None deixa um pool vazio passar a requisição a outro pool.
+
+O [explicador do fluxo de decisão GSLB](/tools/f5-gslb-decision-flow) renderiza tudo isso a partir de uma configuração colada: a cadeia resolvida com os padrões rotulados, a semântica de cada camada e as verificações acima aplicadas deterministicamente. Para o que acontece dentro do método Topology, o [pontuador longest-match](/tools/f5-topology-longest-match) e seu artigo companheiro continuam a história.
+
+Toda a semântica de métodos, padrões e gramática deste artigo vem das referências tmsh `gtm pool a` e `gtm wideip a` e do capítulo do manual de Load Balancing do BIG-IP DNS sobre balanceamento e disponibilidade de recursos, conforme vinculado nas listas de fontes das ferramentas.

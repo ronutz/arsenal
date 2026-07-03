@@ -79,6 +79,12 @@ import F5xcServicePolicyExplainerTool from "@/components/F5xcServicePolicyExplai
 import { manifest as f5xcServicePolicyManifest } from "@/lib/tools/f5xc-service-policy-explainer";
 import PersistenceMethodExplainerTool from "@/components/PersistenceMethodExplainerTool";
 import { manifest as persistManifest } from "@/lib/tools/f5-persistence-method-explainer";
+import LbMethodChooserTool from "@/components/LbMethodChooserTool";
+import GslbDecisionFlowTool from "@/components/GslbDecisionFlowTool";
+import TopologyLongestMatchTool from "@/components/TopologyLongestMatchTool";
+import { manifest as lbMethodManifest } from "@/lib/tools/f5-lb-method-chooser";
+import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
+import { manifest as topoMatchManifest } from "@/lib/tools/f5-topology-longest-match";
 import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
 import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
@@ -265,6 +271,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-persistence-method-explainer": {
     Component: PersistenceMethodExplainerTool,
     sources: persistManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-lb-method-chooser": {
+    Component: LbMethodChooserTool,
+    sources: lbMethodManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-gslb-decision-flow": {
+    Component: GslbDecisionFlowTool,
+    sources: gslbFlowManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-topology-longest-match": {
+    Component: TopologyLongestMatchTool,
+    sources: topoMatchManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-cipher-string-expander": {
     Component: F5CipherStringExpanderTool,

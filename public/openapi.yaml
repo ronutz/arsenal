@@ -28,6 +28,7 @@ servers:
 tags:
   - name: Encoding
   - name: F5 Distributed Cloud (XC)
+  - name: F5 GTM, AFM & APM
   - name: F5 LTM, iRules & platform
   - name: HTTP & web
   - name: Hashing
@@ -961,6 +962,73 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5-gslb-decision-flow:
+    get:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_gslb_decision_flow
+      summary: GSLB decision-flow explainer
+      description: >-
+        The BIG-IP DNS two-tier decision, explained: pool selection at the wide IP, then the
+        preferred, alternate and fallback chain inside the pool, with the grammar validated and the
+        manual's rules cross-checked. Standards: F5 BIG-IP DNS / GTM. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - gtm pool a pool_dc1 { load-balancing-mode topology }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_gslb_decision_flow_post
+      summary: GSLB decision-flow explainer (POST)
+      description: >-
+        The BIG-IP DNS two-tier decision, explained: pool selection at the wide IP, then the
+        preferred, alternate and fallback chain inside the pool, with the grammar validated and the
+        manual's rules cross-checked. Standards: F5 BIG-IP DNS / GTM. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - gtm pool a pool_dc1 { load-balancing-mode topology }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5-irules-event-order:
     get:
       tags:
@@ -1011,6 +1079,73 @@ paths:
           text/plain:
             schema:
               type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-lb-method-chooser:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_lb_method_chooser
+      summary: LB-method chooser
+      description: >-
+        Paste an ltm pool and get its load-balancing method explained in F5's own terms, with
+        cross-checks against the rest of the pool, or answer two questions and get a sourced
+        recommendation. All in your browser. Standards: F5 LTM load-balancing methods. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - ltm pool web_pool { load-balancing-mode least-connections-member }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_lb_method_chooser_post
+      summary: LB-method chooser (POST)
+      description: >-
+        Paste an ltm pool and get its load-balancing method explained in F5's own terms, with
+        cross-checks against the rest of the pool, or answer two questions and get a sourced
+        recommendation. All in your browser. Standards: F5 LTM load-balancing methods. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - ltm pool web_pool { load-balancing-mode least-connections-member }
       responses:
         '200':
           description: The computed result.
@@ -1269,6 +1404,71 @@ paths:
               type: string
               examples:
                 - ltm virtual vip { destination 10.0.0.1:80 pool web_pool }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-topology-longest-match:
+    get:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_topology_longest_match
+      summary: GTM topology longest-match scorer
+      description: >-
+        Topology decisions computed the way BIG-IP DNS computes them: the Longest Match sort with
+        per-record rationale, the scoring walk with shadowing shown, highest score wins, ties
+        round-robin. Standards: F5 GTM topology records. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - 'gtm topology ldns: subnet 10.0.0.0/8 server: pool /Common/POOL_A { score 100 }'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_topology_longest_match_post
+      summary: GTM topology longest-match scorer (POST)
+      description: >-
+        Topology decisions computed the way BIG-IP DNS computes them: the Longest Match sort with
+        per-record rationale, the scoring walk with shadowing shown, highest score wins, ties
+        round-robin. Standards: F5 GTM topology records. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - 'gtm topology ldns: subnet 10.0.0.0/8 server: pool /Common/POOL_A { score 100 }'
       responses:
         '200':
           description: The computed result.

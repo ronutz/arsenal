@@ -44,6 +44,74 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "13:36",
+    kind: "feature",
+    title: "Calmer page headers across the site",
+    body:
+      "Every top-level page now opens with the same header format the Learn page pioneered: titles cap at a comfortable 2.75rem instead of the 3 to 4.5rem the section pages used to run, and the intro line reads at body-text scale. One shared style now carries the look, replacing three copies of an inline override and eight page-specific variants. The homepage landing hero keeps its own scale on purpose.",
+  },
+  {
+    date: "2026-07-03",
+    time: "12:57",
+    kind: "content",
+    title: "Two new Learn articles: the GSLB chain and the topology sort",
+    body:
+      "BIG-IP DNS Load Balancing: the Wide IP, the Pool, and the Three-Step Chain covers both decision tiers and the chain rules people trip over: the alternate can only be static, the fallback ignores availability on purpose, and None cascades all the way to a BIND aggregate. GTM Topology Records: Longest Match Is a Sort, Not the Pick walks the record anatomy, the verified sorting ladder, and the scoring model with shadowing, including the worked example the scorer loads as its one-click demo. Both in English and Portuguese, grounded in the tmsh references, the Load Balancing manual, and K10721.",
+  },
+  {
+    date: "2026-07-03",
+    time: "12:54",
+    kind: "tool",
+    tools: ["f5-gslb-decision-flow"],
+    title: "New tool: GSLB decision-flow explainer",
+    body:
+      "Paste gtm wideip and gtm pool stanzas and the two-tier BIG-IP DNS decision renders as it really runs: pool selection at the wide IP, then each pool's preferred, alternate and fallback chain in F5's own terms, with the grammar validated per tier, the fallback-ignores-availability rule stated on every resolved chain, and the manual's cross-checks applied, from Fallback IP wiring to the topology-at-both-tiers warning. A method name explains one method; the word methods lists both catalogues.",
+  },
+  {
+    date: "2026-07-03",
+    time: "12:54",
+    kind: "tool",
+    tools: ["f5-topology-longest-match"],
+    title: "New tool: GTM topology longest-match scorer",
+    body:
+      "Longest Match is a sort, not the pick, and this tool computes it the way BIG-IP DNS does: the records sort by source statement, destination statement and weight, then the scoring walk assigns each candidate its score from the first matching record, shadowing the rest. Paste topology records and a source line to see the sorted list with per-record rationale, which record scored which candidate, and why a heavy wildcard really can beat a light /32.",
+  },
+  {
+    date: "2026-07-03",
+    time: "12:35",
+    kind: "infra",
+    tools: ["f5xc-service-policy-explainer", "f5-bigip-license-explainer", "f5-awaf-declarative-policy-explainer"],
+    title: "Paste boxes now wrap long lines",
+    body:
+      "The input boxes on the F5XC service-policy explainer, the BIG-IP license explainer, and the Advanced WAF policy explainer were using the terminal-output text style, which never wraps: a long pasted line ran off the right edge behind a scrollbar. They now use the same wrapping paste-box style as every other tool. The dig and nslookup explainers keep the non-wrapping style on purpose, since aligned terminal output is the point there.",
+  },
+  {
+    date: "2026-07-03",
+    time: "12:09",
+    kind: "infra",
+    title: "robots.txt now exists",
+    body:
+      "The footer's machine-readable row has linked robots.txt since the row shipped, but the file itself was never created, so the URL answered 404. It now serves a plain allow-all policy and points crawlers at llms.txt, the full machine-readable index.",
+  },
+  {
+    date: "2026-07-03",
+    time: "11:43",
+    kind: "tool",
+    tools: ["f5-lb-method-chooser"],
+    title: "New tool: LB-method chooser",
+    body:
+      "Paste an ltm pool and get its load-balancing method explained in F5's own terms, with cross-checks against the rest of the pool: ratio weights the mode ignores, missing connection limits that weighted modes require, slow-ramp pairing, priority-group activation, and the ignore-persisted-weight scope. Covers all 19 documented modes, takes a bare method name or the word methods for the full catalogue, and answers two questions with a sourced recommendation. Grounded in the tmsh ltm pool reference, K42275060, and K6406. Runs entirely in the browser.",
+  },
+  {
+    date: "2026-07-03",
+    time: "11:43",
+    kind: "content",
+    title: "Two new Learn articles: load-balancing methods and virtual server types",
+    body:
+      "BIG-IP Load-Balancing Methods, and What Each One Weighs walks the 19 modes along the two axes that organize them, static or dynamic and member or node, including the ratio rule from K6406 that explains half the field surprises. BIG-IP Virtual Server Types, and What Each One Actually Does covers Standard through Reject and the specialists, from the full-proxy handshake to the FastL4 packet path, grounded in K93100324 and K8082. Both in English and Portuguese.",
+  },
+  {
+    date: "2026-07-03",
     time: "10:35",
     kind: "content",
     title: "On building new tools, easier to read",

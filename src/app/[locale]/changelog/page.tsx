@@ -87,8 +87,8 @@ export default async function ChangelogPage({ params }: { params: Promise<{ loca
           <section className="colophon-hero">
             <div className="container colophon-container">
               <p className="hero-eyebrow">{t("eyebrow")}</p>
-              <h1 className="colophon-title">{t("title")}</h1>
-              <p className="colophon-lede">{t("lede", { count: toolCount })}</p>
+              <h1 className="page-hero-title">{t("title")}</h1>
+              <p className="page-hero-lede">{t("lede", { count: toolCount })}</p>
             </div>
           </section>
 
