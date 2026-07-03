@@ -51,6 +51,7 @@ export default async function ToolsPage({
           {/* Hero */}
           <section className="certs-hero">
             <div className="container certs-container">
+              <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
             </div>

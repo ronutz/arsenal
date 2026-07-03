@@ -64,6 +64,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-dos-vector-explainer", href: "/tools/f5-dos-vector-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-irules-command-context", href: "/tools/f5-irules-command-context", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-irules-vs-ltm-policy", href: "/tools/f5-irules-vs-ltm-policy", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-packet-filter-explainer", href: "/tools/f5-packet-filter-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-service-check-date", href: "/tools/f5-service-check-date", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-bigip-license-explainer", href: "/tools/f5-bigip-license-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-cipher-string-expander", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },

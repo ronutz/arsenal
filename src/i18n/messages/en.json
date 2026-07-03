@@ -2528,7 +2528,29 @@
       "sketchTitle": "Policy sketch (grammar per the vendor's 12.1 examples; validate with tmsh)",
       "summaryTitle": "Summary",
       "precedenceTitle": "Best-match precedence (head of the built-in table)"
-    }
+    },
+    "f5-packet-filter-explainer": {
+      "name": "BIG-IP packet-filter explainer",
+      "blurb": "Paste net packet-filter rules for the ordered first-match walk with the man page's own semantics, shadow detection, and the platform context every filter decision sits inside. Add a sim: line and an honest three-state simulator answers which rule matches your packet.",
+      "inputLabel": "net packet-filter stanzas, optional sim: line",
+      "inputPlaceholder": "net packet-filter spoof_blocker {\n    order 5\n    action discard\n    vlan external\n    rule \"(src net 172.19.255.0/24)\"\n}\nsim: tcp src 172.19.255.7 dst 172.19.254.80 dport 443 vlan external",
+      "runsLocally": "Runs locally in your browser. Nothing you paste leaves this page.",
+      "postureNote": "Explains and simulates your own filter walk; the configuration is parsed, never executed.",
+      "example": "Example",
+      "clear": "Clear",
+      "walkTitle": "Evaluation order (single global list, lowest order first)",
+      "allVlans": "all VLANs",
+      "emptyExpression": "(empty expression: matches ALL packets)",
+      "observationsTitle": "Observations",
+      "simTitle": "Simulation walk",
+      "outcomeTitle": "Outcome",
+      "contextTitle": "Platform context (always in force)",
+      "vMatch": "match",
+      "vNoMatch": "no match",
+      "vVlanSkip": "VLAN skip",
+      "vUnknown": "cannot evaluate"
+    },
+    "eyebrow": "Tools"
   },
   "privacy_page": {
     "eyebrow": "Privacy",

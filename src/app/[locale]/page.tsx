@@ -62,8 +62,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="hero">
           <div className="container">
             <p className="hero-eyebrow">{t("hero.eyebrow")}</p>
-            <h1 className="hero-title">{t("hero.title")}</h1>
-            <p className="hero-subtitle">{t("hero.subtitle")}</p>
+            <h1 className="page-hero-title">{t("hero.title")}</h1>
+            <p className="page-hero-lede">{t("hero.subtitle")}</p>
             <div className="hero-cta">
               <a href="#cidr" className="btn btn-primary">
                 {t("hero.ctaPrimary")}

@@ -1,0 +1,48 @@
+---
+slug: bigip-packet-filters
+title: "Packet Filters: O Checkpoint Antes de Tudo, e a Chave Que Vem Desligada"
+summary: "Packet filters do BIG-IP são uma política de acesso baseada em BPF sobre o tráfego de entrada, avaliada como uma lista global única em ordem ascendente, primeira correspondência terminal vence. A chave mestra vem desabilitada, exceções trusted superam qualquer regra que você escreva, ARP e os ICMPs importantes passam direto por padrão, conexões estabelecidas são invisíveis para ela, e a porta de gerenciamento nunca a encontra. E mais: a partir da v16 existe um segundo objeto, sem relação, usando o mesmo nome."
+concepts: ["packet filters", "bpf", "tcpdump", "f5", "big-ip", "segurança de rede", "tmos"]
+relatedTools: ["f5-packet-filter-explainer"]
+relatedArticles: ["bigip-syn-flood-protection"]
+category: networking
+order: 4
+status: reviewed
+updated: "2026-07-03"
+---
+
+Antes de virtual servers, antes de iRules, antes de quase tudo sobre o que um engenheiro de entrega de aplicações normalmente raciocina, um BIG-IP pode triar pacotes de entrada contra uma lista de regras escrita na própria linguagem de filtros do tcpdump. Essa é a camada de packet filters, documentada no capítulo Packet Filters do guia TMOS Routing Administration e no man page tmsh de `net packet-filter`, e o capítulo resolve duas questões de escopo imediatamente: packet filters aplicam-se apenas ao tráfego de entrada, e regras de packet filter não têm relação com iRules. A referência de eventos de iRules concorda pelo outro lado, listando FLOW_INIT como disparando depois dos packet filters.
+
+## Uma lista, ordem ascendente, primeira correspondência terminal
+
+As regras vivem em uma lista global única. Cada regra carrega quatro atributos obrigatórios, name, order, action e expressão, e a semântica de order do man page não deixa nada para interpretação: duas regras não podem compartilhar um valor de order, o sistema avalia o menor primeiro, e seu próprio exemplo trabalhado vale citar pela forma, cinco regras numeradas 500, 100, 300, 200, 201 avaliam como 100, 200, 201, 300, 500.
+
+Três das quatro ações são terminais. Accept aceita o pacote e para de avaliar; discard o descarta silenciosamente e para; reject o descarta e avisa o remetente, com a forma da resposta governada por uma opção global, uma mensagem ICMP tipo 3 código 13 de administrativamente proibido quando Send ICMP Error on Packet Reject está habilitado, um reject dependente de protocolo caso contrário. A quarta ação, continue, é a interessante: ela reconhece o pacote para logging ou estatística e não toma decisão alguma de tratamento, a avaliação segue para a próxima regra. É o único jeito de um pacote tocar duas regras.
+
+A expressão é obrigatória mas pode ser vazia, e o man page é direto sobre o que isso significa: uma rule vazia casa com TODOS os pacotes. Coloque uma ação terminal atrás de uma expressão vazia e cada regra depois dela, dentro do escopo de VLAN a que se aplica, é decoração. O conselho de sequenciamento da própria F5 no mesmo man page: dê às regras mais específicas os menores orders, e prefira uma expressão com vários critérios a várias regras com um critério cada, o motor avalia a primeira com mais eficiência.
+
+## A chave que vem desligada
+
+A propriedade global Packet Filtering vem Disabled por padrão, e o capítulo declara a consequência sem rodeios: quando você desabilita essa configuração, nenhuma configuração ou regra de packet filter opera, e o sistema BIG-IP permite todo o tráfego por padrão. Uma lista de regras lindamente ordenada sob uma chave mestra desabilitada não filtra nada. A global companheira, Unhandled Packet Action, decide o destino de pacotes que nenhuma regra casou, padrão Accept, e o capítulo anexa um aviso a mudá-la: antes de virar para Discard ou Reject, tenha certeza de que tudo que você quer aceito já casa com uma regra de accept, porque uma postura default-deny com uma lista de regras incompleta é uma indisponibilidade com papelada.
+
+## O tráfego que passa direto pelas suas regras
+
+Várias classes de tráfego nunca encontram suas regras, e conhecê-las é a maior parte da história operacional.
+
+Exceções trusted vêm primeiro, literalmente. A referência de `net packet-filter-trusted` declara que o processamento do tráfego trusted ocorre antes da avaliação da lista de regras, tornando impossível sobrepor essa opção e bloquear certos tipos de tráfego com uma regra de packet filter. Trusted vence discussões que você nem sabia que estava tendo.
+
+Exceções de protocolo vêm ligadas por padrão: ARP é sempre aceito, assim como quatro tipos de ICMP IPv4 que o capítulo nomeia, UNREACH, SOURCEQUENCH, REDIRECT e TIMEXCEED. Ambas as configurações podem ser desmarcadas, mas até lá, uma regra que parece bloquear ICMP não está bloqueando esses quatro.
+
+Conexões estabelecidas também são isentas por padrão, de um jeito que surpreende: a opção Filter Established Connections vem desmarcada, então as regras avaliam tráfego que inicia conexões, não cada pacote de cada fluxo. A nota da F5 sobre habilitá-la é franca, fazer isso tipicamente não melhora a segurança e pode impactar o desempenho do sistema.
+
+E uma interface é isenta por projeto: o próprio exemplo de acesso de gerenciamento do man page nota que a porta de gerenciamento não é afetada por configuração alguma de packet filter. Trancar-se para fora de self-IPs do lado TMM é possível; trancar-se para fora da mgmt via packet filters, não.
+
+Uma nota de leitura cuidadosa sobre o próprio capítulo: sua prosa definicional diz que o valor None nas listas de exceção de MAC, IP e VLAN significa que o tráfego de todas as origens fica sujeito à filtragem, o padrão, enquanto as tabelas de referência rápida do procedimento passo a passo usam redação invertida para o mesmo valor. As seções definicionais, o padrão None e a postura de aceitar por padrão concordam entre si; leia a prosa, não as tabelas.
+
+## A colisão de nomes
+
+A partir da versão 16 existe um segundo objeto chamado packet filter: `security packet-filter policy`, um mecanismo do lado AFM para filtrar extension headers de IPv6, com suas próprias regras, seu próprio logging, e nenhuma relação com a lista `net packet-filter` que este artigo descreve. Dois objetos, um nome, módulos diferentes, trabalhos diferentes. Quando um colega diz packet filter em um sistema v16+, vale uma pergunta de esclarecimento.
+
+## Lendo os seus
+
+O [explicador de packet filters](/tools/f5-packet-filter-explainer) caminha por uma lista de regras colada com exatamente a semântica acima, sinaliza regras sombreadas deterministicamente, e simula um pacote pela caminhada com um avaliador de três estados que para honestamente quando uma expressão sai do seu subconjunto de BPF. As expressões em si são a linguagem do tcpdump; o [construtor de tcpdump](/tools/f5-bigip-tcpdump-builder) a fala fluentemente, e o pcap-filter(7) continua sendo a casa da gramática.

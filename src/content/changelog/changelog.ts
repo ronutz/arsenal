@@ -44,11 +44,36 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "17:23",
+    kind: "feature",
+    title: "Homepage joins the page-hero standard; Tools index gets its eyebrow",
+    body:
+      "The landing hero now uses the same title and lede scale as every other top-level page, the one page deliberately left out of the header standardization pending an explicit call - the reading-comfort scale won. The call-to-action row inherits the spacing the old subtitle carried, with no inline overrides. And the Tools index, which had the standard title but not the small cyan section marker the Learn, Changelog, and Roadmap pages carry, now opens with one: TOOLS above the tagline, translated like its siblings.",
+  },
+  {
+    date: "2026-07-03",
     time: "16:34",
     kind: "content",
     title: "Learn article: CMP, the cores you paid for",
     body:
       "The article behind the new iRules pair, in English and Portuguese: one TMM per core, connections disaggregated across them, and demotion meaning every connection for a virtual serialized onto a single TMM. The demotion list per the CMP Compatibility page: global variables (validator catches them as of v10) with static:: as the documented cure, plus the two per-TMM traps that bite without demoting - RULE_INIT-generated keys and statistics profiles. Closes with the persistence timeline for the folklore, and the LTM-policy escape hatch for match-and-act logic that never needed Tcl.",
+  },
+  {
+    date: "2026-07-03",
+    time: "16:58",
+    kind: "content",
+    title: "Learn article: packet filters, the checkpoint before everything",
+    body:
+      "The rich companion to the new tool, in English and Portuguese: one global list in ascending order, first terminal match wins, continue as the only action that lets a packet touch two rules, and an empty expression matching everything. Then the part that decides real outcomes: the master switch ships disabled and off means allow-all, trusted exemptions outrank every rule and cannot be overridden, ARP and four important ICMP types walk past by default, established connections are invisible to the filter unless you enable the option F5 itself says rarely helps, and the management port never meets any of it. Closes with the chapter's own prose-versus-tables wording inversion as a careful-reading note, and the v16 security packet-filter policy name collision.",
+  },
+  {
+    date: "2026-07-03",
+    time: "16:56",
+    kind: "tool",
+    tools: ["f5-packet-filter-explainer"],
+    title: "New tool: BIG-IP packet-filter explainer",
+    body:
+      "The layer that runs before almost everything else, walked with the man page's own semantics: a single global list, lowest order first (the reference's worked 500/100/300/200/201 sequence is a golden vector), unique orders enforced, evaluation stopping on accept, discard, or reject, continue as the only non-terminal action, and an empty rule expression matching ALL packets, with VLAN-scope-aware shadow detection. Add a sim: line and an honest three-state BPF-subset simulator answers which rule matches, stopping the walk rather than guessing when an expression leaves the evaluated subset. The context panel carries what the chapter says always applies: the master switch is disabled by default and off means all traffic allowed, trusted exemptions precede rules and cannot be overridden, ARP and the important ICMP types are exempt by default, established connections are not filtered by default, and the management interface is untouched by any of it.",
   },
   {
     date: "2026-07-03",

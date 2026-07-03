@@ -2528,7 +2528,29 @@
       "sketchTitle": "Esboço de policy (gramática dos exemplos 12.1 do fabricante; valide com tmsh)",
       "summaryTitle": "Resumo",
       "precedenceTitle": "Precedência do best-match (topo da tabela embutida)"
-    }
+    },
+    "f5-packet-filter-explainer": {
+      "name": "Explicador de packet filters do BIG-IP",
+      "blurb": "Cole regras net packet-filter para a caminhada de primeira correspondência ordenada com a semântica do próprio man page, detecção de sombreamento, e o contexto de plataforma dentro do qual cada decisão de filtro vive. Adicione uma linha sim: e um simulador honesto de três estados responde qual regra casa com seu pacote.",
+      "inputLabel": "Estâncias net packet-filter, linha sim: opcional",
+      "inputPlaceholder": "net packet-filter spoof_blocker {\n    order 5\n    action discard\n    vlan external\n    rule \"(src net 172.19.255.0/24)\"\n}\nsim: tcp src 172.19.255.7 dst 172.19.254.80 dport 443 vlan external",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você cola sai desta página.",
+      "postureNote": "Explica e simula a caminhada do seu próprio filtro; a configuração é interpretada, nunca executada.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "walkTitle": "Ordem de avaliação (lista global única, menor order primeiro)",
+      "allVlans": "todas as VLANs",
+      "emptyExpression": "(expressão vazia: casa com TODOS os pacotes)",
+      "observationsTitle": "Observações",
+      "simTitle": "Caminhada da simulação",
+      "outcomeTitle": "Resultado",
+      "contextTitle": "Contexto de plataforma (sempre em vigor)",
+      "vMatch": "casou",
+      "vNoMatch": "não casou",
+      "vVlanSkip": "pulo de VLAN",
+      "vUnknown": "não avaliável"
+    },
+    "eyebrow": "Ferramentas"
   },
   "privacy_page": {
     "eyebrow": "Privacidade",

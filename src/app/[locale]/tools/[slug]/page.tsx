@@ -85,12 +85,14 @@ import TopologyLongestMatchTool from "@/components/TopologyLongestMatchTool";
 import DosVectorExplainerTool from "@/components/DosVectorExplainerTool";
 import IrulesCommandContextTool from "@/components/IrulesCommandContextTool";
 import IrulesVsLtmPolicyTool from "@/components/IrulesVsLtmPolicyTool";
+import PacketFilterExplainerTool from "@/components/PacketFilterExplainerTool";
 import { manifest as lbMethodManifest } from "@/lib/tools/f5-lb-method-chooser";
 import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
 import { manifest as topoMatchManifest } from "@/lib/tools/f5-topology-longest-match";
 import { manifest as dosVectorManifest } from "@/lib/tools/f5-dos-vector-explainer";
 import { manifest as irulesCtxManifest } from "@/lib/tools/f5-irules-command-context";
 import { manifest as irulesPolManifest } from "@/lib/tools/f5-irules-vs-ltm-policy";
+import { manifest as packetFilterManifest } from "@/lib/tools/f5-packet-filter-explainer";
 import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
 import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
@@ -301,6 +303,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-irules-vs-ltm-policy": {
     Component: IrulesVsLtmPolicyTool,
     sources: irulesPolManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-packet-filter-explainer": {
+    Component: PacketFilterExplainerTool,
+    sources: packetFilterManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-cipher-string-expander": {
     Component: F5CipherStringExpanderTool,

@@ -1,0 +1,48 @@
+---
+slug: bigip-packet-filters
+title: "Packet Filters: The Checkpoint Before Everything, and the Switch That Ships Off"
+summary: "BIG-IP packet filters are a BPF-based access policy on incoming traffic, evaluated as one global list in ascending order, first terminal match wins. The master switch ships disabled, trusted exemptions outrank every rule you write, ARP and the important ICMPs walk past by default, established connections are invisible to it, and the management port never meets it at all. Also: as of v16 there is a second, unrelated object wearing the same name."
+concepts: ["packet filters", "bpf", "tcpdump", "f5", "big-ip", "network security", "tmos"]
+relatedTools: ["f5-packet-filter-explainer"]
+relatedArticles: ["bigip-syn-flood-protection"]
+category: networking
+order: 4
+status: reviewed
+updated: "2026-07-03"
+---
+
+Before virtual servers, before iRules, before nearly everything an application delivery engineer usually reasons about, a BIG-IP can screen incoming packets against a rule list written in tcpdump's own filter language. That is the packet filter layer, documented in the TMOS Routing Administration guide's Packet Filters chapter and the tmsh `net packet-filter` man page, and the chapter settles two scoping questions immediately: packet filters apply to incoming traffic only, and packet filter rules are unrelated to iRules. The iRules event reference agrees from the other side, listing FLOW_INIT as firing after packet filters.
+
+## One list, ascending order, first terminal match
+
+Rules live in a single global list. Each rule carries four mandatory attributes, name, order, action, and expression, and the man page's order semantics leave nothing to interpretation: no two rules may share an order value, the system evaluates the lowest first, and its own worked example is worth quoting by shape, five rules numbered 500, 100, 300, 200, 201 evaluate as 100, 200, 201, 300, 500.
+
+Three of the four actions are terminal. Accept takes the packet and stops evaluating; discard drops it silently and stops; reject drops it and tells the sender, with the reply's shape governed by a global option, an ICMP type 3 code 13 administratively-prohibited message when Send ICMP Error on Packet Reject is enabled, a protocol-dependent reject otherwise. The fourth action, continue, is the interesting one: it acknowledges the packet for logging or statistics and makes no handling decision at all, evaluation proceeds to the next rule. It is the only way a packet touches two rules.
+
+The expression is mandatory but may be empty, and the man page is blunt about what that means: an empty rule matches ALL packets. Put a terminal action behind an empty expression and every rule after it, within the VLAN scope it applies to, is decoration. F5's own sequencing advice in the same man page: give the most specific rules the lowest orders, and prefer one expression with several criteria over several rules with one criterion each, the engine evaluates the former more efficiently.
+
+## The switch that ships off
+
+The global Packet Filtering property defaults to Disabled, and the chapter states the consequence without hedging: when you disable this setting, no packet filter settings or packet filter rules operate, and the BIG-IP system allows all traffic by default. A beautifully ordered rule list under a disabled master switch filters nothing. The companion global, Unhandled Packet Action, decides the fate of packets no rule matched, default Accept, and the chapter attaches a warning to changing it: before flipping to Discard or Reject, be certain everything you want accepted already matches an accept rule, because a default-deny posture with an incomplete rule list is an outage with paperwork.
+
+## The traffic that walks past your rules
+
+Several classes of traffic never meet your rules at all, and knowing them is most of the operational story.
+
+Trusted exemptions come first, literally. The `net packet-filter-trusted` reference states that processing of trusted traffic occurs before rule list evaluation, making it impossible to override this option and mask out certain types of traffic with a packet filter rule. Trusted wins arguments you did not know you were having.
+
+Protocol exemptions are on by default: ARP is always accepted, and so are four IPv4 ICMP types the chapter names, UNREACH, SOURCEQUENCH, REDIRECT, and TIMEXCEED. Both settings can be cleared, but until they are, a rule that appears to block ICMP is not blocking those four.
+
+Established connections are exempt by default too, in a way that surprises people: the Filter Established Connections option ships unchecked, so rules evaluate connection-initiating traffic, not every packet of every flow. F5's note on enabling it is candid, doing so does not typically enhance security and can impact system performance.
+
+And one interface is exempt by design: the man page's own management-access example notes that the management port is not affected by any packet filter configuration. Locking yourself out of TMM-side self-IPs is possible; locking yourself out of mgmt via packet filters is not.
+
+One careful-reading note for the chapter itself: its definitional prose says a value of None on the MAC, IP, and VLAN exemption lists means traffic from all sources is subject to filtering, the default, while the step-by-step enabling procedure's quick-reference tables use inverted wording for the same value. The definitional sections, the None default, and the accept-by-default posture agree with each other; read the prose, not the tables.
+
+## The name collision
+
+As of version 16 there is a second object called a packet filter: `security packet-filter policy`, an AFM-side mechanism for filtering IPv6 extension headers, with its own rules, its own logging, and no relationship to the `net packet-filter` list this article describes. Two objects, one name, different modules, different jobs. When a colleague says packet filter on a v16+ system, it is worth one clarifying question.
+
+## Reading yours
+
+The [packet-filter explainer](/tools/f5-packet-filter-explainer) walks a pasted rule list with exactly the semantics above, flags shadowed rules deterministically, and simulates a packet through the walk with a three-state evaluator that stops honestly when an expression leaves its BPF subset. The expressions themselves are tcpdump's language; the [tcpdump builder](/tools/f5-bigip-tcpdump-builder) speaks it fluently, and pcap-filter(7) remains the grammar's home.

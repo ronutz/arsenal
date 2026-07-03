@@ -98,6 +98,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  margin-top: 2rem; /* spacing formerly carried by .hero-subtitle (D-84 homepage fold-in) */
 }
 
 /* --- Buttons --- */
@@ -7639,3 +7640,10 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .ivp-verdict.ivp-verify { border-color: var(--color-warning); color: var(--color-warning); }
 .ivp-verdict.ivp-keep { color: var(--text-secondary); }
 .ivp-sketch { white-space: pre; overflow-x: auto; padding: 0.6rem 0.75rem; font-size: 0.8rem; }
+
+/* ---- f5-packet-filter-explainer ------------------------------------------- */
+.pfe-walk { padding-left: 1.25rem; }
+.pfe-verdict.pfe-match { border-color: var(--color-success, #22c55e); color: var(--color-success, #22c55e); }
+.pfe-verdict.pfe-nomatch { color: var(--text-secondary); }
+.pfe-verdict.pfe-skip { color: var(--text-secondary); font-style: italic; }
+.pfe-verdict.pfe-unknown { border-color: var(--color-warning); color: var(--color-warning); }
