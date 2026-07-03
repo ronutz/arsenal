@@ -43,6 +43,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-03",
+    time: "04:50",
+    kind: "feature",
+    title: "Sticky vendor filter, back-to-top, and a tidier footer",
+    body:
+      "Browsing the long lists is easier: the vendor filter on the tools and Learn indexes now stays pinned below the header while you scroll, and a small corner button returns you to the top once you are more than a screen down. The footer is consolidated too: its utility links now sit in three compact rows with dimmed separators, and the machine-readable row (llms.txt, robots.txt, feed.xml) now sits at the very end just above the build stamp, in smaller monospace, so the three read as the quiet file endpoints they are.",
+  },
+  {
     date: "2026-07-02",
     time: "16:45",
     kind: "tool",

@@ -16,6 +16,7 @@ import FamilyChip from "@/components/FamilyChip";
 import { categoryColor } from "@/config/categoryColors";
 import { vendorColor, browseVendors } from "@/config/vendors";
 import ToolVendorFilter from "@/components/ToolVendorFilter";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default async function ToolsPage({
   params,
@@ -56,7 +57,7 @@ export default async function ToolsPage({
 
           {/* Browse by vendor (client-side filter; progressive enhancement) */}
           {vendorKeys.length > 0 && (
-            <div className="container certs-container tools-jumpnav" style={{ marginTop: "2rem" }}>
+            <div className="container certs-container tools-jumpnav vendor-filter-dock" style={{ marginTop: "2rem" }}>
               <ToolVendorFilter
                 vendors={vendorKeys}
                 labels={Object.fromEntries(vendorKeys.map((v) => [v, t(`vendors.${v}`)]))}
@@ -168,6 +169,8 @@ export default async function ToolsPage({
       </main>
 
       <SiteFooter />
+
+      <ScrollToTop label={t("backToTop")} />
     </>
   );
 }

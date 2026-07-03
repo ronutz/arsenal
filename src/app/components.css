@@ -3589,6 +3589,65 @@
   gap: 0.5rem 0.75rem;
   margin: 0 0 1.25rem;
 }
+
+/* Sticky dock so the vendor filter stays visible while scrolling a long list.
+   Wraps the filter on /tools and /learn; its containing block spans the full
+   list (a bare filter sits in a short wrapper on /tools and would not pin).
+   Offset below the sticky header (min-height 4rem); z-index sits under the
+   header (z-40). Vertical padding only so the container's horizontal padding
+   is preserved on /tools. */
+.vendor-filter-dock {
+  position: sticky;
+  top: 4rem;
+  z-index: 30;
+  margin-bottom: 1.25rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  background: color-mix(in srgb, var(--canvas-primary) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+/* Inside the dock the filter carries no vertical margin; the dock spaces it. */
+.vendor-filter-dock .vendor-filter { margin: 0; }
+
+/* Back-to-top button: fixed bottom-right, fades in past ~one screen of scroll,
+   sits above the header and sticky filter (z-50). Hidden state is fully
+   non-interactive. Motion is dropped under prefers-reduced-motion. */
+.scroll-top-btn {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 50;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--canvas-primary) 88%, transparent);
+  backdrop-filter: blur(10px);
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.15s ease, border-color 0.15s ease;
+  pointer-events: none;
+}
+.scroll-top-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.scroll-top-btn:hover,
+.scroll-top-btn:focus-visible {
+  color: var(--accent-amber);
+  border-color: color-mix(in srgb, var(--accent-amber) 45%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top-btn { transition: opacity 0.15s ease; transform: none; }
+  .scroll-top-btn.is-visible { transform: none; }
+}
 .vendor-filter-label {
   font-size: 0.72rem;
   font-weight: 700;
@@ -3621,7 +3680,7 @@
   border-color: color-mix(in srgb, var(--accent-amber) 60%, transparent);
   background: color-mix(in srgb, var(--accent-amber) 14%, var(--surface-base));
 }
-.category-section { scroll-margin-top: 2rem; }
+.category-section { scroll-margin-top: 7.5rem; }
 /* Tools index: the first category sits directly under the jump-nav. Without
    this, the .section top padding leaves a large gap there (the Learn index has
    no such gap because its category blocks don't carry .section). */
@@ -3845,7 +3904,8 @@ a.tools-card:hover {
 }
 .footer-contribute-link:hover { color: var(--text-secondary); text-decoration: underline; }
 .footer-sep { color: var(--border-strong); margin: 0 0.5rem; }
-.footer-machine { font-family: var(--font-mono); }
+.footer-machine { font-family: var(--font-mono); font-size: 0.78rem; } /* a step below the 0.85rem human links, above the 0.72rem build stamp */
+.footer-machine .footer-contribute-link { font-size: inherit; } /* links carry an explicit 0.85rem elsewhere; here they follow the row's smaller size */
 
 /* Coffee support link — a deliberately muted amber, fixed across themes so it
    reads as one quiet warm accent. The monochrome cup glyph inherits this color. */

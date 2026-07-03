@@ -18,6 +18,7 @@ import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
 import { browseVendors } from "@/config/vendors";
 import ToolVendorFilter from "@/components/ToolVendorFilter";
+import ScrollToTop from "@/components/ScrollToTop";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -74,13 +75,15 @@ export default async function LearnIndexPage({
             </p>
 
             {vendorKeys.length > 0 && (
-              <ToolVendorFilter
-                vendors={vendorKeys}
-                labels={Object.fromEntries(vendorKeys.map((v) => [v, tTools(`vendors.${v}`)]))}
-                allLabel={tTools("vendorFilterAll")}
-                legend={tTools("vendorFilterLabel")}
-                cardSelector=".learn-grid-item"
-              />
+              <div className="vendor-filter-dock">
+                <ToolVendorFilter
+                  vendors={vendorKeys}
+                  labels={Object.fromEntries(vendorKeys.map((v) => [v, tTools(`vendors.${v}`)]))}
+                  allLabel={tTools("vendorFilterAll")}
+                  legend={tTools("vendorFilterLabel")}
+                  cardSelector=".learn-grid-item"
+                />
+              </div>
             )}
 
             {/* Category jump-nav */}
@@ -135,6 +138,8 @@ export default async function LearnIndexPage({
       </main>
 
       <SiteFooter />
+
+      <ScrollToTop label={tTools("backToTop")} />
     </>
   );
 }

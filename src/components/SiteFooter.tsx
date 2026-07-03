@@ -3,9 +3,10 @@
 // ----------------------------------------------------------------------------
 // SITE FOOTER — the shared footer used on every page.
 //
-// Order: credits (-> /colophon) | utility links (translations, API, contribute,
-// feedback, Privacy, License) | a quiet "buy me a coffee" support link | and the
-// Red Education training callout last.
+// Order: credits (-> /colophon) | grouped utility links (ideas + translations,
+// then contact + legal) | a quiet "buy me a coffee" support link | the Red
+// Education training callout | the machine-readable row (monospace, a step
+// smaller) | and the build stamp last.
 //
 // next-intl rich-text is used so a single word can be styled without splitting
 // the translation: the Red Education line authors <b>Red Education</b> and we
@@ -40,16 +41,19 @@ export default async function SiteFooter() {
           </Link>
         </p>
 
-        {/* Utility links, grouped into three compact rows with dimmed-middot
-            separators. The /api link stays desurfaced while access control
-            matures; its page, docs, and spec remain reachable by direct URL. */}
+        {/* Utility links, grouped into two compact rows with dimmed-middot
+            separators: participation first (ideas, then translations), then
+            contact and legal. The machine-readable row lives at the end of the
+            footer, just above the build stamp. The /api link stays desurfaced
+            while access control matures; its page, docs, and spec remain
+            reachable by direct URL. */}
         <p className="footer-contribute">
-          <Link href="/contribute" className="footer-contribute-link">
-            {t("contribute")}
-          </Link>
-          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
+          </Link>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          <Link href="/contribute" className="footer-contribute-link">
+            {t("contribute")}
           </Link>
         </p>
         <p className="footer-contribute">
@@ -65,22 +69,6 @@ export default async function SiteFooter() {
             {t("license")}
           </Link>
         </p>
-        {/* Machine-readable surface (monospace): the llms.txt map for AI agents,
-            robots.txt, and the Learn RSS feed. Plain anchors (static files). */}
-        <p className="footer-contribute footer-machine">
-          <a href="/llms.txt" className="footer-contribute-link">
-            llms.txt
-          </a>
-          <span className="footer-sep" aria-hidden="true">&#183;</span>
-          <a href="/robots.txt" className="footer-contribute-link">
-            robots.txt
-          </a>
-          <span className="footer-sep" aria-hidden="true">&#183;</span>
-          <a href="/feed.xml" className="footer-contribute-link">
-            feed.xml
-          </a>
-        </p>
-
         {/* Quiet support link. The cup is forced to monochrome (U+FE0E) so it
             inherits the link's muted-amber color rather than rendering bright. */}
         <p className="footer-coffee">
@@ -95,7 +83,7 @@ export default async function SiteFooter() {
           </a>
         </p>
 
-        {/* Red Education callout — last. Only the brand name is colored (via the
+        {/* Red Education callout. Only the brand name is colored (via the
             <b> tag in the message); the line ends with a graduation cap. */}
         <p className="footer-built footer-redu">
           <a
@@ -108,6 +96,24 @@ export default async function SiteFooter() {
               b: (chunks) => <span className="brand">{chunks}</span>,
             })}
             {"\u00A0🎓"}
+          </a>
+        </p>
+
+        {/* Machine-readable surface, last before the build stamp: the llms.txt
+            map for AI agents, robots.txt, and the Learn RSS feed. Monospace and
+            a step smaller (see .footer-machine) so the row reads as quiet file
+            endpoints. Plain anchors (static files, not locale routes). */}
+        <p className="footer-contribute footer-machine">
+          <a href="/llms.txt" className="footer-contribute-link">
+            llms.txt
+          </a>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          <a href="/robots.txt" className="footer-contribute-link">
+            robots.txt
+          </a>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          <a href="/feed.xml" className="footer-contribute-link">
+            feed.xml
           </a>
         </p>
 

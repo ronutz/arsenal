@@ -54,6 +54,12 @@ export default function F5AwafDeclarativePolicyExplainerTool() {
   const t = useTranslations("tools.f5-awaf-declarative-policy-explainer");
   const [input, setInput] = useState("");
 
+  // The empty-textarea example is a literal JSON snippet, so it must bypass
+  // ICU parsing (t.raw): the sample's braces read as ICU message arguments
+  // and fail with INVALID_MESSAGE, collapsing the placeholder to a fallback
+  // key path in every locale. Build-wide guard: scripts/check-icu-messages.mjs.
+  const inputPlaceholder = t.raw("inputPlaceholder");
+
   // Pure, synchronous decode on every change. No effects, no fetching.
   const parsed = useMemo(() => parseAwafPolicy(input), [input]);
 
@@ -75,7 +81,7 @@ export default function F5AwafDeclarativePolicyExplainerTool() {
         className="cidr-input dig-textarea"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder={t("inputPlaceholder")}
+        placeholder={inputPlaceholder}
         spellCheck={false}
         rows={12}
       />

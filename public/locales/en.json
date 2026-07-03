@@ -2301,7 +2301,8 @@
       "labelEnforcement": "Enforcement",
       "example": "Example",
       "clear": "Clear"
-    }
+    },
+    "backToTop": "Back to top"
   },
   "privacy_page": {
     "eyebrow": "Privacy",
