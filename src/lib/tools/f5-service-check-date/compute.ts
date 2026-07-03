@@ -47,7 +47,7 @@ import {
 // Errors
 // ----------------------------------------------------------------------------
 
-export type ServiceCheckErrorCode = "empty" | "format" | "unknownVersion";
+export type ServiceCheckErrorCode = "empty" | "format" | "unknownVersion" | "licenseNoDate";
 
 export class ServiceCheckError extends Error {
   code: ServiceCheckErrorCode;
@@ -105,6 +105,11 @@ export interface DateLookupResult {
   newestReachable: LicenseCheckEntry | null;
   /** Lowest-version blocked row (the nearest version that needs reactivation), or null. */
   nextBlocked: LicenseCheckEntry | null;
+  /** Present when the date was extracted from pasted bigip.license / tmsh text:
+   *  the exact matched span (label + date), whitespace-normalized, echoed back
+   *  in the UI so the user can confirm the right line was picked up. Optional
+   *  and additive, so plain date lookups and the public API are unchanged. */
+  extractedFrom?: { matchedText: string };
 }
 
 export type LookupResult = VersionLookupResult | DateLookupResult;
@@ -197,6 +202,50 @@ function looksLikeDate(input: string): boolean {
 }
 
 // ----------------------------------------------------------------------------
+// License / tmsh paste extraction
+// ----------------------------------------------------------------------------
+
+// The service-check-date line as F5 publishes it, in both places users copy
+// from, with the date in any of the three forms parseServiceCheckDate accepts:
+//   * the raw /config/bigip.license file:  "Service check date :  20151008"
+//     (F5 DevCentral, "7 Steps Checklist before upgrading your F5 BIG-IP");
+//     a second published sample shows "Service check date: 20180208", so the
+//     spacing around the colon is flexible;
+//   * tmsh show sys license output:        "Service Check Date 2016/08/18"
+//     (F5 K3782 sample; Title Case, no colon; K000160443 documents the field).
+// Case-insensitive, colon optional, whitespace flexible. Fixed words joined by
+// single \s+ quantifiers plus one fixed-width date alternation -> linear scan,
+// ReDoS-safe. Deliberately NOT line-anchored: pasting a multi-line file into
+// the single-line input flattens newlines, so the label + date may sit
+// anywhere inside the text.
+const LICENSE_SCD_RE =
+  /service\s+check\s+date\s*:?\s*(\d{8}|\d{4}-\d{2}-\d{2}|\d{4}\/\d{2}\/\d{2})/i;
+
+// The label alone (no usable date after it) -> a targeted "licenseNoDate"
+// error instead of the confusing generic version-format fallthrough.
+const LICENSE_LABEL_RE = /service\s+check\s+date/i;
+
+/** What extractServiceCheckDate found in pasted text. */
+export interface ExtractedServiceCheckDate {
+  /** The exact matched span (label + date), whitespace-normalized for display. */
+  matchedText: string;
+  /** The raw date substring, in whichever of the three accepted forms it appeared. */
+  dateRaw: string;
+}
+
+/**
+ * Find the FIRST "Service check date" line in pasted bigip.license or tmsh
+ * "show sys license" text. A license carries exactly one such line, so
+ * first-match is the whole-file semantic. Returns null when the label is
+ * absent (the input is then treated as a plain date or version as before).
+ */
+export function extractServiceCheckDate(text: string): ExtractedServiceCheckDate | null {
+  const m = LICENSE_SCD_RE.exec(text);
+  if (!m) return null;
+  return { matchedText: m[0].replace(/\s+/g, " ").trim(), dateRaw: m[1] };
+}
+
+// ----------------------------------------------------------------------------
 // Lookups
 // ----------------------------------------------------------------------------
 
@@ -248,14 +297,26 @@ export function lookupByDate(input: string): DateLookupResult {
 }
 
 /**
- * run - the registry-facing entry point. Auto-detects the input: a date-shaped
- * string routes to the reachable-versions lookup, otherwise it is treated as a
- * version. Throws ServiceCheckError (empty / format / unknownVersion); the UI
- * catches and localizes it.
+ * run - the registry-facing entry point. Auto-detects the input: pasted
+ * bigip.license / tmsh text containing the service-check-date label has the
+ * date extracted and routes to the reachable-versions lookup (with the matched
+ * span attached); a date-shaped string routes to the same lookup; otherwise the
+ * input is treated as a version. Throws ServiceCheckError (empty / format /
+ * unknownVersion / licenseNoDate); the UI catches and localizes it.
  */
 export function run(input: string): LookupResult {
   const trimmed = input.trim();
   if (trimmed === "") throw new ServiceCheckError("empty", "no input");
+  // Pasted bigip.license / tmsh output: pick the service check date out of
+  // the noise and answer the date question, keeping the matched span for the UI.
+  const extracted = extractServiceCheckDate(trimmed);
+  if (extracted) {
+    return { ...lookupByDate(extracted.dateRaw), extractedFrom: { matchedText: extracted.matchedText } };
+  }
+  if (LICENSE_LABEL_RE.test(trimmed)) {
+    // The label is present but no date in a recognizable form follows it.
+    throw new ServiceCheckError("licenseNoDate", "service check date label without a date");
+  }
   if (looksLikeDate(trimmed)) return lookupByDate(trimmed);
   return lookupByVersion(trimmed);
 }

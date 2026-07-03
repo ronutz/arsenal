@@ -21,3 +21,7 @@ A verificação se aplica a um upgrade, que a F5 define como uma mudança no pri
 ## Como usar
 
 Digite uma versão do BIG-IP (`17.1.3`, `21.1`, `16.1.x`) ou uma service check date (`20230611`, `2023-06-11` ou `2023/06/11`); a ferramenta detecta qual você forneceu e responde de acordo. Como isto codifica documentação de fabricante e não um padrão fixo, e a F5 adiciona uma linha a cada release, confirme qualquer valor na F5 K7727 ou no `/etc/version_date` do sistema de destino antes de um upgrade em produção.
+
+## Colando a licença ou a saída do tmsh
+
+Você pode colar o conteúdo completo do `/config/bigip.license`, um trecho dele, ou a saída de `tmsh show sys license`; a ferramenta localiza a linha da service check date e responde à mesma pergunta de elegibilidade de upgrade. As duas formas publicadas são reconhecidas: a do arquivo, `Service check date : 20151008` (espaçamento flexível ao redor dos dois-pontos), e a do tmsh, `Service Check Date 2016/08/18`. A licença tem exatamente uma linha dessas, então a primeira ocorrência vale, e a linha encontrada é exibida de volta para você confirmar o valor. Todo o resto do texto é ignorado e, como sempre, nada sai do seu navegador.

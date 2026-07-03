@@ -2263,7 +2263,8 @@
       "errors": {
         "empty": "Informe uma versão do BIG-IP ou uma service check date.",
         "format": "Isto não é uma versão do BIG-IP nem uma service check date. Informe uma versão como 17.1.3 ou uma data como 20230611.",
-        "unknownVersion": "Essa versão não está na tabela de License Check Date da F5."
+        "unknownVersion": "Essa versão não está na tabela de License Check Date da F5.",
+        "licenseNoDate": "Encontrei o rótulo Service check date no texto colado, mas sem uma data ao lado. Verifique o texto ou informe a data diretamente."
       },
       "version": {
         "heading": "Service check date mínima",
@@ -2281,8 +2282,10 @@
         "allReachable": "Esta service check date alcança a versão mais recente da tabela; nada está bloqueado.",
         "blockedHeading": "Branches mais novos que você ainda não pode alcançar",
         "blockedHint": "Cada um precisa que a service check date da licença seja igual ou posterior à data mostrada. Reative a licença primeiro.",
-        "needsDate": "precisa de uma service check date de {date} ou posterior"
-      }
+        "needsDate": "precisa de uma service check date de {date} ou posterior",
+        "extractedFrom": "Do texto colado:"
+      },
+      "pasteHint": "Você também pode colar o conteúdo do /config/bigip.license ou a saída de tmsh show sys license; a service check date é extraída automaticamente."
     },
     "f5-awaf-declarative-policy-explainer": {
       "name": "Explicador de política declarativa do F5 Advanced WAF",
@@ -2302,7 +2305,85 @@
       "example": "Exemplo",
       "clear": "Limpar"
     },
-    "backToTop": "Voltar ao topo"
+    "backToTop": "Voltar ao topo",
+    "f5-bigip-license-explainer": {
+      "name": "Explicador de licença F5 BIG-IP",
+      "blurb": "Cole o seu /config/bigip.license, arquivo completo ou um trecho, e receba uma leitura em linguagem clara: tipo de gerenciamento, datas de licenciamento com o veredito de upgrade da K7727, Registration Key e plataforma, módulos ativos e opcionais, restrições e tokens de recursos. Roda inteiramente no seu navegador.",
+      "inputLabel": "Conteúdo do bigip.license",
+      "inputPlaceholder": "Cole aqui o conteúdo do /config/bigip.license, o arquivo completo ou qualquer trecho.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Analisado inteiramente no seu navegador. Nada é enviado, e valores de chaves ou assinaturas nunca são exibidos.",
+      "verifyNote": "Os significados dos campos seguem os artigos F5 citados; confirme decisões de licenciamento na documentação ou no suporte da F5.",
+      "errors": {
+        "empty": "Cole o conteúdo do /config/bigip.license.",
+        "notRecognized": "Este texto não parece uma licença BIG-IP. Esperava marcadores como active module, Registration Key ou o cabeçalho do arquivo de licença."
+      },
+      "flavor": {
+        "bigiq-managed": "Gerenciada pelo BIG-IQ License Manager",
+        "direct": "Licenciada diretamente no BIG-IP",
+        "unknown": "Tipo de gerenciamento não identificado"
+      },
+      "identity": {
+        "heading": "Identidade",
+        "header": "Cabeçalho do arquivo",
+        "usage": "Usage",
+        "vendor": "Vendor",
+        "authVers": "Auth vers"
+      },
+      "dates": {
+        "heading": "Datas de licenciamento",
+        "licensedDate": "Licensed date",
+        "serviceCheckDate": "Service check date",
+        "start": "License start",
+        "end": "License end",
+        "absent": "não presente neste arquivo",
+        "k7727Newest": "Versão mais nova alcançável: {label}",
+        "k7727Blocked": "Os branches a partir de {label} exigem service check date de {date} ou posterior, então uma reativação de licença viria antes.",
+        "serviceStatus": "Service Status"
+      },
+      "platform": {
+        "heading": "Plataforma e chaves",
+        "regKey": "Registration Key",
+        "regKeyOdd": "Esta Registration Key não corresponde ao formato publicado 5-5-5-5-7.",
+        "licensedVersion": "Licensed version",
+        "platformId": "Platform ID",
+        "decodedUnknown": "Platform ID fora do mapa embarcado; consulte a F5 K9476, a matriz de compatibilidade de hardware e software.",
+        "applianceSN": "Appliance SN"
+      },
+      "modules": {
+        "heading": "Módulos ativos",
+        "featuresLabel": "Recursos:",
+        "optionalHeading": "Módulos opcionais",
+        "optionalNote": "Listados como licenciáveis, porém dormentes até serem licenciados; o provisionamento pode ser possível com o recurso inativo."
+      },
+      "constraints": {
+        "heading": "Restrições de versão e plataforma",
+        "exclusiveVersions": "Exclusive_version",
+        "denyVersions": "Deny_version",
+        "exclusivePlatforms": "Exclusive_Platform",
+        "exvNote": "Conforme a F5 K42091606, a faixa BIG-IP permitida é lida nas entradas de estilo BIG-IP; o próprio exemplo da F5 também lista entradas baixas (5.*.* a 8.*.*) junto delas, abaixo do piso 9.2.0 da tabela K7727, sem rotular a que se referem.",
+        "ceiling": "Entrada BIG-IP mais alta: {glob}. Tetos de versão mapeiam para gerações de SKU Version Plus, conforme a F5 K15643."
+      },
+      "tokens": {
+        "heading": "Tokens de recursos e limites",
+        "count": "{n} tokens encontrados; valores exibidos exatamente como escritos."
+      },
+      "validation": {
+        "heading": "Material de validação",
+        "privacy": "Apenas presença e tamanho; os valores em si nunca são exibidos.",
+        "present": "presente, {n} caracteres",
+        "absentValue": "não presente",
+        "dossier": "Dossier",
+        "authorization": "Authorization",
+        "managerKey": "license_manager_key",
+        "poolInfo": "pool_license_information",
+        "certAuth": "certificate_auth"
+      },
+      "stats": {
+        "line": "{kv} linhas de dados, {comments} linhas de comentário, {unrec} não reconhecidas."
+      }
+    }
   },
   "privacy_page": {
     "eyebrow": "Privacidade",

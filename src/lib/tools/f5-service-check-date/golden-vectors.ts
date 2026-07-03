@@ -45,6 +45,9 @@ interface DateExpect {
   newestReachableLabel: string | null;
   /** Label of the nearest blocked version, or null when none are blocked. */
   nextBlockedLabel: string | null;
+  /** When set, the run must have extracted the date from pasted text and the
+   *  result's extractedFrom.matchedText must equal exactly this span. */
+  extractedText?: string;
 }
 
 export interface ServiceCheckGoldenVector {
@@ -118,6 +121,37 @@ export const SERVICE_CHECK_GOLDEN_VECTORS: ServiceCheckGoldenVector[] = [
     input: "2005-01-01",
     expect: { kind: "date", newestReachableLabel: null, nextBlockedLabel: "9.2.0 - 9.2.5" },
   },
+  // -- pasted bigip.license / tmsh text -> extracted-date lookup --
+  {
+    id: "lic-file-devcentral",
+    description: "raw bigip.license line form (F5 DevCentral upgrade-checklist sample) extracts 20151008",
+    input: "Service check date :              20151008",
+    expect: { kind: "date", newestReachableLabel: "12.0.x", nextBlockedLabel: "12.1.x", extractedText: "Service check date : 20151008" },
+  },
+  {
+    id: "lic-file-tight-colon",
+    description: "published variant with no space before the colon extracts 20180208",
+    input: "Service check date: 20180208",
+    expect: { kind: "date", newestReachableLabel: "13.1.x", nextBlockedLabel: "14.0.x", extractedText: "Service check date: 20180208" },
+  },
+  {
+    id: "lic-tmsh-k3782",
+    description: "tmsh show sys license form (F5 K3782 sample): Title Case, no colon, slash date",
+    input: "Service Check Date 2016/08/18",
+    expect: { kind: "date", newestReachableLabel: "12.1.x", nextBlockedLabel: "13.0.x", extractedText: "Service Check Date 2016/08/18" },
+  },
+  {
+    id: "lic-multiline",
+    description: "multi-line license fragment: the service-check-date line is found among other lines",
+    input: "#\nVendor : F5 Networks, Inc.\nService check date :          20230208\nPlatform ID : Z100\n",
+    expect: { kind: "date", newestReachableLabel: "17.1.x", nextBlockedLabel: "17.5.x", extractedText: "Service check date : 20230208" },
+  },
+  {
+    id: "lic-flattened",
+    description: "newline-flattened paste (single-line input) still extracts K7727's worked-example date",
+    input: "Vendor : F5 Networks, Inc. Service check date : 20210611 Platform ID : Z100",
+    expect: { kind: "date", newestReachableLabel: "16.1.x", nextBlockedLabel: "17.0.x", extractedText: "Service check date : 20210611" },
+  },
 ];
 
 export interface ServiceCheckRejectVector {
@@ -132,6 +166,7 @@ export const SERVICE_CHECK_REJECT_VECTORS: ServiceCheckRejectVector[] = [
   { id: "r-garbage", description: "neither a date nor a version", input: "not a version!!", expectCode: "format" },
   { id: "r-unknown-version", description: "a version with no K7727 row", input: "99.9", expectCode: "unknownVersion" },
   { id: "r-bad-date", description: "an impossible calendar date", input: "2023-13-40", expectCode: "format" },
+  { id: "r-lic-no-date", description: "the service-check-date label with no date after it", input: "Service check date : pending activation", expectCode: "licenseNoDate" },
 ];
 
 export interface VectorFailure {
@@ -165,6 +200,11 @@ export function verifyVectors(): { passed: number; failed: number; failures: Vec
         const next = r.nextBlocked ? r.nextBlocked.label : null;
         if (newest !== e.newestReachableLabel || next !== e.nextBlockedLabel) {
           failures.push({ id: v.id, reason: `got newest=${newest} next=${next}` });
+          continue;
+        }
+        // When the vector pinned an extraction span, the result must carry it.
+        if (e.extractedText !== undefined && r.extractedFrom?.matchedText !== e.extractedText) {
+          failures.push({ id: v.id, reason: `extractedFrom=${r.extractedFrom?.matchedText ?? "(none)"}` });
           continue;
         }
       }

@@ -31,6 +31,7 @@ export {
   lookupByDate,
   parseVersion,
   parseServiceCheckDate,
+  extractServiceCheckDate,
   ServiceCheckError,
 } from "./compute";
 export type {
@@ -39,6 +40,7 @@ export type {
   DateLookupResult,
   ParsedVersion,
   ParsedDate,
+  ExtractedServiceCheckDate,
   ServiceCheckErrorCode,
 } from "./compute";
 export {
@@ -65,8 +67,20 @@ export const manifest = Object.freeze({
     "f5-license-check-date",
     "license-check-date",
     "version-date",
+    "bigip.license",
   ],
   inputDetectors: [
+    {
+      // Pasted bigip.license or tmsh "show sys license" text: the presence of
+      // the service-check-date label routes the whole paste here. Fixed words
+      // joined by \s+ (case handled via classes, since detector patterns are
+      // compiled without flags) -> linear, ReDoS-safe. Unanchored on purpose:
+      // the label sits mid-text in a paste.
+      kind: "regex",
+      pattern: "[Ss]ervice\\s+[Cc]heck\\s+[Dd]ate",
+      priority: 9,
+      example: "Service check date : 20230611",
+    },
     {
       // A service check date in the bigip.license compact form or an ISO-ish
       // date. Anchored + fixed-width, so linear and ReDoS-safe.
@@ -123,6 +137,26 @@ export const manifest = Object.freeze({
         "BIG-IP version schema: the major / minor / maintenance / point-release definitions that fix the upgrade-vs-update boundary the gate applies to",
       status: "active",
     },
+    {
+      id: "f5-k3782",
+      label: "F5 K3782 - Finding the serial number or registration key of your BIG-IP system",
+      type: "vendor-doc",
+      url: "https://my.f5.com/manage/s/article/K3782",
+      access_date: "2026-07-03",
+      scope:
+        "the tmsh 'show sys license' field set and sample line forms (Service Check Date in yyyy/mm/dd form) that the paste extractor accepts",
+      status: "active",
+    },
+    {
+      id: "f5-k000160443",
+      label: "F5 K000160443 - Understanding the output of tmsh show sys license on BIG-IP",
+      type: "vendor-doc",
+      url: "https://my.f5.com/manage/s/article/K000160443",
+      access_date: "2026-07-03",
+      scope:
+        "field-by-field meaning of the license output (Licensed On vs Service Check Date vs License End Date) and confirmation the license file lives at /config/bigip.license",
+      status: "active",
+    },
   ],
   credits: [
     { handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true },
@@ -130,11 +164,12 @@ export const manifest = Object.freeze({
 });
 
 /**
- * run - the registry-facing entry point. Auto-detects the input: a date routes
- * to the reachable-versions lookup, a version routes to the minimum-service-
- * check-date lookup. Throws ServiceCheckError (empty / format / unknownVersion),
- * which the UI catches and localizes.
- * @param input a service check date (yyyymmdd / yyyy-mm-dd / yyyy/mm/dd) or a BIG-IP version
+ * run - the registry-facing entry point. Auto-detects the input: pasted
+ * bigip.license / tmsh text has its service check date extracted and routes to
+ * the reachable-versions lookup; a date routes to the same lookup; a version
+ * routes to the minimum-service-check-date lookup. Throws ServiceCheckError
+ * (empty / format / unknownVersion / licenseNoDate), which the UI localizes.
+ * @param input a service check date (yyyymmdd / yyyy-mm-dd / yyyy/mm/dd), a BIG-IP version, or pasted bigip.license / tmsh show sys license text
  * @returns the two-way lookup result
  */
 export function runTool(input: string): LookupResult {

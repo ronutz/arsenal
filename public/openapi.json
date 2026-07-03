@@ -1110,6 +1110,96 @@
         }
       }
     },
+    "/f5-bigip-license-explainer": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_bigip_license_explainer",
+        "summary": "F5 BIG-IP license explainer",
+        "description": "Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading: management flavor, licensing dates with the K7727 upgrade verdict, Registration Key and platform, active and optional modules, constraints, and feature tokens. Runs entirely in your browser. Standards: F5 K000160443, F5 K7727, F5 K3782, F5 K7752, F5 K42091606, F5 K02011230, F5 K15643. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "active module :  LTM, 1 Gbps, VE|CCCCCCC-CCCCCCC|..."
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_bigip_license_explainer_post",
+        "summary": "F5 BIG-IP license explainer (POST)",
+        "description": "Paste your /config/bigip.license, full file or a fragment, and get a plain-language reading: management flavor, licensing dates with the K7727 upgrade verdict, Registration Key and platform, active and optional modules, constraints, and feature tokens. Runs entirely in your browser. Standards: F5 K000160443, F5 K7727, F5 K3782, F5 K7752, F5 K42091606, F5 K02011230, F5 K15643. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "active module :  LTM, 1 Gbps, VE|CCCCCCC-CCCCCCC|..."
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5-cipher-string-expander": {
       "get": {
         "tags": [
@@ -1207,7 +1297,7 @@
         ],
         "operationId": "run_f5_service_check_date",
         "summary": "F5 service check date",
-        "description": "Enter a BIG-IP version to get the minimum service check date its license must carry, or enter a service check date to see the newest version you can upgrade to. Based on F5's published License Check Date table (K7727); runs entirely in your browser. Standards: F5 K7727, F5 K8986. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Enter a BIG-IP version to get the minimum service check date its license must carry, or enter a service check date to see the newest version you can upgrade to. Based on F5's published License Check Date table (K7727); runs entirely in your browser. Standards: F5 K7727, F5 K8986, F5 K3782, F5 K000160443. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -1217,7 +1307,7 @@
             "schema": {
               "type": "string",
               "examples": [
-                "20230611"
+                "Service check date : 20230611"
               ]
             }
           }
@@ -1251,7 +1341,7 @@
         ],
         "operationId": "run_f5_service_check_date_post",
         "summary": "F5 service check date (POST)",
-        "description": "Enter a BIG-IP version to get the minimum service check date its license must carry, or enter a service check date to see the newest version you can upgrade to. Based on F5's published License Check Date table (K7727); runs entirely in your browser. Standards: F5 K7727, F5 K8986. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Enter a BIG-IP version to get the minimum service check date its license must carry, or enter a service check date to see the newest version you can upgrade to. Based on F5's published License Check Date table (K7727); runs entirely in your browser. Standards: F5 K7727, F5 K8986, F5 K3782, F5 K000160443. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -1260,7 +1350,7 @@
               "schema": {
                 "type": "string",
                 "examples": [
-                  "20230611"
+                  "Service check date : 20230611"
                 ]
               }
             }

@@ -3904,8 +3904,22 @@ a.tools-card:hover {
 }
 .footer-contribute-link:hover { color: var(--text-secondary); text-decoration: underline; }
 .footer-sep { color: var(--border-strong); margin: 0 0.5rem; }
-.footer-machine { font-family: var(--font-mono); font-size: 0.78rem; } /* a step below the 0.85rem human links, above the 0.72rem build stamp */
-.footer-machine .footer-contribute-link { font-size: inherit; } /* links carry an explicit 0.85rem elsewhere; here they follow the row's smaller size */
+/* QUIET TRAILING BLOCK - the machine row sits with the build stamp at the very
+   end of the footer: pushed apart from the human links above (margin-top) and
+   sized + dimmed to match .footer-modified (0.72rem, tertiary, ~0.55 opacity),
+   so the closing two lines read as one subdued reference block. Hover or
+   keyboard focus restores contrast so the links stay comfortably usable. */
+.footer-machine {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  margin: 1.4rem 0 0;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+.footer-machine:hover,
+.footer-machine:focus-within { opacity: 0.9; }
+.footer-machine .footer-contribute-link { font-size: inherit; color: var(--text-tertiary); }
+.footer-machine .footer-sep { color: var(--border-subtle); margin: 0 0.45rem; }
 
 /* Coffee support link — a deliberately muted amber, fixed across themes so it
    reads as one quiet warm accent. The monochrome cup glyph inherits this color. */
@@ -7101,7 +7115,8 @@ a.tools-card:hover {
 .about-cred-desc { font-size: 0.9rem; line-height: 1.55; color: var(--text-secondary); flex: 1; }
 .about-cred-cta { font-size: 0.86rem; font-weight: 600; color: var(--accent-primary); margin-top: 0.35rem; }
 
-.footer-modified { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-tertiary); opacity: 0.55; margin: 0.9rem 0 0; }
+/* Clusters tightly under the machine row above; the two form one quiet block. */
+.footer-modified { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-tertiary); opacity: 0.55; margin: 0.3rem 0 0; }
 
 /* ============================================================
    Roadmap page (generated from the catalogue) + Training-page

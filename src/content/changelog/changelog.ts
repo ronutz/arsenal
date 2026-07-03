@@ -44,6 +44,24 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "06:59",
+    kind: "tool",
+    title: "New tool: F5 BIG-IP license explainer",
+    tools: ["f5-bigip-license-explainer"],
+    body:
+      "Paste your /config/bigip.license, the full file or any fragment, and read it in plain language: whether it is BIG-IQ managed or licensed directly, the licensing dates with the K7727 upgrade verdict, the Registration Key and platform, active and optional modules with their per-module keys, Exclusive_version, Deny_version and Exclusive_Platform constraints, and every feature token. Key and signature values are never displayed, and nothing leaves the browser. The line grammar is grounded in two real, sanitized lab license files (one BIG-IQ managed, one direct) and in F5 K000160443, K7727, K3782, K7752, K42091606 and K02011230, verified against 5 golden vectors.",
+  },
+  {
+    date: "2026-07-03",
+    time: "05:57",
+    kind: "tool",
+    title: "F5 service check date now reads pasted licenses and tmsh output",
+    tools: ["f5-service-check-date"],
+    body:
+      "Paste your /config/bigip.license contents, any fragment of it, or the output of tmsh show sys license, and the tool picks out the service check date and answers the same upgrade-eligibility question, echoing the matched line for confirmation. Both published line forms are recognized: the file form (Service check date : 20151008, with flexible colon spacing) and the tmsh form (Service Check Date 2016/08/18). Quick manual entry is unchanged and remains the primary path. Grounded in F5 K3782 and K000160443 plus F5's published upgrade checklist, verified against 6 new golden vectors (20 total).",
+  },
+  {
+    date: "2026-07-03",
     time: "04:50",
     kind: "feature",
     title: "Sticky vendor filter, back-to-top, and a tidier footer",

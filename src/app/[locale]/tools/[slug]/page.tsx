@@ -83,6 +83,8 @@ import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool"
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
 import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
 import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check-date";
+import F5BigipLicenseExplainerTool from "@/components/F5BigipLicenseExplainerTool";
+import { manifest as f5BigipLicenseManifest } from "@/lib/tools/f5-bigip-license-explainer";
 import F5AwafDeclarativePolicyExplainerTool from "@/components/F5AwafDeclarativePolicyExplainerTool";
 import { manifest as f5AwafManifest } from "@/lib/tools/f5-awaf-declarative-policy-explainer";
 import F5SslProfileExplainerTool from "@/components/F5SslProfileExplainerTool";
@@ -132,6 +134,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-service-check-date": {
     Component: F5ServiceCheckDateTool,
     sources: f5ServiceCheckManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-bigip-license-explainer": {
+    Component: F5BigipLicenseExplainerTool,
+    sources: f5BigipLicenseManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   jwt: {
     Component: JwtTool,

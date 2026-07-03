@@ -12,7 +12,11 @@
 //     the "boots but won't load config" consequence;
 //   * enter a service check date (20230611 / 2023-06-11 / 2023/06/11) -> the
 //     newest version you can upgrade to, and the newer branches you cannot reach
-//     yet with the date each one needs.
+//     yet with the date each one needs;
+//   * paste /config/bigip.license contents or tmsh show sys license output ->
+//     the service check date is extracted (file and tmsh line forms, flexible
+//     case / colon / whitespace) and answered as above, with the matched line
+//     echoed back for confirmation.
 //
 // Everything runs IN THE BROWSER via the local f5-service-check-date module,
 // which looks up a vendored copy of F5's authoritative K7727 License Check Date
@@ -86,6 +90,11 @@ export default function F5ServiceCheckDateTool() {
           </span>
           {t("runsLocally")}
         </p>
+        {/* Paste affordance: the same field also accepts a pasted
+            /config/bigip.license or tmsh show sys license output. */}
+        <p className="cidr-privacy" style={{ marginTop: "0.25rem" }}>
+          {t("pasteHint")}
+        </p>
       </div>
 
       {error && (
@@ -130,6 +139,14 @@ export default function F5ServiceCheckDateTool() {
         <div className="jwt-results">
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("date.heading")}</h4>
+            {/* Echo the exact matched span so the user can confirm the right
+                line was picked out of their paste. */}
+            {result.extractedFrom && (
+              <p className="cipher-note">
+                {t("date.extractedFrom")}{" "}
+                <code className="mono">{result.extractedFrom.matchedText}</code>
+              </p>
+            )}
             {result.newestReachable ? (
               <>
                 <p className="jwt-claim-value">{t("date.newestReachable")}</p>

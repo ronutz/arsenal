@@ -41,12 +41,15 @@ export default async function SiteFooter() {
           </Link>
         </p>
 
-        {/* Utility links, grouped into two compact rows with dimmed-middot
-            separators: participation first (ideas, then translations), then
-            contact and legal. The machine-readable row lives at the end of the
-            footer, just above the build stamp. The /api link stays desurfaced
-            while access control matures; its page, docs, and spec remain
-            reachable by direct URL. */}
+        {/* Utility links, consolidated into ONE compact row with dimmed-middot
+            separators, in this deliberate order: participation first (share an
+            idea, improve the translations), then legal (license, privacy),
+            then contact last. Long enough to wrap gracefully on narrow
+            screens; the flexless <p> lets the browser break at separators.
+            The machine-readable row lives at the end of the footer, just
+            above the build stamp. The /api link stays desurfaced while access
+            control matures; its page, docs, and spec remain reachable by
+            direct URL. */}
         <p className="footer-contribute">
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
@@ -55,18 +58,17 @@ export default async function SiteFooter() {
           <Link href="/contribute" className="footer-contribute-link">
             {t("contribute")}
           </Link>
-        </p>
-        <p className="footer-contribute">
-          <Link href="/contact" className="footer-contribute-link">
-            {t("feedback")}
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          <Link href="/license" className="footer-contribute-link">
+            {t("license")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/privacy" className="footer-contribute-link">
             {t("privacy")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
-          <Link href="/license" className="footer-contribute-link">
-            {t("license")}
+          <Link href="/contact" className="footer-contribute-link">
+            {t("feedback")}
           </Link>
         </p>
         {/* Quiet support link. The cup is forced to monochrome (U+FE0E) so it
@@ -99,10 +101,13 @@ export default async function SiteFooter() {
           </a>
         </p>
 
-        {/* Machine-readable surface, last before the build stamp: the llms.txt
-            map for AI agents, robots.txt, and the Learn RSS feed. Monospace and
-            a step smaller (see .footer-machine) so the row reads as quiet file
-            endpoints. Plain anchors (static files, not locale routes). */}
+        {/* QUIET TRAILING BLOCK, part 1 of 2 - the machine-readable surface:
+            the llms.txt map for AI agents, robots.txt, and the Learn RSS feed.
+            Sits at the very end with the build stamp, pushed apart from the
+            human links above and rendered small + dimmed (.footer-machine) at
+            the stamp's own size and tone: these closing lines are reference
+            plumbing, not calls to action, and must not compete with the
+            footer proper. Plain anchors (static files, not locale routes). */}
         <p className="footer-contribute footer-machine">
           <a href="/llms.txt" className="footer-contribute-link">
             llms.txt
@@ -117,7 +122,8 @@ export default async function SiteFooter() {
           </a>
         </p>
 
-        {/* Build stamp, last line, dimmed. One timestamp per build
+        {/* QUIET TRAILING BLOCK, part 2 of 2 - build stamp, dimmed, clustered
+            tightly under the machine row. One timestamp per build
             (scripts/gen-build-info.mjs), in UTC so it is unambiguous. */}
         <p className="footer-modified">
           {t("lastModified", {

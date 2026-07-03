@@ -59,6 +59,7 @@ export const tools: ToolEntry[] = [
   { id: "bigip-tcpdump-builder", href: "/tools/bigip-tcpdump-builder", category: "networking", vendors: ["f5"], available: true },
   { id: "persistence-method-explainer", href: "/tools/persistence-method-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-service-check-date", href: "/tools/f5-service-check-date", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-bigip-license-explainer", href: "/tools/f5-bigip-license-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-cipher-string-expander", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
   { id: "f5-ssl-profile-explainer", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
   { id: "epoch", href: "/tools/epoch", category: "encoding", available: true },

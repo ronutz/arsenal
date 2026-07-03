@@ -44,10 +44,26 @@ export interface ToolProvenance {
 const PROVENANCE: Record<string, ToolProvenance> = {
   "f5-service-check-date": {
     basis:
-      "The comparison runs entirely in your browser against a vendored copy of F5's License Check Date table. Enter a version and it returns the minimum service check date that version's license must carry; enter a service check date and it returns the newest version you can upgrade to and the newer branches you cannot reach yet. It is pure date arithmetic with no clock and no network: the version's License Check Date and the service check date are both inputs, so the same inputs always give the same answer.",
+      "The comparison runs entirely in your browser against a vendored copy of F5's License Check Date table. Enter a version and it returns the minimum service check date that version's license must carry; enter a service check date and it returns the newest version you can upgrade to and the newer branches you cannot reach yet; paste your /config/bigip.license contents or tmsh show sys license output and the service check date is extracted for the same answer. It is pure date arithmetic with no clock and no network: the version's License Check Date and the service check date are both inputs, so the same inputs always give the same answer.",
     sources: [
       { label: "F5 K7727", url: "https://my.f5.com/manage/s/article/K7727", note: "The License Check Date table, the Service Check Date definition, and the boot-time enforcement behaviour" },
       { label: "F5 K8986", url: "https://my.f5.com/manage/s/article/K8986", note: "The BIG-IP version schema that fixes the upgrade-vs-update boundary the check applies to" },
+      { label: "F5 K3782", url: "https://my.f5.com/manage/s/article/K3782", note: "The tmsh show sys license field set and sample line forms the paste extractor accepts" },
+      { label: "F5 K000160443", url: "https://my.f5.com/manage/s/article/K000160443", note: "Field-by-field meaning of the license output and the /config/bigip.license file location" },
+    ],
+    disclaimer: "vendor-docs",
+  },
+  "f5-bigip-license-explainer": {
+    basis:
+      "The decode runs entirely in your browser. Paste /config/bigip.license contents, the full file or any fragment, and it explains the license in plain language: whether it is managed by BIG-IQ or licensed directly, the licensing dates with the K7727 upgrade-eligibility verdict (computed over the same vendored table the F5 service check date tool uses), the Registration Key and platform, active and optional modules with their per-module keys, Exclusive_version, Deny_version and Exclusive_Platform constraints, and every feature token. It is decode-only: nothing is validated against a live system, nothing is transmitted, and key or signature values are never displayed, only their presence and length. The line grammar is grounded in two real, sanitized lab license files (BIG-IQ-managed and direct) and in the F5 articles below.",
+    sources: [
+      { label: "F5 K000160443", url: "https://my.f5.com/manage/s/article/K000160443", note: "Field-by-field meaning of the license fields and the /config/bigip.license location" },
+      { label: "F5 K7727", url: "https://my.f5.com/manage/s/article/K7727", note: "The Service Check Date definition and the License Check Date table behind the upgrade verdict" },
+      { label: "F5 K3782", url: "https://my.f5.com/manage/s/article/K3782", note: "The registration key shape and the license field set" },
+      { label: "F5 K7752", url: "https://my.f5.com/manage/s/article/K7752", note: "The 27-character base registration key and the add-on key model" },
+      { label: "F5 K42091606", url: "https://my.f5.com/manage/s/article/K42091606", note: "Exclusive_version fields define the permitted VE software range" },
+      { label: "F5 K02011230", url: "https://my.f5.com/manage/s/article/K02011230", note: "Z100-family platform IDs belong to BIG-IP VE" },
+      { label: "F5 K15643", url: "https://my.f5.com/manage/s/article/K15643", note: "Version Plus semantics behind the Exclusive_version ceiling" },
     ],
     disclaimer: "vendor-docs",
   },
