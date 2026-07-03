@@ -1,0 +1,34 @@
+---
+slug: bigip-cmp-clustered-multiprocessing
+title: "CMP: Os Núcleos Que Você Pagou, e as Linhas de iRule Que os Devolvem"
+summary: "O clustered multiprocessing roda um TMM por núcleo e espalha os fluxos entre eles. Um virtual server rebaixado roda tudo no TMM0. A lista de rebaixamento é curta e documentada: variáveis globais acima de tudo, com static:: como cura, mais duas armadilhas por TMM (chaves em RULE_INIT, perfis de estatísticas) que não rebaixam mas quebram premissas em silêncio."
+concepts: ["cmp", "tmm", "clustered multiprocessing", "irules", "f5", "desempenho", "ltm policy"]
+relatedTools: ["f5-irules-command-context", "f5-irules-vs-ltm-policy"]
+relatedArticles: ["bigip-connection-eviction-policies"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-07-03"
+---
+
+O plano de dados do BIG-IP é o Traffic Management Microkernel, e em plataformas multiprocessadas não existe um só, e sim um por núcleo, com as conexões desagregadas entre as instâncias. Isso é o clustered multiprocessing, CMP, e é a razão de um appliance moderno escalar com a contagem de núcleos. A F5 documenta o modelo na série de overviews K7751, K14248 e K14358, um por geração de plataforma, e as conclusões práticas para quem escreve iRules vivem na página de CMP Compatibility da referência da API de iRules.
+
+## O que o rebaixamento realmente custa
+
+A página de compatibilidade declara a consequência sem enfeite: um virtual server usando recursos não compatíveis com CMP deve ser rebaixado do processamento CMP, e todas as conexões daquele virtual server são tratadas por um único TMM. Não desacelerado, não penalizado por um percentual: serializado em um núcleo enquanto os outros assistem. Em uma caixa de dois núcleos isso é metade da sua capacidade; em um appliance moderno é quase toda ela. O iHealth sinaliza virtuais rebaixados exatamente por isso, e o modo CMP de um virtual é visível em seu status detalhado.
+
+## A construção que rebaixa, e sua cura documentada
+
+O residente principal da lista de rebaixamento é a variável global. A página de compatibilidade é específica no mecanismo e na linha do tempo: variáveis globais não são compartilhadas entre instâncias de TMM, não são compatíveis com CMP, e a partir da versão 10 o validador captura a forma global e o virtual server é rebaixado. A mesma página nomeia a cura: variáveis static:: foram adicionadas precisamente como o jeito compatível com CMP de compartilhar valores estáticos, com a ressalva embutida no nome, elas são definidas na inicialização, não são estado mutável compartilhado. Uma iRule que faz `set ::counter 0` está gastando núcleos para economizar teclas; o [explicador de comandos e contexto](/tools/f5-irules-command-context) sinaliza o padrão na hora e cita essa página quando o faz.
+
+## Duas armadilhas que não rebaixam mas ainda mordem
+
+A página de compatibilidade documenta dois comportamentos por TMM que valem separar do rebaixamento propriamente dito. Chaves geradas em RULE_INIT existem uma vez por TMM, então uma requisição criptografada pela instância de um núcleo não pode ser descriptografada pela instância de outro; o sintoma é falha intermitente que segue o hash de desagregação, tão desagradável de diagnosticar quanto parece. E perfis de estatísticas mantêm uma instância separada por TMM, com o GUI e o SNMP mostrando contagens cumulativas, o que serve para dashboards e engana qualquer lógica que as leia esperando uma verdade única.
+
+## A ruga histórica, por completude
+
+A página também registra a linha do tempo da persistência: até a 9.4.2 nenhum método de persistência era compatível com CMP, a 9.4.3 trouxe cookie e hash, e a 9.6.1 tornou todos os métodos compatíveis. Em qualquer coisa moderna isso é história e não orientação, mas explica o folclore de que persistência e CMP não se misturam, folclore que deixou de ser verdade há muito tempo.
+
+## A saída que evita o assunto inteiro
+
+Um bloco de casar-e-agir que nunca precisou de Tcl nunca precisou do risco. LTM policies, a camada sem programação de regras sob uma estratégia de correspondência, executam condições e ações sem uma linha de código de iRule, e o fabricante entrega seus exemplos de policy com equivalentes em iRule precisamente para facilitar a comparação. O [classificador iRules vs LTM Policy](/tools/f5-irules-vs-ltm-policy) aplica essa comparação por bloco when, com um esboço de migração onde a gramática permite. Os blocos que continuam iRules são os que fazem coisas que policies não fazem, que é exatamente para isso que iRules existem; escreva esses com a página de compatibilidade aberta, e os núcleos continuam seus.

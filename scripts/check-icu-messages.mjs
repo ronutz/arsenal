@@ -31,6 +31,9 @@ const RAW_LITERAL_KEYS = new Set([
   "tools.f5-lb-method-chooser.inputPlaceholder", // tmsh pool sample: literal braces, rendered with t.raw()
   "tools.f5-gslb-decision-flow.inputPlaceholder", // gtm pool sample: literal braces, rendered with t.raw()
   "tools.f5-topology-longest-match.inputPlaceholder", // topology record sample: literal braces, rendered with t.raw()
+  "tools.f5-dos-vector-explainer.inputPlaceholder", // dos device-config sample: literal braces, rendered with t.raw()
+  "tools.f5-irules-command-context.inputPlaceholder", // iRule sample: literal braces, rendered with t.raw()
+  "tools.f5-irules-vs-ltm-policy.inputPlaceholder", // iRule sample: literal braces, rendered with t.raw()
 ]);
 
 const packs = readdirSync(DIR).filter((f) => f.endsWith(".json"));

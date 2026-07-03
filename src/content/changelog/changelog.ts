@@ -44,6 +44,40 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "16:34",
+    kind: "content",
+    title: "Learn article: CMP, the cores you paid for",
+    body:
+      "The article behind the new iRules pair, in English and Portuguese: one TMM per core, connections disaggregated across them, and demotion meaning every connection for a virtual serialized onto a single TMM. The demotion list per the CMP Compatibility page: global variables (validator catches them as of v10) with static:: as the documented cure, plus the two per-TMM traps that bite without demoting - RULE_INIT-generated keys and statistics profiles. Closes with the persistence timeline for the folklore, and the LTM-policy escape hatch for match-and-act logic that never needed Tcl.",
+  },
+  {
+    date: "2026-07-03",
+    time: "16:32",
+    kind: "tool",
+    tools: ["f5-irules-command-context", "f5-irules-vs-ltm-policy"],
+    title: "Two new tools: the iRules CMP pair",
+    body:
+      "The command/context explainer reads an iRule the way the reference would: every when block with the event's own Master List one-liner, commands inventoried with direct links to their reference pages, the documented priority evaluation order, and a CMP audit sourced line by line to the CMP Compatibility page - global variables demote the virtual server to a single TMM (the validator catches them as of v10), static:: is the documented cure, RULE_INIT-generated keys are per-TMM, statistics profiles count per TMM. Its sibling classifies each block against LTM policies with three honest verdicts: policy-expressible with a migration sketch in the grammar the vendor's own examples demonstrate, verify-on-version for constructs the verified sources did not show, or iRule-required with the blockers named. Both link per-command validity pages rather than reproducing tables they have not verified.",
+  },
+  {
+    date: "2026-07-03",
+    time: "15:49",
+    kind: "content",
+    title: "Two Learn articles: SYN flood protection, and connection eviction policies",
+    body:
+      "The DoS-vector explainer's article pair, in English and Portuguese. SYN Flood Protection walks the cookie mechanics per K14779, the LTM threshold map and per-VLAN hardware mode, the AFM tcp-half-open vector's documented precedence over the LTM global SYN cookie, and the mitigation-below-detection arrangement that drops traffic with no attack log. Connection Eviction Policies covers the K15738 lineage from the adaptive reaper, the watermark semantics that change meaning with the attachment context, the strategies the manual honestly calls statistical and opportunistic, and the slow-flow monitor-first pattern. Both grounded in the F5 references fetched this session.",
+  },
+  {
+    date: "2026-07-03",
+    time: "15:36",
+    kind: "tool",
+    tools: ["f5-dos-vector-explainer"],
+    title: "New tool: AFM DoS-vector explainer",
+    body:
+      "Paste security dos device-config or profile stanzas and every vector renders with F5's own one-line identity (the full 105-entry reference table, sys-db tunables included), the threshold mechanics spelled out - detection compares a 1-minute average against an absolute value or a learned 1-hour baseline, and the internal rate limit runs in hardware where the platform has it - and deterministic cross-checks: the mitigation-below-detection inversion that drops traffic with no attack log, automatic-mode semantics, policing with detection disabled, bad-actor wiring, and the tcp-half-open SYN-cookie interplay. Defensive configuration only; the tool never generates traffic.",
+  },
+  {
+    date: "2026-07-03",
     time: "14:47",
     kind: "feature",
     title: "Three small touches: the stamp, the roadmap pointer, and a heart",

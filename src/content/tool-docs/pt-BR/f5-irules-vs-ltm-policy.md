@@ -1,0 +1,11 @@
+# Classificador iRules vs LTM Policy
+
+O fabricante entrega seus exemplos de Local Traffic Policies nas duas formas, policy e iRule equivalente, porque as duas genuinamente se sobrepõem. A pergunta que vale automatizar é quais dos seus blocos when vivem na sobreposição.
+
+Cole uma iRule e cada bloco recebe um de três vereditos, e apenas três, porque honestidade precisa de um balde do meio. Exprimível em policy significa que cada construção mapeia para a gramática que os próprios exemplos 12.1 do fabricante demonstram: condições http-uri, http-header e http-cookie com equals, contains, starts-with e ends-with; encaminhar para um pool ou resetar; log write, incluindo substituição tcl:; replace e insert de cabeçalho; habilitar compressão. Esses blocos vêm com um esboço de migração exatamente nessa gramática, marcado para validação com tmsh. Verifique na sua versão significa que as construções são plausivelmente cobertas em releases atuais mas as fontes que esta ferramenta verificou não as demonstraram; HTTP::redirect é o residente canônico, e a ferramenta manda checar as listas de condições e ações da sua versão em vez de adivinhar. iRule obrigatória nomeia os bloqueadores: eventos além do par de request e response HTTP, loops e procedures Tcl, lógica de regex (a gramática verificada casa com listas de operandos, não padrões), variáveis (policies não têm nenhuma; a substituição tcl: dentro de uma ação é a exceção estreita documentada), estado de table e session, conexões sideband, coleta de payload, timers.
+
+A palavra strategies renderiza as três estratégias de correspondência com a semântica da própria referência ltm policy-strategy: first-match encerra o motor na primeira condição que casa; all-match executa as ações de tudo que casa; best-match deixa a correspondência mais específica vencer, com empates caindo para a tabela de precedência embutida cujo topo a ferramenta reproduz.
+
+Por que migrar o que pode migrar: LTM Policy é a camada que as fontes descrevem como altamente performática e que, ao contrário de iRules, não exige programação, e nenhum dos riscos de rebaixamento de CMP das iRules existe dentro de uma policy. A mecânica de migração pelo manual de Getting Started: rascunho, publicar, anexar ao virtual.
+
+Tudo roda localmente; nada do que você cola sai da página.

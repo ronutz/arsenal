@@ -1,0 +1,13 @@
+# AFM DoS-vector / profile explainer
+
+An AFM device-DoS configuration is a hundred small dials with three failure modes: thresholds that never fire, thresholds that fire silently, and thresholds someone set without knowing what the vector actually counts. This tool reads the configuration back to you the way the reference manual would.
+
+Paste a `security dos device-config` stanza, one or more `security dos profile` stanzas, or both, exactly as tmsh lists them. Every vector entry renders as a card: the vector's identity in F5's own one-line description (the tool carries the full 105-entry vector table from the tmsh reference, sys-db tunables included), each threshold field annotated with the reference's semantics, and deterministic observations underneath.
+
+The semantics matter more than they look. A pps detection threshold compares a one-minute average against an absolute value; the percent variant compares that same one-minute average against a dynamically learned one-hour baseline; and the internal rate limit is programmed into hardware on platforms that have it, with bad packets always dropped regardless. The tool spells each of these out on the field where it applies.
+
+The observations are the point. The marquee check is the inversion F5's own SYN-cookie troubleshooting series warns about: a mitigation rate limit set below the detection threshold rate-limits traffic before an attack is ever declared, so packets drop with no attack log. The tool flags it in both attribute-naming families, device (`default-internal-rate-limit` vs `detection-threshold-pps`) and profile (`rate-limit` vs `rate-threshold`), and repeats the check per-source for bad-actor rates. Around it: automatic-threshold mode explained the way the DDoS training material states it (detection thresholds adjust to observed traffic; mitigation limits are always stress-driven, so anomalies without stress alert but do not block), manual numbers marked inert under automatic mode, `simulate-auto-threshold` scoped to manual mode as the reference requires, detection disabled while a finite limit polices silently, `enforce disabled` and `detect-only` called out as monitoring rather than mitigation, and orphaned bad-actor wiring in either direction.
+
+A single vector name renders one card; the word `vectors` renders the whole catalogue grouped into nine categories. Vectors outside the curated table still parse and get the threshold mechanics, flagged honestly as outside it rather than guessed at.
+
+This tool explains defensive configuration and never generates traffic of any kind. Everything runs locally; nothing you paste leaves the page.

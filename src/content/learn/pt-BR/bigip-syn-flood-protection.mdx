@@ -1,0 +1,34 @@
+---
+slug: bigip-syn-flood-protection
+title: "Proteção contra SYN Flood no BIG-IP: Cookies, Limiares e Quem Responde Primeiro"
+summary: "Um SYN flood ataca o estado half-open da tabela de conexões. A resposta do BIG-IP é o SYN cookie: um SYN-ACK sem estado com o estado codificado no número de sequência. A parte interessante é o empilhamento: limiares globais e por VS no LTM, cookies de hardware por VLAN e um vetor de device do AFM que tem precedência sobre tudo isso, mais um arranjo de limiares que mitiga em silêncio, sem log de ataque."
+concepts: ["syn flood", "syn cookie", "afm", "dos", "ltm", "f5", "tcp", "half-open"]
+relatedTools: ["f5-dos-vector-explainer"]
+relatedArticles: ["bigip-connection-eviction-policies"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+Um SYN flood de TCP não ataca banda; ataca memória. Cada SYN que um listener honra cria uma entrada half-open que espera o terceiro pacote do handshake, e uma enxurrada de SYNs forjados enche essa tabela com entradas cujo terceiro pacote nunca virá. A defesa clássica, no BIG-IP como em qualquer lugar, é o SYN cookie, e o K14779 declara o truque com clareza: em vez de armazenar o estado half-open, o sistema responde com um SYN-ACK cujo número de sequência codifica esse estado. Nenhuma entrada é criada, então a fila sob ataque simplesmente não existe. Quando um cliente legítimo completa o handshake, o ACK de retorno traz o cookie de volta, o sistema o valida, reconstrói o estado da conexão e só então insere o fluxo na tabela de conexões e o conecta adiante.
+
+## Onde os cookies são feitos
+
+No BIG-IP o mecanismo roda em mais de um lugar, e é no empilhamento que moram as surpresas operacionais. Em software, cada TMM pode gerar e validar cookies. Nas plataformas com a high-speed bridge (a HSBe2), o K14779 descreve um modelo colaborativo: quando a taxa de SYN cruza o limiar de ativação, o TMM que a observa notifica o hardware e os TMMs vizinhos, e a geração de cookies passa para o hardware, que é a diferença entre sobreviver a um flood em line rate e queimar CPU nele.
+
+Há também um modo de hardware por VLAN, `hardware-syncookie` no objeto `net vlan`, documentado no capítulo do manual de SYN flood da plataforma com seus próprios gatilhos: ele engata quando a contagem half-open do limiar global de SYN check do LTM é atingida, quando o limiar do syncache da própria VLAN é atingido, ou quando o limite de taxa de SYN flood é alcançado. Duas notas de compatibilidade acompanham esse modo. A série de troubleshooting de SYN cookies do DevCentral, escrita por engenheiros da F5, afirma que o hardware-syncookie por VLAN não é compatível com a configuração de DoS device do AFM, então os dois não devem ser empilhados sobre o mesmo tráfego. E virtual servers wildcard historicamente complicavam o offload de hardware: pelo K50955355, antes da 14.1 um listener wildcard mantinha apenas um destino em hardware enquanto o resto caía para cookies em software, com o custo de CPU que isso implica; a partir da 14.1, em plataformas suportadas, o offload cobre o caso wildcard.
+
+## O mapa de limiares
+
+O lado LTM expõe seus ajustes em `ltm global-settings connection`: `global-syn-challenge-threshold` é a contagem half-open do equipamento inteiro que ativa SYN cookies, `default-vs-syn-challenge-threshold` semeia o limiar por virtual server, e `vlan-syn-cookie` governa o mecanismo de VLAN acima. Por virtual server, o profile FastL4 carrega `syn-cookie-enable`, e o caminho acelerado por PVA tem sua própria chave em `sys db pvasyncookies.enabled`. Se a proteção engata no equipamento, na VLAN ou no virtual server depende de qual limiar dispara primeiro, que é exatamente o motivo de a série de troubleshooting existir.
+
+## A camada AFM, e quem responde primeiro
+
+Provisione o AFM e um segundo contador aparece: o vetor `tcp-half-open` em `security dos device-config`, que conta conexões embrionárias diretamente (seu vizinho `tcp-syn-flood` conta pacotes SYN crus, uma medição diferente que captura floods diferentes). O vetor carrega o par padrão, um `detection-threshold-pps` e um `default-internal-rate-limit`, e a série de troubleshooting resolve a questão de precedência sem ambiguidade: o Device DoS do AFM tem preferência sobre o SYN cookie global do LTM. Coloque o limite de taxa do vetor igual ou abaixo do limiar global de challenge do LTM e é o AFM que age primeiro; o mecanismo do LTM atrás dele pode nunca ver o tráfego que o teria disparado.
+
+Essa mesma série documenta o arranjo que vale memorizar. Nada impede configurar o limite de mitigação abaixo do limiar de detecção; o sistema avisa no momento da configuração e depois honra o que você escreveu. O resultado é um vetor que limita o tráfego na faixa entre os dois valores sem nunca declarar um ataque, o que significa pacotes descartados e nenhum log de ataque para explicá-los. Se conexões estão falhando misteriosamente sob carga e os logs de DoS estão limpos, essa inversão é uma das primeiras coisas a descartar.
+
+## Lendo a sua própria configuração
+
+Uma dependência operacional completa o quadro: o K14779 observa que a proteção por SYN cookie espera que o auto-lasthop devolva o tráfego do handshake pelo caminho em que chegou, então desabilitá-lo exige uma rota compensatória. O resto é aritmética entre limiares que você pode ler. O [explicador de vetores DoS do AFM](/tools/f5-dos-vector-explainer) neste site interpreta estrofes de `security dos device-config` e de profiles, anota cada limiar com a semântica da própria referência e sinaliza a inversão silenciosa nas duas famílias de nomes de atributos, o que transforma o parágrafo acima em uma checagem que roda no seu navegador.

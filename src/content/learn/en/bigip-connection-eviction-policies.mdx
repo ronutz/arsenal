@@ -1,0 +1,34 @@
+---
+slug: bigip-connection-eviction-policies
+title: "Connection Eviction Policies: What BIG-IP Throws Overboard, and When"
+summary: "The connection table is finite, and something decides what dies first when it fills. Before 11.6 that was the adaptive reaper and two db keys; since 11.6 it is the eviction policy: watermark triggers whose meaning changes with the attachment context, strategies the manual honestly calls statistical and opportunistic, and a slow-flow block with a clean monitor-first pattern."
+concepts: ["eviction policy", "connection table", "adaptive reaping", "sweeper", "ltm", "f5", "dos", "slow flows"]
+relatedTools: ["f5-dos-vector-explainer"]
+relatedArticles: ["bigip-syn-flood-protection"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+Every flow through a BIG-IP occupies a connection-table entry, and the table lives in finite TMM memory. Under a slow-and-low attack, a misbehaving client population, or plain overload, the box has to choose: refuse new connections, or evict old ones. The machinery that makes that choice has two generations, and knowing both helps because the older one still explains log lines people meet today.
+
+## The lineage: adaptive reaping
+
+Before 11.6.0, the mechanism was adaptive reaping, tuned by two database keys, `connection.adaptivereaper.lowwater` and `connection.adaptivereaper.hiwater`, expressed as percentages of TMM page memory. K15738 describes the behavior: crossing the low-water mark starts aggressive reaping, which accelerates the closing of the most idle connections, and, importantly, may reap flows before their configured idle timeouts would have expired. Crossing the high-water mark is harsher: unestablished connections are simply no longer allowed. When this machinery engages, it announces itself in `/var/log/ltm` with the aggressive-mode sweeper message, and that log line is still the fastest way to recognize a unit under table pressure. From 11.6.0, K15738 continues, the low-water and high-water values are configured in an eviction policy instead.
+
+## The policy object, and why context changes its meaning
+
+An eviction policy, `ltm eviction-policy` in tmsh, carries a trigger with a high-water and a low-water limit, and the reference makes a distinction that decides everything about how you size them. When the policy is applied at the global context, the limits are measured against the memory available on the BIG-IP. When it is applied to a virtual server or a route domain, the same numbers are measured against that object's configured connection limit instead. The identical policy therefore means different things in different attachments: a global 90 is a statement about box memory; a per-virtual 90 is a statement about that listener's connection ceiling. The global attachment lives in `ltm global-settings connection` as the flow eviction policy, and the reference's own example configures a policy with a low-water of 70 and a high-water of 80, useful numbers to anchor on because they are the vendor's, not folklore.
+
+## Strategies: statistical, and honest about it
+
+Between the watermarks, the policy chooses victims by strategy, and the manual's candor here is worth quoting in spirit: the strategies work on a cyclic sweep of the connection table, and they are statistical and opportunistic rather than guarantees that a particular flow, or type of flow, will be evicted. Bias-bytes prefers the flows that have moved the fewest bytes; bias-idle prefers the flows idle the longest; bias-oldest prefers the flows that have existed the longest. Alongside the biases sit low-priority selectors that mark whole classes of traffic as preferred victims, geographies carrying a country list among them. The right reading of all of this is probabilistic: you are shaping who is likely to die first, not writing an execution order.
+
+## Slow flows, and the monitor-first pattern
+
+The slow-flow block inside the policy is the anti-slow-loris tool: a threshold in bytes per second below which a flow counts as slow, a throttling switch that kills flows so classified, and an eviction-type expressed as a count or a percentage of how many slow flows are tolerated. The clean deployment pattern is built into the shape of the options, and the reference's example uses it: enable slow-flow detection with throttling disabled first, which yields metrics about how much of your legitimate traffic is slow, and only then enable throttling with numbers you have evidence for. The reference also notes the detection itself carries a performance cost, so it is a dial to turn deliberately, not a default to leave on everywhere.
+
+## What this article deliberately does not tell you
+
+Your unit ships with a default eviction policy attached at the global context, and the honest advice is to read its actual values with `tmsh list ltm eviction-policy` rather than trust any article's recollection of the defaults, this one included. What is worth carrying in your head is the model: watermarks whose denominator depends on the attachment context, strategies that bias a sweep rather than guarantee an order, a slow-flow block with a built-in monitor-first mode, and one legacy log line, the aggressive sweeper, that tells you the old machinery's spiritual successor is earning its keep. The [DoS-vector explainer](/tools/f5-dos-vector-explainer) on this site covers the neighboring layer, the AFM vectors that decide what gets dropped before it ever occupies a table entry.

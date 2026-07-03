@@ -962,6 +962,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5-dos-vector-explainer:
+    get:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_dos_vector_explainer
+      summary: AFM DoS-vector / profile explainer
+      description: >-
+        Every AFM DoS vector explained in F5's own words, with the threshold mechanics spelled out
+        and the configuration cross-checked: the silent mitigation-below-detection inversion,
+        automatic-mode semantics, policing without detection, and the SYN-cookie interplay.
+        Defensive configuration only. Standards: F5 AFM DoS profiles. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - >-
+                security dos device-config dos-device-config { dos-device-vector { tcp-half-open { }
+                } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_dos_vector_explainer_post
+      summary: AFM DoS-vector / profile explainer (POST)
+      description: >-
+        Every AFM DoS vector explained in F5's own words, with the threshold mechanics spelled out
+        and the configuration cross-checked: the silent mitigation-below-detection inversion,
+        automatic-mode semantics, policing without detection, and the SYN-cookie interplay.
+        Defensive configuration only. Standards: F5 AFM DoS profiles. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - >-
+                  security dos device-config dos-device-config { dos-device-vector { tcp-half-open {
+                  } } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5-gslb-decision-flow:
     get:
       tags:
@@ -1029,6 +1102,73 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5-irules-command-context:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_irules_command_context
+      summary: iRules command / context explainer
+      description: >-
+        Paste an iRule: every when block explained with the event's own reference one-liner, its
+        commands inventoried and linked, the documented priority evaluation order, and a CMP audit
+        that catches the constructs that demote your virtual server to a single TMM. Standards: F5
+        iRules API reference. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - when HTTP_REQUEST { pool web }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_irules_command_context_post
+      summary: iRules command / context explainer (POST)
+      description: >-
+        Paste an iRule: every when block explained with the event's own reference one-liner, its
+        commands inventoried and linked, the documented priority evaluation order, and a CMP audit
+        that catches the constructs that demote your virtual server to a single TMM. Standards: F5
+        iRules API reference. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - when HTTP_REQUEST { pool web }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5-irules-event-order:
     get:
       tags:
@@ -1079,6 +1219,73 @@ paths:
           text/plain:
             schema:
               type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-irules-vs-ltm-policy:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_irules_vs_ltm_policy
+      summary: iRules vs LTM Policy classifier
+      description: >-
+        Per when block, an honest verdict: expressible in an LTM policy (with a migration sketch in
+        the vendor's own example grammar), verify on your version, or iRule-required with the
+        blockers named. Policies are the no-programming layer; this tool tells you which blocks
+        belong there. Standards: F5 LTM policies, F5 iRules. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - when HTTP_REQUEST { pool web }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_irules_vs_ltm_policy_post
+      summary: iRules vs LTM Policy classifier (POST)
+      description: >-
+        Per when block, an honest verdict: expressible in an LTM policy (with a migration sketch in
+        the vendor's own example grammar), verify on your version, or iRule-required with the
+        blockers named. Policies are the no-programming layer; this tool tells you which blocks
+        belong there. Standards: F5 LTM policies, F5 iRules. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - when HTTP_REQUEST { pool web }
       responses:
         '200':
           description: The computed result.

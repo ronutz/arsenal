@@ -1,0 +1,34 @@
+---
+slug: bigip-cmp-clustered-multiprocessing
+title: "CMP: The Cores You Paid For, and the iRule Lines That Give Them Back"
+summary: "Clustered multiprocessing runs one TMM per core and spreads flows across them. A demoted virtual server runs everything on TMM0. The demotion list is short and documented: global variables above all, with static:: as the cure, plus two per-TMM traps (RULE_INIT keys, statistics profiles) that do not demote but quietly break assumptions."
+concepts: ["cmp", "tmm", "clustered multiprocessing", "irules", "f5", "performance", "ltm policy"]
+relatedTools: ["f5-irules-command-context", "f5-irules-vs-ltm-policy"]
+relatedArticles: ["bigip-connection-eviction-policies"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-07-03"
+---
+
+BIG-IP's data plane is the Traffic Management Microkernel, and on multiprocessor platforms there is not one of it but one per core, with connections disaggregated across the instances. That is clustered multiprocessing, CMP, and it is the reason a modern appliance scales with its core count. F5 documents the model across the K7751, K14248, and K14358 overview series, one per platform generation, and the practical takeaways for anyone writing iRules live on the iRules API reference's CMP Compatibility page.
+
+## What demotion actually costs
+
+The compatibility page states the consequence without decoration: a virtual server using features that are not CMP-compatible should be demoted from CMP processing, and all connections for that virtual server are handled by a single TMM. Not slowed, not penalized by a percentage: serialized onto one core while the others watch. On a two-core box that is half your capacity; on a modern appliance it is nearly all of it. iHealth flags demoted virtuals for exactly this reason, and the CMP mode of a virtual is visible in its detailed status.
+
+## The construct that demotes, and its documented cure
+
+The headline resident of the demotion list is the global variable. The compatibility page is specific on both the mechanism and the timeline: global variables are not shared across TMM instances, they are not CMP-compatible, and as of version 10 the validator catches the global form and the virtual server is demoted. The same page names the cure: static:: variables were added precisely as the CMP-compatible way to share static values, with the caveat built into the name, they are set at initialization, not shared mutable state. An iRule that does `set ::counter 0` is spending cores to save keystrokes; the [command / context explainer](/tools/f5-irules-command-context) flags the pattern on sight and cites this page when it does.
+
+## Two traps that do not demote but still bite
+
+The compatibility page documents two per-TMM behaviors worth separating from demotion proper. Keys generated in RULE_INIT exist once per TMM, so a request encrypted by the instance on one core cannot be decrypted by the instance on another; the symptom is intermittent failure that follows the disaggregation hash, which is as unpleasant to troubleshoot as it sounds. And statistics profiles keep a separate instance per TMM, with the GUI and SNMP showing cumulative counts, fine for dashboards, misleading for any logic that reads them expecting a single truth.
+
+## The historical wrinkle, for completeness
+
+The page also records the persistence timeline: through 9.4.2 no persistence method was CMP-compatible, 9.4.3 brought cookie and hash, and 9.6.1 made all methods compatible. On anything modern this is history rather than guidance, but it explains the folklore that persistence and CMP do not mix, folklore that stopped being true a long time ago.
+
+## The escape hatch that avoids the whole topic
+
+A match-and-act block that never needed Tcl never needed the risk. LTM policies, the no-programming layer of rules under a matching strategy, execute conditions and actions without a line of iRule code, and the vendor ships its policy examples with iRule equivalents precisely to make the comparison easy. The [iRules vs LTM Policy classifier](/tools/f5-irules-vs-ltm-policy) applies that comparison per when block, with a migration sketch where the grammar allows it. The blocks that stay iRules are the ones doing things policies cannot, which is exactly what iRules are for; write those with the compatibility page open, and the cores stay yours.

@@ -7626,3 +7626,16 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* The changelog's one-line pointer to the roadmap: same lede scale, a touch
    of separation from the count line above it. */
 .changelog-roadmap-note { margin-top: 0.5rem; }
+
+/* ---- f5-dos-vector-explainer -------------------------------------------- */
+.dve-posture { margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-secondary); }
+.dve-cat { color: var(--text-secondary); }
+.dve-db { border-style: dashed; }
+.dve-uncurated { border-color: var(--color-warning); color: var(--color-warning); }
+
+/* ---- f5-irules-command-context / f5-irules-vs-ltm-policy ------------------ */
+.icc-ref { margin: 0.35rem 0 0; font-size: 0.85rem; }
+.ivp-verdict.ivp-good { border-color: var(--color-success, #22c55e); color: var(--color-success, #22c55e); }
+.ivp-verdict.ivp-verify { border-color: var(--color-warning); color: var(--color-warning); }
+.ivp-verdict.ivp-keep { color: var(--text-secondary); }
+.ivp-sketch { white-space: pre; overflow-x: auto; padding: 0.6rem 0.75rem; font-size: 0.8rem; }

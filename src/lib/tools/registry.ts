@@ -57,6 +57,9 @@ import { run as persistenceMethodExplainerRun } from "./f5-persistence-method-ex
 import { run as lbMethodChooserRun } from "./f5-lb-method-chooser";
 import { run as gslbDecisionFlowRun } from "./f5-gslb-decision-flow";
 import { run as topologyLongestMatchRun } from "./f5-topology-longest-match";
+import { run as dosVectorExplainerRun } from "./f5-dos-vector-explainer";
+import { run as irulesCommandContextRun } from "./f5-irules-command-context";
+import { run as irulesVsLtmPolicyRun } from "./f5-irules-vs-ltm-policy";
 import { run as pkceRun } from "./pkce";
 import { run as regexRun } from "./regex";
 import { run as samlDecoderRun } from "./saml-decoder";
@@ -113,6 +116,9 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-lb-method-chooser", run: lbMethodChooserRun },
   { slug: "f5-gslb-decision-flow", run: gslbDecisionFlowRun },
   { slug: "f5-topology-longest-match", run: topologyLongestMatchRun },
+  { slug: "f5-dos-vector-explainer", run: dosVectorExplainerRun },
+  { slug: "f5-irules-command-context", run: irulesCommandContextRun },
+  { slug: "f5-irules-vs-ltm-policy", run: irulesVsLtmPolicyRun },
   { slug: "pkce", run: pkceRun },
   { slug: "regex", run: regexRun },
   { slug: "saml-decoder", run: samlDecoderRun },

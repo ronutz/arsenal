@@ -1,0 +1,34 @@
+---
+slug: bigip-connection-eviction-policies
+title: "Políticas de Evicção de Conexões: O Que o BIG-IP Joga ao Mar, e Quando"
+summary: "A tabela de conexões é finita, e algo decide o que morre primeiro quando ela enche. Antes da 11.6 isso era o adaptive reaper e duas chaves de db; desde a 11.6 é a política de evicção: gatilhos de marca-d'água cujo significado muda com o contexto de anexação, estratégias que o manual honestamente chama de estatísticas e oportunistas, e um bloco de slow-flow com um padrão limpo de monitorar primeiro."
+concepts: ["eviction policy", "tabela de conexões", "adaptive reaping", "sweeper", "ltm", "f5", "dos", "slow flows"]
+relatedTools: ["f5-dos-vector-explainer"]
+relatedArticles: ["bigip-syn-flood-protection"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+Cada fluxo que atravessa um BIG-IP ocupa uma entrada na tabela de conexões, e a tabela vive em memória finita dos TMMs. Sob um ataque slow-and-low, uma população de clientes mal comportada ou sobrecarga pura, o equipamento tem que escolher: recusar conexões novas ou expulsar as antigas. A maquinaria que faz essa escolha tem duas gerações, e conhecer as duas ajuda porque a mais velha ainda explica linhas de log que as pessoas encontram hoje.
+
+## A linhagem: adaptive reaping
+
+Antes da 11.6.0, o mecanismo era o adaptive reaping, ajustado por duas chaves de banco de dados, `connection.adaptivereaper.lowwater` e `connection.adaptivereaper.hiwater`, expressas como percentuais da memória de páginas dos TMMs. O K15738 descreve o comportamento: cruzar a marca baixa inicia o reaping agressivo, que acelera o fechamento das conexões mais ociosas e, ponto importante, pode ceifar fluxos antes de seus idle timeouts configurados expirarem. Cruzar a marca alta é mais duro: conexões não estabelecidas simplesmente deixam de ser permitidas. Quando essa maquinaria engata, ela se anuncia no `/var/log/ltm` com a mensagem do sweeper em modo agressivo, e essa linha de log ainda é o jeito mais rápido de reconhecer uma unidade sob pressão de tabela. A partir da 11.6.0, continua o K15738, os valores de marca baixa e alta passam a ser configurados em uma política de evicção.
+
+## O objeto de política, e por que o contexto muda seu significado
+
+Uma política de evicção, `ltm eviction-policy` no tmsh, carrega um gatilho com um limite de marca alta e um de marca baixa, e a referência faz uma distinção que decide tudo sobre como dimensioná-los. Quando a política é aplicada no contexto global, os limites são medidos contra a memória disponível no BIG-IP. Quando é aplicada a um virtual server ou a um route domain, os mesmos números são medidos contra o limite de conexões configurado daquele objeto. A mesma política, portanto, significa coisas diferentes em anexações diferentes: um 90 global é uma afirmação sobre a memória do equipamento; um 90 por virtual é uma afirmação sobre o teto de conexões daquele listener. A anexação global vive em `ltm global-settings connection` como a política de evicção de fluxos, e o próprio exemplo da referência configura uma política com marca baixa 70 e marca alta 80, números úteis para ancorar porque são do fabricante, não folclore.
+
+## Estratégias: estatísticas, e honestas quanto a isso
+
+Entre as marcas-d'água, a política escolhe vítimas por estratégia, e a franqueza do manual aqui merece ser citada em espírito: as estratégias trabalham em uma varredura cíclica da tabela de conexões, e são estatísticas e oportunistas em vez de garantias de que um fluxo específico, ou tipo de fluxo, será expulso. Bias-bytes prefere os fluxos que moveram menos bytes; bias-idle prefere os fluxos ociosos há mais tempo; bias-oldest prefere os fluxos que existem há mais tempo. Ao lado dos vieses ficam seletores de baixa prioridade que marcam classes inteiras de tráfego como vítimas preferenciais, entre eles geografias carregando uma lista de países. A leitura certa de tudo isso é probabilística: você está moldando quem tem mais chance de morrer primeiro, não escrevendo uma ordem de execução.
+
+## Fluxos lentos, e o padrão de monitorar primeiro
+
+O bloco de slow-flow dentro da política é a ferramenta anti-slow-loris: um limiar em bytes por segundo abaixo do qual um fluxo conta como lento, uma chave de throttling que mata fluxos assim classificados, e um eviction-type expresso como contagem ou percentual de quantos fluxos lentos são tolerados. O padrão limpo de implantação está embutido no formato das opções, e o exemplo da referência o usa: habilite a detecção de slow-flow com throttling desabilitado primeiro, o que rende métricas sobre quanto do seu tráfego legítimo é lento, e só então habilite o throttling com números para os quais você tem evidência. A referência também observa que a própria detecção carrega um custo de desempenho, então é um ajuste para girar deliberadamente, não um padrão para deixar ligado em todo lugar.
+
+## O que este artigo deliberadamente não te diz
+
+Sua unidade vem de fábrica com uma política de evicção padrão anexada no contexto global, e o conselho honesto é ler os valores reais dela com `tmsh list ltm eviction-policy` em vez de confiar na lembrança de qualquer artigo sobre os padrões, este incluído. O que vale carregar na cabeça é o modelo: marcas-d'água cujo denominador depende do contexto de anexação, estratégias que enviesam uma varredura em vez de garantir uma ordem, um bloco de slow-flow com um modo de monitorar primeiro embutido, e uma linha de log legada, o sweeper agressivo, que te diz que o sucessor espiritual da maquinaria antiga está fazendo por merecer. O [explicador de vetores DoS](/tools/f5-dos-vector-explainer) neste site cobre a camada vizinha, os vetores do AFM que decidem o que é descartado antes mesmo de ocupar uma entrada na tabela.

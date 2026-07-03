@@ -1,0 +1,34 @@
+---
+slug: bigip-syn-flood-protection
+title: "SYN Flood Protection on BIG-IP: Cookies, Thresholds, and Who Answers First"
+summary: "A SYN flood attacks the connection table's half-open state. BIG-IP's answer is the SYN cookie: a stateless SYN-ACK with the state encoded in the sequence number. The interesting part is the layering: LTM global and per-VS thresholds, per-VLAN hardware cookies, and an AFM device vector that takes precedence over all of it, plus one threshold arrangement that mitigates silently with no attack log."
+concepts: ["syn flood", "syn cookie", "afm", "dos", "ltm", "f5", "tcp", "half-open"]
+relatedTools: ["f5-dos-vector-explainer"]
+relatedArticles: ["bigip-connection-eviction-policies"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+A TCP SYN flood does not attack bandwidth; it attacks memory. Every SYN a listener honors creates a half-open entry that waits for the handshake's third packet, and a flood of spoofed SYNs fills that table with entries whose third packet will never come. The classic defense, on BIG-IP as elsewhere, is the SYN cookie, and K14779 states the trick plainly: instead of storing the half-open state, the system answers with a SYN-ACK whose sequence number encodes it. No entry is created, so the queue being attacked simply is not there. When a legitimate client completes the handshake, the returning ACK carries the cookie back, the system validates it, reconstructs the connection state, and only then inserts the flow into the connection table and connects it onward.
+
+## Where the cookies are made
+
+On BIG-IP the mechanism runs in more than one place, and the layering is where operational surprises live. In software, each TMM can generate and validate cookies. On platforms carrying the high-speed bridge (the HSBe2), K14779 describes a collaborative model: when the SYN rate crosses the activation threshold, the TMM that observes it notifies the hardware and its peer TMMs, and cookie generation moves into hardware, which is the difference between surviving a line-rate flood and burning CPU on it.
+
+There is also a per-VLAN hardware mode, `hardware-syncookie` on the `net vlan` object, documented in the platform's SYN-flood manual chapter with its own triggers: it engages when the LTM global SYN check threshold's half-open count is reached, when the VLAN's own syncache threshold is reached, or when the SYN flood rate limit is hit. Two compatibility notes attach to this mode. The DevCentral SYN-cookie troubleshooting series, written by F5 engineers, states that per-VLAN hardware syncookie is not compatible with the AFM DoS device configuration, so the two should not be layered on the same traffic. And wildcard virtual servers historically complicated hardware offload: per K50955355, before 14.1 a wildcard listener could keep only one destination in hardware while the rest fell back to software cookies, with the CPU cost that implies; from 14.1 on supported platforms the offload covers the wildcard case.
+
+## The threshold map
+
+The LTM side exposes its knobs in `ltm global-settings connection`: `global-syn-challenge-threshold` is the box-wide half-open count that activates SYN cookies, `default-vs-syn-challenge-threshold` seeds the per-virtual-server threshold, and `vlan-syn-cookie` governs the VLAN mechanism above. Per virtual server, the FastL4 profile carries `syn-cookie-enable`, and the PVA-accelerated path has its own switch in `sys db pvasyncookies.enabled`. Whether protection engages at the box, the VLAN, or the virtual server depends on which threshold trips first, which is exactly why the troubleshooting series exists.
+
+## The AFM layer, and who answers first
+
+Provision AFM and a second counter appears: the `tcp-half-open` vector in `security dos device-config`, which counts embryonic connections directly (its neighbor `tcp-syn-flood` counts raw SYN packets instead, a different measurement that catches different floods). The vector carries the standard pair, a `detection-threshold-pps` and a `default-internal-rate-limit`, and the troubleshooting series settles the precedence question without ambiguity: AFM Device DoS has preference over the LTM global SYN cookie. Set the vector's rate limit at or below the LTM global challenge threshold and it is AFM that acts first; the LTM mechanism behind it may never see the traffic that would have tripped it.
+
+That same series documents the one arrangement worth memorizing. Nothing prevents configuring the mitigation rate limit below the detection threshold; the system warns at configuration time and then honors what you wrote. The result is a vector that rate-limits traffic in the band between the two values while never declaring an attack, which means dropped packets and no attack log to explain them. If connections are mysteriously failing under load and the DoS logs are clean, this inversion is one of the first things to rule out.
+
+## Reading your own configuration
+
+One operational dependency rounds out the picture: K14779 notes that SYN cookie protection expects auto-lasthop to return handshake traffic through the path it arrived on, so disabling it needs a compensating route. The rest is arithmetic between thresholds you can read. The [AFM DoS-vector explainer](/tools/f5-dos-vector-explainer) on this site parses `security dos device-config` and profile stanzas, annotates every threshold with the reference's own semantics, and flags the silent inversion in both attribute-naming families, which turns the paragraph above into a check that runs in your browser.
