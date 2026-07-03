@@ -44,6 +44,23 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "18:43",
+    kind: "content",
+    title: "Learn article: AFM contexts, accept as a ticket",
+    body:
+      "The companion to the new explainer, in English and Portuguese: the fixed context order with the management port apart, the manual's processed-again-at-the-next-context sentence that makes accept a ticket to the next checkpoint rather than through the building, accept-decisively as the one yes that ends the walk, the bluntly worded ICMP restriction at edge contexts, staging as the honest rehearsal, the system's own redundant-and-conflicting definitions including the accept-versus-accept-decisively surprise, and the ADC-versus-Firewall default-action split with the fail-open-versus-fail-closed stakes named.",
+  },
+  {
+    date: "2026-07-03",
+    time: "18:41",
+    kind: "tool",
+    tools: ["f5-afm-rule-context"],
+    title: "New tool: AFM rule-context & match explainer",
+    body:
+      "Paste contexts, policies, and a packet, and the walk runs in the manual's own order: global, route domain, then the virtual server or self IP, with management port rules processed separately. The semantics that decide real outcomes are all here: a matching rule's action applies and the traffic is processed again at the next context, so accept is a ticket to the next checkpoint and only accept-decisively ends the walk with a yes; the one-click Example is a global accept-decisively trumping a virtual-server drop that never sees the packet. ICMP rules at edge contexts are skipped with the manual's ignored note, staged policies log without enforcing, rule-lists expand in place, and criteria the tool cannot evaluate stop the walk honestly. A lone policy gets the audit the system itself defines: redundant and conflicting rules, including accept versus accept-decisively counting as conflicting.",
+  },
+  {
+    date: "2026-07-03",
     time: "18:21",
     kind: "content",
     title: "Learn article: OneConnect, reuse as a grouping problem",

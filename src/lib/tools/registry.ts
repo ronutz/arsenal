@@ -61,6 +61,7 @@ import { run as dosVectorExplainerRun } from "./f5-dos-vector-explainer";
 import { run as irulesCommandContextRun } from "./f5-irules-command-context";
 import { run as irulesVsLtmPolicyRun } from "./f5-irules-vs-ltm-policy";
 import { run as oneconnectSourceMaskRun } from "./f5-oneconnect-source-mask";
+import { run as afmRuleContextRun } from "./f5-afm-rule-context";
 import { run as packetFilterExplainerRun } from "./f5-packet-filter-explainer";
 import { run as pkceRun } from "./pkce";
 import { run as regexRun } from "./regex";
@@ -122,6 +123,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-irules-command-context", run: irulesCommandContextRun },
   { slug: "f5-irules-vs-ltm-policy", run: irulesVsLtmPolicyRun },
   { slug: "f5-oneconnect-source-mask", run: oneconnectSourceMaskRun },
+  { slug: "f5-afm-rule-context", run: afmRuleContextRun },
   { slug: "f5-packet-filter-explainer", run: packetFilterExplainerRun },
   { slug: "pkce", run: pkceRun },
   { slug: "regex", run: regexRun },

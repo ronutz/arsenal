@@ -2564,6 +2564,21 @@
       "maskTitle": "Mask",
       "groupLabel": "Reuse group",
       "observationsTitle": "Observations"
+    },
+    "f5-afm-rule-context": {
+      "name": "AFM rule-context & match explainer",
+      "blurb": "Walk a packet through AFM's documented context order and watch the semantics that decide real outcomes: accept passes one context and the traffic is processed again at the next, only accept-decisively ends the walk, ICMP rules at a virtual server or self IP are ignored, and staged policies log without enforcing. A lone policy gets the redundant-and-conflicting audit the system itself defines.",
+      "inputLabel": "Contexts + policies + a packet, a lone policy, or \"contexts\" / \"actions\"",
+      "inputPlaceholder": "security firewall policy P_G {\n    rules {\n        r1 {\n            action accept-decisively\n            source {\n                addresses {\n                    10.66.0.0/16\n                }\n            }\n        }\n    }\n}\ncontext global {\n    policy P_G\n}\npacket src 10.66.1.5 dst 192.0.2.10:443 proto tcp",
+      "runsLocally": "Runs locally in your browser. Nothing you paste leaves this page.",
+      "postureNote": "Explains and simulates documented processing; nothing here probes or touches any device.",
+      "example": "Example",
+      "clear": "Clear",
+      "stagedChip": "staged",
+      "fromRuleList": "from rule-list",
+      "dispositionTitle": "Disposition",
+      "findingsTitle": "Audit findings",
+      "observationsTitle": "Observations"
     }
   },
   "privacy_page": {

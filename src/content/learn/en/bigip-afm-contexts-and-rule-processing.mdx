@@ -1,0 +1,32 @@
+---
+slug: bigip-afm-contexts-and-rule-processing
+title: "AFM Contexts: Accept Is a Ticket to the Next Checkpoint"
+summary: "The Network Firewall walks packets through contexts in a fixed order: global, route domain, then virtual server or self IP, with the management port apart. A match's action applies and the traffic is processed again at the next context, so accept continues, only accept-decisively ends the walk, ICMP rules at edge contexts are ignored, and staging logs without enforcing."
+concepts: ["afm", "network firewall", "contexts", "accept-decisively", "f5", "security", "firewall policy"]
+relatedTools: ["f5-afm-rule-context"]
+relatedArticles: ["bigip-packet-filters"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+A firewall with one rule table is easy to reason about. AFM's Network Firewall is not that: it is a hierarchy of contexts, each carrying its own policy, and the same packet can be judged three times before anything answers it. The Policies and Implementations manual states the order without ambiguity: processing progresses from the global context, to the route domain, and then to the virtual server or self IP context, with management port rules processed separately, and the management port is also the one context that cannot take a policy at all, only inline rules.
+
+## The sentence that changes how you read rules
+
+Right next to that order sits the sentence that decides real outcomes: if traffic matches a firewall rule within a given context, that action is applied to the traffic, and the traffic is processed again at the next context. Read it twice, because it inverts the intuition most firewall experience builds. An accept in the global policy does not admit the packet; it admits the packet to the route domain's judgment, and then to the virtual server's. Accept is a ticket to the next checkpoint.
+
+The action that does admit the packet outright is accept-decisively, and the F5 DevCentral overview states its power in one line: the packet is permitted and no further context processing is performed. That skip-ahead is exactly why a global accept-decisively for a management subnet trumps a virtual-server drop that would otherwise have caught the same traffic, a sequence the [rule-context explainer](/tools/f5-afm-rule-context) ships as its one-click Example so the hierarchy's sharpest edge is the first thing you see. The remaining two actions terminate the other way: drop discards silently, and reject answers, a TCP RST when the protocol is TCP, an ICMP unreachable otherwise.
+
+## The restrictions worth memorizing
+
+Two of the manual's restrictions do the most practical work. The first is about ICMP, and the wording is unusually blunt: you cannot create a rule for ICMP or ICMPv6 on a self IP or virtual server context, and while a rule list containing one can be attached there, such a rule will be ignored. Ping filtering belongs at global or route domain, and an ICMP rule that rode into an edge context inside a rule list is not merely ineffective, it is silently skipped, which is the kind of behavior that costs an afternoon if nothing tells you. The second is staging: a staged policy logs what it would have matched without affecting connectivity, which makes it the honest way to rehearse a new ruleset against production traffic before enforcement, and also means a staged match in the middle of a walk changes nothing about the packet's fate.
+
+## What the system itself calls redundant and conflicting
+
+The manual defines rule hygiene in terms a tool can compute. A rule whose match criteria are entirely covered by an earlier rule is redundant when the actions agree and conflicting when they differ, and because the earlier rule matches first, the later one simply never fires. The definition carries one deliberate surprise: accept and accept-decisively are treated as conflicting even though both accept, because, as the whole article so far explains, they are not the same answer, one continues the walk and one ends it. The explainer's audit mode applies exactly these definitions to a pasted policy.
+
+## Default actions, modes, and honest limits
+
+When no context terminates a packet, the disposition falls to the system's Default Firewall Action, and the Getting Started guide's own walkthrough switches that setting from ADC mode to Firewall mode, the split between a load balancer that permits by default and a firewall that denies by default. Community write-ups tabulate the per-context defaults for each mode; treat those as a starting point and verify the setting on your own box under Security, Options, Network Firewall, because the difference between the two modes is the difference between fail-open and fail-closed. The explainer takes the honest path here: it applies a default only when you declare one, and otherwise tells you exactly which setting your answer depends on. The same honesty governs its matching: geolocation, FQDN, and schedule criteria are recognized and reported, not guessed at, and the walk stops with an indeterminate verdict rather than inventing a match. A tool that computes should say so when it cannot.

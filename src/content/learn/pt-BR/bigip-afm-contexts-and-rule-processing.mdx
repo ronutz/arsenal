@@ -1,0 +1,32 @@
+---
+slug: bigip-afm-contexts-and-rule-processing
+title: "Contextos do AFM: Accept É um Bilhete para o Próximo Posto de Controle"
+summary: "O Network Firewall caminha pacotes pelos contextos em ordem fixa: global, route domain, depois virtual server ou self IP, com a porta de gerenciamento à parte. A ação de um casamento é aplicada e o tráfego é processado de novo no próximo contexto, então accept continua, só accept-decisively encerra a caminhada, regras de ICMP em contextos de borda são ignoradas, e staging registra sem aplicar."
+concepts: ["afm", "network firewall", "contextos", "accept-decisively", "f5", "segurança", "firewall policy"]
+relatedTools: ["f5-afm-rule-context"]
+relatedArticles: ["bigip-packet-filters"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+Um firewall com uma tabela de regras é fácil de raciocinar. O Network Firewall do AFM não é isso: é uma hierarquia de contextos, cada um carregando sua própria policy, e o mesmo pacote pode ser julgado três vezes antes que algo lhe responda. O manual de Policies and Implementations declara a ordem sem ambiguidade: o processamento progride do contexto global, para o route domain, e então para o contexto de virtual server ou self IP, com as regras da porta de gerenciamento processadas separadamente, e a porta de gerenciamento é também o único contexto que não pode receber policy alguma, apenas regras inline.
+
+## A frase que muda como você lê regras
+
+Logo ao lado dessa ordem está a frase que decide resultados reais: se o tráfego casa com uma regra de firewall dentro de um dado contexto, aquela ação é aplicada ao tráfego, e o tráfego é processado de novo no próximo contexto. Leia duas vezes, porque ela inverte a intuição que a maioria da experiência com firewalls constrói. Um accept na policy global não admite o pacote; ele admite o pacote ao julgamento do route domain, e depois ao do virtual server. Accept é um bilhete para o próximo posto de controle.
+
+A ação que admite o pacote de vez é accept-decisively, e o overview do DevCentral da F5 declara seu poder em uma linha: o pacote é permitido e nenhum processamento adicional de contexto é realizado. Esse salto é exatamente o motivo de um accept-decisively global para uma sub-rede de gerenciamento atropelar um drop de virtual server que teria pegado o mesmo tráfego, uma sequência que o [explicador de contexto e regras](/tools/f5-afm-rule-context) entrega como seu Exemplo de um clique, para que a aresta mais afiada da hierarquia seja a primeira coisa que você vê. As duas ações restantes encerram do outro jeito: drop descarta em silêncio, e reject responde, um RST TCP quando o protocolo é TCP, um ICMP unreachable caso contrário.
+
+## As restrições que valem memorizar
+
+Duas restrições do manual fazem o trabalho mais prático. A primeira é sobre ICMP, e a redação é incomumente direta: você não pode criar uma regra para ICMP ou ICMPv6 em um contexto de self IP ou virtual server, e embora uma rule list contendo uma possa ser anexada ali, tal regra será ignorada. Filtragem de ping pertence ao global ou ao route domain, e uma regra de ICMP que entrou de carona em um contexto de borda dentro de uma rule list não é apenas ineficaz, é pulada em silêncio, que é o tipo de comportamento que custa uma tarde se nada lhe avisa. A segunda é o staging: uma policy em staging registra o que teria casado sem afetar a conectividade, o que a torna o jeito honesto de ensaiar um novo conjunto de regras contra tráfego de produção antes da aplicação, e também significa que um casamento em staging no meio de uma caminhada não muda nada no destino do pacote.
+
+## O que o próprio sistema chama de redundante e conflitante
+
+O manual define a higiene de regras em termos que uma ferramenta pode computar. Uma regra cujos critérios de casamento são inteiramente cobertos por uma regra anterior é redundante quando as ações concordam e conflitante quando diferem, e como a regra anterior casa primeiro, a posterior simplesmente nunca dispara. A definição carrega uma surpresa deliberada: accept e accept-decisively são tratados como conflitantes mesmo que ambos aceitem, porque, como todo o artigo até aqui explica, eles não são a mesma resposta, um continua a caminhada e o outro a encerra. O modo de auditoria do explicador aplica exatamente essas definições a uma policy colada.
+
+## Ações padrão, modos e limites honestos
+
+Quando nenhum contexto encerra um pacote, a disposição cai na Default Firewall Action do sistema, e o próprio passo a passo do guia de Getting Started troca essa configuração do modo ADC para o modo Firewall, a divisão entre um balanceador que permite por padrão e um firewall que nega por padrão. Textos da comunidade tabulam os padrões por contexto para cada modo; trate-os como ponto de partida e verifique a configuração na sua própria caixa em Security, Options, Network Firewall, porque a diferença entre os dois modos é a diferença entre falhar aberto e falhar fechado. O explicador toma o caminho honesto aqui: aplica um padrão apenas quando você declara um, e caso contrário diz exatamente de qual configuração sua resposta depende. A mesma honestidade governa seu casamento: critérios de geolocalização, FQDN e schedule são reconhecidos e relatados, não chutados, e a caminhada para com um veredito indeterminado em vez de inventar um casamento. Uma ferramenta que computa deve dizer quando não pode.

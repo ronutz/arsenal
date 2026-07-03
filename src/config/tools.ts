@@ -65,6 +65,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-irules-command-context", href: "/tools/f5-irules-command-context", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-irules-vs-ltm-policy", href: "/tools/f5-irules-vs-ltm-policy", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-oneconnect-source-mask", href: "/tools/f5-oneconnect-source-mask", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-afm-rule-context", href: "/tools/f5-afm-rule-context", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-packet-filter-explainer", href: "/tools/f5-packet-filter-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-service-check-date", href: "/tools/f5-service-check-date", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-bigip-license-explainer", href: "/tools/f5-bigip-license-explainer", category: "networking", vendors: ["f5"], available: true },

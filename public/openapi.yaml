@@ -626,6 +626,77 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5-afm-rule-context:
+    get:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_afm_rule_context
+      summary: AFM rule-context & match explainer
+      description: >-
+        Walk a packet through AFM's documented context order and watch the semantics that decide
+        real outcomes: accept passes one context and the traffic is processed again at the next,
+        only accept-decisively ends the walk, ICMP rules at a virtual server or self IP are ignored,
+        and staged policies log without enforcing. A lone policy gets the redundant-and-conflicting
+        audit the system itself defines. Standards: F5 BIG-IP AFM Network Firewall. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - security firewall policy P { rules { r1 { action drop } } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_f5_afm_rule_context_post
+      summary: AFM rule-context & match explainer (POST)
+      description: >-
+        Walk a packet through AFM's documented context order and watch the semantics that decide
+        real outcomes: accept passes one context and the traffic is processed again at the next,
+        only accept-decisively ends the walk, ICMP rules at a virtual server or self IP are ignored,
+        and staged policies log without enforcing. A lone policy gets the redundant-and-conflicting
+        audit the system itself defines. Standards: F5 BIG-IP AFM Network Firewall. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - security firewall policy P { rules { r1 { action drop } } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5-awaf-declarative-policy-explainer:
     get:
       tags:

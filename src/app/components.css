@@ -7649,3 +7649,8 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .pfe-verdict.pfe-unknown { border-color: var(--color-warning); color: var(--color-warning); }
 
 .learn-hero-lede { margin-bottom: 2.5rem; } /* spacing formerly inline (full i18n pass hygiene) */
+
+/* ---- f5-afm-rule-context ---- */
+.afm-step.afm-terminated { border-left: 3px solid var(--color-warning); }
+.afm-step.afm-continue { border-left: 3px solid var(--color-success, #22c55e); }
+.afm-step.afm-indeterminate { border-left: 3px solid var(--text-secondary); }

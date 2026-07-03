@@ -2564,6 +2564,21 @@
       "maskTitle": "Máscara",
       "groupLabel": "Grupo de reuso",
       "observationsTitle": "Observações"
+    },
+    "f5-afm-rule-context": {
+      "name": "Explicador de contexto e regras do AFM",
+      "blurb": "Caminhe um pacote pela ordem de contextos documentada do AFM e veja a semântica que decide resultados reais: accept passa um contexto e o tráfego é processado de novo no próximo, só accept-decisively encerra a caminhada, regras de ICMP em um virtual server ou self IP são ignoradas, e policies em staging registram sem aplicar. Uma policy sozinha recebe a auditoria de regras redundantes e conflitantes que o próprio sistema define.",
+      "inputLabel": "Contextos + policies + um pacote, uma policy sozinha, ou \"contexts\" / \"actions\"",
+      "inputPlaceholder": "security firewall policy P_G {\n    rules {\n        r1 {\n            action accept-decisively\n            source {\n                addresses {\n                    10.66.0.0/16\n                }\n            }\n        }\n    }\n}\ncontext global {\n    policy P_G\n}\npacket src 10.66.1.5 dst 192.0.2.10:443 proto tcp",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você cola sai desta página.",
+      "postureNote": "Explica e simula o processamento documentado; nada aqui sonda ou toca qualquer dispositivo.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "stagedChip": "staging",
+      "fromRuleList": "da rule-list",
+      "dispositionTitle": "Disposição",
+      "findingsTitle": "Achados da auditoria",
+      "observationsTitle": "Observações"
     }
   },
   "privacy_page": {
