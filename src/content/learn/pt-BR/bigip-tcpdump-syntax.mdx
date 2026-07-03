@@ -3,7 +3,7 @@ slug: bigip-tcpdump-syntax
 title: "tcpdump no BIG-IP: como ele difere do tcpdump padrão"
 summary: "Em um BIG-IP, o tcpdump é o mesmo binário que você conhece do Linux, mas a interface em que você captura não é uma NIC. A interface especial 0.0 e os sufixos de detalhe exclusivos da F5 mudam como você monta o comando. Esta é a base para todo o resto."
 concepts: ["tcpdump", "f5", "big-ip", "packet capture", "tmm", "0.0 interface"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["tmm-detail-and-peer-flows", "capturing-on-vlans-and-trunks", "bigip-tcpdump-safety"]
 category: networking
 order: 31
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-O `tcpdump` em um BIG-IP é a ferramenta comum baseada em libpcap. O que muda é onde ele captura. Em um host Linux comum você indica uma NIC física ou virtual, como `eth0`. Em um BIG-IP, o tráfego é processado pelo Traffic Management Microkernel (TMM), e a interface que você normalmente quer não é uma NIC. O [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder) monta um comando correto a partir dessas escolhas, para você não precisar memorizar a sintaxe sob pressão.
+O `tcpdump` em um BIG-IP é a ferramenta comum baseada em libpcap. O que muda é onde ele captura. Em um host Linux comum você indica uma NIC física ou virtual, como `eth0`. Em um BIG-IP, o tráfego é processado pelo Traffic Management Microkernel (TMM), e a interface que você normalmente quer não é uma NIC. O [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder) monta um comando correto a partir dessas escolhas, para você não precisar memorizar a sintaxe sob pressão.
 
 ## A interface 0.0
 

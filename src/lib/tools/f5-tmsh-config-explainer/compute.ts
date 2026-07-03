@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/tmsh-config-explainer/compute.ts
+// src/lib/tools/f5-tmsh-config-explainer/compute.ts
 // ----------------------------------------------------------------------------
 // THE bigip.conf (tmsh) PARSER.
 //

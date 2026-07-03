@@ -3,7 +3,7 @@ slug: ltm-health-monitors
 title: "How LTM Health Monitors Decide Up or Down"
 summary: "A health monitor is the probe a BIG-IP uses to decide whether a backend member can receive traffic. Its send and receive strings, its interval and timeout, and where it is attached together determine how quickly a failure is noticed and how a member is marked down."
 concepts: ["health monitor", "ltm", "pool", "availability", "f5", "load balancing"]
-relatedTools: ["tmsh-config-explainer"]
+relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works"]
 category: networking
 order: 3
@@ -27,4 +27,4 @@ The same monitor behaves differently depending on where it sits. Attached to a p
 
 ## Reading monitors in a config
 
-When you review a configuration, a missing or mismatched monitor is one of the highest-value things to catch. A pool without a monitor, a single-member pool with no redundancy, or an HTTP monitor whose `recv` string no longer matches the application's response are all silent availability risks. The [tmsh config explainer](/tools/tmsh-config-explainer) surfaces these directly, noting when a pool has no health monitor or only one member. To see how the pool and its monitor fit into the larger request path, read [how a virtual server works](/learn/how-a-virtual-server-works); for the configuration grammar itself, see [the anatomy of a bigip.conf file](/learn/anatomy-of-bigip-conf).
+When you review a configuration, a missing or mismatched monitor is one of the highest-value things to catch. A pool without a monitor, a single-member pool with no redundancy, or an HTTP monitor whose `recv` string no longer matches the application's response are all silent availability risks. The [tmsh config explainer](/tools/f5-tmsh-config-explainer) surfaces these directly, noting when a pool has no health monitor or only one member. To see how the pool and its monitor fit into the larger request path, read [how a virtual server works](/learn/how-a-virtual-server-works); for the configuration grammar itself, see [the anatomy of a bigip.conf file](/learn/anatomy-of-bigip-conf).

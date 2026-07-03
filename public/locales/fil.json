@@ -636,7 +636,7 @@
       "dayOfYearLabel": "araw ng taon",
       "relativeNote": "kaugnay sa orasan ng iyong device"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "iRule event order",
       "blurb": "Piliin ang profile stack ng isang BIG-IP virtual server — Client-SSL, HTTP, Server-SSL, pool — at tingnan ang pagkakasunod-sunod ng pag-trigger ng karaniwang iRule events, mula CLIENT_ACCEPTED hanggang CLIENT_CLOSED, bilang timeline at listahan. Lahat sa iyong browser.",
       "stackLabel": "Profile stack ng virtual server",
@@ -1419,11 +1419,7 @@
     "emailTitle": "Paano mo ako maaabot",
     "emailBody": "Ang email ang channel. Sabihin mo kung ano ang natagpuan mo o kung ano ang gusto mo, na may sapat na detalye para makilos: isang halimbawa, isang link, ang eksaktong pananalita, kung ano ang akma. Kung mas magiging maganda nito ang toolbox, gagawin ito.",
     "emailLabel": "Email",
-    "backToTools": "Bumalik sa toolbox",
-    "disclaimerTitle": "Paano ginagawa at pinopondohan ang mga bagong kagamitan",
-    "disclaimerBody": "Alang-alang sa lubos na katapatan: bawat bagong kagamitan dito ay ginawa gamit ang Claude Max, ang pinakamataas na antas ng paggamit ng Anthropic, at hindi mura ang subscription na iyon. Ang 5x plan ay nagkakahalaga ng humigit-kumulang 100 USD kada buwan, ang 20x plan ay humigit-kumulang 200. Kapag pinondohan, may nagagawang kagamitan. Kapag hindi, ang paggawa ay pansamantalang humihinto hanggang sa mapondohan, kaya naman ang mga bagong kagamitan ay may hilig na dumating nang paunti-unti sa halip na sa isang nakapirming iskedyul.",
-    "disclaimerBody2": "Kung nais mong tumulong, ang link na Buy Me a Coffee sa footer ang paraan. Bawat kontribusyon ay napupunta sa iisang reserba na ginagastos lamang para sa buwanang subscription na iyon sa Claude Max. Walang ibang gastos, walang kaltas, walang sorpresa.",
-    "disclaimerStatus": "Sa ngayon: pinondohan na ang subscription at aktibong ginagawa ang mga bagong kagamitan."
+    "backToTools": "Bumalik sa toolbox"
   },
   "languageStatus": {
     "title": "Katayuan ng pagsasalin",

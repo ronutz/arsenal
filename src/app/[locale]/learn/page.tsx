@@ -16,7 +16,7 @@ import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
-import { browseVendors } from "@/config/vendors";
+import { browseVendors, populatedVendors, vendorColor } from "@/config/vendors";
 import ToolVendorFilter from "@/components/ToolVendorFilter";
 import ScrollToTop from "@/components/ScrollToTop";
 import Header from "@/components/Header";
@@ -33,6 +33,7 @@ export default async function LearnIndexPage({
   const tNav = await getTranslations("nav");
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
+  const tHub = await getTranslations("vendorHub"); // hub-strip chrome
   // Articles, grouped by the loader (within each group: curated order; English
   // fallback handled inside). Category groups themselves are sorted A->Z by
   // resolved label, locale-aware, to mirror the Tools index taxonomy.
@@ -73,6 +74,23 @@ export default async function LearnIndexPage({
               Practical explanations of the concepts behind the tools. Each article is written to
               build genuine understanding, not just to define a term.
             </p>
+
+            {/* Vendor hub strip - see tools/page.tsx: discoverability on top
+                of the listing, nav stays small (PRIME 2026-07-03). */}
+            {populatedVendors().length > 0 && (
+              <p className="vendor-hub-strip">
+                {populatedVendors().map((v) => (
+                  <Link key={v} href={`/${v}`} className="vendor-hub-strip-link">
+                    <span
+                      className="category-dot"
+                      style={{ "--chip-color": vendorColor(v) } as React.CSSProperties}
+                      aria-hidden="true"
+                    />
+                    {tTools(`vendors.${v}`)} {tHub("eyebrow")} →
+                  </Link>
+                ))}
+              </p>
+            )}
 
             {vendorKeys.length > 0 && (
               <div className="vendor-filter-dock">

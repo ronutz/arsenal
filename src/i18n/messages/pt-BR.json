@@ -490,7 +490,7 @@
         "s8": "O provedor retorna as claims do usuário"
       }
     },
-    "bigip-persistence-cookie": {
+    "f5-bigip-persistence-cookie": {
       "name": "Decodificador de Cookie de Persistência BIG-IP",
       "blurb": "Decodifique um cookie de persistência BIGipServer da F5 no IP e porta do membro do pool, ou gere um cookie a partir de um endereço e porta. Roda inteiramente no seu navegador.",
       "inputLabel": "Cookie BIGipServer",
@@ -665,7 +665,7 @@
       "copy": "Copiar",
       "copied": "Copiado"
     },
-    "tmsh-config-explainer": {
+    "f5-tmsh-config-explainer": {
       "name": "Explicador de configuração tmsh",
       "blurb": "Cole um trecho de bigip.conf do BIG-IP e receba uma explicação em português de cada objeto, além da estrutura, totalmente no seu navegador.",
       "inputLabel": "Trecho de bigip.conf",
@@ -681,7 +681,7 @@
       "iruleLabel": "Esta é uma iRule em Tcl, exibida na íntegra. É código executado em eventos, não configuração tmsh.",
       "notesHeading": "Pontos de atenção"
     },
-    "persistence-method-explainer": {
+    "f5-persistence-method-explainer": {
       "name": "Explicador de métodos de persistência",
       "blurb": "Cole perfis de persistência e virtual servers do BIG-IP e veja o método por trás de cada um, seus modos de falha e a cadeia de primário para fallback, tudo no seu navegador.",
       "inputLabel": "Configuração de persistência (perfis e virtuals)",
@@ -1321,7 +1321,7 @@
       "dayOfYearLabel": "dia do ano",
       "relativeNote": "relativo ao relógio do seu dispositivo"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "Ordem de eventos de iRule",
       "blurb": "Escolha o conjunto de perfis de um virtual server do BIG-IP — Client-SSL, HTTP, Server-SSL, pool — e veja a ordem em que os eventos de iRule comuns disparam, de CLIENT_ACCEPTED a CLIENT_CLOSED, como linha do tempo e lista. Tudo no seu navegador.",
       "stackLabel": "Conjunto de perfis do virtual server",
@@ -1433,7 +1433,7 @@
       "err_der": "Não foi possível analisar a estrutura DER.",
       "err_structure": "Isso é analisado como DER, mas não é uma solicitação de certificação PKCS#10."
     },
-    "bigip-tcpdump-builder": {
+    "f5-bigip-tcpdump-builder": {
       "name": "Construtor de tcpdump para BIG-IP",
       "blurb": "Monta um comando tcpdump correto para o BIG-IP a partir de opções estruturadas: a sintaxe de interface da TMM, o nível de detalhe de fluxo, o snaplen, a gravação em arquivo e um filtro BPF. Ele formata o comando para você executar; não captura nada.",
       "runsLocally": "O comando é montado no seu navegador. Nada é capturado, executado ou enviado para lugar nenhum.",
@@ -2992,10 +2992,10 @@
     "backToTools": "Voltar para as ferramentas",
     "roadmapCheck": "Vale consultar o roadmap primeiro, para ver o que já está planejado ou publicado e evitar duplicatas:",
     "roadmapLink": "ver o roadmap",
-    "disclaimerTitle": "Como as novas ferramentas são construídas e financiadas",
-    "disclaimerBody": "Em nome da total transparência: cada nova ferramenta aqui é construída com o Claude Max, o nível de uso mais alto da Anthropic, e essa assinatura não é barata. O plano 5x custa cerca de USD 100 por mês, o plano 20x cerca de USD 200. Quando está financiado, ferramentas são construídas. Quando não está, a construção simplesmente pausa até que esteja, e é por isso que novas ferramentas tendem a chegar em ondas, e não em um cronograma fixo.",
-    "disclaimerBody2": "Se você quiser ajudar, o link Buy Me a Coffee no rodapé é o caminho. Cada contribuição vai para uma única reserva gasta em nada além dessa assinatura mensal do Claude Max. Sem outros custos, sem parte para ninguém, sem surpresas.",
-    "disclaimerStatus": "Agora: a assinatura está financiada e novas ferramentas estão sendo construídas ativamente."
+    "disclaimerTitle": "Sobre construir novas ferramentas",
+    "disclaimerStatus": "Agora: as ferramentas de trabalho estão financiadas e novas ferramentas estão sendo construídas ativamente.",
+    "disclaimerBody": "Com toda a honestidade: estas ferramentas são construídas com o CONCORD, meu processo de construção assistido por IA, e ele tem custos reais e recorrentes. Três assinaturas pagas de IA o sustentam, uma para cada assento de trabalho. O ANVIL, o assento de engenharia, roda com o Claude, da Anthropic, e é o assento que carrega o peso do trabalho: é ele que de fato constrói, então precisa estar em um dos níveis Max do Claude para haver capacidade suficiente para projetar, escrever e testar novas ferramentas. O SCOUT, o assento de estratégia e marca, roda com o ChatGPT Plus, da OpenAI. O PRISM, o assento de design, roda com o Google AI Pro. Além dos três assentos, um plano Cloudflare Workers mantém o site no ar, e os domínios têm uma taxa de registro anual própria. No total, fica em aproximadamente USD 150 a USD 250 por mês, dependendo principalmente de qual nível do Claude o assento de engenharia está usando naquele mês. Quando as ferramentas estão financiadas, novas ferramentas são construídas. Quando não estão, a construção simplesmente pausa até que estejam, e é por isso que novas ferramentas costumam surgir em ondas, e não em um cronograma fixo. Você pode ver como os assentos funcionam, e quem ocupa cada um, no <colophon>colofão</colophon>.",
+    "disclaimerBody2": "Se quiser ajudar, o link Buy Me a Coffee no rodapé é o caminho. Cada contribuição vai para uma única reserva, gasta unicamente em manter esse conjunto de ferramentas funcionando: as três assinaturas, a hospedagem e os domínios. Sem cortes, sem surpresas."
   },
   "languageStatus": {
     "title": "Status da tradução",
@@ -3051,5 +3051,13 @@
     "articlesHeading": "Artigos",
     "read": "Ler",
     "backToTools": "Todas as ferramentas"
+  },
+  "vendorHub": {
+    "eyebrow": "hub do fabricante",
+    "lede": "Tudo que existe no ronutz.com para {vendor}, em um só lugar: todas as ferramentas, agrupadas por família, seguidas de todos os artigos. As ferramentas computam localmente no seu navegador; os artigos são fundamentados na documentação do fabricante.",
+    "toolsHeading": "Ferramentas",
+    "learnHeading": "Artigos",
+    "read": "Ler",
+    "metaDescription": "Todas as ferramentas e todos os artigos de {vendor} no ronutz.com, em uma página: ferramentas agrupadas por família, depois a biblioteca completa de artigos."
   }
 }

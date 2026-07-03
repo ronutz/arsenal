@@ -108,139 +108,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /bigip-persistence-cookie:
-    get:
-      tags:
-        - Security & WAF
-      operationId: run_bigip_persistence_cookie
-      summary: BIG-IP Persistence Cookie Decoder
-      description: >-
-        Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or
-        encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5
-        K7784, RFC 1918, RFC 5952. Stateless and side-effect-free: the same input always yields the
-        same result, and nothing is stored or logged.
-      parameters:
-        - name: input
-          in: query
-          required: true
-          description: The tool input.
-          schema:
-            type: string
-            examples:
-              - BIGipServerWEB=1677787402.20480.0000
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      tags:
-        - Security & WAF
-      operationId: run_bigip_persistence_cookie_post
-      summary: BIG-IP Persistence Cookie Decoder (POST)
-      description: >-
-        Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or
-        encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5
-        K7784, RFC 1918, RFC 5952. Stateless and side-effect-free: the same input always yields the
-        same result, and nothing is stored or logged.
-      requestBody:
-        required: true
-        description: The tool input as text.
-        content:
-          text/plain:
-            schema:
-              type: string
-              examples:
-                - BIGipServerWEB=1677787402.20480.0000
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /bigip-tcpdump-builder:
-    get:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_bigip_tcpdump_builder
-      summary: BIG-IP tcpdump builder
-      description: >-
-        Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax,
-        flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run;
-        it captures nothing. The input is a JSON object: send it as the request body (POST) or as a
-        JSON string (?input=). Standards: tcpdump, F5 TMM :nnn capture syntax. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
-      parameters:
-        - name: input
-          in: query
-          required: true
-          description: The tool input, as a JSON string.
-          schema:
-            type: string
-            examples:
-              - interface 0.0, high detail, both sides, filtered by host
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_bigip_tcpdump_builder_post
-      summary: BIG-IP tcpdump builder (POST)
-      description: >-
-        Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax,
-        flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run;
-        it captures nothing. The input is a JSON object: send it as the request body (POST) or as a
-        JSON string (?input=). Standards: tcpdump, F5 TMM :nnn capture syntax. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
-      requestBody:
-        required: true
-        description: The tool input as a JSON object.
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /cert-renewal-planner:
     get:
       tags:
@@ -896,6 +763,139 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5-bigip-persistence-cookie:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_bigip_persistence_cookie
+      summary: BIG-IP Persistence Cookie Decoder
+      description: >-
+        Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or
+        encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5
+        K7784, RFC 1918, RFC 5952. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - BIGipServerWEB=1677787402.20480.0000
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_bigip_persistence_cookie_post
+      summary: BIG-IP Persistence Cookie Decoder (POST)
+      description: >-
+        Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or
+        encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5
+        K7784, RFC 1918, RFC 5952. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - BIGipServerWEB=1677787402.20480.0000
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-bigip-tcpdump-builder:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_bigip_tcpdump_builder
+      summary: BIG-IP tcpdump builder
+      description: >-
+        Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax,
+        flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run;
+        it captures nothing. The input is a JSON object: send it as the request body (POST) or as a
+        JSON string (?input=). Standards: tcpdump, F5 TMM :nnn capture syntax. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - interface 0.0, high detail, both sides, filtered by host
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_bigip_tcpdump_builder_post
+      summary: BIG-IP tcpdump builder (POST)
+      description: >-
+        Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax,
+        flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run;
+        it captures nothing. The input is a JSON object: send it as the request body (POST) or as a
+        JSON string (?input=). Standards: tcpdump, F5 TMM :nnn capture syntax. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5-cipher-string-expander:
     get:
       tags:
@@ -948,6 +948,134 @@ paths:
               type: string
               examples:
                 - f5-secure
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-irules-event-order:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_irules_event_order
+      summary: iRule event order
+      description: >-
+        Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
+        see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
+        timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_irules_event_order_post
+      summary: iRule event order (POST)
+      description: >-
+        Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
+        see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
+        timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-persistence-method-explainer:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_persistence_method_explainer
+      summary: Persistence-method explainer
+      description: >-
+        Paste BIG-IP persistence profiles and virtual servers and get the method behind each, its
+        failure modes, and the primary-to-fallback chain, all in your browser. Standards: F5 LTM
+        persistence. Stateless and side-effect-free: the same input always yields the same result,
+        and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - ltm persistence cookie my_cookie { method insert }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_persistence_method_explainer_post
+      summary: Persistence-method explainer (POST)
+      description: >-
+        Paste BIG-IP persistence profiles and virtual servers and get the method behind each, its
+        failure modes, and the primary-to-fallback chain, all in your browser. Standards: F5 LTM
+        persistence. Stateless and side-effect-free: the same input always yields the same result,
+        and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - ltm persistence cookie my_cookie { method insert }
       responses:
         '200':
           description: The computed result.
@@ -1076,6 +1204,71 @@ paths:
           text/plain:
             schema:
               type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-tmsh-config-explainer:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_tmsh_config_explainer
+      summary: tmsh config explainer
+      description: >-
+        Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus
+        the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - ltm virtual vip { destination 10.0.0.1:80 pool web_pool }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_tmsh_config_explainer_post
+      summary: tmsh config explainer (POST)
+      description: >-
+        Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus
+        the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - ltm virtual vip { destination 10.0.0.1:80 pool web_pool }
       responses:
         '200':
           description: The computed result.
@@ -1406,69 +1599,6 @@ paths:
               type: string
               examples:
                 - 2001:db8::1/64
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /irules-event-order:
-    get:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_irules_event_order
-      summary: iRule event order
-      description: >-
-        Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
-        see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
-        timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless
-        and side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
-      parameters:
-        - name: input
-          in: query
-          required: true
-          description: The tool input.
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_irules_event_order_post
-      summary: iRule event order (POST)
-      description: >-
-        Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
-        see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
-        timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless
-        and side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
-      requestBody:
-        required: true
-        description: The tool input as text.
-        content:
-          text/plain:
-            schema:
-              type: string
       responses:
         '200':
           description: The computed result.
@@ -1880,71 +2010,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /persistence-method-explainer:
-    get:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_persistence_method_explainer
-      summary: Persistence-method explainer
-      description: >-
-        Paste BIG-IP persistence profiles and virtual servers and get the method behind each, its
-        failure modes, and the primary-to-fallback chain, all in your browser. Standards: F5 LTM
-        persistence. Stateless and side-effect-free: the same input always yields the same result,
-        and nothing is stored or logged.
-      parameters:
-        - name: input
-          in: query
-          required: true
-          description: The tool input.
-          schema:
-            type: string
-            examples:
-              - ltm persistence cookie my_cookie { method insert }
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_persistence_method_explainer_post
-      summary: Persistence-method explainer (POST)
-      description: >-
-        Paste BIG-IP persistence profiles and virtual servers and get the method behind each, its
-        failure modes, and the primary-to-fallback chain, all in your browser. Standards: F5 LTM
-        persistence. Stateless and side-effect-free: the same input always yields the same result,
-        and nothing is stored or logged.
-      requestBody:
-        required: true
-        description: The tool input as text.
-        content:
-          text/plain:
-            schema:
-              type: string
-              examples:
-                - ltm persistence cookie my_cookie { method insert }
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /pkce:
     get:
       tags:
@@ -2328,71 +2393,6 @@ paths:
               type: string
               examples:
                 - <134>
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /tmsh-config-explainer:
-    get:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_tmsh_config_explainer
-      summary: tmsh config explainer
-      description: >-
-        Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus
-        the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
-      parameters:
-        - name: input
-          in: query
-          required: true
-          description: The tool input.
-          schema:
-            type: string
-            examples:
-              - ltm virtual vip { destination 10.0.0.1:80 pool web_pool }
-      responses:
-        '200':
-          description: The computed result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolResult'
-        '400':
-          description: The input is missing or could not be processed.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      tags:
-        - F5 LTM, iRules & platform
-      operationId: run_tmsh_config_explainer_post
-      summary: tmsh config explainer (POST)
-      description: >-
-        Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus
-        the structure, entirely in your browser. Standards: F5 tmsh reference. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
-      requestBody:
-        required: true
-        description: The tool input as text.
-        content:
-          text/plain:
-            schema:
-              type: string
-              examples:
-                - ltm virtual vip { destination 10.0.0.1:80 pool web_pool }
       responses:
         '200':
           description: The computed result.

@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/tmsh-config-explainer/explain.ts
+// src/lib/tools/f5-tmsh-config-explainer/explain.ts
 // ----------------------------------------------------------------------------
 // THE SEMANTIC LAYER over the bigip.conf parse tree.
 //

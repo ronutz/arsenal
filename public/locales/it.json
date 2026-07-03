@@ -636,7 +636,7 @@
       "dayOfYearLabel": "giorno dell'anno",
       "relativeNote": "relativo all'orologio del tuo dispositivo"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "Ordine degli eventi iRule",
       "blurb": "Scegli lo stack di profili di un virtual server BIG-IP — Client-SSL, HTTP, Server-SSL, pool — e guarda l'ordine in cui scattano gli eventi iRule comuni, da CLIENT_ACCEPTED a CLIENT_CLOSED, come timeline ed elenco. Tutto nel tuo browser.",
       "stackLabel": "Stack di profili del virtual server",
@@ -1419,11 +1419,7 @@
     "emailTitle": "Come contattarmi",
     "emailBody": "L'e-mail è il canale. Dimmi cosa hai trovato o cosa vorresti, con abbastanza dettagli per agire: un esempio, un link, la formulazione esatta, quel che serve. Se migliora la cassetta degli attrezzi, viene costruito.",
     "emailLabel": "E-mail",
-    "backToTools": "Torna alla cassetta degli attrezzi",
-    "disclaimerTitle": "Come vengono costruiti e finanziati i nuovi strumenti",
-    "disclaimerBody": "Per amore di totale onestà: ogni nuovo strumento qui è costruito con Claude Max, il livello d'uso più alto di Anthropic, e quell'abbonamento non è economico. Il piano 5x costa circa 100 USD al mese, il piano 20x circa 200. Quando è finanziato, gli strumenti vengono costruiti. Quando non lo è, lo sviluppo semplicemente si ferma finché non lo è, ed è per questo che i nuovi strumenti tendono ad arrivare a ondate anziché secondo un calendario fisso.",
-    "disclaimerBody2": "Se vuoi dare una mano, il link Buy Me a Coffee nel piè di pagina è la via. Ogni contributo confluisce in un'unica riserva destinata esclusivamente a quell'abbonamento mensile a Claude Max. Nessun altro costo, nessuna trattenuta, nessuna sorpresa.",
-    "disclaimerStatus": "In questo momento: l'abbonamento è finanziato e si stanno costruendo attivamente nuovi strumenti."
+    "backToTools": "Torna alla cassetta degli attrezzi"
   },
   "languageStatus": {
     "title": "Stato della traduzione",

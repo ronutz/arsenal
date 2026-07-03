@@ -3,7 +3,7 @@ slug: how-a-virtual-server-works
 title: "Como Funciona um Virtual Server do BIG-IP"
 summary: "Um virtual server é a porta de entrada de um BIG-IP. Ele vincula um IP e uma porta de escuta, aplica uma pilha de perfis, decide a persistência, escolhe um membro do pool e traduz o endereço de origem em direção ao backend. Ler essas partes em ordem mostra exatamente como uma conexão será tratada."
 concepts: ["virtual server", "ltm", "balanceamento de carga", "perfis", "snat", "f5"]
-relatedTools: ["tmsh-config-explainer"]
+relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["anatomy-of-bigip-conf", "ltm-health-monitors"]
 category: networking
 order: 2
@@ -31,4 +31,4 @@ A última decisão é qual endereço de origem o backend enxerga. O bloco `sourc
 
 ## Lendo como um caminho
 
-Em conjunto, um virtual server descreve um caminho: um cliente alcança o `destination`, a pilha de perfis analisa e possivelmente descriptografa a conexão, a persistência e o pool selecionam um membro, e a tradução de origem reescreve a origem de saída. O [explicador de configuração tmsh](/tools/tmsh-config-explainer) dispõe esses campos e destaca os que têm mais chance de surpreender, como uma porta HTTPS sem perfil client-SSL ou uma configuração de SNAT igual a none. Para a gramática em que esses objetos são escritos, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).
+Em conjunto, um virtual server descreve um caminho: um cliente alcança o `destination`, a pilha de perfis analisa e possivelmente descriptografa a conexão, a persistência e o pool selecionam um membro, e a tradução de origem reescreve a origem de saída. O [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) dispõe esses campos e destaca os que têm mais chance de surpreender, como uma porta HTTPS sem perfil client-SSL ou uma configuração de SNAT igual a none. Para a gramática em que esses objetos são escritos, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).

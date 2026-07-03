@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/bigip-persistence-cookie/registry-data.ts
+// src/lib/tools/f5-bigip-persistence-cookie/registry-data.ts
 // ----------------------------------------------------------------------------
 // REFERENCE DATA for the F5 BIG-IP persistence cookie decoder.
 //

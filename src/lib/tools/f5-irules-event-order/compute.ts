@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/irules-event-order/compute.ts
+// src/lib/tools/f5-irules-event-order/compute.ts
 // ----------------------------------------------------------------------------
 // F5 BIG-IP iRule event-order planner (arsenal-local, pure, deterministic).
 //

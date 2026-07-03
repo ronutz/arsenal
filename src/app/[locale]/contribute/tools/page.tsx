@@ -20,6 +20,7 @@
 
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ObfuscatedEmail from "@/components/ObfuscatedEmail";
@@ -110,9 +111,26 @@ export default async function ContributeToolsPage({
               </div>
             </div>
 
+            {/* Funding transparency block. Copy ratified via PRIME hand-off,
+                2026-07-03: three CONCORD seats (ANVIL/Claude, SCOUT/ChatGPT,
+                PRISM/Google AI), hosting, and domains; range rounded to
+                USD 150-250 per PRIME. The heading was retitled the same day
+                ("On building new tools"); the "Right now:" status line below
+                is intentionally untouched (out of hand-off scope). The
+                colophon link is authored inside the i18n value as a
+                <colophon> rich tag and rendered here with the locale-aware
+                Link, the site-wide internal-link form. */}
             <div className="contribute-block contribute-disclaimer">
               <h2 className="contribute-h2">{t("disclaimerTitle")}</h2>
-              <p className="contribute-body">{t("disclaimerBody")}</p>
+              <p className="contribute-body">
+                {t.rich("disclaimerBody", {
+                  colophon: (chunks) => (
+                    <Link href="/colophon" className="contribute-inline-link">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
               <p className="contribute-body">{t("disclaimerBody2")}</p>
               <p className="contribute-body contribute-disclaimer-status">{t("disclaimerStatus")}</p>
             </div>

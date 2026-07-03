@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/bigip-tcpdump-builder/golden-vectors.ts
+// src/lib/tools/f5-bigip-tcpdump-builder/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // GOLDEN VECTORS for the BIG-IP tcpdump builder (set id: "bigip-tcpdump-v1").
 //

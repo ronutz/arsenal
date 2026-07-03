@@ -317,9 +317,17 @@ for (const [cat, arts] of groupBy(enArticles, (a) => a.category ?? "other")) {
   L.push("");
 }
 
+// Vendor hubs: one line per POPULATED vendor (>= 1 available tool), matching
+// the visibility rule of the hub route itself.
+const hubVendors = Array.from(
+  new Set(liveTools.flatMap((t) => t.vendors ?? [])),
+);
 L.push(
   "## More",
   "",
+  ...hubVendors.map(
+    (v) => `- [${v.toUpperCase()} vendor hub](${ORIGIN}/${SOURCE_LOCALE}/${v}/): every ${v.toUpperCase()} tool and article on one page`,
+  ),
   `- [About](${ORIGIN}/${SOURCE_LOCALE}/about): background, credentials, and history`,
   `- [Training](${ORIGIN}/${SOURCE_LOCALE}/training): instructor-led course offerings`,
   `- [Learn RSS feed](${ORIGIN}/feed.xml): most recent articles`,

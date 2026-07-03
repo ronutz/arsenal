@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/persistence-method-explainer/compute.ts
+// src/lib/tools/f5-persistence-method-explainer/compute.ts
 // ----------------------------------------------------------------------------
 // EXPLAINS BIG-IP LTM PERSISTENCE.
 //
@@ -20,7 +20,7 @@
 // and the SSL administration guide). Pure and offline.
 // ============================================================================
 
-import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode, type ParseResult } from "../tmsh-config-explainer/compute";
+import { parseTmsh, asTopLevel, asKeyValue, type ConfigNode, type ParseResult } from "../f5-tmsh-config-explainer/compute";
 
 export interface FieldNote {
   key: string;

@@ -3,7 +3,7 @@ slug: anatomy-of-bigip-conf
 title: "The Anatomy of a bigip.conf File"
 summary: "Every object in a BIG-IP configuration follows the same shape: a module, a component, an optional type, a name, and a brace-delimited body. Once you can see that pattern, a wall of tmsh config becomes a readable tree of virtual servers, pools, monitors, and profiles."
 concepts: ["tmsh", "bigip.conf", "configuration", "f5", "ltm", "syntax"]
-relatedTools: ["tmsh-config-explainer"]
+relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["how-a-virtual-server-works", "ltm-health-monitors"]
 category: networking
 order: 1
@@ -37,7 +37,7 @@ Newlines separate entries, and braces can nest as deeply as the object needs. Co
 
 ## The one exception: iRules
 
-There is a single object type whose body is not tmsh configuration at all. An `ltm rule` contains an iRule, which is a program written in Tcl. Its body uses braces too, but those braces belong to Tcl control structures like `when { ... }` and `if { ... }`, not to the configuration language. For that reason an iRule body should be read verbatim as code, not interpreted as settings. The [tmsh config explainer](/tools/tmsh-config-explainer) treats iRule bodies exactly this way: it captures them untouched and never tries to execute or rewrite them.
+There is a single object type whose body is not tmsh configuration at all. An `ltm rule` contains an iRule, which is a program written in Tcl. Its body uses braces too, but those braces belong to Tcl control structures like `when { ... }` and `if { ... }`, not to the configuration language. For that reason an iRule body should be read verbatim as code, not interpreted as settings. The [tmsh config explainer](/tools/f5-tmsh-config-explainer) treats iRule bodies exactly this way: it captures them untouched and never tries to execute or rewrite them.
 
 ## Why read it this way
 

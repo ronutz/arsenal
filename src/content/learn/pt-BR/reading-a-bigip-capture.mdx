@@ -3,7 +3,7 @@ slug: reading-a-bigip-capture
 title: "Lendo uma captura do BIG-IP: o trailer da F5 no Wireshark"
 summary: "Uma captura feita com o sufixo de detalhe da TMM carrega bytes extras após cada pacote. Sozinho, isso parece ruído. Com o dissecador f5ethtrailer, o Wireshark transforma isso em campos legíveis que dizem exatamente como o BIG-IP tratou cada fluxo."
 concepts: ["tcpdump", "f5", "big-ip", "wireshark", "f5ethtrailer", "peer flow", "analysis"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["tmm-detail-and-peer-flows", "bigip-tcpdump-syntax"]
 category: networking
 order: 34
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-Capturar os pacotes é metade do trabalho; lê-los é a outra metade. Uma captura do BIG-IP feita com um sufixo de detalhe (`:n`, `:nn` ou `:nnn`) contém os quadros padrão mais um trailer Ethernet da F5 em cada um. Este artigo é sobre transformar esse trailer em respostas. Você monta a própria captura com o [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder).
+Capturar os pacotes é metade do trabalho; lê-los é a outra metade. Uma captura do BIG-IP feita com um sufixo de detalhe (`:n`, `:nn` ou `:nnn`) contém os quadros padrão mais um trailer Ethernet da F5 em cada um. Este artigo é sobre transformar esse trailer em respostas. Você monta a própria captura com o [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder).
 
 ## Abra no Wireshark
 

@@ -13,10 +13,10 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { explainConfig, parseTmsh } from "@/lib/tools/tmsh-config-explainer";
+import { explainConfig, parseTmsh } from "@/lib/tools/f5-tmsh-config-explainer";
 
 export default function TmshConfigExplainerTool() {
-  const t = useTranslations("tools.tmsh-config-explainer");
+  const t = useTranslations("tools.f5-tmsh-config-explainer");
   const [input, setInput] = useState("");
 
   const result = useMemo(() => (input.trim() ? explainConfig(parseTmsh(input)) : null), [input]);

@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/irules-event-order/golden-vectors.ts
+// src/lib/tools/f5-irules-event-order/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // Fixed profile-stack -> expected automatic event sequence. The sequences are
 // pinned to F5 Clouddocs and the DevCentral iRule-event-order capture.
@@ -7,7 +7,7 @@
 
 import { run } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "irules-event-order-golden-2026-06-29";
+export const GOLDEN_VECTOR_SET_ID = "f5-irules-event-order-golden-2026-06-29";
 
 export interface EventOrderVector {
   id: string;

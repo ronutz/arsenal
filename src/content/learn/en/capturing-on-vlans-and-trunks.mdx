@@ -3,7 +3,7 @@ slug: capturing-on-vlans-and-trunks
 title: "Capturing on VLANs, Self-IPs, and Trunks"
 summary: "0.0 captures on every TMM interface, but sometimes you want to scope a capture to one segment. BIG-IP lets you name a VLAN, a self-IP, or other interface specifiers in place of 0.0, and each choice changes what you see."
 concepts: ["tcpdump", "f5", "big-ip", "vlan", "self-ip", "trunk", "tmm"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "bigip-tcpdump-safety"]
 category: networking
 order: 33
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-The `0.0` interface is the right default because it shows traffic on every TMM interface at once. But when a device is busy, or you already know which segment a problem lives on, naming a specific interface narrows the capture and reduces the noise. The [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder) accepts any of these in the interface field.
+The `0.0` interface is the right default because it shows traffic on every TMM interface at once. But when a device is busy, or you already know which segment a problem lives on, naming a specific interface narrows the capture and reduces the noise. The [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder) accepts any of these in the interface field.
 
 ## 0.0 versus a named VLAN
 

@@ -44,6 +44,39 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "09:19",
+    kind: "content",
+    title: "Funding transparency, updated",
+    body:
+      "The On building new tools section on the contribute page now tells the whole story: the three CONCORD seats (ANVIL on Claude, SCOUT on ChatGPT Plus, PRISM on Google AI Pro), the Cloudflare Workers plan, and the yearly domain fees, roughly USD 150 to 250 a month all in, with a link to the colophon for how the seats work. Buy Me a Coffee contributions go to that toolchain and nothing else.",
+  },
+  {
+    date: "2026-07-03",
+    time: "09:00",
+    kind: "feature",
+    title: "F5 hub, easy to find",
+    body:
+      "Hub discoverability now lives on top of the Tools and Learn listings: a small pill on each page links straight to the F5 hub, keeping the header a simple four-item bar. The pills are generated from the same populated-vendor rule as the hub itself, so Fortinet, Netskope, and Extreme Networks will appear there automatically the day their first tools ship.",
+  },
+  {
+    date: "2026-07-03",
+    time: "08:43",
+    kind: "feature",
+    title: "Vendor hub pages",
+    body:
+      "ronutz.com/f5 is live: one page gathering every F5 tool, grouped by family, followed by every F5 article. The bare /f5 address permanently redirects to the English hub, and /tools/f5 and /learn/f5 land on the hub's anchored sections in every language. Fortinet, Netskope, and Extreme Networks hubs materialize automatically when their first tools ship; until then their addresses redirect to the tools index. A new build guard keeps the vendor namespace safe: no tool, article, or page may ever take a vendor name as its address.",
+  },
+  {
+    date: "2026-07-03",
+    time: "07:48",
+    kind: "feature",
+    title: "Five F5 tools renamed with permanent redirects",
+    tools: ["f5-bigip-persistence-cookie", "f5-bigip-tcpdump-builder", "f5-irules-event-order", "f5-tmsh-config-explainer", "f5-persistence-method-explainer"],
+    body:
+      "The BIG-IP persistence cookie decoder, tcpdump builder, iRules event order, tmsh config explainer, and persistence method explainer now carry the f5- vendor prefix in their URLs, matching the rest of the F5 family. Every old address answers with a permanent redirect: page and .md URLs via static 301 rules in all sixteen languages, and old API slugs via a 308 from the worker so request method and body are preserved. The old names also remain as OMNIBOX aliases, so pasting or typing them still lands on the right tool.",
+  },
+  {
+    date: "2026-07-03",
     time: "06:59",
     kind: "tool",
     title: "New tool: F5 BIG-IP license explainer",
@@ -213,7 +246,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "05:00",
     kind: "tool",
     title: "New tool: BIG-IP tcpdump builder",
-    tools: ["bigip-tcpdump-builder"],
+    tools: ["f5-bigip-tcpdump-builder"],
     body:
       "Build a correct F5 BIG-IP tcpdump command from a plain description: the right interface syntax (including the :nnn peer-flow form), host and port filters, and capture options, with each part explained. Local and offline.",
   },
@@ -447,7 +480,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "tool",
     title: "iRule event order is live",
     body: "Toggle the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool, or FastL4 — and see the order the common iRule events fire, from CLIENT_ACCEPTED through CLIENT_CLOSED, as a color-coded timeline (the toolbox's first inline diagram) and an ordered list, with the conditional events (TCP/HTTP collect, LB failure, 100 Continue) called out and where each one slots in. The sequence is pinned to F5 Clouddocs and the DevCentral event-order capture. Five Learn articles ship alongside it. It is a model of documented behaviour that runs entirely in the browser and never contacts a device.",
-    tools: ["irules-event-order"],
+    tools: ["f5-irules-event-order"],
   },
 
   // ---- 2026-06-29 : Unix time converter ------------------------------------
@@ -580,7 +613,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "tool",
     title: "Persistence-method explainer",
     body: "A new tool that reads BIG-IP persistence profiles and virtual servers, explains each method (cookie, source-address, SSL, universal, hash, and more) with its real failure modes, and resolves each virtual's primary and fallback persistence chain. It reuses the tmsh parser and pairs with the persistence cookie decoder. Shipped with three Learn articles.",
-    tools: ["persistence-method-explainer"],
+    tools: ["f5-persistence-method-explainer"],
   },
   {
     date: "2026-06-29",
@@ -588,7 +621,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "tool",
     title: "tmsh config explainer",
     body: "A new tool that parses a BIG-IP bigip.conf snippet and explains its objects, virtual servers, pools, monitors, profiles, and iRules, in plain English. Shipped with three Learn articles.",
-    tools: ["tmsh-config-explainer"],
+    tools: ["f5-tmsh-config-explainer"],
   },
   {
     date: "2026-06-29",
@@ -620,7 +653,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "tool",
     title: "BIG-IP persistence cookie decoder",
     body: "A new tool that decodes F5 BIG-IP persistence cookies across all four encoding formats, detects encrypted cookies, and can also encode a cookie from a pool member. Shipped with Learn articles.",
-    tools: ["bigip-persistence-cookie"],
+    tools: ["f5-bigip-persistence-cookie"],
   },
   {
     date: "2026-06-29",

@@ -18,7 +18,7 @@ import {
   planEventOrder,
   type VirtualConfig,
   type EventSide,
-} from "@/lib/tools/irules-event-order";
+} from "@/lib/tools/f5-irules-event-order";
 
 const SIDE_COLOR: Record<EventSide, string> = {
   client: "var(--accent-primary)",
@@ -42,7 +42,7 @@ const TOGGLES: { field: keyof VirtualConfig; key: string }[] = [
 ];
 
 export default function IrulesEventOrderTool() {
-  const t = useTranslations("tools.irules-event-order");
+  const t = useTranslations("tools.f5-irules-event-order");
   const [cfg, setCfg] = useState<VirtualConfig>({
     fastL4: false,
     clientSsl: true,

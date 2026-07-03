@@ -13,7 +13,7 @@
 // build its engine (with run()), then add one line below.
 //
 // Each entry normalizes the tool to (input: string) => result. Most tools take a
-// plain string. The six structured-input tools (bigip-tcpdump-builder, cert-
+// plain string. The six structured-input tools (f5-bigip-tcpdump-builder, cert-
 // renewal-planner, csr-decoder, diff, hmac, totp-hotp) accept a JSON object,
 // passed to the API as a JSON string and parsed here; they are marked structured
 // so the docs describe a JSON request body. cidr's engine is named cidrAnalyze.
@@ -26,8 +26,8 @@
 // ============================================================================
 
 import { run as base64Run } from "./base64";
-import { run as bigipPersistenceCookieRun } from "./bigip-persistence-cookie";
-import { run as bigipTcpdumpBuilderRun } from "./bigip-tcpdump-builder";
+import { run as bigipPersistenceCookieRun } from "./f5-bigip-persistence-cookie";
+import { run as bigipTcpdumpBuilderRun } from "./f5-bigip-tcpdump-builder";
 import { run as certRenewalPlannerRun } from "./cert-renewal-planner";
 import { cidrAnalyze } from "./cidr/compute";
 import { run as cipherRun } from "./cipher";
@@ -46,21 +46,21 @@ import { run as hashRun } from "./hash";
 import { run as hmacRun } from "./hmac";
 import { run as httpRequestTranslatorRun } from "./http-request-translator";
 import { run as ipv6Run } from "./ipv6";
-import { run as irulesEventOrderRun } from "./irules-event-order";
+import { run as irulesEventOrderRun } from "./f5-irules-event-order";
 import { run as jsonFormatterRun } from "./json-formatter";
 import { run as jsonYamlConvertRun } from "./json-yaml-convert";
 import { run as jwksExplainerRun } from "./jwks-explainer";
 import { run as jwtRun } from "./jwt";
 import { run as nslookupOutputExplainerRun } from "./nslookup-output-explainer";
 import { run as oidcRun } from "./oidc";
-import { run as persistenceMethodExplainerRun } from "./persistence-method-explainer";
+import { run as persistenceMethodExplainerRun } from "./f5-persistence-method-explainer";
 import { run as pkceRun } from "./pkce";
 import { run as regexRun } from "./regex";
 import { run as samlDecoderRun } from "./saml-decoder";
 import { run as secureHeadersRun } from "./secure-headers";
 import { run as ssrfUrlClassifierRun } from "./ssrf-url-classifier";
 import { run as syslogPriDecoderRun } from "./syslog-pri-decoder";
-import { run as tmshConfigExplainerRun } from "./tmsh-config-explainer";
+import { run as tmshConfigExplainerRun } from "./f5-tmsh-config-explainer";
 import { run as totpHotpRun } from "./totp-hotp";
 import { run as urlInspectorRun } from "./url-inspector";
 import { run as uuidRun } from "./uuid";
@@ -79,8 +79,8 @@ export interface ApiTool {
 /** Every API-exposed tool. Kept in sync with the catalogue by the build (D-72). */
 export const API_TOOLS: ApiTool[] = [
   { slug: "base64", run: base64Run },
-  { slug: "bigip-persistence-cookie", run: bigipPersistenceCookieRun },
-  { slug: "bigip-tcpdump-builder", structured: true, run: (input) => bigipTcpdumpBuilderRun(JSON.parse(input)) },
+  { slug: "f5-bigip-persistence-cookie", run: bigipPersistenceCookieRun },
+  { slug: "f5-bigip-tcpdump-builder", structured: true, run: (input) => bigipTcpdumpBuilderRun(JSON.parse(input)) },
   { slug: "cert-renewal-planner", structured: true, run: (input) => certRenewalPlannerRun(JSON.parse(input)) },
   { slug: "cidr", run: (input) => cidrAnalyze(input) },
   { slug: "cipher", run: cipherRun },
@@ -99,21 +99,21 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "hmac", structured: true, run: (input) => hmacRun(JSON.parse(input)) },
   { slug: "http-request-translator", run: httpRequestTranslatorRun },
   { slug: "ipv6", run: ipv6Run },
-  { slug: "irules-event-order", run: irulesEventOrderRun },
+  { slug: "f5-irules-event-order", run: irulesEventOrderRun },
   { slug: "json-formatter", run: jsonFormatterRun },
   { slug: "json-yaml-convert", run: jsonYamlConvertRun },
   { slug: "jwks-explainer", run: jwksExplainerRun },
   { slug: "jwt", run: jwtRun },
   { slug: "nslookup-output-explainer", run: nslookupOutputExplainerRun },
   { slug: "oidc", run: oidcRun },
-  { slug: "persistence-method-explainer", run: persistenceMethodExplainerRun },
+  { slug: "f5-persistence-method-explainer", run: persistenceMethodExplainerRun },
   { slug: "pkce", run: pkceRun },
   { slug: "regex", run: regexRun },
   { slug: "saml-decoder", run: samlDecoderRun },
   { slug: "secure-headers", run: secureHeadersRun },
   { slug: "ssrf-url-classifier", run: ssrfUrlClassifierRun },
   { slug: "syslog-pri-decoder", run: syslogPriDecoderRun },
-  { slug: "tmsh-config-explainer", run: tmshConfigExplainerRun },
+  { slug: "f5-tmsh-config-explainer", run: tmshConfigExplainerRun },
   { slug: "totp-hotp", structured: true, run: (input) => totpHotpRun(JSON.parse(input)) },
   { slug: "url-inspector", run: urlInspectorRun },
   { slug: "uuid", run: uuidRun },

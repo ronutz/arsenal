@@ -636,7 +636,7 @@
       "dayOfYearLabel": "dag på året",
       "relativeNote": "i förhållande till din enhets klocka"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "iRule-händelseordning",
       "blurb": "Välj profilstacken på en BIG-IP-virtuell server — Client-SSL, HTTP, Server-SSL, pool — och se ordningen som de vanliga iRule-händelserna utlöses i, från CLIENT_ACCEPTED till CLIENT_CLOSED, som tidslinje och lista. Allt i din webbläsare.",
       "stackLabel": "Den virtuella serverns profilstack",
@@ -1419,11 +1419,7 @@
     "emailTitle": "Så når du mig",
     "emailBody": "E-post är kanalen. Berätta vad du hittade eller vad du önskar, med tillräckligt med detaljer för att agera: ett exempel, en länk, den exakta formuleringen, vad som passar. Om det gör verktygslådan bättre byggs det.",
     "emailLabel": "E-post",
-    "backToTools": "Tillbaka till verktygslådan",
-    "disclaimerTitle": "Hur nya verktyg byggs och finansieras",
-    "disclaimerBody": "För fullständig ärlighets skull: varje nytt verktyg här byggs med Claude Max, Anthropics högsta användningsnivå, och den prenumerationen är inte billig. 5x-planen kostar omkring 100 USD i månaden, 20x-planen omkring 200. När den är finansierad byggs verktyg. När den inte är det pausas bygget helt enkelt tills den är det, vilket är anledningen till att nya verktyg tenderar att komma i skov snarare än enligt ett fast schema.",
-    "disclaimerBody2": "Om du vill hjälpa till är Buy Me a Coffee-länken i sidfoten vägen. Varje bidrag går till en enda reserv som uteslutande används till den månatliga Claude Max-prenumerationen. Inga andra kostnader, ingen andel, inga överraskningar.",
-    "disclaimerStatus": "Just nu: prenumerationen är finansierad och nya verktyg byggs aktivt."
+    "backToTools": "Tillbaka till verktygslådan"
   },
   "languageStatus": {
     "title": "Översättningsstatus",

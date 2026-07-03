@@ -74,6 +74,18 @@ function json(
 
 const API_PREFIX = "/api/v1/";
 
+// Pre-rename API slugs (renamed 2026-07-03 to carry the f5- vendor prefix).
+// Requests to the old slugs answer with a permanent redirect to the successor.
+// 308 (not 301) so the method and body are preserved: clients may replay a
+// 301 as GET, which would break POST callers mid-migration.
+const RENAMED_API_SLUGS = new Map<string, string>([
+  ["bigip-persistence-cookie", "f5-bigip-persistence-cookie"],
+  ["bigip-tcpdump-builder", "f5-bigip-tcpdump-builder"],
+  ["irules-event-order", "f5-irules-event-order"],
+  ["tmsh-config-explainer", "f5-tmsh-config-explainer"],
+  ["persistence-method-explainer", "f5-persistence-method-explainer"],
+]);
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -86,6 +98,18 @@ export default {
     // ---- /api/v1/<slug> : generic tool dispatch ----------------------------
     if (url.pathname.startsWith(API_PREFIX)) {
       const slug = url.pathname.slice(API_PREFIX.length);
+
+      // Renamed slug? Permanent redirect to the successor, query preserved.
+      const renamedTo = RENAMED_API_SLUGS.get(slug);
+      if (renamedTo) {
+        const to = new URL(url);
+        to.pathname = API_PREFIX + renamedTo;
+        return new Response(null, {
+          status: 308,
+          headers: { Location: to.toString(), "Cache-Control": "public, max-age=86400" },
+        });
+      }
+
       const tool = API_TOOL_MAP.get(slug);
 
       if (!tool) {

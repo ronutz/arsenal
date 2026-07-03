@@ -3,7 +3,7 @@ slug: reading-a-bigip-capture
 title: "Reading a BIG-IP Capture: The F5 Trailer in Wireshark"
 summary: "A capture taken with the TMM detail suffix carries extra bytes after each packet. On its own that looks like noise. With the f5ethtrailer dissector, Wireshark turns it into readable fields that tell you exactly how BIG-IP handled each flow."
 concepts: ["tcpdump", "f5", "big-ip", "wireshark", "f5ethtrailer", "peer flow", "analysis"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["tmm-detail-and-peer-flows", "bigip-tcpdump-syntax"]
 category: networking
 order: 34
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-Capturing the packets is half the job; reading them is the other half. A BIG-IP capture taken with a detail suffix (`:n`, `:nn`, or `:nnn`) contains the standard frames plus an F5 Ethernet trailer on each one. This article is about turning that trailer into answers. You build the capture itself with the [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder).
+Capturing the packets is half the job; reading them is the other half. A BIG-IP capture taken with a detail suffix (`:n`, `:nn`, or `:nnn`) contains the standard frames plus an F5 Ethernet trailer on each one. This article is about turning that trailer into answers. You build the capture itself with the [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder).
 
 ## Open it in Wireshark
 

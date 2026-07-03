@@ -3,7 +3,7 @@ slug: tmm-detail-and-peer-flows
 title: "TMM Detail Levels and Peer Flows (:n, :nn, :nnn, :p)"
 summary: "The colon suffix on a BIG-IP capture interface is the most confusing and most useful part of the syntax. It controls how much internal TMM metadata is attached to each packet, and whether you capture one side of a connection or both."
 concepts: ["tcpdump", "f5", "big-ip", "tmm", "peer flow", "f5ethtrailer", "noise flags"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "reading-a-bigip-capture"]
 category: networking
 order: 32
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-When you write `-i 0.0:nnnp`, the `:nnnp` part is pure BIG-IP. It does two separate things: it sets a detail level, and it asks for both flows of a connection. Understanding it is what makes a BIG-IP capture far more powerful than a plain one. The [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder) exposes these as simple toggles.
+When you write `-i 0.0:nnnp`, the `:nnnp` part is pure BIG-IP. It does two separate things: it sets a detail level, and it asks for both flows of a connection. Understanding it is what makes a BIG-IP capture far more powerful than a plain one. The [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder) exposes these as simple toggles.
 
 ## What the detail levels add
 

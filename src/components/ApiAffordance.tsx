@@ -45,7 +45,7 @@ const API_ORIGIN = "https://ronutz.com";
  * `structured: true` entries; keep in sync when a structured tool is added.
  */
 const STRUCTURED_SLUGS = new Set<string>([
-  "bigip-tcpdump-builder",
+  "f5-bigip-tcpdump-builder",
   "cert-renewal-planner",
   "csr-decoder",
   "diff",

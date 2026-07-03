@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/bigip-tcpdump-builder/compute.ts
+// src/lib/tools/f5-bigip-tcpdump-builder/compute.ts
 // ----------------------------------------------------------------------------
 // BIG-IP TCPDUMP COMMAND BUILDER - assemble a valid tcpdump command for an F5
 // BIG-IP from a set of options, including the F5-specific interface syntax.
@@ -155,7 +155,7 @@ export function buildCommand(opts: TcpdumpOptions): TcpdumpResult {
 
   // ---- Advisories (BIG-IP operational guidance, not errors) ----
   // We push STABLE CODES, not prose, so the UI can localise each advisory via
-  // tools.bigip-tcpdump-builder.warnings.<code>. The golden vectors assert the
+  // tools.f5-bigip-tcpdump-builder.warnings.<code>. The golden vectors assert the
   // COUNT of advisories, so the wording can evolve without touching them.
   const isAllIfaces = opts.iface.trim() === "0.0";
   const hasBound = filter.length > 0 || (opts.count !== undefined && (opts.count as number) > 0);

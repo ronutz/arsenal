@@ -636,7 +636,7 @@
       "dayOfYearLabel": "jour de l'année",
       "relativeNote": "par rapport à l'horloge de votre appareil"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "Ordre des événements iRule",
       "blurb": "Choisissez la pile de profils d'un virtual server BIG-IP — Client-SSL, HTTP, Server-SSL, pool — et voyez l'ordre dans lequel les événements iRule courants se déclenchent, de CLIENT_ACCEPTED à CLIENT_CLOSED, sous forme de chronologie et de liste. Le tout dans votre navigateur.",
       "stackLabel": "Pile de profils du virtual server",
@@ -1419,11 +1419,7 @@
     "emailTitle": "Comment me joindre",
     "emailBody": "L'e-mail est le canal. Dites-moi ce que vous avez trouvé ou ce que vous souhaitez, avec assez de détails pour agir : un exemple, un lien, la formulation exacte, ce qui convient. Si cela améliore la boîte à outils, ce sera construit.",
     "emailLabel": "E-mail",
-    "backToTools": "Retour à la boîte à outils",
-    "disclaimerTitle": "Comment les nouveaux outils sont conçus et financés",
-    "disclaimerBody": "Par souci de totale honnêteté : chaque nouvel outil ici est conçu avec Claude Max, le niveau d'utilisation le plus élevé d'Anthropic, et cet abonnement n'est pas bon marché. Le forfait 5x coûte environ 100 USD par mois, le forfait 20x environ 200. Quand c'est financé, des outils sont créés. Quand ça ne l'est pas, la création se met simplement en pause jusqu'à ce que ça le soit, ce qui explique pourquoi les nouveaux outils arrivent par vagues plutôt que selon un calendrier fixe.",
-    "disclaimerBody2": "Si vous souhaitez y contribuer, le lien Buy Me a Coffee en pied de page est la voie. Chaque contribution va dans une réserve unique consacrée uniquement à cet abonnement mensuel Claude Max. Aucun autre coût, aucune commission, aucune surprise.",
-    "disclaimerStatus": "En ce moment : l'abonnement est financé et de nouveaux outils sont activement en cours de création."
+    "backToTools": "Retour à la boîte à outils"
   },
   "languageStatus": {
     "title": "Statut de la traduction",

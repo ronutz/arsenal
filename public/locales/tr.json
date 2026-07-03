@@ -636,7 +636,7 @@
       "dayOfYearLabel": "yılın günü",
       "relativeNote": "cihazınızın saatine göre"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "iRule olay sırası",
       "blurb": "Bir BIG-IP virtual server'ının profil yığınını seçin — Client-SSL, HTTP, Server-SSL, havuz — ve yaygın iRule olaylarının CLIENT_ACCEPTED'tan CLIENT_CLOSED'a hangi sırayla tetiklendiğini zaman çizelgesi ve liste olarak görün. Hepsi tarayıcınızda.",
       "stackLabel": "Virtual server profil yığını",
@@ -1419,11 +1419,7 @@
     "emailTitle": "Bana nasıl ulaşırsınız",
     "emailBody": "Kanal e-postadır. Ne bulduğunuzu ya da ne istediğinizi, üzerinde işlem yapılabilecek kadar ayrıntıyla anlatın: bir örnek, bir bağlantı, tam ifade, ne uygunsa. Araç kutusunu daha iyi hale getiriyorsa, yapılır.",
     "emailLabel": "E-posta",
-    "backToTools": "Araç kutusuna dön",
-    "disclaimerTitle": "Yeni araçlar nasıl geliştirilir ve finanse edilir",
-    "disclaimerBody": "Tam bir dürüstlük adına: buradaki her yeni araç, Anthropic'in en yüksek kullanım kademesi olan Claude Max ile geliştiriliyor ve bu abonelik ucuz değil. 5x planı ayda yaklaşık 100 USD, 20x planı yaklaşık 200 USD. Finanse edildiğinde araçlar geliştirilir. Edilmediğinde geliştirme, finanse edilene kadar duraklar; bu yüzden yeni araçlar sabit bir takvime göre değil, dalgalar hâlinde gelme eğilimindedir.",
-    "disclaimerBody2": "İlerlemesine yardım etmek isterseniz, altbilgideki Buy Me a Coffee bağlantısı bunun yoludur. Her katkı, yalnızca o aylık Claude Max aboneliği için harcanan tek bir rezerve gider. Başka masraf yok, pay yok, sürpriz yok.",
-    "disclaimerStatus": "Şu anda: abonelik finanse edildi ve yeni araçlar etkin biçimde geliştiriliyor."
+    "backToTools": "Araç kutusuna dön"
   },
   "languageStatus": {
     "title": "Çeviri durumu",

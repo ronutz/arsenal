@@ -636,7 +636,7 @@
       "dayOfYearLabel": "dag van het jaar",
       "relativeNote": "ten opzichte van de klok van je apparaat"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "iRule-gebeurtenisvolgorde",
       "blurb": "Kies de profielstack van een BIG-IP-virtual-server — Client-SSL, HTTP, Server-SSL, pool — en zie de volgorde waarin de gangbare iRule-gebeurtenissen afgaan, van CLIENT_ACCEPTED tot CLIENT_CLOSED, als tijdlijn en lijst. Allemaal in je browser.",
       "stackLabel": "Profielstack van de virtual server",
@@ -1419,11 +1419,7 @@
     "emailTitle": "Hoe je me bereikt",
     "emailBody": "E-mail is het kanaal. Vertel me wat je vond of wat je wilt, met genoeg detail om mee aan de slag te gaan: een voorbeeld, een link, de exacte formulering, wat past. Als het de toolbox beter maakt, wordt het gebouwd.",
     "emailLabel": "E-mail",
-    "backToTools": "Terug naar de toolbox",
-    "disclaimerTitle": "Hoe nieuwe hulpmiddelen worden gebouwd en gefinancierd",
-    "disclaimerBody": "In het belang van volledige eerlijkheid: elk nieuw hulpmiddel hier wordt gebouwd met Claude Max, het hoogste gebruiksniveau van Anthropic, en dat abonnement is niet goedkoop. Het 5x-abonnement kost ongeveer 100 USD per maand, het 20x-abonnement ongeveer 200. Als het gefinancierd is, worden er hulpmiddelen gebouwd. Als dat niet zo is, pauzeert het bouwen gewoon totdat het weer kan, en daarom komen nieuwe hulpmiddelen eerder in golven dan volgens een vast schema.",
-    "disclaimerBody2": "Als je wilt helpen, is de Buy Me a Coffee-link in de voettekst de manier. Elke bijdrage gaat naar één enkele reserve die uitsluitend wordt besteed aan dat maandelijkse Claude Max-abonnement. Geen andere kosten, geen commissie, geen verrassingen.",
-    "disclaimerStatus": "Op dit moment: het abonnement is gefinancierd en er worden actief nieuwe hulpmiddelen gebouwd."
+    "backToTools": "Terug naar de toolbox"
   },
   "languageStatus": {
     "title": "Vertaalstatus",

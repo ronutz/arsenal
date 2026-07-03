@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/bigip-tcpdump-builder/index.ts
+// src/lib/tools/f5-bigip-tcpdump-builder/index.ts
 // ----------------------------------------------------------------------------
 // THE SELF-DESCRIBING BIG-IP TCPDUMP BUILDER MODULE - {manifest, run, vectors}.
 //
@@ -28,8 +28,8 @@ export { GOLDEN_VECTOR_SET_ID, TCPDUMP_GOLDEN_VECTORS } from "./golden-vectors";
 export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "F5 LTM, iRules & platform",
-  toolSlug: "bigip-tcpdump-builder",
-  canonicalAliases: ["f5-tcpdump", "bigip-packet-capture", "tmm-tcpdump", "tcpdump-builder"],
+  toolSlug: "f5-bigip-tcpdump-builder",
+  canonicalAliases: ["bigip-tcpdump-builder" /* pre-rename slug, 2026-07-03 */, "f5-tcpdump", "bigip-packet-capture", "tmm-tcpdump", "tcpdump-builder"],
   inputDetectors: [
     {
       // A builder assembles from controls; there is no pasted string to detect.

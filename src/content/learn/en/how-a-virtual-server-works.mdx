@@ -3,7 +3,7 @@ slug: how-a-virtual-server-works
 title: "How a BIG-IP Virtual Server Works"
 summary: "A virtual server is the front door of a BIG-IP. It binds a listening IP and port, applies a stack of profiles, decides persistence, picks a pool member, and translates the source address toward the backend. Reading those pieces in order tells you exactly how a connection will be handled."
 concepts: ["virtual server", "ltm", "load balancing", "profiles", "snat", "f5"]
-relatedTools: ["tmsh-config-explainer"]
+relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["anatomy-of-bigip-conf", "ltm-health-monitors"]
 category: networking
 order: 2
@@ -31,4 +31,4 @@ The last decision is what source address the backend sees. The `source-address-t
 
 ## Reading it as a path
 
-Put together, a virtual server describes a path: a client reaches the `destination`, the profile stack parses and possibly decrypts the connection, persistence and the pool select a member, and source translation rewrites the outbound source. The [tmsh config explainer](/tools/tmsh-config-explainer) lays these fields out and flags the ones most likely to surprise you, such as an HTTPS port with no client-SSL profile or a SNAT setting of none. For the grammar these objects are written in, see [the anatomy of a bigip.conf file](/learn/anatomy-of-bigip-conf).
+Put together, a virtual server describes a path: a client reaches the `destination`, the profile stack parses and possibly decrypts the connection, persistence and the pool select a member, and source translation rewrites the outbound source. The [tmsh config explainer](/tools/f5-tmsh-config-explainer) lays these fields out and flags the ones most likely to surprise you, such as an HTTPS port with no client-SSL profile or a SNAT setting of none. For the grammar these objects are written in, see [the anatomy of a bigip.conf file](/learn/anatomy-of-bigip-conf).

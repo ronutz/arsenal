@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/persistence-method-explainer/index.ts
+// src/lib/tools/f5-persistence-method-explainer/index.ts
 // ----------------------------------------------------------------------------
 // THE SELF-DESCRIBING PERSISTENCE-METHOD EXPLAINER - a self-contained {manifest, run,
 // vectors} triple. Paste BIG-IP persistence profiles and/or virtual servers and
@@ -13,7 +13,7 @@
 // nothing.
 // ============================================================================
 
-import { parseTmsh } from "../tmsh-config-explainer/compute";
+import { parseTmsh } from "../f5-tmsh-config-explainer/compute";
 import { extractPersistence, type PersistResult } from "./compute";
 import { GOLDEN_VECTOR_SET_ID, P_VECTORS } from "./golden-vectors";
 
@@ -22,12 +22,12 @@ export type { PersistResult, MethodExplain, PersistChain, ChainStep, FieldNote }
 export { GOLDEN_VECTOR_SET_ID, P_VECTORS, verifyVectors } from "./golden-vectors";
 export type { PVector } from "./golden-vectors";
 
-/** The D-49 declarative manifest for the persistence-method-explainer tool. */
+/** The D-49 declarative manifest for the f5-persistence-method-explainer tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "F5 LTM, iRules & platform",
-  toolSlug: "persistence-method-explainer",
-  canonicalAliases: ["f5-persistence-explainer", "ltm-persistence-explainer", "bigip-persistence-method", "persistence-explainer"],
+  toolSlug: "f5-persistence-method-explainer",
+  canonicalAliases: ["persistence-method-explainer" /* pre-rename slug, 2026-07-03 */, "f5-persistence-explainer", "ltm-persistence-explainer", "bigip-persistence-method", "persistence-explainer"],
   inputDetectors: [
     {
       kind: "regex",

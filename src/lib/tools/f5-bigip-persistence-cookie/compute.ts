@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/bigip-persistence-cookie/compute.ts
+// src/lib/tools/f5-bigip-persistence-cookie/compute.ts
 // ----------------------------------------------------------------------------
 // THE F5 BIG-IP PERSISTENCE COOKIE DECODER ENGINE.
 //

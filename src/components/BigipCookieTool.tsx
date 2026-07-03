@@ -27,7 +27,7 @@ import {
   BigipEncodeError,
   type BigipReport,
   type BigipEncodeResult,
-} from "@/lib/tools/bigip-persistence-cookie";
+} from "@/lib/tools/f5-bigip-persistence-cookie";
 
 type Mode = "decode" | "encode";
 
@@ -50,7 +50,7 @@ function Field({ label, value, mono }: { label: string; value?: string; mono?: b
 }
 
 export default function BigipCookieTool() {
-  const t = useTranslations("tools.bigip-persistence-cookie");
+  const t = useTranslations("tools.f5-bigip-persistence-cookie");
   const [mode, setMode] = useState<Mode>("decode");
 
   // -- decode state --

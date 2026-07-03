@@ -636,7 +636,7 @@
       "dayOfYearLabel": "一年中的第几天",
       "relativeNote": "相对于你的设备时钟"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "iRule 事件顺序",
       "blurb": "选择 BIG-IP 虚拟服务器的配置栈——Client-SSL、HTTP、Server-SSL、池——查看常见 iRule 事件从 CLIENT_ACCEPTED 到 CLIENT_CLOSED 的触发顺序，以时间线和列表呈现。全部在你的浏览器中完成。",
       "stackLabel": "虚拟服务器配置栈",
@@ -1419,11 +1419,7 @@
     "emailTitle": "如何联系我",
     "emailBody": "电子邮件就是渠道。告诉我你发现了什么或想要什么，并提供足够的细节以便采取行动：一个示例、一个链接、确切的措辞，凡是合适的都行。只要它能让工具箱变得更好，就会被构建出来。",
     "emailLabel": "电子邮件",
-    "backToTools": "返回工具箱",
-    "disclaimerTitle": "新工具是如何构建和筹资的",
-    "disclaimerBody": "出于彻底的坦诚：这里的每个新工具都是用 Claude Max 构建的，也就是 Anthropic 的最高用量档位，而这个订阅并不便宜。5x 套餐每月约 100 美元，20x 套餐约 200 美元。有钱付费时，就会有工具产出；没有时，构建就会暂停，直到再次续上，这也是新工具往往成批出现、而非按固定时间表推出的原因。",
-    "disclaimerBody2": "如果你愿意助一臂之力，页脚的 Buy Me a Coffee 链接就是途径。每一笔捐助都进入同一个储备金，只用于支付这项每月的 Claude Max 订阅。没有其他开支，没有抽成，没有意外。",
-    "disclaimerStatus": "目前：订阅已获资助，正在积极构建新工具。"
+    "backToTools": "返回工具箱"
   },
   "languageStatus": {
     "title": "翻译状态",

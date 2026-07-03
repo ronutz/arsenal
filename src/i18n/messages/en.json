@@ -856,7 +856,7 @@
         "s8": "Provider returns the user's claims"
       }
     },
-    "bigip-persistence-cookie": {
+    "f5-bigip-persistence-cookie": {
       "name": "BIG-IP Persistence Cookie Decoder",
       "blurb": "Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or encode one from an address and port. Runs entirely in your browser.",
       "inputLabel": "BIGipServer cookie",
@@ -1031,7 +1031,7 @@
       "copy": "Copy",
       "copied": "Copied"
     },
-    "tmsh-config-explainer": {
+    "f5-tmsh-config-explainer": {
       "name": "tmsh config explainer",
       "blurb": "Paste a BIG-IP bigip.conf snippet and get a plain-English breakdown of every object, plus the structure, entirely in your browser.",
       "inputLabel": "bigip.conf snippet",
@@ -1047,7 +1047,7 @@
       "iruleLabel": "This is a Tcl iRule, shown verbatim. It is code that runs on events, not tmsh configuration.",
       "notesHeading": "Things to notice"
     },
-    "persistence-method-explainer": {
+    "f5-persistence-method-explainer": {
       "name": "Persistence-method explainer",
       "blurb": "Paste BIG-IP persistence profiles and virtual servers and get the method behind each, its failure modes, and the primary-to-fallback chain, all in your browser.",
       "inputLabel": "Persistence config (profiles and virtuals)",
@@ -1321,7 +1321,7 @@
       "dayOfYearLabel": "day of year",
       "relativeNote": "relative to your device clock"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "iRule event order",
       "blurb": "Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a timeline and a list. All in your browser.",
       "stackLabel": "Virtual server profile stack",
@@ -1433,7 +1433,7 @@
       "err_der": "The DER structure could not be parsed.",
       "err_structure": "This parses as DER but is not a PKCS#10 certification request."
     },
-    "bigip-tcpdump-builder": {
+    "f5-bigip-tcpdump-builder": {
       "name": "BIG-IP tcpdump builder",
       "blurb": "Assemble a BIG-IP-correct tcpdump command from structured choices: the TMM interface syntax, flow detail, snaplen, file output, and a BPF filter. It formats the command for you to run; it captures nothing.",
       "runsLocally": "The command is assembled in your browser. Nothing is captured, run, or sent anywhere.",
@@ -2981,10 +2981,10 @@
     "backToTools": "Back to the toolbox",
     "roadmapCheck": "It's worth checking the roadmap first, to see what's already planned or shipped and avoid duplicates:",
     "roadmapLink": "see the roadmap",
-    "disclaimerTitle": "How new tools get built and funded",
-    "disclaimerBody": "In the interest of total honesty: every new tool here is built with Claude Max, Anthropic's highest usage tier, and that subscription is not cheap. The 5x plan runs about USD 100 a month, the 20x plan about USD 200. When it is funded, tools get built. When it is not, building simply pauses until it is, which is why new tools tend to arrive in bursts rather than on a fixed schedule.",
-    "disclaimerBody2": "If you would like to help it along, the Buy Me a Coffee link in the footer is the way. Every contribution goes into a single reserve spent on nothing but that monthly Claude Max subscription. No other costs, no cut, no surprises.",
-    "disclaimerStatus": "Right now: the subscription is funded and new tools are actively being built."
+    "disclaimerTitle": "On building new tools",
+    "disclaimerBody": "In the interest of total honesty: these tools are built with CONCORD, my AI-assisted build process, and it runs on real, recurring costs. Three paid AI subscriptions carry it, one for each working seat. ANVIL, the engineering seat, runs on Claude from Anthropic, and this is the load-bearing one: it does the actual building, so it has to sit on one of Claude's Max tiers for there to be enough capacity to design, write, and test new tools at all. SCOUT, the strategy and brand seat, runs on ChatGPT Plus from OpenAI. PRISM, the design seat, runs on Google AI Pro. On top of the three seats, a Cloudflare Workers plan keeps the site served, and the domains renew once a year for a fee of their own. All in, it comes to roughly USD 150 to USD 250 a month, depending mostly on which Claude tier the engineering seat is running that month. When the tooling is funded, tools get built. When it is not, building simply pauses until it is, which is why new tools tend to arrive in bursts rather than on a fixed schedule. You can read how the seats work, and who sits in each, on <colophon>the colophon</colophon>.",
+    "disclaimerBody2": "If you would like to help it along, the Buy Me a Coffee link in the footer is the way. Every contribution goes into a single reserve spent on nothing but keeping that toolchain running: the three subscriptions, the hosting, and the domains. No cut, no surprises.",
+    "disclaimerStatus": "Right now: the tooling is funded and new tools are actively being built."
   },
   "license_page": {
     "eyebrow": "Terms",
@@ -3051,5 +3051,13 @@
     "articlesHeading": "Articles",
     "read": "Read",
     "backToTools": "All tools"
+  },
+  "vendorHub": {
+    "eyebrow": "vendor hub",
+    "lede": "Everything on ronutz.com for {vendor}, in one place: every tool, grouped by family, followed by every article. Tools compute locally in your browser; articles are grounded in vendor documentation.",
+    "toolsHeading": "Tools",
+    "learnHeading": "Articles",
+    "read": "Read",
+    "metaDescription": "Every {vendor} tool and every {vendor} article on ronutz.com, on one page: tools grouped by family, then the full article library."
   }
 }

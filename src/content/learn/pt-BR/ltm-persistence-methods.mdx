@@ -3,7 +3,7 @@ slug: ltm-persistence-methods
 title: "Métodos de Persistência do BIG-IP e em Que Cada Um se Baseia"
 summary: "O BIG-IP oferece vários métodos de persistência, e a única coisa que têm em comum é o objetivo: enviar um cliente que retorna ao mesmo membro do pool. Aquilo em que cada um se baseia, cookie, endereço de origem, ID de sessão SSL ou um valor extraído por iRule, decide onde cada um se encaixa e onde cada um falha."
 concepts: ["persistência", "ltm", "balanceamento de carga", "cookie", "f5", "sessão"]
-relatedTools: ["persistence-method-explainer"]
+relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["choosing-a-persistence-method", "fallback-persistence-and-match-across"]
 category: networking
 order: 1
@@ -15,7 +15,7 @@ Sem persistência, cada nova conexão é balanceada de forma independente, entã
 
 ## Persistência por cookie
 
-A persistência por cookie vincula um cliente a um membro por meio de um cookie HTTP. Ela tem quatro modos. **Insert** adiciona o cookie à resposta e o lê de volta depois, então o mapeamento fica no cliente e nenhum registro do lado do servidor é necessário. **Rewrite** faz o servidor emitir um cookie em branco que o BIG-IP sobrescreve. **Passive** faz o próprio servidor definir o cookie no formato especial, que o BIG-IP apenas lê. **Hash** balanceia com base em um hash de um cookie definido pelo servidor. Por funcionar na camada HTTP, a persistência por cookie precisa de um perfil HTTP, o que significa que o tráfego deve ser HTTP ou HTTPS que o BIG-IP descriptografa. O [decodificador de cookie de persistência](/tools/bigip-persistence-cookie) companheiro mostra o que o valor codificado dentro desse cookie de fato contém.
+A persistência por cookie vincula um cliente a um membro por meio de um cookie HTTP. Ela tem quatro modos. **Insert** adiciona o cookie à resposta e o lê de volta depois, então o mapeamento fica no cliente e nenhum registro do lado do servidor é necessário. **Rewrite** faz o servidor emitir um cookie em branco que o BIG-IP sobrescreve. **Passive** faz o próprio servidor definir o cookie no formato especial, que o BIG-IP apenas lê. **Hash** balanceia com base em um hash de um cookie definido pelo servidor. Por funcionar na camada HTTP, a persistência por cookie precisa de um perfil HTTP, o que significa que o tráfego deve ser HTTP ou HTTPS que o BIG-IP descriptografa. O [decodificador de cookie de persistência](/tools/f5-bigip-persistence-cookie) companheiro mostra o que o valor codificado dentro desse cookie de fato contém.
 
 ## Afinidade por endereço de origem e de destino
 
@@ -35,4 +35,4 @@ Dois métodos existem para protocolos específicos. A persistência **MSRDP** ra
 
 ## Lendo-os em uma configuração
 
-O [explicador de métodos de persistência](/tools/persistence-method-explainer) identifica cada perfil de persistência em uma configuração, nomeia seu método e lista os campos que importam. O próximo passo é decidir qual método se encaixa em uma dada aplicação, abordado em [escolhendo um método de persistência](/learn/choosing-a-persistence-method), e entender como um primário e um fallback funcionam juntos, abordado em [fallback de persistência e match-across](/learn/fallback-persistence-and-match-across).
+O [explicador de métodos de persistência](/tools/f5-persistence-method-explainer) identifica cada perfil de persistência em uma configuração, nomeia seu método e lista os campos que importam. O próximo passo é decidir qual método se encaixa em uma dada aplicação, abordado em [escolhendo um método de persistência](/learn/choosing-a-persistence-method), e entender como um primário e um fallback funcionam juntos, abordado em [fallback de persistência e match-across](/learn/fallback-persistence-and-match-across).

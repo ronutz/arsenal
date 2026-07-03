@@ -3,7 +3,7 @@ slug: choosing-a-persistence-method
 title: "Escolhendo um Método de Persistência (e Seus Modos de Falha)"
 summary: "A maioria das necessidades de persistência é atendida pela afinidade de endereço de origem ou pela persistência por cookie, mas ambas têm modos de falha bem conhecidos: a afinidade de origem desmorona atrás de NAT, e os cookies precisam de HTTP. Saber onde cada método falha é o que transforma uma escolha padrão em uma escolha deliberada."
 concepts: ["persistência", "ltm", "nat", "tls", "f5", "design"]
-relatedTools: ["persistence-method-explainer"]
+relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "fallback-persistence-and-match-across"]
 category: networking
 order: 2
@@ -31,4 +31,4 @@ Quando a chave certa não é nenhuma das anteriores, um token de aplicação em 
 
 ## Deixando a ferramenta revelar os trade-offs
 
-O [explicador de métodos de persistência](/tools/persistence-method-explainer) imprime os modos de falha de cada método ao lado de sua configuração, então um perfil de endereço de origem mostra a ressalva do NAT e um perfil SSL mostra a ressalva do TLS 1.3 diretamente ao lado das configurações. Para o catálogo completo de métodos, veja [métodos de persistência do BIG-IP](/learn/ltm-persistence-methods); para como um primário e um fallback se combinam, veja [fallback de persistência e match-across](/learn/fallback-persistence-and-match-across).
+O [explicador de métodos de persistência](/tools/f5-persistence-method-explainer) imprime os modos de falha de cada método ao lado de sua configuração, então um perfil de endereço de origem mostra a ressalva do NAT e um perfil SSL mostra a ressalva do TLS 1.3 diretamente ao lado das configurações. Para o catálogo completo de métodos, veja [métodos de persistência do BIG-IP](/learn/ltm-persistence-methods); para como um primário e um fallback se combinam, veja [fallback de persistência e match-across](/learn/fallback-persistence-and-match-across).

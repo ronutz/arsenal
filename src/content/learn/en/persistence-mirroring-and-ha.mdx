@@ -3,7 +3,7 @@ slug: persistence-mirroring-and-ha
 title: "Persistence Mirroring Across an HA Pair"
 summary: "Persistence records live in memory on the active BIG-IP. On failover, the standby takes over connections, but unless persistence has been mirrored to it, it does not know the existing client-to-member mappings, and clients can be rebalanced mid-session. Mirroring trades a little overhead for sticky sessions that survive failover."
 concepts: ["persistence", "high availability", "mirroring", "failover", "big-ip"]
-relatedTools: ["persistence-method-explainer"]
+relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "source-address-persistence-and-mega-proxy"]
 category: networking
 order: 5

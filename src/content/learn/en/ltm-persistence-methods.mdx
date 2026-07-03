@@ -3,7 +3,7 @@ slug: ltm-persistence-methods
 title: "BIG-IP Persistence Methods, and What Each Keys On"
 summary: "BIG-IP offers several persistence methods, and the only thing they have in common is the goal: send a returning client to the same pool member. What they key on, cookie, source address, SSL session ID, or an iRule-extracted value, decides where each one fits and where each one breaks."
 concepts: ["persistence", "ltm", "load balancing", "cookie", "f5", "session"]
-relatedTools: ["persistence-method-explainer"]
+relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["choosing-a-persistence-method", "fallback-persistence-and-match-across"]
 category: networking
 order: 1
@@ -15,7 +15,7 @@ Without persistence, every new connection is load-balanced independently, so a c
 
 ## Cookie persistence
 
-Cookie persistence ties a client to a member through an HTTP cookie. It has four modes. **Insert** adds the cookie to the response and reads it back later, so the mapping lives in the client and no server-side record is needed. **Rewrite** has the server emit a placeholder that BIG-IP overwrites. **Passive** has the server set the specially formatted cookie itself, which BIG-IP only reads. **Hash** load-balances on a hash of a server-set cookie. Because it works at the HTTP layer, cookie persistence needs an HTTP profile, which means the traffic must be HTTP or HTTPS that BIG-IP decrypts. The companion [persistence cookie decoder](/tools/bigip-persistence-cookie) shows what the encoded value inside such a cookie actually contains.
+Cookie persistence ties a client to a member through an HTTP cookie. It has four modes. **Insert** adds the cookie to the response and reads it back later, so the mapping lives in the client and no server-side record is needed. **Rewrite** has the server emit a placeholder that BIG-IP overwrites. **Passive** has the server set the specially formatted cookie itself, which BIG-IP only reads. **Hash** load-balances on a hash of a server-set cookie. Because it works at the HTTP layer, cookie persistence needs an HTTP profile, which means the traffic must be HTTP or HTTPS that BIG-IP decrypts. The companion [persistence cookie decoder](/tools/f5-bigip-persistence-cookie) shows what the encoded value inside such a cookie actually contains.
 
 ## Source and destination address affinity
 
@@ -35,4 +35,4 @@ Two methods exist for particular protocols. **MSRDP** persistence tracks Microso
 
 ## Reading them in a config
 
-The [persistence-method explainer](/tools/persistence-method-explainer) identifies each persistence profile in a configuration, names its method, and lists the fields that matter. The next step is deciding which method fits a given application, covered in [choosing a persistence method](/learn/choosing-a-persistence-method), and understanding how a primary and a fallback work together, covered in [fallback persistence and match-across](/learn/fallback-persistence-and-match-across).
+The [persistence-method explainer](/tools/f5-persistence-method-explainer) identifies each persistence profile in a configuration, names its method, and lists the fields that matter. The next step is deciding which method fits a given application, covered in [choosing a persistence method](/learn/choosing-a-persistence-method), and understanding how a primary and a fallback work together, covered in [fallback persistence and match-across](/learn/fallback-persistence-and-match-across).

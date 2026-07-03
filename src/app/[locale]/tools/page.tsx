@@ -14,7 +14,7 @@ import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
 import FamilyChip from "@/components/FamilyChip";
 import { categoryColor } from "@/config/categoryColors";
-import { vendorColor, browseVendors } from "@/config/vendors";
+import { vendorColor, browseVendors, populatedVendors } from "@/config/vendors";
 import ToolVendorFilter from "@/components/ToolVendorFilter";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -27,6 +27,7 @@ export default async function ToolsPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("tools");
+  const tHub = await getTranslations("vendorHub"); // hub-strip chrome
   const tNav = await getTranslations("nav");
 
   // Vendor families to offer in the browse-by-vendor filter (populated + always-show).
@@ -54,6 +55,26 @@ export default async function ToolsPage({
               <p className="certs-lede">{t("lede")}</p>
             </div>
           </section>
+
+          {/* Vendor hub strip - hub discoverability lives HERE, on top of the
+              listing, not in the header (nav stays small; PRIME 2026-07-03).
+              One pill per POPULATED vendor, same source as the hub route, so
+              new vendors appear automatically. Label reuses the localized
+              vendor name + the vendorHub.eyebrow chrome key. */}
+          {populatedVendors().length > 0 && (
+            <div className="container certs-container vendor-hub-strip">
+              {populatedVendors().map((v) => (
+                <Link key={v} href={`/${v}`} className="vendor-hub-strip-link">
+                  <span
+                    className="category-dot"
+                    style={{ "--chip-color": vendorColor(v) } as React.CSSProperties}
+                    aria-hidden="true"
+                  />
+                  {t(`vendors.${v}`)} {tHub("eyebrow")} →
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Browse by vendor (client-side filter; progressive enhancement) */}
           {vendorKeys.length > 0 && (

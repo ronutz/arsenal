@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/bigip-persistence-cookie/index.ts
+// src/lib/tools/f5-bigip-persistence-cookie/index.ts
 // ----------------------------------------------------------------------------
 // THE SELF-DESCRIBING BIG-IP PERSISTENCE COOKIE MODULE - a self-contained
 // {manifest, run, vectors} triple. Squarely in the F5 wheelhouse: a BIG-IP
@@ -45,12 +45,12 @@ export {
 } from "./golden-vectors";
 export type { BigipGoldenVector, BigipRejectVector, BigipEncodeVector, BigipEncodeRejectVector } from "./golden-vectors";
 
-/** The D-49 declarative manifest for the bigip-persistence-cookie tool. */
+/** The D-49 declarative manifest for the f5-bigip-persistence-cookie tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "Security & WAF",
-  toolSlug: "bigip-persistence-cookie",
-  canonicalAliases: [
+  toolSlug: "f5-bigip-persistence-cookie",
+  canonicalAliases: ["bigip-persistence-cookie" /* pre-rename slug, 2026-07-03 */, 
     "bigip-cookie",
     "f5-cookie-decoder",
     "bigipserver",
@@ -100,7 +100,7 @@ export const manifest = Object.freeze({
 
   // -- Teaching & provenance --
   learnLinks: [
-    "learn/bigip-persistence-cookies",
+    "learn/f5-bigip-persistence-cookies",
     "learn/bigip-cookie-formats",
     "learn/bigip-cookie-disclosure",
     "learn/bigip-cookie-encryption",

@@ -3,7 +3,7 @@ slug: ltm-health-monitors
 title: "Como os Monitores de Saúde do LTM Decidem Ativo ou Inativo"
 summary: "Um monitor de saúde é a sondagem que um BIG-IP usa para decidir se um membro de backend pode receber tráfego. Suas strings de envio e recebimento, seu intervalo e timeout, e onde ele está anexado determinam juntos com que rapidez uma falha é percebida e como um membro é marcado como inativo."
 concepts: ["monitor de saúde", "ltm", "pool", "disponibilidade", "f5", "balanceamento de carga"]
-relatedTools: ["tmsh-config-explainer"]
+relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works"]
 category: networking
 order: 3
@@ -27,4 +27,4 @@ O mesmo monitor se comporta de forma diferente dependendo de onde fica. Anexado 
 
 ## Lendo monitores em uma configuração
 
-Quando você revisa uma configuração, um monitor ausente ou mal configurado é uma das coisas de maior valor a se identificar. Um pool sem monitor, um pool de membro único sem redundância, ou um monitor HTTP cuja string `recv` não corresponde mais à resposta da aplicação são todos riscos silenciosos de disponibilidade. O [explicador de configuração tmsh](/tools/tmsh-config-explainer) revela esses pontos diretamente, indicando quando um pool não tem monitor de saúde ou tem apenas um membro. Para ver como o pool e seu monitor se encaixam no caminho maior da requisição, leia [como funciona um virtual server](/learn/how-a-virtual-server-works); para a própria gramática de configuração, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).
+Quando você revisa uma configuração, um monitor ausente ou mal configurado é uma das coisas de maior valor a se identificar. Um pool sem monitor, um pool de membro único sem redundância, ou um monitor HTTP cuja string `recv` não corresponde mais à resposta da aplicação são todos riscos silenciosos de disponibilidade. O [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) revela esses pontos diretamente, indicando quando um pool não tem monitor de saúde ou tem apenas um membro. Para ver como o pool e seu monitor se encaixam no caminho maior da requisição, leia [como funciona um virtual server](/learn/how-a-virtual-server-works); para a própria gramática de configuração, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).

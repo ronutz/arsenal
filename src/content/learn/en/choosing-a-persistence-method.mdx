@@ -3,7 +3,7 @@ slug: choosing-a-persistence-method
 title: "Choosing a Persistence Method (and Its Failure Modes)"
 summary: "Most persistence requirements are met by source address affinity or cookie persistence, but both have well-known failure modes: source affinity collapses behind NAT, and cookies need HTTP. Knowing where each method breaks is what turns a default choice into a deliberate one."
 concepts: ["persistence", "ltm", "nat", "tls", "f5", "design"]
-relatedTools: ["persistence-method-explainer"]
+relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "fallback-persistence-and-match-across"]
 category: networking
 order: 2
@@ -31,4 +31,4 @@ When the right key is none of the above, an application token in a header or pay
 
 ## Letting the tool surface the trade-offs
 
-The [persistence-method explainer](/tools/persistence-method-explainer) prints each method's failure modes alongside its configuration, so a source-address profile shows the NAT caveat and an SSL profile shows the TLS 1.3 caveat directly next to the settings. For the full catalog of methods, see [BIG-IP persistence methods](/learn/ltm-persistence-methods); for how a primary and fallback combine, see [fallback persistence and match-across](/learn/fallback-persistence-and-match-across).
+The [persistence-method explainer](/tools/f5-persistence-method-explainer) prints each method's failure modes alongside its configuration, so a source-address profile shows the NAT caveat and an SSL profile shows the TLS 1.3 caveat directly next to the settings. For the full catalog of methods, see [BIG-IP persistence methods](/learn/ltm-persistence-methods); for how a primary and fallback combine, see [fallback persistence and match-across](/learn/fallback-persistence-and-match-across).

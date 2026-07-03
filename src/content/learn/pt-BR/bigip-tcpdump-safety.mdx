@@ -3,7 +3,7 @@ slug: bigip-tcpdump-safety
 title: "Capturando com segurança em um BIG-IP de produção"
 summary: "O tcpdump em um BIG-IP toca o plano de dados e o sistema de arquivos de um dispositivo que está carregando tráfego ao vivo. Alguns hábitos, limitar a captura, observar o espaço em disco e ser deliberado quanto ao detalhe, evitam que uma captura de diagnóstico vire um incidente."
 concepts: ["tcpdump", "f5", "big-ip", "operations", "safety", "disk space", "tmm"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "capturing-on-vlans-and-trunks"]
 category: networking
 order: 35
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-Uma captura de pacotes é uma operação somente leitura, mas em um BIG-IP de produção ela não é gratuita. Consome CPU, grava em um sistema de arquivos de que outros processos precisam, e uma captura sem limites em um dispositivo ocupado pode crescer de forma alarmante. Nada disso é motivo para evitar capturar; é motivo para capturar de forma deliberada. O [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder) o conduz aos padrões seguros.
+Uma captura de pacotes é uma operação somente leitura, mas em um BIG-IP de produção ela não é gratuita. Consome CPU, grava em um sistema de arquivos de que outros processos precisam, e uma captura sem limites em um dispositivo ocupado pode crescer de forma alarmante. Nada disso é motivo para evitar capturar; é motivo para capturar de forma deliberada. O [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder) o conduz aos padrões seguros.
 
 ## Sempre limite a captura
 

@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/bigip-persistence-cookie/golden-vectors.ts
+// src/lib/tools/f5-bigip-persistence-cookie/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // Golden + reject vectors for the BIG-IP persistence cookie decoder. The golden
 // inputs are the canonical examples from F5 K6917 and the drwetter reference

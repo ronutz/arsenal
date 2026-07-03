@@ -3,7 +3,7 @@ slug: fallback-persistence-and-match-across
 title: "Fallback de Persistência e as Configurações Match-Across"
 summary: "Um virtual server pode carregar dois métodos de persistência, um primário e um fallback usado quando o primário não encontra registro, e três configurações match-across que decidem quão amplamente um registro de persistência é compartilhado. Ambos são fáceis de configurar errado de formas que só aparecem sob carga."
 concepts: ["persistência", "fallback", "match-across", "ltm", "f5", "virtual server"]
-relatedTools: ["persistence-method-explainer"]
+relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method"]
 category: networking
 order: 3
@@ -17,7 +17,7 @@ Um único método de persistência muitas vezes não basta sozinho. O BIG-IP per
 
 Em um virtual server, o perfil de persistência padrão é o método primário, e `fallback-persistence` nomeia um segundo método usado quando o primário não produz registro. O exemplo clássico é um primário de persistência por cookie com um fallback de afinidade de endereço de origem: clientes que aceitam cookies persistem por cookie, e clientes que removem cookies ainda chegam de forma consistente por IP de origem. Outra combinação comum é a persistência SSL como primário com a afinidade de endereço de origem como fallback, para que um cliente que não apresenta um ID de sessão reutilizável, no TLS 1.3 ou simplesmente não reutilizando sua sessão, ainda seja capturado por seu endereço.
 
-Para um fallback ser significativo, ele precisa usar um método diferente do primário. Um primário e um fallback que resolvem para o mesmo método não acrescentam resiliência; eles simplesmente fazem a mesma coisa duas vezes. O [explicador de métodos de persistência](/tools/persistence-method-explainer) resolve as duas pontas da cadeia e sinaliza esse caso, além de reconhecer as combinações recomendadas.
+Para um fallback ser significativo, ele precisa usar um método diferente do primário. Um primário e um fallback que resolvem para o mesmo método não acrescentam resiliência; eles simplesmente fazem a mesma coisa duas vezes. O [explicador de métodos de persistência](/tools/f5-persistence-method-explainer) resolve as duas pontas da cadeia e sinaliza esse caso, além de reconhecer as combinações recomendadas.
 
 ## Match Across Services
 
@@ -29,4 +29,4 @@ Match Across Virtual Servers é mais amplo: mantém um cliente no mesmo node ind
 
 ## Lendo a cadeia
 
-Como essas configurações interagem, lê-las a olho nu entre vários perfis e virtuals é propenso a erros. O [explicador de métodos de persistência](/tools/persistence-method-explainer) dispõe o primário e o fallback de cada virtual junto com as observações que se aplicam, e mostra as configurações match-across em cada perfil com o que elas fazem. Para os próprios métodos, veja [métodos de persistência do BIG-IP](/learn/ltm-persistence-methods); para escolher entre eles, veja [escolhendo um método de persistência](/learn/choosing-a-persistence-method).
+Como essas configurações interagem, lê-las a olho nu entre vários perfis e virtuals é propenso a erros. O [explicador de métodos de persistência](/tools/f5-persistence-method-explainer) dispõe o primário e o fallback de cada virtual junto com as observações que se aplicam, e mostra as configurações match-across em cada perfil com o que elas fazem. Para os próprios métodos, veja [métodos de persistência do BIG-IP](/learn/ltm-persistence-methods); para escolher entre eles, veja [escolhendo um método de persistência](/learn/choosing-a-persistence-method).

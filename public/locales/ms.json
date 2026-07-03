@@ -636,7 +636,7 @@
       "dayOfYearLabel": "hari dalam tahun",
       "relativeNote": "relatif kepada jam peranti anda"
     },
-    "irules-event-order": {
+    "f5-irules-event-order": {
       "name": "Susunan acara iRule",
       "blurb": "Pilih timbunan profil pelayan maya BIG-IP — Client-SSL, HTTP, Server-SSL, pool — dan lihat susunan acara iRule biasa dicetuskan, dari CLIENT_ACCEPTED ke CLIENT_CLOSED, sebagai garis masa dan senarai. Semuanya dalam pelayar anda.",
       "stackLabel": "Timbunan profil pelayan maya",
@@ -1419,11 +1419,7 @@
     "emailTitle": "Cara menghubungi saya",
     "emailBody": "E-mel ialah salurannya. Beritahu saya apa yang anda temui atau apa yang anda mahukan, dengan butiran yang cukup untuk bertindak: satu contoh, satu pautan, ungkapan yang tepat, apa sahaja yang sesuai. Jika ia menjadikan kotak alat ini lebih baik, ia akan dibina.",
     "emailLabel": "E-mel",
-    "backToTools": "Kembali ke kotak alat",
-    "disclaimerTitle": "Bagaimana alat baharu dibina dan dibiayai",
-    "disclaimerBody": "Demi kejujuran sepenuhnya: setiap alat baharu di sini dibina dengan Claude Max, tahap penggunaan tertinggi Anthropic, dan langganan itu tidak murah. Pelan 5x berharga kira-kira 100 USD sebulan, pelan 20x kira-kira 200. Apabila dibiayai, alat dibina. Apabila tidak, pembinaan hanya dijeda sehingga ia dibiayai, itulah sebabnya alat baharu cenderung muncul secara berkelompok dan bukannya mengikut jadual tetap.",
-    "disclaimerBody2": "Jika anda ingin membantu, pautan Buy Me a Coffee di pengaki ialah caranya. Setiap sumbangan masuk ke satu rizab tunggal yang dibelanjakan semata-mata untuk langganan bulanan Claude Max itu. Tiada kos lain, tiada potongan, tiada kejutan.",
-    "disclaimerStatus": "Buat masa ini: langganan telah dibiayai dan alat baharu sedang dibina secara aktif."
+    "backToTools": "Kembali ke kotak alat"
   },
   "languageStatus": {
     "title": "Status terjemahan",

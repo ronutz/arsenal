@@ -3,7 +3,7 @@ slug: tmm-detail-and-peer-flows
 title: "Níveis de detalhe da TMM e peer flows (:n, :nn, :nnn, :p)"
 summary: "O sufixo com dois-pontos na interface de captura do BIG-IP é a parte mais confusa e mais útil da sintaxe. Ele controla quanto metadado interno da TMM é anexado a cada pacote e se você captura um lado da conexão ou os dois."
 concepts: ["tcpdump", "f5", "big-ip", "tmm", "peer flow", "f5ethtrailer", "noise flags"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "reading-a-bigip-capture"]
 category: networking
 order: 32
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-Quando você escreve `-i 0.0:nnnp`, a parte `:nnnp` é puramente do BIG-IP. Ela faz duas coisas distintas: define um nível de detalhe e pede os dois fluxos de uma conexão. Entendê-la é o que torna uma captura no BIG-IP muito mais poderosa do que uma comum. O [construtor de tcpdump para BIG-IP](/tools/bigip-tcpdump-builder) expõe isso como interruptores simples.
+Quando você escreve `-i 0.0:nnnp`, a parte `:nnnp` é puramente do BIG-IP. Ela faz duas coisas distintas: define um nível de detalhe e pede os dois fluxos de uma conexão. Entendê-la é o que torna uma captura no BIG-IP muito mais poderosa do que uma comum. O [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder) expõe isso como interruptores simples.
 
 ## O que os níveis de detalhe acrescentam
 

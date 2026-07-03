@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/tmsh-config-explainer/golden-vectors.ts
+// src/lib/tools/f5-tmsh-config-explainer/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // Vectors for the tmsh config explainer. These exercise the parser (object
 // typing, nesting, iRule verbatim capture, unbalanced-brace detection) and the
@@ -10,7 +10,7 @@
 import { parseTmsh } from "./compute";
 import { explainConfig } from "./explain";
 
-export const GOLDEN_VECTOR_SET_ID = "tmsh-config-explainer-golden-v1";
+export const GOLDEN_VECTOR_SET_ID = "f5-tmsh-config-explainer-golden-v1";
 
 export interface TmshVector {
   id: string;

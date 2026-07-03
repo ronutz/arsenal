@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/tmsh-config-explainer/index.ts
+// src/lib/tools/f5-tmsh-config-explainer/index.ts
 // ----------------------------------------------------------------------------
 // THE SELF-DESCRIBING tmsh CONFIG EXPLAINER - a self-contained {manifest, run, vectors}
 // triple. Paste a bigip.conf snippet and get a structure tree plus a
@@ -22,12 +22,12 @@ export type { ObjectExplain, FieldExplain, ExplainResult } from "./explain";
 export { GOLDEN_VECTOR_SET_ID, TMSH_VECTORS, verifyVectors } from "./golden-vectors";
 export type { TmshVector } from "./golden-vectors";
 
-/** The D-49 declarative manifest for the tmsh-config-explainer tool. */
+/** The D-49 declarative manifest for the f5-tmsh-config-explainer tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "F5 LTM, iRules & platform",
-  toolSlug: "tmsh-config-explainer",
-  canonicalAliases: ["bigip-conf-explainer", "tmsh-explainer", "bigip-config-explainer", "f5-config-explainer", "tmsh-decoder"],
+  toolSlug: "f5-tmsh-config-explainer",
+  canonicalAliases: ["tmsh-config-explainer" /* pre-rename slug, 2026-07-03 */, "bigip-conf-explainer", "tmsh-explainer", "bigip-config-explainer", "f5-config-explainer", "tmsh-decoder"],
   inputDetectors: [
     {
       kind: "regex",

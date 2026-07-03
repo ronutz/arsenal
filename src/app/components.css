@@ -2534,16 +2534,11 @@
 .footer-built-link:hover {
   color: var(--accent-primary);
 }
-/* The credits line ("Built by ... with CONCORD") in amber, the footer hero.
-   Scoped with :not(.footer-redu) so the Red Education line keeps its own
-   muted color (styled by the more specific .footer-redu rule below). */
-.footer-built:not(.footer-redu) .footer-built-link {
-  color: var(--accent-amber);
-}
-.footer-built:not(.footer-redu) .footer-built-link:hover {
-  color: var(--accent-amber);
-  text-decoration: underline;
-}
+/* The credits line ("Built by ... with CONCORD") uses the base
+   .footer-built-link treatment above: it inherits the footer text color and
+   warms to the primary accent on hover. (An amber variant was tried and
+   retired on 2026-07-03; the Red Education link keeps its own muted color
+   via the more specific .footer-redu rule further down.) */
 
 .colophon-container {
   max-width: 46rem;
@@ -3912,6 +3907,7 @@ a.tools-card:hover {
 .footer-machine {
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  color: var(--text-tertiary); /* the build-stamp text sits directly in the row */
   margin: 1.4rem 0 0;
   opacity: 0.55;
   transition: opacity 0.15s ease;
@@ -3923,7 +3919,41 @@ a.tools-card:hover {
 
 /* Coffee support link — a deliberately muted amber, fixed across themes so it
    reads as one quiet warm accent. The monochrome cup glyph inherits this color. */
-.footer-coffee { margin-top: 0.4rem; }
+/* Inline link inside the contribute funding block (colophon reference). */
+.contribute-inline-link { color: var(--text-primary); text-decoration: underline; text-underline-offset: 2px; }
+.contribute-inline-link:hover { color: var(--accent-primary); }
+
+/* Vendor hub strip - pill links on top of the Tools/Learn listings (the
+   hubs' discoverability home; the header nav stays a small 4-item bar). */
+.vendor-hub-strip { margin: 1.75rem auto 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
+.vendor-hub-strip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.vendor-hub-strip-link:hover { color: var(--accent-primary); border-color: var(--border-strong); }
+
+/* Vendor hub: family section headings (canonical catalogue family labels,
+   grouped under the Tools heading). Quieter than the h2 above them. */
+.tools-family-heading {
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 1.6rem 0 0.9rem;
+}
+
+/* Support row: coffee + official-training share one line. The wide middot
+   gives the two unrelated items clearly more air than the tight separators
+   in the utility row above (0.5rem there, 1.4rem here). */
+.footer-support { margin-top: 0.4rem; }
+.footer-sep.footer-sep-wide { margin: 0 1.4rem; }
 .footer-coffee-link {
   font-size: 0.9rem;
   color: #a8814a;
@@ -4797,7 +4827,7 @@ a.tools-card:hover {
 }
 
 /* ============================================================ */
-/* bigip-persistence-cookie: decode/encode mode toggle, decoded */
+/* f5-bigip-persistence-cookie: decode/encode mode toggle, decoded */
 /* endpoint headline, and the encode input grid.                */
 /* ============================================================ */
 .bigip-mode {
@@ -5015,7 +5045,7 @@ a.tools-card:hover {
 .json-hint-btn:hover { background: color-mix(in srgb, var(--accent-primary) 14%, transparent); }
 
 /* ============================================================ */
-/* tmsh-config-explainer: bigip.conf object breakdown.          */
+/* f5-tmsh-config-explainer: bigip.conf object breakdown.          */
 /* ============================================================ */
 .tmsh-input { min-height: 12rem; }
 .tmsh-empty {
@@ -5106,7 +5136,7 @@ a.tools-card:hover {
 .tmsh-notes { margin-top: 0.95rem; }
 
 /* ============================================================ */
-/* persistence-method-explainer: chains + method cards.         */
+/* f5-persistence-method-explainer: chains + method cards.         */
 /* ============================================================ */
 .persist-section { display: flex; flex-direction: column; gap: 0.85rem; }
 .persist-heading {
@@ -5725,7 +5755,7 @@ a.tools-card:hover {
 }
 
 /* ============================================================================
-   irules-event-order — iRule event-order planner
+   f5-irules-event-order — iRule event-order planner
    ========================================================================== */
 .irev-toggles {
   display: flex;
@@ -7115,8 +7145,8 @@ a.tools-card:hover {
 .about-cred-desc { font-size: 0.9rem; line-height: 1.55; color: var(--text-secondary); flex: 1; }
 .about-cred-cta { font-size: 0.86rem; font-weight: 600; color: var(--accent-primary); margin-top: 0.35rem; }
 
-/* Clusters tightly under the machine row above; the two form one quiet block. */
-.footer-modified { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-tertiary); opacity: 0.55; margin: 0.3rem 0 0; }
+/* (.footer-modified retired 2026-07-03: the build stamp merged into the
+   .footer-machine closing line, stamp first, then the machine endpoints.) */
 
 /* ============================================================
    Roadmap page (generated from the catalogue) + Training-page

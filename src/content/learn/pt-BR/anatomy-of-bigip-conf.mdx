@@ -3,7 +3,7 @@ slug: anatomy-of-bigip-conf
 title: "A Anatomia de um Arquivo bigip.conf"
 summary: "Todo objeto de uma configuração BIG-IP segue a mesma forma: um módulo, um componente, um tipo opcional, um nome e um corpo delimitado por chaves. Quando você enxerga esse padrão, uma parede de configuração tmsh vira uma árvore legível de virtual servers, pools, monitores e perfis."
 concepts: ["tmsh", "bigip.conf", "configuração", "f5", "ltm", "sintaxe"]
-relatedTools: ["tmsh-config-explainer"]
+relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["how-a-virtual-server-works", "ltm-health-monitors"]
 category: networking
 order: 1
@@ -37,7 +37,7 @@ Quebras de linha separam as entradas, e as chaves podem aninhar tão profundamen
 
 ## A única exceção: iRules
 
-Existe um único tipo de objeto cujo corpo não é configuração tmsh. Um `ltm rule` contém uma iRule, que é um programa escrito em Tcl. Seu corpo também usa chaves, mas elas pertencem a estruturas de controle do Tcl como `when { ... }` e `if { ... }`, não à linguagem de configuração. Por isso o corpo de uma iRule deve ser lido na íntegra como código, não interpretado como configurações. O [explicador de configuração tmsh](/tools/tmsh-config-explainer) trata os corpos de iRule exatamente assim: captura-os intactos e nunca tenta executá-los ou reescrevê-los.
+Existe um único tipo de objeto cujo corpo não é configuração tmsh. Um `ltm rule` contém uma iRule, que é um programa escrito em Tcl. Seu corpo também usa chaves, mas elas pertencem a estruturas de controle do Tcl como `when { ... }` e `if { ... }`, não à linguagem de configuração. Por isso o corpo de uma iRule deve ser lido na íntegra como código, não interpretado como configurações. O [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) trata os corpos de iRule exatamente assim: captura-os intactos e nunca tenta executá-los ou reescrevê-los.
 
 ## Por que ler dessa forma
 

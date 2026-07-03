@@ -3,7 +3,7 @@ slug: bigip-tcpdump-safety
 title: "Capturing Safely on a Production BIG-IP"
 summary: "tcpdump on a BIG-IP touches the data plane and the file system of a device that is carrying live traffic. A few habits, bounding the capture, watching disk space, and being deliberate about detail, keep a troubleshooting capture from becoming an incident."
 concepts: ["tcpdump", "f5", "big-ip", "operations", "safety", "disk space", "tmm"]
-relatedTools: ["bigip-tcpdump-builder"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "capturing-on-vlans-and-trunks"]
 category: networking
 order: 35
@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-A packet capture is a read-only operation, but on a production BIG-IP it is not free. It consumes CPU, it writes to a file system that other processes need, and an unbounded capture on a busy device can grow alarmingly fast. None of this is a reason to avoid capturing; it is a reason to capture deliberately. The [BIG-IP tcpdump builder](/tools/bigip-tcpdump-builder) nudges you toward the safe defaults.
+A packet capture is a read-only operation, but on a production BIG-IP it is not free. It consumes CPU, it writes to a file system that other processes need, and an unbounded capture on a busy device can grow alarmingly fast. None of this is a reason to avoid capturing; it is a reason to capture deliberately. The [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder) nudges you toward the safe defaults.
 
 ## Always bound the capture
 

@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/tools/persistence-method-explainer/golden-vectors.ts
+// src/lib/tools/f5-persistence-method-explainer/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // Vectors for the persistence-method explainer. They check method recognition
 // across the profile types, field annotation, the presence of failure-mode
@@ -9,7 +9,7 @@
 
 import { run } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "persistence-method-explainer-golden-v1";
+export const GOLDEN_VECTOR_SET_ID = "f5-persistence-method-explainer-golden-v1";
 
 export interface PVector {
   id: string;

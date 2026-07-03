@@ -71,9 +71,15 @@ export default async function SiteFooter() {
             {t("feedback")}
           </Link>
         </p>
-        {/* Quiet support link. The cup is forced to monochrome (U+FE0E) so it
-            inherits the link's muted-amber color rather than rendering bright. */}
-        <p className="footer-coffee">
+        {/* Support row: the coffee link and the Red Education callout share
+            ONE line, separated by a WIDE middot (.footer-sep-wide) so the two
+            unrelated items read as clearly distinct - deliberately more air
+            than the tight separators in the utility row above. The cup is
+            forced to monochrome (U+FE0E) so it inherits the link's muted
+            amber; on the training link only the brand name is colored (the
+            <b> tag in the message), and the line ends with a graduation cap.
+            Wraps into two natural lines on narrow screens. */}
+        <p className="footer-support footer-built footer-redu">
           <a
             href={COFFEE_URL}
             target="_blank"
@@ -83,11 +89,7 @@ export default async function SiteFooter() {
             {t("coffee")}
             {"\u00A0\u2615\uFE0E"}
           </a>
-        </p>
-
-        {/* Red Education callout. Only the brand name is colored (via the
-            <b> tag in the message); the line ends with a graduation cap. */}
-        <p className="footer-built footer-redu">
+          <span className="footer-sep footer-sep-wide" aria-hidden="true">&#183;</span>
           <a
             href={reduUrl}
             target="_blank"
@@ -101,14 +103,19 @@ export default async function SiteFooter() {
           </a>
         </p>
 
-        {/* QUIET TRAILING BLOCK, part 1 of 2 - the machine-readable surface:
-            the llms.txt map for AI agents, robots.txt, and the Learn RSS feed.
-            Sits at the very end with the build stamp, pushed apart from the
-            human links above and rendered small + dimmed (.footer-machine) at
-            the stamp's own size and tone: these closing lines are reference
-            plumbing, not calls to action, and must not compete with the
-            footer proper. Plain anchors (static files, not locale routes). */}
-        <p className="footer-contribute footer-machine">
+        {/* QUIET TRAILING LINE - one dimmed closing row: the build stamp
+            first (one timestamp per build via scripts/gen-build-info.mjs, in
+            UTC so it is unambiguous), then the machine-readable surface: the
+            llms.txt map for AI agents, robots.txt, and the Learn RSS feed.
+            Small, monospace, low-contrast (.footer-machine), pushed apart
+            from the human links above: reference plumbing, not a call to
+            action. File links are plain anchors (static files, not locale
+            routes). */}
+        <p className="footer-machine">
+          {t("lastModified", {
+            stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
+          })}
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <a href="/llms.txt" className="footer-contribute-link">
             llms.txt
           </a>
@@ -120,15 +127,6 @@ export default async function SiteFooter() {
           <a href="/feed.xml" className="footer-contribute-link">
             feed.xml
           </a>
-        </p>
-
-        {/* QUIET TRAILING BLOCK, part 2 of 2 - build stamp, dimmed, clustered
-            tightly under the machine row. One timestamp per build
-            (scripts/gen-build-info.mjs), in UTC so it is unambiguous. */}
-        <p className="footer-modified">
-          {t("lastModified", {
-            stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
-          })}
         </p>
       </div>
     </footer>

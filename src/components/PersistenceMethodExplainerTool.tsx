@@ -13,10 +13,10 @@
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { run } from "@/lib/tools/persistence-method-explainer";
+import { run } from "@/lib/tools/f5-persistence-method-explainer";
 
 export default function PersistenceMethodExplainerTool() {
-  const t = useTranslations("tools.persistence-method-explainer");
+  const t = useTranslations("tools.f5-persistence-method-explainer");
   const [input, setInput] = useState("");
 
   const result = useMemo(() => (input.trim() ? run(input) : null), [input]);

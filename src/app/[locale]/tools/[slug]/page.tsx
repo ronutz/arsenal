@@ -60,7 +60,7 @@ import { manifest as samlDecoderManifest } from "@/lib/tools/saml-decoder";
 import OidcTool from "@/components/OidcTool";
 import { manifest as oidcManifest } from "@/lib/tools/oidc";
 import BigipCookieTool from "@/components/BigipCookieTool";
-import { manifest as bigipManifest } from "@/lib/tools/bigip-persistence-cookie";
+import { manifest as bigipManifest } from "@/lib/tools/f5-bigip-persistence-cookie";
 import UrlInspectorTool from "@/components/UrlInspectorTool";
 import { manifest as urlManifest } from "@/lib/tools/url-inspector";
 import JsonFormatterTool from "@/components/JsonFormatterTool";
@@ -68,7 +68,7 @@ import { manifest as jsonManifest } from "@/lib/tools/json-formatter";
 import JsonYamlConvertTool from "@/components/JsonYamlConvertTool";
 import { manifest as jsonYamlManifest } from "@/lib/tools/json-yaml-convert";
 import TmshConfigExplainerTool from "@/components/TmshConfigExplainerTool";
-import { manifest as tmshManifest } from "@/lib/tools/tmsh-config-explainer";
+import { manifest as tmshManifest } from "@/lib/tools/f5-tmsh-config-explainer";
 import DigOutputExplainerTool from "@/components/DigOutputExplainerTool";
 import { manifest as digManifest } from "@/lib/tools/dig-output-explainer";
 import NslookupOutputExplainerTool from "@/components/NslookupOutputExplainerTool";
@@ -78,7 +78,7 @@ import { manifest as xmlManifest } from "@/lib/tools/xml-decoder";
 import F5xcServicePolicyExplainerTool from "@/components/F5xcServicePolicyExplainerTool";
 import { manifest as f5xcServicePolicyManifest } from "@/lib/tools/f5xc-service-policy-explainer";
 import PersistenceMethodExplainerTool from "@/components/PersistenceMethodExplainerTool";
-import { manifest as persistManifest } from "@/lib/tools/persistence-method-explainer";
+import { manifest as persistManifest } from "@/lib/tools/f5-persistence-method-explainer";
 import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
 import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
@@ -96,7 +96,7 @@ import { manifest as certRenewalManifest } from "@/lib/tools/cert-renewal-planne
 import CsrDecoderTool from "@/components/CsrDecoderTool";
 import { manifest as csrManifest } from "@/lib/tools/csr-decoder";
 import IrulesEventOrderTool from "@/components/IrulesEventOrderTool";
-import { manifest as irevManifest } from "@/lib/tools/irules-event-order";
+import { manifest as irevManifest } from "@/lib/tools/f5-irules-event-order";
 import SyslogPriDecoderTool from "@/components/SyslogPriDecoderTool";
 import { manifest as syslogPriManifest } from "@/lib/tools/syslog-pri-decoder";
 import JwksExplainerTool from "@/components/JwksExplainerTool";
@@ -104,7 +104,7 @@ import { manifest as jwksManifest } from "@/lib/tools/jwks-explainer";
 import RegexTool from "@/components/RegexTool";
 import { manifest as regexManifest } from "@/lib/tools/regex";
 import BigipTcpdumpBuilderTool from "@/components/BigipTcpdumpBuilderTool";
-import { manifest as tcpdumpManifest } from "@/lib/tools/bigip-tcpdump-builder";
+import { manifest as tcpdumpManifest } from "@/lib/tools/f5-bigip-tcpdump-builder";
 import CvssVectorDecoderTool from "@/components/CvssVectorDecoderTool";
 import { manifest as cvssManifest } from "@/lib/tools/cvss-vector-decoder";
 import HttpRequestTranslatorTool from "@/components/HttpRequestTranslatorTool";
@@ -202,7 +202,7 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: OidcTool,
     sources: oidcManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
-  "bigip-persistence-cookie": {
+  "f5-bigip-persistence-cookie": {
     Component: BigipCookieTool,
     sources: bigipManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
@@ -218,7 +218,7 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: JsonYamlConvertTool,
     sources: jsonYamlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
-  "tmsh-config-explainer": {
+  "f5-tmsh-config-explainer": {
     Component: TmshConfigExplainerTool,
     sources: tmshManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
@@ -258,11 +258,11 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: SsrfUrlClassifierTool,
     sources: ssrfManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
-  "bigip-tcpdump-builder": {
+  "f5-bigip-tcpdump-builder": {
     Component: BigipTcpdumpBuilderTool,
     sources: tcpdumpManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
-  "persistence-method-explainer": {
+  "f5-persistence-method-explainer": {
     Component: PersistenceMethodExplainerTool,
     sources: persistManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
@@ -286,7 +286,7 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: CsrDecoderTool,
     sources: csrManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
-  "irules-event-order": {
+  "f5-irules-event-order": {
     Component: IrulesEventOrderTool,
     sources: irevManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },

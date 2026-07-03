@@ -7,11 +7,11 @@
 // Unlike the decode tools (which take one pasted string), this is a *builder*:
 // the whole UI is a form over a single TcpdumpOptions object. Every control
 // edits one field; the command is recomputed synchronously on each change by the
-// pure engine (src/lib/tools/bigip-tcpdump-builder). The engine FORMATS a string
+// pure engine (src/lib/tools/f5-bigip-tcpdump-builder). The engine FORMATS a string
 // and runs nothing — there is no capture, no egress, nothing leaves the browser.
 //
 // The advisories come back from the engine as STABLE CODES (e.g. "unfiltered-
-// all-tmm"); we localise each one here via tools.bigip-tcpdump-builder.warnings.
+// all-tmm"); we localise each one here via tools.f5-bigip-tcpdump-builder.warnings.
 // ============================================================================
 
 "use client";
@@ -26,7 +26,7 @@ import {
   type NameResolution,
   type Snaplen,
   type Verbosity,
-} from "@/lib/tools/bigip-tcpdump-builder";
+} from "@/lib/tools/f5-bigip-tcpdump-builder";
 
 // ---------------------------------------------------------------------------
 // A small segmented-button control. Defined outside the component so it does not
@@ -94,7 +94,7 @@ function Check({
 }
 
 export default function BigipTcpdumpBuilderTool() {
-  const t = useTranslations("tools.bigip-tcpdump-builder");
+  const t = useTranslations("tools.f5-bigip-tcpdump-builder");
 
   // The whole form is one options object, seeded from the engine's canonical
   // default (a sensible, filtered, written-to-file capture).
