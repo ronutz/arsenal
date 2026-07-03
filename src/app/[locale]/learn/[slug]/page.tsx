@@ -40,6 +40,7 @@ export default async function ArticlePage({
   if (!article) notFound();
 
   const tNav = await getTranslations("nav");
+  const tLearn = await getTranslations("learn");
   const related = getRelatedArticles(article, locale);
 
   return (
@@ -79,8 +80,8 @@ export default async function ArticlePage({
 
             {/* Read-next: related articles from frontmatter. */}
             {related.length > 0 && (
-              <nav className="article-related" aria-label="Related articles">
-                <h2 className="article-related-title">Read next</h2>
+              <nav className="article-related" aria-label={tLearn("relatedAria")}>
+                <h2 className="article-related-title">{tLearn("readNext")}</h2>
                 <ul className="article-related-list">
                   {related.map((r) => (
                     <li key={r.slug}>

@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: "roadmap" });
   return {
     title: t("eyebrow"),
-    description: "The tools planned and under consideration for the ronutz.com toolbox, generated from the live build catalogue.",
+    description: t("metaDescription"),
   };
 }
 

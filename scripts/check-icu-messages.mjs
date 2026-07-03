@@ -34,6 +34,7 @@ const RAW_LITERAL_KEYS = new Set([
   "tools.f5-dos-vector-explainer.inputPlaceholder", // dos device-config sample: literal braces, rendered with t.raw()
   "tools.f5-irules-command-context.inputPlaceholder", // iRule sample: literal braces, rendered with t.raw()
   "tools.f5-irules-vs-ltm-policy.inputPlaceholder", // iRule sample: literal braces, rendered with t.raw()
+  "tools.f5-oneconnect-source-mask.inputPlaceholder", // profile sample: literal braces, rendered with t.raw()
   "tools.f5-packet-filter-explainer.inputPlaceholder", // tmsh sample: literal braces, rendered with t.raw()
 ]);
 

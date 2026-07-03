@@ -44,6 +44,31 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "18:21",
+    kind: "content",
+    title: "Learn article: OneConnect, reuse as a grouping problem",
+    body:
+      "The companion to the new explainer, in English and Portuguese: the source mask's two documented poles and the subnet-style grouping between them, the naming drift (Source Mask, Source Prefix Length, source-mask), and the sentence both K articles state that decides real outcomes: SNAT translates first, the mask sees only the translated address, so one SNAT address means one reuse group however narrow the mask. Plus the pool lifecycle defaults, the per-TMM division and the Current Idle statistic's real meaning from F5's own lab, and the strict limit the manual itself recommends against.",
+  },
+  {
+    date: "2026-07-03",
+    time: "18:19",
+    kind: "tool",
+    tools: ["f5-oneconnect-source-mask"],
+    title: "New tool: OneConnect source-mask explainer",
+    body:
+      "Paste a one-connect profile and every option renders with the v17 man page's own semantics, defaults filled in explicitly, from the 0.0.0.0 mask that shares reused connections across all clients to the strict limit the manual itself calls not recommended. Or run the mask simulation: real client IPs, a mask, and optionally a SNAT address, which demonstrates the ordering K7208 and K5911 both state, translation first, mask second, so one SNAT address collapses every client into a single reuse group however narrow the mask. Rounded out with the statistics honesty from F5's own lab article: max-size divides per TMM, and Current Idle counts idle connections whether or not they are eligible for reuse.",
+  },
+  {
+    date: "2026-07-03",
+    time: "17:45",
+    kind: "i18n",
+    title: "Full i18n pass: the last hardcoded strings",
+    body:
+      "A three-pass audit of every page and component (line-level text, multi-line prose, and metadata) found the stragglers and moved them into the message system: the Learn hub's entire hero (section marker, title, and tagline were hardcoded English on all sixteen locales), the Read links and Read-next block on articles, the primary navigation's screen-reader label, and the changelog and roadmap meta descriptions. Portuguese ships alongside English as always; the remaining locales fall back per key. Protocol samples inside tools (dig headers, tmsh literals, example XML) stay English on purpose, because they are syntax, not copy.",
+  },
+  {
+    date: "2026-07-03",
     time: "17:23",
     kind: "feature",
     title: "Homepage joins the page-hero standard; Tools index gets its eyebrow",

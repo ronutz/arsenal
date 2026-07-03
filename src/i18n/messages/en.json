@@ -19,7 +19,8 @@
     "closeMenu": "Close menu",
     "learn": "Learn",
     "endorsements": "Endorsements",
-    "certs": "Certifications"
+    "certs": "Certifications",
+    "primaryAria": "Primary"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -2550,7 +2551,20 @@
       "vVlanSkip": "VLAN skip",
       "vUnknown": "cannot evaluate"
     },
-    "eyebrow": "Tools"
+    "eyebrow": "Tools",
+    "f5-oneconnect-source-mask": {
+      "name": "OneConnect source-mask explainer",
+      "blurb": "Paste a one-connect profile for the full option audit with the man page's own semantics and defaults, or simulate a mask against real client IPs and watch the reuse groups form. The marquee demonstration: SNAT translates first, so a single SNAT address collapses every client into one reuse group no matter how narrow the mask.",
+      "inputLabel": "A one-connect profile, a mask simulation, or \"settings\"",
+      "inputPlaceholder": "ltm profile one-connect my_oc {\n    source-mask 255.255.255.0\n    limit-type strict\n}\n\n...or: mask 255.255.255.0 ips 10.1.1.5 10.1.2.7 [snat 192.0.2.10]\n...or: settings",
+      "runsLocally": "Runs locally in your browser. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "defaultChip": "default",
+      "maskTitle": "Mask",
+      "groupLabel": "Reuse group",
+      "observationsTitle": "Observations"
+    }
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -3189,7 +3203,8 @@
     "kindI18n": "Localization",
     "kindContent": "Content",
     "kindInfra": "Infrastructure",
-    "roadmapNote": "Looking for what comes next instead? The <roadmap>roadmap</roadmap> tracks what is planned and queued; this page records what has already shipped."
+    "roadmapNote": "Looking for what comes next instead? The <roadmap>roadmap</roadmap> tracks what is planned and queued; this page records what has already shipped.",
+    "metaDescription": "A dated record of new tools, articles, and significant changes to ronutz.com."
   },
   "roadmap": {
     "eyebrow": "Roadmap",
@@ -3204,7 +3219,8 @@
     "intentClose": "Neither is committed. What makes them possible is that the tooling has been built from the ground up expecting them: deterministic cores, no hidden state, a clean API surface, machine-readable docs. So if the time comes, opening these up is a step, not a rewrite.",
     "ideaTitle": "Have an idea?",
     "ideaBody": "Every tool here started the same way: someone needed a small, specific thing and could not find it at the worst possible moment, the digital cousin of being one console cable short at 2am with the maintenance window closing. If the one you are reaching for is not here yet, propose it. Worth a scroll through the list first, though, in case that exact adapter is already on my bench half-built.",
-    "ideaCta": "Suggest a tool"
+    "ideaCta": "Suggest a tool",
+    "metaDescription": "The tools planned and under consideration for the ronutz.com toolbox, generated from the live build catalogue."
   },
   "apiAffordance": {
     "label": "Also available as an API",
@@ -3233,5 +3249,13 @@
     "learnHeading": "Articles",
     "read": "Read",
     "metaDescription": "Every {vendor} tool and every {vendor} article on ronutz.com, on one page: tools grouped by family, then the full article library."
+  },
+  "learn": {
+    "eyebrow": "Learn",
+    "title": "Network and security concepts, explained clearly.",
+    "lede": "Practical explanations of the concepts behind the tools. Each article is written to build genuine understanding, not just to define a term.",
+    "read": "Read",
+    "readNext": "Read next",
+    "relatedAria": "Related articles"
   }
 }

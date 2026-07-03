@@ -19,7 +19,8 @@
     "closeMenu": "Fechar menu",
     "learn": "Aprender",
     "endorsements": "Depoimentos",
-    "certs": "Certificações"
+    "certs": "Certificações",
+    "primaryAria": "Principal"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -2550,7 +2551,20 @@
       "vVlanSkip": "pulo de VLAN",
       "vUnknown": "não avaliável"
     },
-    "eyebrow": "Ferramentas"
+    "eyebrow": "Ferramentas",
+    "f5-oneconnect-source-mask": {
+      "name": "Explicador de source-mask do OneConnect",
+      "blurb": "Cole um profile one-connect para a auditoria completa das opções com a semântica e os padrões da própria man page, ou simule uma máscara contra IPs reais de clientes e veja os grupos de reuso se formarem. A demonstração principal: o SNAT traduz primeiro, então um único endereço SNAT colapsa todos os clientes em um só grupo de reuso, não importa quão estreita seja a máscara.",
+      "inputLabel": "Um profile one-connect, uma simulação de máscara, ou \"settings\"",
+      "inputPlaceholder": "ltm profile one-connect my_oc {\n    source-mask 255.255.255.0\n    limit-type strict\n}\n\n...ou: mask 255.255.255.0 ips 10.1.1.5 10.1.2.7 [snat 192.0.2.10]\n...ou: settings",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "defaultChip": "padrão",
+      "maskTitle": "Máscara",
+      "groupLabel": "Grupo de reuso",
+      "observationsTitle": "Observações"
+    }
   },
   "privacy_page": {
     "eyebrow": "Privacidade",
@@ -3189,7 +3203,8 @@
     "kindI18n": "Localização",
     "kindContent": "Conteúdo",
     "kindInfra": "Infraestrutura",
-    "roadmapNote": "Procurando o que vem a seguir? O <roadmap>roadmap</roadmap> acompanha o que está planejado e na fila; esta página registra o que já foi entregue."
+    "roadmapNote": "Procurando o que vem a seguir? O <roadmap>roadmap</roadmap> acompanha o que está planejado e na fila; esta página registra o que já foi entregue.",
+    "metaDescription": "Um registro datado de novas ferramentas, artigos e mudanças significativas no ronutz.com."
   },
   "roadmap": {
     "eyebrow": "Roadmap",
@@ -3204,7 +3219,8 @@
     "intentClose": "Nenhuma está comprometida. O que as torna possíveis é que a ferramentaria foi construída desde a base já esperando por elas: motores determinísticos, sem estado oculto, uma superfície de API limpa, documentação legível por máquina. Então, se a hora chegar, abrir isso é um passo, não uma reescrita.",
     "ideaTitle": "Tem uma ideia?",
     "ideaBody": "Toda ferramenta aqui começou do mesmo jeito: alguém precisou de algo pequeno e específico e não encontrou no pior momento possível, o primo digital de estar com um cabo de console a menos às 2 da manhã com a janela de manutenção se fechando. Se a que você está procurando ainda não está aqui, proponha. Vale uma olhada na lista antes, caso esse adaptador exato já esteja na minha bancada, metade pronto.",
-    "ideaCta": "Sugerir uma ferramenta"
+    "ideaCta": "Sugerir uma ferramenta",
+    "metaDescription": "As ferramentas planejadas e em consideração para o toolbox ronutz.com, geradas a partir do catálogo de build ao vivo."
   },
   "apiAffordance": {
     "label": "Também disponível como API",
@@ -3233,5 +3249,13 @@
     "learnHeading": "Artigos",
     "read": "Ler",
     "metaDescription": "Todas as ferramentas e todos os artigos de {vendor} no ronutz.com, em uma página: ferramentas agrupadas por família, depois a biblioteca completa de artigos."
+  },
+  "learn": {
+    "eyebrow": "Aprender",
+    "title": "Conceitos de redes e segurança, explicados com clareza.",
+    "lede": "Explicações práticas dos conceitos por trás das ferramentas. Cada artigo é escrito para construir entendimento genuíno, não apenas para definir um termo.",
+    "read": "Ler",
+    "readNext": "Leia a seguir",
+    "relatedAria": "Artigos relacionados"
   }
 }

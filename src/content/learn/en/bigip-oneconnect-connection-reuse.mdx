@@ -1,0 +1,36 @@
+---
+slug: bigip-oneconnect-connection-reuse
+title: "OneConnect: Reuse Is a Grouping Problem, and SNAT Rewrites the Groups"
+summary: "OneConnect parks idle server-side connections and hands them to the next eligible request. The source mask defines eligible, from 0.0.0.0 sharing across all clients to a host mask keeping reuse per client. The catch both K articles state: SNAT translates first, the mask sees only the translated address, so one SNAT address means one group."
+concepts: ["oneconnect", "connection reuse", "source mask", "snat", "f5", "ltm", "tmm"]
+relatedTools: ["f5-oneconnect-source-mask"]
+relatedArticles: ["bigip-cmp-clustered-multiprocessing"]
+category: networking
+order: 4
+status: reviewed
+updated: "2026-07-03"
+---
+
+Every new server-side TCP connection costs a handshake, a slot in the server's accept queue, and memory on both ends. OneConnect exists to stop paying that price per request: when a client detaches, the server-side connection can park in a reuse pool instead of closing, and the next eligible request rides it. The profile that governs this is small, and its options are documented crisply in the tmsh reference; the production behavior hides in two words, eligible and translated.
+
+## The mask defines the groups
+
+The reference states the source-mask poles in plain language: the default 0.0.0.0 causes the system to share reused connections across all clients, and a host mask, all ones in binary, shares only those reused connections originating from the same client IP address. Between the poles the mask behaves exactly like a subnet mask: clients whose addresses agree on the masked bits form one reuse group, and connections park and are reclaimed within the group. The [OneConnect explainer](/tools/f5-oneconnect-source-mask) renders those groups from real addresses so the arithmetic stops being abstract.
+
+A note on names, because the vendor changed them: the GUI called this Source Mask through version 11 and Source Prefix Length from version 12 on, while tmsh has said `source-mask` throughout. Same option, three labels.
+
+## Then SNAT rewrites the inputs
+
+Here is the sentence that decides real outcomes, and both K7208 and K5911 state it: the system performs SNAT translation on the source address first, and then applies the OneConnect source mask to the translated address to determine reuse eligibility. The mask never sees the client's real IP when SNAT is in play. The consequence follows by straight logic: with a single SNAT address on the virtual, every client translates to the same source, so any mask, however narrow, produces exactly one reuse group. A host mask that reads like per-client isolation quietly becomes global sharing. If separation is the goal under SNAT, the translated addresses must differ, which means a SNAT pool, and the mask then groups the pool's addresses, not the clients.
+
+Sharing across clients is not inherently wrong; it is the default. But it means one server-side connection carries requests from many different people, so any application logic that infers identity from the connection's source address is already wrong, and the HTTP profile's X-Forwarded-For insertion becomes the honest way to tell the server who is really asking.
+
+## The knobs around the pool
+
+The rest of the profile bounds the pool's lifecycle, defaults per the v17 reference: a parked connection older than max-age 86400 seconds is removed, a connection reused max-reuse 1000 times is retired, and the pool holds max-size 10000 connections, beyond which a finishing connection simply closes instead of parking. Two behaviors from F5's own lab article are worth carrying into any troubleshooting session: the pool is kept per TMM, so the configured max-size divides across the traffic processors (the article's controlled test shows exactly that split), and the Current Idle statistic counts every idle server-side connection whether or not the mask makes it eligible for reuse, so it is not a gauge of the reuse pool. That per-TMM shape is the same architecture the [CMP article](/learn/bigip-cmp-clustered-multiprocessing) walks through from the iRules side.
+
+The limit-type option deserves its own paragraph because the manual gives it one. With none, the historical default, in-flight requests count toward pool-member connection limits and more TCP connections may exist than in-flight requests, particularly, the page notes, with SNAT pools and narrow masks. With idle, idle connections are dropped as the limit is reached, with brief overshoot possible during the swap. And strict honors the limit with no exceptions, which means idle connections block new ones until they expire even when they could have been reused; the manual itself says this is not recommended outside very special cases with short expiration timeouts. When the vendor's reference warns you off a setting in its own voice, believe it.
+
+## Reading a profile in one pass
+
+Given a stanza, the questions in order: what does the mask group, and is SNAT rewriting the inputs before the mask sees them; is the application connection-identity-safe under that grouping, or does it need X-Forwarded-For; do the age, reuse, and size bounds fit the traffic; and is limit-type anything other than none for a documented reason. The explainer runs that pass mechanically, defaults filled in, warnings where the manual itself put them.

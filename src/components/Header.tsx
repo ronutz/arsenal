@@ -28,7 +28,7 @@ export default async function Header() {
           <span className="wordmark-dot" aria-hidden="true" />
         </Link>
 
-        <nav className="site-nav" aria-label="Primary">
+        <nav className="site-nav" aria-label={t("primaryAria")}>
           <Link href="/tools" className="site-nav-link">
             {t("tools")}
           </Link>

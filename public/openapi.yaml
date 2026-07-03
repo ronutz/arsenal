@@ -1366,6 +1366,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5-oneconnect-source-mask:
+    get:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_oneconnect_source_mask
+      summary: OneConnect source-mask explainer
+      description: >-
+        Paste a one-connect profile for the full option audit with the man page's own semantics and
+        defaults, or simulate a mask against real client IPs and watch the reuse groups form. The
+        marquee demonstration: SNAT translates first, so a single SNAT address collapses every
+        client into one reuse group no matter how narrow the mask. Standards: F5 tmsh ltm profile
+        one-connect, F5 K7208 / K5911. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - ltm profile one-connect my_oc { source-mask 255.255.255.0 }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 LTM, iRules & platform
+      operationId: run_f5_oneconnect_source_mask_post
+      summary: OneConnect source-mask explainer (POST)
+      description: >-
+        Paste a one-connect profile for the full option audit with the man page's own semantics and
+        defaults, or simulate a mask against real client IPs and watch the reuse groups form. The
+        marquee demonstration: SNAT translates first, so a single SNAT address collapses every
+        client into one reuse group no matter how narrow the mask. Standards: F5 tmsh ltm profile
+        one-connect, F5 K7208 / K5911. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - ltm profile one-connect my_oc { source-mask 255.255.255.0 }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5-packet-filter-explainer:
     get:
       tags:

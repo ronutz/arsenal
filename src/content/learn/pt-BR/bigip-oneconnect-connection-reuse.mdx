@@ -1,0 +1,36 @@
+---
+slug: bigip-oneconnect-connection-reuse
+title: "OneConnect: Reuso É um Problema de Agrupamento, e o SNAT Reescreve os Grupos"
+summary: "O OneConnect estaciona conexões ociosas do lado servidor e as entrega à próxima requisição elegível. A source mask define elegível, de 0.0.0.0 compartilhando entre todos os clientes a uma máscara de host mantendo o reuso por cliente. A pegadinha que ambos os artigos K declaram: o SNAT traduz primeiro, a máscara vê apenas o endereço traduzido, então um endereço SNAT significa um grupo."
+concepts: ["oneconnect", "reuso de conexão", "source mask", "snat", "f5", "ltm", "tmm"]
+relatedTools: ["f5-oneconnect-source-mask"]
+relatedArticles: ["bigip-cmp-clustered-multiprocessing"]
+category: networking
+order: 4
+status: reviewed
+updated: "2026-07-03"
+---
+
+Cada nova conexão TCP do lado servidor custa um handshake, uma vaga na fila de accept do servidor e memória nas duas pontas. O OneConnect existe para parar de pagar esse preço por requisição: quando um cliente se desconecta, a conexão do lado servidor pode estacionar em um pool de reuso em vez de fechar, e a próxima requisição elegível a aproveita. O profile que governa isso é pequeno, e suas opções estão documentadas com nitidez na referência do tmsh; o comportamento de produção se esconde em duas palavras, elegível e traduzido.
+
+## A máscara define os grupos
+
+A referência declara os polos da source-mask em linguagem direta: o padrão 0.0.0.0 faz o sistema compartilhar conexões reusadas entre todos os clientes, e uma máscara de host, todos os bits em um, compartilha apenas as conexões originadas do mesmo IP de cliente. Entre os polos a máscara se comporta exatamente como uma máscara de sub-rede: clientes cujos endereços concordam nos bits mascarados formam um grupo de reuso, e conexões estacionam e são recuperadas dentro do grupo. O [explicador de OneConnect](/tools/f5-oneconnect-source-mask) renderiza esses grupos a partir de endereços reais, para a aritmética deixar de ser abstrata.
+
+Uma nota sobre nomes, porque o fabricante os mudou: o GUI chamou isto de Source Mask até a versão 11 e de Source Prefix Length da versão 12 em diante, enquanto o tmsh diz `source-mask` desde sempre. Mesma opção, três rótulos.
+
+## Então o SNAT reescreve as entradas
+
+Aqui está a frase que decide resultados reais, e tanto o K7208 quanto o K5911 a declaram: o sistema executa a tradução SNAT no endereço de origem primeiro, e então aplica a source mask do OneConnect ao endereço traduzido para determinar a elegibilidade de reuso. A máscara nunca vê o IP real do cliente quando há SNAT em jogo. A consequência segue por lógica direta: com um único endereço SNAT no virtual, todo cliente traduz para a mesma origem, então qualquer máscara, por mais estreita, produz exatamente um grupo de reuso. Uma máscara de host que parece isolamento por cliente vira silenciosamente compartilhamento global. Se separação é o objetivo sob SNAT, os endereços traduzidos precisam diferir, o que significa um SNAT pool, e a máscara então agrupa os endereços do pool, não os clientes.
+
+Compartilhar entre clientes não é inerentemente errado; é o padrão. Mas significa que uma conexão do lado servidor carrega requisições de muitas pessoas diferentes, então qualquer lógica de aplicação que infira identidade do endereço de origem da conexão já está errada, e a inserção de X-Forwarded-For do profile HTTP se torna o jeito honesto de dizer ao servidor quem realmente está pedindo.
+
+## Os botões ao redor do pool
+
+O resto do profile delimita o ciclo de vida do pool, com padrões conforme a referência v17: uma conexão estacionada mais velha que max-age 86400 segundos é removida, uma conexão reusada max-reuse 1000 vezes é aposentada, e o pool guarda max-size 10000 conexões, além das quais uma conexão que termina simplesmente fecha em vez de estacionar. Dois comportamentos do próprio artigo de laboratório da F5 valem levar para qualquer sessão de troubleshooting: o pool é mantido por TMM, então o max-size configurado se divide entre os processadores de tráfego (o teste controlado do artigo mostra exatamente essa divisão), e a estatística Current Idle conta toda conexão ociosa do lado servidor, seja ou não elegível pela máscara, então ela não é um medidor do pool de reuso. Essa forma por TMM é a mesma arquitetura que o [artigo de CMP](/learn/bigip-cmp-clustered-multiprocessing) percorre pelo lado das iRules.
+
+A opção limit-type merece seu próprio parágrafo porque o manual lhe dá um. Com none, o padrão histórico, requisições em voo contam para os limites de conexão do pool member e podem existir mais conexões TCP do que requisições em voo, particularmente, nota a página, com SNAT pools e máscaras estreitas. Com idle, conexões ociosas são derrubadas conforme o limite é atingido, com breve ultrapassagem possível durante a troca. E strict honra o limite sem exceções, o que significa que conexões ociosas bloqueiam novas até expirarem mesmo quando poderiam ter sido reusadas; o próprio manual diz que isso não é recomendado fora de casos muito especiais com timeouts de expiração curtos. Quando a referência do fabricante desaconselha uma configuração com a própria voz, acredite.
+
+## Lendo um profile em uma passada
+
+Dado um stanza, as perguntas em ordem: o que a máscara agrupa, e o SNAT está reescrevendo as entradas antes de a máscara vê-las; a aplicação é segura quanto à identidade da conexão sob esse agrupamento, ou precisa de X-Forwarded-For; os limites de idade, reuso e tamanho servem ao tráfego; e o limit-type é algo além de none por uma razão documentada. O explicador roda essa passada mecanicamente, com padrões preenchidos e alertas onde o próprio manual os colocou.

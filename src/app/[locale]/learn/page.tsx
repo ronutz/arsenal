@@ -31,6 +31,7 @@ export default async function LearnIndexPage({
   setRequestLocale(locale);
 
   const tNav = await getTranslations("nav");
+  const t = await getTranslations("learn");
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
@@ -66,14 +67,9 @@ export default async function LearnIndexPage({
       <main id="main">
         <section className="section">
           <div className="container">
-            <p className="hero-eyebrow">Learn</p>
-            <h1 className="page-hero-title">
-              Network and security concepts, explained clearly.
-            </h1>
-            <p className="page-hero-lede" style={{ marginBottom: "2.5rem" }}>
-              Practical explanations of the concepts behind the tools. Each article is written to
-              build genuine understanding, not just to define a term.
-            </p>
+            <p className="hero-eyebrow">{t("eyebrow")}</p>
+            <h1 className="page-hero-title">{t("title")}</h1>
+            <p className="page-hero-lede learn-hero-lede">{t("lede")}</p>
 
             {/* Vendor hub strip - see tools/page.tsx: discoverability on top
                 of the listing, nav stays small (PRIME 2026-07-03). */}
@@ -144,7 +140,7 @@ export default async function LearnIndexPage({
                             <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
                           ))}
                         </span>
-                        <span className="learn-card-cta">Read</span>
+                        <span className="learn-card-cta">{t("read")}</span>
                       </Link>
                     </li>
                   ))}

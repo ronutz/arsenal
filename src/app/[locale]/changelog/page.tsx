@@ -22,13 +22,13 @@ import { CHANGELOG, type ChangelogEntry, type ChangelogKind } from "@/content/ch
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 
 // Localized <title>. (The description stays English: it is a meta tag, not
-// visible page copy, and is low-value to translate.)
+// visible page copy.) Meta description translated per the 2026-07-03 full i18n pass.
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "changelog" });
   return {
     title: t("eyebrow"),
-    description: "A dated record of new tools, articles, and significant changes to ronutz.com.",
+    description: t("metaDescription"),
   };
 }
 
