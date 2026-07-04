@@ -14,8 +14,7 @@ import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
 import FamilyChip from "@/components/FamilyChip";
 import { categoryColor } from "@/config/categoryColors";
-import { vendorColor, browseVendors, populatedVendors } from "@/config/vendors";
-import ToolVendorFilter from "@/components/ToolVendorFilter";
+import { vendorColor, populatedVendors } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export default async function ToolsPage({
@@ -30,12 +29,10 @@ export default async function ToolsPage({
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
   const tNav = await getTranslations("nav");
 
-  // Vendor families to offer in the browse-by-vendor filter (populated + always-show).
-  const vendorKeys = browseVendors();
-
-  // Alphabetical (locale-aware) by the resolved category label, so each
-  // language sees its categories in its own A->Z order.
-  const categories = [...toolCategories()].sort((a, b) =>
+  // The generic index lists VENDOR-AGNOSTIC tools only (PRIME directive
+  // 2026-07-03); vendor tools live on their hubs, linked in the strip above.
+  const agnosticTools = tools.filter((t) => t.available && !(t.vendors ?? []).length);
+  const categories = [...new Set(agnosticTools.map((t) => t.category))].sort((a, b) =>
     t(`categories.${a}`).localeCompare(t(`categories.${b}`), locale),
   );
 
@@ -77,18 +74,6 @@ export default async function ToolsPage({
             </div>
           )}
 
-          {/* Browse by vendor (client-side filter; progressive enhancement) */}
-          {vendorKeys.length > 0 && (
-            <div className="container certs-container tools-jumpnav vendor-filter-dock" style={{ marginTop: "2rem" }}>
-              <ToolVendorFilter
-                vendors={vendorKeys}
-                labels={Object.fromEntries(vendorKeys.map((v) => [v, t(`vendors.${v}`)]))}
-                allLabel={t("vendorFilterAll")}
-                legend={t("vendorFilterLabel")}
-              />
-            </div>
-          )}
-
           {/* Category jump-nav */}
           {categories.length > 1 && (
             <div className="container certs-container tools-jumpnav" style={{ marginTop: "2rem" }}>
@@ -122,8 +107,8 @@ export default async function ToolsPage({
                   </Link>
                 </h2>
                 <ul className="tools-grid">
-                  {tools
-                    .filter((tool) => tool.category === category)
+                  {agnosticTools
+                .filter((tool) => tool.category === category)
                     .sort((a, b) =>
                       t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale),
                     )

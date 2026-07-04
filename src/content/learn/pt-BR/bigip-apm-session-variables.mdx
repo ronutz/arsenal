@@ -1,0 +1,28 @@
+---
+slug: bigip-apm-session-variables
+title: "Variáveis de Sessão: Onde o APM Guarda Tudo Que Aprendeu"
+summary: "Toda ação de access policy escreve seus resultados em variáveis session.*, nomeadas por uma anatomia que o manual desenha e lidas por três sintaxes oficiais. A camada tem um contrato que vale memorizar: variáveis seguras são criptografadas, escondidas de relatórios e logs, e legíveis só com -secure, o que faz de um mcget puro numa senha a clássica leitura vazia silenciosa."
+concepts: ["apm", "variáveis de sessão", "mcget", "access policy", "vpe", "f5", "variáveis seguras", "sessiondump"]
+relatedTools: ["f5-apm-session-variable-reference", "f5-apm-sso-explainer"]
+relatedArticles: ["bigip-apm-sso-methods"]
+category: identity
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+Uma access policy do APM é uma conversa, e as variáveis de sessão são sua memória. Toda ação escreve o que aprendeu, um resultado de consulta, um atributo, um campo de certificado, uma decisão, em um nome hierárquico sob session., e tudo rio abaixo, regras de ramo, métodos de SSO, atribuição de recursos, customização, lê essa memória. O capítulo de Session Variables do manual é a tabela canônica, e a [referência de variáveis de sessão](/tools/f5-apm-session-variable-reference) o incorpora como uma consulta ciente de padrões; este artigo percorre a gramática da camada e seu único contrato que vale emoldurar.
+
+## A anatomia, e por que os nomes são templates
+
+O capítulo abre com uma figura de anatomia: um nome de variável é a string session, depois um tipo, depois o nome do agente ou a string last, depois pedaços específicos do agente, depois um nó attr ou result, depois um nome de atributo. Os templates seguem direto. session.ad.$name.attr.$attr_name é uma linha, não uma variável, porque cada atributo recuperado é convertido em uma variável de sessão separada, a frase do próprio capítulo, e $name se vincula a qualquer agente AD que rodou, com last como a referência que os próprios exemplos oficiais usam: o guia de per-request policy entrega `expr { [mcget {session.ad.last.attr.primaryGroupID}] == 100 }` como sua expressão de ramo padrão. As famílias são amplas, resultados de policy (session.policy.result chegando como allowed, access_denied ou redirect), o conjunto de cliente (session.client.platform, session.ui.mode com a cautela do próprio manual de que UI mode não mapeia diretamente para tipo de cliente), o trio AAA, a família completa de certificado sob session.ssl.cert, verificações de endpoint, OTP e atribuições, e o capítulo até sinaliza seu próprio beco sem saída, session.check_software.last.hd.state, uma variável sem uso que sempre mostra zero.
+
+## Três sintaxes, um contrato de segurança
+
+A plataforma lê essa memória de três jeitos. Campos de configuração e mensagens expandem `%{session.x}` inline, e o exemplo de OTP do próprio capítulo é a prova, `One-Time Passcode: %{session.otp.assigned.val}`. Regras de ramo leem via mcget dentro de blocos expr. E agentes do lado Tcl usam access::session data get e set. Pelas três corre o contrato que o laboratório da própria F5 declara sem rodeios: o valor de uma variável segura é armazenado criptografado no session db, não é exibido como parte do relatório de sessão na UI, não é registrado como parte do agente de logging, e variáveis seguras exigem a flag -secure, tanto para mcget quanto para access::session data get/set.
+
+Esse contrato cria a armadilha clássica da camada. session.logon.last.password e session.sso.token.last.password, o par que os [métodos de SSO](/learn/bigip-apm-sso-methods) leem no fim das contas, são seguras, então um mcget puro em qualquer uma retorna um valor vazio, em silêncio, não um erro, e uma tarde desaparece dentro de um fluxo de logon que parece correto em todo lugar exceto na única flag. A [referência](/tools/f5-apm-session-variable-reference) entrega exatamente essa leitura como seu Exemplo de um clique e nomeia o que volta. O contexto de encanamento faz o par valer saber de cor: uma Logon Page popula session.logon.last.username e seus irmãos, o SSO Credential Mapping alimenta session.sso.token.last.*, e o SSO Configuration Guide liga padrões direto na camada, a configuração NTLM Domain com padrão em session.logon.last.domain, a fonte de senha do Form Based em session.sso.token.last.password.
+
+## Suas próprias variáveis, e as duas superfícies de depuração
+
+A camada também é gravável. Atribua a session.custom.qualquercoisa em um Variable Assign e o APM cria o contêiner automaticamente, a palavra depois de session virando a pasta no relatório, com a demonstração do próprio laboratório fechando o ciclo ao lê-la de volta como `%{session.custom.mynewvar}` em uma message box. Quando uma policy se comporta mal, o primeiro movimento honesto é olhar o que a sessão realmente contém, e há duas superfícies para isso. O relatório de Current Sessions mostra toda variável de uma sessão, com a nota operacional do laboratório de que variáveis aparecem apenas para sessões ativas, que é exatamente por que seu padrão de troubleshooting estaciona uma message box no meio da policy para segurar a sessão aberta enquanto você lê. E o comando sessiondump da CLI faz o mesmo do shell, as variáveis de uma sessão específica com o argumento sid, tudo de uma vez com allkeys. Se as variáveis que o recurso rio abaixo lê estão vazias ou erradas nessas superfícies, nenhuma configuração no recurso em si vai salvar, que é a tese silenciosa dessa camada inteira: depurar APM é ler variáveis de sessão.

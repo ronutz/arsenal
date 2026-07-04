@@ -1,0 +1,28 @@
+---
+slug: bigip-apm-session-variables
+title: "Session Variables: Where APM Keeps Everything It Learned"
+summary: "Every access-policy action writes its results into session.* variables, named by an anatomy the manual draws and read by three official syntaxes. The layer has one contract worth memorizing: secure variables are encrypted, hidden from reports and logs, and readable only with -secure, which makes a bare mcget on a password the classic silent empty read."
+concepts: ["apm", "session variables", "mcget", "access policy", "vpe", "f5", "secure variables", "sessiondump"]
+relatedTools: ["f5-apm-session-variable-reference", "f5-apm-sso-explainer"]
+relatedArticles: ["bigip-apm-sso-methods"]
+category: identity
+order: 2
+status: reviewed
+updated: "2026-07-03"
+---
+
+An APM access policy is a conversation, and session variables are its memory. Every action writes what it learned, a query result, an attribute, a certificate field, a decision, into a hierarchical name under session., and everything downstream, branch rules, SSO methods, resource assignment, customization, reads that memory. The manual's Session Variables chapter is the canonical table, and the [session-variable reference](/tools/f5-apm-session-variable-reference) vendors it as a pattern-aware lookup; this article walks the layer's grammar and its one contract worth framing.
+
+## The anatomy, and why the names are templates
+
+The chapter opens with an anatomy figure: a variable name is the string session, then a type, then the agent name or the string last, then agent-specific pieces, then a node of attr or result, then an attribute name. The templates follow directly. session.ad.$name.attr.$attr_name is a row, not a variable, because each retrieved attribute is converted to a separate session variable, the chapter's own sentence, and $name binds to whichever AD agent ran, with last as the reference the official examples themselves use: the per-request policy guide ships `expr { [mcget {session.ad.last.attr.primaryGroupID}] == 100 }` as its default branch expression. The families are broad, policy results (session.policy.result arriving as allowed, access_denied, or redirect), the client set (session.client.platform, session.ui.mode with the manual's own caution that UI mode does not directly map to client type), the AAA trio, the complete certificate family under session.ssl.cert, endpoint checks, OTP, and assignments, and the chapter even flags its own dead end, session.check_software.last.hd.state, an unused variable that always shows zero.
+
+## Three syntaxes, one secure contract
+
+The platform reads this memory three ways. Configuration fields and messages expand `%{session.x}` inline, and the chapter's own OTP example is the proof text, `One-Time Passcode: %{session.otp.assigned.val}`. Branch rules read through mcget inside expr blocks. And Tcl-side agents use access::session data get and set. Across all three runs the contract F5's own lab states without hedging: a secure variable's value is stored encrypted in the session db, is not displayed as part of the session report in the UI, is not logged as part of the logging agent, and secure variables require the -secure flag, both for mcget and for access::session data get/set.
+
+That contract creates the layer's classic trap. session.logon.last.password and session.sso.token.last.password, the pair the [SSO methods](/learn/bigip-apm-sso-methods) ultimately read, are secure, so a bare mcget on either returns an empty value, silently, not an error, and an afternoon disappears into a logon flow that looks correct everywhere except the one flag. The [reference](/tools/f5-apm-session-variable-reference) ships exactly that read as its one-click Example and names what comes back. The plumbing context makes the pair worth knowing cold: a Logon Page populates session.logon.last.username and its siblings, SSO Credential Mapping feeds session.sso.token.last.*, and the SSO Configuration Guide wires defaults straight into the layer, the NTLM Domain setting defaulting to session.logon.last.domain, the Form Based password source to session.sso.token.last.password.
+
+## Your own variables, and the two debug surfaces
+
+The layer is writable too. Assign to session.custom.anything in a Variable Assign and APM creates the container automatically, the word after session becoming the folder in the report, the lab's own demonstration closing the loop by reading it back as `%{session.custom.mynewvar}` in a message box. When a policy misbehaves, the honest first move is to look at what the session actually holds, and there are two surfaces for it. The Current Sessions report shows every variable for a session, with the lab's operational footnote that variables display for active sessions only, which is exactly why its troubleshooting pattern parks a message box mid-policy to hold the session open while you read. And the CLI's sessiondump command does the same from the shell, a specific session's variables with the sid argument, everything at once with allkeys. If the variables the downstream feature reads are empty or wrong at those surfaces, no amount of configuration on the feature itself will save it, which is the quiet thesis of this whole layer: APM debugging is session-variable reading.

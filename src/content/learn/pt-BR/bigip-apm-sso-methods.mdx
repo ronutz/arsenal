@@ -1,0 +1,30 @@
+---
+slug: bigip-apm-sso-methods
+title: "Métodos SSO do APM: Um Objeto Ruim Pode Apagar a Sessão Inteira"
+summary: "O capítulo do APM define oito métodos de SSO e declara um raio de explosão que a maioria dos desenhos ignora: um objeto mal configurado de qualquer método não-formulário pode desabilitar o SSO de todos os métodos da sessão; os dois métodos de formulário são os únicos isentos. Mais os pré-requisitos do Kerberos (sem keytab, nas palavras do próprio manual), a peculiaridade do cabeçalho único do NTLMv2 e o token de senha do FBCI."
+concepts: ["apm", "sso", "kerberos", "kcd", "ntlm", "form-based", "saml", "oauth", "f5", "access policy"]
+relatedTools: ["f5-apm-sso-explainer"]
+relatedArticles: ["bigip-afm-contexts-and-rule-processing"]
+category: identity
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+Single sign-on no APM não é um recurso; são oito, e o capítulo de Single Sign-On Methods os nomeia: HTTP Basic, NTLMv1, NTLMv2, Kerberos, Form Based, Forms - Client Initiated, OAuth Bearer e SAML. Cada um repassa ou troca a identidade autenticada do usuário na direção de um backend do seu próprio jeito, e cada um é configurado como um objeto SSO que o access profile entrega aos recursos. O [explicador de métodos SSO](/tools/f5-apm-sso-explainer) renderiza os oito como cartões; este artigo percorre as propriedades que decidem desenhos.
+
+## O raio de explosão que o capítulo declara logo de cara
+
+O parágrafo de abertura do capítulo carrega a frase que deveria moldar toda revisão: configurar mal um objeto SSO de HTTP Basic, NTLMv1, NTLMv2, Kerberos, OAuth Bearer ou SAML pode desabilitar o SSO de todos os métodos de autenticação da sessão de um usuário quando ele acessa um recurso com o objeto mal configurado. Form Based e Forms - Client Initiated são as exceções, os únicos métodos de SSO que não são desabilitados quando qualquer outro método falha por causa de um objeto quebrado. Leia isso como uma assimetria de consequências: um erro de digitação numa configuração de formulário custa o SSO daquela aplicação; um erro num objeto Kerberos ou NTLM pode custar tudo à sessão. Os objetos não-formulário merecem um controle de mudanças proporcional a esse raio.
+
+## O que cada método realmente movimenta
+
+O HTTP Basic é o mais direto: o plug-in de SSO envia cada requisição com um cabeçalho Authorization carregando o base64 de usuário, dois-pontos, senha. Base64 é codificação, não proteção, então o caminho até o backend é parte do desenho de segurança, não um detalhe. Os dois métodos NTLM usam o desafio-resposta do protocolo para que a senha em si nunca cruze até o servidor, com o v2 sendo a versão atualizada; o v2 também carrega uma peculiaridade documentada que vale memorizar, uma resposta 401 trazendo mais de um cabeçalho WWW-Authenticate: NTLM faz o SSO NTLMv2 falhar, e o manual chama isso de esperado.
+
+O Kerberos é a opção transparente para servidores web Windows ingressados no AD, e seus pré-requisitos são específicos o bastante para o cartão do [explicador](/tools/f5-apm-sso-explainer) ler como um checklist: uma conta de delegação por realm de servidor, dedicada e com senha que não expira; seu SPN inserido como Account Name em formato SPN; o realm em maiúsculas; e para servidores em múltiplos realms, uma conta de delegação no realm primário com Resource-Based Constrained Delegation concedida nos realms confiáveis. O manual acrescenta uma linha que resolve uma confusão perene de uma vez: o Kerberos SSO do APM não precisa nem usa um arquivo keytab. As portas de entrada naturais do Kerberos SSO são os métodos de autenticação em que a senha nunca viaja em texto claro, sendo os exemplos do próprio capítulo os certificados de cliente e o NTLM, que é exatamente o padrão que os desenhos modernos com SAML na frente usam, federar na frente, delegar atrás.
+
+Os dois métodos de formulário automatizam o formulário de login da própria aplicação. O Form Based o constrói e envia via POST no lado servidor: a Start URI decide quando ele dispara, um Form Action em branco significa que a URL original da requisição é usada, e a fonte da senha assume por padrão a variável session.sso.token.last.password. O Forms - Client Initiated é o irmão mais sutil: o APM detecta a página de logon por uma URI, cabeçalho ou cookie configurado, deixa a aplicação servir seu formulário, então insere JavaScript gerado que o preenche e envia automaticamente, e o guia de configuração registra o melhor detalhe do desenho, o parâmetro de senha recebe um token de senha em vez da senha real do usuário, resgatado no lado servidor na submissão. A credencial nunca fica no código da página. OAuth Bearer e SAML completam os oito movimentando tokens emitidos e asserções em vez de senhas em cache, e ambos ficam do lado que envenena na divisão de isolamento.
+
+## O encanamento debaixo dos oito
+
+Todo método consome o que a access policy guardou em cache. A fiação clássica é uma Logon Page (ou uma porta de entrada sem senha) populando session.logon.last.username e seus irmãos, e então um agente SSO Credential Mapping alimentando as variáveis session.sso.token.last.* que os objetos SSO leem; a configuração NTLM Domain, por exemplo, assume por padrão direto a session.logon.last.domain. Quando o SSO se comporta mal, o primeiro movimento honesto é a própria visão de variáveis de sessão do APM para a sessão ao vivo: se as variáveis que o método lê estão vazias ou erradas, nenhuma configuração de objeto SSO vai salvar. Essa camada de variáveis é uma referência por si só: a [referência de variáveis de sessão](/tools/f5-apm-session-variable-reference) incorpora a tabela do manual, resolve os nomes-padrão e sinaliza a armadilha da flag -secure em expressões coladas.

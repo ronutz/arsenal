@@ -37,14 +37,11 @@ import SiteFooter from "@/components/SiteFooter";
 import FamilyChip from "@/components/FamilyChip";
 import ScrollToTop from "@/components/ScrollToTop";
 import { tools } from "@/config/tools";
-import { CATALOGUE, FAMILIES } from "@/content/catalogue/catalogue";
-import { getAllArticles, getArticleVendors, type Article } from "@/lib/learn";
+import { subsOf } from "@/config/vendors";
+import { getAllArticles, getArticleVendors, getArticleSub, type Article } from "@/lib/learn";
 import { vendorColor, isVendor, populatedVendors } from "@/config/vendors";
 
-/** slug -> catalogue family, for grouping the vendor's tools by family. */
-function familyOf(slug: string): string | null {
-  return CATALOGUE.find((e) => e.slug === slug)?.family ?? null;
-}
+
 
 export function generateStaticParams() {
   // Only populated vendors get pages (dynamicParams=false below makes this
@@ -86,19 +83,13 @@ export default async function VendorHubPage({
   const tHub = await getTranslations("vendorHub"); // page chrome
   const label = t(`vendors.${vendor}`);
 
-  // ---- The vendor's tools, grouped by catalogue family --------------------
-  // Sections follow the canonical FAMILIES order; inside a family, tools sort
-  // by localized name. A built tool always has a catalogue family (guarded by
-  // check-tools-registry), so the null fallback never fires in practice.
+  // ---- The vendor's tools and articles, grouped by SUB-CATEGORY -----------
+  // Sections follow the vendor's ordered sub-category taxonomy (PRIME
+  // directive 2026-07-03; VENDOR_SUBS in src/config/vendors.ts). A trailing
+  // "other" bucket catches anything unmapped so nothing silently disappears.
   const vendorTools = tools.filter(
     (tool) => tool.available && (tool.vendors ?? []).includes(vendor),
   );
-  const familyGroups = FAMILIES.map((family) => ({
-    family,
-    tools: vendorTools
-      .filter((tool) => familyOf(tool.id) === family)
-      .sort((a, b) => t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale)),
-  })).filter((group) => group.tools.length > 0);
 
   // ---- The vendor's articles ----------------------------------------------
   // getArticleVendors is the shared derivation (concepts UNION the vendors of
@@ -107,6 +98,18 @@ export default async function VendorHubPage({
   const vendorArticles = getAllArticles(locale)
     .filter((a: Article) => getArticleVendors(a).includes(vendor))
     .sort((a: Article, b: Article) => a.title.localeCompare(b.title, locale));
+
+  const subIds = [...subsOf(vendor).map((s) => s.id), "other"];
+  const subGroups = subIds
+    .map((id) => ({
+      id,
+      tools: vendorTools
+        .filter((tool) => (tool.sub ?? "other") === id)
+        .sort((a, b) => t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale)),
+      articles: vendorArticles.filter((a) => (getArticleSub(a, vendor) ?? "other") === id),
+    }))
+    .filter((g) => g.tools.length > 0 || g.articles.length > 0);
+  const subLabel = (id: string) => (id === "other" ? t("subs.other") : t(`subs.${vendor}.${id}`));
 
   return (
     <>
@@ -141,11 +144,9 @@ export default async function VendorHubPage({
               <h2 className="tools-category">
                 {tHub("toolsHeading")} ({vendorTools.length})
               </h2>
-              {familyGroups.map((group) => (
-                <div key={group.family} style={{ marginBottom: "2rem" }}>
-                  {/* Family names are canonical catalogue labels (product
-                      wording), shown as-is in every locale. */}
-                  <h3 className="tools-family-heading">{group.family}</h3>
+              {subGroups.filter((g) => g.tools.length > 0).map((group) => (
+                <div key={group.id} style={{ marginBottom: "2rem" }}>
+                  <h3 className="tools-family-heading">{subLabel(group.id)}</h3>
                   <ul className="tools-grid">
                     {group.tools.map((tool) => (
                       <li
@@ -176,8 +177,11 @@ export default async function VendorHubPage({
               <h2 className="tools-category">
                 {tHub("learnHeading")} ({vendorArticles.length})
               </h2>
+              {subGroups.filter((g) => g.articles.length > 0).map((group) => (
+                <div key={group.id} style={{ marginBottom: "2rem" }}>
+                  <h3 className="tools-family-heading">{subLabel(group.id)}</h3>
               <ul className="learn-grid">
-                {vendorArticles.map((a) => (
+                {group.articles.map((a) => (
                   <li
                     key={a.slug}
                     className="learn-grid-item"
@@ -199,6 +203,8 @@ export default async function VendorHubPage({
                   </li>
                 ))}
               </ul>
+                </div>
+              ))}
             </section>
           </div>
         </section>

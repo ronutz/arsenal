@@ -40,6 +40,9 @@ export interface ArticleFrontmatter {
    * so one label set serves both the tools index and the Learn index.
    */
   category: string;
+  /** Vendor sub-category override (tools.subs.<vendor>.<sub>); usually derived
+   *  from relatedTools instead, see getArticleSub. */
+  sub?: string;
   /** Translation/quality status, mirroring the i18n + credential model. */
   status: "reviewed" | "machine-draft" | "stub";
   updated: string;
@@ -159,7 +162,9 @@ export interface CategoryGroup {
  * silently disappears. Within a group, articles keep the title sort.
  */
 export function getArticlesByCategory(locale: string = SOURCE_LOCALE): CategoryGroup[] {
-  const articles = getAllArticles(locale);
+  // Vendor-tagged articles are excluded here: the generic Learn categories are
+  // vendor-agnostic only; vendor content lives on the vendor hubs.
+  const articles = getAllArticles(locale).filter((a) => !isVendorArticle(a));
   // Within a category, curated progression order wins; title is the tiebreak
   // for any article that has not been assigned an order yet.
   const byOrder = (a: Article, b: Article) =>
@@ -212,4 +217,27 @@ export function getArticleVendors(article: Article): string[] {
     }
   }
   return Array.from(set);
+}
+
+// ============================================================================
+// getArticleSub — the vendor sub-category an article belongs to on a vendor
+// hub. Explicit front-matter `sub:` wins; otherwise the first relatedTool
+// carrying that vendor with a sub supplies it. Returns null when nothing
+// resolves (the hub buckets those under its trailing group so nothing
+// silently disappears).
+// ============================================================================
+export function getArticleSub(article: Article, vendor: string): string | null {
+  if (article.sub) return article.sub;
+  for (const slug of article.relatedTools) {
+    const tool = tools.find((t) => t.id === slug);
+    if (tool?.sub && (tool.vendors ?? []).includes(vendor)) return tool.sub;
+  }
+  return null;
+}
+
+/** Vendor-tagged articles live on their vendor hub, not in the generic
+ *  categories (PRIME directive 2026-07-03: non-vendor categories are
+ *  vendor-agnostic and integration content only). */
+export function isVendorArticle(article: Article): boolean {
+  return getArticleVendors(article).length > 0;
 }

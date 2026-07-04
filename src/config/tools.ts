@@ -25,6 +25,8 @@ export interface ToolEntry {
   category: string;
   /** Optional vendor-family memberships (e.g. ["f5"]); additive second
    *  grouping dimension resolved via src/config/vendors.ts. */
+  /** Vendor sub-category (tools.subs.<vendor>.<sub> label); vendor tools only. */
+  sub?: string;
   vendors?: string[];
   /** False renders a muted "coming soon" card with no link. */
   available: boolean;
@@ -50,29 +52,32 @@ export const tools: ToolEntry[] = [
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
   { id: "saml-decoder", href: "/tools/saml-decoder", category: "security", available: true },
   { id: "xml-decoder", href: "/tools/xml-decoder", category: "security", available: true },
-  { id: "f5xc-service-policy-explainer", href: "/tools/f5xc-service-policy-explainer", category: "security", vendors: ["f5"], available: true },
-  { id: "f5-bigip-persistence-cookie", href: "/tools/f5-bigip-persistence-cookie", category: "security", vendors: ["f5"], available: true },
+  { id: "f5xc-service-policy-explainer", sub: "f5xc", href: "/tools/f5xc-service-policy-explainer", category: "security", vendors: ["f5"], available: true },
+  { id: "f5-bigip-persistence-cookie", sub: "ltm", href: "/tools/f5-bigip-persistence-cookie", category: "security", vendors: ["f5"], available: true },
   { id: "url-inspector", href: "/tools/url-inspector", category: "web", available: true },
   { id: "json-formatter", href: "/tools/json-formatter", category: "encoding", available: true },
   { id: "json-yaml-convert", href: "/tools/json-yaml-convert", category: "encoding", available: true },
-  { id: "f5-tmsh-config-explainer", href: "/tools/f5-tmsh-config-explainer", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-bigip-tcpdump-builder", href: "/tools/f5-bigip-tcpdump-builder", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-persistence-method-explainer", href: "/tools/f5-persistence-method-explainer", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-lb-method-chooser", href: "/tools/f5-lb-method-chooser", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-gslb-decision-flow", href: "/tools/f5-gslb-decision-flow", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-topology-longest-match", href: "/tools/f5-topology-longest-match", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-dos-vector-explainer", href: "/tools/f5-dos-vector-explainer", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-irules-command-context", href: "/tools/f5-irules-command-context", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-irules-vs-ltm-policy", href: "/tools/f5-irules-vs-ltm-policy", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-oneconnect-source-mask", href: "/tools/f5-oneconnect-source-mask", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-afm-rule-context", href: "/tools/f5-afm-rule-context", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-packet-filter-explainer", href: "/tools/f5-packet-filter-explainer", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-service-check-date", href: "/tools/f5-service-check-date", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-bigip-license-explainer", href: "/tools/f5-bigip-license-explainer", category: "networking", vendors: ["f5"], available: true },
-  { id: "f5-cipher-string-expander", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
-  { id: "f5-ssl-profile-explainer", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
+  { id: "f5-tmsh-config-explainer", sub: "tmos", href: "/tools/f5-tmsh-config-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-bigip-tcpdump-builder", sub: "tmos", href: "/tools/f5-bigip-tcpdump-builder", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-persistence-method-explainer", sub: "ltm", href: "/tools/f5-persistence-method-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-lb-method-chooser", sub: "ltm", href: "/tools/f5-lb-method-chooser", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-gslb-decision-flow", sub: "dns-gtm", href: "/tools/f5-gslb-decision-flow", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-topology-longest-match", sub: "dns-gtm", href: "/tools/f5-topology-longest-match", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-dos-vector-explainer", sub: "afm", href: "/tools/f5-dos-vector-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-irules-command-context", sub: "ltm", href: "/tools/f5-irules-command-context", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-irules-vs-ltm-policy", sub: "ltm", href: "/tools/f5-irules-vs-ltm-policy", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-oneconnect-source-mask", sub: "ltm", href: "/tools/f5-oneconnect-source-mask", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-afm-rule-context", sub: "afm", href: "/tools/f5-afm-rule-context", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-apm-sso-explainer", sub: "zta-apm", href: "/tools/f5-apm-sso-explainer", category: "identity", vendors: ["f5"], available: true },
+  { id: "f5-l4-profile-explainer", sub: "ltm", href: "/tools/f5-l4-profile-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-apm-session-variable-reference", sub: "zta-apm", href: "/tools/f5-apm-session-variable-reference", category: "identity", vendors: ["f5"], available: true },
+  { id: "f5-packet-filter-explainer", sub: "tmos", href: "/tools/f5-packet-filter-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-service-check-date", sub: "tmos", href: "/tools/f5-service-check-date", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-bigip-license-explainer", sub: "tmos", href: "/tools/f5-bigip-license-explainer", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-cipher-string-expander", sub: "ltm", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
+  { id: "f5-ssl-profile-explainer", sub: "ltm", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
   { id: "epoch", href: "/tools/epoch", category: "encoding", available: true },
-  { id: "f5-irules-event-order", href: "/tools/f5-irules-event-order", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-irules-event-order", sub: "ltm", href: "/tools/f5-irules-event-order", category: "networking", vendors: ["f5"], available: true },
   { id: "syslog-pri-decoder", href: "/tools/syslog-pri-decoder", category: "networking", available: true },
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
@@ -83,7 +88,7 @@ export const tools: ToolEntry[] = [
   { id: "hash-preimage-finder", href: "/tools/hash-preimage-finder", category: "hashing", available: true },
   { id: "http-request-translator", href: "/tools/http-request-translator", category: "web", available: true },
   { id: "ssrf-url-classifier", href: "/tools/ssrf-url-classifier", category: "security", available: true },
-  { id: "f5-awaf-declarative-policy-explainer", href: "/tools/f5-awaf-declarative-policy-explainer", category: "security", vendors: ["f5"], available: true },
+  { id: "f5-awaf-declarative-policy-explainer", sub: "asm-awaf", href: "/tools/f5-awaf-declarative-policy-explainer", category: "security", vendors: ["f5"], available: true },
 ];
 
 /** Tools that are live and linkable. */

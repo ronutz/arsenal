@@ -1,0 +1,34 @@
+---
+slug: bigip-l4-protocol-profiles
+title: "Perfis de Protocolo: TCP Vivo, TCP Congelado e os Dois Caminhos Rápidos"
+summary: "O menu de tcp esconde três decisões. O anúncio do 13.0 da F5 dividiu a família full-proxy em perfis vivos que ela atualiza continuamente (somente leitura, ajustados via filhos) e um trio legado congelado que ainda é distribuído. O FastL4 troca o proxy por um caminho de pacotes em hardware, e o FastHTTP é o caso HTTP estreito que precisa passar em todos os critérios da sua lista."
+concepts: ["perfil tcp", "fastl4", "fasthttp", "f5-tcp-progressive", "pva", "perfis de protocolo", "f5", "ltm"]
+relatedTools: ["f5-l4-profile-explainer", "f5-irules-event-order"]
+relatedArticles: ["bigip-profiles-on-a-virtual-server", "bigip-oneconnect-connection-reuse"]
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-03"
+---
+
+Abra a lista de perfis de protocolo de um virtual server e o BIG-IP oferece uma multidão: tcp, quatro nomes começando com f5-, três terminando em -optimized, FastL4, FastHTTP. A multidão é na verdade três famílias e três decisões, e cada cartão do [explicador de perfis L4](/tools/f5-l4-profile-explainer) pertence a uma delas.
+
+## O full proxy, e o dia em que seus perfis passaram a viver
+
+Um virtual server padrão é um proxy TCP completo: duas pilhas independentes, uma negociada com o cliente e uma com os servidores, que é o que permite ajustar cada lado ao seu próprio enlace e o que carrega todo recurso L7 da plataforma. Por anos o ajuste veio como presets congelados, tcp-lan-optimized, tcp-wan-optimized, tcp-mobile-optimized, e seus valores envelheceram enquanto as redes mudavam por baixo deles.
+
+O BIG-IP 13.0 reorganizou a família, e o anúncio da própria F5 vale ser lido nas palavras originais: f5-tcp-wan, f5-tcp-lan e f5-tcp-mobile são versões atualizadas dos três perfis -optimized, adaptando todas as configurações aos seus tipos de enlace sem habilitar os recursos mais novos, e o f5-tcp-progressive é um perfil de uso geral, como o tcp padrão, carregando os recursos mais recentes para adotantes precoces. Os critérios de benchmark publicados junto foram diretos: os três ajustados por enlace alcançaram vazão pelo menos tão alta, e frequentemente melhor, que o tcp padrão para seus tipos de enlace, e o progressive igual ou maior em todos os tipos de rede representativos.
+
+A mudança mais profunda foi o contrato. Esses quatro perfis, mais o tcp padrão, tornaram-se vivos: a F5 os atualiza continuamente com boas práticas conforme evoluem, com recursos novos chegando no progressive imediatamente e nos perfis vivos conservadores algumas versões depois. E todos os cinco tornaram-se somente leitura, então ajuste local significa criar um perfil filho, onde marcar a flag custom em uma configuração a fixa contra pushes futuros. Essa é a decisão inteira legado-versus-vivo em um parágrafo: o trio legado ainda é distribuído, listado ao lado da família viva na referência de perfis atual, congelado para configurações que dependem de valores exatos, enquanto o caminho de atualização do próprio fornecedor para qualquer coisa nova é o quarteto vivo. Uma nota de dimensionamento sobrevive do par mobile: para objetos abaixo de um megabyte, o tcp-mobile-optimized simples geralmente supera o mptcp-mobile-optimized.
+
+## FastL4: o perfil que não é um proxy
+
+A segunda decisão abandona o proxy por completo. A referência de perfis declara o propósito do FastL4 com clareza: atribuí-lo deixa o hardware Packet Velocity ASIC, onde a plataforma o suporta, processar parte ou todo o tráfego de camada 4, e ele se pareia com virtual servers Performance (Layer 4), Forwarding (Layer 2) e Forwarding (IP), com o offload dinâmico capaz de entregar fluxos estabelecidos ao hardware ePVA no meio da conexão. O guia de operações dá o quando em uma única cláusula, pouco ou nenhum processamento L4 ou L7 necessário, e nomeia o custo com igual economia: informação L7 mínima disponível, então decisões de balanceamento ficam limitadas em escopo. Nenhum perfil HTTP viaja aqui, e a superfície de iRules encolhe para os eventos L4, exatamente a disponibilidade que o [explicador de ordem de eventos](/tools/f5-irules-event-order) sinaliza.
+
+A man page torna o cartão prático. O par loose é o kit de sobrevivência do roteamento assimétrico: loose-initialization aceita qualquer pacote TCP como iniciação de conexão em vez de exigir um SYN, loose-close derruba no primeiro FIN de qualquer lado, ambos desabilitados por padrão. O modo pva-acceleration roda full, partial, dedicated ou none. O tratamento de timestamp e window-scale tem padrão preserve, a postura de passagem em dois padrões de opção. E o late-binding é o truque de festa da família: uma iRule lê um pacote FIX de camada 7 para selecionar o pool, e então entrega o fluxo ao ePVA para carregar em latência de hardware, com um perfil FIX exigido no virtual server.
+
+## FastHTTP: rápido, estreito e honesto sobre isso
+
+A terceira decisão é a estreita. O FastHTTP, segundo a referência, combina recursos selecionados dos perfis TCP Express, HTTP e OneConnect em um único perfil otimizado para desempenho de rede, pareando com o virtual server Performance (HTTP), e seu benefício de assinatura é o reúso de conexões, com o sistema transformando ou adicionando o cabeçalho Connection para manter conexões do lado servidor abertas, a mesma economia que o [artigo de OneConnect](/learn/bigip-oneconnect-connection-reuse) percorre em detalhe.
+
+O que torna o perfil seguro de recomendar é que sua qualificação é um checklist que a referência declara abertamente: sem autenticação remota de servidor, sem gestão de tráfego SSL, sem otimizações de TCP, sem compressão, pipelining ou RAM Cache; sem necessidade de manter endereços IP de origem; servidores que suportam keep-alive, HTTP/1.1 ou 1.0 com o cabeçalho, IIS por padrão; e apenas suporte básico de iRules, sendo os exemplos da própria referência CLIENT_ACCEPTED, SERVER_CONNECTED e HTTP_REQUEST. Lida de trás para frente, cada linha desqualifica: termine TLS, comprima, faça cache, preserve IPs de cliente ou rode iRules pesadas de conteúdo, e a resposta é o virtual server padrão com perfis tcp e http. O veredito do guia de operações é a nota de fechamento certa, possivelmente o jeito mais rápido de passar tráfego HTTP sob certas circunstâncias, com requisitos e limitações específicos, e o K8024 como a leitura que você faz antes de implantar, não depois.

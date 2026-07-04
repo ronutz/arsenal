@@ -44,6 +44,81 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-03",
+    time: "22:39",
+    kind: "feature",
+    title: "Vendor sub-categories, and generic categories go vendor-agnostic",
+    body:
+      "The taxonomy grew a level. Vendor hubs now group their tools and articles by ordered sub-categories: for F5, the ten pillars from LTM and iRules through TMOS, DNS/GTM, ASM, AFM, APM, SSL Orchestrator, automation, public cloud, and Distributed Cloud, with every tool assigned and articles inheriting their placement from the tools they relate to. Fortinet, Netskope, and Extreme Networks received source-grounded taxonomies of their own, built from each vendor's official product catalogue, twelve Fortinet sub-categories with the full A-to-Z product list assigned, ten Netskope One components, eight Extreme product families, ready for the day their first tools ship. And the generic categories on the Tools and Learn indexes are now exclusively vendor-agnostic: vendor content lives on its hub, one cross-vendor syslog article came home to networking, and the hub strip on top of each index is the way in.",
+  },
+  {
+    date: "2026-07-03",
+    time: "22:39",
+    kind: "content",
+    title: "Privacy page: why preferences live only on your device",
+    body:
+      "A new section on the privacy page explains what this site remembers and why. The theme choice is stored only in your browser's localStorage and applied before first paint; no cookie, no account, no server ever sees it, which is exactly why a private window, cleared site data, or another device starts you back at the default. Language is not stored at all, it lives in the URL, so a bookmarked address in your language keeps it. With no accounts and no tracking, preferences can only live where you can see and delete them.",
+  },
+  {
+    date: "2026-07-03",
+    time: "22:03",
+    kind: "content",
+    title: "Learn article: session variables, where APM keeps everything it learned",
+    body:
+      "The companion to the new reference, in English and Portuguese, and the closing of the APM cluster the SSO article opened: the naming anatomy from the manual's own figure and why the names are templates, the three official read syntaxes with the chapter's own OTP percent-expansion as proof text, the secure contract in F5's own lab wording and the silent empty read it produces on a bare mcget of a password, the plumbing pair every SSO method ultimately reads, session.custom's auto-container behavior, and the two debug surfaces, the active-sessions-only report with its message-box pause trick and sessiondump from the CLI. The SSO methods article's closing line now links the live reference.",
+  },
+  {
+    date: "2026-07-03",
+    time: "22:01",
+    kind: "tool",
+    tools: ["f5-apm-session-variable-reference"],
+    title: "New tool: APM session-variable reference",
+    body:
+      "The Session Variables chapter, vendored and made pattern-aware. Paste session.ad.last.attr.memberOf and it resolves against the chapter's own dollar-name templates with the bindings shown, because each retrieved attribute becomes its own variable, the chapter's rule. Families run from policy results through the client and AAA sets to the full session.ssl.cert family, endpoint checks with the always-zero hd.state quirk flagged, OTP with the chapter's own percent-expansion example, and the logon and SSO plumbing rows the SSO methods read. Expressions parse across the three official syntaxes, percent expansion, mcget inside expr branch rules, and access::session data get and set, with the secure audit riding along in F5's own wording: encrypted in the session db, hidden from reports and logs, minus-secure required on both read paths. The one-click Example is the classic empty-value trap, a bare mcget on the logon password, and the tool names exactly what comes back: nothing.",
+  },
+  {
+    date: "2026-07-03",
+    time: "19:50",
+    kind: "content",
+    title: "Learn article: living TCP, frozen TCP, and the two fast paths",
+    body:
+      "The companion to the new explainer, in English and Portuguese: the day the tcp family started living, told in the 13.0 announcement's own words, updated versions of the -optimized trio, progressive for the very latest features, five read-only living profiles tuned through child profiles with the custom flag pinning settings against future pushes, and the frozen legacy trio that still ships. FastL4 as the profile that is not a proxy, the PVA packet path, the loose pair for asymmetric routing, and the late-binding FIX trick. FastHTTP as the narrow case whose qualification is a checklist, every criterion a disqualifier read backwards, with K8024 as the reading you do before deploying, not after.",
+  },
+  {
+    date: "2026-07-03",
+    time: "19:48",
+    kind: "tool",
+    tools: ["f5-l4-profile-explainer"],
+    title: "New tool: LTM L4 protocol profile explainer",
+    body:
+      "The protocol-profile decision, told the way F5's own sources tell it. The tcp family's living-versus-legacy split from the 13.0 announcement verbatim: f5-tcp-wan, lan, and mobile as the updated versions of the -optimized trio, f5-tcp-progressive as the general-use profile carrying the very latest features, all five living profiles continually updated and read-only, tuned through child profiles, while the frozen legacy names still ship for configurations that depend on them. FastL4 as the not-a-proxy: the PVA hardware packet path for Performance and Forwarding virtual servers, the ops guide's little-or-no-processing when-clause, the loose-initialization and loose-close pair for asymmetric routing with their man-page defaults, and the late-binding FIX offload. FastHTTP as the narrow case: TCP Express, HTTP, and OneConnect combined, with the complete when-to-use criteria list, the basic-iRule event trio, and K8024 named as required pre-deployment reading. The one-click Example opens FastL4, the card with the most decisions on it.",
+  },
+  {
+    date: "2026-07-03",
+    time: "19:31",
+    kind: "feature",
+    title: "Tools index hero: the thesis takes the headline",
+    body:
+      "The tools hub's eyebrow and headline both read Tools, breaking the pattern every other index page follows: a short eyebrow, a statement headline, a supporting lede. The headline is now the site's own thesis, tools that compute, never guess, in both languages, with the eyebrow keeping the short label and the existing lede staying as the supporting line.",
+  },
+  {
+    date: "2026-07-03",
+    time: "19:09",
+    kind: "content",
+    title: "Learn article: APM SSO methods and the blast radius",
+    body:
+      "The companion to the new explainer, in English and Portuguese: the eight methods and the asymmetry the chapter states up front, a broken non-form object can dim SSO for the whole session while the two form methods stay standing. What each method actually moves, from Basic's base64 header to NTLMv2's single-header quirk, the Kerberos prerequisite checklist with the no-keytab line and the federate-in-front-delegate-in-back pattern, the Forms - Client Initiated password token that keeps the credential out of the page, and the session-variable plumbing underneath all eight, with the variable reference named as this cluster's next tool.",
+  },
+  {
+    date: "2026-07-03",
+    time: "19:07",
+    kind: "tool",
+    tools: ["f5-apm-sso-explainer"],
+    title: "New tool: APM SSO method explainer",
+    body:
+      "The eight methods the Single Sign-On Methods chapter defines, each rendered with its mechanism, its credentials plumbing, its prerequisites, and the verdict that decides outages: the chapter's own blast-radius paragraph, a misconfigured SSO object for HTTP Basic, NTLM, Kerberos, OAuth Bearer, or SAML can disable SSO for every method in that user's session, and the two form methods are the only exempt ones. The Kerberos card ships the full constrained-delegation prerequisite list, delegation account per realm, SPN-format account name, uppercase realm, multi-realm RBCD, and the line worth framing, APM Kerberos SSO does not need or use a keytab file. NTLMv2 carries its documented single-WWW-Authenticate quirk, and Forms - Client Initiated its password-token indirection, the real password never sits in the page.",
+  },
+  {
+    date: "2026-07-03",
     time: "18:43",
     kind: "content",
     title: "Learn article: AFM contexts, accept as a ticket",

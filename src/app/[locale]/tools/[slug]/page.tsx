@@ -87,6 +87,9 @@ import IrulesCommandContextTool from "@/components/IrulesCommandContextTool";
 import IrulesVsLtmPolicyTool from "@/components/IrulesVsLtmPolicyTool";
 import OneconnectSourceMaskTool from "@/components/OneconnectSourceMaskTool";
 import AfmRuleContextTool from "@/components/AfmRuleContextTool";
+import ApmSsoExplainerTool from "@/components/ApmSsoExplainerTool";
+import L4ProfileExplainerTool from "@/components/L4ProfileExplainerTool";
+import ApmSessionVariableReferenceTool from "@/components/ApmSessionVariableReferenceTool";
 import PacketFilterExplainerTool from "@/components/PacketFilterExplainerTool";
 import { manifest as lbMethodManifest } from "@/lib/tools/f5-lb-method-chooser";
 import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
@@ -96,6 +99,9 @@ import { manifest as irulesCtxManifest } from "@/lib/tools/f5-irules-command-con
 import { manifest as irulesPolManifest } from "@/lib/tools/f5-irules-vs-ltm-policy";
 import { manifest as oneconnectManifest } from "@/lib/tools/f5-oneconnect-source-mask";
 import { manifest as afmContextManifest } from "@/lib/tools/f5-afm-rule-context";
+import { manifest as apmSsoManifest } from "@/lib/tools/f5-apm-sso-explainer";
+import { manifest as l4ProfileManifest } from "@/lib/tools/f5-l4-profile-explainer";
+import { manifest as svarManifest } from "@/lib/tools/f5-apm-session-variable-reference";
 import { manifest as packetFilterManifest } from "@/lib/tools/f5-packet-filter-explainer";
 import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
@@ -315,6 +321,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-afm-rule-context": {
     Component: AfmRuleContextTool,
     sources: afmContextManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-apm-sso-explainer": {
+    Component: ApmSsoExplainerTool,
+    sources: apmSsoManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-l4-profile-explainer": {
+    Component: L4ProfileExplainerTool,
+    sources: l4ProfileManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-apm-session-variable-reference": {
+    Component: ApmSessionVariableReferenceTool,
+    sources: svarManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-packet-filter-explainer": {
     Component: PacketFilterExplainerTool,

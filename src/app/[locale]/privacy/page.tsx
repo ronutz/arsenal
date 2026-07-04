@@ -50,6 +50,7 @@ export default async function PrivacyPage({
     ["controllerTitle", "controllerBody"],
     ["noTrackTitle", "noTrackBody"],
     ["browserTitle", "browserBody"],
+    ["prefsTitle", "prefsBody"],
     ["hostingTitle", "hostingBody"],
     ["toolsTitle", "toolsBody"],
     ["contactTitle", "contactBody"],

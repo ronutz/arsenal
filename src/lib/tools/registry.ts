@@ -62,6 +62,9 @@ import { run as irulesCommandContextRun } from "./f5-irules-command-context";
 import { run as irulesVsLtmPolicyRun } from "./f5-irules-vs-ltm-policy";
 import { run as oneconnectSourceMaskRun } from "./f5-oneconnect-source-mask";
 import { run as afmRuleContextRun } from "./f5-afm-rule-context";
+import { run as apmSsoExplainerRun } from "./f5-apm-sso-explainer";
+import { run as l4ProfileExplainerRun } from "./f5-l4-profile-explainer";
+import { run as apmSvarRun } from "./f5-apm-session-variable-reference";
 import { run as packetFilterExplainerRun } from "./f5-packet-filter-explainer";
 import { run as pkceRun } from "./pkce";
 import { run as regexRun } from "./regex";
@@ -124,6 +127,9 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-irules-vs-ltm-policy", run: irulesVsLtmPolicyRun },
   { slug: "f5-oneconnect-source-mask", run: oneconnectSourceMaskRun },
   { slug: "f5-afm-rule-context", run: afmRuleContextRun },
+  { slug: "f5-apm-sso-explainer", run: apmSsoExplainerRun },
+  { slug: "f5-l4-profile-explainer", run: l4ProfileExplainerRun },
+  { slug: "f5-apm-session-variable-reference", run: apmSvarRun },
   { slug: "f5-packet-filter-explainer", run: packetFilterExplainerRun },
   { slug: "pkce", run: pkceRun },
   { slug: "regex", run: regexRun },

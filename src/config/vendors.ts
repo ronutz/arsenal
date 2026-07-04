@@ -80,3 +80,117 @@ export function browseVendors(): string[] {
   const pop = new Set(populatedVendors());
   return VENDOR_FAMILIES.filter((v) => pop.has(v.key) || v.alwaysShow).map((v) => v.key);
 }
+
+
+// ============================================================================
+// VENDOR SUB-CATEGORIES (PRIME directive, 2026-07-03)
+// ----------------------------------------------------------------------------
+// Vendor hubs group their tools and articles by these ordered sub-categories.
+// Labels are i18n: tools.subs.<vendor>.<id>. Generic /tools and /learn
+// categories are vendor-agnostic ONLY; vendor-tagged items live on their hub.
+//
+// F5 taxonomy: PRIME-specified verbatim (10 sub-categories).
+// Fortinet / Netskope / Extreme taxonomies: source-grounded 2026-07-03 from
+// fortinet.com/products (the A-Z catalogue), netskope.com product and
+// Netskope One platform pages, and extremenetworks.com product/solution
+// pages. Their hubs render the moment their first tool ships
+// (populatedVendors gating unchanged); the structure is canon-ready now.
+//
+// FORTINET PRODUCT -> SUB-CATEGORY ASSIGNMENT (the A-Z catalogue, assigned
+// per PRIME's instruction; seed subs first):
+//   fortigate:    FortiGate NGFW, FortiGate VM, FortiGate Cloud, FortiGate
+//                 CNF, FortiGate Rugged / Rugged products, FortiOS,
+//                 FortiOS-Carrier, FortiConverter, FortiGate-as-a-Service,
+//                 FortiDDoS
+//   fortianalyzer: FortiAnalyzer, FortiAnalyzer Cloud
+//   fortimanager: FortiManager, FortiManager Cloud, FortiPortal,
+//                 FortiEdge Cloud, FortiAIOps, FortiFlex, FortiPoints
+//   fortiswitch:  FortiSwitch, FortiSwitch chassis
+//   fortiap:      FortiAP, FortiAP high-density
+//   fortinac:     FortiNAC
+//   sase:         FortiSASE, FortiSASE Sovereign, Secure SD-WAN, FortiProxy
+//                 (SWG), Universal ZTNA, FortiClient (VPN & ZTNA agent),
+//                 FortiMonitor (DEM), FortiExtender (5G/LTE WAN edge)
+//   secops:       FortiSIEM, FortiSOAR, FortiSOC / SOCaaS, FortiEDR/XDR,
+//                 FortiEndpoint, FortiNDR, FortiSandbox, FortiDeceptor,
+//                 FortiRecon (CTEM), FortiDLP, FortiMail / Workspace
+//                 Security, FortiDevice CAASM
+//   identity:     FortiAuthenticator, FortiAuthenticator Cloud /
+//                 FortiIdentity Cloud, FortiToken, FortiPAM
+//   appsec:       FortiWeb, FortiAppSec, FortiADC, FortiCNAPP, FortiDAST,
+//                 FortiDevSec, FortiAIGate (AI runtime), FortiGuard
+//                 Advanced Bot Protection, FortiAI-SecureAI
+//   fortiguard:   FortiGuard AI-Powered Security Services (IPS, AV, URL and
+//                 DNS filtering, CASB, inline malware, attack-surface
+//                 rating, OT security service), FortiAI-Protect,
+//                 FortiAI-Assist
+//   uc-video:     FortiVoice / FortiFone, FortiCam / FortiRecorder
+//
+// NETSKOPE (Netskope One components, per the platform pages): the SSE core
+// (NG-SWG converging SWG+CASB), then the named services and platform layer.
+//
+// EXTREME (product families, per extremenetworks.com): Platform ONE, the
+// ExtremeCloud IQ management continuum, the wired/wireless/fabric/WAN
+// families, access security (ExtremeControl NAC, Universal ZTNA,
+// AirDefense, Defender for IoT), and analytics/AIOps.
+// ============================================================================
+
+export interface VendorSub {
+  readonly id: string;
+}
+
+export const VENDOR_SUBS: Record<string, readonly VendorSub[]> = Object.freeze({
+  f5: [
+    { id: "ltm" },        // LTM - Local Traffic Manager & iRules
+    { id: "tmos" },       // TMOS, F5OS, Platform
+    { id: "dns-gtm" },    // DNS / GTM - Global Traffic Manager
+    { id: "asm-awaf" },   // ASM / Advanced WAF
+    { id: "afm" },        // AFM - Advanced Firewall Manager
+    { id: "zta-apm" },    // ZTA / APM - Access Policy Manager
+    { id: "sslo" },       // SSL Orchestrator
+    { id: "automation" }, // Automation & Integration
+    { id: "cloud" },      // Public Cloud
+    { id: "f5xc" },       // F5 Distributed Cloud
+  ],
+  fortinet: [
+    { id: "fortigate" },
+    { id: "fortianalyzer" },
+    { id: "fortimanager" },
+    { id: "fortiswitch" },
+    { id: "fortiap" },
+    { id: "fortinac" },
+    { id: "sase" },
+    { id: "secops" },
+    { id: "identity" },
+    { id: "appsec" },
+    { id: "fortiguard" },
+    { id: "uc-video" },
+  ],
+  netskope: [
+    { id: "swg" },            // Next Gen Secure Web Gateway (+ RBI, enterprise browser, DNS)
+    { id: "casb" },
+    { id: "ztna" },           // Private Access / Universal ZTNA
+    { id: "fwaas" },          // Cloud Firewall
+    { id: "data-protection" }, // unified DLP, endpoint DLP, DSPM
+    { id: "posture" },        // CSPM, SSPM
+    { id: "sdwan" },          // Borderless / Endpoint SD-WAN, Converged Access
+    { id: "analytics-dem" },  // Advanced Analytics + Proactive DEM
+    { id: "ai-security" },    // AI gateway, agentic broker, guardrails, red teaming
+    { id: "platform" },       // Zero Trust Engine, One Client, Orchestrator, NewEdge, Cloud Exchange, Device Intelligence
+  ],
+  extreme: [
+    { id: "platform-one" },   // Extreme Platform ONE
+    { id: "cloud-iq" },       // ExtremeCloud IQ, IQ Controller, Site Engine, Cloud Edge / UCP
+    { id: "switching" },      // ExtremeSwitching, Switch Engine / EXOS
+    { id: "wireless" },       // ExtremeWireless access points
+    { id: "fabric" },         // Extreme Fabric / Fabric Engine / Fabric Connect
+    { id: "sdwan" },          // ExtremeCloud SD-WAN
+    { id: "access-security" }, // ExtremeControl NAC, Universal ZTNA, AirDefense, Defender for IoT
+    { id: "analytics" },      // ExtremeAnalytics, AIOps
+  ],
+});
+
+/** Ordered sub-categories for a vendor ([] for unknown). */
+export function subsOf(vendor: string): readonly VendorSub[] {
+  return VENDOR_SUBS[vendor] ?? [];
+}

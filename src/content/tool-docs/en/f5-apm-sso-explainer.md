@@ -1,0 +1,11 @@
+# APM SSO method explainer
+
+APM's job after authentication is to keep authenticating for you, and the Single Sign-On Methods chapter defines exactly eight ways it does that: HTTP Basic, NTLMv1, NTLMv2, Kerberos constrained delegation, Form Based, Forms - Client Initiated, OAuth Bearer, and SAML. This tool renders each as a card with its mechanism, its credentials plumbing, its prerequisites, and its quirks, all condensed faithfully from the chapter and the method-specific guides.
+
+The verdict on every card is the chapter's own blast-radius paragraph, and it is the operational headline: a misconfigured SSO object for HTTP Basic, NTLMv1, NTLMv2, Kerberos, OAuth Bearer, or SAML can disable SSO for all authentication methods in that user's session. Form Based and Forms - Client Initiated are the only two methods not disabled when another method's object is broken. One bad Kerberos SSO configuration and every application in the session can lose its SSO; one bad form configuration and only that application does. That asymmetry decides how carefully each object class deserves to be handled.
+
+The Kerberos card carries the full prerequisite list: a delegation account in Active Directory per server realm, its SPN entered as the Account Name in SPN format, the realm in uppercase, Resource-Based Constrained Delegation for multi-realm estates, and the manual's own line, worth framing: APM Kerberos SSO does not need or use a keytab file. Its natural front doors are the methods where the password never travels in clear text, client certificates and NTLM among the chapter's own examples. NTLMv2 carries the documented quirk that a 401 with more than one WWW-Authenticate: NTLM header makes SSO fail, expected behavior per the manual. Forms - Client Initiated carries its design's cleverest detail: the JavaScript APM inserts assigns the password parameter a token rather than the actual password, so the credential never sits in the page.
+
+The plumbing note on every lookup ties the methods to the machinery: access-policy agents populate the session variables SSO consumes, the classic wiring being a Logon Page followed by SSO Credential Mapping, feeding session.logon.last.* into session.sso.token.last.*.
+
+Everything runs locally; nothing you type leaves the page.

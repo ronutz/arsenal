@@ -1,0 +1,34 @@
+---
+slug: bigip-l4-protocol-profiles
+title: "Protocol Profiles: Living TCP, Frozen TCP, and the Two Fast Paths"
+summary: "The tcp dropdown hides three decisions. F5's 13.0 announcement split the full-proxy family into living profiles it continually updates (read-only, tuned via children) and a frozen legacy trio that still ships. FastL4 trades the proxy for a hardware packet path, and FastHTTP is the narrow HTTP case that must clear every criterion on its list."
+concepts: ["tcp profile", "fastl4", "fasthttp", "f5-tcp-progressive", "pva", "protocol profiles", "f5", "ltm"]
+relatedTools: ["f5-l4-profile-explainer", "f5-irules-event-order"]
+relatedArticles: ["bigip-profiles-on-a-virtual-server", "bigip-oneconnect-connection-reuse"]
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-03"
+---
+
+Open a virtual server's protocol profile list and BIG-IP offers a crowd: tcp, four names starting with f5-, three ending in -optimized, FastL4, FastHTTP. The crowd is really three families and three decisions, and every card in the [L4 profile explainer](/tools/f5-l4-profile-explainer) belongs to one of them.
+
+## The full proxy, and the day its profiles started living
+
+A standard virtual server is a full TCP proxy: two independent stacks, one negotiated with the client and one with the servers, which is what lets each side be tuned to its own link and what carries every L7 feature the platform has. For years the tuning came as frozen presets, tcp-lan-optimized, tcp-wan-optimized, tcp-mobile-optimized, and their values aged as networks changed underneath them.
+
+BIG-IP 13.0 reorganized the family, and F5's own announcement is worth reading in its original words: f5-tcp-wan, f5-tcp-lan, and f5-tcp-mobile are updated versions of the three -optimized profiles, adapting all settings to their link types without enabling the very newest features, and f5-tcp-progressive is a general-use profile, like the tcp default, carrying the very latest features for early adopters. The benchmark criteria published alongside were blunt: the link-tuned three achieved throughput at least as high, and often better, than default tcp for their link types, and progressive equal or higher across all representative network types.
+
+The deeper change was the contract. Those four profiles, plus default tcp, became living: F5 continually updates them with best practices as they evolve, new features landing in progressive immediately and in the conservative living profiles a couple of releases later. And all five became read-only, so local tuning means creating a child profile, where checking the custom flag on a setting pins it against future pushes. That is the whole legacy-versus-living decision in one paragraph: the legacy trio still ships, listed beside the living family in the current profiles reference, frozen for configurations that depend on exact values, while the vendor's own upgrade path for anything new is the living four. One sizing footnote survives from the mobile pair: for objects under a megabyte, plain tcp-mobile-optimized generally beats mptcp-mobile-optimized.
+
+## FastL4: the profile that is not a proxy
+
+The second decision abandons the proxy entirely. The profiles reference states FastL4's purpose plainly: assigning it lets the Packet Velocity ASIC hardware, where the platform supports it, process some or all of the Layer 4 traffic, and it pairs with Performance (Layer 4), Forwarding (Layer 2), and Forwarding (IP) virtual servers, with dynamic offload able to hand established flows to ePVA hardware mid-connection. The operations guide gives the when in a single clause, little or no L4 or L7 processing required, and names the cost with equal economy: minimal L7 information is available, so load-balancing decisions are limited in scope. No HTTP profile rides here, and the iRule surface shrinks to the L4 events, exactly the availability the [event-order explainer](/tools/f5-irules-event-order) flags.
+
+The man page turns the card practical. The loose pair is the asymmetric-routing survival kit: loose-initialization accepts any TCP packet as connection initiation rather than requiring a SYN, loose-close tears down on the first FIN from either side, both default disabled. The pva-acceleration mode runs full, partial, dedicated, or none. Timestamp and window-scale handling default to preserve, the pass-through posture in two option defaults. And late-binding is the family's party trick: an iRule reads a Layer 7 FIX packet to select the pool, then hands the stream to the ePVA to carry at hardware latency, a FIX profile on the virtual server required.
+
+## FastHTTP: fast, narrow, and honest about it
+
+The third decision is the narrow one. FastHTTP, per the reference, combines selected features from the TCP Express, HTTP, and OneConnect profiles into a single profile optimized for network performance, pairing with the Performance (HTTP) virtual server, and its signature benefit is connection reuse, the system transforming or adding the Connection header to keep server-side connections open, the same economics the [OneConnect article](/learn/bigip-oneconnect-connection-reuse) walks in detail.
+
+What makes the profile safe to recommend is that its qualification is a checklist the reference states outright: no remote server authentication, no SSL traffic management, no TCP optimizations, no compression, pipelining, or RAM Cache; no need to maintain source IP addresses; servers that support keep-alive, HTTP/1.1 or 1.0 with the header, IIS by default; and basic iRule support only, the reference's own examples being CLIENT_ACCEPTED, SERVER_CONNECTED, and HTTP_REQUEST. Read backwards, every line disqualifies: terminate TLS, compress, cache, preserve client IPs, or run content-heavy iRules, and the answer is the standard virtual server with tcp and http profiles instead. The operations guide's verdict is the right closing note, possibly the fastest way to pass HTTP traffic under certain circumstances, with specific requirements and limitations, and K8024 as the reading you do before deploying, not after.

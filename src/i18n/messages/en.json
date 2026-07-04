@@ -1220,7 +1220,7 @@
       "tooLong": "The test text is too long to run; shorten it and try again.",
       "runsLocally": "Runs entirely in your browser."
     },
-    "title": "Tools",
+    "title": "Tools that compute, never guess.",
     "lede": "Small, fast, privacy-first utilities that run entirely in your browser. Nothing you type is sent anywhere.",
     "open": "Open",
     "comingSoon": "Coming soon",
@@ -2579,6 +2579,104 @@
       "dispositionTitle": "Disposition",
       "findingsTitle": "Audit findings",
       "observationsTitle": "Observations"
+    },
+    "f5-apm-sso-explainer": {
+      "name": "APM SSO method explainer",
+      "blurb": "The eight SSO methods APM's own chapter defines, each card carrying the verdict that decides outages: a misconfigured SSO object for any non-form method can disable SSO for every method in that user's session; Form Based and Forms - Client Initiated are the only exempt ones. Kerberos ships its full prerequisite list, including the line worth framing: APM Kerberos SSO does not need or use a keytab file.",
+      "inputLabel": "A method name, or \"methods\"",
+      "inputPlaceholder": "kerberos · ntlmv2 · forms · fbci · basic · saml · oauth · methods",
+      "runsLocally": "Runs locally in your browser. Nothing you type leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "isolatedChip": "exempt from session-wide disable",
+      "poisonsChip": "can disable session-wide SSO",
+      "credentialsLabel": "Credentials",
+      "prereqTitle": "Prerequisites",
+      "quirksTitle": "Quirks worth memorizing",
+      "observationsTitle": "Observations"
+    },
+    "f5-l4-profile-explainer": {
+      "name": "LTM L4 protocol profile explainer",
+      "blurb": "The protocol-profile decision in cards: full-proxy tcp with every feature, the living f5-tcp-* four that F5 continually updates (read-only, tuned via child profiles) versus the frozen legacy -optimized trio, FastL4's PVA packet path with the loose pair for asymmetric routing, and FastHTTP's narrow-but-fast HTTP case with its complete when-to-use criteria list and K8024 as required reading.",
+      "inputLabel": "A profile name, or \"profiles\"",
+      "inputPlaceholder": "fastl4 · fasthttp · f5-tcp-progressive · tcp-wan-optimized · legacy · profiles",
+      "runsLocally": "Runs locally in your browser. Nothing you type leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "familyFullProxy": "full proxy",
+      "familyLiving": "living",
+      "familyLegacy": "legacy (frozen)",
+      "familyAccelerated": "hardware packet path",
+      "familyLightProxy": "light HTTP proxy",
+      "whenTitle": "When to use it",
+      "tradeoffsTitle": "Tradeoffs",
+      "quirksTitle": "Details worth memorizing",
+      "observationsTitle": "Observations"
+    },
+    "f5-apm-session-variable-reference": {
+      "name": "APM session-variable reference",
+      "blurb": "The Session Variables chapter as a pattern-aware lookup: paste session.ad.last.attr.memberOf and it resolves against the chapter's own templates, paste an mcget expression and every reference inside is explained with the secure audit riding along, the classic empty-value trap named exactly: a bare mcget on session.logon.last.password reads back empty, because secure variables require -secure.",
+      "inputLabel": "A variable, an expression, a family, or \"variables\"",
+      "inputPlaceholder": "session.ad.last.attr.memberOf\nexpr { [mcget {session.ad.last.attr.primaryGroupID}] == 100 }\n%{session.otp.assigned.val}",
+      "runsLocally": "Runs locally in your browser. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "secureChip": "secure",
+      "unknownChip": "not in snapshot",
+      "populatedByLabel": "Populated by",
+      "familiesTitle": "Families",
+      "observationsTitle": "Observations"
+    },
+    "subs": {
+      "other": "More",
+      "f5": {
+        "ltm": "LTM · Local Traffic Manager & iRules",
+        "tmos": "TMOS · F5OS & Platform",
+        "dns-gtm": "DNS / GTM · Global Traffic Manager",
+        "asm-awaf": "ASM · Advanced WAF",
+        "afm": "AFM · Advanced Firewall Manager",
+        "zta-apm": "ZTA / APM · Access Policy Manager",
+        "sslo": "SSL Orchestrator",
+        "automation": "Automation & Integration",
+        "cloud": "Public Cloud",
+        "f5xc": "F5 Distributed Cloud"
+      },
+      "fortinet": {
+        "fortigate": "FortiGate / FortiOS",
+        "fortianalyzer": "FortiAnalyzer",
+        "fortimanager": "FortiManager",
+        "fortiswitch": "FortiSwitch",
+        "fortiap": "FortiAP",
+        "fortinac": "FortiNAC",
+        "sase": "Unified SASE & SD-WAN",
+        "secops": "Security Operations",
+        "identity": "Identity & Access",
+        "appsec": "Cloud & Application Security",
+        "fortiguard": "FortiGuard AI Services",
+        "uc-video": "Voice & Video"
+      },
+      "netskope": {
+        "swg": "Next Gen Secure Web Gateway",
+        "casb": "CASB",
+        "ztna": "Private Access / Universal ZTNA",
+        "fwaas": "Cloud Firewall (FWaaS)",
+        "data-protection": "Data Protection · DLP & DSPM",
+        "posture": "Posture Management · CSPM & SSPM",
+        "sdwan": "Borderless SD-WAN",
+        "analytics-dem": "Advanced Analytics & DEM",
+        "ai-security": "AI Security",
+        "platform": "Platform & NewEdge"
+      },
+      "extreme": {
+        "platform-one": "Extreme Platform ONE",
+        "cloud-iq": "ExtremeCloud IQ",
+        "switching": "ExtremeSwitching",
+        "wireless": "ExtremeWireless",
+        "fabric": "Extreme Fabric",
+        "sdwan": "ExtremeCloud SD-WAN",
+        "access-security": "Access Security & NAC",
+        "analytics": "Analytics & AIOps"
+      }
     }
   },
   "privacy_page": {
@@ -2613,7 +2711,9 @@
     "changesTitle": "Changes to this notice",
     "changesBody": "If this notice changes, the revised version will be published on this page and the date below will be updated. Material changes will not be applied retroactively.",
     "updated": "Last updated: 30 June 2026",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "prefsTitle": "Theme, language, and what this site remembers",
+    "prefsBody": "Your theme choice is stored only in this browser's localStorage, on your device, and applied before first paint on your next visit; there is no cookie, no account, and no server that ever sees it, which also means it cannot follow you: a private window, cleared site data, or a different browser or device starts you back at the default theme by design. Your language is not stored anywhere at all, because it lives in the address itself: /en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it, while visiting the bare domain serves the default. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them."
   },
   "footer": {
     "redEducation": "Book official training with <b>Red Education</b>",

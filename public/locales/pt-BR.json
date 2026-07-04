@@ -854,7 +854,7 @@
       "tooLong": "O texto de teste é longo demais para executar; encurte-o e tente novamente.",
       "runsLocally": "Executa inteiramente no seu navegador."
     },
-    "title": "Ferramentas",
+    "title": "Ferramentas que calculam, nunca chutam.",
     "lede": "Utilitários pequenos, rápidos e que respeitam a privacidade, rodando inteiramente no seu navegador. Nada do que você digita é enviado a lugar nenhum.",
     "open": "Abrir",
     "comingSoon": "Em breve",
@@ -2579,6 +2579,104 @@
       "dispositionTitle": "Disposição",
       "findingsTitle": "Achados da auditoria",
       "observationsTitle": "Observações"
+    },
+    "f5-apm-sso-explainer": {
+      "name": "Explicador de métodos SSO do APM",
+      "blurb": "Os oito métodos de SSO que o próprio capítulo do APM define, cada cartão carregando o veredito que decide indisponibilidades: um objeto SSO mal configurado de qualquer método não-formulário pode desabilitar o SSO de todos os métodos naquela sessão do usuário; Form Based e Forms - Client Initiated são os únicos isentos. O Kerberos entrega sua lista completa de pré-requisitos, incluindo a linha que vale emoldurar: o Kerberos SSO do APM não precisa nem usa um arquivo keytab.",
+      "inputLabel": "Um nome de método, ou \"methods\"",
+      "inputPlaceholder": "kerberos · ntlmv2 · forms · fbci · basic · saml · oauth · methods",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você digita sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "isolatedChip": "isento do desligamento da sessão",
+      "poisonsChip": "pode desabilitar o SSO da sessão",
+      "credentialsLabel": "Credenciais",
+      "prereqTitle": "Pré-requisitos",
+      "quirksTitle": "Peculiaridades que valem memorizar",
+      "observationsTitle": "Observações"
+    },
+    "f5-l4-profile-explainer": {
+      "name": "Explicador de perfis de protocolo L4 do LTM",
+      "blurb": "A decisão de perfis de protocolo em cartões: o tcp full-proxy com todos os recursos, os quatro f5-tcp-* vivos que a F5 atualiza continuamente (somente leitura, ajustados via perfis filhos) versus o trio legado -optimized congelado, o caminho de pacotes PVA do FastL4 com o par loose para roteamento assimétrico, e o caso HTTP estreito-mas-rápido do FastHTTP com sua lista completa de critérios de uso e o K8024 como leitura obrigatória.",
+      "inputLabel": "Um nome de perfil, ou \"profiles\"",
+      "inputPlaceholder": "fastl4 · fasthttp · f5-tcp-progressive · tcp-wan-optimized · legacy · profiles",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você digita sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "familyFullProxy": "full proxy",
+      "familyLiving": "vivo",
+      "familyLegacy": "legado (congelado)",
+      "familyAccelerated": "caminho de pacotes em hardware",
+      "familyLightProxy": "proxy HTTP leve",
+      "whenTitle": "Quando usar",
+      "tradeoffsTitle": "Contrapartidas",
+      "quirksTitle": "Detalhes que valem memorizar",
+      "observationsTitle": "Observações"
+    },
+    "f5-apm-session-variable-reference": {
+      "name": "Referência de variáveis de sessão do APM",
+      "blurb": "O capítulo de Session Variables como uma consulta ciente de padrões: cole session.ad.last.attr.memberOf e ele resolve contra os próprios templates do capítulo, cole uma expressão mcget e cada referência dentro dela é explicada com a auditoria de variáveis seguras junto, a clássica armadilha do valor vazio nomeada com exatidão: um mcget puro em session.logon.last.password volta vazio, porque variáveis seguras exigem -secure.",
+      "inputLabel": "Uma variável, uma expressão, uma família, ou \"variables\"",
+      "inputPlaceholder": "session.ad.last.attr.memberOf\nexpr { [mcget {session.ad.last.attr.primaryGroupID}] == 100 }\n%{session.otp.assigned.val}",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "secureChip": "segura",
+      "unknownChip": "fora do snapshot",
+      "populatedByLabel": "Populada por",
+      "familiesTitle": "Famílias",
+      "observationsTitle": "Observações"
+    },
+    "subs": {
+      "other": "Mais",
+      "f5": {
+        "ltm": "LTM · Local Traffic Manager e iRules",
+        "tmos": "TMOS · F5OS e Plataforma",
+        "dns-gtm": "DNS / GTM · Global Traffic Manager",
+        "asm-awaf": "ASM · Advanced WAF",
+        "afm": "AFM · Advanced Firewall Manager",
+        "zta-apm": "ZTA / APM · Access Policy Manager",
+        "sslo": "SSL Orchestrator",
+        "automation": "Automação e Integração",
+        "cloud": "Nuvem Pública",
+        "f5xc": "F5 Distributed Cloud"
+      },
+      "fortinet": {
+        "fortigate": "FortiGate / FortiOS",
+        "fortianalyzer": "FortiAnalyzer",
+        "fortimanager": "FortiManager",
+        "fortiswitch": "FortiSwitch",
+        "fortiap": "FortiAP",
+        "fortinac": "FortiNAC",
+        "sase": "SASE Unificado e SD-WAN",
+        "secops": "Operações de Segurança",
+        "identity": "Identidade e Acesso",
+        "appsec": "Segurança de Nuvem e Aplicações",
+        "fortiguard": "Serviços de IA FortiGuard",
+        "uc-video": "Voz e Vídeo"
+      },
+      "netskope": {
+        "swg": "Next Gen Secure Web Gateway",
+        "casb": "CASB",
+        "ztna": "Private Access / Universal ZTNA",
+        "fwaas": "Cloud Firewall (FWaaS)",
+        "data-protection": "Proteção de Dados · DLP e DSPM",
+        "posture": "Gestão de Postura · CSPM e SSPM",
+        "sdwan": "Borderless SD-WAN",
+        "analytics-dem": "Advanced Analytics e DEM",
+        "ai-security": "Segurança de IA",
+        "platform": "Plataforma e NewEdge"
+      },
+      "extreme": {
+        "platform-one": "Extreme Platform ONE",
+        "cloud-iq": "ExtremeCloud IQ",
+        "switching": "ExtremeSwitching",
+        "wireless": "ExtremeWireless",
+        "fabric": "Extreme Fabric",
+        "sdwan": "ExtremeCloud SD-WAN",
+        "access-security": "Segurança de Acesso e NAC",
+        "analytics": "Análises e AIOps"
+      }
     }
   },
   "privacy_page": {
@@ -2613,7 +2711,9 @@
     "changesTitle": "Alterações neste aviso",
     "changesBody": "Se este aviso mudar, a versão revisada será publicada nesta página e a data abaixo será atualizada. Mudanças materiais não serão aplicadas retroativamente.",
     "updated": "Última atualização: 30 de junho de 2026",
-    "backHome": "Voltar para o início"
+    "backHome": "Voltar para o início",
+    "prefsTitle": "Tema, idioma e o que este site lembra",
+    "prefsBody": "Sua escolha de tema é guardada apenas no localStorage deste navegador, no seu dispositivo, e aplicada antes da primeira pintura na próxima visita; não há cookie, não há conta e nenhum servidor jamais a vê, o que também significa que ela não pode seguir você: uma janela privada, os dados de site limpos, ou outro navegador ou dispositivo recomeçam no tema padrão, por desenho. Seu idioma não é guardado em lugar nenhum, porque ele mora no próprio endereço: /en/ e /pt-BR/ são páginas diferentes, então favoritar ou compartilhar uma URL no seu idioma o mantém, enquanto visitar o domínio puro serve o padrão. Essa é a troca inteira: sem contas e sem rastreamento, preferências só podem morar onde você pode vê-las e apagá-las."
   },
   "footer": {
     "redEducation": "Reserve treinamento oficial com a <b>Red Education</b>",

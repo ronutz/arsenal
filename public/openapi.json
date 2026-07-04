@@ -935,6 +935,186 @@
         }
       }
     },
+    "/f5-apm-session-variable-reference": {
+      "get": {
+        "tags": [
+          "F5 GTM, AFM & APM"
+        ],
+        "operationId": "run_f5_apm_session_variable_reference",
+        "summary": "APM session-variable reference",
+        "description": "The Session Variables chapter as a pattern-aware lookup: paste session.ad.last.attr.memberOf and it resolves against the chapter's own templates, paste an mcget expression and every reference inside is explained with the secure audit riding along, the classic empty-value trap named exactly: a bare mcget on session.logon.last.password reads back empty, because secure variables require -secure. Standards: F5 APM session variables. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "mcget {session.logon.last.password}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 GTM, AFM & APM"
+        ],
+        "operationId": "run_f5_apm_session_variable_reference_post",
+        "summary": "APM session-variable reference (POST)",
+        "description": "The Session Variables chapter as a pattern-aware lookup: paste session.ad.last.attr.memberOf and it resolves against the chapter's own templates, paste an mcget expression and every reference inside is explained with the secure audit riding along, the classic empty-value trap named exactly: a bare mcget on session.logon.last.password reads back empty, because secure variables require -secure. Standards: F5 APM session variables. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "mcget {session.logon.last.password}"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-apm-sso-explainer": {
+      "get": {
+        "tags": [
+          "F5 GTM, AFM & APM"
+        ],
+        "operationId": "run_f5_apm_sso_explainer",
+        "summary": "APM SSO method explainer",
+        "description": "The eight SSO methods APM's own chapter defines, each card carrying the verdict that decides outages: a misconfigured SSO object for any non-form method can disable SSO for every method in that user's session; Form Based and Forms - Client Initiated are the only exempt ones. Kerberos ships its full prerequisite list, including the line worth framing: APM Kerberos SSO does not need or use a keytab file. Standards: F5 APM Single Sign-On Methods. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "kerberos"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 GTM, AFM & APM"
+        ],
+        "operationId": "run_f5_apm_sso_explainer_post",
+        "summary": "APM SSO method explainer (POST)",
+        "description": "The eight SSO methods APM's own chapter defines, each card carrying the verdict that decides outages: a misconfigured SSO object for any non-form method can disable SSO for every method in that user's session; Form Based and Forms - Client Initiated are the only exempt ones. Kerberos ships its full prerequisite list, including the line worth framing: APM Kerberos SSO does not need or use a keytab file. Standards: F5 APM Single Sign-On Methods. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "kerberos"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5-awaf-declarative-policy-explainer": {
       "get": {
         "tags": [
@@ -1798,6 +1978,96 @@
                 "type": "string",
                 "examples": [
                   "when HTTP_REQUEST { pool web }"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-l4-profile-explainer": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_l4_profile_explainer",
+        "summary": "LTM L4 protocol profile explainer",
+        "description": "The protocol-profile decision in cards: full-proxy tcp with every feature, the living f5-tcp-* four that F5 continually updates (read-only, tuned via child profiles) versus the frozen legacy -optimized trio, FastL4's PVA packet path with the loose pair for asymmetric routing, and FastHTTP's narrow-but-fast HTTP case with its complete when-to-use criteria list and K8024 as required reading. Standards: F5 LTM protocol profiles. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "fastl4"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_l4_profile_explainer_post",
+        "summary": "LTM L4 protocol profile explainer (POST)",
+        "description": "The protocol-profile decision in cards: full-proxy tcp with every feature, the living f5-tcp-* four that F5 continually updates (read-only, tuned via child profiles) versus the frozen legacy -optimized trio, FastL4's PVA packet path with the loose pair for asymmetric routing, and FastHTTP's narrow-but-fast HTTP case with its complete when-to-use criteria list and K8024 as required reading. Standards: F5 LTM protocol profiles. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "fastl4"
                 ]
               }
             }

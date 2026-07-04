@@ -16,8 +16,7 @@ import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
-import { browseVendors, populatedVendors, vendorColor } from "@/config/vendors";
-import ToolVendorFilter from "@/components/ToolVendorFilter";
+import { populatedVendors, vendorColor } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -45,17 +44,6 @@ export default async function LearnIndexPage({
     ),
   );
 
-  // Browse-by-vendor: offer only vendors that actually have articles here
-  // (derived, not hardcoded), intersected with the public browse set. Articles
-  // are tagged below with data-vendors; the SAME island that filters the Tools
-  // index filters these cards, keyed off ".learn-grid-item".
-  const articleVendorSet = new Set<string>();
-  for (const group of groups) {
-    for (const article of group.articles) {
-      for (const vendor of getArticleVendors(article)) articleVendorSet.add(vendor);
-    }
-  }
-  const vendorKeys = browseVendors().filter((v) => articleVendorSet.has(v));
 
   return (
     <>
@@ -88,17 +76,6 @@ export default async function LearnIndexPage({
               </p>
             )}
 
-            {vendorKeys.length > 0 && (
-              <div className="vendor-filter-dock">
-                <ToolVendorFilter
-                  vendors={vendorKeys}
-                  labels={Object.fromEntries(vendorKeys.map((v) => [v, tTools(`vendors.${v}`)]))}
-                  allLabel={tTools("vendorFilterAll")}
-                  legend={tTools("vendorFilterLabel")}
-                  cardSelector=".learn-grid-item"
-                />
-              </div>
-            )}
 
             {/* Category jump-nav */}
             {groups.length > 1 && (

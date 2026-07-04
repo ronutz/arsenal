@@ -1,0 +1,30 @@
+---
+slug: bigip-apm-sso-methods
+title: "APM SSO Methods: One Bad Object Can Dim the Whole Session"
+summary: "APM's chapter defines eight SSO methods and states a blast radius most designs ignore: a misconfigured object for any non-form method can disable SSO for every method in the session; the two form methods are the only exempt ones. Plus the Kerberos prerequisites (no keytab, by the manual's own words), NTLMv2's single-header quirk, and the FBCI password token."
+concepts: ["apm", "sso", "kerberos", "kcd", "ntlm", "form-based", "saml", "oauth", "f5", "access policy"]
+relatedTools: ["f5-apm-sso-explainer"]
+relatedArticles: ["bigip-afm-contexts-and-rule-processing"]
+category: identity
+order: 1
+status: reviewed
+updated: "2026-07-03"
+---
+
+Single sign-on in APM is not one feature; it is eight, and the Single Sign-On Methods chapter names them: HTTP Basic, NTLMv1, NTLMv2, Kerberos, Form Based, Forms - Client Initiated, OAuth Bearer, and SAML. Each replays or exchanges the user's authenticated identity toward a backend in its own way, and each is configured as an SSO object the access profile hands to resources. The [SSO method explainer](/tools/f5-apm-sso-explainer) renders all eight as cards; this article walks the properties that decide designs.
+
+## The blast radius the chapter states up front
+
+The chapter's opening paragraph carries the sentence that should shape every review: misconfiguring an SSO object for HTTP Basic, NTLMv1, NTLMv2, Kerberos, OAuth Bearer, or SAML could disable SSO for all authentication methods for a user's session when the user accesses a resource with the misconfigured object. Form Based and Forms - Client Initiated are the exceptions, the only SSO methods not disabled when any other method fails because of a broken object. Read that as an asymmetry of consequences: a typo in a form configuration costs that one application its SSO; a typo in a Kerberos or NTLM object can cost the session everything. The non-form objects deserve change control proportional to that radius.
+
+## What each method actually moves
+
+HTTP Basic is the bluntest: the SSO plug-in sends every request with an Authorization header carrying the base64 of username, colon, password. Base64 is encoding, not protection, so the path to the backend is part of the security design, not an afterthought. The two NTLM methods use the protocol's challenge-response so the password itself never crosses to the server, with v2 the updated version; v2 also carries a documented quirk worth memorizing, a 401 response bearing more than one WWW-Authenticate: NTLM header makes NTLMv2 SSO fail, and the manual calls that expected.
+
+Kerberos is the transparent option for Windows web servers joined to AD, and its prerequisites are specific enough that the [explainer](/tools/f5-apm-sso-explainer)'s card reads like a checklist: a delegation account per server realm, dedicated and non-expiring; its SPN entered as the Account Name in SPN format; the realm in uppercase; and for servers spanning realms, one delegation account in the primary realm with Resource-Based Constrained Delegation granted on the trusted ones. The manual adds a line that settles a perennial confusion in one stroke: APM Kerberos SSO does not need or use a keytab file. Kerberos SSO's natural front doors are the authentication methods where the password never travels in clear text, the chapter's own examples being client certificates and NTLM, which is exactly the pattern modern SAML-fronted designs use, federate at the front, delegate at the back.
+
+The two form methods automate the application's own login form. Form Based constructs and POSTs it server-side: the Start URI decides when it fires, a blank Form Action means the original request URL is used, and the password source defaults to the session.sso.token.last.password variable. Forms - Client Initiated is the subtler sibling: APM detects the logon page by a configured URI, header, or cookie, lets the application serve its form, then inserts generated JavaScript that fills and auto-submits it, and the configuration guide records the design's best detail, the password parameter is assigned a password token rather than the actual user password, redeemed server-side on submission. The credential never sits in the page source. OAuth Bearer and SAML round out the eight by moving issued tokens and assertions instead of cached passwords, and both sit on the poisons side of the isolation split.
+
+## The plumbing underneath all eight
+
+Every method consumes what the access policy cached. The classic wiring is a Logon Page (or a password-less front door) populating session.logon.last.username and its siblings, then an SSO Credential Mapping agent feeding the session.sso.token.last.* variables the SSO objects read; the NTLM Domain setting, for instance, defaults straight to session.logon.last.domain. When SSO misbehaves, the honest first move is APM's own session-variable view for the live session: if the variables the method reads are empty or wrong, no SSO object configuration will save it. That variable layer is a reference of its own: the [session-variable reference](/tools/f5-apm-session-variable-reference) vendors the manual's table, resolves the pattern names, and flags the secure-flag trap on pasted expressions.

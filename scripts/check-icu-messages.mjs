@@ -36,6 +36,7 @@ const RAW_LITERAL_KEYS = new Set([
   "tools.f5-irules-vs-ltm-policy.inputPlaceholder", // iRule sample: literal braces, rendered with t.raw()
   "tools.f5-oneconnect-source-mask.inputPlaceholder", // profile sample: literal braces, rendered with t.raw()
   "tools.f5-afm-rule-context.inputPlaceholder", // firewall policy sample: literal braces, rendered with t.raw()
+  "tools.f5-apm-session-variable-reference.inputPlaceholder", // mcget/percent samples: literal braces, rendered with t.raw()
   "tools.f5-packet-filter-explainer.inputPlaceholder", // tmsh sample: literal braces, rendered with t.raw()
 ]);
 
