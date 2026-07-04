@@ -25,6 +25,9 @@ type Result =
   | { ok: true; data: SslProfileAnalysis }
   | { ok: false; code: string };
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "ltm profile client-ssl /Common/web_clientssl {\n      cert-key-chain { rsa { cert /Common/www.crt key /Common/www.key chain /Common/int.crt } }\n      cipher-group /Common/f5-secure\n      ciphers none\n      options { dont-insert-empty-fragments cipher-server-preference no-sslv3 no-tlsv1 no-tlsv1.1 }\n      renegotiation disabled\n      secure-renegotiation require\n      server-name www.example.com\n      sni-default true\n      ocsp-stapling enabled\n    }";
+
 export default function F5SslProfileExplainerTool() {
   const t = useTranslations("tools.f5-ssl-profile-explainer");
   const [input, setInput] = useState("");
@@ -51,9 +54,15 @@ export default function F5SslProfileExplainerTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool ssl-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="ssl-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="ssl-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="ssl-input"
           className="cidr-input mono saml-textarea json-input ssl-input"

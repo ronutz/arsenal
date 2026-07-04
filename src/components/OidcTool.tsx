@@ -74,6 +74,9 @@ function Field({ label, value, mono }: { label: string; value?: string; mono?: b
   );
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
 export default function OidcTool() {
   const t = useTranslations("tools.oidc");
 
@@ -233,9 +236,15 @@ export default function OidcTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool oidc-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="oidc-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="oidc-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="oidc-input"
           className="cidr-input mono saml-textarea"

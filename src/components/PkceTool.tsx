@@ -37,6 +37,9 @@ const FLOW: { actor: FlowActor; labelKey: string; code: string }[] = [
   { actor: "server", labelKey: "s8", code: "access + refresh" },
 ];
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+
 export default function PkceTool() {
   const t = useTranslations("tools.pkce");
 
@@ -78,9 +81,15 @@ export default function PkceTool() {
   return (
     <div className="cidr-tool jwt-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="pkce-verifier">
-          {t("verifierLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="pkce-verifier">
+            {t("verifierLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setVerifier(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setVerifier("")}>{t("clear")}</button>
+          </div>
+        </div>
         <div className="cidr-controls">
           <input
             id="pkce-verifier"

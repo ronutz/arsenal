@@ -15,6 +15,9 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run } from "@/lib/tools/f5-persistence-method-explainer";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "ltm persistence cookie c1 {\n    defaults-from cookie\n    cookie-name BIGipServer_app\n    method insert\n}";
+
 export default function PersistenceMethodExplainerTool() {
   const t = useTranslations("tools.f5-persistence-method-explainer");
   const [input, setInput] = useState("");
@@ -25,9 +28,15 @@ export default function PersistenceMethodExplainerTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool persist-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="persist-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="persist-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="persist-input"
           className="cidr-input mono saml-textarea json-input tmsh-input"

@@ -17,6 +17,9 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { formatJson, type FormatOptions, type IndentStyle } from "@/lib/tools/json-formatter";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "  42  ";
+
 export default function JsonFormatterTool() {
   const t = useTranslations("tools.json-formatter");
 
@@ -47,9 +50,15 @@ export default function JsonFormatterTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="json-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="json-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="json-input"
           className="cidr-input mono saml-textarea json-input"

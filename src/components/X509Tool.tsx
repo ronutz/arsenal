@@ -60,6 +60,9 @@ function truncateLabel(s: string, n = 46): string {
   return s.length > n ? s.slice(0, n - 1) + "\u2026" : s;
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "-----BEGIN CERTIFICATE-----\nMIIELDCCAxSgAwIBAgIGGis8TV5vMA0GCSqGSIb3DQEBCwUAMHoxCzAJBgNVBAYT\nAkJSMRIwEAYDVQQIDAlTYW8gUGF1bG8xEjAQBgNVBAcMCVNhbyBQYXVsbzEXMBUG\nA1UECgwOTlRaIFRlY2hub2xvZ3kxEDAOBgNVBAsMB0Fyc2VuYWwxGDAWBgNVBAMM\nD3Rlc3Qucm9udXR6LmNvbTAeFw0yNjA2MjYwNDI3MzRaFw0zNjA2MjMwNDI3MzRa\nMHoxCzAJBgNVBAYTAkJSMRIwEAYDVQQIDAlTYW8gUGF1bG8xEjAQBgNVBAcMCVNh\nbyBQYXVsbzEXMBUGA1UECgwOTlRaIFRlY2hub2xvZ3kxEDAOBgNVBAsMB0Fyc2Vu\nYWwxGDAWBgNVBAMMD3Rlc3Qucm9udXR6LmNvbTCCASIwDQYJKoZIhvcNAQEBBQAD\nggEPADCCAQoCggEBALwOgIj4c3kdS4Xg2PosyzzgJ06lZM9xD+3XHr4N857o56Hi\nqumKeYQM/4jkOJWhKz5StbWNXqZ1lbrjQwr9RV9kV6jqMo/iQYlmlmxsTeWoJ61Q\n6VYeAIsZrJSCr7tS0ZH9nAYzJYz/FnqtSjwm9EPEc/zahpMvSNLYS3R/d1m41EG4\nJhE1hL9tvF7Hb/7KaoxVuot86kOiAf20j5RsM86f/0LdXHAWro4VUAMvukqSW+Y2\nohhmRHq4OvAxNccxUBAVG6txUuaSVOxTNVj2tD+0ZFXWrLdZtLAWcXC1BmDi5UiB\n+0loZvGF4oqL1DlNJzg5C74wiQ0LzIznnm89hO8CAwEAAaOBtzCBtDAdBgNVHQ4E\nFgQUu2Q3pfojzu7xdoDhP2xGe0Xikz0wHwYDVR0jBBgwFoAUu2Q3pfojzu7xdoDh\nP2xGe0Xikz0wNQYDVR0RBC4wLIIPdGVzdC5yb251dHouY29tghN3d3cudGVzdC5y\nb251dHouY29thwTAAAIKMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgWgMB0G\nA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEA\nZLJsSDfnqw1fq796la2eG4rvmiSSJjJ538572mwEy+onM7I3YLYCcB3WigGUzGCN\nZrCxxSjM8o0fxzsAC6lF0R8/TH2JGcIkbDs9AeKrxk2R6rzw9GX7piuY8coq3/as\nkajp304mXNvu3fDab2+ZS1V9GtxwFH85PfToN5le5Hj5r32C5li3COCd50MldjtA\nuxXXdP0pZ6kQXPiANQMEsd3Cw3WwajsDBVVoS51q0aBXwpaXYVZKOQseXYnxGLIx\nQtPSAxwFS8aeZ+jBOyChneaQiUdMc6QtK5NdWgGhSI3eAOr7T2sV/ZGgQqTxNd05\nPoj+ZRuLb3wyRtsDCQJiDw==\n-----END CERTIFICATE-----";
+
 export default function X509Tool() {
   const t = useTranslations("tools.x509");
   const locale = useLocale();
@@ -143,9 +146,15 @@ export default function X509Tool() {
   return (
     <div className="cidr-tool jwt-tool x509-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="x509-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="x509-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="x509-input"
           className="cidr-input jwt-input mono"

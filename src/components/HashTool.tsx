@@ -16,6 +16,9 @@ import { useCallback, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, HASH_ALGORITHMS, type HashAlgorithm, type HashResult } from "@/lib/tools/hash";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "abc";
+
 export default function HashTool() {
   const t = useTranslations("tools.hash");
 
@@ -76,9 +79,15 @@ export default function HashTool() {
       </div>
 
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="hash-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="hash-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="hash-input"
           className="cidr-input jwt-input mono"

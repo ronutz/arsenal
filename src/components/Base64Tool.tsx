@@ -19,6 +19,9 @@ import { run, CODECS, type Codec, type CodecResult } from "@/lib/tools/base64";
 
 type Direction = "encode" | "decode";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "foobar";
+
 export default function Base64Tool() {
   const t = useTranslations("tools.base64");
 
@@ -98,9 +101,15 @@ export default function Base64Tool() {
       </div>
 
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="b64-input">
-          {direction === "encode" ? t("inputLabelEncode") : t("inputLabelDecode")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="b64-input">
+            {direction === "encode" ? t("inputLabelEncode") : t("inputLabelDecode")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => { setDirection("encode"); setValue(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="b64-input"
           className="cidr-input jwt-input mono"

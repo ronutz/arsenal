@@ -75,6 +75,10 @@ function LineContent({ text, parts, mark }: { text: string; parts: WordPart[] | 
   );
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE_A = "line1\nline2";
+const EXAMPLE_B = "line1\nline2\nline3";
+
 export default function DiffTool() {
   const t = useTranslations("tools.diff");
 
@@ -103,9 +107,15 @@ export default function DiffTool() {
       {/* The two inputs, side by side on wide screens */}
       <div className="diff-inputs">
         <div className="cidr-input-row diff-input-col">
-          <label className="cidr-label" htmlFor="diff-a">
-            {t("originalLabel")}
-          </label>
+          <div className="dig-input-head">
+            <label className="cidr-label" htmlFor="diff-a">
+              {t("originalLabel")}
+            </label>
+            <div className="dig-input-actions">
+              <button type="button" className="b64-copy" onClick={() => { setA(EXAMPLE_A); setB(EXAMPLE_B); }}>{t("example")}</button>
+              <button type="button" className="b64-copy" onClick={() => { setA(""); setB(""); }}>{t("clear")}</button>
+            </div>
+          </div>
           <textarea
             id="diff-a"
             className="cidr-input jwt-input mono diff-textarea"

@@ -17,6 +17,10 @@ import { useCallback, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, HMAC_ALGORITHMS, type HmacAlgorithm, type HmacResult } from "@/lib/tools/hmac";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE_MSG = "what do ya want for nothing?";
+const EXAMPLE_KEY = "Jefe";
+
 export default function HmacTool() {
   const t = useTranslations("tools.hmac");
 
@@ -73,9 +77,15 @@ export default function HmacTool() {
       </div>
 
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="hmac-message">
-          {t("messageLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="hmac-message">
+            {t("messageLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => { setMessage(EXAMPLE_MSG); setKeyText(EXAMPLE_KEY); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setMessage(""); setKeyText(""); }}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="hmac-message"
           className="cidr-input jwt-input mono"

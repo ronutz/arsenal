@@ -19,6 +19,9 @@ import { generateV4, generateV7, inspectUuid, type UuidInfo } from "@/lib/tools/
 
 type Version = "v4" | "v7";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "550e8400-e29b-41d4-a716-446655440000";
+
 export default function UuidTool() {
   const t = useTranslations("tools.uuid");
 
@@ -113,9 +116,15 @@ export default function UuidTool() {
 
       {/* Inspect */}
       <div className="cidr-input-row uuid-inspect">
-        <label className="cidr-label" htmlFor="uuid-inspect">
-          {t("inspectLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="uuid-inspect">
+            {t("inspectLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInspectInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInspectInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <input
           id="uuid-inspect"
           type="text"

@@ -59,6 +59,9 @@ interface Progress {
   done: boolean;
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "d41d8cd98f00b204e9800998ecf8427e";
+
 export default function HashPreimageFinderTool() {
   const t = useTranslations("tools.hash-preimage-finder");
 
@@ -138,7 +141,13 @@ export default function HashPreimageFinderTool() {
   return (
     <div className="cidr-tool jwt-tool dig-tool hpf-tool">
       {/* --- Input --- */}
-      <label className="cidr-label" htmlFor="hpf-hash">{t("hashLabel")}</label>
+      <div className="dig-input-head">
+        <label className="cidr-label" htmlFor="hpf-hash">{t("hashLabel")}</label>
+        <div className="dig-input-actions">
+          <button type="button" className="b64-copy" onClick={() => setHashInput(EXAMPLE)}>{t("example")}</button>
+          <button type="button" className="b64-copy" onClick={() => setHashInput("")}>{t("clear")}</button>
+        </div>
+      </div>
       <input
         id="hpf-hash"
         className="cidr-input dig-mono"

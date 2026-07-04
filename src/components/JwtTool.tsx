@@ -80,6 +80,9 @@ type VerifyState =
   | { kind: "algNone" }
   | { kind: "unsupported"; alg: string };
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
 export default function JwtTool() {
   const t = useTranslations("tools.jwt");
   const locale = useLocale();
@@ -190,9 +193,15 @@ export default function JwtTool() {
   return (
     <div className="cidr-tool jwt-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="jwt-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="jwt-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(""); setSecret(""); }}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="jwt-input"
           className="cidr-input jwt-input mono"

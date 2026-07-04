@@ -137,9 +137,15 @@ export default function BigipTcpdumpBuilderTool() {
         <legend className="tcpdump-legend">{t("groupInterface")}</legend>
 
         <div className="tcpdump-field">
-          <label className="cidr-label" htmlFor="tcp-iface">
-            {t("ifaceLabel")}
-          </label>
+          <div className="dig-input-head">
+            <label className="cidr-label" htmlFor="tcp-iface">
+              {t("ifaceLabel")}
+            </label>
+            <div className="dig-input-actions">
+              <button type="button" className="b64-copy" onClick={() => setOpts({ ...DEFAULT_OPTIONS, iface: "0.0", detail: "nnn", nameResolution: "no-dns-port", filter: "host 10.1.1.1 and port 443" })}>{t("example")}</button>
+              <button type="button" className="b64-copy" onClick={() => setOpts(DEFAULT_OPTIONS)}>{t("clear")}</button>
+            </div>
+          </div>
           <input
             id="tcp-iface"
             className="cidr-input mono"

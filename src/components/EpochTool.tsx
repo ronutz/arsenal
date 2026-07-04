@@ -47,6 +47,9 @@ function relativeTime(targetMs: number, nowMs: number, locale: string): string {
   return rtf.format(0, "second");
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "1000000000";
+
 export default function EpochTool() {
   const t = useTranslations("tools.epoch");
   const locale = useLocale();
@@ -72,9 +75,15 @@ export default function EpochTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool epoch-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="epoch-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="epoch-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <div className="epoch-input-wrap">
           <input
             id="epoch-input"

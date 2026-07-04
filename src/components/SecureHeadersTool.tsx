@@ -46,6 +46,9 @@ const SEVERITY: Record<HeaderRating, number> = {
   strong: 4,
 };
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "HTTP/2 200\nstrict-transport-security: max-age=63072000; includeSubDomains; preload\ncontent-security-policy: default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'\nx-content-type-options: nosniff\nx-frame-options: DENY\nreferrer-policy: strict-origin-when-cross-origin\npermissions-policy: geolocation=(), camera=(), microphone=()\ncross-origin-opener-policy: same-origin\ncross-origin-resource-policy: same-origin\nset-cookie: __Host-session=abc; Secure; HttpOnly; SameSite=Lax; Path=/";
+
 export default function SecureHeadersTool() {
   const t = useTranslations("tools.secure-headers");
 
@@ -86,9 +89,15 @@ export default function SecureHeadersTool() {
   return (
     <div className="cidr-tool jwt-tool secure-headers-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="sh-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="sh-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="sh-input"
           className="cidr-input mono sh-textarea"

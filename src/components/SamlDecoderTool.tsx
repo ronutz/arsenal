@@ -68,6 +68,9 @@ function Field({ label, value, mono }: { label: string; value?: string; mono?: b
   );
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"_r\" Version=\"2.0\" IssueInstant=\"2026-06-29T12:00:00Z\"><saml:Issuer>https://idp.example.com</saml:Issuer><samlp:Status><samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/></samlp:Status><saml:Assertion ID=\"a\" Version=\"2.0\" IssueInstant=\"2026-06-29T12:00:00Z\"><saml:Subject><saml:NameID>u</saml:NameID></saml:Subject><saml:Conditions><saml:AudienceRestriction><saml:Audience>https://sp.example.com</saml:Audience></saml:AudienceRestriction></saml:Conditions></saml:Assertion></samlp:Response>";
+
 export default function SamlDecoderTool() {
   const t = useTranslations("tools.saml-decoder");
 
@@ -187,9 +190,15 @@ export default function SamlDecoderTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="saml-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="saml-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="saml-input"
           className="cidr-input mono saml-textarea"

@@ -16,6 +16,9 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, type Operator } from "@/lib/tools/f5-cipher-string-expander";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "ECDHE:RSA:!SSLv3:!RC4:!EXP:!DES:!MD5:@STRENGTH";
+
 export default function F5CipherStringExpanderTool() {
   const t = useTranslations("tools.f5-cipher-string-expander");
   const [input, setInput] = useState("");
@@ -28,9 +31,15 @@ export default function F5CipherStringExpanderTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool cipherstr-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="cipherstr-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="cipherstr-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="cipherstr-input"
           className="cidr-input mono saml-textarea json-input cipherstr-input"

@@ -31,6 +31,9 @@ const JWKS_DEMO_KEYS: { kid: string; match: boolean; y: number }[] = [
   { kid: "k3", match: false, y: 113 },
 ];
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "{\n  \"keys\": [\n    {\n      \"kty\": \"EC\",\n      \"crv\": \"P-256\",\n      \"x\": \"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4\",\n      \"y\": \"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM\",\n      \"use\": \"enc\",\n      \"kid\": \"1\"\n    },\n    {\n      \"kty\": \"RSA\",\n      \"n\": \"0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx4cbbfAAtVT86zwu1RK7aPFFxuhDR1L6tSoc_BJECPebWKRXjBZCiFV4n3oknjhMstn64tZ_2W-5JsGY4Hc5n9yBXArwl93lqt7_RN5w6Cf0h4QyQ5v-65YGjQR0_FDW2QvzqY368QQMicAtaSqzs8KJZgnYb9c7d0zgdAZHzu6qMQvRL5hajrn1n91CbOpbISD08qNLyrdkt-bFTWhAI4vMQFh6WeZu0fM4lFd2NcRwr3XPksINHaQ-G_xBniIqbw0Ls1jF44-csFCur-kEgU8awapJzKnqDKgw\",\n      \"e\": \"AQAB\",\n      \"alg\": \"RS256\",\n      \"use\": \"sig\",\n      \"kid\": \"2011-04-29\"\n    }\n  ]\n}";
+
 export default function JwksExplainerTool() {
   const t = useTranslations("tools.jwks-explainer");
   const [mode, setMode] = useState<Mode>("explain");
@@ -110,9 +113,15 @@ export default function JwksExplainerTool() {
       </div>
 
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="jwks-input">
-          {t("jwksInputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="jwks-input">
+            {t("jwksInputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setJwks(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setJwks(""); setJwt(""); }}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="jwks-input"
           className="json-input mono"

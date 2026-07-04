@@ -33,6 +33,9 @@ import {
   type LookupResult,
 } from "@/lib/tools/f5-service-check-date";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "17.1.3";
+
 export default function F5ServiceCheckDateTool() {
   const t = useTranslations("tools.f5-service-check-date");
 
@@ -68,9 +71,15 @@ export default function F5ServiceCheckDateTool() {
   return (
     <div className="cidr-tool jwt-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="scd-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="scd-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <input
           id="scd-input"
           type="text"

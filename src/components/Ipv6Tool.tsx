@@ -18,6 +18,9 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, Ipv6DecodeError, type DecodedIpv6 } from "@/lib/tools/ipv6";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "2001:db8:0:0:8:800:200c:417a";
+
 export default function Ipv6Tool() {
   const t = useTranslations("tools.ipv6");
 
@@ -49,9 +52,15 @@ export default function Ipv6Tool() {
   return (
     <div className="cidr-tool jwt-tool ipv6-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="ipv6-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="ipv6-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <input
           id="ipv6-input"
           className="cidr-input mono"

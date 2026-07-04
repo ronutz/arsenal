@@ -71,7 +71,13 @@ export default function IrulesEventOrderTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool irev-tool">
       <div className="cidr-input-row">
-        <p className="cidr-label">{t("stackLabel")}</p>
+        <div className="dig-input-head">
+          <p className="cidr-label">{t("stackLabel")}</p>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setCfg((PRESETS.find((p) => p.key === "https") ?? PRESETS[0]).cfg)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setCfg({ fastL4: false, clientSsl: false, http: false, serverSsl: false, pool: false })}>{t("clear")}</button>
+          </div>
+        </div>
         <div className="irev-toggles">
           {TOGGLES.map(({ field, key }) => (
             <label key={key} className={`irev-toggle${cfg[field] ? " irev-toggle-on" : ""}`}>

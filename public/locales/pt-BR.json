@@ -192,7 +192,9 @@
       "rangeHeading": "Layout de endereços",
       "usableShort": "utilizáveis",
       "rfcNote": "/31 e /32 não reservam nada: todo endereço é utilizável (RFC 3021).",
-      "reservedNote": "O primeiro endereço é a rede e o último é o broadcast; ambos são reservados, então utilizáveis = total − 2."
+      "reservedNote": "O primeiro endereço é a rede e o último é o broadcast; ambos são reservados, então utilizáveis = total − 2.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "secure-headers": {
       "name": "Analisador de Cabeçalhos de Segurança",
@@ -312,7 +314,9 @@
         "OVERALL_CORS_RISK": "Uma política de origem cruzada (CORS) expõe dados a outros sites.",
         "OVERALL_STRONG": "Postura geral de cabeçalhos de segurança forte.",
         "OVERALL_POOR": "Vários cabeçalhos de segurança essenciais estão ausentes."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "saml-decoder": {
       "name": "Decodificador SAML",
@@ -406,7 +410,9 @@
         "s6": "O navegador envia a SAMLResponse (POST) de volta ao ACS do SP",
         "s7": "O SP verifica a assinatura, as condições e o audience",
         "s8": "O SP estabelece uma sessão e concede o acesso"
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "oidc": {
       "name": "Decodificador OIDC",
@@ -489,7 +495,9 @@
         "s6": "A Relying Party valida a assinatura do ID token contra o JWKS",
         "s7": "A Relying Party pode chamar o UserInfo com o access token",
         "s8": "O provedor retorna as claims do usuário"
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "f5-bigip-persistence-cookie": {
       "name": "Decodificador de Cookie de Persistência BIG-IP",
@@ -548,7 +556,9 @@
         "routeDomainPlaceholder": "ex.: 0",
         "resultLabel": "Valor do cookie",
         "resultNote": "Este é o valor que um BIG-IP definiria para esse membro do pool usando a codificação padrão (sem criptografia)."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "url-inspector": {
       "name": "Inspetor de URL",
@@ -599,7 +609,9 @@
         "PERCENT_ENCODED": "Esta URL contém caracteres codificados em percent, que foram decodificados no detalhamento acima.",
         "PLUS_IN_QUERY": "A query contém um sinal de mais. Sob form encoding (application/x-www-form-urlencoded) um mais significa espaço; sob a RFC 3986 estrita é um mais literal. Os valores acima o mantêm literal."
       },
-      "note": "Os componentes são mostrados exatamente como escritos, sem normalização. A análise segue a RFC 3986; a query é dividida em & e =, e cada parte é decodificada de percent."
+      "note": "Os componentes são mostrados exatamente como escritos, sem normalização. A análise segue a RFC 3986; a query é dividida em & e =, e cada parte é decodificada de percent.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "json-formatter": {
       "name": "Formatador e Validador JSON",
@@ -631,7 +643,9 @@
       "statKeys": "{n} chaves",
       "statObjects": "{n} objetos",
       "statArrays": "{n} arrays",
-      "statDepth": "profundidade {n}"
+      "statDepth": "profundidade {n}",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "json-yaml-convert": {
       "name": "Conversor JSON ↔ YAML",
@@ -664,7 +678,9 @@
       "outputYaml": "YAML",
       "outputJson": "JSON",
       "copy": "Copiar",
-      "copied": "Copiado"
+      "copied": "Copiado",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "f5-tmsh-config-explainer": {
       "name": "Explicador de configuração tmsh",
@@ -680,7 +696,9 @@
       "notExplained": "ainda não explicado",
       "blockTag": "bloco",
       "iruleLabel": "Esta é uma iRule em Tcl, exibida na íntegra. É código executado em eventos, não configuração tmsh.",
-      "notesHeading": "Pontos de atenção"
+      "notesHeading": "Pontos de atenção",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "f5-persistence-method-explainer": {
       "name": "Explicador de métodos de persistência",
@@ -701,7 +719,9 @@
       "caveatsHeading": "Atenção a",
       "notExplained": "ainda não explicado",
       "unknownMethod": "método",
-      "blockTag": "bloco"
+      "blockTag": "bloco",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "f5-lb-method-chooser": {
       "name": "Seletor de métodos de balanceamento",
@@ -771,7 +791,9 @@
       "opDelete": "remover",
       "opLowerPriority": "baixar prioridade",
       "opSort": "ordenar",
-      "notRecognized": "não reconhecido"
+      "notRecognized": "não reconhecido",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "syslog-pri-decoder": {
       "name": "Decodificador + codificador de PRI syslog",
@@ -793,7 +815,9 @@
       "struct": {
         "heading": "Como um PRI se divide em facility e severity",
         "note": "Um único inteiro PRI carrega os dois campos. Dividir por 8 dá a facility, e o resto dá a severity, então o PRI 134 é facility 16 e severity 6. Codificar funciona no sentido inverso: facility × 8 + severity."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "jwks-explainer": {
       "name": "Explicador de JWKS + correspondência de chaves",
@@ -825,7 +849,9 @@
         "jwtHeader": "Cabeçalho do JWT",
         "matchLabel": "correspondência por kid",
         "note": "Quando um JWT chega, o verificador lê o seu kid e encontra a única chave do conjunto com o mesmo kid, e então usa essa chave para conferir a assinatura. Cada chave precisa de um kid distinto para que isso seja inequívoco."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "regex": {
       "name": "Kit de Regex",
@@ -852,7 +878,9 @@
       "showingFirst": "Mostrando as primeiras",
       "matchesWord": "correspondências",
       "tooLong": "O texto de teste é longo demais para executar; encurte-o e tente novamente.",
-      "runsLocally": "Executa inteiramente no seu navegador."
+      "runsLocally": "Executa inteiramente no seu navegador.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "title": "Ferramentas que calculam, nunca chutam.",
     "lede": "Utilitários pequenos, rápidos e que respeitam a privacidade, rodando inteiramente no seu navegador. Nada do que você digita é enviado a lugar nenhum.",
@@ -895,7 +923,9 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Copiar",
-      "copied": "Copiado"
+      "copied": "Copiado",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "hmac": {
       "name": "Gerador de HMAC (SHA-256/384/512)",
@@ -914,7 +944,9 @@
         "heading": "Como o HMAC é construído",
         "innerHash": "hash interno",
         "note": "O HMAC aplica o hash à mensagem duas vezes. A chave é combinada por XOR com um pad interno fixo antes do primeiro hash e com um pad externo antes do segundo, e essa construção de dois pads é o que evita ataques de extensão de comprimento. A chave é primeiro reduzida ao tamanho de bloco do hash."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "totp-hotp": {
       "name": "Gerador e validador TOTP / HOTP",
@@ -950,7 +982,9 @@
       "explainMovingFactor": "Fator móvel (contador / intervalo de tempo)",
       "explainOffset": "Deslocamento de truncamento",
       "explainTruncated": "Valor truncado para o código",
-      "explainNote": "Aplica-se HMAC ao fator móvel de 8 bytes com o seu segredo, toma-se o nibble inferior do último byte como deslocamento, leem-se 4 bytes ali como um número de 31 bits e calcula-se o módulo 10^dígitos. É o truncamento dinâmico do RFC 4226; o TOTP apenas usa o intervalo de tempo como contador."
+      "explainNote": "Aplica-se HMAC ao fator móvel de 8 bytes com o seu segredo, toma-se o nibble inferior do último byte como deslocamento, leem-se 4 bytes ali como um número de 31 bits e calcula-se o módulo 10^dígitos. É o truncamento dinâmico do RFC 4226; o TOTP apenas usa o intervalo de tempo como contador.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "diff": {
       "name": "Diff de texto",
@@ -964,7 +998,9 @@
       "resultHeading": "Diferenças",
       "emptyState": "Cole texto nas duas caixas para compará-las.",
       "noChanges": "Nenhuma diferença encontrada.",
-      "tooLarge": "Estas entradas são grandes demais para comparar no navegador. Tente comparar trechos menores."
+      "tooLarge": "Estas entradas são grandes demais para comparar no navegador. Tente comparar trechos menores.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "base64": {
       "name": "Códec Base64, Base32, Hex e Porcentual",
@@ -998,7 +1034,9 @@
         "base32": "Base32",
         "base16": "Hex",
         "percent": "Percent"
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "pkce": {
       "name": "Verificador e challenge de OAuth PKCE",
@@ -1027,7 +1065,9 @@
       "s5": "Código de autorização retornado",
       "s6": "A requisição de token leva o verifier",
       "s7": "O servidor re-deriva e compara",
-      "s8": "Tokens de acesso e refresh emitidos"
+      "s8": "Tokens de acesso e refresh emitidos",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "uuid": {
       "name": "Gerador e inspetor de UUID (v4 / v7)",
@@ -1046,7 +1086,8 @@
       "versionField": "Versão",
       "variantField": "Variante",
       "timestampField": "Carimbo de data/hora (v7)",
-      "versionValue": "Versão {version}"
+      "versionValue": "Versão {version}",
+      "example": "Exemplo"
     },
     "jwt": {
       "name": "Decodificador e verificador de JWT",
@@ -1095,7 +1136,9 @@
         "heading": "Anatomia de um JWT",
         "signingInput": "Entrada da assinatura",
         "note": "O cabeçalho e o payload são apenas codificados em base64url, não criptografados, então qualquer pessoa pode lê-los. A assinatura é calculada sobre o cabeçalho e o payload unidos por um ponto, e é o que um verificador confere."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "x509": {
       "name": "Decodificador de certificados X.509",
@@ -1182,7 +1225,9 @@
         "timestamp": "Registrado em",
         "signature": "Assinatura",
         "note": "As assinaturas são exibidas mas não verificadas aqui; verificar um SCT requer a chave pública do log e o pré-certificado."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "ipv6": {
       "name": "Kit de ferramentas IPv6",
@@ -1223,7 +1268,9 @@
       "ifaceId": "ID de interface",
       "hostBits": "Bits de host",
       "prefixNote": "Os bits à esquerda do limite são fixados pelo prefixo; os bits à direita identificam o host dentro dele.",
-      "conventionNote": "Nenhum prefixo foi informado, então a linha tracejada marca a divisão convencional /64: prefixo de roteamento e sub-rede à esquerda, o identificador de interface de 64 bits à direita."
+      "conventionNote": "Nenhum prefixo foi informado, então a linha tracejada marca a divisão convencional /64: prefixo de roteamento e sub-rede à esquerda, o identificador de interface de 64 bits à direita.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "cipher": {
       "name": "Decodificador de suítes de cifra",
@@ -1322,7 +1369,9 @@
         "legacy": "Legado",
         "combines": "Combina {classical} com {pq}",
         "foot": "X25519MLKEM768 é o grupo híbrido que a maioria dos navegadores agora envia por padrão."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "f5-ssl-profile-explainer": {
       "name": "Explicador de perfil SSL do F5",
@@ -1350,7 +1399,9 @@
       "serverLeg": "Lado do servidor",
       "thisProfile": "este perfil",
       "clientNote": "Um perfil client-ssl termina o TLS do cliente no BIG-IP. A conexão até o membro do pool só é recriptografada se um perfil server-ssl for aplicado; sem ele, esse trecho fica em texto puro (SSL offload).",
-      "serverNote": "Um perfil server-ssl permite que o BIG-IP abra uma nova conexão TLS até o membro do pool (recriptografia). O lado do cliente é tratado por um perfil client-ssl separado."
+      "serverNote": "Um perfil server-ssl permite que o BIG-IP abra uma nova conexão TLS até o membro do pool (recriptografia). O lado do cliente é tratado por um perfil client-ssl separado.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "epoch": {
       "name": "Conversor de tempo Unix",
@@ -1368,7 +1419,9 @@
       "utcHeading": "Data e hora UTC",
       "formatsHeading": "Todos os formatos",
       "dayOfYearLabel": "dia do ano",
-      "relativeNote": "relativo ao relógio do seu dispositivo"
+      "relativeNote": "relativo ao relógio do seu dispositivo",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "f5-irules-event-order": {
       "name": "Ordem de eventos de iRule",
@@ -1392,7 +1445,9 @@
       "conditionalNote": "Estes disparam apenas sob condições específicas: um TCP::collect ou HTTP::collect, uma falha de balanceamento, ou uma resposta 100 Continue.",
       "sideClient": "lado cliente",
       "sideServer": "lado servidor",
-      "sideGlobal": "global"
+      "sideGlobal": "global",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "cert-renewal-planner": {
       "name": "Planejador de renovação de certificados",
@@ -1540,7 +1595,9 @@
         "snaplen-zero-modern": "No BIG-IP 15.x e posteriores, -s0 corresponde ao snaplen padrão de 262144 bytes (mantido por compatibilidade), então ainda captura os pacotes inteiros.",
         "hex-with-writefile": "-X afeta apenas a saída na tela. Não tem efeito quando você também grava um arquivo binário com -w.",
         "colon-in-iface-name": "Um nome de interface não pode conter dois-pontos no BIG-IP. Os dois-pontos são reservados para o sufixo de detalhe da TMM."
-      }
+      },
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "dig-output-explainer": {
       "name": "explicador de saída do dig",
@@ -2223,7 +2280,9 @@
           "body": "MD5 e SHA-1 têm colisões quebradas e, como o SHA-256, são rápidos demais para guardar segredos. Use um hash de senha dedicado e dê aos segredos comprimento e aleatoriedade suficientes para que nenhuma busca no espaço de chaves os alcance."
         }
       },
-      "disclaimer": "Tudo roda localmente no seu navegador. Nada do que você cola é enviado. Esta ferramenta existe para demonstrar a fragilidade de hashes e é limitada para só recuperar entradas trivialmente fracas."
+      "disclaimer": "Tudo roda localmente no seu navegador. Nada do que você cola é enviado. Esta ferramenta existe para demonstrar a fragilidade de hashes e é limitada para só recuperar entradas trivialmente fracas.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "ssrf-url-classifier": {
       "name": "Classificador de URL para SSRF",
@@ -2334,7 +2393,9 @@
         "needsDate": "precisa de uma service check date de {date} ou posterior",
         "extractedFrom": "Do texto colado:"
       },
-      "pasteHint": "Você também pode colar o conteúdo do /config/bigip.license ou a saída de tmsh show sys license; a service check date é extraída automaticamente."
+      "pasteHint": "Você também pode colar o conteúdo do /config/bigip.license ou a saída de tmsh show sys license; a service check date é extraída automaticamente.",
+      "example": "Exemplo",
+      "clear": "Limpar"
     },
     "f5-awaf-declarative-policy-explainer": {
       "name": "Explicador de política declarativa do F5 Advanced WAF",

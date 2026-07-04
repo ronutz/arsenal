@@ -149,6 +149,9 @@ function OctetBits({ octets, prefix }: { octets: number[]; prefix: number }) {
   );
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "192.168.1.0/24";
+
 export default function CidrTool() {
   const t = useTranslations("tools.cidr");
   const [mode, setMode] = useState<Mode>("subnet");
@@ -320,9 +323,15 @@ export default function CidrTool() {
       {/* ---------- SUBNET ---------- */}
       {mode === "subnet" && (
         <div className="cidr-input-row">
-          <label className="cidr-label" htmlFor="cidr-input">
-            {t("inputLabel")}
-          </label>
+          <div className="dig-input-head">
+            <label className="cidr-label" htmlFor="cidr-input">
+              {t("inputLabel")}
+            </label>
+            <div className="dig-input-actions">
+              <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+              <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            </div>
+          </div>
           <div className="cidr-controls">
             <input
               id="cidr-input"

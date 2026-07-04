@@ -149,7 +149,9 @@
         "heading": "Anatomy of a JWT",
         "signingInput": "Signing input",
         "note": "The header and payload are only base64url-encoded, not encrypted, so anyone can read them. The signature is computed over the header and payload joined by a dot, and is what a verifier checks."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "base64": {
       "name": "Base64, Base32, Hex & Percent Codec",
@@ -183,7 +185,9 @@
         "base32": "Base32",
         "base16": "Hex",
         "percent": "Percent"
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "hash": {
       "name": "Hash Generator (SHA-1/256/384/512)",
@@ -197,7 +201,9 @@
       "hex": "Hex",
       "base64": "Base64",
       "copy": "Copy",
-      "copied": "Copied"
+      "copied": "Copied",
+      "example": "Example",
+      "clear": "Clear"
     },
     "hmac": {
       "name": "HMAC Generator (SHA-256/384/512)",
@@ -216,7 +222,9 @@
         "heading": "How HMAC is built",
         "innerHash": "inner hash",
         "note": "HMAC hashes the message twice. The key is XORed with a fixed inner pad before the first hash and with an outer pad before the second, and this two-pad construction is what prevents length-extension attacks. The key is first reduced to the hash's block size."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "totp-hotp": {
       "name": "TOTP / HOTP Generator & Validator",
@@ -252,7 +260,9 @@
       "explainMovingFactor": "Moving factor (counter / time step)",
       "explainOffset": "Truncation offset",
       "explainTruncated": "Truncated value to code",
-      "explainNote": "HMAC the 8-byte moving factor under your secret, take the low nibble of the last byte as an offset, read 4 bytes there as a 31-bit number, then take that modulo 10^digits. That is RFC 4226 dynamic truncation; TOTP just feeds the time step in as the counter."
+      "explainNote": "HMAC the 8-byte moving factor under your secret, take the low nibble of the last byte as an offset, read 4 bytes there as a 31-bit number, then take that modulo 10^digits. That is RFC 4226 dynamic truncation; TOTP just feeds the time step in as the counter.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "diff": {
       "name": "Text Diff",
@@ -266,7 +276,9 @@
       "resultHeading": "Differences",
       "emptyState": "Paste text in both boxes to compare them.",
       "noChanges": "No differences found.",
-      "tooLarge": "These inputs are too large to diff in the browser. Try comparing smaller sections."
+      "tooLarge": "These inputs are too large to diff in the browser. Try comparing smaller sections.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "pkce": {
       "name": "OAuth PKCE Verifier & Challenge",
@@ -295,7 +307,9 @@
       "s5": "Authorization code returned",
       "s6": "Token request carries the verifier",
       "s7": "Server re-derives and compares",
-      "s8": "Access and refresh tokens issued"
+      "s8": "Access and refresh tokens issued",
+      "example": "Example",
+      "clear": "Clear"
     },
     "uuid": {
       "name": "UUID Generator & Inspector (v4 / v7)",
@@ -314,7 +328,8 @@
       "versionField": "Version",
       "variantField": "Variant",
       "timestampField": "Timestamp (v7)",
-      "versionValue": "Version {version}"
+      "versionValue": "Version {version}",
+      "example": "Example"
     },
     "x509": {
       "name": "X.509 Certificate Decoder",
@@ -401,7 +416,9 @@
       "thisCert": "this certificate",
       "issuedBy": "Issued by",
       "signs": "signs",
-      "trustNote": "Trust flows downward: each certificate is signed by the one above, up to a root your system already trusts."
+      "trustNote": "Trust flows downward: each certificate is signed by the one above, up to a root your system already trusts.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "ipv6": {
       "name": "IPv6 Toolkit",
@@ -442,7 +459,9 @@
       "ifaceId": "Interface ID",
       "hostBits": "Host bits",
       "prefixNote": "Bits left of the boundary are fixed by the prefix; bits to the right identify the host within it.",
-      "conventionNote": "No prefix was given, so the dashed line marks the conventional /64 split: routing prefix and subnet on the left, the 64-bit interface identifier on the right."
+      "conventionNote": "No prefix was given, so the dashed line marks the conventional /64 split: routing prefix and subnet on the left, the 64-bit interface identifier on the right.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "cidr": {
       "name": "CIDR / Subnet Calculator",
@@ -558,7 +577,9 @@
       "rangeHeading": "Address layout",
       "usableShort": "usable",
       "rfcNote": "/31 and /32 reserve nothing: every address is usable (RFC 3021).",
-      "reservedNote": "The first address is the network and the last is the broadcast; both are reserved, so usable = total − 2."
+      "reservedNote": "The first address is the network and the last is the broadcast; both are reserved, so usable = total − 2.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "secure-headers": {
       "name": "Secure Headers Analyzer",
@@ -678,7 +699,9 @@
         "OVERALL_CORS_RISK": "A cross-origin (CORS) policy exposes data to other sites.",
         "OVERALL_STRONG": "Strong overall security-header posture.",
         "OVERALL_POOR": "Several core security headers are missing."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "saml-decoder": {
       "name": "SAML Decoder",
@@ -772,7 +795,9 @@
         "s6": "The browser POSTs the SAMLResponse back to the SP's ACS",
         "s7": "The SP checks the signature, conditions, and audience",
         "s8": "The SP establishes a session and grants access"
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "oidc": {
       "name": "OIDC Decoder",
@@ -855,7 +880,9 @@
         "s6": "Relying Party validates the ID token signature against the JWKS",
         "s7": "Relying Party may call UserInfo with the access token",
         "s8": "Provider returns the user's claims"
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "f5-bigip-persistence-cookie": {
       "name": "BIG-IP Persistence Cookie Decoder",
@@ -914,7 +941,9 @@
         "routeDomainPlaceholder": "e.g. 0",
         "resultLabel": "Cookie value",
         "resultNote": "This is the value a BIG-IP would set for that pool member using the default (unencrypted) encoding."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "url-inspector": {
       "name": "URL Inspector",
@@ -965,7 +994,9 @@
         "PERCENT_ENCODED": "This URL contains percent-encoded characters, which have been decoded in the breakdown above.",
         "PLUS_IN_QUERY": "The query contains a plus sign. Under form encoding (application/x-www-form-urlencoded) a plus means a space; under strict RFC 3986 it is a literal plus. The values above keep it literal."
       },
-      "note": "Components are shown exactly as written, without normalization. Parsing follows RFC 3986; the query is split on & and =, and each part is percent-decoded."
+      "note": "Components are shown exactly as written, without normalization. Parsing follows RFC 3986; the query is split on & and =, and each part is percent-decoded.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "json-formatter": {
       "name": "JSON Formatter & Validator",
@@ -997,7 +1028,9 @@
       "statKeys": "{n} keys",
       "statObjects": "{n} objects",
       "statArrays": "{n} arrays",
-      "statDepth": "depth {n}"
+      "statDepth": "depth {n}",
+      "example": "Example",
+      "clear": "Clear"
     },
     "json-yaml-convert": {
       "name": "JSON ↔ YAML Converter",
@@ -1030,7 +1063,9 @@
       "outputYaml": "YAML",
       "outputJson": "JSON",
       "copy": "Copy",
-      "copied": "Copied"
+      "copied": "Copied",
+      "example": "Example",
+      "clear": "Clear"
     },
     "f5-tmsh-config-explainer": {
       "name": "tmsh config explainer",
@@ -1046,7 +1081,9 @@
       "notExplained": "not yet explained",
       "blockTag": "block",
       "iruleLabel": "This is a Tcl iRule, shown verbatim. It is code that runs on events, not tmsh configuration.",
-      "notesHeading": "Things to notice"
+      "notesHeading": "Things to notice",
+      "example": "Example",
+      "clear": "Clear"
     },
     "f5-persistence-method-explainer": {
       "name": "Persistence-method explainer",
@@ -1067,7 +1104,9 @@
       "caveatsHeading": "Watch out for",
       "notExplained": "not yet explained",
       "unknownMethod": "method",
-      "blockTag": "block"
+      "blockTag": "block",
+      "example": "Example",
+      "clear": "Clear"
     },
     "f5-lb-method-chooser": {
       "name": "LB-method chooser",
@@ -1137,7 +1176,9 @@
       "opDelete": "remove",
       "opLowerPriority": "lower priority",
       "opSort": "sort",
-      "notRecognized": "not recognized"
+      "notRecognized": "not recognized",
+      "example": "Example",
+      "clear": "Clear"
     },
     "syslog-pri-decoder": {
       "name": "Syslog PRI decoder + encoder",
@@ -1159,7 +1200,9 @@
       "struct": {
         "heading": "How a PRI splits into facility and severity",
         "note": "A single PRI integer carries both fields. Dividing by 8 gives the facility, and the remainder gives the severity, so PRI 134 is facility 16 and severity 6. Encoding runs the other way: facility × 8 + severity."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "jwks-explainer": {
       "name": "JWKS explainer + key matcher",
@@ -1191,7 +1234,9 @@
         "jwtHeader": "JWT header",
         "matchLabel": "matched by kid",
         "note": "When a JWT arrives, the verifier reads its kid and finds the one key in the set with the same kid, then uses that key to check the signature. Each key needs a distinct kid for this to be unambiguous."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "regex": {
       "name": "Regex Toolkit",
@@ -1218,7 +1263,9 @@
       "showingFirst": "Showing the first",
       "matchesWord": "matches",
       "tooLong": "The test text is too long to run; shorten it and try again.",
-      "runsLocally": "Runs entirely in your browser."
+      "runsLocally": "Runs entirely in your browser.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "title": "Tools that compute, never guess.",
     "lede": "Small, fast, privacy-first utilities that run entirely in your browser. Nothing you type is sent anywhere.",
@@ -1322,7 +1369,9 @@
         "legacy": "Legacy",
         "combines": "Combines {classical} with {pq}",
         "foot": "X25519MLKEM768 is the hybrid most browsers now send by default."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "f5-ssl-profile-explainer": {
       "name": "F5 SSL profile explainer",
@@ -1350,7 +1399,9 @@
       "serverLeg": "Server side",
       "thisProfile": "this profile",
       "clientNote": "A client-ssl profile terminates the client's TLS at the BIG-IP. The connection on to the pool member is re-encrypted only if a server-ssl profile is applied; with none, that leg is cleartext (SSL offload).",
-      "serverNote": "A server-ssl profile lets the BIG-IP open a fresh TLS connection to the pool member (re-encryption). The client side is handled by a separate client-ssl profile."
+      "serverNote": "A server-ssl profile lets the BIG-IP open a fresh TLS connection to the pool member (re-encryption). The client side is handled by a separate client-ssl profile.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "epoch": {
       "name": "Unix time converter",
@@ -1368,7 +1419,9 @@
       "utcHeading": "UTC date and time",
       "formatsHeading": "Every format",
       "dayOfYearLabel": "day of year",
-      "relativeNote": "relative to your device clock"
+      "relativeNote": "relative to your device clock",
+      "example": "Example",
+      "clear": "Clear"
     },
     "f5-irules-event-order": {
       "name": "iRule event order",
@@ -1392,7 +1445,9 @@
       "conditionalNote": "These fire only under specific conditions: a TCP::collect or HTTP::collect, a load-balancing failure, or a 100 Continue response.",
       "sideClient": "client side",
       "sideServer": "server side",
-      "sideGlobal": "global"
+      "sideGlobal": "global",
+      "example": "Example",
+      "clear": "Clear"
     },
     "cert-renewal-planner": {
       "name": "Certificate renewal planner",
@@ -1540,7 +1595,9 @@
         "snaplen-zero-modern": "On BIG-IP 15.x and later, -s0 maps to the default snap length of 262144 bytes (kept for compatibility), so it still captures whole packets.",
         "hex-with-writefile": "-X only affects on-screen output. It has no effect when you also write a binary file with -w.",
         "colon-in-iface-name": "An interface name must not contain a colon on BIG-IP. The colon is reserved for the TMM detail suffix."
-      }
+      },
+      "example": "Example",
+      "clear": "Clear"
     },
     "dig-output-explainer": {
       "name": "dig output explainer",
@@ -2223,7 +2280,9 @@
           "body": "MD5 and SHA-1 are collision-broken and, like SHA-256, far too fast for storing secrets. Use a purpose-built password hash, and give secrets enough length and randomness that no keyspace search can reach them."
         }
       },
-      "disclaimer": "Everything runs locally in your browser. Nothing you paste is uploaded. This tool exists to demonstrate hash weakness and is bounded so it can only recover trivially weak inputs."
+      "disclaimer": "Everything runs locally in your browser. Nothing you paste is uploaded. This tool exists to demonstrate hash weakness and is bounded so it can only recover trivially weak inputs.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "ssrf-url-classifier": {
       "name": "SSRF URL classifier",
@@ -2334,7 +2393,9 @@
         "needsDate": "needs a service check date of {date} or later",
         "extractedFrom": "From your pasted text:"
       },
-      "pasteHint": "You can also paste your /config/bigip.license contents or the tmsh show sys license output; the service check date is picked out automatically."
+      "pasteHint": "You can also paste your /config/bigip.license contents or the tmsh show sys license output; the service check date is picked out automatically.",
+      "example": "Example",
+      "clear": "Clear"
     },
     "f5-awaf-declarative-policy-explainer": {
       "name": "F5 Advanced WAF declarative-policy explainer",

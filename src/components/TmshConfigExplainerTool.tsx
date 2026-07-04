@@ -15,6 +15,9 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { explainConfig, parseTmsh } from "@/lib/tools/f5-tmsh-config-explainer";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "ltm virtual vip {\n    destination 10.0.0.9:443\n    ip-protocol tcp\n    pool web_pool\n    profiles { tcp { } http { } }\n}";
+
 export default function TmshConfigExplainerTool() {
   const t = useTranslations("tools.f5-tmsh-config-explainer");
   const [input, setInput] = useState("");
@@ -24,9 +27,15 @@ export default function TmshConfigExplainerTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="tmsh-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="tmsh-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="tmsh-input"
           className="cidr-input mono saml-textarea json-input tmsh-input"

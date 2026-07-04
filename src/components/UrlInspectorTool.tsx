@@ -36,6 +36,9 @@ function Row({ label, value, mono }: { label: string; value?: string; mono?: boo
   );
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "https://user:pass@www.example.com:8443/path/to/page?a=1&b=hello%20world&c#section";
+
 export default function UrlInspectorTool() {
   const t = useTranslations("tools.url-inspector");
 
@@ -73,9 +76,15 @@ export default function UrlInspectorTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool url-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="url-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="url-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="url-input"
           className="cidr-input mono saml-textarea"

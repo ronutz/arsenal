@@ -31,6 +31,9 @@ import {
 const MODES: readonly OtpMode[] = ["totp", "hotp"];
 const DIGIT_CHOICES = [6, 7, 8] as const;
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "12345678901234567890";
+
 export default function TotpHotpTool() {
   const t = useTranslations("tools.totp-hotp");
 
@@ -159,9 +162,15 @@ export default function TotpHotpTool() {
 
       {/* Secret + its encoding */}
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="otp-secret">
-          {t("secretLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="otp-secret">
+            {t("secretLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => { setMode("hotp"); setEncoding("ascii"); setSecret(EXAMPLE); setCounter(0); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setSecret("")}>{t("clear")}</button>
+          </div>
+        </div>
         <input
           id="otp-secret"
           type="text"

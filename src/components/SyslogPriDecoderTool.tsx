@@ -17,6 +17,9 @@ import { decodePri, encodePri, FACILITIES, SEVERITIES } from "@/lib/tools/syslog
 
 type Mode = "decode" | "encode";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "<34>";
+
 export default function SyslogPriDecoderTool() {
   const t = useTranslations("tools.syslog-pri-decoder");
   const [mode, setMode] = useState<Mode>("decode");
@@ -44,9 +47,15 @@ export default function SyslogPriDecoderTool() {
       {mode === "decode" ? (
         <>
           <div className="cidr-input-row">
-            <label className="cidr-label" htmlFor="syslogpri-input">
-              {t("decodeInputLabel")}
-            </label>
+            <div className="dig-input-head">
+              <label className="cidr-label" htmlFor="syslogpri-input">
+                {t("decodeInputLabel")}
+              </label>
+              <div className="dig-input-actions">
+                <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+                <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+              </div>
+            </div>
             <input
               id="syslogpri-input"
               className="cidr-input mono"

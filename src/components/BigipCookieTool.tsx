@@ -49,6 +49,9 @@ function Field({ label, value, mono }: { label: string; value?: string; mono?: b
   );
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "1677787402.20480.0000";
+
 export default function BigipCookieTool() {
   const t = useTranslations("tools.f5-bigip-persistence-cookie");
   const [mode, setMode] = useState<Mode>("decode");
@@ -158,9 +161,15 @@ export default function BigipCookieTool() {
       {mode === "decode" ? (
         <>
           <div className="cidr-input-row">
-            <label className="cidr-label" htmlFor="bigip-input">
-              {t("inputLabel")}
-            </label>
+            <div className="dig-input-head">
+              <label className="cidr-label" htmlFor="bigip-input">
+                {t("inputLabel")}
+              </label>
+              <div className="dig-input-actions">
+                <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+                <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+              </div>
+            </div>
             <textarea
               id="bigip-input"
               className="cidr-input mono saml-textarea"

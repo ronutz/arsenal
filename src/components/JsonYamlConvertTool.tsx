@@ -20,6 +20,9 @@ import { convert, detectFormat, type Direction, type IndentWidth } from "@/lib/t
 
 const NOTE_CODES = ["COMMENTS_DROPPED", "ANCHORS_EXPANDED", "MERGE_KEYS_LITERAL", "LARGE_NUMBER"] as const;
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "name: api\nport: 80";
+
 export default function JsonYamlConvertTool() {
   const t = useTranslations("tools.json-yaml-convert");
 
@@ -53,9 +56,15 @@ export default function JsonYamlConvertTool() {
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="jy-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="jy-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setInput(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
+          </div>
+        </div>
         <textarea
           id="jy-input"
           className="cidr-input mono saml-textarea json-input"

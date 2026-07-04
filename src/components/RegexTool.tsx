@@ -33,6 +33,11 @@ import {
   type RegexMatch,
 } from "@/lib/tools/regex";
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE_PAT = "\\d+";
+const EXAMPLE_FLAGS = "g";
+const EXAMPLE_TEXT = "a1b22c333";
+
 export default function RegexTool() {
   const t = useTranslations("tools.regex");
   const [pattern, setPattern] = useState("");
@@ -131,9 +136,15 @@ export default function RegexTool() {
 
       {/* Pattern + flags, styled like a /pattern/flags literal */}
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="regex-pattern">
-          {t("patternLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="regex-pattern">
+            {t("patternLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => { setPattern(EXAMPLE_PAT); setFlags(EXAMPLE_FLAGS); setTestText(EXAMPLE_TEXT); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setPattern(""); setTestText(""); }}>{t("clear")}</button>
+          </div>
+        </div>
         <div className="regex-literal">
           <span className="regex-slash">/</span>
           <input

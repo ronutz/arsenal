@@ -49,6 +49,9 @@ function ianaKind(rec: "Y" | "N" | "D"): "ok" | "warn" | "bad" {
   return "warn";
 }
 
+// D-83 Example samples — verbatim from this tool's golden vectors.
+const EXAMPLE = "TLS_CHACHA20_POLY1305_SHA256";
+
 export default function CipherTool() {
   const t = useTranslations("tools.cipher");
 
@@ -87,9 +90,15 @@ export default function CipherTool() {
   return (
     <div className="cidr-tool jwt-tool cipher-tool">
       <div className="cidr-input-row">
-        <label className="cidr-label" htmlFor="cipher-input">
-          {t("inputLabel")}
-        </label>
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="cipher-input">
+            {t("inputLabel")}
+          </label>
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+          </div>
+        </div>
         <input
           id="cipher-input"
           type="text"

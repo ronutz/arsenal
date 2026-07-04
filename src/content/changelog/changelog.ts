@@ -43,6 +43,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-04",
+    time: "02:14",
+    kind: "feature",
+    title: "Every tool now has an Example button (D-83 retrofit complete)",
+    body:
+      "The Example and Clear buttons that newer tools shipped with are now on every tool, all 54 of them. The 31 retrofitted tools each load a sample taken verbatim from their own golden test vectors, so every example provably works: the RFC 4231 HMAC test case, the RFC 7636 PKCE verifier from appendix B, the RFC 7517 example key set, the canonical jwt.io token, the classic BIG-IP persistence cookie from K6917, real tmsh stanzas, and more. Even the two form-style tools joined in their own way: the iRule event-order tool's Example applies the HTTPS re-encrypt preset, and the tcpdump builder's fills in the all-TMM interface, name-resolution-off, and a host-and-port filter. One click shows what each tool does; one click clears it.",
+  },
+  {
     date: "2026-07-03",
     time: "22:39",
     kind: "feature",
