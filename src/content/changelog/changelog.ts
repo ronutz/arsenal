@@ -44,6 +44,42 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-04",
+    time: "11:39",
+    kind: "tool",
+    title: "New: AWAF policy-diff hole checker (FP set complete)",
+    body:
+      "Paste a before and an after declarative WAF policy and it classifies every security-relevant change as a relaxation or a tightening, then answers the question that matters after tuning: did this open a hole? It separates relaxations that widen protection beyond a single entity (switching to Transparent, disabling a violation or evasion, Data Guard off, trusting X-Forwarded-For, moving signatures to staging, or adding a wildcard entity) from a properly-scoped single-entity allow (adding one URL or parameter, the normal false-positive fix). The verdict is opened-hole if any policy-wide relaxation is present, scoped-only if the widenings stay entity-scoped, or tightened-only. This completes the four-tool false-positive set (request-log triage, learning-suggestion interpreter, signature accuracy/risk, and now policy-diff). Field paths validated against F5's declarative WAF policy schema; decode-only, nothing leaves the browser.",
+    tools: ["f5-awaf-policy-diff"],
+  },
+  {
+    date: "2026-07-04",
+    time: "11:14",
+    kind: "tool",
+    title: "New: AWAF signature accuracy/risk interpreter",
+    body:
+      "Reframed from a per-signature-ID lookup (not feasible or honest given F5's proprietary signature set): it reads the two properties F5 publishes for every attack signature, its Accuracy and its Risk, plus whether it applies to your systems and whether it is enforced. F5 defines accuracy as false-positive susceptibility, so low accuracy means a high false-positive likelihood, medium some, high low; risk is the damage a real match would do. It places the signature in the accuracy-by-risk quadrant and gives the tuning move: low/low is the prime relax candidate, low accuracy plus high risk is false-positive-prone but dangerous so investigate first, high/high is a reliable high-stakes block you do not relax. It flags signatures for systems not in your stack as pure noise and surfaces accuracy as a lever: a signature set weighted toward higher-accuracy signatures produces fewer false positives. Tool 3 of the four false-positive follow-ons. Grounded in F5's attack-signature docs; deterministic, nothing leaves the browser.",
+    tools: ["f5-awaf-signature-accuracy-risk"],
+  },
+  {
+    date: "2026-07-04",
+    time: "10:35",
+    kind: "tool",
+    title: "New: AWAF learning-suggestion interpreter",
+    body:
+      "Ties the poisoning estimator and the false-positive triage together. Characterise a Traffic Learning suggestion (its action, its learning score, the violation rating, the learning mode, and the source trust) and it says whether accepting it loosens the policy (add an allowed entity, allow a meta-character, relax an attribute, disable a violation or signature) or tightens it (remove a wildcard, enforce a staged entity, make an attribute more specific), whether a loosening is a genuine false-positive fix or a security relaxation (by rating: 1-2 fix, 3 investigate, 4-5 relaxing an attack), and whether Automatic learning is about to enforce it. It flags the poisoning vector: Automatic mode, a relaxing loosening, untrusted traffic, and a climbing learning score, which rises as the violation rating falls, so low-rated suggestions auto-accept fastest. This is tool 2 of the four false-positive follow-ons. Grounded in F5 K03513854 and the ASM learning docs; deterministic, nothing leaves the browser.",
+    tools: ["f5-awaf-learning-suggestion-interpreter"],
+  },
+  {
+    date: "2026-07-04",
+    time: "09:31",
+    kind: "tool",
+    title: "New: AWAF request-log triage",
+    body:
+      "Paste an ASM request-log entry, the syslog key-value line or the CEF line you see in your SIEM, and it extracts the policy, the support ID for log correlation, the request status, the violation rating, the client IP, method, and URI, classifies each violation into a triage category, and gives F5's rating-based verdict (4-5 likely attack, 3 investigate, 1-2 likely false positive), then bridges to the false-positive triage tool for the per-violation fix. It handles both the legacy key-value format and CEF. Note on honesty: it does not decode the support-ID number, because that number is an opaque correlation reference and does not carry the violations, the log line does. This is the first of the four false-positive follow-on tools. Grounded in F5's ASM logging-field and reporting docs; decode-only, nothing leaves the browser.",
+    tools: ["f5-awaf-request-log-triage"],
+  },
+  {
+    date: "2026-07-04",
     time: "08:44",
     kind: "tool",
     title: "New: AWAF false-positive triage",

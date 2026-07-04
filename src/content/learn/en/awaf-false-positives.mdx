@@ -3,7 +3,7 @@ slug: awaf-false-positives
 title: "Handling False Positives in Advanced WAF: Triage by Rating, Then Tune with Scope"
 summary: "A false positive is legitimate traffic that trips a security policy. In F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) the violation rating is the triage signal: ratings 1 and 2 are likely false positives you can accept, rating 3 needs investigation, and ratings 4 and 5 block even with Block flags off and should be cleared rather than relaxed. The fix is always scoped to the specific URL or parameter, never a policy-wide disable, and the governing rule is to relax only where a false positive actually occurred."
 concepts: ["f5", "awaf", "advanced waf", "asm", "false positive", "violation rating", "signature", "staging", "tuning", "security", "bigip"]
-relatedTools: ["f5-awaf-false-positive-triage", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer"]
+relatedTools: ["f5-awaf-false-positive-triage", "f5-awaf-request-log-triage", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer"]
 relatedArticles: ["awaf-signature-staging-and-enforcement-readiness", "awaf-automatic-learning-poisoning", "awaf-enforcement-mode-blocking-vs-transparent"]
 category: security
 order: 6

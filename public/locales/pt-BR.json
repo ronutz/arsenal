@@ -2691,17 +2691,17 @@
     "subs": {
       "other": "Mais",
       "f5": {
-        "ltm": "LTM · Local Traffic Manager",
+        "ltm": "BIG-IP LTM - Local Traffic Manager",
         "irules": "iRules",
-        "tmos": "TMOS · F5OS · Plataformas",
-        "dns-gtm": "DNS / GTM · Global Traffic Manager",
-        "asm-awaf": "ASM · Advanced WAF",
-        "afm": "AFM · Advanced Firewall Manager",
-        "zta-apm": "ZTA / APM · Access Policy Manager",
-        "sslo": "SSL Orchestrator",
+        "tmos": "TMOS - Traffic Management Operating System · F5OS · Plataformas",
+        "dns-gtm": "BIG-IP DNS (antigo GTM - Global Traffic Manager)",
+        "asm-awaf": "F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager)",
+        "afm": "BIG-IP AFM - Advanced Firewall Manager",
+        "zta-apm": "BIG-IP Zero Trust Access (antigo BIG-IP APM - Access Policy Manager)",
+        "sslo": "SSLO - SSL Orchestrator",
         "automation": "Automação e Integração",
         "cloud": "Nuvem Pública",
-        "f5xc": "F5 Distributed Cloud"
+        "f5xc": "F5XC - F5 Distributed Cloud"
       },
       "fortinet": {
         "fortigate": "FortiGate / FortiOS",
@@ -3031,6 +3031,265 @@
         "scopeIt": "Sempre limite a correção à URL ou parâmetro específico. Desabilitar uma signature ou violação para toda a política troca um falso positivo por um ponto cego em todo o resto.",
         "potentialFp": "Para falsos positivos de attack signature, o Potential False Positive Detection é a opção mais leve: deixa o sistema decidir por similaridade de tráfego em vez de você desabilitar signatures à mão.",
         "unlearnable": "Algumas violações de rating 5 são não aprendíveis (por exemplo Null in request): a política nunca as relaxa, então não há o que aceitar."
+      }
+    },
+    "f5-awaf-request-log-triage": {
+      "name": "Triagem de request-log do AWAF",
+      "blurb": "Cole uma entrada de request-log do ASM (syslog key-value ou CEF) e ela extrai a política, o support ID para correlação de log, o status da requisição, o violation rating, o IP do cliente, método e URI, classifica cada violação, e dá o veredito baseado em rating do F5, depois faz a ponte para a ferramenta de triagem de falso-positivo. Roda inteiramente no seu navegador.",
+      "inputLabel": "Uma entrada de request-log do ASM (syslog key-value ou CEF)",
+      "inputPlaceholder": "Cole uma linha como:\nASM:policy_name=\"prod\",violations=\"Attack signature detected,Illegal meta character in parameter value\",violation_rating=\"2\",support_id=\"5268275531735896872\",request_status=\"blocked\",ip_client=\"192.0.2.9\",method=\"GET\",uri=\"/search\"",
+      "runsLocally": "Processado no seu navegador. Nada que você cola é enviado.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "empty": "Cole uma linha de request-log do ASM (key-value ou CEF) para interpretá-la e triar suas violações.",
+      "verdict": {
+        "likely-fp": "O rating diz: provavelmente um falso positivo",
+        "investigate": "O rating diz: investigue antes de decidir",
+        "likely-attack": "O rating diz: provavelmente um ataque real",
+        "no-rating": "Sem violation rating neste log"
+      },
+      "format": {
+        "kv": "log key-value",
+        "cef": "log CEF",
+        "unknown": "formato não reconhecido"
+      },
+      "fieldsHeading": "Requisição interpretada",
+      "f": {
+        "supportId": "Support ID",
+        "policy": "Política",
+        "status": "Status",
+        "rating": "Violation rating",
+        "client": "IP do cliente",
+        "method": "Método",
+        "uri": "URI",
+        "attackType": "Tipo de ataque",
+        "xff": "X-Forwarded-For"
+      },
+      "status": {
+        "blocked": "bloqueada",
+        "alarmed": "alarmada (registrada, não bloqueada)",
+        "passed": "passou"
+      },
+      "violationsHeading": "Violações",
+      "cat": {
+        "attack-signature": "signature",
+        "meta-char": "meta-caractere",
+        "parameter": "parâmetro",
+        "url": "URL",
+        "file-type": "tipo de arquivo",
+        "length": "comprimento",
+        "file-upload-signature": "file upload",
+        "xml-json-signature": "XML/JSON",
+        "cookie": "cookie",
+        "http-compliance": "HTTP compliance"
+      },
+      "catUnknown": "outro",
+      "notesHeading": "O que isto significa",
+      "note": {
+        "noRating": "Este log não tem o campo violation_rating (versões mais antigas o omitem). Abra a requisição em Security > Event Logs > Application > Requests para ler seu rating, e trie a partir de lá.",
+        "ratingAttack": "O violation rating é {rating}. Um 4 ou 5 é provavelmente um ataque real e bloqueia mesmo com os Block flags desligados, então limpe qualquer sugestão de aprendizado em vez de relaxar a política.",
+        "ratingFp": "O violation rating é {rating}. Um 1 ou 2 geralmente é um falso positivo genuíno, então se você confirmar que a requisição é legítima pode aplicar a correção com escopo na ferramenta de triagem de falso-positivo.",
+        "ratingInvestigate": "O violation rating é {rating}. Um 3 é ambíguo; examine a requisição no event log antes de decidir.",
+        "unparsed": "Isto não parece uma linha de request-log do ASM. Cole uma linha syslog key-value (começando com ASM:) ou uma linha CEF (contendo |F5|ASM|).",
+        "supportIdOpaque": "O support ID é uma referência de correlação para achar esta requisição exata no event log. Ele não codifica as violações, então não pode ser decodificado nelas; esta ferramenta as lê da linha de log.",
+        "bridge": "Leve cada violação acima para a ferramenta de triagem de falso-positivo com sua categoria e o rating para obter a correção com escopo."
+      }
+    },
+    "f5-awaf-learning-suggestion-interpreter": {
+      "name": "Interpretador de sugestão de aprendizado do AWAF",
+      "blurb": "Conecta o estimador de envenenamento e a triagem de falso-positivo. Caracterize uma sugestão do Traffic Learning e ela diz se aceitá-la afrouxa ou aperta a política, se um afrouxamento é uma correção de falso positivo ou uma relaxação de segurança, e se o aprendizado Automático está prestes a fazer enforcement por você. Roda inteiramente no seu navegador.",
+      "inputLabel": "A sugestão de aprendizado que você está avaliando",
+      "runsLocally": "Calculado no seu navegador. Nada é enviado.",
+      "example": "Exemplo",
+      "clear": "Redefinir",
+      "scopeNote": "Um modelo determinístico do comportamento de aprendizado documentado do F5, não uma sondagem. Leia a ação, o learning score e o violation rating médio da tela do Traffic Learning. Nunca contata um BIG-IP e não depende do JSON REST exato da sugestão.",
+      "f": {
+        "action": "Ação sugerida",
+        "rating": "Violation rating médio",
+        "mode": "Modo de aprendizado",
+        "trust": "Origem do tráfego",
+        "score": "Learning score"
+      },
+      "grp": {
+        "loosening": "Afrouxamento (relaxa a política)",
+        "tightening": "Aperto (restringe a política)"
+      },
+      "action": {
+        "add-entity": "Adicionar uma entidade válida (URL / parâmetro / tipo de arquivo / cookie)",
+        "add-meta-char": "Permitir um meta-caractere em uma entidade",
+        "relax-attribute": "Relaxar um atributo de entidade (ex. comprimento maior)",
+        "disable-violation": "Desabilitar uma violação",
+        "disable-signature": "Desabilitar ou relaxar uma attack signature",
+        "remove-wildcard": "Remover um wildcard, adicionar entidades explícitas",
+        "enforce-entity": "Fazer enforcement de uma entidade em staging (staging → blocking)",
+        "specify-attribute": "Tornar um atributo mais específico"
+      },
+      "rating": {
+        "na": "n/a (não vem de violação)",
+        "1": "1 — quase certamente legítimo",
+        "2": "2 — provavelmente legítimo",
+        "3": "3 — incerto",
+        "4": "4 — provavelmente um ataque",
+        "5": "5 — ataque certo"
+      },
+      "mode": {
+        "automatic": "Automático",
+        "manual": "Manual"
+      },
+      "trust": {
+        "trusted": "Confiável",
+        "untrusted": "Não confiável",
+        "mixed": "Misto"
+      },
+      "direction": {
+        "loosening": "Afrouxamento",
+        "tightening": "Aperto"
+      },
+      "assessment": {
+        "add-legitimate": "Adicionando uma entidade legítima que a política não tinha aprendido",
+        "fp-fix": "Afrouxamento que resolve um falso positivo genuíno",
+        "investigate": "Investigue antes de aceitar",
+        "likely-relaxing-attack": "Este afrouxamento relaxaria um ataque real",
+        "beneficial-tightening": "Aperto que melhora a política"
+      },
+      "autoApplyBadge": "Vetor de envenenamento",
+      "notesHeading": "O que isto significa",
+      "note": {
+        "scoreRatingInverse": "O learning score sobe conforme o violation rating cai, então as sugestões de menor rating (os falsos positivos mais prováveis) chegam ao auto-aceite mais rápido. Isso é por design, e também é exatamente o que um atacante alimentando violações de baixo rating faz subir.",
+        "autoEnforce": "No aprendizado Automático, uma sugestão que atinge 100% de learning score é aceita e enforced automaticamente, sem etapa humana.",
+        "poisoningVector": "Este é o vetor de envenenamento: um afrouxamento relaxante de tráfego não confiável subindo em direção ao auto-aceite no modo Automático. Modele o quão perto está com o estimador de envenenamento, e considere aprendizado Manual ou afrouxamento apenas de tráfego confiável.",
+        "discipline": "Relaxe a política apenas onde um falso positivo ocorreu, nunca onde um ataque real causou a violação. O violation rating é como você distingue os dois.",
+        "enforceCheckFp": "Fazer enforcement move a entidade de staging para blocking, então confirme que ela não gerou falsos positivos durante o staging antes de aceitar.",
+        "tighteningSafe": "O aperto aumenta a especificidade da política, então aceitá-lo geralmente melhora a segurança em vez de enfraquecê-la.",
+        "manualHuman": "No aprendizado Manual um humano deve aceitar cada sugestão, então nada é enforced sem sua revisão.",
+        "scoreNearAccept": "Com um learning score de {score}% esta sugestão está perto de ser aceita; verifique-a deliberadamente em vez de deixá-la passar."
+      }
+    },
+    "f5-awaf-signature-accuracy-risk": {
+      "name": "Interpretador de accuracy/risk de signature do AWAF",
+      "blurb": "Leia a Accuracy e o Risk publicados de uma attack signature e ela diz o quão propensa a falso positivo é, o quão danoso um match real seria, e a jogada de ajuste. O F5 define accuracy como suscetibilidade a falso positivo, então accuracy baixa significa muitos falsos positivos. Roda inteiramente no seu navegador.",
+      "inputLabel": "As propriedades publicadas da signature",
+      "runsLocally": "Calculado no seu navegador. Nada é enviado.",
+      "example": "Exemplo",
+      "clear": "Redefinir",
+      "scopeNote": "Um modelo determinístico das propriedades documentadas de signature do F5, não uma base de dados por ID. Leia Accuracy, Risk e Systems da própria entrada da signature em Security > Options > Application Security > Attack Signatures. Nunca contata um BIG-IP.",
+      "f": {
+        "accuracy": "Accuracy",
+        "risk": "Risk",
+        "system": "Aplica-se aos seus sistemas?",
+        "enforcement": "Estado de enforcement"
+      },
+      "level": {
+        "low": "Baixa",
+        "medium": "Média",
+        "high": "Alta"
+      },
+      "system": {
+        "in-stack": "Sim — um sistema que meu app usa",
+        "not-in-stack": "Não — um sistema que meu app não usa",
+        "unknown": "Não tenho certeza"
+      },
+      "enforcement": {
+        "enforced-blocking": "Enforced, política em modo Blocking",
+        "staged": "Em staging",
+        "transparent": "Política em modo Transparent"
+      },
+      "quadrant": {
+        "fp-prone-low-stakes": "Propensa a falso positivo, baixo risco",
+        "fp-prone-dangerous": "Propensa a falso positivo, mas perigosa se real",
+        "reliable-high-stakes": "Confiável e de alto risco — não relaxe",
+        "reliable-low-stakes": "Confiável, baixo risco"
+      },
+      "fp": {
+        "high": "Alta probabilidade de falso positivo",
+        "some": "Alguma probabilidade de falso positivo",
+        "low": "Baixa probabilidade de falso positivo"
+      },
+      "impact": {
+        "low": "Dano baixo se real",
+        "medium": "Dano moderado se real",
+        "high": "Dano severo se real"
+      },
+      "blocksNow": "Bloqueando agora",
+      "notBlocking": "Não bloqueando",
+      "recHeading": "A jogada de ajuste",
+      "rec": {
+        "fp-prone-low-stakes": "Este é o principal candidato a relaxar. Accuracy baixa significa falsos positivos frequentes e risk baixo significa que pouco se perde ao relaxá-la, então desabilitá-la na URL ou parâmetro específico (ou deixá-la em staging) é razoável depois de confirmar um falso positivo.",
+        "fp-prone-dangerous": "Investigue a requisição real antes de relaxar qualquer coisa. Accuracy baixa torna os falsos positivos prováveis, mas o dano potencial significa que um match genuíno não pode passar. Não desabilite esta cegamente.",
+        "reliable-high-stakes": "Não relaxe esta. Accuracy alta significa que um match é muito provavelmente um ataque genuíno, e o dano potencial é severo. Trate os matches como reais e mantenha o enforcement.",
+        "reliable-low-stakes": "Confiável mas de baixo risco. Os matches são confiáveis, então relaxe apenas com um falso positivo confirmado, e mesmo assim limite à URL ou parâmetro específico."
+      },
+      "notesHeading": "O que isto significa",
+      "note": {
+        "accuracyFp": {
+          "low": "O F5 define accuracy como a suscetibilidade de uma signature a falsos positivos, e uma signature de accuracy Baixa tem alta probabilidade de falsos positivos.",
+          "medium": "O F5 define accuracy como a suscetibilidade de uma signature a falsos positivos, e uma signature de accuracy Média tem alguma probabilidade de falsos positivos.",
+          "high": "O F5 define accuracy como a suscetibilidade de uma signature a falsos positivos, e uma signature de accuracy Alta tem baixa probabilidade de falsos positivos."
+        },
+        "systemNotInStack": "Esta signature mira um sistema que seu app não usa, então é puro ruído aqui. Em vez de desabilitá-la uma política por vez, limite seu signature set aos seus sistemas reais (por exemplo apenas os bancos de dados, servidores web e linguagens que você usa).",
+        "systemUnknown": "Confirme se o sistema desta signature se aplica ao seu stack; uma signature de um sistema que você não usa só gera falsos positivos.",
+        "staged": "Esta signature está em staging: registra mas não bloqueia. Trate qualquer falso positivo como sinal de aprendizado, e faça enforcement apenas quando estiver confiante de que está limpa.",
+        "transparent": "A política está em modo Transparent, então não bloqueia nada. Isto é registrado, não bloqueado; a accuracy e o risk importam para quando você mudar para Blocking.",
+        "highAccuracyLever": "Se falsos positivos de accuracy baixa forem frequentes, deixe a accuracy guiar quais signatures você faz enforcement. Accuracy é uma propriedade documentada de signature e um critério de filtro de signature set, então um set voltado para signatures de accuracy mais alta produz menos falsos positivos, porque o F5 define accuracy como suscetibilidade a falso positivo.",
+        "disciplineHighRisk": "Como esta signature protege contra um ataque danoso, não a desabilite só porque é propensa a falso positivo. Verifique a requisição real primeiro; o custo de relaxar um match real aqui é alto.",
+        "scopeIt": "Limite qualquer mudança à URL ou parâmetro específico, ou filtre o signature set. Desabilitar uma signature para toda a política troca um falso positivo por um ponto cego em todo o resto."
+      }
+    },
+    "f5-awaf-policy-diff": {
+      "name": "Verificador de brecha por diff de política do AWAF",
+      "blurb": "Cole uma política declarativa de WAF antes e depois e ela classifica cada mudança relevante para segurança como afrouxamento ou aperto, e responde a pergunta que importa depois do ajuste: isto abriu uma brecha? Sinaliza afrouxamentos que ampliam a proteção além de uma única entidade em contraste com um allow de entidade única devidamente delimitado. Roda inteiramente no seu navegador.",
+      "inputLabel": "Duas políticas declarativas de WAF para comparar",
+      "beforeLabel": "Antes",
+      "afterLabel": "Depois",
+      "beforePlaceholder": "Cole o JSON da política anterior, ex.\n{ \"policy\": { \"enforcementMode\": \"blocking\", \"data-guard\": { \"enabled\": true } } }",
+      "afterPlaceholder": "Cole o JSON da política posterior, ex.\n{ \"policy\": { \"enforcementMode\": \"transparent\", \"data-guard\": { \"enabled\": false } } }",
+      "runsLocally": "Comparado no seu navegador. Nenhuma política é enviada.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "scopeNote": "Um diff determinístico das seções relevantes para segurança que o schema de política declarativa do F5 define. Ela lê o enforcement mode, o signature staging, a confiança em X-Forwarded-For, o Data Guard, o CSRF, os block flags por violação, a habilitação por evasion, e as entidades URL / parâmetro / tipo de arquivo. Nunca contata um BIG-IP.",
+      "empty": "Cole uma política antes e depois para ver quais mudanças abriram uma brecha e quais permaneceram delimitadas.",
+      "parseError": "Uma das duas entradas não é um JSON válido. Verifique ambas as políticas e tente de novo.",
+      "notPolicy": "Uma das entradas não parece uma política declarativa de WAF (esperava um objeto de política, opcionalmente dentro de uma chave \"policy\").",
+      "verdict": {
+        "opened-hole": "Isto abriu uma brecha: há um afrouxamento para toda a política",
+        "scoped-only": "Apenas mudanças delimitadas: as ampliações permanecem por entidade",
+        "tightened-only": "Apertado: toda mudança aumenta a proteção",
+        "no-change": "Nenhuma mudança relevante para segurança entre as duas políticas",
+        "mixed-scoped": "Mudou, dentro do escopo"
+      },
+      "summary": "{wide} afrouxamento(s) para toda a política, {scoped} ampliação(ões) delimitada(s), {tight} aperto(s).",
+      "policyWideHeading": "Afrouxamentos para toda a política (ampliam além de uma única entidade)",
+      "scopedHeading": "Ampliações delimitadas (entidade única — a correção normal de falso positivo)",
+      "tighteningHeading": "Apertos",
+      "concern": {
+        "high": "alto",
+        "medium": "médio",
+        "low": "baixo"
+      },
+      "dimType": {
+        "url": "URL",
+        "parameter": "parâmetro",
+        "filetype": "tipo de arquivo"
+      },
+      "label": {
+        "enforcementToTransparent": "Enforcement mudou para Transparent: toda a política para de bloquear, independentemente dos block flags por violação.",
+        "enforcementToBlocking": "Enforcement mudou para Blocking: a política agora faz enforcement de seus block flags.",
+        "sigStagingOn": "Signature staging ligado: as signatures registram mas não bloqueiam mais até o enforcement.",
+        "sigStagingOff": "Signature staging desligado: as signatures agora fazem enforcement.",
+        "trustXffOn": "Confiança em X-Forwarded-For ligada: a política agora confia em um header fornecido pelo cliente para o IP de origem, que é falsificável.",
+        "trustXffOff": "Confiança em X-Forwarded-For desligada: a política não confia mais no header fornecido pelo cliente.",
+        "dataGuardOff": "Data Guard desligado: as respostas não são mais mascaradas contra vazamento de dados sensíveis.",
+        "dataGuardOn": "Data Guard ligado: as respostas são mascaradas contra dados sensíveis.",
+        "csrfOff": "Proteção CSRF desligada.",
+        "csrfOn": "Proteção CSRF ligada.",
+        "evasionDisabled": "Detecção de evasion desabilitada: {name}.",
+        "evasionEnabled": "Detecção de evasion habilitada: {name}.",
+        "violationBlockOff": "Violação não bloqueia mais: {name}.",
+        "violationBlockOn": "Violação agora bloqueia: {name}.",
+        "wildcardAdded": "Wildcard {type} adicionado: {name} — casa com muitas, não uma entidade.",
+        "wildcardRemoved": "Wildcard {type} removido: {name}.",
+        "entityAdded": "{type} permitido adicionado: {name}.",
+        "entityRemoved": "{type} permitido removido: {name}."
       }
     }
   },

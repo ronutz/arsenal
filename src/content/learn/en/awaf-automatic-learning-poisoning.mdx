@@ -3,7 +3,7 @@ slug: awaf-automatic-learning-poisoning
 title: "Automatic Learning in Production: How an Attacker Poisons a WAF Policy"
 summary: "Left in Automatic learning mode against untrusted traffic, the BIG-IP Advanced WAF Policy Builder will accept and enforce a suggestion once its learning score reaches 100%, and some suggestions disable violations or widen entities. An attacker who floods legitimate-looking traffic from enough sources can push a relaxation to 100% and drill a hole. F5's design resists this with source, session, and time thresholds, but the safe posture is Manual learning by default and building only from trusted traffic."
 concepts: ["f5", "awaf", "waf", "asm", "policy builder", "automatic learning", "learning mode", "trusted ip", "security", "bigip", "k000134503"]
-relatedTools: ["f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer", "f5-awaf-declarative-policy-explainer"]
+relatedTools: ["f5-awaf-learning-suggestion-interpreter", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer", "f5-awaf-declarative-policy-explainer"]
 relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-signature-staging-and-enforcement-readiness"]
 category: security
 order: 4

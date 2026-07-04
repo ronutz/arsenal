@@ -38,8 +38,8 @@
 //   - BIG-IP ASM Implementations, "Changing/Configuring How a Security Policy
 //     is (Automatically) Built" (Loosen/Tighten/Track Site Changes; trusted vs
 //     untrusted thresholds; rating slows learning; trusted default = 1 session)
-//   - BIG-IP Next "Reference: WAF Policy Builder" (Learning Mode
-//     Automatic/Manual/Disabled; auto-accept at 100%; Learning Speed sampling)
+//   - BIG-IP ASM "Changing How a Security Policy is Built" (automatic vs manual
+//     learning; accept and enforce at a 100% learning score; tighten is automatic-only)
 // ============================================================================
 
 export type LearningMode = "automatic" | "manual" | "disabled";

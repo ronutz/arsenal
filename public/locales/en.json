@@ -2691,17 +2691,17 @@
     "subs": {
       "other": "More",
       "f5": {
-        "ltm": "LTM · Local Traffic Manager",
+        "ltm": "BIG-IP LTM - Local Traffic Manager",
         "irules": "iRules",
-        "tmos": "TMOS · F5OS · Platforms",
-        "dns-gtm": "DNS / GTM · Global Traffic Manager",
-        "asm-awaf": "ASM · Advanced WAF",
-        "afm": "AFM · Advanced Firewall Manager",
-        "zta-apm": "ZTA / APM · Access Policy Manager",
-        "sslo": "SSL Orchestrator",
+        "tmos": "TMOS - Traffic Management Operating System · F5OS · Platforms",
+        "dns-gtm": "BIG-IP DNS (formerly GTM - Global Traffic Manager)",
+        "asm-awaf": "F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager)",
+        "afm": "BIG-IP AFM - Advanced Firewall Manager",
+        "zta-apm": "BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager)",
+        "sslo": "SSLO - SSL Orchestrator",
         "automation": "Automation & Integration",
         "cloud": "Public Cloud",
-        "f5xc": "F5 Distributed Cloud"
+        "f5xc": "F5XC - F5 Distributed Cloud"
       },
       "fortinet": {
         "fortigate": "FortiGate / FortiOS",
@@ -3031,6 +3031,265 @@
         "scopeIt": "Always scope the fix to the specific URL or parameter. Disabling a signature or violation policy-wide trades one false positive for a blind spot everywhere else.",
         "potentialFp": "For attack-signature false positives, Potential False Positive Detection is the lightest-touch option: it lets the system decide by traffic similarity instead of you hand-disabling signatures.",
         "unlearnable": "Some rating-5 violations are unlearnable (for example Null in request): the policy will never relax them, so there is nothing to accept."
+      }
+    },
+    "f5-awaf-request-log-triage": {
+      "name": "AWAF request-log triage",
+      "blurb": "Paste an ASM request-log entry (syslog key-value or CEF) and it extracts the policy, the support ID for log correlation, the request status, the violation rating, the client IP, method, and URI, classifies each violation, and gives F5's rating-based verdict, then bridges to the false-positive triage tool. Runs entirely in your browser.",
+      "inputLabel": "An ASM request-log entry (syslog key-value or CEF)",
+      "inputPlaceholder": "Paste a line like:\nASM:policy_name=\"prod\",violations=\"Attack signature detected,Illegal meta character in parameter value\",violation_rating=\"2\",support_id=\"5268275531735896872\",request_status=\"blocked\",ip_client=\"192.0.2.9\",method=\"GET\",uri=\"/search\"",
+      "runsLocally": "Parsed in your browser. Nothing you paste is uploaded.",
+      "example": "Example",
+      "clear": "Clear",
+      "empty": "Paste an ASM request-log line (key-value or CEF) to parse it and triage its violations.",
+      "verdict": {
+        "likely-fp": "Rating says: likely a false positive",
+        "investigate": "Rating says: investigate before deciding",
+        "likely-attack": "Rating says: likely a real attack",
+        "no-rating": "No violation rating in this log"
+      },
+      "format": {
+        "kv": "key-value log",
+        "cef": "CEF log",
+        "unknown": "unrecognized format"
+      },
+      "fieldsHeading": "Parsed request",
+      "f": {
+        "supportId": "Support ID",
+        "policy": "Policy",
+        "status": "Status",
+        "rating": "Violation rating",
+        "client": "Client IP",
+        "method": "Method",
+        "uri": "URI",
+        "attackType": "Attack type",
+        "xff": "X-Forwarded-For"
+      },
+      "status": {
+        "blocked": "blocked",
+        "alarmed": "alarmed (logged, not blocked)",
+        "passed": "passed"
+      },
+      "violationsHeading": "Violations",
+      "cat": {
+        "attack-signature": "signature",
+        "meta-char": "meta-char",
+        "parameter": "parameter",
+        "url": "URL",
+        "file-type": "file type",
+        "length": "length",
+        "file-upload-signature": "file upload",
+        "xml-json-signature": "XML/JSON",
+        "cookie": "cookie",
+        "http-compliance": "HTTP compliance"
+      },
+      "catUnknown": "other",
+      "notesHeading": "What this means",
+      "note": {
+        "noRating": "This log has no violation_rating field (older versions omit it). Open the request in Security > Event Logs > Application > Requests to read its rating, then triage from there.",
+        "ratingAttack": "The violation rating is {rating}. A 4 or 5 is most likely a real attack and blocks even with Block flags off, so clear any learning suggestion rather than relaxing the policy.",
+        "ratingFp": "The violation rating is {rating}. A 1 or 2 is usually a genuine false positive, so if you confirm the request is legitimate you can apply the scoped fix in the false-positive triage tool.",
+        "ratingInvestigate": "The violation rating is {rating}. A 3 is ambiguous; examine the request in the event log before you decide.",
+        "unparsed": "This does not look like an ASM request-log line. Paste a syslog key-value line (starting with ASM:) or a CEF line (containing |F5|ASM|).",
+        "supportIdOpaque": "The support ID is a correlation reference for finding this exact request in the event log. It does not encode the violations, so it cannot be decoded into them; this tool reads them from the log line instead.",
+        "bridge": "Take each violation above into the false-positive triage tool with its category and the rating to get the scoped remediation."
+      }
+    },
+    "f5-awaf-learning-suggestion-interpreter": {
+      "name": "AWAF learning-suggestion interpreter",
+      "blurb": "Ties the poisoning estimator and the false-positive triage together. Characterise a Traffic Learning suggestion and it tells you whether accepting it loosens or tightens the policy, whether a loosening is a false-positive fix or a security relaxation, and whether Automatic learning is about to enforce it for you. Runs entirely in your browser.",
+      "inputLabel": "The learning suggestion you are weighing up",
+      "runsLocally": "Computed in your browser. Nothing is sent.",
+      "example": "Example",
+      "clear": "Reset",
+      "scopeNote": "A deterministic model of F5's documented learning behaviour, not a probe. Read the action, learning score, and average violation rating from the Traffic Learning screen. It never contacts a BIG-IP and does not depend on the exact REST suggestion JSON.",
+      "f": {
+        "action": "Suggested action",
+        "rating": "Avg violation rating",
+        "mode": "Learning mode",
+        "trust": "Traffic source",
+        "score": "Learning score"
+      },
+      "grp": {
+        "loosening": "Loosening (relaxes the policy)",
+        "tightening": "Tightening (constrains the policy)"
+      },
+      "action": {
+        "add-entity": "Add a valid entity (URL / parameter / file type / cookie)",
+        "add-meta-char": "Allow a meta-character on an entity",
+        "relax-attribute": "Relax an entity attribute (e.g. longer length)",
+        "disable-violation": "Disable a violation",
+        "disable-signature": "Disable or relax an attack signature",
+        "remove-wildcard": "Remove a wildcard, add explicit entities",
+        "enforce-entity": "Enforce a staged entity (staging → blocking)",
+        "specify-attribute": "Make an attribute more specific"
+      },
+      "rating": {
+        "na": "n/a (not violation-driven)",
+        "1": "1 — almost certainly legitimate",
+        "2": "2 — likely legitimate",
+        "3": "3 — uncertain",
+        "4": "4 — likely an attack",
+        "5": "5 — certain attack"
+      },
+      "mode": {
+        "automatic": "Automatic",
+        "manual": "Manual"
+      },
+      "trust": {
+        "trusted": "Trusted",
+        "untrusted": "Untrusted",
+        "mixed": "Mixed"
+      },
+      "direction": {
+        "loosening": "Loosening",
+        "tightening": "Tightening"
+      },
+      "assessment": {
+        "add-legitimate": "Adding a legitimate entity the policy had not learned",
+        "fp-fix": "Loosening that resolves a genuine false positive",
+        "investigate": "Investigate before accepting",
+        "likely-relaxing-attack": "This loosening would relax a real attack",
+        "beneficial-tightening": "Tightening that improves the policy"
+      },
+      "autoApplyBadge": "Poisoning vector",
+      "notesHeading": "What this means",
+      "note": {
+        "scoreRatingInverse": "The learning score rises as the violation rating falls, so the lowest-rated suggestions (the most likely false positives) reach auto-accept fastest. That is by design, and it is also exactly what an attacker feeding low-rated violations drives up.",
+        "autoEnforce": "In Automatic learning, a suggestion that reaches a 100% learning score is accepted and enforced automatically, with no human step.",
+        "poisoningVector": "This is the poisoning vector: a relaxing loosening from untrusted traffic climbing toward auto-accept in Automatic mode. Model how far it is with the poisoning estimator, and consider Manual learning or trusted-only loosening.",
+        "discipline": "Relax the policy only where a false positive occurred, never where a real attack caused the violation. The violation rating is how you tell the two apart.",
+        "enforceCheckFp": "Enforcing moves the entity from staging to blocking, so confirm it has generated no false positives during staging before you accept.",
+        "tighteningSafe": "Tightening increases the policy's specificity, so accepting it generally improves security rather than weakening it.",
+        "manualHuman": "In Manual learning a human must accept every suggestion, so nothing is enforced without your review.",
+        "scoreNearAccept": "At a {score}% learning score this suggestion is close to being accepted; check it deliberately rather than letting it through."
+      }
+    },
+    "f5-awaf-signature-accuracy-risk": {
+      "name": "AWAF signature accuracy/risk interpreter",
+      "blurb": "Read an attack signature's published Accuracy and Risk and it tells you how false-positive-prone it is, how damaging a real match would be, and the tuning move. F5 defines accuracy as false-positive susceptibility, so low accuracy means many false positives. Runs entirely in your browser.",
+      "inputLabel": "The signature's published properties",
+      "runsLocally": "Computed in your browser. Nothing is sent.",
+      "example": "Example",
+      "clear": "Reset",
+      "scopeNote": "A deterministic model of F5's documented signature properties, not a per-ID database. Read Accuracy, Risk, and Systems from the signature's own entry under Security > Options > Application Security > Attack Signatures. It never contacts a BIG-IP.",
+      "f": {
+        "accuracy": "Accuracy",
+        "risk": "Risk",
+        "system": "Applies to your systems?",
+        "enforcement": "Enforcement state"
+      },
+      "level": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "system": {
+        "in-stack": "Yes — a system my app runs",
+        "not-in-stack": "No — a system my app does not run",
+        "unknown": "Not sure"
+      },
+      "enforcement": {
+        "enforced-blocking": "Enforced, policy in Blocking mode",
+        "staged": "In staging",
+        "transparent": "Policy in Transparent mode"
+      },
+      "quadrant": {
+        "fp-prone-low-stakes": "False-positive-prone, low stakes",
+        "fp-prone-dangerous": "False-positive-prone, but dangerous if real",
+        "reliable-high-stakes": "Reliable and high-stakes — do not relax",
+        "reliable-low-stakes": "Reliable, low stakes"
+      },
+      "fp": {
+        "high": "High false-positive likelihood",
+        "some": "Some false-positive likelihood",
+        "low": "Low false-positive likelihood"
+      },
+      "impact": {
+        "low": "Low damage if real",
+        "medium": "Moderate damage if real",
+        "high": "Severe damage if real"
+      },
+      "blocksNow": "Blocking now",
+      "notBlocking": "Not blocking",
+      "recHeading": "The tuning move",
+      "rec": {
+        "fp-prone-low-stakes": "This is the prime relax candidate. Low accuracy means frequent false positives and low risk means little is lost if you relax it, so disabling it on the specific URL or parameter (or leaving it in staging) is reasonable once you have confirmed a false positive.",
+        "fp-prone-dangerous": "Investigate the actual request before you relax anything. Low accuracy makes false positives likely, but the potential damage means a genuine match must not be waved through. Do not blindly disable this one.",
+        "reliable-high-stakes": "Do not relax this. High accuracy means a match is very likely a genuine attack, and the potential damage is severe. Treat matches as real and keep it enforcing.",
+        "reliable-low-stakes": "Reliable but low-stakes. Matches are trustworthy, so relax only with a confirmed false positive, and even then scope it to the specific URL or parameter."
+      },
+      "notesHeading": "What this means",
+      "note": {
+        "accuracyFp": {
+          "low": "F5 defines accuracy as a signature's susceptibility to false positives, and a Low accuracy signature has a high likelihood of false positives.",
+          "medium": "F5 defines accuracy as a signature's susceptibility to false positives, and a Medium accuracy signature has some likelihood of false positives.",
+          "high": "F5 defines accuracy as a signature's susceptibility to false positives, and a High accuracy signature has a low likelihood of false positives."
+        },
+        "systemNotInStack": "This signature targets a system your application does not run, so it is pure noise here. Rather than disable it one policy at a time, scope your signature set to your actual systems (for example only the databases, web servers, and languages you use).",
+        "systemUnknown": "Confirm whether this signature's system applies to your stack; a signature for a system you do not run only generates false positives.",
+        "staged": "This signature is in staging: it logs but does not block. Treat any false positive as a learning signal, and enforce it only once you are confident it is clean.",
+        "transparent": "The policy is in Transparent mode, so it blocks nothing. This is logged, not blocked; the accuracy and risk matter for when you move to Blocking.",
+        "highAccuracyLever": "If low-accuracy false positives are frequent, let accuracy guide which signatures you enforce. Accuracy is a documented signature property and a signature-set filter criterion, so a signature set weighted toward higher-accuracy signatures produces fewer false positives, because F5 defines accuracy as false-positive susceptibility.",
+        "disciplineHighRisk": "Because this signature guards against a damaging attack, do not disable it just because it is false-positive-prone. Check the actual request first; the cost of relaxing a real match here is high.",
+        "scopeIt": "Scope any change to the specific URL or parameter, or filter the signature set. Disabling a signature policy-wide trades one false positive for a blind spot everywhere else."
+      }
+    },
+    "f5-awaf-policy-diff": {
+      "name": "AWAF policy-diff hole checker",
+      "blurb": "Paste a before and an after declarative WAF policy and it classifies every security-relevant change as a relaxation or a tightening, then answers the question that matters after tuning: did this open a hole? It flags relaxations that widen protection beyond a single entity apart from a properly-scoped single-entity allow. Runs entirely in your browser.",
+      "inputLabel": "Two declarative WAF policies to compare",
+      "beforeLabel": "Before",
+      "afterLabel": "After",
+      "beforePlaceholder": "Paste the earlier policy JSON, e.g.\n{ \"policy\": { \"enforcementMode\": \"blocking\", \"data-guard\": { \"enabled\": true } } }",
+      "afterPlaceholder": "Paste the later policy JSON, e.g.\n{ \"policy\": { \"enforcementMode\": \"transparent\", \"data-guard\": { \"enabled\": false } } }",
+      "runsLocally": "Compared in your browser. Neither policy is uploaded.",
+      "example": "Example",
+      "clear": "Clear",
+      "scopeNote": "A deterministic diff of the security-relevant sections F5's declarative policy schema defines. It reads enforcement mode, signature staging, X-Forwarded-For trust, Data Guard, CSRF, per-violation block flags, per-evasion enablement, and the URL / parameter / file-type entities. It never contacts a BIG-IP.",
+      "empty": "Paste a before and an after policy to see which changes opened a hole and which stayed scoped.",
+      "parseError": "One of the two inputs is not valid JSON. Check both policies and try again.",
+      "notPolicy": "One of the inputs does not look like a declarative WAF policy (expected a policy object, optionally wrapped in a \"policy\" key).",
+      "verdict": {
+        "opened-hole": "This opened a hole: a policy-wide relaxation is present",
+        "scoped-only": "Scoped changes only: the widenings stay entity-scoped",
+        "tightened-only": "Tightened: every change increases protection",
+        "no-change": "No security-relevant change between the two policies",
+        "mixed-scoped": "Changed, within scope"
+      },
+      "summary": "{wide} policy-wide relaxation(s), {scoped} scoped widening(s), {tight} tightening(s).",
+      "policyWideHeading": "Policy-wide relaxations (these widen beyond a single entity)",
+      "scopedHeading": "Scoped widenings (single-entity — the normal false-positive fix)",
+      "tighteningHeading": "Tightenings",
+      "concern": {
+        "high": "high",
+        "medium": "medium",
+        "low": "low"
+      },
+      "dimType": {
+        "url": "URL",
+        "parameter": "parameter",
+        "filetype": "file type"
+      },
+      "label": {
+        "enforcementToTransparent": "Enforcement switched to Transparent: the whole policy stops blocking, regardless of per-violation block flags.",
+        "enforcementToBlocking": "Enforcement switched to Blocking: the policy now enforces its block flags.",
+        "sigStagingOn": "Signature staging turned on: signatures log but no longer block until enforced.",
+        "sigStagingOff": "Signature staging turned off: signatures now enforce.",
+        "trustXffOn": "X-Forwarded-For trust turned on: the policy now trusts a client-supplied header for the source IP, which is spoofable.",
+        "trustXffOff": "X-Forwarded-For trust turned off: the policy no longer trusts the client-supplied header.",
+        "dataGuardOff": "Data Guard turned off: responses are no longer masked for sensitive data leakage.",
+        "dataGuardOn": "Data Guard turned on: responses are masked for sensitive data.",
+        "csrfOff": "CSRF protection turned off.",
+        "csrfOn": "CSRF protection turned on.",
+        "evasionDisabled": "Evasion detection disabled: {name}.",
+        "evasionEnabled": "Evasion detection enabled: {name}.",
+        "violationBlockOff": "Violation no longer blocks: {name}.",
+        "violationBlockOn": "Violation now blocks: {name}.",
+        "wildcardAdded": "Wildcard {type} added: {name} — this matches many, not one entity.",
+        "wildcardRemoved": "Wildcard {type} removed: {name}.",
+        "entityAdded": "Allowed {type} added: {name}.",
+        "entityRemoved": "Allowed {type} removed: {name}."
       }
     }
   },

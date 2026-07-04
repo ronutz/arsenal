@@ -75,7 +75,6 @@ export const manifest = Object.freeze({
     { id: "f5-awaf-index", label: "F5 BIG-IP WAF Declarative Policy - index (published versions v16.0, v16.1, v17.0, v17.1, v17.5)", url: "https://clouddocs.f5.com/products/waf-declarative-policy/" },
     { id: "f5-awaf-schema-v17_1", label: "F5 BIG-IP Declarative WAF v17.1 Schema (latest complete; v17.5 schema not yet published)", url: "https://clouddocs.f5.com/products/waf-declarative-policy/schema_v17_1.html" },
     { id: "f5-awaf-descriptions-v17_1", label: "F5 BIG-IP Declarative WAF v17.1 Schema Description", url: "https://clouddocs.f5.com/products/waf-declarative-policy/declarative_policy_v17_1.html" },
-    { id: "f5-awaf-overview", label: "F5 Overview: WAF Policies (declarative format, templates, adjustments)", url: "https://clouddocs.f5.com/bigip-next/latest/waf_management/awaf_how_to_create_policy.html" },
   ],
 });
 

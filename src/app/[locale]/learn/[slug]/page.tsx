@@ -12,6 +12,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import BigipTimeline from "@/components/learn/BigipTimeline";
 import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
 import { getArticle, getAllArticleSlugs, getRelatedArticles } from "@/lib/learn";
@@ -75,6 +76,7 @@ export default async function ArticlePage({
               <MDXRemote
                 source={article.body}
                 options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+                components={{ BigipTimeline }}
               />
             </div>
 

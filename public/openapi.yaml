@@ -1138,8 +1138,8 @@ paths:
         requests, and time to force one automatic relaxation, and gates on the rules that make it
         impossible. Runs entirely in your browser. The input is a JSON object: send it as the
         request body (POST) or as a JSON string (?input=). Standards: F5 K000134503, F5 BIG-IP ASM
-        Policy Builder, F5 BIG-IP Next Policy Builder ref. Stateless and side-effect-free: the same
-        input always yields the same result, and nothing is stored or logged.
+        Policy Builder, F5 BIG-IP ASM learning. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -1172,8 +1172,287 @@ paths:
         requests, and time to force one automatic relaxation, and gates on the rules that make it
         impossible. Runs entirely in your browser. The input is a JSON object: send it as the
         request body (POST) or as a JSON string (?input=). Standards: F5 K000134503, F5 BIG-IP ASM
-        Policy Builder, F5 BIG-IP Next Policy Builder ref. Stateless and side-effect-free: the same
+        Policy Builder, F5 BIG-IP ASM learning. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-awaf-learning-suggestion-interpreter:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_learning_suggestion_interpreter
+      summary: AWAF learning-suggestion interpreter
+      description: >-
+        Ties the poisoning estimator and the false-positive triage together. Characterise a Traffic
+        Learning suggestion and it tells you whether accepting it loosens or tightens the policy,
+        whether a loosening is a false-positive fix or a security relaxation, and whether Automatic
+        learning is about to enforce it for you. Runs entirely in your browser. The input is a JSON
+        object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
+        K03513854, F5 BIG-IP ASM learning, F5 K70544352. Stateless and side-effect-free: the same
         input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_learning_suggestion_interpreter_post
+      summary: AWAF learning-suggestion interpreter (POST)
+      description: >-
+        Ties the poisoning estimator and the false-positive triage together. Characterise a Traffic
+        Learning suggestion and it tells you whether accepting it loosens or tightens the policy,
+        whether a loosening is a false-positive fix or a security relaxation, and whether Automatic
+        learning is about to enforce it for you. Runs entirely in your browser. The input is a JSON
+        object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
+        K03513854, F5 BIG-IP ASM learning, F5 K70544352. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-awaf-policy-diff:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_policy_diff
+      summary: AWAF policy-diff hole checker
+      description: >-
+        Paste a before and an after declarative WAF policy and it classifies every security-relevant
+        change as a relaxation or a tightening, then answers the question that matters after tuning:
+        did this open a hole? It flags relaxations that widen protection beyond a single entity
+        apart from a properly-scoped single-entity allow. Runs entirely in your browser. The input
+        is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: F5 Advanced WAF declarative policy schema, F5 K70544352. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_policy_diff_post
+      summary: AWAF policy-diff hole checker (POST)
+      description: >-
+        Paste a before and an after declarative WAF policy and it classifies every security-relevant
+        change as a relaxation or a tightening, then answers the question that matters after tuning:
+        did this open a hole? It flags relaxations that widen protection beyond a single entity
+        apart from a properly-scoped single-entity allow. Runs entirely in your browser. The input
+        is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: F5 Advanced WAF declarative policy schema, F5 K70544352. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-awaf-request-log-triage:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_request_log_triage
+      summary: AWAF request-log triage
+      description: >-
+        Paste an ASM request-log entry (syslog key-value or CEF) and it extracts the policy, the
+        support ID for log correlation, the request status, the violation rating, the client IP,
+        method, and URI, classifies each violation, and gives F5's rating-based verdict, then
+        bridges to the false-positive triage tool. Runs entirely in your browser. Standards: F5
+        BIG-IP ASM logging fields, F5 ASM violation rating. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - >-
+                ASM:policy_name="p",violations="Attack signature
+                detected",support_id="123",request_status="blocked"
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_request_log_triage_post
+      summary: AWAF request-log triage (POST)
+      description: >-
+        Paste an ASM request-log entry (syslog key-value or CEF) and it extracts the policy, the
+        support ID for log correlation, the request status, the violation rating, the client IP,
+        method, and URI, classifies each violation, and gives F5's rating-based verdict, then
+        bridges to the false-positive triage tool. Runs entirely in your browser. Standards: F5
+        BIG-IP ASM logging fields, F5 ASM violation rating. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - >-
+                  ASM:policy_name="p",violations="Attack signature
+                  detected",support_id="123",request_status="blocked"
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-awaf-signature-accuracy-risk:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_signature_accuracy_risk
+      summary: AWAF signature accuracy/risk interpreter
+      description: >-
+        Read an attack signature's published Accuracy and Risk and it tells you how
+        false-positive-prone it is, how damaging a real match would be, and the tuning move. F5
+        defines accuracy as false-positive susceptibility, so low accuracy means many false
+        positives. Runs entirely in your browser. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: F5 BIG-IP ASM attack signatures, F5
+        signature-set reference, F5 K70544352. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_signature_accuracy_risk_post
+      summary: AWAF signature accuracy/risk interpreter (POST)
+      description: >-
+        Read an attack signature's published Accuracy and Risk and it tells you how
+        false-positive-prone it is, how damaging a real match would be, and the tuning move. F5
+        defines accuracy as false-positive susceptibility, so low accuracy means many false
+        positives. Runs entirely in your browser. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: F5 BIG-IP ASM attack signatures, F5
+        signature-set reference, F5 K70544352. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.

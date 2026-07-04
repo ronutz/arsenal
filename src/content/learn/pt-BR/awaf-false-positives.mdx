@@ -3,7 +3,7 @@ slug: awaf-false-positives
 title: "Lidando com falsos positivos no Advanced WAF: triagem por rating, depois ajuste com escopo"
 summary: "Um falso positivo é tráfego legítimo que dispara uma política de segurança. No F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) o violation rating é o sinal de triagem: ratings 1 e 2 são provavelmente falsos positivos que você pode aceitar, rating 3 precisa de investigação, e ratings 4 e 5 bloqueiam mesmo com os Block flags desligados e devem ser limpos em vez de relaxados. A correção é sempre com escopo na URL ou parâmetro específico, nunca um disable para toda a política, e a regra que rege tudo é relaxar apenas onde um falso positivo de fato ocorreu."
 concepts: ["f5", "awaf", "advanced waf", "asm", "false positive", "violation rating", "signature", "staging", "tuning", "security", "bigip"]
-relatedTools: ["f5-awaf-false-positive-triage", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer"]
+relatedTools: ["f5-awaf-false-positive-triage", "f5-awaf-request-log-triage", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer"]
 relatedArticles: ["awaf-signature-staging-and-enforcement-readiness", "awaf-automatic-learning-poisoning", "awaf-enforcement-mode-blocking-vs-transparent"]
 category: security
 order: 6

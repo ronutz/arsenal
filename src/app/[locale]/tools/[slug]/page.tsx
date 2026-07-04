@@ -114,11 +114,19 @@ import F5AwafEvasionExplainerTool from "@/components/F5AwafEvasionExplainerTool"
 import F5AwafLearningPoisoningEstimatorTool from "@/components/F5AwafLearningPoisoningEstimatorTool";
 import As3ExplainerValidatorTool from "@/components/As3ExplainerValidatorTool";
 import F5AwafFalsePositiveTriageTool from "@/components/F5AwafFalsePositiveTriageTool";
+import F5AwafRequestLogTriageTool from "@/components/F5AwafRequestLogTriageTool";
+import F5AwafLearningSuggestionInterpreterTool from "@/components/F5AwafLearningSuggestionInterpreterTool";
+import F5AwafSignatureAccuracyRiskTool from "@/components/F5AwafSignatureAccuracyRiskTool";
+import F5AwafPolicyDiffTool from "@/components/F5AwafPolicyDiffTool";
 import { manifest as f5AwafManifest } from "@/lib/tools/f5-awaf-declarative-policy-explainer";
 import { manifest as f5AwafEvasionManifest } from "@/lib/tools/f5-awaf-evasion-explainer";
 import { manifest as f5AwafPoisoningManifest } from "@/lib/tools/f5-awaf-learning-poisoning-estimator";
 import { manifest as as3Manifest } from "@/lib/tools/as3-explainer-validator";
 import { manifest as f5AwafFpManifest } from "@/lib/tools/f5-awaf-false-positive-triage";
+import { manifest as f5AwafLogManifest } from "@/lib/tools/f5-awaf-request-log-triage";
+import { manifest as f5AwafSuggManifest } from "@/lib/tools/f5-awaf-learning-suggestion-interpreter";
+import { manifest as f5AwafSigManifest } from "@/lib/tools/f5-awaf-signature-accuracy-risk";
+import { manifest as f5AwafDiffManifest } from "@/lib/tools/f5-awaf-policy-diff";
 import F5SslProfileExplainerTool from "@/components/F5SslProfileExplainerTool";
 import { manifest as sslProfileManifest } from "@/lib/tools/f5-ssl-profile-explainer";
 import EpochTool from "@/components/EpochTool";
@@ -290,6 +298,22 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: F5AwafFalsePositiveTriageTool,
     sources: f5AwafFpManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "f5-awaf-request-log-triage": {
+    Component: F5AwafRequestLogTriageTool,
+    sources: f5AwafLogManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-awaf-learning-suggestion-interpreter": {
+    Component: F5AwafLearningSuggestionInterpreterTool,
+    sources: f5AwafSuggManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-awaf-signature-accuracy-risk": {
+    Component: F5AwafSignatureAccuracyRiskTool,
+    sources: f5AwafSigManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-awaf-policy-diff": {
+    Component: F5AwafPolicyDiffTool,
+    sources: f5AwafDiffManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "cvss-vector-decoder": {
     Component: CvssVectorDecoderTool,
     sources: cvssManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -434,6 +458,22 @@ export default async function ToolDetailPage({
       <main id="main">
         <article className="section">
           <div className="container article-container">
+            {entry && (
+              <a
+                href="https://buymeacoffee.com/ronutz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tool-coffee-corner"
+                aria-label={locale === "pt-BR" ? "Me pague um café" : "Buy me a coffee"}
+                title={locale === "pt-BR" ? "Me pague um café" : "Buy me a coffee"}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 8h13v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8z" />
+                  <path d="M17 9h1.4a2.5 2.5 0 0 1 0 5H17" />
+                  <path d="M7 2.2c-.5 1 .5 1.6 0 2.8M11 2.2c-.5 1 .5 1.6 0 2.8" />
+                </svg>
+              </a>
+            )}
             <Link href="/tools" className="article-back">
               ← {tTools("backToTools")}
             </Link>

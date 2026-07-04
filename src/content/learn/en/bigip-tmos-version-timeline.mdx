@@ -1,0 +1,22 @@
+---
+slug: bigip-tmos-version-timeline
+title: "BIG-IP, TMOS, and F5OS: A Version Timeline You Can Slide Through"
+summary: "BIG-IP the platform and TMOS the software were the same thing until 2004, when version 9.0 split them and moved the box from BSD to a Linux host with the TMM microkernel. This interactive timeline slides from the 1997 BIG-IP Controller to BIG-IP 21.0, showing the software version and the operating system underneath it at each step, including why the numbers jump straight from 17 to 21."
+concepts: ["f5", "tmos", "big-ip", "f5os", "version history", "platforms", "velos", "rseries", "bsd"]
+relatedTools: ["f5-service-check-date", "f5-bigip-license-explainer"]
+relatedArticles: ["bigip-cmp-clustered-multiprocessing"]
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-04"
+---
+
+Ask when "BIG-IP" and "TMOS" became two different words and you get a precise answer: 7 September 2004, with the release of version 9.0. Before that, the hardware and the software were both just called BIG-IP (or the BIG-IP Controller), running on a BSD base. Version 9.0 moved system management to Linux, introduced the Traffic Management Microkernel (TMM) to talk directly to the networking hardware, and from that point the hardware became the "BIG-IP platform" and the software became TMOS, the Traffic Management Operating System.
+
+Slide through the rest below. Each stop shows the BIG-IP software version of that era and the operating system underneath it, from the BSD beginnings, through the long TMOS line, to F5OS and the VELOS and rSeries platforms that run BIG-IP as a tenant.
+
+<BigipTimeline lang="en" />
+
+Two things on the timeline are worth calling out. First, from BIG-IP 12.0 (2015) F5 adopted the alternating model that still holds: a Major Release (x.0.0) followed by a Long-Term Stability Release (x.1.0) that most sites actually run. Second, the version numbers jump straight from 17 to 21. That gap is not a mistake and it is not skipped for superstition: 18 through 20 belonged to BIG-IP Next, a separate re-architecture that F5 has since discontinued (the final BIG-IP Next 20.3 reached end of life on 30 April 2025), choosing instead to modernize the TMOS line and resume it at 21.0.
+
+The dates here are year-level on purpose. The release dates for 12.0 and later come from F5's own release records (K33062581, the TMOS Software Release Date Information, and K9412, the BIG-IP release matrix); the 2004 origin of TMOS comes from F5's company history; and the intermediate branches that are now end-of-life carry their widely documented release year. Nothing here is read from a live system.

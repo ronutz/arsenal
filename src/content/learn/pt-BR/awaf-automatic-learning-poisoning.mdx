@@ -3,7 +3,7 @@ slug: awaf-automatic-learning-poisoning
 title: "Aprendizado automático em produção: como um atacante envenena uma política de WAF"
 summary: "Deixado em modo de aprendizado Automatic sobre tráfego não confiável, o Policy Builder do BIG-IP Advanced WAF aceita e aplica uma sugestão assim que seu learning score chega a 100%, e algumas sugestões desabilitam violações ou ampliam entidades. Um atacante que inunda tráfego de aparência legítima a partir de fontes suficientes consegue levar um afrouxamento a 100% e abrir um buraco. O design do F5 resiste a isso com limites de fontes, sessões e tempo, mas a postura segura é aprendizado Manual por padrão e construir apenas a partir de tráfego confiável."
 concepts: ["f5", "awaf", "waf", "asm", "policy builder", "automatic learning", "learning mode", "trusted ip", "security", "bigip", "k000134503"]
-relatedTools: ["f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer", "f5-awaf-declarative-policy-explainer"]
+relatedTools: ["f5-awaf-learning-suggestion-interpreter", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer", "f5-awaf-declarative-policy-explainer"]
 relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-signature-staging-and-enforcement-readiness"]
 category: security
 order: 4

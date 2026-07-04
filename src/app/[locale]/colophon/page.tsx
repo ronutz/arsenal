@@ -259,6 +259,12 @@ export default async function ColophonPage({
               </div>
             </div>
           </section>
+          {/* A quiet door to /dev/fun — the not-serious shelf. No emphasis. */}
+          <p className="colophon-devfun mono">
+            <Link href="/dev-fun/mega-brain" className="colophon-devfun-link">
+              /dev/fun
+            </Link>
+          </p>
         </article>
       </main>
 

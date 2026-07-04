@@ -46,6 +46,10 @@ import { run as f5AwafEvasionRun } from "./f5-awaf-evasion-explainer";
 import { run as f5AwafPoisoningRun } from "./f5-awaf-learning-poisoning-estimator";
 import { run as as3Run } from "./as3-explainer-validator";
 import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
+import { run as f5AwafLogRun } from "./f5-awaf-request-log-triage";
+import { run as f5AwafSuggRun } from "./f5-awaf-learning-suggestion-interpreter";
+import { run as f5AwafSigRun } from "./f5-awaf-signature-accuracy-risk";
+import { run as f5AwafDiffRun } from "./f5-awaf-policy-diff";
 import { run as hashRun } from "./hash";
 import { run as hmacRun } from "./hmac";
 import { run as httpRequestTranslatorRun } from "./http-request-translator";
@@ -115,6 +119,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-awaf-learning-poisoning-estimator", structured: true, run: f5AwafPoisoningRun },
   { slug: "as3-explainer-validator", run: as3Run },
   { slug: "f5-awaf-false-positive-triage", structured: true, run: f5AwafFpRun },
+  { slug: "f5-awaf-request-log-triage", run: f5AwafLogRun },
+  { slug: "f5-awaf-learning-suggestion-interpreter", structured: true, run: f5AwafSuggRun },
+  { slug: "f5-awaf-signature-accuracy-risk", structured: true, run: f5AwafSigRun },
+  { slug: "f5-awaf-policy-diff", structured: true, run: f5AwafDiffRun },
   { slug: "hash", run: hashRun },
   { slug: "hmac", structured: true, run: (input) => hmacRun(JSON.parse(input)) },
   { slug: "http-request-translator", run: httpRequestTranslatorRun },
