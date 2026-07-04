@@ -41,6 +41,11 @@ function tierFor(power: number): number {
   return 0;
 }
 
+// The Mano Deyvin homage button is hidden for now (PRIME request). Flip to
+// true to bring the "🍺 O react do Mano" reality-check button (and its
+// overlay) back.
+const SHOW_MANO_BUTTON = false;
+
 export default function MegaBrainConsole() {
   const [power, setPower] = useState(0);
   const [terms, setTerms] = useState(0); // fake "termos inteligentes pesquisados" counter
@@ -152,9 +157,11 @@ export default function MegaBrainConsole() {
         <button type="button" className="mb-btn mb-btn-forca" onClick={forcaTotal}>
           ⚡ FORÇA TOTAL
         </button>
-        <button type="button" className="mb-btn mb-btn-mano" onClick={reactDoMano}>
-          🍺 O react do Mano
-        </button>
+        {SHOW_MANO_BUTTON && (
+          <button type="button" className="mb-btn mb-btn-mano" onClick={reactDoMano}>
+            🍺 O react do Mano
+          </button>
+        )}
         <button type="button" className="mb-btn mb-btn-off" onClick={desligar}>
           desligar
         </button>

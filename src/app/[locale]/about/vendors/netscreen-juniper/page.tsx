@@ -30,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       sections={["s1", "s2"]}
       icons={["firewall", "gateway", "switch", "router"]}
       lineage={{ stages: lineageStages, titleKey: "juniper.lineageTitle", descKey: "juniper.lineageDesc" }}
-      next={{ slug: "palo-alto", key: "paloalto" }}
+      next={{ slug: "extreme", key: "extreme" }}
     />
   );
 }

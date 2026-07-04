@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   return (
     <VendorPage
       vendorKey="cabletron"
-      sections={["s1", "s2"]}
+      sections={["s1", "ssr", "field", "customers", "s2", "s3"]}
       icons={["switch", "router", "wlan", "firewall"]}
       lineage={{ stages: lineageStages, titleKey: "cabletron.lineageTitle", descKey: "cabletron.lineageDesc" }}
       next={{ slug: "riverstone", key: "riverstone" }}

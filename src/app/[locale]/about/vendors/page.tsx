@@ -1,9 +1,9 @@
 // ============================================================================
 // src/app/[locale]/about/vendors/page.tsx
 // ----------------------------------------------------------------------------
-// THE VENDORS INDEX — entry point to the five historical vendor pages.
+// THE VENDORS INDEX — entry point to the historical vendor pages.
 //
-// Lists the grouped vendors (Cabletron+Enterasys, NetScreen+Juniper, Riverstone,
+// Lists the vendors in rough chronological order as cards. These are PAST
 // Cisco, Palo Alto) in rough chronological order as cards. These are PAST
 // relationships; the lede makes clear the platforms taught today live under
 // Training. Statically generated per locale.
@@ -19,7 +19,10 @@ const VENDORS = [
   { slug: "cabletron-enterasys", key: "cabletron" },
   { slug: "riverstone", key: "riverstone" },
   { slug: "cisco", key: "cisco" },
+  { slug: "ironport", key: "ironport" },
   { slug: "netscreen-juniper", key: "juniper" },
+  { slug: "extreme", key: "extreme" },
+  { slug: "fireeye-mcafee-ixia", key: "distribution" },
   { slug: "palo-alto", key: "paloalto" },
 ] as const;
 

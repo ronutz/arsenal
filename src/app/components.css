@@ -7948,7 +7948,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .mb-total-sub { margin: 0.4rem 0 0; font-size: 0.85rem; color: #22d3ee; }
 .mb-total-fine { margin: 0.35rem 0 0; font-size: 0.72rem; color: #7c88b0; font-style: italic; }
 
-.mb-disclaimer { margin: 1.1rem 1.25rem 0; font-size: 0.75rem; color: #5f6b91; text-align: center; line-height: 1.5; }
+.mb-disclaimer { margin: 1.1rem 1.25rem 0; font-size: 0.75rem; color: #5f6b91; opacity: 0.45; text-align: center; line-height: 1.5; }
 
 @keyframes mb-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 @keyframes mb-spin { to { transform: rotate(360deg); } }
