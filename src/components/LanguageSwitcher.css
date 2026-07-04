@@ -158,7 +158,7 @@
 
 /* ==========================================================================
    TRANSLATION-STATUS CUE — per-language dots + panel legend.
-   Green = written/reviewed by a person (English, pt-BR); amber = machine-
+   Green = written/reviewed by a person (English); blue = machine-
    translated and covering the whole site; yellow = machine-translated with
    newer content still catching up. Status colours are fixed (traffic-light
    semantics) so they read identically across themes; a faint ring keeps them
@@ -173,7 +173,7 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
 }
 .ls-status--reviewed { background: #34D399; } /* green  */
-.ls-status--complete { background: #F59E0B; } /* amber  */
+.ls-status--complete { background: #3B82F6; } /* blue — machine, complete */
 .ls-status--partial  { background: #FACC15; } /* yellow */
 .ls-status--stub     { background: #EF4444; } /* red — no pack yet (English fallback) */
 

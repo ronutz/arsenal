@@ -13,6 +13,7 @@
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "@/i18n/navigation";
 
 // Milestone lines, drawn from the meme lore. Keyed by the threshold reached.
 const MILESTONES: { at: number; line: string }[] = [
@@ -44,6 +45,8 @@ export default function MegaBrainConsole() {
   const [power, setPower] = useState(0);
   const [terms, setTerms] = useState(0); // fake "termos inteligentes pesquisados" counter
   const rampRef = useRef<number | null>(null);
+  const [reacting, setReacting] = useState(false); // Mano Deyvin reality-check overlay
+  const manoTimerRef = useRef<number | null>(null);
 
   const tier = tierFor(power);
   const milestone = milestoneFor(power);
@@ -57,7 +60,10 @@ export default function MegaBrainConsole() {
   }, [atTotal]);
 
   // Cancel any ramp on unmount.
-  useEffect(() => () => { if (rampRef.current) cancelAnimationFrame(rampRef.current); }, []);
+  useEffect(() => () => {
+    if (rampRef.current) cancelAnimationFrame(rampRef.current);
+    if (manoTimerRef.current) window.clearTimeout(manoTimerRef.current);
+  }, []);
 
   const stopRamp = () => { if (rampRef.current) { cancelAnimationFrame(rampRef.current); rampRef.current = null; } };
 
@@ -82,6 +88,17 @@ export default function MegaBrainConsole() {
 
   const onLever = (v: number) => { stopRamp(); setPower(v); };
 
+  // Shout-out to Mano Deyvin, whose react sparked the whole meme. Fittingly,
+  // his button is the reality check: it deflates the hype (that is his bit).
+  const reactDoMano = () => {
+    stopRamp();
+    setPower(0);
+    setTerms(0);
+    setReacting(true);
+    if (manoTimerRef.current) window.clearTimeout(manoTimerRef.current);
+    manoTimerRef.current = window.setTimeout(() => setReacting(false), 4200);
+  };
+
   // Brain scale + glow scale with power.
   const scale = 1 + (power / 100) * 0.7;
   const glow = 6 + (power / 100) * 60;
@@ -91,6 +108,7 @@ export default function MegaBrainConsole() {
       <div className="mb-titlebar">
         <span className="mb-dot" /><span className="mb-dot" /><span className="mb-dot" />
         <span className="mb-titlebar-text mono">/dev/fun — console_do_mega_brain.exe</span>
+        <Link href="/tools" className="mb-close" aria-label="Fechar janela e voltar às ferramentas" title="Fechar janela">✕</Link>
       </div>
 
       <div className="mb-stage" aria-hidden="true">
@@ -134,10 +152,28 @@ export default function MegaBrainConsole() {
         <button type="button" className="mb-btn mb-btn-forca" onClick={forcaTotal}>
           ⚡ FORÇA TOTAL
         </button>
+        <button type="button" className="mb-btn mb-btn-mano" onClick={reactDoMano}>
+          🍺 O react do Mano
+        </button>
         <button type="button" className="mb-btn mb-btn-off" onClick={desligar}>
           desligar
         </button>
       </div>
+
+      {reacting && (
+        <div className="mb-mano-overlay" role="status" onClick={() => setReacting(false)}>
+          <div className="mb-mano-card">
+            <p className="mb-mano-emoji">🍺</p>
+            <p className="mb-mano-line">REALITY CHECK</p>
+            <p className="mb-mano-sub">Calma no hype: no fim, é só engenharia de prompt com boa comunicação. E tá tudo bem.</p>
+            <p className="mb-mano-credit">
+              Homenagem ao{" "}
+              <a href="https://youtube.com/@manodeyvin" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>Mano Deyvin</a>
+              , o react que começou a zoeira. 🤙
+            </p>
+          </div>
+        </div>
+      )}
 
       {atTotal && (
         <div className="mb-total-banner">
@@ -148,7 +184,7 @@ export default function MegaBrainConsole() {
       )}
 
       <p className="mb-disclaimer">
-        Isto não computa, não otimiza e não pesquisa termo nenhum. É um alívio de estresse. Se sentiu a dopamina, funcionou. ☕
+        Isto não computa, não otimiza e não pesquisa termo nenhum. É um alívio de estresse. Se sentiu a dopamina, funcionou.
       </p>
     </div>
   );

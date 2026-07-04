@@ -7846,6 +7846,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   border-radius: 14px;
   padding: 0 0 1.25rem;
   overflow: hidden;
+  position: relative;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   color: #e6ecff;
   transition: box-shadow 0.3s ease;
@@ -7929,9 +7930,9 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   background: linear-gradient(180deg, #ff6ab5, #ff2d95); cursor: grab; box-shadow: 0 0 14px rgba(255,45,149,0.7);
 }
 
-.mb-buttons { display: flex; gap: 0.7rem; padding: 1rem 1.25rem 0; }
+.mb-buttons { display: flex; flex-wrap: wrap; gap: 0.7rem; padding: 1rem 1.25rem 0; }
 .mb-btn { border: none; border-radius: 10px; font-weight: 700; cursor: pointer; padding: 0.7rem 1rem; transition: transform 0.12s ease, filter 0.2s ease; }
-.mb-btn-forca { flex: 1; background: linear-gradient(90deg, #7c3aed, #ff2d95); color: #fff; letter-spacing: 0.05em; font-size: 1rem; box-shadow: 0 6px 20px rgba(255,45,149,0.35); }
+.mb-btn-forca { flex: 1 1 100%; background: linear-gradient(90deg, #7c3aed, #ff2d95); color: #fff; letter-spacing: 0.05em; font-size: 1rem; box-shadow: 0 6px 20px rgba(255,45,149,0.35); }
 .mb-btn-forca:hover { transform: translateY(-1px); filter: brightness(1.1); }
 .mb-btn-forca:active { transform: translateY(1px) scale(0.99); }
 .mb-btn-off { background: #141c34; color: #8b97bf; font-size: 0.85rem; }
@@ -8017,3 +8018,60 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .bt-legend-item { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: var(--text-secondary); }
 .bt-sources { margin: 0.9rem 0 0; font-size: 0.72rem; line-height: 1.5; color: var(--text-tertiary, var(--text-secondary)); }
 @media (max-width: 560px) { .bt-card-label { flex-basis: 5.5rem; } .bt-year { font-size: 2rem; } }
+
+
+/* --- timeline: per-branch EoSD/EoTS lifecycle marks --- */
+.bt-life { margin-top: 0.9rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-subtle); }
+.bt-life-title { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 0.5rem; }
+.bt-life-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.7rem;
+  padding: 0.45rem 0.6rem; margin-bottom: 0.4rem; border-radius: var(--radius-sm, 8px);
+  border-left: 3px solid var(--border-strong);
+  background: var(--surface-elevated, var(--surface-base));
+}
+.bt-life-branch { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); }
+.bt-life-dates { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; font-size: 0.82rem; color: var(--text-secondary); }
+.bt-life-sep { opacity: 0.5; }
+.bt-life-badge { margin-left: auto; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+
+/* EoL: dimmed */
+.bt-life-eol { opacity: 0.5; border-left-color: var(--text-tertiary, #94a3b8); }
+.bt-lifeb-eol { background: color-mix(in srgb, var(--text-tertiary, #94a3b8) 25%, transparent); color: var(--text-primary); }
+/* Nearing EoTS: amber reminder */
+.bt-life-soon { border-left-color: var(--color-warning, #d97706); background: color-mix(in srgb, var(--color-warning, #d97706) 10%, var(--surface-base)); }
+.bt-lifeb-soon { background: color-mix(in srgb, var(--color-warning, #d97706) 26%, transparent); color: var(--text-primary); }
+/* Comfortably supported: green */
+.bt-life-ok { border-left-color: var(--color-success, #16a34a); }
+.bt-lifeb-ok { background: color-mix(in srgb, var(--color-success, #16a34a) 22%, transparent); color: var(--text-primary); }
+/* Pre-hydration neutral */
+.bt-life-neutral { border-left-color: var(--border-strong); }
+
+
+/* --- Mega Brain: close button, Mano Deyvin homage button + overlay --- */
+.mb-close {
+  margin-left: auto; color: #7c88b0; text-decoration: none;
+  font-size: 0.95rem; line-height: 1; padding: 0.15rem 0.45rem; border-radius: 5px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.mb-close:hover, .mb-close:focus-visible { color: #fff; background: #e11d48; outline: none; }
+
+.mb-btn-mano { flex: 1 1 auto; background: linear-gradient(90deg, #b45309, #f59e0b); color: #1a1205; font-size: 0.92rem; }
+.mb-btn-mano:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.mb-btn-mano:active { transform: translateY(1px) scale(0.99); }
+
+.mb-mano-overlay {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem; cursor: pointer;
+  background: rgba(7, 11, 22, 0.93); backdrop-filter: blur(3px);
+  animation: mb-banner-in 0.3s ease;
+}
+.mb-mano-card { text-align: center; max-width: 350px; }
+.mb-mano-emoji { font-size: 3rem; margin: 0; animation: mb-pop 0.4s ease; }
+.mb-mano-line { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.12em; color: #f59e0b; margin: 0.4rem 0 0; }
+.mb-mano-sub { font-size: 0.95rem; color: #e6ecff; margin: 0.7rem 0 0; line-height: 1.55; }
+.mb-mano-credit { font-size: 0.85rem; color: #9aa6cc; margin: 1rem 0 0; line-height: 1.5; }
+.mb-mano-credit a { color: #f59e0b; font-weight: 700; text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) {
+  .mb-mano-overlay, .mb-mano-emoji { animation: none; }
+}

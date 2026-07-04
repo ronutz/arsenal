@@ -38,7 +38,7 @@ export interface LocaleMeta {
 
 /**
  * THE REGISTRY. Order here is the order shown in the language switcher.
- * Day-one real content: en, pt-BR, es (status 'reviewed'). All others are
+ * Human-reviewed: en only. pt-BR is machine-translated but complete; es and all others are
  * registered + selectable but 'stub' → they fall back to English until a real
  * pack lands. This is the "capability is day-one, content arrives as packs"
  * decision (D-20 amendment, PRIME-ratified 2026-06-23).
@@ -46,7 +46,7 @@ export interface LocaleMeta {
 export const LOCALES: readonly LocaleMeta[] = [
   // --- Languages with real, human-reviewed content shipping day-one ---
   { code: "en",         nativeName: "English",            englishName: "English",                 dir: "ltr", status: "reviewed" },
-  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "reviewed" },
+  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "machine-draft" },
   { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "machine-draft" },
 
   // --- Registered + selectable day-one; stubs falling back to English until translated ---

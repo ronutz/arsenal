@@ -3922,7 +3922,7 @@
     "complete": "Automática, completa",
     "partial": "Automática, em andamento",
     "explainTitle": "Como as traduções são marcadas",
-    "explainBody": "O inglês e o português do Brasil são escritos e revisados por uma pessoa. A maioria dos outros idiomas é traduzida por máquina e sinalizada conforme o seu progresso: âmbar quando o idioma cobre todo o site, amarelo enquanto o conteúdo mais recente ainda está em inglês e sendo atualizado. Os idiomas marcados em vermelho ainda não têm tradução e são exibidos em inglês por enquanto. As páginas traduzidas por máquina também trazem um pequeno aviso, e você pode ajudar a melhorar qualquer uma delas.",
+    "explainBody": "O inglês é escrito e revisado por uma pessoa. O português brasileiro e os demais idiomas são traduzidos por máquina, e marcados pelo quanto já avançaram: azul quando um idioma cobre o site inteiro, amarelo enquanto conteúdo novo ainda está em inglês e se atualizando. Idiomas marcados em vermelho ainda não têm tradução e são exibidos em inglês por ora. Páginas traduzidas por máquina também trazem um aviso curto, e você é bem-vindo a ajudar a melhorar qualquer uma delas.",
     "stub": "Ainda não traduzido"
   },
   "changelog": {

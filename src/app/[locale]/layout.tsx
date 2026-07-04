@@ -60,6 +60,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "site" });
   return {
+    metadataBase: new URL("https://ronutz.com"),
     title: `${t("name")} · ${t("tagline")}`,
     description: t("tagline"),
     // Favicon set generated from the RN mark (see public/). favicon.ico covers

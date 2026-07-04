@@ -39,7 +39,7 @@ import { LOCALES, DEFAULT_LOCALE, getLocale, type LocaleMeta } from "@/i18n/loca
 import { LOCALE_COVERAGE } from "@/i18n/locale-coverage";
 
 // A locale's display status for the switcher cue:
-//   "reviewed" — written and reviewed by a person (English, pt-BR) -> green
+//   "reviewed" — written and reviewed by a person (English) -> green
 //   "complete" — machine-translated and covering the whole site   -> amber
 //   "partial"  — machine-translated, newer content still catching up -> yellow
 //   "stub"     — no pack yet, so the page falls back to English     -> red

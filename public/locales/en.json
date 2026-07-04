@@ -3922,7 +3922,7 @@
     "complete": "Machine, complete",
     "partial": "Machine, in progress",
     "explainTitle": "How translations are marked",
-    "explainBody": "English and Brazilian Portuguese are written and reviewed by a person. Most other languages are machine-translated and flagged by how far along they are: amber once a language covers the whole site, yellow while newer content is still in English and catching up. Languages marked red have no translation yet and are shown in English for now. Machine-translated pages also carry a short notice, and you are welcome to help improve any of them.",
+    "explainBody": "English is written and reviewed by a person. Brazilian Portuguese and the other languages are machine-translated, and marked by how far along they are: blue once a language covers the whole site, yellow while newer content is still in English and catching up. Languages marked red have no translation yet and are shown in English for now. Machine-translated pages also carry a short notice, and you are welcome to help improve any of them.",
     "stub": "Not translated yet"
   },
   "changelog": {
