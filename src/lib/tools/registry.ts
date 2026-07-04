@@ -42,6 +42,10 @@ import { run as f5xcServicePolicyExplainerRun } from "./f5xc-service-policy-expl
 import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigipLicenseExplainerRun } from "./f5-bigip-license-explainer";
 import { run as f5AwafDeclarativePolicyRun } from "./f5-awaf-declarative-policy-explainer";
+import { run as f5AwafEvasionRun } from "./f5-awaf-evasion-explainer";
+import { run as f5AwafPoisoningRun } from "./f5-awaf-learning-poisoning-estimator";
+import { run as as3Run } from "./as3-explainer-validator";
+import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
 import { run as hashRun } from "./hash";
 import { run as hmacRun } from "./hmac";
 import { run as httpRequestTranslatorRun } from "./http-request-translator";
@@ -107,6 +111,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-service-check-date", run: f5ServiceCheckDateRun },
   { slug: "f5-bigip-license-explainer", run: f5BigipLicenseExplainerRun },
   { slug: "f5-awaf-declarative-policy-explainer", run: f5AwafDeclarativePolicyRun },
+  { slug: "f5-awaf-evasion-explainer", run: f5AwafEvasionRun },
+  { slug: "f5-awaf-learning-poisoning-estimator", structured: true, run: f5AwafPoisoningRun },
+  { slug: "as3-explainer-validator", run: as3Run },
+  { slug: "f5-awaf-false-positive-triage", structured: true, run: f5AwafFpRun },
   { slug: "hash", run: hashRun },
   { slug: "hmac", structured: true, run: (input) => hmacRun(JSON.parse(input)) },
   { slug: "http-request-translator", run: httpRequestTranslatorRun },

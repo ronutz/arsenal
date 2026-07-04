@@ -1,0 +1,44 @@
+---
+slug: as3-declaration-anatomy
+title: "Anatomia de uma declaração AS3: da classe AS3 até o Pool"
+summary: "Uma declaração AS3 do F5 BIG-IP é uma árvore JSON que descreve a configuração desejada, em termos de tenant e application, e deixa o AS3 resolver a ordem das operações. Isto percorre a estrutura de cima a baixo: o wrapper de requisição AS3 versus uma declaração apenas ADC, a classe ADC e seu schemaVersion, o Tenant que vira uma partição, a Application e seu template, e as classes de recurso como Service_HTTP, Pool e TLS_Server, além das regras que tornam uma declaração válida."
+concepts: ["f5", "as3", "application services 3", "appsvcs", "declarative", "automation", "bigip", "tenant", "adc", "iac"]
+relatedTools: ["as3-explainer-validator"]
+relatedArticles: ["awaf-declarative-policy-structure"]
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-04"
+---
+
+O AS3, a Application Services 3 Extension do F5, permite configurar um BIG-IP descrevendo o estado final que você quer em vez de emitir os comandos individuais para chegar lá. Uma declaração descreve a configuração desejada de um Application Delivery Controller em termos de tenant e application, expressa como um documento JSON, e o AS3 resolve a ordem das operações para o dispositivo corresponder. A declaração é uma árvore, e assim que você consegue ler a árvore, o AS3 deixa de ser um mistério.
+
+## Duas formas de entrar: a requisição AS3 ou uma declaração apenas ADC
+
+O objeto mais externo é de uma de duas classes. Uma **requisição AS3** completa tem `class: "AS3"` e carrega opções de nível superior: `action` (deploy, dry-run, redeploy, retrieve, remove ou patch), `persist` (se salva o resultado na configuração em execução), e uma propriedade `declaration` contendo a config real. Você também pode pular o wrapper e enviar a declaração diretamente, uma **declaração apenas ADC** com `class: "ADC"` no topo, mas então as opções `action` e `persist` deixam de estar disponíveis. Ambas são enviadas para o mesmo lugar: `POST https://<BIG-IP>/mgmt/shared/appsvcs/declare`.
+
+Você transmite declarações com um cliente REST comum. O AS3 suporta POST para implantar, GET para recuperar o que foi enviado anteriormente, DELETE para remover tenants, e PATCH (desde o AS3 3.1.0) para modificar. GET, DELETE e PATCH funcionam sobre declarações que você já enviou e o AS3 reteve.
+
+## A classe ADC: as configurações da declaração
+
+Dentro da requisição (ou no topo de um documento apenas ADC) fica a classe ADC. Ela carrega as configurações gerais da declaração: um **`schemaVersion`** que o AS3 exige e que é deliberadamente desacoplado da versão de release do AS3, para que uma declaração antiga continue funcionando com um AS3 novo; um `id`, `label` e `remark` opcionais para seu próprio controle; e um objeto `controls` opcional para tracing e logging. Todo o resto neste nível é um tenant.
+
+## Tenant, depois Application, depois recursos
+
+A árvore tem forma fixa. A classe de nível mais alto é o **Tenant**, e cada tenant vira uma **partição** no BIG-IP. Um tenant é um conjunto de applications pertencentes a uma autoridade. Dentro de um tenant, cada **Application** é uma coleção dos recursos ADC de uma aplicação de negócio. Dentro de uma application vivem os recursos reais: o virtual server, seu pool, seus monitors, seus perfis de TLS.
+
+A declaração válida mínima decorre disso: ao menos um Tenant, contendo ao menos uma Application, contendo ao menos um recurso como um `Service_TCP`. Menos que isso não gera configuração.
+
+## O template e a regra da classe de service
+
+Cada Application tem um **`template`**, e ele carrega uma regra que vale memorizar. Se o template é `http`, `https`, `tcp`, `udp` ou `l4`, a application **precisa** conter um objeto de service correspondente, `Service_HTTP`, `Service_HTTPS`, `Service_TCP`, `Service_UDP` ou `Service_L4`, e ele precisa se chamar **`service`** (isso era `serviceMain` antes do AS3 3.20). Os templates `generic` e `shared` não têm essa exigência e deixam os objetos usar qualquer nome. Desde o AS3 3.20, se você omitir o template inteiramente, `generic` é o padrão, e é por isso que muitos exemplos atuais não especificam template e nomeiam o virtual server como `service` livremente.
+
+## As classes de recurso
+
+Dentro de uma application você encontrará um elenco recorrente, cada um identificado por sua `class`. `Service_HTTP` e `Service_HTTPS` são virtual servers de Layer 7 (o HTTPS terminando TLS); `Service_TCP`, `Service_UDP` e `Service_L4` são suas contrapartes de Layer 4. Um `Pool` é o pool de balanceamento com seus membros e `loadBalancingMode`. Um `Monitor` é uma verificação de saúde customizada. `TLS_Server` é o perfil ao qual os clientes se conectam (um perfil Client SSL no BIG-IP) e `TLS_Client` é como o BIG-IP se conecta adiante (um perfil Server SSL), com `Certificate` guardando o certificado e a chave. `Persist` é um perfil de stickiness, `WAF_Policy` anexa uma política do Advanced WAF, `Endpoint_Policy` é uma política de tráfego LTM, e `iRule` anexa Tcl. A ferramenta neste site nomeia e explica cada classe que encontra, e sinaliza qualquer uma que não reconheça em vez de escondê-la.
+
+## Pointers, nomes reservados e nomenclatura
+
+Os objetos se referem uns aos outros por **pointer**. Um pointer relativo de uma palavra como `web_pool` refere-se a um objeto com esse nome na mesma application e tenant; o AS3 preenche o caminho. A palavra-chave `use` aponta para outro objeto na declaração, enquanto `bigip` aponta para um objeto existente já configurado no dispositivo fora do AS3. Para compartilhar um recurso, uma application chamada `Shared` dentro de um tenant é referenciável por outras applications naquele tenant, e `/Common/Shared` é referenciável em todo lugar.
+
+Alguns nomes são reservados: o nome de tenant **Common**, o nome de application **Shared**, o nome de virtual server **service**, e o nome de propriedade **constants**. Todo outro nome de tenant, application e recurso é sua escolha, sujeito a uma regra: de 1 a 64 caracteres, alfanuméricos, começando com uma letra. O explicador aqui verifica exatamente isso, junto com as regras estruturais acima, para você pegar uma declaração malformada antes do AS3. É um verificador de estrutura, não o schema completo do AS3, então trate um resultado limpo como um bom sinal, não uma garantia.

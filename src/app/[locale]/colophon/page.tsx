@@ -209,6 +209,19 @@ export default async function ColophonPage({
               verified core, answering the question a savvy reader will ask. */}
           <section className="section">
             <div className="container colophon-container">
+              {/* The hosting ceiling, honestly stated: Cloudflare Workers static-asset
+                  limits (20k free / 100k paid per version, 25 MiB per file; the paid
+                  raise is the 2025-09-02 changelog and needs Wrangler >= 4.34), and
+                  this architecture's measured cost of ~3 files per page across 16
+                  locales, ~50 per tool, ~100 per tool+article pack. */}
+              <h2 className="colophon-h2">{t("limitsTitle")}</h2>
+              <p className="colophon-body">{t("limitsBody1")}</p>
+              <p className="colophon-body">{t("limitsBody2")}</p>
+            </div>
+          </section>
+
+          <section className="section">
+            <div className="container colophon-container">
               <h2 className="colophon-h2">{t("vibeTitle")}</h2>
               <p className="colophon-body">{t("vibeBody1")}</p>
               <p className="colophon-body">{t("vibeBody2")}</p>

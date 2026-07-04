@@ -92,6 +92,8 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
             <p className="section-body">{t("intentApi")}</p>
             <p className="section-body">{t("intentOpen")}</p>
             <p className="section-body">{t("intentClose")}</p>
+            {/* The measured hosting ceiling; full account on the colophon. */}
+            <p className="section-body">{t("ceiling")}</p>
           </div>
         </section>
 

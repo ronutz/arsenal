@@ -1,0 +1,34 @@
+---
+slug: awaf-false-positives
+title: "Handling False Positives in Advanced WAF: Triage by Rating, Then Tune with Scope"
+summary: "A false positive is legitimate traffic that trips a security policy. In F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) the violation rating is the triage signal: ratings 1 and 2 are likely false positives you can accept, rating 3 needs investigation, and ratings 4 and 5 block even with Block flags off and should be cleared rather than relaxed. The fix is always scoped to the specific URL or parameter, never a policy-wide disable, and the governing rule is to relax only where a false positive actually occurred."
+concepts: ["f5", "awaf", "advanced waf", "asm", "false positive", "violation rating", "signature", "staging", "tuning", "security", "bigip"]
+relatedTools: ["f5-awaf-false-positive-triage", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer"]
+relatedArticles: ["awaf-signature-staging-and-enforcement-readiness", "awaf-automatic-learning-poisoning", "awaf-enforcement-mode-blocking-vs-transparent"]
+category: security
+order: 6
+status: reviewed
+updated: "2026-07-04"
+---
+
+A false positive is a request that a real user legitimately made, blocked or flagged because it happened to match a security check. Every web application firewall produces them, and in F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) they are the single biggest source of operational friction: the most common WAF deployment failure is going straight to blocking mode, where every false positive breaks a workflow, generates a helpdesk ticket, and erodes confidence in the WAF before it has proven its worth. Handling them well is less about turning things off than about triaging correctly and tuning with scope.
+
+## The violation rating is your triage signal
+
+Advanced WAF assigns each transaction a violation rating from 1 to 5, based on the combination of violations in that transaction and their impact, not on any single violation in isolation, because real attacks tend to stack several violations at once. That rating tells you how to treat a suspected false positive, and F5 builds the blocking behavior around it.
+
+Ratings of 4 or 5 are most likely real attacks, and the system blocks them even when every detected violation has its Block flag off. For these you should clear the learning suggestion without changing the policy: relaxing to accommodate a rating-5 request would be relaxing to accommodate an attack. Ratings of 1, 2, and 3 are not blocked by default, precisely to reduce false positives. A rating of 3 sits on the fence and needs to be reviewed in the event log before you decide. Ratings of 1 and 2 are the ones that are usually genuine false positives, and if you confirm the request is legitimate you can accept the learning suggestion or apply a scoped fix. A small set of the most severe violations are unlearnable and always rated 5, so there is never anything to accept for those.
+
+## Staging changes what "blocked" means
+
+Before you tune anything, check whether the offending check is actually enforcing. A signature in staging logs its matches but does not block, and a policy in Transparent mode blocks nothing at all. In both cases what looks like a false positive is a learning signal rather than a broken user experience, which is exactly the point of staging: new or problematic signatures belong in staging for one to two weeks of production traffic so you can find their false positives before they can block anyone. The disciplined pipeline moves a signature Staging to Alarm to Blocking as confidence grows, which is also how you avoid a wave of false positives when you switch a policy from Transparent to Blocking.
+
+## Tune with scope, never policy-wide
+
+Once you have confirmed a genuine false positive, the correct fix depends on the violation, and all of the good options share one property: they are scoped to the specific URL or parameter, not the whole policy. Disabling a signature or a violation policy-wide trades one false positive for a blind spot on every other URL, which is how a tuning session quietly becomes a security regression.
+
+For an attack signature that misfires, disable that signature on just that URL or parameter, or add the URL or parameter as an allowed entity so the check is bypassed only there, or enable Potential False Positive Detection and let the system decide by traffic similarity, treating requests like the majority as benign and flagging the outliers that real attacks produce. For an illegal meta character, add the character to the allowed set of that parameter, value, or URL. For an illegal parameter, URL, or file type, add the entity to the allowed list. For a length violation, raise the specific limit to fit legitimate traffic. Uploaded files routinely trip signatures, and the clean fix is to declare the upload parameter with value type user-input and data type file upload so its binary content is not scanned as text. Signatures firing inside XML or JSON payloads are best handled by attaching the matching content profile so the structure is parsed and the checks apply appropriately. Cookie violations deserve a second look, because a modified cookie is usually real tampering rather than a false positive.
+
+## The one rule to keep
+
+Every technique above is bounded by a single discipline that F5 states plainly: relax the policy only where a false positive actually occurred, and never where a real attack caused the violation. The violation rating exists to help you tell those two cases apart, and the scoped fixes exist so that correcting one does not weaken the other. The triage tool on this site puts F5's rating logic and the scoped remediation for each violation category in one place, so a false positive becomes a decision you can make deliberately rather than by reflexively clicking accept.

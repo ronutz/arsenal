@@ -30,6 +30,7 @@ tags:
   - name: F5 Distributed Cloud (XC)
   - name: F5 GTM, AFM & APM
   - name: F5 LTM, iRules & platform
+  - name: F5 automation (AS3 / DO)
   - name: HTTP & web
   - name: Hashing
   - name: Identifiers & time
@@ -42,6 +43,79 @@ tags:
   - name: TLS & transport
   - name: Text & utilities
 paths:
+  /as3-explainer-validator:
+    get:
+      tags:
+        - F5 automation (AS3 / DO)
+      operationId: run_as3_explainer_validator
+      summary: AS3 declaration explainer
+      description: >-
+        Paste the JSON you POST to /mgmt/shared/appsvcs/declare and it reads it back: whether it is
+        a full AS3 request or an ADC-only declaration, the schemaVersion and metadata, and the
+        Tenant to Application to resource tree with every class explained, while checking the
+        structural rules F5 documents. Runs entirely in your browser. Standards: F5 BIG-IP AS3 user
+        guide, F5 AS3 schema reference. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - >-
+                { "class": "AS3", "action": "deploy", "declaration": { "class": "ADC",
+                "schemaVersion": "3.0.0" } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 automation (AS3 / DO)
+      operationId: run_as3_explainer_validator_post
+      summary: AS3 declaration explainer (POST)
+      description: >-
+        Paste the JSON you POST to /mgmt/shared/appsvcs/declare and it reads it back: whether it is
+        a full AS3 request or an ADC-only declaration, the schemaVersion and metadata, and the
+        Tenant to Application to resource tree with every class explained, while checking the
+        structural rules F5 documents. Runs entirely in your browser. Standards: F5 BIG-IP AS3 user
+        guide, F5 AS3 schema reference. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - >-
+                  { "class": "AS3", "action": "deploy", "declaration": { "class": "ADC",
+                  "schemaVersion": "3.0.0" } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /base64:
     get:
       tags:
@@ -844,7 +918,7 @@ paths:
       tags:
         - Security & WAF
       operationId: run_f5_awaf_declarative_policy_explainer
-      summary: F5 Advanced WAF declarative-policy explainer
+      summary: AWAF declarative-policy explainer
       description: >-
         Paste a BIG-IP Advanced WAF declarative security policy (JSON) and get a section-by-section,
         plain-language reading grounded in F5's published schema, with security callouts that read
@@ -878,7 +952,7 @@ paths:
       tags:
         - Security & WAF
       operationId: run_f5_awaf_declarative_policy_explainer_post
-      summary: F5 Advanced WAF declarative-policy explainer (POST)
+      summary: AWAF declarative-policy explainer (POST)
       description: >-
         Paste a BIG-IP Advanced WAF declarative security policy (JSON) and get a section-by-section,
         plain-language reading grounded in F5's published schema, with security callouts that read
@@ -895,6 +969,219 @@ paths:
               type: string
               examples:
                 - '{ "policy": { "template": { "name": "POLICY_TEMPLATE_RAPID_DEPLOYMENT" } } }'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-awaf-evasion-explainer:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_evasion_explainer
+      summary: AWAF evasion-technique explainer
+      description: >-
+        Type a sub-violation name or "evasions" for F5's eight evasion sub-violations explained,
+        each with its default and the encoding trick it catches, or paste the evasions block of a
+        declarative WAF policy to read each one back as enabled or disabled with the
+        Multiple-decoding pass count. Grounded in F5 K7929; runs entirely in your browser.
+        Standards: F5 K7929, F5 BIG-IP ASM 17.5 violations, F5 Declarative WAF schema v17.1.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - >-
+                { "blocking-settings": { "evasions": [ { "description": "Multiple decoding",
+                "enabled": true } ] } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_evasion_explainer_post
+      summary: AWAF evasion-technique explainer (POST)
+      description: >-
+        Type a sub-violation name or "evasions" for F5's eight evasion sub-violations explained,
+        each with its default and the encoding trick it catches, or paste the evasions block of a
+        declarative WAF policy to read each one back as enabled or disabled with the
+        Multiple-decoding pass count. Grounded in F5 K7929; runs entirely in your browser.
+        Standards: F5 K7929, F5 BIG-IP ASM 17.5 violations, F5 Declarative WAF schema v17.1.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - >-
+                  { "blocking-settings": { "evasions": [ { "description": "Multiple decoding",
+                  "enabled": true } ] } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-awaf-false-positive-triage:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_false_positive_triage
+      summary: AWAF false-positive triage
+      description: >-
+        The flip side of the poisoning estimator: relax a genuine Advanced WAF false positive
+        correctly, with scope, and stop before relaxing a real attack. Pick a violation category,
+        its average violation rating, and whether it is enforced, staged, or transparent, and get
+        F5's rating-based verdict and the scoped fix. Runs entirely in your browser. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
+        K70544352, F5 BIG-IP ASM violation rating, F5 ASM learning. Stateless and side-effect-free:
+        the same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_false_positive_triage_post
+      summary: AWAF false-positive triage (POST)
+      description: >-
+        The flip side of the poisoning estimator: relax a genuine Advanced WAF false positive
+        correctly, with scope, and stop before relaxing a real attack. Pick a violation category,
+        its average violation rating, and whether it is enforced, staged, or transparent, and get
+        F5's rating-based verdict and the scoped fix. Runs entirely in your browser. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
+        K70544352, F5 BIG-IP ASM violation rating, F5 ASM learning. Stateless and side-effect-free:
+        the same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5-awaf-learning-poisoning-estimator:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_learning_poisoning_estimator
+      summary: AWAF automatic-learning poisoning estimator
+      description: >-
+        How many requests does an attacker need to drill a hole through your BIG-IP Advanced WAF
+        policy when the Policy Builder is left in Automatic learning against untrusted traffic?
+        Enter your Loosen thresholds and the attacker's resources; it computes the minimum sources,
+        requests, and time to force one automatic relaxation, and gates on the rules that make it
+        impossible. Runs entirely in your browser. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: F5 K000134503, F5 BIG-IP ASM
+        Policy Builder, F5 BIG-IP Next Policy Builder ref. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_f5_awaf_learning_poisoning_estimator_post
+      summary: AWAF automatic-learning poisoning estimator (POST)
+      description: >-
+        How many requests does an attacker need to drill a hole through your BIG-IP Advanced WAF
+        policy when the Policy Builder is left in Automatic learning against untrusted traffic?
+        Enter your Loosen thresholds and the attacker's resources; it computes the minimum sources,
+        requests, and time to force one automatic relaxation, and gates on the rules that make it
+        impossible. Runs entirely in your browser. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: F5 K000134503, F5 BIG-IP ASM
+        Policy Builder, F5 BIG-IP Next Policy Builder ref. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.
@@ -982,7 +1269,7 @@ paths:
       tags:
         - Security & WAF
       operationId: run_f5_bigip_persistence_cookie
-      summary: BIG-IP Persistence Cookie Decoder
+      summary: BIG-IP persistence-cookie decoder
       description: >-
         Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or
         encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5
@@ -1014,7 +1301,7 @@ paths:
       tags:
         - Security & WAF
       operationId: run_f5_bigip_persistence_cookie_post
-      summary: BIG-IP Persistence Cookie Decoder (POST)
+      summary: BIG-IP persistence-cookie decoder (POST)
       description: >-
         Decode an F5 BIGipServer persistence cookie into the backend pool member's IP and port, or
         encode one from an address and port. Runs entirely in your browser. Standards: F5 K6917, F5
@@ -1180,7 +1467,7 @@ paths:
       tags:
         - F5 GTM, AFM & APM
       operationId: run_f5_dos_vector_explainer
-      summary: AFM DoS-vector / profile explainer
+      summary: AFM DoS-vector & profile explainer
       description: >-
         Every AFM DoS vector explained in F5's own words, with the threshold mechanics spelled out
         and the configuration cross-checked: the silent mitigation-below-detection inversion,
@@ -1216,7 +1503,7 @@ paths:
       tags:
         - F5 GTM, AFM & APM
       operationId: run_f5_dos_vector_explainer_post
-      summary: AFM DoS-vector / profile explainer (POST)
+      summary: AFM DoS-vector & profile explainer (POST)
       description: >-
         Every AFM DoS vector explained in F5's own words, with the threshold mechanics spelled out
         and the configuration cross-checked: the silent mitigation-below-detection inversion,
@@ -1320,7 +1607,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_irules_command_context
-      summary: iRules command / context explainer
+      summary: iRules command-context explainer
       description: >-
         Paste an iRule: every when block explained with the event's own reference one-liner, its
         commands inventoried and linked, the documented priority evaluation order, and a CMP audit
@@ -1353,7 +1640,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_irules_command_context_post
-      summary: iRules command / context explainer (POST)
+      summary: iRules command-context explainer (POST)
       description: >-
         Paste an iRule: every when block explained with the event's own reference one-liner, its
         commands inventoried and linked, the documented priority evaluation order, and a CMP audit
@@ -1387,7 +1674,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_irules_event_order
-      summary: iRule event order
+      summary: iRules event-order explainer
       description: >-
         Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
         see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
@@ -1418,7 +1705,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_irules_event_order_post
-      summary: iRule event order (POST)
+      summary: iRules event-order explainer (POST)
       description: >-
         Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
         see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
@@ -1450,7 +1737,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_irules_vs_ltm_policy
-      summary: iRules vs LTM Policy classifier
+      summary: iRules vs LTM policy classifier
       description: >-
         Per when block, an honest verdict: expressible in an LTM policy (with a migration sketch in
         the vendor's own example grammar), verify on your version, or iRule-required with the
@@ -1483,7 +1770,7 @@ paths:
       tags:
         - F5 LTM, iRules & platform
       operationId: run_f5_irules_vs_ltm_policy_post
-      summary: iRules vs LTM Policy classifier (POST)
+      summary: iRules vs LTM policy classifier (POST)
       description: >-
         Per when block, an honest verdict: expressible in an LTM policy (with a migration sketch in
         the vendor's own example grammar), verify on your version, or iRule-required with the
@@ -2114,7 +2401,7 @@ paths:
       tags:
         - F5 Distributed Cloud (XC)
       operationId: run_f5xc_service_policy_explainer
-      summary: F5 XC Service Policy Explainer
+      summary: F5XC service-policy explainer
       description: >-
         Paste an F5 Distributed Cloud service_policy and see exactly how it matches: the server
         scope, the rule order, and every rule's action and conditions. iRules for XC, decoded.
@@ -2146,7 +2433,7 @@ paths:
       tags:
         - F5 Distributed Cloud (XC)
       operationId: run_f5xc_service_policy_explainer_post
-      summary: F5 XC Service Policy Explainer (POST)
+      summary: F5XC service-policy explainer (POST)
       description: >-
         Paste an F5 Distributed Cloud service_policy and see exactly how it matches: the server
         scope, the rule order, and every rule's action and conditions. iRules for XC, decoded.

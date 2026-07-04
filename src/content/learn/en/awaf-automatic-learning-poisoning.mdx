@@ -1,0 +1,48 @@
+---
+slug: awaf-automatic-learning-poisoning
+title: "Automatic Learning in Production: How an Attacker Poisons a WAF Policy"
+summary: "Left in Automatic learning mode against untrusted traffic, the BIG-IP Advanced WAF Policy Builder will accept and enforce a suggestion once its learning score reaches 100%, and some suggestions disable violations or widen entities. An attacker who floods legitimate-looking traffic from enough sources can push a relaxation to 100% and drill a hole. F5's design resists this with source, session, and time thresholds, but the safe posture is Manual learning by default and building only from trusted traffic."
+concepts: ["f5", "awaf", "waf", "asm", "policy builder", "automatic learning", "learning mode", "trusted ip", "security", "bigip", "k000134503"]
+relatedTools: ["f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer", "f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-signature-staging-and-enforcement-readiness"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-07-04"
+---
+
+The Policy Builder in F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) can build and refine a security policy on its own, watching live traffic and deciding which URLs, parameters, file types, and behaviors are legitimate. That automation is genuinely useful when you are building a policy from known-good traffic. It becomes a liability the moment you leave it on, in Automatic mode, in front of the open internet, because the same mechanism that learns your application will also learn whatever an attacker patiently teaches it.
+
+## Automatic mode acts without you
+
+The Policy Builder attaches a **learning score** to each suggestion, a percentage that measures how confident the system is that the change is warranted. In **Automatic** learning mode, when a suggestion's score reaches 100%, the system accepts and enforces it, with no administrator in the loop. In **Manual** mode the suggestion waits until a human accepts it. In **Disabled** mode the policy does not learn at all.
+
+The catch is that not every suggestion tightens the policy. The Policy Builder's **Loosen** stage exists to relax the policy, and F5 describes exactly what it does: it adds entities, configures attributes such as lengths and allowed meta-characters, and **disables violations**. A relaxation that reaches 100% in Automatic mode is applied automatically, just like any other suggestion. That is the hole an attacker aims for: get a violation disabled or an entity widened, and future attacks that would have been blocked now pass. The attacker is not forging a block-bypass directly; they are manufacturing apparent legitimacy until the Policy Builder concludes the malicious pattern is normal and relaxes around it.
+
+## What drives the score up
+
+An attacker who understands the scoring knows which levers to pull. F5 states that a suggestion has a higher learning score when the traffic has met the conditions in the policy, when it originates from **many different sources**, when it is **unlikely to be a violation** (a low violation rating), and when it comes from a **trusted IP address**. And the Policy Builder enforces a relaxation only once it has processed sufficient traffic and sessions over enough time, from **different IP addresses**.
+
+So to force an automatic relaxation from untrusted traffic, an attacker has to send traffic that looks legitimate (low violation rating), that recurs, and that arrives from enough distinct sources spread over a period. This is not a single curl loop from one host. It is closer to training-data poisoning, and it needs breadth of sources, not just volume.
+
+## Two safeguards that bound the attack
+
+F5 did not leave this wide open, and the limits are worth teaching:
+
+**The most severe violations are unlearnable.** Violations such as Null in request, unparsable request content, and bad HTTP version are never learned, no suggestion is ever created for them, and their violation rating is fixed at 5. A high-confidence attack signature cannot be laundered into legitimacy this way at all.
+
+**Rating scales the cost.** If the violation rating of the requests is higher, the system deliberately slows the learning process and requires more user sessions and more different IP addresses before it will suggest a change. If the rating is lower, relaxation happens faster. Borderline, low-rated patterns are cheap to teach; obvious attacks are expensive to impossible.
+
+## Trusted versus untrusted is the whole game
+
+The single most important knob is which traffic the policy trusts. For clients with **trusted** IP addresses, the rules require far less traffic, by default only **one user session**, to update the policy. **Untrusted** traffic must clear much higher thresholds, from many different sources over a longer period. That asymmetry is precisely the anti-poisoning design: build fast from clients you trust, and make the anonymous internet work much harder.
+
+Two traps hide here. First, if you leave the Trusted IP list empty, the system treats **all** traffic as untrusted, so an empty list does not protect you; it simply makes the untrusted thresholds your only defense. Second, the "Only from Trusted Traffic" option lives under Track Site Changes, and the default is to loosen from all traffic, so relying on trusted-only loosening takes deliberate configuration.
+
+## The safe posture
+
+The corrective actions all point the same way:
+
+Set **Learning Mode to Manual** (or Disabled) in production, so no suggestion, especially a relaxation, is applied without a human accepting it. This is the clean default. Build policies from a **known-good Trusted IP range** (QA, staging, synthetic clients) rather than live untrusted traffic, and where the option exists, loosen only from trusted traffic. If you must run automatic building against real traffic, **raise the untrusted Loosen thresholds** (different sources, sessions, time spread) high enough that untrusted traffic effectively never relaxes the policy during the learning period. Never place internet-reachable or attacker-reachable ranges in the Trusted IP list, since trusted traffic relaxes the policy with a single session. And once the policy is built and stable, **turn automatic building off** so it stops learning from live traffic.
+
+The instructor's rule of thumb is simple: automatic learning is a build-time convenience, not a production posture. Leave it in Manual by default, switch to Automatic only while you are deliberately building from traffic you trust, and turn it off when the policy is done. The companion estimator on this site lets you put numbers on the risk for your own Loosen thresholds, but the safe default does not depend on the numbers.

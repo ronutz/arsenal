@@ -4,14 +4,14 @@ title: "Blocking vs Transparent: o que o modo de enforcement do Advanced WAF rea
 summary: "O enforcementMode de uma política de WAF decide se ela protege ou apenas observa. Em modo blocking, requisições que disparam uma violação configurada para bloquear são rejeitadas. Em modo transparent, nada é bloqueado mesmo quando uma violação dispara, então a política é somente monitoramento. Confundir os dois é um dos erros mais comuns em WAF."
 concepts: ["f5", "awaf", "waf", "asm", "enforcement mode", "blocking", "transparent", "security", "bigip"]
 relatedTools: ["f5-awaf-declarative-policy-explainer"]
-relatedArticles: ["awaf-declarative-policy-structure", "awaf-signature-staging-and-enforcement-readiness"]
+relatedArticles: ["awaf-declarative-policy-structure", "awaf-signature-staging-and-enforcement-readiness", "awaf-evasion-techniques", "awaf-automatic-learning-poisoning", "awaf-false-positives"]
 category: security
 order: 2
 status: reviewed
 updated: "2026-07-02"
 ---
 
-Toda política do BIG-IP Advanced WAF tem um `enforcementMode`, e ele é a primeira coisa a verificar ao lê-la, porque decide se a política de fato *protege* a aplicação ou apenas a *observa*.
+Toda política do F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) tem um `enforcementMode`, e ele é a primeira coisa a verificar ao lê-la, porque decide se a política de fato *protege* a aplicação ou apenas a *observa*.
 
 ## Os dois modos
 

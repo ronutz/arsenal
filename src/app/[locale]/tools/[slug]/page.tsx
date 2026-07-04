@@ -110,7 +110,15 @@ import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check
 import F5BigipLicenseExplainerTool from "@/components/F5BigipLicenseExplainerTool";
 import { manifest as f5BigipLicenseManifest } from "@/lib/tools/f5-bigip-license-explainer";
 import F5AwafDeclarativePolicyExplainerTool from "@/components/F5AwafDeclarativePolicyExplainerTool";
+import F5AwafEvasionExplainerTool from "@/components/F5AwafEvasionExplainerTool";
+import F5AwafLearningPoisoningEstimatorTool from "@/components/F5AwafLearningPoisoningEstimatorTool";
+import As3ExplainerValidatorTool from "@/components/As3ExplainerValidatorTool";
+import F5AwafFalsePositiveTriageTool from "@/components/F5AwafFalsePositiveTriageTool";
 import { manifest as f5AwafManifest } from "@/lib/tools/f5-awaf-declarative-policy-explainer";
+import { manifest as f5AwafEvasionManifest } from "@/lib/tools/f5-awaf-evasion-explainer";
+import { manifest as f5AwafPoisoningManifest } from "@/lib/tools/f5-awaf-learning-poisoning-estimator";
+import { manifest as as3Manifest } from "@/lib/tools/as3-explainer-validator";
+import { manifest as f5AwafFpManifest } from "@/lib/tools/f5-awaf-false-positive-triage";
 import F5SslProfileExplainerTool from "@/components/F5SslProfileExplainerTool";
 import { manifest as sslProfileManifest } from "@/lib/tools/f5-ssl-profile-explainer";
 import EpochTool from "@/components/EpochTool";
@@ -265,6 +273,22 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-awaf-declarative-policy-explainer": {
     Component: F5AwafDeclarativePolicyExplainerTool,
     sources: f5AwafManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-awaf-evasion-explainer": {
+    Component: F5AwafEvasionExplainerTool,
+    sources: f5AwafEvasionManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-awaf-learning-poisoning-estimator": {
+    Component: F5AwafLearningPoisoningEstimatorTool,
+    sources: f5AwafPoisoningManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "as3-explainer-validator": {
+    Component: As3ExplainerValidatorTool,
+    sources: as3Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-awaf-false-positive-triage": {
+    Component: F5AwafFalsePositiveTriageTool,
+    sources: f5AwafFpManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "cvss-vector-decoder": {
     Component: CvssVectorDecoderTool,

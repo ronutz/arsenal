@@ -1,0 +1,34 @@
+---
+slug: awaf-false-positives
+title: "Lidando com falsos positivos no Advanced WAF: triagem por rating, depois ajuste com escopo"
+summary: "Um falso positivo é tráfego legítimo que dispara uma política de segurança. No F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) o violation rating é o sinal de triagem: ratings 1 e 2 são provavelmente falsos positivos que você pode aceitar, rating 3 precisa de investigação, e ratings 4 e 5 bloqueiam mesmo com os Block flags desligados e devem ser limpos em vez de relaxados. A correção é sempre com escopo na URL ou parâmetro específico, nunca um disable para toda a política, e a regra que rege tudo é relaxar apenas onde um falso positivo de fato ocorreu."
+concepts: ["f5", "awaf", "advanced waf", "asm", "false positive", "violation rating", "signature", "staging", "tuning", "security", "bigip"]
+relatedTools: ["f5-awaf-false-positive-triage", "f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer"]
+relatedArticles: ["awaf-signature-staging-and-enforcement-readiness", "awaf-automatic-learning-poisoning", "awaf-enforcement-mode-blocking-vs-transparent"]
+category: security
+order: 6
+status: reviewed
+updated: "2026-07-04"
+---
+
+Um falso positivo é uma requisição que um usuário real fez legitimamente, bloqueada ou sinalizada porque por acaso casou com uma verificação de segurança. Todo web application firewall os produz, e no F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) eles são a maior fonte de atrito operacional: a falha de implantação de WAF mais comum é ir direto para o modo blocking, onde cada falso positivo quebra um fluxo de trabalho, gera um chamado de suporte e corrói a confiança no WAF antes de ele provar seu valor. Lidar bem com eles é menos sobre desligar coisas e mais sobre triar corretamente e ajustar com escopo.
+
+## O violation rating é seu sinal de triagem
+
+O Advanced WAF atribui a cada transação um violation rating de 1 a 5, com base na combinação de violações naquela transação e seu impacto, não em qualquer violação isolada, porque ataques reais tendem a empilhar várias violações de uma vez. Esse rating diz como tratar um suspeito falso positivo, e o F5 constrói o comportamento de bloqueio em torno dele.
+
+Ratings 4 ou 5 são provavelmente ataques reais, e o sistema os bloqueia mesmo quando toda violação detectada tem seu Block flag desligado. Para eles você deve limpar a sugestão de aprendizado sem mudar a política: relaxar para acomodar uma requisição de rating 5 seria relaxar para acomodar um ataque. Ratings 1, 2 e 3 não são bloqueados por padrão, justamente para reduzir falsos positivos. Um rating 3 fica em cima do muro e precisa ser revisado no event log antes de você decidir. Ratings 1 e 2 são os que geralmente são falsos positivos genuínos, e se você confirmar que a requisição é legítima pode aceitar a sugestão de aprendizado ou aplicar uma correção com escopo. Um pequeno conjunto das violações mais graves é não aprendível e sempre com rating 5, então nunca há nada a aceitar para elas.
+
+## Staging muda o que "bloqueado" significa
+
+Antes de ajustar qualquer coisa, verifique se a verificação em questão está de fato fazendo enforcement. Uma signature em staging registra seus matches mas não bloqueia, e uma política em modo Transparent não bloqueia nada. Em ambos os casos o que parece um falso positivo é um sinal de aprendizado em vez de uma experiência de usuário quebrada, que é exatamente o objetivo do staging: signatures novas ou problemáticas pertencem ao staging por uma a duas semanas de tráfego de produção para você achar seus falsos positivos antes que possam bloquear alguém. O pipeline disciplinado move uma signature de Staging para Alarm para Blocking conforme a confiança cresce, que também é como você evita uma onda de falsos positivos ao mudar uma política de Transparent para Blocking.
+
+## Ajuste com escopo, nunca para toda a política
+
+Depois de confirmar um falso positivo genuíno, a correção correta depende da violação, e todas as boas opções compartilham uma propriedade: são com escopo na URL ou parâmetro específico, não em toda a política. Desabilitar uma signature ou violação para toda a política troca um falso positivo por um ponto cego em todas as outras URLs, que é como uma sessão de ajuste vira silenciosamente uma regressão de segurança.
+
+Para uma attack signature que dispara errado, desabilite aquela signature apenas naquela URL ou parâmetro, ou adicione a URL ou parâmetro como entidade permitida para a verificação ser ignorada apenas ali, ou habilite o Potential False Positive Detection e deixe o sistema decidir por similaridade de tráfego, tratando requisições parecidas com a maioria como benignas e sinalizando os outliers que ataques reais produzem. Para um meta-caractere ilegal, adicione o caractere ao conjunto permitido daquele parâmetro, valor ou URL. Para um parâmetro, URL ou tipo de arquivo ilegal, adicione a entidade à lista permitida. Para uma violação de comprimento, aumente o limite específico para caber o tráfego legítimo. Arquivos enviados rotineiramente disparam signatures, e a correção limpa é declarar o parâmetro de upload com value type user-input e data type file upload para seu conteúdo binário não ser escaneado como texto. Signatures disparando dentro de payloads XML ou JSON são melhor tratadas anexando o content profile correspondente para a estrutura ser interpretada e as verificações se aplicarem adequadamente. Violações de cookie merecem um segundo olhar, porque um cookie modificado geralmente é adulteração real e não um falso positivo.
+
+## A única regra a manter
+
+Toda técnica acima é limitada por uma única disciplina que o F5 afirma claramente: relaxe a política apenas onde um falso positivo de fato ocorreu, e nunca onde um ataque real causou a violação. O violation rating existe para ajudar você a distinguir esses dois casos, e as correções com escopo existem para que corrigir um não enfraqueça o outro. A ferramenta de triagem neste site coloca a lógica de rating do F5 e a correção com escopo para cada categoria de violação em um só lugar, para um falso positivo virar uma decisão que você toma deliberadamente em vez de por reflexo clicar aceitar.

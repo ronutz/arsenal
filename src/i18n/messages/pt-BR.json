@@ -500,7 +500,7 @@
       "clear": "Limpar"
     },
     "f5-bigip-persistence-cookie": {
-      "name": "Decodificador de Cookie de Persistência BIG-IP",
+      "name": "Decodificador de cookie de persistência BIG-IP",
       "blurb": "Decodifique um cookie de persistência BIGipServer da F5 no IP e porta do membro do pool, ou gere um cookie a partir de um endereço e porta. Roda inteiramente no seu navegador.",
       "inputLabel": "Cookie BIGipServer",
       "inputPlaceholder": "Cole o valor do cookie, um par nome=valor ou uma linha Set-Cookie completa. Exemplo: 1677787402.20480.0000",
@@ -1424,7 +1424,7 @@
       "clear": "Limpar"
     },
     "f5-irules-event-order": {
-      "name": "Ordem de eventos de iRule",
+      "name": "Explicador da ordem de eventos de iRules",
       "blurb": "Escolha o conjunto de perfis de um virtual server do BIG-IP — Client-SSL, HTTP, Server-SSL, pool — e veja a ordem em que os eventos de iRule comuns disparam, de CLIENT_ACCEPTED a CLIENT_CLOSED, como linha do tempo e lista. Tudo no seu navegador.",
       "stackLabel": "Conjunto de perfis do virtual server",
       "tog_clientssl": "Perfil Client-SSL",
@@ -1770,7 +1770,7 @@
       }
     },
     "f5xc-service-policy-explainer": {
-      "name": "Explicador de Service Policy do F5 XC",
+      "name": "Explicador de service-policy do F5XC",
       "blurb": "Cole uma service_policy do F5 Distributed Cloud e veja exatamente como ela casa: o escopo de servidor, a ordem das regras e a ação e as condições de cada regra. iRules para o XC, decodificado.",
       "input": {
         "label": "JSON de service_policy do F5 XC",
@@ -2398,7 +2398,7 @@
       "clear": "Limpar"
     },
     "f5-awaf-declarative-policy-explainer": {
-      "name": "Explicador de política declarativa do F5 Advanced WAF",
+      "name": "Explicador de política declarativa do AWAF",
       "blurb": "Cole uma política de segurança declarativa do BIG-IP Advanced WAF (JSON) e receba uma leitura seção por seção, em linguagem clara e fundamentada no schema publicado pela F5, com alertas de segurança que interpretam os valores: enforcement transparent significa somente monitoramento, além de staging de assinaturas, Data Guard desligado e cookies sem Secure ou HttpOnly. Roda inteiramente no seu navegador.",
       "inputLabel": "Política declarativa de WAF (JSON)",
       "inputPlaceholder": "{\n  \"policy\": {\n    \"name\": \"my-app-policy\",\n    \"template\": { \"name\": \"POLICY_TEMPLATE_RAPID_DEPLOYMENT\" },\n    \"enforcementMode\": \"blocking\",\n    \"signature-settings\": { \"signatureStaging\": false }\n  }\n}",
@@ -2544,7 +2544,7 @@
       "notesTitle": "Notas"
     },
     "f5-dos-vector-explainer": {
-      "name": "Explicador de vetores DoS / perfis AFM",
+      "name": "Explicador de vetores DoS e perfis AFM",
       "blurb": "Cada vetor DoS do AFM explicado nas palavras da própria F5, com a mecânica de limiares detalhada e a configuração verificada: a inversão silenciosa de mitigação abaixo da detecção, a semântica do modo automático, policiamento sem detecção e a interação com SYN cookies. Somente configuração defensiva.",
       "inputLabel": "Estrofes security dos device-config / profile, um nome de vetor, ou \"vectors\"",
       "inputPlaceholder": "security dos device-config dos-device-config {\n    dos-device-vector {\n        tcp-half-open {\n            detection-threshold-pps 2500\n            default-internal-rate-limit 2000\n        }\n    }\n}\n\n...ou um nome de vetor (tcp-half-open), ou \"vectors\" para o catálogo",
@@ -2560,7 +2560,7 @@
       "uncurated": "fora da tabela curada"
     },
     "f5-irules-command-context": {
-      "name": "Explicador de comandos / contexto de iRules",
+      "name": "Explicador de comando-contexto de iRules",
       "blurb": "Cole uma iRule: cada bloco when explicado com a descrição oficial do evento, seus comandos inventariados e vinculados, a ordem de avaliação por priority documentada, e uma auditoria de CMP que captura as construções que rebaixam seu virtual server para um único TMM.",
       "inputLabel": "Uma iRule, um nome de evento, ou \"events\"",
       "inputPlaceholder": "when HTTP_REQUEST priority 400 {\n    if { [HTTP::uri] starts_with \"/api\" } {\n        pool api_pool\n    }\n}\n\n...ou um nome de evento (HTTP_REQUEST), ou \"events\" para o catálogo",
@@ -2576,7 +2576,7 @@
       "uncurated": "fora da tabela curada"
     },
     "f5-irules-vs-ltm-policy": {
-      "name": "Classificador iRules vs LTM Policy",
+      "name": "Classificador iRules vs LTM policy",
       "blurb": "Por bloco when, um veredito honesto: exprimível em uma LTM policy (com um esboço de migração na gramática dos próprios exemplos do fabricante), verifique na sua versão, ou iRule obrigatória com os bloqueadores nomeados. Policies são a camada sem programação; esta ferramenta diz quais blocos pertencem a ela.",
       "inputLabel": "Uma iRule para classificar, ou \"strategies\"",
       "inputPlaceholder": "when HTTP_REQUEST {\n    if { [HTTP::uri] starts_with \"/api\" } {\n        pool api_pool\n    }\n}\n\n...ou \"strategies\" para a semântica de first-match / all-match / best-match",
@@ -2691,8 +2691,9 @@
     "subs": {
       "other": "Mais",
       "f5": {
-        "ltm": "LTM · Local Traffic Manager e iRules",
-        "tmos": "TMOS · F5OS e Plataforma",
+        "ltm": "LTM · Local Traffic Manager",
+        "irules": "iRules",
+        "tmos": "TMOS · F5OS · Plataformas",
         "dns-gtm": "DNS / GTM · Global Traffic Manager",
         "asm-awaf": "ASM · Advanced WAF",
         "afm": "AFM · Advanced Firewall Manager",
@@ -2737,6 +2738,299 @@
         "sdwan": "ExtremeCloud SD-WAN",
         "access-security": "Segurança de Acesso e NAC",
         "analytics": "Análises e AIOps"
+      }
+    },
+    "f5-awaf-evasion-explainer": {
+      "name": "Explicador de técnicas de evasão do AWAF",
+      "blurb": "Digite o nome de uma subviolação ou \"evasions\" para as oito subviolações de evasão do F5 explicadas, cada uma com seu padrão e o truque de codificação que ela detecta, ou cole o bloco evasions de uma política declarativa de WAF para ler cada uma como habilitada ou desabilitada, com a contagem de passes do Multiple decoding. Baseado no F5 K7929; roda inteiramente no seu navegador.",
+      "inputLabel": "Nome de uma subviolação, \"evasions\", ou o bloco evasions de uma política",
+      "inputPlaceholder": "Digite \"evasions\" para as oito, ou um nome como \"Multiple decoding\", ou cole:\n{ \"blocking-settings\": { \"evasions\": [ { \"description\": \"Multiple decoding\", \"enabled\": true, \"maxDecodingPasses\": 3 } ] } }",
+      "runsLocally": "Processado no seu navegador. Nada que você cola é enviado.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "empty": "Digite \"evasions\" para as oito subviolações do F5, um único nome, ou cole um bloco evasions para lê-lo.",
+      "nameMiss": "Essa não é uma das oito subviolações de evasão do F5. Tente \"evasions\" para a lista completa.",
+      "notesHeading": "Vale saber",
+      "refHeading": "As oito subviolações de evasão",
+      "stateHeading": "Subviolações de evasão nesta política",
+      "catchesLabel": "Detecta",
+      "relatedToolLabel": "Ferramenta relacionada",
+      "defaultEnabled": "Habilitada por padrão",
+      "stateOn": "habilitada",
+      "stateOff": "desabilitada",
+      "stateUnset": "não definida (aplica-se o padrão do template)",
+      "passesDefault": "Passes de Multiple decoding: não definido, então aplica-se o padrão de {value}.",
+      "passesSet": "Passes de Multiple decoding: {value}.",
+      "bridgeNote": "Várias destas são as mesmas operações de decodificação que esta caixa de ferramentas realiza: %u, bare-byte e o %XX do Bad unescape são território do codec Base64/Percent, e Multiple decoding é a decodificação percent repetida. A ferramenta relacionada em cada card permite ver a decodificação à mão.",
+      "notes": {
+        "notName": "Isso não é JSON e não é um nome de subviolação conhecido.",
+        "parseError": "Isso parece JSON mas não pôde ser interpretado",
+        "noBlock": "Este JSON não tem um array evasions. Cole o bloco evasions, ou uma política cujo blocking-settings contenha um.",
+        "allDefault": "Nenhuma subviolação de evasão foi definida explicitamente aqui, então cada uma assume o padrão do seu template (as oito são Habilitadas por padrão).",
+        "disabled": "Desabilitadas aqui: {names}. Uma subviolação desabilitada significa que aquela normalização ou verificação é pulada, então seu truque de evasão pode escapar das assinaturas.",
+        "passesRange": "Passes de Multiple decoding é {value}, fora do intervalo de 2 a 5 do schema. O sistema rejeitaria ou limitaria esse valor.",
+        "passesRaised": "Passes de Multiple decoding elevado para {value} (o padrão é 3). Mais passes detectam codificação aninhada mais profunda, ao custo de um pouco mais de processamento.",
+        "unknownEntry": "Uma entrada de evasions tem uma descrição não reconhecida ({description}); ela não é uma das oito subviolações do F5.",
+        "learnGated": "O aprendizado está desabilitado na violação-pai \"Evasion technique detected\", então, conforme o schema, estas subviolações não são aprendidas mesmo quando uma requisição as aciona."
+      },
+      "tech": {
+        "pct-u": {
+          "name": "%u decoding",
+          "what": "Realiza a decodificação Unicode no estilo %u da Microsoft na URI e nos parâmetros, de modo que um caractere escrito como %u00XX seja resolvido ao que realmente é antes de as assinaturas o verem.",
+          "catches": "Ataques escondidos atrás de escapes Unicode %u da Microsoft, uma forma clássica de escrever um metacaractere para que um filtro ingênuo não perceba.",
+          "tool": "Base64, Base32, Hex & Percent Codec"
+        },
+        "apache-ws": {
+          "name": "Apache whitespace",
+          "what": "Detecta os bytes de espaço em branco ASCII 9, 11, 12 e 13 na URI, caracteres de controle que alguns servidores tratam como separadores.",
+          "catches": "Requisições que contrabandeiam payloads por um filtro usando espaços incomuns que o servidor de origem tolera.",
+          "tool": null
+        },
+        "bad-unescape": {
+          "name": "Bad unescape",
+          "what": "Detecta codificação hex ilegal, um sinal de porcentagem não seguido por dois dígitos hex válidos (por exemplo %RR).",
+          "catches": "Percent-escapes malformados criados para que o WAF e o servidor discordem sobre o que a sequência decodifica.",
+          "tool": "URL Inspector"
+        },
+        "bare-byte": {
+          "name": "Bare byte decoding",
+          "what": "Detecta bytes ASCII altos, valores brutos acima de 127 enviados sem escape na requisição.",
+          "catches": "Bytes não-ASCII injetados diretamente para representar caracteres que uma assinatura observa, sem a codificação que os revelaria.",
+          "tool": "Base64, Base32, Hex & Percent Codec"
+        },
+        "dir-traversal": {
+          "name": "Directory traversals",
+          "what": "Detecta padrões de travessia de diretório como ../ que sobem na árvore de diretórios.",
+          "catches": "Tentativas de escapar do caminho pretendido e alcançar arquivos em outro lugar do servidor, o cerne de um ataque de path traversal.",
+          "tool": "URL Inspector"
+        },
+        "iis-backslash": {
+          "name": "IIS backslashes",
+          "what": "Normaliza a barra invertida \\ para uma barra normal /, do jeito que o IIS trata as duas como equivalentes em um caminho.",
+          "catches": "Payloads que usam \\ onde as assinaturas esperam /, contando com o servidor para uni-las depois que o WAF já olhou.",
+          "tool": null
+        },
+        "iis-unicode": {
+          "name": "IIS Unicode codepoints",
+          "what": "Decodifica os mapeamentos de code-point %u específicos do IIS a partir da code page Windows-1252.",
+          "catches": "As evasões por escape Unicode do IIS que notoriamente permitiam a atacantes escrever travessia e metacaracteres em uma forma que só o IIS decodificaria.",
+          "tool": "Base64, Base32, Hex & Percent Codec"
+        },
+        "multi-decode": {
+          "name": "Multiple decoding",
+          "what": "Decodifica a URI e os valores de parâmetro repetidamente, até o número configurado de passes, de modo que payloads escondidos sob várias camadas de codificação sejam desembrulhados antes da inspeção.",
+          "catches": "Payloads com codificação dupla e tripla, em que um valor é codificado em percent mais de uma vez para que um decodificador de passe único nunca revele os caracteres reais.",
+          "tool": "Base64, Base32, Hex & Percent Codec"
+        }
+      }
+    },
+    "f5-awaf-learning-poisoning-estimator": {
+      "name": "Estimador de envenenamento do aprendizado automático do AWAF",
+      "blurb": "Quantas requisições um atacante precisa para abrir um buraco na sua política do BIG-IP Advanced WAF quando o Policy Builder fica em aprendizado automático sobre tráfego não confiável? Informe seus limites de Loosen e os recursos do atacante; a ferramenta calcula o mínimo de fontes, requisições e tempo para forçar um afrouxamento automático, e barra os casos que o tornam impossível. Roda inteiramente no seu navegador.",
+      "policyLabel": "Sua configuração de Loosen do Policy Builder",
+      "attackerLabel": "O atacante",
+      "example": "Exemplo",
+      "clear": "Redefinir",
+      "runsLocally": "Calculado no seu navegador. Nada é enviado.",
+      "scopeNote": "Um modelo determinístico do comportamento documentado do Policy Builder do F5, não uma sondagem. Nunca contata um BIG-IP. Leia os limites reais de Loosen da sua política em Security > Application Security > Policy Building > Learning and Blocking Settings.",
+      "f": {
+        "mode": "Learning Mode",
+        "loosenUntrusted": "Afrouxar a partir de tráfego não confiável (padrão)",
+        "attackerTrusted": "Os IPs do atacante estão na lista de IPs confiáveis",
+        "rating": "Violation rating da manipulação",
+        "untrustedSources": "Não confiável: fontes distintas para afrouxar",
+        "untrustedSourcesHint": "O padrão do F5 é 10",
+        "untrustedSessions": "Não confiável: sessões distintas para afrouxar",
+        "trustedSessions": "Confiável: sessões distintas para afrouxar",
+        "trustedSessionsHint": "O padrão do F5 é 1",
+        "timeSpread": "Período mínimo (horas)",
+        "ratingFactor": "Fator de desaceleração por rating",
+        "ratingFactorHint": "O F5 exige mais para ratings maiores mas não publica a curva; defina o seu (1 = modelar apenas o limite)",
+        "attackerSources": "IPs de origem distintos do atacante",
+        "attackerSourcesHint": "ex.: tamanho da botnet",
+        "rate": "Requisições por hora por fonte"
+      },
+      "mode": {
+        "automatic": "Automatic (aceita automaticamente em 100%)",
+        "manual": "Manual (um humano aceita cada uma)",
+        "disabled": "Disabled (sem aprendizado)"
+      },
+      "rating": {
+        "1": "1 — quase certamente legítimo",
+        "2": "2 — provavelmente legítimo",
+        "3": "3 — incerto",
+        "4": "4 — provavelmente um ataque",
+        "5": "5 — ataque certo / não aprendível"
+      },
+      "verdict": {
+        "learning-disabled": "Seguro: o aprendizado está Disabled — a política nunca se altera sozinha.",
+        "manual": "Seguro: modo Manual — um humano precisa aceitar cada afrouxamento, então não há buraco automático a ser aberto.",
+        "unlearnable": "Seguro: uma violação de rating 5 é não aprendível — o Policy Builder nunca a afrouxa automaticamente, não importa quanto tráfego chegue.",
+        "trusted-only-blocked": "Seguro: o afrouxamento está restrito a tráfego confiável, então um atacante não confiável não alcança o caminho de Loosen.",
+        "insufficient-sources": "Fora de alcance: o atacante não controla fontes distintas suficientes para atingir o limite de Loosen.",
+        "drillable": "Vulnerável: esta configuração pode ser afrouxada automaticamente. Esforço mínimo do atacante:"
+      },
+      "stat": {
+        "sources": "IPs de origem distintos",
+        "requests": "requisições (limite inferior)",
+        "time": "tempo mínimo decorrido"
+      },
+      "insufficientDetail": "A regra de Loosen precisa de {need} fontes distintas; o atacante controla {have}. Aumentar esse limite é uma das mitigações abaixo.",
+      "notesHeading": "O que a documentação diz",
+      "mitigationsHeading": "Como fechar isso",
+      "note": {
+        "autoEnforce": "No modo Automatic, uma sugestão que atinge learning score de 100% é aceita e aplicada sem humano no processo — inclusive sugestões que desabilitam uma violação ou ampliam uma entidade.",
+        "unlearnable": "As violações mais graves (por exemplo Null in request, conteúdo não interpretável, versão HTTP inválida) são não aprendíveis: nenhuma sugestão é criada e o rating é fixo em 5, então o controle não pode ser lavado dessa forma.",
+        "ratingCost": "No rating {rating}, o F5 desacelera o aprendizado e exige mais fontes e sessões distintas antes de afrouxar. Quanto maior o rating, mais caro o envenenamento.",
+        "trustedOneSession": "Clientes confiáveis afrouxam a política com apenas uma sessão; o tráfego não confiável precisa de muito mais fontes distintas ao longo de um período. Essa assimetria é o design anti-envenenamento.",
+        "emptyTrusted": "Se a lista de IPs confiáveis estiver vazia, o sistema trata todo o tráfego como não confiável — então uma lista vazia não te protege, ela torna os limites de não confiável a única defesa.",
+        "attackerTrusted": "Estes IPs são confiáveis, então valem as regras rápidas de tráfego confiável — por isso você nunca deve colocar faixas alcançáveis por não confiáveis na lista de IPs confiáveis.",
+        "lowerBound": "Esta contagem de requisições é um limite inferior documentado (um acerto distinto por fonte/sessão exigida). Uma campanha real precisa de mais, pois o padrão precisa se repetir para elevar o score."
+      },
+      "mit": {
+        "manual": "Defina o Learning Mode como Manual (ou Disabled) para que nenhuma sugestão seja aplicada sem um humano aceitar. Este é o padrão limpo para produção.",
+        "trustedOnly": "Afrouxe apenas a partir de tráfego confiável onde a opção existe (Track Site Changes), e construa políticas a partir de uma faixa de IPs confiáveis conhecida em vez de tráfego não confiável ao vivo.",
+        "raiseThresholds": "Aumente os limites de Loosen para não confiável (fontes distintas, sessões, período) para que o tráfego não confiável praticamente nunca afrouxe a política durante o período de aprendizado.",
+        "keepOut": "Nunca coloque faixas alcançáveis pela internet ou por atacantes na lista de IPs confiáveis — o tráfego confiável afrouxa a política com uma única sessão.",
+        "disableAfter": "Depois que a política estiver construída e estável, desabilite a construção automática de política (ou o Track Site Changes) para que ela pare de aprender com o tráfego ao vivo."
+      },
+      "untrustedActiveNote": "Este cenário afrouxa a partir de tráfego não confiável no modo Automatic — exatamente a configuração a evitar em uma política exposta à internet."
+    },
+    "as3-explainer-validator": {
+      "name": "Explicador de declaração AS3",
+      "blurb": "Cole o JSON que você faz POST em /mgmt/shared/appsvcs/declare e ele o lê de volta: se é uma requisição AS3 completa ou uma declaração apenas ADC, o schemaVersion e os metadados, e a árvore Tenant para Application para recurso com cada classe explicada, verificando as regras estruturais que o F5 documenta. Roda inteiramente no seu navegador.",
+      "inputLabel": "Uma requisição AS3 ou declaração ADC (JSON)",
+      "inputPlaceholder": "Cole uma declaração AS3, por exemplo:\n{ \"class\": \"AS3\", \"action\": \"deploy\", \"declaration\": { \"class\": \"ADC\", \"schemaVersion\": \"3.0.0\", \"MyTenant\": { \"class\": \"Tenant\", \"MyApp\": { \"class\": \"Application\", \"service\": { \"class\": \"Service_HTTP\", \"virtualAddresses\": [\"10.0.0.1\"] } } } } }",
+      "runsLocally": "Processado no seu navegador. Nada que você cola é enviado.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "empty": "Cole uma requisição AS3 ou uma declaração ADC para ver sua estrutura explicada e verificada.",
+      "scopeNote": "Um explicador de estrutura e verificador de sanidade, não um validador completo de JSON-Schema: ele verifica as regras estruturais documentadas e explica as classes, mas uma declaração que passa aqui ainda pode ser rejeitada pelo próprio AS3. Nunca contata um BIG-IP.",
+      "kind": {
+        "as3Request": "Esta é uma requisição AS3 completa (class AS3)",
+        "adcOnly": "Esta é uma declaração apenas ADC (class ADC, sem o wrapper AS3)",
+        "notAs3": "Isto não é uma declaração AS3 ou ADC"
+      },
+      "req": {
+        "action": "action",
+        "persist": "persist",
+        "persistTrue": "true (salvo na configuração em execução)",
+        "persistFalse": "false (não salvo)",
+        "persistUnset": "não definido"
+      },
+      "adc": {
+        "schemaVersion": "schemaVersion",
+        "id": "id",
+        "label": "label",
+        "remark": "remark",
+        "controls": "tem um objeto Controls (trace/logging)"
+      },
+      "stats": {
+        "tenants": "tenants",
+        "applications": "applications",
+        "services": "services",
+        "pools": "pools"
+      },
+      "treeHeading": "Árvore de tenant, application e recursos",
+      "tenantPartition": "vira a partição {name} no BIG-IP",
+      "appTemplate": "template: {template}",
+      "templateDefault": "(assumiu generic por padrão, AS3 3.20+)",
+      "reserved": {
+        "common": "tenant reservado",
+        "shared": "application reservada (compartilhável dentro do tenant)",
+        "service": "nome de service reservado"
+      },
+      "findingsHeading": "Verificações estruturais",
+      "finding": {
+        "parseError": "Isso parece JSON mas não pôde ser interpretado",
+        "notAs3": "O objeto de nível superior não tem class AS3 nem ADC, então isto não é uma declaração AS3. Uma requisição AS3 começa com class AS3; uma declaração ADC começa com class ADC.",
+        "adcOnly": "Esta é uma declaração apenas ADC (sem o wrapper AS3), então as opções action e persist não estão disponíveis. Envolva-a em um objeto class AS3 para usá-las.",
+        "missingSchema": "A declaração ADC não tem schemaVersion. O AS3 o exige, e ele é desacoplado da versão de release do AS3.",
+        "noTenant": "A declaração não tem Tenant. Uma declaração precisa conter ao menos um objeto com class Tenant, que vira uma partição no BIG-IP.",
+        "emptyTenant": "O tenant {tenant} não tem Application. Cada tenant precisa conter ao menos um objeto com class Application.",
+        "emptyApp": "A application {app} no tenant {tenant} não tem recursos. Uma application precisa conter ao menos um recurso ADC, por exemplo um Service ou Pool.",
+        "templateMismatch": "A application {app} no tenant {tenant} usa o template {template}, que exige um objeto {needs} correspondente chamado service (antes serviceMain), mas nenhum foi encontrado.",
+        "invalidName": "O nome \"{name}\" em {where} não é um nome AS3 válido: nomes têm de 1 a 64 caracteres, alfanuméricos ou underscore, e precisam começar com uma letra.",
+        "reservedName": "\"{name}\" é um nome AS3 reservado ({role})."
+      },
+      "unknownClass": "(classe fora do catálogo desta ferramenta; ainda exibida)"
+    },
+    "f5-awaf-false-positive-triage": {
+      "name": "Triagem de falso-positivo do AWAF",
+      "blurb": "O outro lado do estimador de envenenamento: relaxe um falso positivo genuíno do Advanced WAF corretamente, com escopo, e pare antes de relaxar um ataque real. Escolha uma categoria de violação, seu violation rating médio, e se está enforced, staged ou transparent, e obtenha o veredito baseado em rating do F5 e a correção com escopo. Roda inteiramente no seu navegador.",
+      "inputLabel": "A violação que você está triando",
+      "runsLocally": "Calculado no seu navegador. Nada é enviado.",
+      "example": "Exemplo",
+      "clear": "Redefinir",
+      "scopeNote": "Um modelo determinístico do comportamento de triagem documentado do F5, não uma sondagem. Leia a violação, o rating e o estado de enforcement da requisição em Security > Event Logs > Application > Requests. Nunca contata um BIG-IP.",
+      "f": {
+        "category": "Categoria da violação",
+        "rating": "Violation rating médio",
+        "state": "Estado de enforcement"
+      },
+      "cat": {
+        "attack-signature": "Attack signature detectada",
+        "meta-char": "Meta-caractere ilegal (em parâmetro, valor ou URL)",
+        "parameter": "Parâmetro ilegal / desconhecido",
+        "url": "URL ilegal",
+        "file-type": "Tipo de arquivo ilegal",
+        "length": "Comprimento ilegal (URL, query, POST data, requisição)",
+        "file-upload-signature": "Signature em conteúdo de arquivo enviado",
+        "xml-json-signature": "Signature em payload XML ou JSON",
+        "cookie": "Cookie modificado / ilegal",
+        "http-compliance": "Verificação de HTTP compliance / RFC"
+      },
+      "rating": {
+        "1": "1 — quase certamente legítimo",
+        "2": "2 — provavelmente legítimo",
+        "3": "3 — incerto",
+        "4": "4 — provavelmente um ataque",
+        "5": "5 — ataque certo"
+      },
+      "state": {
+        "enforced-blocking": "Enforced, política em modo Blocking",
+        "staged": "Signature / entidade em staging",
+        "transparent": "Política em modo Transparent"
+      },
+      "triage": {
+        "likely-fp": "Provavelmente um falso positivo",
+        "investigate": "Investigue antes de decidir",
+        "likely-attack": "Provavelmente um ataque real — não relaxe"
+      },
+      "blocksNow": "Bloqueando tráfego agora",
+      "notBlocking": "Não bloqueando (apenas registrado)",
+      "action": {
+        "accept-if-confirmed": "Se você confirmar que é legítimo, aplique a correção com escopo abaixo (ou aceite a sugestão de aprendizado).",
+        "investigate-first": "Examine a requisição no event log primeiro; um rating 3 pode ir para qualquer lado.",
+        "clear-do-not-relax": "Limpe a sugestão de aprendizado sem mudar a política. Relaxar isto abriria um buraco."
+      },
+      "remediationHeading": "Correção com escopo (se for um falso positivo confirmado)",
+      "rem": {
+        "disableSignatureScoped": "Desabilite a signature específica apenas na URL ou parâmetro específico, nunca para toda a política.",
+        "allowEntityBypass": "Adicione a URL ou parâmetro como entidade permitida para a verificação ser ignorada apenas ali.",
+        "potentialFpDetection": "Habilite o Potential False Positive Detection para o sistema aprender a similaridade das requisições e tratar as parecidas com a maioria como benignas, sinalizando outliers.",
+        "stageSignature": "Coloque a signature (de volta) em staging para que registre mas não bloqueie enquanto você coleta mais tráfego.",
+        "allowMetaChar": "Adicione o caractere aos meta-caracteres permitidos daquele parâmetro, valor ou character set de URL.",
+        "addAllowedParameter": "Adicione o parâmetro como um parâmetro permitido com o value type e comprimento corretos.",
+        "addAllowedUrl": "Adicione a URL às URLs permitidas.",
+        "addAllowedFileType": "Adicione o tipo de arquivo aos tipos permitidos.",
+        "raiseLength": "Aumente o limite de comprimento relevante (URL, query string, POST data ou requisição) para caber o tráfego legítimo.",
+        "markFileUploadParam": "Adicione um parâmetro explícito com Value Type 'User-input value' e Data Type 'File Upload' para que o conteúdo binário enviado não seja escaneado como texto.",
+        "attachContentProfile": "Anexe um content profile XML ou JSON para que o payload estruturado seja interpretado e as signatures se apliquem adequadamente, em vez de aos bytes brutos.",
+        "allowCookieNotEnforced": "Somente se a aplicação modifica o cookie legitimamente, permita aquele cookie específico como não-enforced.",
+        "investigateCookie": "Violações de cookie geralmente são adulteração real; confirme que a aplicação realmente altera o cookie antes de relaxar qualquer coisa.",
+        "adjustHttpComplianceSubcheck": "Ajuste apenas a sub-verificação específica de HTTP compliance, se o desvio for legítimo para esta aplicação.",
+        "urlOverride": "Use um override de Microservices ou de nível de URL para relaxar a verificação apenas para aquele host e URL."
+      },
+      "notesHeading": "Tenha em mente",
+      "note": {
+        "ratingBlocks": "Um rating 4 ou 5 bloqueia a requisição mesmo quando toda violação detectada tem o Block flag desligado, porque o rating combinado a marca como provável ataque.",
+        "staged": "Esta signature ou entidade está em staging: registra mas não bloqueia. Trate o 'falso positivo' como um sinal de aprendizado, valide por uma a duas semanas, depois faça enforcement.",
+        "transparent": "A política está em modo Transparent, então não bloqueia nada. Isto é registrado, não bloqueado; a correção importa para quando você mudar para Blocking.",
+        "discipline": "A regra que rege tudo isto: relaxe a política apenas onde um falso positivo de fato ocorreu, nunca onde um ataque real causou a violação.",
+        "scopeIt": "Sempre limite a correção à URL ou parâmetro específico. Desabilitar uma signature ou violação para toda a política troca um falso positivo por um ponto cego em todo o resto.",
+        "potentialFp": "Para falsos positivos de attack signature, o Potential False Positive Detection é a opção mais leve: deixa o sistema decidir por similaridade de tráfego em vez de você desabilitar signatures à mão.",
+        "unlearnable": "Algumas violações de rating 5 são não aprendíveis (por exemplo Null in request): a política nunca as relaxa, então não há o que aceitar."
       }
     }
   },
@@ -3228,7 +3522,10 @@
     "localLabel": "Local e determinístico",
     "localBody": "Tudo roda no navegador. A ferramenta chama uma função pura: dada a mesma entrada, ela retorna a mesma saída, não guarda estado e não envia nada para um servidor. Sem cookies, sem analytics, como a página de Privacidade detalha por completo.",
     "thanksTitle": "Agradecimentos especiais",
-    "p2Body": "A lógica determinística que cada ferramenta executa é a ferramenta inteira: não há etapa oculta no servidor, nem conta, nem telemetria. Tudo é executado no seu navegador."
+    "p2Body": "A lógica determinística que cada ferramenta executa é a ferramenta inteira: não há etapa oculta no servidor, nem conta, nem telemetria. Tudo é executado no seu navegador.",
+    "limitsTitle": "O teto, dito com clareza",
+    "limitsBody1": "Este site roda como um único Cloudflare Worker servindo arquivos estáticos, e essa plataforma tem limites rígidos e publicados que merecem honestidade. Uma versão de Worker pode carregar no máximo 20.000 arquivos estáticos no plano gratuito e 100.000 no plano pago (elevado de 20.000 em setembro de 2025, e somente ao publicar com o Wrangler 4.34 ou mais novo), com nenhum arquivo acima de 25 MiB. As requisições aos próprios arquivos estáticos são gratuitas e ilimitadas; apenas as invocações do script do Worker, como a API, são medidas.",
+    "limitsBody2": "Esses números importam porque esta arquitetura multiplica conteúdo de propósito. Cada página renderizada é publicada como cerca de três arquivos: seu HTML, o payload de navegação do framework e um fragmento do índice de busca, em todos os dezesseis idiomas, e as páginas em inglês e português ainda ganham gêmeas em Markdown legível por máquina. Na prática, uma ferramenta custa cerca de cinquenta arquivos e uma ferramenta com seu artigo companheiro cerca de cem, então o site atual está um pouco acima de dezoito mil arquivos. Sob o teto do plano pago, isso deixa espaço para centenas de ferramentas a mais; o build é medido contra esses limites e, se um dia a caixa de ferramentas realmente superar um único Worker, o caminho de expansão já está traçado: dividir rotas entre Workers adicionais, cada um com sua própria cota, e por fim armazenamento de objetos sem limite algum de contagem."
   },
   "support": {
     "title": "Apoie o projeto",
@@ -3396,7 +3693,8 @@
     "ideaTitle": "Tem uma ideia?",
     "ideaBody": "Toda ferramenta aqui começou do mesmo jeito: alguém precisou de algo pequeno e específico e não encontrou no pior momento possível, o primo digital de estar com um cabo de console a menos às 2 da manhã com a janela de manutenção se fechando. Se a que você está procurando ainda não está aqui, proponha. Vale uma olhada na lista antes, caso esse adaptador exato já esteja na minha bancada, metade pronto.",
     "ideaCta": "Sugerir uma ferramenta",
-    "metaDescription": "As ferramentas planejadas e em consideração para o toolbox ronutz.com, geradas a partir do catálogo de build ao vivo."
+    "metaDescription": "As ferramentas planejadas e em consideração para o toolbox ronutz.com, geradas a partir do catálogo de build ao vivo.",
+    "ceiling": "O crescimento aqui tem um teto medido, não vago. A plataforma de hospedagem limita quantos arquivos estáticos um Worker pode carregar, e a aritmética deste site — cerca de cem arquivos por pacote de ferramenta e artigo, em dezesseis idiomas — é conferida contra esse limite a cada build. Hoje há espaço para centenas de ferramentas a mais, e o caminho de expansão além de um único Worker já está desenhado, então o roadmap abaixo é limitado pelo critério, não pela hospedagem."
   },
   "apiAffordance": {
     "label": "Também disponível como API",

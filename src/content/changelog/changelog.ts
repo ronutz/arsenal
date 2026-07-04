@@ -44,6 +44,58 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-04",
+    time: "08:44",
+    kind: "tool",
+    title: "New: AWAF false-positive triage",
+    body:
+      "The flip side of the poisoning estimator: it helps you relax a genuine Advanced WAF false positive correctly, with scope, and stop before relaxing a real attack. Pick a violation category, its average violation rating, and whether it is enforced, staged, or transparent, and it returns F5's rating-based verdict: ratings 1 and 2 are likely false positives you can accept if confirmed, rating 3 must be investigated, and ratings 4 and 5 block even with Block flags off, so you clear the suggestion without relaxing. It gives the scoped remediation for that category (disable a signature on one URL or parameter, add an allowed entity, add the meta-character to that entity's set, attach an XML/JSON profile, mark a file-upload parameter, or enable Potential False Positive Detection), never a policy-wide disable, and always restates the discipline: relax only where a false positive occurred, never where a real attack caused the violation. A companion Learn article covers the workflow. Grounded in F5 K70544352 and the ASM violation-rating and learning docs; deterministic, nothing leaves the browser.",
+    tools: ["f5-awaf-false-positive-triage"],
+  },
+  {
+    date: "2026-07-04",
+    time: "08:38",
+    kind: "tool",
+    title: "New: AS3 declaration explainer",
+    body:
+      "Paste the JSON you POST to /mgmt/shared/appsvcs/declare and this reads it back: whether it is a full AS3 request (class AS3, with action and persist) or an ADC-only declaration (class ADC), the schemaVersion and metadata, and the Tenant to Application to resource tree with every class named and explained, from Service_HTTP and Service_HTTPS through Pool, Monitor, TLS_Server, Certificate, WAF_Policy, and iRule. It also checks the structural rules F5 documents: a top-level AS3 or ADC class, a schemaVersion, at least one Tenant containing an Application containing a resource, and the template and service-class matching rule (http/https/tcp/udp/l4 require a matching Service_* named service), plus reserved-name and 1-to-64 alphanumeric name checks. It lights up the Automation sub-category on the F5 hub as its first tenant. A companion Learn article walks the anatomy of a declaration. A structure explainer and sanity checker, not a full schema validator; grounded in F5's AS3 docs, decode-only, nothing leaves the browser.",
+    tools: ["as3-explainer-validator"],
+  },
+  {
+    date: "2026-07-04",
+    time: "07:35",
+    kind: "tool",
+    title: "New: AWAF automatic-learning poisoning estimator",
+    body:
+      "A deterministic calculator for a question every WAF instructor gets: how many requests does an attacker need to drill a hole through your BIG-IP Advanced WAF policy when the Policy Builder is left in Automatic learning against untrusted traffic? In Automatic mode a suggestion that reaches a 100% learning score is auto-accepted and enforced, and the Loosen stage can disable violations and widen entities. Enter your policy's Loosen thresholds (different sources, sessions, time spread; F5 default 10 untrusted sources) and the target manipulation's violation rating, plus the attacker's distinct source IPs and per-source rate, and it computes the minimum sources, requests, and elapsed time to force one automatic relaxation. It gates hard on the documented rules that make it impossible: Manual or Disabled learning, rating-5 unlearnable violations, and loosening restricted to trusted traffic, and it surfaces the five hardening levers. A companion Learn article, 'Automatic Learning in Production: How an Attacker Poisons a WAF Policy', explains the mechanism. Grounded in F5 K000134503 and the ASM learning manuals; nothing is fetched or sent.",
+    tools: ["f5-awaf-learning-poisoning-estimator"],
+  },
+  {
+    date: "2026-07-04",
+    time: "03:43",
+    kind: "content",
+    title: "F5 hub: dedicated iRules category, corrected tags, standardized names",
+    body:
+      "The F5 hub got a taxonomy and naming pass. iRules is now its own category with a dedicated heading, split out from LTM, so iRule tools and articles group together on their own. The BIG-IP persistence-cookie decoder, which was mis-tagged Security & WAF, now correctly reads Networking. The platform divider is standardized to 'TMOS · F5OS · Platforms', and six F5 tool names were polished for consistency: sentence case throughout, 'F5XC' rather than 'F5 XC', 'iRules' spelled consistently, and cleaner separators, aligned across the hub and the catalogue in both English and Portuguese.",
+  },
+  {
+    date: "2026-07-04",
+    time: "03:04",
+    kind: "tool",
+    title: "New: AWAF evasion-technique explainer",
+    body:
+      "The decode side of 'evasion technique detected' (VIOL_EVASION), grounded verbatim in F5's K7929 and the current BIG-IP ASM 17.5 violation chapter. Type a sub-violation name or 'evasions' and get F5's own eight sub-violations explained, Microsoft %u decoding, Apache whitespace, Bad unescape, Bare byte decoding, Directory traversals, IIS backslashes, IIS Unicode codepoints, and Multiple decoding, each with its default (all enabled) and the encoding trick it catches. Or paste the evasions block of a declarative policy to read each one back as enabled or disabled, with the Multiple-decoding pass count surfaced and bounds-checked against the schema's 2-to-5 range. It bridges to the Base64 and Percent codec tools that perform the very same decode operations, the encode/decode complement asked for, since several evasions are exactly the %u, bare-byte, and repeated percent-decoding those tools already do. A companion Learn article, 'Evasion Techniques: How Advanced WAF Normalizes Around Attacker Encoding', explains the whole class. Decode-only; nothing leaves the browser.",
+    tools: ["f5-awaf-evasion-explainer"],
+  },
+  {
+    date: "2026-07-04",
+    time: "02:36",
+    kind: "content",
+    title: "The colophon now states the hosting ceiling, honestly",
+    body:
+      "A new colophon section, echoed in one paragraph on the roadmap, spells out the hard limits this site lives under: a Cloudflare Worker version carries at most 20,000 static files on the free plan and 100,000 on the paid plan (raised five-fold in September 2025, deployable only with Wrangler 4.34 or newer), no file over 25 MiB, and static-asset requests free and unlimited. Against that, the site's own arithmetic: about three files per rendered page across sixteen languages, roughly fifty files per tool and a hundred per tool-with-article pack, a little over eighteen thousand files today, and a mapped expansion path, route-sharded Workers, then object storage, should the toolbox ever outgrow one Worker.",
+  },
+  {
+    date: "2026-07-04",
     time: "02:14",
     kind: "feature",
     title: "Every tool now has an Example button (D-83 retrofit complete)",

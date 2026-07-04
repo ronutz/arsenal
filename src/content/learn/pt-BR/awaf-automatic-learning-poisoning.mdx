@@ -1,0 +1,48 @@
+---
+slug: awaf-automatic-learning-poisoning
+title: "Aprendizado automático em produção: como um atacante envenena uma política de WAF"
+summary: "Deixado em modo de aprendizado Automatic sobre tráfego não confiável, o Policy Builder do BIG-IP Advanced WAF aceita e aplica uma sugestão assim que seu learning score chega a 100%, e algumas sugestões desabilitam violações ou ampliam entidades. Um atacante que inunda tráfego de aparência legítima a partir de fontes suficientes consegue levar um afrouxamento a 100% e abrir um buraco. O design do F5 resiste a isso com limites de fontes, sessões e tempo, mas a postura segura é aprendizado Manual por padrão e construir apenas a partir de tráfego confiável."
+concepts: ["f5", "awaf", "waf", "asm", "policy builder", "automatic learning", "learning mode", "trusted ip", "security", "bigip", "k000134503"]
+relatedTools: ["f5-awaf-learning-poisoning-estimator", "f5-awaf-evasion-explainer", "f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-signature-staging-and-enforcement-readiness"]
+category: security
+order: 4
+status: reviewed
+updated: "2026-07-04"
+---
+
+O Policy Builder do F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) consegue construir e refinar uma política de segurança sozinho, observando o tráfego ao vivo e decidindo quais URLs, parâmetros, tipos de arquivo e comportamentos são legítimos. Essa automação é de fato útil quando você está construindo uma política a partir de tráfego reconhecidamente bom. Ela vira um risco no momento em que você a deixa ligada, em modo Automatic, diante da internet aberta, porque o mesmo mecanismo que aprende sua aplicação também aprende o que um atacante paciente lhe ensinar.
+
+## O modo Automatic age sem você
+
+O Policy Builder atribui um **learning score** a cada sugestão, uma porcentagem que mede a confiança do sistema de que a mudança se justifica. No modo de aprendizado **Automatic**, quando o score de uma sugestão chega a 100%, o sistema a aceita e aplica, sem administrador no processo. No modo **Manual** a sugestão espera até que um humano a aceite. No modo **Disabled** a política não aprende nada.
+
+O detalhe é que nem toda sugestão aperta a política. A etapa **Loosen** do Policy Builder existe para relaxar a política, e o F5 descreve exatamente o que ela faz: adiciona entidades, configura atributos como comprimentos e meta-caracteres permitidos, e **desabilita violações**. Um afrouxamento que chega a 100% no modo Automatic é aplicado automaticamente, como qualquer outra sugestão. É esse o buraco que o atacante mira: desabilitar uma violação ou ampliar uma entidade, e ataques futuros que teriam sido bloqueados passam a passar. O atacante não está forjando um bypass de bloqueio diretamente; está fabricando aparência de legitimidade até o Policy Builder concluir que o padrão malicioso é normal e relaxar em torno dele.
+
+## O que eleva o score
+
+Um atacante que entende a pontuação sabe quais alavancas puxar. O F5 afirma que uma sugestão tem learning score mais alto quando o tráfego atendeu às condições da política, quando origina de **muitas fontes diferentes**, quando é **improvável de ser uma violação** (um violation rating baixo), e quando vem de um **endereço IP confiável**. E o Policy Builder aplica um afrouxamento apenas depois de processar tráfego e sessões suficientes ao longo de tempo bastante, de **endereços IP diferentes**.
+
+Então, para forçar um afrouxamento automático a partir de tráfego não confiável, um atacante precisa enviar tráfego que pareça legítimo (violation rating baixo), que se repita, e que chegue de fontes distintas suficientes espalhadas por um período. Isso não é um único laço de curl a partir de um host. É mais próximo de envenenamento de dados de treino, e precisa de amplitude de fontes, não apenas de volume.
+
+## Duas salvaguardas que limitam o ataque
+
+O F5 não deixou isso escancarado, e os limites valem ser ensinados:
+
+**As violações mais graves são não aprendíveis.** Violações como Null in request, conteúdo de requisição não interpretável e versão HTTP inválida nunca são aprendidas, nenhuma sugestão é criada para elas, e seu violation rating é fixo em 5. Uma assinatura de ataque de alta confiança não pode ser lavada em legitimidade dessa forma.
+
+**O rating escala o custo.** Se o violation rating das requisições é mais alto, o sistema deliberadamente desacelera o aprendizado e exige mais sessões de usuário e mais endereços IP diferentes antes de sugerir uma mudança. Se o rating é mais baixo, o afrouxamento acontece mais rápido. Padrões limítrofes, de rating baixo, são baratos de ensinar; ataques óbvios são caros a impossíveis.
+
+## Confiável versus não confiável é o jogo inteiro
+
+O botão mais importante é qual tráfego a política confia. Para clientes com endereços IP **confiáveis**, as regras exigem muito menos tráfego, por padrão apenas **uma sessão de usuário**, para atualizar a política. O tráfego **não confiável** precisa superar limites muito mais altos, de muitas fontes diferentes ao longo de um período maior. Essa assimetria é justamente o design anti-envenenamento: construa rápido a partir de clientes em que você confia, e faça a internet anônima trabalhar muito mais.
+
+Duas armadilhas se escondem aqui. Primeiro, se você deixa a lista de IPs confiáveis vazia, o sistema trata **todo** o tráfego como não confiável, então uma lista vazia não te protege; ela simplesmente torna os limites de não confiável sua única defesa. Segundo, a opção "Only from Trusted Traffic" fica sob Track Site Changes, e o padrão é afrouxar a partir de todo o tráfego, então depender do afrouxamento apenas por confiável exige configuração deliberada.
+
+## A postura segura
+
+As ações corretivas apontam todas na mesma direção:
+
+Defina o **Learning Mode como Manual** (ou Disabled) em produção, para que nenhuma sugestão, especialmente um afrouxamento, seja aplicada sem um humano aceitar. Este é o padrão limpo. Construa políticas a partir de uma **faixa de IPs confiáveis reconhecidamente boa** (QA, staging, clientes sintéticos) em vez de tráfego não confiável ao vivo, e onde a opção existir, afrouxe apenas a partir de tráfego confiável. Se você precisa rodar a construção automática sobre tráfego real, **aumente os limites de Loosen para não confiável** (fontes diferentes, sessões, período) o suficiente para que o tráfego não confiável praticamente nunca relaxe a política durante o período de aprendizado. Nunca coloque faixas alcançáveis pela internet ou por atacantes na lista de IPs confiáveis, já que o tráfego confiável relaxa a política com uma única sessão. E, quando a política estiver construída e estável, **desligue a construção automática** para que ela pare de aprender com o tráfego ao vivo.
+
+A regra prática do instrutor é simples: o aprendizado automático é uma conveniência de construção, não uma postura de produção. Deixe-o em Manual por padrão, mude para Automatic apenas enquanto estiver deliberadamente construindo a partir de tráfego em que você confia, e desligue-o quando a política estiver pronta. O estimador companheiro neste site permite colocar números no risco para os seus próprios limites de Loosen, mas o padrão seguro não depende dos números.

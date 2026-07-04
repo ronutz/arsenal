@@ -141,8 +141,9 @@ export interface VendorSub {
 
 export const VENDOR_SUBS: Record<string, readonly VendorSub[]> = Object.freeze({
   f5: [
-    { id: "ltm" },        // LTM - Local Traffic Manager & iRules
-    { id: "tmos" },       // TMOS, F5OS, Platform
+    { id: "ltm" },        // LTM - Local Traffic Manager
+    { id: "irules" },     // iRules - Tcl event scripting (dedicated per PRIME)
+    { id: "tmos" },       // TMOS / F5OS / Platforms
     { id: "dns-gtm" },    // DNS / GTM - Global Traffic Manager
     { id: "asm-awaf" },   // ASM / Advanced WAF
     { id: "afm" },        // AFM - Advanced Firewall Manager

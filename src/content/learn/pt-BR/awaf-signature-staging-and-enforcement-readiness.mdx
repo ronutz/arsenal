@@ -15,7 +15,7 @@ Há uma segunda razão, além do modo de enforcement, pela qual uma política qu
 
 ## O que o staging faz
 
-Quando uma assinatura está **em staging**, o Advanced WAF a compara com o tráfego e registra a correspondência, mas não age sobre ela. Nada é bloqueado; a correspondência é registrada para que você a revise. O objetivo é permitir que uma assinatura de ataque nova ou atualizada se prove contra tráfego real antes de ter permissão para rejeitar uma requisição, para que uma assinatura ruidosa ou propensa a falsos positivos não derrube tráfego legítimo no momento em que é adicionada.
+Quando uma assinatura está **em staging**, o F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) a compara com o tráfego e registra a correspondência, mas não age sobre ela. Nada é bloqueado; a correspondência é registrada para que você a revise. O objetivo é permitir que uma assinatura de ataque nova ou atualizada se prove contra tráfego real antes de ter permissão para rejeitar uma requisição, para que uma assinatura ruidosa ou propensa a falsos positivos não derrube tráfego legítimo no momento em que é adicionada.
 
 Em uma política declarativa, o interruptor global fica em `signature-settings`:
 

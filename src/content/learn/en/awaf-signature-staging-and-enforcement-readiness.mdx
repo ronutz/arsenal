@@ -15,7 +15,7 @@ There is a second reason, beyond enforcement mode, why a policy that looks prote
 
 ## What staging does
 
-When a signature is **in staging**, Advanced WAF matches it against traffic and logs the match, but it does not act on it. Nothing is blocked; the match is recorded so you can review it. The point is to let a new or updated attack signature prove itself against real traffic before it is allowed to reject a request, so a noisy or false-positive-prone signature cannot take down legitimate traffic the moment it is added.
+When a signature is **in staging**, F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) matches it against traffic and logs the match, but it does not act on it. Nothing is blocked; the match is recorded so you can review it. The point is to let a new or updated attack signature prove itself against real traffic before it is allowed to reject a request, so a noisy or false-positive-prone signature cannot take down legitimate traffic the moment it is added.
 
 In a declarative policy, the global toggle sits in `signature-settings`:
 

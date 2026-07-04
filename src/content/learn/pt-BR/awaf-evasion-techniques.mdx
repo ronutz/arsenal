@@ -1,0 +1,69 @@
+---
+slug: awaf-evasion-techniques
+title: "Técnicas de evasão: como o Advanced WAF normaliza a codificação do atacante"
+summary: "Atacantes escondem payloads dentro de codificações incomuns para que uma assinatura nunca veja os caracteres reais. O BIG-IP Advanced WAF responde com oito subviolações de evasão sob a única violação 'Evasion technique detected', cada uma normalizando ou detectando um truque: %u decoding, Apache whitespace, Bad unescape, Bare byte decoding, Directory traversals, IIS backslashes, IIS Unicode codepoints e Multiple decoding. As oito são habilitadas por padrão."
+concepts: ["f5", "awaf", "waf", "asm", "evasion", "evasion techniques", "encoding", "normalization", "security", "bigip", "k7929"]
+relatedTools: ["f5-awaf-evasion-explainer", "base64", "url-inspector"]
+relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-declarative-policy-structure"]
+category: security
+order: 3
+status: reviewed
+updated: "2026-07-04"
+---
+
+As assinaturas de ataque casam com os caracteres que um atacante envia. Então o truque mais antigo do manual é não enviar esses caracteres diretamente: codificá-los, escapá-los, embrulhá-los num formato para o qual a assinatura não foi escrita, e contar com o servidor web para decodificá-los de volta no ataque *depois* que o firewall já olhou. O F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) chama essa classe de truque de **técnica de evasão**, e se defende dela normalizando a requisição, decodificando-a e canonicalizando-a, antes de as assinaturas rodarem.
+
+Todas essas vivem sob uma única violação, **Evasion technique detected** (`VIOL_EVASION`), que se divide em oito **subviolações**. Cada subviolação trata de uma evasão específica, e o F5 entrega as oito **habilitadas por padrão**.
+
+## Por que a normalização importa
+
+Um web application firewall e o servidor de origem precisam concordar sobre o que uma requisição *significa*. Se o WAF vê `%2e%2e%2f` como uma string opaca mas o servidor a decodifica para `../`, um atacante pode subir na árvore de diretórios à plena vista do firewall. A normalização fecha essa lacuna: o WAF decodifica a requisição do mesmo jeito que o servidor fará, para que as assinaturas inspecionem os caracteres reais e resolvidos, e não o disfarce.
+
+É esse o jogo inteiro. Toda subviolação de evasão é ou um decodificador para um truque de codificação, ou um detector para um padrão de entrada malformada.
+
+## As oito subviolações
+
+**%u decoding** realiza a decodificação Unicode no estilo `%u` da Microsoft na URI e nos parâmetros, resolvendo um caractere escrito como `%u00XX` antes de as assinaturas o verem.
+
+**Apache whitespace** detecta os bytes de espaço em branco ASCII 9, 11, 12 e 13 na URI, caracteres de controle que alguns servidores tratam silenciosamente como separadores.
+
+**Bad unescape** detecta codificação hex ilegal, um sinal de porcentagem não seguido por dois dígitos hex válidos, como `%RR`. Escapes malformados são uma forma predileta de fazer o WAF e o servidor discordarem.
+
+**Bare byte decoding** detecta bytes ASCII altos, valores brutos acima de 127 enviados sem escape, usados para representar caracteres observados sem a codificação que os revelaria.
+
+**Directory traversals** detecta padrões de travessia de diretório como `../` que escapam do caminho pretendido rumo a arquivos em outro lugar do servidor.
+
+**IIS backslashes** normaliza a barra invertida `\` para uma barra normal `/`, do jeito que o IIS trata as duas como equivalentes em um caminho, para que um payload usando `\` não escape de assinaturas escritas para `/`.
+
+**IIS Unicode codepoints** decodifica os mapeamentos de code-point `%u` específicos do IIS a partir da code page Windows-1252, os escapes por trás de toda uma geração de exploits de travessia no IIS.
+
+**Multiple decoding** decodifica a URI e os valores de parâmetro repetidamente, até um número configurado de passes, para que um payload enterrado sob várias camadas de codificação seja desembrulhado antes da inspeção. Esta é a resposta à codificação dupla e tripla.
+
+## Multiple decoding e a contagem de passes
+
+Multiple decoding é a única subviolação com um botão de ajuste. No schema declarativo ela carrega `maxDecodingPasses`, que o schema limita entre **2 e 5**, com um padrão documentado de **3**. Cada passe adicional desembrulha mais uma camada de codificação: um valor codificado em percent duas vezes precisa de pelo menos dois passes para revelar seus caracteres reais, e um atacante que codifica três vezes está apostando que seu decodificador para cedo. Elevar a contagem de passes detecta aninhamento mais profundo a um pequeno custo de processamento; definir um valor fora do intervalo de 2 a 5 é rejeitado.
+
+## Lendo isso numa política
+
+Numa política declarativa do BIG-IP Advanced WAF, essas configurações vivem no array `evasions` dentro de `blocking-settings`. Cada entrada nomeia uma subviolação no seu `description` e carrega um booleano `enabled`:
+
+```json
+{
+  "blocking-settings": {
+    "evasions": [
+      { "description": "Multiple decoding", "enabled": true, "maxDecodingPasses": 3 },
+      { "description": "Directory traversals", "enabled": false }
+    ]
+  }
+}
+```
+
+Uma entrada **ausente** não está desabilitada, ela simplesmente assume o padrão do template (habilitada). Uma entrada definida como `enabled: false`, como Directory traversals acima, genuinamente desliga aquela normalização, e com ela vai a proteção: a evasão que ela detectava agora pode chegar à aplicação sem ser resolvida. Isso merece um segundo olhar sempre que você vê uma.
+
+Mais uma regra do schema: as subviolações só são *aprendidas* quando o aprendizado está habilitado na violação-pai `VIOL_EVASION`. Se essa violação tiver `learn` desligado, uma requisição que dispara ainda é detectada e pode ser alarmada ou bloqueada, mas o sistema não gerará uma sugestão de aprendizado para ela.
+
+## A conexão com as ferramentas de codificação
+
+A maioria dessas subviolações é exatamente a operação de decodificação que você pode fazer à mão. Escapes `%u`, bare bytes e o percent-encoding `%XX` que o Bad unescape fiscaliza são território de um codec de percent e Base64; Multiple decoding é simplesmente percent-decoding rodado mais de uma vez. Ver a decodificação acontecer, levando `%2e%2e%2f` a `../`, ou `%25%32%65` por dois passes até `%2e` e então `.`, é o jeito mais rápido de construir intuição sobre o que o WAF está normalizando, e por que um atacante recorreu à codificação em primeiro lugar.
+
+Tudo que o Advanced WAF faz aqui é normalização defensiva. Ele nunca gera essas codificações; ele as desfaz, para que as assinaturas possam ver a requisição do jeito que o servidor verá.
