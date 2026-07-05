@@ -1,6 +1,6 @@
 ## O que faz
 
-Cole uma política de segurança declarativa do BIG-IP Advanced WAF (ASM), o JSON `{ "policy": { ... } }` que você mantém em controle de versão, e a ferramenta a lê de volta para você, seção por seção, em linguagem clara: o que cada configuração é e, onde importa, o que o valor específico que você definiu realmente significa para a segurança da política. É um explicador somente de decodificação, fundamentado no schema declarativo publicado pela F5, e roda inteiramente no seu navegador.
+Cole uma política de segurança declarativa do F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager), o JSON `{ "policy": { ... } }` que você mantém em controle de versão, e a ferramenta a lê de volta para você, seção por seção, em linguagem clara: o que cada configuração é e, onde importa, o que o valor específico que você definiu realmente significa para a segurança da política. É um explicador somente de decodificação, fundamentado no schema declarativo publicado pela F5, e roda inteiramente no seu navegador.
 
 ## Ela lê uma política como um delta sobre o seu template
 

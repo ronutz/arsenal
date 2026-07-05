@@ -1,6 +1,6 @@
 ## What it does
 
-Paste a BIG-IP Advanced WAF (ASM) declarative security policy, the JSON `{ "policy": { ... } }` you keep in source control, and the tool reads it back to you section by section in plain language: what each setting is, and, where it matters, what the specific value you set actually means for the policy's security. It is a decode-only explainer, grounded in F5's published declarative-policy schema, and it runs entirely in your browser.
+Paste an F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) declarative security policy, the JSON `{ "policy": { ... } }` you keep in source control, and the tool reads it back to you section by section in plain language: what each setting is, and, where it matters, what the specific value you set actually means for the policy's security. It is a decode-only explainer, grounded in F5's published declarative-policy schema, and it runs entirely in your browser.
 
 ## It reads a policy as a delta on its template
 

@@ -2,7 +2,7 @@
 
 An iRule is Tcl with a contract: code runs when events fire, commands are valid in some events and not others, and a handful of constructs quietly cost you every CPU core but one. This tool reads the contract back.
 
-Paste an iRule and every `when` block renders as a card. The event's identity comes from the Master List of iRule Events on clouddocs, condensed faithfully, with its module and a link to its reference page; events outside the curated LTM-scope table still parse and are flagged rather than guessed at. The block's commands are inventoried, namespaced and bare alike, each linked directly to its reference page.
+Paste an iRule and every `when` block renders as a card. The event's identity comes from the Master List of iRule Events on clouddocs, condensed faithfully, with its module and a link to its reference page; events outside the curated BIG-IP LTM - Local Traffic Manager scope table still parse and are flagged rather than guessed at. The block's commands are inventoried, namespaced and bare alike, each linked directly to its reference page.
 
 When an event appears in more than one block, the evaluation order renders per the priority command's documented rules: values 0 to 1000, default 500, lower runs first, same priority runs in insertion order, and across multiple iRules on one virtual the rule listing order breaks the remaining ties.
 

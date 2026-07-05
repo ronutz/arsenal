@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-A inspeção no lado do servidor consegue ler os cabeçalhos e o corpo de uma requisição, mas não consegue dizer se foi um navegador real ou um script que a enviou. Para responder a isso, o Advanced WAF injeta JavaScript na resposta e lê o que o cliente faz com ele. Esta é a análise de sinais por trás do bot defense: o WAF faz ao cliente perguntas que só um navegador real consegue responder, e pontua as respostas.
+A inspeção no lado do servidor consegue ler os cabeçalhos e o corpo de uma requisição, mas não consegue dizer se foi um navegador real ou um script que a enviou. Para responder a isso, o F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) injeta JavaScript na resposta e lê o que o cliente faz com ele. Esta é a análise de sinais por trás do bot defense: o WAF faz ao cliente perguntas que só um navegador real consegue responder, e pontua as respostas.
 
 ## Por que injetar algo
 

@@ -1,6 +1,6 @@
 ## O que faz
 
-Cole uma `service_policy` do F5 Distributed Cloud (XC) em JSON e a ferramenta detalha exatamente como ela casa: o escopo de servidor ao qual se aplica, a ordem em que suas regras são avaliadas e, para cada regra, sua ação e as condições que precisam valer. Ela lê a definição da política inteiramente no seu navegador e não avalia nada contra tráfego real.
+Cole uma `service_policy` do F5XC - F5 Distributed Cloud em JSON e a ferramenta detalha exatamente como ela casa: o escopo de servidor ao qual se aplica, a ordem em que suas regras são avaliadas e, para cada regra, sua ação e as condições que precisam valer. Ela lê a definição da política inteiramente no seu navegador e não avalia nada contra tráfego real.
 
 ## O que é uma service policy
 

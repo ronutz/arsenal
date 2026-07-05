@@ -1,6 +1,6 @@
 ## What it does
 
-BIG-IP Advanced WAF detects a whole class of attacks that hide behind encoding, where a payload is escaped or encoded so an attack signature never sees the real characters, and the web server decodes it back into the attack only after the firewall has looked. F5 groups the defenses under one violation, "Evasion technique detected" (`VIOL_EVASION`), split into eight sub-violations. This tool is the decode side of that violation: type a sub-violation name (or the word `evasions`) to get all eight explained, or paste the `evasions` block of a declarative policy to read each one back as enabled or disabled. It is grounded verbatim in F5's own K7929 and the current BIG-IP ASM violation chapter, and it runs entirely in your browser.
+F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) detects a whole class of attacks that hide behind encoding, where a payload is escaped or encoded so an attack signature never sees the real characters, and the web server decodes it back into the attack only after the firewall has looked. F5 groups the defenses under one violation, "Evasion technique detected" (`VIOL_EVASION`), split into eight sub-violations. This tool is the decode side of that violation: type a sub-violation name (or the word `evasions`) to get all eight explained, or paste the `evasions` block of a declarative policy to read each one back as enabled or disabled. It is grounded verbatim in F5's own K7929 and the current BIG-IP ASM violation chapter, and it runs entirely in your browser.
 
 ## Two modes, one input
 

@@ -39,4 +39,4 @@ The order is not trivia — it dictates what data is available when. `HTTP::head
 
 ## A map, not the territory
 
-This tool models the documented order for a Standard (full-proxy) virtual server, which covers the vast majority of LTM use cases. The exact set also depends on modules (APM, ASM, and others add their own events) and on whether your iRule explicitly collects data. Use it to reason about *where* in the flow your logic should live, then confirm against a real configuration for anything unusual.
+This tool models the documented order for a Standard (full-proxy) virtual server, which covers the vast majority of BIG-IP LTM - Local Traffic Manager use cases. The exact set also depends on modules: BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager), F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager), and others add their own events. It also depends on whether your iRule explicitly collects data. Use it to reason about *where* in the flow your logic should live, then confirm against a real configuration for anything unusual.

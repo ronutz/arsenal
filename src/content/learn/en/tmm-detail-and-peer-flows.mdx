@@ -21,7 +21,7 @@ The trailing `n` characters raise the amount of internal information BIG-IP appe
 - `:nn` (medium) adds more, including the name of the virtual server associated with the flow.
 - `:nnn` (high) adds the most, including flow and peer-flow identifiers and, on resets, the reason a connection was torn down.
 
-Higher detail is more useful for diagnosing how BIG-IP handled a flow, at the cost of a larger trailer on every packet. For most LTM troubleshooting, `:nnn` is the level to reach for.
+Higher detail is more useful for diagnosing how BIG-IP handled a flow, at the cost of a larger trailer on every packet. For most BIG-IP LTM - Local Traffic Manager troubleshooting, `:nnn` is the level to reach for.
 
 ## Why "noise"
 

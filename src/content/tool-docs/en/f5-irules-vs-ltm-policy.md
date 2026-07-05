@@ -6,6 +6,6 @@ Paste an iRule and each block gets one of three verdicts, and only three, becaus
 
 The strategies keyword renders the three matching strategies with the ltm policy-strategy reference's own semantics: first-match terminates the engine on the first matching condition; all-match executes actions for everything that matches; best-match lets the more specific match win, ties falling through to the built-in precedence table whose head the tool reproduces.
 
-Why migrate what can migrate: LTM Policy is the layer the sources describe as highly performant and, unlike iRules, requiring no programming, and none of the iRule CMP-demotion hazards exist inside a policy. The migration mechanics per the Getting Started manual: draft, publish, attach to the virtual.
+Why migrate what can migrate: LTM Policy, native to BIG-IP LTM - Local Traffic Manager, is the layer the sources describe as highly performant and, unlike iRules, requiring no programming, and none of the iRule CMP-demotion hazards exist inside a policy. The migration mechanics per the Getting Started manual: draft, publish, attach to the virtual.
 
 Everything runs locally; nothing you paste leaves the page.

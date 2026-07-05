@@ -18,7 +18,7 @@ Ordinary TLS is one-directional authentication: the server proves who it is, the
 On a `client-ssl` profile, `peer-cert-mode` decides whether the BIG-IP asks the client for a certificate, and how hard it insists:
 
 - **ignore** — the default. No client certificate is requested. This is ordinary one-way TLS.
-- **request** — the BIG-IP asks for a client certificate, but the handshake **completes even if none is presented**. The result (present / absent / valid / invalid) is available for an iRule or an APM policy to act on. Use this when you want a soft check or conditional logic rather than a hard wall.
+- **request** — the BIG-IP asks for a client certificate, but the handshake **completes even if none is presented**. The result (present / absent / valid / invalid) is available for an iRule or a BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager) policy to act on. Use this when you want a soft check or conditional logic rather than a hard wall.
 - **require** — the BIG-IP demands a valid client certificate. No acceptable certificate, no connection. This is enforced mutual TLS.
 
 ## Requesting is not validating

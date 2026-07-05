@@ -1,6 +1,6 @@
 # GTM topology longest-match scorer
 
-The folklore says longest match wins. The documentation says something sharper: Longest Match is a sort of the record list, and the scores decide. This tool computes the whole thing the way BIG-IP DNS does.
+The folklore says longest match wins. The documentation says something sharper: Longest Match is a sort of the record list, and the scores decide. This tool computes the whole thing the way BIG-IP DNS (formerly GTM - Global Traffic Manager) does.
 
 Paste `gtm topology` records (as tmsh prints them: `gtm topology ldns: <source> server: <destination> { score N }`, with `not` negation supported on either side), optional `gtm region` stanzas (positive members; nested regions resolve), one `source` line declaring the LDNS attributes to evaluate (`ip=`, `country=`, `continent=`, `isp=`, `region=`), and optionally a `candidates` line naming the destinations to score (otherwise the pool and datacenter destinations in the records become the candidates).
 

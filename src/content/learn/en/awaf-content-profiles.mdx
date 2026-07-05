@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-A WAF that treats a request body as one opaque blob cannot tell a legitimate JSON document from a malicious one, and it cannot apply a signature to a single field without drowning in false positives. A content profile fixes that: it tells Advanced WAF how to parse the payload for a given content type, so the WAF can walk the structure, apply attack signatures to each value, and enforce limits on the shape of the data. Advanced WAF ships profile types for JSON, XML, GWT (Google Web Toolkit), GraphQL, and plain text, and you attach a profile to the URLs or parameters that carry that content.
+A WAF that treats a request body as one opaque blob cannot tell a legitimate JSON document from a malicious one, and it cannot apply a signature to a single field without drowning in false positives. A content profile fixes that: it tells F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) how to parse the payload for a given content type, so the WAF can walk the structure, apply attack signatures to each value, and enforce limits on the shape of the data. Advanced WAF ships profile types for JSON, XML, GWT (Google Web Toolkit), GraphQL, and plain text, and you attach a profile to the URLs or parameters that carry that content.
 
 ## JSON
 

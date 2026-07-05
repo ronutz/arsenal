@@ -1,6 +1,6 @@
 ## What it does
 
-Paste an F5 Distributed Cloud (XC) `service_policy` as JSON and the tool spells out exactly how it matches: the server scope it applies to, the order its rules are evaluated in, and for each rule its action and the conditions that must hold. It reads the policy definition entirely in your browser and evaluates nothing against live traffic.
+Paste an F5XC - F5 Distributed Cloud `service_policy` as JSON and the tool spells out exactly how it matches: the server scope it applies to, the order its rules are evaluated in, and for each rule its action and the conditions that must hold. It reads the policy definition entirely in your browser and evaluates nothing against live traffic.
 
 ## What a service policy is
 

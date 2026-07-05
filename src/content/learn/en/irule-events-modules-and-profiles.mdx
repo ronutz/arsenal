@@ -15,7 +15,7 @@ The event order is only half the story. Before an event can take its place in th
 
 ## Gate one: module provisioning
 
-Many events belong to a specific TMOS module, and that module must be **provisioned** (and licensed) for the event to fire. The APM access events, the ASM/Advanced WAF request and response events, the bot-defense events, and others each come from their module. Write `when ASM_REQUEST_BLOCKING { ... }` on a box where ASM is not provisioned and nothing happens — no error, no trigger. The core LTM connection events (`CLIENT_ACCEPTED`, `LB_SELECTED`, the connection teardown events) are the exception: they are part of base LTM and are always available.
+Many events belong to a specific TMOS module, and that module must be **provisioned** (and licensed) for the event to fire. The BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager) access events, the ASM/F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) request and response events, the bot-defense events, and others each come from their module. Write `when ASM_REQUEST_BLOCKING { ... }` on a box where ASM is not provisioned and nothing happens — no error, no trigger. The core BIG-IP LTM - Local Traffic Manager connection events (`CLIENT_ACCEPTED`, `LB_SELECTED`, the connection teardown events) are the exception: they are part of base LTM and are always available.
 
 ## Gate two: profile selection
 

@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-A WAF policy blocks individual bad requests. Session tracking answers a different question: which client is behind the bad requests, and what should we do about that client? It is how Advanced WAF moves from stopping a request to stopping an actor.
+A WAF policy blocks individual bad requests. Session tracking answers a different question: which client is behind the bad requests, and what should we do about that client? It is how F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) moves from stopping a request to stopping an actor.
 
 ## What session tracking does
 
@@ -19,7 +19,7 @@ F5 puts it plainly: you use session tracking to track, enforce, and report on us
 
 ## How ASM identifies the client
 
-ASM identifies a session with its own ASM cookie, which carries the session ID it generates when a client first arrives. For the username, you have three choices: **use login pages** configured in ASM, **use APM usernames and session ID** when APM authenticates the user, or **none**, for applications without a login page, tracking by session or IP only. Login pages define the URLs, parameters, and validation criteria for logging in, and they are what make username tracking possible.
+ASM identifies a session with its own ASM cookie, which carries the session ID it generates when a client first arrives. For the username, you have three choices: **use login pages** configured in ASM, **use BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager) usernames and session ID** when APM authenticates the user, or **none**, for applications without a login page, tracking by session or IP only. Login pages define the URLs, parameters, and validation criteria for logging in, and they are what make username tracking possible.
 
 ## The three actions
 

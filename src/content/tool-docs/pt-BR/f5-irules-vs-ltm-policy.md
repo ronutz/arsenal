@@ -6,6 +6,6 @@ Cole uma iRule e cada bloco recebe um de três vereditos, e apenas três, porque
 
 A palavra strategies renderiza as três estratégias de correspondência com a semântica da própria referência ltm policy-strategy: first-match encerra o motor na primeira condição que casa; all-match executa as ações de tudo que casa; best-match deixa a correspondência mais específica vencer, com empates caindo para a tabela de precedência embutida cujo topo a ferramenta reproduz.
 
-Por que migrar o que pode migrar: LTM Policy é a camada que as fontes descrevem como altamente performática e que, ao contrário de iRules, não exige programação, e nenhum dos riscos de rebaixamento de CMP das iRules existe dentro de uma policy. A mecânica de migração pelo manual de Getting Started: rascunho, publicar, anexar ao virtual.
+Por que migrar o que pode migrar: LTM Policy, nativa do BIG-IP LTM - Local Traffic Manager, é a camada que as fontes descrevem como altamente performática e que, ao contrário de iRules, não exige programação, e nenhum dos riscos de rebaixamento de CMP das iRules existe dentro de uma policy. A mecânica de migração pelo manual de Getting Started: rascunho, publicar, anexar ao virtual.
 
 Tudo roda localmente; nada do que você cola sai da página.

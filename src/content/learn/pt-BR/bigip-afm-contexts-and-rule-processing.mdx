@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-03"
 ---
 
-Um firewall com uma tabela de regras é fácil de raciocinar. O Network Firewall do AFM não é isso: é uma hierarquia de contextos, cada um carregando sua própria policy, e o mesmo pacote pode ser julgado três vezes antes que algo lhe responda. O manual de Policies and Implementations declara a ordem sem ambiguidade: o processamento progride do contexto global, para o route domain, e então para o contexto de virtual server ou self IP, com as regras da porta de gerenciamento processadas separadamente, e a porta de gerenciamento é também o único contexto que não pode receber policy alguma, apenas regras inline.
+Um firewall com uma tabela de regras é fácil de raciocinar. O Network Firewall do BIG-IP AFM - Advanced Firewall Manager não é isso: é uma hierarquia de contextos, cada um carregando sua própria policy, e o mesmo pacote pode ser julgado três vezes antes que algo lhe responda. O manual de Policies and Implementations declara a ordem sem ambiguidade: o processamento progride do contexto global, para o route domain, e então para o contexto de virtual server ou self IP, com as regras da porta de gerenciamento processadas separadamente, e a porta de gerenciamento é também o único contexto que não pode receber policy alguma, apenas regras inline.
 
 ## A frase que muda como você lê regras
 

@@ -1,6 +1,6 @@
 # Pontuador longest-match de topologia GTM
 
-O folclore diz que a correspondência mais longa vence. A documentação diz algo mais afiado: Longest Match é uma ordenação da lista de registros, e as pontuações decidem. Esta ferramenta computa tudo do jeito que o BIG-IP DNS computa.
+O folclore diz que a correspondência mais longa vence. A documentação diz algo mais afiado: Longest Match é uma ordenação da lista de registros, e as pontuações decidem. Esta ferramenta computa tudo do jeito que o BIG-IP DNS (antigo GTM - Global Traffic Manager) computa.
 
 Cole registros `gtm topology` (como o tmsh os imprime: `gtm topology ldns: <origem> server: <destino> { score N }`, com negação `not` suportada em ambos os lados), estrofes `gtm region` opcionais (membros positivos; regiões aninhadas resolvem), uma linha `source` declarando os atributos do LDNS a avaliar (`ip=`, `country=`, `continent=`, `isp=`, `region=`), e opcionalmente uma linha `candidates` nomeando os destinos a pontuar (caso contrário os destinos pool e datacenter dos registros viram os candidatos).
 

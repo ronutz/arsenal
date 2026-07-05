@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-Uma política de WAF bloqueia requisições ruins individuais. O session tracking responde a uma pergunta diferente: qual cliente está por trás das requisições ruins, e o que fazer com esse cliente? É como o Advanced WAF passa de deter uma requisição a deter um ator.
+Uma política de WAF bloqueia requisições ruins individuais. O session tracking responde a uma pergunta diferente: qual cliente está por trás das requisições ruins, e o que fazer com esse cliente? É como o F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) passa de deter uma requisição a deter um ator.
 
 ## O que o session tracking faz
 
@@ -19,7 +19,7 @@ A F5 coloca de forma simples: você usa o session tracking para rastrear, impor 
 
 ## Como o ASM identifica o cliente
 
-O ASM identifica uma sessão com o seu próprio cookie ASM, que carrega o session ID gerado quando um cliente chega pela primeira vez. Para o nome de usuário, você tem três opções: **usar login pages** configuradas no ASM, **usar nomes de usuário e session ID do APM** quando o APM autentica o usuário, ou **none**, para aplicações sem página de login, rastreando apenas por sessão ou IP. As login pages definem as URLs, parâmetros e critérios de validação para fazer login, e são o que torna possível o rastreamento por usuário.
+O ASM identifica uma sessão com o seu próprio cookie ASM, que carrega o session ID gerado quando um cliente chega pela primeira vez. Para o nome de usuário, você tem três opções: **usar login pages** configuradas no ASM, **usar nomes de usuário e session ID do BIG-IP Zero Trust Access (antigo BIG-IP APM - Access Policy Manager)** quando o APM autentica o usuário, ou **none**, para aplicações sem página de login, rastreando apenas por sessão ou IP. As login pages definem as URLs, parâmetros e critérios de validação para fazer login, e são o que torna possível o rastreamento por usuário.
 
 ## As três ações
 

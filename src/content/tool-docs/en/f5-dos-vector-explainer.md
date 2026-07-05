@@ -1,6 +1,6 @@
 # AFM DoS-vector / profile explainer
 
-An AFM device-DoS configuration is a hundred small dials with three failure modes: thresholds that never fire, thresholds that fire silently, and thresholds someone set without knowing what the vector actually counts. This tool reads the configuration back to you the way the reference manual would.
+A BIG-IP AFM - Advanced Firewall Manager device-DoS configuration is a hundred small dials with three failure modes: thresholds that never fire, thresholds that fire silently, and thresholds someone set without knowing what the vector actually counts. This tool reads the configuration back to you the way the reference manual would.
 
 Paste a `security dos device-config` stanza, one or more `security dos profile` stanzas, or both, exactly as tmsh lists them. Every vector entry renders as a card: the vector's identity in F5's own one-line description (the tool carries the full 105-entry vector table from the tmsh reference, sys-db tunables included), each threshold field annotated with the reference's semantics, and deterministic observations underneath.
 

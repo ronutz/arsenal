@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-Um WAF que trata o corpo de uma requisição como um bloco opaco não consegue distinguir um documento JSON legítimo de um malicioso, e não consegue aplicar uma assinatura a um único campo sem se afogar em falsos positivos. Um content profile resolve isso: ele diz ao Advanced WAF como analisar o payload de um determinado tipo de conteúdo, para que o WAF percorra a estrutura, aplique assinaturas de ataque a cada valor e imponha limites sobre o formato dos dados. O Advanced WAF fornece tipos de profile para JSON, XML, GWT (Google Web Toolkit), GraphQL e texto simples, e você associa um profile às URLs ou parâmetros que carregam aquele conteúdo.
+Um WAF que trata o corpo de uma requisição como um bloco opaco não consegue distinguir um documento JSON legítimo de um malicioso, e não consegue aplicar uma assinatura a um único campo sem se afogar em falsos positivos. Um content profile resolve isso: ele diz ao F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) como analisar o payload de um determinado tipo de conteúdo, para que o WAF percorra a estrutura, aplique assinaturas de ataque a cada valor e imponha limites sobre o formato dos dados. O Advanced WAF fornece tipos de profile para JSON, XML, GWT (Google Web Toolkit), GraphQL e texto simples, e você associa um profile às URLs ou parâmetros que carregam aquele conteúdo.
 
 ## JSON
 

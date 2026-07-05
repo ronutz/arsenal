@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-02"
 ---
 
-Server-side inspection can read a request's headers and body, but it cannot tell whether a real browser or a script sent it. To answer that, Advanced WAF injects JavaScript into the response and reads what the client does with it. This is the signal analysis behind bot defense: the WAF asks the client questions only a real browser can answer, and scores the replies.
+Server-side inspection can read a request's headers and body, but it cannot tell whether a real browser or a script sent it. To answer that, F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) injects JavaScript into the response and reads what the client does with it. This is the signal analysis behind bot defense: the WAF asks the client questions only a real browser can answer, and scores the replies.
 
 ## Why inject anything at all
 

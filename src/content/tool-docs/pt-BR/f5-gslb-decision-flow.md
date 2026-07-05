@@ -1,6 +1,6 @@
 # Explicador do fluxo de decisão GSLB
 
-Cole estrofes `gtm wideip` e `gtm pool` (como `tmsh list gtm wideip a <nome>` e `tmsh list gtm pool a <nome>` as imprimem) e a decisão em duas camadas do BIG-IP DNS é renderizada como realmente executa.
+Cole estrofes `gtm wideip` e `gtm pool` (como `tmsh list gtm wideip a <nome>` e `tmsh list gtm pool a <nome>` as imprimem) e a decisão em duas camadas do BIG-IP DNS (antigo GTM - Global Traffic Manager) é renderizada como realmente executa.
 
 A camada wide-IP mostra o método de seleção de pool (`pool-lb-mode`, padrão round-robin) com os pools anexados, seus valores de order e ratio, e as configurações do wide IP que moldam as respostas: persistence, last-resort-pool, comportamento de failure-rcode e a verbosidade do log de decisão que permite assistir esse mesmo fluxo nos logs.
 

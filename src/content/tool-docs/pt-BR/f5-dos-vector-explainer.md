@@ -1,6 +1,6 @@
 # Explicador de vetores DoS / perfis AFM
 
-Uma configuração de device-DoS do AFM é uma centena de pequenos ajustes com três modos de falha: limiares que nunca disparam, limiares que disparam em silêncio e limiares que alguém definiu sem saber o que o vetor realmente conta. Esta ferramenta lê a configuração de volta para você do jeito que o manual de referência leria.
+Uma configuração de device-DoS do BIG-IP AFM - Advanced Firewall Manager é uma centena de pequenos ajustes com três modos de falha: limiares que nunca disparam, limiares que disparam em silêncio e limiares que alguém definiu sem saber o que o vetor realmente conta. Esta ferramenta lê a configuração de volta para você do jeito que o manual de referência leria.
 
 Cole uma estrofe `security dos device-config`, uma ou mais estrofes `security dos profile`, ou ambas, exatamente como o tmsh as lista. Cada entrada de vetor vira um cartão: a identidade do vetor na descrição de uma linha da própria F5 (a ferramenta carrega a tabela completa de 105 vetores da referência tmsh, incluindo as variáveis sys-db ajustáveis), cada campo de limiar anotado com a semântica da referência, e observações determinísticas logo abaixo.
 

@@ -15,7 +15,7 @@ A ordem dos eventos é só metade da história. Antes de um evento poder assumir
 
 ## Portão um: provisionamento de módulo
 
-Muitos eventos pertencem a um módulo específico do TMOS, e esse módulo precisa estar **provisionado** (e licenciado) para o evento disparar. Os eventos de acesso do APM, os eventos de requisição e resposta do ASM/Advanced WAF, os eventos de bot-defense e outros vêm cada um do seu módulo. Escreva `when ASM_REQUEST_BLOCKING { ... }` em um equipamento onde o ASM não está provisionado e nada acontece — sem erro, sem disparo. Os eventos centrais de conexão do LTM (`CLIENT_ACCEPTED`, `LB_SELECTED`, os eventos de encerramento da conexão) são a exceção: fazem parte do LTM base e estão sempre disponíveis.
+Muitos eventos pertencem a um módulo específico do TMOS, e esse módulo precisa estar **provisionado** (e licenciado) para o evento disparar. Os eventos de acesso do BIG-IP Zero Trust Access (antigo BIG-IP APM - Access Policy Manager), os eventos de requisição e resposta do ASM/F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager), os eventos de bot-defense e outros vêm cada um do seu módulo. Escreva `when ASM_REQUEST_BLOCKING { ... }` em um equipamento onde o ASM não está provisionado e nada acontece — sem erro, sem disparo. Os eventos centrais de conexão do BIG-IP LTM - Local Traffic Manager (`CLIENT_ACCEPTED`, `LB_SELECTED`, os eventos de encerramento da conexão) são a exceção: fazem parte do LTM base e estão sempre disponíveis.
 
 ## Portão dois: seleção de perfil
 

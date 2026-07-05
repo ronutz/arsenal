@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-03"
 ---
 
-A firewall with one rule table is easy to reason about. AFM's Network Firewall is not that: it is a hierarchy of contexts, each carrying its own policy, and the same packet can be judged three times before anything answers it. The Policies and Implementations manual states the order without ambiguity: processing progresses from the global context, to the route domain, and then to the virtual server or self IP context, with management port rules processed separately, and the management port is also the one context that cannot take a policy at all, only inline rules.
+A firewall with one rule table is easy to reason about. BIG-IP AFM - Advanced Firewall Manager's Network Firewall is not that: it is a hierarchy of contexts, each carrying its own policy, and the same packet can be judged three times before anything answers it. The Policies and Implementations manual states the order without ambiguity: processing progresses from the global context, to the route domain, and then to the virtual server or self IP context, with management port rules processed separately, and the management port is also the one context that cannot take a policy at all, only inline rules.
 
 ## The sentence that changes how you read rules
 

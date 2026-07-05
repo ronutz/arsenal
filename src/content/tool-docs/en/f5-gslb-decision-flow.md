@@ -1,6 +1,6 @@
 # GSLB decision-flow explainer
 
-Paste `gtm wideip` and `gtm pool` stanzas (as `tmsh list gtm wideip a <name>` and `tmsh list gtm pool a <name>` print them) and the two-tier BIG-IP DNS decision renders as it really runs.
+Paste `gtm wideip` and `gtm pool` stanzas (as `tmsh list gtm wideip a <name>` and `tmsh list gtm pool a <name>` print them) and the two-tier BIG-IP DNS (formerly GTM - Global Traffic Manager) decision renders as it really runs.
 
 The wide-IP tier shows the pool-selection method (`pool-lb-mode`, default round-robin) with the attached pools, their order and ratio values, and the wide-IP settings that shape answers: persistence, last-resort-pool, failure-rcode behavior, and the decision-log verbosity knob that lets you watch this same flow in the logs.
 

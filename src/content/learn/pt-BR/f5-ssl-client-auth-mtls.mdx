@@ -18,7 +18,7 @@ O TLS comum é autenticação em uma direção: o servidor prova quem é, o clie
 Num perfil `client-ssl`, o `peer-cert-mode` decide se o BIG-IP pede um certificado ao cliente, e com que firmeza insiste:
 
 - **ignore** — o padrão. Nenhum certificado de cliente é solicitado. É o TLS comum, de uma via.
-- **request** — o BIG-IP pede um certificado de cliente, mas o handshake **se completa mesmo que nenhum seja apresentado**. O resultado (presente / ausente / válido / inválido) fica disponível para um iRule ou uma política do APM agir sobre ele. Use quando quiser uma verificação leve ou lógica condicional em vez de uma barreira rígida.
+- **request** — o BIG-IP pede um certificado de cliente, mas o handshake **se completa mesmo que nenhum seja apresentado**. O resultado (presente / ausente / válido / inválido) fica disponível para um iRule ou uma política do BIG-IP Zero Trust Access (antigo BIG-IP APM - Access Policy Manager) agir sobre ele. Use quando quiser uma verificação leve ou lógica condicional em vez de uma barreira rígida.
 - **require** — o BIG-IP exige um certificado de cliente válido. Sem certificado aceitável, sem conexão. É o TLS mútuo imposto.
 
 ## Solicitar não é validar

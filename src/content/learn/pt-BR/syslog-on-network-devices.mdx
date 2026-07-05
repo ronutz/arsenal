@@ -20,7 +20,7 @@ Alguns padrões valem a pena memorizar:
 - O **FortiGate** usa `local7` (facility 23) por padrão. O FortiOS também permite escolher o formato, incluindo RFC 5424, em suas configurações de syslog.
 - Os firewalls **Cisco ASA** usam `local4` (facility 20) por padrão.
 - Os **switches e roteadores Cisco** são muito comumente configurados para `local7` (facility 23).
-- O **F5 BIG-IP** registra o tráfego LTM em `local0` (facility 16) por padrão.
+- O **F5 BIG-IP** registra o tráfego BIG-IP LTM - Local Traffic Manager em `local0` (facility 16) por padrão.
 
 Estes são convenções e pontos de partida, não leis: cada um desses dispositivos permite mudar a facility, e em um ambiente bem administrado você frequentemente o faz, justamente para que cada plataforma caia em uma facility distinta e possa ser roteada separadamente no coletor.
 

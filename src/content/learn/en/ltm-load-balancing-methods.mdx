@@ -35,7 +35,7 @@ Most dynamic modes come in two scopes, and the suffix matters. A **member** mode
 
 **Weighted Least Connections** reads each member's connection-limit as its capacity statement and sends the new connection to whoever is at the lowest percentage of theirs. The reference is explicit about the prerequisite: every member (or, for the node form, every node) needs a connection-limit, and the default of 0 breaks the arithmetic.
 
-**Ratio Least Connections**, available since LTM 11.0.0 per K6406, combines the ratio you declared with the live connection count, and an unset ratio counts as 1.
+**Ratio Least Connections**, available since BIG-IP LTM - Local Traffic Manager 11.0.0 per K6406, combines the ratio you declared with the live connection count, and an unset ratio counts as 1.
 
 **Dynamic Ratio** takes the proportion out of your hands entirely: the weights come from continuous monitoring of the servers and are therefore continually changing, in the reference's words. K14129 shows where to see the weight the system computed.
 

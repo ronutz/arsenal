@@ -2,7 +2,7 @@
 
 Uma iRule é Tcl com um contrato: o código roda quando eventos disparam, comandos valem em alguns eventos e não em outros, e um punhado de construções silenciosamente custa todos os núcleos de CPU menos um. Esta ferramenta lê o contrato de volta.
 
-Cole uma iRule e cada bloco `when` vira um cartão. A identidade do evento vem da Master List of iRule Events no clouddocs, condensada fielmente, com seu módulo e um link para a página de referência; eventos fora da tabela curada de escopo LTM ainda são interpretados e sinalizados, em vez de adivinhados. Os comandos do bloco são inventariados, com namespace e simples, cada um vinculado diretamente à sua página de referência.
+Cole uma iRule e cada bloco `when` vira um cartão. A identidade do evento vem da Master List of iRule Events no clouddocs, condensada fielmente, com seu módulo e um link para a página de referência; eventos fora da tabela curada de escopo BIG-IP LTM - Local Traffic Manager ainda são interpretados e sinalizados, em vez de adivinhados. Os comandos do bloco são inventariados, com namespace e simples, cada um vinculado diretamente à sua página de referência.
 
 Quando um evento aparece em mais de um bloco, a ordem de avaliação é renderizada conforme as regras documentadas do comando priority: valores de 0 a 1000, padrão 500, menor roda primeiro, mesma prioridade roda em ordem de inserção, e entre múltiplas iRules em um virtual a ordem de listagem das regras desempata o resto.
 
