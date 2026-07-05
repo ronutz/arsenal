@@ -27,6 +27,7 @@ import { Link } from "@/i18n/navigation";
 const TOYS = [
   { key: "megaBrain", href: "/dev-fun/mega-brain", badged: true },
   { key: "meetingBingo", href: "/dev-fun/meeting-bingo", badged: false },
+  { key: "bossScreens", href: "/dev-fun/boss-screens", badged: false },
 ] as const;
 
 export async function generateMetadata({

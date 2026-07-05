@@ -172,6 +172,13 @@ export default async function ToolsPage({
               <p className="tools-note">{t("note")}</p>
             </div>
           </section>
+          {/* A quiet door to /dev/fun — the not-serious shelf. No emphasis.
+              Same treatment as the colophon's footer link. */}
+          <p className="colophon-devfun mono">
+            <Link href="/dev-fun" className="colophon-devfun-link">
+              /dev/fun
+            </Link>
+          </p>
         </article>
       </main>
 

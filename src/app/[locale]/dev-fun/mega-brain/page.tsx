@@ -98,6 +98,8 @@ export default async function MegaBrainPage({
     fullPower: t("fullPower"),
     turnOff: t("turnOff"),
     stopLabel: t("stopLabel"),
+    motionOffAria: t("motionOffAria"),
+    motionOnAria: t("motionOnAria"),
     disabledTitleGoh: t("disabledTitleGoh"),
     manoRealityCheck: t("manoRealityCheck"),
     manoSub: t("manoSub"),

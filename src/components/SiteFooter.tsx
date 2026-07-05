@@ -67,6 +67,10 @@ export default async function SiteFooter() {
             {t("privacy")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
+          <Link href="/settings" className="footer-contribute-link">
+            {t("settings")}
+          </Link>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/contact" className="footer-contribute-link">
             {t("feedback")}
           </Link>

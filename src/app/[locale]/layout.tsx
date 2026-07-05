@@ -26,6 +26,8 @@ import { dirFor, getLocale } from "@/i18n/locales";
 import InputModality from "@/components/InputModality";
 import MachineTranslationNotice from "@/components/MachineTranslationNotice";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
+import { SHORTCUT_ACTIONS } from "@/config/shortcuts";
+import { LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "@/i18n/locales";
 import "@/app/globals.css";
 
 // Canon typography: Inter (prose) + JetBrains Mono (data/codes/BCP-47 tags).
@@ -127,7 +129,21 @@ export default async function LocaleLayout({
 
   // Site-wide keyboard-shortcut labels (the boss-key overlay wording), resolved
   // here in the page's language and handed to the client listener as props.
+  // Site-wide keyboard-shortcut labels, resolved here in the page's language.
+  // The action-label map is keyed by action id (each action declares its
+  // labelKey in the registry), so the cheat-sheet can name every binding.
   const tShortcuts = await getTranslations({ locale, namespace: "shortcuts" });
+  const shortcutActionLabels: Record<string, string> = Object.fromEntries(
+    SHORTCUT_ACTIONS.map((a) => [a.id, tShortcuts(a.labelKey)]),
+  );
+  const shortcutsLabels = {
+    bossHint: tShortcuts("bossHint"),
+    bossDismiss: tShortcuts("bossDismiss"),
+    cheatTitle: tShortcuts("cheatTitle"),
+    cheatClose: tShortcuts("cheatClose"),
+    cheatHint: tShortcuts("cheatHint"),
+    actionLabels: shortcutActionLabels,
+  };
 
   return (
     <html lang={locale} dir={dir} className={`${inter.variable} ${jetbrainsMono.variable}`}>
@@ -140,13 +156,41 @@ export default async function LocaleLayout({
               "(function(){try{var t=localStorage.getItem('ronutz-theme');if(t&&t!=='obsidian'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();",
           }}
         />
+        {/* Language preference (client-side, device-only). Precedence rule
+            (PRIME-confirmed): an EXPLICIT locale in the URL wins — visiting a
+            deep /en/… or any /pt-BR/… path is honored as-is and updates the
+            saved preference; shared/deep links are never hijacked. The stored
+            preference only REDIRECTS at the one locale-less entry point: the
+            bare domain, which the Worker resolves to the DEFAULT locale's HOME
+            (/en or /en/). So a returning visitor whose saved language differs is
+            forwarded from that home to their language's home. Runs before paint
+            to keep the redirect flash minimal. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{" +
+              "var LIVE=" + JSON.stringify(LIVE_LOCALE_CODES) + ";" +
+              "var DEF=" + JSON.stringify(DEFAULT_LOCALE) + ";" +
+              "var p=location.pathname;var parts=p.split('/');var seg=parts[1]||'';" +
+              "var cur=LIVE.indexOf(seg)>-1?seg:null;" +
+              "var pref=localStorage.getItem('ronutz-lang');" +
+              // Is this the default-locale HOME root (/en or /en/)? That is the
+              // bare-domain landing — the only place we honor a stored redirect.
+              "var isDefHome=cur===DEF&&(parts.length<=2||(parts.length===3&&parts[2]===''));" +
+              "if(isDefHome&&pref&&LIVE.indexOf(pref)>-1&&pref!==DEF){" +
+              "location.replace('/'+pref+'/');return;}" +
+              // Otherwise, an explicit locale in the URL just updates the memory.
+              "if(cur){localStorage.setItem('ronutz-lang',cur);}" +
+              "}catch(e){}})();",
+          }}
+        />
         {/* Tracks last input modality (keyboard vs pointer) so the skip link
             reveals only for keyboard users — see InputModality. */}
         <InputModality />
-        {/* Site-wide keyboard shortcuts (t/l/m/z navigation + b boss key). The
-            listener stays inert whenever a form field is focused or a modifier
-            is held — see KeyboardShortcuts. */}
-        <KeyboardShortcuts bossHint={tShortcuts("bossHint")} bossDismiss={tShortcuts("bossDismiss")} />
+        {/* Site-wide keyboard shortcuts (navigation, favorites, search, boss
+            key, and the ? cheat-sheet). The listener stays inert whenever a
+            form field is focused or a modifier is held — see KeyboardShortcuts. */}
+        <KeyboardShortcuts labels={shortcutsLabels} />
         {/* Honesty banner: machine-draft locales announce themselves and link to
             the contribute page. Rendered above page content, hidden on English
             and any human-reviewed locale. */}

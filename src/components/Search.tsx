@@ -165,6 +165,15 @@ export default function Search() {
     return () => document.removeEventListener("keydown", onKey);
   }, [openSearch]);
 
+  // The site-wide shortcut layer (KeyboardShortcuts) opens this same search via
+  // a custom event, so the `s` / `/` shortcuts reuse this one search UI rather
+  // than a parallel overlay. Any component can dispatch ronutz:open-search.
+  useEffect(() => {
+    const onOpen = () => openSearch();
+    window.addEventListener("ronutz:open-search", onOpen);
+    return () => window.removeEventListener("ronutz:open-search", onOpen);
+  }, [openSearch]);
+
   // Run the search whenever the query changes (debounced lightly).
   useEffect(() => {
     if (!open) return;

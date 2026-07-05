@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "16:07",
+    kind: "feature",
+    title: "Customizable shortcuts, a settings page, ten boss-key screens, and a motion switch",
+    body:
+      "A big pass over the site's keyboard shortcuts and the /dev/fun corner. Shortcuts are now user-configurable: a new Settings page (linked in the footer) lets you rebind any shortcut key, with the choice saved on your device; press ? anywhere for a live cheat-sheet of the current bindings. New shortcuts were added alongside the originals: s opens search, / focuses it, h goes home, ? opens the cheat-sheet, and 1 to 5 jump to five go-to tools (CIDR, Base64, JWT, JSON to YAML, and the F5 hub). Language is now a saved preference too: a return visit to the site's home takes you to your preferred language, while any explicit /en/ or /pt-BR/ link is always honored as-is. The boss key grew from two disguises to ten period-accurate ones (Lotus 1-2-3, WordStar, VisiCalc, Norton Utilities, WordPerfect 5.1, dBASE III+, Turbo Pascal, the Windows blue screen, Norton Commander, and a Commodore 64 that types a program by itself), shuffled so you see them all before any repeats; while one is up, the left and right arrows browse the rest, and Esc dismisses. A new Boss-Key Screens gallery in /dev/fun lets you browse them by name, thumbnail, and a short note, and open any one fullscreen. Finally, the Mega Brain console got a motion switch in its title bar for anyone who prefers less movement (its explanatory banners now also hold still while the console shakes), complementing the system reduced-motion setting the site already respects.",
+  },
+  {
+    date: "2026-07-05",
     time: "13:54",
     kind: "feature",
     title: "Site-wide keyboard shortcuts, and a Mega Brain console tune-up",

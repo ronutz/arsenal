@@ -123,6 +123,14 @@ export default function LanguageSwitcher() {
     (l: LocaleMeta) => {
       setOpen(false);
       setQuery("");
+      // Remember the choice as a preference so a returning visitor who lands on
+      // a locale-less entry point is sent here automatically (see the redirect
+      // script in the layout). Persisted device-only, like the theme.
+      try {
+        window.localStorage.setItem("ronutz-lang", l.code);
+      } catch {
+        /* private mode: skip persistence; the navigation below still happens */
+      }
       if (l.status === "stub") {
         const rest = pathname === "/" ? "/" : pathname.endsWith("/") ? pathname : `${pathname}/`;
         window.location.assign(`/${DEFAULT_LOCALE}${rest}`);

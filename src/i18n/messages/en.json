@@ -3441,7 +3441,8 @@
     "license": "License",
     "coffee": "Buy me a coffee",
     "lastModified": "Last modified {stamp}",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "settings": "Settings"
   },
   "search": {
     "kindTool": "Tool",
@@ -4488,6 +4489,10 @@
       "meetingBingo": {
         "name": "Meeting Bingo",
         "desc": "Pick the meeting type, get a card of the cliches you are about to hear. Five in a row is a bingo."
+      },
+      "bossScreens": {
+        "name": "Boss-Key Screens",
+        "desc": "A gallery of the vintage work-app disguises the boss key can throw up. Browse and open any one."
       }
     }
   },
@@ -4581,10 +4586,77 @@
     ],
     "stopLabel": "STOP",
     "manoDismiss": "click anywhere to dismiss",
-    "devFunTitle": "Back to /dev/fun"
+    "devFunTitle": "Back to /dev/fun",
+    "motionOffAria": "Turn off motion",
+    "motionOnAria": "Turn on motion"
   },
   "shortcuts": {
     "bossHint": "‹ press any key ›",
-    "bossDismiss": "Work application. Press any key or click to return."
+    "bossDismiss": "Work application. Press any key or click to return.",
+    "actionHome": "Home",
+    "actionTools": "Tools index",
+    "actionLearn": "Learn index",
+    "actionMegaBrain": "Mega Brain console",
+    "actionBingo": "Buzzword Bingo",
+    "actionToolCidr": "CIDR / subnet calculator",
+    "actionToolBase64": "Base64 encode / decode",
+    "actionToolJwt": "JWT decoder",
+    "actionToolJsonYaml": "JSON ⇄ YAML converter",
+    "actionVendorF5": "F5 hub",
+    "actionSearch": "Open search",
+    "actionFocusSearch": "Focus search",
+    "actionCheatSheet": "Keyboard shortcuts help",
+    "actionBoss": "Boss key",
+    "cheatTitle": "Keyboard shortcuts",
+    "cheatClose": "Close",
+    "cheatHint": "Esc or click outside to close. Customize these in Settings."
+  },
+  "settings_page": {
+    "eyebrow": "Preferences",
+    "title": "Settings",
+    "lede": "Personalize how the site behaves. Everything here is saved on this device only — there are no accounts and no server, so your choices never leave your browser.",
+    "shortcutsTitle": "Keyboard shortcuts",
+    "shortcutsBody": "Rebind any shortcut key to a different action. Pick an action from each menu; the change applies immediately. Some keys may be fixed by the site administrator, in which case they are shown locked. Press ? anywhere on the site to see the current shortcuts at a glance.",
+    "colKey": "Key",
+    "colAction": "Action",
+    "locked": "Locked",
+    "reset": "Reset to defaults",
+    "persistNote": "Saved on this device only. Clearing site data or using another browser or device restores the defaults.",
+    "themeLangTitle": "Theme and language",
+    "themeLangBody": "Theme and language are set from the controls in the header. Your theme is remembered on this device; your language is remembered too, and a return visit to the site's home sends you to your preferred language. An explicit link in a specific language is always honored as-is.",
+    "privacyLink": "How preferences are stored"
+  },
+  "bossScreens": {
+    "metaTitle": "Boss-Key Screens — /dev/fun",
+    "metaDescription": "Browse the vintage work-app screens the boss key can summon, and open any one fullscreen.",
+    "title": "Boss-Key Screens",
+    "tagline": "The disguises, on display.",
+    "intro": "Press the boss key anywhere (or B) and the page hides behind one of these vintage work apps. Here they all are — click any screen to see it fullscreen, then use the left and right arrows to browse the rest.",
+    "open": "Open",
+    "backTitle": "Back to /dev/fun",
+    "name": {
+      "bsod": "Windows Blue Screen",
+      "c64": "Commodore 64",
+      "commander": "Norton Commander",
+      "dbase": "dBASE III+",
+      "lotus": "Lotus 1-2-3",
+      "norton": "Norton Utilities",
+      "turbopascal": "Turbo Pascal",
+      "visicalc": "VisiCalc",
+      "wordperfect": "WordPerfect 5.1",
+      "wordstar": "WordStar"
+    },
+    "blurb": {
+      "bsod": "The Blue Screen of Death: Windows' STOP error, arguably the most recognized screen in PC history.",
+      "c64": "The best-selling home computer ever. Boots to a blue BASIC V2 prompt; here it types a little program by itself.",
+      "commander": "The twin-panel DOS file manager that defined orthodox file management, in unmistakable blue.",
+      "dbase": "The database that ran 1980s business, driven from its famous dot prompt.",
+      "lotus": "The IBM PC's killer app and the archetypal boss-key screen: a spreadsheet that looks like real work.",
+      "norton": "Peter Norton's blue toolkit; the Disk Doctor rescued many a floppy.",
+      "turbopascal": "Borland's beloved blue IDE that taught a generation to program, compiler and editor in one.",
+      "visicalc": "The first spreadsheet, on the Apple II. The original boss screens imitated exactly this budget grid.",
+      "wordperfect": "The near-blank blue writing screen that ruled DOS word processing, with just a status line in the corner.",
+      "wordstar": "The word processor of the CP/M and early DOS era, remembered for its Ctrl-key command menus."
+    }
   }
 }

@@ -3441,7 +3441,8 @@
     "license": "Licença",
     "coffee": "Me pague um café",
     "lastModified": "Última modificação {stamp}",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "settings": "Configurações"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -4488,6 +4489,10 @@
       "meetingBingo": {
         "name": "Bingo de Reunião",
         "desc": "Escolha o tipo de reunião e receba uma cartela com os clichês que você vai ouvir. Cinco em linha é bingo."
+      },
+      "bossScreens": {
+        "name": "Telas da Tecla do Chefe",
+        "desc": "Uma galeria dos disfarces de aplicativos de trabalho antigos que a tecla do chefe pode exibir. Explore e abra qualquer uma."
       }
     }
   },
@@ -4581,10 +4586,77 @@
     ],
     "stopLabel": "STOP",
     "manoDismiss": "clique em qualquer lugar para fechar",
-    "devFunTitle": "Voltar para /dev/fun"
+    "devFunTitle": "Voltar para /dev/fun",
+    "motionOffAria": "Desligar animações",
+    "motionOnAria": "Ligar animações"
   },
   "shortcuts": {
     "bossHint": "‹ pressione qualquer tecla ›",
-    "bossDismiss": "Aplicação de trabalho. Pressione qualquer tecla ou clique para voltar."
+    "bossDismiss": "Aplicação de trabalho. Pressione qualquer tecla ou clique para voltar.",
+    "actionHome": "Início",
+    "actionTools": "Índice de Ferramentas",
+    "actionLearn": "Índice de Aprender",
+    "actionMegaBrain": "Console do Mega Brain",
+    "actionBingo": "Buzzword Bingo",
+    "actionToolCidr": "Calculadora CIDR / sub-rede",
+    "actionToolBase64": "Codificar / decodificar Base64",
+    "actionToolJwt": "Decodificador de JWT",
+    "actionToolJsonYaml": "Conversor JSON ⇄ YAML",
+    "actionVendorF5": "Central F5",
+    "actionSearch": "Abrir busca",
+    "actionFocusSearch": "Focar a busca",
+    "actionCheatSheet": "Ajuda de atalhos de teclado",
+    "actionBoss": "Tecla do chefe",
+    "cheatTitle": "Atalhos de teclado",
+    "cheatClose": "Fechar",
+    "cheatHint": "Esc ou clique fora para fechar. Personalize em Configurações."
+  },
+  "settings_page": {
+    "eyebrow": "Preferências",
+    "title": "Configurações",
+    "lede": "Personalize como o site se comporta. Tudo aqui é salvo apenas neste dispositivo — não há contas nem servidor, então suas escolhas nunca saem do seu navegador.",
+    "shortcutsTitle": "Atalhos de teclado",
+    "shortcutsBody": "Reatribua qualquer tecla de atalho a uma ação diferente. Escolha uma ação em cada menu; a mudança se aplica imediatamente. Algumas teclas podem estar fixadas pelo administrador do site e, nesse caso, aparecem bloqueadas. Pressione ? em qualquer lugar do site para ver os atalhos atuais de relance.",
+    "colKey": "Tecla",
+    "colAction": "Ação",
+    "locked": "Bloqueada",
+    "reset": "Restaurar padrões",
+    "persistNote": "Salvo apenas neste dispositivo. Limpar os dados do site ou usar outro navegador ou dispositivo restaura os padrões.",
+    "themeLangTitle": "Tema e idioma",
+    "themeLangBody": "Tema e idioma são definidos pelos controles no cabeçalho. Seu tema é lembrado neste dispositivo; seu idioma também é lembrado, e uma nova visita à página inicial do site leva você ao seu idioma preferido. Um link explícito em um idioma específico é sempre respeitado como está.",
+    "privacyLink": "Como as preferências são armazenadas"
+  },
+  "bossScreens": {
+    "metaTitle": "Telas da Tecla do Chefe — /dev/fun",
+    "metaDescription": "Explore as telas de aplicativos de trabalho antigos que a tecla do chefe pode invocar, e abra qualquer uma em tela cheia.",
+    "title": "Telas da Tecla do Chefe",
+    "tagline": "Os disfarces, em exposição.",
+    "intro": "Pressione a tecla do chefe em qualquer lugar (ou B) e a página se esconde atrás de um destes aplicativos de trabalho antigos. Aqui estão todos — clique em qualquer tela para vê-la em tela cheia, e use as setas esquerda e direita para navegar pelas demais.",
+    "open": "Abrir",
+    "backTitle": "Voltar para /dev/fun",
+    "name": {
+      "bsod": "Windows Blue Screen",
+      "c64": "Commodore 64",
+      "commander": "Norton Commander",
+      "dbase": "dBASE III+",
+      "lotus": "Lotus 1-2-3",
+      "norton": "Norton Utilities",
+      "turbopascal": "Turbo Pascal",
+      "visicalc": "VisiCalc",
+      "wordperfect": "WordPerfect 5.1",
+      "wordstar": "WordStar"
+    },
+    "blurb": {
+      "bsod": "A Tela Azul da Morte: o erro STOP do Windows, talvez a tela mais reconhecida da história do PC.",
+      "c64": "O computador doméstico mais vendido de todos os tempos. Inicia num prompt azul do BASIC V2; aqui ele digita um programinha sozinho.",
+      "commander": "O gerenciador de arquivos DOS de painel duplo que definiu a gestão ortodoxa de arquivos, no inconfundível azul.",
+      "dbase": "O banco de dados que moveu os negócios dos anos 1980, comandado a partir de seu famoso prompt de ponto.",
+      "lotus": "O aplicativo matador do IBM PC e a tela do chefe por excelência: uma planilha que parece trabalho de verdade.",
+      "norton": "O kit azul de Peter Norton; o Disk Doctor salvou muito disquete.",
+      "turbopascal": "A querida IDE azul da Borland que ensinou uma geração a programar, compilador e editor em um só.",
+      "visicalc": "A primeira planilha, no Apple II. As telas do chefe originais imitavam exatamente esta grade de orçamento.",
+      "wordperfect": "A tela de escrita azul quase em branco que dominou a edição de texto no DOS, só com uma linha de status no canto.",
+      "wordstar": "O processador de texto da era CP/M e início do DOS, lembrado por seus menus de comando com Ctrl."
+    }
   }
 }

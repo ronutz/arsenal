@@ -19,6 +19,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import BossApp from "@/components/dev-fun/BossApp";
+import { drawBossScreen, type BossScreenKind } from "@/components/dev-fun/boss-screens";
 
 /** Every string the console renders, resolved by the server page. */
 export interface MegaBrainLabels {
@@ -53,6 +54,8 @@ export interface MegaBrainLabels {
   fullPower: string;
   turnOff: string;
   stopLabel: string;
+  motionOffAria: string;
+  motionOnAria: string;
   disabledTitleGoh: string;
   manoRealityCheck: string;
   manoSub: string;
@@ -109,8 +112,33 @@ export default function MegaBrainConsole({
   const rampRef = useRef<number | null>(null);
   const [reacting, setReacting] = useState(false); // Mano Deyvin reality-check overlay
   const manoTimerRef = useRef<number | null>(null);
+  // Motion switch: when false, the console stops all shaking/pulsing/spinning
+  // (data-motion="off" on the console). Independent of the OS reduced-motion
+  // pref (which is always honored via CSS media query); this is the manual,
+  // in-frame control for people who want motion off regardless. Persisted so it
+  // sticks across visits. Starts "on" and is corrected from storage after mount
+  // (avoids any server/client markup mismatch).
+  const [motionOn, setMotionOn] = useState(true);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("ronutz-mb-motion") === "off") setMotionOn(false);
+    } catch {
+      /* private mode: keep the default */
+    }
+  }, []);
+  const toggleMotion = () => {
+    setMotionOn((on) => {
+      const next = !on;
+      try {
+        localStorage.setItem("ronutz-mb-motion", next ? "on" : "off");
+      } catch {
+        /* private mode: session-only */
+      }
+      return next;
+    });
+  };
   // Boss key: which mock work-app is showing (null = console visible).
-  const [bossApp, setBossApp] = useState<null | "lotus" | "wordstar">(null);
+  const [bossApp, setBossApp] = useState<null | BossScreenKind>(null);
   // FAIL-SAFE (red dot): `burnout` is the brief overload transition, `goHorse`
   // the engaged mode. prevPowerRef remembers the power to restore on disengage;
   // failTimerRef drives the burnout -> Go Horse handover; axiomIdx cycles lore.
@@ -259,9 +287,10 @@ export default function MegaBrainConsole({
     setReacting(true);
   };
 
-  // Boss key: hide the console behind a random 1980s work app (Lotus 1-2-3
-  // or WordStar). Any key/click in BossApp brings the console back.
-  const bossKey = () => setBossApp(Math.random() < 0.5 ? "lotus" : "wordstar");
+  // Boss key: hide the console behind a random vintage work app (drawn from the
+  // shared shuffled bag, so all ten screens appear evenly). Arrow keys navigate
+  // between screens; any other key/click brings the console back.
+  const bossKey = () => setBossApp(drawBossScreen());
 
   // FAIL-SAFE (the red dot). First press: the Mega Brain overloads (burnout
   // shudder, ~1.5s), then the console fails over to Go Horse mode, where
@@ -297,7 +326,7 @@ export default function MegaBrainConsole({
 
   return (
     <>
-    <div className={`mb-console mb-tier-${tier}${burnout ? " mb-burnout" : ""}${goHorse ? " mb-goh" : ""}`} data-total={atTotal ? "1" : "0"} data-vibe={vibeLevel} style={{ ["--mb-power" as string]: fxPower, ["--mb-power-pct" as string]: `${fxPower}%` }}>
+    <div className={`mb-console mb-tier-${tier}${burnout ? " mb-burnout" : ""}${goHorse ? " mb-goh" : ""}`} data-total={atTotal ? "1" : "0"} data-vibe={vibeLevel} data-motion={motionOn ? "on" : "off"} style={{ ["--mb-power" as string]: fxPower, ["--mb-power-pct" as string]: `${fxPower}%` }}>
       <div className="mb-titlebar">
         <button
           type="button"
@@ -313,6 +342,20 @@ export default function MegaBrainConsole({
           <Link href="/dev-fun" className="mb-titlebar-devfun" title={labels.devFunTitle}>/dev/fun</Link>
           {labels.titlebar}
         </span>
+        {/* PRIME 05/07/2026: subtle motion switch. Understated by design — a
+            small frame control, not a loud button — so it stays out of the way
+            but lets anyone who wants motion off turn it off (and it sticks).
+            aria-pressed reflects "motion off" state for assistive tech. */}
+        <button
+          type="button"
+          className="mb-motion-toggle"
+          onClick={toggleMotion}
+          aria-pressed={!motionOn}
+          aria-label={motionOn ? labels.motionOffAria : labels.motionOnAria}
+          title={motionOn ? labels.motionOffAria : labels.motionOnAria}
+        >
+          <span aria-hidden="true">{motionOn ? "◐" : "○"}</span>
+        </button>
         {/* PRIME 05/07/2026: the two power controls now live as pills in the
             upper frame — Força Total as a fixed-pink lightning pill (a constant
             pink, distinct from the power-reactive brain glow), and STOP as a red
@@ -452,7 +495,7 @@ export default function MegaBrainConsole({
 
       <p className="mb-disclaimer">{labels.disclaimer}</p>
     </div>
-    {bossApp && <BossApp kind={bossApp} onDismiss={() => setBossApp(null)} hint={labels.bossHint} dismissLabel={labels.bossDismiss} />}
+    {bossApp && <BossApp kind={bossApp} onDismiss={() => setBossApp(null)} onNavigate={(k) => setBossApp(k)} hint={labels.bossHint} dismissLabel={labels.bossDismiss} />}
     </>
   );
 }

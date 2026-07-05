@@ -7896,6 +7896,22 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .mb-titlebar-devfun { color: #22d3ee; text-decoration: none; border-radius: 4px; padding: 0 0.15rem; transition: color 0.15s ease, background-color 0.15s ease; }
 .mb-titlebar-devfun:hover, .mb-titlebar-devfun:focus-visible { color: #67e8f9; text-decoration: underline; outline: none; }
 
+/* PRIME 05/07/2026: motion toggle — deliberately subtle. A small, muted frame
+   control (no fill, low-contrast glyph) that brightens on hover/focus and shows
+   a clear pressed state when motion is OFF. Sits in the titlebar between the
+   frame title and the power pills. */
+.mb-motion-toggle {
+  margin-left: auto; flex: 0 0 auto;
+  background: none; border: 1px solid transparent; border-radius: 6px;
+  color: #5b6689; cursor: pointer; font-size: 0.82rem; line-height: 1;
+  padding: 0.2rem 0.4rem; transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+.mb-motion-toggle:hover, .mb-motion-toggle:focus-visible { color: #22d3ee; border-color: rgba(34, 211, 238, 0.4); outline: none; }
+.mb-motion-toggle[aria-pressed="true"] { color: #8b97bf; border-color: rgba(139, 151, 191, 0.35); background: rgba(139, 151, 191, 0.08); }
+/* When the toggle is present, the actions group no longer needs the auto margin
+   (the toggle now carries it), so pills sit snug after it. */
+.mb-motion-toggle + .mb-titlebar-actions { margin-left: 0.5rem; }
+
 /* PRIME 05/07/2026: the two power controls as pills in the upper frame. The
    actions group sits between the frame title and the site address; on narrow
    frames it wraps below rather than crowding. */
@@ -8047,6 +8063,29 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   50% { transform: translate(1.5px,-1px); } 75% { transform: translate(-1px,-1.5px); } 100% { transform: translate(1px,1.5px); }
 }
 
+/* PRIME 05/07/2026: keep the EXPLANATORY BANNERS readable while the console
+   shakes. The shakes are transforms on .mb-console, which drag every child. We
+   cancel that on the text banners with a COUNTER-animation: same duration and
+   easing as the parent shake, but the inverse translation, so the banner's net
+   position stays put and the text stops juddering. Each banner only appears in
+   the state whose shake it counters:
+     - .mb-total-banner  shows at TOTAL (tier-5 -> mb-shake)         -> counter it
+     - .mb-goh-banner    shows in burnout (mb-burnout-shake) and Go Horse -> counter
+   (Go Horse itself does not shake, so the counter simply resolves to no motion.) */
+.mb-console.mb-tier-5 .mb-total-banner { animation: mb-banner-in 0.4s ease, mb-shake-counter 0.09s infinite; }
+.mb-console.mb-burnout .mb-goh-banner { animation: mb-banner-in 0.35s ease, mb-burnout-shake-counter 0.4s ease-in-out infinite; }
+@keyframes mb-shake-counter {
+  0% { transform: translate(0,0); } 25% { transform: translate(1.5px,-1px); }
+  50% { transform: translate(-1.5px,1px); } 75% { transform: translate(1px,1.5px); } 100% { transform: translate(-1px,-1.5px); }
+}
+@keyframes mb-burnout-shake-counter {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(5px) rotate(0.3deg); }
+  40% { transform: translateX(-5px) rotate(-0.3deg); }
+  60% { transform: translateX(4px); }
+  80% { transform: translateX(-4px); }
+}
+
 /* --- Brain-click vibration, scaled by strength tier (PRIME). data-vibe (1..4)
    is set on .mb-console for ~0.42s on each click. Levels 1-2 rattle only the
    brain; 3-4 shake the whole console, level 4 being the vigorous whole-screen
@@ -8131,6 +8170,31 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   .mb-console[data-vibe] .mb-brain { animation: none; }
   .mb-clickpop { animation: none; opacity: 1; transform: translateX(-50%); }
 }
+
+/* PRIME 05/07/2026: MANUAL motion switch. The console carries data-motion="off"
+   when the user turns motion off with the in-frame toggle (persisted, so it
+   sticks). It mirrors the reduced-motion kills above but is user-driven, for
+   people who want it off even when their OS pref is not set. All shaking,
+   pulsing, spinning, vibrating, and galloping stops; the console stays fully
+   usable and every readout stays put. This is deliberately the SAME rule set as
+   prefers-reduced-motion, kept in sync. */
+.mb-console[data-motion="off"] { animation: none; }
+.mb-console[data-motion="off"] .mb-brain,
+.mb-console[data-motion="off"].mb-tier-4 .mb-brain,
+.mb-console[data-motion="off"].mb-tier-5 .mb-brain { animation: none; }
+.mb-console[data-motion="off"] .mb-rays,
+.mb-console[data-motion="off"].mb-tier-5 .mb-rays { animation: none; }
+.mb-console[data-motion="off"] .mb-milestone,
+.mb-console[data-motion="off"] .mb-total-banner,
+.mb-console[data-motion="off"] .mb-goh-banner { animation: none; }
+.mb-console[data-motion="off"][data-vibe] { animation: none; }
+.mb-console[data-motion="off"][data-vibe] .mb-brain { animation: none; }
+.mb-console[data-motion="off"] .mb-clickpop { animation: none; opacity: 1; transform: translateX(-50%); }
+.mb-console[data-motion="off"].mb-burnout,
+.mb-console[data-motion="off"] .mb-gallop,
+.mb-console[data-motion="off"] .mb-aura { animation: none; }
+/* The pink lightning pill and thumb breathe animations also settle. */
+.mb-console[data-motion="off"] .mb-thumb-up { animation: none; }
 
 
 /* ============================================================================
@@ -8298,6 +8362,146 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .boss-hint { opacity: 0.35; font-size: 0.85em; animation: boss-hint-blink 1.7s steps(1) infinite; }
 .ws-hint { text-align: center; padding: 0.5em 0; }
 @keyframes boss-hint-blink { 0%, 62% { opacity: 0.35; } 63%, 100% { opacity: 0.12; } }
+
+/* ==== additional boss screens (VisiCalc, Norton, WordPerfect, dBASE, Turbo
+   Pascal, BSOD, Norton Commander, Commodore 64). Each keeps the shared mono
+   overlay + scanlines; only per-screen palette and layout differ. ============ */
+
+/* VisiCalc (Apple II) — green phosphor on black; single-letter column frame */
+.boss-visicalc { color: #33ff66; }
+.vc-prompt { display: flex; justify-content: space-between; gap: 2ch; padding-bottom: 0.5em; white-space: pre; border-bottom: 1px solid #1a7a33; }
+.vc-prompt-val { color: #aaffbb; }
+.vc-colhead, .vc-row { white-space: pre; }
+.vc-col { display: inline-block; width: 10ch; text-align: center; background: #10401d; color: #baffc9; }
+.vc-corner { background: #10401d; }
+.vc-rownum { display: inline-block; width: 3ch; text-align: right; background: #10401d; color: #baffc9; padding-right: 0.4ch; }
+.vc-cell { display: inline-block; width: 10ch; text-align: right; padding-right: 0.6ch; }
+.vc-cell-label { text-align: left; padding-right: 0; padding-left: 0.4ch; }
+.vc-fill { flex: 1; min-height: 0.8em; }
+.vc-hint { text-align: center; padding: 0.5em 0; }
+
+/* Norton Utilities — the unmistakable NU blue with a grey disk map */
+.boss-norton { color: #c8c8c8; background: #0000a8; padding: 0 !important; }
+.nu-titlebar { display: flex; justify-content: space-between; gap: 2ch; background: #c8c8c8; color: #0000a8; font-weight: 700; padding: 0.15em 1ch; }
+.nu-body { flex: 1; display: flex; gap: 2ch; padding: 1em 1ch; flex-wrap: wrap; }
+.nu-panel { border: 2px solid #55ffff; padding: 0.6em 1ch; min-width: 34ch; }
+.nu-panel-title { margin: 0 0 0.6em; color: #ffff55; font-weight: 700; }
+.nu-line { margin: 0.15em 0; white-space: pre; color: #d8d8d8; }
+.nu-ok { color: #55ff55; margin-top: 0.6em; font-weight: 700; }
+.nu-map { flex: 1; min-width: 20ch; line-height: 1; letter-spacing: 0.05ch; color: #7a7aff; word-break: break-all; }
+.nu-map-used { color: #8f8fff; }
+.nu-map-sys { color: #ffff55; }
+.nu-status { background: #c8c8c8; color: #0000a8; padding: 0.15em 1ch; text-align: center; }
+.boss-norton .boss-hint { animation: boss-hint-blink 1.7s steps(1) infinite; }
+
+/* WordPerfect 5.1 — near-blank white text on deep blue, status bottom-right */
+.boss-wordperfect { color: #e8e8e8; background: #0000a8; }
+.wp-doc { margin: 0; white-space: pre-wrap; flex: 0 0 auto; padding-top: 0.5em; }
+.wp-cursor { animation: ws-blink 1s steps(1) infinite; }
+.wp-fill { flex: 1; }
+.wp-status { display: flex; justify-content: space-between; gap: 2ch; padding-top: 0.4em; }
+.wp-hint { text-align: left; }
+
+/* dBASE III+ — plain white on black, dot-prompt session */
+.boss-dbase { color: #e0e0e0; }
+.dbase-body { margin: 0; white-space: pre; flex: 0 0 auto; }
+.dbase-cursor { display: inline-block; animation: ws-blink 1s steps(1) infinite; }
+.dbase-fill { flex: 1; }
+.dbase-status { display: flex; justify-content: space-between; gap: 1.5ch; flex-wrap: wrap; background: #00a8a8; color: #000; padding: 0 0.6ch; font-weight: 700; }
+
+/* Turbo Pascal 7 — Borland blue IDE: cyan menu bar, editor window, F-key bar */
+.boss-turbopascal { color: #ffff55; background: #0000a8; padding: 0 !important; }
+.tp-menubar { background: #00a8a8; color: #000; padding: 0.15em 1ch; letter-spacing: 0.05ch; }
+.tp-menu-hi { color: #fff; font-weight: 700; }
+.tp-window { flex: 1; margin: 0.6em 1ch; border: 1px solid #55ffff; display: flex; flex-direction: column; }
+.tp-window-title { text-align: center; background: #0000a8; color: #fff; border-bottom: 1px solid #55ffff; padding: 0 1ch; }
+.tp-code { margin: 0; padding: 0.5em 1ch; white-space: pre; color: #ffff77; flex: 1; }
+.tp-cursor { display: inline-block; background: #ffff77; color: #0000a8; animation: ws-blink 1s steps(1) infinite; }
+.tp-status { display: flex; gap: 1.6ch; flex-wrap: wrap; background: #00a8a8; color: #000; padding: 0.15em 1ch; }
+
+/* Windows BSOD — light grey text on the classic pure blue */
+.boss-bsod { color: #f0f0f0; background: #0000aa; justify-content: flex-start; }
+.bsod-body { max-width: 78ch; margin: 8vh auto 0; display: flex; flex-direction: column; gap: 0.9em; padding: 0 2ch; }
+.bsod-head { text-align: center; margin: 0; }
+.bsod-head-inv { background: #c8c8c8; color: #0000aa; padding: 0 1ch; font-weight: 700; }
+.bsod-line { margin: 0; }
+.bsod-tech { word-break: break-all; }
+.bsod-hint { text-align: center; margin-top: 1.2em; }
+
+/* Norton Commander — twin blue panels + cyan function-key bar */
+.boss-commander { color: #d8d8d8; background: #0000a8; padding: 0 !important; }
+.nc-panels { flex: 1; display: flex; gap: 0; }
+.nc-panel { flex: 1; border: 1px solid #55ffff; margin: 0.4em 0.3ch; display: flex; flex-direction: column; }
+.nc-panel-active { border-color: #ffff55; }
+.nc-panel-path { text-align: center; background: #0000a8; color: #fff; border-bottom: 1px solid #55ffff; padding: 0 1ch; }
+.nc-panel-active .nc-panel-path { background: #00a8a8; color: #000; font-weight: 700; }
+.nc-panel-head { display: flex; justify-content: space-between; gap: 1ch; padding: 0 1ch; color: #ffff55; border-bottom: 1px solid #2a2acc; }
+.nc-panel-rows { flex: 1; padding: 0.2em 0; }
+.nc-row { display: flex; justify-content: space-between; gap: 1ch; padding: 0 1ch; white-space: pre; }
+.nc-name { color: #d8d8d8; }
+.nc-size { color: #9a9aff; }
+.nc-row-sel { background: #00a8a8; color: #000; }
+.nc-row-sel .nc-name, .nc-row-sel .nc-size { color: #000; }
+.nc-cmdline { display: flex; align-items: center; gap: 0.5ch; padding: 0.2em 1ch; }
+.nc-cursor { animation: ws-blink 1s steps(1) infinite; color: #fff; }
+.nc-hint { margin-left: auto; }
+.nc-fnbar { display: flex; gap: 0.4ch; flex-wrap: wrap; background: #00a8a8; color: #000; padding: 0.1em 0.4ch; font-size: 0.9em; }
+.nc-fnbar span { background: #000; color: #d8d8d8; padding: 0 0.4ch; }
+
+/* Commodore 64 — the iconic light-blue border/text on a blue field, with a
+   program that types itself line by line, then RUNs. */
+.boss-c64 { color: #8f8fff; background: #4040e0; padding: clamp(0.5rem, 3vw, 2rem) !important; }
+.c64-banner { margin: 0; white-space: pre; color: #b0b0ff; text-transform: uppercase; }
+.c64-typed { margin-top: 0.4em; text-transform: uppercase; }
+.c64-line { white-space: pre; color: #b0b0ff; overflow: hidden; opacity: 0; }
+/* Each line reveals in turn via a typing width sweep; timings staggered so it
+   reads like a person at the keyboard. steps() gives the character-by-character
+   feel. The cursor block sits at the end of the final line. */
+.c64-line-1 { animation: c64-type 0.7s steps(18) 0.3s forwards; }
+.c64-line-2 { animation: c64-type 0.5s steps(10) 1.2s forwards; }
+.c64-line-3 { animation: c64-type 0.3s steps(3) 1.9s forwards; }
+.c64-line-4 { animation: c64-appear 0.05s linear 2.3s forwards; }
+.c64-line-5 { animation: c64-appear 0.05s linear 2.5s forwards; }
+.c64-line-6 { animation: c64-appear 0.05s linear 2.7s forwards; }
+@keyframes c64-type { from { opacity: 1; width: 0; white-space: nowrap; } to { opacity: 1; width: 22ch; white-space: nowrap; } }
+@keyframes c64-appear { to { opacity: 1; } }
+.c64-cursor { animation: ws-blink 0.8s steps(1) infinite; }
+.c64-hint { text-align: center; padding-top: 1.2em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wp-cursor, .dbase-cursor, .tp-cursor, .nc-cursor, .c64-cursor,
+  .c64-line-1, .c64-line-2, .c64-line-3, .c64-line-4, .c64-line-5, .c64-line-6 {
+    animation: none; opacity: 1; width: auto; white-space: pre;
+  }
+}
+
+/* ==== keyboard-shortcut cheat-sheet overlay (the "?" help) ================= */
+.kbd-cheat-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  background: rgba(2, 6, 23, 0.72); backdrop-filter: blur(4px);
+  animation: mb-banner-in 0.2s ease;
+}
+.kbd-cheat-card {
+  background: var(--surface-1, #0b1120); color: var(--text-1, #e6ecff);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 14px;
+  width: min(30rem, 94vw); max-height: 84vh; overflow: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55); padding: 1.25rem 1.4rem 1rem;
+}
+.kbd-cheat-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; }
+.kbd-cheat-title { font-size: 1.1rem; margin: 0; color: var(--text-1, #e6ecff); }
+.kbd-cheat-close { background: none; border: none; color: var(--text-3, #7c88b0); font-size: 1.2rem; cursor: pointer; padding: 0.15rem 0.4rem; border-radius: 6px; line-height: 1; }
+.kbd-cheat-close:hover, .kbd-cheat-close:focus-visible { color: var(--accent-1, #22d3ee); outline: none; }
+.kbd-cheat-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.kbd-cheat-row { display: flex; align-items: center; gap: 0.9rem; }
+.kbd-cheat-key {
+  flex: 0 0 auto; min-width: 2rem; text-align: center;
+  background: var(--surface-2, #131c31); color: var(--accent-1, #22d3ee);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 6px;
+  padding: 0.15rem 0.5rem; font-size: 0.85rem; font-weight: 700;
+}
+.kbd-cheat-action { color: var(--text-2, #b8c2e0); font-size: 0.92rem; }
+.kbd-cheat-hint { margin: 1rem 0 0; font-size: 0.74rem; color: var(--text-3, #7c88b0); text-align: center; }
 
 @media (prefers-reduced-motion: reduce) {
   .mb-lever::-webkit-slider-thumb, .mb-lever::-moz-range-thumb, .mb-lever-hint,
@@ -8491,3 +8695,44 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .bingo-devfun { margin: 0 0 0.35rem; font-size: 0.8rem; }
 .bingo-devfun-link { color: #22d3ee; text-decoration: none; border-radius: 4px; padding: 0 0.15rem; transition: color 0.15s ease; }
 .bingo-devfun-link:hover, .bingo-devfun-link:focus-visible { color: #67e8f9; text-decoration: underline; outline: none; }
+
+/* ==== /settings — shortcut customization table ============================= */
+.shortcut-settings { margin-top: 1.5rem; }
+.shortcut-table { width: 100%; max-width: 40rem; border-collapse: collapse; }
+.shortcut-table th { text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary, #7c88b0); padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border-strong, #1e293b); }
+.shortcut-th-key { width: 6rem; }
+.shortcut-row td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); vertical-align: middle; }
+.shortcut-key { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; padding: 0.2rem 0.55rem; background: var(--surface-2, #131c31); color: var(--accent-primary, #22d3ee); border: 1px solid var(--border-strong, #1e293b); border-radius: 6px; font-size: 0.9rem; font-weight: 700; }
+.shortcut-td-action { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+.shortcut-select { background: var(--surface-base, #0b1120); color: var(--text-primary, #e6ecff); border: 1px solid var(--border-strong, #1e293b); border-radius: var(--radius-sm, 8px); padding: 0.4rem 0.6rem; font-size: 0.9rem; font-family: inherit; cursor: pointer; min-width: 16rem; max-width: 100%; }
+.shortcut-select:disabled { opacity: 0.55; cursor: not-allowed; }
+.shortcut-select:focus-visible { outline: 2px solid var(--accent-primary, #22d3ee); outline-offset: 1px; }
+.shortcut-locked { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-amber, #f59e0b); border: 1px solid rgba(245, 166, 35, 0.4); border-radius: 5px; padding: 0.1rem 0.45rem; }
+.shortcut-actions { margin-top: 1.2rem; }
+.shortcut-note { margin-top: 0.9rem; font-size: 0.78rem; color: var(--text-tertiary, #7c88b0); }
+.settings-privacy-link { display: inline-block; margin-top: 0.8rem; color: var(--accent-primary, #22d3ee); text-decoration: none; }
+.settings-privacy-link:hover, .settings-privacy-link:focus-visible { text-decoration: underline; outline: none; }
+
+/* ==== /dev/fun boss-screens viewer (gallery grid + scaled thumbnails) ====== */
+.boss-viewer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1.1rem; margin-top: 1.6rem; }
+.boss-viewer-card { display: flex; flex-direction: column; text-align: left; background: var(--surface-1, #0b1120); border: 1px solid var(--border-strong, #1e293b); border-radius: 12px; overflow: hidden; cursor: pointer; padding: 0; transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease; }
+.boss-viewer-card:hover, .boss-viewer-card:focus-visible { transform: translateY(-2px); border-color: var(--accent-primary, #22d3ee); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); outline: none; }
+/* The thumbnail is a real boss screen rendered at full size, then scaled down to
+   fit a fixed 16:10 window. The inner wrapper is sized to the "screen" and
+   transform-scaled; overflow hidden crops to the card. Pointer events off so the
+   whole card is the click target. */
+.boss-viewer-thumb { position: relative; width: 100%; aspect-ratio: 16 / 10; background: #000; overflow: hidden; pointer-events: none; border-bottom: 1px solid var(--border-strong, #1e293b); }
+.boss-thumb-inner {
+  position: absolute; top: 0; left: 0;
+  width: 250%; height: 250%;
+  transform: scale(0.4); transform-origin: top left;
+  font-family: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+  font-size: 11px; line-height: 1.3;
+}
+/* The screen fills the thumb window; each boss-screen paints its own palette. */
+.boss-thumb-inner .boss-screen { width: 100%; height: 100%; max-width: none; padding: 0.5rem 0.6rem; }
+.boss-viewer-meta { display: flex; flex-direction: column; gap: 0.35rem; padding: 0.8rem 0.9rem 0.95rem; }
+.boss-viewer-name { font-weight: 700; color: var(--text-primary, #e6ecff); font-size: 0.98rem; }
+.boss-viewer-year { color: var(--text-tertiary, #7c88b0); font-weight: 400; font-size: 0.82rem; }
+.boss-viewer-blurb { color: var(--text-secondary, #b8c2e0); font-size: 0.85rem; line-height: 1.5; }
+@media (prefers-reduced-motion: reduce) { .boss-viewer-card:hover, .boss-viewer-card:focus-visible { transform: none; } }
