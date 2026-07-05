@@ -1,0 +1,32 @@
+---
+slug: bigip-declarative-onboarding-do
+title: "Declarative Onboarding: A Metade L1-L3 do Automation Toolchain"
+summary: "O AS3 configura serviços de aplicação em um BIG-IP que já está na rede. O Declarative Onboarding é o que o coloca lá: licenciamento, provisionamento, DNS e NTP, VLANs e self IPs e rotas, usuários e cluster, expressos como uma declaração JSON contra um Device com um único tenant chamado Common. Este artigo percorre o modelo, as fases de onboarding e as pegadinhas específicas de versão que mordem em produção."
+concepts: ["f5", "declarative onboarding", "do", "bigip", "automação", "declarativo", "onboarding", "cluster", "iac", "toolchain"]
+relatedTools: ["do-explainer-validator", "as3-explainer-validator"]
+relatedArticles: ["as3-declaration-anatomy"]
+category: networking
+order: 6
+status: reviewed
+updated: "2026-07-05"
+---
+
+O F5 Automation Toolchain tem duas metades declarativas, e o jeito mais rápido de mantê-las separadas é pela camada em que cada uma trabalha. O AS3, o Application Services 3 Extension, configura os serviços de aplicação de Camada 4-7, os virtual servers, pools, monitores e profiles TLS, em um BIG-IP que já está na rede. O Declarative Onboarding, DO, é a outra metade: faz o onboarding de Camada 1-3 que coloca a caixa na rede em primeiro lugar. Um BIG-IP recém-inicializado não tem licença, nenhum módulo provisionado, nenhuma VLAN, nenhum self IP, nenhuma rota e nenhuma conta de usuário além das padrão; o DO é como você declara tudo isso em um documento JSON em vez de clicar pelo Setup Utility ou roteirizar tmsh. O [explicador de DO](/tools/do-explainer-validator) lê uma declaração de volta do jeito que este artigo descreve.
+
+## Um Device, um tenant, e ele precisa se chamar Common
+
+Uma declaração DO tem um `class` de topo igual a `Device`, e essa é a forma que você faz POST direto a um BIG-IP em `/mgmt/shared/declarative-onboarding`. Há uma segunda forma, um `class` igual a `DO` envolvendo uma `declaration` e carregando um `targetHost`, que é o que você envia a um BIG-IQ quando quer que ele provisione um dispositivo remotamente; o explicador reconhece as duas e diz qual você colou. Dentro do Device fica exatamente um tenant, e aqui o DO é mais rígido que o AS3: onde o AS3 deixa você nomear tenants livremente porque cada um vira uma partição administrativa, o DO exige que o único tenant se chame `Common`. Um tenant com qualquer outro nome é um erro, e o explicador o sinaliza, porque o onboarding configura a própria caixa, não uma partição dela.
+
+As opções de topo valem conhecer antes das classes. O `schemaVersion` fixa o schema DO que você está mirando. O `async` igual a true muda o contrato da API: em vez de bloquear até todo o onboarding terminar, o DO retorna um 202 com um id de tarefa na hora, e você consulta essa tarefa com GET até ela reportar sucesso, o que importa porque alguns passos de onboarding, uma ida-e-volta de licenciamento ou uma mudança de provisionamento que induz reboot, demoram o bastante para uma chamada síncrona expirar. Um `webhook` dá ao DO uma URL para onde fazer POST do resultado quando terminar.
+
+## As classes, na ordem em que o onboarding realmente acontece
+
+Dentro de `Common` cada chave é um objeto nomeado com seu próprio `class`, e embora o DO resolva a ordem das operações sozinho, agrupar as classes por fase é o modelo mental que torna uma declaração legível. Licenciamento e provisionamento vêm primeiro porque habilitam tudo: `License` aplica uma regkey BYOL ou puxa de um license pool de BIG-IQ, e `Provision` define o nível de cada módulo, `ltm` para `nominal`, `gtm` para `minimum`, e assim por diante, porque um módulo que você não provisionou não pode ser configurado pelo AS3 depois. A identidade do sistema é a base: `System` carrega o hostname e os timeouts de inatividade, `DNS` e `NTP` definem name servers e horário, e objetos `User` criam contas com papéis e shells. A rede constrói o plano de dados: objetos `VLAN` nomeiam VLANs e vinculam interfaces, objetos `SelfIp` colocam endereços nessas VLANs, e objetos `Route`, o padrão convencionalmente chamado `default`, dão o roteamento da caixa. O cluster vem por último porque junta caixas que já estão cada uma provisionada: `ConfigSync`, `DeviceTrust`, `DeviceGroup` e `FailoverUnicast` são como uma única declaração transforma um membro em parte de um par de alta disponibilidade, com o owner criando o device group e os membros entrando nele.
+
+## As pegadinhas que o manual documenta e o explicador aplica
+
+Três detalhes na documentação do DO causam mais casos de suporte do que seu tamanho sugere, e o explicador sinaliza cada um em vez de deixá-lo em uma nota de rodapé. O primeiro é o `hostname`: você pode defini-lo em `Common` ou dentro de uma classe `System`, mas não em ambos, e os dois são mutuamente exclusivos por design. O segundo é uma armadilha genuína introduzida por uma mudança de versão: antes do DO 1.36 um `SelfIp` que omitia `allowService` herdava um padrão que permitia os serviços padrão, mas o DO 1.36 mudou esse padrão para `none`, então a mesma declaração que antes deixava um self IP acessível para gerenciamento agora o tranca, e um self IP sem `allowService` explícito merece um segundo olhar. O terceiro é o usuário `root`: o DO não consegue trocar a senha do root sem a existente, então um objeto User `root` precisa carregar seu `oldPassword`. Nenhuma dessas impede uma declaração de fazer parse, que é exatamente por que um verificador de estrutura que as conhece ganha seu lugar.
+
+## Um verificador de sanidade, não o validador de schema
+
+O explicador é deliberadamente um explicador de estrutura e verificador de sanidade, não um validador completo de JSON-Schema. A F5 publica o schema DO completo, e o jeito pretendido de validar cada propriedade é apontar seu editor para ele, o VS Code verifica uma declaração contra o schema enquanto você digita. Uma declaração que lê limpo aqui ainda pode ser rejeitada pelo DO por uma propriedade que esta ferramenta não modela, então trate o explicador como a primeira passada rápida que nomeia cada classe, agrupa o onboarding e pega as armadilhas documentadas, e trate o schema publicado como a palavra final. Como toda ferramenta aqui, ela roda inteiramente no navegador e nunca contata um BIG-IP ou um BIG-IQ.

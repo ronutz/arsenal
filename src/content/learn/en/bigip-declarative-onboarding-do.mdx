@@ -1,0 +1,32 @@
+---
+slug: bigip-declarative-onboarding-do
+title: "Declarative Onboarding: The L1-L3 Half of the Automation Toolchain"
+summary: "AS3 configures application services on a BIG-IP that is already on the network. Declarative Onboarding is what gets it there: licensing, provisioning, DNS and NTP, VLANs and self IPs and routes, users, and clustering, expressed as one JSON declaration against a Device with a single tenant named Common. This walks the model, the onboarding phases, and the version-specific gotchas that bite in production."
+concepts: ["f5", "declarative onboarding", "do", "bigip", "automation", "declarative", "onboarding", "clustering", "iac", "toolchain"]
+relatedTools: ["do-explainer-validator", "as3-explainer-validator"]
+relatedArticles: ["as3-declaration-anatomy"]
+category: networking
+order: 6
+status: reviewed
+updated: "2026-07-05"
+---
+
+The F5 Automation Toolchain has two declarative halves, and the fastest way to keep them straight is by the layer each one works at. AS3, the Application Services 3 Extension, configures the Layer 4-7 application services, the virtual servers, pools, monitors, and TLS profiles, on a BIG-IP that is already on the network. Declarative Onboarding, DO, is the other half: it does the Layer 1-3 onboarding that gets the box onto the network in the first place. A freshly booted BIG-IP has no license, no provisioned modules, no VLANs, no self IPs, no routes, and no user accounts beyond the defaults; DO is how you declare all of that in one JSON document instead of clicking through Setup Utility or scripting tmsh. The [DO explainer](/tools/do-explainer-validator) reads a declaration back the way this article describes it.
+
+## One Device, one tenant, and it must be named Common
+
+A DO declaration has a top-level `class` of `Device`, and that is the shape you POST straight to a BIG-IP at `/mgmt/shared/declarative-onboarding`. There is a second shape, a `class` of `DO` wrapping a `declaration` and carrying a `targetHost`, which is what you send to a BIG-IQ when you want it to onboard a device remotely; the explainer recognizes both and tells you which one you pasted. Inside the Device sits exactly one tenant, and here DO is stricter than AS3: where AS3 lets you name tenants freely because each becomes an administrative partition, DO requires the single tenant to be named `Common`. A tenant under any other name is an error, and the explainer flags it, because onboarding configures the box itself, not a partition of it.
+
+The top-level options are worth knowing before the classes. `schemaVersion` pins the DO schema you are targeting. `async` set to true changes the API contract: instead of blocking until the whole onboarding finishes, DO returns a 202 with a task id right away, and you poll that task with GET until it reports success, which matters because some onboarding steps, a licensing round-trip or a reboot-inducing provisioning change, take long enough that a synchronous call can time out. A `webhook` gives DO a URL to POST the result to when it finishes.
+
+## The classes, in the order onboarding actually happens
+
+Inside `Common` each key is a named object with its own `class`, and while DO works out the operation order itself, grouping the classes by phase is the mental model that makes a declaration readable. Licensing and provisioning come first because they gate everything: `License` applies a BYOL regkey or pulls from a BIG-IQ license pool, and `Provision` sets each module's level, `ltm` to `nominal`, `gtm` to `minimum`, and so on, because a module you have not provisioned cannot be configured by AS3 later. System identity is foundational: `System` carries the hostname and inactivity timeouts, `DNS` and `NTP` set name servers and time, and `User` objects create accounts with roles and shells. Networking builds the data plane: `VLAN` objects name VLANs and bind interfaces, `SelfIp` objects put addresses on those VLANs, and `Route` objects, the default one conventionally named `default`, give the box its routing. Clustering comes last because it joins boxes that are each already onboarded: `ConfigSync`, `DeviceTrust`, `DeviceGroup`, and `FailoverUnicast` are how a single declaration turns one member into part of a high-availability pair, with the owner creating the device group and the members joining it.
+
+## The gotchas the manual documents and the explainer enforces
+
+Three details in the DO docs cause more support cases than their size suggests, and the explainer flags each one rather than leaving it to a footnote. The first is `hostname`: you may set it on `Common` or inside a `System` class, but not both, and the two are mutually exclusive by design. The second is a genuine trap introduced by a version change: before DO 1.36 a `SelfIp` that omitted `allowService` inherited a default that permitted the default services, but DO 1.36 changed that default to `none`, so the same declaration that used to leave a self IP reachable for management now locks it down, and a self IP with no explicit `allowService` is worth a second look. The third is the `root` user: DO cannot change the root password without the existing one, so a `root` User object must carry its `oldPassword`. None of these will stop a declaration from parsing, which is exactly why a structure checker that knows them earns its place.
+
+## A sanity checker, not the schema validator
+
+The explainer is deliberately a structure explainer and sanity checker, not a full JSON-Schema validator. F5 publishes the complete DO schema, and the intended way to validate every property is to point your editor at it, VS Code will check a declaration against the schema as you type. A declaration that reads cleanly here can still be rejected by DO for a property this tool does not model, so treat the explainer as the fast first pass that names every class, groups the onboarding, and catches the documented traps, and treat the published schema as the final word. As with every tool here, it runs entirely in the browser and never contacts a BIG-IP or a BIG-IQ.

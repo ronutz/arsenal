@@ -3291,6 +3291,59 @@
         "entityAdded": "{type} permitido adicionado: {name}.",
         "entityRemoved": "{type} permitido removido: {name}."
       }
+    },
+    "do-explainer-validator": {
+      "name": "Explicador e validador de declaração DO",
+      "blurb": "Cole o JSON que você faz POST em /mgmt/shared/declarative-onboarding e ele lê de volta para você: se é um wrapper de requisição DO ou uma declaração Device pura, as opções de topo, e os objetos de classe do tenant Common agrupados pela fase em que o DO os provisiona, com cada classe nomeada e explicada. Também verifica as regras estruturais que a F5 documenta e sinaliza as pegadinhas que mordem em produção, da mudança do padrão de allowService no DO 1.36 a um usuário root sem seu oldPassword. O DO é o irmão do AS3: o DO faz o onboarding de L1-L3, o AS3 os serviços de L4-L7.",
+      "inputLabel": "Uma declaração DO (JSON Device) ou um wrapper de requisição class DO",
+      "inputPlaceholder": "{\n  \"schemaVersion\": \"1.0.0\",\n  \"class\": \"Device\",\n  \"async\": true,\n  \"Common\": {\n    \"class\": \"Tenant\",\n    \"myLicense\": { \"class\": \"License\", \"regKey\": \"...\" },\n    \"myProvisioning\": { \"class\": \"Provision\", \"ltm\": \"nominal\" }\n  }\n}",
+      "runsLocally": "A decodificação roda localmente no seu navegador. Nada do que você cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "empty": "Cole uma declaração DO para vê-la explicada.",
+      "scopeNote": "Isto é um explicador de estrutura e verificador de sanidade, não um validador completo de JSON-Schema. Nunca contata um BIG-IP ou BIG-IQ e nada do que você cola sai do navegador. Uma declaração que passa aqui ainda pode ser rejeitada pelo próprio DO.",
+      "clusterNote": "Esta declaração inclui classes de cluster, então provisiona um membro de um par ou grupo de alta disponibilidade.",
+      "walkHeading": "O que é provisionado, em ordem",
+      "walkOrderNote": "Agrupado pela fase em que o DO efetivamente os provisiona: licenciamento e provisionamento habilitam os módulos, a identidade do sistema é a base, a rede constrói o plano de dados, e então o cluster junta a caixa aos seus pares.",
+      "unknownClass": "(classe fora do catálogo desta ferramenta, mas ainda reportada)",
+      "findingsHeading": "Achados",
+      "kind": {
+        "doRequest": "Wrapper de requisição DO (class DO)",
+        "deviceOnly": "Declaração Device",
+        "notDo": "Não é uma declaração DO"
+      },
+      "req": {
+        "targetHost": "targetHost",
+        "hasDeclaration": "carrega uma declaração Device",
+        "noDeclaration": "nenhuma declaração encontrada no wrapper"
+      },
+      "device": {
+        "schemaVersion": "schemaVersion",
+        "async": "async",
+        "asyncTrue": "true (retorna 202; consulte com GET)",
+        "asyncFalse": "false (bloqueia até concluir)",
+        "webhook": "webhook definido",
+        "label": "label"
+      },
+      "stats": {
+        "objects": "objetos",
+        "licensing": "licenciamento",
+        "networking": "rede",
+        "clustering": "cluster"
+      },
+      "finding": {
+        "parseError": "Erro de parse do JSON",
+        "notDo": "Isto não é uma declaração DO. Cole uma declaração Device, ou um wrapper de requisição class DO.",
+        "deviceOnly": "Isto é uma declaração Device pura, como enviada por POST direto a um BIG-IP (um wrapper class DO com targetHost é usado contra um BIG-IQ).",
+        "missingSchema": "Sem schemaVersion. Uma declaração DO deve declarar a schemaVersion que mira.",
+        "noCommon": "Nenhum tenant Common encontrado. Uma declaração DO precisa conter um único tenant chamado Common.",
+        "tenantNotCommon": "O tenant se chama \"{name}\", mas o DO exige que o tenant se chame Common.",
+        "emptyCommon": "O tenant Common não tem objetos de onboarding.",
+        "hostnameConflict": "hostname está definido tanto em Common quanto em uma classe System. Eles são mutuamente exclusivos; defina em apenas um lugar.",
+        "rootOldPassword": "O usuário root \"{name}\" não tem oldPassword. Trocar a senha do root exige seu oldPassword existente.",
+        "allowServiceDefault": "O self IP \"{name}\" não define allowService. Desde o DO 1.36 o padrão mudou de `default` para `none`, então ele agora não permite serviço algum a menos que você os defina explicitamente.",
+        "asyncNote": "async é true, então o DO retorna um 202 com um id de tarefa imediatamente; consulte a tarefa com GET até concluir."
+      }
     }
   },
   "privacy_page": {

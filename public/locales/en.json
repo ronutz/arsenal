@@ -3291,6 +3291,59 @@
         "entityAdded": "Allowed {type} added: {name}.",
         "entityRemoved": "Allowed {type} removed: {name}."
       }
+    },
+    "do-explainer-validator": {
+      "name": "DO declaration explainer + validator",
+      "blurb": "Paste the JSON you POST to /mgmt/shared/declarative-onboarding and it reads it back: whether it is a DO request wrapper or a bare Device declaration, the top-level options, and the Common tenant's class-objects grouped by the phase DO onboards them in, with every class named and explained. It also checks the structural rules F5 documents and flags the gotchas that bite in production, from the DO 1.36 allowService default change to a root user missing its oldPassword. DO is the sibling of AS3: DO does the L1-L3 onboarding, AS3 the L4-L7 services.",
+      "inputLabel": "A DO declaration (Device JSON) or a class DO request wrapper",
+      "inputPlaceholder": "{\n  \"schemaVersion\": \"1.0.0\",\n  \"class\": \"Device\",\n  \"async\": true,\n  \"Common\": {\n    \"class\": \"Tenant\",\n    \"myLicense\": { \"class\": \"License\", \"regKey\": \"...\" },\n    \"myProvisioning\": { \"class\": \"Provision\", \"ltm\": \"nominal\" }\n  }\n}",
+      "runsLocally": "Decoding runs locally in your browser. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "empty": "Paste a DO declaration to see it explained.",
+      "scopeNote": "This is a structure explainer and sanity checker, not a full JSON-Schema validator. It never contacts a BIG-IP or BIG-IQ and nothing you paste leaves the browser. A declaration that passes here can still be rejected by DO itself.",
+      "clusterNote": "This declaration includes clustering classes, so it onboards one member of a high-availability pair or group.",
+      "walkHeading": "What onboards, in order",
+      "walkOrderNote": "Grouped by the phase DO effectively onboards them in: licensing and provisioning gate the modules, system identity is foundational, networking builds the data plane, then clustering joins the box to its peers.",
+      "unknownClass": "(class not in this tool's catalog, but still reported)",
+      "findingsHeading": "Findings",
+      "kind": {
+        "doRequest": "DO request wrapper (class DO)",
+        "deviceOnly": "Device declaration",
+        "notDo": "Not a DO declaration"
+      },
+      "req": {
+        "targetHost": "targetHost",
+        "hasDeclaration": "carries a Device declaration",
+        "noDeclaration": "no declaration found in the wrapper"
+      },
+      "device": {
+        "schemaVersion": "schemaVersion",
+        "async": "async",
+        "asyncTrue": "true (returns 202; poll with GET)",
+        "asyncFalse": "false (blocks until done)",
+        "webhook": "webhook set",
+        "label": "label"
+      },
+      "stats": {
+        "objects": "objects",
+        "licensing": "licensing",
+        "networking": "networking",
+        "clustering": "clustering"
+      },
+      "finding": {
+        "parseError": "JSON parse error",
+        "notDo": "This is not a DO declaration. Paste a Device declaration, or a class DO request wrapper.",
+        "deviceOnly": "This is a bare Device declaration, as POSTed straight to a BIG-IP (a class DO wrapper with a targetHost is used against a BIG-IQ).",
+        "missingSchema": "No schemaVersion. A DO declaration should declare the schemaVersion it targets.",
+        "noCommon": "No Common tenant found. A DO declaration must contain a single tenant named Common.",
+        "tenantNotCommon": "The tenant is named \"{name}\", but DO requires the tenant to be named Common.",
+        "emptyCommon": "The Common tenant has no onboarding objects.",
+        "hostnameConflict": "hostname is set on both Common and a System class. They are mutually exclusive; set it in one place only.",
+        "rootOldPassword": "The root user \"{name}\" has no oldPassword. Changing the root password requires its existing oldPassword.",
+        "allowServiceDefault": "The self IP \"{name}\" sets no allowService. Since DO 1.36 the default changed from `default` to `none`, so it now allows no services unless you set them explicitly.",
+        "asyncNote": "async is true, so DO returns a 202 with a task id immediately; poll the task with GET until it completes."
+      }
     }
   },
   "privacy_page": {

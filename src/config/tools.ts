@@ -99,6 +99,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-awaf-evasion-explainer", sub: "asm-awaf", href: "/tools/f5-awaf-evasion-explainer", category: "security", vendors: ["f5"], available: true },
   { id: "f5-awaf-learning-poisoning-estimator", sub: "asm-awaf", href: "/tools/f5-awaf-learning-poisoning-estimator", category: "security", vendors: ["f5"], available: true },
   { id: "as3-explainer-validator", sub: "automation", href: "/tools/as3-explainer-validator", category: "networking", vendors: ["f5"], available: true },
+  { id: "do-explainer-validator", sub: "automation", href: "/tools/do-explainer-validator", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-awaf-false-positive-triage", sub: "asm-awaf", href: "/tools/f5-awaf-false-positive-triage", category: "security", vendors: ["f5"], available: true },
   { id: "f5-awaf-request-log-triage", sub: "asm-awaf", href: "/tools/f5-awaf-request-log-triage", category: "security", vendors: ["f5"], available: true },
   { id: "f5-awaf-learning-suggestion-interpreter", sub: "asm-awaf", href: "/tools/f5-awaf-learning-suggestion-interpreter", category: "security", vendors: ["f5"], available: true },

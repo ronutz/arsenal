@@ -29,7 +29,8 @@ const DIR = "src/i18n/messages";
 const RAW_LITERAL_KEYS = new Set([
   "tools.f5-awaf-declarative-policy-explainer.inputPlaceholder",
   "tools.f5-awaf-evasion-explainer.inputPlaceholder", // evasions block JSON sample: literal braces, rendered with t.raw()
-  "tools.as3-explainer-validator.inputPlaceholder", // AS3 declaration JSON sample: literal braces, rendered with t.raw()
+  "tools.as3-explainer-validator.inputPlaceholder",
+  "tools.do-explainer-validator.inputPlaceholder", // DO JSON sample: literal braces, rendered with t.raw() // AS3 declaration JSON sample: literal braces, rendered with t.raw()
   "tools.f5-awaf-policy-diff.beforePlaceholder", // declarative policy JSON sample: literal braces, rendered with t.raw()
   "tools.f5-awaf-policy-diff.afterPlaceholder", // declarative policy JSON sample: literal braces, rendered with t.raw()
   "tools.f5-lb-method-chooser.inputPlaceholder", // tmsh pool sample: literal braces, rendered with t.raw()

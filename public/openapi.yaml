@@ -639,6 +639,81 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /do-explainer-validator:
+    get:
+      tags:
+        - F5 automation (AS3 / DO)
+      operationId: run_do_explainer_validator
+      summary: DO declaration explainer + validator
+      description: >-
+        Paste the JSON you POST to /mgmt/shared/declarative-onboarding and it reads it back: whether
+        it is a DO request wrapper or a bare Device declaration, the top-level options, and the
+        Common tenant's class-objects grouped by the phase DO onboards them in, with every class
+        named and explained. It also checks the structural rules F5 documents and flags the gotchas
+        that bite in production, from the DO 1.36 allowService default change to a root user missing
+        its oldPassword. DO is the sibling of AS3: DO does the L1-L3 onboarding, AS3 the L4-L7
+        services. Standards: F5 BIG-IP Declarative Onboarding, F5 DO schema reference. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - '{ "class": "DO", "declaration": { "class": "Device", "schemaVersion": "1.0.0" } }'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 automation (AS3 / DO)
+      operationId: run_do_explainer_validator_post
+      summary: DO declaration explainer + validator (POST)
+      description: >-
+        Paste the JSON you POST to /mgmt/shared/declarative-onboarding and it reads it back: whether
+        it is a DO request wrapper or a bare Device declaration, the top-level options, and the
+        Common tenant's class-objects grouped by the phase DO onboards them in, with every class
+        named and explained. It also checks the structural rules F5 documents and flags the gotchas
+        that bite in production, from the DO 1.36 allowService default change to a root user missing
+        its oldPassword. DO is the sibling of AS3: DO does the L1-L3 onboarding, AS3 the L4-L7
+        services. Standards: F5 BIG-IP Declarative Onboarding, F5 DO schema reference. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - '{ "class": "DO", "declaration": { "class": "Device", "schemaVersion": "1.0.0" } }'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /epoch:
     get:
       tags:

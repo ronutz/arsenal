@@ -43,6 +43,23 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-05",
+    time: "10:30",
+    kind: "tool",
+    title: "New tool: DO declaration explainer + validator",
+    body:
+      "The sibling of the AS3 explainer, for the other half of the F5 Automation Toolchain. Paste the JSON you POST to /mgmt/shared/declarative-onboarding and it reads it back: whether it is a DO request wrapper (class DO, as sent to a BIG-IQ with a targetHost) or a bare Device declaration, the top-level options (schemaVersion, async, webhook, label), and the one tenant a DO declaration is allowed, which the schema requires be named Common. It walks that tenant's class-objects grouped by the phase DO effectively onboards them in: licensing and provisioning first because they gate the modules, then system identity (hostname, DNS, NTP, users), then networking (VLANs, self IPs, routes), then the clustering that joins a box to its peers. Every class is named and explained from F5's schema reference. It also flags the documented gotchas that bite in production: a hostname set on both Common and a System class (mutually exclusive), a self IP with no allowService (DO 1.36 changed that default from `default` to `none`, so it now locks down), a root user missing its oldPassword, and async:true returning a 202 you poll with GET. A structure explainer and sanity checker, not the full JSON-Schema validator; grounded in F5 DO docs (clouddocs, DO 1.47.0), decode-only, nothing leaves the browser.",
+    tools: ["do-explainer-validator"],
+  },
+  {
+    date: "2026-07-05",
+    time: "10:30",
+    kind: "content",
+    title: "Learn article: Declarative Onboarding, the L1-L3 half",
+    body:
+      "The companion to the new explainer, in English and Portuguese. It draws the line that makes the whole toolchain click: AS3 configures the L4-L7 application services on a box already on the network, and DO does the L1-L3 onboarding that gets it there, licensing, provisioning, DNS and NTP, VLANs and self IPs and routes, users, and clustering. It walks the one-Device-one-Common-tenant model and why DO is stricter than AS3 about the tenant name, the async-returns-202 contract, the classes in the order onboarding actually happens, and the three version-specific traps the docs bury: the hostname mutual-exclusion, the DO 1.36 allowService default flip to none, and the root oldPassword requirement. Cross-linked to the AS3 anatomy article and the new tool.",
+  },
+  {
     date: "2026-07-04",
     time: "11:39",
     kind: "tool",

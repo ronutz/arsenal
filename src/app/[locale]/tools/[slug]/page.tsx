@@ -113,6 +113,7 @@ import F5AwafDeclarativePolicyExplainerTool from "@/components/F5AwafDeclarative
 import F5AwafEvasionExplainerTool from "@/components/F5AwafEvasionExplainerTool";
 import F5AwafLearningPoisoningEstimatorTool from "@/components/F5AwafLearningPoisoningEstimatorTool";
 import As3ExplainerValidatorTool from "@/components/As3ExplainerValidatorTool";
+import DoExplainerValidatorTool from "@/components/DoExplainerValidatorTool";
 import F5AwafFalsePositiveTriageTool from "@/components/F5AwafFalsePositiveTriageTool";
 import F5AwafRequestLogTriageTool from "@/components/F5AwafRequestLogTriageTool";
 import F5AwafLearningSuggestionInterpreterTool from "@/components/F5AwafLearningSuggestionInterpreterTool";
@@ -122,6 +123,7 @@ import { manifest as f5AwafManifest } from "@/lib/tools/f5-awaf-declarative-poli
 import { manifest as f5AwafEvasionManifest } from "@/lib/tools/f5-awaf-evasion-explainer";
 import { manifest as f5AwafPoisoningManifest } from "@/lib/tools/f5-awaf-learning-poisoning-estimator";
 import { manifest as as3Manifest } from "@/lib/tools/as3-explainer-validator";
+import { manifest as doManifest } from "@/lib/tools/do-explainer-validator";
 import { manifest as f5AwafFpManifest } from "@/lib/tools/f5-awaf-false-positive-triage";
 import { manifest as f5AwafLogManifest } from "@/lib/tools/f5-awaf-request-log-triage";
 import { manifest as f5AwafSuggManifest } from "@/lib/tools/f5-awaf-learning-suggestion-interpreter";
@@ -293,6 +295,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "as3-explainer-validator": {
     Component: As3ExplainerValidatorTool,
     sources: as3Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "do-explainer-validator": {
+    Component: DoExplainerValidatorTool,
+    sources: doManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-awaf-false-positive-triage": {
     Component: F5AwafFalsePositiveTriageTool,
