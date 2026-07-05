@@ -55,6 +55,11 @@ export type { SamlGoldenVector, SamlRejectVector } from "./golden-vectors";
 /** The D-49 declarative manifest for the saml-decoder tool. */
 export const manifest = Object.freeze({
   // -- Identity & routing --
+  // Catalogue family is "Security & WAF" (D-73: manifest toolFamily must equal
+  // the catalogue family). On the category PAGES the tool's home is Identity &
+  // tokens (category: "identity" in src/config/tools.ts), and it ALSO appears
+  // under Security & WAF via secondaryCategories there — SAML is an identity
+  // protocol whose decoding is a security operation, so it lives in both.
   toolFamily: "Security & WAF",
   toolSlug: "saml-decoder",
   canonicalAliases: [

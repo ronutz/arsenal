@@ -37,7 +37,11 @@ import { vendorColor } from "@/config/vendors";
  * currently tool-only or article-only.
  */
 function categoryKeys(): string[] {
-  const set = new Set<string>(tools.filter((t) => !(t.vendors ?? []).length).map((tool) => tool.category));
+  const set = new Set<string>();
+  for (const t of tools.filter((tool) => !(tool.vendors ?? []).length)) {
+    set.add(t.category);
+    for (const c of t.secondaryCategories ?? []) set.add(c);
+  }
   for (const group of getArticlesByCategory()) {
     if (group.articles.length > 0) set.add(group.category);
   }
@@ -76,7 +80,7 @@ export default async function CategoryPage({
 
   // Tools in this category, available only, sorted by localized name.
   const catTools = tools
-    .filter((tool) => tool.category === key && tool.available && !(tool.vendors ?? []).length)
+    .filter((tool) => (tool.category === key || (tool.secondaryCategories ?? []).includes(key)) && tool.available && !(tool.vendors ?? []).length)
     .sort((a, b) => t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale));
 
   // Articles in this category, in the loader's curated order (English fallback

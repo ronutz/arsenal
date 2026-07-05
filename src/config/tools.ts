@@ -28,6 +28,13 @@ export interface ToolEntry {
   /** Vendor sub-category (tools.subs.<vendor>.<sub> label); vendor tools only. */
   sub?: string;
   vendors?: string[];
+  /** Additional category KEYS this tool also appears under (additive, like
+   *  vendors[]). The primary `category` still owns the tool's home; each key
+   *  here makes it ALSO render on that category's page. Used where a tool
+   *  genuinely spans domains, e.g. SAML is an identity protocol whose decoding
+   *  is a security operation, so it lives in Identity and cross-links to
+   *  Security & WAF. Resolved through tools.categories.<key> like `category`. */
+  secondaryCategories?: string[];
   /** False renders a muted "coming soon" card with no link. */
   available: boolean;
 }
@@ -50,7 +57,7 @@ export const tools: ToolEntry[] = [
   { id: "dig-output-explainer", href: "/tools/dig-output-explainer", category: "networking", available: true },
   { id: "nslookup-output-explainer", href: "/tools/nslookup-output-explainer", category: "networking", available: true },
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
-  { id: "saml-decoder", href: "/tools/saml-decoder", category: "security", available: true },
+  { id: "saml-decoder", href: "/tools/saml-decoder", category: "identity", secondaryCategories: ["security"], available: true },
   { id: "xml-decoder", href: "/tools/xml-decoder", category: "security", available: true },
   { id: "f5xc-service-policy-explainer", sub: "f5xc", href: "/tools/f5xc-service-policy-explainer", category: "security", vendors: ["f5"], available: true },
   { id: "f5-bigip-persistence-cookie", sub: "ltm", href: "/tools/f5-bigip-persistence-cookie", category: "networking", vendors: ["f5"], available: true },

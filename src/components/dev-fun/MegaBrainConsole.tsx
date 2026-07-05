@@ -3,33 +3,73 @@
 // ============================================================================
 // src/components/dev-fun/MegaBrainConsole.tsx
 // ----------------------------------------------------------------------------
-// /dev/fun — CONSOLE DO MEGA BRAIN. A deliberately over-the-top pt-BR parody of
-// the Thiago Finch "Mega Brain" meme ("use todo o poder do seu Mega Brain",
-// "força total"), which the Brazilian dev community loves to mock. Drag the
-// FORÇA lever to 100%, watch the brain go supernova, collect the catchphrases.
+// /dev/fun — MEGA BRAIN CONSOLE. A deliberately over-the-top parody of the
+// Thiago Finch "Mega Brain" meme ("use all the power of your Mega Brain",
+// "full power"), which the Brazilian dev community loves to mock. Drag the
+// POWER lever to 100%, watch the brain go supernova, collect the catchphrases.
 // It computes nothing and grounds nothing: it is a stress reliever. Pure client
-// theatre. Strings are hard-coded pt-BR by design (the page redirects every
-// other locale here).
+// theatre.
+//
+// Originally pt-BR only; now localized (PRIME 05/07/2026). All copy arrives as
+// props from the server page, which resolves the `megaBrain` i18n namespace, so
+// this component is locale-agnostic. EN + pt-BR are authored natively; the
+// other 14 locales get the English per-key fallback until translated.
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import BossApp from "@/components/dev-fun/BossApp";
 
-// Milestone lines, drawn from the meme lore. Keyed by the threshold reached.
-const MILESTONES: { at: number; line: string }[] = [
-  { at: 0, line: "Mega Brain em repouso. 🧠" },
-  { at: 1, line: "Aquecendo o Mega Brain…" },
-  { at: 25, line: "Mega Brain aquecido! Sente a potência chegando. ⚡" },
-  { at: 50, line: "ATIVA o Mega Brain! Usa MAIS contexto!" },
-  { at: 75, line: "Quase na força total! Não é sobre a sintaxe do prompt, é sobre a INTENÇÃO! 🧠🔥" },
-  { at: 100, line: "🧠🤯⚡ FORÇA TOTAL DO MEGA BRAIN! Usa TODO o poder e pesquisa termos inteligentes!" },
-];
-
-function milestoneFor(power: number): { at: number; line: string } {
-  let m = MILESTONES[0];
-  for (const cand of MILESTONES) if (power >= cand.at) m = cand;
-  return m;
+/** Every string the console renders, resolved by the server page. */
+export interface MegaBrainLabels {
+  titlebar: string;
+  close: string;
+  closeAria: string;
+  homeTitle: string;
+  failsafeEngageAria: string;
+  failsafeEngageTitle: string;
+  failsafeRestoreAria: string;
+  failsafeRestoreTitle: string;
+  manoAria: string;
+  manoTitle: string;
+  manoCheersArrow: string;
+  bossAria: string;
+  bossTitle: string;
+  m0: string;
+  m1: string;
+  m25: string;
+  m50: string;
+  m75: string;
+  m100: string;
+  meterLabel: string;
+  meterLabelGoh: string;
+  burnoutReadout: string;
+  leverLabel: string;
+  leverAria: string;
+  leverHint: string;
+  leverHintGoh: string;
+  leverTitleGoh: string;
+  fullPower: string;
+  turnOff: string;
+  disabledTitleGoh: string;
+  manoRealityCheck: string;
+  manoSub: string;
+  manoCreditPre: string;
+  manoCreditName: string;
+  manoCreditPost: string;
+  totalBanner: string;
+  totalTerms: string; // contains "{count}"
+  totalFine: string;
+  gohLine: string;
+  gohSub: string;
+  gohFinePre: string;
+  gohFineLink: string;
+  gohFinePost: string;
+  burnoutLine: string;
+  burnoutSub: string;
+  disclaimer: string;
+  bossHint: string;
+  bossDismiss: string;
 }
 
 // Power tier drives the escalating visuals.
@@ -42,27 +82,28 @@ function tierFor(power: number): number {
   return 0;
 }
 
-// FAIL-SAFE LORE: when the Mega Brain burns out, the console fails over to
-// "modo Go Horse", a homage to eXtreme Go Horse (XGH), the legendary Brazilian
-// satire of deadline-driven development (gohorseprocess.com.br, 22 axioms).
-// Axiom nº 1 is quoted verbatim (its four-word signature line, with credit in
-// the banner); every other line below is an ORIGINAL Mega Brain riff written in
-// the same spirit, deliberately NOT a reproduction of the manifesto.
-const XGH_AXIOMS: string[] = [
-  "Axioma nº 1: “Pensou, não é XGH.”",
-  "Deploy na sexta: o cérebro descansa, a produção se vira.",
-  "Se compilou, tá pronto. Se rodou, tá entregue.",
-  "Bug em produção é só um teste executado pelo cliente.",
-  "Gambiarra que funciona de primeira vira arquitetura oficial.",
-  "A documentação é o código. Boa sorte aí.",
-  "Rollback é para quem planejou ter volta.",
-  "“Funciona na minha máquina” agora é SLA.",
-  "Estimativa de prazo: era pra ontem, então relaxa.",
-];
-
-export default function MegaBrainConsole() {
+export default function MegaBrainConsole({
+  labels,
+  xgh,
+  clickPhrases,
+  manoHref,
+  xghHref,
+  localeTag,
+}: {
+  labels: MegaBrainLabels;
+  /** XGH axiom lore: axiom 1 quoted, the rest original riffs (server-provided). */
+  xgh: string[];
+  /** Witty one-liners popped on each brain click, shuffle-bagged (server-provided). */
+  clickPhrases: string[];
+  /** Mano Deyvin YouTube URL. */
+  manoHref: string;
+  /** eXtreme Go Horse reference URL. */
+  xghHref: string;
+  /** BCP-47 tag for number formatting (e.g. "pt-BR", "en"). */
+  localeTag: string;
+}) {
   const [power, setPower] = useState(0);
-  const [terms, setTerms] = useState(0); // fake "termos inteligentes pesquisados" counter
+  const [terms, setTerms] = useState(0); // fake "smart terms searched" counter
   const rampRef = useRef<number | null>(null);
   const [reacting, setReacting] = useState(false); // Mano Deyvin reality-check overlay
   const manoTimerRef = useRef<number | null>(null);
@@ -77,14 +118,83 @@ export default function MegaBrainConsole() {
   const failTimerRef = useRef<number | null>(null);
   const prevPowerRef = useRef(0);
 
+  // --- Brain click: vibration (scaled by tier) + a witty popup phrase. ---
+  // vibeLevel 0 = idle; 1..4 map to tiers 1..4 (tier 5 is TOTAL FORCE, whose
+  // own console shake already owns the screen, so clicks there add no vibe).
+  const [vibeLevel, setVibeLevel] = useState(0);
+  const vibeTimerRef = useRef<number | null>(null);
+  // Each popped phrase gets a fresh id so re-clicking the SAME phrase still
+  // re-triggers the CSS pop animation (keyed on id).
+  const [pop, setPop] = useState<{ id: number; text: string } | null>(null);
+  const popTimerRef = useRef<number | null>(null);
+  const popIdRef = useRef(0);
+  // Shuffle-bag: draw phrases without repeat until the bag empties, then refill.
+  // Avoids the "same line twice in a row" that pure random gives on 24 items.
+  const bagRef = useRef<string[]>([]);
+  const drawPhrase = useCallback((): string => {
+    if (bagRef.current.length === 0) {
+      const next = [...clickPhrases];
+      for (let i = next.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [next[i], next[j]] = [next[j], next[i]];
+      }
+      // If the last shown phrase would be first again, rotate it to the back so
+      // consecutive bags never collide at the seam.
+      if (next.length > 1 && pop && next[next.length - 1] === pop.text) {
+        next.unshift(next.pop() as string);
+      }
+      bagRef.current = next;
+    }
+    return bagRef.current.pop() as string;
+  }, [clickPhrases, pop]);
+
+  const onBrainClick = useCallback(() => {
+    // Go Horse mode reuses the stage click to restore; burnout is mid-transition.
+    // In both, skip the vibe/popup so we don't fight those states.
+    if (goHorse || burnout) return;
+    const lvl = Math.min(tierFor(power), 4); // 0 at rest, up to 4 pre-TOTAL
+    if (lvl > 0) {
+      setVibeLevel(0); // reset so the same level re-animates on rapid clicks
+      // next frame, apply — a tick lets the class drop before re-adding
+      requestAnimationFrame(() => setVibeLevel(lvl));
+      if (vibeTimerRef.current) window.clearTimeout(vibeTimerRef.current);
+      vibeTimerRef.current = window.setTimeout(() => setVibeLevel(0), 420);
+    }
+    const id = ++popIdRef.current;
+    setPop({ id, text: drawPhrase() });
+    if (popTimerRef.current) window.clearTimeout(popTimerRef.current);
+    popTimerRef.current = window.setTimeout(() => {
+      setPop((cur) => (cur && cur.id === id ? null : cur));
+    }, 1400);
+  }, [goHorse, burnout, power, drawPhrase]);
+
+  // Clean up the click timers on unmount.
+  useEffect(() => {
+    return () => {
+      if (vibeTimerRef.current) window.clearTimeout(vibeTimerRef.current);
+      if (popTimerRef.current) window.clearTimeout(popTimerRef.current);
+    };
+  }, []);
+
+  // Milestone lines by threshold reached, resolved from labels.
+  const milestoneLine = (p: number): string => {
+    if (p >= 100) return labels.m100;
+    if (p >= 75) return labels.m75;
+    if (p >= 50) return labels.m50;
+    if (p >= 25) return labels.m25;
+    if (p >= 1) return labels.m1;
+    return labels.m0;
+  };
+  const milestoneKey = (p: number): number =>
+    p >= 100 ? 100 : p >= 75 ? 75 : p >= 50 ? 50 : p >= 25 ? 25 : p >= 1 ? 1 : 0;
+
   // Visuals run on fxPower: Go Horse mode pins the meter at "infinite
   // productivity" (100) regardless of the real power, which burnout zeroed.
   const fxPower = goHorse ? 100 : power;
   const tier = tierFor(fxPower);
-  const milestone = milestoneFor(power);
   const atTotal = power >= 100;
 
-  // The "termos inteligentes" counter only ticks at total force. Dopamine.
+  // The "smart terms" counter only ticks at full power. Dopamine.
   useEffect(() => {
     if (!atTotal) return;
     const id = window.setInterval(() => setTerms((t) => t + Math.floor(3 + Math.random() * 12)), 130);
@@ -94,9 +204,9 @@ export default function MegaBrainConsole() {
   // Go Horse mode: cycle the axiom lore on a lazy interval.
   useEffect(() => {
     if (!goHorse) return;
-    const id = window.setInterval(() => setAxiomIdx((i) => (i + 1) % XGH_AXIOMS.length), 3200);
+    const id = window.setInterval(() => setAxiomIdx((i) => (i + 1) % xgh.length), 3200);
     return () => window.clearInterval(id);
-  }, [goHorse]);
+  }, [goHorse, xgh.length]);
 
   // Cancel any ramp on unmount.
   useEffect(() => () => {
@@ -107,7 +217,7 @@ export default function MegaBrainConsole() {
 
   const stopRamp = () => { if (rampRef.current) { cancelAnimationFrame(rampRef.current); rampRef.current = null; } };
 
-  // FORÇA TOTAL button: satisfying ramp from wherever you are to 100%.
+  // FULL POWER button: satisfying ramp from wherever you are to 100%.
   const forcaTotal = useCallback(() => {
     stopRamp();
     const start = performance.now();
@@ -124,7 +234,7 @@ export default function MegaBrainConsole() {
     rampRef.current = requestAnimationFrame(step);
   }, [power]);
 
-  // "desligar" is the master reset: it also clears a burnout / Go Horse state.
+  // "turn off" is the master reset: it also clears a burnout / Go Horse state.
   const desligar = () => {
     stopRamp();
     if (failTimerRef.current) { window.clearTimeout(failTimerRef.current); failTimerRef.current = null; }
@@ -142,9 +252,9 @@ export default function MegaBrainConsole() {
     stopRamp();
     setPower(0);
     setTerms(0);
+    // PRIME 05/07/2026: the tribute stays up until the user taps the beer mug
+    // (the mano dot); no auto-dismiss, so the shout-out is deliberate.
     setReacting(true);
-    if (manoTimerRef.current) window.clearTimeout(manoTimerRef.current);
-    manoTimerRef.current = window.setTimeout(() => setReacting(false), 4200);
   };
 
   // Boss key: hide the console behind a random 1980s work app (Lotus 1-2-3
@@ -152,8 +262,8 @@ export default function MegaBrainConsole() {
   const bossKey = () => setBossApp(Math.random() < 0.5 ? "lotus" : "wordstar");
 
   // FAIL-SAFE (the red dot). First press: the Mega Brain overloads (burnout
-  // shudder, ~1.5s), then the console fails over to "modo Go Horse", where
-  // thinking is disabled by design (Axioma nº 1) and productivity reads ∞.
+  // shudder, ~1.5s), then the console fails over to Go Horse mode, where
+  // thinking is disabled by design (Axiom nº 1) and productivity reads infinite.
   // Second press restores the exact pre-burnout power. PRIME's spec: "Mega
   // Brain is suffering burnout, ENGAGE GO-HORSE FTW!"
   const failSafe = () => {
@@ -175,7 +285,8 @@ export default function MegaBrainConsole() {
       setAxiomIdx(0);
       setGoHorse(true);
       failTimerRef.current = null;
-    }, 1500);
+      // PRIME 05/07/2026: 3000ms (was 1500) so the burnout message reads longer.
+    }, 3000);
   };
 
   // Brain scale + glow scale with power.
@@ -184,26 +295,30 @@ export default function MegaBrainConsole() {
 
   return (
     <>
-    <div className={`mb-console mb-tier-${tier}${burnout ? " mb-burnout" : ""}${goHorse ? " mb-goh" : ""}`} data-total={atTotal ? "1" : "0"}>
+    <div className={`mb-console mb-tier-${tier}${burnout ? " mb-burnout" : ""}${goHorse ? " mb-goh" : ""}`} data-total={atTotal ? "1" : "0"} data-vibe={vibeLevel} style={{ ["--mb-power" as string]: fxPower, ["--mb-power-pct" as string]: `${fxPower}%` }}>
       <div className="mb-titlebar">
         <button
           type="button"
           className="mb-dot mb-dot-failsafe"
           onClick={failSafe}
           aria-pressed={goHorse || burnout}
-          aria-label={goHorse || burnout ? "Desativar o fail-safe e restaurar o Mega Brain" : "Fail-safe: em caso de burnout, engajar modo Go Horse"}
-          title={goHorse || burnout ? "Restaurar o Mega Brain" : "FAIL-SAFE: burnout? ENGAGE GO-HORSE FTW!"}
+          aria-label={goHorse || burnout ? labels.failsafeRestoreAria : labels.failsafeEngageAria}
+          title={goHorse || burnout ? labels.failsafeRestoreTitle : labels.failsafeEngageTitle}
         />
-        <button type="button" className="mb-dot mb-dot-mano" onClick={reactDoMano} aria-label="Homenagem ao Mano Deyvin" title="O react do Mano" />
-        <button type="button" className="mb-dot mb-dot-boss" onClick={bossKey} aria-label="Botão do chefe: minimiza o console" title="Botão do chefe" />
-        <span className="mb-titlebar-text mono">/dev/fun — console_do_mega_brain.exe</span>
+        <button type="button" className={`mb-dot mb-dot-mano${reacting ? " mb-dot-mano-cheer" : ""}`} onClick={reacting ? () => setReacting(false) : reactDoMano} aria-label={labels.manoAria} title={labels.manoTitle} />
+        <button type="button" className="mb-dot mb-dot-boss" onClick={bossKey} aria-label={labels.bossAria} title={labels.bossTitle} />
+        <span className="mb-titlebar-text mono">{labels.titlebar}</span>
         {/* PRIME 04/07/2026: the frame carries the site's own address, and both
             it and the ✕ exit to the home page (the ✕ used to go to /tools). */}
-        <Link href="/" className="mb-titlebar-url mono" title="ronutz.com">ronutz.com/</Link>
-        <Link href="/" className="mb-close" aria-label="Fechar janela e voltar à página inicial" title="Fechar janela">✕</Link>
+        <Link href="/" className="mb-titlebar-url mono" title={labels.homeTitle}>ronutz.com/</Link>
+        <Link href="/" className="mb-close" aria-label={labels.closeAria} title={labels.close}>✕</Link>
       </div>
 
-      <div className="mb-stage" aria-hidden="true">
+      <div
+        className={`mb-stage${goHorse ? " mb-stage-goh" : ""}`}
+        aria-hidden="true"
+        onClick={goHorse ? failSafe : onBrainClick}
+      >
         <div className="mb-aura" style={{ opacity: 0.15 + (fxPower / 100) * 0.85, transform: `scale(${1 + fxPower / 60})` }} />
         <div className="mb-brain-scale" style={{ transform: `scale(${scale})` }}>
           <div
@@ -215,24 +330,52 @@ export default function MegaBrainConsole() {
         </div>
         {tier >= 4 && <div className="mb-rays" />}
         {goHorse && <div className="mb-gallop">🐴</div>}
+        {pop && (
+          <div key={pop.id} className="mb-clickpop mono">
+            {pop.text}
+          </div>
+        )}
       </div>
 
       {/* aria-live goes quiet in Go Horse mode; the axiom carousel would spam
           screen readers on every 3.2s tick otherwise. */}
       <div className="mb-readout" role="status" aria-live={goHorse ? "off" : "polite"}>
         <div className="mb-percent mono">{goHorse ? "∞" : burnout ? "ERR" : power}<span className="mb-percent-sign">%</span></div>
-        <div key={goHorse ? `xgh-${axiomIdx}` : burnout ? "burnout" : milestone.at} className="mb-milestone">
-          {goHorse ? XGH_AXIOMS[axiomIdx] : burnout ? "⚠ SOBRECARGA CRÍTICA: BURNOUT DO MEGA BRAIN DETECTADO" : milestone.line}
+        <div key={goHorse ? `xgh-${axiomIdx}` : burnout ? "burnout" : milestoneKey(power)} className="mb-milestone">
+          {goHorse ? xgh[axiomIdx] : burnout ? labels.burnoutReadout : milestoneLine(power)}
         </div>
       </div>
 
+      {/* PRIME 05/07/2026: the fail-safe / Go Horse banner sits ABOVE the
+          slider now (was below the buttons). */}
+      {(burnout || goHorse) && (
+        <div className={`mb-goh-banner ${goHorse ? "is-goh" : "is-burnout"}`} role="status">
+          {goHorse ? (
+            <>
+              <p className="mb-goh-line">{labels.gohLine}</p>
+              <p className="mb-goh-sub mono">{labels.gohSub}</p>
+              <p className="mb-goh-fine">
+                {labels.gohFinePre}
+                <a href={xghHref} target="_blank" rel="noopener noreferrer">{labels.gohFineLink}</a>
+                {labels.gohFinePost}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mb-goh-line">{labels.burnoutLine}</p>
+              <p className="mb-goh-sub mono">{labels.burnoutSub}</p>
+            </>
+          )}
+        </div>
+      )}
+
       <div className="mb-powerbar">
         <div className={`mb-powerbar-fill${goHorse ? " mb-powerbar-fill-goh" : ""}`} style={{ width: `${fxPower}%` }} />
-        <span className="mb-powerbar-label mono">{goHorse ? "PRODUTIVIDADE XGH" : "POTÊNCIA DO MEGA BRAIN"}</span>
+        <span className="mb-powerbar-label mono">{goHorse ? labels.meterLabelGoh : labels.meterLabel}</span>
       </div>
 
       <div className="mb-lever-wrap">
-        <label htmlFor="mb-lever" className="mb-lever-label mono">FORÇA</label>
+        <label htmlFor="mb-lever" className="mb-lever-label mono">{labels.leverLabel}</label>
         <input
           id="mb-lever"
           className="mb-lever"
@@ -241,32 +384,36 @@ export default function MegaBrainConsole() {
           max={100}
           value={power}
           onChange={(e) => onLever(parseInt(e.target.value, 10))}
-          aria-label="Força do Mega Brain"
+          aria-label={labels.leverAria}
           disabled={goHorse || burnout}
-          title={goHorse ? "Pensou, não é XGH." : undefined}
+          title={goHorse ? labels.leverTitleGoh : undefined}
         />
       </div>
-      <p className="mb-lever-hint mono">{goHorse ? "pensar está temporariamente desativado (Axioma nº 1)" : "arraste o controle para carregar o poder"}</p>
+      <p className="mb-lever-hint mono">{goHorse ? labels.leverHintGoh : labels.leverHint}</p>
 
       <div className="mb-buttons">
-        <button type="button" className="mb-btn mb-btn-forca" onClick={forcaTotal} disabled={goHorse || burnout} title={goHorse || burnout ? "Pensou, não é XGH." : undefined}>
-          ⚡ FORÇA TOTAL
+        <button type="button" className="mb-btn mb-btn-forca" onClick={forcaTotal} disabled={goHorse || burnout} title={goHorse || burnout ? labels.disabledTitleGoh : undefined}>
+          {labels.fullPower}
         </button>
         <button type="button" className="mb-btn mb-btn-off" onClick={desligar}>
-          desligar
+          {labels.turnOff}
         </button>
       </div>
 
       {reacting && (
-        <div className="mb-mano-overlay" role="status" onClick={() => setReacting(false)}>
+        <div className="mb-mano-overlay" role="status">
+          <div className="mb-mano-cheer-arrow" aria-hidden="true">
+            <span className="mb-mano-cheer-text mono">{labels.manoCheersArrow}</span>
+            <span className="mb-mano-cheer-caret">↑</span>
+          </div>
           <div className="mb-mano-card">
             <p className="mb-mano-emoji">🍺</p>
-            <p className="mb-mano-line">REALITY CHECK</p>
-            <p className="mb-mano-sub">Calma no hype: no fim, é só engenharia de prompt com boa comunicação. E tá tudo bem.</p>
+            <p className="mb-mano-line">{labels.manoRealityCheck}</p>
+            <p className="mb-mano-sub">{labels.manoSub}</p>
             <p className="mb-mano-credit">
-              Homenagem ao{" "}
-              <a href="https://youtube.com/@manodeyvin" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>Mano Deyvin</a>
-              , o react que começou a zoeira. 🤙
+              {labels.manoCreditPre}
+              <a href={manoHref} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>{labels.manoCreditName}</a>
+              {labels.manoCreditPost}
             </p>
           </div>
         </div>
@@ -274,38 +421,16 @@ export default function MegaBrainConsole() {
 
       {atTotal && (
         <div className="mb-total-banner">
-          <p className="mb-total-line">MODO FORÇA TOTAL ATIVADO 🧠🤯⚡</p>
-          <p className="mb-total-sub mono">termos inteligentes pesquisados: {terms.toLocaleString("pt-BR")}</p>
-          <p className="mb-total-fine">Copy Chief acionado no sistema. Investigando a atualidade do mercado…</p>
+          <p className="mb-total-line">{labels.totalBanner}</p>
+          <p className="mb-total-sub mono">{labels.totalTerms.replace("{count}", terms.toLocaleString(localeTag))}</p>
+          <p className="mb-total-fine">{labels.totalFine}</p>
         </div>
       )}
 
-      {(burnout || goHorse) && (
-        <div className={`mb-goh-banner ${goHorse ? "is-goh" : "is-burnout"}`} role="status">
-          {goHorse ? (
-            <>
-              <p className="mb-goh-line">🐴 FAIL-SAFE ATIVADO: ENGAGE GO-HORSE FTW!</p>
-              <p className="mb-goh-sub mono">pensar: DESATIVADO · produtividade: ∞ · qualidade: detalhe</p>
-              <p className="mb-goh-fine">
-                Homenagem ao lendário{" "}
-                <a href="https://gohorseprocess.com.br/extreme-go-horse-xgh/" target="_blank" rel="noopener noreferrer">eXtreme Go Horse (XGH)</a>
-                . O botão vermelho restaura o Mega Brain.
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="mb-goh-line">⚠ BURNOUT DO MEGA BRAIN DETECTADO</p>
-              <p className="mb-goh-sub mono">acionando fail-safe…</p>
-            </>
-          )}
-        </div>
-      )}
 
-      <p className="mb-disclaimer">
-        Isto não computa, não otimiza e não pesquisa termo nenhum. É um alívio de estresse. Se sentiu a dopamina, funcionou.
-      </p>
+      <p className="mb-disclaimer">{labels.disclaimer}</p>
     </div>
-    {bossApp && <BossApp kind={bossApp} onDismiss={() => setBossApp(null)} />}
+    {bossApp && <BossApp kind={bossApp} onDismiss={() => setBossApp(null)} hint={labels.bossHint} dismissLabel={labels.bossDismiss} />}
     </>
   );
 }

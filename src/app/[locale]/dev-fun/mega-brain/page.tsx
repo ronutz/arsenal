@@ -1,44 +1,57 @@
 // ============================================================================
 // src/app/[locale]/dev-fun/mega-brain/page.tsx
 // ----------------------------------------------------------------------------
-// /dev/fun — Console do Mega Brain. A pt-BR-only easter-egg page, deliberately
-// OUTSIDE the /tools framework (no catalogue entry, no golden vectors, no
-// dual-locale article requirement — it is a joke, not a deterministic tool).
-// pt-BR renders the console; every other locale is client-redirected to pt-BR.
+// /dev/fun — Mega Brain Console. An easter-egg page, deliberately OUTSIDE the
+// /tools framework (no catalogue entry, no golden vectors, no dual-locale
+// article requirement — it is a joke, not a deterministic tool).
+//
+// Localized (PRIME 05/07/2026, "translate the mega-brain tool to English"). It
+// used to render pt-BR only and client-redirect every other locale; now it
+// renders in ALL 16 locales, resolving the `megaBrain` i18n namespace and
+// handing the strings to the client console as props. EN + pt-BR authored
+// natively; the other 14 locales fall back to English per key until translated.
 // [locale] static params come from the layout, so no generateStaticParams here.
 // ============================================================================
 
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import MegaBrainConsole from "@/components/dev-fun/MegaBrainConsole";
-import MegaBrainRedirect from "@/components/dev-fun/MegaBrainRedirect";
+import MegaBrainConsole, { type MegaBrainLabels } from "@/components/dev-fun/MegaBrainConsole";
 
-const OG_TITLE = "🧠 Console do Mega Brain — FORÇA TOTAL";
-const OG_DESC = "Ative o Mega Brain e empurre a força até 100%. Um alívio de estresse pra dev, com direito ao react do Mano. 🍺";
+const MANO_HREF = "https://youtube.com/@manodeyvin";
+const XGH_HREF = "https://gohorseprocess.com.br/extreme-go-horse-xgh/";
+// og-mega-brain.png renders pt-BR text baked into the image, so the social
+// card stays pt-BR-worded regardless of locale; the OG copy is drawn from the
+// pt-BR pack explicitly so a change there keeps the image and card in sync.
+const OG_IMAGE = "/og-mega-brain.png";
 
-// Funny, curiosity-sparking social preview (og-mega-brain.png). The tool is
-// pt-BR only, so the card is pt-BR regardless of the locale segment.
-export function generateMetadata(): Metadata {
-  const image = { url: "/og-mega-brain.png", width: 1200, height: 630, alt: "Console do Mega Brain — FORÇA TOTAL 100%" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "megaBrain" });
+  const title = t("ogTitle");
+  const description = t("ogDesc");
+  const image = { url: OG_IMAGE, width: 1200, height: 630, alt: t("ogAlt") };
   return {
-    title: OG_TITLE,
-    description: OG_DESC,
+    title,
+    description,
     openGraph: {
-      title: OG_TITLE,
-      description: OG_DESC,
+      title,
+      description,
       type: "website",
-      locale: "pt_BR",
       siteName: "ronutz.com",
-      url: "https://ronutz.com/pt-BR/dev-fun/mega-brain",
+      url: `https://ronutz.com/${locale}/dev-fun/mega-brain`,
       images: [image],
     },
     twitter: {
       card: "summary_large_image",
-      title: OG_TITLE,
-      description: OG_DESC,
-      images: ["/og-mega-brain.png"],
+      title,
+      description,
+      images: [OG_IMAGE],
     },
   };
 }
@@ -50,15 +63,79 @@ export default async function MegaBrainPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const isPt = locale === "pt-BR";
+  const t = await getTranslations("megaBrain");
+
+  // Resolve every console string from the catalog into the props bundle.
+  const labels: MegaBrainLabels & { bossHint: string; bossDismiss: string } = {
+    titlebar: t("titlebar"),
+    close: t("close"),
+    closeAria: t("closeAria"),
+    homeTitle: t("homeTitle"),
+    failsafeEngageAria: t("failsafeEngageAria"),
+    failsafeEngageTitle: t("failsafeEngageTitle"),
+    failsafeRestoreAria: t("failsafeRestoreAria"),
+    failsafeRestoreTitle: t("failsafeRestoreTitle"),
+    manoAria: t("manoAria"),
+    manoTitle: t("manoTitle"),
+    manoCheersArrow: t("manoCheersArrow"),
+    bossAria: t("bossAria"),
+    bossTitle: t("bossTitle"),
+    m0: t("m0"),
+    m1: t("m1"),
+    m25: t("m25"),
+    m50: t("m50"),
+    m75: t("m75"),
+    m100: t("m100"),
+    meterLabel: t("meterLabel"),
+    meterLabelGoh: t("meterLabelGoh"),
+    burnoutReadout: t("burnoutReadout"),
+    leverLabel: t("leverLabel"),
+    leverAria: t("leverAria"),
+    leverHint: t("leverHint"),
+    leverHintGoh: t("leverHintGoh"),
+    leverTitleGoh: t("leverTitleGoh"),
+    fullPower: t("fullPower"),
+    turnOff: t("turnOff"),
+    disabledTitleGoh: t("disabledTitleGoh"),
+    manoRealityCheck: t("manoRealityCheck"),
+    manoSub: t("manoSub"),
+    manoCreditPre: t("manoCreditPre"),
+    manoCreditName: t("manoCreditName"),
+    manoCreditPost: t("manoCreditPost"),
+    totalBanner: t("totalBanner"),
+    totalTerms: t("totalTerms"),
+    totalFine: t("totalFine"),
+    gohLine: t("gohLine"),
+    gohSub: t("gohSub"),
+    gohFinePre: t("gohFinePre"),
+    gohFineLink: t("gohFineLink"),
+    gohFinePost: t("gohFinePost"),
+    burnoutLine: t("burnoutLine"),
+    burnoutSub: t("burnoutSub"),
+    disclaimer: t("disclaimer"),
+    bossHint: t("bossHint"),
+    bossDismiss: t("bossDismiss"),
+  };
+  // XGH axiom lore (axiom 1 quoted, the rest original riffs).
+  const xgh = t.raw("xgh") as string[];
+  const clickPhrases = t.raw("clickPhrases") as string[];
 
   return (
     <>
       <Header />
       <main id="main">
-        <section className="section">
+        {/* Slim top: the console is its own framed box, so the section's
+            large top padding just stranded it below the header (PRIME). */}
+        <section className="section mb-section">
           <div className="container mb-page-container">
-            {isPt ? <MegaBrainConsole /> : <MegaBrainRedirect />}
+            <MegaBrainConsole
+              labels={labels}
+              xgh={xgh}
+              clickPhrases={clickPhrases}
+              manoHref={MANO_HREF}
+              xghHref={XGH_HREF}
+              localeTag={locale}
+            />
           </div>
         </section>
       </main>

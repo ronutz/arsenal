@@ -24,6 +24,10 @@ import { useEffect } from "react";
 interface BossAppProps {
   kind: "lotus" | "wordstar";
   onDismiss: () => void;
+  /** Localized "press any key" hint (server-provided). */
+  hint: string;
+  /** Localized aria-label for the dismiss overlay (server-provided). */
+  dismissLabel: string;
 }
 
 // ---- Lotus 1-2-3 -----------------------------------------------------------
@@ -45,7 +49,7 @@ const LOTUS_ROWS: Array<[number, string[]]> = [
   [11, ["Growth", "4.2%", "5.1%", "7.0%", ""]],
 ];
 
-function Lotus() {
+function Lotus({ hint }: { hint: string }) {
   return (
     <div className="boss-screen boss-lotus">
       <div className="lotus-panel">
@@ -73,7 +77,7 @@ function Lotus() {
       <div className="lotus-fill" />
       <div className="lotus-status">
         <span>01-Aug-26</span>
-        <span className="boss-hint">‹ press any key ›</span>
+        <span className="boss-hint">{hint}</span>
         <span>CALC NUM</span>
       </div>
     </div>
@@ -103,7 +107,7 @@ const WS_DOC = `                 STATUS REPORT
 
       No action is required at this time.`;
 
-function WordStar() {
+function WordStar({ hint }: { hint: string }) {
   return (
     <div className="boss-screen boss-wordstar">
       <div className="ws-status">
@@ -118,12 +122,12 @@ function WordStar() {
         <span className="ws-cursor">▮</span>
       </pre>
       <div className="ws-fill" />
-      <div className="boss-hint ws-hint">‹ press any key ›</div>
+      <div className="boss-hint ws-hint">{hint}</div>
     </div>
   );
 }
 
-export default function BossApp({ kind, onDismiss }: BossAppProps) {
+export default function BossApp({ kind, onDismiss, hint, dismissLabel }: BossAppProps) {
   // Any key returns to the console. Listener lives on window so focus does not
   // matter; cleaned up when the boss app unmounts.
   useEffect(() => {
@@ -137,10 +141,10 @@ export default function BossApp({ kind, onDismiss }: BossAppProps) {
       className="boss-overlay"
       role="button"
       tabIndex={0}
-      aria-label="Aplicação de trabalho. Pressione qualquer tecla ou clique para voltar ao console."
+      aria-label={dismissLabel}
       onClick={onDismiss}
     >
-      {kind === "lotus" ? <Lotus /> : <WordStar />}
+      {kind === "lotus" ? <Lotus hint={hint} /> : <WordStar hint={hint} />}
     </div>
   );
 }
