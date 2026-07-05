@@ -25,6 +25,7 @@ import { routing } from "@/i18n/routing";
 import { dirFor, getLocale } from "@/i18n/locales";
 import InputModality from "@/components/InputModality";
 import MachineTranslationNotice from "@/components/MachineTranslationNotice";
+import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import "@/app/globals.css";
 
 // Canon typography: Inter (prose) + JetBrains Mono (data/codes/BCP-47 tags).
@@ -124,6 +125,10 @@ export default async function LocaleLayout({
   // passing messages explicitly, client components get MISSING_MESSAGE.
   const messages = await getMessages();
 
+  // Site-wide keyboard-shortcut labels (the boss-key overlay wording), resolved
+  // here in the page's language and handed to the client listener as props.
+  const tShortcuts = await getTranslations({ locale, namespace: "shortcuts" });
+
   return (
     <html lang={locale} dir={dir} className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
@@ -138,6 +143,10 @@ export default async function LocaleLayout({
         {/* Tracks last input modality (keyboard vs pointer) so the skip link
             reveals only for keyboard users — see InputModality. */}
         <InputModality />
+        {/* Site-wide keyboard shortcuts (t/l/m/z navigation + b boss key). The
+            listener stays inert whenever a form field is focused or a modifier
+            is held — see KeyboardShortcuts. */}
+        <KeyboardShortcuts bossHint={tShortcuts("bossHint")} bossDismiss={tShortcuts("bossDismiss")} />
         {/* Honesty banner: machine-draft locales announce themselves and link to
             the contribute page. Rendered above page content, hidden on English
             and any human-reviewed locale. */}

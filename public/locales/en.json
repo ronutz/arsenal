@@ -3346,6 +3346,49 @@
         "allowServiceDefault": "The self IP \"{name}\" sets no allowService. Since DO 1.36 the default changed from `default` to `none`, so it now allows no services unless you set them explicitly.",
         "asyncNote": "async is true, so DO returns a 202 with a task id immediately; poll the task with GET until it completes."
       }
+    },
+    "telemetry-streaming-explainer": {
+      "name": "Telemetry Streaming (TS) explainer",
+      "blurb": "Paste the JSON you POST to /mgmt/shared/telemetry/declare and it reads it back: it confirms the top-level Telemetry class, reads the optional Controls, and walks every class-object grouped by its role in the telemetry pipeline: the data sources that produce telemetry (system pollers, event listeners), the consumers that forward it out (Splunk, Azure, AWS, DataDog, Prometheus, and the rest of the catalogue), and the grouping and endpoint classes. It flags the pipeline gaps that make a declaration succeed but do nothing. TS is the third F5 Automation Toolchain extension: AS3 and DO configure the box, TS observes it.",
+      "inputLabel": "A TS declaration (the JSON you POST to /mgmt/shared/telemetry/declare)",
+      "inputPlaceholder": "{\n  \"class\": \"Telemetry\",\n  \"My_System\": {\n    \"class\": \"Telemetry_System\",\n    \"systemPoller\": { \"interval\": 60 }\n  },\n  \"My_Consumer\": {\n    \"class\": \"Telemetry_Consumer\",\n    \"type\": \"Splunk\",\n    \"host\": \"192.0.2.1\",\n    \"passphrase\": { \"cipherText\": \"apikey\" }\n  }\n}",
+      "runsLocally": "Decoding runs locally in your browser. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "empty": "Paste a TS declaration to see it explained.",
+      "scopeNote": "This is a structure explainer and sanity checker, not a full JSON-Schema validator. It never contacts a BIG-IP and nothing you paste leaves the browser. A declaration that passes here can still be rejected by TS itself. Note: F5 has placed Telemetry Streaming in maintenance mode; it remains supported with critical and security fixes, with no deprecation planned.",
+      "walkHeading": "The telemetry pipeline",
+      "walkOrderNote": "Grouped by each class's role: data sources produce telemetry (system pollers collect statistics, event listeners ingest logs), consumers forward it to an external system, and the supporting classes group and extend the rest. A working declaration needs at least one source and at least one consumer.",
+      "unknownClass": "(class not in this tool's catalog, but still reported)",
+      "findingsHeading": "Findings",
+      "kind": {
+        "telemetry": "Telemetry declaration",
+        "notTelemetry": "Not a TS declaration"
+      },
+      "controls": {
+        "logLevel": "logLevel",
+        "debug": "debug",
+        "on": "on",
+        "off": "off",
+        "memoryMonitor": "memoryMonitor set (beta)"
+      },
+      "stats": {
+        "objects": "objects",
+        "sources": "data sources",
+        "consumers": "consumers",
+        "namespaces": "namespaces"
+      },
+      "finding": {
+        "parseError": "JSON parse error",
+        "notTelemetry": "This is not a TS declaration. The top-level class must be Telemetry.",
+        "noSource": "No data source. Add a Telemetry_System (with a systemPoller) or a Telemetry_Listener, or the declaration collects nothing to forward.",
+        "noConsumer": "No consumer. Add a Telemetry_Consumer (push) or Telemetry_Pull_Consumer (pull), or the telemetry has nowhere to go.",
+        "systemWithoutPoller": "The Telemetry_System \"{name}\" has no systemPoller (and no iHealthPoller). To collect metrics, a Telemetry_System must define systemPoller.",
+        "consumerMissingType": "The consumer \"{name}\" has no type. A Telemetry_Consumer must set a type to select its target.",
+        "consumerUnknownType": "The consumer \"{name}\" has type \"{type}\", which is not in this tool's catalogue of TS consumer types (it may be newer than this build, or a typo).",
+        "namespacesPresent": "This declaration uses Telemetry_Namespace: pollers, listeners, and consumers inside a namespace operate as an isolated unit and only see each other.",
+        "controlsNote": "Controls is set with logLevel \"{logLevel}\" (used for logging and debugging; set debug true to send a test event to your consumers)."
+      }
     }
   },
   "privacy_page": {
@@ -3382,7 +3425,9 @@
     "updated": "Last updated: 30 June 2026",
     "backHome": "Back to home",
     "prefsTitle": "Theme, language, and what this site remembers",
-    "prefsBody": "Your theme choice is stored only in this browser's localStorage, on your device, and applied before first paint on your next visit; there is no cookie, no account, and no server that ever sees it, which also means it cannot follow you: a private window, cleared site data, or a different browser or device starts you back at the default theme by design. Your language is not stored anywhere at all, because it lives in the address itself: /en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it, while visiting the bare domain serves the default. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them."
+    "prefsBody": "Your theme choice is stored only in this browser's localStorage, on your device, and applied before first paint on your next visit; there is no cookie, no account, and no server that ever sees it, which also means it cannot follow you: a private window, cleared site data, or a different browser or device starts you back at the default theme by design. Your language is not stored anywhere at all, because it lives in the address itself: /en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it, while visiting the bare domain serves the default. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
+    "shortcutsTitle": "Keyboard shortcuts",
+    "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore."
   },
   "footer": {
     "redEducation": "Book official training with <b>Red Education</b>",
@@ -4425,7 +4470,8 @@
           "What's the business case?"
         ]
       }
-    }
+    },
+    "devFunTitle": "Back to /dev/fun"
   },
   "devFun": {
     "metaTitle": "/dev/fun",
@@ -4449,7 +4495,7 @@
     "ogTitle": "🧠 Mega Brain Console — FULL POWER",
     "ogDesc": "Fire up the Mega Brain and push the power to 100%. A stress reliever for devs, with a reality check included. 🍺",
     "ogAlt": "Mega Brain Console — FULL POWER 100%",
-    "titlebar": "/dev/fun — mega_brain_console.exe",
+    "titlebar": " — mega_brain_console.exe",
     "close": "Close window",
     "closeAria": "Close window and return to the home page",
     "homeTitle": "ronutz.com",
@@ -4459,7 +4505,6 @@
     "failsafeRestoreTitle": "Restore the Mega Brain",
     "manoAria": "Tribute to Mano Deyvin",
     "manoTitle": "Mano's reality check",
-    "manoCheersArrow": "Cheers to him",
     "bossAria": "Boss key: minimize the console",
     "bossTitle": "Boss key",
     "m0": "Mega Brain at rest. 🧠",
@@ -4533,6 +4578,13 @@
       "Tokens well spent.",
       "It's not the syntax. It's the INTENT.",
       "Smart term searched. Allegedly."
-    ]
+    ],
+    "stopLabel": "STOP",
+    "manoDismiss": "click anywhere to dismiss",
+    "devFunTitle": "Back to /dev/fun"
+  },
+  "shortcuts": {
+    "bossHint": "‹ press any key ›",
+    "bossDismiss": "Work application. Press any key or click to return."
   }
 }

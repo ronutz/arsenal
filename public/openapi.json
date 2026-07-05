@@ -5127,6 +5127,96 @@
         }
       }
     },
+    "/telemetry-streaming-explainer": {
+      "get": {
+        "tags": [
+          "F5 automation (AS3 / DO)"
+        ],
+        "operationId": "run_telemetry_streaming_explainer",
+        "summary": "Telemetry Streaming (TS) explainer",
+        "description": "Paste the JSON you POST to /mgmt/shared/telemetry/declare and it reads it back: it confirms the top-level Telemetry class, reads the optional Controls, and walks every class-object grouped by its role in the telemetry pipeline: the data sources that produce telemetry (system pollers, event listeners), the consumers that forward it out (Splunk, Azure, AWS, DataDog, Prometheus, and the rest of the catalogue), and the grouping and endpoint classes. It flags the pipeline gaps that make a declaration succeed but do nothing. TS is the third F5 Automation Toolchain extension: AS3 and DO configure the box, TS observes it. Standards: F5 BIG-IP Telemetry Streaming, F5 TS schema reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{ \"class\": \"Telemetry\", \"My_System\": { \"class\": \"Telemetry_System\", \"systemPoller\": { \"interval\": 60 } } }"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 automation (AS3 / DO)"
+        ],
+        "operationId": "run_telemetry_streaming_explainer_post",
+        "summary": "Telemetry Streaming (TS) explainer (POST)",
+        "description": "Paste the JSON you POST to /mgmt/shared/telemetry/declare and it reads it back: it confirms the top-level Telemetry class, reads the optional Controls, and walks every class-object grouped by its role in the telemetry pipeline: the data sources that produce telemetry (system pollers, event listeners), the consumers that forward it out (Splunk, Azure, AWS, DataDog, Prometheus, and the rest of the catalogue), and the grouping and endpoint classes. It flags the pipeline gaps that make a declaration succeed but do nothing. TS is the third F5 Automation Toolchain extension: AS3 and DO configure the box, TS observes it. Standards: F5 BIG-IP Telemetry Streaming, F5 TS schema reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "{ \"class\": \"Telemetry\", \"My_System\": { \"class\": \"Telemetry_System\", \"systemPoller\": { \"interval\": 60 } } }"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/totp-hotp": {
       "get": {
         "tags": [

@@ -23,6 +23,7 @@ import BossApp from "@/components/dev-fun/BossApp";
 /** Every string the console renders, resolved by the server page. */
 export interface MegaBrainLabels {
   titlebar: string;
+  devFunTitle: string;
   close: string;
   closeAria: string;
   homeTitle: string;
@@ -32,7 +33,7 @@ export interface MegaBrainLabels {
   failsafeRestoreTitle: string;
   manoAria: string;
   manoTitle: string;
-  manoCheersArrow: string;
+  manoDismiss: string;
   bossAria: string;
   bossTitle: string;
   m0: string;
@@ -51,6 +52,7 @@ export interface MegaBrainLabels {
   leverTitleGoh: string;
   fullPower: string;
   turnOff: string;
+  stopLabel: string;
   disabledTitleGoh: string;
   manoRealityCheck: string;
   manoSub: string;
@@ -307,8 +309,35 @@ export default function MegaBrainConsole({
         />
         <button type="button" className={`mb-dot mb-dot-mano${reacting ? " mb-dot-mano-cheer" : ""}`} onClick={reacting ? () => setReacting(false) : reactDoMano} aria-label={labels.manoAria} title={labels.manoTitle} />
         <button type="button" className="mb-dot mb-dot-boss" onClick={bossKey} aria-label={labels.bossAria} title={labels.bossTitle} />
-        <span className="mb-titlebar-text mono">{labels.titlebar}</span>
-        {/* PRIME 04/07/2026: the frame carries the site's own address, and both
+        <span className="mb-titlebar-text mono">
+          <Link href="/dev-fun" className="mb-titlebar-devfun" title={labels.devFunTitle}>/dev/fun</Link>
+          {labels.titlebar}
+        </span>
+        {/* PRIME 05/07/2026: the two power controls now live as pills in the
+            upper frame — Força Total as a fixed-pink lightning pill (a constant
+            pink, distinct from the power-reactive brain glow), and STOP as a red
+            octagonal emergency-stop button, mimicking a real e-stop. */}
+        <div className="mb-titlebar-actions">
+          <button
+            type="button"
+            className="mb-pill mb-pill-forca"
+            onClick={forcaTotal}
+            disabled={goHorse || burnout}
+            title={goHorse || burnout ? labels.disabledTitleGoh : undefined}
+          >
+            {labels.fullPower}
+          </button>
+          <button
+            type="button"
+            className="mb-pill mb-pill-stop"
+            onClick={desligar}
+            aria-label={labels.turnOff}
+            title={labels.turnOff}
+          >
+            <span className="mb-pill-stop-text">{labels.stopLabel}</span>
+          </button>
+        </div>
+        {/* PRIME 05/07/2026: the frame carries the site's own address, and both
             it and the ✕ exit to the home page (the ✕ used to go to /tools). */}
         <Link href="/" className="mb-titlebar-url mono" title={labels.homeTitle}>ronutz.com/</Link>
         <Link href="/" className="mb-close" aria-label={labels.closeAria} title={labels.close}>✕</Link>
@@ -391,21 +420,13 @@ export default function MegaBrainConsole({
       </div>
       <p className="mb-lever-hint mono">{goHorse ? labels.leverHintGoh : labels.leverHint}</p>
 
-      <div className="mb-buttons">
-        <button type="button" className="mb-btn mb-btn-forca" onClick={forcaTotal} disabled={goHorse || burnout} title={goHorse || burnout ? labels.disabledTitleGoh : undefined}>
-          {labels.fullPower}
-        </button>
-        <button type="button" className="mb-btn mb-btn-off" onClick={desligar}>
-          {labels.turnOff}
-        </button>
-      </div>
 
       {reacting && (
-        <div className="mb-mano-overlay" role="status">
-          <div className="mb-mano-cheer-arrow" aria-hidden="true">
-            <span className="mb-mano-cheer-text mono">{labels.manoCheersArrow}</span>
-            <span className="mb-mano-cheer-caret">↑</span>
-          </div>
+        <div
+          className="mb-mano-overlay"
+          role="status"
+          onClick={() => setReacting(false)}
+        >
           <div className="mb-mano-card">
             <p className="mb-mano-emoji">🍺</p>
             <p className="mb-mano-line">{labels.manoRealityCheck}</p>
@@ -415,6 +436,7 @@ export default function MegaBrainConsole({
               <a href={manoHref} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>{labels.manoCreditName}</a>
               {labels.manoCreditPost}
             </p>
+            <p className="mb-mano-dismiss mono">{labels.manoDismiss}</p>
           </div>
         </div>
       )}

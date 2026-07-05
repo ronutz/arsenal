@@ -28,6 +28,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import { Link } from "@/i18n/navigation";
 import MeetingBingo, { type BingoType } from "@/components/dev-fun/MeetingBingo";
 
 // The 9 meeting types, in display order. Ids are stable keys into the i18n
@@ -101,6 +102,9 @@ export default async function MeetingBingoPage({
         <section className="section">
           <div className="container bingo-page-container">
             <div className="bingo-head">
+              <p className="bingo-devfun mono">
+                <Link href="/dev-fun" className="bingo-devfun-link" title={t("devFunTitle")}>/dev/fun</Link>
+              </p>
               <h1 className="bingo-title">{t("title")}</h1>
               <p className="bingo-tagline">{t("tagline")}</p>
               <p className="bingo-intro">{t("intro")}</p>

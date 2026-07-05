@@ -44,6 +44,31 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "13:54",
+    kind: "feature",
+    title: "Site-wide keyboard shortcuts, and a Mega Brain console tune-up",
+    body:
+      "New single-key shortcuts on every page: b for the boss key (hide the page behind a 1980s work app until any key or click), t for the Tools index, l for the Learn index, m for the Mega Brain console, and z for Buzzword Bingo. They stay completely inert while you are typing (a focused text field, paste box, or search input keeps its keys) and when a modifier is held (so Ctrl+T and the like are never shadowed); they run entirely in the browser with no tracking, and are documented on the privacy and site-behavior page. Alongside that, the Mega Brain console got a tune-up: the FULL POWER and STOP controls moved into the window title bar as pills (FULL POWER a fixed-pink lightning pill, STOP a red octagonal emergency-stop button), the Mano Deyvin tribute overlay now dismisses on a click anywhere (fixing a mispointing cue and the sense that a timer was blocking it), and the /dev/fun label in the console frame is now a link back to the /dev/fun index, with a matching link added to Buzzword Bingo.",
+  },
+  {
+    date: "2026-07-05",
+    time: "13:10",
+    kind: "tool",
+    title: "New tool: Telemetry Streaming (TS) explainer",
+    body:
+      "The third F5 Automation Toolchain explainer, completing the AS3 / DO / TS set. Paste the JSON you POST to /mgmt/shared/telemetry/declare and it reads it back: it confirms the top-level Telemetry class, reads the optional Controls (logLevel, debug, the beta memoryMonitor), and walks every named class-object grouped by its role in the telemetry pipeline rather than by onboarding order. Data sources produce telemetry (a Telemetry_System with its systemPoller or iHealthPoller, a standalone Telemetry_System_Poller pulling from another BIG-IP, or a Telemetry_Listener ingesting events on TCP+UDP port 6514); consumers forward it out (Telemetry_Consumer push consumers with the full type catalogue: Splunk, Azure, AWS CloudWatch/S3, Graphite, Kafka, ElasticSearch, DataDog, Generic HTTP, OpenTelemetry and more, or Telemetry_Pull_Consumer pull consumers like Prometheus); and Telemetry_Namespace and Telemetry_Endpoints support the rest. The headline check is pipeline completeness: it flags a declaration that is valid but does nothing, consumers with no source, sources with no consumer, a Telemetry_System missing its systemPoller (the troubleshooting-doc gotcha), a Consumer missing its type, and it counts namespace-internal sources and consumers so a namespaced declaration is not falsely flagged. Where AS3 and DO configure the box, TS observes it. Grounded in F5 TS docs (clouddocs, TS 1.41-1.42); note TS is in maintenance mode per F5, still supported, no deprecation planned. Decode-only, nothing leaves the browser.",
+    tools: ["telemetry-streaming-explainer"],
+  },
+  {
+    date: "2026-07-05",
+    time: "13:10",
+    kind: "content",
+    title: "Learn article: Telemetry Streaming, the extension that observes",
+    body:
+      "The companion to the new explainer, in English and Portuguese. It places TS in the toolchain by what it does differently: AS3 and DO configure the BIG-IP, TS observes it, aggregating, normalizing, and forwarding stats and events to a consumer. It walks the flat Telemetry-class model (no tenant, no Common, unlike DO), the three object roles (sources produce, consumers forward, namespaces and endpoints support), the long push/pull consumer catalogue, and the failure that passes schema validation: an incomplete pipeline with a source but no consumer or a consumer but no source, including the Telemetry_System-without-systemPoller trap and the namespace-scoping subtlety. States plainly that F5 has placed TS in maintenance mode. Cross-linked to the DO and AS3 articles and the new tool.",
+  },
+  {
+    date: "2026-07-05",
     time: "10:30",
     kind: "tool",
     title: "New tool: DO declaration explainer + validator",

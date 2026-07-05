@@ -46,6 +46,7 @@ import { run as f5AwafEvasionRun } from "./f5-awaf-evasion-explainer";
 import { run as f5AwafPoisoningRun } from "./f5-awaf-learning-poisoning-estimator";
 import { run as as3Run } from "./as3-explainer-validator";
 import { run as doRun } from "./do-explainer-validator";
+import { run as tsRun } from "./telemetry-streaming-explainer";
 import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
 import { run as f5AwafLogRun } from "./f5-awaf-request-log-triage";
 import { run as f5AwafSuggRun } from "./f5-awaf-learning-suggestion-interpreter";
@@ -120,6 +121,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-awaf-learning-poisoning-estimator", structured: true, run: f5AwafPoisoningRun },
   { slug: "as3-explainer-validator", run: as3Run },
   { slug: "do-explainer-validator", run: doRun },
+  { slug: "telemetry-streaming-explainer", run: tsRun },
   { slug: "f5-awaf-false-positive-triage", structured: true, run: f5AwafFpRun },
   { slug: "f5-awaf-request-log-triage", run: f5AwafLogRun },
   { slug: "f5-awaf-learning-suggestion-interpreter", structured: true, run: f5AwafSuggRun },

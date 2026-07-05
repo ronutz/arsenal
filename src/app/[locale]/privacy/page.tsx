@@ -51,6 +51,7 @@ export default async function PrivacyPage({
     ["noTrackTitle", "noTrackBody"],
     ["browserTitle", "browserBody"],
     ["prefsTitle", "prefsBody"],
+    ["shortcutsTitle", "shortcutsBody"],
     ["hostingTitle", "hostingBody"],
     ["toolsTitle", "toolsBody"],
     ["contactTitle", "contactBody"],

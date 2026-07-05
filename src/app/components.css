@@ -7892,6 +7892,49 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .mb-titlebar-url { margin-left: auto; font-size: 0.72rem; color: #7c88b0; text-decoration: none; padding: 0.15rem 0.35rem; border-radius: 5px; transition: color 0.15s ease; }
 .mb-titlebar-url:hover, .mb-titlebar-url:focus-visible { color: #22d3ee; outline: none; }
 
+/* PRIME 05/07/2026: /dev/fun in the frame is a link back to the index. */
+.mb-titlebar-devfun { color: #22d3ee; text-decoration: none; border-radius: 4px; padding: 0 0.15rem; transition: color 0.15s ease, background-color 0.15s ease; }
+.mb-titlebar-devfun:hover, .mb-titlebar-devfun:focus-visible { color: #67e8f9; text-decoration: underline; outline: none; }
+
+/* PRIME 05/07/2026: the two power controls as pills in the upper frame. The
+   actions group sits between the frame title and the site address; on narrow
+   frames it wraps below rather than crowding. */
+.mb-titlebar-actions { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
+.mb-pill { border: none; cursor: pointer; font-weight: 800; transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.15s ease; }
+.mb-pill:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: saturate(0.5); }
+
+/* Força Total: a FIXED pink lightning pill — a constant hot pink, deliberately
+   NOT the power-reactive --mb-charge that drives the brain glow, so it reads the
+   same at 0% and 100%. */
+.mb-pill-forca {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: linear-gradient(90deg, #db2777, #ff2d95);
+  color: #fff; letter-spacing: 0.04em; font-size: 0.78rem;
+  padding: 0.34rem 0.7rem; border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(255, 45, 149, 0.45);
+}
+.mb-pill-forca:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 4px 14px rgba(255, 45, 149, 0.6); }
+.mb-pill-forca:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
+.mb-pill-forca:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* STOP: a red octagonal emergency-stop button, mimicking a real e-stop. The
+   octagon is a clip-path; the label sits centered on it. */
+.mb-pill-stop {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.1rem; height: 2.1rem; padding: 0;
+  background: radial-gradient(circle at 50% 38%, #ff4d4d, #c81e1e 70%, #9a0f0f);
+  color: #fff; font-size: 0.6rem; letter-spacing: 0.02em;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  box-shadow: 0 2px 8px rgba(200, 30, 30, 0.55), inset 0 0 0 2px rgba(255,255,255,0.25);
+}
+.mb-pill-stop-text { transform: none; font-weight: 900; }
+.mb-pill-stop:hover { transform: scale(1.06); filter: brightness(1.08); }
+.mb-pill-stop:active { transform: scale(0.96); }
+.mb-pill-stop:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .mb-pill, .mb-pill-forca, .mb-pill-stop { transition: none; }
+}
+
 .mb-stage {
   position: relative; height: 210px;
   display: flex; align-items: center; justify-content: center;
@@ -7979,13 +8022,9 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 }
 .mb-lever::-moz-range-thumb:active { cursor: grabbing; animation: none; }
 
-.mb-buttons { display: flex; flex-wrap: wrap; gap: 0.7rem; padding: 1rem 1.25rem 0; }
-.mb-btn { border: none; border-radius: 10px; font-weight: 700; cursor: pointer; padding: 0.7rem 1rem; transition: transform 0.12s ease, filter 0.2s ease; }
-.mb-btn-forca { flex: 1 1 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--mb-charge) 55%, #7c3aed), var(--mb-charge)); color: #fff; letter-spacing: 0.05em; font-size: 1rem; box-shadow: 0 6px 20px var(--mb-charge-soft); transition: background 0.12s linear, box-shadow 0.12s linear, transform 0.12s ease, filter 0.2s ease; }
-.mb-btn-forca:hover { transform: translateY(-1px); filter: brightness(1.1); }
-.mb-btn-forca:active { transform: translateY(1px) scale(0.99); }
-.mb-btn-off { background: #141c34; color: #8b97bf; font-size: 0.85rem; }
-.mb-btn-off:hover { filter: brightness(1.2); }
+/* PRIME 05/07/2026: the bottom .mb-buttons / .mb-btn-forca / .mb-btn-off rules
+   were removed when the two power controls became titlebar pills
+   (.mb-pill-forca / .mb-pill-stop, defined up in the titlebar section). */
 
 .mb-total-banner {
   margin: 1rem 1.25rem 0; padding: 0.9rem 1rem; text-align: center;
@@ -8194,26 +8233,18 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   background: rgba(7, 11, 22, 0.93); backdrop-filter: blur(3px);
   animation: mb-banner-in 0.3s ease;
 }
-.mb-mano-cheer-arrow {
-  position: absolute; top: 3rem; left: 1.55rem; z-index: 12;
-  display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
-  animation: mb-cheer-bob 1s ease-in-out infinite;
-}
-.mb-mano-cheer-text {
-  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.04em; color: #ffd591;
-  background: rgba(7, 11, 22, 0.9); padding: 0.2rem 0.5rem; border-radius: 7px;
-  border: 1px solid rgba(245, 166, 35, 0.7); white-space: nowrap;
-}
-.mb-mano-cheer-caret { font-size: 1.2rem; line-height: 1; color: #f5a623; order: -1; }
-@keyframes mb-cheer-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+/* PRIME 05/07/2026: the tribute overlay now dismisses on a click anywhere, so
+   the fragile arrow that tried to point at the tiny titlebar dot is gone,
+   replaced by a plain dismiss hint under the card. */
 .mb-mano-card { text-align: center; max-width: 350px; }
+.mb-mano-dismiss { font-size: 0.72rem; letter-spacing: 0.04em; color: #7c88b0; margin: 1.1rem 0 0; opacity: 0.85; }
 .mb-mano-emoji { font-size: 3rem; margin: 0; animation: mb-pop 0.4s ease; }
 .mb-mano-line { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.12em; color: #f59e0b; margin: 0.4rem 0 0; }
 .mb-mano-sub { font-size: 0.95rem; color: #e6ecff; margin: 0.7rem 0 0; line-height: 1.55; }
 .mb-mano-credit { font-size: 0.85rem; color: #9aa6cc; margin: 1rem 0 0; line-height: 1.5; }
 .mb-mano-credit a { color: #f59e0b; font-weight: 700; text-decoration: underline; }
 @media (prefers-reduced-motion: reduce) {
-  .mb-mano-overlay, .mb-mano-emoji, .mb-dot-mano-cheer, .mb-mano-cheer-arrow { animation: none; }
+  .mb-mano-overlay, .mb-mano-emoji, .mb-dot-mano-cheer { animation: none; }
 }
 
 
@@ -8454,3 +8485,9 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 @media (prefers-reduced-motion: reduce) {
   .breadcrumbs-link { transition: none; }
 }
+
+/* PRIME 05/07/2026: /dev/fun eyebrow link back to the index, matching the
+   clickable /dev/fun in the Mega Brain console frame. */
+.bingo-devfun { margin: 0 0 0.35rem; font-size: 0.8rem; }
+.bingo-devfun-link { color: #22d3ee; text-decoration: none; border-radius: 4px; padding: 0 0.15rem; transition: color 0.15s ease; }
+.bingo-devfun-link:hover, .bingo-devfun-link:focus-visible { color: #67e8f9; text-decoration: underline; outline: none; }

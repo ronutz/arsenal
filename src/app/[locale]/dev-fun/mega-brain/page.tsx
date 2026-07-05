@@ -68,6 +68,7 @@ export default async function MegaBrainPage({
   // Resolve every console string from the catalog into the props bundle.
   const labels: MegaBrainLabels & { bossHint: string; bossDismiss: string } = {
     titlebar: t("titlebar"),
+    devFunTitle: t("devFunTitle"),
     close: t("close"),
     closeAria: t("closeAria"),
     homeTitle: t("homeTitle"),
@@ -77,7 +78,7 @@ export default async function MegaBrainPage({
     failsafeRestoreTitle: t("failsafeRestoreTitle"),
     manoAria: t("manoAria"),
     manoTitle: t("manoTitle"),
-    manoCheersArrow: t("manoCheersArrow"),
+    manoDismiss: t("manoDismiss"),
     bossAria: t("bossAria"),
     bossTitle: t("bossTitle"),
     m0: t("m0"),
@@ -96,6 +97,7 @@ export default async function MegaBrainPage({
     leverTitleGoh: t("leverTitleGoh"),
     fullPower: t("fullPower"),
     turnOff: t("turnOff"),
+    stopLabel: t("stopLabel"),
     disabledTitleGoh: t("disabledTitleGoh"),
     manoRealityCheck: t("manoRealityCheck"),
     manoSub: t("manoSub"),
