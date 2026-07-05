@@ -131,6 +131,11 @@ export default async function SiteFooter() {
           <a href="/feed.xml" className="footer-contribute-link">
             feed.xml
           </a>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* The quiet door to the not-serious shelf (PRIME 04/07/2026). */}
+          <Link href="/dev-fun" className="footer-contribute-link">
+            /dev/fun
+          </Link>
         </p>
       </div>
     </footer>

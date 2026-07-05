@@ -89,11 +89,21 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
           <div className="container section-narrow">
             <h2 className="section-title">{t("intentTitle")}</h2>
             <p className="section-body">{t("intentIntro")}</p>
-            <p className="section-body">{t("intentApi")}</p>
-            <p className="section-body">{t("intentOpen")}</p>
+            {/* The two intentions as labeled cards (PRIME 04/07/2026: this
+                copy read as one undifferentiated chunk of text). */}
+            <div className="roadmap-intents">
+              <div className="roadmap-intent-card">
+                <p className="roadmap-intent-label mono">{t("intentApiLabel")}</p>
+                <p className="roadmap-intent-body">{t("intentApi")}</p>
+              </div>
+              <div className="roadmap-intent-card">
+                <p className="roadmap-intent-label mono">{t("intentOpenLabel")}</p>
+                <p className="roadmap-intent-body">{t("intentOpen")}</p>
+              </div>
+            </div>
             <p className="section-body">{t("intentClose")}</p>
             {/* The measured hosting ceiling; full account on the colophon. */}
-            <p className="section-body">{t("ceiling")}</p>
+            <p className="section-body roadmap-ceiling">{t("ceiling")}</p>
           </div>
         </section>
 

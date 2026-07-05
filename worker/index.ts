@@ -86,6 +86,17 @@ const RENAMED_API_SLUGS = new Map<string, string>([
   ["persistence-method-explainer", "f5-persistence-method-explainer"],
 ]);
 
+// Vanity short paths -> their canonical destination. Resolved in the locale-
+// gate section below, BEFORE the default-locale redirect that would otherwise
+// send /mb -> /en/mb/ (which has no page and 404s). Keys are matched with any
+// trailing slash stripped, so /mb and /mb/ both resolve. /mb is the Mega Brain
+// (/dev/fun), which ships only under pt-BR. /bingo is Meeting Bingo; the page
+// exists in every locale, and the shortcut targets the EN page per PRIME's spec.
+const VANITY_REDIRECTS = new Map<string, string>([
+  ["/mb", "/pt-BR/dev-fun/mega-brain/"],
+  ["/bingo", "/en/dev-fun/meeting-bingo/"],
+]);
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -230,6 +241,28 @@ export default {
         { error: "not_found", message: `No API route for ${url.pathname}.` },
         404,
       );
+    }
+
+    // ---- Vanity short paths (BEFORE the locale gate) -----------------------
+    // Bare shortcuts that map to one canonical page. Handled before the locale
+    // gate below, which would otherwise prepend the default locale (/mb ->
+    // /en/mb/) and 404. 302 (not 301): a playful shortcut that may be repointed
+    // later, so browsers must not cache it permanently.
+    {
+      const vanityKey = url.pathname.replace(/\/+$/, "") || "/";
+      const vanityDest = VANITY_REDIRECTS.get(vanityKey);
+      if (vanityDest) {
+        // 302 + no-store: a playful shortcut that may be repointed later, so the
+        // browser must never cache it (avoids the stale-redirect trap that a
+        // cached 301 would create).
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: new URL(`${vanityDest}${url.search}`, url.origin).toString(),
+            "Cache-Control": "no-store",
+          },
+        });
+      }
     }
 
     // ---- Non-API path: the LOCALE GATE -------------------------------------

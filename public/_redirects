@@ -4,9 +4,6 @@
 # machine-readable .md companion. API redirects live in the Worker (308),
 # because _redirects does not apply to worker-served paths.
 
-# Vanity shortcut: /mb -> the pt-BR Console do Mega Brain (/dev/fun).
-/mb /pt-BR/dev-fun/mega-brain 301
-/mb/ /pt-BR/dev-fun/mega-brain 301
 
 /da/tools/bigip-persistence-cookie/ /da/tools/f5-bigip-persistence-cookie/ 301
 /da/tools/bigip-persistence-cookie /da/tools/f5-bigip-persistence-cookie/ 301

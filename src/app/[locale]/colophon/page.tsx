@@ -70,6 +70,20 @@ export default async function ColophonPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+
+              {/* The word itself, dictionary style (PRIME 04/07/2026). Both
+                  senses are sourced: Priberam / Wikipedia for the book note,
+                  Wiktionary for the modern web-colophon extension. */}
+              <aside className="colophon-word-card" aria-label={t("wordTerm")}>
+                <p className="colophon-word-head">
+                  <span className="colophon-word-term">{t("wordTerm")}</span>
+                  <span className="colophon-word-pron mono">{t("wordPron")}</span>
+                  <span className="colophon-word-pos">{t("wordPos")}</span>
+                </p>
+                <p className="colophon-word-def">{t("wordDef")}</p>
+                <p className="colophon-word-def">{t("wordExt")}</p>
+                <p className="colophon-word-ety">{t("wordEty")}</p>
+              </aside>
             </div>
           </section>
 
@@ -261,7 +275,7 @@ export default async function ColophonPage({
           </section>
           {/* A quiet door to /dev/fun — the not-serious shelf. No emphasis. */}
           <p className="colophon-devfun mono">
-            <Link href="/dev-fun/mega-brain" className="colophon-devfun-link">
+            <Link href="/dev-fun" className="colophon-devfun-link">
               /dev/fun
             </Link>
           </p>
