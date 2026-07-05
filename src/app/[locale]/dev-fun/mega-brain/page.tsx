@@ -103,7 +103,11 @@ export default async function MegaBrainPage({
     manoCreditName: t("manoCreditName"),
     manoCreditPost: t("manoCreditPost"),
     totalBanner: t("totalBanner"),
-    totalTerms: t("totalTerms"),
+    // totalTerms contains a literal {count} that the MegaBrainConsole component
+    // fills client-side via String.replace. Fetch it raw so next-intl does not
+    // try to ICU-format it here (which throws FORMATTING_ERROR, the {count}
+    // argument being intentionally absent at this layer).
+    totalTerms: t.raw("totalTerms"),
     totalFine: t("totalFine"),
     gohLine: t("gohLine"),
     gohSub: t("gohSub"),

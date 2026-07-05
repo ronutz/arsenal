@@ -20,7 +20,9 @@
     "learn": "Learn",
     "endorsements": "Endorsements",
     "certs": "Certifications",
-    "primaryAria": "Primary"
+    "primaryAria": "Primary",
+    "home": "Home",
+    "breadcrumb": "Breadcrumb"
   },
   "languageSwitcher": {
     "label": "Language",

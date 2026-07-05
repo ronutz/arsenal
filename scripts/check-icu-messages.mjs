@@ -31,6 +31,7 @@ const RAW_LITERAL_KEYS = new Set([
   "tools.f5-awaf-evasion-explainer.inputPlaceholder", // evasions block JSON sample: literal braces, rendered with t.raw()
   "tools.as3-explainer-validator.inputPlaceholder",
   "tools.do-explainer-validator.inputPlaceholder", // DO JSON sample: literal braces, rendered with t.raw() // AS3 declaration JSON sample: literal braces, rendered with t.raw()
+  "megaBrain.totalTerms", // literal {count} filled client-side via String.replace
   "tools.f5-awaf-policy-diff.beforePlaceholder", // declarative policy JSON sample: literal braces, rendered with t.raw()
   "tools.f5-awaf-policy-diff.afterPlaceholder", // declarative policy JSON sample: literal braces, rendered with t.raw()
   "tools.f5-lb-method-chooser.inputPlaceholder", // tmsh pool sample: literal braces, rendered with t.raw()

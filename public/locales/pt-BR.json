@@ -20,7 +20,9 @@
     "learn": "Aprender",
     "endorsements": "Depoimentos",
     "certs": "Certificações",
-    "primaryAria": "Principal"
+    "primaryAria": "Principal",
+    "home": "Início",
+    "breadcrumb": "Trilha de navegação"
   },
   "languageSwitcher": {
     "label": "Idioma",

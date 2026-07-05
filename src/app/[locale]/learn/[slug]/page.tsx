@@ -18,6 +18,7 @@ import { routing } from "@/i18n/routing";
 import { getArticle, getAllArticleSlugs, getRelatedArticles } from "@/lib/learn";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
 
 /** Pre-generate every article page for every locale at build time. */
@@ -42,6 +43,7 @@ export default async function ArticlePage({
 
   const tNav = await getTranslations("nav");
   const tLearn = await getTranslations("learn");
+  const tTools = await getTranslations("tools"); // category labels live here
   const related = getRelatedArticles(article, locale);
 
   return (
@@ -54,9 +56,17 @@ export default async function ArticlePage({
       <main id="main">
         <article className="section">
           <div className="container article-container">
-            <Link href="/learn" className="article-back">
-              ← Learn
-            </Link>
+            <Breadcrumbs
+              ariaLabel={tNav("breadcrumb")}
+              items={[
+                { label: tNav("home"), href: "/" },
+                { label: tNav("learn"), href: "/learn" },
+                ...(article.category
+                  ? [{ label: tTools(`categories.${article.category}`), href: `/category/${article.category}` }]
+                  : []),
+                { label: article.title },
+              ]}
+            />
             <h1 className="article-title">{article.title}</h1>
             <p className="article-summary">{article.summary}</p>
             {(locale === "en" || locale === "pt-BR") && (

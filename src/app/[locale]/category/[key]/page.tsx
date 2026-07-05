@@ -26,6 +26,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import FamilyChip from "@/components/FamilyChip";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { tools } from "@/config/tools";
 import { getArticlesByCategory } from "@/lib/learn";
 import { categoryColor } from "@/config/categoryColors";
@@ -98,6 +99,14 @@ export default async function CategoryPage({
       <main id="main">
         <section className="section">
           <div className="container">
+            <Breadcrumbs
+              ariaLabel={tNav("breadcrumb")}
+              items={[
+                { label: tNav("home"), href: "/" },
+                { label: tNav("tools"), href: "/tools" },
+                { label: t(`categories.${key}`) },
+              ]}
+            />
             <p className="hero-eyebrow">
               <span
                 className="category-dot"

@@ -36,6 +36,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import FamilyChip from "@/components/FamilyChip";
 import ScrollToTop from "@/components/ScrollToTop";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { tools } from "@/config/tools";
 import { subsOf } from "@/config/vendors";
 import { getAllArticles, getArticleVendors, getArticleSub, type Article } from "@/lib/learn";
@@ -121,6 +122,13 @@ export default async function VendorHubPage({
       <main id="main">
         <section className="section">
           <div className="container">
+            <Breadcrumbs
+              ariaLabel={tNav("breadcrumb")}
+              items={[
+                { label: tNav("home"), href: "/" },
+                { label: label },
+              ]}
+            />
             {/* Hero: vendor dot + eyebrow, vendor name, one-line mission. */}
             <p className="hero-eyebrow">
               <span
@@ -137,6 +145,39 @@ export default async function VendorHubPage({
               {tHub("lede", { vendor: label })}
             </p>
 
+            {/* Jump-to nav, same control the tools index uses: one anchor per
+                populated sub-category (each links to that group's heading
+                below), plus the Learn section. Only rendered when there is
+                more than one destination, so a single-family vendor stays
+                clean. */}
+            {(() => {
+              const jumpTools = subGroups.filter((g) => g.tools.length > 0);
+              const jumpLearn = vendorArticles.length > 0;
+              const destinations = jumpTools.length + (jumpLearn ? 1 : 0);
+              if (destinations < 2) return null;
+              return (
+                <nav className="category-nav" aria-label={t("jumpTo")} style={{ marginBottom: "2.5rem" }}>
+                  <span className="category-nav-label">{t("jumpTo")}</span>
+                  <ul className="category-nav-list">
+                    {jumpTools.map((group) => (
+                      <li key={group.id} data-jumpnav={group.id}>
+                        <a href={`#tools-${group.id}`} className="category-nav-link">
+                          {subLabel(group.id)}
+                        </a>
+                      </li>
+                    ))}
+                    {jumpLearn && (
+                      <li data-jumpnav="learn">
+                        <a href="#learn" className="category-nav-link">
+                          {tHub("learnHeading")}
+                        </a>
+                      </li>
+                    )}
+                  </ul>
+                </nav>
+              );
+            })()}
+
             {/* ---- Tools, family by family. id="tools" is a redirect target
                  (/tools/<vendor> 301s here); category-section supplies the
                  sticky-header scroll offset. ---- */}
@@ -145,7 +186,7 @@ export default async function VendorHubPage({
                 {tHub("toolsHeading")} ({vendorTools.length})
               </h2>
               {subGroups.filter((g) => g.tools.length > 0).map((group) => (
-                <div key={group.id} style={{ marginBottom: "2rem" }}>
+                <div key={group.id} id={`tools-${group.id}`} className="category-section" style={{ marginBottom: "2rem" }}>
                   <h3 className="tools-family-heading">{subLabel(group.id)}</h3>
                   <ul className="tools-grid">
                     {group.tools.map((tool) => (

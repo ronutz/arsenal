@@ -18,6 +18,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
 import ApiAffordance from "@/components/ApiAffordance";
@@ -480,9 +481,21 @@ export default async function ToolDetailPage({
                 </svg>
               </a>
             )}
-            <Link href="/tools" className="article-back">
-              ← {tTools("backToTools")}
-            </Link>
+            {entry ? (
+              <Breadcrumbs
+                ariaLabel={tNav("breadcrumb")}
+                items={[
+                  { label: tNav("home"), href: "/" },
+                  { label: tNav("tools"), href: "/tools" },
+                  { label: tTools(`categories.${entry.category}`), href: `/category/${entry.category}` },
+                  { label: tTools(`${slug}.name`) },
+                ]}
+              />
+            ) : (
+              <Link href="/tools" className="article-back">
+                ← {tTools("backToTools")}
+              </Link>
+            )}
             {entry && <h1 className="article-title">{tTools(`${slug}.name`)}</h1>}
             {entry && <p className="article-summary">{tTools(`${slug}.blurb`)}</p>}
             {entry && (locale === "en" || locale === "pt-BR") && (
