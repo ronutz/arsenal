@@ -23,6 +23,11 @@ import { populatedVendors } from "@/config/vendors";
 import SiteFooter from "@/components/SiteFooter";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
 import ApiAffordance from "@/components/ApiAffordance";
+import ToolRequirements from "@/components/ToolRequirements";
+// API_TOOLS is the authoritative list of API-capable tool slugs (also drives the
+// worker's /api/v1/<slug> routes and the OpenAPI generator). We use it here only
+// to decide whether the "API-ready" pill applies to this tool.
+import { API_TOOLS } from "@/lib/tools/registry";
 import FamilyChip from "@/components/FamilyChip";
 import ToolProvenance from "@/components/ToolProvenance";
 import { provenanceFor } from "@/config/toolProvenance";
@@ -472,6 +477,25 @@ export default async function ToolDetailPage({
   const Component = page.Component;
   const prov = isEnabled("toolProvenance") ? provenanceFor(slug) : null;
 
+  // PROOF OF CONCEPT (reviewable): the "what this page needs" pill row is wired
+  // onto a single tool page first — the CIDR calculator — before any site-wide
+  // rollout. Rolling it out later is just widening this gate.
+  const showRequirements = slug === "cidr";
+  // API-ready when this tool's slug is in the API registry (capability is real;
+  // the surface being switched on is a separate, later config flip).
+  const apiReady = API_TOOLS.some((t) => t.slug === slug);
+  const tReq = await getTranslations("toolRequirements");
+  const reqLabels = {
+    heading: tReq("heading"),
+    browserPill: tReq("browserPill"),
+    clientNeeds: tReq("clientNeeds"),
+    browserNote: tReq("browserNote"),
+    apiPill: tReq("apiPill"),
+    apiNote: tReq("apiNote"),
+    noscriptHeading: tReq("noscriptHeading"),
+    noscriptBody: tReq("noscriptBody"),
+  };
+
   return (
     <>
       <a href="#main" className="skip-link">
@@ -540,6 +564,8 @@ export default async function ToolDetailPage({
             )}
 
             <Component />
+
+            {showRequirements && <ToolRequirements apiReady={apiReady} labels={reqLabels} />}
 
             <ToolLearnPanel toolSlug={slug} locale={locale} heading={tTools("learnHeading")} />
 

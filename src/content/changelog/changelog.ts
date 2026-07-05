@@ -44,6 +44,31 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "19:24",
+    kind: "feature",
+    title: "A 'what this page needs' pill on the CIDR tool (proof of concept)",
+    body:
+      "A new capability row is being trialled on the CIDR calculator before a wider rollout. It states, up front, what your browser needs for the tool to be fully functional: a 'Runs in your browser' pill notes that the tool computes entirely on your device (so nothing you type is sent anywhere) and therefore needs JavaScript, and an 'API-ready' pill marks that this tool is also built to work over an HTTP API, with a clear note that the API is not switched on yet. With JavaScript disabled, a short note now explains the reduced-function version honestly: the page's explanation, the Markdown reference, the Learn article, and the sources all still render server-side; only the live calculator needs JavaScript. English and Portuguese ship together; other locales fall back per key.",
+    tools: ["cidr"],
+  },
+  {
+    date: "2026-07-05",
+    time: "19:00",
+    kind: "feature",
+    title: "Full Apple coverage: the Apple I, the original Apple II, and the Macintosh (Happy Mac)",
+    body:
+      "The boss-key gallery now covers Apple's iconic early machines end to end, each checked against original documentation. New: the Apple I (1976), where Wozniak's 256-byte WozMon prints a backslash and a blinking cursor after Reset; the original Apple II (1977), which has no autostart ROM and comes up in the machine-language monitor at a * prompt (Ctrl-B enters Integer BASIC and its > prompt); and the Macintosh 128K (1984), with Susan Kare's friendly boot, a blinking floppy-with-a-question-mark that resolves into the smiling Happy Mac and Welcome to Macintosh. The existing //e screen was also corrected: it now shows the enhanced //e's Apple //e banner, which keeps it visually distinct from the Apple ][+ screen. Together with the II+, //c, and IIgs added earlier, that is seven Apple screens; the gallery now holds forty in all.",
+  },
+  {
+    date: "2026-07-05",
+    time: "18:15",
+    kind: "feature",
+    title: "Nine more boot screens: Apple ][+, //c, IIgs, Atari 800XL, TI-99/4A, MSX turbo R, and Brazilian clones",
+    body:
+      "The boss-key gallery in /dev/fun grew by nine period-accurate boot screens, each checked against original documentation. New this round: the Apple ][+ (the plain Apple ][ banner and ] prompt), the Apple //c (Apple //c, then Check Disk Drive with no disk in the drive), the Apple IIgs (its Check Startup Device screen with the colour Apple logo sliding side to side), the Atari 800XL (deep blue Atari BASIC READY), the TI-99/4A (the cyan TEXAS INSTRUMENTS HOME COMPUTER title, press any key to begin), and the MSX turbo R (the logo assembling from the sides into MSX BASIC 4.0). Three are Brazilian machines from the market-reserve years: the Prologica CP-300 (the compact, disk-less TRS-80 Model III clone that boots straight to cassette BASIC), the Prologica CP-400 (the TRS-80 Color clone, a CoCo 2 running Extended Color BASIC), and the Unitron AP II (the faithful Apple II Plus clone with a Portuguese ROM). They join the existing screens in the same shuffled rotation (you see them all before any repeats), browse left and right while one is up, and Esc dismisses; all animations respect the reduced-motion setting.",
+  },
+  {
+    date: "2026-07-05",
     time: "16:07",
     kind: "feature",
     title: "Customizable shortcuts, a settings page, ten boss-key screens, and a motion switch",

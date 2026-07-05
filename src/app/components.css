@@ -8736,3 +8736,262 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .boss-viewer-year { color: var(--text-tertiary, #7c88b0); font-weight: 400; font-size: 0.82rem; }
 .boss-viewer-blurb { color: var(--text-secondary, #b8c2e0); font-size: 0.85rem; line-height: 1.5; }
 @media (prefers-reduced-motion: reduce) { .boss-viewer-card:hover, .boss-viewer-card:focus-visible { transform: none; } }
+
+/* ==== copy editor (gated authoring workbench) ============================= */
+.copyedit-container { max-width: 60rem; }
+.copyedit-title { font-size: 1.9rem; font-weight: 800; color: var(--text-primary, #e6ecff); margin: 0.3rem 0 0.6rem; }
+.copyedit-lede { color: var(--text-secondary, #b8c2e0); font-size: 1rem; line-height: 1.6; margin-bottom: 0.6rem; }
+.copyedit-caveat { color: var(--accent-amber, #f59e0b); font-size: 0.85rem; line-height: 1.55; border-left: 3px solid var(--accent-amber, #f59e0b); padding-left: 0.8rem; margin-bottom: 1.4rem; }
+.copyedit { margin-top: 1rem; }
+.copyedit-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem; padding: 1rem; background: var(--surface-1, #0b1120); border: 1px solid var(--border-strong, #1e293b); border-radius: 12px; }
+.copyedit-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.copyedit-field-search { flex: 1 1 16rem; }
+.copyedit-field-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary, #7c88b0); }
+.copyedit-select, .copyedit-search { background: var(--surface-base, #0b1120); color: var(--text-primary, #e6ecff); border: 1px solid var(--border-strong, #1e293b); border-radius: 8px; padding: 0.45rem 0.6rem; font-size: 0.9rem; font-family: inherit; }
+.copyedit-select { min-width: 14rem; cursor: pointer; }
+.copyedit-search { width: 100%; }
+.copyedit-select:focus-visible, .copyedit-search:focus-visible { outline: 2px solid var(--accent-primary, #22d3ee); outline-offset: 1px; }
+.copyedit-check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-secondary, #b8c2e0); cursor: pointer; }
+.copyedit-count { font-size: 0.8rem; color: var(--accent-primary, #22d3ee); }
+.copyedit-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0; }
+.copyedit-btn { font-size: 0.88rem; }
+.copyedit-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 60vh; overflow-y: auto; padding: 0.3rem; border: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); border-radius: 10px; }
+.copyedit-empty { color: var(--text-tertiary, #7c88b0); padding: 1.5rem; text-align: center; }
+.copyedit-row { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.6rem 0.7rem; background: var(--surface-1, #0b1120); border: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); border-radius: 8px; }
+.copyedit-row.is-changed { border-color: var(--accent-primary, #22d3ee); box-shadow: inset 3px 0 0 var(--accent-primary, #22d3ee); }
+.copyedit-row-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.copyedit-path { font-size: 0.76rem; color: var(--text-secondary, #b8c2e0); word-break: break-all; }
+.copyedit-ns { font-size: 0.68rem; color: var(--accent-primary, #22d3ee); background: rgba(34, 211, 238, 0.1); padding: 0.05rem 0.4rem; border-radius: 4px; }
+.copyedit-reset-one { margin-left: auto; background: none; border: none; color: var(--accent-amber, #f59e0b); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0.1rem 0.3rem; border-radius: 4px; }
+.copyedit-reset-one:hover { background: rgba(245, 166, 35, 0.15); }
+.copyedit-input { width: 100%; background: var(--surface-base, #060a14); color: var(--text-primary, #e6ecff); border: 1px solid var(--border-strong, #1e293b); border-radius: 6px; padding: 0.4rem 0.55rem; font-size: 0.9rem; font-family: inherit; line-height: 1.5; }
+.copyedit-textarea { resize: vertical; min-height: 3rem; }
+.copyedit-input:focus-visible { outline: 2px solid var(--accent-primary, #22d3ee); outline-offset: 1px; }
+.copyedit-modal { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem; }
+.copyedit-modal-card { background: var(--surface-1, #0b1120); border: 1px solid var(--border-strong, #1e293b); border-radius: 14px; width: 100%; max-width: 46rem; max-height: 82vh; display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); }
+.copyedit-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.2rem; border-bottom: 1px solid var(--border-strong, #1e293b); }
+.copyedit-modal-title { font-size: 0.9rem; color: var(--text-primary, #e6ecff); word-break: break-all; }
+.copyedit-modal-close { background: none; border: none; color: var(--text-secondary, #b8c2e0); font-size: 1.1rem; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 6px; }
+.copyedit-modal-close:hover { background: var(--surface-2, #131c31); }
+.copyedit-modal-text { flex: 1; margin: 1rem 1.2rem; background: var(--surface-base, #060a14); color: var(--text-secondary, #b8c2e0); border: 1px solid var(--border-strong, #1e293b); border-radius: 8px; padding: 0.8rem; font-size: 0.82rem; line-height: 1.5; resize: none; min-height: 20rem; white-space: pre; }
+.copyedit-modal-actions { display: flex; gap: 0.6rem; padding: 0 1.2rem 1.2rem; }
+
+/* ==== micro boot screens (added batch) ==================================== */
+
+/* --- Sinclair ZX81: blank grey/white raster, one inverse-K bottom-left --- */
+.boss-zx81 { background: #cfcfcf; color: #000; padding: 0 !important; justify-content: flex-end; }
+.zx81-field { flex: 1; }
+.zx81-k { display: inline-block; background: #000; color: #cfcfcf; padding: 0 0.15em; margin: 0.4em; font-weight: 700; animation: ws-blink 1.1s steps(1) infinite; }
+
+/* --- ZX Spectrum 48K: black on white, copyright line + corner stripes --- */
+.boss-spectrum, .boss-tk90x { background: #fff; color: #000; padding: 0 !important; position: relative; }
+.spectrum-field { flex: 1; }
+.spectrum-copy, .tk90x-copy { padding: 0.3em 0.6em 0.6em; letter-spacing: 0.02em; }
+.spectrum-stripes { position: absolute; right: 0.5em; bottom: 0.5em; display: flex; height: 0.5em; }
+.spectrum-stripes span { width: 0.5em; height: 100%; }
+
+/* --- ZX Spectrum 128: blue-bordered start menu --- */
+.boss-s128 { background: #0000cf; color: #fff; padding: clamp(0.4rem,2vw,1.4rem) !important; }
+.s128-inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2em; text-align: center; }
+.s128-copy { color: #fff; }
+.s128-menu { display: flex; flex-direction: column; gap: 0.35em; }
+.s128-item { padding: 0.1em 1.4em; }
+.s128-item-sel { background: #fff; color: #0000cf; }
+
+/* --- MSX family: dark-blue raster, logo scroll-up, MSX BASIC --- */
+.boss-msx { background: #0a0acc; color: #fff; padding: clamp(0.4rem,2vw,1.2rem) !important; }
+.msx-logo { text-align: center; overflow: hidden; height: 2.2em; margin-bottom: 0.4em; }
+.msx-logo-word { display: inline-block; font-weight: 800; letter-spacing: 0.25em; font-size: 1.7em; color: #fff; animation: msx-scroll 1.1s ease-out 1; }
+.msx-logo-expert .expert-brand { display: inline-block; margin-left: 0.5em; font-weight: 700; letter-spacing: 0.05em; color: #ffd000; font-size: 1.1em; }
+.msx-logo-hotbit .hotbit-brand { display: inline-block; margin-left: 0.5em; font-weight: 700; letter-spacing: 0.1em; color: #ff5030; font-size: 1.1em; }
+.msx-basic { color: #fff; white-space: pre; }
+.msx-cursor { animation: ws-blink 0.8s steps(1) infinite; }
+.msx-fkeys { display: flex; gap: 0; margin-top: auto; }
+.msx-fkeys span { flex: 1; background: #00b0e0; color: #003040; text-align: center; padding: 0.15em 0; border-right: 1px solid #0a0acc; font-size: 0.85em; }
+.msx-hint { text-align: center; padding-top: 0.8em; }
+@keyframes msx-scroll { 0% { transform: translateY(1.6em); opacity: 0.2; } 100% { transform: translateY(0); opacity: 1; } }
+
+/* --- TRS-80 Model III: white phosphor on black --- */
+.boss-trs80 { background: #101010; color: #e8e8e8; }
+.trs80-text { color: #e8e8e8; white-space: pre; text-shadow: 0 0 3px rgba(232,232,232,0.4); }
+.trs80-cursor { animation: ws-blink 0.9s steps(1) infinite; }
+.trs80-hint { padding-top: 1em; }
+
+/* --- Prologica CP-500: green phosphor on black --- */
+.boss-cp500, .boss-coco { background: #001500; }
+.cp500-text { color: #33ff66; white-space: pre; text-shadow: 0 0 4px rgba(51,255,102,0.5); }
+.cp500-cursor { animation: ws-blink 0.9s steps(1) infinite; }
+.cp500-hint { padding-top: 1em; color: #33ff66; }
+
+/* --- TRS-80 CoCo: black text on green raster --- */
+.boss-coco { background: #2a8c2a; color: #041a04; }
+.coco-text { color: #041a04; white-space: pre; }
+.coco-cursor { background: #041a04; color: #2a8c2a; animation: ws-blink 0.8s steps(1) infinite; }
+.coco-hint { padding-top: 1em; color: #041a04; opacity: 0.55; }
+
+/* --- Apple //e: mono on black, Applesoft ] prompt --- */
+.boss-apple2 { background: #000; color: #e6e6e6; }
+.apple2-text { color: #e6e6e6; white-space: pre; }
+.apple2-cursor { animation: ws-blink 0.7s steps(1) infinite; }
+.apple2-hint { padding-top: 1em; }
+
+/* --- IBM PC/XT: green mono, cassette BASIC banner --- */
+.boss-ibmpc { background: #050505; color: #33ff33; }
+.ibmpc-text { color: #33ff33; white-space: pre; text-shadow: 0 0 3px rgba(51,255,51,0.4); }
+.ibmpc-cursor { animation: ws-blink 0.9s steps(1) infinite; }
+.ibmpc-hint { padding-top: 1em; color: #33ff33; }
+
+/* --- IBM PC/AT 286: white-on-black POST, memory count --- */
+.boss-at286 { background: #050505; color: #dcdcdc; }
+.at286-text { color: #dcdcdc; white-space: pre; }
+.at286-count { color: #fff; }
+.at286-hint { padding-top: 1em; }
+
+/* --- 386DX-40 AMIBIOS POST: amber-grey, count-up, DEL for SETUP --- */
+.boss-pc386 { background: #020202; color: #c8c8c8; justify-content: space-between; }
+.pc386-top { color: #c8c8c8; white-space: pre; }
+.pc386-count { color: #fff; }
+.pc386-bottom { color: #6a6a6a; white-space: pre; font-size: 0.85em; margin-top: auto; }
+.pc386-hint { text-align: center; padding-top: 0.6em; }
+
+/* --- Commodore VIC-20: cyan border, white screen, dark-blue text --- */
+.boss-vic20 { background: #7be7d6; padding: 0 !important; }
+.vic20-banner { color: #4a4ae0; background: #ffffff; margin: clamp(0.7rem,3.5vw,2rem); padding: 0.5em 0.7em; white-space: pre; flex: 1; }
+.vic20-cursor { background: #4a4ae0; color: #ffffff; animation: ws-blink 0.8s steps(1) infinite; }
+
+/* --- Commodore Amiga: Kickstart insert-disk hand, waggling --- */
+.boss-amiga { background: #0f0f18; color: #b0b0c0; padding: 0 !important; }
+.amiga-scene { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4em; }
+.amiga-hand { position: relative; width: 8em; height: 6em; }
+.amiga-arm { position: absolute; bottom: 0; left: 2.4em; width: 3em; height: 4em; background: #d8a878; border-radius: 0.8em 0.8em 0 0; }
+.amiga-disk { position: absolute; top: 0.6em; left: 0.5em; width: 5.2em; height: 5.2em; background: #303040; border: 2px solid #4a4a5a; border-radius: 0.2em; transform-origin: 60% 90%; animation: amiga-waggle 2.6s ease-in-out infinite; }
+.amiga-disk-shutter { position: absolute; top: 0.3em; left: 50%; transform: translateX(-50%); width: 1.8em; height: 1.3em; background: #8a8a9a; border-radius: 0.1em; }
+.amiga-disk-label { position: absolute; bottom: 0.4em; left: 0.4em; right: 0.4em; height: 2em; background: #c8c8d8; border-radius: 0.1em; }
+.amiga-caption { color: #d0d0e0; letter-spacing: 0.05em; }
+@keyframes amiga-waggle { 0%, 100% { transform: rotate(-7deg) translateY(0); } 50% { transform: rotate(7deg) translateY(-0.3em); } }
+
+/* --- BBC Micro: grey banner + BASIC prompt on black --- */
+.boss-bbc { background: #000; color: #d8d8d8; }
+.bbc-text { color: #d8d8d8; white-space: pre; }
+.bbc-cursor { animation: ws-blink 0.85s steps(1) infinite; }
+.bbc-hint { padding-top: 1em; }
+
+/* --- Amstrad CPC 464: bright yellow on blue --- */
+.boss-cpc { background: #0000a8; color: #ffff40; }
+.cpc-text { color: #ffff40; white-space: pre; }
+.cpc-cursor { background: #ffff40; color: #0000a8; animation: ws-blink 0.8s steps(1) infinite; }
+.cpc-hint { padding-top: 1em; color: #ffff40; opacity: 0.6; }
+
+/* --- Apple //c: mono, "Apple //c" top + "Check Disk Drive" bottom --- */
+.boss-apple2c { display: flex; flex-direction: column; }
+.apple2c-check { color: #e6e6e6; white-space: pre; margin-top: auto; margin-bottom: 1.5em; }
+
+/* --- Apple IIgs: colour Apple logo sliding side to side --- */
+.boss-iigs { background: #000; color: #d8d8d8; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.iigs-inner { display: flex; flex-direction: column; align-items: center; gap: 1.4em; }
+.iigs-logo { display: inline-flex; align-items: center; gap: 0.5em; animation: iigs-slide 2.4s ease-in-out infinite; }
+.iigs-logo-mark { width: 0.9em; height: 1.05em; border-radius: 0.14em;
+  background: linear-gradient(#00a651 0 17%, #ffd000 17% 34%, #ff8000 34% 50%, #e02020 50% 67%, #a020a0 67% 84%, #2060c0 84% 100%); }
+.iigs-logo-text { font-weight: 700; letter-spacing: 0.06em; font-size: 1.3em; }
+.iigs-logo-ii { color: #d8d8d8; }
+.iigs-check { color: #d8d8d8; letter-spacing: 0.03em; }
+.iigs-hint { padding-top: 1.4em; text-align: center; }
+@keyframes iigs-slide { 0%, 100% { transform: translateX(-2.2em); } 50% { transform: translateX(2.2em); } }
+
+/* --- Atari 800XL: deep blue Atari BASIC, white block cursor --- */
+.boss-atari { background: #4a49c8; color: #d8d8ff; }
+.atari-text { color: #ececff; white-space: pre; }
+.atari-cursor { background: #ececff; color: #4a49c8; animation: ws-blink 0.8s steps(1) infinite; }
+.atari-hint { padding-top: 1em; color: #d8d8ff; opacity: 0.7; }
+
+/* --- TI-99/4A: cyan title screen + colour bars --- */
+.boss-ti99 { background: #28c8c8; color: #101010; padding: 0 !important; display: flex; }
+.ti99-frame { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4em; padding: clamp(0.8rem,4vw,2.4rem); }
+.ti99-title { text-align: center; font-weight: 800; letter-spacing: 0.12em; line-height: 1.5; color: #101010; }
+.ti99-press { color: #101010; letter-spacing: 0.04em; }
+.ti99-bars { display: flex; width: 60%; height: 1.1em; }
+.ti99-bars span { flex: 1; }
+
+/* --- MSX turbo R: MSX2+ look, logo assembles from sides, thick font --- */
+.boss-msxtr { background: #101060; }
+.msxtr-logo { animation: none; }
+.msxtr-logo .msx-logo-word { animation: msxtr-assemble 1.2s ease-out 1; }
+.msxtr-badge { display: inline-block; margin-left: 0.5em; font-weight: 700; letter-spacing: 0.08em; color: #40e0ff; font-size: 1.05em; }
+.msxtr-basic { font-weight: 700; }
+@keyframes msxtr-assemble { 0% { letter-spacing: 2em; opacity: 0; } 60% { opacity: 1; } 100% { letter-spacing: 0.25em; opacity: 1; } }
+
+/* --- Prologica CP-300: TRS-80 Model III clone, green phosphor (compact) --- */
+.boss-cp300 { background: #001500; }
+
+/* --- Prologica CP-400: CoCo 2 clone, black on green --- */
+.boss-cp400 { background: #2a8c2a; }
+
+/* --- Unitron AP II: Apple II+ clone, mono --- */
+.boss-unitron { background: #000; }
+
+/* --- Apple I: WozMon, uppercase, "\" + blinking "@" cursor on black --- */
+.boss-apple1 { background: #000; color: #d8d8d8; }
+.apple1-text { color: #d8d8d8; white-space: pre; font-weight: 600; }
+.apple1-cursor { animation: ws-blink 0.7s steps(1) infinite; }
+
+/* --- Apple II (1977 original): monitor "*" + Integer BASIC ">" (reuses apple2) --- */
+.boss-apple2og { }
+
+/* --- Macintosh 128K: floppy-with-"?" cross-fades to the Happy Mac --- */
+.boss-mac { background: #b8b8b8; color: #111; display: flex; align-items: center; justify-content: center; }
+.mac-inner { display: flex; flex-direction: column; align-items: center; gap: 1.6em; }
+.mac-icon { position: relative; width: 5.2em; height: 4.4em; }
+/* both states occupy the same box; CSS cross-fades between them */
+.mac-disk, .mac-happy { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.mac-disk { animation: mac-swap-disk 3.4s ease-in-out infinite; }
+.mac-happy { animation: mac-swap-happy 3.4s ease-in-out infinite; }
+/* the "?" floppy: a rounded square with a slot and a big question mark */
+.mac-disk-q { width: 3.4em; height: 3.9em; background: #efefef; border: 2px solid #222; border-radius: 0.28em; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.9em; color: #222; box-shadow: inset 0 0.5em 0 -0.35em #cfcfcf; }
+/* the Happy Mac: a little beige compact-Mac silhouette with a smiley screen */
+.mac-happy-face { width: 3.6em; height: 4em; background: #dcdcdc; border: 2px solid #222; border-radius: 0.32em 0.32em 0.24em 0.24em; position: relative; }
+.mac-happy-face::before { content: ""; position: absolute; left: 50%; bottom: 0.32em; transform: translateX(-50%); width: 1.5em; height: 0.14em; background: #222; border-radius: 0.1em; } /* the slot */
+.mac-eye { position: absolute; top: 0.9em; width: 0.34em; height: 0.5em; background: #222; border-radius: 0.06em; }
+.mac-eye-l { left: 0.95em; }
+.mac-eye-r { right: 0.95em; }
+.mac-smile { position: absolute; top: 1.75em; left: 50%; transform: translateX(-50%); width: 1.5em; height: 0.75em; border: 0.16em solid #222; border-top: 0; border-radius: 0 0 1.5em 1.5em; }
+.mac-welcome { font-weight: 600; letter-spacing: 0.02em; color: #111; }
+@keyframes mac-swap-disk { 0%, 42% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes mac-swap-happy { 0%, 42% { opacity: 0; } 50%, 100% { opacity: 1; } }
+/* the "?" blinks while the disk is showing */
+.mac-disk-q { animation: ws-blink 0.9s steps(1) infinite; }
+
+/* Respect reduced motion: freeze every added animation to its resting frame */
+@media (prefers-reduced-motion: reduce) {
+  .zx81-k, .msx-cursor, .msx-logo-word, .trs80-cursor, .cp500-cursor,
+  .coco-cursor, .apple2-cursor, .ibmpc-cursor, .vic20-cursor, .bbc-cursor,
+  .cpc-cursor, .amiga-disk, .atari-cursor, .iigs-logo,
+  .msxtr-logo .msx-logo-word, .apple1-cursor, .mac-disk, .mac-happy, .mac-disk-q {
+    animation: none; opacity: 1; transform: none;
+  }
+  .iigs-logo { transform: translateX(0); }
+  .msxtr-logo .msx-logo-word { letter-spacing: 0.25em; }
+  /* reduced motion: settle the Mac on the Happy Mac (the successful end state) */
+  .mac-disk { opacity: 0; }
+  .mac-happy { opacity: 1; }
+}
+
+/* ===========================================================================
+   Tool requirements row (ToolRequirements.tsx): the honest "what this page
+   needs" pills + the no-JavaScript reduced-function note. Semantic tokens only.
+   =========================================================================== */
+.tool-req { margin-top: 1.5rem; padding: 0.9rem 1rem; border: 1px solid var(--color-border); border-radius: 8px; background: color-mix(in srgb, var(--color-surface) 55%, transparent); }
+.tool-req-heading { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.02em; color: var(--color-muted); margin: 0 0 0.6rem; text-transform: none; }
+.tool-req-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+/* pill shell (mirrors .family-chip's rounded shape, with a per-pill accent hue) */
+.tool-req-pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.18rem 0.6rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--req-hue) 40%, var(--color-border)); background: color-mix(in srgb, var(--req-hue) 12%, transparent); color: var(--color-text); font-size: 0.72rem; letter-spacing: 0.01em; white-space: nowrap; }
+.tool-req-pill-dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--req-hue); flex: 0 0 auto; }
+.tool-req-pill-label { font-weight: 600; }
+.tool-req-pill-meta { font-size: 0.68rem; opacity: 0.75; }
+.tool-req-pill--browser { --req-hue: var(--accent-cyan, #22D3EE); }
+.tool-req-pill--api { --req-hue: var(--accent-amber, #F59E0B); }
+.tool-req-note { margin: 0.55rem 0 0; font-size: 0.76rem; line-height: 1.5; color: var(--color-muted); }
+.tool-req-note--api { opacity: 0.9; }
+/* the no-JavaScript note only appears (via <noscript>) when JS is disabled */
+.tool-req-noscript { display: block; margin-top: 0.7rem; padding: 0.6rem 0.75rem; border-left: 3px solid var(--accent-amber, #F59E0B); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 8%, transparent); border-radius: 0 6px 6px 0; font-size: 0.78rem; line-height: 1.5; }
+.tool-req-noscript-heading { display: block; color: var(--color-text); margin-bottom: 0.15rem; }
+.tool-req-noscript-body { color: var(--color-muted); }
