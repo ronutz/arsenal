@@ -19,6 +19,7 @@ import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { populatedVendors } from "@/config/vendors";
 import SiteFooter from "@/components/SiteFooter";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
 import ApiAffordance from "@/components/ApiAffordance";
@@ -449,6 +450,16 @@ export default async function ToolDetailPage({
   if (!page) notFound();
 
   const entry = tools.find((tool) => tool.id === slug);
+  // Vendor-tool breadcrumbs trail through the vendor hub (Home > Vendor > Tool)
+  // rather than the generic category. Pick the first of the tool's vendors that
+  // actually has a hub page (populatedVendors is derived from available vendored
+  // tools, so a hub is guaranteed to exist for it) — this keeps the vendor crumb
+  // a real, built page and never a broken link. Falls back to null (category
+  // trail) for non-vendor tools or the theoretical case of a not-yet-populated
+  // vendor. Today every vendored tool is single-vendor F5, but the .find keeps
+  // this correct if a multi-vendor tool ever ships.
+  const populated = new Set(populatedVendors());
+  const hubVendor = entry?.vendors?.find((v) => populated.has(v)) ?? null;
   const tNav = await getTranslations("nav");
   const tTools = await getTranslations("tools");
   const tHome = await getTranslations("home");
@@ -484,12 +495,20 @@ export default async function ToolDetailPage({
             {entry ? (
               <Breadcrumbs
                 ariaLabel={tNav("breadcrumb")}
-                items={[
-                  { label: tNav("home"), href: "/" },
-                  { label: tNav("tools"), href: "/tools" },
-                  { label: tTools(`categories.${entry.category}`), href: `/category/${entry.category}` },
-                  { label: tTools(`${slug}.name`) },
-                ]}
+                items={
+                  hubVendor
+                    ? [
+                        { label: tNav("home"), href: "/" },
+                        { label: tTools(`vendors.${hubVendor}`), href: `/${hubVendor}` },
+                        { label: tTools(`${slug}.name`) },
+                      ]
+                    : [
+                        { label: tNav("home"), href: "/" },
+                        { label: tNav("tools"), href: "/tools" },
+                        { label: tTools(`categories.${entry.category}`), href: `/category/${entry.category}` },
+                        { label: tTools(`${slug}.name`) },
+                      ]
+                }
               />
             ) : (
               <Link href="/tools" className="article-back">

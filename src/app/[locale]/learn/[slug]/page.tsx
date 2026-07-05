@@ -15,10 +15,11 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import BigipTimeline from "@/components/learn/BigipTimeline";
 import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
-import { getArticle, getAllArticleSlugs, getRelatedArticles } from "@/lib/learn";
+import { getArticle, getAllArticleSlugs, getRelatedArticles, getArticleVendors } from "@/lib/learn";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { populatedVendors } from "@/config/vendors";
 import SiteFooter from "@/components/SiteFooter";
 
 /** Pre-generate every article page for every locale at build time. */
@@ -44,6 +45,17 @@ export default async function ArticlePage({
   const tNav = await getTranslations("nav");
   const tLearn = await getTranslations("learn");
   const tTools = await getTranslations("tools"); // category labels live here
+  // Vendor articles trail through the vendor hub (Home > Vendor > Article), for
+  // symmetry with vendor tools. An article's vendors are DERIVED (getArticleVendors
+  // = concepts that are vendor keys UNION the vendors of its relatedTools), so this
+  // can in principle be 0, 1, or several; take the first that is actually populated
+  // (populatedVendors is derived from available vendored tools, so its hub page is
+  // guaranteed to exist — this keeps the vendor crumb a real, built page and never a
+  // dangling link). Falls back to null (the category trail) for non-vendor articles.
+  // Today every vendored article resolves to exactly one populated vendor (F5); the
+  // .find keeps this correct if a multi-vendor article ever appears.
+  const populated = new Set(populatedVendors());
+  const hubVendor = getArticleVendors(article).find((v) => populated.has(v)) ?? null;
   const related = getRelatedArticles(article, locale);
 
   return (
@@ -58,14 +70,22 @@ export default async function ArticlePage({
           <div className="container article-container">
             <Breadcrumbs
               ariaLabel={tNav("breadcrumb")}
-              items={[
-                { label: tNav("home"), href: "/" },
-                { label: tNav("learn"), href: "/learn" },
-                ...(article.category
-                  ? [{ label: tTools(`categories.${article.category}`), href: `/category/${article.category}` }]
-                  : []),
-                { label: article.title },
-              ]}
+              items={
+                hubVendor
+                  ? [
+                      { label: tNav("home"), href: "/" },
+                      { label: tTools(`vendors.${hubVendor}`), href: `/${hubVendor}` },
+                      { label: article.title },
+                    ]
+                  : [
+                      { label: tNav("home"), href: "/" },
+                      { label: tNav("learn"), href: "/learn" },
+                      ...(article.category
+                        ? [{ label: tTools(`categories.${article.category}`), href: `/category/${article.category}` }]
+                        : []),
+                      { label: article.title },
+                    ]
+              }
             />
             <h1 className="article-title">{article.title}</h1>
             <p className="article-summary">{article.summary}</p>
