@@ -9,8 +9,13 @@
 // into the repo, pinned to a known-good swagger-ui-dist build). They must be
 // same-origin: the site CSP is
 // script-src 'self' / style-src 'self', so a CDN would be blocked. The spec is
-// loaded from /openapi.json, and "try it out" calls the same-origin API, which
-// connect-src 'self' allows.
+// loaded from /openapi.json.
+//
+// DOCUMENTATION-ONLY: the site does not serve the API (the endpoints are
+// implemented but dormant — see the /api page). Swagger UI is therefore
+// initialised with supportedSubmitMethods: [] so there are NO "try it out"
+// controls; it is a spec browser, not a request console. Nothing here calls a
+// live endpoint.
 //
 // Mounted only when its tab is selected (so the ~1.5 MB bundle loads lazily).
 // If the bundle fails to load or initialise, it degrades to a message plus the
@@ -59,6 +64,13 @@ export default function SwaggerUI() {
           presets: [window.SwaggerUIBundle.presets.apis],
           layout: "BaseLayout",
           deepLinking: false,
+          // DOCUMENTATION-ONLY / INERT. The endpoints are implemented but the
+          // site does not serve the API (see the /api page copy for why). An
+          // empty supportedSubmitMethods removes every "Try it out" control, so
+          // Swagger UI renders as a pure, honest spec browser rather than
+          // offering request buttons that would fail against a dormant API.
+          supportedSubmitMethods: [],
+          tryItOutEnabled: false,
         });
       } catch {
         setFailed(true);

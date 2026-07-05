@@ -8995,3 +8995,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .tool-req-noscript { display: block; margin-top: 0.7rem; padding: 0.6rem 0.75rem; border-left: 3px solid var(--accent-amber, #F59E0B); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 8%, transparent); border-radius: 0 6px 6px 0; font-size: 0.78rem; line-height: 1.5; }
 .tool-req-noscript-heading { display: block; color: var(--color-text); margin-bottom: 0.15rem; }
 .tool-req-noscript-body { color: var(--color-muted); }
+
+/* --- /api page: the "documented but not served" notice + Swagger caveat --- */
+.api-block--notice { border-left: 3px solid var(--accent-amber, #F59E0B); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 8%, transparent); border-radius: 0 8px 8px 0; padding: 0.9rem 1.1rem; margin: 1.5rem 0; }
+.api-swagger-caveat { font-size: 0.85rem; line-height: 1.55; color: var(--text-secondary); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 7%, transparent); border-left: 3px solid var(--accent-amber, #F59E0B); border-radius: 0 6px 6px 0; padding: 0.55rem 0.8rem; margin: 0 0 1rem; max-width: 70ch; }

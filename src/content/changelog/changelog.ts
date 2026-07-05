@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "19:49",
+    kind: "feature",
+    title: "The API reference is now public, documented but deliberately not served",
+    body:
+      "The tools API now has a visible home, linked from the footer next to the build stamp. Every tool is built to run as a small, deterministic HTTP API, and the full OpenAPI 3.1 contract is published and browsable, both in an on-brand reference and in a standard Swagger UI view. The page is honest about one thing up front: the API is implemented and documented, but this site does not serve it, because a public API bills for compute on every call in ways a single maintainer cannot cap safely, and the site is meant to stay free and predictable to run. In keeping with that, both reference views are now inert: Swagger UI's try-it-out controls are removed, and the on-brand explorer builds the exact request URL you would call but sends nothing. The engine is open, so anyone who needs the API today can run it themselves. English and Portuguese ship together; other locales fall back per key.",
+  },
+  {
+    date: "2026-07-05",
     time: "19:24",
     kind: "feature",
     title: "A 'what this page needs' pill on the CIDR tool (proof of concept)",

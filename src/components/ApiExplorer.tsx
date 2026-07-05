@@ -43,7 +43,14 @@ export default function ApiExplorer() {
         </button>
       </div>
 
-      {view === "reference" ? <ApiReference /> : <SwaggerUI />}
+      {view === "reference" ? (
+        <ApiReference />
+      ) : (
+        <>
+          <p className="api-swagger-caveat">{t("swaggerCaveat")}</p>
+          <SwaggerUI />
+        </>
+      )}
     </div>
   );
 }

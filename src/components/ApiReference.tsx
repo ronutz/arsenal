@@ -300,32 +300,18 @@ function TryIt({
   }, [params]);
 
   const [values, setValues] = useState<Record<string, string>>(initial);
-  const [running, setRunning] = useState(false);
-  const [result, setResult] = useState<{ status: number; body: string } | null>(
-    null,
-  );
+  const [built, setBuilt] = useState<string | null>(null);
 
-  async function send() {
-    setRunning(true);
-    setResult(null);
+  // INERT / DOCUMENTATION-ONLY. The site does not serve the API (endpoints are
+  // implemented but dormant — see the /api page copy). So this panel does NOT
+  // call the network. Instead it BUILDS the exact request URL you would send
+  // once the API is live, and shows it, so the panel stays educational (you can
+  // see precisely what the endpoint expects) without pretending to run.
+  function build() {
     const qs = new URLSearchParams();
     for (const p of params) if (values[p.name]) qs.set(p.name, values[p.name]);
-    const url = `${basePath}${path}${qs.toString() ? `?${qs}` : ""}`;
-    try {
-      const res = await fetch(url);
-      const text = await res.text();
-      let body = text;
-      try {
-        body = pretty(JSON.parse(text));
-      } catch {
-        /* leave as text */
-      }
-      setResult({ status: res.status, body });
-    } catch {
-      setResult({ status: 0, body: t("loadError") });
-    } finally {
-      setRunning(false);
-    }
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://ronutz.com";
+    setBuilt(`GET ${origin}${basePath}${path}${qs.toString() ? `?${qs}` : ""}`);
   }
 
   return (
@@ -350,21 +336,15 @@ function TryIt({
         <button
           className="apiref-send"
           type="button"
-          onClick={send}
-          disabled={running}
+          onClick={build}
         >
-          {running ? t("tryItRunning") : t("tryItSend")}
+          {t("tryItSend")}
         </button>
       </div>
       <p className="apiref-tryit-hint">{t("tryItHint")}</p>
-      {result && (
+      {built && (
         <div className="apiref-result">
-          <span
-            className={`apiref-status-code apiref-status-${String(result.status)[0]}xx`}
-          >
-            {result.status || "ERR"}
-          </span>
-          <pre className="apiref-pre">{result.body}</pre>
+          <pre className="apiref-pre">{built}</pre>
         </div>
       )}
     </div>

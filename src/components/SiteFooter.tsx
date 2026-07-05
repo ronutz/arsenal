@@ -47,9 +47,10 @@ export default async function SiteFooter() {
             then contact last. Long enough to wrap gracefully on narrow
             screens; the flexless <p> lets the browser break at separators.
             The machine-readable row lives at the end of the footer, just
-            above the build stamp. The /api link stays desurfaced while access
-            control matures; its page, docs, and spec remain reachable by
-            direct URL. */}
+            above the build stamp. The /api link sits on that trailing row,
+            right after the build stamp: the endpoints are implemented and
+            documented, but the API is not served from this site (its page
+            explains why). */}
         <p className="footer-contribute">
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
@@ -122,6 +123,14 @@ export default async function SiteFooter() {
             {t("lastModified", {
               stamp: new Date(BUILD_TIME).toISOString().slice(0, 16).replace("T", " ") + " UTC",
             })}
+          </Link>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* The API reference: the endpoints are implemented and documented,
+              but the API is not served from this site (the /api page explains
+              why). Surfaced here, right after the build stamp, as reference
+              material rather than a call to action. */}
+          <Link href="/api" className="footer-contribute-link">
+            {t("api")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           <a href="/llms.txt" className="footer-contribute-link">

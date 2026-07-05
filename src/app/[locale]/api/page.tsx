@@ -54,6 +54,11 @@ export default async function ApiPage({
             <h1 className="api-title">{t("title")}</h1>
             <p className="api-lede">{t("lede")}</p>
 
+            <div className="api-block api-block--notice">
+              <h2 className="api-h2">{t("servedTitle")}</h2>
+              <p className="api-body">{t("servedBody")}</p>
+            </div>
+
             <div className="api-block">
               <h2 className="api-h2">{t("privacyTitle")}</h2>
               <p className="api-body">{t("privacyBody")}</p>
