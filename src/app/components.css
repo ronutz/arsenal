@@ -8811,6 +8811,9 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .boss-spectrum, .boss-tk90x, .boss-tk95 { background: #fff; color: #000; padding: 0 !important; position: relative; }
 .spectrum-field { flex: 1; }
 .spectrum-copy, .tk90x-copy { padding: 0.3em 0.6em 0.6em; letter-spacing: 0.02em; }
+/* The TK ROMs pad their boot line with leading spaces so it sits centred on the
+   32-column screen; centred here to match (Sinclair's own line stays left). */
+.boss-tk90x .tk90x-copy, .boss-tk95 .tk90x-copy { text-align: center; }
 .spectrum-stripes { position: absolute; right: 0.5em; bottom: 0.5em; display: flex; height: 0.5em; }
 .spectrum-stripes span { width: 0.5em; height: 100%; }
 
@@ -9043,6 +9046,37 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .vdt-p8 { animation-delay: 2.25s; }
 .vdt-p9 { animation-delay: 2.7s; }
 
+/* --- RemoteAccess BBS: the sysop's Waiting-For-Caller console, boxed
+   FrontDoor-styled panels --- */
+.boss-ra { background: #000; color: #b8b8b8; padding: 0 !important; display: flex; flex-direction: column; }
+.ra-titlebar { display: flex; justify-content: space-between; gap: 1em; background: #00a8a8; color: #000; padding: 0.15em 0.7em; font-weight: 700; }
+.ra-body { flex: 1; display: flex; gap: 1.2em; align-items: flex-start; justify-content: center; padding: 1.2em 1em; flex-wrap: wrap; }
+.ra-panel { border: 1px solid #00a8a8; padding: 0.5em 1em 0.8em; min-width: 13em; }
+.ra-panel-title { color: #fcfc54; font-weight: 700; margin: 0 0 0.5em; }
+.ra-grid { display: grid; grid-template-columns: max-content 1fr; gap: 0.12em 1.4em; }
+.ra-grid > span:nth-child(even) { text-align: right; color: #fff; }
+.ra-status { margin: 0; padding: 0.3em 0.8em; border-top: 1px solid #00a8a8; color: #54fc54; }
+.ra-cursor { animation: ws-blink 1s steps(1) infinite; }
+
+/* --- Oblivion/2 BBS: scene-styled front door; the shade header is an
+   original composition from generic block characters --- */
+.boss-obv { background: #000; color: #b8b8b8; padding: 1.1em 1.3em !important; display: flex; flex-direction: column; gap: 0.3em; }
+.obv-shade { margin: 0; color: #fc54fc; letter-spacing: 0.1em; overflow: hidden; white-space: nowrap; }
+.obv-name { margin: 0.1em 0; color: #54fcfc; font-weight: 700; font-size: 1.6em; letter-spacing: 0.45em; }
+.obv-sub { margin: 0.2em 0 1.2em; color: #b8b8b8; }
+.obv-login { margin: auto 0 0; color: #fff; }
+.obv-cursor { animation: ws-blink 1s steps(1) infinite; }
+
+/* --- Telegard BBS: the classic hobbyist main menu --- */
+.boss-tg { background: #000; color: #b8b8b8; padding: 0 !important; display: flex; flex-direction: column; }
+.tg-titlebar { display: flex; justify-content: space-between; gap: 1em; background: #0000a8; color: #fff; padding: 0.15em 0.7em; font-weight: 700; }
+.tg-menu { flex: 1; display: grid; grid-template-columns: repeat(2, max-content); gap: 0.2em 3em; align-content: center; justify-content: center; padding: 1em; }
+.tg-menu p { margin: 0; }
+.tg-key { color: #54fcfc; font-weight: 700; }
+.tg-status { margin: 0; padding: 0.25em 0.8em; color: #fcfc54; border-top: 1px solid #333; }
+.tg-prompt { margin: 0; padding: 0.1em 0.8em 0.5em; color: #fff; }
+.tg-cursor { animation: ws-blink 1s steps(1) infinite; }
+
 /* Respect reduced motion: freeze every added animation to its resting frame */
 @media (prefers-reduced-motion: reduce) {
   .zx81-k, .msx-cursor, .msx-logo-word, .trs80-cursor, .cp500-cursor,
@@ -9061,7 +9095,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   /* reduced motion: NetWare/PCBoard/Videotexto land on their finished frames */
   .bbs-line, .vdt-paint { animation: none; opacity: 1; }
   .bbs-type { animation: none; max-width: 16ch; }
-  .bbs-cursor, .vdt-cursor { animation: none; opacity: 1; }
+  .bbs-cursor, .vdt-cursor, .ra-cursor, .obv-cursor, .tg-cursor { animation: none; opacity: 1; }
   .nw-util::before { animation: none; }
 }
 

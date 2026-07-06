@@ -630,6 +630,105 @@ function Videotexto({ hint }: { hint: string }) {
   );
 }
 
+// ---- RemoteAccess BBS: the sysop's Waiting-For-Caller console --------------
+// Andrew Milner's RemoteAccess (Wantree Development, Australia; shareware from
+// January 1990) ran multiple nodes under DESQview and OS/2 when almost nothing
+// else could, and its sysop interface was styled after the FrontDoor mailer
+// with its author's permission. This is the other side of a BBS: node 1 idle,
+// the sysop's stats on screen, waiting for the phone to ring.
+function RemoteAccess({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-ra">
+      <div className="ra-titlebar">
+        <span>RemoteAccess v2.50</span>
+        <span>ARSENAL BBS - Node 1</span>
+      </div>
+      <div className="ra-body">
+        <div className="ra-panel">
+          <p className="ra-panel-title">Today</p>
+          <div className="ra-grid">
+            <span>Calls</span>
+            <span>27</span>
+            <span>Messages</span>
+            <span>14</span>
+            <span>Uploads</span>
+            <span>3</span>
+            <span>Downloads</span>
+            <span>12</span>
+          </div>
+        </div>
+        <div className="ra-panel">
+          <p className="ra-panel-title">Last caller</p>
+          <div className="ra-grid">
+            <span>Name</span>
+            <span>RODOLFO</span>
+            <span>Off at</span>
+            <span>14:02</span>
+            <span>Baud</span>
+            <span>2400</span>
+            <span>Node</span>
+            <span>1</span>
+          </div>
+        </div>
+      </div>
+      <p className="ra-status">
+        Waiting for caller<span className="ra-cursor"> ...</span>
+      </p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Oblivion/2 BBS: a scene board's front door -----------------------------
+// OBV/2, the DOS BBS the ANSI art scene loved best; its modern remake is
+// themed by Blocktronics artists. Freeware from 1997 under Transcentral
+// Enterprises; v2.40 closed the decade. The shade-block header here is an
+// original composition from generic block characters -- no artist's ANSI
+// work is reproduced.
+function Oblivion({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-obv">
+      <p className="obv-shade" aria-hidden="true">░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░</p>
+      <p className="obv-name">OBLIVION/2</p>
+      <p className="obv-shade" aria-hidden="true">░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░</p>
+      <p className="obv-sub">v2.40 - Transcentral Enterprises - Node 1</p>
+      <p className="obv-login">
+        login: <span className="obv-cursor">▌</span>
+      </p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Telegard BBS: the main menu --------------------------------------------
+// Telegard grew out of leaked WWIV 3.21 source through Carl Mueller, Eric Oman
+// and Martin Pollard, passed to Tim Strike in 1993, and is Renegade's ancestor.
+// Shown in its final 3.09/g2 form (1998, DOS and OS/2): the classic hobbyist
+// main menu over JAM/Squish message bases, tagged file areas and doors.
+function Telegard({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-tg">
+      <div className="tg-titlebar">
+        <span>Telegard v3.09/g2</span>
+        <span>ARSENAL BBS - Node 1</span>
+      </div>
+      <div className="tg-menu">
+        <p><span className="tg-key">[M]</span> Message areas</p>
+        <p><span className="tg-key">[F]</span> File areas</p>
+        <p><span className="tg-key">[D]</span> Doors</p>
+        <p><span className="tg-key">[B]</span> Bulletins</p>
+        <p><span className="tg-key">[U]</span> User settings</p>
+        <p><span className="tg-key">[G]</span> Goodbye</p>
+      </div>
+      <p className="tg-status">[Main] - Time left: 58 min</p>
+      <p className="tg-prompt">
+        Command: <span className="tg-cursor">▌</span>
+      </p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
 // ---- Microdigital TK-82C (BR ZX81 clone) -----------------------------------
 // Microdigital's first widely sold machine and a faithful ZX81 clone, so it
 // boots exactly like one: a blank raster and a single inverse K in the corner.
@@ -650,14 +749,16 @@ function TK82C() {
 }
 
 // ---- Microdigital TK90X (BR ZX Spectrum clone) -----------------------------
-// Spectrum-style blank white screen. Microdigital's tweaked ROM kept Sinclair's
-// bottom copyright line but replaced the © glyph with Δ in the character set
-// (and £ with Σ), so the authentic boot reads "Δ 1982 Sinclair Research Ltd".
+// The real machine boots to a blank paper screen with its OWN name on the
+// bottom line: "TK90X - Color Computer". No Sinclair line, no (c), no year.
+// Verbatim from the ROM: the v1 and v2 dumps both carry the string at 0x3AAE,
+// padded with leading spaces to centre it on the 32-column screen (hence the
+// text-align: center rule). Cross-checked against real-hardware video.
 function TK90X() {
   return (
     <div className="boss-screen boss-tk90x">
       <div className="spectrum-field" />
-      <div className="tk90x-copy">Δ 1982 Sinclair Research Ltd</div>
+      <div className="tk90x-copy">TK90X - Color Computer</div>
       <div className="spectrum-stripes" aria-hidden="true">
         <span style={{ background: "#d7d700" }} />
         <span style={{ background: "#00d7d7" }} />
@@ -669,13 +770,14 @@ function TK90X() {
 }
 
 // ---- Microdigital TK95 (BR ZX Spectrum clone, TK90X successor) -------------
-// Same Spectrum ROM family as the TK90X (same Δ-for-© character tweak), in the
-// later Plus/4-style case with the improved keyboard. Visually the same boot.
+// Per Coopermiti's museum notes the TK95's only ROM change from the TK90X was
+// the boot line, and the ROM dump agrees: at 0x3AB1 it reads simply
+// "TK Color Computer", centred by leading spaces baked into the string.
 function TK95() {
   return (
     <div className="boss-screen boss-tk95">
       <div className="spectrum-field" />
-      <div className="tk90x-copy">Δ 1982 Sinclair Research Ltd</div>
+      <div className="tk90x-copy">TK Color Computer</div>
       <div className="spectrum-stripes" aria-hidden="true">
         <span style={{ background: "#d7d700" }} />
         <span style={{ background: "#00d7d7" }} />
@@ -1246,6 +1348,12 @@ function renderScreen(kind: BossScreenKind, hint: string) {
       return <PCBoard hint={hint} />;
     case "videotexto":
       return <Videotexto hint={hint} />;
+    case "oblivion":
+      return <Oblivion hint={hint} />;
+    case "remoteaccess":
+      return <RemoteAccess hint={hint} />;
+    case "telegard":
+      return <Telegard hint={hint} />;
     case "tk82c":
       return <TK82C />;
     case "tk90x":

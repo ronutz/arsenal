@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "13:24",
+    kind: "content",
+    title: "Three BBS screens, and the TK90X and TK95 set right",
+    body:
+      "The retro screen collection reaches 48 with the other side of the modem: RemoteAccess waiting for a caller on the sysop's console, Oblivion/2's scene-styled front door, and Telegard's classic main menu. The TK90X and TK95 boot screens were also corrected: the real machines boot to their own names (TK90X - Color Computer and TK Color Computer), verified character by character against ROM dumps and real-hardware video, replacing an inaccurate Sinclair-style line.",
+  },
+  {
+    date: "2026-07-06",
     time: "12:34",
     kind: "content",
     title: "Three deep-cut boss screens: NetWare, PCBoard, and Videotexto",
