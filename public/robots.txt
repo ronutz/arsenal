@@ -6,3 +6,5 @@ Allow: /
 
 # Machine-readable index of every tool and article:
 # https://ronutz.com/llms.txt
+
+Sitemap: https://ronutz.com/sitemap.xml

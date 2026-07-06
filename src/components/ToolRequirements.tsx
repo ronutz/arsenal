@@ -56,10 +56,14 @@ export interface ToolRequirementsLabels {
 
 export default function ToolRequirements({
   apiReady,
+  processingOn = false,
   labels,
 }: {
   /** True when this tool exposes an HTTP API (slug present in API_TOOLS). */
   apiReady: boolean;
+  /** True when local API processing is switched on. Drives the API pill colour:
+      green when served locally, neutral grey/white when documented-not-served. */
+  processingOn?: boolean;
   /** Already-localized strings (the page resolves these). */
   labels: ToolRequirementsLabels;
 }) {
@@ -75,9 +79,13 @@ export default function ToolRequirements({
           <span className="tool-req-pill-meta mono">{labels.clientNeeds}</span>
         </span>
 
-        {/* Shown only for API-capable tools; honest about not-yet-live status. */}
+        {/* Shown only for API-capable tools. data-processing drives the colour:
+            "on" => green (served locally), "off" => neutral (built, not live). */}
         {apiReady && (
-          <span className="tool-req-pill tool-req-pill--api">
+          <span
+            className="tool-req-pill tool-req-pill--api"
+            data-processing={processingOn ? "on" : "off"}
+          >
             <span className="tool-req-pill-dot" aria-hidden="true" />
             <span className="tool-req-pill-label">{labels.apiPill}</span>
           </span>

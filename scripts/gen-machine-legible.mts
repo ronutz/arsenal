@@ -30,6 +30,10 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { tools } from "../src/config/tools";
+import { LIVE_LOCALES } from "../src/i18n/locales";
+
+/** BCP-47 codes of the locales actually built (each is also its URL segment). */
+const SITEMAP_LOCALES = LIVE_LOCALES.map((l) => l.code);
 
 const ORIGIN = "https://ronutz.com";
 const OUT = path.join(process.cwd(), "out");
@@ -334,6 +338,80 @@ L.push(
   "",
 );
 fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
+
+// ---- 5. sitemap.xml ------------------------------------------------------
+// A proper XML sitemap with per-URL hreflang alternates. Derived from the built
+// pages (so it never drifts: new pages appear, deleted pages drop out on a fresh
+// build). Strategy: the English tree (out/en) is the canonical route set — every
+// live locale mirrors the same routes — so we walk out/en once for index.html
+// files, turn each into a route path, and emit one <url> per route whose <loc>
+// is the English URL plus an <xhtml:link rel="alternate" hreflang> for EVERY
+// live locale and an x-default (English). This is the robust, standards-based
+// way to declare multilingual equivalence for a statically exported site.
+{
+  const enRoot = path.join(OUT, "en");
+  const routes: string[] = []; // route path WITHOUT locale, e.g. "" (home), "tools/cidr"
+
+  // Recursively collect every directory that contains an index.html.
+  const walk = (dir: string, rel: string) => {
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    if (entries.some((e) => e.isFile() && e.name === "index.html")) {
+      routes.push(rel);
+    }
+    for (const e of entries) {
+      if (e.isDirectory()) {
+        walk(path.join(dir, e.name), rel ? `${rel}/${e.name}` : e.name);
+      }
+    }
+  };
+  walk(enRoot, "");
+
+  routes.sort();
+
+  const xmlEscape = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+  // Build a per-locale URL for a route (locale segment + optional trailing path,
+  // always with a trailing slash to match the exported directory URLs).
+  const localeUrl = (loc: string, route: string) =>
+    `${ORIGIN}/${loc}${route ? `/${route}` : ""}/`;
+
+  const urls: string[] = [];
+  for (const route of routes) {
+    const alternates = SITEMAP_LOCALES.map(
+      (loc) =>
+        `    <xhtml:link rel="alternate" hreflang="${loc}" href="${xmlEscape(localeUrl(loc, route))}" />`,
+    );
+    // x-default points at English (the per-key fallback base).
+    alternates.push(
+      `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(localeUrl("en", route))}" />`,
+    );
+    urls.push(
+      "  <url>",
+      `    <loc>${xmlEscape(localeUrl("en", route))}</loc>`,
+      ...alternates,
+      "  </url>",
+    );
+  }
+
+  const sitemap = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ...urls,
+    "</urlset>",
+    "",
+  ].join("\n");
+
+  fs.writeFileSync(path.join(OUT, "sitemap.xml"), sitemap, "utf8");
+  console.log(
+    `[gen-machine-legible] sitemap.xml (${routes.length} routes × ${SITEMAP_LOCALES.length} locales + x-default).`,
+  );
+}
 
 console.log(
   `[gen-machine-legible] ${mdCount} article .md (${DOC_LOCALES.length} locales), ` +

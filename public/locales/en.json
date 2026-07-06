@@ -3442,7 +3442,8 @@
     "coffee": "Buy me a coffee",
     "lastModified": "Last modified {stamp}",
     "roadmap": "Roadmap",
-    "settings": "Settings"
+    "settings": "Settings",
+    "source": "Source"
   },
   "search": {
     "kindTool": "Tool",
@@ -4023,7 +4024,11 @@
     "swaggerLoadError": "Swagger UI could not be loaded.",
     "servedTitle": "Why the API is documented but not served here",
     "servedBody": "Running a public API means paying for compute on every call, with a bill that grows with usage in ways a single maintainer cannot cap safely. This site is deliberately free and predictable to run, so it serves the browser tools (which compute on your own device, at no cost to the host) and keeps the API dormant rather than risk unbounded cost. The endpoints are real and the contract is stable; what is switched off is the hosted execution. If you need the API today, the engine is open and can be run yourself.",
-    "swaggerCaveat": "This is the standard Swagger UI rendering of the specification. It is a documentation browser only: there are no \"try it out\" controls, because the API is not served from this site."
+    "swaggerCaveat": "This is the standard Swagger UI rendering of the specification. It is a documentation browser only: there are no \"try it out\" controls, because the API is not served from this site.",
+    "servedOnTitle": "The API is served locally on this origin",
+    "servedOnBody": "Local API processing is switched on. The same-origin Worker serves each endpoint using the in-house engines, returning the same deterministic, byte-identical results as the browser tools. It is stateless and logs no query values or request bodies. If you would rather keep everything on your own device, the browser tools remain the zero-egress default.",
+    "stateBadgeOn": "API: served locally",
+    "stateBadgeOff": "API: documented, not served"
   },
   "contributeIdeas": {
     "eyebrow": "Ideas welcome",
@@ -4065,7 +4070,10 @@
     "contact": "Questions about licensing? <a>Get in touch.</a>",
     "backHome": "Back to the tools",
     "thirdHeading": "Open-source components",
-    "thirdBody": "This site stands on open-source work. The site itself is built with Next.js and React and shipped as a static export; internationalization uses next-intl; the Learn content is rendered with next-mdx-remote, gray-matter, remark-gfm, and js-yaml; and search is powered by Pagefind. These are provided under the MIT License, except next-mdx-remote (Mozilla Public License 2.0). The API reference embeds Swagger UI, under the Apache License 2.0. Each component stays under its own license, and the full notices ship alongside the source."
+    "thirdBody": "This site stands on open-source work. The site itself is built with Next.js and React and shipped as a static export; internationalization uses next-intl; the Learn content is rendered with next-mdx-remote, gray-matter, remark-gfm, and js-yaml; and search is powered by Pagefind. These are provided under the MIT License, except next-mdx-remote (Mozilla Public License 2.0). The API reference embeds Swagger UI, under the Apache License 2.0. Each component stays under its own license, and the full notices ship alongside the source.",
+    "sourceHeading": "Source code",
+    "sourceBody": "The full source is on GitHub. Issues and pull requests are welcome; ronutz.com remains the canonical, maintained deployment.",
+    "sourceLink": "View the repository on GitHub"
   },
   "languageStatus": {
     "title": "Translation status",
@@ -4751,14 +4759,16 @@
     "clientNeeds": "JavaScript + CSS",
     "browserNote": "This tool computes entirely on your device, so nothing you type is sent anywhere. That local computation needs JavaScript; CSS is used for layout and theming.",
     "apiPill": "API-ready",
-    "apiNote": "This tool is built to also work over an HTTP API. The API is not switched on yet; when it is, you will be able to call it without a browser.",
     "noscriptHeading": "JavaScript is off, so the live tool will not run.",
-    "noscriptBody": "You can still read this page's explanation, open the Markdown reference and the Learn article, and follow the sources below. Turn JavaScript on to use the interactive tool."
+    "noscriptBody": "You can still read this page's explanation, open the Markdown reference and the Learn article, and follow the sources below. Turn JavaScript on to use the interactive tool.",
+    "apiNoteOff": "This tool is built to also work over an HTTP API. Processing is currently off, so the API is documented but not served; when it is switched on, you will be able to call it without a browser.",
+    "apiNoteOn": "This tool also works over an HTTP API, served locally on this origin. You can call it without a browser; the same deterministic engine returns byte-identical results."
   },
   "toolApiEndpoint": {
     "heading": "API endpoint",
-    "note": "Documented, not served. Opens the specification.",
-    "linkAria": "Open the API reference for this tool"
+    "linkAria": "Open the API reference for this tool",
+    "noteOff": "Documented, not served. Opens the specification.",
+    "noteOn": "Served locally on this origin. Opens the specification."
   },
   "licenseBadges": {
     "groupAria": "Licensing details",

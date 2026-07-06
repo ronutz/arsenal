@@ -3442,7 +3442,8 @@
     "coffee": "Me pague um café",
     "lastModified": "Última modificação {stamp}",
     "roadmap": "Roadmap",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "source": "Código-fonte"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -4023,7 +4024,11 @@
     "engineBody": "Cada endpoint executa a mesma função pura que a ferramenta no navegador executa, de modo que a API e o navegador retornam resultados idênticos byte a byte.",
     "servedTitle": "Por que a API é documentada, mas não servida aqui",
     "servedBody": "Servir uma API pública significa pagar por processamento a cada chamada, com uma conta que cresce com o uso de formas que um mantenedor sozinho não consegue limitar com segurança. Este site foi feito para ser gratuito e previsível de manter, então ele serve as ferramentas do navegador (que calculam no seu próprio dispositivo, sem custo para quem hospeda) e mantém a API dormente, em vez de arriscar custo ilimitado. Os endpoints são reais e o contrato é estável; o que está desligado é a execução hospedada. Se você precisa da API hoje, o motor é aberto e pode ser executado por você mesmo.",
-    "swaggerCaveat": "Esta é a renderização padrão do Swagger UI da especificação. É apenas um navegador de documentação: não há controles de \"try it out\", porque a API não é servida a partir deste site."
+    "swaggerCaveat": "Esta é a renderização padrão do Swagger UI da especificação. É apenas um navegador de documentação: não há controles de \"try it out\", porque a API não é servida a partir deste site.",
+    "servedOnTitle": "A API é servida localmente nesta origem",
+    "servedOnBody": "O processamento local da API está ligado. O Worker de mesma origem serve cada endpoint usando os motores internos, retornando os mesmos resultados determinísticos e idênticos byte a byte que as ferramentas do navegador. Ele não tem estado e não registra valores de consulta nem corpos de requisição. Se você preferir manter tudo no seu próprio dispositivo, as ferramentas do navegador continuam sendo o padrão sem envio de dados.",
+    "stateBadgeOn": "API: servida localmente",
+    "stateBadgeOff": "API: documentada, não servida"
   },
   "license_page": {
     "eyebrow": "Termos",
@@ -4034,7 +4039,10 @@
     "backHome": "Voltar às ferramentas",
     "thirdHeading": "Componentes de código aberto",
     "lede": "O ronutz.com é de código aberto. Seu código é licenciado sob a Apache License 2.0, e seu conteúdo escrito sob a Creative Commons Atribuição 4.0 (CC BY 4.0). Ambos exigem atribuição: reutilize, mas credite a fonte. O site também é construído sobre outros softwares de código aberto, creditados abaixo.",
-    "thirdBody": "Este site se apoia em trabalho de código aberto. O site em si é construído com Next.js e React e entregue como uma exportação estática; a internacionalização usa next-intl; o conteúdo do Learn é renderizado com next-mdx-remote, gray-matter, remark-gfm e js-yaml; e a busca é fornecida pelo Pagefind. Esses componentes são disponibilizados sob a MIT License, exceto o next-mdx-remote (Mozilla Public License 2.0). A referência da API incorpora o Swagger UI, sob a Apache License 2.0. Cada componente permanece sob a sua própria licença, e os avisos completos acompanham o código-fonte."
+    "thirdBody": "Este site se apoia em trabalho de código aberto. O site em si é construído com Next.js e React e entregue como uma exportação estática; a internacionalização usa next-intl; o conteúdo do Learn é renderizado com next-mdx-remote, gray-matter, remark-gfm e js-yaml; e a busca é fornecida pelo Pagefind. Esses componentes são disponibilizados sob a MIT License, exceto o next-mdx-remote (Mozilla Public License 2.0). A referência da API incorpora o Swagger UI, sob a Apache License 2.0. Cada componente permanece sob a sua própria licença, e os avisos completos acompanham o código-fonte.",
+    "sourceHeading": "Código-fonte",
+    "sourceBody": "O código-fonte completo está no GitHub. Issues e pull requests são bem-vindos; o ronutz.com permanece a implantação canônica e mantida.",
+    "sourceLink": "Ver o repositório no GitHub"
   },
   "contributeIdeas": {
     "eyebrow": "Ideias bem-vindas",
@@ -4751,14 +4759,16 @@
     "clientNeeds": "JavaScript + CSS",
     "browserNote": "Esta ferramenta calcula inteiramente no seu dispositivo, então nada do que você digita é enviado para lugar nenhum. Esse cálculo local precisa de JavaScript; o CSS cuida do layout e do tema.",
     "apiPill": "Pronta para API",
-    "apiNote": "Esta ferramenta também foi feita para funcionar por uma API HTTP. A API ainda não está ligada; quando estiver, você poderá chamá-la sem um navegador.",
     "noscriptHeading": "O JavaScript está desligado, então a ferramenta ao vivo não vai rodar.",
-    "noscriptBody": "Você ainda pode ler a explicação desta página, abrir a referência em Markdown e o artigo do Learn, e consultar as fontes abaixo. Ligue o JavaScript para usar a ferramenta interativa."
+    "noscriptBody": "Você ainda pode ler a explicação desta página, abrir a referência em Markdown e o artigo do Learn, e consultar as fontes abaixo. Ligue o JavaScript para usar a ferramenta interativa.",
+    "apiNoteOff": "Esta ferramenta também foi feita para funcionar via API HTTP. O processamento está desligado no momento, então a API é documentada mas não servida; quando for ligada, você poderá chamá-la sem um navegador.",
+    "apiNoteOn": "Esta ferramenta também funciona via API HTTP, servida localmente nesta origem. Você pode chamá-la sem um navegador; o mesmo motor determinístico retorna resultados idênticos byte a byte."
   },
   "toolApiEndpoint": {
     "heading": "Endpoint da API",
-    "note": "Documentado, não servido. Abre a especificação.",
-    "linkAria": "Abrir a referência da API desta ferramenta"
+    "linkAria": "Abrir a referência da API desta ferramenta",
+    "noteOff": "Documentado, não servido. Abre a especificação.",
+    "noteOn": "Servido localmente nesta origem. Abre a especificação."
   },
   "licenseBadges": {
     "groupAria": "Detalhes de licenciamento",

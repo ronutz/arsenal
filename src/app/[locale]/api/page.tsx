@@ -19,6 +19,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ApiExplorer from "@/components/ApiExplorer";
+import { isApiProcessingEnabled } from "@/config/apiSurface";
 
 export async function generateMetadata({
   params,
@@ -40,6 +41,7 @@ export default async function ApiPage({
 
   const t = await getTranslations("api");
   const tNav = await getTranslations("nav");
+  const processingOn = isApiProcessingEnabled();
 
   return (
     <>
@@ -52,11 +54,20 @@ export default async function ApiPage({
         <section className="section">
           <div className="container api-page">
             <h1 className="api-title">{t("title")}</h1>
+            <span
+              className="api-state-badge"
+              data-processing={processingOn ? "on" : "off"}
+            >
+              <span className="api-state-dot" aria-hidden="true" />
+              {processingOn ? t("stateBadgeOn") : t("stateBadgeOff")}
+            </span>
             <p className="api-lede">{t("lede")}</p>
 
-            <div className="api-block api-block--notice">
-              <h2 className="api-h2">{t("servedTitle")}</h2>
-              <p className="api-body">{t("servedBody")}</p>
+            {/* Served-state section: OFF explains why the API is not served; ON
+                explains it is served locally. Driven by the single switch. */}
+            <div className="api-block api-block--notice" data-processing={processingOn ? "on" : "off"}>
+              <h2 className="api-h2">{processingOn ? t("servedOnTitle") : t("servedTitle")}</h2>
+              <p className="api-body">{processingOn ? t("servedOnBody") : t("servedBody")}</p>
             </div>
 
             <div className="api-block">

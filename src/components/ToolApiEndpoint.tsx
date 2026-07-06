@@ -28,7 +28,9 @@ import { apiEndpointFor } from "@/generated/api-endpoints";
 export interface ToolApiEndpointLabels {
   /** Small heading / eyebrow, e.g. "API endpoint". */
   heading: string;
-  /** Note that the endpoint is documented but not served, e.g. "Documented, not served — opens the spec.". */
+  /** Note about serving state. The page passes the ON or OFF variant depending
+      on whether API processing is switched on (served locally vs documented,
+      not served). */
   note: string;
   /** Accessible label for the link, e.g. "Open the API reference for this tool". */
   linkAria: string;
@@ -36,10 +38,14 @@ export interface ToolApiEndpointLabels {
 
 export default function ToolApiEndpoint({
   slug,
+  processingOn,
   labels,
 }: {
   /** Tool slug; looked up in the generated API endpoint map. */
   slug: string;
+  /** True when local API processing is switched on (drives the green vs grey
+      pill colour via the data-processing attribute). */
+  processingOn: boolean;
   /** Already-localized strings (the page resolves these). */
   labels: ToolApiEndpointLabels;
 }) {
@@ -50,8 +56,10 @@ export default function ToolApiEndpoint({
   // params (not a raw fragment) keep this robust across Swagger UI versions.
   const href = `/api?op=${encodeURIComponent(endpoint.op)}&tag=${encodeURIComponent(endpoint.tag)}`;
 
+  // data-processing drives the colour: "on" => green (served locally),
+  // "off" => neutral grey/white (documented, not served).
   return (
-    <div className="tool-endpoint">
+    <div className="tool-endpoint" data-processing={processingOn ? "on" : "off"}>
       <span className="tool-endpoint-eyebrow">{labels.heading}</span>
       <Link href={href} className="tool-endpoint-link" aria-label={labels.linkAria}>
         <span className="tool-endpoint-method mono">{endpoint.method}</span>

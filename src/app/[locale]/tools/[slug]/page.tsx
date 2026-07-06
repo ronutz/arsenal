@@ -29,6 +29,7 @@ import ToolApiEndpoint from "@/components/ToolApiEndpoint";
 // worker's /api/v1/<slug> routes and the OpenAPI generator). We use it here only
 // to decide whether the "API-ready" pill applies to this tool.
 import { API_TOOLS } from "@/lib/tools/registry";
+import { isApiProcessingEnabled } from "@/config/apiSurface";
 import FamilyChip from "@/components/FamilyChip";
 import ToolProvenance from "@/components/ToolProvenance";
 import { provenanceFor } from "@/config/toolProvenance";
@@ -485,6 +486,9 @@ export default async function ToolDetailPage({
   // API-ready when this tool's slug is in the API registry (capability is real;
   // the surface being switched on is a separate, later config flip).
   const apiReady = API_TOOLS.some((t) => t.slug === slug);
+  // The single API_PROCESSING switch: green pills + "served locally" wording
+  // when on; neutral pills + "documented, not served" wording when off.
+  const processingOn = isApiProcessingEnabled();
   const tReq = await getTranslations("toolRequirements");
   const reqLabels = {
     heading: tReq("heading"),
@@ -492,7 +496,7 @@ export default async function ToolDetailPage({
     clientNeeds: tReq("clientNeeds"),
     browserNote: tReq("browserNote"),
     apiPill: tReq("apiPill"),
-    apiNote: tReq("apiNote"),
+    apiNote: processingOn ? tReq("apiNoteOn") : tReq("apiNoteOff"),
     noscriptHeading: tReq("noscriptHeading"),
     noscriptBody: tReq("noscriptBody"),
   };
@@ -501,7 +505,7 @@ export default async function ToolDetailPage({
   const tEndpoint = await getTranslations("toolApiEndpoint");
   const endpointLabels = {
     heading: tEndpoint("heading"),
-    note: tEndpoint("note"),
+    note: processingOn ? tEndpoint("noteOn") : tEndpoint("noteOff"),
     linkAria: tEndpoint("linkAria"),
   };
 
@@ -574,9 +578,11 @@ export default async function ToolDetailPage({
 
             <Component />
 
-            <ToolApiEndpoint slug={slug} labels={endpointLabels} />
+            <ToolApiEndpoint slug={slug} processingOn={processingOn} labels={endpointLabels} />
 
-            {showRequirements && <ToolRequirements apiReady={apiReady} labels={reqLabels} />}
+            {showRequirements && (
+              <ToolRequirements apiReady={apiReady} processingOn={processingOn} labels={reqLabels} />
+            )}
 
             <ToolLearnPanel toolSlug={slug} locale={locale} heading={tTools("learnHeading")} />
 

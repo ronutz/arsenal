@@ -148,6 +148,16 @@ export default async function SiteFooter() {
             {t("api")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* The public source repository. External anchor (leaves the site). */}
+          <a
+            href="https://github.com/nutzmann/arsenal"
+            className="footer-contribute-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("source")}
+          </a>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <a href="/llms.txt" className="footer-contribute-link">
             llms.txt
           </a>

@@ -74,6 +74,24 @@ export default async function LicensePage({
             </div>
           </section>
 
+          {/* Source code — the public repository */}
+          <section className="section">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("sourceHeading")}</h2>
+              <p className="colophon-body">{t("sourceBody")}</p>
+              <p>
+                <a
+                  className="api-download"
+                  href="https://github.com/nutzmann/arsenal"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t("sourceLink")} →
+                </a>
+              </p>
+            </div>
+          </section>
+
           {/* Contact + back */}
           <section className="section">
             <div className="container colophon-container">

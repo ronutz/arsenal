@@ -89,14 +89,44 @@ export interface ApiSurfaceConfig {
 }
 
 // ---------------------------------------------------------------------------
-// THE CONFIG. Everything OFF: the surface is fully built but completely dark.
-// To go live later: set global.enabled = true, add a tools[slug] entry with
-// enabled: true, turn on the features you want (here or via defaultFeatures),
-// and assign gate policy ids where access should be guarded.
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │  THE API PROCESSING SWITCH.  This is the ONE value to flip.              │
+// │                                                                         │
+// │      0  =  API processing OFF  (default). The API is documented but     │
+// │            not served: endpoints return 404, and every API pill/badge   │
+// │            in the UI shows the neutral "documented, not served" state.  │
+// │                                                                         │
+// │      1  =  LOCAL API processing ON. The same-origin Worker serves the   │
+// │            API using the in-house engines, and every API pill/badge     │
+// │            turns green ("served locally").                              │
+// │                                                                         │
+// │  Flip this to 1 (and deploy) to turn the API on; flip back to 0 to turn │
+// │  it off. Both the Worker (serving) and the UI (pills + wording) read    │
+// │  this one value, so they can never disagree.                            │
+// └─────────────────────────────────────────────────────────────────────────┘
+/**
+ * THE API PROCESSING SWITCH (see the box above). Declared as `number` so the
+ * value is a genuine runtime switch: editing it to 1 is meaningful to every
+ * reader below. 0 = off (default), 1 = local processing on.
+ */
+export const API_PROCESSING: number = 0;
+
+/** True when local API processing is switched on (API_PROCESSING === 1). */
+export function isApiProcessingEnabled(): boolean {
+  return API_PROCESSING === 1;
+}
+
+// ---------------------------------------------------------------------------
+// THE CONFIG. `global.enabled` is driven by the single API_PROCESSING switch
+// above. The per-tool / per-feature hierarchy below still applies WHEN
+// processing is on: a feature is surfaced only if global + tool + feature all
+// resolve on. To go live: set API_PROCESSING = 1, add a tools[slug] entry with
+// enabled: true, turn on the features you want, and assign gate policy ids where
+// access should be guarded.
 // ---------------------------------------------------------------------------
 export const API_SURFACE: ApiSurfaceConfig = {
   global: {
-    enabled: false,
+    enabled: API_PROCESSING === 1,
     gate: null,
     defaultFeatures: { endpoint: false, curl: false, docs: false, tryIt: false },
   },

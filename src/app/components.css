@@ -9051,3 +9051,68 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .license-badges--footer .license-badge-icon--cc { width: 1.8rem; }
 .license-badges--footer:hover .license-badge { border-color: var(--border-strong); }
 .license-badges--footer:hover .license-badge-label { color: var(--text-primary); }
+
+/* --- API pills/badges: two-state colour driven by the API_PROCESSING switch --
+   OFF (documented, not served): neutral grey/white.
+   ON  (served locally):         green.
+   Both the tool-page "API-ready" pill and the endpoint affordance react. */
+
+/* "API-ready" requirement pill */
+.tool-req-pill--api[data-processing="off"] {
+  --req-hue: var(--text-tertiary, #94a3b8);
+  border-color: var(--border-strong);
+}
+.tool-req-pill--api[data-processing="off"] .tool-req-pill-label { color: var(--text-secondary); }
+.tool-req-pill--api[data-processing="on"] {
+  --req-hue: var(--accent-green, #22C55E);
+  border-color: color-mix(in srgb, var(--accent-green, #22C55E) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-green, #22C55E) 8%, transparent);
+}
+.tool-req-pill--api[data-processing="on"] .tool-req-pill-label { color: var(--text-primary); }
+
+/* Endpoint affordance (method chip + link) */
+.tool-endpoint[data-processing="off"] .tool-endpoint-link {
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--text-tertiary, #94a3b8) 8%, transparent);
+}
+.tool-endpoint[data-processing="off"] .tool-endpoint-link:hover {
+  border-color: var(--text-tertiary, #94a3b8);
+  background: color-mix(in srgb, var(--text-tertiary, #94a3b8) 14%, transparent);
+}
+.tool-endpoint[data-processing="off"] .tool-endpoint-method {
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
+}
+.tool-endpoint[data-processing="on"] .tool-endpoint-link {
+  border-color: color-mix(in srgb, var(--accent-green, #22C55E) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-green, #22C55E) 8%, transparent);
+}
+.tool-endpoint[data-processing="on"] .tool-endpoint-link:hover {
+  border-color: var(--accent-green, #22C55E);
+  background: color-mix(in srgb, var(--accent-green, #22C55E) 14%, transparent);
+}
+.tool-endpoint[data-processing="on"] .tool-endpoint-method {
+  color: var(--accent-green, #22C55E);
+  border-color: color-mix(in srgb, var(--accent-green, #22C55E) 45%, transparent);
+}
+
+/* --- /api page state badge (two-colour, driven by API_PROCESSING) ----------- */
+.api-state-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin: 0 0 1rem;
+  padding: 0.3rem 0.65rem; border-radius: 999px; border: 1px solid var(--border-strong);
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500;
+}
+.api-state-dot { width: 0.55rem; height: 0.55rem; border-radius: 999px; flex: 0 0 auto; }
+.api-state-badge[data-processing="off"] { color: var(--text-secondary); background: color-mix(in srgb, var(--text-tertiary, #94a3b8) 8%, transparent); }
+.api-state-badge[data-processing="off"] .api-state-dot { background: var(--text-tertiary, #94a3b8); }
+.api-state-badge[data-processing="on"] {
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--accent-green, #22C55E) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-green, #22C55E) 10%, transparent);
+}
+.api-state-badge[data-processing="on"] .api-state-dot { background: var(--accent-green, #22C55E); }
+/* When served, the notice block reads as active rather than cautionary. */
+.api-block--notice[data-processing="on"] {
+  border-left-color: var(--accent-green, #22C55E);
+  background: color-mix(in srgb, var(--accent-green, #22C55E) 8%, transparent);
+}

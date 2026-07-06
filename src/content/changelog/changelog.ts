@@ -44,6 +44,22 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "21:37",
+    kind: "feature",
+    title: "A single switch turns the API on or off, and the pills follow it",
+    body:
+      "Whether the API is served is now controlled by one value in one file (API_PROCESSING in the API surface config): 0 keeps it documented but not served, 1 turns on local processing, where the same-origin worker answers each endpoint with the in-house engines. Both the worker and the interface read that one value, so they can never disagree: while it is off, every /api/v1 request returns an honest 404, and every API pill and badge shows a neutral grey state with 'documented, not served' wording; flip it to 1 and the same pills turn green with 'served locally' wording, on each tool page and on the API page. The switch ships in the off position. A repository link was also added to the License page and the footer. English and Portuguese ship together; other locales fall back per key.",
+  },
+  {
+    date: "2026-07-05",
+    time: "21:32",
+    kind: "infra",
+    title: "A proper multilingual sitemap, with hreflang for every language",
+    body:
+      "The site now generates sitemap.xml at build time, listing every page with an hreflang alternate for each of the sixteen live languages plus an x-default, so search engines understand which URLs are translations of one another. It is derived from the built pages, so it stays current automatically as pages are added or removed. robots.txt now points at it. This complements the per-page canonical links added earlier.",
+  },
+  {
+    date: "2026-07-05",
     time: "21:07",
     kind: "launch",
     title: "ronutz.com is now open source: Apache-2.0 for code, CC BY 4.0 for content",

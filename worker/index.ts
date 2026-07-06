@@ -110,6 +110,24 @@ export default {
     if (url.pathname.startsWith(API_PREFIX)) {
       const slug = url.pathname.slice(API_PREFIX.length);
 
+      // ---- Master processing switch -----------------------------------------
+      // The single API_PROCESSING switch (src/config/apiSurface.ts) governs
+      // whether the API is SERVED at all. While it is off (the default), the
+      // endpoints are documented but not served, so every /api/v1/* request
+      // gets an honest 404 that points at the reference. Flipping the switch to
+      // 1 (and deploying) is what turns local processing on. This gate is first,
+      // before slug lookup, so the whole surface is dark as one unit.
+      if (!API_SURFACE.global.enabled) {
+        return json(
+          {
+            error: "api_not_served",
+            message:
+              "The API is documented but not served from this site. See https://ronutz.com/en/api for the specification and why processing is off.",
+          },
+          404,
+        );
+      }
+
       // Renamed slug? Permanent redirect to the successor, query preserved.
       const renamedTo = RENAMED_API_SLUGS.get(slug);
       if (renamedTo) {
