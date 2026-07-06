@@ -8806,24 +8806,47 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .zx81-k { display: inline-block; background: #000; color: #cfcfcf; padding: 0 0.15em; margin: 0.4em; font-weight: 700; animation: ws-blink 1.1s steps(1) infinite; }
 @keyframes zx81-type { from { max-width: 0; } to { max-width: 16ch; } }
 
-/* --- ZX Spectrum 48K + Microdigital TK90X / TK95: black on white, copyright
-   line + corner stripes. The TK clones kept Sinclair's line but with Δ for © --- */
-.boss-spectrum, .boss-tk90x, .boss-tk95 { background: #fff; color: #000; padding: 0 !important; position: relative; }
+/* --- ZX Spectrum 48K + Microdigital TK90X / TK95: black on white paper screen
+   with the boot line at the bottom. The real Spectrum shows Sinclair's line and
+   a corner colour ident; the TK clones show their OWN name and no stripes --- */
+.boss-spectrum, .boss-tk90x, .boss-tk95 { background: #fff; color: #000; padding: 0 !important; position: relative; display: flex; flex-direction: column; }
 .spectrum-field { flex: 1; }
 .spectrum-copy, .tk90x-copy { padding: 0.3em 0.6em 0.6em; letter-spacing: 0.02em; }
-/* The TK ROMs pad their boot line with leading spaces so it sits centred on the
-   32-column screen; centred here to match (Sinclair's own line stays left). */
-.boss-tk90x .tk90x-copy, .boss-tk95 .tk90x-copy { text-align: center; }
+/* TK90X: name centred near the top; TK95: name bottom-left (per real-hardware
+   photos). The TK90X keeps a thin horizontal colour bar low on the screen; the
+   TK95 shows a taller eight-band vertical colour field. Both use the Spectrum
+   BRIGHT palette: white, yellow, cyan, green, magenta, red, blue, black. */
+.boss-tk90x .tk90x-copy-top { text-align: center; padding-top: 0.9em; }
+.boss-tk95 .tk95-copy { text-align: left; }
+.tk-colorbar { display: flex; height: 1.4em; margin: 0 0.9em 1.1em; border: 1px solid #000; }
+.tk-colorbar span { flex: 1; }
+.tk95-bands { flex: 1; display: flex; margin: 1.1em 0.9em 0.4em; }
+.tk95-bands span { flex: 1; }
 .spectrum-stripes { position: absolute; right: 0.5em; bottom: 0.5em; display: flex; height: 0.5em; }
 .spectrum-stripes span { width: 0.5em; height: 100%; }
 
-/* --- ZX Spectrum 128: blue-bordered start menu --- */
-.boss-s128 { background: #0000cf; color: #fff; padding: clamp(0.4rem,2vw,1.4rem) !important; }
-.s128-inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2em; text-align: center; }
-.s128-copy { color: #fff; }
-.s128-menu { display: flex; flex-direction: column; gap: 0.35em; }
-.s128-item { padding: 0.1em 1.4em; }
-.s128-item-sel { background: #fff; color: #0000cf; }
+/* --- ZX Spectrum 128: the start menu. Real hardware shows a black menu box
+   with a cyan-highlighted first item on a light background, header bar with the
+   rainbow ident sitting above (drawn by the box border here for simplicity) --- */
+.boss-s128 { background: #c8c8c8; color: #000; padding: 0 !important; display: flex; align-items: center; justify-content: center; }
+.s128-inner { display: flex; flex-direction: column; background: #000; color: #fff; border: 3px solid #fff; box-shadow: 0 0 0 3px #000; padding: 0.2em 0; min-width: 14em; }
+.s128-menu { display: flex; flex-direction: column; }
+.s128-item { padding: 0.12em 1.2em; color: #fff; }
+.s128-item-sel { background: #00d7d7; color: #000; }
+
+/* --- ZX Spectrum +2A / +3 (Amstrad): header badge + rainbow, black menu box,
+   and the Amstrad copyright / drive line at the bottom of a light screen --- */
+.boss-s2a, .boss-s3 { background: #c8c8c8; color: #000; padding: 0 !important; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4em; }
+.s2a-frame { display: flex; flex-direction: column; border: 3px solid #000; min-width: 15em; }
+.s2a-header { display: flex; align-items: stretch; background: #000; }
+.s2a-badge { color: #fff; font-weight: 700; padding: 0.1em 0.7em; }
+.s2a-stripes { display: flex; margin-left: auto; }
+.s2a-stripes span { width: 0.9em; }
+.s2a-menu { background: #000; color: #fff; border-top: 2px solid #fff; padding: 0.1em 0 0.2em; }
+.s2a-item { padding: 0.12em 1.2em; }
+.s2a-item-sel { background: #00d7d7; color: #000; }
+.s2a-foot { text-align: center; line-height: 1.35; }
+.s2a-foot p { margin: 0; }
 
 /* --- MSX family: dark-blue raster, logo scroll-up, MSX BASIC --- */
 .boss-msx { background: #0a0acc; color: #fff; padding: clamp(0.4rem,2vw,1.2rem) !important; }
@@ -9077,6 +9100,190 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .tg-prompt { margin: 0; padding: 0.1em 0.8em 0.5em; color: #fff; }
 .tg-cursor { animation: ws-blink 1s steps(1) infinite; }
 
+/* --- XTreePro + XTreeGold: the tree file managers. Pro = grey classic; Gold
+   adds a pull-down menu bar and twin panes --- */
+.boss-xp, .boss-xg { background: #000; color: #b8b8b8; padding: 0.5em 0.9em !important; display: flex; flex-direction: column; gap: 0.25em; }
+.xp-path { margin: 0; color: #fff; }
+.xp-body { display: flex; gap: 1.2em; }
+.xp-tree { border: 1px solid #555; padding: 0.3em 0.7em; min-width: 11em; }
+.xp-tree p { margin: 0; }
+.xp-stats { border: 1px solid #555; padding: 0.3em 0.7em; text-align: right; }
+.xp-stats p { margin: 0; }
+.xp-stats-title { color: #fff; font-weight: 700; }
+.xp-num { color: #fcfc54; }
+.xp-files { display: flex; gap: 1.4em; flex-wrap: wrap; border: 1px solid #555; padding: 0.25em 0.7em; }
+.xp-cmds { margin-top: auto; border-top: 1px solid #555; padding-top: 0.25em; }
+.xp-cmds p { margin: 0; }
+.xp-cmds b { color: #54fcfc; }
+.xp-brand { margin: 0; text-align: right; color: #fff; font-weight: 700; }
+.xg-menubar { margin: 0; background: #00a8a8; color: #000; padding: 0.1em 0.5em; font-weight: 700; }
+.xg-body { display: flex; gap: 0.8em; }
+.xg-pane { flex: 1; border: 1px solid #00a8a8; padding: 0.3em 0.7em; }
+.xg-pane p { margin: 0; }
+.xg-path { color: #fcfc54; }
+.xg-files { border-color: #00a8a8; }
+.xg-brand { margin: 0; text-align: right; color: #fcfc54; font-weight: 700; }
+
+/* --- Microsoft Works (DOS): blue desktop, grey chooser dialog --- */
+.boss-wk { background: #0000a8; color: #fff; padding: 0 !important; display: flex; flex-direction: column; }
+.wk-menubar { margin: 0; background: #b8b8b8; color: #000; padding: 0.12em 0.6em; }
+.wk-dialog { margin: auto; background: #b8b8b8; color: #000; border: 2px solid #000; box-shadow: 0.5em 0.5em 0 rgba(0, 0, 0, 0.55); padding: 0.5em 1.4em 0.7em; min-width: 15em; }
+.wk-dialog-title { margin: 0 0 0.5em; text-align: center; font-weight: 700; }
+.wk-item { margin: 0; padding: 0 0.4em; }
+.wk-item-sel { background: #000; color: #fff; }
+.wk-ok { margin: 0.6em 0 0; text-align: center; font-weight: 700; }
+.wk-status { margin: 0; background: #b8b8b8; color: #000; padding: 0.12em 0.6em; }
+
+/* --- MultiMate Advantage: blue numbered main menu --- */
+.boss-mm { background: #0000a8; color: #fff; padding: 1em 1.4em !important; display: flex; flex-direction: column; }
+.mm-title { margin: 0; font-weight: 700; letter-spacing: 0.06em; }
+.mm-sub { margin: 0 0 1em; color: #54fcfc; }
+.mm-menu p { margin: 0 0 0.1em; }
+.mm-num { display: inline-block; min-width: 1.5em; color: #fcfc54; font-weight: 700; }
+.mm-prompt { margin: auto 0 0; color: #fcfc54; }
+.mm-cursor { animation: ws-blink 1s steps(1) infinite; color: #fff; }
+
+/* --- Harvard Graphics: the numbered slide-shop menu --- */
+.boss-hg { background: #0000a8; color: #fff; padding: 0 !important; display: flex; flex-direction: column; }
+.hg-title { margin: 0; background: #00a8a8; color: #000; padding: 0.15em 0.7em; font-weight: 700; }
+.hg-menu { margin: auto; border: 2px double #fff; padding: 0.5em 1.6em 0.8em; }
+.hg-menu p { margin: 0; }
+.hg-menu-title { text-align: center; color: #fcfc54; font-weight: 700; margin-bottom: 0.4em !important; }
+.hg-num { display: inline-block; min-width: 1.5em; color: #54fcfc; font-weight: 700; }
+.hg-fkeys { margin: 0; background: #00a8a8; color: #000; padding: 0.12em 0.7em; }
+
+/* --- Professional Write: SPC's gentle main menu --- */
+.boss-pw { background: #000; color: #b8b8b8; padding: 1em 1.4em !important; display: flex; flex-direction: column; }
+.pw-title { margin: 0 0 1em; color: #54fcfc; font-weight: 700; letter-spacing: 0.05em; }
+.pw-menu { border: 1px solid #555; padding: 0.5em 1.3em 0.7em; align-self: flex-start; }
+.pw-menu p { margin: 0; }
+.pw-menu-title { color: #fff; font-weight: 700; margin-bottom: 0.35em !important; }
+.pw-num { display: inline-block; min-width: 1.5em; color: #fcfc54; font-weight: 700; }
+.pw-foot { margin: auto 0 0; color: #555; }
+
+/* --- Ami Pro: a Windows 3.x word processor, SmartIcons and all --- */
+.boss-ap { background: #b8b8b8; color: #000; padding: 0 !important; display: flex; flex-direction: column; font-family: var(--font-sans, sans-serif); }
+.ap-titlebar { background: #0000a8; color: #fff; padding: 0.1em 0.5em; font-weight: 700; display: flex; gap: 0.6em; align-items: center; }
+.ap-sys { background: #b8b8b8; color: #000; padding: 0 0.3em; font-weight: 400; }
+.ap-menubar { margin: 0; padding: 0.1em 0.6em; border-bottom: 1px solid #808080; }
+.ap-icons { display: flex; gap: 0.22em; padding: 0.22em 0.5em; border-bottom: 1px solid #808080; }
+.ap-icons span { width: 1em; height: 1em; border: 1px solid #404040; }
+.ap-page { flex: 1; background: #fff; margin: 0.5em 1.4em; border: 1px solid #808080; padding: 0.6em 0.9em; }
+.ap-page p { margin: 0 0 0.3em; }
+.ap-caret { animation: ws-blink 1s steps(1) infinite; }
+.ap-status { margin: 0; padding: 0.08em 0.6em; border-top: 1px solid #808080; }
+
+/* --- dBASE II: green-phosphor CP/M-era dot prompt --- */
+.boss-d2 { background: #001400; color: #33ff66; padding: 1em 1.3em !important; display: flex; flex-direction: column; gap: 0.1em; }
+.boss-d2 p { margin: 0; }
+.d2-banner { margin-bottom: 0.6em !important; }
+.d2-cursor { animation: ws-blink 1s steps(1) infinite; }
+
+/* --- Clipper Summer '87: a compile session, verbatim copyright block --- */
+.boss-cl { background: #000; color: #b8b8b8; padding: 1em 1.3em !important; display: flex; flex-direction: column; gap: 0.1em; }
+.cl-line { margin: 0; }
+.cl-prompt { color: #fff; }
+.cl-cursor { animation: ws-blink 1s steps(1) infinite; color: #fff; }
+
+/* --- Borland SideKick: the pop-up over a dimmed DOS session --- */
+.boss-sk { background: #000; color: #b8b8b8; padding: 0.8em 1.2em !important; position: relative; }
+.sk-back { opacity: 0.35; }
+.sk-back p { margin: 0; }
+.sk-window { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #00a8a8; color: #000; border: 2px solid #fff; box-shadow: 0.6em 0.6em 0 rgba(0, 0, 0, 0.6); padding: 0.4em 1.4em 0.6em; }
+.sk-title { margin: 0 0 0.4em; text-align: center; font-weight: 700; }
+.sk-item { margin: 0; }
+.sk-foot { margin: 0.45em 0 0; text-align: center; font-weight: 700; color: #7a0000; }
+
+/* --- Windows for Workgroups 3.11: grey Program Manager chrome --- */
+.boss-wfw { background: #008080; color: #000; padding: 0 !important; display: flex; flex-direction: column; font-family: var(--font-sans, sans-serif); }
+.wfw-titlebar { background: #000080; color: #fff; padding: 0.1em 0.4em; display: flex; gap: 0.5em; align-items: center; font-weight: 700; }
+.wfw-sysbox { background: #c0c0c0; color: #000; padding: 0 0.35em; font-weight: 400; }
+.wfw-menubar { margin: 0; background: #c0c0c0; color: #000; padding: 0.1em 0.6em; border-bottom: 1px solid #808080; }
+.wfw-group { margin: 0.7em 1em 0; background: #c0c0c0; border: 2px solid #808080; border-top-color: #fff; border-left-color: #fff; padding: 0.2em; }
+.wfw-group-title { margin: 0 0 0.3em; background: #000080; color: #fff; padding: 0.05em 0.5em; }
+.wfw-icons { display: flex; flex-wrap: wrap; gap: 0.6em 1.1em; padding: 0.3em 0.5em 0.5em; }
+.wfw-ico { display: flex; flex-direction: column; align-items: center; text-align: center; width: 5.2em; font-size: 0.82em; color: #000; }
+.wfw-ico b { font-size: 1.7em; line-height: 1; color: #000080; }
+.wfw-group-net { margin-bottom: auto; }
+
+/* --- OS/2 Warp 3: Workplace Shell desktop + LaunchPad --- */
+.boss-os2 { background: #4a7a7a; color: #000; padding: 0 !important; display: flex; flex-direction: column; font-family: var(--font-sans, sans-serif); }
+.os2-desktop { flex: 1; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 1em 1.4em; padding: 1em; }
+.os2-ico { display: flex; flex-direction: column; align-items: center; text-align: center; width: 5.5em; color: #fff; font-size: 0.85em; text-shadow: 1px 1px 0 rgba(0,0,0,0.6); }
+.os2-glyph { font-size: 2em; line-height: 1; }
+.os2-ico-shred .os2-glyph { color: #ffd0d0; }
+.os2-launchpad { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3em 0.5em; margin: 0.5em; padding: 0.35em 0.5em; background: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; }
+.os2-launchpad span { background: #c0c0c0; border: 1px solid #808080; border-top-color: #fff; border-left-color: #fff; padding: 0.1em 0.5em; font-size: 0.82em; color: #000; }
+
+/* --- Macintosh Finder: black-on-white desktop, menu bar, Trash --- */
+.boss-macf { background: #fff; color: #000; padding: 0 !important; display: flex; flex-direction: column; font-family: var(--font-sans, sans-serif); background-image: radial-gradient(#0000 1px, #fff 1px); }
+.macf-menubar { background: #fff; border-bottom: 2px solid #000; padding: 0.05em 0.6em; display: flex; gap: 1.1em; font-size: 0.9em; }
+.macf-apple { font-weight: 700; }
+.macf-desktop { flex: 1; position: relative; }
+.macf-disk { position: absolute; top: 0.7em; right: 0.8em; display: flex; flex-direction: column; align-items: center; width: 5em; text-align: center; font-size: 0.82em; }
+.macf-disk-glyph { font-size: 1.8em; line-height: 1; }
+.macf-trash { position: absolute; bottom: 0.6em; right: 0.9em; display: flex; flex-direction: column; align-items: center; width: 4em; text-align: center; font-size: 0.82em; }
+.macf-trash-glyph { font-size: 1.9em; line-height: 1; }
+
+/* --- NCSA Mosaic: grey X/Motif browser chrome --- */
+.boss-mosaic { background: #c0c0c0; color: #000; padding: 0 !important; display: flex; flex-direction: column; font-family: var(--font-sans, sans-serif); }
+.mosaic-menubar { margin: 0; padding: 0.1em 0.6em; border-bottom: 1px solid #808080; font-size: 0.9em; }
+.mosaic-btns { display: flex; gap: 0.4em; padding: 0.3em 0.5em; }
+.mosaic-btns span { background: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; padding: 0.1em 0.6em; font-size: 0.82em; }
+.mosaic-url { display: flex; gap: 0.5em; align-items: center; padding: 0.2em 0.6em 0.4em; }
+.mosaic-url-label { font-weight: 700; font-size: 0.82em; }
+.mosaic-url-val { flex: 1; background: #fff; border: 1px solid #808080; padding: 0.1em 0.4em; font-family: var(--font-mono, monospace); font-size: 0.8em; }
+.mosaic-page { flex: 1; background: #fff; margin: 0 0.5em 0.5em; border: 1px solid #808080; padding: 0.6em 0.9em; }
+.mosaic-page p { margin: 0 0 0.5em; }
+.mosaic-h1 { font-size: 1.25em; font-weight: 700; }
+.mosaic-link { color: #0000cc; text-decoration: underline; }
+
+/* --- CompuServe: mono terminal, numbered menu + ! prompt --- */
+.boss-cis { background: #000; color: #b0b0b0; padding: 0.9em 1.2em !important; display: flex; flex-direction: column; gap: 0.05em; }
+.boss-cis p { margin: 0; }
+.cis-head { color: #fff; font-weight: 700; }
+.cis-copy { color: #808080; margin-bottom: 0.6em !important; }
+.cis-menu { margin-bottom: 0.6em; }
+.cis-num { display: inline-block; min-width: 1.6em; color: #54fcfc; }
+.cis-prompt { color: #fff; margin-top: auto !important; }
+.cis-cursor { animation: ws-blink 1s steps(1) infinite; }
+
+/* --- America Online: the blue Welcome screen --- */
+.boss-aol { background: #003399; color: #fff; padding: 0 !important; display: flex; flex-direction: column; font-family: var(--font-sans, sans-serif); }
+.aol-titlebar { background: #001b66; color: #fff; padding: 0.12em 0.6em; font-weight: 700; }
+.aol-welcome { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7em; padding: 0.8em; }
+.aol-hello { margin: 0; font-size: 1.4em; font-weight: 700; }
+.aol-mail { display: flex; flex-direction: column; align-items: center; gap: 0.1em; background: #ffd700; color: #003399; padding: 0.4em 1.2em; border-radius: 0.3em; font-weight: 700; }
+.aol-mail-glyph { font-size: 1.6em; line-height: 1; }
+.aol-channels { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35em 0.5em; max-width: 26em; }
+.aol-channels span { background: #4477cc; border: 1px solid #99bbee; padding: 0.15em 0.7em; font-size: 0.85em; }
+.aol-keyword { margin: 0; }
+.aol-kw-field { background: #fff; color: #000; padding: 0.05em 0.6em; font-family: var(--font-mono, monospace); }
+
+/* --- Network General Sniffer: blue text-mode menu, arrow-marked commands and
+   a function-key legend along the bottom --- */
+.boss-sniffer { background: #0000a8; color: #b0b0b0; padding: 0 !important; display: flex; flex-direction: column; }
+.snf-title { background: #00a8a8; color: #000; padding: 0.15em 0.7em; font-weight: 700; }
+.snf-body { flex: 1; display: flex; gap: 1.5em; padding: 0.9em 1.1em; }
+.snf-menu { min-width: 13em; }
+.snf-item { margin: 0; display: flex; gap: 0.4em; color: #fff; }
+.snf-mark { width: 1em; color: #fcfc54; }
+.snf-arrow { margin-left: auto; color: #54fc54; }
+.snf-item-sel { background: #b0b0b0; color: #a80000; font-weight: 700; }
+.snf-item-sel .snf-mark, .snf-item-sel .snf-arrow { color: #a80000; }
+.snf-desc { flex: 1; align-self: flex-end; color: #54fcfc; border-left: 1px solid #4444cc; padding-left: 1.2em; }
+.snf-fkeys { display: flex; gap: 1.5em; background: #00a8a8; color: #000; padding: 0.12em 0.7em; }
+
+/* --- VMware ESXi 6.7: the yellow-and-grey DCUI --- */
+.boss-esxi { background: #5c5c5c; color: #fff; padding: 0 !important; display: flex; flex-direction: column; }
+.esxi-titlebar { background: #f2c500; color: #000; padding: 0.15em 0.8em; font-weight: 700; }
+.esxi-main { flex: 1; padding: 1em 1.1em; }
+.esxi-main p { margin: 0; }
+.esxi-line { color: #e0e0e0; }
+.esxi-url { color: #ffe680; }
+.esxi-spacer { height: 0.6em; }
+.esxi-footbar { display: flex; gap: 2em; background: #f2c500; color: #000; padding: 0.15em 0.8em; font-weight: 700; }
+
 /* Respect reduced motion: freeze every added animation to its resting frame */
 @media (prefers-reduced-motion: reduce) {
   .zx81-k, .msx-cursor, .msx-logo-word, .trs80-cursor, .cp500-cursor,
@@ -9095,7 +9302,8 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   /* reduced motion: NetWare/PCBoard/Videotexto land on their finished frames */
   .bbs-line, .vdt-paint { animation: none; opacity: 1; }
   .bbs-type { animation: none; max-width: 16ch; }
-  .bbs-cursor, .vdt-cursor, .ra-cursor, .obv-cursor, .tg-cursor { animation: none; opacity: 1; }
+  .bbs-cursor, .vdt-cursor, .ra-cursor, .obv-cursor, .tg-cursor,
+  .mm-cursor, .d2-cursor, .cl-cursor, .ap-caret, .cis-cursor { animation: none; opacity: 1; }
   .nw-util::before { animation: none; }
 }
 

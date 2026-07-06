@@ -504,13 +504,14 @@ function ZXSpectrum() {
 }
 
 // ---- ZX Spectrum 128 -------------------------------------------------------
-// The 128's blue-bordered start MENU (the English +2/128 layout).
-const S128_MENU = ["128 BASIC", "Calculator", "48 BASIC", "Tape Tester"] as const;
+// The 128's start MENU. Real hardware shows no copyright line here (that only
+// appears on the Amstrad +2/+2A/+3); just the menu, with Tape Loader selected.
+// Order per the machine's own menu: Tape Loader, 128 BASIC, Calculator, 48 BASIC.
+const S128_MENU = ["Tape Loader", "128 BASIC", "Calculator", "48 BASIC"] as const;
 function ZXSpectrum128() {
   return (
     <div className="boss-screen boss-s128">
       <div className="s128-inner">
-        <div className="s128-copy">© 1986 Sinclair Research Ltd</div>
         <div className="s128-menu">
           {S128_MENU.map((m, i) => (
             <div key={m} className={`s128-item${i === 0 ? " s128-item-sel" : ""}`}>
@@ -729,6 +730,562 @@ function Telegard({ hint }: { hint: string }) {
   );
 }
 
+// ---- XTreePro: the tree that tamed hard disks -------------------------------
+// Executive Systems' XTree (April 1, 1985, USD 39.95) grew into XTreePro in
+// 1988: multiple drives and more speed. The command words on the bottom rows
+// are XTree's documented set (Attribute, Available, Copy, Delete, Filespec,
+// Log, Makedir, Rename, Showall, Tag, Untag, View, Volume, eXecute); the
+// panel arrangement follows the classic layout.
+function XTreePro({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-xp">
+      <p className="xp-path">Path: C:\ARSENAL</p>
+      <div className="xp-body">
+        <div className="xp-tree">
+          <p>C:\</p>
+          <p>├─ARSENAL</p>
+          <p>│ ├─DOCS</p>
+          <p>│ └─TOOLS</p>
+          <p>└─DOS</p>
+        </div>
+        <div className="xp-stats">
+          <p className="xp-stats-title">DISK C:</p>
+          <p>Available</p>
+          <p className="xp-num">11,462,656</p>
+          <p>Bytes</p>
+        </div>
+      </div>
+      <div className="xp-files">
+        <span>AUTOEXEC.BAT</span>
+        <span>COMMAND.COM</span>
+        <span>CONFIG.SYS</span>
+        <span>README.TXT</span>
+      </div>
+      <div className="xp-cmds">
+        <p><b>A</b>ttribute <b>C</b>opy <b>D</b>elete <b>F</b>ilespec <b>L</b>og <b>M</b>akedir <b>R</b>ename</p>
+        <p><b>S</b>howall <b>T</b>ag <b>U</b>ntag <b>V</b>iew v<b>O</b>lume e<b>X</b>ecute a<b>V</b>ailable</p>
+      </div>
+      <p className="xp-brand">XTreePro</p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- XTreeGold: the gilded edition ------------------------------------------
+// XTreeGold (1989) added pull-down menus and a Norton Commander-style split
+// pane; Gold 2.0 (December 1990) folded ZIP archives into the file window.
+// All three sourced signatures are on screen: the menu bar, the twin panes,
+// and a ZIP sitting among the files.
+function XTreeGold({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-xg">
+      <p className="xg-menubar">File  Directory  Tag  Volume  Window  Help</p>
+      <div className="xg-body">
+        <div className="xg-pane">
+          <p className="xg-path">C:\ARSENAL</p>
+          <p>├─DOCS</p>
+          <p>└─TOOLS</p>
+        </div>
+        <div className="xg-pane">
+          <p className="xg-path">D:\BACKUP</p>
+          <p>├─1990</p>
+          <p>└─ZIPS</p>
+        </div>
+      </div>
+      <div className="xp-files xg-files">
+        <span>BACKUP.ZIP</span>
+        <span>NOTES.TXT</span>
+        <span>REPORT.DOC</span>
+        <span>VENDAS.DBF</span>
+      </div>
+      <div className="xp-cmds">
+        <p><b>A</b>ttribute <b>C</b>opy <b>D</b>elete <b>F</b>ilespec <b>L</b>og <b>M</b>akedir <b>R</b>ename <b>T</b>ag</p>
+      </div>
+      <p className="xg-brand">XTreeGold 2.0</p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Microsoft Works (DOS): one program, four tools --------------------------
+// Unveiled September 14, 1987 (Microsoft's own history page): word processor,
+// spreadsheet, database and a communications tool in one monolithic program
+// that ran in 256 KB. The chooser dialog is composed; the four tool names are
+// the sourced component set.
+function MSWorks({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-wk">
+      <p className="wk-menubar">File  Edit  Print  Select  Format  Options  Window</p>
+      <div className="wk-dialog">
+        <p className="wk-dialog-title">Create New File</p>
+        <p className="wk-item wk-item-sel">Word Processor</p>
+        <p className="wk-item">Spreadsheet</p>
+        <p className="wk-item">Database</p>
+        <p className="wk-item">Communications</p>
+        <p className="wk-ok">&lt; New &gt;   &lt; Cancel &gt;</p>
+      </div>
+      <p className="wk-status">Microsoft Works  ─  Press ALT to choose commands</p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- MultiMate Advantage: the Wang that moved into a PC ---------------------
+// Born as WordMate (December 1982) so Connecticut Mutual's Wang operators
+// would not need retraining, down to a clip-on keyboard template. Ashton-Tate
+// paid about USD 20 million for MultiMate in December 1985. The numbered main
+// menu here is composed in the product's style.
+function MultiMate({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-mm">
+      <p className="mm-title">MultiMate Advantage</p>
+      <p className="mm-sub">Ashton-Tate</p>
+      <div className="mm-menu">
+        <p><span className="mm-num">1</span> Edit an Old Document</p>
+        <p><span className="mm-num">2</span> Create a New Document</p>
+        <p><span className="mm-num">3</span> Print Document Utility</p>
+        <p><span className="mm-num">4</span> Merge Print Utility</p>
+        <p><span className="mm-num">5</span> Document Handling Utilities</p>
+        <p><span className="mm-num">6</span> Other Utilities</p>
+        <p><span className="mm-num">9</span> Return to DOS</p>
+      </div>
+      <p className="mm-prompt">DESIRED FUNCTION: <span className="mm-cursor">▌</span></p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Harvard Graphics: the slide factory -------------------------------------
+// SPC's Harvard Presentation Graphics (1986) let a text-mode DOS PC assemble
+// text, charts and clip art into slide shows; version 2.0 (1987) gave it the
+// famous short name. Menu wording is composed in the product's numbered style.
+function HarvardGraphics({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-hg">
+      <p className="hg-title">Harvard Graphics</p>
+      <div className="hg-menu">
+        <p className="hg-menu-title">Main Menu</p>
+        <p><span className="hg-num">1</span> Create new chart</p>
+        <p><span className="hg-num">2</span> Enter/edit chart</p>
+        <p><span className="hg-num">3</span> Draw/annotate</p>
+        <p><span className="hg-num">4</span> Get/save/remove</p>
+        <p><span className="hg-num">5</span> Import/export</p>
+        <p><span className="hg-num">6</span> Produce output</p>
+        <p><span className="hg-num">7</span> Slide show menu</p>
+        <p><span className="hg-num">8</span> Setup</p>
+      </div>
+      <p className="hg-fkeys">F1-Help    F10-Continue</p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Professional Write: letters, minus the pain ------------------------------
+// Software Publishing Corporation replaced pfs:Write with Professional Write
+// in 1986: pull-down menus and context-sensitive help, the friendly option
+// next to WordPerfect and Word. Menu wording composed in the SPC style.
+function ProfessionalWrite({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-pw">
+      <p className="pw-title">Professional Write</p>
+      <div className="pw-menu">
+        <p className="pw-menu-title">Main Menu</p>
+        <p><span className="pw-num">1</span> Create/Edit a document</p>
+        <p><span className="pw-num">2</span> Get a file</p>
+        <p><span className="pw-num">3</span> Dictionary</p>
+        <p><span className="pw-num">4</span> Setup</p>
+        <p><span className="pw-num">5</span> Exit</p>
+      </div>
+      <p className="pw-foot">Software Publishing Corporation</p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Ami Pro: Windows before Word got there -----------------------------------
+// Samna's Amí (1988) was the first fully functional Windows word processor,
+// a year ahead of Word for Windows; tables arrived and it became Ami Pro.
+// Lotus bought Samna in November 1990 for USD 65 million. The colourful
+// SmartIcons strip was its sourced signature; icons here are abstract squares.
+function AmiPro({ hint }: { hint: string }) {
+  const icons = ["#c04040", "#40a040", "#4060c0", "#c0a040", "#a040a0", "#40a0a0", "#c07040", "#6040c0", "#40c070", "#c04070"];
+  return (
+    <div className="boss-screen boss-ap">
+      <div className="ap-titlebar"><span className="ap-sys">─</span>Ami Pro - [Untitled]</div>
+      <p className="ap-menubar">File  Edit  View  Text  Style  Tools  Window  Help</p>
+      <div className="ap-icons" aria-hidden="true">
+        {icons.map((c, i) => (
+          <span key={i} style={{ background: c }} />
+        ))}
+      </div>
+      <div className="ap-page">
+        <p>Quarterly training report</p>
+        <p>The new lab pods are ready for the next class,<span className="ap-caret">|</span></p>
+      </div>
+      <p className="ap-status">Insert</p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- dBASE II: the dot that started xBase -------------------------------------
+// Wayne Ratliff's Vulcan from JPL, licensed by Ashton-Tate and shipped as
+// dBASE II (no dBASE I ever existed; the II was marketing). A CP/M standard
+// alongside WordStar and SuperCalc, USD 700, PC port in September 1982. Its
+// sourced signature is the dot-prompt interpreter; the version line is
+// composed (2.3b is a magazine-reviewed release).
+function DBase2({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-d2">
+      <p className="d2-banner">dBASE II ver 2.3b</p>
+      <p className="d2-line">.USE CLIENTES</p>
+      <p className="d2-line">.<span className="d2-cursor">▌</span></p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Clipper Summer '87: compiling the family business ------------------------
+// Nantucket's dBASE compiler (Winter '84 shipped May 25, 1985). Summer '87,
+// released December 21, 1987, stayed in production use for a decade. The two
+// copyright lines are verbatim from a preserved banner; the header and the
+// code-size line are composed. CA bought Nantucket in 1992 for USD 190M.
+function Clipper({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-cl">
+      <p className="cl-line cl-prompt">C:\ARSENAL&gt;clipper vendas</p>
+      <p className="cl-line">The Clipper Compiler, Summer &#39;87</p>
+      <p className="cl-line">Copyright (c) Nantucket Corp 1985-1987.  All Rights Reserved.</p>
+      <p className="cl-line">Microsoft C Runtime Library Routines,</p>
+      <p className="cl-line">Copyright (c) Microsoft Corp 1984-1987.</p>
+      <p className="cl-line cl-gap">&nbsp;</p>
+      <p className="cl-line">Compiling VENDAS.PRG</p>
+      <p className="cl-line">Code size:38214  Symbols:512  Constants:2048</p>
+      <p className="cl-line cl-prompt">C:\ARSENAL&gt;<span className="cl-cursor">▌</span></p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Borland SideKick: the pop-up over everything -----------------------------
+// Philippe Kahn's USD 49.95 TSR (June 1984), invoked with Ctrl-Alt over
+// whatever was running; a million copies in three years. The tool names are
+// the sourced 1.x set; the function-key mapping is composed. InfoWorld, 1984:
+// it "stands in the shadows behind whatever program you are using".
+function SideKick({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-sk">
+      <div className="sk-back" aria-hidden="true">
+        <p>C:\&gt;dir /w</p>
+        <p>COMMAND.COM   AUTOEXEC.BAT   CONFIG.SYS   ARSENAL</p>
+        <p>C:\&gt;_</p>
+      </div>
+      <div className="sk-window">
+        <p className="sk-title">SideKick</p>
+        <p className="sk-item">F1  Help</p>
+        <p className="sk-item">F2  Notepad</p>
+        <p className="sk-item">F3  Calculator</p>
+        <p className="sk-item">F4  Calendar</p>
+        <p className="sk-item">F5  Dialer</p>
+        <p className="sk-item">F6  ASCII table</p>
+        <p className="sk-foot">Borland</p>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Windows for Workgroups 3.11: Program Manager ---------------------------
+// The grey-chrome Windows 3.x shell that ran offices worldwide, shipped
+// November 8, 1993 (codenamed Snowball) with peer-to-peer networking baked in.
+// Program Manager hosts program groups of icons; the Main group and a Network
+// group are shown. Icons are drawn as simple glyphs, not reproductions.
+function WinWorkgroups({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-wfw">
+      <div className="wfw-titlebar">
+        <span className="wfw-sysbox">-</span>
+        <span className="wfw-title-text">Program Manager</span>
+      </div>
+      <p className="wfw-menubar">File  Options  Window  Help</p>
+      <div className="wfw-group">
+        <p className="wfw-group-title">Main</p>
+        <div className="wfw-icons">
+          <span className="wfw-ico"><b>&#9707;</b>File Manager</span>
+          <span className="wfw-ico"><b>&#9636;</b>Control Panel</span>
+          <span className="wfw-ico"><b>&#9707;</b>Print Manager</span>
+          <span className="wfw-ico"><b>&#9670;</b>Clipboard</span>
+        </div>
+      </div>
+      <div className="wfw-group wfw-group-net">
+        <p className="wfw-group-title">Network</p>
+        <div className="wfw-icons">
+          <span className="wfw-ico"><b>&#9707;</b>Net Setup</span>
+          <span className="wfw-ico"><b>&#9993;</b>Mail</span>
+        </div>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- OS/2 Warp 3: the Workplace Shell desktop -------------------------------
+// IBM's object-oriented desktop (the Workplace Shell arrived in OS/2 2.0, 1992;
+// Warp 3 shipped October 1994). Desktop icons drag and drop; the LaunchPad sits
+// at the bottom and the Shredder is IBM's wastebasket. Icons are plain glyphs.
+function OS2Warp({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-os2">
+      <div className="os2-desktop">
+        <div className="os2-ico"><span className="os2-glyph">&#128421;</span>OS/2 System</div>
+        <div className="os2-ico"><span className="os2-glyph">&#128193;</span>Templates</div>
+        <div className="os2-ico"><span className="os2-glyph">&#128462;</span>Information</div>
+        <div className="os2-ico os2-ico-shred"><span className="os2-glyph">&#9986;</span>Shredder</div>
+      </div>
+      <div className="os2-launchpad">
+        <span>Drives</span>
+        <span>OS/2 Window</span>
+        <span>Printer</span>
+        <span>Settings</span>
+        <span>Lockup</span>
+        <span>Shutdown</span>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Macintosh Finder: the desktop that taught the metaphor -----------------
+// Distinct from the Mac power-on (Happy Mac) screen: this is the Finder desktop
+// introduced with the Macintosh 128K in 1984. Menu bar, a hard-disk icon at top
+// right, and the Trash in the bottom-right corner (a real folder from System 7,
+// May 13 1991). The striped title bar and glyphs are drawn, not reproduced.
+function MacFinder({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-macf">
+      <div className="macf-menubar">
+        <span className="macf-apple">&#63743;</span>
+        <span>File</span>
+        <span>Edit</span>
+        <span>View</span>
+        <span>Special</span>
+      </div>
+      <div className="macf-desktop">
+        <div className="macf-disk">
+          <span className="macf-disk-glyph">&#128190;</span>
+          <span>Macintosh HD</span>
+        </div>
+        <div className="macf-trash">
+          <span className="macf-trash-glyph">&#128465;</span>
+          <span>Trash</span>
+        </div>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- NCSA Mosaic: the browser that opened the web ---------------------------
+// Built at NCSA (University of Illinois) by Marc Andreessen and Eric Bina,
+// released 1993; the team went on to make Netscape. Grey X/Motif chrome, a row
+// of navigation buttons, a URL bar, and a simple page with a link and inline
+// image placeholder. The NCSA spinning-globe sat at the top right while loading.
+function Mosaic({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-mosaic">
+      <p className="mosaic-menubar">File  Edit  Options  Navigate  Annotate  Help</p>
+      <div className="mosaic-btns">
+        <span>Back</span>
+        <span>Forward</span>
+        <span>Home</span>
+        <span>Reload</span>
+        <span>Open</span>
+      </div>
+      <div className="mosaic-url">
+        <span className="mosaic-url-label">URL:</span>
+        <span className="mosaic-url-val">http://www.ncsa.uiuc.edu/</span>
+      </div>
+      <div className="mosaic-page">
+        <p className="mosaic-h1">NCSA Mosaic Home Page</p>
+        <p>Welcome to NCSA Mosaic, an Internet information browser.</p>
+        <p className="mosaic-link">What's New | Demo Documents | Help</p>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- CompuServe: the numbered menu and the ! prompt -------------------------
+// The first big consumer online service (Columbus, Ohio; consumer launch
+// September 24, 1979). Before the CIM GUI, this was the classic terminal view:
+// a numbered top menu over a mono link, and the lone "!" command prompt where
+// you typed GO commands. Menu items are period-typical.
+function CompuServe({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-cis">
+      <p className="cis-head">CompuServe Information Service</p>
+      <p className="cis-copy">Copyright (c) CompuServe Incorporated</p>
+      <div className="cis-menu">
+        <p><span className="cis-num">1</span> Access Basic Services</p>
+        <p><span className="cis-num">2</span> Member Assistance</p>
+        <p><span className="cis-num">3</span> Communications/Bulletin Bds.</p>
+        <p><span className="cis-num">4</span> News/Weather/Sports</p>
+        <p><span className="cis-num">5</span> Travel</p>
+        <p><span className="cis-num">6</span> The Electronic MALL/Shopping</p>
+        <p><span className="cis-num">7</span> Money Matters/Markets</p>
+        <p><span className="cis-num">8</span> Entertainment/Games</p>
+      </div>
+      <p className="cis-prompt">Enter choice !<span className="cis-cursor">&#9612;</span></p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- America Online: the Welcome screen -------------------------------------
+// For millions, the internet was this blue screen and the friendly voice.
+// Quantum's Q-Link became America Online in 1991; Steve Case mailed the world a
+// floppy. The Welcome window with the mailbox and the channel list is drawn in
+// AOL's blue; the running-man and mail glyphs are simple stand-ins.
+function AOL({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-aol">
+      <div className="aol-titlebar">America Online</div>
+      <div className="aol-welcome">
+        <p className="aol-hello">Welcome, Rodolfo!</p>
+        <div className="aol-mail">
+          <span className="aol-mail-glyph">&#9993;</span>
+          <span>You've Got Mail</span>
+        </div>
+        <div className="aol-channels">
+          <span>Today's News</span>
+          <span>Sports</span>
+          <span>Entertainment</span>
+          <span>Computing</span>
+          <span>Travel</span>
+          <span>Internet Connection</span>
+        </div>
+        <p className="aol-keyword">Keyword: <span className="aol-kw-field">welcome</span></p>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- ZX Spectrum +2A / +3: the Amstrad-era start menu ------------------------
+// The +2A (black case, cassette) and +3 (black case, 3-inch floppy) share the
+// same Amstrad +3 ROM, so BOTH show the identical menu whose second item reads
+// "+3 BASIC" even on the +2A -- the +2A is, in the manual's words, a +3 with a
+// cassette deck. Verbatim from the +3 manual: Loader / +3 BASIC / Calculator /
+// 48 BASIC, with Loader highlighted. The bottom line is the machine's own
+// copyright, "(c)1982, 1986, 1987 Amstrad Plc.", matched to a real-hardware
+// photo. Both run +3DOS, so drive M: (the RAMdisk) is available on each; only
+// the +3 adds a physical disk. Header badge and drive text distinguish them.
+const AMSTRAD_MENU = ["Loader", "+3 BASIC", "Calculator", "48 BASIC"] as const;
+function AmstradSpectrum({ badge, cls, drive, hint }: { badge: string; cls: string; drive: string; hint: string }) {
+  return (
+    <div className={`boss-screen ${cls}`}>
+      <div className="s2a-frame">
+        <div className="s2a-header">
+          <span className="s2a-badge">{badge}</span>
+          <span className="s2a-stripes" aria-hidden="true">
+            <span style={{ background: "#d70000" }} />
+            <span style={{ background: "#d7d700" }} />
+            <span style={{ background: "#00d700" }} />
+            <span style={{ background: "#00d7d7" }} />
+          </span>
+        </div>
+        <div className="s2a-menu">
+          {AMSTRAD_MENU.map((m, i) => (
+            <div key={m} className={`s2a-item${i === 0 ? " s2a-item-sel" : ""}`}>
+              {m}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="s2a-foot">
+        <p>&copy;1982, 1986, 1987 Amstrad Plc.</p>
+        <p>{drive}</p>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- Network General Sniffer: the DOS protocol analyzer ----------------------
+// The tool that named a whole category (and Wireshark's distant ancestor),
+// first sold by Network General (Mountain View, CA) in December 1986. It ran
+// over MS-DOS on a 40-line text display, navigated by three-panel Miller
+// columns. The main menu here is verbatim from a Sniffer v4.4 tutorial:
+// Traffic generator / Capture filters / Trigger / Schedule / Capture / Display
+// / Files / Options / Exit, with executable items marked by an arrow and the
+// function-key legend (F1 Help, F10 New Capture) along the bottom.
+const SNIFFER_MENU: Array<{ label: string; exec: boolean }> = [
+  { label: "Traffic generator", exec: true },
+  { label: "Capture filters", exec: false },
+  { label: "Trigger", exec: false },
+  { label: "Schedule", exec: true },
+  { label: "Capture", exec: true },
+  { label: "Display", exec: true },
+  { label: "Files", exec: false },
+  { label: "Options", exec: false },
+  { label: "Exit", exec: true },
+];
+function Sniffer({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-sniffer">
+      <div className="snf-title">The Sniffer Network Analyzer &#8212; Ethernet</div>
+      <div className="snf-body">
+        <div className="snf-menu">
+          {SNIFFER_MENU.map((m, i) => (
+            <p key={m.label} className={`snf-item${i === 0 ? " snf-item-sel" : ""}`}>
+              <span className="snf-mark">{i === 0 ? "\u00bb" : " "}</span>
+              {m.label}
+              <span className="snf-arrow">{m.exec ? "\u2190" : " "}</span>
+            </p>
+          ))}
+        </div>
+        <div className="snf-desc">
+          Generate frames onto the network to test a station or a path.
+        </div>
+      </div>
+      <div className="snf-fkeys">
+        <span>F1 Help</span>
+        <span>F10 New Capture</span>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- VMware ESXi 6.7: the DCUI ----------------------------------------------
+// The bare-metal hypervisor's Direct Console User Interface, the yellow-on-grey
+// screen an admin meets at the physical host. ESXi 6.7 went GA April 17, 2018.
+// The layout follows the real DCUI: a title bar, the running version, a host
+// resource summary, the "download vSphere Client" line, and the two-key legend
+// at the bottom (F2 to customize, F12 to shut down). IP and hardware strings
+// are placeholders in the product's format.
+function ESXi({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-esxi">
+      <div className="esxi-titlebar">VMware ESXi 6.7.0 (VMKernel Release Build 8169922)</div>
+      <div className="esxi-main">
+        <p className="esxi-line">VMware, Inc. VMware Virtual Platform</p>
+        <p className="esxi-line">2 x Intel(R) Xeon(R) CPU E5-2670</p>
+        <p className="esxi-line">32 GiB Memory</p>
+        <p className="esxi-spacer">&nbsp;</p>
+        <p className="esxi-line">Download tools to manage this host from:</p>
+        <p className="esxi-line esxi-url">http://arsenal.local/</p>
+        <p className="esxi-line esxi-url">https://192.168.1.20/ (DHCP)</p>
+      </div>
+      <div className="esxi-footbar">
+        <span>&lt;F2&gt; Customize System/View Logs</span>
+        <span>&lt;F12&gt; Shut Down/Restart</span>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
 // ---- Microdigital TK-82C (BR ZX81 clone) -----------------------------------
 // Microdigital's first widely sold machine and a faithful ZX81 clone, so it
 // boots exactly like one: a blank raster and a single inverse K in the corner.
@@ -749,41 +1306,48 @@ function TK82C() {
 }
 
 // ---- Microdigital TK90X (BR ZX Spectrum clone) -----------------------------
-// The real machine boots to a blank paper screen with its OWN name on the
-// bottom line: "TK90X - Color Computer". No Sinclair line, no (c), no year.
-// Verbatim from the ROM: the v1 and v2 dumps both carry the string at 0x3AAE,
-// padded with leading spaces to centre it on the 32-column screen (hence the
-// text-align: center rule). Cross-checked against real-hardware video.
+// Corrected against PRIME's own photographs of real hardware. The power-on
+// screen is paper-white with the machine's name near the top, "TK90X - Color
+// Computer" (verbatim from the ROM at 0x3AAE, five leading spaces centring it
+// on the 32-column screen), AND a thin horizontal eight-colour bar low on the
+// screen. The bar is the Spectrum BRIGHT palette in descending order: white,
+// yellow, cyan, green, magenta, red, blue, black (sampled from the photos as
+// ~0xC0-level RGB, e.g. white 191,191,191; yellow 188,195,4). This bar is an
+// on-screen boot element, distinct from the Spectrum's case/logo rainbow.
 function TK90X() {
+  const bar = ["#ffffff", "#d7d700", "#00d7d7", "#00d700", "#d700d7", "#d70000", "#0000d7", "#000000"];
   return (
     <div className="boss-screen boss-tk90x">
+      <div className="tk90x-copy tk90x-copy-top">TK90X - Color Computer</div>
       <div className="spectrum-field" />
-      <div className="tk90x-copy">TK90X - Color Computer</div>
-      <div className="spectrum-stripes" aria-hidden="true">
-        <span style={{ background: "#d7d700" }} />
-        <span style={{ background: "#00d7d7" }} />
-        <span style={{ background: "#00d700" }} />
-        <span style={{ background: "#d700d7" }} />
+      <div className="tk-colorbar" aria-hidden="true">
+        {bar.map((c, i) => (
+          <span key={i} style={{ background: c }} />
+        ))}
       </div>
     </div>
   );
 }
 
 // ---- Microdigital TK95 (BR ZX Spectrum clone, TK90X successor) -------------
-// Per Coopermiti's museum notes the TK95's only ROM change from the TK90X was
-// the boot line, and the ROM dump agrees: at 0x3AB1 it reads simply
-// "TK Color Computer", centred by leading spaces baked into the string.
+// Corrected against PRIME's photograph of a real Brazilian TK95: the boot line
+// reads "Microdigital TK95", bottom-left aligned. (An earlier build used a
+// "TK95ES" ROM dump that renders "TK Color Computer"; the ES/Spanish-variant
+// dump disagrees with the real Brazilian hardware, so the photograph governs
+// -- a ROM is only evidence if it is the RIGHT ROM.) The TK95 shows a taller
+// eight-colour vertical-band field, same Spectrum BRIGHT palette and order as
+// the TK90X's bar, faintly tiled with the year in the original; here rendered
+// as clean vertical colour bands.
 function TK95() {
+  const bar = ["#ffffff", "#d7d700", "#00d7d7", "#00d700", "#d700d7", "#d70000", "#0000d7", "#000000"];
   return (
     <div className="boss-screen boss-tk95">
-      <div className="spectrum-field" />
-      <div className="tk90x-copy">TK Color Computer</div>
-      <div className="spectrum-stripes" aria-hidden="true">
-        <span style={{ background: "#d7d700" }} />
-        <span style={{ background: "#00d7d7" }} />
-        <span style={{ background: "#00d700" }} />
-        <span style={{ background: "#d700d7" }} />
+      <div className="tk95-bands" aria-hidden="true">
+        {bar.map((c, i) => (
+          <span key={i} style={{ background: c }} />
+        ))}
       </div>
+      <div className="tk90x-copy tk95-copy">Microdigital TK95</div>
     </div>
   );
 }
@@ -1354,6 +1918,50 @@ function renderScreen(kind: BossScreenKind, hint: string) {
       return <RemoteAccess hint={hint} />;
     case "telegard":
       return <Telegard hint={hint} />;
+    case "amipro":
+      return <AmiPro hint={hint} />;
+    case "clipper":
+      return <Clipper hint={hint} />;
+    case "dbase2":
+      return <DBase2 hint={hint} />;
+    case "harvard":
+      return <HarvardGraphics hint={hint} />;
+    case "msworks":
+      return <MSWorks hint={hint} />;
+    case "multimate":
+      return <MultiMate hint={hint} />;
+    case "profwrite":
+      return <ProfessionalWrite hint={hint} />;
+    case "sidekick":
+      return <SideKick hint={hint} />;
+    case "xtreegold":
+      return <XTreeGold hint={hint} />;
+    case "xtreepro":
+      return <XTreePro hint={hint} />;
+    case "aol":
+      return <AOL hint={hint} />;
+    case "compuserve":
+      return <CompuServe hint={hint} />;
+    case "macfinder":
+      return <MacFinder hint={hint} />;
+    case "mosaic":
+      return <Mosaic hint={hint} />;
+    case "os2warp":
+      return <OS2Warp hint={hint} />;
+    case "wfw311":
+      return <WinWorkgroups hint={hint} />;
+    case "zxspectrum2a":
+      return (
+        <AmstradSpectrum badge="128 +2A" cls="boss-s2a" drive="Drive M: available." hint={hint} />
+      );
+    case "zxspectrum3":
+      return (
+        <AmstradSpectrum badge="128 +3" cls="boss-s3" drive="Drive M: available." hint={hint} />
+      );
+    case "esxi":
+      return <ESXi hint={hint} />;
+    case "sniffer":
+      return <Sniffer hint={hint} />;
     case "tk82c":
       return <TK82C />;
     case "tk90x":

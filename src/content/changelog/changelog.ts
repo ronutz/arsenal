@@ -44,6 +44,54 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "15:41",
+    kind: "content",
+    title: "Two professional tools close out the boss-screen set",
+    body:
+      "The retro collection reaches 68 with the pro tools that ran the network room: the Network General Sniffer, the DOS protocol analyzer that named the whole category and whose menu here is taken verbatim from a Sniffer v4.4 tutorial, and the VMware ESXi 6.7 DCUI, the bare-metal hypervisor's yellow-and-grey console with its F2-to-configure, F12-to-shut-down legend. Both were checked against period sources, from the Sniffer's own manual description to VMware's release records.",
+  },
+  {
+    date: "2026-07-06",
+    time: "15:23",
+    kind: "content",
+    title: "The 128K Spectrum family: +2A and +3 join, and the 128 menu is corrected",
+    body:
+      "The ZX Spectrum 128 boot menu was fixed to show the machine's real options (Tape Loader, 128 BASIC, Calculator, 48 BASIC) with no spurious copyright line, and two new screens join it: the Amstrad-era ZX Spectrum +2A and +3, both showing the shared +3 ROM menu (Loader, +3 BASIC, Calculator, 48 BASIC) and the (c)1982, 1986, 1987 Amstrad Plc. line, matched against a real-hardware photo and the official +3 manual.",
+  },
+  {
+    date: "2026-07-06",
+    time: "14:58",
+    kind: "content",
+    title: "TK90X and TK95 boot screens corrected against real hardware",
+    body:
+      "Photographs of real Microdigital hardware corrected two things on these boot screens. Both machines show an eight-colour test bar (the ZX Spectrum bright palette) that was missing before: the TK90X a thin horizontal bar, the TK95 a taller field of vertical colour bands. The TK95's boot line was also fixed to read Microdigital TK95, its actual name, replacing a line taken from a mislabelled Spanish-variant ROM dump. A reminder that a ROM dump is only good evidence when it is the right ROM.",
+  },
+  {
+    date: "2026-07-06",
+    time: "14:45",
+    kind: "content",
+    title: "The GUI and online era arrives: six more boss screens",
+    body:
+      "The retro collection reaches 64 with the interfaces that carried computing from the command line into the graphical, networked age: Windows for Workgroups 3.11 Program Manager, the OS/2 Warp Workplace Shell desktop, the classic Macintosh Finder with its Trash, NCSA Mosaic opening the web, and the two services that first put millions online, CompuServe with its numbered menu and AOL with its Welcome screen. Framing facts were checked against period sources, from IBM and Microsoft histories to NCSA's own account of Mosaic.",
+  },
+  {
+    date: "2026-07-06",
+    time: "14:26",
+    kind: "content",
+    title: "TK90X and TK95 boot screens: the rainbow stripes are gone",
+    body:
+      "The Microdigital TK90X and TK95 retro screens were showing four colour bars that the real machines never display at power-on: those stripes belong to the Spectrum's logo and case motif, not the boot screen, which is plain black text on a paper-white background. Both now boot the way the hardware does, to a blank white screen with only the copyright line at the bottom (TK90X - Color Computer and TK Color Computer), verified byte-for-byte against ROM dumps and a real-hardware boot video.",
+  },
+  {
+    date: "2026-07-06",
+    time: "13:55",
+    kind: "content",
+    title: "Ten DOS-era workhorses join the boss screens",
+    body:
+      "The retro screen collection jumps to 58 with the software that ran offices and small businesses: XTreePro and XTreeGold, dBASE II at its dot prompt, a Clipper Summer '87 compile with its preserved copyright banner, Borland SideKick popping over a DOS session, MultiMate Advantage, Professional Write, Harvard Graphics, Microsoft Works, and Ami Pro, the first fully functional Windows word processor. Every dated fact was checked against period sources, from the XTree fan archive's command list to Microsoft's own history pages.",
+  },
+  {
+    date: "2026-07-06",
     time: "13:24",
     kind: "content",
     title: "Three BBS screens, and the TK90X and TK95 set right",
