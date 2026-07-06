@@ -19,6 +19,15 @@ updates:
     groups:
       npm-minor-and-patch:
         update-types: ["minor", "patch"]
+    # Next.js 16 was tried and reverted: its static-export artifact bloat overflows
+    # the Cloudflare Workers build disk for this many-page multilingual export. Hold
+    # next / next-intl at their current major until the 16 migration is planned
+    # deliberately (Dependabot still offers minor + patch bumps within the major).
+    ignore:
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "next-intl"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"
 

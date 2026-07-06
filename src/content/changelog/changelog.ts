@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "05:10",
+    kind: "content",
+    title: "Two more retro boot screens, and a fix to a third",
+    body:
+      "The hidden retro boot-screen collection gains the Microdigital TK-82C (a ZX81 clone, the machine this site's author first learned to program on) and the TK95 (the TK90X's Spectrum-clone successor), bringing the set to 42. The ZX81 and TK-82C screens now type a first line by themselves, the way those machines did. The TK90X screen was corrected: its ROM replaced the copyright symbol with a Greek delta, so its boot line now reads accurately. The screens in the viewer are also listed in alphabetical order.",
+  },
+  {
+    date: "2026-07-06",
     time: "04:30",
     kind: "infra",
     title: "Pinned to the framework version the site builds cleanly on",

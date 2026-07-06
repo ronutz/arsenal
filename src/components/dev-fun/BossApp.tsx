@@ -468,11 +468,17 @@ READY.`}</pre>
 
 // ---- Sinclair ZX81 ---------------------------------------------------------
 // Power-on: a blank white/grey raster with a single inverse-video "K" cursor
-// in the very bottom-left. Nothing else. The K blinks. That is the whole screen.
+// in the very bottom-left. Then the machine shows life: it types LOAD "" (the
+// universal ZX81 first command) a character at a time, the cursor flipping from
+// K (keyword mode) to L (letter mode) as real keys land — exactly as the ROM did.
 function ZX81() {
   return (
     <div className="boss-screen boss-zx81">
       <div className="zx81-field">
+        <span className="zx81-line" aria-hidden="true">
+          <span className="zx81-typed">LOAD </span>
+          <span className="zx81-quotes">&quot;&quot;</span>
+        </span>
         <span className="zx81-k">K</span>
       </div>
     </div>
@@ -517,13 +523,52 @@ function ZXSpectrum128() {
   );
 }
 
+// ---- Microdigital TK-82C (BR ZX81 clone) -----------------------------------
+// Microdigital's first widely sold machine and a faithful ZX81 clone, so it
+// boots exactly like one: a blank raster and a single inverse K in the corner.
+// Here it types its author's first program — 10 PRINT "RONUTZ" — the way a ZX81
+// did, the cursor flipping K (keyword) to L (letter) as the line is entered.
+function TK82C() {
+  return (
+    <div className="boss-screen boss-tk82c">
+      <div className="zx81-field">
+        <span className="zx81-line" aria-hidden="true">
+          <span className="zx81-typed tk82c-typed">10 PRINT </span>
+          <span className="zx81-quotes tk82c-quotes">&quot;RONUTZ&quot;</span>
+        </span>
+        <span className="zx81-k">K</span>
+      </div>
+    </div>
+  );
+}
+
 // ---- Microdigital TK90X (BR ZX Spectrum clone) -----------------------------
-// Spectrum-style blank screen; Microdigital's tweaked ROM shows its own line.
+// Spectrum-style blank white screen. Microdigital's tweaked ROM kept Sinclair's
+// bottom copyright line but replaced the © glyph with Δ in the character set
+// (and £ with Σ), so the authentic boot reads "Δ 1982 Sinclair Research Ltd".
 function TK90X() {
   return (
     <div className="boss-screen boss-tk90x">
       <div className="spectrum-field" />
-      <div className="tk90x-copy">© 1985 Microdigital Eletronica Ltda.</div>
+      <div className="tk90x-copy">Δ 1982 Sinclair Research Ltd</div>
+      <div className="spectrum-stripes" aria-hidden="true">
+        <span style={{ background: "#d7d700" }} />
+        <span style={{ background: "#00d7d7" }} />
+        <span style={{ background: "#00d700" }} />
+        <span style={{ background: "#d700d7" }} />
+      </div>
+    </div>
+  );
+}
+
+// ---- Microdigital TK95 (BR ZX Spectrum clone, TK90X successor) -------------
+// Same Spectrum ROM family as the TK90X (same Δ-for-© character tweak), in the
+// later Plus/4-style case with the improved keyboard. Visually the same boot.
+function TK95() {
+  return (
+    <div className="boss-screen boss-tk95">
+      <div className="spectrum-field" />
+      <div className="tk90x-copy">Δ 1982 Sinclair Research Ltd</div>
       <div className="spectrum-stripes" aria-hidden="true">
         <span style={{ background: "#d7d700" }} />
         <span style={{ background: "#00d7d7" }} />
@@ -1088,8 +1133,12 @@ function renderScreen(kind: BossScreenKind, hint: string) {
       return <Ti99 />;
     case "trs80":
       return <Trs80 hint={hint} />;
+    case "tk82c":
+      return <TK82C />;
     case "tk90x":
       return <TK90X />;
+    case "tk95":
+      return <TK95 />;
     case "unitron":
       return <Unitron hint={hint} />;
     case "vic20":
