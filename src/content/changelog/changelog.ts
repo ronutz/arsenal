@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "21:07",
+    kind: "launch",
+    title: "ronutz.com is now open source: Apache-2.0 for code, CC BY 4.0 for content",
+    body:
+      "The project is now open source. The application code is licensed under the Apache License 2.0, and the written content, including every Learn article and all the tool copy, under Creative Commons Attribution 4.0 (CC BY 4.0). Both licenses require attribution, so anyone reusing the code or the content must credit the source, and ronutz.com stays the canonical, maintained home. The License page now describes the open terms, the footer badges are live, and the repository carries the full LICENSE, a content license, and the third-party NOTICE. Each page also now declares its own canonical URL, so a copy rehosted elsewhere still points search engines back here. English and Portuguese ship together; other locales fall back per key.",
+  },
+  {
+    date: "2026-07-05",
     time: "20:39",
     kind: "feature",
     title: "Open-source and licensing badges, on the way to opening the code",

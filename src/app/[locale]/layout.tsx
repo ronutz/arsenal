@@ -78,6 +78,12 @@ export async function generateMetadata({
     },
     manifest: "/manifest.webmanifest",
     alternates: {
+      // Per-page canonical. With metadataBase set, a "./" canonical resolves to
+      // THIS page's own absolute URL on every generated route (verified against
+      // Next.js static-export behaviour), e.g. https://ronutz.com/en/tools/cidr.
+      // This is the anti-clone lever: a scraped copy rehosted elsewhere still
+      // points search engines back to ronutz.com as the canonical source.
+      canonical: "./",
       types: {
         "application/rss+xml": [{ url: "/feed.xml", title: `${t("name")} — Learn` }],
       },

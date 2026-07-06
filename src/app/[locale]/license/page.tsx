@@ -3,10 +3,10 @@
 // ----------------------------------------------------------------------------
 // LICENSE — the licensing terms for ronutz.com.
 //
-// Two parts: the site itself is proprietary — its design, content, branding,
-// and the particular way the tools are assembled here are closed source, all
-// rights reserved — and a third-party section credits the open-source software
-// the site is built on, under each component's own license (the required
+// Two parts: the project itself is open source — its code under the Apache
+// License 2.0 and its written content under CC BY 4.0, both requiring
+// attribution — and a third-party section credits the open-source software the
+// site is built on, under each component's own license (the required
 // attribution; the full notices live in the repo's NOTICE file). Linked from
 // the footer's "License". Reuses the colophon's layout classes. Statically
 // generated; localized across all live locales.

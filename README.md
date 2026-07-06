@@ -4,14 +4,14 @@ The application behind **ronutz.com**: a privacy-first, local-compute network an
 
 ## Status
 
-Private, in active development. Not yet open-sourced. See [License](#license).
+Open source. Code is licensed under the Apache License 2.0; the written content is licensed under CC BY 4.0. See [License](#license).
 
 ## What this is
 
 ronutz.com is a personal toolbox and professional portfolio for Rodolfo Nützmann. Its tools run entirely in the browser; nothing is sent to a server unless a tool explicitly says so. The site is statically exported and served from the edge.
 
-- Tools execute client-side on the open-source engine [`@ronutz/netcore`](https://www.npmjs.com/package/@ronutz/netcore).
-- A small, optional HTTP API mirrors selected tools server-side, byte-for-byte, using that same engine.
+- Tools execute client-side on in-house engines that live in this repository (`src/lib/`); there is no external engine dependency.
+- A small HTTP API mirrors selected tools server-side, byte-for-byte, using those same in-house engines. The API is documented but not served from this site (see the `/api` page for why).
 - The interface is available in multiple languages.
 
 ## Tech
@@ -36,13 +36,17 @@ npm run update-swagger-ui -- 5.32.8  # pin a version
 
 ## Related
 
-- [`@ronutz/netcore`](https://www.npmjs.com/package/@ronutz/netcore): the open-source engine that powers the tools, both in the browser and in the API.
 - `@ronutz/concord`: the project's governance and operating framework.
 
 ## License
 
-Copyright (c) 2026 Rodolfo Nützmann. All rights reserved.
+Copyright 2026 Rodolfo Nützmann.
 
-This repository is currently proprietary while in private development (`UNLICENSED` in `package.json`); no rights are granted. It is intended to be released under the Apache License 2.0 (code) and the Creative Commons Attribution 4.0 International license (content), matching `@ronutz/netcore`, if and when it is opened. At that point, replacing this section and the [`LICENSE`](./LICENSE) file with the corresponding license text is the change that makes it public.
+This project is dual-licensed:
+
+- **Source code** is licensed under the **Apache License 2.0**. See [`LICENSE`](./LICENSE).
+- **Content** (the written material: every Learn article, the tool copy and explanatory prose, and the documentation) is licensed under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**. See [`LICENSE-CONTENT`](./LICENSE-CONTENT).
+
+Both licenses require attribution: if you reuse the code or the content, credit Rodolfo Nützmann (ronutz.com) and indicate any changes. ronutz.com remains the canonical, maintained source.
 
 Third-party components redistributed in this repository retain their own licenses; see [`NOTICE`](./NOTICE).

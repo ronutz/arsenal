@@ -18,8 +18,8 @@
 // invariant, proven by each engine's golden vectors). Because the registry is
 // also what the OpenAPI generator reads, the served endpoints and the documented
 // endpoints cannot drift (D-72). Every run() is awaited, so sync and async
-// engines are handled identically. Arsenal carries no runtime dependency on
-// @ronutz/netcore; the engines are in-house and imported directly.
+// engines are handled identically. The engines are in-house (src/lib/) and
+// imported directly; there is no external engine dependency.
 //
 // PRIVACY (deliberate, consistent with the rest of the site): stateless. It
 // reads only the input on the request, computes, and returns. It logs no query

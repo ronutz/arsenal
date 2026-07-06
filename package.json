@@ -1,15 +1,21 @@
 {
   "//": "================================================================",
-  "//1": "ARSENAL: the ronutz.com application (private). This repo BECOMES the",
-  "//2": "deployable site. As of 2026-06-29 it is SELF-CONTAINED: it no longer",
-  "//3": "consumes @ronutz/netcore at runtime. The single-subnet CIDR logic that",
-  "//4": "still did was brought in-house (cidrAnalyze). This reverses C-73's premise:",
-  "//5": "netcore is now a future curation TARGET, not an upstream dependency.",
+  "//1": "ARSENAL: the ronutz.com application. This repo IS the deployable",
+  "//2": "site: a privacy-first, local-compute network/security toolbox PWA.",
+  "//3": "It is SELF-CONTAINED -- the tool engines live in-house under",
+  "//4": "src/lib/ and there is no runtime dependency on any external engine.",
+  "//5": "Code is Apache-2.0; content (Learn articles and copy) is CC BY 4.0.",
   "//6": "================================================================",
   "name": "@ronutz/arsenal",
   "version": "0.1.0",
-  "private": true,
   "description": "The ronutz.com application: a privacy-first, local-compute network/security toolbox PWA (Next.js).",
+  "license": "Apache-2.0",
+  "author": "Rodolfo Nützmann (https://ronutz.com)",
+  "homepage": "https://ronutz.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nutzmann/arsenal.git"
+  },
   "type": "module",
   "scripts": {
     "//build-note": "build runs next build THEN pagefind. Pagefind indexes the static HTML in out/ to produce the client-side search index. The two steps must run in order.",
@@ -22,7 +28,7 @@
     "prebuild": "node scripts/check-tool-articles.mjs && node scripts/check-changelog.mjs && node scripts/check-tools-registry.mjs && node scripts/check-vendor-namespace.mjs && node scripts/check-tool-docs.mjs && node scripts/check-icu-messages.mjs && node scripts/copy-locales.mjs && tsx scripts/build-openapi.mts && node scripts/gen-api-endpoints.mjs && node scripts/gen-locale-coverage.mjs && node scripts/gen-build-info.mjs",
     "update-swagger-ui": "node scripts/update-swagger-ui.mjs"
   },
-  "//7": "No runtime dependency on @ronutz/netcore; modules curate OUT to it later.",
+  "//7": "Self-contained: tool engines are in-house under src/lib/; no external engine dependency.",
   "//overrides": "postcss pinned to >=8.5.10 to clear GHSA-qx2v-qp2m-jg93 (XSS in CSS stringify); build-time tooling only.",
   "overrides": {
     "postcss": "^8.5.10"
@@ -45,6 +51,5 @@
     "pagefind": "^1.5.2",
     "tsx": "^4.21.0",
     "typescript": "^5.7.0"
-  },
-  "license": "UNLICENSED"
+  }
 }

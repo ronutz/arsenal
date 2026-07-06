@@ -1,8 +1,8 @@
 # ============================================================================
 # .gitignore — arsenal (ronutz.com)
 # Keeps build artifacts, dependencies, and secrets OUT of the repo. Everything
-# else (source, config, package-lock, public assets, the netcore type shim) is
-# committed and is what Cloudflare Pages builds from.
+# else (source, config, package-lock, public assets) is committed and is what
+# Cloudflare builds from.
 # ============================================================================
 
 # Dependencies (reinstalled via `npm install` on every build)

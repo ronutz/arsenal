@@ -62,14 +62,14 @@ build if skipped.
   panel are all filesystem-derived: a rebuild updates them. Verify after build.
 
 ## 8. API worker (only if the tool gets a hosted endpoint)
-- Engines are **arsenal-local**; ARSENAL has **no runtime dependency on
-  @ronutz/netcore** (it is a future curation target, not an upstream dep). The
-  Cloudflare worker (`worker/index.ts`) must import engines from
-  `../src/lib/tools/...`, never from `@ronutz/netcore/...` — that subpath is not
-  installed on a clean Cloudflare `npm clean-install` and breaks `wrangler deploy`.
+- Engines are **arsenal-local**; ARSENAL has **no external engine dependency**.
+  The Cloudflare worker (`worker/index.ts`) must import engines from
+  `../src/lib/tools/...`. Do not introduce an external engine package: such a
+  subpath would not be installed on a clean Cloudflare `npm clean-install` and
+  would break `wrangler deploy`.
 - Sanity-check the worker bundles: `npx esbuild worker/index.ts --bundle
   --format=esm --platform=neutral --outfile=/tmp/w.js` (esbuild is what wrangler
-  uses); the bundle must contain zero `@ronutz/netcore` references.
+  uses); the bundle must import only arsenal-local engines.
 
 ## 9. Build & verify, then ship
 - Full `npm run build` green: 0 IntlError/MISSING_MESSAGE, the tool page renders

@@ -4028,12 +4028,12 @@
   "license_page": {
     "eyebrow": "Termos",
     "title": "Licença",
-    "closedHeading": "Código fechado — este site",
-    "closedBody": "O site em si é de código fechado. Seu design, sua interface, seu conteúdo escrito (incluindo cada artigo do Learn), sua marca e a forma específica como estas ferramentas são montadas e apresentadas aqui são propriedade exclusiva, todos os direitos reservados. Nenhuma permissão é concedida para copiar, reproduzir, modificar, redistribuir ou criar obras derivadas do site ou de seu conteúdo sem consentimento prévio por escrito.",
+    "closedHeading": "Código aberto: Apache-2.0 (código) e CC BY 4.0 (conteúdo)",
+    "closedBody": "O código da aplicação é licenciado sob a Apache License 2.0. O conteúdo escrito -- cada artigo do Learn, os textos e explicações das ferramentas, e a documentação -- é licenciado sob a Creative Commons Atribuição 4.0 Internacional (CC BY 4.0). Você pode usar, modificar e redistribuir ambos, inclusive comercialmente, desde que dê o devido crédito a Rodolfo Nützmann (ronutz.com), inclua um link para a licença e indique quaisquer alterações. O ronutz.com permanece a fonte canônica e mantida.",
     "contact": "Dúvidas sobre a licença? <a>Entre em contato.</a>",
     "backHome": "Voltar às ferramentas",
     "thirdHeading": "Componentes de código aberto",
-    "lede": "ronutz.com é uma obra proprietária, todos os direitos reservados. Estes termos abrangem o site e o seu conteúdo. O site é construído sobre software de código aberto, que é usado e redistribuído sob os seus próprios termos de licença, creditados abaixo.",
+    "lede": "O ronutz.com é de código aberto. Seu código é licenciado sob a Apache License 2.0, e seu conteúdo escrito sob a Creative Commons Atribuição 4.0 (CC BY 4.0). Ambos exigem atribuição: reutilize, mas credite a fonte. O site também é construído sobre outros softwares de código aberto, creditados abaixo.",
     "thirdBody": "Este site se apoia em trabalho de código aberto. O site em si é construído com Next.js e React e entregue como uma exportação estática; a internacionalização usa next-intl; o conteúdo do Learn é renderizado com next-mdx-remote, gray-matter, remark-gfm e js-yaml; e a busca é fornecida pelo Pagefind. Esses componentes são disponibilizados sob a MIT License, exceto o next-mdx-remote (Mozilla Public License 2.0). A referência da API incorpora o Swagger UI, sob a Apache License 2.0. Cada componente permanece sob a sua própria licença, e os avisos completos acompanham o código-fonte."
   },
   "contributeIdeas": {
@@ -4765,6 +4765,6 @@
     "openSource": "Código Aberto",
     "codeLicense": "Apache-2.0",
     "contentLicense": "CC BY 4.0",
-    "caption": "Licenciamento previsto para a abertura · código Apache-2.0 · conteúdo CC BY 4.0 · atribuição obrigatória"
+    "caption": "Código sob Apache-2.0 · conteúdo sob CC BY 4.0 · atribuição obrigatória"
   }
 }

@@ -62,11 +62,16 @@ export interface AuthorizedIdentity {
 // THE ALLOWLIST. Only these identities may ever hold admin access. (Enforced by
 // the service layer, not here.) Kept out of the public build by gating the admin
 // page out of production.
+//
+// PUBLIC-REPO NOTE: the real owner identities are NOT committed. They are
+// configured privately (in the closed service layer / environment) and are
+// never part of the public source or the public bundle. The entries below are
+// non-identifying placeholders that document the SHAPE of the allowlist; replace
+// them in your own private configuration.
 // ----------------------------------------------------------------------------
 const AUTHORIZED: AuthorizedIdentity[] = [
-  { email: "rnutzman@gmail.com", idp: "google", role: "owner", label: "Rodolfo (Google)" },
-  { email: "rodolfo.nutzmann@gmail.com", idp: "google", role: "owner", label: "Rodolfo (Google)" },
-  { email: "rodolfo@mindstream.com.br", idp: "microsoft", role: "owner", label: "Rodolfo (Microsoft 365)" },
+  { email: "owner@example.com", idp: "google", role: "owner", label: "Owner (Google)" },
+  { email: "owner@example.org", idp: "microsoft", role: "owner", label: "Owner (Microsoft 365)" },
 ];
 
 /** Whether the federated IdPs are, by intent, the only sign-in path (no local). */

@@ -1,25 +1,23 @@
 # arsenal — Roadmap
 
-**Project:** ARSENAL — the private Services layer of ronutz.com (Next.js 15 static-export PWA on
-Cloudflare Workers). Consumes the public `netcore` engine across the C-04/C-60 boundary.
+**Project:** ARSENAL — the application layer of ronutz.com (Next.js 15 static-export PWA on
+Cloudflare Workers). Self-contained: the tool engines live in-house under `src/lib/`.
 **Version:** v1.1 · **Date:** 2026-06-28 (GMT-3) · **Governed by:** CONCORD (Protocol v2.0)
 
 This is an **execution roadmap** derived from the ratified canon; it is not a decision ledger
 (Protocol §10.1: the Platform Charter is the sole persistent memory). Each item cites its ratified
-ID (`C-xx` seam / `D-xx` decision) or the Parking Lot (Charter Appendix C). Companion roadmaps:
-`netcore/ROADMAP.md` (engine) and `concord/ROADMAP.md` (governance).
+ID (`C-xx` seam / `D-xx` decision) or the Parking Lot (Charter Appendix C). Companion roadmap:
+`concord/ROADMAP.md` (governance).
 
 **Legend:** 🟢 shipped · 🔵 in progress · 🟡 next · ⚪ deferred · 🅿️ parked (Appendix C)
 
 ---
 
-## 1. Engine cutover to `netcore` 0.2.0
+## 1. Engine architecture
 
-- 🟡 Adopt `netcore` 0.2.0: `CidrTool` `cidrTool.run()` → `cidr()`, `usableHosts` → `hostCount`,
-  optionally surface the new fields (`version`, `isPrivate`, `isSpecialUse`, `isGloballyReachable`,
-  `classification`); delete `src/types/netcore.d.ts`; adopt the API seam (worker → `createApiHandler`,
-  `build-openapi.mjs` → `toOpenAPI()` sourced from golden vectors, retire hand-authored
-  `openapi.yaml`); bump dep to `^0.2.0`. **[C-04 API-first · C-60 Engine⟷Services · runbook Phase 4]**
+- 🟢 Engines are in-house under `src/lib/` — self-contained, with no external engine dependency. The
+  worker and the OpenAPI generator both read the same tool registry, so served and documented
+  endpoints cannot drift (D-72). Golden-vector suites prove each engine's outputs. **[C-04 API-first · C-60 Engine⟷Services]**
 
 ## 2. Tools (build one tool + its Learn content end-to-end)
 

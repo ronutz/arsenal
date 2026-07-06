@@ -1,11 +1,14 @@
 ronutz.com (ARSENAL)
-Copyright (c) 2026 Rodolfo Nützmann.
+Copyright 2026 Rodolfo Nützmann.
 
-This project is built on, and in part redistributes, third-party open-source
-software. Each component remains the property of its respective authors and is
-used under its own license, attributed below. Attributions are required by
-those licenses; the proprietary terms in LICENSE apply only to this project's
-own code and content, not to the components named here.
+This project's own source code is licensed under the Apache License 2.0
+(see LICENSE) and its written content under CC BY 4.0 (see LICENSE-CONTENT).
+
+It is built on, and in part redistributes, third-party open-source software.
+Each component remains the property of its respective authors and is used under
+its own license, attributed below. Those attributions are required by their
+licenses; this project's own license terms apply only to this project's own
+code and content, not to the components named here.
 
 ============================================================================
 BUNDLED / REDISTRIBUTED

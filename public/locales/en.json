@@ -4059,9 +4059,9 @@
   "license_page": {
     "eyebrow": "Terms",
     "title": "License",
-    "lede": "ronutz.com is a proprietary work, all rights reserved. These terms cover the website and its content. The site is built on open-source software, which is used and redistributed under its own license terms — credited below.",
-    "closedHeading": "Closed source: this website",
-    "closedBody": "The website itself is closed source. Its design, interface, written content (including every Learn article), branding, and the particular way these tools are assembled and presented here are proprietary, all rights reserved. No permission is granted to copy, reproduce, modify, redistribute, or create derivative works from the site or its content without prior written consent.",
+    "lede": "ronutz.com is open source. Its code is licensed under the Apache License 2.0, and its written content under Creative Commons Attribution 4.0 (CC BY 4.0). Both require attribution: reuse it, but credit the source. The site is also built on other open-source software, credited below.",
+    "closedHeading": "Open source: Apache-2.0 (code) and CC BY 4.0 (content)",
+    "closedBody": "The application code is licensed under the Apache License 2.0. The written content -- every Learn article, the tool copy and explanatory prose, and the documentation -- is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). You may use, modify, and redistribute both, including commercially, provided you give appropriate credit to Rodolfo Nützmann (ronutz.com), link to the license, and indicate any changes. ronutz.com remains the canonical, maintained source.",
     "contact": "Questions about licensing? <a>Get in touch.</a>",
     "backHome": "Back to the tools",
     "thirdHeading": "Open-source components",
@@ -4765,6 +4765,6 @@
     "openSource": "Open Source",
     "codeLicense": "Apache-2.0",
     "contentLicense": "CC BY 4.0",
-    "caption": "Planned licensing for open release · code Apache-2.0 · content CC BY 4.0 · attribution required"
+    "caption": "Code under Apache-2.0 · content under CC BY 4.0 · attribution required"
   }
 }
