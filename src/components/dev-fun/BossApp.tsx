@@ -1286,6 +1286,263 @@ function ESXi({ hint }: { hint: string }) {
   );
 }
 
+// ---- Sniffer packet-decode screens ------------------------------------------
+// These reuse the Sniffer's authentic three-pane analysis view (the layout its
+// own manual describes: summary list, single-packet decoded detail, and raw
+// hex). Each screen shows a different historically-recognizable capture.
+//
+// SAFETY NOTE (deliberate design): a real decode shows bytes on the wire. For
+// the worms, the "recognizable" bytes ARE the weapon (shellcode / exploit
+// triggers / propagation payloads), so this NEVER reproduces them. Instead:
+//   - HTTP 420 and ILOVEYOU are benign application-layer artifacts (an HTTP
+//     rate-limit response; an email envelope). Their real, sourced strings are
+//     shown in full -- there is no exploit code in either.
+//   - The six network worms are shown at the HEADER level only: the summary and
+//     detail panes carry the real flow metadata (ports, protocol, CVE, date)
+//     that an analyst's summary would show, and the hex pane carries ONLY
+//     benign protocol-header bytes (Ethernet/IP/TCP), capped by an explicit
+//     "payload omitted" marker naming the worm and its vector. No payload,
+//     shellcode, or exploit bytes appear anywhere.
+// Every on-screen string is grounded in a cited source (F5/vendor docs, CISA,
+// CAIDA, Microsoft/MSRC, F-Secure/Kaspersky, and the Twitter API 420 record).
+
+type DecodeRow = { proto: string; info: string; sel?: boolean };
+type DecodeLine = { indent?: number; text: string };
+type SnifferCapture = {
+  suite: string; // title-bar suite label (e.g. "Ethernet")
+  summary: DecodeRow[]; // top pane: multiple-packet summary
+  detail: DecodeLine[]; // middle pane: decoded detail of the selected packet
+  hex: string[]; // bottom pane: raw bytes (headers only for worm captures)
+  note?: string; // optional footer note (used to label omitted payloads)
+};
+
+function SnifferDecode({ capture, hint }: { capture: SnifferCapture; hint: string }) {
+  return (
+    <div className="boss-screen boss-snfd">
+      <div className="snfd-title">
+        The Sniffer Network Analyzer &#8212; {capture.suite} &#8212; Display
+      </div>
+      <div className="snfd-pane snfd-summary">
+        {capture.summary.map((r, i) => (
+          <p key={i} className={`snfd-row${r.sel ? " snfd-row-sel" : ""}`}>
+            <span className="snfd-proto">{r.proto}</span>
+            <span className="snfd-info">{r.info}</span>
+          </p>
+        ))}
+      </div>
+      <div className="snfd-pane snfd-detail">
+        {capture.detail.map((l, i) => (
+          <p key={i} className="snfd-dline" style={{ paddingLeft: `${(l.indent ?? 0) * 1.2}em` }}>
+            {l.text}
+          </p>
+        ))}
+      </div>
+      <div className="snfd-pane snfd-hex">
+        {capture.hex.map((h, i) => (
+          <p key={i} className="snfd-hline">{h}</p>
+        ))}
+        {capture.note ? <p className="snfd-note">{capture.note}</p> : null}
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// -- Capture 1: HTTP 420 Enhance your calm (Twitter Search/Trends v1.0 API) ----
+// Fully benign: an HTTP response. Status line, headers and JSON body are the
+// real, documented artifact (http.dev / evertpot). Deprecated later for 429.
+const CAP_HTTP420: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "TCP", info: "80 -> 51194  ACK  Len=0" },
+    { proto: "HTTP", info: "HTTP/1.1 420 Enhance your calm  (application/json)", sel: true },
+    { proto: "TCP", info: "51194 -> 80  ACK  Len=0" },
+  ],
+  detail: [
+    { text: "HTTP: ----- Hypertext Transfer Protocol -----" },
+    { indent: 1, text: "HTTP: Status-Line = HTTP/1.1 420 Enhance your calm" },
+    { indent: 1, text: "HTTP: Content-Type = application/json" },
+    { indent: 1, text: "HTTP: Retry-After = 60" },
+    { indent: 1, text: "HTTP: (rate limited; Twitter Search/Trends v1.0 API)" },
+    { indent: 1, text: 'HTTP: Body = {"errors":[{"message":"Enhance your calm","code":420}]}' },
+  ],
+  hex: [
+    "0000  48 54 54 50 2f 31 2e 31  20 34 32 30 20 45 6e 68   HTTP/1.1 420 Enh",
+    "0010  61 6e 63 65 20 79 6f 75  72 20 63 61 6c 6d 0d 0a   ance your calm..",
+    "0020  52 65 74 72 79 2d 41 66  74 65 72 3a 20 36 30 0d   Retry-After: 60.",
+  ],
+};
+
+// -- Capture 2: ILOVEYOU / LoveLetter (May 2000) -------------------------------
+// Benign email envelope ONLY. Subject/body/attachment are the documented mail
+// artifact (F-Secure, Microsoft, Kaspersky, Bishop analysis). NO VBScript.
+const CAP_ILOVEYOU: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "SMTP", info: "MAIL FROM / RCPT TO  (queued)" },
+    { proto: "SMTP", info: "DATA: Subject: ILOVEYOU", sel: true },
+    { proto: "SMTP", info: "250 Message accepted for delivery" },
+  ],
+  detail: [
+    { text: "SMTP: ----- Simple Mail Transfer Protocol -----" },
+    { indent: 1, text: "SMTP: From = <current-user>@example.com" },
+    { indent: 1, text: "SMTP: Subject = ILOVEYOU" },
+    { indent: 1, text: "SMTP: Body = kindly check the attached LOVELETTER coming from me." },
+    { indent: 1, text: "SMTP: Attachment = LOVE-LETTER-FOR-YOU.TXT.vbs" },
+    { indent: 1, text: "SMTP: (VBS/LoveLetter, spreads via Outlook address book)" },
+  ],
+  hex: [
+    "0000  53 75 62 6a 65 63 74 3a  20 49 4c 4f 56 45 59 4f   Subject: ILOVEYO",
+    "0010  55 0d 0a 6b 69 6e 64 6c  79 20 63 68 65 63 6b 20   U..kindly check ",
+    "0020  74 68 65 20 61 74 74 61  63 68 65 64 20 2e 2e 2e   the attached ...",
+  ],
+  note: "Attachment body (VBScript) omitted -- mail envelope shown only.",
+};
+
+// -- Capture 3: Morris Worm (Nov 2, 1988) -------------------------------------
+// Header-level: fingerd (TCP/79) + sendmail (TCP/25 debug). TCP/IP only.
+// Sources: Wikipedia, MIT 6.805, Grokipedia, arXiv study. NO shellcode.
+const CAP_MORRIS: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "TCP", info: "1024 -> 79   SYN   (finger daemon)", sel: true },
+    { proto: "TCP", info: "1025 -> 25   SYN   (sendmail / SMTP)" },
+    { proto: "TCP", info: "79 -> 1024   SYN, ACK" },
+  ],
+  detail: [
+    { text: "IP:  ----- Internet Protocol -----" },
+    { indent: 1, text: "IP:  Protocol = 6 (TCP)" },
+    { text: "TCP: ----- Transmission Control Protocol -----" },
+    { indent: 1, text: "TCP: Destination Port = 79 (finger)" },
+    { indent: 1, text: "TCP: Flags = ....S. (SYN)" },
+    { indent: 1, text: "TCP: [Internet Worm of 1988 -- fingerd + sendmail debug vectors]" },
+  ],
+  hex: [
+    "0000  45 00 00 2c 1c 46 40 00  40 06 b1 e6 0a 00 00 01   E..,.F@.@.......",
+    "0010  0a 00 00 02 04 00 00 4f  00 00 00 00 00 00 00 00   .......O........",
+  ],
+  note: "Payload omitted -- Morris Worm fingerd/sendmail exploit not shown.",
+};
+
+// -- Capture 4: Stuxnet (2010) ------------------------------------------------
+// Header-level: SMB print-spooler (MS10-061) + MS08-067, TCP/445. Targets
+// Siemens WinCC. Sources: CISA, Symantec Dossier, MSRC, ESET. NO payload.
+const CAP_STUXNET: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "TCP", info: "1039 -> 445  SYN   (SMB / print spooler)", sel: true },
+    { proto: "SMB", info: "Negotiate Protocol Request" },
+    { proto: "SMB", info: "Tree Connect: \\\\HOST\\print$" },
+  ],
+  detail: [
+    { text: "TCP: ----- Transmission Control Protocol -----" },
+    { indent: 1, text: "TCP: Destination Port = 445 (microsoft-ds / SMB)" },
+    { text: "SMB: ----- Server Message Block -----" },
+    { indent: 1, text: "SMB: Command = Tree Connect (print spooler share)" },
+    { indent: 1, text: "SMB: [Stuxnet -- MS10-061 spooler + MS08-067; target: WinCC]" },
+  ],
+  hex: [
+    "0000  45 00 00 30 3a 21 40 00  80 06 00 00 c0 a8 01 0a   E..0:!@.........",
+    "0010  c0 a8 01 20 04 0f 01 bd  00 00 00 00 00 00 00 00   ... ............",
+  ],
+  note: "Payload omitted -- Stuxnet spooler/SMB exploit not shown.",
+};
+
+// -- Capture 5: Conficker / Downadup (Nov 2008) -------------------------------
+// Header-level: TCP/445 SMB SYN scan, MS08-067 (CVE-2008-4250). Sources:
+// CAIDA telescope, Grokipedia, Cisco IPS notes. NO payload.
+const CAP_CONFICKER: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "TCP", info: "1055 -> 445  SYN   (scanning)", sel: true },
+    { proto: "TCP", info: "1056 -> 445  SYN   (scanning)" },
+    { proto: "TCP", info: "1057 -> 445  SYN   (scanning)" },
+  ],
+  detail: [
+    { text: "TCP: ----- Transmission Control Protocol -----" },
+    { indent: 1, text: "TCP: Destination Port = 445 (microsoft-ds / SMB)" },
+    { indent: 1, text: "TCP: Flags = ....S. (SYN)  -- high-rate host sweep" },
+    { indent: 1, text: "TCP: [Conficker/Downadup -- MS08-067, CVE-2008-4250]" },
+  ],
+  hex: [
+    "0000  45 00 00 30 5b 12 40 00  80 06 00 00 c0 a8 01 0a   E..0[.@.........",
+    "0010  c0 a8 01 c8 04 1f 01 bd  00 00 00 00 00 00 00 00   ................",
+  ],
+  note: "Payload omitted -- Conficker MS08-067 exploit not shown.",
+};
+
+// -- Capture 6: Mirai (2016) --------------------------------------------------
+// Header-level: Telnet (TCP/23) brute-force against IoT. Credential list is
+// NOT shown. Sources: Krebs, US-CERT/CISA, MalwareTech analyses. NO creds.
+const CAP_MIRAI: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "TCP", info: "1071 -> 23   SYN   (Telnet)", sel: true },
+    { proto: "TELNET", info: "login attempt (IoT device)" },
+    { proto: "TELNET", info: "login attempt (IoT device)" },
+  ],
+  detail: [
+    { text: "TCP: ----- Transmission Control Protocol -----" },
+    { indent: 1, text: "TCP: Destination Port = 23 (telnet)" },
+    { text: "TELNET: ----- Telnet Protocol -----" },
+    { indent: 1, text: "TELNET: Login prompt / credential guess" },
+    { indent: 1, text: "TELNET: [Mirai -- IoT Telnet brute force; credential list omitted]" },
+  ],
+  hex: [
+    "0000  45 00 00 2c 6a 3f 40 00  40 06 00 00 c0 a8 01 0a   E..,j?@.@.......",
+    "0010  c0 a8 01 64 04 2f 00 17  00 00 00 00 00 00 00 00   ...d./..........",
+  ],
+  note: "Credential list omitted -- Mirai hardcoded logins not shown.",
+};
+
+// -- Capture 7: WannaCry (May 12, 2017) ---------------------------------------
+// Header-level: SMBv1 TCP/445, EternalBlue / MS17-010 (CVE-2017-0144).
+// Sources: CISA IOCs, Mandiant, Wikipedia. NO exploit bytes.
+const CAP_WANNACRY: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "TCP", info: "1083 -> 445  SYN   (SMBv1)", sel: true },
+    { proto: "SMB", info: "Negotiate Protocol Request" },
+    { proto: "SMB", info: "Session Setup AndX Request" },
+  ],
+  detail: [
+    { text: "TCP: ----- Transmission Control Protocol -----" },
+    { indent: 1, text: "TCP: Destination Port = 445 (microsoft-ds / SMBv1)" },
+    { text: "SMB: ----- Server Message Block v1 -----" },
+    { indent: 1, text: "SMB: Command = Negotiate / Session Setup" },
+    { indent: 1, text: "SMB: [WannaCry -- EternalBlue, MS17-010, CVE-2017-0144]" },
+  ],
+  hex: [
+    "0000  45 00 00 30 7c 55 40 00  80 06 00 00 c0 a8 01 0a   E..0|U@.........",
+    "0010  c0 a8 01 32 04 3b 01 bd  00 00 00 00 00 00 00 00   ...2.;..........",
+  ],
+  note: "Payload omitted -- WannaCry EternalBlue exploit not shown.",
+};
+
+// -- Capture 8: NotPetya (2017) -----------------------------------------------
+// Header-level: same EternalBlue / MS17-010 SMB TCP/445 vector as WannaCry
+// (NotPetya is a wiper). Sources: SpamTitan, ESET, CISA. NO exploit bytes.
+const CAP_PETYA: SnifferCapture = {
+  suite: "Ethernet",
+  summary: [
+    { proto: "TCP", info: "1090 -> 445  SYN   (SMBv1)", sel: true },
+    { proto: "SMB", info: "Negotiate Protocol Request" },
+    { proto: "SMB", info: "Tree Connect AndX Request" },
+  ],
+  detail: [
+    { text: "TCP: ----- Transmission Control Protocol -----" },
+    { indent: 1, text: "TCP: Destination Port = 445 (microsoft-ds / SMBv1)" },
+    { text: "SMB: ----- Server Message Block v1 -----" },
+    { indent: 1, text: "SMB: Command = Negotiate / Tree Connect" },
+    { indent: 1, text: "SMB: [NotPetya -- EternalBlue, MS17-010; wiper]" },
+  ],
+  hex: [
+    "0000  45 00 00 30 8e 61 40 00  80 06 00 00 c0 a8 01 0a   E..0.a@.........",
+    "0010  c0 a8 01 46 04 42 01 bd  00 00 00 00 00 00 00 00   ...F.B..........",
+  ],
+  note: "Payload omitted -- NotPetya EternalBlue exploit not shown.",
+};
+
 // ---- Microdigital TK-82C (BR ZX81 clone) -----------------------------------
 // Microdigital's first widely sold machine and a faithful ZX81 clone, so it
 // boots exactly like one: a blank raster and a single inverse K in the corner.
@@ -1962,6 +2219,22 @@ function renderScreen(kind: BossScreenKind, hint: string) {
       return <ESXi hint={hint} />;
     case "sniffer":
       return <Sniffer hint={hint} />;
+    case "snifferconficker":
+      return <SnifferDecode capture={CAP_CONFICKER} hint={hint} />;
+    case "snifferhttp420":
+      return <SnifferDecode capture={CAP_HTTP420} hint={hint} />;
+    case "snifferiloveyou":
+      return <SnifferDecode capture={CAP_ILOVEYOU} hint={hint} />;
+    case "sniffermirai":
+      return <SnifferDecode capture={CAP_MIRAI} hint={hint} />;
+    case "sniffermorris":
+      return <SnifferDecode capture={CAP_MORRIS} hint={hint} />;
+    case "snifferpetya":
+      return <SnifferDecode capture={CAP_PETYA} hint={hint} />;
+    case "snifferstuxnet":
+      return <SnifferDecode capture={CAP_STUXNET} hint={hint} />;
+    case "snifferwannacry":
+      return <SnifferDecode capture={CAP_WANNACRY} hint={hint} />;
     case "tk82c":
       return <TK82C />;
     case "tk90x":

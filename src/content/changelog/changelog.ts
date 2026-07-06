@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "16:13",
+    kind: "content",
+    title: "The Sniffer learns to decode: eight famous captures in the three-pane view",
+    body:
+      "The Network General Sniffer screen gains eight companion decodes rendered in its authentic three-pane analysis view (summary, detail, and hex): an HTTP 420 Enhance Your Calm response, the ILOVEYOU mail envelope, and the Morris Worm, Stuxnet, Conficker, Mirai, WannaCry, and NotPetya. HTTP 420 and ILOVEYOU show their real, benign application-layer artifacts in full; the six network worms are shown at the header level only (ports, protocol, CVE, date) with a clear payload-omitted marker, so no exploit or shellcode bytes appear. Every on-screen string is grounded in a cited source, from CISA and CAIDA to Microsoft and the Twitter API record.",
+  },
+  {
+    date: "2026-07-06",
     time: "15:41",
     kind: "content",
     title: "Two professional tools close out the boss-screen set",

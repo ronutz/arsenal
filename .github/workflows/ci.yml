@@ -36,8 +36,8 @@ jobs:
     name: Typecheck (tsc)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: ".node-version"
           cache: "npm"
@@ -48,8 +48,8 @@ jobs:
     name: Build (guards + export)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: ".node-version"
           cache: "npm"
@@ -61,5 +61,5 @@ jobs:
     name: REUSE compliance
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
       - uses: fsfe/reuse-action@v6

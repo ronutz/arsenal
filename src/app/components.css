@@ -9284,6 +9284,26 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .esxi-spacer { height: 0.6em; }
 .esxi-footbar { display: flex; gap: 2em; background: #f2c500; color: #000; padding: 0.15em 0.8em; font-weight: 700; }
 
+/* --- Sniffer packet-decode: the authentic three-pane analysis view.
+   Summary list on top, decoded-detail tree in the middle, raw hex at the
+   bottom, over the Sniffer's blue screen. Worm captures show header bytes
+   only, capped by a "payload omitted" note. --- */
+.boss-snfd { background: #0000a8; color: #c0c0c0; padding: 0 !important; display: flex; flex-direction: column; font-size: 0.82em; line-height: 1.28; }
+.snfd-title { background: #00a8a8; color: #000; padding: 0.12em 0.6em; font-weight: 700; flex-shrink: 0; }
+.snfd-pane { padding: 0.25em 0.6em; overflow: hidden; }
+.snfd-pane p { margin: 0; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.snfd-summary { border-bottom: 1px solid #4444cc; }
+.snfd-row { display: flex; gap: 0.6em; color: #54fcfc; }
+.snfd-proto { width: 4.5em; color: #fcfc54; flex-shrink: 0; }
+.snfd-info { flex: 1; }
+.snfd-row-sel { background: #c0c0c0; color: #0000a8; }
+.snfd-row-sel .snfd-proto { color: #a80000; }
+.snfd-detail { flex: 1; border-bottom: 1px solid #4444cc; color: #fff; }
+.snfd-dline { color: #ffffff; }
+.snfd-hex { color: #54fc54; }
+.snfd-hline { color: #7cfc7c; }
+.snfd-note { color: #fc8054; margin-top: 0.3em !important; font-style: italic; white-space: normal !important; }
+
 /* Respect reduced motion: freeze every added animation to its resting frame */
 @media (prefers-reduced-motion: reduce) {
   .zx81-k, .msx-cursor, .msx-logo-word, .trs80-cursor, .cp500-cursor,
