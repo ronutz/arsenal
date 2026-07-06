@@ -523,6 +523,113 @@ function ZXSpectrum128() {
   );
 }
 
+// ---- Novell NetWare 3.12: MONITOR.NLM -------------------------------------
+// The LAN era's server heartbeat. MONITOR is loaded at the console's colon
+// prompt; its General Information screen refreshes utilization about once a
+// second (Novell docs), and Novell tuning guidance says Total Cache Buffers
+// below 40% of Original means the server needs RAM (TID 10012765) -- this
+// server sits at a healthy 75%. Release: September 1993 (OS/2 Museum timeline).
+function NetWare({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-netware">
+      <div className="nw-titlebar">
+        <span>NetWare v3.12 Console Monitor</span>
+        <span>NetWare Loadable Module</span>
+      </div>
+      <div className="nw-body">
+        <div className="nw-panel">
+          <p className="nw-panel-title">Information For Server RONUTZ</p>
+          <div className="nw-grid">
+            <span>File Server Up Time:</span>
+            <span>142 Days 6 Hours 51 Minutes 12 Seconds</span>
+            <span>Utilization:</span>
+            <span className="nw-util" aria-hidden="true" />
+            <span>Original Cache Buffers:</span>
+            <span>2,096</span>
+            <span>Total Cache Buffers:</span>
+            <span>1,585</span>
+            <span>Dirty Cache Buffers:</span>
+            <span>0</span>
+            <span>Current Disk Requests:</span>
+            <span>0</span>
+            <span>Packet Receive Buffers:</span>
+            <span>100</span>
+            <span>Directory Cache Buffers:</span>
+            <span>78</span>
+            <span>Service Processes:</span>
+            <span>3</span>
+            <span>Connections In Use:</span>
+            <span>18</span>
+            <span>Open Files:</span>
+            <span>29</span>
+          </div>
+        </div>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- PCBoard BBS: dialing Salt Air -----------------------------------------
+// Clark Development's PCBoard (1983), the high-end commercial DOS BBS of the
+// modem era. An AT-command modem dials CDC's own support board, Salt Air
+// (801-261-8976, straight from the PPL manual), the carrier locks at 2400 bps,
+// and the v15.22 node banner answers. Line pacing mimics a real call.
+// NOTE for PRIME: the login-prompt wording ("First name:") is kept generic;
+// the exact PCBoard default prompt was not source-verified this session.
+function PCBoard({ hint }: { hint: string }) {
+  return (
+    <div className="boss-screen boss-pcboard">
+      <div className="bbs-field">
+        <p className="bbs-echo">
+          <span className="bbs-type">ATDT 8012618976</span>
+        </p>
+        <p className="bbs-line bbs-d2">CONNECT 2400</p>
+        <p className="bbs-line bbs-d3">&nbsp;</p>
+        <p className="bbs-line bbs-d4 bbs-banner">PCBoard (R) v15.22 - Node 1</p>
+        <p className="bbs-line bbs-d5 bbs-welcome">Welcome to Salt Air BBS</p>
+        <p className="bbs-line bbs-d6">&nbsp;</p>
+        <p className="bbs-line bbs-d7">
+          First name: RODOLFO<span className="bbs-cursor">▌</span>
+        </p>
+      </div>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
+// ---- TELESP Videotexto: the index painting at 1200 bps ---------------------
+// Brazil's videotex. TELESP ran the country's first service in Sao Paulo
+// (experimental 1982, official Dec 1982), adapting France's ANTIOPE standard
+// with home micros as terminals over V.23 modems (1200 bps down / 75 up).
+// Pages were 40x24 cells, eight colours, mosaic semigraphics -- and a full
+// screen painted top to bottom at 1200 bps, the reveal recreated here. Menu
+// entries are documented period services; accents are stripped the way the
+// era's alphanumeric character set stripped them.
+function Videotexto({ hint }: { hint: string }) {
+  const colours = ["#fc5454", "#54fc54", "#fcfc54", "#5454fc", "#fc54fc", "#54fcfc", "#ffffff", "#fc5454"];
+  return (
+    <div className="boss-screen boss-vdt">
+      <div className="vdt-mosaic vdt-paint vdt-p1" aria-hidden="true">
+        {colours.map((c, i) => (
+          <span key={i} style={{ background: c }} />
+        ))}
+      </div>
+      <p className="vdt-title vdt-paint vdt-p2">VIDEOTEXTO</p>
+      <p className="vdt-sub vdt-paint vdt-p3">TELESP - TELECOMUNICACOES DE SAO PAULO</p>
+      <p className="vdt-item vdt-paint vdt-p4"><span className="vdt-num">1</span>NOTICIAS</p>
+      <p className="vdt-item vdt-paint vdt-p5"><span className="vdt-num">2</span>COTACOES DA BOLSA</p>
+      <p className="vdt-item vdt-paint vdt-p6"><span className="vdt-num">3</span>CORREIO ELETRONICO</p>
+      <p className="vdt-item vdt-paint vdt-p7"><span className="vdt-num">4</span>LISTA TELEFONICA</p>
+      <p className="vdt-item vdt-paint vdt-p8"><span className="vdt-num">5</span>HOROSCOPO</p>
+      <p className="vdt-prompt vdt-paint vdt-p9">
+        DIGITE O NUMERO DESEJADO <span className="vdt-cursor">█</span>
+      </p>
+      <span className="boss-hint">{hint}</span>
+    </div>
+  );
+}
+
 // ---- Microdigital TK-82C (BR ZX81 clone) -----------------------------------
 // Microdigital's first widely sold machine and a faithful ZX81 clone, so it
 // boots exactly like one: a blank raster and a single inverse K in the corner.
@@ -1133,6 +1240,12 @@ function renderScreen(kind: BossScreenKind, hint: string) {
       return <Ti99 />;
     case "trs80":
       return <Trs80 hint={hint} />;
+    case "netware":
+      return <NetWare hint={hint} />;
+    case "pcboard":
+      return <PCBoard hint={hint} />;
+    case "videotexto":
+      return <Videotexto hint={hint} />;
     case "tk82c":
       return <TK82C />;
     case "tk90x":

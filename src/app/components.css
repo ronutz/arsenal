@@ -8984,6 +8984,65 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* the "?" blinks while the disk is showing */
 .mac-disk-q { animation: ws-blink 0.9s steps(1) infinite; }
 
+/* --- Novell NetWare 3.12: MONITOR.NLM General Information. C-Worthy blue,
+   cyan title bars, yellow values; utilization ticks like MONITOR's roughly
+   once-a-second refresh (static "4 %" fallback where content animation is
+   unsupported) --- */
+.boss-netware { background: #0000a8; color: #fff; padding: 0 !important; display: flex; flex-direction: column; }
+.nw-titlebar { display: flex; justify-content: space-between; gap: 1em; background: #00a8a8; color: #000; padding: 0.15em 0.7em; font-weight: 700; }
+.nw-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1em; overflow: hidden; }
+.nw-panel { border: 2px double #fff; padding: 0.6em 1.2em 1em; box-shadow: 0.55em 0.55em 0 rgba(0, 0, 0, 0.5); max-width: 100%; }
+.nw-panel-title { text-align: center; background: #00a8a8; color: #000; font-weight: 700; margin: -0.6em -1.2em 0.8em; padding: 0.12em 0.5em; }
+.nw-grid { display: grid; grid-template-columns: max-content max-content; gap: 0.14em 1.6em; }
+.nw-grid > span:nth-child(even) { text-align: right; color: #fcfc54; }
+.nw-util::before { content: "4 %"; animation: nw-util 4s steps(1) infinite; }
+@keyframes nw-util { 0% { content: "4 %"; } 25% { content: "9 %"; } 50% { content: "2 %"; } 75% { content: "13 %"; } }
+
+/* --- PCBoard BBS: grey-on-black terminal; the ATDT line self-types, then the
+   modem and board lines land on a real call's pacing --- */
+.boss-pcboard { background: #000; color: #b8b8b8; padding: 1em 1.3em !important; }
+.bbs-field { display: flex; flex-direction: column; gap: 0.12em; }
+.bbs-echo { margin: 0; }
+.bbs-type { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; max-width: 0; animation: bbs-type 1.5s steps(15) 0.4s forwards; }
+@keyframes bbs-type { to { max-width: 16ch; } }
+.bbs-line { margin: 0; opacity: 0; animation: bbs-show 0.4s steps(1, end) forwards; }
+/* GOTCHA: bbs-show needs a real duration and explicit from/to. A 0.01s duration
+   with a multi-second delay on a composited (opacity) animation never fires in
+   Chromium; steps(1, end) + 0.4s makes the line appear at delay+0.4s, so the
+   per-line delays below are the designed appearance times minus 0.4s. */
+@keyframes bbs-show { from { opacity: 0; } to { opacity: 1; } }
+.bbs-d2 { animation-delay: 2.5s; }
+.bbs-d3 { animation-delay: 2.6s; }
+.bbs-d4 { animation-delay: 3.4s; }
+.bbs-d5 { animation-delay: 3.8s; }
+.bbs-d6 { animation-delay: 3.9s; }
+.bbs-d7 { animation-delay: 4.6s; }
+.bbs-banner { color: #54fcfc; font-weight: 700; }
+.bbs-welcome { color: #fcfc54; }
+.bbs-cursor { animation: ws-blink 1s steps(1) infinite; color: #fff; }
+
+/* --- TELESP Videotexto: black alphamosaic page, eight-colour mosaic band,
+   rows painting top-to-bottom on the 1200 bps cadence --- */
+.boss-vdt { background: #000; color: #fff; padding: 0.9em 1.3em !important; display: flex; flex-direction: column; gap: 0.18em; }
+.vdt-mosaic { display: flex; height: 0.85em; margin-bottom: 0.5em; }
+.vdt-mosaic span { flex: 1; }
+.vdt-title { color: #fcfc54; font-weight: 700; letter-spacing: 0.4em; transform: scaleY(1.55); transform-origin: top left; margin: 0.15em 0 0.9em; }
+.vdt-sub { color: #54fcfc; margin: 0 0 0.7em; }
+.vdt-item { margin: 0; }
+.vdt-num { color: #54fc54; display: inline-block; min-width: 1.6em; }
+.vdt-prompt { color: #fc54fc; margin: auto 0 0; }
+.vdt-cursor { color: #fff; animation: ws-blink 1s steps(1) infinite; }
+.vdt-paint { opacity: 0; animation: bbs-show 0.4s steps(1, end) forwards; }
+.vdt-p1 { animation-delay: 0s; }
+.vdt-p2 { animation-delay: 0.15s; }
+.vdt-p3 { animation-delay: 0.5s; }
+.vdt-p4 { animation-delay: 0.85s; }
+.vdt-p5 { animation-delay: 1.2s; }
+.vdt-p6 { animation-delay: 1.55s; }
+.vdt-p7 { animation-delay: 1.9s; }
+.vdt-p8 { animation-delay: 2.25s; }
+.vdt-p9 { animation-delay: 2.7s; }
+
 /* Respect reduced motion: freeze every added animation to its resting frame */
 @media (prefers-reduced-motion: reduce) {
   .zx81-k, .msx-cursor, .msx-logo-word, .trs80-cursor, .cp500-cursor,
@@ -8999,6 +9058,11 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   /* reduced motion: settle the Mac on the Happy Mac (the successful end state) */
   .mac-disk { opacity: 0; }
   .mac-happy { opacity: 1; }
+  /* reduced motion: NetWare/PCBoard/Videotexto land on their finished frames */
+  .bbs-line, .vdt-paint { animation: none; opacity: 1; }
+  .bbs-type { animation: none; max-width: 16ch; }
+  .bbs-cursor, .vdt-cursor { animation: none; opacity: 1; }
+  .nw-util::before { animation: none; }
 }
 
 /* ===========================================================================

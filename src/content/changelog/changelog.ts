@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "12:34",
+    kind: "content",
+    title: "Three deep-cut boss screens: NetWare, PCBoard, and Videotexto",
+    body:
+      "The retro screen collection grows to 45 with three long-requested additions: the Novell NetWare 3.12 console running MONITOR.NLM (its utilization figure ticking about once a second, the way the real screen refreshed), a PCBoard BBS session dialing Clark Development's own Salt Air support board at 2400 bps, and the TELESP Videotexto index painting line by line the way Brazil's 1982 videotex service did over a 1200/75 bps modem link.",
+  },
+  {
+    date: "2026-07-06",
     time: "05:10",
     kind: "content",
     title: "Two more retro boot screens, and a fix to a third",
