@@ -25,7 +25,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 import { API_TOOLS, API_EXCLUDED } from "../src/lib/tools/registry";
 import { CATALOGUE } from "../src/content/catalogue/catalogue";
 

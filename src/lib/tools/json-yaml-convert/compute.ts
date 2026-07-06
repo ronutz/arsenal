@@ -21,7 +21,7 @@
 // json-formatter is the tool to reach for when exact large integers matter.
 // ============================================================================
 
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 import { parseJson, JsonParseError } from "../json-formatter/compute";
 
 export type Direction = "json-to-yaml" | "yaml-to-json";
@@ -86,7 +86,7 @@ function jsonToYaml(input: string, indent: IndentWidth): ConvertResult {
       lineWidth: -1, // never wrap long scalars
       noRefs: true, // expand repeated nodes instead of emitting anchors
       sortKeys: false,
-      quotingType: '"',
+      quoteStyle: "double",
       forceQuotes: false,
     });
   } catch (e) {

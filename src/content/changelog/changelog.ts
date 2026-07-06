@@ -43,6 +43,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-06",
+    time: "03:20",
+    kind: "content",
+    title: "Boss-key screens now hold a proper 4:3 monitor shape",
+    body:
+      "The retro boss-key screens are now framed like the CRT and TV displays these machines actually used, a 4:3 monitor that scales to fit the window and centers with letterboxing, rather than stretching. Previously each screen filled the full window height while its width followed its content, so a screen with only a line or two (a ZX Spectrum copyright line, an MSX prompt) became a tall, narrow strip, while a wide two-panel layout like Norton Utilities happened to look right. Every screen now shares the same correct proportions on any window size, from an ultrawide monitor to a phone.",
+  },
+  {
     date: "2026-07-05",
     time: "22:18",
     kind: "feature",

@@ -13,6 +13,11 @@
    automatically when <html dir="rtl"> is set for Arabic (or any future RTL script).
    ============================================================================ */
 
+/* Component stylesheets — MUST precede all rules (CSS @import ordering; Turbopack enforces this). */
+@import "./components.css";
+@import "../components/LanguageSwitcher.css";
+
+
 :root {
   /* Semantic status tokens (D-71). Generic base = dark defaults, inherited by the
      18 dark themes; the 8 light themes override the generics below. */
@@ -720,8 +725,6 @@ body {
 }
 
 /* --- Component stylesheets (imported here so they load globally) --- */
-@import "./components.css";
-@import "../components/LanguageSwitcher.css";
 
 /* --- Shared helpers --- */
 a {

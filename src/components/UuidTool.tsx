@@ -151,7 +151,7 @@ export default function UuidTool() {
               <dl className="jwt-claims">
                 <div className="jwt-claim-row">
                   <dt className="jwt-claim-label">{t("versionField")}</dt>
-                  <dd className="jwt-claim-value">{t("versionValue", { version: inspectResult.version })}</dd>
+                  <dd className="jwt-claim-value">{t("versionValue", { version: inspectResult.version ?? "" })}</dd>
                 </div>
                 <div className="jwt-claim-row">
                   <dt className="jwt-claim-label">{t("variantField")}</dt>

@@ -174,7 +174,7 @@ export default function As3ExplainerValidatorTool() {
                           <span className="as3-node-class">Application</span> <b>{app.name}</b>
                           {app.isShared && <span className="as3-badge">{t("reserved.shared")}</span>}
                           <span className="as3-node-note">
-                            {t("appTemplate", { template: app.template })}
+                            {t("appTemplate", { template: app.template ?? "" })}
                             {app.templateDefaulted ? ` ${t("templateDefault")}` : ""}
                           </span>
                         </div>
