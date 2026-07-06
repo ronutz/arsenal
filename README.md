@@ -1,7 +1,7 @@
 # @ronutz/arsenal
 
-[![CI](https://github.com/nutzmann/arsenal/actions/workflows/ci.yml/badge.svg)](https://github.com/nutzmann/arsenal/actions/workflows/ci.yml)
-[![REUSE status](https://api.reuse.software/badge/github.com/nutzmann/arsenal)](https://api.reuse.software/info/github.com/nutzmann/arsenal)
+[![CI](https://github.com/ronutz/arsenal/actions/workflows/ci.yml/badge.svg)](https://github.com/ronutz/arsenal/actions/workflows/ci.yml)
+[![REUSE status](https://api.reuse.software/badge/github.com/ronutz/arsenal)](https://api.reuse.software/info/github.com/ronutz/arsenal)
 [![License: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue.svg)](./LICENSE)
 [![Content: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey.svg)](./LICENSE-CONTENT)
 

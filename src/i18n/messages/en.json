@@ -3430,6 +3430,7 @@
     "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore."
   },
   "footer": {
+    "guide": "Guide",
     "redEducation": "Book official training with <b>Red Education</b>",
     "builtWith": "Built by Rodolfo Nützmann with CONCORD",
     "colophon": "How this was built",
@@ -4776,5 +4777,93 @@
     "codeLicense": "Apache-2.0",
     "contentLicense": "CC BY 4.0",
     "caption": "Code under Apache-2.0 · content under CC BY 4.0 · attribution required"
+  },
+  "guide": {
+    "eyebrow": "User guide",
+    "title": "How to use this site",
+    "lede": "A practical guide to the toolbox: what is here, how each tool works, which tools to reach for, and how the site handles privacy, languages, and offline use. Everything computes locally in your browser.",
+    "tocAria": "Guide sections",
+    "nav": {
+      "datasheet": "At a glance",
+      "quickref": "Tool reference",
+      "usage": "Suggested usage",
+      "manual": "Manual"
+    },
+    "datasheetHeading": "At a glance",
+    "datasheetIntro": "The essentials in one panel. These figures are generated from the site itself at build time, so they always match what is actually published.",
+    "ds": {
+      "tools": "Live tools",
+      "categories": "Categories",
+      "articles": "Learn articles",
+      "languages": "Languages",
+      "compute": "Where it runs",
+      "computeValue": "In your browser, on your device",
+      "privacy": "Your input",
+      "privacyValue": "Never sent anywhere by default",
+      "codeLicense": "Code license",
+      "contentLicense": "Content license",
+      "tech": "Built with",
+      "techValue": "Next.js, a statically exported progressive web app",
+      "cost": "Price",
+      "costValue": "Free to use; the first useful answer is never behind a paywall"
+    },
+    "quickrefHeading": "Tool reference",
+    "quickrefIntro": "Every general-purpose tool, grouped by category. This list is generated from the live registry, so it is always complete. Tools tied to a specific vendor live on that vendor's page.",
+    "usageHeading": "Suggested usage",
+    "usageIntro": "Common tasks, and the tools that get them done. Follow the tools in order for each task.",
+    "recipes": {
+      "inspect-a-token": {
+        "title": "Inspect a token you received",
+        "desc": "Decode a JSON Web Token to read its claims, then decode any Base64 fields inside it."
+      },
+      "plan-a-subnet": {
+        "title": "Plan an IP subnet",
+        "desc": "Work out network ranges, masks, and host counts for IPv4, then do the same for IPv6."
+      },
+      "work-with-a-certificate": {
+        "title": "Work with a TLS certificate",
+        "desc": "Decode a certificate to see its fields, check a signing request, and plan the renewal date."
+      },
+      "set-up-app-login": {
+        "title": "Set up sign-in for an app",
+        "desc": "Understand an OpenID Connect flow, add PKCE for a public client, and add a one-time-password second factor."
+      },
+      "read-a-dns-answer": {
+        "title": "Read a DNS answer",
+        "desc": "Make sense of the output from dig, and from nslookup, line by line."
+      },
+      "verify-data-integrity": {
+        "title": "Verify data integrity",
+        "desc": "Compute a hash of some data, or an HMAC when a shared secret is involved."
+      }
+    },
+    "manualHeading": "Manual",
+    "manual": {
+      "start": {
+        "h": "Running a tool",
+        "b": "Open any tool, paste or type your input, and the result appears immediately. There is no sign-in and nothing to install. Most tools include an Example button that fills in sample input, and a Clear button that resets the fields. Below each tool you will find related Learn articles that explain the underlying concept."
+      },
+      "privacy": {
+        "h": "Privacy and themes",
+        "b": "Tools run entirely in your browser, so the data you enter is not transmitted anywhere by default. Your theme choice is remembered on your device only. Your language is carried in the page address rather than stored. The Privacy page explains exactly what is and is not kept."
+      },
+      "api": {
+        "h": "The API",
+        "b": "Each tool's logic is also documented as an API, with a machine-readable specification you can read on the API page. The API is documented for reference; whether requests are served depends on the site's current configuration, which the API page states plainly."
+      },
+      "languages": {
+        "h": "Languages",
+        "b": "The interface is available in several languages; switch using the language control in the header. English and Brazilian Portuguese are authored directly. Where a phrase has not yet been translated for a given language, the English text is shown for that phrase so nothing is ever missing."
+      },
+      "offline": {
+        "h": "Offline use",
+        "b": "The site is a progressive web app. Once you have visited it, your browser can keep it available, and because the tools compute locally they keep working without a connection. You can add the site to your home screen or desktop like an app."
+      },
+      "source": {
+        "h": "Source and license",
+        "b": "The project is open source. The code is licensed under Apache 2.0 and the written content under CC BY 4.0. You can read the source, report an issue, or suggest a tool from the repository, which is linked in the footer and on the License page."
+      }
+    },
+    "backToTools": "Browse all tools"
   }
 }

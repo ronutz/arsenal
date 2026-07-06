@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "22:18",
+    kind: "feature",
+    title: "A user guide that stays current with the toolbox",
+    body:
+      "There is now a Site User Guide at /guide, linked from the footer. It has four parts: an at-a-glance datasheet, a full tool reference grouped by category, suggested-usage recipes that map a common task to the tools that do it, and a short manual covering how to run a tool, privacy, the API, languages, and offline use. The datasheet figures and the tool reference are generated from the site's own sources at build time, so they always match what is published; a build guard additionally fails if a recipe ever points at a tool that no longer exists. English and Portuguese are authored directly; other locales fall back per key.",
+  },
+  {
+    date: "2026-07-05",
     time: "21:37",
     kind: "feature",
     title: "A single switch turns the API on or off, and the pills follow it",

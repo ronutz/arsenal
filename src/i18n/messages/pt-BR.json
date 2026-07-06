@@ -3430,6 +3430,7 @@
     "shortcutsBody": "O site tem alguns atalhos de tecla única para navegação rápida, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de uma convincente aplicação de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l para o índice de Aprender; m abre o console do Mega Brain; e z abre o Buzzword Bingo. Eles são deliberadamente inertes sempre que você está digitando: se o foco está em um campo de texto, uma caixa de colar, um campo de busca, ou qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita é jamais engolido. Eles também são ignorados quando uma tecla modificadora está pressionada, então as combinações do seu próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não adicionam rastreamento algum, e são puramente uma conveniência que você pode ignorar."
   },
   "footer": {
+    "guide": "Guia",
     "redEducation": "Reserve treinamento oficial com a <b>Red Education</b>",
     "builtWith": "Feito por Rodolfo Nützmann com CONCORD",
     "colophon": "Como isto foi construído",
@@ -4776,5 +4777,93 @@
     "codeLicense": "Apache-2.0",
     "contentLicense": "CC BY 4.0",
     "caption": "Código sob Apache-2.0 · conteúdo sob CC BY 4.0 · atribuição obrigatória"
+  },
+  "guide": {
+    "eyebrow": "Guia de uso",
+    "title": "Como usar este site",
+    "lede": "Um guia prático da caixa de ferramentas: o que existe aqui, como cada ferramenta funciona, qual usar em cada caso e como o site trata privacidade, idiomas e uso offline. Tudo é calculado localmente, no seu navegador.",
+    "tocAria": "Seções do guia",
+    "nav": {
+      "datasheet": "Visão geral",
+      "quickref": "Referência de ferramentas",
+      "usage": "Sugestões de uso",
+      "manual": "Manual"
+    },
+    "datasheetHeading": "Visão geral",
+    "datasheetIntro": "O essencial em um só painel. Estes números são gerados a partir do próprio site no momento da compilação, então sempre refletem o que está de fato publicado.",
+    "ds": {
+      "tools": "Ferramentas ativas",
+      "categories": "Categorias",
+      "articles": "Artigos do Aprenda",
+      "languages": "Idiomas",
+      "compute": "Onde roda",
+      "computeValue": "No seu navegador, no seu dispositivo",
+      "privacy": "Seus dados",
+      "privacyValue": "Por padrão, nunca enviados a lugar nenhum",
+      "codeLicense": "Licença do código",
+      "contentLicense": "Licença do conteúdo",
+      "tech": "Feito com",
+      "techValue": "Next.js, um progressive web app exportado de forma estática",
+      "cost": "Preço",
+      "costValue": "Uso gratuito; a primeira resposta útil nunca fica atrás de um paywall"
+    },
+    "quickrefHeading": "Referência de ferramentas",
+    "quickrefIntro": "Todas as ferramentas de uso geral, organizadas por categoria. Esta lista é gerada a partir do registro ativo, então está sempre completa. As ferramentas ligadas a um fabricante específico ficam na página desse fabricante.",
+    "usageHeading": "Sugestões de uso",
+    "usageIntro": "Tarefas comuns e as ferramentas que as resolvem. Siga as ferramentas na ordem indicada para cada tarefa.",
+    "recipes": {
+      "inspect-a-token": {
+        "title": "Inspecionar um token recebido",
+        "desc": "Decodifique um JSON Web Token para ler suas claims e, depois, decodifique quaisquer campos em Base64 dentro dele."
+      },
+      "plan-a-subnet": {
+        "title": "Planejar uma sub-rede IP",
+        "desc": "Calcule faixas de rede, máscaras e número de hosts em IPv4 e faça o mesmo para IPv6."
+      },
+      "work-with-a-certificate": {
+        "title": "Trabalhar com um certificado TLS",
+        "desc": "Decodifique um certificado para ver seus campos, verifique uma solicitação de assinatura e planeje a data de renovação."
+      },
+      "set-up-app-login": {
+        "title": "Configurar login em um aplicativo",
+        "desc": "Entenda um fluxo OpenID Connect, adicione PKCE para um cliente público e inclua um segundo fator com senha de uso único."
+      },
+      "read-a-dns-answer": {
+        "title": "Ler uma resposta de DNS",
+        "desc": "Interprete a saída do dig e a do nslookup, linha por linha."
+      },
+      "verify-data-integrity": {
+        "title": "Verificar a integridade dos dados",
+        "desc": "Calcule o hash de um dado ou um HMAC quando houver um segredo compartilhado."
+      }
+    },
+    "manualHeading": "Manual",
+    "manual": {
+      "start": {
+        "h": "Usando uma ferramenta",
+        "b": "Abra qualquer ferramenta, cole ou digite sua entrada e o resultado aparece na hora. Não há login nem nada para instalar. A maioria das ferramentas traz um botão Exemplo, que preenche uma entrada de amostra, e um botão Limpar, que zera os campos. Abaixo de cada ferramenta há artigos do Aprenda que explicam o conceito por trás dela."
+      },
+      "privacy": {
+        "h": "Privacidade e temas",
+        "b": "As ferramentas rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum por padrão. A escolha de tema é lembrada apenas no seu dispositivo. O idioma fica no endereço da página, e não é armazenado. A página de Privacidade explica exatamente o que é e o que não é guardado."
+      },
+      "api": {
+        "h": "A API",
+        "b": "A lógica de cada ferramenta também é documentada como uma API, com uma especificação legível por máquina disponível na página da API. A API é documentada como referência; se as requisições são atendidas depende da configuração atual do site, o que a página da API informa com clareza."
+      },
+      "languages": {
+        "h": "Idiomas",
+        "b": "A interface está disponível em vários idiomas; troque pelo controle de idioma no cabeçalho. Inglês e português do Brasil são escritos diretamente. Quando uma frase ainda não foi traduzida para um idioma, o texto em inglês é exibido nessa frase, de modo que nada fique faltando."
+      },
+      "offline": {
+        "h": "Uso offline",
+        "b": "O site é um progressive web app. Depois da primeira visita, o navegador pode mantê-lo disponível e, como as ferramentas calculam localmente, elas continuam funcionando sem conexão. Você pode adicionar o site à tela inicial ou à área de trabalho como um aplicativo."
+      },
+      "source": {
+        "h": "Código e licença",
+        "b": "O projeto é de código aberto. O código é licenciado sob Apache 2.0 e o conteúdo escrito sob CC BY 4.0. Você pode ler o código, relatar um problema ou sugerir uma ferramenta pelo repositório, que fica no rodapé e na página de Licença."
+      }
+    },
+    "backToTools": "Ver todas as ferramentas"
   }
 }

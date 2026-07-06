@@ -9116,3 +9116,162 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   border-left-color: var(--accent-green, #22C55E);
   background: color-mix(in srgb, var(--accent-green, #22C55E) 8%, transparent);
 }
+
+/* ============================================================================
+   SITE USER GUIDE (/guide)
+   Semantic tokens only. The guide reuses .colophon-* hero/section shells and
+   adds these part-specific blocks: an in-page TOC, the datasheet definition
+   grid, the quick-reference category lists, the suggested-usage recipe cards,
+   and the manual blocks.
+   ============================================================================ */
+
+/* In-page table of contents (the four parts). */
+.guide-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 1.5rem;
+}
+.guide-toc-link {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.15rem;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.guide-toc-link:hover {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+/* 1. Datasheet: a two-column label/value definition grid. */
+.guide-datasheet {
+  margin: 1.5rem 0 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.guide-ds-row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 14rem) 1fr;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.guide-ds-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+.guide-ds-value {
+  color: var(--text-primary);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* 2. Quick reference: category groups, each a list of tool rows. */
+.guide-qr-group {
+  margin-top: 1.75rem;
+}
+.guide-qr-cat {
+  font-size: 1rem;
+  margin: 0 0 0.6rem;
+}
+.guide-qr-catlink {
+  color: var(--accent-cyan);
+  text-decoration: none;
+}
+.guide-qr-catlink:hover {
+  text-decoration: underline;
+}
+.guide-qr-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.guide-qr-item {
+  display: grid;
+  grid-template-columns: minmax(9rem, 15rem) 1fr;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  align-items: baseline;
+}
+.guide-qr-name {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+.guide-qr-name:hover {
+  color: var(--accent-cyan);
+}
+.guide-qr-blurb {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* 3. Suggested usage: recipe cards, each with an ordered tool chain. */
+.guide-recipes {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+}
+.guide-recipe {
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.6rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--surface-elevated);
+}
+.guide-recipe-title {
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+  color: var(--text-primary);
+}
+.guide-recipe-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.8rem;
+}
+.guide-recipe-steps {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.3rem;
+}
+.guide-recipe-step {
+  color: var(--text-tertiary);
+}
+.guide-recipe-tool {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 500;
+}
+.guide-recipe-tool:hover {
+  text-decoration: underline;
+}
+
+/* 4. Manual: stacked prose blocks. */
+.guide-manual-block {
+  margin-top: 1.5rem;
+}
+.guide-manual-h {
+  font-size: 1.05rem;
+  margin: 0 0 0.4rem;
+  color: var(--text-primary);
+}
+
+/* Narrow screens: collapse the two-column rows to single column. */
+@media (max-width: 640px) {
+  .guide-ds-row,
+  .guide-qr-item {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+}

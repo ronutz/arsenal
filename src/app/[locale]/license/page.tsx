@@ -82,7 +82,7 @@ export default async function LicensePage({
               <p>
                 <a
                   className="api-download"
-                  href="https://github.com/nutzmann/arsenal"
+                  href="https://github.com/ronutz/arsenal"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

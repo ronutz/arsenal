@@ -67,6 +67,10 @@ export default async function SiteFooter() {
             documented, but the API is not served from this site (its page
             explains why). */}
         <p className="footer-contribute">
+          <Link href="/guide" className="footer-contribute-link">
+            {t("guide")}
+          </Link>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
           </Link>
@@ -150,7 +154,7 @@ export default async function SiteFooter() {
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           {/* The public source repository. External anchor (leaves the site). */}
           <a
-            href="https://github.com/nutzmann/arsenal"
+            href="https://github.com/ronutz/arsenal"
             className="footer-contribute-link"
             target="_blank"
             rel="noopener noreferrer"

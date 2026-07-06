@@ -14,7 +14,7 @@
   "homepage": "https://ronutz.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nutzmann/arsenal.git"
+    "url": "git+https://github.com/ronutz/arsenal.git"
   },
   "type": "module",
   "scripts": {
@@ -25,7 +25,7 @@
     "build": "next build && pagefind --site out && tsx scripts/gen-machine-legible.mts",
     "start": "next start",
     "lint": "next lint",
-    "prebuild": "node scripts/check-tool-articles.mjs && node scripts/check-changelog.mjs && node scripts/check-tools-registry.mjs && node scripts/check-vendor-namespace.mjs && node scripts/check-tool-docs.mjs && node scripts/check-icu-messages.mjs && node scripts/copy-locales.mjs && tsx scripts/build-openapi.mts && node scripts/gen-api-endpoints.mjs && node scripts/gen-locale-coverage.mjs && node scripts/gen-build-info.mjs",
+    "prebuild": "node scripts/check-tool-articles.mjs && node scripts/check-changelog.mjs && node scripts/check-tools-registry.mjs && node scripts/check-vendor-namespace.mjs && node scripts/check-tool-docs.mjs && node scripts/check-user-guide.mjs && node scripts/check-icu-messages.mjs && node scripts/copy-locales.mjs && tsx scripts/build-openapi.mts && node scripts/gen-api-endpoints.mjs && node scripts/gen-locale-coverage.mjs && node scripts/gen-build-info.mjs",
     "update-swagger-ui": "node scripts/update-swagger-ui.mjs"
   },
   "//7": "Self-contained: tool engines are in-house under src/lib/; no external engine dependency.",
