@@ -44,11 +44,11 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
-    time: "03:55",
+    time: "04:30",
     kind: "infra",
-    title: "Restored the production build under Next.js 16",
+    title: "Pinned to the framework version the site builds cleanly on",
     body:
-      "After the framework moved to Next.js 16, the site stopped building: two always-present interface pieces (the keyboard-shortcut layer and the language switcher) call the locale-aware router, and Next 16 now runs that call while turning each page into static HTML at build time, where no router exists yet, so it errored out. Those pieces only ever navigate in response to a keypress or a click, never while a page is being built, so the router access now happens strictly in the browser. The full site builds and exports again.",
+      "The framework was briefly moved up a major version, which changed how the site is turned into static files at build time: it began emitting several extra bookkeeping files per page, and across thousands of pages in sixteen languages that overflowed the build machine's disk before the export could finish. Since the site is a purely static export that gains nothing from the newer version's server-oriented features, it is now pinned back to the previous major version, which produces far fewer build artifacts and completes the export well within the available space. Everything the site does is unchanged; this only affects how it is built.",
   },
   {
     date: "2026-07-06",
