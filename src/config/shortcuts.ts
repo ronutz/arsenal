@@ -59,6 +59,7 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   { id: "nav-home", kind: "navigate", path: "/", labelKey: "actionHome" },
   { id: "nav-tools", kind: "navigate", path: "/tools", labelKey: "actionTools" },
   { id: "nav-learn", kind: "navigate", path: "/learn", labelKey: "actionLearn" },
+  { id: "nav-dev-fun", kind: "navigate", path: "/dev-fun", labelKey: "actionDevFun" },
   { id: "nav-mega-brain", kind: "navigate", path: "/dev-fun/mega-brain", labelKey: "actionMegaBrain" },
   { id: "nav-bingo", kind: "navigate", path: "/dev-fun/meeting-bingo", labelKey: "actionBingo" },
   // Navigation — the five favorite tools (PRIME-ratified defaults; rebindable)
@@ -85,12 +86,14 @@ export const ACTION_BY_ID: Record<string, ShortcutAction> = Object.fromEntries(
 // customizable, and the sysadmin may override via POLICY below.
 //
 // Chosen keys:
-//   b boss · t tools · l learn · m mega-brain · z bingo   (existing set)
+//   b boss · t tools · l learn · m mega-brain · z bingo · f dev-fun index
+//     (existing set + the dev-fun landing page)
 //   s search overlay · / focus search · ? cheat-sheet · h home   (new "expected"
 //     web conventions)
 //   1-5 favorite tools (PRIME-ratified: CIDR, Base64, JWT, JSON⇄YAML, F5 hub)
 export const DEFAULT_BINDINGS: Record<string, string> = {
   b: "cmd-boss",
+  f: "nav-dev-fun",
   t: "nav-tools",
   l: "nav-learn",
   m: "nav-mega-brain",
@@ -107,7 +110,7 @@ export const DEFAULT_BINDINGS: Record<string, string> = {
 };
 
 // The keys the settings UI exposes, in display order (matches DEFAULT_BINDINGS).
-export const SHORTCUT_KEYS: string[] = ["b", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5"];
+export const SHORTCUT_KEYS: string[] = ["b", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5"];
 
 // ---- Sysadmin policy -------------------------------------------------------
 // Per-key operator rules. Any key absent from this map is fully customizable

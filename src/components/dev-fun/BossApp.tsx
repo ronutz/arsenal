@@ -576,8 +576,11 @@ function NetWare({ hint }: { hint: string }) {
 // modem era. An AT-command modem dials CDC's own support board, Salt Air
 // (801-261-8976, straight from the PPL manual), the carrier locks at 2400 bps,
 // and the v15.22 node banner answers. Line pacing mimics a real call.
-// NOTE for PRIME: the login-prompt wording ("First name:") is kept generic;
-// the exact PCBoard default prompt was not source-verified this session.
+// The login identity on PCBoard was the user's HANDLE -- whatever alias the
+// caller chose under each board's policy served as the logon name (the PCBoard
+// manual itself refers to "the logon name that you use for your Salt Air
+// account"). PRIME ran a real PCBoard (INTELECTA) and confirms the handle was
+// the login name; the handle shown here, kr34t0r, is PRIME's own.
 function PCBoard({ hint }: { hint: string }) {
   return (
     <div className="boss-screen boss-pcboard">
@@ -591,7 +594,7 @@ function PCBoard({ hint }: { hint: string }) {
         <p className="bbs-line bbs-d5 bbs-welcome">Welcome to Salt Air BBS</p>
         <p className="bbs-line bbs-d6">&nbsp;</p>
         <p className="bbs-line bbs-d7">
-          First name: RODOLFO<span className="bbs-cursor">▌</span>
+          Enter your handle: kr34t0r<span className="bbs-cursor">▌</span>
         </p>
       </div>
       <span className="boss-hint">{hint}</span>

@@ -23,10 +23,15 @@ updates:
     # the Cloudflare Workers build disk for this many-page multilingual export. Hold
     # next / next-intl at their current major until the 16 migration is planned
     # deliberately (Dependabot still offers minor + patch bumps within the major).
+    # TypeScript 6.0 is likewise held at 5.x: a major tsc bump tightens type-checking
+    # and removes deprecated flags, and the whole build gates on a clean `tsc --noEmit`
+    # across every generated page, so the 6.0 migration is planned deliberately too.
     ignore:
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
       - dependency-name: "next-intl"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"

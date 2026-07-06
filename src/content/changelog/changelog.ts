@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "18:26",
+    kind: "feature",
+    title: "Keyboard shortcut: press F for the dev-fun index",
+    body:
+      "The site-wide keyboard shortcuts gain F, which jumps to the dev-fun landing page (joining B for the boss key, M for the Mega Brain console, and Z for Buzzword Bingo). Like every shortcut it is rebindable in Settings and inert while you are typing in a field. Separately, the PCBoard boss screen now shows a handle at its login prompt, matching how PCBoard boards actually identified callers.",
+  },
+  {
+    date: "2026-07-06",
     time: "16:13",
     kind: "content",
     title: "The Sniffer learns to decode: eight famous captures in the three-pane view",
