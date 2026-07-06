@@ -9,7 +9,7 @@
 // stays light. Reference always works; Swagger UI is the opt-in second view.
 // ============================================================================
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import ApiReference from "./ApiReference";
 import SwaggerUI from "./SwaggerUI";
@@ -19,6 +19,19 @@ type View = "reference" | "swagger";
 export default function ApiExplorer() {
   const t = useTranslations("api");
   const [view, setView] = useState<View>("reference");
+  // When a tool page links here with ?op=<operationId>&tag=<tag>, open the
+  // Swagger view and deep-link to that operation. Read once on mount.
+  const [target, setTarget] = useState<{ op: string; tag: string } | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const op = params.get("op");
+    const tag = params.get("tag");
+    if (op) {
+      setTarget({ op, tag: tag ?? "" });
+      setView("swagger");
+    }
+  }, []);
 
   return (
     <div className="api-explorer">
@@ -48,7 +61,7 @@ export default function ApiExplorer() {
       ) : (
         <>
           <p className="api-swagger-caveat">{t("swaggerCaveat")}</p>
-          <SwaggerUI />
+          <SwaggerUI target={target} />
         </>
       )}
     </div>

@@ -20,12 +20,14 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { redEducationUrl, externalRel } from "@/config/redEducation";
 import { BUILD_TIME } from "@/generated/build-info";
+import LicenseBadges from "@/components/LicenseBadges";
 
 // Buy Me a Coffee support link.
 const COFFEE_URL = "https://buymeacoffee.com/ronutz";
 
 export default async function SiteFooter() {
   const t = await getTranslations("footer");
+  const tBadges = await getTranslations("licenseBadges");
 
   // Honoring Red Education, the authorized training center. Lead-attributed
   // (utm_campaign=footer) and referrer-preserving.
@@ -40,6 +42,19 @@ export default async function SiteFooter() {
             {t("builtWith")}
           </Link>
         </p>
+
+        {/* Open-source / license badges: a quiet, sitewide brand signal that the
+            project is open and how it is licensed. The cluster links to
+            /license (the full terms). Compact 'footer' variant. */}
+        <LicenseBadges
+          variant="footer"
+          labels={{
+            groupAria: tBadges("groupAria"),
+            openSource: tBadges("openSource"),
+            codeLicense: tBadges("codeLicense"),
+            contentLicense: tBadges("contentLicense"),
+          }}
+        />
 
         {/* Utility links, consolidated into ONE compact row with dimmed-middot
             separators, in this deliberate order: participation first (share an

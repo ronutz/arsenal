@@ -8999,3 +8999,55 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* --- /api page: the "documented but not served" notice + Swagger caveat --- */
 .api-block--notice { border-left: 3px solid var(--accent-amber, #F59E0B); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 8%, transparent); border-radius: 0 8px 8px 0; padding: 0.9rem 1.1rem; margin: 1.5rem 0; }
 .api-swagger-caveat { font-size: 0.85rem; line-height: 1.55; color: var(--text-secondary); background: color-mix(in srgb, var(--accent-amber, #F59E0B) 7%, transparent); border-left: 3px solid var(--accent-amber, #F59E0B); border-radius: 0 6px 6px 0; padding: 0.55rem 0.8rem; margin: 0 0 1rem; max-width: 70ch; }
+
+/* --- Tool API endpoint affordance (ToolApiEndpoint.tsx): the endpoint URL,
+   linking to the Swagger UI operation. Semantic tokens only. --- */
+.tool-endpoint { margin-top: 1.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.7rem; }
+.tool-endpoint-eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-muted); }
+.tool-endpoint-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.28rem 0.6rem; border: 1px solid var(--border-strong); border-radius: 6px; background: color-mix(in srgb, var(--accent-cyan, #22D3EE) 8%, transparent); text-decoration: none; transition: border-color 0.15s ease, background 0.15s ease; }
+.tool-endpoint-link:hover { border-color: var(--accent-cyan, #22D3EE); background: color-mix(in srgb, var(--accent-cyan, #22D3EE) 14%, transparent); }
+.tool-endpoint-method { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; color: var(--accent-cyan, #22D3EE); padding: 0.05rem 0.35rem; border: 1px solid color-mix(in srgb, var(--accent-cyan, #22D3EE) 45%, transparent); border-radius: 4px; }
+.tool-endpoint-url { font-size: 0.82rem; color: var(--color-text); word-break: break-all; }
+.tool-endpoint-note { font-size: 0.72rem; color: var(--color-muted); font-style: italic; }
+
+/* --- Open-source / license badges (hand-authored, self-hosted SVG) --------- */
+.license-badges { margin: 1.25rem 0 0; }
+.license-badges-row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.license-badge {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.4rem 0.7rem; border: 1px solid var(--border-strong);
+  border-radius: 999px; background: var(--surface-elevated);
+  font-family: var(--font-mono); font-size: 0.82rem; line-height: 1;
+  color: var(--text-secondary); white-space: nowrap;
+}
+.license-badge-icon { width: 1.05rem; height: 1.05rem; display: block; flex: 0 0 auto; }
+.license-badge-icon--cc { width: 2.1rem; }
+.license-badge-key {
+  font-size: 0.62rem; letter-spacing: 0.04em; padding: 0.12rem 0.3rem;
+  border-radius: 4px; background: var(--surface-base); color: var(--text-tertiary);
+}
+.license-badge-label { font-weight: 500; color: var(--text-primary); }
+/* accent tints per mark, kept subtle */
+.license-badge--os   { color: var(--accent-green, #22C55E); }
+.license-badge--apache { color: var(--accent-amber, #F59E0B); }
+.license-badge--cc   { color: var(--accent-cyan, #22D3EE); }
+.license-badges-caption {
+  margin: 0.7rem 0 0; font-family: var(--font-mono); font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
+/* Footer variant: one compact, quiet link-cluster. */
+.license-badges--footer {
+  display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+  margin: 0; text-decoration: none;
+}
+.license-badges--footer .license-badge {
+  padding: 0.28rem 0.55rem; font-size: 0.72rem; gap: 0.35rem;
+  background: transparent; border-color: var(--border-subtle);
+  color: var(--text-tertiary);
+}
+.license-badges--footer .license-badge-label { color: var(--text-secondary); font-weight: 400; }
+.license-badges--footer .license-badge-icon { width: 0.9rem; height: 0.9rem; }
+.license-badges--footer .license-badge-icon--cc { width: 1.8rem; }
+.license-badges--footer:hover .license-badge { border-color: var(--border-strong); }
+.license-badges--footer:hover .license-badge-label { color: var(--text-primary); }

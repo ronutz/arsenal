@@ -4754,5 +4754,17 @@
     "apiNote": "This tool is built to also work over an HTTP API. The API is not switched on yet; when it is, you will be able to call it without a browser.",
     "noscriptHeading": "JavaScript is off, so the live tool will not run.",
     "noscriptBody": "You can still read this page's explanation, open the Markdown reference and the Learn article, and follow the sources below. Turn JavaScript on to use the interactive tool."
+  },
+  "toolApiEndpoint": {
+    "heading": "API endpoint",
+    "note": "Documented, not served. Opens the specification.",
+    "linkAria": "Open the API reference for this tool"
+  },
+  "licenseBadges": {
+    "groupAria": "Licensing details",
+    "openSource": "Open Source",
+    "codeLicense": "Apache-2.0",
+    "contentLicense": "CC BY 4.0",
+    "caption": "Planned licensing for open release · code Apache-2.0 · content CC BY 4.0 · attribution required"
   }
 }

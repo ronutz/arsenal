@@ -16,6 +16,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import LicenseBadges from "@/components/LicenseBadges";
 
 export default async function LicensePage({
   params,
@@ -27,6 +28,7 @@ export default async function LicensePage({
 
   const t = await getTranslations("license_page");
   const tNav = await getTranslations("nav");
+  const tBadges = await getTranslations("licenseBadges");
 
   return (
     <>
@@ -43,6 +45,16 @@ export default async function LicensePage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+              <LicenseBadges
+                variant="page"
+                labels={{
+                  groupAria: tBadges("groupAria"),
+                  openSource: tBadges("openSource"),
+                  codeLicense: tBadges("codeLicense"),
+                  contentLicense: tBadges("contentLicense"),
+                  caption: tBadges("caption"),
+                }}
+              />
             </div>
           </section>
 

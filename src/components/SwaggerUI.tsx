@@ -39,7 +39,12 @@ declare global {
 const CSS_HREF = "/vendor/swagger-ui/swagger-ui.css";
 const JS_SRC = "/vendor/swagger-ui/swagger-ui-bundle.js";
 
-export default function SwaggerUI() {
+export default function SwaggerUI({
+  target,
+}: {
+  /** Optional operation to deep-link to: { op: operationId, tag }. */
+  target?: { op: string; tag: string } | null;
+}) {
   const t = useTranslations("api");
   const ref = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
@@ -55,6 +60,21 @@ export default function SwaggerUI() {
       document.head.appendChild(link);
     }
 
+    // Deep-link: Swagger UI 5's fragment is #/<tag>/<operationId>, with spaces
+    // in the tag encoded as %20 (matches the bundle's createDeepLinkPath). When
+    // a tool page links here with a target, set that fragment BEFORE init so
+    // deepLinking scrolls to and expands the operation on load. Setting the hash
+    // does not enable "try it out" (that is gated separately by
+    // supportedSubmitMethods: []), so the view stays inert.
+    if (target?.op) {
+      const tagPart = (target.tag || "").trim().replace(/\s/g, "%20");
+      const frag = `#/${tagPart}/${target.op}`;
+      if (window.location.hash !== frag) {
+        // history.replaceState avoids adding a back-button entry for the jump.
+        history.replaceState(null, "", window.location.pathname + window.location.search + frag);
+      }
+    }
+
     function init() {
       if (cancelled || !ref.current || !window.SwaggerUIBundle) return;
       try {
@@ -63,7 +83,9 @@ export default function SwaggerUI() {
           domNode: ref.current,
           presets: [window.SwaggerUIBundle.presets.apis],
           layout: "BaseLayout",
-          deepLinking: false,
+          // deepLinking lets Swagger honor the #/<tag>/<op> fragment set above,
+          // scrolling to and expanding the linked operation on load.
+          deepLinking: true,
           // DOCUMENTATION-ONLY / INERT. The endpoints are implemented but the
           // site does not serve the API (see the /api page copy for why). An
           // empty supportedSubmitMethods removes every "Try it out" control, so
@@ -99,7 +121,7 @@ export default function SwaggerUI() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [target]);
 
   if (failed) {
     return (

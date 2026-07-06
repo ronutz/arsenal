@@ -4754,5 +4754,17 @@
     "apiNote": "Esta ferramenta também foi feita para funcionar por uma API HTTP. A API ainda não está ligada; quando estiver, você poderá chamá-la sem um navegador.",
     "noscriptHeading": "O JavaScript está desligado, então a ferramenta ao vivo não vai rodar.",
     "noscriptBody": "Você ainda pode ler a explicação desta página, abrir a referência em Markdown e o artigo do Learn, e consultar as fontes abaixo. Ligue o JavaScript para usar a ferramenta interativa."
+  },
+  "toolApiEndpoint": {
+    "heading": "Endpoint da API",
+    "note": "Documentado, não servido. Abre a especificação.",
+    "linkAria": "Abrir a referência da API desta ferramenta"
+  },
+  "licenseBadges": {
+    "groupAria": "Detalhes de licenciamento",
+    "openSource": "Código Aberto",
+    "codeLicense": "Apache-2.0",
+    "contentLicense": "CC BY 4.0",
+    "caption": "Licenciamento previsto para a abertura · código Apache-2.0 · conteúdo CC BY 4.0 · atribuição obrigatória"
   }
 }

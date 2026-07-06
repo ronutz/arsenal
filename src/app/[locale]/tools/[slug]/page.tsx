@@ -24,6 +24,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
 import ApiAffordance from "@/components/ApiAffordance";
 import ToolRequirements from "@/components/ToolRequirements";
+import ToolApiEndpoint from "@/components/ToolApiEndpoint";
 // API_TOOLS is the authoritative list of API-capable tool slugs (also drives the
 // worker's /api/v1/<slug> routes and the OpenAPI generator). We use it here only
 // to decide whether the "API-ready" pill applies to this tool.
@@ -495,6 +496,14 @@ export default async function ToolDetailPage({
     noscriptHeading: tReq("noscriptHeading"),
     noscriptBody: tReq("noscriptBody"),
   };
+  // Endpoint-URL affordance: shown on every API-capable tool (the component
+  // renders nothing for tools without an endpoint). Links to the Swagger view.
+  const tEndpoint = await getTranslations("toolApiEndpoint");
+  const endpointLabels = {
+    heading: tEndpoint("heading"),
+    note: tEndpoint("note"),
+    linkAria: tEndpoint("linkAria"),
+  };
 
   return (
     <>
@@ -564,6 +573,8 @@ export default async function ToolDetailPage({
             )}
 
             <Component />
+
+            <ToolApiEndpoint slug={slug} labels={endpointLabels} />
 
             {showRequirements && <ToolRequirements apiReady={apiReady} labels={reqLabels} />}
 

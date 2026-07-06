@@ -44,6 +44,22 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-05",
+    time: "20:39",
+    kind: "feature",
+    title: "Open-source and licensing badges, on the way to opening the code",
+    body:
+      "The License page and the footer now carry a set of hand-drawn, self-hosted badges that declare how the project will be licensed once it is opened: Open Source, the code under the Apache License 2.0, and the content under Creative Commons Attribution 4.0 (CC BY 4.0), which requires anyone reusing it to credit the source. The badges are inline SVG that theme with the rest of the site and load no external assets, in keeping with the privacy stance; the Apache mark is a plain SPDX label rather than the Apache Foundation's feather, and the Creative Commons glyphs are the marks CC publishes for exactly this purpose. On the License page they are framed as the planned terms, since the project is still proprietary today; the footer cluster links through to the full terms. English and Portuguese ship together; other locales fall back per key.",
+  },
+  {
+    date: "2026-07-05",
+    time: "20:22",
+    kind: "feature",
+    title: "Every API-capable tool now shows its endpoint URL, linked to the spec",
+    body:
+      "Each tool that has an HTTP API endpoint now displays that endpoint on its page, for example GET https://ronutz.com/api/v1/cidr, as a link that opens the API reference's Swagger UI view, deep-linked to that tool's operation. The endpoint URLs and their operation anchors are read from the generated OpenAPI spec at build time, so they are always correct, including hand-authored operations whose identifiers differ from the tool slug. The label is honest: the endpoint is documented, not served, and the link opens the specification rather than making a live call. Tools without an API endpoint show nothing. English and Portuguese ship together; other locales fall back per key.",
+  },
+  {
+    date: "2026-07-05",
     time: "19:49",
     kind: "feature",
     title: "The API reference is now public, documented but deliberately not served",
