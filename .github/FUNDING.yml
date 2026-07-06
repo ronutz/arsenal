@@ -1,0 +1,5 @@
+# SPDX-FileCopyrightText: 2026 Rodolfo Nützmann <https://ronutz.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# Shows a "Sponsor" button on the repo. ronutz uses Buy Me a Coffee.
+custom: ["https://buymeacoffee.com/ronutz"]

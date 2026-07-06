@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2026 Rodolfo Nützmann <https://ronutz.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# ============================================================================
+# release-please — automated versioning + changelog + GitHub Releases, driven
+# by Conventional Commits (feat:, fix:, feat!: for breaking, etc.).
+#
+# How it works: on each push to main, the action scans commits since the last
+# release and maintains a "release PR" that bumps the version (in package.json
+# and .release-please-manifest.json) and updates CHANGELOG.md. MERGING that PR
+# is what cuts the release: it tags the commit and publishes a GitHub Release.
+#
+# Config lives in release-please-config.json + .release-please-manifest.json
+# (manifest mode), so the versioning strategy is declarative and reviewable.
+#
+# NOTE on tokens: this uses the built-in GITHUB_TOKEN. Because of GitHub's
+# recursion guard, releases/PRs created with GITHUB_TOKEN do NOT trigger other
+# workflows — so CI will not automatically run on the release PR. If you want CI
+# to run on the release PR, create a Personal Access Token, store it as a secret
+# (e.g. RELEASE_PLEASE_TOKEN), and pass it as `token:` below. Also enable
+# Settings > Actions > General > "Allow GitHub Actions to create and approve
+# pull requests".
+# ============================================================================
+
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          # Manifest mode reads release-please-config.json +
+          # .release-please-manifest.json from the repo root.
+          token: ${{ secrets.GITHUB_TOKEN }}

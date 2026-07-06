@@ -1,0 +1,47 @@
+name: Bug report
+description: Something on ronutz.com behaves incorrectly.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please do not include any secrets or private
+        data. For **security** vulnerabilities, do not open a public issue; see
+        SECURITY.md instead.
+  - type: input
+    id: tool
+    attributes:
+      label: Which tool or page?
+      description: The tool name or URL (e.g. /en/tools/cidr).
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you do, step by step?
+      placeholder: |
+        1. Open ...
+        2. Enter ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Browser / OS
+      description: e.g. Firefox 130 on Windows 11.
+    validations:
+      required: false

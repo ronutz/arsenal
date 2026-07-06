@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Rodolfo Nützmann <https://ronutz.com>
+// SPDX-License-Identifier: Apache-2.0
+
 // ============================================================================
 // src/config/apiSurface.ts
 // ----------------------------------------------------------------------------

@@ -1,0 +1,67 @@
+# ============================================================================
+# REUSE.toml — machine-readable licensing for the whole project (REUSE 3.3).
+# ----------------------------------------------------------------------------
+# Rather than a per-file SPDX header in every one of ~1,800 source files (which
+# REUSE explicitly supports declaring in bulk here instead), this file assigns
+# copyright + license to files by path. It is the officially recommended way to
+# make a large existing codebase REUSE-compliant, and it also covers binary
+# assets (PDFs, images) that cannot carry a comment header.
+#
+# Precedence: within this file the LAST matching [[annotations]] table wins for
+# a given file, so the ordering is general-first, specific-last.
+#
+# The project is dual-licensed:
+#   - CODE                → Apache-2.0   (see LICENSE)
+#   - CONTENT (the prose) → CC-BY-4.0    (see LICENSE-CONTENT)
+# Third-party components keep their own licenses (see NOTICE + the tables below).
+#
+# Verify with:  reuse lint
+# ============================================================================
+
+version = 1
+
+# --- Default: everything is the author's code under Apache-2.0 --------------
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
+# --- Written CONTENT (Learn articles + tool documentation) → CC-BY-4.0 ------
+# The prose the site publishes. Kept separate from the code license.
+[[annotations]]
+path = ["src/content/learn/**", "src/content/tool-docs/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# --- Translation catalogs → CC-BY-4.0 (they are localized content) ----------
+[[annotations]]
+path = "src/i18n/messages/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# --- Author's images / brand marks / documents → CC-BY-4.0 ------------------
+[[annotations]]
+path = ["public/**/*.png", "public/**/*.ico", "public/**/*.pdf", "public/certs/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# --- Generated artifacts → CC0-1.0 style is common, but keep Apache-2.0 -----
+# openapi.{json,yaml} are generated from the code at build time; they inherit
+# the code license. (Left explicit for clarity.)
+[[annotations]]
+path = ["public/openapi.json", "public/openapi.yaml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
+# --- Third-party: vendored Swagger UI → its own Apache-2.0 ------------------
+# Bundled build artifacts from swagger-ui-dist; SmartBear + contributors.
+[[annotations]]
+path = "public/vendor/swagger-ui/**"
+precedence = "override"
+SPDX-FileCopyrightText = "SmartBear Software and the Swagger UI contributors"
+SPDX-License-Identifier = "Apache-2.0"

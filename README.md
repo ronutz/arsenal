@@ -1,5 +1,10 @@
 # @ronutz/arsenal
 
+[![CI](https://github.com/nutzmann/arsenal/actions/workflows/ci.yml/badge.svg)](https://github.com/nutzmann/arsenal/actions/workflows/ci.yml)
+[![REUSE status](https://api.reuse.software/badge/github.com/nutzmann/arsenal)](https://api.reuse.software/info/github.com/nutzmann/arsenal)
+[![License: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue.svg)](./LICENSE)
+[![Content: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey.svg)](./LICENSE-CONTENT)
+
 The application behind **ronutz.com**: a privacy-first, local-compute network and security toolbox, delivered as a statically exported Next.js Progressive Web App.
 
 ## Status
@@ -50,3 +55,5 @@ This project is dual-licensed:
 Both licenses require attribution: if you reuse the code or the content, credit Rodolfo Nützmann (ronutz.com) and indicate any changes. ronutz.com remains the canonical, maintained source.
 
 Third-party components redistributed in this repository retain their own licenses; see [`NOTICE`](./NOTICE).
+
+Licensing is machine-readable: the project is [REUSE 3.3](https://reuse.software) compliant. Every file's copyright and license are declared in [`REUSE.toml`](./REUSE.toml), and full license texts live in [`LICENSES/`](./LICENSES). Run `reuse lint` to verify.

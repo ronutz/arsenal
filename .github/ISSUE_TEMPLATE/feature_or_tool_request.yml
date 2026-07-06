@@ -1,0 +1,39 @@
+name: Feature or tool request
+description: Suggest a new tool, or an improvement to an existing one.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tools on this site are **deterministic** and **compute locally** — they
+        calculate a correct answer, they never guess. A tool request is most
+        actionable when you can describe the input, the computation, and the
+        authoritative source that defines the correct output.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: The task you are trying to do.
+    validations:
+      required: true
+  - type: input
+    id: input
+    attributes:
+      label: Input
+      description: What would you give the tool? (e.g. a CIDR block, a JWT, a certificate)
+    validations:
+      required: false
+  - type: input
+    id: output
+    attributes:
+      label: Output
+      description: What should it compute and return?
+    validations:
+      required: false
+  - type: input
+    id: source
+    attributes:
+      label: Authoritative source
+      description: The RFC, standard, or vendor doc that defines the correct behavior.
+    validations:
+      required: false

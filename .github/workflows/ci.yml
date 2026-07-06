@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: 2026 Rodolfo Nützmann <https://ronutz.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# ============================================================================
+# CI — runs on every push to main and on every pull request.
+#
+# Three independent checks gate a change:
+#   1. typecheck  — `tsc --noEmit` (the type contract).
+#   2. build      — `npm run build`, which first runs the prebuild guards
+#                   (tool/article/registry/i18n consistency), then the Next
+#                   static export, Pagefind, and the sitemap/feed generation.
+#                   This is the real safety net: if the site cannot build, the
+#                   PR is red.
+#   3. reuse      — REUSE 3.3 licensing compliance (every file has copyright +
+#                   license info). Uses the official FSFE action.
+# ============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel superseded runs on the same ref to save minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    name: Typecheck (tsc)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: "npm"
+      - run: npm ci
+      - run: npx tsc --noEmit
+
+  build:
+    name: Build (guards + export)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: "npm"
+      - run: npm ci
+      # `build` runs the `prebuild` lifecycle script (the guards) first.
+      - run: npm run build
+
+  reuse:
+    name: REUSE compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: fsfe/reuse-action@v6
