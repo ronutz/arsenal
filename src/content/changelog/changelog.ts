@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "03:55",
+    kind: "infra",
+    title: "Restored the production build under Next.js 16",
+    body:
+      "After the framework moved to Next.js 16, the site stopped building: two always-present interface pieces (the keyboard-shortcut layer and the language switcher) call the locale-aware router, and Next 16 now runs that call while turning each page into static HTML at build time, where no router exists yet, so it errored out. Those pieces only ever navigate in response to a keypress or a click, never while a page is being built, so the router access now happens strictly in the browser. The full site builds and exports again.",
+  },
+  {
+    date: "2026-07-06",
     time: "03:20",
     kind: "content",
     title: "Boss-key screens now hold a proper 4:3 monitor shape",

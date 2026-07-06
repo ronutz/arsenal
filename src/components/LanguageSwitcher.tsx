@@ -82,12 +82,40 @@ const ORDERED_LOCALES: readonly LocaleMeta[] = [...LOCALES].sort((a, b) => {
   return a.nativeName.localeCompare(b.nativeName, "en");
 });
 
+// Sole caller of next-intl's navigation hooks. Rendered only after mount, so
+// useRouter/usePathname never execute during static prerender. Keeps the parent's
+// refs in sync and renders nothing.
+function LangNavBridge({
+  routerReplaceRef,
+  pathnameRef,
+}: {
+  routerReplaceRef: React.MutableRefObject<(pathname: string, opts: { locale: string }) => void>;
+  pathnameRef: React.MutableRefObject<string>;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(() => {
+    routerReplaceRef.current = (p, opts) => router.replace(p, opts);
+    pathnameRef.current = pathname;
+  }, [router, pathname, routerReplaceRef, pathnameRef]);
+  return null;
+}
+
 export default function LanguageSwitcher() {
   const t = useTranslations("languageSwitcher");
   const tStatus = useTranslations("languageStatus");
   const activeLocale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
+  // next-intl's navigation hooks (useRouter/usePathname) throw when this client
+  // component is prerendered to HTML under Next 16 (no router context on the
+  // server). They are only ever read inside selectLocale (a click handler), so
+  // an inner mount-only bridge fills these refs client-side; the hooks never run
+  // during static prerender. (useLocale/useTranslations are prerender-safe.)
+  const routerReplaceRef = useRef<(pathname: string, opts: { locale: string }) => void>(
+    () => {},
+  );
+  const pathnameRef = useRef<string>("/");
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -132,14 +160,15 @@ export default function LanguageSwitcher() {
         /* private mode: skip persistence; the navigation below still happens */
       }
       if (l.status === "stub") {
-        const rest = pathname === "/" ? "/" : pathname.endsWith("/") ? pathname : `${pathname}/`;
+        const p = pathnameRef.current;
+        const rest = p === "/" ? "/" : p.endsWith("/") ? p : `${p}/`;
         window.location.assign(`/${DEFAULT_LOCALE}${rest}`);
         return;
       }
       // next-intl's router keeps the current pathname, swaps the locale.
-      router.replace(pathname, { locale: l.code });
+      routerReplaceRef.current(pathnameRef.current, { locale: l.code });
     },
-    [router, pathname]
+    []
   );
 
   // Close on outside click.
@@ -191,6 +220,9 @@ export default function LanguageSwitcher() {
 
   return (
     <div ref={containerRef} className="ls-root">
+      {mounted && (
+        <LangNavBridge routerReplaceRef={routerReplaceRef} pathnameRef={pathnameRef} />
+      )}
       {/* Trigger: current language endonym + BCP-47 code */}
       <button
         type="button"

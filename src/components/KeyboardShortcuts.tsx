@@ -37,7 +37,7 @@
 // route through those popups so Esc closes whatever is up.
 // ============================================================================
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import BossApp from "@/components/dev-fun/BossApp";
 import { drawBossScreen, type BossScreenKind } from "@/components/dev-fun/boss-screens";
@@ -78,8 +78,33 @@ function keyLabel(key: string): string {
   return key;
 }
 
-export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
+// Sole caller of next-intl's useRouter. Rendered only after mount (client-side),
+// so the hook never executes during static prerender. It fills the parent's
+// navigate ref with a locale-aware push and renders nothing.
+function ShortcutRouterBridge({
+  navigateRef,
+}: {
+  navigateRef: React.MutableRefObject<(path: string) => void>;
+}) {
   const router = useRouter();
+  useEffect(() => {
+    navigateRef.current = (path: string) => router.push(path);
+  }, [router, navigateRef]);
+  return null;
+}
+
+export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
+  // useRouter (next-intl's) must not be called during static prerender: under
+  // Next 16 the client hook throws when this component is prerendered to HTML at
+  // build time (it has no router context on the server). Navigation is only ever
+  // triggered from a keydown handler — i.e. in the browser — so we obtain the
+  // navigate function through a ref that an inner, mount-only child fills in.
+  // The child <ShortcutRouterBridge> is the sole caller of useRouter, and it is
+  // rendered only after mount, so the hook runs exclusively client-side.
+  const navigateRef = useRef<(path: string) => void>(() => {});
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const [bossScreen, setBossScreen] = useState<BossScreenKind | null>(null);
   const [cheatOpen, setCheatOpen] = useState(false);
   // Effective bindings, kept in sync with the store (settings UI edits, policy).
@@ -112,7 +137,7 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
       const action = ACTION_BY_ID[actionId];
       if (!action) return;
       if (action.kind === "navigate" && action.path) {
-        router.push(action.path);
+        navigateRef.current(action.path);
         return;
       }
       if (action.kind === "command") {
@@ -130,7 +155,7 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
         }
       }
     },
-    [router, openRandomBoss],
+    [openRandomBoss],
   );
 
   const onKeyDown = useCallback(
@@ -161,6 +186,7 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
 
   return (
     <>
+      {mounted && <ShortcutRouterBridge navigateRef={navigateRef} />}
       {bossScreen && (
         <BossApp
           kind={bossScreen}
