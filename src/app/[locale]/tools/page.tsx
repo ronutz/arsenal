@@ -37,6 +37,11 @@ export default async function ToolsPage({
     t(`categories.${a}`).localeCompare(t(`categories.${b}`), locale),
   );
 
+  // Tool count per vendor hub, computed the same way the hub route filters its
+  // tools, so the number shown in the strip always matches what the hub lists.
+  const vendorToolCount = (v: string) =>
+    tools.filter((tl) => tl.available && (tl.vendors ?? []).includes(v)).length;
+
   return (
     <>
       <a href="#main" className="skip-link">
@@ -69,7 +74,8 @@ export default async function ToolsPage({
                     style={{ "--chip-color": vendorColor(v) } as React.CSSProperties}
                     aria-hidden="true"
                   />
-                  {t(`vendors.${v}`)} {tHub("eyebrow")} →
+                  {t(`vendors.${v}`)} {tHub("eyebrow")}{" "}
+                  <span className="vendor-hub-strip-count">({vendorToolCount(v)})</span> →
                 </Link>
               ))}
             </div>

@@ -69,6 +69,7 @@ export const tools: ToolEntry[] = [
   { id: "json-yaml-convert", href: "/tools/json-yaml-convert", category: "encoding", available: true },
   { id: "f5-tmsh-config-explainer", sub: "tmos", href: "/tools/f5-tmsh-config-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-bigip-tcpdump-builder", sub: "tmos", href: "/tools/f5-bigip-tcpdump-builder", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-irules-runtime-calculator", sub: "irules", href: "/tools/f5-irules-runtime-calculator", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-persistence-method-explainer", sub: "ltm", href: "/tools/f5-persistence-method-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-lb-method-chooser", sub: "ltm", href: "/tools/f5-lb-method-chooser", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-gslb-decision-flow", sub: "dns-gtm", href: "/tools/f5-gslb-decision-flow", category: "networking", vendors: ["f5"], available: true },

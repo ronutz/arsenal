@@ -1,0 +1,44 @@
+---
+slug: irules-performance-and-timing
+title: "iRules performance: cycles, timing, and the runtime calculator"
+summary: "How iRules actually execute inside TMM (a Tcl interpreter compiling to bytecode), what the timing command measures, why average cycles is the reliable number and maximum is discarded, and how to turn cycles into real runtime, CPU cost per request, and maximum requests per second."
+concepts: ["irules", "tcl", "performance", "timing", "cycles", "f5", "tmm", "cmp"]
+relatedTools: ["f5-irules-runtime-calculator"]
+relatedArticles: ["bigip-l4-protocol-profiles"]
+category: networking
+order: 20
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Where iRules run
+
+To reason about iRule performance you have to know where the code runs, and the answer is unusually direct: an iRule is Tcl, and its interpreter is built into TMM itself. F5's own architecture notes make the point that there is no separate process running a virtual machine on the sideline; a customized Tcl interpreter is integrated within the traffic management microkernel, alongside the data processing, result caching, and memory management. That integration is why iRules are fast, and it is also why a slow iRule is expensive: the cycles it burns are TMM's cycles, taken directly from the budget that moves traffic.
+
+Execution proceeds through a handful of stages that are worth naming, because the profiling tools use them. TMM fires an event and enters "iRules land"; if several scripts share that event, locating the right one takes a moment. Execution reaches the rule, then the Tcl virtual machine. Here is the part people miss: **Tcl scripts are compiled to bytecode before execution**, and the virtual machine runs one bytecode instruction at a time. When a bytecode is an "invoke", the machine calls the native implementation of the command. So an iRule is neither purely interpreted line by line nor compiled to machine code; it is compiled to Tcl bytecode that drives a mix of VM operations and native command calls. The commands you write, `HTTP::uri`, `class match`, `table`, are native functions the bytecode invokes.
+
+## What timing measures
+
+The `timing` command records execution statistics for each event: the total number of executions, failures, and aborts, and the CPU cycles consumed as a `(min, avg, max)` triple. A single line looks like this:
+
+```
+RULE my_rule +-> HTTP_REQUEST 729 total 0 fail 0 abort | Cycles (min, avg, max) = (3693, 3959, 53936)
+```
+
+You read it with `tmsh show ltm rule <name>`, or on the Statistics tab of the iRules Editor. Since version 11.5.0 timing has been enabled by default for all iRules, with negligible overhead, so you rarely need to turn it on explicitly. The unit is CPU cycles, which is deliberate: cycles are the currency TMM actually spends, and they translate cleanly to time once you know the clock speed.
+
+## Why average, and why not maximum
+
+Of the three numbers, **average cycles is the one to trust**, provided you gathered it under a large, representative load. The maximum is almost always misleading, for two grounded reasons. First, the very first execution of a freshly edited rule includes one-time compile-time optimization: TMM performs its data inspection and caching setup so that later calls can use streamlined, cached values like `HTTP::host`. That first pass is far heavier than steady-state and lands entirely in the maximum. Second, operating-system scheduling adds overhead at least once per tick, which inflates the maximum even after compilation. On top of both, the timing mechanism carries a margin of error of roughly 70 to 100 cycles. The practical routine is simple: let the rule take its first hit, clear the statistics once, then measure under load and read the average.
+
+The minimum is occasionally useful as a floor, but the average is what predicts real-world cost. The maximum is best treated as noise unless you are hunting a specific pathological path.
+
+## From cycles to runtime
+
+Cycles become time through one figure the calculator calls Cycles per second, computed as cores times clock in MHz times one million, straight from `/proc/cpuinfo`. From it, the spreadsheet builds four views of every event, each split into a best, typical, and worst case (the minimum, average, and maximum cycles): the raw cycles; the runtime in microseconds, which is cycles times one million divided by Cycles per second; the CPU percentage a single request costs, which is cycles divided by Cycles per second; and the maximum requests per second the rule can sustain, which is Cycles per second divided by cycles. The cost of one request through the rule is the sum of its events' cycles, and the Total row derives its runtime, percentage, and throughput from that sum.
+
+The spreadsheet's own shipped example makes the arithmetic concrete: with Cycles per second of 2,903,000,097, a request totalling 591,600 average cycles takes 203.79 microseconds, costs 0.020379 percent CPU, and tops out near 4,907 requests per second; the worst-case column, built from the maximum cycles, is what tells you the ceiling under a pathological path. The [runtime calculator tool](/tools/f5-irules-runtime-calculator) reproduces all four tables in the browser: paste the field-fmt output, give it the clock and core count, and read the best, typical, and worst figures directly. Populate the statistics first with a load generator such as apachebench and clear them once after the first hit, so the one-time compile cost is not averaged in.
+
+## The CMP dimension
+
+There is one architectural caveat that can invalidate the requests-per-second figure entirely. The maximum-requests calculation assumes the work spreads across all cores, which is how CMP (Clustered Multiprocessing) normally distributes traffic: each core runs its own TMM instance handling a share of connections. But if an iRule modifies a global variable, the virtual server is demoted to a single core, and your effective ceiling collapses to the single-core figure. On a busy platform that is the difference between using all your processors and using one of them. The runtime calculator reports both the all-cores and single-core maxima for exactly this reason, and the fix, keeping state in the CMP-safe `static::` namespace or in data groups rather than in globals, is the subject of its own discussion. Cycles tell you how expensive a rule is; CMP tells you how many cores are allowed to help pay.

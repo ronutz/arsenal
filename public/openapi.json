@@ -2895,6 +2895,94 @@
         }
       }
     },
+    "/f5-irules-runtime-calculator": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_runtime_calculator",
+        "summary": "iRules runtime calculator",
+        "description": "Turn iRule timing statistics into real runtime, CPU cost per request, and maximum requests per second. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules timing. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "HTTP_REQUEST 729 total 0 fail 0 abort | Cycles (min, avg, max) = (3693, 3959, 53936)"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_runtime_calculator_post",
+        "summary": "iRules runtime calculator (POST)",
+        "description": "Turn iRule timing statistics into real runtime, CPU cost per request, and maximum requests per second. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules timing. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5-irules-vs-ltm-policy": {
       "get": {
         "tags": [

@@ -119,7 +119,8 @@ export default async function LearnIndexPage({
                   />
                   <Link href={`/category/${group.category}`} className="tools-category-link">
                     {tTools(`categories.${group.category}`)}
-                  </Link>
+                  </Link>{" "}
+                  <span className="category-count">({group.articles.length})</span>
                 </h2>
                 <ul className="learn-grid">
                   {group.articles.map((a) => (

@@ -1,0 +1,44 @@
+---
+slug: irules-performance-and-timing
+title: "Desempenho de iRules: ciclos, timing e a calculadora de runtime"
+summary: "Como os iRules realmente executam dentro do TMM (um interpretador Tcl que compila para bytecode), o que o comando timing mede, por que a média de ciclos é o número confiável e o máximo é descartado, e como transformar ciclos em tempo real de execução, custo de CPU por requisição e máximo de requisições por segundo."
+concepts: ["irules", "tcl", "performance", "timing", "cycles", "f5", "tmm", "cmp"]
+relatedTools: ["f5-irules-runtime-calculator"]
+relatedArticles: ["bigip-l4-protocol-profiles"]
+category: networking
+order: 20
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Onde os iRules rodam
+
+Para raciocinar sobre o desempenho de iRules você precisa saber onde o código roda, e a resposta é incomumente direta: um iRule é Tcl, e seu interpretador está embutido no próprio TMM. As notas de arquitetura da própria F5 deixam claro que não há um processo separado rodando uma máquina virtual à parte; um interpretador Tcl customizado está integrado dentro do microkernel de gerenciamento de tráfego, ao lado do processamento de dados, do cache de resultados e do gerenciamento de memória. Essa integração é o motivo pelo qual os iRules são rápidos, e também o motivo pelo qual um iRule lento é caro: os ciclos que ele queima são ciclos do TMM, tirados diretamente do orçamento que move o tráfego.
+
+A execução prossegue por um punhado de estágios que vale nomear, porque as ferramentas de profiling os usam. O TMM dispara um evento e entra na "terra dos iRules"; se vários scripts compartilham esse evento, localizar o certo leva um instante. A execução alcança a regra, depois a máquina virtual Tcl. Aqui está a parte que as pessoas ignoram: **scripts Tcl são compilados para bytecode antes da execução**, e a máquina virtual executa uma instrução de bytecode por vez. Quando um bytecode é um "invoke", a máquina chama a implementação nativa do comando. Então um iRule não é nem puramente interpretado linha por linha nem compilado para código de máquina; ele é compilado para bytecode Tcl que conduz uma mistura de operações da VM e chamadas nativas de comandos. Os comandos que você escreve, `HTTP::uri`, `class match`, `table`, são funções nativas que o bytecode invoca.
+
+## O que o timing mede
+
+O comando `timing` registra estatísticas de execução para cada evento: o número total de execuções, falhas e aborts, e os ciclos de CPU consumidos como um trio `(min, avg, max)`. Uma única linha se parece com isto:
+
+```
+RULE my_rule +-> HTTP_REQUEST 729 total 0 fail 0 abort | Cycles (min, avg, max) = (3693, 3959, 53936)
+```
+
+Você a lê com `tmsh show ltm rule <nome>`, ou na aba Statistics do iRules Editor. Desde a versão 11.5.0 o timing fica habilitado por padrão para todos os iRules, com sobrecarga desprezível, então você raramente precisa ligá-lo explicitamente. A unidade é ciclos de CPU, o que é deliberado: ciclos são a moeda que o TMM realmente gasta, e eles se traduzem de forma limpa em tempo assim que você conhece a velocidade de clock.
+
+## Por que a média, e por que não o máximo
+
+Dos três números, **a média de ciclos é o confiável**, desde que você o tenha coletado sob uma carga grande e representativa. O máximo é quase sempre enganoso, por duas razões fundamentadas. Primeiro, a primeiríssima execução de uma regra recém-editada inclui otimização de compilação única: o TMM realiza sua inspeção de dados e configuração de cache para que chamadas posteriores possam usar valores em cache e simplificados como `HTTP::host`. Essa primeira passagem é muito mais pesada que o regime estável e cai inteiramente no máximo. Segundo, o escalonamento do sistema operacional adiciona sobrecarga pelo menos uma vez por tick, o que infla o máximo mesmo após a compilação. Além de ambos, o mecanismo de timing carrega uma margem de erro de cerca de 70 a 100 ciclos. A rotina prática é simples: deixe a regra receber seu primeiro acesso, limpe as estatísticas uma vez, depois meça sob carga e leia a média.
+
+O mínimo é ocasionalmente útil como piso, mas a média é o que prevê o custo do mundo real. O máximo é melhor tratado como ruído, a menos que você esteja caçando um caminho patológico específico.
+
+## De ciclos a tempo de execução
+
+Ciclos viram tempo através de uma figura que a calculadora chama de Cycles por segundo, calculada como núcleos vezes clock em MHz vezes um milhão, direto de `/proc/cpuinfo`. A partir dela, a planilha constrói quatro visões de cada evento, cada uma dividida em um melhor, típico e pior caso (os ciclos mínimo, médio e máximo): os ciclos brutos; o tempo de execução em microssegundos, que é ciclos vezes um milhão dividido por Cycles por segundo; a porcentagem de CPU que uma única requisição custa, que é ciclos dividido por Cycles por segundo; e o máximo de requisições por segundo que a regra pode sustentar, que é Cycles por segundo dividido por ciclos. O custo de uma requisição pela regra é a soma dos ciclos dos seus eventos, e a linha Total deriva seu tempo de execução, porcentagem e vazão dessa soma.
+
+O próprio exemplo entregue com a planilha torna a aritmética concreta: com Cycles por segundo de 2.903.000.097, uma requisição totalizando 591.600 ciclos médios leva 203,79 microssegundos, custa 0,020379 por cento de CPU e atinge o teto perto de 4.907 requisições por segundo; a coluna de pior caso, construída a partir dos ciclos máximos, é o que diz o teto sob um caminho patológico. A [ferramenta calculadora de runtime](/tools/f5-irules-runtime-calculator) reproduz as quatro tabelas no navegador: cole a saída field-fmt, informe o clock e a contagem de núcleos, e leia as figuras de melhor, típico e pior caso diretamente. Popule as estatísticas primeiro com um gerador de carga como o apachebench e limpe-as uma vez após o primeiro acesso, para que o custo de compilação único não entre na média.
+
+## A dimensão CMP
+
+Há uma ressalva arquitetural que pode invalidar a figura de requisições por segundo inteiramente. O cálculo de máximo de requisições assume que o trabalho se espalha por todos os núcleos, que é como o CMP (Clustered Multiprocessing) normalmente distribui o tráfego: cada núcleo roda sua própria instância de TMM lidando com uma parcela das conexões. Mas se um iRule modifica uma variável global, o servidor virtual é demovido para um único núcleo, e seu teto efetivo colapsa para a figura de núcleo único. Em uma plataforma ocupada essa é a diferença entre usar todos os seus processadores e usar um deles. A calculadora de runtime reporta tanto o máximo de todos os núcleos quanto o de núcleo único exatamente por essa razão, e a correção, manter estado no namespace `static::` seguro para CMP ou em data groups em vez de em globais, é assunto de sua própria discussão. Ciclos dizem quão cara uma regra é; o CMP diz quantos núcleos têm permissão para ajudar a pagar.

@@ -209,6 +209,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5_irules_event_order",
     "tag": "F5 LTM, iRules & platform"
   },
+  "f5-irules-runtime-calculator": {
+    "url": "https://ronutz.com/api/v1/f5-irules-runtime-calculator",
+    "method": "GET",
+    "op": "run_f5_irules_runtime_calculator",
+    "tag": "F5 LTM, iRules & platform"
+  },
   "f5-irules-vs-ltm-policy": {
     "url": "https://ronutz.com/api/v1/f5-irules-vs-ltm-policy",
     "method": "GET",

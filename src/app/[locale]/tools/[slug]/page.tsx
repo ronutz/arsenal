@@ -51,6 +51,8 @@ import PublicSuffixTool from "@/components/PublicSuffixTool";
 import { manifest as publicSuffixManifest } from "@/lib/tools/public-suffix";
 import LetsEncryptRateLimitsTool from "@/components/LetsEncryptRateLimitsTool";
 import { manifest as letsEncryptRateLimitsManifest } from "@/lib/tools/letsencrypt-rate-limits";
+import F5IrulesRuntimeCalculatorTool from "@/components/F5IrulesRuntimeCalculatorTool";
+import { manifest as f5IrulesRuntimeCalculatorManifest } from "@/lib/tools/f5-irules-runtime-calculator";
 import DiffTool from "@/components/DiffTool";
 import { manifest as diffManifest } from "@/lib/tools/diff";
 import PkceTool from "@/components/PkceTool";
@@ -233,6 +235,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "letsencrypt-rate-limits": {
     Component: LetsEncryptRateLimitsTool,
     sources: letsEncryptRateLimitsManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-runtime-calculator": {
+    Component: F5IrulesRuntimeCalculatorTool,
+    sources: f5IrulesRuntimeCalculatorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "totp-hotp": {
     Component: TotpHotpTool,

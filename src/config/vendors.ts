@@ -16,8 +16,9 @@
 // tools and articles together.
 //
 // VISIBILITY: only vendors that actually have tools are surfaced, EXCEPT that a
-// vendor with alwaysShow=true is surfaced regardless. Today only F5 is populated
-// and shown; Fortinet/Netskope/Extreme stay hidden until they have tools, so we
+// vendor with alwaysShow=true is surfaced regardless. As of 2026-07-07 all four
+// are populated (F5 holds the bulk; Fortinet/Netskope/Extreme have their first
+// tool each). A vendor with neither tools nor alwaysShow stays hidden, so we
 // never render an empty vendor shelf.
 //
 // Labels are i18n (tools.vendors.<key>), never hard-coded here - same rule as

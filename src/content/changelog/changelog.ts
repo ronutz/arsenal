@@ -44,6 +44,15 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-07",
+    time: "06:45",
+    kind: "tool",
+    title: "iRules runtime calculator",
+    body:
+      "A browser version of DevCentral's long-standing iRules Runtime Calculator spreadsheet. Paste the timing statistics from tmsh show ltm rule, give it your platform's clock speed and core count, and it converts CPU cycles into real runtime: the average microseconds each event costs, the total cycles per request, the CPU percentage a single request consumes, and the maximum requests per second the rule can sustain, both across all cores and demoted to a single core. It reads the Cycles (min, avg, max) output, uses the average and discards the compile-inflated maximum exactly as F5 advises, and reproduces F5's own published worked example to the digit. Ships with a companion Learn article on how iRules execute (a Tcl interpreter compiling to bytecode inside TMM), what timing measures, and why average is the number that matters. Local arithmetic; nothing leaves the browser.",
+    tools: ["f5-irules-runtime-calculator"],
+  },
+  {
+    date: "2026-07-07",
     time: "05:35",
     kind: "content",
     title: "Vendor ACME companions: BIG-IP and FortiGate",

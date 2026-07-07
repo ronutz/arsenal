@@ -1,0 +1,11 @@
+## What it does
+
+Paste the timing statistics from `tmsh show ltm rule <name> field-fmt`, give your platform's clock speed and core count, and this tool reproduces the four tables of DevCentral's long-standing iRules Runtime Calculator spreadsheet, entirely in the browser. For every event, and for the rule as a whole, it shows a best, typical, and worst case (the minimum, average, and maximum cycles) across four views: raw CPU cycles, runtime in microseconds, the CPU percentage a single request costs, and the maximum requests per second the rule can sustain. Nothing is sent anywhere.
+
+## The measurement it reads
+
+The `timing` command records, per event, the total executions and the cycles consumed as a minimum, average, and maximum. With `field-fmt`, that appears as blocks carrying `avg-cycles`, `min-cycles`, `max-cycles`, and `total-executions` (often abbreviated, like `43.0K`, which the tool expands). The classic one-line form, `HTTP_REQUEST 729 total 0 fail 0 abort | Cycles (min, avg, max) = (3693, 3959, 53936)`, is also accepted. Since version 11.5.0 timing is on by default. **Average is the column to trust.** Maximum is inflated because the first run of a freshly edited rule includes one-time compile-time optimization, and operating-system scheduling adds overhead at least once per tick; timing itself carries a margin of error of roughly 70 to 100 cycles. Push a large, representative load (ten thousand requests or more) and clear the statistics once after the first hit.
+
+## How the numbers are derived
+
+Everything flows from one figure the spreadsheet calls Cycles per second, which it computes as cores times clock in MHz times one million, straight from `/proc/cpuinfo`; that is the default here, and an optional override accepts a platform-specific number. From it: runtime in microseconds is cycles times one million divided by Cycles per second; the CPU percentage per request is cycles divided by Cycles per second; and the maximum requests per second is Cycles per second divided by cycles. The Total row sums the per-event cycles and derives its microseconds, percentage, and requests from that sum. One caveat the tool restates: these figures assume the work spreads across all cores under CMP, so if a rule modifies a global variable and is demoted to a single core, recompute with a core count of one.
