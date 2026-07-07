@@ -48,7 +48,7 @@ export const VENDOR_FAMILIES: readonly VendorFamily[] = Object.freeze([
 /** vendor key -> supplementary hue (dot + soft border only). Provisional; tune here. */
 export const VENDOR_COLORS: Record<string, string> = {
   f5: "#E4002B", // F5 red
-  fortinet: "#C8102E", // Fortinet red
+  fortinet: "#000000", // Fortinet black (PRIME 2026-07-07: the F5 and Fortinet reds read identical at dot size; Fortinet's brand pairs red with black, so its hub dot goes black to differentiate)
   netskope: "#00A9E0", // Netskope blue
   extreme: "#582C83", // Extreme Networks purple
 };

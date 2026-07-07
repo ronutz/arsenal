@@ -113,8 +113,13 @@ export default function F5ReleaseCadenceCalendarTool() {
           </section>
         </div>
 
-        {/* The schedule */}
+        {/* The schedule. Four columns with long localized headers exceed a
+            phone viewport (~430px on iPhone 16 Pro Max, reported by PRIME
+            2026-07-07), so the table sits inside a horizontal-scroll wrapper:
+            the card keeps its border and the table scrolls within it instead
+            of bleeding past the card edge. Mirrors .admin-table-wrap. */}
         <div className="hash-out">
+          <div className="rc-table-wrap">
           <table className="rc-table">
             <thead>
               <tr>
@@ -135,6 +140,7 @@ export default function F5ReleaseCadenceCalendarTool() {
               ))}
             </tbody>
           </table>
+          </div>{/* /.rc-table-wrap */}
         </div>
 
         <p className="hmac-build-note">{t("note1")}</p>
