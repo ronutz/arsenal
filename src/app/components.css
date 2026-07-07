@@ -7713,6 +7713,87 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .poison-verdict-safe   { border-left-color: var(--color-success); }
 .poison-verdict-info   { border-left-color: var(--accent-primary); }
 .poison-verdict-danger { border-left-color: var(--color-danger); }
+
+/* ==== FortiOS sniffer builder/decoder ====================================== */
+/* Mode toggle: two pill buttons; the active one takes the accent. */
+.sniff-modes { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.sniff-mode { cursor: pointer; }
+.sniff-mode-on {
+  background: var(--accent-primary);
+  color: var(--surface-base);
+  border-color: var(--accent-primary);
+}
+/* Builder form: a responsive grid of labelled controls. */
+.sniff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.9rem 1rem;
+}
+.sniff-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.sniff-field-label {
+  font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);
+}
+.sniff-in { width: 100%; box-sizing: border-box; }
+/* The composed / echoed command, shown mono in a bordered box. */
+.sniff-command {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--accent-primary);
+}
+.sniff-results { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 1.05rem; }
+.sniff-arg { }
+
+/* ==== PAC file explainer =================================================== */
+.pac-results { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 1.05rem; }
+/* Directive / helper cards reuse tmsh-object; these tune the internals. */
+.pac-parts { list-style: none; margin: 0.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+.pac-part { display: flex; flex-direction: column; gap: 0.2rem; }
+.pac-part-kw { color: var(--accent-primary); font-weight: 600; }
+.pac-failover {
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+}
+.pac-helper-count { color: var(--text-secondary); }
+/* DNS-consulting helpers get an amber accent to flag the blocking cost. */
+.pac-helper-dns { border-left: 3px solid var(--color-warning); }
+.pac-dns-badge {
+  background: var(--color-warning);
+  color: var(--surface-base);
+  border-color: var(--color-warning);
+}
+.pac-lint-error { color: var(--color-danger); }
+.pac-lint-warn { color: var(--color-warning); }
+
+/* ==== ExtremeXOS config explainer ========================================= */
+.exos-results { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 1.05rem; }
+/* Aggregated VLAN cards. */
+.exos-vlan-facts { list-style: none; margin: 0.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.exos-vlan-facts li { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+.exos-fact-k { color: var(--text-secondary); font-weight: 600; min-width: 8rem; }
+.exos-ref-note { margin-bottom: 0.6rem; }
+/* Per-command lists, grouped by category. */
+.exos-cmd-list { list-style: none; margin: 0.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+.exos-cmd { display: flex; flex-direction: column; gap: 0.25rem; }
+.exos-cmd-raw {
+  display: block;
+  color: var(--accent-primary);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.5rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.exos-cmd-explain { color: var(--text-primary); }
+.exos-note-warn { color: var(--color-warning); }
+
+
 .poison-verdict-head { margin: 0; font-size: 1.05rem; color: var(--text-primary); }
 .poison-verdict-detail { margin: 0.5rem 0 0; font-size: 0.9rem; color: var(--text-secondary); }
 .poison-mitigations, .poison-notes {
@@ -8489,6 +8570,112 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   .c64-line-1, .c64-line-2, .c64-line-3, .c64-line-4, .c64-line-5, .c64-line-6 {
     animation: none; opacity: 1; width: auto; white-space: pre;
   }
+}
+
+/* ---- MS-DOS 6 Defrag ------------------------------------------------------
+   Cyan-on-blue block map with a legend and side panels, in the double-line
+   box frame. Blocks settle into place on a positional delay (the "sweep"),
+   and a Reading/Writing marker pulses. Deterministic: all CSS, no JS. */
+.boss-defrag {
+  color: #55ffff; background: #0000aa;
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  padding: clamp(0.5rem, 2.5vw, 1.6rem) !important;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.dfg-frame {
+  border: 3px double #55ffff; padding: clamp(0.4rem, 1.6vw, 1rem);
+  max-width: 60rem; margin: 0 auto; width: 100%;
+}
+.dfg-title {
+  text-align: center; color: #ffffff; font-weight: 700;
+  letter-spacing: 0.05em; margin-bottom: 0.7em;
+  font-size: clamp(0.8rem, 2.4vw, 1.15rem);
+}
+.dfg-main { display: flex; gap: clamp(0.5rem, 2vw, 1.4rem); align-items: flex-start; }
+.dfg-map {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 1px; flex: 1 1 auto; line-height: 1;
+  font-size: clamp(0.5rem, 1.7vw, 0.95rem);
+}
+.dfg-cell { color: #55ffff; opacity: 0.25; animation: dfg-settle 0.4s steps(2) forwards; }
+@keyframes dfg-settle { to { opacity: 1; } }
+/* A reading/writing highlight that sweeps once across the whole map. */
+.dfg-head {
+  position: absolute; top: 0; bottom: 0; width: 6%;
+  background: rgba(255, 255, 85, 0.35);
+  animation: dfg-sweep 3.4s linear infinite;
+}
+@keyframes dfg-sweep { from { left: 0; } to { left: 94%; } }
+.dfg-side { flex: 0 0 auto; display: flex; flex-direction: column; gap: 0.7rem; width: clamp(7rem, 20vw, 11rem); }
+.dfg-panel { border: 2px double #55ffff; padding: 0.4rem 0.55rem; }
+.dfg-panel-title { color: #ffff55; font-weight: 700; margin-bottom: 0.35em; font-size: clamp(0.6rem, 1.7vw, 0.85rem); }
+.dfg-stat { color: #ffffff; font-size: clamp(0.55rem, 1.6vw, 0.8rem); }
+.dfg-bar { border: 1px solid #55ffff; height: 0.8em; margin: 0.35em 0; overflow: hidden; }
+.dfg-bar-fill { display: block; height: 100%; width: 0; background: #55ffff; animation: dfg-fill 3.4s linear infinite; }
+@keyframes dfg-fill { from { width: 0; } to { width: 100%; } }
+.dfg-pct, .dfg-kv { color: #aaaaaa; font-size: clamp(0.5rem, 1.5vw, 0.78rem); }
+.dfg-kv { display: flex; justify-content: space-between; }
+.dfg-legend {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 0.8em;
+  padding-top: 0.6em; border-top: 1px solid #3a3ad0;
+  font-size: clamp(0.5rem, 1.5vw, 0.8rem); color: #ffffff;
+}
+.dfg-leg { display: inline-flex; align-items: center; gap: 0.4em; }
+.dfg-swatch { display: inline-block; }
+.dfg-used { color: #55ffff; }
+.dfg-unused { color: #5555cc; }
+.dfg-read { color: #ffff55; }
+.dfg-write { color: #000000; background: #55ffff; padding: 0 0.25em; font-weight: 700; }
+.dfg-hint { text-align: center; padding-top: 1em; }
+
+/* ---- Central Point Copy II PC --------------------------------------------
+   Plain DOS text UI: banner, a copy-direction line, then a track counter that
+   climbs 0->39 while a row of ticks fills in (track by track), the motion the
+   utility was watched for. All-CSS deterministic animation. */
+.boss-copyiipc {
+  color: #aaaaaa; background: #000000;
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  padding: clamp(0.6rem, 3vw, 2rem) !important;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.cp2-banner {
+  color: #ffffff; font-weight: 700; margin: 0 0 1.4em;
+  font-size: clamp(0.75rem, 2.4vw, 1.15rem); line-height: 1.4; white-space: pre;
+}
+.cp2-body { max-width: 48rem; }
+.cp2-line { margin-bottom: 0.7em; font-size: clamp(0.7rem, 2vw, 1rem); }
+.cp2-status { color: #ffffff; }
+.cp2-verb {
+  color: #55ff55; font-weight: 700;
+  animation: cp2-verb-flip 2.2s steps(1) infinite;
+}
+@keyframes cp2-verb-flip { 0%, 55% { color: #55ff55; } 56%, 100% { color: #ffff55; } }
+.cp2-track {
+  color: #ffff55; font-weight: 700;
+  animation: cp2-count 4.4s steps(40) forwards;
+}
+/* The counter is faked with a CSS counter driven by an integer keyframe. */
+@property --cp2n { syntax: "<integer>"; inherits: false; initial-value: 0; }
+.cp2-track { counter-reset: cp2 var(--cp2n); }
+.cp2-track::after { content: counter(cp2, decimal-leading-zero); }
+@keyframes cp2-count { to { --cp2n: 39; } }
+.cp2-map {
+  display: grid; grid-template-columns: repeat(40, 1fr); gap: 1px;
+  margin: 0.4em 0 1em; line-height: 1; max-width: 40rem;
+  font-size: clamp(0.45rem, 1.5vw, 0.85rem);
+}
+.cp2-tick { color: #55ff55; opacity: 0.2; animation: dfg-settle 0.3s steps(2) forwards; }
+.cp2-note { color: #888888; }
+.cp2-hint { text-align: center; padding-top: 1.2em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dfg-cell, .dfg-head, .dfg-bar-fill, .cp2-tick, .cp2-verb, .cp2-track {
+    animation: none; opacity: 1;
+  }
+  .dfg-head { display: none; }
+  .cp2-track::after { content: "39"; }
 }
 
 /* ==== keyboard-shortcut cheat-sheet overlay (the "?" help) ================= */

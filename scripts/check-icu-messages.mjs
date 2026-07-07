@@ -45,6 +45,7 @@ const RAW_LITERAL_KEYS = new Set([
   "tools.f5-afm-rule-context.inputPlaceholder", // firewall policy sample: literal braces, rendered with t.raw()
   "tools.f5-apm-session-variable-reference.inputPlaceholder", // mcget/percent samples: literal braces, rendered with t.raw()
   "tools.f5-packet-filter-explainer.inputPlaceholder", // tmsh sample: literal braces, rendered with t.raw()
+  "tools.pac-file-explainer.inputPlaceholder", // PAC FindProxyForURL sample: literal braces, rendered with t.raw()
 ]);
 
 const packs = readdirSync(DIR).filter((f) => f.endsWith(".json"));

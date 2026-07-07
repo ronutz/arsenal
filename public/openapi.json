@@ -25,6 +25,9 @@
       "name": "Encoding"
     },
     {
+      "name": "Extreme switching & fabric (EXOS / VOSS / SPB)"
+    },
+    {
       "name": "F5 Distributed Cloud (XC)"
     },
     {
@@ -37,6 +40,9 @@
       "name": "F5 automation (AS3 / DO)"
     },
     {
+      "name": "Fortinet FortiGate & FortiOS"
+    },
+    {
       "name": "HTTP & web"
     },
     {
@@ -47,6 +53,9 @@
     },
     {
       "name": "Identity & tokens"
+    },
+    {
+      "name": "Netskope SSE / SASE"
     },
     {
       "name": "Networking & addressing",
@@ -1000,6 +1009,96 @@
             "text/plain": {
               "schema": {
                 "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exos-config-explainer": {
+      "get": {
+        "tags": [
+          "Extreme switching & fabric (EXOS / VOSS / SPB)"
+        ],
+        "operationId": "run_exos_config_explainer",
+        "summary": "ExtremeXOS config explainer",
+        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "create vlan engineering tag 100"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Extreme switching & fabric (EXOS / VOSS / SPB)"
+        ],
+        "operationId": "run_exos_config_explainer_post",
+        "summary": "ExtremeXOS config explainer (POST)",
+        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "create vlan engineering tag 100"
+                ]
               }
             }
           }
@@ -3689,6 +3788,96 @@
         }
       }
     },
+    "/fortios-sniffer-builder": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_sniffer_builder",
+        "summary": "FortiOS packet sniffer builder",
+        "description": "Build a FortiGate diagnose sniffer packet command from parts, or paste one to have every argument explained: interface, filter, verbosity 1-6, count, and timestamp format. Standards: FortiOS diagnose sniffer packet. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "diagnose sniffer packet any 'host 10.1.1.1 and icmp' 4 0 l"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_sniffer_builder_post",
+        "summary": "FortiOS packet sniffer builder (POST)",
+        "description": "Build a FortiGate diagnose sniffer packet command from parts, or paste one to have every argument explained: interface, filter, verbosity 1-6, count, and timestamp format. Standards: FortiOS diagnose sniffer packet. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "diagnose sniffer packet any 'host 10.1.1.1 and icmp' 4 0 l"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/hash": {
       "get": {
         "tags": [
@@ -4648,6 +4837,96 @@
                 "type": "string",
                 "examples": [
                   "{\"issuer\":\"https://idp.example.com\",\"authorization_endpoint\":\"...\"}"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pac-file-explainer": {
+      "get": {
+        "tags": [
+          "Netskope SSE / SASE"
+        ],
+        "operationId": "run_pac_file_explainer",
+        "summary": "PAC file explainer and validator",
+        "description": "Paste a Proxy Auto-Config file and it reads back the proxy directives it returns, the PAC helper functions it uses (with the DNS-consulting ones flagged), structural and correctness lints, and whether it is a Netskope explicit-proxy steering file. Never runs the file. Standards: PAC (FindProxyForURL). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "function FindProxyForURL(url, host) { return \"DIRECT\"; }"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Netskope SSE / SASE"
+        ],
+        "operationId": "run_pac_file_explainer_post",
+        "summary": "PAC file explainer and validator (POST)",
+        "description": "Paste a Proxy Auto-Config file and it reads back the proxy directives it returns, the PAC helper functions it uses (with the DNS-consulting ones flagged), structural and correctness lints, and whether it is a Netskope explicit-proxy steering file. Never runs the file. Standards: PAC (FindProxyForURL). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "function FindProxyForURL(url, host) { return \"DIRECT\"; }"
                 ]
               }
             }

@@ -2095,6 +2095,138 @@ UNITRON AP II
   );
 }
 
+// ============================================================================
+// DOS DISK UTILITIES (added batch) — two full-screen tools everyone who ran
+// DOS remembers watching work: Microsoft Defrag and Central Point's Copy II PC.
+// Both are ANIMATED, because their whole appeal was that you sat and watched
+// the drive being worked on in real time. Layouts and colours are built to the
+// real programs (MS-DOS 6 DEFRAG's blue block map with its legend and status
+// panels; Copy II PC's DOS text UI reading/writing a floppy track by track).
+// Sources: MS-DOS 6 DEFRAG documentation and the block-map legend (Used /
+// Unused / Reading / Writing / Bad / Optimizing); Central Point Copy II PC v6
+// manual and the track-copy read/write flow. Deterministic CSS animations only
+// (no JS timers, no randomness) so every viewing is identical.
+// ============================================================================
+
+// ---- Microsoft Defrag (MS-DOS 6.x) -----------------------------------------
+// The DOS 6 defragmenter: a cyan-on-blue full grid of cluster blocks with a
+// legend and two side panels (Status + Drive info), the classic double-line
+// box frame, and the "Optimizing Drive C" title. The block characters animate
+// from "used" (█) settling into place, with a reading/writing marker sweeping
+// across, exactly the "watch the disk get tidied" moment the tool was loved for.
+const DEFRAG_ROWS = 8;
+const DEFRAG_COLS = 24;
+function Defrag({ hint }: { hint: string }) {
+  // A fixed grid of blocks; per-cell animation delay is derived from position
+  // (deterministic), so the "sweep" reads left-to-right, top-to-bottom.
+  const cells = [];
+  for (let r = 0; r < DEFRAG_ROWS; r++) {
+    for (let c = 0; c < DEFRAG_COLS; c++) {
+      const idx = r * DEFRAG_COLS + c;
+      cells.push(
+        <span
+          key={idx}
+          className="dfg-cell"
+          style={{ animationDelay: `${(idx * 0.05).toFixed(2)}s` }}
+        >
+          {"\u2588"}
+        </span>,
+      );
+    }
+  }
+  return (
+    <div className="boss-screen boss-defrag">
+      <div className="dfg-frame">
+        <div className="dfg-title">Optimizing Drive C</div>
+        <div className="dfg-main">
+          <div className="dfg-map" aria-hidden="true">
+            {cells}
+            <span className="dfg-head" aria-hidden="true"> </span>
+          </div>
+          <div className="dfg-side">
+            <div className="dfg-panel">
+              <div className="dfg-panel-title">Status</div>
+              <div className="dfg-stat">Reading...</div>
+              <div className="dfg-bar">
+                <span className="dfg-bar-fill" />
+              </div>
+              <div className="dfg-pct">Cluster 1,428</div>
+            </div>
+            <div className="dfg-panel">
+              <div className="dfg-panel-title">Drive C</div>
+              <div className="dfg-kv">
+                <span>Full</span>
+                <span>72%</span>
+              </div>
+              <div className="dfg-kv">
+                <span>Method</span>
+                <span>Full</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="dfg-legend">
+          <span className="dfg-leg">
+            <span className="dfg-swatch dfg-used">{"\u2588"}</span> Used
+          </span>
+          <span className="dfg-leg">
+            <span className="dfg-swatch dfg-unused">{"\u2591"}</span> Unused
+          </span>
+          <span className="dfg-leg">
+            <span className="dfg-swatch dfg-read">{"\u2593"}</span> Reading
+          </span>
+          <span className="dfg-leg">
+            <span className="dfg-swatch dfg-write">B</span> Writing
+          </span>
+        </div>
+      </div>
+      <div className="boss-hint dfg-hint">{hint}</div>
+    </div>
+  );
+}
+
+// ---- Central Point Copy II PC (1983-) --------------------------------------
+// The DOS-era disk backup utility. A plain text UI: the product banner, a
+// "Copying drive A: to drive B:" line, then the thing you actually watched, a
+// track counter climbing 0..39 with a Read/Write status that flips as each
+// track is copied, and a row of track ticks filling in. Copy-protected disks
+// were copied "track by track", which is the motion recreated here.
+const CP2_TRACKS = 40;
+function CopyIIPC({ hint }: { hint: string }) {
+  const ticks = [];
+  for (let i = 0; i < CP2_TRACKS; i++) {
+    ticks.push(
+      <span
+        key={i}
+        className="cp2-tick"
+        style={{ animationDelay: `${(i * 0.11).toFixed(2)}s` }}
+      >
+        {"\u2588"}
+      </span>,
+    );
+  }
+  return (
+    <div className="boss-screen boss-copyiipc">
+      <pre className="cp2-banner">{`COPY II PC  Version 6.0
+(C) Central Point Software, Inc.`}</pre>
+      <div className="cp2-body">
+        <div className="cp2-line">Copying drive A: to drive B:</div>
+        <div className="cp2-line cp2-status">
+          <span className="cp2-verb">Reading</span> track{" "}
+          <span className="cp2-track" aria-hidden="true" /> of 39, side 0
+        </div>
+        <div className="cp2-map" aria-hidden="true">
+          {ticks}
+        </div>
+        <div className="cp2-line cp2-note">
+          Copying original disk, track by track...
+        </div>
+      </div>
+      <div className="boss-hint cp2-hint">{hint}</div>
+    </div>
+  );
+}
+
 // ---- screen dispatch -------------------------------------------------------
 function renderScreen(kind: BossScreenKind, hint: string) {
   switch (kind) {
@@ -2118,6 +2250,10 @@ function renderScreen(kind: BossScreenKind, hint: string) {
       return <Commander hint={hint} />;
     case "c64":
       return <C64 hint={hint} />;
+    case "defrag":
+      return <Defrag hint={hint} />;
+    case "copyiipc":
+      return <CopyIIPC hint={hint} />;
     case "amiga":
       return <Amiga />;
     case "apple1":

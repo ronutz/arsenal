@@ -876,7 +876,8 @@
     "api": "API-referanse",
     "contributeTools": "Del en idé",
     "license": "Lisens",
-    "coffee": "Kjøp meg en kaffe"
+    "coffee": "Kjøp meg en kaffe",
+    "disclaimer": "Ansvarsfraskrivelse"
   },
   "search": {
     "kindTool": "Verktøy",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Artikler",
     "read": "Les",
     "backToTools": "Alle verktøy"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Ansvarsfraskrivelse",
+    "metaDescription": "Ingen garantier og intet ansvar. Alt paa ronutz.com leveres som det er, bygget fra offentlig tilgjengelig informasjon, til bruk paa eget ansvar og etter eget skjoenn.",
+    "eyebrow": "Juridisk",
+    "title": "Ansvarsfraskrivelse og ansvarsbegrensning",
+    "lede": "Les dette foer du stoler paa noe som dette nettstedet forteller deg. Det er kort, det er klart, og det gjelder for hver side, hvert verktoey, hvert resultat og hver linje av kildekoden med aapen kildekode.",
+    "shortTitle": "Kortversjonen",
+    "short1": "Bruk dette nettstedet, verktoeyene og koden paa eget ansvar og etter eget skjoenn. Ingenting her er garantert: verken riktigheten av verktoeyenes resultater, noeyaktigheten av artikler eller dokumentasjon, eller tilgjengeligheten av selve nettstedet.",
+    "short2": "Alt her er bygget i god tro fra offentlig tilgjengelig informasjon og kan vaere ufullstendig, utdatert eller rett og slett feil. Kontroller alltid mot leverandoerens offisielle dokumentasjon og dine egne tester foer du handler paa noe.",
+    "short3": "Hvis du er uenig i noen del av denne meldingen, saa bruk verken nettstedet eller koden.",
+    "asIsTitle": "Ingen garanti av noe slag",
+    "asIsBody": "Nettstedet, verktoeyene, innholdet og den tilhoerende koden med aapen kildekode leveres som de er og som tilgjengelige, uten garantier eller betingelser av noe slag, verken uttrykkelige, underforstaatte, lovbestemte eller andre, inkludert men ikke begrenset til underforstaatte garantier om salgbarhet, egnethet for et bestemt formaal, eiendomsrett, ikke-krenkelse, noeyaktighet, fullstendighet, paalitelighet eller uavbrutt tilgjengelighet. Ingen raad eller informasjon innhentet fra dette nettstedet skaper noen garanti som ikke er uttrykkelig angitt her, og ingenting her er uttrykkelig garantert.",
+    "accuracyTitle": "Noeyaktighet: offentlig informasjon, beste innsats, ingen garanti",
+    "accuracyBody": "Hvert verktoey, hver artikkel og hvert dokument paa dette nettstedet er bygget fra offentlig tilgjengelig informasjon som leverandoerdokumentasjon, standarder og RFC-er, tolket i god tro. Kilder kan endre seg, tolkninger kan vaere feil, programvare kan ha feil, og innhold kan bli utdatert. Verktoeyenes utdata er informative hjelpemidler, ikke autoritative svar. Foer du konfigurerer, endrer, kjoeper, sertifiserer eller feilsoeker noe basert paa det du leser eller beregner her, saa kontroller det mot den offisielle dokumentasjonen for den aktuelle leverandoeren eller standarden og mot dine egne tester. Ansvaret for enhver beslutning du tar, og for konsekvensene av den, er helt ditt eget.",
+    "adviceTitle": "Ikke profesjonell raadgivning, ingen tilknytning",
+    "adviceBody": "Ingenting paa dette nettstedet er profesjonell, juridisk, sikkerhetsmessig, compliance- eller sertifiseringsraadgivning, og ingenting her skaper et profesjonelt forhold av noe slag. Dette er et uavhengig nettsted. Produkt- og firmanavn som vises her, inkludert F5, Fortinet, Extreme Networks og Netskope, er varemerker som tilhoerer sine respektive eiere, brukes kun for aa identifisere teknologiene som omtales, og innebaerer ingen tilknytning til, sponsing av eller godkjenning fra disse selskapene.",
+    "liabilityTitle": "Ansvarsbegrensning: ingen",
+    "liabilityBody": "I den grad gjeldende lov tillater det, er nettstedets eier, bidragsytere og enhver annen som er involvert i aa skape, produsere, drifte eller levere dette nettstedet eller koden, ikke ansvarlige for skader eller tap av noe slag som oppstaar som foelge av eller i forbindelse med din bruk av, eller manglende evne til aa bruke, nettstedet, verktoeyene, resultatene, innholdet eller koden. Denne utelukkelsen dekker direkte, indirekte, tilfeldige, spesielle, foelge-, straffe- og eksemplariske skader og inkluderer, uten begrensning, tap av data, tap av fortjeneste, tap av forretning, tap av goodwill, driftsavbrudd, anskaffelse av erstatningstjenester samt personlige eller profesjonelle konsekvenser av beslutninger tatt i tillit til noe som finnes her, selv om det er advart om muligheten for slike skader, og uavhengig av ansvarsgrunnlaget. Der gjeldende lov ikke tillater full utelukkelse av ansvar, er ansvaret begrenset til det minste beloepet og det snevreste omfanget som loven tillater.",
+    "securityTitle": "Sikkerhet: beste innsats, intet ansvar for brudd",
+    "securityBody": "Dette nettstedet er utformet for aa minimere risiko: det genereres statisk, verktoeyene beregner lokalt i nettleseren din, og det unngaar aa samle inn data det ikke trenger. Det gjoeres en beste innsats for aa holde nettstedet og dets avhengigheter sikre. Ingen systemer er imidlertid garantert sikre, og en slik garanti gis ikke her. Nettstedets eier kan ikke holdes ansvarlig for sikkerhetsbrudd, saarbarheter eller hendelser, verken i dette nettstedet, dets avhengigheter, dets drifts- eller leveringsinfrastruktur eller dets programvareforsyningskjede, som kan paavirke brukere av dette nettstedet eller brukere av koden med aapen kildekode som vedlikeholdes paa github.com/ronutz. Hvis du finner et sikkerhetsproblem, er en rapport via kontaktsiden oppriktig velkommen.",
+    "openSourceTitle": "Koden med aapen kildekode",
+    "openSourceBody": "Koden med aapen kildekode som er publisert paa github.com/ronutz, er lisensiert under sine egne lisensvilkaar, for oeyeblikket Apache License 2.0 for netcore-motoren. Den lisensen regulerer koden og leverer selv koden som den er, med sin egen ansvarsfraskrivelse for garanti og ansvarsbegrensning, som gjelder fullt ut for enhver som bruker, kopierer, endrer eller videredistribuerer koden. Ingenting paa denne siden reduserer eller erstatter vilkaarene i den lisensen.",
+    "changesTitle": "Endringer",
+    "changesBody": "Nettstedet, verktoeyene, innholdet, koden og denne meldingen kan endre seg, slutte aa virke eller forsvinne naar som helst, uten varsel og uten forpliktelse overfor noen. Den gjeldende versjonen er den naavaerende versjonen av denne siden.",
+    "acceptBody": "Ved aa bruke dette nettstedet eller koden godtar du denne meldingen fullt ut. Hvis du ikke godtar den, er din eneste utvei aa slutte aa bruke nettstedet og koden.",
+    "backHome": "Tilbake til forsiden"
   }
 }

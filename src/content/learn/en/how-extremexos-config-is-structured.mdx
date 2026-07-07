@@ -1,0 +1,39 @@
+---
+slug: how-extremexos-config-is-structured
+title: "How an ExtremeXOS Config Is Structured"
+summary: "ExtremeXOS has no interface sub-modes. Every line is a self-contained imperative command that begins with a verb (create, configure, enable, disable, delete, unconfigure) acting on a named object, so a config reads as a flat list. This explains that model, how VLANs and tagged/untagged ports work, why an IP on a VLAN still needs enable ipforwarding, and the EXOS-specific name for a LAG."
+concepts: ["extreme", "extremexos", "exos", "switch engine", "vlan", "tagged port", "link aggregation", "switching"]
+relatedTools: ["exos-config-explainer"]
+sub: switching
+relatedArticles: []
+category: networking
+order: 138
+status: reviewed
+updated: "2026-07-06"
+---
+
+Anyone coming to ExtremeXOS from Cisco IOS notices the difference within a few lines: there is no `interface` mode, no `configure terminal`, no nesting at all. An EXOS configuration is a flat sequence of complete commands. Once that clicks, the whole config becomes easy to read top to bottom. This explains the model the paired tool is built around.
+
+## One verb per line
+
+Every EXOS command begins with one of six verbs, and the verb tells you what kind of change the line makes:
+
+`create` makes a new object, such as a VLAN, a local account, or a spanning-tree domain. `configure` sets a property on something that already exists, and it is by far the most common verb. `enable` and `disable` turn a feature or object on and off, from a single port to IP routing. `delete` removes an object, and `unconfigure` resets part of the configuration to its default.
+
+Because nothing is nested, each line stands on its own. `configure vlan engineering add ports 1:1, 1:2 tagged` means exactly what it says regardless of what came before it. This is why reading an EXOS config is really just reading a list, and why explaining it line by line loses nothing.
+
+## VLANs, tags, and ports
+
+The backbone of most switch configs is VLANs and port membership, and EXOS builds them in three steps. First `create vlan engineering tag 100` makes the VLAN and gives it an 802.1Q tag. Then `configure vlan engineering add ports 1:1, 1:2, 1:3 tagged` adds ports to it. The `tagged` versus `untagged` choice is the important one. A tagged port carries the VLAN's 802.1Q tag in the frame and can belong to many VLANs at once, which is how you build a trunk. An untagged port carries no tag and can belong to only one VLAN; because every port starts life in the VLAN named Default, you have to remove an untagged port from Default before you can add it untagged to another VLAN. Ports are written slot:port on stacked and modular switches (1:1 is slot 1, port 1; 2:24 is slot 2, port 24) and as plain numbers on a stand-alone switch.
+
+## Making a VLAN routed
+
+Give a VLAN an IP address with `configure vlan engineering ipaddress 10.1.1.1/24` and it becomes a Layer 3 interface. That single command does not make the switch a router, though. Routing between interfaces is off until you also issue `enable ipforwarding`. This is a common trap: a config with several IP-addressed VLANs that has no ipforwarding line will not pass traffic between them. It is worth checking for explicitly, which is why the paired tool flags exactly that situation.
+
+## The EXOS word for a LAG
+
+Link aggregation is where EXOS terminology surprises people. What most platforms call a port-channel or a LAG, EXOS calls "sharing." You create one with `enable sharing 1:1 grouping 1:1, 1:2 algorithm address-based`, and from then on the whole group is referred to by its master port (1:1 here). Add `lacp` and it negotiates dynamically with the neighbor; leave it off and it is a static bundle. Knowing that "sharing" and "master port" are the aggregation vocabulary is most of what you need to read that part of a config.
+
+## Where this comes from
+
+Everything here is drawn from Extreme Networks' own material: the ExtremeXOS Command Reference for the command grammar and the specific behavior of `configure vlan add ports`, and the Switch Engine user guide for VLANs, routing, and sharing. The paired tool reads a pasted config lexically and explains it; it never connects to a switch.

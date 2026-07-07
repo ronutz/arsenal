@@ -876,7 +876,8 @@
     "api": "API-referentie",
     "contributeTools": "Deel een idee",
     "license": "Licentie",
-    "coffee": "Trakteer me op een koffie"
+    "coffee": "Trakteer me op een koffie",
+    "disclaimer": "Disclaimer"
   },
   "search": {
     "kindTool": "Tool",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Artikelen",
     "read": "Lezen",
     "backToTools": "Alle hulpmiddelen"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Disclaimer",
+    "metaDescription": "Geen garanties en geen aansprakelijkheid. Alles op ronutz.com wordt aangeboden zoals het is, samengesteld uit openbaar beschikbare informatie, voor gebruik op eigen risico en naar eigen inzicht.",
+    "eyebrow": "Juridisch",
+    "title": "Disclaimer en beperking van aansprakelijkheid",
+    "lede": "Lees dit voordat je vertrouwt op wat deze site je vertelt. Het is kort, het is duidelijk en het geldt voor elke pagina, elk hulpmiddel, elk resultaat en elke regel van de opensourcecode.",
+    "shortTitle": "De korte versie",
+    "short1": "Gebruik deze site, de hulpmiddelen en de code op eigen risico en naar eigen inzicht. Niets hier is gegarandeerd: niet de juistheid van de resultaten van de hulpmiddelen, niet de nauwkeurigheid van artikelen of documentatie, en niet de beschikbaarheid van de site zelf.",
+    "short2": "Alles hier is te goeder trouw samengesteld uit openbaar beschikbare informatie en kan onvolledig, verouderd of gewoon onjuist zijn. Controleer altijd aan de hand van de officiele documentatie van de leverancier en je eigen tests voordat je op iets handelt.",
+    "short3": "Als je het niet eens bent met enig deel van deze kennisgeving, gebruik dan noch de site noch de code.",
+    "asIsTitle": "Geen enkele garantie",
+    "asIsBody": "De site, de hulpmiddelen, de inhoud en de bijbehorende opensourcecode worden aangeboden zoals ze zijn en zoals ze beschikbaar zijn, zonder garanties of voorwaarden van welke aard dan ook, expliciet, impliciet, wettelijk of anderszins, met inbegrip van maar niet beperkt tot impliciete garanties van verkoopbaarheid, geschiktheid voor een bepaald doel, eigendom, niet-inbreuk, juistheid, volledigheid, betrouwbaarheid of ononderbroken beschikbaarheid. Geen enkel advies of informatie verkregen van deze site schept een garantie die hier niet uitdrukkelijk is vermeld, en hier wordt niets uitdrukkelijk gegarandeerd.",
+    "accuracyTitle": "Nauwkeurigheid: openbare informatie, naar beste vermogen, geen garantie",
+    "accuracyBody": "Elk hulpmiddel, artikel en document op deze site is samengesteld uit openbaar beschikbare informatie zoals documentatie van leveranciers, standaarden en RFC's, te goeder trouw geinterpreteerd. Bronnen kunnen veranderen, interpretaties kunnen onjuist zijn, software kan fouten bevatten en inhoud kan verouderen. Uitvoer van hulpmiddelen is informatieve ondersteuning, geen gezaghebbend antwoord. Voordat je iets configureert, wijzigt, koopt, certificeert of oplost op basis van wat je hier leest of berekent, controleer het dan aan de hand van de officiele documentatie van de betreffende leverancier of standaard en je eigen tests. De verantwoordelijkheid voor elke beslissing die je neemt, en voor de gevolgen ervan, ligt volledig bij jou.",
+    "adviceTitle": "Geen professioneel advies, geen band",
+    "adviceBody": "Niets op deze site is professioneel, juridisch, beveiligings-, compliance- of certificeringsadvies, en niets hier schept een professionele relatie van welke aard dan ook. Dit is een onafhankelijke site. Product- en bedrijfsnamen die hier voorkomen, waaronder F5, Fortinet, Extreme Networks en Netskope, zijn handelsmerken van hun respectieve eigenaren, worden alleen gebruikt om de besproken technologieen te identificeren en impliceren geen band met, sponsoring door of goedkeuring door die bedrijven.",
+    "liabilityTitle": "Beperking van aansprakelijkheid: geen",
+    "liabilityBody": "Voor zover maximaal toegestaan door de toepasselijke wet zijn de eigenaar van de site, de bijdragers en ieder ander die betrokken is bij het maken, produceren, hosten of leveren van deze site of de code niet aansprakelijk voor schade of verlies van welke aard dan ook die voortvloeit uit of verband houdt met jouw gebruik van, of onvermogen om te gebruiken, de site, de hulpmiddelen, de resultaten, de inhoud of de code. Deze uitsluiting omvat directe, indirecte, incidentele, bijzondere, gevolg-, punitieve en voorbeeldschade en omvat, zonder beperking, verlies van gegevens, winstderving, verlies van omzet, verlies van goodwill, bedrijfsonderbreking, het betrekken van vervangende diensten en persoonlijke of professionele gevolgen van beslissingen die zijn genomen in vertrouwen op iets wat hier is gevonden, zelfs indien gewezen op de mogelijkheid van dergelijke schade en ongeacht de aansprakelijkheidsgrondslag. Waar de toepasselijke wet de volledige uitsluiting van aansprakelijkheid niet toestaat, is de aansprakelijkheid beperkt tot het kleinste bedrag en de engste reikwijdte die de wet toestaat.",
+    "securityTitle": "Beveiliging: naar beste vermogen, geen verantwoordelijkheid voor inbreuken",
+    "securityBody": "Deze site is ontworpen om risico te minimaliseren: hij wordt statisch gegenereerd, de hulpmiddelen rekenen lokaal in je browser en hij vermijdt het verzamelen van gegevens die hij niet nodig heeft. Er wordt naar beste vermogen aan gewerkt om de site en de afhankelijkheden veilig te houden. Geen enkel systeem is echter gegarandeerd veilig, en een dergelijke garantie wordt hier niet gegeven. De eigenaar van de site kan niet verantwoordelijk worden gehouden voor beveiligingsinbreuken, kwetsbaarheden of incidenten, of dat nu in deze site, de afhankelijkheden, de hosting- of leveringsinfrastructuur of de softwaretoeleveringsketen is, die gevolgen kunnen hebben voor gebruikers van deze site of gebruikers van de opensourcecode die wordt onderhouden op github.com/ronutz. Als je een beveiligingsprobleem vindt, is een melding via de contactpagina oprecht welkom.",
+    "openSourceTitle": "De opensourcecode",
+    "openSourceBody": "De opensourcecode gepubliceerd op github.com/ronutz is gelicentieerd onder de eigen licentievoorwaarden, momenteel de Apache License 2.0 voor de netcore-engine. Die licentie regelt de code en levert de code zelf zoals hij is, met een eigen uitsluiting van garantie en beperking van aansprakelijkheid, die volledig gelden voor iedereen die de code gebruikt, kopieert, wijzigt of herdistribueert. Niets op deze pagina vermindert of vervangt de voorwaarden van die licentie.",
+    "changesTitle": "Wijzigingen",
+    "changesBody": "De site, de hulpmiddelen, de inhoud, de code en deze kennisgeving kunnen op elk moment veranderen, stoppen met werken of verdwijnen, zonder aankondiging en zonder verplichting jegens wie dan ook. De van toepassing zijnde versie is de huidige versie van deze pagina.",
+    "acceptBody": "Door deze site of de code te gebruiken aanvaard je deze kennisgeving volledig. Als je deze niet aanvaardt, is je enige remedie te stoppen met het gebruik van de site en de code.",
+    "backHome": "Terug naar start"
   }
 }

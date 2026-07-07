@@ -3400,6 +3400,53 @@
         "comment": "comment",
         "pi": "PI"
       }
+    },
+    "fortios-sniffer-builder": {
+      "name": "FortiOS packet sniffer builder",
+      "blurb": "Build a FortiGate diagnose sniffer packet command from parts, or paste one to have every argument explained: interface, filter, verbosity 1-6, count, and timestamp format.",
+      "runsLocally": "Runs locally in your browser. Nothing you enter or paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "modeLabel": "Choose build or decode",
+      "modeBuild": "Build a command",
+      "modeDecode": "Decode a command",
+      "ifaceLabel": "Interface",
+      "hostLabel": "Host (optional)",
+      "portLabel": "Port (optional)",
+      "protoLabel": "Protocol",
+      "verbLabel": "Verbosity",
+      "countLabel": "Packet count (0 = unlimited)",
+      "tsLabel": "Timestamp",
+      "pasteLabel": "Paste a diagnose sniffer packet command",
+      "pastePlaceholder": "diagnose sniffer packet any 'host 10.1.1.1 and tcp port 443' 4 0 l",
+      "commandTitle": "Command",
+      "breakdownTitle": "Argument breakdown",
+      "notesTitle": "Notes"
+    },
+    "pac-file-explainer": {
+      "name": "PAC file explainer and validator",
+      "blurb": "Paste a Proxy Auto-Config file and it reads back the proxy directives it returns, the PAC helper functions it uses (with the DNS-consulting ones flagged), structural and correctness lints, and whether it is a Netskope explicit-proxy steering file. Never runs the file.",
+      "runsLocally": "Runs locally in your browser and never evaluates the file. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Paste a PAC file (FindProxyForURL)",
+      "inputPlaceholder": "function FindProxyForURL(url, host) {\n  if (isPlainHostName(host)) return \"DIRECT\";\n  return \"PROXY proxy.example.com:8080; DIRECT\";\n}",
+      "findingsTitle": "Findings",
+      "directivesTitle": "Proxy directives returned",
+      "helpersTitle": "PAC helper functions used",
+      "returnValuesTitle": "Return values a PAC can produce"
+    },
+    "exos-config-explainer": {
+      "name": "ExtremeXOS config explainer",
+      "blurb": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch.",
+      "runsLocally": "Runs locally in your browser. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Paste an ExtremeXOS configuration",
+      "inputPlaceholder": "create vlan engineering tag 100\nconfigure vlan engineering add ports 1:1, 1:2 tagged\nconfigure vlan engineering ipaddress 10.1.1.1/24\nenable ipforwarding",
+      "findingsTitle": "Findings",
+      "vlansTitle": "VLAN summary",
+      "verbsTitle": "The EXOS command verbs"
     }
   },
   "privacy_page": {
@@ -3455,7 +3502,8 @@
     "lastModified": "Last modified {stamp}",
     "roadmap": "Roadmap",
     "settings": "Settings",
-    "source": "Source"
+    "source": "Source",
+    "disclaimer": "Disclaimer"
   },
   "search": {
     "kindTool": "Tool",
@@ -4734,7 +4782,9 @@
       "zxspectrum": "ZX Spectrum 48K",
       "zxspectrum128": "ZX Spectrum 128",
       "zxspectrum2a": "ZX Spectrum +2A",
-      "zxspectrum3": "ZX Spectrum +3"
+      "zxspectrum3": "ZX Spectrum +3",
+      "defrag": "MS-DOS Defrag",
+      "copyiipc": "Copy II PC"
     },
     "blurb": {
       "amiga": "Kickstart's insert-disk screen: the animated hand offering a Workbench floppy, the friendliest boot in computing.",
@@ -4812,7 +4862,9 @@
       "zxspectrum": "The machine that built the UK bedroom-coder scene. A blank white screen and one line: © 1982 Sinclair Research Ltd.",
       "zxspectrum128": "The 128K's start menu: Tape Loader, 128 BASIC, Calculator, 48 BASIC, over the AY chip's three-channel sound and that rainbow ident.",
       "zxspectrum2a": "Amstrad's black-cased +2A: a +3 with a cassette deck instead of the disk, so its menu still reads +3 BASIC. The last Spectrum made.",
-      "zxspectrum3": "Amstrad's +3 added a 3-inch floppy and +3DOS to the Spectrum line. Loader, +3 BASIC, Calculator, 48 BASIC, and drive M: for the RAMdisk."
+      "zxspectrum3": "Amstrad's +3 added a 3-inch floppy and +3DOS to the Spectrum line. Loader, +3 BASIC, Calculator, 48 BASIC, and drive M: for the RAMdisk.",
+      "defrag": "Microsoft's DOS 6 defragmenter, a cut-down Norton SpeedDisk: the whole drive as a grid of blocks, shuffled before your eyes.",
+      "copyiipc": "Central Point's legendary disk backup utility that copied what others could not, track by patient track."
     },
     "jumpTo": "Jump to",
     "groups": {
@@ -4958,5 +5010,32 @@
       }
     },
     "backToTools": "Browse all tools"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Disclaimer",
+    "metaDescription": "No warranties, no guarantees, no liability. Everything on ronutz.com is provided as is, built from publicly available information, for use at your own risk and judgement.",
+    "eyebrow": "Legal",
+    "title": "Disclaimer and limitation of liability",
+    "lede": "Please read this before relying on anything this site tells you. It is short, it is plain, and it applies to every page, every tool, every result, and every line of the open-source code.",
+    "shortTitle": "The short version",
+    "short1": "Use this site, its tools, and its code at your own risk and your own judgement. Nothing here is guaranteed: not the correctness of tool results, not the accuracy of articles or documentation, not the availability of the site itself.",
+    "short2": "Everything here is built in good faith from publicly available information, and it can be incomplete, outdated, or simply wrong. Always verify against official vendor documentation and your own testing before you act on anything.",
+    "short3": "If you do not agree with any part of this notice, do not use the site or the code.",
+    "asIsTitle": "No warranty of any kind",
+    "asIsBody": "The site, its tools, its content, and the associated open-source code are provided on an as is and as available basis, without warranties or conditions of any kind, whether express, implied, statutory, or otherwise, including but not limited to any implied warranties of merchantability, fitness for a particular purpose, title, non-infringement, accuracy, completeness, reliability, or uninterrupted availability. No advice or information obtained from this site creates any warranty not expressly stated here, and nothing here is expressly stated.",
+    "accuracyTitle": "Accuracy: public information, best effort, no guarantee",
+    "accuracyBody": "Every tool, article, and document on this site is built from publicly available information such as vendor documentation, standards, and RFCs, interpreted in good faith. Sources can change, interpretations can be mistaken, software can have bugs, and content can go stale. Tool outputs are informational aids, not authoritative answers. Before you configure, change, buy, certify, or troubleshoot anything based on what you read or compute here, verify it against the official documentation of the vendor or standard in question and against your own testing. The responsibility for any decision you make, and for its consequences, is entirely yours.",
+    "adviceTitle": "Not professional advice, no affiliation",
+    "adviceBody": "Nothing on this site is professional, legal, security, compliance, or certification advice, and nothing here creates a professional relationship of any kind. This is an independent site. Product and company names that appear here, including F5, Fortinet, Extreme Networks, and Netskope, are trademarks of their respective owners, are used only to identify the technologies being discussed, and do not imply any affiliation with, sponsorship by, or endorsement from those companies.",
+    "liabilityTitle": "Limitation of liability: none",
+    "liabilityBody": "To the maximum extent permitted by applicable law, the site owner, contributors, and anyone else involved in creating, producing, hosting, or delivering this site or its code shall not be liable for any damages or losses of any kind arising out of or in connection with your use of, or inability to use, the site, its tools, its results, its content, or its code. This exclusion covers direct, indirect, incidental, special, consequential, punitive, and exemplary damages, and includes, without limitation, loss of data, loss of profits, loss of business, loss of goodwill, business interruption, procurement of substitute services, and personal or professional consequences of decisions taken in reliance on anything found here, even if advised of the possibility of such damages, and regardless of the theory of liability. Where applicable law does not allow the full exclusion of liability, liability is limited to the smallest amount and narrowest scope that law permits.",
+    "securityTitle": "Security: best effort, no responsibility for breaches",
+    "securityBody": "This site is designed to minimize risk: it is statically generated, its tools compute locally in your browser, and it avoids collecting data it does not need. A best effort is made to keep the site and its dependencies secure. No system is guaranteed to be secure, however, and no such guarantee is given here. The site owner cannot be held responsible for security breaches, vulnerabilities, or incidents, whether in this site, its dependencies, its hosting or delivery infrastructure, or its software supply chain, that might impact users of this site or users of the open-source code maintained at github.com/ronutz. If you find a security issue, a report through the contact page is genuinely appreciated.",
+    "openSourceTitle": "The open-source code",
+    "openSourceBody": "The open-source code published under github.com/ronutz is licensed under its own license terms, currently the Apache License 2.0 for the netcore engine. That license governs the code and itself provides the code as is, with its own disclaimer of warranty and limitation of liability, which apply in full to anyone who uses, copies, modifies, or redistributes the code. Nothing on this page reduces or replaces the terms of that license.",
+    "changesTitle": "Changes",
+    "changesBody": "The site, its tools, its content, its code, and this notice may change, break, or disappear at any time, without notice and without obligation to anyone. The current version of this page is the one that applies.",
+    "acceptBody": "By using this site or its code you accept this notice in full. If you do not accept it, your only remedy is to stop using the site and the code.",
+    "backHome": "Back to home"
   }
 }

@@ -83,6 +83,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_epoch",
     "tag": "Identifiers & time"
   },
+  "exos-config-explainer": {
+    "url": "https://ronutz.com/api/v1/exos-config-explainer",
+    "method": "GET",
+    "op": "run_exos_config_explainer",
+    "tag": "Extreme switching & fabric (EXOS / VOSS / SPB)"
+  },
   "f5-afm-rule-context": {
     "url": "https://ronutz.com/api/v1/f5-afm-rule-context",
     "method": "GET",
@@ -263,6 +269,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5xc_service_policy_explainer",
     "tag": "F5 Distributed Cloud (XC)"
   },
+  "fortios-sniffer-builder": {
+    "url": "https://ronutz.com/api/v1/fortios-sniffer-builder",
+    "method": "GET",
+    "op": "run_fortios_sniffer_builder",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
   "hash": {
     "url": "https://ronutz.com/api/v1/hash",
     "method": "GET",
@@ -328,6 +340,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_oidc",
     "tag": "Identity & tokens"
+  },
+  "pac-file-explainer": {
+    "url": "https://ronutz.com/api/v1/pac-file-explainer",
+    "method": "GET",
+    "op": "run_pac_file_explainer",
+    "tag": "Netskope SSE / SASE"
   },
   "pkce": {
     "url": "https://ronutz.com/api/v1/pkce",

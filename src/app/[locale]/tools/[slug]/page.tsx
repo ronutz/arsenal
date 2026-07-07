@@ -123,6 +123,9 @@ import F5AwafEvasionExplainerTool from "@/components/F5AwafEvasionExplainerTool"
 import F5AwafLearningPoisoningEstimatorTool from "@/components/F5AwafLearningPoisoningEstimatorTool";
 import As3ExplainerValidatorTool from "@/components/As3ExplainerValidatorTool";
 import IqueryProtocolExplainerTool from "@/components/IqueryProtocolExplainerTool";
+import FortiosSnifferBuilderTool from "@/components/FortiosSnifferBuilderTool";
+import PacFileExplainerTool from "@/components/PacFileExplainerTool";
+import ExosConfigExplainerTool from "@/components/ExosConfigExplainerTool";
 import DoExplainerValidatorTool from "@/components/DoExplainerValidatorTool";
 import TelemetryStreamingExplainerTool from "@/components/TelemetryStreamingExplainerTool";
 import F5AwafFalsePositiveTriageTool from "@/components/F5AwafFalsePositiveTriageTool";
@@ -135,6 +138,9 @@ import { manifest as f5AwafEvasionManifest } from "@/lib/tools/f5-awaf-evasion-e
 import { manifest as f5AwafPoisoningManifest } from "@/lib/tools/f5-awaf-learning-poisoning-estimator";
 import { manifest as as3Manifest } from "@/lib/tools/as3-explainer-validator";
 import { manifest as iqueryManifest } from "@/lib/tools/iquery-protocol-explainer";
+import { manifest as fortiosSnifferManifest } from "@/lib/tools/fortios-sniffer-builder";
+import { manifest as pacManifest } from "@/lib/tools/pac-file-explainer";
+import { manifest as exosManifest } from "@/lib/tools/exos-config-explainer";
 import { manifest as doManifest } from "@/lib/tools/do-explainer-validator";
 import { manifest as tsManifest } from "@/lib/tools/telemetry-streaming-explainer";
 import { manifest as f5AwafFpManifest } from "@/lib/tools/f5-awaf-false-positive-triage";
@@ -312,6 +318,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "iquery-protocol-explainer": {
     Component: IqueryProtocolExplainerTool,
     sources: iqueryManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortios-sniffer-builder": {
+    Component: FortiosSnifferBuilderTool,
+    sources: fortiosSnifferManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "pac-file-explainer": {
+    Component: PacFileExplainerTool,
+    sources: pacManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "exos-config-explainer": {
+    Component: ExosConfigExplainerTool,
+    sources: exosManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "do-explainer-validator": {
     Component: DoExplainerValidatorTool,

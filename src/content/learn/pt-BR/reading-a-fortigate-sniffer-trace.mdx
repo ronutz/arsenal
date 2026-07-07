@@ -1,0 +1,59 @@
+---
+slug: reading-a-fortigate-sniffer-trace
+title: "Lendo uma captura do sniffer do FortiGate"
+summary: "O comando diagnose sniffer packet do FortiGate reúne cinco argumentos posicionais em uma linha: interface, filtro, verbosidade, contagem e formato de horário. Este artigo explica o que cada argumento faz, o que os seis níveis de verbosidade realmente imprimem, por que uma captura às vezes não mostra nada (remoção da tag de VLAN e offload em hardware) e como transformar a saída em um pcap para o Wireshark."
+concepts: ["fortinet", "fortigate", "fortios", "sniffer de pacotes", "diagnose sniffer packet", "captura de pacotes", "diagnostico", "pcap"]
+relatedTools: ["fortios-sniffer-builder"]
+sub: fortigate
+relatedArticles: ["fortinet-ssl-inspection-modes"]
+category: networking
+order: 45
+status: reviewed
+updated: "2026-07-06"
+---
+
+Quando um pacote não está chegando onde deveria em um FortiGate, o sniffer embutido é o primeiro lugar para olhar. É um único comando de CLI com cinco argumentos posicionais e, assim que você consegue ler essa linha, a saída se lê sozinha. Este texto percorre o comando que a ferramenta correspondente monta e decodifica.
+
+## A anatomia do comando
+
+A forma completa são cinco argumentos em ordem fixa:
+
+```
+diagnose sniffer packet <interface> <'filtro'> <verbose> <count> <tsformat>
+```
+
+Somente a interface é realmente obrigatória; o resto tem valores padrão no equipamento. Na prática, você quase sempre fornece também um filtro e uma verbosidade, porque uma captura sem filtro e com verbosidade baixa em uma caixa movimentada é difícil de ler. A forma abreviada `diag sniff packet` é aceita e significa o mesmo.
+
+**Interface.** Um nome de interface física ou lógica como `port1` ou `wan1`, ou a palavra `any` para capturar em todas as interfaces de uma vez. Há uma sutileza com `any`: ela captura usando o modo cooked do Linux (SLL), que não inclui o cabeçalho Ethernet real, e remove a tag de VLAN. Se você precisa do cabeçalho Ethernet ou da tag de VLAN, capture na interface física específica em vez de `any`.
+
+**Filtro.** Uma expressão Berkeley Packet Filter entre aspas simples, por exemplo `'host 10.1.1.1 and tcp port 443'`. Você pode casar por `host`, `src host`, `dst host`, `net`, `port` e protocolos como `arp`, `ip`, `ip6`, `icmp`, `tcp`, `udp`, `gre` e `esp`, combinados com `and`, `or` e `not`. Um `host` ou `port` simples (sem `src` ou `dst`) casa as duas direções, que normalmente é o que você quer ao verificar se uma resposta voltou. Use a palavra literal `none` para nenhum filtro.
+
+## O que os seis níveis de verbosidade imprimem
+
+A verbosidade é um número de 1 a 6 e controla duas coisas independentes: quanto de cada pacote é impresso e se o nome da interface é mostrado.
+
+A escada de profundidade é: o nível 1 imprime só os cabeçalhos do pacote; o nível 2 adiciona a carga da camada IP; o nível 3 adiciona os dados do quadro Ethernet completo, quando disponíveis. Os níveis 4, 5 e 6 repetem essa mesma escada (cabeçalhos, depois carga IP, depois dados Ethernet), mas imprimem adicionalmente o nome da interface que cada pacote usou. Esse detalhe do nome da interface é o motivo prático de preferir 4 a 1, e é essencial quando você captura em `any`, porque senão você não consegue saber por qual interface um pacote passou.
+
+Um jeito útil de lembrar: 1 a 3 dão mais bytes; 4 a 6 dão os mesmos bytes mais os nomes das interfaces. Se você vai abrir a captura no Wireshark, quer os níveis mais profundos (3 ou 6), porque só eles incluem o quadro completo.
+
+## Contagem e horário
+
+**Contagem** é o número de pacotes a capturar antes de o sniffer parar sozinho. Zero, ou omitir o argumento, significa capturar até você pressionar `Ctrl+C`. Limitar a contagem é educado quando você está trabalhando por SSH, porque uma captura sem limite pode inundar sua própria sessão com o mesmo tráfego que sua conexão SSH gera; filtrar `port 22` ajuda pelo mesmo motivo.
+
+**Formato de horário** é o último argumento: `a` imprime um horário absoluto em UTC (`yyyy-mm-dd hh:mm:ss.ms`), `l` imprime um horário absoluto no horário local do FortiGate, e omitir o argumento imprime um tempo relativo ao início da captura. A forma relativa serve para uma única captura, mas se você roda capturas em paralelo em duas interfaces ou em duas sessões SSH e quer alinhar os pacotes, use `a` ou `l` para que os horários sejam comparáveis.
+
+## Por que uma captura às vezes não mostra nada
+
+Duas situações confundem as pessoas, e vale checar as duas antes de concluir que um pacote nunca chegou.
+
+A primeira é a remoção da tag de VLAN, já mencionada: em `any` e em interfaces VLAN a tag não é mostrada nos níveis de verbosidade mais altos. Se você está especificamente atrás de um problema de VLAN, capture na interface física pai e case a tag com um filtro por deslocamento de bytes, por exemplo `'ether[14:2]=0x00db'` para a VLAN 219.
+
+A segunda, e a surpresa mais comum, é o offload em hardware. Em modelos de FortiGate com processadores de rede (NP) ou um system-on-chip, sessões estabelecidas são descarregadas para o ASIC e não passam mais pela CPU, então o sniffer do kernel simplesmente não consegue vê-las. Se uma sessão deveria estar fluindo mas o sniffer está silencioso, desabilite temporariamente o offload na política de firewall correspondente com `set auto-asic-offload disable`, reproduza e reabilite depois. Isto é um passo de diagnóstico, não uma configuração permanente.
+
+## Transformando a captura em um pcap
+
+Ler hexadecimal em um terminal só ajuda até certo ponto. Capture na verbosidade 3 ou 6 (para o quadro Ethernet completo estar presente), copie a saída e passe-a pelo script Perl `fgt2eth.pl` da Fortinet, que converte o texto do sniffer em um arquivo `.pcap` que você pode abrir no Wireshark. A partir daí você tem a decodificação completa de protocolos, o follow-stream e a filtragem que um terminal não oferece.
+
+## De onde isto vem
+
+Tudo aqui vem do próprio material da Fortinet: a seção do Guia de Administração do FortiGate sobre executar uma captura, a entrada da referência de CLI do FortiOS para `diagnose sniffer packet` e a orientação de diagnóstico da comunidade Fortinet sobre o sniffer embutido. A ferramenta correspondente monta e decodifica esses comandos offline; nunca roda um sniffer nem toca em um equipamento.

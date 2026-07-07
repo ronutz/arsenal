@@ -1,0 +1,39 @@
+---
+slug: how-extremexos-config-is-structured
+title: "Como uma configuração ExtremeXOS é estruturada"
+summary: "O ExtremeXOS não tem sub-modos de interface. Cada linha é um comando imperativo autossuficiente que começa com um verbo (create, configure, enable, disable, delete, unconfigure) agindo sobre um objeto nomeado, então uma configuração se lê como uma lista plana. Este artigo explica esse modelo, como VLANs e portas tagged/untagged funcionam, por que um IP em uma VLAN ainda precisa de enable ipforwarding, e o nome específico do EXOS para um LAG."
+concepts: ["extreme", "extremexos", "exos", "switch engine", "vlan", "porta tagged", "agregacao de links", "switching"]
+relatedTools: ["exos-config-explainer"]
+sub: switching
+relatedArticles: []
+category: networking
+order: 138
+status: reviewed
+updated: "2026-07-06"
+---
+
+Quem chega ao ExtremeXOS vindo do Cisco IOS nota a diferença em poucas linhas: não há modo `interface`, não há `configure terminal`, não há aninhamento algum. Uma configuração EXOS é uma sequência plana de comandos completos. Quando isso faz sentido, toda a configuração fica fácil de ler de cima a baixo. Este texto explica o modelo em torno do qual a ferramenta correspondente foi construída.
+
+## Um verbo por linha
+
+Todo comando EXOS começa com um de seis verbos, e o verbo diz que tipo de mudança a linha faz:
+
+`create` cria um novo objeto, como uma VLAN, uma conta local ou um domínio de spanning tree. `configure` define uma propriedade em algo que já existe, e é de longe o verbo mais comum. `enable` e `disable` ligam e desligam um recurso ou objeto, de uma única porta ao roteamento IP. `delete` remove um objeto, e `unconfigure` redefine parte da configuração para o padrão.
+
+Como nada é aninhado, cada linha se sustenta sozinha. `configure vlan engineering add ports 1:1, 1:2 tagged` significa exatamente o que diz, independentemente do que veio antes. É por isso que ler uma configuração EXOS é realmente só ler uma lista, e por que explicá-la linha por linha não perde nada.
+
+## VLANs, tags e portas
+
+A espinha dorsal da maioria das configurações de switch são VLANs e associação de portas, e o EXOS as constrói em três passos. Primeiro `create vlan engineering tag 100` cria a VLAN e lhe dá uma tag 802.1Q. Depois `configure vlan engineering add ports 1:1, 1:2, 1:3 tagged` adiciona portas a ela. A escolha entre `tagged` e `untagged` é a importante. Uma porta tagged carrega a tag 802.1Q da VLAN no quadro e pode pertencer a muitas VLANs ao mesmo tempo, que é como se constrói um trunk. Uma porta untagged não carrega tag e pode pertencer a apenas uma VLAN; como toda porta começa a vida na VLAN chamada Default, você precisa remover uma porta untagged da Default antes de poder adicioná-la untagged a outra VLAN. As portas são escritas como slot:porta em switches empilhados e modulares (1:1 é slot 1, porta 1; 2:24 é slot 2, porta 24) e como números simples em um switch stand-alone.
+
+## Tornando uma VLAN roteada
+
+Dê a uma VLAN um endereço IP com `configure vlan engineering ipaddress 10.1.1.1/24` e ela se torna uma interface de Camada 3. Esse único comando não torna o switch um roteador, porém. O roteamento entre interfaces fica desligado até você também emitir `enable ipforwarding`. Esta é uma armadilha comum: uma configuração com várias VLANs com IP mas sem a linha ipforwarding não passará tráfego entre elas. Vale a pena verificar isso explicitamente, e é por isso que a ferramenta correspondente sinaliza exatamente essa situação.
+
+## A palavra do EXOS para um LAG
+
+A agregação de links é onde a terminologia do EXOS surpreende as pessoas. O que a maioria das plataformas chama de port-channel ou LAG, o EXOS chama de "sharing". Você cria um com `enable sharing 1:1 grouping 1:1, 1:2 algorithm address-based`, e a partir daí todo o grupo é referenciado pela sua porta mestre (1:1 aqui). Adicione `lacp` e ele negocia dinamicamente com o vizinho; deixe de fora e é um agrupamento estático. Saber que "sharing" e "porta mestre" são o vocabulário de agregação é a maior parte do que você precisa para ler essa parte de uma configuração.
+
+## De onde isto vem
+
+Tudo aqui vem do próprio material da Extreme Networks: a Referência de Comandos do ExtremeXOS para a gramática dos comandos e o comportamento específico de `configure vlan add ports`, e o guia do usuário do Switch Engine para VLANs, roteamento e sharing. A ferramenta correspondente lê uma configuração colada de forma lexical e a explica; nunca se conecta a um switch.

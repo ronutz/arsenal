@@ -1,0 +1,59 @@
+---
+slug: reading-a-fortigate-sniffer-trace
+title: "Reading a FortiGate Packet Sniffer Trace"
+summary: "The FortiGate diagnose sniffer packet command packs five positional arguments into one line: interface, filter, verbosity, count, and timestamp format. This explains what each argument does, what the six verbosity levels actually print, why a capture sometimes shows nothing (VLAN-tag stripping and hardware offload), and how to turn the output into a pcap for Wireshark."
+concepts: ["fortinet", "fortigate", "fortios", "packet sniffer", "diagnose sniffer packet", "packet capture", "troubleshooting", "pcap"]
+relatedTools: ["fortios-sniffer-builder"]
+sub: fortigate
+relatedArticles: ["fortinet-ssl-inspection-modes"]
+category: networking
+order: 45
+status: reviewed
+updated: "2026-07-06"
+---
+
+When a packet is not arriving where it should on a FortiGate, the built-in sniffer is the first place to look. It is a single CLI command with five positional arguments, and once you can read that line, the output reads itself. This walks through the command the paired builder tool composes and decodes.
+
+## The anatomy of the command
+
+The full form is five arguments in a fixed order:
+
+```
+diagnose sniffer packet <interface> <'filter'> <verbose> <count> <tsformat>
+```
+
+Only the interface is truly required; the rest have device defaults. In practice you almost always supply a filter and a verbosity too, because an unfiltered, low-verbosity capture on a busy box is hard to read. The abbreviated `diag sniff packet` is accepted and means the same thing.
+
+**Interface.** A physical or logical interface name such as `port1` or `wan1`, or the keyword `any` to capture on every interface at once. There is a subtlety with `any`: it captures using the Linux "cooked" capture mode (SLL), which does not include the real Ethernet header, and it strips the VLAN tag. If you need the Ethernet header or the VLAN tag, capture on the specific physical interface instead of `any`.
+
+**Filter.** A Berkeley Packet Filter expression in single quotes, for example `'host 10.1.1.1 and tcp port 443'`. You can match on `host`, `src host`, `dst host`, `net`, `port`, and protocols like `arp`, `ip`, `ip6`, `icmp`, `tcp`, `udp`, `gre`, and `esp`, combined with `and`, `or`, and `not`. A bare `host` or `port` (without `src` or `dst`) matches both directions, which is usually what you want when checking whether a reply came back. Use the literal word `none` for no filter at all.
+
+## What the six verbosity levels print
+
+Verbosity is a number from 1 to 6, and it controls two independent things: how much of each packet is printed, and whether the interface name is shown.
+
+The depth ladder is: level 1 prints packet headers only; level 2 adds the IP-layer payload; level 3 adds the full Ethernet-frame data when it is available. Levels 4, 5, and 6 repeat that same ladder (headers, then IP payload, then Ethernet data) but additionally print the name of the interface each packet used. That interface-name detail is the practical reason to prefer 4 over 1, and it is essential when you capture on `any`, because otherwise you cannot tell which interface a packet took.
+
+A useful way to remember it: 1 to 3 give more bytes; 4 to 6 give the same bytes plus interface names. If you are going to open the capture in Wireshark, you want the deepest levels (3 or 6), because only those include the full frame.
+
+## Count and timestamp
+
+**Count** is the number of packets to capture before the sniffer stops on its own. Zero, or omitting the argument, means capture until you press `Ctrl+C`. Bounding the count is polite when you are working over SSH, because an unbounded capture can flood your own session with the very traffic your SSH connection is generating; filtering out `port 22` helps for the same reason.
+
+**Timestamp format** is the last argument: `a` prints an absolute UTC timestamp (`yyyy-mm-dd hh:mm:ss.ms`), `l` prints an absolute timestamp in the FortiGate's local time, and omitting the argument prints a time relative to the start of the capture. The relative form is fine for a single capture, but if you run captures in parallel on two interfaces or in two SSH sessions and want to line the packets up, use `a` or `l` so the timestamps are comparable.
+
+## Why a capture sometimes shows nothing
+
+Two situations catch people out, and both are worth checking before concluding that a packet never arrived.
+
+The first is VLAN-tag stripping, already mentioned: on `any` and on VLAN interfaces the tag is not shown at the higher verbosity levels. If you are specifically chasing a VLAN problem, sniff on the parent physical interface and match on the tag with a byte-offset filter, for example `'ether[14:2]=0x00db'` for VLAN 219.
+
+The second, and the more common surprise, is hardware offload. On FortiGate models with network processors (NP) or a system-on-chip, established sessions are offloaded to the ASIC and no longer pass through the CPU, so the kernel sniffer simply cannot see them. If a session should be flowing but the sniffer is silent, temporarily disable offload on the matching firewall policy with `set auto-asic-offload disable`, reproduce, and re-enable it afterwards. This is a diagnostic step, not a permanent setting.
+
+## Turning the capture into a pcap
+
+Reading hex in a terminal only goes so far. Capture at verbosity 3 or 6 (so the full Ethernet frame is present), copy the output, and run it through Fortinet's `fgt2eth.pl` Perl script, which converts the sniffer text into a `.pcap` file you can open in Wireshark. From there you get the full protocol decode, follow-stream, and filtering that a terminal cannot give you.
+
+## Where this comes from
+
+Everything here is drawn from Fortinet's own material: the FortiGate Administration Guide section on performing a sniffer trace or packet capture, the FortiOS CLI reference entry for `diagnose sniffer packet`, and Fortinet's community troubleshooting guidance on the built-in sniffer. The paired tool composes and decodes these commands offline; it never runs a sniffer or touches a device.

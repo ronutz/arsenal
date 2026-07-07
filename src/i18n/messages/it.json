@@ -876,7 +876,8 @@
     "api": "Riferimento dell'API",
     "contributeTools": "Proponi un'idea",
     "license": "Licenza",
-    "coffee": "Offrimi un caffè"
+    "coffee": "Offrimi un caffè",
+    "disclaimer": "Avvertenze legali"
   },
   "search": {
     "kindTool": "Strumento",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Articoli",
     "read": "Leggi",
     "backToTools": "Tutti gli strumenti"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Avvertenze legali",
+    "metaDescription": "Nessuna garanzia e nessuna responsabilita. Tutto su ronutz.com e fornito cosi com'e, costruito da informazioni pubblicamente disponibili, da usare a proprio rischio e giudizio.",
+    "eyebrow": "Note legali",
+    "title": "Avvertenze legali e limitazione di responsabilita",
+    "lede": "Leggi questo prima di fare affidamento su qualsiasi cosa che questo sito ti dica. E breve, e chiaro e si applica a ogni pagina, ogni strumento, ogni risultato e ogni riga del codice open source.",
+    "shortTitle": "La versione breve",
+    "short1": "Usa questo sito, i suoi strumenti e il suo codice a tuo rischio e giudizio. Nulla qui e garantito: ne la correttezza dei risultati degli strumenti, ne l'accuratezza degli articoli o della documentazione, ne la disponibilita del sito stesso.",
+    "short2": "Tutto qui e costruito in buona fede da informazioni pubblicamente disponibili e puo essere incompleto, obsoleto o semplicemente errato. Verifica sempre con la documentazione ufficiale del fornitore e con i tuoi test prima di agire su qualsiasi cosa.",
+    "short3": "Se non sei d'accordo con una qualsiasi parte di questo avviso, non usare ne il sito ne il codice.",
+    "asIsTitle": "Nessuna garanzia di alcun tipo",
+    "asIsBody": "Il sito, i suoi strumenti, i suoi contenuti e il codice open source associato sono forniti cosi come sono e in base alla disponibilita, senza garanzie o condizioni di alcun tipo, siano esse esplicite, implicite, di legge o di altra natura, incluse ma non limitate a garanzie implicite di commerciabilita, idoneita a uno scopo particolare, titolarita, non violazione, accuratezza, completezza, affidabilita o disponibilita ininterrotta. Nessun consiglio o informazione ottenuti da questo sito crea una garanzia non espressamente indicata qui, e qui nulla e espressamente garantito.",
+    "accuracyTitle": "Accuratezza: informazioni pubbliche, massimo impegno, nessuna garanzia",
+    "accuracyBody": "Ogni strumento, articolo e documento di questo sito e costruito da informazioni pubblicamente disponibili come documentazione dei fornitori, standard e RFC, interpretate in buona fede. Le fonti possono cambiare, le interpretazioni possono essere errate, il software puo contenere bug e i contenuti possono diventare obsoleti. Gli output degli strumenti sono ausili informativi, non risposte autorevoli. Prima di configurare, modificare, acquistare, certificare o risolvere qualsiasi cosa sulla base di cio che leggi o calcoli qui, verificalo con la documentazione ufficiale del fornitore o dello standard in questione e con i tuoi test. La responsabilita di ogni decisione che prendi, e delle sue conseguenze, e interamente tua.",
+    "adviceTitle": "Non e consulenza professionale, nessuna affiliazione",
+    "adviceBody": "Nulla in questo sito costituisce consulenza professionale, legale, di sicurezza, di conformita o di certificazione, e nulla qui crea un rapporto professionale di alcun tipo. Questo e un sito indipendente. I nomi di prodotti e aziende che compaiono qui, inclusi F5, Fortinet, Extreme Networks e Netskope, sono marchi dei rispettivi titolari, sono usati solo per identificare le tecnologie trattate e non implicano alcuna affiliazione, sponsorizzazione o approvazione da parte di tali aziende.",
+    "liabilityTitle": "Limitazione di responsabilita: nessuna",
+    "liabilityBody": "Nella massima misura consentita dalla legge applicabile, il titolare del sito, i collaboratori e chiunque altro sia coinvolto nella creazione, produzione, hosting o fornitura di questo sito o del suo codice non saranno responsabili per danni o perdite di alcun tipo derivanti da o connessi al tuo uso, o all'impossibilita di usare, il sito, i suoi strumenti, i suoi risultati, i suoi contenuti o il suo codice. Questa esclusione copre danni diretti, indiretti, incidentali, speciali, consequenziali, punitivi ed esemplari e include, senza limitazione, perdita di dati, perdita di profitti, perdita di affari, perdita di avviamento, interruzione dell'attivita, l'acquisizione di servizi sostitutivi e conseguenze personali o professionali di decisioni prese facendo affidamento su qualsiasi cosa trovata qui, anche se avvisati della possibilita di tali danni e indipendentemente dalla teoria di responsabilita. Ove la legge applicabile non consenta l'esclusione totale della responsabilita, questa e limitata all'importo minimo e all'ambito piu ristretto che la legge consente.",
+    "securityTitle": "Sicurezza: massimo impegno, nessuna responsabilita per violazioni",
+    "securityBody": "Questo sito e progettato per ridurre al minimo il rischio: e generato staticamente, i suoi strumenti calcolano localmente nel tuo browser ed evita di raccogliere dati di cui non ha bisogno. Viene fatto il massimo impegno per mantenere sicuri il sito e le sue dipendenze. Nessun sistema, tuttavia, e garantito sicuro, e qui non viene fornita alcuna garanzia di questo tipo. Il titolare del sito non puo essere ritenuto responsabile di violazioni di sicurezza, vulnerabilita o incidenti, sia in questo sito, nelle sue dipendenze, nella sua infrastruttura di hosting e distribuzione o nella sua catena di fornitura del software, che potrebbero avere impatto sugli utenti di questo sito o sugli utenti del codice open source mantenuto su github.com/ronutz. Se trovi un problema di sicurezza, una segnalazione tramite la pagina di contatto e sinceramente gradita.",
+    "openSourceTitle": "Il codice open source",
+    "openSourceBody": "Il codice open source pubblicato su github.com/ronutz e concesso in licenza secondo i propri termini di licenza, attualmente la Licenza Apache 2.0 per il motore netcore. Tale licenza regola il codice e fornisce il codice stesso cosi com'e, con la propria esclusione di garanzia e limitazione di responsabilita, che si applicano integralmente a chiunque usi, copi, modifichi o ridistribuisca il codice. Nulla in questa pagina riduce o sostituisce i termini di tale licenza.",
+    "changesTitle": "Modifiche",
+    "changesBody": "Il sito, i suoi strumenti, i suoi contenuti, il suo codice e questo avviso possono cambiare, smettere di funzionare o scomparire in qualsiasi momento, senza preavviso e senza obblighi verso chiunque. La versione applicabile e la versione attuale di questa pagina.",
+    "acceptBody": "Usando questo sito o il suo codice accetti questo avviso per intero. Se non lo accetti, il tuo unico rimedio e smettere di usare il sito e il codice.",
+    "backHome": "Torna alla home"
   }
 }

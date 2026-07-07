@@ -3400,6 +3400,53 @@
         "comment": "comentário",
         "pi": "PI"
       }
+    },
+    "fortios-sniffer-builder": {
+      "name": "Construtor de sniffer de pacotes do FortiOS",
+      "blurb": "Monte um comando diagnose sniffer packet do FortiGate a partir das partes, ou cole um para ter cada argumento explicado: interface, filtro, verbosidade 1-6, contagem e formato de horário.",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você digita ou cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "modeLabel": "Escolha montar ou decodificar",
+      "modeBuild": "Montar um comando",
+      "modeDecode": "Decodificar um comando",
+      "ifaceLabel": "Interface",
+      "hostLabel": "Host (opcional)",
+      "portLabel": "Porta (opcional)",
+      "protoLabel": "Protocolo",
+      "verbLabel": "Verbosidade",
+      "countLabel": "Contagem de pacotes (0 = ilimitado)",
+      "tsLabel": "Horário",
+      "pasteLabel": "Cole um comando diagnose sniffer packet",
+      "pastePlaceholder": "diagnose sniffer packet any 'host 10.1.1.1 and tcp port 443' 4 0 l",
+      "commandTitle": "Comando",
+      "breakdownTitle": "Detalhamento dos argumentos",
+      "notesTitle": "Notas"
+    },
+    "pac-file-explainer": {
+      "name": "Explicador e validador de arquivo PAC",
+      "blurb": "Cole um arquivo Proxy Auto-Config e ele mostra as diretivas de proxy que retorna, as funções auxiliares PAC que usa (com as que consultam DNS sinalizadas), verificações de estrutura e correção, e se é um arquivo de direcionamento de proxy explícito da Netskope. Nunca executa o arquivo.",
+      "runsLocally": "Roda localmente no seu navegador e nunca executa o arquivo. Nada do que você cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Cole um arquivo PAC (FindProxyForURL)",
+      "inputPlaceholder": "function FindProxyForURL(url, host) {\n  if (isPlainHostName(host)) return \"DIRECT\";\n  return \"PROXY proxy.example.com:8080; DIRECT\";\n}",
+      "findingsTitle": "Constatações",
+      "directivesTitle": "Diretivas de proxy retornadas",
+      "helpersTitle": "Funções auxiliares PAC usadas",
+      "returnValuesTitle": "Valores de retorno que um PAC pode produzir"
+    },
+    "exos-config-explainer": {
+      "name": "Explicador de configuração ExtremeXOS",
+      "blurb": "Cole uma configuração ExtremeXOS (EXOS / Switch Engine) e ela explica cada comando em português claro, resume as VLANs (tag, portas tagged e untagged, endereços IP) e agrupa os comandos por categoria. Nunca toca em um switch.",
+      "runsLocally": "Roda localmente no seu navegador. Nada do que você cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Cole uma configuração ExtremeXOS",
+      "inputPlaceholder": "create vlan engineering tag 100\nconfigure vlan engineering add ports 1:1, 1:2 tagged\nconfigure vlan engineering ipaddress 10.1.1.1/24\nenable ipforwarding",
+      "findingsTitle": "Constatações",
+      "vlansTitle": "Resumo de VLANs",
+      "verbsTitle": "Os verbos de comando do EXOS"
     }
   },
   "privacy_page": {
@@ -3455,7 +3502,8 @@
     "lastModified": "Última modificação {stamp}",
     "roadmap": "Roadmap",
     "settings": "Configurações",
-    "source": "Código-fonte"
+    "source": "Código-fonte",
+    "disclaimer": "Aviso legal"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -4734,7 +4782,9 @@
       "zxspectrum": "ZX Spectrum 48K",
       "zxspectrum128": "ZX Spectrum 128",
       "zxspectrum2a": "ZX Spectrum +2A",
-      "zxspectrum3": "ZX Spectrum +3"
+      "zxspectrum3": "ZX Spectrum +3",
+      "defrag": "MS-DOS Defrag",
+      "copyiipc": "Copy II PC"
     },
     "blurb": {
       "amiga": "A tela de inserir disco do Kickstart: a mão animada oferecendo um disquete do Workbench, o boot mais simpático da computação.",
@@ -4812,7 +4862,9 @@
       "zxspectrum": "A máquina que criou a cena dos programadores de quarto no Reino Unido. Tela branca em branco e uma linha: © 1982 Sinclair Research Ltd.",
       "zxspectrum128": "O menu inicial do 128K: Tape Loader, 128 BASIC, Calculator, 48 BASIC, sobre o som de três canais do chip AY e aquele arco-íris de abertura.",
       "zxspectrum2a": "O +2A da Amstrad, de gabinete preto: um +3 com gravador de fita no lugar do disco, por isso o menu ainda diz +3 BASIC. O último Spectrum fabricado.",
-      "zxspectrum3": "O +3 da Amstrad trouxe um disquete de 3 polegadas e o +3DOS à linha Spectrum. Loader, +3 BASIC, Calculator, 48 BASIC, e a unidade M: para o RAMdisk."
+      "zxspectrum3": "O +3 da Amstrad trouxe um disquete de 3 polegadas e o +3DOS à linha Spectrum. Loader, +3 BASIC, Calculator, 48 BASIC, e a unidade M: para o RAMdisk.",
+      "defrag": "O desfragmentador do DOS 6 da Microsoft, um Norton SpeedDisk enxugado: o disco inteiro como uma grade de blocos, embaralhada diante dos seus olhos.",
+      "copyiipc": "O lendário utilitário de backup de discos da Central Point, que copiava o que os outros não conseguiam, trilha por paciente trilha."
     },
     "jumpTo": "Ir para",
     "groups": {
@@ -4958,5 +5010,32 @@
       }
     },
     "backToTools": "Ver todas as ferramentas"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Aviso legal",
+    "metaDescription": "Sem garantias e sem responsabilidade. Tudo em ronutz.com é fornecido no estado em que se encontra, construído a partir de informações publicamente disponíveis, para uso por sua conta e risco.",
+    "eyebrow": "Legal",
+    "title": "Aviso legal e limitação de responsabilidade",
+    "lede": "Leia isto antes de confiar em qualquer coisa que este site lhe diga. É curto, é direto, e se aplica a cada página, cada ferramenta, cada resultado e cada linha do código aberto.",
+    "shortTitle": "A versão curta",
+    "short1": "Use este site, suas ferramentas e seu código por sua própria conta, risco e julgamento. Nada aqui é garantido: nem a correção dos resultados das ferramentas, nem a exatidão dos artigos ou da documentação, nem a disponibilidade do próprio site.",
+    "short2": "Tudo aqui é construído de boa-fé a partir de informações publicamente disponíveis, e pode estar incompleto, desatualizado ou simplesmente errado. Sempre verifique na documentação oficial do fabricante e nos seus próprios testes antes de agir com base em qualquer coisa.",
+    "short3": "Se você não concorda com qualquer parte deste aviso, não use o site nem o código.",
+    "asIsTitle": "Nenhuma garantia de qualquer tipo",
+    "asIsBody": "O site, suas ferramentas, seu conteúdo e o código aberto associado são fornecidos no estado em que se encontram e conforme a disponibilidade, sem garantias ou condições de qualquer tipo, sejam expressas, implícitas, legais ou de outra natureza, incluindo, sem limitação, garantias implícitas de comercialização, adequação a um propósito específico, titularidade, não violação, exatidão, completude, confiabilidade ou disponibilidade ininterrupta. Nenhum conselho ou informação obtida deste site cria qualquer garantia que não esteja expressamente declarada aqui, e nada aqui é expressamente declarado.",
+    "accuracyTitle": "Exatidão: informação pública, melhor esforço, nenhuma garantia",
+    "accuracyBody": "Cada ferramenta, artigo e documento deste site é construído a partir de informações publicamente disponíveis, como documentação de fabricantes, padrões e RFCs, interpretadas de boa-fé. Fontes mudam, interpretações podem estar equivocadas, software tem bugs e conteúdo envelhece. Os resultados das ferramentas são apoios informativos, não respostas com autoridade. Antes de configurar, alterar, comprar, certificar ou diagnosticar qualquer coisa com base no que você lê ou calcula aqui, verifique na documentação oficial do fabricante ou do padrão em questão e nos seus próprios testes. A responsabilidade por qualquer decisão que você tomar, e pelas suas consequências, é inteiramente sua.",
+    "adviceTitle": "Não é aconselhamento profissional, nenhuma afiliação",
+    "adviceBody": "Nada neste site constitui aconselhamento profissional, jurídico, de segurança, de conformidade ou de certificação, e nada aqui cria qualquer relação profissional. Este é um site independente. Nomes de produtos e empresas que aparecem aqui, incluindo F5, Fortinet, Extreme Networks e Netskope, são marcas de seus respectivos titulares, são usados apenas para identificar as tecnologias discutidas e não implicam qualquer afiliação, patrocínio ou endosso por parte dessas empresas.",
+    "liabilityTitle": "Limitação de responsabilidade: nenhuma",
+    "liabilityBody": "Na máxima extensão permitida pela lei aplicável, o dono do site, os colaboradores e qualquer pessoa envolvida em criar, produzir, hospedar ou entregar este site ou seu código não serão responsáveis por quaisquer danos ou perdas de qualquer natureza decorrentes do uso, ou da impossibilidade de uso, do site, de suas ferramentas, de seus resultados, de seu conteúdo ou de seu código. Esta exclusão cobre danos diretos, indiretos, incidentais, especiais, consequentes, punitivos e exemplares, e inclui, sem limitação, perda de dados, perda de lucros, perda de negócios, perda de reputação, interrupção de atividades, contratação de serviços substitutos e consequências pessoais ou profissionais de decisões tomadas com base em qualquer coisa encontrada aqui, mesmo se avisados da possibilidade de tais danos, e independentemente da teoria de responsabilidade. Onde a lei aplicável não permitir a exclusão total de responsabilidade, a responsabilidade fica limitada ao menor valor e ao escopo mais estreito que a lei permitir.",
+    "securityTitle": "Segurança: melhor esforço, nenhuma responsabilidade por violações",
+    "securityBody": "Este site foi projetado para minimizar riscos: é gerado estaticamente, suas ferramentas calculam localmente no seu navegador, e ele evita coletar dados de que não precisa. Um melhor esforço é feito para manter o site e suas dependências seguros. Nenhum sistema, porém, tem segurança garantida, e nenhuma garantia desse tipo é dada aqui. O dono do site não pode ser responsabilizado por violações de segurança, vulnerabilidades ou incidentes, seja neste site, em suas dependências, em sua infraestrutura de hospedagem e entrega, ou em sua cadeia de suprimentos de software, que possam impactar usuários deste site ou usuários do código aberto mantido em github.com/ronutz. Se você encontrar um problema de segurança, um relato pela página de contato é sinceramente bem-vindo.",
+    "openSourceTitle": "O código aberto",
+    "openSourceBody": "O código aberto publicado sob github.com/ronutz é licenciado sob seus próprios termos, atualmente a Apache License 2.0 para o motor netcore. Aquela licença rege o código e, ela própria, fornece o código no estado em que se encontra, com sua própria isenção de garantia e limitação de responsabilidade, que se aplicam integralmente a quem usar, copiar, modificar ou redistribuir o código. Nada nesta página reduz ou substitui os termos daquela licença.",
+    "changesTitle": "Mudanças",
+    "changesBody": "O site, suas ferramentas, seu conteúdo, seu código e este aviso podem mudar, quebrar ou desaparecer a qualquer momento, sem aviso e sem obrigação para com ninguém. A versão atual desta página é a que se aplica.",
+    "acceptBody": "Ao usar este site ou seu código, você aceita este aviso integralmente. Se não o aceita, seu único remédio é deixar de usar o site e o código.",
+    "backHome": "Voltar ao início"
   }
 }

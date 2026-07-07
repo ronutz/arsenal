@@ -876,7 +876,8 @@
     "api": "API-Referenz",
     "contributeTools": "Teile eine Idee",
     "license": "Lizenz",
-    "coffee": "Spendier mir einen Kaffee"
+    "coffee": "Spendier mir einen Kaffee",
+    "disclaimer": "Haftungsausschluss"
   },
   "search": {
     "kindTool": "Werkzeug",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Artikel",
     "read": "Lesen",
     "backToTools": "Alle Werkzeuge"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Haftungsausschluss",
+    "metaDescription": "Keine Gewaehrleistung, keine Garantien, keine Haftung. Alles auf ronutz.com wird ohne Maengelgewaehr bereitgestellt, aus oeffentlich verfuegbaren Informationen erstellt, zur Nutzung auf eigenes Risiko und nach eigenem Ermessen.",
+    "eyebrow": "Rechtliches",
+    "title": "Haftungsausschluss und Haftungsbeschraenkung",
+    "lede": "Bitte lesen Sie dies, bevor Sie sich auf irgendetwas verlassen, das diese Website Ihnen mitteilt. Es ist kurz, es ist klar, und es gilt fuer jede Seite, jedes Werkzeug, jedes Ergebnis und jede Zeile des Open-Source-Codes.",
+    "shortTitle": "Die Kurzfassung",
+    "short1": "Nutzen Sie diese Website, ihre Werkzeuge und ihren Code auf eigenes Risiko und nach eigenem Ermessen. Nichts hier ist garantiert: weder die Richtigkeit der Werkzeugergebnisse noch die Genauigkeit von Artikeln oder Dokumentation noch die Verfuegbarkeit der Website selbst.",
+    "short2": "Alles hier wird in gutem Glauben aus oeffentlich verfuegbaren Informationen erstellt und kann unvollstaendig, veraltet oder schlicht falsch sein. Pruefen Sie immer anhand der offiziellen Herstellerdokumentation und Ihrer eigenen Tests, bevor Sie auf irgendetwas hin handeln.",
+    "short3": "Wenn Sie einem Teil dieses Hinweises nicht zustimmen, nutzen Sie weder die Website noch den Code.",
+    "asIsTitle": "Keinerlei Gewaehrleistung",
+    "asIsBody": "Die Website, ihre Werkzeuge, ihre Inhalte und der zugehoerige Open-Source-Code werden ohne Maengelgewaehr und je nach Verfuegbarkeit bereitgestellt, ohne Gewaehrleistungen oder Bedingungen jeglicher Art, ob ausdruecklich, stillschweigend, gesetzlich oder anderweitig, einschliesslich, aber nicht beschraenkt auf stillschweigende Gewaehrleistungen der Marktgaengigkeit, der Eignung fuer einen bestimmten Zweck, des Eigentums, der Nichtverletzung von Rechten, der Genauigkeit, der Vollstaendigkeit, der Zuverlaessigkeit oder der ununterbrochenen Verfuegbarkeit. Keine von dieser Website erhaltene Beratung oder Information begruendet eine Gewaehrleistung, die hier nicht ausdruecklich genannt ist, und hier wird nichts ausdruecklich zugesichert.",
+    "accuracyTitle": "Genauigkeit: oeffentliche Informationen, nach bestem Bemuehen, ohne Garantie",
+    "accuracyBody": "Jedes Werkzeug, jeder Artikel und jedes Dokument auf dieser Website wird aus oeffentlich verfuegbaren Informationen wie Herstellerdokumentation, Standards und RFCs erstellt und in gutem Glauben ausgelegt. Quellen koennen sich aendern, Auslegungen koennen falsch sein, Software kann Fehler enthalten und Inhalte koennen veralten. Werkzeugausgaben sind Informationshilfen, keine massgeblichen Antworten. Bevor Sie auf Grundlage dessen, was Sie hier lesen oder berechnen, etwas konfigurieren, aendern, kaufen, zertifizieren oder beheben, pruefen Sie es anhand der offiziellen Dokumentation des betreffenden Herstellers oder Standards und anhand Ihrer eigenen Tests. Die Verantwortung fuer jede Entscheidung, die Sie treffen, und fuer deren Folgen liegt allein bei Ihnen.",
+    "adviceTitle": "Keine professionelle Beratung, keine Verbindung",
+    "adviceBody": "Nichts auf dieser Website ist professionelle, rechtliche, sicherheitsbezogene, Compliance- oder Zertifizierungsberatung, und nichts hier begruendet ein berufliches Verhaeltnis irgendeiner Art. Dies ist eine unabhaengige Website. Produkt- und Firmennamen, die hier erscheinen, darunter F5, Fortinet, Extreme Networks und Netskope, sind Marken ihrer jeweiligen Inhaber, werden nur zur Kennzeichnung der besprochenen Technologien verwendet und implizieren keine Verbindung mit, Sponsoring durch oder Billigung durch diese Unternehmen.",
+    "liabilityTitle": "Haftungsbeschraenkung: keine",
+    "liabilityBody": "Soweit nach geltendem Recht zulaessig, haften der Betreiber der Website, Mitwirkende und alle anderen, die an der Erstellung, Produktion, dem Hosting oder der Bereitstellung dieser Website oder ihres Codes beteiligt sind, nicht fuer Schaeden oder Verluste jeglicher Art, die aus Ihrer Nutzung oder Nichtnutzbarkeit der Website, ihrer Werkzeuge, ihrer Ergebnisse, ihrer Inhalte oder ihres Codes entstehen oder damit zusammenhaengen. Dieser Ausschluss umfasst direkte, indirekte, beilaeufige, besondere, Folge-, Straf- und exemplarische Schaeden und schliesst ohne Einschraenkung Datenverlust, entgangenen Gewinn, Geschaeftsverlust, Verlust des Geschaefts- oder Firmenwerts, Betriebsunterbrechung, die Beschaffung von Ersatzleistungen sowie persoenliche oder berufliche Folgen von Entscheidungen ein, die im Vertrauen auf irgendetwas hier Gefundenes getroffen wurden, selbst wenn auf die Moeglichkeit solcher Schaeden hingewiesen wurde und unabhaengig von der Haftungsgrundlage. Soweit das geltende Recht den vollstaendigen Haftungsausschluss nicht zulaesst, wird die Haftung auf den geringstmoeglichen Betrag und den engsten vom Recht zugelassenen Umfang beschraenkt.",
+    "securityTitle": "Sicherheit: nach bestem Bemuehen, keine Verantwortung fuer Verstoesse",
+    "securityBody": "Diese Website ist darauf ausgelegt, Risiken zu minimieren: Sie wird statisch erzeugt, ihre Werkzeuge rechnen lokal in Ihrem Browser, und sie vermeidet es, Daten zu erheben, die sie nicht benoetigt. Es wird nach bestem Bemuehen versucht, die Website und ihre Abhaengigkeiten sicher zu halten. Kein System ist jedoch garantiert sicher, und eine solche Garantie wird hier nicht gegeben. Der Betreiber der Website kann nicht fuer Sicherheitsverletzungen, Schwachstellen oder Vorfaelle verantwortlich gemacht werden, sei es in dieser Website, ihren Abhaengigkeiten, ihrer Hosting- oder Bereitstellungsinfrastruktur oder ihrer Software-Lieferkette, die Nutzer dieser Website oder Nutzer des unter github.com/ronutz gepflegten Open-Source-Codes betreffen koennten. Wenn Sie ein Sicherheitsproblem finden, ist eine Meldung ueber die Kontaktseite aufrichtig willkommen.",
+    "openSourceTitle": "Der Open-Source-Code",
+    "openSourceBody": "Der unter github.com/ronutz veroeffentlichte Open-Source-Code ist unter seinen eigenen Lizenzbedingungen lizenziert, derzeit die Apache License 2.0 fuer die netcore-Engine. Diese Lizenz regelt den Code und stellt den Code selbst ohne Maengelgewaehr bereit, mit ihrem eigenen Gewaehrleistungsausschluss und ihrer eigenen Haftungsbeschraenkung, die vollumfaenglich fuer jeden gelten, der den Code nutzt, kopiert, aendert oder weiterverbreitet. Nichts auf dieser Seite mindert oder ersetzt die Bedingungen dieser Lizenz.",
+    "changesTitle": "Aenderungen",
+    "changesBody": "Die Website, ihre Werkzeuge, ihre Inhalte, ihr Code und dieser Hinweis koennen sich jederzeit aendern, ausfallen oder verschwinden, ohne Ankuendigung und ohne Verpflichtung gegenueber irgendjemandem. Es gilt die jeweils aktuelle Fassung dieser Seite.",
+    "acceptBody": "Durch die Nutzung dieser Website oder ihres Codes akzeptieren Sie diesen Hinweis vollumfaenglich. Wenn Sie ihn nicht akzeptieren, besteht Ihr einziges Rechtsmittel darin, die Nutzung der Website und des Codes einzustellen.",
+    "backHome": "Zurueck zur Startseite"
   }
 }

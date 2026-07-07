@@ -876,7 +876,8 @@
     "api": "Reperensya ng API",
     "contributeTools": "Magbahagi ng ideya",
     "license": "Lisensya",
-    "coffee": "Ibili mo ako ng kape"
+    "coffee": "Ibili mo ako ng kape",
+    "disclaimer": "Pagtatatwa"
   },
   "search": {
     "kindTool": "Tool",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Mga Artikulo",
     "read": "Basahin",
     "backToTools": "Lahat ng kagamitan"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Pagtatatwa",
+    "metaDescription": "Walang warranty at walang pananagutan. Ang lahat sa ronutz.com ay ibinibigay ayon sa kung ano ito, binuo mula sa impormasyong available sa publiko, para gamitin sa sarili mong panganib at pagpapasya.",
+    "eyebrow": "Legal",
+    "title": "Pagtatatwa at limitasyon ng pananagutan",
+    "lede": "Pakibasa ito bago ka umasa sa anumang sinasabi sa iyo ng site na ito. Maikli ito, malinaw ito, at nalalapat ito sa bawat pahina, bawat tool, bawat resulta, at bawat linya ng open-source na code.",
+    "shortTitle": "Ang maikling bersyon",
+    "short1": "Gamitin ang site na ito, ang mga tool nito, at ang code nito sa sarili mong panganib at sarili mong pagpapasya. Walang anuman dito ang garantisado: hindi ang kawastuhan ng mga resulta ng tool, hindi ang katumpakan ng mga artikulo o dokumentasyon, at hindi ang availability ng site mismo.",
+    "short2": "Ang lahat dito ay binuo nang may mabuting hangarin mula sa impormasyong available sa publiko, at maaaring hindi kumpleto, luma na, o basta mali. Palaging i-verify laban sa opisyal na dokumentasyon ng vendor at sa sarili mong pagsubok bago ka kumilos sa anuman.",
+    "short3": "Kung hindi ka sumasang-ayon sa anumang bahagi ng abisong ito, huwag gamitin ang site o ang code.",
+    "asIsTitle": "Walang warranty ng anumang uri",
+    "asIsBody": "Ang site, ang mga tool nito, ang nilalaman nito, at ang kaugnay na open-source na code ay ibinibigay sa batayang ayon sa kung ano ito at ayon sa availability, nang walang mga warranty o kundisyon ng anumang uri, maging tahasan, ipinahihiwatig, ayon sa batas, o iba pa, kabilang ngunit hindi limitado sa anumang ipinahihiwatig na warranty ng pagiging marketable, pagiging angkop para sa isang partikular na layunin, titulo, hindi paglabag, katumpakan, pagkakumpleto, pagiging maaasahan, o walang-patid na availability. Walang payo o impormasyong nakuha mula sa site na ito ang lumilikha ng anumang warranty na hindi tahasang nakasaad dito, at walang anuman dito ang tahasang isinasaad.",
+    "accuracyTitle": "Katumpakan: pampublikong impormasyon, pinakamahusay na pagsisikap, walang garantiya",
+    "accuracyBody": "Ang bawat tool, artikulo, at dokumento sa site na ito ay binuo mula sa impormasyong available sa publiko tulad ng dokumentasyon ng vendor, mga pamantayan, at mga RFC, na binibigyang-kahulugan nang may mabuting hangarin. Maaaring magbago ang mga pinagmulan, maaaring maling maunawaan ang mga interpretasyon, maaaring may bug ang software, at maaaring maluma ang nilalaman. Ang mga output ng tool ay mga tulong na pang-impormasyon, hindi mga makapangyarihang sagot. Bago ka mag-configure, magbago, bumili, mag-certify, o mag-troubleshoot ng anuman batay sa nababasa o kinakalkula mo dito, i-verify ito laban sa opisyal na dokumentasyon ng vendor o pamantayang tinutukoy at sa sarili mong pagsubok. Ang pananagutan para sa anumang desisyong ginagawa mo, at para sa mga bunga nito, ay ganap na sa iyo.",
+    "adviceTitle": "Hindi propesyonal na payo, walang kaugnayan",
+    "adviceBody": "Walang anuman sa site na ito ang propesyonal, legal, seguridad, compliance, o certification na payo, at walang anuman dito ang lumilikha ng propesyonal na relasyon ng anumang uri. Ito ay isang independiyenteng site. Ang mga pangalan ng produkto at kompanyang lumalabas dito, kabilang ang F5, Fortinet, Extreme Networks, at Netskope, ay mga trademark ng kani-kanilang may-ari, ginagamit lamang upang tukuyin ang mga teknolohiyang tinatalakay, at hindi nagpapahiwatig ng anumang kaugnayan sa, pag-sponsor ng, o pag-endorso mula sa mga kompanyang iyon.",
+    "liabilityTitle": "Limitasyon ng pananagutan: wala",
+    "liabilityBody": "Hanggang sa pinakamataas na saklaw na pinahihintulutan ng naaangkop na batas, ang may-ari ng site, ang mga tagapag-ambag, at sinumang iba pang sangkot sa paglikha, pagbuo, pag-host, o paghahatid ng site na ito o ng code nito ay hindi mananagot para sa anumang pinsala o pagkalugi ng anumang uri na nagmumula sa o kaugnay ng iyong paggamit ng, o kawalan ng kakayahang gamitin, ang site, ang mga tool nito, ang mga resulta nito, ang nilalaman nito, o ang code nito. Sinasaklaw ng pagbubukod na ito ang tuwiran, di-tuwiran, insidental, natatangi, kasunod, maparusa, at halimbawang pinsala, at kabilang, nang walang limitasyon, ang pagkawala ng datos, pagkawala ng kita, pagkawala ng negosyo, pagkawala ng goodwill, pagkaantala ng negosyo, pagkuha ng kapalit na serbisyo, at mga personal o propesyonal na bunga ng mga desisyong ginawa nang umaasa sa anumang natagpuan dito, kahit na binalaan tungkol sa posibilidad ng gayong pinsala, at anuman ang teoriya ng pananagutan. Kung hindi pinahihintulutan ng naaangkop na batas ang ganap na pagbubukod ng pananagutan, ang pananagutan ay limitado sa pinakamaliit na halaga at pinakamakitid na saklaw na pinahihintulutan ng batas.",
+    "securityTitle": "Seguridad: pinakamahusay na pagsisikap, walang pananagutan para sa mga paglabag",
+    "securityBody": "Ang site na ito ay dinisenyo upang bawasan ang panganib: ito ay static na binubuo, ang mga tool nito ay nagkakalkula nang lokal sa iyong browser, at iniiwasan nitong mangolekta ng datos na hindi nito kailangan. Ginagawa ang pinakamahusay na pagsisikap upang mapanatiling ligtas ang site at ang mga dependency nito. Gayunpaman, walang sistemang garantisadong ligtas, at walang gayong garantiyang ibinibigay dito. Ang may-ari ng site ay hindi maaaring managot para sa mga paglabag sa seguridad, kahinaan, o insidente, maging sa site na ito, sa mga dependency nito, sa imprastraktura ng pag-host o paghahatid nito, o sa supply chain ng software nito, na maaaring makaapekto sa mga gumagamit ng site na ito o sa mga gumagamit ng open-source na code na pinananatili sa github.com/ronutz. Kung makakita ka ng isyu sa seguridad, tunay na tinatanggap ang isang ulat sa pamamagitan ng pahina ng contact.",
+    "openSourceTitle": "Ang open-source na code",
+    "openSourceBody": "Ang open-source na code na inilathala sa github.com/ronutz ay lisensyado sa ilalim ng sarili nitong mga tuntunin ng lisensya, sa kasalukuyan ang Apache License 2.0 para sa netcore na engine. Ang lisensyang iyon ang namamahala sa code at mismong nagbibigay ng code ayon sa kung ano ito, kasama ang sarili nitong pagtatatwa ng warranty at limitasyon ng pananagutan, na ganap na nalalapat sa sinumang gumagamit, kumukopya, nagbabago, o namamahagi muli ng code. Walang anuman sa pahinang ito ang nagpapababa o pumapalit sa mga tuntunin ng lisensyang iyon.",
+    "changesTitle": "Mga pagbabago",
+    "changesBody": "Ang site, ang mga tool nito, ang nilalaman nito, ang code nito, at ang abisong ito ay maaaring magbago, masira, o mawala anumang oras, nang walang abiso at walang obligasyon kaninuman. Ang nalalapat na bersyon ay ang kasalukuyang bersyon ng pahinang ito.",
+    "acceptBody": "Sa paggamit ng site na ito o ng code nito, tinatanggap mo nang buo ang abisong ito. Kung hindi mo ito tinatanggap, ang tanging remedyo mo ay ang ihinto ang paggamit ng site at ng code.",
+    "backHome": "Bumalik sa home"
   }
 }

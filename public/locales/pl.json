@@ -876,7 +876,8 @@
     "api": "Dokumentacja API",
     "contributeTools": "Podziel się pomysłem",
     "license": "Licencja",
-    "coffee": "Postaw mi kawę"
+    "coffee": "Postaw mi kawę",
+    "disclaimer": "Zastrzezenie prawne"
   },
   "search": {
     "kindTool": "Narzędzie",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Artykuły",
     "read": "Czytaj",
     "backToTools": "Wszystkie narzędzia"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Zastrzezenie prawne",
+    "metaDescription": "Bez gwarancji i bez odpowiedzialnosci. Wszystko na ronutz.com jest udostepniane w stanie, w jakim jest, zbudowane na podstawie publicznie dostepnych informacji, do uzytku na wlasne ryzyko i wedlug wlasnego osadu.",
+    "eyebrow": "Informacje prawne",
+    "title": "Zastrzezenie prawne i ograniczenie odpowiedzialnosci",
+    "lede": "Przeczytaj to, zanim zaufasz czemukolwiek, co ta witryna Ci mowi. Jest krotkie, jest jasne i dotyczy kazdej strony, kazdego narzedzia, kazdego wyniku i kazdej linijki kodu open source.",
+    "shortTitle": "Wersja skrocona",
+    "short1": "Korzystaj z tej witryny, jej narzedzi i jej kodu na wlasne ryzyko i wedlug wlasnego osadu. Nic tutaj nie jest gwarantowane: ani poprawnosc wynikow narzedzi, ani dokladnosc artykulow lub dokumentacji, ani dostepnosc samej witryny.",
+    "short2": "Wszystko tutaj jest budowane w dobrej wierze na podstawie publicznie dostepnych informacji i moze byc niekompletne, nieaktualne lub po prostu bledne. Zawsze weryfikuj wzgledem oficjalnej dokumentacji dostawcy i wlasnych testow, zanim podejmiesz jakiekolwiek dzialanie.",
+    "short3": "Jesli nie zgadzasz sie z jakakolwiek czescia tej informacji, nie korzystaj ani z witryny, ani z kodu.",
+    "asIsTitle": "Brak jakiejkolwiek gwarancji",
+    "asIsBody": "Witryna, jej narzedzia, jej tresc i powiazany kod open source sa udostepniane w stanie, w jakim sa, i w miare dostepnosci, bez gwarancji ani warunkow jakiegokolwiek rodzaju, wyraznych, dorozumianych, ustawowych lub innych, w tym miedzy innymi dorozumianych gwarancji przydatnosci handlowej, przydatnosci do okreslonego celu, tytulu prawnego, nienaruszalnosci, dokladnosci, kompletnosci, niezawodnosci lub nieprzerwanej dostepnosci. Zadna porada ani informacja uzyskana z tej witryny nie tworzy zadnej gwarancji, ktora nie zostala tu wyraznie okreslona, a nic tutaj nie jest wyraznie gwarantowane.",
+    "accuracyTitle": "Dokladnosc: informacje publiczne, najlepsze staranie, brak gwarancji",
+    "accuracyBody": "Kazde narzedzie, artykul i dokument w tej witrynie jest budowany na podstawie publicznie dostepnych informacji, takich jak dokumentacja dostawcow, standardy i dokumenty RFC, interpretowanych w dobrej wierze. Zrodla moga sie zmieniac, interpretacje moga byc bledne, oprogramowanie moze miec bledy, a tresc moze sie zdezaktualizowac. Wyniki narzedzi sa pomocami informacyjnymi, a nie miarodajnymi odpowiedziami. Zanim cokolwiek skonfigurujesz, zmienisz, kupisz, certyfikujesz lub bedziesz rozwiazywac problem na podstawie tego, co tu czytasz lub obliczasz, zweryfikuj to wzgledem oficjalnej dokumentacji danego dostawcy lub standardu oraz wzgledem wlasnych testow. Odpowiedzialnosc za kazda podjeta decyzje i za jej konsekwencje spoczywa wylacznie na Tobie.",
+    "adviceTitle": "To nie jest profesjonalna porada, brak powiazania",
+    "adviceBody": "Nic w tej witrynie nie jest profesjonalna, prawna, dotyczaca bezpieczenstwa, zgodnosci ani certyfikacji porada, a nic tutaj nie tworzy relacji zawodowej jakiegokolwiek rodzaju. To niezalezna witryna. Nazwy produktow i firm, ktore sie tu pojawiaja, w tym F5, Fortinet, Extreme Networks i Netskope, sa znakami towarowymi ich odpowiednich wlascicieli, sa uzywane wylacznie do identyfikacji omawianych technologii i nie oznaczaja zadnego powiazania z tymi firmami, sponsorowania przez nie ani ich poparcia.",
+    "liabilityTitle": "Ograniczenie odpowiedzialnosci: brak",
+    "liabilityBody": "W maksymalnym zakresie dozwolonym przez obowiazujace prawo wlasciciel witryny, wspoltworcy oraz kazda inna osoba zaangazowana w tworzenie, produkcje, hosting lub dostarczanie tej witryny lub jej kodu nie ponosza odpowiedzialnosci za jakiekolwiek szkody lub straty wynikajace z korzystania przez Ciebie z witryny, jej narzedzi, jej wynikow, jej tresci lub jej kodu, lub z niemoznosci korzystania z nich, albo z nimi zwiazane. To wylaczenie obejmuje szkody bezposrednie, posrednie, uboczne, szczegolne, wynikowe, karne i przykladowe oraz obejmuje, bez ograniczen, utrate danych, utrate zyskow, utrate biznesu, utrate reputacji, przerwe w dzialalnosci, nabycie uslug zastepczych oraz osobiste lub zawodowe konsekwencje decyzji podjetych w zaufaniu do czegokolwiek, co tu znaleziono, nawet jesli uprzedzono o mozliwosci wystapienia takich szkod i niezaleznie od podstawy odpowiedzialnosci. Tam, gdzie obowiazujace prawo nie zezwala na pelne wylaczenie odpowiedzialnosci, odpowiedzialnosc jest ograniczona do najmniejszej kwoty i najwezszego zakresu, na jaki zezwala prawo.",
+    "securityTitle": "Bezpieczenstwo: najlepsze staranie, brak odpowiedzialnosci za naruszenia",
+    "securityBody": "Ta witryna zostala zaprojektowana tak, aby minimalizowac ryzyko: jest generowana statycznie, jej narzedzia obliczaja lokalnie w Twojej przegladarce i unika zbierania danych, ktorych nie potrzebuje. Podejmowane jest najlepsze staranie, aby witryna i jej zaleznosci byly bezpieczne. Zaden system nie jest jednak gwarantowanie bezpieczny i taka gwarancja nie jest tutaj udzielana. Wlasciciela witryny nie mozna pociagnac do odpowiedzialnosci za naruszenia bezpieczenstwa, podatnosci ani incydenty, czy to w tej witrynie, jej zaleznosciach, jej infrastrukturze hostingowej lub dostawczej, czy w jej lancuchu dostaw oprogramowania, ktore moglyby wplynac na uzytkownikow tej witryny lub uzytkownikow kodu open source utrzymywanego pod adresem github.com/ronutz. Jesli znajdziesz problem z bezpieczenstwem, zgloszenie za posrednictwem strony kontaktowej jest szczerze mile widziane.",
+    "openSourceTitle": "Kod open source",
+    "openSourceBody": "Kod open source opublikowany pod adresem github.com/ronutz jest licencjonowany na wlasnych warunkach licencji, obecnie na licencji Apache License 2.0 dla silnika netcore. Ta licencja reguluje kod i sama udostepnia kod w stanie, w jakim jest, z wlasnym wylaczeniem gwarancji i ograniczeniem odpowiedzialnosci, ktore maja pelne zastosowanie do kazdego, kto uzywa, kopiuje, modyfikuje lub redystrybuuje kod. Nic na tej stronie nie ogranicza ani nie zastepuje warunkow tej licencji.",
+    "changesTitle": "Zmiany",
+    "changesBody": "Witryna, jej narzedzia, jej tresc, jej kod i ta informacja moga sie zmienic, przestac dzialac lub zniknac w dowolnym momencie, bez powiadomienia i bez zobowiazan wobec kogokolwiek. Obowiazujaca wersja to biezaca wersja tej strony.",
+    "acceptBody": "Korzystajac z tej witryny lub jej kodu, w pelni akceptujesz te informacje. Jesli jej nie akceptujesz, jedynym srodkiem zaradczym jest zaprzestanie korzystania z witryny i kodu.",
+    "backHome": "Powrot do strony glownej"
   }
 }

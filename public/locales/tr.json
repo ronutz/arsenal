@@ -876,7 +876,8 @@
     "api": "API referansı",
     "contributeTools": "Bir fikir paylaş",
     "license": "Lisans",
-    "coffee": "Bana bir kahve ısmarla"
+    "coffee": "Bana bir kahve ısmarla",
+    "disclaimer": "Sorumluluk reddi"
   },
   "search": {
     "kindTool": "Araç",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Makaleler",
     "read": "Oku",
     "backToTools": "Tüm araçlar"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Sorumluluk reddi",
+    "metaDescription": "Hicbir garanti ve hicbir sorumluluk yok. ronutz.com uzerindeki her sey oldugu gibi, kamuya acik bilgilerden olusturularak, kendi riskiniz ve kendi takdiriniz altinda kullanilmak uzere sunulur.",
+    "eyebrow": "Yasal",
+    "title": "Sorumluluk reddi ve sorumlulugun sinirlandirilmasi",
+    "lede": "Bu sitenin size soyledigi herhangi bir seye guvenmeden once bunu okuyun. Kisa, sade ve her sayfa, her arac, her sonuc ve acik kaynak kodunun her satiri icin gecerlidir.",
+    "shortTitle": "Kisa surumu",
+    "short1": "Bu siteyi, araclarini ve kodunu kendi riskiniz ve kendi takdiriniz altinda kullanin. Buradaki hicbir sey garanti edilmez: ne araclarin sonuclarinin dogrulugu, ne makalelerin veya belgelerin dogrulugu, ne de sitenin kendisinin erisilebilirligi.",
+    "short2": "Buradaki her sey iyi niyetle kamuya acik bilgilerden olusturulur ve eksik, guncel olmayan veya tamamen yanlis olabilir. Herhangi bir sey uzerine harekete gecmeden once daima ureticinin resmi belgelerine ve kendi testlerinize gore dogrulayin.",
+    "short3": "Bu bildirimin herhangi bir kismini kabul etmiyorsaniz, ne siteyi ne de kodu kullanin.",
+    "asIsTitle": "Hicbir turde garanti yok",
+    "asIsBody": "Site, araclari, icerigi ve ilgili acik kaynak kodu, acik, zimni, yasal veya baska turlu olsun, satilabilirlik, belirli bir amaca uygunluk, mulkiyet, ihlal etmeme, dogruluk, eksiksizlik, guvenilirlik veya kesintisiz erisilebilirlik zimni garantileri dahil ancak bunlarla sinirli olmamak uzere, hicbir turde garanti veya kosul olmaksizin, oldugu gibi ve mevcut oldugu sekilde sunulur. Bu siteden elde edilen hicbir tavsiye veya bilgi, burada acikca belirtilmeyen herhangi bir garanti olusturmaz ve burada hicbir sey acikca garanti edilmez.",
+    "accuracyTitle": "Dogruluk: kamuya acik bilgi, en iyi caba, garanti yok",
+    "accuracyBody": "Bu sitedeki her arac, makale ve belge, uretici belgeleri, standartlar ve RFC'ler gibi kamuya acik bilgilerden olusturulur ve iyi niyetle yorumlanir. Kaynaklar degisebilir, yorumlar hatali olabilir, yazilimda hatalar olabilir ve icerik eskiyebilir. Arac ciktilari bilgilendirici yardimcilardir, yetkili yanitlar degildir. Burada okudugunuz veya hesapladiginiz seye dayanarak herhangi bir seyi yapilandirmadan, degistirmeden, satin almadan, sertifikalandirmadan veya sorun gidermeden once, bunu soz konusu ureticinin veya standardin resmi belgelerine ve kendi testlerinize gore dogrulayin. Verdiginiz her kararin ve sonuclarinin sorumlulugu tamamen size aittir.",
+    "adviceTitle": "Profesyonel tavsiye degildir, hicbir baglantisi yoktur",
+    "adviceBody": "Bu sitedeki hicbir sey profesyonel, hukuki, guvenlik, uyumluluk veya sertifikasyon tavsiyesi degildir ve buradaki hicbir sey herhangi bir turde profesyonel iliski olusturmaz. Burasi bagimsiz bir sitedir. Burada gorunen, F5, Fortinet, Extreme Networks ve Netskope dahil urun ve sirket adlari, ilgili sahiplerinin ticari markalaridir, yalnizca ele alinan teknolojileri tanimlamak icin kullanilir ve bu sirketlerle herhangi bir baglanti, onlar tarafindan sponsorluk veya onay anlamina gelmez.",
+    "liabilityTitle": "Sorumlulugun sinirlandirilmasi: yok",
+    "liabilityBody": "Yururlukteki yasanin izin verdigi azami olcude, site sahibi, katkida bulunanlar ve bu sitenin veya kodunun olusturulmasi, uretilmesi, barindirilmasi veya sunulmasinda yer alan diger herkes, siteyi, araclarini, sonuclarini, icerigini veya kodunu kullanmanizdan ya da kullanamamanizdan kaynaklanan veya bunlarla baglantili hicbir turde zarar veya kayiptan sorumlu olmayacaktir. Bu haric tutma, dogrudan, dolayli, arizi, ozel, sonucsal, cezai ve ornek nitelikte zararlari kapsar ve sinirlama olmaksizin veri kaybini, kar kaybini, is kaybini, itibar kaybini, is kesintisini, ikame hizmetlerin tedarikini ve burada bulunan herhangi bir seye guvenilerek alinan kararlarin kisisel veya profesyonel sonuclarini, bu tur zararlarin olasiligi konusunda uyarilmis olsa bile ve sorumluluk teorisinden bagimsiz olarak, icerir. Yururlukteki yasanin sorumlulugun tam olarak haric tutulmasina izin vermedigi durumlarda, sorumluluk yasanin izin verdigi en kucuk tutar ve en dar kapsamla sinirlidir.",
+    "securityTitle": "Guvenlik: en iyi caba, ihlallerden sorumluluk yok",
+    "securityBody": "Bu site riski en aza indirmek uzere tasarlanmistir: statik olarak olusturulur, araclari tarayicinizda yerel olarak hesaplar ve ihtiyac duymadigi verileri toplamaktan kacinir. Siteyi ve bagimliliklarini guvende tutmak icin en iyi caba gosterilir. Ancak hicbir sistemin guvenli oldugu garanti edilemez ve burada boyle bir garanti verilmez. Site sahibi, ister bu sitede, ister bagimliliklarinda, ister barindirma veya teslimat altyapisinda, ister yazilim tedarik zincirinde olsun, bu sitenin kullanicilarini veya github.com/ronutz adresinde tutulan acik kaynak kodunun kullanicilarini etkileyebilecek guvenlik ihlallerinden, aciklardan veya olaylardan sorumlu tutulamaz. Bir guvenlik sorunu bulursaniz, iletisim sayfasi uzerinden bir bildirim iceten memnuniyetle karsilanir.",
+    "openSourceTitle": "Acik kaynak kodu",
+    "openSourceBody": "github.com/ronutz adresinde yayinlanan acik kaynak kodu, su anda netcore motoru icin Apache License 2.0 olan kendi lisans kosullari altinda lisanslanmistir. Bu lisans kodu yonetir ve kodu kendisi oldugu gibi sunar; kodu kullanan, kopyalayan, degistiren veya yeniden dagitan herkes icin tam olarak gecerli olan kendi garanti reddi ve sorumluluk sinirlamasi ile birlikte. Bu sayfadaki hicbir sey o lisansin kosullarini azaltmaz veya degistirmez.",
+    "changesTitle": "Degisiklikler",
+    "changesBody": "Site, araclari, icerigi, kodu ve bu bildirim herhangi bir zamanda, bildirimde bulunmaksizin ve kimseye karsi yukumluluk olmaksizin degisebilir, calismayi durdurabilir veya ortadan kalkabilir. Gecerli surum, bu sayfanin mevcut surumudur.",
+    "acceptBody": "Bu siteyi veya kodunu kullanarak bu bildirimi tamamen kabul edersiniz. Kabul etmiyorsaniz, tek care siteyi ve kodu kullanmayi birakmaktir.",
+    "backHome": "Ana sayfaya don"
   }
 }

@@ -876,7 +876,8 @@
     "api": "Référence de l'API",
     "contributeTools": "Proposez une idée",
     "license": "Licence",
-    "coffee": "Offre-moi un café"
+    "coffee": "Offre-moi un café",
+    "disclaimer": "Avertissement"
   },
   "search": {
     "kindTool": "Outil",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Articles",
     "read": "Lire",
     "backToTools": "Tous les outils"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Avertissement",
+    "metaDescription": "Aucune garantie, aucune promesse, aucune responsabilite. Tout sur ronutz.com est fourni en l'etat, construit a partir d'informations publiquement disponibles, a utiliser a vos propres risques et selon votre propre jugement.",
+    "eyebrow": "Mentions legales",
+    "title": "Avertissement et limitation de responsabilite",
+    "lede": "Veuillez lire ceci avant de vous fier a quoi que ce soit que ce site vous indique. C'est court, c'est clair, et cela s'applique a chaque page, chaque outil, chaque resultat et chaque ligne du code open source.",
+    "shortTitle": "La version courte",
+    "short1": "Utilisez ce site, ses outils et son code a vos propres risques et selon votre propre jugement. Rien ici n'est garanti : ni l'exactitude des resultats des outils, ni la justesse des articles ou de la documentation, ni la disponibilite du site lui-meme.",
+    "short2": "Tout ici est construit de bonne foi a partir d'informations publiquement disponibles, et peut etre incomplet, obsolete ou tout simplement faux. Verifiez toujours dans la documentation officielle du fournisseur et par vos propres tests avant d'agir sur quoi que ce soit.",
+    "short3": "Si vous n'etes pas d'accord avec une quelconque partie de cet avis, n'utilisez ni le site ni le code.",
+    "asIsTitle": "Aucune garantie d'aucune sorte",
+    "asIsBody": "Le site, ses outils, son contenu et le code open source associe sont fournis en l'etat et selon leur disponibilite, sans garanties ni conditions d'aucune sorte, qu'elles soient expresses, implicites, legales ou autres, y compris, sans s'y limiter, toute garantie implicite de qualite marchande, d'adequation a un usage particulier, de titre, d'absence de contrefacon, d'exactitude, d'exhaustivite, de fiabilite ou de disponibilite ininterrompue. Aucun conseil ni aucune information obtenus de ce site ne cree de garantie qui ne soit expressement enoncee ici, et rien ici n'est expressement garanti.",
+    "accuracyTitle": "Exactitude : information publique, meilleur effort, aucune garantie",
+    "accuracyBody": "Chaque outil, article et document de ce site est construit a partir d'informations publiquement disponibles telles que la documentation des fournisseurs, les normes et les RFC, interpretees de bonne foi. Les sources peuvent changer, les interpretations peuvent etre erronees, les logiciels peuvent contenir des bogues et le contenu peut devenir obsolete. Les sorties des outils sont des aides informatives, pas des reponses faisant autorite. Avant de configurer, modifier, acheter, certifier ou depanner quoi que ce soit a partir de ce que vous lisez ou calculez ici, verifiez-le dans la documentation officielle du fournisseur ou de la norme concernee et par vos propres tests. La responsabilite de toute decision que vous prenez, et de ses consequences, vous incombe entierement.",
+    "adviceTitle": "Pas de conseil professionnel, aucune affiliation",
+    "adviceBody": "Rien sur ce site ne constitue un conseil professionnel, juridique, de securite, de conformite ou de certification, et rien ici ne cree de relation professionnelle d'aucune sorte. Ce site est independant. Les noms de produits et d'entreprises qui apparaissent ici, notamment F5, Fortinet, Extreme Networks et Netskope, sont des marques de leurs proprietaires respectifs, sont utilises uniquement pour identifier les technologies abordees et n'impliquent aucune affiliation, aucun parrainage ni aucune approbation de la part de ces entreprises.",
+    "liabilityTitle": "Limitation de responsabilite : aucune",
+    "liabilityBody": "Dans toute la mesure permise par la loi applicable, le proprietaire du site, les contributeurs et toute autre personne participant a la creation, la production, l'hebergement ou la fourniture de ce site ou de son code ne sauraient etre tenus responsables de dommages ou pertes de quelque nature que ce soit decoulant de votre utilisation, ou de l'impossibilite d'utiliser, le site, ses outils, ses resultats, son contenu ou son code. Cette exclusion couvre les dommages directs, indirects, accessoires, speciaux, consecutifs, punitifs et exemplaires, et inclut, sans limitation, la perte de donnees, la perte de benefices, la perte d'activite, la perte de clientele, l'interruption d'activite, l'acquisition de services de remplacement ainsi que les consequences personnelles ou professionnelles de decisions prises en se fiant a quoi que ce soit trouve ici, meme si la possibilite de tels dommages a ete signalee et quelle que soit la theorie de responsabilite. Lorsque la loi applicable ne permet pas l'exclusion totale de responsabilite, celle-ci est limitee au montant le plus faible et a la portee la plus etroite que la loi autorise.",
+    "securityTitle": "Securite : meilleur effort, aucune responsabilite en cas de faille",
+    "securityBody": "Ce site est concu pour reduire le risque au minimum : il est genere de maniere statique, ses outils calculent localement dans votre navigateur, et il evite de collecter des donnees dont il n'a pas besoin. Le meilleur effort est fait pour maintenir le site et ses dependances securises. Aucun systeme n'est toutefois garanti sur, et aucune garantie de ce type n'est donnee ici. Le proprietaire du site ne peut etre tenu responsable de failles de securite, de vulnerabilites ou d'incidents, que ce soit dans ce site, ses dependances, son infrastructure d'hebergement ou de livraison, ou sa chaine d'approvisionnement logicielle, susceptibles d'affecter les utilisateurs de ce site ou les utilisateurs du code open source maintenu sur github.com/ronutz. Si vous trouvez un probleme de securite, un signalement via la page de contact est sincerement apprecie.",
+    "openSourceTitle": "Le code open source",
+    "openSourceBody": "Le code open source publie sur github.com/ronutz est place sous ses propres termes de licence, actuellement la licence Apache 2.0 pour le moteur netcore. Cette licence regit le code et fournit elle-meme le code en l'etat, avec sa propre exclusion de garantie et sa propre limitation de responsabilite, qui s'appliquent pleinement a quiconque utilise, copie, modifie ou redistribue le code. Rien sur cette page ne reduit ni ne remplace les termes de cette licence.",
+    "changesTitle": "Modifications",
+    "changesBody": "Le site, ses outils, son contenu, son code et cet avis peuvent changer, cesser de fonctionner ou disparaitre a tout moment, sans preavis et sans obligation envers quiconque. La version applicable est la version actuelle de cette page.",
+    "acceptBody": "En utilisant ce site ou son code, vous acceptez cet avis dans son integralite. Si vous ne l'acceptez pas, votre seul recours est de cesser d'utiliser le site et le code.",
+    "backHome": "Retour a l'accueil"
   }
 }

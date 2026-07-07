@@ -107,6 +107,12 @@ export const tools: ToolEntry[] = [
   { id: "f5-awaf-learning-suggestion-interpreter", sub: "asm-awaf", href: "/tools/f5-awaf-learning-suggestion-interpreter", category: "security", vendors: ["f5"], available: true },
   { id: "f5-awaf-signature-accuracy-risk", sub: "asm-awaf", href: "/tools/f5-awaf-signature-accuracy-risk", category: "security", vendors: ["f5"], available: true },
   { id: "f5-awaf-policy-diff", sub: "asm-awaf", href: "/tools/f5-awaf-policy-diff", category: "security", vendors: ["f5"], available: true },
+  // First Fortinet tool: populates the Fortinet vendor hub.
+  { id: "fortios-sniffer-builder", sub: "fortigate", href: "/tools/fortios-sniffer-builder", category: "networking", vendors: ["fortinet"], available: true },
+  // First Netskope tool: populates the Netskope vendor hub.
+  { id: "pac-file-explainer", sub: "swg", href: "/tools/pac-file-explainer", category: "networking", vendors: ["netskope"], available: true },
+  // First Extreme tool: populates the Extreme vendor hub.
+  { id: "exos-config-explainer", sub: "switching", href: "/tools/exos-config-explainer", category: "networking", vendors: ["extreme"], available: true },
 ];
 
 /** Tools that are live and linkable. */

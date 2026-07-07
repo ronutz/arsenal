@@ -83,6 +83,12 @@ export default async function SiteFooter() {
             {t("license")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* Disclaimer / limitation of liability (PRIME, 2026-07-06): sits in
+              the legal cluster between License and Privacy. */}
+          <Link href="/disclaimer" className="footer-contribute-link">
+            {t("disclaimer")}
+          </Link>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/privacy" className="footer-contribute-link">
             {t("privacy")}
           </Link>

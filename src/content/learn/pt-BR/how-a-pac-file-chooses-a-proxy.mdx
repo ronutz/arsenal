@@ -1,0 +1,51 @@
+---
+slug: how-a-pac-file-chooses-a-proxy
+title: "Como um arquivo PAC escolhe um proxy"
+summary: "Um arquivo PAC é uma pequena função JavaScript, FindProxyForURL(url, host), que o navegador chama a cada requisição para decidir entre ir direto e usar um proxy. Este artigo explica a gramática da string de retorno (DIRECT, PROXY, SOCKS e failover por ponto e vírgula), as funções auxiliares e quais delas forçam uma consulta DNS bloqueante, as armadilhas que aparecem na prática, e como a Netskope usa um PAC para direcionar tráfego ao seu Cloud Explicit Proxy."
+concepts: ["netskope", "pac", "proxy auto-config", "findproxyforurl", "explicit proxy", "swg", "secure web gateway", "direcionamento de proxy"]
+relatedTools: ["pac-file-explainer"]
+sub: swg
+relatedArticles: ["netskope-inline-tls-decryption"]
+category: networking
+order: 115
+status: reviewed
+updated: "2026-07-06"
+---
+
+O proxy auto-config é anterior a quase tudo o mais na infraestrutura web, e ainda é como uma grande parte do tráfego corporativo é direcionada. Um arquivo PAC é uma única função JavaScript que o navegador avalia a cada requisição. Entendê-la é a diferença entre confiar em uma configuração de direcionamento e adivinhá-la. Este texto explica o modelo que a ferramenta correspondente lê.
+
+## Uma função, chamada a cada requisição
+
+Um arquivo PAC define exatamente um ponto de entrada:
+
+```
+function FindProxyForURL(url, host) {
+  // ... retorna uma string de proxy
+}
+```
+
+O navegador a chama com a `url` completa e o `host` extraído, e espera de volta uma string dizendo para onde enviar a requisição. Todo o resto no arquivo existe para ajudar essa função a decidir. O arquivo é servido com o tipo MIME `application/x-ns-proxy-autoconfig`, normalmente a partir de uma URL configurada no navegador ou descoberta por WPAD.
+
+Há uma sutileza moderna que vale saber de antemão: muitos navegadores baseados em Chromium agora removem o caminho e a query de URLs `https://` antes de chamar a função, passando apenas o esquema, o host e a porta. Uma lógica que tenta casar pelo caminho de uma URL HTTPS não o verá. Casar pelo host ainda funciona.
+
+## A gramática da string de retorno
+
+A string que `FindProxyForURL` retorna é uma ou mais diretivas separadas por ponto e vírgula. O navegador as tenta da esquerda para a direita e usa a primeira que funcionar, o que faz do ponto e vírgula um mecanismo de failover.
+
+As diretivas são `DIRECT` (conectar direto ao destino, sem proxy), `PROXY host:porta` (usar aquele proxy HTTP) e `SOCKS host:porta` (usar aquele servidor SOCKS). Navegadores mais novos também aceitam `HTTP host:porta`, `HTTPS host:porta` (uma conexão TLS ao proxy) e as formas explícitas `SOCKS4` e `SOCKS5`. Então `PROXY primario:8080; PROXY reserva:8080; DIRECT` significa "tente o proxy primário, depois o reserva, e se nenhum responder, vá direto". Esse `DIRECT` no final é uma rede de segurança comum e deliberada: sem ele, um proxy inacessível pode deixar o tráfego sem para onde ir.
+
+## As funções auxiliares, e as que custam uma consulta DNS
+
+Arquivos PAC decidem usando uma biblioteca fixa de funções auxiliares. A maioria delas são operações puras de string e não custam nada: `isPlainHostName` (verdadeiro para um nome de rótulo único sem qualificação, o jeito clássico de mandar nomes curtos de intranet direto), `dnsDomainIs` (o host termina em um sufixo de domínio), `shExpMatch` (uma correspondência shell-glob), `dnsDomainLevels`, `weekdayRange`, `dateRange` e `timeRange`.
+
+Três auxiliares são diferentes, e a distinção importa para o desempenho: `isInNet`, `isResolvable` e `dnsResolve` todas consultam DNS. A MDN aponta isso explicitamente, porque uma consulta DNS a cada requisição pode bloquear e deixar a navegação lenta. A regra prática é ordenar suas verificações de modo que as comparações baratas de string decidam primeiro, e o DNS só seja consultado quando nada mais decidiu. Um arquivo que recorre a `isInNet` no topo da função paga esse custo em cada requisição.
+
+Mais duas arestas valem ser internalizadas. `shExpMatch` usa curingas de shell-glob (`*` e `?`), não expressões regulares, então um padrão escrito em sintaxe de regex silenciosamente não casa. E `myIpAddress` é não confiável em máquinas com várias interfaces e pode cair em um endereço de loopback como `127.0.0.1`, então uma lógica que ramifica com base nele pode se comportar de forma diferente do esperado em máquinas com VPN ou múltiplas interfaces. Há também um conjunto de extensões IPv6 da Microsoft com sufixo `Ex` (`dnsResolveEx`, `isInNetEx`, `myIpAddressEx` e outras) suportadas pelo Chromium, mas não pelo Firefox.
+
+## Como a Netskope usa um PAC
+
+Um Secure Web Gateway precisa de uma forma de fazer o navegador enviar tráfego para ele, e uma das formas padrão é um arquivo PAC. O Cloud Explicit Proxy da Netskope é direcionado exatamente assim. Um PAC da Netskope retorna `PROXY eproxy-<tenant>.goskope.com:8081` para o tráfego web que deve inspecionar, com o nome do tenant preenchido, e retorna `DIRECT` para o que deve contornar o proxy: hostnames simples e os hosts de provedor de identidade dos quais o fluxo de login depende. A porta 8081 é a porta do proxy explícito. Como o proxy faz inspeção TLS, a CA raiz da Netskope precisa ser confiável no cliente, e a Netskope usa surrogates de cookie para carregar a identidade do usuário pelo caminho do proxy explícito. Ler um PAC da Netskope, então, é principalmente uma questão de separar os desvios `DIRECT` da única linha `PROXY` que envia todo o resto ao host de proxy explícito do tenant.
+
+## De onde isto vem
+
+A mecânica do PAC aqui vem da referência Proxy Auto-Configuration da MDN e do artigo de proxy auto-config da Wikipedia (para as extensões IPv6 da Microsoft); as especificidades da Netskope vêm da documentação do Cloud Explicit Proxy da Netskope. A ferramenta correspondente lê um arquivo PAC colado de forma lexical e o explica; nunca avalia o arquivo nem contata um proxy.

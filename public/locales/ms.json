@@ -876,7 +876,8 @@
     "api": "Rujukan API",
     "contributeTools": "Kongsi idea",
     "license": "Lesen",
-    "coffee": "Belanja saya kopi"
+    "coffee": "Belanja saya kopi",
+    "disclaimer": "Penafian"
   },
   "search": {
     "kindTool": "Alat",
@@ -1456,5 +1457,32 @@
     "articlesHeading": "Artikel",
     "read": "Baca",
     "backToTools": "Semua alat"
+  },
+  "disclaimer_page": {
+    "metaTitle": "Penafian",
+    "metaDescription": "Tiada jaminan dan tiada liabiliti. Segala-galanya di ronutz.com disediakan sebagaimana adanya, dibina daripada maklumat yang tersedia secara umum, untuk digunakan atas risiko dan pertimbangan anda sendiri.",
+    "eyebrow": "Undang-undang",
+    "title": "Penafian dan pembatasan liabiliti",
+    "lede": "Sila baca ini sebelum anda bergantung pada apa-apa yang diberitahu oleh laman ini. Ia ringkas, ia jelas, dan ia terpakai untuk setiap halaman, setiap alat, setiap keputusan, dan setiap baris kod sumber terbuka.",
+    "shortTitle": "Versi ringkas",
+    "short1": "Gunakan laman ini, alatnya, dan kodnya atas risiko dan pertimbangan anda sendiri. Tiada apa-apa di sini yang dijamin: bukan ketepatan keputusan alat, bukan ketepatan artikel atau dokumentasi, dan bukan ketersediaan laman itu sendiri.",
+    "short2": "Segala-galanya di sini dibina dengan niat baik daripada maklumat yang tersedia secara umum, dan ia boleh jadi tidak lengkap, lapuk, atau memang salah. Sentiasa sahkan dengan dokumentasi rasmi vendor dan ujian anda sendiri sebelum anda bertindak atas apa-apa.",
+    "short3": "Jika anda tidak bersetuju dengan mana-mana bahagian notis ini, jangan gunakan laman atau kod tersebut.",
+    "asIsTitle": "Tiada jaminan dalam apa jua bentuk",
+    "asIsBody": "Laman, alatnya, kandungannya, dan kod sumber terbuka yang berkaitan disediakan atas dasar sebagaimana adanya dan sebagaimana tersedia, tanpa jaminan atau syarat dalam apa jua bentuk, sama ada nyata, tersirat, berkanun, atau selainnya, termasuk tetapi tidak terhad kepada apa-apa jaminan tersirat tentang kebolehdagangan, kesesuaian untuk tujuan tertentu, hak milik, tidak melanggar, ketepatan, kelengkapan, kebolehpercayaan, atau ketersediaan tanpa gangguan. Tiada nasihat atau maklumat yang diperoleh daripada laman ini mewujudkan sebarang jaminan yang tidak dinyatakan secara nyata di sini, dan tiada apa-apa di sini yang dinyatakan secara nyata.",
+    "accuracyTitle": "Ketepatan: maklumat umum, usaha terbaik, tiada jaminan",
+    "accuracyBody": "Setiap alat, artikel, dan dokumen di laman ini dibina daripada maklumat yang tersedia secara umum seperti dokumentasi vendor, piawaian, dan RFC, ditafsirkan dengan niat baik. Sumber boleh berubah, tafsiran boleh tersilap, perisian boleh mempunyai pepijat, dan kandungan boleh menjadi lapuk. Output alat ialah bantuan bermaklumat, bukan jawapan berwibawa. Sebelum anda mengkonfigurasi, mengubah, membeli, memperakui, atau menyelesaikan masalah apa-apa berdasarkan apa yang anda baca atau kira di sini, sahkannya dengan dokumentasi rasmi vendor atau piawaian berkenaan dan dengan ujian anda sendiri. Tanggungjawab bagi apa-apa keputusan yang anda buat, dan bagi akibatnya, adalah sepenuhnya milik anda.",
+    "adviceTitle": "Bukan nasihat profesional, tiada gabungan",
+    "adviceBody": "Tiada apa-apa di laman ini merupakan nasihat profesional, undang-undang, keselamatan, pematuhan, atau pensijilan, dan tiada apa-apa di sini mewujudkan hubungan profesional dalam apa jua bentuk. Ini ialah laman bebas. Nama produk dan syarikat yang muncul di sini, termasuk F5, Fortinet, Extreme Networks, dan Netskope, ialah tanda dagangan pemilik masing-masing, digunakan hanya untuk mengenal pasti teknologi yang dibincangkan, dan tidak membayangkan sebarang gabungan dengan, penajaan oleh, atau sokongan daripada syarikat-syarikat tersebut.",
+    "liabilityTitle": "Pembatasan liabiliti: tiada",
+    "liabilityBody": "Setakat maksimum yang dibenarkan oleh undang-undang yang terpakai, pemilik laman, penyumbang, dan sesiapa sahaja yang terlibat dalam mencipta, menghasilkan, mengehos, atau menyampaikan laman ini atau kodnya tidak akan bertanggungjawab atas apa-apa ganti rugi atau kerugian dalam apa jua bentuk yang timbul daripada atau berkaitan dengan penggunaan anda, atau ketidakupayaan untuk menggunakan, laman, alatnya, keputusannya, kandungannya, atau kodnya. Pengecualian ini merangkumi ganti rugi langsung, tidak langsung, sampingan, khas, berbangkit, punitif, dan teladan, dan termasuk, tanpa had, kehilangan data, kehilangan keuntungan, kehilangan perniagaan, kehilangan nama baik, gangguan perniagaan, perolehan perkhidmatan gantian, serta akibat peribadi atau profesional daripada keputusan yang dibuat dengan bergantung pada apa-apa yang ditemui di sini, walaupun telah dinasihatkan tentang kemungkinan ganti rugi sedemikian, dan tanpa mengira teori liabiliti. Apabila undang-undang yang terpakai tidak membenarkan pengecualian liabiliti sepenuhnya, liabiliti dihadkan kepada jumlah yang paling kecil dan skop yang paling sempit yang dibenarkan oleh undang-undang.",
+    "securityTitle": "Keselamatan: usaha terbaik, tiada tanggungjawab atas pelanggaran",
+    "securityBody": "Laman ini direka untuk meminimumkan risiko: ia dijana secara statik, alatnya mengira secara setempat dalam pelayar anda, dan ia mengelak daripada mengumpul data yang tidak diperlukannya. Usaha terbaik dilakukan untuk memastikan laman dan kebergantungannya selamat. Namun, tiada sistem yang dijamin selamat, dan jaminan sedemikian tidak diberikan di sini. Pemilik laman tidak boleh dipertanggungjawabkan atas pelanggaran keselamatan, kerentanan, atau insiden, sama ada dalam laman ini, kebergantungannya, infrastruktur pengehosan atau penyampaiannya, atau rantaian bekalan perisiannya, yang mungkin memberi kesan kepada pengguna laman ini atau pengguna kod sumber terbuka yang diselenggara di github.com/ronutz. Jika anda menemui isu keselamatan, laporan melalui halaman hubungi kami amat dialu-alukan.",
+    "openSourceTitle": "Kod sumber terbuka",
+    "openSourceBody": "Kod sumber terbuka yang diterbitkan di github.com/ronutz dilesenkan di bawah terma lesennya sendiri, pada masa ini Lesen Apache 2.0 untuk enjin netcore. Lesen itu mentadbir kod dan menyediakan kod itu sendiri sebagaimana adanya, dengan penafian jaminan dan pembatasan liabilitinya sendiri, yang terpakai sepenuhnya kepada sesiapa yang menggunakan, menyalin, mengubah suai, atau mengedar semula kod tersebut. Tiada apa-apa di halaman ini yang mengurangkan atau menggantikan terma lesen tersebut.",
+    "changesTitle": "Perubahan",
+    "changesBody": "Laman, alatnya, kandungannya, kodnya, dan notis ini boleh berubah, rosak, atau hilang pada bila-bila masa, tanpa notis dan tanpa kewajipan kepada sesiapa. Versi yang terpakai ialah versi semasa halaman ini.",
+    "acceptBody": "Dengan menggunakan laman ini atau kodnya, anda menerima notis ini sepenuhnya. Jika anda tidak menerimanya, satu-satunya remedi anda ialah berhenti menggunakan laman dan kod tersebut.",
+    "backHome": "Kembali ke laman utama"
   }
 }
