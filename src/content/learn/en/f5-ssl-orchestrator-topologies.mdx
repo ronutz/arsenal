@@ -1,0 +1,45 @@
+---
+slug: f5-ssl-orchestrator-topologies
+title: "F5 SSL Orchestrator: Forward and Reverse Proxy Topologies"
+summary: "SSL Orchestrator is F5's dedicated TLS-visibility product: it decrypts traffic once and steers it through a chain of security devices. Its topologies map directly onto the generic proxy modes, forward proxy for outbound (forging certificates) and reverse proxy for inbound (holding them), across L3 explicit, L3 transparent, and L2 forms. This covers the topology names, how each handles certificates, and the service-chaining model that is the point of the product."
+concepts: ["f5", "sslo", "ssl orchestrator", "forward proxy", "reverse proxy", "tls interception", "service chain", "bigip", "certificate forging"]
+relatedTools: []
+sub: sslo
+relatedArticles: ["ssl-forward-proxy-interception", "tls-reverse-proxy-inbound", "http-proxy-forward-and-reverse", "certificate-validation"]
+category: security
+order: 40
+status: reviewed
+updated: "2026-07-06"
+---
+
+The generic articles on SSL forward proxy and inbound TLS describe interception in the abstract. F5's SSL Orchestrator (SSLO) is a concrete, purpose-built implementation of both, layered on the BIG-IP platform, and its terminology maps cleanly onto those generic ideas once you see the correspondence. This is written to complement those articles, not repeat them, so it assumes the mechanics of forging and terminating and focuses on how SSLO names and arranges them.
+
+## What SSL Orchestrator adds over a plain intercept
+
+A BIG-IP with client-SSL and server-SSL profiles can already terminate and re-encrypt TLS. SSL Orchestrator exists because inspecting decrypted traffic usually means feeding it to *several* security devices (a firewall, an IPS, a DLP appliance, a malware sandbox), and doing that well is harder than a single decrypt. SSLO decrypts once and then steers the cleartext through a **dynamic service chain**: a set of independently addressable security services that traffic can be routed to based on policy. F5's documentation stresses the contrast with a traditional daisy chain, where traffic enters one device, leaves to the next, and so on; a dynamic service chain lets devices be targeted independently, and services can be different types, inline Layer 2, inline Layer 3 (routed next-hop), HTTP explicit/transparent, ICAP, or receive-only TAP. Decrypt-once-inspect-many is the product's reason to exist.
+
+## The certificate rule that divides everything
+
+Per F5's own architecture guide, the dividing line is blunt: SSL Orchestrator forward proxy works by forging new certificates for clients based on the certificate received from the server, and reverse proxy works by sending its own certificate to the client. That single sentence is the whole forward-versus-reverse distinction from the generic articles, stated in F5's terms. Forward proxy (outbound) re-issues a server certificate to the client, signed by the organization's CA that its managed devices trust; reverse proxy (inbound) presents the real server's certificate because the organization owns that server. Everything else about a topology follows from which side of this line it is on.
+
+## The outbound (forward proxy) topologies
+
+SSLO presents outbound interception in three shapes, and the names line up with the generic explicit/transparent axis:
+
+**L3 Explicit Proxy** is the traditional explicit forward proxy. The topology defines a listening IP and port that clients are configured to use (by hand, PAC, or WPAD), and it speaks the explicit-proxy protocol, including the HTTP CONNECT method for HTTPS. A useful implementation detail: SSLO's explicit-proxy topology builds two virtual servers, the explicit proxy VIP itself, and a TCP tunnel VIP that the SSL configuration, security policy, and service chains actually attach to; client traffic arrives at the explicit VIP and wraps around through the tunnel VIP. Because authentication happens at the proxy connection layer, an authentication policy (an SWG-Explicit access policy issuing an HTTP 407 challenge) attaches at the explicit VIP, separately from the security policy.
+
+**L3 Outbound** is the traditional transparent forward proxy. There is no configured proxy address; traffic is routed to the BIG-IP self-IP as a next hop (by client gateway, policy-based routing, WCCP, or dynamic routing), and the client is unaware. Interception rules (wildcard listeners on TCP, UDP, and other protocols) catch the flows.
+
+**L2 Outbound** embeds the same forward-proxy behavior in a Layer 2 "virtual wire" architecture, where the BIG-IP is bump-in-the-wire rather than a routed hop; the certificate handling (re-issue to the client) is identical, only the network insertion differs.
+
+## The inbound (reverse proxy) topologies
+
+**L3 Inbound** is a reverse-proxy "gateway" configuration: SSLO sits in front of applications (or in front of another ADC) with a wildcard listener, forwarding decrypted traffic inbound and re-encrypting on egress, since the inbound path must re-encrypt to reach the real servers. In Gateway mode the topology is a routing point with a wildcard destination and no address translation; Application mode enables address translation for individual apps. An L2 Inbound form exists as gateway-only.
+
+**Existing Application** is the pattern to know when a BIG-IP LTM (or APM) already fronts the application and already does its own client-SSL/server-SSL termination and load balancing. This topology adds only the security services, service chain, and security policy (which manifests as an Access per-request policy) and attaches them to the existing virtual, rather than building new virtual servers and SSL. It is how SSLO bolts inspection onto an application delivery setup that is already in place.
+
+## Two details worth carrying away
+
+First, mutual TLS through a reverse-proxy SSLO needs special handling, because the middle device does not hold the client's key. F5's answer is **Client Certificate Constrained Delegation (C3D)**: SSLO completes mTLS with the client, then forges an equivalent client certificate (with a key it controls) to present to the server. Where that is not wanted, the SSL settings offer a "Bypass on Client Cert Failure" option that detects the server's client-certificate request and auto-bypasses decryption for that flow, the same "exempt mutual-TLS destinations" resolution the generic articles describe.
+
+Second, SSLO deployments generate a large number of TMOS objects with a systematic naming scheme (for example `-t-`/`-u-` marking TCP/UDP objects and `-4-`/`-6-` marking IPv4/IPv6), which is why reading an SSLO configuration is easier once you know it is a machine-generated arrangement of ordinary BIG-IP virtual servers, SSL profiles, and pools rather than a monolithic black box.

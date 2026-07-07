@@ -1,0 +1,34 @@
+---
+slug: saml-proxy-explained
+title: "The SAML Proxy: Inserting an Identity Layer into a Session"
+summary: "A SAML proxy sits in the SSO flow rather than the packet path: it terminates the user's request, forces authentication against an identity provider, and only then lets the session through, using SAML's browser-redirect model. It can act as a service provider to the IdP and an identity provider to the app at once (a proxy or broker), which is how one login federates many downstream systems. This explains the roles, the flow, and why it is a proxy at all."
+concepts: ["saml proxy", "identity provider", "service provider", "idp proxy", "sso", "federation", "reverse proxy sso", "identity broker"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-bindings-and-sso-initiation", "ssl-forward-proxy-interception", "oidc-overview"]
+category: security
+order: 6
+status: reviewed
+updated: "2026-07-06"
+---
+
+The proxies in the companion articles operate on packets and connections: a TCP proxy splices transport flows, an HTTP proxy parses requests, a TLS proxy handles encryption. A SAML proxy operates on something different, the authentication decision, and it is worth being precise about the sense in which it is a proxy at all. It does not primarily move bytes; it inserts itself into the single-sign-on handshake so that no request reaches a protected resource until an identity provider has vouched for the user. Understanding it requires the SAML roles first (the overview article covers them in full), then how a proxy slots between them.
+
+## A one-paragraph refresher on the roles
+
+SAML browser SSO has two roles. The **service provider** (SP) is the application the user wants to reach; it needs to know who the user is but delegates that question. The **identity provider** (IdP) is the authority that authenticates the user and issues a signed **assertion** stating who they are. In the standard SP-initiated flow, the user hits the SP, the SP redirects the browser to the IdP with an authentication request, the IdP authenticates the user and redirects the browser back to the SP carrying a signed assertion, and the SP validates the assertion and starts a session. The messages ride on the browser via HTTP-Redirect and HTTP-POST bindings; the SP and IdP never talk directly. Keep that shape in mind, because a proxy works by taking on one or both of these roles.
+
+## What makes it a proxy: terminate, authenticate, admit
+
+A SAML proxy is a component placed in front of one or more applications that enforces SAML authentication on their behalf. When a request arrives, the proxy does not pass it through; it terminates the request and checks for an established, authenticated session. If there is none, it starts the SAML SP-initiated flow itself, redirecting the browser to the IdP, receiving and validating the returned assertion, and only then admitting the request to the downstream application. The application behind it may know nothing about SAML at all; from its point of view, requests simply arrive already authenticated, often with the user's identity handed over in a header or a fresh token.
+
+This is the same terminate-and-admit pattern a reverse proxy uses for traffic, applied to identity. That is the exact sense in which it is a proxy: it stands between the client and the resource, speaks the protocol on the resource's behalf, and lets nothing through until its policy (here, "prove who you are") is satisfied. It is frequently combined with a reverse proxy in the packet path, so the same box both intercepts the connection and enforces the login, but the two functions are conceptually separate.
+
+## The powerful case: an identity provider proxy
+
+The richer configuration is when the proxy plays **both** roles at once. To the upstream identity provider it presents itself as a service provider (it sends authentication requests and consumes assertions); to the downstream applications it presents itself as an identity provider (it issues assertions they consume). Sitting in the middle, it is an **IdP proxy** or **identity broker**.
+
+This chaining is what makes federation scale. A single proxy can authenticate the user once against one upstream IdP and then satisfy many downstream applications, each of which trusts only the proxy, not the original IdP. It lets an organization put one consistent authentication policy (multi-factor requirements, device checks, conditional access) at a single chokepoint in front of applications that each speak their own dialect. It also bridges identity systems: the upstream side can be one protocol or IdP and the downstream side another, with the proxy translating between them, which is how a SAML app can be fronted by an OIDC login, or vice versa. The proxy becomes a trust hub: downstream apps delegate to it, it delegates upstream, and the user experiences a single sign-on across the whole set.
+
+## Why the mode matters
+
+Because a SAML proxy rides the browser-redirect flow, it inherits SAML's assumptions, and they shape where it fits. It works cleanly for browser-based access, where redirects and POSTs are natural, and it depends on the user having a browser session to redirect, which is why it suits interactive users and struggles with headless clients and servers that cannot follow a SAML redirect. Its security rests entirely on validating the assertion correctly: checking the signature, the issuer, the audience, and the conditions, exactly the checks the SAML signatures and assertions articles describe, because a proxy that admits requests on the strength of an assertion it failed to verify is an open door. And as a trust hub it concentrates risk: compromise the proxy and you compromise access to everything behind it, the identity-layer analogue of the concentration-of-plaintext concern that an SSL forward proxy raises for content.

@@ -1,0 +1,38 @@
+---
+slug: tcp-proxy-layer-4
+title: "O Proxy TCP: O Que um Middlebox de Camada 4 Vê e o Que Não Vê"
+summary: "Um proxy TCP termina a conexão TCP do cliente e abre uma separada para o servidor, unindo dois fluxos independentes na Camada 4. Ele reescreve endereços e portas, pode agrupar e reutilizar conexões, e não vê nada do payload da aplicação acima do cabeçalho de transporte. Este artigo explica full-proxy versus encaminhamento de pacotes, por que o IP de origem desaparece, e como o Proxy Protocol o traz de volta."
+concepts: ["proxy tcp", "camada 4", "full proxy", "splicing de conexao", "source nat", "proxy protocol", "balanceamento de carga", "transporte"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["http-proxy-forward-and-reverse", "tls-reverse-proxy-inbound", "how-a-virtual-server-works"]
+category: networking
+order: 82
+status: reviewed
+updated: "2026-07-06"
+---
+
+Um proxy é qualquer intermediário que fica entre um cliente e um servidor e fala com cada um em nome do outro. O lugar mais baixo e útil para fazer isso é a Camada 4, a camada de transporte, onde a unidade de trabalho é uma conexão TCP em vez de uma requisição HTTP ou um registro TLS. Um proxy TCP é o full proxy mais simples que existe, e entender exatamente o que ele pode e não pode ver torna todo proxy de camada superior mais fácil de raciocinar.
+
+## Duas conexões, unidas
+
+O movimento que define um proxy TCP é que ele não encaminha pacotes; ele termina uma conexão e origina outra. O cliente completa um handshake TCP completo (SYN, SYN-ACK, ACK) com o proxy e acredita estar falando com o servidor. O proxy, por sua vez, completa seu próprio handshake separado com o servidor real. A partir daí o proxy repassa bytes entre os dois: ele lê de um socket e escreve no outro, nas duas direções, até que um lado feche. Isso se chama splicing de conexão ou full proxy na Camada 4.
+
+Como há duas conexões independentes, elas podem diferir em quase todos os detalhes de transporte. As conexões do lado cliente e do lado servidor têm seus próprios números de sequência, seus próprios tamanhos de janela, suas próprias opções TCP e seu próprio estado de congestionamento. Um enlace de cliente lento e com perdas e um enlace de servidor rápido não compartilham mais um único laço de controle fim a fim; o proxy faz buffer entre eles e deixa cada lado rodar no seu próprio ritmo. Esse desacoplamento é grande parte do motivo pelo qual um full proxy melhora desempenho e resiliência, e é invisível para os dois pontos de extremidade.
+
+## O que a Camada 4 vê, e o que não vê
+
+Um proxy TCP opera sobre o cabeçalho de transporte: endereço IP de origem e destino, porta de origem e destino, e as flags e opções TCP. Isso é suficiente para tomar uma decisão de encaminhamento, para balancear carga entre um pool de servidores, para impor limites de conexão e para aplicar tradução de endereços de origem e destino. Não é suficiente para ver nada sobre a aplicação. Métodos HTTP, URLs, cabeçalhos, nomes de host e quaisquer detalhes do handshake TLS vivem todos no payload acima do cabeçalho de transporte, e um proxy puramente de Camada 4 trata esse payload como um fluxo opaco de bytes que ele copia sem parsear.
+
+Esse é o trade-off central. Um proxy de Camada 4 é rápido e agnóstico ao protocolo precisamente porque não parseia o payload; ele fará proxy de HTTP, TLS, SSH, um protocolo de banco de dados ou qualquer outra coisa de bom grado, porque não se importa com o que os bytes significam. Mas ele também não pode tomar decisões que dependam do conteúdo da aplicação, não pode rotear por URL, e não pode inspecionar um fluxo criptografado. Quando você precisa dessas coisas, sobe para um proxy de Camada 7 (veja o artigo sobre proxies HTTP), e paga pela visibilidade extra com o custo do parsing.
+
+Há uma nuance importante para o tráfego criptografado. Um proxy de Camada 4 não pode ler uma sessão TLS, mas os primeiros bytes de um ClientHello TLS são enviados em texto claro, e incluem o Server Name Indication (SNI). Um proxy de Camada 4 pode espiar esse único campo para rotear uma conexão ao backend certo por nome de host sem descriptografar nada, um padrão comum para TLS passthrough. Ainda não é descriptografia; é ler um rótulo em texto claro num fluxo que de resto é opaco.
+
+## O endereço de origem que desaparece
+
+Como o proxy origina uma conexão novinha para o servidor, o servidor vê o endereço do proxy como origem, não o do cliente. Do ponto de vista do servidor toda conexão vem do punhado de IPs do proxy. Isso normalmente é deliberado (é como funcionam o source NAT e o agrupamento de conexões) mas destrói a informação que muitos servidores mais querem: quem o cliente realmente era. Logs de acesso mostram o proxy; regras de acesso baseadas em IP veem o proxy; a geolocalização vê o proxy.
+
+Dois mecanismos trazem a identidade do cliente de volta. Na Camada 7, proxies HTTP adicionam um cabeçalho `X-Forwarded-For`, mas isso só funciona para HTTP e só depois que o payload é parseado. Na Camada 4, a resposta é o **Proxy Protocol**, um pequeno cabeçalho que o proxy prepende no início do fluxo TCP do lado servidor, antes de qualquer dado de aplicação, carregando o endereço e a porta de origem e destino originais. O servidor (se entender o Proxy Protocol) lê esse cabeçalho primeiro, registra o endereço real do cliente, e então trata o resto do fluxo normalmente. É o jeito da Camada 4 de preservar a identidade do cliente através de uma conexão que foi re-originada, e é agnóstico ao protocolo porque fica inteiramente abaixo da aplicação.
+
+## Onde você encontra proxies TCP
+
+Qualquer balanceador de carga ou ADC rodando num modo rápido de Camada 4 é um proxy TCP. No F5 BIG-IP, por exemplo, o perfil FastL4 conduz um caminho leve de Camada 4 (com aceleração de hardware em plataformas suportadas) exatamente para os casos em que você quer throughput e manejo de conexões sem parsing de Camada 7; um virtual server Standard, em contraste, engaja o full proxy TCP e pode empilhar processamento HTTP e TLS por cima. Balanceadores de carga em nuvem expõem a mesma divisão como balanceadores "de rede" (Camada 4) versus "de aplicação" (Camada 7). O padrão é idêntico em todo lugar: decida se você precisa ver a aplicação, e se não precisa, fique na Camada 4 onde é mais barato e mais geral.

@@ -44,6 +44,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "21:32",
+    kind: "content",
+    title: "New Learn articles: proxies, TLS interception, and SAML proxying",
+    body:
+      "A batch of ten articles on the proxy family. Five vendor-agnostic explainers cover the TCP proxy at Layer 4, HTTP proxies (forward vs reverse, explicit vs transparent), inbound TLS at a reverse proxy (offload, bridging, passthrough), the SSL forward proxy that intercepts outbound TLS, and the SAML proxy that inserts an identity layer into a session. Five vendor companions map those concepts onto real products: F5 SSL Orchestrator topologies, F5 BIG-IP APM as a SAML SP/IdP, enforcing forward secrecy on F5, FortiGate certificate vs deep SSL inspection, and Netskope cloud forward proxy with inline TLS decryption. Perfect forward secrecy and the F5 client-SSL/server-SSL profile split were already covered by existing explainers, which the new articles link to rather than duplicate. Every vendor claim was checked against the vendor's own documentation. English and Portuguese, with the other locales served by English fallback.",
+  },
+  {
+    date: "2026-07-06",
     time: "20:52",
     kind: "feature",
     title: "Boss-screens viewer: grouped, with a jump navigator",

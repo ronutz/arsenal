@@ -1,0 +1,31 @@
+---
+slug: netskope-inline-tls-decryption
+title: "Netskope: Cloud Forward Proxy and Inline TLS Decryption"
+summary: "Netskope is a forward proxy that lives in the cloud rather than on a box at your edge: traffic is steered to its NewEdge data planes, where the Next Gen SWG decrypts, inspects, and applies policy inline. This maps Netskope's steering methods and its SAML-based user identification onto the generic forward-proxy interception model, and covers the root-CA trust requirement and the certificate-pinning bypass that every cloud-proxy deployment hits."
+concepts: ["netskope", "swg", "forward proxy", "tls interception", "inline decryption", "steering", "newedge", "sase", "certificate pinning"]
+relatedTools: ["x509"]
+sub: swg
+relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reverse", "saml-proxy-explained", "certificate-validation"]
+category: security
+order: 43
+status: reviewed
+updated: "2026-07-06"
+---
+
+The generic SSL forward proxy article describes outbound TLS interception performed by a proxy at the network edge. Netskope does the same job, but relocates the proxy: instead of an appliance in the data center, the interception happens in Netskope's cloud, the NewEdge global network of data planes, and traffic is steered there from wherever the user is. That single architectural shift is what makes it a Secure Service Edge (SSE) product rather than a box, and it changes how the pieces of the generic model are arranged without changing the mechanics of interception itself.
+
+## Where the proxy lives: steering to the cloud
+
+Because the proxy is not on the local network, the first problem is getting traffic to it. Netskope calls this **steering**, and its reference architecture offers several methods for the forward-proxy (outbound) case: the **Netskope One Client** on managed endpoints (a lightweight agent that tunnels cloud and web traffic to the platform, with all proxying and security done in the cloud); **GRE or IPsec tunnels** from an on-premises egress device (with at least two tunnels to different NewEdge data planes recommended for resilience); and the **Cloud Explicit Proxy**, steered by a PAC file, for devices that cannot run the client. When explicit-proxy traffic is carried inside a tunnel, Netskope calls the method **Explicit Proxy over Tunnel (EPoT)**. The common thread is that all of these deliver the user's web and cloud traffic to a NewEdge data plane, which is where the actual forward proxy sits.
+
+## Interception, unchanged in the middle
+
+Once traffic reaches NewEdge, the interception is the generic model exactly. The Next Gen Secure Web Gateway terminates the user's TLS, opens its own session to the destination, decrypts, inspects, applies policy (web filtering, threat protection, DLP, inline CASB controls), and re-encrypts. And it depends on the same trust anchor every interception depends on: the **Netskope root CA must be trusted on the endpoints**, or clients will reject the re-signed certificates. Netskope's own documentation is explicit that user SAML authentication and SSL inspection are possible only if the Netskope root and intermediate certificate bundle can be installed on the endpoints. For remote users on the Cloud Explicit Proxy, the root certificate is downloaded and installed per device. This is the cloud-hosted version of the "install the proxy's CA on managed devices" requirement from the generic article.
+
+## Identifying the user: SAML in the forward-proxy path
+
+A forward proxy needs to know *who* the user is to apply per-user policy, and here Netskope leans on SAML, which is why this topic touches the SAML proxy article. In the explicit-proxy path, user identity can be established with a SAML 2.0 IdP, configured under Settings > Security Cloud Platform > Forward Proxy > SAML; the user's browser is set to use port 8081 for this, and the authenticated identity then drives policy. The plain Cloud Explicit Proxy, once a user is identified, relies on cookie surrogates to keep associating subsequent requests with that user. Remote users from unknown locations are required to authenticate to the IdP before browsing. This is the forward-proxy use of SAML (authenticate the user of an outbound session); it is distinct from Netskope's SAML *reverse* proxy, which inserts into a SaaS application's own SSO flow to control inbound access to sanctioned apps clientlessly, the reverse-proxy side that the SAML proxy article's federation discussion describes.
+
+## The pinning problem, and Bypass + Tunnel
+
+Being a forward proxy, Netskope hits the same wall the generic article describes: certificate-pinned applications reject the re-signed certificate and break. Netskope's handling has a useful twist for a cloud proxy. A plain **Bypass** sends the traffic straight to its destination, skipping Netskope entirely. But pinned applications also have the option to **Bypass Netskope Proxy + Tunnel**: the traffic is still tunneled to Netskope and egresses through its data plane (so it is still steered and still visible at the connection level), but SSL decryption and policy enforcement are skipped for it. That preserves egress control and some visibility for pinned apps that cannot tolerate interception, and Netskope recommends Bypass + Tunnel over a plain bypass for exactly that reason. It is the cloud-proxy expression of the generic article's rule that a real interception deployment is inspect-by-default plus a maintained set of exceptions for pinned and otherwise un-interceptable traffic.

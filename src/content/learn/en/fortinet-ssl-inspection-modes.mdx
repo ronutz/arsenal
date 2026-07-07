@@ -1,0 +1,33 @@
+---
+slug: fortinet-ssl-inspection-modes
+title: "FortiGate SSL Inspection: Certificate vs Deep Inspection"
+summary: "A FortiGate inspects encrypted traffic in one of two modes: certificate inspection reads only the SNI and the certificate to make a filtering decision without decrypting, while deep (full) inspection is a full man-in-the-middle that decrypts, inspects, and re-encrypts. This maps FortiGate's SSL/SSH inspection profiles onto the generic forward-proxy interception model and covers the flow-versus-proxy engine split that shapes what each can do."
+concepts: ["fortinet", "fortigate", "ssl inspection", "certificate inspection", "deep inspection", "full ssl inspection", "tls interception", "forward proxy"]
+relatedTools: ["x509"]
+sub: fortigate
+relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reverse", "certificate-validation", "hsts-and-https"]
+category: security
+order: 42
+status: reviewed
+updated: "2026-07-06"
+---
+
+The generic SSL forward proxy article explains outbound TLS interception in the abstract. A FortiGate is one of the most widely deployed places that interception actually happens, and Fortinet frames it as two distinct SSL inspection modes with a clear line between them. This complements the generic article by mapping FortiGate's terminology and profiles onto it, so it assumes the mechanics of forging and terminating and focuses on the FortiGate specifics.
+
+## The two modes, and the line between them
+
+FortiOS applies SSL inspection through an SSL/SSH inspection profile attached to a firewall policy. It ships four predefined profiles: `certificate-inspection`, `deep-inspection`, and `no-inspection` (read-only), plus `custom-deep-inspection`, which is editable; you can also clone any of them. The important choice is between the first two.
+
+**Certificate inspection** does not decrypt. It inspects only up to the SSL/TLS handshake, reading the Server Name Indication and the fields in the server's certificate (the subject and subject-alternative-name), then makes a security decision from that clear-text metadata alone. That is enough to do web filtering by hostname or category, and nothing more: because the payload is never decrypted, certificate inspection cannot drive antivirus, IPS, DLP, or application control, all of which need the actual content. Two limitations are worth noting from Fortinet's documentation: certificate inspection does not validate the certificate (in flow mode, untrusted-certificate and server-certificate SNI checks are not performed), and the built-in `certificate-inspection` profile is read-only and listens only on port 443, so inspecting HTTPS on a non-standard port means creating a custom profile. It is the privacy-preserving, low-impact option for when you only need to control which sites are reached.
+
+**Deep inspection** (also called full SSL inspection) is the full man-in-the-middle. The FortiGate impersonates the recipient of the client's TLS session: it establishes two encrypted sessions, one client-to-FortiGate and one FortiGate-to-server, decrypts and inspects the content between them, then re-encrypts and forwards to the real recipient. Only the FortiGate, in the middle, sees plaintext. This is what unlocks deep security: antivirus, IPS, DLP, and application control can all run on the decrypted stream, and deep inspection covers not just HTTPS but other TLS-wrapped protocols such as SMTPS, POP3S, IMAPS, and FTPS.
+
+## The certificate that makes deep inspection work (or warn)
+
+Deep inspection is the generic interception model exactly: to present a certificate for a site it does not own, the FortiGate re-signs the server's certificate with a stored CA. By default that CA is **Fortinet_CA_SSL** (there is also Fortinet_CA_Untrusted for servers whose own certificate failed validation, and you can upload your own CA). Because Fortinet_CA_SSL is not in browsers' trusted-root lists out of the box, an un-provisioned client shows a certificate warning on every deep-inspected site, the browser correctly detecting an unrecognized man-in-the-middle. The fix is the same as the generic article's: distribute the FortiGate's CA certificate into the clients' Trusted Root store (commonly by Active Directory group policy on managed Windows fleets). And as always, deep inspection is defeated by certificate pinning and HSTS, and Fortinet supports address and web-category allowlists to exempt sensitive or pinned traffic (banking, healthcare) from decryption.
+
+## Flow versus proxy: two engines, different reach
+
+A FortiGate-specific detail that shapes behavior: FortiGate performs inspection with one of two engines. The **IPS engine** handles flow-based inspection, and the **WAD daemon** handles proxy-based inspection. They aim at the same goal, decrypting TLS for other engines to inspect, but their capabilities differ because one is flow and the other is a proxy. Two consequences matter in practice. First, protocol port mapping (telling the FortiGate that IMAPS is on a non-default port, for example) only works in proxy-based inspection; flow-based inspection inspects all ports regardless. Second, the inspection mode is set at both the policy and the profile level and they must agree, if the security profile is proxy-based, the policy must be in proxy mode. The default policy mode is flow; proxy mode is used when you need proxy-only options. The engine split also affects features like replacement-message blocking pages, which behave differently between the two modes.
+
+The upshot mirrors the generic article: certificate inspection is the see-the-label, don't-open-the-envelope option for web filtering with minimal disruption and privacy preserved; deep inspection is the open-the-envelope option required for real content security, at the cost of managing a trusted CA on every client and maintaining exceptions for the traffic that pinning, HSTS, and law place off-limits.

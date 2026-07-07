@@ -1,0 +1,33 @@
+---
+slug: enforcing-forward-secrecy-on-f5
+title: "Impondo Forward Secrecy no F5 BIG-IP"
+summary: "Forward secrecy não é uma caixa de seleção no BIG-IP; é uma consequência da configuração de cifras num perfil SSL. Este artigo mostra como as cipher rules e os cipher groups do BIG-IP controlam se o conjunto negociado usa uma troca de chaves efêmera (ECDHE/DHE) ou RSA estático, por que a preferência de cifra do lado servidor importa, e como o TLS 1.3 remove a escolha. Ele encerra com como a Fortinet e o Netskope impõem a mesma propriedade."
+concepts: ["f5", "ltm", "forward secrecy", "cipher group", "cipher rule", "ecdhe", "bigip", "perfil ssl"]
+relatedTools: ["f5-cipher-string-expander"]
+sub: ltm
+relatedArticles: ["forward-secrecy", "f5-clientssl-vs-serverssl", "f5-cipher-ordering-and-negotiation", "tls13-cipher-suites"]
+category: transport
+order: 45
+status: reviewed
+updated: "2026-07-06"
+---
+
+O artigo genérico sobre forward secrecy explica a propriedade: uma sessão tem forward secrecy quando seu segredo foi derivado de uma troca de chaves efêmera (ECDHE ou DHE) em vez de criptografado sob a chave RSA de longo prazo do servidor. No F5 BIG-IP essa propriedade não é um interruptor que você habilita; ela é decidida pela configuração de cifras anexada ao perfil SSL que termina a conexão. Este texto companheiro mostra onde essa configuração vive e como tornar a forward secrecy o resultado garantido, e então nota como o mesmo trabalho é feito na Fortinet e no Netskope.
+
+## Onde a decisão é tomada
+
+A forward secrecy no BIG-IP é resolvida por quais conjuntos de cifras o perfil SSL voltado ao cliente está disposto a negociar, e em que ordem ele os prefere. O perfil client SSL carrega uma configuração de cifras; o token de troca de chaves do conjunto negociado é o que determina a forward secrecy, exatamente como o artigo genérico descreve. Se o perfil permite e prefere conjuntos ECDHE (ou DHE), as sessões ganham forward secrecy; se ele permite conjuntos de transporte de chave RSA estático (aqueles cujo nome IANA começa com `TLS_RSA_WITH_`) e um cliente os prefere, essas sessões não ganham. Impor forward secrecy, portanto, significa moldar a lista de cifras de modo que a troca de chaves efêmera seja oferecida e o transporte de chave RSA estático seja excluído ou despriorizado.
+
+O BIG-IP moderno expressa isso com **cipher rules** e **cipher groups** em vez de uma única string opaca. Uma cipher rule nomeia uma string de cifras ordenada mais restrições opcionais de grupo DH e de assinatura; um cipher group combina rules com ações de allow, restrict e exclude para produzir a lista final. A forma mais antiga é uma **cipher string** bruta definida diretamente no perfil, uma lista ordenada de conjuntos de cifras separados por dois-pontos, onde palavras-chave se combinam com `+` e um `!` inicial exclui, `-` deleta, e `@STRENGTH` reordena por comprimento de chave. De qualquer forma, a mecânica é a mesma: você está construindo o conjunto ordenado de suites que o perfil negociará, e a forward secrecy é imposta garantindo que esse conjunto contenha suites de troca de chaves efêmera e não recaia em RSA estático. Como a lista exata de suites expandida depende do banco de dados de cifras do TMOS por versão, vale confirmar o resultado em vez de assumi-lo; a ferramenta cipher-string-expander explica o que uma dada rule ou string significa e sinaliza escolhas fracas ou obsoletas, e na caixa o `tmm --clientciphers <string>` imprime a lista ordenada de fato que um perfil ofereceria.
+
+## Por que a preferência do lado servidor importa
+
+Escolher quais suites são permitidas é apenas metade do trabalho; a ordem decide qual é de fato escolhida. Durante a negociação, o cliente oferece uma lista e o servidor escolhe. Por padrão um servidor pode honrar a ordem de preferência do cliente, o que significa que um cliente que prefere um conjunto mais fraco ou sem forward secrecy pode puxar a sessão para lá mesmo que opções melhores existam. Habilitar a **preferência de cifra do servidor** (para que a ordem do próprio BIG-IP vença) é o que torna uma política de ordenação de fato aplicável: coloque as suites ECDHE-AEAD primeiro, e o servidor as escolherá sempre que o cliente as suportar, independentemente da ordem do cliente. Esse é o tema do artigo companheiro sobre ordenação e negociação de cifras, e é a diferença entre "suites com forward secrecy estão disponíveis" e "suites com forward secrecy são usadas".
+
+## O TLS 1.3 remove a escolha
+
+A imposição mais limpa é preferir o TLS 1.3 no lado voltado ao cliente. Como o artigo genérico e o artigo sobre TLS 1.3 explicam, o TLS 1.3 removeu o transporte de chave RSA estático do protocolo inteiramente; toda troca de chaves do TLS 1.3 é efêmera, então a forward secrecy é garantida para qualquer sessão negociada em 1.3 sem nenhum ajuste de cifra necessário. A configuração de cifras então só governa o fallback para TLS 1.2, que é onde a disciplina ECDHE-versus-RSA-estático ainda se aplica para clientes que não conseguem fazer 1.3. Lembre do artigo sobre perfis client-SSL versus server-SSL que os dois perfis carregam configurações de cifras independentes, então uma revisão de endurecimento confirma a forward secrecy na perna do cliente e, separadamente, na perna de recriptografia até o backend.
+
+## O mesmo trabalho na Fortinet e no Netskope
+
+O princípio é independente de fornecedor; apenas a superfície de controle difere. Num **FortiGate**, as configurações de inspeção SSL/SSH e as configurações SSL do VIP ou do server-load-balance expõem os conjuntos de cifras permitidos e as versões de TLS, e impor forward secrecy significa permitir conjuntos ECDHE e desabilitar RSA estático e versões de protocolo obsoletas; aqui também, preferir o TLS 1.3 torna isso automático. No **Netskope**, a terminação TLS acontece na data plane da nuvem, então a política de cifras é uma configuração no nível do tenant em vez de um perfil por dispositivo: a plataforma negocia suites modernas e com forward secrecy com clientes e destinos, e a alavanca do administrador é a versão mínima de TLS e a política de descriptografia em vez de uma string de cifras escrita à mão. Em todos os casos a regra subjacente do artigo genérico se mantém inalterada: a forward secrecy está presente exatamente quando a troca de chaves negociada é efêmera, e cada produto simplesmente lhe dá um jeito diferente de garantir esse resultado.

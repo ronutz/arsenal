@@ -1,0 +1,40 @@
+---
+slug: tls-reverse-proxy-inbound
+title: "TLS de Entrada: Offload, Bridging e Passthrough no Reverse Proxy"
+summary: "Um reverse proxy que trata HTTPS de entrada tem três escolhas para a sessão TLS: terminá-la e enviar texto claro ao backend (offload), terminar e recriptografar até o backend (bridging), ou encaminhar os bytes criptografados intocados (passthrough). Cada uma equilibra visibilidade contra confidencialidade e custo de forma diferente. Este artigo explica as três, por que o proxy detém o certificado do servidor, e o que o SNI e o TLS mútuo mudam."
+concepts: ["terminacao tls", "ssl offload", "ssl bridging", "ssl passthrough", "reverse proxy", "sni", "tls mutuo", "recriptografia", "transporte"]
+relatedTools: ["x509", "cipher"]
+relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "forward-secrecy", "x509-anatomy"]
+category: transport
+order: 9
+status: reviewed
+updated: "2026-07-06"
+---
+
+Quando um reverse proxy fica na frente de aplicações HTTPS, ele precisa decidir o que fazer com a sessão TLS que chega do cliente. A escolha não é incidental: ela determina se o proxy pode ver e agir sobre o tráfego, se os dados ficam criptografados no salto curto até o backend, e quanto trabalho criptográfico o proxy precisa fazer. Há exatamente três opções, e todo balanceador de carga e ADC oferece alguma combinação delas.
+
+A única coisa comum a todo TLS de entrada em reverse proxy é a direção do certificado. Como o proxy está na frente dos servidores, ele apresenta o certificado do **servidor** aos clientes que chegam (ou um certificado válido para o mesmo nome de host). O cliente está se conectando a `www.example.com` e precisa ver um certificado para `www.example.com`; que a caixa terminando o TLS seja um balanceador de carga em vez do servidor web de origem é invisível e intencional. Isso é o oposto de um forward proxy de saída, que forja certificados para destinos que ele não possui, coberto no artigo sobre SSL forward proxy.
+
+## Offload: terminar e seguir em texto claro
+
+No **SSL offload** (também chamado de terminação SSL), o proxy completa o handshake TLS com o cliente, descriptografa o tráfego, e o encaminha ao backend como HTTP em texto claro. A conexão do proxy ao servidor é não criptografada.
+
+Essa é a opção de maior visibilidade e menor custo no backend. Como o tráfego está em texto claro no proxy, tudo acima do TLS está disponível: o proxy pode rotear por URL, aplicar um firewall de aplicação web, inserir cookies para persistência, adicionar `X-Forwarded-For`, cachear e reescrever conteúdo. A criptografia assimétrica cara do handshake, e qualquer aceleração de hardware, acontece uma vez no proxy, e os servidores de backend ficam livres de fazer TLS. O custo é que o tráfego trafega não criptografado entre o proxy e os servidores, o que só é aceitável quando esse caminho é ele mesmo confiável, tipicamente um segmento controlado de data center. Em qualquer ambiente com requisitos de conformidade para criptografia em trânsito de ponta a ponta, o offload puro normalmente não é permitido.
+
+## Bridging: terminar e recriptografar
+
+No **SSL bridging** (também chamado de recriptografia SSL ou, em algumas plataformas, full proxy TLS), o proxy termina a sessão TLS do cliente, descriptografa, faz seu trabalho de Camada 7, e então abre uma **segunda** sessão TLS até o backend e recriptografa antes de encaminhar. Há duas pernas criptografadas com um breve momento de texto claro dentro do proxy onde a inspeção e a política acontecem.
+
+O bridging mantém toda a visibilidade e o controle do offload, porque o proxy ainda descriptografa, ao mesmo tempo em que restaura a criptografia no fio até o backend. Essa combinação é por que é a escolha comum em ambientes regulados: o WAF ainda vê as requisições, a persistência e o roteamento ainda funcionam, e ainda assim nenhum dado de aplicação em texto claro cruza a rede. As duas pernas são sessões TLS independentes, então podem usar certificados diferentes, conjuntos de cifras diferentes e versões de protocolo diferentes; o lado voltado ao cliente pode impor um conjunto moderno e com forward secrecy enquanto o lado do backend usa o que os servidores internos suportarem. O custo é o maior trabalho criptográfico dos três: o proxy roda dois handshakes por conexão e criptografa nas duas direções.
+
+## Passthrough: encaminhar o texto cifrado
+
+No **SSL passthrough**, o proxy não termina o TLS de forma alguma. Ele encaminha o fluxo TCP criptografado direto a um backend, que completa o handshake TLS com o cliente de ponta a ponta. O proxy nunca detém a chave privada e nunca vê texto claro.
+
+O passthrough é na verdade um comportamento de Camada 4 vestindo um rótulo TLS, e herda as propriedades do proxy TCP: rápido, agnóstico ao protocolo e cego ao conteúdo. O proxy não pode aplicar um WAF, não pode rotear por URL, e não pode inserir cookies, porque não pode ler a requisição. O que ele *ainda pode* fazer é rotear pelo Server Name Indication, porque o SNI no ClientHello é enviado em texto claro antes de a criptografia começar; um proxy passthrough espia aquele nome de host para escolher o pool de backend certo sem descriptografar mais nada. O passthrough é a escolha certa quando a criptografia de ponta a ponta até o backend é obrigatória e o proxy não precisa inspecionar, ou quando o backend precisa terminar o TLS ele mesmo (por exemplo, para fazer sua própria autenticação por certificado de cliente).
+
+## O que o SNI e o TLS mútuo mudam
+
+Duas funcionalidades atravessam os três modos. O **SNI** importa porque um único IP e porta de proxy rotineiramente fica na frente de muitos nomes de host; o campo SNI deixa o proxy (ou o backend, sob passthrough) selecionar o certificado e a configuração corretos para o nome solicitado. Acertar o tratamento do SNI é o que faz a hospedagem virtual sobre TLS funcionar.
+
+O **TLS mútuo** (autenticação por certificado de cliente) é onde a escolha do modo se torna consequente. Se o backend espera um certificado de cliente, o offload e o bridging quebram a cadeia, porque o proxy, não o cliente, termina a sessão TLS do cliente, então o certificado do cliente nunca chega ao backend. O proxy pode validar o certificado do cliente ele mesmo e então passar a identidade verificada ao backend num cabeçalho, ou, se o backend realmente precisa ver o certificado original do cliente, algumas plataformas reapresentam uma cópia restrita dele na perna do backend. Se nenhum for aceitável, o passthrough é o único modo que preserva um handshake TLS mútuo genuíno de ponta a ponta. Decidir como o TLS mútuo é tratado é frequentemente o que força a escolha entre os três modos em primeiro lugar.

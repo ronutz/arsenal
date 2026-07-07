@@ -1,0 +1,40 @@
+---
+slug: http-proxy-forward-and-reverse
+title: "Proxies HTTP: Forward vs Reverse, Explícito vs Transparente"
+summary: "Um proxy HTTP parseia requisições na Camada 7, então pode rotear por URL, reescrever cabeçalhos e impor política sobre conteúdo que um proxy TCP não consegue ver. Dois eixos descrevem toda implantação: forward vs reverse (para qual lado ele trabalha) e explícito vs transparente (se o cliente sabe que ele está lá). Este artigo cobre o método CONNECT, o X-Forwarded-For e o Via, e onde cada combinação é usada."
+concepts: ["proxy http", "forward proxy", "reverse proxy", "proxy explicito", "proxy transparente", "metodo connect", "x-forwarded-for", "camada 7"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["tcp-proxy-layer-4", "tls-reverse-proxy-inbound", "ssl-forward-proxy-interception"]
+category: networking
+order: 83
+status: reviewed
+updated: "2026-07-06"
+---
+
+Assim que um proxy parseia HTTP em vez de apenas repassar bytes, ele se torna um tipo diferente de ferramenta. Ele pode rotear uma requisição por sua URL ou cabeçalho `Host`, adicionar ou remover cabeçalhos, impor política com base no conteúdo real de uma requisição, cachear respostas e reescrever o que passa por ele. Essa é toda a razão para pagar o custo do parsing de Camada 7 que um proxy TCP evita. Mas "proxy HTTP" cobre várias implantações bem diferentes, e duas perguntas independentes fixam qual delas você está olhando.
+
+## Eixo um: forward ou reverse
+
+Um **forward proxy** trabalha em nome dos clientes. Ele fica na borda de uma rede de clientes e intermedeia requisições de saída para a internet mais ampla. A organização que o opera quer controlar, registrar, filtrar ou proteger o que seus próprios usuários alcançam: filtragem web, varredura de malware, prevenção de perda de dados e registro de acesso vivem todos aqui. O conjunto de destinos é aberto (qualquer lugar na internet), e o conjunto de clientes é conhecido (os usuários da organização). Um gateway web corporativo é o forward proxy clássico.
+
+Um **reverse proxy** trabalha em nome dos servidores. Ele fica na frente de um conjunto de aplicações web e intermedeia requisições de entrada da internet até elas. A organização que o opera é dona dos servidores e quer protegê-los, balancear carga e descarregar trabalho para eles: terminação TLS, balanceamento de carga, cache, um firewall de aplicação web e roteamento de requisições vivem todos aqui. Agora o conjunto de clientes é aberto (qualquer um na internet) e o conjunto de destinos é conhecido (as aplicações da organização). Um balanceador de carga ou ADC na frente de uma fazenda web é o reverse proxy clássico.
+
+A mecânica é parecida, mas a direção da confiança é oposta, e isso muda tudo sobre como o proxy é configurado, qual certificado ele apresenta, e o que ele está tentando realizar. A mesma caixa física pode fazer os dois papéis para tráfegos diferentes, e é por isso que manter os dois modelos mentais distintos importa.
+
+## Eixo dois: explícito ou transparente
+
+Este eixo faz uma pergunta mais simples: o cliente sabe que o proxy está lá?
+
+Um **proxy explícito** é aquele que o cliente é deliberadamente configurado para usar. O navegador ou o sistema operacional tem um endereço e porta de proxy definidos (à mão, por um arquivo PAC, ou por autodescoberta WPAD), e envia suas requisições ao proxy de propósito. Para HTTP em texto claro, uma requisição de proxy explícito é visivelmente diferente: o cliente coloca a URL absoluta completa na linha de requisição, `GET http://example.com/path HTTP/1.1`, em vez de apenas o caminho, porque está pedindo ao proxy que vá buscar aquela URL. Para HTTPS, o cliente não pode enviar a requisição em texto claro, então usa o **método CONNECT**: ele pede ao proxy que abra um túnel bruto para `example.com:443`, o proxy responde `200 Connection Established`, e o cliente então roda seu handshake TLS normal através desse túnel. Um proxy explícito simples que só faz CONNECT é efetivamente um túnel de Camada 4 para HTTPS; para ver dentro desse túnel o proxy precisa adicionalmente interceptar o TLS, que é o tema do artigo sobre SSL forward proxy.
+
+Um **proxy transparente** (também chamado de proxy inline ou interceptador) é aquele que o cliente desconhece. O tráfego é redirecionado a ele pela rede, por roteamento, por roteamento baseado em política, por um redirecionamento WCCP, ou porque ele fica inline no caminho, e o cliente acredita estar falando diretamente com o servidor de origem. A requisição parece completamente normal (`GET /path HTTP/1.1` com um cabeçalho `Host`), porque do lado do cliente nada de especial está acontecendo. A implantação transparente é conveniente porque não precisa de configuração no cliente, mas é também por isso que interceptar HTTPS de forma transparente é tão disruptivo: o cliente nunca concordou com um proxy, então um proxy que de repente apresenta seu próprio certificado parece exatamente com um ataque, e defesas como certificate pinning e HSTS são projetadas para rejeitá-lo.
+
+## Os cabeçalhos que marcam a passagem de um proxy
+
+Um reverse proxy que re-origina a conexão esconde o endereço do cliente do backend, o mesmo problema de Camada 4 descrito no artigo do proxy TCP, mas na Camada 7 há uma correção padrão. O proxy adiciona um cabeçalho `X-Forwarded-For` carregando o IP original do cliente (e acrescenta a ele se vários proxies estiverem encadeados), mais companheiros como `X-Forwarded-Proto` (a conexão do cliente era HTTP ou HTTPS) e `X-Forwarded-Host`. O equivalente padronizado moderno é o cabeçalho único `Forwarded` (RFC 7239), que carrega os mesmos fatos num campo estruturado. Um forward proxy, por sua vez, convencionalmente adiciona um cabeçalho `Via` nomeando a si mesmo, então uma resposta carrega um registro visível dos proxies pelos quais passou.
+
+Esses cabeçalhos são estruturais e devem ser tratados com cuidado. Um backend que confia cegamente no `X-Forwarded-For` pode ser enganado por um cliente que define o cabeçalho ele mesmo, então um proxy deve sobrescrever em vez de apenas acrescentar o salto voltado ao cliente, e backends devem confiar no cabeçalho apenas vindo de endereços de proxy conhecidos. Essa é uma fonte comum de bugs de spoofing de IP e de controle de acesso, e vale verificar sempre que uma decisão de "quem é o cliente" está sendo tomada atrás de um proxy.
+
+## Juntando os eixos
+
+Os dois eixos são independentes, então todas as quatro combinações existem e são usadas. Um forward proxy explícito é o gateway web corporativo configurado. Um forward proxy transparente é um gateway inline que intercepta o tráfego de saída sem nenhuma configuração no cliente. Um reverse proxy é quase sempre transparente do lado do cliente (o cliente apenas visita um site e não sabe que há um proxy na frente dele), e só pode ser feito "explícito" no sentido estrito de que o DNS aponta o nome de host para ele. Quando você encontrar um proxy, nomear os dois eixos, para qual lado ele serve e se o cliente sabe, diz a maior parte do que você precisa saber sobre como ele se comporta.

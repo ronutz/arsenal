@@ -1,0 +1,42 @@
+---
+slug: ssl-forward-proxy-interception
+title: "SSL Forward Proxy: How Outbound TLS Interception Works and What Breaks It"
+summary: "To inspect encrypted outbound traffic, a forward proxy performs a controlled man-in-the-middle: it terminates the user's TLS session, opens its own to the real server, and forges a certificate for that server signed by a private CA the organization's own devices trust. This explains the mechanics, the trust model that makes it safe (and dangerous), and why pinning, HSTS, and mutual TLS defeat it."
+concepts: ["ssl forward proxy", "tls interception", "man in the middle", "certificate forging", "private ca", "certificate pinning", "hsts", "outbound inspection", "security"]
+relatedTools: ["x509", "cipher"]
+relatedArticles: ["tls-reverse-proxy-inbound", "http-proxy-forward-and-reverse", "certificate-validation", "hsts-and-https"]
+category: security
+order: 94
+status: reviewed
+updated: "2026-07-06"
+---
+
+Most outbound traffic leaving an organization is now TLS-encrypted, which is good for privacy and bad for a security team that needs to see what its users are sending and receiving. Malware hides its command-and-control in HTTPS; data exfiltration rides the same encrypted channels as legitimate work. A forward proxy that only tunnels HTTPS (via the CONNECT method) can log the destination hostname but cannot see inside. To inspect the content, the proxy has to decrypt it, and decrypting a session designed to be end-to-end confidential means becoming a deliberate, authorized man-in-the-middle. That is what an SSL forward proxy does.
+
+## The mechanics: two sessions and a forged certificate
+
+Break the interception into steps. A user's browser tries to reach `https://example.com`. The forward proxy, sitting inline or configured as the browser's proxy, intercepts the connection. It then does two things at once:
+
+First, it acts as a client to the real server: it opens its own TLS session outbound to `example.com`, validates the server's real certificate against its trust store the way any client would, and establishes an encrypted session with the origin. This is how the proxy sees the true server identity and gets the real content.
+
+Second, it acts as a server to the user: it cannot present `example.com`'s real certificate, because it does not have `example.com`'s private key. Instead it **generates a new certificate for `example.com` on the fly** and signs it with its own certificate authority. It typically copies the real server certificate's identity fields (the subject and subject-alternative-names it just observed on the outbound leg) into the forged certificate so the name matches what the user asked for. The user's browser receives this freshly minted certificate, checks it, and, crucially, must decide whether to trust it.
+
+Now the proxy holds both sessions. It decrypts what the user sends, inspects and applies policy (web filtering, antivirus, data-loss prevention, threat detection), then re-encrypts and forwards to the server, and does the reverse for responses. The user sees a padlock and a valid certificate; the server sees a normal client. In between, the proxy sees everything in the clear.
+
+## The trust model: why it is safe, and why it is dangerous
+
+The whole scheme stands or falls on one thing: the browser must trust the proxy's CA. A forged certificate for `example.com` is, cryptographically, indistinguishable from an attacker's forgery unless the signer is trusted. What makes corporate interception legitimate rather than an attack is that the organization installs its private CA into the trust stores of the devices it manages, by group policy, MDM, or a provisioning image. Because those devices were told in advance to trust this CA, the forged certificates validate cleanly and no warning appears.
+
+That same fact is why interception is powerful and why it is risky. It works only on managed devices where the CA was installed; an unmanaged or personal device that never trusted the CA will show a certificate warning on every intercepted site, which is exactly the intended behavior of a browser detecting a man-in-the-middle. And the proxy's CA is now one of the most sensitive keys in the organization: anyone who steals it can forge a trusted certificate for any site to any of those devices. Interception also concentrates plaintext for the entire user population at one point, so the proxy itself becomes a high-value target and, in many jurisdictions, a legal and privacy obligation (some categories of traffic, such as banking and healthcare, are commonly exempted from decryption for exactly this reason).
+
+## What defeats interception, by design
+
+Several web-security mechanisms exist precisely to detect or prevent a man-in-the-middle, and they do not distinguish a hostile attacker from an authorized corporate proxy. They break interception, and understanding why is essential to running one.
+
+**Certificate pinning** is the strongest. A pinned application ships with the specific certificate or public key it expects from its server baked in, and rejects any other, even a "valid" one signed by a trusted CA. Because the forged certificate is signed by the proxy's CA and not the server's real key, a pinned app refuses the connection outright. Mobile apps, software updaters, and some cloud clients pin, which is why interception deployments maintain bypass lists for pinned destinations: the only options are to exempt that traffic from decryption or to break the app.
+
+**HSTS** (HTTP Strict Transport Security) hardens the browser against downgrade and warning-click-through for sites that have asserted it, and preloaded-HSTS sites cannot be reached at all if the certificate does not validate; combined with pinning it makes some destinations effectively un-interceptable.
+
+**Mutual TLS** breaks interception from the other direction: if the destination server requires a client certificate, the proxy, standing in the middle, does not hold the user's client key and cannot complete the handshake to the server. As with inbound mutual TLS, the usual resolution is to bypass decryption for those destinations.
+
+The practical upshot is that an SSL forward proxy never inspects everything. A real deployment is an inspect-by-default policy plus a carefully maintained set of exceptions for pinned, mutually-authenticated, and legally-protected traffic. The article on inbound TLS covers the mirror-image case, a reverse proxy terminating traffic for servers the organization *does* own, where no forging is needed because the proxy legitimately holds the certificate.

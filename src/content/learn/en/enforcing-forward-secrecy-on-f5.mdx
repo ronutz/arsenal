@@ -1,0 +1,33 @@
+---
+slug: enforcing-forward-secrecy-on-f5
+title: "Enforcing Forward Secrecy on F5 BIG-IP"
+summary: "Forward secrecy is not a checkbox on BIG-IP; it is a consequence of the cipher configuration on an SSL profile. This shows how BIG-IP cipher rules and cipher groups control whether the negotiated suite uses an ephemeral (ECDHE/DHE) or static-RSA key exchange, why server-side cipher preference matters, and how TLS 1.3 removes the choice. It closes with how Fortinet and Netskope enforce the same property."
+concepts: ["f5", "ltm", "forward secrecy", "cipher group", "cipher rule", "ecdhe", "bigip", "ssl profile"]
+relatedTools: ["f5-cipher-string-expander"]
+sub: ltm
+relatedArticles: ["forward-secrecy", "f5-clientssl-vs-serverssl", "f5-cipher-ordering-and-negotiation", "tls13-cipher-suites"]
+category: transport
+order: 45
+status: reviewed
+updated: "2026-07-06"
+---
+
+The generic forward-secrecy article explains the property: a session has forward secrecy when its secret was derived from an ephemeral key exchange (ECDHE or DHE) rather than encrypted under the server's long-term RSA key. On F5 BIG-IP that property is not a toggle you enable; it is decided by the cipher configuration attached to the SSL profile that terminates the connection. This companion shows where that configuration lives and how to make forward secrecy the guaranteed outcome, then notes how the same job is done on Fortinet and Netskope.
+
+## Where the decision is made
+
+Forward secrecy on BIG-IP is settled by which cipher suites the client-facing SSL profile is willing to negotiate, and in what order it prefers them. The client SSL profile carries a cipher configuration; the negotiated suite's key-exchange token is what determines forward secrecy, exactly as the generic article describes. If the profile permits and prefers ECDHE (or DHE) suites, sessions get forward secrecy; if it permits static-RSA key-transport suites (the ones whose IANA name begins `TLS_RSA_WITH_`) and a client prefers them, those sessions do not. Enforcing forward secrecy therefore means shaping the cipher list so that ephemeral key exchange is offered and static-RSA key transport is excluded or de-prioritized.
+
+Modern BIG-IP expresses this with **cipher rules** and **cipher groups** rather than a single opaque string. A cipher rule names an ordered cipher string plus optional DH group and signature constraints; a cipher group combines rules with allow, restrict, and exclude actions to produce the final list. The older form is a raw **cipher string** set directly on the profile, an ordered list of cipher sets separated by colons, where keywords combine with `+` and a leading `!` excludes, `-` deletes, and `@STRENGTH` re-sorts by key length. Either way, the mechanics are the same: you are building the ordered set of suites the profile will negotiate, and forward secrecy is enforced by ensuring that set contains ephemeral-key-exchange suites and does not fall back to static RSA. Because the exact expanded suite list depends on the per-version TMOS cipher database, it is worth confirming the result rather than assuming it; the cipher-string-expander tool explains what a given rule or string means and flags weak or deprecated choices, and on the box `tmm --clientciphers <string>` prints the actual ordered list a profile would offer.
+
+## Why server-side preference matters
+
+Choosing which suites are allowed is only half the job; order decides which one is actually chosen. During negotiation, the client offers a list and the server picks. By default a server may honor the client's preference order, which means a client that prefers a weaker or non-forward-secret suite can pull the session there even if better options exist. Enabling **server cipher preference** (so the BIG-IP's own order wins) is what makes an ordering policy actually enforceable: put ECDHE-AEAD suites first, and the server will choose them whenever the client supports them, regardless of the client's order. This is the subject of the companion article on cipher ordering and negotiation, and it is the difference between "forward-secret suites are available" and "forward-secret suites are used."
+
+## TLS 1.3 removes the choice
+
+The cleanest enforcement is to prefer TLS 1.3 on the client-facing side. As the generic article and the TLS 1.3 article explain, TLS 1.3 removed static-RSA key transport from the protocol entirely; every TLS 1.3 key exchange is ephemeral, so forward secrecy is guaranteed for any session negotiated at 1.3 with no cipher tuning required. Cipher configuration then only governs the TLS 1.2 fallback, which is where the ECDHE-versus-static-RSA discipline still applies for clients that cannot do 1.3. Recall from the article on client-SSL versus server-SSL profiles that the two profiles carry independent cipher configurations, so a hardening review confirms forward secrecy on the client leg and, separately, on the re-encryption leg to the backend.
+
+## The same job on Fortinet and Netskope
+
+The principle is vendor-independent; only the control surface differs. On a **FortiGate**, the SSL/SSH inspection and the VIP or server-load-balance SSL settings expose the allowed cipher suites and TLS versions, and enforcing forward secrecy means permitting ECDHE suites and disabling static-RSA and obsolete protocol versions; here too, preferring TLS 1.3 makes it automatic. On **Netskope**, TLS termination happens in the cloud data plane, so the cipher policy is a tenant-level setting rather than a per-device profile: the platform negotiates modern, forward-secret suites with clients and destinations, and the administrator's lever is the minimum TLS version and the decryption policy rather than a hand-written cipher string. In every case the underlying rule from the generic article holds unchanged: forward secrecy is present exactly when the negotiated key exchange is ephemeral, and each product simply gives you a different way to guarantee that outcome.

@@ -1,0 +1,40 @@
+---
+slug: tls-reverse-proxy-inbound
+title: "Inbound TLS: Offload, Bridging, and Passthrough at the Reverse Proxy"
+summary: "A reverse proxy handling inbound HTTPS has three choices for the TLS session: terminate it and send plaintext to the backend (offload), terminate and re-encrypt to the backend (bridging), or forward the encrypted bytes untouched (passthrough). Each trades visibility against confidentiality and cost differently. This explains all three, why the proxy holds the server's certificate, and what SNI and mutual TLS change."
+concepts: ["tls termination", "ssl offload", "ssl bridging", "ssl passthrough", "reverse proxy", "sni", "mutual tls", "re-encryption", "transport"]
+relatedTools: ["x509", "cipher"]
+relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "forward-secrecy", "x509-anatomy"]
+category: transport
+order: 9
+status: reviewed
+updated: "2026-07-06"
+---
+
+When a reverse proxy sits in front of HTTPS applications, it has to decide what to do with the TLS session arriving from the client. The choice is not incidental: it determines whether the proxy can see and act on the traffic, whether data is encrypted on the short hop to the backend, and how much cryptographic work the proxy has to do. There are exactly three options, and every load balancer and ADC offers some combination of them.
+
+The one thing common to all inbound reverse-proxy TLS is the direction of the certificate. Because the proxy is fronting the servers, it presents the **server's** certificate to arriving clients (or a certificate valid for the same hostname). The client is connecting to `www.example.com` and must see a certificate for `www.example.com`; that the box terminating TLS is a load balancer rather than the origin web server is invisible and intended. This is the opposite of an outbound forward proxy, which forges certificates for destinations it does not own, covered in the SSL forward proxy article.
+
+## Offload: terminate and go plaintext
+
+In **SSL offload** (also called SSL termination), the proxy completes the TLS handshake with the client, decrypts the traffic, and forwards it to the backend as plain HTTP. The connection from proxy to server is unencrypted.
+
+This is the highest-visibility, lowest-cost-on-the-backend option. Because the traffic is in the clear at the proxy, everything above TLS is available: the proxy can route by URL, apply a web application firewall, insert cookies for persistence, add `X-Forwarded-For`, cache, and rewrite content. The expensive asymmetric cryptography of the handshake, and any hardware acceleration, happens once at the proxy, and the backend servers are freed from doing TLS at all. The cost is that traffic travels unencrypted between the proxy and the servers, which is only acceptable when that path is itself trusted, typically a controlled data-center segment. In any environment with compliance requirements for encryption-in-transit end to end, plain offload is usually not allowed.
+
+## Bridging: terminate and re-encrypt
+
+In **SSL bridging** (also called SSL re-encryption or, on some platforms, full proxy TLS), the proxy terminates the client's TLS session, decrypts, does its Layer 7 work, and then opens a **second** TLS session to the backend and re-encrypts before forwarding. There are two encrypted legs with a brief plaintext moment inside the proxy where inspection and policy happen.
+
+Bridging keeps all the visibility and control of offload, because the proxy still decrypts, while restoring encryption on the wire to the backend. That combination is why it is the common choice in regulated environments: the WAF still sees requests, persistence and routing still work, and yet no plaintext application data crosses the network. The two legs are independent TLS sessions, so they can use different certificates, different cipher suites, and different protocol versions; the client-facing side can enforce a modern, forward-secret suite while the backend side uses whatever the internal servers support. The cost is the most cryptographic work of the three: the proxy runs two handshakes per connection and encrypts in both directions.
+
+## Passthrough: forward the ciphertext
+
+In **SSL passthrough**, the proxy does not terminate TLS at all. It forwards the encrypted TCP stream straight to a backend, which completes the TLS handshake with the client end to end. The proxy never holds the private key and never sees plaintext.
+
+Passthrough is really a Layer 4 behavior wearing a TLS label, and it inherits the properties of the TCP proxy: fast, protocol-agnostic, and blind to content. The proxy cannot apply a WAF, cannot route by URL, and cannot insert cookies, because it cannot read the request. What it *can* still do is route by the Server Name Indication, because the SNI in the ClientHello is sent in the clear before encryption begins; a passthrough proxy peeks at that hostname to pick the right backend pool without decrypting anything else. Passthrough is the right choice when end-to-end encryption to the backend is mandatory and the proxy has no need to inspect, or when the backend must terminate TLS itself (for example to do its own client-certificate authentication).
+
+## What SNI and mutual TLS change
+
+Two features cut across all three modes. **SNI** matters because a single proxy IP and port routinely fronts many hostnames; the SNI field lets the proxy (or the backend, under passthrough) select the correct certificate and configuration for the requested name. Getting SNI handling right is what makes virtual hosting over TLS work at all.
+
+**Mutual TLS** (client-certificate authentication) is where the mode choice becomes consequential. If the backend expects a client certificate, offload and bridging break the chain, because the proxy, not the client, terminates the client's TLS session, so the client's certificate never reaches the backend. The proxy can validate the client certificate itself and then pass the verified identity to the backend in a header, or, if the backend truly must see the original client certificate, some platforms re-present a constrained copy of it on the backend leg. If neither is acceptable, passthrough is the only mode that preserves a genuine end-to-end mutual-TLS handshake. Deciding how mutual TLS is handled is often what forces the choice between the three modes in the first place.

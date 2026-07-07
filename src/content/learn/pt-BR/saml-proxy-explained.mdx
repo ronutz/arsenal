@@ -1,0 +1,34 @@
+---
+slug: saml-proxy-explained
+title: "O SAML Proxy: Inserindo uma Camada de Identidade numa Sessão"
+summary: "Um SAML proxy fica no fluxo de SSO em vez do caminho dos pacotes: ele termina a requisição do usuário, força a autenticação contra um provedor de identidade, e só então deixa a sessão passar, usando o modelo de redirecionamento por navegador do SAML. Ele pode agir como provedor de serviço para o IdP e provedor de identidade para a aplicação ao mesmo tempo (um proxy ou broker), que é como um único login federa muitos sistemas downstream. Este artigo explica os papéis, o fluxo, e por que ele é um proxy afinal."
+concepts: ["saml proxy", "provedor de identidade", "provedor de servico", "idp proxy", "sso", "federacao", "reverse proxy sso", "broker de identidade"]
+relatedTools: ["saml-decoder"]
+relatedArticles: ["saml-overview", "saml-bindings-and-sso-initiation", "ssl-forward-proxy-interception", "oidc-overview"]
+category: security
+order: 6
+status: reviewed
+updated: "2026-07-06"
+---
+
+Os proxies dos artigos companheiros operam sobre pacotes e conexões: um proxy TCP une fluxos de transporte, um proxy HTTP parseia requisições, um proxy TLS trata da criptografia. Um SAML proxy opera sobre algo diferente, a decisão de autenticação, e vale ser preciso sobre o sentido em que ele é um proxy afinal. Ele não move bytes primariamente; ele se insere no handshake de single-sign-on de modo que nenhuma requisição alcance um recurso protegido até que um provedor de identidade tenha atestado o usuário. Entendê-lo requer primeiro os papéis do SAML (o artigo de visão geral os cobre por completo), depois como um proxy se encaixa entre eles.
+
+## Uma revisão de um parágrafo dos papéis
+
+O SSO por navegador do SAML tem dois papéis. O **provedor de serviço** (SP) é a aplicação que o usuário quer alcançar; ele precisa saber quem o usuário é mas delega essa pergunta. O **provedor de identidade** (IdP) é a autoridade que autentica o usuário e emite uma **asserção** assinada declarando quem ele é. No fluxo SP-iniciado padrão, o usuário acessa o SP, o SP redireciona o navegador ao IdP com uma requisição de autenticação, o IdP autentica o usuário e redireciona o navegador de volta ao SP carregando uma asserção assinada, e o SP valida a asserção e inicia uma sessão. As mensagens andam pelo navegador via bindings HTTP-Redirect e HTTP-POST; o SP e o IdP nunca falam diretamente. Mantenha esse formato em mente, porque um proxy funciona assumindo um ou ambos esses papéis.
+
+## O que o torna um proxy: terminar, autenticar, admitir
+
+Um SAML proxy é um componente colocado na frente de uma ou mais aplicações que impõe autenticação SAML em nome delas. Quando uma requisição chega, o proxy não a repassa; ele termina a requisição e verifica se há uma sessão estabelecida e autenticada. Se não houver, ele mesmo inicia o fluxo SP-iniciado do SAML, redirecionando o navegador ao IdP, recebendo e validando a asserção retornada, e só então admitindo a requisição à aplicação downstream. A aplicação por trás dele pode não saber nada sobre SAML; do ponto de vista dela, as requisições simplesmente chegam já autenticadas, frequentemente com a identidade do usuário entregue num cabeçalho ou num token novo.
+
+Esse é o mesmo padrão de terminar-e-admitir que um reverse proxy usa para o tráfego, aplicado à identidade. Esse é o sentido exato em que ele é um proxy: ele fica entre o cliente e o recurso, fala o protocolo em nome do recurso, e não deixa nada passar até que sua política (aqui, "prove quem você é") seja satisfeita. Ele é frequentemente combinado com um reverse proxy no caminho dos pacotes, de modo que a mesma caixa tanto intercepta a conexão quanto impõe o login, mas as duas funções são conceitualmente separadas.
+
+## O caso poderoso: um proxy provedor de identidade
+
+A configuração mais rica é quando o proxy faz **ambos** os papéis ao mesmo tempo. Para o provedor de identidade upstream ele se apresenta como um provedor de serviço (envia requisições de autenticação e consome asserções); para as aplicações downstream ele se apresenta como um provedor de identidade (emite asserções que elas consomem). Sentado no meio, ele é um **IdP proxy** ou **broker de identidade**.
+
+Esse encadeamento é o que faz a federação escalar. Um único proxy pode autenticar o usuário uma vez contra um IdP upstream e então satisfazer muitas aplicações downstream, cada uma das quais confia apenas no proxy, não no IdP original. Isso deixa uma organização colocar uma política de autenticação consistente (requisitos de múltiplos fatores, verificações de dispositivo, acesso condicional) num único ponto de estrangulamento na frente de aplicações que cada uma fala seu próprio dialeto. Também faz a ponte entre sistemas de identidade: o lado upstream pode ser um protocolo ou IdP e o lado downstream outro, com o proxy traduzindo entre eles, que é como uma aplicação SAML pode ser frontada por um login OIDC, ou vice-versa. O proxy se torna um hub de confiança: as aplicações downstream delegam a ele, ele delega ao upstream, e o usuário experimenta um single sign-on por todo o conjunto.
+
+## Por que o modo importa
+
+Como um SAML proxy anda no fluxo de redirecionamento por navegador, ele herda as suposições do SAML, e elas moldam onde ele se encaixa. Ele funciona de forma limpa para acesso baseado em navegador, onde redirecionamentos e POSTs são naturais, e depende de o usuário ter uma sessão de navegador para redirecionar, e é por isso que serve a usuários interativos e tem dificuldade com clientes headless e servidores que não podem seguir um redirecionamento SAML. Sua segurança se apoia inteiramente em validar a asserção corretamente: verificar a assinatura, o emissor, a audiência e as condições, exatamente as verificações que os artigos sobre assinaturas e asserções SAML descrevem, porque um proxy que admite requisições com base numa asserção que deixou de verificar é uma porta aberta. E como hub de confiança ele concentra risco: comprometa o proxy e você compromete o acesso a tudo por trás dele, o análogo na camada de identidade da preocupação com a concentração de texto claro que um SSL forward proxy levanta para o conteúdo.

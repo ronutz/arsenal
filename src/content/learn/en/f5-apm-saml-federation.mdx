@@ -1,0 +1,29 @@
+---
+slug: f5-apm-saml-federation
+title: "F5 BIG-IP APM as a SAML Proxy: SP and IdP Modes"
+summary: "BIG-IP APM (now BIG-IP Zero Trust Access) is a concrete SAML proxy: as a reverse proxy in front of an application it acts as a SAML service provider, delegating login to an external identity provider and then doing single sign-on to the backend; it can also act as a SAML identity provider that federates SSO to SaaS. This maps the generic SAML-proxy roles onto APM's SP service, IdP service, and connector objects."
+concepts: ["f5", "zta-apm", "apm", "saml", "service provider", "identity provider", "reverse proxy sso", "federation", "access policy"]
+relatedTools: ["saml-decoder"]
+sub: zta-apm
+relatedArticles: ["saml-proxy-explained", "saml-overview", "oidc-overview", "bigip-apm-sso-methods"]
+category: security
+order: 44
+status: reviewed
+updated: "2026-07-06"
+---
+
+The generic SAML-proxy article describes a component that terminates a request, forces SAML authentication, and admits the session, optionally acting as both a service provider upstream and an identity provider downstream. F5's BIG-IP Access Policy Manager (APM, now marketed as BIG-IP Zero Trust Access) is a direct implementation of exactly that, built on the BIG-IP reverse proxy. This complements the generic article by naming the APM objects that play each role, so it assumes the SAML roles and flow and focuses on the F5 mapping.
+
+## APM as a SAML service provider: the reverse-proxy front door
+
+The most common deployment is APM fronting an application as a reverse proxy and enforcing SAML login before anything reaches the backend. In F5's terms, APM runs a **SAML SP service**: an authentication (AAA) service that requests authentication from an external identity provider and consumes the returned assertion to allow access to the resources behind APM. The external IdP is described to APM by a **SAML IdP connector**, usually created by importing the IdP's federation metadata (which carries the endpoints and the signing certificate). You bind the SP service to the IdP connector, and that binding is the federation trust.
+
+At run time this is the generic terminate-authenticate-admit pattern exactly. A user hits the application's endpoint, which is really the APM virtual server. The APM access policy redirects the browser to the external SAML IdP (SP-initiated flow); the IdP authenticates the user, applies its own conditional-access policies, and redirects back to APM with a signed assertion; APM validates the assertion and starts the session. Only then does APM pass the request to the backend, and it typically performs a second single sign-on to the application using a different method, header injection, Kerberos constrained delegation, or form-based SSO, so the backend sees an authenticated request in whatever scheme it understands. This is the identity-layer analogue of SSL bridging: APM terminates one authentication (SAML from the IdP) and originates another (SSO to the app), with the user's identity handed across the gap. Both SP-initiated and IdP-initiated flows are supported.
+
+A useful capability here is **IdP discovery**: when a single SP service is bound to several IdP connectors, APM chooses the correct IdP at run time by matching criteria, which is how one front door can serve users from several partner organizations, each with its own IdP.
+
+## APM as a SAML identity provider: federating out to SaaS
+
+APM can also play the other role. As a **SAML IdP service**, APM authenticates users itself and issues signed assertions to external service providers, defined by **SAML SP connectors**. This is how BIG-IP federates single sign-on to SaaS applications such as Office 365 and Salesforce: the user authenticates once to APM (often reaching a webtop that lists their applications), and APM issues each SaaS SP an assertion so the user is signed in without re-entering credentials. Here APM is the authority the downstream SPs trust.
+
+Put the two modes together and APM becomes the IdP-proxy of the generic article: it can consume authentication from an upstream IdP as an SP and issue authentication to downstream SPs as an IdP, sitting in the middle as an identity broker with one consistent access policy (device posture, multi-factor, conditional access) enforced at the BIG-IP chokepoint. Because these are ordinary APM objects layered on a BIG-IP virtual server, the same box also does the packet-path reverse proxying, TLS termination via its client-SSL profile, and load balancing, so the identity proxy and the traffic proxy are the same device wearing both hats, which is the practical form the generic article's "frequently combined with a reverse proxy" note takes on F5. And as the generic article warns, this makes APM a trust hub whose compromise exposes everything behind it, so the correctness of assertion validation (signature, issuer, audience, conditions) and the protection of APM's own signing keys are the load-bearing controls.

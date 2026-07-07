@@ -1,0 +1,40 @@
+---
+slug: http-proxy-forward-and-reverse
+title: "HTTP Proxies: Forward vs Reverse, Explicit vs Transparent"
+summary: "An HTTP proxy parses requests at Layer 7, so it can route by URL, rewrite headers, and enforce policy on content a TCP proxy cannot see. Two axes describe every deployment: forward vs reverse (which side it works for) and explicit vs transparent (whether the client knows it is there). This covers the CONNECT method, X-Forwarded-For and Via, and where each combination is used."
+concepts: ["http proxy", "forward proxy", "reverse proxy", "explicit proxy", "transparent proxy", "connect method", "x-forwarded-for", "layer 7"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["tcp-proxy-layer-4", "tls-reverse-proxy-inbound", "ssl-forward-proxy-interception"]
+category: networking
+order: 83
+status: reviewed
+updated: "2026-07-06"
+---
+
+Once a proxy parses HTTP rather than just relaying bytes, it becomes a different kind of tool. It can route a request by its URL or `Host` header, add or strip headers, enforce policy based on the actual content of a request, cache responses, and rewrite what passes through. That is the whole reason to pay the cost of Layer 7 parsing that a TCP proxy avoids. But "HTTP proxy" covers several very different deployments, and two independent questions pin down which one you are looking at.
+
+## Axis one: forward or reverse
+
+A **forward proxy** works on behalf of the clients. It sits at the edge of a client network and brokers outbound requests to the wider internet. The organization that runs it wants to control, log, filter, or secure what its own users reach: web filtering, malware scanning, data-loss prevention, and access logging all live here. The set of destinations is open (anywhere on the internet), and the set of clients is known (the organization's users). A corporate web gateway is the classic forward proxy.
+
+A **reverse proxy** works on behalf of the servers. It sits in front of a set of web applications and brokers inbound requests from the internet to them. The organization that runs it owns the servers and wants to protect, load-balance, and offload work for them: TLS termination, load balancing, caching, a web application firewall, and request routing all live here. Now the set of clients is open (anyone on the internet) and the set of destinations is known (the organization's applications). A load balancer or ADC in front of a web farm is the classic reverse proxy.
+
+The mechanics are similar, but the direction of trust is opposite, and that changes everything about how the proxy is configured, what certificate it presents, and what it is trying to accomplish. The same physical box can play both roles for different traffic, which is why keeping the two mental models distinct matters.
+
+## Axis two: explicit or transparent
+
+This axis asks a simpler question: does the client know the proxy is there?
+
+An **explicit proxy** is one the client is deliberately configured to use. The browser or operating system has a proxy address and port set (by hand, by a PAC file, or by WPAD autodiscovery), and it sends its requests to the proxy on purpose. For plaintext HTTP, an explicit proxy request is visibly different: the client puts the full absolute URL on the request line, `GET http://example.com/path HTTP/1.1`, rather than just the path, because it is asking the proxy to go fetch that URL. For HTTPS, the client cannot send the request in the clear, so it uses the **CONNECT method**: it asks the proxy to open a raw tunnel to `example.com:443`, the proxy replies `200 Connection Established`, and the client then runs its normal TLS handshake through that tunnel. A plain explicit proxy that only does CONNECT is effectively a Layer 4 tunnel for HTTPS; to see inside that tunnel the proxy must additionally intercept TLS, which is the subject of the SSL forward proxy article.
+
+A **transparent proxy** (also called an inline or intercepting proxy) is one the client does not know about. Traffic is redirected to it by the network, by routing, by policy-based routing, by a WCCP redirect, or because it sits inline on the path, and the client believes it is talking directly to the origin server. The request looks completely normal (`GET /path HTTP/1.1` with a `Host` header), because from the client's side nothing special is happening. Transparent deployment is convenient because it needs no client configuration, but it is also why intercepting HTTPS transparently is so disruptive: the client never agreed to a proxy, so a proxy that suddenly presents its own certificate looks exactly like an attack, and defenses like certificate pinning and HSTS are designed to reject it.
+
+## The headers that mark a proxy's passage
+
+A reverse proxy that re-originates the connection hides the client's address from the backend, the same Layer 4 problem described in the TCP proxy article, but at Layer 7 there is a standard fix. The proxy adds an `X-Forwarded-For` header carrying the original client IP (and appends to it if several proxies are chained), plus companions like `X-Forwarded-Proto` (was the client connection HTTP or HTTPS) and `X-Forwarded-Host`. The modern standardized equivalent is the single `Forwarded` header (RFC 7239), which carries the same facts in one structured field. A forward proxy, meanwhile, conventionally adds a `Via` header naming itself, so a response carries a visible record of the proxies it passed through.
+
+These headers are load-bearing and must be handled with care. A backend that trusts `X-Forwarded-For` blindly can be fooled by a client that sets the header itself, so a proxy should overwrite rather than merely append the client-facing hop, and backends should trust the header only from known proxy addresses. This is a common source of IP-spoofing and access-control bugs, and it is worth checking whenever a "who is the client" decision is being made behind a proxy.
+
+## Putting the axes together
+
+The two axes are independent, so all four combinations exist and are used. An explicit forward proxy is the configured corporate web gateway. A transparent forward proxy is an inline gateway that intercepts outbound traffic with no client setup. A reverse proxy is almost always transparent from the client's side (the client just visits a website and does not know a proxy is in front of it), and it can be made "explicit" only in the narrow sense that DNS points the hostname at it. When you meet a proxy, naming both axes, which side it serves and whether the client knows, tells you most of what you need to know about how it behaves.

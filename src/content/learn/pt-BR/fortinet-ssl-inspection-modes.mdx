@@ -1,0 +1,33 @@
+---
+slug: fortinet-ssl-inspection-modes
+title: "Inspeção SSL do FortiGate: Certificate vs Deep Inspection"
+summary: "Um FortiGate inspeciona tráfego criptografado em um de dois modos: a certificate inspection lê apenas o SNI e o certificado para tomar uma decisão de filtragem sem descriptografar, enquanto a deep (full) inspection é um man-in-the-middle completo que descriptografa, inspeciona e recriptografa. Este artigo mapeia os perfis de inspeção SSL/SSH do FortiGate sobre o modelo genérico de interceptação de forward proxy e cobre a divisão de engine flow-versus-proxy que molda o que cada um pode fazer."
+concepts: ["fortinet", "fortigate", "inspecao ssl", "certificate inspection", "deep inspection", "full ssl inspection", "interceptacao tls", "forward proxy"]
+relatedTools: ["x509"]
+sub: fortigate
+relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reverse", "certificate-validation", "hsts-and-https"]
+category: security
+order: 42
+status: reviewed
+updated: "2026-07-06"
+---
+
+O artigo genérico sobre SSL forward proxy explica a interceptação de TLS de saída de forma abstrata. Um FortiGate é um dos lugares mais amplamente implantados onde a interceptação de fato acontece, e a Fortinet a enquadra como dois modos distintos de inspeção SSL com uma linha clara entre eles. Este texto complementa o artigo genérico mapeando a terminologia e os perfis do FortiGate sobre ele, então assume a mecânica de forjar e terminar e foca nas especificidades do FortiGate.
+
+## Os dois modos, e a linha entre eles
+
+O FortiOS aplica a inspeção SSL através de um perfil de inspeção SSL/SSH anexado a uma política de firewall. Ele vem com quatro perfis predefinidos: `certificate-inspection`, `deep-inspection` e `no-inspection` (somente leitura), mais `custom-deep-inspection`, que é editável; você também pode clonar qualquer um deles. A escolha importante é entre os dois primeiros.
+
+A **certificate inspection** não descriptografa. Ela inspeciona apenas até o handshake SSL/TLS, lendo o Server Name Indication e os campos no certificado do servidor (o subject e o subject-alternative-name), e então toma uma decisão de segurança apenas a partir dessa metadata em texto claro. Isso é suficiente para fazer filtragem web por nome de host ou categoria, e nada mais: como o payload nunca é descriptografado, a certificate inspection não pode conduzir antivírus, IPS, DLP ou controle de aplicação, todos os quais precisam do conteúdo real. Duas limitações valem notar da documentação da Fortinet: a certificate inspection não valida o certificado (no modo flow, verificações de certificado não confiável e de SNI do certificado do servidor não são realizadas), e o perfil embutido `certificate-inspection` é somente leitura e escuta apenas na porta 443, então inspecionar HTTPS numa porta não padrão significa criar um perfil customizado. É a opção que preserva a privacidade e de baixo impacto para quando você só precisa controlar quais sites são alcançados.
+
+A **deep inspection** (também chamada de full SSL inspection) é o man-in-the-middle completo. O FortiGate se faz passar pelo destinatário da sessão TLS do cliente: ele estabelece duas sessões criptografadas, uma cliente-para-FortiGate e uma FortiGate-para-servidor, descriptografa e inspeciona o conteúdo entre elas, então recriptografa e encaminha ao destinatário real. Apenas o FortiGate, no meio, vê texto claro. É isso que destrava a segurança profunda: antivírus, IPS, DLP e controle de aplicação podem todos rodar no fluxo descriptografado, e a deep inspection cobre não só HTTPS mas outros protocolos embrulhados em TLS como SMTPS, POP3S, IMAPS e FTPS.
+
+## O certificado que faz a deep inspection funcionar (ou avisar)
+
+A deep inspection é exatamente o modelo genérico de interceptação: para apresentar um certificado para um site que ele não possui, o FortiGate reassina o certificado do servidor com uma CA armazenada. Por padrão essa CA é a **Fortinet_CA_SSL** (há também a Fortinet_CA_Untrusted para servidores cujo próprio certificado falhou na validação, e você pode subir sua própria CA). Como a Fortinet_CA_SSL não está nas listas de raízes confiáveis dos navegadores por padrão, um cliente não provisionado mostra um aviso de certificado em todo site com deep inspection, o navegador corretamente detectando um man-in-the-middle não reconhecido. A correção é a mesma do artigo genérico: distribuir o certificado da CA do FortiGate para o armazenamento de Raízes Confiáveis dos clientes (comumente por group policy do Active Directory em frotas Windows gerenciadas). E como sempre, a deep inspection é derrotada por certificate pinning e HSTS, e a Fortinet suporta allowlists de endereço e de categoria web para isentar tráfego sensível ou com pinning (bancário, saúde) da descriptografia.
+
+## Flow versus proxy: dois engines, alcance diferente
+
+Um detalhe específico do FortiGate que molda o comportamento: o FortiGate realiza a inspeção com um de dois engines. O **engine IPS** trata da inspeção baseada em flow, e o **daemon WAD** trata da inspeção baseada em proxy. Eles miram o mesmo objetivo, descriptografar TLS para outros engines inspecionarem, mas suas capacidades diferem porque um é flow e o outro é um proxy. Duas consequências importam na prática. Primeira, o mapeamento de porta de protocolo (dizer ao FortiGate que o IMAPS está numa porta não padrão, por exemplo) só funciona na inspeção baseada em proxy; a inspeção baseada em flow inspeciona todas as portas independentemente. Segunda, o modo de inspeção é definido tanto no nível da política quanto no do perfil e eles precisam concordar, se o perfil de segurança é baseado em proxy, a política precisa estar em modo proxy. O modo de política padrão é flow; o modo proxy é usado quando você precisa de opções exclusivas de proxy. A divisão de engine também afeta funcionalidades como páginas de bloqueio de mensagem de substituição, que se comportam de forma diferente entre os dois modos.
+
+O resultado espelha o artigo genérico: a certificate inspection é a opção ver-o-rótulo, não-abrir-o-envelope para filtragem web com disrupção mínima e privacidade preservada; a deep inspection é a opção abrir-o-envelope exigida para segurança de conteúdo real, ao custo de gerenciar uma CA confiável em todo cliente e manter exceções para o tráfego que o pinning, o HSTS e a lei colocam fora dos limites.

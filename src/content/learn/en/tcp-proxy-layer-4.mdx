@@ -1,0 +1,38 @@
+---
+slug: tcp-proxy-layer-4
+title: "The TCP Proxy: What a Layer 4 Middlebox Does and Does Not See"
+summary: "A TCP proxy terminates the client's TCP connection and opens a separate one to the server, splicing two independent flows together at Layer 4. It rewrites addresses and ports, can pool and reuse connections, and sees nothing of the application payload above the transport header. This explains full-proxy versus packet-forwarding, why the source IP disappears, and how the Proxy Protocol puts it back."
+concepts: ["tcp proxy", "layer 4", "full proxy", "connection splicing", "source nat", "proxy protocol", "load balancing", "transport"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["http-proxy-forward-and-reverse", "tls-reverse-proxy-inbound", "how-a-virtual-server-works"]
+category: networking
+order: 82
+status: reviewed
+updated: "2026-07-06"
+---
+
+A proxy is any intermediary that sits between a client and a server and speaks to each on the other's behalf. The lowest useful place to do that is Layer 4, the transport layer, where the unit of work is a TCP connection rather than an HTTP request or a TLS record. A TCP proxy is the simplest full proxy there is, and understanding exactly what it can and cannot see makes every higher-layer proxy easier to reason about.
+
+## Two connections, spliced
+
+The defining move of a TCP proxy is that it does not forward packets; it terminates one connection and originates another. The client completes a full TCP handshake (SYN, SYN-ACK, ACK) with the proxy and believes it is talking to the server. The proxy, in turn, completes its own separate handshake with the real server. From then on the proxy relays bytes between the two: it reads from one socket and writes to the other, in both directions, until one side closes. This is called connection splicing or a full proxy at Layer 4.
+
+Because there are two independent connections, they can differ in almost every transport detail. The client-side and server-side connections have their own sequence numbers, their own window sizes, their own TCP options, and their own congestion state. A slow, lossy client link and a fast server link no longer share one end-to-end control loop; the proxy buffers between them and lets each side run at its own pace. That decoupling is a large part of why a full proxy improves performance and resilience, and it is invisible to both endpoints.
+
+## What Layer 4 can see, and what it cannot
+
+A TCP proxy operates on the transport header: source and destination IP address, source and destination port, and the TCP flags and options. That is enough to make a forwarding decision, to load-balance across a pool of servers, to enforce connection limits, and to apply source and destination network address translation. It is not enough to see anything about the application. HTTP methods, URLs, headers, hostnames, and any TLS handshake details all live in the payload above the transport header, and a pure Layer 4 proxy treats that payload as an opaque stream of bytes it copies without parsing.
+
+This is the key trade-off. A Layer 4 proxy is fast and protocol-agnostic precisely because it does not parse the payload; it will happily proxy HTTP, TLS, SSH, a database protocol, or anything else, because it does not care what the bytes mean. But it also cannot make decisions that depend on application content, cannot route by URL, and cannot inspect an encrypted stream. When you need those things you move up to a Layer 7 proxy (see the article on HTTP proxies), and you pay for the extra visibility with the cost of parsing.
+
+There is one important nuance for encrypted traffic. A Layer 4 proxy cannot read a TLS session, but the very first bytes of a TLS ClientHello are sent in the clear, and they include the Server Name Indication (SNI). A Layer 4 proxy can peek at that one field to route a connection to the right backend by hostname without decrypting anything, a common pattern for TLS passthrough. It is still not decryption; it is reading a plaintext label on an otherwise opaque stream.
+
+## The disappearing source address
+
+Because the proxy originates a brand-new connection to the server, the server sees the proxy's address as the source, not the client's. From the server's point of view every connection comes from the handful of proxy IPs. This is usually deliberate (it is how source NAT and connection pooling work) but it destroys the one piece of information many servers most want: who the client actually was. Access logs show the proxy; IP-based access rules see the proxy; geolocation sees the proxy.
+
+Two mechanisms put the client identity back. At Layer 7, HTTP proxies add an `X-Forwarded-For` header, but that only works for HTTP and only after the payload is parsed. At Layer 4, the answer is the **Proxy Protocol**, a tiny header the proxy prepends to the very start of the server-side TCP stream, before any application data, carrying the original source and destination address and port. The server (if it understands the Proxy Protocol) reads that header first, records the real client address, and then treats the rest of the stream normally. It is the Layer 4 way to preserve client identity through a connection that has been re-originated, and it is protocol-agnostic because it sits below the application entirely.
+
+## Where you meet TCP proxies
+
+Any load balancer or ADC running in a fast Layer 4 mode is a TCP proxy. On F5 BIG-IP, for example, the FastL4 profile drives a lightweight Layer 4 path (with hardware acceleration on supported platforms) for exactly the cases where you want throughput and connection handling without Layer 7 parsing; a Standard virtual server, by contrast, engages the full TCP proxy and can layer HTTP and TLS processing on top. Cloud load balancers expose the same split as "network" (Layer 4) versus "application" (Layer 7) load balancers. The pattern is identical everywhere: decide whether you need to see the application, and if you do not, stay at Layer 4 where it is cheapest and most general.
