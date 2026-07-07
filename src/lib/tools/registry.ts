@@ -55,6 +55,8 @@ import { run as acmeDns01Run } from "./acme-dns01";
 import { run as publicSuffixRun } from "./public-suffix";
 import { run as letsEncryptRateLimitsRun } from "./letsencrypt-rate-limits";
 import { run as f5IrulesRuntimeCalculatorRun } from "./f5-irules-runtime-calculator";
+import { run as f5IrulesPerformanceLinterRun } from "./f5-irules-performance-linter";
+import { run as f5ReleaseCadenceCalendarRun } from "./f5-release-cadence-calendar";
 import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
 import { run as f5AwafLogRun } from "./f5-awaf-request-log-triage";
 import { run as f5AwafSuggRun } from "./f5-awaf-learning-suggestion-interpreter";
@@ -119,6 +121,8 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "public-suffix", structured: true, run: (input) => publicSuffixRun({ host: input }) },
   { slug: "letsencrypt-rate-limits", structured: true, run: (input) => letsEncryptRateLimitsRun({ names: input }) },
   { slug: "f5-irules-runtime-calculator", structured: true, run: (input) => f5IrulesRuntimeCalculatorRun(JSON.parse(input)) },
+  { slug: "f5-irules-performance-linter", structured: true, run: (input) => f5IrulesPerformanceLinterRun(JSON.parse(input)) },
+  { slug: "f5-release-cadence-calendar", structured: true, run: (input) => f5ReleaseCadenceCalendarRun(JSON.parse(input)) },
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },
   { slug: "diff", structured: true, run: (input) => diffRun(JSON.parse(input)) },
   { slug: "dig-output-explainer", run: digOutputExplainerRun },

@@ -2895,6 +2895,94 @@
         }
       }
     },
+    "/f5-irules-performance-linter": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_performance_linter",
+        "summary": "iRules performance linter",
+        "description": "Paste an iRule; it flags F5-documented performance anti-patterns line by line, with severity, cause, and fix. The big one: global variables demote CMP. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules, Tcl. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "when HTTP_REQUEST { set ::x 1 }"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_performance_linter_post",
+        "summary": "iRules performance linter (POST)",
+        "description": "Paste an iRule; it flags F5-documented performance anti-patterns line by line, with severity, cause, and fix. The big one: global variables demote CMP. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules, Tcl. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5-irules-runtime-calculator": {
       "get": {
         "tags": [
@@ -3495,6 +3583,91 @@
                 "examples": [
                   "ltm persistence cookie my_cookie { method insert }"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-release-cadence-calendar": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_release_cadence_calendar",
+        "summary": "F5 release cadence calendar",
+        "description": "F5 moved to a monthly security cadence in July 2026. This computes the upcoming hardened-release and security-notification dates so you can plan patch windows. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 release cadence. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_release_cadence_calendar_post",
+        "summary": "F5 release cadence calendar (POST)",
+        "description": "F5 moved to a monthly security cadence in July 2026. This computes the upcoming hardened-release and security-notification dates so you can plan patch windows. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 release cadence. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
               }
             }
           }

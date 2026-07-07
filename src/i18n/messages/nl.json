@@ -830,6 +830,29 @@
         "s7": "De relying party kan UserInfo aanroepen met het access token",
         "s8": "De provider retourneert de claims van de gebruiker"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "F5 release-cadanskalender",
+      "blurb": "F5 is in juli 2026 overgestapt op een maandelijkse beveiligingscadans. Dit berekent de komende data van geharde releases en beveiligingsmeldingen, zodat u patchvensters kunt plannen. Lokaal, geen netwerk.",
+      "fromLabel": "Plannen vanaf",
+      "monthsLabel": "Weer te geven maanden",
+      "example": "Voorbeeld",
+      "clear": "Vandaag",
+      "nextReleaseLabel": "Volgende geharde release",
+      "nextNotifLabel": "Volgende beveiligingsmelding",
+      "today": "vandaag",
+      "inDays": "over {n} dagen",
+      "daysAgo": "{n} dagen geleden",
+      "colDate": "Datum (derde woensdag)",
+      "colRelease": "Geharde release",
+      "colNotification": "Beveiligingsmelding",
+      "colCovers": "Melding dekt",
+      "releaseYes": "Ja",
+      "notifNone": "nog geen",
+      "note1": "Elke datum is een derde woensdag: de geharde release van die maand verschijnt, en de beveiligingsmelding van de vorige maand wordt een maand na de gedekte release gepubliceerd.",
+      "note2": "Dit zijn de geplande data. F5 geeft ook op elk moment out-of-band beveiligingswaarschuwingen en engineering-hotfixes uit voor dringende problemen, en houdt flexibiliteit om de timing van meldingen aan te passen.",
+      "learnMore": "Nieuw met deze wijziging?",
+      "learnLink": "Lees wat er is veranderd en waarom"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Beveiliging: naar beste vermogen, geen verantwoordelijkheid voor inbreuken",
     "securityBody": "Deze site is ontworpen om risico te minimaliseren: hij wordt statisch gegenereerd, de hulpmiddelen rekenen lokaal in je browser en hij vermijdt het verzamelen van gegevens die hij niet nodig heeft. Er wordt naar beste vermogen aan gewerkt om de site en de afhankelijkheden veilig te houden. Geen enkel systeem is echter gegarandeerd veilig, en een dergelijke garantie wordt hier niet gegeven. De eigenaar van de site kan niet verantwoordelijk worden gehouden voor beveiligingsinbreuken, kwetsbaarheden of incidenten, of dat nu in deze site, de afhankelijkheden, de hosting- of leveringsinfrastructuur of de softwaretoeleveringsketen is, die gevolgen kunnen hebben voor gebruikers van deze site of gebruikers van de opensourcecode die wordt onderhouden op github.com/ronutz. Als je een beveiligingsprobleem vindt, is een melding via de contactpagina oprecht welkom.",
     "openSourceTitle": "De opensourcecode",
-    "openSourceBody": "De opensourcecode gepubliceerd op github.com/ronutz is gelicentieerd onder de eigen licentievoorwaarden, momenteel de Apache License 2.0 voor de netcore-engine. Die licentie regelt de code en levert de code zelf zoals hij is, met een eigen uitsluiting van garantie en beperking van aansprakelijkheid, die volledig gelden voor iedereen die de code gebruikt, kopieert, wijzigt of herdistribueert. Niets op deze pagina vermindert of vervangt de voorwaarden van die licentie.",
     "changesTitle": "Wijzigingen",
     "changesBody": "De site, de hulpmiddelen, de inhoud, de code en deze kennisgeving kunnen op elk moment veranderen, stoppen met werken of verdwijnen, zonder aankondiging en zonder verplichting jegens wie dan ook. De van toepassing zijnde versie is de huidige versie van deze pagina.",
     "acceptBody": "Door deze site of de code te gebruiken aanvaard je deze kennisgeving volledig. Als je deze niet aanvaardt, is je enige remedie te stoppen met het gebruik van de site en de code.",

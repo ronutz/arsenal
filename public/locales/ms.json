@@ -830,6 +830,29 @@
         "s7": "Relying Party boleh memanggil UserInfo dengan access token",
         "s8": "Penyedia mengembalikan claim pengguna"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "Kalendar kadens keluaran F5",
+      "blurb": "F5 beralih kepada kadens keselamatan bulanan pada Julai 2026. Alat ini mengira tarikh akan datang bagi keluaran diperkukuh dan pemberitahuan keselamatan supaya anda boleh merancang tetingkap tampalan. Setempat, tiada rangkaian.",
+      "fromLabel": "Rancang dari",
+      "monthsLabel": "Bulan untuk dipaparkan",
+      "example": "Contoh",
+      "clear": "Hari ini",
+      "nextReleaseLabel": "Keluaran diperkukuh seterusnya",
+      "nextNotifLabel": "Pemberitahuan keselamatan seterusnya",
+      "today": "hari ini",
+      "inDays": "dalam {n} hari",
+      "daysAgo": "{n} hari lalu",
+      "colDate": "Tarikh (Rabu ketiga)",
+      "colRelease": "Keluaran diperkukuh",
+      "colNotification": "Pemberitahuan keselamatan",
+      "colCovers": "Pemberitahuan meliputi",
+      "releaseYes": "Ya",
+      "notifNone": "belum ada",
+      "note1": "Setiap tarikh ialah Rabu ketiga: keluaran diperkukuh bulan itu dikeluarkan, dan pemberitahuan keselamatan bulan sebelumnya diterbitkan sebulan selepas keluaran yang diliputinya.",
+      "note2": "Ini ialah tarikh yang dijadualkan. F5 juga mengeluarkan amaran keselamatan luar jadual dan pembaikan kejuruteraan (hotfix) untuk isu mendesak pada bila-bila masa, dan mengekalkan fleksibiliti untuk melaraskan masa pemberitahuan.",
+      "learnMore": "Baharu dengan perubahan ini?",
+      "learnLink": "Baca apa yang berubah dan mengapa"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Keselamatan: usaha terbaik, tiada tanggungjawab atas pelanggaran",
     "securityBody": "Laman ini direka untuk meminimumkan risiko: ia dijana secara statik, alatnya mengira secara setempat dalam pelayar anda, dan ia mengelak daripada mengumpul data yang tidak diperlukannya. Usaha terbaik dilakukan untuk memastikan laman dan kebergantungannya selamat. Namun, tiada sistem yang dijamin selamat, dan jaminan sedemikian tidak diberikan di sini. Pemilik laman tidak boleh dipertanggungjawabkan atas pelanggaran keselamatan, kerentanan, atau insiden, sama ada dalam laman ini, kebergantungannya, infrastruktur pengehosan atau penyampaiannya, atau rantaian bekalan perisiannya, yang mungkin memberi kesan kepada pengguna laman ini atau pengguna kod sumber terbuka yang diselenggara di github.com/ronutz. Jika anda menemui isu keselamatan, laporan melalui halaman hubungi kami amat dialu-alukan.",
     "openSourceTitle": "Kod sumber terbuka",
-    "openSourceBody": "Kod sumber terbuka yang diterbitkan di github.com/ronutz dilesenkan di bawah terma lesennya sendiri, pada masa ini Lesen Apache 2.0 untuk enjin netcore. Lesen itu mentadbir kod dan menyediakan kod itu sendiri sebagaimana adanya, dengan penafian jaminan dan pembatasan liabilitinya sendiri, yang terpakai sepenuhnya kepada sesiapa yang menggunakan, menyalin, mengubah suai, atau mengedar semula kod tersebut. Tiada apa-apa di halaman ini yang mengurangkan atau menggantikan terma lesen tersebut.",
     "changesTitle": "Perubahan",
     "changesBody": "Laman, alatnya, kandungannya, kodnya, dan notis ini boleh berubah, rosak, atau hilang pada bila-bila masa, tanpa notis dan tanpa kewajipan kepada sesiapa. Versi yang terpakai ialah versi semasa halaman ini.",
     "acceptBody": "Dengan menggunakan laman ini atau kodnya, anda menerima notis ini sepenuhnya. Jika anda tidak menerimanya, satu-satunya remedi anda ialah berhenti menggunakan laman dan kod tersebut.",

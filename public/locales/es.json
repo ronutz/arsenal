@@ -830,6 +830,29 @@
         "s7": "La parte confiante puede llamar a UserInfo con el token de acceso",
         "s8": "El proveedor devuelve los claims del usuario"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "Calendario de cadencia de versiones de F5",
+      "blurb": "F5 pasó a una cadencia de seguridad mensual en julio de 2026. Esto calcula las próximas fechas de versiones reforzadas y notificaciones de seguridad para que pueda planificar ventanas de parcheo. Local, sin red.",
+      "fromLabel": "Planificar desde",
+      "monthsLabel": "Meses a mostrar",
+      "example": "Ejemplo",
+      "clear": "Hoy",
+      "nextReleaseLabel": "Próxima versión reforzada",
+      "nextNotifLabel": "Próxima notificación de seguridad",
+      "today": "hoy",
+      "inDays": "en {n} días",
+      "daysAgo": "hace {n} días",
+      "colDate": "Fecha (tercer miércoles)",
+      "colRelease": "Versión reforzada",
+      "colNotification": "Notificación de seguridad",
+      "colCovers": "La notificación cubre",
+      "releaseYes": "Sí",
+      "notifNone": "todavía ninguna",
+      "note1": "Cada fecha es un tercer miércoles: se publica la versión reforzada de ese mes, y la notificación de seguridad del mes anterior se publica un mes después de la versión que cubre.",
+      "note2": "Estas son las fechas programadas. F5 también emite alertas de seguridad fuera de banda y correcciones de ingeniería (hotfixes) para problemas urgentes en cualquier momento, y conserva flexibilidad para ajustar el momento de las notificaciones.",
+      "learnMore": "¿Nuevo en este cambio?",
+      "learnLink": "Lea qué cambió y por qué"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Seguridad: mejor esfuerzo, sin responsabilidad por brechas",
     "securityBody": "Este sitio está diseñado para minimizar el riesgo: se genera de forma estática, sus herramientas calculan localmente en tu navegador y evita recopilar datos que no necesita. Se hace el mejor esfuerzo por mantener el sitio y sus dependencias seguros. Sin embargo, ningún sistema tiene la seguridad garantizada, y aquí no se ofrece tal garantía. El titular del sitio no puede ser considerado responsable de brechas de seguridad, vulnerabilidades o incidentes, ya sea en este sitio, sus dependencias, su infraestructura de alojamiento y entrega o su cadena de suministro de software, que pudieran afectar a los usuarios de este sitio o a los usuarios del código abierto mantenido en github.com/ronutz. Si encuentras un problema de seguridad, un aviso a través de la página de contacto es sinceramente bienvenido.",
     "openSourceTitle": "El código abierto",
-    "openSourceBody": "El código abierto publicado en github.com/ronutz está licenciado bajo sus propios términos de licencia, actualmente la Licencia Apache 2.0 para el motor netcore. Esa licencia rige el código y ofrece el código tal cual, con su propia renuncia de garantía y limitación de responsabilidad, que se aplican en su totalidad a quien use, copie, modifique o redistribuya el código. Nada en esta página reduce ni sustituye los términos de esa licencia.",
     "changesTitle": "Cambios",
     "changesBody": "El sitio, sus herramientas, su contenido, su código y este aviso pueden cambiar, dejar de funcionar o desaparecer en cualquier momento, sin previo aviso y sin obligación hacia nadie. La versión aplicable es la versión actual de esta página.",
     "acceptBody": "Al usar este sitio o su código aceptas este aviso en su totalidad. Si no lo aceptas, tu único recurso es dejar de usar el sitio y el código.",

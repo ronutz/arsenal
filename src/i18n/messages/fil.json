@@ -830,6 +830,29 @@
         "s7": "Maaaring tawagan ng Relying Party ang UserInfo gamit ang access token",
         "s8": "Ibinabalik ng provider ang mga claim ng user"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "Kalendaryo ng cadence ng mga release ng F5",
+      "blurb": "Lumipat ang F5 sa buwanang security cadence noong Hulyo 2026. Kinukcompute nito ang mga paparating na petsa ng pinatibay na release at security notification para makapagplano ka ng mga patch window. Lokal, walang network.",
+      "fromLabel": "Magplano mula",
+      "monthsLabel": "Mga buwang ipapakita",
+      "example": "Halimbawa",
+      "clear": "Ngayon",
+      "nextReleaseLabel": "Susunod na pinatibay na release",
+      "nextNotifLabel": "Susunod na security notification",
+      "today": "ngayon",
+      "inDays": "sa {n} araw",
+      "daysAgo": "{n} araw na ang nakalipas",
+      "colDate": "Petsa (ikatlong Miyerkules)",
+      "colRelease": "Pinatibay na release",
+      "colNotification": "Security notification",
+      "colCovers": "Saklaw ng notification",
+      "releaseYes": "Oo",
+      "notifNone": "wala pa",
+      "note1": "Bawat petsa ay isang ikatlong Miyerkules: lumalabas ang pinatibay na release ng buwang iyon, at inilalathala ang security notification ng nakaraang buwan isang buwan matapos ang release na saklaw nito.",
+      "note2": "Ito ang mga nakatakdang petsa. Naglalabas din ang F5 ng out-of-band na security alert at engineering hotfix para sa mga apurahang isyu anumang oras, at pinananatili ang flexibility na iakma ang timing ng notification.",
+      "learnMore": "Bago sa pagbabagong ito?",
+      "learnLink": "Basahin kung ano ang nagbago at bakit"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Seguridad: pinakamahusay na pagsisikap, walang pananagutan para sa mga paglabag",
     "securityBody": "Ang site na ito ay dinisenyo upang bawasan ang panganib: ito ay static na binubuo, ang mga tool nito ay nagkakalkula nang lokal sa iyong browser, at iniiwasan nitong mangolekta ng datos na hindi nito kailangan. Ginagawa ang pinakamahusay na pagsisikap upang mapanatiling ligtas ang site at ang mga dependency nito. Gayunpaman, walang sistemang garantisadong ligtas, at walang gayong garantiyang ibinibigay dito. Ang may-ari ng site ay hindi maaaring managot para sa mga paglabag sa seguridad, kahinaan, o insidente, maging sa site na ito, sa mga dependency nito, sa imprastraktura ng pag-host o paghahatid nito, o sa supply chain ng software nito, na maaaring makaapekto sa mga gumagamit ng site na ito o sa mga gumagamit ng open-source na code na pinananatili sa github.com/ronutz. Kung makakita ka ng isyu sa seguridad, tunay na tinatanggap ang isang ulat sa pamamagitan ng pahina ng contact.",
     "openSourceTitle": "Ang open-source na code",
-    "openSourceBody": "Ang open-source na code na inilathala sa github.com/ronutz ay lisensyado sa ilalim ng sarili nitong mga tuntunin ng lisensya, sa kasalukuyan ang Apache License 2.0 para sa netcore na engine. Ang lisensyang iyon ang namamahala sa code at mismong nagbibigay ng code ayon sa kung ano ito, kasama ang sarili nitong pagtatatwa ng warranty at limitasyon ng pananagutan, na ganap na nalalapat sa sinumang gumagamit, kumukopya, nagbabago, o namamahagi muli ng code. Walang anuman sa pahinang ito ang nagpapababa o pumapalit sa mga tuntunin ng lisensyang iyon.",
     "changesTitle": "Mga pagbabago",
     "changesBody": "Ang site, ang mga tool nito, ang nilalaman nito, ang code nito, at ang abisong ito ay maaaring magbago, masira, o mawala anumang oras, nang walang abiso at walang obligasyon kaninuman. Ang nalalapat na bersyon ay ang kasalukuyang bersyon ng pahinang ito.",
     "acceptBody": "Sa paggamit ng site na ito o ng code nito, tinatanggap mo nang buo ang abisong ito. Kung hindi mo ito tinatanggap, ang tanging remedyo mo ay ang ihinto ang paggamit ng site at ng code.",

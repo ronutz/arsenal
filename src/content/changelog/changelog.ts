@@ -10,7 +10,10 @@
 // TO ADD AN ENTRY: prepend a new object to the top of CHANGELOG (the array is
 // kept newest-first). Use an ISO date ("YYYY-MM-DD"); an optional `time` may be
 // added for same-day ordering. Keep `title` short and `body` to one to three
-// plain sentences. Reference tool slugs in `tools` when relevant.
+// plain sentences. Link the entry to whatever it describes: `tools` for tool
+// slugs, `articles` for Learn article slugs, and `links` for any other feature
+// or page (label + locale-agnostic href). Everything an entry announces should
+// be reachable from it.
 //
 // Dates reflect the day a change shipped. Where several tools shipped on the
 // same day, they are listed in the order they were built.
@@ -26,8 +29,14 @@ export interface ChangelogEntry {
   kind: ChangelogKind;
   title: string;
   body: string;
-  /** Optional tool slugs this entry concerns (linked on the page). */
+  /** Optional tool slugs this entry concerns (linked to /tools/<slug>). */
   tools?: string[];
+  /** Optional Learn article slugs this entry concerns (linked to /learn/<slug>). */
+  articles?: string[];
+  /** Optional labeled links to features or pages this entry concerns
+   *  (e.g. { label: "Disclaimer page", href: "/disclaimer" }). Locale-agnostic
+   *  hrefs; the i18n Link prefixes the active locale. */
+  links?: { label: string; href: string }[];
 }
 
 /** Human label for each kind, shown as a badge. */
@@ -44,9 +53,30 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-07",
+    time: "15:00",
+    kind: "tool",
+    title: "F5 release cadence calendar",
+    body:
+      "On 6 July 2026 F5 moved from a quarterly to a monthly security release cadence: hardened software releases on the third Wednesday of every month starting 15 July, and security notifications one month later starting 19 August (covering the July release). This tool turns that schedule into concrete dates. Pick a start date, which defaults to today, and it lists the upcoming hardened releases and security notifications and tells you the next of each. Because F5's own anchor dates line up to third Wednesdays, each third Wednesday carries both that month's release and the previous month's notification, and the tool makes that plannable in advance. Verified against F5's two published anchors; local date arithmetic, nothing leaves the browser. Ships with a companion Learn article explaining exactly what changed, why F5 says it changed, what stays the same, and what it means for how you patch.",
+    tools: ["f5-release-cadence-calendar"],
+    articles: ["f5-monthly-release-cadence"],
+  },
+  {
+    date: "2026-07-07",
+    time: "10:15",
+    kind: "tool",
+    title: "iRules performance linter",
+    articles: ["irules-cmp-and-static-namespace"],
+    body:
+      "Paste an iRule and it flags a small, high-confidence set of anti-patterns straight from F5's own documentation, line by line. The flagship finding is the global-namespace variable ($::x, set ::x, the global keyword): F5's validator catches it from v10 and demotes the virtual server to a single TMM instance (CMP demotion), globals have been deprecated since v10, and the old $::datagroup form raises a runtime error and resets the client on v11 and later. It also warns on unbraced expr (which the bytecode compiler cannot optimize) and notes deprecated matchclass/findclass and costly regexp/regsub. It deliberately does not cry wolf: static::, class match, braced expr, and persistence/tables/session (all CMP-safe on modern versions) pass clean, and comments are skipped. Each finding carries a severity, the offending token, why it matters, and the fix. Ships with a companion Learn article on CMP and the static:: namespace, and points at the runtime calculator for real measurement. Local scan; nothing leaves the browser.",
+    tools: ["f5-irules-performance-linter"],
+  },
+  {
+    date: "2026-07-07",
     time: "06:45",
     kind: "tool",
     title: "iRules runtime calculator",
+    articles: ["irules-performance-and-timing"],
     body:
       "A browser version of DevCentral's long-standing iRules Runtime Calculator spreadsheet. Paste the timing statistics from tmsh show ltm rule, give it your platform's clock speed and core count, and it converts CPU cycles into real runtime: the average microseconds each event costs, the total cycles per request, the CPU percentage a single request consumes, and the maximum requests per second the rule can sustain, both across all cores and demoted to a single core. It reads the Cycles (min, avg, max) output, uses the average and discards the compile-inflated maximum exactly as F5 advises, and reproduces F5's own published worked example to the digit. Ships with a companion Learn article on how iRules execute (a Tcl interpreter compiling to bytecode inside TMM), what timing measures, and why average is the number that matters. Local arithmetic; nothing leaves the browser.",
     tools: ["f5-irules-runtime-calculator"],
@@ -56,6 +86,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "05:35",
     kind: "content",
     title: "Vendor ACME companions: BIG-IP and FortiGate",
+    articles: ["bigip-acme-certificate-automation", "fortigate-acme-certificate-automation"],
     body:
       "Two vendor Learn articles on certificate automation. The F5 BIG-IP article covers the native ACMEv2 client added in BIG-IP 21.1.0, which handles provisioning, renewal, and deployment for any ACMEv2 CA (Let's Encrypt, ZeroSSL, DigiCert, Buypass, Google Trust Services, SSL.com) through Certificate Order Management, alongside the dehydrated-based DevCentral solutions that preceded it, BIG-IQ's centralized Let's Encrypt CA management profile, and Ansible-driven issuance. The FortiGate article covers FortiOS's built-in ACME client for the appliance's own management certificate: its public-IP and FQDN requirements, the single-name SAN constraint (no wildcards, no multiple SANs), and the TLS-ALPN-01 and HTTP-01 challenges by FortiOS version. Both link the certificate cluster (rate-limit planner, x509 decoder, renewal planner, dns-01) and contrast the two native clients. Every vendor claim was checked against the vendor's own documentation, including F5's 21.1.0 release notes and Fortinet's per-version admin guides. English and Portuguese, other locales served by English fallback.",
   },
@@ -64,6 +95,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "05:10",
     kind: "tool",
     title: "Let's Encrypt rate-limit planner",
+    articles: ["acme-protocol"],
     body: "Paste the hostnames you plan to certify and see how they map onto Let's Encrypt's limits. It groups names by registered domain (eTLD+1) using the Public Suffix List, shows the fewest certificates you need by packing up to 100 names each, points out where a wildcard would collapse subdomains, and warns if issuing one certificate per name would exceed the 50-per-registered-domain-per-week limit. The concrete limits are shown with their snapshot date and source link, and it notes that ARI-coordinated renewals are exempt from all limits. Builds directly on the registered-domain resolver; runs entirely locally.",
     tools: ["letsencrypt-rate-limits"],
   },
@@ -80,6 +112,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "03:26",
     kind: "tool",
     title: "ACME dns-01 TXT computer",
+    articles: ["acme-protocol"],
     body: "Compute the TXT record that passes an ACME dns-01 challenge. Paste the challenge token and your ACME account key (a public JWK, or its thumbprint) and it returns the _acme-challenge record name, the value to publish, and the key authorization and RFC 7638 thumbprint it was derived from. Only the key's public members are used and the key is never echoed; the SHA-256 runs locally via Web Crypto, verified against the RFC 7638 known-answer test. Ships with a new ACME protocol article explaining the whole issuance flow.",
     tools: ["acme-dns01"],
   },
@@ -88,6 +121,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "23:42",
     kind: "tool",
     title: "ExtremeXOS config explainer",
+    articles: ["how-extremexos-config-is-structured"],
     body: "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs with their tags and tagged/untagged ports and IP addresses, and groups the commands by category. First Extreme Networks tool, so the Extreme hub is now live.",
     tools: ["exos-config-explainer"],
   },
@@ -96,6 +130,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "23:05",
     kind: "tool",
     title: "PAC file explainer and validator",
+    articles: ["how-a-pac-file-chooses-a-proxy"],
     body: "Paste a Proxy Auto-Config file and it reads back the proxy directives it returns, the helper functions it uses (with the DNS-consulting ones flagged), structural and correctness lints, and whether it is a Netskope Cloud Explicit Proxy steering file. It never evaluates the file. First Netskope tool, so the Netskope hub is now live.",
     tools: ["pac-file-explainer"],
   },
@@ -104,6 +139,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "23:00",
     kind: "tool",
     title: "FortiOS packet sniffer builder",
+    articles: ["reading-a-fortigate-sniffer-trace"],
     body: "Build a FortiGate diagnose sniffer packet command from parts, or paste one to have every argument explained: interface, filter, verbosity 1-6, count, and timestamp format, with the common traps flagged. First Fortinet tool, so the Fortinet hub is now live.",
     tools: ["fortios-sniffer-builder"],
   },
@@ -112,6 +148,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "22:40",
     kind: "feature",
     title: "Two more Boss-Key Screens: MS-DOS Defrag and Copy II PC",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body: "The Boss-Key Screen gallery gains two animated DOS disk utilities: the MS-DOS 6 defragmenter with its cyan block map, and Central Point's Copy II PC copying a floppy track by track. Both animate with CSS only and respect reduced-motion.",
   },
   {
@@ -119,6 +156,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "22:20",
     kind: "feature",
     title: "Disclaimer and limitation-of-liability page",
+    links: [{ label: "Disclaimer page", href: "/disclaimer" }],
     body: "A new plain-language disclaimer sets out that everything on the site is provided as is, built from public information, for use at your own risk, with no warranty and no liability, and that security is best-effort. Linked from the footer next to the license and privacy notices.",
   },
   {
@@ -126,6 +164,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "21:32",
     kind: "content",
     title: "New Learn articles: proxies, TLS interception, and SAML proxying",
+    articles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "saml-proxy-explained"],
     body:
       "A batch of ten articles on the proxy family. Five vendor-agnostic explainers cover the TCP proxy at Layer 4, HTTP proxies (forward vs reverse, explicit vs transparent), inbound TLS at a reverse proxy (offload, bridging, passthrough), the SSL forward proxy that intercepts outbound TLS, and the SAML proxy that inserts an identity layer into a session. Five vendor companions map those concepts onto real products: F5 SSL Orchestrator topologies, F5 BIG-IP APM as a SAML SP/IdP, enforcing forward secrecy on F5, FortiGate certificate vs deep SSL inspection, and Netskope cloud forward proxy with inline TLS decryption. Perfect forward secrecy and the F5 client-SSL/server-SSL profile split were already covered by existing explainers, which the new articles link to rather than duplicate. Every vendor claim was checked against the vendor's own documentation. English and Portuguese, with the other locales served by English fallback.",
   },
@@ -134,6 +173,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "20:52",
     kind: "feature",
     title: "Boss-screens viewer: grouped, with a jump navigator",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The boss-key screen gallery on /dev-fun now organizes its 76 screens into six families, home computers, PC hardware and POST, DOS software, operating systems and servers, online services and BBSes, and network analysis, each in its own labelled section. A jump navigator sits on top, the same category-nav pattern used by the Tools and Learn indexes, so you can skip straight to a family instead of scrolling one long grid. Group labels are localized (English and Portuguese, other locales via English fallback); the cards, thumbnails, and fullscreen overlay are unchanged.",
   },
@@ -142,6 +182,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "20:01",
     kind: "content",
     title: "New Learn articles: post-quantum cryptography",
+    articles: ["nist-pqc-standards"],
     body:
       "Three new articles in the transport track cover the post-quantum transition end to end. The first explains what a quantum computer would actually break (Shor against RSA/DH/ECC, Grover only halving symmetric strength) and why harvest-now-decrypt-later makes it a present concern. The second walks the finalized NIST standards, FIPS 203 ML-KEM for key establishment and FIPS 204 ML-DSA and FIPS 205 SLH-DSA for signatures, plus the HQC and FN-DSA backups still in the pipeline. The third is the practical one: how hybrid key exchange (X25519MLKEM768) puts post-quantum crypto on the TLS 1.3 wire today, the ClientHello size problem it creates for middleboxes and load balancers, and where browser and server deployment stands. Grounded in NIST CSRC, the IETF drafts, and current deployment reporting; English and Portuguese.",
   },
@@ -150,6 +191,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "19:29",
     kind: "tool",
     title: "New tool: F5 iQuery protocol explainer",
+    articles: ["how-iquery-connects-bigip-dns"],
     body:
       "A new F5 BIG-IP DNS (GTM) tool that decodes iqdump output and /var/log/gtm iQuery messages, and explains the iQuery architecture on request. Paste iqdump and it reads back the header comments and the <xml_connection> stanza (the big3d peer on TCP 4353, the sync group, version, connection_id); paste a gtm log and it decodes the box green-to-red state changes; or pick a topic (mesh, port 4353, SSL trust, iqdump, metrics, gtmd, big3d, VLAN) for a plain-language explanation. Decode-only and fully local, grounded in F5's BIG-IP DNS/GTM manuals and K-articles, with the example taken from a real iqdump sample F5 published. Ships with a paired Learn article in English and Portuguese.",
     tools: ["iquery-protocol-explainer"],
@@ -159,6 +201,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "18:26",
     kind: "feature",
     title: "Keyboard shortcut: press F for the dev-fun index",
+    links: [{ label: "dev-fun index", href: "/dev-fun" }],
     body:
       "The site-wide keyboard shortcuts gain F, which jumps to the dev-fun landing page (joining B for the boss key, M for the Mega Brain console, and Z for Buzzword Bingo). Like every shortcut it is rebindable in Settings and inert while you are typing in a field. Separately, the PCBoard boss screen now shows a handle at its login prompt, matching how PCBoard boards actually identified callers.",
   },
@@ -167,6 +210,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:13",
     kind: "content",
     title: "The Sniffer learns to decode: eight famous captures in the three-pane view",
+    tools: ["f5-bigip-tcpdump-builder"],
     body:
       "The Network General Sniffer screen gains eight companion decodes rendered in its authentic three-pane analysis view (summary, detail, and hex): an HTTP 420 Enhance Your Calm response, the ILOVEYOU mail envelope, and the Morris Worm, Stuxnet, Conficker, Mirai, WannaCry, and NotPetya. HTTP 420 and ILOVEYOU show their real, benign application-layer artifacts in full; the six network worms are shown at the header level only (ports, protocol, CVE, date) with a clear payload-omitted marker, so no exploit or shellcode bytes appear. Every on-screen string is grounded in a cited source, from CISA and CAIDA to Microsoft and the Twitter API record.",
   },
@@ -175,6 +219,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:41",
     kind: "content",
     title: "Two professional tools close out the boss-screen set",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The retro collection reaches 68 with the pro tools that ran the network room: the Network General Sniffer, the DOS protocol analyzer that named the whole category and whose menu here is taken verbatim from a Sniffer v4.4 tutorial, and the VMware ESXi 6.7 DCUI, the bare-metal hypervisor's yellow-and-grey console with its F2-to-configure, F12-to-shut-down legend. Both were checked against period sources, from the Sniffer's own manual description to VMware's release records.",
   },
@@ -183,6 +228,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:23",
     kind: "content",
     title: "The 128K Spectrum family: +2A and +3 join, and the 128 menu is corrected",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The ZX Spectrum 128 boot menu was fixed to show the machine's real options (Tape Loader, 128 BASIC, Calculator, 48 BASIC) with no spurious copyright line, and two new screens join it: the Amstrad-era ZX Spectrum +2A and +3, both showing the shared +3 ROM menu (Loader, +3 BASIC, Calculator, 48 BASIC) and the (c)1982, 1986, 1987 Amstrad Plc. line, matched against a real-hardware photo and the official +3 manual.",
   },
@@ -191,6 +237,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:58",
     kind: "content",
     title: "TK90X and TK95 boot screens corrected against real hardware",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "Photographs of real Microdigital hardware corrected two things on these boot screens. Both machines show an eight-colour test bar (the ZX Spectrum bright palette) that was missing before: the TK90X a thin horizontal bar, the TK95 a taller field of vertical colour bands. The TK95's boot line was also fixed to read Microdigital TK95, its actual name, replacing a line taken from a mislabelled Spanish-variant ROM dump. A reminder that a ROM dump is only good evidence when it is the right ROM.",
   },
@@ -199,6 +246,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:45",
     kind: "content",
     title: "The GUI and online era arrives: six more boss screens",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The retro collection reaches 64 with the interfaces that carried computing from the command line into the graphical, networked age: Windows for Workgroups 3.11 Program Manager, the OS/2 Warp Workplace Shell desktop, the classic Macintosh Finder with its Trash, NCSA Mosaic opening the web, and the two services that first put millions online, CompuServe with its numbered menu and AOL with its Welcome screen. Framing facts were checked against period sources, from IBM and Microsoft histories to NCSA's own account of Mosaic.",
   },
@@ -207,6 +255,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:26",
     kind: "content",
     title: "TK90X and TK95 boot screens: the rainbow stripes are gone",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The Microdigital TK90X and TK95 retro screens were showing four colour bars that the real machines never display at power-on: those stripes belong to the Spectrum's logo and case motif, not the boot screen, which is plain black text on a paper-white background. Both now boot the way the hardware does, to a blank white screen with only the copyright line at the bottom (TK90X - Color Computer and TK Color Computer), verified byte-for-byte against ROM dumps and a real-hardware boot video.",
   },
@@ -215,6 +264,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:55",
     kind: "content",
     title: "Ten DOS-era workhorses join the boss screens",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The retro screen collection jumps to 58 with the software that ran offices and small businesses: XTreePro and XTreeGold, dBASE II at its dot prompt, a Clipper Summer '87 compile with its preserved copyright banner, Borland SideKick popping over a DOS session, MultiMate Advantage, Professional Write, Harvard Graphics, Microsoft Works, and Ami Pro, the first fully functional Windows word processor. Every dated fact was checked against period sources, from the XTree fan archive's command list to Microsoft's own history pages.",
   },
@@ -223,6 +273,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:24",
     kind: "content",
     title: "Three BBS screens, and the TK90X and TK95 set right",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The retro screen collection reaches 48 with the other side of the modem: RemoteAccess waiting for a caller on the sysop's console, Oblivion/2's scene-styled front door, and Telegard's classic main menu. The TK90X and TK95 boot screens were also corrected: the real machines boot to their own names (TK90X - Color Computer and TK Color Computer), verified character by character against ROM dumps and real-hardware video, replacing an inaccurate Sinclair-style line.",
   },
@@ -231,6 +282,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "12:34",
     kind: "content",
     title: "Three deep-cut boss screens: NetWare, PCBoard, and Videotexto",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The retro screen collection grows to 45 with three long-requested additions: the Novell NetWare 3.12 console running MONITOR.NLM (its utilization figure ticking about once a second, the way the real screen refreshed), a PCBoard BBS session dialing Clark Development's own Salt Air support board at 2400 bps, and the TELESP Videotexto index painting line by line the way Brazil's 1982 videotex service did over a 1200/75 bps modem link.",
   },
@@ -239,6 +291,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "05:10",
     kind: "content",
     title: "Two more retro boot screens, and a fix to a third",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The hidden retro boot-screen collection gains the Microdigital TK-82C (a ZX81 clone, the machine this site's author first learned to program on) and the TK95 (the TK90X's Spectrum-clone successor), bringing the set to 42. The ZX81 and TK-82C screens now type a first line by themselves, the way those machines did. The TK90X screen was corrected: its ROM replaced the copyright symbol with a Greek delta, so its boot line now reads accurately. The screens in the viewer are also listed in alphabetical order.",
   },
@@ -255,6 +308,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "03:20",
     kind: "content",
     title: "Boss-key screens now hold a proper 4:3 monitor shape",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The retro boss-key screens are now framed like the CRT and TV displays these machines actually used, a 4:3 monitor that scales to fit the window and centers with letterboxing, rather than stretching. Previously each screen filled the full window height while its width followed its content, so a screen with only a line or two (a ZX Spectrum copyright line, an MSX prompt) became a tall, narrow strip, while a wide two-panel layout like Norton Utilities happened to look right. Every screen now shares the same correct proportions on any window size, from an ultrawide monitor to a phone.",
   },
@@ -263,6 +317,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "22:18",
     kind: "feature",
     title: "A user guide that stays current with the toolbox",
+    links: [{ label: "User guide", href: "/guide" }],
     body:
       "There is now a Site User Guide at /guide, linked from the footer. It has four parts: an at-a-glance datasheet, a full tool reference grouped by category, suggested-usage recipes that map a common task to the tools that do it, and a short manual covering how to run a tool, privacy, the API, languages, and offline use. The datasheet figures and the tool reference are generated from the site's own sources at build time, so they always match what is published; a build guard additionally fails if a recipe ever points at a tool that no longer exists. English and Portuguese are authored directly; other locales fall back per key.",
   },
@@ -271,6 +326,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "21:37",
     kind: "feature",
     title: "A single switch turns the API on or off, and the pills follow it",
+    links: [{ label: "Settings", href: "/settings" }],
     body:
       "Whether the API is served is now controlled by one value in one file (API_PROCESSING in the API surface config): 0 keeps it documented but not served, 1 turns on local processing, where the same-origin worker answers each endpoint with the in-house engines. Both the worker and the interface read that one value, so they can never disagree: while it is off, every /api/v1 request returns an honest 404, and every API pill and badge shows a neutral grey state with 'documented, not served' wording; flip it to 1 and the same pills turn green with 'served locally' wording, on each tool page and on the API page. The switch ships in the off position. A repository link was also added to the License page and the footer. English and Portuguese ship together; other locales fall back per key.",
   },
@@ -287,6 +343,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "21:07",
     kind: "launch",
     title: "ronutz.com is now open source: Apache-2.0 for code, CC BY 4.0 for content",
+    links: [{ label: "License", href: "/license" }],
     body:
       "The project is now open source. The application code is licensed under the Apache License 2.0, and the written content, including every Learn article and all the tool copy, under Creative Commons Attribution 4.0 (CC BY 4.0). Both licenses require attribution, so anyone reusing the code or the content must credit the source, and ronutz.com stays the canonical, maintained home. The License page now describes the open terms, the footer badges are live, and the repository carries the full LICENSE, a content license, and the third-party NOTICE. Each page also now declares its own canonical URL, so a copy rehosted elsewhere still points search engines back here. English and Portuguese ship together; other locales fall back per key.",
   },
@@ -295,6 +352,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "20:39",
     kind: "feature",
     title: "Open-source and licensing badges, on the way to opening the code",
+    links: [{ label: "License", href: "/license" }],
     body:
       "The License page and the footer now carry a set of hand-drawn, self-hosted badges that declare how the project will be licensed once it is opened: Open Source, the code under the Apache License 2.0, and the content under Creative Commons Attribution 4.0 (CC BY 4.0), which requires anyone reusing it to credit the source. The badges are inline SVG that theme with the rest of the site and load no external assets, in keeping with the privacy stance; the Apache mark is a plain SPDX label rather than the Apache Foundation's feather, and the Creative Commons glyphs are the marks CC publishes for exactly this purpose. On the License page they are framed as the planned terms, since the project is still proprietary today; the footer cluster links through to the full terms. English and Portuguese ship together; other locales fall back per key.",
   },
@@ -303,6 +361,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "20:22",
     kind: "feature",
     title: "Every API-capable tool now shows its endpoint URL, linked to the spec",
+    links: [{ label: "API reference", href: "/api" }],
     body:
       "Each tool that has an HTTP API endpoint now displays that endpoint on its page, for example GET https://ronutz.com/api/v1/cidr, as a link that opens the API reference's Swagger UI view, deep-linked to that tool's operation. The endpoint URLs and their operation anchors are read from the generated OpenAPI spec at build time, so they are always correct, including hand-authored operations whose identifiers differ from the tool slug. The label is honest: the endpoint is documented, not served, and the link opens the specification rather than making a live call. Tools without an API endpoint show nothing. English and Portuguese ship together; other locales fall back per key.",
   },
@@ -311,6 +370,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "19:49",
     kind: "feature",
     title: "The API reference is now public, documented but deliberately not served",
+    links: [{ label: "API reference", href: "/api" }],
     body:
       "The tools API now has a visible home, linked from the footer next to the build stamp. Every tool is built to run as a small, deterministic HTTP API, and the full OpenAPI 3.1 contract is published and browsable, both in an on-brand reference and in a standard Swagger UI view. The page is honest about one thing up front: the API is implemented and documented, but this site does not serve it, because a public API bills for compute on every call in ways a single maintainer cannot cap safely, and the site is meant to stay free and predictable to run. In keeping with that, both reference views are now inert: Swagger UI's try-it-out controls are removed, and the on-brand explorer builds the exact request URL you would call but sends nothing. The engine is open, so anyone who needs the API today can run it themselves. English and Portuguese ship together; other locales fall back per key.",
   },
@@ -328,6 +388,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "19:00",
     kind: "feature",
     title: "Full Apple coverage: the Apple I, the original Apple II, and the Macintosh (Happy Mac)",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The boss-key gallery now covers Apple's iconic early machines end to end, each checked against original documentation. New: the Apple I (1976), where Wozniak's 256-byte WozMon prints a backslash and a blinking cursor after Reset; the original Apple II (1977), which has no autostart ROM and comes up in the machine-language monitor at a * prompt (Ctrl-B enters Integer BASIC and its > prompt); and the Macintosh 128K (1984), with Susan Kare's friendly boot, a blinking floppy-with-a-question-mark that resolves into the smiling Happy Mac and Welcome to Macintosh. The existing //e screen was also corrected: it now shows the enhanced //e's Apple //e banner, which keeps it visually distinct from the Apple ][+ screen. Together with the II+, //c, and IIgs added earlier, that is seven Apple screens; the gallery now holds forty in all.",
   },
@@ -336,6 +397,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "18:15",
     kind: "feature",
     title: "Nine more boot screens: Apple ][+, //c, IIgs, Atari 800XL, TI-99/4A, MSX turbo R, and Brazilian clones",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "The boss-key gallery in /dev/fun grew by nine period-accurate boot screens, each checked against original documentation. New this round: the Apple ][+ (the plain Apple ][ banner and ] prompt), the Apple //c (Apple //c, then Check Disk Drive with no disk in the drive), the Apple IIgs (its Check Startup Device screen with the colour Apple logo sliding side to side), the Atari 800XL (deep blue Atari BASIC READY), the TI-99/4A (the cyan TEXAS INSTRUMENTS HOME COMPUTER title, press any key to begin), and the MSX turbo R (the logo assembling from the sides into MSX BASIC 4.0). Three are Brazilian machines from the market-reserve years: the Prologica CP-300 (the compact, disk-less TRS-80 Model III clone that boots straight to cassette BASIC), the Prologica CP-400 (the TRS-80 Color clone, a CoCo 2 running Extended Color BASIC), and the Unitron AP II (the faithful Apple II Plus clone with a Portuguese ROM). They join the existing screens in the same shuffled rotation (you see them all before any repeats), browse left and right while one is up, and Esc dismisses; all animations respect the reduced-motion setting.",
   },
@@ -344,6 +406,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:07",
     kind: "feature",
     title: "Customizable shortcuts, a settings page, ten boss-key screens, and a motion switch",
+    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
     body:
       "A big pass over the site's keyboard shortcuts and the /dev/fun corner. Shortcuts are now user-configurable: a new Settings page (linked in the footer) lets you rebind any shortcut key, with the choice saved on your device; press ? anywhere for a live cheat-sheet of the current bindings. New shortcuts were added alongside the originals: s opens search, / focuses it, h goes home, ? opens the cheat-sheet, and 1 to 5 jump to five go-to tools (CIDR, Base64, JWT, JSON to YAML, and the F5 hub). Language is now a saved preference too: a return visit to the site's home takes you to your preferred language, while any explicit /en/ or /pt-BR/ link is always honored as-is. The boss key grew from two disguises to ten period-accurate ones (Lotus 1-2-3, WordStar, VisiCalc, Norton Utilities, WordPerfect 5.1, dBASE III+, Turbo Pascal, the Windows blue screen, Norton Commander, and a Commodore 64 that types a program by itself), shuffled so you see them all before any repeats; while one is up, the left and right arrows browse the rest, and Esc dismisses. A new Boss-Key Screens gallery in /dev/fun lets you browse them by name, thumbnail, and a short note, and open any one fullscreen. Finally, the Mega Brain console got a motion switch in its title bar for anyone who prefers less movement (its explanatory banners now also hold still while the console shakes), complementing the system reduced-motion setting the site already respects.",
   },
@@ -352,6 +415,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:54",
     kind: "feature",
     title: "Site-wide keyboard shortcuts, and a Mega Brain console tune-up",
+    links: [{ label: "Mega Brain console", href: "/dev-fun/mega-brain" }],
     body:
       "New single-key shortcuts on every page: b for the boss key (hide the page behind a 1980s work app until any key or click), t for the Tools index, l for the Learn index, m for the Mega Brain console, and z for Buzzword Bingo. They stay completely inert while you are typing (a focused text field, paste box, or search input keeps its keys) and when a modifier is held (so Ctrl+T and the like are never shadowed); they run entirely in the browser with no tracking, and are documented on the privacy and site-behavior page. Alongside that, the Mega Brain console got a tune-up: the FULL POWER and STOP controls moved into the window title bar as pills (FULL POWER a fixed-pink lightning pill, STOP a red octagonal emergency-stop button), the Mano Deyvin tribute overlay now dismisses on a click anywhere (fixing a mispointing cue and the sense that a timer was blocking it), and the /dev/fun label in the console frame is now a link back to the /dev/fun index, with a matching link added to Buzzword Bingo.",
   },
@@ -369,6 +433,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:10",
     kind: "content",
     title: "Learn article: Telemetry Streaming, the extension that observes",
+    articles: ["bigip-telemetry-streaming-ts"],
     body:
       "The companion to the new explainer, in English and Portuguese. It places TS in the toolchain by what it does differently: AS3 and DO configure the BIG-IP, TS observes it, aggregating, normalizing, and forwarding stats and events to a consumer. It walks the flat Telemetry-class model (no tenant, no Common, unlike DO), the three object roles (sources produce, consumers forward, namespaces and endpoints support), the long push/pull consumer catalogue, and the failure that passes schema validation: an incomplete pipeline with a source but no consumer or a consumer but no source, including the Telemetry_System-without-systemPoller trap and the namespace-scoping subtlety. States plainly that F5 has placed TS in maintenance mode. Cross-linked to the DO and AS3 articles and the new tool.",
   },
@@ -386,6 +451,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "10:30",
     kind: "content",
     title: "Learn article: Declarative Onboarding, the L1-L3 half",
+    articles: ["bigip-declarative-onboarding-do"],
     body:
       "The companion to the new explainer, in English and Portuguese. It draws the line that makes the whole toolchain click: AS3 configures the L4-L7 application services on a box already on the network, and DO does the L1-L3 onboarding that gets it there, licensing, provisioning, DNS and NTP, VLANs and self IPs and routes, users, and clustering. It walks the one-Device-one-Common-tenant model and why DO is stricter than AS3 about the tenant name, the async-returns-202 contract, the classes in the order onboarding actually happens, and the three version-specific traps the docs bury: the hostname mutual-exclusion, the DO 1.36 allowService default flip to none, and the root oldPassword requirement. Cross-linked to the AS3 anatomy article and the new tool.",
   },
@@ -457,6 +523,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "03:43",
     kind: "content",
     title: "F5 hub: dedicated iRules category, corrected tags, standardized names",
+    links: [{ label: "F5 hub", href: "/f5" }],
     body:
       "The F5 hub got a taxonomy and naming pass. iRules is now its own category with a dedicated heading, split out from LTM, so iRule tools and articles group together on their own. The BIG-IP persistence-cookie decoder, which was mis-tagged Security & WAF, now correctly reads Networking. The platform divider is standardized to 'TMOS · F5OS · Platforms', and six F5 tool names were polished for consistency: sentence case throughout, 'F5XC' rather than 'F5 XC', 'iRules' spelled consistently, and cleaner separators, aligned across the hub and the catalogue in both English and Portuguese.",
   },
@@ -474,6 +541,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "02:36",
     kind: "content",
     title: "The colophon now states the hosting ceiling, honestly",
+    links: [{ label: "Colophon", href: "/colophon" }],
     body:
       "A new colophon section, echoed in one paragraph on the roadmap, spells out the hard limits this site lives under: a Cloudflare Worker version carries at most 20,000 static files on the free plan and 100,000 on the paid plan (raised five-fold in September 2025, deployable only with Wrangler 4.34 or newer), no file over 25 MiB, and static-asset requests free and unlimited. Against that, the site's own arithmetic: about three files per rendered page across sixteen languages, roughly fifty files per tool and a hundred per tool-with-article pack, a little over eighteen thousand files today, and a mapped expansion path, route-sharded Workers, then object storage, should the toolbox ever outgrow one Worker.",
   },
@@ -482,6 +550,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "02:14",
     kind: "feature",
     title: "Every tool now has an Example button (D-83 retrofit complete)",
+    links: [{ label: "All tools", href: "/tools" }],
     body:
       "The Example and Clear buttons that newer tools shipped with are now on every tool, all 54 of them. The 31 retrofitted tools each load a sample taken verbatim from their own golden test vectors, so every example provably works: the RFC 4231 HMAC test case, the RFC 7636 PKCE verifier from appendix B, the RFC 7517 example key set, the canonical jwt.io token, the classic BIG-IP persistence cookie from K6917, real tmsh stanzas, and more. Even the two form-style tools joined in their own way: the iRule event-order tool's Example applies the HTTPS re-encrypt preset, and the tcpdump builder's fills in the all-TMM interface, name-resolution-off, and a host-and-port filter. One click shows what each tool does; one click clears it.",
   },
@@ -490,6 +559,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "22:39",
     kind: "feature",
     title: "Vendor sub-categories, and generic categories go vendor-agnostic",
+    links: [{ label: "All tools", href: "/tools" }],
     body:
       "The taxonomy grew a level. Vendor hubs now group their tools and articles by ordered sub-categories: for F5, the ten pillars from LTM and iRules through TMOS, DNS/GTM, ASM, AFM, APM, SSL Orchestrator, automation, public cloud, and Distributed Cloud, with every tool assigned and articles inheriting their placement from the tools they relate to. Fortinet, Netskope, and Extreme Networks received source-grounded taxonomies of their own, built from each vendor's official product catalogue, twelve Fortinet sub-categories with the full A-to-Z product list assigned, ten Netskope One components, eight Extreme product families, ready for the day their first tools ship. And the generic categories on the Tools and Learn indexes are now exclusively vendor-agnostic: vendor content lives on its hub, one cross-vendor syslog article came home to networking, and the hub strip on top of each index is the way in.",
   },
@@ -498,6 +568,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "22:39",
     kind: "content",
     title: "Privacy page: why preferences live only on your device",
+    links: [{ label: "Privacy page", href: "/privacy" }],
     body:
       "A new section on the privacy page explains what this site remembers and why. The theme choice is stored only in your browser's localStorage and applied before first paint; no cookie, no account, no server ever sees it, which is exactly why a private window, cleared site data, or another device starts you back at the default. Language is not stored at all, it lives in the URL, so a bookmarked address in your language keeps it. With no accounts and no tracking, preferences can only live where you can see and delete them.",
   },
@@ -506,6 +577,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "22:03",
     kind: "content",
     title: "Learn article: session variables, where APM keeps everything it learned",
+    articles: ["bigip-apm-session-variables"],
     body:
       "The companion to the new reference, in English and Portuguese, and the closing of the APM cluster the SSO article opened: the naming anatomy from the manual's own figure and why the names are templates, the three official read syntaxes with the chapter's own OTP percent-expansion as proof text, the secure contract in F5's own lab wording and the silent empty read it produces on a bare mcget of a password, the plumbing pair every SSO method ultimately reads, session.custom's auto-container behavior, and the two debug surfaces, the active-sessions-only report with its message-box pause trick and sessiondump from the CLI. The SSO methods article's closing line now links the live reference.",
   },
@@ -523,6 +595,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "19:50",
     kind: "content",
     title: "Learn article: living TCP, frozen TCP, and the two fast paths",
+    articles: ["tcp-proxy-layer-4"],
     body:
       "The companion to the new explainer, in English and Portuguese: the day the tcp family started living, told in the 13.0 announcement's own words, updated versions of the -optimized trio, progressive for the very latest features, five read-only living profiles tuned through child profiles with the custom flag pinning settings against future pushes, and the frozen legacy trio that still ships. FastL4 as the profile that is not a proxy, the PVA packet path, the loose pair for asymmetric routing, and the late-binding FIX trick. FastHTTP as the narrow case whose qualification is a checklist, every criterion a disqualifier read backwards, with K8024 as the reading you do before deploying, not after.",
   },
@@ -540,6 +613,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "19:31",
     kind: "feature",
     title: "Tools index hero: the thesis takes the headline",
+    links: [{ label: "All tools", href: "/tools" }],
     body:
       "The tools hub's eyebrow and headline both read Tools, breaking the pattern every other index page follows: a short eyebrow, a statement headline, a supporting lede. The headline is now the site's own thesis, tools that compute, never guess, in both languages, with the eyebrow keeping the short label and the existing lede staying as the supporting line.",
   },
@@ -548,6 +622,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "19:09",
     kind: "content",
     title: "Learn article: APM SSO methods and the blast radius",
+    articles: ["bigip-apm-sso-methods"],
     body:
       "The companion to the new explainer, in English and Portuguese: the eight methods and the asymmetry the chapter states up front, a broken non-form object can dim SSO for the whole session while the two form methods stay standing. What each method actually moves, from Basic's base64 header to NTLMv2's single-header quirk, the Kerberos prerequisite checklist with the no-keytab line and the federate-in-front-delegate-in-back pattern, the Forms - Client Initiated password token that keeps the credential out of the page, and the session-variable plumbing underneath all eight, with the variable reference named as this cluster's next tool.",
   },
@@ -565,6 +640,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "18:43",
     kind: "content",
     title: "Learn article: AFM contexts, accept as a ticket",
+    articles: ["bigip-afm-contexts-and-rule-processing"],
     body:
       "The companion to the new explainer, in English and Portuguese: the fixed context order with the management port apart, the manual's processed-again-at-the-next-context sentence that makes accept a ticket to the next checkpoint rather than through the building, accept-decisively as the one yes that ends the walk, the bluntly worded ICMP restriction at edge contexts, staging as the honest rehearsal, the system's own redundant-and-conflicting definitions including the accept-versus-accept-decisively surprise, and the ADC-versus-Firewall default-action split with the fail-open-versus-fail-closed stakes named.",
   },
@@ -582,6 +658,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "18:21",
     kind: "content",
     title: "Learn article: OneConnect, reuse as a grouping problem",
+    articles: ["bigip-oneconnect-connection-reuse"],
     body:
       "The companion to the new explainer, in English and Portuguese: the source mask's two documented poles and the subnet-style grouping between them, the naming drift (Source Mask, Source Prefix Length, source-mask), and the sentence both K articles state that decides real outcomes: SNAT translates first, the mask sees only the translated address, so one SNAT address means one reuse group however narrow the mask. Plus the pool lifecycle defaults, the per-TMM division and the Current Idle statistic's real meaning from F5's own lab, and the strict limit the manual itself recommends against.",
   },
@@ -607,6 +684,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "17:23",
     kind: "feature",
     title: "Homepage joins the page-hero standard; Tools index gets its eyebrow",
+    links: [{ label: "Home", href: "/" }],
     body:
       "The landing hero now uses the same title and lede scale as every other top-level page, the one page deliberately left out of the header standardization pending an explicit call - the reading-comfort scale won. The call-to-action row inherits the spacing the old subtitle carried, with no inline overrides. And the Tools index, which had the standard title but not the small cyan section marker the Learn, Changelog, and Roadmap pages carry, now opens with one: TOOLS above the tagline, translated like its siblings.",
   },
@@ -615,6 +693,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:34",
     kind: "content",
     title: "Learn article: CMP, the cores you paid for",
+    articles: ["bigip-cmp-clustered-multiprocessing"],
     body:
       "The article behind the new iRules pair, in English and Portuguese: one TMM per core, connections disaggregated across them, and demotion meaning every connection for a virtual serialized onto a single TMM. The demotion list per the CMP Compatibility page: global variables (validator catches them as of v10) with static:: as the documented cure, plus the two per-TMM traps that bite without demoting - RULE_INIT-generated keys and statistics profiles. Closes with the persistence timeline for the folklore, and the LTM-policy escape hatch for match-and-act logic that never needed Tcl.",
   },
@@ -623,6 +702,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:58",
     kind: "content",
     title: "Learn article: packet filters, the checkpoint before everything",
+    articles: ["bigip-packet-filters"],
     body:
       "The rich companion to the new tool, in English and Portuguese: one global list in ascending order, first terminal match wins, continue as the only action that lets a packet touch two rules, and an empty expression matching everything. Then the part that decides real outcomes: the master switch ships disabled and off means allow-all, trusted exemptions outrank every rule and cannot be overridden, ARP and four important ICMP types walk past by default, established connections are invisible to the filter unless you enable the option F5 itself says rarely helps, and the management port never meets any of it. Closes with the chapter's own prose-versus-tables wording inversion as a careful-reading note, and the v16 security packet-filter policy name collision.",
   },
@@ -666,6 +746,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:47",
     kind: "feature",
     title: "Three small touches: the stamp, the roadmap pointer, and a heart",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body:
       "The build stamp in the footer's machine row now links here, to the changelog, since that is the natural question a build stamp raises. This page opens with a one-line pointer to the roadmap, separating what is planned from what has shipped. And the special-thanks line on the colophon now ends with a small monochromatic heart, as it always should have.",
   },
@@ -674,6 +755,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:47",
     kind: "content",
     title: "Certification record corrected against the certificate itself",
+    links: [{ label: "Certifications", href: "/certifications" }],
     body:
       "The Extreme Networks switching credential listed as Certified Administrator (2026) is, per the certificate document now hosted alongside it, the Extreme Certified Associate, issued August 2023 with no expiry. The entry was corrected to match the document and the certificate PDF is served with it.",
   },
@@ -750,6 +832,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "10:35",
     kind: "content",
     title: "On building new tools, easier to read",
+    links: [{ label: "Contributing a tool", href: "/contribute/tools" }],
     body:
       "The funding story on the contribute page is the same text, now set for comfortable reading: a short intro, the three seats as a compact list, the infrastructure line, and the monthly total on its own line so the number is easy to find. Not a word changed in English or Portuguese, only the presentation.",
   },
@@ -758,6 +841,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "10:33",
     kind: "feature",
     title: "Clearer API error messages",
+    links: [{ label: "API reference", href: "/api" }],
     body:
       "When a tools API call fails validation, the error now tells you something useful. Deliberate validation messages from the tool engines pass through unchanged, while internal runtime errors, like a missing field in a JSON body, map to a stable hint that points at the request schema in openapi.json instead of leaking implementation details.",
   },
@@ -774,6 +858,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "09:19",
     kind: "content",
     title: "Funding transparency, updated",
+    links: [{ label: "Colophon", href: "/colophon" }],
     body:
       "The On building new tools section on the contribute page now tells the whole story: the three CONCORD seats (ANVIL on Claude, SCOUT on ChatGPT Plus, PRISM on Google AI Pro), the Cloudflare Workers plan, and the yearly domain fees, roughly USD 150 to 250 a month all in, with a link to the colophon for how the seats work. Buy Me a Coffee contributions go to that toolchain and nothing else.",
   },
@@ -782,6 +867,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "09:00",
     kind: "feature",
     title: "F5 hub, easy to find",
+    links: [{ label: "F5 hub", href: "/f5" }],
     body:
       "Hub discoverability now lives on top of the Tools and Learn listings: a small pill on each page links straight to the F5 hub, keeping the header a simple four-item bar. The pills are generated from the same populated-vendor rule as the hub itself, so Fortinet, Netskope, and Extreme Networks will appear there automatically the day their first tools ship.",
   },
@@ -790,6 +876,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "08:43",
     kind: "feature",
     title: "Vendor hub pages",
+    links: [{ label: "F5 hub", href: "/f5" }],
     body:
       "ronutz.com/f5 is live: one page gathering every F5 tool, grouped by family, followed by every F5 article. The bare /f5 address permanently redirects to the English hub, and /tools/f5 and /learn/f5 land on the hub's anchored sections in every language. Fortinet, Netskope, and Extreme Networks hubs materialize automatically when their first tools ship; until then their addresses redirect to the tools index. A new build guard keeps the vendor namespace safe: no tool, article, or page may ever take a vendor name as its address.",
   },
@@ -825,6 +912,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "04:50",
     kind: "feature",
     title: "Sticky vendor filter, back-to-top, and a tidier footer",
+    links: [{ label: "All tools", href: "/tools" }],
     body:
       "Browsing the long lists is easier: the vendor filter on the tools and Learn indexes now stays pinned below the header while you scroll, and a small corner button returns you to the top once you are more than a screen down. The footer is consolidated too: its utility links now sit in three compact rows with dimmed separators, and the machine-readable row (llms.txt, robots.txt, feed.xml) now sits at the very end just above the build stamp, in smaller monospace, so the three read as the quiet file endpoints they are.",
   },
@@ -860,6 +948,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:00",
     kind: "feature",
     title: "Public roadmap page",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body:
       "A public roadmap at /roadmap, generated from the live build catalogue so it is always current: every planned tool grouped by family, plus a running count of what has already shipped. Linked from the footer and the Share-an-idea page so proposals can check what is already planned and avoid duplicates.",
   },
@@ -876,6 +965,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:40",
     kind: "feature",
     title: "Navigation and credibility restructure",
+    links: [{ label: "About", href: "/about" }],
     body:
       "The main navigation now leads with what you use (Tools and Learn) alongside About, Training, and Contact. Certifications and Endorsements moved out of the top bar and now lead the About page as featured cards, and the Training page opens with the instructor and links to those credentials, so the professional showcase is cleanly separate from the tools.",
   },
@@ -893,6 +983,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:30",
     kind: "feature",
     title: "Every tool now has an HTTP API endpoint",
+    links: [{ label: "API reference", href: "/api" }],
     body:
       "Every deterministic tool is now reachable over a simple HTTP API at /api/v1/&lt;tool&gt;, driven by a single registry so the API and its published OpenAPI specification stay in lockstep with the toolbox as tools are added. Capabilities that would be abused as an unbounded search on shared infrastructure are explicitly excluded and remain browser-only. The API reference page lists what is available.",
   },
@@ -1236,6 +1327,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "08:42",
     kind: "content",
     title: "Licensing and colophon copy updated across all locales",
+    links: [{ label: "License", href: "/license" }, { label: "Colophon", href: "/colophon" }],
     body: "The license, colophon, and API copy were reworded in every live language to match how things work now: each tool is self-contained and runs entirely in the browser, with no upstream engine imported at runtime. The determinism and privacy guarantees are unchanged.",
   },
   {
@@ -1243,6 +1335,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "08:44",
     kind: "feature",
     title: "Two F5 iControl REST tools on the roadmap",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body: "Queued an iControl REST path explainer — which decodes /mgmt/tm/... URLs, the tilde-encoded ~partition~ paths, and the query options, and shows the matching tmsh path — and an iControl REST stats decoder that flattens F5's deeply nested stats JSON into readable key-values. Both are offline and never contact a device.",
   },
 
@@ -1252,6 +1345,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "08:22",
     kind: "infra",
     title: "CIDR is now self-contained",
+    tools: ["cidr"],
     body: "The CIDR tool was the last piece still calling an external compute package; its single-subnet analysis (cidrAnalyze) has been brought in-house, with output verified byte-for-byte against what it replaced. The site no longer depends on any external engine at runtime.",
   },
   {
@@ -1259,6 +1353,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "08:24",
     kind: "feature",
     title: "Two Expect (Tcl) tools on the roadmap",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body: "Queued an Expect script explainer — which breaks down spawn, expect, send, and timeout blocks and flags pitfalls like hardcoded credentials and a missing timeout — and an Expect pattern tester for the glob, -re, and -ex match modes. Both are static and offline; neither runs a script.",
   },
 
@@ -1286,6 +1381,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "07:38",
     kind: "feature",
     title: "F5 packet-trailer tools added to the roadmap",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body: "Two tools derived from the Wireshark f5ethtrailer dissector were added to the roadmap: an F5 Ethernet trailer decoder (Low, Medium, and High details: ingress, slot, TMM, VIP, flow and peer IDs, RST cause, peer info; it ignores the TLS keylog provider) and an F5 TCP RST cause explainer.",
   },
 
@@ -1313,6 +1409,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "06:30",
     kind: "feature",
     title: "SIEM event formats added to the roadmap",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body: "Four logging and SIEM tools were added to the roadmap: a CEF decoder (ArcSight), a Splunk HEC event explainer, a LEEF decoder (QRadar) in a new logging category, and an F5 high-speed logging and log-profile explainer.",
   },
 
@@ -1322,6 +1419,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "06:23",
     kind: "feature",
     title: "Roadmap expanded with syslog, API, and cloud-native tools",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body: "Nine tools were added to the roadmap. Two syslog tools (a PRI decoder and encoder, and a full RFC 5424 / RFC 3164 message parser) and four API tools (a JWKS explainer and key matcher, a CORS preflight explainer, a webhook signature verifier, and an OpenAPI explainer) were ranked by value. A cloud-native set (Kubernetes NetworkPolicy, RBAC, and kubeconfig explainers) was added in a new category at the end of the queue.",
   },
 
@@ -1413,6 +1511,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "11:00",
     kind: "feature",
     title: "Tool roadmap ranked and catalogue reorganized",
+    links: [{ label: "Roadmap", href: "/roadmap" }],
     body: "The full tool roadmap was ranked end to end and persisted into the catalogue. The tools index was reorganized to list tools alphabetically, with Learn articles in a curated reading order.",
   },
   {

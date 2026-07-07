@@ -830,6 +830,29 @@
         "s7": "Relying Party access token ile UserInfo'yu çağırabilir",
         "s8": "Sağlayıcı kullanıcının claim'lerini döndürür"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "F5 sürüm kadansı takvimi",
+      "blurb": "F5, Temmuz 2026'da aylık güvenlik kadansına geçti. Bu araç, yama pencerelerini planlayabilmeniz için yaklaşan sağlamlaştırılmış sürüm ve güvenlik bildirimi tarihlerini hesaplar. Yerel, ağ yok.",
+      "fromLabel": "Şu tarihten planla",
+      "monthsLabel": "Gösterilecek ay sayısı",
+      "example": "Örnek",
+      "clear": "Bugün",
+      "nextReleaseLabel": "Sonraki sağlamlaştırılmış sürüm",
+      "nextNotifLabel": "Sonraki güvenlik bildirimi",
+      "today": "bugün",
+      "inDays": "{n} gün içinde",
+      "daysAgo": "{n} gün önce",
+      "colDate": "Tarih (üçüncü Çarşamba)",
+      "colRelease": "Sağlamlaştırılmış sürüm",
+      "colNotification": "Güvenlik bildirimi",
+      "colCovers": "Bildirimin kapsamı",
+      "releaseYes": "Evet",
+      "notifNone": "henüz yok",
+      "note1": "Her tarih bir üçüncü Çarşambadır: o ayın sağlamlaştırılmış sürümü yayımlanır ve önceki ayın güvenlik bildirimi, kapsadığı sürümden bir ay sonra yayımlanır.",
+      "note2": "Bunlar planlanan tarihlerdir. F5 ayrıca acil sorunlar için her an plan dışı güvenlik uyarıları ve mühendislik düzeltmeleri (hotfix) yayımlar ve bildirim zamanlamasını ayarlama esnekliğini korur.",
+      "learnMore": "Bu değişiklikte yeni misiniz?",
+      "learnLink": "Neyin neden değiştiğini okuyun"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Güvenlik: en iyi çaba, ihlallerden sorumluluk yok",
     "securityBody": "Bu site riski en aza indirmek üzere tasarlanmıştır: statik olarak oluşturulur, araçları tarayıcınızda yerel olarak hesaplar ve ihtiyaç duymadığı verileri toplamaktan kaçınır. Siteyi ve bağımlılıklarını güvende tutmak için en iyi çaba gösterilir. Ancak hiçbir sistemin güvenli olduğu garanti edilemez ve burada böyle bir garanti verilmez. Site sahibi, ister bu sitede, ister bağımlılıklarında, ister barındırma veya teslimat altyapısında, ister yazılım tedarik zincirinde olsun, bu sitenin kullanıcılarını veya github.com/ronutz adresinde tutulan açık kaynak kodunun kullanıcılarını etkileyebilecek güvenlik ihlallerinden, açıklardan veya olaylardan sorumlu tutulamaz. Bir güvenlik sorunu bulursanız, iletişim sayfası üzerinden bir bildirim içtenlikle memnuniyetle karşılanır.",
     "openSourceTitle": "Açık kaynak kodu",
-    "openSourceBody": "github.com/ronutz adresinde yayınlanan açık kaynak kodu, şu anda netcore motoru için Apache License 2.0 olan kendi lisans koşulları altında lisanslanmıştır. Bu lisans kodu yönetir ve kodu kendisi olduğu gibi sunar; kodu kullanan, kopyalayan, değiştiren veya yeniden dağıtan herkes için tam olarak geçerli olan kendi garanti reddi ve sorumluluk sınırlaması ile birlikte. Bu sayfadaki hiçbir şey o lisansın koşullarını azaltmaz veya değiştirmez.",
     "changesTitle": "Değişiklikler",
     "changesBody": "Site, araçları, içeriği, kodu ve bu bildirim herhangi bir zamanda, bildirimde bulunmaksızın ve kimseye karşı yükümlülük olmaksızın değişebilir, çalışmayı durdurabilir veya ortadan kalkabilir. Geçerli sürüm, bu sayfanın mevcut sürümüdür.",
     "acceptBody": "Bu siteyi veya kodunu kullanarak bu bildirimi tamamen kabul edersiniz. Kabul etmiyorsanız, tek çare siteyi ve kodu kullanmayı bırakmaktır.",

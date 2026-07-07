@@ -830,6 +830,29 @@
         "s7": "Die Relying Party kann UserInfo mit dem Access Token aufrufen",
         "s8": "Der Anbieter gibt die Claims des Benutzers zurück"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "F5 Release-Kadenz-Kalender",
+      "blurb": "F5 ist im Juli 2026 zu einer monatlichen Sicherheitskadenz übergegangen. Dies berechnet die kommenden Termine für gehärtete Releases und Sicherheitshinweise, damit Sie Patch-Fenster planen können. Lokal, kein Netzwerk.",
+      "fromLabel": "Planen ab",
+      "monthsLabel": "Anzuzeigende Monate",
+      "example": "Beispiel",
+      "clear": "Heute",
+      "nextReleaseLabel": "Nächstes gehärtetes Release",
+      "nextNotifLabel": "Nächster Sicherheitshinweis",
+      "today": "heute",
+      "inDays": "in {n} Tagen",
+      "daysAgo": "vor {n} Tagen",
+      "colDate": "Datum (dritter Mittwoch)",
+      "colRelease": "Gehärtetes Release",
+      "colNotification": "Sicherheitshinweis",
+      "colCovers": "Hinweis deckt ab",
+      "releaseYes": "Ja",
+      "notifNone": "noch keiner",
+      "note1": "Jedes Datum ist ein dritter Mittwoch: Das gehärtete Release dieses Monats erscheint, und der Sicherheitshinweis des Vormonats wird einen Monat nach dem abgedeckten Release veröffentlicht.",
+      "note2": "Dies sind die geplanten Termine. F5 gibt außerdem jederzeit außerplanmäßige Sicherheitswarnungen und Engineering-Hotfixes für dringende Probleme heraus und behält sich Flexibilität beim Zeitpunkt der Hinweise vor.",
+      "learnMore": "Neu bei dieser Änderung?",
+      "learnLink": "Lesen Sie, was sich geändert hat und warum"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Sicherheit: nach bestem Bemühen, keine Verantwortung für Verstöße",
     "securityBody": "Diese Website ist darauf ausgelegt, Risiken zu minimieren: Sie wird statisch erzeugt, ihre Werkzeuge rechnen lokal in Ihrem Browser, und sie vermeidet es, Daten zu erheben, die sie nicht benötigt. Es wird nach bestem Bemühen versucht, die Website und ihre Abhängigkeiten sicher zu halten. Kein System ist jedoch garantiert sicher, und eine solche Garantie wird hier nicht gegeben. Der Betreiber der Website kann nicht für Sicherheitsverletzungen, Schwachstellen oder Vorfälle verantwortlich gemacht werden, sei es in dieser Website, ihren Abhängigkeiten, ihrer Hosting- oder Bereitstellungsinfrastruktur oder ihrer Software-Lieferkette, die Nutzer dieser Website oder Nutzer des unter github.com/ronutz gepflegten Open-Source-Codes betreffen könnten. Wenn Sie ein Sicherheitsproblem finden, ist eine Meldung über die Kontaktseite aufrichtig willkommen.",
     "openSourceTitle": "Der Open-Source-Code",
-    "openSourceBody": "Der unter github.com/ronutz veröffentlichte Open-Source-Code ist unter seinen eigenen Lizenzbedingungen lizenziert, derzeit die Apache License 2.0 für die netcore-Engine. Diese Lizenz regelt den Code und stellt den Code selbst ohne Mängelgewähr bereit, mit ihrem eigenen Gewährleistungsausschluss und ihrer eigenen Haftungsbeschränkung, die vollumfänglich für jeden gelten, der den Code nutzt, kopiert, ändert oder weiterverbreitet. Nichts auf dieser Seite mindert oder ersetzt die Bedingungen dieser Lizenz.",
     "changesTitle": "Änderungen",
     "changesBody": "Die Website, ihre Werkzeuge, ihre Inhalte, ihr Code und dieser Hinweis können sich jederzeit ändern, ausfallen oder verschwinden, ohne Ankündigung und ohne Verpflichtung gegenüber irgendjemandem. Es gilt die jeweils aktuelle Fassung dieser Seite.",
     "acceptBody": "Durch die Nutzung dieser Website oder ihres Codes akzeptieren Sie diesen Hinweis vollumfänglich. Wenn Sie ihn nicht akzeptieren, besteht Ihr einziges Rechtsmittel darin, die Nutzung der Website und des Codes einzustellen.",

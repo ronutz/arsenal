@@ -53,6 +53,10 @@ import LetsEncryptRateLimitsTool from "@/components/LetsEncryptRateLimitsTool";
 import { manifest as letsEncryptRateLimitsManifest } from "@/lib/tools/letsencrypt-rate-limits";
 import F5IrulesRuntimeCalculatorTool from "@/components/F5IrulesRuntimeCalculatorTool";
 import { manifest as f5IrulesRuntimeCalculatorManifest } from "@/lib/tools/f5-irules-runtime-calculator";
+import F5IrulesPerformanceLinterTool from "@/components/F5IrulesPerformanceLinterTool";
+import { manifest as f5IrulesPerformanceLinterManifest } from "@/lib/tools/f5-irules-performance-linter";
+import F5ReleaseCadenceCalendarTool from "@/components/F5ReleaseCadenceCalendarTool";
+import { manifest as f5ReleaseCadenceCalendarManifest } from "@/lib/tools/f5-release-cadence-calendar";
 import DiffTool from "@/components/DiffTool";
 import { manifest as diffManifest } from "@/lib/tools/diff";
 import PkceTool from "@/components/PkceTool";
@@ -239,6 +243,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-irules-runtime-calculator": {
     Component: F5IrulesRuntimeCalculatorTool,
     sources: f5IrulesRuntimeCalculatorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-performance-linter": {
+    Component: F5IrulesPerformanceLinterTool,
+    sources: f5IrulesPerformanceLinterManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-release-cadence-calendar": {
+    Component: F5ReleaseCadenceCalendarTool,
+    sources: f5ReleaseCadenceCalendarManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "totp-hotp": {
     Component: TotpHotpTool,

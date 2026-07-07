@@ -4131,6 +4131,26 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .vendor-hub-strip-count { color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
 .category-count { color: var(--text-tertiary); font-weight: 400; font-size: 0.85em; font-variant-numeric: tabular-nums; }
 
+/* iRules performance linter: severity badges + line note. High is a soft red,
+   warning reuses the amber accent, info the cyan accent. */
+.irl-sev { font-size: 0.72em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 0.35rem; }
+.irl-sev-high { color: #f87171; }
+.irl-sev-warning { color: var(--accent-amber); }
+.irl-sev-info { color: var(--accent-primary); }
+.irl-line { color: var(--text-tertiary); font-weight: 400; font-size: 0.8em; text-transform: none; letter-spacing: normal; }
+
+/* F5 release cadence calendar */
+.rc-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.5rem; }
+.rc-months-label { margin: 0 0 0 0.4rem; }
+.rc-months-input { width: 5rem; }
+.rc-next-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem; }
+.rc-next { flex: 1 1 220px; }
+.rc-next-date { font-size: 1.35rem; font-weight: 700; color: var(--accent-primary); margin: 0.2rem 0 0.1rem; }
+.rc-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.rc-table th, .rc-table td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border-subtle, var(--surface-elevated)); }
+.rc-table th { color: var(--text-tertiary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.rc-none { color: var(--text-tertiary); }
+
 /* Vendor hub: family section headings (canonical catalogue family labels,
    grouped under the Tools heading). Quieter than the h2 above them. */
 .tools-family-heading {

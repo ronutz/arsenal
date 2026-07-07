@@ -830,6 +830,29 @@
         "s7": "Strona ufająca może wywołać UserInfo z tokenem dostępu",
         "s8": "Dostawca zwraca claims użytkownika"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "Kalendarz kadencji wydań F5",
+      "blurb": "W lipcu 2026 r. F5 przeszło na miesięczną kadencję zabezpieczeń. To narzędzie oblicza nadchodzące daty wzmocnionych wydań i powiadomień o zabezpieczeniach, aby ułatwić planowanie okien aktualizacji. Lokalnie, bez sieci.",
+      "fromLabel": "Planuj od",
+      "monthsLabel": "Miesiące do pokazania",
+      "example": "Przykład",
+      "clear": "Dziś",
+      "nextReleaseLabel": "Następne wzmocnione wydanie",
+      "nextNotifLabel": "Następne powiadomienie o zabezpieczeniach",
+      "today": "dziś",
+      "inDays": "za {n} dni",
+      "daysAgo": "{n} dni temu",
+      "colDate": "Data (trzecia środa)",
+      "colRelease": "Wzmocnione wydanie",
+      "colNotification": "Powiadomienie o zabezpieczeniach",
+      "colCovers": "Powiadomienie obejmuje",
+      "releaseYes": "Tak",
+      "notifNone": "jeszcze brak",
+      "note1": "Każda data to trzecia środa: ukazuje się wzmocnione wydanie z danego miesiąca, a powiadomienie o zabezpieczeniach z poprzedniego miesiąca jest publikowane miesiąc po wydaniu, którego dotyczy.",
+      "note2": "To są zaplanowane daty. F5 wydaje również w dowolnym momencie alerty bezpieczeństwa poza harmonogramem oraz poprawki inżynieryjne (hotfixy) dla pilnych problemów i zachowuje elastyczność w dostosowaniu terminów powiadomień.",
+      "learnMore": "Nowość w tej zmianie?",
+      "learnLink": "Przeczytaj, co się zmieniło i dlaczego"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Bezpieczeństwo: najlepsze staranie, brak odpowiedzialności za naruszenia",
     "securityBody": "Ta witryna została zaprojektowana tak, aby minimalizować ryzyko: jest generowana statycznie, jej narzędzia obliczają lokalnie w Twojej przeglądarce i unika zbierania danych, których nie potrzebuje. Podejmowane jest najlepsze staranie, aby witryna i jej zależności były bezpieczne. Żaden system nie jest jednak gwarantowanie bezpieczny i taka gwarancja nie jest tutaj udzielana. Właściciela witryny nie można pociągnąć do odpowiedzialności za naruszenia bezpieczeństwa, podatności ani incydenty, czy to w tej witrynie, jej zależnościach, jej infrastrukturze hostingowej lub dostawczej, czy w jej łańcuchu dostaw oprogramowania, które mogłyby wpłynąć na użytkowników tej witryny lub użytkowników kodu open source utrzymywanego pod adresem github.com/ronutz. Jeśli znajdziesz problem z bezpieczeństwem, zgłoszenie za pośrednictwem strony kontaktowej jest szczerze mile widziane.",
     "openSourceTitle": "Kod open source",
-    "openSourceBody": "Kod open source opublikowany pod adresem github.com/ronutz jest licencjonowany na własnych warunkach licencji, obecnie na licencji Apache License 2.0 dla silnika netcore. Ta licencja reguluje kod i sama udostępnia kod w stanie, w jakim jest, z własnym wyłączeniem gwarancji i ograniczeniem odpowiedzialności, które mają pełne zastosowanie do każdego, kto używa, kopiuje, modyfikuje lub redystrybuuje kod. Nic na tej stronie nie ogranicza ani nie zastępuje warunków tej licencji.",
     "changesTitle": "Zmiany",
     "changesBody": "Witryna, jej narzędzia, jej treść, jej kod i ta informacja mogą się zmienić, przestać działać lub zniknąć w dowolnym momencie, bez powiadomienia i bez zobowiązań wobec kogokolwiek. Obowiązująca wersja to bieżąca wersja tej strony.",
     "acceptBody": "Korzystając z tej witryny lub jej kodu, w pełni akceptujesz tę informację. Jeśli jej nie akceptujesz, jedynym środkiem zaradczym jest zaprzestanie korzystania z witryny i kodu.",

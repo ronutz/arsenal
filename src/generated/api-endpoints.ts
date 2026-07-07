@@ -209,6 +209,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5_irules_event_order",
     "tag": "F5 LTM, iRules & platform"
   },
+  "f5-irules-performance-linter": {
+    "url": "https://ronutz.com/api/v1/f5-irules-performance-linter",
+    "method": "GET",
+    "op": "run_f5_irules_performance_linter",
+    "tag": "F5 LTM, iRules & platform"
+  },
   "f5-irules-runtime-calculator": {
     "url": "https://ronutz.com/api/v1/f5-irules-runtime-calculator",
     "method": "GET",
@@ -249,6 +255,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "url": "https://ronutz.com/api/v1/f5-persistence-method-explainer",
     "method": "GET",
     "op": "run_f5_persistence_method_explainer",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "f5-release-cadence-calendar": {
+    "url": "https://ronutz.com/api/v1/f5-release-cadence-calendar",
+    "method": "GET",
+    "op": "run_f5_release_cadence_calendar",
     "tag": "F5 LTM, iRules & platform"
   },
   "f5-service-check-date": {

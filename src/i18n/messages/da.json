@@ -830,6 +830,29 @@
         "s7": "Relying party kan kalde UserInfo med access token",
         "s8": "Udbyderen returnerer brugerens claims"
       }
+    },
+    "f5-release-cadence-calendar": {
+      "name": "F5 udgivelseskadence-kalender",
+      "blurb": "F5 gik over til en månedlig sikkerhedskadence i juli 2026. Dette beregner de kommende datoer for hærdede udgivelser og sikkerhedsmeddelelser, så du kan planlægge patch-vinduer. Lokalt, intet netværk.",
+      "fromLabel": "Planlæg fra",
+      "monthsLabel": "Måneder der skal vises",
+      "example": "Eksempel",
+      "clear": "I dag",
+      "nextReleaseLabel": "Næste hærdede udgivelse",
+      "nextNotifLabel": "Næste sikkerhedsmeddelelse",
+      "today": "i dag",
+      "inDays": "om {n} dage",
+      "daysAgo": "for {n} dage siden",
+      "colDate": "Dato (tredje onsdag)",
+      "colRelease": "Hærdet udgivelse",
+      "colNotification": "Sikkerhedsmeddelelse",
+      "colCovers": "Meddelelsen dækker",
+      "releaseYes": "Ja",
+      "notifNone": "endnu ingen",
+      "note1": "Hver dato er en tredje onsdag: månedens hærdede udgivelse udkommer, og den foregående måneds sikkerhedsmeddelelse offentliggøres en måned efter den udgivelse, den dækker.",
+      "note2": "Dette er de planlagte datoer. F5 udsender også når som helst sikkerhedsadvarsler uden for planen og engineering-hotfixes til hastende problemer og bevarer fleksibilitet til at justere tidspunktet for meddelelser.",
+      "learnMore": "Ny med denne ændring?",
+      "learnLink": "Læs hvad der ændrede sig og hvorfor"
     }
   },
   "privacy_page": {
@@ -1480,7 +1503,6 @@
     "securityTitle": "Sikkerhed: bedste indsats, intet ansvar for brud",
     "securityBody": "Dette websted er designet til at minimere risiko: det genereres statisk, dets værktøjer beregner lokalt i din browser, og det undgår at indsamle data, det ikke har brug for. Der gøres en bedste indsats for at holde webstedet og dets afhængigheder sikre. Intet system er dog garanteret sikkert, og en sådan garanti gives ikke her. Webstedets ejer kan ikke holdes ansvarlig for sikkerhedsbrud, sårbarheder eller hændelser, hverken i dette websted, dets afhængigheder, dets hosting- eller leveringsinfrastruktur eller dets softwareforsyningskæde, som kan påvirke brugere af dette websted eller brugere af den open source-kode, der vedligeholdes på github.com/ronutz. Hvis du finder et sikkerhedsproblem, er en anmeldelse via kontaktsiden oprigtigt velkommen.",
     "openSourceTitle": "Open source-koden",
-    "openSourceBody": "Open source-koden, der er udgivet på github.com/ronutz, er licenseret under sine egne licensvilkår, i øjeblikket Apache License 2.0 for netcore-motoren. Den licens regulerer koden og leverer selv koden som den er, med sin egen ansvarsfraskrivelse for garanti og ansvarsbegrænsning, som gælder fuldt ud for enhver, der bruger, kopierer, ændrer eller videredistribuerer koden. Intet på denne side reducerer eller erstatter vilkårene i den licens.",
     "changesTitle": "Ændringer",
     "changesBody": "Webstedet, dets værktøjer, dets indhold, dets kode og denne meddelelse kan ændre sig, holde op med at virke eller forsvinde til enhver tid, uden varsel og uden forpligtelse over for nogen. Den gældende version er den aktuelle version af denne side.",
     "acceptBody": "Ved at bruge dette websted eller dets kode accepterer du denne meddelelse fuldt ud. Hvis du ikke accepterer den, er din eneste udvej at holde op med at bruge webstedet og koden.",

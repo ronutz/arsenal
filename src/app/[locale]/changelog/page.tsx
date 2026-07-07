@@ -20,6 +20,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { CHANGELOG, type ChangelogEntry, type ChangelogKind } from "@/content/changelog/changelog";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
+import { getAllArticles } from "@/lib/learn";
 
 // Localized <title>. (The description stays English: it is a meta tag, not
 // visible page copy.) Meta description translated per the 2026-07-03 full i18n pass.
@@ -74,6 +75,18 @@ export default async function ChangelogPage({ params }: { params: Promise<{ loca
 
   const toolCount = CATALOGUE.filter((t) => t.status === "live").length;
 
+  // slug -> localized title, for linking Learn articles referenced by an entry.
+  const articleTitle = new Map(getAllArticles(locale).map((a) => [a.slug, a.title]));
+
+  // Every link an entry points at: its tools, its Learn articles, and any other
+  // feature/page. Rendered as one unified "related links" row so an entry always
+  // links to what it describes, not just tools.
+  const entryRefs = (e: ChangelogEntry): { href: string; label: string }[] => [
+    ...(e.tools ?? []).map((slug) => ({ href: `/tools/${slug}`, label: TOOL_NAME.get(slug) ?? slug })),
+    ...(e.articles ?? []).map((slug) => ({ href: `/learn/${slug}`, label: articleTitle.get(slug) ?? slug })),
+    ...(e.links ?? []).map((l) => ({ href: l.href, label: l.label })),
+  ];
+
   return (
     <>
       <a href="#main" className="skip-link">
@@ -113,27 +126,30 @@ export default async function ChangelogPage({ params }: { params: Promise<{ loca
                       <time dateTime={g.date}>{formatDate(g.date, locale)}</time>
                     </h2>
                     <ul className="changelog-entries">
-                      {g.entries.map((e, i) => (
+                      {g.entries.map((e, i) => {
+                        const refs = entryRefs(e);
+                        return (
                         <li className="changelog-entry" key={`${g.date}-${i}`}>
                           <div className="changelog-entry-head">
                             <span className={`changelog-badge changelog-badge--${e.kind}`}>{kindLabel[e.kind]}</span>
                             <h3 className="changelog-entry-title">{e.title}</h3>
                           </div>
                           <p className="changelog-entry-body">{e.body}</p>
-                          {e.tools && e.tools.length > 0 && (
+                          {refs.length > 0 && (
                             <p className="changelog-entry-tools">
-                              {e.tools.map((slug, j) => (
-                                <span key={slug}>
+                              {refs.map((r, j) => (
+                                <span key={r.href}>
                                   {j > 0 && <span className="changelog-tool-sep"> · </span>}
-                                  <Link href={`/tools/${slug}`} className="changelog-tool-link">
-                                    {TOOL_NAME.get(slug) ?? slug}
+                                  <Link href={r.href} className="changelog-tool-link">
+                                    {r.label}
                                   </Link>
                                 </span>
                               ))}
                             </p>
                           )}
                         </li>
-                      ))}
+                        );
+                      })}
                     </ul>
                   </li>
                 ))}
