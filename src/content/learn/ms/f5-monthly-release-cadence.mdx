@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "Kadens keluaran F5 yang lebih pantas: keluaran diperkukuh dan pemberitahuan keselamatan bulanan"
+summary: "Pada 6 Julai 2026, F5 beralih daripada kadens keselamatan suku tahunan kepada bulanan: keluaran perisian diperkukuh pada Rabu ketiga setiap bulan mulai 15 Julai, dan pemberitahuan keselamatan sebulan kemudian mulai 19 Ogos. Inilah dengan tepat apa yang berubah, mengapa F5 kata ia berubah, apa yang kekal sama, dan apa maknanya bagi cara anda menampal."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Apa yang berubah, dalam satu ayat
+
+Pada 6 Julai 2026, F5 mengumumkan bahawa keluaran keselamatan perisiannya beralih daripada jadual **suku tahunan** kepada **bulanan**: keluaran perisian diperkukuh kini dikeluarkan pada **Rabu ketiga setiap bulan** (mulai 15 Julai 2026), dan pemberitahuan keselamatan yang menerangkan apa yang dibaiki oleh keluaran tersebut diterbitkan **sebulan selepas setiap keluaran** (yang pertama pada 19 Ogos 2026, meliputi keluaran 15 Julai). Amaran luar jadual bagi isu mendesak diteruskan seperti sebelum ini. Pengumuman itu datang daripada Chief Product Officer F5, Kunal Anand, dan dihantar kepada pelanggan langganan keselamatan oleh F5 SIRT pada minggu yang sama.
+
+Jika anda menjalankan F5 dalam pengeluaran, ini ialah perubahan operasi yang perlu anda rancang, bukan sekadar berita.
+
+## Dua perubahan konkrit
+
+**1. Keluaran perisian diperkukuh bulanan, pada Rabu ketiga.** Setiap keluaran menghimpunkan set pembetulan yang luas: isu yang ditemui oleh pengimbasan kod F5 berkuasa AI, isu lanjut yang muncul semasa menjejakinya, laporan daripada pasukan dalaman dan penyelidik luar, serta pengukuhan keselamatan dan kestabilan secara umum. F5 menyatakan bahawa ia akan **menghadkan butiran yang didedahkan tentang pembetulan tertentu** dalam setiap keluaran, supaya tidak memberikan penyerang peta kerentanan sebelum pelanggan menampal.
+
+**2. Pemberitahuan keselamatan suku tahunan menjadi bulanan.** Satu pemberitahuan keselamatan bagi setiap keluaran diperkukuh diterbitkan kira-kira sebulan kemudian. F5 memberikan satu titik rujukan yang tepat: keluaran 15 Julai diliputi oleh pemberitahuan pada 19 Ogos. Kedua-dua tarikh itu ialah Rabu ketiga, jadi dalam praktik kadens tersusun kemas, dan pada mana-mana Rabu ketiga dua perkara berlaku serentak: keluaran diperkukuh bulan itu dikeluarkan, dan pemberitahuan keselamatan bulan sebelumnya diterbitkan. Jurang sebulan yang disengajakan itu ialah kelebihan awal: ia memberi anda masa untuk mengemas kini sebelum butiran kerentanan menjadi umum.
+
+F5 menyatakan dengan jelas bahawa ini ialah tarikh yang dihasratkan, bukan kontrak yang tegar. Syarikat mengekalkan fleksibiliti untuk mengubah masa, kandungan atau pendekatan sesuatu pemberitahuan apabila undang-undang, kontrak, kewajipan pendedahan terselaras, penyelarasan dengan pihak berkuasa, eksploitasi aktif, penilaian materialiti, embargo atau perlindungan pelanggan memerlukannya.
+
+## Mengapa F5 kata ia membuat perubahan itu
+
+Alasan yang dinyatakan F5 wajar diulang dengan tepat, kerana ia mengubah cara anda seharusnya berfikir tentang keluaran. Pemacunya ialah **penemuan kerentanan yang dipercepat oleh AI**. F5 telah menggunakan model AI perintis (frontier) untuk mengimbas kodnya sendiri, menjalankan kitaran berterusan mengimbas, mengasingkan, membaiki, menguji dan mengeluarkan. Ini menonjolkan lebih banyak isu, dengan lebih pantas, dan F5 membingkaikan peningkatan keluaran yang terhasil sebagai tanda keselamatan yang lebih kukuh, bukan perisian yang lebih lemah. Tetapi menemui isu dengan pantas hanya membantu jika pembetulan sampai kepada pelanggan sama pantas, dan dalam kata-kata F5, kadens suku tahunan dibina untuk era yang berbeza: tetingkap antara sesuatu kerentanan menjadi diketahui dan wujudnya eksploitasi yang berfungsi telah menyempit sehingga suku tahunan tidak lagi memadai.
+
+Ada satu akibat yang penting bagi pengutamaan. F5 memberi amaran bahawa **tahap keterukan sesuatu pembetulan tunggal ialah panduan yang kurang boleh dipercayai tentang kepentingannya berbanding dahulu**, kerana penyerang semakin mampu merangkai kerentanan berketerukan rendah dan sederhana menjadi eksploitasi baharu. Arahan praktikal yang menyusul adalah tegas: layan setiap keluaran seolah-olah ia menutup jurang kritikal, dan sebarkannya, bukan hanya yang ditanda sebagai kritikal.
+
+## Apa yang kekal sama
+
+Kadens bulanan bersandar pada struktur keluaran F5 sedia ada, yang tidak lenyap:
+
+| Jenis keluaran | Produk | Apa yang disampaikannya |
+| --- | --- | --- |
+| Keluaran penyelenggaraan | BIG-IP, BIG-IQ, F5OS, NGINX | Pembetulan pepijat, himpunan pembetulan CVE terbaharu, ciri kecil, kestabilan dan pembaikan kecacatan |
+| Keluaran utama | BIG-IP, BIG-IQ, F5OS | Pencapaian peta hala tuju: ciri baharu, modul, keupayaan, penambahbaikan teras seni bina keselamatan |
+| Keluaran kestabilan jangka panjang tahunan | NGINX | Asas stabil dengan tetingkap sokongan lanjutan |
+| Pembaikan kejuruteraan (EHF) | Mengikut keperluan | Pembetulan mendesak yang dikeluarkan atas permintaan berdasarkan kesan kepada pelanggan |
+| Amaran keselamatan luar jadual | Mengikut keperluan | Pemberitahuan segera apabila maklumat kerentanan mendesak tidak boleh menunggu kitaran bulanan |
+
+## Suku tahunan lawan bulanan, secara ringkas
+
+| | Sebelum (suku tahunan) | Selepas (bulanan) |
+| --- | --- | --- |
+| Keluaran diperkukuh | Lebih kurang setiap tiga bulan | Rabu ketiga setiap bulan, mulai 15 Jul 2026 |
+| Pemberitahuan keselamatan | Suku tahunan | Bulanan, sebulan selepas setiap keluaran (mulai 19 Ogos 2026) |
+| Butiran pembetulan semasa keluaran | Lebih banyak butiran didedahkan | Butiran sengaja dihadkan sehingga pemberitahuan |
+| Isu mendesak | Amaran luar jadual | Amaran luar jadual (tidak berubah) |
+
+## Apa maknanya bagi cara anda menampal
+
+Rumusan jujurnya ialah kadens yang lebih pantas menuntut lebih daripada pasukan anda, dan kerjanya terletak pada menyerap lebih banyak kemas kini, lebih kerap, tanpa lebih risiko. Tindakan yang disyorkan F5 sendiri adalah praktikal dan wajar dipandang serius:
+
+Automasikan. Jika anda masih menerapkan kemas kini BIG-IP secara manual, kadens bulanan ialah masanya untuk mengubahnya. F5 menunjukkan perkakas automasinya dan koleksi Red Hat Ansible untuk BIG-IP, supaya aliran keluaran yang lebih besar tidak berubah menjadi aliran kerja manual yang lebih besar.
+
+Dapatkan keterlihatan armada. F5 mengesyorkan penggunaan F5 Insight for ADSP sekarang, baik untuk melihat postur tampalan semasa anda merentas keseluruhan aset anda mahupun untuk bersedia bagi keupayaan pengurusan armada yang F5 kata akan datang ke Insight.
+
+Rancang tetingkap. Kerana jadual bersifat deterministik (Rabu ketiga, setiap bulan), anda boleh meletakkan tetingkap penyelenggaraan dalam kalendar terlebih dahulu dan bukannya bertindak balas kepada setiap keluaran. [Kalendar kadens keluaran F5](/tools/f5-release-cadence-calendar) mengira tarikh keluaran dan pemberitahuan akan datang atas sebab inilah. Dan jika mereka bentuk aliran kerja kemas kini automatik berisiko rendah melebihi kapasiti semasa anda, F5 Professional Services ialah jalan yang dicadangkan F5.
+
+Bagi dasar yang mendasarinya, dasar pendedahan kerentanan F5 diterbitkan sebagai artikel pangkalan pengetahuan K4602, dan butiran bagi setiap keluaran diperkukuh diterbitkan sebaik ia tersedia. Anjakan pemikiran utama ialah yang sentiasa diulang F5: apabila penemuan mempercepat di kedua-dua belah pihak, menyebarkan keluaran terkini dengan pantas bukan lagi amalan terbaik untuk yang berhati-hati, tetapi paras asas untuk kekal terlindung.

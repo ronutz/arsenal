@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "Ang mas mabilis na release cadence ng F5: buwanang pinatibay na release at security notification"
+summary: "Noong 6 Hulyo 2026, lumipat ang F5 mula sa quarterly patungong buwanang security cadence: pinatibay na software release tuwing ikatlong Miyerkules ng bawat buwan simula 15 Hulyo, at security notification pagkalipas ng isang buwan simula 19 Agosto. Narito nang eksakto kung ano ang nagbago, kung bakit sabi ng F5 na nagbago ito, kung ano ang nananatiling pareho, at kung ano ang kahulugan nito sa paraan mo ng pag-patch."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Ano ang nagbago, sa isang pangungusap
+
+Noong 6 Hulyo 2026, inanunsyo ng F5 na ang mga security release ng software nito ay lumilipat mula sa **quarterly** na iskedyul patungo sa **buwanan**: ang pinatibay na software release ay lumalabas na ngayon tuwing **ikatlong Miyerkules ng bawat buwan** (simula 15 Hulyo 2026), at ang mga security notification na naglalarawan kung ano ang inayos ng mga release na iyon ay inilalathala **isang buwan pagkatapos ng bawat release** (ang una noong 19 Agosto 2026, na sumasaklaw sa release ng 15 Hulyo). Ang mga out-of-band na alerto para sa mga apurahang isyu ay nagpapatuloy tulad ng dati. Nagmula ang anunsyo sa Chief Product Officer ng F5 na si Kunal Anand, at ipinadala sa mga customer na may security subscription ng F5 SIRT sa parehong linggo.
+
+Kung nagpapatakbo ka ng F5 sa produksyon, ito ay isang pagbabago sa operasyon na kailangan mong planuhin, hindi lamang balita.
+
+## Ang dalawang konkretong pagbabago
+
+**1. Buwanang pinatibay na software release, tuwing ikatlong Miyerkules.** Ang bawat release ay tumitipon ng malawak na hanay ng mga pag-aayos: mga isyung natuklasan ng AI-driven na code scanning ng F5, ang karagdagang mga isyung lumilitaw habang tinutugis ang mga ito, mga ulat mula sa mga internal na team at panlabas na mananaliksik, at pangkalahatang paglakas ng seguridad at katatagan. Sinabi ng F5 na **lilimitahan nito ang detalyeng ibinubunyag tungkol sa mga tiyak na pag-aayos** sa bawat release, upang hindi mabigyan ang mga umaatake ng mapa ng mga vulnerability bago maka-patch ang mga customer.
+
+**2. Ang quarterly na security notification ay nagiging buwanan.** Isang security notification para sa bawat pinatibay na release ay inilalathala mga isang buwan pagkatapos. Nagbibigay ang F5 ng isang eksaktong sangguniang punto: ang release ng 15 Hulyo ay saklaw ng isang notification noong 19 Agosto. Ang parehong petsang ito ay mga ikatlong Miyerkules, kaya sa praktika ay maayos na nagkakasabay ang cadence, at sa alinmang ikatlong Miyerkules, dalawang bagay ang nangyayari nang sabay: lumalabas ang pinatibay na release ng buwang iyon, at inilalathala ang security notification ng nakaraang buwan. Ang sinadyang isang-buwang agwat ay isang panimulang bentahe: binibigyan ka nito ng oras na mag-update bago maging pampubliko ang mga detalye ng vulnerability.
+
+Malinaw na sinasabi ng F5 na ang mga ito ay ang mga nilalayong petsa, hindi isang matigas na kontrata. Pinananatili ng kompanya ang flexibility na baguhin ang timing, nilalaman, o pamamaraan ng isang notification kapag hinihingi ito ng batas, kontrata, mga obligasyon sa coordinated disclosure, pakikipag-ugnayan sa mga awtoridad, aktibong pagsasamantala, pagtatasa ng materiality, embargo, o proteksyon ng customer.
+
+## Bakit sabi ng F5 na ginawa nito ang pagbabago
+
+Ang nakasaad na dahilan ng F5 ay nararapat ulitin nang eksakto, dahil binabago nito kung paano mo dapat isipin ang mga release. Ang nagtutulak ay ang **pinabilis-ng-AI na pagtuklas ng vulnerability**. Gumagamit ang F5 ng frontier na mga modelo ng AI para i-scan ang sarili nitong code, na nagpapatakbo ng tuluy-tuloy na siklo ng scan, triage, ayos, test, at release. Nagbubunyag ito ng mas maraming isyu, nang mas mabilis, at ipinapakita ng F5 ang bunga nitong pagdami ng release bilang tanda ng mas matatag na seguridad sa halip na mas mahinang software. Ngunit ang mabilis na paghahanap ng mga isyu ay nakakatulong lamang kung ang mga pag-aayos ay nakararating sa mga customer nang kasing bilis, at sa mga salita ng F5, ang isang quarterly na cadence ay itinayo para sa ibang panahon: ang agwat sa pagitan ng pagiging alam ng isang vulnerability at pagkakaroon ng gumaganang exploit ay lumiit nang labis kaya hindi na sapat ang quarterly.
+
+May isang bunga na mahalaga para sa pagbibigay-priyoridad. Nagbabala ang F5 na **ang severity ng anumang nag-iisang pag-aayos ay isang di-gaanong maaasahang gabay sa halaga nito kaysa dati**, dahil ang mga umaatake ay lalong nagagawang pagkabit-kabitin ang mga low- at medium-severity na vulnerability tungo sa mga bagong exploit. Ang praktikal na tagubilin na sumusunod ay tuwiran: ituring ang bawat release na para bang isinasara nito ang isang kritikal na butas, at i-deploy ito, hindi lamang ang mga tinatakan bilang kritikal.
+
+## Ano ang nananatiling pareho
+
+Ang buwanang cadence ay nakapatong sa umiiral na istruktura ng release ng F5, na hindi nawawala:
+
+| Uri ng release | Mga produkto | Ano ang inihahatid nito |
+| --- | --- | --- |
+| Mga maintenance release | BIG-IP, BIG-IQ, F5OS, NGINX | Mga pag-aayos ng bug, pinagsama-samang kamakailang pag-aayos ng CVE, maliliit na feature, katatagan at pagwawasto ng depekto |
+| Mga major release | BIG-IP, BIG-IQ, F5OS | Mga milestone sa roadmap: bagong feature, module, kakayahan, mga pagpapabuti sa core na security architecture |
+| Mga taunang long-term stability release | NGINX | Isang matatag na pundasyon na may pinalawak na mga window ng suporta |
+| Mga engineering hotfix (EHF) | Kapag kinakailangan | Mga apurahang pag-aayos na inilalabas ayon sa pangangailangan batay sa epekto sa customer |
+| Mga out-of-band na security alert | Kapag kinakailangan | Agarang notification kapag ang apurahang impormasyon ng vulnerability ay hindi na makakaabot sa buwanang siklo |
+
+## Quarterly laban sa buwanan, sa isang sulyap
+
+| | Dati (quarterly) | Ngayon (buwanan) |
+| --- | --- | --- |
+| Pinatibay na release | Humigit-kumulang tuwing tatlong buwan | Ikatlong Miyerkules ng bawat buwan, mula 15 Hul 2026 |
+| Mga security notification | Quarterly | Buwanan, isang buwan pagkatapos ng bawat release (mula 19 Ago 2026) |
+| Detalye ng pag-aayos sa release | Mas maraming detalyeng ibinunyag | Detalyeng sinadyang nilimitahan hanggang sa notification |
+| Mga apurahang isyu | Mga out-of-band na alerto | Mga out-of-band na alerto (walang pagbabago) |
+
+## Ano ang kahulugan nito sa paraan mo ng pag-patch
+
+Ang tapat na buod ay ang mas mabilis na cadence ay humihingi ng mas marami mula sa iyong team, at ang trabaho ay nasa pag-absorb ng mas maraming update, nang mas madalas, nang walang mas maraming panganib. Ang mga inirekomendang aksyon mismo ng F5 ay praktikal at nararapat seryosohin:
+
+I-automate. Kung mano-mano mo pa ring inilalapat ang mga update ng BIG-IP, ang buwanang cadence ang panahon para baguhin iyon. Itinuturo ng F5 ang mga automation tool nito at ang mga Red Hat Ansible collection para sa BIG-IP, upang ang mas malaking daloy ng mga release ay hindi maging mas malaking daloy ng manwal na gawain.
+
+Kumuha ng visibility sa fleet. Inirerekomenda ng F5 na i-deploy ang F5 Insight for ADSP ngayon, kapwa para makita ang iyong kasalukuyang patch posture sa buong ari-arian mo at para maging handa para sa mga fleet-management na kakayahang sinasabi ng F5 na darating sa Insight.
+
+Planuhin ang window. Dahil deterministiko ang iskedyul (ikatlong Miyerkules, bawat buwan), maaari mong ilagay nang maaga sa kalendaryo ang mga maintenance window sa halip na tumugon sa bawat release. Kinakalkula ng [F5 release cadence calendar](/tools/f5-release-cadence-calendar) ang mga paparating na petsa ng release at notification para mismo sa dahilang ito. At kung ang pagdidisenyo ng isang low-risk, automated na update workflow ay lampas sa iyong kasalukuyang kapasidad, ang F5 Professional Services ang landas na iminumungkahi ng F5.
+
+Para sa saligang patakaran, ang vulnerability disclosure policy ng F5 ay inilathala bilang knowledge base article na K4602, at ang detalye para sa bawat pinatibay na release ay inilalathala habang ito ay nagiging available. Ang pangunahing pagbabago sa pag-iisip ay ang laging binabalikan ng F5: habang bumibilis ang pagtuklas sa magkabilang panig, ang mabilis na pag-deploy ng pinakabagong release ay hindi na pinakamahusay na kasanayan para sa mga maingat, kundi ang batayang antas para manatiling protektado.

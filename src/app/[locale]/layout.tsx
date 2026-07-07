@@ -88,7 +88,7 @@ export async function generateMetadata({
       // points search engines back to ronutz.com as the canonical source.
       canonical: "./",
       types: {
-        "application/rss+xml": [{ url: "/feed.xml", title: `${t("name")} — Learn` }],
+        "application/rss+xml": [{ url: "/feed.xml", title: `${t("name")} Learn` }],
       },
     },
   };

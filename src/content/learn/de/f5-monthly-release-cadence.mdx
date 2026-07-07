@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "F5s schnellere Release-Kadenz: monatliche gehärtete Releases und Sicherheitshinweise"
+summary: "Am 6. Juli 2026 wechselte F5 von einer vierteljährlichen zu einer monatlichen Sicherheitskadenz: gehärtete Software-Releases am dritten Mittwoch jedes Monats ab dem 15. Juli und Sicherheitshinweise einen Monat später ab dem 19. August. Hier steht genau, was sich geändert hat, warum F5 die Änderung nach eigener Aussage vorgenommen hat, was gleich bleibt und was das für Ihr Patchen bedeutet."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Was sich geändert hat, in einem Satz
+
+Am 6. Juli 2026 kündigte F5 an, dass seine Software-Sicherheits-Releases von einem **vierteljährlichen** auf einen **monatlichen** Rhythmus umstellen: Gehärtete Software-Releases erscheinen nun am **dritten Mittwoch jedes Monats** (ab dem 15. Juli 2026), und Sicherheitshinweise, die beschreiben, was diese Releases behoben haben, werden **einen Monat nach jedem Release** veröffentlicht (der erste am 19. August 2026, für das Release vom 15. Juli). Außerplanmäßige Warnungen für dringende Probleme bleiben wie bisher. Die Ankündigung kam von F5s Chief Product Officer, Kunal Anand, und wurde in derselben Woche vom F5 SIRT an die Kunden des Sicherheits-Abonnements verschickt.
+
+Wenn Sie F5 in der Produktion betreiben, ist dies eine betriebliche Änderung, die Sie einplanen müssen, und nicht nur eine Nachricht.
+
+## Die zwei konkreten Änderungen
+
+**1. Monatliche gehärtete Software-Releases, am dritten Mittwoch.** Jedes Release fasst eine breite Menge an Korrekturen zusammen: Probleme, die durch F5s KI-gestütztes Code-Scanning gefunden wurden, die weiteren Probleme, die beim Nachverfolgen auftauchen, Meldungen von internen Teams und externen Forschern sowie allgemeine Sicherheits- und Stabilitätshärtung. F5 hat erklärt, dass es **den Detailgrad zu den einzelnen Korrekturen** in jedem Release **begrenzen** wird, um Angreifern keine Landkarte zu den Schwachstellen zu geben, bevor die Kunden gepatcht haben.
+
+**2. Aus vierteljährlichen Sicherheitshinweisen werden monatliche.** Ein Sicherheitshinweis für jedes gehärtete Release wird etwa einen Monat später veröffentlicht. F5 nennt einen exakten Ankerpunkt: Das Release vom 15. Juli wird durch einen Hinweis am 19. August abgedeckt. Beide Daten sind dritte Mittwoche, sodass die Kadenz in der Praxis sauber aufgeht, und an jedem dritten Mittwoch geschehen zwei Dinge gleichzeitig: Das gehärtete Release dieses Monats erscheint, und der Sicherheitshinweis des Vormonats wird veröffentlicht. Der bewusste Abstand von einem Monat ist ein Vorsprung: Er gibt Ihnen Zeit zum Aktualisieren, bevor die Details der Schwachstelle öffentlich werden.
+
+F5 stellt klar, dass dies die beabsichtigten Termine sind, kein starrer Vertrag. Das Unternehmen behält sich vor, Zeitpunkt, Inhalt oder Vorgehen eines Hinweises zu ändern, wenn Gesetz, Vertrag, Verpflichtungen zur koordinierten Offenlegung, Abstimmung mit Behörden, aktive Ausnutzung, eine Wesentlichkeitsbewertung, ein Embargo oder der Kundenschutz dies erfordern.
+
+## Warum F5 die Änderung nach eigener Aussage vorgenommen hat
+
+F5s erklärte Begründung lohnt sich, genau wiederzugeben, weil sie ändert, wie Sie über die Releases denken sollten. Der Treiber ist die **KI-beschleunigte Schwachstellenfindung**. F5 nutzt Frontier-KI-Modelle, um den eigenen Code zu scannen, und durchläuft dabei einen fortlaufenden Zyklus aus Scannen, Sichten, Beheben, Testen und Veröffentlichen. Das bringt mehr Probleme zutage, schneller, und F5 wertet die daraus folgende Zunahme an Releases als Zeichen stärkerer Sicherheit statt schwächerer Software. Aber Probleme schnell zu finden hilft nur, wenn die Korrekturen die Kunden ebenso schnell erreichen, und nach F5s Worten war eine vierteljährliche Kadenz für eine andere Ära gebaut: Das Fenster zwischen dem Bekanntwerden einer Schwachstelle und der Existenz eines funktionierenden Exploits ist so schmal geworden, dass vierteljährlich nicht mehr genügt.
+
+Es gibt eine Konsequenz, die für die Priorisierung wichtig ist. F5 warnt, dass **der Schweregrad einer einzelnen Korrektur ein weniger verlässlicher Anhaltspunkt für ihre Bedeutung ist als früher**, weil Angreifer zunehmend in der Lage sind, Schwachstellen niedrigen und mittleren Schweregrads zu neuartigen Exploits zu verketten. Die praktische Anweisung, die daraus folgt, ist unmissverständlich: Behandeln Sie jedes Release so, als schließe es eine kritische Lücke, und spielen Sie es ein, nicht nur die als kritisch gekennzeichneten.
+
+## Was gleich bleibt
+
+Die monatliche Kadenz sitzt auf F5s bestehender Release-Struktur, die nicht verschwindet:
+
+| Release-Typ | Produkte | Was es liefert |
+| --- | --- | --- |
+| Wartungs-Releases | BIG-IP, BIG-IQ, F5OS, NGINX | Fehlerbehebungen, eine Sammlung aktueller CVE-Korrekturen, kleine Funktionen, Stabilität und Fehlerbehebung |
+| Major-Releases | BIG-IP, BIG-IQ, F5OS | Roadmap-Meilensteine: neue Funktionen, Module, Fähigkeiten, Verbesserungen der zentralen Sicherheitsarchitektur |
+| Jährliche Long-Term-Stability-Releases | NGINX | Eine stabile Grundlage mit verlängerten Supportzeiträumen |
+| Engineering-Hotfixes (EHFs) | Bei Bedarf | Dringende Korrekturen nach Bedarf, je nach Kundenauswirkung |
+| Außerplanmäßige Sicherheitswarnungen | Bei Bedarf | Sofortige Benachrichtigung, wenn dringende Schwachstelleninformationen nicht auf den monatlichen Zyklus warten können |
+
+## Vierteljährlich gegenüber monatlich, auf einen Blick
+
+| | Vorher (vierteljährlich) | Nachher (monatlich) |
+| --- | --- | --- |
+| Gehärtetes Release | Etwa alle drei Monate | Dritter Mittwoch jedes Monats, ab 15. Jul 2026 |
+| Sicherheitshinweise | Vierteljährlich | Monatlich, einen Monat nach jedem Release (ab 19. Aug 2026) |
+| Detailgrad der Korrekturen beim Release | Mehr Details offengelegt | Details bewusst begrenzt bis zum Hinweis |
+| Dringende Probleme | Außerplanmäßige Warnungen | Außerplanmäßige Warnungen (unverändert) |
+
+## Was das für Ihr Patchen bedeutet
+
+Die ehrliche Zusammenfassung lautet: Eine schnellere Kadenz verlangt Ihrem Team mehr ab, und die Arbeit besteht darin, mehr Updates häufiger aufzunehmen, ohne mehr Risiko. F5s eigene empfohlene Maßnahmen sind praktisch und ernst zu nehmen:
+
+Automatisieren. Wenn Sie BIG-IP-Updates noch von Hand einspielen, ist eine monatliche Kadenz der Moment, das zu ändern. F5 verweist auf seine Automatisierungswerkzeuge und die Red-Hat-Ansible-Collections für BIG-IP, damit ein größerer Strom an Releases nicht zu einem größeren Strom an Handarbeit wird.
+
+Verschaffen Sie sich Flottenübersicht. F5 empfiehlt, jetzt F5 Insight for ADSP einzusetzen, um sowohl Ihren aktuellen Patch-Stand über Ihren Bestand hinweg zu sehen als auch für die Flottenverwaltungsfunktionen gerüstet zu sein, die laut F5 zu Insight kommen.
+
+Planen Sie das Fenster. Da der Zeitplan deterministisch ist (dritter Mittwoch, jeden Monat), können Sie Wartungsfenster im Voraus in den Kalender eintragen, statt auf jedes Release zu reagieren. Der [F5 Release-Kadenz-Kalender](/tools/f5-release-cadence-calendar) berechnet genau dafür die kommenden Release- und Hinweistermine. Und wenn die Gestaltung eines risikoarmen, automatisierten Update-Workflows Ihre derzeitigen Kapazitäten übersteigt, sind die F5 Professional Services der Weg, den F5 vorschlägt.
+
+Zur zugrunde liegenden Richtlinie: F5s Richtlinie zur Offenlegung von Schwachstellen ist als Knowledge-Base-Artikel K4602 veröffentlicht, und die Details zu jedem gehärteten Release werden veröffentlicht, sobald sie verfügbar sind. Die zentrale Denkverschiebung ist die, zu der F5 immer wieder zurückkehrt: Da die Findung auf beiden Seiten schneller wird, ist das rasche Einspielen des neuesten Release keine bewährte Praxis mehr für die Vorsichtigen, sondern die Grundvoraussetzung, um geschützt zu bleiben.

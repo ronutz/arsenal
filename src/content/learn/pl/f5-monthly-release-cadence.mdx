@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "Szybsza kadencja wydań F5: comiesięczne wzmocnione wydania i powiadomienia o zabezpieczeniach"
+summary: "6 lipca 2026 r. F5 przeszło z kwartalnej na miesięczną kadencję zabezpieczeń: wzmocnione wydania oprogramowania w trzecią środę każdego miesiąca od 15 lipca, a powiadomienia o zabezpieczeniach miesiąc później od 19 sierpnia. Oto dokładnie, co się zmieniło, dlaczego F5 twierdzi, że to zmieniło, co pozostaje bez zmian i co to oznacza dla sposobu, w jaki aktualizujesz systemy."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Co się zmieniło, w jednym zdaniu
+
+6 lipca 2026 r. F5 ogłosiło, że jego wydania zabezpieczeń oprogramowania przechodzą z harmonogramu **kwartalnego** na **miesięczny**: wzmocnione wydania oprogramowania ukazują się teraz w **trzecią środę każdego miesiąca** (od 15 lipca 2026 r.), a powiadomienia o zabezpieczeniach opisujące, co te wydania naprawiły, są publikowane **miesiąc po każdym wydaniu** (pierwsze 19 sierpnia 2026 r., obejmujące wydanie z 15 lipca). Alerty spoza harmonogramu dotyczące pilnych problemów są kontynuowane jak dotychczas. Ogłoszenie pochodziło od Chief Product Officer F5, Kunal Anand, i zostało wysłane klientom z subskrypcją zabezpieczeń przez F5 SIRT w tym samym tygodniu.
+
+Jeśli uruchamiasz F5 w środowisku produkcyjnym, jest to zmiana operacyjna, którą musisz zaplanować, a nie tylko wiadomość.
+
+## Dwie konkretne zmiany
+
+**1. Comiesięczne wzmocnione wydania oprogramowania, w trzecią środę.** Każde wydanie zbiera szeroki zestaw poprawek: problemy wykryte przez skanowanie kodu F5 oparte na sztucznej inteligencji, dalsze problemy, które wychodzą na jaw podczas ich śledzenia, zgłoszenia od zespołów wewnętrznych i badaczy zewnętrznych oraz ogólne wzmacnianie bezpieczeństwa i stabilności. F5 zapowiedziało, że **ograniczy szczegółowość informacji, które ujawnia na temat poszczególnych poprawek** w każdym wydaniu, aby nie dać atakującym mapy podatności, zanim klienci założą łaty.
+
+**2. Kwartalne powiadomienia o zabezpieczeniach stają się miesięczne.** Powiadomienie o zabezpieczeniach dla każdego wzmocnionego wydania jest publikowane około miesiąc później. F5 podaje jeden dokładny punkt odniesienia: wydanie z 15 lipca jest objęte powiadomieniem 19 sierpnia. Obie te daty to trzecie środy, więc w praktyce kadencja układa się schludnie, i w każdą trzecią środę dzieją się dwie rzeczy naraz: ukazuje się wzmocnione wydanie z danego miesiąca, a powiadomienie o zabezpieczeniach z poprzedniego miesiąca zostaje opublikowane. Celowy odstęp jednego miesiąca to przewaga na starcie: daje ci czas na aktualizację, zanim szczegóły podatności staną się publiczne.
+
+F5 wyraźnie zaznacza, że są to daty zamierzone, a nie sztywna umowa. Firma zachowuje elastyczność w zmianie terminu, treści lub sposobu powiadomienia, gdy wymagają tego prawo, umowa, obowiązki skoordynowanego ujawniania, koordynacja z organami władzy, aktywne wykorzystywanie, ocena istotności, embargo lub ochrona klientów.
+
+## Dlaczego F5 twierdzi, że wprowadziło tę zmianę
+
+Podane przez F5 uzasadnienie warto przytoczyć dokładnie, ponieważ zmienia ono sposób, w jaki powinieneś myśleć o wydaniach. Motorem jest **przyspieszone przez sztuczną inteligencję wykrywanie podatności**. F5 wykorzystuje graniczne modele sztucznej inteligencji do skanowania własnego kodu, prowadząc ciągły cykl skanowania, klasyfikacji, naprawy, testowania i wydawania. To ujawnia więcej problemów, szybciej, a F5 przedstawia wynikający z tego wzrost liczby wydań jako oznakę silniejszego bezpieczeństwa, a nie słabszego oprogramowania. Ale szybkie znajdowanie problemów pomaga tylko wtedy, gdy poprawki docierają do klientów równie szybko, a mówiąc słowami F5, kwartalna kadencja została zbudowana na inną epokę: okno między tym, kiedy podatność staje się znana, a tym, kiedy istnieje działający exploit, zwęziło się do tego stopnia, że kwartalnie już nie wystarcza.
+
+Istnieje konsekwencja, która ma znaczenie dla ustalania priorytetów. F5 ostrzega, że **poziom istotności pojedynczej poprawki jest mniej wiarygodnym wskaźnikiem jej wagi niż kiedyś**, ponieważ atakujący są coraz częściej w stanie łączyć podatności o niskim i średnim poziomie istotności w nowe exploity. Wynikająca z tego praktyczna wskazówka jest dosadna: traktuj każde wydanie tak, jakby zamykało krytyczną lukę, i wdrażaj je, a nie tylko te oznaczone jako krytyczne.
+
+## Co pozostaje bez zmian
+
+Miesięczna kadencja opiera się na istniejącej strukturze wydań F5, która nie znika:
+
+| Typ wydania | Produkty | Co dostarcza |
+| --- | --- | --- |
+| Wydania konserwacyjne | BIG-IP, BIG-IQ, F5OS, NGINX | Poprawki błędów, zbiorcze zestawienie niedawnych poprawek CVE, drobne funkcje, stabilność i usuwanie usterek |
+| Wydania główne | BIG-IP, BIG-IQ, F5OS | Kamienie milowe planu rozwoju: nowe funkcje, moduły, możliwości, usprawnienia rdzenia architektury bezpieczeństwa |
+| Roczne wydania stabilności długoterminowej | NGINX | Stabilna podstawa z wydłużonymi okresami wsparcia |
+| Poprawki inżynieryjne (EHF) | W razie potrzeby | Pilne poprawki wydawane na żądanie w zależności od wpływu na klienta |
+| Alerty bezpieczeństwa spoza harmonogramu | W razie potrzeby | Natychmiastowe powiadomienie, gdy pilne informacje o podatności nie mogą czekać na cykl miesięczny |
+
+## Kwartalnie kontra miesięcznie, w skrócie
+
+| | Przedtem (kwartalnie) | Potem (miesięcznie) |
+| --- | --- | --- |
+| Wzmocnione wydanie | Mniej więcej co trzy miesiące | Trzecia środa każdego miesiąca, od 15 lip 2026 |
+| Powiadomienia o zabezpieczeniach | Kwartalnie | Miesięcznie, miesiąc po każdym wydaniu (od 19 sie 2026) |
+| Szczegółowość poprawek przy wydaniu | Więcej ujawnionych szczegółów | Szczegóły celowo ograniczone do czasu powiadomienia |
+| Pilne problemy | Alerty spoza harmonogramu | Alerty spoza harmonogramu (bez zmian) |
+
+## Co to oznacza dla sposobu, w jaki aktualizujesz systemy
+
+Uczciwe podsumowanie jest takie, że szybsza kadencja wymaga więcej od twojego zespołu, a praca polega na przyjmowaniu większej liczby aktualizacji, częściej, bez większego ryzyka. Zalecane przez samo F5 działania są praktyczne i warte potraktowania poważnie:
+
+Automatyzuj. Jeśli nadal stosujesz aktualizacje BIG-IP ręcznie, miesięczna kadencja to moment, aby to zmienić. F5 wskazuje na swoje narzędzia do automatyzacji oraz kolekcje Red Hat Ansible dla BIG-IP, aby większy strumień wydań nie przekładał się na większy strumień pracy ręcznej.
+
+Zyskaj wgląd we flotę. F5 zaleca wdrożenie F5 Insight for ADSP już teraz, zarówno po to, aby zobaczyć swój obecny stan załatania w całym środowisku, jak i po to, aby być gotowym na funkcje zarządzania flotą, które według F5 trafiają do Insight.
+
+Zaplanuj okno. Ponieważ harmonogram jest deterministyczny (trzecia środa, każdego miesiąca), możesz z wyprzedzeniem wpisać okna konserwacji do kalendarza, zamiast reagować na każde wydanie. [Kalendarz kadencji wydań F5](/tools/f5-release-cadence-calendar) oblicza nadchodzące daty wydań i powiadomień właśnie z tego powodu. A jeśli zaprojektowanie zautomatyzowanego procesu aktualizacji o niskim ryzyku przekracza twoje obecne możliwości, F5 Professional Services to droga, którą sugeruje F5.
+
+Co do leżącej u podstaw polityki, polityka ujawniania podatności F5 jest opublikowana jako artykuł bazy wiedzy K4602, a szczegóły każdego wzmocnionego wydania są publikowane w miarę ich dostępności. Kluczowa zmiana sposobu myślenia to ta, do której F5 wciąż powraca: gdy wykrywanie przyspiesza po obu stronach, szybkie wdrażanie najnowszego wydania nie jest już najlepszą praktyką dla ostrożnych, lecz poziomem podstawowym pozostania chronionym.

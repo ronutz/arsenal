@@ -1,0 +1,83 @@
+---
+slug: bigip-21x-whats-new
+title: "BIG-IP 21.x: what changed, and why there is no version 18, 19, or 20"
+summary: "TMOS jumped from 17.x straight to 21.0.0 (November 2025) and 21.1.0 (May 2026), absorbing the modernization originally planned for the discontinued BIG-IP Next. Here is the full picture, verified against F5's own release notes and announcements: the version-numbering story, the platform and lifecycle rules you must check first, and a themed tour of what 21.0 and 21.1 actually deliver, from MCP-aware AI traffic handling and post-quantum TLS to in-place upgrades, a 64-bit control plane, HTTP/3 WAF, and multi-RPZ DNS."
+concepts: ["f5", "bigip", "tmos", "upgrade", "post-quantum", "mcp", "http3", "dns", "security"]
+relatedTools: []
+relatedArticles: ["bigip-acme-certificate-automation", "nist-pqc-standards", "quantum-threat-to-cryptography"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-07-07"
+---
+
+## The short version
+
+BIG-IP TMOS went from 17.x directly to **21.0.0 (released 6 November 2025)** and then **21.1.0 (released 5 May 2026)**. There is no TMOS 18, 19, or 20: the 20.x number belonged to BIG-IP Next, the separate next-generation product line that F5 discontinued, and the jump to 21 marks the decision to modernize classic TMOS instead. If you run BIG-IP in production, 21.x is now the line where new capability lands, and it changes real things: how you upgrade, which hardware you can run, how long releases are supported, and what the box can do about AI traffic, post-quantum cryptography, HTTP/3, and DNS filtering at scale.
+
+## Why there is no BIG-IP 18, 19, or 20
+
+BIG-IP Next was F5's ground-up rewrite, versioned in the 20.x range. F5 made the strategic decision to stop BIG-IP Next development: **BIG-IP Next 20.3 was the final release, and it reached End of Life on 30 April 2025** (the decision and timeline are documented in F5 knowledge article K000152956; BIG-IP Next for Kubernetes and the Cloud-Native Network Functions products are separate and unaffected). In F5's own words when announcing 21.1, having discontinued BIG-IP Next, the company pledged to modernize TMOS by integrating many of the enhancements originally envisioned for Next, and 21.0 was the first step of that plan.
+
+So the version jump is not marketing arithmetic. Skipping to 21 puts classic TMOS unambiguously above the retired 20.x line and signals that the modernization roadmap now runs through the software you already operate. For anyone who paused on 17.1 waiting to see how the Next story ended: it ended, and 21.x is the answer.
+
+## The 21.x line at a glance
+
+| Release | GA date | Character | Lifecycle note |
+| --- | --- | --- | --- |
+| 21.0.0 | 6 Nov 2025 | Foundation release: control-plane scale and modernization, first MCP/AI capabilities, SSL Orchestrator improvements | Short-term-stability release; support window reduced to 9 months (from the previous 12) |
+| 21.1.0 | 5 May 2026 | The big feature wave: PQC, MCP persistence and WAF protection, in-place upgrade, 64-bit migration, HTTP/3 WAF, multi-RPZ, APM identity work | Long-term-stability release; Standard Support reduced to 3 years (from the previous 4) |
+
+The shorter support windows are themselves news: plan your adoption cadence around a faster-moving train than the 17.x era assumed.
+
+## Platform support: check this before anything else
+
+**BIG-IP 21.x does not run on iSeries or VIPRION.** F5 states that attempting to install or boot 21.x on these systems may result in unsupported behavior or boot failures. Customers on those platforms should continue with 17.x releases, which remain supported until the hardware reaches end of software support; the EoSS dates fall on 1 April 2026, 1 January 2027, and 1 October 2027 depending on the model generation. Running 21.x requires **rSeries, VELOS, or Virtual Edition**. A vCMP tenant can technically be deployed with 21.x, but it is **not supported** (F5 points to K4309 for the details).
+
+The practical consequence: for iSeries and VIPRION estates, the 21.x conversation is inseparable from a hardware refresh conversation, and the EoSS clock is already running.
+
+## AI traffic: MCP from pass-through to protection
+
+The marquee theme of 21.x is making BIG-IP useful in front of AI workloads, and it arrives in two stages.
+
+**21.0** introduced support for the **Model Context Protocol (MCP)**, the emerging standard for communication between AI models, applications, and data sources, alongside **S3 data-storage integrations** aimed squarely at AI pipelines: secure ingestion for fine-tuning and batch inference, high-throughput retrieval for RAG and embeddings generation, policy-driven model-artifact distribution with observability, and controlled egress with consistent security and compliance.
+
+**21.1** made it operational. On the LTM side, the new **MCP Persistence Profile** keeps an LLM client pinned to the same backend server for the whole session, with TMM issuing a wrapped, encrypted Mcp-Session-ID, so stateful AI sessions survive in multi-server environments. On the WAF side, a dedicated **MCP protocol protection** policy template brings prompt-injection and tool-injection detection, SSRF protection, Data Guard masking of sensitive data, and JWT validation to MCP traffic. One caveat F5 documents plainly: SSE and streaming responses bypass response-side inspection, so design your logging and downstream controls with that in mind.
+
+## Post-quantum TLS, with a lineage
+
+BIG-IP's post-quantum story did not start in 21.x: F5's first PQC step shipped in **v17.5.0**, with the X25519_ML-KEM-768 hybrid key exchange in TLS 1.3. What 21.1 adds are the **SecP+ML-KEM cipher groups aligned to NIST FIPS 203**: **SecP256r1MLKEM768** and **SecP384r1MLKEM1024**, hybrid key exchanges combining classical elliptic-curve agreement with the ML-KEM quantum-resistant mechanism, available on both the client side and the server side of the proxy.
+
+Two supporting changes matter operationally. **X25519 gains hardware acceleration via Intel QAT**, enabled by default on both ClientSSL and ServerSSL profiles, which addresses the extra cost hybrid handshakes bring. And the parent Client/Server SSL profiles now **default to TLS 1.3 with DTLS 1.2**, which is the posture PQC assumes. For the background on why hybrid key exchange is the transition mechanism and what ML-KEM is, see the companion pieces on the quantum threat and the NIST PQC standards linked below.
+
+## Operations: in-place upgrade, 64-bit, and a faster control plane
+
+**In-place upgrade (21.1)** is the headline for anyone who owns maintenance windows. Instead of installing every RPM into a software volume and rebooting into it, the in-place upgrade updates only the modified RPMs and their dependencies directly in the active volume, and a **Dry Run** mode checks compatibility beforehand. Two honest limits, straight from the release notes: it is **not** an in-service upgrade, the device is still expected to be offline during the procedure; and initially only a carefully selected set of Engineering Hotfixes support it, with the list expanding as the feature matures.
+
+**The 32-to-64-bit migration (21.1)** continues the platform modernization: mergeD is now 64-bit, restjavad moved from Java 8 to **Java 21**, and the TMSH libraries used by iControl services gained 64-bit support (with 32-bit retained for not-yet-ported modules). iControl REST implements requests **up to 10% faster** end to end while consuming less CPU and memory, and gains rate limiting on the management interface. MCPd, the configuration daemon, was hardened for low-memory conditions and faster boot and config-load; back in **21.0** it also gained configurable worker threads (default 1, range 0 to 4 via the `mcpd.workerthreads` database variable) so query and statistics requests can be processed concurrently with configuration operations. Control-plane scale in 21.0 reached **1,000,000 configuration objects**, built on MCPD efficiency work and eXtremeDB improvements.
+
+**BigD went multi-threaded (21.1).** The application health-monitoring daemon now runs a single multi-threaded instance supporting up to **15,000 control-plane monitors**, with documented formulas for its thread count based on vCPUs and hyperthreading. A deterministic calculator for exactly that sizing is planned as this article's companion tool.
+
+Rounding out the operational picture: a **new TMUI (Beta)**, the ability to **change the primary administrator account** away from the default admin via TMUI, TMSH, or iControl REST, UCS **platform-migrate with validation** (folding in Journeys capabilities), and one deprecation to note: iRules LX dropped Node.js v0.12 support in 21.1 (Node v6 is the documented interim until the platform's move to Rocky Linux brings a modern version).
+
+## Web and API security
+
+**HTTP/3 over QUIC gains WAF, Bot Defense, and L7 DoS protection in 21.1**, on the client side of the proxy; HTTP/3 on LTM itself remains experimental, so this is a security-first rollout of the protocol. On the API side, Advanced WAF now understands **OpenAPI 3.1**: it learns the allowed endpoints, methods, parameters, data types, and security requirements from the spec and blocks requests that do not match, stopping malformed requests and abuse of undocumented endpoints before they reach the application (OpenAPI 2.0 and 3.0 remain supported). Logging to Splunk gains an extended key-value format.
+
+## Access and identity
+
+APM in 21.1 collected a set of long-requested items: **OAuth 2.0 Dynamic Client Registration (RFC 7591)**; **native SAML for Windows and macOS clients via the system browser**, enabling FIDO2 and Entra ID flows and replacing the old iRules-based workaround; **Access IPsec VPN tunnels**, giving SSL-VPN deployments an IPsec migration path; an HTTP connector usable in per-session policies; Portal Access moving to ES13; and endpoint inspection support on Ubuntu ARM64.
+
+## DNS: multi-RPZ at scale
+
+BIG-IP DNS in 21.1 brings **multi-RPZ**: up to **65,535 Response Policy Zone feed zones per DNS cache**, with configurable precedence between zones, TSIG-authenticated zone transfers up to HMAC-SHA-512, and the full RPZ action set, from NXDOMAIN and NODATA rewrites through CNAME walled-garden redirection to PASSTHRU, DROP, and TCP-only. For anyone running DNS-layer threat-intel feeds, this turns a single-feed capability into a policy engine that can rank commercial, community, and internal feeds against each other.
+
+## SSL Orchestrator and certificates
+
+SSL Orchestrator picked up its improvements in **21.0**: return-side (egress) iRules on Inspection Services across L2, L3, and HTTP types, Header Enrichment, and SNI preservation enabled by default. And 21.1's native **ACMEv2 client** automates certificate provisioning, renewal, and deployment against any ACMEv2-compliant CA, not just Let's Encrypt: F5 names ZeroSSL, DigiCert, Buypass, Google Trust Services, and SSL.com. That feature has its own deep dive on this site, linked below, covering configuration and the shortening-certificate-lifetime context that makes it essential.
+
+## If you run 17.1 today
+
+The sober reading of 21.x for a production 17.1 estate: first, settle the hardware question, because iSeries and VIPRION are excluded and their EoSS dates are near; second, pick your train, since 21.0.0's 9-month window makes it a stepping stone while 21.1.0 is the long-term-stability release with a 3-year Standard Support horizon; third, plan for the new upgrade mechanics, because in-place upgrade plus Dry Run will change maintenance-window math once your EHF path supports it; and fourth, treat the AI, PQC, HTTP/3, and multi-RPZ items as capability you now have a concrete version target for, rather than roadmap promises.
+
+Everything above is drawn from F5's primary sources, retrieved and cross-checked on 7 July 2026: the New Features release notes for BIG-IP 21.0.0 and 21.1.0 on techdocs.f5.com, F5's 21.1 general-availability announcement, the DevCentral "What's new in BIG-IP v21.0" article, and the lifecycle and discontinuation knowledge articles K5903, K9412, and K000152956, with K4309 covering the vCMP position.

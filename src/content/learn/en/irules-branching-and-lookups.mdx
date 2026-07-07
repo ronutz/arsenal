@@ -1,0 +1,84 @@
+---
+slug: irules-branching-and-lookups
+title: "iRules: choosing between if, switch, class match, and static arrays"
+summary: "When an iRule has to match one value against many and act, there are four common tools: chained if, switch, a data group with class match, and a directly-indexed static:: array. F5 has actually ranked them for speed. Here is that ranking, and the two questions that decide which one you should reach for."
+concepts: ["irules", "tcl", "f5", "performance", "switch", "data groups", "static", "class"]
+relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing"]
+category: networking
+order: 22
+status: reviewed
+updated: "2026-07-07"
+---
+
+## The same job, four ways
+
+A great many iRules do one thing: take a value, compare it against a set of known values, and act on the match. Route a host to a pool, block a path, map a client network to a decision. There are four common ways to write that, and they do not cost the same. F5's own "How To Write Fast Rules" ranks them, and the ranking is worth knowing because the fast option is often no harder to write than the slow one.
+
+The findings below are F5's, and F5 states them with an honest hedge ("likely due to"), because they come from measurement rather than from the internals. They hold for the allowed subset of Tcl that runs inside TMM.
+
+## The ranking, fastest habits first
+
+**Chain your conditions with elseif rather than stacking separate if statements.** A run of independent `if` blocks evaluates every one; an `if` / `elseif` chain is a single statement that stops at the first match, so fewer commands are looked up and run and fewer return values are weighed.
+
+```tcl
+# slower: three separate statements, all evaluated
+if { $x eq "a" } { ... }
+if { $x eq "b" } { ... }
+if { $x eq "c" } { ... }
+
+# faster: one statement, short-circuits at the first match
+if { $x eq "a" } { ... } elseif { $x eq "b" } { ... } elseif { $x eq "c" } { ... }
+```
+
+**Prefer switch over any form of if when you can.** Matching one variable against a list of values is exactly what `switch` is for, and it avoids the extra expression evaluation that each `if` carries. It is also far easier to read.
+
+```tcl
+switch [string tolower [HTTP::host]] {
+    "www.example.com"  { pool web_pool }
+    "api.example.com"  { pool api_pool }
+    default            { pool default_pool }
+}
+```
+
+**For a fixed set of about a hundred entries or fewer, switch (even switch -glob) beats matchclass** provided the data does not need to change independently of the rule. The reason F5 gives is that the old `matchclass` command hashes with MD5, which the small-set `switch` does not need.
+
+**For an exact-key lookup on static data, a directly-indexed array is fastest of all.** If what you have is really a key-to-value map, put it in a `static::` array at load time and index it directly. That is an O(1) hash lookup with none of the per-comparison work of `switch` or the function call of `matchclass`.
+
+```tcl
+when RULE_INIT {
+    array set static::pool_for {
+        www  web_pool
+        api  api_pool
+        img  image_pool
+    }
+}
+when HTTP_REQUEST {
+    set key [getfield [HTTP::host] "." 1]
+    if { [info exists static::pool_for($key)] } {
+        pool $static::pool_for($key)
+    }
+}
+```
+
+## The two questions that actually decide it
+
+Speed is only half the story. Before you pick from the ranking, answer two questions.
+
+**Does the data change independently of the rule?** A `switch` body and a `static::` array are baked into the iRule: changing an entry means editing and reloading the rule. A **data group** (a class), read with the `class` command, is a separate configuration object you can edit on its own, with no change to the code that uses it. So the moment your list is maintained by someone else, changes often, or is large, a data group wins on grounds that have nothing to do with raw speed, and it is CMP-safe.
+
+```tcl
+when HTTP_REQUEST {
+    if { [class match [HTTP::path] starts_with blocked_paths] } {
+        HTTP::respond 403 content "forbidden"
+    }
+}
+```
+
+**What kind of match is it?** The four tools are not interchangeable. A `static::` array does exact-key lookups only. `switch` does exact matches, and `switch -glob` does simple wildcard patterns. A data group with `class match` does exact, and also the address- and string-aware forms (`starts_with`, `ends_with`, `contains`, longest-match on IP subnets) that the others cannot express cleanly. Pick the construct whose match type fits, then optimize within it.
+
+## A caveat about the numbers, honestly
+
+That "hundred entries or fewer" crossover is measured against `matchclass`, which was **deprecated in version 10** in favor of the `class` command. The `class` command was introduced precisely because it offers better functionality and performance than its predecessor, so the crossover point where a data group overtakes `switch` is a guideline inherited from the old command, not a hard number for modern code. When it matters, do not guess: read the real per-event cost with timing statistics using the [iRules runtime calculator](/tools/f5-irules-runtime-calculator), and let the numbers from your own box decide.
+
+And when none of these fit, and only then, reach for a regular expression. The [iRules performance linter](/tools/f5-irules-performance-linter) flags `regexp` and `regsub` for exactly this reason: they are the most expensive way to match, and one of `switch`, `class`, or a `static::` array is almost always cheaper. The [companion article on CMP and the static:: namespace](/learn/irules-cmp-and-static-namespace) covers why `static::` is the right home for that array in the first place.

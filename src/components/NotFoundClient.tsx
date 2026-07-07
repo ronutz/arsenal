@@ -37,7 +37,7 @@ const GURU: { code: string; meaning: string }[] = [
 
 // A short stack of other famous non-serious errors, accurately attributed.
 const CONSOLE_ERRORS: { pre: string; tone: "info" | "warn" | "err"; text: string; dim?: string }[] = [
-  { pre: "418", tone: "info", text: "I'm a teapot — the server refuses to brew this page", dim: "RFC 2324" },
+  { pre: "418", tone: "info", text: "I'm a teapot: the server refuses to brew this page", dim: "RFC 2324" },
   { pre: "!!", tone: "warn", text: "PC LOAD LETTER" },
   { pre: "??", tone: "warn", text: "Keyboard not found. Press F1 to continue." },
   { pre: ">_", tone: "info", text: "These aren't the droids you're looking for." },

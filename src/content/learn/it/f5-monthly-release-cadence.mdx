@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "La cadenza di rilascio più rapida di F5: release rafforzate e notifiche di sicurezza mensili"
+summary: "Il 6 luglio 2026 F5 è passata da una cadenza di sicurezza trimestrale a una mensile: release software rafforzate il terzo mercoledì di ogni mese a partire dal 15 luglio, e notifiche di sicurezza un mese dopo a partire dal 19 agosto. Ecco esattamente cosa è cambiato, perché F5 dice di averlo cambiato, cosa resta uguale e cosa significa per il tuo modo di applicare le patch."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Cosa è cambiato, in una frase
+
+Il 6 luglio 2026 F5 ha annunciato che le sue release di sicurezza software passano da un calendario **trimestrale** a uno **mensile**: le release software rafforzate escono ora il **terzo mercoledì di ogni mese** (a partire dal 15 luglio 2026), e le notifiche di sicurezza che descrivono cosa hanno corretto quelle release vengono pubblicate **un mese dopo ogni release** (la prima il 19 agosto 2026, a copertura della release del 15 luglio). Gli avvisi fuori banda per i problemi urgenti continuano come prima. L'annuncio è arrivato dal Chief Product Officer di F5, Kunal Anand, ed è stato inviato ai clienti con abbonamento di sicurezza dal F5 SIRT nella stessa settimana.
+
+Se esegui F5 in produzione, questo è un cambiamento operativo da pianificare, non solo una notizia.
+
+## I due cambiamenti concreti
+
+**1. Release software rafforzate mensili, il terzo mercoledì.** Ogni release raccoglie un ampio insieme di correzioni: problemi trovati dalla scansione del codice basata su IA di F5, gli ulteriori problemi che emergono nel rintracciarli, segnalazioni da team interni e ricercatori esterni, e rafforzamento generale di sicurezza e stabilità. F5 ha dichiarato che **limiterà il dettaglio divulgato sulle singole correzioni** di ogni release, per non fornire agli attaccanti una mappa delle vulnerabilità prima che i clienti abbiano applicato le patch.
+
+**2. Le notifiche di sicurezza trimestrali diventano mensili.** Una notifica di sicurezza per ogni release rafforzata viene pubblicata circa un mese dopo. F5 fornisce un ancoraggio esatto: la release del 15 luglio è coperta da una notifica il 19 agosto. Entrambe le date sono terzi mercoledì, quindi in pratica la cadenza combacia in modo pulito, e in ogni terzo mercoledì accadono due cose contemporaneamente: esce la release rafforzata di quel mese e viene pubblicata la notifica di sicurezza del mese precedente. L'intervallo deliberato di un mese è un vantaggio iniziale: ti dà il tempo di aggiornare prima che i dettagli della vulnerabilità diventino pubblici.
+
+F5 è esplicita nel dire che queste sono le date previste, non un contratto rigido. L'azienda mantiene la flessibilità di cambiare tempistica, contenuto o approccio di una notifica quando lo richiedano la legge, un contratto, obblighi di divulgazione coordinata, il coordinamento con le autorità, uno sfruttamento attivo, una valutazione di materialità, un embargo o la protezione dei clienti.
+
+## Perché F5 dice di aver fatto il cambiamento
+
+Il ragionamento dichiarato da F5 merita di essere riportato con precisione, perché cambia il modo in cui dovresti pensare alle release. Il motore è la **scoperta di vulnerabilità accelerata dall'IA**. F5 utilizza modelli di IA di frontiera per scansionare il proprio codice, eseguendo un ciclo continuo di scansione, triage, correzione, test e rilascio. Questo fa emergere più problemi, più in fretta, e F5 inquadra l'aumento di release che ne deriva come un segno di sicurezza più forte e non di software più debole. Ma trovare i problemi in fretta aiuta solo se le correzioni raggiungono i clienti con la stessa rapidità e, nelle parole di F5, una cadenza trimestrale era costruita per un'altra epoca: la finestra tra il momento in cui una vulnerabilità diventa nota e quello in cui esiste un exploit funzionante si è ristretta al punto che il trimestrale non basta più.
+
+C'è una conseguenza che conta per la definizione delle priorità. F5 avverte che **la gravità di una singola correzione è una guida meno affidabile della sua importanza di quanto non fosse un tempo**, perché gli attaccanti sono sempre più in grado di concatenare vulnerabilità di gravità bassa e media in exploit inediti. L'istruzione pratica che ne deriva è netta: tratta ogni release come se chiudesse una falla critica, e distribuiscila, non solo quelle contrassegnate come critiche.
+
+## Cosa resta uguale
+
+La cadenza mensile si appoggia sulla struttura di release esistente di F5, che non scompare:
+
+| Tipo di release | Prodotti | Cosa offre |
+| --- | --- | --- |
+| Release di manutenzione | BIG-IP, BIG-IQ, F5OS, NGINX | Correzioni di bug, un raggruppamento di correzioni CVE recenti, piccole funzionalità, stabilità e rimozione dei difetti |
+| Release maggiori | BIG-IP, BIG-IQ, F5OS | Traguardi della roadmap: nuove funzionalità, moduli, capacità, miglioramenti dell'architettura di sicurezza centrale |
+| Release annuali di stabilità a lungo termine | NGINX | Una base stabile con finestre di supporto estese |
+| Hotfix di ingegneria (EHF) | Secondo necessità | Correzioni urgenti rilasciate su richiesta in base all'impatto sul cliente |
+| Avvisi di sicurezza fuori banda | Secondo necessità | Notifica immediata quando informazioni urgenti su una vulnerabilità non possono attendere il ciclo mensile |
+
+## Trimestrale contro mensile, in sintesi
+
+| | Prima (trimestrale) | Dopo (mensile) |
+| --- | --- | --- |
+| Release rafforzata | Circa ogni tre mesi | Terzo mercoledì di ogni mese, dal 15 lug 2026 |
+| Notifiche di sicurezza | Trimestrali | Mensili, un mese dopo ogni release (dal 19 ago 2026) |
+| Dettaglio delle correzioni al rilascio | Più dettagli divulgati | Dettagli deliberatamente limitati fino alla notifica |
+| Problemi urgenti | Avvisi fuori banda | Avvisi fuori banda (invariato) |
+
+## Cosa significa per il tuo modo di applicare le patch
+
+Il riassunto onesto è che una cadenza più rapida chiede di più al tuo team, e il lavoro sta nell'assorbire più aggiornamenti, più spesso, senza più rischio. Le azioni raccomandate dalla stessa F5 sono pratiche e vale la pena prenderle sul serio:
+
+Automatizza. Se applichi ancora gli aggiornamenti di BIG-IP a mano, una cadenza mensile è il momento di cambiarlo. F5 rimanda ai propri strumenti di automazione e alle collezioni Red Hat Ansible per BIG-IP, così che un flusso maggiore di release non si traduca in un flusso maggiore di lavoro manuale.
+
+Ottieni visibilità sul parco. F5 raccomanda di distribuire ora F5 Insight for ADSP, sia per vedere la tua attuale postura di patching sull'intero parco sia per essere pronto alle funzionalità di gestione della flotta che, secondo F5, arriveranno in Insight.
+
+Pianifica la finestra. Poiché il calendario è deterministico (terzo mercoledì, ogni mese), puoi mettere le finestre di manutenzione a calendario in anticipo invece di reagire a ogni release. Il [calendario della cadenza di rilascio F5](/tools/f5-release-cadence-calendar) calcola le prossime date di release e notifica proprio per questo motivo. E se progettare un flusso di aggiornamento automatizzato e a basso rischio va oltre la tua capacità attuale, i Servizi Professionali F5 sono la strada che F5 suggerisce.
+
+Per la politica di fondo, la politica di divulgazione delle vulnerabilità di F5 è pubblicata come articolo della knowledge base K4602, e il dettaglio di ogni release rafforzata viene pubblicato man mano che diventa disponibile. Il cambio di mentalità chiave è quello a cui F5 torna di continuo: con la scoperta che accelera da entrambe le parti, applicare rapidamente l'ultima release non è più una buona pratica per i prudenti, è la base per restare protetti.

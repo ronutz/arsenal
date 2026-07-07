@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "F5's snellere releasecadans: maandelijkse geharde releases en beveiligingsmeldingen"
+summary: "Op 6 juli 2026 stapte F5 over van een driemaandelijkse naar een maandelijkse beveiligingscadans: geharde softwarereleases op de derde woensdag van elke maand vanaf 15 juli, en beveiligingsmeldingen een maand later vanaf 19 augustus. Hier staat precies wat er veranderde, waarom F5 zegt dat het veranderde, wat hetzelfde blijft en wat het betekent voor hoe u patcht."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Wat er veranderde, in één zin
+
+Op 6 juli 2026 kondigde F5 aan dat zijn software-beveiligingsreleases overgaan van een **driemaandelijks** naar een **maandelijks** schema: geharde softwarereleases verschijnen nu op de **derde woensdag van elke maand** (vanaf 15 juli 2026), en beveiligingsmeldingen die beschrijven wat die releases hebben verholpen worden **een maand na elke release** gepubliceerd (de eerste op 19 augustus 2026, voor de release van 15 juli). Out-of-band-waarschuwingen voor dringende problemen blijven zoals voorheen. De aankondiging kwam van F5's Chief Product Officer, Kunal Anand, en werd in dezelfde week door het F5 SIRT naar klanten met een beveiligingsabonnement gestuurd.
+
+Als u F5 in productie draait, is dit een operationele wijziging waarop u moet plannen, niet slechts een nieuwsbericht.
+
+## De twee concrete wijzigingen
+
+**1. Maandelijkse geharde softwarereleases, op de derde woensdag.** Elke release bundelt een brede reeks correcties: problemen gevonden door F5's AI-gestuurde codescanning, de verdere problemen die opduiken bij het natrekken ervan, meldingen van interne teams en externe onderzoekers, en algemene beveiligings- en stabiliteitsharding. F5 heeft gezegd dat het **de mate van detail die het over de specifieke correcties prijsgeeft, zal beperken** in elke release, om aanvallers geen kaart van de kwetsbaarheden te geven voordat klanten hebben gepatcht.
+
+**2. Driemaandelijkse beveiligingsmeldingen worden maandelijks.** Een beveiligingsmelding voor elke geharde release wordt ongeveer een maand later gepubliceerd. F5 geeft één exact ankerpunt: de release van 15 juli wordt gedekt door een melding op 19 augustus. Beide data zijn derde woensdagen, dus in de praktijk sluit de cadans netjes aan, en op elke derde woensdag gebeuren er twee dingen tegelijk: de geharde release van die maand verschijnt, en de beveiligingsmelding van de vorige maand wordt gepubliceerd. De bewuste tussenpoos van een maand is een voorsprong: het geeft u tijd om bij te werken voordat de details van de kwetsbaarheid openbaar worden.
+
+F5 is uitdrukkelijk dat dit de bedoelde data zijn, geen star contract. Het bedrijf behoudt de flexibiliteit om het tijdstip, de inhoud of de aanpak van een melding te wijzigen wanneer wet, contract, verplichtingen tot gecoördineerde openbaarmaking, coördinatie met overheden, actief misbruik, een materialiteitsbeoordeling, een embargo of klantbescherming dat vereisen.
+
+## Waarom F5 zegt de wijziging te hebben doorgevoerd
+
+F5's opgegeven redenering is het waard om nauwkeurig te herhalen, want ze verandert hoe u over de releases zou moeten denken. De aandrijver is de **door AI versnelde ontdekking van kwetsbaarheden**. F5 gebruikt frontier-AI-modellen om de eigen code te scannen, en doorloopt daarbij een doorlopende cyclus van scannen, triageren, herstellen, testen en uitbrengen. Dat brengt meer problemen aan het licht, sneller, en F5 duidt de daaruit volgende toename aan releases als een teken van sterkere beveiliging in plaats van zwakkere software. Maar problemen snel vinden helpt alleen als de correcties de klanten net zo snel bereiken, en in F5's bewoordingen was een driemaandelijkse cadans gebouwd voor een ander tijdperk: het venster tussen het moment waarop een kwetsbaarheid bekend wordt en het moment waarop een werkende exploit bestaat, is zo smal geworden dat driemaandelijks niet meer volstaat.
+
+Er is een gevolg dat van belang is voor prioritering. F5 waarschuwt dat **de ernst van een afzonderlijke correctie een minder betrouwbare leidraad voor het belang ervan is dan vroeger**, omdat aanvallers steeds vaker in staat zijn kwetsbaarheden van lage en gemiddelde ernst aaneen te schakelen tot nieuwe exploits. De praktische instructie die daaruit volgt is onomwonden: behandel elke release alsof ze een kritiek gat dicht, en rol ze uit, niet alleen die welke als kritiek zijn aangemerkt.
+
+## Wat hetzelfde blijft
+
+De maandelijkse cadans rust op F5's bestaande releasestructuur, die niet verdwijnt:
+
+| Releasetype | Producten | Wat het levert |
+| --- | --- | --- |
+| Onderhoudsreleases | BIG-IP, BIG-IQ, F5OS, NGINX | Bugfixes, een bundeling van recente CVE-correcties, kleine functies, stabiliteit en defectherstel |
+| Grote releases | BIG-IP, BIG-IQ, F5OS | Mijlpalen uit de roadmap: nieuwe functies, modules, mogelijkheden, verbeteringen aan de kern-beveiligingsarchitectuur |
+| Jaarlijkse long-term-stability-releases | NGINX | Een stabiele basis met verlengde ondersteuningsperioden |
+| Engineering-hotfixes (EHF's) | Indien nodig | Dringende correcties op aanvraag uitgebracht op basis van klantimpact |
+| Out-of-band-beveiligingswaarschuwingen | Indien nodig | Onmiddellijke melding wanneer dringende kwetsbaarheidsinformatie niet op de maandelijkse cyclus kan wachten |
+
+## Driemaandelijks versus maandelijks, in één oogopslag
+
+| | Voorheen (driemaandelijks) | Nu (maandelijks) |
+| --- | --- | --- |
+| Geharde release | Ongeveer elke drie maanden | Derde woensdag van elke maand, vanaf 15 jul 2026 |
+| Beveiligingsmeldingen | Driemaandelijks | Maandelijks, een maand na elke release (vanaf 19 aug 2026) |
+| Detail van de correcties bij release | Meer detail prijsgegeven | Detail bewust beperkt tot de melding |
+| Dringende problemen | Out-of-band-waarschuwingen | Out-of-band-waarschuwingen (ongewijzigd) |
+
+## Wat het betekent voor hoe u patcht
+
+De eerlijke samenvatting is dat een snellere cadans meer van uw team vraagt, en het werk zit in het opnemen van meer updates, vaker, zonder meer risico. F5's eigen aanbevolen acties zijn praktisch en de moeite waard om serieus te nemen:
+
+Automatiseer. Als u BIG-IP-updates nog met de hand toepast, is een maandelijkse cadans het moment om dat te veranderen. F5 wijst op zijn automatiseringsgereedschap en de Red Hat Ansible-collecties voor BIG-IP, zodat een grotere stroom releases zich niet vertaalt in een grotere stroom handwerk.
+
+Verkrijg zicht op het wagenpark. F5 raadt aan om F5 Insight for ADSP nu in te zetten, zowel om uw huidige patchstatus over uw hele bestand te zien als om klaar te zijn voor de fleet-managementmogelijkheden die volgens F5 naar Insight komen.
+
+Plan het venster. Omdat het schema deterministisch is (derde woensdag, elke maand), kunt u onderhoudsvensters vooraf in de agenda zetten in plaats van op elke release te reageren. De [F5 releasecadans-kalender](/tools/f5-release-cadence-calendar) berekent de komende release- en meldingsdata precies om deze reden. En als het ontwerpen van een risicoarme, geautomatiseerde updateworkflow uw huidige capaciteit te boven gaat, zijn de F5 Professional Services de weg die F5 voorstelt.
+
+Voor het onderliggende beleid: F5's beleid voor het openbaar maken van kwetsbaarheden is gepubliceerd als kennisbankartikel K4602, en het detail voor elke geharde release wordt gepubliceerd zodra het beschikbaar komt. De belangrijkste verschuiving in denken is die waar F5 telkens op terugkomt: nu de ontdekking aan beide kanten versnelt, is het snel uitrollen van de nieuwste release niet langer een best practice voor de voorzichtigen, maar de basislijn om beschermd te blijven.

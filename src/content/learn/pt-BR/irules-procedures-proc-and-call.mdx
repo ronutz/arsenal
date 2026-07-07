@@ -1,0 +1,110 @@
+---
+slug: irules-procedures-proc-and-call
+title: "Procedimentos em iRules: código reutilizável com proc e call"
+summary: "Desde o BIG-IP 11.4, um iRule pode definir um bloco de código uma vez como um procedimento e chamá-lo de qualquer lugar, inclusive de outros iRules que não estão anexados a nenhum servidor virtual. Aqui está como proc e call funcionam, como argumentos e padrões são declarados, e a única regra de namespace que confunde todo mundo."
+concepts: ["irules", "tcl", "f5", "proc", "call", "procedures", "code reuse"]
+relatedTools: ["f5-irules-performance-linter"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-lookups"]
+category: networking
+order: 23
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O fim do copiar e colar
+
+Antes do BIG-IP 11.4, compartilhar um bloco útil de lógica de iRule significava copiá-lo para toda regra que precisasse dele. A partir da 11.4, procedimentos Tcl, procs, são suportados em iRules: defina o bloco uma vez, dê a ele um nome, e chame-o onde precisar. Esse é todo o objetivo, reutilização de código, e com ele um único lugar para documentar, resolver problemas e atualizar lógica que costumava viver em uma dúzia de cópias.
+
+## Onde um proc vive
+
+Quase tudo em um iRule vive dentro de um bloco `when EVENT`. Procs são uma das poucas exceções: um proc é definido **fora** de qualquer evento. A forma é a comum do Tcl, um nome, seus argumentos e um corpo.
+
+```tcl
+proc logme { msg } {
+    log local0. $msg
+}
+when CLIENT_ACCEPTED {
+    call logme "chegou em CLIENT_ACCEPTED"
+}
+when CLIENT_DATA {
+    call logme "chegou em CLIENT_DATA"
+}
+```
+
+O comando `call` executa o proc, e retorna o que o `return` do proc devolver (se houver). Um proc definido no mesmo iRule que o chamador é um proc **local**, e você o chama pelo nome simples.
+
+## Procs locais e procs de biblioteca
+
+A metade mais poderosa do recurso é que um proc pode viver em um iRule **diferente**, e esse iRule não precisa estar anexado a nenhum servidor virtual. Isso permite construir um iRule que é nada além de uma biblioteca de procedimentos, e chamá-los de todos os outros lugares.
+
+```tcl
+# Uma regra de biblioteca, anexada a nada:
+rule proc_library {
+    proc html_encode { str } {
+        set out ""
+        foreach ch [split $str ""] {
+            switch $ch {
+                "<" { append out "&lt;" }
+                ">" { append out "&gt;" }
+                "&" { append out "&amp;" }
+                default { append out $ch }
+            }
+        }
+        return $out
+    }
+}
+```
+
+Para chamar um proc que vive em outro iRule, você o qualifica com o nome do iRule que o define. Entre partições, prefixe também a partição e o nome da regra.
+
+```tcl
+when HTTP_REQUEST {
+    set safe [call proc_library::html_encode [HTTP::uri]]
+    # forma entre particoes:
+    # call /Common/proc_library::html_encode $value
+}
+```
+
+## Argumentos, argumentos variáveis e padrões
+
+Os argumentos de proc seguem o Tcl padrão. Um proc pode receber uma lista fixa de argumentos, nenhum argumento, um número variável reunido em uma lista, ou argumentos com valores padrão usados quando o chamador os omite.
+
+```tcl
+# nenhum argumento
+proc noargs {} { log local0. "nenhum argumento" }
+
+# um conjunto explicito e fixo
+proc explicit_args { arg1 arg2 } { log local0. "$arg1 e $arg2" }
+
+# um numero variavel, reunido na lista "args"
+proc any_args args { log local0. "recebi [llength $args]: $args" }
+
+# padroes, usados quando o chamador omite um argumento
+proc with_defaults { {arg1 default1} {arg2 default2} } {
+    log local0. "arg1=$arg1 arg2=$arg2"
+}
+```
+
+Chamado de três formas, os padrões preenchem as lacunas: `call with_defaults` usa ambos os padrões, `call with_defaults "a"` define o primeiro e usa o padrão no segundo, e `call with_defaults "a" "b"` define ambos.
+
+## A única regra que confunde todo mundo
+
+Se um proc em uma biblioteca chama **outro** proc na mesma biblioteca, você ainda precisa qualificar o namespace nessa chamada interna. Deixada sem qualificação, o interpretador assume que o proc chamado é local a qualquer iRule que esteja rodando no momento, não à biblioteca, e a chamada falha.
+
+```tcl
+rule procs {
+    proc sequence { from to } {
+        for { set lst {} } { $from <= $to } { incr from } { lappend lst $from }
+        return $lst
+    }
+    proc build { x y } {
+        # ERRADO: [call sequence $x $y] -- procurado na regra chamadora
+        # CERTO: qualifique, mesmo que sequence esteja bem aqui
+        return [call procs::sequence $x $y]
+    }
+}
+```
+
+## O que os procs dão a você, e o que custam
+
+O ganho é a manutenibilidade: uma única definição para raciocinar, corrigir e versionar, e uma forma genuinamente modular de compartilhar lógica de iRule, já que uma regra de biblioteca pode ser incluída e chamada sem estar vinculada a um servidor virtual. O custo é uma quantidade modesta de sobrecarga por chamada pelo salto para dentro do procedimento, pequena o bastante para quase nunca dever dissuadi-lo de um proc que torna o código correto e legível. Se quiser saber se um proc específico de fato custa algo que valha a pena considerar na sua plataforma, meça-o com estatísticas de timing através da [calculadora de runtime de iRules](/tools/f5-irules-runtime-calculator) em vez de adivinhar. E mantenha em mente a regra de CMP do [artigo sobre o namespace static::](/learn/irules-cmp-and-static-namespace) dentro de procs também: uma variável global demove o virtual onde quer que apareça, procedimento ou não.

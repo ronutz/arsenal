@@ -1,0 +1,110 @@
+---
+slug: irules-procedures-proc-and-call
+title: "iRules procedures: reusable code with proc and call"
+summary: "Since BIG-IP 11.4, an iRule can define a block of code once as a procedure and call it from anywhere, including from other iRules that are not attached to any virtual server. Here is how proc and call work, how arguments and defaults are declared, and the one namespace rule that trips everyone up."
+concepts: ["irules", "tcl", "f5", "proc", "call", "procedures", "code reuse"]
+relatedTools: ["f5-irules-performance-linter"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-lookups"]
+category: networking
+order: 23
+status: reviewed
+updated: "2026-07-07"
+---
+
+## The end of copy-paste
+
+Before BIG-IP 11.4, sharing a useful block of iRule logic meant copying it into every rule that needed it. As of 11.4, Tcl procedures, procs, are supported in iRules: define the block once, give it a name, and call it wherever you need it. That is the whole point, code reuse, and with it one place to document, troubleshoot, and update logic that used to live in a dozen copies.
+
+## Where a proc lives
+
+Almost everything in an iRule lives inside a `when EVENT` block. Procs are one of the few exceptions: a proc is defined **outside** any event. The form is the ordinary Tcl one, a name, its arguments, and a body.
+
+```tcl
+proc logme { msg } {
+    log local0. $msg
+}
+when CLIENT_ACCEPTED {
+    call logme "arrived at CLIENT_ACCEPTED"
+}
+when CLIENT_DATA {
+    call logme "arrived at CLIENT_DATA"
+}
+```
+
+The `call` command runs the proc, and returns whatever the proc's `return` gives back (if anything). A proc defined in the same iRule as the caller is a **local** proc, and you call it by its bare name.
+
+## Local procs and library procs
+
+The more powerful half of the feature is that a proc can live in a **different** iRule entirely, and that iRule does not have to be attached to any virtual server. That lets you build one iRule that is nothing but a library of procedures, and call them from everywhere else.
+
+```tcl
+# A library rule, attached to nothing:
+rule proc_library {
+    proc html_encode { str } {
+        set out ""
+        foreach ch [split $str ""] {
+            switch $ch {
+                "<" { append out "&lt;" }
+                ">" { append out "&gt;" }
+                "&" { append out "&amp;" }
+                default { append out $ch }
+            }
+        }
+        return $out
+    }
+}
+```
+
+To call a proc that lives in another iRule, you qualify it with the name of the iRule that defines it. Across partitions, prefix the partition and rule name too.
+
+```tcl
+when HTTP_REQUEST {
+    set safe [call proc_library::html_encode [HTTP::uri]]
+    # cross-partition form:
+    # call /Common/proc_library::html_encode $value
+}
+```
+
+## Arguments, variable arguments, and defaults
+
+Proc arguments follow standard Tcl. A proc can take a fixed list of arguments, no arguments at all, a variable number collected into a list, or arguments with default values used when the caller omits them.
+
+```tcl
+# no arguments
+proc noargs {} { log local0. "no arguments" }
+
+# an explicit, fixed set
+proc explicit_args { arg1 arg2 } { log local0. "$arg1 and $arg2" }
+
+# a variable number, gathered into the list "args"
+proc any_args args { log local0. "got [llength $args]: $args" }
+
+# defaults, used when the caller leaves an argument out
+proc with_defaults { {arg1 default1} {arg2 default2} } {
+    log local0. "arg1=$arg1 arg2=$arg2"
+}
+```
+
+Called three ways, the defaults fill in the gaps: `call with_defaults` gives both defaults, `call with_defaults "a"` sets the first and defaults the second, and `call with_defaults "a" "b"` sets both.
+
+## The one rule that trips everyone up
+
+If a proc in a library calls **another** proc in the same library, you must still qualify the namespace on that inner call. Left bare, the interpreter assumes the called proc is local to whichever iRule is currently running, not to the library, and the call fails.
+
+```tcl
+rule procs {
+    proc sequence { from to } {
+        for { set lst {} } { $from <= $to } { incr from } { lappend lst $from }
+        return $lst
+    }
+    proc build { x y } {
+        # WRONG: [call sequence $x $y] -- looked for in the calling rule
+        # RIGHT: qualify it, even though sequence is right here
+        return [call procs::sequence $x $y]
+    }
+}
+```
+
+## What procs buy you, and what they cost
+
+The gain is maintainability: one definition to reason about, fix, and version, and a genuinely modular way to share iRule logic, since a library rule can be dropped in and called without being bound to a virtual server. The cost is a modest amount of overhead per call for the jump into the procedure, small enough that it should almost never talk you out of a proc that makes the code correct and legible. If you want to know whether a particular proc actually costs anything worth caring about on your platform, measure it with timing statistics through the [iRules runtime calculator](/tools/f5-irules-runtime-calculator) rather than guessing. And keep the CMP rule from the [static:: namespace article](/learn/irules-cmp-and-static-namespace) in mind inside procs too: a global variable demotes the virtual wherever it appears, procedure or not.

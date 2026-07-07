@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // BIG-IP 21.x flagship overview article (en + pt-BR native), opening the
+    // PKG-BIGIP21 pack: version-numbering story, platform/lifecycle rules, and
+    // a themed tour of 21.0 + 21.1. Verified against F5 primary sources.
+    date: "2026-07-07",
+    time: "14:20",
+    kind: "content",
+    title: "BIG-IP 21.x: the flagship overview",
+    body:
+      "Why TMOS jumped from 17.x straight to 21, what 21.0.0 and 21.1.0 actually deliver (MCP-aware AI traffic, post-quantum TLS, in-place upgrade, 64-bit control plane, HTTP/3 WAF, multi-RPZ), and the platform and lifecycle rules to check first. First piece of the BIG-IP 21.x pack; deep dives follow.",
+    articles: ["bigip-21x-whats-new"],
+  },
+  {
     date: "2026-07-07",
     time: "15:00",
     kind: "tool",
@@ -1189,7 +1201,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     title: "CSR decoder UI now in all 16 locales",
     tools: ["csr-decoder"],
     body:
-      "The CSR decoder's interface — input labels, result cards, the requested-extension and attribute labels, and the error messages — is now translated across all 16 locales (40 strings each), so the tool reads natively instead of falling back to English.",
+      "The CSR decoder's interface (input labels, result cards, the requested-extension and attribute labels, and the error messages) is now translated across all 16 locales (40 strings each), so the tool reads natively instead of falling back to English.",
   },
   // ---- 2026-06-30 : CSR decoder launch -------------------------------------
   {
@@ -1209,7 +1221,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     title: "Certificate renewal planner UI now in all 16 locales",
     tools: ["cert-renewal-planner"],
     body:
-      "The planner's interface — input labels, result cards, the SC-081v3 schedule table, the projection, and the guidance notes — is now translated across all 16 locales (44 strings each), so the tool reads natively instead of falling back to English.",
+      "The planner's interface (input labels, result cards, the SC-081v3 schedule table, the projection, and the guidance notes) is now translated across all 16 locales (44 strings each), so the tool reads natively instead of falling back to English.",
   },
   // ---- 2026-06-30 : planner articles in pt-BR ------------------------------
   {
@@ -1219,7 +1231,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     title: "Planner Learn articles now in Brazilian Portuguese",
     tools: ["cert-renewal-planner"],
     body:
-      "The five certificate renewal planner articles — the 47-day schedule, validity windows, DCV/SII reuse, renewing with ACME and ARI, and public vs private PKI — are now translated to Brazilian Portuguese, bringing pt-BR to parity with English for this set.",
+      "The five certificate renewal planner articles (the 47-day schedule, validity windows, DCV/SII reuse, renewing with ACME and ARI, and public vs private PKI) are now translated to Brazilian Portuguese, bringing pt-BR to parity with English for this set.",
   },
   // ---- 2026-06-30 : planner Learn articles ---------------------------------
   {
@@ -1247,7 +1259,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:18",
     kind: "feature",
     title: "SSL profile explainer now shows the data path",
-    body: "Decoding a client-ssl or server-ssl profile now draws the BIG-IP SSL data path — client, BIG-IP, pool member — and lights up the TLS leg the profile actually governs: a client-ssl profile on the client-side leg it terminates, a server-ssl profile on the server-side leg it initiates, with the profile named on that leg. The note spells out the offload-versus-re-encrypt consequence. This closes the Tier 1 SVG retrofits. Vector, theme-aware, parsed entirely in the browser.",
+    body: "Decoding a client-ssl or server-ssl profile now draws the BIG-IP SSL data path (client, BIG-IP, pool member) and lights up the TLS leg the profile actually governs: a client-ssl profile on the client-side leg it terminates, a server-ssl profile on the server-side leg it initiates, with the profile named on that leg. The note spells out the offload-versus-re-encrypt consequence. This closes the Tier 1 SVG retrofits. Vector, theme-aware, parsed entirely in the browser.",
     tools: ["f5-ssl-profile-explainer"],
   },
 
@@ -1257,7 +1269,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:02",
     kind: "feature",
     title: "IPv6 tool now shows the address structure",
-    body: "Decoding an IPv6 address now draws its 128 bits as eight hextet cells over a 0-128 bit ruler, with the prefix boundary drawn at the actual /N — shading the network prefix apart from the host portion, and naming the 64-bit interface identifier when the split lands on /64. With no prefix supplied, a dashed line marks the conventional /64 boundary instead. The fourth of the Tier 1/2 SVG retrofits, and the right shape for 128 bits where a per-bit grid would not fit. Vector, theme-aware, all in the browser.",
+    body: "Decoding an IPv6 address now draws its 128 bits as eight hextet cells over a 0-128 bit ruler, with the prefix boundary drawn at the actual /N, shading the network prefix apart from the host portion and naming the 64-bit interface identifier when the split lands on /64. With no prefix supplied, a dashed line marks the conventional /64 boundary instead. The fourth of the Tier 1/2 SVG retrofits, and the right shape for 128 bits where a per-bit grid would not fit. Vector, theme-aware, all in the browser.",
     tools: ["ipv6"],
   },
 
@@ -1277,7 +1289,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:18",
     kind: "feature",
     title: "x509 tool now shows the chain of trust",
-    body: "Decoding a certificate now draws a small chain-of-trust diagram — root CA, intermediate CA, end-entity — and highlights where the pasted certificate sits: a self-signed certificate lights up the root, a CA certificate the intermediate, and an ordinary certificate the leaf, with its subject and issuer named and the self-signed case called out. The second of the Tier 1/2 SVG retrofits. Vector and theme-aware; the certificate never leaves the browser.",
+    body: "Decoding a certificate now draws a small chain-of-trust diagram (root CA, intermediate CA, end-entity) and highlights where the pasted certificate sits: a self-signed certificate lights up the root, a CA certificate the intermediate, and an ordinary certificate the leaf, with its subject and issuer named and the self-signed case called out. The second of the Tier 1/2 SVG retrofits. Vector and theme-aware; the certificate never leaves the browser.",
     tools: ["x509"],
   },
 
@@ -1287,7 +1299,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:45",
     kind: "feature",
     title: "PKCE tool now shows the flow as a diagram",
-    body: "The PKCE generator gains an inline sequence diagram of the S256 authorization-code flow — generate a code_verifier, derive the code_challenge, carry it on the /authorize request, get an authorization code, send the verifier on the /token request, and have the server re-derive and compare before issuing tokens — colour-coded by who acts (app vs authorization server). It is the first of the Tier 1/2 SVG retrofits across existing tools. Vector and theme-aware; nothing about the tool leaves the browser.",
+    body: "The PKCE generator gains an inline sequence diagram of the S256 authorization-code flow (generate a code_verifier, derive the code_challenge, carry it on the /authorize request, get an authorization code, send the verifier on the /token request, and have the server re-derive and compare before issuing tokens), colour-coded by who acts (app vs authorization server). It is the first of the Tier 1/2 SVG retrofits across existing tools. Vector and theme-aware; nothing about the tool leaves the browser.",
     tools: ["pkce"],
   },
 
@@ -1297,7 +1309,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "12:16",
     kind: "tool",
     title: "iRule event order is live",
-    body: "Toggle the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool, or FastL4 — and see the order the common iRule events fire, from CLIENT_ACCEPTED through CLIENT_CLOSED, as a color-coded timeline (the toolbox's first inline diagram) and an ordered list, with the conditional events (TCP/HTTP collect, LB failure, 100 Continue) called out and where each one slots in. The sequence is pinned to F5 Clouddocs and the DevCentral event-order capture. Five Learn articles ship alongside it. It is a model of documented behaviour that runs entirely in the browser and never contacts a device.",
+    body: "Toggle the profile stack on a BIG-IP virtual server (client-SSL, HTTP, server-SSL, pool, or FastL4) and see the order the common iRule events fire, from CLIENT_ACCEPTED through CLIENT_CLOSED, as a color-coded timeline (the toolbox's first inline diagram) and an ordered list, with the conditional events (TCP/HTTP collect, LB failure, 100 Continue) called out and where each one slots in. The sequence is pinned to F5 Clouddocs and the DevCentral event-order capture. Five Learn articles ship alongside it. It is a model of documented behaviour that runs entirely in the browser and never contacts a device.",
     tools: ["f5-irules-event-order"],
   },
 
@@ -1307,7 +1319,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "11:28",
     kind: "tool",
     title: "Unix time converter is live",
-    body: "Paste a Unix timestamp — the unit (seconds, milliseconds, microseconds, or nanoseconds) is read from its magnitude and stated back to you — or an ISO-8601 date, and get the instant in every common form: the UTC calendar breakdown with weekday and day-of-year, ISO 8601, RFC 3339, the HTTP date, and the timestamp in all four units. Negative timestamps and the Year 2038 boundary are flagged. Five Learn articles ship alongside it. The conversion is pure date math that runs entirely in the browser; a Now button and a relative-to-your-clock line are the only parts that read the wall clock.",
+    body: "Paste a Unix timestamp, whose unit (seconds, milliseconds, microseconds, or nanoseconds) is read from its magnitude and stated back to you, or an ISO-8601 date, and get the instant in every common form: the UTC calendar breakdown with weekday and day-of-year, ISO 8601, RFC 3339, the HTTP date, and the timestamp in all four units. Negative timestamps and the Year 2038 boundary are flagged. Five Learn articles ship alongside it. The conversion is pure date math that runs entirely in the browser; a Now button and a relative-to-your-clock line are the only parts that read the wall clock.",
     tools: ["epoch"],
   },
 
@@ -1317,7 +1329,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "10:32",
     kind: "tool",
     title: "F5 SSL profile explainer is live",
-    body: "Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix derived from the options field (which version each no- flag permits or blocks), and a 🟢/🟡/🟠/🔴 security read covering chain building, renegotiation, SNI, OCSP stapling, and mutual-TLS validation — each setting explained. Five Learn articles ship alongside it. Parsing runs entirely in the browser; it never contacts a device.",
+    body: "Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix derived from the options field (which version each no- flag permits or blocks), and a 🟢/🟡/🟠/🔴 security read covering chain building, renegotiation, SNI, OCSP stapling, and mutual-TLS validation, with each setting explained. Five Learn articles ship alongside it. Parsing runs entirely in the browser; it never contacts a device.",
     tools: ["f5-ssl-profile-explainer"],
   },
 
@@ -1336,7 +1348,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "feature",
     title: "Two F5 iControl REST tools on the roadmap",
     links: [{ label: "Roadmap", href: "/roadmap" }],
-    body: "Queued an iControl REST path explainer — which decodes /mgmt/tm/... URLs, the tilde-encoded ~partition~ paths, and the query options, and shows the matching tmsh path — and an iControl REST stats decoder that flattens F5's deeply nested stats JSON into readable key-values. Both are offline and never contact a device.",
+    body: "Queued an iControl REST path explainer that decodes /mgmt/tm/... URLs, the tilde-encoded ~partition~ paths, and the query options and shows the matching tmsh path, and an iControl REST stats decoder that flattens F5's deeply nested stats JSON into readable key-values. Both are offline and never contact a device.",
   },
 
   // ---- 2026-06-29 : CIDR self-contained + Expect roadmap -------------------
@@ -1354,7 +1366,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "feature",
     title: "Two Expect (Tcl) tools on the roadmap",
     links: [{ label: "Roadmap", href: "/roadmap" }],
-    body: "Queued an Expect script explainer — which breaks down spawn, expect, send, and timeout blocks and flags pitfalls like hardcoded credentials and a missing timeout — and an Expect pattern tester for the glob, -re, and -ex match modes. Both are static and offline; neither runs a script.",
+    body: "Queued an Expect script explainer that breaks down spawn, expect, send, and timeout blocks and flags pitfalls like hardcoded credentials and a missing timeout, and an Expect pattern tester for the glob, -re, and -ex match modes. Both are static and offline; neither runs a script.",
   },
 
   // ---- 2026-06-29 : Regex toolkit ------------------------------------------
@@ -1363,7 +1375,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "08:05",
     kind: "tool",
     title: "New tool: Regex Toolkit",
-    body: "Compile, test, and explain JavaScript regular expressions in one place: live matches with positional and named capture groups highlighted, a plain-language token breakdown of what the pattern does, and a static check that warns before a catastrophic-backtracking (ReDoS) pattern runs against your text — so a single keystroke cannot freeze the page. Ships with three Learn articles. Everything runs in the browser.",
+    body: "Compile, test, and explain JavaScript regular expressions in one place: live matches with positional and named capture groups highlighted, a plain-language token breakdown of what the pattern does, and a static check that warns before a catastrophic-backtracking (ReDoS) pattern runs against your text, so that a single keystroke cannot freeze the page. Ships with three Learn articles. Everything runs in the browser.",
     tools: ["regex"],
   },
 

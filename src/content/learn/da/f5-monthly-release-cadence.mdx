@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "F5s hurtigere udgivelseskadence: månedlige hærdede udgivelser og sikkerhedsmeddelelser"
+summary: "Den 6. juli 2026 skiftede F5 fra en kvartalsvis til en månedlig sikkerhedskadence: hærdede softwareudgivelser den tredje onsdag hver måned fra den 15. juli, og sikkerhedsmeddelelser en måned senere fra den 19. august. Her står præcis, hvad der ændrede sig, hvorfor F5 siger, det ændrede sig, hvad der forbliver det samme, og hvad det betyder for, hvordan du patcher."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Hvad der ændrede sig, i én sætning
+
+Den 6. juli 2026 annoncerede F5, at dets software-sikkerhedsudgivelser skifter fra en **kvartalsvis** tidsplan til en **månedlig**: hærdede softwareudgivelser udkommer nu den **tredje onsdag hver måned** (fra den 15. juli 2026), og sikkerhedsmeddelelser, der beskriver, hvad disse udgivelser rettede, offentliggøres **en måned efter hver udgivelse** (den første den 19. august 2026, som dækker udgivelsen den 15. juli). Sikkerhedsadvarsler uden for planen for hastende problemer fortsætter som før. Annonceringen kom fra F5s Chief Product Officer, Kunal Anand, og blev sendt til kunder med sikkerhedsabonnement af F5 SIRT i samme uge.
+
+Hvis du kører F5 i produktion, er dette en driftsmæssig ændring, du skal planlægge efter, og ikke blot en nyhed.
+
+## De to konkrete ændringer
+
+**1. Månedlige hærdede softwareudgivelser, den tredje onsdag.** Hver udgivelse samler en bred mængde rettelser: problemer fundet af F5s AI-drevne kodescanning, de yderligere problemer, der dukker op, når man opsporer dem, rapporter fra interne teams og eksterne forskere samt generel sikkerheds- og stabilitetshærdning. F5 har oplyst, at det vil **begrænse detaljeringsgraden om de enkelte rettelser** i hver udgivelse for ikke at give angribere et kort over sårbarhederne, før kunderne har patchet.
+
+**2. Kvartalsvise sikkerhedsmeddelelser bliver månedlige.** En sikkerhedsmeddelelse for hver hærdet udgivelse offentliggøres cirka en måned senere. F5 giver ét præcist holdepunkt: udgivelsen den 15. juli dækkes af en meddelelse den 19. august. Begge datoer er tredje onsdage, så i praksis går kadencen pænt op, og på enhver tredje onsdag sker der to ting på én gang: månedens hærdede udgivelse udkommer, og den foregående måneds sikkerhedsmeddelelse offentliggøres. Det bevidste mellemrum på en måned er et forspring: det giver dig tid til at opdatere, før detaljerne om sårbarheden bliver offentlige.
+
+F5 gør det klart, at dette er de tilsigtede datoer, ikke en stiv kontrakt. Virksomheden bevarer fleksibiliteten til at ændre tidspunktet, indholdet eller fremgangsmåden for en meddelelse, når lov, kontrakt, forpligtelser til koordineret offentliggørelse, koordinering med myndigheder, aktiv udnyttelse, en væsentlighedsvurdering, et embargo eller kundebeskyttelse kræver det.
+
+## Hvorfor F5 siger, at ændringen blev foretaget
+
+F5s angivne begrundelse er værd at gengive præcist, fordi den ændrer, hvordan du bør tænke om udgivelserne. Drivkraften er **AI-accelereret opdagelse af sårbarheder**. F5 har brugt frontier-AI-modeller til at scanne sin egen kode og kører derved en løbende cyklus af scanning, triage, rettelse, test og udgivelse. Det bringer flere problemer frem, hurtigere, og F5 fremstiller den deraf følgende stigning i udgivelser som et tegn på stærkere sikkerhed snarere end svagere software. Men at finde problemer hurtigt hjælper kun, hvis rettelserne når kunderne lige så hurtigt, og med F5s ord var en kvartalsvis kadence bygget til en anden tid: vinduet mellem, at en sårbarhed bliver kendt, og at et fungerende exploit findes, er blevet så smalt, at kvartalsvis ikke længere er nok.
+
+Der er en konsekvens, der betyder noget for prioriteringen. F5 advarer om, at **alvorsgraden af en enkelt rettelse er en mindre pålidelig rettesnor for dens betydning end tidligere**, fordi angribere i stigende grad er i stand til at kæde sårbarheder med lav og mellem alvorsgrad sammen til nye exploits. Den praktiske anvisning, der følger, er kontant: behandl hver udgivelse, som om den lukker et kritisk hul, og udrul den, ikke kun dem, der er markeret som kritiske.
+
+## Hvad der forbliver det samme
+
+Den månedlige kadence hviler på F5s eksisterende udgivelsesstruktur, som ikke forsvinder:
+
+| Udgivelsestype | Produkter | Hvad den leverer |
+| --- | --- | --- |
+| Vedligeholdelsesudgivelser | BIG-IP, BIG-IQ, F5OS, NGINX | Fejlrettelser, en samling af nylige CVE-rettelser, små funktioner, stabilitet og defektudbedring |
+| Større udgivelser | BIG-IP, BIG-IQ, F5OS | Milepæle på roadmap: nye funktioner, moduler, kapaciteter, forbedringer af den centrale sikkerhedsarkitektur |
+| Årlige long-term-stability-udgivelser | NGINX | Et stabilt fundament med udvidede supportvinduer |
+| Engineering-hotfixes (EHF'er) | Efter behov | Hastende rettelser udgivet efter behov baseret på kundepåvirkning |
+| Sikkerhedsadvarsler uden for planen | Efter behov | Øjeblikkelig besked, når hastende sårbarhedsoplysninger ikke kan vente på den månedlige cyklus |
+
+## Kvartalsvis kontra månedlig, kort fortalt
+
+| | Før (kvartalsvis) | Efter (månedlig) |
+| --- | --- | --- |
+| Hærdet udgivelse | Cirka hver tredje måned | Tredje onsdag hver måned, fra 15. jul 2026 |
+| Sikkerhedsmeddelelser | Kvartalsvis | Månedligt, en måned efter hver udgivelse (fra 19. aug 2026) |
+| Detaljeringsgrad for rettelser ved udgivelse | Flere detaljer offentliggjort | Detaljer bevidst begrænset indtil meddelelsen |
+| Hastende problemer | Advarsler uden for planen | Advarsler uden for planen (uændret) |
+
+## Hvad det betyder for, hvordan du patcher
+
+Den ærlige opsummering er, at en hurtigere kadence kræver mere af dit team, og arbejdet ligger i at optage flere opdateringer, oftere, uden mere risiko. F5s egne anbefalede handlinger er praktiske og værd at tage alvorligt:
+
+Automatisér. Hvis du stadig anvender BIG-IP-opdateringer i hånden, er en månedlig kadence tidspunktet at ændre det på. F5 peger på sine automatiseringsværktøjer og Red Hat Ansible-samlingerne til BIG-IP, så en større strøm af udgivelser ikke oversættes til en større strøm af manuelt arbejde.
+
+Få overblik over flåden. F5 anbefaler at udrulle F5 Insight for ADSP nu, både for at se din nuværende patch-status på tværs af dit miljø og for at være klar til de flådehåndteringsfunktioner, som F5 siger er på vej til Insight.
+
+Planlæg vinduet. Fordi tidsplanen er deterministisk (tredje onsdag, hver måned), kan du sætte vedligeholdelsesvinduer i kalenderen på forhånd i stedet for at reagere på hver udgivelse. [F5 udgivelseskadence-kalenderen](/tools/f5-release-cadence-calendar) beregner de kommende udgivelses- og meddelelsesdatoer netop af denne grund. Og hvis det at designe et lavrisiko, automatiseret opdateringsworkflow overstiger din nuværende kapacitet, er F5 Professional Services den vej, F5 foreslår.
+
+Hvad angår den underliggende politik, er F5s politik for offentliggørelse af sårbarheder udgivet som knowledge base-artikel K4602, og detaljerne for hver hærdet udgivelse offentliggøres, efterhånden som de bliver tilgængelige. Det centrale skift i tankegang er det, F5 hele tiden vender tilbage til: når opdagelsen accelererer på begge sider, er hurtig udrulning af den nyeste udgivelse ikke længere en god praksis for de forsigtige, men grundniveauet for at forblive beskyttet.

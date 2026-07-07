@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "F5's faster release cadence: monthly hardened releases and security notifications"
+summary: "On 6 July 2026 F5 moved from a quarterly to a monthly security release cadence: hardened software releases on the third Wednesday of every month from 15 July, and security notifications one month later starting 19 August. Here is exactly what changed, why F5 says it changed, what stays the same, and what it means for how you patch."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## What changed, in one sentence
+
+On 6 July 2026, F5 announced that its software security releases move from a **quarterly** schedule to a **monthly** one: hardened software releases now ship on the **third Wednesday of every month** (starting 15 July 2026), and security notifications describing what those releases fixed are published **one month after each release** (the first on 19 August 2026, covering the 15 July release). Out-of-band alerts for urgent issues continue as before. The announcement came from F5's Chief Product Officer, Kunal Anand, and was sent to security-subscription customers by the F5 SIRT the same week.
+
+If you run F5 in production, this is an operational change you need to plan for, not just a news item.
+
+## The two concrete changes
+
+**1. Monthly hardened software releases, on the third Wednesday.** Each release rolls up a broad set of fixes: issues found by F5's AI-driven code scanning, the further issues that surface while chasing those down, reports from internal teams and outside researchers, and general security and stability hardening. F5 has said it will **limit the detail it discloses about the specific fixes** in each release, so as not to hand attackers a map to the vulnerabilities before customers have patched.
+
+**2. Quarterly security notifications become monthly.** A security notification for each hardened release is published about a month later. F5 gives one exact anchor: the 15 July release is covered by a notification on 19 August. Both of those dates are third Wednesdays, so in practice the cadence lines up neatly, and on any given third Wednesday two things happen at once: that month's hardened release ships, and the previous month's security notification is published. The deliberate one-month gap is a head start: it gives you time to update before the vulnerability details become public.
+
+F5 is explicit that these are the intended dates, not a rigid contract. It retains flexibility to change the timing, content, or approach of a notification where law, contract, coordinated-disclosure obligations, government coordination, active exploitation, a materiality assessment, an embargo, or customer protection call for it.
+
+## Why F5 says it made the change
+
+F5's stated reasoning is worth repeating accurately, because it changes how you should think about the releases. The driver is **AI-accelerated vulnerability discovery**. F5 has been using frontier AI models to scan its own code, running a continuous cycle of scan, triage, fix, test, and release. That surfaces more issues, faster, and F5 frames the resulting increase in releases as a sign of stronger security rather than weaker software. But finding issues quickly only helps if the fixes reach customers just as quickly, and in F5's words a quarterly cadence was built for a different era: the window between a vulnerability becoming known and a working exploit existing has narrowed to the point where quarterly is no longer enough.
+
+There is a consequence that matters for prioritization. F5 warns that **the severity of any single fix is a less reliable guide to its importance than it used to be**, because attackers are increasingly able to chain low- and medium-severity vulnerabilities into novel exploits. The practical instruction that follows is blunt: treat every release as though it closes a critical gap, and deploy it, not just the ones flagged critical.
+
+## What stays the same
+
+The monthly cadence sits on top of F5's existing release structure, which does not go away:
+
+| Release type | Products | What it delivers |
+| --- | --- | --- |
+| Maintenance releases | BIG-IP, BIG-IQ, F5OS, NGINX | Bug fixes, a roll-up of recent CVE fixes, small features, stability and defect remediation |
+| Major releases | BIG-IP, BIG-IQ, F5OS | Roadmap milestones: new features, modules, capabilities, core security-architecture improvements |
+| Annual long-term stability releases | NGINX | A stable foundation with extended support windows |
+| Engineering hotfixes (EHFs) | As needed | Urgent fixes released on demand based on customer impact |
+| Out-of-band security alerts | As needed | Immediate notification when urgent vulnerability information cannot wait for the monthly cycle |
+
+## Quarterly versus monthly, at a glance
+
+| | Before (quarterly) | After (monthly) |
+| --- | --- | --- |
+| Hardened release | Roughly every three months | Third Wednesday of every month, from 15 Jul 2026 |
+| Security notifications | Quarterly | Monthly, one month after each release (from 19 Aug 2026) |
+| Fix detail at release | More detail disclosed | Detail deliberately limited until the notification |
+| Urgent issues | Out-of-band alerts | Out-of-band alerts (unchanged) |
+
+## What it means for how you patch
+
+The honest summary is that a faster cadence asks more of your team, and the work is in absorbing more updates, more often, without more risk. F5's own recommended actions are practical and worth taking seriously:
+
+Automate. If you are still applying BIG-IP updates by hand, a monthly cadence is the moment to change that. F5 points to its automation tooling and the Red Hat Ansible collections for BIG-IP so that a larger stream of releases does not translate into a larger stream of manual work.
+
+Get fleet visibility. F5 recommends deploying F5 Insight for ADSP now, both to see your current patch posture across your estate and to be positioned for the fleet-management capabilities F5 says are coming to Insight.
+
+Plan the window. Because the schedule is deterministic (third Wednesday, every month), you can put maintenance windows on the calendar in advance rather than reacting to each release. The [F5 release cadence calendar](/tools/f5-release-cadence-calendar) computes the upcoming release and notification dates for exactly this reason. And if designing a low-risk, automated update workflow is beyond your current capacity, F5 Professional Services is the route F5 suggests.
+
+For the underlying policy, F5's vulnerability disclosure policy is published as knowledge-base article K4602, and the detail for each hardened release is published as it becomes available. The key mindset shift is the one F5 keeps returning to: with discovery accelerating on both sides, running the latest release quickly is no longer best practice for the cautious, it is the baseline for staying protected.

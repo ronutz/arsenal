@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "La cadencia de versiones más rápida de F5: versiones reforzadas y notificaciones de seguridad mensuales"
+summary: "El 6 de julio de 2026, F5 pasó de una cadencia de seguridad trimestral a una mensual: versiones de software reforzadas el tercer miércoles de cada mes a partir del 15 de julio, y notificaciones de seguridad un mes después a partir del 19 de agosto. Aquí está exactamente qué cambió, por qué dice F5 que cambió, qué permanece igual y qué significa para su forma de aplicar parches."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Qué cambió, en una frase
+
+El 6 de julio de 2026, F5 anunció que sus versiones de seguridad de software pasan de un calendario **trimestral** a uno **mensual**: las versiones de software reforzadas ahora salen el **tercer miércoles de cada mes** (a partir del 15 de julio de 2026), y las notificaciones de seguridad que describen lo que corrigieron esas versiones se publican **un mes después de cada versión** (la primera el 19 de agosto de 2026, cubriendo la versión del 15 de julio). Las alertas fuera de banda para problemas urgentes continúan como antes. El anuncio provino del Chief Product Officer de F5, Kunal Anand, y el F5 SIRT lo envió a los clientes con suscripción de seguridad esa misma semana.
+
+Si ejecuta F5 en producción, este es un cambio operativo que debe planificar, no solo una noticia.
+
+## Los dos cambios concretos
+
+**1. Versiones de software reforzadas mensuales, el tercer miércoles.** Cada versión agrupa un amplio conjunto de correcciones: problemas encontrados por el escaneo de código impulsado por IA de F5, los problemas adicionales que surgen al rastrearlos, informes de equipos internos e investigadores externos, y endurecimiento general de seguridad y estabilidad. F5 ha dicho que **limitará el detalle que divulga sobre las correcciones concretas** de cada versión, para no dar a los atacantes un mapa de las vulnerabilidades antes de que los clientes hayan aplicado el parche.
+
+**2. Las notificaciones de seguridad trimestrales pasan a ser mensuales.** Una notificación de seguridad para cada versión reforzada se publica alrededor de un mes después. F5 da un ancla exacta: la versión del 15 de julio queda cubierta por una notificación el 19 de agosto. Ambas fechas son terceros miércoles, así que en la práctica la cadencia encaja con limpieza, y en cualquier tercer miércoles ocurren dos cosas a la vez: sale la versión reforzada de ese mes y se publica la notificación de seguridad del mes anterior. El intervalo deliberado de un mes es una ventaja inicial: le da tiempo para actualizar antes de que los detalles de la vulnerabilidad se hagan públicos.
+
+F5 es explícito en que estas son las fechas previstas, no un contrato rígido. Conserva flexibilidad para cambiar el momento, el contenido o el enfoque de una notificación cuando la ley, un contrato, obligaciones de divulgación coordinada, la coordinación con autoridades, la explotación activa, una evaluación de materialidad, un embargo o la protección del cliente así lo exijan.
+
+## Por qué dice F5 que hizo el cambio
+
+El razonamiento declarado por F5 vale la pena repetirlo con precisión, porque cambia cómo debe pensar sobre las versiones. El motor es el **descubrimiento de vulnerabilidades acelerado por IA**. F5 ha estado usando modelos de IA de frontera para escanear su propio código, ejecutando un ciclo continuo de escanear, clasificar, corregir, probar y publicar. Eso saca a la luz más problemas, más rápido, y F5 enmarca el aumento resultante de versiones como una señal de seguridad más fuerte y no de software más débil. Pero encontrar problemas rápido solo ayuda si las correcciones llegan a los clientes con la misma rapidez y, en palabras de F5, una cadencia trimestral fue construida para otra era: la ventana entre que una vulnerabilidad se hace conocida y que existe un exploit funcional se ha estrechado hasta el punto de que lo trimestral ya no basta.
+
+Hay una consecuencia que importa para la priorización. F5 advierte que **la severidad de cualquier corrección aislada es una guía menos fiable de su importancia de lo que solía ser**, porque los atacantes son cada vez más capaces de encadenar vulnerabilidades de severidad baja y media en exploits novedosos. La instrucción práctica que se deriva es contundente: trate cada versión como si cerrara una brecha crítica, e impleméntela, no solo las marcadas como críticas.
+
+## Qué permanece igual
+
+La cadencia mensual se asienta sobre la estructura de versiones existente de F5, que no desaparece:
+
+| Tipo de versión | Productos | Qué entrega |
+| --- | --- | --- |
+| Versiones de mantenimiento | BIG-IP, BIG-IQ, F5OS, NGINX | Corrección de errores, un agrupado de correcciones de CVE recientes, funciones pequeñas, estabilidad y remediación de defectos |
+| Versiones mayores | BIG-IP, BIG-IQ, F5OS | Hitos del roadmap: nuevas funciones, módulos, capacidades, mejoras en la arquitectura de seguridad central |
+| Versiones anuales de estabilidad a largo plazo | NGINX | Una base estable con ventanas de soporte extendidas |
+| Hotfixes de ingeniería (EHF) | Según sea necesario | Correcciones urgentes publicadas a demanda según el impacto en el cliente |
+| Alertas de seguridad fuera de banda | Según sea necesario | Notificación inmediata cuando información urgente de vulnerabilidad no puede esperar al ciclo mensual |
+
+## Trimestral frente a mensual, de un vistazo
+
+| | Antes (trimestral) | Después (mensual) |
+| --- | --- | --- |
+| Versión reforzada | Aproximadamente cada tres meses | Tercer miércoles de cada mes, desde el 15 jul 2026 |
+| Notificaciones de seguridad | Trimestrales | Mensuales, un mes después de cada versión (desde el 19 ago 2026) |
+| Detalle de la corrección en la versión | Más detalle divulgado | Detalle deliberadamente limitado hasta la notificación |
+| Problemas urgentes | Alertas fuera de banda | Alertas fuera de banda (sin cambios) |
+
+## Qué significa para su forma de aplicar parches
+
+El resumen honesto es que una cadencia más rápida exige más de su equipo, y el trabajo consiste en absorber más actualizaciones, con más frecuencia, sin más riesgo. Las acciones recomendadas por la propia F5 son prácticas y vale la pena tomarlas en serio:
+
+Automatice. Si todavía aplica las actualizaciones de BIG-IP a mano, una cadencia mensual es el momento de cambiar eso. F5 señala sus herramientas de automatización y las colecciones de Red Hat Ansible para BIG-IP, de modo que un flujo mayor de versiones no se traduzca en un flujo mayor de trabajo manual.
+
+Obtenga visibilidad de la flota. F5 recomienda implementar F5 Insight for ADSP ahora, tanto para ver su postura actual de parches en todo su parque como para posicionarse ante las capacidades de gestión de flota que, según F5, llegarán a Insight.
+
+Planifique la ventana. Como el calendario es determinista (tercer miércoles, cada mes), puede poner ventanas de mantenimiento en el calendario con antelación en lugar de reaccionar a cada versión. La [calculadora de cadencia de versiones de F5](/tools/f5-release-cadence-calendar) calcula las próximas fechas de versión y notificación precisamente por este motivo. Y si diseñar un flujo de actualización automatizado y de bajo riesgo supera su capacidad actual, los Servicios Profesionales de F5 son la vía que F5 sugiere.
+
+En cuanto a la política subyacente, la política de divulgación de vulnerabilidades de F5 se publica como el artículo de base de conocimiento K4602, y el detalle de cada versión reforzada se publica a medida que está disponible. El cambio de mentalidad clave es aquel al que F5 vuelve una y otra vez: con el descubrimiento acelerándose en ambos lados, aplicar rápido la versión más reciente ya no es una buena práctica para los cautelosos, es la línea base para permanecer protegido.

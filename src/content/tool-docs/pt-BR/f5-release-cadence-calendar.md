@@ -1,0 +1,7 @@
+## O que faz
+
+Em 6 de julho de 2026, a F5 anunciou a mudança de uma cadência trimestral para mensal de lançamentos de segurança. Esta ferramenta transforma esse cronograma em datas concretas para você planejar. Escolha uma data inicial (o padrão é hoje) e ela lista os próximos lançamentos de software endurecido (hardened) da F5 e as notificações de segurança que os seguem, e informa o próximo de cada.
+
+Toda a cadência se reduz a uma regra. Os lançamentos de software endurecido saem na **terceira quarta-feira de cada mês**, começando em 15 de julho de 2026. Uma **notificação de segurança** para cada lançamento é publicada um mês depois, e como as próprias datas-âncora da F5 se alinham às terceiras quartas-feiras (lançamento em 15 de julho, notificação em 19 de agosto), cada terceira quarta-feira carrega os dois eventos de uma vez: o lançamento endurecido daquele mês sai, e a notificação de segurança do mês anterior é publicada. O intervalo de um mês é deliberado, dando a você uma janela para atualizar antes que o detalhe da vulnerabilidade se torne público.
+
+As datas são calculadas localmente por aritmética simples; nada sai do seu navegador. São as datas programadas: a F5 continua emitindo alertas de segurança fora de banda e hotfixes de engenharia para problemas urgentes a qualquer momento, e retém explicitamente flexibilidade para ajustar o momento ou o conteúdo de uma notificação quando considerações legais, de divulgação, de exploração ou de proteção do cliente exigirem.

@@ -1,0 +1,74 @@
+---
+slug: irules-loops-and-lists
+title: "Loops and lists in iRules, and why they block"
+summary: "iRules support foreach, for, and while, and most of Tcl's list commands. But loops run inline in a single-threaded TMM, so a large loop per request stalls that connection. Here is which loop to use, which list commands you actually have, and why foreach is the one to reach for first."
+concepts: ["irules", "tcl", "f5", "performance", "foreach", "loops", "lists", "tmm"]
+relatedTools: ["f5-irules-runtime-calculator", "f5-irules-performance-linter"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-lookups", "irules-performance-and-timing"]
+category: networking
+order: 24
+status: reviewed
+updated: "2026-07-07"
+---
+
+## The fact that governs every loop
+
+An iRule runs inside TMM, and each TMM instance is single-threaded on its core. A loop does not run in the background; it runs inline, holding that connection's processing until it finishes. So the first thing to know about loops in iRules is not their syntax, it is their cost: iterate over too many items and you stall the TMM handling that request. F5's own guidance is blunt about it, warning that because the loops are blocking and TMM is single-threaded, you really do not want to iterate through too many cases before moving on. The classic mistake, a big counting loop used as a homemade "sleep," is exactly the thing not to do.
+
+That does not make loops forbidden. It makes them something to keep small and bounded, and to prefer alternatives to when one exists.
+
+## foreach first
+
+When you are walking a list, `foreach` is both faster and cleaner than a `for` or `while` loop that indexes the list by hand. F5's optimization notes make the same point: the `for` version that pulls each element with `lindex` is the slower one.
+
+```tcl
+when HTTP_REQUEST {
+    set domains { bob.com ted.com example.com }
+
+    # preferred: foreach, faster and more elegant
+    foreach domain $domains {
+        # work with $domain
+    }
+}
+```
+
+Reach for `for` or `while` when you genuinely need index arithmetic, a non-list counter, or a condition that is not just "each element." Both are available, and both give you `continue` (stop this pass, go to the next test) and `break` (leave the loop immediately).
+
+```tcl
+set count [llength $domains]
+# slower than foreach: manual indexing
+for { set i 0 } { $i < $count } { incr i } {
+    set domain [lindex $domains $i]
+}
+# while, equivalent and equally slower for this job
+set i 0
+while { $i < $count } {
+    set domain [lindex $domains $i]
+    incr i
+}
+```
+
+## The list commands you actually have
+
+iRules expose most of Tcl's list handling. Available: `list`, `split`, `join`, `concat`, `llength`, `lindex`, `lrange`, `linsert`, `lreplace`, `lsort`, `lsearch`, `lappend`, and `lset`. A few Tcl commands are **not** available in iRules, notably `lrepeat`, `lreverse`, and `dict`, so do not reach for those.
+
+Two building blocks do most of the real work. `split` turns a string into a proper list on a separator, and `lindex` pulls an element out by position (starting at zero). Together they replace a lot of manual parsing:
+
+```tcl
+# take the first field of a "!"-separated cookie value
+set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]
+```
+
+## A note on iRule commands versus Tcl commands
+
+Some parsing has two spellings: a pure-Tcl one and an iRule-command one. `getfield` does much the same job as `lindex [split ...]` and reads more clearly, but there is a subtlety worth knowing. An iRule-specific command has to jump from the Tcl virtual machine back into TMM to run, which the pure-Tcl commands do not. F5 describes the cost as incredibly negligible in normal use, something to be aware of only if you are squeezing out every last cycle. Note too that they count differently: `getfield` starts at field 1, while `lindex` starts at index 0.
+
+```tcl
+# same result, two spellings
+set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]   ;# 0-indexed
+set id [getfield [HTTP::cookie "JSESSIONID"] "!" 1]         ;# 1-indexed
+```
+
+## Prefer a lookup to a loop
+
+The through-line from the rest of this cluster applies here too. If a loop is scanning a list to find a match, a data group read with `class match` or a directly-indexed `static::` array will usually do the same work without the per-item iteration, and without the blocking cost that grows with the list. The [comparison of if, switch, class, and static arrays](/learn/irules-branching-and-lookups) covers when each of those fits. When you do need a loop, keep the body small, cap the number of iterations, and if you want to know what it actually costs on your platform, measure it with timing statistics through the [iRules runtime calculator](/tools/f5-irules-runtime-calculator). And remember the rule from the [static:: namespace article](/learn/irules-cmp-and-static-namespace): whatever the loop touches, a global variable inside it still demotes the virtual to a single core.

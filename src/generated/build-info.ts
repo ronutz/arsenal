@@ -1,2 +1,2 @@
 // AUTO-GENERATED at build time by scripts/gen-build-info.mjs. Do not edit by hand.
-export const BUILD_TIME = "2026-07-07T15:47:56.696Z";
+export const BUILD_TIME = "2026-07-07T17:10:09.363Z";

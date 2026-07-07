@@ -1,0 +1,84 @@
+---
+slug: irules-branching-and-lookups
+title: "iRules: escolhendo entre if, switch, class match e arrays static"
+summary: "Quando um iRule precisa comparar um valor com muitos e agir, há quatro ferramentas comuns: if encadeado, switch, um data group com class match, e um array static:: indexado diretamente. A F5 de fato ordenou essas opções por velocidade. Aqui está essa ordem, e as duas perguntas que decidem qual usar."
+concepts: ["irules", "tcl", "f5", "performance", "switch", "data groups", "static", "class"]
+relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing"]
+category: networking
+order: 22
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O mesmo trabalho, quatro formas
+
+Uma grande quantidade de iRules faz uma coisa: pega um valor, compara com um conjunto de valores conhecidos e age sobre o casamento. Rotear um host para um pool, bloquear um caminho, mapear uma rede de cliente para uma decisão. Há quatro formas comuns de escrever isso, e elas não custam o mesmo. O próprio "How To Write Fast Rules" da F5 as ordena, e a ordem vale a pena conhecer porque a opção rápida muitas vezes não é mais difícil de escrever que a lenta.
+
+As constatações abaixo são da F5, e a F5 as declara com uma ressalva honesta ("provavelmente por causa de"), porque vêm de medição e não das entranhas do sistema. Elas valem para o subconjunto permitido de Tcl que roda dentro do TMM.
+
+## A ordem, dos melhores hábitos primeiro
+
+**Encadeie suas condições com elseif em vez de empilhar instruções if separadas.** Uma sequência de blocos `if` independentes avalia todos; uma cadeia `if` / `elseif` é uma única instrução que para no primeiro casamento, então menos comandos são buscados e executados e menos valores de retorno são ponderados.
+
+```tcl
+# mais lento: tres instrucoes separadas, todas avaliadas
+if { $x eq "a" } { ... }
+if { $x eq "b" } { ... }
+if { $x eq "c" } { ... }
+
+# mais rapido: uma instrucao, para no primeiro casamento
+if { $x eq "a" } { ... } elseif { $x eq "b" } { ... } elseif { $x eq "c" } { ... }
+```
+
+**Prefira switch a qualquer forma de if quando puder.** Comparar uma variável com uma lista de valores é exatamente para o que o `switch` serve, e ele evita a avaliação extra de expressão que cada `if` carrega. Também é bem mais fácil de ler.
+
+```tcl
+switch [string tolower [HTTP::host]] {
+    "www.example.com"  { pool web_pool }
+    "api.example.com"  { pool api_pool }
+    default            { pool default_pool }
+}
+```
+
+**Para um conjunto fixo de cerca de cem entradas ou menos, switch (mesmo switch -glob) supera matchclass** desde que os dados não precisem mudar independentemente da regra. A razão que a F5 dá é que o antigo comando `matchclass` faz hash com MD5, o que o `switch` de conjunto pequeno não precisa fazer.
+
+**Para uma busca por chave exata em dados estáticos, um array indexado diretamente é o mais rápido de todos.** Se o que você tem é de fato um mapa de chave para valor, coloque-o em um array `static::` no carregamento e indexe-o diretamente. Isso é uma busca hash O(1) sem nada do trabalho por comparação do `switch` ou da chamada de função do `matchclass`.
+
+```tcl
+when RULE_INIT {
+    array set static::pool_for {
+        www  web_pool
+        api  api_pool
+        img  image_pool
+    }
+}
+when HTTP_REQUEST {
+    set key [getfield [HTTP::host] "." 1]
+    if { [info exists static::pool_for($key)] } {
+        pool $static::pool_for($key)
+    }
+}
+```
+
+## As duas perguntas que de fato decidem
+
+Velocidade é só metade da história. Antes de escolher a partir da ordem, responda duas perguntas.
+
+**Os dados mudam independentemente da regra?** Um corpo de `switch` e um array `static::` estão embutidos no iRule: mudar uma entrada significa editar e recarregar a regra. Um **data group** (uma class), lido com o comando `class`, é um objeto de configuração separado que você pode editar sozinho, sem mudança no código que o usa. Então no momento em que sua lista é mantida por outra pessoa, muda com frequência ou é grande, um data group vence por motivos que nada têm a ver com velocidade bruta, e é seguro para CMP.
+
+```tcl
+when HTTP_REQUEST {
+    if { [class match [HTTP::path] starts_with blocked_paths] } {
+        HTTP::respond 403 content "forbidden"
+    }
+}
+```
+
+**Que tipo de casamento é?** As quatro ferramentas não são intercambiáveis. Um array `static::` faz apenas buscas por chave exata. O `switch` faz casamentos exatos, e o `switch -glob` faz padrões curinga simples. Um data group com `class match` faz exato, e também as formas cientes de endereço e de string (`starts_with`, `ends_with`, `contains`, casamento mais longo em sub-redes IP) que as outras não expressam de forma limpa. Escolha o construto cujo tipo de casamento serve, depois otimize dentro dele.
+
+## Uma ressalva sobre os números, com honestidade
+
+Aquele ponto de virada de "cem entradas ou menos" é medido contra o `matchclass`, que foi **descontinuado na versão 10** em favor do comando `class`. O comando `class` foi introduzido justamente porque oferece melhor funcionalidade e desempenho que seu antecessor, então o ponto de virada onde um data group ultrapassa o `switch` é uma diretriz herdada do comando antigo, não um número exato para código moderno. Quando importar, não adivinhe: leia o custo real por evento com estatísticas de timing usando a [calculadora de runtime de iRules](/tools/f5-irules-runtime-calculator), e deixe os números da sua própria caixa decidirem.
+
+E quando nenhuma dessas serve, e só então, recorra a uma expressão regular. O [linter de desempenho de iRules](/tools/f5-irules-performance-linter) sinaliza `regexp` e `regsub` exatamente por isso: são a forma mais cara de casar, e um de `switch`, `class` ou um array `static::` é quase sempre mais barato. O [artigo companheiro sobre CMP e o namespace static::](/learn/irules-cmp-and-static-namespace) cobre por que o `static::` é o lugar certo para esse array em primeiro lugar.

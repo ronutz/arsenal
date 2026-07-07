@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "F5'in daha hızlı sürüm kadansı: aylık sağlamlaştırılmış sürümler ve güvenlik bildirimleri"
+summary: "6 Temmuz 2026'da F5, üç aylık güvenlik kadansından aylık kadansa geçti: her ayın üçüncü Çarşambası 15 Temmuz'dan itibaren sağlamlaştırılmış yazılım sürümleri ve her sürümden bir ay sonra 19 Ağustos'tan itibaren güvenlik bildirimleri. İşte tam olarak neyin değiştiği, F5'in neden değiştiğini söylediği, neyin aynı kaldığı ve bunun yama uygulama biçiminiz için ne anlama geldiği."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Neyin değiştiği, tek cümlede
+
+6 Temmuz 2026'da F5, yazılım güvenlik sürümlerinin **üç aylık** bir programdan **aylık** bir programa geçtiğini duyurdu: sağlamlaştırılmış yazılım sürümleri artık **her ayın üçüncü Çarşambası** çıkıyor (15 Temmuz 2026'dan itibaren) ve bu sürümlerin neyi düzelttiğini açıklayan güvenlik bildirimleri **her sürümden bir ay sonra** yayımlanıyor (ilki 19 Ağustos 2026'da, 15 Temmuz sürümünü kapsıyor). Acil sorunlar için plan dışı uyarılar eskisi gibi devam ediyor. Duyuru, F5'in Chief Product Officer'ı Kunal Anand'dan geldi ve aynı hafta F5 SIRT tarafından güvenlik aboneliği olan müşterilere gönderildi.
+
+F5'i üretim ortamında çalıştırıyorsanız bu, yalnızca bir haber değil, planlamanız gereken operasyonel bir değişikliktir.
+
+## İki somut değişiklik
+
+**1. Aylık sağlamlaştırılmış yazılım sürümleri, üçüncü Çarşamba.** Her sürüm, geniş bir düzeltme kümesini bir araya getirir: F5'in yapay zeka destekli kod taramasının bulduğu sorunlar, bunları izlerken ortaya çıkan başka sorunlar, iç ekiplerden ve dış araştırmacılardan gelen bildirimler ve genel güvenlik ile kararlılık sağlamlaştırması. F5, müşteriler yama uygulamadan önce saldırganlara güvenlik açıklarının bir haritasını vermemek için her sürümdeki **belirli düzeltmelere ilişkin açıkladığı ayrıntı düzeyini sınırlayacağını** belirtti.
+
+**2. Üç aylık güvenlik bildirimleri aylık hale geliyor.** Her sağlamlaştırılmış sürüm için bir güvenlik bildirimi yaklaşık bir ay sonra yayımlanır. F5 tam bir sabit nokta veriyor: 15 Temmuz sürümü 19 Ağustos'taki bir bildirimle kapsanır. Bu tarihlerin ikisi de üçüncü Çarşambadır, dolayısıyla uygulamada kadans düzgün biçimde oturur ve herhangi bir üçüncü Çarşambada iki şey aynı anda gerçekleşir: o ayın sağlamlaştırılmış sürümü çıkar ve önceki ayın güvenlik bildirimi yayımlanır. Bilinçli olarak bırakılan bir aylık boşluk bir öndeliktir: güvenlik açığının ayrıntıları kamuya açılmadan önce güncelleme yapmanız için size zaman tanır.
+
+F5, bunların hedeflenen tarihler olduğunu, katı bir sözleşme olmadığını açıkça belirtir. Şirket; yasa, sözleşme, koordineli açıklama yükümlülükleri, kamu makamlarıyla eşgüdüm, etkin istismar, önemlilik değerlendirmesi, ambargo ya da müşteri koruması gerektirdiğinde bir bildirimin zamanlamasını, içeriğini veya yaklaşımını değiştirme esnekliğini korur.
+
+## F5 değişikliği neden yaptığını söylüyor
+
+F5'in belirttiği gerekçe tam olarak aktarılmaya değer, çünkü sürümler hakkında nasıl düşünmeniz gerektiğini değiştirir. İtici güç, **yapay zekayla hızlandırılmış güvenlik açığı keşfidir**. F5, kendi kodunu taramak için sınır (frontier) yapay zeka modelleri kullanıyor ve böylece sürekli bir tara, ayıkla, düzelt, test et ve yayımla döngüsü çalıştırıyor. Bu, daha fazla sorunu daha hızlı ortaya çıkarır ve F5, bunun sonucunda artan sürüm sayısını daha zayıf bir yazılım değil, daha güçlü bir güvenlik işareti olarak sunar. Ancak sorunları hızlı bulmak, yalnızca düzeltmeler müşterilere aynı hızla ulaşırsa işe yarar ve F5'in ifadesiyle üç aylık bir kadans başka bir çağ için kurulmuştu: bir güvenlik açığının bilinir hale gelmesiyle çalışan bir istismarın var olması arasındaki pencere, üç aylığın artık yetmeyeceği kadar daraldı.
+
+Önceliklendirme için önemli bir sonuç vardır. F5, saldırganların düşük ve orta önem düzeyindeki güvenlik açıklarını yeni istismarlar halinde zincirleme yeteneğinin giderek arttığı için **tek bir düzeltmenin önem düzeyinin, önemine dair eskisinden daha az güvenilir bir rehber olduğu** uyarısında bulunur. Bundan çıkan pratik talimat açıktır: her sürümü kritik bir açığı kapatıyormuş gibi ele alın ve yalnızca kritik olarak işaretlenenleri değil, hepsini dağıtın.
+
+## Neyin aynı kaldığı
+
+Aylık kadans, F5'in ortadan kalkmayan mevcut sürüm yapısının üzerinde durur:
+
+| Sürüm türü | Ürünler | Ne sağlar |
+| --- | --- | --- |
+| Bakım sürümleri | BIG-IP, BIG-IQ, F5OS, NGINX | Hata düzeltmeleri, son CVE düzeltmelerinin bir derlemesi, küçük özellikler, kararlılık ve kusur giderme |
+| Ana sürümler | BIG-IP, BIG-IQ, F5OS | Yol haritası dönüm noktaları: yeni özellikler, modüller, yetenekler, çekirdek güvenlik mimarisi iyileştirmeleri |
+| Yıllık uzun vadeli kararlılık sürümleri | NGINX | Genişletilmiş destek pencereleriyle kararlı bir temel |
+| Mühendislik düzeltmeleri (EHF) | Gerektiğinde | Müşteri etkisine göre talep üzerine yayımlanan acil düzeltmeler |
+| Plan dışı güvenlik uyarıları | Gerektiğinde | Acil güvenlik açığı bilgisi aylık döngüyü bekleyemediğinde anında bildirim |
+
+## Üç aylık ile aylık, bir bakışta
+
+| | Önce (üç aylık) | Sonra (aylık) |
+| --- | --- | --- |
+| Sağlamlaştırılmış sürüm | Yaklaşık her üç ayda bir | Her ayın üçüncü Çarşambası, 15 Tem 2026'dan itibaren |
+| Güvenlik bildirimleri | Üç aylık | Aylık, her sürümden bir ay sonra (19 Ağu 2026'dan itibaren) |
+| Sürümde düzeltme ayrıntısı | Daha fazla ayrıntı açıklanır | Ayrıntı bildirime kadar bilinçli olarak sınırlanır |
+| Acil sorunlar | Plan dışı uyarılar | Plan dışı uyarılar (değişmedi) |
+
+## Yama uygulama biçiminiz için ne anlama geldiği
+
+Dürüst özet şudur: daha hızlı bir kadans ekibinizden daha fazlasını ister ve iş, daha fazla güncellemeyi daha sık, daha fazla risk almadan özümsemektedir. F5'in kendi önerdiği eylemler pratiktir ve ciddiye alınmaya değer:
+
+Otomatikleştirin. BIG-IP güncellemelerini hâlâ elle uyguluyorsanız, aylık kadans bunu değiştirmenin tam zamanıdır. F5, daha büyük bir sürüm akışının daha büyük bir el işi akışına dönüşmemesi için otomasyon araçlarına ve BIG-IP için Red Hat Ansible koleksiyonlarına işaret eder.
+
+Filo görünürlüğü edinin. F5, hem tüm envanterinizdeki mevcut yama durumunuzu görmek hem de F5'in Insight'a geleceğini söylediği filo yönetimi yeteneklerine hazır olmak için F5 Insight for ADSP'yi şimdi devreye almanızı önerir.
+
+Pencereyi planlayın. Program deterministik olduğundan (üçüncü Çarşamba, her ay), her sürüme tepki vermek yerine bakım pencerelerini takvime önceden koyabilirsiniz. [F5 sürüm kadansı takvimi](/tools/f5-release-cadence-calendar) tam da bu nedenle yaklaşan sürüm ve bildirim tarihlerini hesaplar. Düşük riskli, otomatik bir güncelleme iş akışı tasarlamak mevcut kapasitenizi aşıyorsa, F5 Professional Services F5'in önerdiği yoldur.
+
+Temeldeki politikaya gelince, F5'in güvenlik açığı açıklama politikası bilgi tabanı makalesi K4602 olarak yayımlanmıştır ve her sağlamlaştırılmış sürümün ayrıntıları, kullanıma sunuldukça yayımlanır. Temel zihniyet değişimi, F5'in sürekli döndüğü şeydir: keşif her iki tarafta da hızlanırken en son sürümü hızla dağıtmak artık temkinliler için bir en iyi uygulama değil, korunmuş kalmanın temel düzeyidir.

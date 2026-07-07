@@ -1,0 +1,74 @@
+---
+slug: irules-loops-and-lists
+title: "Laços e listas em iRules, e por que eles bloqueiam"
+summary: "iRules suportam foreach, for e while, e a maioria dos comandos de lista do Tcl. Mas laços rodam em linha em um TMM de thread única, então um laço grande por requisição trava aquela conexão. Aqui está qual laço usar, quais comandos de lista você realmente tem, e por que o foreach é o primeiro a buscar."
+concepts: ["irules", "tcl", "f5", "performance", "foreach", "loops", "lists", "tmm"]
+relatedTools: ["f5-irules-runtime-calculator", "f5-irules-performance-linter"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-lookups", "irules-performance-and-timing"]
+category: networking
+order: 24
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O fato que rege todo laço
+
+Um iRule roda dentro do TMM, e cada instância de TMM é de thread única em seu núcleo. Um laço não roda em segundo plano; roda em linha, segurando o processamento daquela conexão até terminar. Então a primeira coisa a saber sobre laços em iRules não é sua sintaxe, é seu custo: itere sobre itens demais e você trava o TMM que atende aquela requisição. A própria orientação da F5 é direta sobre isso, alertando que, como os laços são bloqueantes e o TMM é de thread única, você realmente não quer iterar por casos demais antes de seguir em frente. O erro clássico, um grande laço de contagem usado como um "sleep" caseiro, é exatamente o que não fazer.
+
+Isso não torna os laços proibidos. Torna-os algo a manter pequeno e limitado, e a preferir alternativas quando existir uma.
+
+## foreach primeiro
+
+Quando você está percorrendo uma lista, o `foreach` é ao mesmo tempo mais rápido e mais limpo que um laço `for` ou `while` que indexa a lista à mão. As notas de otimização da F5 fazem o mesmo ponto: a versão `for` que puxa cada elemento com `lindex` é a mais lenta.
+
+```tcl
+when HTTP_REQUEST {
+    set domains { bob.com ted.com example.com }
+
+    # preferido: foreach, mais rapido e mais elegante
+    foreach domain $domains {
+        # trabalhe com $domain
+    }
+}
+```
+
+Recorra a `for` ou `while` quando você genuinamente precisar de aritmética de índice, um contador que não seja de lista, ou uma condição que não seja apenas "cada elemento". Ambos estão disponíveis, e ambos dão a você `continue` (para esta passagem, vai para o próximo teste) e `break` (sai do laço imediatamente).
+
+```tcl
+set count [llength $domains]
+# mais lento que foreach: indexacao manual
+for { set i 0 } { $i < $count } { incr i } {
+    set domain [lindex $domains $i]
+}
+# while, equivalente e igualmente mais lento para este trabalho
+set i 0
+while { $i < $count } {
+    set domain [lindex $domains $i]
+    incr i
+}
+```
+
+## Os comandos de lista que você de fato tem
+
+iRules expõem a maioria do tratamento de listas do Tcl. Disponíveis: `list`, `split`, `join`, `concat`, `llength`, `lindex`, `lrange`, `linsert`, `lreplace`, `lsort`, `lsearch`, `lappend` e `lset`. Alguns comandos do Tcl **não** estão disponíveis em iRules, notavelmente `lrepeat`, `lreverse` e `dict`, então não recorra a esses.
+
+Dois blocos de construção fazem a maior parte do trabalho real. O `split` transforma uma string em uma lista propriamente dita por um separador, e o `lindex` extrai um elemento por posição (começando em zero). Juntos, substituem muita análise manual:
+
+```tcl
+# pega o primeiro campo de um valor de cookie separado por "!"
+set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]
+```
+
+## Uma nota sobre comandos de iRule versus comandos do Tcl
+
+Alguma análise tem duas grafias: uma de Tcl puro e uma de comando de iRule. O `getfield` faz praticamente o mesmo trabalho que `lindex [split ...]` e lê de forma mais clara, mas há uma sutileza que vale saber. Um comando específico de iRule precisa saltar da máquina virtual Tcl de volta para o TMM para rodar, o que os comandos de Tcl puro não fazem. A F5 descreve o custo como incrivelmente insignificante no uso normal, algo a se atentar apenas se você está espremendo cada último ciclo. Note também que eles contam de forma diferente: o `getfield` começa no campo 1, enquanto o `lindex` começa no índice 0.
+
+```tcl
+# mesmo resultado, duas grafias
+set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]   ;# indexado em 0
+set id [getfield [HTTP::cookie "JSESSIONID"] "!" 1]         ;# indexado em 1
+```
+
+## Prefira uma busca a um laço
+
+O fio condutor do resto deste conjunto se aplica aqui também. Se um laço está varrendo uma lista para achar um casamento, um data group lido com `class match` ou um array `static::` indexado diretamente normalmente fará o mesmo trabalho sem a iteração por item, e sem o custo bloqueante que cresce com a lista. A [comparação de if, switch, class e arrays static](/learn/irules-branching-and-lookups) cobre quando cada um deles serve. Quando você de fato precisar de um laço, mantenha o corpo pequeno, limite o número de iterações e, se quiser saber o que ele de fato custa na sua plataforma, meça-o com estatísticas de timing através da [calculadora de runtime de iRules](/tools/f5-irules-runtime-calculator). E lembre-se da regra do [artigo sobre o namespace static::](/learn/irules-cmp-and-static-namespace): seja o que o laço tocar, uma variável global dentro dele ainda demove o virtual para um único núcleo.

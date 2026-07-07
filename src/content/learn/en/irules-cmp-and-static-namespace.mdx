@@ -1,0 +1,77 @@
+---
+slug: irules-cmp-and-static-namespace
+title: "iRules, CMP, and the static:: namespace"
+summary: "Clustered Multiprocessing spreads a virtual server's traffic across every TMM, but one construct quietly undoes it: a global variable demotes the virtual to a single core. This is why globals are deprecated, what the static:: namespace and data groups do instead, and how RULE_INIT ties them together."
+concepts: ["irules", "cmp", "static", "rule_init", "data groups", "tcl", "f5", "tmm", "performance"]
+relatedTools: ["f5-irules-performance-linter"]
+relatedArticles: ["irules-branching-and-lookups", "irules-procedures-proc-and-call", "irules-loops-and-lists", "irules-performance-and-timing"]
+category: networking
+order: 21
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Where the parallelism comes from
+
+A BIG-IP does not run traffic on one processor. Clustered Multiprocessing (CMP) runs a separate copy of the traffic management microkernel, a TMM instance, on each core, and distributes a virtual server's connections across all of them. On an eight-core appliance, eight TMMs share the load for a busy virtual, and an iRule attached to that virtual runs independently inside each one. That is the design that lets a single virtual server scale with the hardware.
+
+The catch is that this parallelism is fragile in one specific way, and knowing that one way is most of what iRule performance tuning comes down to.
+
+## The one construct that breaks it
+
+A **global variable** demotes the virtual server to a single TMM. F5's own documentation is blunt about it: "Global variables modified by an iRule will demote the execution of the virtual to a single processor core." On that eight-core box, the virtual now uses one core and the other seven sit idle for its traffic. F5 calls this CMP demotion, or TMM pinning, and it happens because a global's value cannot be kept consistent across independent TMM instances, so the system serializes the whole virtual onto one.
+
+A global variable in Tcl is one in the global namespace: written with the `global` keyword, or with a `::` prefix on the name. The reason globals are easy to write by accident is that the syntax looks ordinary:
+
+```tcl
+when RULE_INIT {
+    set ::max_sessions 5000
+}
+when HTTP_REQUEST {
+    if { [table keys -subtable sessions -count] > $::max_sessions } {
+        HTTP::respond 503 content "busy"
+    }
+}
+```
+
+That `::max_sessions` reads and writes a global, and it demotes every virtual the rule is attached to. Global variables have been **deprecated since version 10**, and the validator flags the `global` keyword from v10 onward. There is a sharper edge, too: the old habit of reading a data group as a global list, `$::my_class`, not only demoted CMP on older versions but on **version 11 and later raises a Tcl runtime error and sends a reset to the client**. What looks like a harmless legacy pattern is, on a modern box, a broken connection.
+
+## The fix: the static:: namespace
+
+The replacement for a shared, read-mostly value is the **`static::` namespace**. A `static::` variable is set once, per TMM, when the rule loads, and every TMM gets its own copy of the same value, so nothing has to be serialized and CMP stays intact. It is the CMP-safe way to hold a constant that many events or many connections need:
+
+```tcl
+when RULE_INIT {
+    set static::max_sessions 5000
+    set static::maintenance 0
+}
+when HTTP_REQUEST {
+    if { $static::maintenance } {
+        HTTP::respond 503 content "maintenance"
+    }
+}
+```
+
+The rule of thumb is simple. For a value that is the same for every connection and rarely changes, use `static::`. For a value that belongs to one connection, use an ordinary local variable, which is already per-TMM and CMP-safe. The only thing you avoid is the global namespace.
+
+## What RULE_INIT actually is
+
+`RULE_INIT` is the event that fires when an iRule is first loaded and every time it is modified or the system restarts. It runs once, not per connection, which makes it the right place to set `static::` constants: pay the setup cost at load time, then read cheap per-connection. It is not a place to do per-request work, and it is emphatically not made safe by putting a global there. A `set ::x` inside `RULE_INIT` demotes CMP exactly the same as one anywhere else; the fix is still `static::`.
+
+## Data you want to edit: use a data group
+
+`static::` and `RULE_INIT` are for values baked into the rule. When you have data that you want to change without touching the iRule at all, a list of blocked paths, a mapping of hosts to pools, an allow-list of client networks, the right tool is a **data group** (a class), read with the **`class` command**. A data group is a separate configuration object, edited independently of the rule, so you can add or remove entries without a rule change and without a reload of the code that uses it:
+
+```tcl
+when HTTP_REQUEST {
+    if { [class match [HTTP::path] starts_with blocked_paths] } {
+        HTTP::respond 403 content "forbidden"
+    }
+}
+```
+
+Two things make this the modern pattern. First, it is CMP-safe: data groups are shared correctly across TMMs. Second, it is maintainable: the edit surface is the data group, not the code, so the rule stays stable while the data moves. Note that the `class` command replaced the older `matchclass` and `findclass`, which were deprecated in v10, and that you must never put a `::` prefix on the data group name, that is the very global-list syntax that errors on v11.
+
+## The smaller edges
+
+Two more habits are worth breaking. Brace your `expr` expressions, `expr { $a + $b }` rather than `expr $a + $b`, so the bytecode compiler can optimize the expression instead of the interpreter substituting and re-parsing it. And reach for regular expressions last: `regexp` and `regsub` cost materially more than fixed string work, so when a match is really a prefix, a suffix, an exact value, or a simple glob, `string`, `scan`, `switch -glob`, or a data group will do the same job for fewer cycles. The [iRules performance linter](/tools/f5-irules-performance-linter) flags all of these, and the [runtime calculator](/tools/f5-irules-runtime-calculator) tells you, from real timing statistics, whether any of it actually mattered for your rule.

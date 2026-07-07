@@ -1,0 +1,77 @@
+---
+slug: irules-cmp-and-static-namespace
+title: "iRules, CMP e o namespace static::"
+summary: "O Clustered Multiprocessing espalha o tráfego de um servidor virtual por todos os TMMs, mas um construto desfaz isso silenciosamente: uma variável global demove o virtual para um único núcleo. É por isso que globais estão descontinuadas, o que o namespace static:: e os data groups fazem no lugar, e como o RULE_INIT amarra tudo."
+concepts: ["irules", "cmp", "static", "rule_init", "data groups", "tcl", "f5", "tmm", "performance"]
+relatedTools: ["f5-irules-performance-linter"]
+relatedArticles: ["irules-branching-and-lookups", "irules-procedures-proc-and-call", "irules-loops-and-lists", "irules-performance-and-timing"]
+category: networking
+order: 21
+status: reviewed
+updated: "2026-07-07"
+---
+
+## De onde vem o paralelismo
+
+Um BIG-IP não roda tráfego em um só processador. O Clustered Multiprocessing (CMP) roda uma cópia separada do microkernel de gerenciamento de tráfego, uma instância de TMM, em cada núcleo, e distribui as conexões de um servidor virtual por todas elas. Em um appliance de oito núcleos, oito TMMs compartilham a carga de um virtual movimentado, e um iRule anexado a esse virtual roda de forma independente dentro de cada um. Esse é o design que permite a um único servidor virtual escalar com o hardware.
+
+O problema é que esse paralelismo é frágil de uma forma específica, e conhecer essa única forma é a maior parte do que a otimização de iRules envolve.
+
+## O único construto que o quebra
+
+Uma **variável global** demove o servidor virtual para um único TMM. A própria documentação da F5 é direta sobre isso: "Variáveis globais modificadas por um iRule demovem a execução do virtual para um único núcleo de processador." Naquela caixa de oito núcleos, o virtual agora usa um núcleo e os outros sete ficam ociosos para o tráfego dele. A F5 chama isso de demoção de CMP, ou fixação de TMM, e acontece porque o valor de uma global não pode ser mantido consistente entre instâncias de TMM independentes, então o sistema serializa o virtual inteiro em um só.
+
+Uma variável global em Tcl é uma no namespace global: escrita com a palavra-chave `global`, ou com um prefixo `::` no nome. A razão pela qual globais são fáceis de escrever por acidente é que a sintaxe parece comum:
+
+```tcl
+when RULE_INIT {
+    set ::max_sessions 5000
+}
+when HTTP_REQUEST {
+    if { [table keys -subtable sessions -count] > $::max_sessions } {
+        HTTP::respond 503 content "busy"
+    }
+}
+```
+
+Aquele `::max_sessions` lê e escreve uma global, e demove todo virtual ao qual a regra está anexada. Variáveis globais estão **descontinuadas desde a versão 10**, e o validador sinaliza a palavra-chave `global` a partir da v10. Há uma aresta mais afiada também: o velho hábito de ler um data group como uma lista global, `$::my_class`, não só demovia o CMP em versões antigas, mas na **versão 11 e posteriores levanta um erro de execução Tcl e envia um reset para o cliente**. O que parece um padrão legado inofensivo é, em uma caixa moderna, uma conexão quebrada.
+
+## A correção: o namespace static::
+
+O substituto para um valor compartilhado e majoritariamente de leitura é o **namespace `static::`**. Uma variável `static::` é definida uma vez, por TMM, quando a regra carrega, e cada TMM recebe sua própria cópia do mesmo valor, então nada precisa ser serializado e o CMP permanece intacto. É a forma segura para CMP de guardar uma constante que muitos eventos ou muitas conexões precisam:
+
+```tcl
+when RULE_INIT {
+    set static::max_sessions 5000
+    set static::maintenance 0
+}
+when HTTP_REQUEST {
+    if { $static::maintenance } {
+        HTTP::respond 503 content "maintenance"
+    }
+}
+```
+
+A regra prática é simples. Para um valor que é o mesmo para toda conexão e raramente muda, use `static::`. Para um valor que pertence a uma conexão, use uma variável local comum, que já é por TMM e segura para CMP. A única coisa que você evita é o namespace global.
+
+## O que o RULE_INIT realmente é
+
+`RULE_INIT` é o evento que dispara quando um iRule é carregado pela primeira vez e toda vez que é modificado ou o sistema reinicia. Ele roda uma vez, não por conexão, o que o torna o lugar certo para definir constantes `static::`: pague o custo de configuração no carregamento, depois leia barato por conexão. Não é um lugar para fazer trabalho por requisição, e enfaticamente não é tornado seguro colocando uma global lá. Um `set ::x` dentro do `RULE_INIT` demove o CMP exatamente como um em qualquer outro lugar; a correção ainda é `static::`.
+
+## Dados que você quer editar: use um data group
+
+`static::` e `RULE_INIT` são para valores embutidos na regra. Quando você tem dados que quer mudar sem tocar no iRule, uma lista de caminhos bloqueados, um mapeamento de hosts para pools, uma lista de permissão de redes de cliente, a ferramenta certa é um **data group** (uma class), lido com o **comando `class`**. Um data group é um objeto de configuração separado, editado independentemente da regra, então você pode adicionar ou remover entradas sem uma mudança na regra e sem um reload do código que o usa:
+
+```tcl
+when HTTP_REQUEST {
+    if { [class match [HTTP::path] starts_with blocked_paths] } {
+        HTTP::respond 403 content "forbidden"
+    }
+}
+```
+
+Duas coisas fazem disso o padrão moderno. Primeiro, é seguro para CMP: data groups são compartilhados corretamente entre TMMs. Segundo, é mantível: a superfície de edição é o data group, não o código, então a regra permanece estável enquanto os dados mudam. Note que o comando `class` substituiu os antigos `matchclass` e `findclass`, que foram descontinuados na v10, e que você nunca deve colocar um prefixo `::` no nome do data group, essa é exatamente a sintaxe de lista global que gera erro na v11.
+
+## As arestas menores
+
+Dois outros hábitos valem a pena quebrar. Coloque entre chaves suas expressões `expr`, `expr { $a + $b }` em vez de `expr $a + $b`, para que o compilador de bytecode possa otimizar a expressão em vez de o interpretador substituir e re-analisar. E recorra a expressões regulares por último: `regexp` e `regsub` custam materialmente mais que trabalho fixo de string, então quando um casamento é na verdade um prefixo, um sufixo, um valor exato ou um glob simples, `string`, `scan`, `switch -glob` ou um data group farão o mesmo trabalho por menos ciclos. O [linter de desempenho de iRules](/tools/f5-irules-performance-linter) sinaliza todos esses, e a [calculadora de runtime](/tools/f5-irules-runtime-calculator) diz, a partir de estatísticas reais de timing, se algo disso realmente importou para a sua regra.

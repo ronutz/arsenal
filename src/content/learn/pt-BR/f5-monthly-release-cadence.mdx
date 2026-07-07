@@ -1,0 +1,65 @@
+---
+slug: f5-monthly-release-cadence
+title: "A cadência mais rápida da F5: lançamentos endurecidos e notificações de segurança mensais"
+summary: "Em 6 de julho de 2026 a F5 mudou de uma cadência trimestral para mensal de lançamentos de segurança: lançamentos de software endurecido na terceira quarta-feira de cada mês a partir de 15 de julho, e notificações de segurança um mês depois começando em 19 de agosto. Aqui está exatamente o que mudou, por que a F5 diz que mudou, o que permanece igual, e o que isso significa para como você aplica patches."
+concepts: ["f5", "bigip", "f5os", "nginx", "security", "patching", "cve", "release cadence", "vulnerability"]
+relatedTools: ["f5-release-cadence-calendar"]
+relatedArticles: []
+category: networking
+order: 5
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O que mudou, em uma frase
+
+Em 6 de julho de 2026, a F5 anunciou que seus lançamentos de segurança de software passam de um cronograma **trimestral** para um **mensal**: os lançamentos de software endurecido (hardened) agora saem na **terceira quarta-feira de cada mês** (começando em 15 de julho de 2026), e as notificações de segurança que descrevem o que esses lançamentos corrigiram são publicadas **um mês após cada lançamento** (a primeira em 19 de agosto de 2026, cobrindo o lançamento de 15 de julho). Alertas fora de banda para problemas urgentes continuam como antes. O anúncio veio do Chief Product Officer da F5, Kunal Anand, e foi enviado aos clientes assinantes de segurança pelo F5 SIRT na mesma semana.
+
+Se você roda F5 em produção, esta é uma mudança operacional para planejar, não apenas uma notícia.
+
+## As duas mudanças concretas
+
+**1. Lançamentos de software endurecido mensais, na terceira quarta-feira.** Cada lançamento agrega um amplo conjunto de correções: problemas encontrados pela varredura de código orientada por IA da F5, os problemas adicionais que surgem ao rastreá-los, relatos de equipes internas e pesquisadores externos, e endurecimento geral de segurança e estabilidade. A F5 disse que vai **limitar o detalhe que divulga sobre as correções específicas** em cada lançamento, para não entregar aos atacantes um mapa das vulnerabilidades antes que os clientes tenham aplicado o patch.
+
+**2. As notificações de segurança trimestrais tornam-se mensais.** Uma notificação de segurança para cada lançamento endurecido é publicada cerca de um mês depois. A F5 dá uma âncora exata: o lançamento de 15 de julho é coberto por uma notificação em 19 de agosto. Ambas as datas são terceiras quartas-feiras, então na prática a cadência se alinha de forma limpa, e em qualquer terceira quarta-feira duas coisas acontecem ao mesmo tempo: o lançamento endurecido daquele mês sai, e a notificação de segurança do mês anterior é publicada. O intervalo deliberado de um mês é uma vantagem inicial: dá a você tempo para atualizar antes que os detalhes da vulnerabilidade se tornem públicos.
+
+A F5 é explícita de que essas são as datas pretendidas, não um contrato rígido. Ela retém flexibilidade para mudar o momento, o conteúdo ou a abordagem de uma notificação quando lei, contrato, obrigações de divulgação coordenada, coordenação governamental, exploração ativa, uma avaliação de materialidade, um embargo ou a proteção do cliente exigirem.
+
+## Por que a F5 diz que fez a mudança
+
+O raciocínio declarado pela F5 vale a pena repetir com precisão, porque muda como você deve pensar sobre os lançamentos. O motor é a **descoberta de vulnerabilidades acelerada por IA**. A F5 vem usando modelos de IA de fronteira para varrer seu próprio código, rodando um ciclo contínuo de varrer, triar, corrigir, testar e lançar. Isso revela mais problemas, mais rápido, e a F5 enquadra o aumento resultante de lançamentos como um sinal de segurança mais forte e não de software mais fraco. Mas encontrar problemas rapidamente só ajuda se as correções chegarem aos clientes com a mesma rapidez, e nas palavras da F5 uma cadência trimestral foi construída para outra era: a janela entre uma vulnerabilidade se tornar conhecida e um exploit funcional existir se estreitou a ponto de o trimestral não ser mais suficiente.
+
+Há uma consequência que importa para a priorização. A F5 alerta que **a severidade de qualquer correção isolada é um guia menos confiável de sua importância do que costumava ser**, porque os atacantes são cada vez mais capazes de encadear vulnerabilidades de severidade baixa e média em exploits inéditos. A instrução prática que se segue é direta: trate cada lançamento como se ele fechasse uma brecha crítica, e implante-o, não apenas os marcados como críticos.
+
+## O que permanece igual
+
+A cadência mensal fica sobre a estrutura de lançamentos existente da F5, que não desaparece:
+
+| Tipo de lançamento | Produtos | O que entrega |
+| --- | --- | --- |
+| Lançamentos de manutenção | BIG-IP, BIG-IQ, F5OS, NGINX | Correções de bugs, um agrupamento de correções de CVE recentes, pequenos recursos, estabilidade e remediação de defeitos |
+| Lançamentos maiores | BIG-IP, BIG-IQ, F5OS | Marcos de roadmap: novos recursos, módulos, capacidades, melhorias de arquitetura de segurança central |
+| Lançamentos anuais de estabilidade de longo prazo | NGINX | Uma base estável com janelas de suporte estendidas |
+| Hotfixes de engenharia (EHFs) | Conforme necessário | Correções urgentes lançadas sob demanda com base no impacto ao cliente |
+| Alertas de segurança fora de banda | Conforme necessário | Notificação imediata quando informação urgente de vulnerabilidade não pode esperar o ciclo mensal |
+
+## Trimestral versus mensal, em resumo
+
+| | Antes (trimestral) | Depois (mensal) |
+| --- | --- | --- |
+| Lançamento endurecido | Aproximadamente a cada três meses | Terceira quarta-feira de cada mês, a partir de 15 jul 2026 |
+| Notificações de segurança | Trimestrais | Mensais, um mês após cada lançamento (a partir de 19 ago 2026) |
+| Detalhe da correção no lançamento | Mais detalhe divulgado | Detalhe deliberadamente limitado até a notificação |
+| Problemas urgentes | Alertas fora de banda | Alertas fora de banda (inalterado) |
+
+## O que isso significa para como você aplica patches
+
+O resumo honesto é que uma cadência mais rápida exige mais da sua equipe, e o trabalho está em absorver mais atualizações, com mais frequência, sem mais risco. As próprias ações recomendadas pela F5 são práticas e valem a pena levar a sério:
+
+Automatize. Se você ainda aplica atualizações de BIG-IP à mão, uma cadência mensal é o momento de mudar isso. A F5 aponta para suas ferramentas de automação e as coleções Ansible da Red Hat para BIG-IP, de modo que um fluxo maior de lançamentos não se traduza em um fluxo maior de trabalho manual.
+
+Obtenha visibilidade da frota. A F5 recomenda implantar o F5 Insight for ADSP agora, tanto para ver sua postura atual de patches em todo o parque quanto para se posicionar para as capacidades de gerenciamento de frota que a F5 diz que estão vindo ao Insight.
+
+Planeje a janela. Como o cronograma é determinístico (terceira quarta-feira, todo mês), você pode colocar janelas de manutenção no calendário com antecedência em vez de reagir a cada lançamento. A [calculadora de cadência de lançamentos da F5](/tools/f5-release-cadence-calendar) computa as próximas datas de lançamento e notificação exatamente por esse motivo. E se projetar um fluxo de atualização automatizado e de baixo risco estiver além da sua capacidade atual, os Serviços Profissionais da F5 são o caminho que a F5 sugere.
+
+Para a política subjacente, a política de divulgação de vulnerabilidades da F5 é publicada como o artigo de base de conhecimento K4602, e o detalhe de cada lançamento endurecido é publicado conforme fica disponível. A mudança de mentalidade chave é aquela à qual a F5 sempre retorna: com a descoberta acelerando dos dois lados, rodar o lançamento mais recente rapidamente não é mais uma boa prática para os cautelosos, é a linha de base para permanecer protegido.
