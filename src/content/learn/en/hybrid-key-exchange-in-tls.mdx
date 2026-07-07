@@ -1,0 +1,43 @@
+---
+slug: hybrid-key-exchange-in-tls
+title: "Hybrid Key Exchange in TLS 1.3: What X25519MLKEM768 Does on the Wire"
+summary: "The web did not swap classical key exchange for post-quantum; it runs both at once. X25519MLKEM768 combines a 1990s elliptic curve with lattice-based ML-KEM-768 in a single TLS 1.3 group, so a break of either still leaves the session secure. This covers why hybrid rather than replacement, the wire format and its size problem, and where deployment stands across browsers, servers, and the middleboxes it breaks."
+concepts: ["post-quantum", "tls 1.3", "hybrid key exchange", "x25519mlkem768", "ml-kem", "x25519", "key agreement", "harvest now decrypt later", "clienthello", "middlebox"]
+relatedTools: []
+relatedArticles: ["nist-pqc-standards", "quantum-threat-to-cryptography", "tls13-cipher-suites", "forward-secrecy"]
+category: transport
+order: 8
+status: reviewed
+updated: "2026-07-06"
+---
+
+A large share of the web's TLS handshakes already combine a 1990s-era elliptic curve with a lattice-based algorithm standardized only in 2024. The combination is called X25519MLKEM768, and it has quietly become a default key-agreement mechanism in the major browsers, not because anyone has built a quantum computer that breaks elliptic curves, but because someone eventually might, and traffic recorded today will still matter then. It is the most concrete, already-deployed piece of the post-quantum transition, and it is worth understanding exactly.
+
+## Why hybrid, not replacement
+
+The obvious move would be to drop ECDH and use ML-KEM alone. The industry deliberately did not do that, for one reason: ML-KEM is new. Lattice hardness has been studied for years, but a scheme that has only recently been standardized is a younger attack surface than X25519, which has decades of scrutiny behind it. And the field has a fresh memory of what young assumptions can do, the isogeny scheme SIKE was broken in 2022 by a classical attack, after years as a serious candidate. Betting the entire key exchange on ML-KEM alone would mean that a surprise cryptanalytic result against it breaks everything.
+
+Hybrid removes that single point of failure. You run both a classical exchange and a post-quantum one in the same handshake and combine their outputs, so the session key is safe as long as at least one of the two holds. If a quantum computer eventually breaks X25519, ML-KEM still protects you; if an unexpected classical break lands against ML-KEM, X25519 still protects you. It is defense in depth applied to the handshake, and it is explicitly a transitional posture, the right answer for the next several years, not a permanent end state.
+
+## What X25519MLKEM768 is
+
+X25519MLKEM768 is a named group for TLS 1.3, assigned the codepoint 0x11EC, that pairs two key-establishment methods:
+
+- **X25519**, the classical elliptic-curve Diffie-Hellman exchange over Curve25519, the same one already ubiquitous in modern TLS.
+- **ML-KEM-768**, the FIPS 203 lattice key-encapsulation mechanism at its middle parameter set.
+
+It is defined in the IETF draft `draft-ietf-tls-ecdhe-mlkem` (adopted by the TLS working group in March 2025), which specifies three such hybrids, X25519MLKEM768 plus SecP256r1MLKEM768 and SecP384r1MLKEM1024 for the NIST-curve world. X25519MLKEM768 is the one virtually every browser ships, and Cloudflare has reported it accounting for the large majority of the post-quantum connections it sees. The concatenated-hybrid construction it uses, combining the two shared secrets and feeding the result through the key-derivation function, is the pattern described in RFC 9794.
+
+On the wire, the client's ClientHello advertises X25519MLKEM768 in its supported_groups and sends a key_share entry that concatenates the two public values: an ML-KEM-768 encapsulation key (1184 bytes) and an X25519 ephemeral public key (32 bytes), 1216 bytes in total. If the server supports the group, it validates the ML-KEM key material, generates its X25519 ephemeral, runs ML-KEM encapsulation against the client's key, and returns roughly 1120 bytes (1088-byte ML-KEM ciphertext plus 32-byte X25519 value). Both sides now hold two shared secrets. They are concatenated in a fixed order, ML-KEM secret first, then X25519, and fed into the ordinary TLS 1.3 key schedule. Under the security of the key-derivation step, the combined secret stays safe if either input does, which is exactly the property hybrid is there to provide.
+
+## The size problem
+
+The defining engineering problem of post-quantum TLS is not the mathematics; it is the size. A classical X25519 ClientHello fits comfortably inside a single TCP segment. Adding ML-KEM-768 pushes the ClientHello up by roughly 1.1 kilobytes, and it frequently no longer fits in one segment or one standard 1500-byte Ethernet frame, so it spans two packets.
+
+That sounds harmless and is not. A great deal of network middleware, firewalls, intrusion-detection systems, load balancers, and other middleboxes, was written on the quiet assumption that the entire ClientHello arrives in the first packet. When it does not, some of that equipment mishandles or drops the split handshake, producing a new and confusing failure mode: TLS that works fine classically but fails, or silently downgrades, the moment the post-quantum group is offered. This is real enough that Chrome once rolled back its hybrid deployment after it disrupted handshakes on enterprise networks whose middleboxes could not cope. If you operate a load balancer or inspection device in front of TLS servers, this is the thing to test before enabling the group.
+
+## Where deployment stands
+
+Adoption on the client side has moved fast. Chrome shipped the pre-standard predecessor (X25519Kyber768Draft00) enabled by default in version 124 (April 2024), then switched to the standardized X25519MLKEM768 in version 131 (November 2024); Edge followed through shared Chromium. Firefox enabled it by default for HTTPS in version 132, with QUIC/HTTP3 support arriving in version 135. Apple added support across iOS 26 and macOS 26 in late 2025. On the server and library side, OpenSSL 3.5 (April 2025) was the first stable release with native ML-KEM, removing the need for the Open Quantum Safe provider plug-in; Go enabled X25519MLKEM768 by default from Go 1.24, which quietly turned it on for Go-based systems including recent Kubernetes. At the edge, Cloudflare, Google, and others have supported the hybrid group for years and report a large and rising share of human-initiated connections using it.
+
+Two caveats keep the picture honest. First, coverage thins past the browser-to-CDN edge: many self-hosted Apache, nginx, and HAProxy deployments still negotiate classical X25519 because the operator has not enabled the group, the TLS build is too old, or a load balancer in front drops the oversized handshake. Second, hybrid key exchange is not the same thing as being post-quantum. It protects confidentiality against harvest-now-decrypt-later, which is the urgent part, but authentication is a separate migration: the signatures in certificates are still classical on most of the web, and moving those to ML-DSA (and its composite-with-ECDSA transitional forms) is the next front. Deploying X25519MLKEM768 on a load balancer is a real and worthwhile step; it is a floor, not a finish line. For the algorithms underneath it, see the companion articles on the quantum threat and on the NIST standards.

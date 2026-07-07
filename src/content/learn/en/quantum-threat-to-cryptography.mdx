@@ -1,0 +1,38 @@
+---
+slug: quantum-threat-to-cryptography
+title: "What a Quantum Computer Would Break, and What It Would Not"
+summary: "A large quantum computer would not weaken all cryptography equally. Shor's algorithm breaks the public-key math behind RSA, Diffie-Hellman, and elliptic curves outright; Grover's algorithm only halves the strength of symmetric ciphers and hashes, which AES-256 and SHA-384 already survive. This explains the split, why 'harvest now, decrypt later' makes it a today problem, and why a broken candidate like SIKE is a reminder to stay humble."
+concepts: ["post-quantum", "quantum computing", "shor", "grover", "rsa", "elliptic curve", "diffie-hellman", "harvest now decrypt later", "aes", "cryptography"]
+relatedTools: []
+relatedArticles: ["forward-secrecy", "tls13-cipher-suites", "hash-function-families"]
+category: transport
+order: 6
+status: reviewed
+updated: "2026-07-06"
+---
+
+The phrase "quantum computers will break encryption" is common and half wrong. A large, fault-tolerant quantum computer would break some of the cryptography the internet runs on completely, and leave the rest almost untouched. Knowing which is which is the whole basis of the migration now underway, so it is worth being precise.
+
+## Two algorithms, two very different effects
+
+The threat comes down to two quantum algorithms, and they do not do the same thing.
+
+**Shor's algorithm** factors large integers and computes discrete logarithms in polynomial time. That is exactly the hard math that public-key cryptography relies on: RSA rests on integer factoring, Diffie-Hellman on the discrete-log problem, and elliptic-curve cryptography (ECDH and ECDSA) on the elliptic-curve version of discrete log. A quantum computer of sufficient size running Shor's algorithm breaks all of them. Not weakens: breaks. Bigger RSA keys do not save you, because the speedup is not a constant factor you can outrun with key length; it changes the difficulty class of the problem.
+
+**Grover's algorithm** is a general search that finds a target in an unsorted space of size N in about the square root of N steps, a quadratic speedup. Applied to a symmetric cipher, that means brute-forcing a k-bit key takes on the order of 2 to the k/2 rather than 2 to the k. So Grover effectively halves the security level of symmetric algorithms. AES-128 drops to roughly 64 bits of brute-force resistance, which is uncomfortable, but AES-256 drops to about 128 bits, which is still far out of reach. The same halving logic applies to hash functions and their collision and preimage resistance, which is why a 256-bit hash is treated as roughly 128-bit in a post-quantum setting.
+
+## The split this creates
+
+Put the two together and you get a clean division. Symmetric cryptography survives with a margin adjustment: keep AES-256 and a 384-bit-or-larger hash and you are fine, no new mathematics required. Public-key cryptography does not survive: every widely deployed key-exchange and signature algorithm on the internet today is a Shor target. Because public-key algorithms are what establish the session keys and prove identity in TLS, SSH, IPsec, and code signing, "public-key is broken" is not a small corner of the problem. It is the handshake, the certificate, and the signature all at once.
+
+This is precisely why the standardization effort produced new key-establishment and signature algorithms but left symmetric ciphers alone. The fix needed is a replacement for the public-key layer, not a wholesale reinvention of cryptography.
+
+## Why this is a problem before the computer exists
+
+The natural response is that no such quantum computer exists yet, so this can wait. For confidentiality, that reasoning fails, because of an attack with a blunt name: **harvest now, decrypt later** (also called store-now-decrypt-later). An adversary can record encrypted traffic today, sit on it, and decrypt it years later once a capable quantum computer arrives. Anything you send now whose value outlives the hardware timeline, medical records, state secrets, long-lived credentials, intellectual property, is already exposed to a future break the moment it crosses the wire. The clock that matters is not when the quantum computer is built; it is the sum of how long your data must stay secret plus how long migration takes. If that sum reaches past the arrival of the machine, you are already late.
+
+Authentication is different in an important way. A signature only has to resist forgery up to the moment it is verified; you cannot forge a TLS handshake signature after the fact to break a session that already happened. So harvest-now-decrypt-later pressures confidentiality (key exchange) first and hardest, while signature migration, though necessary, is less of a race against recorded traffic. That difference is why key agreement moved first across the internet, and signatures are following.
+
+## A dose of humility: SIKE
+
+One more reason this migration is handled carefully rather than rushed. Among the candidates in the standardization process was SIKE, an isogeny-based key-exchange scheme prized for its very small keys. In 2022 it was broken by Castryck and Decru with a classical attack that recovered the key in about an hour on a single computer, no quantum machine involved. A scheme that had survived years of scrutiny collapsed abruptly once the right mathematical idea appeared. The lesson is not that the new algorithms are untrustworthy; it is that confidence in a young mathematical assumption can be wrong, and that is a strong argument for conservative choices, for keeping a backup based on entirely different math, and for the hybrid deployments that pair a new algorithm with a classical one rather than betting everything on the new one alone. Those are the subjects of the companion articles on the NIST standards and on hybrid key exchange in TLS.

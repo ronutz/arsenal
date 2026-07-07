@@ -45,6 +45,7 @@ import { run as f5AwafDeclarativePolicyRun } from "./f5-awaf-declarative-policy-
 import { run as f5AwafEvasionRun } from "./f5-awaf-evasion-explainer";
 import { run as f5AwafPoisoningRun } from "./f5-awaf-learning-poisoning-estimator";
 import { run as as3Run } from "./as3-explainer-validator";
+import { run as iqueryRun } from "./iquery-protocol-explainer";
 import { run as doRun } from "./do-explainer-validator";
 import { run as tsRun } from "./telemetry-streaming-explainer";
 import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
@@ -120,6 +121,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-awaf-evasion-explainer", run: f5AwafEvasionRun },
   { slug: "f5-awaf-learning-poisoning-estimator", structured: true, run: f5AwafPoisoningRun },
   { slug: "as3-explainer-validator", run: as3Run },
+  { slug: "iquery-protocol-explainer", run: iqueryRun },
   { slug: "do-explainer-validator", run: doRun },
   { slug: "telemetry-streaming-explainer", run: tsRun },
   { slug: "f5-awaf-false-positive-triage", structured: true, run: f5AwafFpRun },

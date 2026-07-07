@@ -69,6 +69,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-persistence-method-explainer", sub: "ltm", href: "/tools/f5-persistence-method-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-lb-method-chooser", sub: "ltm", href: "/tools/f5-lb-method-chooser", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-gslb-decision-flow", sub: "dns-gtm", href: "/tools/f5-gslb-decision-flow", category: "networking", vendors: ["f5"], available: true },
+  { id: "iquery-protocol-explainer", sub: "dns-gtm", href: "/tools/iquery-protocol-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-topology-longest-match", sub: "dns-gtm", href: "/tools/f5-topology-longest-match", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-dos-vector-explainer", sub: "afm", href: "/tools/f5-dos-vector-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-irules-command-context", sub: "irules", href: "/tools/f5-irules-command-context", category: "networking", vendors: ["f5"], available: true },

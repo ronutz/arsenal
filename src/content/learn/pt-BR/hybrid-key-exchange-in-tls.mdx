@@ -1,0 +1,43 @@
+---
+slug: hybrid-key-exchange-in-tls
+title: "Troca de Chaves Híbrida no TLS 1.3: O Que o X25519MLKEM768 Faz no Fio"
+summary: "A web não trocou a troca de chaves clássica pela pós-quântica; ela roda as duas ao mesmo tempo. O X25519MLKEM768 combina uma curva elíptica dos anos 1990 com o ML-KEM-768 baseado em reticulado num único grupo do TLS 1.3, de modo que a quebra de qualquer um ainda deixa a sessão segura. Este artigo cobre por que híbrido em vez de substituição, o formato no fio e seu problema de tamanho, e onde está a implantação entre navegadores, servidores e os middleboxes que ele quebra."
+concepts: ["pos-quantico", "tls 1.3", "troca de chaves hibrida", "x25519mlkem768", "ml-kem", "x25519", "acordo de chaves", "colher agora decifrar depois", "clienthello", "middlebox"]
+relatedTools: []
+relatedArticles: ["nist-pqc-standards", "quantum-threat-to-cryptography", "tls13-cipher-suites", "forward-secrecy"]
+category: transport
+order: 8
+status: reviewed
+updated: "2026-07-06"
+---
+
+Uma grande parte dos handshakes TLS da web já combina uma curva elíptica da era dos anos 1990 com um algoritmo baseado em reticulado padronizado apenas em 2024. A combinação se chama X25519MLKEM768, e ela silenciosamente se tornou um mecanismo padrão de acordo de chaves nos principais navegadores, não porque alguém tenha construído um computador quântico que quebra curvas elípticas, mas porque alguém eventualmente pode, e o tráfego gravado hoje ainda importará então. É a peça mais concreta e já implantada da transição pós-quântica, e vale entendê-la com exatidão.
+
+## Por que híbrido, e não substituição
+
+O movimento óbvio seria abandonar o ECDH e usar o ML-KEM sozinho. A indústria deliberadamente não fez isso, por um motivo: o ML-KEM é novo. A dificuldade de reticulado é estudada há anos, mas um esquema que só foi padronizado recentemente é uma superfície de ataque mais jovem que o X25519, que tem décadas de escrutínio atrás de si. E o campo tem uma memória fresca do que suposições jovens podem fazer, o esquema de isogenias SIKE foi quebrado em 2022 por um ataque clássico, depois de anos como candidato sério. Apostar toda a troca de chaves apenas no ML-KEM significaria que um resultado criptanalítico surpresa contra ele quebra tudo.
+
+O híbrido remove esse ponto único de falha. Você roda tanto uma troca clássica quanto uma pós-quântica no mesmo handshake e combina suas saídas, de modo que a chave de sessão fica segura enquanto pelo menos uma das duas se sustentar. Se um computador quântico eventualmente quebrar o X25519, o ML-KEM ainda o protege; se uma quebra clássica inesperada atingir o ML-KEM, o X25519 ainda o protege. É defesa em profundidade aplicada ao handshake, e é explicitamente uma postura de transição, a resposta certa para os próximos vários anos, não um estado final permanente.
+
+## O que é o X25519MLKEM768
+
+O X25519MLKEM768 é um grupo nomeado para o TLS 1.3, ao qual foi atribuído o codepoint 0x11EC, que combina dois métodos de estabelecimento de chaves:
+
+- **X25519**, a troca Diffie-Hellman clássica de curva elíptica sobre a Curve25519, a mesma já onipresente no TLS moderno.
+- **ML-KEM-768**, o mecanismo de encapsulamento de chaves de reticulado do FIPS 203 no seu conjunto de parâmetros intermediário.
+
+Ele é definido no rascunho da IETF `draft-ietf-tls-ecdhe-mlkem` (adotado pelo grupo de trabalho TLS em março de 2025), que especifica três desses híbridos, X25519MLKEM768 mais SecP256r1MLKEM768 e SecP384r1MLKEM1024 para o mundo das curvas NIST. O X25519MLKEM768 é o que praticamente todo navegador entrega, e a Cloudflare relatou que ele responde pela grande maioria das conexões pós-quânticas que ela vê. A construção de híbrido concatenado que ele usa, combinando os dois segredos compartilhados e passando o resultado pela função de derivação de chaves, é o padrão descrito na RFC 9794.
+
+No fio, o ClientHello do cliente anuncia o X25519MLKEM768 nos seus supported_groups e envia uma entrada key_share que concatena os dois valores públicos: uma chave de encapsulamento ML-KEM-768 (1184 bytes) e uma chave pública efêmera X25519 (32 bytes), 1216 bytes no total. Se o servidor suporta o grupo, ele valida o material de chave ML-KEM, gera seu efêmero X25519, roda o encapsulamento ML-KEM contra a chave do cliente, e retorna cerca de 1120 bytes (texto cifrado ML-KEM de 1088 bytes mais o valor X25519 de 32 bytes). Ambos os lados agora possuem dois segredos compartilhados. Eles são concatenados numa ordem fixa, o segredo ML-KEM primeiro, depois o X25519, e alimentados no cronograma de chaves comum do TLS 1.3. Sob a segurança da etapa de derivação de chaves, o segredo combinado permanece seguro se qualquer uma das entradas o for, que é exatamente a propriedade que o híbrido existe para prover.
+
+## O problema de tamanho
+
+O problema de engenharia que define o TLS pós-quântico não é a matemática; é o tamanho. Um ClientHello X25519 clássico cabe confortavelmente dentro de um único segmento TCP. Adicionar o ML-KEM-768 aumenta o ClientHello em cerca de 1,1 kilobyte, e frequentemente ele não cabe mais em um segmento ou em um quadro Ethernet padrão de 1500 bytes, então ele se espalha por dois pacotes.
+
+Isso soa inofensivo e não é. Boa parte do middleware de rede, firewalls, sistemas de detecção de intrusão, balanceadores de carga e outros middleboxes, foi escrita sob a suposição silenciosa de que o ClientHello inteiro chega no primeiro pacote. Quando não chega, parte desse equipamento manipula errado ou descarta o handshake dividido, produzindo um modo de falha novo e confuso: TLS que funciona bem no modo clássico mas falha, ou faz downgrade silencioso, no momento em que o grupo pós-quântico é oferecido. Isso é real o bastante para que o Chrome tenha uma vez revertido sua implantação híbrida depois que ela atrapalhou handshakes em redes corporativas cujos middleboxes não davam conta. Se você opera um balanceador de carga ou dispositivo de inspeção na frente de servidores TLS, isso é o que testar antes de habilitar o grupo.
+
+## Onde está a implantação
+
+A adoção do lado do cliente se moveu rápido. O Chrome entregou o predecessor pré-padrão (X25519Kyber768Draft00) habilitado por padrão na versão 124 (abril de 2024), depois mudou para o X25519MLKEM768 padronizado na versão 131 (novembro de 2024); o Edge seguiu pelo Chromium compartilhado. O Firefox o habilitou por padrão para HTTPS na versão 132, com o suporte a QUIC/HTTP3 chegando na versão 135. A Apple adicionou suporte no iOS 26 e no macOS 26 no fim de 2025. Do lado do servidor e das bibliotecas, o OpenSSL 3.5 (abril de 2025) foi o primeiro lançamento estável com ML-KEM nativo, removendo a necessidade do plug-in provider do Open Quantum Safe; o Go habilitou o X25519MLKEM768 por padrão a partir do Go 1.24, o que silenciosamente o ligou para sistemas baseados em Go, incluindo o Kubernetes recente. Na borda, Cloudflare, Google e outros suportam o grupo híbrido há anos e relatam uma parcela grande e crescente de conexões iniciadas por humanos usando-o.
+
+Duas ressalvas mantêm o quadro honesto. Primeira, a cobertura se afina depois da borda navegador-para-CDN: muitas implantações self-hosted de Apache, nginx e HAProxy ainda negociam o X25519 clássico porque o operador não habilitou o grupo, o build do TLS é velho demais, ou um balanceador de carga na frente descarta o handshake grande demais. Segunda, troca de chaves híbrida não é a mesma coisa que ser pós-quântico. Ela protege a confidencialidade contra o colher-agora-decifrar-depois, que é a parte urgente, mas a autenticação é uma migração separada: as assinaturas nos certificados ainda são clássicas na maior parte da web, e movê-las para o ML-DSA (e suas formas de transição compostas com ECDSA) é a próxima frente. Implantar o X25519MLKEM768 num balanceador de carga é um passo real e valioso; é um piso, não uma linha de chegada. Para os algoritmos por baixo dele, veja os artigos companheiros sobre a ameaça quântica e sobre os padrões do NIST.

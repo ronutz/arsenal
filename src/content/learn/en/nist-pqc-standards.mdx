@@ -1,0 +1,44 @@
+---
+slug: nist-pqc-standards
+title: "The NIST Post-Quantum Standards: ML-KEM, ML-DSA, and SLH-DSA"
+summary: "In August 2024 NIST finalized the first three post-quantum standards: FIPS 203 (ML-KEM, from Kyber) for key establishment, and FIPS 204 (ML-DSA, from Dilithium) and FIPS 205 (SLH-DSA, from SPHINCS+) for signatures. This explains what each one is for, why there are two signature standards on different math, and where HQC and FN-DSA fit as the backups still coming down the pipeline."
+concepts: ["post-quantum", "nist", "fips 203", "fips 204", "fips 205", "ml-kem", "ml-dsa", "slh-dsa", "kyber", "dilithium", "sphincs", "lattice", "hqc"]
+relatedTools: []
+relatedArticles: ["quantum-threat-to-cryptography", "hash-function-families", "public-vs-private-pki"]
+category: transport
+order: 7
+status: reviewed
+updated: "2026-07-06"
+---
+
+The quantum threat falls on public-key cryptography: key establishment and signatures, the two jobs RSA and the elliptic curves do today. So the replacements come in exactly those two shapes. NIST ran an open competition from 2016, selected the first winners in 2022, and on 13 August 2024 published the first three finalized standards. They are the ones to build with today.
+
+## FIPS 203: ML-KEM, for key establishment
+
+FIPS 203 specifies **ML-KEM**, Module-Lattice-Based Key-Encapsulation Mechanism, standardized from the algorithm previously known as CRYSTALS-Kyber. This is the post-quantum replacement for the key-exchange role of RSA and ECDH, and it is NIST's primary, general-purpose recommendation for that job.
+
+A KEM (key-encapsulation mechanism) is worth understanding as a shape, because it is slightly different from classic Diffie-Hellman. One side publishes an encapsulation (public) key; the other side runs "encapsulate" against it, which produces a shared secret plus a ciphertext; it sends the ciphertext back, and the first side runs "decapsulate" to recover the same shared secret. The result is a shared secret both sides hold, which is what you feed into a symmetric cipher, the same end goal as a Diffie-Hellman exchange, reached a different way. ML-KEM's security rests on the Module Learning With Errors (Module-LWE) problem over structured lattices, and it is offered in three parameter sets, ML-KEM-512, ML-KEM-768, and ML-KEM-1024, targeting increasing security levels. Its selling points are small keys by post-quantum standards and fast operation; ML-KEM-768 public keys are around 1.2 kilobytes, a number that matters a great deal for protocols like TLS.
+
+## FIPS 204 and FIPS 205: two signature standards, on purpose
+
+Signatures got two standards at once, and the reason is deliberate: they rest on different mathematics, so that a weakness in one does not take down the other.
+
+**FIPS 204 specifies ML-DSA**, Module-Lattice-Based Digital Signature Algorithm, from CRYSTALS-Dilithium. It is the primary, general-purpose signature standard, the intended replacement for ECDSA and RSA signatures. It uses the same family of lattice hardness assumptions as ML-KEM (Module-LWE, plus Module-SIS), and a "Fiat-Shamir with aborts" construction: signing runs a rejection-sampling loop that occasionally repeats until it produces an acceptable signature, which is why signing time has a small variable tail. It comes in three sets, ML-DSA-44, ML-DSA-65, and ML-DSA-87.
+
+**FIPS 205 specifies SLH-DSA**, Stateless Hash-Based Digital Signature Algorithm, from SPHINCS+. Its security rests solely on the properties of hash functions, nothing else, no lattices. That makes it the conservative backup: if lattice cryptography were ever broken, SLH-DSA would still stand, because it depends only on assumptions the whole field already trusts deeply (the same collision and preimage resistance that underpins ordinary hashing). The trade-off is cost: SLH-DSA signatures are large (thousands to tens of thousands of bytes) and signing is markedly slower than the lattice schemes, so it suits data that must stay verifiable for decades, archives, firmware, long-lived documents, more than high-volume, latency-sensitive traffic.
+
+The practical point NIST and follow-on guidance stress: these three are not interchangeable options you pick one of. ML-KEM does key establishment; ML-DSA and SLH-DSA do signatures; choosing a KEM does not remove the need for a signature scheme, and choosing one signature scheme does not remove the value of the hash-based backup. You select by function, not preference.
+
+## Security levels, and how they map to what you know
+
+NIST expresses the strength of each parameter set as a category tied to a symmetric-equivalent: level 1 is comparable to breaking AES-128, level 3 to AES-192, and level 5 to AES-256. Those equivalents already fold in Grover's algorithm, the quantum search that halves symmetric strength, so the mapping is a post-quantum comparison, not a classical one. For national-security systems, the NSA's CNSA 2.0 suite names the top parameter sets specifically: ML-KEM-1024 and ML-DSA-87, with a 2030 migration deadline. NIST's own transition guidance (draft IR 8547) sketches deprecating RSA and ECC for new federal systems after 2030 and disallowing them, including for legacy interoperability, after 2035.
+
+## The backups still in the pipeline
+
+The August 2024 trio is not the end of the program. Two more pieces are worth knowing so you can plan for crypto-agility rather than being surprised.
+
+**HQC** was selected on 11 March 2025 as an additional, backup key-encapsulation mechanism. Its significance is that it is code-based, resting on the hardness of decoding error-correcting codes, not on lattices. That is the whole point: ML-KEM remains the fast, compact primary, and HQC is the insurance policy built on entirely different math, so a future break of lattice cryptography would not take both down. Its own FIPS standard is still being written and is a couple of years out, so it is something to track, not to deploy yet.
+
+**FN-DSA**, to be published as FIPS 206, is a fourth signature standard based on the Falcon submission (the name stands for FFT over NTRU-Lattice-Based Digital Signature Algorithm). It is another lattice signature, but tuned for small signatures at the cost of a more implementation-sensitive design, which makes it a fit for niches like firmware signing and embedded systems where signature size is the binding constraint. As of this writing it is in development / draft rather than final, so ML-DSA remains the general-purpose starting point.
+
+None of these standards, it is worth noting, specifies how to combine a post-quantum algorithm with a classical one. That "hybrid" question, running ML-KEM alongside X25519 so that either one failing still leaves you secure, is handled at the protocol level, and it is the subject of the companion article on hybrid key exchange in TLS.

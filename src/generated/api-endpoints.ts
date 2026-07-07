@@ -287,6 +287,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_ipv6",
     "tag": "Networking & addressing"
   },
+  "iquery-protocol-explainer": {
+    "url": "https://ronutz.com/api/v1/iquery-protocol-explainer",
+    "method": "GET",
+    "op": "run_iquery_protocol_explainer",
+    "tag": "F5 GTM, AFM & APM"
+  },
   "json-formatter": {
     "url": "https://ronutz.com/api/v1/json-formatter",
     "method": "GET",

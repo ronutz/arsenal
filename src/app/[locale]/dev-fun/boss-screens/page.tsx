@@ -15,7 +15,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
 import BossScreensViewer from "@/components/dev-fun/BossScreensViewer";
-import { BOSS_SCREEN_META } from "@/components/dev-fun/boss-screens";
+import { BOSS_SCREEN_META, BOSS_GROUPS } from "@/components/dev-fun/boss-screens";
 
 export async function generateMetadata({
   params,
@@ -49,9 +49,18 @@ export default async function BossScreensPage({
     blurbs[meta.kind] = t(`blurb.${meta.kind}`);
   }
 
+  // Localized label for each display group (keyed by group id), resolved here
+  // so the client viewer stays free of English strings.
+  const groupLabels: Record<string, string> = {};
+  for (const group of BOSS_GROUPS) {
+    groupLabels[group] = t(`groups.${group}`);
+  }
+
   const labels = {
     names,
     blurbs,
+    groupLabels,
+    jumpTo: t("jumpTo"),
     bossHint: tShortcuts("bossHint"),
     bossDismiss: tShortcuts("bossDismiss"),
     openLabel: t("open"),

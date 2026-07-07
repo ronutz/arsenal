@@ -44,6 +44,31 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-06",
+    time: "20:52",
+    kind: "feature",
+    title: "Boss-screens viewer: grouped, with a jump navigator",
+    body:
+      "The boss-key screen gallery on /dev-fun now organizes its 76 screens into six families, home computers, PC hardware and POST, DOS software, operating systems and servers, online services and BBSes, and network analysis, each in its own labelled section. A jump navigator sits on top, the same category-nav pattern used by the Tools and Learn indexes, so you can skip straight to a family instead of scrolling one long grid. Group labels are localized (English and Portuguese, other locales via English fallback); the cards, thumbnails, and fullscreen overlay are unchanged.",
+  },
+  {
+    date: "2026-07-06",
+    time: "20:01",
+    kind: "content",
+    title: "New Learn articles: post-quantum cryptography",
+    body:
+      "Three new articles in the transport track cover the post-quantum transition end to end. The first explains what a quantum computer would actually break (Shor against RSA/DH/ECC, Grover only halving symmetric strength) and why harvest-now-decrypt-later makes it a present concern. The second walks the finalized NIST standards, FIPS 203 ML-KEM for key establishment and FIPS 204 ML-DSA and FIPS 205 SLH-DSA for signatures, plus the HQC and FN-DSA backups still in the pipeline. The third is the practical one: how hybrid key exchange (X25519MLKEM768) puts post-quantum crypto on the TLS 1.3 wire today, the ClientHello size problem it creates for middleboxes and load balancers, and where browser and server deployment stands. Grounded in NIST CSRC, the IETF drafts, and current deployment reporting; English and Portuguese.",
+  },
+  {
+    date: "2026-07-06",
+    time: "19:29",
+    kind: "tool",
+    title: "New tool: F5 iQuery protocol explainer",
+    body:
+      "A new F5 BIG-IP DNS (GTM) tool that decodes iqdump output and /var/log/gtm iQuery messages, and explains the iQuery architecture on request. Paste iqdump and it reads back the header comments and the <xml_connection> stanza (the big3d peer on TCP 4353, the sync group, version, connection_id); paste a gtm log and it decodes the box green-to-red state changes; or pick a topic (mesh, port 4353, SSL trust, iqdump, metrics, gtmd, big3d, VLAN) for a plain-language explanation. Decode-only and fully local, grounded in F5's BIG-IP DNS/GTM manuals and K-articles, with the example taken from a real iqdump sample F5 published. Ships with a paired Learn article in English and Portuguese.",
+    tools: ["iquery-protocol-explainer"],
+  },
+  {
+    date: "2026-07-06",
     time: "18:26",
     kind: "feature",
     title: "Keyboard shortcut: press F for the dev-fun index",

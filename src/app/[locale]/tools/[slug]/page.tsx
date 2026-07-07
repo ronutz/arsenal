@@ -122,6 +122,7 @@ import F5AwafDeclarativePolicyExplainerTool from "@/components/F5AwafDeclarative
 import F5AwafEvasionExplainerTool from "@/components/F5AwafEvasionExplainerTool";
 import F5AwafLearningPoisoningEstimatorTool from "@/components/F5AwafLearningPoisoningEstimatorTool";
 import As3ExplainerValidatorTool from "@/components/As3ExplainerValidatorTool";
+import IqueryProtocolExplainerTool from "@/components/IqueryProtocolExplainerTool";
 import DoExplainerValidatorTool from "@/components/DoExplainerValidatorTool";
 import TelemetryStreamingExplainerTool from "@/components/TelemetryStreamingExplainerTool";
 import F5AwafFalsePositiveTriageTool from "@/components/F5AwafFalsePositiveTriageTool";
@@ -133,6 +134,7 @@ import { manifest as f5AwafManifest } from "@/lib/tools/f5-awaf-declarative-poli
 import { manifest as f5AwafEvasionManifest } from "@/lib/tools/f5-awaf-evasion-explainer";
 import { manifest as f5AwafPoisoningManifest } from "@/lib/tools/f5-awaf-learning-poisoning-estimator";
 import { manifest as as3Manifest } from "@/lib/tools/as3-explainer-validator";
+import { manifest as iqueryManifest } from "@/lib/tools/iquery-protocol-explainer";
 import { manifest as doManifest } from "@/lib/tools/do-explainer-validator";
 import { manifest as tsManifest } from "@/lib/tools/telemetry-streaming-explainer";
 import { manifest as f5AwafFpManifest } from "@/lib/tools/f5-awaf-false-positive-triage";
@@ -306,6 +308,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "as3-explainer-validator": {
     Component: As3ExplainerValidatorTool,
     sources: as3Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "iquery-protocol-explainer": {
+    Component: IqueryProtocolExplainerTool,
+    sources: iqueryManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "do-explainer-validator": {
     Component: DoExplainerValidatorTool,

@@ -1,0 +1,40 @@
+---
+slug: how-iquery-connects-bigip-dns
+title: "Como o iQuery Conecta o BIG-IP DNS ao Resto da Rede"
+summary: "O iQuery é o protocolo XML que o BIG-IP DNS usa para saber se os objetos que ele resolve estão realmente no ar. Este artigo percorre a malha: gtmd e big3d, as conexões de longa duração na TCP 4353, a confiança por certificado SSL que o bigip_add estabelece, o que o iqdump mostra e a razão clássica de um virtual server estar verde no LTM mas vermelho no DNS."
+concepts: ["iquery", "big-ip dns", "gtm", "f5", "gslb", "big3d", "gtmd", "iqdump", "porta 4353"]
+relatedTools: ["iquery-protocol-explainer", "f5-gslb-decision-flow"]
+relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longest-match"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-07-06"
+---
+
+O BIG-IP DNS (antigo GTM) responde consultas DNS com o endereço de uma aplicação saudável, o que significa que ele precisa saber, continuamente, se os objetos para os quais aponta estão de fato no ar. Ele descobre isso através do iQuery, um protocolo que você raramente configura diretamente, mas precisa entender no momento em que o balanceamento global se comporta de um jeito que a configuração do LTM sozinha não consegue explicar.
+
+## Um protocolo XML entre equipamentos BIG-IP
+
+O iQuery é um protocolo proprietário que os sistemas BIG-IP usam para se comunicar entre si. É XML, enviado comprimido com gzip, e não é um protocolo voltado ao cliente como o DNS: é a conversa de plano de controle entre os seus equipamentos BIG-IP. O BIG-IP DNS o usa para determinar a saúde dos objetos na sua configuração, trocar o estado do grupo de sincronização e transportar a sincronização de configuração pelo grupo, de modo que cada equipamento compartilhe uma visão única do que existe e do que está no ar.
+
+Dois processos fazem o trabalho. No BIG-IP DNS, o `gtmd` conduz o GSLB e abre as conexões iQuery. Em cada BIG-IP que o DNS sonda, incluindo outros equipamentos BIG-IP DNS e os sistemas LTM que hospedam os virtual servers, o `big3d` responde. O agente `gtmd` monitora tanto a disponibilidade desses sistemas quanto a integridade dos caminhos de rede entre os sistemas que hospedam um domínio e os servidores DNS locais que o resolvem.
+
+## A malha e a porta 4353
+
+Todo equipamento BIG-IP DNS é um cliente iQuery: o `gtmd` dele conecta ao `big3d` de cada servidor BIG-IP definido na configuração. Essas são conexões de longa duração sobre a porta TCP 4353, e o conjunto todo delas, entre os equipamentos DNS e entre DNS e LTM, é chamado de malha iQuery. O `big3d` escuta na 4353 em todos os self IPs e no IP de gerência, então, para a malha se formar, a porta 4353 precisa estar aberta em qualquer firewall entre os membros.
+
+Uma visão unificada importa. Para monitorar um objeto, o grupo de sincronização elege o BIG-IP DNS mais próximo do alvo para executar a sonda, e esse equipamento compartilha o resultado com os demais. Se os equipamentos não estiverem todos conectados aos mesmos pares, eles podem discordar sobre quem é responsável por um monitor, e os objetos começam a oscilar, marcados como fora, depois no ar, depois fora de novo.
+
+## Confiança SSL, e como ela é estabelecida
+
+O iQuery é criptografado com SSL, e os equipamentos se autenticam mutuamente com autenticação baseada em certificado; eles precisam trocar certificados e compartilhar um grupo de sincronização de configuração antes de poderem compartilhar qualquer dado. Você estabelece essa confiança pela linha de comando. O `bigip_add` troca certificados SSL com um BIG-IP de mesma versão para que os dois fiquem autorizados a se comunicar; o `big3d_install` conecta a pares mais antigos e atualiza o `big3d` deles (que precisa ser da mesma versão do software do DNS, ou mais novo) enquanto troca certificados; e o `gtm_add` insere o sistema local em um grupo de sincronização DNS existente copiando a configuração de um membro remoto. Esses scripts alcançam o alvo por SSH, então precisam da porta 22 além da 4353. Com uma CA de terceiros você pode, em vez disso, colocar uma raiz compartilhada em `/config/gtm/server.crt` e `/config/big3d/client.crt` e deixar a malha confiar nela sem rodar os scripts.
+
+## O que o iqdump mostra
+
+O `iqdump` permite observar os dados iQuery brutos e confirmar tanto o caminho quanto a autenticação SSL de um BIG-IP DNS até outro equipamento da malha. Rode `iqdump <ip>` (opcionalmente com o nome de um grupo de sincronização, ou o switch `-s` para nomear um grupo diferente do padrão) e ele transmite até você apertar Ctrl-C. A saída abre com linhas de comentário, o hostname local, o par `big3d` ao qual conectou e a porta, o grupo de sincronização assinado e um horário, e então uma seção `<xml_connection>` carregando a `version` remota, o build do `big3d` e um `connection_id`. Se o caminho ou a autenticação SSL estiver quebrado, o `iqdump` falha e reporta um erro em vez de uma conexão, e é exatamente por isso que uma linha de par bem-sucedida é um sinal útil. O equivalente em tmsh é `tmsh show /gtm iquery all`, e em DNS > GSLB > Servers aparece o status iQuery de cada servidor.
+
+## Por que um virtual server está verde no LTM mas vermelho no DNS
+
+Como o DNS precisa responder do jeito que os clientes reais veem a rede, as sondas iQuery têm que seguir o mesmo caminho de rede que os clientes DNS; caso contrário, uma sonda que tem sucesso por um caminho privado pode levar o BIG-IP DNS a entregar uma resposta errada para os clientes de verdade. E há um descasamento clássico que vale memorizar: um virtual server aparece disponível (verde) no LTM mas fora (vermelho) no BIG-IP DNS. A causa usual é que o nome do virtual server configurado no BIG-IP DNS não bate com o nome no LTM que ele referencia. O iQuery está transportando o status real do LTM fielmente; os dois sistemas simplesmente nomeiam o objeto de forma diferente, então o DNS nunca associa o status ao seu próprio objeto. Ler o objeto nos dados iQuery, que é o que o `iqdump` e esta ferramenta permitem, é como você encontra isso.
+
+Uma nota de versão: o módulo Link Controller, historicamente parte dessa mesma malha iQuery, foi removido no BIG-IP 21.0.0.

@@ -1,0 +1,40 @@
+---
+slug: how-iquery-connects-bigip-dns
+title: "How iQuery Connects BIG-IP DNS to the Rest of the Network"
+summary: "iQuery is the XML protocol BIG-IP DNS uses to learn whether the objects it answers for are actually up. This walks the mesh: gtmd and big3d, the long-lived TCP 4353 connections, the SSL certificate trust that bigip_add bootstraps, what iqdump shows you, and the classic reason a virtual server is green on the LTM but red on DNS."
+concepts: ["iquery", "big-ip dns", "gtm", "f5", "gslb", "big3d", "gtmd", "iqdump", "port 4353"]
+relatedTools: ["iquery-protocol-explainer", "f5-gslb-decision-flow"]
+relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longest-match"]
+category: networking
+order: 3
+status: reviewed
+updated: "2026-07-06"
+---
+
+BIG-IP DNS (formerly GTM) answers DNS queries with the address of a healthy application, which means it has to know, continuously, whether the objects it points at are actually up. It learns that through iQuery, a protocol you rarely configure directly but need to understand the moment global load balancing behaves in a way the LTM configuration alone cannot explain.
+
+## An XML protocol between BIG-IP devices
+
+iQuery is a proprietary protocol that BIG-IP systems use to communicate with each other. It is XML, sent gzip-compressed, and it is not a client-facing protocol like DNS: it is the control-plane conversation among your BIG-IP devices. BIG-IP DNS uses it to determine the health of the objects in its configuration, to exchange synchronization-group state, and to carry configuration synchronization across the group, so that every device shares one view of what exists and what is up.
+
+Two processes do the work. On BIG-IP DNS, `gtmd` drives GSLB and opens the iQuery connections. On every BIG-IP that DNS probes, including other BIG-IP DNS devices and the LTM systems hosting the virtual servers, `big3d` answers. The `gtmd` agent monitors both the availability of those systems and the integrity of the network paths between the systems hosting a domain and the local DNS servers that resolve it.
+
+## The mesh and port 4353
+
+Every BIG-IP DNS device is an iQuery client: its `gtmd` connects to the `big3d` on every BIG-IP server defined in the configuration. These are long-lived connections over TCP port 4353, and the whole set of them, among the DNS devices and between DNS and LTM, is called the iQuery mesh. `big3d` listens on 4353 on all self IPs and on the management IP, so for the mesh to form, port 4353 has to be open through any firewall between the members.
+
+A unified view matters. To monitor an object, the sync group elects the BIG-IP DNS closest to the target to run the probe, and that device shares the result with the others. If the devices are not all connected to the same peers, they can disagree about who is responsible for a monitor, and objects start to flap, marked down then up then down again.
+
+## SSL trust, and how it is bootstrapped
+
+iQuery is encrypted with SSL, and the devices authenticate each other with certificate-based authentication; they must exchange certificates and share a configuration synchronization group before they can share any data. You bootstrap that trust from the command line. `bigip_add` exchanges SSL certificates with a same-version BIG-IP so the two are authorized to communicate; `big3d_install` connects to older peers and upgrades their `big3d` (which must be the same version as, or newer than, the DNS software) while exchanging certificates; and `gtm_add` joins the local system into an existing DNS synchronization group by copying a remote member's configuration. Those scripts reach the target over SSH, so they need port 22 as well as 4353. With a third-party CA you can instead place a shared root under `/config/gtm/server.crt` and `/config/big3d/client.crt` and let the mesh trust it without running the scripts.
+
+## What iqdump shows you
+
+`iqdump` lets you watch the raw iQuery data and confirm both the path and the SSL authentication from a BIG-IP DNS to another mesh device. Run `iqdump <ip>` (optionally with a synchronization-group name, or the `-s` switch to name a non-default group) and it streams until you press Ctrl-C. The output opens with comment lines, the local hostname, the `big3d` peer it connected to and the port, the sync group it subscribed to, and a timestamp, then an `<xml_connection>` stanza carrying the remote `version`, the `big3d` build, and a `connection_id`. If the path or the SSL authentication is broken, `iqdump` fails and reports an error instead of a connection, which is exactly why a successful peer line is a useful signal. The tmsh equivalent is `tmsh show /gtm iquery all`, and DNS > GSLB > Servers shows each server's iQuery status.
+
+## Why a virtual server is green on the LTM but red on DNS
+
+Because DNS must answer the way real clients see the network, iQuery probes have to follow the same network path as DNS clients; a probe that succeeds on a private path can otherwise lead BIG-IP DNS to hand out an answer that is wrong for actual clients. And there is a classic mismatch worth memorizing: a virtual server shows available (green) on the LTM but offline (red) on BIG-IP DNS. The usual cause is that the virtual-server name configured on BIG-IP DNS does not match the name on the LTM it references. iQuery is carrying the LTM's real status faithfully; the two systems are simply naming the object differently, so DNS never matches the status to its own object. Reading the object in the iQuery data, which is what `iqdump` and this tool let you do, is how you find that.
+
+One version note: the Link Controller module, historically part of this same iQuery mesh, was removed in BIG-IP 21.0.0.

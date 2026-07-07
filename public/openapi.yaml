@@ -3080,6 +3080,71 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /iquery-protocol-explainer:
+    get:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_iquery_protocol_explainer
+      summary: iQuery protocol explainer
+      description: >-
+        Decode F5 BIG-IP DNS iqdump output and /var/log/gtm iQuery messages, or explain the iQuery
+        architecture (mesh, port 4353, SSL trust, iqdump, gtmd, big3d). Runs locally. Standards: F5
+        BIG-IP DNS (GTM) iQuery, F5 Device Trust / CMI. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - '<!-- Connected to big3d at: ::ffff:10.10.10.10:4353 -->'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_iquery_protocol_explainer_post
+      summary: iQuery protocol explainer (POST)
+      description: >-
+        Decode F5 BIG-IP DNS iqdump output and /var/log/gtm iQuery messages, or explain the iQuery
+        architecture (mesh, port 4353, SSL trust, iqdump, gtmd, big3d). Runs locally. Standards: F5
+        BIG-IP DNS (GTM) iQuery, F5 Device Trust / CMI. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - '<!-- Connected to big3d at: ::ffff:10.10.10.10:4353 -->'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /json-formatter:
     get:
       tags:

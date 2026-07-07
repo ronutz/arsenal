@@ -1,0 +1,44 @@
+---
+slug: nist-pqc-standards
+title: "Os Padrões Pós-Quânticos do NIST: ML-KEM, ML-DSA e SLH-DSA"
+summary: "Em agosto de 2024 o NIST finalizou os três primeiros padrões pós-quânticos: FIPS 203 (ML-KEM, do Kyber) para estabelecimento de chaves, e FIPS 204 (ML-DSA, do Dilithium) e FIPS 205 (SLH-DSA, do SPHINCS+) para assinaturas. Este artigo explica para que serve cada um, por que há dois padrões de assinatura sobre matemáticas diferentes, e onde o HQC e o FN-DSA entram como reservas ainda a caminho."
+concepts: ["pos-quantico", "nist", "fips 203", "fips 204", "fips 205", "ml-kem", "ml-dsa", "slh-dsa", "kyber", "dilithium", "sphincs", "reticulado", "hqc"]
+relatedTools: []
+relatedArticles: ["quantum-threat-to-cryptography", "hash-function-families", "public-vs-private-pki"]
+category: transport
+order: 7
+status: reviewed
+updated: "2026-07-06"
+---
+
+A ameaça quântica recai sobre a criptografia de chave pública: estabelecimento de chaves e assinaturas, os dois trabalhos que o RSA e as curvas elípticas fazem hoje. Então as substituições vêm exatamente nesses dois formatos. O NIST conduziu uma competição aberta desde 2016, selecionou os primeiros vencedores em 2022 e, em 13 de agosto de 2024, publicou os três primeiros padrões finalizados. São com eles que se deve construir hoje.
+
+## FIPS 203: ML-KEM, para estabelecimento de chaves
+
+O FIPS 203 especifica o **ML-KEM**, Mecanismo de Encapsulamento de Chaves Baseado em Reticulado de Módulo, padronizado a partir do algoritmo antes conhecido como CRYSTALS-Kyber. Esta é a substituição pós-quântica para o papel de troca de chaves do RSA e do ECDH, e é a recomendação primária e de uso geral do NIST para esse trabalho.
+
+Vale entender um KEM (mecanismo de encapsulamento de chaves) como um formato, porque ele é ligeiramente diferente do Diffie-Hellman clássico. Um lado publica uma chave de encapsulamento (pública); o outro lado roda "encapsular" contra ela, o que produz um segredo compartilhado mais um texto cifrado; ele envia o texto cifrado de volta, e o primeiro lado roda "desencapsular" para recuperar o mesmo segredo compartilhado. O resultado é um segredo compartilhado que ambos os lados possuem, que é o que você alimenta numa cifra simétrica, o mesmo objetivo final de uma troca Diffie-Hellman, alcançado de um jeito diferente. A segurança do ML-KEM se apoia no problema Module Learning With Errors (Module-LWE) sobre reticulados estruturados, e ele é oferecido em três conjuntos de parâmetros, ML-KEM-512, ML-KEM-768 e ML-KEM-1024, mirando níveis de segurança crescentes. Seus pontos fortes são chaves pequenas para os padrões pós-quânticos e operação rápida; as chaves públicas do ML-KEM-768 têm cerca de 1,2 kilobyte, um número que importa muito para protocolos como o TLS.
+
+## FIPS 204 e FIPS 205: dois padrões de assinatura, de propósito
+
+As assinaturas ganharam dois padrões de uma vez, e o motivo é deliberado: eles se apoiam em matemáticas diferentes, de modo que uma fraqueza em um não derrube o outro.
+
+**O FIPS 204 especifica o ML-DSA**, Algoritmo de Assinatura Digital Baseado em Reticulado de Módulo, do CRYSTALS-Dilithium. É o padrão de assinatura primário e de uso geral, a substituição pretendida para as assinaturas ECDSA e RSA. Ele usa a mesma família de suposições de dificuldade de reticulado que o ML-KEM (Module-LWE, mais Module-SIS), e uma construção "Fiat-Shamir com abortos": a assinatura roda um laço de amostragem por rejeição que ocasionalmente se repete até produzir uma assinatura aceitável, e é por isso que o tempo de assinatura tem uma pequena cauda variável. Ele vem em três conjuntos, ML-DSA-44, ML-DSA-65 e ML-DSA-87.
+
+**O FIPS 205 especifica o SLH-DSA**, Algoritmo de Assinatura Digital Sem Estado Baseado em Hash, do SPHINCS+. Sua segurança se apoia unicamente nas propriedades das funções de hash, nada mais, sem reticulados. Isso o torna o reserva conservador: se a criptografia de reticulado fosse algum dia quebrada, o SLH-DSA ainda se sustentaria, porque depende apenas de suposições que todo o campo já confia profundamente (a mesma resistência a colisão e pré-imagem que sustenta o hashing comum). O trade-off é o custo: as assinaturas do SLH-DSA são grandes (milhares a dezenas de milhares de bytes) e a assinatura é marcadamente mais lenta que os esquemas de reticulado, então ele serve a dados que precisam permanecer verificáveis por décadas, arquivos, firmware, documentos de longa duração, mais do que a tráfego de alto volume e sensível a latência.
+
+O ponto prático que o NIST e as orientações seguintes enfatizam: esses três não são opções intercambiáveis das quais você escolhe uma. O ML-KEM faz estabelecimento de chaves; o ML-DSA e o SLH-DSA fazem assinaturas; escolher um KEM não elimina a necessidade de um esquema de assinatura, e escolher um esquema de assinatura não elimina o valor do reserva baseado em hash. Você seleciona por função, não por preferência.
+
+## Níveis de segurança, e como eles se mapeiam ao que você conhece
+
+O NIST expressa a força de cada conjunto de parâmetros como uma categoria ligada a um equivalente simétrico: o nível 1 é comparável a quebrar o AES-128, o nível 3 ao AES-192, e o nível 5 ao AES-256. Esses equivalentes já incorporam o algoritmo de Grover, a busca quântica que reduz pela metade a força simétrica, então o mapeamento é uma comparação pós-quântica, não clássica. Para sistemas de segurança nacional, o conjunto CNSA 2.0 da NSA nomeia especificamente os conjuntos de parâmetros mais altos: ML-KEM-1024 e ML-DSA-87, com um prazo de migração em 2030. A própria orientação de transição do NIST (rascunho IR 8547) esboça depreciar o RSA e o ECC para novos sistemas federais depois de 2030 e proibi-los, inclusive para interoperabilidade legada, depois de 2035.
+
+## As reservas ainda na fila
+
+O trio de agosto de 2024 não é o fim do programa. Duas outras peças valem conhecer para você planejar a agilidade criptográfica em vez de ser surpreendido.
+
+O **HQC** foi selecionado em 11 de março de 2025 como um mecanismo de encapsulamento de chaves adicional, de reserva. Sua importância é que é baseado em código, apoiando-se na dificuldade de decodificar códigos corretores de erro, e não em reticulados. Esse é todo o ponto: o ML-KEM permanece o primário rápido e compacto, e o HQC é a apólice de seguro construída sobre matemática totalmente diferente, de modo que uma quebra futura da criptografia de reticulado não derrubaria os dois. Seu próprio padrão FIPS ainda está sendo escrito e está a alguns anos de distância, então é algo para acompanhar, não para implantar ainda.
+
+O **FN-DSA**, a ser publicado como FIPS 206, é um quarto padrão de assinatura baseado na submissão Falcon (o nome vem de FFT sobre Algoritmo de Assinatura Digital Baseado em Reticulado NTRU). É outra assinatura de reticulado, mas ajustada para assinaturas pequenas ao custo de um projeto mais sensível à implementação, o que o torna adequado para nichos como assinatura de firmware e sistemas embarcados onde o tamanho da assinatura é a restrição vinculante. No momento em que este texto é escrito, ele está em desenvolvimento / rascunho, e não final, então o ML-DSA continua o ponto de partida de uso geral.
+
+Nenhum desses padrões, vale notar, especifica como combinar um algoritmo pós-quântico com um clássico. Essa questão "híbrida", rodar o ML-KEM junto com o X25519 para que a falha de qualquer um ainda o deixe seguro, é tratada no nível do protocolo, e é o tema do artigo companheiro sobre troca de chaves híbrida no TLS.

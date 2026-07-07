@@ -1,0 +1,38 @@
+---
+slug: quantum-threat-to-cryptography
+title: "O Que um Computador Quântico Quebraria, e o Que Não Quebraria"
+summary: "Um computador quântico grande não enfraqueceria toda a criptografia por igual. O algoritmo de Shor quebra por completo a matemática de chave pública por trás de RSA, Diffie-Hellman e curvas elípticas; o algoritmo de Grover apenas reduz pela metade a força de cifras simétricas e hashes, o que AES-256 e SHA-384 já suportam. Este artigo explica a divisão, por que 'colher agora, decifrar depois' torna isso um problema de hoje, e por que um candidato quebrado como o SIKE é um lembrete de humildade."
+concepts: ["pos-quantico", "computacao quantica", "shor", "grover", "rsa", "curva eliptica", "diffie-hellman", "colher agora decifrar depois", "aes", "criptografia"]
+relatedTools: []
+relatedArticles: ["forward-secrecy", "tls13-cipher-suites", "hash-function-families"]
+category: transport
+order: 6
+status: reviewed
+updated: "2026-07-06"
+---
+
+A frase "computadores quânticos vão quebrar a criptografia" é comum e meio errada. Um computador quântico grande e tolerante a falhas quebraria por completo parte da criptografia sobre a qual a internet funciona, e deixaria o resto quase intocado. Saber qual é qual é toda a base da migração em curso, então vale ser preciso.
+
+## Dois algoritmos, dois efeitos muito diferentes
+
+A ameaça se resume a dois algoritmos quânticos, e eles não fazem a mesma coisa.
+
+**O algoritmo de Shor** fatora inteiros grandes e calcula logaritmos discretos em tempo polinomial. É exatamente a matemática difícil da qual a criptografia de chave pública depende: o RSA se apoia na fatoração de inteiros, o Diffie-Hellman no problema do logaritmo discreto, e a criptografia de curva elíptica (ECDH e ECDSA) na versão em curva elíptica do logaritmo discreto. Um computador quântico de tamanho suficiente rodando o algoritmo de Shor quebra todos eles. Não enfraquece: quebra. Chaves RSA maiores não salvam você, porque o ganho não é um fator constante que se possa superar com o tamanho da chave; ele muda a classe de dificuldade do problema.
+
+**O algoritmo de Grover** é uma busca genérica que encontra um alvo em um espaço não ordenado de tamanho N em cerca da raiz quadrada de N passos, um ganho quadrático. Aplicado a uma cifra simétrica, isso significa que forçar por força bruta uma chave de k bits leva na ordem de 2 elevado a k/2 em vez de 2 elevado a k. Ou seja, o Grover efetivamente reduz pela metade o nível de segurança dos algoritmos simétricos. O AES-128 cai para cerca de 64 bits de resistência a força bruta, o que é desconfortável, mas o AES-256 cai para cerca de 128 bits, o que continua muito fora de alcance. A mesma lógica de redução pela metade se aplica às funções de hash e à sua resistência a colisão e pré-imagem, e é por isso que um hash de 256 bits é tratado como cerca de 128 bits num cenário pós-quântico.
+
+## A divisão que isso cria
+
+Junte os dois e você obtém uma divisão clara. A criptografia simétrica sobrevive com um ajuste de margem: mantenha o AES-256 e um hash de 384 bits ou mais e você está bem, sem exigir matemática nova. A criptografia de chave pública não sobrevive: todo algoritmo de troca de chaves e de assinatura amplamente implantado na internet hoje é um alvo do Shor. Como os algoritmos de chave pública são o que estabelece as chaves de sessão e prova identidade em TLS, SSH, IPsec e assinatura de código, "a chave pública está quebrada" não é um cantinho do problema. É o handshake, o certificado e a assinatura de uma vez só.
+
+É precisamente por isso que o esforço de padronização produziu novos algoritmos de estabelecimento de chaves e de assinatura, mas deixou as cifras simétricas em paz. O conserto necessário é uma substituição da camada de chave pública, não uma reinvenção completa da criptografia.
+
+## Por que isso é um problema antes de o computador existir
+
+A resposta natural é que nenhum computador quântico desses existe ainda, então isso pode esperar. Para a confidencialidade, esse raciocínio falha, por causa de um ataque de nome direto: **colher agora, decifrar depois** (também chamado de armazenar agora, decifrar depois). Um adversário pode gravar o tráfego cifrado hoje, guardá-lo, e decifrá-lo anos depois assim que um computador quântico capaz chegar. Qualquer coisa que você envie agora cujo valor ultrapasse o prazo do hardware, registros médicos, segredos de Estado, credenciais de longa duração, propriedade intelectual, já está exposta a uma quebra futura no momento em que cruza o fio. O relógio que importa não é quando o computador quântico é construído; é a soma de quanto tempo os seus dados precisam ficar secretos mais quanto tempo a migração leva. Se essa soma alcançar além da chegada da máquina, você já está atrasado.
+
+A autenticação é diferente de um jeito importante. Uma assinatura só precisa resistir à falsificação até o momento em que é verificada; você não pode falsificar a assinatura de um handshake TLS depois do fato para quebrar uma sessão que já aconteceu. Então o colher-agora-decifrar-depois pressiona a confidencialidade (troca de chaves) primeiro e com mais força, enquanto a migração de assinaturas, embora necessária, é menos uma corrida contra o tráfego gravado. Essa diferença é por que a troca de chaves se moveu primeiro na internet, e as assinaturas estão vindo em seguida.
+
+## Uma dose de humildade: o SIKE
+
+Mais um motivo para essa migração ser conduzida com cuidado em vez de apressada. Entre os candidatos no processo de padronização estava o SIKE, um esquema de troca de chaves baseado em isogenias, valorizado por suas chaves muito pequenas. Em 2022 ele foi quebrado por Castryck e Decru com um ataque clássico que recuperou a chave em cerca de uma hora num único computador, sem nenhuma máquina quântica envolvida. Um esquema que havia sobrevivido a anos de escrutínio ruiu abruptamente assim que a ideia matemática certa apareceu. A lição não é que os novos algoritmos não sejam confiáveis; é que a confiança em uma suposição matemática jovem pode estar errada, e isso é um forte argumento a favor de escolhas conservadoras, de manter um reserva baseado em matemática totalmente diferente, e das implantações híbridas que combinam um algoritmo novo com um clássico em vez de apostar tudo apenas no novo. Esses são os temas dos artigos companheiros sobre os padrões do NIST e sobre a troca de chaves híbrida no TLS.

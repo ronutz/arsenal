@@ -8753,6 +8753,24 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .boss-viewer-blurb { color: var(--text-secondary, #b8c2e0); font-size: 0.85rem; line-height: 1.5; }
 @media (prefers-reduced-motion: reduce) { .boss-viewer-card:hover, .boss-viewer-card:focus-visible { transform: none; } }
 
+/* Grouped boss-screens viewer: a jump navigator on top (reusing .category-nav)
+   and one section per family. The nav sits below the page intro, so give it a
+   little top room; each group heading anchors its section (scroll-margin keeps
+   it clear of the sticky header when jumped to). */
+.boss-viewer-jumpnav { margin-top: 1.8rem; }
+.boss-viewer-section { scroll-margin-top: 7.5rem; }
+.boss-viewer-section + .boss-viewer-section { margin-top: 2.6rem; }
+.boss-viewer-group-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #e6ecff);
+  margin: 0;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--border-subtle, #1e293b);
+}
+/* Inside a group the grid follows the heading, so trim its standalone top gap. */
+.boss-viewer-section .boss-viewer-grid { margin-top: 1.1rem; }
+
 /* ==== copy editor (gated authoring workbench) ============================= */
 .copyedit-container { max-width: 60rem; }
 .copyedit-title { font-size: 1.9rem; font-weight: 800; color: var(--text-primary, #e6ecff); margin: 0.3rem 0 0.6rem; }
