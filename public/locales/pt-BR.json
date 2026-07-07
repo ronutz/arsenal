@@ -3450,6 +3450,8 @@
     },
     "filterLegend": "Mostrar",
     "filterAll": "Todas",
+    "filterNone": "Nenhuma",
+    "filterEmpty": "Nenhuma categoria selecionada",
     "acme-dns01": {
       "name": "Calculadora de TXT dns-01 do ACME",
       "blurb": "Calcule o registro TXT de um desafio dns-01 do ACME, a partir do token e da chave da conta.",
@@ -4768,11 +4770,12 @@
       "Não é a sintaxe. É a INTENÇÃO!",
       "Termo inteligente pesquisado. Dizem."
     ],
-    "stopLabel": "STOP",
+    "stopLabel": "PARAR",
     "manoDismiss": "clique em qualquer lugar para fechar",
     "devFunTitle": "Voltar para /dev/fun",
     "motionOffAria": "Desligar animações",
-    "motionOnAria": "Ligar animações"
+    "motionOnAria": "Ligar animações",
+    "ptBrFlagAria": "Ler o console em Português do Brasil"
   },
   "shortcuts": {
     "actionBingo": "Buzzword Bingo",

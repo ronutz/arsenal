@@ -2,7 +2,7 @@
 slug: bigip-snat-and-return-traffic
 title: "SNAT and the Return-Traffic Problem"
 summary: "For a load-balanced connection to work, the pool member's reply must come back through BIG-IP. If the member routes its return traffic straight to the client instead, the connection breaks. SNAT solves this by making BIG-IP the source address the member replies to, at the cost of hiding the real client IP."
-concepts: ["big-ip", "snat", "asymmetric routing", "source nat", "x-forwarded-for"]
+concepts: ["big-ip", "snat", "asymmetric routing", "source nat", "x-forwarded-for", "f5"]
 relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "bigip-pools-and-load-balancing"]
 category: networking

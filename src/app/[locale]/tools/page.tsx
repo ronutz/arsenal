@@ -106,6 +106,8 @@ export default async function ToolsPage({
               <CategoryFilter
                 legend={t("filterLegend")}
                 allLabel={t("filterAll")}
+                noneLabel={t("filterNone")}
+                emptyLabel={t("filterEmpty")}
                 groups={categories.map((category) => ({
                   key: category,
                   sectionId: category,

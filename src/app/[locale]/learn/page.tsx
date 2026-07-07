@@ -99,6 +99,8 @@ export default async function LearnIndexPage({
               <CategoryFilter
                 legend={tTools("filterLegend")}
                 allLabel={tTools("filterAll")}
+                noneLabel={tTools("filterNone")}
+                emptyLabel={tTools("filterEmpty")}
                 groups={groups.map((group) => ({
                   key: group.category,
                   sectionId: group.category,

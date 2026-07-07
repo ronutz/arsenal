@@ -12,9 +12,11 @@
 // PROGRESSIVE ENHANCEMENT: like ToolVendorFilter, this layers on top of already
 // server-rendered sections it does not own. With no JavaScript every section
 // stays visible (nothing is hidden without JS). Every group is shown by default,
-// so the page is unchanged until the reader deselects a chip. At least one group
-// always stays visible (the last shown chip cannot be turned off), so the page
-// can never become empty; an "all" chip restores the default in one click.
+// so the page is unchanged until the reader deselects a chip. The reader may
+// deselect every group (an explicit "None" chip does this in one click, opposite
+// the "All" reset); the page is allowed to show no content, and a short empty-
+// state line appears so a fully filtered page never looks broken. "All" restores
+// every group and "None" hides them all, each in one click.
 //
 // CONTRACT (already rendered by the pages for the anchor nav):
 //   * each group's section is reachable by a DOM id (group.sectionId);
@@ -51,12 +53,18 @@ export default function CategoryFilter({
   groups,
   legend,
   allLabel,
+  noneLabel,
+  emptyLabel,
 }: {
   groups: CategoryFilterGroup[];
   /** Group label announced to assistive tech and shown before the chips. */
   legend: string;
   /** Label for the "show everything" reset chip. */
   allLabel: string;
+  /** Label for the "hide everything" chip (opposite of All). */
+  noneLabel: string;
+  /** Message shown when no category is selected (the page is allowed to be empty). */
+  emptyLabel: string;
 }) {
   // Set of HIDDEN keys; empty = default (all shown), so first paint matches SSR.
   const [hidden, setHidden] = useState<Set<string>>(() => new Set());
@@ -82,8 +90,8 @@ export default function CategoryFilter({
     (key: string) => {
       setHidden((prev) => {
         const willHide = !prev.has(key);
-        // Keep at least one group visible: refuse to hide the last shown one.
-        if (willHide && prev.size + 1 >= groups.length) return prev;
+        // No floor: the reader may hide every group (see "None" below); the page
+        // is allowed to show nothing, and the chips remain to restore any of it.
         const next = new Set(prev);
         if (willHide) next.add(key);
         else next.delete(key);
@@ -102,11 +110,24 @@ export default function CategoryFilter({
     });
   }, [applyHidden]);
 
+  // "None": hide every group. The page is allowed to show no content; the chips
+  // (and "All") remain, so the reader restores any or all of it in one click.
+  const selectNone = useCallback(() => {
+    setHidden(() => {
+      const all = new Set(groups.map((g) => g.key));
+      applyHidden(all);
+      return all;
+    });
+  }, [groups, applyHidden]);
+
+  const allHidden = hidden.size === groups.length;
+
   // Nothing to filter with a single group.
   if (groups.length < 2) return null;
 
   return (
-    <div className="cat-filter" role="group" aria-label={legend}>
+    <>
+      <div className="cat-filter" role="group" aria-label={legend}>
       <span className="cat-filter-label">{legend}</span>
       <button
         type="button"
@@ -115,6 +136,14 @@ export default function CategoryFilter({
         onClick={reset}
       >
         {allLabel}
+      </button>
+      <button
+        type="button"
+        className="cat-filter-chip"
+        aria-pressed={allHidden}
+        onClick={selectNone}
+      >
+        {noneLabel}
       </button>
       {groups.map((g) => {
         const shown = !hidden.has(g.key);
@@ -137,6 +166,12 @@ export default function CategoryFilter({
           </button>
         );
       })}
-    </div>
+      </div>
+      {allHidden && (
+        <p className="cat-filter-empty" role="status">
+          {emptyLabel}
+        </p>
+      )}
+    </>
   );
 }

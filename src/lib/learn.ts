@@ -202,11 +202,11 @@ export function getArticlesByCategory(locale: string = SOURCE_LOCALE): CategoryG
 //      tool.vendors).
 // Signal 2 is what makes this correct: it catches the F5 articles (BIG-IP
 // cookies, iRules, F5 XC service policies, etc.) that link to an F5 tool but
-// were never tagged "f5" in concepts. Snapshot 2026-07-07: the union is 83 F5
-// articles; 60 carry an "f5" concept and 23 more only link an F5 tool, so concept
-// alone would miss those 23. (These counts drift as the corpus grows; the
-// derivation, not the number, is the point.) Pure function of the article + tool
-// registry, no state.
+// were never tagged "f5" in concepts. As of 2026-07-07 all 83 F5 articles DO
+// carry the vendor concept (the 23 that had only linked an F5 tool were
+// backfilled), so signal 1 alone now suffices; signal 2 stays as the safety net
+// that keeps classification correct for any future article added without the
+// tag. Pure function of the article + tool registry, no state.
 // ============================================================================
 export function getArticleVendors(article: Article): string[] {
   const set = new Set<string>();

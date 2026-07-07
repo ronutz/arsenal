@@ -56,6 +56,8 @@ export interface MegaBrainLabels {
   stopLabel: string;
   motionOffAria: string;
   motionOnAria: string;
+  /** Accessible label for the Brazilian-flag pt-BR shortcut (07/07/2026). */
+  ptBrFlagAria: string;
   disabledTitleGoh: string;
   manoRealityCheck: string;
   manoSub: string;
@@ -342,6 +344,34 @@ export default function MegaBrainConsole({
           <Link href="/dev-fun" className="mb-titlebar-devfun" title={labels.devFunTitle}>/dev/fun</Link>
           {labels.titlebar}
         </span>
+        {/* PRIME 07/07/2026: Brazilian-flag shortcut to pt-BR, sitting just left
+            of the motion control. A nod to the joke's ORIGIN — the "mega brain
+            at full power" meme is Brazilian (Mano Deyvin / XGH). This is a
+            DELIBERATE, contextual exception to the site's no-flags-for-languages
+            rule (see LanguageSwitcher): there a flag can't stand for a language
+            spoken across many countries, but HERE pt-BR is specifically
+            Brazilian Portuguese and the flag is an easter-egg, not the general
+            language picker. Implemented as a locale-switching <Link> (which is
+            prerender-safe, unlike useRouter), so it degrades to a plain anchor to
+            the pt-BR page. Shown selected when the console is already pt-BR. */}
+        <Link
+          href="/dev-fun/mega-brain"
+          locale="pt-BR"
+          className={`mb-flag-br${localeTag === "pt-BR" ? " is-selected" : ""}`}
+          aria-label={labels.ptBrFlagAria}
+          title={labels.ptBrFlagAria}
+          aria-current={localeTag === "pt-BR" ? "true" : undefined}
+        >
+          <svg viewBox="0 0 20 14" width="20" height="14" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <rect width="20" height="14" fill="#009C3B" />
+            <path d="M10 1.6 L18.4 7 L10 12.4 L1.6 7 Z" fill="#FFDF00" />
+            <circle cx="10" cy="7" r="3.3" fill="#002776" />
+            <clipPath id="mbBrGlobe">
+              <circle cx="10" cy="7" r="3.3" />
+            </clipPath>
+            <path clipPath="url(#mbBrGlobe)" d="M6.6 6.2 Q10 8.5 13.4 6.2 L13.4 7.1 Q10 9.4 6.6 7.1 Z" fill="#FFFFFF" />
+          </svg>
+        </Link>
         {/* PRIME 05/07/2026: subtle motion switch. Understated by design — a
             small frame control, not a loud button — so it stays out of the way
             but lets anyone who wants motion off turn it off (and it sticks).

@@ -202,6 +202,8 @@ export default async function VendorHubPage({
                 <CategoryFilter
                   legend={t("filterLegend")}
                   allLabel={t("filterAll")}
+                  noneLabel={t("filterNone")}
+                  emptyLabel={t("filterEmpty")}
                   groups={filterGroups}
                 />
               );

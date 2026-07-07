@@ -3802,6 +3802,16 @@
 .cat-filter-chip[aria-pressed="false"] {
   opacity: 0.5;
 }
+/* Empty state: shown when the reader deselects every category (the "None" chip).
+   Quiet and centered so a fully filtered page reads as intentional, not broken. */
+.cat-filter-empty {
+  margin: 0 0 2rem;
+  padding: 1rem 0;
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+  font-style: italic;
+  text-align: center;
+}
 /* The independent hide signal for the category filter. `!important` so it wins
    over any explicit `display` on the section/nav item; kept separate from the
    `hidden` attribute so the two index filters do not clobber each other. */
@@ -8111,6 +8121,22 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* When the toggle is present, the actions group no longer needs the auto margin
    (the toggle now carries it), so pills sit snug after it. */
 .mb-motion-toggle + .mb-titlebar-actions { margin-left: 0.5rem; }
+
+/* PRIME 07/07/2026: Brazilian-flag pt-BR shortcut. It takes over the auto-margin
+   the motion toggle used to carry, so it starts the right-hand cluster and sits
+   immediately to the LEFT of the motion control. Muted until hovered or selected
+   — a quiet easter-egg, not a loud button. */
+.mb-flag-br {
+  margin-left: auto; flex: 0 0 auto; display: inline-flex; align-items: center;
+  padding: 0.15rem; border: 1px solid transparent; border-radius: 5px;
+  line-height: 0; opacity: 0.6; cursor: pointer;
+  transition: opacity 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.mb-flag-br svg { display: block; border-radius: 2px; }
+.mb-flag-br:hover, .mb-flag-br:focus-visible { opacity: 1; border-color: rgba(34, 211, 238, 0.4); outline: none; }
+.mb-flag-br.is-selected { opacity: 1; border-color: rgba(34, 211, 238, 0.55); box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.25); }
+/* With the flag present the motion toggle no longer needs its own auto-margin. */
+.mb-flag-br + .mb-motion-toggle { margin-left: 0.4rem; }
 
 /* PRIME 05/07/2026: the two power controls as pills in the upper frame. The
    actions group sits between the frame title and the site address; on narrow

@@ -3450,6 +3450,8 @@
     },
     "filterLegend": "Show",
     "filterAll": "All",
+    "filterNone": "None",
+    "filterEmpty": "No categories selected",
     "acme-dns01": {
       "name": "ACME dns-01 TXT computer",
       "blurb": "Compute the TXT record for an ACME dns-01 challenge, from the token and account key.",
@@ -4772,7 +4774,8 @@
     "manoDismiss": "click anywhere to dismiss",
     "devFunTitle": "Back to /dev/fun",
     "motionOffAria": "Turn off motion",
-    "motionOnAria": "Turn on motion"
+    "motionOnAria": "Turn on motion",
+    "ptBrFlagAria": "Read the console in Brazilian Portuguese"
   },
   "shortcuts": {
     "actionBingo": "Buzzword Bingo",
