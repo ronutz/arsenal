@@ -1,0 +1,48 @@
+---
+slug: lets-encrypt
+title: "Let's Encrypt: the free CA and its rate limits"
+summary: "What Let's Encrypt is, why its certificates are short-lived, and how its rate limits actually work: the per-registered-domain and per-account limits, the exact-set and authorization-failure limits, and why ARI renewals are exempt from all of them."
+concepts: ["lets-encrypt", "acme", "rate-limits", "ari", "certificate-automation", "isrg"]
+relatedTools: ["letsencrypt-rate-limits", "acme-dns01", "cert-renewal-planner", "x509"]
+relatedArticles: ["acme-protocol", "certificate-signing-request", "tls-certificate-lifetimes", "certificate-revocation"]
+category: pki
+order: 9
+status: reviewed
+updated: "2026-07-07"
+---
+
+## What Let's Encrypt is
+
+Let's Encrypt is a free, automated certificate authority run by the nonprofit Internet Security Research Group (ISRG). It issues domain-validated TLS certificates at no cost, and it does so entirely through [ACME](/learn/acme-protocol), the automation protocol, rather than any manual purchase flow. That combination, free plus fully automated, is what made encrypted HTTP the default rather than the exception across the web.
+
+## Why the certificates are short-lived
+
+A Let's Encrypt certificate is valid for 90 days, far shorter than the one-to-two-year certificates that were once normal (see [certificate lifetimes](/learn/tls-certificate-lifetimes)). Short lifetimes limit the damage window if a key is compromised and make automated renewal a hard requirement rather than an afterthought, which is precisely the point: a certificate that must renew every few months cannot depend on a human remembering to do it. In 2025 Let's Encrypt went further and began offering short-lived certificates valid for about six days, requested through a certificate profile, pushing the same logic to its conclusion. For either lifetime, the operational model is the same: the client renews automatically, well before expiry.
+
+## How the rate limits work
+
+To keep a free service fair, Let's Encrypt caps issuance. The limits are enforced with a token-bucket scheme: each limit is a bucket that refills over time, so you can spend it in a burst or spread requests out, and once depleted it refills gradually rather than resetting on a fixed calendar. Revoking a certificate does not give capacity back, because issuing it already spent the resource. The main production limits, as documented by Let's Encrypt, are:
+
+- **50 new certificates per registered domain every 7 days.** This is the one people meet most. It is a global limit across all accounts, and it refills at one certificate roughly every 3.4 hours.
+- **300 new orders per account every 3 hours**, refilling at one order every 36 seconds.
+- **5 certificates per exact set of identifiers every 7 days.** Requesting the identical name set over and over, often from reinstalling or wiping a client during troubleshooting, is the usual way to hit this, and it refills slowly.
+- **Authorization failures per identifier per account**, capped at 5 per hour, to stop a misconfigured client from hammering validation. A separate consecutive-failure limit eventually pauses a name that keeps failing until you unpause it.
+- **Account registration and per-IP request limits** on top, enforced at the load balancer.
+
+Because these change over time, the [Let's Encrypt rate-limits page](https://letsencrypt.org/docs/rate-limits/) is the authoritative source for the current numbers.
+
+## The registered domain is the key unit
+
+The per-domain limit counts against the **registered domain**, not each hostname. Let's Encrypt determines that using the [Public Suffix List](https://publicsuffix.org/): the registered domain is the public suffix plus one label. So `www.example.com` and `api.example.com` both count against `example.com`, but `example.co.uk` is the registered domain for `new.blog.example.co.uk`, because `.co.uk` is itself a public suffix. This is the detail that surprises people: subdomains share one budget. For IP-address certificates the unit is the exact IPv4 address, or the containing IPv6 /64. Because a single certificate can carry up to 100 names, and a wildcard such as `*.example.com` covers every subdomain at once, folding many hostnames into fewer certificates is the standard way to stay comfortably under the per-domain limit.
+
+## Renewals are the escape hatch
+
+The limits are deliberately designed so that renewing rarely trips them, and the mechanism matters for anyone automating at scale. Let's Encrypt recognizes a renewal in two ways. The strong one is **ACME Renewal Information (ARI)**: a client that supports ARI asks the CA when to renew and, when it reorders, names the certificate it is replacing. An ARI-coordinated renewal is exempt from **all** rate limits. The weaker one is the older behavior where an order for the exact same set of identifiers is treated as a renewal; that exempts it from the per-account and per-registered-domain limits, but not from the exact-set or authorization-failure limits. The practical guidance follows directly: use a client that supports ARI, and renewal effectively stops being a rate-limit concern.
+
+## Test against staging first
+
+Let's Encrypt runs a separate staging environment with far higher limits and an untrusted certificate hierarchy. Point a new client or a troubleshooting session there first: you get the full ACME flow without spending production capacity or risking a lockout on a real domain. Only switch to production once issuance works end to end.
+
+## The chain and the roots
+
+Current Let's Encrypt certificates chain to ISRG's own roots: **ISRG Root X1** (RSA) and **ISRG Root X2** (ECDSA), both now trusted directly by browsers and operating systems, with rotating intermediates in between. Earlier on, Let's Encrypt leaned on a cross-signature from IdenTrust's older root so that clients would trust it before ISRG's roots were widely distributed; modern clients no longer need that path. You can inspect any issued certificate, including its chain pointers, with the [certificate decoder](/tools/x509), and compute the dns-01 record for issuance with the [ACME dns-01 tool](/tools/acme-dns01).

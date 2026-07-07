@@ -45,6 +45,12 @@ import HmacTool from "@/components/HmacTool";
 import { manifest as hmacManifest } from "@/lib/tools/hmac";
 import TotpHotpTool from "@/components/TotpHotpTool";
 import { manifest as totpHotpManifest } from "@/lib/tools/totp-hotp";
+import AcmeDns01Tool from "@/components/AcmeDns01Tool";
+import { manifest as acmeDns01Manifest } from "@/lib/tools/acme-dns01";
+import PublicSuffixTool from "@/components/PublicSuffixTool";
+import { manifest as publicSuffixManifest } from "@/lib/tools/public-suffix";
+import LetsEncryptRateLimitsTool from "@/components/LetsEncryptRateLimitsTool";
+import { manifest as letsEncryptRateLimitsManifest } from "@/lib/tools/letsencrypt-rate-limits";
 import DiffTool from "@/components/DiffTool";
 import { manifest as diffManifest } from "@/lib/tools/diff";
 import PkceTool from "@/components/PkceTool";
@@ -215,6 +221,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   hmac: {
     Component: HmacTool,
     sources: hmacManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "acme-dns01": {
+    Component: AcmeDns01Tool,
+    sources: acmeDns01Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "public-suffix": {
+    Component: PublicSuffixTool,
+    sources: publicSuffixManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "letsencrypt-rate-limits": {
+    Component: LetsEncryptRateLimitsTool,
+    sources: letsEncryptRateLimitsManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "totp-hotp": {
     Component: TotpHotpTool,

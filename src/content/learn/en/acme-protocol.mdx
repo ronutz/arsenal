@@ -1,0 +1,53 @@
+---
+slug: acme-protocol
+title: "ACME: how certificates issue and renew themselves"
+summary: "How the ACME protocol automates certificate issuance end to end: the account, the order, the three challenge types, the dns-01 record you publish, and the finalize-and-download step that produces the certificate."
+concepts: ["acme", "dns-01", "http-01", "tls-alpn-01", "key-authorization", "certificate-automation"]
+relatedTools: ["acme-dns01", "csr-decoder", "x509"]
+relatedArticles: ["certificate-signing-request", "certificate-revocation", "tls-certificate-lifetimes"]
+category: pki
+order: 8
+status: reviewed
+updated: "2026-07-07"
+---
+
+## The problem ACME solves
+
+A certificate authority will not sign a certificate for a name until it is satisfied you control that name. Historically that check was manual: paste a CSR into a web form, receive an email, click a link. That does not scale, and it does not survive the move to short certificate lifetimes (see [certificate lifetimes](/learn/tls-certificate-lifetimes)), where a certificate that renews every few weeks cannot involve a human each time. ACME, defined in RFC 8555, is the protocol that automates the entire conversation between a client and a CA, from proving control to receiving the certificate, with no manual steps.
+
+## The account and the order
+
+An ACME client first creates an **account**, identified by an **account key** it generates and keeps. This key is not the certificate's key; it signs the client's ACME requests so the CA knows they come from the same account. Every request the client makes is a signed JWS.
+
+To get a certificate the client submits a **newOrder** listing the **identifiers** it wants, the DNS names for the certificate. The CA responds with one **authorization** per identifier, each still pending. An authorization is the CA saying "prove you control this name, and here are the ways you may do it." The order cannot proceed until every authorization is valid.
+
+## Proving control: the three challenges
+
+Each authorization offers one or more **challenges**, and the client picks one. The three standard types all hang off the same idea, a **key authorization** that binds the challenge to your account key:
+
+- **http-01** — serve a file at `http://<domain>/.well-known/acme-challenge/<token>` whose contents are the key authorization. Simple, but needs inbound port 80 and cannot do wildcards.
+- **dns-01** — publish a TXT record derived from the key authorization (detailed below). Works behind a firewall and is the only type that validates a wildcard name.
+- **tls-alpn-01** (RFC 8737) — answer on port 443 during a TLS handshake using the `acme-tls/1` ALPN protocol, serving a special self-signed certificate. Useful when only 443 is reachable.
+
+The key authorization itself is the same in every case: the challenge **token** joined to a thumbprint of your account public key, as `token || '.' || base64url(thumbprint)`. The thumbprint is the RFC 7638 SHA-256 hash of the key's canonical form. Because it depends on your account key, only your client can produce the right answer, which is what proves control rather than mere reachability.
+
+## dns-01 in detail
+
+For dns-01 the published value is not the key authorization directly but its digest: the base64url of the SHA-256 of the key authorization. That value goes into a TXT record at `_acme-challenge.<domain>`. A wildcard order for `*.example.com` is validated under `_acme-challenge.example.com`, and because the apex and the wildcard are separate identifiers, a certificate covering both needs two records.
+
+```
+thumbprint       = base64url( SHA-256( canonical account JWK ) )   (RFC 7638)
+keyAuthorization = token "." thumbprint                            (RFC 8555 §8.1)
+TXT value        = base64url( SHA-256( keyAuthorization ) )        (RFC 8555 §8.4)
+record           = _acme-challenge.<domain>   IN TXT  "<TXT value>"
+```
+
+The [ACME dns-01 tool](/tools/acme-dns01) computes exactly this chain from a token and your public account key, so you can check what your client is about to publish. The CA runs the same computation from its stored copy of your account key and compares, so a match proves the record could only have come from your account.
+
+## Finalize and download
+
+Once every authorization is valid the order becomes ready, and the client sends a **finalize** request carrying a CSR. That CSR contains the certificate's own key pair and the requested names as Subject Alternative Names, and it is entirely separate from the account key (see [certificate signing requests](/learn/certificate-signing-request) for its structure). The CA verifies the CSR's names match the order, issues the certificate, and the client downloads it. You can inspect the result with the [certificate decoder](/tools/x509).
+
+## Renewal, and what is next
+
+Because none of this needs a human, renewal is just the same flow run again before expiry, which is how millions of sites keep certificates that renew every few weeks. Clients like certbot, acme.sh, and lego implement it, and newer additions refine it: ACME Renewal Information (RFC 9773) lets the CA suggest the ideal renewal window, and draft challenge types such as dns-account-01 add an account-scoped label so several independent systems can validate the same name at once without fighting over a single record. Those drafts are still in progress, but the core dns-01 exchange above is stable and is what every current ACME client speaks today.

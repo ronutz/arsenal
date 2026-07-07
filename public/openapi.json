@@ -58,6 +58,9 @@
       "name": "Netskope SSE / SASE"
     },
     {
+      "name": "Networking"
+    },
+    {
       "name": "Networking & addressing",
       "description": "IP addressing and subnet computations."
     },
@@ -78,6 +81,94 @@
     }
   ],
   "paths": {
+    "/acme-dns01": {
+      "get": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_acme_dns01",
+        "summary": "ACME dns-01 TXT computer",
+        "description": "Compute the TXT record for an ACME dns-01 challenge, from the token and account key. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 8555, RFC 7638, RFC 4648. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "ACME dns-01 token + account key JWK"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_acme_dns01_post",
+        "summary": "ACME dns-01 TXT computer (POST)",
+        "description": "Compute the TXT record for an ACME dns-01 challenge, from the token and account key. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 8555, RFC 7638, RFC 4648. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/as3-explainer-validator": {
       "get": {
         "tags": [
@@ -4686,6 +4777,94 @@
         }
       }
     },
+    "/letsencrypt-rate-limits": {
+      "get": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_letsencrypt_rate_limits",
+        "summary": "Let's Encrypt rate-limit planner",
+        "description": "Plan certificate issuance for a set of hostnames: group them by registered domain and see how they map onto Let's Encrypt's rate limits. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: LE Rate Limits, Public Suffix List. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "A list of hostnames you want on Let's Encrypt certificates"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_letsencrypt_rate_limits_post",
+        "summary": "Let's Encrypt rate-limit planner (POST)",
+        "description": "Plan certificate issuance for a set of hostnames: group them by registered domain and see how they map onto Let's Encrypt's rate limits. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: LE Rate Limits, Public Suffix List. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/nslookup-output-explainer": {
       "get": {
         "tags": [
@@ -5018,6 +5197,94 @@
                 "examples": [
                   "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public-suffix": {
+      "get": {
+        "tags": [
+          "Networking"
+        ],
+        "operationId": "run_public_suffix",
+        "summary": "Registered domain (eTLD+1)",
+        "description": "Find the public suffix (eTLD) and registered domain (eTLD+1) for any hostname, using the Public Suffix List. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Public Suffix List. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "www.example.co.uk"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Networking"
+        ],
+        "operationId": "run_public_suffix_post",
+        "summary": "Registered domain (eTLD+1) (POST)",
+        "description": "Find the public suffix (eTLD) and registered domain (eTLD+1) for any hostname, using the Public Suffix List. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Public Suffix List. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
               }
             }
           }

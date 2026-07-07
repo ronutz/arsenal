@@ -8,7 +8,7 @@ relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy
 category: pki
 order: 3
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-07-07"
 ---
 
 ## The issuance problem
@@ -24,6 +24,27 @@ A CSR is itself an ASN.1 structure, defined by PKCS#10 (RFC 2986) and usually sh
 - a **signature over the request, made with the matching private key**.
 
 That last part is the clever bit. By signing the request with the private key, you prove you actually hold the key that pairs with the public key you submitted, all without revealing the private key itself. The private key never leaves your control, which is exactly as it should be, because anyone who has it can impersonate you.
+
+## The PKCS#10 structure, field by field
+
+Underneath that three-part summary, PKCS#10 defines a precise ASN.1 shape. The outer `CertificationRequest` is a `SEQUENCE` of exactly three things: the request information, the signature algorithm, and the signature itself.
+
+```
+CertificationRequest ::= SEQUENCE {
+  certificationRequestInfo  CertificationRequestInfo,
+  signatureAlgorithm        AlgorithmIdentifier,
+  signature                 BIT STRING }
+
+CertificationRequestInfo ::= SEQUENCE {
+  version        INTEGER,                -- always v1 (0)
+  subject        Name,                   -- the distinguished name you request
+  subjectPKInfo  SubjectPublicKeyInfo,   -- algorithm + your public key bits
+  attributes     [0] Attributes }        -- everything else you ask for
+```
+
+The `certificationRequestInfo` is the "to-be-signed" half: your subject name, your public key wrapped in the very same `SubjectPublicKeyInfo` structure that will later appear in the finished certificate (see the [anatomy article](/learn/x509-anatomy)), and an `attributes` set. The signature is computed over the DER encoding of that half using your private key, which is what mechanically proves possession of the key described above.
+
+The `attributes` set is where the interesting requests live. A modern certificate identifies a server by its Subject Alternative Names, not its subject common name, and those SANs travel here inside the PKCS#9 `extensionRequest` attribute, which is a container for the X.509v3 extensions you would like the CA to copy into the certificate. When the [CSR decoder](/tools/csr-decoder) shows you requested SANs or key usages, it is reading them out of this attribute. (PKCS#10 version 1.7, in RFC 2986, obsoletes the older version 1.5 from RFC 2314; the structure above is what every current tool emits.)
 
 ## The CA is the authority, not the requester
 

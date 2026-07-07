@@ -3447,6 +3447,83 @@
       "findingsTitle": "Findings",
       "vlansTitle": "VLAN summary",
       "verbsTitle": "The EXOS command verbs"
+    },
+    "filterLegend": "Show",
+    "filterAll": "All",
+    "acme-dns01": {
+      "name": "ACME dns-01 TXT computer",
+      "blurb": "Compute the TXT record for an ACME dns-01 challenge, from the token and account key.",
+      "tokenLabel": "Challenge token",
+      "tokenPlaceholder": "the token from the dns-01 challenge",
+      "keyLabel": "Account key (public JWK or thumbprint)",
+      "keyPlaceholder": "the public account key as a JWK, or its base64url thumbprint",
+      "domainLabel": "Domain (optional)",
+      "domainPlaceholder": "example.org  (or *.example.org)",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs locally. Only the key's public members are used; nothing leaves your browser.",
+      "recordHeading": "DNS record to publish",
+      "recordNameLabel": "Record name",
+      "txtValueLabel": "TXT value",
+      "recordNote": "Publish this as a TXT record, wait for it to propagate, then let your ACME client continue.",
+      "derivationHeading": "How it was derived",
+      "keyAuthLabel": "Key authorization",
+      "thumbprintLabel": "Account key thumbprint",
+      "thumbComputed": "Computed from the JWK (RFC 7638).",
+      "thumbProvided": "Used the thumbprint you provided.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "public-suffix": {
+      "name": "Registered domain (eTLD+1)",
+      "blurb": "Find the public suffix (eTLD) and registered domain (eTLD+1) for any hostname, using the Public Suffix List.",
+      "hostLabel": "Hostname",
+      "hostPlaceholder": "www.example.co.uk",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs locally in your browser against a bundled list. Nothing is sent anywhere.",
+      "resultHeading": "Result",
+      "registeredDomainLabel": "Registered domain (eTLD+1)",
+      "publicSuffixLabel": "Public suffix (eTLD)",
+      "subdomainLabel": "Subdomain",
+      "ruleLabel": "Rule",
+      "sectionIcann": "ICANN section",
+      "sectionPrivate": "PRIVATE section",
+      "noRegistrable": "This host is itself a public suffix, so nothing is registrable at this exact name.",
+      "icannViewHeading": "ICANN-only view",
+      "icannViewNote": "The interpretation certificate rate limits and same-site checks use.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "letsencrypt-rate-limits": {
+      "name": "Let's Encrypt rate-limit planner",
+      "blurb": "Plan certificate issuance for a set of hostnames: group them by registered domain and see how they map onto Let's Encrypt's rate limits.",
+      "namesLabel": "Intended certificate names",
+      "namesPlaceholder": "One hostname per line, e.g. www.example.com",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs locally in your browser. Nothing is sent anywhere.",
+      "summaryHeading": "Summary",
+      "totalNamesLabel": "Names",
+      "domainsLabel": "Registered domains",
+      "minCertsLabel": "Min certificates",
+      "exceedsWarning": "At least one registered domain would exceed the weekly limit if you issue one certificate per name. Pack names onto fewer certificates or use a wildcard.",
+      "groupCountLabel": "Names (of weekly limit)",
+      "minCertsForDomainLabel": "Min certificates",
+      "groupExceeds": "One certificate per name here would exceed 50 per week. Pack them onto fewer certificates, or cover subdomains with a wildcard.",
+      "wildcardLabel": "Wildcard could cover",
+      "groupNamesLabel": "Names",
+      "ipHeading": "IP addresses",
+      "ipNote": "IP addresses use their own unit: the exact IPv4 address, or the containing IPv6 /64. They are not grouped as domains.",
+      "invalidHeading": "Not planned",
+      "invalidNote": "These were not valid hostnames, or were bare public suffixes with nothing registrable, so they were skipped.",
+      "limitsHeading": "Let's Encrypt limits",
+      "limitCertsPerDomain": "Certificates per registered domain (7 days)",
+      "limitOrders": "New orders per account (3 hours)",
+      "limitExactSet": "Same exact set of names (7 days)",
+      "limitMaxNames": "Names per certificate",
+      "ariNote": "Renewals coordinated by ARI are exempt from all rate limits.",
+      "snapshotNote": "Limits as of"
     }
   },
   "privacy_page": {
@@ -3508,14 +3585,21 @@
   "search": {
     "kindTool": "Tool",
     "kindArticle": "Article",
+    "kindGuide": "Guide",
     "kindPage": "Page",
     "label": "Search",
     "placeholder": "Search the site…",
     "close": "Close",
     "searching": "Searching…",
     "noResults": "No results for “{query}”.",
+    "filterEmpty": "No results of the selected types.",
     "unavailable": "Search runs on the published site. It is not available in local preview.",
-    "hint": "Type to search articles, tools, and pages."
+    "hint": "Type to search tools, articles, the user guide, and pages.",
+    "filterLabel": "Filter results by type",
+    "filterTools": "Tools",
+    "filterArticles": "Articles",
+    "filterGuide": "User Guide",
+    "filterPages": "Pages"
   },
   "theme": {
     "label": "Theme",
@@ -3964,6 +4048,7 @@
     "stackSearch": "Search",
     "stackSearchV": "Static, client-side full-text search; no search server",
     "vibeTitle": "Is this vibe coding?",
+    "codeSynth": "The code is 100% synthesised by Claude.",
     "vibeBody1": "It is a fair question, and worth answering plainly. Vibe coding is a term the AI researcher Andrej Karpathy coined in early 2025 for a way of building software where you describe what you want to a language model, accept what it writes without reading it closely, and steer by results rather than by the code itself. He framed it as giving in to the vibes and forgetting that the code even exists, and was clear that it suited quick, throwaway projects more than systems people depend on.",
     "vibeBody2": "By that definition, part of this site was built that way, and it is worth owning rather than hiding. The application's surface, the framework wiring, the components, the styling, the plumbing that holds the pages together, was produced quickly with an AI engineer and steered by outcome and by a fixed set of house rules, not typed out by hand line by line. For that layer, where a mistake is visible and easily corrected, speed was the point.",
     "vibeBody3": "The parts that matter most are held to a different standard. Everything that computes your data is verified, not vibed: each tool's core is checked against the published standard it implements, the relevant RFCs and specifications, and its output is confirmed against independent references before it ships. As a widely cited line from the programmer Simon Willison puts it, code you have reviewed, tested, and understood is not vibe coding at all. Karpathy himself now calls the disciplined version agentic engineering: keeping the leverage of AI without conceding the quality of the result. That is the line this project draws. Fast where speed is free, rigorous where it counts, and one human accountable for all of it.",
@@ -4980,6 +5065,54 @@
       "verify-data-integrity": {
         "title": "Verify data integrity",
         "desc": "Compute a hash of some data, or an HMAC when a shared secret is involved."
+      },
+      "debug-a-saml-login": {
+        "title": "Debug a SAML single sign-on",
+        "desc": "Decode a SAML response to read its assertions and conditions, then inspect the X.509 certificate that signed it."
+      },
+      "map-a-jwks-to-tokens": {
+        "title": "Match a token to its signing key",
+        "desc": "Read a JWKS key set to see the keys it publishes, then decode a JSON Web Token to find the key that signed it."
+      },
+      "understand-a-tls-connection": {
+        "title": "Understand a TLS connection",
+        "desc": "Decode the negotiated cipher suite, inspect the server certificate, and review the response security headers."
+      },
+      "harden-a-web-response": {
+        "title": "Harden a web response",
+        "desc": "Audit a site's HTTP security headers, then inspect the URL those headers protect."
+      },
+      "assess-ssrf-risk": {
+        "title": "Assess a URL for SSRF risk",
+        "desc": "Classify whether a URL could reach an internal target, then inspect its parts in detail."
+      },
+      "score-a-vulnerability": {
+        "title": "Score a vulnerability",
+        "desc": "Decode a CVSS vector string into its metrics to understand how severe a finding really is."
+      },
+      "convert-and-tidy-config": {
+        "title": "Convert and tidy a config",
+        "desc": "Convert a config between JSON and YAML, then format the result so it is easy to read."
+      },
+      "compare-two-files": {
+        "title": "Compare two files",
+        "desc": "Normalize two JSON blobs with the formatter, then diff them to see exactly what changed."
+      },
+      "reproduce-an-http-request": {
+        "title": "Reproduce an HTTP request",
+        "desc": "Break a URL into its parts, then translate the call into curl, fetch, or another client."
+      },
+      "identify-an-unknown-hash": {
+        "title": "Identify an unknown hash",
+        "desc": "Look up a digest against known values, then recompute a hash to confirm the match."
+      },
+      "read-a-syslog-line": {
+        "title": "Read a syslog line",
+        "desc": "Decode a syslog PRI value into its facility and severity."
+      },
+      "build-and-test-a-regex": {
+        "title": "Build and test a regex",
+        "desc": "Write a regular expression and test it against sample text as you go."
       }
     },
     "manualHeading": "Manual",
@@ -5009,7 +5142,8 @@
         "b": "The project is open source. The code is licensed under Apache 2.0 and the written content under CC BY 4.0. You can read the source, report an issue, or suggest a tool from the repository, which is linked in the footer and on the License page."
       }
     },
-    "backToTools": "Browse all tools"
+    "backToTools": "Browse all tools",
+    "exploreLearn": "Explore the Learn library"
   },
   "disclaimer_page": {
     "metaTitle": "Disclaimer",

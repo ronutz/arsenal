@@ -16,6 +16,7 @@ import FamilyChip from "@/components/FamilyChip";
 import { categoryColor } from "@/config/categoryColors";
 import { vendorColor, populatedVendors } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
+import CategoryFilter from "@/components/CategoryFilter";
 
 export default async function ToolsPage({
   params,
@@ -89,6 +90,23 @@ export default async function ToolsPage({
                   ))}
                 </ul>
               </nav>
+            </div>
+          )}
+
+          {/* Second nav utility: show/hide categories (client island; the
+              jump-nav above scrolls, this one filters what is displayed). */}
+          {categories.length > 1 && (
+            <div className="container certs-container">
+              <CategoryFilter
+                legend={t("filterLegend")}
+                allLabel={t("filterAll")}
+                groups={categories.map((category) => ({
+                  key: category,
+                  sectionId: category,
+                  label: t(`categories.${category}`),
+                  color: categoryColor(category),
+                }))}
+              />
             </div>
           )}
 

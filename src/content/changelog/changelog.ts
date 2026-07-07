@@ -43,6 +43,38 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-07",
+    time: "05:35",
+    kind: "content",
+    title: "Vendor ACME companions: BIG-IP and FortiGate",
+    body:
+      "Two vendor Learn articles on certificate automation. The F5 BIG-IP article covers the native ACMEv2 client added in BIG-IP 21.1.0, which handles provisioning, renewal, and deployment for any ACMEv2 CA (Let's Encrypt, ZeroSSL, DigiCert, Buypass, Google Trust Services, SSL.com) through Certificate Order Management, alongside the dehydrated-based DevCentral solutions that preceded it, BIG-IQ's centralized Let's Encrypt CA management profile, and Ansible-driven issuance. The FortiGate article covers FortiOS's built-in ACME client for the appliance's own management certificate: its public-IP and FQDN requirements, the single-name SAN constraint (no wildcards, no multiple SANs), and the TLS-ALPN-01 and HTTP-01 challenges by FortiOS version. Both link the certificate cluster (rate-limit planner, x509 decoder, renewal planner, dns-01) and contrast the two native clients. Every vendor claim was checked against the vendor's own documentation, including F5's 21.1.0 release notes and Fortinet's per-version admin guides. English and Portuguese, other locales served by English fallback.",
+  },
+  {
+    date: "2026-07-07",
+    time: "05:10",
+    kind: "tool",
+    title: "Let's Encrypt rate-limit planner",
+    body: "Paste the hostnames you plan to certify and see how they map onto Let's Encrypt's limits. It groups names by registered domain (eTLD+1) using the Public Suffix List, shows the fewest certificates you need by packing up to 100 names each, points out where a wildcard would collapse subdomains, and warns if issuing one certificate per name would exceed the 50-per-registered-domain-per-week limit. The concrete limits are shown with their snapshot date and source link, and it notes that ARI-coordinated renewals are exempt from all limits. Builds directly on the registered-domain resolver; runs entirely locally.",
+    tools: ["letsencrypt-rate-limits"],
+  },
+  {
+    date: "2026-07-07",
+    time: "04:20",
+    kind: "tool",
+    title: "Registered domain (eTLD+1) resolver",
+    body: "Find the public suffix and registered domain for any hostname. Paste a name and it returns the eTLD (e.g. co.uk), the registered domain (e.g. example.co.uk), the subdomain, and which section of the Public Suffix List decided it. It implements the full PSL algorithm, including wildcard and exception rules, and when a PRIVATE-section rule wins (like github.io) it also shows the ICANN-only view. This is the exact boundary certificate rate limits, cookies, and same-site checks rely on. Runs locally against a bundled, dated snapshot of the list; verified against the PSL algorithm test vectors. Ships with a companion article on public suffixes and eTLD+1.",
+    tools: ["public-suffix"],
+  },
+  {
+    date: "2026-07-07",
+    time: "03:26",
+    kind: "tool",
+    title: "ACME dns-01 TXT computer",
+    body: "Compute the TXT record that passes an ACME dns-01 challenge. Paste the challenge token and your ACME account key (a public JWK, or its thumbprint) and it returns the _acme-challenge record name, the value to publish, and the key authorization and RFC 7638 thumbprint it was derived from. Only the key's public members are used and the key is never echoed; the SHA-256 runs locally via Web Crypto, verified against the RFC 7638 known-answer test. Ships with a new ACME protocol article explaining the whole issuance flow.",
+    tools: ["acme-dns01"],
+  },
+  {
     date: "2026-07-06",
     time: "23:42",
     kind: "tool",

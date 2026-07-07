@@ -237,6 +237,9 @@ export default async function ColophonPage({
           <section className="section">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("vibeTitle")}</h2>
+              <p className="colophon-body">
+                <strong>{t("codeSynth")}</strong>
+              </p>
               <p className="colophon-body">{t("vibeBody1")}</p>
               <p className="colophon-body">{t("vibeBody2")}</p>
               <p className="colophon-body">{t("vibeBody3")}</p>

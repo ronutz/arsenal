@@ -18,6 +18,7 @@ import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
 import { populatedVendors, vendorColor } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
+import CategoryFilter from "@/components/CategoryFilter";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -91,6 +92,20 @@ export default async function LearnIndexPage({
                   ))}
                 </ul>
               </nav>
+            )}
+
+            {/* Second nav utility: show/hide categories (scroll vs filter). */}
+            {groups.length > 1 && (
+              <CategoryFilter
+                legend={tTools("filterLegend")}
+                allLabel={tTools("filterAll")}
+                groups={groups.map((group) => ({
+                  key: group.category,
+                  sectionId: group.category,
+                  label: tTools(`categories.${group.category}`),
+                  color: categoryColor(group.category),
+                }))}
+              />
             )}
 
             {/* One block per category, mirroring the tools index taxonomy. */}

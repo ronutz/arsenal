@@ -976,9 +976,65 @@
 .search-result-kind--article {
   color: var(--text-secondary);
 }
+.search-result-kind--guide {
+  color: var(--color-warning, #f59e0b);
+  border-color: color-mix(in srgb, var(--color-warning, #f59e0b) 45%, transparent);
+}
 .search-result-kind--page {
   color: var(--text-secondary);
   opacity: 0.8;
+}
+
+/* ---- Type filter pills (include/exclude Tools / Articles / User Guide / Pages)
+   Sit between the search input and the results; toggle which kinds appear. --- */
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.14));
+}
+.search-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.14));
+  /* Inactive (excluded) pills read as struck-through-quiet, not invisible, so the
+     reader always sees the full set of available filters. */
+  opacity: 0.55;
+  transition: opacity 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+.search-filter:hover {
+  opacity: 0.85;
+}
+.search-filter--active {
+  opacity: 1;
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+}
+.search-filter-count {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.1em;
+  text-align: center;
+  padding: 0 0.25rem;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
+}
+.search-filter--active .search-filter-count {
+  color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 18%, transparent);
 }
 
 /* ============================================================================
@@ -3695,6 +3751,62 @@
   color: var(--accent-amber);
   border-color: color-mix(in srgb, var(--accent-amber) 60%, transparent);
   background: color-mix(in srgb, var(--accent-amber) 14%, var(--surface-base));
+}
+
+/* Show/hide category filter (client island: CategoryFilter.tsx) — the second
+   nav utility on the index pages. Same visual language as the vendor filter and
+   the jump-nav; a "shown" chip (aria-pressed="true") carries the amber accent,
+   a "hidden" chip reads quiet. `.cat-hidden` is the independent hide signal so
+   this filter composes with the vendor filter's `hidden` attribute (OR: either
+   one hides). */
+.cat-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0 0 2rem;
+}
+.cat-filter-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.cat-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+.cat-filter-chip:hover,
+.cat-filter-chip:focus-visible {
+  color: var(--accent-amber);
+  border-color: color-mix(in srgb, var(--accent-amber) 45%, transparent);
+}
+/* Shown categories carry the accent; hidden ones read quiet but stay legible. */
+.cat-filter-chip[aria-pressed="true"] {
+  color: var(--accent-amber);
+  border-color: color-mix(in srgb, var(--accent-amber) 60%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 14%, var(--surface-base));
+}
+.cat-filter-chip[aria-pressed="false"] {
+  opacity: 0.5;
+}
+/* The independent hide signal for the category filter. `!important` so it wins
+   over any explicit `display` on the section/nav item; kept separate from the
+   `hidden` attribute so the two index filters do not clobber each other. */
+.cat-hidden {
+  display: none !important;
 }
 .category-section { scroll-margin-top: 7.5rem; }
 /* Tools index: the first category sits directly under the jump-nav. Without
@@ -9822,6 +9934,14 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   font-size: 1.05rem;
   margin: 0 0 0.4rem;
   color: var(--text-primary);
+}
+
+/* Footer CTA row: back-to-tools + Learn library, side by side, wrapping on
+   narrow screens. */
+.guide-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 /* Narrow screens: collapse the two-column rows to single column. */

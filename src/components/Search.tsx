@@ -82,16 +82,35 @@ function sanitizeExcerpt(raw: string): string {
  * (CIDR now has its own /tools/cidr page, so it badges as a tool; the home page
  * also embeds the CIDR widget, and that home-page hit simply reads as a page.)
  */
-type ResultKind = "tool" | "article" | "page";
+type ResultKind = "tool" | "article" | "guide" | "page";
 function classifyKind(url: string): ResultKind {
+  // /learn/ and /tools/ are checked first so an article or tool whose slug
+  // happens to contain "guide" is not misclassified as the User Guide.
   if (url.includes("/tools/")) return "tool";
   if (url.includes("/learn/")) return "article";
+  if (/\/guide(\/|$|#|\?)/.test(url)) return "guide";
   return "page";
 }
-const KIND_LABEL_KEY: Record<ResultKind, "kindTool" | "kindArticle" | "kindPage"> = {
+const KIND_LABEL_KEY: Record<ResultKind, "kindTool" | "kindArticle" | "kindGuide" | "kindPage"> = {
   tool: "kindTool",
   article: "kindArticle",
+  guide: "kindGuide",
   page: "kindPage",
+};
+
+// The include/exclude filter pills, in display order. Each toggles whether hits
+// of that kind appear. All are enabled by default, so search behaves exactly as
+// before until the reader chooses to narrow it. The pill label keys are plural
+// ("Tools", "Articles", "User Guide", "Pages") to read as category filters.
+const FILTER_KINDS: readonly ResultKind[] = ["tool", "article", "guide", "page"];
+const FILTER_LABEL_KEY: Record<
+  ResultKind,
+  "filterTools" | "filterArticles" | "filterGuide" | "filterPages"
+> = {
+  tool: "filterTools",
+  article: "filterArticles",
+  guide: "filterGuide",
+  page: "filterPages",
 };
 
 export default function Search() {
@@ -110,6 +129,26 @@ export default function Search() {
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  // Which result kinds are currently included. All enabled by default, so search
+  // is unchanged until the reader narrows it. A Set keeps include/exclude O(1).
+  const [enabled, setEnabled] = useState<Set<ResultKind>>(
+    () => new Set<ResultKind>(FILTER_KINDS),
+  );
+  const toggleKind = useCallback((kind: ResultKind) => {
+    setEnabled((prev) => {
+      const next = new Set(prev);
+      // Never let the reader switch every kind off — that would show an empty
+      // panel with no way back except re-enabling. Toggling the last remaining
+      // kind is a no-op; toggling any other behaves as expected.
+      if (next.has(kind)) {
+        if (next.size > 1) next.delete(kind);
+      } else {
+        next.add(kind);
+      }
+      return next;
+    });
+  }, []);
+
   // Classify each hit by URL so we can badge its type. Order is left exactly as
   // Pagefind ranked it — most relevant first, regardless of type — because the
   // badge already conveys the type, and grouping would risk burying a more
@@ -117,6 +156,18 @@ export default function Search() {
   const ordered = useMemo(
     () => results.map((r) => ({ ...r, kind: classifyKind(r.url) })),
     [results],
+  );
+
+  // Per-kind counts (over the unfiltered set) so each pill can show how many
+  // hits it holds, and the filtered list actually shown to the reader.
+  const counts = useMemo(() => {
+    const c: Record<ResultKind, number> = { tool: 0, article: 0, guide: 0, page: 0 };
+    for (const r of ordered) c[r.kind] += 1;
+    return c;
+  }, [ordered]);
+  const shown = useMemo(
+    () => ordered.filter((r) => enabled.has(r.kind)),
+    [ordered, enabled],
   );
 
   // Lazily load the Pagefind runtime the first time search opens.
@@ -281,15 +332,41 @@ export default function Search() {
               </button>
             </div>
 
+            {/* Type filters — include/exclude Tools, Articles, User Guide, and
+                other Pages. Shown only once there are results to narrow, so an
+                empty search stays uncluttered. */}
+            {!unavailable && ordered.length > 0 && (
+              <div className="search-filters" role="group" aria-label={t("filterLabel")}>
+                {FILTER_KINDS.map((kind) => {
+                  const active = enabled.has(kind);
+                  return (
+                    <button
+                      key={kind}
+                      type="button"
+                      className={`search-filter${active ? " search-filter--active" : ""}`}
+                      aria-pressed={active}
+                      onClick={() => toggleKind(kind)}
+                    >
+                      {t(FILTER_LABEL_KEY[kind])}
+                      <span className="search-filter-count">{counts[kind]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
             <div className="search-results">
               {unavailable && <p className="search-message">{t("unavailable")}</p>}
               {!unavailable && loading && <p className="search-message">{t("searching")}</p>}
-              {!unavailable && !loading && query.trim() && results.length === 0 && (
+              {!unavailable && !loading && query.trim() && ordered.length === 0 && (
                 <p className="search-message">{t("noResults", { query: query.trim() })}</p>
               )}
-              {!unavailable && ordered.length > 0 && (
+              {!unavailable && ordered.length > 0 && shown.length === 0 && (
+                <p className="search-message">{t("filterEmpty")}</p>
+              )}
+              {!unavailable && shown.length > 0 && (
                 <ul className="search-result-list">
-                  {ordered.map((r, i) => (
+                  {shown.map((r, i) => (
                     <li key={`${r.url}-${i}`}>
                       <a className="search-result" href={r.url}>
                         <span className="search-result-head">

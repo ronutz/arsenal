@@ -3447,6 +3447,83 @@
       "findingsTitle": "Constatações",
       "vlansTitle": "Resumo de VLANs",
       "verbsTitle": "Os verbos de comando do EXOS"
+    },
+    "filterLegend": "Mostrar",
+    "filterAll": "Todas",
+    "acme-dns01": {
+      "name": "Calculadora de TXT dns-01 do ACME",
+      "blurb": "Calcule o registro TXT de um desafio dns-01 do ACME, a partir do token e da chave da conta.",
+      "tokenLabel": "Token do desafio",
+      "tokenPlaceholder": "o token do desafio dns-01",
+      "keyLabel": "Chave da conta (JWK público ou thumbprint)",
+      "keyPlaceholder": "a chave pública da conta como JWK, ou seu thumbprint base64url",
+      "domainLabel": "Domínio (opcional)",
+      "domainPlaceholder": "example.org  (ou *.example.org)",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda localmente. Apenas os membros públicos da chave são usados; nada sai do seu navegador.",
+      "recordHeading": "Registro DNS a publicar",
+      "recordNameLabel": "Nome do registro",
+      "txtValueLabel": "Valor TXT",
+      "recordNote": "Publique isto como um registro TXT, aguarde a propagação e deixe seu cliente ACME continuar.",
+      "derivationHeading": "Como foi derivado",
+      "keyAuthLabel": "Autorização de chave",
+      "thumbprintLabel": "Thumbprint da chave da conta",
+      "thumbComputed": "Calculado a partir do JWK (RFC 7638).",
+      "thumbProvided": "Usou o thumbprint que você forneceu.",
+      "copy": "Copiar",
+      "copied": "Copiado"
+    },
+    "public-suffix": {
+      "name": "Domínio registrado (eTLD+1)",
+      "blurb": "Descubra o sufixo público (eTLD) e o domínio registrado (eTLD+1) de qualquer nome de host, usando a Public Suffix List.",
+      "hostLabel": "Nome de host",
+      "hostPlaceholder": "www.example.co.uk",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda localmente no seu navegador, contra uma lista embutida. Nada é enviado para lugar nenhum.",
+      "resultHeading": "Resultado",
+      "registeredDomainLabel": "Domínio registrado (eTLD+1)",
+      "publicSuffixLabel": "Sufixo público (eTLD)",
+      "subdomainLabel": "Subdomínio",
+      "ruleLabel": "Regra",
+      "sectionIcann": "Seção ICANN",
+      "sectionPrivate": "Seção PRIVATE",
+      "noRegistrable": "Este host é em si um sufixo público, então nada é registrável neste nome exato.",
+      "icannViewHeading": "Visão apenas-ICANN",
+      "icannViewNote": "A interpretação que os limites de emissão de certificados e as verificações same-site usam.",
+      "copy": "Copiar",
+      "copied": "Copiado"
+    },
+    "letsencrypt-rate-limits": {
+      "name": "Planejador de limites da Let's Encrypt",
+      "blurb": "Planeje a emissão de certificados para um conjunto de nomes de host: agrupe-os por domínio registrado e veja como se encaixam nos limites da Let's Encrypt.",
+      "namesLabel": "Nomes pretendidos dos certificados",
+      "namesPlaceholder": "Um nome de host por linha, ex. www.example.com",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda localmente no seu navegador. Nada é enviado para lugar nenhum.",
+      "summaryHeading": "Resumo",
+      "totalNamesLabel": "Nomes",
+      "domainsLabel": "Domínios registrados",
+      "minCertsLabel": "Certificados mínimos",
+      "exceedsWarning": "Pelo menos um domínio registrado excederia o limite semanal se você emitir um certificado por nome. Empacote nomes em menos certificados ou use um curinga.",
+      "groupCountLabel": "Nomes (do limite semanal)",
+      "minCertsForDomainLabel": "Certificados mínimos",
+      "groupExceeds": "Um certificado por nome aqui excederia 50 por semana. Empacote-os em menos certificados, ou cubra subdomínios com um curinga.",
+      "wildcardLabel": "Curinga poderia cobrir",
+      "groupNamesLabel": "Nomes",
+      "ipHeading": "Endereços IP",
+      "ipNote": "Endereços IP usam sua própria unidade: o endereço IPv4 exato, ou o /64 IPv6 que o contém. Eles não são agrupados como domínios.",
+      "invalidHeading": "Não planejados",
+      "invalidNote": "Estes não eram nomes de host válidos, ou eram sufixos públicos puros sem nada registrável, então foram ignorados.",
+      "limitsHeading": "Limites da Let's Encrypt",
+      "limitCertsPerDomain": "Certificados por domínio registrado (7 dias)",
+      "limitOrders": "Novos pedidos por conta (3 horas)",
+      "limitExactSet": "Mesmo conjunto exato de nomes (7 dias)",
+      "limitMaxNames": "Nomes por certificado",
+      "ariNote": "Renovações coordenadas por ARI são isentas de todos os limites.",
+      "snapshotNote": "Limites em"
     }
   },
   "privacy_page": {
@@ -3508,14 +3585,21 @@
   "search": {
     "kindTool": "Ferramenta",
     "kindArticle": "Artigo",
+    "kindGuide": "Guia",
     "kindPage": "Página",
     "label": "Buscar",
     "placeholder": "Buscar no site…",
     "close": "Fechar",
     "searching": "Buscando…",
     "noResults": "Nenhum resultado para “{query}”.",
+    "filterEmpty": "Nenhum resultado dos tipos selecionados.",
     "unavailable": "A busca funciona no site publicado. Não está disponível na pré-visualização local.",
-    "hint": "Digite para buscar artigos, ferramentas e páginas."
+    "hint": "Digite para pesquisar ferramentas, artigos, o guia do usuário e páginas.",
+    "filterLabel": "Filtrar resultados por tipo",
+    "filterTools": "Ferramentas",
+    "filterArticles": "Artigos",
+    "filterGuide": "Guia do usuário",
+    "filterPages": "Páginas"
   },
   "theme": {
     "label": "Tema",
@@ -3963,6 +4047,7 @@
     "stackSearch": "Busca",
     "stackSearchV": "Busca de texto completo estática, no lado do cliente; sem servidor de busca",
     "vibeTitle": "Isto é vibe coding?",
+    "codeSynth": "O código é 100% sintetizado pelo Claude.",
     "vibeBody1": "É uma pergunta justa, e vale a pena respondê-la com clareza. Vibe coding é um termo que o pesquisador de IA Andrej Karpathy cunhou no início de 2025 para uma forma de construir software em que você descreve o que quer a um modelo de linguagem, aceita o que ele escreve sem ler com atenção e se orienta pelos resultados, não pelo próprio código. Ele o descreveu como se entregar à vibe e esquecer que o código sequer existe, e deixou claro que servia mais para projetos rápidos e descartáveis do que para sistemas dos quais as pessoas dependem.",
     "vibeBody2": "Por essa definição, parte deste site foi construída assim, e é melhor assumir do que esconder. A superfície da aplicação, a ligação do framework, os componentes, a estilização, o encanamento que mantém as páginas juntas, foi produzida rapidamente com um engenheiro de IA e orientada pelo resultado e por um conjunto fixo de regras internas, não digitada à mão linha por linha. Para essa camada, onde um erro é visível e facilmente corrigido, a velocidade era o ponto.",
     "vibeBody3": "As partes que mais importam seguem um padrão diferente. Tudo o que computa os seus dados é verificado, não feito na vibe: o núcleo de cada ferramenta é conferido contra o padrão publicado que implementa, os RFCs e especificações pertinentes, e a sua saída é confirmada contra referências independentes antes de ser publicada. Como diz uma frase muito citada do programador Simon Willison, código que você revisou, testou e entendeu não é vibe coding de forma alguma. O próprio Karpathy agora chama a versão disciplinada de agentic engineering: manter a alavancagem da IA sem abrir mão da qualidade do resultado. É essa a linha que este projeto traça. Rápido onde a velocidade sai de graça, rigoroso onde importa, e uma pessoa responsável por tudo.",
@@ -4980,6 +5065,54 @@
       "verify-data-integrity": {
         "title": "Verificar a integridade dos dados",
         "desc": "Calcule o hash de um dado ou um HMAC quando houver um segredo compartilhado."
+      },
+      "debug-a-saml-login": {
+        "title": "Depurar um login SAML (SSO)",
+        "desc": "Decodifique uma resposta SAML para ler suas asserções e condições e, em seguida, inspecione o certificado X.509 que a assinou."
+      },
+      "map-a-jwks-to-tokens": {
+        "title": "Associar um token à sua chave de assinatura",
+        "desc": "Leia um conjunto de chaves JWKS para ver as chaves publicadas e, em seguida, decodifique um JSON Web Token para encontrar a chave que o assinou."
+      },
+      "understand-a-tls-connection": {
+        "title": "Entender uma conexão TLS",
+        "desc": "Decodifique a suíte de cifras negociada, inspecione o certificado do servidor e revise os cabeçalhos de segurança da resposta."
+      },
+      "harden-a-web-response": {
+        "title": "Reforçar a segurança de uma resposta web",
+        "desc": "Audite os cabeçalhos de segurança HTTP de um site e, em seguida, inspecione a URL que esses cabeçalhos protegem."
+      },
+      "assess-ssrf-risk": {
+        "title": "Avaliar o risco de SSRF em uma URL",
+        "desc": "Classifique se uma URL pode alcançar um alvo interno e, em seguida, inspecione suas partes em detalhe."
+      },
+      "score-a-vulnerability": {
+        "title": "Pontuar uma vulnerabilidade",
+        "desc": "Decodifique uma string de vetor CVSS em suas métricas para entender o quão grave é uma descoberta."
+      },
+      "convert-and-tidy-config": {
+        "title": "Converter e organizar uma configuração",
+        "desc": "Converta uma configuração entre JSON e YAML e, em seguida, formate o resultado para que fique fácil de ler."
+      },
+      "compare-two-files": {
+        "title": "Comparar dois arquivos",
+        "desc": "Normalize dois blocos JSON com o formatador e, em seguida, compare-os para ver exatamente o que mudou."
+      },
+      "reproduce-an-http-request": {
+        "title": "Reproduzir uma requisição HTTP",
+        "desc": "Divida uma URL em suas partes e, em seguida, traduza a chamada para curl, fetch ou outro cliente."
+      },
+      "identify-an-unknown-hash": {
+        "title": "Identificar um hash desconhecido",
+        "desc": "Pesquise um digest em relação a valores conhecidos e, em seguida, recalcule um hash para confirmar a correspondência."
+      },
+      "read-a-syslog-line": {
+        "title": "Ler uma linha de syslog",
+        "desc": "Decodifique um valor PRI de syslog em sua facility e severidade."
+      },
+      "build-and-test-a-regex": {
+        "title": "Criar e testar uma regex",
+        "desc": "Escreva uma expressão regular e teste-a com texto de exemplo conforme avança."
       }
     },
     "manualHeading": "Manual",
@@ -5009,7 +5142,8 @@
         "b": "O projeto é de código aberto. O código é licenciado sob Apache 2.0 e o conteúdo escrito sob CC BY 4.0. Você pode ler o código, relatar um problema ou sugerir uma ferramenta pelo repositório, que fica no rodapé e na página de Licença."
       }
     },
-    "backToTools": "Ver todas as ferramentas"
+    "backToTools": "Ver todas as ferramentas",
+    "exploreLearn": "Explorar a biblioteca Learn"
   },
   "disclaimer_page": {
     "metaTitle": "Aviso legal",

@@ -226,11 +226,16 @@ export default async function GuidePage({
             </div>
           </section>
 
-          {/* Footer CTA back to the tools */}
+          {/* Footer CTAs: back to the tools, and into the Learn library — the
+              guide reports the article count in the datasheet, so give the
+              reader a direct way to reach those articles. */}
           <section className="section">
-            <div className="container colophon-container">
+            <div className="container colophon-container guide-cta-row">
               <Link href="/tools" className="btn btn-secondary colophon-back">
                 {t("backToTools")} →
+              </Link>
+              <Link href="/learn" className="btn btn-secondary">
+                {t("exploreLearn")} →
               </Link>
             </div>
           </section>

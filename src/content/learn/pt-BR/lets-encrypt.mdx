@@ -1,0 +1,48 @@
+---
+slug: lets-encrypt
+title: "Let's Encrypt: a CA gratuita e seus limites de emissão"
+summary: "O que é a Let's Encrypt, por que seus certificados são de vida curta e como seus limites de emissão realmente funcionam: os limites por domínio registrado e por conta, os limites por conjunto exato e por falha de autorização, e por que as renovações por ARI são isentas de todos eles."
+concepts: ["lets-encrypt", "acme", "rate-limits", "ari", "certificate-automation", "isrg"]
+relatedTools: ["letsencrypt-rate-limits", "acme-dns01", "cert-renewal-planner", "x509"]
+relatedArticles: ["acme-protocol", "certificate-signing-request", "tls-certificate-lifetimes", "certificate-revocation"]
+category: pki
+order: 9
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O que é a Let's Encrypt
+
+A Let's Encrypt é uma autoridade certificadora gratuita e automatizada, mantida pela organização sem fins lucrativos Internet Security Research Group (ISRG). Ela emite certificados TLS com validação de domínio sem custo, e faz isso inteiramente pelo [ACME](/learn/acme-protocol), o protocolo de automação, em vez de qualquer fluxo de compra manual. Essa combinação, gratuito mais totalmente automatizado, é o que tornou o HTTP criptografado o padrão em vez da exceção na web.
+
+## Por que os certificados são de vida curta
+
+Um certificado da Let's Encrypt é válido por 90 dias, muito menos que os certificados de um a dois anos que já foram normais (veja [tempos de vida de certificados](/learn/tls-certificate-lifetimes)). Vidas curtas limitam a janela de dano se uma chave for comprometida e tornam a renovação automática um requisito rígido, e não algo secundário, que é justamente o objetivo: um certificado que precisa se renovar a cada poucos meses não pode depender de uma pessoa lembrar de fazê-lo. Em 2025 a Let's Encrypt foi além e passou a oferecer certificados de vida curta, válidos por cerca de seis dias, solicitados por meio de um perfil de certificado, levando a mesma lógica à sua conclusão. Para qualquer uma das durações, o modelo operacional é o mesmo: o cliente renova automaticamente, bem antes da expiração.
+
+## Como funcionam os limites de emissão
+
+Para manter um serviço gratuito justo, a Let's Encrypt limita a emissão. Os limites são aplicados com um esquema de token bucket (balde de fichas): cada limite é um balde que se reabastece com o tempo, então você pode gastá-lo de uma vez ou distribuir as requisições, e uma vez esgotado ele se reabastece gradualmente em vez de zerar em uma data fixa. Revogar um certificado não devolve a capacidade, porque emiti-lo já consumiu o recurso. Os principais limites de produção, conforme documentado pela Let's Encrypt, são:
+
+- **50 novos certificados por domínio registrado a cada 7 dias.** É o que as pessoas mais encontram. É um limite global entre todas as contas, e se reabastece a cerca de um certificado a cada 3,4 horas.
+- **300 novos pedidos por conta a cada 3 horas**, reabastecendo a um pedido a cada 36 segundos.
+- **5 certificados por conjunto exato de identificadores a cada 7 dias.** Solicitar o mesmo conjunto de nomes repetidamente, muitas vezes por reinstalar ou apagar a configuração de um cliente durante a resolução de problemas, é a forma usual de atingir esse limite, e ele se reabastece devagar.
+- **Falhas de autorização por identificador por conta**, limitadas a 5 por hora, para impedir que um cliente mal configurado martele a validação. Um limite separado de falhas consecutivas acaba pausando um nome que continua falhando até você reativá-lo.
+- **Limites de registro de conta e de requisições por IP** por cima, aplicados no balanceador de carga.
+
+Como isso muda com o tempo, a [página de limites da Let's Encrypt](https://letsencrypt.org/docs/rate-limits/) é a fonte autoritativa para os números atuais.
+
+## O domínio registrado é a unidade central
+
+O limite por domínio conta contra o **domínio registrado**, não contra cada nome de host. A Let's Encrypt determina isso usando a [Public Suffix List](https://publicsuffix.org/): o domínio registrado é o sufixo público mais um rótulo. Então `www.example.com` e `api.example.com` contam ambos contra `example.com`, mas `example.co.uk` é o domínio registrado de `new.blog.example.co.uk`, porque `.co.uk` é em si um sufixo público. É esse o detalhe que surpreende as pessoas: subdomínios compartilham um único orçamento. Para certificados de endereço IP, a unidade é o endereço IPv4 exato, ou o intervalo IPv6 /64 que o contém. Como um único certificado pode carregar até 100 nomes, e um curinga como `*.example.com` cobre todos os subdomínios de uma vez, agrupar muitos nomes de host em menos certificados é a forma padrão de ficar confortavelmente abaixo do limite por domínio.
+
+## As renovações são a saída de emergência
+
+Os limites são deliberadamente projetados para que renovar quase nunca os atinja, e o mecanismo importa para quem automatiza em escala. A Let's Encrypt reconhece uma renovação de duas formas. A forte é o **ACME Renewal Information (ARI)**: um cliente que suporta ARI pergunta à CA quando renovar e, ao refazer o pedido, indica o certificado que está substituindo. Uma renovação coordenada por ARI é isenta de **todos** os limites. A fraca é o comportamento antigo em que um pedido para o mesmo conjunto exato de identificadores é tratado como renovação; isso o isenta dos limites por conta e por domínio registrado, mas não dos limites por conjunto exato ou por falha de autorização. A orientação prática decorre disso diretamente: use um cliente que suporte ARI, e a renovação basicamente deixa de ser uma preocupação de limite.
+
+## Teste primeiro no ambiente de staging
+
+A Let's Encrypt mantém um ambiente de staging separado, com limites muito mais altos e uma hierarquia de certificados não confiável. Aponte um cliente novo ou uma sessão de resolução de problemas para lá primeiro: você obtém todo o fluxo ACME sem gastar a capacidade de produção nem arriscar um bloqueio em um domínio real. Só mude para produção quando a emissão funcionar de ponta a ponta.
+
+## A cadeia e as raízes
+
+Os certificados atuais da Let's Encrypt encadeiam até as raízes da própria ISRG: **ISRG Root X1** (RSA) e **ISRG Root X2** (ECDSA), ambas agora confiadas diretamente por navegadores e sistemas operacionais, com intermediários rotativos no meio. No início, a Let's Encrypt se apoiava em uma assinatura cruzada da raiz mais antiga da IdenTrust para que os clientes confiassem nela antes de as raízes da ISRG estarem amplamente distribuídas; os clientes modernos não precisam mais desse caminho. Você pode inspecionar qualquer certificado emitido, inclusive os ponteiros da sua cadeia, com o [decodificador de certificados](/tools/x509), e calcular o registro dns-01 para a emissão com a [ferramenta ACME dns-01](/tools/acme-dns01).

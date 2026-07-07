@@ -1,0 +1,52 @@
+---
+slug: fortigate-acme-certificate-automation
+title: "ACME on FortiGate: a built-in client for the box's own certificate"
+summary: "How FortiOS's native ACME support obtains and renews a Let's Encrypt certificate for the FortiGate itself: the public-IP and FQDN requirements, the single-name SAN constraint, the TLS-ALPN-01 and HTTP-01 challenges (and which FortiOS versions support them), the GUI and CLI configuration, and how this differs from BIG-IP's native client."
+concepts: ["acme", "lets-encrypt", "fortinet", "fortigate", "fortios", "certificate-automation", "pki"]
+relatedTools: ["letsencrypt-rate-limits", "x509", "cert-renewal-planner", "csr-decoder", "acme-dns01"]
+relatedArticles: ["acme-protocol", "lets-encrypt", "bigip-acme-certificate-automation"]
+category: pki
+order: 15
+status: reviewed
+updated: "2026-07-07"
+---
+
+## What FortiOS automates
+
+FortiOS has an ACME client built into the operating system. Its documented purpose is narrow and specific: obtain and automatically renew a server certificate, from Let's Encrypt or another [ACME](/learn/acme-protocol) certificate authority, for the FortiGate's own HTTPS management interface, so that administrators reaching the GUI over the internet see a trusted certificate rather than a browser warning. Fortinet defines the client against RFC 8555, the same standard Let's Encrypt uses, and notes it works with other ACME-based services too, not only Let's Encrypt. This is a different goal from a load balancer automating certificates for the applications behind it; on FortiGate, the certificate being automated is the device's.
+
+## The requirements that shape it
+
+Because the CA has to validate control of the FortiGate directly, the prerequisites are strict. The FortiGate must have a public IP address and a hostname in DNS, an FQDN, that resolves to that public IP. You designate an ACME interface on which the client listens for challenges, and that interface must be publicly reachable. Critically, the ports the challenge uses, TCP/80 and TCP/443, must not be occupied by other services on that interface, so it cannot carry VIPs or port forwarding on those ports, and ACME certificates are not supported on loopback interfaces. These constraints follow directly from how the challenges work.
+
+The single most defining limit is the certificate's name. FortiOS fills the Subject Alternative Name automatically with the FortiGate's DNS hostname, and that field cannot be edited: you cannot use a wildcard, and you cannot add multiple SANs. The result is a single-FQDN certificate for the box itself. If you need a wildcard or a multi-name certificate, the native client is not the tool for it.
+
+## The challenges, by version
+
+How the FortiGate proves ownership has evolved. Newer FortiOS releases support two challenge types: **TLS-ALPN-01** on TCP/443 and **HTTP-01** on TCP/80, with TLS-ALPN-01 as the default. TLS-ALPN-01, defined in RFC 8737, has the FortiGate present a special self-signed certificate carrying an `acmeIdentifier` and the right SAN during a TLS handshake on 443; because that certificate is deliberately unusual, security scanners often flag it, which Fortinet notes is expected. HTTP-01, as the missing "s" in the name implies, answers over plain HTTP on port 80. By default port 80 redirects to 443, and if 443 is already in use by the HTTPS daemon, the ACME daemon falls back to the HTTP-01 challenge on 80. Older FortiOS versions offered only the HTTP-01 path on port 80, which is why the interface prerequisites were originally written around that port.
+
+## Configuring it
+
+In the GUI, the flow is short. Under System, Certificates, you create a certificate and choose Use Let's Encrypt (in earlier releases, an imported Local Certificate with Type set to Automated and ACME service set to Let's Encrypt). You set a certificate name, which is what the rest of the configuration references, a Domain equal to the FortiGate's public FQDN, and an Email, which Fortinet notes is not actually used during enrollment. You then select the ACME interface. Let's Encrypt provisions the certificate, it lands in the Local Certificates list, and you point System, Settings, HTTPS server certificate at it.
+
+The same thing on the CLI is compact:
+
+```
+config vpn certificate local
+    edit "acme-cert"
+        set enroll-protocol acme2
+        set acme-domain "fgt.example.com"
+        set acme-email "admin@example.com"
+    next
+end
+```
+
+Enabling it prompts you to accept the Let's Encrypt Terms of Service. Once issued, the certificate chains to a Let's Encrypt intermediate under ISRG Root X1, and renewal is handled by the same client listening on the ACME interface, with no scheduled job to maintain.
+
+## How this differs from BIG-IP
+
+The contrast with the [native client on BIG-IP](/learn/bigip-acme-certificate-automation) is instructive. BIG-IP 21.1.0's ACMEv2 support is aimed at provisioning certificates for the application virtual servers it fronts, across several ACME CAs, and it can reach wildcards through the DNS-01 challenge. FortiOS's client is scoped to the appliance's own management certificate, a single FQDN, using on-box challenges over 443 or 80. Both are genuine native ACME implementations; they simply solve different halves of the problem, and knowing which one you are configuring saves a lot of confusion about wildcards and SANs.
+
+## Where the shared pieces fit
+
+The certificate a FortiGate issues is an ordinary Let's Encrypt certificate, so the same considerations apply. Its issuance counts against the registered domain of the FortiGate's FQDN, so if you are automating many devices under one domain, the [rate-limit planner](/tools/letsencrypt-rate-limits) shows how they share that weekly budget (see [Let's Encrypt](/learn/lets-encrypt)). You can inspect the resulting certificate, including its chain, with the [certificate decoder](/tools/x509), and reason about its replacement timing with the [renewal planner](/tools/cert-renewal-planner). For platforms where you drive ACME with the DNS-01 challenge instead, the [dns-01 tool](/tools/acme-dns01) computes the record you publish.

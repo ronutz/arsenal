@@ -8,7 +8,7 @@ relatedArticles: ["certificate-formats", "certificate-validation", "x509-anatomy
 category: pki
 order: 3
 status: machine-draft
-updated: "2026-06-27"
+updated: "2026-07-07"
 ---
 
 ## O problema da emissão
@@ -24,6 +24,27 @@ Uma CSR é, ela mesma, uma estrutura ASN.1, definida pelo PKCS#10 (RFC 2986) e g
 - uma **assinatura sobre a requisição, feita com a chave privada correspondente**.
 
 Essa última parte é o detalhe engenhoso. Ao assinar a requisição com a chave privada, você prova que de fato detém a chave que forma par com a chave pública que submeteu, tudo sem revelar a própria chave privada. A chave privada nunca deixa seu controle, que é exatamente como deveria ser, porque qualquer um que a tenha pode se passar por você.
+
+## A estrutura PKCS#10, campo a campo
+
+Por baixo desse resumo em três partes, o PKCS#10 define uma forma ASN.1 precisa. A `CertificationRequest` externa é uma `SEQUENCE` de exatamente três coisas: as informações da requisição, o algoritmo de assinatura e a própria assinatura.
+
+```
+CertificationRequest ::= SEQUENCE {
+  certificationRequestInfo  CertificationRequestInfo,
+  signatureAlgorithm        AlgorithmIdentifier,
+  signature                 BIT STRING }
+
+CertificationRequestInfo ::= SEQUENCE {
+  version        INTEGER,                -- sempre v1 (0)
+  subject        Name,                   -- o nome distinto que você requisita
+  subjectPKInfo  SubjectPublicKeyInfo,   -- algoritmo + os bits da sua chave pública
+  attributes     [0] Attributes }        -- tudo o mais que você pede
+```
+
+O `certificationRequestInfo` é a metade "a ser assinada": seu nome de sujeito, sua chave pública embrulhada na mesmíssima estrutura `SubjectPublicKeyInfo` que mais tarde aparecerá no certificado finalizado (veja o [artigo de anatomia](/learn/x509-anatomy)), e um conjunto de `attributes`. A assinatura é calculada sobre a codificação DER dessa metade usando sua chave privada, o que prova mecanicamente a posse da chave descrita acima.
+
+O conjunto de `attributes` é onde ficam as requisições interessantes. Um certificado moderno identifica um servidor por seus Subject Alternative Names, não pelo common name do sujeito, e esses SANs viajam aqui dentro do atributo `extensionRequest` do PKCS#9, que é um contêiner para as extensões X.509v3 que você gostaria que a CA copiasse para o certificado. Quando o [decodificador de CSR](/tools/csr-decoder) mostra os SANs ou usos de chave requisitados, ele os está lendo a partir desse atributo. (A versão 1.7 do PKCS#10, na RFC 2986, torna obsoleta a versão 1.5 mais antiga da RFC 2314; a estrutura acima é o que toda ferramenta atual emite.)
 
 ## A CA é a autoridade, não o requisitante
 

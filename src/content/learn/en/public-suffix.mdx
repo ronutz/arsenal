@@ -1,0 +1,34 @@
+---
+slug: public-suffix
+title: "Public suffixes and the registered domain (eTLD+1)"
+summary: "What a public suffix (eTLD) and a registered domain (eTLD+1) are, why you cannot compute them by taking the last two labels, how the Public Suffix List algorithm resolves them, and where the boundary matters: certificate rate limits, cookies, and same-site."
+concepts: ["public-suffix", "etld", "registered-domain", "cookies", "same-site", "certificate-rate-limits"]
+relatedTools: ["public-suffix", "acme-dns01"]
+relatedArticles: ["lets-encrypt", "acme-protocol"]
+category: networking
+order: 12
+status: reviewed
+updated: "2026-07-07"
+---
+
+## The problem with "the last two labels"
+
+It is tempting to assume the registered part of a hostname is just its last two labels. For `www.example.com` that works: the registered domain is `example.com`. But for `www.example.co.uk` it is wrong. Here `.co.uk` is a public suffix, so the registered domain is `example.co.uk`, three labels deep. There is no pattern in the string that tells you this. The only way to know that `.co.uk` behaves like a top-level domain while `.example.com` does not is to consult a list of which suffixes are public. That list is the [Public Suffix List](https://publicsuffix.org/) (PSL), and the [registered-domain tool](/tools/public-suffix) resolves names against it.
+
+## Two definitions
+
+A **public suffix**, also called an effective top-level domain or **eTLD**, is a suffix under which the public can register names directly. `com`, `co.uk`, `github.io`, and `s3.amazonaws.com` are all public suffixes. A **registered domain**, or **eTLD+1**, is a public suffix plus exactly one label to its left: the shortest name someone can actually own. `example.com` and `example.co.uk` are registered domains; `co.uk` is not, because nobody registers `co.uk` itself.
+
+## The algorithm
+
+Resolving a name against the list follows a small, exact procedure. You look for rules that match the host, where a rule's labels must equal the host's labels from the right, and a `*` label in a rule matches any single label. Among the matches, an **exception rule** (written with a leading `!`) always wins; otherwise the rule with the **most labels** wins. If the winner is an exception rule, its leftmost label is dropped. The public suffix is what the winning rule matches, and the registered domain is that suffix plus one more label. If nothing matches, the rightmost label alone is treated as the suffix.
+
+Two rule types make the difference from naive matching. A **wildcard** such as `*.ck` means every `something.ck` is a public suffix, so `foo.bar.ck` is registrable but `bar.ck` is not. An **exception** such as `!www.ck` carves a single name back out, so `www.ck` is registrable even though the wildcard would otherwise have swallowed it.
+
+## ICANN and PRIVATE
+
+The list is split into two sections, and the distinction is not cosmetic. The **ICANN** section holds registry-operated suffixes: this is the boundary that browsers enforce for security decisions. The **PRIVATE** section holds suffixes that companies added because they hand out subdomains to third parties, such as `github.io`, `*.compute.amazonaws.com`, or various app-hosting platforms. The two can give different answers. Under the full list, `alice.github.io` is its own registered domain, which is exactly what GitHub wants: one user's Pages site should not be same-site with another's. Under ICANN rules alone, the registered domain is `github.io`. Which interpretation is correct depends on the question you are asking, so the tool reports both whenever a PRIVATE rule is what decided the outcome.
+
+## Where the boundary is used
+
+Three systems lean on the registered domain, and getting it wrong causes real, confusing bugs. **Certificate rate limits**: Let's Encrypt counts new certificates against the registered domain, so all the subdomains of one site share a single weekly budget (see [Let's Encrypt](/learn/lets-encrypt)). Teams that issue a separate certificate per subdomain are often surprised to hit the limit. **Cookies**: a site cannot set a cookie for a public suffix like `co.uk`, because that would let one site read another's cookies across the whole suffix; the registered-domain boundary is what the browser checks. **Same-site and CSRF**: whether two URLs count as same-site, which governs cookie sending and some cross-origin protections, is decided at the registered-domain boundary using the PSL. In all three cases the rule is the same, and the [registered-domain tool](/tools/public-suffix) shows you precisely where that line falls for any name.

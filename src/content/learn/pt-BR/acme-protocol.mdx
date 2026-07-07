@@ -1,0 +1,53 @@
+---
+slug: acme-protocol
+title: "ACME: como os certificados se emitem e se renovam sozinhos"
+summary: "Como o protocolo ACME automatiza a emissão de certificados de ponta a ponta: a conta, o pedido, os três tipos de desafio, o registro dns-01 que você publica e a etapa de finalizar e baixar que produz o certificado."
+concepts: ["acme", "dns-01", "http-01", "tls-alpn-01", "key-authorization", "certificate-automation"]
+relatedTools: ["acme-dns01", "csr-decoder", "x509"]
+relatedArticles: ["certificate-signing-request", "certificate-revocation", "tls-certificate-lifetimes"]
+category: pki
+order: 8
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O problema que o ACME resolve
+
+Uma autoridade certificadora não assina um certificado para um nome enquanto não estiver convencida de que você controla aquele nome. Historicamente essa verificação era manual: colar uma CSR em um formulário web, receber um e-mail, clicar em um link. Isso não escala, e não sobrevive à mudança para certificados de vida curta (veja [tempos de vida de certificados](/learn/tls-certificate-lifetimes)), em que um certificado que se renova a cada poucas semanas não pode envolver uma pessoa a cada vez. O ACME, definido na RFC 8555, é o protocolo que automatiza toda a conversa entre um cliente e uma CA, da prova de controle até o recebimento do certificado, sem etapas manuais.
+
+## A conta e o pedido
+
+Um cliente ACME primeiro cria uma **conta**, identificada por uma **chave de conta** que ele gera e mantém. Essa chave não é a chave do certificado; ela assina as requisições ACME do cliente para que a CA saiba que vêm da mesma conta. Toda requisição que o cliente faz é um JWS assinado.
+
+Para obter um certificado, o cliente envia um **newOrder** listando os **identificadores** que deseja, os nomes DNS do certificado. A CA responde com uma **autorização** por identificador, cada uma ainda pendente. Uma autorização é a CA dizendo "prove que controla este nome, e aqui estão as formas pelas quais você pode fazê-lo." O pedido não avança até que toda autorização esteja válida.
+
+## Provando o controle: os três desafios
+
+Cada autorização oferece um ou mais **desafios**, e o cliente escolhe um. Os três tipos padrão partem todos da mesma ideia, uma **autorização de chave** (key authorization) que amarra o desafio à chave da sua conta:
+
+- **http-01** — sirva um arquivo em `http://<domínio>/.well-known/acme-challenge/<token>` cujo conteúdo é a autorização de chave. Simples, mas precisa da porta 80 de entrada e não faz curingas.
+- **dns-01** — publique um registro TXT derivado da autorização de chave (detalhado abaixo). Funciona atrás de um firewall e é o único tipo que valida um nome curinga.
+- **tls-alpn-01** (RFC 8737) — responda na porta 443 durante um handshake TLS usando o protocolo ALPN `acme-tls/1`, servindo um certificado autoassinado especial. Útil quando só a 443 está acessível.
+
+A autorização de chave em si é a mesma em todos os casos: o **token** do desafio unido a um thumbprint da chave pública da sua conta, como `token || '.' || base64url(thumbprint)`. O thumbprint é o hash SHA-256 da RFC 7638 sobre a forma canônica da chave. Como depende da chave da sua conta, só o seu cliente pode produzir a resposta correta, o que prova o controle em vez de mera acessibilidade.
+
+## O dns-01 em detalhe
+
+Para o dns-01, o valor publicado não é a autorização de chave diretamente, mas seu digest: o base64url do SHA-256 da autorização de chave. Esse valor vai em um registro TXT em `_acme-challenge.<domínio>`. Um pedido curinga para `*.example.com` é validado sob `_acme-challenge.example.com`, e como o ápice e o curinga são identificadores separados, um certificado que cobre ambos precisa de dois registros.
+
+```
+thumbprint       = base64url( SHA-256( JWK canônico da conta ) )   (RFC 7638)
+keyAuthorization = token "." thumbprint                            (RFC 8555 §8.1)
+valor TXT        = base64url( SHA-256( keyAuthorization ) )        (RFC 8555 §8.4)
+registro         = _acme-challenge.<domínio>   IN TXT  "<valor TXT>"
+```
+
+A [ferramenta ACME dns-01](/tools/acme-dns01) calcula exatamente essa cadeia a partir de um token e da chave pública da sua conta, para que você possa conferir o que seu cliente está prestes a publicar. A CA executa o mesmo cálculo a partir da cópia armazenada da chave da sua conta e compara, então uma correspondência prova que o registro só poderia ter vindo da sua conta.
+
+## Finalizar e baixar
+
+Assim que toda autorização está válida, o pedido fica pronto, e o cliente envia uma requisição de **finalize** contendo uma CSR. Essa CSR contém o próprio par de chaves do certificado e os nomes solicitados como Subject Alternative Names, e é totalmente separada da chave de conta (veja [requisições de assinatura de certificado](/learn/certificate-signing-request) para sua estrutura). A CA verifica se os nomes da CSR correspondem ao pedido, emite o certificado, e o cliente o baixa. Você pode inspecionar o resultado com o [decodificador de certificados](/tools/x509).
+
+## Renovação, e o que vem a seguir
+
+Como nada disso precisa de uma pessoa, a renovação é apenas o mesmo fluxo executado de novo antes da expiração, e é assim que milhões de sites mantêm certificados que se renovam a cada poucas semanas. Clientes como certbot, acme.sh e lego o implementam, e adições mais recentes o refinam: o ACME Renewal Information (RFC 9773) permite que a CA sugira a janela ideal de renovação, e tipos de desafio em rascunho, como o dns-account-01, adicionam um rótulo com escopo de conta para que vários sistemas independentes possam validar o mesmo nome ao mesmo tempo sem disputar um único registro. Esses rascunhos ainda estão em andamento, mas a troca dns-01 central acima é estável e é o que todo cliente ACME atual fala hoje.

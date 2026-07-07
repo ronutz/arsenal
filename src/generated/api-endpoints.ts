@@ -17,6 +17,12 @@ export interface ApiEndpoint {
 }
 
 export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
+  "acme-dns01": {
+    "url": "https://ronutz.com/api/v1/acme-dns01",
+    "method": "GET",
+    "op": "run_acme_dns01",
+    "tag": "PKI"
+  },
   "as3-explainer-validator": {
     "url": "https://ronutz.com/api/v1/as3-explainer-validator",
     "method": "GET",
@@ -329,6 +335,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_jwt",
     "tag": "Identity & tokens"
   },
+  "letsencrypt-rate-limits": {
+    "url": "https://ronutz.com/api/v1/letsencrypt-rate-limits",
+    "method": "GET",
+    "op": "run_letsencrypt_rate_limits",
+    "tag": "PKI"
+  },
   "nslookup-output-explainer": {
     "url": "https://ronutz.com/api/v1/nslookup-output-explainer",
     "method": "GET",
@@ -352,6 +364,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_pkce",
     "tag": "Identity & tokens"
+  },
+  "public-suffix": {
+    "url": "https://ronutz.com/api/v1/public-suffix",
+    "method": "GET",
+    "op": "run_public_suffix",
+    "tag": "Networking"
   },
   "regex": {
     "url": "https://ronutz.com/api/v1/regex",

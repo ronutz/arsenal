@@ -57,4 +57,52 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
     id: "verify-data-integrity",
     toolIds: ["hash", "hmac"],
   },
+  {
+    id: "debug-a-saml-login",
+    toolIds: ["saml-decoder", "x509"],
+  },
+  {
+    id: "map-a-jwks-to-tokens",
+    toolIds: ["jwks-explainer", "jwt"],
+  },
+  {
+    id: "understand-a-tls-connection",
+    toolIds: ["cipher", "x509", "secure-headers"],
+  },
+  {
+    id: "harden-a-web-response",
+    toolIds: ["secure-headers", "url-inspector"],
+  },
+  {
+    id: "assess-ssrf-risk",
+    toolIds: ["ssrf-url-classifier", "url-inspector"],
+  },
+  {
+    id: "score-a-vulnerability",
+    toolIds: ["cvss-vector-decoder"],
+  },
+  {
+    id: "convert-and-tidy-config",
+    toolIds: ["json-yaml-convert", "json-formatter"],
+  },
+  {
+    id: "compare-two-files",
+    toolIds: ["json-formatter", "diff"],
+  },
+  {
+    id: "reproduce-an-http-request",
+    toolIds: ["url-inspector", "http-request-translator"],
+  },
+  {
+    id: "identify-an-unknown-hash",
+    toolIds: ["hash-preimage-finder", "hash"],
+  },
+  {
+    id: "read-a-syslog-line",
+    toolIds: ["syslog-pri-decoder"],
+  },
+  {
+    id: "build-and-test-a-regex",
+    toolIds: ["regex"],
+  },
 ];

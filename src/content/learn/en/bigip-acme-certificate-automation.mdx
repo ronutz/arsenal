@@ -1,0 +1,40 @@
+---
+slug: bigip-acme-certificate-automation
+title: "ACME on BIG-IP: from DevCentral scripts to a native client"
+summary: "How Let's Encrypt and other ACME certificate automation works on F5 BIG-IP: the native ACMEv2 client introduced in BIG-IP 21.1.0 (provisioning, renewal, and deployment for any ACMEv2 CA), the community dehydrated-based solutions that came before it, BIG-IQ's centralized Let's Encrypt CA management profile, and where the shared ACME concepts and rate limits fit."
+concepts: ["acme", "lets-encrypt", "bigip", "certificate-automation", "f5", "pki", "acmev2"]
+relatedTools: ["acme-dns01", "letsencrypt-rate-limits", "csr-decoder", "x509", "cert-renewal-planner"]
+relatedArticles: ["acme-protocol", "lets-encrypt", "public-suffix"]
+category: pki
+order: 14
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Why this changed
+
+Certificate lifetimes are collapsing. The industry has moved from certificates that lasted a year or more toward 90-day norms, and proposals to go far shorter are already on the table. At those lifetimes, renewing a BIG-IP's certificates by hand stops being viable: a certificate that must be replaced every few months, across a fleet of virtual servers, has to renew itself. [ACME](/learn/acme-protocol) is the protocol that automates exactly that, and how you run it on BIG-IP now depends on your version.
+
+## The native ACMEv2 client (BIG-IP 21.1.0)
+
+With BIG-IP 21.1.0, F5 added native ACMEv2 support to TMOS itself. Per F5's release notes, BIG-IP now handles certificate provisioning, renewal, and deployment automatically, and the implementation targets ACMEv2-compliant CAs generally, not only Let's Encrypt: F5 lists ZeroSSL, DigiCert, Buypass, Google Trust Services, and SSL.com alongside it, with a Certificate Order Management feature providing direct API integration for supported CAs. This is a real shift from earlier releases, where ACME was something you added, to a built-in capability configured in the Configuration utility under SSL Certificate Management.
+
+Configuring it against Let's Encrypt involves a few BIG-IP-specific prerequisites, documented by F5 and walked through on DevCentral. You need a DNS Resolver that can reach the CA's endpoints, typically the native resolver the BIG-IP ships with. You need an internal proxy the device uses to make the outbound connection to the CA. And the ACMEv2 account itself is keyed to a self-signed certificate you create for the purpose: it acts as the device's account identifier, so its Common Name is set to a contact address and its Subject Alternative Name is left empty. The account is then created against a Directory URL, which for Let's Encrypt production is `https://acme-v02.api.letsencrypt.org/directory`, with a mandatory Contacts value in `mailto:` form. To satisfy the HTTP-01 challenge, the domain's A record must point to an IP served by a virtual server listening on port 80, which answers the CA's validation request. Once the account status reads valid, you order the first certificate directly from the BIG-IP.
+
+## What came before: dehydrated on the box
+
+Before the native client, ACME on BIG-IP lived on DevCentral as community solutions that run on the BIG-IP itself, and they remain relevant for versions earlier than 21.1.0. The lineage runs through Jason Rahm's early ACMEv2 client work to Kevin Stewart's dehydrated-based projects, the most complete being Kojot ACME: a wrapper around the dehydrated ACMEv2 client plus a utility that handles installation, configuration, authentication, revocation, scheduling, and reporting. Because these speak RFC 8555, they work with any ACMEv2 server, from Let's Encrypt to internal CAs like Smallstep or a Pebble test server.
+
+The mechanics are worth knowing because they show what the protocol needs. For the HTTP-01 challenge, the solution deploys an iRule to the port-80 virtual server that intercepts the CA's challenge request and answers it, backed by two data groups: one holding the account and CA configuration, and an ephemeral one holding the challenge tokens that is cleaned up when validation completes. The alternative is the DNS-01 challenge, where the client publishes a TXT record at `_acme-challenge` instead; this is the route to choose when the BIG-IP's management path is not reachable on port 80, and it is the only challenge that can issue wildcards. Either way, the client requests the order, satisfies the challenge, and installs the returned certificate and key, using a transaction so an in-use certificate is swapped safely.
+
+## Fleet-wide: BIG-IQ
+
+Where BIG-IP handles one device, BIG-IQ centralizes issuance across many. It provides a Let's Encrypt CA management profile: one profile can serve certificates to several domains, with the BIG-IQ acting as the proxy between your domains, the managed BIG-IP devices, and the CA. Renewal can be fully or semi-automated ahead of expiry, and an auto-deploy option pushes each renewed certificate out to the managing BIG-IP devices on a schedule, defaulting to midnight after renewal. For an estate of BIG-IPs this removes the per-device configuration the on-box solutions require.
+
+## Infrastructure-as-code
+
+For teams that manage BIG-IP through automation, ACME issuance can be driven from Ansible. F5's TLS automation examples and the community F5-letsencrypt project for Ansible Automation Platform both issue Let's Encrypt certificates and deploy them, typically favouring the DNS-01 challenge because BIG-IP management interfaces are usually not reachable on port 80 from the internet, and because DNS-01 handles wildcards. These fold certificate renewal into the same pipelines that manage the rest of the configuration.
+
+## Where the shared pieces fit
+
+Whichever path you take, the ACME fundamentals are the same, and the rest of this toolset covers them. The DNS-01 challenge value you publish is a specific computation you can produce with the [ACME dns-01 tool](/tools/acme-dns01). Let's Encrypt's [rate limits](/learn/lets-encrypt) count against the registered domain, so if a BIG-IP fronts many subdomains it is worth checking how they group with the [rate-limit planner](/tools/letsencrypt-rate-limits) before pointing automation at production. And once a certificate is issued, you can inspect it with the [certificate decoder](/tools/x509) and plan its replacement with the [renewal planner](/tools/cert-renewal-planner). The native client changes how BIG-IP obtains a certificate; it does not change what a certificate is.

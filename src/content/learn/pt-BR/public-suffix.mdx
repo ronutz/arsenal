@@ -1,0 +1,34 @@
+---
+slug: public-suffix
+title: "Sufixos públicos e o domínio registrado (eTLD+1)"
+summary: "O que são um sufixo público (eTLD) e um domínio registrado (eTLD+1), por que você não pode calculá-los pegando os dois últimos rótulos, como o algoritmo da Public Suffix List os resolve, e onde a fronteira importa: limites de emissão de certificados, cookies e same-site."
+concepts: ["public-suffix", "etld", "registered-domain", "cookies", "same-site", "certificate-rate-limits"]
+relatedTools: ["public-suffix", "acme-dns01"]
+relatedArticles: ["lets-encrypt", "acme-protocol"]
+category: networking
+order: 12
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O problema com "os dois últimos rótulos"
+
+É tentador supor que a parte registrada de um nome de host são apenas seus dois últimos rótulos. Para `www.example.com` isso funciona: o domínio registrado é `example.com`. Mas para `www.example.co.uk` está errado. Aqui `.co.uk` é um sufixo público, então o domínio registrado é `example.co.uk`, com três rótulos de profundidade. Não há padrão na string que informe isso. A única forma de saber que `.co.uk` se comporta como um domínio de topo enquanto `.example.com` não, é consultar uma lista de quais sufixos são públicos. Essa lista é a [Public Suffix List](https://publicsuffix.org/) (PSL), e a [ferramenta de domínio registrado](/tools/public-suffix) resolve nomes contra ela.
+
+## Duas definições
+
+Um **sufixo público**, também chamado de domínio de topo efetivo ou **eTLD**, é um sufixo sob o qual o público pode registrar nomes diretamente. `com`, `co.uk`, `github.io` e `s3.amazonaws.com` são todos sufixos públicos. Um **domínio registrado**, ou **eTLD+1**, é um sufixo público mais exatamente um rótulo à sua esquerda: o menor nome que alguém pode de fato possuir. `example.com` e `example.co.uk` são domínios registrados; `co.uk` não é, porque ninguém registra o próprio `co.uk`.
+
+## O algoritmo
+
+Resolver um nome contra a lista segue um procedimento pequeno e exato. Você procura regras que casem com o host, onde os rótulos de uma regra precisam ser iguais aos rótulos do host, da direita para a esquerda, e um rótulo `*` em uma regra casa com qualquer rótulo único. Entre as correspondências, uma **regra de exceção** (escrita com um `!` no início) sempre vence; caso contrário, vence a regra com **mais rótulos**. Se a vencedora for uma regra de exceção, seu rótulo mais à esquerda é descartado. O sufixo público é o que a regra vencedora casa, e o domínio registrado é esse sufixo mais um rótulo. Se nada casar, apenas o rótulo mais à direita é tratado como o sufixo.
+
+Dois tipos de regra fazem a diferença em relação ao casamento ingênuo. Um **curinga** como `*.ck` significa que todo `algo.ck` é um sufixo público, então `foo.bar.ck` é registrável mas `bar.ck` não é. Uma **exceção** como `!www.ck` recorta um único nome de volta, então `www.ck` é registrável mesmo que o curinga o tivesse engolido.
+
+## ICANN e PRIVATE
+
+A lista é dividida em duas seções, e a distinção não é cosmética. A seção **ICANN** contém sufixos operados por registros: essa é a fronteira que os navegadores aplicam para decisões de segurança. A seção **PRIVATE** contém sufixos que empresas adicionaram porque distribuem subdomínios a terceiros, como `github.io`, `*.compute.amazonaws.com` ou várias plataformas de hospedagem de aplicações. As duas podem dar respostas diferentes. Sob a lista completa, `alice.github.io` é seu próprio domínio registrado, que é exatamente o que o GitHub quer: o site Pages de um usuário não deve ser same-site com o de outro. Apenas sob as regras ICANN, o domínio registrado é `github.io`. Qual interpretação está correta depende da pergunta que você está fazendo, então a ferramenta reporta ambas sempre que uma regra PRIVATE é o que decidiu o resultado.
+
+## Onde a fronteira é usada
+
+Três sistemas se apoiam no domínio registrado, e errá-lo causa bugs reais e confusos. **Limites de emissão de certificados**: a Let's Encrypt contabiliza novos certificados contra o domínio registrado, então todos os subdomínios de um site compartilham um único orçamento semanal (veja [Let's Encrypt](/learn/lets-encrypt)). Equipes que emitem um certificado separado por subdomínio muitas vezes se surpreendem ao atingir o limite. **Cookies**: um site não pode definir um cookie para um sufixo público como `co.uk`, porque isso deixaria um site ler os cookies de outro em todo o sufixo; a fronteira do domínio registrado é o que o navegador verifica. **Same-site e CSRF**: se dois URLs contam como same-site, o que rege o envio de cookies e algumas proteções cross-origin, é decidido na fronteira do domínio registrado usando a PSL. Nos três casos a regra é a mesma, e a [ferramenta de domínio registrado](/tools/public-suffix) mostra precisamente onde essa linha cai para qualquer nome.

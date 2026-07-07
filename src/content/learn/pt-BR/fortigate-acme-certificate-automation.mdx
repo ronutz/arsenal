@@ -1,0 +1,52 @@
+---
+slug: fortigate-acme-certificate-automation
+title: "ACME no FortiGate: um cliente embutido para o certificado do próprio equipamento"
+summary: "Como o suporte ACME nativo do FortiOS obtém e renova um certificado Let's Encrypt para o próprio FortiGate: os requisitos de IP público e FQDN, a restrição de SAN de nome único, os desafios TLS-ALPN-01 e HTTP-01 (e quais versões do FortiOS os suportam), a configuração via GUI e CLI, e como isso difere do cliente nativo do BIG-IP."
+concepts: ["acme", "lets-encrypt", "fortinet", "fortigate", "fortios", "certificate-automation", "pki"]
+relatedTools: ["letsencrypt-rate-limits", "x509", "cert-renewal-planner", "csr-decoder", "acme-dns01"]
+relatedArticles: ["acme-protocol", "lets-encrypt", "bigip-acme-certificate-automation"]
+category: pki
+order: 15
+status: reviewed
+updated: "2026-07-07"
+---
+
+## O que o FortiOS automatiza
+
+O FortiOS tem um cliente ACME embutido no sistema operacional. Seu propósito documentado é estreito e específico: obter e renovar automaticamente um certificado de servidor, da Let's Encrypt ou de outra autoridade certificadora [ACME](/learn/acme-protocol), para a própria interface de gerenciamento HTTPS do FortiGate, de modo que administradores que acessam a GUI pela internet vejam um certificado confiável em vez de um aviso do navegador. A Fortinet define o cliente conforme a RFC 8555, o mesmo padrão que a Let's Encrypt usa, e observa que ele também funciona com outros serviços baseados em ACME, não apenas a Let's Encrypt. Esse é um objetivo diferente de um balanceador de carga automatizando certificados para as aplicações atrás dele; no FortiGate, o certificado que está sendo automatizado é o do próprio dispositivo.
+
+## Os requisitos que o moldam
+
+Como a CA precisa validar o controle do FortiGate diretamente, os pré-requisitos são estritos. O FortiGate precisa ter um endereço IP público e um nome de host em DNS, um FQDN, que resolva para esse IP público. Você designa uma interface ACME na qual o cliente escuta os desafios, e essa interface precisa ser publicamente alcançável. De forma crítica, as portas que o desafio usa, TCP/80 e TCP/443, não podem estar ocupadas por outros serviços nessa interface, então ela não pode carregar VIPs ou encaminhamento de portas nessas portas, e certificados ACME não são suportados em interfaces de loopback. Essas restrições decorrem diretamente de como os desafios funcionam.
+
+O limite mais definidor de todos é o nome do certificado. O FortiOS preenche o Subject Alternative Name automaticamente com o nome de host DNS do FortiGate, e esse campo não pode ser editado: você não pode usar um curinga, e não pode adicionar múltiplos SANs. O resultado é um certificado de FQDN único para o próprio equipamento. Se você precisa de um curinga ou de um certificado de múltiplos nomes, o cliente nativo não é a ferramenta para isso.
+
+## Os desafios, por versão
+
+Como o FortiGate prova a posse evoluiu. Versões mais novas do FortiOS suportam dois tipos de desafio: **TLS-ALPN-01** na TCP/443 e **HTTP-01** na TCP/80, com o TLS-ALPN-01 como padrão. O TLS-ALPN-01, definido na RFC 8737, faz o FortiGate apresentar um certificado autoassinado especial carregando um `acmeIdentifier` e o SAN correto durante um handshake TLS na 443; como esse certificado é deliberadamente incomum, scanners de segurança frequentemente o sinalizam, o que a Fortinet observa ser esperado. O HTTP-01, como o "s" ausente no nome sugere, responde por HTTP puro na porta 80. Por padrão a porta 80 redireciona para a 443, e se a 443 já estiver em uso pelo daemon HTTPS, o daemon ACME recai para o desafio HTTP-01 na 80. Versões mais antigas do FortiOS ofereciam apenas o caminho HTTP-01 na porta 80, e é por isso que os pré-requisitos de interface foram originalmente escritos em torno dessa porta.
+
+## Configurando
+
+Na GUI, o fluxo é curto. Em System, Certificates, você cria um certificado e escolhe Use Let's Encrypt (em versões anteriores, um Local Certificate importado com Type definido como Automated e ACME service definido como Let's Encrypt). Você define um nome de certificado, que é o que o resto da configuração referencia, um Domain igual ao FQDN público do FortiGate, e um Email, que a Fortinet observa não ser de fato usado durante a inscrição. Você então seleciona a interface ACME. A Let's Encrypt provisiona o certificado, ele aparece na lista Local Certificates, e você aponta System, Settings, HTTPS server certificate para ele.
+
+A mesma coisa na CLI é compacta:
+
+```
+config vpn certificate local
+    edit "acme-cert"
+        set enroll-protocol acme2
+        set acme-domain "fgt.example.com"
+        set acme-email "admin@example.com"
+    next
+end
+```
+
+Habilitá-lo solicita que você aceite os Termos de Serviço da Let's Encrypt. Uma vez emitido, o certificado encadeia até um intermediário da Let's Encrypt sob a ISRG Root X1, e a renovação é feita pelo mesmo cliente escutando na interface ACME, sem nenhuma tarefa agendada para manter.
+
+## Como isso difere do BIG-IP
+
+O contraste com o [cliente nativo no BIG-IP](/learn/bigip-acme-certificate-automation) é instrutivo. O suporte ACMEv2 do BIG-IP 21.1.0 visa provisionar certificados para os servidores virtuais de aplicação que ele serve de frente, através de várias CAs ACME, e pode alcançar curingas por meio do desafio DNS-01. O cliente do FortiOS é limitado ao certificado de gerenciamento do próprio appliance, um FQDN único, usando desafios na própria caixa sobre 443 ou 80. Ambos são implementações ACME nativas genuínas; eles simplesmente resolvem metades diferentes do problema, e saber qual você está configurando poupa muita confusão sobre curingas e SANs.
+
+## Onde as peças compartilhadas se encaixam
+
+O certificado que um FortiGate emite é um certificado Let's Encrypt comum, então as mesmas considerações se aplicam. Sua emissão conta contra o domínio registrado do FQDN do FortiGate, então se você está automatizando muitos dispositivos sob um domínio, o [planejador de limites](/tools/letsencrypt-rate-limits) mostra como eles compartilham esse orçamento semanal (veja [Let's Encrypt](/learn/lets-encrypt)). Você pode inspecionar o certificado resultante, inclusive sua cadeia, com o [decodificador de certificados](/tools/x509), e raciocinar sobre o momento de sua substituição com o [planejador de renovação](/tools/cert-renewal-planner). Para plataformas onde você conduz o ACME com o desafio DNS-01, a [ferramenta dns-01](/tools/acme-dns01) calcula o registro que você publica.

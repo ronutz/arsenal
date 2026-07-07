@@ -1,0 +1,40 @@
+---
+slug: bigip-acme-certificate-automation
+title: "ACME no BIG-IP: dos scripts do DevCentral a um cliente nativo"
+summary: "Como funciona a automação de certificados Let's Encrypt e outros ACME no F5 BIG-IP: o cliente ACMEv2 nativo introduzido no BIG-IP 21.1.0 (provisionamento, renovação e implantação para qualquer CA ACMEv2), as soluções comunitárias baseadas em dehydrated que vieram antes, o perfil centralizado de gerenciamento de CA Let's Encrypt do BIG-IQ, e onde os conceitos e limites de emissão ACME compartilhados se encaixam."
+concepts: ["acme", "lets-encrypt", "bigip", "certificate-automation", "f5", "pki", "acmev2"]
+relatedTools: ["acme-dns01", "letsencrypt-rate-limits", "csr-decoder", "x509", "cert-renewal-planner"]
+relatedArticles: ["acme-protocol", "lets-encrypt", "public-suffix"]
+category: pki
+order: 14
+status: reviewed
+updated: "2026-07-07"
+---
+
+## Por que isso mudou
+
+Os tempos de vida dos certificados estão encolhendo. A indústria saiu de certificados que duravam um ano ou mais para normas de 90 dias, e propostas para ir muito além já estão na mesa. Com essas durações, renovar os certificados de um BIG-IP à mão deixa de ser viável: um certificado que precisa ser substituído a cada poucos meses, em uma frota de servidores virtuais, tem que se renovar sozinho. O [ACME](/learn/acme-protocol) é o protocolo que automatiza exatamente isso, e como você o executa no BIG-IP agora depende da sua versão.
+
+## O cliente ACMEv2 nativo (BIG-IP 21.1.0)
+
+Com o BIG-IP 21.1.0, a F5 adicionou suporte nativo a ACMEv2 ao próprio TMOS. Conforme as notas de versão da F5, o BIG-IP agora cuida do provisionamento, renovação e implantação de certificados automaticamente, e a implementação mira CAs compatíveis com ACMEv2 de forma geral, não apenas a Let's Encrypt: a F5 lista ZeroSSL, DigiCert, Buypass, Google Trust Services e SSL.com ao lado dela, com um recurso de Certificate Order Management fornecendo integração direta via API para as CAs suportadas. Essa é uma mudança real em relação a versões anteriores, onde o ACME era algo que você adicionava, para uma capacidade embutida configurada no utilitário de Configuração em SSL Certificate Management.
+
+Configurá-lo contra a Let's Encrypt envolve alguns pré-requisitos específicos do BIG-IP, documentados pela F5 e percorridos no DevCentral. Você precisa de um DNS Resolver que consiga alcançar os endpoints da CA, tipicamente o resolver nativo que o BIG-IP já traz. Você precisa de um proxy interno que o dispositivo use para fazer a conexão de saída com a CA. E a própria conta ACMEv2 é chaveada por um certificado autoassinado que você cria para esse fim: ele atua como o identificador de conta do dispositivo, então seu Common Name é definido como um endereço de contato e seu Subject Alternative Name é deixado vazio. A conta é então criada contra uma Directory URL, que para a produção da Let's Encrypt é `https://acme-v02.api.letsencrypt.org/directory`, com um valor de Contacts obrigatório no formato `mailto:`. Para satisfazer o desafio HTTP-01, o registro A do domínio precisa apontar para um IP servido por um servidor virtual escutando na porta 80, que responde à requisição de validação da CA. Assim que o status da conta ler valid, você solicita o primeiro certificado diretamente do BIG-IP.
+
+## O que veio antes: dehydrated na própria caixa
+
+Antes do cliente nativo, o ACME no BIG-IP vivia no DevCentral como soluções comunitárias que rodam no próprio BIG-IP, e elas permanecem relevantes para versões anteriores à 21.1.0. A linhagem passa pelo trabalho inicial de cliente ACMEv2 de Jason Rahm até os projetos baseados em dehydrated de Kevin Stewart, sendo o mais completo o Kojot ACME: um wrapper em torno do cliente ACMEv2 dehydrated mais um utilitário que cuida de instalação, configuração, autenticação, revogação, agendamento e relatórios. Como falam RFC 8555, funcionam com qualquer servidor ACMEv2, da Let's Encrypt a CAs internas como o Smallstep ou um servidor de teste Pebble.
+
+Vale conhecer a mecânica porque ela mostra o que o protocolo precisa. Para o desafio HTTP-01, a solução implanta uma iRule no servidor virtual da porta 80 que intercepta a requisição de desafio da CA e a responde, apoiada por dois data groups: um contendo a configuração da conta e da CA, e um efêmero contendo os tokens de desafio, que é limpo quando a validação completa. A alternativa é o desafio DNS-01, onde o cliente publica um registro TXT em `_acme-challenge`; esse é o caminho a escolher quando o caminho de gerenciamento do BIG-IP não está acessível na porta 80, e é o único desafio que pode emitir curingas. De qualquer forma, o cliente solicita o pedido, satisfaz o desafio e instala o certificado e a chave retornados, usando uma transação para que um certificado em uso seja trocado com segurança.
+
+## Em escala de frota: BIG-IQ
+
+Onde o BIG-IP cuida de um dispositivo, o BIG-IQ centraliza a emissão em vários. Ele fornece um perfil de gerenciamento de CA Let's Encrypt: um perfil pode servir certificados a vários domínios, com o BIG-IQ atuando como o proxy entre seus domínios, os dispositivos BIG-IP gerenciados e a CA. A renovação pode ser total ou parcialmente automatizada antes da expiração, e uma opção de auto-deploy empurra cada certificado renovado para os dispositivos BIG-IP gerenciadores em um agendamento, com padrão à meia-noite após a renovação. Para um parque de BIG-IPs, isso remove a configuração por dispositivo que as soluções na própria caixa exigem.
+
+## Infraestrutura como código
+
+Para equipes que gerenciam o BIG-IP por automação, a emissão ACME pode ser conduzida pelo Ansible. Os exemplos de automação de TLS da F5 e o projeto comunitário F5-letsencrypt para o Ansible Automation Platform ambos emitem certificados Let's Encrypt e os implantam, tipicamente favorecendo o desafio DNS-01 porque as interfaces de gerenciamento do BIG-IP geralmente não estão acessíveis na porta 80 pela internet, e porque o DNS-01 lida com curingas. Eles dobram a renovação de certificados nos mesmos pipelines que gerenciam o resto da configuração.
+
+## Onde as peças compartilhadas se encaixam
+
+Qualquer que seja o caminho, os fundamentos do ACME são os mesmos, e o resto deste conjunto de ferramentas os cobre. O valor de desafio DNS-01 que você publica é uma computação específica que você pode produzir com a [ferramenta ACME dns-01](/tools/acme-dns01). Os [limites de emissão](/learn/lets-encrypt) da Let's Encrypt contam contra o domínio registrado, então se um BIG-IP serve de frente para muitos subdomínios, vale verificar como eles se agrupam com o [planejador de limites](/tools/letsencrypt-rate-limits) antes de apontar a automação para a produção. E assim que um certificado é emitido, você pode inspecioná-lo com o [decodificador de certificados](/tools/x509) e planejar sua substituição com o [planejador de renovação](/tools/cert-renewal-planner). O cliente nativo muda como o BIG-IP obtém um certificado; ele não muda o que um certificado é.

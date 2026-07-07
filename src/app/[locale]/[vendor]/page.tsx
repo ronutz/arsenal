@@ -36,6 +36,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import FamilyChip from "@/components/FamilyChip";
 import ScrollToTop from "@/components/ScrollToTop";
+import CategoryFilter from "@/components/CategoryFilter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { tools } from "@/config/tools";
 import { subsOf } from "@/config/vendors";
@@ -175,6 +176,34 @@ export default async function VendorHubPage({
                     )}
                   </ul>
                 </nav>
+              );
+            })()}
+
+            {/* Second nav utility: show/hide families + the Learn section
+                (client island). Mirrors the jump-nav destinations above: one
+                chip per populated tool family, plus a Learn chip. The jump-nav
+                scrolls; this filters what is displayed. */}
+            {(() => {
+              const jumpTools = subGroups.filter((g) => g.tools.length > 0);
+              const jumpLearn = vendorArticles.length > 0;
+              const filterGroups = [
+                ...jumpTools.map((g) => ({
+                  key: g.id,
+                  sectionId: `tools-${g.id}`,
+                  label: subLabel(g.id),
+                  color: vendorColor(vendor),
+                })),
+                ...(jumpLearn
+                  ? [{ key: "learn", sectionId: "learn", label: tHub("learnHeading") }]
+                  : []),
+              ];
+              if (filterGroups.length < 2) return null;
+              return (
+                <CategoryFilter
+                  legend={t("filterLegend")}
+                  allLabel={t("filterAll")}
+                  groups={filterGroups}
+                />
               );
             })()}
 
