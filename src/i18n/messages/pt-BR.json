@@ -3980,7 +3980,9 @@
       "tool": "Ferramenta",
       "badges": "Selos",
       "posture": "Postura",
-      "anchors": "Âncoras"
+      "anchors": "Âncoras",
+      "gvTitle": "vetores dourados: saídas corretas conhecidas fixadas no CI",
+      "svTitle": "vetores de instantâneo: disparo de regras e classificação exatos fixados no CI (ferramenta consultiva)"
     }
   },
   "privacy_page": {

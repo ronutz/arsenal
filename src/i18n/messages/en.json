@@ -3980,7 +3980,9 @@
       "tool": "Tool",
       "badges": "Badges",
       "posture": "Posture",
-      "anchors": "Anchors"
+      "anchors": "Anchors",
+      "gvTitle": "golden vectors: known-correct outputs pinned in CI",
+      "svTitle": "snapshot vectors: exact rule-firing and ranking pinned in CI (advisory tool)"
     }
   },
   "privacy_page": {

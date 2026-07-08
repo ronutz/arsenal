@@ -254,7 +254,16 @@ export default async function AdminConsolePage({
                               {tool.consolidationPending && <span className="admin-tag admin-tag--pending">merge pending</span>}
                               {tool.isNew && <span className="admin-tag admin-tag--new">new</span>}
                               {typeof tool.vectors === "number" && (
-                                <span className="admin-tag">{tool.vectors} GV</span>
+                                <span
+                                  className="admin-tag"
+                                  title={
+                                    tool.verification === "snapshot"
+                                      ? "rule-firing snapshot vectors (D-86 ruling)"
+                                      : "classic golden vectors (D-49)"
+                                  }
+                                >
+                                  {`${tool.vectors} ${tool.verification === "snapshot" ? "SV" : "GV"}`}
+                                </span>
                               )}
                             </td>
                             <td className="mono admin-posture">{tool.posture}</td>

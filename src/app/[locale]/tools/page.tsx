@@ -240,7 +240,12 @@ export default async function ToolsPage({
                                 />
                                 {c?.isNew && <span className="admin-tag admin-tag--new">new</span>}
                                 {typeof c?.vectors === "number" && (
-                                  <span className="admin-tag">{c.vectors} GV</span>
+                                  <span
+                                    className="admin-tag"
+                                    title={t(c?.verification === "snapshot" ? "listHead.svTitle" : "listHead.gvTitle")}
+                                  >
+                                    {`${c.vectors} ${c?.verification === "snapshot" ? "SV" : "GV"}`}
+                                  </span>
                                 )}
                               </td>
                               <td className="mono admin-posture">{c?.posture ?? "—"}</td>
