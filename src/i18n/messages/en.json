@@ -3896,7 +3896,7 @@
         }
       }
     },
-    "devOtherTagline": "tools that ask, not guess",
+    "devOtherTagline": "off the catalogue, still on principle",
     "fault-hypothesis-builder": {
       "name": "Fault Hypothesis Builder",
       "blurb": "Describe a fault in six structured fields; a fixed rule set ranks hypotheses to test - with the evidence to collect, what would support each, and what would weaken it. Advisory structure, never a diagnosis.",
@@ -3974,6 +3974,13 @@
         "copied": "Copied!",
         "downloadMd": "Download .md"
       }
+    },
+    "devOutTagline": "tools that ask, not guess",
+    "listHead": {
+      "tool": "Tool",
+      "badges": "Badges",
+      "posture": "Posture",
+      "anchors": "Anchors"
     }
   },
   "privacy_page": {
@@ -4745,7 +4752,12 @@
     "lede": "Practical explanations of the concepts behind the tools. Each article is written to build genuine understanding, not just to define a term.",
     "read": "Read",
     "readNext": "Read next",
-    "relatedAria": "Related articles"
+    "relatedAria": "Related articles",
+    "listHead": {
+      "article": "Article",
+      "topic": "Topic",
+      "summary": "Summary"
+    }
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -5641,10 +5653,10 @@
   },
   "dev": {
     "metaTitle": "/dev — the developer wing",
-    "metaDescription": "The developer wing of ronutz.com: /dev/fun, the not-serious shelf, and /dev/other, the green room where tools ask the live internet.",
+    "metaDescription": "The developer wing of ronutz.com: /dev/fun, the not-serious shelf; /dev/other, the green room for shapes the catalogue cannot hold yet; and /dev/out, the red room where tools ask the live internet.",
     "title": "/dev",
-    "tagline": "Two rooms off the main floor.",
-    "intro": "Everything on the main site computes locally and deterministically. This wing holds what does not fit that promise: one room for play, one room, in green, for tools that talk to the outside world.",
+    "tagline": "Three rooms off the main floor.",
+    "intro": "Everything on the main site computes locally and deterministically. This wing holds what does not fit that promise: one room for play, one, in green, for shapes the catalogue cannot hold yet, and one, in red, for tools that talk to the outside world.",
     "fun": {
       "title": "/dev/fun",
       "tagline": "The not-serious shelf. Toys, easter eggs, and one very dramatic brain."
@@ -5652,29 +5664,53 @@
     "other": {
       "title": "/dev/other",
       "badge": "other environment",
+      "tagline": "Off the catalogue, still on principle. Shapes the definitions cannot hold yet."
+    },
+    "out": {
+      "title": "/dev/out",
+      "badge": "egress environment",
       "tagline": "Tools that ask, not guess. Live lookups against the real internet, in a clearly marked room."
     }
   },
   "devOther": {
-    "metaTitle": "/dev/other — tools that ask, not guess",
-    "metaDescription": "The green room of ronutz.com: live lookups against the real internet — RDAP and friends — with the rules of engagement stated out loud. Your query goes browser-direct to the official registry; nothing is sent to ronutz.com servers.",
+    "metaTitle": "/dev/other — off the catalogue, still on principle",
+    "metaDescription": "The green room of ronutz.com: tools whose shapes the main catalogue's definitions cannot hold yet — experimental contracts, odd forms — while the house principles (local-first, no accounts, no tracking, open source) keep holding.",
     "title": "/dev/other",
     "badge": "other environment",
-    "tagline": "Tools that ask, not guess.",
-    "intro": "The main site's thesis is tools that compute, never guess: local, deterministic, zero egress. The tools in this room cannot keep that promise, because their whole job is to ask the live internet a question. So they live here, behind green walls, with the differences written on the door.",
+    "tagline": "Off the catalogue, still on principle.",
+    "intro": "Every tool on the main floor signs the same contract: a manifest, golden vectors, a documented shape. This room is for tools that cannot sign it yet — not because they talk to the internet (those live next door in /dev/out, in red), but because their shape fits no drawer. The principles still hold; the paperwork differs.",
     "backToDev": "← back to /dev",
-    "backToOther": "← back to /dev/other",
+    "notice": {
+      "title": "What 'other' means here",
+      "p1": "Tools in this room live outside the main catalogue's definitions: experimental input contracts, unusual output shapes, ideas still finding their form. They are not lesser — they are early or odd, and labeled as such, honestly.",
+      "p2": "The house rules keep holding. Local-first unless a tool states otherwise on its own door, no accounts, no tracking by us, no ads, open source. Tools whose whole job is asking the live internet live next door in /dev/out, behind red walls."
+    },
+    "empty": "No residents yet. The first tool that defies the definitions for a reason other than network egress moves in here — green walls, honest label."
+  },
+  "devOut": {
+    "metaTitle": "/dev/out — tools that ask, not guess",
+    "metaDescription": "The red room of ronutz.com: live lookups against the real internet — RDAP and friends — with the rules of engagement stated out loud. Your query goes browser-direct to the official registry; nothing is sent to ronutz.com servers.",
+    "title": "/dev/out",
+    "badge": "egress environment",
+    "tagline": "Tools that ask, not guess.",
+    "intro": "The main site's thesis is tools that compute, never guess: local, deterministic, zero egress. The tools in this room cannot keep that promise, because their whole job is to ask the live internet a question. So they live here, behind red walls, with the differences written on the door.",
+    "backToDev": "← back to /dev",
+    "backToOut": "← back to /dev/out",
     "notice": {
       "title": "How this room differs from the rest of the site",
       "p1": "Tools here send your input out of the browser. It goes directly from your browser to the official service named on screen (the registry that answers your query) — never to ronutz.com servers, which see nothing, in this version. Nothing leaves until you explicitly press Ask.",
       "p2": "Results are the live world, not a computation. They come from third parties, can change between two identical queries, can be rate-limited or unavailable, and carry no golden-vector guarantee — the tested, deterministic parts here are the input parsing, the registry routing, and the response parsing, and the tool says which registry it will ask before anything is sent.",
       "p3": "Everything else still holds. No account, no tracking by us, no ads, open source. The third party you query will see your request (that is how asking works) — its own terms and privacy policy apply to that hop, and each tool links the exact endpoint so you can inspect it.",
-      "p4": "The deep-green background is the marker: same darkness as the rest of the site, different hue, different rules. When the walls are green, you are in the room where packets leave."
+      "p4": "The deep-red background is the marker: same darkness as the rest of the site, different hue, different rules. When the walls are red, you are in the room where packets leave."
     },
     "tools": {
       "rdapLookup": {
         "name": "RDAP lookup",
         "blurb": "WHOIS, the modern way: domain, IP, or AS number in, the official registry's structured answer out — asked directly from your browser, with the registry named before anything is sent."
+      },
+      "asnLookup": {
+        "name": "ASN lookup",
+        "blurb": "Who holds an AS number: special-purpose ASNs answered locally with their RFC, real ones fetched browser-direct from the owning RIR — with the registry named before anything is sent."
       }
     },
     "rdap": {
@@ -5723,6 +5759,58 @@
       "about1": "RDAP is WHOIS rebuilt on HTTPS and JSON (RFCs 7480, 9082, 9083): the same registry data, structured, with consistent field names and honest redaction notices instead of free-form text. This tool resolves which registry is authoritative using vendored snapshots of IANA's bootstrap files (RFC 9224), builds the exact query URL, shows it, and only sends it when you press Ask — directly from your browser to the registry, never through ronutz.com.",
       "about2": "The deterministic layers (input classification, IDN punycode conversion, bootstrap routing, URL construction, response parsing) are golden-vector-tested like every tool on the main site. The one thing that cannot be pinned is the registry's live answer — which is exactly why this tool lives here and not at /tools.",
       "sourcesLabel": "Sources"
+    },
+    "asn": {
+      "metaTitle": "ASN lookup — who holds an AS number",
+      "metaDescription": "Type an AS number and see, before anything is sent, which regional registry would answer. Special-purpose ASNs (private, documentation, AS_TRANS, AS0) are explained locally with their RFC and never leave the browser; real ones are fetched browser-direct from the owning RIR on an explicit Ask.",
+      "inputLabel": "AS number",
+      "inputPlaceholder": "AS15169 · 28573 · 64512",
+      "example": "Example",
+      "clear": "Clear",
+      "nothingLeaves": "Nothing leaves the browser until you press Ask. Typing only computes, locally, what kind of number this is and which registry would be asked.",
+      "willAsk": "This would ask {registry} (browser-direct, never through ronutz.com):",
+      "ask": "Ask the registry",
+      "asking": "Asking…",
+      "egressBadge": "egress on click",
+      "resultTitle": "Registry answer",
+      "notFoundTitle": "The registry has no object for this number",
+      "notFoundBody": "An HTTP 404 from the RIR means no autnum object is registered there for this number. That is the registry's honest answer, relayed unchanged.",
+      "httpErrorTitle": "The registry answered with HTTP {status}",
+      "httpErrorBody": "Shown verbatim rather than interpreted. You can run the same query from your own machine:",
+      "netErrorTitle": "The browser could not complete the request",
+      "netErrorBody": "This is either a network failure or a registry that does not send CORS headers to browsers (RIPE, as of 2026-07-08, does not). The page cannot tell the two apart by design. The same query from your own machine:",
+      "rawToggle": "Show the raw RDAP document",
+      "redirectNote": "The bootstrap registry redirected this number to {host} — a national registry answering on the RIR's behalf. The browser followed the redirect; the answer above is theirs.",
+      "provenance": "Routing is decided locally against a vendored copy of the IANA RDAP bootstrap (asn.json publication {asnPub}, vendored {vendored}); special-purpose classification against the IANA Special-Purpose AS Numbers registry (accessed {specialAccessed}). Live answers come from the registries themselves and carry no golden-vector guarantee.",
+      "sourcesLabel": "Sources",
+      "about1": "An Autonomous System number identifies a routing domain on the internet, and five regional registries hold the records of who each one belongs to. This tool classifies your input locally, and only for globally-assignable numbers builds the one URL that would answer — the owning RIR's RDAP autnum endpoint — showing it to you before anything is sent.",
+      "about2": "Two whole classes of answer never touch the network: special-purpose numbers (AS0, AS112, AS_TRANS, documentation and private ranges, the two reserved ends of the space) are explained with their RFC right here, and numbers falling in bootstrap gaps are reported as unallocated. An honest tool refuses to pretend a lookup where none exists.",
+      "fields": {
+        "handle": "Handle",
+        "holder": "Holder",
+        "port43": "WHOIS (port 43)",
+        "answeredBy": "Answered by"
+      },
+      "special": {
+        "reservedAs0": "reserved (never a valid origin)",
+        "as112": "the AS112 project (sinks misdirected DNS)",
+        "asTrans": "AS_TRANS (16↔32-bit transition)",
+        "documentation": "documentation and sample code",
+        "privateUse": "private use",
+        "reservedLast": "reserved (last number of its space)",
+        "body": "This is a special-purpose AS number, set aside by {rfc}. No regional registry holds a delegation for it, so there is nothing to ask and no query will be made.",
+        "range": "Reserved block: {range}.",
+        "noEgress": "Answered entirely locally — zero bytes left the browser."
+      },
+      "unallocated": {
+        "title": "not delegated to any registry",
+        "body": "This number falls in a gap of the IANA bootstrap file: no RIR currently serves RDAP for it, which usually means the block is unallocated or not yet delegated. That is the answer; no query will be made."
+      },
+      "errors": {
+        "empty": "Type an AS number.",
+        "format": "Not an AS number — accepted forms: AS15169, as 15169, or the bare number.",
+        "range": "Beyond the 32-bit AS number space (the maximum is 4294967295)."
+      }
     }
   }
 }

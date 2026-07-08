@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/dev-other/rdap/golden-vectors.ts
+// src/lib/dev-out/rdap/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // GOLDEN VECTORS for the RDAP lookup's DETERMINISTIC layers: classification,
 // bootstrap endpoint selection (against the vendored IANA snapshots, dated in
@@ -19,7 +19,7 @@ import {
   type QueryKind,
 } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "dev-other-rdap/2026-07-08";
+export const GOLDEN_VECTOR_SET_ID = "dev-out-rdap/2026-07-08";
 
 interface PlanVector {
   id: string;

@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
+import { CATALOGUE } from "@/content/catalogue/catalogue";
 import FamilyChip from "@/components/FamilyChip";
 import { categoryColor } from "@/config/categoryColors";
 import { vendorColor, populatedVendors } from "@/config/vendors";
@@ -34,6 +35,10 @@ export default async function ToolsPage({
   // The generic index lists VENDOR-AGNOSTIC tools only (PRIME directive
   // 2026-07-03); vendor tools live on their hubs, linked in the strip above.
   const agnosticTools = tools.filter((t) => t.available && !(t.vendors ?? []).length);
+  // Public-safe catalogue join for the list view: posture and anchors are
+  // already public on the roadmap; isNew/vectors are quality signals, not
+  // internal machinery (ranks, notes, merge IDs stay admin-only).
+  const cat = new Map(CATALOGUE.map((e) => [e.slug, e]));
   const categories = [...new Set(agnosticTools.map((t) => t.category))].sort((a, b) =>
     t(`categories.${a}`).localeCompare(t(`categories.${b}`), locale),
   );
@@ -198,6 +203,54 @@ export default async function ToolsPage({
                       )
                     )}
                 </ul>
+
+                {/* LIST VIEW — the same tools in catalogue anatomy, reusing the
+                    admin-table vocabulary (the reference layout). Hidden by
+                    default; main[data-view="list"] swaps the grid for this. */}
+                <div className="admin-table-wrap pubcat">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>{t("listHead.tool")}</th>
+                        <th>{t("listHead.badges")}</th>
+                        <th>{t("listHead.posture")}</th>
+                        <th>{t("listHead.anchors")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {agnosticTools
+                        .filter((tool) => tool.category === category)
+                        .sort((a, b) =>
+                          t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale),
+                        )
+                        .map((tool) => {
+                          const c = cat.get(tool.id);
+                          return (
+                            <tr key={tool.id} data-vendors={(tool.vendors ?? []).join(" ")}>
+                              <td>
+                                <Link href={tool.href} className="pubcat-toollink">
+                                  <span className="admin-name">{t(`${tool.id}.name`)}</span>
+                                  <span className="admin-slug mono">{tool.id}</span>
+                                </Link>
+                              </td>
+                              <td className="admin-status-cell">
+                                <FamilyChip
+                                  category={tool.category}
+                                  label={t(`categories.${tool.category}`)}
+                                />
+                                {c?.isNew && <span className="admin-tag admin-tag--new">new</span>}
+                                {typeof c?.vectors === "number" && (
+                                  <span className="admin-tag">{c.vectors} GV</span>
+                                )}
+                              </td>
+                              <td className="mono admin-posture">{c?.posture ?? "—"}</td>
+                              <td className="admin-specs">{c?.specs?.length ? c.specs.join(" · ") : "—"}</td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </section>
           ))}
@@ -222,6 +275,14 @@ export default async function ToolsPage({
               /dev/other
             </Link>
             <span className="devother-door-tagline">{t("devOtherTagline")}</span>
+          </p>
+          {/* The red door: /dev/out, the egress room, right after the green
+              one (PRIME 08/07: basic-colors triad). */}
+          <p className="colophon-devfun mono devout-door">
+            <Link href="/dev/out" className="devout-door-link">
+              /dev/out
+            </Link>
+            <span className="devout-door-tagline">{t("devOutTagline")}</span>
           </p>
         </article>
       </main>

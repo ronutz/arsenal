@@ -1,9 +1,10 @@
 // ============================================================================
 // src/app/[locale]/dev/page.tsx
 // ----------------------------------------------------------------------------
-// THE /dev INDEX - the little landing for the developer wing. Two rooms:
-// /dev/fun (the not-serious shelf, default weather) and /dev/other (the
-// green room, where tools ask the live internet). Same classification,
+// THE /dev INDEX - the little landing for the developer wing. Three rooms:
+// /dev/fun (the not-serious shelf, default weather), /dev/other (the green
+// room, for shapes the catalogue cannot hold yet), and /dev/out (the red
+// room, where tools ask the live internet - the networkEgress class). Same classification,
 // navigation, display, and localization disciplines as /tools and /learn:
 // canonical /dev under the locale tree, localized metadata, house shell,
 // existing card vocabulary (devfun-card reused; the /dev/other card carries
@@ -71,6 +72,18 @@ export default async function DevIndexPage({
                   </span>
                 </span>
                 <span className="devfun-card-desc">{t("other.tagline")}</span>
+              </Link>
+
+              {/* Room three: /dev/out — the red room, badged in its own tone. */}
+              <Link href="/dev/out" className="devfun-card">
+                <span className="devfun-card-top">
+                  <span className="devfun-card-name">{t("out.title")}</span>
+                  <span className="envout-badge mono">{t("out.badge")}</span>
+                  <span className="devfun-card-arrow" aria-hidden="true">
+                    &#8594;
+                  </span>
+                </span>
+                <span className="devfun-card-desc">{t("out.tagline")}</span>
               </Link>
             </div>
           </div>

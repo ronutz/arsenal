@@ -151,6 +151,37 @@ export default async function LearnIndexPage({
                     </li>
                   ))}
                 </ul>
+
+                {/* LIST VIEW — same articles in catalogue anatomy (admin-table
+                    vocabulary); summary rides the wide notes-style column. */}
+                <div className="admin-table-wrap pubcat">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>{t("listHead.article")}</th>
+                        <th>{t("listHead.topic")}</th>
+                        <th>{t("listHead.summary")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {group.articles.map((a) => (
+                        <tr key={a.slug} data-vendors={getArticleVendors(a).join(" ")}>
+                          <td>
+                            <Link href={`/learn/${a.slug}`} className="pubcat-toollink">
+                              <span className="admin-name">{a.title}</span>
+                            </Link>
+                          </td>
+                          <td className="admin-status-cell">
+                            {articleCategories(a).map((cat) => (
+                              <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
+                            ))}
+                          </td>
+                          <td className="admin-note">{a.summary}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </section>
             ))}
           </div>

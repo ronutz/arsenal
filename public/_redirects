@@ -559,3 +559,37 @@
 /zh-Hans/dev-fun/meeting-bingo /zh-Hans/dev/fun/meeting-bingo/ 301
 /zh-Hans/dev-fun/boss-screens/ /zh-Hans/dev/fun/boss-screens/ 301
 /zh-Hans/dev-fun/boss-screens /zh-Hans/dev/fun/boss-screens/ 301
+
+# /dev/other/rdap-lookup -> /dev/out/rdap-lookup (room split: egress class moved to the red room, 2026-07-08)
+/da/dev/other/rdap-lookup/ /da/dev/out/rdap-lookup/ 301
+/da/dev/other/rdap-lookup /da/dev/out/rdap-lookup/ 301
+/de/dev/other/rdap-lookup/ /de/dev/out/rdap-lookup/ 301
+/de/dev/other/rdap-lookup /de/dev/out/rdap-lookup/ 301
+/en/dev/other/rdap-lookup/ /en/dev/out/rdap-lookup/ 301
+/en/dev/other/rdap-lookup /en/dev/out/rdap-lookup/ 301
+/es/dev/other/rdap-lookup/ /es/dev/out/rdap-lookup/ 301
+/es/dev/other/rdap-lookup /es/dev/out/rdap-lookup/ 301
+/fil/dev/other/rdap-lookup/ /fil/dev/out/rdap-lookup/ 301
+/fil/dev/other/rdap-lookup /fil/dev/out/rdap-lookup/ 301
+/fr/dev/other/rdap-lookup/ /fr/dev/out/rdap-lookup/ 301
+/fr/dev/other/rdap-lookup /fr/dev/out/rdap-lookup/ 301
+/it/dev/other/rdap-lookup/ /it/dev/out/rdap-lookup/ 301
+/it/dev/other/rdap-lookup /it/dev/out/rdap-lookup/ 301
+/ms/dev/other/rdap-lookup/ /ms/dev/out/rdap-lookup/ 301
+/ms/dev/other/rdap-lookup /ms/dev/out/rdap-lookup/ 301
+/nb/dev/other/rdap-lookup/ /nb/dev/out/rdap-lookup/ 301
+/nb/dev/other/rdap-lookup /nb/dev/out/rdap-lookup/ 301
+/nl/dev/other/rdap-lookup/ /nl/dev/out/rdap-lookup/ 301
+/nl/dev/other/rdap-lookup /nl/dev/out/rdap-lookup/ 301
+/pl/dev/other/rdap-lookup/ /pl/dev/out/rdap-lookup/ 301
+/pl/dev/other/rdap-lookup /pl/dev/out/rdap-lookup/ 301
+/pt-BR/dev/other/rdap-lookup/ /pt-BR/dev/out/rdap-lookup/ 301
+/pt-BR/dev/other/rdap-lookup /pt-BR/dev/out/rdap-lookup/ 301
+/ru/dev/other/rdap-lookup/ /ru/dev/out/rdap-lookup/ 301
+/ru/dev/other/rdap-lookup /ru/dev/out/rdap-lookup/ 301
+/sv/dev/other/rdap-lookup/ /sv/dev/out/rdap-lookup/ 301
+/sv/dev/other/rdap-lookup /sv/dev/out/rdap-lookup/ 301
+/tr/dev/other/rdap-lookup/ /tr/dev/out/rdap-lookup/ 301
+/tr/dev/other/rdap-lookup /tr/dev/out/rdap-lookup/ 301
+/zh-Hans/dev/other/rdap-lookup/ /zh-Hans/dev/out/rdap-lookup/ 301
+/zh-Hans/dev/other/rdap-lookup /zh-Hans/dev/out/rdap-lookup/ 301

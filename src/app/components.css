@@ -10530,120 +10530,33 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* Testimonials: root column. */
 .tm-root { display: flex; flex-direction: column; gap: 1rem; }
 
-/* ==========================================================================
-   VIEW TOGGLE + LIST VIEW (tools + learn indexes)
-   --------------------------------------------------------------------------
-   The ViewToggle island sets data-view="list" on <main>; everything visual
-   about the list density lives here. One DOM, two layouts: the same card
-   markup re-flows into compact catalogue-style rows. Cards is the default
-   (no attribute), so no-JS pages are unchanged.
-   ========================================================================== */
-
-/* --- the toggle control itself (sits beside the category filter) --- */
-.viewtoggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  flex-wrap: wrap;
+/* ============================================================================
+   LIST VIEW — catalogue anatomy on the public indexes (/tools, /learn)
+   ----------------------------------------------------------------------------
+   The ViewToggle island sets data-view="list" on <main>. Each category/section
+   renders BOTH the card grid and a catalogue-anatomy table (.pubcat, reusing
+   the admin-table vocabulary — the reference layout). Default shows cards and
+   hides tables; list mode swaps them. No JS → cards, nothing lost. */
+.pubcat {
+  display: none;
+  margin-top: 0.5rem;
 }
-.viewtoggle-legend {
-  font-size: 0.78rem;
-  color: var(--color-muted);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.viewtoggle-btn {
-  font: inherit;
-  font-size: 0.82rem;
-  padding: 0.28rem 0.8rem;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--color-muted);
-  cursor: pointer;
-  transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
-}
-.viewtoggle-btn:hover {
-  color: var(--color-text);
-  border-color: var(--border-strong);
-}
-.viewtoggle-btn--on {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-}
-
-/* --- list density: kill the grids, rows separated by hairlines --- */
 main[data-view="list"] .tools-grid,
 main[data-view="list"] .learn-grid {
+  display: none;
+}
+main[data-view="list"] .pubcat {
   display: block;
 }
-main[data-view="list"] .tools-grid-item,
-main[data-view="list"] .learn-grid-item {
-  border-bottom: 1px solid var(--color-border);
-}
-main[data-view="list"] .tools-grid-item:last-child,
-main[data-view="list"] .learn-grid-item:last-child {
-  border-bottom: none;
-}
-
-/* --- the card becomes a single scannable row: name, one-line blurb, chips --- */
-main[data-view="list"] .tools-card,
-main[data-view="list"] .learn-card {
+/* Row link: name as the primary line, slug as the quiet second. */
+.pubcat-toollink {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.55rem 0.5rem;
-  border: none;
-  border-radius: 0;
-  background: transparent;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-decoration: none;
 }
-main[data-view="list"] .tools-card:hover,
-main[data-view="list"] .learn-card:hover {
-  background: var(--surface-elevated);
-}
-main[data-view="list"] .tools-card-name,
-main[data-view="list"] .learn-card-title {
-  font-size: 0.92rem;
-  margin: 0;
-  flex: 0 0 auto;
-  max-width: 40%;
-}
-main[data-view="list"] .tools-card-blurb,
-main[data-view="list"] .learn-card-summary {
-  flex: 1 1 auto;
-  margin: 0;
-  font-size: 0.82rem;
-  color: var(--color-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
-main[data-view="list"] .family-chip-row {
-  flex: 0 0 auto;
-  margin: 0;
-}
-main[data-view="list"] .tools-card-go,
-main[data-view="list"] .learn-card-cta {
-  flex: 0 0 auto;
-  margin: 0;
-  font-size: 0.78rem;
-}
-
-/* Narrow screens: the one-line blurb is the first thing to give way, keeping
-   name + chips scannable without horizontal pressure. */
-@media (max-width: 640px) {
-  main[data-view="list"] .tools-card-blurb,
-  main[data-view="list"] .learn-card-summary {
-    display: none;
-  }
-  main[data-view="list"] .tools-card-name,
-  main[data-view="list"] .learn-card-title {
-    max-width: none;
-    flex: 1 1 auto;
-  }
+.pubcat-toollink:hover .admin-name {
+  color: var(--color-accent);
 }
 
 /* ============================================================================
@@ -10722,6 +10635,87 @@ main[data-view="list"] .learn-card-cta {
   border-bottom-style: solid;
 }
 .devother-door-tagline {
+  color: var(--text-tertiary);
+  margin-left: 0.5rem;
+}
+
+/* ============================================================================
+   /dev/out — THE EGRESS ENVIRONMENT (the red room)
+   ----------------------------------------------------------------------------
+   The third wall color of the basic triad (blue mothership, green /dev/other,
+   red /dev/out). Same derivation discipline as the green room: the Obsidian
+   palette hue-rotated to pure red at identical saturation/lightness — canvas
+   #020617 → #170202, surface-base #0f172a → #2A0F0F, elevated #1e293b →
+   #3B1E1E, borders #334155/#475569 → #553333/#694747 — with text pinned to
+   the dark-theme values so the room renders identically under all 26 site
+   themes. The interactive accent stays the site cyan (the environment
+   changes, the identity does not). Red is luminance-poor, so the environment
+   marker cannot be the strict S/L rotation of the green's #34d399 (that lands
+   ~4.1:1); #f87171 keeps hue 0 and reaches ≈7.3:1 on this canvas — AA with
+   room to spare. Wrap the whole page (header + main + footer) in .env-out. */
+.env-out {
+  --canvas-primary: #170202;
+  --surface-base: #2A0F0F;
+  --surface-elevated: #3B1E1E;
+  --border-subtle: #553333;
+  --border-strong: #694747;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  /* The red environment marker, used for badges and the door (AA ≈ 7.3:1). */
+  --env-out-accent: #f87171;
+  background: var(--canvas-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The small mono pill that marks egress-environment surfaces and links. */
+.envout-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--env-out-accent);
+  border-radius: 999px;
+  color: var(--env-out-accent);
+}
+
+/* The visible notice: why this room differs from the rest of the site. */
+.envout-notice {
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--env-out-accent);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0 1.75rem;
+}
+.envout-notice-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--env-out-accent);
+}
+.envout-notice-text {
+  margin: 0.4rem 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* The red door on the tools index: same quiet treatment as the green one,
+   in the egress environment's characteristic tone. */
+.devout-door {
+  margin-top: 0.35rem;
+}
+.devout-door-link {
+  color: var(--env-out-accent);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--env-out-accent);
+}
+.devout-door-link:hover {
+  border-bottom-style: solid;
+}
+.devout-door-tagline {
   color: var(--text-tertiary);
   margin-left: 0.5rem;
 }

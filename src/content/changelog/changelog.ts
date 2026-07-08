@@ -53,6 +53,40 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-08",
+    time: "14:05",
+    kind: "feature",
+    title: "List view rebuilt in catalogue anatomy",
+    body: "The list mode on the tools and Learn indexes is no longer a flattened card: it is now a proper catalogue table per section - tool, badges, posture, and standards anchors for tools; article, topic, and summary for Learn - in the same anatomy as the internal build catalogue. Cards remain the default; the toggle and its remembered preference are unchanged.",
+    links: [
+      { label: "Tools", href: "/tools" },
+      { label: "Learn", href: "/learn" },
+    ],
+  },
+  {
+    date: "2026-07-08",
+    time: "13:10",
+    kind: "tool",
+    title: "ASN lookup joins the red room",
+    body: "The second /dev/out resident. Type an AS number and the deterministic layers answer what they can before any egress: special-purpose ASNs (AS0, AS112, AS_TRANS, documentation and private ranges, the reserved ends) are explained locally with their RFC and never leave the browser, bootstrap gaps are reported as unallocated, and real numbers are fetched browser-direct from the owning RIR on an explicit Ask - including following NIR redirects honestly (Brazilian ASNs answer from Registro.br) and naming who actually answered. RIPE-region numbers fail honestly with the exact curl to run instead.",
+    links: [
+      { label: "ASN lookup", href: "/dev/out/asn-lookup" },
+      { label: "/dev/out", href: "/dev/out" },
+    ],
+  },
+  {
+    date: "2026-07-08",
+    time: "12:10",
+    kind: "feature",
+    title: "The developer wing completes its color triad: /dev/out in red",
+    body: "Network-egress tools now live in /dev/out, the red room, which inherits the explicit-egress rules and the RDAP lookup; /dev/other, the green room, is reserved for tools whose shapes the catalogue cannot hold yet, for reasons other than egress. Blue mothership, green for the odd shapes, red for the room where packets leave. Old RDAP links redirect.",
+    links: [
+      { label: "/dev/out", href: "/dev/out" },
+      { label: "/dev/other", href: "/dev/other" },
+      { label: "RDAP lookup", href: "/dev/out/rdap-lookup" },
+    ],
+  },
+  {
+    date: "2026-07-08",
     time: "11:05",
     kind: "tool",
     title: "Operations & Fieldcraft opens with the Fault Hypothesis Builder",
@@ -70,7 +104,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     links: [
       { label: "/dev", href: "/dev" },
       { label: "/dev/other", href: "/dev/other" },
-      { label: "RDAP lookup", href: "/dev/other/rdap-lookup" },
+      { label: "RDAP lookup", href: "/dev/out/rdap-lookup" },
     ],
   },
   {

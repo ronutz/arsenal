@@ -1,18 +1,18 @@
 // ============================================================================
 // src/app/[locale]/dev/other/page.tsx
 // ----------------------------------------------------------------------------
-// THE /dev/other INDEX - the green room. Tools here ASK the live internet
-// instead of computing locally, so the whole page (header + main + footer)
-// wraps in .env-other: the hue-rotated Obsidian mini-theme whose deep-green
-// background marks "another environment". The full four-paragraph notice
-// renders here; tool pages carry the compact version. Cards reuse the house
-// tools-card vocabulary - the tokens turn green for free inside the wrapper.
+// THE /dev/other INDEX - the green room, now for the genuinely OTHER tools:
+// shapes the main catalogue's definitions cannot hold yet (experimental input
+// contracts, odd outputs, ideas finding their form) for reasons OTHER than
+// network egress - egress tools live next door in /dev/out, in red. The
+// house principles keep holding here, and the room says so on the door. The
+// page keeps the .env-other green mini-theme: same darkness, different hue,
+// different paperwork. Currently unoccupied, and honest about it.
 // ============================================================================
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import EnvOtherNotice from "@/components/EnvOtherNotice";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -28,9 +28,10 @@ export async function generateMetadata({
   };
 }
 
-// The room's inventory. Grows as C-87 tools land; each entry pairs a route
-// with its i18n key under devOther.tools.*.
-const OTHER_TOOLS = [{ key: "rdapLookup", href: "/dev/other/rdap-lookup" }] as const;
+// The room's inventory. Empty by honest design until a tool defies the
+// definitions for a reason other than egress; each future entry pairs a
+// route with its i18n key under devOther.tools.*.
+const OTHER_TOOLS = [] as const;
 
 export default async function DevOtherIndexPage({
   params,
@@ -55,18 +56,16 @@ export default async function DevOtherIndexPage({
               <p className="devfun-intro">{t("intro")}</p>
             </div>
 
-            <EnvOtherNotice />
+            {/* The room's short notice: what "other" means, what still holds. */}
+            <div className="envother-notice">
+              <p className="envother-notice-title mono">{t("notice.title")}</p>
+              <p className="envother-notice-text">{t("notice.p1")}</p>
+              <p className="envother-notice-text">{t("notice.p2")}</p>
+            </div>
 
-            <ul className="tools-grid">
-              {OTHER_TOOLS.map((tool) => (
-                <li key={tool.key} className="tools-grid-item">
-                  <Link href={tool.href} className="tools-card">
-                    <h3 className="tools-card-name">{t(`tools.${tool.key}.name`)}</h3>
-                    <p className="tools-card-blurb">{t(`tools.${tool.key}.blurb`)}</p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {OTHER_TOOLS.length === 0 && (
+              <p className="devfun-intro">{t("empty")}</p>
+            )}
 
             <p className="tools-note" style={{ marginTop: "1.5rem" }}>
               <Link href="/dev" className="devother-door-link">

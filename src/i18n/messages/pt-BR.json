@@ -3896,7 +3896,7 @@
         }
       }
     },
-    "devOtherTagline": "ferramentas que perguntam, em vez de adivinhar",
+    "devOtherTagline": "fora do catálogo, dentro dos princípios",
     "fault-hypothesis-builder": {
       "name": "Construtor de Hipóteses de Falha",
       "blurb": "Descreva uma falha em seis campos estruturados; um conjunto fixo de regras classifica hipóteses a testar - com as evidências a coletar, o que sustentaria cada uma e o que a enfraqueceria. Estrutura consultiva, nunca um diagnóstico.",
@@ -3974,6 +3974,13 @@
         "copied": "Copiado!",
         "downloadMd": "Baixar .md"
       }
+    },
+    "devOutTagline": "ferramentas que perguntam, em vez de adivinhar",
+    "listHead": {
+      "tool": "Ferramenta",
+      "badges": "Selos",
+      "posture": "Postura",
+      "anchors": "Âncoras"
     }
   },
   "privacy_page": {
@@ -4745,7 +4752,12 @@
     "lede": "Explicações práticas dos conceitos por trás das ferramentas. Cada artigo é escrito para construir entendimento genuíno, não apenas para definir um termo.",
     "read": "Ler",
     "readNext": "Leia a seguir",
-    "relatedAria": "Artigos relacionados"
+    "relatedAria": "Artigos relacionados",
+    "listHead": {
+      "article": "Artigo",
+      "topic": "Tema",
+      "summary": "Resumo"
+    }
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -5641,10 +5653,10 @@
   },
   "dev": {
     "metaTitle": "/dev — a ala do desenvolvedor",
-    "metaDescription": "A ala do desenvolvedor do ronutz.com: /dev/fun, a prateleira não-séria, e /dev/other, a sala verde onde as ferramentas perguntam à internet ao vivo.",
+    "metaDescription": "A ala do desenvolvedor do ronutz.com: /dev/fun, a prateleira não-séria; /dev/other, a sala verde para formas que o catálogo ainda não comporta; e /dev/out, a sala vermelha onde as ferramentas perguntam à internet ao vivo.",
     "title": "/dev",
-    "tagline": "Duas salas fora do salão principal.",
-    "intro": "Tudo no site principal computa localmente e de forma determinística. Esta ala guarda o que não cabe nessa promessa: uma sala para brincar e uma sala, em verde, para ferramentas que falam com o mundo lá fora.",
+    "tagline": "Três salas fora do salão principal.",
+    "intro": "Tudo no site principal computa localmente e de forma determinística. Esta ala guarda o que não cabe nessa promessa: uma sala para brincar, uma, em verde, para formas que o catálogo ainda não comporta, e uma, em vermelho, para ferramentas que falam com o mundo lá fora.",
     "fun": {
       "title": "/dev/fun",
       "tagline": "A prateleira não-séria. Brinquedos, easter eggs e um cérebro muito dramático."
@@ -5652,29 +5664,53 @@
     "other": {
       "title": "/dev/other",
       "badge": "outro ambiente",
+      "tagline": "Fora do catálogo, dentro dos princípios. Formas que as definições ainda não comportam."
+    },
+    "out": {
+      "title": "/dev/out",
+      "badge": "ambiente de egresso",
       "tagline": "Ferramentas que perguntam, em vez de adivinhar. Consultas ao vivo contra a internet real, em uma sala claramente demarcada."
     }
   },
   "devOther": {
-    "metaTitle": "/dev/other — ferramentas que perguntam, em vez de adivinhar",
-    "metaDescription": "A sala verde do ronutz.com: consultas ao vivo contra a internet real — RDAP e companhia — com as regras do jogo ditas em voz alta. Sua consulta vai direto do navegador ao registro oficial; nada é enviado aos servidores do ronutz.com.",
+    "metaTitle": "/dev/other — fora do catálogo, dentro dos princípios",
+    "metaDescription": "A sala verde do ronutz.com: ferramentas cujas formas as definições do catálogo principal ainda não comportam — contratos experimentais, formatos incomuns — enquanto os princípios da casa (local em primeiro lugar, sem contas, sem rastreamento, código aberto) continuam valendo.",
     "title": "/dev/other",
     "badge": "outro ambiente",
-    "tagline": "Ferramentas que perguntam, em vez de adivinhar.",
-    "intro": "A tese do site principal é ferramentas que computam, nunca adivinham: local, determinístico, zero egresso. As ferramentas desta sala não conseguem manter essa promessa, porque o trabalho delas é justamente fazer uma pergunta à internet ao vivo. Por isso vivem aqui, entre paredes verdes, com as diferenças escritas na porta.",
+    "tagline": "Fora do catálogo, dentro dos princípios.",
+    "intro": "Toda ferramenta do salão principal assina o mesmo contrato: um manifesto, vetores dourados, uma forma documentada. Esta sala é para ferramentas que ainda não conseguem assiná-lo — não porque falam com a internet (essas vivem na porta ao lado, em /dev/out, em vermelho), mas porque a forma delas não cabe em gaveta nenhuma. Os princípios continuam valendo; a papelada é outra.",
     "backToDev": "← voltar a /dev",
-    "backToOther": "← voltar a /dev/other",
+    "notice": {
+      "title": "O que 'other' significa aqui",
+      "p1": "As ferramentas desta sala vivem fora das definições do catálogo principal: contratos de entrada experimentais, formatos de saída incomuns, ideias ainda encontrando sua forma. Não são menores — são precoces ou estranhas, e rotuladas como tal, honestamente.",
+      "p2": "As regras da casa continuam valendo. Local em primeiro lugar, a menos que uma ferramenta declare o contrário na própria porta; sem contas, sem rastreamento por nós, sem anúncios, código aberto. Ferramentas cujo trabalho é perguntar à internet ao vivo moram na porta ao lado, em /dev/out, entre paredes vermelhas."
+    },
+    "empty": "Nenhum morador ainda. A primeira ferramenta que desafiar as definições por um motivo que não seja egresso de rede se muda para cá — paredes verdes, rótulo honesto."
+  },
+  "devOut": {
+    "metaTitle": "/dev/out — ferramentas que perguntam, em vez de adivinhar",
+    "metaDescription": "A sala vermelha do ronutz.com: consultas ao vivo contra a internet real — RDAP e companhia — com as regras do jogo ditas em voz alta. Sua consulta vai direto do navegador ao registro oficial; nada é enviado aos servidores do ronutz.com.",
+    "title": "/dev/out",
+    "badge": "ambiente de egresso",
+    "tagline": "Ferramentas que perguntam, em vez de adivinhar.",
+    "intro": "A tese do site principal é ferramentas que computam, nunca adivinham: local, determinístico, zero egresso. As ferramentas desta sala não conseguem manter essa promessa, porque o trabalho delas é justamente fazer uma pergunta à internet ao vivo. Por isso vivem aqui, entre paredes vermelhas, com as diferenças escritas na porta.",
+    "backToDev": "← voltar a /dev",
+    "backToOut": "← voltar a /dev/out",
     "notice": {
       "title": "Como esta sala difere do resto do site",
       "p1": "As ferramentas daqui enviam sua entrada para fora do navegador. Ela vai diretamente do seu navegador ao serviço oficial nomeado na tela (o registro que responde à sua consulta) — nunca aos servidores do ronutz.com, que não veem nada, nesta versão. Nada sai até você apertar Perguntar explicitamente.",
       "p2": "Os resultados são o mundo ao vivo, não uma computação. Vêm de terceiros, podem mudar entre duas consultas idênticas, podem sofrer limite de taxa ou indisponibilidade, e não carregam garantia de vetores dourados — as partes testadas e determinísticas aqui são a interpretação da entrada, o roteamento de registros e a interpretação da resposta, e a ferramenta diz qual registro vai perguntar antes de qualquer envio.",
       "p3": "Todo o resto continua valendo. Sem conta, sem rastreamento por nós, sem anúncios, código aberto. O terceiro que você consulta verá a sua requisição (é assim que perguntar funciona) — os termos e a política de privacidade dele valem para esse trecho, e cada ferramenta mostra o endpoint exato para você inspecionar.",
-      "p4": "O fundo verde-profundo é o marcador: a mesma escuridão do resto do site, outro matiz, outras regras. Quando as paredes estão verdes, você está na sala de onde os pacotes saem."
+      "p4": "O fundo vermelho-profundo é o marcador: a mesma escuridão do resto do site, outro matiz, outras regras. Quando as paredes estão vermelhas, você está na sala de onde os pacotes saem."
     },
     "tools": {
       "rdapLookup": {
         "name": "Consulta RDAP",
         "blurb": "WHOIS do jeito moderno: domínio, IP ou número de AS entram, a resposta estruturada do registro oficial sai — perguntada direto do seu navegador, com o registro nomeado antes de qualquer envio."
+      },
+      "asnLookup": {
+        "name": "Consulta de ASN",
+        "blurb": "Quem detém um número de AS: ASNs de uso especial respondidos localmente com o RFC correspondente, os reais consultados direto do navegador ao RIR responsável — com o registro nomeado antes de qualquer envio."
       }
     },
     "rdap": {
@@ -5723,6 +5759,58 @@
       "about1": "RDAP é o WHOIS reconstruído sobre HTTPS e JSON (RFCs 7480, 9082, 9083): os mesmos dados de registro, estruturados, com nomes de campo consistentes e avisos honestos de redação em vez de texto livre. Esta ferramenta resolve qual registro é autoritativo usando snapshots embarcados dos arquivos de bootstrap da IANA (RFC 9224), monta a URL exata da consulta, a exibe, e só a envia quando você aperta Perguntar — diretamente do seu navegador ao registro, nunca passando pelo ronutz.com.",
       "about2": "As camadas determinísticas (classificação da entrada, conversão IDN para punycode, roteamento de bootstrap, construção de URL, interpretação da resposta) são testadas com vetores dourados como toda ferramenta do site principal. A única coisa que não dá para cravar é a resposta ao vivo do registro — exatamente por isso esta ferramenta vive aqui, e não em /tools.",
       "sourcesLabel": "Fontes"
+    },
+    "asn": {
+      "metaTitle": "Consulta de ASN — quem detém um número de AS",
+      "metaDescription": "Digite um número de AS e veja, antes de qualquer envio, qual registro regional responderia. ASNs de uso especial (privados, documentação, AS_TRANS, AS0) são explicados localmente com o RFC correspondente e nunca saem do navegador; os reais são consultados direto do navegador ao RIR responsável, mediante um Perguntar explícito.",
+      "inputLabel": "Número de AS",
+      "inputPlaceholder": "AS15169 · 28573 · 64512",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "nothingLeaves": "Nada sai do navegador até você apertar Perguntar. Digitar apenas calcula, localmente, que tipo de número é este e qual registro seria consultado.",
+      "willAsk": "Isto perguntaria a {registry} (direto do navegador, nunca via ronutz.com):",
+      "ask": "Perguntar ao registro",
+      "asking": "Perguntando…",
+      "egressBadge": "egresso ao clicar",
+      "resultTitle": "Resposta do registro",
+      "notFoundTitle": "O registro não tem objeto para este número",
+      "notFoundBody": "Um HTTP 404 do RIR significa que nenhum objeto autnum está registrado lá para este número. Essa é a resposta honesta do registro, repassada sem alterações.",
+      "httpErrorTitle": "O registro respondeu com HTTP {status}",
+      "httpErrorBody": "Mostrado literalmente, sem interpretação. Você pode rodar a mesma consulta da sua própria máquina:",
+      "netErrorTitle": "O navegador não conseguiu completar a requisição",
+      "netErrorBody": "Isto é ou uma falha de rede ou um registro que não envia cabeçalhos CORS para navegadores (o RIPE, em 2026-07-08, não envia). A página não consegue distinguir os dois casos, por design. A mesma consulta da sua própria máquina:",
+      "rawToggle": "Mostrar o documento RDAP bruto",
+      "redirectNote": "O registro de bootstrap redirecionou este número para {host} — um registro nacional respondendo em nome do RIR. O navegador seguiu o redirecionamento; a resposta acima é dele.",
+      "provenance": "O roteamento é decidido localmente contra uma cópia vendorizada do bootstrap RDAP da IANA (asn.json publicado em {asnPub}, vendorizado em {vendored}); a classificação de uso especial, contra o registro IANA Special-Purpose AS Numbers (acessado em {specialAccessed}). Respostas ao vivo vêm dos próprios registros e não carregam garantia de vetores dourados.",
+      "sourcesLabel": "Fontes",
+      "about1": "Um número de Sistema Autônomo identifica um domínio de roteamento na internet, e cinco registros regionais guardam os registros de a quem cada um pertence. Esta ferramenta classifica sua entrada localmente e, apenas para números atribuíveis globalmente, monta a única URL que responderia — o endpoint RDAP autnum do RIR responsável — mostrando-a antes de qualquer envio.",
+      "about2": "Duas classes inteiras de resposta jamais tocam a rede: números de uso especial (AS0, AS112, AS_TRANS, faixas de documentação e uso privado, as duas pontas reservadas do espaço) são explicados aqui mesmo com o RFC correspondente, e números que caem em lacunas do bootstrap são reportados como não alocados. Uma ferramenta honesta se recusa a fingir uma consulta onde ela não existe.",
+      "fields": {
+        "handle": "Handle",
+        "holder": "Detentor",
+        "port43": "WHOIS (porta 43)",
+        "answeredBy": "Respondido por"
+      },
+      "special": {
+        "reservedAs0": "reservado (nunca uma origem válida)",
+        "as112": "o projeto AS112 (absorve consultas DNS mal direcionadas)",
+        "asTrans": "AS_TRANS (transição 16↔32 bits)",
+        "documentation": "documentação e código de exemplo",
+        "privateUse": "uso privado",
+        "reservedLast": "reservado (último número do seu espaço)",
+        "body": "Este é um número de AS de uso especial, separado pelo {rfc}. Nenhum registro regional detém delegação para ele, então não há a quem perguntar e nenhuma consulta será feita.",
+        "range": "Bloco reservado: {range}.",
+        "noEgress": "Respondido inteiramente localmente — zero bytes saíram do navegador."
+      },
+      "unallocated": {
+        "title": "não delegado a nenhum registro",
+        "body": "Este número cai em uma lacuna do arquivo de bootstrap da IANA: nenhum RIR serve RDAP para ele atualmente, o que geralmente significa que o bloco está não alocado ou ainda não delegado. Essa é a resposta; nenhuma consulta será feita."
+      },
+      "errors": {
+        "empty": "Digite um número de AS.",
+        "format": "Não é um número de AS — formas aceitas: AS15169, as 15169 ou o número puro.",
+        "range": "Além do espaço de números de AS de 32 bits (o máximo é 4294967295)."
+      }
     }
   }
 }

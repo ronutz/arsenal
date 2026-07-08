@@ -1,5 +1,5 @@
 // ============================================================================
-// src/lib/dev-other/rdap/compute.ts
+// src/lib/dev-out/rdap/compute.ts
 // ----------------------------------------------------------------------------
 // RDAP LOOKUP - the deterministic layers of the first /dev/other tool.
 //

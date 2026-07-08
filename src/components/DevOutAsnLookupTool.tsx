@@ -1,48 +1,46 @@
 // ============================================================================
-// src/components/DevOtherRdapTool.tsx
+// src/components/DevOutAsnLookupTool.tsx
 // ----------------------------------------------------------------------------
-// RDAP LOOKUP - the first /dev/other tool, built around one privacy rule:
+// ASN LOOKUP - the second /dev/out tool, same privacy rule as the first:
 // NOTHING LEAVES THE BROWSER UNTIL THE PERSON PRESSES ASK.
 //
-// Typing runs only the deterministic layers (classify -> vendored-bootstrap
-// endpoint selection -> URL) and shows, before any egress, exactly which
-// registry would be asked. The fetch happens on an explicit button press,
-// browser-direct to the official registry (never through ronutz.com servers
-// in this version). Failure paths are designed, not hidden:
-//   - HTTP 404      -> "the registry has no object by that name" (honest)
-//   - other HTTP    -> status shown verbatim
-//   - network/CORS  -> explained (some registries, RIPE among them as of
-//                      2026-07-08, do not send CORS headers), with the exact
-//                      curl equivalent to run locally instead
-// Styling reuses the established tool vocabulary (cidr-*, jwt-*, cipher-note,
-// b64-copy); inside .env-other the tokens render green for free.
+// Typing runs only the deterministic layers (classify -> special-purpose
+// table -> vendored-bootstrap routing -> URL) and shows, before any egress,
+// exactly which RIR would be asked. Two whole classes of answer need no
+// network at all and get none: special-purpose ASNs (AS0, AS112, AS_TRANS,
+// documentation, private use, the RFC 7300 reserved ends) are explained with
+// their RFC, and bootstrap gaps are reported as unallocated - an answer, not
+// an error. One honest extra: some RIRs redirect NIR-delegated numbers
+// (LACNIC hands Brazilian ASNs to rdap.registro.br, verified 2026-07-08);
+// fetch follows the redirect and the result names who actually answered.
 // ============================================================================
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  planQuery,
-  parseRdapResponse,
+  planAsn,
+  summarizeAutnum,
   curlCommand,
-  RdapError,
+  AsnError,
   BOOTSTRAP_SNAPSHOT,
-  type RdapSummary,
-} from "@/lib/dev-other/rdap/compute";
+  SPECIAL_REGISTRY_SNAPSHOT,
+  type AutnumSummary,
+} from "@/lib/dev-out/asn/compute";
 
-// Example input, faithful to the golden vectors (domain-com).
-const EXAMPLE = "example.com";
+// Example input, faithful to the golden vectors (routing vector "arin").
+const EXAMPLE = "AS15169";
 
 type FetchState =
   | { phase: "idle" }
   | { phase: "loading"; host: string }
-  | { phase: "done"; summary: RdapSummary; raw: unknown; url: string }
+  | { phase: "done"; summary: AutnumSummary; raw: unknown; url: string; answeredBy: string }
   | { phase: "notFound"; url: string }
   | { phase: "httpError"; status: number; url: string }
   | { phase: "netError"; url: string };
 
-export default function DevOtherRdapTool() {
-  const t = useTranslations("devOther.rdap");
+export default function DevOutAsnLookupTool() {
+  const t = useTranslations("devOut.asn");
 
   const [value, setValue] = useState("");
   const [fetchState, setFetchState] = useState<FetchState>({ phase: "idle" });
@@ -52,9 +50,9 @@ export default function DevOtherRdapTool() {
     const trimmed = value.trim();
     if (trimmed === "") return { kind: "empty" as const };
     try {
-      return { kind: "ok" as const, plan: planQuery(trimmed) };
+      return { kind: "ok" as const, plan: planAsn(trimmed) };
     } catch (e) {
-      const code = e instanceof RdapError ? e.code : "format";
+      const code = e instanceof AsnError ? e.code : "format";
       return { kind: "error" as const, code };
     }
   }, [value]);
@@ -66,7 +64,7 @@ export default function DevOtherRdapTool() {
 
   // The one and only egress point: an explicit user action.
   const ask = useCallback(async () => {
-    if (plan.kind !== "ok") return;
+    if (plan.kind !== "ok" || plan.plan.kind !== "query") return;
     const { url } = plan.plan;
     const host = new URL(url).hostname;
     setFetchState({ phase: "loading", host });
@@ -83,12 +81,13 @@ export default function DevOtherRdapTool() {
         setFetchState({ phase: "httpError", status: res.status, url });
       } else {
         const raw: unknown = await res.json();
-        setFetchState({ phase: "done", summary: parseRdapResponse(raw), raw, url });
+        // res.url is the FINAL hop after any redirects - who really answered.
+        const answeredBy = res.url ? new URL(res.url).hostname : host;
+        setFetchState({ phase: "done", summary: summarizeAutnum(raw), raw, url, answeredBy });
       }
     } catch {
-      // TypeError covers both network failure and a missing CORS header; the
-      // distinction is invisible to page JavaScript by design, so the message
-      // explains both and hands over the curl equivalent.
+      // TypeError covers both network failure and a missing CORS header (RIPE,
+      // as of 2026-07-08); the message explains both and hands over the curl.
       setFetchState({ phase: "netError", url });
     } finally {
       clearTimeout(timer);
@@ -107,7 +106,7 @@ export default function DevOtherRdapTool() {
     <div className="cidr-tool jwt-tool">
       <div className="cidr-input-row">
         <div className="dig-input-head">
-          <label className="cidr-label" htmlFor="rdap-input">
+          <label className="cidr-label" htmlFor="asn-input">
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
@@ -120,7 +119,7 @@ export default function DevOtherRdapTool() {
           </div>
         </div>
         <input
-          id="rdap-input"
+          id="asn-input"
           className="cidr-input mono"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -145,13 +144,44 @@ export default function DevOtherRdapTool() {
           {t(`errors.${plan.code}`)}
         </p>
       )}
-      {plan.kind === "ok" && (
+
+      {/* Special-purpose ASN: a complete answer with zero egress. */}
+      {plan.kind === "ok" && plan.plan.kind === "special" && (
+        <div className="jwt-results">
+          <section className="jwt-panel">
+            <h4 className="jwt-panel-title">
+              {plan.plan.normalized} — {t(`special.${plan.plan.special.reasonKey}`)}
+            </h4>
+            <p className="cipher-note">
+              {t("special.body", { rfc: plan.plan.special.rfc })}{" "}
+              {t("special.range", {
+                range:
+                  plan.plan.special.start === plan.plan.special.end
+                    ? `AS${plan.plan.special.start}`
+                    : `AS${plan.plan.special.start}-AS${plan.plan.special.end}`,
+              })}
+            </p>
+            <p className="cipher-note">{t("special.noEgress")}</p>
+          </section>
+        </div>
+      )}
+
+      {/* Unallocated: a bootstrap gap is an answer, not an error. */}
+      {plan.kind === "ok" && plan.plan.kind === "unallocated" && (
+        <div className="jwt-results">
+          <section className="jwt-panel">
+            <h4 className="jwt-panel-title">
+              {plan.plan.normalized} — {t("unallocated.title")}
+            </h4>
+            <p className="cipher-note">{t("unallocated.body")}</p>
+          </section>
+        </div>
+      )}
+
+      {plan.kind === "ok" && plan.plan.kind === "query" && (
         <>
           <p className="rdap-plan">
-            {t("willAsk", {
-              registry: new URL(plan.plan.url).hostname,
-              kind: t(`kinds.${plan.plan.input.kind}`),
-            })}{" "}
+            {t("willAsk", { registry: plan.plan.registryHost })}{" "}
             <code className="mono">{plan.plan.url}</code>
           </p>
           <div className="rdap-ask-row">
@@ -163,7 +193,7 @@ export default function DevOtherRdapTool() {
             >
               {fetchState.phase === "loading" ? t("asking") : t("ask")}
             </button>
-            <span className="envother-badge mono">{t("egressBadge")}</span>
+            <span className="envout-badge mono">{t("egressBadge")}</span>
           </div>
         </>
       )}
@@ -199,7 +229,8 @@ export default function DevOtherRdapTool() {
         <div className="jwt-results">
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">
-              {fetchState.summary.displayName ?? t("resultTitle")}
+              {fetchState.summary.range ?? t("resultTitle")}
+              {fetchState.summary.name ? ` — ${fetchState.summary.name}` : ""}
             </h4>
             {fetchState.summary.status.length > 0 && (
               <div className="jwt-badges" style={{ marginTop: "0.5rem" }}>
@@ -211,42 +242,19 @@ export default function DevOtherRdapTool() {
               </div>
             )}
             <dl className="jwt-claims" style={{ marginTop: "0.75rem" }}>
-              {summaryRow(t("fields.class"), fetchState.summary.objectClassName)}
               {summaryRow(t("fields.handle"), fetchState.summary.handle)}
+              {summaryRow(t("fields.holder"), fetchState.summary.holder)}
               {Object.entries(fetchState.summary.events).map(([action, date]) => (
                 <div className="jwt-claim-row" key={action}>
                   <dt className="jwt-claim-label">{action}</dt>
                   <dd className="jwt-claim-value mono">{date.slice(0, 10)}</dd>
                 </div>
               ))}
-              {fetchState.summary.entities
-                .filter((e) => e.name)
-                .map((e, i) => (
-                  <div className="jwt-claim-row" key={i}>
-                    <dt className="jwt-claim-label">{e.roles.join(", ") || t("fields.entity")}</dt>
-                    <dd className="jwt-claim-value">{e.name}</dd>
-                  </div>
-                ))}
-              {summaryRow(
-                t("fields.nameservers"),
-                fetchState.summary.nameservers.length > 0
-                  ? fetchState.summary.nameservers.join(", ")
-                  : null,
-              )}
-              {summaryRow(
-                t("fields.dnssec"),
-                fetchState.summary.dnssecSigned === null
-                  ? null
-                  : fetchState.summary.dnssecSigned
-                    ? t("fields.signed")
-                    : t("fields.unsigned"),
-              )}
               {summaryRow(t("fields.port43"), fetchState.summary.port43)}
+              {summaryRow(t("fields.answeredBy"), fetchState.answeredBy)}
             </dl>
-            {fetchState.summary.noticeTitles.length > 0 && (
-              <p className="cipher-note">
-                {t("fields.notices")}: {fetchState.summary.noticeTitles.join(" · ")}
-              </p>
+            {fetchState.answeredBy !== new URL(fetchState.url).hostname && (
+              <p className="cipher-note">{t("redirectNote", { host: fetchState.answeredBy })}</p>
             )}
             {/* The raw document, honest and complete, one click away. */}
             <details style={{ marginTop: "0.75rem" }}>
@@ -259,11 +267,12 @@ export default function DevOtherRdapTool() {
         </div>
       )}
 
-      {/* Provenance of the routing layer: the vendored bootstrap snapshot. */}
+      {/* Provenance of the deterministic layers. */}
       <p className="cipher-note" style={{ marginTop: "1rem" }}>
-        {t("bootstrapNote", {
+        {t("provenance", {
+          asnPub: BOOTSTRAP_SNAPSHOT.publications.asn.slice(0, 10),
           vendored: BOOTSTRAP_SNAPSHOT.vendored,
-          dns: BOOTSTRAP_SNAPSHOT.publications.dns.slice(0, 10),
+          specialAccessed: SPECIAL_REGISTRY_SNAPSHOT.accessed,
         })}
       </p>
     </div>
