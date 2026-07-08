@@ -39,6 +39,7 @@ export default async function BossScreensPage({
   setRequestLocale(locale);
   const t = await getTranslations("bossScreens");
   const tShortcuts = await getTranslations("shortcuts");
+  const tTools = await getTranslations("tools");
 
   // Localized name + blurb per screen id. The i18n keys mirror the screen ids
   // (name.<id> / blurb.<id>); BOSS_SCREEN_META is the id list + English fallback.
@@ -64,6 +65,9 @@ export default async function BossScreensPage({
     bossHint: tShortcuts("bossHint"),
     bossDismiss: tShortcuts("bossDismiss"),
     openLabel: t("open"),
+    viewLegend: tTools("viewLegend"),
+    viewCards: tTools("viewCards"),
+    viewList: tTools("viewList"),
   };
 
   return (

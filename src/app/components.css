@@ -10559,6 +10559,92 @@ main[data-view="list"] .pubcat {
   color: var(--color-accent);
 }
 
+/* --- The View: Cards/List segmented control (ViewToggle island). Mirrors the
+   .api-viewtoggle vocabulary so it reads identically to the API view switch. */
+.viewtoggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.viewtoggle-legend {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.viewtoggle-btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.4rem 0.9rem;
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+}
+.viewtoggle-btn:first-of-type {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+.viewtoggle-btn:last-of-type {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-left: none;
+}
+.viewtoggle-btn:hover {
+  color: var(--text-primary);
+}
+.viewtoggle-btn--on {
+  background: var(--accent-primary);
+  color: var(--canvas-primary);
+  border-color: var(--accent-primary);
+}
+
+/* Boss-screens list view: same swap contract as /tools and /learn, over the
+   boss-viewer grid. Cards is the no-attribute default. */
+main[data-view="list"] .boss-viewer-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+main[data-view="list"] .boss-viewer-card {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.55rem 0.5rem;
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+}
+main[data-view="list"] .boss-viewer-card:last-child {
+  border-bottom: none;
+}
+main[data-view="list"] .boss-viewer-card:hover {
+  background: var(--surface-elevated);
+}
+main[data-view="list"] .boss-viewer-thumb {
+  flex: 0 0 auto;
+  width: 3.5rem;
+  height: 2.4rem;
+  overflow: hidden;
+}
+main[data-view="list"] .boss-viewer-meta {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-width: 0;
+}
+main[data-view="list"] .boss-viewer-blurb {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-tertiary);
+  font-size: 0.82rem;
+}
+
 /* ============================================================================
    /dev/other — THE OTHER ENVIRONMENT (the green room)
    ----------------------------------------------------------------------------
@@ -10846,4 +10932,183 @@ main[data-view="list"] .pubcat {
   display: flex;
   gap: 0.6rem;
   margin-top: 1rem;
+}
+
+/* Boss-screens controls row: jump-nav on the left, the view toggle trailing. */
+.boss-viewer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.boss-viewer-controls .boss-viewer-jumpnav {
+  margin-bottom: 0;
+}
+
+/* ============================================================================
+   SUBNETTING DRILL TRAINER (src/components/DevOtherSubnetDrillTool.tsx)
+   Green-room resident; tokens only, renders green inside .env-other. */
+.drill-scoreboard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+}
+.drill-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.drill-stat-label {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.drill-stat-value {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+.drill-reset {
+  margin-left: auto;
+}
+.drill-config,
+.drill-play,
+.drill-done {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.drill-diff-row {
+  display: inline-flex;
+}
+.drill-diff-row .viewtoggle-btn:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+.drill-diff-row .viewtoggle-btn:not(:first-child) {
+  border-left: none;
+}
+.drill-start {
+  align-self: flex-start;
+}
+.drill-progress {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+.drill-prompt {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.drill-answer-row,
+.drill-bool-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+.drill-answer-row .cidr-input {
+  max-width: 18rem;
+}
+.drill-feedback {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.drill-feedback--ok {
+  border-left: 3px solid var(--color-success);
+}
+.drill-feedback--no {
+  border-left: 3px solid var(--color-warning);
+}
+.drill-feedback-verdict {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+.drill-score {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+/* PCAP ANALYZER (src/components/DevOtherPcapTool.tsx) — green-room tenant. */
+.pcap-drop {
+  border: 2px dashed var(--border-strong);
+  border-radius: 10px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--surface-base);
+}
+.pcap-drop:hover,
+.pcap-drop--over {
+  border-color: var(--env-other-accent, var(--accent-primary));
+  background: var(--surface-elevated);
+}
+.pcap-drop-title {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+}
+.pcap-drop-hint {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+.pcap-depth {
+  border-left: 3px solid var(--border-strong);
+  padding-left: 0.75rem;
+}
+.pcap-proto-rows {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.pcap-proto-line {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.pcap-proto-label {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  width: 2rem;
+}
+
+/* WEBSERIAL CONSOLE (src/components/DevOtherWebSerialTool.tsx) */
+.ws-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+.ws-console {
+  margin-top: 0.75rem;
+  background: #0a0e14;
+  color: #c9d1d9;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  min-height: 12rem;
+  max-height: 26rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 0.82rem;
+  line-height: 1.5;
 }

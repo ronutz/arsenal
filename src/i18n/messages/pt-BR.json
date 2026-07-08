@@ -5687,7 +5687,174 @@
       "p1": "As ferramentas desta sala vivem fora das definições do catálogo principal: contratos de entrada experimentais, formatos de saída incomuns, ideias ainda encontrando sua forma. Não são menores — são precoces ou estranhas, e rotuladas como tal, honestamente.",
       "p2": "As regras da casa continuam valendo. Local em primeiro lugar, a menos que uma ferramenta declare o contrário na própria porta; sem contas, sem rastreamento por nós, sem anúncios, código aberto. Ferramentas cujo trabalho é perguntar à internet ao vivo moram na porta ao lado, em /dev/out, entre paredes vermelhas."
     },
-    "empty": "Nenhum morador ainda. A primeira ferramenta que desafiar as definições por um motivo que não seja egresso de rede se muda para cá — paredes verdes, rótulo honesto."
+    "empty": "Nenhum morador ainda. A primeira ferramenta que desafiar as definições por um motivo que não seja egresso de rede se muda para cá — paredes verdes, rótulo honesto.",
+    "subnetDrill": {
+      "metaTitle": "Treino de subnetting — pratique cálculo CIDR",
+      "metaDescription": "Prática cronometrada de subnetting: endereços de rede e broadcast, hosts utilizáveis, máscaras, dimensionamento de prefixo e contenção, gerados a cada rodada com uma sequência lembrada. Roda inteiramente no seu navegador.",
+      "name": "Treino de subnetting",
+      "blurb": "Prática CIDR aleatorizada com níveis de dificuldade e uma sequência que o navegador lembra.",
+      "why": "Esta ferramenta vive na sala verde porque GERA exercícios (aleatoriedade) e LEMBRA sua sequência (estado) — duas coisas que as ferramentas de entrada-para-saída do catálogo não fazem. A matemática que ela cobra é o próprio motor CIDR do site.",
+      "about1": "Escolha uma dificuldade e cada rodada distribui dez questões novas a partir de uma nova semente aleatória, então nenhuma rodada se repete. A aritmética de subnetting é calculada pelo mesmo motor por trás da ferramenta CIDR, então toda resposta canônica é exatamente o que aquela ferramenta produziria.",
+      "about2": "Sua sequência atual, melhor sequência e placar de todos os tempos ficam no armazenamento local do seu navegador e nunca saem dele. Limpe-os quando quiser com Zerar; nada aqui é enviado ou rastreado.",
+      "difficulty": {
+        "label": "Dificuldade",
+        "easy": "Fácil (/24-/30)",
+        "medium": "Médio (/16-/30)",
+        "hard": "Difícil (/8-/31)"
+      },
+      "start": "Iniciar rodada de {n} questões",
+      "runsLocally": "Tudo — as questões, a correção, o placar — acontece no seu navegador. Nada é gerado em ou enviado a um servidor.",
+      "progress": "Questão {i} de {n}",
+      "q": {
+        "network": "Endereço de rede de {cidr}?",
+        "broadcast": "Endereço de broadcast de {cidr}?",
+        "hosts": "Quantos hosts utilizáveis em {cidr}?",
+        "netmask": "Máscara decimal pontuada para {cidr}?",
+        "hostToPrefix": "Menor prefixo que comporta ao menos {n} hosts utilizáveis?",
+        "contains": "{host} está dentro de {cidr}?"
+      },
+      "hint": {
+        "ipv4": "ex.: 192.168.1.0",
+        "netmask": "ex.: 255.255.255.0",
+        "integer": "um número",
+        "prefix": "ex.: /24",
+        "boolean": "sim / não"
+      },
+      "check": "Verificar",
+      "yes": "Sim",
+      "no": "Não",
+      "correct": "Correto.",
+      "incorrect": "Quase — a resposta é {answer}.",
+      "nextQ": "Próxima questão",
+      "finish": "Encerrar rodada",
+      "roundOver": "Rodada concluída",
+      "roundScore": "Você acertou {correct} de {n}.",
+      "again": "Outra rodada",
+      "changeDifficulty": "Mudar dificuldade",
+      "stats": {
+        "streak": "Sequência",
+        "best": "Melhor",
+        "lifetime": "Total",
+        "reset": "Zerar placar"
+      }
+    },
+    "tools": {
+      "subnetDrill": {
+        "name": "Treino de subnetting",
+        "blurb": "Prática CIDR aleatorizada com níveis e uma sequência que o navegador lembra — a matemática é o próprio motor do site."
+      },
+      "pcapAnalyzer": {
+        "name": "Analisador PCAP",
+        "blurb": "Solte uma captura e leia-a localmente — protocolos, conversas, emissores, sinais de anomalia. Nada é enviado."
+      },
+      "fingerprint": {
+        "name": "Inspetor de impressão digital",
+        "blurb": "Os sinais que um rastreador poderia ler para identificar seu navegador — exibidos só para você, computados só aqui."
+      },
+      "serialConsole": {
+        "name": "Console WebSerial",
+        "blurb": "Um terminal serial no seu navegador — acesse equipamentos por adaptador USB, sem instalar ou enviar nada."
+      }
+    },
+    "backToOther": "Voltar à sala verde",
+    "pcap": {
+      "metaTitle": "Analisador PCAP — leia uma captura no navegador",
+      "metaDescription": "Solte um .pcap ou .pcapng e obtenha um resumo L2-L4, tabelas de conversas e maiores emissores, e sinalizações de anomalia de primeiro nível — computados inteiramente no seu navegador, nada enviado.",
+      "name": "Analisador PCAP",
+      "blurb": "Solte uma captura e leia-a localmente: protocolos, conversas, emissores e sinais de anomalia — nada enviado.",
+      "why": "Esta ferramenta vive na sala verde porque sua entrada é um ARQUIVO BINÁRIO, não o texto de colar/formulário que as ferramentas do catálogo recebem. É um contrato de entrada que o catálogo ainda não comporta; no dia em que comportar, esta ferramenta se gradua para o piso principal.",
+      "about1": "Solte um arquivo de captura e ele é lido para a memória e dissecado no seu navegador: o formato do contêiner (pcap clássico em qualquer ordem de bytes, incluindo a variante de nanossegundos, e pcapng), depois Ethernet até IPv4/IPv6 e TCP/UDP/ICMP — o suficiente para a visão geral, as tabelas de conversas e maiores emissores, e um primeiro nível de sinalizações de anomalia apresentadas como observações, não veredictos.",
+      "about2": "Esta primeira versão disseca as camadas 2 a 4. A análise de payload de aplicação (detalhes de DNS, TLS, HTTP) é uma passagem futura deliberada, não uma lacuna oculta — a ferramenta informa a profundidade que alcançou. Arquivos são limitados a 50 MB porque um navegador é para triagem, não para forense de múltiplos gigabytes; capturas maiores são recusadas em vez de travar a aba.",
+      "dropTitle": "Solte um .pcap ou .pcapng aqui",
+      "dropHint": "ou clique para escolher um arquivo — ele nunca sai do seu navegador",
+      "runsLocally": "O arquivo é lido para a memória e dissecado inteiramente no seu navegador. Nada é enviado; não há ida e volta a servidor algum.",
+      "reading": "Lendo {name}…",
+      "depthNote": "Este resumo cobre as camadas 2-4. A dissecação de payload de aplicação (conteúdo de DNS/TLS/HTTP) é uma passagem futura.",
+      "overview": "Visão geral",
+      "flagsTitle": "Sinais de anomalia",
+      "talkersTitle": "Maiores emissores",
+      "convTitle": "Conversas",
+      "f": {
+        "format": "Formato",
+        "packets": "Pacotes",
+        "bytes": "Bytes",
+        "duration": "Duração",
+        "host": "Host",
+        "pkts": "Pacotes",
+        "endpoints": "Extremidades",
+        "proto": "Protocolo"
+      },
+      "flags": {
+        "synNoSynAck": "{syn} pacotes SYN sem nenhum SYN-ACK em resposta — conexões tentadas que nunca completaram o handshake.",
+        "synImbalance": "Pacotes SYN ({syn}) superam em muito os SYN-ACKs ({synack}) — vale verificar se um host está varrendo ou um serviço está inacessível.",
+        "highRst": "{rst} pacotes RST, uma fração alta da captura — conexões estão sendo resetadas com frequência.",
+        "truncated": "O arquivo terminou no meio de um registro; o último pacote estava incompleto e a análise parou ali.",
+        "singleConversation": "A captura inteira é uma única conversa — uma captura direcionada, ou um filtro deixado aplicado."
+      },
+      "errors": {
+        "empty": "Esse arquivo é pequeno demais para ser uma captura.",
+        "format": "Isto não parece um arquivo pcap ou pcapng (magic não reconhecido).",
+        "unsupported": "Esse formato de captura ainda não é suportado.",
+        "truncated": "O arquivo parece truncado.",
+        "tooBig": "Esse arquivo é maior que {max}. Um dissecador de navegador é para triagem; abra capturas muito grandes em uma ferramenta de desktop.",
+        "read": "O arquivo não pôde ser lido."
+      }
+    },
+    "fingerprint": {
+      "metaTitle": "Inspetor de impressão digital — o que esta página pode ler sobre você",
+      "metaDescription": "Veja os sinais de navegador e dispositivo que um rastreador poderia ler para criar sua impressão digital — user agent, tela, hashes de canvas e WebGL, fontes, fuso horário e mais — computados inteiramente no seu navegador e exibidos só para você.",
+      "name": "Inspetor de impressão digital",
+      "blurb": "Os sinais que um rastreador poderia ler para identificar seu navegador, exibidos só para você e computados só aqui.",
+      "why": "Esta ferramenta vive na sala verde porque sua entrada é o SEU NAVEGADOR E DISPOSITIVO — a saída legitimamente difere para cada visitante, então não há resposta correta fixa para vetores dourados afirmarem. É a tese de privacidade tornada visível.",
+      "intro": "Clique abaixo e esta página computa, no seu navegador, os sinais que um script de impressão digital leria. Nada é enviado a lugar algum — o resultado é exibido só para você.",
+      "run": "Inspecionar meu navegador",
+      "runsLocally": "Cada sinal é computado no seu navegador e exibido apenas aqui. Nada é enviado, armazenado ou comparado com o de outra pessoa.",
+      "resultTitle": "A superfície do seu navegador",
+      "entropyNote": "Cerca de {n} destes sinais têm alta entropia individual — quanto mais deles um rastreador consegue ler, mais unicamente eles identificam você. Este é um indicador aproximado, não uma contagem precisa de bits.",
+      "sig": {
+        "userAgent": "User agent",
+        "platform": "Plataforma",
+        "languages": "Idiomas",
+        "timezone": "Fuso horário",
+        "screen": "Tela",
+        "cores": "Núcleos de CPU",
+        "memory": "Memória do dispositivo",
+        "touch": "Pontos de toque",
+        "canvas": "Hash de canvas",
+        "webglHash": "Hash de WebGL",
+        "gpu": "GPU",
+        "fonts": "Fontes detectadas",
+        "dnt": "Do Not Track",
+        "cookies": "Cookies"
+      },
+      "fontsValue": "{n} de um conjunto de teste",
+      "on": "ativo",
+      "off": "inativo",
+      "footer": "Recarregue a página para descartar esta leitura; ela existe só nesta aba e nunca foi transmitida.",
+      "about1": "Impressão digital não precisa de cookies. Um script pode combinar seu user agent, geometria de tela, fontes instaladas e o modo exato como sua GPU renderiza um canvas oculto em um identificador que segue você entre sites sem nenhum ID armazenado. Esta ferramenta computa esses mesmos sinais para você ver a superfície por conta própria.",
+      "about2": "Tudo aqui roda localmente e é exibido só para você; nada é enviado ou retido. É um complemento ao trabalho de impressão digital passiva no site principal, tornado concreto: o jeito mais claro de entender uma superfície de rastreamento é olhar a sua."
+    },
+    "webserial": {
+      "metaTitle": "Console WebSerial — um terminal de navegador para cabos de console",
+      "metaDescription": "Um terminal serial no seu navegador para equipamentos de rede: conecte um adaptador de console USB, escolha um baud rate e leia e envie linhas — tudo local, só em Chromium, nada enviado.",
+      "name": "Console WebSerial",
+      "blurb": "Um terminal serial no seu navegador — acesse um switch ou firewall por um adaptador USB, sem instalar nada.",
+      "why": "Esta ferramenta vive na sala verde porque usa a API de permissão de hardware serial do navegador e mantém uma sessão AO VIVO — não há entrada e saída fixas para vetorizar. As ferramentas do catálogo são funções puras; um console ao vivo não é.",
+      "baud": "Baud rate",
+      "connect": "Conectar a uma porta",
+      "disconnect": "Desconectar",
+      "download": "Baixar sessão",
+      "runsLocally": "Isto conversa apenas entre seu navegador e o dispositivo conectado. Nada é enviado; a sessão vive nesta aba e some ao recarregar, a menos que você a baixe.",
+      "unsupported": "Este navegador não suporta a API Web Serial.",
+      "unsupportedHint": "Web Serial está disponível em navegadores baseados em Chromium (Chrome, Edge, Opera) no desktop. Abra esta página lá para usar o console.",
+      "connectError": "Não foi possível abrir essa porta. Outro programa pode estar usando-a, ou a conexão foi cancelada.",
+      "opened": "Conectado a {baud} 8-N-1.",
+      "consolePlaceholder": "A saída da sessão aparecerá aqui quando você conectar a uma porta.",
+      "linePlaceholder": "Digite um comando e pressione Enter",
+      "send": "Enviar",
+      "about1": "Acesso ao console normalmente significa instalar um terminal e caçar a porta COM certa. A API Web Serial permite que um navegador converse diretamente com um adaptador USB-serial, então você pode acessar o console de um switch, roteador ou firewall a partir de uma máquina restrita sem nada instalado — escolha o baud rate, clique em conectar, e o navegador mostra seu próprio seletor de dispositivo.",
+      "about2": "O console é só para Chromium e limitado por permissão por design: o navegador, não esta página, decide a qual dispositivo você concede acesso. Nada que passa pela tela é armazenado ou enviado; o histórico vive na memória e é descartado ao recarregar, a menos que você o baixe."
+    }
   },
   "devOut": {
     "metaTitle": "/dev/out — ferramentas que perguntam, em vez de adivinhar",

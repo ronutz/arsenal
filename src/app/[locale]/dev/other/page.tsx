@@ -31,7 +31,12 @@ export async function generateMetadata({
 // The room's inventory. Empty by honest design until a tool defies the
 // definitions for a reason other than egress; each future entry pairs a
 // route with its i18n key under devOther.tools.*.
-const OTHER_TOOLS = [] as const;
+const OTHER_TOOLS = [
+  { key: "pcapAnalyzer", href: "/dev/other/pcap-analyzer" },
+  { key: "serialConsole", href: "/dev/other/serial-console" },
+  { key: "fingerprint", href: "/dev/other/fingerprint" },
+  { key: "subnetDrill", href: "/dev/other/subnet-drill" },
+] as const;
 
 export default async function DevOtherIndexPage({
   params,
@@ -63,9 +68,17 @@ export default async function DevOtherIndexPage({
               <p className="envother-notice-text">{t("notice.p2")}</p>
             </div>
 
-            {OTHER_TOOLS.length === 0 && (
-              <p className="devfun-intro">{t("empty")}</p>
-            )}
+            {/* The room now has a resident; render the card grid. */}
+            <ul className="tools-grid">
+              {OTHER_TOOLS.map((tool) => (
+                <li key={tool.key} className="tools-grid-item">
+                  <Link href={tool.href} className="tools-card">
+                    <h3 className="tools-card-name">{t(`tools.${tool.key}.name`)}</h3>
+                    <p className="tools-card-blurb">{t(`tools.${tool.key}.blurb`)}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
             <p className="tools-note" style={{ marginTop: "1.5rem" }}>
               <Link href="/dev" className="devother-door-link">

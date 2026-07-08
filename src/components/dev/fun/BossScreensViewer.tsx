@@ -21,6 +21,7 @@
 // ============================================================================
 
 import { useState } from "react";
+import ViewToggle from "@/components/ViewToggle";
 import BossApp, { BossScreenThumb } from "@/components/dev/fun/BossApp";
 import {
   BOSS_SCREEN_META,
@@ -44,6 +45,10 @@ export interface BossViewerLabels {
   bossDismiss: string;
   /** aria-label prefix for a thumbnail button, e.g. "Open {name}". */
   openLabel: string;
+  /** View toggle chrome (Cards/List density). */
+  viewLegend: string;
+  viewCards: string;
+  viewList: string;
 }
 
 // DOM id for a group's section (and the nav anchor that targets it). Prefixed
@@ -61,21 +66,31 @@ export default function BossScreensViewer({ labels }: { labels: BossViewerLabels
 
   return (
     <>
-      {/* Group jump-nav — same pattern as the Tools and Learn indexes. */}
-      {groups.length > 1 && (
-        <nav className="category-nav boss-viewer-jumpnav" aria-label={labels.jumpTo}>
-          <span className="category-nav-label">{labels.jumpTo}</span>
-          <ul className="category-nav-list">
-            {groups.map((group) => (
-              <li key={group} data-jumpnav={group}>
-                <a href={`#${sectionId(group)}`} className="category-nav-link">
-                  {labels.groupLabels[group] ?? group}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+      {/* Jump-nav + the Cards/List density toggle, same utilities as the
+          Tools and Learn indexes. The toggle sets data-view on <main>. */}
+      <div className="boss-viewer-controls">
+        {groups.length > 1 && (
+          <nav className="category-nav boss-viewer-jumpnav" aria-label={labels.jumpTo}>
+            <span className="category-nav-label">{labels.jumpTo}</span>
+            <ul className="category-nav-list">
+              {groups.map((group) => (
+                <li key={group} data-jumpnav={group}>
+                  <a href={`#${sectionId(group)}`} className="category-nav-link">
+                    {labels.groupLabels[group] ?? group}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+        <ViewToggle
+          targetId="main"
+          storageKey="ronutz:view:boss-screens"
+          legend={labels.viewLegend}
+          cardsLabel={labels.viewCards}
+          listLabel={labels.viewList}
+        />
+      </div>
 
       {/* One section per group, in curated BOSS_GROUPS order. */}
       {groups.map((group) => (

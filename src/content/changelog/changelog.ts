@@ -53,6 +53,16 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-08",
+    time: "15:40",
+    kind: "tool",
+    title: "The green room opens: four tools off the catalogue",
+    body: "The residual room at /dev/other now has residents - tools whose shapes the catalogue cannot hold yet, for reasons other than reaching the network. A PCAP analyzer reads a capture file entirely in your browser (nothing uploaded) and reports an L2-L4 summary, conversations, top talkers, and anomaly flags. A WebSerial console turns a Chromium browser into a serial terminal for console cables. A self-fingerprint inspector shows the browser and device signals a tracker could read, computed only for you. And a subnetting drill trainer generates randomized CIDR practice with a streak your browser remembers, reusing the site's own CIDR engine for the math. Each states on its own page why it lives off the catalogue.",
+    links: [
+      { label: "The green room", href: "/dev/other" },
+    ],
+  },
+  {
+    date: "2026-07-08",
     time: "14:05",
     kind: "feature",
     title: "List view rebuilt in catalogue anatomy",

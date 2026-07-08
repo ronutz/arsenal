@@ -5687,7 +5687,174 @@
       "p1": "Tools in this room live outside the main catalogue's definitions: experimental input contracts, unusual output shapes, ideas still finding their form. They are not lesser — they are early or odd, and labeled as such, honestly.",
       "p2": "The house rules keep holding. Local-first unless a tool states otherwise on its own door, no accounts, no tracking by us, no ads, open source. Tools whose whole job is asking the live internet live next door in /dev/out, behind red walls."
     },
-    "empty": "No residents yet. The first tool that defies the definitions for a reason other than network egress moves in here — green walls, honest label."
+    "empty": "No residents yet. The first tool that defies the definitions for a reason other than network egress moves in here — green walls, honest label.",
+    "subnetDrill": {
+      "metaTitle": "Subnetting drill — practice CIDR math",
+      "metaDescription": "Timed subnetting practice: network and broadcast addresses, usable hosts, masks, prefix sizing, and containment, generated fresh each round with a remembered streak. Runs entirely in your browser.",
+      "name": "Subnetting drill",
+      "blurb": "Randomized CIDR practice with difficulty tiers and a streak your browser remembers.",
+      "why": "This tool lives in the green room because it GENERATES exercises (randomness) and REMEMBERS your streak (state) — two things the catalogue's fixed input-to-output tools do not do. The math it quizzes is the site's own CIDR engine.",
+      "about1": "Pick a difficulty and each round deals ten fresh questions drawn from a new random seed, so no two rounds repeat. The subnet arithmetic is computed by the same engine behind the CIDR tool, so every canonical answer is exactly what that tool would produce.",
+      "about2": "Your current streak, best streak, and lifetime score are kept in your browser's local storage and never leave it. Clear them any time with Reset; nothing here is uploaded or tracked.",
+      "difficulty": {
+        "label": "Difficulty",
+        "easy": "Easy (/24-/30)",
+        "medium": "Medium (/16-/30)",
+        "hard": "Hard (/8-/31)"
+      },
+      "start": "Start {n}-question round",
+      "runsLocally": "Everything — the questions, the grading, the score — happens in your browser. Nothing is generated on or sent to a server.",
+      "progress": "Question {i} of {n}",
+      "q": {
+        "network": "Network address of {cidr}?",
+        "broadcast": "Broadcast address of {cidr}?",
+        "hosts": "How many usable hosts in {cidr}?",
+        "netmask": "Dotted-decimal mask for {cidr}?",
+        "hostToPrefix": "Smallest prefix that fits at least {n} usable hosts?",
+        "contains": "Is {host} inside {cidr}?"
+      },
+      "hint": {
+        "ipv4": "e.g. 192.168.1.0",
+        "netmask": "e.g. 255.255.255.0",
+        "integer": "a number",
+        "prefix": "e.g. /24",
+        "boolean": "yes / no"
+      },
+      "check": "Check",
+      "yes": "Yes",
+      "no": "No",
+      "correct": "Correct.",
+      "incorrect": "Not quite — the answer is {answer}.",
+      "nextQ": "Next question",
+      "finish": "Finish round",
+      "roundOver": "Round complete",
+      "roundScore": "You got {correct} of {n} right.",
+      "again": "Another round",
+      "changeDifficulty": "Change difficulty",
+      "stats": {
+        "streak": "Streak",
+        "best": "Best",
+        "lifetime": "Lifetime",
+        "reset": "Reset stats"
+      }
+    },
+    "tools": {
+      "subnetDrill": {
+        "name": "Subnetting drill",
+        "blurb": "Randomized CIDR practice with difficulty tiers and a streak your browser remembers — the math is the site's own engine."
+      },
+      "pcapAnalyzer": {
+        "name": "PCAP analyzer",
+        "blurb": "Drop a capture and read it locally — protocols, conversations, talkers, anomaly flags. Nothing is uploaded."
+      },
+      "fingerprint": {
+        "name": "Self-fingerprint inspector",
+        "blurb": "The signals a tracker could read to identify your browser — shown only to you, computed only here."
+      },
+      "serialConsole": {
+        "name": "WebSerial console",
+        "blurb": "A serial terminal in your browser — console into gear over a USB adapter, nothing installed or uploaded."
+      }
+    },
+    "backToOther": "Back to the green room",
+    "pcap": {
+      "metaTitle": "PCAP analyzer — read a capture in your browser",
+      "metaDescription": "Drop a .pcap or .pcapng and get an L2-L4 summary, conversation and top-talker tables, and first-tier anomaly flags — computed entirely in your browser, nothing uploaded.",
+      "name": "PCAP analyzer",
+      "blurb": "Drop a capture and read it locally: protocols, conversations, talkers, and anomaly flags — nothing uploaded.",
+      "why": "This tool lives in the green room because its input is a BINARY FILE, not the paste/form text the catalogue's tools take. That is an input contract the catalogue cannot hold yet; the day it can, this tool graduates to the main floor.",
+      "about1": "Drop a capture file and it is read into memory and dissected in your browser: the container format (classic pcap in either byte order, including the nanosecond variant, and pcapng), then Ethernet through IPv4/IPv6 and TCP/UDP/ICMP — enough for the overview, the conversation and top-talker tables, and a first tier of anomaly flags stated as observations, not verdicts.",
+      "about2": "This first version dissects layers 2 through 4. Application-payload parsing (DNS, TLS, HTTP details) is a deliberate future pass, not a hidden gap — the tool tells you the depth it reached. Files are capped at 50 MB because a browser is for triage, not multi-gigabyte forensics; larger captures are refused rather than freezing the tab.",
+      "dropTitle": "Drop a .pcap or .pcapng here",
+      "dropHint": "or click to choose a file — it never leaves your browser",
+      "runsLocally": "The file is read into memory and dissected entirely in your browser. Nothing is uploaded; there is no server round-trip at all.",
+      "reading": "Reading {name}…",
+      "depthNote": "This summary covers layers 2-4. Application-payload dissection (DNS/TLS/HTTP contents) is a future pass.",
+      "overview": "Overview",
+      "flagsTitle": "Anomaly flags",
+      "talkersTitle": "Top talkers",
+      "convTitle": "Conversations",
+      "f": {
+        "format": "Format",
+        "packets": "Packets",
+        "bytes": "Bytes",
+        "duration": "Duration",
+        "host": "Host",
+        "pkts": "Packets",
+        "endpoints": "Endpoints",
+        "proto": "Protocol"
+      },
+      "flags": {
+        "synNoSynAck": "{syn} SYN packets with no SYN-ACK in reply — connections that were attempted but never completed a handshake.",
+        "synImbalance": "SYN packets ({syn}) far outnumber SYN-ACKs ({synack}) — worth checking whether a host is scanning or a service is unreachable.",
+        "highRst": "{rst} RST packets, a high share of the capture — connections are being reset often.",
+        "truncated": "The file ended mid-record; the last packet was incomplete and parsing stopped there.",
+        "singleConversation": "The whole capture is a single conversation — a targeted capture, or a filter left applied."
+      },
+      "errors": {
+        "empty": "That file is too small to be a capture.",
+        "format": "This does not look like a pcap or pcapng file (unrecognized magic).",
+        "unsupported": "That capture format is not supported yet.",
+        "truncated": "The file appears truncated.",
+        "tooBig": "That file is larger than {max}. A browser dissector is for triage; open very large captures in a desktop tool.",
+        "read": "The file could not be read."
+      }
+    },
+    "fingerprint": {
+      "metaTitle": "Self-fingerprint inspector — what this page can read about you",
+      "metaDescription": "See the browser and device signals a tracker could read to fingerprint you — user agent, screen, canvas and WebGL hashes, fonts, timezone and more — computed entirely in your browser and shown only to you.",
+      "name": "Self-fingerprint inspector",
+      "blurb": "The signals a tracker could read to identify your browser, shown only to you and computed only here.",
+      "why": "This tool lives in the green room because its input is your BROWSER AND DEVICE — the output legitimately differs for every visitor, so there is no fixed correct answer for golden vectors to assert. It is the privacy thesis made visible.",
+      "intro": "Click below and this page computes, in your browser, the signals a fingerprinting script would read. Nothing is sent anywhere — the result is shown only to you.",
+      "run": "Inspect my browser",
+      "runsLocally": "Every signal is computed in your browser and displayed here only. Nothing is uploaded, stored, or compared against anyone else.",
+      "resultTitle": "Your browser's surface",
+      "entropyNote": "About {n} of these signals are individually high-entropy — the more of them a tracker can read, the more uniquely they identify you. This is a rough indicator, not a precise bit count.",
+      "sig": {
+        "userAgent": "User agent",
+        "platform": "Platform",
+        "languages": "Languages",
+        "timezone": "Time zone",
+        "screen": "Screen",
+        "cores": "CPU cores",
+        "memory": "Device memory",
+        "touch": "Touch points",
+        "canvas": "Canvas hash",
+        "webglHash": "WebGL hash",
+        "gpu": "GPU",
+        "fonts": "Fonts detected",
+        "dnt": "Do Not Track",
+        "cookies": "Cookies"
+      },
+      "fontsValue": "{n} of a probe set",
+      "on": "on",
+      "off": "off",
+      "footer": "Reload the page to discard this reading; it exists only in this tab and was never transmitted.",
+      "about1": "Fingerprinting does not need cookies. A script can combine your user agent, screen geometry, installed fonts, and the exact way your GPU renders a hidden canvas into an identifier that follows you across sites without any stored ID. This tool computes those same signals so you can see the surface for yourself.",
+      "about2": "Everything here runs locally and is shown only to you; nothing is uploaded or retained. It is a companion to the passive-fingerprint work on the main site, made concrete: the clearest way to understand a tracking surface is to look at your own."
+    },
+    "webserial": {
+      "metaTitle": "WebSerial console — a browser terminal for console cables",
+      "metaDescription": "A serial terminal in your browser for network gear: connect a USB console adapter, pick a baud rate, and read and send lines — all local, Chromium-only, nothing uploaded.",
+      "name": "WebSerial console",
+      "blurb": "A serial terminal in your browser — console into a switch or firewall over a USB adapter, nothing installed.",
+      "why": "This tool lives in the green room because it uses the browser's serial hardware-permission API and holds a LIVE session — there is no fixed input and output to golden-vector. The catalogue's tools are pure functions; a live console is not.",
+      "baud": "Baud rate",
+      "connect": "Connect to a port",
+      "disconnect": "Disconnect",
+      "download": "Download session",
+      "runsLocally": "This talks only between your browser and the connected device. Nothing is uploaded; the session lives in this tab and is gone on reload unless you download it.",
+      "unsupported": "This browser does not support the Web Serial API.",
+      "unsupportedHint": "Web Serial is available in Chromium-based browsers (Chrome, Edge, Opera) on desktop. Open this page there to use the console.",
+      "connectError": "Could not open that port. Another program may be holding it, or the connection was cancelled.",
+      "opened": "Connected at {baud} 8-N-1.",
+      "consolePlaceholder": "Session output will appear here once you connect to a port.",
+      "linePlaceholder": "Type a command and press Enter",
+      "send": "Send",
+      "about1": "Console access usually means installing a terminal program and hunting for the right COM port. The Web Serial API lets a browser talk to a USB-to-serial adapter directly, so you can console into a switch, router, or firewall from a locked-down machine with nothing installed — pick the baud rate, click connect, and the browser shows its own device picker.",
+      "about2": "The console is Chromium-only and permission-gated by design: the browser, not this page, decides which device you grant access to. Nothing that scrolls by is stored or sent; the scrollback lives in memory and is discarded on reload unless you download it."
+    }
   },
   "devOut": {
     "metaTitle": "/dev/out — tools that ask, not guess",
