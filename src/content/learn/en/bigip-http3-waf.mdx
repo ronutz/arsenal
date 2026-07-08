@@ -1,0 +1,36 @@
+---
+slug: bigip-http3-waf
+title: "WAF Over QUIC: HTTP/3 Web Protection in BIG-IP 21.1"
+summary: "BIG-IP 21.1 extends Advanced WAF, Bot Defense, and L7 DoS protection to HTTP/3 virtual servers, with the same inspection fidelity as HTTP/1.1 and HTTP/2 and any policy template type. The limits matter as much as the feature: client-side only, no behavioral DoS, no HTTP/3 virtual server creation from the WAF UI, and the underlying LTM HTTP/3 implementation remains experimental. Alongside it, API Security gains OpenAPI 3.1 import and remote logging gains a Splunk key-value Extended format."
+concepts: ["f5", "bigip", "waf", "http3", "quic", "openapi", "api security", "asm"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["bigip-21x-whats-new", "bigip-ai-mcp"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-08"
+---
+
+HTTP/3 changed the transport under the web: QUIC over UDP instead of TCP, with encryption reaching deeper into the protocol. For a WAF that grew up parsing TCP streams, that is not a version bump, it is a new listening post. BIG-IP 21.1 is the release where F5's web protection stack takes up position on it.
+
+## What actually ships
+
+Per the 21.1 release notes, WAF inspection of HTTP/3 client-side traffic is now supported, and the coverage is the full protection trio: Advanced WAF security policies, Bot Defense, and L7 DoS protection can all attach to HTTP/3-enabled virtual servers. Two details in F5's wording deserve emphasis. First, security policies of any template type can be associated with an HTTP/3 virtual server, so this is not a special reduced-capability policy mode; the policy you built for HTTP/2 conceptually carries over. Second, F5 explicitly claims the same inspection fidelity as HTTP/1.1 and HTTP/2, naming the classic payload threats, cross-site scripting and SQL injection, as covered. The transport changed; the attack surface the WAF reads did not get a discount. Since the enforcement object is still an ASM policy, everything about reading one still applies, and the [declarative-policy explainer](/tools/f5-awaf-declarative-policy-explainer) works on these policies unchanged.
+
+## The limits, stated as plainly as F5 states them
+
+Three current limitations frame the deployment. Client-side only: the HTTP/3 protection applies where the client connects; the server side of the proxy is not part of this feature. No BADOS: behavioral DoS is not supported on HTTP/3, so L7 DoS protection here means the signature and threshold machinery, not the behavioral learning layer. And no HTTP/3 virtual server creation from the WAF UI: the virtual server is built on the LTM side first, then protected.
+
+The fourth caveat is the biggest one and it is architectural: the underlying HTTP/3 implementation on BIG-IP LTM remains experimental, with F5 pointing to K60235402 for the protocol overview. Read that dependency correctly: the WAF layer on top is a supported 21.1 feature, but it stands on a transport implementation F5 itself still labels experimental. For production, that argues for HTTP/3 as an addition alongside HTTP/1.1 and HTTP/2 listeners rather than a replacement, letting clients that negotiate HTTP/3 get it while everything else lands on the mature paths.
+
+## OpenAPI 3.1 for API Security
+
+The same release lets Advanced WAF's API Security consume OpenAPI Specification 3.1 files through the existing import workflow, no configuration changes required. F5's note carries one scoping clause worth keeping: all OpenAPI 3.1.x files are accepted, but schema features are supported at the major-version level, so 3.1.0 semantics define what the policy builder understands. If your API teams moved to 3.1 for its JSON Schema alignment and webhooks, the spec file they already maintain now drives the positive security model directly, and the perennial workaround of down-converting specs to 3.0 for the WAF can retire.
+
+## Logging: Splunk key-value, now in two sizes
+
+Remote application-security logging gains a format: Splunk Key-Value Pairs Extended, which enriches events with an XML violation_details element carrying additional violation context, while the existing format is renamed Splunk Key-Value Pairs Basic. The operational fine print is a one-way door: configurations using the Extended format cannot be loaded on releases that do not support it, so a UCS or config sync that travels backwards in version must not carry Extended logging profiles.
+
+## Reading the release as one motion
+
+Put the three items together and 21.1's WAF story is about meeting traffic where it is going: the transport clients are adopting (HTTP/3), the contract format API teams are writing (OpenAPI 3.1), and the SIEM detail level analysts keep asking for (Extended key-value). The [flagship overview](/learn/bigip-21x-whats-new) situates this next to the release's other marquee WAF item, MCP protocol protection, which the [AI and MCP deep-dive](/learn/bigip-ai-mcp) covers in full.

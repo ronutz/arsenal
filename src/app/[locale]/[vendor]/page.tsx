@@ -37,6 +37,7 @@ import SiteFooter from "@/components/SiteFooter";
 import FamilyChip from "@/components/FamilyChip";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
+import ViewToggle from "@/components/ViewToggle";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { tools } from "@/config/tools";
 import { subsOf } from "@/config/vendors";
@@ -208,6 +209,18 @@ export default async function VendorHubPage({
                 />
               );
             })()}
+
+            {/* Third nav utility: cards/list density. Same island + attribute
+                contract as /tools and /learn; the hub reuses their card classes
+                so the list re-flow CSS applies unchanged. One shared preference
+                across all vendor hubs. */}
+            <ViewToggle
+              targetId="main"
+              storageKey="ronutz:view:hub"
+              legend={t("viewLegend")}
+              cardsLabel={t("viewCards")}
+              listLabel={t("viewList")}
+            />
 
             {/* ---- Tools, family by family. id="tools" is a redirect target
                  (/tools/<vendor> 301s here); category-section supplies the

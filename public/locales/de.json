@@ -1507,5 +1507,21 @@
     "changesBody": "Die Website, ihre Werkzeuge, ihre Inhalte, ihr Code und dieser Hinweis können sich jederzeit ändern, ausfallen oder verschwinden, ohne Ankündigung und ohne Verpflichtung gegenüber irgendjemandem. Es gilt die jeweils aktuelle Fassung dieser Seite.",
     "acceptBody": "Durch die Nutzung dieser Website oder ihres Codes akzeptieren Sie diesen Hinweis vollumfänglich. Wenn Sie ihn nicht akzeptieren, besteht Ihr einziges Rechtsmittel darin, die Nutzung der Website und des Codes einzustellen.",
     "backHome": "Zurück zur Startseite"
+  },
+  "notFound": {
+    "sub": "Seite nicht gefunden",
+    "quip": "Es liegt an dir, nicht an mir.",
+    "bofhIntroPre": "Ticket geschlossen vom",
+    "bofhIntroPost": ". Ursache liegt vor:",
+    "bofhWait": "Ausreden-Datenbank wird befragt…",
+    "bofhAgain": "Ticket wieder öffnen",
+    "bofhAgainTitle": "Wieder öffnen erzeugt eine neue Ausrede. Keine Lösung.",
+    "lostTitle": "Du wirkst verloren. Hier ist eins, aus digitalem Zufall gegriffen:",
+    "badgeTool": "TOOL",
+    "badgeLearn": "ARTIKEL",
+    "shuffling": "wird gemischt…",
+    "goToolbox": "Zur Toolbox",
+    "shuffleAgain": "Nochmal mischen",
+    "home": "Startseite"
   }
 }

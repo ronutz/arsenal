@@ -17,6 +17,7 @@ import { categoryColor } from "@/config/categoryColors";
 import { vendorColor, populatedVendors } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
+import ViewToggle from "@/components/ViewToggle";
 
 export default async function ToolsPage({
   params,
@@ -115,6 +116,15 @@ export default async function ToolsPage({
                   color: categoryColor(category),
                 }))}
               />
+              {/* Third nav utility: cards/list density (client island; sets
+                  data-view on <main>, CSS re-flows the same cards into rows). */}
+              <ViewToggle
+                targetId="main"
+                storageKey="ronutz:view:tools"
+                legend={t("viewLegend")}
+                cardsLabel={t("viewCards")}
+                listLabel={t("viewList")}
+              />
             </div>
           )}
 
@@ -201,9 +211,17 @@ export default async function ToolsPage({
           {/* A quiet door to /dev/fun — the not-serious shelf. No emphasis.
               Same treatment as the colophon's footer link. */}
           <p className="colophon-devfun mono">
-            <Link href="/dev-fun" className="colophon-devfun-link">
+            <Link href="/dev/fun" className="colophon-devfun-link">
               /dev/fun
             </Link>
+          </p>
+          {/* The green door: /dev/other, in the other environment's
+              characteristic tone, after the last listed tool (PRIME 08/07). */}
+          <p className="colophon-devfun mono devother-door">
+            <Link href="/dev/other" className="devother-door-link">
+              /dev/other
+            </Link>
+            <span className="devother-door-tagline">{t("devOtherTagline")}</span>
           </p>
         </article>
       </main>

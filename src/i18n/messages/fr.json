@@ -1507,5 +1507,21 @@
     "changesBody": "Le site, ses outils, son contenu, son code et cet avis peuvent changer, cesser de fonctionner ou disparaître à tout moment, sans préavis et sans obligation envers quiconque. La version applicable est la version actuelle de cette page.",
     "acceptBody": "En utilisant ce site ou son code, vous acceptez cet avis dans son intégralité. Si vous ne l'acceptez pas, votre seul recours est de cesser d'utiliser le site et le code.",
     "backHome": "Retour à l'accueil"
+  },
+  "notFound": {
+    "sub": "Page introuvable",
+    "quip": "C'est toi, pas moi.",
+    "bofhIntroPre": "Ticket fermé par le",
+    "bofhIntroPost": ". Cause racine au dossier :",
+    "bofhWait": "consultation de la base d'excuses…",
+    "bofhAgain": "Rouvrir le ticket",
+    "bofhAgainTitle": "Rouvrir produit une nouvelle excuse. Pas un correctif.",
+    "lostTitle": "Tu sembles perdu. En voici un, tiré du hasard numérique :",
+    "badgeTool": "OUTIL",
+    "badgeLearn": "ARTICLE",
+    "shuffling": "tirage en cours…",
+    "goToolbox": "Vers la boîte à outils",
+    "shuffleAgain": "Retirer au sort",
+    "home": "Accueil"
   }
 }

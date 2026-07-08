@@ -46,7 +46,26 @@ const CONSOLE_ERRORS: { pre: string; tone: "info" | "warn" | "err"; text: string
   { pre: "??", tone: "warn", text: "Abort, Retry, Fail?" },
 ];
 
-export default function NotFoundClient({ pool, locales }: { pool: PoolItem[]; locales: string[] }) {
+// English defaults double as the fallback for locales without a translated
+// notFound namespace, and keep the first paint sensible before hydration.
+const EN = {
+  sub: "Page not found",
+  quip: QUIP,
+  bofhIntroPre: "Ticket closed by the",
+  bofhIntroPost: ". Root cause on file:",
+  bofhWait: "consulting the excuse database\u2026",
+  bofhAgain: "Reopen ticket",
+  bofhAgainTitle: "Reopening produces a new excuse. It does not produce a fix.",
+  lostTitle: "You seem lost. Here is one, plucked out of digital randomness:",
+  badgeTool: "TOOL",
+  badgeLearn: "LEARN",
+  shuffling: "shuffling\u2026",
+  goToolbox: "Go to the toolbox",
+  shuffleAgain: "Shuffle again",
+  home: "Home",
+};
+
+export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: PoolItem[]; locales: string[]; msgs?: Record<string, Record<string, string>> }) {
   const [path, setPath] = useState("/\u2026");
   const [locale, setLocale] = useState("en");
   const [guru, setGuru] = useState(0);
@@ -83,19 +102,22 @@ export default function NotFoundClient({ pool, locales }: { pool: PoolItem[]; lo
     setExcuse(e);
   };
   const g = GURU[guru];
+  // Localized chrome: the visitor's locale was resolved from window.location
+  // above; unknown or untranslated locales fall back to English key by key.
+  const s = { ...EN, ...(msgs[locale] ?? msgs["en"] ?? {}) };
 
   return (
     <div className="nf-root">
       <div className="nf-head">
         <div className="nf-404 mono">404</div>
-        <div className="nf-sub">Page not found</div>
+        <div className="nf-sub">{s.sub}</div>
         <div className="nf-path mono">
           <span className="nf-dim">GET</span> {path} <span className="nf-arrow">&#8594;</span>{" "}
           <span className="nf-status">404 Not Found</span>
         </div>
       </div>
 
-      <p className="nf-quip">{QUIP}</p>
+      <p className="nf-quip">{s.quip}</p>
 
       {/* Authentic Amiga Guru Meditation, cycling through variations */}
       <div className="guru" aria-label="Amiga Guru Meditation error">
@@ -119,7 +141,7 @@ export default function NotFoundClient({ pool, locales }: { pool: PoolItem[]; lo
           src/content/bofh/excuses.ts (481 excuses, served verbatim). */}
       <div className="nf-bofh" role="status" aria-live="polite">
         <p className="nf-bofh-intro">
-          Ticket closed by the{" "}
+          {s.bofhIntroPre}{" "}
           <a
             className="nf-bofh-link"
             href="https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell"
@@ -128,44 +150,44 @@ export default function NotFoundClient({ pool, locales }: { pool: PoolItem[]; lo
           >
             BOFH
           </a>
-          . Root cause on file:
+          {s.bofhIntroPost}
         </p>
         {excuse ? (
           <p className="nf-bofh-excuse mono">&ldquo;{excuse}&rdquo;</p>
         ) : (
-          <p className="nf-bofh-excuse nf-bofh-wait mono">consulting the excuse database&#8230;</p>
+          <p className="nf-bofh-excuse nf-bofh-wait mono">{s.bofhWait}</p>
         )}
         <button
           type="button"
           className="nf-bofh-again"
           onClick={reopenTicket}
-          title="Reopening produces a new excuse. It does not produce a fix."
+          title={s.bofhAgainTitle}
         >
-          Reopen ticket &#8635;
+          {s.bofhAgain} &#8635;
         </button>
       </div>
 
       {/* You seem lost — a random tool or article */}
       <div className="nf-lost">
-        <p className="nf-lost-title">You seem lost. Here is one, plucked out of digital randomness:</p>
+        <p className="nf-lost-title">{s.lostTitle}</p>
         {pick ? (
           <a className="nf-pick" href={href(pick.p)}>
-            <span className={`nf-badge nf-badge-${pick.k}`}>{pick.k === "tool" ? "TOOL" : "LEARN"}</span>
+            <span className={`nf-badge nf-badge-${pick.k}`}>{pick.k === "tool" ? s.badgeTool : s.badgeLearn}</span>
             <span className="nf-pick-label">{pick.l}</span>
             <span className="nf-pick-arrow">&#8594;</span>
           </a>
         ) : (
-          <div className="nf-pick nf-pick-empty mono">shuffling&#8230;</div>
+          <div className="nf-pick nf-pick-empty mono">{s.shuffling}</div>
         )}
         <div className="nf-actions">
           <a className="nf-btn" href={href("/tools")}>
-            Go to the toolbox <span aria-hidden="true">&#8594;</span>
+            {s.goToolbox} <span aria-hidden="true">&#8594;</span>
           </a>
           <button type="button" className="nf-btn nf-btn-ghost" onClick={reshuffle}>
-            Shuffle again
+            {s.shuffleAgain}
           </button>
           <a className="nf-btn nf-btn-ghost" href={`/${locale}`}>
-            Home
+            {s.home}
           </a>
         </div>
       </div>

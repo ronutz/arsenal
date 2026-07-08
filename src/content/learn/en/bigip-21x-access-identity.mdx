@@ -1,0 +1,34 @@
+---
+slug: bigip-21x-access-identity
+title: "Access and Identity in BIG-IP 21.1: DCR, Native SAML, and IPsec Comes Home"
+summary: "The access layer of BIG-IP 21.1 modernizes in four directions at once: OAuth 2.0 Dynamic Client Registration (RFC 7591) lets clients, including agentic AI systems, register themselves with an Initial Access Token; SAML through the system's default browser goes native on Windows and macOS, unlocking FIDO2 and Entra ID flows without the old iRules; the Edge Client gains real IPsec VPN tunnels alongside SSL-VPN; and the supporting cast spans an HTTP Connector in per-session policies, ES13 in Portal Access, and endpoint inspection on Ubuntu ARM64."
+concepts: ["f5", "bigip", "apm", "oauth", "saml", "ipsec", "vpn", "identity", "zero trust"]
+relatedTools: ["f5-apm-session-variable-reference", "f5-apm-sso-explainer"]
+relatedArticles: ["bigip-21x-whats-new", "bigip-post-quantum-tls"]
+category: networking
+order: 8
+status: machine-draft
+updated: "2026-07-08"
+---
+
+Access Policy Manager, now marketed as BIG-IP Zero Trust Access, is where BIG-IP touches identity, and identity is where the industry is moving fastest: passwordless flows, agentic clients that need credentials programmatically, and VPNs whose transport assumptions are being rewritten. BIG-IP 21.1's access features read as one coordinated response, and every claim below is from F5's release notes.
+
+## Dynamic Client Registration: OAuth clients that enroll themselves
+
+APM as an OAuth 2.0 Authorization Server gains Dynamic Client Registration per RFC 7591. Enable DCR on an OAuth profile and authorized clients register themselves dynamically, presenting an Initial Access Token to do so, with support for the Client Credentials grant, configurable client authentication settings, client secret expiration, and enhanced logging. The classic beneficiary is any environment where OAuth clients appear faster than a human can click through a registration form. The 2026 beneficiary is sharper: F5's own launch material frames DCR as expediting access for agentic AI systems, agents registering themselves programmatically instead of waiting on manual steps. If the [MCP article](/learn/bigip-ai-mcp) covers how 21.x load-balances and inspects AI traffic, DCR is how the same platform issues those AI clients their credentials, API-driven end to end. The governance note writes itself: the Initial Access Token is now the gate on client creation, so treat its issuance and lifetime with the same care as any credential that can mint credentials.
+
+## Native SAML through the system browser
+
+Until now, sending an APM desktop client's SAML authentication through the machine's default browser took a published iRules recipe. 21.1 implements it natively: check Enable System Browser in the connectivity profile's Desktop Client Settings, and the Edge Client on Windows and macOS hands authentication to the system's default browser. The reason this matters is what lives in that browser: platform authenticators and existing IdP sessions, which is exactly what modern methods need, and F5 names FIDO2 and Microsoft Entra ID device authentication as the flows this enables. The same system-browser pattern is how any SAML identity provider a client organization runs, from Entra ID in F5's example to the Ping Identity or ForgeRock deployments common in enterprise identity stacks, gets to present its own strongest authentication experience instead of an embedded-webview compromise. It requires BIG-IP 21.1 with APM Clients 7.2.7 or later, takes effect dynamically with no client reinstallation, and retires a whole category of iRules maintenance.
+
+## IPsec joins the Edge Client
+
+The tunnel itself gets a second transport: 21.1 adds Access IPsec VPN tunnels, so clients on the Windows Edge Client or F5 Access on macOS can reach the backend network over IPsec instead of SSL/TLS. A new VPN Type field in the connectivity profile does the heavy lifting: set it to IPsec and the system generates an Access IPsec Policy, with the associated IPsec Policy, IKE Peer, and Traffic Selector objects created when the virtual server is configured. F5's constraints are specific and belong in the design doc verbatim: IPsec authentication supports machine certificate authentication only, so the machine cert agent must be present in the access policy or the tunnel will not establish; do not run LTM IPsec and Access IPsec in the same environment on shared VLANs, since traffic aimed at the Access virtual server can be misrouted to the LTM IPsec forwarder; and profile conversion is one-way, SSL to IPsec is supported, IPsec back to SSL means a new profile. Configuration applies dynamically, again with clients 7.2.7 or later. One adjacent, verified note for the roadmap: F5's 21.1 launch material also announces quantum-resistant TLS/SSL VPN tunneling with the X25519 plus ML-KEM-768 hybrid, covered in the [post-quantum article](/learn/bigip-post-quantum-tls), with quantum-secure IPsec signposted as a future step.
+
+## The supporting cast
+
+Three smaller items round out the layer. Per-session access policies gain the HTTP Connector, previously a per-request capability, so a policy can call an external HTTP service during session establishment and use the response in authentication and authorization decisions, with the configuration model now cleanly split into Transport, Request, and Agent objects. Portal Access's JavaScript rewriting engine jumps from ES6 to ES13, so modern web applications pass through the rewriter without manual URL surgery. Endpoint inspection arrives on Ubuntu ARM64 (clients 7.2.7+, EPSEC 1988+), extending posture checking to a platform that increasingly exists on real desks. And Windows Edge Client logging becomes tunable per connectivity profile, with the server-side log level able to override the client's when set below DEBUG.
+
+## Reading the direction
+
+Every item points the same way: authentication delegated to where it is strongest (the system browser, the platform authenticator), enrollment automated where humans were the bottleneck (DCR), transport choice restored (IPsec beside SSL-VPN), and the policy engine reaching outward (HTTP Connector). For the session variables and SSO mechanics all of this ultimately drives, the [session-variable reference](/tools/f5-apm-session-variable-reference) and the [SSO explainer](/tools/f5-apm-sso-explainer) pick up where the release notes stop, and the [flagship overview](/learn/bigip-21x-whats-new) holds the full 21.x context.

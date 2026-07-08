@@ -1,0 +1,36 @@
+---
+slug: bigip-dns-multi-rpz
+title: "DNS as a Policy Engine: Multi-RPZ in BIG-IP 21.1"
+summary: "Response Policy Zones turn a resolver into a policy enforcement point, and BIG-IP DNS 21.1 turns one feed into many: up to 65,535 RPZ zones per DNS cache, evaluated by configurable precedence, transferred securely with TSIG HMAC-SHA-512, and armed with the full RPZ action set from NXDOMAIN and walled-garden CNAME to PASSTHRU, DROP, and TCP-only. Per-FQDN A-record answers replace the single global walled-garden IP, and triggers extend beyond QNAME to client IP and response IP."
+concepts: ["f5", "bigip", "dns", "rpz", "security", "dns cache", "tsig", "threat intelligence"]
+relatedTools: ["f5-gslb-decision-flow"]
+relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
+category: networking
+order: 6
+status: machine-draft
+updated: "2026-07-08"
+---
+
+A Response Policy Zone is DNS's native firewall rule format: a zone file whose records do not describe where names live but what the resolver should do when asked about them. Feed a resolver an RPZ of known-bad domains and every client behind it inherits the protection at the cheapest possible layer, the name lookup itself. BIG-IP DNS has supported RPZ on its cache for years; the ceiling was one feed and one global response behavior. BIG-IP 21.1 removes both.
+
+## From one feed to sixty-five thousand
+
+The 21.1 release notes state the new shape directly: multiple RPZ feed zones, up to 65,535, can now be associated with a single DNS cache. That number is not about anyone loading tens of thousands of feeds; it is about the composition it makes trivial. A realistic cache now layers a regulatory blocklist mandated by a national authority, a commercial threat-intelligence feed or three, and internally managed policy zones, the allow-list exceptions, the corporate blocks, the temporary incident-response entries, each arriving as its own zone with its own transfer schedule and its own owner.
+
+Layering creates conflicts, so 21.1 adds the second half: the zones are evaluated in a configurable precedence order. That order is now a security control in its own right. The internal exception zone almost always belongs above the commercial feeds, so an over-broad vendor entry cannot block a business-critical domain; the regulatory zone's position is a compliance decision, not a technical one. Whoever operates the cache should be able to recite the precedence list the way a firewall admin recites a rule base, top to bottom.
+
+## Feeds you can trust arriving
+
+An RPZ is only as trustworthy as its transfer path: it is a zone, it arrives by zone transfer, and a tampered transfer is a policy injection. 21.1 adds support for securing RPZ zone transfers with TSIG using HMAC-SHA-512, so each feed's transfers are authenticated with a shared key at the strongest HMAC the TSIG ecosystem commonly offers. For feeds crossing organizational boundaries, commercial intel providers, national CERT feeds, this moves from nice-to-have to baseline.
+
+## The full action vocabulary
+
+Earlier BIG-IP RPZ support enforced a narrow response behavior; 21.1 implements the broader action set the RPZ specifications define, and the release notes enumerate it: NXDOMAIN (the name does not exist), NODATA (the name exists, this record type does not), CNAME to a walled garden, local data, PASSTHRU (explicitly exempt, the allow-list verb), DROP (silence), TCP-only (a soft challenge that forces retry over TCP), plus Given and Disabled. Two upgrades inside that list change day-to-day design. BIG-IP DNS now honors RPZ-defined A records, so a feed can answer different blocked names with different addresses, per-FQDN walled gardens instead of one global sinkhole IP, which matters when the block page for phishing should differ from the block page for malware command-and-control. And triggers extend beyond the query name: client IP and response IP triggers are supported, so policy can key on who is asking and on where an answer points, catching the resolution whose final address lands in a known-bad network even when the name itself is clean.
+
+## Where RPZ sits in the answering line
+
+RPZ is a property of the DNS cache, and the cache has a fixed place in BIG-IP DNS's documented processing order: after iRules, DNSSEC processing, the GSLB wide IP match, and DNS Express. The practical consequence is worth spelling out: RPZ governs what the cache resolves for clients; it does not sit in front of your own authoritative answers, a wide IP or a DNS Express zone answers before the cache is ever consulted. That is the correct layering, policy on lookups outward, authority on your own names, and it is also why an RPZ deployment belongs on resolver-role listeners. The [request processing order article](/learn/bigip-dns-request-processing-order) walks the whole line; the [flagship 21.x overview](/learn/bigip-21x-whats-new) holds the release context.
+
+## Designing a multi-RPZ deployment
+
+Three habits translate the feature into a clean operation. Name zones by owner and intent (rpz-regulatory-anatel, rpz-vendor-x, rpz-internal-allow), because the precedence list is only auditable if the names carry meaning. Give every external feed a TSIG key of its own, so revoking one provider never touches another. And decide the failure posture per zone before the first incident: a stale regulatory zone and a stale vendor feed do not deserve the same alarm level, and the serial-number lag on each transfer is the metric that tells you which one you have.

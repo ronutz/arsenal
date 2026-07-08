@@ -1,0 +1,46 @@
+---
+slug: bigip-inplace-upgrade-and-64bit
+title: "The BIG-IP 21.x Ops Story: In-Place Upgrades, a 64-Bit Control Plane, and BigD at Scale"
+summary: "BIG-IP 21.1 changes how you upgrade (in-place, with a Dry Run compatibility check), what the control plane is built from (64-bit mergeD, Java 21, 64-bit TMSH libraries), how it survives memory pressure (OOM priority for MCPd), how fast it answers (multi-threaded MCPD and a 15,000-monitor multi-threaded BigD), and how it migrates (UCS platform-migrate with validate). Every claim here is from F5's release notes, including the honest limits: in-place is not in-service, and 21.x does not run on iSeries or VIPRION."
+concepts: ["f5", "bigip", "tmos", "upgrade", "64-bit", "bigd", "mcpd", "icontrol", "ucs"]
+relatedTools: ["f5-bigd-thread-calculator", "f5-service-check-date"]
+relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-08"
+---
+
+The flashy parts of BIG-IP 21.x are MCP and post-quantum TLS; the parts an operations team will feel every week are quieter. This article collects the platform and lifecycle changes from F5's 21.0 and 21.1 release notes into one operational read: how upgrades work now, what changed under the control plane's hood, and the new sizing rules for the daemons you actually watch.
+
+## In-place upgrade, and its two honest limits
+
+The traditional BIG-IP upgrade installs every RPM into a software volume and reboots. BIG-IP 21.1 introduces the in-place upgrade: only the modified RPMs and their dependencies are installed, directly in the active software volume, and each affected process is restarted individually in proper order rather than the whole system rebooting unless a reboot is required. The payoff is significantly faster upgrades and shorter maintenance windows.
+
+Two limits keep expectations honest, both stated plainly by F5. First, this is not an in-service upgrade: the device is still expected to be offline during the procedure. Faster is not the same as hitless. Second, availability starts narrow: initially only a carefully selected set of Engineering Hotfixes supports in-place upgrade, with the list expanding as the feature matures, which is also why an "is my target eligible" calculator would be guesswork rather than computation.
+
+The companion feature is Dry Run: it compares the image you selected against what the active volume runs and tells you which of three paths applies, in-place upgrade, in-place upgrade with reboot, or full upgrade (reboot-only), after a set of compatibility checks. Run it first, always; it converts an upgrade-day surprise into a planning input. And before any of this, the oldest gate still applies: the license's service check date must be current for the target version, which the [service check date tool](/tools/f5-service-check-date) computes from a version or a pasted license.
+
+## The 64-bit control plane
+
+21.x continues the migration of the control plane from 32-bit to 64-bit x86_64. In 21.1, mergeD is 64-bit (larger addressable memory for TM stat table processing), restjavad moves from Java 8 to Java 21 (better garbage collection and memory management), and the TMSH libraries used by iControl services gain 64-bit builds so restjavad and icrd_child run in a 64-bit address space, with 32-bit libraries retained for modules not yet ported. F5 states the change is transparent: no impact to the TMSH CLI or to existing iControl REST and SOAP clients. The practical operator note comes from the 21.0 side of the story: 64-bit binaries have larger resident memory than their 32-bit ancestors, so verify available memory before upgrading a tightly-sized VE.
+
+## Memory pressure and the OOM ladder
+
+21.1 formalizes what happens when memory runs out. MCPd now receives higher protection from the kernel's OOM killer, and protected daemons restart with a 5-second delay to avoid termination loops. F5 is candid about the stakes: an MCPd restart disrupts the data path and takes other daemons and TMM with it. For persistent OOM events the documented fix is provisioning more host memory via `provision.extramb`. And there is a self-correcting clause: if MCPd itself leaks and causes at least 10 consecutive OOM restarts of other processes within 2 minutes, the system automatically lowers MCPd's priority so the kernel can recycle it, a designed escape hatch from a leaking guardian.
+
+## Faster answers: MCPD threads and iControl rate limits
+
+MCPD gains multithreaded request handling: concurrent configuration and query traffic (SNMP walks, tmstats reads) is served by worker threads instead of one sequential queue. The default is 1 worker thread, configurable from 0 (the old single-threaded behavior) to 4 via `mcpd.workerthreads`, and F5's guidance is refreshingly concrete: raise it only when workers sit above 80% CPU for a minute or two or queries time out, confirm other CPUs are actually idle first, and increase by one at a time. On the API side, 21.1 adds rate limiting on the /mgmt endpoint, per client, configurable through `sys httpd api-ratelimit`, `api-requestlimit`, and `api-ratelimit-errcode`, closing off unthrottled iControl REST as an accidental control-plane DoS.
+
+## BigD grows up: one daemon, many threads, 15,000 monitors
+
+The health-monitor daemon becomes a single multi-threaded instance supporting up to 15,000 control-plane monitors, with the load spread evenly across threads and tmctl output consolidated accordingly. The thread count is derived from the vCPU count with two documented formulas, (vCPUs × 6) ÷ 10 on hyperthreaded systems and (vCPUs ÷ 2) − 1 on normal ones, and can be pinned manually with `bigd.numprocs`, capped at the vCPU count, where 0 means automatic. Which formula applies is a platform fact: per F5's platform docs, r5000/r10000/r12000 and VELOS tenants see hyperthreads as vCPUs, r2000/r4000 count physical cores (no hyperthreading), and Virtual Edition inherits the host. The [BigD thread calculator](/tools/f5-bigd-thread-calculator) encodes both formulas verbatim plus that platform map, including the honest note that F5 states no rounding rule for fractional results. For scale beyond roughly 5,000 monitor instances, the 21.0 notes still point to In-TMM monitors, which reach 25,000 with an 8 GB extramb allocation.
+
+## Migration, admin, and the small quality-of-life set
+
+UCS-based migration gains a `validate` option on `tmsh load sys ucs ... platform-migrate`: a JSON preview of what a load would change, with warnings for ignored objects, and the platform-adjustment logic that used to live in the F5 Journeys tool now built in, removing unsupported trunks and STP settings on the way to rSeries, VELOS, or VE while preserving the destination's management IP and DHCP settings. You can finally change the primary administrator away from the literal "admin" account, from TMUI, TMSH, or iControl REST. A first cut of the modernized TMUI ships disabled by default behind the New UI (Beta) preference. And one removal deserves a pre-upgrade check: Node.js v0.12 support is gone, so iRules LX workspaces on v0.12 must move to Node.js v6 before the upgrade, with affected workspaces flagged in the logs.
+
+## The platform gate, one more time
+
+None of this applies to iSeries or VIPRION: 21.x does not support them, installation attempts can fail to boot, and those platforms ride 17.x to their end-of-software-support dates. 21.x runs on rSeries, VELOS, and Virtual Edition; a vCMP tenant can technically be deployed with 21.x but is unsupported per K4309. The [flagship overview](/learn/bigip-21x-whats-new) carries the full lifecycle picture around this article's operational core.

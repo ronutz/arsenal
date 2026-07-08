@@ -19,6 +19,7 @@ import { Link } from "@/i18n/navigation";
 import { populatedVendors, vendorColor } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
+import ViewToggle from "@/components/ViewToggle";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -109,6 +110,16 @@ export default async function LearnIndexPage({
                 }))}
               />
             )}
+
+            {/* Third nav utility: cards/list density (shared labels from the
+                tools namespace, same as the filter above). */}
+            <ViewToggle
+              targetId="main"
+              storageKey="ronutz:view:learn"
+              legend={tTools("viewLegend")}
+              cardsLabel={tTools("viewCards")}
+              listLabel={tTools("viewList")}
+            />
 
             {/* One block per category, mirroring the tools index taxonomy. */}
             {groups.map((group) => (

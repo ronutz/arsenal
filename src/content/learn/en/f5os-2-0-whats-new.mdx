@@ -1,0 +1,32 @@
+---
+slug: f5os-2-0-whats-new
+title: "F5OS 2.0 From the Tenant's Seat: Cloud-Init, Per-Port RRDAG, and Q-in-Q"
+summary: "F5OS 2.0 is the platform-layer release that BIG-IP 21.1's hardware-facing features assume. Verified against F5's release documentation, this is the tenant operator's view: cloud-init for zero-touch BIG-IP tenant deployment on VELOS and rSeries (including DO and AS3 declarations at first boot), Round Robin DAG scoped to specific UDP ports instead of whole VLANs, and Q-in-Q arriving on VELOS under F5OS Confd, each with its exact platform list and the F5OS 2.0 host requirement spelled out."
+concepts: ["f5", "f5os", "velos", "rseries", "bigip", "cloud-init", "rrdag", "q-in-q", "tenant"]
+relatedTools: []
+relatedArticles: ["bigip-21x-whats-new", "bigip-inplace-upgrade-and-64bit"]
+category: networking
+order: 7
+status: machine-draft
+updated: "2026-07-08"
+---
+
+Since 21.x runs only on rSeries, VELOS, and Virtual Edition, the platform layer under the tenant stopped being background noise: F5OS is now half of every hardware deployment's story. F5OS 2.0 is the platform release that BIG-IP 21.1's hardware-facing features assume, and this article takes the view that matters to most readers here, the BIG-IP tenant operator's, covering the three F5OS-2.0-coupled capabilities documented in F5's 21.1 release notes. A deeper F5OS-native tour (the platform's own administration and lifecycle changes) deserves its own grounding pass against the F5OS 2.0 release notes and will follow separately; nothing below depends on it.
+
+## Cloud-init: the tenant that configures itself
+
+The headline for anyone who deploys tenants: F5OS now supports cloud-init for BIG-IP tenant deployments on VELOS and all rSeries variants. When creating a tenant, the cloud-init user data field carries initial configuration, passwords, user accounts, SSH keys, and automation declarations, that is applied automatically at first boot. F5 states the intent plainly: eliminate manual post-deployment configuration and enable zero-touch provisioning, bringing to F5OS the same cloud-init automation BIG-IP Virtual Edition has had all along.
+
+The clause that turns this from convenience into architecture is the toolchain support: both standard cloud-init options and F5's automation integrations, Declarative Onboarding (DO) and Application Services (AS3), can ride in the user data. A tenant can therefore land fully described, platform settings by DO, application services by AS3, from the moment F5OS instantiates it. If your organization already treats BIG-IP VE as declarative infrastructure, the hardware tenants on VELOS and rSeries now speak the same language, and the last manual snowflake in the fleet loses its excuse.
+
+## RRDAG learns to aim: per-port UDP disaggregation
+
+Round Robin DAG is the disaggregation mode that sprays traffic across processing resources evenly, useful for flows where the default hashing concentrates load, classically SIP and VoIP. Its old granularity was the problem: RRDAG applied at the VLAN level, so opting one protocol in meant opting every neighbor on the VLAN in too. With F5OS 2.0 hosting a BIG-IP 21.1 tenant, RRDAG can be configured per protocol and per port for UDP: define a UDP port list and only those ports get round-robin distribution, everything else keeps normal DAG behavior. F5's fine print is precise and worth transcribing into your design notes: UDP only; a port list is required, and with no ports specified RRDAG is simply not applied; supported on VELOS BX110 blades but not BX520, and on rSeries r5000, r10000, and r12000 including the DF variants; and the host platform must run F5OS 2.0 or later, the feature stays unavailable if only the tenant was upgraded. Existing configurations keep working and no extra licensing is involved.
+
+## Q-in-Q comes to VELOS
+
+Q-in-Q, stacked 802.1Q tagging for carrying customer VLANs inside provider VLANs, has long existed on VIPRION and iSeries. Since those platforms end at 17.x, the capability had to cross the platform generation, and with F5OS 2.0.0 or later it does: Q-in-Q is now supported on VELOS, with all configuration managed through F5OS Confd under the F5OS configuration framework. The operational shift is where the knobs live: on the legacy platforms Q-in-Q was a TMOS-side affair; on VELOS it is platform-layer configuration, owned by whoever administers F5OS, with the tenant consuming the result. Service-provider designs migrating from VIPRION should plan that ownership handoff explicitly.
+
+## The dependency reading
+
+All three features share one shape: the capability is delivered by the platform, consumed by the tenant, and gated on F5OS 2.0 on the host. That makes the platform version a first-class item in any 21.x deployment plan, checked with the same seriousness as the BIG-IP version itself, and F5's hardware/software support matrix (K86001294) is the authoritative pairing table. The [ops deep-dive](/learn/bigip-inplace-upgrade-and-64bit) covers the tenant-side upgrade machinery this pairs with, and the [flagship overview](/learn/bigip-21x-whats-new) holds the whole 21.x picture.

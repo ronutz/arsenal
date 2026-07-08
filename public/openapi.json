@@ -65,6 +65,9 @@
       "description": "IP addressing and subnet computations."
     },
     {
+      "name": "Operations & Fieldcraft"
+    },
+    {
       "name": "PKI"
     },
     {
@@ -650,6 +653,91 @@
         "operationId": "run_csr_decoder_post",
         "summary": "CSR decoder (POST)",
         "description": "Decode a PKCS#10 certificate signing request to read its subject, public key, requested SANs and extensions, and attributes — entirely in your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: PKCS#10 / RFC 2986, RFC 5280. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/curl-command-builder": {
+      "get": {
+        "tags": [
+          "HTTP & web"
+        ],
+        "operationId": "run_curl_command_builder",
+        "summary": "curl command builder",
+        "description": "Pick any of the 27 protocols curl speaks, fill in protocol-aware fields, and get the exact command with every flag explained and safety warnings surfaced. The inverse of the HTTP request translator: that one reads a command, this one writes it. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: curl manual, everything curl. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "HTTP & web"
+        ],
+        "operationId": "run_curl_command_builder_post",
+        "summary": "curl command builder (POST)",
+        "description": "Pick any of the 27 protocols curl speaks, fill in protocol-aware fields, and get the exact command with every flag explained and safety warnings surfaced. The inverse of the HTTP request translator: that one reads a command, this one writes it. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: curl manual, everything curl. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -2155,6 +2243,96 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-bigd-thread-calculator": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_bigd_thread_calculator",
+        "summary": "BigD thread calculator",
+        "description": "Enter your vCPU count (and whether the system is hyperthreaded) to get the BigD thread count BIG-IP 21.1 derives automatically, per F5's documented formulas, plus the bigd.numprocs override cap and the 15,000-monitor ceiling. Standards: F5 techdocs 21.1.0 New Features (BigD), F5 clouddocs rSeries/VELOS platform docs + K15003 (HT map). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "8 vCPUs ht"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_bigd_thread_calculator_post",
+        "summary": "BigD thread calculator (POST)",
+        "description": "Enter your vCPU count (and whether the system is hyperthreaded) to get the BigD thread count BIG-IP 21.1 derives automatically, per F5's documented formulas, plus the bigd.numprocs override cap and the 15,000-monitor ceiling. Standards: F5 techdocs 21.1.0 New Features (BigD), F5 clouddocs rSeries/VELOS platform docs + K15003 (HT map). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "8 vCPUs ht"
+                ]
               }
             }
           }
@@ -4112,6 +4290,91 @@
                 "examples": [
                   "{ \"spec\": { \"rule_list\": { \"rules\": [ ... ] } } }"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fault-hypothesis-builder": {
+      "get": {
+        "tags": [
+          "Operations & Fieldcraft"
+        ],
+        "operationId": "run_fault_hypothesis_builder",
+        "summary": "Fault Hypothesis Builder",
+        "description": "Describe a fault in six structured fields; a fixed rule set ranks hypotheses to test - with the evidence to collect, what would support each, and what would weaken it. Advisory structure, never a diagnosis. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Operations & Fieldcraft"
+        ],
+        "operationId": "run_fault_hypothesis_builder_post",
+        "summary": "Fault Hypothesis Builder (POST)",
+        "description": "Describe a fault in six structured fields; a fixed rule set ranks hypotheses to test - with the evidence to collect, what would support each, and what would weaken it. Advisory structure, never a diagnosis. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
               }
             }
           }

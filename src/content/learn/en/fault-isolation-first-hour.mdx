@@ -1,0 +1,33 @@
+---
+slug: fault-isolation-first-hour
+title: "The First Hour: Hypothesis-Driven Fault Isolation"
+summary: "The difference between a two-hour incident and a two-day one is usually decided in the first hour, and it is rarely decided by tools. It is decided by method: aligning onset with change, isolating by scope, reading layer signatures, and treating every explanation as a hypothesis that evidence must support or weaken before anyone acts on it."
+concepts: ["troubleshooting", "fault isolation", "operations", "incident response", "change management", "evidence"]
+relatedTools: ["fault-hypothesis-builder"]
+relatedArticles: []
+category: networking
+order: 6
+status: machine-draft
+updated: "2026-07-08"
+---
+Watch a senior engineer join a bridge call twenty minutes into an incident and something odd happens: they barely touch a terminal at first. They ask what changed, who exactly is affected, when it started, and what has already been ruled out. Juniors sometimes read this as slowness. It is the opposite. The first hour of a fault is won or lost on method, and the method is hypothesis-driven isolation: generate candidate fault domains from the shape of the symptom, then let evidence promote or demote them. The terminal comes after the thinking, and it comes aimed.
+
+## Change alignment is the king signal
+
+Most faults follow a change. Not all, but enough that the first question is always the same: what changed, and does the onset time align with it? Alignment is measured against logs, not against memory - the first error timestamp in the logs versus the change record's timestamps, because "when users started complaining" routinely lags the real onset by hours. When an internal change aligns, the change is your leading hypothesis to test: diff the configuration against the last known-good version, and if a safe rollback path exists, testing the rollback in a window beats debating it in a call. When the aligned change belongs to a provider, the discipline inverts: you verify against their status history and maintenance record first, because it is their change, not yours to diff.
+
+The trap wears the opposite costume. "Nothing changed" is a hypothesis, not a fact, and it is one of the most frequently falsified statements in operations. Certificates expire with no one touching anything. A DHCP lease rolls, a TTL expires after last week's forgotten record edit, an auto-update lands. Treat the claim exactly as you would treat any other hypothesis: verify it against the change record, the deployment logs, and the provider calendars before you trust it.
+
+## Scope draws the boundary of the fault domain
+
+Who is affected is a boundary-drawing exercise, and the boundary points at the domain. One user affected makes the client environment - its resolver, proxy, VPN, security agent - the cheapest domain to eliminate first: reproduce from a second machine, then from a second network, and note which combination fails. Everyone affected at once inverts the logic: the fault lives in whatever everyone shares, so the productive move is to LIST the shared elements explicitly (the circuit, the core device, the identity provider, the common backend) and test a path that deliberately bypasses the leading suspect. The interesting cases sit in the middle. Some users failing while others sail through the same service is the classic signature of one unhealthy member behind a load-balanced pool or an ECMP set: whoever hashes to the bad member hurts, everyone else is fine, and the aggregate graphs look healthy because averages hide one bad member. The evidence that decides is per-member, never aggregate.
+
+## Layer signatures are free evidence
+
+Certain observations isolate a domain almost by themselves, and they cost minutes to collect. Working by IP while failing by name puts the fault in the resolution path nearly by definition. TCP connecting while the application errors moves the domain up the stack to the app and its dependencies, and away from the network people who usually get paged first. Small transactions succeeding while large transfers stall is the path-MTU signature, usually introduced by a tunnel or overlay someone added. Handshake errors point at the TLS legs, and on a terminating proxy there are two of them, client-side and server-side, failing independently. A brand-new service that has never worked is not a fault at all: it is a provisioning walk - name resolves, address routes, firewall permits, service listens, TLS presents, health checks pass - and the method is to stop at the first broken link rather than to hypothesize. Two minutes spent gathering one of these signatures is usually worth more than an hour of unfocused log reading.
+
+## Hypotheses earn rank through evidence, in both directions
+
+The discipline that separates isolation from guessing is stating, for every candidate, not only what would support it but what would weaken it - and going looking for both. A hypothesis you cannot imagine evidence against is not a hypothesis; it is a conclusion you have already committed to, and it will absorb your first hour whether it is right or not. Writing the candidates down with both halves does something subtle to a bridge call: it converts an argument about who is right into a checklist of what to collect, and it produces, as a side effect, exactly the packet a vendor TAC or an escalation needs - what was observed, what was ruled out and by which evidence, what remains open. The ranking should stay auditable too: you should be able to say WHY a candidate leads, in terms of which observations pushed it up, because the next person to join the call will ask, and "it feels likely" does not transfer.
+
+None of this replaces judgment, vendor support, or change approval, and a method is not a diagnosis machine. What it buys is narrower: a first hour that converges instead of wanders, and a paper trail that makes the second hour cheaper than the first. The Fault Hypothesis Builder on this site encodes the method as a deterministic worksheet - structured description in, ranked hypotheses with evidence out, every fired rule inspectable - precisely so the thinking survives contact with a 3 a.m. page.

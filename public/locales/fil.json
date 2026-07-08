@@ -1507,5 +1507,21 @@
     "changesBody": "Ang site, ang mga tool nito, ang nilalaman nito, ang code nito, at ang abisong ito ay maaaring magbago, masira, o mawala anumang oras, nang walang abiso at walang obligasyon kaninuman. Ang nalalapat na bersyon ay ang kasalukuyang bersyon ng pahinang ito.",
     "acceptBody": "Sa paggamit ng site na ito o ng code nito, tinatanggap mo nang buo ang abisong ito. Kung hindi mo ito tinatanggap, ang tanging remedyo mo ay ang ihinto ang paggamit ng site at ng code.",
     "backHome": "Bumalik sa home"
+  },
+  "notFound": {
+    "sub": "Hindi nahanap ang pahina",
+    "quip": "Ikaw ang dahilan, hindi ako.",
+    "bofhIntroPre": "Isinara ang ticket ng",
+    "bofhIntroPost": ". Nakatala ang ugat ng problema:",
+    "bofhWait": "sinasangguni ang database ng mga dahilan…",
+    "bofhAgain": "Buksang muli ang ticket",
+    "bofhAgainTitle": "Ang muling pagbubukas ay nagbibigay ng bagong dahilan. Hindi ng solusyon.",
+    "lostTitle": "Mukhang naliligaw ka. Heto ang isa, hinugot mula sa digital na pagkakataon:",
+    "badgeTool": "KASANGKAPAN",
+    "badgeLearn": "ARTIKULO",
+    "shuffling": "binabalasa…",
+    "goToolbox": "Pumunta sa toolbox",
+    "shuffleAgain": "Balasahin muli",
+    "home": "Home"
   }
 }

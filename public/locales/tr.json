@@ -1507,5 +1507,21 @@
     "changesBody": "Site, araçları, içeriği, kodu ve bu bildirim herhangi bir zamanda, bildirimde bulunmaksızın ve kimseye karşı yükümlülük olmaksızın değişebilir, çalışmayı durdurabilir veya ortadan kalkabilir. Geçerli sürüm, bu sayfanın mevcut sürümüdür.",
     "acceptBody": "Bu siteyi veya kodunu kullanarak bu bildirimi tamamen kabul edersiniz. Kabul etmiyorsanız, tek çare siteyi ve kodu kullanmayı bırakmaktır.",
     "backHome": "Ana sayfaya dön"
+  },
+  "notFound": {
+    "sub": "Sayfa bulunamadı",
+    "quip": "Sorun sende, bende değil.",
+    "bofhIntroPre": "Kayıt şu kişi tarafından kapatıldı:",
+    "bofhIntroPost": ". Kök neden dosyada:",
+    "bofhWait": "bahane veritabanına bakılıyor…",
+    "bofhAgain": "Kaydı yeniden aç",
+    "bofhAgainTitle": "Yeniden açmak yeni bir bahane üretir. Çözüm üretmez.",
+    "lostTitle": "Kaybolmuş görünüyorsun. İşte dijital rastgelelikten çekilen bir tane:",
+    "badgeTool": "ARAÇ",
+    "badgeLearn": "MAKALE",
+    "shuffling": "karıştırılıyor…",
+    "goToolbox": "Araç kutusuna git",
+    "shuffleAgain": "Yeniden karıştır",
+    "home": "Ana sayfa"
   }
 }

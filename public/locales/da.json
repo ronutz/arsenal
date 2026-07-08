@@ -1507,5 +1507,21 @@
     "changesBody": "Webstedet, dets værktøjer, dets indhold, dets kode og denne meddelelse kan ændre sig, holde op med at virke eller forsvinde til enhver tid, uden varsel og uden forpligtelse over for nogen. Den gældende version er den aktuelle version af denne side.",
     "acceptBody": "Ved at bruge dette websted eller dets kode accepterer du denne meddelelse fuldt ud. Hvis du ikke accepterer den, er din eneste udvej at holde op med at bruge webstedet og koden.",
     "backHome": "Tilbage til forsiden"
+  },
+  "notFound": {
+    "sub": "Siden blev ikke fundet",
+    "quip": "Det er dig, ikke mig.",
+    "bofhIntroPre": "Sagen lukket af",
+    "bofhIntroPost": ". Årsag registreret:",
+    "bofhWait": "slår op i undskyldningsdatabasen…",
+    "bofhAgain": "Genåbn sagen",
+    "bofhAgainTitle": "Genåbning giver en ny undskyldning. Ikke en løsning.",
+    "lostTitle": "Du ser fortabt ud. Her er ét, plukket ud af digital tilfældighed:",
+    "badgeTool": "VÆRKTØJ",
+    "badgeLearn": "ARTIKEL",
+    "shuffling": "blander…",
+    "goToolbox": "Gå til værktøjskassen",
+    "shuffleAgain": "Bland igen",
+    "home": "Forside"
   }
 }

@@ -1507,5 +1507,21 @@
     "changesBody": "El sitio, sus herramientas, su contenido, su código y este aviso pueden cambiar, dejar de funcionar o desaparecer en cualquier momento, sin previo aviso y sin obligación hacia nadie. La versión aplicable es la versión actual de esta página.",
     "acceptBody": "Al usar este sitio o su código aceptas este aviso en su totalidad. Si no lo aceptas, tu único recurso es dejar de usar el sitio y el código.",
     "backHome": "Volver al inicio"
+  },
+  "notFound": {
+    "sub": "Página no encontrada",
+    "quip": "Eres tú, no yo.",
+    "bofhIntroPre": "Ticket cerrado por el",
+    "bofhIntroPost": ". Causa raíz archivada:",
+    "bofhWait": "consultando la base de datos de excusas…",
+    "bofhAgain": "Reabrir ticket",
+    "bofhAgainTitle": "Reabrir produce una nueva excusa. No produce una solución.",
+    "lostTitle": "Pareces perdido. Aquí tienes uno, sacado del azar digital:",
+    "badgeTool": "HERRAMIENTA",
+    "badgeLearn": "ARTÍCULO",
+    "shuffling": "barajando…",
+    "goToolbox": "Ir a la caja de herramientas",
+    "shuffleAgain": "Barajar de nuevo",
+    "home": "Inicio"
   }
 }

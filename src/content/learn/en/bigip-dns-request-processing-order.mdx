@@ -1,0 +1,38 @@
+---
+slug: bigip-dns-request-processing-order
+title: "One Query, Six Answering Machines: the BIG-IP DNS Processing Order"
+summary: "A DNS query arriving at a BIG-IP listener can be answered by iRules, DNSSEC processing, a GSLB wide IP, DNS Express, a DNS cache, local BIND, or a pool of real DNS servers. F5 documents a strict precedence among them, and most surprises in BIG-IP DNS, from the record that answers when you expected GSLB to Rapid Response silencing BIND, come down to reading that order correctly."
+concepts: ["big-ip dns", "gtm", "f5", "dns express", "dns cache", "bind", "listener", "unhandled query action"]
+relatedTools: ["f5-gslb-decision-flow", "f5-iquery-protocol-explainer"]
+relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longest-match", "how-iquery-connects-bigip-dns", "dns-message-header-and-flags"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-08"
+---
+
+A BIG-IP DNS box is not one DNS server. It is a front door, the listener, behind which up to half a dozen different answering machines wait in a documented line: iRules, DNSSEC processing, GSLB wide IPs, DNS Express, one of three kinds of DNS cache, the local BIND instance, and finally a pool of real DNS servers. Every query walks that line in order and the first machine that can answer, answers. Nearly every "why did I get THIS response" mystery in BIG-IP DNS dissolves once you can recite the line.
+
+## The responders and the resolvers
+
+It helps to split the machines into two families first. The responders hold answers of their own: a GSLB wide IP computes an intelligent answer from health and location; DNS Express serves a zone it holds as a high-speed authoritative secondary, populated by zone transfer; the local BIND instance (the one ZoneRunner manages) serves whatever zones live in its files. The resolvers go find answers elsewhere: a cache in resolver or validating-resolver mode recurses from the root hints (the validating flavor also checks DNSSEC signatures), a cache in transparent mode just remembers what the servers behind it said, and an LTM pool on the listener screens queries through to real name servers. BIG-IP consults responders before resolvers, which is exactly what you want: authoritative and computed answers should win over lookups.
+
+## The documented order
+
+F5's K14510 gives the precedence, and K28650431 spells the full walk out: the listener receives the packet, then iRules run first, then the DNS profile's machinery takes over in sequence, DNSSEC processing, GSLB (the wide IP match), DNS Express, the DNS cache, the local BIND server if the profile enables Use BIND Server on BIG-IP, and then an LTM pool if one is assigned to the listener. There is even a step after the end: if the listener's address is also a self IP with port 53 open, the system-level BIND will answer what nothing else did. Two placements in that line surprise people reliably. First, iRules outrank everything, an iRule that answers a query ends the walk before GSLB ever sees it, which is what makes DNS iRules both powerful and dangerous. Second, the wide IP match comes before DNS Express: if a name is both a wide IP and a record inside a DNS Express zone, GSLB wins, and the manual confirms the corollary for caching, the system processes requests through DNS Express first and only then caches responses.
+
+## Where a query falls off the line
+
+A query that matches no wide IP and no DNS Express zone hits the DNS profile's Unhandled Query Action, and this small setting decides the whole character of the listener. Allow, the default, lets the query continue down the line to the cache, BIND, or the pool. Drop discards it silently; Reject answers with a refusal; Hint returns a root-servers referral; No Error returns an empty success. A listener meant purely as a GSLB and DNS Express front should not Allow its way into being an open resolver; a listener meant as a resolver obviously must.
+
+## The three caches are three different machines
+
+The DNS cache object comes in three resolver types, and picking the wrong one is a classic misconfiguration. Transparent caches sit in front of something else, typically the pool of DNS servers, and simply remember the answers passing through. Resolver caches do the recursion themselves, walking down from the root name servers (root hints, InterNIC's list by default). Validating resolver adds DNSSEC validation to that recursion. F5's own manual adds a performance recommendation worth repeating: send cache misses to a pool of local DNS servers rather than to the local BIND instance, because one BIND process is slower than several external resolvers.
+
+## BIND is the last resort, and sometimes silenced
+
+The local BIND instance earns its place at the end of the line: it is the slowest responder on the box, and modern designs use ZoneRunner mostly as an editing surface whose zones feed DNS Express by transfer, rather than as the thing that answers clients. There is also a mode that removes it from the line entirely: with Rapid Response enabled on the DNS profile, only GSLB and DNS Express function, and queries that match neither follow rapid-response-last-action, drop by default, so records that live only in ZoneRunner stop resolving. K13850558 documents exactly this surprise, and it is a fine illustration of the whole article: the record existed, the machine that held it was simply no longer in the line.
+
+## Reading a listener like a sentence
+
+Put together, a listener's DNS profile reads like a sentence about intent. GSLB enabled, DNS Express enabled, no cache, no BIND, Unhandled Query Action Drop: a hardened authoritative front. GSLB disabled, transparent cache, pool assigned: a caching forwarder. Resolver cache with validation: a recursive resolver for internal clients. When behavior does not match intent, walk the K14510 line from the top, iRules, DNSSEC, wide IPs, DNS Express, cache, BIND, pool, and find which machine answered out of turn. The [GSLB decision-flow explainer](/tools/f5-gslb-decision-flow) picks up the story at the wide IP step, and the [iQuery article](/learn/how-iquery-connects-bigip-dns) covers how the GSLB brain learns the health it decides with.

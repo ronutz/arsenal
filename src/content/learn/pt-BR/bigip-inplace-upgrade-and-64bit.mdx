@@ -1,0 +1,46 @@
+---
+slug: bigip-inplace-upgrade-and-64bit
+title: "A história operacional do BIG-IP 21.x: upgrade in-place, plano de controle 64-bit e BigD em escala"
+summary: "O BIG-IP 21.1 muda como você atualiza (in-place, com verificação de compatibilidade Dry Run), do que o plano de controle é feito (mergeD 64-bit, Java 21, bibliotecas TMSH 64-bit), como ele sobrevive à pressão de memória (prioridade OOM para o MCPd), a velocidade das respostas (MCPD multi-thread e um BigD multi-thread de 15.000 monitores) e como migra (UCS platform-migrate com validate). Cada afirmação vem das release notes da F5, incluindo os limites honestos: in-place não é in-service, e o 21.x não roda em iSeries nem VIPRION."
+concepts: ["f5", "bigip", "tmos", "upgrade", "64-bit", "bigd", "mcpd", "icontrol", "ucs"]
+relatedTools: ["f5-bigd-thread-calculator", "f5-service-check-date"]
+relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-08"
+---
+
+As partes vistosas do BIG-IP 21.x são o MCP e o TLS pós-quântico; as partes que uma equipe de operações vai sentir toda semana são mais silenciosas. Este artigo reúne as mudanças de plataforma e ciclo de vida das release notes do 21.0 e do 21.1 em uma leitura operacional: como upgrades funcionam agora, o que mudou sob o capô do plano de controle e as novas regras de dimensionamento dos daemons que você de fato observa.
+
+## Upgrade in-place, e seus dois limites honestos
+
+O upgrade tradicional do BIG-IP instala todos os RPMs em um volume de software e reinicia. O BIG-IP 21.1 introduz o upgrade in-place: apenas os RPMs modificados e suas dependências são instalados, diretamente no volume de software ativo, e cada processo afetado é reiniciado individualmente na ordem correta, em vez de o sistema inteiro reiniciar, a menos que um reboot seja necessário. O ganho é upgrade significativamente mais rápido e janelas de manutenção mais curtas.
+
+Dois limites mantêm as expectativas honestas, ambos declarados pela F5 com todas as letras. Primeiro, isto não é um upgrade in-service: o dispositivo ainda deve ficar offline durante o procedimento. Mais rápido não é o mesmo que sem impacto. Segundo, a disponibilidade começa estreita: inicialmente apenas um conjunto cuidadosamente selecionado de Engineering Hotfixes suporta in-place, com a lista crescendo conforme o recurso amadurece, o que também explica por que uma calculadora de "meu alvo é elegível" seria chute, não cálculo.
+
+O recurso companheiro é o Dry Run: ele compara a imagem selecionada com o que roda no volume ativo e diz qual dos três caminhos se aplica, in-place, in-place com reboot, ou upgrade completo (somente reboot), após uma bateria de verificações de compatibilidade. Rode-o primeiro, sempre; ele converte a surpresa do dia do upgrade em insumo de planejamento. E antes de tudo isso, o portão mais antigo continua valendo: o service check date da licença precisa estar atual para a versão alvo, e a [ferramenta de service check date](/tools/f5-service-check-date) calcula isso a partir de uma versão ou de uma licença colada.
+
+## O plano de controle 64-bit
+
+O 21.x continua a migração do plano de controle de 32 para 64 bits x86_64. No 21.1, o mergeD é 64-bit (mais memória endereçável para o processamento das tabelas TM stat), o restjavad passa de Java 8 para Java 21 (melhor coleta de lixo e gestão de memória), e as bibliotecas TMSH usadas pelos serviços iControl ganham builds 64-bit, de modo que restjavad e icrd_child rodam em espaço de endereçamento de 64 bits, com as bibliotecas de 32 bits mantidas para módulos ainda não portados. A F5 declara a mudança transparente: sem impacto no CLI do TMSH nem nos clientes iControl REST e SOAP existentes. A nota prática do operador vem do lado 21.0 da história: binários 64-bit têm memória residente maior que seus ancestrais 32-bit, então verifique a memória disponível antes de atualizar uma VE dimensionada no limite.
+
+## Pressão de memória e a escada de OOM
+
+O 21.1 formaliza o que acontece quando a memória acaba. O MCPd agora recebe proteção maior contra o OOM killer do kernel, e os daemons protegidos reiniciam com atraso de 5 segundos para evitar loops de terminação. A F5 é franca sobre o que está em jogo: um restart do MCPd interrompe o caminho de dados e leva junto outros daemons e o TMM. Para eventos de OOM persistentes, a correção documentada é provisionar mais memória de host via `provision.extramb`. E existe uma cláusula de autocorreção: se o próprio MCPd vazar memória e causar ao menos 10 restarts consecutivos por OOM de outros processos em 2 minutos, o sistema baixa automaticamente a prioridade do MCPd para que o kernel possa reciclá-lo, uma saída de emergência projetada para um guardião que vaza.
+
+## Respostas mais rápidas: threads do MCPD e limites de taxa no iControl
+
+O MCPD ganha tratamento multi-thread de requisições: tráfego concorrente de configuração e consulta (varreduras SNMP, leituras de tmstats) é atendido por worker threads em vez de uma única fila sequencial. O padrão é 1 worker thread, configurável de 0 (o comportamento antigo, single-thread) a 4 via `mcpd.workerthreads`, e a orientação da F5 é concreta: aumente apenas quando os workers ficarem acima de 80% de CPU por um ou dois minutos ou quando consultas estourarem timeout, confirme antes que as demais CPUs estão de fato ociosas, e suba de um em um. No lado da API, o 21.1 adiciona limitação de taxa no endpoint /mgmt, por cliente, configurável por `sys httpd api-ratelimit`, `api-requestlimit` e `api-ratelimit-errcode`, fechando o iControl REST sem limites como DoS acidental do plano de controle.
+
+## O BigD cresce: um daemon, muitas threads, 15.000 monitores
+
+O daemon de health monitors vira uma instância única multi-thread suportando até 15.000 monitores no plano de controle, com a carga distribuída igualmente entre as threads e a saída do tmctl consolidada. A contagem de threads é derivada da contagem de vCPUs com duas fórmulas documentadas, (vCPUs × 6) ÷ 10 em sistemas hyperthreaded e (vCPUs ÷ 2) − 1 nos normais, e pode ser fixada manualmente com `bigd.numprocs`, limitada à contagem de vCPUs, onde 0 significa automático. Qual fórmula se aplica é um fato de plataforma: pelos docs de plataforma da F5, tenants de r5000/r10000/r12000 e VELOS enxergam hyperthreads como vCPUs, r2000/r4000 contam núcleos físicos (sem hyperthreading), e o Virtual Edition herda o host. A [calculadora de threads do BigD](/tools/f5-bigd-thread-calculator) codifica as duas fórmulas literalmente mais esse mapa de plataformas, incluindo a nota honesta de que a F5 não declara regra de arredondamento para resultados fracionários. Para escala além de cerca de 5.000 instâncias de monitor, as notas do 21.0 continuam apontando para monitores In-TMM, que chegam a 25.000 com alocação de extramb de 8 GB.
+
+## Migração, administração e o pequeno conjunto de qualidade de vida
+
+A migração via UCS ganha a opção `validate` no `tmsh load sys ucs ... platform-migrate`: uma prévia em JSON do que uma carga mudaria, com avisos para objetos ignorados, e a lógica de ajuste de plataforma que vivia na ferramenta F5 Journeys agora embutida, removendo trunks e configurações de STP não suportados no caminho para rSeries, VELOS ou VE, preservando o IP de gerência e o DHCP do destino. Finalmente é possível trocar o administrador primário da conta literal "admin", por TMUI, TMSH ou iControl REST. Uma primeira versão da TMUI modernizada chega desabilitada por padrão atrás da preferência New UI (Beta). E uma remoção merece checagem pré-upgrade: o suporte a Node.js v0.12 acabou, então workspaces de iRules LX em v0.12 precisam migrar para Node.js v6 antes do upgrade, com os workspaces afetados sinalizados nos logs.
+
+## O portão de plataforma, mais uma vez
+
+Nada disso se aplica a iSeries ou VIPRION: o 21.x não os suporta, tentativas de instalação podem falhar no boot, e essas plataformas seguem no 17.x até suas datas de fim de suporte de software. O 21.x roda em rSeries, VELOS e Virtual Edition; um tenant vCMP pode tecnicamente ser implantado com 21.x, mas não é suportado, conforme o K4309. A [visão geral do 21.x](/learn/bigip-21x-whats-new) carrega o quadro completo de ciclo de vida em torno do núcleo operacional deste artigo.

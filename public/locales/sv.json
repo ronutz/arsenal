@@ -1507,5 +1507,21 @@
     "changesBody": "Webbplatsen, dess verktyg, dess innehåll, dess kod och detta meddelande kan ändras, sluta fungera eller försvinna när som helst, utan förvarning och utan skyldighet gentemot någon. Den gällande versionen är den aktuella versionen av denna sida.",
     "acceptBody": "Genom att använda denna webbplats eller dess kod accepterar du detta meddelande i sin helhet. Om du inte accepterar det är din enda åtgärd att sluta använda webbplatsen och koden.",
     "backHome": "Tillbaka till startsidan"
+  },
+  "notFound": {
+    "sub": "Sidan hittades inte",
+    "quip": "Det är du, inte jag.",
+    "bofhIntroPre": "Ärendet stängdes av",
+    "bofhIntroPost": ". Grundorsak registrerad:",
+    "bofhWait": "slår upp i ursäktsdatabasen…",
+    "bofhAgain": "Öppna ärendet igen",
+    "bofhAgainTitle": "Att öppna igen ger en ny ursäkt. Ingen lösning.",
+    "lostTitle": "Du verkar vilse. Här är ett, plockat ur digital slump:",
+    "badgeTool": "VERKTYG",
+    "badgeLearn": "ARTIKEL",
+    "shuffling": "blandar…",
+    "goToolbox": "Till verktygslådan",
+    "shuffleAgain": "Blanda igen",
+    "home": "Hem"
   }
 }

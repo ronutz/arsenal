@@ -1507,5 +1507,21 @@
     "changesBody": "Nettstedet, verktøyene, innholdet, koden og denne meldingen kan endre seg, slutte å virke eller forsvinne når som helst, uten varsel og uten forpliktelse overfor noen. Den gjeldende versjonen er den nåværende versjonen av denne siden.",
     "acceptBody": "Ved å bruke dette nettstedet eller koden godtar du denne meldingen fullt ut. Hvis du ikke godtar den, er din eneste utvei å slutte å bruke nettstedet og koden.",
     "backHome": "Tilbake til forsiden"
+  },
+  "notFound": {
+    "sub": "Fant ikke siden",
+    "quip": "Det er deg, ikke meg.",
+    "bofhIntroPre": "Saken ble lukket av",
+    "bofhIntroPost": ". Årsak registrert:",
+    "bofhWait": "slår opp i unnskyldningsdatabasen…",
+    "bofhAgain": "Gjenåpne saken",
+    "bofhAgainTitle": "Gjenåpning gir en ny unnskyldning. Ikke en løsning.",
+    "lostTitle": "Du ser bortkommen ut. Her er ett, plukket fra digital tilfeldighet:",
+    "badgeTool": "VERKTØY",
+    "badgeLearn": "ARTIKKEL",
+    "shuffling": "stokker…",
+    "goToolbox": "Gå til verktøykassen",
+    "shuffleAgain": "Stokk på nytt",
+    "home": "Hjem"
   }
 }

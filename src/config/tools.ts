@@ -87,6 +87,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-apm-session-variable-reference", sub: "zta-apm", href: "/tools/f5-apm-session-variable-reference", category: "identity", vendors: ["f5"], available: true },
   { id: "f5-packet-filter-explainer", sub: "tmos", href: "/tools/f5-packet-filter-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-service-check-date", sub: "tmos", href: "/tools/f5-service-check-date", category: "networking", vendors: ["f5"], available: true },
+  { id: "f5-bigd-thread-calculator", sub: "tmos", href: "/tools/f5-bigd-thread-calculator", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-bigip-license-explainer", sub: "tmos", href: "/tools/f5-bigip-license-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-cipher-string-expander", sub: "ltm", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
   { id: "f5-ssl-profile-explainer", sub: "ltm", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
@@ -100,6 +101,7 @@ export const tools: ToolEntry[] = [
   // guarded by scripts/check-tools-registry.mjs in the prebuild chain).
   { id: "cvss-vector-decoder", href: "/tools/cvss-vector-decoder", category: "security", available: true },
   { id: "hash-preimage-finder", href: "/tools/hash-preimage-finder", category: "hashing", available: true },
+  { id: "curl-command-builder", href: "/tools/curl-command-builder", category: "web", available: true },
   { id: "http-request-translator", href: "/tools/http-request-translator", category: "web", available: true },
   { id: "ssrf-url-classifier", href: "/tools/ssrf-url-classifier", category: "security", available: true },
   { id: "f5-awaf-declarative-policy-explainer", sub: "asm-awaf", href: "/tools/f5-awaf-declarative-policy-explainer", category: "security", vendors: ["f5"], available: true },
@@ -119,6 +121,7 @@ export const tools: ToolEntry[] = [
   { id: "pac-file-explainer", sub: "swg", href: "/tools/pac-file-explainer", category: "networking", vendors: ["netskope"], available: true },
   // First Extreme tool: populates the Extreme vendor hub.
   { id: "exos-config-explainer", sub: "switching", href: "/tools/exos-config-explainer", category: "networking", vendors: ["extreme"], available: true },
+  { id: "fault-hypothesis-builder", href: "/tools/fault-hypothesis-builder", category: "operations", available: true },
 ];
 
 /** Tools that are live and linkable. */

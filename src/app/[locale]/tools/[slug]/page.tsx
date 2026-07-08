@@ -127,6 +127,10 @@ import { manifest as packetFilterManifest } from "@/lib/tools/f5-packet-filter-e
 import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool";
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
 import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
+import F5BigdThreadCalculatorTool from "@/components/F5BigdThreadCalculatorTool";
+import { manifest as f5BigdThreadManifest } from "@/lib/tools/f5-bigd-thread-calculator";
+import FaultHypothesisBuilderTool from "@/components/FaultHypothesisBuilderTool";
+import { manifest as faultHypothesisBuilderManifest } from "@/lib/tools/fault-hypothesis-builder";
 import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check-date";
 import F5BigipLicenseExplainerTool from "@/components/F5BigipLicenseExplainerTool";
 import { manifest as f5BigipLicenseManifest } from "@/lib/tools/f5-bigip-license-explainer";
@@ -182,6 +186,8 @@ import CvssVectorDecoderTool from "@/components/CvssVectorDecoderTool";
 import { manifest as cvssManifest } from "@/lib/tools/cvss-vector-decoder";
 import HttpRequestTranslatorTool from "@/components/HttpRequestTranslatorTool";
 import { manifest as curlManifest } from "@/lib/tools/http-request-translator";
+import { manifest as curlbManifest } from "@/lib/tools/curl-command-builder";
+import CurlCommandBuilderTool from "@/components/CurlCommandBuilderTool";
 import HashPreimageFinderTool from "@/components/HashPreimageFinderTool";
 import { manifest as hpfManifest } from "@/lib/tools/hash-preimage-finder";
 import SsrfUrlClassifierTool from "@/components/SsrfUrlClassifierTool";
@@ -207,6 +213,15 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-service-check-date": {
     Component: F5ServiceCheckDateTool,
     sources: f5ServiceCheckManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fault-hypothesis-builder": {
+    Component: FaultHypothesisBuilderTool,
+    // The pilot's provenance is the original ruleset (D-18): no URL, by nature.
+    sources: faultHypothesisBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "f5-bigd-thread-calculator": {
+    Component: F5BigdThreadCalculatorTool,
+    sources: f5BigdThreadManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-bigip-license-explainer": {
     Component: F5BigipLicenseExplainerTool,
@@ -398,6 +413,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "cvss-vector-decoder": {
     Component: CvssVectorDecoderTool,
     sources: cvssManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "curl-command-builder": {
+    Component: CurlCommandBuilderTool,
+    sources: curlbManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "http-request-translator": {
     Component: HttpRequestTranslatorTool,

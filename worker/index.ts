@@ -96,8 +96,8 @@ const RENAMED_API_SLUGS = new Map<string, string>([
 // (/dev/fun), which ships only under pt-BR. /bingo is Meeting Bingo; the page
 // exists in every locale, and the shortcut targets the EN page per PRIME's spec.
 const VANITY_REDIRECTS = new Map<string, string>([
-  ["/mb", "/pt-BR/dev-fun/mega-brain/"],
-  ["/bingo", "/en/dev-fun/meeting-bingo/"],
+  ["/mb", "/pt-BR/dev/fun/mega-brain/"],
+  ["/bingo", "/en/dev/fun/meeting-bingo/"],
 ]);
 
 export default {

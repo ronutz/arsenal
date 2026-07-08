@@ -1,0 +1,32 @@
+---
+slug: bigip-post-quantum-tls
+title: "TLS pós-quântico no BIG-IP: híbridos ML-KEM do 17.5 ao 21.1"
+summary: "A história pós-quântica do BIG-IP é uma linhagem: a troca de chaves híbrida X25519MLKEM768 chegou na era do 17.5.0, e o 21.1.0 completa a família de curvas NIST com SecP256r1MLKEM768 e SecP384r1MLKEM1024, no TLS do lado do cliente e do lado do servidor, conforme o FIPS 203. Ao redor, o 21.1 torna o lado clássico mais rápido e mais estrito: aceleração de hardware do X25519 via Intel QAT ligada por padrão, perfis SSL pai com padrão TLS 1.3 e DTLS 1.2, nonce em requisições OCSP e melhorias no C3D. Aqui está o que cada peça significa e como implantar sem quebrar um único cliente legado."
+concepts: ["f5", "bigip", "tls", "post-quantum", "ml-kem", "pqc", "ssl", "fips 203"]
+relatedTools: ["cipher", "f5-cipher-string-expander", "f5-ssl-profile-explainer"]
+relatedArticles: ["bigip-21x-whats-new", "nist-pqc-standards", "quantum-threat-to-cryptography"]
+category: networking
+order: 3
+status: machine-draft
+updated: "2026-07-08"
+---
+
+A ameaça quântica ao TLS é um problema de colheita antes de ser um problema de decifração: tráfego gravado hoje pode ser decifrado no dia em que um computador quântico grande o bastante quebrar a troca de chaves de curva elíptica que o protegia. A defesa que o NIST padronizou no FIPS 203 é o ML-KEM, um mecanismo de encapsulamento de chaves baseado em reticulados, e o padrão de implantação em que a indústria convergiu é o híbrido: executar uma troca clássica de curva elíptica e um encapsulamento ML-KEM no mesmo handshake e misturar os dois segredos, de modo que a sessão fica segura a menos que ambos sejam quebrados. O BIG-IP percorre essa estrada há algum tempo; o 21.1.0 é onde a estrada se alarga.
+
+## A linhagem: um híbrido vira uma família
+
+O primeiro híbrido chegou na era do 17.5.0: o X25519MLKEM768, o par da curva X25519 com o ML-KEM-768 que os navegadores implantaram primeiro. A sintaxe de cipher rules do BIG-IP já o fala, na mesma lista de dh-groups dos irmãos clássicos, e as próprias release notes do 21.0 mostram nomes de grupos clássicos e PQC convivendo em uma mesma regra. O que o 21.1.0 adiciona é o lado da família das curvas NIST: SecP256r1MLKEM768 e SecP384r1MLKEM1024, trocas híbridas que pareiam as curvas P-256 e P-384 com o ML-KEM-768 e o ML-KEM-1024 respectivamente, suportadas no TLS do lado do cliente e do lado do servidor. Essa última cláusula importa mais do que parece: o BIG-IP agora negocia híbridos pós-quânticos com navegadores no lado ClientSSL e com servidores de backend no lado ServerSSL, então uma implantação full-proxy não se torna o único elo clássico de uma cadeia que já resistia ao quântico.
+
+Por que três híbridos em vez de um? Ecossistemas. O X25519MLKEM768 é o que o mundo dos navegadores implantou; as variantes SecP existem para ambientes cujos regimes de conformidade foram escritos em torno das curvas NIST, e o P-384 com ML-KEM-1024 atende o degrau de segurança mais alto. A orientação prática é pouco glamourosa: ofereça os híbridos que seus clientes de fato enviam, mantenha os grupos clássicos na lista atrás deles e deixe a negociação fazer o trabalho. O [decodificador de cifras](/tools/cipher) e o [expansor de cipher strings da F5](/tools/f5-cipher-string-expander) leem os nomes de grupos e cifras envolvidos, e o [explicador de perfis SSL](/tools/f5-ssl-profile-explainer) mostra onde a configuração vive.
+
+## O lado clássico fica mais rápido: X25519 no QAT
+
+Um handshake híbrido faz mais matemática que um clássico, o que torna o outro recurso de troca de chaves do 21.1 bem oportuno: aceleração de hardware do X25519 via Intel QuickAssist Technology em plataformas equipadas com QAT. Segundo as release notes, vem habilitada por padrão, aplica-se aos perfis ClientSSL e ServerSSL, não exige configuração e recua automaticamente para software quando o hardware está ausente. O X25519 é o burro de carga do sigilo futuro no TLS 1.3, e é também metade do híbrido mais implantado, então descarregá-lo devolve CPU exatamente onde o PQC a gasta.
+
+## Padrões mais estritos e o elenco de apoio
+
+O 21.1 também move a linha de base. Novos perfis pai de Client SSL e Server SSL vêm com padrão TLS 1.3 e DTLS 1.2, o que muda o que um perfil recém-criado negocia antes de qualquer ajuste; perfis existentes mantêm o comportamento configurado, mas todo perfil novo já nasce moderno. Em volta do handshake, a versão adiciona um nonce configurável nas requisições OCSP, uma opção de resistência a replay na checagem de status de certificado, e um conjunto de melhorias no C3D para o caminho de delegação restrita de certificado de cliente: sobrescrita do notBefore e cache dos certificados forjados, suporte a SubjectDirectoryAttributes e novos comandos de iRules SSL::c3d. E uma nota adjacente, verificada no material de lançamento da F5, para quem opera VPNs: o BIG-IP Zero Trust Access, antigo APM, ganha no 21.1 tunelamento VPN TLS/SSL resistente ao quântico com o híbrido X25519 mais ML-KEM-768, lado do cliente e lado do servidor, com IPsec quântico-seguro sinalizado para depois. O túnel que sobrevive a todas as sessões web merece a análise de colher-agora-decifrar-depois mais do que qualquer outro fluxo.
+
+## Implantando sem quebrar ninguém
+
+A surpresa agradável da troca de chaves híbrida é que ela é negociada, não imposta. Um cliente que nunca ouviu falar de ML-KEM ignora os grupos híbridos da sua lista e cai no ECDHE clássico exatamente como antes; um navegador que prefere X25519MLKEM768 o recebe. A disciplina de implantação, portanto, é sobre ordem e observação, não sobre risco: habilite os híbridos primeiro no ClientSSL, onde a população de navegadores se atualiza sozinha, observe a distribuição de grupos negociados, e então estenda ao ServerSSL conforme sua frota de backend ganha suporte. Duas coisas a verificar antes de declarar vitória. Tamanho do handshake: key shares de ML-KEM são kilobytes onde pontos de curva eram bytes, então um ClientHello que sempre oferece um share PQC gordo pode tropeçar em middleboxes antigas e caminhos de MTU apertados; teste os cantos estranhos do seu parque. E realidade do hardware: a aceleração QAT cobre a metade X25519, então meça a CPU de handshake na sua plataforma real antes e depois de habilitar híbridos em escala, em vez de assumir que o offload absorve tudo. A [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto da versão inteira, e o [artigo sobre os padrões PQC do NIST](/learn/nist-pqc-standards) cobre o que o ML-KEM de fato é por dentro.

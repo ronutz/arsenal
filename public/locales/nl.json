@@ -1507,5 +1507,21 @@
     "changesBody": "De site, de hulpmiddelen, de inhoud, de code en deze kennisgeving kunnen op elk moment veranderen, stoppen met werken of verdwijnen, zonder aankondiging en zonder verplichting jegens wie dan ook. De van toepassing zijnde versie is de huidige versie van deze pagina.",
     "acceptBody": "Door deze site of de code te gebruiken aanvaard je deze kennisgeving volledig. Als je deze niet aanvaardt, is je enige remedie te stoppen met het gebruik van de site en de code.",
     "backHome": "Terug naar start"
+  },
+  "notFound": {
+    "sub": "Pagina niet gevonden",
+    "quip": "Het ligt aan jou, niet aan mij.",
+    "bofhIntroPre": "Ticket gesloten door de",
+    "bofhIntroPost": ". Oorzaak vastgelegd:",
+    "bofhWait": "smoezendatabase wordt geraadpleegd…",
+    "bofhAgain": "Ticket heropenen",
+    "bofhAgainTitle": "Heropenen levert een nieuwe smoes op. Geen oplossing.",
+    "lostTitle": "Je lijkt verdwaald. Hier is er een, geplukt uit digitale willekeur:",
+    "badgeTool": "TOOL",
+    "badgeLearn": "ARTIKEL",
+    "shuffling": "schudden…",
+    "goToolbox": "Naar de toolbox",
+    "shuffleAgain": "Opnieuw schudden",
+    "home": "Home"
   }
 }

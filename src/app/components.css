@@ -7646,6 +7646,10 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   height: 0.5rem;
   border-radius: 50%;
   background: var(--chip-color);
+  /* Hairline ring so dark hues (e.g. Fortinet's black, PRIME-requested) stay
+     visible on the OBSIDIAN canvas; subtle enough to be invisible on bright
+     hues. Applies to every category/vendor dot uniformly. */
+  box-shadow: 0 0 0 1px var(--border-strong);
   flex: none;
 }
 .family-chip-row {
@@ -10196,3 +10200,656 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   cursor: pointer;
 }
 .curl-copy:hover { color: var(--text-primary); border-color: var(--accent-primary); }
+
+/* ============================================================================
+   curl command builder (curlb-*) - authored 2026-07-07 with the tool.
+   Reuses today's curl-* recipes (copy button, warnings, error, flag chips)
+   plus the shared .cidr-tool container and .cidr-example-btn; everything
+   below is builder-specific. Semantic tokens only.
+   ============================================================================ */
+
+/* Protocol picker: five labeled groups of scheme chips. */
+.curlb-groups { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1rem; }
+.curlb-group { display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap; }
+.curlb-group-label {
+  min-width: 6.5rem;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.curlb-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.curlb-chip {
+  appearance: none;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.curlb-chip:hover { color: var(--text-primary); border-color: var(--border-strong); }
+.curlb-chip--on { color: var(--accent-primary); border-color: var(--accent-primary); }
+
+/* Selected-protocol explainer card. */
+.curlb-proto-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.1rem;
+  background: var(--surface-elevated);
+}
+.curlb-proto-head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+.curlb-proto-name { font-weight: 700; color: var(--text-primary); }
+.curlb-meta-chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.08rem 0.45rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+}
+.curlb-tls--tls { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+.curlb-tls--upgrade { color: var(--accent-amber); border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent); }
+.curlb-tls--clear { color: var(--color-warning); border-color: color-mix(in srgb, var(--color-warning) 55%, transparent); }
+.curlb-proto-desc { margin: 0 0 0.5rem; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.55; }
+
+/* Adaptive form: titled sections, responsive field grid, checkbox rows. */
+.curlb-form { display: flex; flex-direction: column; gap: 1.15rem; }
+.curlb-section { border-top: 1px solid var(--border-subtle); padding-top: 0.9rem; }
+.curlb-section-title {
+  color: var(--text-tertiary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.6rem;
+}
+.curlb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.7rem 0.9rem; }
+.curlb-field { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.curlb-field--narrow { max-width: 11rem; }
+.curlb-field--wide { grid-column: 1 / -1; }
+.curlb-field-label { color: var(--text-secondary); font-size: 0.82rem; }
+.curlb-input, .curlb-select {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.42rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-base);
+  color: var(--text-primary);
+  min-width: 0;
+}
+.curlb-input:focus, .curlb-select:focus { outline: 2px solid color-mix(in srgb, var(--accent-primary) 55%, transparent); outline-offset: 1px; }
+.curlb-data { font-family: var(--font-mono); resize: vertical; }
+.curlb-kvs { margin-top: 0.7rem; display: flex; flex-direction: column; gap: 0.45rem; align-items: flex-start; }
+.curlb-kv-row { display: flex; gap: 0.45rem; width: 100%; align-items: center; flex-wrap: wrap; }
+.curlb-kv-row .curlb-input { flex: 1 1 10rem; }
+.curlb-check { display: flex; align-items: center; gap: 0.45rem; font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.55rem; cursor: pointer; }
+.curlb-check--inline { margin-top: 0; }
+.curlb-checks { display: flex; flex-wrap: wrap; gap: 0.3rem 1.4rem; }
+
+/* Live preview card + flag-by-flag breakdown. */
+.curlb-preview { margin-top: 1.3rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; }
+.curlb-preview-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  background: var(--surface-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.curlb-preview-actions { display: flex; gap: 0.4rem; }
+.curlb-cmd { background: var(--surface-base); }
+.curlb-preview .curl-error { margin: 0.75rem; }
+.curlb-shellnote { margin: 0.45rem 0.85rem 0.7rem; font-size: 0.78rem; }
+.curlb-parts { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.curlb-part { display: flex; align-items: baseline; gap: 0.2rem; flex-wrap: wrap; }
+.curlb-part-val { word-break: break-all; color: var(--text-tertiary); }
+
+/* ============================================================================
+   F5 automation trio: AS3 / DO / Telemetry Streaming explainers (as3-*, do-*)
+   - authored 2026-07-07. Same disease as http-request-translator: the shared
+   results-presentation family was never written, so verdict cards, chips,
+   stat cards, and the object tree rendered as unstyled defaults. The three
+   components deliberately share the as3-* vocabulary (their containers stack
+   on the existing .tmsh-results, walks on .as3-tree), so ONE block heals all
+   three; .poison-stat* is also used by the AWAF learning-poisoning estimator,
+   which picks these up for free. Semantic tokens only; hues are supplementary
+   to the chip text (same philosophy as FamilyChip).
+   ============================================================================ */
+
+/* Verdict card: what kind of declaration this is, tinted by severity. */
+.as3-verdict {
+  padding: 0.7rem 0.95rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 0.9rem;
+}
+.as3-verdict-ok {
+  border-color: color-mix(in srgb, var(--accent-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--accent-primary) 8%, var(--surface-base));
+}
+.as3-verdict-warn {
+  border-color: color-mix(in srgb, var(--color-warning) 40%, transparent);
+  background: color-mix(in srgb, var(--color-warning) 10%, var(--surface-base));
+}
+.as3-verdict-head { margin: 0 0 0.45rem; font-size: 0.98rem; color: var(--text-primary); }
+
+/* Declaration metadata chips (action, schema version, ids). */
+.as3-meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem 0.55rem; margin: 0.3rem 0; }
+.as3-chip {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+.as3-chip b { color: var(--text-primary); font-weight: 600; }
+.as3-remark { margin: 0.45rem 0 0; color: var(--text-secondary); font-style: italic; font-size: 0.88rem; }
+
+/* Object-count stat cards (shared with the AWAF poisoning estimator). */
+.as3-stats { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.85rem 0 0.35rem; }
+.poison-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 5.5rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+}
+.poison-stat-num { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 700; color: var(--accent-primary); }
+.poison-stat-lbl { font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.15rem; }
+
+/* Declaration tree: tenants > applications > objects (AS3) or phase groups
+   (DO / Telemetry walks stack .do-walk / .ts-walk on this base). */
+.as3-tree { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.5rem; }
+.as3-tenant { border-left: 2px solid var(--border-strong); padding-left: 0.85rem; }
+.as3-tenant-head, .as3-app-head, .do-group-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+.do-group-head { font-weight: 600; margin-bottom: 0.3rem; }
+.as3-app { margin: 0.55rem 0 0 0.9rem; border-left: 1px solid var(--border-subtle); padding-left: 0.85rem; }
+.as3-node-class {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+.as3-node-note { font-size: 0.78rem; color: var(--text-tertiary); }
+.as3-badge {
+  display: inline-block;
+  padding: 0.05rem 0.45rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 55%, transparent);
+  color: var(--accent-amber);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Per-object rows: class chip + name + explanation. */
+.as3-objects { list-style: none; margin: 0.45rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.as3-object { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem; font-size: 0.88rem; }
+.as3-obj-name { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary); }
+.as3-obj-explain { color: var(--text-secondary); font-size: 0.85rem; }
+.as3-obj-chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.06rem 0.45rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  background: var(--surface-base);
+}
+/* Category hues (supplementary; the chip already names the class). */
+.as3-cat-service  { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+.as3-cat-network  { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+.as3-cat-tls      { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+.as3-cat-pool     { color: var(--accent-amber); border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent); }
+.as3-cat-persist  { color: var(--accent-amber); border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent); }
+.as3-cat-monitor  { color: var(--color-warning); border-color: color-mix(in srgb, var(--color-warning) 55%, transparent); }
+.as3-cat-policy   { color: var(--color-warning); border-color: color-mix(in srgb, var(--color-warning) 55%, transparent); }
+.as3-cat-security { color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
+.as3-cat-irule    { color: var(--text-primary); border-color: var(--border-strong); }
+.as3-cat-other    { color: var(--text-tertiary); }
+
+/* DO phase groups: left-border tint marks the onboarding phase. */
+.do-group { border-left: 2px solid var(--border-strong); padding-left: 0.85rem; }
+.do-phase-license { border-left-color: var(--accent-amber); }
+.do-phase-system  { border-left-color: var(--accent-primary); }
+.do-phase-network { border-left-color: var(--accent-primary); }
+.do-phase-cluster { border-left-color: var(--color-warning); }
+.do-phase-other   { border-left-color: var(--border-strong); }
+.do-obj-note { display: block; font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.1rem; }
+
+/* ============================================================================
+   Total gap cleanup pass - authored 2026-07-07 (PRIME order). The coverage
+   audit's sibling-context table left exactly 28 standalone-undefined classes
+   across 20 components; every one is styled below, grouped per component.
+   Shared classes fix multiple tools at once (the b64 head, label and actions
+   rows plus dig-output and dig-privacy
+   heal both CVSS and SSRF; awaf-sections heals two AWAF explainers; iq/exos/
+   sniff note bases share one recipe family). Recipes mirror the established
+   siblings named in each comment. Semantic tokens only.
+   ============================================================================ */
+
+/* Shared input-header row (CVSS + SSRF) - mirrors .dig-input-head family. */
+.b64-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem; }
+.b64-label { display: block; font-size: 0.85rem; color: var(--text-secondary); }
+.b64-actions { display: flex; gap: 0.5rem; }
+
+/* Shared results wrapper + privacy note (CVSS + SSRF) - mirror .curl-explain
+   spacing and the .cidr-privacy recipe. */
+.dig-output { margin-top: 1.1rem; display: flex; flex-direction: column; gap: 0.9rem; }
+.dig-privacy, .epoch-privacy, .cidr-runs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+/* CIDR: VLSM requests that did not fit - soft warning treatment. */
+.cidr-unfit {
+  margin-top: 0.9rem;
+  padding-left: 0.85rem;
+  border-left: 2px solid color-mix(in srgb, var(--color-warning) 60%, transparent);
+}
+
+/* Note lists with kind variants (EXOS / iQuery / FortiOS sniffer). The bases
+   were never authored; only .exos-note-warn existed. Kinds observed in the
+   engines: good / info / warn. */
+.exos-note, .iq-note, .sniff-note { font-size: 0.85rem; color: var(--text-secondary); margin: 0.15rem 0; }
+.exos-note-info, .iq-note-info, .sniff-note-info { color: var(--text-secondary); }
+.exos-note-good, .iq-note-good, .sniff-note-good { color: var(--accent-primary); }
+.iq-note-warn, .sniff-note-warn { color: var(--color-warning); }
+
+/* AWAF evasion + declarative-policy explainers: responsive card grid. */
+.awaf-sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.6rem; margin-top: 0.5rem; }
+
+/* AWAF learning-poisoning estimator: stat-card row - mirrors .as3-stats. */
+.poison-numbers { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.75rem 0 0.35rem; }
+
+/* AWAF signature accuracy/risk: verdict badge row + chips. */
+.sig-badge-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.4rem 0 0.6rem; }
+.sig-impact, .sig-block {
+  display: inline-block;
+  padding: 0.08rem 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+.sig-block-on { color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
+.sig-block-off { color: var(--text-tertiary); }
+
+/* Cipher-string expander: the "what this string does right" block. */
+.cipherstr-good { margin-top: 0.8rem; padding-left: 0.85rem; border-left: 2px solid color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+
+/* Site header: search / theme / language cluster. */
+.site-header-actions { display: flex; align-items: center; gap: 0.6rem; }
+
+/* iQuery explainer: topic quick-pick button row. */
+.iq-topic-buttons { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+
+/* LB-method chooser: member list block + related-methods line. */
+.lbm-members { margin-top: 0.55rem; }
+.lbm-related { margin: 0.6rem 0 0; font-size: 0.88rem; color: var(--text-secondary); }
+
+/* Machine-translation notice: the message text between icon and CTA. */
+.mt-notice-text { flex: 1; font-size: 0.85rem; color: var(--text-secondary); }
+
+/* PAC-file explainer: lint finding base (severity variants color it;
+   .pac-lint-error existed, warn did not). */
+.pac-lint { font-size: 0.85rem; color: var(--text-secondary); margin: 0.15rem 0; }
+.pac-lint-warn { color: var(--color-warning); }
+
+/* Shortcut settings: key column keeps kbd chips on one line. */
+.shortcut-td-key { white-space: nowrap; padding-right: 1rem; }
+
+/* Topology longest-match: rule-row labels and operands. */
+.tlm-ldns, .tlm-server { font-size: 0.85rem; color: var(--text-tertiary); }
+.tlm-operand { color: var(--text-primary); font-size: 0.85rem; }
+
+/* Testimonials: root column. */
+.tm-root { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ==========================================================================
+   VIEW TOGGLE + LIST VIEW (tools + learn indexes)
+   --------------------------------------------------------------------------
+   The ViewToggle island sets data-view="list" on <main>; everything visual
+   about the list density lives here. One DOM, two layouts: the same card
+   markup re-flows into compact catalogue-style rows. Cards is the default
+   (no attribute), so no-JS pages are unchanged.
+   ========================================================================== */
+
+/* --- the toggle control itself (sits beside the category filter) --- */
+.viewtoggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.viewtoggle-legend {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.viewtoggle-btn {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.28rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+.viewtoggle-btn:hover {
+  color: var(--color-text);
+  border-color: var(--border-strong);
+}
+.viewtoggle-btn--on {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+/* --- list density: kill the grids, rows separated by hairlines --- */
+main[data-view="list"] .tools-grid,
+main[data-view="list"] .learn-grid {
+  display: block;
+}
+main[data-view="list"] .tools-grid-item,
+main[data-view="list"] .learn-grid-item {
+  border-bottom: 1px solid var(--color-border);
+}
+main[data-view="list"] .tools-grid-item:last-child,
+main[data-view="list"] .learn-grid-item:last-child {
+  border-bottom: none;
+}
+
+/* --- the card becomes a single scannable row: name, one-line blurb, chips --- */
+main[data-view="list"] .tools-card,
+main[data-view="list"] .learn-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.5rem;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+main[data-view="list"] .tools-card:hover,
+main[data-view="list"] .learn-card:hover {
+  background: var(--surface-elevated);
+}
+main[data-view="list"] .tools-card-name,
+main[data-view="list"] .learn-card-title {
+  font-size: 0.92rem;
+  margin: 0;
+  flex: 0 0 auto;
+  max-width: 40%;
+}
+main[data-view="list"] .tools-card-blurb,
+main[data-view="list"] .learn-card-summary {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+main[data-view="list"] .family-chip-row {
+  flex: 0 0 auto;
+  margin: 0;
+}
+main[data-view="list"] .tools-card-go,
+main[data-view="list"] .learn-card-cta {
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+/* Narrow screens: the one-line blurb is the first thing to give way, keeping
+   name + chips scannable without horizontal pressure. */
+@media (max-width: 640px) {
+  main[data-view="list"] .tools-card-blurb,
+  main[data-view="list"] .learn-card-summary {
+    display: none;
+  }
+  main[data-view="list"] .tools-card-name,
+  main[data-view="list"] .learn-card-title {
+    max-width: none;
+    flex: 1 1 auto;
+  }
+}
+
+/* ============================================================================
+   /dev/other — THE OTHER ENVIRONMENT (the green room)
+   ----------------------------------------------------------------------------
+   A self-contained mini-theme: the Obsidian palette hue-rotated to deep green
+   (same saturation/lightness — canvas #020617 → #02170D, surface-base
+   #0f172a → #0F2A1D, elevated #1e293b → #1E3B2D, borders #334155/#475569 →
+   #335545/#476959), with text pinned to the dark-theme values so the room
+   renders identically under all 26 site themes: another environment has its
+   own weather. The interactive accent deliberately stays the site cyan — the
+   environment changes, the identity does not. Wrap the whole page (header +
+   main + footer) in .env-other; every token-driven component inside goes
+   green for free. */
+.env-other {
+  --canvas-primary: #02170D;
+  --surface-base: #0F2A1D;
+  --surface-elevated: #1E3B2D;
+  --border-subtle: #335545;
+  --border-strong: #476959;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  /* The emerald environment marker, used for badges and the door. AA on the
+     green canvas (contrast ≈ 8.9:1). */
+  --env-other-accent: #34d399;
+  background: var(--canvas-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The small mono pill that marks other-environment surfaces and links. */
+.envother-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--env-other-accent);
+  border-radius: 999px;
+  color: var(--env-other-accent);
+}
+
+/* The visible notice: why this room differs from the rest of the site. */
+.envother-notice {
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--env-other-accent);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0 1.75rem;
+}
+.envother-notice-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--env-other-accent);
+}
+.envother-notice-text {
+  margin: 0.4rem 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* The green door on the tools index: same quiet treatment as the /dev/fun
+   door, in the other environment's characteristic tone. */
+.devother-door {
+  margin-top: 0.35rem;
+}
+.devother-door-link {
+  color: var(--env-other-accent);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--env-other-accent);
+}
+.devother-door-link:hover {
+  border-bottom-style: solid;
+}
+.devother-door-tagline {
+  color: var(--text-tertiary);
+  margin-left: 0.5rem;
+}
+
+/* The pre-flight line: which registry will be asked, before anything leaves. */
+.rdap-plan {
+  margin: 0.5rem 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.rdap-ask-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin: 0.5rem 0 0.25rem;
+}
+
+/* ============================================================================
+   OPERATIONS & FIELDCRAFT — the fc-* component family (D-86)
+   ----------------------------------------------------------------------------
+   Shared by the Fault Hypothesis Builder pilot and the cluster's later tools.
+   Tokens only; signal bands ride the D-71 status tokens. */
+.fc-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.fc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+.fc-check-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.35rem 1rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+.fc-notes {
+  margin: 0.5rem 0 0.75rem;
+}
+.fc-warning {
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--color-warning);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+}
+.fc-card {
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 0.9rem 0;
+}
+.fc-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.fc-rank {
+  color: var(--text-tertiary);
+  font-size: 1.1rem;
+}
+.fc-card-title {
+  margin: 0;
+  font-size: 1rem;
+  flex: 1;
+}
+.fc-signal {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.fc-signal--strong { color: var(--color-success); }
+.fc-signal--moderate { color: var(--color-warning); }
+.fc-signal--weak { color: var(--color-neutral); }
+.fc-rationale {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0.6rem;
+}
+.fc-subhead {
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  margin: 0.5rem 0 0.25rem;
+}
+.fc-evidence {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.fc-evidence-item {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: 0.3rem 0;
+}
+.fc-evidence-cmd {
+  display: block;
+  margin: 0.2rem 0 0 1.6rem;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+.fc-sw {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin: 0.35rem 0;
+}
+.fc-why {
+  margin: 0.75rem 0;
+}
+.fc-why-block { margin: 0.5rem 0; }
+.fc-why-rules {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0.2rem 0 0.5rem;
+  padding-left: 1.1rem;
+}
+.fc-export-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}

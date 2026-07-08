@@ -1,0 +1,36 @@
+---
+slug: bigip-dns-multi-rpz
+title: "DNS como motor de política: multi-RPZ no BIG-IP 21.1"
+summary: "Response Policy Zones transformam um resolvedor em ponto de aplicação de política, e o BIG-IP DNS 21.1 transforma um feed em muitos: até 65.535 zonas RPZ por cache DNS, avaliadas por precedência configurável, transferidas com segurança via TSIG HMAC-SHA-512, e armadas com o conjunto completo de ações RPZ, de NXDOMAIN e CNAME de jardim murado a PASSTHRU, DROP e TCP-only. Respostas A por FQDN substituem o único IP global de jardim murado, e os gatilhos vão além do QNAME para IP do cliente e IP da resposta."
+concepts: ["f5", "bigip", "dns", "rpz", "security", "dns cache", "tsig", "threat intelligence"]
+relatedTools: ["f5-gslb-decision-flow"]
+relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
+category: networking
+order: 6
+status: machine-draft
+updated: "2026-07-08"
+---
+
+Uma Response Policy Zone é o formato nativo de regra de firewall do DNS: um arquivo de zona cujos registros não descrevem onde os nomes vivem, mas o que o resolvedor deve fazer quando perguntado sobre eles. Alimente um resolvedor com uma RPZ de domínios sabidamente maliciosos e todo cliente atrás dele herda a proteção na camada mais barata possível, a própria consulta de nome. O BIG-IP DNS suporta RPZ no seu cache há anos; o teto era um único feed e um único comportamento global de resposta. O BIG-IP 21.1 remove os dois.
+
+## De um feed a sessenta e cinco mil
+
+As release notes do 21.1 declaram a nova forma diretamente: múltiplas zonas de feed RPZ, até 65.535, agora podem ser associadas a um único cache DNS. Esse número não é sobre alguém carregar dezenas de milhares de feeds; é sobre a composição que ele torna trivial. Um cache realista agora empilha uma lista de bloqueio regulatória exigida por autoridade nacional, um ou três feeds comerciais de inteligência de ameaças, e zonas de política gerenciadas internamente, as exceções de allow-list, os bloqueios corporativos, as entradas temporárias de resposta a incidente, cada uma chegando como zona própria, com agenda de transferência própria e dono próprio.
+
+Empilhar cria conflitos, então o 21.1 traz a segunda metade: as zonas são avaliadas em uma ordem de precedência configurável. Essa ordem passa a ser um controle de segurança por direito próprio. A zona interna de exceções quase sempre pertence acima dos feeds comerciais, para que uma entrada exagerada de fornecedor não bloqueie um domínio crítico do negócio; a posição da zona regulatória é uma decisão de conformidade, não técnica. Quem opera o cache deveria conseguir recitar a lista de precedência como um administrador de firewall recita sua base de regras, de cima a baixo.
+
+## Feeds em cuja chegada você pode confiar
+
+Uma RPZ é tão confiável quanto seu caminho de transferência: ela é uma zona, chega por transferência de zona, e uma transferência adulterada é uma injeção de política. O 21.1 adiciona suporte a proteger as transferências de zona RPZ com TSIG usando HMAC-SHA-512, de modo que as transferências de cada feed são autenticadas com uma chave compartilhada no HMAC mais forte que o ecossistema TSIG costuma oferecer. Para feeds que cruzam fronteiras organizacionais, provedores comerciais de inteligência, feeds de CERT nacionais, isso passa de conveniência a linha de base.
+
+## O vocabulário completo de ações
+
+O suporte anterior de RPZ no BIG-IP aplicava um comportamento estreito de resposta; o 21.1 implementa o conjunto mais amplo de ações que as especificações de RPZ definem, e as release notes o enumeram: NXDOMAIN (o nome não existe), NODATA (o nome existe, este tipo de registro não), CNAME para jardim murado, dados locais, PASSTHRU (isenção explícita, o verbo de allow-list), DROP (silêncio), TCP-only (um desafio brando que força a repetição por TCP), além de Given e Disabled. Duas melhorias dentro dessa lista mudam o desenho do dia a dia. O BIG-IP DNS agora honra registros A definidos na RPZ, então um feed pode responder nomes bloqueados diferentes com endereços diferentes, jardins murados por FQDN em vez de um único IP global de sumidouro, o que importa quando a página de bloqueio de phishing deve diferir da página de bloqueio de comando e controle de malware. E os gatilhos vão além do nome consultado: gatilhos por IP do cliente e por IP da resposta são suportados, então a política pode se apoiar em quem pergunta e em para onde uma resposta aponta, pegando a resolução cujo endereço final cai em uma rede sabidamente maliciosa mesmo quando o nome em si é limpo.
+
+## Onde a RPZ se senta na fila de resposta
+
+RPZ é propriedade do cache DNS, e o cache tem lugar fixo na ordem documentada de processamento do BIG-IP DNS: depois das iRules, do processamento DNSSEC, da correspondência de wide IP do GSLB e do DNS Express. A consequência prática merece ser dita por extenso: a RPZ governa o que o cache resolve para os clientes; ela não fica na frente das suas próprias respostas autoritativas, um wide IP ou uma zona do DNS Express respondem antes de o cache sequer ser consultado. Essa é a camada correta, política nas consultas para fora, autoridade nos seus próprios nomes, e é também por isso que uma implantação de RPZ pertence a listeners com papel de resolvedor. O [artigo da ordem de processamento](/learn/bigip-dns-request-processing-order) percorre a fila inteira; a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto da versão.
+
+## Desenhando uma implantação multi-RPZ
+
+Três hábitos traduzem o recurso em operação limpa. Nomeie as zonas por dono e intenção (rpz-regulatoria-anatel, rpz-fornecedor-x, rpz-interna-allow), porque a lista de precedência só é auditável se os nomes carregarem significado. Dê a cada feed externo uma chave TSIG própria, para que revogar um provedor nunca toque em outro. E decida a postura de falha por zona antes do primeiro incidente: uma zona regulatória defasada e um feed de fornecedor defasado não merecem o mesmo nível de alarme, e o atraso de número de série em cada transferência é a métrica que diz qual dos dois você tem.

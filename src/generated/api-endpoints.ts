@@ -59,6 +59,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_csr_decoder",
     "tag": "PKI"
   },
+  "curl-command-builder": {
+    "url": "https://ronutz.com/api/v1/curl-command-builder",
+    "method": "GET",
+    "op": "run_curl_command_builder",
+    "tag": "HTTP & web"
+  },
   "cvss-vector-decoder": {
     "url": "https://ronutz.com/api/v1/cvss-vector-decoder",
     "method": "GET",
@@ -160,6 +166,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_f5_awaf_signature_accuracy_risk",
     "tag": "Security & WAF"
+  },
+  "f5-bigd-thread-calculator": {
+    "url": "https://ronutz.com/api/v1/f5-bigd-thread-calculator",
+    "method": "GET",
+    "op": "run_f5_bigd_thread_calculator",
+    "tag": "F5 LTM, iRules & platform"
   },
   "f5-bigip-license-explainer": {
     "url": "https://ronutz.com/api/v1/f5-bigip-license-explainer",
@@ -292,6 +304,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_f5xc_service_policy_explainer",
     "tag": "F5 Distributed Cloud (XC)"
+  },
+  "fault-hypothesis-builder": {
+    "url": "https://ronutz.com/api/v1/fault-hypothesis-builder",
+    "method": "GET",
+    "op": "run_fault_hypothesis_builder",
+    "tag": "Operations & Fieldcraft"
   },
   "fortios-sniffer-builder": {
     "url": "https://ronutz.com/api/v1/fortios-sniffer-builder",

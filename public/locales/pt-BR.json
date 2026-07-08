@@ -187,7 +187,8 @@
       "web": "Web e HTTP",
       "transport": "TLS e transporte",
       "security": "Segurança e WAF",
-      "text": "Texto e utilitários"
+      "text": "Texto e utilitários",
+      "operations": "Operações e fieldcraft"
     },
     "cert-renewal-planner": {
       "name": "Planejador de renovação de certificados",
@@ -496,6 +497,240 @@
       "err_format": "Isso não parece uma CSR em PEM, base64 ou hex.",
       "err_der": "Não foi possível analisar a estrutura DER.",
       "err_structure": "Isso é analisado como DER, mas não é uma solicitação de certificação PKCS#10."
+    },
+    "curl-command-builder": {
+      "name": "Construtor de comandos curl",
+      "blurb": "Escolha qualquer um dos 27 protocolos que o curl fala, preencha campos que se adaptam ao protocolo e receba o comando exato, com cada flag explicada e avisos de segurança. O inverso do tradutor de requisições HTTP: aquele lê um comando, este escreve um.",
+      "ui": {
+        "group_web": "Web",
+        "group_transfer": "Transferência de arquivos",
+        "group_mail": "E-mail",
+        "group_messaging": "Mensageria",
+        "group_lookup": "Consulta e legado",
+        "portDefault": "porta padrão",
+        "example": "Exemplo",
+        "clear": "Limpar",
+        "sec_target": "Destino",
+        "sec_request": "Requisição",
+        "sec_auth": "Credenciais",
+        "sec_mail": "Envelope de e-mail",
+        "sec_transfer": "Transferência",
+        "sec_connection": "Conexão, TLS e tempo",
+        "sec_behavior": "Comportamento e saída",
+        "host": "Host",
+        "port": "Porta",
+        "pathUrl": "Caminho",
+        "pathRemote": "Caminho remoto",
+        "pathTopic": "Tópico",
+        "pathMailbox": "Caixa de correio",
+        "pathWord": "Consulta (d:palavra)",
+        "pathLocal": "Caminho do arquivo local",
+        "pathShare": "Compartilhamento e caminho",
+        "method": "Método",
+        "httpVersion": "Versão HTTP",
+        "httpAuto": "Negociar (padrão)",
+        "headers": "Cabeçalhos",
+        "headerName": "Nome",
+        "headerValue": "Valor",
+        "add": "Adicionar",
+        "remove": "Remover",
+        "data": "Corpo da requisição (-d)",
+        "dataUrlencode": "Codificar como URL (--data-urlencode)",
+        "form": "Campos multipart (-F)",
+        "formFile": "arquivo (@)",
+        "user": "Usuário",
+        "pass": "Senha",
+        "passNote": "Deixar a senha vazia faz o curl perguntar na hora de executar, mantendo-a fora do histórico do shell.",
+        "mailFrom": "Remetente do envelope (--mail-from)",
+        "mailRcpt": "Destinatários, separados por vírgula (--mail-rcpt)",
+        "upload": "Enviar arquivo local (-T)",
+        "output": "Salvar resposta",
+        "outStdout": "No terminal",
+        "outRemote": "Nome remoto do arquivo (-O)",
+        "outFile": "Arquivo nomeado (-o)",
+        "outFileName": "Nome do arquivo de saída",
+        "listOnly": "Listagem só de nomes (-l)",
+        "proxy": "Proxy (-x)",
+        "resolve": "Fixar DNS (--resolve)",
+        "cacert": "Bundle de CA (--cacert)",
+        "insecure": "Pular verificação TLS (-k), com aviso",
+        "connectTimeout": "Timeout de conexão, s",
+        "maxTime": "Tempo total máximo, s",
+        "retry": "Tentativas",
+        "cookie": "Enviar cookie (-b)",
+        "cookieJar": "Salvar cookies em (-c)",
+        "userAgent": "User-Agent (-A)",
+        "followRedirects": "Seguir redirecionamentos (-L)",
+        "compressed": "Pedir compressão (--compressed)",
+        "include": "Incluir cabeçalhos da resposta (-i)",
+        "verbose": "Verboso (-v)",
+        "silent": "Silencioso (-s)",
+        "preview": "Seu comando",
+        "copyPretty": "Copiar",
+        "copyLine": "Copiar em uma linha",
+        "copied": "Copiado",
+        "partsTitle": "Cada flag, explicada",
+        "err_host": "Informe um host para montar o comando.",
+        "err_path": "Informe o caminho de um arquivo local para a URL file://.",
+        "err_protocol": "Escolha um protocolo.",
+        "windowsNote": "As aspas seguem shells POSIX (bash, zsh). O cmd.exe e o PowerShell usam regras diferentes; execute como está no Git Bash ou no WSL.",
+        "privacy": "Roda inteiramente no seu navegador. Nada do que você digita é enviado e nenhuma requisição é executada."
+      },
+      "tls": {
+        "clear": "texto claro",
+        "tls": "TLS",
+        "upgrade": "texto claro, pode subir para TLS"
+      },
+      "proto": {
+        "http": {
+          "name": "HTTP",
+          "desc": "O protocolo de transferência da web. O curl fala de HTTP/0.9 a HTTP/3 e dá controle total sobre método, cabeçalhos, corpo, cookies e autenticação."
+        },
+        "https": {
+          "name": "HTTPS",
+          "desc": "HTTP dentro de TLS: o mesmo modelo de requisição com o transporte cifrado e o servidor autenticado por certificado."
+        },
+        "ws": {
+          "name": "WebSocket",
+          "desc": "Um canal bidirecional, parecido com TCP, estabelecido sobre uma requisição HTTP comum. O esquema ws é a variante em texto claro."
+        },
+        "wss": {
+          "name": "WebSocket Secure",
+          "desc": "O mesmo canal WebSocket bidirecional estabelecido sobre HTTPS, com toda a sessão dentro de TLS."
+        },
+        "ftp": {
+          "name": "FTP",
+          "desc": "O clássico File Transfer Protocol: download, upload e listagem de diretórios. Começa em texto claro; a sessão pode subir para TLS."
+        },
+        "ftps": {
+          "name": "FTPS",
+          "desc": "FTP com camada TLS implícita desde o primeiro byte. Historicamente complicado atrás de firewalls por causa das conexões de dados separadas."
+        },
+        "sftp": {
+          "name": "SFTP",
+          "desc": "O SSH File Transfer Protocol sobre SSH versão 2: uma única conexão cifrada para comandos e dados."
+        },
+        "scp": {
+          "name": "SCP",
+          "desc": "O protocolo clássico de cópia do SSH, sobre SSH versão 2. Semântica simples de cópia de arquivos; o SFTP é o irmão mais completo."
+        },
+        "tftp": {
+          "name": "TFTP",
+          "desc": "FTP trivial sobre UDP: minúsculo, sem autenticação, texto claro por definição. O burro de carga de firmware e boot de rede."
+        },
+        "smb": {
+          "name": "SMB",
+          "desc": "Compartilhamento de arquivos do Windows. O curl suporta SMB versão 1 para enviar e baixar arquivos de um compartilhamento."
+        },
+        "smbs": {
+          "name": "SMBS",
+          "desc": "SMB embrulhado em TLS: a mesma semântica da versão 1 com o transporte cifrado."
+        },
+        "file": {
+          "name": "Arquivo local",
+          "desc": "Acesso a arquivo local via URL, sem rede nenhuma. Útil para testar pipelines com sintaxe real de curl."
+        },
+        "smtp": {
+          "name": "SMTP",
+          "desc": "Envio de e-mail: fazer upload de uma mensagem para um servidor SMTP significa enviá-la. Remetente e destinatários do envelope têm flags próprias."
+        },
+        "smtps": {
+          "name": "SMTPS",
+          "desc": "SMTP com TLS implícito desde o primeiro byte, convencionalmente na porta 465."
+        },
+        "pop3": {
+          "name": "POP3",
+          "desc": "Busca de e-mail em um servidor POP3: baixar significa buscar uma mensagem. Começa em texto claro e pode subir com STLS."
+        },
+        "pop3s": {
+          "name": "POP3S",
+          "desc": "POP3 dentro de TLS implícito na porta 995."
+        },
+        "imap": {
+          "name": "IMAP",
+          "desc": "Leitura de e-mail e caixas em um servidor IMAP; a URL seleciona a caixa e a mensagem. Começa em texto claro, pode subir para TLS."
+        },
+        "imaps": {
+          "name": "IMAPS",
+          "desc": "IMAP dentro de TLS implícito na porta 993."
+        },
+        "mqtt": {
+          "name": "MQTT",
+          "desc": "O protocolo publish-subscribe de IoT, versão 3. Baixar um tópico é assinar; postar dados é publicar nele."
+        },
+        "mqtts": {
+          "name": "MQTTS",
+          "desc": "MQTT dentro de TLS, convencionalmente na porta 8883."
+        },
+        "ldap": {
+          "name": "LDAP",
+          "desc": "Consultas de diretório: a URL codifica DN base, atributos, escopo e filtro em uma linha só."
+        },
+        "ldaps": {
+          "name": "LDAPS",
+          "desc": "LDAP dentro de TLS implícito na porta 636."
+        },
+        "dict": {
+          "name": "DICT",
+          "desc": "O protocolo de servidores de dicionário: uma URL como /d:palavra consulta a palavra no servidor."
+        },
+        "gopher": {
+          "name": "Gopher",
+          "desc": "O protocolo de documentos anterior à web, ainda vivo em nichos. Recupera menus e documentos."
+        },
+        "gophers": {
+          "name": "GopherS",
+          "desc": "Gopher sobre TLS, uma extensão moderna do protocolo antigo."
+        },
+        "rtsp": {
+          "name": "RTSP",
+          "desc": "O Real Time Streaming Protocol: o curl suporta downloads RTSP 1.0 para conversar com servidores de mídia."
+        },
+        "telnet": {
+          "name": "Telnet",
+          "desc": "Uma sessão interativa em texto claro: o curl envia o que lê do stdin e imprime o que o servidor responde. Útil para cutucar serviços TCP crus."
+        }
+      },
+      "opt": {
+        "headOnly": "-I pede apenas os cabeçalhos (requisição HEAD); nenhum corpo é transferido.",
+        "method": "-X define o método explicitamente; o curl só precisa disso quando não dá para inferir.",
+        "httpVersion": "Fixa a versão HTTP em vez de deixar o curl negociar.",
+        "header": "-H adiciona um cabeçalho exatamente como escrito.",
+        "user": "-u envia credenciais; sem senha, o curl pergunta na hora.",
+        "data": "-d envia estes dados como corpo: em HTTP implica POST, em MQTT publica no tópico.",
+        "dataUrlencode": "--data-urlencode envia os dados codificados como URL, seguro para caracteres arbitrários.",
+        "form": "-F monta um corpo multipart/form-data; um @ no início envia o arquivo daquele caminho.",
+        "upload": "-T envia o arquivo local para a URL (PUT em HTTP, STOR em FTP, a mensagem em SMTP).",
+        "mailFrom": "--mail-from define o remetente do envelope SMTP.",
+        "mailRcpt": "--mail-rcpt adiciona um destinatário ao envelope SMTP.",
+        "cookie": "-b envia o cookie informado, ou lê cookies de um arquivo.",
+        "cookieJar": "-c grava neste arquivo os cookies recebidos na transferência.",
+        "userAgent": "-A define o User-Agent.",
+        "proxy": "-x faz a transferência passar por este proxy.",
+        "resolve": "--resolve fixa host:porta em um endereço, ignorando o DNS para aquele nome.",
+        "cacert": "--cacert valida o servidor contra este bundle de CA em vez do repositório do sistema.",
+        "insecure": "-k pula completamente a verificação do certificado TLS.",
+        "connectTimeout": "--connect-timeout limita o tempo para estabelecer a conexão, em segundos.",
+        "maxTime": "--max-time limita a duração total da transferência, em segundos.",
+        "retry": "--retry repete uma falha transitória esta quantidade de vezes, com backoff.",
+        "followRedirects": "-L segue redirecionamentos HTTP até o destino final.",
+        "compressed": "--compressed pede resposta comprimida e descomprime de forma transparente.",
+        "listOnly": "-l pede uma listagem só com nomes (diretório FTP ou caixa de correio).",
+        "outputRemote": "-O salva o download com o nome remoto do arquivo.",
+        "outputFile": "-o salva o download com o nome informado.",
+        "include": "-i inclui os cabeçalhos da resposta na saída.",
+        "verbose": "-v narra toda a conversa, incluindo detalhes de conexão e TLS.",
+        "silent": "-s silencia o medidor de progresso e as mensagens de erro."
+      },
+      "warn": {
+        "insecure": "-k desliga a verificação do certificado TLS: a conexão fica cifrada, mas o servidor não é autenticado. Aceitável contra uma máquina de laboratório, perigoso em qualquer outro lugar.",
+        "cleartext": "Este protocolo começa em texto claro: tudo, inclusive credenciais, cruza a rede sem cifra a menos que a sessão suba para TLS.",
+        "passOnCli": "A senha faz parte da linha de comando: pode parar no histórico do shell e aparecer na lista de processos. Prefira -u usuário sozinho e deixe o curl perguntar, ou use um arquivo .netrc.",
+        "dataDefaultCt": "Com -d e sem cabeçalho Content-Type, o curl envia application/x-www-form-urlencoded. Se o corpo é JSON, adicione um cabeçalho Content-Type: application/json.",
+        "considerSslReqd": "Este protocolo pode subir para TLS (estilo STARTTLS). Considere adicionar --ssl-reqd para a transferência falhar em vez de continuar em texto claro.",
+        "telnetInteractive": "telnet: abre uma sessão interativa; o curl envia o que lê do stdin e imprime o que o servidor responde.",
+        "smbV1": "O curl fala SMB versão 1, que muitos servidores modernos desabilitam. Espere funcionar principalmente contra compartilhamentos legados."
+      }
     },
     "cvss-vector-decoder": {
       "name": "Decodificador de vetor CVSS",
@@ -3606,6 +3841,139 @@
       "note2": "Estas são as datas programadas. A F5 também emite alertas de segurança fora de banda e hotfixes de engenharia para problemas urgentes a qualquer momento, e retém flexibilidade para ajustar o momento das notificações.",
       "learnMore": "Novo nessa mudança?",
       "learnLink": "Leia o que mudou e por quê"
+    },
+    "viewLegend": "Visualização",
+    "viewCards": "Cartões",
+    "viewList": "Lista",
+    "f5-bigd-thread-calculator": {
+      "name": "Calculadora de threads do BigD",
+      "blurb": "Informe a contagem de vCPUs (e se o sistema é hyperthreaded) para obter a quantidade de threads do BigD que o BIG-IP 21.1 deriva automaticamente, pelas fórmulas documentadas da F5, além do teto do bigd.numprocs e do limite de 15.000 monitores.",
+      "inputLabel": "Contagem de vCPUs e tipo de sistema",
+      "inputPlaceholder": "8 r10900, 16 r4800, 22 velos, 8 ht, ou apenas 6",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador: duas fórmulas documentadas, sem rede, sem relógio.",
+      "threadsExact": "{n} threads",
+      "threadsFloor": "{floor} threads ({exact} exato)",
+      "fractionNote": "A F5 documenta a fórmula, mas não uma regra de arredondamento para resultados fracionários; o valor exato e o piso em threads inteiras são exibidos. A contagem do sistema em execução é a autoridade final.",
+      "zeroNote": "Com 2 vCPUs a fórmula documentada resulta em 0; o bigd ainda roda como instância única multi-thread, então trate esse caso como \"threading mínimo\", não como \"sem bigd\".",
+      "ht": {
+        "heading": "Sistema hyperthreaded",
+        "formula": "(vCPUs × 6) ÷ 10"
+      },
+      "normal": {
+        "heading": "Sistema normal (sem HT)",
+        "formula": "(vCPUs ÷ 2) − 1"
+      },
+      "config": {
+        "heading": "Ajuste manual e teto",
+        "capLabel": "Teto manual do bigd.numprocs",
+        "ceilingLabel": "Limite de monitores no plano de controle",
+        "numprocsNote": "O bigd.numprocs define a contagem de threads manualmente, mas é limitado ao número de vCPUs disponíveis; o padrão 0 significa que a contagem é calculada automaticamente com a fórmula acima."
+      },
+      "verifyNote": "Fórmulas literais das release notes do BIG-IP 21.1.0 da F5 (BigD enhancements for large-scale configurations). Para dimensionar além de 5.000 instâncias de monitor, as notas do 21.0 apontam para monitores In-TMM.",
+      "errors": {
+        "empty": "Informe uma contagem de vCPUs, opcionalmente seguida de ht ou normal.",
+        "format": "Não foi possível interpretar. Tente contagem mais tipo, como \"8 ht\" ou \"16 normal\".",
+        "range": "A contagem de vCPUs deve ser um número inteiro entre 1 e 1024."
+      },
+      "platform": {
+        "heading": "Plataforma:",
+        "htNote": "Esta plataforma é hyperthreaded: cada núcleo Intel aparece como duas vCPUs, então a fórmula hyperthreaded se aplica à contagem de vCPUs que o tenant enxerga.",
+        "normalNote": "Esta plataforma não usa hyperthreading: ela conta apenas núcleos físicos de CPU, então a fórmula normal se aplica.",
+        "veNote": "O Virtual Edition herda o que o hypervisor expõe. Verifique dentro do guest (lscpu: \"Thread(s) per core\", 2 significa hyperthreaded) e escolha a fórmula correspondente; as duas são mostradas.",
+        "rseriesAmbiguous": "O rSeries se divide ao meio: r5000/r10000/r12000 são hyperthreaded, r2000/r4000 não são. Informe o modelo (por exemplo r10900, r4800) e a fórmula certa é selecionada.",
+        "not21x": "Apenas contexto: esta plataforma não roda BIG-IP 21.x, e o BigD multi-thread com estas fórmulas é um recurso do 21.1. Ela permanece no 17.x com o bigd clássico.",
+        "overridden": "Sua escolha explícita de ht/normal sobrepõe o padrão documentado desta plataforma (útil quando o hyperthreading está desabilitado no firmware).",
+        "labels": {
+          "rseries-high": "rSeries r5000 / r10000 / r12000",
+          "rseries-low": "rSeries r2000 / r4000",
+          "rseries-ambiguous": "rSeries (família não especificada)",
+          "velos": "VELOS (BX110 / BX520)",
+          "iseries": "iSeries",
+          "viprion": "VIPRION",
+          "ve": "Virtual Edition"
+        }
+      }
+    },
+    "devOtherTagline": "ferramentas que perguntam, em vez de adivinhar",
+    "fault-hypothesis-builder": {
+      "name": "Construtor de Hipóteses de Falha",
+      "blurb": "Descreva uma falha em seis campos estruturados; um conjunto fixo de regras classifica hipóteses a testar - com as evidências a coletar, o que sustentaria cada uma e o que a enfraqueceria. Estrutura consultiva, nunca um diagnóstico.",
+      "form": {
+        "heading": "Descreva a falha (modo rápido)",
+        "symptom": "O que os usuários estão enfrentando?",
+        "scope": "Quem é afetado?",
+        "timing": "Padrão temporal",
+        "preset": "Preset de domínio (ajusta os comandos de evidência)",
+        "changed": "O que mudou recentemente? (todas que se aplicam)",
+        "clues": "Pistas de camada observadas (todas que se aplicam)"
+      },
+      "options": {
+        "total-outage": "Indisponibilidade total",
+        "intermittent": "Falhas intermitentes",
+        "slow": "Lento, mas funcionando",
+        "errors-for-some": "Erros para algumas requisições/usuários",
+        "auth-failures": "Falhas de autenticação",
+        "cannot-reach-new-service": "Não alcança um serviço NOVO (nunca funcionou)",
+        "one-user": "Um usuário",
+        "some-users": "Alguns usuários",
+        "one-site": "Um site/localidade",
+        "one-app": "Uma aplicação",
+        "everyone": "Todos",
+        "nothing-known": "Nada (que eu saiba)",
+        "config-change": "Mudança de configuração",
+        "software-deploy": "Deploy/upgrade de software",
+        "network-change": "Mudança de rede",
+        "cert-or-key": "Certificado ou material de chave",
+        "capacity-growth": "Evento de crescimento de tráfego/capacidade",
+        "provider-maintenance": "Manutenção do provedor (anunciada)",
+        "constant": "Constante desde o início",
+        "intermittent-random": "Intermitente, sem padrão",
+        "time-of-day": "Acompanha o horário / a carga",
+        "since-change": "Começou logo após uma mudança",
+        "dns-fails": "Resolução de nomes falha",
+        "works-by-ip-not-name": "Funciona por IP, não por nome",
+        "tls-errors": "Erros de TLS/certificado",
+        "tcp-connects-but-app-errors": "TCP conecta, aplicação dá erro",
+        "timeouts": "Timeouts",
+        "slow-only-large-transfers": "Só transferências grandes travam",
+        "one-path-works-other-not": "Um caminho funciona, outro não",
+        "http-5xx": "Respostas HTTP 5xx",
+        "http-4xx-auth": "Respostas HTTP 401/403",
+        "generic": "Genérico (neutro de fornecedor)",
+        "load-balancer": "Load balancer / ADC",
+        "dns": "DNS",
+        "tls-pki": "TLS / PKI"
+      },
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador. As notas de texto livre entram apenas na planilha exportada - nunca influenciam a classificação, e nada é enviado.",
+      "emptyState": "Selecione acima o que você está vendo e as hipóteses a testar aparecem aqui - classificadas, com evidências, ao vivo enquanto você refina.",
+      "notes": {
+        "heading": "Detalhe opcional para a exportação (não afeta a classificação)",
+        "hint": "Estas linhas são copiadas literalmente para a seção Situação da planilha, para que um chamado ou caso de TAC já comece completo.",
+        "summary": "Resumo em uma linha",
+        "impact": "Impacto no negócio",
+        "alreadyTried": "Já tentado"
+      },
+      "results": {
+        "heading": "Hipóteses a testar",
+        "framing": "Classificadas por regras determinísticas sobre o que você descreveu. A evidência decide - cada cartão mostra o que sustentaria a hipótese e o que a enfraqueceria.",
+        "signal": {
+          "strong": "sinal forte",
+          "moderate": "sinal moderado",
+          "weak": "sinal fraco"
+        },
+        "evidenceHeading": "Evidências a coletar",
+        "supportsHeading": "Sustentaria",
+        "weakensHeading": "Enfraqueceria",
+        "whyHeading": "Por que esta classificação?",
+        "whyIntro": "Cada regra disparada, com seus pontos. A classificação é a soma - inspecionável, nunca um oráculo.",
+        "copyMd": "Copiar planilha (Markdown)",
+        "copied": "Copiado!",
+        "downloadMd": "Baixar .md"
+      }
     }
   },
   "privacy_page": {
@@ -5254,5 +5622,107 @@
     "changesBody": "O site, suas ferramentas, seu conteúdo, seu código e este aviso podem mudar, quebrar ou desaparecer a qualquer momento, sem aviso e sem obrigação para com ninguém. A versão atual desta página é a que se aplica.",
     "acceptBody": "Ao usar este site ou seu código, você aceita este aviso integralmente. Se não o aceita, seu único remédio é deixar de usar o site e o código.",
     "backHome": "Voltar ao início"
+  },
+  "notFound": {
+    "sub": "Página não encontrada",
+    "quip": "É você, não eu.",
+    "bofhIntroPre": "Chamado encerrado pelo",
+    "bofhIntroPost": ". Causa raiz registrada:",
+    "bofhWait": "consultando o banco de desculpas…",
+    "bofhAgain": "Reabrir chamado",
+    "bofhAgainTitle": "Reabrir produz uma nova desculpa. Não produz uma correção.",
+    "lostTitle": "Você parece perdido. Aqui vai um item, tirado da aleatoriedade digital:",
+    "badgeTool": "FERRAMENTA",
+    "badgeLearn": "ARTIGO",
+    "shuffling": "sorteando…",
+    "goToolbox": "Ir para a caixa de ferramentas",
+    "shuffleAgain": "Sortear de novo",
+    "home": "Início"
+  },
+  "dev": {
+    "metaTitle": "/dev — a ala do desenvolvedor",
+    "metaDescription": "A ala do desenvolvedor do ronutz.com: /dev/fun, a prateleira não-séria, e /dev/other, a sala verde onde as ferramentas perguntam à internet ao vivo.",
+    "title": "/dev",
+    "tagline": "Duas salas fora do salão principal.",
+    "intro": "Tudo no site principal computa localmente e de forma determinística. Esta ala guarda o que não cabe nessa promessa: uma sala para brincar e uma sala, em verde, para ferramentas que falam com o mundo lá fora.",
+    "fun": {
+      "title": "/dev/fun",
+      "tagline": "A prateleira não-séria. Brinquedos, easter eggs e um cérebro muito dramático."
+    },
+    "other": {
+      "title": "/dev/other",
+      "badge": "outro ambiente",
+      "tagline": "Ferramentas que perguntam, em vez de adivinhar. Consultas ao vivo contra a internet real, em uma sala claramente demarcada."
+    }
+  },
+  "devOther": {
+    "metaTitle": "/dev/other — ferramentas que perguntam, em vez de adivinhar",
+    "metaDescription": "A sala verde do ronutz.com: consultas ao vivo contra a internet real — RDAP e companhia — com as regras do jogo ditas em voz alta. Sua consulta vai direto do navegador ao registro oficial; nada é enviado aos servidores do ronutz.com.",
+    "title": "/dev/other",
+    "badge": "outro ambiente",
+    "tagline": "Ferramentas que perguntam, em vez de adivinhar.",
+    "intro": "A tese do site principal é ferramentas que computam, nunca adivinham: local, determinístico, zero egresso. As ferramentas desta sala não conseguem manter essa promessa, porque o trabalho delas é justamente fazer uma pergunta à internet ao vivo. Por isso vivem aqui, entre paredes verdes, com as diferenças escritas na porta.",
+    "backToDev": "← voltar a /dev",
+    "backToOther": "← voltar a /dev/other",
+    "notice": {
+      "title": "Como esta sala difere do resto do site",
+      "p1": "As ferramentas daqui enviam sua entrada para fora do navegador. Ela vai diretamente do seu navegador ao serviço oficial nomeado na tela (o registro que responde à sua consulta) — nunca aos servidores do ronutz.com, que não veem nada, nesta versão. Nada sai até você apertar Perguntar explicitamente.",
+      "p2": "Os resultados são o mundo ao vivo, não uma computação. Vêm de terceiros, podem mudar entre duas consultas idênticas, podem sofrer limite de taxa ou indisponibilidade, e não carregam garantia de vetores dourados — as partes testadas e determinísticas aqui são a interpretação da entrada, o roteamento de registros e a interpretação da resposta, e a ferramenta diz qual registro vai perguntar antes de qualquer envio.",
+      "p3": "Todo o resto continua valendo. Sem conta, sem rastreamento por nós, sem anúncios, código aberto. O terceiro que você consulta verá a sua requisição (é assim que perguntar funciona) — os termos e a política de privacidade dele valem para esse trecho, e cada ferramenta mostra o endpoint exato para você inspecionar.",
+      "p4": "O fundo verde-profundo é o marcador: a mesma escuridão do resto do site, outro matiz, outras regras. Quando as paredes estão verdes, você está na sala de onde os pacotes saem."
+    },
+    "tools": {
+      "rdapLookup": {
+        "name": "Consulta RDAP",
+        "blurb": "WHOIS do jeito moderno: domínio, IP ou número de AS entram, a resposta estruturada do registro oficial sai — perguntada direto do seu navegador, com o registro nomeado antes de qualquer envio."
+      }
+    },
+    "rdap": {
+      "metaTitle": "Consulta RDAP — WHOIS do jeito moderno",
+      "metaDescription": "Consulte os registros RDAP oficiais para um domínio, endereço IP ou número de AS, direto do navegador. Roteamento determinístico a partir de snapshots embarcados do bootstrap da IANA; design de egresso explícito: nada sai até você apertar Perguntar.",
+      "inputLabel": "Domínio, endereço IP ou número de AS",
+      "inputPlaceholder": "example.com · 8.8.8.8 · AS15169",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "nothingLeaves": "Nada sai do seu navegador até você apertar Perguntar. Digitar apenas computa, localmente, qual registro responderia.",
+      "willAsk": "Esta consulta de {kind} perguntaria a {registry} diretamente do seu navegador:",
+      "kinds": {
+        "domain": "domínio",
+        "ipv4": "IPv4",
+        "ipv6": "IPv6",
+        "asn": "número de AS"
+      },
+      "ask": "Perguntar ao registro",
+      "asking": "Perguntando…",
+      "egressBadge": "sai do seu navegador",
+      "resultTitle": "Resposta do registro",
+      "notFoundTitle": "Não encontrado no registro",
+      "notFoundBody": "O registro respondeu 404: nenhum objeto com esse nome na base dele. Para um domínio, isso normalmente significa que não está registrado (ou que o registro não o publica via RDAP).",
+      "httpErrorTitle": "O registro respondeu HTTP {status}",
+      "httpErrorBody": "Esse status vem do registro, não deste site. Pode ser limite de taxa, manutenção ou uma consulta que ele não atende. A mesma consulta no seu terminal:",
+      "netErrorTitle": "A consulta não pôde ser concluída pelo navegador",
+      "netErrorBody": "Ou a rede falhou, ou o registro não permite consultas diretas do navegador (sem cabeçalho CORS — alguns registros, RIPE entre eles em 2026-07-08, não enviam). Este é um limite conhecido e honesto do design navegador-direto: nada foi enviado por proxy escondido. Rode a consulta idêntica no seu terminal:",
+      "rawToggle": "Mostrar o documento RDAP bruto",
+      "fields": {
+        "class": "Classe do objeto",
+        "handle": "Handle",
+        "entity": "Entidade",
+        "nameservers": "Servidores de nome",
+        "dnssec": "DNSSEC",
+        "signed": "delegação assinada",
+        "unsigned": "não assinada",
+        "port43": "WHOIS legado (porta 43)",
+        "notices": "Avisos do registro"
+      },
+      "bootstrapNote": "O roteamento de registros é determinístico: percorre snapshots embarcados dos quatro arquivos de bootstrap RDAP da IANA (RFC 9224), embarcados em {vendored}; o carimbo de publicação da própria tabela dns é {dns}. A resposta ao vivo, por design, não é determinística — por isso esta ferramenta vive na sala verde.",
+      "errors": {
+        "empty": "Informe um domínio, um endereço IP ou um número de AS.",
+        "format": "Não foi possível interpretar isso como domínio, endereço IP ou número de AS.",
+        "noEndpoint": "O registro de bootstrap da IANA não publica endpoint RDAP para isso — resposta honesta: esta ferramenta não tem a quem perguntar."
+      },
+      "about1": "RDAP é o WHOIS reconstruído sobre HTTPS e JSON (RFCs 7480, 9082, 9083): os mesmos dados de registro, estruturados, com nomes de campo consistentes e avisos honestos de redação em vez de texto livre. Esta ferramenta resolve qual registro é autoritativo usando snapshots embarcados dos arquivos de bootstrap da IANA (RFC 9224), monta a URL exata da consulta, a exibe, e só a envia quando você aperta Perguntar — diretamente do seu navegador ao registro, nunca passando pelo ronutz.com.",
+      "about2": "As camadas determinísticas (classificação da entrada, conversão IDN para punycode, roteamento de bootstrap, construção de URL, interpretação da resposta) são testadas com vetores dourados como toda ferramenta do site principal. A única coisa que não dá para cravar é a resposta ao vivo do registro — exatamente por isso esta ferramenta vive aqui, e não em /tools.",
+      "sourcesLabel": "Fontes"
+    }
   }
 }

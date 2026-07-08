@@ -187,7 +187,8 @@
       "web": "Web & HTTP",
       "transport": "TLS & transport",
       "security": "Security & WAF",
-      "text": "Text & utilities"
+      "text": "Text & utilities",
+      "operations": "Operations & Fieldcraft"
     },
     "cert-renewal-planner": {
       "name": "Certificate renewal planner",
@@ -496,6 +497,240 @@
       "err_format": "That does not look like a PEM, base64, or hex CSR.",
       "err_der": "The DER structure could not be parsed.",
       "err_structure": "This parses as DER but is not a PKCS#10 certification request."
+    },
+    "curl-command-builder": {
+      "name": "curl command builder",
+      "blurb": "Pick any of the 27 protocols curl speaks, fill in protocol-aware fields, and get the exact command with every flag explained and safety warnings surfaced. The inverse of the HTTP request translator: that one reads a command, this one writes it.",
+      "ui": {
+        "group_web": "Web",
+        "group_transfer": "File transfer",
+        "group_mail": "Mail",
+        "group_messaging": "Messaging",
+        "group_lookup": "Lookup and legacy",
+        "portDefault": "default port",
+        "example": "Example",
+        "clear": "Clear",
+        "sec_target": "Target",
+        "sec_request": "Request",
+        "sec_auth": "Credentials",
+        "sec_mail": "Mail envelope",
+        "sec_transfer": "Transfer",
+        "sec_connection": "Connection, TLS and timing",
+        "sec_behavior": "Behavior and output",
+        "host": "Host",
+        "port": "Port",
+        "pathUrl": "Path",
+        "pathRemote": "Remote path",
+        "pathTopic": "Topic",
+        "pathMailbox": "Mailbox",
+        "pathWord": "Lookup (d:word)",
+        "pathLocal": "Local file path",
+        "pathShare": "Share and path",
+        "method": "Method",
+        "httpVersion": "HTTP version",
+        "httpAuto": "Negotiate (default)",
+        "headers": "Headers",
+        "headerName": "Name",
+        "headerValue": "Value",
+        "add": "Add",
+        "remove": "Remove",
+        "data": "Body data (-d)",
+        "dataUrlencode": "URL-encode the data (--data-urlencode)",
+        "form": "Multipart form fields (-F)",
+        "formFile": "file (@)",
+        "user": "User",
+        "pass": "Password",
+        "passNote": "Leaving the password empty makes curl prompt for it at run time, keeping it out of your shell history.",
+        "mailFrom": "Envelope sender (--mail-from)",
+        "mailRcpt": "Recipients, comma-separated (--mail-rcpt)",
+        "upload": "Upload local file (-T)",
+        "output": "Save response",
+        "outStdout": "To the terminal",
+        "outRemote": "Remote file name (-O)",
+        "outFile": "Named file (-o)",
+        "outFileName": "Output file name",
+        "listOnly": "Names-only listing (-l)",
+        "proxy": "Proxy (-x)",
+        "resolve": "Pin DNS (--resolve)",
+        "cacert": "CA bundle (--cacert)",
+        "insecure": "Skip TLS verification (-k), with a warning",
+        "connectTimeout": "Connect timeout, s",
+        "maxTime": "Max total time, s",
+        "retry": "Retries",
+        "cookie": "Send cookie (-b)",
+        "cookieJar": "Save cookies to (-c)",
+        "userAgent": "User-Agent (-A)",
+        "followRedirects": "Follow redirects (-L)",
+        "compressed": "Ask for compression (--compressed)",
+        "include": "Include response headers (-i)",
+        "verbose": "Verbose (-v)",
+        "silent": "Silent (-s)",
+        "preview": "Your command",
+        "copyPretty": "Copy",
+        "copyLine": "Copy one-line",
+        "copied": "Copied",
+        "partsTitle": "Every flag, explained",
+        "err_host": "Enter a host to build the command.",
+        "err_path": "Enter a local file path for the file:// URL.",
+        "err_protocol": "Pick a protocol.",
+        "windowsNote": "Quoting targets POSIX shells (bash, zsh). cmd.exe and PowerShell quote differently; run these as written in Git Bash or WSL.",
+        "privacy": "Runs entirely in your browser. Nothing you type is sent anywhere and no request is ever executed."
+      },
+      "tls": {
+        "clear": "cleartext",
+        "tls": "TLS",
+        "upgrade": "cleartext, can upgrade to TLS"
+      },
+      "proto": {
+        "http": {
+          "name": "HTTP",
+          "desc": "The web's transfer protocol. curl speaks HTTP/0.9 through HTTP/3 and gives you full control over method, headers, body, cookies, and authentication."
+        },
+        "https": {
+          "name": "HTTPS",
+          "desc": "HTTP inside TLS: the same request model with the transport encrypted and the server authenticated by certificate."
+        },
+        "ws": {
+          "name": "WebSocket",
+          "desc": "A bidirectional, TCP-like channel set up over a plain HTTP request. The ws scheme is the cleartext flavor."
+        },
+        "wss": {
+          "name": "WebSocket Secure",
+          "desc": "The same bidirectional WebSocket channel established over HTTPS, so the whole session runs inside TLS."
+        },
+        "ftp": {
+          "name": "FTP",
+          "desc": "The classic File Transfer Protocol: downloads, uploads, and directory listings. Starts in cleartext; the session can upgrade to TLS."
+        },
+        "ftps": {
+          "name": "FTPS",
+          "desc": "FTP with an implicit TLS layer from the first byte. Historically awkward through firewalls because of its separate data connections."
+        },
+        "sftp": {
+          "name": "SFTP",
+          "desc": "The SSH File Transfer Protocol carried over SSH version 2: one encrypted connection for both commands and data."
+        },
+        "scp": {
+          "name": "SCP",
+          "desc": "The classic SSH copy protocol over SSH version 2. Plain file-copy semantics; SFTP is the richer sibling."
+        },
+        "tftp": {
+          "name": "TFTP",
+          "desc": "Trivial FTP over UDP: tiny, unauthenticated, cleartext by design. The firmware and network-boot workhorse."
+        },
+        "smb": {
+          "name": "SMB",
+          "desc": "Windows file sharing. curl supports SMB version 1 for uploading and downloading files on a share."
+        },
+        "smbs": {
+          "name": "SMBS",
+          "desc": "SMB wrapped in TLS: the same version 1 file semantics with the transport encrypted."
+        },
+        "file": {
+          "name": "Local file",
+          "desc": "Local file access through a URL, no network at all. Handy for testing pipelines with real curl syntax."
+        },
+        "smtp": {
+          "name": "SMTP",
+          "desc": "Mail submission: uploading a message to an SMTP server means sending it. The envelope sender and recipients are set with dedicated flags."
+        },
+        "smtps": {
+          "name": "SMTPS",
+          "desc": "SMTP with implicit TLS from the first byte, conventionally on port 465."
+        },
+        "pop3": {
+          "name": "POP3",
+          "desc": "Retrieve mail from a POP3 server: downloading means fetching a message. Starts cleartext and can upgrade with STLS."
+        },
+        "pop3s": {
+          "name": "POP3S",
+          "desc": "POP3 inside implicit TLS on port 995."
+        },
+        "imap": {
+          "name": "IMAP",
+          "desc": "Read mail and mailboxes on an IMAP server; the URL selects the mailbox and message. Starts cleartext, can upgrade to TLS."
+        },
+        "imaps": {
+          "name": "IMAPS",
+          "desc": "IMAP inside implicit TLS on port 993."
+        },
+        "mqtt": {
+          "name": "MQTT",
+          "desc": "The IoT publish-subscribe protocol, version 3. Downloading a topic subscribes to it; posting data publishes on it."
+        },
+        "mqtts": {
+          "name": "MQTTS",
+          "desc": "MQTT carried inside TLS, conventionally on port 8883."
+        },
+        "ldap": {
+          "name": "LDAP",
+          "desc": "Directory lookups: the URL encodes the base DN, attributes, scope, and filter in one line."
+        },
+        "ldaps": {
+          "name": "LDAPS",
+          "desc": "LDAP inside implicit TLS on port 636."
+        },
+        "dict": {
+          "name": "DICT",
+          "desc": "The dictionary server protocol: a URL like /d:word looks the word up on the server."
+        },
+        "gopher": {
+          "name": "Gopher",
+          "desc": "The pre-web document protocol, still alive in niches. Retrieves menus and documents."
+        },
+        "gophers": {
+          "name": "GopherS",
+          "desc": "Gopher over TLS, a modern extension to the old protocol."
+        },
+        "rtsp": {
+          "name": "RTSP",
+          "desc": "The Real Time Streaming Protocol: curl supports RTSP 1.0 downloads for talking to streaming media servers."
+        },
+        "telnet": {
+          "name": "Telnet",
+          "desc": "An interactive cleartext session: curl sends what it reads on stdin and prints what the server returns. Useful for poking raw TCP services."
+        }
+      },
+      "opt": {
+        "headOnly": "-I asks for headers only (a HEAD request); no body is transferred.",
+        "method": "-X sets the request method explicitly; curl only needs it when the method cannot be inferred.",
+        "httpVersion": "Pins the HTTP version instead of letting curl negotiate one.",
+        "header": "-H adds one request header exactly as written.",
+        "user": "-u sends credentials; with no password given, curl prompts for it.",
+        "data": "-d sends this data as the request body: on HTTP it implies POST, on MQTT it publishes to the topic.",
+        "dataUrlencode": "--data-urlencode sends the data URL-encoded, safe for arbitrary characters.",
+        "form": "-F builds a multipart/form-data body; a leading @ uploads the file at that path.",
+        "upload": "-T uploads the given local file to the URL (PUT on HTTP, STOR on FTP, the message on SMTP).",
+        "mailFrom": "--mail-from sets the SMTP envelope sender.",
+        "mailRcpt": "--mail-rcpt adds one SMTP envelope recipient.",
+        "cookie": "-b sends the given cookie string, or reads cookies from a file.",
+        "cookieJar": "-c writes the cookies received during the transfer to this file.",
+        "userAgent": "-A sets the User-Agent string.",
+        "proxy": "-x sends the transfer through this proxy.",
+        "resolve": "--resolve pins host:port to a specific address, bypassing DNS for that name.",
+        "cacert": "--cacert verifies the server against this CA bundle instead of the system store.",
+        "insecure": "-k skips TLS certificate verification entirely.",
+        "connectTimeout": "--connect-timeout caps how long establishing the connection may take, in seconds.",
+        "maxTime": "--max-time caps the whole transfer duration, in seconds.",
+        "retry": "--retry retries a transient failure this many times, with backoff.",
+        "followRedirects": "-L follows HTTP redirects to the final location.",
+        "compressed": "--compressed asks for a compressed response and transparently decompresses it.",
+        "listOnly": "-l asks for a names-only listing (FTP directory or mailbox).",
+        "outputRemote": "-O saves the download under its remote file name.",
+        "outputFile": "-o saves the download to the given file name.",
+        "include": "-i includes the response headers in the output.",
+        "verbose": "-v narrates the whole exchange, including connection and TLS details.",
+        "silent": "-s silences the progress meter and error output."
+      },
+      "warn": {
+        "insecure": "-k disables TLS certificate verification: the connection is encrypted but the peer is not authenticated. Fine against a lab box, dangerous anywhere else.",
+        "cleartext": "This protocol starts in cleartext: everything, including any credentials, crosses the network unencrypted unless the session upgrades to TLS.",
+        "passOnCli": "The password is part of the command line: it can land in shell history and show in the process list. Prefer -u user alone and let curl prompt, or use a .netrc file.",
+        "dataDefaultCt": "With -d and no Content-Type header, curl sends application/x-www-form-urlencoded. If this body is JSON, add a Content-Type: application/json header.",
+        "considerSslReqd": "This protocol can upgrade to TLS (STARTTLS style). Consider adding --ssl-reqd so the transfer fails rather than continue in cleartext.",
+        "telnetInteractive": "telnet: opens an interactive session; curl sends what it reads on stdin and prints what the server returns.",
+        "smbV1": "curl speaks SMB version 1, which many modern servers disable. Expect this to work mainly against legacy shares."
+      }
     },
     "cvss-vector-decoder": {
       "name": "CVSS vector decoder",
@@ -3606,6 +3841,139 @@
       "note2": "These are the scheduled dates. F5 also issues out-of-band security alerts and engineering hotfixes for urgent issues at any time, and retains flexibility to adjust notification timing.",
       "learnMore": "New to this change?",
       "learnLink": "Read what changed and why"
+    },
+    "viewLegend": "View",
+    "viewCards": "Cards",
+    "viewList": "List",
+    "f5-bigd-thread-calculator": {
+      "name": "BigD thread calculator",
+      "blurb": "Enter your vCPU count (and whether the system is hyperthreaded) to get the BigD thread count BIG-IP 21.1 derives automatically, per F5's documented formulas, plus the bigd.numprocs override cap and the 15,000-monitor ceiling.",
+      "inputLabel": "vCPU count and system type",
+      "inputPlaceholder": "8 r10900, 16 r4800, 22 velos, 8 ht, or just 6",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs entirely in your browser: two documented formulas, no network, no clock.",
+      "threadsExact": "{n} threads",
+      "threadsFloor": "{floor} threads ({exact} exact)",
+      "fractionNote": "F5 documents the formula but not a rounding rule for fractional results; the exact value and its whole-thread floor are both shown. The running system's own count is authoritative.",
+      "zeroNote": "At 2 vCPUs the documented formula yields 0; bigd still runs as a single multi-threaded instance, so treat this edge as \"minimal threading\" rather than \"no bigd\".",
+      "ht": {
+        "heading": "Hyperthreaded system",
+        "formula": "(vCPUs × 6) ÷ 10"
+      },
+      "normal": {
+        "heading": "Normal (non-HT) system",
+        "formula": "(vCPUs ÷ 2) − 1"
+      },
+      "config": {
+        "heading": "Override and ceiling",
+        "capLabel": "bigd.numprocs manual cap",
+        "ceilingLabel": "Control-plane monitor ceiling",
+        "numprocsNote": "bigd.numprocs sets the thread count by hand but is capped at the number of available vCPUs; its default 0 means the count is calculated automatically with the formula above."
+      },
+      "verifyNote": "Formulas verbatim from F5's BIG-IP 21.1.0 release notes (BigD enhancements for large-scale configurations). For sizing beyond 5,000 monitor instances, F5's 21.0 notes point to In-TMM monitors.",
+      "errors": {
+        "empty": "Enter a vCPU count, optionally followed by ht or normal.",
+        "format": "Could not read that. Try a count plus a type, like \"8 ht\" or \"16 normal\".",
+        "range": "The vCPU count must be a whole number between 1 and 1024."
+      },
+      "platform": {
+        "heading": "Platform:",
+        "htNote": "This platform is hyperthreaded: each Intel core appears as two vCPUs, so the hyperthreaded formula applies to the vCPU count the tenant sees.",
+        "normalNote": "This platform does not use hyperthreading: it counts physical CPU cores only, so the normal formula applies.",
+        "veNote": "Virtual Edition inherits whatever the hypervisor exposes. Check inside the guest (lscpu: \"Thread(s) per core\", 2 means hyperthreaded) and pick the matching formula; both are shown.",
+        "rseriesAmbiguous": "rSeries splits down the middle: r5000/r10000/r12000 are hyperthreaded, r2000/r4000 are not. Enter the model (e.g. r10900, r4800) and the right formula is selected.",
+        "not21x": "Context only: this platform cannot run BIG-IP 21.x, and the multi-threaded BigD with these formulas is a 21.1 feature. It stays on 17.x with the classic bigd.",
+        "overridden": "Your explicit ht/normal choice overrides this platform's documented default (useful when hyperthreading is disabled in firmware).",
+        "labels": {
+          "rseries-high": "rSeries r5000 / r10000 / r12000",
+          "rseries-low": "rSeries r2000 / r4000",
+          "rseries-ambiguous": "rSeries (family not specified)",
+          "velos": "VELOS (BX110 / BX520)",
+          "iseries": "iSeries",
+          "viprion": "VIPRION",
+          "ve": "Virtual Edition"
+        }
+      }
+    },
+    "devOtherTagline": "tools that ask, not guess",
+    "fault-hypothesis-builder": {
+      "name": "Fault Hypothesis Builder",
+      "blurb": "Describe a fault in six structured fields; a fixed rule set ranks hypotheses to test - with the evidence to collect, what would support each, and what would weaken it. Advisory structure, never a diagnosis.",
+      "form": {
+        "heading": "Describe the fault (quick mode)",
+        "symptom": "What are users experiencing?",
+        "scope": "Who is affected?",
+        "timing": "Timing pattern",
+        "preset": "Domain preset (flavors the evidence commands)",
+        "changed": "What changed recently? (all that apply)",
+        "clues": "Layer clues you have observed (all that apply)"
+      },
+      "options": {
+        "total-outage": "Total outage",
+        "intermittent": "Intermittent failures",
+        "slow": "Slow, but working",
+        "errors-for-some": "Errors for some requests/users",
+        "auth-failures": "Authentication failures",
+        "cannot-reach-new-service": "Cannot reach a NEW service (never worked)",
+        "one-user": "One user",
+        "some-users": "Some users",
+        "one-site": "One site/location",
+        "one-app": "One application",
+        "everyone": "Everyone",
+        "nothing-known": "Nothing (that I know of)",
+        "config-change": "Configuration change",
+        "software-deploy": "Software deploy/upgrade",
+        "network-change": "Network change",
+        "cert-or-key": "Certificate or key material",
+        "capacity-growth": "Traffic/capacity growth event",
+        "provider-maintenance": "Provider maintenance (announced)",
+        "constant": "Constant since onset",
+        "intermittent-random": "Intermittent, no pattern",
+        "time-of-day": "Tracks time of day / load",
+        "since-change": "Started right after a change",
+        "dns-fails": "Name lookups fail",
+        "works-by-ip-not-name": "Works by IP, not by name",
+        "tls-errors": "TLS/certificate errors",
+        "tcp-connects-but-app-errors": "TCP connects, application errors",
+        "timeouts": "Timeouts",
+        "slow-only-large-transfers": "Only large transfers stall",
+        "one-path-works-other-not": "One path works, another does not",
+        "http-5xx": "HTTP 5xx responses",
+        "http-4xx-auth": "HTTP 401/403 responses",
+        "generic": "Generic (vendor-neutral)",
+        "load-balancer": "Load balancer / ADC",
+        "dns": "DNS",
+        "tls-pki": "TLS / PKI"
+      },
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs entirely in your browser. The free-text notes flow only into the exported worksheet - they never influence the ranking, and nothing is uploaded.",
+      "emptyState": "Pick what you are seeing above and the hypotheses to test appear here - ranked, with evidence, live as you refine.",
+      "notes": {
+        "heading": "Optional detail for the export (does not affect the ranking)",
+        "hint": "These lines are copied verbatim into the worksheet's Situation section so a ticket or TAC case starts complete.",
+        "summary": "One-line summary",
+        "impact": "Business impact",
+        "alreadyTried": "Already tried"
+      },
+      "results": {
+        "heading": "Hypotheses to test",
+        "framing": "Ranked by deterministic rules over what you described. Evidence decides - each card shows what would support the hypothesis and what would weaken it.",
+        "signal": {
+          "strong": "strong signal",
+          "moderate": "moderate signal",
+          "weak": "weak signal"
+        },
+        "evidenceHeading": "Evidence to collect",
+        "supportsHeading": "Would support",
+        "weakensHeading": "Would weaken",
+        "whyHeading": "Why this ranking?",
+        "whyIntro": "Every rule that fired, with its points. The ranking is the sum - inspectable, never an oracle.",
+        "copyMd": "Copy worksheet (Markdown)",
+        "copied": "Copied!",
+        "downloadMd": "Download .md"
+      }
     }
   },
   "privacy_page": {
@@ -5254,5 +5622,107 @@
     "changesBody": "The site, its tools, its content, its code, and this notice may change, break, or disappear at any time, without notice and without obligation to anyone. The current version of this page is the one that applies.",
     "acceptBody": "By using this site or its code you accept this notice in full. If you do not accept it, your only remedy is to stop using the site and the code.",
     "backHome": "Back to home"
+  },
+  "notFound": {
+    "sub": "Page not found",
+    "quip": "It's you, not me.",
+    "bofhIntroPre": "Ticket closed by the",
+    "bofhIntroPost": ". Root cause on file:",
+    "bofhWait": "consulting the excuse database…",
+    "bofhAgain": "Reopen ticket",
+    "bofhAgainTitle": "Reopening produces a new excuse. It does not produce a fix.",
+    "lostTitle": "You seem lost. Here is one, plucked out of digital randomness:",
+    "badgeTool": "TOOL",
+    "badgeLearn": "LEARN",
+    "shuffling": "shuffling…",
+    "goToolbox": "Go to the toolbox",
+    "shuffleAgain": "Shuffle again",
+    "home": "Home"
+  },
+  "dev": {
+    "metaTitle": "/dev — the developer wing",
+    "metaDescription": "The developer wing of ronutz.com: /dev/fun, the not-serious shelf, and /dev/other, the green room where tools ask the live internet.",
+    "title": "/dev",
+    "tagline": "Two rooms off the main floor.",
+    "intro": "Everything on the main site computes locally and deterministically. This wing holds what does not fit that promise: one room for play, one room, in green, for tools that talk to the outside world.",
+    "fun": {
+      "title": "/dev/fun",
+      "tagline": "The not-serious shelf. Toys, easter eggs, and one very dramatic brain."
+    },
+    "other": {
+      "title": "/dev/other",
+      "badge": "other environment",
+      "tagline": "Tools that ask, not guess. Live lookups against the real internet, in a clearly marked room."
+    }
+  },
+  "devOther": {
+    "metaTitle": "/dev/other — tools that ask, not guess",
+    "metaDescription": "The green room of ronutz.com: live lookups against the real internet — RDAP and friends — with the rules of engagement stated out loud. Your query goes browser-direct to the official registry; nothing is sent to ronutz.com servers.",
+    "title": "/dev/other",
+    "badge": "other environment",
+    "tagline": "Tools that ask, not guess.",
+    "intro": "The main site's thesis is tools that compute, never guess: local, deterministic, zero egress. The tools in this room cannot keep that promise, because their whole job is to ask the live internet a question. So they live here, behind green walls, with the differences written on the door.",
+    "backToDev": "← back to /dev",
+    "backToOther": "← back to /dev/other",
+    "notice": {
+      "title": "How this room differs from the rest of the site",
+      "p1": "Tools here send your input out of the browser. It goes directly from your browser to the official service named on screen (the registry that answers your query) — never to ronutz.com servers, which see nothing, in this version. Nothing leaves until you explicitly press Ask.",
+      "p2": "Results are the live world, not a computation. They come from third parties, can change between two identical queries, can be rate-limited or unavailable, and carry no golden-vector guarantee — the tested, deterministic parts here are the input parsing, the registry routing, and the response parsing, and the tool says which registry it will ask before anything is sent.",
+      "p3": "Everything else still holds. No account, no tracking by us, no ads, open source. The third party you query will see your request (that is how asking works) — its own terms and privacy policy apply to that hop, and each tool links the exact endpoint so you can inspect it.",
+      "p4": "The deep-green background is the marker: same darkness as the rest of the site, different hue, different rules. When the walls are green, you are in the room where packets leave."
+    },
+    "tools": {
+      "rdapLookup": {
+        "name": "RDAP lookup",
+        "blurb": "WHOIS, the modern way: domain, IP, or AS number in, the official registry's structured answer out — asked directly from your browser, with the registry named before anything is sent."
+      }
+    },
+    "rdap": {
+      "metaTitle": "RDAP lookup — WHOIS, the modern way",
+      "metaDescription": "Query the official RDAP registries for a domain, IP address, or AS number, browser-direct. Deterministic routing from vendored IANA bootstrap snapshots; explicit-egress design: nothing leaves until you press Ask.",
+      "inputLabel": "Domain, IP address, or AS number",
+      "inputPlaceholder": "example.com · 8.8.8.8 · AS15169",
+      "example": "Example",
+      "clear": "Clear",
+      "nothingLeaves": "Nothing leaves your browser until you press Ask. Typing only computes, locally, which registry would answer.",
+      "willAsk": "This {kind} query would ask {registry} directly from your browser:",
+      "kinds": {
+        "domain": "domain",
+        "ipv4": "IPv4",
+        "ipv6": "IPv6",
+        "asn": "AS number"
+      },
+      "ask": "Ask the registry",
+      "asking": "Asking…",
+      "egressBadge": "leaves your browser",
+      "resultTitle": "Registry answer",
+      "notFoundTitle": "Not found at the registry",
+      "notFoundBody": "The registry answered 404: no object by that name in its database. For a domain, that usually means it is not registered (or the registry does not publish it over RDAP).",
+      "httpErrorTitle": "The registry answered HTTP {status}",
+      "httpErrorBody": "That status comes from the registry, not from this site. It may be rate limiting, maintenance, or a query it will not serve. The same query from your own terminal:",
+      "netErrorTitle": "The query could not complete from the browser",
+      "netErrorBody": "Either the network failed or the registry does not allow browser-direct queries (no CORS header — some registries, RIPE among them as of 2026-07-08, do not send one). This is a known, honest limit of the browser-direct design: nothing was silently proxied. Run the identical query from your own terminal:",
+      "rawToggle": "Show the raw RDAP document",
+      "fields": {
+        "class": "Object class",
+        "handle": "Handle",
+        "entity": "Entity",
+        "nameservers": "Nameservers",
+        "dnssec": "DNSSEC",
+        "signed": "delegation signed",
+        "unsigned": "not signed",
+        "port43": "Legacy WHOIS (port 43)",
+        "notices": "Registry notices"
+      },
+      "bootstrapNote": "Registry routing is deterministic: it walks vendored snapshots of the four IANA RDAP bootstrap files (RFC 9224), vendored {vendored}; the dns table's own publication stamp is {dns}. The live answer, by design, is not deterministic — that is why this tool lives in the green room.",
+      "errors": {
+        "empty": "Enter a domain, an IP address, or an AS number.",
+        "format": "Could not read that as a domain, IP address, or AS number.",
+        "noEndpoint": "IANA's bootstrap registry publishes no RDAP endpoint for that — honest answer: this tool cannot ask anyone about it."
+      },
+      "about1": "RDAP is WHOIS rebuilt on HTTPS and JSON (RFCs 7480, 9082, 9083): the same registry data, structured, with consistent field names and honest redaction notices instead of free-form text. This tool resolves which registry is authoritative using vendored snapshots of IANA's bootstrap files (RFC 9224), builds the exact query URL, shows it, and only sends it when you press Ask — directly from your browser to the registry, never through ronutz.com.",
+      "about2": "The deterministic layers (input classification, IDN punycode conversion, bootstrap routing, URL construction, response parsing) are golden-vector-tested like every tool on the main site. The one thing that cannot be pinned is the registry's live answer — which is exactly why this tool lives here and not at /tools.",
+      "sourcesLabel": "Sources"
+    }
   }
 }

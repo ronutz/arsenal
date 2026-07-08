@@ -1507,5 +1507,21 @@
     "changesBody": "Witryna, jej narzędzia, jej treść, jej kod i ta informacja mogą się zmienić, przestać działać lub zniknąć w dowolnym momencie, bez powiadomienia i bez zobowiązań wobec kogokolwiek. Obowiązująca wersja to bieżąca wersja tej strony.",
     "acceptBody": "Korzystając z tej witryny lub jej kodu, w pełni akceptujesz tę informację. Jeśli jej nie akceptujesz, jedynym środkiem zaradczym jest zaprzestanie korzystania z witryny i kodu.",
     "backHome": "Powrót do strony głównej"
+  },
+  "notFound": {
+    "sub": "Nie znaleziono strony",
+    "quip": "To ty, nie ja.",
+    "bofhIntroPre": "Zgłoszenie zamknięte przez",
+    "bofhIntroPost": ". Przyczyna w aktach:",
+    "bofhWait": "przeszukiwanie bazy wymówek…",
+    "bofhAgain": "Otwórz zgłoszenie ponownie",
+    "bofhAgainTitle": "Ponowne otwarcie daje nową wymówkę. Nie daje rozwiązania.",
+    "lostTitle": "Wyglądasz na zagubionego. Oto jedno, wyjęte z cyfrowej losowości:",
+    "badgeTool": "NARZĘDZIE",
+    "badgeLearn": "ARTYKUŁ",
+    "shuffling": "losowanie…",
+    "goToolbox": "Przejdź do skrzynki z narzędziami",
+    "shuffleAgain": "Losuj ponownie",
+    "home": "Strona główna"
   }
 }

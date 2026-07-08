@@ -39,8 +39,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
-import BossApp from "@/components/dev-fun/BossApp";
-import { drawBossScreen, type BossScreenKind } from "@/components/dev-fun/boss-screens";
+import BossApp from "@/components/dev/fun/BossApp";
+import { drawBossScreen, type BossScreenKind } from "@/components/dev/fun/boss-screens";
 import { resolveBindings, subscribe } from "@/lib/preferences";
 import { ACTION_BY_ID, DEFAULT_BINDINGS } from "@/config/shortcuts";
 

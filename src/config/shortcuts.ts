@@ -59,9 +59,9 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   { id: "nav-home", kind: "navigate", path: "/", labelKey: "actionHome" },
   { id: "nav-tools", kind: "navigate", path: "/tools", labelKey: "actionTools" },
   { id: "nav-learn", kind: "navigate", path: "/learn", labelKey: "actionLearn" },
-  { id: "nav-dev-fun", kind: "navigate", path: "/dev-fun", labelKey: "actionDevFun" },
-  { id: "nav-mega-brain", kind: "navigate", path: "/dev-fun/mega-brain", labelKey: "actionMegaBrain" },
-  { id: "nav-bingo", kind: "navigate", path: "/dev-fun/meeting-bingo", labelKey: "actionBingo" },
+  { id: "nav-dev-fun", kind: "navigate", path: "/dev/fun", labelKey: "actionDevFun" },
+  { id: "nav-mega-brain", kind: "navigate", path: "/dev/fun/mega-brain", labelKey: "actionMegaBrain" },
+  { id: "nav-bingo", kind: "navigate", path: "/dev/fun/meeting-bingo", labelKey: "actionBingo" },
   // Navigation — the five favorite tools (PRIME-ratified defaults; rebindable)
   { id: "tool-cidr", kind: "navigate", path: "/tools/cidr", labelKey: "actionToolCidr" },
   { id: "tool-base64", kind: "navigate", path: "/tools/base64", labelKey: "actionToolBase64" },

@@ -1,0 +1,38 @@
+---
+slug: bigip-ai-mcp
+title: "Tráfego de IA no BIG-IP: MCP de perfis a persistência e proteção"
+summary: "O BIG-IP 21.0 ensinou o TMOS a falar Model Context Protocol com perfis HTTP, JSON e SSE; o 21.1 o tornou fluente, com um perfil de persistência nativo aimcp que prende uma sessão de IA a um backend usando um Mcp-Session-ID encapsulado e criptografado, e um template de política MCP Protection no Advanced WAF mirando o OWASP MCP Top 10: tool poisoning, exposição de segredos e injeção. Aqui está o que cada peça faz, verificado contra as release notes e manuais da F5, incluindo a ressalva que importa: respostas em streaming SSE não passam pela inspeção do lado da resposta."
+concepts: ["f5", "bigip", "mcp", "ai", "llm", "waf", "persistence", "sse"]
+relatedTools: ["f5-persistence-method-explainer", "f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["bigip-21x-whats-new"]
+category: networking
+order: 2
+status: machine-draft
+updated: "2026-07-08"
+---
+
+O tema central da linha BIG-IP 21.x é que o TMOS agora trata tráfego de IA como protocolo de primeira classe, e não como HTTP opaco. O protocolo em questão é o MCP, Model Context Protocol: a convenção JSON-RPC 2.0 que permite a um cliente LLM descobrir e chamar ferramentas em servidores MCP, transportada sobre Streamable HTTP ou, por compatibilidade, HTTP com Server-Sent Events. Essa combinação, sessões de vida longa, respostas em streaming e chamadas de ferramenta com efeitos colaterais reais, é exatamente o tipo de tráfego que um balanceador ingênuo trata mal e que um WAF ingênuo não consegue ler. As versões 21.x atacam o problema em dois passos.
+
+## 21.0: o BIG-IP aprende a falar MCP
+
+O BIG-IP 21.0.0 introduziu o suporte a MCP na camada de perfis. Segundo a referência de perfis do LTM da F5, tratar MCP corretamente exige um perfil HTTP mais perfis JSON e SSE no virtual server: juntos, eles permitem que o TMM interprete a estrutura das mensagens JSON-RPC, lide com os dois transportes e aplique inspeção e otimização no nível do protocolo em vez de simplesmente repassar bytes às cegas. Os perfis expõem limites de tamanho para as partes da mensagem, e JSON e SSE trazem cada um seus próprios eventos e comandos de iRules, então o 21.0 já permitia interpretar, manipular e gerenciar tráfego MCP.
+
+A persistência, porém, ainda era manual. Sessões MCP são stateful quando o servidor emite um Mcp-Session-Id, e a partir desse momento o cliente precisa apresentá-lo em toda requisição; um servidor MCP stateful que recebe uma requisição no meio da sessão no membro errado do pool perdeu o contexto do diálogo. A própria documentação do 21.0 e o passo a passo com OpenShift publicado pela F5 resolviam isso com uma iRule fazendo persistência Universal (UIE) chaveada no cabeçalho Mcp-Session-Id: detectar os endpoints MCP, ler o token, prender a sessão. Funcionava, e era exatamente o tipo de código-cola que um recurso de plataforma deveria um dia substituir.
+
+Ao lado do trabalho de protocolo, o 21.0 adicionou integrações de armazenamento S3 voltadas a cargas de IA, o lado de dados de pipelines RAG, embeddings, fine-tuning, inferência em lote e distribuição de artefatos de modelo, de modo que a mesma caixa que fica à frente dos endpoints MCP também pode ficar no caminho do armazenamento com egresso controlado.
+
+## 21.1: persistência nativa, o perfil aimcp
+
+O BIG-IP 21.1.0 substitui a iRule por um tipo real de persistência. O LTM ganha um perfil de persistência MCP, entregue como `aimcp`, e as release notes da F5 descrevem o mecanismo com precisão: o TMM fornece ao cliente um valor de Mcp-Session-ID encapsulado e criptografado, garantindo continuidade de sessão e segurança ao mesmo tempo. O material de lançamento da F5 descreve o comportamento como muito parecido com a persistência por cookie: uma vez que o servidor MCP emite um ID de sessão, o tráfego subsequente que carrega esse ID é roteado para o mesmo membro do pool. O detalhe do encapsulamento merece uma pausa. O valor que o cliente guarda não é o identificador bruto de sessão do backend; o TMM o criptografa e encapsula, então o token que transita pelo cliente não pode ser trivialmente reproduzido contra outro membro nem vaza a nomenclatura do backend. Quem conhece como a persistência por cookie do BIG-IP codifica e opcionalmente criptografa o cookie do membro reconhece a mesma filosofia aplicada a um protocolo de IA. O [explicador de métodos de persistência](/tools/f5-persistence-method-explainer) coloca o aimcp em contexto ao lado dos métodos clássicos.
+
+O 21.1 também adiciona suporte experimental ao A2A, o protocolo Agent2Agent, com balanceamento de carga para tráfego A2A e logging e visibilidade via iRules, um sinal de para onde essa trilha vai: não apenas clientes falando com servidores de ferramentas, mas agentes falando com agentes pelo mesmo plano de dados.
+
+## 21.1: o WAF aprende o modelo de ameaça
+
+A segunda metade da versão é protetiva. O Advanced WAF no 21.1 ganha inspeção do protocolo MCP com um template de política de segurança dedicado, o MCP Protection Policy, mirando as classes de ataque que o OWASP MCP Top 10 cataloga: tool poisoning, exposição de segredos, injeção de prompt e de ferramenta e seus parentes. O conjunto de recursos parece um WAF que de fato conheceu tráfego MCP: detecção de injeção de prompt e de ferramenta nos payloads JSON-RPC, proteção contra SSRF para as chamadas de saída que uma invocação de ferramenta pode disparar, mascaramento Data Guard para que segredos e padrões sensíveis não saiam nas respostas, e validação de JWT para os tokens que autenticam clientes MCP. O template adiciona seu próprio tipo de página de bloqueio, e a aplicação expõe o ID de sessão MCP nos cabeçalhos de resposta e o ID de requisição MCP no corpo da resposta, o que torna prático correlacionar um bloqueio a uma chamada de ferramenta específica. Como é um template de política, tudo sobre como ele aplica é legível como qualquer política ASM; o [explicador de políticas declarativas](/tools/f5-awaf-declarative-policy-explainer) se aplica sem mudanças.
+
+Uma ressalva merece negrito nas suas notas de projeto, direto da documentação da versão: respostas em streaming SSE não passam pela inspeção do lado da resposta. As proteções do lado da requisição, a detecção de injeção, as checagens de SSRF e a validação de JWT, veem tudo; mas uma resposta transmitida como Server-Sent Events não é retida para a limpeza de resposta estilo Data Guard. Se o seu modelo de ameaça inclui exfiltração de segredos na saída do modelo, o caminho de streaming precisa de um controle compensatório, porque o WAF é honesto em não ser um ali.
+
+## Antes de ligar
+
+Três verificações, em ordem. Primeira, plataforma: o 21.x roda apenas em rSeries, VELOS e Virtual Edition, então um parque iSeries permanece no 17.x e fora deste conjunto de recursos por completo. Segunda, perfis: o perfil de persistência MCP e o template do WAF pressupõem que o virtual server já fala MCP, perfis HTTP mais JSON mais SSE, então adapte esses primeiro e confirme que os limites de tamanho comportam seus payloads. Terceira, sessões: se você carregou a iRule de persistência da era 21.0, aposente-a ao anexar o aimcp em vez de rodar as duas, um dono por token de sessão. A [visão geral do 21.x](/learn/bigip-21x-whats-new) situa tudo isso na história mais ampla da versão.

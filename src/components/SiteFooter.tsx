@@ -181,7 +181,7 @@ export default async function SiteFooter() {
           </a>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           {/* The quiet door to the not-serious shelf (PRIME 04/07/2026). */}
-          <Link href="/dev-fun" className="footer-contribute-link">
+          <Link href="/dev/fun" className="footer-contribute-link">
             /dev/fun
           </Link>
         </p>

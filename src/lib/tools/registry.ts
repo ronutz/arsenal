@@ -40,6 +40,8 @@ import { run as f5CipherStringExpanderRun } from "./f5-cipher-string-expander";
 import { run as f5SslProfileExplainerRun } from "./f5-ssl-profile-explainer";
 import { run as f5xcServicePolicyExplainerRun } from "./f5xc-service-policy-explainer";
 import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
+import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
+import { runFromJson as faultHypothesisBuilderRun } from "./fault-hypothesis-builder";
 import { run as f5BigipLicenseExplainerRun } from "./f5-bigip-license-explainer";
 import { run as f5AwafDeclarativePolicyRun } from "./f5-awaf-declarative-policy-explainer";
 import { run as f5AwafEvasionRun } from "./f5-awaf-evasion-explainer";
@@ -64,6 +66,7 @@ import { run as f5AwafSigRun } from "./f5-awaf-signature-accuracy-risk";
 import { run as f5AwafDiffRun } from "./f5-awaf-policy-diff";
 import { run as hashRun } from "./hash";
 import { run as hmacRun } from "./hmac";
+import { run as curlCommandBuilderRun } from "./curl-command-builder";
 import { run as httpRequestTranslatorRun } from "./http-request-translator";
 import { run as ipv6Run } from "./ipv6";
 import { run as irulesEventOrderRun } from "./f5-irules-event-order";
@@ -121,6 +124,8 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "public-suffix", structured: true, run: (input) => publicSuffixRun({ host: input }) },
   { slug: "letsencrypt-rate-limits", structured: true, run: (input) => letsEncryptRateLimitsRun({ names: input }) },
   { slug: "f5-irules-runtime-calculator", structured: true, run: (input) => f5IrulesRuntimeCalculatorRun(JSON.parse(input)) },
+  { slug: "f5-bigd-thread-calculator", run: f5BigdThreadCalculatorRun },
+  { slug: "fault-hypothesis-builder", structured: true, run: faultHypothesisBuilderRun },
   { slug: "f5-irules-performance-linter", structured: true, run: (input) => f5IrulesPerformanceLinterRun(JSON.parse(input)) },
   { slug: "f5-release-cadence-calendar", structured: true, run: (input) => f5ReleaseCadenceCalendarRun(JSON.parse(input)) },
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },
@@ -148,6 +153,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-awaf-signature-accuracy-risk", structured: true, run: f5AwafSigRun },
   { slug: "f5-awaf-policy-diff", structured: true, run: f5AwafDiffRun },
   { slug: "hash", run: hashRun },
+  { slug: "curl-command-builder", structured: true, run: (input) => curlCommandBuilderRun(JSON.parse(input)) },
   { slug: "hmac", structured: true, run: (input) => hmacRun(JSON.parse(input)) },
   { slug: "http-request-translator", run: httpRequestTranslatorRun },
   { slug: "ipv6", run: ipv6Run },

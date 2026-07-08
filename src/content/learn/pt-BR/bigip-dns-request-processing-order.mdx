@@ -1,0 +1,38 @@
+---
+slug: bigip-dns-request-processing-order
+title: "Uma consulta, seis atendentes: a ordem de processamento do BIG-IP DNS"
+summary: "Uma consulta DNS que chega a um listener do BIG-IP pode ser respondida por iRules, pelo processamento DNSSEC, por um wide IP de GSLB, pelo DNS Express, por um cache DNS, pelo BIND local ou por um pool de servidores DNS reais. A F5 documenta uma precedência estrita entre eles, e a maioria das surpresas no BIG-IP DNS, do registro que responde quando você esperava GSLB ao Rapid Response silenciando o BIND, se resolve lendo essa ordem corretamente."
+concepts: ["big-ip dns", "gtm", "f5", "dns express", "dns cache", "bind", "listener", "unhandled query action"]
+relatedTools: ["f5-gslb-decision-flow", "f5-iquery-protocol-explainer"]
+relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longest-match", "how-iquery-connects-bigip-dns", "dns-message-header-and-flags"]
+category: networking
+order: 4
+status: machine-draft
+updated: "2026-07-08"
+---
+
+Uma caixa BIG-IP DNS não é um servidor DNS. É uma porta de entrada, o listener, atrás da qual até meia dúzia de atendentes diferentes esperam em uma fila documentada: iRules, processamento DNSSEC, wide IPs de GSLB, DNS Express, um de três tipos de cache DNS, a instância local do BIND e, por fim, um pool de servidores DNS reais. Toda consulta percorre essa fila em ordem, e o primeiro atendente capaz de responder, responde. Quase todo mistério de "por que recebi ESSA resposta" no BIG-IP DNS se dissolve quando você consegue recitar a fila.
+
+## Os respondedores e os resolvedores
+
+Ajuda separar os atendentes em duas famílias primeiro. Os respondedores têm respostas próprias: um wide IP de GSLB calcula uma resposta inteligente a partir de saúde e localização; o DNS Express serve uma zona que mantém como secundário autoritativo de alta velocidade, populada por transferência de zona; a instância local do BIND (a que o ZoneRunner gerencia) serve as zonas que vivem em seus arquivos. Os resolvedores vão buscar respostas em outro lugar: um cache em modo resolver ou validating resolver recursa a partir dos root hints (o sabor validating também verifica assinaturas DNSSEC), um cache em modo transparent apenas memoriza o que os servidores atrás dele disseram, e um pool LTM no listener encaminha consultas para servidores de nome reais. O BIG-IP consulta respondedores antes de resolvedores, que é exatamente o que se quer: respostas autoritativas e calculadas devem vencer buscas externas.
+
+## A ordem documentada
+
+O K14510 da F5 dá a precedência, e o K28650431 descreve a caminhada completa: o listener recebe o pacote, as iRules rodam primeiro, e então a maquinaria do perfil DNS assume em sequência, processamento DNSSEC, GSLB (a correspondência de wide IP), DNS Express, o cache DNS, o BIND local se o perfil habilitar Use BIND Server on BIG-IP, e então um pool LTM se houver um atribuído ao listener. Existe até um passo depois do fim: se o endereço do listener também for um self IP com a porta 53 aberta, o BIND do sistema responde o que nada mais respondeu. Duas posições nessa fila surpreendem com regularidade. Primeira: iRules estão acima de tudo, uma iRule que responde a consulta encerra a caminhada antes que o GSLB a veja, e é isso que torna iRules de DNS poderosas e perigosas ao mesmo tempo. Segunda: a correspondência de wide IP vem antes do DNS Express: se um nome é ao mesmo tempo um wide IP e um registro dentro de uma zona do DNS Express, o GSLB vence, e o manual confirma o corolário para cache, o sistema processa as requisições primeiro pelo DNS Express e só depois armazena as respostas em cache.
+
+## Onde uma consulta cai da fila
+
+Uma consulta que não corresponde a nenhum wide IP nem a nenhuma zona do DNS Express cai na Unhandled Query Action do perfil DNS, e essa pequena configuração decide o caráter inteiro do listener. Allow, o padrão, deixa a consulta continuar fila abaixo até o cache, o BIND ou o pool. Drop descarta em silêncio; Reject responde com recusa; Hint devolve uma referência aos servidores raiz; No Error devolve um sucesso vazio. Um listener pensado como fachada pura de GSLB e DNS Express não deveria virar resolvedor aberto por um Allow distraído; um listener pensado como resolvedor, obviamente, precisa dele.
+
+## Os três caches são três máquinas diferentes
+
+O objeto de cache DNS vem em três tipos de resolver, e escolher o errado é um erro clássico. O transparent fica na frente de outra coisa, tipicamente o pool de servidores DNS, e apenas memoriza as respostas que passam. O resolver faz a recursão ele mesmo, descendo a partir dos servidores raiz (root hints, a lista da InterNIC por padrão). O validating resolver adiciona validação DNSSEC a essa recursão. O próprio manual da F5 acrescenta uma recomendação de desempenho que vale repetir: envie os erros de cache para um pool de servidores DNS locais em vez da instância local do BIND, porque um processo BIND é mais lento que vários resolvedores externos.
+
+## O BIND é o último recurso, e às vezes é silenciado
+
+A instância local do BIND merece seu lugar no fim da fila: é o respondedor mais lento da caixa, e projetos modernos usam o ZoneRunner mais como superfície de edição cujas zonas alimentam o DNS Express por transferência do que como o que responde clientes. Existe também um modo que a remove da fila por completo: com o Rapid Response habilitado no perfil DNS, apenas GSLB e DNS Express funcionam, e consultas que não correspondem a nenhum dos dois seguem a rapid-response-last-action, drop por padrão, então registros que vivem apenas no ZoneRunner param de resolver. O K13850558 documenta exatamente essa surpresa, e ela ilustra bem o artigo inteiro: o registro existia, o atendente que o guardava simplesmente não estava mais na fila.
+
+## Lendo um listener como uma frase
+
+No conjunto, o perfil DNS de um listener se lê como uma frase sobre intenção. GSLB habilitado, DNS Express habilitado, sem cache, sem BIND, Unhandled Query Action em Drop: uma fachada autoritativa endurecida. GSLB desabilitado, cache transparent, pool atribuído: um encaminhador com cache. Cache resolver com validação: um resolvedor recursivo para clientes internos. Quando o comportamento não bate com a intenção, percorra a fila do K14510 do topo, iRules, DNSSEC, wide IPs, DNS Express, cache, BIND, pool, e descubra qual atendente respondeu fora de hora. O [explicador do fluxo de decisão GSLB](/tools/f5-gslb-decision-flow) retoma a história no passo do wide IP, e o [artigo sobre iQuery](/learn/how-iquery-connects-bigip-dns) cobre como o cérebro do GSLB aprende a saúde com que decide.

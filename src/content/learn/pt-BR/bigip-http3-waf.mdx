@@ -1,0 +1,36 @@
+---
+slug: bigip-http3-waf
+title: "WAF sobre QUIC: proteção web HTTP/3 no BIG-IP 21.1"
+summary: "O BIG-IP 21.1 estende o Advanced WAF, o Bot Defense e a proteção L7 DoS a virtual servers HTTP/3, com a mesma fidelidade de inspeção do HTTP/1.1 e do HTTP/2 e qualquer tipo de template de política. Os limites importam tanto quanto o recurso: apenas lado do cliente, sem DoS comportamental, sem criação de virtual server HTTP/3 pela UI do WAF, e a implementação de HTTP/3 do LTM continua experimental. Ao lado, o API Security ganha importação de OpenAPI 3.1 e o logging remoto ganha o formato Splunk key-value Extended."
+concepts: ["f5", "bigip", "waf", "http3", "quic", "openapi", "api security", "asm"]
+relatedTools: ["f5-awaf-declarative-policy-explainer"]
+relatedArticles: ["bigip-21x-whats-new", "bigip-ai-mcp"]
+category: networking
+order: 5
+status: machine-draft
+updated: "2026-07-08"
+---
+
+O HTTP/3 trocou o transporte sob a web: QUIC sobre UDP em vez de TCP, com criptografia alcançando camadas mais profundas do protocolo. Para um WAF que cresceu interpretando streams TCP, isso não é um incremento de versão, é um novo posto de escuta. O BIG-IP 21.1 é a versão em que a pilha de proteção web da F5 assume posição nele.
+
+## O que de fato chega
+
+Segundo as release notes do 21.1, a inspeção WAF de tráfego HTTP/3 do lado do cliente passa a ser suportada, e a cobertura é o trio completo de proteção: políticas do Advanced WAF, Bot Defense e proteção L7 DoS podem se associar a virtual servers com HTTP/3 habilitado. Dois detalhes na redação da F5 merecem ênfase. Primeiro, políticas de segurança de qualquer tipo de template podem ser associadas a um virtual server HTTP/3, então isto não é um modo especial de política com capacidade reduzida; a política que você construiu para HTTP/2 conceitualmente se transporta. Segundo, a F5 afirma explicitamente a mesma fidelidade de inspeção do HTTP/1.1 e do HTTP/2, nomeando as ameaças clássicas de payload, cross-site scripting e SQL injection, como cobertas. O transporte mudou; a superfície de ataque que o WAF lê não ganhou desconto. Como o objeto de aplicação continua sendo uma política ASM, tudo sobre ler uma política continua valendo, e o [explicador de políticas declarativas](/tools/f5-awaf-declarative-policy-explainer) funciona nelas sem mudanças.
+
+## Os limites, ditos com a clareza com que a F5 os diz
+
+Três limitações atuais moldam a implantação. Apenas lado do cliente: a proteção HTTP/3 se aplica onde o cliente conecta; o lado servidor do proxy não faz parte deste recurso. Sem BADOS: o DoS comportamental não é suportado em HTTP/3, então proteção L7 DoS aqui significa a maquinaria de assinaturas e limiares, não a camada de aprendizado comportamental. E sem criação de virtual server HTTP/3 pela UI do WAF: o virtual server nasce no lado LTM primeiro, e depois é protegido.
+
+A quarta ressalva é a maior e é arquitetural: a implementação de HTTP/3 subjacente no BIG-IP LTM continua experimental, com a F5 apontando para o K60235402 na visão geral do protocolo. Leia essa dependência corretamente: a camada WAF por cima é um recurso suportado do 21.1, mas ela se apoia em uma implementação de transporte que a própria F5 ainda rotula de experimental. Para produção, isso recomenda o HTTP/3 como adição ao lado dos listeners HTTP/1.1 e HTTP/2, e não como substituto, deixando os clientes que negociam HTTP/3 recebê-lo enquanto todo o resto pousa nos caminhos maduros.
+
+## OpenAPI 3.1 para o API Security
+
+A mesma versão permite que o API Security do Advanced WAF consuma arquivos OpenAPI Specification 3.1 pelo fluxo de importação existente, sem mudanças de configuração. A nota da F5 carrega uma cláusula de escopo que vale guardar: todos os arquivos OpenAPI 3.1.x são aceitos, mas os recursos de schema são suportados no nível da versão principal, então a semântica do 3.1.0 define o que o construtor de políticas entende. Se seus times de API migraram para o 3.1 pelo alinhamento com JSON Schema e pelos webhooks, o arquivo de especificação que eles já mantêm agora alimenta o modelo de segurança positiva diretamente, e a eterna gambiarra de rebaixar specs para 3.0 por causa do WAF pode se aposentar.
+
+## Logging: Splunk key-value, agora em dois tamanhos
+
+O logging remoto de segurança de aplicação ganha um formato: Splunk Key-Value Pairs Extended, que enriquece os eventos com um elemento XML violation_details trazendo contexto adicional da violação, enquanto o formato existente é renomeado para Splunk Key-Value Pairs Basic. A letra miúda operacional é uma porta de mão única: configurações que usam o formato Extended não carregam em versões que não o suportam, então um UCS ou config sync que viaje para trás em versão não pode levar perfis de logging Extended.
+
+## Lendo a versão como um movimento só
+
+Junte os três itens e a história de WAF do 21.1 é sobre encontrar o tráfego onde ele está indo: o transporte que os clientes estão adotando (HTTP/3), o formato de contrato que os times de API estão escrevendo (OpenAPI 3.1) e o nível de detalhe de SIEM que os analistas vivem pedindo (key-value Extended). A [visão geral do 21.x](/learn/bigip-21x-whats-new) situa isso ao lado do outro item de destaque do WAF na versão, a proteção do protocolo MCP, que o [aprofundamento de IA e MCP](/learn/bigip-ai-mcp) cobre por completo.

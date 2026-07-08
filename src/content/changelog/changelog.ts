@@ -52,6 +52,123 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-08",
+    time: "11:05",
+    kind: "tool",
+    title: "Operations & Fieldcraft opens with the Fault Hypothesis Builder",
+    body: "A new tool family for operational judgment, piloted end-to-end per D-86. Describe a fault in six structured fields and 25 deterministic rules rank hypotheses to test across 13 fault domains, each with evidence to collect and the signals that would support or weaken it, plus an exportable Markdown worksheet. It structures, it never diagnoses; the verification model is rule-firing snapshot vectors, pinned in CI. A paired method article covers hypothesis-driven fault isolation, and four follow-on fieldcraft tools are admitted to the queue pending the post-pilot review.",
+    tools: ["fault-hypothesis-builder"],
+    articles: ["fault-isolation-first-hour"],
+  },
+  {
+    date: "2026-07-08",
+    time: "09:10",
+    kind: "feature",
+    title: "The developer wing gets an index, and a green room opens: /dev, /dev/fun, /dev/other",
+    body:
+      "/dev-fun moved to its canonical home at /dev/fun (old URLs 301), a small /dev index now fronts the wing, and a new room opened: /dev/other, for tools that ask the live internet instead of computing locally. The room is marked by a deep-green background (the site palette hue-rotated, same darkness) and a visible notice stating exactly how it differs: input leaves the browser only when you press Ask, it goes browser-direct to the official registry (never to ronutz.com servers), and live answers carry no golden-vector guarantee. First resident: RDAP lookup, WHOIS the modern way — domain, IP, or AS number routed deterministically via vendored IANA bootstrap snapshots (RFC 9224), with the registry named before anything is sent, 15 golden vectors on the deterministic layers, and honest curl fallbacks where registries do not allow browser queries. The tools index gained a green door after the last tool.",
+    links: [
+      { label: "/dev", href: "/dev" },
+      { label: "/dev/other", href: "/dev/other" },
+      { label: "RDAP lookup", href: "/dev/other/rdap-lookup" },
+    ],
+  },
+  {
+    date: "2026-07-08",
+    time: "07:20",
+    kind: "tool",
+    title: "BigD calculator learns the platform-to-hyperthreading map",
+    tools: ["f5-bigd-thread-calculator"],
+    body:
+      "Type the platform instead of guessing the formula: per F5's own platform documentation, rSeries splits down the middle (r5000/r10000/r12000 hyperthreaded, two vCPUs per core; r2000/r4000 physical cores only), VELOS tenants run on hyperthreads (HT-Split per K15003), iSeries and VIPRION count hyperthreads in F5's sizing language but cannot run 21.x (shown as context with that caveat), and Virtual Edition depends on the host (check lscpu). \"8 r10900\" now selects the hyperthreaded formula, \"16 r4800\" the normal one; an explicit ht/normal word still overrides the platform default. Golden vectors grew from 13 to 23; the platform map is sourced from the rSeries/VELOS clouddocs pages and K15003, fetched 2026-07-08.",
+    links: [
+      { label: "Open the calculator", href: "/tools/f5-bigd-thread-calculator" },
+      { label: "The 21.x ops story", href: "/learn/bigip-inplace-upgrade-and-64bit" },
+    ],
+  },
+  {
+    date: "2026-07-08",
+    time: "05:55",
+    kind: "content",
+    title: "Five Learn articles complete the BIG-IP 21.x pack",
+    body:
+      "The 21.x series is now whole. New today, en + pt-BR: the ops story (in-place upgrade with Dry Run and its two honest limits, the 64-bit control plane, the OOM ladder, MCPD worker threads, iControl REST rate limits, UCS platform-migrate validate); WAF over QUIC (HTTP/3 protection with its four stated limits, OpenAPI 3.1, Splunk key-value Extended); DNS as a policy engine (multi-RPZ: 65,535 zones, precedence, TSIG HMAC-SHA-512, the full action set, per-FQDN walled gardens); F5OS 2.0 from the tenant's seat (cloud-init with DO/AS3, per-port UDP RRDAG fine print, Q-in-Q on VELOS); and access & identity (RFC 7591 DCR, native system-browser SAML, Access IPsec constraints, ES13, ARM64). Grounded verbatim in F5's 21.1.0 and 21.0.0 release notes, the 21.1 GA announcement, and K4309 / K60235402 / K86001294, fetched 2026-07-08.",
+    links: [
+      { label: "The 21.x ops story", href: "/learn/bigip-inplace-upgrade-and-64bit" },
+      { label: "WAF over QUIC", href: "/learn/bigip-http3-waf" },
+      { label: "Multi-RPZ", href: "/learn/bigip-dns-multi-rpz" },
+      { label: "F5OS 2.0", href: "/learn/f5os-2-0-whats-new" },
+      { label: "Access & identity", href: "/learn/bigip-21x-access-identity" },
+    ],
+  },
+  {
+    date: "2026-07-08",
+    time: "05:50",
+    kind: "tool",
+    title: "New tool: BigD thread calculator",
+    tools: ["f5-bigd-thread-calculator"],
+    body:
+      "BIG-IP 21.1 rebuilt bigd as a multi-threaded single instance serving up to 15,000 control-plane monitors, and documented the automatic thread count: (vCPUs \u00d7 6) \u00f7 10 on hyperthreaded systems, (vCPUs \u00f7 2) \u2212 1 on normal ones, with bigd.numprocs as a manual override capped at the vCPU count (0 = automatic). The calculator encodes both formulas verbatim, shows the exact value and its whole-thread floor when the arithmetic lands on a fraction (F5 states no rounding rule, so the tool says so instead of guessing), and surfaces the override cap and the monitor ceiling. 13 golden vectors; formulas re-verified against F5 techdocs 21.1.0 on 2026-07-08. Pairs with the new ops article.",
+    links: [
+      { label: "Open the calculator", href: "/tools/f5-bigd-thread-calculator" },
+      { label: "The 21.x ops story", href: "/learn/bigip-inplace-upgrade-and-64bit" },
+    ],
+  },
+  {
+    // ViewToggle island (data-view on <main>, CSS-only re-flow) + the Fortinet
+    // hub dot recolor requested by PRIME the same day.
+    date: "2026-07-08",
+    time: "04:30",
+    kind: "feature",
+    title: "List view for the Tools and Learn indexes and the vendor hubs",
+    links: [
+      { label: "Tools", href: "/tools" },
+      { label: "Learn", href: "/learn" },
+    ],
+    body:
+      "Both indexes and the four vendor hubs now offer two densities. Cards remains the default; the new List view re-flows the very same entries into compact catalogue-style rows, name, a one-line summary, and the category and vendor chips, for fast scanning of a long index. The choice sits next to the category filter, is remembered on your device (per index, and once for all hubs), and needs no page reload; with JavaScript off the pages simply stay on cards. Also in this update: the Fortinet dot on the vendor hub strip and chips is now orange, keeping it clearly distinct from F5's red at dot size.",
+  },
+  {
+    // PKG-BIGIP21 step (b): the two marquee deep-dives following the flagship.
+    // Facts re-confirmed 2026-07-08 against techdocs 21.1.0 New Features, the
+    // F5 21.1 GA blog, DevCentral what's-new-21.1, and the 21.0 LTM profiles
+    // manual (Model Context Protocol on BIG-IP).
+    date: "2026-07-08",
+    time: "03:40",
+    kind: "content",
+    title: "Two BIG-IP 21.x deep-dives: AI/MCP, and post-quantum TLS",
+    links: [
+      { label: "AI and MCP", href: "/learn/bigip-ai-mcp" },
+      { label: "Post-quantum TLS", href: "/learn/bigip-post-quantum-tls" },
+    ],
+    body:
+      "The two marquee themes of the 21.x line, each in full. AI Traffic on BIG-IP walks MCP from the 21.0 foundation (HTTP, JSON, and SSE profiles, iRule-based session pinning, S3 integrations for AI workloads) to 21.1's native aimcp persistence profile, where TMM hands the client a wrapped and encrypted Mcp-Session-ID, and the Advanced WAF MCP Protection Policy template aimed at the OWASP MCP Top 10, with the caveat that matters: SSE streaming responses bypass response-side inspection. Post-Quantum TLS traces the ML-KEM hybrid lineage from X25519MLKEM768 in the 17.5 era to 21.1's SecP256r1MLKEM768 and SecP384r1MLKEM1024 on both client and server side per FIPS 203, plus X25519 hardware acceleration via Intel QAT on by default, TLS 1.3 and DTLS 1.2 parent-profile defaults, the OCSP nonce, C3D enhancements, and a rollout plan that breaks no legacy client. In English and Portuguese, verified against F5's release notes, manuals, and launch announcements.",
+  },
+  {
+    // Completes the seven queued BIG-IP fundamentals articles (six shipped
+    // 2026-07-03); precedence chain verified against F5 K14510 via K28650431,
+    // the DNS Services manual (DNS Express + Caching chapters), and K13850558.
+    date: "2026-07-08",
+    time: "02:45",
+    kind: "content",
+    title: "New Learn article: the BIG-IP DNS request processing order",
+    links: [{ label: "Read it", href: "/learn/bigip-dns-request-processing-order" }],
+    body:
+      "One query, six answering machines: what actually answers a DNS query arriving at a BIG-IP listener, in F5's documented precedence, iRules first, then DNSSEC processing, the GSLB wide IP match, DNS Express, the DNS cache, the local BIND server, and finally an LTM pool, with the self-IP port 53 edge case at the very end. Covers the responders-versus-resolvers split, the Unhandled Query Action choices, the three DNS cache types, F5's pool-over-BIND recommendation, and the Rapid Response mode that silently removes BIND from the line. In English and Portuguese, grounded in F5 K14510 and K28650431, the BIG-IP DNS Services manual, and K13850558.",
+  },
+  {
+    // curl command builder: 27-protocol coverage, per-protocol explainer
+    // panels driven by the same table as the assembler, canonical flag order,
+    // 11 golden vectors. Inverse of http-request-translator.
+    date: "2026-07-07",
+    time: "20:30",
+    kind: "tool",
+    title: "New tool: curl command builder",
+    tools: ["curl-command-builder"],
+    body:
+      "Pick any of the 27 protocols curl speaks, from HTTPS and SFTP to MQTT, IMAP, and DICT, fill in protocol-aware fields, and get the exact command assembled in one canonical flag order with every flag explained. Per-protocol explainer panels show what each protocol is, its default port, and its TLS posture. Warns on -k, on cleartext protocols, on passwords placed on the command line, and on curl's form-encoded -d default. The inverse of the HTTP request translator. Local and offline; nothing is executed.",
+  },
+  {
     // BIG-IP 21.x flagship overview article (en + pt-BR native), opening the
     // PKG-BIGIP21 pack: version-numbering story, platform/lifecycle rules, and
     // a themed tour of 21.0 + 21.1. Verified against F5 primary sources.
@@ -160,7 +277,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "22:40",
     kind: "feature",
     title: "Two more Boss-Key Screens: MS-DOS Defrag and Copy II PC",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body: "The Boss-Key Screen gallery gains two animated DOS disk utilities: the MS-DOS 6 defragmenter with its cyan block map, and Central Point's Copy II PC copying a floppy track by track. Both animate with CSS only and respect reduced-motion.",
   },
   {
@@ -185,9 +302,9 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "20:52",
     kind: "feature",
     title: "Boss-screens viewer: grouped, with a jump navigator",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
-      "The boss-key screen gallery on /dev-fun now organizes its 76 screens into six families, home computers, PC hardware and POST, DOS software, operating systems and servers, online services and BBSes, and network analysis, each in its own labelled section. A jump navigator sits on top, the same category-nav pattern used by the Tools and Learn indexes, so you can skip straight to a family instead of scrolling one long grid. Group labels are localized (English and Portuguese, other locales via English fallback); the cards, thumbnails, and fullscreen overlay are unchanged.",
+      "The boss-key screen gallery on /dev/fun now organizes its 76 screens into six families, home computers, PC hardware and POST, DOS software, operating systems and servers, online services and BBSes, and network analysis, each in its own labelled section. A jump navigator sits on top, the same category-nav pattern used by the Tools and Learn indexes, so you can skip straight to a family instead of scrolling one long grid. Group labels are localized (English and Portuguese, other locales via English fallback); the cards, thumbnails, and fullscreen overlay are unchanged.",
   },
   {
     date: "2026-07-06",
@@ -213,7 +330,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "18:26",
     kind: "feature",
     title: "Keyboard shortcut: press F for the dev-fun index",
-    links: [{ label: "dev-fun index", href: "/dev-fun" }],
+    links: [{ label: "dev-fun index", href: "/dev/fun" }],
     body:
       "The site-wide keyboard shortcuts gain F, which jumps to the dev-fun landing page (joining B for the boss key, M for the Mega Brain console, and Z for Buzzword Bingo). Like every shortcut it is rebindable in Settings and inert while you are typing in a field. Separately, the PCBoard boss screen now shows a handle at its login prompt, matching how PCBoard boards actually identified callers.",
   },
@@ -231,7 +348,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:41",
     kind: "content",
     title: "Two professional tools close out the boss-screen set",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The retro collection reaches 68 with the pro tools that ran the network room: the Network General Sniffer, the DOS protocol analyzer that named the whole category and whose menu here is taken verbatim from a Sniffer v4.4 tutorial, and the VMware ESXi 6.7 DCUI, the bare-metal hypervisor's yellow-and-grey console with its F2-to-configure, F12-to-shut-down legend. Both were checked against period sources, from the Sniffer's own manual description to VMware's release records.",
   },
@@ -240,7 +357,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "15:23",
     kind: "content",
     title: "The 128K Spectrum family: +2A and +3 join, and the 128 menu is corrected",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The ZX Spectrum 128 boot menu was fixed to show the machine's real options (Tape Loader, 128 BASIC, Calculator, 48 BASIC) with no spurious copyright line, and two new screens join it: the Amstrad-era ZX Spectrum +2A and +3, both showing the shared +3 ROM menu (Loader, +3 BASIC, Calculator, 48 BASIC) and the (c)1982, 1986, 1987 Amstrad Plc. line, matched against a real-hardware photo and the official +3 manual.",
   },
@@ -249,7 +366,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:58",
     kind: "content",
     title: "TK90X and TK95 boot screens corrected against real hardware",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "Photographs of real Microdigital hardware corrected two things on these boot screens. Both machines show an eight-colour test bar (the ZX Spectrum bright palette) that was missing before: the TK90X a thin horizontal bar, the TK95 a taller field of vertical colour bands. The TK95's boot line was also fixed to read Microdigital TK95, its actual name, replacing a line taken from a mislabelled Spanish-variant ROM dump. A reminder that a ROM dump is only good evidence when it is the right ROM.",
   },
@@ -258,7 +375,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:45",
     kind: "content",
     title: "The GUI and online era arrives: six more boss screens",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The retro collection reaches 64 with the interfaces that carried computing from the command line into the graphical, networked age: Windows for Workgroups 3.11 Program Manager, the OS/2 Warp Workplace Shell desktop, the classic Macintosh Finder with its Trash, NCSA Mosaic opening the web, and the two services that first put millions online, CompuServe with its numbered menu and AOL with its Welcome screen. Framing facts were checked against period sources, from IBM and Microsoft histories to NCSA's own account of Mosaic.",
   },
@@ -267,7 +384,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "14:26",
     kind: "content",
     title: "TK90X and TK95 boot screens: the rainbow stripes are gone",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The Microdigital TK90X and TK95 retro screens were showing four colour bars that the real machines never display at power-on: those stripes belong to the Spectrum's logo and case motif, not the boot screen, which is plain black text on a paper-white background. Both now boot the way the hardware does, to a blank white screen with only the copyright line at the bottom (TK90X - Color Computer and TK Color Computer), verified byte-for-byte against ROM dumps and a real-hardware boot video.",
   },
@@ -276,7 +393,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:55",
     kind: "content",
     title: "Ten DOS-era workhorses join the boss screens",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The retro screen collection jumps to 58 with the software that ran offices and small businesses: XTreePro and XTreeGold, dBASE II at its dot prompt, a Clipper Summer '87 compile with its preserved copyright banner, Borland SideKick popping over a DOS session, MultiMate Advantage, Professional Write, Harvard Graphics, Microsoft Works, and Ami Pro, the first fully functional Windows word processor. Every dated fact was checked against period sources, from the XTree fan archive's command list to Microsoft's own history pages.",
   },
@@ -285,7 +402,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:24",
     kind: "content",
     title: "Three BBS screens, and the TK90X and TK95 set right",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The retro screen collection reaches 48 with the other side of the modem: RemoteAccess waiting for a caller on the sysop's console, Oblivion/2's scene-styled front door, and Telegard's classic main menu. The TK90X and TK95 boot screens were also corrected: the real machines boot to their own names (TK90X - Color Computer and TK Color Computer), verified character by character against ROM dumps and real-hardware video, replacing an inaccurate Sinclair-style line.",
   },
@@ -294,7 +411,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "12:34",
     kind: "content",
     title: "Three deep-cut boss screens: NetWare, PCBoard, and Videotexto",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The retro screen collection grows to 45 with three long-requested additions: the Novell NetWare 3.12 console running MONITOR.NLM (its utilization figure ticking about once a second, the way the real screen refreshed), a PCBoard BBS session dialing Clark Development's own Salt Air support board at 2400 bps, and the TELESP Videotexto index painting line by line the way Brazil's 1982 videotex service did over a 1200/75 bps modem link.",
   },
@@ -303,7 +420,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "05:10",
     kind: "content",
     title: "Two more retro boot screens, and a fix to a third",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The hidden retro boot-screen collection gains the Microdigital TK-82C (a ZX81 clone, the machine this site's author first learned to program on) and the TK95 (the TK90X's Spectrum-clone successor), bringing the set to 42. The ZX81 and TK-82C screens now type a first line by themselves, the way those machines did. The TK90X screen was corrected: its ROM replaced the copyright symbol with a Greek delta, so its boot line now reads accurately. The screens in the viewer are also listed in alphabetical order.",
   },
@@ -320,7 +437,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "03:20",
     kind: "content",
     title: "Boss-key screens now hold a proper 4:3 monitor shape",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The retro boss-key screens are now framed like the CRT and TV displays these machines actually used, a 4:3 monitor that scales to fit the window and centers with letterboxing, rather than stretching. Previously each screen filled the full window height while its width followed its content, so a screen with only a line or two (a ZX Spectrum copyright line, an MSX prompt) became a tall, narrow strip, while a wide two-panel layout like Norton Utilities happened to look right. Every screen now shares the same correct proportions on any window size, from an ultrawide monitor to a phone.",
   },
@@ -400,7 +517,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "19:00",
     kind: "feature",
     title: "Full Apple coverage: the Apple I, the original Apple II, and the Macintosh (Happy Mac)",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The boss-key gallery now covers Apple's iconic early machines end to end, each checked against original documentation. New: the Apple I (1976), where Wozniak's 256-byte WozMon prints a backslash and a blinking cursor after Reset; the original Apple II (1977), which has no autostart ROM and comes up in the machine-language monitor at a * prompt (Ctrl-B enters Integer BASIC and its > prompt); and the Macintosh 128K (1984), with Susan Kare's friendly boot, a blinking floppy-with-a-question-mark that resolves into the smiling Happy Mac and Welcome to Macintosh. The existing //e screen was also corrected: it now shows the enhanced //e's Apple //e banner, which keeps it visually distinct from the Apple ][+ screen. Together with the II+, //c, and IIgs added earlier, that is seven Apple screens; the gallery now holds forty in all.",
   },
@@ -409,7 +526,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "18:15",
     kind: "feature",
     title: "Nine more boot screens: Apple ][+, //c, IIgs, Atari 800XL, TI-99/4A, MSX turbo R, and Brazilian clones",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "The boss-key gallery in /dev/fun grew by nine period-accurate boot screens, each checked against original documentation. New this round: the Apple ][+ (the plain Apple ][ banner and ] prompt), the Apple //c (Apple //c, then Check Disk Drive with no disk in the drive), the Apple IIgs (its Check Startup Device screen with the colour Apple logo sliding side to side), the Atari 800XL (deep blue Atari BASIC READY), the TI-99/4A (the cyan TEXAS INSTRUMENTS HOME COMPUTER title, press any key to begin), and the MSX turbo R (the logo assembling from the sides into MSX BASIC 4.0). Three are Brazilian machines from the market-reserve years: the Prologica CP-300 (the compact, disk-less TRS-80 Model III clone that boots straight to cassette BASIC), the Prologica CP-400 (the TRS-80 Color clone, a CoCo 2 running Extended Color BASIC), and the Unitron AP II (the faithful Apple II Plus clone with a Portuguese ROM). They join the existing screens in the same shuffled rotation (you see them all before any repeats), browse left and right while one is up, and Esc dismisses; all animations respect the reduced-motion setting.",
   },
@@ -418,7 +535,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:07",
     kind: "feature",
     title: "Customizable shortcuts, a settings page, ten boss-key screens, and a motion switch",
-    links: [{ label: "Boss-screens gallery", href: "/dev-fun/boss-screens" }],
+    links: [{ label: "Boss-screens gallery", href: "/dev/fun/boss-screens" }],
     body:
       "A big pass over the site's keyboard shortcuts and the /dev/fun corner. Shortcuts are now user-configurable: a new Settings page (linked in the footer) lets you rebind any shortcut key, with the choice saved on your device; press ? anywhere for a live cheat-sheet of the current bindings. New shortcuts were added alongside the originals: s opens search, / focuses it, h goes home, ? opens the cheat-sheet, and 1 to 5 jump to five go-to tools (CIDR, Base64, JWT, JSON to YAML, and the F5 hub). Language is now a saved preference too: a return visit to the site's home takes you to your preferred language, while any explicit /en/ or /pt-BR/ link is always honored as-is. The boss key grew from two disguises to ten period-accurate ones (Lotus 1-2-3, WordStar, VisiCalc, Norton Utilities, WordPerfect 5.1, dBASE III+, Turbo Pascal, the Windows blue screen, Norton Commander, and a Commodore 64 that types a program by itself), shuffled so you see them all before any repeats; while one is up, the left and right arrows browse the rest, and Esc dismisses. A new Boss-Key Screens gallery in /dev/fun lets you browse them by name, thumbnail, and a short note, and open any one fullscreen. Finally, the Mega Brain console got a motion switch in its title bar for anyone who prefers less movement (its explanatory banners now also hold still while the console shakes), complementing the system reduced-motion setting the site already respects.",
   },
@@ -427,7 +544,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "13:54",
     kind: "feature",
     title: "Site-wide keyboard shortcuts, and a Mega Brain console tune-up",
-    links: [{ label: "Mega Brain console", href: "/dev-fun/mega-brain" }],
+    links: [{ label: "Mega Brain console", href: "/dev/fun/mega-brain" }],
     body:
       "New single-key shortcuts on every page: b for the boss key (hide the page behind a 1980s work app until any key or click), t for the Tools index, l for the Learn index, m for the Mega Brain console, and z for Buzzword Bingo. They stay completely inert while you are typing (a focused text field, paste box, or search input keeps its keys) and when a modifier is held (so Ctrl+T and the like are never shadowed); they run entirely in the browser with no tracking, and are documented on the privacy and site-behavior page. Alongside that, the Mega Brain console got a tune-up: the FULL POWER and STOP controls moved into the window title bar as pills (FULL POWER a fixed-pink lightning pill, STOP a red octagonal emergency-stop button), the Mano Deyvin tribute overlay now dismisses on a click anywhere (fixing a mispointing cue and the sense that a timer was blocking it), and the /dev/fun label in the console frame is now a link back to the /dev/fun index, with a matching link added to Buzzword Bingo.",
   },

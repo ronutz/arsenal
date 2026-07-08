@@ -1507,5 +1507,21 @@
     "changesBody": "本网站、其工具、其内容、其代码以及本声明可能随时更改、失效或消失，恕不另行通知，且对任何人不承担义务。以本页面的当前版本为准。",
     "acceptBody": "使用本网站或其代码即表示您完全接受本声明。如果您不接受，您唯一的补救办法是停止使用本网站和代码。",
     "backHome": "返回首页"
+  },
+  "notFound": {
+    "sub": "页面未找到",
+    "quip": "是你的问题，不是我的。",
+    "bofhIntroPre": "工单已被",
+    "bofhIntroPost": "关闭。根本原因已存档：",
+    "bofhWait": "正在查询借口数据库…",
+    "bofhAgain": "重新打开工单",
+    "bofhAgainTitle": "重新打开只会产生新的借口，不会产生修复。",
+    "lostTitle": "你好像迷路了。这里有一个，从数字随机性中抽出：",
+    "badgeTool": "工具",
+    "badgeLearn": "文章",
+    "shuffling": "抽取中…",
+    "goToolbox": "前往工具箱",
+    "shuffleAgain": "再抽一次",
+    "home": "首页"
   }
 }

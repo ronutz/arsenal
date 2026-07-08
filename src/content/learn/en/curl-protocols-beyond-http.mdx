@@ -1,0 +1,46 @@
+---
+slug: curl-protocols-beyond-http
+title: "The 27 Protocols curl Speaks"
+summary: "curl is known as an HTTP tool, but the current tool speaks 27 URL schemes: file transfer over FTP, SFTP and SMB, mail over SMTP, POP3 and IMAP, MQTT publish-subscribe, LDAP lookups, and relics like Gopher, DICT and Telnet. Knowing the map, and which schemes start in cleartext, changes how you use it."
+concepts: ["curl", "protocols", "ftp", "sftp", "smtp", "imap", "mqtt", "tls"]
+relatedTools: ["curl-command-builder", "http-request-translator"]
+relatedArticles: ["reading-a-curl-command", "curl-security-flags", "curl-headers-auth-and-cookies", "curl-data-flags-and-content-type"]
+category: networking
+order: 95
+status: machine-draft
+updated: "2026-07-07"
+---
+
+Ask most engineers what curl does and the answer is "HTTP requests". True, and radically incomplete. The current curl tool speaks 27 URL schemes, and the official list on curl.se reads like a tour of networking history: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, MQTTS, POP3, POP3S, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS and WSS. This article walks the map: what each family is for, which schemes start inside TLS, and the curl semantics that surprise people the first time.
+
+## One tool, one grammar
+
+The reason one tool can cover this much ground is that curl treats everything as a URL-addressed transfer: a scheme, a host, and a protocol-flavored path. What changes per protocol is what "download" and "upload" mean. On HTTP a download is a GET and an upload with `-T` is a PUT. On FTP and SFTP they are file retrievals and stores. On SMTP, uploading a message means sending it. On MQTT, downloading a topic means subscribing to it, and posting data with `-d` means publishing. On POP3, a download fetches an email. The grammar stays constant; the verbs are reinterpreted.
+
+One more piece of the grammar: if you give curl a URL without a scheme, it guesses. The default guess is HTTP, but often-used hostname prefixes steer it, so a hostname starting with "ftp." is assumed to want FTP. Convenient interactively, and worth avoiding in scripts, where an explicit scheme documents intent.
+
+## The web family: HTTP, HTTPS, WS, WSS
+
+HTTP and HTTPS need no introduction; curl can speak HTTP/0.9 through HTTP/3 depending on build and flags, and this is where the rich request shaping lives: methods, headers, cookies, multipart forms, redirects, compression. WS and WSS are WebSocket: a bidirectional, TCP-like channel bootstrapped over an HTTP or HTTPS request, useful for poking at socket endpoints from a shell.
+
+## The transfer family: FTP, FTPS, SFTP, SCP, TFTP, SMB, SMBS, FILE
+
+This is the original curl heartland. Classic FTP starts in cleartext on port 21 and can upgrade the session to TLS; FTPS instead wraps the connection in TLS from the first byte, and its separate data connections have annoyed firewalls for decades. SFTP and SCP look similar from the command line but share only the transport: both run over SSH version 2, with SCP offering plain copy semantics and SFTP a fuller file protocol. TFTP is the UDP-based minimalist, unauthenticated by design, living in firmware-flash and network-boot land. SMB and SMBS reach Windows file shares, with a caveat the tool should say out loud: curl speaks SMB version 1, which modern servers frequently disable. And `file://` skips the network entirely, which makes it perfect for testing a pipeline with real curl syntax before pointing it at production.
+
+## The mail family: SMTP, POP3, IMAP and their TLS twins
+
+curl is a complete, if spartan, mail client. Sending is an SMTP upload: `-T message.eml` plus `--mail-from` and `--mail-rcpt` for the envelope. Receiving is a POP3 or IMAP download, with the IMAP URL selecting mailbox and message. Each of the three comes in two flavors: a cleartext port that can upgrade to TLS in-session (STARTTLS on SMTP and IMAP, STLS on POP3), and an implicit-TLS twin on its own port: SMTPS on 465, POP3S on 995, IMAPS on 993. The practical rule: on the upgrade-style flavors, add `--ssl-reqd` so the transfer fails rather than continue in cleartext if the server does not offer the upgrade.
+
+## Messaging, lookups, and the museum wing
+
+MQTT gives curl a foothold in IoT: version 3 of the publish-subscribe protocol, where subscribing is a download and publishing is `-d` data posted to a topic URL, with MQTTS as the TLS variant. LDAP and LDAPS pack a whole directory query, base DN, attributes, scope and filter, into one URL. Then the museum wing, still maintained and still occasionally exactly what you need: DICT queries dictionary servers with URLs like `dict://dict.org/d:curl`; Gopher, the pre-web document protocol, gets a modern GopherS twin; RTSP 1.0 talks to streaming media servers; and TELNET turns curl into an interactive raw-TCP client that sends stdin and prints whatever comes back.
+
+A historical footnote: older curl builds also listed the RTMP streaming family. It lives on only in builds linked against librtmp and is absent from the current official list, which is why tools targeting current curl treat it as legacy.
+
+## The cleartext map is the security map
+
+Sort the 27 schemes by TLS posture and a security checklist falls out. Nine start inside TLS: HTTPS, WSS, FTPS, SFTP, SCP, SMBS, SMTPS, POP3S, IMAPS, MQTTS, LDAPS (SFTP and SCP get theirs from SSH rather than TLS, same practical effect). A second group starts in cleartext but can upgrade in-session: FTP, SMTP, POP3, IMAP, LDAP. Everything else, HTTP, WS, TFTP, SMB, DICT, GOPHER, RTSP, TELNET, runs in the clear, full stop. Credentials sent over the third group cross the network readable; over the second group they do too, unless you force the upgrade. That is the whole argument for `--ssl-reqd`, and for reading the scheme before reading anything else in a command.
+
+## Try it
+
+The [curl command builder](/tools/curl-command-builder) turns this article into a workbench: pick any of the 27 protocols, get its explainer, fill protocol-aware fields, and copy the exact command with every flag explained. Its inverse, the [HTTP request translator](/tools/http-request-translator), reads a pasted command back to you.

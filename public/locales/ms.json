@@ -1507,5 +1507,21 @@
     "changesBody": "Laman, alatnya, kandungannya, kodnya, dan notis ini boleh berubah, rosak, atau hilang pada bila-bila masa, tanpa notis dan tanpa kewajipan kepada sesiapa. Versi yang terpakai ialah versi semasa halaman ini.",
     "acceptBody": "Dengan menggunakan laman ini atau kodnya, anda menerima notis ini sepenuhnya. Jika anda tidak menerimanya, satu-satunya remedi anda ialah berhenti menggunakan laman dan kod tersebut.",
     "backHome": "Kembali ke laman utama"
+  },
+  "notFound": {
+    "sub": "Halaman tidak ditemui",
+    "quip": "Puncanya anda, bukan saya.",
+    "bofhIntroPre": "Tiket ditutup oleh",
+    "bofhIntroPost": ". Punca direkodkan:",
+    "bofhWait": "menyemak pangkalan data alasan…",
+    "bofhAgain": "Buka semula tiket",
+    "bofhAgainTitle": "Membuka semula menghasilkan alasan baharu. Bukan penyelesaian.",
+    "lostTitle": "Anda nampak sesat. Ini satu, dipetik daripada kerawakan digital:",
+    "badgeTool": "ALAT",
+    "badgeLearn": "ARTIKEL",
+    "shuffling": "mengocok…",
+    "goToolbox": "Pergi ke kotak alat",
+    "shuffleAgain": "Kocok lagi",
+    "home": "Laman utama"
   }
 }
