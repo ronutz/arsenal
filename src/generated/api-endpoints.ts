@@ -41,6 +41,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_cert_renewal_planner",
     "tag": "PKI"
   },
+  "change-window-runbook-builder": {
+    "url": "https://ronutz.com/api/v1/change-window-runbook-builder",
+    "method": "GET",
+    "op": "run_change_window_runbook_builder",
+    "tag": "Operations & Fieldcraft"
+  },
   "cidr": {
     "url": "https://ronutz.com/api/v1/cidr",
     "method": "GET",

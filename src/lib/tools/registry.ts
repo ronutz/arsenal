@@ -42,6 +42,7 @@ import { run as f5xcServicePolicyExplainerRun } from "./f5xc-service-policy-expl
 import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
 import { runFromJson as faultHypothesisBuilderRun } from "./fault-hypothesis-builder";
+import { runFromJson as changeWindowRunbookBuilderRun } from "./change-window-runbook-builder";
 import { run as f5BigipLicenseExplainerRun } from "./f5-bigip-license-explainer";
 import { run as f5AwafDeclarativePolicyRun } from "./f5-awaf-declarative-policy-explainer";
 import { run as f5AwafEvasionRun } from "./f5-awaf-evasion-explainer";
@@ -126,6 +127,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-irules-runtime-calculator", structured: true, run: (input) => f5IrulesRuntimeCalculatorRun(JSON.parse(input)) },
   { slug: "f5-bigd-thread-calculator", run: f5BigdThreadCalculatorRun },
   { slug: "fault-hypothesis-builder", structured: true, run: faultHypothesisBuilderRun },
+  { slug: "change-window-runbook-builder", structured: true, run: changeWindowRunbookBuilderRun },
   { slug: "f5-irules-performance-linter", structured: true, run: (input) => f5IrulesPerformanceLinterRun(JSON.parse(input)) },
   { slug: "f5-release-cadence-calendar", structured: true, run: (input) => f5ReleaseCadenceCalendarRun(JSON.parse(input)) },
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },

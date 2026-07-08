@@ -1,0 +1,37 @@
+---
+slug: change-windows-that-do-not-become-incidents
+title: "Change Windows That Do Not Become Incidents"
+summary: "Most self-inflicted outages are changes that went wrong with no clean way back. The difference between a change and an incident is rarely the change itself; it is the runbook around it - what you verified before, how you sequenced it, what would make you stop, and whether the way back was written down and tested before you needed it."
+concepts: ["change management", "operations", "runbook", "rollback", "maintenance window", "incident response"]
+relatedTools: ["change-window-runbook-builder"]
+relatedArticles: ["fault-isolation-first-hour"]
+category: networking
+order: 7
+status: machine-draft
+updated: "2026-07-08"
+---
+A large share of serious outages are not attacks or hardware failures. They are changes: a configuration edited under time pressure, an upgrade that went sideways, a certificate swapped with the wrong chain, a firewall rule that blocked more than intended. The uncomfortable part is that these are the outages you cause yourself, which means they are also the ones a little structure prevents. The structure is a runbook, and a good one is less about the change and more about everything wrapped around it: what you confirmed before you touched anything, how you moved, what signal would make you stop, and whether the way back was a written procedure rather than a decision made under pressure.
+
+## The plan is mostly what happens before and after the change
+
+The actual command that makes the change is usually the smallest part of a good runbook. Most of the value is in the pre-flight and the close-out. Before you start, three things earn their place every time: a written scope (exactly what is changing, on which systems, and the precise window), a fresh backup of everything you will touch that you have confirmed is readable, and a health baseline captured now so that "working" has a definition to compare against afterward. The backup is the one people skip when they are confident, and it is the one that turns a bad change from an incident into an inconvenience. A backup you have not opened is a hope; take it, and confirm it restores before you rely on it.
+
+The close-out matters for a subtler reason. When the change succeeds, the new configuration is the good state - so persist it and take a fresh backup of it, because the next person to roll back should roll back to this state, not to the one before your change. Closing the ticket with what actually happened, including any deviation from the plan, is what makes the next change on this system start from the truth instead of from someone's memory.
+
+## Reversibility decides how much the plan leans on prevention
+
+Not all changes are equally recoverable, and the runbook should be shaped by which kind you have. An easily reversible change can afford to move quickly and lean on the rollback if something looks wrong. A change that is hard to reverse, or a genuine one-way door with no clean rollback at all, inverts the whole posture: prevention becomes the safety net, because back-out is not one. That means more verification before you start and during, a slower hand on the irreversible steps, and an agreed forward-fix plan for the case where something breaks and going back is not an option. The most dangerous combination in operations is a one-way change in critical production during business hours, and it is dangerous precisely because every one of those factors removes a layer of safety at once.
+
+This is also why an untested rollback deserves suspicion. A back-out that is written but never exercised is a common way to discover, at the worst possible moment, that the restore does not actually work - the backup was incomplete, a dependency was missed, the documented steps skip something everyone assumed. If a change is not easy to reverse, the rollback earns a test before the window, not during the incident.
+
+## Sequence to contain the blast radius
+
+How you move through the change decides how large a mistake becomes. The instinct under pressure is to apply the change everywhere at once and be done; the discipline is the opposite. Work in small, reversible increments where you can, and after each one, pause to confirm it did what you expected before continuing. On anything with more than one node - a load-balanced pool, an HA pair, a cluster - change one member first, verify it there, and only then roll across the rest, so a bad change costs you one member instead of the service. Where a device carries live sessions, drain it before you touch it rather than dropping active connections. The blast radius is not just a property of the change; it is a property of how you sequence it, and good sequencing turns a potential outage into a contained, observed step.
+
+Certain change types carry their own sharp edges worth naming in the plan. A certificate rotation breaks every client at once if the key and chain are wrong, so the material gets staged and verified offline before anything is installed, and the handshake gets tested end to end after. A DNS change does not take effect instantly; it propagates over the record's TTL, so the old answer lingers in caches and a mistake is not undone the moment you fix the record - which means timing the change around the TTL, and lowering it ahead of a cutover, belongs in the plan.
+
+## Decide what would make you stop before you start
+
+The single most valuable line in a runbook is the rollback trigger, and it has to be written before the change, not improvised during it. Under pressure, with a change half-applied and something looking wrong, the temptation to push on "just one more step" is strong and usually wrong. A trigger decided in advance - a specific error rate, a failed health probe, an elapsed time with no sign of success - converts that moment from a judgment call under stress into a procedure you already agreed to follow. Pair it with the back-out steps written out explicitly, and rollback stops being a decision and becomes a checklist. For a high-impact change, name the roles too: who runs the change, who watches monitoring, and who makes the rollback call, so that when the trigger trips there is no debate about whose call it is.
+
+None of this replaces the change-approval process, vendor support, or your own production review, and a runbook is not an approval - it does not make a change safe, it makes a change organized. What it buys is narrower and real: a change that is scoped, sequenced, reversible where it can be, and watched, with a written way back that someone tested. The Change Window Runbook Builder on this site encodes this as a deterministic assembler - describe the change, get a phased runbook with the risks it carries and readiness cautions about what you have not done yet - precisely so the plan exists on paper before the window opens, and so a human reviews and runs it rather than trusting it to work by itself.

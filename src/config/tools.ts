@@ -122,6 +122,7 @@ export const tools: ToolEntry[] = [
   // First Extreme tool: populates the Extreme vendor hub.
   { id: "exos-config-explainer", sub: "switching", href: "/tools/exos-config-explainer", category: "networking", vendors: ["extreme"], available: true },
   { id: "fault-hypothesis-builder", href: "/tools/fault-hypothesis-builder", category: "operations", available: true },
+  { id: "change-window-runbook-builder", href: "/tools/change-window-runbook-builder", category: "operations", available: true },
 ];
 
 /** Tools that are live and linkable. */

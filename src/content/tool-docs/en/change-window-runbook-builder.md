@@ -1,0 +1,17 @@
+## What it does
+
+Describe a planned change through six structured fields - change type, environment, blast radius, reversibility, the window, and the safeguards already in place - and a fixed registry of 22 original rules fires deterministically over that description. Out comes an ORDERED RUNBOOK assembled into six fixed phases: pre-flight, approvals and comms, execution, verification, rollback triggers and back-out, and close-out. Alongside it, the tool surfaces the risks the plan carries (severity-tagged: a one-way change, a broad blast radius, a business-hours window on a critical system) and readiness cautions about the input itself - no backup marked as taken, a rollback not marked as tested, monitoring not ready. Five domain presets (generic, load-balancer, dns, tls-pki, firewall) flavor the command hints where one applies. One click exports a Markdown runbook ready for the change ticket or the bridge, with your checked steps marked.
+
+## What it deliberately is not
+
+This tool structures and sequences; it never approves a change and never executes anything. It makes no network connections, asks for no credentials or secrets, and replaces neither the change-approval process nor production review. The runbook it assembles is a proposal to review and adapt against your own environment and standards - a human runs it and signs off. The free-text notes (summary, change detail, back-out owner) flow only into the exported runbook; they never influence which rules fire, so the engine's behavior stays fully deterministic.
+
+## How the runbook is assembled - and how it is verified
+
+Each rule is a pure predicate over the structured input; when it fires it pulls in a set of steps (each belonging to one fixed phase) and optionally a risk factor. A step referenced by several rules still appears once, ordered by the first rule that pulled it in; the phases themselves are always emitted in the same operational order, so the runbook reads top to bottom like a real one. Every change gets a baseline spine (scope it, baseline it, confirm approval, apply, verify against the baseline, watch, define a rollback trigger, close out), and the specifics layer on from the change type, the reversibility, the environment, the blast radius, the window, and the preset. The "Why these steps?" panel lists every fired rule with its reason, so the plan is auditable rather than oracular.
+
+Because there is no single "correct" runbook for an advisory tool, classic golden vectors do not apply. The verification model - the ruling set by the Fault Hypothesis Builder pilot for the whole Operations & Fieldcraft family - is RULE-FIRING SNAPSHOT VECTORS: for each test input, the build asserts exactly which rules fire, in registry order, the exact ordered step ids in each phase, the exact set of risk factors, and the exact set of readiness warnings. Thirteen vectors (eight scenarios, five rejects) pin the current registry; any drift in rules, steps, phase assignment, risks, or warnings breaks the build.
+
+## API input
+
+The API-parity entry takes a JSON object: `{"changeType", "environment", "blastRadius", "reversibility", "window", "safeguards": [], "preset", "notes": {"summary", "changeDetail", "backoutOwner"}}`. All fields except `notes` use the closed vocabularies shown in the form; an out-of-vocabulary value (including an unknown safeguard) is a format error, never a guess. `safeguards` may be an empty array.

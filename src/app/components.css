@@ -3345,13 +3345,13 @@
   line-height: 1.5;
 }
 .contact-feedback a {
-  color: var(--accent-cyan);
+  color: var(--accent-primary);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.15s ease;
 }
 .contact-feedback a:hover {
-  border-bottom-color: var(--accent-cyan);
+  border-bottom-color: var(--accent-primary);
 }
 
 /* Dev-only placeholder-email reminder (never shown in production). */
@@ -10005,8 +10005,8 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 .guide-toc-link:hover {
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
 }
 
 /* 1. Datasheet: a two-column label/value definition grid. */
@@ -10044,7 +10044,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   margin: 0 0 0.6rem;
 }
 .guide-qr-catlink {
-  color: var(--accent-cyan);
+  color: var(--accent-primary);
   text-decoration: none;
 }
 .guide-qr-catlink:hover {
@@ -10071,7 +10071,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   text-decoration: none;
 }
 .guide-qr-name:hover {
-  color: var(--accent-cyan);
+  color: var(--accent-primary);
 }
 .guide-qr-blurb {
   color: var(--text-secondary);
@@ -10111,7 +10111,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   color: var(--text-tertiary);
 }
 .guide-recipe-tool {
-  color: var(--accent-cyan);
+  color: var(--accent-primary);
   text-decoration: none;
   font-weight: 500;
 }
@@ -11137,6 +11137,74 @@ main[data-view="list"] .boss-viewer-blurb {
   display: flex;
   gap: 0.6rem;
   margin-top: 1rem;
+}
+
+/* ---- Change Window Runbook Builder (T-RB) ----------------------------------
+   Reuses the fieldcraft .fc-card frame; adds a phase header with a step number
+   and a risk list. The phased runbook reads top to bottom like a real one. */
+.rb-risks {
+  border-left: 3px solid var(--color-warning, #f59e0b);
+}
+.rb-risk-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.rb-risk-item {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.rb-risk-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.rb-risk-note {
+  color: var(--text-secondary);
+}
+/* Phase card: a numbered header, then the step checklist. */
+.rb-phase-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.rb-phase-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  color: var(--accent-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.rb-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.rb-step {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.rb-step label {
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.rb-step input {
+  margin-top: 0.28rem;
+  flex-shrink: 0;
 }
 
 /* Boss-screens controls row: jump-nav on the left, the view toggle trailing. */

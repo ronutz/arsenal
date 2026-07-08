@@ -437,6 +437,91 @@
         }
       }
     },
+    "/change-window-runbook-builder": {
+      "get": {
+        "tags": [
+          "Operations & Fieldcraft"
+        ],
+        "operationId": "run_change_window_runbook_builder",
+        "summary": "Change Window Runbook Builder",
+        "description": "Describe a planned change in six structured fields; a fixed rule set assembles an ordered runbook across six phases - with the risks the plan carries and readiness cautions about the input. Advisory structure to review and adapt, never an approval. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Operations & Fieldcraft"
+        ],
+        "operationId": "run_change_window_runbook_builder_post",
+        "summary": "Change Window Runbook Builder (POST)",
+        "description": "Describe a planned change in six structured fields; a fixed rule set assembles an ordered runbook across six phases - with the risks the plan carries and readiness cautions about the input. Advisory structure to review and adapt, never an approval. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/cidr": {
       "get": {
         "tags": [

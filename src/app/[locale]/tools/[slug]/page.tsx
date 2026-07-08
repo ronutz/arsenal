@@ -131,6 +131,8 @@ import F5BigdThreadCalculatorTool from "@/components/F5BigdThreadCalculatorTool"
 import { manifest as f5BigdThreadManifest } from "@/lib/tools/f5-bigd-thread-calculator";
 import FaultHypothesisBuilderTool from "@/components/FaultHypothesisBuilderTool";
 import { manifest as faultHypothesisBuilderManifest } from "@/lib/tools/fault-hypothesis-builder";
+import ChangeWindowRunbookBuilderTool from "@/components/ChangeWindowRunbookBuilderTool";
+import { manifest as changeWindowRunbookBuilderManifest } from "@/lib/tools/change-window-runbook-builder";
 import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check-date";
 import F5BigipLicenseExplainerTool from "@/components/F5BigipLicenseExplainerTool";
 import { manifest as f5BigipLicenseManifest } from "@/lib/tools/f5-bigip-license-explainer";
@@ -218,6 +220,11 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: FaultHypothesisBuilderTool,
     // The pilot's provenance is the original ruleset (D-18): no URL, by nature.
     sources: faultHypothesisBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "change-window-runbook-builder": {
+    Component: ChangeWindowRunbookBuilderTool,
+    // Provenance is the original change-runbook ruleset (D-18): no URL, by nature.
+    sources: changeWindowRunbookBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
   },
   "f5-bigd-thread-calculator": {
     Component: F5BigdThreadCalculatorTool,

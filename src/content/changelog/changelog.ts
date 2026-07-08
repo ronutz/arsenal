@@ -53,6 +53,16 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-08",
+    time: "18:20",
+    kind: "tool",
+    title: "Change Window Runbook Builder: the fieldcraft cluster's second tool",
+    body: "The Operations & Fieldcraft family gains its second member, built on the shared foundation the Fault Hypothesis Builder pilot established. Describe a planned change through six structured fields - change type, environment, blast radius, reversibility, the window, and the safeguards already in place - and a fixed, original 22-rule registry assembles an ordered runbook across six phases: pre-flight, approvals and comms, execution, verification, rollback triggers and back-out, and close-out. It surfaces the risks the plan carries (a one-way change, a broad blast radius, a business-hours window on a critical system) and readiness cautions about the input itself (no backup marked, rollback untested, monitoring not ready). Five domain presets flavor the commands. It structures and sequences, it never approves or executes: the runbook is a proposal to review and adapt, with a Why-panel exposing every fired rule, and a one-click Markdown export for the change ticket. Verified by rule-firing snapshot vectors, the same model the pilot set.",
+    tools: ["change-window-runbook-builder"],
+    articles: ["change-windows-that-do-not-become-incidents"],
+    links: [{ label: "Change Window Runbook Builder", href: "/tools/change-window-runbook-builder" }],
+  },
+  {
+    date: "2026-07-08",
     time: "17:30",
     kind: "feature",
     title: "Collapsible navigation, and the rooms become categories",
