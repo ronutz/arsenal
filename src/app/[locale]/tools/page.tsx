@@ -90,8 +90,15 @@ export default async function ToolsPage({
           {/* Category jump-nav */}
           {categories.length > 1 && (
             <div className="container certs-container tools-jumpnav" style={{ marginTop: "2rem" }}>
-              <nav className="category-nav" aria-label={t("jumpTo")}>
-                <span className="category-nav-label">{t("jumpTo")}</span>
+              {/* Collapsed by default (QF-2): native <details>, no JS. The
+                  summary is the always-visible header with a rotating chevron. */}
+              <details className="jumpnav">
+                <summary className="jumpnav-summary" aria-label={t("jumpTo")}>
+                  <span className="jumpnav-chevron" aria-hidden="true">
+                    &#9656;
+                  </span>
+                  {t("jumpTo")}
+                </summary>
                 <ul className="category-nav-list">
                   {categories.map((category) => (
                     <li key={category} data-jumpnav={category}>
@@ -101,7 +108,7 @@ export default async function ToolsPage({
                     </li>
                   ))}
                 </ul>
-              </nav>
+              </details>
             </div>
           )}
 
@@ -114,6 +121,8 @@ export default async function ToolsPage({
                 allLabel={t("filterAll")}
                 noneLabel={t("filterNone")}
                 emptyLabel={t("filterEmpty")}
+                moreLabel={t("filterMore")}
+                fewerLabel={t("filterFewer")}
                 groups={categories.map((category) => ({
                   key: category,
                   sectionId: category,
@@ -260,34 +269,51 @@ export default async function ToolsPage({
             </section>
           ))}
 
-          {/* Growth note */}
-          <section className="section">
+          {/* ---- The rooms as categories (QF-2) ----------------------------
+              The green and red rooms each get their own category section: one
+              explainer card, tinted to the room's palette, leading to its index.
+              This replaces the former quiet mono door-links and the growth note.
+              Rendered as .tools-grid single-card sections so they sit in the same
+              rhythm as the tool categories above. */}
+          <section id="room-green" className="section room-section room-section--green">
             <div className="container certs-container">
-              <p className="tools-note">{t("note")}</p>
+              <h2 className="tools-category room-section-heading">
+                {t("roomsGreenCategory")}
+              </h2>
+              <ul className="tools-grid">
+                <li className="tools-grid-item">
+                  <Link href="/dev/other" className="tools-card room-card">
+                    <h3 className="tools-card-name">{t("roomsGreenTitle")}</h3>
+                    <p className="tools-card-blurb">{t("roomsGreenDesc")}</p>
+                    <span className="room-card-cta">{t("roomsGreenCta")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </section>
+          <section id="room-red" className="section room-section room-section--red">
+            <div className="container certs-container">
+              <h2 className="tools-category room-section-heading">
+                {t("roomsRedCategory")}
+              </h2>
+              <ul className="tools-grid">
+                <li className="tools-grid-item">
+                  <Link href="/dev/out" className="tools-card room-card">
+                    <h3 className="tools-card-name">{t("roomsRedTitle")}</h3>
+                    <p className="tools-card-blurb">{t("roomsRedDesc")}</p>
+                    <span className="room-card-cta">{t("roomsRedCta")}</span>
+                  </Link>
+                </li>
+              </ul>
             </div>
           </section>
           {/* A quiet door to /dev/fun — the not-serious shelf. No emphasis.
-              Same treatment as the colophon's footer link. */}
+              Same treatment as the colophon's footer link. Kept quiet on
+              purpose: the toys are not a category, unlike the two rooms above. */}
           <p className="colophon-devfun mono">
             <Link href="/dev/fun" className="colophon-devfun-link">
               /dev/fun
             </Link>
-          </p>
-          {/* The green door: /dev/other, in the other environment's
-              characteristic tone, after the last listed tool (PRIME 08/07). */}
-          <p className="colophon-devfun mono devother-door">
-            <Link href="/dev/other" className="devother-door-link">
-              /dev/other
-            </Link>
-            <span className="devother-door-tagline">{t("devOtherTagline")}</span>
-          </p>
-          {/* The red door: /dev/out, the egress room, right after the green
-              one (PRIME 08/07: basic-colors triad). */}
-          <p className="colophon-devfun mono devout-door">
-            <Link href="/dev/out" className="devout-door-link">
-              /dev/out
-            </Link>
-            <span className="devout-door-tagline">{t("devOutTagline")}</span>
           </p>
         </article>
       </main>

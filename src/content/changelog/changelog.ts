@@ -53,6 +53,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-08",
+    time: "17:30",
+    kind: "feature",
+    title: "Collapsible navigation, and the rooms become categories",
+    body: "Two index-page navigators are now tidier. The \"Jump to\" section list is collapsed by default behind a single header you can expand - a native disclosure that needs no JavaScript and works from the keyboard - on the tools and Learn indexes, the vendor hubs, and the boss-screens viewer. The \"Show\" filter keeps All and None always visible, with the per-category chips tucked behind a small expander so the common actions stay one click away and the granular ones are there when you want them. And on the tools index, the green room and the red room are no longer quiet footnotes: each is now its own category section with a single explainer card, tinted in that room's own color, leading to its index.",
+    links: [
+      { label: "Tools", href: "/tools" },
+      { label: "The green room", href: "/dev/other" },
+      { label: "The red room", href: "/dev/out" },
+    ],
+  },
+  {
+    date: "2026-07-08",
     time: "15:40",
     kind: "tool",
     title: "The green room opens: four tools off the catalogue",

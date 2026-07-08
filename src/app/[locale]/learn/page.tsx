@@ -79,10 +79,15 @@ export default async function LearnIndexPage({
             )}
 
 
-            {/* Category jump-nav */}
+            {/* Category jump-nav, collapsed by default (QF-2): native <details>, no JS. */}
             {groups.length > 1 && (
-              <nav className="category-nav" aria-label={tTools("jumpTo")}>
-                <span className="category-nav-label">{tTools("jumpTo")}</span>
+              <details className="jumpnav">
+                <summary className="jumpnav-summary" aria-label={tTools("jumpTo")}>
+                  <span className="jumpnav-chevron" aria-hidden="true">
+                    &#9656;
+                  </span>
+                  {tTools("jumpTo")}
+                </summary>
                 <ul className="category-nav-list">
                   {groups.map((group) => (
                     <li key={group.category} data-jumpnav={group.category}>
@@ -92,7 +97,7 @@ export default async function LearnIndexPage({
                     </li>
                   ))}
                 </ul>
-              </nav>
+              </details>
             )}
 
             {/* Second nav utility: show/hide categories (scroll vs filter). */}
@@ -102,6 +107,8 @@ export default async function LearnIndexPage({
                 allLabel={tTools("filterAll")}
                 noneLabel={tTools("filterNone")}
                 emptyLabel={tTools("filterEmpty")}
+                moreLabel={tTools("filterMore")}
+                fewerLabel={tTools("filterFewer")}
                 groups={groups.map((group) => ({
                   key: group.category,
                   sectionId: group.category,

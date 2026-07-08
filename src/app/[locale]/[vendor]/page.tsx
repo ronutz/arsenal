@@ -121,7 +121,7 @@ export default async function VendorHubPage({
       </a>
       <Header />
 
-      <main id="main">
+      <main id="main" className="hub-main">
         <section className="section">
           <div className="container">
             <Breadcrumbs
@@ -157,9 +157,15 @@ export default async function VendorHubPage({
               const jumpLearn = vendorArticles.length > 0;
               const destinations = jumpTools.length + (jumpLearn ? 1 : 0);
               if (destinations < 2) return null;
+              // Collapsed by default (QF-2): native <details>, no JS.
               return (
-                <nav className="category-nav" aria-label={t("jumpTo")} style={{ marginBottom: "2.5rem" }}>
-                  <span className="category-nav-label">{t("jumpTo")}</span>
+                <details className="jumpnav" style={{ marginBottom: "2.5rem" }}>
+                  <summary className="jumpnav-summary" aria-label={t("jumpTo")}>
+                    <span className="jumpnav-chevron" aria-hidden="true">
+                      &#9656;
+                    </span>
+                    {t("jumpTo")}
+                  </summary>
                   <ul className="category-nav-list">
                     {jumpTools.map((group) => (
                       <li key={group.id} data-jumpnav={group.id}>
@@ -176,7 +182,7 @@ export default async function VendorHubPage({
                       </li>
                     )}
                   </ul>
-                </nav>
+                </details>
               );
             })()}
 
@@ -205,6 +211,8 @@ export default async function VendorHubPage({
                   allLabel={t("filterAll")}
                   noneLabel={t("filterNone")}
                   emptyLabel={t("filterEmpty")}
+                  moreLabel={t("filterMore")}
+                  fewerLabel={t("filterFewer")}
                   groups={filterGroups}
                 />
               );

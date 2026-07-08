@@ -2751,7 +2751,6 @@
     },
     "learnHeading": "Aprenda os conceitos",
     "lede": "Utilitários pequenos, rápidos e que respeitam a privacidade, rodando inteiramente no seu navegador. Nada do que você digita é enviado a lugar nenhum.",
-    "note": "Esta caixa de ferramentas está crescendo. Novas ferramentas são adicionadas aqui à medida que ficam prontas, cada uma com processamento local e de uso gratuito.",
     "nslookup-output-explainer": {
       "name": "explicador de saída do nslookup",
       "blurb": "Cole a saída real do nslookup e obtenha um detalhamento decodificado e explicado: o resolvedor usado, se a resposta é autoritativa, cada registro (com breakdown de campos de MX / SRV / SOA) e quaisquer falhas. Analisado inteiramente no seu navegador, nada é resolvido nem enviado a lugar algum.",
@@ -3983,7 +3982,17 @@
       "anchors": "Âncoras",
       "gvTitle": "vetores dourados: saídas corretas conhecidas fixadas no CI",
       "svTitle": "vetores de instantâneo: disparo de regras e classificação exatos fixados no CI (ferramenta consultiva)"
-    }
+    },
+    "filterMore": "Mais",
+    "filterFewer": "Menos",
+    "roomsGreenCategory": "A sala verde",
+    "roomsGreenTitle": "Fora do catálogo, ainda dentro do princípio",
+    "roomsGreenDesc": "Ferramentas que ainda não podem assinar o contrato do piso principal — um manifesto, vetores de ouro, uma forma fixa — porque seu formato ainda está se definindo. Iniciais ou peculiares, não inferiores, e rotuladas como tal. Mesma privacidade, mesma computação local.",
+    "roomsGreenCta": "Entrar na sala verde",
+    "roomsRedCategory": "A sala vermelha",
+    "roomsRedTitle": "Ferramentas que perguntam, não adivinham",
+    "roomsRedDesc": "O único lugar onde uma ferramenta envia sua entrada para fora do navegador — ao serviço oficial nomeado na tela, e somente quando você pressiona Perguntar. Respostas ao vivo da internet real, com as regras de engajamento declaradas em voz alta e o endpoint nomeado antes de qualquer envio.",
+    "roomsRedCta": "Entrar na sala vermelha"
   },
   "privacy_page": {
     "eyebrow": "Privacidade",
@@ -4376,7 +4385,7 @@
     "instructor": {
       "eyebrow": "Seu instrutor",
       "body": "Estes cursos são ministrados por Rodolfo Nützmann, instrutor técnico sênior que entrega treinamentos oficiais F5, Fortinet, Extreme Networks e Netskope no mundo todo, apoiado em uma carreira em redes e segurança iniciada em 1996 no lado da implementação. As credenciais, e o que dizem alunos anteriores, estão a um clique.",
-      "about": "Sobre o Rodolfo",
+      "about": "Sobre",
       "certs": "Certificações",
       "endorsements": "Depoimentos"
     }

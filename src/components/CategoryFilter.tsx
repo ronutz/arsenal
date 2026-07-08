@@ -55,6 +55,8 @@ export default function CategoryFilter({
   allLabel,
   noneLabel,
   emptyLabel,
+  moreLabel,
+  fewerLabel,
 }: {
   groups: CategoryFilterGroup[];
   /** Group label announced to assistive tech and shown before the chips. */
@@ -65,9 +67,17 @@ export default function CategoryFilter({
   noneLabel: string;
   /** Message shown when no category is selected (the page is allowed to be empty). */
   emptyLabel: string;
+  /** Label for the expander that reveals the per-category chips (QF-2). */
+  moreLabel: string;
+  /** Label for the expander once open, hiding the per-category chips again (QF-2). */
+  fewerLabel: string;
 }) {
   // Set of HIDDEN keys; empty = default (all shown), so first paint matches SSR.
   const [hidden, setHidden] = useState<Set<string>>(() => new Set());
+  // The per-category chips collapse by default (QF-2). All and None stay visible
+  // always, so the two common actions never require expanding anything; the
+  // expander only reveals the granular per-category chips when a reader wants them.
+  const [expanded, setExpanded] = useState(false);
 
   // Imperatively reflect a hidden-set onto the server-rendered DOM: toggle the
   // `.cat-hidden` class on each group's section and its jump-nav item.
@@ -145,27 +155,42 @@ export default function CategoryFilter({
       >
         {noneLabel}
       </button>
-      {groups.map((g) => {
-        const shown = !hidden.has(g.key);
-        return (
-          <button
-            key={g.key}
-            type="button"
-            className="cat-filter-chip"
-            aria-pressed={shown}
-            onClick={() => toggle(g.key)}
-          >
-            {g.color ? (
-              <span
-                className="category-dot"
-                style={{ "--chip-color": g.color } as React.CSSProperties}
-                aria-hidden="true"
-              />
-            ) : null}
-            {g.label}
-          </button>
-        );
-      })}
+      {/* The expander (QF-2): reveals or hides the per-category chips. All and
+          None above stay usable whether or not the granular chips are open. */}
+      <button
+        type="button"
+        className="cat-filter-more"
+        aria-expanded={expanded}
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <span className="cat-filter-more-chevron" aria-hidden="true">
+          &#9656;
+        </span>
+        {expanded ? fewerLabel : moreLabel}
+      </button>
+      {/* Per-category chips: collapsed by default, shown only when expanded. */}
+      {expanded &&
+        groups.map((g) => {
+          const shown = !hidden.has(g.key);
+          return (
+            <button
+              key={g.key}
+              type="button"
+              className="cat-filter-chip"
+              aria-pressed={shown}
+              onClick={() => toggle(g.key)}
+            >
+              {g.color ? (
+                <span
+                  className="category-dot"
+                  style={{ "--chip-color": g.color } as React.CSSProperties}
+                  aria-hidden="true"
+                />
+              ) : null}
+              {g.label}
+            </button>
+          );
+        })}
       </div>
       {allHidden && (
         <p className="cat-filter-empty" role="status">

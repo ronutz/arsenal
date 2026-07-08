@@ -2751,7 +2751,6 @@
     },
     "learnHeading": "Learn the concepts",
     "lede": "Small, fast, privacy-first utilities that run entirely in your browser. Nothing you type is sent anywhere.",
-    "note": "This toolbox is growing. New tools are added here as they ship, each one local-first and free to use.",
     "nslookup-output-explainer": {
       "name": "nslookup output explainer",
       "blurb": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere.",
@@ -3983,7 +3982,17 @@
       "anchors": "Anchors",
       "gvTitle": "golden vectors: known-correct outputs pinned in CI",
       "svTitle": "snapshot vectors: exact rule-firing and ranking pinned in CI (advisory tool)"
-    }
+    },
+    "filterMore": "More",
+    "filterFewer": "Fewer",
+    "roomsGreenCategory": "The green room",
+    "roomsGreenTitle": "Off the catalogue, still on principle",
+    "roomsGreenDesc": "Tools that cannot sign the main floor's contract yet - a manifest, golden vectors, a fixed shape - because their form is still finding itself. Early or odd, not lesser, and labeled as such. Same privacy, same local-first compute.",
+    "roomsGreenCta": "Enter the green room",
+    "roomsRedCategory": "The red room",
+    "roomsRedTitle": "Tools that ask, not guess",
+    "roomsRedDesc": "The one place a tool sends your input out of the browser - to the official service named on screen, and only when you press Ask. Live answers from the real internet, with the rules of engagement stated out loud and the endpoint named before anything is sent.",
+    "roomsRedCta": "Enter the red room"
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -4376,7 +4385,7 @@
     "instructor": {
       "eyebrow": "Your instructor",
       "body": "These courses are taught by Rodolfo Nützmann, a senior technical instructor delivering authorized F5, Fortinet, Extreme Networks, and Netskope training worldwide, built on a networking and security career that began in 1996 on the implementation side. The credentials, and what past students say, are a click away.",
-      "about": "About Rodolfo",
+      "about": "About",
       "certs": "Certifications",
       "endorsements": "Endorsements"
     }
@@ -5675,25 +5684,25 @@
     }
   },
   "devOther": {
-    "metaTitle": "/dev/other — off the catalogue, still on principle",
-    "metaDescription": "The green room of ronutz.com: tools whose shapes the main catalogue's definitions cannot hold yet — experimental contracts, odd forms — while the house principles (local-first, no accounts, no tracking, open source) keep holding.",
+    "metaTitle": "/dev/other - off the catalogue, still on principle",
+    "metaDescription": "The green room of ronutz.com: tools whose shapes the main catalogue's definitions cannot hold yet - experimental contracts, odd forms - while the house principles (local-first, no accounts, no tracking, open source) keep holding.",
     "title": "/dev/other",
     "badge": "other environment",
     "tagline": "Off the catalogue, still on principle.",
-    "intro": "Every tool on the main floor signs the same contract: a manifest, golden vectors, a documented shape. This room is for tools that cannot sign it yet — not because they talk to the internet (those live next door in /dev/out, in red), but because their shape fits no drawer. The principles still hold; the paperwork differs.",
+    "intro": "Every tool on the main floor signs the same contract: a manifest, golden vectors, a documented shape. This room is for tools that cannot sign it yet - not because they talk to the internet (those live next door in /dev/out, in red), but because their shape fits no drawer. The principles still hold; the paperwork differs.",
     "backToDev": "← back to /dev",
     "notice": {
       "title": "What 'other' means here",
-      "p1": "Tools in this room live outside the main catalogue's definitions: experimental input contracts, unusual output shapes, ideas still finding their form. They are not lesser — they are early or odd, and labeled as such, honestly.",
+      "p1": "Tools in this room live outside the main catalogue's definitions: experimental input contracts, unusual output shapes, ideas still finding their form. They are not lesser - they are early or odd, and labeled as such, honestly.",
       "p2": "The house rules keep holding. Local-first unless a tool states otherwise on its own door, no accounts, no tracking by us, no ads, open source. Tools whose whole job is asking the live internet live next door in /dev/out, behind red walls."
     },
-    "empty": "No residents yet. The first tool that defies the definitions for a reason other than network egress moves in here — green walls, honest label.",
+    "empty": "No residents yet. The first tool that defies the definitions for a reason other than network egress moves in here - green walls, honest label.",
     "subnetDrill": {
-      "metaTitle": "Subnetting drill — practice CIDR math",
+      "metaTitle": "Subnetting drill - practice CIDR math",
       "metaDescription": "Timed subnetting practice: network and broadcast addresses, usable hosts, masks, prefix sizing, and containment, generated fresh each round with a remembered streak. Runs entirely in your browser.",
       "name": "Subnetting drill",
       "blurb": "Randomized CIDR practice with difficulty tiers and a streak your browser remembers.",
-      "why": "This tool lives in the green room because it GENERATES exercises (randomness) and REMEMBERS your streak (state) — two things the catalogue's fixed input-to-output tools do not do. The math it quizzes is the site's own CIDR engine.",
+      "why": "This tool lives in the green room because it GENERATES exercises (randomness) and REMEMBERS your streak (state) - two things the catalogue's fixed input-to-output tools do not do. The math it quizzes is the site's own CIDR engine.",
       "about1": "Pick a difficulty and each round deals ten fresh questions drawn from a new random seed, so no two rounds repeat. The subnet arithmetic is computed by the same engine behind the CIDR tool, so every canonical answer is exactly what that tool would produce.",
       "about2": "Your current streak, best streak, and lifetime score are kept in your browser's local storage and never leave it. Clear them any time with Reset; nothing here is uploaded or tracked.",
       "difficulty": {
@@ -5703,7 +5712,7 @@
         "hard": "Hard (/8-/31)"
       },
       "start": "Start {n}-question round",
-      "runsLocally": "Everything — the questions, the grading, the score — happens in your browser. Nothing is generated on or sent to a server.",
+      "runsLocally": "Everything - the questions, the grading, the score - happens in your browser. Nothing is generated on or sent to a server.",
       "progress": "Question {i} of {n}",
       "q": {
         "network": "Network address of {cidr}?",
@@ -5724,7 +5733,7 @@
       "yes": "Yes",
       "no": "No",
       "correct": "Correct.",
-      "incorrect": "Not quite — the answer is {answer}.",
+      "incorrect": "Not quite - the answer is {answer}.",
       "nextQ": "Next question",
       "finish": "Finish round",
       "roundOver": "Round complete",
@@ -5741,32 +5750,32 @@
     "tools": {
       "subnetDrill": {
         "name": "Subnetting drill",
-        "blurb": "Randomized CIDR practice with difficulty tiers and a streak your browser remembers — the math is the site's own engine."
+        "blurb": "Randomized CIDR practice with difficulty tiers and a streak your browser remembers - the math is the site's own engine."
       },
       "pcapAnalyzer": {
         "name": "PCAP analyzer",
-        "blurb": "Drop a capture and read it locally — protocols, conversations, talkers, anomaly flags. Nothing is uploaded."
+        "blurb": "Drop a capture and read it locally - protocols, conversations, talkers, anomaly flags. Nothing is uploaded."
       },
       "fingerprint": {
         "name": "Self-fingerprint inspector",
-        "blurb": "The signals a tracker could read to identify your browser — shown only to you, computed only here."
+        "blurb": "The signals a tracker could read to identify your browser - shown only to you, computed only here."
       },
       "serialConsole": {
         "name": "WebSerial console",
-        "blurb": "A serial terminal in your browser — console into gear over a USB adapter, nothing installed or uploaded."
+        "blurb": "A serial terminal in your browser - console into gear over a USB adapter, nothing installed or uploaded."
       }
     },
     "backToOther": "Back to the green room",
     "pcap": {
-      "metaTitle": "PCAP analyzer — read a capture in your browser",
-      "metaDescription": "Drop a .pcap or .pcapng and get an L2-L4 summary, conversation and top-talker tables, and first-tier anomaly flags — computed entirely in your browser, nothing uploaded.",
+      "metaTitle": "PCAP analyzer - read a capture in your browser",
+      "metaDescription": "Drop a .pcap or .pcapng and get an L2-L4 summary, conversation and top-talker tables, and first-tier anomaly flags - computed entirely in your browser, nothing uploaded.",
       "name": "PCAP analyzer",
-      "blurb": "Drop a capture and read it locally: protocols, conversations, talkers, and anomaly flags — nothing uploaded.",
+      "blurb": "Drop a capture and read it locally: protocols, conversations, talkers, and anomaly flags - nothing uploaded.",
       "why": "This tool lives in the green room because its input is a BINARY FILE, not the paste/form text the catalogue's tools take. That is an input contract the catalogue cannot hold yet; the day it can, this tool graduates to the main floor.",
-      "about1": "Drop a capture file and it is read into memory and dissected in your browser: the container format (classic pcap in either byte order, including the nanosecond variant, and pcapng), then Ethernet through IPv4/IPv6 and TCP/UDP/ICMP — enough for the overview, the conversation and top-talker tables, and a first tier of anomaly flags stated as observations, not verdicts.",
-      "about2": "This first version dissects layers 2 through 4. Application-payload parsing (DNS, TLS, HTTP details) is a deliberate future pass, not a hidden gap — the tool tells you the depth it reached. Files are capped at 50 MB because a browser is for triage, not multi-gigabyte forensics; larger captures are refused rather than freezing the tab.",
+      "about1": "Drop a capture file and it is read into memory and dissected in your browser: the container format (classic pcap in either byte order, including the nanosecond variant, and pcapng), then Ethernet through IPv4/IPv6 and TCP/UDP/ICMP - enough for the overview, the conversation and top-talker tables, and a first tier of anomaly flags stated as observations, not verdicts.",
+      "about2": "This first version dissects layers 2 through 4. Application-payload parsing (DNS, TLS, HTTP details) is a deliberate future pass, not a hidden gap - the tool tells you the depth it reached. Files are capped at 50 MB because a browser is for triage, not multi-gigabyte forensics; larger captures are refused rather than freezing the tab.",
       "dropTitle": "Drop a .pcap or .pcapng here",
-      "dropHint": "or click to choose a file — it never leaves your browser",
+      "dropHint": "or click to choose a file - it never leaves your browser",
       "runsLocally": "The file is read into memory and dissected entirely in your browser. Nothing is uploaded; there is no server round-trip at all.",
       "reading": "Reading {name}…",
       "depthNote": "This summary covers layers 2-4. Application-payload dissection (DNS/TLS/HTTP contents) is a future pass.",
@@ -5785,11 +5794,11 @@
         "proto": "Protocol"
       },
       "flags": {
-        "synNoSynAck": "{syn} SYN packets with no SYN-ACK in reply — connections that were attempted but never completed a handshake.",
-        "synImbalance": "SYN packets ({syn}) far outnumber SYN-ACKs ({synack}) — worth checking whether a host is scanning or a service is unreachable.",
-        "highRst": "{rst} RST packets, a high share of the capture — connections are being reset often.",
+        "synNoSynAck": "{syn} SYN packets with no SYN-ACK in reply - connections that were attempted but never completed a handshake.",
+        "synImbalance": "SYN packets ({syn}) far outnumber SYN-ACKs ({synack}) - worth checking whether a host is scanning or a service is unreachable.",
+        "highRst": "{rst} RST packets, a high share of the capture - connections are being reset often.",
         "truncated": "The file ended mid-record; the last packet was incomplete and parsing stopped there.",
-        "singleConversation": "The whole capture is a single conversation — a targeted capture, or a filter left applied."
+        "singleConversation": "The whole capture is a single conversation - a targeted capture, or a filter left applied."
       },
       "errors": {
         "empty": "That file is too small to be a capture.",
@@ -5801,16 +5810,16 @@
       }
     },
     "fingerprint": {
-      "metaTitle": "Self-fingerprint inspector — what this page can read about you",
-      "metaDescription": "See the browser and device signals a tracker could read to fingerprint you — user agent, screen, canvas and WebGL hashes, fonts, timezone and more — computed entirely in your browser and shown only to you.",
+      "metaTitle": "Self-fingerprint inspector - what this page can read about you",
+      "metaDescription": "See the browser and device signals a tracker could read to fingerprint you - user agent, screen, canvas and WebGL hashes, fonts, timezone and more - computed entirely in your browser and shown only to you.",
       "name": "Self-fingerprint inspector",
       "blurb": "The signals a tracker could read to identify your browser, shown only to you and computed only here.",
-      "why": "This tool lives in the green room because its input is your BROWSER AND DEVICE — the output legitimately differs for every visitor, so there is no fixed correct answer for golden vectors to assert. It is the privacy thesis made visible.",
-      "intro": "Click below and this page computes, in your browser, the signals a fingerprinting script would read. Nothing is sent anywhere — the result is shown only to you.",
+      "why": "This tool lives in the green room because its input is your BROWSER AND DEVICE - the output legitimately differs for every visitor, so there is no fixed correct answer for golden vectors to assert. It is the privacy thesis made visible.",
+      "intro": "Click below and this page computes, in your browser, the signals a fingerprinting script would read. Nothing is sent anywhere - the result is shown only to you.",
       "run": "Inspect my browser",
       "runsLocally": "Every signal is computed in your browser and displayed here only. Nothing is uploaded, stored, or compared against anyone else.",
       "resultTitle": "Your browser's surface",
-      "entropyNote": "About {n} of these signals are individually high-entropy — the more of them a tracker can read, the more uniquely they identify you. This is a rough indicator, not a precise bit count.",
+      "entropyNote": "About {n} of these signals are individually high-entropy - the more of them a tracker can read, the more uniquely they identify you. This is a rough indicator, not a precise bit count.",
       "sig": {
         "userAgent": "User agent",
         "platform": "Platform",
@@ -5835,11 +5844,11 @@
       "about2": "Everything here runs locally and is shown only to you; nothing is uploaded or retained. It is a companion to the passive-fingerprint work on the main site, made concrete: the clearest way to understand a tracking surface is to look at your own."
     },
     "webserial": {
-      "metaTitle": "WebSerial console — a browser terminal for console cables",
-      "metaDescription": "A serial terminal in your browser for network gear: connect a USB console adapter, pick a baud rate, and read and send lines — all local, Chromium-only, nothing uploaded.",
+      "metaTitle": "WebSerial console - a browser terminal for console cables",
+      "metaDescription": "A serial terminal in your browser for network gear: connect a USB console adapter, pick a baud rate, and read and send lines - all local, Chromium-only, nothing uploaded.",
       "name": "WebSerial console",
-      "blurb": "A serial terminal in your browser — console into a switch or firewall over a USB adapter, nothing installed.",
-      "why": "This tool lives in the green room because it uses the browser's serial hardware-permission API and holds a LIVE session — there is no fixed input and output to golden-vector. The catalogue's tools are pure functions; a live console is not.",
+      "blurb": "A serial terminal in your browser - console into a switch or firewall over a USB adapter, nothing installed.",
+      "why": "This tool lives in the green room because it uses the browser's serial hardware-permission API and holds a LIVE session - there is no fixed input and output to golden-vector. The catalogue's tools are pure functions; a live console is not.",
       "baud": "Baud rate",
       "connect": "Connect to a port",
       "disconnect": "Disconnect",
@@ -5852,13 +5861,13 @@
       "consolePlaceholder": "Session output will appear here once you connect to a port.",
       "linePlaceholder": "Type a command and press Enter",
       "send": "Send",
-      "about1": "Console access usually means installing a terminal program and hunting for the right COM port. The Web Serial API lets a browser talk to a USB-to-serial adapter directly, so you can console into a switch, router, or firewall from a locked-down machine with nothing installed — pick the baud rate, click connect, and the browser shows its own device picker.",
+      "about1": "Console access usually means installing a terminal program and hunting for the right COM port. The Web Serial API lets a browser talk to a USB-to-serial adapter directly, so you can console into a switch, router, or firewall from a locked-down machine with nothing installed - pick the baud rate, click connect, and the browser shows its own device picker.",
       "about2": "The console is Chromium-only and permission-gated by design: the browser, not this page, decides which device you grant access to. Nothing that scrolls by is stored or sent; the scrollback lives in memory and is discarded on reload unless you download it."
     }
   },
   "devOut": {
-    "metaTitle": "/dev/out — tools that ask, not guess",
-    "metaDescription": "The red room of ronutz.com: live lookups against the real internet — RDAP and friends — with the rules of engagement stated out loud. Your query goes browser-direct to the official registry; nothing is sent to ronutz.com servers.",
+    "metaTitle": "/dev/out - tools that ask, not guess",
+    "metaDescription": "The red room of ronutz.com: live lookups against the real internet - RDAP and friends - with the rules of engagement stated out loud. Your query goes browser-direct to the official registry; nothing is sent to ronutz.com servers.",
     "title": "/dev/out",
     "badge": "egress environment",
     "tagline": "Tools that ask, not guess.",
@@ -5867,23 +5876,23 @@
     "backToOut": "← back to /dev/out",
     "notice": {
       "title": "How this room differs from the rest of the site",
-      "p1": "Tools here send your input out of the browser. It goes directly from your browser to the official service named on screen (the registry that answers your query) — never to ronutz.com servers, which see nothing, in this version. Nothing leaves until you explicitly press Ask.",
-      "p2": "Results are the live world, not a computation. They come from third parties, can change between two identical queries, can be rate-limited or unavailable, and carry no golden-vector guarantee — the tested, deterministic parts here are the input parsing, the registry routing, and the response parsing, and the tool says which registry it will ask before anything is sent.",
-      "p3": "Everything else still holds. No account, no tracking by us, no ads, open source. The third party you query will see your request (that is how asking works) — its own terms and privacy policy apply to that hop, and each tool links the exact endpoint so you can inspect it.",
+      "p1": "Tools here send your input out of the browser. It goes directly from your browser to the official service named on screen (the registry that answers your query) - never to ronutz.com servers, which see nothing, in this version. Nothing leaves until you explicitly press Ask.",
+      "p2": "Results are the live world, not a computation. They come from third parties, can change between two identical queries, can be rate-limited or unavailable, and carry no golden-vector guarantee - the tested, deterministic parts here are the input parsing, the registry routing, and the response parsing, and the tool says which registry it will ask before anything is sent.",
+      "p3": "Everything else still holds. No account, no tracking by us, no ads, open source. The third party you query will see your request (that is how asking works) - its own terms and privacy policy apply to that hop, and each tool links the exact endpoint so you can inspect it.",
       "p4": "The deep-red background is the marker: same darkness as the rest of the site, different hue, different rules. When the walls are red, you are in the room where packets leave."
     },
     "tools": {
       "rdapLookup": {
         "name": "RDAP lookup",
-        "blurb": "WHOIS, the modern way: domain, IP, or AS number in, the official registry's structured answer out — asked directly from your browser, with the registry named before anything is sent."
+        "blurb": "WHOIS, the modern way: domain, IP, or AS number in, the official registry's structured answer out - asked directly from your browser, with the registry named before anything is sent."
       },
       "asnLookup": {
         "name": "ASN lookup",
-        "blurb": "Who holds an AS number: special-purpose ASNs answered locally with their RFC, real ones fetched browser-direct from the owning RIR — with the registry named before anything is sent."
+        "blurb": "Who holds an AS number: special-purpose ASNs answered locally with their RFC, real ones fetched browser-direct from the owning RIR - with the registry named before anything is sent."
       }
     },
     "rdap": {
-      "metaTitle": "RDAP lookup — WHOIS, the modern way",
+      "metaTitle": "RDAP lookup - WHOIS, the modern way",
       "metaDescription": "Query the official RDAP registries for a domain, IP address, or AS number, browser-direct. Deterministic routing from vendored IANA bootstrap snapshots; explicit-egress design: nothing leaves until you press Ask.",
       "inputLabel": "Domain, IP address, or AS number",
       "inputPlaceholder": "example.com · 8.8.8.8 · AS15169",
@@ -5906,7 +5915,7 @@
       "httpErrorTitle": "The registry answered HTTP {status}",
       "httpErrorBody": "That status comes from the registry, not from this site. It may be rate limiting, maintenance, or a query it will not serve. The same query from your own terminal:",
       "netErrorTitle": "The query could not complete from the browser",
-      "netErrorBody": "Either the network failed or the registry does not allow browser-direct queries (no CORS header — some registries, RIPE among them as of 2026-07-08, do not send one). This is a known, honest limit of the browser-direct design: nothing was silently proxied. Run the identical query from your own terminal:",
+      "netErrorBody": "Either the network failed or the registry does not allow browser-direct queries (no CORS header - some registries, RIPE among them as of 2026-07-08, do not send one). This is a known, honest limit of the browser-direct design: nothing was silently proxied. Run the identical query from your own terminal:",
       "rawToggle": "Show the raw RDAP document",
       "fields": {
         "class": "Object class",
@@ -5919,18 +5928,18 @@
         "port43": "Legacy WHOIS (port 43)",
         "notices": "Registry notices"
       },
-      "bootstrapNote": "Registry routing is deterministic: it walks vendored snapshots of the four IANA RDAP bootstrap files (RFC 9224), vendored {vendored}; the dns table's own publication stamp is {dns}. The live answer, by design, is not deterministic — that is why this tool lives in the green room.",
+      "bootstrapNote": "Registry routing is deterministic: it walks vendored snapshots of the four IANA RDAP bootstrap files (RFC 9224), vendored {vendored}; the dns table's own publication stamp is {dns}. The live answer, by design, is not deterministic - that is why this tool lives in the green room.",
       "errors": {
         "empty": "Enter a domain, an IP address, or an AS number.",
         "format": "Could not read that as a domain, IP address, or AS number.",
-        "noEndpoint": "IANA's bootstrap registry publishes no RDAP endpoint for that — honest answer: this tool cannot ask anyone about it."
+        "noEndpoint": "IANA's bootstrap registry publishes no RDAP endpoint for that - honest answer: this tool cannot ask anyone about it."
       },
-      "about1": "RDAP is WHOIS rebuilt on HTTPS and JSON (RFCs 7480, 9082, 9083): the same registry data, structured, with consistent field names and honest redaction notices instead of free-form text. This tool resolves which registry is authoritative using vendored snapshots of IANA's bootstrap files (RFC 9224), builds the exact query URL, shows it, and only sends it when you press Ask — directly from your browser to the registry, never through ronutz.com.",
-      "about2": "The deterministic layers (input classification, IDN punycode conversion, bootstrap routing, URL construction, response parsing) are golden-vector-tested like every tool on the main site. The one thing that cannot be pinned is the registry's live answer — which is exactly why this tool lives here and not at /tools.",
+      "about1": "RDAP is WHOIS rebuilt on HTTPS and JSON (RFCs 7480, 9082, 9083): the same registry data, structured, with consistent field names and honest redaction notices instead of free-form text. This tool resolves which registry is authoritative using vendored snapshots of IANA's bootstrap files (RFC 9224), builds the exact query URL, shows it, and only sends it when you press Ask - directly from your browser to the registry, never through ronutz.com.",
+      "about2": "The deterministic layers (input classification, IDN punycode conversion, bootstrap routing, URL construction, response parsing) are golden-vector-tested like every tool on the main site. The one thing that cannot be pinned is the registry's live answer - which is exactly why this tool lives here and not at /tools.",
       "sourcesLabel": "Sources"
     },
     "asn": {
-      "metaTitle": "ASN lookup — who holds an AS number",
+      "metaTitle": "ASN lookup - who holds an AS number",
       "metaDescription": "Type an AS number and see, before anything is sent, which regional registry would answer. Special-purpose ASNs (private, documentation, AS_TRANS, AS0) are explained locally with their RFC and never leave the browser; real ones are fetched browser-direct from the owning RIR on an explicit Ask.",
       "inputLabel": "AS number",
       "inputPlaceholder": "AS15169 · 28573 · 64512",
@@ -5949,10 +5958,10 @@
       "netErrorTitle": "The browser could not complete the request",
       "netErrorBody": "This is either a network failure or a registry that does not send CORS headers to browsers (RIPE, as of 2026-07-08, does not). The page cannot tell the two apart by design. The same query from your own machine:",
       "rawToggle": "Show the raw RDAP document",
-      "redirectNote": "The bootstrap registry redirected this number to {host} — a national registry answering on the RIR's behalf. The browser followed the redirect; the answer above is theirs.",
+      "redirectNote": "The bootstrap registry redirected this number to {host} - a national registry answering on the RIR's behalf. The browser followed the redirect; the answer above is theirs.",
       "provenance": "Routing is decided locally against a vendored copy of the IANA RDAP bootstrap (asn.json publication {asnPub}, vendored {vendored}); special-purpose classification against the IANA Special-Purpose AS Numbers registry (accessed {specialAccessed}). Live answers come from the registries themselves and carry no golden-vector guarantee.",
       "sourcesLabel": "Sources",
-      "about1": "An Autonomous System number identifies a routing domain on the internet, and five regional registries hold the records of who each one belongs to. This tool classifies your input locally, and only for globally-assignable numbers builds the one URL that would answer — the owning RIR's RDAP autnum endpoint — showing it to you before anything is sent.",
+      "about1": "An Autonomous System number identifies a routing domain on the internet, and five regional registries hold the records of who each one belongs to. This tool classifies your input locally, and only for globally-assignable numbers builds the one URL that would answer - the owning RIR's RDAP autnum endpoint - showing it to you before anything is sent.",
       "about2": "Two whole classes of answer never touch the network: special-purpose numbers (AS0, AS112, AS_TRANS, documentation and private ranges, the two reserved ends of the space) are explained with their RFC right here, and numbers falling in bootstrap gaps are reported as unallocated. An honest tool refuses to pretend a lookup where none exists.",
       "fields": {
         "handle": "Handle",
@@ -5969,7 +5978,7 @@
         "reservedLast": "reserved (last number of its space)",
         "body": "This is a special-purpose AS number, set aside by {rfc}. No regional registry holds a delegation for it, so there is nothing to ask and no query will be made.",
         "range": "Reserved block: {range}.",
-        "noEgress": "Answered entirely locally — zero bytes left the browser."
+        "noEgress": "Answered entirely locally - zero bytes left the browser."
       },
       "unallocated": {
         "title": "not delegated to any registry",
@@ -5977,7 +5986,7 @@
       },
       "errors": {
         "empty": "Type an AS number.",
-        "format": "Not an AS number — accepted forms: AS15169, as 15169, or the bare number.",
+        "format": "Not an AS number - accepted forms: AS15169, as 15169, or the bare number.",
         "range": "Beyond the 32-bit AS number space (the maximum is 4294967295)."
       }
     }

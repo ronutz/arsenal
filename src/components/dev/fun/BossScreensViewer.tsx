@@ -69,9 +69,15 @@ export default function BossScreensViewer({ labels }: { labels: BossViewerLabels
       {/* Jump-nav + the Cards/List density toggle, same utilities as the
           Tools and Learn indexes. The toggle sets data-view on <main>. */}
       <div className="boss-viewer-controls">
+        {/* Collapsed by default (QF-2): native <details>, no JS. */}
         {groups.length > 1 && (
-          <nav className="category-nav boss-viewer-jumpnav" aria-label={labels.jumpTo}>
-            <span className="category-nav-label">{labels.jumpTo}</span>
+          <details className="jumpnav boss-viewer-jumpnav">
+            <summary className="jumpnav-summary" aria-label={labels.jumpTo}>
+              <span className="jumpnav-chevron" aria-hidden="true">
+                &#9656;
+              </span>
+              {labels.jumpTo}
+            </summary>
             <ul className="category-nav-list">
               {groups.map((group) => (
                 <li key={group} data-jumpnav={group}>
@@ -81,7 +87,7 @@ export default function BossScreensViewer({ labels }: { labels: BossViewerLabels
                 </li>
               ))}
             </ul>
-          </nav>
+          </details>
         )}
         <ViewToggle
           targetId="main"
