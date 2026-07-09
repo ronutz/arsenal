@@ -13,8 +13,9 @@
 .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace; }
 .nf-root { max-width: 720px; margin: 0 auto; padding: 3rem 1.25rem 4rem; display: flex; flex-direction: column; align-items: center; gap: 1.7rem; text-align: center; }
 .nf-head { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
-.nf-404 { font-size: clamp(4.5rem, 18vw, 8rem); font-weight: 800; line-height: 1; letter-spacing: 0.04em; background: linear-gradient(180deg, #22d3ee, #7c9cff); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 40px rgba(34,211,238,0.22); }
-.nf-sub { font-size: 1.4rem; font-weight: 600; color: #e6ecff; }
+.nf-headline { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0.6rem; }
+.nf-404 { font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 800; line-height: 1; letter-spacing: 0.04em; background: linear-gradient(180deg, #22d3ee, #7c9cff); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 40px rgba(34,211,238,0.22); }
+.nf-sub { font-size: clamp(1.1rem, 3.5vw, 1.5rem); font-weight: 600; color: #e6ecff; }
 .nf-path { font-size: 0.82rem; color: #9aa6cc; margin-top: 0.5rem; border: 1px solid #1b2540; border-radius: 999px; padding: 0.35rem 0.85rem; background: rgba(255,255,255,0.02); word-break: break-all; }
 .nf-dim { color: #5f6b91; }
 .nf-arrow { color: #5f6b91; }

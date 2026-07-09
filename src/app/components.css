@@ -9011,7 +9011,96 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .kbd-cheat-action { color: var(--text-2, #b8c2e0); font-size: 0.92rem; }
 .kbd-cheat-hint { margin: 1rem 0 0; font-size: 0.74rem; color: var(--text-3, #7c88b0); text-align: center; }
 
+/* --- T-DOT: the "." page-context panel ----------------------------------- */
+/* Same overlay/card idiom as the cheat sheet above, reusing the same tokens so
+   it themes identically on all six themes. The card is a touch wider to give
+   the inline man page room to breathe. */
+.ctx-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  background: rgba(2, 6, 23, 0.72); backdrop-filter: blur(4px);
+  animation: mb-banner-in 0.2s ease;
+}
+.ctx-card {
+  background: var(--surface-1, #0b1120); color: var(--text-1, #e6ecff);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 14px;
+  width: min(40rem, 94vw); max-height: 84vh; overflow: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55); padding: 1.25rem 1.4rem 1rem;
+}
+.ctx-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; }
+.ctx-head-titles { min-width: 0; }
+.ctx-eyebrow { margin: 0 0 0.2rem; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3, #7c88b0); }
+.ctx-title { font-size: 1.15rem; margin: 0; color: var(--text-1, #e6ecff); overflow-wrap: anywhere; }
+.ctx-close { background: none; border: none; color: var(--text-3, #7c88b0); font-size: 1.2rem; cursor: pointer; padding: 0.15rem 0.4rem; border-radius: 6px; line-height: 1; }
+.ctx-close:hover, .ctx-close:focus-visible { color: var(--accent-1, #22d3ee); outline: none; }
+
+.ctx-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.ctx-item { margin: 0; }
+/* An actioning row (man page, link): full-width button, hover lifts the border. */
+.ctx-action {
+  display: flex; flex-direction: column; gap: 0.2rem; width: 100%; text-align: left; cursor: pointer;
+  background: var(--surface-2, #131c31); color: var(--text-1, #e6ecff);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 10px; padding: 0.7rem 0.85rem;
+}
+.ctx-action:hover, .ctx-action:focus-visible { border-color: var(--accent-1, #22d3ee); outline: none; }
+.ctx-action-label { font-size: 0.95rem; font-weight: 600; }
+.ctx-action-detail { font-size: 0.82rem; color: var(--text-2, #b8c2e0); }
+/* A descriptive (legend) row: same frame, not clickable. */
+.ctx-legend {
+  display: flex; flex-direction: column; gap: 0.2rem;
+  background: var(--surface-2, #131c31);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 10px; padding: 0.7rem 0.85rem;
+}
+
+/* Hub map: a labelled group with a compact section list of jump buttons. */
+.ctx-hubmap { display: flex; flex-direction: column; gap: 0.4rem; }
+.ctx-hubmap-list { list-style: none; margin: 0.3rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.ctx-hubmap-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; width: 100%; cursor: pointer;
+  background: var(--surface-2, #131c31); color: var(--text-1, #e6ecff);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 8px; padding: 0.45rem 0.7rem;
+}
+.ctx-hubmap-link:hover, .ctx-hubmap-link:focus-visible { border-color: var(--accent-1, #22d3ee); outline: none; }
+.ctx-hubmap-label { font-size: 0.9rem; }
+.ctx-hubmap-count { flex: 0 0 auto; color: var(--accent-1, #22d3ee); font-size: 0.8rem; font-weight: 700; }
+
+/* Inline man page: a back button, a status line, then the rendered doc. The doc
+   body reuses prose-ish spacing but scoped to the panel so it never leaks. */
+.ctx-manpage { display: flex; flex-direction: column; }
+.ctx-back {
+  align-self: flex-start; background: none; border: none; cursor: pointer;
+  color: var(--accent-1, #22d3ee); font-size: 0.85rem; padding: 0.1rem 0.2rem 0.6rem; line-height: 1;
+}
+.ctx-back:hover, .ctx-back:focus-visible { text-decoration: underline; outline: none; }
+.ctx-manpage-status { margin: 0.4rem 0; font-size: 0.85rem; color: var(--text-3, #7c88b0); }
+.ctx-manpage-error { color: var(--color-warning, #f59e0b); }
+.ctx-manpage-body { color: var(--text-2, #b8c2e0); font-size: 0.9rem; line-height: 1.6; overflow-wrap: anywhere; }
+.ctx-manpage-body h1, .ctx-manpage-body h2, .ctx-manpage-body h3,
+.ctx-manpage-body h4, .ctx-manpage-body h5, .ctx-manpage-body h6 {
+  color: var(--text-1, #e6ecff); margin: 1.1rem 0 0.4rem; line-height: 1.3;
+}
+.ctx-manpage-body h1 { font-size: 1.15rem; }
+.ctx-manpage-body h2 { font-size: 1.05rem; }
+.ctx-manpage-body h3 { font-size: 0.98rem; }
+.ctx-manpage-body p { margin: 0.5rem 0; }
+.ctx-manpage-body ul { margin: 0.5rem 0; padding-left: 1.2rem; }
+.ctx-manpage-body li { margin: 0.2rem 0; }
+.ctx-manpage-body code {
+  background: var(--surface-2, #131c31); color: var(--accent-1, #22d3ee);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 5px; padding: 0.05rem 0.3rem;
+  font-size: 0.86em; overflow-wrap: anywhere;
+}
+.ctx-manpage-body pre {
+  background: var(--surface-2, #131c31); border: 1px solid var(--border-1, #1e293b);
+  border-radius: 8px; padding: 0.7rem 0.85rem; overflow-x: auto; margin: 0.6rem 0;
+}
+.ctx-manpage-body pre code { background: none; border: none; padding: 0; color: var(--text-1, #e6ecff); }
+.ctx-manpage-body a { color: var(--accent-1, #22d3ee); }
+.ctx-manpage-body strong { color: var(--text-1, #e6ecff); }
+.ctx-hint { margin: 1rem 0 0; font-size: 0.74rem; color: var(--text-3, #7c88b0); text-align: center; }
+
 @media (prefers-reduced-motion: reduce) {
+  .ctx-overlay { animation: none; }
   .mb-lever::-webkit-slider-thumb, .mb-lever::-moz-range-thumb, .mb-lever-hint,
   .boss-overlay, .ws-cursor, .boss-hint { animation: none; }
 }
@@ -9147,6 +9236,23 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .devfun-badge { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; padding: 0.15rem 0.4rem; border-radius: 5px; background: rgba(245, 158, 11, 0.13); color: var(--accent-amber); }
 .devfun-card-arrow { margin-left: auto; color: var(--accent-primary); font-size: 1.1rem; }
 .devfun-card-desc { display: block; margin: 0.4rem 0 0; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.55; }
+/* Room-tinted cards on the /dev index: the whole box carries a soft wash of the
+   room's palette plus a colored left edge, so the green and red rooms read as
+   their own place at a glance (not just via the badge). */
+.devfun-card--other {
+  border-color: rgba(52, 211, 153, 0.35);
+  border-left: 3px solid #34d399;
+  background: linear-gradient(90deg, rgba(52, 211, 153, 0.06), var(--surface-base) 60%);
+}
+.devfun-card--other:hover { border-color: #34d399; }
+.devfun-card--other .devfun-card-arrow { color: #34d399; }
+.devfun-card--out {
+  border-color: rgba(248, 113, 113, 0.35);
+  border-left: 3px solid #f87171;
+  background: linear-gradient(90deg, rgba(248, 113, 113, 0.06), var(--surface-base) 60%);
+}
+.devfun-card--out:hover { border-color: #f87171; }
+.devfun-card--out .devfun-card-arrow { color: #f87171; }
 @media (prefers-reduced-motion: reduce) { .devfun-card:hover { transform: none; } }
 
 /* ---- Breadcrumbs (site-wide TMUI-style trail) ------------------------------
@@ -10676,6 +10782,26 @@ main[data-view="list"] .tools-grid,
 main[data-view="list"] .learn-grid {
   display: none;
 }
+/* The green/red room sections have no .pubcat table (they are not catalogue
+   entries), so the generic rule above would hide them entirely in list view,
+   leaving nothing to click. Keep their single card visible and lay it out as a
+   full-width row so each room stays a clear, selectable entry in both views. */
+main[data-view="list"] .room-section .tools-grid {
+  display: block;
+}
+main[data-view="list"] .room-section .tools-grid-item {
+  width: 100%;
+}
+main[data-view="list"] .room-section .room-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.75rem;
+}
+main[data-view="list"] .room-section .room-card .tools-card-blurb {
+  flex: 1 1 100%;
+  margin: 0.15rem 0 0;
+}
 main[data-view="list"] .pubcat {
   display: block;
 }
@@ -11384,4 +11510,744 @@ main[data-view="list"] .boss-viewer-blurb {
   word-break: break-all;
   font-size: 0.82rem;
   line-height: 1.5;
+}
+
+/* ============================================================================
+   Operations & Fieldcraft cluster - tools 3/4/5 (D-86)
+   Incident Timeline & RCA Builder, Change Blast-Radius Mapper, TAC Escalation
+   Packet Builder. These reuse the shared .fc-* vocabulary and mirror the .rb-*
+   idiom from the runbook builder; only the tool-specific pieces are new.
+   ============================================================================ */
+
+/* ---- Shared risk-list styling across the three tools (mirrors .rb-risk-*) --- */
+.rca-risks,
+.blast-risks,
+.tac-risks {
+  border-left: 3px solid var(--color-warning, #f59e0b);
+}
+.rca-risk-list,
+.blast-risk-list,
+.tac-risk-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.rca-risk-item,
+.blast-risk-item,
+.tac-risk-item {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.rca-risk-label,
+.blast-risk-label,
+.tac-risk-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.rca-risk-note,
+.blast-risk-note,
+.tac-risk-note {
+  color: var(--text-secondary);
+}
+
+/* ---- Incident Timeline & RCA Builder ---- */
+/* Timeline event editor: a row of kind + order + note + remove. */
+.rca-events {
+  list-style: none;
+  margin: 0.4rem 0 0.6rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.rca-event {
+  display: grid;
+  grid-template-columns: minmax(9rem, 1.4fr) 4.5rem minmax(6rem, 2fr) auto;
+  gap: 0.4rem;
+  align-items: center;
+}
+.rca-event-order {
+  text-align: center;
+}
+.rca-event-remove {
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-tertiary);
+  border-radius: 0.35rem;
+  cursor: pointer;
+  padding: 0.35rem 0.55rem;
+  line-height: 1;
+}
+.rca-event-remove:hover:not(:disabled) {
+  color: var(--color-warning, #f59e0b);
+  border-color: var(--color-warning, #f59e0b);
+}
+.rca-event-remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.rca-add {
+  margin-top: 0.2rem;
+}
+@media (max-width: 640px) {
+  .rca-event {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rca-event-note {
+    grid-column: 1 / -1;
+  }
+}
+/* Factor domains: an observe checkbox, with a confirm checkbox once observed. */
+.rca-factors {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.rca-factor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+}
+.rca-factor-observe {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.rca-factor-confirm {
+  color: var(--accent-amber, #f59e0b);
+  font-size: 0.85rem;
+}
+/* Ordered timeline in the results. Milestones stand out. */
+.rca-timeline-list {
+  margin: 0.4rem 0 0.6rem;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.rca-tl-item {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.rca-tl-milestone .rca-tl-label {
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+.rca-tl-label {
+  color: var(--text-primary);
+}
+.rca-tl-note {
+  color: var(--text-secondary);
+}
+.rca-bands {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0.5rem 0 0;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.rca-band {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.rca-band-label {
+  color: var(--text-primary);
+}
+/* Candidate contributing factors: the heart of the scaffold. */
+.rca-candidate {
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.rca-candidate:first-of-type {
+  border-top: none;
+}
+.rca-candidate-rationale {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0.2rem 0 0.5rem;
+  line-height: 1.55;
+}
+.rca-confirmed-tag {
+  margin-left: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-success, #22c55e);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.rca-evidence-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+@media (max-width: 640px) {
+  .rca-evidence-cols {
+    grid-template-columns: 1fr;
+  }
+}
+.rca-evidence-head {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin: 0 0 0.25rem;
+}
+.rca-evidence-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ---- Change Blast-Radius Mapper ---- */
+.blast-band-head,
+.tac-ready-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+/* Concentric tier card: a numbered header, then the affected-item list. */
+.blast-tier-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.blast-tier-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  color: var(--accent-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.blast-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.blast-item {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--border-subtle);
+}
+.blast-contain-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.blast-contain-item {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.blast-contain-item label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+/* ---- TAC Escalation Packet Builder ---- */
+.tac-collect {
+  border-left: 3px solid var(--accent-primary);
+}
+.tac-collect-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tac-collect-item {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.tac-collect-item label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.tac-collect-item .fc-evidence-cmd {
+  display: block;
+  margin: 0.3rem 0 0 1.5rem;
+}
+.tac-section {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.tac-section:first-of-type {
+  border-top: none;
+}
+.tac-section-lines {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.tac-section-line {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+/* ============================================================================
+   Vendor home (T-HUB) - the /vendors landing page. One card per training-
+   pillar vendor. Reuses the page-hero-* and category-dot vocabulary; the card
+   grid and card chrome are new.
+   ============================================================================ */
+.vendors-home-hero {
+  padding: 2rem 0 0.5rem;
+}
+.vendors-home-grid-section {
+  padding: 1.5rem 0;
+}
+.vendors-home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+.vendors-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.2rem 1.3rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--chip-color, var(--border-subtle));
+  border-radius: 0.6rem;
+  background: var(--surface-base);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.vendors-card--live:hover {
+  border-color: var(--chip-color, var(--accent-primary));
+  transform: translateY(-2px);
+}
+.vendors-card--soon {
+  opacity: 0.85;
+}
+.vendors-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.vendors-card-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  flex-shrink: 0;
+}
+.vendors-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+.vendors-card-blurb {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0;
+  flex-grow: 1;
+}
+.vendors-card-counts {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  margin: 0.2rem 0 0;
+}
+.vendors-card-count {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.vendors-card-sep {
+  color: var(--border-subtle);
+}
+.vendors-card-soon {
+  font-style: italic;
+}
+.vendors-card-cta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--chip-color, var(--accent-primary));
+  margin-top: 0.15rem;
+}
+.vendors-home-note-section {
+  padding: 0.5rem 0 2.5rem;
+}
+.vendors-home-note {
+  max-width: 44rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.vendors-home-note p {
+  margin: 0 0 0.7rem;
+}
+.vendors-home-scope {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  border-left: 2px solid var(--border-subtle);
+  padding-left: 0.8rem;
+}
+
+/* ============================================================================
+   GLOSSARY — index (/glossary) + entry (/glossary/[slug]).
+   Semantic tokens only (theme-aware, WCAG-AA across the six themes). Kind hues
+   reuse existing accent/color tokens; nothing here invents a raw palette.
+   ============================================================================ */
+
+/* ---- filter island (GlossaryFilter) ---- */
+.gloss-filter {
+  margin: 1.5rem 0 2rem;
+}
+.gloss-search-row {
+  margin-bottom: 1rem;
+}
+.gloss-search-input {
+  width: 100%;
+  max-width: 32rem;
+  padding: 0.6rem 0.85rem;
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.gloss-search-input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+.gloss-chipset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.gloss-chipset-legend {
+  float: none;
+  width: auto;
+  padding: 0;
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.gloss-chip {
+  padding: 0.3rem 0.7rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.gloss-chip:hover {
+  border-color: var(--color-accent);
+}
+.gloss-chip.is-active {
+  color: var(--color-canvas);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.gloss-filter-status {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  min-height: 1.4rem;
+}
+.gloss-count {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+.gloss-clear {
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Empty state: hidden by default (so a JS-less page never shows it); the filter
+   island adds `.is-visible` only when the current filter has hidden every row. */
+.gloss-empty {
+  display: none;
+  margin: 1.5rem 0;
+  color: var(--color-muted);
+  font-style: italic;
+}
+.gloss-empty.is-visible {
+  display: block;
+}
+
+/* ---- shared: hidden by filter ---- */
+.gloss-hidden {
+  display: none !important;
+}
+
+/* ---- index A-Z list ---- */
+.gloss-list {
+  margin-top: 1rem;
+}
+.gloss-group {
+  margin-bottom: 1.75rem;
+}
+.gloss-group-letter {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.25rem;
+  margin: 0 0 0.75rem;
+}
+.gloss-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.gloss-entry-link {
+  display: block;
+  padding: 0.75rem 0.9rem;
+  color: inherit;
+  text-decoration: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.12s, transform 0.12s;
+}
+.gloss-entry-link:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+.gloss-entry-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+.gloss-entry-headword {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.gloss-entry-def {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+/* ---- kind badge (five kinds; reuse accent/color tokens) ---- */
+.gloss-kind-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.gloss-kind-lore {
+  color: var(--accent-amber);
+  border-color: var(--accent-amber);
+}
+.gloss-kind-expression {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+.gloss-kind-jargon {
+  color: var(--color-neutral);
+  border-color: var(--color-neutral);
+}
+.gloss-kind-acronym {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.gloss-kind-term {
+  color: var(--color-muted);
+  border-color: var(--color-border);
+}
+
+/* ---- disputed marker ---- */
+.gloss-disputed-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+  white-space: nowrap;
+}
+
+/* ---- entry detail page ---- */
+.gloss-detail-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.gloss-detail-headword {
+  margin: 0;
+}
+.gloss-detail-domains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1.25rem;
+}
+.gloss-domain-tag {
+  font-size: 0.78rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.gloss-detail-label {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+.gloss-detail-expansion,
+.gloss-detail-aliases {
+  margin: 0.25rem 0;
+  font-size: 0.92rem;
+}
+.gloss-detail-def {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 1rem 0 0.75rem;
+}
+.gloss-detail-context {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  margin: 0 0 1.25rem;
+}
+.gloss-detail-disputed {
+  padding: 0.75rem 0.9rem;
+  border-left: 3px solid var(--color-warning);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  margin: 0 0 1.25rem;
+}
+.gloss-detail-sources {
+  margin: 1.5rem 0;
+}
+.gloss-detail-sources-title,
+.gloss-rail-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  margin: 0 0 0.5rem;
+}
+.gloss-sources-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+.gloss-sources-list li {
+  margin: 0.2rem 0;
+}
+
+/* ---- related rails ---- */
+.gloss-rail {
+  margin: 1.25rem 0;
+}
+.gloss-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.gloss-rail-link {
+  display: inline-block;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  text-decoration: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.12s;
+}
+.gloss-rail-link:hover {
+  border-color: var(--color-accent);
+}
+.gloss-rail-tool {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.gloss-detail-back {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+/* Glossary companion callout on the Learn index (a quiet content pointer). */
+.learn-glossary-callout {
+  margin: 0.5rem 0 1.25rem;
+}
+.learn-glossary-callout-link {
+  display: inline-block;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.92rem;
+  color: var(--color-text);
+  text-decoration: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  transition: border-color 0.12s;
+}
+.learn-glossary-callout-link:hover {
+  border-color: var(--color-accent);
 }

@@ -1,0 +1,31 @@
+---
+slug: root-cause-is-a-verb-not-a-noun
+title: "Causa-Raiz É um Verbo, Não um Substantivo"
+summary: "A expressão causa-raiz convida a um único vilão e a um final arrumadinho. Incidentes reais raramente têm um; têm fatores contribuintes, e o trabalho honesto é estruturar os candidatos e a evidência que confirmaria ou descartaria cada um — não nomear um culpado antes de a evidência chegar."
+concepts: ["análise de causa-raiz", "revisão pós-incidente", "resposta a incidentes", "fatores contribuintes", "operações", "postmortem"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["fault-isolation-first-hour", "change-windows-that-do-not-become-incidents"]
+category: networking
+order: 8
+status: machine-draft
+updated: "2026-07-08"
+---
+A expressão "causa-raiz" faz um estrago silencioso na forma como as equipes raciocinam sobre incidentes. É um substantivo, singular e definido, e convida a uma história com um vilão e um final satisfatório: ache a coisa, culpe a coisa, conserte a coisa, feche o chamado. A maioria dos incidentes reais não funciona assim. Eles são o produto de vários fatores contribuintes que se alinharam — uma fraqueza latente, uma mudança que a expôs, um monitor que não a pegou cedo, um passo de runbook que era ambíguo — e qualquer um deles removido poderia ter evitado a interrupção ou encurtado ela. Tratar "causa-raiz" como um verbo, algo que você faz em vez de algo que você encontra, muda o trabalho de nomear um culpado para estruturar a evidência. Essa mudança é toda a diferença entre uma revisão que melhora o sistema e uma que apenas atribui culpa.
+
+## Comece pela linha do tempo, porque a sequência é evidência
+
+Antes de qualquer hipótese sobre o porquê, ponha o quê e o quando em ordem. Uma linha do tempo não é decoração burocrática; a sequência de eventos é ela própria evidência. Uma mudança que ocorre logo antes do primeiro sintoma é um candidato que vale testar; uma mudança que ocorre depois de o sintoma começar não pode tê-lo iniciado, por mais tentadora que seja a história. Alertas que disparam tarde, ou não disparam, apontam para o monitoramento, não para a falha. As lacunas importam tanto quanto os eventos: um longo trecho entre o sintoma começar e alguém perceber não é uma causa do incidente, mas costuma ser o motivo de o incidente ter durado muito mais do que precisava, e isso é um achado por si só. Acertar a ordem primeiro impede que a revisão se ancore num suspeito antes de a sequência ter a chance de incluí-lo ou descartá-lo.
+
+## Candidatos carregam evidência, dos dois lados
+
+A unidade útil de uma revisão de incidente não é uma conclusão, mas um candidato: um domínio que vale investigar, acompanhado da evidência que o confirmaria e, tão importante quanto, da evidência que o descartaria. A metade do descarte é a parte que as equipes pulam, e pulá-la é como uma história plausível endurece em uma aceita sem nunca ter sido testada. Se o candidato é uma mudança recente, a evidência de confirmação é que o carimbo de tempo dela precede o sintoma e que revertê-la limpou o problema; a evidência de descarte é que sistemas não relacionados e inalterados mostraram o mesmo sintoma, ou que o sintoma é anterior à mudança. Um candidato que você só consegue confirmar não é um candidato, é uma suposição. Um candidato que você também consegue descartar é uma questão que você de fato consegue fechar.
+
+É por isso que um esqueleto honesto nomeia mais de um candidato e é confortável deixando alguns em aberto. Dois fatores contribuintes marcados como confirmados não são uma contradição; incidentes costumam ter vários, e a disciplina é garantir que cada confirmação repouse sobre a sua própria evidência, e não sobre uma única suposição compartilhada. Da mesma forma, "ainda desconhecido" é um desfecho legítimo de uma revisão, não uma falha dela — ele marca exatamente qual evidência ainda está pendente antes de a questão poder fechar, e isso é mais útil do que uma resposta confiante que ninguém verificou.
+
+## Confirmar é um ato humano, e deve continuar sendo
+
+Existe uma atração forte, sobretudo com uma ferramenta no circuito, de deixar a estrutura lhe entregar um veredito. Resista. O ponto de separar candidatos de conclusões é que confirmar é uma decisão que uma pessoa toma contra evidência real, e ela deve sempre ser atribuída a essa pessoa, e não afirmada pelo processo. Um esqueleto pode ordenar a linha do tempo, expor os candidatos e dispor a evidência que cada um exigiria. Ele não pode saber qual certificado de fato expirou ou se a reversão realmente limpou o sintoma; só as pessoas com acesso aos sistemas podem confirmar isso. Manter o ato de confirmação explicitamente humano não é uma limitação a contornar — é o que mantém a revisão honesta, e é por isso que um bom esqueleto marca um fator como confirmado apenas quando uma pessoa diz que sim, e diz quem.
+
+## O resultado é um sistema melhor, não um nome
+
+A medida de uma revisão pós-incidente não é se ela produziu uma causa-raiz, mas se produziu mudanças que tornam o próximo incidente menos provável ou menos severo. É por isso que fatores contribuintes são mais úteis do que uma causa única: cada um é um lugar onde o sistema pode ser melhorado. O processo de mudança, a lacuna de monitoramento, o runbook ambíguo, a redundância ausente — nomear cada um como um fator o transforma em uma ação, e a soma dessas ações é um sistema mais resiliente. Uma revisão que termina com um nome e nenhuma mudança encontrou um culpado e não aprendeu nada. Uma revisão que termina com vários fatores e uma pequena lista de melhorias fez o trabalho de verdade. Causa-raiz, feita como um verbo, produz o segundo tipo.

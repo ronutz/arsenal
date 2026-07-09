@@ -1,0 +1,29 @@
+---
+slug: tac-cases-that-get-triaged-fast
+title: "TAC Cases That Get Triaged Fast"
+summary: "The slowest support cases are rarely the hardest problems; they are the ones that opened without the diagnostic the vendor needs. A case that arrives complete - clear problem, exact error, the diagnostic bundle, the impact - skips the round trips and starts with an engineer actually working it."
+concepts: ["technical support", "escalation", "vendor support", "operations", "diagnostics", "incident response"]
+relatedTools: ["tac-escalation-packet-builder"]
+relatedArticles: ["fault-isolation-first-hour", "change-windows-that-do-not-become-incidents"]
+category: networking
+order: 10
+status: machine-draft
+updated: "2026-07-08"
+---
+The time a support case takes is only loosely related to how hard the underlying problem is. A genuinely difficult issue that arrives with everything the vendor needs can move quickly; a simple one that arrives as three lines of description can sit for days, not because anyone is slow, but because the first several exchanges are spent asking for the data that should have been in the case from the start. Each of those exchanges is a round trip measured in hours or a business day, and they stack. The single most effective thing you can do to speed up a case is unglamorous: open it complete. That means gathering the artifacts the vendor will ask for before you type the first word, so the first thing a support engineer does is work the problem rather than request the basics.
+
+## The case is a hand-off, and it should read like one
+
+A good escalation is written for the person receiving it, who knows the product but knows nothing about your environment or your incident. That framing dictates the structure. It opens with a problem statement written before you started typing - what is broken, what you expected instead, and the single clearest symptom - because a vague or evolving problem statement is the slowest thing to triage. It states severity and, crucially, business impact, because impact is what sets the severity the vendor assigns; a down-service case with no impact stated often gets graded lower than the situation warrants. It gives the environment: the affected product and exact version, and where it sits, because a version mismatch is a frequent first question and the answer being right there saves a round trip. And it is honest about what you have already tried, because showing what you have ruled out lets the engineer skip it rather than ask you to repeat it.
+
+## The diagnostics are the difference
+
+The part that most reliably determines whether a case moves is the diagnostic evidence attached to it. Nearly every vendor will, as a near-reflex first request, ask for their own diagnostic bundle from the affected device - captured while the problem is present, if at all possible, because a bundle taken after recovery often shows a healthy system. Attaching it up front simply deletes that first round trip. The exact error text, copied verbatim rather than paraphrased, matters more than it seems: it is the string the engineer searches their own internal knowledge base with, and a paraphrase does not match. For problems that touch traffic, a packet capture taken at the point of failure, filtered to the affected flow and with the capture point noted, turns a description into evidence. Logs covering the failure window, with timestamps and the time zone stated, do the same. None of this is exotic; it is the standard set, and the difference between a fast case and a slow one is usually just whether it was gathered before the case opened or requested after.
+
+## Reproducibility changes what to collect
+
+How repeatable the problem is should shape the evidence you stage. A problem you can reproduce on demand is the best case for the vendor, because a case they can reproduce in their own lab moves fastest of all - so exact reproduction steps become the highest-value artifact you can provide. An intermittent problem is the hard one: you cannot summon it, so the work is to stage the capture and logging now, before the next occurrence, so that when it happens again it is recorded rather than missed. A problem that happened once and has not recurred leaves the logs from that window as your primary record, which makes collecting them before they roll over a priority. Matching the evidence you gather to the reproducibility of the problem is the difference between waiting for a recurrence you cannot control and having the recurrence already captured when it comes.
+
+## Complete is a checklist, not a feeling
+
+"Open the case complete" is easy to agree with and easy to skip under pressure, which is exactly when a checklist earns its place. The useful move is to treat the pre-open state as a gap to close: list the artifacts a case of this shape needs, mark what you already have, and let what remains be the short, concrete list of what to collect before you open. A checklist also resists the pressure of a Sev 1, where the temptation is to open immediately with whatever is at hand - but a down case with a thin packet still stalls on the first request for data, so gathering the essentials even under pressure is faster overall, not slower. The goal is not bureaucracy; it is that the case arrives as a hand-off an engineer can pick up and work, which is the whole point of escalating in the first place.

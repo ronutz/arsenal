@@ -316,6 +316,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /change-blast-radius-mapper:
+    get:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_change_blast_radius_mapper
+      summary: Change Blast-Radius Mapper
+      description: >-
+        Describe what you are changing and its structure; a fixed rule set maps the blast radius as
+        concentric tiers (target, co-located, downstream, human) populated with what could be
+        affected, plus severity-tagged risks and containment measures. It maps what could be
+        affected, never asserts what will break. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_change_blast_radius_mapper_post
+      summary: Change Blast-Radius Mapper (POST)
+      description: >-
+        Describe what you are changing and its structure; a fixed rule set maps the blast radius as
+        concentric tiers (target, co-located, downstream, human) populated with what could be
+        affected, plus severity-tagged risks and containment measures. It maps what could be
+        affected, never asserts what will break. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /change-window-runbook-builder:
     get:
       tags:
@@ -3675,6 +3743,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /incident-timeline-rca-builder:
+    get:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_incident_timeline_rca_builder
+      summary: Incident Timeline & RCA Builder
+      description: >-
+        Enter an incident's events as a small timeline and mark the contributing-factor domains you
+        observed; a fixed rule set orders the timeline, derives the milestone spans, and structures
+        candidate contributing factors with the evidence for each. It never names a root cause -
+        candidates to investigate, not a verdict. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_incident_timeline_rca_builder_post
+      summary: Incident Timeline & RCA Builder (POST)
+      description: >-
+        Enter an incident's events as a small timeline and mark the contributing-factor domains you
+        observed; a fixed rule set orders the timeline, derives the milestone spans, and structures
+        candidate contributing factors with the evidence for each. It never names a root cause -
+        candidates to investigate, not a verdict. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /ipv6:
     get:
       tags:
@@ -4785,6 +4921,72 @@ paths:
               type: string
               examples:
                 - <134>
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /tac-escalation-packet-builder:
+    get:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_tac_escalation_packet_builder
+      summary: TAC Escalation Packet Builder
+      description: >-
+        Describe the issue you are about to escalate; a fixed rule set assembles a complete
+        vendor-support packet and a checklist of the artifacts still to collect before opening the
+        case, dropping what you already have. It structures the hand-off; it does not open a case or
+        contact any vendor. The input is a JSON object: send it as the request body (POST) or as a
+        JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free:
+        the same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_tac_escalation_packet_builder_post
+      summary: TAC Escalation Packet Builder (POST)
+      description: >-
+        Describe the issue you are about to escalate; a fixed rule set assembles a complete
+        vendor-support packet and a checklist of the artifacts still to collect before opening the
+        case, dropping what you already have. It structures the hand-off; it does not open a case or
+        contact any vendor. The input is a JSON object: send it as the request body (POST) or as a
+        JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free:
+        the same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.

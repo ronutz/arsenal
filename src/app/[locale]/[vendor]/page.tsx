@@ -35,6 +35,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import FamilyChip from "@/components/FamilyChip";
+import PageCapabilities from "@/components/PageCapabilities";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
@@ -84,6 +85,7 @@ export default async function VendorHubPage({
   const tNav = await getTranslations("nav");
   const t = await getTranslations("tools"); // vendor labels + tool names/blurbs
   const tHub = await getTranslations("vendorHub"); // page chrome
+  const tShortcuts = await getTranslations("shortcuts"); // "." context panel
   const label = t(`vendors.${vendor}`);
 
   // ---- The vendor's tools and articles, grouped by SUB-CATEGORY -----------
@@ -302,6 +304,40 @@ export default async function VendorHubPage({
           </div>
         </section>
       </main>
+
+      {/* T-DOT: register this hub's "." context capability - a hub map that jumps
+          to each populated tool-family section. Built from the same subGroups the
+          page renders, using the identical `tools-<id>` anchors, so the map never
+          drifts from the page. Only offered when there are at least two
+          tool-bearing sections (a single-family hub needs no map), matching the
+          jump-nav's own threshold. */}
+      {(() => {
+        const mapSections = subGroups
+          .filter((g) => g.tools.length > 0)
+          .map((g) => ({
+            id: g.id,
+            label: subLabel(g.id),
+            anchor: `tools-${g.id}`,
+            toolCount: g.tools.length,
+          }));
+        if (mapSections.length < 2) return null;
+        return (
+          <PageCapabilities
+            set={{
+              title: label,
+              capabilities: [
+                {
+                  id: "hub-map",
+                  kind: "hub-map",
+                  label: tShortcuts("hubMapLabel"),
+                  detail: tShortcuts("hubMapDetail"),
+                  sections: mapSections,
+                },
+              ],
+            }}
+          />
+        );
+      })()}
 
       <SiteFooter />
 

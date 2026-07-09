@@ -18,6 +18,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import MegaBrainConsole, { type MegaBrainLabels } from "@/components/dev/fun/MegaBrainConsole";
+import PageCapabilities from "@/components/PageCapabilities";
 
 const MANO_HREF = "https://youtube.com/@manodeyvin";
 const XGH_HREF = "https://gohorseprocess.com.br/extreme-go-horse-xgh/";
@@ -148,6 +149,23 @@ export default async function MegaBrainPage({
           </div>
         </section>
       </main>
+
+      {/* T-DOT: register the mega-brain screen's "." context capabilities - a
+          legend of its interactive controls. These are descriptive (the controls
+          themselves are on screen), so the panel is a discoverability aid: press
+          "." to see what the dots and the lever do. */}
+      <PageCapabilities
+        set={{
+          title: t("ctxTitle"),
+          capabilities: [
+            { id: "lever", kind: "legend", label: t("ctxLever"), detail: t("ctxLeverDetail") },
+            { id: "failsafe", kind: "legend", label: t("ctxFailsafe"), detail: t("ctxFailsafeDetail") },
+            { id: "mano", kind: "legend", label: t("ctxMano"), detail: t("ctxMano2") },
+            { id: "boss", kind: "legend", label: t("ctxBoss"), detail: t("ctxBossDetail") },
+          ],
+        }}
+      />
+
       <SiteFooter />
     </>
   );

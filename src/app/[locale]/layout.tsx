@@ -152,6 +152,13 @@ export default async function LocaleLayout({
     cheatClose: tShortcuts("cheatClose"),
     cheatHint: tShortcuts("cheatHint"),
     actionLabels: shortcutActionLabels,
+    // T-DOT: the "." page-context panel.
+    contextTitle: tShortcuts("contextTitle"),
+    contextClose: tShortcuts("contextClose"),
+    contextHint: tShortcuts("contextHint"),
+    contextBack: tShortcuts("contextBack"),
+    contextLoading: tShortcuts("contextLoading"),
+    contextError: tShortcuts("contextError"),
   };
 
   return (

@@ -151,8 +151,8 @@ export default function X509Tool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(EXAMPLE); decode(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(""); decode(""); }}>{t("clear")}</button>
           </div>
         </div>
         <textarea

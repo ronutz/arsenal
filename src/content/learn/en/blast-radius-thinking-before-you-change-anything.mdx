@@ -1,0 +1,29 @@
+---
+slug: blast-radius-thinking-before-you-change-anything
+title: "Blast-Radius Thinking Before You Change Anything"
+summary: "Before a change, the question is not only will this work but if it goes wrong, how far does the damage reach. Blast radius is the shape of that reach - target, neighbours, dependents, people - and thinking about it in tiers is how you decide what to contain before you touch anything."
+concepts: ["blast radius", "impact analysis", "change management", "operations", "containment", "dependencies"]
+relatedTools: ["change-blast-radius-mapper"]
+relatedArticles: ["change-windows-that-do-not-become-incidents", "fault-isolation-first-hour"]
+category: networking
+order: 9
+status: machine-draft
+updated: "2026-07-08"
+---
+Every change carries two questions. The first, "will this work," gets almost all the attention. The second, "if it goes wrong, how far does the damage reach," is the one that separates a contained mistake from an outage. That reach has a name borrowed from demolition: the blast radius. Thinking about it deliberately, before you touch anything, is not pessimism - it is how you decide which safeguards are worth the effort for this particular change, because a change with a small radius and a change with a wide one deserve very different amounts of caution even when the command you type is identical.
+
+## The radius is concentric, and it helps to walk it outward
+
+Blast radius is easiest to reason about as a set of tiers spreading out from the thing you are changing. At the centre is the target itself - the object you are editing and its own state, which is expected to be affected; that is the point of the change. The next ring out is everything co-located with it: other services on the same device, neighbours sharing its CPU or memory or connection table, other tenants on the same platform. These are the surprises, because a change aimed at one service can take down a neighbour through a device-wide fault the target's owner never considered. Beyond that sit the downstream dependents - the services that call the target and see its failure as their own - and their dependents in turn, because failure propagates a hop further than people expect. The outermost ring is the human one: the users behind those services, the customers with an SLA, the on-call who will field the pages. Walking the tiers outward, rather than staring at the target alone, is what surfaces the affected things nobody would have listed off the top of their head.
+
+## Structure decides the reach more than the change does
+
+The same edit has a wildly different radius depending on where the target sits. A configuration change on a dedicated, out-of-band box that nothing depends on has a radius of roughly one. The identical change on a heavily shared platform, in the live traffic path, that everything depends on, reaches nearly the whole estate. This is why the interesting inputs to a blast-radius assessment are structural, not about the change itself: is the target in the path, so that every flow through it is exposed rather than just its endpoints? Is it shared, so a device-wide fault crosses into neighbours? How many things depend on it? A few specifics carry outsized weight. A certificate change affects every client that completes a handshake, all at once, not gradually - one wrong chain breaks all of them together. A DNS change lingers in downstream caches for the record's TTL, so it is not undone the instant you fix the record. And a standalone target with no redundant peer means any interruption is a full interruption, which is why "no redundancy" makes even a narrow-reach change worth treating carefully.
+
+## Containment is chosen against the radius
+
+Once you can see the shape of the reach, the safeguards choose themselves, and they are specific rather than generic. If the target carries live sessions, drain it before you touch it so connections finish instead of dropping. If there is more than one node, change one and verify it there before rolling across the rest, so a mistake costs one unit rather than the service. If there is a healthy peer, fail over and change the standby first, keeping the active path untouched until the change is proven. If it is a DNS change, lower the TTL ahead of time so a bad answer expires from caches quickly. If it is a certificate, stage and verify the key and full chain offline before install, so no client meets a broken handshake. If the reach is wide and human, move the change into a maintenance window so the surface is smallest when the risk is highest, and tell the downstream owners so impact is expected rather than discovered. Each of these maps to a specific tier of the radius; you are not applying every precaution every time, you are applying the ones that shrink the tiers that are actually populated.
+
+## The map is a prompt, not a prophecy
+
+A blast-radius assessment maps categories of things that could be affected, from a description of the change's structure. It does not know your actual topology, and it is not predicting what will break - it is laying out the shape so that nothing in a tier gets forgotten. The value is in the walk itself: being made to consider the co-located neighbours you would not have thought of, the downstream dependents two hops away, the caches that will hold the old answer. The specifics still have to be confirmed against the real environment, and the coarse "how wide" reading is a prompt to weight the plan, not a verdict on it. Used that way, thinking in blast radius does the one thing that most reliably keeps a change from becoming an incident: it makes you decide what to contain before you touch anything, rather than discovering the reach after something has already gone wrong.

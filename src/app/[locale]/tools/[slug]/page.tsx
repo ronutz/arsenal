@@ -31,6 +31,7 @@ import ToolApiEndpoint from "@/components/ToolApiEndpoint";
 import { API_TOOLS } from "@/lib/tools/registry";
 import { isApiProcessingEnabled } from "@/config/apiSurface";
 import FamilyChip from "@/components/FamilyChip";
+import PageCapabilities from "@/components/PageCapabilities";
 import ToolProvenance from "@/components/ToolProvenance";
 import { provenanceFor } from "@/config/toolProvenance";
 import { isEnabled } from "@/config/features";
@@ -133,6 +134,12 @@ import FaultHypothesisBuilderTool from "@/components/FaultHypothesisBuilderTool"
 import { manifest as faultHypothesisBuilderManifest } from "@/lib/tools/fault-hypothesis-builder";
 import ChangeWindowRunbookBuilderTool from "@/components/ChangeWindowRunbookBuilderTool";
 import { manifest as changeWindowRunbookBuilderManifest } from "@/lib/tools/change-window-runbook-builder";
+import IncidentTimelineRcaBuilderTool from "@/components/IncidentTimelineRcaBuilderTool";
+import { manifest as incidentTimelineRcaBuilderManifest } from "@/lib/tools/incident-timeline-rca-builder";
+import ChangeBlastRadiusMapperTool from "@/components/ChangeBlastRadiusMapperTool";
+import { manifest as changeBlastRadiusMapperManifest } from "@/lib/tools/change-blast-radius-mapper";
+import TacEscalationPacketBuilderTool from "@/components/TacEscalationPacketBuilderTool";
+import { manifest as tacEscalationPacketBuilderManifest } from "@/lib/tools/tac-escalation-packet-builder";
 import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check-date";
 import F5BigipLicenseExplainerTool from "@/components/F5BigipLicenseExplainerTool";
 import { manifest as f5BigipLicenseManifest } from "@/lib/tools/f5-bigip-license-explainer";
@@ -225,6 +232,21 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: ChangeWindowRunbookBuilderTool,
     // Provenance is the original change-runbook ruleset (D-18): no URL, by nature.
     sources: changeWindowRunbookBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "incident-timeline-rca-builder": {
+    Component: IncidentTimelineRcaBuilderTool,
+    // Provenance is the original incident-RCA ruleset (D-18): no URL, by nature.
+    sources: incidentTimelineRcaBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "change-blast-radius-mapper": {
+    Component: ChangeBlastRadiusMapperTool,
+    // Provenance is the original blast-radius ruleset (D-18): no URL, by nature.
+    sources: changeBlastRadiusMapperManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "tac-escalation-packet-builder": {
+    Component: TacEscalationPacketBuilderTool,
+    // Provenance is the original TAC-escalation ruleset (D-18): no URL, by nature.
+    sources: tacEscalationPacketBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
   },
   "f5-bigd-thread-calculator": {
     Component: F5BigdThreadCalculatorTool,
@@ -589,6 +611,7 @@ export default async function ToolDetailPage({
   // Endpoint-URL affordance: shown on every API-capable tool (the component
   // renders nothing for tools without an endpoint). Links to the Swagger view.
   const tEndpoint = await getTranslations("toolApiEndpoint");
+  const tShortcuts = await getTranslations("shortcuts");
   const endpointLabels = {
     heading: tEndpoint("heading"),
     note: processingOn ? tEndpoint("noteOn") : tEndpoint("noteOff"),
@@ -652,6 +675,26 @@ export default async function ToolDetailPage({
                   {locale === "pt-BR" ? "Documentação (Markdown)" : "Documentation (Markdown)"}
                 </a>
               </p>
+            )}
+            {/* T-DOT: register this tool page's "." context capability - open the
+                D-77 man page inline. Only en/pt-BR carry a D-77 doc (the same
+                gate as the Markdown link above), so the capability is only
+                offered where the fetch target exists. */}
+            {entry && (locale === "en" || locale === "pt-BR") && (
+              <PageCapabilities
+                set={{
+                  title: tTools(`${slug}.name`),
+                  capabilities: [
+                    {
+                      id: "man-page",
+                      kind: "man-page",
+                      label: tShortcuts("manPageLabel"),
+                      detail: tShortcuts("manPageDetail"),
+                      docUrl: `/${locale}/tools/${slug}.md`,
+                    },
+                  ],
+                }}
+              />
             )}
             {entry && (
               <span className="family-chip-row">

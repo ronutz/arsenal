@@ -36,6 +36,7 @@ export default async function LearnIndexPage({
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
+  const tGloss = await getTranslations("glossary"); // glossary callout
   // Articles, grouped by the loader (within each group: curated order; English
   // fallback handled inside). Category groups themselves are sorted A->Z by
   // resolved label, locale-aware, to mirror the Tools index taxonomy.
@@ -60,6 +61,16 @@ export default async function LearnIndexPage({
             <p className="hero-eyebrow">{t("eyebrow")}</p>
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede learn-hero-lede">{t("lede")}</p>
+
+            {/* Glossary companion pointer: the Learn library explains topics at
+                length; the Glossary defines the vocabulary. Surfaced at the top
+                of the index so a reader looking up a single term has a one-click
+                door to it (PRIME 2026-07-09). */}
+            <p className="learn-glossary-callout">
+              <Link href="/glossary" className="learn-glossary-callout-link">
+                {tGloss("title")}: {tGloss("tagline")}
+              </Link>
+            </p>
 
             {/* Vendor hub strip - see tools/page.tsx: discoverability on top
                 of the listing, nav stays small (PRIME 2026-07-03). */}

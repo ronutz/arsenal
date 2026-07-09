@@ -27,6 +27,7 @@ export default function Base64Tool() {
 
   const [direction, setDirection] = useState<Direction>("encode");
   const [codec, setCodec] = useState<Codec>("base64");
+  const [layers, setLayers] = useState<number>(1);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<CodecResult | null>(null);
   const [copied, setCopied] = useState(false);
@@ -39,16 +40,51 @@ export default function Base64Tool() {
     setResult(next === "" ? null : run(next));
   }, []);
 
-  // What to display, derived from the one result plus the current toggles.
-  const decoded = result ? result.decoded[codec] : null;
-  const decodeFailed = direction === "decode" && decoded !== null && !decoded.ok;
+  // MULTI-LAYER (D-? PRIME 2026-07-08): attackers routinely double-, triple-, or
+  // n-encode a payload to slip it past naive filters, so the tool can apply the
+  // selected codec repeatedly. Encoding wraps N layers; decoding peels N layers.
+  // Each pass reuses the same single-pass run() - the pure codec library is
+  // untouched; only the iteration lives here. The first layer is the existing
+  // one-pass result; further layers re-run over the previous layer's output.
+  //
+  // decodeFailed is reported for the layer that first fails to peel (so a user
+  // asking for 3 layers on a 2-layer payload sees exactly where it stopped).
+  const single = result ? result.decoded[codec] : null;
+
+  // Encode: value -> codec -> codec -> ... (N times). Whitespace passed through
+  // between passes exactly as the single-pass tool does.
+  const encodeLayered = (): string | null => {
+    if (!result) return null;
+    let out = result.encoded[codec];
+    for (let i = 1; i < layers; i++) out = run(out).encoded[codec];
+    return out;
+  };
+
+  // Decode: peel N layers. Each pass must succeed; the first failure stops and
+  // is surfaced. Returns the fully-peeled decoded layer, or null on failure.
+  const decodeLayered = (): { text: string; isUtf8: boolean; byteLength: number } | null => {
+    if (!single || !single.ok) return null;
+    let layer = single;
+    for (let i = 1; i < layers; i++) {
+      const next = run(layer.text).decoded[codec];
+      if (!next.ok) return null;
+      layer = next;
+    }
+    return { text: layer.text, isUtf8: layer.isUtf8, byteLength: layer.byteLength };
+  };
+
+  const decodedLayered = direction === "decode" ? decodeLayered() : null;
+  const decodeFailed = direction === "decode" && single !== null && (!single.ok || (layers > 1 && decodedLayered === null));
   const output: string | null = result
     ? direction === "encode"
-      ? result.encoded[codec]
-      : decoded && decoded.ok
-        ? decoded.text
+      ? encodeLayered()
+      : decodedLayered
+        ? decodedLayered.text
         : null
     : null;
+  // The layer whose reason to show: the single-pass reason if the first layer
+  // failed, otherwise a generic "a deeper layer was not valid for this codec".
+  const decoded = single;
 
   const onCopy = useCallback(async () => {
     if (output == null || !navigator.clipboard) return;
@@ -106,8 +142,8 @@ export default function Base64Tool() {
             {direction === "encode" ? t("inputLabelEncode") : t("inputLabelDecode")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => { setDirection("encode"); setValue(EXAMPLE); }}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setDirection("encode"); onChange(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => onChange("")}>{t("clear")}</button>
           </div>
         </div>
         <textarea

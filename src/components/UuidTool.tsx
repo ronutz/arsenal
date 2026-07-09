@@ -121,8 +121,8 @@ export default function UuidTool() {
             {t("inspectLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setInspectInput(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setInspectInput("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => onInspect(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => onInspect("")}>{t("clear")}</button>
           </div>
         </div>
         <input

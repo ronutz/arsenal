@@ -109,8 +109,10 @@ export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: Poo
   return (
     <div className="nf-root">
       <div className="nf-head">
-        <div className="nf-404 mono">404</div>
-        <div className="nf-sub">{s.sub}</div>
+        <div className="nf-headline">
+          <span className="nf-404 mono">404</span>
+          <span className="nf-sub">{s.sub}</span>
+        </div>
         <div className="nf-path mono">
           <span className="nf-dim">GET</span> {path} <span className="nf-arrow">&#8594;</span>{" "}
           <span className="nf-status">404 Not Found</span>

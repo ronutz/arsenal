@@ -53,6 +53,36 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-08",
+    time: "23:55",
+    kind: "feature",
+    title: "The Glossary went live",
+    body: "A new Glossary launched at /glossary: 151 entries covering the field's terms, acronyms, expressions, jargon, and lore, each defined in English and Brazilian Portuguese and filterable by domain, kind, and free-text search. Lore entries are fact-checked and cite primary sources, and many terms link straight to the tool that computes them.",
+    links: [{ label: "Open the Glossary", href: "/glossary" }],
+  },
+  {
+    date: "2026-07-08",
+    time: "22:30",
+    kind: "feature",
+    title: "Press \".\" for what this page can do",
+    body: "A new page-context panel puts each page's special actions one keystroke away. Press the period key anywhere (outside a text field) and a panel lists what the current page offers. On any tool page it opens that tool's full documentation - the man page - inline, without leaving the page. On a vendor hub it shows a hub map that jumps straight to any tool-family section. On the Mega Brain screen it explains what each of its controls does. Pages that have nothing special to offer leave the key alone, so it never gets in the way. Escape or a click outside closes the panel.",
+    links: [{ label: "Try it on the F5 hub", href: "/f5" }],
+  },
+  {
+    date: "2026-07-08",
+    time: "19:45",
+    kind: "tool",
+    title: "The Operations & Fieldcraft cluster completes: three tools ship together",
+    body: "The fieldcraft family reaches its full five, with three siblings shipped in one batch on the shared foundation the Fault Hypothesis Builder pilot established. The Incident Timeline & RCA Builder orders an incident's events, derives the milestone spans, and structures candidate contributing factors with the evidence that would confirm or rule out each - and it never names a root cause: a factor is echoed confirmed only when you mark it, always attributed to you, an invariant checked by the build itself. The Change Blast-Radius Mapper maps a change as concentric tiers (target, co-located, downstream, human) populated with what could be affected, plus severity-tagged risks and containment measures; it maps what could be affected, never asserts what will break. The TAC Escalation Packet Builder assembles a complete vendor-support packet and a checklist of the artifacts still to collect before opening the case, dropping what you already have; it structures the hand-off, it does not open a case. All three run entirely in the browser, each verified by rule-firing snapshot vectors (twelve, eleven, and twelve), each with a Why-panel and a one-click Markdown export. That is thirty-five vectors across three tools, and four tools now sharing one foundation with no changes to it.",
+    tools: ["incident-timeline-rca-builder", "change-blast-radius-mapper", "tac-escalation-packet-builder"],
+    articles: ["root-cause-is-a-verb-not-a-noun", "blast-radius-thinking-before-you-change-anything", "tac-cases-that-get-triaged-fast"],
+    links: [
+      { label: "Incident Timeline & RCA Builder", href: "/tools/incident-timeline-rca-builder" },
+      { label: "Change Blast-Radius Mapper", href: "/tools/change-blast-radius-mapper" },
+      { label: "TAC Escalation Packet Builder", href: "/tools/tac-escalation-packet-builder" },
+    ],
+  },
+  {
+    date: "2026-07-08",
     time: "18:20",
     kind: "tool",
     title: "Change Window Runbook Builder: the fieldcraft cluster's second tool",

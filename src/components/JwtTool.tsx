@@ -198,8 +198,8 @@ export default function JwtTool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => { setValue(""); setSecret(""); }}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(EXAMPLE); decode(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(""); setSecret(""); decode(""); }}>{t("clear")}</button>
           </div>
         </div>
         <textarea

@@ -81,8 +81,8 @@ export default function UrlInspectorTool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(EXAMPLE); parse(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(""); parse(""); }}>{t("clear")}</button>
           </div>
         </div>
         <textarea

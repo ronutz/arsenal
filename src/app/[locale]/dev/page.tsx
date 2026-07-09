@@ -63,7 +63,7 @@ export default async function DevIndexPage({
               </Link>
 
               {/* Room two: /dev/other — the green room, badged in its own tone. */}
-              <Link href="/dev/other" className="devfun-card">
+              <Link href="/dev/other" className="devfun-card devfun-card--other">
                 <span className="devfun-card-top">
                   <span className="devfun-card-name">{t("other.title")}</span>
                   <span className="envother-badge mono">{t("other.badge")}</span>
@@ -75,7 +75,7 @@ export default async function DevIndexPage({
               </Link>
 
               {/* Room three: /dev/out — the red room, badged in its own tone. */}
-              <Link href="/dev/out" className="devfun-card">
+              <Link href="/dev/out" className="devfun-card devfun-card--out">
                 <span className="devfun-card-top">
                   <span className="devfun-card-name">{t("out.title")}</span>
                   <span className="envout-badge mono">{t("out.badge")}</span>

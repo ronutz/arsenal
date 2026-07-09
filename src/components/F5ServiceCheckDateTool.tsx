@@ -76,8 +76,8 @@ export default function F5ServiceCheckDateTool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(EXAMPLE); compute(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(""); compute(""); }}>{t("clear")}</button>
           </div>
         </div>
         <input

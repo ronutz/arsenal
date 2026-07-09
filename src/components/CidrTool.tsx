@@ -328,8 +328,8 @@ export default function CidrTool() {
               {t("inputLabel")}
             </label>
             <div className="dig-input-actions">
-              <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-              <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+              <button type="button" className="b64-copy" onClick={() => { setValue(EXAMPLE); try { setSubnet(cidrAnalyze(EXAMPLE.trim())); setError(null); } catch (e) { setError(mapError(e)); setSubnet(null); } }}>{t("example")}</button>
+              <button type="button" className="b64-copy" onClick={() => { setValue(""); setSubnet(null); setError(null); }}>{t("clear")}</button>
             </div>
           </div>
           <div className="cidr-controls">

@@ -1,0 +1,31 @@
+---
+slug: root-cause-is-a-verb-not-a-noun
+title: "Root Cause Is a Verb, Not a Noun"
+summary: "The phrase root cause invites a single villain and a tidy ending. Real incidents rarely have one; they have contributing factors, and the honest work is structuring the candidates and the evidence that would confirm or rule out each - not naming a culprit before the evidence is in."
+concepts: ["root cause analysis", "post-incident review", "incident response", "contributing factors", "operations", "postmortem"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["fault-isolation-first-hour", "change-windows-that-do-not-become-incidents"]
+category: networking
+order: 8
+status: machine-draft
+updated: "2026-07-08"
+---
+The phrase "root cause" does quiet damage to how teams reason about incidents. It is a noun, singular and definite, and it invites a story with one villain and a satisfying ending: find the thing, blame the thing, fix the thing, close the ticket. Most real incidents do not work that way. They are the product of several contributing factors that lined up - a latent weakness, a change that surfaced it, a monitor that did not catch it early, a runbook step that was ambiguous - and any one of them removed might have prevented the outage or shortened it. Treating "root cause" as a verb, something you do rather than something you find, changes the work from naming a culprit to structuring the evidence. That shift is the whole difference between a review that improves the system and one that just assigns blame.
+
+## Start with the timeline, because sequence is evidence
+
+Before any hypothesis about why, get the what and the when in order. A timeline is not bureaucratic decoration; the sequence of events is itself evidence. A change that lands just before the first symptom is a candidate worth testing; a change that lands after the symptom began cannot have started it, however tempting the story. Alerts that fire late, or not at all, point at the monitoring rather than the fault. The gaps matter as much as the events: a long stretch between the symptom beginning and anyone noticing is not a cause of the incident, but it is often why the incident ran far longer than it needed to, and that is a finding in its own right. Getting the order right first stops the review from anchoring on a suspect before the sequence has had a chance to rule it in or out.
+
+## Candidates carry evidence, both ways
+
+The useful unit of an incident review is not a conclusion but a candidate: a domain worth investigating, paired with the evidence that would confirm it and, just as important, the evidence that would rule it out. The rule-out half is the part teams skip, and skipping it is how a plausible story hardens into an accepted one without ever being tested. If the candidate is a recent change, the confirming evidence is that its timestamp precedes the symptom and that rolling it back cleared the problem; the ruling-out evidence is that unrelated, unchanged systems showed the same symptom, or that the symptom predates the change. A candidate you can only confirm is not a candidate, it is an assumption. A candidate you can also rule out is a question you can actually close.
+
+This is why an honest scaffold names more than one candidate and is comfortable leaving some open. Two contributing factors marked confirmed is not a contradiction; incidents often have several, and the discipline is to make sure each confirmation rests on its own evidence rather than a single shared assumption. Equally, "still unknown" is a legitimate outcome of a review, not a failure of it - it marks precisely which evidence is still owed before the question can close, and that is more useful than a confident answer nobody checked.
+
+## Confirmation is a human act, and it should stay one
+
+There is a strong pull, especially with a tool in the loop, to let the structure hand you a verdict. Resist it. The point of separating candidates from conclusions is that confirmation is a decision a person makes against real evidence, and it should always be attributed to that person rather than asserted by the process. A scaffold can order the timeline, surface the candidates, and lay out the evidence each would need. It cannot know which certificate actually expired or whether the rollback truly cleared the symptom; only the people with access to the systems can confirm that. Keeping the act of confirmation explicitly human is not a limitation to work around - it is the thing that keeps the review honest, and it is why a good scaffold marks a factor confirmed only when a person says so, and says who.
+
+## The output is a better system, not a name
+
+The measure of a post-incident review is not whether it produced a root cause but whether it produced changes that make the next incident less likely or less severe. That is why contributing factors are more useful than a single cause: each one is a place the system can be improved. The change process, the monitoring gap, the ambiguous runbook, the missing redundancy - naming each as a factor turns it into an action, and the sum of those actions is a more resilient system. A review that ends with one name and no changes has found a culprit and learned nothing. A review that ends with several factors and a short list of improvements has done the actual work. Root cause, done as a verb, produces the second kind.

@@ -86,8 +86,8 @@ export default function PkceTool() {
             {t("verifierLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setVerifier(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setVerifier("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setVerifier(EXAMPLE); void recompute(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setVerifier(""); void recompute(""); }}>{t("clear")}</button>
           </div>
         </div>
         <div className="cidr-controls">

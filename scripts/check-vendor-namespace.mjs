@@ -41,6 +41,11 @@ const articleSlugs = fs
   .readdirSync("src/content/learn/en")
   .filter((f) => f.endsWith(".mdx"))
   .map((f) => f.replace(/\.mdx$/, ""));
+// Glossary entry slugs address /glossary/<slug>; keep them out of vendor space
+// too (registry is TS, so parse the slug: "..." lines the same way).
+const glossarySlugs = [
+  ...read("src/content/glossary/glossary.ts").matchAll(/\bslug:\s*"([a-z0-9-]+)"/g),
+].map((m) => m[1]);
 const routeFolders = fs
   .readdirSync("src/app/[locale]", { withFileTypes: true })
   .filter((e) => e.isDirectory() && !e.name.startsWith("["))
@@ -51,6 +56,7 @@ const populations = [
   ["tool id", toolIds],
   ["catalogue slug", catalogueSlugs],
   ["Learn article slug", articleSlugs],
+  ["glossary slug", glossarySlugs],
   ["static route under [locale]", routeFolders],
 ];
 const collisions = [];
@@ -68,5 +74,5 @@ if (collisions.length > 0) {
 }
 
 console.log(
-  `[check-vendor-namespace] OK: ${vendorKeys.length} vendor keys (${vendorKeys.join(", ")}) are collision-free across ${toolIds.length} tool ids, ${catalogueSlugs.length} catalogue slugs, ${articleSlugs.length} article slugs, and ${routeFolders.length} static routes.`,
+  `[check-vendor-namespace] OK: ${vendorKeys.length} vendor keys (${vendorKeys.join(", ")}) are collision-free across ${toolIds.length} tool ids, ${catalogueSlugs.length} catalogue slugs, ${articleSlugs.length} article slugs, ${glossarySlugs.length} glossary slugs, and ${routeFolders.length} static routes.`,
 );

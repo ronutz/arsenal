@@ -28,8 +28,9 @@ export default function Ipv6Tool() {
   const [decoded, setDecoded] = useState<DecodedIpv6 | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value;
+  // Single apply path so the input field and the decoded result can never
+  // desync: the textarea, Example, and Clear all route through here.
+  function apply(raw: string) {
     setValue(raw);
     const trimmed = raw.trim();
     if (!trimmed) {
@@ -57,8 +58,8 @@ export default function Ipv6Tool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => apply(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => apply("")}>{t("clear")}</button>
           </div>
         </div>
         <input
@@ -66,7 +67,7 @@ export default function Ipv6Tool() {
           className="cidr-input mono"
           type="text"
           value={value}
-          onChange={onChange}
+          onChange={(e) => apply(e.target.value)}
           placeholder={t("inputPlaceholder")}
           autoComplete="off"
           autoCorrect="off"

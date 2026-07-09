@@ -68,6 +68,12 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   { id: "tool-jwt", kind: "navigate", path: "/tools/jwt", labelKey: "actionToolJwt" },
   { id: "tool-json-yaml", kind: "navigate", path: "/tools/json-yaml-convert", labelKey: "actionToolJsonYaml" },
   { id: "vendor-f5", kind: "navigate", path: "/f5", labelKey: "actionVendorF5" },
+  // Navigation — five more quick-launch destinations (keys 6-0; rebindable)
+  { id: "tool-hash", kind: "navigate", path: "/tools/hash", labelKey: "actionToolHash" },
+  { id: "tool-uuid", kind: "navigate", path: "/tools/uuid", labelKey: "actionToolUuid" },
+  { id: "tool-url-inspector", kind: "navigate", path: "/tools/url-inspector", labelKey: "actionToolUrlInspector" },
+  { id: "tool-x509", kind: "navigate", path: "/tools/x509", labelKey: "actionToolX509" },
+  { id: "nav-vendors", kind: "navigate", path: "/vendors", labelKey: "actionVendors" },
   // Commands — handled inside the shortcut layer
   { id: "cmd-search", kind: "command", command: "search-overlay", labelKey: "actionSearch" },
   { id: "cmd-focus-search", kind: "command", command: "focus-search", labelKey: "actionFocusSearch" },
@@ -91,6 +97,7 @@ export const ACTION_BY_ID: Record<string, ShortcutAction> = Object.fromEntries(
 //   s search overlay · / focus search · ? cheat-sheet · h home   (new "expected"
 //     web conventions)
 //   1-5 favorite tools (PRIME-ratified: CIDR, Base64, JWT, JSON⇄YAML, F5 hub)
+//   6-0 more quick launches: Hash, UUID, URL inspector, X.509, Vendors home
 export const DEFAULT_BINDINGS: Record<string, string> = {
   b: "cmd-boss",
   f: "nav-dev-fun",
@@ -107,10 +114,15 @@ export const DEFAULT_BINDINGS: Record<string, string> = {
   "3": "tool-jwt",
   "4": "tool-json-yaml",
   "5": "vendor-f5",
+  "6": "tool-hash",
+  "7": "tool-uuid",
+  "8": "tool-url-inspector",
+  "9": "tool-x509",
+  "0": "nav-vendors",
 };
 
 // The keys the settings UI exposes, in display order (matches DEFAULT_BINDINGS).
-export const SHORTCUT_KEYS: string[] = ["b", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5"];
+export const SHORTCUT_KEYS: string[] = ["b", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
 // ---- Sysadmin policy -------------------------------------------------------
 // Per-key operator rules. Any key absent from this map is fully customizable

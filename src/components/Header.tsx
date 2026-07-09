@@ -35,10 +35,12 @@ export default async function Header() {
           <Link href="/learn" className="site-nav-link">
             {t("learn")}
           </Link>
-          {/* Vendor hubs are deliberately NOT in this nav: the bar stays a
-              small, simple 4-item explore bar (PRIME, 2026-07-03). Hub
-              discoverability lives as a strip on top of the Tools and Learn
-              listings instead (vendor-hub-strip in both pages). */}
+          {/* Vendors home (T-HUB): the front door to the per-vendor hubs. The
+              individual hubs are still reached from here and from the strip on
+              the Tools and Learn listings; this adds one explore entry. */}
+          <Link href="/vendors" className="site-nav-link">
+            {t("vendors")}
+          </Link>
           <Link href="/about" className="site-nav-link">
             {t("about")}
           </Link>

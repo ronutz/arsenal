@@ -84,8 +84,8 @@ export default function HashTool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => onChange(EXAMPLE)}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => onChange("")}>{t("clear")}</button>
           </div>
         </div>
         <textarea

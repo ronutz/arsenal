@@ -94,8 +94,8 @@ export default function SecureHeadersTool() {
             {t("inputLabel")}
           </label>
           <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setValue(EXAMPLE)}>{t("example")}</button>
-            <button type="button" className="b64-copy" onClick={() => setValue("")}>{t("clear")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(EXAMPLE); analyze(EXAMPLE); }}>{t("example")}</button>
+            <button type="button" className="b64-copy" onClick={() => { setValue(""); analyze(""); }}>{t("clear")}</button>
           </div>
         </div>
         <textarea

@@ -41,6 +41,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_cert_renewal_planner",
     "tag": "PKI"
   },
+  "change-blast-radius-mapper": {
+    "url": "https://ronutz.com/api/v1/change-blast-radius-mapper",
+    "method": "GET",
+    "op": "run_change_blast_radius_mapper",
+    "tag": "Operations & Fieldcraft"
+  },
   "change-window-runbook-builder": {
     "url": "https://ronutz.com/api/v1/change-window-runbook-builder",
     "method": "GET",
@@ -341,6 +347,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_http_request_translator",
     "tag": "HTTP & web"
   },
+  "incident-timeline-rca-builder": {
+    "url": "https://ronutz.com/api/v1/incident-timeline-rca-builder",
+    "method": "GET",
+    "op": "run_incident_timeline_rca_builder",
+    "tag": "Operations & Fieldcraft"
+  },
   "ipv6": {
     "url": "https://ronutz.com/api/v1/ipv6",
     "method": "GET",
@@ -442,6 +454,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_syslog_pri_decoder",
     "tag": "Protocol & packet decoders"
+  },
+  "tac-escalation-packet-builder": {
+    "url": "https://ronutz.com/api/v1/tac-escalation-packet-builder",
+    "method": "GET",
+    "op": "run_tac_escalation_packet_builder",
+    "tag": "Operations & Fieldcraft"
   },
   "telemetry-streaming-explainer": {
     "url": "https://ronutz.com/api/v1/telemetry-streaming-explainer",

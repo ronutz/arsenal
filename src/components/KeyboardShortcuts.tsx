@@ -43,6 +43,13 @@ import BossApp from "@/components/dev/fun/BossApp";
 import { drawBossScreen, type BossScreenKind } from "@/components/dev/fun/boss-screens";
 import { resolveBindings, subscribe } from "@/lib/preferences";
 import { ACTION_BY_ID, DEFAULT_BINDINGS } from "@/config/shortcuts";
+import {
+  getPageCapabilities,
+  subscribePageCapabilities,
+  type PageCapabilitySet,
+  type PageCapability,
+} from "@/lib/pageCapabilities";
+import { manPageToHtml } from "@/lib/manPageMarkdown";
 
 export interface ShortcutsLabels {
   /** Boss overlay "press any key" hint. */
@@ -57,6 +64,20 @@ export interface ShortcutsLabels {
   cheatHint: string;
   /** Localized action label per action id (for the cheat-sheet rows). */
   actionLabels: Record<string, string>;
+
+  // --- T-DOT: the "." page-context panel ---
+  /** Panel title shown above the page's own heading (e.g. "Page actions"). */
+  contextTitle: string;
+  /** Panel close aria-label. */
+  contextClose: string;
+  /** Footer hint explaining the "." key. */
+  contextHint: string;
+  /** Back button label when the inline man page is open. */
+  contextBack: string;
+  /** Shown while the man page is being fetched. */
+  contextLoading: string;
+  /** Shown if the man page fails to load. */
+  contextError: string;
 }
 
 interface KeyboardShortcutsProps {
@@ -107,6 +128,19 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
 
   const [bossScreen, setBossScreen] = useState<BossScreenKind | null>(null);
   const [cheatOpen, setCheatOpen] = useState(false);
+
+  // T-DOT: the "." context panel. `contextOpen` toggles the overlay; `caps` is
+  // the current page's capability set (null when the page declares none - then
+  // "." is inert). `manPage` holds the inline man-page sub-view when a "man-page"
+  // capability is opened: its rendered HTML, plus loading/error flags.
+  const [contextOpen, setContextOpen] = useState(false);
+  const [caps, setCaps] = useState<PageCapabilitySet | null>(null);
+  const [manPage, setManPage] = useState<{
+    title: string;
+    html: string | null;
+    loading: boolean;
+    error: boolean;
+  } | null>(null);
   // Effective bindings, kept in sync with the store (settings UI edits, policy).
   const [bindings, setBindings] = useState<Record<string, string>>(DEFAULT_BINDINGS);
 
@@ -126,10 +160,48 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
     };
   }, []);
 
+  // T-DOT: track the current page's capability set. <PageCapabilities> writes it
+  // on mount and clears it on navigation; we mirror it into state so the panel
+  // re-renders. If the page changes while the panel is open (rare - the panel
+  // grabs focus), close it so it never shows a stale page's actions.
+  useEffect(() => {
+    const sync = () => {
+      const next = getPageCapabilities();
+      setCaps(next);
+      if (next === null) {
+        setContextOpen(false);
+        setManPage(null);
+      }
+    };
+    sync();
+    return subscribePageCapabilities(sync);
+  }, []);
+
   // Pick a boss screen using the shared shuffled bag (drawBossScreen) so none
   // is starved and none repeats until the whole set has shown once.
   const openRandomBoss = useCallback(() => {
     setBossScreen(drawBossScreen());
+  }, []);
+
+  // T-DOT: open a "man-page" capability inline. Fetches the static Markdown twin
+  // (emitted to /<locale>/tools/<slug>.md by gen-machine-legible.mts) and renders
+  // it in the panel. Shows loading immediately, then the doc or an error. The doc
+  // is our own authored, in-repo content; manPageToHtml escapes every byte before
+  // tokenizing, so injecting the result is safe.
+  const openManPage = useCallback((cap: PageCapability) => {
+    if (!cap.docUrl) return;
+    setManPage({ title: cap.label, html: null, loading: true, error: false });
+    fetch(cap.docUrl)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.text();
+      })
+      .then((md) => {
+        setManPage({ title: cap.label, html: manPageToHtml(md), loading: false, error: false });
+      })
+      .catch(() => {
+        setManPage({ title: cap.label, html: null, loading: false, error: true });
+      });
   }, []);
 
   const runAction = useCallback(
@@ -167,7 +239,29 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
         if (e.key === "Escape") setCheatOpen(false);
         return;
       }
+      // T-DOT: while the context panel is open it owns the keyboard. Escape steps
+      // back out of the inline man page first, then closes the panel.
+      if (contextOpen) {
+        if (e.key === "Escape") {
+          if (manPage) setManPage(null);
+          else setContextOpen(false);
+        }
+        return;
+      }
       if (isEditable(e.target) || isEditable(document.activeElement)) return;
+
+      // T-DOT: "." opens the page-context panel - but only when the current page
+      // registered capabilities. On a page that declares none, "." stays inert so
+      // the key is never hijacked. This is handled before the rebindable-shortcut
+      // lookup; "." is a dedicated handler, not a rebindable action.
+      if (e.key === ".") {
+        if (caps && caps.capabilities.length > 0) {
+          e.preventDefault();
+          setManPage(null);
+          setContextOpen(true);
+        }
+        return;
+      }
 
       // Normalize: letters lowercased; punctuation/digits as-is.
       const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
@@ -176,7 +270,7 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
       e.preventDefault();
       runAction(actionId);
     },
-    [bindings, bossScreen, cheatOpen, runAction],
+    [bindings, bossScreen, cheatOpen, contextOpen, manPage, caps, runAction],
   );
 
   useEffect(() => {
@@ -227,6 +321,125 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
               ))}
             </ul>
             <p className="kbd-cheat-hint mono">{labels.cheatHint}</p>
+          </div>
+        </div>
+      )}
+
+      {/* T-DOT: the "." page-context panel. Two views share one card: the
+          capability list, and (when a man-page capability is opened) the inline
+          documentation with a back button. Clicking the backdrop or the close
+          button dismisses the whole panel. */}
+      {contextOpen && caps && (
+        <div
+          className="ctx-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label={labels.contextTitle}
+          onClick={() => setContextOpen(false)}
+        >
+          <div className="ctx-card" onClick={(e) => e.stopPropagation()}>
+            <div className="ctx-head">
+              <div className="ctx-head-titles">
+                <p className="ctx-eyebrow mono">{labels.contextTitle}</p>
+                <h2 className="ctx-title">{manPage ? manPage.title : caps.title}</h2>
+              </div>
+              <button
+                type="button"
+                className="ctx-close"
+                onClick={() => setContextOpen(false)}
+                aria-label={labels.contextClose}
+              >
+                ✕
+              </button>
+            </div>
+
+            {manPage ? (
+              // --- inline man-page sub-view ---
+              <div className="ctx-manpage">
+                <button
+                  type="button"
+                  className="ctx-back"
+                  onClick={() => setManPage(null)}
+                >
+                  ← {labels.contextBack}
+                </button>
+                {manPage.loading && (
+                  <p className="ctx-manpage-status mono">{labels.contextLoading}</p>
+                )}
+                {manPage.error && (
+                  <p className="ctx-manpage-status ctx-manpage-error mono">
+                    {labels.contextError}
+                  </p>
+                )}
+                {manPage.html !== null && (
+                  <div
+                    className="ctx-manpage-body"
+                    // Safe: our own in-repo docs, fully HTML-escaped before tokenizing.
+                    dangerouslySetInnerHTML={{ __html: manPage.html }}
+                  />
+                )}
+              </div>
+            ) : (
+              // --- capability list ---
+              <ul className="ctx-list">
+                {caps.capabilities.map((cap) => (
+                  <li key={cap.id} className="ctx-item">
+                    {cap.kind === "man-page" ? (
+                      <button
+                        type="button"
+                        className="ctx-action"
+                        onClick={() => openManPage(cap)}
+                      >
+                        <span className="ctx-action-label">{cap.label}</span>
+                        {cap.detail && <span className="ctx-action-detail">{cap.detail}</span>}
+                      </button>
+                    ) : cap.kind === "hub-map" ? (
+                      <div className="ctx-hubmap">
+                        <p className="ctx-action-label">{cap.label}</p>
+                        {cap.detail && <p className="ctx-action-detail">{cap.detail}</p>}
+                        <ul className="ctx-hubmap-list">
+                          {(cap.sections ?? []).map((s) => (
+                            <li key={s.id}>
+                              <button
+                                type="button"
+                                className="ctx-hubmap-link"
+                                onClick={() => {
+                                  setContextOpen(false);
+                                  navigateRef.current(`#${s.anchor}`);
+                                }}
+                              >
+                                <span className="ctx-hubmap-label">{s.label}</span>
+                                <span className="ctx-hubmap-count mono">{s.toolCount}</span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : cap.kind === "link" && cap.href ? (
+                      <button
+                        type="button"
+                        className="ctx-action"
+                        onClick={() => {
+                          setContextOpen(false);
+                          navigateRef.current(cap.href as string);
+                        }}
+                      >
+                        <span className="ctx-action-label">{cap.label}</span>
+                        {cap.detail && <span className="ctx-action-detail">{cap.detail}</span>}
+                      </button>
+                    ) : (
+                      // legend: descriptive, non-actioning row
+                      <div className="ctx-legend">
+                        <span className="ctx-action-label">{cap.label}</span>
+                        {cap.detail && <span className="ctx-action-detail">{cap.detail}</span>}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <p className="ctx-hint mono">{labels.contextHint}</p>
           </div>
         </div>
       )}

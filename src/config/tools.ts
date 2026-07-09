@@ -123,6 +123,9 @@ export const tools: ToolEntry[] = [
   { id: "exos-config-explainer", sub: "switching", href: "/tools/exos-config-explainer", category: "networking", vendors: ["extreme"], available: true },
   { id: "fault-hypothesis-builder", href: "/tools/fault-hypothesis-builder", category: "operations", available: true },
   { id: "change-window-runbook-builder", href: "/tools/change-window-runbook-builder", category: "operations", available: true },
+  { id: "incident-timeline-rca-builder", href: "/tools/incident-timeline-rca-builder", category: "operations", available: true },
+  { id: "change-blast-radius-mapper", href: "/tools/change-blast-radius-mapper", category: "operations", available: true },
+  { id: "tac-escalation-packet-builder", href: "/tools/tac-escalation-packet-builder", category: "operations", available: true },
 ];
 
 /** Tools that are live and linkable. */

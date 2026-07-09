@@ -22,7 +22,8 @@
     "certs": "Certificações",
     "primaryAria": "Principal",
     "home": "Início",
-    "breadcrumb": "Trilha de navegação"
+    "breadcrumb": "Trilha de navegação",
+    "vendors": "Fornecedores"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -4078,6 +4079,261 @@
         "rollback": "Gatilhos de rollback e retorno",
         "closeout": "Encerramento"
       }
+    },
+    "incident-timeline-rca-builder": {
+      "name": "Construtor de Linha do Tempo e RCA de Incidente",
+      "blurb": "Insira os eventos de um incidente como uma pequena linha do tempo e marque os domínios de fator contribuinte que você observou; um conjunto fixo de regras ordena a linha do tempo, deriva os intervalos entre marcos e estrutura fatores contribuintes candidatos com a evidência de cada um. Nunca aponta uma causa-raiz - candidatos a investigar, não um veredito.",
+      "form": {
+        "heading": "Monte a linha do tempo do incidente",
+        "timelineHeading": "Eventos da linha do tempo",
+        "timelineHint": "Adicione os eventos do incidente e defina uma ordem para cada um (menor roda antes). A ferramenta não tem relógio - quem controla a sequência é você; os intervalos são contados em eventos.",
+        "eventKind": "Tipo de evento",
+        "eventOrder": "Ordem",
+        "eventNote": "Nota",
+        "eventNotePlaceholder": "O que aconteceu (opcional)",
+        "addEvent": "+ Adicionar evento",
+        "removeEvent": "Remover este evento",
+        "factorsHeading": "Domínios de fator contribuinte que você observou",
+        "factorsHint": "Marque os domínios que você tem motivo para investigar. Marque \"marcar confirmado\" apenas para um fator que você confirmou a partir da sua própria evidência - a ferramenta nunca confirma um por você.",
+        "markConfirmed": "marcar confirmado (pela minha evidência)"
+      },
+      "eventKinds": {
+        "change-made": "Mudança feita",
+        "symptom-began": "Sintoma começou",
+        "alert-fired": "Alerta disparou",
+        "detected": "Detectado (percebido por alguém)",
+        "investigation-step": "Passo de investigação",
+        "escalated": "Escalado",
+        "mitigated": "Mitigado (impacto reduzido)",
+        "resolved": "Resolvido (serviço restaurado)",
+        "other": "Outro"
+      },
+      "factorDomains": {
+        "recent-change": "Uma mudança recente",
+        "capacity-saturation": "Capacidade ou saturação",
+        "dependency-failure": "Uma dependência com falha",
+        "configuration-error": "Um erro de configuração",
+        "expired-credential": "Um certificado ou credencial expirado",
+        "human-process-gap": "Uma lacuna de processo ou fator humano",
+        "monitoring-gap": "Uma lacuna de detecção ou monitoramento",
+        "external-provider": "Um provedor externo",
+        "unknown-still": "Ainda desconhecido"
+      },
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador. As notas em texto livre fluem apenas para o esqueleto exportado - nunca influenciam quais candidatos aparecem, e nada é enviado.",
+      "emptyState": "Monte a linha do tempo acima e o esqueleto de RCA aparece aqui - a linha do tempo ordenada, os intervalos entre marcos e os fatores candidatos a investigar, ao vivo enquanto você refina.",
+      "notes": {
+        "heading": "Detalhe opcional para a exportação (não afeta o esqueleto)",
+        "hint": "Estas linhas são copiadas literalmente para o esqueleto exportado, para que o relato da revisão comece completo.",
+        "summary": "Resumo do incidente em uma linha",
+        "followups": "Pendências ainda em aberto"
+      },
+      "bands": {
+        "B-SYMPTOM-DETECT": "Do sintoma à detecção",
+        "B-DETECT-MITIGATE": "Da detecção à mitigação",
+        "B-MITIGATE-RESOLVE": "Da mitigação à resolução",
+        "B-DETECT-RESOLVE": "Da detecção à resolução"
+      },
+      "results": {
+        "heading": "Seu esqueleto de RCA",
+        "framing": "Estruturado por regras determinísticas sobre o que você descreveu - candidatos a investigar com a evidência que cada um exigiria, não uma conclusão. Uma causa-raiz é confirmada por pessoas a partir de evidências, em uma revisão de verdade.",
+        "timelineHeading": "Linha do tempo ordenada",
+        "bandCount": "{count} evento(s) no intervalo",
+        "completenessHeading": "Completude da linha do tempo",
+        "candidatesHeading": "Fatores contribuintes candidatos (a investigar)",
+        "candidatesIntro": "Cada um é um domínio a testar, não uma conclusão. Confirme ou descarte cada um contra a sua própria evidência; a ferramenta nunca confirma um por você.",
+        "confirmHeading": "Evidência que confirmaria",
+        "ruleOutHeading": "Evidência que descartaria",
+        "confirmedByYou": " (marcado como confirmado por você)",
+        "severity": {
+          "high": "alta",
+          "medium": "média",
+          "low": "baixa"
+        },
+        "whyHeading": "Por que estes candidatos?",
+        "whyIntro": "Cada regra que disparou, com o seu motivo. O esqueleto é a soma - inspecionável, nunca um oráculo.",
+        "copyMd": "Copiar esqueleto (Markdown)",
+        "copied": "Copiado!",
+        "downloadMd": "Baixar .md"
+      }
+    },
+    "change-blast-radius-mapper": {
+      "name": "Mapeador de Raio de Impacto de Mudança",
+      "blurb": "Descreva o que você está mudando e a estrutura dele; um conjunto fixo de regras mapeia o raio de impacto como camadas concêntricas (alvo, co-localizado, a jusante, humano) preenchidas com o que poderia ser afetado, mais riscos classificados por severidade e medidas de contenção. Mapeia o que poderia ser afetado, nunca afirma o que vai quebrar.",
+      "form": {
+        "heading": "Descreva a mudança (modo rápido)",
+        "target": "O que você está mudando?",
+        "colocation": "Compartilha hardware ou plataforma?",
+        "trafficPath": "Está no caminho do tráfego?",
+        "dependents": "Quantas coisas dependem disso?",
+        "redundancy": "Existe um par redundante?",
+        "userReach": "Até onde vai o alcance de usuários?",
+        "preset": "Preset de domínio (dá sabor às especificidades)"
+      },
+      "options": {
+        "single-server": "Um único servidor",
+        "network-device": "Um dispositivo de rede",
+        "load-balancer": "Um load balancer / ADC",
+        "dns-record": "Um registro DNS",
+        "certificate": "Um certificado",
+        "firewall-policy": "Uma política de firewall",
+        "shared-platform": "Uma plataforma compartilhada",
+        "database": "Um banco de dados",
+        "dedicated": "Dedicado (nada mais nele)",
+        "some-shared": "Alguns serviços o compartilham",
+        "heavily-shared": "Muito compartilhado / multi-inquilino",
+        "in-path": "No caminho ativo do tráfego",
+        "control-plane": "Apenas plano de controle",
+        "out-of-band": "Fora de banda",
+        "none-known": "Nenhuma conhecida",
+        "a-few": "Algumas",
+        "many": "Muitas",
+        "everything": "Praticamente tudo",
+        "ha-pair-healthy": "Par HA, saudável",
+        "ha-pair-degraded": "Par HA, par degradado",
+        "cluster": "Cluster",
+        "standalone": "Autônomo (sem par)",
+        "internal-team": "Uma equipe interna",
+        "one-app": "Uma aplicação",
+        "one-site": "Um site / localidade",
+        "customer-facing": "Voltado ao cliente",
+        "everyone": "Todos",
+        "generic": "Genérico (neutro de fornecedor)",
+        "dns": "DNS",
+        "tls-pki": "TLS / PKI",
+        "firewall": "Firewall"
+      },
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador. Mapeia categorias a partir do que você descreve - não tem visão da sua topologia real - e nada é enviado.",
+      "emptyState": "Descreva a mudança acima e o mapa de raio de impacto aparece aqui - camadas concêntricas com o que poderia ser afetado, os riscos e as medidas de contenção, ao vivo enquanto você refina.",
+      "notes": {
+        "heading": "Detalhe opcional para a exportação (não afeta o mapa)",
+        "hint": "Estas linhas são copiadas literalmente para a avaliação exportada.",
+        "summary": "Resumo da mudança em uma linha",
+        "targetDetail": "Detalhe do alvo"
+      },
+      "tiers": {
+        "target": "O próprio alvo da mudança",
+        "colocated": "Co-localizado (compartilha o dispositivo ou a plataforma)",
+        "downstream": "A jusante (depende do alvo)",
+        "human": "Superfície humana e de negócio"
+      },
+      "results": {
+        "heading": "Mapa de raio de impacto",
+        "framing": "Mapeado por regras determinísticas sobre o que você descreveu - as categorias de coisa em cada camada que poderiam ser afetadas, não uma enumeração da sua topologia. Confirme as especificidades contra o seu ambiente real.",
+        "band": {
+          "contained": "contido",
+          "moderate": "moderado",
+          "wide": "amplo"
+        },
+        "risksHeading": "Fatores de risco",
+        "containmentHeading": "Medidas de contenção (encolhem o raio)",
+        "severity": {
+          "high": "alta",
+          "medium": "média",
+          "low": "baixa"
+        },
+        "whyHeading": "Por que este mapa?",
+        "whyIntro": "Cada regra que disparou, com o seu motivo. O mapa é a soma - inspecionável, nunca um oráculo.",
+        "copyMd": "Copiar avaliação (Markdown)",
+        "copied": "Copiado!",
+        "downloadMd": "Baixar .md"
+      }
+    },
+    "tac-escalation-packet-builder": {
+      "name": "Construtor de Pacote de Escalação para TAC",
+      "blurb": "Descreva o problema que você está prestes a escalar; um conjunto fixo de regras monta um pacote completo de suporte do fornecedor e uma lista dos artefatos que ainda faltam coletar antes de abrir o chamado, removendo o que você já tem. Estrutura a passagem; não abre um chamado nem contata nenhum fornecedor.",
+      "form": {
+        "heading": "Descreva a escalação (modo rápido)",
+        "vendor": "Qual domínio de produto?",
+        "severity": "Severidade (como o fornecedor classificaria)",
+        "reproducibility": "É reproduzível?",
+        "collected": "O que você já coletou? (todos que se aplicam)",
+        "tried": "O que você já tentou? (todos que se aplicam)"
+      },
+      "options": {
+        "load-balancer": "Load balancer / ADC",
+        "firewall": "Firewall",
+        "dns": "DNS",
+        "routing-switching": "Roteamento / switching",
+        "tls-pki": "TLS / PKI",
+        "endpoint-security": "Segurança de endpoint",
+        "generic": "Genérico",
+        "sev1-down": "Sev 1 - serviço fora",
+        "sev2-degraded": "Sev 2 - degradado",
+        "sev3-question": "Sev 3 - dúvida / não urgente",
+        "sev4-info": "Sev 4 - informativo",
+        "reproducible": "Reproduzível sob demanda",
+        "intermittent": "Intermitente",
+        "happened-once": "Aconteceu uma vez"
+      },
+      "collectedOptions": {
+        "problem-statement": "Declaração do problema",
+        "exact-error": "Texto/código exato do erro",
+        "timeline": "Linha do tempo",
+        "topology": "Esboço de topologia / fluxo de dados",
+        "config-backup": "Backup da configuração",
+        "diagnostic-bundle": "Pacote de diagnóstico do fornecedor",
+        "packet-capture": "Captura de pacotes",
+        "logs": "Logs (janela da falha)",
+        "repro-steps": "Passos de reprodução",
+        "business-impact": "Declaração de impacto ao negócio"
+      },
+      "triedOptions": {
+        "nothing-yet": "Nada ainda",
+        "restart": "Reiniciei o componente",
+        "rollback": "Revertí uma mudança recente",
+        "config-review": "Revisei a configuração",
+        "failover": "Fiz failover para o par",
+        "workaround-applied": "Apliquei um contorno (ainda em vigor)",
+        "kb-search": "Busquei na base de conhecimento do fornecedor"
+      },
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador. Não abre um chamado, não contata nenhum fornecedor nem coleta diagnósticos - diz quais anexar - e nada é enviado.",
+      "emptyState": "Descreva a escalação acima e o pacote aparece aqui - as seções montadas e a lista do que coletar antes de abrir o chamado, ao vivo enquanto você refina.",
+      "notes": {
+        "heading": "Detalhe opcional para a exportação (não afeta o pacote)",
+        "hint": "Estas linhas são copiadas para o pacote exportado, onde é o lugar delas.",
+        "problemSummary": "Declaração do problema em um parágrafo",
+        "environment": "Ambiente (produto / versão / onde fica)",
+        "caseReference": "Sua referência interna de chamado"
+      },
+      "sections": {
+        "problem": "Declaração do problema",
+        "severity-impact": "Severidade e impacto ao negócio",
+        "environment": "Ambiente",
+        "timeline": "Linha do tempo",
+        "tried": "O que foi tentado",
+        "attached": "Anexado a este chamado",
+        "to-collect": "A coletar antes de abrir o chamado",
+        "ask": "O pedido"
+      },
+      "results": {
+        "heading": "Seu pacote de escalação",
+        "framing": "Montado por regras determinísticas sobre o que você descreveu - uma passagem para revisar antes de abrir o chamado, não um diagnóstico. A lista é a lacuna: o que anexar que você ainda não tem.",
+        "readiness": {
+          "ready": "pronto para abrir",
+          "nearly": "quase pronto",
+          "gather-first": "reunir primeiro"
+        },
+        "readinessHeading": "Notas de prontidão",
+        "toCollectHeading": "A coletar antes de abrir o chamado",
+        "toCollectIntro": "A maior causa isolada de um chamado lento é um primeiro contato sem o diagnóstico que o fornecedor vai pedir. Reúna estes primeiro.",
+        "packetHeading": "O pacote montado",
+        "severity": {
+          "high": "alta",
+          "medium": "média",
+          "low": "baixa"
+        },
+        "whyHeading": "Por que esta lista?",
+        "whyIntro": "Cada regra que disparou, com o seu motivo. O pacote é a soma - inspecionável, nunca um oráculo.",
+        "copyMd": "Copiar pacote (Markdown)",
+        "copied": "Copiado!",
+        "downloadMd": "Baixar .md"
+      }
     }
   },
   "privacy_page": {
@@ -4134,7 +4390,8 @@
     "roadmap": "Roadmap",
     "settings": "Configurações",
     "source": "Código-fonte",
-    "disclaimer": "Aviso legal"
+    "disclaimer": "Aviso legal",
+    "glossary": "Glossário"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -5212,67 +5469,13 @@
     }
   },
   "megaBrain": {
-    "ogTitle": "🧠 Console do Mega Brain — FORÇA TOTAL",
-    "ogDesc": "Ative o Mega Brain e empurre a força até 100%. Um alívio de estresse pra dev, com direito ao react do Mano. 🍺",
-    "ogAlt": "Console do Mega Brain — FORÇA TOTAL 100%",
-    "titlebar": " — mega_brain_console.exe",
-    "close": "Fechar janela",
-    "closeAria": "Fechar janela e voltar à página inicial",
-    "homeTitle": "ronutz.com",
-    "failsafeEngageAria": "Fail-safe: em caso de burnout, engajar modo Go Horse",
-    "failsafeEngageTitle": "FAIL-SAFE: burnout? ENGAGE GO-HORSE FTW!",
-    "failsafeRestoreAria": "Desativar o fail-safe e restaurar o Mega Brain",
-    "failsafeRestoreTitle": "Restaurar o Mega Brain",
-    "manoAria": "Homenagem ao Mano Deyvin",
-    "manoTitle": "O react do Mano",
     "bossAria": "Botão do chefe: minimiza o console",
-    "bossTitle": "Botão do chefe",
-    "m0": "Mega Brain em repouso. 🧠",
-    "m1": "Aquecendo o Mega Brain…",
-    "m25": "Mega Brain aquecido! Sente a potência chegando. ⚡",
-    "m50": "ATIVA o Mega Brain! Usa MAIS contexto!",
-    "m75": "Quase na força total! Não é sobre a sintaxe do prompt, é sobre a INTENÇÃO! 🧠🔥",
-    "m100": "🧠🤯⚡ FORÇA TOTAL DO MEGA BRAIN! Usa TODO o poder e pesquisa termos inteligentes!",
-    "meterLabel": "POTÊNCIA DO MEGA BRAIN",
-    "meterLabelGoh": "PRODUTIVIDADE XGH",
-    "burnoutReadout": "⚠ SOBRECARGA CRÍTICA: BURNOUT DO MEGA BRAIN DETECTADO",
-    "leverLabel": "FORÇA",
-    "leverAria": "Força do Mega Brain",
-    "leverHint": "arraste o controle para carregar o poder",
-    "leverHintGoh": "pensar está temporariamente desativado (Axioma nº 1)",
-    "leverTitleGoh": "Pensou, não é XGH.",
-    "fullPower": "⚡ FORÇA TOTAL",
-    "turnOff": "desligar",
-    "disabledTitleGoh": "Pensou, não é XGH.",
-    "manoRealityCheck": "REALITY CHECK",
-    "manoSub": "Calma no hype: no fim, é só engenharia de prompt com boa comunicação. E tá tudo bem.",
-    "manoCreditPre": "Homenagem ao ",
-    "manoCreditName": "Mano Deyvin",
-    "manoCreditPost": ", o react que começou a zoeira. 🤙",
-    "totalBanner": "MODO FORÇA TOTAL ATIVADO 🧠🤯⚡",
-    "totalTerms": "termos inteligentes pesquisados: {count}",
-    "totalFine": "Copy Chief acionado no sistema. Investigando a atualidade do mercado…",
-    "gohLine": "🐴 FAIL-SAFE ATIVADO: ENGAGE GO-HORSE FTW!",
-    "gohSub": "pensar: DESATIVADO · produtividade: ∞ · qualidade: detalhe",
-    "gohFinePre": "Homenagem ao lendário ",
-    "gohFineLink": "eXtreme Go Horse (XGH)",
-    "gohFinePost": ". O botão vermelho restaura o Mega Brain.",
-    "burnoutLine": "⚠ BURNOUT DO MEGA BRAIN DETECTADO",
-    "burnoutSub": "acionando fail-safe…",
-    "xgh": [
-      "Axioma nº 1: “Pensou, não é XGH.”",
-      "Deploy na sexta: o cérebro descansa, a produção se vira.",
-      "Se compilou, tá pronto. Se rodou, tá entregue.",
-      "Bug em produção é só um teste executado pelo cliente.",
-      "Gambiarra que funciona de primeira vira arquitetura oficial.",
-      "A documentação é o código. Boa sorte aí.",
-      "Rollback é para quem planejou ter volta.",
-      "“Funciona na minha máquina” agora é SLA.",
-      "Estimativa de prazo: era pra ontem, então relaxa."
-    ],
-    "disclaimer": "Isto não computa, não otimiza e não pesquisa termo nenhum. É um alívio de estresse. Se sentiu a dopamina, funcionou.",
-    "bossHint": "‹ press any key ›",
     "bossDismiss": "Aplicação de trabalho. Pressione qualquer tecla ou clique para voltar ao console.",
+    "bossHint": "‹ press any key ›",
+    "bossTitle": "Botão do chefe",
+    "burnoutLine": "⚠ BURNOUT DO MEGA BRAIN DETECTADO",
+    "burnoutReadout": "⚠ SOBRECARGA CRÍTICA: BURNOUT DO MEGA BRAIN DETECTADO",
+    "burnoutSub": "acionando fail-safe…",
     "clickPhrases": [
       "Neurônios disparando. Quase todos.",
       "Esse clique foi inteligente. 🧠",
@@ -5299,12 +5502,75 @@
       "Não é a sintaxe. É a INTENÇÃO!",
       "Termo inteligente pesquisado. Dizem."
     ],
-    "stopLabel": "PARAR",
-    "manoDismiss": "clique em qualquer lugar para fechar",
+    "close": "Fechar janela",
+    "closeAria": "Fechar janela e voltar à página inicial",
+    "ctxBoss": "O ponto da tecla-chefe",
+    "ctxBossDetail": "Esconde o console atrás de um app de trabalho vintage. Setas trocam de tela; qualquer outra tecla volta.",
+    "ctxFailsafe": "O ponto à prova de falhas (vermelho)",
+    "ctxFailsafeDetail": "O primeiro toque sobrecarrega o Mega Brain até o esgotamento; toque de novo para restaurar.",
+    "ctxLever": "A alavanca de potência",
+    "ctxLeverDetail": "Arraste a alavanca, ou pressione o botão POTÊNCIA MÁXIMA, para levar o hype a 100%.",
+    "ctxMano": "O ponto de homenagem ao Mano (âmbar)",
+    "ctxMano2": "Um brinde ao Mano Deyvin; clique nele e depois no nome dele para abrir o canal.",
+    "ctxTitle": "Controles do Mega Brain",
     "devFunTitle": "Voltar para /dev/fun",
+    "disabledTitleGoh": "Pensou, não é XGH.",
+    "disclaimer": "Isto não computa, não otimiza e não pesquisa termo nenhum. É um alívio de estresse. Se sentiu a dopamina, funcionou.",
+    "failsafeEngageAria": "Fail-safe: em caso de burnout, engajar modo Go Horse",
+    "failsafeEngageTitle": "FAIL-SAFE: burnout? ENGAGE GO-HORSE FTW!",
+    "failsafeRestoreAria": "Desativar o fail-safe e restaurar o Mega Brain",
+    "failsafeRestoreTitle": "Restaurar o Mega Brain",
+    "fullPower": "⚡ FORÇA TOTAL",
+    "gohFineLink": "eXtreme Go Horse (XGH)",
+    "gohFinePost": ". O botão vermelho restaura o Mega Brain.",
+    "gohFinePre": "Homenagem ao lendário ",
+    "gohLine": "🐴 FAIL-SAFE ATIVADO: ENGAGE GO-HORSE FTW!",
+    "gohSub": "pensar: DESATIVADO · produtividade: ∞ · qualidade: detalhe",
+    "homeTitle": "ronutz.com",
+    "leverAria": "Força do Mega Brain",
+    "leverHint": "arraste o controle para carregar o poder",
+    "leverHintGoh": "pensar está temporariamente desativado (Axioma nº 1)",
+    "leverLabel": "FORÇA",
+    "leverTitleGoh": "Pensou, não é XGH.",
+    "m0": "Mega Brain em repouso. 🧠",
+    "m1": "Aquecendo o Mega Brain…",
+    "m100": "🧠🤯⚡ FORÇA TOTAL DO MEGA BRAIN! Usa TODO o poder e pesquisa termos inteligentes!",
+    "m25": "Mega Brain aquecido! Sente a potência chegando. ⚡",
+    "m50": "ATIVA o Mega Brain! Usa MAIS contexto!",
+    "m75": "Quase na força total! Não é sobre a sintaxe do prompt, é sobre a INTENÇÃO! 🧠🔥",
+    "manoAria": "Homenagem ao Mano Deyvin",
+    "manoCreditName": "Mano Deyvin",
+    "manoCreditPost": ", o react que começou a zoeira. 🤙",
+    "manoCreditPre": "Homenagem ao ",
+    "manoDismiss": "clique em qualquer lugar para fechar",
+    "manoRealityCheck": "REALITY CHECK",
+    "manoSub": "Calma no hype: no fim, é só engenharia de prompt com boa comunicação. E tá tudo bem.",
+    "manoTitle": "O react do Mano",
+    "meterLabel": "POTÊNCIA DO MEGA BRAIN",
+    "meterLabelGoh": "PRODUTIVIDADE XGH",
     "motionOffAria": "Desligar animações",
     "motionOnAria": "Ligar animações",
-    "ptBrFlagAria": "Ler o console em Português do Brasil"
+    "ogAlt": "Console do Mega Brain — FORÇA TOTAL 100%",
+    "ogDesc": "Ative o Mega Brain e empurre a força até 100%. Um alívio de estresse pra dev, com direito ao react do Mano. 🍺",
+    "ogTitle": "🧠 Console do Mega Brain — FORÇA TOTAL",
+    "ptBrFlagAria": "Ler o console em Português do Brasil",
+    "stopLabel": "PARAR",
+    "titlebar": " — mega_brain_console.exe",
+    "totalBanner": "MODO FORÇA TOTAL ATIVADO 🧠🤯⚡",
+    "totalFine": "Copy Chief acionado no sistema. Investigando a atualidade do mercado…",
+    "totalTerms": "termos inteligentes pesquisados: {count}",
+    "turnOff": "desligar",
+    "xgh": [
+      "Axioma nº 1: “Pensou, não é XGH.”",
+      "Deploy na sexta: o cérebro descansa, a produção se vira.",
+      "Se compilou, tá pronto. Se rodou, tá entregue.",
+      "Bug em produção é só um teste executado pelo cliente.",
+      "Gambiarra que funciona de primeira vira arquitetura oficial.",
+      "A documentação é o código. Boa sorte aí.",
+      "Rollback é para quem planejou ter volta.",
+      "“Funciona na minha máquina” agora é SLA.",
+      "Estimativa de prazo: era pra ontem, então relaxa."
+    ]
   },
   "shortcuts": {
     "actionBingo": "Buzzword Bingo",
@@ -5318,15 +5584,30 @@
     "actionSearch": "Abrir busca",
     "actionToolBase64": "Codificar / decodificar Base64",
     "actionToolCidr": "Calculadora CIDR / sub-rede",
+    "actionToolHash": "Gerador de hash",
     "actionToolJsonYaml": "Conversor JSON ⇄ YAML",
     "actionToolJwt": "Decodificador de JWT",
+    "actionToolUrlInspector": "Inspetor de URL",
+    "actionToolUuid": "Ferramentas de UUID",
+    "actionToolX509": "Decodificador de certificado X.509",
     "actionTools": "Índice de Ferramentas",
     "actionVendorF5": "Central F5",
+    "actionVendors": "Página de fornecedores",
     "bossDismiss": "Aplicação de trabalho. Pressione qualquer tecla ou clique para voltar.",
     "bossHint": "‹ pressione qualquer tecla ›",
     "cheatClose": "Fechar",
     "cheatHint": "Esc ou clique fora para fechar. Personalize em Configurações.",
-    "cheatTitle": "Atalhos de teclado"
+    "cheatTitle": "Atalhos de teclado",
+    "contextBack": "Voltar às ações da página",
+    "contextClose": "Fechar ações da página",
+    "contextError": "Não foi possível carregar a documentação. Use o link Markdown na página.",
+    "contextHint": "Pressione . em qualquer lugar para abrir. Esc ou clique fora para fechar.",
+    "contextLoading": "Carregando a documentação...",
+    "contextTitle": "Ações da página",
+    "hubMapDetail": "As famílias de ferramentas deste hub, em ordem.",
+    "hubMapLabel": "Ir para uma seção de família",
+    "manPageDetail": "Leia a documentação completa desta ferramenta sem sair da página.",
+    "manPageLabel": "Abrir o manual"
   },
   "settings_page": {
     "eyebrow": "Preferências",
@@ -6074,6 +6355,673 @@
         "empty": "Digite um número de AS.",
         "format": "Não é um número de AS — formas aceitas: AS15169, as 15169 ou o número puro.",
         "range": "Além do espaço de números de AS de 32 bits (o máximo é 4294967295)."
+      }
+    }
+  },
+  "vendorsHome": {
+    "crumb": "Fornecedores",
+    "eyebrow": "hubs de fornecedores",
+    "title": "Hubs de fornecedores",
+    "lede": "Um lar único para os fornecedores em torno dos quais este site é construído. Cada hub reúne todas as ferramentas e todos os artigos de um fornecedor em um só lugar — ferramentas que computam localmente no seu navegador, artigos fundamentados na documentação do próprio fornecedor.",
+    "toolsLabel": "ferramentas",
+    "articlesLabel": "artigos",
+    "openHub": "Abrir hub",
+    "comingSoon": "O hub abre com a sua primeira ferramenta",
+    "note": "Cada hub é o único lugar que reúne tudo o que o site tem para um fornecedor: as ferramentas, agrupadas por família de produto, e a biblioteca completa de artigos daquele fornecedor, em uma só página. Os mesmos hubs são alcançáveis pela faixa nas listagens de Ferramentas e Aprender.",
+    "scopeNote": "Estes quatro são os fornecedores cujo treinamento o autor deste site está autorizado a ministrar. Ferramentas e artigos podem referenciar tecnologias de outros fornecedores quando relevante, mas um hub aqui significa uma relação de treinamento autorizado, não apenas cobertura.",
+    "metaTitle": "Hubs de fornecedores - ronutz.com",
+    "metaDescription": "Os hubs de fornecedores em ronutz.com: F5, Fortinet, Netskope e Extreme Networks, cada um reunindo todas as ferramentas e artigos daquele fornecedor em uma página.",
+    "blurbs": {
+      "f5": "BIG-IP e o ecossistema F5 mais amplo: gerência de tráfego, DNS, segurança de aplicações, acesso e F5 Distributed Cloud. O hub mais profundo do site.",
+      "fortinet": "O Fortinet Security Fabric: FortiGate e FortiOS, SASE, operações seguras, segurança de aplicações e os serviços FortiGuard.",
+      "netskope": "Netskope One e SSE: o secure web gateway de nova geração, CASB, ZTNA, firewall em nuvem e as camadas de proteção de dados e de plataforma.",
+      "extreme": "Extreme Networks: Platform ONE, o contínuo ExtremeCloud IQ, cabeado, sem fio e fabric, segurança de acesso e analytics."
+    }
+  },
+  "glossary": {
+    "title": "Glossário",
+    "tagline": "Os termos, siglas, expressões, gírias e o folclore da área - definidos, com fontes, e ligados às ferramentas que os calculam.",
+    "searchPlaceholder": "Buscar termos, siglas, expressões...",
+    "filterKindLegend": "Filtrar por tipo",
+    "filterDomainLegend": "Filtrar por domínio",
+    "allKinds": "Todos os tipos",
+    "allDomains": "Todos os domínios",
+    "resultsCount": "{count, plural, one {# verbete} other {# verbetes}}",
+    "noResults": "Nenhum verbete corresponde a esses filtros.",
+    "clearFilters": "Limpar filtros",
+    "expansionLabel": "Significa",
+    "aliasesLabel": "Também conhecido como",
+    "sourcesLabel": "Fontes",
+    "disputedLabel": "Contestado / frequentemente mal contado",
+    "disputedNote": "Uma versão popular desta história é imprecisa - veja a nota acima.",
+    "relatedToolsLabel": "Ferramentas que calculam isto",
+    "relatedArticlesLabel": "Leia mais",
+    "relatedTermsLabel": "Termos relacionados",
+    "backToIndex": "Todos os verbetes do glossário",
+    "kinds": {
+      "term": "termo",
+      "acronym": "sigla",
+      "expression": "expressão",
+      "jargon": "gíria",
+      "lore": "folclore"
+    },
+    "domains": {
+      "enterprise-networking": "redes",
+      "cyber-security": "segurança",
+      "crypto": "criptografia",
+      "cloud": "nuvem",
+      "grc": "governança e risco",
+      "privacy": "privacidade",
+      "hacking": "hacking",
+      "darkweb": "dark web",
+      "ops-culture": "cultura de operações",
+      "web-development": "desenvolvimento web",
+      "programming": "programação"
+    },
+    "entries": {
+      "anycast": {
+        "def": "Um endereço IP anunciado de muitos lugares, para que os usuários alcancem a instância mais próxima.",
+        "context": "Com anycast, o próprio roteamento da rede envia cada cliente ao site anunciante mais próximo, distribuindo carga e reduzindo latência, a espinha dorsal do DNS e das CDNs modernas. O mesmo endereço, muitos lugares; o roteamento decide qual você recebe."
+      },
+      "baz": {
+        "def": "O terceiro nome-substituto metassintático, depois de foo e bar.",
+        "context": "Quando um exemplo precisa de mais de dois nomes-substitutos, \"baz\" vem em seguida, depois \"qux\". Como foo e bar, sua linhagem está registrada na RFC 3092."
+      },
+      "beaconing": {
+        "def": "Os check-ins regulares e automatizados que um host comprometido faz ao seu servidor de comando.",
+        "context": "Um malware faz beaconing para perguntar \"alguma ordem?\" em intervalos. Esse ritmo, mesmo quando o tráfego é cifrado e disfarçado, é um forte sinal de detecção: humanos e aplicativos normais não ligam para o mesmo host desconhecido feito um metrônomo."
+      },
+      "bgp": {
+        "def": "O protocolo que decide como o tráfego é roteado entre as grandes redes que compõem a internet.",
+        "context": "O Border Gateway Protocol (RFC 4271) é como sistemas autônomos dizem uns aos outros quais destinos alcançam e por qual caminho. Ele comanda o roteamento entre redes da internet, e como confia no que lhe é informado, protegê-lo (ver RPKI) é um projeto contínuo."
+      },
+      "bikeshedding": {
+        "def": "Gastar discussão desproporcional em um detalhe trivial enquanto uma decisão importante e complexa passa quase sem escrutínio.",
+        "context": "O nome vem da ilustração de C. Northcote Parkinson, de 1957: um comitê aprova rapidamente uma usina nuclear, mas discute por horas a cor do galpão de bicicletas, porque todos têm opinião sobre o galpão e poucos conseguem avaliar o reator. É o risco permanente de toda revisão de projeto."
+      },
+      "blast-radius": {
+        "def": "Até onde o dano se espalha quando um componente falha ou é comprometido.",
+        "context": "O raio de explosão é uma lente de projeto: arquitetar de modo que uma falha única, uma implantação ruim, uma conta invadida, fique contida em vez de cascatear. Minimizá-lo, por isolamento, segmentação e limites, é por que mudanças são encenadas e privilégios são delimitados."
+      },
+      "blue-team": {
+        "def": "Os defensores: as pessoas e ferramentas que detectam, respondem e se recuperam de ataques.",
+        "context": "O blue team é a defesa permanente, monitorando, endurecendo, caçando e respondendo, a contraparte que o red team está testando. A maior parte do trabalho é discreta e contínua: os alertas que disparam, os logs que são lidos, os exercícios que são executados."
+      },
+      "bohrbug": {
+        "def": "Um bug sólido e reproduzível que se comporta da mesma forma toda vez que você o executa.",
+        "context": "A contraparte do heisenbug, nomeada em referência ao átomo determinístico de Bohr. Um bohrbug é o tipo bom de difícil: não se esconde da observação, então, uma vez achado o dado que o dispara, ele dispara sempre."
+      },
+      "botnet": {
+        "def": "Uma rede de máquinas comprometidas controladas como uma só, muitas vezes para ataques ou spam.",
+        "context": "Cada dispositivo infectado (um \"bot\" ou \"zumbi\") obedece a um comando-e-controle comum, permitindo que um operador maneje milhares de máquinas ao mesmo tempo, mais notoriamente para lançar enxurradas de DDoS. Os donos em geral não fazem ideia de que seu aparelho se alistou."
+      },
+      "brute-force": {
+        "def": "Tentar todas as possibilidades até que uma funcione.",
+        "context": "Um ataque de força bruta simplesmente esgota o espaço, cada senha, cada chave, enquanto um ataque de dicionário tenta primeiro os candidatos prováveis. Segredos fortes e de alta entropia vencem por tornar o espaço grande demais para ser percorrido em tempo útil; limitação de taxa e bloqueios encarecem cada tentativa."
+      },
+      "bug-bounty": {
+        "def": "Um programa que paga pesquisadores por relatar falhas de segurança de forma responsável.",
+        "context": "Os bug bounties formalizam a divulgação responsável: um escopo definido, regras e recompensas transformam potenciais adversários em aliados pagos. Não substituem a segurança interna, mas ampliam o conjunto de olhos procurando o que você deixou passar."
+      },
+      "c2": {
+        "def": "A infraestrutura que um atacante usa para controlar máquinas comprometidas remotamente.",
+        "context": "Comando e controle é como um malware liga para casa em busca de instruções e exfiltra dados. Os defensores caçam seu beaconing revelador, os check-ins regulares a um controlador, porque esse padrão é muitas vezes o que denuncia um comprometimento silencioso."
+      },
+      "cargo-cult-programming": {
+        "def": "Copiar código ou rituais que parecem funcionar sem entender por quê, na esperança de que o resultado apareça.",
+        "context": "A expressão adapta a \"ciência de culto à carga\" de Richard Feynman: repetir os gestos e esperar que o resultado surja. No código, é colar uma configuração, um encantamento ou uma classe padrão porque funcionou em outro lugar, sem entender o que faz. A cura é compreensão, não mais cópia."
+      },
+      "chain-analysis": {
+        "def": "Rastrear fluxos de criptomoeda por uma blockchain pública para seguir o dinheiro.",
+        "context": "Como a maioria das blockchains é pública e permanente, transações podem ser agrupadas e seguidas, e é assim que investigadores desfazem lavagem apesar dos mixers. É o lado do defensor e do regulador do mesmo livro-razão de que a darkweb depende."
+      },
+      "cia-triad": {
+        "def": "Os três objetivos centrais da segurança da informação: confidencialidade, integridade e disponibilidade.",
+        "context": "A confidencialidade mantém os dados longe dos olhos errados, a integridade os mantém livres de alteração, e a disponibilidade os mantém acessíveis quando necessário. Quase todo controle de segurança serve a um destes três, e eles frequentemente se contrapõem entre si."
+      },
+      "cidr": {
+        "def": "Uma forma compacta de escrever uma rede IP como um endereço mais um comprimento de prefixo, como 10.0.0.0/8.",
+        "context": "O Classless Inter-Domain Routing (RFC 4632) substituiu as antigas classes rígidas A/B/C por um número após a barra que diz quantos bits iniciais são a rede. É a notação por trás de quase toda decisão de sub-rede, e a entrada com que nossas ferramentas de CIDR trabalham."
+      },
+      "cipher-suite": {
+        "def": "O conjunto específico de algoritmos que uma conexão TLS concorda em usar para troca de chaves, criptografia e integridade.",
+        "context": "Uma suíte de cifras nomeia a combinação, como as chaves são trocadas, qual cifra criptografa os dados e como a integridade é verificada, com que ambos os lados concordam durante o handshake. Quais suítes um servidor permite determina quão fortes e modernas são suas conexões."
+      },
+      "circuit-breaker": {
+        "def": "Um padrão que para de chamar uma dependência com falha por um tempo, para que uma pane não arraste tudo junto.",
+        "context": "Como o disjuntor elétrico que lhe dá nome, um disjuntor de software desarma após falhas demais e falha rápido em vez de acumular requisições fadadas, testando periodicamente se a dependência se recuperou. Contém o raio de explosão de uma falha a jusante."
+      },
+      "collision": {
+        "def": "Quando duas entradas diferentes produzem a mesma saída de hash.",
+        "context": "Todo hash tem colisões em teoria, já que mapeia entradas infinitas em saídas finitas, mas um hash seguro torna computacionalmente inviável achar um par útil. Quando a resistência a colisões de um hash quebra (como ocorreu com MD5 e SHA-1), ele é aposentado do uso em segurança."
+      },
+      "control-plane": {
+        "def": "A parte de um sistema que toma decisões, em oposição ao plano de dados que move o tráfego.",
+        "context": "O plano de controle decide para onde as coisas vão, configuração, roteamento, agendamento, enquanto o plano de dados faz o encaminhamento em si, em alta velocidade. Separá-los é uma ideia central de projeto em redes, Kubernetes e service meshes."
+      },
+      "cors": {
+        "def": "O mecanismo do navegador que decide se uma página web pode fazer requisições a uma origem diferente.",
+        "context": "Por padrão, a política de mesma origem impede que uma página de um site leia respostas de outro; o Cross-Origin Resource Sharing é como um servidor opta por permitir acessos específicos entre origens. Entendê-lo mal está por trás de boa parte das dores de cabeça de \"bloqueado por CORS\"."
+      },
+      "credential-stuffing": {
+        "def": "Tentativas de login automatizadas usando pares de usuário e senha roubados de outros vazamentos.",
+        "context": "Como as pessoas reutilizam senhas, um conjunto vazado de um site é testado em massa contra muitos outros. Não é adivinhação; é reproduzir pares sabidamente válidos, e é por isso que senhas únicas e autenticação de múltiplos fatores o derrotam."
+      },
+      "csp": {
+        "def": "Uma política do navegador que restringe o que uma página pode carregar e executar, para conter ataques como o XSS.",
+        "context": "Uma Content Security Policy permite a um site declarar quais fontes de scripts, estilos e outros conteúdos são permitidas, de modo que um script malicioso injetado seja recusado pelo navegador. É uma forte segunda linha de defesa por trás da codificação de saída adequada."
+      },
+      "csrf": {
+        "def": "Um ataque que engana o navegador de um usuário logado para fazer uma requisição indesejada.",
+        "context": "O Cross-Site Request Forgery abusa do fato de os navegadores anexarem cookies automaticamente: uma página maliciosa pode fazer seu navegador autenticado executar uma ação que você não pretendia. Tokens anti-CSRF e cookies same-site são as defesas habituais."
+      },
+      "cve": {
+        "def": "Uma entrada de catálogo público que identifica de forma única uma vulnerabilidade conhecida específica.",
+        "context": "Um identificador CVE (como CVE-2021-44228) dá a todos um nome comum para uma falha, para que boletins, varreduras e correções se refiram à mesma coisa sem ambiguidade. É um identificador, não uma severidade; isso é o que o CVSS acrescenta."
+      },
+      "cvss": {
+        "def": "Uma pontuação padrão de 0 a 10 que avalia a severidade de uma vulnerabilidade.",
+        "context": "O Common Vulnerability Scoring System combina fatores, como é explorada, o que impacta, em um número e uma string vetor, para que equipes comparem e priorizem. Mede a severidade inerente, não o seu risco específico, que também depende de exposição e contexto."
+      },
+      "data-minimization": {
+        "def": "Coletar e manter apenas os dados pessoais de que você realmente precisa, e só pelo tempo necessário.",
+        "context": "Um princípio central de privacidade: dados que você nunca coleta não podem vazar, ser intimados ou mal utilizados. É também o instinto de projeto por trás de ferramentas que priorizam privacidade, computar localmente, não guardar o que não precisa."
+      },
+      "ddos": {
+        "def": "Um ataque que sobrecarrega um serviço com tráfego de muitas fontes ao mesmo tempo.",
+        "context": "Uma negação de serviço distribuída inunda um alvo a partir de uma botnet de muitas máquinas, tornando difícil bloquear filtrando um único endereço. Mira a disponibilidade, tirar você do ar, em vez de roubar dados, e a mitigação depende de absorver ou depurar a enxurrada."
+      },
+      "dead-drop": {
+        "def": "Um método de passar informação sem que as partes jamais se encontrem.",
+        "context": "Emprestado da espionagem, um dead drop digital deixa dados em um local combinado para retirada posterior, desacoplando remetente e destinatário no tempo. Nomeado aqui apenas como conceito; a ideia é que a separação no tempo derrota a vigilância que observa duas partes se encontrando."
+      },
+      "debugging": {
+        "def": "O processo sistemático de encontrar e corrigir defeitos em software.",
+        "context": "Depurar é trabalho de detetive: reproduzir, isolar, formular uma hipótese, testá-la, repetir. A palavra está enredada com a mariposa de 1947, mas a prática é bem mais antiga, e técnicas do pato de borracha a uma busca por bisseção são suas ferramentas diárias."
+      },
+      "defense-in-depth": {
+        "def": "Sobrepor múltiplos controles independentes de modo que, se um falha, os outros ainda resistem.",
+        "context": "A defesa em profundidade parte do princípio de que qualquer controle único pode ser contornado, então os empilha, rede, host, aplicação, identidade, forçando um atacante a vencer vários em sequência. Nenhuma camada é perfeita; a força está na sobreposição."
+      },
+      "devsecops": {
+        "def": "Uma cultura e prática de embutir segurança no desenvolvimento e nas operações, em vez de acoplá-la depois.",
+        "context": "O DevSecOps estende o DevOps ao tornar a segurança uma responsabilidade compartilhada e automatizada ao longo do pipeline, e não um portão no fim. A família, DevOps, SecOps, NetOps, SRE, compartilha um instinto: derrubar os muros entre construir, operar e proteger."
+      },
+      "digital-signature": {
+        "def": "Uma prova criptográfica de que uma mensagem veio de um detentor específico de chave e não foi alterada.",
+        "context": "Assinar gera o hash da mensagem e cifra o resumo com uma chave privada; qualquer um com a chave pública verifica origem e integridade. É como atualizações de software, certificados e documentos provam ser autênticos e não adulterados."
+      },
+      "dns": {
+        "def": "O sistema que traduz nomes legíveis por humanos, como example.com, em endereços IP.",
+        "context": "O Domain Name System é a lista telefônica da internet, uma consulta distribuída e hierárquica feita bilhões de vezes por segundo. Como tanto depende dele, sua velocidade (via anycast e cache) e sua segurança (variantes criptografadas) são áreas constantes de trabalho."
+      },
+      "dns-over-https": {
+        "def": "Enviar consultas DNS dentro de HTTPS criptografado para que não possam ser lidas ou adulteradas em trânsito.",
+        "context": "O DNS tradicional é texto puro, então qualquer um no caminho pode ver e até alterar quais sites você resolve. O DoH (e seu irmão DoT) envolve essas consultas em TLS, melhorando a privacidade. Também gera debate, pois pode contornar a filtragem em nível de rede de que alguns operadores dependem."
+      },
+      "eating-your-own-dog-food": {
+        "def": "Usar o próprio produto em trabalho real antes de pedir que qualquer outra pessoa o faça.",
+        "context": "\"Dogfooding\" é a prática de rodar o próprio software internamente, para que sua equipe sinta os bugs antes dos clientes. É um teste de credibilidade tanto quanto de qualidade: se você não vai confiar nele, por que eles confiariam."
+      },
+      "end-to-end-encryption": {
+        "def": "Criptografia em que apenas os extremos que se comunicam podem ler as mensagens, não os servidores no meio.",
+        "context": "Com E2EE as chaves ficam nos dispositivos, então o provedor que retransmite as mensagens não consegue lê-las, diferente da criptografia de transporte, que protege os dados só em trânsito entre cada salto. É o padrão para mensagens privadas, e a razão pela qual os debates sobre acesso legal se repetem."
+      },
+      "entropy": {
+        "def": "Uma medida de imprevisibilidade; em segurança, a aleatoriedade que torna chaves e segredos difíceis de adivinhar.",
+        "context": "Alta entropia significa que um atacante não consegue estreitar as possibilidades, e por isso chaves devem vir de uma boa fonte aleatória, não de uma previsível. Entropia fraca, um gerador aleatório ruim, uma senha pouco variada, mina silenciosamente uma criptografia de resto forte."
+      },
+      "ephemeral-key": {
+        "def": "Uma chave de vida curta gerada para uma única sessão e depois descartada.",
+        "context": "A troca de chaves efêmeras (o E em DHE e ECDHE) é o mecanismo por trás do sigilo futuro: como a chave existe só para uma conversa e nunca é armazenada, não sobra nada para roubar depois. É a rotina que torna cada sessão criptograficamente independente."
+      },
+      "exit-node": {
+        "def": "O relé final do Tor, onde o tráfego sai da rede rumo ao seu destino.",
+        "context": "A saída vê o tráfego ao reingressar na internet normal, e é por isso que os operadores de saída assumem responsabilidade extra e por que a criptografia de ponta a ponta ainda importa mesmo sobre o Tor. A saída conhece o destino, mas não a origem original."
+      },
+      "exit-scam": {
+        "def": "Quando um operador de repente encerra tudo e desaparece com os fundos dos usuários.",
+        "context": "Um padrão recorrente em mercados não regulados: construir confiança, acumular depósitos e sumir. Nomeado aqui para explicar a dinâmica da fraude; a lição vale para qualquer serviço custodial em que a confiança faz todo o trabalho, sem nenhum recurso por trás."
+      },
+      "exploit": {
+        "def": "Código ou técnica que transforma uma vulnerabilidade em comportamento indevido real.",
+        "context": "A vulnerabilidade é a fraqueza; um exploit é o que tira proveito dela, a chave funcional feita para uma fechadura quebrada específica. \"Weaponizado\" descreve um exploit empacotado para uso confiável e fácil. Em geral carrega um payload: aquilo que roda quando a porta se abre."
+      },
+      "five-hundred-mile-email": {
+        "def": "Um conto clássico de administração de sistemas sobre um sistema de e-mail que misteriosamente não conseguia enviar mensagens além de cerca de 800 km.",
+        "context": "A história de Trey Harris tem uma causa real: uma configuração quebrada deixou um tempo-limite de rede perto de zero, então só servidores próximos o bastante para responder em poucos milissegundos conseguiam conectar, e alguns milissegundos de ida e volta à velocidade da luz dão aproximadamente 800 km. É a parábola perfeita de por que um sintoma de aparência absurda merece uma busca real pela causa raiz."
+      },
+      "foo-bar": {
+        "def": "Os nomes-substitutos canônicos em exemplos de programação, usados quando o nome específico não importa.",
+        "context": "\"foo\" e \"bar\" são variáveis metassintáticas: marcadores que deixam um exemplo focar na estrutura, e não no nome. Sua história está documentada na RFC 3092, que liga o par ao MIT e à gíria FUBAR da Segunda Guerra. Quando você precisa de um terceiro e um quarto, seguem \"baz\" e \"qux\"."
+      },
+      "forward-proxy": {
+        "def": "Um servidor que fica à frente dos clientes e encaminha suas requisições de saída.",
+        "context": "A imagem espelhada de um proxy reverso: um proxy de encaminhamento representa o usuário indo para a internet, acrescentando filtragem, cache ou anonimato. Um proxy web corporativo e um proxy pessoal de privacidade têm ambos esse formato."
+      },
+      "forward-secrecy": {
+        "def": "Uma propriedade que mantém sessões passadas seguras mesmo que a chave de longo prazo do servidor seja roubada depois.",
+        "context": "Com sigilo futuro, cada sessão negocia uma chave efêmera nova que é descartada em seguida, de modo que comprometer o servidor amanhã não decifra gravações do tráfego de hoje. O TLS moderno o adota por padrão; é por isso que capturar tráfego cifrado para \"decifrar depois\" quase nunca funciona."
+      },
+      "fubar": {
+        "def": "Gíria para algo quebrado além de qualquer conserto razoável.",
+        "context": "\"Fouled Up Beyond All Recognition\" (bagunçado além de todo reconhecimento) é o irmão da Segunda Guerra do SNAFU, e um dos fios que a RFC 3092 segue para explicar de onde veio o \"foobar\" no código. Na prática, rotula o estado a partir do qual você para de remendar e recomeça."
+      },
+      "gdpr": {
+        "def": "A lei abrangente de proteção de dados da União Europeia, em vigor desde 2018.",
+        "context": "O Regulamento Geral de Proteção de Dados estabelece regras para o tratamento de dados pessoais, consentimento, limites de finalidade, direitos de acesso e exclusão, com penalidades reais, e se aplica a quem processa dados de residentes da UE. A LGPD brasileira é fortemente inspirada nele."
+      },
+      "graceful-degradation": {
+        "def": "Projetar um sistema de modo que, quando parte dele falha, o resto continua funcionando de forma reduzida.",
+        "context": "Em vez de uma pane total, um serviço que degrada com elegância abre mão do não essencial (digamos, recomendações) e preserva o núcleo (digamos, o checkout). É a diferença entre \"um recurso está ausente agora\" e \"o site inteiro está fora\"."
+      },
+      "grok": {
+        "def": "Entender algo tão completamente que passa a fazer parte de como você pensa.",
+        "context": "Cunhado por Robert Heinlein em \"Um Estranho numa Terra Estranha\" (1961) e adotado inteiramente pela cultura hacker, \"grokar\" é mais profundo do que saber: é compreensão por absorção, o ponto em que um conceito deixa de ser externo e vira intuição."
+      },
+      "hack": {
+        "def": "Originalmente, uma solução inventiva ou elegante admirada pela esperteza, não uma invasão.",
+        "context": "No sentido original, do Tech Model Railroad Club do MIT e da cultura inicial do MIT, um hack é um feito de engenharia esperto e muitas vezes lúdico. O sentido de invasão veio depois e hoje domina as manchetes, mas o sentido mais antigo, engenhosidade pela engenhosidade, é a raiz de \"hacker\" como motivo de orgulho."
+      },
+      "hacker-hat-colors": {
+        "def": "Um atalho para a intenção de um hacker: white hat (autorizado/defensivo), black hat (malicioso), grey hat (no meio-termo).",
+        "context": "Os chapéus vêm dos faroestes antigos. Um white hat testa sistemas com permissão; um black hat ataca por ganho ou dano; um grey hat atua na zona cinzenta, talvez sondando sem autorização mas divulgando em vez de explorar. Intenção e autorização, não habilidade, traçam as fronteiras."
+      },
+      "hash": {
+        "def": "Uma função de mão única que transforma qualquer entrada em uma impressão digital de tamanho fixo.",
+        "context": "Um hash criptográfico mapeia dados para um resumo curto que é praticamente impossível de reverter e muda por completo à menor alteração na entrada. Sustenta verificações de integridade, armazenamento de senhas (com sal) e assinaturas; um bom hash torna inviável achar duas entradas com a mesma saída (uma colisão)."
+      },
+      "have-i-been-pwned": {
+        "def": "Um serviço gratuito que informa se seu e-mail ou senha apareceu em um vazamento de dados conhecido.",
+        "context": "O HIBP agrega despejos de vazamentos para que qualquer pessoa verifique a exposição sem manusear os dados roubados. Sua verificação de senhas usa um esquema engenhoso (k-anonimato) que permite consultar sem revelar a senha que você está checando."
+      },
+      "heisenbug": {
+        "def": "Um bug que muda de comportamento ou desaparece quando você tenta observá-lo.",
+        "context": "Batizado em referência ao princípio da incerteza, um heisenbug é aquele que some sob o depurador, ou só aparece em produção, porque o ato de observar (log extra, tempo mais lento, um ponto de parada) perturba as condições de tempo ou memória que o causam. Seu oposto, sempre reproduzível, é o bohrbug."
+      },
+      "hmac": {
+        "def": "Uma forma de provar que uma mensagem é autêntica e inalterada, usando um hash e um segredo compartilhado.",
+        "context": "O Hash-based Message Authentication Code (RFC 2104) combina uma chave secreta com a mensagem, de modo que só quem tem a chave produz ou verifica a etiqueta. Diferente de um hash puro, protege contra adulteração por quem não consegue forjar a chave."
+      },
+      "idempotency-key": {
+        "def": "Um token único anexado a uma requisição para que o servidor possa ignorar duplicatas acidentais com segurança.",
+        "context": "Quando um cliente tenta de novo por não ter recebido resposta, a chave de idempotência permite ao servidor reconhecer \"esta eu já fiz\" e não, digamos, cobrar o cartão duas vezes. É o mecanismo prático que torna as novas tentativas seguras em uma rede não confiável."
+      },
+      "idempotent": {
+        "def": "Uma operação que tem o mesmo efeito quer você a execute uma vez ou muitas.",
+        "context": "A idempotência importa onde há novas tentativas: uma requisição de pagamento duplicada não pode cobrar duas vezes, uma implantação repetida não pode corromper o estado. Projetar operações para serem idempotentes é o que torna sistemas distribuídos seguros de repetir."
+      },
+      "immutable-infrastructure": {
+        "def": "Uma abordagem em que servidores nunca são modificados no lugar; para mudar um, você o substitui por um novo build.",
+        "context": "Resumida na frase \"gado, não bichos de estimação\", a infraestrutura imutável evita o desvio e as surpresas de máquinas remendadas à mão ao reconstruir a partir de uma imagem conhecida toda vez. Torna implantações previsíveis e reversões triviais: basta trazer de volta a imagem antiga."
+      },
+      "infrastructure-as-code": {
+        "def": "Gerenciar servidores e redes por meio de arquivos de configuração versionados em vez de configuração manual.",
+        "context": "Com IaC, a infraestrutura desejada é declarada em código (Terraform e afins), revisada e aplicada de forma repetível, de modo que os ambientes ficam consistentes e auditáveis. Traz a disciplina da engenharia de software, revisão, versionamento, testes, para as operações."
+      },
+      "iv": {
+        "def": "Um valor inicial que faz uma cifra produzir saída diferente para entradas idênticas.",
+        "context": "Um vetor de inicialização semeia o modo de uma cifra de bloco para que cifrar o mesmo texto duas vezes não gere o mesmo texto cifrado, escondendo padrões. Como um nonce, é usado por mensagem e em geral não precisa ser secreto, mas reutilizá-lo pode ser catastrófico."
+      },
+      "jwt": {
+        "def": "Um token compacto e assinado que carrega afirmações sobre um usuário, usado para provar identidade entre serviços.",
+        "context": "Um JSON Web Token empacota dados (quem você é, o que pode fazer, quando expira) em uma string assinada que o receptor verifica sem consultar um banco. Conveniente e sem estado, mas fácil de usar mal: deve ser validado com cuidado e não tratado como armazenamento de segredos."
+      },
+      "kludge": {
+        "def": "Uma correção desajeitada e deselegante que funciona apesar de ser feia.",
+        "context": "Um kludge (ou kluge) resolve o problema pela força, não pelo projeto: a fita adesiva do software. Não é automaticamente ruim, às vezes é o custo honesto de um prazo, mas todo kludge é um pequeno depósito na dívida técnica."
+      },
+      "kubernetes": {
+        "def": "Um sistema de código aberto para automatizar a implantação e a escalabilidade de aplicações em contêineres.",
+        "context": "O Kubernetes (abreviado K8s) agenda contêineres por um cluster, reinicia os que falham e os escala conforme a demanda, então os operadores declaram o estado desejado e ele converge para lá. Tornou-se a camada de controle padrão para cargas nativas de nuvem."
+      },
+      "lateral-movement": {
+        "def": "Espalhar-se de um sistema comprometido para outros ao longo de uma rede.",
+        "context": "Uma vez dentro, um atacante se move de lado, host a host, conta a conta, para alcançar os dados ou sistemas que importam. Detectar o movimento leste-oeste é uma tarefa central do blue team, e a microssegmentação existe para desacelerá-lo."
+      },
+      "least-privilege": {
+        "def": "Dar a cada usuário ou processo apenas o acesso necessário para sua tarefa, e nada além.",
+        "context": "O princípio do menor privilégio encolhe o raio de explosão de qualquer comprometimento: uma conta que pode pouco vale pouco para um atacante. É simples de enunciar e infinitamente difícil de manter, e é por isso que revisões de acesso existem."
+      },
+      "leftpad": {
+        "def": "O incidente de 2016 em que remover um pacote de onze linhas quebrou builds por toda a internet por um breve período.",
+        "context": "Quando o minúsculo pacote left-pad foi retirado do npm, inúmeros projetos que dependiam dele (direta ou profundamente em sua árvore) de repente falharam ao compilar. Virou a história de advertência sobre quanto do software moderno se apoia em pequenas dependências despercebidas, e o risco que isso carrega."
+      },
+      "load-balancing": {
+        "def": "Distribuir o trabalho recebido por vários servidores para que nenhum fique sobrecarregado.",
+        "context": "Um balanceador de carga distribui requisições por alguma política, round robin, menos conexões ou uma regra ciente da saúde, dando capacidade e resiliência: se um back-end falha, o tráfego migra para os demais. É o burro de carga por trás de quase todo serviço escalável."
+      },
+      "mac": {
+        "def": "Uma etiqueta curta que prova que uma mensagem veio de quem detém a chave compartilhada e não foi alterada.",
+        "context": "Um Message Authentication Code fornece integridade e autenticidade juntas: recalcule-a com a chave e compare. O HMAC é a construção comum baseada em hash. Note a coincidência com \"endereço MAC\", um termo de redes sem relação; o contexto desfaz a ambiguidade."
+      },
+      "mac-address": {
+        "def": "O endereço de hardware que identifica uma interface de rede em uma rede local.",
+        "context": "Um endereço MAC é o identificador de 48 bits gravado (ou atribuído) a uma placa de rede, usado para entregar quadros no segmento local; sua primeira metade, o OUI, identifica o fabricante. Diferente de um endereço IP, não roteia entre redes, é estritamente local."
+      },
+      "merkle-tree": {
+        "def": "Uma árvore de hashes que permite verificar com eficiência se um item pertence a um grande conjunto.",
+        "context": "Introduzida por Ralph Merkle em 1979, uma árvore de Merkle gera hashes dos dados em pares até uma única raiz, de modo que uma prova pequena confirma qualquer folha sem re-hashear tudo. Sustenta controle de versão, blockchains e muitos sistemas de integridade."
+      },
+      "mfa": {
+        "def": "Exigir duas ou mais provas independentes de identidade para entrar, não apenas uma senha.",
+        "context": "A Autenticação de Múltiplos Fatores combina algo que você sabe (uma senha) com algo que você tem (um telefone ou chave) ou é (uma impressão digital), de modo que uma senha roubada sozinha não basta. É uma das defesas mais eficazes contra o sequestro de contas."
+      },
+      "microsegmentation": {
+        "def": "Dividir uma rede em zonas pequenas e controladas individualmente para limitar o movimento lateral.",
+        "context": "A microssegmentação coloca política granular entre cargas de trabalho, não só no perímetro, para que uma invasão em um segmento não se espalhe livremente para os outros. É um pilar prático do zero trust, encolhendo o raio de explosão dentro da rede."
+      },
+      "mixer": {
+        "def": "Um serviço que mistura a criptomoeda de muitas partes para obscurecer quem pagou a quem.",
+        "context": "Um mixer (ou tumbler) junta fundos e paga moedas diferentes, quebrando o vínculo direto na cadeia entre origem e destino. Nomeado aqui para explicar um conceito que investigadores e equipes de conformidade precisam entender; a análise de cadeia (chain analysis) é a contramedida."
+      },
+      "mss": {
+        "def": "O maior bloco de dados reais que um segmento TCP carrega, após os cabeçalhos.",
+        "context": "O Maximum Segment Size é o MTU menos o overhead dos cabeçalhos IP e TCP, o payload real que cada segmento comporta. O \"MSS clamping\" o reduz deliberadamente para evitar fragmentação em um enlace com MTU menor, uma correção comum em túneis."
+      },
+      "mtu": {
+        "def": "O maior pacote, em bytes, que um enlace transporta sem fragmentar.",
+        "context": "A Maximum Transmission Unit é o teto de tamanho de um salto de rede, classicamente 1500 bytes em Ethernet. Erre e os pacotes fragmentam ou são descartados, e é por isso que MTU e MSS valem ser calculados em vez de adivinhados."
+      },
+      "nat": {
+        "def": "Reescrever endereços IP em trânsito, classicamente para deixar muitos hosts privados compartilharem um endereço público.",
+        "context": "O Network Address Translation (RFC 2663) é por que uma casa ou escritório inteiro pode ficar atrás de um único IP público. Vem em variações, NAT de origem, NAT de destino, tradução de portas, e complica qualquer coisa que suponha que o endereço visto é o real."
+      },
+      "noisy-neighbor": {
+        "def": "Um inquilino cujo uso pesado de recursos degrada o desempenho dos outros que compartilham a mesma infraestrutura.",
+        "context": "Em nuvens multi-inquilino, uma carga que monopoliza CPU, disco ou rede pode sufocar os vizinhos, daí o nome. Limites de isolamento e cotas existem para impedir que o pico de um inquilino vire o problema de todos."
+      },
+      "nonce": {
+        "def": "Um número usado uma única vez, incluído em um protocolo para que a mesma mensagem não possa ser reenviada.",
+        "context": "Um nonce garante frescor: como nunca se repete, uma requisição capturada não pode ser reenviada para enganar o destinatário. É distinto de um IV e de um sal, embora os três injetem unicidade; a função específica do nonce é derrotar o replay."
+      },
+      "oauth": {
+        "def": "Um padrão que permite a um aplicativo acessar seus dados em outro serviço sem manusear sua senha.",
+        "context": "O OAuth 2.0 é o fluxo de \"Entrar com...\" e \"permitir que este app...\": você autoriza um acesso limitado e revogável, e o app recebe um token em vez de suas credenciais. O OpenID Connect constrói identidade em cima dele. Bem feito, significa que um vazamento não entrega sua senha em todo lugar."
+      },
+      "observability": {
+        "def": "Quão bem você consegue entender o que um sistema faz internamente a partir dos sinais que ele emite.",
+        "context": "Muitas vezes resumida em logs, métricas e traces, a observabilidade trata de poder fazer novas perguntas a um sistema em execução sem publicar novo código, sobretudo quando algo quebra de um jeito imprevisto. É o que transforma uma pane misteriosa em uma diagnosticável."
+      },
+      "off-by-one": {
+        "def": "O erro clássico de contar um a mais ou um a menos, sobretudo nos limites de um laço ou intervalo.",
+        "context": "Também chamado de erro de poste de cerca (dez postes seguram nove painéis, não dez), é o bug que mora no < contra o <=, ou no primeiro e no último elemento. É tão comum que é praticamente um rito de passagem, e por isso casos de borda ganham seus próprios testes."
+      },
+      "onion-routing": {
+        "def": "Uma técnica de privacidade que envolve o tráfego em camadas de criptografia e o faz saltar por vários relés.",
+        "context": "Cada relé descasca uma camada e conhece apenas o próximo salto, de modo que nenhum nó sozinho sabe ao mesmo tempo quem você é e para onde vai, a ideia por trás do Tor. É tecnologia de privacidade legítima usada por jornalistas, ativistas e pessoas comuns; a \"dark web\" é um uso entre muitos."
+      },
+      "opsec": {
+        "def": "A disciplina de proteger os pequenos fragmentos de informação que, juntos, revelam demais.",
+        "context": "Segurança operacional trata de controlar metadados e hábitos, não só segredos: um nome de usuário reutilizado, um horário, a localização de uma foto. Um item isolado é inofensivo; o agregado desanonimiza. Para defensores e pesquisadores, boa OPSEC é, acima de tudo, consistência."
+      },
+      "owasp": {
+        "def": "Uma comunidade sem fins lucrativos que produz orientações gratuitas e amplamente usadas sobre segurança de aplicações.",
+        "context": "A OWASP é mais conhecida pelo OWASP Top 10, sua lista periodicamente atualizada dos riscos mais críticos de aplicações web, mas também entrega ferramentas e guias. É um ponto de referência comum ao falar do que um WAF ou uma revisão de código seguro deve cobrir."
+      },
+      "path-mtu-discovery": {
+        "def": "Como um remetente descobre o menor MTU ao longo de toda a rota, não apenas do primeiro salto.",
+        "context": "O PMTUD (RFC 1191) sonda o caminho e encolhe os pacotes para caberem em seu enlace mais estreito, evitando fragmentação de ponta a ponta. Quando firewalls bloqueiam as mensagens ICMP de que ele depende, falha silenciosamente, gerando o clássico sintoma \"conecta mas trava em transferências grandes\"."
+      },
+      "payload": {
+        "def": "A parte de um ataque que executa a ação pretendida, uma vez que a entrega tem sucesso.",
+        "context": "Se o exploit é como você entra, o payload é o que você faz em seguida: abrir um shell, instalar um beacon, cifrar arquivos. A mesma palavra aparece de forma inofensiva em redes, para a porção de dados de um pacote; o contexto diz qual sentido está em jogo."
+      },
+      "pentest": {
+        "def": "Um ataque simulado autorizado que encontra fraquezas antes que um atacante real o faça.",
+        "context": "Um teste de penetração é segurança ofensiva com permissão: uma tentativa delimitada e autorizada de invadir um sistema para que os achados sejam corrigidos. Diferente de uma varredura de vulnerabilidades, ele encadeia fraquezas como um adversário faria, e termina em um relatório, não em um comprometimento."
+      },
+      "pepper": {
+        "def": "Um valor secreto acrescentado junto ao sal ao gerar hashes de senhas.",
+        "context": "Enquanto o sal é único mas guardado com o hash, o pepper é um segredo único mantido à parte, no código ou em um HSM, para que um banco de dados roubado sozinho não baste para atacar os hashes. É defesa em profundidade sobreposta ao salgamento."
+      },
+      "phishing": {
+        "def": "Enganar alguém para revelar credenciais ou executar malware, geralmente por e-mail.",
+        "context": "O phishing weaponiza a confiança em vez do código: uma mensagem de aparência legítima atrai o alvo a clicar, entrar ou pagar. \"Spear phishing\" é feito sob medida para uma pessoa; \"whaling\" mira executivos. Continua sendo uma das entradas mais confiáveis, porque ataca o humano, não o firewall."
+      },
+      "pii": {
+        "def": "Qualquer dado que possa identificar uma pessoa específica, isoladamente ou combinado com outros dados.",
+        "context": "Informação Pessoal Identificável abrange o óbvio (nome, documento) e o combinável (uma data de nascimento mais um CEP). Regulações como o GDPR são construídas em torno de protegê-la, e a minimização de dados é a disciplina de não coletar o que você não precisa."
+      },
+      "pki": {
+        "def": "O sistema de certificados e autoridades que permite a desconhecidos confiarem nas chaves públicas uns dos outros.",
+        "context": "A Infraestrutura de Chaves Públicas responde \"esta chave é mesmo dela\" ao ter Autoridades Certificadoras confiáveis atestando chaves com certificados assinados. É a cadeia de confiança por trás do cadeado no seu navegador, e a maquinaria que torna o TLS usável na escala da internet."
+      },
+      "pod": {
+        "def": "A menor unidade implantável no Kubernetes: um ou mais contêineres que compartilham rede e armazenamento.",
+        "context": "Um pod agrupa contêineres que pertencem juntos e rodam no mesmo nó, compartilhando um IP e volumes, sendo um padrão comum um contêiner de aplicação mais um sidecar. O Kubernetes cria, substitui e escala pods, e não contêineres individuais."
+      },
+      "post-quantum-cryptography": {
+        "def": "Novos algoritmos projetados para permanecerem seguros mesmo contra um futuro computador quântico de grande escala.",
+        "context": "Um computador quântico capaz poderia quebrar boa parte da criptografia de chave pública atual, então a PQC desenvolve substitutos que lhe resistam. A urgência vem do \"colher agora, decifrar depois\": dados cifrados hoje poderiam ser guardados e quebrados quando tal máquina existir."
+      },
+      "privilege-escalation": {
+        "def": "Transformar acesso limitado em acesso maior, idealmente administrador ou root.",
+        "context": "Atacantes raramente caem onde querem estar; a escalada de privilégios é o passo de um ponto de apoio ao controle real. \"Vertical\" ganha direitos mais altos em um host; \"horizontal\" (movimento lateral) se espalha para outras contas ou máquinas. O menor privilégio existe para tornar esse passo difícil."
+      },
+      "public-key-cryptography": {
+        "def": "Criptografia que usa um par de chaves, uma pública e uma privada, para que nenhum segredo compartilhado precise ser trocado antes.",
+        "context": "Na criptografia assimétrica, o que uma chave tranca, só a outra destranca. Anunciada por Diffie e Hellman em 1976, resolveu o antigo problema de trocar chaves com segurança, e sustenta TLS, assinaturas digitais e PKI."
+      },
+      "purple-team": {
+        "def": "Red e blue trabalhando juntos, para que cada achado ofensivo melhore imediatamente a defesa.",
+        "context": "Mais do que um grupo separado, o purple teaming é uma forma de conduzir um exercício: atacantes e defensores compartilham conhecimento em tempo real, transformando cada técnica bem-sucedida em uma nova detecção. Troca o drama de um teste-surpresa por aprendizado mais rápido."
+      },
+      "pwned": {
+        "def": "Gíria para ter sido completamente derrotado ou comprometido.",
+        "context": "De um provável erro de digitação de \"owned\" na cultura dos games, \"pwned\" se espalhou para a segurança com o sentido de uma conta ou sistema que foi tomado. Está imortalizado no \"Have I Been Pwned\", o serviço que verifica se seu endereço aparece em vazamentos conhecidos."
+      },
+      "qos": {
+        "def": "Técnicas que priorizam certo tráfego de rede sobre outros para atender a necessidades de desempenho.",
+        "context": "A Qualidade de Serviço permite que uma rede favoreça tráfego sensível à latência, uma chamada de voz, um fluxo de vídeo, sobre transferências em massa, para que os pacotes importantes não fiquem presos atrás dos grandes. Importa mais onde a banda é disputada e o atraso prejudica."
+      },
+      "rabbit-hole": {
+        "def": "Uma investigação que continua puxando você para mais fundo, muito além de onde pretendia parar.",
+        "context": "Emprestada de \"Alice no País das Maravilhas\", descer a toca do coelho é perseguir um problema ou uma curiosidade por camada após camada. Pode ser produtivo ou uma armadilha; a habilidade está em perceber em qual dos dois você está."
+      },
+      "race-condition": {
+        "def": "Um bug em que o resultado depende do tempo imprevisível de operações concorrentes.",
+        "context": "Quando duas coisas tocam um estado compartilhado ao mesmo tempo, a ordem decide o resultado, e a ordem errada corrompe dados ou abre uma brecha de segurança (a classe TOCTOU: hora da verificação até a hora do uso). Como envolvem tempo, condições de corrida muitas vezes se comportam como heisenbugs."
+      },
+      "rainbow-table": {
+        "def": "Uma tabela de consulta pré-computada que reverte hashes de senha sem sal rapidamente.",
+        "context": "Em vez de gerar hashes das tentativas ao vivo, o atacante pré-computa hashes de enormes quantidades de senhas e consulta a sua. O sal derrota isso por completo: um sal único por senha significa que a tabela gigante do atacante não corresponde a ninguém, forçando-o de volta ao trabalho lento por alvo."
+      },
+      "red-team": {
+        "def": "Um grupo que faz o papel do adversário para testar as defesas de uma organização de forma realista.",
+        "context": "Um red team vai além de um pentest: emula os objetivos e a paciência de um agente de ameaça real, testando pessoas e processos além da tecnologia, muitas vezes sem que os defensores saibam. Existe para responder \"um atacante determinado conseguiria entrar\", não apenas \"esta máquina está atualizada\"."
+      },
+      "redos": {
+        "def": "Uma negação de serviço causada por uma expressão regular que demora catastroficamente com certas entradas.",
+        "context": "Alguns padrões de regex fazem backtracking exponencial em strings forjadas, então uma única requisição pode travar uma CPU, transformando uma validação inocente em uma vulnerabilidade ReDoS. A correção são padrões mais seguros ou um motor de regex de tempo linear."
+      },
+      "regex": {
+        "def": "Uma linguagem de padrões compacta para casar e extrair texto.",
+        "context": "Uma expressão regular descreve um conjunto de strings, usada para validar, buscar ou dividir texto. É poderosa e concisa a ponto de ser notoriamente difícil de reler; padrões malfeitos também podem ser lentos o bastante para virar um risco de negação de serviço (ver ReDoS)."
+      },
+      "replay-attack": {
+        "def": "Capturar uma mensagem válida e reenviá-la para produzir um efeito não autorizado.",
+        "context": "Em um ataque de replay o adversário não precisa decifrar nada, apenas reenviar uma requisição capturada e ainda válida, como reproduzir um token de autenticação. Nonces, carimbos de tempo e valores de uso único o derrotam ao tornar cada mensagem válida apenas uma vez."
+      },
+      "responsible-disclosure": {
+        "def": "Relatar uma vulnerabilidade em sigilo ao fornecedor e dar tempo para corrigi-la antes de torná-la pública.",
+        "context": "Também chamada de divulgação coordenada, equilibra dois bens: os usuários recebem uma correção, e a falha não vira uma arma pública no primeiro dia. As práticas variam quanto ao prazo, mas o princípio é dar à correção uma vantagem sobre o exploit."
+      },
+      "reverse-proxy": {
+        "def": "Um servidor que recebe requisições de clientes e as encaminha aos servidores de back-end em nome deles.",
+        "context": "Um proxy reverso é a face pública à frente dos seus servidores reais: pode terminar TLS, balancear carga, fazer cache e hospedar um WAF, enquanto os back-ends ficam ocultos. Os clientes falam só com ele, o que o torna um ponto de controle tão natural."
+      },
+      "root-cause": {
+        "def": "A razão subjacente de uma falha, sob os seus sintomas visíveis.",
+        "context": "A análise de causa raiz pergunta \"por quê\" além da primeira resposta, técnicas como os Cinco Porquês, até chegar à condição que, se corrigida, evita a recorrência. A disciplina está em resistir à tentadora correção no nível do sintoma, que deixa a causa real no lugar."
+      },
+      "rpki": {
+        "def": "Um sistema de registros assinados que permite a roteadores verificar se uma rede pode anunciar um dado bloco de endereços.",
+        "context": "A Resource Public Key Infrastructure (RFC 6480) anexa prova criptográfica de quem pode originar quais prefixos, para que um roteador rejeite anúncios BGP falsos. É a principal defesa contra sequestros de rota, acidentais ou maliciosos."
+      },
+      "rubber-duck-debugging": {
+        "def": "Depurar explicando seu código, linha por linha, para um objeto inanimado.",
+        "context": "Popularizada por \"The Pragmatic Programmer\", a técnica funciona porque articular o problema em voz alta força você a tornar explícitas as suas suposições, e a errada costuma aparecer no meio da frase. O pato é opcional; explicar é o essencial."
+      },
+      "runbook": {
+        "def": "Um procedimento documentado para executar uma tarefa operacional específica ou lidar com uma situação conhecida.",
+        "context": "Um bom runbook transforma conhecimento tribal em passos que qualquer pessoa de plantão segue às 3 da manhã: pré-condições, comandos exatos, verificações e rollback. É a diferença entre uma mudança calma e repetível e a improvisação sob pressão."
+      },
+      "salt": {
+        "def": "Dados aleatórios adicionados a uma senha antes do hash, únicos por usuário.",
+        "context": "Salgar significa que duas pessoas com a mesma senha obtêm hashes diferentes, o que derrota tabelas arco-íris e torna a pré-computação inútil. Não precisa ser secreto, apenas único; um valor secreto complementar é chamado de pepper."
+      },
+      "serverless": {
+        "def": "Um modelo em que você executa código sem gerenciar servidores e paga apenas enquanto ele roda.",
+        "context": "O serverless (muitas vezes funções como serviço, como o AWS Lambda) esconde as máquinas por completo: a plataforma provisiona, escala e cobra por invocação. \"Sem servidor\" é um leve equívoco de nome, servidores ainda existem, você apenas não os opera."
+      },
+      "service-mesh": {
+        "def": "Uma camada dedicada que gerencia a comunicação entre serviços dentro de um cluster.",
+        "context": "Um service mesh (como Istio ou Linkerd) tira novas tentativas, criptografia, roteamento e observabilidade do código da aplicação e os coloca em proxies sidecar, dando controle uniforme sobre o tráfego leste-oeste. Troca certa complexidade por consistência entre muitos serviços."
+      },
+      "shellcode": {
+        "def": "Um pequeno trecho autocontido de código de máquina que um exploit executa, classicamente para abrir um shell.",
+        "context": "Shellcode é escrito para ser compacto e independente de posição porque executa em qualquer espaço apertado que o exploit oferecer. O nome é histórico, sua tarefa hoje pode ser qualquer coisa, mas o ofício, código minúsculo que roda do nada, é o mesmo."
+      },
+      "shift-left": {
+        "def": "Mover testes, segurança e verificações de qualidade para mais cedo no processo de desenvolvimento.",
+        "context": "Deslocar para a esquerda significa pegar problemas enquanto são baratos, no projeto e no commit, e não em produção. Em segurança, coloca varredura e modelagem de ameaças no pipeline; a ideia é que quanto mais cedo você acha um defeito, menos custa corrigi-lo."
+      },
+      "sidecar": {
+        "def": "Um contêiner auxiliar que roda ao lado de uma aplicação principal para acrescentar capacidades sem alterá-la.",
+        "context": "O padrão sidecar anexa preocupações como proxy, log ou terminação de TLS como um contêiner vizinho, para que a aplicação siga focada em sua própria tarefa. É o bloco de construção do service mesh, onde o sidecar cuida de todo o tráfego de rede."
+      },
+      "slo": {
+        "def": "Uma meta concreta de quão confiável um serviço deve ser, como 99,9% das requisições bem-sucedidas.",
+        "context": "Um Objetivo de Nível de Serviço transforma \"seja confiável\" em uma meta mensurável, e a distância entre ela e a perfeição vira um orçamento de erro que você pode gastar em mudanças. Dá às equipes uma forma comum e honesta de equilibrar novos recursos contra estabilidade."
+      },
+      "smishing": {
+        "def": "Phishing conduzido por mensagens de texto SMS.",
+        "context": "O smishing é o primo móvel do phishing: um texto se passando pelo seu banco ou por uma transportadora, atraindo você a um site falso ou app malicioso. \"Vishing\" é o equivalente por chamada de voz. O canal muda; a jogada de engenharia social, não."
+      },
+      "snafu": {
+        "def": "Gíria da guerra para uma situação caótica, mas caótica de forma rotineira.",
+        "context": "A sigla significa \"Situation Normal, All Fouled Up\" (situação normal, tudo bagunçado, na versão educada), cunhada nas forças armadas dos EUA na Segunda Guerra. Sua graça está na palavra \"normal\": o caos é esperado, e é por isso que ainda se aplica ao trabalho de operações."
+      },
+      "soc": {
+        "def": "A equipe e a instalação responsáveis por monitorar e defender continuamente a segurança de uma organização.",
+        "context": "Um Security Operations Center observa os alertas, investiga incidentes e coordena a resposta, muitas vezes ininterruptamente, em geral alimentado por um SIEM que agrega logs. É onde o trabalho contínuo do blue team de fato se materializa."
+      },
+      "soc2": {
+        "def": "Um padrão de auditoria que reporta quão bem uma organização de serviços protege os dados de clientes.",
+        "context": "Um relatório SOC 2 avalia controles contra princípios de confiança, segurança, disponibilidade, confidencialidade e outros, e é comumente exigido por clientes antes de confiar seus dados a um fornecedor. É evidência de processo, não um certificado único de perfeição."
+      },
+      "social-engineering": {
+        "def": "Manipular pessoas, e não tecnologia, para obter acesso ou informação.",
+        "context": "Todo golpe, de uma ligação com pretexto a uma porta em que alguém entra na cola de outro, é engenharia social: explorar boa vontade, autoridade ou urgência para contornar controles que só o código imporia. É por isso que OPSEC e conscientização importam tanto quanto atualizar sistemas."
+      },
+      "sql-injection": {
+        "def": "Injetar comandos de banco de dados por uma entrada que é concatenada em uma consulta.",
+        "context": "A injeção de SQL ocorre quando a entrada do usuário é costurada no SQL como código, e não como dado, deixando um atacante ler ou alterar o banco. É antiga em décadas e ainda comum; consultas parametrizadas (prepared statements) a fecham de forma limpa."
+      },
+      "subnet": {
+        "def": "Uma fatia de uma rede maior, definida por quantos bits de endereço são fixos.",
+        "context": "A divisão em sub-redes reparte um bloco de endereços em redes menores para que tráfego e broadcast fiquem contidos e o roteamento permaneça são. A máscara (ou prefixo CIDR) traça a linha entre a parte de rede e a parte de host de cada endereço."
+      },
+      "supernet": {
+        "def": "Uma única rota que resume várias redes menores.",
+        "context": "A supernetting (agregação de rotas) é o inverso da divisão em sub-redes: combinar blocos adjacentes em um prefixo mais curto para que roteadores carreguem menos entradas, mais abrangentes. É como a tabela de roteamento global se mantém gerenciável em vez de listar cada rede pequena separadamente."
+      },
+      "supply-chain-attack": {
+        "def": "Comprometer um software atacando algo de que ele depende, em vez do alvo diretamente.",
+        "context": "Em vez de invadir você, um atacante envenena uma biblioteca, ferramenta de build ou atualização em que você confia, e entra de carona, como o susto do left-pad e vários incidentes reais mostraram o alcance das dependências. As defesas incluem verificar a proveniência e fixar aquilo em que você se apoia."
+      },
+      "syn-flood": {
+        "def": "Uma negação de serviço que abre muitas conexões TCP pela metade para esgotar os recursos de um servidor.",
+        "context": "Ao enviar uma torrente de SYNs e nunca completar o handshake, um atacante enche a tabela de conexões pendentes de modo que as legítimas não conseguem entrar. Os SYN cookies são a defesa clássica, permitindo ao servidor evitar guardar estado para conexões não comprovadas."
+      },
+      "technical-debt": {
+        "def": "O custo futuro de escolher uma solução rápida agora em vez de uma melhor depois.",
+        "context": "A metáfora de Ward Cunningham: atalhos tomam tempo emprestado hoje e cobram juros amanhã, no esforço extra que toda mudança posterior exige. Um pouco pode ser uma troca sensata; sem ser paga, compõe-se até o código resistir a qualquer mudança."
+      },
+      "the-first-bug": {
+        "def": "O registro de 1947 em que uma mariposa presa em um relé do Harvard Mark II foi colada ao lado da nota \"First actual case of bug being found\" (primeiro caso real de um inseto sendo encontrado).",
+        "context": "É real e encantador, mas não é a origem da palavra: engenheiros, entre eles Edison, já chamavam defeitos de \"bugs\" décadas antes. A mariposa de 1947 é o primeiro caso de um inseto literal causando falha, e o caderno de registro está preservado no Smithsonian. Grace Hopper adorava contar a história, e foi assim que as duas ideias se fundiram na memória popular."
+      },
+      "the-jargon-file": {
+        "def": "O dicionário comunitário de longa data da gíria e cultura hacker, mantido desde os anos 1970.",
+        "context": "Iniciado em Stanford em 1975 e depois editado como \"The New Hacker's Dictionary\", o Jargon File é onde boa parte deste vocabulário é registrada e sua etimologia debatida. É uma fonte primária do folclore hacker, e um lembrete de que essa cultura sempre se documentou."
+      },
+      "the-network-is-reliable": {
+        "def": "Uma lista de suposições falsas que programadores insistem em fazer sobre sistemas distribuídos.",
+        "context": "As oito falácias (a rede é confiável, a latência é zero, a banda é infinita, e assim por diante) nomeiam as crenças confortáveis que funcionam em uma máquina e traem você em muitas. Formuladas na Sun Microsystems nos anos 1990, são a lista de verificação permanente para qualquer coisa que converse por uma rede."
+      },
+      "the-story-of-mel": {
+        "def": "Um poema da Usenet de 1983 sobre Mel Kaye, um programador que escrevia código tão próximo da máquina que desafiava a própria ideia de reescrevê-lo.",
+        "context": "O tributo de Ed Nather descreve Mel otimizando ao posicionar instruções onde a memória de tambor giraria até elas no momento exato, e recusando-se a adicionar um recurso que deixaria o chefe trapacear em uma demonstração. É o retrato mais querido do \"programador de verdade\", em partes iguais de admiração e advertência."
+      },
+      "there-are-two-hard-things": {
+        "def": "A piada de que existem apenas dois problemas difíceis na computação: invalidação de cache, dar nomes às coisas, e erros de off-by-one.",
+        "context": "Atribuída a Phil Karlton, a frase tem graça porque comete um erro de off-by-one ao enumerá-los. Sob a piada há três coisas de fato difíceis: saber quando um dado em cache está velho, escolher nomes que continuem claros conforme o código cresce, e acertar os limites com exatidão."
+      },
+      "threat-model": {
+        "def": "Um olhar estruturado sobre o que pode dar errado, quem pode atacar e o que vale a pena defender.",
+        "context": "A modelagem de ameaças pergunta, antes de construir, o que estamos protegendo, quem quer isso, como poderiam conseguir e o que faremos a respeito. Frameworks como o STRIDE lhe dão estrutura. O resultado orienta onde gastar o esforço limitado de segurança."
+      },
+      "three-way-handshake": {
+        "def": "A troca de três mensagens que abre uma conexão TCP: SYN, SYN-ACK, ACK.",
+        "context": "Antes de qualquer dado fluir, os dois lados sincronizam números de sequência em três passos, concordando que se escutam. É o aperto de mãos cortês por baixo de toda página web e transferência de arquivo, e seu estado meio-aberto é o que um SYN flood abusa."
+      },
+      "tls": {
+        "def": "O protocolo que criptografa e autentica a maior parte do tráfego da internet, o S do HTTPS.",
+        "context": "O Transport Layer Security (o sucessor moderno do SSL, versão atual 1.3 na RFC 8446) protege os dados em trânsito e verifica que você fala com o servidor certo. Negocia uma suíte de cifras e, por padrão hoje, sigilo futuro para cada sessão."
+      },
+      "toil": {
+        "def": "Trabalho operacional repetitivo e manual que cresce com o serviço mas não agrega valor duradouro.",
+        "context": "Na definição de SRE do Google, toil é o tipo de labuta, reinícios manuais, verificações feitas à mão, que poderia e deveria ser automatizada. Dar-lhe nome distingue engenharia genuína de trabalho braçal, e fundamenta o argumento para eliminá-lo."
+      },
+      "tor-relay": {
+        "def": "Um dos servidores voluntários que encaminham o tráfego do Tor.",
+        "context": "Um caminho pelo Tor usa vários relés com papéis distintos, uma entrada (guarda), um ou mais intermediários e uma saída. Operar um relé é uma forma lícita de apoiar a rede. A divisão em três papéis é o que impede qualquer relé sozinho de ligar origem a destino."
+      },
+      "ttl": {
+        "def": "Um contador que limita quanto tempo um dado vive ou até onde um pacote pode viajar antes de ser descartado.",
+        "context": "No DNS, o TTL é quantos segundos um registro pode ficar em cache antes de precisar ser consultado de novo; no IP, é o limite de saltos que impede um pacote perdido de circular para sempre. Mesmo nome, duas tarefas, ambas sobre limitar o tempo de vida."
+      },
+      "unicast": {
+        "def": "Comunicação endereçada a exatamente um destinatário.",
+        "context": "O unicast é a entrega um para um, o padrão da maior parte do tráfego, em contraste com broadcast (para todos em um segmento), multicast (para um grupo inscrito) e anycast (para o mais próximo entre muitos). A distinção define quão eficientemente o tráfego alcança seu público."
+      },
+      "vlsm": {
+        "def": "Usar tamanhos de sub-rede diferentes dentro da mesma rede, dimensionados à necessidade de cada segmento.",
+        "context": "O Variable-Length Subnet Masking abandona máscaras de tamanho único: um enlace ponto a ponto recebe um /30 minúsculo enquanto uma LAN de usuários recebe um /24 folgado, para não desperdiçar endereços. Depende do roteamento sem classes para carregar os prefixos variados."
+      },
+      "vpn": {
+        "def": "Um túnel criptografado que carrega seu tráfego como se você estivesse em outra rede.",
+        "context": "Uma Rede Privada Virtual envolve sua conexão para que ela pareça originar-se do ponto de saída da VPN, usada para alcançar recursos corporativos privados ou proteger tráfego em redes não confiáveis. Ela desloca a confiança em vez de removê-la: você passa a confiar no operador da VPN em vez da rede local."
+      },
+      "waf": {
+        "def": "Um filtro que inspeciona o tráfego web e bloqueia ataques na camada de aplicação.",
+        "context": "Um Web Application Firewall fica à frente de uma aplicação e olha dentro do HTTP, barrando injeção, cross-site scripting e ataques semelhantes que um firewall de rede não enxerga. É proteção na camada 7, ajustada à forma das requisições web, e não a portas e endereços."
+      },
+      "wizard": {
+        "def": "Uma pessoa com domínio profundo e quase intuitivo de um sistema.",
+        "context": "No uso hacker, um wizard é alguém que entende um sistema tão a fundo que conserta o que ninguém mais consegue, a pessoa para quem você escala quando o manual acaba. Carrega respeito genuíno, e um toque do arcano."
+      },
+      "xkcd-workflow": {
+        "def": "A pergunta sobre se automatizar uma tarefa realmente economiza mais tempo do que custa automatizá-la.",
+        "context": "Uma famosa tabela do xkcd pesa a frequência com que você faz uma tarefa contra o tempo que leva para automatizá-la, mostrando quando o esforço compensa. É o contrapeso honesto ao instinto do engenheiro de automatizar tudo, e primo próximo do yak shaving."
+      },
+      "xss": {
+        "def": "Um ataque que injeta script malicioso em uma página web para que ele rode no navegador de outros usuários.",
+        "context": "O Cross-Site Scripting explora uma página que reflete ou armazena entrada não confiável sem escapá-la, deixando o JavaScript do atacante rodar com a sessão da vítima. Codificação de saída e uma Content Security Policy são as defesas padrão; é uma presença perene no OWASP Top 10."
+      },
+      "yak-shaving": {
+        "def": "A sequência de subtarefas sem relação que você precisa terminar antes de fazer aquilo que realmente pretendia.",
+        "context": "Você quer corrigir um bug, mas primeiro precisa atualizar uma biblioteca, que exige um runtime mais novo, que exige uma mudança de configuração, e de repente você está tosquiando um iaque. O termo vem do laboratório de IA do MIT nos anos 1990. Dar nome a isso é útil: é o sinal para perguntar se o desvio é mesmo necessário."
+      },
+      "zero-day": {
+        "def": "Uma vulnerabilidade desconhecida do fornecedor, com zero dias disponíveis para tê-la corrigido.",
+        "context": "Um zero-day é perigoso justamente porque ainda não existe correção: os defensores tiveram zero dias de aviso. O termo se estende ao exploit que usa essa falha. Assim que o fornecedor toma conhecimento e lança uma correção, o relógio começa e deixa de ser um zero-day."
+      },
+      "zero-trust": {
+        "def": "Um modelo de segurança que por padrão não confia em nada e verifica cada requisição, venha de onde vier.",
+        "context": "O zero trust substitui o antigo perímetro de \"confiável dentro, hostil fora\" por verificação contínua de identidade, dispositivo e contexto a cada acesso, dentro da rede ou não. \"Nunca confie, sempre verifique\" é o lema; menor privilégio e microssegmentação são como se constrói."
       }
     }
   }
