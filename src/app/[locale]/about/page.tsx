@@ -85,7 +85,7 @@ export default async function AboutPage({
         <section className="section about-credibility">
           <div className="container">
             <div className="about-cred-grid">
-              <Link href="/certifications" className="about-cred-card">
+              <Link href="/about/credentials" className="about-cred-card">
                 <span className="about-cred-eyebrow">{t("credibility.certsEyebrow")}</span>
                 <span className="about-cred-title">{t("credibility.certsTitle")}</span>
                 <span className="about-cred-desc">{t("credibility.certsDesc")}</span>

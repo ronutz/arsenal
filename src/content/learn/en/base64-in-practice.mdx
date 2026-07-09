@@ -8,7 +8,7 @@ relatedArticles: ["base64", "base64url", "certificate-formats", "text-encodings-
 category: encoding
 order: 4
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-07-09"
 ---
 
 ## Why wrap binary in text at all
@@ -31,3 +31,11 @@ Base64 is not free. Three bytes become four characters, so the encoded form is a
 The Basic auth example makes the most important point on its own. `Authorization: Basic dXNlcjpwYXNz` looks opaque, but `dXNlcjpwYXNz` is simply Base64 for `user:pass`, reversible by anyone, with no key involved. Base64 provides **no confidentiality whatsoever.** It is an encoding (a reversible change of representation), not encryption (a key-protected secret) and not hashing (a one-way fingerprint). This is why Basic auth is only safe over TLS: the transport encrypts the header, because Base64 certainly does not.
 
 Whenever you see a long opaque-looking string, decoding it first is a cheap way to learn what it is. The [Base64 tool](/tools/base64) decodes data URIs, PEM bodies, and auth headers to their raw bytes and text, entirely in your browser, so nothing you paste leaves the page.
+
+## Stacked encodings: double, triple, and beyond
+
+Because encoding is reversible and carries no key, it is trivial to apply more than once. Base64 the output of a Base64, and you have a doubly-encoded string; do it again for triple. Each pass is legitimate on its own, and the result is still just text, which is exactly why it is a favourite obfuscation move. Attackers stack encodings (sometimes mixing Base64, URL/percent, and hex across layers) so that a payload sails past a filter or a signature that only inspects the outermost, or first-decoded, form. A WAF rule matching `<script` never sees it if the request carries `PHNjcmlwdA==` wrapped one more time.
+
+The defence is symmetric: to understand a suspicious blob you peel the layers, decoding repeatedly until you reach plausible plaintext rather than yet another encoded string. The tell that you are not done is that a decode yields something that still looks encoded (all Base64 alphabet, or riddled with `%` escapes). A practical habit is to keep decoding until the output stops changing shape.
+
+The [Base64 tool](/tools/base64) supports this directly: the layers control (×1, ×2, ×3) encodes a payload through several passes, or peels several off when decoding. If you ask it to peel more layers than a payload actually has, it stops at the first layer that fails to decode and shows you exactly where, so you can see how deep the nesting really went. This is the same reason security tooling that normalizes input decodes recursively before matching: a rule that inspects only one layer is a rule an extra `base64` defeats.

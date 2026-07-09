@@ -1,29 +1,34 @@
 // ============================================================================
 // src/app/[locale]/certifications/page.tsx
 // ----------------------------------------------------------------------------
-// CERTIFICATIONS PAGE.
+// CERTIFICATION STUDY-AID HUB (candidate-facing).
 //
-// Leads with what is CURRENT and unmistakable, instructor authorizations and
-// currently-valid certifications, shown as prominent cards. Then the F5 MVP
-// recognition. Then the full HISTORICAL record grouped by vendor, present for
-// depth but visually secondary, with a jump link from the top. Cert names are
-// rendered directly (proper nouns); only headings/labels come from i18n.
-// Statically generated per locale.
+// The top-level Certifications section was repurposed on 2026-07-09: it no
+// longer shows Rodolfo's own credentials (those moved to /about/credentials).
+// It now serves certification CANDIDATES with blueprint-guided study maps.
+//
+// The hub lists each certification (a credential earned by passing one or more
+// exams) and, under it, one card per exam study guide. Guides whose official
+// blueprint has not yet been transcribed show an "in preparation" badge; the
+// guide page itself renders an honest placeholder until the blueprint is mapped.
+//
+// See the ethics guardrail in src/content/certifications/study-guides.ts: these
+// guides map PUBLISHED blueprint objectives to learning resources and never
+// contain exam questions or dumps. Statically generated per locale.
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import EvidenceLinks, { type EvidenceCopy } from "@/components/EvidenceLinks";
+import TrainingCta from "@/components/TrainingCta";
 import {
-  instructorAuthorizations,
-  currentCertifications,
-  recognition,
-  historical,
-  CREDLY_PROFILE,
-} from "@/content/certifications/data";
+  getCertifications,
+  getGuidesForCertification,
+  objectiveCount,
+} from "@/content/certifications/study-guides";
 
-export default async function CertificationsPage({
+export default async function CertificationsHubPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
@@ -31,17 +36,9 @@ export default async function CertificationsPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("certs");
+  const t = await getTranslations("certGuides");
   const tNav = await getTranslations("nav");
-
-  // Evidence-link labels, passed to the EvidenceLinks server component.
-  const evidenceCopy: EvidenceCopy = {
-    verify: t("verify"),
-    credly: t("credly"),
-    certificate: t("certificate"),
-    code: t("verifyCode"),
-    candidate: t("candidateId"),
-  };
+  const certs = getCertifications();
 
   return (
     <>
@@ -57,108 +54,87 @@ export default async function CertificationsPage({
             <div className="container certs-container">
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
-              <div className="certs-hero-links">
-                <a href="#historical" className="certs-jump">
-                  {t("jumpToHistorical")} ↓
-                </a>
-                <a
-                  href={CREDLY_PROFILE}
-                  className="certs-jump"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t("credlyVerify")} ↗
-                </a>
-              </div>
             </div>
           </section>
 
-          {/* CURRENT: instructor authorizations */}
+          {/* Study philosophy + ethics stance */}
           <section className="section">
-            <div className="container certs-container">
-              <div className="certs-group-head">
-                <h2 className="certs-group-title">{t("instructorTitle")}</h2>
-                <span className="certs-badge certs-badge--current">{t("current")}</span>
+            <div className="container certs-container certhub-notes">
+              <div className="certhub-note">
+                <h2 className="certhub-note-title">{t("philosophyTitle")}</h2>
+                <p className="certhub-note-body">{t("philosophyBody")}</p>
               </div>
-              <p className="certs-group-intro">{t("instructorIntro")}</p>
-              <ul className="certs-current-grid">
-                {instructorAuthorizations.map((c) => (
-                  <li className="certs-current-card" key={c.name}>
-                    <span className="certs-current-issuer mono">{c.issuer}</span>
-                    <span className="certs-current-name">{c.name}</span>
-                    <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
-                  </li>
-                ))}
-              </ul>
+              <div className="certhub-note certhub-note--ethics">
+                <h2 className="certhub-note-title">{t("ethicsTitle")}</h2>
+                <p className="certhub-note-body">{t("ethicsBody")}</p>
+              </div>
             </div>
           </section>
 
-          {/* CURRENT: certifications */}
-          <section className="section">
-            <div className="container certs-container">
-              <div className="certs-group-head">
-                <h2 className="certs-group-title">{t("currentCertsTitle")}</h2>
-                <span className="certs-badge certs-badge--current">{t("current")}</span>
-              </div>
-              <ul className="certs-current-grid">
-                {currentCertifications.map((c) => (
-                  <li className="certs-current-card" key={c.name}>
-                    <span className="certs-current-issuer mono">{c.issuer}</span>
-                    <span className="certs-current-name">{c.name}</span>
-                    {c.detail && <span className="certs-current-detail">{c.detail}</span>}
-                    {c.period && <span className="certs-current-period mono">{c.period}</span>}
-                    <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-
-          {/* RECOGNITION */}
-          <section className="section certs-recognition-section">
-            <div className="container certs-container">
-              <h2 className="certs-group-title">{t("recognitionTitle")}</h2>
-              {recognition.map((r) => (
-                <div className="certs-recognition" key={r.name}>
-                  <div className="certs-recognition-main">
-                    <span className="certs-recognition-name">{r.name}</span>
-                    {r.period && <span className="certs-recognition-period mono">{r.period}</span>}
+          {/* One section per certification, with its exam guides as cards. */}
+          {certs.map((cert) => {
+            const guides = getGuidesForCertification(cert.key);
+            return (
+              <section className="section certhub-cert" id={cert.key} key={cert.key}>
+                <div className="container certs-container">
+                  <div className="certs-group-head">
+                    <h2 className="certs-group-title">{cert.name}</h2>
+                    <span className="certs-badge certs-badge--current mono">{cert.code}</span>
                   </div>
-                  {r.note && <p className="certs-recognition-note">{r.note}</p>}
-                </div>
-              ))}
-            </div>
-          </section>
+                  <p className="certs-group-intro">
+                    {t("requiresAll", { count: cert.examSlugs.length })}
+                  </p>
 
-          {/* HISTORICAL, grouped by vendor */}
-          <section className="section certs-historical-section" id="historical">
-            <div className="container certs-container">
-              <div className="certs-group-head">
-                <h2 className="certs-group-title">{t("historicalTitle")}</h2>
-                <span className="certs-badge certs-badge--past">{t("historical")}</span>
-              </div>
-              <p className="certs-group-intro">{t("historicalIntro")}</p>
-
-              <div className="certs-historical-groups">
-                {historical.map((g) => (
-                  <div className="certs-vendor-group" key={g.vendor}>
-                    <h3 className="certs-vendor-name">{g.vendor}</h3>
-                    {g.note && <p className="certs-vendor-note">{g.note}</p>}
-                    <ul className="certs-vendor-list">
-                      {g.items.map((c) => (
-                        <li className="certs-hist-item" key={c.name}>
-                          <span className="certs-hist-main">
-                            <span className="certs-hist-name">{c.name}</span>
-                            {c.detail && <span className="certs-hist-detail">{c.detail}</span>}
-                            <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
-                          </span>
-                          {c.period && <span className="certs-hist-period mono">{c.period}</span>}
+                  <ul className="certhub-guide-grid">
+                    {guides.map((g) => {
+                      const n = objectiveCount(g);
+                      return (
+                        <li className="certhub-guide-card-wrap" key={g.slug}>
+                          <Link href={`/certifications/${g.slug}`} className="certhub-guide-card">
+                            <span className="certhub-guide-code mono">{g.examCode}</span>
+                            <span className="certhub-guide-name">{g.examName}</span>
+                            <span className="certhub-guide-meta">
+                              {g.status === "preparing" ? (
+                                <span className="certhub-guide-badge certhub-guide-badge--prep">
+                                  {t("inPreparation")}
+                                </span>
+                              ) : (
+                                <span className="certhub-guide-badge">
+                                  {t("objectivesCount", { count: n })}
+                                </span>
+                              )}
+                              <span className="certhub-guide-cta">{t("openGuide")} &#8594;</span>
+                            </span>
+                          </Link>
                         </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
+                      );
+                    })}
+                  </ul>
+
+                  {cert.renewalNote && (
+                    <p className="certhub-renewal">{cert.renewalNote}</p>
+                  )}
+                </div>
+              </section>
+            );
+          })}
+
+          {/* Instructor-led training CTA (subtle): high-intent candidates can
+              learn these live with an authorized instructor at Red Education. */}
+          <section className="section">
+            <div className="container certs-container">
+              <TrainingCta />
+            </div>
+          </section>
+
+          {/* Pointer to Rodolfo's own credentials (moved under About). */}
+          <section className="section">
+            <div className="container certs-container">
+              <p className="certs-studyguides-pointer">
+                <Link href="/about/credentials" className="certs-studyguides-link">
+                  {t("credentialsPointer")} &#8594;
+                </Link>
+              </p>
             </div>
           </section>
         </article>

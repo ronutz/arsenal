@@ -176,7 +176,9 @@
         "percent": "Percent"
       },
       "example": "Example",
-      "clear": "Clear"
+      "clear": "Clear",
+      "layersLabel": "Layers",
+      "layersOptionTitle": "{n, plural, =1 {Single pass (no extra layers)} other {Apply the codec # times: n-encode, or peel # layers when decoding}}"
     },
     "categories": {
       "identity": "Identity & tokens",
@@ -235,7 +237,8 @@
       "err_invalidDate": "Use a valid date (YYYY-MM-DD).",
       "err_order": "The expiry date must be after the issue date.",
       "err_tooLong": "That input is too long.",
-      "err_invalid": "Could not read those dates."
+      "err_invalid": "Could not read those dates.",
+      "clearLabel": "Clear"
     },
     "cidr": {
       "name": "CIDR / Subnet Calculator",
@@ -497,7 +500,8 @@
       "err_empty": "Paste a certificate signing request to decode.",
       "err_format": "That does not look like a PEM, base64, or hex CSR.",
       "err_der": "The DER structure could not be parsed.",
-      "err_structure": "This parses as DER but is not a PKCS#10 certification request."
+      "err_structure": "This parses as DER but is not a PKCS#10 certification request.",
+      "clearLabel": "Clear"
     },
     "curl-command-builder": {
       "name": "curl command builder",
@@ -4731,7 +4735,10 @@
       "about": "About",
       "certs": "Certifications",
       "endorsements": "Endorsements"
-    }
+    },
+    "envTitle": "Remote training environments",
+    "envBody1": "Live online classes (vILT) run on Zoom by preference, with Google Meet and Microsoft Teams equally supported when a customer's platform policy calls for it.",
+    "envBody2": "Hands-on labs are delivered through self-hosted lab environments that Rodolfo builds and maintains, through Red Education's lab infrastructure, and through platforms such as CloudShare, Skytap, ReadyTech Axis, and Amazon WorkSpaces - whichever fits the course and the customer."
   },
   "contact": {
     "title": "Get in touch",
@@ -4791,7 +4798,9 @@
     "credly": "Credly",
     "certificate": "Certificate",
     "verifyCode": "Code",
-    "candidateId": "ID"
+    "candidateId": "ID",
+    "backToAbout": "Back to About",
+    "studyGuidesPointer": "Studying for an F5 exam? See our certification study guides"
   },
   "colophon_page": {
     "eyebrow": "Colophon",
@@ -5098,7 +5107,9 @@
     "toolsHeading": "Tools",
     "learnHeading": "Articles",
     "read": "Read",
-    "metaDescription": "Every {vendor} tool and every {vendor} article on ronutz.com, on one page: tools grouped by family, then the full article library."
+    "metaDescription": "Every {vendor} tool and every {vendor} article on ronutz.com, on one page: tools grouped by family, then the full article library.",
+    "certsEyebrow": "Certification prep",
+    "certsCta": "Study guide: {cert}"
   },
   "learn": {
     "eyebrow": "Learn",
@@ -7024,5 +7035,65 @@
         "context": "Zero trust replaces the old \"trusted inside, hostile outside\" perimeter with continuous verification of identity, device, and context for every access, inside the network or not. \"Never trust, always verify\" is the slogan; least privilege and microsegmentation are how it is built."
       }
     }
+  },
+  "certGuides": {
+    "title": "Certification study guides",
+    "lede": "Blueprint-guided study maps for vendor certification exams. Every objective from the published exam blueprint is linked to the articles, tools, and official manual pages that teach it, so you study the right things in the right order.",
+    "philosophyTitle": "How these guides work",
+    "philosophyBody": "The exam blueprint is the spine. Each objective points to deterministic, grounded resources already on this site plus the vendor's own documentation. No filler, and no guessing which topics matter.",
+    "ethicsTitle": "What these guides are not",
+    "ethicsBody": "These are independent study aids built from the public exam blueprint. They contain no exam questions, answers, or brain dumps, which violate every vendor's certification agreement. They help you learn the material, not shortcut the exam.",
+    "credentialsPointer": "Looking for Rodolfo Nützmann's own certifications? They live under About",
+    "requiresAll": "Earned by passing all {count} exams, in any order.",
+    "openGuide": "Open study guide",
+    "inPreparation": "In preparation",
+    "objectivesCount": "{count, plural, =0 {Blueprint pending} one {# objective} other {# objectives}}",
+    "backToHub": "All study guides",
+    "partOf": "Part of {cert}",
+    "examLabel": "Exam",
+    "targetsLabel": "Targets",
+    "versionUnspecified": "Product version not specified in the blueprint",
+    "sourceLabel": "Blueprint source",
+    "disclaimer": "Independent study aid built from the public exam blueprint. Not affiliated with, authorized by, or endorsed by {vendor}. Exam objectives, versions, and availability change, so always verify against the official blueprint.",
+    "onThisSite": "On this site",
+    "toolsLabel": "Tools",
+    "manualLabel": "Official manual",
+    "latestTag": "latest",
+    "articleComing": "Article coming",
+    "preparingTitle": "Study guide in preparation",
+    "preparingBody": "The official blueprint for this exam is being mapped to the site's articles, tools, and manual pages. In the meantime, the exam's official page is linked above."
+  },
+  "trainingCta": {
+    "eyebrow": "Instructor-led training",
+    "body": "Prefer to learn with an instructor? Rodolfo Nützmann and other authorized instructors teach these courses live at <redu>Red Education</redu>, a global Authorized Training Center.",
+    "link": "Explore instructor-led training"
+  },
+  "redEducation": {
+    "metaTitle": "Red Education - Global Authorized Training Center",
+    "metaDescription": "Red Education is a global Authorized Training Center for the world's leading network and security vendors, with more than 100,000 students trained across 132 countries. Rodolfo Nützmann teaches there as a Senior Instructor.",
+    "eyebrow": "Authorized training",
+    "title": "Red Education",
+    "lede": "A global Authorized Training Center for the world's leading network and security vendors - and the home of Rodolfo Nützmann's classroom since 2023.",
+    "whoTitle": "Who they are",
+    "whoBody1": "Founded in 2005, Red Education is a specialist IT and cyber security training company that has trained more than 100,000 students across 132 countries, holding a 4.9-star average rating from more than 5,000 reviews.",
+    "whoBody2": "Training is delivered by more than 50 instructors, many certified across multiple vendors, in classroom, virtual, and on-site formats across five global regions: the Americas, Australasia, SAARC, ASEAN, and EMEA.",
+    "authTitle": "Vendor authorizations",
+    "authIntro": "Red Education delivers vendor-accredited training as an authorized partner of the world's leading network and security vendors, including:",
+    "awardsTitle": "Recognition",
+    "awardF5": "Best F5 ATC Award 2020/21, with a 98% customer satisfaction rating on F5 courses.",
+    "awardFortinet": "Fortinet Training Institute ATC Partner of the Year for APAC (2026 ATC Awards).",
+    "rodolfoTitle": "Rodolfo at Red Education",
+    "rodolfoBody": "Rodolfo Nützmann has taught at Red Education as a Senior Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world.",
+    "caseStudyNote": "Red Education's own case study on upskilling 43 engineers at a global IT firm names Rodolfo among the instructors who delivered the training.",
+    "caseStudyLink": "Read the case study",
+    "linkTraining": "Course catalog on this site",
+    "linkCredentials": "Rodolfo's credentials",
+    "tributeTitle": "A word of thanks",
+    "tribute": "I joined Red Education as a Senior Instructor in 2023, and it turned out to be one of the best professional decisions of my career. Behind every class I deliver stands an operations team spanning five regions that makes complex logistics look effortless, account managers who genuinely care about outcomes, and a standard of quality that pushes me to be better every single session. This page is my public thank-you to the people of Red Education, for trusting me with their classrooms and their students.",
+    "tributeSignature": "Rodolfo Nützmann, Senior Instructor",
+    "ctaTitle": "Book instructor-led training",
+    "ctaBody": "Courses taught by Rodolfo Nützmann and other authorized instructors can be booked directly at Red Education, worldwide, in classroom, virtual, or on-site formats.",
+    "ctaButton": "Visit Red Education",
+    "aboutLink": "About Red Education"
   }
 }

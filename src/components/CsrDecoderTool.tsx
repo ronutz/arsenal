@@ -114,6 +114,9 @@ export default function CsrDecoderTool() {
           <button type="button" className="cidr-example-btn" onClick={loadExample}>
             {t("exampleLabel")}
           </button>
+          <button type="button" className="cidr-example-btn" onClick={() => { setValue(""); decode(""); }}>
+            {t("clearLabel")}
+          </button>
         </div>
         <p id="csr-privacy" className="cidr-privacy">
           <span className="cidr-lock" aria-hidden="true">

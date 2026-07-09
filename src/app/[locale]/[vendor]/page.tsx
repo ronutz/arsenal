@@ -40,6 +40,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { getCertificationsForVendor } from "@/content/certifications/study-guides";
 import { tools } from "@/config/tools";
 import { subsOf } from "@/config/vendors";
 import { getAllArticles, getArticleVendors, getArticleSub, type Article } from "@/lib/learn";
@@ -149,88 +150,111 @@ export default async function VendorHubPage({
               {tHub("lede", { vendor: label })}
             </p>
 
-            {/* Jump-to nav, same control the tools index uses: one anchor per
-                populated sub-category (each links to that group's heading
-                below), plus the Learn section. Only rendered when there is
-                more than one destination, so a single-family vendor stays
-                clean. */}
+            {/* Certification cross-link (PRIME 2026-07-09): when this vendor has
+                study guides on the site, surface a prominent link from its hub to
+                the certification page. High-intent traffic path. Conditional, so
+                vendors without guides show nothing. */}
             {(() => {
-              const jumpTools = subGroups.filter((g) => g.tools.length > 0);
-              const jumpLearn = vendorArticles.length > 0;
-              const destinations = jumpTools.length + (jumpLearn ? 1 : 0);
-              if (destinations < 2) return null;
-              // Collapsed by default (QF-2): native <details>, no JS.
+              const vendorCerts = getCertificationsForVendor(vendor);
+              if (vendorCerts.length === 0) return null;
               return (
-                <details className="jumpnav" style={{ marginBottom: "2.5rem" }}>
-                  <summary className="jumpnav-summary" aria-label={t("jumpTo")}>
-                    <span className="jumpnav-chevron" aria-hidden="true">
-                      &#9656;
-                    </span>
-                    {t("jumpTo")}
-                  </summary>
-                  <ul className="category-nav-list">
-                    {jumpTools.map((group) => (
-                      <li key={group.id} data-jumpnav={group.id}>
-                        <a href={`#tools-${group.id}`} className="category-nav-link">
-                          {subLabel(group.id)}
-                        </a>
-                      </li>
+                <div className="vendor-cert-callout">
+                  <span className="vendor-cert-callout-eyebrow">{tHub("certsEyebrow")}</span>
+                  <div className="vendor-cert-callout-links">
+                    {vendorCerts.map((c) => (
+                      <Link
+                        key={c.key}
+                        href={`/certifications#${c.key}`}
+                        className="vendor-cert-callout-link"
+                      >
+                        {tHub("certsCta", { cert: c.name })}
+                        <span aria-hidden="true"> &#8594;</span>
+                      </Link>
                     ))}
-                    {jumpLearn && (
-                      <li data-jumpnav="learn">
-                        <a href="#learn" className="category-nav-link">
-                          {tHub("learnHeading")}
-                        </a>
-                      </li>
-                    )}
-                  </ul>
-                </details>
+                  </div>
+                </div>
               );
             })()}
 
-            {/* Second nav utility: show/hide families + the Learn section
-                (client island). Mirrors the jump-nav destinations above: one
-                chip per populated tool family, plus a Learn chip. The jump-nav
-                scrolls; this filters what is displayed. */}
-            {(() => {
-              const jumpTools = subGroups.filter((g) => g.tools.length > 0);
-              const jumpLearn = vendorArticles.length > 0;
-              const filterGroups = [
-                ...jumpTools.map((g) => ({
-                  key: g.id,
-                  sectionId: `tools-${g.id}`,
-                  label: subLabel(g.id),
-                  color: vendorColor(vendor),
-                })),
-                ...(jumpLearn
-                  ? [{ key: "learn", sectionId: "learn", label: tHub("learnHeading") }]
-                  : []),
-              ];
-              if (filterGroups.length < 2) return null;
-              return (
-                <CategoryFilter
-                  legend={t("filterLegend")}
-                  allLabel={t("filterAll")}
-                  noneLabel={t("filterNone")}
-                  emptyLabel={t("filterEmpty")}
-                  moreLabel={t("filterMore")}
-                  fewerLabel={t("filterFewer")}
-                  groups={filterGroups}
-                />
-              );
-            })()}
-
-            {/* Third nav utility: cards/list density. Same island + attribute
-                contract as /tools and /learn; the hub reuses their card classes
-                so the list re-flow CSS applies unchanged. One shared preference
-                across all vendor hubs. */}
-            <ViewToggle
-              targetId="main"
-              storageKey="ronutz:view:hub"
-              legend={t("viewLegend")}
-              cardsLabel={t("viewCards")}
-              listLabel={t("viewList")}
-            />
+            {/* Sticky nav-utility bar (PRIME 2026-07-09): jump-to + show-only +
+                view density in one strip that sticks below the site header on
+                scroll. Contained (inside the hero container). The jump-nav and
+                filter render only when there is more than one destination; the
+                view toggle is always available. Both start collapsed. */}
+            <div className="nav-utility-bar nav-utility-bar--contained">
+              <div className="nav-utility-inner">
+                {/* Jump-to nav: one anchor per populated sub-category plus Learn. */}
+                {(() => {
+                  const jumpTools = subGroups.filter((g) => g.tools.length > 0);
+                  const jumpLearn = vendorArticles.length > 0;
+                  const destinations = jumpTools.length + (jumpLearn ? 1 : 0);
+                  if (destinations < 2) return null;
+                  return (
+                    <details className="jumpnav">
+                      <summary className="jumpnav-summary" aria-label={t("jumpTo")}>
+                        <span className="jumpnav-chevron" aria-hidden="true">
+                          &#9656;
+                        </span>
+                        {t("jumpTo")}
+                      </summary>
+                      <ul className="category-nav-list">
+                        {jumpTools.map((group) => (
+                          <li key={group.id} data-jumpnav={group.id}>
+                            <a href={`#tools-${group.id}`} className="category-nav-link">
+                              {subLabel(group.id)}
+                            </a>
+                          </li>
+                        ))}
+                        {jumpLearn && (
+                          <li data-jumpnav="learn">
+                            <a href="#learn" className="category-nav-link">
+                              {tHub("learnHeading")}
+                            </a>
+                          </li>
+                        )}
+                      </ul>
+                    </details>
+                  );
+                })()}
+                <div className="nav-utility-controls">
+                  {/* Show-only: one chip per populated tool family, plus Learn. */}
+                  {(() => {
+                    const jumpTools = subGroups.filter((g) => g.tools.length > 0);
+                    const jumpLearn = vendorArticles.length > 0;
+                    const filterGroups = [
+                      ...jumpTools.map((g) => ({
+                        key: g.id,
+                        sectionId: `tools-${g.id}`,
+                        label: subLabel(g.id),
+                        color: vendorColor(vendor),
+                      })),
+                      ...(jumpLearn
+                        ? [{ key: "learn", sectionId: "learn", label: tHub("learnHeading") }]
+                        : []),
+                    ];
+                    if (filterGroups.length < 2) return null;
+                    return (
+                      <CategoryFilter
+                        legend={t("filterLegend")}
+                        allLabel={t("filterAll")}
+                        noneLabel={t("filterNone")}
+                        emptyLabel={t("filterEmpty")}
+                        moreLabel={t("filterMore")}
+                        fewerLabel={t("filterFewer")}
+                        groups={filterGroups}
+                      />
+                    );
+                  })()}
+                  <ViewToggle
+                    targetId="main"
+                    storageKey="ronutz:view:hub"
+                    legend={t("viewLegend")}
+                    cardsLabel={t("viewCards")}
+                    listLabel={t("viewList")}
+                  />
+                </div>
+              </div>
+            </div>
 
             {/* ---- Tools, family by family. id="tools" is a redirect target
                  (/tools/<vendor> 301s here); category-section supplies the

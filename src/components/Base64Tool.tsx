@@ -134,6 +134,29 @@ export default function Base64Tool() {
             </button>
           ))}
         </div>
+
+        {/* Layers: how many times to apply the codec. Attackers commonly double,
+            triple, or n-encode a payload to slip it past naive filters; encoding
+            wraps N layers and decoding peels N (stopping at the first layer that
+            fails to peel). The compute reads `layers` in render, so changing it
+            recomputes with no extra wiring. (PRIME 2026-07-09.) */}
+        <div className="seg seg--layers" role="group" aria-label={t("layersLabel")}>
+          {[1, 2, 3].map((n) => (
+            <button
+              key={n}
+              type="button"
+              className={`seg-btn${layers === n ? " seg-btn--active" : ""}`}
+              aria-pressed={layers === n}
+              title={t("layersOptionTitle", { n })}
+              onClick={() => {
+                setLayers(n);
+                setCopied(false);
+              }}
+            >
+              {`\u00D7${n}`}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="cidr-input-row">

@@ -35,6 +35,11 @@ export default async function Header() {
           <Link href="/learn" className="site-nav-link">
             {t("learn")}
           </Link>
+          {/* Certification study guides (candidate-facing): a high-intent
+              destination promoted to the primary nav (PRIME 2026-07-09). */}
+          <Link href="/certifications" className="site-nav-link">
+            {t("certifications")}
+          </Link>
           {/* Vendors home (T-HUB): the front door to the per-vendor hubs. The
               individual hubs are still reached from here and from the strip on
               the Tools and Learn listings; this adds one explore entry. */}

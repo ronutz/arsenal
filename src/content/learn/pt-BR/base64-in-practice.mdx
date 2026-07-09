@@ -8,7 +8,7 @@ relatedArticles: ["base64", "base64url", "certificate-formats", "text-encodings-
 category: encoding
 order: 4
 status: machine-draft
-updated: "2026-06-27"
+updated: "2026-07-09"
 ---
 
 ## Por que embrulhar binário em texto
@@ -31,3 +31,11 @@ O Base64 não é de graça. Três bytes viram quatro caracteres, então a forma 
 O exemplo do Basic auth já deixa o ponto mais importante claro. `Authorization: Basic dXNlcjpwYXNz` parece opaco, mas `dXNlcjpwYXNz` é simplesmente o Base64 de `user:pass`, reversível por qualquer pessoa, sem nenhuma chave envolvida. O Base64 não oferece **nenhuma confidencialidade**. É uma codificação (uma mudança reversível de representação), não criptografia (um segredo protegido por chave) e nem hashing (uma impressão digital de mão única). É por isso que o Basic auth só é seguro sobre TLS: o transporte criptografa o cabeçalho, porque o Base64 certamente não o faz.
 
 Sempre que você vir uma string longa de aparência opaca, decodificá-la primeiro é uma forma barata de descobrir o que ela é. A [ferramenta Base64](/tools/base64) decodifica data URIs, corpos PEM e cabeçalhos de autenticação para seus bytes e texto brutos, inteiramente no seu navegador, então nada do que você cola sai da página.
+
+## Codificações empilhadas: dupla, tripla e além
+
+Como a codificação é reversível e não carrega nenhuma chave, é trivial aplicá-la mais de uma vez. Faça o Base64 da saída de um Base64 e você tem uma string duplamente codificada; repita para obter uma tripla. Cada passagem é legítima por si só, e o resultado ainda é apenas texto, que é exatamente por que é um recurso de ofuscação predileto. Atacantes empilham codificações (às vezes misturando Base64, URL/percent e hexadecimal entre as camadas) para que uma carga passe por um filtro ou uma assinatura que só inspeciona a forma mais externa, ou a primeira decodificada. Uma regra de WAF que casa com `<script` nunca a vê se a requisição carrega `PHNjcmlwdA==` embrulhado mais uma vez.
+
+A defesa é simétrica: para entender um blob suspeito, você descasca as camadas, decodificando repetidamente até chegar a um texto plausível em vez de mais uma string codificada. O sinal de que você ainda não terminou é que uma decodificação produz algo que continua parecendo codificado (todo o alfabeto Base64, ou cheio de escapes `%`). Um hábito prático é continuar decodificando até a saída parar de mudar de forma.
+
+A [ferramenta Base64](/tools/base64) apoia isso diretamente: o controle de camadas (×1, ×2, ×3) codifica uma carga em várias passagens, ou remove várias ao decodificar. Se você pedir para remover mais camadas do que uma carga realmente tem, ela para na primeira camada que falha ao decodificar e mostra exatamente onde, para você ver quão profundo o aninhamento realmente foi. É a mesma razão pela qual ferramentas de segurança que normalizam a entrada decodificam recursivamente antes de casar: uma regra que inspeciona apenas uma camada é uma regra que um `base64` a mais derrota.

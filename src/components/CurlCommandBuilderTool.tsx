@@ -123,6 +123,7 @@ export default function CurlCommandBuilderTool() {
         <p className="curlb-proto-desc">{t("proto." + p.key + ".desc")}</p>
         <div className="curl-actions">
           <button type="button" className="cidr-example-btn" onClick={loadExample}>{t("ui.example")}</button>
+          <button type="button" className="cidr-example-btn" onClick={() => setS(EMPTY)}>{t("ui.clear")}</button>
           <button type="button" className="cidr-example-btn" onClick={() => setS({ protocol: p.key })}>{t("ui.clear")}</button>
         </div>
       </div>

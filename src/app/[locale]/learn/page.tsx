@@ -90,54 +90,60 @@ export default async function LearnIndexPage({
             )}
 
 
-            {/* Category jump-nav, collapsed by default (QF-2): native <details>, no JS. */}
-            {groups.length > 1 && (
-              <details className="jumpnav">
-                <summary className="jumpnav-summary" aria-label={tTools("jumpTo")}>
-                  <span className="jumpnav-chevron" aria-hidden="true">
-                    &#9656;
-                  </span>
-                  {tTools("jumpTo")}
-                </summary>
-                <ul className="category-nav-list">
-                  {groups.map((group) => (
-                    <li key={group.category} data-jumpnav={group.category}>
-                      <a href={`#${group.category}`} className="category-nav-link">
-                        {tTools(`categories.${group.category}`)}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            )}
-
-            {/* Second nav utility: show/hide categories (scroll vs filter). */}
-            {groups.length > 1 && (
-              <CategoryFilter
-                legend={tTools("filterLegend")}
-                allLabel={tTools("filterAll")}
-                noneLabel={tTools("filterNone")}
-                emptyLabel={tTools("filterEmpty")}
-                moreLabel={tTools("filterMore")}
-                fewerLabel={tTools("filterFewer")}
-                groups={groups.map((group) => ({
-                  key: group.category,
-                  sectionId: group.category,
-                  label: tTools(`categories.${group.category}`),
-                  color: categoryColor(group.category),
-                }))}
-              />
-            )}
-
-            {/* Third nav utility: cards/list density (shared labels from the
-                tools namespace, same as the filter above). */}
-            <ViewToggle
-              targetId="main"
-              storageKey="ronutz:view:learn"
-              legend={tTools("viewLegend")}
-              cardsLabel={tTools("viewCards")}
-              listLabel={tTools("viewList")}
-            />
+            {/* Sticky nav-utility bar (PRIME 2026-07-09): jump-to + show-only +
+                view density in one strip that sticks below the site header on
+                scroll. Contained (already inside the article container). The bar
+                always renders (view toggle is always available); the jump-nav and
+                filter appear only when there is more than one category. Both start
+                collapsed. */}
+            <div className="nav-utility-bar nav-utility-bar--contained">
+              <div className="nav-utility-inner">
+                {groups.length > 1 && (
+                  <details className="jumpnav">
+                    <summary className="jumpnav-summary" aria-label={tTools("jumpTo")}>
+                      <span className="jumpnav-chevron" aria-hidden="true">
+                        &#9656;
+                      </span>
+                      {tTools("jumpTo")}
+                    </summary>
+                    <ul className="category-nav-list">
+                      {groups.map((group) => (
+                        <li key={group.category} data-jumpnav={group.category}>
+                          <a href={`#${group.category}`} className="category-nav-link">
+                            {tTools(`categories.${group.category}`)}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+                <div className="nav-utility-controls">
+                  {groups.length > 1 && (
+                    <CategoryFilter
+                      legend={tTools("filterLegend")}
+                      allLabel={tTools("filterAll")}
+                      noneLabel={tTools("filterNone")}
+                      emptyLabel={tTools("filterEmpty")}
+                      moreLabel={tTools("filterMore")}
+                      fewerLabel={tTools("filterFewer")}
+                      groups={groups.map((group) => ({
+                        key: group.category,
+                        sectionId: group.category,
+                        label: tTools(`categories.${group.category}`),
+                        color: categoryColor(group.category),
+                      }))}
+                    />
+                  )}
+                  <ViewToggle
+                    targetId="main"
+                    storageKey="ronutz:view:learn"
+                    legend={tTools("viewLegend")}
+                    cardsLabel={tTools("viewCards")}
+                    listLabel={tTools("viewList")}
+                  />
+                </div>
+              </div>
+            </div>
 
             {/* One block per category, mirroring the tools index taxonomy. */}
             {groups.map((group) => (

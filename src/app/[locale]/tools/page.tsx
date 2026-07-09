@@ -87,58 +87,56 @@ export default async function ToolsPage({
             </div>
           )}
 
-          {/* Category jump-nav */}
+          {/* Sticky nav-utility bar (PRIME 2026-07-09): jump-to + show-only +
+              view density in one strip that sticks just below the site header on
+              scroll, so both selectors stay reachable. Collapsed by default (the
+              jump-nav <details> and the per-category chips both start closed). */}
           {categories.length > 1 && (
-            <div className="container certs-container tools-jumpnav" style={{ marginTop: "2rem" }}>
-              {/* Collapsed by default (QF-2): native <details>, no JS. The
-                  summary is the always-visible header with a rotating chevron. */}
-              <details className="jumpnav">
-                <summary className="jumpnav-summary" aria-label={t("jumpTo")}>
-                  <span className="jumpnav-chevron" aria-hidden="true">
-                    &#9656;
-                  </span>
-                  {t("jumpTo")}
-                </summary>
-                <ul className="category-nav-list">
-                  {categories.map((category) => (
-                    <li key={category} data-jumpnav={category}>
-                      <a href={`#${category}`} className="category-nav-link">
-                        {t(`categories.${category}`)}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </div>
-          )}
-
-          {/* Second nav utility: show/hide categories (client island; the
-              jump-nav above scrolls, this one filters what is displayed). */}
-          {categories.length > 1 && (
-            <div className="container certs-container">
-              <CategoryFilter
-                legend={t("filterLegend")}
-                allLabel={t("filterAll")}
-                noneLabel={t("filterNone")}
-                emptyLabel={t("filterEmpty")}
-                moreLabel={t("filterMore")}
-                fewerLabel={t("filterFewer")}
-                groups={categories.map((category) => ({
-                  key: category,
-                  sectionId: category,
-                  label: t(`categories.${category}`),
-                  color: categoryColor(category),
-                }))}
-              />
-              {/* Third nav utility: cards/list density (client island; sets
-                  data-view on <main>, CSS re-flows the same cards into rows). */}
-              <ViewToggle
-                targetId="main"
-                storageKey="ronutz:view:tools"
-                legend={t("viewLegend")}
-                cardsLabel={t("viewCards")}
-                listLabel={t("viewList")}
-              />
+            <div className="nav-utility-bar">
+              <div className="container certs-container nav-utility-inner">
+                {/* Jump-to: native <details>, no JS; summary is a prominent pill. */}
+                <details className="jumpnav">
+                  <summary className="jumpnav-summary" aria-label={t("jumpTo")}>
+                    <span className="jumpnav-chevron" aria-hidden="true">
+                      &#9656;
+                    </span>
+                    {t("jumpTo")}
+                  </summary>
+                  <ul className="category-nav-list">
+                    {categories.map((category) => (
+                      <li key={category} data-jumpnav={category}>
+                        <a href={`#${category}`} className="category-nav-link">
+                          {t(`categories.${category}`)}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+                {/* Show-only (filters what is displayed) + cards/list density. */}
+                <div className="nav-utility-controls">
+                  <CategoryFilter
+                    legend={t("filterLegend")}
+                    allLabel={t("filterAll")}
+                    noneLabel={t("filterNone")}
+                    emptyLabel={t("filterEmpty")}
+                    moreLabel={t("filterMore")}
+                    fewerLabel={t("filterFewer")}
+                    groups={categories.map((category) => ({
+                      key: category,
+                      sectionId: category,
+                      label: t(`categories.${category}`),
+                      color: categoryColor(category),
+                    }))}
+                  />
+                  <ViewToggle
+                    targetId="main"
+                    storageKey="ronutz:view:tools"
+                    legend={t("viewLegend")}
+                    cardsLabel={t("viewCards")}
+                    listLabel={t("viewList")}
+                  />
+                </div>
+              </div>
             </div>
           )}
 

@@ -32,6 +32,7 @@ export default async function TrainingLandingPage({
   const t = await getTranslations("teach");
   const tT = await getTranslations("training");
   const tNav = await getTranslations("nav");
+  const tRedu = await getTranslations("redEducation"); // /red-education link label
 
   return (
     <>
@@ -121,6 +122,18 @@ export default async function TrainingLandingPage({
             </div>
           </section>
 
+          {/* Remote training environments (PRIME 2026-07-09): how remote
+              delivery actually works - vILT platforms and hands-on lab
+              environments. Facts supplied by PRIME; reuses teach-block-*
+              styling (no new CSS). */}
+          <section className="section">
+            <div className="container teach-container">
+              <h2 className="teach-block-title">{t("envTitle")}</h2>
+              <p className="teach-block-body">{t("envBody1")}</p>
+              <p className="teach-block-body">{t("envBody2")}</p>
+            </div>
+          </section>
+
           {/* Beyond the classroom (advisor/consultant implication) */}
           <section className="section teach-advisor">
             <div className="container teach-container">
@@ -170,6 +183,13 @@ export default async function TrainingLandingPage({
                   {t("coursesButton")}
                 </a>
               </div>
+              {/* Contextual link to the Red Education profile/homage page
+                  (PRIME 2026-07-09): the ATC these courses are booked through. */}
+              <p className="teach-redu-link-row">
+                <Link href="/red-education" className="redu-inline-link">
+                  {tRedu("aboutLink")} <span aria-hidden="true">&#8594;</span>
+                </Link>
+              </p>
             </div>
           </section>
         </article>

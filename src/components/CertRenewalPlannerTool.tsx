@@ -100,6 +100,9 @@ export default function CertRenewalPlannerTool() {
         <button type="button" className="cert-renewal-example-btn" onClick={loadExample}>
           {t("exampleLabel")}
         </button>
+        <button type="button" className="cert-renewal-example-btn" onClick={() => { setNotBefore(""); setNotAfter(""); }}>
+          {t("clearLabel")}
+        </button>
       </p>
 
       {result && !result.ok && (

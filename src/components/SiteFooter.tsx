@@ -18,7 +18,6 @@
 
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { redEducationUrl, externalRel } from "@/config/redEducation";
 import { BUILD_TIME } from "@/generated/build-info";
 import LicenseBadges from "@/components/LicenseBadges";
 
@@ -28,10 +27,6 @@ const COFFEE_URL = "https://buymeacoffee.com/ronutz";
 export default async function SiteFooter() {
   const t = await getTranslations("footer");
   const tBadges = await getTranslations("licenseBadges");
-
-  // Honoring Red Education, the authorized training center. Lead-attributed
-  // (utm_campaign=footer) and referrer-preserving.
-  const reduUrl = redEducationUrl("footer");
 
   return (
     <footer className="site-footer">
@@ -126,17 +121,15 @@ export default async function SiteFooter() {
             {"\u00A0\u2615\uFE0E"}
           </a>
           <span className="footer-sep footer-sep-wide" aria-hidden="true">&#183;</span>
-          <a
-            href={reduUrl}
-            target="_blank"
-            rel={externalRel(reduUrl)}
-            className="footer-built-link"
-          >
+          {/* Red Education callout: now points to the on-site profile/homage
+              page (/red-education), which carries the lead-attributed outbound
+              link - site-wide internal linking for the page (PRIME 2026-07-09). */}
+          <Link href="/red-education" className="footer-built-link">
             {t.rich("redEducation", {
               b: (chunks) => <span className="brand">{chunks}</span>,
             })}
             {"\u00A0🎓"}
-          </a>
+          </Link>
         </p>
 
         {/* QUIET TRAILING LINE - one dimmed closing row: the build stamp

@@ -176,7 +176,9 @@
         "percent": "Percent"
       },
       "example": "Exemplo",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "layersLabel": "Camadas",
+      "layersOptionTitle": "{n, plural, =1 {Passagem única (sem camadas extras)} other {Aplicar o codec # vezes: codificar # vezes, ou remover # camadas ao decodificar}}"
     },
     "categories": {
       "identity": "Identidade e tokens",
@@ -235,7 +237,8 @@
       "err_invalidDate": "Use uma data válida (AAAA-MM-DD).",
       "err_order": "A data de expiração deve ser posterior à de emissão.",
       "err_tooLong": "Esta entrada é longa demais.",
-      "err_invalid": "Não foi possível ler essas datas."
+      "err_invalid": "Não foi possível ler essas datas.",
+      "clearLabel": "Limpar"
     },
     "cidr": {
       "title": "Calculadora CIDR",
@@ -497,7 +500,8 @@
       "err_empty": "Cole uma solicitação de assinatura de certificado para decodificar.",
       "err_format": "Isso não parece uma CSR em PEM, base64 ou hex.",
       "err_der": "Não foi possível analisar a estrutura DER.",
-      "err_structure": "Isso é analisado como DER, mas não é uma solicitação de certificação PKCS#10."
+      "err_structure": "Isso é analisado como DER, mas não é uma solicitação de certificação PKCS#10.",
+      "clearLabel": "Limpar"
     },
     "curl-command-builder": {
       "name": "Construtor de comandos curl",
@@ -4731,7 +4735,10 @@
       "about": "Sobre",
       "certs": "Certificações",
       "endorsements": "Depoimentos"
-    }
+    },
+    "envTitle": "Ambientes de treinamento remoto",
+    "envBody1": "As turmas ao vivo online (vILT) acontecem preferencialmente pelo Zoom, com Google Meet e Microsoft Teams igualmente atendidos quando a política de plataforma do cliente exigir.",
+    "envBody2": "Os laboratórios práticos são entregues em ambientes de laboratório próprios que o Rodolfo constrói e mantém, na infraestrutura de laboratórios da Red Education e em plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces - o que melhor servir ao curso e ao cliente."
   },
   "contact": {
     "title": "Entre em contato",
@@ -4791,7 +4798,9 @@
     "credly": "Credly",
     "certificate": "Certificado",
     "verifyCode": "Código",
-    "candidateId": "ID"
+    "candidateId": "ID",
+    "backToAbout": "Voltar para Sobre",
+    "studyGuidesPointer": "Estudando para uma prova F5? Veja nossos guias de estudo de certificação"
   },
   "colophon_page": {
     "eyebrow": "Colofão",
@@ -5098,7 +5107,9 @@
     "toolsHeading": "Ferramentas",
     "learnHeading": "Artigos",
     "read": "Ler",
-    "metaDescription": "Todas as ferramentas e todos os artigos de {vendor} no ronutz.com, em uma página: ferramentas agrupadas por família, depois a biblioteca completa de artigos."
+    "metaDescription": "Todas as ferramentas e todos os artigos de {vendor} no ronutz.com, em uma página: ferramentas agrupadas por família, depois a biblioteca completa de artigos.",
+    "certsEyebrow": "Preparação para certificação",
+    "certsCta": "Guia de estudo: {cert}"
   },
   "learn": {
     "eyebrow": "Aprender",
@@ -7024,5 +7035,65 @@
         "context": "O zero trust substitui o antigo perímetro de \"confiável dentro, hostil fora\" por verificação contínua de identidade, dispositivo e contexto a cada acesso, dentro da rede ou não. \"Nunca confie, sempre verifique\" é o lema; menor privilégio e microssegmentação são como se constrói."
       }
     }
+  },
+  "certGuides": {
+    "title": "Guias de estudo para certificação",
+    "lede": "Mapas de estudo guiados pelo blueprint de provas de certificação. Cada objetivo do blueprint oficial da prova é ligado aos artigos, às ferramentas e às páginas do manual oficial que o ensinam, para você estudar as coisas certas na ordem certa.",
+    "philosophyTitle": "Como estes guias funcionam",
+    "philosophyBody": "O blueprint da prova é a espinha dorsal. Cada objetivo aponta para recursos determinísticos e fundamentados já presentes neste site, além da documentação do próprio fabricante. Sem enrolação e sem adivinhar quais tópicos importam.",
+    "ethicsTitle": "O que estes guias não são",
+    "ethicsBody": "São recursos de estudo independentes, montados a partir do blueprint público da prova. Não contêm questões, respostas ou \"dumps\" da prova, que violam o contrato de certificação de qualquer fabricante. Eles ajudam você a aprender o conteúdo, não a burlar a prova.",
+    "credentialsPointer": "Procurando as certificações do próprio Rodolfo Nützmann? Elas ficam em Sobre",
+    "requiresAll": "Obtida ao passar em todas as {count} provas, em qualquer ordem.",
+    "openGuide": "Abrir guia de estudo",
+    "inPreparation": "Em preparação",
+    "objectivesCount": "{count, plural, =0 {Blueprint pendente} one {# objetivo} other {# objetivos}}",
+    "backToHub": "Todos os guias de estudo",
+    "partOf": "Parte de {cert}",
+    "examLabel": "Prova",
+    "targetsLabel": "Baseada em",
+    "versionUnspecified": "Versão do produto não especificada no blueprint",
+    "sourceLabel": "Fonte do blueprint",
+    "disclaimer": "Recurso de estudo independente, montado a partir do blueprint público da prova. Sem afiliação, autorização ou endosso da {vendor}. Objetivos, versões e disponibilidade das provas mudam, então sempre confira o blueprint oficial.",
+    "onThisSite": "Neste site",
+    "toolsLabel": "Ferramentas",
+    "manualLabel": "Manual oficial",
+    "latestTag": "mais recente",
+    "articleComing": "Artigo em breve",
+    "preparingTitle": "Guia de estudo em preparação",
+    "preparingBody": "O blueprint oficial desta prova está sendo mapeado para os artigos, as ferramentas e as páginas do manual do site. Enquanto isso, a página oficial da prova está no link acima."
+  },
+  "trainingCta": {
+    "eyebrow": "Treinamento com instrutor",
+    "body": "Prefere aprender com um instrutor? Rodolfo Nützmann e outros instrutores autorizados ministram estes cursos ao vivo na <redu>Red Education</redu>, um Centro de Treinamento Autorizado global.",
+    "link": "Conhecer os treinamentos com instrutor"
+  },
+  "redEducation": {
+    "metaTitle": "Red Education - Centro de Treinamento Autorizado global",
+    "metaDescription": "A Red Education é um Centro de Treinamento Autorizado global dos principais fabricantes de rede e segurança do mundo, com mais de 100.000 alunos treinados em 132 países. Rodolfo Nützmann leciona lá como Instrutor Sênior.",
+    "eyebrow": "Treinamento autorizado",
+    "title": "Red Education",
+    "lede": "Um Centro de Treinamento Autorizado global dos principais fabricantes de rede e segurança do mundo - e a casa das aulas de Rodolfo Nützmann desde 2023.",
+    "whoTitle": "Quem são",
+    "whoBody1": "Fundada em 2005, a Red Education é uma empresa especializada em treinamento de TI e segurança cibernética que já treinou mais de 100.000 alunos em 132 países, com avaliação média de 4,9 estrelas em mais de 5.000 avaliações.",
+    "whoBody2": "Os treinamentos são ministrados por mais de 50 instrutores, muitos certificados em vários fabricantes, nos formatos presencial, virtual e in-company, em cinco regiões globais: Américas, Australásia, SAARC, ASEAN e EMEA.",
+    "authTitle": "Autorizações de fabricantes",
+    "authIntro": "A Red Education ministra treinamentos credenciados como parceira autorizada dos principais fabricantes de rede e segurança do mundo, incluindo:",
+    "awardsTitle": "Reconhecimento",
+    "awardF5": "Melhor ATC F5 (Best F5 ATC Award 2020/21), com 98% de satisfação dos clientes nos cursos F5.",
+    "awardFortinet": "ATC Partner of the Year para a APAC do Fortinet Training Institute (ATC Awards 2026).",
+    "rodolfoTitle": "Rodolfo na Red Education",
+    "rodolfoBody": "Rodolfo Nützmann leciona na Red Education como Instrutor Sênior desde 2023. Pela Red Education, ele ministra treinamentos oficiais com instrutor para F5, Fortinet, Netskope e Extreme Networks a alunos do mundo inteiro.",
+    "caseStudyNote": "O próprio estudo de caso da Red Education sobre a capacitação de 43 engenheiros em uma empresa global de TI cita Rodolfo entre os instrutores que ministraram o treinamento.",
+    "caseStudyLink": "Ler o estudo de caso",
+    "linkTraining": "Catálogo de cursos neste site",
+    "linkCredentials": "Credenciais do Rodolfo",
+    "tributeTitle": "Uma palavra de agradecimento",
+    "tribute": "Entrei na Red Education como Instrutor Sênior em 2023, e foi uma das melhores decisões profissionais da minha carreira. Por trás de cada turma que ministro há uma equipe de operações presente em cinco regiões que faz logísticas complexas parecerem simples, gerentes de conta que se importam de verdade com o resultado e um padrão de qualidade que me faz querer ser melhor a cada sessão. Esta página é o meu agradecimento público às pessoas da Red Education, por confiarem a mim suas salas de aula e seus alunos.",
+    "tributeSignature": "Rodolfo Nützmann, Instrutor Sênior",
+    "ctaTitle": "Reserve um treinamento com instrutor",
+    "ctaBody": "Os cursos ministrados por Rodolfo Nützmann e outros instrutores autorizados podem ser reservados diretamente na Red Education, no mundo todo, nos formatos presencial, virtual ou in-company.",
+    "ctaButton": "Visitar a Red Education",
+    "aboutLink": "Sobre a Red Education"
   }
 }
