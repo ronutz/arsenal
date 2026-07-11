@@ -198,6 +198,10 @@ export const VENDOR_SUBS: Record<string, readonly VendorSub[]> = Object.freeze({
     { id: "sso" },           // SAML / OIDC single sign-on and federation
     { id: "oauth-tokens" },  // OAuth 2.0, PKCE, JWT, JWKS
     { id: "mfa" },           // TOTP / HOTP multi-factor
+    { id: "signals" },       // Client signals feeding adaptive, risk-based auth (JA3 / JA4 TLS fingerprints)
+  ],
+  zscaler: [
+    { id: "signals" },       // TLS-inspection surface: client fingerprints (JA3 / JA4) read on the wire
   ],
 });
 

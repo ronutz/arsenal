@@ -3294,7 +3294,11 @@
       "ping": {
         "sso": "Single sign-on & federation",
         "oauth-tokens": "OAuth & tokens",
-        "mfa": "Multi-factor authentication"
+        "mfa": "Multi-factor authentication",
+        "signals": "Risk & client signals"
+      },
+      "zscaler": {
+        "signals": "TLS fingerprints"
       }
     },
     "syslog-pri-decoder": {
@@ -7761,7 +7765,7 @@
     "metaDescription": "Red Education is a global Authorized Training Center for the world's leading network and security vendors, with more than 100,000 students trained across 132 countries. Rodolfo Nützmann teaches there as a Senior Instructor.",
     "eyebrow": "Authorized training",
     "title": "Red Education",
-    "lede": "A global Authorized Training Center for the world's leading network and security vendors - and the home of Rodolfo Nützmann's classroom since 2023.",
+    "lede": "A global Authorized Training Center for the world's leading network and security vendors - and the home of Rodolfo Nützmann's classroom since 2021.",
     "whoTitle": "Who they are",
     "whoBody1": "Founded in 2005, Red Education is a specialist IT and cyber security training company that has trained more than 100,000 students across 132 countries, holding a 4.9-star average rating from more than 5,000 reviews.",
     "whoBody2": "Training is delivered by more than 50 instructors, many certified across multiple vendors, in classroom, virtual, and on-site formats across five global regions: the Americas, Australasia, SAARC, ASEAN, and EMEA.",
@@ -7771,13 +7775,13 @@
     "awardF5": "Best F5 ATC Award 2020/21, with a 98% customer satisfaction rating on F5 courses.",
     "awardFortinet": "Fortinet Training Institute ATC Partner of the Year for APAC (2026 ATC Awards).",
     "rodolfoTitle": "Rodolfo at Red Education",
-    "rodolfoBody": "Rodolfo Nützmann has taught at Red Education as a Senior Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world.",
+    "rodolfoBody": "Rodolfo Nützmann has taught through Red Education since 2021, and full-time as a Senior Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world.",
     "caseStudyNote": "Red Education's own case study on upskilling 43 engineers at a global IT firm names Rodolfo among the instructors who delivered the training.",
     "caseStudyLink": "Read the case study",
     "linkTraining": "Course catalog on this site",
     "linkCredentials": "Rodolfo's credentials",
     "tributeTitle": "A word of thanks",
-    "tribute": "I joined Red Education as a Senior Instructor in 2023, and it turned out to be one of the best professional decisions of my career. Behind every class I deliver stands an operations team spanning five regions that makes complex logistics look effortless, account managers who genuinely care about outcomes, and a standard of quality that pushes me to be better every single session. This page is my public thank-you to the people of Red Education, for trusting me with their classrooms and their students.",
+    "tribute": "I began teaching through Red Education in 2021 and joined full-time as a Senior Instructor in 2023, which turned out to be one of the best professional decisions of my career. Behind every class I deliver stands an operations team spanning five regions that makes complex logistics look effortless, account managers who genuinely care about outcomes, and a standard of quality that pushes me to be better every single session. This page is my public thank-you to the people of Red Education, for trusting me with their classrooms and their students.",
     "tributeSignature": "Rodolfo Nützmann, Senior Instructor",
     "ctaTitle": "Book instructor-led training",
     "ctaBody": "Courses taught by Rodolfo Nützmann and other authorized instructors can be booked directly at Red Education, worldwide, in classroom, virtual, or on-site formats.",

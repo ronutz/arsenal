@@ -3294,7 +3294,11 @@
       "ping": {
         "sso": "Single sign-on e federação",
         "oauth-tokens": "OAuth e tokens",
-        "mfa": "Autenticação multifator"
+        "mfa": "Autenticação multifator",
+        "signals": "Risco e sinais do cliente"
+      },
+      "zscaler": {
+        "signals": "Fingerprints TLS"
       }
     },
     "syslog-pri-decoder": {
@@ -7761,7 +7765,7 @@
     "metaDescription": "A Red Education é um Centro de Treinamento Autorizado global dos principais fabricantes de rede e segurança do mundo, com mais de 100.000 alunos treinados em 132 países. Rodolfo Nützmann leciona lá como Instrutor Sênior.",
     "eyebrow": "Treinamento autorizado",
     "title": "Red Education",
-    "lede": "Um Centro de Treinamento Autorizado global dos principais fabricantes de rede e segurança do mundo - e a casa das aulas de Rodolfo Nützmann desde 2023.",
+    "lede": "Um Centro de Treinamento Autorizado global dos principais fabricantes de rede e segurança do mundo - e a casa das aulas de Rodolfo Nützmann desde 2021.",
     "whoTitle": "Quem são",
     "whoBody1": "Fundada em 2005, a Red Education é uma empresa especializada em treinamento de TI e segurança cibernética que já treinou mais de 100.000 alunos em 132 países, com avaliação média de 4,9 estrelas em mais de 5.000 avaliações.",
     "whoBody2": "Os treinamentos são ministrados por mais de 50 instrutores, muitos certificados em vários fabricantes, nos formatos presencial, virtual e in-company, em cinco regiões globais: Américas, Australásia, SAARC, ASEAN e EMEA.",
@@ -7771,13 +7775,13 @@
     "awardF5": "Melhor ATC F5 (Best F5 ATC Award 2020/21), com 98% de satisfação dos clientes nos cursos F5.",
     "awardFortinet": "ATC Partner of the Year para a APAC do Fortinet Training Institute (ATC Awards 2026).",
     "rodolfoTitle": "Rodolfo na Red Education",
-    "rodolfoBody": "Rodolfo Nützmann leciona na Red Education como Instrutor Sênior desde 2023. Pela Red Education, ele ministra treinamentos oficiais com instrutor para F5, Fortinet, Netskope e Extreme Networks a alunos do mundo inteiro.",
+    "rodolfoBody": "Rodolfo Nützmann leciona pela Red Education desde 2021, e em tempo integral como Instrutor Sênior desde 2023. Pela Red Education, ele ministra treinamentos oficiais com instrutor para F5, Fortinet, Netskope e Extreme Networks a alunos do mundo inteiro.",
     "caseStudyNote": "O próprio estudo de caso da Red Education sobre a capacitação de 43 engenheiros em uma empresa global de TI cita Rodolfo entre os instrutores que ministraram o treinamento.",
     "caseStudyLink": "Ler o estudo de caso",
     "linkTraining": "Catálogo de cursos neste site",
     "linkCredentials": "Credenciais do Rodolfo",
     "tributeTitle": "Uma palavra de agradecimento",
-    "tribute": "Entrei na Red Education como Instrutor Sênior em 2023, e foi uma das melhores decisões profissionais da minha carreira. Por trás de cada turma que ministro há uma equipe de operações presente em cinco regiões que faz logísticas complexas parecerem simples, gerentes de conta que se importam de verdade com o resultado e um padrão de qualidade que me faz querer ser melhor a cada sessão. Esta página é o meu agradecimento público às pessoas da Red Education, por confiarem a mim suas salas de aula e seus alunos.",
+    "tribute": "Comecei a lecionar pela Red Education em 2021 e entrei em tempo integral como Instrutor Sênior em 2023, o que foi uma das melhores decisões profissionais da minha carreira. Por trás de cada turma que ministro há uma equipe de operações presente em cinco regiões que faz logísticas complexas parecerem simples, gerentes de conta que se importam de verdade com o resultado e um padrão de qualidade que me faz querer ser melhor a cada sessão. Esta página é o meu agradecimento público às pessoas da Red Education, por confiarem a mim suas salas de aula e seus alunos.",
     "tributeSignature": "Rodolfo Nützmann, Instrutor Sênior",
     "ctaTitle": "Reserve um treinamento com instrutor",
     "ctaBody": "Os cursos ministrados por Rodolfo Nützmann e outros instrutores autorizados podem ser reservados diretamente na Red Education, no mundo todo, nos formatos presencial, virtual ou in-company.",
