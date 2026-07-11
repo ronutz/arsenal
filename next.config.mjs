@@ -80,6 +80,17 @@ const nextConfig = {
   // are served as-is. (We use few/no raster images; SVG and CSS do the work.)
   images: { unoptimized: true },
 
+  // CI DISK GUARD (deploy-pipeline migration, 2026-07-10): webpack's on-disk
+  // cache (.next/cache) is pure overhead on ephemeral CI runners - it is never
+  // reused, yet its multi-GB footprint counts against the runner disk that the
+  // 9,893-page export needs. GitHub Actions sets CI=true automatically, so the
+  // gate activates there with no extra wiring, while local/sandbox builds keep
+  // their cache (incremental rebuilds stay fast).
+  webpack: (config) => {
+    if (process.env.CI) config.cache = false;
+    return config;
+  },
+
   // Emit each route as a folder with index.html (cleaner URLs on static hosts).
   trailingSlash: true,
 

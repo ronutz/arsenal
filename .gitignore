@@ -35,3 +35,6 @@ next-env.d.ts
 
 # Deploy platforms
 .vercel
+
+# Generated OG social-preview cards (built in CI prebuild by scripts/gen-og.mts)
+/public/og/

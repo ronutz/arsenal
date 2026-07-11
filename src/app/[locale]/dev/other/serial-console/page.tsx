@@ -6,6 +6,7 @@
 // vectors), and an inline about with the Chromium-only / permission caveats.
 // ============================================================================
 import type { Metadata } from "next";
+import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -38,7 +39,7 @@ export default async function SerialConsolePage({ params }: { params: Promise<{ 
               <p className="envother-notice-title mono">{t("notice.title")}</p>
               <p className="envother-notice-text">{t("webserial.why")}</p>
             </div>
-            <DevOtherWebSerialTool />
+            <MessageSlice namespaces={["devOther.webserial"]}><DevOtherWebSerialTool /></MessageSlice>
             <div className="devfun-head" style={{ marginTop: "2rem" }}>
               <p className="devfun-intro">{t("webserial.about1")}</p>
               <p className="devfun-intro">{t("webserial.about2")}</p>

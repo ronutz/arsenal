@@ -4338,7 +4338,8 @@
         "copied": "Copied!",
         "downloadMd": "Download .md"
       }
-    }
+    },
+    "documentation": "Documentation"
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -4833,7 +4834,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Engineering",
     "roleAnvilBody": "The chief engineer seat. Architecture, code, content structure, and the build itself, turned from intention into a working, tested, deployable site.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8",
     "roleScout": "SCOUT",
     "roleScoutWho": "Strategy and brand",
     "roleScoutBody": "The strategy and positioning seat. The questions of what this is, who it is for, and how it should present itself to the world.",
@@ -4898,7 +4899,8 @@
     "wordPos": "noun",
     "wordDef": "1. A note, traditionally at the end of a book, recording how it was made: who produced it, where, and with which tools and typefaces.",
     "wordExt": "2. By modern extension, a page on a website that explains how the site was built. In other words: this page.",
-    "wordEty": "From the Greek kolophōn, via Latin: summit, finishing touch."
+    "wordEty": "From the Greek kolophōn, via Latin: summit, finishing touch.",
+    "fableNote": "A note on Fable 5. It is the seat's intended engine, but only for a limited window on the current plan; after that it becomes pay-per-use, and the added cost means it will see little use here. In practice it also falls back to Claude Opus 4.8 for most of this work: ARSENAL's subject is network and application security, and the safeguards on Fable 5 route security-related requests to Opus 4.8, catching this content (sometimes as a false positive) because Fable 5 is currently gated from handling those subjects. So most of what stands here was built on Opus 4.8."
   },
   "support": {
     "title": "Support the project",
@@ -7034,7 +7036,9 @@
         "def": "A security model that trusts nothing by default and verifies every request, wherever it comes from.",
         "context": "Zero trust replaces the old \"trusted inside, hostile outside\" perimeter with continuous verification of identity, device, and context for every access, inside the network or not. \"Never trust, always verify\" is the slogan; least privilege and microsegmentation are how it is built."
       }
-    }
+    },
+    "totalCount": "{count} terms",
+    "azNavLabel": "Jump to letter"
   },
   "certGuides": {
     "title": "Certification study guides",
@@ -7095,5 +7099,19 @@
     "ctaBody": "Courses taught by Rodolfo Nützmann and other authorized instructors can be booked directly at Red Education, worldwide, in classroom, virtual, or on-site formats.",
     "ctaButton": "Visit Red Education",
     "aboutLink": "About Red Education"
+  },
+  "toolDocs": {
+    "titleSuffix": "documentation",
+    "metaDescription": "How the {tool} tool works: what it computes, how to use it, and the sources it is grounded in.",
+    "eyebrow": "Tool documentation",
+    "crumb": "Documentation",
+    "lede": "How the {tool} tool works, what it computes, and the sources behind it.",
+    "backToTool": "Back to the {tool} tool",
+    "openTool": "Open the {tool} tool"
+  },
+  "share": {
+    "label": "Share",
+    "copyUrl": "Copy URL",
+    "copied": "Copied"
   }
 }

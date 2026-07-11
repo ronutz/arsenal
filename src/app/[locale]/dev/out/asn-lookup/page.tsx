@@ -7,6 +7,7 @@
 // renders here rather than through the tool-page map).
 // ============================================================================
 import type { Metadata } from "next";
+import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -52,7 +53,7 @@ export default async function AsnLookupPage({
 
             <EnvOutNotice compact />
 
-            <DevOutAsnLookupTool />
+            <MessageSlice namespaces={["devOut.asn"]}><DevOutAsnLookupTool /></MessageSlice>
 
             {/* About + provenance, inline (off-catalogue room). */}
             <div className="devfun-head" style={{ marginTop: "2rem" }}>

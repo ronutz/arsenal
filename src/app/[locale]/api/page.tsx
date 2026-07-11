@@ -15,6 +15,7 @@
 // ============================================================================
 
 import type { Metadata } from "next";
+import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -91,7 +92,7 @@ export default async function ApiPage({
             </div>
 
             <h2 className="api-h2 api-reference-heading">{t("referenceTitle")}</h2>
-            <ApiExplorer />
+            <MessageSlice namespaces={["api"]}><ApiExplorer /></MessageSlice>
           </div>
         </section>
       </main>

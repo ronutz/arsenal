@@ -40,6 +40,7 @@
 // externalRel (their host). Statically generated per locale.
 // ============================================================================
 
+import { ogImages } from "@/lib/og";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -75,6 +76,7 @@ export async function generateMetadata({
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
+    ...ogImages("page", "red-education", locale, t("title")),
   };
 }
 

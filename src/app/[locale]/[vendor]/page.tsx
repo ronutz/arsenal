@@ -26,6 +26,7 @@
 // reuse the category-section class for the sticky-header scroll offset.
 // ============================================================================
 
+import { ogImages } from "@/lib/og";
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -71,6 +72,7 @@ export async function generateMetadata({
   return {
     title: `${label} ${tHub("eyebrow")}`,
     description: tHub("metaDescription", { vendor: label }),
+    ...ogImages("vendor", vendor, locale, label),
   };
 }
 

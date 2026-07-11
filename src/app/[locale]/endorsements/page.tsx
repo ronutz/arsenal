@@ -11,6 +11,7 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import MessageSlice from "@/components/MessageSlice";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Testimonials from "@/components/Testimonials";
@@ -80,7 +81,7 @@ export default async function EndorsementsPage({
             <ReviewReminder count={MACHINE_TRANSLATED_COUNT} />
 
             <div className="tm-mount">
-              <Testimonials />
+              <MessageSlice namespaces={["testimonials"]}><Testimonials /></MessageSlice>
             </div>
           </div>
         </section>

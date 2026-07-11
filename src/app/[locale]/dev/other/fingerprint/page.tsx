@@ -6,6 +6,7 @@
 // golden vectors apply), and an inline about tying it to the privacy thesis.
 // ============================================================================
 import type { Metadata } from "next";
+import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -38,7 +39,7 @@ export default async function FingerprintPage({ params }: { params: Promise<{ lo
               <p className="envother-notice-title mono">{t("notice.title")}</p>
               <p className="envother-notice-text">{t("fingerprint.why")}</p>
             </div>
-            <DevOtherFingerprintTool />
+            <MessageSlice namespaces={["devOther.fingerprint"]}><DevOtherFingerprintTool /></MessageSlice>
             <div className="devfun-head" style={{ marginTop: "2rem" }}>
               <p className="devfun-intro">{t("fingerprint.about1")}</p>
               <p className="devfun-intro">{t("fingerprint.about2")}</p>

@@ -8,6 +8,7 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ogImages } from "@/lib/og";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
@@ -19,6 +20,18 @@ import { vendorColor, populatedVendors } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "tools" });
+  const alt = t("title");
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
+  return { ...ogImages("page", "tools", locale, alt) };
+}
 
 export default async function ToolsPage({
   params,

@@ -10,12 +10,15 @@
 // ============================================================================
 
 import { notFound } from "next/navigation";
+import MessageSlice from "@/components/MessageSlice";
+import ShareControl from "@/components/ShareControl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import BigipTimeline from "@/components/learn/BigipTimeline";
 import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
 import { getArticle, getAllArticleSlugs, getRelatedArticles, getArticleVendors } from "@/lib/learn";
+import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -29,6 +32,21 @@ export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug }))
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  const article = getArticle(slug, locale);
+  if (!article) return {};
+  return {
+    title: article.title,
+    description: article.summary,
+    ...ogImages("article", slug, locale, article.title),
+  };
 }
 
 export default async function ArticlePage({
@@ -109,6 +127,14 @@ export default async function ArticlePage({
                 components={{ BigipTimeline }}
               />
             </div>
+
+            {/* End-of-read share (A1 nested provider: the share namespace only),
+                at the natural moment a reader finishes the article. */}
+            <MessageSlice namespaces={["share"]}>
+              <div className="article-share">
+                <ShareControl title={article.title} />
+              </div>
+            </MessageSlice>
 
             {/* Read-next: related articles from frontmatter. */}
             {related.length > 0 && (

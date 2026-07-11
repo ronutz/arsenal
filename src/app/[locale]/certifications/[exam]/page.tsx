@@ -25,6 +25,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import TrainingCta from "@/components/TrainingCta";
+import { ogImages } from "@/lib/og";
 import { routing } from "@/i18n/routing";
 import { getAllArticles } from "@/lib/learn";
 import {
@@ -40,6 +41,20 @@ export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
     slugs.map((exam) => ({ locale, exam })),
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; exam: string }>;
+}) {
+  const { locale, exam } = await params;
+  const guide = getStudyGuide(exam);
+  if (!guide) return {};
+  return {
+    title: `${guide.examName} study guide`,
+    ...ogImages("guide", exam, locale, guide.examName),
+  };
 }
 
 export default async function StudyGuidePage({

@@ -7,6 +7,7 @@
 // short provenance renders here rather than through the tool-page map).
 // ============================================================================
 import type { Metadata } from "next";
+import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -55,7 +56,7 @@ export default async function SubnetDrillPage({
               <p className="envother-notice-text">{t("subnetDrill.why")}</p>
             </div>
 
-            <DevOtherSubnetDrillTool />
+            <MessageSlice namespaces={["devOther.subnetDrill"]}><DevOtherSubnetDrillTool /></MessageSlice>
 
             <div className="devfun-head" style={{ marginTop: "2rem" }}>
               <p className="devfun-intro">{t("subnetDrill.about1")}</p>

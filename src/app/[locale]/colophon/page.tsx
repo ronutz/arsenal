@@ -132,6 +132,10 @@ export default async function ColophonPage({
                 ))}
               </ul>
               <p className="colophon-seats-note">{t("seatsModelNote")}</p>
+              {/* Fable 5 availability note (PRIME 2026-07-10): the intended
+                  ANVIL engine, its limited-window/pay-per-use constraint, and
+                  why it routes to Opus 4.8 on this security-focused work. */}
+              <aside className="colophon-fable-note">{t("fableNote")}</aside>
             </div>
           </section>
 

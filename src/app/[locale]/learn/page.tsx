@@ -12,6 +12,7 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ogImages } from "@/lib/og";
 import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
@@ -22,6 +23,18 @@ import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "learn" });
+  const alt = t("title");
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
+  return { ...ogImages("page", "learn", locale, alt) };
+}
 
 export default async function LearnIndexPage({
   params,

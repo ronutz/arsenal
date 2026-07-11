@@ -18,6 +18,7 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -27,6 +28,18 @@ import {
   getGuidesForCertification,
   objectiveCount,
 } from "@/content/certifications/study-guides";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "certGuides" });
+  const alt = t("title");
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
+  return { ...ogImages("page", "certifications", locale, alt) };
+}
 
 export default async function CertificationsHubPage({
   params,

@@ -22,6 +22,7 @@ import {
 } from "@/content/glossary/glossary";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getArticle } from "@/lib/learn";
+import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -36,6 +37,20 @@ export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug })),
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  const entry = getGlossaryEntry(slug);
+  if (!entry) return {};
+  return {
+    title: `${entry.headword} · ${(await getTranslations({ locale, namespace: "glossary" }))("title")}`,
+    ...ogImages("glossary", slug, locale, entry.headword),
+  };
 }
 
 export default async function GlossaryEntryPage({

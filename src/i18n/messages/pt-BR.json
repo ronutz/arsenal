@@ -4338,7 +4338,8 @@
         "copied": "Copiado!",
         "downloadMd": "Baixar .md"
       }
-    }
+    },
+    "documentation": "Documentação"
   },
   "privacy_page": {
     "eyebrow": "Privacidade",
@@ -4833,7 +4834,7 @@
     "roleAnvil": "ANVIL",
     "roleAnvilWho": "Engenharia",
     "roleAnvilBody": "O assento de engenheiro-chefe. Arquitetura, código, estrutura de conteúdo, e a própria build, convertidos da intenção em um site funcional, testado e implantável.",
-    "roleAnvilModel": "Anthropic · Claude Opus 4.8",
+    "roleAnvilModel": "Anthropic · Claude Fable 5 → Opus 4.8",
     "roleScout": "SCOUT",
     "roleScoutWho": "Estratégia e marca",
     "roleScoutBody": "O assento da estratégia e do posicionamento. As perguntas sobre o que isto é, para quem é, e como deve se apresentar ao mundo.",
@@ -4898,7 +4899,8 @@
     "wordPos": "substantivo masculino",
     "wordDef": "1. Nota, tradicionalmente ao final de um livro, que registra como ele foi feito: quem o produziu, onde, e com quais ferramentas e tipografias.",
     "wordExt": "2. Por extensão moderna, a página de um site que explica como o site foi construído. Ou seja: esta página.",
-    "wordEty": "Do grego kolophôn, pelo latim medieval: cume, acabamento."
+    "wordEty": "Do grego kolophôn, pelo latim medieval: cume, acabamento.",
+    "fableNote": "Uma nota sobre o Fable 5. É o motor pretendido para este assento, mas apenas por uma janela limitada no plano atual; depois disso passa a ser pago por uso, e o custo adicional faz com que seja pouco usado aqui. Na prática, ele também recorre ao Claude Opus 4.8 na maior parte deste trabalho: o tema do ARSENAL é segurança de redes e de aplicações, e as salvaguardas do Fable 5 encaminham solicitações relacionadas a segurança para o Opus 4.8, capturando esse conteúdo (às vezes como falso positivo) porque o Fable 5 está atualmente impedido de tratar desses assuntos. Portanto, a maior parte do que está aqui foi construída com o Opus 4.8."
   },
   "support": {
     "title": "Apoie o projeto",
@@ -7034,7 +7036,9 @@
         "def": "Um modelo de segurança que por padrão não confia em nada e verifica cada requisição, venha de onde vier.",
         "context": "O zero trust substitui o antigo perímetro de \"confiável dentro, hostil fora\" por verificação contínua de identidade, dispositivo e contexto a cada acesso, dentro da rede ou não. \"Nunca confie, sempre verifique\" é o lema; menor privilégio e microssegmentação são como se constrói."
       }
-    }
+    },
+    "totalCount": "{count} termos",
+    "azNavLabel": "Ir para a letra"
   },
   "certGuides": {
     "title": "Guias de estudo para certificação",
@@ -7095,5 +7099,19 @@
     "ctaBody": "Os cursos ministrados por Rodolfo Nützmann e outros instrutores autorizados podem ser reservados diretamente na Red Education, no mundo todo, nos formatos presencial, virtual ou in-company.",
     "ctaButton": "Visitar a Red Education",
     "aboutLink": "Sobre a Red Education"
+  },
+  "toolDocs": {
+    "titleSuffix": "documentação",
+    "metaDescription": "Como a ferramenta {tool} funciona: o que ela calcula, como usar e as fontes em que se baseia.",
+    "eyebrow": "Documentação da ferramenta",
+    "crumb": "Documentação",
+    "lede": "Como a ferramenta {tool} funciona, o que ela calcula e as fontes por trás dela.",
+    "backToTool": "Voltar para a ferramenta {tool}",
+    "openTool": "Abrir a ferramenta {tool}"
+  },
+  "share": {
+    "label": "Compartilhar",
+    "copyUrl": "Copiar URL",
+    "copied": "Copiado"
   }
 }

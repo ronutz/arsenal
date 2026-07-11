@@ -6,6 +6,7 @@
 // with the honest depth statement (v1 = L2-L4; deeper payload parsing later).
 // ============================================================================
 import type { Metadata } from "next";
+import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -52,7 +53,7 @@ export default async function PcapAnalyzerPage({
               <p className="envother-notice-text">{t("pcap.why")}</p>
             </div>
 
-            <DevOtherPcapTool />
+            <MessageSlice namespaces={["devOther.pcap"]}><DevOtherPcapTool /></MessageSlice>
 
             <div className="devfun-head" style={{ marginTop: "2rem" }}>
               <p className="devfun-intro">{t("pcap.about1")}</p>

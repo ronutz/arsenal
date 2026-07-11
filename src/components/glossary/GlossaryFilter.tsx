@@ -85,7 +85,8 @@ export default function GlossaryFilter({
       row.classList.toggle("gloss-hidden", !show);
       if (show) shown++;
     }
-    // Hide any alphabetical group heading whose rows are now all hidden.
+    // Hide any alphabetical group heading whose rows are now all hidden, and
+    // dim the matching A-Z rail letter so the rail reflects the active filter.
     const groups = Array.from(
       document.querySelectorAll<HTMLElement>("[data-glossary-group]"),
     );
@@ -94,6 +95,14 @@ export default function GlossaryFilter({
         "[data-glossary-row]:not(.gloss-hidden)",
       ).length;
       g.classList.toggle("gloss-hidden", anyVisible === 0);
+      // Reflect on the rail: the letter jumps only when its bucket has content.
+      const letter = g.dataset.letter;
+      if (letter) {
+        const railItem = document.querySelector<HTMLElement>(
+          `[data-gloss-az="${letter}"]`,
+        );
+        railItem?.classList.toggle("is-empty", anyVisible === 0);
+      }
     }
     // Reveal the empty-state line only when nothing matches.
     const empty = document.querySelector<HTMLElement>("[data-glossary-empty]");
@@ -105,6 +114,41 @@ export default function GlossaryFilter({
   useEffect(() => {
     apply();
   }, [apply]);
+
+  // Scroll-spy: mark the rail letter for whichever bucket is nearest the top of
+  // the viewport, so the A-Z rail shows where you are as you scroll. Passive,
+  // observer-based, cleaned up on unmount; no motion, so reduced-motion-safe.
+  useEffect(() => {
+    const groups = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-glossary-group]"),
+    );
+    if (groups.length === 0 || typeof IntersectionObserver === "undefined") return;
+    const setCurrent = (letter: string | null) => {
+      document
+        .querySelectorAll<HTMLElement>("[data-gloss-az]")
+        .forEach((el) =>
+          el.classList.toggle("is-current", el.dataset.glossAz === letter),
+        );
+    };
+    const visibleLetters = new Set<string>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const en of entries) {
+          const letter = (en.target as HTMLElement).dataset.letter ?? "";
+          if (en.isIntersecting) visibleLetters.add(letter);
+          else visibleLetters.delete(letter);
+        }
+        // The topmost bucket currently intersecting wins.
+        const first = groups.find((g) => visibleLetters.has(g.dataset.letter ?? ""));
+        setCurrent(first?.dataset.letter ?? null);
+      },
+      // A band near the top: a bucket is "current" while its top sits in the
+      // upper third of the viewport.
+      { rootMargin: "-10% 0px -70% 0px", threshold: 0 },
+    );
+    groups.forEach((g) => io.observe(g));
+    return () => io.disconnect();
+  }, []);
 
   const clear = useCallback(() => {
     setDomain("");

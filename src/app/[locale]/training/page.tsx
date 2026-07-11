@@ -16,10 +16,23 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "teach" });
+  const alt = t("title");
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
+  return { ...ogImages("page", "training", locale, alt) };
+}
 
 export default async function TrainingLandingPage({
   params,

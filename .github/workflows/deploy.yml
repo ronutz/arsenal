@@ -1,0 +1,115 @@
+# .github/workflows/deploy.yml
+# ---------------------------------------------------------------------------
+# ARSENAL production deploy: GitHub Actions build + wrangler deploy to
+# Cloudflare Workers.
+#
+# Replaces Cloudflare Workers Builds, whose 20 GB build disk the full
+# 16-locale static export exceeded on 2026-07-09 (ENOSPC during the
+# .next -> out/ copy phase at 9,893 pages).
+#
+# Required repository secrets (GitHub repo -> Settings -> Secrets and
+# variables -> Actions -> New repository secret):
+#   CLOUDFLARE_API_TOKEN   API token from the "Edit Cloudflare Workers"
+#                          template (Cloudflare dashboard -> Account API
+#                          Tokens -> Create Token). Never commit it.
+#   CLOUDFLARE_ACCOUNT_ID  Account ID from the Workers & Pages overview
+#                          page (right-hand API section).
+#
+# D-19: all code commented. Action syntax and runner-disk figures verified
+# against Cloudflare and GitHub documentation on 2026-07-09.
+# ---------------------------------------------------------------------------
+
+name: Deploy ARSENAL to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]     # production tracks main, same trigger Workers Builds used
+  workflow_dispatch:     # manual "Run workflow" button for re-deploys without a push
+
+# One production deploy at a time. New pushes queue behind a running deploy.
+# Never cancel mid-deploy: a half-uploaded Worker version helps nobody.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read         # checkout only; deploy auth is the Cloudflare API token
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45  # guardrail; a full build + deploy should land in ~15-20 min
+
+    steps:
+      # ---------------------------------------------------------------------
+      # 1. Reclaim disk. GitHub guarantees only 14 GB free on hosted runners;
+      #    fresh runners typically show ~20-29 GB. Deleting preinstalled
+      #    toolchains this build never uses (Android SDK ~14 GB, .NET ~2.7 GB,
+      #    Haskell, CodeQL) takes under a minute and puts us far clear of the
+      #    ~18 GB peak (.next + out/ + node_modules + repo) the export needs.
+      # ---------------------------------------------------------------------
+      - name: Free runner disk space
+        run: |
+          echo "Disk before cleanup:" && df -h /
+          sudo rm -rf /usr/local/lib/android      # Android SDK
+          sudo rm -rf /usr/share/dotnet           # .NET runtimes and SDKs
+          sudo rm -rf /usr/local/.ghcup           # Haskell toolchain
+          sudo rm -rf /opt/hostedtoolcache/CodeQL # CodeQL bundles
+          echo "Disk after cleanup:" && df -h /
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # Node 20 matches the previous Workers Builds environment (20.20.x).
+      # "cache: npm" caches ~/.npm only, never .next, so it is disk-cheap.
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ---------------------------------------------------------------------
+      # 2. Full build, unchanged from package.json: prebuild guard chain,
+      #    next build (static export), pagefind index, machine-legible
+      #    generation. GitHub Actions sets CI=true automatically, so a
+      #    webpack-cache gate in next.config
+      #    ("if (process.env.CI) config.cache = false") activates here
+      #    with no extra wiring, if/when added.
+      #    On failure, print disk state so any future ENOSPC reports its
+      #    exact shortfall instead of failing silently.
+      # ---------------------------------------------------------------------
+      - name: Build (guards + export + pagefind + machine-legible)
+        run: |
+          npm run build || {
+            echo "BUILD FAILED. Disk state at failure:"
+            df -h /
+            du -sh .next out node_modules 2>/dev/null || true
+            exit 1
+          }
+
+      # Visibility on the Workers static-asset budget:
+      # 100,000 files per version on Paid plans (needs Wrangler >= 4.34.0),
+      # 20,000 on Free. Printed every run so growth is visible in the logs.
+      - name: Report asset count and disk state
+        run: |
+          COUNT=$(find out -type f | wc -l)
+          echo "out/ contains ${COUNT} files (Paid cap: 100,000 per version)"
+          df -h /
+
+      # ---------------------------------------------------------------------
+      # 3. Deploy. wrangler-action runs "wrangler deploy" by default and
+      #    reads the wrangler config at the repo root (the same one Workers
+      #    Builds used), so no config change is needed. Keep wrangler pinned
+      #    at >= 4.34.0 in devDependencies so local and CI deploys match.
+      # ---------------------------------------------------------------------
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # To force a specific wrangler version for the deploy step,
+          # uncomment and pin:
+          # wranglerVersion: "4.34.0"

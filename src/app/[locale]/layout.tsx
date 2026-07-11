@@ -23,6 +23,7 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale, getMessages } from "next-intl/server";
+import { GLOBAL_CLIENT_NAMESPACES, pickNamespaces } from "@/i18n/clientMessages";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { dirFor, getLocale } from "@/i18n/locales";
@@ -69,6 +70,18 @@ export async function generateMetadata({
     metadataBase: new URL("https://ronutz.com"),
     title: `${t("name")} · ${t("tagline")}`,
     description: t("tagline"),
+    // Default social-preview card. Specific pages (tools, articles, glossary,
+    // study guides, vendor hubs, main pages) override openGraph.images with
+    // their own generated card via ogImages(); anything else inherits this.
+    openGraph: {
+      type: "website",
+      siteName: t("name"),
+      images: [{ url: "/og/default.png", width: 1200, height: 630, alt: t("name") }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: ["/og/default.png"],
+    },
     // Favicon set generated from the RN mark (see public/). favicon.ico covers
     // legacy/tab use; the PNGs give crisp 16/32; apple-touch is the iOS tile.
     icons: {
@@ -131,10 +144,19 @@ export default async function LocaleLayout({
     ? await getTranslations({ locale, namespace: "machineTranslation" })
     : null;
 
-  // Fetch the merged (English-base + locale pack) messages so CLIENT components
-  // (e.g. the language switcher) receive them through the provider. Without
-  // passing messages explicitly, client components get MISSING_MESSAGE.
+  // Fetch the merged (English-base + locale pack) messages, then pass ONLY the
+  // global client-chrome namespaces to the root provider (A1, ratified
+  // 2026-07-10). This is the lever that drops per-page weight ~423 KB -> ~1.35
+  // KB of inlined messages; route-scoped namespaces (a tool's own keys, /api,
+  // dev tools, home stats, endorsements) ride nested providers on their routes.
+  // The full pack still resolves English fallback before the pick, so passive
+  // locales behave exactly as before. check-client-messages.mjs guarantees no
+  // client component is left without its namespace.
   const messages = await getMessages();
+  const globalClientMessages = pickNamespaces(
+    messages,
+    GLOBAL_CLIENT_NAMESPACES,
+  );
 
   // Site-wide keyboard-shortcut labels (the boss-key overlay wording), resolved
   // here in the page's language and handed to the client listener as props.
@@ -217,9 +239,9 @@ export default async function LocaleLayout({
             ctaHref={`/${locale}/contribute`}
           />
         )}
-        {/* Provider makes the loaded (merged-with-English) messages available
-            to all client components via useTranslations(). */}
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        {/* Root provider carries only the global client-chrome namespaces (A1).
+            Route layouts/pages add their own namespace via a nested provider. */}
+        <NextIntlClientProvider messages={globalClientMessages}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

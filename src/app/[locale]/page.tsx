@@ -16,6 +16,8 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import MessageSlice from "@/components/MessageSlice";
+import { ogImages } from "@/lib/og";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import CidrTool from "@/components/CidrTool";
@@ -29,6 +31,18 @@ import { Link } from "@/i18n/navigation";
 import HomeStats from "@/components/HomeStats";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getAllArticles } from "@/lib/learn";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+  const alt = t("hero.title");
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
+  return { ...ogImages("page", "home", locale, alt) };
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   // Next.js 15: route params are async. Await before use.
@@ -76,7 +90,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
 
         {/* --- TOOLBOX TOTALS: derived live counts, count-up on scroll (D-63) --- */}
-        <HomeStats tools={toolCount} articles={articleCount} />
+        <MessageSlice namespaces={["home"]}><HomeStats tools={toolCount} articles={articleCount} /></MessageSlice>
 
         {/* --- CREDIBILITY --- */}
         <section className="section" id="who">
@@ -131,7 +145,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </Link>
             </p>
             <div className="tool-mount">
-              <CidrTool />
+              <MessageSlice namespaces={["tools.cidr"]}><CidrTool /></MessageSlice>
               {/* In-tool Learn panel (surface a): contextual articles for this
                   tool, resolved via the Tools->Learn bridge. Same content source
                   as the standalone Learn section. */}

@@ -16,6 +16,7 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ogImages } from "@/lib/og";
 import {
   getAllGlossaryEntries,
   getGlossaryDomains,
@@ -26,6 +27,18 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import GlossaryFilter from "@/components/glossary/GlossaryFilter";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "glossary" });
+  const alt = t("title");
+  // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
+  return { ...ogImages("page", "glossary", locale, alt) };
+}
 
 export default async function GlossaryIndexPage({
   params,
@@ -63,6 +76,14 @@ export default async function GlossaryIndexPage({
       .join(" ")
       .toLowerCase();
 
+  // A-Z rail (the signature navigation device for a 151-term list): the full
+  // alphabet, with each letter either a jump link (bucket present) or a dimmed
+  // marker (bucket empty). "#" is appended only when non-alphabetic headwords
+  // exist. The client filter later dims letters whose bucket has no visible row.
+  const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const railLetters = [...ALPHABET, ...(groups.has("#") ? ["#"] : [])];
+  const present = new Set(bucketKeys);
+
   return (
     <>
       <a href="#main" className="skip-link">
@@ -75,6 +96,7 @@ export default async function GlossaryIndexPage({
           <div className="container">
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede">{t("tagline")}</p>
+            <p className="gloss-hero-count">{t("totalCount", { count: entries.length })}</p>
 
             <GlossaryFilter
               domains={domains.map((d) => ({ key: d, label: t(`domains.${d}`) }))}
@@ -90,16 +112,46 @@ export default async function GlossaryIndexPage({
               noResultsLabel={t("noResults")}
             />
 
+            {/* A-Z jump rail (signature). Present letters jump to their bucket;
+                empty letters are dimmed. The client filter dims letters whose
+                bucket has no visible row after filtering. */}
+            <nav className="gloss-az" aria-label={t("azNavLabel")}>
+              {railLetters.map((L) =>
+                present.has(L) ? (
+                  <a
+                    key={L}
+                    href={`#gloss-${L === "#" ? "hash" : L}`}
+                    className="gloss-az-link"
+                    data-gloss-az={L}
+                  >
+                    {L}
+                  </a>
+                ) : (
+                  <span
+                    key={L}
+                    className="gloss-az-link is-empty"
+                    data-gloss-az={L}
+                    aria-hidden="true"
+                  >
+                    {L}
+                  </span>
+                ),
+              )}
+            </nav>
+
             {/* One block per alphabetical bucket. */}
             <div className="gloss-list">
               {bucketKeys.map((bucket) => (
                 <section
                   className="gloss-group"
                   key={bucket}
+                  id={`gloss-${bucket === "#" ? "hash" : bucket}`}
                   data-glossary-group
+                  data-letter={bucket}
                 >
-                  <h2 className="gloss-group-letter" aria-hidden="true">
-                    {bucket}
+                  <h2 className="gloss-group-letter">
+                    <span aria-hidden="true">{bucket}</span>
+                    <span className="gloss-group-count">{groups.get(bucket)!.length}</span>
                   </h2>
                   <ul className="gloss-entries">
                     {groups.get(bucket)!.map((e) => (

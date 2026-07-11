@@ -15,6 +15,10 @@
 import type { ComponentType } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ogImages } from "@/lib/og";
+import { hasToolDoc } from "@/lib/toolDocs";
+import MessageSlice from "@/components/MessageSlice";
+import ShareControl from "@/components/ShareControl";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -559,6 +563,21 @@ export function generateStaticParams() {
   return routing.locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })));
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  if (!TOOL_PAGES[slug]) return {};
+  const t = await getTranslations({ locale, namespace: "tools" });
+  const name = t(`${slug}.name`);
+  return {
+    title: `${name} · ${(await getTranslations({ locale, namespace: "site" }))("name")}`,
+    ...ogImages("tool", slug, locale, name),
+  };
+}
+
 export default async function ToolDetailPage({
   params,
 }: {
@@ -705,17 +724,37 @@ export default async function ToolDetailPage({
               </span>
             )}
 
-            <Component />
+            {/* Tool meta links (2026-07-10): the documentation pill (present for
+                every built tool, so guarded) paired with a quiet share control.
+                Wrapped in a nested provider carrying only the share namespace
+                (A1), matching the tool's own tools.<slug> slice below. */}
+            <MessageSlice namespaces={["share"]}>
+              <div className="tool-meta-links">
+                {hasToolDoc(slug) && (
+                  <Link href={`/tools/${slug}/docs`} className="tool-doc-link">
+                    {tTools("documentation")} <span aria-hidden="true">&#8594;</span>
+                  </Link>
+                )}
+                <ShareControl title={tTools(`${slug}.name`)} />
+              </div>
+            </MessageSlice>
 
-            <ToolApiEndpoint slug={slug} processingOn={processingOn} labels={endpointLabels} />
+            {/* A1 nested provider: only this tool's namespace + the API
+                affordance's, instead of the whole pack. Prop-driven children
+                (endpoint, requirements, learn panel) need no namespace. */}
+            <MessageSlice namespaces={[`tools.${slug}`, "apiAffordance"]}>
+              <Component />
 
-            {showRequirements && (
-              <ToolRequirements apiReady={apiReady} processingOn={processingOn} labels={reqLabels} />
-            )}
+              <ToolApiEndpoint slug={slug} processingOn={processingOn} labels={endpointLabels} />
 
-            <ToolLearnPanel toolSlug={slug} locale={locale} heading={tTools("learnHeading")} />
+              {showRequirements && (
+                <ToolRequirements apiReady={apiReady} processingOn={processingOn} labels={reqLabels} />
+              )}
 
-            <ApiAffordance slug={slug} />
+              <ToolLearnPanel toolSlug={slug} locale={locale} heading={tTools("learnHeading")} />
+
+              <ApiAffordance slug={slug} />
+            </MessageSlice>
 
             {prov ? (
               <ToolProvenance

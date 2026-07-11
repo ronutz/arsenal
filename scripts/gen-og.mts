@@ -121,7 +121,7 @@ function articleCard(slug: string, locale: string) {
   const src = read(fs.existsSync(path.join(ROOT, p)) ? p : `src/content/learn/en/${slug}.mdx`);
   const fm = src.slice(0, src.indexOf("---", 4));
   const title = fm.match(/^title:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? slug;
-  const description = fm.match(/^description:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? "";
+  const description = fm.match(/^summary:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? "";
   const vendor = fm.match(/^vendor:\s*["']?([a-z0-9-]+)/m)?.[1] ?? "";
   return { title, tagline: firstSentence(description), color: vendor ? vendorColor(vendor) : C.cyan, footTag: vendor };
 }
@@ -134,7 +134,7 @@ function glossaryCard(slug: string, locale: string) {
     messages("en").glossary.entries[slug];
   const reg = read("src/content/glossary/glossary.ts");
   const block = reg.slice(reg.indexOf(`slug: "${slug}"`), reg.indexOf(`slug: "${slug}"`) + 400);
-  const term = block.match(/term:\s*"([^"]+)"/)?.[1] ?? slug;
+  const term = block.match(/headword:\s*"([^"]+)"/)?.[1] ?? slug;
   return { title: term, tagline: firstSentence(g.def as string), color: C.amber, footTag: "glossary" };
 }
 
@@ -314,9 +314,138 @@ const EYEBROW: Record<string, Record<string, string>> = {
 };
 
 // ---------------------------------------------------------------------------
+// SITE-WIDE enumeration (the real run). Writes public/og/<kind>/<slug>.<ext>
+// for every route x {en, pt-BR}, skipping unchanged images via a content-hash
+// manifest (public/og/manifest.json). Photographic (portrait) cards ship JPEG;
+// everything else PNG. Filenames + the ogMetadata helper agree on the scheme:
+//   public/og/<kind>/<locale>/<slug>.<ext>, kind in
+//   {tool, article, glossary, guide, vendor, page}; the fallback is
+//   public/og/default.png. og:image URL = /og/<kind>/<locale>/<slug>.<ext>.
+// ---------------------------------------------------------------------------
+import crypto from "node:crypto";
+
+const OG_DIR = path.join(ROOT, "public/og");
+const TEMPLATE_VERSION = "2"; // bump to force full regeneration on design change
+
+type Job = {
+  kind: keyof typeof EYEBROW;
+  slug: string;
+  locale: string;
+  input: CardInput;
+  ext: "png" | "jpeg";
+};
+
+/** Portrait config per brand page (both variants approved; per-page choice).
+ *  Paths are repo-relative build inputs under assets/og-portraits/ (committed,
+ *  so CI can read them - NOT the sandbox project mount). */
+const BRAND_PORTRAITS: Record<string, { file: string; mode: "circle" | "panel" }> = {
+  // home + about -> circle (headshot); training + red-education -> panel.
+  "": { file: "assets/og-portraits/rodolfo-headshot.jpeg", mode: "circle" },
+  about: { file: "assets/og-portraits/rodolfo-headshot.jpeg", mode: "circle" },
+  training: { file: "assets/og-portraits/rodolfo-office.jpg", mode: "panel" },
+  "red-education": { file: "assets/og-portraits/rodolfo-office.jpg", mode: "panel" },
+};
+
+// Static/main pages and their hand-picked taglines (en + pt-BR).
+const STATIC_PAGES: { slug: string; title: Record<string, string>; tagline: Record<string, string>; brand?: boolean }[] = [
+  { slug: "", title: { en: "Network, security, and identity tools", "pt-BR": "Ferramentas de rede, segurança e identidade" }, tagline: { en: "Deterministic, local-compute tools by Rodolfo Nützmann - teaching enterprise networks since 1996.", "pt-BR": "Ferramentas determinísticas de computação local, por Rodolfo Nützmann - ensinando redes corporativas desde 1996." }, brand: true },
+  { slug: "tools", title: { en: "Tools", "pt-BR": "Ferramentas" }, tagline: { en: "Deterministic network, security, and identity tools that compute, never guess.", "pt-BR": "Ferramentas determinísticas de rede, segurança e identidade que calculam, nunca chutam." } },
+  { slug: "learn", title: { en: "Learn", "pt-BR": "Aprender" }, tagline: { en: "Grounded articles on networking, security, and identity - sourced, never hand-wavy.", "pt-BR": "Artigos fundamentados sobre redes, segurança e identidade - com fontes, nunca vagos." } },
+  { slug: "certifications", title: { en: "Certification study guides", "pt-BR": "Guias de estudo para certificação" }, tagline: { en: "Blueprint-guided study maps: every exam objective linked to the articles, tools, and manuals that teach it.", "pt-BR": "Mapas de estudo guiados pelo blueprint: cada objetivo ligado aos artigos, ferramentas e manuais que o ensinam." } },
+  { slug: "glossary", title: { en: "Glossary", "pt-BR": "Glossário" }, tagline: { en: "Plain-language definitions for networking, security, and identity terms.", "pt-BR": "Definições em linguagem clara para termos de rede, segurança e identidade." } },
+  { slug: "training", title: { en: "Instructor-led training", "pt-BR": "Treinamento com instrutor" }, tagline: { en: "Authorized F5, Fortinet, Netskope, and Extreme training by Rodolfo Nützmann at Red Education.", "pt-BR": "Treinamento oficial F5, Fortinet, Netskope e Extreme por Rodolfo Nützmann na Red Education." }, brand: true },
+  { slug: "about", title: { en: "About", "pt-BR": "Sobre" }, tagline: { en: "Rodolfo Nützmann - senior technical instructor and the architect of ronutz.com.", "pt-BR": "Rodolfo Nützmann - instrutor técnico sênior e arquiteto do ronutz.com." }, brand: true },
+  { slug: "red-education", title: { en: "Red Education", "pt-BR": "Red Education" }, tagline: { en: "A global Authorized Training Center - and the home of Rodolfo Nützmann's classroom since 2023.", "pt-BR": "Um Centro de Treinamento Autorizado global - e a casa das aulas de Rodolfo Nützmann desde 2023." }, brand: true },
+];
+
+const LOCALES = ["en", "pt-BR"];
+
+/** Build the full job list from the registries. */
+function enumerateJobs(): Job[] {
+  const jobs: Job[] = [];
+  // Built tool PAGES = TOOL_PAGES keys in the route file (the authoritative
+  // /tools/<slug> set; tools.ts `id:` includes catalogue/API-only tools that
+  // are NOT routed, so we must read the route map, not tools.ts).
+  const routeSrc = read("src/app/[locale]/tools/[slug]/page.tsx");
+  const tpStart = routeSrc.indexOf("const TOOL_PAGES");
+  const tpSeg = routeSrc.slice(tpStart, routeSrc.indexOf("generateStaticParams", tpStart));
+  const builtTools = [...tpSeg.matchAll(/^ {2}"?([a-z0-9-]+)"?:\s*\{/gm)].map((m) => m[1]);
+  const articleSlugs = fs.readdirSync(path.join(ROOT, "src/content/learn/en")).filter((f) => f.endsWith(".mdx")).map((f) => f.replace(/\.mdx$/, ""));
+  const glossaryReg = read("src/content/glossary/glossary.ts");
+  const glossarySlugs = [...glossaryReg.matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
+  const guideReg = read("src/content/certifications/study-guides.ts");
+  const guideSlugs = [...guideReg.slice(guideReg.indexOf("export const studyGuides")).matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
+  const vendorSlugs = ["f5", "fortinet", "netskope", "extreme"];
+
+  for (const locale of LOCALES) {
+    for (const s of builtTools) jobs.push({ kind: "tool", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.tool[locale] ?? EYEBROW.tool.en, locale, ...toolCard(s, locale) } });
+    for (const s of articleSlugs) jobs.push({ kind: "article", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.article[locale] ?? EYEBROW.article.en, locale, ...articleCard(s, locale) } });
+    for (const s of glossarySlugs) jobs.push({ kind: "glossary", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.glossary[locale] ?? EYEBROW.glossary.en, locale, ...glossaryCard(s, locale) } });
+    for (const s of guideSlugs) jobs.push({ kind: "guide", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.guide[locale] ?? EYEBROW.guide.en, locale, ...guideCard(s) } });
+    for (const s of vendorSlugs) {
+      const m = messages(locale);
+      const label = m.tools?.vendors?.[s] ?? s;
+      const lede = (m.vendorHub?.lede ?? "").replace("{vendor}", label);
+      jobs.push({ kind: "vendor", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.vendor[locale] ?? EYEBROW.vendor.en, locale, title: label, tagline: firstSentence(lede) || label, color: vendorColor(s), footTag: s } });
+    }
+    for (const p of STATIC_PAGES) {
+      const portrait = p.brand && BRAND_PORTRAITS[p.slug]
+        ? { dataUri: imgDataUri(path.join(ROOT, BRAND_PORTRAITS[p.slug].file)), mode: BRAND_PORTRAITS[p.slug].mode }
+        : undefined;
+      jobs.push({ kind: "page", slug: p.slug || "home", locale, ext: portrait ? "jpeg" : "png", input: { eyebrow: EYEBROW.page[locale] ?? EYEBROW.page.en, locale, title: p.title[locale] ?? p.title.en, tagline: p.tagline[locale] ?? p.tagline.en, color: p.slug === "red-education" ? C.amber : C.cyan, portrait } });
+    }
+  }
+  return jobs;
+}
+
+async function renderJob(job: Job, manifest: Record<string, string>): Promise<"written" | "skipped"> {
+  // Content hash: any change to title/tagline/color/portrait/template -> rewrite.
+  const key = `${job.kind}/${job.locale}/${job.slug}.${job.ext}`;
+  const hash = crypto.createHash("sha1").update(TEMPLATE_VERSION + JSON.stringify({ ...job.input, portrait: job.input.portrait?.mode ?? null }) + (job.input.portrait ? "P" : "")).digest("hex").slice(0, 16);
+  const outPath = path.join(OG_DIR, key);
+  if (manifest[key] === hash && fs.existsSync(outPath)) return "skipped";
+
+  const svg = await satori(card(job.input) as never, { width: 1200, height: 630, fonts: FONTS });
+  const png = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng();
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  if (job.ext === "jpeg") {
+    // Photographic cards: PNG->JPEG via sharp (present in the toolchain) keeps
+    // portrait cards well under the WhatsApp ceiling (verified 362KB->~60KB).
+    const sharp = (await import("sharp")).default;
+    fs.writeFileSync(outPath, await sharp(png).jpeg({ quality: 86, mozjpeg: true }).toBuffer());
+  } else {
+    fs.writeFileSync(outPath, png);
+  }
+  manifest[key] = hash;
+  return "written";
+}
+
+async function siteWide() {
+  fs.mkdirSync(OG_DIR, { recursive: true });
+  const manifestPath = path.join(OG_DIR, "manifest.json");
+  const manifest: Record<string, string> = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, "utf8")) : {};
+  const jobs = enumerateJobs();
+  let written = 0, skipped = 0;
+  // Default fallback card (kind "page", slug "default"), always PNG.
+  await render("default", { eyebrow: EYEBROW.page.en, locale: "en", title: "ronutz.com", tagline: "Network, security, and identity tools that compute, never guess.", color: C.cyan }, OG_DIR);
+  for (const job of jobs) {
+    const r = await renderJob(job, manifest);
+    if (r === "written") {
+      written++;
+      // Flush the manifest every 50 writes so an interrupted run resumes
+      // instead of restarting (generation of the full set exceeds some
+      // sandbox tool timeouts; CI runs it uninterrupted).
+      if (written % 50 === 0) fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 0));
+    } else skipped++;
+  }
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 0));
+  console.log(`[gen-og] site-wide: ${written} written, ${skipped} unchanged, ${jobs.length} total (+ default). manifest: ${Object.keys(manifest).length} entries.`);
+}
+
+// ---------------------------------------------------------------------------
 // SAMPLES (pilot): one representative card per kind + pt-BR + portrait A/B.
 // ---------------------------------------------------------------------------
-async function main() {
+async function samples() {
   const outDir = "/mnt/user-data/outputs/og-samples";
   fs.mkdirSync(outDir, { recursive: true });
   console.log("[gen-og] rendering pilot samples:");
@@ -379,7 +508,7 @@ async function main() {
       title: "Network, security, and identity tools",
       tagline: "Deterministic, local-compute tools by Rodolfo Nützmann - teaching enterprise networks since 1996.",
       color: C.cyan,
-      portrait: { dataUri: imgDataUri("/mnt/project/2024.jpeg"), mode: "circle" },
+      portrait: { dataUri: imgDataUri(path.join(ROOT, "assets/og-portraits/rodolfo-headshot.jpeg")), mode: "circle" },
     },
     outDir,
   );
@@ -391,7 +520,7 @@ async function main() {
       title: "Red Education",
       tagline: "A global Authorized Training Center - and the home of Rodolfo Nützmann's classroom since 2023.",
       color: C.amber,
-      portrait: { dataUri: imgDataUri("/mnt/project/Rod_blurred_bkgrnd.jpg"), mode: "panel" },
+      portrait: { dataUri: imgDataUri(path.join(ROOT, "assets/og-portraits/rodolfo-office.jpg")), mode: "panel" },
     },
     outDir,
   );
@@ -412,7 +541,10 @@ async function main() {
   console.log("[gen-og] done.");
 }
 
-main().catch((e) => {
+// Mode dispatch: `--samples` renders the pilot set to outputs; default is the
+// site-wide run into public/og/ (used by CI prebuild).
+const MODE = process.argv.includes("--samples") ? "samples" : "site-wide";
+(MODE === "samples" ? samples() : siteWide()).catch((e) => {
   console.error(e);
   process.exit(1);
 });
