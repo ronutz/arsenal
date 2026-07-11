@@ -1,0 +1,37 @@
+---
+slug: voss-fabric-connect-spbm
+title: "Fabric Connect and SPBM: Why VOSS Retires Spanning Tree"
+summary: "What Extreme's Fabric Connect actually is - Shortest Path Bridging MAC (SPBM, IEEE 802.1aq) with an IS-IS control plane and a MAC-in-MAC data plane - and why collapsing the core to a single link-state protocol replaces spanning tree and the usual overlay stack."
+concepts: ["fabric connect", "spbm", "802.1aq", "is-is", "mac-in-mac", "b-vlan", "beb", "bcb"]
+relatedTools: ["voss-fabric-id"]
+relatedArticles: ["voss-i-sid-and-vsns", "voss-isis-and-nicknames"]
+category: networking
+order: 40
+status: reviewed
+updated: "2026-07-11"
+---
+
+## The core is the problem
+
+A traditional switched network keeps the core loop-free with spanning tree, which means blocking links to break loops, and it layers protocol on protocol to deliver services: 802.1Q trunks for VLANs, maybe MPLS or VXLAN with BGP for virtualization, plus something to move multicast. Each layer is another thing to design, provision at every hop, and troubleshoot. VOSS - Extreme's **Fabric Connect** - was built to collapse that.
+
+## What Fabric Connect is
+
+Fabric Connect is Extreme's implementation of **Shortest Path Bridging MAC**, or **SPBM**, standardized as **IEEE 802.1aq** (with IP extensions in IETF RFC 6329). It has a long heritage from ex-Nortel and Avaya, who were early and thorough SPBM implementers. The idea is to reduce the core to a single Ethernet-based link-state protocol that provides all virtualization services in one integrated model, instead of a stack of overlays.
+
+Two pieces make that work:
+
+- a **data plane** based on **MAC-in-MAC**: customer frames are encapsulated in a backbone MAC header and switched across the core on backbone MAC addresses (B-MACs), so the core never inspects the customer frame; and
+- a **control plane** based on **IS-IS**: nodes form adjacencies, discover the topology, compute shortest paths to every other node, and advertise service membership - all in one protocol.
+
+## No spanning tree in the core
+
+SPBM does not run spanning tree across the fabric. Transport uses two **Backbone VLANs** (B-VLANs, commonly 4051 and 4052). A B-VLAN is not a normal VLAN: it never floods unknown, broadcast, or multicast traffic. It forwards strictly on the backbone-MAC tables that IS-IS builds, following the shortest path IS-IS computed. Because forwarding is computed rather than learned by flooding, every link can carry traffic and convergence is fast.
+
+## Provision the edge, leave the core alone
+
+The switches at the boundary of the fabric are **Backbone Edge Bridges (BEBs)**; the transit switches in the middle are **Backbone Core Bridges (BCBs)**. All service configuration happens on the BEBs, where the application meets the network - you attach a VLAN or a routing instance to a service there, and IS-IS floods that membership so every relevant BEB participates. The BCBs in between are provisioned once for the fabric itself and then left alone; they carry any service without per-service configuration. This is the SPBM promise often summarized as "build the network once and do not touch it again."
+
+## Where to go next
+
+The unit of service on the edge is the **I-SID**, covered in the companion article on I-SIDs and VSNs. The control plane - IS-IS, node nicknames, and B-MACs - is covered in the article on the VOSS control plane. The fabric-identifier tool decodes the I-SIDs, nicknames, and B-MACs you will meet along the way.

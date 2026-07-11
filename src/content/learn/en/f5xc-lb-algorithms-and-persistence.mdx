@@ -1,0 +1,40 @@
+---
+slug: f5xc-lb-algorithms-and-persistence
+title: "XC Load-Balancing Algorithms and Persistence, for BIG-IP People"
+summary: "On BIG-IP the load-balancing method and the persistence profile are two separate knobs; on XC they are one. Why the consistent-hashing algorithms (Source IP, Cookie, Ring Hash) ARE the persistence method, what you can hash, when to use the non-hash algorithms, and how Load Balancer Override gives per-route persistence."
+concepts: ["load balancing", "persistence", "consistent hashing", "ring hash", "origin pool", "f5 distributed cloud"]
+relatedTools: ["f5xc-lb-algorithm-chooser"]
+relatedArticles: ["f5xc-http-lb-route-evaluation"]
+category: networking
+order: 74
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Two knobs on BIG-IP, one on XC
+
+If you come from BIG-IP, you are used to setting two things independently on a virtual server: the load-balancing method - Round Robin, Least Connections, Ratio, and so on - and, separately, a persistence profile - Source Address Affinity, Cookie, SSL session. The method decides how traffic spreads; the persistence profile decides how a returning client is pinned to the server it saw before. Two settings, two objects. F5 Distributed Cloud does it with one, and understanding that is the whole trick to configuring persistence in XC.
+
+## The XC algorithm list
+
+On an XC origin pool you pick a single Load Balancing Algorithm. The choices are Round Robin, Least Active Request, Random, Source IP Stickiness, Cookie Based Stickiness, Ring Hash, and Load Balancer Override. Some of those names describe distribution and some describe persistence - and that is the point. In XC they live in the same dropdown because the algorithm and the persistence are the same decision.
+
+## Consistent hashing is the persistence
+
+The consistent-hashing algorithms - Source IP Stickiness, Cookie Based Stickiness, and Ring Hash - work by placing clients and origin servers on a ring and hashing something about each request to map the client to a point on that ring. Because the same request criteria always hash to the same origin, the client keeps going back to the same server. That mapping is the persistence - there is no separate profile, because the algorithm is already sticky by construction. As F5's own explainer puts it, consistent hashing is its own algorithm but it also includes, by definition, a persistence method; it essentially is the persistence method. It has a second virtue too: when origins are added or removed, only a small fraction of clients get remapped, which is why it is the right choice for dynamic pools like Kubernetes services.
+
+## The three things you can hash
+
+Consistent hashing needs a key, and XC gives you three. **Source IP** hashes the client address - simple, but it concentrates everyone behind a shared NAT or proxy onto one origin, so it goes lopsided when client diversity is low. **Cookie** hashes a named cookie, with a TTL and path you set, which works well for browsers that faithfully return it. **Ring Hash with a custom hash policy** lets you hash a header you choose - typically one carrying a session ID - which is the cleanest fit for microservices that already pass a session token. Pick the key that is both stable per session and well-distributed across clients.
+
+## When you don't need persistence
+
+If the application is stateless, you do not want a hash algorithm at all - you want even distribution. Round Robin is the default and spreads requests in turn. Least Active Request sends each request to the origin with the fewest in-flight requests, the better pick when requests vary in cost or connections are long. Random is statistically even across large pools. None of these three keeps a client on one origin, and that is fine for stateless work; it is only a problem if you needed stickiness and picked one of them by mistake.
+
+## Per-route persistence with Load Balancer Override
+
+Sometimes one pool serves several domains or routes that need different persistence. That is what Load Balancer Override is for: set the pool's algorithm to Load Balancer Override, and then, in the HTTP load balancer's route Advanced Options, use Load Balancing Control to choose Cookie or Source IP stickiness per route or per domain. It is the one place XC lets you separate the persistence decision from the pool and push it up to the route, the way per-virtual-server persistence profiles work on BIG-IP.
+
+## Picking one
+
+The short version: stateless, even load - Round Robin. Stateless but uneven or long requests - Least Active Request. Sticky by client IP - Source IP Stickiness, unless your clients hide behind a shared IP. Sticky by cookie - Cookie Based Stickiness. Sticky by a session token in a header - Ring Hash with a custom hash policy. Different persistence per route - Load Balancer Override. The companion chooser walks those questions and hands you the algorithm, the BIG-IP equivalent, and the caveats; a BIG-IP method chooser is on the way for the side-by-side.

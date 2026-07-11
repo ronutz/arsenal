@@ -35,6 +35,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_base64",
     "tag": "Encoding"
   },
+  "bigip-ltm-lb-simulator": {
+    "url": "https://ronutz.com/api/v1/bigip-ltm-lb-simulator",
+    "method": "GET",
+    "op": "run_bigip_ltm_lb_simulator",
+    "tag": "F5 BIG-IP LTM"
+  },
   "cert-renewal-planner": {
     "url": "https://ronutz.com/api/v1/cert-renewal-planner",
     "method": "GET",
@@ -311,10 +317,70 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5_topology_longest_match",
     "tag": "F5 GTM, AFM & APM"
   },
+  "f5xc-api-path-explainer": {
+    "url": "https://ronutz.com/api/v1/f5xc-api-path-explainer",
+    "method": "GET",
+    "op": "run_f5xc_api_path_explainer",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-ce-egress-checklist": {
+    "url": "https://ronutz.com/api/v1/f5xc-ce-egress-checklist",
+    "method": "GET",
+    "op": "run_f5xc_ce_egress_checklist",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-domain-sni-match-resolver": {
+    "url": "https://ronutz.com/api/v1/f5xc-domain-sni-match-resolver",
+    "method": "GET",
+    "op": "run_f5xc_domain_sni_match_resolver",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-http-lb-route-explainer": {
+    "url": "https://ronutz.com/api/v1/f5xc-http-lb-route-explainer",
+    "method": "GET",
+    "op": "run_f5xc_http_lb_route_explainer",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-lb-algorithm-chooser": {
+    "url": "https://ronutz.com/api/v1/f5xc-lb-algorithm-chooser",
+    "method": "GET",
+    "op": "run_f5xc_lb_algorithm_chooser",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-object-linter": {
+    "url": "https://ronutz.com/api/v1/f5xc-object-linter",
+    "method": "GET",
+    "op": "run_f5xc_object_linter",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-origin-pool-explainer": {
+    "url": "https://ronutz.com/api/v1/f5xc-origin-pool-explainer",
+    "method": "GET",
+    "op": "run_f5xc_origin_pool_explainer",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-rate-limit-calculator": {
+    "url": "https://ronutz.com/api/v1/f5xc-rate-limit-calculator",
+    "method": "GET",
+    "op": "run_f5xc_rate_limit_calculator",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-security-event-explainer": {
+    "url": "https://ronutz.com/api/v1/f5xc-security-event-explainer",
+    "method": "GET",
+    "op": "run_f5xc_security_event_explainer",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
   "f5xc-service-policy-explainer": {
     "url": "https://ronutz.com/api/v1/f5xc-service-policy-explainer",
     "method": "GET",
     "op": "run_f5xc_service_policy_explainer",
+    "tag": "F5 Distributed Cloud (XC)"
+  },
+  "f5xc-tls-security-level-mapper": {
+    "url": "https://ronutz.com/api/v1/f5xc-tls-security-level-mapper",
+    "method": "GET",
+    "op": "run_f5xc_tls_security_level_mapper",
     "tag": "F5 Distributed Cloud (XC)"
   },
   "fault-hypothesis-builder": {
@@ -365,6 +431,18 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_iquery_protocol_explainer",
     "tag": "F5 GTM, AFM & APM"
   },
+  "ja3-tls-fingerprint": {
+    "url": "https://ronutz.com/api/v1/ja3-tls-fingerprint",
+    "method": "GET",
+    "op": "run_ja3_tls_fingerprint",
+    "tag": "Fingerprinting"
+  },
+  "ja4-fingerprint-decoder": {
+    "url": "https://ronutz.com/api/v1/ja4-fingerprint-decoder",
+    "method": "GET",
+    "op": "run_ja4_fingerprint_decoder",
+    "tag": "Protocol & packet decoders"
+  },
   "json-formatter": {
     "url": "https://ronutz.com/api/v1/json-formatter",
     "method": "GET",
@@ -406,6 +484,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_oidc",
     "tag": "Identity & tokens"
+  },
+  "oui-lookup": {
+    "url": "https://ronutz.com/api/v1/oui-lookup",
+    "method": "GET",
+    "op": "run_oui_lookup",
+    "tag": "Networking & addressing"
   },
   "pac-file-explainer": {
     "url": "https://ronutz.com/api/v1/pac-file-explainer",
@@ -484,6 +568,18 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_uuid",
     "tag": "Identifiers & time"
+  },
+  "voss-exos-translator": {
+    "url": "https://ronutz.com/api/v1/voss-exos-translator",
+    "method": "GET",
+    "op": "run_voss_exos_translator",
+    "tag": "Networking & addressing"
+  },
+  "voss-fabric-id": {
+    "url": "https://ronutz.com/api/v1/voss-fabric-id",
+    "method": "GET",
+    "op": "run_voss_fabric_id",
+    "tag": "Networking & addressing"
   },
   "x509": {
     "url": "https://ronutz.com/api/v1/x509",

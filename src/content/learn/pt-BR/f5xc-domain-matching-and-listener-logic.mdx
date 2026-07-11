@@ -1,0 +1,44 @@
+---
+slug: f5xc-domain-matching-and-listener-logic
+title: "Como o XC Decide Qual Load Balancer Vence um Hostname: Listener Logic, Wildcards e o Apex"
+summary: "A advertise policy estreita uma requisição a um IP e porta; dentro dela, o XC escolhe o match de domínio mais específico (exato vence wildcard). O hostname vem do SNI (HTTPS) ou do header Host (HTTP). Um Default load balancer por advertise policy pega o que não deu match. Wildcards são matches de sufixo que não cobrem o apex, certificados wildcard cobrem um único label, e misturar um wildcard com seu apex entre LBs de certificado automático é um perigo."
+concepts: ["domain matching", "listener logic", "sni", "wildcard", "apex", "default load balancer", "advertise policy", "f5 distributed cloud"]
+relatedTools: ["f5xc-domain-sni-match-resolver"]
+relatedArticles: ["f5xc-http-lb-route-evaluation", "f5xc-origin-pool-anatomy"]
+category: networking
+order: 76
+status: reviewed
+updated: "2026-07-11"
+---
+
+## A pergunta
+
+Dois HTTP load balancers, domínios sobrepostos, uma requisição chegando - qual load balancer a serve? No F5 Distributed Cloud a resposta não é "o que você criou primeiro" nem "o que está listado primeiro." Ela segue uma lógica de match específica, e uma vez que você a conhece, uma classe de problemas confusos de roteamento fica óbvia.
+
+## A advertise policy estreita para IP e porta
+
+Cada load balancer se anuncia em um IP e uma porta - juntos, a advertise policy. Esse é o primeiro filtro: uma requisição que chega em um dado IP e porta só é considerada contra os load balancers que se anunciam ali. Numa implantação HTTP/HTTPS típica você não precisa de muitos IPs, porque o domínio faz o resto do trabalho. Mas o IP e a porta são a moldura em torno de tudo que segue.
+
+## O mais específico vence
+
+Dentro de uma advertise policy, o XC escolhe o load balancer cujo domínio casa mais especificamente com o hostname da requisição. Um FQDN exato vence um wildcard. Se uma requisição para app-b.domain.com pode casar tanto com um LB que lista app-b.domain.com exatamente quanto com um LB que lista *.domain.com, o exato vence - toda vez. Essa é a única regra que resolve a maioria dos enigmas "por que meu tráfego foi para lá": procure o domínio mais específico.
+
+## De onde vem o hostname
+
+O hostname no qual o XC casa não é puxado do DNS - é lido da própria requisição. Para HTTPS, é o valor Server Name Indication (SNI) no handshake TLS. Para HTTP puro, é o header Host. Essa distinção importa quando você está depurando: se o SNI e o header Host discordam, o caminho HTTPS casa no SNI. Isso também significa que um cliente que não envia SNI não pode ser casado com um HTTPS load balancer específico por nome.
+
+## O Default load balancer
+
+O que acontece com uma requisição cujo hostname não casa com nenhum domínio específico? Em HTTPS, um load balancer por advertise policy pode ser designado o Default. Ele pega tudo que não deu match - o exemplo clássico sendo um certificado wildcard para *.domain.com onde algum subdomínio nunca ganhou seu próprio LB. Você pode então usar rotas no Default LB para decidir o que fazer com essas requisições. Só um Default é permitido por advertise policy, e o conceito existe para HTTPS; um TCP load balancer que não casa no SNI simplesmente se comporta como o catch-all para seu IP e porta.
+
+## Wildcards, o apex e certificados
+
+Um domínio wildcard casa subdomínios por sufixo: *.domain.com cobre app.domain.com. Ele não cobre o apex domain.com - esse é um nome separado e precisa de sua própria entrada. E um certificado TLS wildcard cobre exatamente um label, então embora o proxy possa rotear um host multi-label como a.b.domain.com por um listener *.domain.com, o certificado não vai validá-lo. O match também leva a porta em conta para portas não-padrão, então *.foo.com:8080 é distinto de *.foo.com.
+
+## Os conflitos que mordem
+
+Algumas configurações são ativamente perigosas. A F5 desaconselha colocar tanto um wildcard (*.example.com) quanto seu apex (example.com) em load balancers diferentes quando você usa certificados automáticos - o provisionamento de certificado colide. Dois load balancers reivindicando o mesmo domínio exato, ou dois Defaults em uma advertise policy, são configurações erradas que a plataforma não pode resolver silenciosamente. E um empate ambíguo - dois matches igualmente específicos - significa que o resultado não é algo em que você deveria confiar.
+
+## Vendo resolver
+
+As regras são simples isoladamente mas interagem quando você tem vários load balancers e uma mistura de domínios exatos e wildcard. O resolvedor complementar pega seus load balancers e um hostname de teste e mostra o vencedor, o segundo colocado, e cada perigo do conjunto de uma vez - então em vez de rastrear a lógica à mão, você vê app-b.domain.com pousar no LB exato e other.domain.com cair para o wildcard.

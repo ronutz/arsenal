@@ -1,0 +1,36 @@
+---
+slug: f5xc-config-hazards
+title: "Common XC Config Hazards a Linter Can Catch"
+summary: "XC objects accept settings that are valid but operationally wrong. This walks the hazards a single-object linter can flag: origin-pool skip-verification, cleartext, disabled SNI, and missing health checks; load-balancer no-WAF, plain-HTTP listeners, missing HTTP-to-HTTPS redirect, per-route WAF disable, catch-all route shadowing, and wildcard+apex; and a WAF left in monitoring mode - plus why severity is a prioritizer, not a verdict, and the limits of reading one object at a time."
+concepts: ["configuration linting", "origin pool", "http load balancer", "waf", "route shadowing", "tls to origin", "f5 distributed cloud"]
+relatedTools: ["f5xc-object-linter"]
+relatedArticles: ["f5xc-origin-pool-anatomy", "f5xc-domain-matching-and-listener-logic"]
+category: security
+order: 78
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Why a linter, not a wizard
+
+XC's configuration objects are permissive: they will happily accept a setting that is technically valid but operationally wrong. A WAF left in monitoring mode is a valid WAF. An origin pool that skips certificate verification is a valid pool. A catch-all route sitting above your specific routes is a valid route list. None of these produce an error - they produce surprising behavior, weeks later, that you then have to trace back. A linter catches the class of problem that is legal but probably not what you meant.
+
+## The origin-pool hazards
+
+The connection from XC to your origin is where several quiet hazards live. Skipping origin-server verification is the sharpest: the traffic is still encrypted, so it looks secure, but XC accepts any certificate the origin presents, which means anyone who can intercept the path can impersonate your origin. Disabling SNI causes origins that host several names to hand back the wrong certificate or the wrong site. Turning off TLS entirely sends traffic to the origin in cleartext. And an origin pool with no health check relies only on implicit signals, while a pool with a single origin has no redundancy at all. Each of these is sometimes the right call - an internal-only origin on a trusted network, a single origin in a lab - but each is worth seeing spelled out.
+
+## The load-balancer hazards
+
+The most common load-balancer mistake is simply forgetting to attach a WAF: the load balancer works, traffic flows, and nothing is inspecting it for application-layer attacks. Close behind is the route list. Because XC evaluates routes first-match, a catch-all route - one matching the "/" prefix - placed anywhere but last means every route after it is dead, silently. Disabling the WAF on a specific route punches a hole that is easy to forget. On the transport side, a plain-HTTP listener sends client traffic unencrypted, and HTTPS without an HTTP-to-HTTPS redirect leaves clients who arrive over HTTP unprotected. And mixing a wildcard domain with its apex is the auto-certificate conflict F5 warns about.
+
+## The WAF hazard
+
+A WAF has one setting that changes everything: its enforcement mode. In blocking mode it stops attacks; in monitoring mode it detects and logs them but lets them through. Monitoring mode is the correct starting point when you are tuning a new policy and do not yet trust it not to block legitimate traffic - but a WAF that was put in monitoring mode for tuning and never switched to blocking is a WAF that is not protecting anything. Disabling threat campaigns, which detect known active-exploit campaigns rather than generic patterns, similarly trades coverage for fewer detections.
+
+## Severity is a prioritizer, not a verdict
+
+The linter sorts what it finds by severity, and the severity is about consequence, not certainty. A high finding - skipping origin verification - is something that materially weakens security wherever it appears. A warn is usually a mistake but has legitimate uses. An info is often intentional. The point of the ordering is triage: when you paste a real object and get six findings, you want the one that matters most at the top. But every finding is a prompt to check your intent, not an instruction to change the setting. Some of these are exactly right for your situation, and the linter tells you what each one does so you can make that call.
+
+## The limits of a single-object linter
+
+A linter that reads one object cannot see the whole configuration. It does not know whether the WAF your load balancer references by name is in blocking or monitoring mode, because that lives in the WAF object, not the load balancer. It cannot tell you the weight of an origin pool inside a route, because weights live on the route's pool reference. What it can do, and do instantly, is catch the hazards visible in the object in front of you - which is most of them, and the fastest way to find the obvious ones before they surprise you in production.

@@ -1,0 +1,36 @@
+---
+slug: f5xc-ce-registration-and-egress
+title: "What Actually Happens When a CE Registers: Token, Two REs by GeoIP, IPsec-with-SSL-Fallback, and the Allowlist That Makes It Work"
+summary: "The CE registration handshake - token call-home, two Regional Edges chosen by GeoIP, PKI certificates - why the CE tunnels prefer IPsec and fall back to SSL, and how F5's published firewall reference (Secure Mesh v2 vs Legacy, domains over IPs) is the allowlist that lets it all connect."
+concepts: ["customer edge", "ce registration", "regional edge", "ipsec", "firewall allowlist", "f5 distributed cloud"]
+relatedTools: ["f5xc-ce-egress-checklist"]
+relatedArticles: []
+category: networking
+order: 72
+status: reviewed
+updated: "2026-07-11"
+---
+
+## The registration handshake
+
+When you bring up a CE, the first thing it does is call home. Using the node token you generated - a JWT that encodes the registration endpoint - the CE contacts the F5 Distributed Cloud Global Controller. The controller selects two Regional Edges based on the GeoIP proximity of the public IP address the registration arrived from, so the CE connects to the REs closest to where it actually sits on the internet. (You can also pin specific REs at creation time.) The controller returns those two REs to the CE, along with the CE's identity and PKI certificates, which the system rotates regularly.
+
+## IPsec, with SSL as the fallback
+
+With its two REs chosen, the CE builds tunnels to them. It tries to negotiate both IPsec and SSL, and IPsec is preferred - it falls back to SSL only if IPsec cannot be established. That single fact explains a line you see all over the firewall reference: IPsec on UDP 4500 is optional, because SSL tunneling to the global network is supported. If your firewall blocks UDP 4500, the CE does not fail; it tunnels over SSL on TCP 443 instead. Once a tunnel is up, a distributed control plane in the RE takes over the CE, and the secure fabric carries both management and control traffic and, if you want it, your data traffic.
+
+## The allowlist that makes it work
+
+None of that happens if the CE cannot reach the endpoints it needs. F5 publishes a single reference - the Customer Edge IP Address and Domain Reference - listing every IP and domain a CE must be allowed to reach, and it publishes the same list as a downloadable plain-text file for automation. The list is organized by purpose: registration and updates, connecting to the Regional Edges, the F5 domains, reputation and URL-classification feeds, container registries for the CE's own software images, and DNS and NTP.
+
+## Two generations, two lists
+
+The reference splits into Secure Mesh Site v2 and Legacy. SMSv2 is deliberately tight: a single F5-owned wildcard domain (`*.volterra.io`) or an explicit FQDN list, plus one registration IP. F5 removed all third-party wildcard domains from the SMSv2 set. Legacy sites carry a much larger IP range list and a broader domain set that names the third-party registries - Docker, Google, Azure, Red Hat, AWS - directly. Allowlist only the generation you are deploying.
+
+## Domains beat IPs
+
+F5 is explicit that IP addresses can change without notice, and that domain-based permissions are the preferred method. If your firewall supports domain filtering, allow the domains and keep the IP ranges as the fallback for firewalls that cannot do domain-based rules. And remember port 65500 - it is reserved for the CE's local UI and API, not egress, so decide deliberately whether to allow or block it.
+
+## Verify before you escalate
+
+If a CE is stuck "connecting," the cause is almost always a missing allowlist entry. F5's troubleshooting method is to test each endpoint from the node with the CE serviceability curl-host command over the required ports - outbound TCP 80/443 and UDP 53. The companion tool parses the reference file you paste, organizes the allowlist by purpose, and generates exactly that verification script, so you can confirm reachability from the node before opening a case.

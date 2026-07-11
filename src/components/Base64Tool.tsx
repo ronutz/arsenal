@@ -16,6 +16,7 @@
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, CODECS, type Codec, type CodecResult } from "@/lib/tools/base64";
+import { usePrefill } from "@/lib/use-prefill";
 
 type Direction = "encode" | "decode";
 
@@ -96,6 +97,8 @@ export default function Base64Tool() {
       // Clipboard denied/unavailable: the output stays selectable by hand.
     }
   }, [output]);
+
+  usePrefill(onChange);
 
   return (
     <div className="cidr-tool jwt-tool">

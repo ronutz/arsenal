@@ -1,0 +1,38 @@
+---
+slug: voss-i-sid-and-vsns
+title: "O I-SID: Como o VOSS Substitui a Extensão de VLANs"
+summary: "Por que o Fabric Connect da Extreme provisiona serviços na borda em vez de estender VLANs salto a salto, o que é o I-SID de 24 bits, e como Layer 2 VSN, Layer 3 VSN e IP Shortcuts usam o mesmo mecanismo sobre um core MAC-in-MAC do SPBM."
+concepts: ["i-sid", "spbm", "fabric connect", "layer 2 vsn", "layer 3 vsn", "ip shortcuts", "mac-in-mac", "beb"]
+relatedTools: ["voss-fabric-id"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-isis-and-nicknames"]
+category: networking
+order: 41
+status: reviewed
+updated: "2026-07-11"
+---
+
+## O problema que o VOSS resolve
+
+Em uma rede Ethernet tradicional, estender uma VLAN para outra parte do campus significa fazer trunk daquele VLAN ID salto a salto e depender do spanning tree para manter a topologia livre de loops. Funciona, mas escala mal: todo switch no caminho precisa carregar a VLAN, o spanning tree bloqueia enlaces que você pagou, e uma mudança no meio da rede se propaga para fora. O VOSS - o Fabric Connect da Extreme, construído sobre o Shortest Path Bridging MAC (SPBM, IEEE 802.1aq) - adota uma abordagem diferente. Você provisiona um serviço apenas na borda, e a fabric o transporta automaticamente.
+
+## O I-SID é o serviço
+
+A unidade desse serviço é o **I-SID** (Service Instance Identifier), um número de 24 bits carregado no cabeçalho MAC-in-MAC do SPBM. Em vez de estender uma VLAN pelo core, você mapeia a VLAN para um I-SID no switch de borda - o Backbone Edge Bridge, ou BEB. Qualquer outro BEB que tenha o mesmo I-SID configurado entra no mesmo serviço; os switches de core, os Backbone Core Bridges (BCBs), no meio, nunca precisam saber dele. O VLAN ID permanece local em cada borda - apenas o I-SID é global.
+
+## Três tipos de serviço, um mecanismo
+
+O mesmo mecanismo de I-SID carrega três tipos de serviço, dependendo do que você mapeia para ele:
+
+- **Layer 2 VSN** - uma VLAN de cliente é mapeada para um I-SID (`vlan i-sid <vlan> <isid>`). É um serviço Layer 2 any-to-any: a VLAN aparece em todo BEB que compartilha o I-SID, como se estivessem no mesmo switch.
+- **Layer 3 VSN** - uma VRF é mapeada para um I-SID. É um serviço roteado em full-mesh: uma tabela de roteamento virtualizada carregada pela fabric.
+- **IP Shortcuts** - a tabela de roteamento global (VRF 0) é encaminhada por IS-IS sem I-SID algum; o encaminhamento segue a alcançabilidade de backbone-MAC por caminho mais curto.
+
+Portanto, um número de I-SID por si só não diz se é um serviço Layer 2 ou Layer 3 - isso depende do que você anexou a ele. É exatamente por isso que a ferramenta complementar valida o número e explica as opções, em vez de adivinhar um tipo.
+
+## Como um quadro realmente atravessa
+
+Quando um BEB recebe um quadro em uma VLAN mapeada para o I-SID 100, ele consulta o I-SID, descobre qual backbone-MAC remoto é dono daquele serviço, e envolve o quadro original em um novo cabeçalho de backbone-MAC - o seu próprio B-MAC nodal como origem, o B-MAC do nó de destino como destino - e o encaminha para o core. Os BCBs comutam apenas pelo backbone-MAC; eles nunca olham o quadro do cliente. O BEB de destino remove o cabeçalho de backbone e entrega o quadro original. Isto é o MAC-in-MAC: o mundo do cliente e o mundo do backbone permanecem claramente separados.
+
+## Onde entra o plano de controle
+
+Nada disso usa spanning tree. A fabric roda **IS-IS** como seu único plano de controle link-state: os nós formam adjacências, aprendem a topologia, calculam os caminhos mais curtos e propagam a associação de I-SID conforme os serviços são provisionados. Duas Backbone VLANs (tipicamente 4051 e 4052) carregam o tráfego, mas elas não fazem flooding de quadros desconhecidos, broadcast ou multicast - encaminham apenas pelas tabelas de backbone-MAC que o IS-IS constrói. Essa é a promessa do SPBM: construir a rede uma vez, provisionar na borda e deixar o core em paz.

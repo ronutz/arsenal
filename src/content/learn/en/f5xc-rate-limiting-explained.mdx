@@ -1,0 +1,44 @@
+---
+slug: f5xc-rate-limiting-explained
+title: "How F5XC Rate Limiting Actually Counts: Leaky Bucket, Burst, Lockout, and Overshoot"
+summary: "Why [1, Seconds, 60] and [1, Minutes, 1] are the same limit, how the leaky bucket and burst multiplier really behave, the mitigation trap where Disabled is not off, why distributed counting can overshoot, and why layered API rules are first-match."
+concepts: ["rate limiting", "leaky bucket", "burst multiplier", "http 429", "mitigation action", "f5 distributed cloud"]
+relatedTools: ["f5xc-rate-limit-calculator"]
+relatedArticles: []
+category: security
+order: 70
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Two numbers that mean the same thing
+
+An XC rate limit is a tuple: a **Number** of requests per a window built from **Periods** times a **Per Period** unit (Seconds, Minutes, or Hours). So `[1, Seconds, 60]` and `[1, Minutes, 1]` are the same limit - one request per minute. The console lets you write it either way, which is why two people can describe "the same" limit with configurations that look nothing alike. The first thing to do with any rate limiter is normalize it to a single window, which the companion calculator does for you.
+
+## The leaky bucket
+
+Enforcement is a leaky bucket. Requests fill the bucket; the bucket drains at the configured rate. While the bucket has room, requests pass. When a request would overflow the bucket, the load balancer returns **HTTP 429**. That is the whole mechanism - there is no fixed calendar window that resets on the minute, just a bucket that drains continuously.
+
+## The burst multiplier sizes the bucket
+
+The **Burst Multiplier** sets how big the bucket is, as a multiple of the rate. With the default of 1, the bucket holds one window's worth of requests. Set it to 3 on a 15 request/second limit and a client can burst up to 45 requests before the bucket overflows, then is held to the drain rate. Bursts absorb short spikes without tripping the limit; too high a multiplier defeats the purpose.
+
+## The mitigation trap: Disabled is not off
+
+This is where people get burned. The **Mitigation Action** has two settings, and **Disabled does not mean "no rate limiting."** The leaky bucket still enforces the limit and still returns 429 on overflow regardless of the Mitigation Action. Disabled only means no additional lockout timer is layered on top of the standard 429. If you actually want to stop limiting a class of traffic, you remove or bypass the rate limiter - you do not set Mitigation to Disabled.
+
+## Block adds a lockout that sticks
+
+**Block** layers a lockout on top of the 429. Once a client overflows the bucket, it is blocked for the full configured duration - even if the bucket would have drained in the meantime. The client can send again only after the lockout timer expires. The maximum lockout is 48 hours. So Block turns a self-clearing 429 into a fixed penalty box, which is what you usually want for abusive clients and usually do not want for ordinary bursty ones.
+
+## Why you may see more requests than your limit
+
+Counting is distributed. XC enforces at the Regional Edges and across proxies, each keeping its own view of the bucket, so during a burst you can briefly serve more than the configured limit before the distributed counters converge. This is expected behavior, documented by F5, and not a misconfiguration. If you need a hard ceiling, design for the overshoot rather than assuming the limit is exact to the request.
+
+## Layered API rules are first-match
+
+For API rate limiting you can stack Server URL rules and API endpoint rules. They are evaluated **first-match, in the order you configure them** - so a broad rule placed above a specific one will shadow it. Put the specific rules first.
+
+## Putting it together
+
+The companion calculator takes a Number / Per Period / Periods / Burst Multiplier / Mitigation configuration and shows the normalized rate, the burst ceiling, when 429s begin, how a Block lockout behaves, and these caveats - so you can reason about a rate limiter before you deploy it, instead of discovering its behavior in production.

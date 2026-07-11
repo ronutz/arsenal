@@ -1,0 +1,36 @@
+---
+slug: voss-fabric-attach
+title: "Fabric Attach: Provisionando a Borda Automaticamente (Onde o VOSS Encontra o EXOS)"
+summary: "Como o Fabric Attach permite que um dispositivo de borda sinalize o serviço de que precisa para que a fabric provisione o I-SID automaticamente, os papéis FA Server / Proxy / Client, como ele usa o LLDP, e como um switch EXOS se conecta a uma fabric VOSS sem rodar SPBM."
+concepts: ["fabric attach", "fa server", "fa proxy", "fa client", "lldp", "i-sid", "zero touch", "exos"]
+relatedTools: ["voss-fabric-id"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "voss-vs-exos"]
+category: networking
+order: 43
+status: reviewed
+updated: "2026-07-11"
+---
+
+## O problema de provisionar a borda
+
+O Fabric Connect provisiona serviços no Backbone Edge Bridge, o que é uma grande simplificação, mas você ainda precisa tocar em cada porta de borda para mapear uma VLAN para um I-SID. O **Fabric Attach (FA)** automatiza esse último passo: um dispositivo de borda sinaliza o serviço que quer, e a fabric provisiona o I-SID correspondente para ele, sem mapeamento manual.
+
+## Três papéis
+
+O FA tem três tipos de elemento:
+
+- **FA Server** - roda em um nó da fabric (um BEB). Ele aceita solicitações FA dos seus vizinhos e provisiona os mapeamentos de I-SID na fabric.
+- **FA Proxy** - um switch, muitas vezes no armário de fiação, que fica entre os dispositivos finais e o Server e retransmite as informações FA. Um switch EXOS normalmente exerce esse papel.
+- **FA Client** - um dispositivo final, como um telefone IP ou um ponto de acesso, que solicita um serviço diretamente.
+
+## Como ele sinaliza
+
+O FA usa o **LLDP**. O Server descobre os vizinhos FA por meio de TLVs específicos do FA carregados dentro das PDUs de LLDP, então nenhum protocolo de controle separado é necessário. O FA é habilitado globalmente (`fa enable`) e depois nas portas relevantes. Quando um Proxy ou Client anuncia uma associação entre uma VLAN e um I-SID, o Server provisiona aquele Layer 2 VSN automaticamente - a ideia do Zero Touch. A troca pode ser protegida com autenticação de mensagem (uma chave compartilhada), que o Server habilita por padrão quando você ativa o FA em uma porta.
+
+## Onde o EXOS entra
+
+Um switch EXOS se conecta a uma fabric VOSS como um FA Proxy ou Client. No lado do EXOS você habilita o Fabric Attach no uplink - opcionalmente com uma chave de autenticação - e adiciona as VLANs de acesso a esse uplink; o FA Server do VOSS então provisiona os I-SIDs correspondentes na fabric. Esta é a maneira padrão e suportada de trazer uma borda EXOS de Ethernet tradicional para uma fabric VOSS **sem rodar SPBM ou IS-IS no próprio switch EXOS**. Estender o roteamento IP através da fronteira é um assunto separado, tratado pela redistribuição de OSPF, BGP ou RIP no IS-IS da fabric.
+
+## Verificando
+
+No lado do VOSS, `show fa`, `show fa elements` e `show fa agent` mostram o estado do serviço FA, os elementos descobertos e seus tipos, a VLAN e o I-SID que cada um recebeu, e o resultado da autenticação. Essas saídas são a forma mais rápida de confirmar que um switch de borda se conectou e que a fabric provisionou o serviço que você esperava.

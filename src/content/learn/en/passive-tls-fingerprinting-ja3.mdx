@@ -1,0 +1,36 @@
+---
+slug: passive-tls-fingerprinting-ja3
+title: "Passive TLS Fingerprinting: JA3, GREASE, and the Churn That Led to JA4"
+summary: "A ClientHello announces the client in the clear, and the combination of versions, ciphers, and extensions is characteristic of the software that sent it. This covers how JA3 turns that into a hash, why GREASE has to be stripped, how extension-order randomization broke JA3 (the churn), how JA3N and JA4 restore stability, and where a TLS fingerprint fits as a signal for secure web gateways and adaptive authentication."
+concepts: ["passive fingerprinting", "ja3", "ja3n", "ja4", "tls clienthello", "grease", "bot detection", "sse", "adaptive authentication"]
+relatedTools: ["ja3-tls-fingerprint", "ja4-fingerprint-decoder"]
+relatedArticles: ["what-is-a-ja4-tls-fingerprint"]
+category: security
+order: 81
+status: reviewed
+updated: "2026-07-11"
+---
+
+## The passive fingerprint
+
+Every TLS connection begins with the client announcing itself in the clear. Before any encryption is negotiated, the ClientHello lists the versions, ciphers, and extensions the client is willing to use - and the particular combination and ordering of those values is characteristic of the software that produced it. Passive fingerprinting reads that announcement without touching the client: no probes, no challenges, just the packet the client already sent. JA3 is the best-known way to turn that packet into a short, comparable string.
+
+## What goes into a JA3
+
+JA3 takes five fields from the ClientHello - the TLS version, the cipher suites, the extensions, the elliptic curves (supported groups), and the point formats - concatenates their decimal values with dashes inside a field and commas between fields, and hashes the result with MD5. The output is a 32-character identifier. The reason it works as a fingerprint is that these fields are populated by the TLS library, not the application: a program calls into OpenSSL or NSS or Windows schannel and lets it fill in the ClientHello, so the fingerprint reflects the library and its build far more than the code on top. A Python script, a curl build, a specific Chrome version, and a piece of malware each tend to have their own JA3.
+
+## GREASE: the noise you have to remove
+
+There is a deliberate source of noise in the ClientHello. RFC 8701 defines GREASE - reserved values that browsers insert at random into their cipher and extension lists to keep the TLS ecosystem from ossifying, forcing servers to ignore values they do not recognize. Those GREASE values change from connection to connection, so if a fingerprint included them, a single client would hash differently every time. JA3 strips them before hashing, and any correct JA3 implementation must do the same. When two tools disagree about a client's JA3, inconsistent GREASE handling is a common cause.
+
+## The churn that broke JA3
+
+JA3 held up for years, and then browsers changed. Starting around 2024, Chrome and Firefox began randomizing the order of their TLS extensions on every connection - a defense against exactly this kind of fingerprinting. JA3 hashes the extensions in the order they appear, so a browser that shuffles them produces a different JA3 each time. A single Chrome version, which used to map to one JA3, now maps to thousands. For anyone using JA3 to match known-good or known-bad clients, this quietly turned a reliable signal into noise.
+
+## JA3N, and the move to JA4
+
+There are two responses. The immediate one is JA3N: sort the extension list before hashing, and the order no longer matters, so a permuting browser lands on a single stable value again. It is a one-line change and it works, which is why the calculator shows JA3N next to JA3. The durable one is JA4, the successor built by the original JA3 author. JA4 sorts natively, hashes with SHA256 instead of MD5, carries a readable prefix that shows the TLS version and whether SNI and ALPN were present, and extends the idea beyond TLS to HTTP, SSH, QUIC, and TCP. New detection should be built on JA4; JA3 remains worth understanding because a great deal of existing tooling, threat intelligence, and logs still speak it.
+
+## Where fingerprints meet access and identity
+
+A TLS fingerprint is most useful at the places that already see every connection. A secure web gateway or SSE platform terminates and inspects TLS, which means it sees the ClientHello and can compute a fingerprint as one more signal about what is really connecting - a browser, an automation framework, a known bad tool - independent of whatever the User-Agent claims. An identity platform doing adaptive authentication wants the same kind of signal: a device or client that suddenly presents an unfamiliar fingerprint is a reason to ask for more assurance. In both cases the fingerprint is never the whole decision. It is one input among many - behavior, reputation, history - and its value comes from being hard to fake and cheap to read. That is the thread that runs from a ClientHello on the wire to a policy decision at the edge or at login.

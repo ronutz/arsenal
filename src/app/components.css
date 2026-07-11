@@ -2996,6 +2996,11 @@
 .admin-specs { color: var(--text-secondary); font-size: 0.78rem; }
 .admin-note { color: var(--text-tertiary); font-size: 0.78rem; max-width: 26rem; }
 .admin-status-cell { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
+/* Index list view (tools + Learn): the badge/topic cell is a flex td, which
+   ignores the table's vertical-align:top and centers - misaligning it against the
+   top-aligned name/summary cells. Top-align it in the public catalogues only
+   (the admin page keeps center). */
+.pubcat .admin-status-cell { align-items: flex-start; }
 .admin-badge {
   font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
   padding: 0.12rem 0.45rem; border-radius: var(--radius-sm);
@@ -9123,7 +9128,16 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   border: 1px solid var(--border-1, #1e293b); border-radius: 8px; padding: 0.45rem 0.7rem;
 }
 .ctx-hubmap-link:hover, .ctx-hubmap-link:focus-visible { border-color: var(--accent-1, #22d3ee); outline: none; }
-.ctx-hubmap-label { font-size: 0.9rem; }
+.ctx-hubmap-main { display: flex; align-items: center; gap: 0.55rem; min-width: 0; }
+.ctx-hubmap-key {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 1.35rem; height: 1.35rem; padding: 0 0.32rem;
+  background: var(--surface-base, #020617); color: var(--accent-1, #22d3ee);
+  border: 1px solid var(--border-1, #1e293b); border-radius: 5px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; line-height: 1;
+}
+.ctx-hubmap-label { font-size: 0.9rem; min-width: 0; overflow-wrap: anywhere; }
 .ctx-hubmap-count { flex: 0 0 auto; color: var(--accent-1, #22d3ee); font-size: 0.8rem; font-weight: 700; }
 
 /* Inline man page: a back button, a status line, then the rendered doc. The doc
@@ -11594,9 +11608,125 @@ main[data-view="list"] .boss-viewer-blurb {
   overflow-y: auto;
   white-space: pre-wrap;
   word-break: break-all;
-  font-size: 0.82rem;
   line-height: 1.5;
 }
+/* Terminal themes: only the console surface changes; the tx/sys hues follow. */
+.ws-console--obsidian { background: #0a0e14; color: #c9d1d9; }
+.ws-console--matrix { background: #04120a; color: #35d07f; }
+.ws-console--amber { background: #120c00; color: #ffb000; }
+.ws-console--paper { background: #f6f8fa; color: #1c2128; }
+.ws-line--tx { color: #56d4dd; }
+.ws-line--sys { color: #8b98a5; font-style: italic; }
+.ws-ts { color: #6b7683; }
+.ws-marker { color: #56d4dd; font-weight: 700; }
+.ws-console--matrix .ws-line--tx, .ws-console--matrix .ws-marker { color: #7effa0; }
+.ws-console--amber .ws-line--tx, .ws-console--amber .ws-marker { color: #ffd27f; }
+.ws-console--paper .ws-line--tx, .ws-console--paper .ws-marker { color: #0969da; }
+.ws-console--paper .ws-line--sys { color: #656d76; }
+.ws-console--paper .ws-ts { color: #8c959f; }
+
+/* WebSerial Tier 1 controls (2026-07-10) */
+.ws-select { max-width: 12rem; }
+.ws-advanced { margin-top: 0.6rem; }
+.ws-advanced-summary {
+  cursor: pointer; font-size: 0.85rem; color: var(--text-secondary);
+  padding: 0.2rem 0; user-select: none;
+}
+.ws-advanced-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.6rem; margin-top: 0.5rem;
+}
+.ws-field { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; color: var(--text-secondary); }
+.ws-field--inline { flex-direction: row; align-items: center; gap: 0.5rem; }
+.ws-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; margin-top: 0.75rem;
+}
+.ws-search { max-width: 16rem; flex: 1 1 10rem; }
+.ws-matchcount { font-size: 0.78rem; color: var(--text-tertiary); }
+.ws-toggle {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.82rem; color: var(--text-secondary); cursor: pointer;
+}
+.ws-fontctl { display: inline-flex; gap: 0.25rem; }
+.ws-iconbtn, .ws-keybtn {
+  padding: 0.3rem 0.55rem; font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.78rem; background: var(--surface-elevated); color: var(--text-secondary);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); cursor: pointer;
+}
+.ws-iconbtn:hover, .ws-keybtn:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+.ws-console-wrap { position: relative; }
+.ws-jump {
+  position: absolute; right: 0.9rem; bottom: 0.9rem;
+  padding: 0.3rem 0.75rem; font-size: 0.75rem; font-weight: 600;
+  background: var(--accent-primary); color: #041016; border: none;
+  border-radius: 999px; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.ws-send-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.6rem; }
+.ws-ending { flex: 0 0 auto; max-width: 5.5rem; }
+.ws-line-input { flex: 1 1 auto; }
+.ws-keys { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.ws-paste { margin-top: 0.6rem; }
+.ws-paste-hint { font-size: 0.8rem; color: var(--text-tertiary); margin: 0.3rem 0; }
+.ws-paste-area { width: 100%; margin-top: 0.3rem; }
+.ws-paste-controls { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
+.ws-delay { max-width: 6rem; }
+.ws-snippets { max-width: 14rem; }
+
+/* WebSerial Tier 2: console + detected-token side panel */
+.ws-main { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-start; }
+.ws-main .ws-console-wrap { flex: 1 1 22rem; min-width: 0; }
+.ws-detected {
+  flex: 0 1 17rem; min-width: 13rem;
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  background: var(--surface-elevated); padding: 0.6rem 0.7rem;
+  max-height: 26rem; overflow-y: auto; margin-top: 0.75rem;
+}
+.ws-detected-head {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-tertiary); margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.ws-detected-count {
+  background: var(--accent-primary); color: #041016; font-weight: 700;
+  border-radius: 999px; padding: 0.02rem 0.4rem; font-size: 0.7rem;
+}
+.ws-detected-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.ws-detected-item {
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+  padding: 0.4rem 0.5rem; background: var(--surface-base);
+}
+.ws-detected-kind {
+  display: inline-block; font-size: 0.66rem; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--accent-primary); font-weight: 700; margin-bottom: 0.2rem;
+}
+.ws-detected-value {
+  display: block; font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.76rem; color: var(--text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.35rem;
+}
+.ws-detected-actions { display: flex; gap: 0.35rem; }
+.ws-detected-btn {
+  flex: 1; text-align: center; text-decoration: none;
+  padding: 0.2rem 0.4rem; font-size: 0.72rem;
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+  background: var(--surface-elevated); color: var(--text-secondary); cursor: pointer;
+}
+.ws-detected-btn:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+
+/* WebSerial Tier 3: vendor-OS syntax highlighting. Dark-theme palette works on
+   Obsidian/Matrix/Amber; the Paper (light) theme overrides for contrast. */
+.hl-keyword { color: #4aa3df; font-weight: 600; }
+.hl-ip { color: #22d3ee; }
+.hl-iface { color: #c586c0; }
+.hl-string { color: #ce9178; }
+.hl-number { color: #b5cea8; }
+.hl-comment { color: #6a9955; font-style: italic; }
+.ws-console--paper .hl-keyword { color: #0000c0; }
+.ws-console--paper .hl-ip { color: #0969da; }
+.ws-console--paper .hl-iface { color: #a626a4; }
+.ws-console--paper .hl-string { color: #a04900; }
+.ws-console--paper .hl-number { color: #2f7a2f; }
+.ws-console--paper .hl-comment { color: #4a7a3a; }
 
 /* ============================================================================
    Operations & Fieldcraft cluster - tools 3/4/5 (D-86)
@@ -12745,6 +12875,154 @@ main[data-view="list"] .boss-viewer-blurb {
   width: 0.85rem;
   height: 0.85rem;
 }
+
+/* ---- JA4 TLS fingerprint decoder (2026-07-10) -----------------------------
+   Result layout: the assembled fingerprint, a grid of the human-readable JA4_a
+   fields, the two one-way hashes, notes, and a static anatomy footnote. */
+.ja4-error {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 45%, transparent);
+  border-left: 3px solid var(--accent-amber);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent-amber) 8%, var(--surface-base));
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.ja4-result {
+  margin-top: 1.25rem;
+}
+.ja4-fp-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-base) 60%, transparent);
+}
+.ja4-fp-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ja4-fp {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  word-break: break-all;
+}
+.ja4-parts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+.ja4-part {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 3px solid var(--accent-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in srgb, var(--surface-elevated) 55%, transparent);
+}
+.ja4-part-head {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.ja4-part-code {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.ja4-part-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.ja4-hashes {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+.ja4-hash {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-base) 45%, transparent);
+}
+.ja4-hash-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.ja4-hash-value {
+  font-size: 0.95rem;
+  color: var(--accent-amber);
+  word-break: break-all;
+}
+.ja4-hash-desc {
+  grid-column: 1 / -1;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  line-height: 1.45;
+}
+.ja4-notes {
+  margin: 0.9rem 0 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.ja4-notes li {
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+.ja4-anatomy {
+  margin-top: 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-base) 35%, transparent);
+}
+.ja4-anatomy-head {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+}
+.ja4-anatomy-note {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  line-height: 1.55;
+}
+
+/* OUI / MAC lookup (2026-07-10). The field grid + notes reuse the ja4-* result
+   vocabulary; only the vendor headline and the loading line are OUI-specific. */
+.oui-loading { margin: 1rem 0 0; font-size: 0.85rem; color: var(--text-tertiary); }
+.oui-headline {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 1rem;
+  padding: 0.8rem 1rem; margin-bottom: 0.9rem;
+  border: 1px solid var(--border-subtle); border-left: 3px solid var(--accent-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: color-mix(in srgb, var(--surface-elevated) 55%, transparent);
+}
+.oui-vendor { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+.oui-address { font-size: 0.95rem; color: var(--accent-primary); }
 .tool-doc-link {
   display: inline-flex;
   align-items: center;
@@ -12797,4 +13075,73 @@ main[data-view="list"] .boss-viewer-blurb {
   border: 1px solid color-mix(in srgb, var(--accent-amber) 35%, var(--border-subtle));
   border-left: 3px solid var(--accent-amber);
   border-radius: var(--radius-md);
+}
+
+/* ---- VOSS <-> EXOS command translator (voss-exos-translator) ---- */
+.vet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.vet-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  background: var(--surface-elevated);
+}
+.vet-concept {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+.vet-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+@media (max-width: 640px) {
+  .vet-cols {
+    grid-template-columns: 1fr;
+  }
+}
+.vet-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+.vet-os {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.vet-os-voss {
+  color: var(--accent-primary);
+}
+.vet-os-exos {
+  color: var(--accent-amber);
+}
+.vet-cmd {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.4rem;
+  overflow-x: auto;
+  white-space: pre;
+}
+.vet-none {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+.vet-note {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  margin-top: 0.55rem;
+  line-height: 1.4;
 }

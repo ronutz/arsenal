@@ -20,6 +20,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { run, X509DecodeError, type DecodedCertificate } from "@/lib/tools/x509";
+import { usePrefill } from "@/lib/use-prefill";
 
 /** Hex-encode an ArrayBuffer, colon-grouped and upper-case (fingerprint form). */
 function hexColon(buf: ArrayBuffer): string {
@@ -142,6 +143,11 @@ export default function X509Tool() {
   }
 
   const ext = decoded?.extensions;
+
+  usePrefill((v) => {
+    setValue(v);
+    decode(v);
+  });
 
   return (
     <div className="cidr-tool jwt-tool x509-tool">

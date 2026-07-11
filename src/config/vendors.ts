@@ -43,6 +43,8 @@ export const VENDOR_FAMILIES: readonly VendorFamily[] = Object.freeze([
   { key: "fortinet", alwaysShow: false },
   { key: "netskope", alwaysShow: false },
   { key: "extreme", alwaysShow: false },
+  { key: "zscaler", alwaysShow: false },
+  { key: "ping", alwaysShow: false },
 ]);
 
 /** vendor key -> supplementary hue (dot + soft border only). Provisional; tune here. */
@@ -51,6 +53,8 @@ export const VENDOR_COLORS: Record<string, string> = {
   fortinet: "#F97316", // Fortinet orange (PRIME 2026-07-08: the black dot did not land well; orange keeps the dot clearly distinct from F5 red at dot size while staying warm like Fortinet's red/black brand pairing)
   netskope: "#00A9E0", // Netskope blue
   extreme: "#582C83", // Extreme Networks purple
+  zscaler: "#0071C5", // Zscaler blue (provisional brand hue; dot + soft border only)
+  ping: "#C8102E", // Ping Identity red (provisional; distinct enough from F5 red at dot size)
 };
 
 /** Neutral fallback so a future vendor is never invisible. */
@@ -189,6 +193,11 @@ export const VENDOR_SUBS: Record<string, readonly VendorSub[]> = Object.freeze({
     { id: "sdwan" },          // ExtremeCloud SD-WAN
     { id: "access-security" }, // ExtremeControl NAC, Universal ZTNA, AirDefense, Defender for IoT
     { id: "analytics" },      // ExtremeAnalytics, AIOps
+  ],
+  ping: [
+    { id: "sso" },           // SAML / OIDC single sign-on and federation
+    { id: "oauth-tokens" },  // OAuth 2.0, PKCE, JWT, JWKS
+    { id: "mfa" },           // TOTP / HOTP multi-factor
   ],
 });
 

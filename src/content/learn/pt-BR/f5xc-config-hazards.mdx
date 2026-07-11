@@ -1,0 +1,36 @@
+---
+slug: f5xc-config-hazards
+title: "Perigos Comuns de Configuração do XC que um Linter Pode Pegar"
+summary: "Objetos do XC aceitam configurações que são válidas mas operacionalmente erradas. Isto percorre os perigos que um linter de objeto único pode sinalizar: skip-verification, texto puro, SNI desabilitado e health checks ausentes no origin pool; no-WAF, listeners HTTP puros, redirect de HTTP para HTTPS ausente, WAF desabilitado por rota, sombreamento de rota catch-all, e wildcard+apex no load balancer; e um WAF deixado em modo de monitoramento - além de por que a severidade é um priorizador, não um veredito, e os limites de ler um objeto por vez."
+concepts: ["configuration linting", "origin pool", "http load balancer", "waf", "route shadowing", "tls to origin", "f5 distributed cloud"]
+relatedTools: ["f5xc-object-linter"]
+relatedArticles: ["f5xc-origin-pool-anatomy", "f5xc-domain-matching-and-listener-logic"]
+category: security
+order: 78
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Por que um linter, não um wizard
+
+Os objetos de configuração do XC são permissivos: eles alegremente aceitam uma configuração que é tecnicamente válida mas operacionalmente errada. Um WAF deixado em modo de monitoramento é um WAF válido. Um origin pool que pula a verificação de certificado é um pool válido. Uma rota catch-all sentada acima das suas rotas específicas é uma lista de rotas válida. Nenhuma dessas produz um erro - elas produzem comportamento surpreendente, semanas depois, que você então tem que rastrear de volta. Um linter pega a classe de problema que é legal mas provavelmente não é o que você quis dizer.
+
+## Os perigos do origin pool
+
+A conexão do XC até seu origin é onde vários perigos silenciosos vivem. Pular a verificação do origin server é o mais afiado: o tráfego ainda é criptografado, então parece seguro, mas o XC aceita qualquer certificado que o origin apresente, o que significa que qualquer um que possa interceptar o caminho pode se passar pelo seu origin. Desabilitar o SNI faz origins que hospedam vários nomes devolverem o certificado errado ou o site errado. Desligar o TLS inteiramente envia tráfego para o origin em texto puro. E um origin pool sem health check depende apenas de sinais implícitos, enquanto um pool com um único origin não tem redundância alguma. Cada uma dessas às vezes é a escolha certa - um origin interno-apenas em uma rede confiável, um único origin em um lab - mas cada uma vale ver explicitada.
+
+## Os perigos do load balancer
+
+O erro mais comum de load balancer é simplesmente esquecer de anexar um WAF: o load balancer funciona, o tráfego flui, e nada está inspecionando-o em busca de ataques de camada de aplicação. Logo atrás está a lista de rotas. Como o XC avalia rotas por primeiro match, uma rota catch-all - uma que dá match no prefixo "/" - colocada em qualquer lugar exceto por último significa que toda rota depois dela está morta, silenciosamente. Desabilitar o WAF em uma rota específica abre um buraco que é fácil de esquecer. No lado do transporte, um listener HTTP puro envia tráfego do cliente não criptografado, e HTTPS sem um redirect de HTTP para HTTPS deixa clientes que chegam por HTTP desprotegidos. E misturar um domínio wildcard com seu apex é o conflito de certificado automático que a F5 avisa.
+
+## O perigo do WAF
+
+Um WAF tem uma configuração que muda tudo: seu enforcement mode. Em modo de bloqueio ele para ataques; em modo de monitoramento ele os detecta e loga mas os deixa passar. Modo de monitoramento é o ponto de partida correto quando você está fazendo tuning de uma nova policy e ainda não confia que ela não vai bloquear tráfego legítimo - mas um WAF que foi posto em modo de monitoramento para tuning e nunca trocado para bloqueio é um WAF que não está protegendo nada. Desabilitar threat campaigns, que detectam campanhas de exploit ativo conhecidas em vez de padrões genéricos, similarmente troca cobertura por menos detecções.
+
+## Severidade é um priorizador, não um veredito
+
+O linter ordena o que ele encontra por severidade, e a severidade é sobre consequência, não certeza. Um finding de alta - pular a verificação do origin - é algo que enfraquece materialmente a segurança onde quer que apareça. Um aviso geralmente é um erro mas tem usos legítimos. Um info frequentemente é intencional. O ponto da ordenação é triagem: quando você cola um objeto real e obtém seis findings, você quer o que mais importa no topo. Mas cada finding é um lembrete para checar sua intenção, não uma instrução para mudar a configuração. Alguns desses são exatamente certos para a sua situação, e o linter te diz o que cada um faz para que você possa tomar essa decisão.
+
+## Os limites de um linter de objeto único
+
+Um linter que lê um objeto não consegue ver a configuração inteira. Ele não sabe se o WAF que seu load balancer referencia por nome está em modo de bloqueio ou monitoramento, porque isso vive no objeto WAF, não no load balancer. Ele não consegue te dizer o peso de um origin pool dentro de uma rota, porque pesos vivem na referência do pool da rota. O que ele consegue fazer, e fazer instantaneamente, é pegar os perigos visíveis no objeto na sua frente - que são a maioria deles, e a forma mais rápida de achar os óbvios antes que eles te surpreendam em produção.

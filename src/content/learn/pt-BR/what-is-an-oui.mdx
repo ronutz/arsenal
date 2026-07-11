@@ -1,0 +1,37 @@
+---
+slug: what-is-an-oui
+title: "O Que É um OUI, e Como Endereços MAC São Atribuídos"
+summary: "Como um endereço MAC é estruturado, o que é o OUI (o prefixo do fabricante) e quem o distribui, a diferença entre endereços de administração universal e local, e por que um MAC de Wi-Fi aleatorizado não tem fabricante algum."
+concepts: ["oui", "endereco mac", "ieee registration authority", "unicast vs multicast", "administrado localmente", "eui-48"]
+relatedTools: ["oui-lookup"]
+relatedArticles: []
+category: networking
+order: 30
+status: reviewed
+updated: "2026-07-10"
+---
+
+## O formato de um endereço MAC
+
+Um endereço MAC-48 (ou EUI-48) tem 48 bits, seis octetos, normalmente mostrado como hexadecimal separado por dois-pontos ou hífens (`00:1b:54:11:22:33`), ou, na convenção da Cisco, como três grupos separados por ponto (`001b.5411.2233`). Ele se divide exatamente ao meio: os três primeiros octetos são o OUI, e os três últimos são atribuídos pelo fabricante a dispositivos individuais.
+
+## O OUI, e quem o atribui
+
+O OUI - Organizationally Unique Identifier - é um prefixo de 24 bits que a IEEE Registration Authority vende a um fabricante. Compre um OUI (um bloco MA-L) e você passa a ter cerca de 16,7 milhões de endereços para gravar no seu hardware. A IEEE publica as atribuições, e é por isso que uma consulta consegue transformar `00:1b:54` na empresa que o registrou. Há também blocos menores - MA-M (um prefixo de 28 bits, cerca de um milhão de endereços) e MA-S (36 bits, cerca de 4.096) - para fabricantes que não precisam de um OUI inteiro.
+
+## Dois bits escondidos no primeiro octeto
+
+Antes de ler o OUI como um fabricante, dois bits no primeiro octeto dizem se essa leitura faz sentido:
+
+- O **bit I/G** (o bit menos significativo do primeiro octeto) marca unicast (0) versus multicast (1). MACs multicast endereçam um grupo; o exemplo clássico é `01:00:5e`, que carrega multicast IPv4.
+- O **bit U/L** (o bit seguinte) marca administração universal (0) versus local (1). Um endereço de administração universal veio de um OUI e é globalmente único; um administrado localmente foi definido por software e não pertence a nenhum fabricante.
+
+Uma dica fácil: se o segundo dígito hexadecimal do endereço for 2, 6, A ou E, o bit U/L está ativo e o endereço é administrado localmente.
+
+## Por que tantos MACs agora não têm fabricante
+
+Endereços administrados localmente costumavam ser um nicho - um hipervisor criando placas para máquinas virtuais, um grupo de agregação de links apresentando um único endereço. Então a privacidade mudou o padrão. Celulares e notebooks agora usam um MAC aleatorizado e administrado localmente para cada rede Wi-Fi à qual se conectam, justamente para que o endereço não possa ser vinculado a um dispositivo ou a um fabricante. Consulte um desses e a resposta honesta é que não há fabricante: os bits do OUI são aleatórios, não uma atribuição. Uma ferramenta que retornasse um "fabricante" para um MAC aleatorizado estaria inventando um.
+
+## Onde isso é útil
+
+Ler o fabricante de um MAC é trabalho de rede do dia a dia: identificar o que está conectado a uma porta de switch pelo endereço, detectar um dispositivo desconhecido ou não autorizado, reconhecer virtualização (VMware, Xen e VirtualBox têm OUIs bem conhecidos) ou apenas confirmar que aquilo com que você acha que está falando é a marca que você espera. Ler os dois bits primeiro evita que você procure um fabricante para um endereço que, por definição, não tem nenhum.

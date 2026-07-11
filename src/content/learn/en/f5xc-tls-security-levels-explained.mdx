@@ -1,0 +1,36 @@
+---
+slug: f5xc-tls-security-levels-explained
+title: "F5XC TLS Security Levels Decoded: What High/Medium/Low Negotiate, and Why Your Scanner Flags a Load Balancer"
+summary: "The three predefined XC TLS levels plus Custom, why Default is the High level (min TLS 1.2), how the cipher lists are cumulative, why a scanner reports TLS 1.0/1.1 on Medium or Low, and why the Low level's static-RSA ciphers are flagged as weak."
+concepts: ["tls", "cipher suites", "forward secrecy", "tls security level", "f5 distributed cloud", "ssl scanner"]
+relatedTools: ["f5xc-tls-security-level-mapper"]
+relatedArticles: []
+category: transport
+order: 71
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Four ways to set TLS on an XC load balancer
+
+An XC HTTP load balancer offers three predefined TLS security levels - **High**, **Medium**, and **Low** - plus **Custom**. Each predefined level is a shorthand for two things at once: a minimum and maximum TLS version, and a set of cipher suites. Custom lets you choose the versions and suites yourself.
+
+## Default is High
+
+The point people miss is that **Default is High**. An HTTPS load balancer with an automatic certificate uses the Default level, and the Default level is the High level: minimum TLS 1.2, maximum TLS 1.3, and a short list of forward-secret AEAD ciphers - the TLS 1.3 suites plus ECDHE-ECDSA and ECDHE-RSA with GCM or ChaCha20. That is a strong posture out of the box.
+
+## The levels are cumulative
+
+Going down from High does not swap the cipher list, it extends it. **Medium** keeps every High cipher and adds four ECDHE-CBC-SHA suites - still forward-secret, but CBC with SHA-1 rather than AEAD, so medium strength - and lowers the minimum version to TLS 1.0. **Low** keeps every Medium cipher and adds four static-RSA suites, and static RSA means no forward secrecy at all. So Low is a superset of Medium, which is a superset of High. Every level still caps at TLS 1.3.
+
+## Why a scanner flags TLS 1.0 or 1.1
+
+This is the first of two questions F5 answers in a dedicated article. If a scanner reports TLS 1.0 or 1.1 enabled on your load balancer, the load balancer is on **Medium or Low** - those are the levels whose minimum version is TLS 1.0. The Default/High level is minimum TLS 1.2 and will not present the old protocols. So the fix for a TLS 1.0 finding is usually not a mysterious hidden setting; it is that the load balancer is on a lower predefined level than you thought (K000148226).
+
+## Why a scanner flags weak ciphers
+
+The second question. If a scanner reports weak ciphers, it is almost always the **static-RSA suites the Low level adds**. Static RSA key exchange provides no forward secrecy, which every modern scanner grades down regardless of the symmetric cipher. If you are on Low for a legacy-client reason and a scanner is unhappy, those RSA suites are why (K000148079).
+
+## Choosing a level
+
+For a modern posture, stay on **High** (the default) - it is TLS 1.2 and 1.3 with forward-secret AEAD ciphers, and with HSTS added it earns an A or A+ on public TLS graders. Drop to Medium or Low only for a specific legacy-client requirement, and know exactly what you are re-enabling: older protocols at Medium, and non-forward-secret ciphers at Low. The companion mapper shows the exact versions and cipher list for any level, and tells you which levels a given cipher belongs to when you are reading a scan.

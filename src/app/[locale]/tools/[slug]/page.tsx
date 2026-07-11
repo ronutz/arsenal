@@ -102,7 +102,31 @@ import { manifest as nslookupManifest } from "@/lib/tools/nslookup-output-explai
 import XmlDecoderTool from "@/components/XmlDecoderTool";
 import { manifest as xmlManifest } from "@/lib/tools/xml-decoder";
 import F5xcServicePolicyExplainerTool from "@/components/F5xcServicePolicyExplainerTool";
+import F5xcRateLimitCalculatorTool from "@/components/F5xcRateLimitCalculatorTool";
+import F5xcTlsSecurityLevelMapperTool from "@/components/F5xcTlsSecurityLevelMapperTool";
+import F5xcCeEgressChecklistTool from "@/components/F5xcCeEgressChecklistTool";
+import F5xcHttpLbRouteExplainerTool from "@/components/F5xcHttpLbRouteExplainerTool";
+import F5xcLbAlgorithmChooserTool from "@/components/F5xcLbAlgorithmChooserTool";
+import F5xcOriginPoolExplainerTool from "@/components/F5xcOriginPoolExplainerTool";
+import F5xcDomainSniMatchResolverTool from "@/components/F5xcDomainSniMatchResolverTool";
+import F5xcSecurityEventExplainerTool from "@/components/F5xcSecurityEventExplainerTool";
+import F5xcObjectLinterTool from "@/components/F5xcObjectLinterTool";
+import F5xcApiPathExplainerTool from "@/components/F5xcApiPathExplainerTool";
+import BigipLtmLbSimulatorTool from "@/components/BigipLtmLbSimulatorTool";
+import Ja3TlsFingerprintTool from "@/components/Ja3TlsFingerprintTool";
 import { manifest as f5xcServicePolicyManifest } from "@/lib/tools/f5xc-service-policy-explainer";
+import { manifest as f5xcRateLimitManifest } from "@/lib/tools/f5xc-rate-limit-calculator";
+import { manifest as f5xcTlsMapperManifest } from "@/lib/tools/f5xc-tls-security-level-mapper";
+import { manifest as f5xcCeEgressManifest } from "@/lib/tools/f5xc-ce-egress-checklist";
+import { manifest as f5xcRouteManifest } from "@/lib/tools/f5xc-http-lb-route-explainer";
+import { manifest as f5xcLbAlgoManifest } from "@/lib/tools/f5xc-lb-algorithm-chooser";
+import { manifest as f5xcOriginPoolManifest } from "@/lib/tools/f5xc-origin-pool-explainer";
+import { manifest as f5xcDomainSniManifest } from "@/lib/tools/f5xc-domain-sni-match-resolver";
+import { manifest as f5xcSecurityEventManifest } from "@/lib/tools/f5xc-security-event-explainer";
+import { manifest as f5xcObjectLinterManifest } from "@/lib/tools/f5xc-object-linter";
+import { manifest as f5xcApiPathManifest } from "@/lib/tools/f5xc-api-path-explainer";
+import { manifest as bigipLtmSimManifest } from "@/lib/tools/bigip-ltm-lb-simulator";
+import { manifest as ja3Manifest } from "@/lib/tools/ja3-tls-fingerprint";
 import PersistenceMethodExplainerTool from "@/components/PersistenceMethodExplainerTool";
 import { manifest as persistManifest } from "@/lib/tools/f5-persistence-method-explainer";
 import LbMethodChooserTool from "@/components/LbMethodChooserTool";
@@ -188,7 +212,15 @@ import { manifest as csrManifest } from "@/lib/tools/csr-decoder";
 import IrulesEventOrderTool from "@/components/IrulesEventOrderTool";
 import { manifest as irevManifest } from "@/lib/tools/f5-irules-event-order";
 import SyslogPriDecoderTool from "@/components/SyslogPriDecoderTool";
+import Ja4FingerprintDecoderTool from "@/components/Ja4FingerprintDecoderTool";
+import OuiLookupTool from "@/components/OuiLookupTool";
+import VossFabricIdTool from "@/components/VossFabricIdTool";
+import VossExosTranslatorTool from "@/components/VossExosTranslatorTool";
 import { manifest as syslogPriManifest } from "@/lib/tools/syslog-pri-decoder";
+import { manifest as ja4Manifest } from "@/lib/tools/ja4-fingerprint-decoder";
+import { manifest as ouiManifest } from "@/lib/tools/oui-lookup";
+import { manifest as vossManifest } from "@/lib/tools/voss-fabric-id";
+import { manifest as vossExosManifest } from "@/lib/tools/voss-exos-translator";
 import JwksExplainerTool from "@/components/JwksExplainerTool";
 import { manifest as jwksManifest } from "@/lib/tools/jwks-explainer";
 import RegexTool from "@/components/RegexTool";
@@ -383,6 +415,54 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: F5xcServicePolicyExplainerTool,
     sources: f5xcServicePolicyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "f5xc-rate-limit-calculator": {
+    Component: F5xcRateLimitCalculatorTool,
+    sources: f5xcRateLimitManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-tls-security-level-mapper": {
+    Component: F5xcTlsSecurityLevelMapperTool,
+    sources: f5xcTlsMapperManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-ce-egress-checklist": {
+    Component: F5xcCeEgressChecklistTool,
+    sources: f5xcCeEgressManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-http-lb-route-explainer": {
+    Component: F5xcHttpLbRouteExplainerTool,
+    sources: f5xcRouteManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-lb-algorithm-chooser": {
+    Component: F5xcLbAlgorithmChooserTool,
+    sources: f5xcLbAlgoManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-origin-pool-explainer": {
+    Component: F5xcOriginPoolExplainerTool,
+    sources: f5xcOriginPoolManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-domain-sni-match-resolver": {
+    Component: F5xcDomainSniMatchResolverTool,
+    sources: f5xcDomainSniManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-security-event-explainer": {
+    Component: F5xcSecurityEventExplainerTool,
+    sources: f5xcSecurityEventManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-object-linter": {
+    Component: F5xcObjectLinterTool,
+    sources: f5xcObjectLinterManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5xc-api-path-explainer": {
+    Component: F5xcApiPathExplainerTool,
+    sources: f5xcApiPathManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "bigip-ltm-lb-simulator": {
+    Component: BigipLtmLbSimulatorTool,
+    sources: bigipLtmSimManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "ja3-tls-fingerprint": {
+    Component: Ja3TlsFingerprintTool,
+    sources: ja3Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "f5-awaf-declarative-policy-explainer": {
     Component: F5AwafDeclarativePolicyExplainerTool,
     sources: f5AwafManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -542,6 +622,24 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-irules-event-order": {
     Component: IrulesEventOrderTool,
     sources: irevManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "oui-lookup": {
+    Component: OuiLookupTool,
+    sources: ouiManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "voss-fabric-id": {
+    Component: VossFabricIdTool,
+    sources: vossManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "voss-exos-translator": {
+    Component: VossExosTranslatorTool,
+    sources: vossExosManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+
+
+  "ja4-fingerprint-decoder": {
+    Component: Ja4FingerprintDecoderTool,
+    sources: ja4Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "syslog-pri-decoder": {
     Component: SyslogPriDecoderTool,

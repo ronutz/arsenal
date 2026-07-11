@@ -1,0 +1,50 @@
+---
+slug: what-is-a-ja4-tls-fingerprint
+title: "What Is a JA4 TLS Fingerprint?"
+summary: "How a TLS ClientHello becomes a stable fingerprint of the client software, why JA3 faded once browsers began randomizing extension order, how JA4 fixes that by sorting before hashing, and what JA4 can and cannot tell you."
+concepts: ["ja4", "ja3", "tls fingerprinting", "clienthello", "passive fingerprinting", "grease"]
+relatedTools: ["ja4-fingerprint-decoder"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites"]
+category: transport
+order: 20
+status: reviewed
+updated: "2026-07-10"
+---
+
+## What a TLS fingerprint is
+
+Every TLS connection opens with the client sending a ClientHello: a message that lays out, in the clear, exactly how the client is willing to negotiate. Which TLS versions it supports, which cipher suites it offers, which extensions it sends and in what form, which elliptic curves and signature algorithms it will accept, which application protocols it wants through ALPN. None of this is secret, because the server needs it to pick a common set of parameters. But the particular combination is a tell. A given build of Chrome, or curl, or a Go program, or a piece of malware, assembles its ClientHello in a characteristic way, and that characteristic shape can be reduced to a short string. That string is a TLS fingerprint, and it lets a server, proxy, or passive sensor recognize the client software without decrypting a single byte of the conversation.
+
+## JA3, and why it faded
+
+The first widely used TLS fingerprint was JA3, published by Salesforce in 2017. JA3 takes five fields from the ClientHello (the TLS version, the cipher list, the extension list, the elliptic curves, and the elliptic-curve point formats), joins their numeric values into one string in the order the client sent them, and takes the MD5 of that string. For years it worked well.
+
+What broke it was a defensive change in the clients themselves. To stop servers from relying on a fixed extension order, Chrome and then other browsers began randomizing the order of TLS extensions on every connection. Because JA3 hashed the extensions in the order they arrived, a randomized order produced a different JA3 each time, and a fingerprint that changes on every connection is useless for identification. JA3 still has value for software that does not randomize, but for modern browsers it no longer holds.
+
+## How JA4 is built
+
+JA4, published by FoxIO, is the successor designed for that world. Its single most important change is that it sorts the cipher and extension lists before hashing them, so a client that shuffles its extension order still produces the same fingerprint. A JA4 also trades MD5 for SHA-256 and, unlike JA3's opaque hash, keeps a human-readable prefix.
+
+A JA4 is three sections joined by underscores, for example `t13d1516h2_8daaf6152771_e5627efa2ab1`:
+
+- **JA4_a** is readable at a glance: the transport (`t` for TLS over TCP, `q` for QUIC), the TLS version (`13` for TLS 1.3), whether an SNI was present (`d` for a domain, `i` for a bare IP), the cipher and extension counts, and an ALPN marker (`h2` for HTTP/2).
+- **JA4_b** is the first twelve hex characters of the SHA-256 of the sorted cipher list.
+- **JA4_c** is the first twelve hex characters of the SHA-256 of the sorted extension list (with SNI and ALPN removed) plus the signature algorithms.
+
+The two hash sections are one-way, so a JA4 identifies a client without exposing the full parameter lists. The [JA4 fingerprint decoder](/tools/ja4-fingerprint-decoder) breaks a JA4 into these parts, and can also compute the hashes from raw ClientHello values.
+
+## GREASE
+
+One detail that trips up hand-computed fingerprints is GREASE. Defined in draft-davidben-tls-grease, GREASE has clients send reserved, meaningless values among their real ciphers and extensions specifically so that servers learn to ignore unknown values and stay tolerant of future TLS changes. JA4 ignores GREASE everywhere, so those values never count toward the totals or enter the hashes. Any correct implementation, including this one, filters them out first.
+
+## Where JA4 shows up
+
+TLS fingerprinting is a staple of the middle of the network. Content delivery networks and web application firewalls use it to spot automated clients and bots that claim, in their User-Agent header, to be a browser but whose TLS handshake says otherwise. Secure web gateways and cloud proxies use it as one signal among many when classifying traffic. Threat-intelligence feeds publish JA4 values for known malware families, since a piece of malware often reuses the same TLS library and therefore the same fingerprint across many samples. Because it needs only the unencrypted ClientHello, it works passively, without terminating or decrypting the connection.
+
+## A note on licensing
+
+JA4, the TLS client fingerprint described here, is released by FoxIO under the permissive BSD 3-Clause license, the same terms as the original JA3, so anyone can implement it, including in commercial products. The wider JA4+ family (JA4S for the server side, JA4H for HTTP, JA4X for certificates, JA4T for TCP, and others) is licensed under the FoxIO License 1.1, which does not permit monetization without a separate agreement. That distinction is worth knowing before building fingerprinting into a product.
+
+## What it is not
+
+A fingerprint identifies software, not a person, and it is a hint rather than proof. Different programs built on the same TLS library can share a JA4, so a match narrows the field without naming a specific application, and a client can deliberately mimic another's ClientHello to forge one. It says nothing about the content of the connection, which stays encrypted. Read a JA4 as one strong signal about what is talking, to be weighed with the rest of what you can see, not as an identity on its own.

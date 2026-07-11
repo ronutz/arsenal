@@ -19,6 +19,7 @@
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, UrlParseError, type UrlReport } from "@/lib/tools/url-inspector";
+import { usePrefill } from "@/lib/use-prefill";
 
 const HOST_TYPE_LABEL: Record<NonNullable<UrlReport["hostType"]>, string> = {
   ipv4: "ipv4",
@@ -72,6 +73,11 @@ export default function UrlInspectorTool() {
 
   const reason = (r: { code: string; value?: string }) =>
     t(`reasons.${r.code}`, r.value !== undefined ? { value: r.value } : undefined);
+
+  usePrefill((v) => {
+    setValue(v);
+    parse(v);
+  });
 
   return (
     <div className="cidr-tool jwt-tool saml-tool url-tool">

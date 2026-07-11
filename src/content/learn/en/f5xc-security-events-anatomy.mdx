@@ -1,0 +1,40 @@
+---
+slug: f5xc-security-events-anatomy
+title: "Reading an XC Security Event: Type, Action, and the Reason It Fired"
+summary: "XC's WAF, Bot Defense, service policies, and API protection all write to one security-events stream. The sec_event_type field tells you the source; action versus recommended action (and enforcement/staging) explains why a matched signature may not block; and the reason lives in different fields per type - WAF signatures/violations/attack types, the bot verdict, the matched service policy and rule, or API OpenAPI validation and policy hits."
+concepts: ["security event", "waf", "bot defense", "service policy", "api security", "signatures", "violations", "f5 distributed cloud"]
+relatedTools: ["f5xc-security-event-explainer"]
+relatedArticles: ["f5xc-rate-limiting-explained", "f5xc-http-lb-route-evaluation"]
+category: security
+order: 77
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Four services, one event page
+
+F5 Distributed Cloud runs several security services in front of your application - the WAF, Bot Defense, service policies, and API protection - and they all write to the same security-events stream. That is convenient for monitoring but means a single event could have come from any of them, with a different structure depending on which fired. Knowing how to read one is the difference between "something was blocked" and "the SQL-injection signature 200021069 blocked a GET to /search from this IP."
+
+## The type tag tells you the source
+
+Every event carries a sec_event_type field, and its value tells you which service produced it: waf_sec_event, bot_defense_sec_event, svc_policy_sec_event, or api_sec_event. That single field decides which other fields to expect. A WAF event will have signatures and violations; a Bot Defense event will have a bot verdict; a service-policy event will have a policy and rule; an API event will have OpenAPI validation and policy hits. When you are triaging, read the type first - it frames everything else.
+
+## Action, recommendation, and disposition
+
+An event records two related but distinct things: what the security service recommended, and what it actually did. The recommended action (calculated_action for WAF, recommended_action for API) is the policy's verdict - allow, report, or block. The action taken reflects the enforcement mode of the load balancer. This is where a common confusion lives: in monitoring mode, or while a signature is still in staging, the WAF generates a complete event with all its signature and violation detail but does not block the request. So you can see a high-accuracy SQL-injection signature in an event whose action is report, not block. Reading the action rather than assuming from the signature is what keeps you from chasing a block that never happened.
+
+## The WAF reason: signatures, violations, attack types
+
+For a WAF event, the reason lives in three lists. Signatures are the specific patterns that matched, each with an id, a human-readable name, an accuracy (high, medium, or low), and an attack type. Violations are structural problems - a malformed request, an illegal file type, an evasion attempt - each with a context showing where in the request it was found. Attack types summarize the classes of attack detected. Accuracy matters when you are tuning: a low-accuracy signature is more likely to be a false positive, and XC's own tooling lets you filter events by it. The signature id is what you use to build an exclusion if the detection is wrong.
+
+## The bot verdict
+
+A Bot Defense event answers a different question: was this client automated, and how do we know? The insight classifies the client as human, a good bot, or malicious. The automation type explains the evidence - a missing or expired token, a rate limit exceeded, a replayed payload, threat intelligence. The recommendation is what Bot Defense suggested doing about it. Unlike a WAF signature, a bot verdict is about the client's behavior across the session, not a single request's content.
+
+## The service-policy and API reasons
+
+A service-policy event names the policy that was evaluated and the specific rule that matched, along with the result - allow, deny, or a default. That is the most direct kind of event to reason about, because it maps one-to-one to configuration you wrote. An API event adds OpenAPI validation: the request and response validation status tell you whether the traffic conformed to the API's specification, and the policy hits show which protection rule applied. Both types point straight back at a named object you can open and adjust.
+
+## From event to action
+
+Reading an event well ends in a decision. If the detection is correct, the source IP, the signature or rule, and the request id are what you need to escalate or block more broadly. If it is a false positive, the same fields - the signature id, the violation name, the policy rule - are exactly what you exclude. The companion tool pulls all of this out of the raw JSON at once, so a paste turns into a triage-ready summary instead of a hunt through forty fields.

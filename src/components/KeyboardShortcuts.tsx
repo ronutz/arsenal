@@ -99,6 +99,11 @@ function keyLabel(key: string): string {
   return key;
 }
 
+// T-DOT hub-map jump keys: 1-9, then 0, then a-z, in that order. Assigned to the
+// panel's family sections by index, so they are ordered and unique by
+// construction (no two sections can collide on a key).
+const JUMP_KEYS = "1234567890abcdefghijklmnopqrstuvwxyz";
+
 // Sole caller of next-intl's useRouter. Rendered only after mount (client-side),
 // so the hook never executes during static prerender. It fills the parent's
 // navigate ref with a locale-aware push and renders nothing.
@@ -245,6 +250,23 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
         if (e.key === "Escape") {
           if (manPage) setManPage(null);
           else setContextOpen(false);
+          return;
+        }
+        // T-DOT: press a section's jump key (1-9, 0, a-z) to jump to that family
+        // section of the hub-map and close the panel. Keys are index-assigned, so
+        // they match the badges shown in the panel exactly. Disabled while a sub
+        // man-page is open (that view has its own keys). Chords already returned.
+        if (!manPage && e.key.length === 1) {
+          const hub = caps?.capabilities.find((c) => c.kind === "hub-map");
+          const secs = hub?.sections;
+          if (secs && secs.length > 0) {
+            const idx = JUMP_KEYS.indexOf(e.key.toLowerCase());
+            if (idx >= 0 && idx < secs.length) {
+              e.preventDefault();
+              setContextOpen(false);
+              navigateRef.current(`#${secs[idx].anchor}`);
+            }
+          }
         }
         return;
       }
@@ -398,7 +420,7 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
                         <p className="ctx-action-label">{cap.label}</p>
                         {cap.detail && <p className="ctx-action-detail">{cap.detail}</p>}
                         <ul className="ctx-hubmap-list">
-                          {(cap.sections ?? []).map((s) => (
+                          {(cap.sections ?? []).map((s, i) => (
                             <li key={s.id}>
                               <button
                                 type="button"
@@ -408,7 +430,12 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
                                   navigateRef.current(`#${s.anchor}`);
                                 }}
                               >
-                                <span className="ctx-hubmap-label">{s.label}</span>
+                                <span className="ctx-hubmap-main">
+                                  {JUMP_KEYS[i] && (
+                                    <kbd className="ctx-hubmap-key">{JUMP_KEYS[i]}</kbd>
+                                  )}
+                                  <span className="ctx-hubmap-label">{s.label}</span>
+                                </span>
                                 <span className="ctx-hubmap-count mono">{s.toolCount}</span>
                               </button>
                             </li>

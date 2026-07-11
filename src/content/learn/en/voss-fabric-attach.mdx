@@ -1,0 +1,36 @@
+---
+slug: voss-fabric-attach
+title: "Fabric Attach: Auto-Provisioning the Edge (Where VOSS Meets EXOS)"
+summary: "How Fabric Attach lets an edge device signal the service it needs so the fabric provisions the I-SID automatically, the FA Server / Proxy / Client roles, how it rides LLDP, and how an EXOS switch attaches to a VOSS fabric without running SPBM itself."
+concepts: ["fabric attach", "fa server", "fa proxy", "fa client", "lldp", "i-sid", "zero touch", "exos"]
+relatedTools: ["voss-fabric-id"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "voss-vs-exos"]
+category: networking
+order: 43
+status: reviewed
+updated: "2026-07-11"
+---
+
+## The edge-provisioning problem
+
+Fabric Connect provisions services at the Backbone Edge Bridge, which is a big simplification, but you still have to touch each edge port to map a VLAN to an I-SID. **Fabric Attach (FA)** automates that last step: an edge device signals the service it wants, and the fabric provisions the matching I-SID for it, with no manual mapping.
+
+## Three roles
+
+FA has three element types:
+
+- **FA Server** - runs on a fabric node (a BEB). It accepts FA requests from its neighbors and provisions the I-SID mappings into the fabric.
+- **FA Proxy** - a switch, often in the wiring closet, that sits between end devices and the Server and relays FA information. An EXOS switch typically plays this role.
+- **FA Client** - an end device such as an IP phone or access point that requests a service directly.
+
+## How it signals
+
+FA rides **LLDP**. The Server discovers FA neighbors through FA-specific TLVs carried inside LLDP PDUs, so no separate control protocol is needed. FA is enabled globally (`fa enable`) and then on the relevant ports. When a Proxy or Client advertises a binding between a VLAN and an I-SID, the Server provisions that Layer 2 VSN automatically - the Zero Touch idea. The exchange can be secured with message authentication (a shared key), which the Server enables by default when you turn FA on for a port.
+
+## Where EXOS fits
+
+An EXOS switch attaches to a VOSS fabric as an FA Proxy or Client. On the EXOS side you enable Fabric Attach on the uplink - optionally with an authentication key - and add the access VLANs to that uplink; the VOSS FA Server then provisions the matching I-SIDs into the fabric. This is the standard, supported way to bring a traditional-Ethernet EXOS edge onto a VOSS fabric **without running SPBM or IS-IS on the EXOS switch itself**. Extending IP routing across the boundary is a separate matter, handled by redistributing OSPF, BGP, or RIP into the fabric's IS-IS.
+
+## Verifying it
+
+On the VOSS side, `show fa`, `show fa elements`, and `show fa agent` show the FA service state, the discovered elements and their types, the VLAN and I-SID each was assigned, and the authentication result. Those outputs are the fastest way to confirm that an edge switch has attached and that the fabric provisioned the service you expected.

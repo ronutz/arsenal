@@ -1,0 +1,32 @@
+---
+slug: voss-isis-and-nicknames
+title: "IS-IS, Nicknames, and B-MACs: The VOSS Control Plane"
+summary: "How SPBM uses IS-IS as its single link-state control plane on fabric links only, what a 20-bit node nickname is and why it must be unique, and how the system-id / backbone MAC drives MAC-in-MAC forwarding."
+concepts: ["is-is", "nickname", "system-id", "b-mac", "spbm", "nni", "uni", "manual-area"]
+relatedTools: ["voss-fabric-id"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns"]
+category: networking
+order: 42
+status: reviewed
+updated: "2026-07-11"
+---
+
+## The single control plane
+
+SPBM's control plane is **IS-IS** - the same link-state interior gateway protocol used for IP routing, adapted to carry Ethernet fabric information. Nodes form adjacencies on their fabric links, exchange link-state PDUs, and each independently computes the shortest path to every other node. Onto standard IS-IS, 802.1aq adds TLVs (and sub-TLVs) that carry the SPBM-specific data: node nicknames, backbone MACs, and I-SID service membership. When you provision a service on a Backbone Edge Bridge, its I-SID membership floods through the topology inside these TLVs.
+
+## IS-IS runs in the core, not at the edge
+
+A detail that trips people up: IS-IS is the fabric's Network-to-Network Interface (NNI) protocol. It runs between fabric nodes, not on the User-to-Network Interface (UNI) edge ports where hosts and non-fabric devices attach. You will not bring up an IS-IS adjacency to a server or a plain access switch. That is also why extending IP routing to a non-fabric neighbor - an EXOS switch, for instance - uses OSPF, BGP, or RIP redistribution rather than IS-IS, and why Layer 2 attachment uses Fabric Attach; both are covered in later articles. The fabric is typically one IS-IS area, configured with a manual area address such as `49.0000`.
+
+## The nickname
+
+Every SPBM node has a **nickname**: a 20-bit identifier written in hex as `X.XX.XX` (for example `C.30.00` or `1.21.01`). The nickname identifies the node when the fabric builds its multicast distribution trees, and it must be unique across the fabric - including across adjacent IS-IS areas, where duplicate nicknames are not allowed. You can assign nicknames statically, or use dynamic nickname assignment, where a nickname server hands them out from a configured prefix range such as `C.30.00` to `C.3F.FF`.
+
+## The system-id and the B-MAC
+
+Each node also has a **system-id**: a 48-bit value in MAC form, written as a dotted triple like `00bb.0021.0001`, that serves as the node's backbone MAC. In MAC-in-MAC forwarding, a BEB uses its own nodal B-MAC as the source and the destination node's B-MAC as the destination of the backbone header, and the Backbone Core Bridges switch on exactly these addresses. Extreme's guidance is to make the system-id a locally administered address - the U/L bit set, so the first octet is `02` - which keeps it clearly distinct from a burned-in vendor MAC.
+
+## How it comes together
+
+Put the pieces in order. IS-IS forms adjacencies over the NNI links and floods, in its link-state PDUs, each node's nickname, its B-MAC, and the I-SIDs it serves. Every node runs the same shortest-path computation and programs its B-VLAN forwarding tables accordingly. From then on, a customer frame entering a BEB is encapsulated toward the right destination B-MAC and follows the precomputed shortest path: no flooding, no spanning tree, no per-service core configuration. The fabric-identifier tool decodes any nickname, I-SID, or B-MAC you pull from show output while you are still learning to read it.

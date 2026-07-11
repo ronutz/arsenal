@@ -1,0 +1,36 @@
+---
+slug: voss-vs-exos
+title: "VOSS vs EXOS: Dois Sistemas Operacionais da Extreme"
+summary: "A Extreme entrega hardware universal que inicializa com EXOS ou VOSS (Fabric Engine). Isto é o que de fato difere - um SO de Ethernet tradicional com uma CLI intuitiva versus um SO nativo de fabric construído sobre o SPBM - e as três fronteiras nas quais eles se interconectam."
+concepts: ["exos", "voss", "fabric engine", "spbm", "fabric attach", "is-is", "cli", "hardware universal"]
+relatedTools: ["voss-fabric-id", "voss-exos-translator"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "voss-fabric-attach"]
+category: networking
+order: 44
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Uma plataforma, dois sistemas operacionais
+
+A Extreme vende hardware universal que pode inicializar com **EXOS** ou **VOSS** - este último agora com a marca **Fabric Engine** nos switches atuais. São sistemas operacionais diferentes, com linhas de comando diferentes e visões de mundo padrão diferentes, e você escolhe um por equipamento.
+
+## EXOS: Ethernet tradicional, CLI intuitiva
+
+O EXOS é um sistema operacional de switch clássico: VLANs, spanning tree, Layer 2 e Layer 3 padrão, com uma linha de comando que muitos operadores acham limpa e intuitiva (`create vlan`, `configure vlan <nome> add ports`, `show ports`, `show vlan`). É importante notar que **o EXOS não roda SPBM de forma alguma**. A maneira como um switch EXOS entra em uma rede Fabric Connect é como uma **borda Fabric Attach** - um FA Proxy ou Client - e não como um nó da fabric. O EXOS tem IS-IS padrão disponível, mas isso é roteamento IP comum, não o plano de controle da fabric SPBM.
+
+## VOSS: nativo de fabric, CLI no estilo IOS
+
+O VOSS é construído em torno do Fabric Connect e do SPBM: I-SIDs, IS-IS, nicknames e backbone MACs são de primeira classe. Sua linha de comando é no estilo IOS (`enable`, `configure terminal`, `router isis`, `interface GigabitEthernet 1/1`) e é geralmente considerada mais complexa que a do EXOS - mais poderosa para fabric, com mais peças para aprender. Se você vem do EXOS, a mudança é menos sobre sintaxe e mais sobre o modelo: você deixa de estender VLANs e passa a mapeá-las para I-SIDs que a fabric carrega por você.
+
+## Como eles se interconectam
+
+Três fronteiras importam quando uma borda EXOS encontra uma fabric VOSS:
+
+- **Serviços de Layer 2 - Fabric Attach.** Um switch EXOS se conecta como um FA Proxy ou Client, e o FA Server do VOSS provisiona automaticamente os I-SIDs correspondentes. Este é o principal caminho de integração suportado (veja o artigo sobre Fabric Attach).
+- **IS-IS - apenas NNI.** O VOSS roda o IS-IS como um protocolo de Network-to-Network Interface da fabric, não nas portas de borda de User-to-Network Interface, então você geralmente não estabelece uma adjacência IS-IS direta de um switch de acesso EXOS para a borda da fabric VOSS.
+- **Roteamento de Layer 3 - redistribuição.** Para trocar rotas IP através da fronteira, redistribua OSPF, BGP ou RIP no IS-IS da fabric, em vez de esperar que o próprio IS-IS alcance a borda.
+
+## Qual, e onde
+
+É menos "qual é melhor" e mais "qual camada da rede". O VOSS / Fabric Engine está em casa como o core e a distribuição da fabric, onde a simplicidade de construir uma vez do SPBM compensa; o EXOS é comum na borda de acesso e se conecta de forma limpa por Fabric Attach. Como o hardware é universal, essa escolha é por equipamento, e não por compra. A ferramenta de identificadores de fabric decodifica os I-SIDs, nicknames e B-MACs que você encontrará no lado do VOSS ao cruzar essa fronteira.

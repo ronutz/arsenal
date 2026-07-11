@@ -1,0 +1,50 @@
+---
+slug: what-is-a-ja4-tls-fingerprint
+title: "O que é um fingerprint TLS JA4?"
+summary: "Como um ClientHello TLS vira uma impressão digital estável do software cliente, por que o JA3 perdeu força quando os navegadores passaram a embaralhar a ordem das extensões, como o JA4 resolve isso ordenando antes de fazer o hash, e o que o JA4 pode e não pode dizer."
+concepts: ["ja4", "ja3", "tls fingerprinting", "clienthello", "passive fingerprinting", "grease"]
+relatedTools: ["ja4-fingerprint-decoder"]
+relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites"]
+category: transport
+order: 20
+status: reviewed
+updated: "2026-07-10"
+---
+
+## O que é um fingerprint TLS
+
+Toda conexão TLS começa com o cliente enviando um ClientHello: uma mensagem que expõe, em texto claro, exatamente como o cliente está disposto a negociar. Quais versões do TLS ele suporta, quais cifras oferece, quais extensões envia e em que forma, quais curvas elípticas e algoritmos de assinatura aceita, quais protocolos de aplicação deseja via ALPN. Nada disso é secreto, porque o servidor precisa dessas informações para escolher um conjunto comum de parâmetros. Mas a combinação específica é reveladora. Uma determinada versão do Chrome, ou do curl, ou de um programa em Go, ou de um malware, monta seu ClientHello de um jeito característico, e essa forma característica pode ser reduzida a uma string curta. Essa string é um fingerprint TLS, e ela permite que um servidor, proxy ou sensor passivo reconheça o software cliente sem descriptografar um único byte da conversa.
+
+## O JA3, e por que perdeu força
+
+O primeiro fingerprint TLS amplamente usado foi o JA3, publicado pela Salesforce em 2017. O JA3 pega cinco campos do ClientHello (a versão do TLS, a lista de cifras, a lista de extensões, as curvas elípticas e os formatos de ponto das curvas elípticas), une seus valores numéricos em uma string na ordem em que o cliente os enviou, e calcula o MD5 dessa string. Por anos funcionou bem.
+
+O que o quebrou foi uma mudança defensiva nos próprios clientes. Para impedir que servidores dependessem de uma ordem fixa de extensões, o Chrome e depois outros navegadores começaram a embaralhar a ordem das extensões TLS a cada conexão. Como o JA3 fazia o hash das extensões na ordem em que chegavam, uma ordem embaralhada produzia um JA3 diferente a cada vez, e um fingerprint que muda a cada conexão é inútil para identificação. O JA3 ainda tem valor para softwares que não embaralham, mas para navegadores modernos ele já não se sustenta.
+
+## Como um JA4 é formado
+
+O JA4, publicado pela FoxIO, é o sucessor projetado para esse cenário. Sua mudança mais importante é ordenar as listas de cifras e extensões antes de fazer o hash, de modo que um cliente que embaralha a ordem das extensões ainda produz o mesmo fingerprint. Um JA4 também troca o MD5 pelo SHA-256 e, ao contrário do hash opaco do JA3, mantém um prefixo legível.
+
+Um JA4 tem três seções unidas por sublinhados, por exemplo `t13d1516h2_8daaf6152771_e5627efa2ab1`:
+
+- **JA4_a** é legível de imediato: o transporte (`t` para TLS sobre TCP, `q` para QUIC), a versão do TLS (`13` para TLS 1.3), se havia SNI (`d` para domínio, `i` para IP puro), as contagens de cifras e extensões e um marcador ALPN (`h2` para HTTP/2).
+- **JA4_b** são os primeiros doze caracteres hexadecimais do SHA-256 da lista ordenada de cifras.
+- **JA4_c** são os primeiros doze caracteres hexadecimais do SHA-256 da lista ordenada de extensões (com SNI e ALPN removidos) mais os algoritmos de assinatura.
+
+As duas seções de hash são unidirecionais, então um JA4 identifica um cliente sem expor as listas completas de parâmetros. O [decodificador de fingerprint JA4](/tools/ja4-fingerprint-decoder) separa um JA4 nessas partes e também consegue calcular os hashes a partir dos valores brutos do ClientHello.
+
+## GREASE
+
+Um detalhe que atrapalha fingerprints calculados à mão é o GREASE. Definido no draft-davidben-tls-grease, o GREASE faz os clientes enviarem valores reservados e sem significado no meio de suas cifras e extensões reais, justamente para que os servidores aprendam a ignorar valores desconhecidos e permaneçam tolerantes a mudanças futuras do TLS. O JA4 ignora o GREASE em todos os pontos, então esses valores nunca contam nos totais nem entram nos hashes. Qualquer implementação correta, inclusive esta, os filtra primeiro.
+
+## Onde o JA4 aparece
+
+O fingerprinting TLS é um recurso comum no meio da rede. Redes de distribuição de conteúdo e firewalls de aplicação web o usam para identificar clientes automatizados e bots que afirmam, no cabeçalho User-Agent, ser um navegador, mas cujo handshake TLS diz o contrário. Gateways web seguros e proxies em nuvem o usam como um sinal entre vários ao classificar tráfego. Feeds de inteligência de ameaças publicam valores JA4 para famílias de malware conhecidas, já que um malware costuma reutilizar a mesma biblioteca TLS e, portanto, o mesmo fingerprint em muitas amostras. Como precisa apenas do ClientHello não criptografado, ele funciona de forma passiva, sem encerrar nem descriptografar a conexão.
+
+## Uma nota sobre licenciamento
+
+O JA4, o fingerprint de cliente TLS descrito aqui, é publicado pela FoxIO sob a licença permissiva BSD 3-Clause, os mesmos termos do JA3 original, então qualquer um pode implementá-lo, inclusive em produtos comerciais. A família JA4+ mais ampla (JA4S para o lado servidor, JA4H para HTTP, JA4X para certificados, JA4T para TCP, entre outros) é licenciada sob a FoxIO License 1.1, que não permite monetização sem um acordo à parte. Vale conhecer essa distinção antes de embutir fingerprinting em um produto.
+
+## O que ele não é
+
+Um fingerprint identifica software, não uma pessoa, e é uma pista, não uma prova. Programas diferentes construídos sobre a mesma biblioteca TLS podem compartilhar um JA4, então uma correspondência estreita o campo sem nomear uma aplicação específica, e um cliente pode imitar deliberadamente o ClientHello de outro para forjá-lo. Ele não diz nada sobre o conteúdo da conexão, que permanece criptografado. Leia um JA4 como um sinal forte sobre o que está falando, a ser ponderado com o resto do que você consegue ver, e não como uma identidade por si só.

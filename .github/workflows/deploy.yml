@@ -60,12 +60,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # Node 20 matches the previous Workers Builds environment (20.20.x).
+      # Node pin comes from .node-version (single source of truth, shared with
+      # ci.yml and Cloudflare). It is 22 because wrangler >= 4.110, miniflare,
+      # and @cloudflare/kv-asset-handler all require Node >= 22; on Node 20 the
+      # wrangler deploy step aborts with "requires at least Node.js v22.0.0".
       # "cache: npm" caches ~/.npm only, never .next, so it is disk-cheap.
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".node-version"
           cache: npm
 
       - name: Install dependencies

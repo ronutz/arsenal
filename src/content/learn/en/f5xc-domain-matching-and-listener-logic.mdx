@@ -1,0 +1,44 @@
+---
+slug: f5xc-domain-matching-and-listener-logic
+title: "How XC Decides Which Load Balancer Wins a Hostname: Listener Logic, Wildcards, and the Apex"
+summary: "The advertise policy narrows a request to an IP and port; within it, XC picks the most specific domain match (exact beats wildcard). The hostname comes from SNI (HTTPS) or the Host header (HTTP). One Default load balancer per advertise policy catches the unmatched. Wildcards are suffix matches that do not cover the apex, wildcard certs cover a single label, and mixing a wildcard with its apex across auto-cert LBs is a hazard."
+concepts: ["domain matching", "listener logic", "sni", "wildcard", "apex", "default load balancer", "advertise policy", "f5 distributed cloud"]
+relatedTools: ["f5xc-domain-sni-match-resolver"]
+relatedArticles: ["f5xc-http-lb-route-evaluation", "f5xc-origin-pool-anatomy"]
+category: networking
+order: 76
+status: reviewed
+updated: "2026-07-11"
+---
+
+## The question
+
+Two HTTP load balancers, overlapping domains, one incoming request - which load balancer serves it? On F5 Distributed Cloud the answer is not "whichever you created first" or "whichever is listed first." It follows a specific matching logic, and once you know it, a class of confusing routing problems becomes obvious.
+
+## The advertise policy narrows it to IP and port
+
+Every load balancer advertises on an IP and a port - together, the advertise policy. That is the first filter: a request arriving on a given IP and port is only ever considered against the load balancers advertising there. On a typical HTTP/HTTPS deployment you do not need many IPs, because the domain does the rest of the work. But the IP and port are the frame around everything that follows.
+
+## Most specific wins
+
+Within one advertise policy, XC picks the load balancer whose domain most specifically matches the request's hostname. An exact FQDN beats a wildcard. If a request for app-b.domain.com can match both an LB that lists app-b.domain.com exactly and an LB that lists *.domain.com, the exact one wins - every time. This is the single rule that resolves most "why did my traffic go there" puzzles: look for the more specific domain.
+
+## Where the hostname comes from
+
+The hostname XC matches on is not pulled from DNS - it is read from the request itself. For HTTPS, it is the Server Name Indication (SNI) value in the TLS handshake. For plain HTTP, it is the Host header. That distinction matters when you are debugging: if the SNI and the Host header disagree, the HTTPS path matches on SNI. It also means a client that sends no SNI cannot be matched to a specific HTTPS load balancer by name.
+
+## The Default load balancer
+
+What happens to a request whose hostname matches no specific domain? On HTTPS, one load balancer per advertise policy can be designated the Default. It catches everything unmatched - the classic example being a wildcard certificate for *.domain.com where some subdomain was never given its own LB. You can then use routes on the Default LB to decide what to do with those requests. Only one Default is allowed per advertise policy, and the concept exists for HTTPS; a TCP load balancer that does not match on SNI simply behaves as the catch-all for its IP and port.
+
+## Wildcards, the apex, and certificates
+
+A wildcard domain matches subdomains by suffix: *.domain.com covers app.domain.com. It does not cover the apex domain.com - that is a separate name and needs its own entry. And a wildcard TLS certificate covers exactly one label, so while the proxy may route a multi-label host like a.b.domain.com through a *.domain.com listener, the certificate will not validate it. Matching also takes the port into account for non-standard ports, so *.foo.com:8080 is distinct from *.foo.com.
+
+## The conflicts that bite
+
+A few configurations are actively hazardous. F5 advises against putting both a wildcard (*.example.com) and its apex (example.com) on different load balancers when you are using automatic certificates - the certificate provisioning collides. Two load balancers claiming the same exact domain, or two Defaults on one advertise policy, are misconfigurations the platform cannot silently resolve. And an ambiguous tie - two equally specific matches - means the outcome is not something you should rely on.
+
+## Seeing it resolve
+
+The rules are simple in isolation but interact once you have several load balancers and a mix of exact and wildcard domains. The companion resolver takes your load balancers and a test hostname and shows the winner, the runner-up, and every hazard in the set at once - so instead of tracing the logic by hand, you watch app-b.domain.com land on the exact LB and other.domain.com fall through to the wildcard.

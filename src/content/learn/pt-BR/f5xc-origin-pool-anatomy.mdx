@@ -1,0 +1,40 @@
+---
+slug: f5xc-origin-pool-anatomy
+title: "A Anatomia de um Origin Pool do XC: Tipos de Origin, Seleção de Endpoint e TLS para o Origin"
+summary: "O que um origin pool contém, as formas de nomear um origin (IP/DNS público, on-site com um locator, K8s/Consul, virtual network, custom endpoint), por que um origin aparece uma vez por Regional Edge, a regra da porta automática (443 com TLS, senão 80), as configurações de TLS para o origin, e por que pesos e prioridades ficam na referência do pool em uma rota, não nos servers."
+concepts: ["origin pool", "origin server", "endpoint selection", "tls to origin", "service discovery", "f5 distributed cloud"]
+relatedTools: ["f5xc-origin-pool-explainer"]
+relatedArticles: ["f5xc-lb-algorithms-and-persistence", "f5xc-tls-security-levels-explained"]
+category: networking
+order: 75
+status: reviewed
+updated: "2026-07-11"
+---
+
+## O que é um origin pool
+
+Um origin pool do XC é o objeto que responde a uma única pergunta: onde a minha aplicação de fato roda? Ele contém uma lista de origin servers, uma porta, um algoritmo de load balancing, health checks, e, opcionalmente, as configurações de TLS para a conexão do XC até esses origins. Um load balancer roteia para origin pools; o pool é onde os backends reais vivem.
+
+## As formas de nomear um origin
+
+O XC dá várias formas de apontar para um origin, e qual você usa depende de onde o origin está e como você o descobre. A mais simples é um IP público ou um nome DNS público - um origin alcançável pela internet. Quando o origin vive atrás de um Customer Edge ou é alcançável apenas de certos Regional Edges, você usa um IP ou nome DNS "em sites específicos" e anexa um locator de site ou virtual-site que diz onde alcançá-lo e em qual rede. Para backends dinâmicos há service discovery de Kubernetes e Consul, onde você dá um nome de serviço e um site e o XC encontra os endpoints. Há também variantes de virtual-network e uma referência de custom-endpoint para casos que precisam de um objeto de endpoint próprio. Cada origin pode carregar labels, que importam para subset routing.
+
+## Seleção de endpoint e por que um origin aparece várias vezes
+
+Por padrão, cada Regional Edge faz health-check dos seus origins, e é por isso que o Console pode mostrar o mesmo IP de origin listado uma vez por RE - mais de vinte vezes em algumas regiões. A seleção de endpoint decide o que um dado RE faz com o tráfego. Local Preferred, o padrão, faz egress direto do RE local quando aquele RE tem uma entrada de origin saudável, e caso contrário encaminha pela rede global da F5 para o RE mais próximo que tenha. Esse é o comportamento a ter em mente quando um firewall no origin só permite certas faixas de origem: restrinja os health checks a REs específicos com um virtual site, ou você vai ver estados DOWN falsos e muito ruído de firewall.
+
+## O truque da porta
+
+A porta do pool tem três modos, e o automático tem uma regra que vale memorizar: porta automática significa 443 quando o TLS para o origin está habilitado e 80 quando não está. Então se você habilita TLS e deixa a porta automática, o XC fala com seu origin na 443 sem você digitar. Uma porta explícita sobrescreve isso, e "igual à do endpoint" pega a porta do endpoint descoberto - a escolha usual para Consul, onde a porta vem do service discovery.
+
+## TLS para o origin
+
+A conexão do XC até seu origin é separada do TLS voltado ao cliente no load balancer, e tem suas próprias configurações. Você escolhe se usa TLS; se usa, escolhe um nível de segurança - os mesmos níveis High/Medium/Low que o lado do cliente usa, onde High é o padrão e significa mínimo TLS 1.2. Você escolhe como o SNI é definido no handshake de saída: usar o header Host de entrada, enviar um valor explícito, ou não enviar nenhum. E você escolhe como o XC verifica o certificado do origin: contra o bundle de CA confiável da F5, contra uma lista de CA custom, ou de forma alguma. Essa última opção, pular a verificação, é a que exige cuidado. Ela ainda criptografa o tráfego, mas aceita qualquer certificado que o origin apresente, o que derrota o propósito de verificar que você está falando com o servidor certo. O mTLS, onde o XC também apresenta um certificado de cliente ao origin, é o extremo oposto do espectro.
+
+## Pesos e prioridades ficam em outro lugar
+
+Se você veio procurando pesos ou prioridades por origin no pool, você não vai achar, e isso é de propósito. Dentro de um pool os origins são um conjunto plano, distribuído pelo algoritmo do pool. Pesos e prioridades pertencem à referência do pool em uma rota ou nos pools default do load balancer, onde cada entrada é um pool mais um peso mais uma prioridade. É assim que você faz tráfego ponderado ou blue-green entre pools - na rota, não dentro do pool.
+
+## Lendo um rápido
+
+Um spec de origin pool é compacto mas as partes importantes estão espalhadas - as chaves oneof do origin, o sub-objeto de TLS, a escolha de porta. A ferramenta complementar decodifica tudo de uma vez: o tipo e endereço de cada origin, a porta e o algoritmo e a seleção de endpoint, os health checks, e o quadro completo de TLS para o origin, com o caso de pular verificação sinalizado. Isso transforma "com o que este pool de fato se conecta, e como" em um relance.

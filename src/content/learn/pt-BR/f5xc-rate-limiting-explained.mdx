@@ -1,0 +1,44 @@
+---
+slug: f5xc-rate-limiting-explained
+title: "Como o Rate Limiting do F5XC Realmente Conta: Leaky Bucket, Burst, Bloqueio e Overshoot"
+summary: "Por que [1, Seconds, 60] e [1, Minutes, 1] são o mesmo limite, como o leaky bucket e o multiplicador de burst realmente se comportam, a armadilha da mitigação em que Disabled não é desligado, por que a contagem distribuída pode ultrapassar o limite, e por que regras de API em camadas são por primeira correspondência."
+concepts: ["rate limiting", "leaky bucket", "burst multiplier", "http 429", "mitigation action", "f5 distributed cloud"]
+relatedTools: ["f5xc-rate-limit-calculator"]
+relatedArticles: []
+category: security
+order: 70
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Dois números que significam a mesma coisa
+
+Um rate limit do XC é uma tupla: um **Number** de requisições por uma janela construída a partir de **Periods** vezes uma unidade de **Per Period** (Seconds, Minutes ou Hours). Então `[1, Seconds, 60]` e `[1, Minutes, 1]` são o mesmo limite - uma requisição por minuto. O console permite escrever de qualquer uma das formas, e é por isso que duas pessoas podem descrever "o mesmo" limite com configurações que não se parecem em nada. A primeira coisa a fazer com qualquer rate limiter é normalizá-lo para uma única janela, o que a calculadora complementar faz por você.
+
+## O leaky bucket
+
+A imposição é um leaky bucket. As requisições enchem o bucket; o bucket esvazia na taxa configurada. Enquanto o bucket tem espaço, as requisições passam. Quando uma requisição transbordaria o bucket, o load balancer retorna **HTTP 429**. É esse o mecanismo inteiro - não há uma janela de calendário fixa que zera a cada minuto, apenas um bucket que esvazia continuamente.
+
+## O multiplicador de burst dimensiona o bucket
+
+O **Burst Multiplier** define o tamanho do bucket, como um múltiplo da taxa. Com o padrão de 1, o bucket comporta o equivalente a uma janela de requisições. Defina-o como 3 em um limite de 15 requisições/segundo e um cliente pode dar um burst de até 45 requisições antes de o bucket transbordar, e então fica preso à taxa de esvaziamento. Os bursts absorvem picos curtos sem disparar o limite; um multiplicador alto demais anula o propósito.
+
+## A armadilha da mitigação: Disabled não é desligado
+
+É aqui que as pessoas se queimam. A **Mitigation Action** tem duas opções, e **Disabled não significa "sem rate limiting".** O leaky bucket ainda impõe o limite e ainda retorna 429 no transbordo, independentemente da Mitigation Action. Disabled apenas significa que nenhum timer de bloqueio adicional é sobreposto ao 429 padrão. Se você realmente quer parar de limitar uma classe de tráfego, você remove ou faz bypass do rate limiter - você não coloca a Mitigation em Disabled.
+
+## O Block adiciona um bloqueio que gruda
+
+O **Block** sobrepõe um bloqueio ao 429. Quando um cliente transborda o bucket, ele fica bloqueado pela duração inteira configurada - mesmo que o bucket tivesse esvaziado nesse meio-tempo. O cliente só pode enviar de novo depois que o timer de bloqueio expira. O bloqueio máximo é de 48 horas. Assim, o Block transforma um 429 que se limpa sozinho em uma cela de castigo fixa, que é o que você normalmente quer para clientes abusivos e normalmente não quer para clientes comuns com bursts.
+
+## Por que você pode ver mais requisições do que o seu limite
+
+A contagem é distribuída. O XC impõe nos Regional Edges e entre proxies, cada um mantendo sua própria visão do bucket, então, durante um burst, você pode servir brevemente mais do que o limite configurado antes de os contadores distribuídos convergirem. Esse é um comportamento esperado, documentado pela F5, e não uma má configuração. Se você precisa de um teto rígido, projete para o overshoot em vez de supor que o limite é exato até a requisição.
+
+## Regras de API em camadas são por primeira correspondência
+
+Para o rate limiting de API você pode empilhar regras de Server URL e regras de API endpoint. Elas são avaliadas **por primeira correspondência, na ordem em que você as configura** - então uma regra ampla colocada acima de uma específica vai ofuscá-la. Coloque as regras específicas primeiro.
+
+## Juntando tudo
+
+A calculadora complementar recebe uma configuração de Number / Per Period / Periods / Burst Multiplier / Mitigation e mostra a taxa normalizada, o teto de burst, quando os 429 começam, como um bloqueio de Block se comporta e essas ressalvas - para que você possa raciocinar sobre um rate limiter antes de implantá-lo, em vez de descobrir o comportamento dele em produção.

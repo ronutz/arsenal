@@ -1,0 +1,36 @@
+---
+slug: bigip-ltm-request-distribution
+title: "Where Do the Requests Go? Simulating BIG-IP LTM Distribution"
+summary: "A method name tells you the rule; the distribution tells you the outcome. This covers how BIG-IP LTM actually spreads N requests across pool members: why Ratio is a full cycle and not a percentage, how priority group activation leaves lower tiers on visible standby, how Least Sessions uses the persistence-record count (and falls back to Round Robin under cookie persistence), and why the dynamic methods - Fastest, Observed, Predictive, Dynamic Ratio - cannot be simulated from configuration."
+concepts: ["load balancing", "round robin", "ratio", "least connections", "least sessions", "priority group activation", "persistence", "f5 big-ip ltm"]
+relatedTools: ["bigip-ltm-lb-simulator"]
+relatedArticles: ["ltm-load-balancing-methods", "ltm-persistence-methods"]
+category: networking
+order: 80
+status: reviewed
+updated: "2026-07-11"
+---
+
+## From method name to actual distribution
+
+Knowing that a pool uses "Ratio (member)" or "Least Connections" tells you the rule, but not the outcome. The outcome - how a specific set of requests actually spreads across specific members - depends on the ratios, the priority groups, the persistence already in place, and how many requests you are asking about. Two pools with the same method can distribute traffic completely differently. Simulating the distribution turns the rule into a picture: for N requests, this many land here, that many land there.
+
+## Ratio is a full cycle, not a percentage
+
+The most common misreading of Ratio load balancing is treating the ratio as a percentage of an arbitrary sample. It is not. A ratio of 3:2:1:1 means that across one full cycle - and a full cycle is the sum of the ratios, seven requests here - the members receive exactly 3, 2, 1, and 1. Ask about seven requests and you get a clean 3:2:1:1. Ask about eight, and the eighth request begins the next cycle and goes to the highest-ratio member, making it 4:2:1:1. The distribution is only "in ratio" at multiples of the cycle length; in between, the leading members are slightly ahead. This is why a simulator that shows counts for a specific N is more honest than a static percentage: it shows you the actual state at that point in the cycle.
+
+## Priority groups: the standby you can see
+
+Priority group activation is easy to describe and easy to get wrong. Each member belongs to a priority group, and traffic is confined to the highest group as long as it has enough available members - specifically, at least the minimum you configure. Drop below that minimum and the next group down is activated, joining the pool of eligible members. In steady state, with everything healthy, this usually means your lower-priority members receive nothing at all: they are standby capacity, waiting for the primary group to lose members. Seeing a member marked standby with zero traffic is not a bug; it is the feature working. The simulator makes that visible, which is exactly what you want when you are checking whether your failover tiers are arranged the way you think.
+
+## Least Sessions and the persistence metric
+
+Least Sessions is the one method whose input is persistence itself. It sends each new connection to the member with the fewest entries in the persistence table, which means a member that is currently holding many sticky clients is passed over in favor of one holding few. Give the simulator the persistence-record count per member and it fills the emptiest members first until they level out. There is a caveat worth knowing: this behavior assumes a persistence method that tracks sessions, like source-address affinity. If persistence is cookie-based, BIG-IP does not use the session count at all and falls back to Round Robin - so the same pool can behave differently depending on which persistence profile is attached.
+
+## Why the dynamic methods cannot be drawn
+
+Round Robin, Ratio, Least Connections, and Least Sessions can be simulated because everything they need is either configuration or a load figure you can state. Fastest, Observed, Predictive, and Dynamic Ratio cannot, and it is worth being clear about why rather than pretending. These methods decide from live runtime measurements: response times, connection counts sampled every second, whether a member's performance is trending up or down, metrics pulled over SNMP. None of that is in a pool's configuration, and all of it changes continuously. A tool that produced a fixed distribution for "Observed" would be inventing the very measurements the method depends on. The honest move is to name what these methods need and stop there.
+
+## Reading a simulation
+
+A distribution is a starting point for a question, not a guarantee about production. It tells you what the configured rule does with a given load, which is enough to catch the mistakes that matter: a ratio that is backwards, a priority tier that is silently taking traffic, a persistence choice that is quietly falling back to Round Robin. Run the numbers for the N you care about, look at which members are active and which are standby, and check that the shape matches your intent. The pool will do in production what the rule says - the simulation just lets you see the rule before the traffic does.

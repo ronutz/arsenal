@@ -1,0 +1,36 @@
+---
+slug: f5xc-openapi-and-api-inventory
+title: "A Spec OpenAPI como o Inventário de API do XC: Paths, Auth e a Sombra"
+summary: "O XC API Protection é um modelo de segurança positivo construído a partir de uma spec OpenAPI (2.0 ou 3.0.x): os paths e métodos da spec viram o inventário de API que dirige a validação, e endpoints não documentados são Shadow APIs. Isto cobre por que a spec é a fonte da verdade, como o API Discovery gera uma a partir do tráfego, como resolver autenticação corretamente (global vs por operação, e o override público de lista vazia), e por que endpoints com parâmetro de path são a superfície de Broken Object Level Authorization."
+concepts: ["openapi", "swagger", "api inventory", "positive security", "shadow api", "broken object level authorization", "f5 distributed cloud"]
+relatedTools: ["f5xc-api-path-explainer"]
+relatedArticles: ["f5xc-security-events-anatomy", "f5xc-http-lb-route-evaluation"]
+category: networking
+order: 79
+status: reviewed
+updated: "2026-07-11"
+---
+
+## A spec é o inventário
+
+No F5 Distributed Cloud, uma API não é protegida por uma lista de coisas a bloquear - ela é protegida por uma descrição do que é permitido. Essa descrição é uma especificação OpenAPI, e o XC aceita as duas versões que o ecossistema usa: OpenAPI 2.0, ainda chamada de Swagger, e OpenAPI 3.0.x. Quando você faz upload de uma spec, o XC lê seus paths e operações e constrói um inventário de API: o conjunto completo de endpoints e os métodos HTTP que cada um aceita. Tudo a jusante - validação, rate limiting, policy por endpoint - pende desse inventário. Então a spec não é documentação que fica ao lado da config de segurança; ela é a fonte da verdade da config de segurança.
+
+## Segurança positiva: o modelo de allowlist
+
+A razão pela qual o inventário importa é que o XC impõe um modelo de segurança positivo. Em vez de enumerar ataques, ele enumera comportamento válido - endpoints válidos, métodos válidos, parâmetros válidos, payloads válidos - e pode reportar ou bloquear qualquer coisa que não conforme. Muitos dos itens do OWASP API Security Top 10 se resumem a validação de entrada ausente, e um allowlist dirigido por spec fecha essa lacuna por construção: uma requisição para um path não documentado, com um parâmetro inesperado, ou um body malformado, falha a validação porque nunca foi descrita como válida. Ler a sua própria spec com cuidado, então, é ler a forma exata do que a sua API vai aceitar.
+
+## Shadow APIs e as que você gera
+
+A lacuna nesse modelo é a API que você esqueceu de documentar. Um endpoint que está ativo mas ausente da sua spec é uma Shadow API - o projeto OWASP a arquiva sob Improper Assets Management - e ela é desprotegida precisamente porque o inventário não sabe que ela existe. O XC aborda isso da direção oposta com o API Discovery, que observa o tráfego real, faz engenharia reversa do schema do que vê, e gera uma spec OpenAPI que você pode baixar como JSON, revisar, editar, e reimportar. Essa spec gerada é o mesmo tipo de documento que você escreveria à mão, o que significa que a mesma leitura se aplica: cheque quais endpoints ela achou, quais métodos, e se algum deles te surpreende.
+
+## Lendo auth da forma que a spec quer dizer
+
+A parte mais mal lida de uma spec OpenAPI é a autenticação, porque ela é expressa em dois lugares. Uma spec pode declarar um requisito de segurança global que se aplica a toda operação, e qualquer operação pode sobrescrevê-lo. A sutileza que confunde as pessoas é o override vazio: uma operação cujo security é uma lista vazia é explicitamente pública, e ela permanece pública mesmo em uma API onde todo o resto precisa de um token. Então você não pode julgar se um endpoint está protegido olhando a operação sozinha - você tem que resolver o security da própria operação contra o default global, e tratar uma lista vazia como um opt-out deliberado. Um endpoint que está sem autenticação por descuido e um que está sem autenticação por design parecem idênticos até você resolvê-los corretamente.
+
+## Endpoints de nível de objeto e o principal risco de API do OWASP
+
+Os endpoints que mais valem escrutínio são os com um parâmetro de path - /orders/{id}, /users/{userId}/cards. Esses são pontos de acesso de nível de objeto, e são a superfície para Broken Object Level Authorization, que esteve no topo do OWASP API Security Top 10 por anos. A falha é sutil: a API corretamente verifica que você está autenticado, então devolve o objeto número 12345 sem verificar que o objeto 12345 é seu. A autenticação passa; a autorização está ausente. Uma spec não consegue te dizer se a verificação de autorização existe - isso vive no código - mas ela consegue te dizer exatamente quais endpoints carregam esse risco, então você sabe quais auditar.
+
+## Da spec à proteção
+
+Uma vez que você consegue ler uma spec como um inventário, o caminho para a proteção é curto. Os endpoints e métodos definem o que validar; os requisitos de segurança te dizem onde a autenticação é reivindicada e onde está ausente; os parâmetros de path marcam onde a autorização de nível de objeto tem que ser imposta. A ferramenta complementar transforma um documento OpenAPI bruto exatamente nessa visão - cada operação com seu método, parâmetros, body, respostas, e autenticação resolvida, além dos endpoints sem autenticação e de nível de objeto destacados - para que a spec que você alimenta no XC seja uma spec que você de fato leu.

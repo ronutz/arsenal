@@ -1,0 +1,40 @@
+---
+slug: f5xc-http-lb-route-evaluation
+title: "Como o HTTP Load Balancer do XC Escolhe uma Rota: First-Match, Tipos de Path e o WAF por Rota"
+summary: "As rotas do XC são uma lista ordenada avaliada first-match; os quatro tipos de rota (simple, redirect, direct-response, custom); match de path prefix vs exato vs regex; condições de método/header/query; e como qualquer rota pode anexar ou desabilitar seu próprio WAF."
+concepts: ["http load balancer", "routes", "first-match", "path matching", "per-route waf", "f5 distributed cloud"]
+relatedTools: ["f5xc-http-lb-route-explainer"]
+relatedArticles: []
+category: networking
+order: 73
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Um load balancer é uma lista de rotas
+
+Um HTTP load balancer do XC roteia requisições para origin pools, e as regras que decidem para onde cada requisição vai são chamadas de rotas. O load balancer mantém uma lista ordenada delas, mais um origin pool default para qualquer coisa que não der match em nada. Quando uma requisição chega, o load balancer percorre a lista de cima para baixo e para na primeira rota cujas condições derem match. Esse modelo first-match é o motivo pelo qual a ordem das rotas é uma decisão de design, não um detalhe - o próprio how-to da F5 diz para você arrastar uma rota para o topo da lista quando quiser que ela seja avaliada primeiro.
+
+## Quatro tipos de rota
+
+Toda rota é de um dos quatro tipos. Uma rota **simple** dá match no tráfego e o encaminha para um ou mais origin pools, com pesos opcionais para splits de canary ou blue-green. Uma rota **redirect** dá match no tráfego e retorna uma resposta 3xx para um novo protocolo, host e path em vez de fazer proxy. Uma rota **direct-response** dá match no tráfego e retorna um código de status e um body fixos direto do load balancer, sem nunca tocar em um origin - os engenheiros da F5 usam isso para servir páginas pequenas e até JavaScript. Um objeto de rota **custom** aponta para uma rota definida em outro lugar, o que permite que muitos load balancers compartilhem uma rota e permite que rotas redirect carreguem headers custom que rotas simple inline não conseguem.
+
+## Match de path: prefix, exato ou regex
+
+A condição de match que mais importa é o path, e o XC dá três formas de escrevê-la. Um match **prefix** dispara quando o path da requisição começa com sua string, então `/api` dá match em `/api/orders`. Um match **exato** dispara apenas no path inteiro. Um match **regex** dispara quando sua expressão regular der match, que é como você expressa "qualquer path sob /trading" como `/trading/.*`. Prefix é o caso comum; regex é a ferramenta poderosa, e a que mais provavelmente vai te surpreender se a expressão for mais ampla do que você pretendia.
+
+## Match é mais do que o path
+
+Uma rota também pode dar match no método HTTP (ou ANY), em headers de request (presente, valor exato ou regex), e em query parameters. É assim que roteamento baseado em header e testes A/B funcionam - duas rotas com o mesmo path mas condições de header diferentes mandam tráfego para pools diferentes. É também a sutileza com que a regra first-match interage: uma rota ampla mais cedo na lista pode sombrear uma rota mais específica abaixo dela, então a mais específica nunca roda.
+
+## O WAF por rota
+
+Um load balancer aplica uma política de WAF na sua base, mas o WAF não é tudo-ou-nada. Qualquer rota simple pode, em suas Advanced Options, anexar seu próprio App Firewall - então você pode rodar uma política em modo blocking em `/trading/.*` e uma diferente em modo monitoring em todo o resto - ou desabilitar o WAF para aquela rota, ou herdar a política do load balancer, que é o padrão. Uma rota que desabilita o WAF é uma exposição real e é quase invisível em JSON puro, que é exatamente o tipo de coisa que vale a pena destacar.
+
+## Rewrites e mutações de header
+
+Além do roteamento, uma rota pode remodelar a requisição. Ela pode reescrever o path (substituir o prefix que deu match, ou aplicar uma substituição regex), adicionar ou remover headers de request e response, e sobrescrever o comportamento default de host-rewrite. Por padrão o load balancer reescreve o header Host para o nome DNS do origin quando o origin é definido por nome (K000146653); uma rota permite que você mude isso quando a aplicação precisa que o Host original seja preservado.
+
+## Lendo uma config do jeito rápido
+
+Tudo isso é visível no JSON, mas está espalhado por chaves aninhadas e é fácil de ler errado sob pressão. A ferramenta complementar decodifica o bloco de rotas inteiro de uma vez - tipo, match, ação, mutações e WAF por rota, em ordem de avaliação - e diz, para um dado método e path, qual rota realmente vence. Isso transforma "por que essa requisição está indo para o pool errado" de um exercício de leitura de JSON em uma resposta de uma linha.

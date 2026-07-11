@@ -1,0 +1,36 @@
+---
+slug: f5xc-ce-registration-and-egress
+title: "O Que Realmente Acontece Quando um CE se Registra: Token, Dois REs por GeoIP, IPsec-com-Fallback-SSL e o Allowlist Que Faz Funcionar"
+summary: "O handshake de registro do CE - call-home com token, dois Regional Edges escolhidos por GeoIP, certificados PKI - por que os túneis do CE preferem IPsec e recorrem a SSL, e como a referência de firewall publicada pela F5 (Secure Mesh v2 vs Legacy, domínios sobre IPs) é o allowlist que permite tudo se conectar."
+concepts: ["customer edge", "ce registration", "regional edge", "ipsec", "firewall allowlist", "f5 distributed cloud"]
+relatedTools: ["f5xc-ce-egress-checklist"]
+relatedArticles: []
+category: networking
+order: 72
+status: reviewed
+updated: "2026-07-11"
+---
+
+## O handshake de registro
+
+Quando você sobe um CE, a primeira coisa que ele faz é chamar a base. Usando o token de nó que você gerou - um JWT que codifica o endpoint de registro - o CE contata o F5 Distributed Cloud Global Controller. O controller seleciona dois Regional Edges com base na proximidade GeoIP do endereço IP público de onde o registro chegou, então o CE se conecta aos REs mais próximos de onde ele realmente está na internet. (Você também pode fixar REs específicos no momento da criação.) O controller retorna esses dois REs ao CE, junto com a identidade e os certificados PKI do CE, que o sistema rotaciona regularmente.
+
+## IPsec, com SSL como fallback
+
+Com seus dois REs escolhidos, o CE constrói túneis até eles. Ele tenta negociar tanto IPsec quanto SSL, e o IPsec é preferido - ele recorre a SSL apenas se o IPsec não puder ser estabelecido. Esse único fato explica uma linha que você vê por toda a referência de firewall: o IPsec na UDP 4500 é opcional, porque o tunelamento SSL para a rede global é suportado. Se o seu firewall bloqueia a UDP 4500, o CE não falha; ele faz o túnel por SSL na TCP 443. Assim que um túnel sobe, um control plane distribuído no RE assume o CE, e a fabric segura carrega tanto o tráfego de gerência e controle quanto, se você quiser, o seu tráfego de dados.
+
+## O allowlist que faz funcionar
+
+Nada disso acontece se o CE não conseguir alcançar os endpoints de que precisa. A F5 publica uma única referência - a Customer Edge IP Address and Domain Reference - listando todo IP e domínio que um CE deve ter permissão para alcançar, e publica a mesma lista como um arquivo de texto plano baixável para automação. A lista é organizada por propósito: registro e atualizações, conexão com os Regional Edges, os domínios da F5, feeds de reputação e classificação de URL, registries de container para as próprias imagens de software do CE, e DNS e NTP.
+
+## Duas gerações, duas listas
+
+A referência se divide em Secure Mesh Site v2 e Legacy. O SMSv2 é deliberadamente enxuto: um único domínio wildcard de propriedade da F5 (`*.volterra.io`) ou uma lista explícita de FQDNs, mais um IP de registro. A F5 removeu todos os domínios wildcard de terceiros do conjunto SMSv2. Sites Legacy carregam uma lista muito maior de faixas de IP e um conjunto de domínios mais amplo que nomeia os registries de terceiros - Docker, Google, Azure, Red Hat, AWS - diretamente. Coloque no allowlist apenas a geração que você está implantando.
+
+## Domínios vencem IPs
+
+A F5 é explícita que os endereços IP podem mudar sem aviso, e que permissões baseadas em domínio são o método preferido. Se o seu firewall suporta filtragem de domínio, permita os domínios e mantenha as faixas de IP como o fallback para firewalls que não conseguem fazer regras baseadas em domínio. E lembre da porta 65500 - ela é reservada para a UI e API local do CE, não para egress, então decida deliberadamente se vai permitir ou bloquear.
+
+## Verifique antes de escalar
+
+Se um CE fica preso em "connecting", a causa é quase sempre uma entrada faltando no allowlist. O método de troubleshooting da F5 é testar cada endpoint a partir do nó com o comando de serviceability curl-host do CE nas portas necessárias - TCP 80/443 de saída e UDP 53. A ferramenta complementar analisa o arquivo de referência que você cola, organiza o allowlist por propósito e gera exatamente esse script de verificação, para que você possa confirmar o alcance a partir do nó antes de abrir um caso.

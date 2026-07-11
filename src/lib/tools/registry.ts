@@ -39,6 +39,18 @@ import { run as epochRun } from "./epoch";
 import { run as f5CipherStringExpanderRun } from "./f5-cipher-string-expander";
 import { run as f5SslProfileExplainerRun } from "./f5-ssl-profile-explainer";
 import { run as f5xcServicePolicyExplainerRun } from "./f5xc-service-policy-explainer";
+import { run as f5xcRateLimitCalculatorRun } from "./f5xc-rate-limit-calculator";
+import { run as f5xcTlsSecurityLevelMapperRun } from "./f5xc-tls-security-level-mapper";
+import { run as f5xcCeEgressChecklistRun } from "./f5xc-ce-egress-checklist";
+import { run as f5xcHttpLbRouteExplainerRun } from "./f5xc-http-lb-route-explainer";
+import { run as f5xcLbAlgorithmChooserRun } from "./f5xc-lb-algorithm-chooser";
+import { run as f5xcOriginPoolExplainerRun } from "./f5xc-origin-pool-explainer";
+import { run as f5xcDomainSniMatchResolverRun } from "./f5xc-domain-sni-match-resolver";
+import { run as f5xcSecurityEventExplainerRun } from "./f5xc-security-event-explainer";
+import { run as f5xcObjectLinterRun } from "./f5xc-object-linter";
+import { run as f5xcApiPathExplainerRun } from "./f5xc-api-path-explainer";
+import { run as bigipLtmLbSimulatorRun } from "./bigip-ltm-lb-simulator";
+import { run as ja3TlsFingerprintRun } from "./ja3-tls-fingerprint";
 import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
 import { runFromJson as faultHypothesisBuilderRun } from "./fault-hypothesis-builder";
@@ -99,6 +111,10 @@ import { run as samlDecoderRun } from "./saml-decoder";
 import { run as secureHeadersRun } from "./secure-headers";
 import { run as ssrfUrlClassifierRun } from "./ssrf-url-classifier";
 import { run as syslogPriDecoderRun } from "./syslog-pri-decoder";
+import { run as ja4FingerprintDecoderRun } from "./ja4-fingerprint-decoder";
+import { run as ouiLookupRun } from "./oui-lookup";
+import { run as vossFabricIdRun } from "./voss-fabric-id";
+import { run as vossExosTranslatorRun } from "./voss-exos-translator";
 import { run as tmshConfigExplainerRun } from "./f5-tmsh-config-explainer";
 import { run as totpHotpRun } from "./totp-hotp";
 import { run as urlInspectorRun } from "./url-inspector";
@@ -143,6 +159,18 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-cipher-string-expander", run: f5CipherStringExpanderRun },
   { slug: "f5-ssl-profile-explainer", run: f5SslProfileExplainerRun },
   { slug: "f5xc-service-policy-explainer", run: f5xcServicePolicyExplainerRun },
+  { slug: "f5xc-rate-limit-calculator", run: f5xcRateLimitCalculatorRun },
+  { slug: "f5xc-tls-security-level-mapper", run: f5xcTlsSecurityLevelMapperRun },
+  { slug: "f5xc-ce-egress-checklist", run: f5xcCeEgressChecklistRun },
+  { slug: "f5xc-http-lb-route-explainer", run: f5xcHttpLbRouteExplainerRun },
+  { slug: "f5xc-lb-algorithm-chooser", run: f5xcLbAlgorithmChooserRun },
+  { slug: "f5xc-origin-pool-explainer", run: f5xcOriginPoolExplainerRun },
+  { slug: "f5xc-domain-sni-match-resolver", run: f5xcDomainSniMatchResolverRun },
+  { slug: "f5xc-security-event-explainer", run: f5xcSecurityEventExplainerRun },
+  { slug: "f5xc-object-linter", run: f5xcObjectLinterRun },
+  { slug: "f5xc-api-path-explainer", run: f5xcApiPathExplainerRun },
+  { slug: "bigip-ltm-lb-simulator", run: bigipLtmLbSimulatorRun },
+  { slug: "ja3-tls-fingerprint", run: ja3TlsFingerprintRun },
   { slug: "f5-service-check-date", run: f5ServiceCheckDateRun },
   { slug: "f5-bigip-license-explainer", run: f5BigipLicenseExplainerRun },
   { slug: "f5-awaf-declarative-policy-explainer", run: f5AwafDeclarativePolicyRun },
@@ -191,6 +219,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "secure-headers", run: secureHeadersRun },
   { slug: "ssrf-url-classifier", run: ssrfUrlClassifierRun },
   { slug: "syslog-pri-decoder", run: syslogPriDecoderRun },
+  { slug: "ja4-fingerprint-decoder", run: ja4FingerprintDecoderRun },
+  { slug: "oui-lookup", run: ouiLookupRun },
+  { slug: "voss-fabric-id", run: vossFabricIdRun },
+  { slug: "voss-exos-translator", run: vossExosTranslatorRun },
   { slug: "f5-tmsh-config-explainer", run: tmshConfigExplainerRun },
   { slug: "totp-hotp", structured: true, run: (input) => totpHotpRun(JSON.parse(input)) },
   { slug: "url-inspector", run: urlInspectorRun },

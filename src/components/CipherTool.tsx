@@ -26,6 +26,7 @@ import {
   formatCodepoint,
   type DecodedCipherSuite,
 } from "@/lib/tools/cipher";
+import { usePrefill } from "@/lib/use-prefill";
 
 // Which reason codes read as positive / negative / informational, for the
 // colour-coded markers. (The text itself is localized in the message pack.)
@@ -86,6 +87,11 @@ export default function CipherTool() {
 
   const c = decoded?.components;
   const yesNo = (b: boolean) => (b ? t("comp.yes") : t("comp.no"));
+
+  usePrefill((v) => {
+    setValue(v);
+    decode(v);
+  });
 
   return (
     <div className="cidr-tool jwt-tool cipher-tool">

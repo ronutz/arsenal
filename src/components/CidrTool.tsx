@@ -33,6 +33,7 @@ import {
   type AggregateResult,
   type OverlapGapResult,
 } from "@/lib/tools/cidr";
+import { usePrefill } from "@/lib/use-prefill";
 
 type Mode = "subnet" | "vlsm" | "supernet" | "overlap";
 const MODES: Mode[] = ["subnet", "vlsm", "supernet", "overlap"];
@@ -296,6 +297,17 @@ export default function CidrTool() {
   // Octets + prefix for the bit grid, derived from the computed network address.
   const bitOctets = subnet ? ipToOctets(subnet.network) : null;
   const bitPrefix = subnet ? maskToPrefix(subnet.netmask) : null;
+
+  usePrefill((v) => {
+    setValue(v);
+    try {
+      setSubnet(cidrAnalyze(v.trim()));
+      setError(null);
+    } catch (e) {
+      setError(mapError(e));
+      setSubnet(null);
+    }
+  });
 
   return (
     <div className="cidr-tool">

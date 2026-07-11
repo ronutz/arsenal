@@ -1,0 +1,37 @@
+---
+slug: voss-fabric-connect-spbm
+title: "Fabric Connect e SPBM: Por Que o VOSS Aposenta o Spanning Tree"
+summary: "O que é de fato o Fabric Connect da Extreme - o Shortest Path Bridging MAC (SPBM, IEEE 802.1aq) com um plano de controle IS-IS e um plano de dados MAC-in-MAC - e por que reduzir o core a um único protocolo link-state substitui o spanning tree e a pilha usual de overlays."
+concepts: ["fabric connect", "spbm", "802.1aq", "is-is", "mac-in-mac", "b-vlan", "beb", "bcb"]
+relatedTools: ["voss-fabric-id"]
+relatedArticles: ["voss-i-sid-and-vsns", "voss-isis-and-nicknames"]
+category: networking
+order: 40
+status: reviewed
+updated: "2026-07-11"
+---
+
+## O core é o problema
+
+Uma rede comutada tradicional mantém o core livre de loops com o spanning tree, o que significa bloquear enlaces para quebrar loops, e empilha protocolo sobre protocolo para entregar serviços: trunks 802.1Q para VLANs, talvez MPLS ou VXLAN com BGP para virtualização, e mais algo para mover multicast. Cada camada é mais uma coisa para projetar, provisionar em cada salto e diagnosticar. O VOSS - o **Fabric Connect** da Extreme - foi construído para colapsar isso.
+
+## O que é o Fabric Connect
+
+O Fabric Connect é a implementação da Extreme do **Shortest Path Bridging MAC**, ou **SPBM**, padronizado como **IEEE 802.1aq** (com extensões de IP no IETF RFC 6329). Ele tem uma longa herança da ex-Nortel e da Avaya, que foram implementadoras precoces e completas do SPBM. A ideia é reduzir o core a um único protocolo link-state baseado em Ethernet que fornece todos os serviços de virtualização em um modelo integrado, em vez de uma pilha de overlays.
+
+Duas peças fazem isso funcionar:
+
+- um **plano de dados** baseado em **MAC-in-MAC**: os quadros de cliente são encapsulados em um cabeçalho de backbone-MAC e comutados pelo core por endereços de backbone-MAC (B-MACs), de modo que o core nunca inspeciona o quadro do cliente; e
+- um **plano de controle** baseado em **IS-IS**: os nós formam adjacências, descobrem a topologia, calculam os caminhos mais curtos para todos os outros nós e anunciam a associação de serviços - tudo em um só protocolo.
+
+## Nada de spanning tree no core
+
+O SPBM não roda spanning tree pela fabric. O transporte usa duas **Backbone VLANs** (B-VLANs, comumente 4051 e 4052). Uma B-VLAN não é uma VLAN normal: ela nunca faz flooding de tráfego desconhecido, broadcast ou multicast. Ela encaminha estritamente pelas tabelas de backbone-MAC que o IS-IS constrói, seguindo o caminho mais curto que o IS-IS calculou. Como o encaminhamento é calculado em vez de aprendido por flooding, cada enlace pode carregar tráfego e a convergência é rápida.
+
+## Provisione a borda, deixe o core em paz
+
+Os switches na fronteira da fabric são os **Backbone Edge Bridges (BEBs)**; os switches de trânsito no meio são os **Backbone Core Bridges (BCBs)**. Toda a configuração de serviço acontece nos BEBs, onde a aplicação encontra a rede - você anexa ali uma VLAN ou uma instância de roteamento a um serviço, e o IS-IS propaga essa associação para que todo BEB relevante participe. Os BCBs no meio são provisionados uma vez para a própria fabric e depois deixados em paz; eles carregam qualquer serviço sem configuração por serviço. Essa é a promessa do SPBM, muitas vezes resumida como "construir a rede uma vez e não tocar nela de novo".
+
+## Para onde ir em seguida
+
+A unidade de serviço na borda é o **I-SID**, coberto no artigo complementar sobre I-SIDs e VSNs. O plano de controle - IS-IS, os nicknames dos nós e os B-MACs - é coberto no artigo sobre o plano de controle do VOSS. A ferramenta de identificadores de fabric decodifica os I-SIDs, nicknames e B-MACs que você encontrará pelo caminho.

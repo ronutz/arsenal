@@ -1,0 +1,40 @@
+---
+slug: f5xc-http-lb-route-evaluation
+title: "How the XC HTTP Load Balancer Picks a Route: First-Match, Path Types, and the Per-Route WAF"
+summary: "XC routes are an ordered list evaluated first-match; the four route types (simple, redirect, direct-response, custom); prefix vs exact vs regex path match; method/header/query conditions; and how any route can attach or disable its own WAF."
+concepts: ["http load balancer", "routes", "first-match", "path matching", "per-route waf", "f5 distributed cloud"]
+relatedTools: ["f5xc-http-lb-route-explainer"]
+relatedArticles: []
+category: networking
+order: 73
+status: reviewed
+updated: "2026-07-11"
+---
+
+## A load balancer is a list of routes
+
+An XC HTTP load balancer routes requests to origin pools, and the rules that decide where each request goes are called routes. The load balancer holds an ordered list of them, plus a default origin pool for anything that matches nothing. When a request arrives, the load balancer walks the list from top to bottom and stops at the first route whose conditions match. That first-match model is why route order is a design decision, not a detail - F5's own how-to tells you to drag a route to the top of the list when you want it evaluated first.
+
+## Four kinds of route
+
+Every route is one of four types. A **simple** route matches traffic and forwards it to one or more origin pools, with optional weights for canary or blue-green splits. A **redirect** route matches traffic and returns a 3xx response to a new protocol, host, and path instead of proxying it. A **direct-response** route matches traffic and returns a fixed status code and body straight from the load balancer, never touching an origin - F5's engineers use this to serve small pages and even JavaScript. A **custom** route object points at a route defined elsewhere, which lets many load balancers share one route and lets redirect routes carry custom headers that inline simple routes cannot.
+
+## Path match: prefix, exact, or regex
+
+The match condition that matters most is the path, and XC gives you three ways to write it. A **prefix** match fires when the request path starts with your string, so `/api` matches `/api/orders`. An **exact** match fires only on the whole path. A **regex** match fires when your regular expression matches, which is how you express "any path under /trading" as `/trading/.*`. Prefix is the common case; regex is the power tool, and the one most likely to surprise you if the expression is broader than you meant.
+
+## Match is more than the path
+
+A route can also match on the HTTP method (or ANY), on request headers (present, exact value, or regex), and on query parameters. This is how header-based routing and A/B tests work - two routes with the same path but different header conditions send traffic to different pools. It is also the subtlety the first-match rule interacts with: a broad route earlier in the list can shadow a narrower route below it, so the narrower one never runs.
+
+## The per-route WAF
+
+A load balancer applies one WAF policy at its base, but the WAF is not all-or-nothing. Any simple route can, in its Advanced Options, attach its own App Firewall - so you can run one policy in blocking mode on `/trading/.*` and a different one in monitoring mode on everything else - or disable WAF for that route, or inherit the load balancer's policy, which is the default. A route that disables WAF is a real exposure and is nearly invisible in raw JSON, which is exactly the kind of thing worth surfacing.
+
+## Rewrites and header mutations
+
+Beyond routing, a route can reshape the request. It can rewrite the path (replace the matched prefix, or apply a regex substitution), add or remove request and response headers, and override the default host-rewrite behavior. By default the load balancer rewrites the Host header to the origin's DNS name when the origin is defined by name (K000146653); a route lets you change that when the application needs the original Host preserved.
+
+## Reading a config the fast way
+
+All of this is visible in the JSON, but it is spread across nested keys and easy to misread under pressure. The companion tool decodes the whole routes block at once - type, match, action, mutations, and WAF per route, in evaluation order - and tells you, for a given method and path, which route actually wins. That turns "why is this request going to the wrong pool" from a JSON-reading exercise into a one-line answer.

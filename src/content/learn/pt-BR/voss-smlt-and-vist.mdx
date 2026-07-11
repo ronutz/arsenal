@@ -1,0 +1,48 @@
+---
+slug: voss-smlt-and-vist
+title: "SMLT e vIST: Dual-Homing de uma Borda de Fabric"
+summary: "Como o Split MultiLink Trunking faz o dual-homing de um dispositivo de borda para um par de switches com enlaces ativo-ativo e sem spanning tree, como o virtual IST roda o inter-switch trunk pela própria fabric SPBM, e o smlt-peer-system-id e o smlt-virtual-bmac que fazem o cluster ser um nó lógico."
+concepts: ["smlt", "vist", "virtual ist", "rsmlt", "slpp", "mlt", "smlt-virtual-bmac", "dual-homing"]
+relatedTools: ["voss-fabric-id"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-isis-and-nicknames", "voss-fabric-attach", "voss-vs-exos"]
+category: networking
+order: 45
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Dual-homing sem spanning tree
+
+Um switch de acesso que sobe para dois switches superiores em busca de redundância tradicionalmente depende do spanning tree, que bloqueia um dos dois caminhos - você perde metade da banda e a convergência é lenta. O **SMLT** (Split MultiLink Trunking) segue outro caminho: o dispositivo de acesso faz dual-homing para um **par** de switches por meio de um único grupo lógico de agregação de enlaces, então os dois uplinks encaminham ao mesmo tempo e a convergência é subsegundo. Quando o SMLT é habilitado em um grupo de agregação (um MLT), o spanning tree é automaticamente desabilitado nele.
+
+## O cluster de switches e o IST
+
+Os dois switches superiores formam um cluster e precisam permanecer sincronizados - tabelas MAC, ARP e assim por diante - por um **Inter-Switch Trunk (IST)**. Você configura um MLT do tipo SMLT com o **mesmo MLT ID nos dois peers**, e o dispositivo de acesso abaixo enxerga um único grupo lógico de agregação, em vez de dois uplinks separados.
+
+## Virtual IST
+
+Tradicionalmente, o IST é um enlace físico dedicado entre os dois switches do cluster. O **Virtual IST (vIST)** roda esse trunk como um canal pela fabric SPBM, de modo que nenhum cabo direto entre os peers é necessário. Você cria uma VLAN de vIST com um I-SID e uma interface Layer 3, e depois aponta os peers um para o outro:
+
+```
+vlan create 4053 type port-mstprstp 1
+vlan i-sid 4053 40534053
+interface vlan 4053
+  ip address 10.0.53.1 255.255.255.252
+exit
+virtual-ist peer-ip 10.0.53.2 vlan 4053
+```
+
+## Contando à fabric sobre o par
+
+Para o SPBM interoperar com o SMLT, cada peer precisa de duas configurações sob o `router isis`:
+
+```
+spbm 1 smlt-peer-system-id 020b.0002.0000
+spbm 1 smlt-virtual-bmac 02:0b:00:01:00:01
+```
+
+O **smlt-peer-system-id** é o system-id do outro peer, de modo que, se ele falhar, o switch local possa encaminhar em seu lugar. O **smlt-virtual-bmac** é um backbone MAC que os dois peers compartilham e anunciam, para que o resto da fabric enxergue o cluster como uma única origem lógica para o tráfego dual-homed. O B-MAC virtual só é necessário quando você usa system-ids personalizados; com os system-ids base-MAC padrão, o cluster simplesmente usa o menor dos dois. Ele deve ser único na fabric, e a convenção comum é reutilizar o B-MAC de um dos nós e mudar o último byte. Os papéis são automáticos: entre os dois peers, o menor system-id é o primário.
+
+## RSMLT, SLPP e onde isso se encaixa
+
+O **RSMLT** (Routed SMLT) estende a mesma ideia para o Layer 3, adicionando redundância de roteamento no par; ele exige um vIST. Para se proteger contra loops, o VOSS roda o **SLPP** (Simple Loop Prevention Protocol) no cluster, e em uma borda EXOS com Fabric Attach você habilita o **SLPP-Guard** nas portas de acesso - nunca nos uplinks. Juntando tudo, um par de core com vIST é a forma padrão de construir uma borda redundante para um campus Fabric Connect: faça o dual-homing do seu acesso (inclusive uma borda EXOS por Fabric Attach) para o cluster, rode o inter-switch trunk pela própria fabric e deixe o SMLT lhe dar enlaces ativo-ativo com convergência subsegundo. A ferramenta de identificadores de fabric decodifica os system-ids e os B-MACs virtuais que você configura aqui.

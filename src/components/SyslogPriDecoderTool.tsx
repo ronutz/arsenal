@@ -14,6 +14,7 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { decodePri, encodePri, FACILITIES, SEVERITIES } from "@/lib/tools/syslog-pri-decoder";
+import { usePrefill } from "@/lib/use-prefill";
 
 type Mode = "decode" | "encode";
 
@@ -30,6 +31,8 @@ export default function SyslogPriDecoderTool() {
 
   const decoded = useMemo(() => (input.trim() ? decodePri(input) : null), [input]);
   const encoded = useMemo(() => encodePri(facility, severity), [facility, severity]);
+
+  usePrefill(setInput);
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool syslogpri-tool">

@@ -19,6 +19,7 @@
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, CsrDecodeError, type DecodedCsr } from "@/lib/tools/csr-decoder";
+import { usePrefill } from "@/lib/use-prefill";
 
 // A worked example: an RSA-2048 CSR with SAN, keyUsage and EKU (the same CSR
 // used as a golden vector, so the example exercises the full decode path).
@@ -92,6 +93,11 @@ export default function CsrDecoderTool() {
     (decoded.challengePassword !== undefined ||
       decoded.unstructuredName !== undefined ||
       decoded.otherAttributes.length > 0);
+
+  usePrefill((v) => {
+    setValue(v);
+    decode(v);
+  });
 
   return (
     <div className="cidr-tool jwt-tool x509-tool csr-tool">

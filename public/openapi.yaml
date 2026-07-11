@@ -28,10 +28,12 @@ servers:
 tags:
   - name: Encoding
   - name: Extreme switching & fabric (EXOS / VOSS / SPB)
+  - name: F5 BIG-IP LTM
   - name: F5 Distributed Cloud (XC)
   - name: F5 GTM, AFM & APM
   - name: F5 LTM, iRules & platform
   - name: F5 automation (AS3 / DO)
+  - name: Fingerprinting
   - name: Fortinet FortiGate & FortiOS
   - name: HTTP & web
   - name: Hashing
@@ -239,6 +241,65 @@ paths:
               type: string
               examples:
                 - SGVsbG8gV29ybGQ=
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /bigip-ltm-lb-simulator:
+    get:
+      tags:
+        - F5 BIG-IP LTM
+      operationId: run_bigip_ltm_lb_simulator
+      summary: BIG-IP LTM load balancing simulator
+      description: >-
+        Configure pool members, pick a load balancing method and a request count, and see where the
+        next N connections land. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 BIG-IP LTM
+      operationId: run_bigip_ltm_lb_simulator_post
+      summary: BIG-IP LTM load balancing simulator (POST)
+      description: >-
+        Configure pool members, pick a load balancing method and a request count, and see where the
+        next N connections land. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
       responses:
         '200':
           description: The computed result.
@@ -3349,6 +3410,559 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /f5xc-api-path-explainer:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_api_path_explainer
+      summary: F5XC API path explainer
+      description: >-
+        Paste the OpenAPI / Swagger spec you import into (or download from) F5XC API Protection and
+        it lists every path and operation with its method, parameters, request body, responses, and
+        authentication. Standards: F5 Distributed Cloud API. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_api_path_explainer_post
+      summary: F5XC API path explainer (POST)
+      description: >-
+        Paste the OpenAPI / Swagger spec you import into (or download from) F5XC API Protection and
+        it lists every path and operation with its method, parameters, request body, responses, and
+        authentication. Standards: F5 Distributed Cloud API. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-ce-egress-checklist:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_ce_egress_checklist
+      summary: F5XC CE egress checklist & verifier
+      description: >-
+        Paste F5's published Customer Edge IP/domain reference file and get a purpose-organized,
+        site-type-filtered allowlist, the port matrix, a firewall-request text, and a curl-host
+        verifier - parsed from what you paste, never a hardcoded list. Standards: F5 Distributed
+        Cloud. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_ce_egress_checklist_post
+      summary: F5XC CE egress checklist & verifier (POST)
+      description: >-
+        Paste F5's published Customer Edge IP/domain reference file and get a purpose-organized,
+        site-type-filtered allowlist, the port matrix, a firewall-request text, and a curl-host
+        verifier - parsed from what you paste, never a hardcoded list. Standards: F5 Distributed
+        Cloud. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-domain-sni-match-resolver:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_domain_sni_match_resolver
+      summary: F5XC domain / SNI match resolver
+      description: >-
+        Paste the domain lists of one or more F5XC HTTP load balancers and a test hostname, and see
+        which load balancer and domain entry wins - exact beats wildcard, with the Default LB
+        catching the rest. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_domain_sni_match_resolver_post
+      summary: F5XC domain / SNI match resolver (POST)
+      description: >-
+        Paste the domain lists of one or more F5XC HTTP load balancers and a test hostname, and see
+        which load balancer and domain entry wins - exact beats wildcard, with the Default LB
+        catching the rest. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-http-lb-route-explainer:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_http_lb_route_explainer
+      summary: F5XC HTTP LB route explainer
+      description: >-
+        Paste the routes of an F5XC HTTP load balancer and get each route decoded in order - type,
+        path/method/header match, action, header mutations, and per-route WAF - plus a first-match
+        simulator for a test request. Standards: ves.io.schema.views.http_loadbalancer. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_http_lb_route_explainer_post
+      summary: F5XC HTTP LB route explainer (POST)
+      description: >-
+        Paste the routes of an F5XC HTTP load balancer and get each route decoded in order - type,
+        path/method/header match, action, header mutations, and per-route WAF - plus a first-match
+        simulator for a test request. Standards: ves.io.schema.views.http_loadbalancer. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-lb-algorithm-chooser:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_lb_algorithm_chooser
+      summary: F5XC load-balancing algorithm chooser
+      description: >-
+        A short questionnaire recommends an F5XC origin-pool load-balancing algorithm - with the
+        BIG-IP equivalent, caveats, and where to set it - and explains the XC model where consistent
+        hashing IS the persistence method. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_lb_algorithm_chooser_post
+      summary: F5XC load-balancing algorithm chooser (POST)
+      description: >-
+        A short questionnaire recommends an F5XC origin-pool load-balancing algorithm - with the
+        BIG-IP equivalent, caveats, and where to set it - and explains the XC model where consistent
+        hashing IS the persistence method. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-object-linter:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_object_linter
+      summary: F5XC object linter
+      description: >-
+        Paste an F5XC origin_pool, http_loadbalancer, or app_firewall object and it flags risky or
+        surprising settings, each with a severity and a grounded explanation. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_object_linter_post
+      summary: F5XC object linter (POST)
+      description: >-
+        Paste an F5XC origin_pool, http_loadbalancer, or app_firewall object and it flags risky or
+        surprising settings, each with a severity and a grounded explanation. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-origin-pool-explainer:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_origin_pool_explainer
+      summary: F5XC origin pool explainer
+      description: >-
+        Paste an F5XC origin_pool spec and get it decoded - origin-server types and addresses, the
+        pool port, the load-balancing algorithm and endpoint selection, health checks, and the
+        TLS-to-origin settings. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_origin_pool_explainer_post
+      summary: F5XC origin pool explainer (POST)
+      description: >-
+        Paste an F5XC origin_pool spec and get it decoded - origin-server types and addresses, the
+        pool port, the load-balancing algorithm and endpoint selection, health checks, and the
+        TLS-to-origin settings. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-rate-limit-calculator:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_rate_limit_calculator
+      summary: F5XC rate-limit calculator
+      description: >-
+        Turn an F5 Distributed Cloud rate-limiter configuration into its effective rate, burst
+        ceiling, and exact leaky-bucket behavior - including why Disabled is not a bypass and how a
+        Block lockout holds. Standards: F5 Distributed Cloud. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_rate_limit_calculator_post
+      summary: F5XC rate-limit calculator (POST)
+      description: >-
+        Turn an F5 Distributed Cloud rate-limiter configuration into its effective rate, burst
+        ceiling, and exact leaky-bucket behavior - including why Disabled is not a bypass and how a
+        Block lockout holds. Standards: F5 Distributed Cloud. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-security-event-explainer:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_security_event_explainer
+      summary: F5XC security event explainer
+      description: >-
+        Paste an F5XC security event (WAF, Bot Defense, Service Policy, or API) and it decodes the
+        type, the action and disposition, the request context, and the specific reason it fired.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_security_event_explainer_post
+      summary: F5XC security event explainer (POST)
+      description: >-
+        Paste an F5XC security event (WAF, Bot Defense, Service Policy, or API) and it decodes the
+        type, the action and disposition, the request context, and the specific reason it fired.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /f5xc-service-policy-explainer:
     get:
       tags:
@@ -3401,6 +4015,67 @@ paths:
               type: string
               examples:
                 - '{ "spec": { "rule_list": { "rules": [ ... ] } } }'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /f5xc-tls-security-level-mapper:
+    get:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_tls_security_level_mapper
+      summary: F5XC TLS security-level cipher mapper
+      description: >-
+        Map an F5 Distributed Cloud TLS security level to its exact TLS versions and cipher suites,
+        or paste a cipher to see which levels include it - from F5's verbatim TLS Reference.
+        Standards: F5 Distributed Cloud. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 Distributed Cloud (XC)
+      operationId: run_f5xc_tls_security_level_mapper_post
+      summary: F5XC TLS security-level cipher mapper (POST)
+      description: >-
+        Map an F5 Distributed Cloud TLS security level to its exact TLS versions and cipher suites,
+        or paste a cipher to see which levels include it - from F5's verbatim TLS Reference.
+        Standards: F5 Distributed Cloud. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
       responses:
         '200':
           description: The computed result.
@@ -3943,6 +4618,132 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /ja3-tls-fingerprint:
+    get:
+      tags:
+        - Fingerprinting
+      operationId: run_ja3_tls_fingerprint
+      summary: JA3 / JA3N passive TLS fingerprint
+      description: >-
+        Paste a JA3 string and it recomputes the JA3 hash, computes the permutation-stable JA3N,
+        decodes the fields, and flags GREASE values. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Fingerprinting
+      operationId: run_ja3_tls_fingerprint_post
+      summary: JA3 / JA3N passive TLS fingerprint (POST)
+      description: >-
+        Paste a JA3 string and it recomputes the JA3 hash, computes the permutation-stable JA3N,
+        decodes the fields, and flags GREASE values. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /ja4-fingerprint-decoder:
+    get:
+      tags:
+        - Protocol & packet decoders
+      operationId: run_ja4_fingerprint_decoder
+      summary: JA4 / JA3 TLS fingerprint decoder
+      description: >-
+        Decode a JA4 TLS client fingerprint or a JA3 fingerprint into its fields, compute the hashed
+        JA4 from raw values, or compute a JA3 MD5. It auto-detects which you paste. All in your
+        browser. Standards: JA4 (FoxIO), JA3 (Salesforce), BSD 3-Clause. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - t13d1516h2_8daaf6152771_e5627efa2ab1
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Protocol & packet decoders
+      operationId: run_ja4_fingerprint_decoder_post
+      summary: JA4 / JA3 TLS fingerprint decoder (POST)
+      description: >-
+        Decode a JA4 TLS client fingerprint or a JA3 fingerprint into its fields, compute the hashed
+        JA4 from raw values, or compute a JA3 MD5. It auto-detects which you paste. All in your
+        browser. Standards: JA4 (FoxIO), JA3 (Salesforce), BSD 3-Clause. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - t13d1516h2_8daaf6152771_e5627efa2ab1
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /json-formatter:
     get:
       tags:
@@ -4394,6 +5195,71 @@ paths:
               type: string
               examples:
                 - '{"issuer":"https://idp.example.com","authorization_endpoint":"..."}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /oui-lookup:
+    get:
+      tags:
+        - Networking & addressing
+      operationId: run_oui_lookup
+      summary: OUI / MAC vendor lookup
+      description: >-
+        Look up the manufacturer behind a MAC address, and read whether it is unicast or multicast
+        and universally or locally administered. All in your browser. Standards: IEEE MA-L.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - 00:1b:54:11:22:33
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Networking & addressing
+      operationId: run_oui_lookup_post
+      summary: OUI / MAC vendor lookup (POST)
+      description: >-
+        Look up the manufacturer behind a MAC address, and read whether it is unicast or multicast
+        and universally or locally administered. All in your browser. Standards: IEEE MA-L.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - 00:1b:54:11:22:33
       responses:
         '200':
           description: The computed result.
@@ -5266,6 +6132,132 @@ paths:
               type: string
               examples:
                 - 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /voss-exos-translator:
+    get:
+      tags:
+        - Networking & addressing
+      operationId: run_voss_exos_translator
+      summary: VOSS / EXOS command translator
+      description: >-
+        A side-by-side reference between VOSS (Fabric Connect / SPBM) and EXOS. Search a task or
+        command to see how each CLI expresses it - and where EXOS has no equivalent. Standards: SPBM
+        802.1aq, Fabric Attach. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Networking & addressing
+      operationId: run_voss_exos_translator_post
+      summary: VOSS / EXOS command translator (POST)
+      description: >-
+        A side-by-side reference between VOSS (Fabric Connect / SPBM) and EXOS. Search a task or
+        command to see how each CLI expresses it - and where EXOS has no equivalent. Standards: SPBM
+        802.1aq, Fabric Attach. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /voss-fabric-id:
+    get:
+      tags:
+        - Networking & addressing
+      operationId: run_voss_fabric_id
+      summary: VOSS fabric identifier decoder
+      description: >-
+        Decode an Extreme SPBM fabric identifier - a 24-bit I-SID, a 20-bit nickname (X.XX.XX), or a
+        system-id / B-MAC. Auto-detected, all in your browser. Standards: SPBM 802.1aq. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - C.30.00
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Networking & addressing
+      operationId: run_voss_fabric_id_post
+      summary: VOSS fabric identifier decoder (POST)
+      description: >-
+        Decode an Extreme SPBM fabric identifier - a 24-bit I-SID, a 20-bit nickname (X.XX.XX), or a
+        system-id / B-MAC. Auto-detected, all in your browser. Standards: SPBM 802.1aq. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - C.30.00
       responses:
         '200':
           description: The computed result.

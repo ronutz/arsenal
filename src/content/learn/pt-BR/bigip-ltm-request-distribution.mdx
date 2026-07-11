@@ -1,0 +1,36 @@
+---
+slug: bigip-ltm-request-distribution
+title: "Para Onde Vão as Requisições? Simulando a Distribuição do BIG-IP LTM"
+summary: "Um nome de método te diz a regra; a distribuição te diz o resultado. Isto cobre como o BIG-IP LTM de fato espalha N requisições entre os membros do pool: por que o Ratio é um ciclo completo e não uma porcentagem, como o priority group activation deixa tiers mais baixos em standby visível, como o Least Sessions usa a contagem de registros de persistência (e volta para Round Robin sob persistência de cookie), e por que os métodos dinâmicos - Fastest, Observed, Predictive, Dynamic Ratio - não podem ser simulados a partir da configuração."
+concepts: ["load balancing", "round robin", "ratio", "least connections", "least sessions", "priority group activation", "persistence", "f5 big-ip ltm"]
+relatedTools: ["bigip-ltm-lb-simulator"]
+relatedArticles: ["ltm-load-balancing-methods", "ltm-persistence-methods"]
+category: networking
+order: 80
+status: reviewed
+updated: "2026-07-11"
+---
+
+## Do nome do método à distribuição real
+
+Saber que um pool usa "Ratio (member)" ou "Least Connections" te diz a regra, mas não o resultado. O resultado - como um conjunto específico de requisições de fato se espalha entre membros específicos - depende dos ratios, dos priority groups, da persistência já existente, e de quantas requisições você está perguntando. Dois pools com o mesmo método podem distribuir tráfego de formas completamente diferentes. Simular a distribuição transforma a regra em uma imagem: para N requisições, tantas caem aqui, tantas caem ali.
+
+## Ratio é um ciclo completo, não uma porcentagem
+
+A leitura errada mais comum do balanceamento por Ratio é tratar o ratio como uma porcentagem de uma amostra arbitrária. Não é. Um ratio de 3:2:1:1 significa que ao longo de um ciclo completo - e um ciclo completo é a soma dos ratios, sete requisições aqui - os membros recebem exatamente 3, 2, 1, e 1. Pergunte sobre sete requisições e você obtém um 3:2:1:1 limpo. Pergunte sobre oito, e a oitava requisição começa o próximo ciclo e vai para o membro de maior ratio, tornando-o 4:2:1:1. A distribuição só está "no ratio" em múltiplos do comprimento do ciclo; no meio, os membros da frente estão ligeiramente adiante. É por isso que um simulador que mostra contagens para um N específico é mais honesto do que uma porcentagem estática: ele te mostra o estado real naquele ponto do ciclo.
+
+## Priority groups: o standby que você consegue ver
+
+O priority group activation é fácil de descrever e fácil de errar. Cada membro pertence a um priority group, e o tráfego fica confinado ao grupo mais alto enquanto ele tiver membros disponíveis suficientes - especificamente, pelo menos o mínimo que você configura. Caia abaixo desse mínimo e o próximo grupo abaixo é ativado, juntando-se ao pool de membros elegíveis. Em estado estável, com tudo saudável, isso geralmente significa que seus membros de prioridade mais baixa não recebem nada: eles são capacidade de standby, esperando o grupo primário perder membros. Ver um membro marcado como standby com zero tráfego não é um bug; é o recurso funcionando. O simulador torna isso visível, que é exatamente o que você quer quando está verificando se seus tiers de failover estão arranjados da forma que você pensa.
+
+## Least Sessions e a métrica de persistência
+
+O Least Sessions é o único método cuja entrada é a própria persistência. Ele envia cada nova conexão para o membro com o menor número de entradas na tabela de persistência, o que significa que um membro que atualmente segura muitos clientes sticky é preterido em favor de um que segura poucos. Dê ao simulador a contagem de registros de persistência por membro e ele preenche os membros mais vazios primeiro até eles se nivelarem. Há uma ressalva que vale saber: esse comportamento assume um método de persistência que rastreia sessões, como source-address affinity. Se a persistência é baseada em cookie, o BIG-IP não usa a contagem de sessões de forma alguma e volta para Round Robin - então o mesmo pool pode se comportar diferentemente dependendo de qual profile de persistência está anexado.
+
+## Por que os métodos dinâmicos não podem ser desenhados
+
+Round Robin, Ratio, Least Connections, e Least Sessions podem ser simulados porque tudo que eles precisam é ou configuração ou uma cifra de carga que você pode declarar. Fastest, Observed, Predictive, e Dynamic Ratio não podem, e vale ser claro sobre o porquê em vez de fingir. Esses métodos decidem a partir de medições de runtime ao vivo: tempos de resposta, contagens de conexão amostradas a cada segundo, se o desempenho de um membro está subindo ou descendo, métricas puxadas por SNMP. Nada disso está na configuração de um pool, e tudo isso muda continuamente. Uma ferramenta que produzisse uma distribuição fixa para "Observed" estaria inventando as próprias medições das quais o método depende. A atitude honesta é nomear o que esses métodos precisam e parar por aí.
+
+## Lendo uma simulação
+
+Uma distribuição é um ponto de partida para uma pergunta, não uma garantia sobre produção. Ela te diz o que a regra configurada faz com uma dada carga, o que é suficiente para pegar os erros que importam: um ratio que está invertido, um tier de prioridade que está silenciosamente pegando tráfego, uma escolha de persistência que está discretamente voltando para Round Robin. Rode os números para o N que te importa, olhe quais membros estão ativos e quais estão em standby, e verifique que o formato bate com a sua intenção. O pool vai fazer em produção o que a regra diz - a simulação só te deixa ver a regra antes do tráfego ver.

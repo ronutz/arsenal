@@ -1,0 +1,37 @@
+---
+slug: what-is-an-oui
+title: "What Is an OUI, and How MAC Addresses Are Assigned"
+summary: "How a MAC address is structured, what the OUI (the manufacturer prefix) is and who hands it out, the difference between universally and locally administered addresses, and why a randomized Wi-Fi MAC has no vendor at all."
+concepts: ["oui", "mac address", "ieee registration authority", "unicast vs multicast", "locally administered", "eui-48"]
+relatedTools: ["oui-lookup"]
+relatedArticles: []
+category: networking
+order: 30
+status: reviewed
+updated: "2026-07-10"
+---
+
+## The shape of a MAC address
+
+A MAC-48 (or EUI-48) address is 48 bits, six octets, usually shown as hex separated by colons or hyphens (`00:1b:54:11:22:33`), or in Cisco's convention as three dot-separated groups (`001b.5411.2233`). It splits cleanly in half: the first three octets are the OUI, and the last three are assigned by the manufacturer to individual devices.
+
+## The OUI, and who assigns it
+
+The OUI - Organizationally Unique Identifier - is a 24-bit prefix the IEEE Registration Authority sells to a manufacturer. Buy an OUI (an MA-L block) and you own roughly 16.7 million addresses to stamp onto your hardware. The IEEE publishes the assignments, which is why a lookup can turn `00:1b:54` into the company that registered it. There are also smaller blocks - MA-M (a 28-bit prefix, about a million addresses) and MA-S (36-bit, about 4,096) - for vendors that do not need a full OUI.
+
+## Two bits hiding in the first octet
+
+Before you read the OUI as a vendor, two bits in the very first octet tell you whether that reading even makes sense:
+
+- The **I/G bit** (the least significant bit of the first octet) marks unicast (0) versus multicast (1). Multicast MACs address a group; the classic example is `01:00:5e`, which carries IPv4 multicast.
+- The **U/L bit** (the next bit up) marks universally administered (0) versus locally administered (1). A universally administered address came from an OUI and is globally unique; a locally administered one was set by software and belongs to no manufacturer.
+
+An easy tell: if the second hex digit of the address is 2, 6, A, or E, the U/L bit is set and the address is locally administered.
+
+## Why so many MACs now have no vendor
+
+Locally administered addresses used to be niche - a hypervisor minting NICs for virtual machines, a link-aggregation group presenting a single address. Then privacy changed the default. Phones and laptops now use a randomized, locally administered MAC for each Wi-Fi network they join, precisely so the address cannot be tied back to a device or a manufacturer. Look one of those up and the honest answer is that there is no vendor: the OUI bits are random, not an assignment. A tool that returned a "manufacturer" for a randomized MAC would be inventing one.
+
+## Where this is useful
+
+Reading a MAC's vendor is everyday network work: identifying what is plugged into a switch port from its address, spotting a rogue or unexpected device, recognizing virtualization (VMware, Xen, and VirtualBox all have well-known OUIs), or sanity-checking that the thing you think you are talking to is the brand you expect. Reading the two bits first keeps you from chasing a vendor for an address that, by design, has none.
