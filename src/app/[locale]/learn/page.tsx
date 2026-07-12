@@ -68,7 +68,7 @@ export default async function LearnIndexPage({
       </a>
       <Header />
 
-      <main id="main">
+      <main id="main" data-surface="learn">
         <section className="section">
           <div className="container">
             <p className="hero-eyebrow">{t("eyebrow")}</p>

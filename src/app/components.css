@@ -593,8 +593,8 @@
   flex-direction: column;
   height: 100%;
   padding: 1.5rem;
-  background: var(--surface-base);
-  border: 1px solid var(--border-subtle);
+  background: var(--article-surface);
+  border: 1px solid var(--article-border);
   border-radius: var(--radius-lg);
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
@@ -743,8 +743,8 @@
   flex-direction: column;
   gap: 0.2rem;
   padding: 1rem 1.25rem;
-  background: var(--surface-base);
-  border: 1px solid var(--border-subtle);
+  background: var(--article-surface);
+  border: 1px solid var(--article-border);
   border-radius: var(--radius-md);
   transition: border-color 0.15s ease;
 }

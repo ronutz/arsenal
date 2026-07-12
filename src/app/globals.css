@@ -51,6 +51,20 @@
   --accent-hover: #67e8f9;       /* cyan, brighter — hover state */
   --accent-amber: #f59e0b;       /* amber — secondary accent */
 
+  /* --- Article / Learn surface family -----------------------------------------
+     A lighter, accent-tinted surface set that sets the Learn section and its
+     article cards apart from the deeper Tools surfaces. Each value is DERIVED
+     from the active theme's own --accent-primary + base surfaces via color-mix,
+     so all 32 themes adapt automatically with no hand-picked per-theme values.
+     The mixes are taken over --surface-base / --canvas-primary (not the lighter
+     --surface-elevated) so the surface luminance stays in the tool-card band and
+     the existing --text-primary / --text-secondary foregrounds keep their
+     WCAG-AA contrast — the differentiation comes from the blue tint, not from a
+     lightness jump that would wash out secondary text. */
+  --article-canvas: color-mix(in srgb, var(--accent-primary) 6%, var(--canvas-primary));
+  --article-surface: color-mix(in srgb, var(--accent-primary) 10%, var(--surface-base));
+  --article-border: color-mix(in srgb, var(--accent-primary) 30%, var(--border-subtle));
+
   /* --- Type --- */
   --font-prose: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
@@ -678,6 +692,16 @@ body {
     transparent
   );
   background-repeat: no-repeat;
+}
+
+/* Learn section surface: the /learn index and every article page mark their
+   <main> with data-surface="learn" so the reading area takes the lighter,
+   accent-tinted --article-canvas — visibly a lighter blue than the deep Tools
+   canvas. Only the content area is tinted; the global header/footer stay on the
+   base canvas. --article-canvas is a ~6% accent lift over --canvas-primary, so
+   body text (--text-primary / --text-secondary) keeps full contrast. */
+main[data-surface="learn"] {
+  background: var(--article-canvas);
 }
 
 /* --- Accessibility floor (the quality bar, not announced) --- */
