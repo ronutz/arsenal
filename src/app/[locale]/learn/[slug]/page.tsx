@@ -83,7 +83,7 @@ export default async function ArticlePage({
       </a>
       <Header />
 
-      <main id="main" data-surface="learn">
+      <main id="main">
         <article className="section">
           <div className="container article-container">
             <Breadcrumbs
