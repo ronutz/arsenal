@@ -56,6 +56,9 @@ export interface MegaBrainLabels {
   stopLabel: string;
   motionOffAria: string;
   motionOnAria: string;
+  /** Fullscreen switch: enter/exit labels (used for aria-label and title). */
+  fullscreenEnterAria: string;
+  fullscreenExitAria: string;
   /** Accessible label for the Brazilian-flag pt-BR shortcut (07/07/2026). */
   ptBrFlagAria: string;
   disabledTitleGoh: string;
@@ -139,7 +142,59 @@ export default function MegaBrainConsole({
       return next;
     });
   };
-  // Boss key: which mock work-app is showing (null = console visible).
+
+  // FULLSCREEN switch. The console root is the fullscreen target. We prefer the
+  // real Fullscreen API (desktop + Android Chrome give true OS fullscreen), and
+  // fall back to a CSS "fill the viewport" overlay (.mb-fs) on browsers whose
+  // API cannot fullscreen an element - notably iPhone Safari, which only
+  // supports fullscreen for <video>. Two flags so the switch reflects EITHER
+  // path; `nativeFs` is driven by the fullscreenchange event so pressing Esc
+  // (which exits real fullscreen without going through our handler) keeps the
+  // switch in sync. WebKit-prefixed variants cover older Safari.
+  const consoleRef = useRef<HTMLDivElement>(null);
+  const [nativeFs, setNativeFs] = useState(false);
+  const [cssFs, setCssFs] = useState(false);
+  const isFullscreen = nativeFs || cssFs;
+  useEffect(() => {
+    const sync = () => {
+      const doc = document as Document & { webkitFullscreenElement?: Element | null };
+      const el = document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
+      setNativeFs(el === consoleRef.current);
+    };
+    document.addEventListener("fullscreenchange", sync);
+    document.addEventListener("webkitfullscreenchange", sync);
+    return () => {
+      document.removeEventListener("fullscreenchange", sync);
+      document.removeEventListener("webkitfullscreenchange", sync);
+    };
+  }, []);
+  const toggleFullscreen = useCallback(() => {
+    const el = consoleRef.current;
+    if (!el) return;
+    const doc = document as Document & {
+      webkitExitFullscreen?: () => void;
+      webkitFullscreenElement?: Element | null;
+      webkitFullscreenEnabled?: boolean;
+    };
+    const node = el as HTMLDivElement & { webkitRequestFullscreen?: () => void };
+    // Exit whichever fullscreen we're in.
+    if (cssFs) {
+      setCssFs(false);
+      return;
+    }
+    if (document.fullscreenElement ?? doc.webkitFullscreenElement) {
+      (document.exitFullscreen?.bind(document) ?? doc.webkitExitFullscreen?.bind(doc))?.();
+      return;
+    }
+    // Enter: real API where available, CSS fallback otherwise (iPhone Safari).
+    const request = node.requestFullscreen?.bind(node) ?? node.webkitRequestFullscreen?.bind(node);
+    const enabled = document.fullscreenEnabled ?? doc.webkitFullscreenEnabled ?? false;
+    if (request && enabled) {
+      Promise.resolve(request()).catch(() => setCssFs(true));
+    } else {
+      setCssFs(true);
+    }
+  }, [cssFs]);  // Boss key: which mock work-app is showing (null = console visible).
   const [bossApp, setBossApp] = useState<null | BossScreenKind>(null);
   // FAIL-SAFE (red dot): `burnout` is the brief overload transition, `goHorse`
   // the engaged mode. prevPowerRef remembers the power to restore on disengage;
@@ -328,7 +383,7 @@ export default function MegaBrainConsole({
 
   return (
     <>
-    <div className={`mb-console mb-tier-${tier}${burnout ? " mb-burnout" : ""}${goHorse ? " mb-goh" : ""}`} data-total={atTotal ? "1" : "0"} data-vibe={vibeLevel} data-motion={motionOn ? "on" : "off"} style={{ ["--mb-power" as string]: fxPower, ["--mb-power-pct" as string]: `${fxPower}%` }}>
+    <div ref={consoleRef} className={`mb-console mb-tier-${tier}${burnout ? " mb-burnout" : ""}${goHorse ? " mb-goh" : ""}${cssFs ? " mb-fs" : ""}`} data-total={atTotal ? "1" : "0"} data-vibe={vibeLevel} data-motion={motionOn ? "on" : "off"} style={{ ["--mb-power" as string]: fxPower, ["--mb-power-pct" as string]: `${fxPower}%` }}>
       <div className="mb-titlebar">
         <button
           type="button"
@@ -385,6 +440,19 @@ export default function MegaBrainConsole({
           title={motionOn ? labels.motionOffAria : labels.motionOnAria}
         >
           <span aria-hidden="true">{motionOn ? "◐" : "○"}</span>
+        </button>
+        {/* Fullscreen switch: enter/exit the console into full screen. Same
+            understated frame-control look as the motion toggle; aria-pressed
+            reflects the current fullscreen state for assistive tech. */}
+        <button
+          type="button"
+          className="mb-fs-toggle"
+          onClick={toggleFullscreen}
+          aria-pressed={isFullscreen}
+          aria-label={isFullscreen ? labels.fullscreenExitAria : labels.fullscreenEnterAria}
+          title={isFullscreen ? labels.fullscreenExitAria : labels.fullscreenEnterAria}
+        >
+          <span aria-hidden="true">{isFullscreen ? "\u2921" : "\u2922"}</span>
         </button>
         {/* PRIME 05/07/2026: the two power controls now live as pills in the
             upper frame — Força Total as a fixed-pink lightning pill (a constant

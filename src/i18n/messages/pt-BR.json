@@ -5355,12 +5355,12 @@
     "ctaTitle": "Vamos trabalhar juntos",
     "ctaBody": "Seja para contratar um treinamento oficial, montar um programa sob medida para a sua equipe, ou trazer uma consultoria experiente para um problema difícil, a porta está aberta.",
     "ctaButton": "Entre em contato",
-    "coursesButton": "Ver todos os cursos",
+    "coursesButton": "Veja os cursos que ministro",
     "instructor": {
       "eyebrow": "Seu instrutor",
       "body": "Estes cursos são ministrados por Rodolfo Nützmann, instrutor técnico sênior que entrega treinamentos oficiais F5, Fortinet, Extreme Networks e Netskope no mundo todo, apoiado em uma carreira em redes e segurança iniciada em 1996 no lado da implementação. As credenciais, e o que dizem alunos anteriores, estão a um clique.",
       "about": "Sobre",
-      "certs": "Certificações",
+      "certs": "Credenciais",
       "endorsements": "Depoimentos"
     },
     "envTitle": "Ambientes de treinamento remoto",
@@ -6189,6 +6189,8 @@
     "meterLabelGoh": "PRODUTIVIDADE XGH",
     "motionOffAria": "Desligar animações",
     "motionOnAria": "Ligar animações",
+    "fullscreenEnterAria": "Entrar em tela cheia",
+    "fullscreenExitAria": "Sair da tela cheia",
     "ogAlt": "Console do Mega Brain — FORÇA TOTAL 100%",
     "ogDesc": "Ative o Mega Brain e empurre a força até 100%. Um alívio de estresse pra dev, com direito ao react do Mano. 🍺",
     "ogTitle": "🧠 Console do Mega Brain — FORÇA TOTAL",
@@ -7786,7 +7788,7 @@
     "ctaTitle": "Reserve um treinamento com instrutor",
     "ctaBody": "Os cursos ministrados por Rodolfo Nützmann e outros instrutores autorizados podem ser reservados diretamente na Red Education, no mundo todo, nos formatos presencial, virtual ou in-company.",
     "ctaButton": "Visitar a Red Education",
-    "aboutLink": "Sobre a Red Education"
+    "aboutLink": "Em parceria com a Red Education"
   },
   "toolDocs": {
     "titleSuffix": "documentação",

@@ -5355,12 +5355,12 @@
     "ctaTitle": "Let's work together",
     "ctaBody": "Whether you are looking to book official training, build a custom program for your team, or bring in experienced counsel on a hard problem, the door is open.",
     "ctaButton": "Get in touch",
-    "coursesButton": "Browse all courses",
+    "coursesButton": "See the courses I teach",
     "instructor": {
       "eyebrow": "Your instructor",
       "body": "These courses are taught by Rodolfo Nützmann, a senior technical instructor delivering authorized F5, Fortinet, Extreme Networks, and Netskope training worldwide, built on a networking and security career that began in 1996 on the implementation side. The credentials, and what past students say, are a click away.",
       "about": "About",
-      "certs": "Certifications",
+      "certs": "Credentials",
       "endorsements": "Endorsements"
     },
     "envTitle": "Remote training environments",
@@ -6189,6 +6189,8 @@
     "meterLabelGoh": "XGH PRODUCTIVITY",
     "motionOffAria": "Turn off motion",
     "motionOnAria": "Turn on motion",
+    "fullscreenEnterAria": "Enter full screen",
+    "fullscreenExitAria": "Exit full screen",
     "ogAlt": "Mega Brain Console — FULL POWER 100%",
     "ogDesc": "Fire up the Mega Brain and push the power to 100%. A stress reliever for devs, with a reality check included. 🍺",
     "ogTitle": "🧠 Mega Brain Console — FULL POWER",
@@ -7786,7 +7788,7 @@
     "ctaTitle": "Book instructor-led training",
     "ctaBody": "Courses taught by Rodolfo Nützmann and other authorized instructors can be booked directly at Red Education, worldwide, in classroom, virtual, or on-site formats.",
     "ctaButton": "Visit Red Education",
-    "aboutLink": "About Red Education"
+    "aboutLink": "In partnership with Red Education"
   },
   "toolDocs": {
     "titleSuffix": "documentation",

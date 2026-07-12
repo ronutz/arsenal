@@ -80,7 +80,7 @@ export default async function TrainingLandingPage({
                   <Link href="/about" className="teach-instructor-link teach-instructor-link--primary">
                     {t("instructor.about")}
                   </Link>
-                  <Link href="/certifications" className="teach-instructor-link">
+                  <Link href="/about/credentials" className="teach-instructor-link">
                     {t("instructor.certs")}
                   </Link>
                   <Link href="/endorsements" className="teach-instructor-link">

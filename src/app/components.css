@@ -4386,6 +4386,25 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .footer-redu .brand {
   color: #a8605f;
   font-weight: 600;
+  /* Keep the brand name "Red Education" from splitting across lines - on narrow
+     screens the browser was breaking it as "...Red" / "Education". */
+  white-space: nowrap;
+}
+
+/* Narrow screens: the coffee link and the Red Education callout no longer fit
+   on one line (the pt-BR string is the longest and needs the most room), and
+   the browser was wrapping mid-phrase. Stack them so each sits on its own line,
+   left-aligned like the rest of the footer, and drop the middot - a separator
+   has no meaning once the items are on separate lines. Above the breakpoint the
+   row stays the inline <p> with its wide separator, unchanged. */
+@media (max-width: 44rem) {
+  .footer-redu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+  .footer-redu .footer-sep-wide { display: none; }
 }
 
 /* License page — the inline "get in touch" link */
@@ -8348,6 +8367,34 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 /* When the toggle is present, the actions group no longer needs the auto margin
    (the toggle now carries it), so pills sit snug after it. */
 .mb-motion-toggle + .mb-titlebar-actions { margin-left: 0.5rem; }
+
+/* Fullscreen switch: the same understated frame control as the motion toggle,
+   sitting next to it (the motion toggle keeps the auto-margin that pushes the
+   right-hand cluster over). */
+.mb-fs-toggle {
+  flex: 0 0 auto;
+  background: none; border: 1px solid transparent; border-radius: 6px;
+  color: #5b6689; cursor: pointer; font-size: 0.82rem; line-height: 1;
+  padding: 0.2rem 0.4rem; transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+.mb-fs-toggle:hover, .mb-fs-toggle:focus-visible { color: #22d3ee; border-color: rgba(34, 211, 238, 0.4); outline: none; }
+.mb-fs-toggle[aria-pressed="true"] { color: #8b97bf; border-color: rgba(139, 151, 191, 0.35); background: rgba(139, 151, 191, 0.08); }
+.mb-fs-toggle + .mb-titlebar-actions { margin-left: 0.5rem; }
+
+/* Fullscreen fill. Two mechanisms reach the same look: the real Fullscreen API
+   (:fullscreen, desktop + Android) and the CSS fallback (.mb-fs, iPhone Safari,
+   whose API cannot fullscreen a non-video element). Both drop the window chrome
+   (radius/border/margin) and fill the screen; overflow becomes auto so a tall
+   console can scroll. 100dvh tracks the mobile dynamic viewport. */
+.mb-console:fullscreen {
+  max-width: none; margin: 0; border: none; border-radius: 0;
+  width: 100%; height: 100%; overflow: auto;
+}
+.mb-console.mb-fs {
+  position: fixed; inset: 0; z-index: 2147483000;
+  max-width: none; margin: 0; border: none; border-radius: 0;
+  width: 100vw; height: 100dvh; overflow: auto;
+}
 
 /* PRIME 07/07/2026: Brazilian-flag pt-BR shortcut. It takes over the auto-margin
    the motion toggle used to carry, so it starts the right-hand cluster and sits
