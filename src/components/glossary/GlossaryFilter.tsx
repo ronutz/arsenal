@@ -189,10 +189,12 @@ export default function GlossaryFilter({
           <button
             key={k.key}
             type="button"
+            data-kind={k.key}
             className={`gloss-chip gloss-chip-kind-${k.key}${kind === k.key ? " is-active" : ""}`}
             aria-pressed={kind === k.key}
             onClick={() => setKind(kind === k.key ? "" : k.key)}
           >
+            <span className="gloss-chip-swatch" aria-hidden="true" />
             {k.label}
           </button>
         ))}

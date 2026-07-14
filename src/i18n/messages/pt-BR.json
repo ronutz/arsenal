@@ -7122,6 +7122,350 @@
       "programming": "programação"
     },
     "entries": {
+      "the-hacker-manifesto": {
+        "def": "Um breve ensaio de 1986, escrito após a prisão de seu autor, que se tornou a declaração definidora da curiosidade hacker.",
+        "context": "Publicado na Phrack sob o pseudônimo The Mentor, ele apresenta o hacking como uma fome de entender, não de causar dano, e sua frase sobre ser julgado pela curiosidade ecoou amplamente. Segue sendo o texto mais citado da cultura hacker, para o bem e para o mal."
+      },
+      "the-gnu-manifesto": {
+        "def": "O chamado de Richard Stallman, em 1985, para construir um sistema operacional livre compatível com Unix que qualquer um pudesse compartilhar e alterar.",
+        "context": "Ele lançou o Projeto GNU e articulou a ética do software livre - a de que os usuários devem ser livres para executar, estudar, modificar e redistribuir software. As ferramentas que produziu, combinadas anos depois com o núcleo Linux, tornaram-se o sistema operacional que roda boa parte da internet."
+      },
+      "the-cathedral-and-the-bazaar": {
+        "def": "O ensaio de Eric Raymond, de 1997, contrastando o desenvolvimento fechado e de cima para baixo com o aberto e movido pela comunidade.",
+        "context": "A 'catedral' é o software construído em silêncio por um pequeno grupo escolhido; o 'bazar' é o modelo Linux, ruidoso e aberto, em que qualquer um pode contribuir e os lançamentos são frequentes. Ele popularizou o desenvolvimento de código aberto para o público empresarial e cunhou a Lei de Linus, sobre muitos olhos tornarem os bugs superficiais."
+      },
+      "kevin-mitnick": {
+        "def": "O hacker dos anos 1990 cujas façanhas de engenharia social o tornaram o invasor de computadores mais famoso da época.",
+        "context": "Mitnick invadia redes corporativas sobretudo manipulando pessoas, e não máquinas, tornou-se foragido e foi preso em 1995 após uma caçada de grande repercussão. Depois se reinventou como consultor de segurança e autor, transformando 'o humano é o elo mais fraco' em uma lição duradoura."
+      },
+      "the-414s": {
+        "def": "Um grupo de adolescentes de Milwaukee que invadiu dezenas de sistemas de computador em 1983 e levou o hacking às capas dos jornais.",
+        "context": "Batizados a partir do código de área da cidade, acessaram sistemas que incluíam um centro de câncer e o Laboratório Nacional de Los Alamos, na maioria por senhas padrão e adivinhadas. O caso ajudou a impulsionar as primeiras leis de crime informático nos EUA e fixou o jovem 'hacker' no imaginário público."
+      },
+      "log4shell": {
+        "def": "A vulnerabilidade de 2021 na onipresente biblioteca de logging Log4j que permitia a uma string registrada executar código arbitrário.",
+        "context": "Como o Log4j está embutido em incontáveis aplicações Java, uma string manipulada em algo tão inocente quanto um nome de usuário ou user agent podia disparar execução remota de código em quase qualquer lugar. Seu alcance e severidade a tornaram uma das falhas mais graves e difundidas já divulgadas."
+      },
+      "heartbleed": {
+        "def": "A falha de 2014 no OpenSSL que permitia a atacantes ler trechos da memória de um servidor, incluindo chaves e senhas.",
+        "context": "A ausência de uma verificação de limites na extensão de heartbeat do TLS permitia que um cliente pedisse mais dados do que enviara e recebesse o que estivesse adjacente na memória. Foi um dos primeiros bugs com logotipo e nome, e forçou uma corrida global para corrigir servidores e trocar segredos."
+      },
+      "shellshock": {
+        "def": "Uma família de vulnerabilidades do Bash, de 2014, que permitia a atacantes executar comandos por meio de variáveis de ambiente manipuladas.",
+        "context": "O Bash executava por engano o código que vinha após uma definição de função passada em uma variável de ambiente, e como servidores web e outros serviços definem tais variáveis a partir de entradas do usuário, isso virava execução remota de código. O Bash é tão presente nos sistemas Unix que a exposição foi enorme."
+      },
+      "stuxnet": {
+        "def": "O worm de 2010 que sabotou centrífugas nucleares iranianas, a primeira ciberarma conhecida a causar dano físico.",
+        "context": "O Stuxnet se espalhou amplamente, mas só se ativava em controladores industriais Siemens específicos, alterando sutilmente a velocidade das centrífugas enquanto reportava leituras normais aos operadores. Seu uso de vários zero-days e seu alvo físico marcaram a chegada da cibersabotagem em nível estatal."
+      },
+      "wannacry": {
+        "def": "O worm de ransomware de 2017 que se espalhou por um exploit vazado do Windows e paralisou sistemas no mundo todo.",
+        "context": "Ele usou o exploit de SMB EternalBlue para se autopropagar, cifrando arquivos e exigindo Bitcoin, e atingiu hospitais, fábricas e redes ferroviárias em horas. A descoberta acidental de um domínio de interrupção por um pesquisador o desacelerou, mas não antes de causar bilhões em prejuízo."
+      },
+      "the-iloveyou-virus": {
+        "def": "O worm de e-mail de 2000 cujo assunto 'ILOVEYOU' enganou milhões de pessoas, levando-as a infectar as próprias máquinas.",
+        "context": "Abrir a 'carta de amor' anexada executava um script que sobrescrevia arquivos e se enviava para toda a lista de contatos da vítima, espalhando-se pelo mundo em horas. Seu gancho social, e não qualquer brilhantismo técnico, é o que o tornou um dos worms mais destrutivos de sua época."
+      },
+      "the-turing-test": {
+        "def": "A proposta de Alan Turing, de 1950, de julgar a inteligência de máquinas pela capacidade de conversar de forma indistinguível de um humano.",
+        "context": "Em vez de perguntar 'as máquinas podem pensar', Turing reformulou a questão como um jogo de imitação: se um juiz humano não conseguir distinguir com segurança a máquina de uma pessoa apenas pelo texto, a pergunta está respondida de forma pragmática. Isso definiu os termos de décadas de debate sobre inteligência artificial."
+      },
+      "ada-lovelace": {
+        "def": "A matemática do século XIX muitas vezes chamada de primeira programadora por suas notas sobre a Máquina Analítica de Babbage.",
+        "context": "Em 1843 ela traduziu um artigo sobre a máquina proposta por Charles Babbage e acrescentou notas muito mais longas que o original, incluindo o que é frequentemente descrito como o primeiro algoritmo publicado destinado a um computador. Ela também percebeu que tal máquina poderia manipular símbolos, não apenas números - uma intuição à frente de seu tempo."
+      },
+      "the-eniac-programmers": {
+        "def": "As seis mulheres que programaram o ENIAC nos anos 1940, em grande parte sem crédito por décadas.",
+        "context": "Trabalhando sem linguagens de programação ou manuais, elas configuravam a máquina do tamanho de uma sala recabeando-a fisicamente e ajustando chaves, inventando na prática a programação enquanto avançavam. Sua contribuição ficou sem reconhecimento por anos, e sua história reformulou a compreensão de quem construiu a computação primitiva."
+      },
+      "the-streisand-effect": {
+        "def": "Quando uma tentativa de esconder ou suprimir uma informação acaba atraindo muito mais atenção a ela.",
+        "context": "O nome vem de um processo de 2003 em que Barbra Streisand tentou remover uma foto aérea de sua casa de um levantamento costeiro obscuro, que então viralizou por causa da ação. Na internet, tentar enterrar algo costuma ser a forma mais certa de espalhá-lo."
+      },
+      "moores-law": {
+        "def": "A observação de que o número de transistores em um chip aproximadamente dobra a cada dois anos.",
+        "context": "Gordon Moore notou a tendência em 1965, e ela se manteve por décadas como um roteiro autorrealizável em torno do qual toda a indústria se planejava. Está desacelerando à medida que a física impõe limites, mas segue sendo a referência para falar do ritmo do progresso da computação."
+      },
+      "brooks-law": {
+        "def": "O princípio de que acrescentar pessoas a um projeto de software atrasado o torna ainda mais atrasado.",
+        "context": "Novos integrantes precisam de adaptação e treinamento, e cada pessoa a mais multiplica os caminhos de comunicação, então reforçar a equipe na reta final costuma atrasar em vez de acelerar. Fred Brooks o extraiu da gestão do OS/360 da IBM, e ele ainda desmonta o mito de que esforço é intercambiável."
+      },
+      "conways-law": {
+        "def": "A observação de que os sistemas acabam espelhando a estrutura de comunicação das organizações que os constroem.",
+        "context": "Se quatro equipes constroem um compilador, você tende a obter um compilador de quatro passagens, porque as junções do software se formam onde ficam as conversas das equipes. O corolário moderno, a 'manobra inversa de Conway', é moldar as equipes de propósito para que a arquitetura desejada emerja."
+      },
+      "hofstadters-law": {
+        "def": "A regra autorreferente de que as coisas sempre levam mais tempo do que se espera, mesmo levando em conta esta regra.",
+        "context": "Seu toque recursivo captura por que as estimativas de software são cronicamente otimistas: mesmo quando você acrescenta uma folga, os imprevistos que não imaginou ainda o encontram. É citada, com pesar, em quase toda reunião de planejamento que já atrasou."
+      },
+      "hanlons-razor": {
+        "def": "A heurística de nunca atribuir à maldade aquilo que é adequadamente explicado por burrice ou engano.",
+        "context": "Quando algo dá errado, um erro honesto ou um descuido costuma ser mais provável do que um complô deliberado, e presumir maldade envenena a colaboração. Em análises de incidente, ela combina naturalmente com a cultura sem culpados: procure o processo quebrado, não o vilão."
+      },
+      "cunninghams-law": {
+        "def": "A observação de que a melhor forma de obter uma resposta certa on-line é publicar uma errada.",
+        "context": "Pessoas que não responderiam a uma pergunta correm para corrigir um erro, então um post confiantemente errado costuma atrair a correção que uma pergunta simples não traria. O nome vem de Ward Cunningham, criador do wiki, e explica boa parte das discussões nos comentários da internet."
+      },
+      "godwins-law": {
+        "def": "O ditado de que, quanto mais longa uma discussão on-line, mais inevitável se torna uma comparação com nazistas.",
+        "context": "Mike Godwin o cunhou em 1990 para conter analogias históricas banalizadas, e, por convenção, quem primeiro recorre à comparação é tido como tendo perdido o fio da discussão. Virou um atalho para o modo como as discussões acaloradas se degradam."
+      },
+      "leaky-abstraction": {
+        "def": "Uma abstração que deveria esconder a complexidade, mas deixa transparecer detalhes do que está por baixo.",
+        "context": "O TCP promete entrega confiável, mas um cabo rompido ainda aparece como um travamento; um ORM esconde o SQL até que uma consulta lenta o obrigue a pensar em SQL de novo. A 'lei' de Joel Spolsky é que toda abstração não trivial vaza em algum grau, então nunca se pode deixar totalmente de entender a camada de baixo."
+      },
+      "golden-hammer": {
+        "def": "Depender demais de uma única ferramenta conhecida para todo problema, sirva ela ou não.",
+        "context": "De 'se tudo o que você tem é um martelo, tudo parece um prego', descreve recorrer por reflexo à sua linguagem, framework ou padrão favorito em vez de escolher o que o problema pede. A cura é uma caixa de ferramentas maior e o discernimento de saber quando o martelo é a escolha errada."
+      },
+      "north-star": {
+        "def": "A única métrica que uma equipe concorda captar melhor o valor que entrega, usada para alinhar o trabalho de todos.",
+        "context": "Em vez de perseguir uma dúzia de painéis, a equipe escolhe uma métrica-guia - usuários ativos, tarefas concluídas, tempo até o valor - e se orienta por ela. Bem escolhida, foca o esforço; mal escolhida, vira um número que as pessoas manipulam enquanto o objetivo real se perde."
+      },
+      "mandelbug": {
+        "def": "Um bug cujas causas são tão complexas e emaranhadas que seu comportamento parece caótico ou não determinístico.",
+        "context": "Batizado a partir do conjunto de Mandelbrot, infinitamente intrincado, é o bug que não se consegue isolar porque parece depender de tudo ao mesmo tempo. Está na mesma família do heisenbug, que some quando observado, e do bohrbug, que é entediantemente reproduzível."
+      },
+      "schroedinbug": {
+        "def": "Um bug que só se manifesta depois que alguém lê o código e percebe que ele nunca deveria ter funcionado.",
+        "context": "A piada, brincando com o gato de Schrodinger, é que o programa rodava bem até um engenheiro notar que logicamente não poderia, momento em que prontamente quebrou. Ela captura a sensação estranha de que certo código só funcionava porque ninguém olhava com atenção demais."
+      },
+      "crud": {
+        "def": "As quatro operações básicas do armazenamento persistente: criar, ler, atualizar e excluir.",
+        "context": "Quase toda aplicação apoiada em dados é, no fundo, uma forma de fazer CRUD em registros, e os verbos REST e os comandos SQL se mapeiam nessas quatro ações. Um 'app CRUD' é um atalho para software direto que basicamente move registros para dentro e para fora de um banco de dados."
+      },
+      "acid": {
+        "def": "As quatro garantias que uma transação de banco de dados confiável deve oferecer.",
+        "context": "Atomicidade significa tudo ou nada, consistência mantém os dados válidos, isolamento impede que transações concorrentes corrompam umas às outras, e durabilidade significa que dados confirmados sobrevivem a uma falha. O ACID é o contrato clássico dos bancos relacionais, contrastado com o modelo BASE, mais flexível, que muitos armazenamentos distribuídos adotam."
+      },
+      "the-blue-box": {
+        "def": "A caixa geradora de tons que o jovem Steve Wozniak construiu, e vendeu com Steve Jobs, para fazer ligações interurbanas de graça.",
+        "context": "Inspirado pela matéria da Esquire de 1971 sobre phreaking, Wozniak projetou uma blue box digital que emitia os tons de controle em que as centrais telefônicas confiavam, e a dupla passou a vendê-las em Berkeley. Jobs diria depois que, sem a blue box, não haveria Apple - ela provou que dois jovens podiam construir algo que a companhia telefônica não conseguia deter."
+      },
+      "the-first-webpage": {
+        "def": "A página simples que Tim Berners-Lee publicou no CERN em 1991 para explicar a própria World Wide Web.",
+        "context": "Servida de uma máquina NeXT em info.cern.ch, ela descrevia o que era a web, como fazer um navegador e como montar um servidor - a web documentando as próprias instruções. O CERN restaurou a página em seu endereço original, então a primeira coisa que a web disse continua no ar."
+      },
+      "halt-and-catch-fire": {
+        "def": "Uma instrução de máquina de nome jocoso que supostamente travaria a CPU - e, em alguns chips, um opcode não documentado real que faz isso.",
+        "context": "HCF começou como piada de programador para uma instrução que faria algo catastrófico, como incendiar o processador, mas o Motorola 6800 de fato tinha opcodes não documentados que prendiam a CPU num ciclo de leitura descontrolado, e o apelido colou neles. O nome é folclore; o travamento nesses chips é real."
+      },
+      "the-konami-code": {
+        "def": "A sequência de botões cima cima baixo baixo esquerda direita esquerda direita B A, uma trapaça que virou piada cultural.",
+        "context": "Kazuhisa Hashimoto a adicionou ao portar Gradius para o NES em 1986 porque achava o jogo difícil demais para testar, e ela ficou famosa depois em Contra. Décadas depois, ainda está escondida como easter egg em incontáveis sites e apps que recompensam quem a digita."
+      },
+      "all-your-base": {
+        "def": "Uma frase distorcida de um videogame mal traduzido de 1991 que se tornou um dos primeiros memes virais da internet.",
+        "context": "O port de Zero Wing para o Mega Drive abria com 'All your base are belong to us', uma tradução tão desajeitada que virou querida, explodindo em fóruns e montagens por volta de 2000 e 2001. É um marco da cultura de memes primitiva e uma piada recorrente sobre tradução automática ou apressada."
+      },
+      "the-y2k-bug": {
+        "def": "O receio de que sistemas que guardavam anos com dois dígitos lessem 2000 como 1900 na virada do século.",
+        "context": "Décadas de código e dados usaram anos de dois dígitos para poupar espaço, então '00' era ambíguo, motivando um enorme esforço global de correção no fim dos anos 1990. A virada passou com poucos incidentes - o que gerou um debate duradouro sobre se a correção foi exagero ou justamente a razão de nada ter quebrado."
+      },
+      "the-year-2038-problem": {
+        "def": "O momento, em 2038, em que sistemas que contam segundos num inteiro de 32 bits com sinal vão transbordar e voltar a 1901.",
+        "context": "O tempo Unix é o número de segundos desde 1970, e um contador de 32 bits com sinal se esgota às 03:14:07 UTC de 19 de janeiro de 2038, virando um valor negativo lido como dezembro de 1901. Sistemas modernos usam tempo de 64 bits, mas dispositivos embarcados e legados que ainda usam 32 bits são o Y2K da próxima geração."
+      },
+      "the-pentium-fdiv-bug": {
+        "def": "Uma falha de 1994 no Intel Pentium que devolvia respostas ligeiramente erradas em certas divisões de ponto flutuante.",
+        "context": "O matemático Thomas Nicely detectou o erro numa tabela de consulta, e a oferta inicial da Intel de trocar chips só para quem provasse estar afetado causou um desastre de imagem. A Intel voltou atrás, registrou uma despesa de cerca de 475 milhões de dólares, e o episódio redefiniu como a indústria lida com erratas de hardware."
+      },
+      "the-therac-25": {
+        "def": "Uma máquina de radioterapia dos anos 1980 cujos defeitos de software aplicaram superdosagens massivas a pacientes.",
+        "context": "Uma condição de corrida permitia que um operador rápido acionasse um modo de alta potência com o hardware de conformação do feixe fora de posição, e a remoção de travas físicas em favor de verificações por software fez com que nada o detectasse; ao menos seis pacientes foram gravemente feridos ou mortos. É o estudo de caso canônico em segurança de software e a razão de sistemas de missão crítica não confiarem só no software."
+      },
+      "the-mars-climate-orbiter": {
+        "def": "A sonda da NASA perdida em 1999 porque duas equipes trocaram dados de empuxo em unidades diferentes.",
+        "context": "O software de uma equipe produzia resultados em libra-força segundo enquanto o software de navegação esperava newton segundo, então a nave passou perto demais de Marte e foi destruída na atmosfera. Uma missão de 125 milhões de dólares terminou por uma incompatibilidade de unidades não verificada - o argumento clássico para grandezas tipadas e contratos de interface."
+      },
+      "knight-capital": {
+        "def": "A corretora que, em 2012, perdeu cerca de 440 milhões de dólares em 45 minutos por causa de uma implantação de software malfeita.",
+        "context": "Um engenheiro deixou de copiar o novo código para um de oito servidores, e uma flag de recurso reaproveitada reativou uma lógica de teste havia muito morta, que disparou milhões de ordens não intencionais ao mercado. A perda quase levou a empresa à falência em uma hora - a advertência definitiva sobre higiene de implantação e código morto deixado no lugar."
+      },
+      "hello-world": {
+        "def": "O programinha que apenas imprime uma saudação, tradicionalmente a primeira coisa que se escreve numa linguagem nova.",
+        "context": "Brian Kernighan usou 'hello, world' num tutorial de B em 1972 e depois no livro de C de 1978, e o ritual se espalhou para quase toda linguagem desde então. É o teste de fumaça universal - se imprime, sua cadeia de ferramentas funciona e você pode começar."
+      },
+      "goto-considered-harmful": {
+        "def": "A carta de Dijkstra, de 1968, argumentando que o goto irrestrito torna os programas difíceis de raciocinar.",
+        "context": "Ele sustentou que saltos livres deixam o fluxo de controle vagar até não se conseguir acompanhar o estado do programa, e defendeu construções estruturadas; o título famoso foi, na verdade, dado pelo editor Niklaus Wirth. O texto venceu o debate, inaugurou o formato de ensaio 'considered harmful' e moldou como todos escrevem fluxo de controle hoje."
+      },
+      "real-programmers": {
+        "def": "Um ensaio satírico de 1983 cujo 'Real Programmer' é um hacker machista que despreza as facilidades de alto nível.",
+        "context": "A paródia de Ed Post a 'Real Men Don't Eat Quiche' celebrava a velha guarda do FORTRAN e do assembly que desdenha a programação estruturada e as ferramentas úteis, meio de brincadeira, meio com nostalgia. O arquétipo que ele nomeou ainda ressurge sempre que alguém insiste que o jeito mais difícil e de mais baixo nível é o único verdadeiro."
+      },
+      "the-first-tweet": {
+        "def": "A mensagem de Jack Dorsey em 2006, 'just setting up my twttr', o primeiro post no Twitter.",
+        "context": "Enviada em 21 de março de 2006, quando o serviço ainda se escrevia 'twttr', é uma linha de status banal que por acaso inaugurou uma plataforma que remodelou a conversa pública. Dorsey depois a leiloou como NFT, um epílogo curioso para cinco palavras simples."
+      },
+      "wall-of-confusion": {
+        "def": "A disfunção em que desenvolvimento e operações jogam o trabalho de um lado para o outro sem responsabilidade compartilhada.",
+        "context": "O desenvolvimento joga o código 'por cima do muro' para operações e vai embora; operações recebe as consequências e culpa o desenvolvimento - cada lado otimizando localmente enquanto o todo sofre. Nomear o muro da confusão foi parte do que lançou o DevOps, cujo propósito é derrubá-lo com metas e ferramentas comuns."
+      },
+      "move-fast-and-break-things": {
+        "def": "Um lema que valoriza velocidade e iteração acima da cautela, aceitando que alguma quebra é o preço de aprender rápido.",
+        "context": "O lema inicial do Facebook capturava a aposta de uma startup de que lançar e corrigir vence deliberar, e se espalhou pela indústria. O próprio Facebook o aposentou em 2014 por 'mova-se rápido com infraestrutura estável', uma admissão discreta de que, em escala, a quebra deixa de ser barata."
+      },
+      "not-invented-here": {
+        "def": "A tendência a construir algo por conta própria em vez de adotar uma solução externa perfeitamente boa.",
+        "context": "O NIH aparece como desconfiança de bibliotecas, padrões ou fornecedores externos, às vezes justificada por controle e às vezes só por ego ou falta de familiaridade. É o contrapeso da reutilização: ocasionalmente a escolha certa para uma competência central, mas muitas vezes uma reinvenção cara de um problema já resolvido."
+      },
+      "spaghetti-code": {
+        "def": "Código cujo fluxo de controle é tão emaranhado que fica quase impossível de acompanhar.",
+        "context": "O nome evoca um prato de macarrão: saltos e desvios se cruzam até que seguir um caminho signifique seguir todos. Classicamente causado pelo goto irrestrito, hoje descreve qualquer base de código em que tudo está enredado com tudo."
+      },
+      "big-ball-of-mud": {
+        "def": "Um sistema sem arquitetura discernível - estruturado de forma aleatória, esparramado e mantido de pé pela conveniência.",
+        "context": "Foote e Yoder o nomearam como a arquitetura de fato mais comum: não projetada, mas acumulada, remendo sobre remendo, até que a estrutura seja o que sobreviveu. A percepção incômoda é que ele muitas vezes vence no curto prazo, e é justamente por isso que é tão difundido."
+      },
+      "scope-creep": {
+        "def": "A expansão descontrolada do escopo de um projeto depois que ele já começou.",
+        "context": "Pequenos acréscimos do tipo 'já que você está nisso' se acumulam até que a entrega, o prazo e o orçamento não correspondam mais ao plano original. Combatê-lo é a razão de existirem o controle de mudanças, critérios claros de aceitação e uma definição firme de pronto."
+      },
+      "bit-rot": {
+        "def": "O modo como um software funcional parece se deteriorar com o tempo à medida que o mundo ao seu redor muda.",
+        "context": "Os bits não apodrecem literalmente, mas dependências mudam, plataformas se alteram e pressupostos expiram, então um código intocado que rodava bem no ano passado agora quebra. É por isso que 'se funciona, não mexa' é uma armadilha - sistemas sem manutenção apodrecem justamente porque todo o resto continua se movendo."
+      },
+      "shadow-it": {
+        "def": "Tecnologias e serviços usados dentro de uma organização sem o conhecimento ou a aprovação da TI central.",
+        "context": "Uma equipe assina uma ferramenta SaaS no cartão de crédito porque o processo oficial é lento, e agora dados da empresa ficam em um lugar que a segurança nunca avaliou. O shadow IT é tanto um sintoma quanto um risco: as pessoas contornam a TI quando os caminhos oficiais são dolorosos demais."
+      },
+      "two-pizza-team": {
+        "def": "A regra de que uma equipe deve ser pequena o suficiente para ser alimentada com duas pizzas.",
+        "context": "Atribuída a Jeff Bezos, a ideia é que o custo de comunicação explode à medida que a equipe cresce, então equipes menores se movem mais rápido e assumem o próprio trabalho com mais clareza. É uma regra prática para autonomia e a metade organizacional de construir sistemas fracamente acoplados."
+      },
+      "dry": {
+        "def": "O princípio de que cada pedaço de conhecimento deve ter uma representação única e autoritativa em um sistema.",
+        "context": "Cunhado em The Pragmatic Programmer, o DRY diz que lógica duplicada significa bugs duplicados e divergência, então você fatora a ideia compartilhada em um só lugar. Sua contrapartida é um alerta - forçar coisas diferentes a compartilhar código só porque parecem semelhantes é uma armadilha - então o DRY trata de conhecimento, não de mero texto."
+      },
+      "kiss": {
+        "def": "O princípio de design de que sistemas funcionam melhor quando mantidos simples em vez de tornados complexos.",
+        "context": "Atribuído ao engenheiro aeronáutico Kelly Johnson, o KISS pede que se prefira a coisa mais simples que resolva o problema, já que a complexidade é onde proliferam bugs, custo e mal-entendidos. É um contrapeso constante à tentação de superengenharia."
+      },
+      "mung": {
+        "def": "Transformar dados por meio de uma série de mudanças, muitas vezes de forma bagunçada ou destrutiva.",
+        "context": "Do gracejo recursivo 'Mung Until No Good', pode significar remodelar dados de forma útil ou arruinar algo por mexer repetidamente, conforme o tom. 'Data munging' é o sentido cotidiano: o trabalho sujo de limpar e reformatar entradas até que se encaixem."
+      },
+      "bogon": {
+        "def": "Um pacote que reivindica um endereço de origem que jamais poderia aparecer legitimamente na internet pública.",
+        "context": "A palavra vem da gíria hacker para o quantum imaginário de 'bogosidade' e depois virou um termo real de redes: bogons trazem endereços de origem não alocados ou privados e geralmente sinalizam spoofing ou má configuração. As redes os filtram na borda com listas de bogons, já que nada de bom chega de um endereço que não deveria existir."
+      },
+      "floss": {
+        "def": "Um termo abrangente para software que é ao mesmo tempo livre (como em liberdade) e de código aberto.",
+        "context": "O 'libre' no meio desfaz a ambiguidade do inglês 'free', que confusamente significa tanto gratuito quanto livre; o FLOSS enfatiza a liberdade de usar, estudar, modificar e compartilhar. É o rótulo neutro que contorna o antigo debate entre 'software livre' e 'código aberto'."
+      },
+      "rfc-1149": {
+        "def": "Uma RFC de 1º de abril de 1990 que especifica o transporte de datagramas IP por pombo-correio.",
+        "context": "A RFC 1149 define a codificação de datagramas em papel enrolado na perna de um pombo, com uma discussão séria sobre perda de pacotes e latência. Em 2001, o Bergen Linux User Group de fato a implementou, obtendo um ping através da cidade com perda medida de quatro pacotes em nove e tempos de ida e volta de várias horas."
+      },
+      "teapot-418": {
+        "def": "Um código de status HTTP de 1º de abril, definido em 1998, retornado por um bule ao qual se pede café.",
+        "context": "A RFC 2324 inventou o Hyper Text Coffee Pot Control Protocol e seu status 418 como piada, mas o código ganhou vida própria e é amplamente implementado como easter egg. Tentativas de remover o 418 de frameworks reais em 2017 geraram reação suficiente para que fosse mantido e, depois, reservado pela IETF."
+      },
+      "the-morris-worm": {
+        "def": "O programa auto-replicante de 1988 que se tornou o primeiro worm a perturbar a internet primitiva em larga escala.",
+        "context": "Escrito pelo estudante de Cornell Robert Tappan Morris, explorava falhas no sendmail, no fingerd e em senhas fracas; uma verificação de reinfecção defeituosa o fez replicar de forma tão agressiva que travou milhares de máquinas. Morris foi a primeira pessoa condenada sob o Computer Fraud and Abuse Act, e o incidente motivou a criação do primeiro CERT."
+      },
+      "the-cuckoos-egg": {
+        "def": "A caçada de Cliff Stoll, em 1986, a um invasor que começou com um erro contábil de 75 centavos.",
+        "context": "Astrônomo que virou administrador de sistemas no Lawrence Berkeley Lab, Stoll notou uma minúscula discrepância de cobrança e a rastreou até um invasor que vendia dados militares roubados à KGB, identificando por fim Markus Hess na Alemanha. Seu livro é um texto fundamental da detecção de intrusões e um dos primeiros relatos reais de contraespionagem digital."
+      },
+      "trusting-trust": {
+        "def": "A demonstração de Ken Thompson, em 1984, de que um compilador pode esconder um backdoor auto-propagante invisível no código-fonte.",
+        "context": "Em sua palestra do Prêmio Turing, Thompson descreveu como ensinar um compilador a inserir um backdoor de login e a reinseri-lo sempre que compilasse um novo compilador, de modo que a malícia sobrevivia mesmo sem nenhum código-fonte contê-la. A lição - não se pode confiar plenamente em código que não se escreveu, até o nível das ferramentas - ainda sustenta a segurança de cadeia de suprimentos."
+      },
+      "the-first-spam": {
+        "def": "Uma mensagem de marketing da DEC, em 1978, disparada a centenas de usuários da ARPANET, geralmente citada como o primeiro spam.",
+        "context": "O profissional de marketing Gary Thuerk enviou e-mail a cerca de 400 usuários na costa oeste dos EUA para anunciar a demonstração de um computador DEC, provocando reclamações imediatas sobre o uso indevido da rede. A palavra 'spam' para esse tipo de mensagem surgiu depois, emprestada de um quadro do Monty Python, mas o disparo de Thuerk é o marco de origem usual."
+      },
+      "the-first-emoticon": {
+        "def": "O sorriso de lado proposto em um mural eletrônico da CMU em 1982 para marcar piadas em texto puro.",
+        "context": "Scott Fahlman sugeriu :-) para mensagens humorísticas e :-( para as sérias, depois que discussões inflamadas surgiram por causa de mensagens escritas como piada. O post original foi mais tarde recuperado de fitas de backup, tornando-o um dos poucos 'primeiros' da internet com data e hora precisas e verificadas."
+      },
+      "captain-crunch": {
+        "def": "A lenda do phreaking telefônico de que um apito de brinquedo emitindo 2600 Hz podia tomar as linhas de longa distância da AT&T.",
+        "context": "John Draper adotou o apelido Captain Crunch depois que um apito que vinha no cereal produzia justamente o tom de 2600 Hz que as antigas centrais telefônicas usavam para sinalizar uma linha livre, permitindo ligações gratuitas. O artigo da Esquire de 1971 que o divulgou inspirou uma geração de hackers, incluindo os jovens Wozniak e Jobs, e deu nome à revista 2600, criada depois."
+      },
+      "the-mother-of-all-demos": {
+        "def": "A demonstração de Douglas Engelbart, em 1968, que revelou de uma só vez o mouse, o hipertexto e a colaboração ao vivo.",
+        "context": "Em 90 minutos em São Francisco, a equipe de Engelbart mostrou o mouse, janelas, links de hipertexto, edição de texto em tempo real e videoconferência - quase toda a área de trabalho moderna, décadas antes. O apelido veio depois, porque tanto do que todos usam hoje apareceu, funcionando, em uma única sessão."
+      },
+      "the-at-sign": {
+        "def": "A escolha de Ray Tomlinson, em 1971, do @ para separar o usuário do seu host no e-mail em rede.",
+        "context": "Ao enviar o primeiro e-mail entre dois computadores na ARPANET, Tomlinson precisava de um caractere que nunca aparecesse no nome de um usuário, e o @ estava sem uso no teclado do Teletype, já significando 'at' (em). Essa escolha pragmática tornou o @ um dos símbolos mais reconhecíveis do mundo; em português é a arroba, antiga unidade de peso de cuja marca de escriba o símbolo descende."
+      },
+      "error-404-myth": {
+        "def": "A afirmação popular, porém falsa, de que o HTTP 404 recebe o nome de uma sala específica do CERN onde ficava o primeiro servidor da web.",
+        "context": "A história diz que pedidos por um arquivo inexistente eram encaminhados à 'sala 404' e devolvidos - um conto elegante, mas sem fundamento. O 404 é apenas o status HTTP para 'Não Encontrado', em que o 4 inicial marca um erro do cliente, exatamente como 400, 401 e 403; não havia sala mágica alguma."
+      },
+      "endianness-holy-wars": {
+        "def": "A divisão de ordenação de bytes cujos nomes Danny Cohen tomou emprestados de uma guerra satírica em As Viagens de Gulliver.",
+        "context": "No romance de Swift, Lilliput e Blefuscu entram em guerra por decidir se um ovo cozido deve ser aberto pela ponta maior ou menor; o memorando de Cohen, de 1980, usou Big-Endian e Little-Endian para alfinetar engenheiros que discutiam com igual fervor sobre qual byte vem primeiro. A piada pegou, e os dois termos são hoje o vocabulário padrão para a ordem de bytes da máquina."
+      },
+      "the-ariane-5-failure": {
+        "def": "A explosão de foguete de 1996 causada pela reutilização de software do Ariane 4 que estourou uma conversão de 16 bits.",
+        "context": "Quarenta segundos após o lançamento, um código herdado do Ariane 4, mais lento, tentou encaixar um valor de velocidade horizontal de 64 bits em um inteiro de 16 bits; a conversão transbordou, e o computador de guiagem desligou levando junto o seu reserva, destruindo o foguete e sua carga. É o caso clássico de por que conversões numéricas sem verificação e a reutilização de software sem testes são perigosas."
+      },
+      "the-answer-42": {
+        "def": "O número que um supercomputador dá, após 7,5 milhões de anos, como a Resposta para a Vida, o Universo e Tudo Mais.",
+        "context": "No romance de Douglas Adams, o Pensador Profundo calcula 42, mas observa que o verdadeiro problema é que ninguém sabe qual era a Pergunta. Virou uma piada recorrente na cultura da programação, escondida em easter eggs que vão da calculadora do Google a inúmeros valores padrão e dados de teste."
+      },
+      "boil-the-ocean": {
+        "def": "Tentar algo tão amplo ou ambicioso que fracassa pela própria dimensão.",
+        "context": "Usada como alerta no planejamento: 'não vamos ferver o oceano' significa escolher uma fatia viável em vez de tentar resolver tudo de uma vez. A imagem é propositalmente absurda - não dá para aquecer um oceano inteiro, então não se deve dimensionar o trabalho como se desse."
+      },
+      "drink-the-kool-aid": {
+        "def": "Adotar uma crença ou tecnologia com entusiasmo acrítico, movido pelo grupo.",
+        "context": "Costuma-se dizer de equipes que abraçam um framework ou metodologia como dogma, além do ponto da avaliação honesta. A expressão tem origem sombria nas mortes de Jonestown, em 1978, então carrega um tom de advertência sobre a convicção cega, mesmo quando usada de forma leve na área técnica."
+      },
+      "bus-factor": {
+        "def": "O número de pessoas que precisariam ser atropeladas por um ônibus para que um projeto empaque por falta de conhecimento.",
+        "context": "Um bus factor de um significa que uma única pessoa detém conhecimento crítico e não documentado - um risco sério. As equipes o elevam de propósito com documentação, programação em par e revisão de código, para que nenhum componente dependa de exatamente uma cabeça insubstituível."
+      },
+      "happy-path": {
+        "def": "O cenário padrão em que tudo é válido e nada dá errado.",
+        "context": "Código que só trata o caminho feliz funciona na demonstração e quebra em produção, onde as entradas vêm malformadas e os serviços estouram o tempo. A boa engenharia gasta a maior parte do esforço nos caminhos infelizes - os erros, as bordas e as falhas que o caminho feliz ignora."
+      },
+      "code-smell": {
+        "def": "Um sinal superficial no código que sugere um problema de design mais profundo, sem ser em si um defeito.",
+        "context": "Métodos longos, lógica duplicada e classes gigantes são maus cheiros clássicos: o código funciona, mas algo está errado e tende a doer depois. Kent Beck cunhou o termo e Martin Fowler o popularizou como um convite a considerar a refatoração, não como um veredito automático."
+      },
+      "yagni": {
+        "def": "O princípio de que não se deve construir uma funcionalidade até que ela seja de fato necessária.",
+        "context": "Pilar da Programação Extrema, o YAGNI combate a generalidade especulativa - os recursos e abstrações adicionados 'por via das dúvidas', que custam caro e raramente são usados. Construa para a necessidade real de hoje e deixe que os requisitos de amanhã, quando chegarem, guiem o código de amanhã."
+      },
+      "worse-is-better": {
+        "def": "A observação de que um design mais simples e menos completo muitas vezes vence um mais correto, porém complexo.",
+        "context": "Richard Gabriel argumentou que Unix e C se espalharam justamente por privilegiarem a simplicidade de implementação em vez da completude, ao contrário de designs mais ricos, porém mais difíceis de construir e portar. A frase é hoje um atalho para a verdade incômoda de que a solução tecnicamente superior nem sempre vence."
+      },
+      "cattle-not-pets": {
+        "def": "A mentalidade de que servidores devem ser descartáveis e intercambiáveis, não indivíduos mantidos com carinho.",
+        "context": "Um servidor de estimação tem nome, é cuidado até se recuperar quando adoece e é insubstituível; o gado é numerado, idêntico e simplesmente substituído quando um falha. A analogia resume a mudança para uma infraestrutura imutável e automatizada, em que se reconstrói em vez de consertar."
+      },
+      "premature-optimization": {
+        "def": "Ajustar o código em busca de velocidade antes de saber se isso importa, ao custo de clareza e tempo.",
+        "context": "A frase de Knuth - 'a otimização prematura é a raiz de todo o mal' - alerta contra distorcer o código por ganhos de desempenho que a medição não mostrou serem necessários. A citação completa admite os poucos pontos percentuais críticos que de fato importam; a ideia é medir primeiro e então otimizar a parte que realmente faz diferença."
+      },
+      "chestertons-fence": {
+        "def": "O princípio de que não se deve remover algo sem antes entender por que foi colocado ali.",
+        "context": "A parábola: não derrube uma cerca atravessada numa estrada só porque sua finalidade não é óbvia, pois alguém teve uma razão que você talvez não veja. No código, é a cautela contra apagar a linha estranha, a verificação esquisita ou a gambiarra legada antes de descobrir o que silenciosamente depende dela."
+      },
+      "footgun": {
+        "def": "Um recurso ou API tão fácil de usar errado que convida você a dar um tiro no próprio pé.",
+        "context": "O gerenciamento manual de memória do C, a coerção implícita de tipos e o estado global mutável são footguns clássicos: poderosos, ocasionalmente necessários e rápidos em causar dano autoinfligido. Chamar algo de footgun é avisar que o uso padrão e óbvio é também o perigoso."
+      },
+      "sneakernet": {
+        "def": "Mover dados carregando fisicamente a mídia de armazenamento em vez de usar uma rede.",
+        "context": "Atravessar o prédio a pé com um disco rígido - de tênis - pode superar a rede em volume bruto, e por isso 'nunca subestime a banda de uma perua cheia de fitas' é uma piada consagrada. Os provedores de nuvem formalizaram a ideia com dispositivos de transferência do tamanho de caminhões para mover petabytes que levariam meses pela rede."
+      },
+      "fud": {
+        "def": "A tática de espalhar medo, incerteza e dúvida para minar um concorrente ou uma ideia.",
+        "context": "Classicamente dirigida a compradores - insinuando que o produto de um rival é arriscado ou não comprovado para travar uma decisão - a expressão remonta às vendas de mainframes nos anos 1970. Em segurança, também descreve o marketing de fornecedores que exagera ameaças para vender a solução."
+      },
+      "the-thundering-herd": {
+        "def": "Quando muitos clientes ou processos despertam e disputam um mesmo recurso no mesmo instante, sobrecarregando-o.",
+        "context": "Uma entrada de cache expira e mil requisições falham ao mesmo tempo e atropelam o banco de dados; ou uma conexão caída faz todos os clientes reconectarem no mesmo segundo. As soluções espalham o pico - jitter, coalescência de requisições e retentativas escalonadas - para que a manada chegue como um fio d'água em vez de uma parede."
+      },
       "anycast": {
         "def": "Um endereço IP anunciado de muitos lugares, para que os usuários alcancem a instância mais próxima.",
         "context": "Com anycast, o próprio roteamento da rede envia cada cliente ao site anunciante mais próximo, distribuindo carga e reduzindo latência, a espinha dorsal do DNS e das CDNs modernas. O mesmo endereço, muitos lugares; o roteamento decide qual você recebe."
