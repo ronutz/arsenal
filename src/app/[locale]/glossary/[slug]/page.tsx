@@ -87,7 +87,7 @@ export default async function GlossaryEntryPage({
       <Header />
 
       <main id="main">
-        <article className="section">
+        <article className="section gloss-detail" data-kind={entry.kind}>
           <div className="container article-container">
             <Breadcrumbs
               ariaLabel={tNav("breadcrumb")}

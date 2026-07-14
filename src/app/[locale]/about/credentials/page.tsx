@@ -109,24 +109,53 @@ export default async function CredentialsPage({
             </div>
           </section>
 
-          {/* CURRENT: certifications */}
+          {/* CURRENT: certifications, grouped by vendor with jump buttons. */}
           <section className="section">
             <div className="container certs-container">
               <div className="certs-group-head">
                 <h2 className="certs-group-title">{t("currentCertsTitle")}</h2>
                 <span className="certs-badge certs-badge--current">{t("current")}</span>
               </div>
-              <ul className="certs-current-grid">
-                {currentCertifications.map((c) => (
-                  <li className="certs-current-card" key={c.name}>
-                    <span className="certs-current-issuer mono">{c.issuer}</span>
-                    <span className="certs-current-name">{c.name}</span>
-                    {c.detail && <span className="certs-current-detail">{c.detail}</span>}
-                    {c.period && <span className="certs-current-period mono">{c.period}</span>}
-                    <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
-                  </li>
-                ))}
-              </ul>
+
+              {/* Vendor jump buttons: one per vendor present, in a fixed order.
+                  Each scrolls to that vendor's sub-section below. */}
+              {(() => {
+                const order = ["F5", "Fortinet", "Extreme Networks", "Ping Identity", "Netskope"];
+                const present = order.filter((v) =>
+                  currentCertifications.some((c) => c.issuer === v),
+                );
+                const anchor = (v: string) =>
+                  `cert-${v.toLowerCase().replace(/\s+/g, "-")}`;
+                return (
+                  <>
+                    <nav className="certs-vendor-jumps" aria-label={t("currentCertsTitle")}>
+                      {present.map((v) => (
+                        <a key={v} href={`#${anchor(v)}`} className="certs-vendor-jump">
+                          {v}
+                        </a>
+                      ))}
+                    </nav>
+                    {present.map((v) => (
+                      <div className="certs-vendor-block" key={v} id={anchor(v)}>
+                        <h3 className="certs-vendor-heading">{v}</h3>
+                        <ul className="certs-current-grid">
+                          {currentCertifications
+                            .filter((c) => c.issuer === v)
+                            .map((c) => (
+                              <li className="certs-current-card" key={c.name}>
+                                <span className="certs-current-issuer mono">{c.issuer}</span>
+                                <span className="certs-current-name">{c.name}</span>
+                                {c.detail && <span className="certs-current-detail">{c.detail}</span>}
+                                {c.period && <span className="certs-current-period mono">{c.period}</span>}
+                                <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </>
+                );
+              })()}
             </div>
           </section>
 
@@ -157,24 +186,42 @@ export default async function CredentialsPage({
               <p className="certs-group-intro">{t("historicalIntro")}</p>
 
               <div className="certs-historical-groups">
-                {historical.map((g) => (
-                  <div className="certs-vendor-group" key={g.vendor}>
-                    <h3 className="certs-vendor-name">{g.vendor}</h3>
-                    {g.note && <p className="certs-vendor-note">{g.note}</p>}
-                    <ul className="certs-vendor-list">
-                      {g.items.map((c) => (
-                        <li className="certs-hist-item" key={c.name}>
-                          <span className="certs-hist-main">
-                            <span className="certs-hist-name">{c.name}</span>
-                            {c.detail && <span className="certs-hist-detail">{c.detail}</span>}
-                            <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
-                          </span>
-                          {c.period && <span className="certs-hist-period mono">{c.period}</span>}
-                        </li>
+                {historical.map((g) => {
+                  // Items with no era render first; era-tagged items follow,
+                  // grouped under an era sub-heading (Fortinet uses this to
+                  // separate the legacy-NSE and FCP/FCSS eras).
+                  const noEra = g.items.filter((c) => !c.era);
+                  const eras = [
+                    ...new Set(g.items.filter((c) => c.era).map((c) => c.era!)),
+                  ];
+                  const renderItem = (c: (typeof g.items)[number]) => (
+                    <li className="certs-hist-item" key={c.name}>
+                      <span className="certs-hist-main">
+                        <span className="certs-hist-name">{c.name}</span>
+                        {c.detail && <span className="certs-hist-detail">{c.detail}</span>}
+                        <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
+                      </span>
+                      {c.period && <span className="certs-hist-period mono">{c.period}</span>}
+                    </li>
+                  );
+                  return (
+                    <div className="certs-vendor-group" key={g.vendor}>
+                      <h3 className="certs-vendor-name">{g.vendor}</h3>
+                      {g.note && <p className="certs-vendor-note">{g.note}</p>}
+                      {noEra.length > 0 && (
+                        <ul className="certs-vendor-list">{noEra.map(renderItem)}</ul>
+                      )}
+                      {eras.map((era) => (
+                        <div className="certs-era" key={era}>
+                          <h4 className="certs-era-heading">{era}</h4>
+                          <ul className="certs-vendor-list">
+                            {g.items.filter((c) => c.era === era).map(renderItem)}
+                          </ul>
+                        </div>
                       ))}
-                    </ul>
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>

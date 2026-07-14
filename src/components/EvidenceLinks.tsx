@@ -30,14 +30,6 @@ interface EvidenceLinksProps {
 }
 
 // Small inline icons (original, generic).
-function IconVerify() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 2l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V5z" />
-      <path d="M9 11l2 2 4-4" />
-    </svg>
-  );
-}
 function IconBadge() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -72,12 +64,6 @@ export default function EvidenceLinks({ evidence, copy }: EvidenceLinksProps) {
   return (
     <div className="evidence">
       <div className="evidence-links">
-        {verifyUrl && (
-          <a className="evidence-link" href={verifyUrl} target="_blank" rel="noopener noreferrer">
-            <IconVerify />
-            {copy.verify}
-          </a>
-        )}
         {credly && (
           <a className="evidence-link" href={credly} target="_blank" rel="noopener noreferrer">
             <IconBadge />
