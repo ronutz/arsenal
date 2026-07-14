@@ -101,22 +101,24 @@ export default function ShortcutSettings({ labels }: { labels: ShortcutSettingsL
                   <kbd className="shortcut-key mono">{labels.keyLabels[key] ?? key}</kbd>
                 </td>
                 <td className="shortcut-td-action">
-                  <select
-                    className="shortcut-select"
-                    value={current}
-                    disabled={!customizable}
-                    aria-label={`${labels.keyLabels[key] ?? key} — ${labels.colAction}`}
-                    onChange={(e) => onPick(key, e.target.value)}
-                  >
-                    {SHORTCUT_ACTIONS.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {labels.actionLabels[a.id] ?? a.id}
-                      </option>
-                    ))}
-                  </select>
-                  {(isForced || !customizable) && (
-                    <span className="shortcut-locked">{labels.locked}</span>
-                  )}
+                  <span className="shortcut-action-inner">
+                    <select
+                      className="shortcut-select"
+                      value={current}
+                      disabled={!customizable}
+                      aria-label={`${labels.keyLabels[key] ?? key} — ${labels.colAction}`}
+                      onChange={(e) => onPick(key, e.target.value)}
+                    >
+                      {SHORTCUT_ACTIONS.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {labels.actionLabels[a.id] ?? a.id}
+                        </option>
+                      ))}
+                    </select>
+                    {(isForced || !customizable) && (
+                      <span className="shortcut-locked">{labels.locked}</span>
+                    )}
+                  </span>
                 </td>
               </tr>
             );

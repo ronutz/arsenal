@@ -254,19 +254,21 @@ export default async function ToolsPage({
                                 </Link>
                               </td>
                               <td className="admin-status-cell">
-                                <FamilyChip
-                                  category={tool.category}
-                                  label={t(`categories.${tool.category}`)}
-                                />
-                                {c?.isNew && <span className="admin-tag admin-tag--new">new</span>}
-                                {typeof c?.vectors === "number" && (
-                                  <span
-                                    className="admin-tag"
-                                    title={t(c?.verification === "snapshot" ? "listHead.svTitle" : "listHead.gvTitle")}
-                                  >
-                                    {`${c.vectors} ${c?.verification === "snapshot" ? "SV" : "GV"}`}
-                                  </span>
-                                )}
+                                <span className="admin-badges">
+                                  <FamilyChip
+                                    category={tool.category}
+                                    label={t(`categories.${tool.category}`)}
+                                  />
+                                  {c?.isNew && <span className="admin-tag admin-tag--new">new</span>}
+                                  {typeof c?.vectors === "number" && (
+                                    <span
+                                      className="admin-tag"
+                                      title={t(c?.verification === "snapshot" ? "listHead.svTitle" : "listHead.gvTitle")}
+                                    >
+                                      {`${c.vectors} ${c?.verification === "snapshot" ? "SV" : "GV"}`}
+                                    </span>
+                                  )}
+                                </span>
                               </td>
                               <td className="mono admin-posture">{c?.posture ?? "—"}</td>
                               <td className="admin-specs">{c?.specs?.length ? c.specs.join(" · ") : "—"}</td>

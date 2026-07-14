@@ -141,6 +141,7 @@ export default async function CredentialsPage({
                     {r.period && <span className="certs-recognition-period mono">{r.period}</span>}
                   </div>
                   {r.note && <p className="certs-recognition-note">{r.note}</p>}
+                  <EvidenceLinks evidence={r.evidence} copy={evidenceCopy} />
                 </div>
               ))}
             </div>

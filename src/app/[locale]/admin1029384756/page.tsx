@@ -246,25 +246,27 @@ export default async function AdminConsolePage({
                               <span className="admin-name">{tool.name}</span>
                             </td>
                             <td className="admin-status-cell">
-                              <span className={`admin-badge admin-badge--${tool.status}`}>{tool.status}</span>
-                              {tool.f5 && <span className="admin-tag admin-tag--f5">F5</span>}
-                              {tool.fortinet && <span className="admin-tag admin-tag--fortinet">Fortinet</span>}
-                              {tool.extreme && <span className="admin-tag admin-tag--extreme">Extreme</span>}
-                              {tool.netskope && <span className="admin-tag admin-tag--netskope">Netskope</span>}
-                              {tool.consolidationPending && <span className="admin-tag admin-tag--pending">merge pending</span>}
-                              {tool.isNew && <span className="admin-tag admin-tag--new">new</span>}
-                              {typeof tool.vectors === "number" && (
-                                <span
-                                  className="admin-tag"
-                                  title={
-                                    tool.verification === "snapshot"
-                                      ? "rule-firing snapshot vectors (D-86 ruling)"
-                                      : "classic golden vectors (D-49)"
-                                  }
-                                >
-                                  {`${tool.vectors} ${tool.verification === "snapshot" ? "SV" : "GV"}`}
-                                </span>
-                              )}
+                              <span className="admin-badges">
+                                <span className={`admin-badge admin-badge--${tool.status}`}>{tool.status}</span>
+                                {tool.f5 && <span className="admin-tag admin-tag--f5">F5</span>}
+                                {tool.fortinet && <span className="admin-tag admin-tag--fortinet">Fortinet</span>}
+                                {tool.extreme && <span className="admin-tag admin-tag--extreme">Extreme</span>}
+                                {tool.netskope && <span className="admin-tag admin-tag--netskope">Netskope</span>}
+                                {tool.consolidationPending && <span className="admin-tag admin-tag--pending">merge pending</span>}
+                                {tool.isNew && <span className="admin-tag admin-tag--new">new</span>}
+                                {typeof tool.vectors === "number" && (
+                                  <span
+                                    className="admin-tag"
+                                    title={
+                                      tool.verification === "snapshot"
+                                        ? "rule-firing snapshot vectors (D-86 ruling)"
+                                        : "classic golden vectors (D-49)"
+                                    }
+                                  >
+                                    {`${tool.vectors} ${tool.verification === "snapshot" ? "SV" : "GV"}`}
+                                  </span>
+                                )}
+                              </span>
                             </td>
                             <td className="mono admin-posture">{tool.posture}</td>
                             <td className="admin-specs">{tool.specs?.join(", ") || "—"}</td>

@@ -209,9 +209,11 @@ export default async function LearnIndexPage({
                             </Link>
                           </td>
                           <td className="admin-status-cell">
-                            {articleCategories(a).map((cat) => (
-                              <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
-                            ))}
+                            <span className="admin-badges">
+                              {articleCategories(a).map((cat) => (
+                                <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
+                              ))}
+                            </span>
                           </td>
                           <td className="admin-note">{a.summary}</td>
                         </tr>

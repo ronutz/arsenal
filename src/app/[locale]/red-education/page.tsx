@@ -150,6 +150,31 @@ export default async function RedEducationPage({
             </div>
           </section>
 
+          {/* Vision + values: Red Education's own stated vision and five company
+              values, transcribed from the company's own materials (supplied by
+              PRIME 2026-07-11). Their words, framed clearly as theirs; light
+              normalization only (terminal punctuation, "&" -> "and", one
+              possessive apostrophe). British "behaviours" kept - it is a
+              quotation of an Australian company's own value statement. */}
+          <section className="section">
+            <div className="container redu-container">
+              <h2 className="redu-section-title">{t("dnaTitle")}</h2>
+              <p className="redu-body">{t("dnaIntro")}</p>
+              <h3 className="redu-awards-title">{t("visionTitle")}</h3>
+              <p className="redu-body">{t("visionBody1")}</p>
+              <p className="redu-body">{t("visionBody2")}</p>
+              <p className="redu-body">{t("visionBody3")}</p>
+              <h3 className="redu-awards-title">{t("valuesTitle")}</h3>
+              <ul className="redu-awards">
+                {(["v1", "v2", "v3", "v4", "v5"] as const).map((k) => (
+                  <li className="redu-award" key={k}>
+                    {t(`values.${k}`)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
           {/* Red Education's vendor authorizations + named recognitions. */}
           <section className="section">
             <div className="container redu-container">

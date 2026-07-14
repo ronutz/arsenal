@@ -2995,12 +2995,13 @@
 .admin-posture { color: var(--text-secondary); font-size: 0.78rem; white-space: nowrap; }
 .admin-specs { color: var(--text-secondary); font-size: 0.78rem; }
 .admin-note { color: var(--text-tertiary); font-size: 0.78rem; max-width: 26rem; }
-.admin-status-cell { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
-/* Index list view (tools + Learn): the badge/topic cell is a flex td, which
-   ignores the table's vertical-align:top and centers - misaligning it against the
-   top-aligned name/summary cells. Top-align it in the public catalogues only
-   (the admin page keeps center). */
-.pubcat .admin-status-cell { align-items: flex-start; }
+/* Badge/topic cell (tools index, Learn index, admin). The td itself stays a
+   plain table-cell: putting display:flex on a td collapses it to content
+   height, which drags its border-bottom up under the chips instead of the row
+   line (the misaligned-divider bug, twice reported). Chip layout lives on the
+   inner .admin-badges wrapper instead. */
+.admin-status-cell { vertical-align: top; }
+.admin-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
 .admin-badge {
   font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
   padding: 0.12rem 0.45rem; border-radius: var(--radius-sm);
@@ -9443,7 +9444,8 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .shortcut-th-key { width: 6rem; }
 .shortcut-row td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); vertical-align: middle; }
 .shortcut-key { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; padding: 0.2rem 0.55rem; background: var(--surface-2, #131c31); color: var(--accent-primary, #22d3ee); border: 1px solid var(--border-strong, #1e293b); border-radius: 6px; font-size: 0.9rem; font-weight: 700; }
-.shortcut-td-action { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+.shortcut-td-action { vertical-align: middle; } /* plain table-cell; flex on the inner wrapper (flex on a td collapses it - see .admin-status-cell) */
+.shortcut-action-inner { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
 .shortcut-select { background: var(--surface-base, #0b1120); color: var(--text-primary, #e6ecff); border: 1px solid var(--border-strong, #1e293b); border-radius: var(--radius-sm, 8px); padding: 0.4rem 0.6rem; font-size: 0.9rem; font-family: inherit; cursor: pointer; min-width: 16rem; max-width: 100%; }
 .shortcut-select:disabled { opacity: 0.55; cursor: not-allowed; }
 .shortcut-select:focus-visible { outline: 2px solid var(--accent-primary, #22d3ee); outline-offset: 1px; }
