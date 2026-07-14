@@ -54,12 +54,20 @@ function IconDoc() {
     </svg>
   );
 }
+function IconLink() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M10 13a5 5 0 007.07 0l3-3a5 5 0 00-7.07-7.07l-1.5 1.5" />
+      <path d="M14 11a5 5 0 00-7.07 0l-3 3a5 5 0 007.07 7.07l1.5-1.5" />
+    </svg>
+  );
+}
 
 export default function EvidenceLinks({ evidence, copy }: EvidenceLinksProps) {
   // Nothing to show -> render nothing.
   if (!evidence) return null;
-  const { pdf, credly, verifyUrl, verifyId, candidateId } = evidence;
-  if (!pdf && !credly && !verifyUrl) return null;
+  const { pdf, credly, verifyUrl, verifyId, candidateId, links } = evidence;
+  if (!pdf && !credly && !verifyUrl && !links?.length) return null;
 
   return (
     <div className="evidence">
@@ -82,6 +90,14 @@ export default function EvidenceLinks({ evidence, copy }: EvidenceLinksProps) {
             {copy.certificate}
           </a>
         )}
+        {/* Additional public evidence (e.g. yearly award announcements); labels
+            are locale-neutral values carried in the data (years, codes). */}
+        {links?.map((l) => (
+          <a className="evidence-link" href={l.url} key={l.url} target="_blank" rel="noopener noreferrer">
+            <IconLink />
+            {l.label}
+          </a>
+        ))}
       </div>
 
       {/* Codes needed to verify on the portal, shown plainly. */}

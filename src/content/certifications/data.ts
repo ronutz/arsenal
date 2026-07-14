@@ -31,6 +31,8 @@ export interface CredentialEvidence {
   verifyId?: string;
   /** Secondary identifier some portals require (e.g. F5 candidate ID). */
   candidateId?: string;
+  /** Additional public evidence links (e.g. the yearly MVP announcements). */
+  links?: readonly { label: string; url: string }[];
 }
 
 export interface Credential {
@@ -118,6 +120,17 @@ export const recognition: Credential[] = [
     issuer: "F5",
     period: "2022 · 2023 · 2024",
     note: "Awarded three consecutive years for community contribution and technical expertise.",
+    // Official announcements on community.f5.com; his presence in each year's
+    // list live-verified 2026-07-14 (2024 + 2023 rosters name Rodolfo_Nützmann;
+    // for 2022, F5's own Featured Member article states "2022 MVP Rodolfo
+    // Nützmann"). Canonical /kb/ URLs.
+    evidence: {
+      links: [
+        { label: "2022", url: "https://community.f5.com/kb/technicalarticles/2022-devcentral-mvp-announcement/286788" },
+        { label: "2023", url: "https://community.f5.com/kb/devcentralnews/2023-devcentral-mvp-announcement/307243" },
+        { label: "2024", url: "https://community.f5.com/kb/devcentralnews/2024-devcentral-mvp-announcement/326017" },
+      ],
+    },
   },
   {
     name: "The Captain's Call Award",
@@ -199,10 +212,12 @@ export const historical: HistoricalGroup[] = [
       { name: "Panorama: Managing Firewalls at Scale", issuer: "Red Education", detail: "Palo Alto Networks EDU-220", period: "2021", evidence: { credly: C("1ec70a7d-d604-4eca-83fd-36508584d10c") } },
       { name: "Firewall: Troubleshooting", issuer: "Red Education", detail: "Palo Alto Networks EDU-330", period: "2021", evidence: { credly: C("da12dbc8-0df3-46b9-a984-a1134515061f") } },
       { name: "Palo Alto Accredited Configuration Engineer (ACE) 6.0", issuer: "Palo Alto Networks", period: "2018", evidence: { pdf: P("palo-alto-ace6") } },
+      // CNSE: read from the certificate itself (2026-07-14) - "Certified
+      // Network Security Engineer", CNSE Number 5.1-1505, May 12, 2014.
+      { name: "Palo Alto Networks Certified Network Security Engineer (CNSE) 5.1", issuer: "Palo Alto Networks", period: "2014", evidence: { pdf: P("palo-alto-cnse"), verifyId: "5.1-1505" } },
       { name: "Palo Alto Accredited Configuration Engineer (ACE) 5.0", issuer: "Palo Alto Networks", period: "2014", evidence: { pdf: P("palo-alto-ace5") } },
       { name: "Palo Alto Accredited Configuration Engineer (ACE) 5, Partner", issuer: "Palo Alto Networks", period: "2014", evidence: { pdf: P("palo-alto-ace5-partner") } },
       { name: "Palo Alto Accredited Sales Expert (ASE) 5.0", issuer: "Palo Alto Networks", period: "2014", evidence: { pdf: P("palo-alto-ase5") } },
-      { name: "Palo Alto Networks certification, v5.1", issuer: "Palo Alto Networks", period: "2014", evidence: { pdf: P("palo-alto-2014") } },
     ],
   },
   {
