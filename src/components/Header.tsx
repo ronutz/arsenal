@@ -46,6 +46,11 @@ export default async function Header() {
           <Link href="/vendors" className="site-nav-link">
             {t("vendors")}
           </Link>
+          {/* Industry hub (PRIME 2026-07-15): the front door to the
+              deep-research vendor histories and lineages. */}
+          <Link href="/industry" className="site-nav-link">
+            {t("industry")}
+          </Link>
           <Link href="/about" className="site-nav-link">
             {t("about")}
           </Link>

@@ -133,6 +133,9 @@ export default async function VendorHubPage({
               ariaLabel={tNav("breadcrumb")}
               items={[
                 { label: tNav("home"), href: "/" },
+                // The vendors hub is the parent of every vendor page
+                // (breadcrumb fix, PRIME 2026-07-15).
+                { label: tNav("vendors"), href: "/vendors" },
                 { label: label },
               ]}
             />

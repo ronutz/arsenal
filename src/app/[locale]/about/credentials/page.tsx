@@ -188,16 +188,16 @@ export default async function CredentialsPage({
                         >
                           <h3 className="certs-vendor-name">{g.vendor}</h3>
 
-                          {/* Currently-valid certifications (amber dates). */}
-                          {g.currentCerts.length > 0 && (
+                          {/* Currently-valid certifications (amber dates) followed by
+                              past certifications with no era, in ONE list. They used to
+                              be two sibling <ul>s, but the row divider is a border-top
+                              on .certs-hist-item with :first-child exempt, so the first
+                              past cert (e.g. F5-CTP right after F5-CA) lost its divider
+                              at the list boundary. One merged list = dividers between
+                              every adjacent pair; data-current still styles the rows. */}
+                          {(g.currentCerts.length > 0 || g.pastCerts.length > 0) && (
                             <ul className="certs-vendor-list">
                               {g.currentCerts.map(renderItem)}
-                            </ul>
-                          )}
-
-                          {/* Past certifications with no era. */}
-                          {g.pastCerts.length > 0 && (
-                            <ul className="certs-vendor-list">
                               {g.pastCerts.map(renderItem)}
                             </ul>
                           )}

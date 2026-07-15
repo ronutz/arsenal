@@ -23,7 +23,8 @@
     "primaryAria": "Principal",
     "home": "Início",
     "breadcrumb": "Trilha de navegação",
-    "vendors": "Fornecedores"
+    "vendors": "Fornecedores",
+    "industry": "Indústria"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -8585,5 +8586,14 @@
     "innovationsTitle": "Inovações-chave",
     "marketsTitle": "Principais mercados",
     "analystTitle": "Posição nos relatórios de analistas"
+  },
+  "industry": {
+    "metaTitle": "Indústria - histórias e linhagens de fabricantes",
+    "metaDescription": "Perfis de pesquisa aprofundada dos fabricantes de redes e segurança de uma carreira desde 1996, dos parceiros de treinamento ensinados ao lado deles e das linhagens corporativas que os conectam.",
+    "eyebrow": "Indústria",
+    "title": "A indústria, vista de dentro",
+    "lede": "Histórias de pesquisa aprofundada sobre os fabricantes de uma carreira desde 1996, os parceiros ensinados ao lado deles e as linhagens corporativas que os conectam. Escritas a partir de fontes primárias: registros na SEC, relatórios de investigação e a imprensa especializada de cada época.",
+    "careerTitle": "Os fabricantes da carreira",
+    "careerNote": "Relação direta de trabalho entre 1996 e 2020, em ordem cronológica do primeiro contato."
   }
 }

@@ -2519,14 +2519,19 @@
   }
 }
 .certs-vendor-name {
-  font-size: 0.8rem;
+  /* Vendor group headings: bright cyan + a larger size so they stand out
+     from the rows (was 0.8rem amber). --accent-hover is each theme's
+     curated "brighter accent" (cyan #67e8f9 on Obsidian; deeper on light
+     themes for contrast), so the emphasis survives all 32 themes. The
+     amber date treatment on current certs is untouched. */
+  font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--accent-amber);
+  color: var(--accent-hover);
   font-weight: 600;
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent-amber) 25%, var(--border-subtle));
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-primary) 30%, var(--border-subtle));
 }
 .certs-vendor-list {
   list-style: none;
@@ -8192,6 +8197,26 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .pfe-verdict.pfe-unknown { border-color: var(--color-warning); color: var(--color-warning); }
 
 .learn-hero-lede { margin-bottom: 2.5rem; } /* spacing formerly inline (full i18n pass hygiene) */
+
+/* Learn index: glossary companion pointer (PRIME 2026-07-09). The class
+   shipped without rules, so the <p> rendered margin-less (global reset)
+   and the vendor hub strip's intentional -1rem tuck (designed for /tools,
+   where the strip sits directly under the hero lede) rode up OVER this
+   line (PRIME 2026-07-15). Style mirrors the certs-studyguides pointer. */
+.learn-glossary-callout { margin: 0.9rem 0 0; font-size: 0.92rem; }
+.learn-glossary-callout-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.learn-glossary-callout-link:hover,
+.learn-glossary-callout-link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+/* When the hub strip follows the callout (Learn index only), cancel the
+   tuck-under-the-lede negative top margin; /tools keeps its -1rem. */
+.learn-glossary-callout + .vendor-hub-strip { margin-top: 0.85rem; }
 
 /* ---- f5-afm-rule-context ---- */
 .afm-step.afm-terminated { border-left: 3px solid var(--color-warning); }

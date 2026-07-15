@@ -23,7 +23,8 @@
     "primaryAria": "Primary",
     "home": "Home",
     "breadcrumb": "Breadcrumb",
-    "vendors": "Vendors"
+    "vendors": "Vendors",
+    "industry": "Industry"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -8585,5 +8586,14 @@
     "innovationsTitle": "Key innovations",
     "marketsTitle": "Main markets",
     "analystTitle": "Analyst standing"
+  },
+  "industry": {
+    "metaTitle": "Industry - vendor histories and lineages",
+    "metaDescription": "Deep-research profiles of the networking and security vendors of a career since 1996, the training partners taught alongside them, and the corporate lineages that connect them.",
+    "eyebrow": "Industry",
+    "title": "The industry, from the inside",
+    "lede": "Deep-research histories of the vendors of a career since 1996, the partners taught alongside them, and the corporate lineages that connect them. Written from primary sources: SEC filings, inquiry reports, and the trade press of each era.",
+    "careerTitle": "The career vendors",
+    "careerNote": "Worked with directly between 1996 and 2020, in chronological order of first engagement."
   }
 }

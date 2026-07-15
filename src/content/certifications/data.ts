@@ -352,14 +352,26 @@ export interface FullRecordGroup {
 }
 
 /**
+ * Vendors pinned to the head of the full record, in this exact order (PRIME
+ * directive, 2026-07-15): the vendors of the active teaching/practice present
+ * lead the record. Everyone else follows in career-chronology historical
+ * order. Pinned vendors with no data are harmless: the empty-group filter at
+ * the end of getFullRecord() drops them.
+ */
+const VENDOR_PRIORITY = ["F5", "Fortinet", "Ping Identity", "Netskope"];
+
+/**
  * Merge currentCertifications + historical into per-vendor full-record groups.
- * Vendor order: the historical order first (career chronology), with any vendor
- * that only appears in currentCertifications appended after, in first-seen order.
+ * Vendor order: VENDOR_PRIORITY first, then the historical order (career
+ * chronology), then any vendor that only appears in currentCertifications,
+ * in first-seen order.
  */
 export function getFullRecord(): FullRecordGroup[] {
   const order: string[] = [];
   const seen = new Set<string>();
-  // historical order leads (oldest-career vendors are meaningful), then current-only.
+  // Pinned vendors lead (PRIME directive above)...
+  for (const v of VENDOR_PRIORITY) { seen.add(v); order.push(v); }
+  // ...then historical order (oldest-career vendors are meaningful), then current-only.
   for (const g of historical) if (!seen.has(g.vendor)) { seen.add(g.vendor); order.push(g.vendor); }
   for (const c of currentCertifications) if (!seen.has(c.issuer)) { seen.add(c.issuer); order.push(c.issuer); }
 

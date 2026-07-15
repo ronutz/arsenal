@@ -23,7 +23,8 @@
     "primaryAria": "Principal",
     "home": "Início",
     "breadcrumb": "Trilha de navegação",
-    "vendors": "Fornecedores"
+    "vendors": "Fornecedores",
+    "industry": "Indústria"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -8073,6 +8074,390 @@
       "zero-trust": {
         "def": "Um modelo de segurança que por padrão não confia em nada e verifica cada requisição, venha de onde vier.",
         "context": "O zero trust substitui o antigo perímetro de \"confiável dentro, hostil fora\" por verificação contínua de identidade, dispositivo e contexto a cada acesso, dentro da rede ou não. \"Nunca confie, sempre verifique\" é o lema; menor privilégio e microssegmentação são como se constrói."
+      },
+      "the-first-email": {
+        "def": "Ray Tomlinson enviou o primeiro e-mail em rede entre duas máquinas da ARPANET em 1971, escolhendo o @ para separar o usuário do host.",
+        "context": "Tomlinson adaptava seu programa SNDMSG na BBN quando escolheu a arroba, um caractere pouco usado que se lia naturalmente como 'usuário em tal host'. Ele depois admitiu não lembrar o conteúdo da primeira mensagem, chutando algo como QWERTYUIOP. A convenção que ele escolheu numa tarde ainda endereça todas as caixas de correio do planeta."
+      },
+      "alohanet": {
+        "def": "A rede de rádio da Universidade do Havaí (1971) cujo esquema de acesso aleatório virou o ancestral do tratamento de colisões do Ethernet.",
+        "context": "A equipe de Norman Abramson precisava interligar campi entre ilhas, então a ALOHAnet deixava as estações transmitirem quando tivessem dados e simplesmente retransmitirem após colisões. Essa ideia de 'tentar, colidir, recuar' é o ancestral intelectual direto do CSMA/CD do Ethernet: Robert Metcalfe estudou a ALOHA a fundo antes de esboçar o Ethernet no Xerox PARC. Em certo sentido, a rede sem fio veio antes das LANs cabeadas."
+      },
+      "blue-box": {
+        "def": "O aparelho de phreaking telefônico que gerava o tom de 2600 Hz e as frequências de sinalização para tomar o controle da rede de longa distância.",
+        "context": "A sinalização in-band fazia a rede telefônica confiar em tons que qualquer pessoa podia produzir; um apito de brinde do cereal Cap'n Crunch atingia exatamente 2600 Hz, dando a John Draper o apelido de Captain Crunch. Steve Wozniak e Steve Jobs montaram e venderam blue boxes antes de fundar a Apple, e Wozniak disse depois que sem elas não haveria Apple. A lição sobreviveu ao hardware: nunca confie em sinais de controle transportados no canal de dados."
+      },
+      "green-card-spam": {
+        "def": "A postagem em massa de abril de 1994 na Usenet, feita por dois advogados de imigração, que transformou o spam comercial num problema de todos.",
+        "context": "Laurence Canter e Martha Siegel publicaram um anúncio da 'Loteria do Green Card' em milhares de newsgroups da Usenet de uma vez, ignorando todas as normas comunitárias da Internet pré-comercial. A reação furiosa, os cancelbots e a cobertura de imprensa que vieram em seguida praticamente fundaram a cultura antispam. Se a mensagem de 1978 na ARPANET foi um caso isolado, este foi o momento em que o spam virou indústria."
+      },
+      "trojan-room-coffee-pot": {
+        "def": "A cafeteira de Cambridge cuja câmera de monitoramento virou a primeira webcam do mundo.",
+        "context": "Em 1991, pesquisadores do Laboratório de Computação da Universidade de Cambridge apontaram uma câmera para a cafeteira compartilhada para ninguém atravessar o prédio à toa; quando a imagem foi para a jovem web em 1993, virou a primeira webcam, vista por milhões no mundo todo. A transmissão durou uma década, até a cafeteira ser desligada em 2001 e leiloada no eBay para um site de notícias alemão. A história de origem mais pura da computação: preguiça, corretamente aplicada."
+      },
+      "the-evil-bit": {
+        "def": "A RFC de 1º de abril propondo que pacotes maliciosos simplesmente ativem um bit do cabeçalho para se declararem malignos.",
+        "context": "A RFC 3514 de Steve Bellovin (1º de abril de 2003) define um flag de segurança no cabeçalho IPv4: pacotes benévolos usam 0, pacotes de ataque devem usar 1, e os firewalls só precisam descartar os marcados. É a sátira favorita da área a todo produto que promete detectar intenção direto do fio. Sempre que alguém propõe confiar na autodeclaração do remetente, algum engenheiro pergunta se ele checa o evil bit."
+      },
+      "640k-quote": {
+        "def": "A famosa frase '640K devem bastar para qualquer um', atribuída a Bill Gates, que nega repetidamente tê-la dito.",
+        "context": "Nunca apareceu uma fonte primária para a frase, e Gates a negou publicamente mais de uma vez, lembrando que ninguém envolvido nos limites de memória do PC os achava permanentes. O teto de 640 KB em si era real, um artefato do mapa de memória do IBM PC original, e por isso a frase soava plausível o bastante para colar. Sobrevive como a parábola canônica sobre subestimar requisitos futuros, pendurada em um homem que nunca a disse."
+      },
+      "y2k": {
+        "def": "O defeito do ano com dois dígitos que ameaçou a lógica de datas no mundo inteiro na virada de 1999 para 2000, e o esforço de correção que o desarmou.",
+        "context": "Décadas de software guardaram o ano em dois dígitos para economizar memória, então 00 podia ordenar antes de 99 e quebrar de cálculos de juros a controladores embarcados. Centenas de bilhões de dólares em correções globais depois, a virada passou com falhas apenas pontuais. O Y2K virou a lição permanente da área sobre o paradoxo da prevenção: quando ela funciona, depois parece que o perigo nunca existiu."
+      },
+      "melissa-virus": {
+        "def": "O vírus de macro do Word de março de 1999 que se enviava aos 50 primeiros contatos do Outlook e soterrou o e-mail corporativo no mundo todo.",
+        "context": "David L. Smith liberou o Melissa em 26 de março de 1999, escondido em um documento do Word; cada cópia aberta se remetia adiante em massa, e a enxurrada exponencial forçou empresas, incluindo a Microsoft, a desligar o e-mail de saída. Smith, que o batizou com o nome de uma dançarina, foi rastreado em dias e condenado à prisão. O Melissa marcou o momento em que o próprio e-mail virou o transporte preferido de malware."
+      },
+      "code-red": {
+        "def": "O worm de IIS de julho de 2001 que pichava sites com 'Hacked By Chinese!' e infectou centenas de milhares de servidores em horas.",
+        "context": "O Code Red explorava um buffer overflow no IIS da Microsoft, se espalhava sem gravar arquivo em disco, desfigurava sites em inglês e apontou um ataque coordenado para o endereço da Casa Branca. A CAIDA mediu mais de 359.000 hosts infectados em menos de catorze horas, o primeiro dado concreto sobre a velocidade real de um worm de Internet. Os pesquisadores da eEye que o dissecaram o batizaram em homenagem ao refrigerante Mountain Dew sabor Code Red que estavam tomando."
+      },
+      "sql-slammer": {
+        "def": "O worm de 376 bytes que cabia em um único pacote UDP e infectou a maioria de suas 75.000 vítimas em dez minutos, em 25 de janeiro de 2003.",
+        "context": "O Slammer vivia apenas na memória e nos pacotes de rede, sem tocar o disco: uma carga de 376 bytes otimizada à mão, disparada contra a porta UDP 1434, dobrando de tamanho a cada 8,5 segundos no pico. Caixas eletrônicos falharam, boa parte da Coreia do Sul perdeu conectividade e roteadores caíram sob a carga de varredura, tudo por uma falha que a Microsoft havia corrigido seis meses antes. Segue sendo a prova canônica de que é a demora em aplicar patches, e não o brilhantismo do atacante, que incendeia a Internet."
+      },
+      "conficker": {
+        "def": "O worm de Windows de 2008 que montou uma das maiores botnets da história e popularizou os algoritmos de geração de domínios.",
+        "context": "Explorando a vulnerabilidade MS08-067 a partir de novembro de 2008, o Conficker infectou milhões de máquinas no auge e provocou a criação do Conficker Working Group, um esforço de toda a indústria, com a Microsoft oferecendo 250 mil dólares pela cabeça dos autores. Sua safra diária de domínios de encontro gerados por algoritmo obrigou os defensores a pré-registrar milhares de nomes, tornando o DGA um capítulo padrão da análise de malware. Relíquias infectadas continuaram 'ligando para casa' por anos, um monumento às frotas legadas sem patch."
+      },
+      "therac-25": {
+        "def": "A máquina de radioterapia cujas condições de corrida no software causaram superdoses massivas nos anos 1980, o caso fundador da segurança de software.",
+        "context": "Entre 1985 e 1987, o Therac-25 aplicou superdoses de radiação em pelo menos seis pacientes, algumas fatais, depois que o fabricante removeu os intertravamentos de hardware e confiou em um software com condições de corrida disparadas pela digitação rápida dos operadores. A investigação de Nancy Leveson e Clark Turner virou leitura obrigatória: as falhas eram sistêmicas, não um bug isolado, e o código reaproveitado carregava premissas que a nova máquina não honrava mais. Desde então, todo argumento do tipo 'o software segura' precisa responder ao Therac-25."
+      },
+      "ariane-5": {
+        "def": "O voo inaugural de 1996 destruído por um estouro de inteiro em software reaproveitado do Ariane 4.",
+        "context": "Trinta e sete segundos após a decolagem, em 4 de junho de 1996, um valor de velocidade em 64 bits estourou uma conversão para 16 bits dentro do código de alinhamento inercial herdado do Ariane 4, cujo perfil de voo tornava o estouro impossível; no Ariane 5, mais rápido, não era. A exceção derrubou as duas unidades redundantes, que rodavam código idêntico, o foguete desviou e se autodestruiu, e cerca de meio bilhão de dólares em veículo e carga caiu no Atlântico. O relatório Lions o transformou no eterno estudo de caso sobre reutilizar código fora do envelope validado."
+      },
+      "mars-climate-orbiter": {
+        "def": "A sonda de Marte perdida em 1999 porque o software de uma equipe falava em libras-força-segundo e o da outra esperava newtons-segundo.",
+        "context": "Em 23 de setembro de 1999, o orbitador entrou na atmosfera marciana baixo demais e foi destruído: o software de solo da Lockheed Martin reportava o impulso dos propulsores em libras-força-segundo, unidades imperiais, enquanto a navegação do JPL esperava newtons-segundo, e meses de pequenos erros de trajetória se acumularam em silêncio. O relatório da NASA o transformou na parábola definitiva sobre contratos de interface. Unidades fazem parte do tipo; o universo não faz conversão implícita."
+      },
+      "eternalblue": {
+        "def": "O exploit de SMB desenvolvido pela NSA e vazado em 2017 que moveu o WannaCry e o NotPetya.",
+        "context": "Desenvolvido dentro da NSA e vazado pelo grupo Shadow Brokers em abril de 2017, o EternalBlue transformou em arma uma falha do SMBv1 que a Microsoft havia corrigido um mês antes como MS17-010; em semanas movia o WannaCry e, logo depois, o NotPetya. Virou o caso de referência no debate sobre governos estocarem vulnerabilidades em vez de divulgá-las. A sobrevida do exploit em redes sem patch durou anos além das manchetes."
+      },
+      "postels-law": {
+        "def": "'Seja conservador no que você faz, seja liberal no que aceita dos outros' - o princípio da robustez da especificação do TCP.",
+        "context": "Jon Postel escreveu a máxima na especificação do TCP de 1980, e ela moldou uma geração de implementações interoperáveis de protocolo. Décadas depois, a área se retratou em parte: tolerar entrada malformada deixa erros e ataques se esconderem, e a orientação moderna (incluindo a RFC 9413) defende validação mais estrita. A lei sobrevive como o eixo de um dos debates mais longos da engenharia de protocolos."
+      },
+      "metcalfes-law": {
+        "def": "O valor de uma rede cresce com o quadrado do número de usuários conectados.",
+        "context": "Atribuída a Robert Metcalfe, coinventor do Ethernet, e popularizada nos anos 1990, a lei captura por que redes 'viram': cada nó novo adiciona enlaces a todos os nós existentes. Economistas já argumentaram que o expoente real é mais suave (Odlyzko propôs n log n), mas o ponto qualitativo sobreviveu a todas as críticas. É a explicação de uma linha para efeitos de rede, aprisionamento de plataforma e por que o fax só importou quando todo mundo tinha um."
+      },
+      "murphys-law": {
+        "def": "'Tudo que pode dar errado vai dar errado' - a mais antiga premissa de planejamento da engenharia.",
+        "context": "O nome remonta ao capitão Edward Murphy e aos testes de trenó-foguete de 1949 na base aérea de Edwards, embora os participantes contassem versões conflitantes de quem disse o quê, e o sentimento seja mais antigo que todos eles. Em operações, não é pessimismo, é método: projete para o modo de falha, porque com implantações suficientes ele vai ocorrer. Toda redundância, backup e simulação de caos é a lei de Murphy levada a sério."
+      },
+      "parkinsons-law": {
+        "def": "'O trabalho se expande até preencher o tempo disponível para sua conclusão.'",
+        "context": "Cyril Northcote Parkinson abriu seu ensaio de 1955 na The Economist com a frase, tirada da observação de burocracias que crescem independentemente da carga de trabalho. Engenheiros a encontram em toda estimativa com gordura e em todo sprint que preenche exatamente o prazo. O mesmo livro deu à área a lei da trivialidade, mais conhecida por aqui como bikeshedding."
+      },
+      "peter-principle": {
+        "def": "Em uma hierarquia, as pessoas sobem até seu nível de incompetência.",
+        "context": "A sátira de Laurence J. Peter, de 1969, observou que a promoção premia o desempenho no cargo atual, não a aptidão para o próximo, então as pessoas sobem até chegar a um papel que fazem mal, e lá ficam. As empresas de tecnologia criaram trilhas de carreira duplas em grande parte para amortecê-lo, deixando ótimos engenheiros avançarem sem virar gestores. A sátira acumulou desde então apoio empírico em estudos sobre promoções em equipes de vendas."
+      },
+      "sturgeons-law": {
+        "def": "'Noventa por cento de tudo é lixo.'",
+        "context": "O autor de ficção científica Theodore Sturgeon cunhou a frase nos anos 1950 defendendo seu gênero: os críticos julgavam a FC pelos piores exemplos, embora noventa por cento de tudo, em qualquer área, seja igualmente ruim. Engenheiros recorrem a ela ao avaliar ecossistemas de plugins, resultados de busca do npm e submissões de conferências. O corolário importa mais que a lei: julgue uma área pelos seus dez por cento melhores."
+      },
+      "kerckhoffs-principle": {
+        "def": "Um sistema criptográfico deve permanecer seguro mesmo que tudo sobre ele, exceto a chave, seja público.",
+        "context": "Auguste Kerckhoffs o enunciou em 1883 para cifras militares, e Claude Shannon o comprimiu em 'o inimigo conhece o sistema'. É o argumento formal contra a segurança por obscuridade: projetos vazam, infiltrados desertam, hardware é capturado, e só a chave pode ser trocada a baixo custo. Toda competição aberta de cifras, do AES ao processo pós-quântico, é o princípio de Kerckhoffs institucionalizado."
+      },
+      "linus-law": {
+        "def": "'Com olhos suficientes, todos os bugs são rasos.'",
+        "context": "Eric Raymond cunhou a frase em A Catedral e o Bazar e a batizou em homenagem a Linus Torvalds, como o argumento central da vantagem de qualidade do código aberto. O Heartbleed virou seu contraexemplo permanente: o código ficou aberto por anos, mas quase ninguém estava de fato olhando. A leitura moderna acrescenta a cláusula que faltava: os olhos precisam ser financiados, qualificados e apontados para o código."
+      },
+      "goodharts-law": {
+        "def": "'Quando uma medida vira meta, deixa de ser uma boa medida.'",
+        "context": "O economista Charles Goodhart observou o efeito na política monetária de 1975; a antropóloga Marilyn Strathern deu a formulação moderna e certeira. A engenharia vive isso todo dia: otimize o número de chamados fechados e a qualidade morre, otimize a cobertura de linhas e os testes param de verificar, otimize a velocity e as estimativas incham. Toda métrica que vale gerenciar vale burlar, então emparelhe cada meta com o comportamento que ela deveria representar."
+      },
+      "two-hard-things": {
+        "def": "'Só existem duas coisas difíceis em Ciência da Computação: invalidação de cache e dar nomes às coisas.'",
+        "context": "A frase é atribuída a Phil Karlton, engenheiro da Netscape, e sua longevidade vem de ser verdadeira: os dois problemas são sobre manter um nome ou uma cópia fiéis a uma realidade que muda. O corolário favorito da comunidade acrescenta uma terceira: erros de off-by-one. Cite-a sempre que um cache velho e um nome de variável enganoso conspirarem no mesmo incidente."
+      },
+      "foobar": {
+        "def": "Os nomes-curinga canônicos, foo e bar, usados para variáveis e exemplos cuja identidade não importa.",
+        "context": "A dupla permeia documentação, testes e RFCs sempre que se precisa de um nome sem significado; baz, qux e companhia vêm quando dois não bastam. A RFC 3092, um documento de 1º de abril genuinamente informativo, traça a etimologia pela cultura hacker do MIT e por quadrinhos, incluindo o vínculo popular, mas incerto, com o acrônimo militar FUBAR. Usar foo sinaliza 'o nome aqui não é o ponto', um ato pequeno, mas real, de comunicação."
+      },
+      "nerd-snipe": {
+        "def": "Apresentar a alguém um problema irresistivelmente interessante, descarrilando o que quer que a pessoa devesse estar fazendo.",
+        "context": "O termo vem da tirinha xkcd #356, em que um físico é parado no meio da rua (fatalmente, na piada) por um quebra-cabeça de grade infinita de resistores. Engenheiros o usam como acusação e como confissão: um enigma bem mirado num canal de chat consome a tarde de um time inteiro. Considere-o o ataque de negação de serviço que mira a curiosidade."
+      },
+      "rtfm": {
+        "def": "A resposta clássica da cultura de suporte dizendo que a resposta já está na documentação.",
+        "context": "Canonizado pelo Jargon File, o RTFM carrega o pacto central da cultura hacker: respeito pelo tempo alheio e a expectativa de que você pesquise antes de perguntar. A expansão educada usa 'fine'; todo mundo conhece a original. Comunidades modernas o suavizam em 'deixa eu te mandar o link da doc', mas a norma de fundo, faça sua lição de casa primeiro, não mudou."
+      },
+      "lgtm": {
+        "def": "O carimbo de aprovação do code review: por mim, está bom.",
+        "context": "LGTM é como um revisor aprova uma mudança, e ferramentas inteiras de review o adotaram como palavra-chave de aprovação. Também dá nome ao modo de falha: um LGTM carimbado num diff de mil linhas significa que ninguém leu de verdade. A revisão de duas letras é ao mesmo tempo a graxa dos times velozes e o epitáfio de muitos postmortems de incidente."
+      },
+      "token-ring": {
+        "def": "A tecnologia de LAN determinística (IEEE 802.5) em que um token circulante concede o direito de transmitir, defendida pela IBM contra o Ethernet.",
+        "context": "As estações em um anel lógico passam um token; só quem o detém transmite, então não há colisões e a latência é previsível sob carga, exatamente o que o Ethernet da época não podia prometer. Rodando a 4 e 16 Mbit/s, com um sucessor de alta velocidade de 100 Mbit/s, dominou as empresas IBM-cêntricas até meados dos anos 1990, antes que a economia do Ethernet comutado encerrasse a guerra. Tecnicamente elegante e comercialmente derrotado, segue sendo o grande contrafactual das redes."
+      },
+      "martian-packet": {
+        "def": "Um pacote cujo endereço de origem ou destino não poderia legitimamente aparecer onde apareceu, como se tivesse vindo de Marte.",
+        "context": "Os requisitos de roteadores (RFC 1812) usam o termo para endereços impossíveis no contexto: faixas de loopback no cabo, espaço reservado ou uma origem que afirma estar dentro da sua rede chegando por uma interface externa. Kernels Linux os registram quando o rp_filter captura tráfego forjado. Marcianos se sobrepõem aos bogons, mas acrescentam o teste direcional: não apenas 'este prefixo não deveria existir aqui', e sim 'este pacote não poderia ter vindo de lá'."
+      },
+      "smurf-attack": {
+        "def": "O DDoS de amplificação clássico: requisições ICMP echo enviadas a um endereço de broadcast com a vítima forjada como origem.",
+        "context": "Cada host da rede abusada responde ao ping, então um pacote forjado devolve uma multidão de respostas à vítima; o nome vem do smurf.c, a ferramenta de ataque de 1997. A defesa mudou os padrões de fábrica: roteadores pararam de encaminhar broadcasts direcionados (codificado na RFC 2644) e as redes aprenderam a filtrar origens forjadas. O smurf é o ancestral contra o qual todo ataque de reflexão moderno, do DNS à amplificação NTP, é medido."
+      },
+      "xerox-parc": {
+        "def": "O laboratório de pesquisa de Palo Alto que inventou a mobília do computador moderno e, famosamente, deixou outros venderem-na.",
+        "context": "O Palo Alto Research Center da Xerox produziu, numa única década de 1970 espantosa, a interface gráfica, a impressora a laser, o Ethernet, o Smalltalk orientado a objetos e a estação Alto que amarrava tudo. A Apple e a Microsoft comercializaram a GUI; a 3Com comercializou o Ethernet; a Xerox ficou com as impressoras. O PARC virou a parábola permanente sobre a distância entre inventar o futuro e ser dono dele, e seus ex-alunos semearam metade das outras histórias deste site, do Ethernet ao fundador da Juniper."
+      },
+      "eliza": {
+        "def": "O chatbot de 1966 de Joseph Weizenbaum, em cujos padrões de texto os usuários confidenciavam segredos, batizando o efeito ELIZA.",
+        "context": "O script DOCTOR do ELIZA parodiava um terapeuta rogeriano devolvendo as palavras do usuário em forma de pergunta, e Weizenbaum ficou perturbado ao ver pessoas, incluindo sua própria secretária, tratá-lo como confidente. O efeito ELIZA, nossa prontidão em atribuir compreensão a sistemas que apenas manipulam símbolos, leva seu nome. Cada geração de software conversacional desde então repete o experimento em escala maior."
+      },
+      "the-crypto-wars": {
+        "def": "A batalha dos anos 1990 sobre se a criptografia forte poderia ser exportada, custodiada ou sequer usada livremente.",
+        "context": "O governo dos EUA classificava criptografia forte como munição, propôs em 1993 o chip Clipper com custódia de chaves e investigou Phil Zimmermann por anos depois que o PGP escapou para a Internet; os ativistas responderam imprimindo código-fonte em livros, que a Primeira Emenda protege. As regras de exportação foram em grande parte relaxadas até 2000, e o cadeado dos navegadores é o dividendo dessa paz. Toda proposta moderna de backdoor para acesso legal reabre as mesmas trincheiras."
+      },
+      "the-l0pht-testimony": {
+        "def": "A audiência de 1998 no Senado em que sete hackers testemunharam que podiam derrubar a Internet em trinta minutos.",
+        "context": "Em maio de 1998, os membros do coletivo hacker de Boston L0pht compareceram a uma comissão do Senado dos EUA usando seus codinomes, Mudge, Weld Pond, Space Rogue e os demais, e disseram aos senadores que os protocolos centrais da Internet eram tão frágeis que o grupo poderia desativá-la em cerca de meia hora. Foi o momento em que a perícia hacker entrou na sala de políticas públicas como testemunho, e não como ameaça. Vários deles, notadamente Mudge, seguiram para cargos seniores de segurança no governo e na indústria."
+      },
+      "room-641a": {
+        "def": "A instalação da AT&T em São Francisco onde um técnico revelou divisores de fibra copiando tráfego de Internet para a NSA.",
+        "context": "Em 2006, o técnico aposentado da AT&T Mark Klein divulgou documentos descrevendo uma sala segura na central da Folsom Street onde divisores ópticos duplicavam o tráfego de fibra do backbone para equipamentos de análise conectados à NSA. A revelação alimentou o processo Hepting v. AT&T, da EFF, e, anos antes dos vazamentos de 2013, colocou a interceptação em massa de tráfego doméstico em registro público. Segue sendo a imagem concreta por trás da expressão upstream collection."
+      },
+      "the-first-domain": {
+        "def": "symbolics.com, registrado em 15 de março de 1985 por uma fabricante de máquinas Lisp, foi o primeiro .com da Internet.",
+        "context": "A Symbolics, um spin-off do laboratório de IA do MIT que vendia estações Lisp, registrou o primeiro nome de domínio comercial anos antes de a web existir; só um punhado de organizações a seguiu naquele ano inteiro. A empresa definhou com o inverno da IA, mas o domínio nunca caducou e foi vendido em 2009 a um investidor que o mantém como peça de museu. O .com mais antigo da Internet pertence a um modelo de negócio que morreu antes de a maior parte da Internet nascer."
+      },
+      "the-first-banner-ad": {
+        "def": "O 'Have you ever clicked your mouse right here? You will.' da AT&T na HotWired, em 27 de outubro de 1994 - o anúncio que fundou o modelo de negócio da web.",
+        "context": "Não houve um único primeiro: a HotWired estreou com cerca de uma dúzia de banners de 468 por 60 pixels, da AT&T, Volvo, Club Med e outros, e a GNN já tinha vendido um anúncio clicável no ano anterior. Mas o desafio em letras de arco-íris da AT&T virou O primeiro, com seu criador reportando que cerca de 44 por cento de quem viu clicou, uma taxa que a indústria nunca mais viu. Tudo o que a web moderna oferece de graça descende daquela tarde."
+      },
+      "the-slashdot-effect": {
+        "def": "A queda de um site pequeno sob o tráfego de um link repentino de primeira página, batizada em homenagem ao site que fazia isso toda noite.",
+        "context": "No fim dos anos 1990, um link da comunidade de notícias Slashdot podia entregar mais visitantes em uma hora do que um servidor de hobby via em um ano, e 'slashdotted' virou o verbo para a indisponibilidade resultante. Os sucessores o rebatizaram de abraço da morte do Reddit, mas a física nunca mudou: multidões legítimas são indistinguíveis, do ponto de vista do servidor, de uma negação de serviço. CDNs e arquiteturas static-first são a resposta longa da indústria."
+      },
+      "nimda": {
+        "def": "O worm de setembro de 2001 que atacava por cinco vetores ao mesmo tempo, uma semana depois do 11 de Setembro.",
+        "context": "Liberado em 18 de setembro de 2001, o Nimda (admin ao contrário) se espalhava por e-mail, compartilhamentos de rede abertos, sites desfigurados que infectavam seus visitantes, exploits de IIS e as backdoors deixadas pelo Code Red II, tornando-se em horas o worm mais disseminado da Internet. Chegando dias depois dos ataques a Nova York, provocou temores breves de ciberterrorismo que a análise nunca sustentou. Ensinou aos defensores que um malware não precisa escolher uma única porta."
+      },
+      "the-blaster-worm": {
+        "def": "O worm de Windows de agosto de 2003 que reiniciava PCs no mundo todo e carregava uma provocação endereçada a Bill Gates.",
+        "context": "O Blaster explorava a falha de DCOM RPC do MS03-026, derrubando máquinas em loops de reinicialização e mirando uma inundação no site de atualizações da Microsoft; seu código trazia a mensagem 'billy gates why do you make this possible? Stop making money and fix your software!!'. Um adolescente que liberou uma variante foi preso em semanas. Junto com o Slammer, no mesmo ano, empurrou a Microsoft para a reforma de segurança que produziu o Service Pack 2 do XP e a cultura moderna do Patch Tuesday."
+      },
+      "operation-aurora": {
+        "def": "A campanha de espionagem de 2009 contra o Google e dezenas de empresas que trouxe o hacking de Estado-nação a público.",
+        "context": "Revelada pelo Google num post de blog de janeiro de 2010 que chocou a indústria, a Aurora usou um zero-day do Internet Explorer para penetrar Google, Adobe e, segundo relatos, mais de vinte outras empresas, atrás de código-fonte e das contas de ativistas de direitos humanos. A resposta do Google, ameaçando deixar o mercado chinês, tornou uma invasão questão de política externa pela primeira vez. A transparência corporativa sobre intrusões de nível estatal começa nesse momento."
+      },
+      "clippy": {
+        "def": "O assistente animado em forma de clipe da Microsoft, amado na lembrança e detestado no uso, o conto de advertência da interface proativa.",
+        "context": "Introduzido com o Office 97 como Clippit, o Assistente do Office interrompia o trabalho para oferecer ajuda que ninguém pediu ('Parece que você está escrevendo uma carta'), foi desativado por padrão no Office XP e removido de vez no Office 2007. Seu fracasso virou leitura obrigatória em design de interação: assistência precisa ser convidada, contextual e fácil de dispensar. Todo copiloto de IA moderno é lançado contra o fantasma do Clippy."
+      },
+      "deep-blue": {
+        "def": "A máquina da IBM que derrotou o campeão mundial de xadrez Garry Kasparov em maio de 1997, a primeira vitória de uma máquina sobre um campeão reinante em um match.",
+        "context": "O Deep Blue venceu a revanche de 1997 por 3,5 a 2,5, um ano depois de perder o primeiro confronto, avaliando cerca de 200 milhões de posições por segundo com chips de xadrez dedicados e busca por força bruta, e não algo parecido com compreensão. Kasparov suspeitou de intervenção humana por trás de um lance estranho; a IBM recusou um terceiro match e aposentou a máquina. A vitória redesenhou a linha que o teste de Turing havia esboçado: as máquinas agora podiam nos vencer nos jogos que chamávamos de inteligência."
+      },
+      "the-max-headroom-incident": {
+        "def": "O sequestro de transmissão de 1987 em Chicago por alguém de máscara do Max Headroom, até hoje sem solução.",
+        "context": "Na noite de 22 de novembro de 1987, um invasor sobrepôs os enlaces estúdio-transmissor de duas emissoras de Chicago, primeiro o noticiário esportivo da WGN por segundos, depois a WTTW durante Doctor Who, por cerca de noventa segundos bizarros de desvario mascarado. Sobrepor um enlace de transmissão exigia engenharia de RF de verdade e mais potência do que o uplink legítimo, e apesar da investigação da FCC ninguém jamais foi identificado. Segue sendo o caso definidor de intrusão de sinal de broadcast e um dos mistérios favoritos da cultura hacker."
+      },
+      "phrack": {
+        "def": "O e-zine underground, publicado desde 1985, que carregou os textos fundadores da cultura hacker e sua escrita técnica mais profunda.",
+        "context": "A Phrack (phreak mais hack) circula desde 1985 como revista eletrônica voluntária; a edição 7 trouxe o Manifesto Hacker, e o 'Smashing the Stack for Fun and Profit' de Aleph One, na edição 49, ensinou a uma geração como buffer overflows realmente funcionam, fundando a alfabetização moderna em exploits. Promotores certa vez avaliaram um documento que ela republicou em dezenas de milhares de dólares, na era das batidas do caso Steve Jackson Games; o texto era efetivamente público. É o samizdat da área, ainda em publicação."
+      },
+      "schneiers-law": {
+        "def": "'Qualquer um consegue inventar um sistema de segurança tão engenhoso que ele próprio não sabe como quebrar.'",
+        "context": "Bruce Schneier formulou a observação em 1998 e Cory Doctorow depois pendurou nela o nome de Schneier: a incapacidade do projetista de quebrar uma cifra é evidência sobre o projetista, não sobre a cifra. É o argumento prático a favor de revisão pública, competições abertas e da contratação de gente cujo trabalho é quebrar seus próprios projetos. Corolário na prática: nunca coloque em produção criptografia que você mesmo inventou."
+      },
+      "galls-law": {
+        "def": "Um sistema complexo que funciona invariavelmente evoluiu de um sistema simples que funcionava.",
+        "context": "John Gall a escreveu em Systemantics (1975), com o inverso mais afiado: um sistema complexo projetado do zero nunca funciona e não pode ser remendado até funcionar; é preciso recomeçar de um sistema simples que funcione. É a espinha teórica da entrega iterativa, dos MVPs e do padrão strangler-fig para reescritas. Redesenhos big-bang fracassam no prazo previsto; Gall explicou o porquê com antecedência."
+      },
+      "principle-of-least-astonishment": {
+        "def": "Um componente deve se comportar como a maioria dos usuários espera; surpresa é defeito.",
+        "context": "O princípio, em circulação desde os anos 1970, julga projetos pela distância entre o que fazem e o que um usuário razoável prevê: uma interface que espanta será mal usada, por melhor que seja a documentação. Vale para design de APIs, padrões de fábrica, tratamento de erros e UI. Quando duas implementações são igualmente corretas, entregue a que dispensa explicação."
+      },
+      "zero-one-infinity": {
+        "def": "Permita nenhum, um, ou qualquer número de algo; todo outro limite é arbitrário.",
+        "context": "Atribuída ao pioneiro holandês Willem van der Poel, a regra diz que tetos arbitrários (três tentativas de login, dezesseis partições, 255 caracteres) codificam um palpite sobre o futuro que o futuro vai desmentir. Zero e um são escolhas estruturais; tudo acima de um só deveria ser limitado pelos recursos. Metade das verrugas de compatibilidade dos sistemas legados são violações dela, fossilizadas."
+      },
+      "hyrums-law": {
+        "def": "Com usuários suficientes, todo comportamento observável do seu sistema será dependido por alguém, com contrato ou sem.",
+        "context": "Cunhada pelo engenheiro do Google Hyrum Wright, a lei explica por que 'nunca prometemos isso' não evita quebras: usuários se prendem a tempos, textos de erro, ordenação e manias não documentadas, então a interface de facto é tudo que é observável. O xkcd 1172 ('toda mudança quebra o fluxo de trabalho de alguém') é sua forma em quadrinhos. É a razão profunda pela qual refatorações que preservam comportamento ainda acordam alguém às 3 da manhã."
+      },
+      "wirths-law": {
+        "def": "O software fica mais lento mais depressa do que o hardware fica mais rápido.",
+        "context": "Niklaus Wirth formalizou a queixa em seu ensaio de 1995, A Plea for Lean Software, creditando a tirada a Martin Reiser; é a sombra da lei de Moore. Cada duplicação do hardware é gasta em camadas de abstração, frameworks e recursos, até a experiência do usuário ficar parada ou regredir. Recorra a ela sempre que um editor de texto precisar de um gigabyte para abrir um arquivo que a máquina original nem conseguiria armazenar."
+      },
+      "amdahls-law": {
+        "def": "O ganho de paralelizar uma tarefa é limitado pela sua fração serial: processadores infinitos não superam 1/s.",
+        "context": "Gene Amdahl a defendeu contra o entusiasmo inicial com multiprocessadores em 1967: se 10 por cento de um trabalho é inerentemente sequencial, nenhuma quantidade de hardware paralelo rende mais que dez vezes de aceleração. A lei disciplina toda conversa de escalabilidade, de chips multicore a pipelines distribuídos, apontando a otimização primeiro para o gargalo serial. Gustafson depois ofereceu a releitura otimista para problemas que crescem, mas Amdahl ainda governa cargas fixas."
+      },
+      "ninety-ninety-rule": {
+        "def": "'Os primeiros 90 por cento do código consomem os primeiros 90 por cento do tempo de desenvolvimento. Os 10 por cento restantes consomem os outros 90 por cento.'",
+        "context": "Tom Cargill, do Bell Labs, a cunhou, e a coluna Programming Pearls de Jon Bentley (1985) a canonizou; a aritmética é a piada e a verdade. Demos, caminhos felizes e protótipos são os primeiros 90; casos de borda, integração e acabamento são os segundos. Todo relatório de status 'quase pronto' é a regra em plena execução."
+      },
+      "no-silver-bullet": {
+        "def": "A tese de Fred Brooks de que nenhuma técnica isolada trará um ganho de ordem de grandeza na produtividade de software, porque a complexidade é essencial, não acidental.",
+        "context": "O ensaio de Brooks, de 1986, dividiu a dificuldade do software em complexidade acidental, que ferramentas removem, e complexidade essencial, a intrincação irredutível do próprio problema, e previu que nenhuma bala de prata de dez vezes surgiria em uma década. Quatro décadas de linguagens, metodologias e agora assistentes de IA foram, cada uma, anunciadas como a exceção. O ensaio sobrevive como a réplica padrão a todo lançamento 'isto muda tudo', e como o desafio permanente que cada um precisa responder."
+      },
+      "pets-vs-cattle": {
+        "def": "A doutrina da era da nuvem: trate servidores como gado intercambiável a ser substituído, não como bichos de estimação com nome a serem tratados.",
+        "context": "Popularizada nos círculos de nuvem do início dos anos 2010 por Randy Bias, que credita a palestra de Bill Baker sobre SQL Server, a metáfora divide a infraestrutura em pets (únicos, configurados à mão, restaurados com carinho quando adoecem) e gado (numerado, idêntico, destruído e substituído em caso de falha). É o núcleo cultural da infraestrutura imutável, do autoscaling e da configuração como código. Quando um engenheiro faz SSH na produção para consertar uma máquina à mão, nasceu um pet."
+      },
+      "blue-screen-of-death": {
+        "def": "A tela azul de erro fatal do Windows e, por extensão, qualquer falha total de sistema visível ao usuário.",
+        "context": "A tela azul de parada anuncia erros irrecuperáveis do kernel do Windows desde o início dos anos 1990, evoluindo de paredes de hexadecimal para um emoticon triste e um código QR. Seu peso cultural vem da visibilidade: BSODs aparecem em painéis de aeroporto, caixas eletrônicos e telões de estádio, e a atualização da CrowdStrike de julho de 2024 derrubou frotas delas no mundo inteiro ao mesmo tempo. 'Dar tela azul' virou verbo para qualquer travamento duro, seja qual for o sistema."
+      },
+      "chaos-monkey": {
+        "def": "A ferramenta da Netflix que mata instâncias de produção aleatoriamente, e o nome de injetar falhas de propósito para provar resiliência.",
+        "context": "Criado durante a migração da Netflix para a nuvem no início dos anos 2010 e aberto em 2012, o Chaos Monkey encerra máquinas virtuais aleatórias em horário comercial, para que os engenheiros projetem para a falha em vez de torcer contra ela. Cresceu no Simian Army e na disciplina hoje chamada engenharia do caos. A aposta é simples: as falhas que você agenda custam menos que as falhas idênticas que você não agenda."
+      },
+      "split-brain": {
+        "def": "A falha de cluster em que nós particionados acreditam, cada um, ser o sobrevivente, e ambos continuam gravando.",
+        "context": "Quando o enlace entre membros do cluster cai, cada lado pode concluir que o outro morreu, promover-se e aceitar escritas; na reconexão, as histórias divergiram e os dados de alguém terão de perder. Regras de quorum, fencing (atire na cabeça do outro nó) e nós-testemunha existem para garantir que exatamente um lado vença. Split-brain é o teorema CAP chegando à produção, geralmente de madrugada."
+      },
+      "solid": {
+        "def": "Os cinco princípios de design orientado a objetos reunidos por Robert C. Martin e organizados em acrônimo por Michael Feathers.",
+        "context": "Responsabilidade única, aberto-fechado, substituição de Liskov, segregação de interfaces e inversão de dependência miram o código no mesmo alvo: módulos que você pode mudar sem reação em cadeia. Os princípios antecedem o acrônimo; o mnemônico foi o que os transformou em checklist. Aplicados com juízo, produzem projetos flexíveis; aplicados como dogma, produzem quinze interfaces por classe, o que é uma violação do espírito por conta própria."
+      },
+      "gigo": {
+        "def": "Garbage in, garbage out: nenhuma computação melhora a qualidade das suas entradas.",
+        "context": "A frase remonta às primeiras décadas da computação, respondendo à fé do público de que máquinas não erravam: elas computam com exatidão, inclusive respostas exatamente erradas a partir de dados errados. Sobreviveu a todas as mudanças de tecnologia e ganhou força nova na era do aprendizado de máquina, em que o lixo é o conjunto de treinamento. Validação de dados, pipelines e model cards são o GIGO levado a sério."
+      },
+      "ethernet": {
+        "def": "A tecnologia de LAN esboçada no Xerox PARC em 1973 que venceu todas as guerras de rede e hoje carrega quase tudo.",
+        "context": "Robert Metcalfe circulou o memorando fundador em 22 de maio de 1973, com David Boggs construindo a primeira rede coaxial de 2,94 Mbit/s; o CSMA/CD, inspirado na ALOHA, deixava as estações dividirem um fio colidindo com educação. Padronizado via DIX (1980) e IEEE 802.3 (1983), venceu Token Ring, FDDI e ATM em preço e em ritmo de evolução, abandonando no caminho o próprio fio compartilhado em favor dos switches. De dez megabits a 800 gigabits, o formato de quadro sobrevive; o nome hoje significa o vencedor."
+      },
+      "cap-theorem": {
+        "def": "Um sistema distribuído diante de uma partição de rede precisa escolher entre consistência e disponibilidade; não pode manter as duas.",
+        "context": "Eric Brewer o conjecturou numa palestra de 2000 e Gilbert e Lynch o provaram em 2002: quando os nós não conseguem se falar, o sistema ou recusa respostas (consistente, indisponível) ou responde com dados possivelmente velhos (disponível, inconsistente). Partições não são opcionais em redes reais, então o teorema é, na verdade, sobre qual modo de falha você pré-seleciona. A página de marketing de todo banco de dados é um artigo de posição sobre CAP, diga isso ou não."
+      },
+      "year-2038-problem": {
+        "def": "O tempo Unix de 32 bits com sinal estoura às 03:14:07 UTC de 19 de janeiro de 2038, rebobinando o relógio para 1901.",
+        "context": "O Unix conta segundos desde 1970 no que historicamente era um inteiro de 32 bits com sinal, que se esgota em janeiro de 2038; sistemas afetados passarão de repente a acreditar que é dezembro de 1901. As plataformas modernas já moveram o time_t para 64 bits, mas o problema sobrevive em dispositivos embarcados, formatos de arquivo, protocolos e bancos de dados com décadas de vida útil. É o irmão mais quieto do Y2K: mais bem compreendido, mais distante e enterrado mais fundo."
+      },
+      "the-first-computer-bug": {
+        "def": "A mariposa colada no diário de bordo do Harvard Mark II em 9 de setembro de 1947, com a legenda 'Primeiro caso real de bug encontrado'.",
+        "context": "A equipe de Grace Hopper rastreou uma falha de relé até uma mariposa de verdade, colou-a no diário e escreveu a legenda famosa; a página sobrevive no Smithsonian. A piada só funciona porque 'bug' para defeito técnico já era velho, Edison o usava nos anos 1870, e a própria legenda pisca para isso com o 'real'. Ou seja: a história é verdadeira, a mariposa é real e a etimologia é mais antiga que a mariposa: a rara lenda em que todas as camadas se confirmam."
+      },
+      "the-homebrew-computer-club": {
+        "def": "O clube de hobbistas de Menlo Park, de 1975, onde começaram a indústria do computador pessoal e sua primeira briga por software.",
+        "context": "Reunido pela primeira vez na garagem de Gordon French em 5 de março de 1975, em torno do recém-lançado Altair 8800, o clube e sua cultura de mostrar-e-contar lançaram dezenas de empresas; Steve Wozniak demonstrou ali o que viria a ser o Apple I. Também abrigou a cisão ideológica fundadora da indústria: a Carta Aberta aos Hobbistas de Bill Gates, de 1976, acusou a cultura de copiar fitas do clube de roubar o BASIC da Micro-Soft, traçando a linha de batalha entre software como bem comum e software como produto. O software livre e a indústria de software dividem essa garagem como local de nascimento."
+      },
+      "captain-midnight": {
+        "def": "O sequestro do satélite da HBO em 1986, por um engenheiro de uplink da Flórida protestando contra uma mensalidade de US$ 12,95.",
+        "context": "Em 27 de abril de 1986, John R. MacDougall, sozinho no turno de uma estação de uplink na Flórida, girou a antena para o satélite da HBO e sobrepôs o filme com 'GOODEVENING HBO FROM CAPTAIN MIDNIGHT. $12.95/MONTH? NO WAY!' por quatro minutos e meio; os engenheiros da HBO duelaram com ele até 2000 watts e cederam para não arriscar o satélite. Foi pego depois que um turista o ouviu se gabando num orelhão, pagou multa de 5.000 dólares, e o Congresso tornou o sequestro de satélite crime grave, legislação pronta bem a tempo do incidente Max Headroom no ano seguinte. Um vendedor de antenas irritado contra um império de broadcast, e o uplink venceu."
+      },
+      "the-dao-hack": {
+        "def": "O esvaziamento, em 2016, do maior contrato inteligente financiado por multidão, respondido pelo hard fork que dividiu o Ethereum em dois.",
+        "context": "A DAO levantou um financiamento coletivo recorde como um contrato de venture dirigido pelos investidores; em junho de 2016, um atacante usou uma falha de reentrância para drenar cerca de 3,6 milhões de ether, então algo em torno de 50 milhões de dólares. O hard fork do Ethereum em 20 de julho reverteu o roubo, e os dissidentes que sustentavam que código é lei mantiveram viva a cadeia original como Ethereum Classic. É o desastre fundador dos contratos inteligentes e o estudo de caso permanente sobre o custo da imutabilidade quando a coisa imutável é um bug."
+      },
+      "mt-gox": {
+        "def": "A exchange de Tóquio que processava a maioria das negociações de bitcoin do mundo, até 850.000 delas sumirem em 2014.",
+        "context": "Nascida como Magic: The Gathering Online eXchange, a Mt. Gox cresceu até dominar a negociação de bitcoin antes de desabar em falência em fevereiro de 2014, reportando cerca de 850.000 bitcoins desaparecidos, a maioria de clientes; uns 200.000 foram depois encontrados numa carteira antiga. As investigações apontaram anos de furto gradual das hot wallets, e não um golpe dramático único. Segue sendo a lição canônica de custódia do mundo cripto, comprimida em poucas palavras: se as chaves não são suas, as moedas também não."
+      },
+      "the-silk-road": {
+        "def": "O mercado oculto na rede Tor, de 2011 a 2013, cuja ascensão e queda definiram a imagem pública da dark web.",
+        "context": "Lançado no início de 2011 e operado sob o pseudônimo Dread Pirate Roberts, o Silk Road combinou serviços ocultos do Tor com custódia em bitcoin e virou o maior mercado ilegal da época, até o FBI o apreender em outubro de 2013, prendendo o fundador Ross Ulbricht numa biblioteca de São Francisco. Ulbricht foi condenado em 2015 à prisão perpétua; foi indultado em janeiro de 2025. Para a educação em segurança, o caso é a referência sobre como sistemas de anonimato falham na prática: não a criptografia, mas erros operacionais, posts antigos em fóruns e um laptop capturado aberto e logado."
+      },
+      "the-ioccc": {
+        "def": "O concurso, realizado desde 1984, que celebra os programas em C funcionais mais gloriosamente ilegíveis da Terra.",
+        "context": "Fundado por Landon Curt Noll e Larry Bassel, o International Obfuscated C Code Contest premia programas que abusam de cada canto escuro da linguagem e ainda assim compilam e fazem algo maravilhoso: simuladores de voo com código em forma de avião, haicais autorreplicantes, compiladores em poucas linhas torturadas. É ao mesmo tempo uma piada, um museu da semântica do C e uma aula de segurança, já que ofuscado-mas-funcional é exatamente a cara do código malicioso. A categoria favorita dos jurados: abuso das regras."
+      },
+      "illegal-number": {
+        "def": "Um número cuja mera posse ou publicação é alegadamente ilegal, a redução ao absurdo do controle de informação.",
+        "context": "Quando a criptografia dos DVDs foi quebrada, Phil Carmody encontrou um número primo que literalmente é o código de descriptografia DeCSS, executável quando desempacotado, tornando um primo, em tese, ilegal de publicar. Em maio de 2007, o consórcio AACS enviou notificações de remoção pela chave de 16 bytes do HD DVD começada em 09 F9, e os usuários do Digg responderam publicando-a em músicas, imagens e camisetas até os operadores do site se renderem à enxurrada. Cada episódio desses reafirma o mesmo teorema: bits são números, números são discurso, e o sigilo por ameaça jurídica não sobrevive ao contato com o efeito Streisand."
+      },
+      "the-fail-whale": {
+        "def": "O mascote de sobrecarga do Twitter, uma baleia erguida por passarinhos, que transformou instabilidade crônica em marca querida de 2007 a 2013.",
+        "context": "A ilustração de Yiying Lu, 'Lifting a Dreamer', recebia os usuários sempre que o Twitter dos primeiros anos vergava, o que, em eventos ao vivo, era o tempo todo; a página de erro ganhou fã-clubes, tatuagens e produtos. Por trás dela, um monolito Rails era rearquitetado em pleno voo para o serviço baseado em JVM que aposentou a baleia por volta de 2013. Segue sendo a conquista mais estranha da história de operações: uma página de indisponibilidade que os usuários lamentaram perder."
+      },
+      "kevin-poulsen": {
+        "def": "O hacker que tomou as linhas telefônicas de uma rádio para ser a chamada de número 102 e ganhar um Porsche, e depois virou jornalista de segurança.",
+        "context": "Em junho de 1990, Poulsen e amigos assumiram as linhas de entrada da rádio KIIS-FM, de Los Angeles, para que ele fosse exatamente o 102º a ligar, ganhando um Porsche 944 S2; suas explorações mais profundas contra sistemas de telefonia lhe renderam anos como foragido e, depois da captura, uma das sentenças por hacking mais pesadas da época. Proibido de usar computadores ao sair, reinventou-se como jornalista investigativo e chegou a editor sênior da Wired, revelando grandes casos de cibercrime. O arco completo, de phreaker a condenado a imprensa, fez dele o modelo de redenção que sua geração cita."
+      },
+      "the-leap-second": {
+        "def": "O segundo extra inserido ocasionalmente para manter o tempo atômico alinhado à rotação da Terra, e as quedas que ele causou.",
+        "context": "Como o giro do planeta deriva em relação aos relógios atômicos, os guardiões do tempo adicionam, irregularmente desde 1972, um 61º segundo a um minuto escolhido; softwares que supunham minutos de 60 segundos discordaram. A inserção de 30 de junho de 2012 derrubou, notoriamente, o Reddit, serviços da Mozilla e sistemas de check-in de companhias aéreas, e eventos posteriores empurraram os operadores para o 'leap smearing', espalhando o segundo invisivelmente ao longo de horas. Em 2022, o órgão mundial de metrologia votou por abolir os segundos intercalares até 2035, um caso raro de a realidade receber patch para se adequar ao software."
+      },
+      "left-pad": {
+        "def": "O pacote npm de onze linhas cuja remoção, em 2016, quebrou builds no mundo JavaScript inteiro.",
+        "context": "Em março de 2016, o desenvolvedor Azer Koculu despublicou seus módulos do npm após uma disputa de nomes envolvendo o registro e a reivindicação de marca de uma empresa; entre eles estava o left-pad, onze linhas que preenchiam strings, do qual milhares de pacotes, incluindo o Babel, dependiam transitivamente. Builds falharam globalmente em minutos, o npm restaurou o pacote contra a vontade do autor, e 'des-despublicar' entrou no vocabulário. O incidente forçou o ecossistema a encarar a profundidade das dependências, a governança do registro e o quanto da web moderna repousava na função de fim de semana de uma única pessoa."
+      },
+      "fallacies-of-distributed-computing": {
+        "def": "As oito suposições que todo novato em sistemas distribuídos faz, começando por 'a rede é confiável', catalogadas na Sun nos anos 1990.",
+        "context": "Peter Deutsch e colegas na Sun, com James Gosling acrescentando a última, listaram o que os recém-chegados supõem errado: a rede é confiável, a latência é zero, a banda é infinita, a rede é segura, a topologia não muda, há um único administrador, o custo de transporte é zero e a rede é homogênea. Cada bug de timeout, manada estrondosa e split-brain é uma das oito cobrando sua dívida. A lista é o território deste site condensado num parágrafo: redes falham, e sistemas honestos são projetados por quem acredita nisso."
+      },
+      "kernighans-law": {
+        "def": "'Depurar é duas vezes mais difícil do que escrever o código. Portanto, se você escrever o código da forma mais engenhosa possível, você é, por definição, não inteligente o bastante para depurá-lo.'",
+        "context": "Brian Kernighan a escreveu com P. J. Plauger em The Elements of Programming Style (1974), e ela é desde então o veredito permanente sobre a esperteza. A lei não proíbe sofisticação; ela a precifica, na capacidade de depuração do seu eu-futuro às 3 da manhã. A pergunta mais útil do code review é a lei de Kernighan na forma interrogativa: vamos entender isto daqui a seis meses?"
+      },
+      "greenspuns-tenth-rule": {
+        "def": "'Qualquer programa em C ou Fortran suficientemente complicado contém uma implementação ad hoc, informalmente especificada, cheia de bugs e lenta de metade do Common Lisp.'",
+        "context": "A tirada de Philip Greenspun (não existem regras de um a nove) observa que programas grandes inevitavelmente desenvolvem os recursos dinâmicos que faltam à sua linguagem: interpretadores de configuração, sistemas de objetos, coleta de lixo, tudo reinventado mal. É o argumento clássico por escolher ferramentas expressivas em vez de reconstruí-las por acidente. O corolário é muito citado: isso inclui as próprias implementações de Common Lisp."
+      },
+      "atwoods-law": {
+        "def": "'Qualquer aplicação que possa ser escrita em JavaScript acabará sendo escrita em JavaScript.'",
+        "context": "Jeff Atwood a cunhou em 2007 como meia piada sobre a gravidade da plataforma web; então o Node levou o JavaScript aos servidores, o Electron ao desktop e o React Native aos celulares, e a piada virou roteiro. A lei é, na verdade, sobre alcance: o runtime instalado em toda parte vence, argumentos de qualidade à parte. Seu sucessor espiritual já circula: tudo que puder ser compilado para WebAssembly, será."
+      },
+      "poes-law": {
+        "def": "Sem um marcador claro de intenção, a paródia de posições extremas é indistinguível das próprias posições.",
+        "context": "Nathan Poe a formulou num fórum sobre criacionismo em 2005, e a Internet logo provou que ela é geral: sem um emoji piscando, alguém levará a sátira a sério, e outra pessoa tomará o post sincero por sátira. É uma restrição real à comunicação online, à moderação e, agora, aos conjuntos de dados raspados da web, onde a ironia chega sem rótulo. Toda comunidade a reaprende no dia em que sua piada interna escapa da contenção."
+      },
+      "cobra-effect": {
+        "def": "Um incentivo que agrava o problema que deveria resolver, batizado pela recompensa colonial por cobras que criou fazendas de cobras.",
+        "context": "Conta-se que a Delhi britânica pagava por cobra morta, moradores empreendedores passaram a criá-las, e o cancelamento da recompensa soltou o estoque, deixando mais cobras do que antes; a documentação da história é fraca, mas o mecanismo está em toda parte. Pague por bug encontrado e bugs serão plantados; premie chamados fechados e chamados serão divididos; recompense vulnerabilidades sem cuidado e você financia um mercado cinza. É a lei de Goodhart com presas: a métrica não só se descolou do objetivo, ela o atacou."
+      },
+      "wheelers-law": {
+        "def": "'Todos os problemas da ciência da computação podem ser resolvidos com mais um nível de indireção', com o corolário popular: exceto o problema de níveis demais de indireção.",
+        "context": "Atribuído ao pioneiro de Cambridge David Wheeler, coinventor da sub-rotina, o aforismo nomeia o movimento universal da área: interponha uma camada, um ponteiro, um proxy, uma máquina virtual, e o incompatível se torna compatível. O corolário não oficial traz a conta, já que cada camada adiciona latência, opacidade e um novo lugar para as abstrações vazarem. As pilhas modernas são o aforismo de Wheeler aplicado algumas dezenas de vezes, seguido de ferramentas de observabilidade vendidas para enxergar através do resultado."
+      },
+      "clarkes-third-law": {
+        "def": "'Qualquer tecnologia suficientemente avançada é indistinguível de magia.'",
+        "context": "A terceira lei de Arthur C. Clarke foi escrita sobre profecia e progresso, mas a engenharia a adotou como diagnóstico: quando usuários, ou engenheiros, não enxergam o mecanismo, raciocinam sobre o sistema com superstição em vez de modelos. É daí que vêm as correções cargo-cult, os reboots rituais e o 'funciona, não mexe'. O corolário prático para quem é do ofício: qualquer tecnologia distinguível de magia é insuficientemente avançada, e qualquer equipe que trata a própria pilha como magia está insuficientemente informada."
+      },
+      "dogfooding": {
+        "def": "Usar o próprio produto internamente, para que as falhas mordam você antes de morder os clientes.",
+        "context": "O uso do termo em tecnologia costuma ser rastreado à Microsoft dos anos 1980, onde o e-mail 'Eating our own Dogfood' de um gerente empurrou as equipes para o próprio software de servidor inacabado. O dogfooding encurta o ciclo de feedback como nenhuma pesquisa consegue: quem constrói sente a latência, esbarra nos casos de borda e não pode fechar o chamado contra si mesmo. Seu modo de falha conhecido é a monocultura, já que uma empresa de usuários avançados consome uma dieta que nenhum cliente consome; faça dogfooding, e depois teste com estranhos mesmo assim."
+      },
+      "backhoe-fade": {
+        "def": "O nome seco que as telecom dão à perda total de sinal causada por máquinas de obra cavando através da fibra.",
+        "context": "Engenheiros de rádio falam em rain fade; operadores de fibra, com humor de forca, em backhoe fade: o rompimento físico e abrupto de um cabo enterrado por uma retroescavadeira que não ligou antes de cavar. É uma das principais causas de grandes indisponibilidades, e por isso projetos sérios exigem caminhos fisicamente diversos, em valas separadas, idealmente em lados opostos da estrada. O termo codifica a sabedoria de uma carreira inteira: sua redundância só é tão real quanto a geografia entre os dois cabos."
+      },
+      "magic-number": {
+        "def": "Uma constante inexplicada enterrada no código, ou os bytes de assinatura que identificam um formato de arquivo.",
+        "context": "O termo carrega dois sentidos aparentados: o antipadrão (um 86400 ou 0,85 nu, cujo significado vive só na cabeça do autor, curado com constantes nomeadas) e a assinatura de arquivo (os bytes iniciais, como os do PNG ou o 0xCAFEBABE dos arquivos class do Java, que dizem às ferramentas o que estão lendo; o comando file do Unix é um museu deles). Os dois sentidos falam da mesma coisa, significado codificado sem explicação. Um é um bug à espera; o outro, uma convenção funcionando."
+      },
+      "wetware": {
+        "def": "Os humanos do sistema, nomeados como se fossem mais um componente ao lado do hardware e do software.",
+        "context": "Da safra do Jargon File, a palavra enquadra as pessoas como a terceira plataforma da pilha: a que vem de fábrica com fadiga, hábitos e confiança social pré-instalados. A segurança a usa com sobriedade, já que phishing e engenharia social são ataques ao wetware que nenhum patch corrige, apenas treinamento e design que assume o erro humano. A meia piada do termo carrega a lição mais séria da disciplina: o perímetro inclui todo mundo com um crachá e uma caixa de entrada."
+      },
+      "pebkac": {
+        "def": "Código de helpdesk para 'o problema existe entre o teclado e a cadeira': o usuário.",
+        "context": "Ao lado de irmãos como o erro ID-10T (leia em voz alta) e o PICNIC (problem in chair, not in computer), o PEBKAC permitia à equipe de suporte diagnosticar o humano na frente de testemunhas. A doutrina moderna de usabilidade inverteu o veredito: se usuários suficientes batem na mesma parede, a parede é o defeito, e 'erro do usuário' costuma nomear um design que o convidou. O acrônimo sobrevive como piada e como confissão de como os sistemas costumavam culpar seus operadores."
+      },
+      "tldr": {
+        "def": "Too long; didn't read (longo demais; não li): a reclamação que virou o rótulo padrão de resumo.",
+        "context": "Nascido nos fóruns como um descarte de textos intermináveis, o TL;DR inverteu a polaridade: quem escreve agora se antecipa abrindo com uma seção TL;DR, e a abreviação passou a significar o próprio resumo. A cultura de engenharia institucionalizou o gesto em abstracts de RFCs, sumários executivos e relatórios de incidente em que as três primeiras linhas precisam carregar a carga útil. É a economia da atenção comprimida em cinco letras e um ponto e vírgula que a maioria omite."
+      },
+      "eol": {
+        "def": "End of life (fim de vida): a data após a qual um produto não recebe mais correções, patches nem simpatia do fabricante.",
+        "context": "Os fabricantes publicam ocasos em etapas, fim de venda, fim de manutenção de software, fim de suporte e o EOL final, depois do qual rodar o produto significa rodar vulnerabilidades conhecidas e incorrigíveis. Auditores tratam software em EOL como apontamento permanente, atacantes o tratam como convite permanente, e metade dos piores incidentes da indústria remonta a frotas além de suas datas. Acompanhar as datas é trabalho sem glamour e decisivo, exatamente o tipo de coisa que uma ferramenta deveria fazer por você."
+      },
+      "air-gap": {
+        "def": "Isolar um sistema não lhe dando conexão de rede alguma: o controle de segurança feito de ausência literal.",
+        "context": "Redes air-gapped protegem sistemas industriais, sigilosos e de backup garantindo que nenhum cabo ou rádio os alcance; dados só cruzam por mídia escoltada. O Stuxnet é a prova canônica dos limites, entrando em controladores isolados de centrífugas em pendrives, e pesquisadores seguem demonstrando exfiltrações exóticas por som, calor e LEDs piscando. O gap eleva enormemente o custo do atacante sem reduzir a necessidade de disciplina do defensor: no momento em que a conveniência ganha uma exceção, o gap vira uma história que você conta aos auditores."
+      },
+      "broadcast-storm": {
+        "def": "O colapso em que quadros de broadcast se multiplicam por um loop de comutação até a rede se afogar no próprio tráfego.",
+        "context": "Quadros Ethernet não carregam time-to-live, então um cabo redundante entre switches deixa cada broadcast circular para sempre enquanto é reinundado por todas as portas, saturando enlaces e CPUs em segundos. O Spanning Tree Protocol existe para romper esses loops, e o storm control para limitar o estrago; o incidente clássico continua sendo alguém plugando prestativamente as duas tomadas de rede 'por redundância'. É o lembrete da camada 2 de que redundância sem plano de controle é só um loop."
+      },
+      "two-generals-problem": {
+        "def": "A prova de que duas partes num canal não confiável jamais podem ter certeza de que concordaram em agir juntas.",
+        "context": "Dois generais precisam atacar simultaneamente e só se comunicam por mensageiros que podem ser capturados; seja qual for a confirmação enviada por último, quem a enviou não pode saber se chegou, então nenhum protocolo finito alcança acordo com certeza, resultado formalizado nos anos 1970. É a impossibilidade de alicerce sob as transações distribuídas, a entrega exactly-once e todo loop de retry com chaves de idempotência. Seu irmão mais difícil, os generais bizantinos, acrescenta traidores; sistemas reais se contentam com o provavelmente-acordado, que é o que timeouts e confirmações de fato compram."
       }
     },
     "totalCount": "{count} termos",
@@ -8201,5 +8586,14 @@
     "innovationsTitle": "Inovações-chave",
     "marketsTitle": "Principais mercados",
     "analystTitle": "Posição nos relatórios de analistas"
+  },
+  "industry": {
+    "metaTitle": "Indústria - histórias e linhagens de fabricantes",
+    "metaDescription": "Perfis de pesquisa aprofundada dos fabricantes de redes e segurança de uma carreira desde 1996, dos parceiros de treinamento ensinados ao lado deles e das linhagens corporativas que os conectam.",
+    "eyebrow": "Indústria",
+    "title": "A indústria, vista de dentro",
+    "lede": "Histórias de pesquisa aprofundada sobre os fabricantes de uma carreira desde 1996, os parceiros ensinados ao lado deles e as linhagens corporativas que os conectam. Escritas a partir de fontes primárias: registros na SEC, relatórios de investigação e a imprensa especializada de cada época.",
+    "careerTitle": "Os fabricantes da carreira",
+    "careerNote": "Relação direta de trabalho entre 1996 e 2020, em ordem cronológica do primeiro contato."
   }
 }
