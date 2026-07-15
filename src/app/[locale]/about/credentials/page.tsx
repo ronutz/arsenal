@@ -19,12 +19,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import EvidenceLinks, { type EvidenceCopy } from "@/components/EvidenceLinks";
+import EvidenceLinks, { EvidenceCodes, type EvidenceCopy } from "@/components/EvidenceLinks";
 import {
   instructorAuthorizations,
-  currentCertifications,
   recognition,
-  historical,
+  getFullRecord,
   CREDLY_PROFILE,
 } from "@/content/certifications/data";
 
@@ -47,6 +46,9 @@ export default async function CredentialsPage({
     code: t("verifyCode"),
     candidate: t("candidateId"),
   };
+
+  // The merged full record: current + past certs + training, grouped by vendor.
+  const fullRecord = getFullRecord();
 
   return (
     <>
@@ -109,56 +111,6 @@ export default async function CredentialsPage({
             </div>
           </section>
 
-          {/* CURRENT: certifications, grouped by vendor with jump buttons. */}
-          <section className="section">
-            <div className="container certs-container">
-              <div className="certs-group-head">
-                <h2 className="certs-group-title">{t("currentCertsTitle")}</h2>
-                <span className="certs-badge certs-badge--current">{t("current")}</span>
-              </div>
-
-              {/* Vendor jump buttons: one per vendor present, in a fixed order.
-                  Each scrolls to that vendor's sub-section below. */}
-              {(() => {
-                const order = ["F5", "Fortinet", "Extreme Networks", "Ping Identity", "Netskope"];
-                const present = order.filter((v) =>
-                  currentCertifications.some((c) => c.issuer === v),
-                );
-                const anchor = (v: string) =>
-                  `cert-${v.toLowerCase().replace(/\s+/g, "-")}`;
-                return (
-                  <>
-                    <nav className="certs-vendor-jumps" aria-label={t("currentCertsTitle")}>
-                      {present.map((v) => (
-                        <a key={v} href={`#${anchor(v)}`} className="certs-vendor-jump">
-                          {v}
-                        </a>
-                      ))}
-                    </nav>
-                    {present.map((v) => (
-                      <div className="certs-vendor-block" key={v} id={anchor(v)}>
-                        <h3 className="certs-vendor-heading">{v}</h3>
-                        <ul className="certs-current-grid">
-                          {currentCertifications
-                            .filter((c) => c.issuer === v)
-                            .map((c) => (
-                              <li className="certs-current-card" key={c.name}>
-                                <span className="certs-current-issuer mono">{c.issuer}</span>
-                                <span className="certs-current-name">{c.name}</span>
-                                {c.detail && <span className="certs-current-detail">{c.detail}</span>}
-                                {c.period && <span className="certs-current-period mono">{c.period}</span>}
-                                <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </>
-                );
-              })()}
-            </div>
-          </section>
-
           {/* RECOGNITION */}
           <section className="section certs-recognition-section">
             <div className="container certs-container">
@@ -181,48 +133,108 @@ export default async function CredentialsPage({
             <div className="container certs-container">
               <div className="certs-group-head">
                 <h2 className="certs-group-title">{t("historicalTitle")}</h2>
+                <span className="certs-badge certs-badge--current">{t("current")}</span>
                 <span className="certs-badge certs-badge--past">{t("historical")}</span>
               </div>
               <p className="certs-group-intro">{t("historicalIntro")}</p>
 
-              <div className="certs-historical-groups">
-                {historical.map((g) => {
-                  // Items with no era render first; era-tagged items follow,
-                  // grouped under an era sub-heading (Fortinet uses this to
-                  // separate the legacy-NSE and FCP/FCSS eras).
-                  const noEra = g.items.filter((c) => !c.era);
-                  const eras = [
-                    ...new Set(g.items.filter((c) => c.era).map((c) => c.era!)),
-                  ];
-                  const renderItem = (c: (typeof g.items)[number]) => (
-                    <li className="certs-hist-item" key={c.name}>
-                      <span className="certs-hist-main">
-                        <span className="certs-hist-name">{c.name}</span>
-                        {c.detail && <span className="certs-hist-detail">{c.detail}</span>}
-                        <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
-                      </span>
-                      {c.period && <span className="certs-hist-period mono">{c.period}</span>}
-                    </li>
-                  );
-                  return (
-                    <div className="certs-vendor-group" key={g.vendor}>
-                      <h3 className="certs-vendor-name">{g.vendor}</h3>
-                      {g.note && <p className="certs-vendor-note">{g.note}</p>}
-                      {noEra.length > 0 && (
-                        <ul className="certs-vendor-list">{noEra.map(renderItem)}</ul>
+              {/* Vendor jump buttons over the merged record. */}
+              {(() => {
+                const anchor = (v: string) =>
+                  `cert-${v.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
+                const record = fullRecord;
+
+                // One item row. `current` drives the amber date treatment.
+                const renderItem = (c: (typeof record)[number]["pastCerts"][number]) => (
+                  <li
+                    className="certs-hist-item"
+                    data-current={c.current ? "true" : undefined}
+                    key={c.name}
+                  >
+                    <span className="certs-hist-main">
+                      <span className="certs-hist-name">{c.name}</span>
+                      {(c.detail || c.evidence?.verifyId || c.evidence?.candidateId) && (
+                        <span className="certs-hist-sub">
+                          {c.detail && <span className="certs-hist-detail">{c.detail}</span>}
+                          <EvidenceCodes evidence={c.evidence} copy={evidenceCopy} />
+                        </span>
                       )}
-                      {eras.map((era) => (
-                        <div className="certs-era" key={era}>
-                          <h4 className="certs-era-heading">{era}</h4>
-                          <ul className="certs-vendor-list">
-                            {g.items.filter((c) => c.era === era).map(renderItem)}
-                          </ul>
+                    </span>
+                    <span className="certs-hist-side">
+                      {c.period && (
+                        <span className="certs-hist-period mono">{c.period}</span>
+                      )}
+                      <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
+                    </span>
+                  </li>
+                );
+
+                return (
+                  <>
+                    <nav className="certs-vendor-jumps" aria-label={t("historicalTitle")}>
+                      {record.map((g) => (
+                        <a key={g.vendor} href={`#${anchor(g.vendor)}`} className="certs-vendor-jump">
+                          {g.vendor}
+                        </a>
+                      ))}
+                    </nav>
+
+                    <div className="certs-historical-groups">
+                      {record.map((g) => (
+                        <div
+                          className="certs-vendor-group"
+                          key={g.vendor}
+                          id={anchor(g.vendor)}
+                        >
+                          <h3 className="certs-vendor-name">{g.vendor}</h3>
+
+                          {/* Currently-valid certifications (amber dates). */}
+                          {g.currentCerts.length > 0 && (
+                            <ul className="certs-vendor-list">
+                              {g.currentCerts.map(renderItem)}
+                            </ul>
+                          )}
+
+                          {/* Past certifications with no era. */}
+                          {g.pastCerts.length > 0 && (
+                            <ul className="certs-vendor-list">
+                              {g.pastCerts.map(renderItem)}
+                            </ul>
+                          )}
+
+                          {/* Past certifications grouped by era (Fortinet). */}
+                          {g.eraCerts.map((e) => (
+                            <div className="certs-era" key={e.era}>
+                              <h4 className="certs-era-heading">{e.era}</h4>
+                              <ul className="certs-vendor-list">
+                                {e.items.map(renderItem)}
+                              </ul>
+                            </div>
+                          ))}
+
+                          {/* Training-course completions, in their own sub-section. */}
+                          {g.training.length > 0 && (
+                            <div className="certs-training">
+                              <h4 className="certs-training-heading">{t("trainingLabel")}</h4>
+                              <ul className="certs-vendor-list">
+                                {g.training.map(renderItem)}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
-                  );
-                })}
-              </div>
+                  </>
+                );
+              })()}
+
+              {/* Fortinet certification-program transition note, placed at the
+                  foot of the record (moved here from the Fortinet group so it
+                  reads as a closing footnote rather than a top-of-list banner). */}
+              <aside className="certs-footnote">
+                <h3 className="certs-footnote-title">{t("fortinetTransitionLabel")}</h3>
+                <p className="certs-footnote-text">{t("fortinetTransitionNote")}</p>
+              </aside>
             </div>
           </section>
         </article>

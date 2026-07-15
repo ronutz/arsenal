@@ -5427,7 +5427,10 @@
     "verifyCode": "Code",
     "candidateId": "ID",
     "backToAbout": "Back to About",
-    "studyGuidesPointer": "Studying for an F5 exam? See our certification study guides"
+    "studyGuidesPointer": "Studying for an F5 exam? See our certification study guides",
+    "fortinetTransitionNote": "Effective 15 July 2026, Fortinet retires the FCF / FCA / FCP / FCSS / FCX names and restores an eight-level NSE 1–8 progression across four tracks (Secure Networking, Security Operations, Cloud Security, SASE). On that date these map forward: FCF becomes NSE 1 and NSE 2, FCA becomes NSE 3, and the FortiGate / FortiOS exam behind FCP becomes NSE 4, with further NSE 5–7 levels assigned from the exam history above. The named certifications remain on record.",
+    "fortinetTransitionLabel": "A note on the Fortinet certification program",
+    "trainingLabel": "Training"
   },
   "colophon_page": {
     "eyebrow": "Colophon",

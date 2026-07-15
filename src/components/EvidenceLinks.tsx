@@ -58,7 +58,7 @@ function IconLink() {
 export default function EvidenceLinks({ evidence, copy }: EvidenceLinksProps) {
   // Nothing to show -> render nothing.
   if (!evidence) return null;
-  const { pdf, credly, verifyUrl, verifyId, candidateId, links } = evidence;
+  const { pdf, credly, verifyUrl, links } = evidence;
   if (!pdf && !credly && !verifyUrl && !links?.length) return null;
 
   return (
@@ -85,22 +85,31 @@ export default function EvidenceLinks({ evidence, copy }: EvidenceLinksProps) {
           </a>
         ))}
       </div>
-
-      {/* Codes needed to verify on the portal, shown plainly. */}
-      {(verifyId || candidateId) && (
-        <div className="evidence-codes mono">
-          {candidateId && (
-            <span className="evidence-code">
-              {copy.candidate}: {candidateId}
-            </span>
-          )}
-          {verifyId && (
-            <span className="evidence-code">
-              {copy.code}: {verifyId}
-            </span>
-          )}
-        </div>
-      )}
     </div>
+  );
+}
+
+/**
+ * The portal verification codes (candidate ID / verification code), rendered as
+ * compact inline text so they can sit on the same line as an item's subtitle
+ * rather than taking their own stacked rows. Used by the full-record list.
+ */
+export function EvidenceCodes({ evidence, copy }: EvidenceLinksProps) {
+  if (!evidence) return null;
+  const { verifyId, candidateId } = evidence;
+  if (!verifyId && !candidateId) return null;
+  return (
+    <span className="evidence-codes-inline mono">
+      {candidateId && (
+        <span className="evidence-code">
+          {copy.candidate}: {candidateId}
+        </span>
+      )}
+      {verifyId && (
+        <span className="evidence-code">
+          {copy.code}: {verifyId}
+        </span>
+      )}
+    </span>
   );
 }

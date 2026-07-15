@@ -47,6 +47,9 @@ export interface Credential {
    *  a sub-heading separating eras (used for Fortinet: legacy NSE / FCP & FCSS /
    *  current program). Items without an era render before any era-tagged ones. */
   era?: string;
+  /** True -> this is a training-course completion, not a certification. Rendered
+   *  under a per-vendor "Training" sub-section, kept distinct from real certs. */
+  training?: boolean;
 }
 
 export interface HistoricalGroup {
@@ -109,10 +112,10 @@ export const currentCertifications: Credential[] = [
 
   // Netskope Academy course completions (dated, verifiable certificates —
   // listed as completions, distinct from the accreditations above).
-  { name: "Netskope Security Cloud Implementation and Integration, Hands-On Lab", issuer: "Netskope", detail: "Instructor-led course", period: "2024 – 2026", note: "Course completion, score 100%.", evidence: { pdf: P("netskope-ii-hands-on-lab"), verifyUrl: NS("edvct8dpkicr"), verifyId: "edvct8dpkicr" } },
-  { name: "Netskope Security Cloud Operation and Administration", issuer: "Netskope", detail: "Self-paced course", period: "2026 – 2028", note: "Course completion.", evidence: { pdf: P("netskope-oa-self-paced"), verifyUrl: NS("ujpn8j8idpwx"), verifyId: "ujpn8j8idpwx" } },
-  { name: "Netskope Security Cloud Implementation and Integration", issuer: "Netskope", detail: "Self-paced course", period: "2026 – 2028", note: "Course completion.", evidence: { pdf: P("netskope-ii-self-paced"), verifyUrl: NS("st6i8pzryrcf"), verifyId: "st6i8pzryrcf" } },
-  { name: "Netskope Security Cloud Activation and Adoption", issuer: "Netskope", detail: "Self-paced course", period: "2026 – 2028", note: "Course completion.", evidence: { pdf: P("netskope-activation-adoption"), verifyUrl: NS("r5rtv2yz7t5g"), verifyId: "r5rtv2yz7t5g" } },
+  { name: "Netskope Security Cloud Implementation and Integration, Hands-On Lab", issuer: "Netskope", training: true, detail: "Instructor-led course", period: "2024 – 2026", note: "Course completion, score 100%.", evidence: { pdf: P("netskope-ii-hands-on-lab"), verifyUrl: NS("edvct8dpkicr"), verifyId: "edvct8dpkicr" } },
+  { name: "Netskope Security Cloud Operation and Administration", issuer: "Netskope", training: true, detail: "Self-paced course", period: "2026 – 2028", note: "Course completion.", evidence: { pdf: P("netskope-oa-self-paced"), verifyUrl: NS("ujpn8j8idpwx"), verifyId: "ujpn8j8idpwx" } },
+  { name: "Netskope Security Cloud Implementation and Integration", issuer: "Netskope", training: true, detail: "Self-paced course", period: "2026 – 2028", note: "Course completion.", evidence: { pdf: P("netskope-ii-self-paced"), verifyUrl: NS("st6i8pzryrcf"), verifyId: "st6i8pzryrcf" } },
+  { name: "Netskope Security Cloud Activation and Adoption", issuer: "Netskope", training: true, detail: "Self-paced course", period: "2026 – 2028", note: "Course completion.", evidence: { pdf: P("netskope-activation-adoption"), verifyUrl: NS("r5rtv2yz7t5g"), verifyId: "r5rtv2yz7t5g" } },
 ];
 
 // ----------------------------------------------------------------------------
@@ -168,7 +171,6 @@ export const historical: HistoricalGroup[] = [
   },
   {
     vendor: "Fortinet",
-    note: "Effective 15 July 2026, Fortinet retires the FCF / FCA / FCP / FCSS / FCX names and restores an eight-level NSE 1–8 progression across four tracks (Secure Networking, Security Operations, Cloud Security, SASE). On that date these map forward: FCF becomes NSE 1 and NSE 2, FCA becomes NSE 3, and the FortiGate / FortiOS exam behind FCP becomes NSE 4, with further NSE 5–7 levels assigned from the exam history below. The named certifications remain on record.",
     items: [
       { name: "Fortinet Certified Professional, Security Operations", issuer: "Fortinet", detail: "FCP-SO", period: "2024 – 2026", note: "Expired 2026.", era: "FCP & FCSS era (2023 - 2025)", evidence: { pdf: P("fortinet-fcp-so"), credly: C("85a6e67d-6fe7-4c5c-9cc4-3dad553f64d1"), verifyId: "8949460026RN" } },
       { name: "Fortinet FortiGate 7.4 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("cc71bb44-1e3e-4f1a-bebe-301262152b19") } },
@@ -183,26 +185,26 @@ export const historical: HistoricalGroup[] = [
       { name: "Fortinet NSE 3", issuer: "Fortinet", period: "2022", era: "Legacy NSE program (2022)", evidence: { pdf: P("fortinet-nse3"), verifyId: "ndyZwxAQoE" } },
       { name: "Fortinet NSE 2", issuer: "Fortinet", period: "2022", era: "Legacy NSE program (2022)", evidence: { pdf: P("fortinet-nse2"), verifyId: "6vEbZm87aX" } },
       { name: "Fortinet NSE 1", issuer: "Fortinet", period: "2022", era: "Legacy NSE program (2022)", evidence: { pdf: P("fortinet-nse1"), verifyId: "jIIP5ksrdc" } },
-      { name: "Getting Started in Cybersecurity 1.0", issuer: "Fortinet", period: "2022", era: "Legacy NSE program (2022)", evidence: { credly: C("13d844c1-9371-403b-a45f-806194c6f026") } },
-      { name: "Introduction to the Threat Landscape 1.0", issuer: "Fortinet", period: "2022", era: "Legacy NSE program (2022)", evidence: { credly: C("5662c537-2b16-4fbc-8886-1856f4e7acf7") } },
+      { name: "Getting Started in Cybersecurity 1.0", issuer: "Fortinet", training: true, period: "2022", era: "Legacy NSE program (2022)", evidence: { credly: C("13d844c1-9371-403b-a45f-806194c6f026") } },
+      { name: "Introduction to the Threat Landscape 1.0", issuer: "Fortinet", training: true, period: "2022", era: "Legacy NSE program (2022)", evidence: { credly: C("5662c537-2b16-4fbc-8886-1856f4e7acf7") } },
     ],
   },
   {
     vendor: "Extreme Networks",
     items: [
-      { name: "ExtremeCloud IQ – API and Automation", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("d6dd82b8-b2d5-4638-8c68-7e1d7b6cc61a") } },
-      { name: "Cisco to Extreme Networks Conversion: Switching", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("0e60562a-f336-4bd8-8111-58542eb192c6") } },
-      { name: "ExtremeCloud Edge, Installation and Configuration", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("50fc3a23-93c2-430e-81f6-d6b67e0bd9ca") } },
-      { name: "ExtremeCloud SD-WAN, Troubleshooting", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("519aaed8-c256-4370-bcef-c21cee9f31b5") } },
-      { name: "ExtremeCloud SD-WAN, Advanced Configuration", issuer: "Extreme Networks", period: "2024" },
-      { name: "ExtremeCloud SD-WAN, Management", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("db018b83-74ec-4a9a-bf0d-a6057aec6f55") } },
-      { name: "ExtremeCloud SD-WAN, Installation and Configuration", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("2219bac3-a5b9-4a25-8486-971741b2c7d6") } },
+      { name: "ExtremeCloud IQ – API and Automation", issuer: "Extreme Networks", training: true, period: "2024", evidence: { credly: C("d6dd82b8-b2d5-4638-8c68-7e1d7b6cc61a") } },
+      { name: "Cisco to Extreme Networks Conversion: Switching", issuer: "Extreme Networks", training: true, period: "2024", evidence: { credly: C("0e60562a-f336-4bd8-8111-58542eb192c6") } },
+      { name: "ExtremeCloud Edge, Installation and Configuration", issuer: "Extreme Networks", training: true, period: "2024", evidence: { credly: C("50fc3a23-93c2-430e-81f6-d6b67e0bd9ca") } },
+      { name: "ExtremeCloud SD-WAN, Troubleshooting", issuer: "Extreme Networks", training: true, period: "2024", evidence: { credly: C("519aaed8-c256-4370-bcef-c21cee9f31b5") } },
+      { name: "ExtremeCloud SD-WAN, Advanced Configuration", issuer: "Extreme Networks", training: true, period: "2024" },
+      { name: "ExtremeCloud SD-WAN, Management", issuer: "Extreme Networks", training: true, period: "2024", evidence: { credly: C("db018b83-74ec-4a9a-bf0d-a6057aec6f55") } },
+      { name: "ExtremeCloud SD-WAN, Installation and Configuration", issuer: "Extreme Networks", training: true, period: "2024", evidence: { credly: C("2219bac3-a5b9-4a25-8486-971741b2c7d6") } },
       { name: "Extreme Certified Associate, ExtremeCloud SD-WAN", issuer: "Extreme Networks", period: "2024" },
       { name: "Extreme Certified Associate, Solutions Design", issuer: "Extreme Networks", period: "2023" },
       { name: "Extreme Certified Associate, Solutions Selling", issuer: "Extreme Networks", period: "2023" },
       { name: "Extreme Certified Associate, Network Security Basics", issuer: "Extreme Networks", period: "2024" },
-      { name: "ExtremeCloud IQ, Site Engine Installation and Configuration", issuer: "Extreme Networks", period: "2022" },
-      { name: "ExtremeWireless Cloud, Installation and Configuration", issuer: "Extreme Networks", period: "2022" },
+      { name: "ExtremeCloud IQ, Site Engine Installation and Configuration", issuer: "Extreme Networks", training: true, period: "2022" },
+      { name: "ExtremeWireless Cloud, Installation and Configuration", issuer: "Extreme Networks", training: true, period: "2022" },
       { name: "Extreme Certified Specialist, Wireless Cloud", issuer: "Extreme Networks", period: "2021 – 2022" },
       { name: "Extreme Certified Specialist, Campus EXOS Switching & Routing", issuer: "Extreme Networks", period: "2021 – 2022" },
       { name: "Extreme Certified Specialist, Management Center", issuer: "Extreme Networks", period: "2021 – 2022" },
@@ -217,9 +219,9 @@ export const historical: HistoricalGroup[] = [
       { name: "Palo Alto Networks Systems Engineer, Foundation (PSE)", issuer: "Palo Alto Networks", period: "2020", note: "Expired 2022.", evidence: { credly: C("2ef2fdd0-2704-4f25-b661-f116126e1dad") } },
       // Official Palo Alto Networks EDU courses completed through, and badged
       // by, Red Education (Credly issuer: Red Education).
-      { name: "Firewall Essentials: Configuration and Management", issuer: "Red Education", detail: "Palo Alto Networks EDU-210", period: "2021", evidence: { credly: C("e36bdcf5-9c27-4a15-ae9a-7e9eed0cd621") } },
-      { name: "Panorama: Managing Firewalls at Scale", issuer: "Red Education", detail: "Palo Alto Networks EDU-220", period: "2021", evidence: { credly: C("1ec70a7d-d604-4eca-83fd-36508584d10c") } },
-      { name: "Firewall: Troubleshooting", issuer: "Red Education", detail: "Palo Alto Networks EDU-330", period: "2021", evidence: { credly: C("da12dbc8-0df3-46b9-a984-a1134515061f") } },
+      { name: "Firewall Essentials: Configuration and Management", issuer: "Red Education", training: true, detail: "Palo Alto Networks EDU-210", period: "2021", evidence: { credly: C("e36bdcf5-9c27-4a15-ae9a-7e9eed0cd621") } },
+      { name: "Panorama: Managing Firewalls at Scale", issuer: "Red Education", training: true, detail: "Palo Alto Networks EDU-220", period: "2021", evidence: { credly: C("1ec70a7d-d604-4eca-83fd-36508584d10c") } },
+      { name: "Firewall: Troubleshooting", issuer: "Red Education", training: true, detail: "Palo Alto Networks EDU-330", period: "2021", evidence: { credly: C("da12dbc8-0df3-46b9-a984-a1134515061f") } },
       { name: "Palo Alto Accredited Configuration Engineer (ACE) 6.0", issuer: "Palo Alto Networks", period: "2018", evidence: { pdf: P("palo-alto-ace6") } },
       // CNSE: read from the certificate itself (2026-07-14) - "Certified
       // Network Security Engineer", CNSE Number 5.1-1505, May 12, 2014.
@@ -317,3 +319,73 @@ export const CREDENTIAL_COUNT =
   instructorAuthorizations.length +
   currentCertifications.length +
   historical.reduce((n, g) => n + g.items.length, 0);
+
+// ============================================================================
+// FULL-RECORD MERGE (2026-07-14)
+// The "full record" section now unifies currently-valid certifications with the
+// historical ones, per vendor, so the record is genuinely complete. Each item
+// is tagged with its status (current vs. past) and its class (cert vs.
+// training) so the page can render, within each vendor:
+//   1. current certifications (dates in amber),
+//   2. past certifications (dates muted),
+//   3. a "Training" sub-section (course completions),
+// while preserving the Fortinet era sub-separators on the historical certs.
+// ============================================================================
+
+/** One row in the merged full record. */
+export interface FullRecordItem extends Credential {
+  /** True when the credential is currently valid (came from currentCertifications). */
+  current: boolean;
+}
+
+/** A vendor's merged block: current + past certs + training, in canonical order. */
+export interface FullRecordGroup {
+  vendor: string;
+  /** Currently-valid certifications (not training). */
+  currentCerts: FullRecordItem[];
+  /** Past certifications with no era tag (not training). */
+  pastCerts: FullRecordItem[];
+  /** Past certifications grouped by era label (Fortinet). */
+  eraCerts: { era: string; items: FullRecordItem[] }[];
+  /** Training-course completions (current or past), shown in their own block. */
+  training: FullRecordItem[];
+}
+
+/**
+ * Merge currentCertifications + historical into per-vendor full-record groups.
+ * Vendor order: the historical order first (career chronology), with any vendor
+ * that only appears in currentCertifications appended after, in first-seen order.
+ */
+export function getFullRecord(): FullRecordGroup[] {
+  const order: string[] = [];
+  const seen = new Set<string>();
+  // historical order leads (oldest-career vendors are meaningful), then current-only.
+  for (const g of historical) if (!seen.has(g.vendor)) { seen.add(g.vendor); order.push(g.vendor); }
+  for (const c of currentCertifications) if (!seen.has(c.issuer)) { seen.add(c.issuer); order.push(c.issuer); }
+
+  return order.map((vendor) => {
+    const cur: FullRecordItem[] = currentCertifications
+      .filter((c) => c.issuer === vendor)
+      .map((c) => ({ ...c, current: true }));
+    const past: FullRecordItem[] = (historical.find((g) => g.vendor === vendor)?.items ?? [])
+      .map((c) => ({ ...c, current: false }));
+    const all = [...cur, ...past];
+
+    const training = all.filter((c) => c.training);
+    const certs = all.filter((c) => !c.training);
+
+    const currentCerts = certs.filter((c) => c.current);
+    const pastCertsAll = certs.filter((c) => !c.current);
+    const pastCerts = pastCertsAll.filter((c) => !c.era);
+    const eraOrder = [...new Set(pastCertsAll.filter((c) => c.era).map((c) => c.era!))];
+    const eraCerts = eraOrder.map((era) => ({
+      era,
+      items: pastCertsAll.filter((c) => c.era === era),
+    }));
+
+    return { vendor, currentCerts, pastCerts, eraCerts, training };
+  }).filter((g) =>
+    g.currentCerts.length + g.pastCerts.length + g.training.length +
+    g.eraCerts.reduce((n, e) => n + e.items.length, 0) > 0,
+  );
+}
