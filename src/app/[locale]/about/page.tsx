@@ -230,6 +230,9 @@ export default async function AboutPage({
               <Link href="/about/vendors" className="btn btn-secondary">
                 {t("path.vendorsLink")}
               </Link>
+              <Link href="/about/vendor-lineages" className="btn btn-secondary">
+                {t("path.lineagesLink")}
+              </Link>
             </div>
           </div>
         </section>

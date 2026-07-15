@@ -5082,7 +5082,8 @@
       "f5channel": "Engenharia de vendas e pré-vendas voltada ao canal para a F5, com capacitação técnica, execução de provas de conceito e treinamento de parceiros ao longo da distribuição.",
       "rededucation": "Instrutor de treinamento autorizado que ministra cursos oficiais e certificados sobre F5, Fortinet, Extreme Networks e Netskope para organizações no mundo todo.",
       "fullHistory": "Ler a história completa",
-      "vendorsLink": "Fabricantes com quem trabalhei"
+      "vendorsLink": "Fabricantes com quem trabalhei",
+      "lineagesLink": "Linhagens e aquisições de fornecedores"
     },
     "origins": {
       "title": "Onde tudo começou",
@@ -8164,5 +8165,41 @@
     "label": "Compartilhar",
     "copyUrl": "Copiar URL",
     "copied": "Copiado"
+  },
+  "lineages": {
+    "back": "Voltar para Sobre",
+    "title": "Linhagens de fornecedores",
+    "lede": "O setor de redes corporativas e segurança se consolidou sem trégua. Estas são as genealogias corporativas por trás dos fornecedores - quem adquiriu quem, e no que cada compra se transformou. Cada valor é conferido em documentos primários.",
+    "intro": "Comece pela F5, cuja plataforma foi montada em grande parte por aquisições. Mais fornecedores a seguir.",
+    "founded": "Fundada",
+    "acquisitions": "Aquisições",
+    "became": "Tornou-se: ",
+    "sources": "Fontes",
+    "asOf": "divulgadas, em",
+    "nameChanges": "Mudanças de nome corporativo",
+    "f5CardTitle": "F5, Inc.",
+    "f5CardDesc": "De um único balanceador (1996) a uma plataforma de entrega e segurança de aplicações, via mais de 23 aquisições.",
+    "moreSoon": "Mais linhagens de fornecedores estão sendo pesquisadas e adicionadas - cada uma verificada em fontes primárias antes de publicar."
+  },
+  "partnerVendors": {
+    "reduEyebrow": "Parceiro de treinamento da Red Education",
+    "otherEyebrow": "Linhagem do fornecedor",
+    "disclaimerTag": "Observação",
+    "disclaimerText": "Rodolfo não ministra treinamento de {vendor}. Sua instrução autorizada abrange F5, Fortinet, Netskope e Extreme Networks. {vendor} é ministrado pela equipe de instrutores da Red Education - entre as mais premiadas do setor, com reconhecimentos concedidos por diversos fornecedores.",
+    "awardsTitle": "Reconhecimentos da Red Education",
+    "sourcesLabel": "Fontes",
+    "reduSectionTitle": "Parceiros de treinamento da Red Education",
+    "reduSectionNote": "Fornecedores para os quais a Red Education é autorizada a ministrar treinamento. Estes não fazem parte da instrução autorizada do Rodolfo - a dele abrange F5, Fortinet, Netskope e Extreme Networks.",
+    "reduCardTag": "Trilha de parceiro",
+    "otherSectionTitle": "Outros fornecedores - linhagens dos pioneiros",
+    "otherSectionNote": "Genealogias corporativas das empresas que moldaram redes, telecom e cibersegurança - quem as fundou, o que construíram e onde sua PI e suas pessoas vivem hoje. Páginas de história apenas: nenhuma associação de treinamento é implicada.",
+    "otherCardTag": "Linhagem",
+    "foundingTitle": "Histórias de fundação",
+    "foundersLabel": "Fundadores",
+    "timelineTitle": "A linha do tempo",
+    "productsTitle": "Produtos e soluções emblemáticos",
+    "innovationsTitle": "Inovações-chave",
+    "marketsTitle": "Principais mercados",
+    "analystTitle": "Posição nos relatórios de analistas"
   }
 }

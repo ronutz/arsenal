@@ -6,6 +6,7 @@
 // ============================================================================
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";
+import { ironportProfile } from "@/content/vendors/profiles/ironport";
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -15,6 +16,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       vendorKey="ironport"
       sections={["s1", "s2"]}
       icons={["gateway", "firewall"]}
+      profile={ironportProfile}
       next={{ slug: "netscreen-juniper", key: "juniper" }}
     />
   );

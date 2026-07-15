@@ -7,6 +7,7 @@
 // ============================================================================
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";
+import { extremeProfile } from "@/content/vendors/profiles/extreme";
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -16,6 +17,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       vendorKey="extreme"
       sections={["s1", "s2"]}
       icons={["switch", "router", "metro"]}
+      profile={extremeProfile}
       next={{ slug: "fireeye-mcafee-ixia", key: "distribution" }}
     />
   );

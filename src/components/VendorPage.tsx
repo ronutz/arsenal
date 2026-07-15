@@ -16,6 +16,8 @@
 // ============================================================================
 
 import { getTranslations } from "next-intl/server";
+import VendorProfileSections from "@/components/VendorProfileSections";
+import type { VendorProfile } from "@/content/vendors/profile-types";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -35,6 +37,8 @@ export interface VendorPageProps {
   icons?: TechIconName[];
   /** Optional corporate-genealogy diagram config + heading keys. */
   lineage?: { stages: LineageStage[]; titleKey: string; descKey: string };
+  /** Optional rich corporate-history profile, rendered beneath the career narrative. */
+  profile?: VendorProfile;
 }
 
 export default async function VendorPage({
@@ -44,8 +48,10 @@ export default async function VendorPage({
   next,
   icons,
   lineage,
+  profile,
 }: VendorPageProps) {
   const t = await getTranslations("vendors");
+  const tp = await getTranslations("partnerVendors");
   const tNav = await getTranslations("nav");
 
   return (
@@ -141,6 +147,28 @@ export default async function VendorPage({
           </section>
 
           {/* Next vendor */}
+          {/* Rich corporate-history profile (round 6 refactor): the verified
+              record - foundings, acquisitions, timeline - beneath the career
+              narrative, reusing the partner-page sections and labels. */}
+          {profile && (
+            <section className="section">
+              <div className="container vendor-container">
+                <VendorProfileSections
+                  profile={profile}
+                  labels={{
+                    founding: tp("foundingTitle"),
+                    founders: tp("foundersLabel"),
+                    timeline: tp("timelineTitle"),
+                    products: tp("productsTitle"),
+                    innovations: tp("innovationsTitle"),
+                    markets: tp("marketsTitle"),
+                    analyst: tp("analystTitle"),
+                  }}
+                />
+              </div>
+            </section>
+          )}
+
           {next && (
             <section className="section">
               <div className="container vendor-container">

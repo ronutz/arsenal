@@ -6,6 +6,7 @@
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";
 import type { LineageStage } from "@/components/LineageDiagram";
+import { netscreenJuniperProfile } from "@/content/vendors/profiles/netscreen-juniper";
 
 const lineageStages: LineageStage[] = [
   {
@@ -30,6 +31,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       sections={["s1", "s2"]}
       icons={["firewall", "gateway", "switch", "router"]}
       lineage={{ stages: lineageStages, titleKey: "juniper.lineageTitle", descKey: "juniper.lineageDesc" }}
+      profile={netscreenJuniperProfile}
       next={{ slug: "extreme", key: "extreme" }}
     />
   );

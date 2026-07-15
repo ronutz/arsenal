@@ -13417,3 +13417,538 @@ main[data-view="list"] .boss-viewer-blurb {
   margin-top: 0.55rem;
   line-height: 1.4;
 }
+
+/* ============================================================================
+   VENDOR LINEAGES (/about/vendor-lineages) - corporate-genealogy timelines.
+   Design: an "audited ledger" - a year rail down the left, deal cards to the
+   right, JetBrains Mono for years/prices (the data), amber for "became" hooks
+   that tie an acquisition to a product line. Cyan is the structural accent.
+   ============================================================================ */
+.lineage-container {
+  max-width: 60rem;
+}
+.lineage-hero {
+  padding: 2.5rem 0 1rem;
+}
+.lineage-intro {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 0.75rem;
+  max-width: 44rem;
+}
+
+/* Vendor header */
+.lineage-vendor-head {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid color-mix(in srgb, var(--accent-primary) 30%, var(--border-subtle));
+}
+.lineage-vendor-name {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.01em;
+}
+.lineage-vendor-tagline {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 42rem;
+}
+
+/* Founding header block */
+.lineage-head {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 720px) {
+  .lineage-head { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+.lineage-founded {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.lineage-founded-year {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.lineage-founded-line {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 0.6rem;
+}
+.lineage-founded-line strong { color: var(--text-primary); font-weight: 600; }
+.lineage-origin {
+  font-size: 0.88rem;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Name evolution card */
+.lineage-names {
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.25rem;
+}
+.lineage-name-step { position: relative; }
+.lineage-name-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.lineage-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.lineage-name-from {
+  font-size: 0.8rem;
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+.lineage-name-note {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  line-height: 1.45;
+  margin: 0.25rem 0 0;
+}
+.lineage-name-arrow {
+  display: block;
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0.5rem 0.1rem;
+}
+
+/* Acquisition ledger header */
+.lineage-acq-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.lineage-acq-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+.lineage-acq-count {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+
+/* The timeline: a continuous rail with deal cards */
+.lineage-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.lineage-deal {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 1.1rem;
+}
+/* The vertical spine, drawn behind the dots. */
+.lineage-deal::before {
+  content: "";
+  position: absolute;
+  left: 4.5rem;
+  top: 0.2rem;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--accent-primary) 35%, transparent),
+    var(--border-subtle)
+  );
+  transform: translateX(-1px);
+}
+.lineage-deal:last-child { padding-bottom: 0; }
+.lineage-deal:last-child::before { bottom: auto; height: 1.4rem; }
+.lineage-deal-rail {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  position: relative;
+  padding-top: 0.05rem;
+}
+.lineage-deal-year {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.lineage-deal-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--canvas-primary);
+  border: 2px solid var(--accent-primary);
+  margin-top: 0.28rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.lineage-deal[data-first="true"] .lineage-deal-dot {
+  background: var(--accent-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-primary) 18%, transparent);
+}
+
+/* Deal card */
+.lineage-deal-card {
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.lineage-deal-card:hover {
+  border-color: color-mix(in srgb, var(--accent-primary) 40%, var(--border-subtle));
+}
+.lineage-deal-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.lineage-deal-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.lineage-deal-price {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+.lineage-deal-what {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0.35rem 0 0;
+}
+/* "Became" hook - amber, ties the purchase to a product taught today. */
+.lineage-deal-became {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0.5rem 0 0;
+  padding: 0.4rem 0.6rem;
+  background: color-mix(in srgb, var(--accent-amber) 9%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--accent-amber) 55%, transparent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.lineage-deal-became-label {
+  font-weight: 700;
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.35rem;
+}
+.lineage-deal-note {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  line-height: 1.45;
+  margin: 0.45rem 0 0;
+  font-style: italic;
+}
+
+/* Provenance footer */
+.lineage-sources {
+  margin-top: 2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+.lineage-sources-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+.lineage-sources-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.lineage-source-link {
+  font-size: 0.82rem;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.lineage-source-link:hover { text-decoration: underline; }
+
+.lineage-more {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 1rem 1.25rem;
+  background: var(--surface-base);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  max-width: 44rem;
+}
+
+/* ============================================================================
+   VENDORS INDEX - section dividers + partner/other-vendor pages (2026-07-14)
+   ============================================================================ */
+.vendor-divider {
+  margin: 3rem 0 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+}
+.vendor-divider-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  margin: 0 0 0.5rem;
+}
+.vendor-divider-note {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 46rem;
+}
+
+/* Linked vendor chip on the Red Education page. */
+.redu-vendor-chip--link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.redu-vendor-chip--link:hover,
+.redu-vendor-chip--link:focus-visible {
+  color: var(--canvas-primary);
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+/* Partner / other-vendor page: disclaimer, body, awards, sources */
+.partner-disclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  background: color-mix(in srgb, var(--accent-amber) 8%, var(--surface-base));
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 30%, var(--border-subtle));
+  border-left: 3px solid var(--accent-amber);
+  border-radius: var(--radius-md);
+  max-width: 52rem;
+}
+.partner-disclaimer-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-amber);
+}
+.partner-disclaimer-text {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.partner-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: 52rem;
+}
+.partner-body-p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.partner-awards-title {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-amber);
+  margin: 0 0 0.75rem;
+}
+.partner-awards-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 52rem;
+}
+.partner-award {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  padding-left: 1.1rem;
+  position: relative;
+}
+.partner-award::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent-amber);
+}
+.partner-sources {
+  padding-top: 0.5rem;
+}
+.partner-sources-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 0.5rem;
+}
+.partner-sources-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.partner-source-link {
+  font-size: 0.82rem;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.partner-source-link:hover { text-decoration: underline; }
+
+/* ============================================================================
+   RICH VENDOR PROFILES (VendorProfileSections) - founding stories, converged
+   timeline (reuses .lineage-*), products, innovations. The homage format.
+   ============================================================================ */
+.vprofile {
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+}
+.vprofile-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  margin: 0 0 1.1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid color-mix(in srgb, var(--accent-amber) 35%, var(--border-subtle));
+}
+
+/* Founding story cards - a 2-up grid of origin stories */
+.vprofile-foundings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+@media (max-width: 760px) {
+  .vprofile-foundings { grid-template-columns: 1fr; }
+}
+.vprofile-founding {
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.2rem;
+}
+.vprofile-founding-head {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
+}
+.vprofile-founding-year {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1.1;
+  flex-shrink: 0;
+}
+.vprofile-founding-company {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.15rem;
+}
+.vprofile-founding-meta {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.4;
+}
+.vprofile-founders-label {
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+.vprofile-founding-story {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Flagship products - name + what, ledger-like rows */
+.vprofile-products,
+.vprofile-innovs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.vprofile-product,
+.vprofile-innov {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--border-subtle) 60%, transparent);
+}
+.vprofile-product-name,
+.vprofile-innov-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.vprofile-product-what,
+.vprofile-innov-detail {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}

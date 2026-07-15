@@ -13,8 +13,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import { partnerVendors } from "@/content/vendors/partners";
 
-// The five vendor pages, in chronological order of first engagement.
+// The career vendor pages, in chronological order of first engagement.
 const VENDORS = [
   { slug: "cabletron-enterasys", key: "cabletron" },
   { slug: "riverstone", key: "riverstone" },
@@ -35,7 +36,11 @@ export default async function VendorsIndexPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("vendors");
+  const tp = await getTranslations("partnerVendors");
   const tNav = await getTranslations("nav");
+
+  const reduPartners = partnerVendors.filter((v) => v.group === "redu");
+  const otherVendors = partnerVendors.filter((v) => v.group === "other");
 
   return (
     <>
@@ -56,6 +61,7 @@ export default async function VendorsIndexPage({
               {t("indexLede")}
             </h1>
 
+            {/* Career vendors (worked with) */}
             <ul className="vendor-grid">
               {VENDORS.map((v) => (
                 <li key={v.slug}>
@@ -63,6 +69,40 @@ export default async function VendorsIndexPage({
                     <span className="vendor-card-years mono">{t(`${v.key}.years`)}</span>
                     <span className="vendor-card-name">{t(`${v.key}.name`)}</span>
                     <span className="vendor-card-tagline">{t(`${v.key}.tagline`)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Divider: Red Education training partners */}
+            <div className="vendor-divider">
+              <h2 className="vendor-divider-title">{tp("reduSectionTitle")}</h2>
+              <p className="vendor-divider-note">{tp("reduSectionNote")}</p>
+            </div>
+            <ul className="vendor-grid">
+              {reduPartners.map((v) => (
+                <li key={v.slug}>
+                  <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
+                    <span className="vendor-card-years mono">{tp("reduCardTag")}</span>
+                    <span className="vendor-card-name">{v.name}</span>
+                    <span className="vendor-card-tagline">{v.tagline}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Divider: Other vendors (corporate lineages, no training association) */}
+            <div className="vendor-divider">
+              <h2 className="vendor-divider-title">{tp("otherSectionTitle")}</h2>
+              <p className="vendor-divider-note">{tp("otherSectionNote")}</p>
+            </div>
+            <ul className="vendor-grid">
+              {otherVendors.map((v) => (
+                <li key={v.slug}>
+                  <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
+                    <span className="vendor-card-years mono">{tp("otherCardTag")}</span>
+                    <span className="vendor-card-name">{v.name}</span>
+                    <span className="vendor-card-tagline">{v.tagline}</span>
                   </Link>
                 </li>
               ))}

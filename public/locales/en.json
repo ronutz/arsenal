@@ -5082,7 +5082,8 @@
       "f5channel": "Channel-facing sales and pre-sales engineering for F5, providing technical enablement, proof-of-concept execution, and partner training across distribution.",
       "rededucation": "Authorized training instructor delivering official certified courses across F5, Fortinet, Extreme Networks, and Netskope to organizations worldwide.",
       "fullHistory": "Read the full history",
-      "vendorsLink": "Vendors I have worked with"
+      "vendorsLink": "Vendors I have worked with",
+      "lineagesLink": "Vendor lineages & acquisitions"
     },
     "origins": {
       "title": "Where it started",
@@ -8164,5 +8165,41 @@
     "label": "Share",
     "copyUrl": "Copy URL",
     "copied": "Copied"
+  },
+  "lineages": {
+    "back": "Back to About",
+    "title": "Vendor lineages",
+    "lede": "The enterprise-networking and security industry consolidated relentlessly. These are the corporate genealogies behind the vendors - who acquired whom, and what each purchase became. Every figure is cross-checked against primary filings.",
+    "intro": "Start with F5, whose platform was assembled largely by acquisition. More vendors follow.",
+    "founded": "Founded",
+    "acquisitions": "Acquisitions",
+    "became": "Became: ",
+    "sources": "Sources",
+    "asOf": "disclosed, as of",
+    "nameChanges": "Corporate name changes",
+    "f5CardTitle": "F5, Inc.",
+    "f5CardDesc": "From one load balancer (1996) to an app delivery and security platform, via 23+ acquisitions.",
+    "moreSoon": "More vendor lineages are being researched and added - each verified against primary sources before it ships."
+  },
+  "partnerVendors": {
+    "reduEyebrow": "Red Education training partner",
+    "otherEyebrow": "Vendor lineage",
+    "disclaimerTag": "Note",
+    "disclaimerText": "Rodolfo does not deliver {vendor} training. His own authorized instruction covers F5, Fortinet, Netskope, and Extreme Networks. {vendor} is taught by Red Education's instructor team - among the most awarded in the industry, with recognition granted by multiple vendors.",
+    "awardsTitle": "Red Education recognition",
+    "sourcesLabel": "Sources",
+    "reduSectionTitle": "Red Education training partners",
+    "reduSectionNote": "Vendors Red Education is authorized to deliver training for. These are not part of Rodolfo's own authorized instruction - his covers F5, Fortinet, Netskope, and Extreme Networks.",
+    "reduCardTag": "Partner track",
+    "otherSectionTitle": "Other vendors - lineages of the pioneers",
+    "otherSectionNote": "Corporate genealogies of the companies that shaped networking, telecom, and cybersecurity - who founded them, what they built, and where their IP and people live today. History pages only: no training association is implied.",
+    "otherCardTag": "Lineage",
+    "foundingTitle": "Founding stories",
+    "foundersLabel": "Founders",
+    "timelineTitle": "The timeline",
+    "productsTitle": "Flagship products and solutions",
+    "innovationsTitle": "Key innovations",
+    "marketsTitle": "Main markets",
+    "analystTitle": "Analyst standing"
   }
 }

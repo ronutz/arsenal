@@ -4,6 +4,7 @@
 // ============================================================================
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";
+import { paloAltoProfile } from "@/content/vendors/profiles/palo-alto";
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -13,6 +14,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       vendorKey="paloalto"
       sections={["s1", "s2"]}
       icons={["firewall", "gateway"]}
+      profile={paloAltoProfile}
       next={null}
     />
   );

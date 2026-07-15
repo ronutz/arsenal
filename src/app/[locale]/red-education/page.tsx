@@ -52,13 +52,26 @@ import {
 } from "@/config/redEducation";
 
 // Red Education's authorized-vendor list (proper nouns, rendered verbatim).
-// This is THEIR list; Rodolfo's own vendors are named separately below.
-const RED_EDUCATION_VENDORS = [
-  "F5",
-  "Fortinet",
-  "Palo Alto Networks",
-  "Check Point",
-  "Cisco",
+// This is THEIR list; Rodolfo's own vendors are named separately below. Each
+// entry optionally links to that vendor's page on this site. Verified 2026-07-14
+// against Red Education's own vendor pages and site vendor list. HPE/Aruba/
+// Juniper are deliberately ABSENT - Red Education does not deliver those.
+const RED_EDUCATION_VENDORS: { name: string; href?: string }[] = [
+  { name: "F5" },
+  { name: "Fortinet" },
+  { name: "Palo Alto Networks", href: "/about/vendors/palo-alto" },
+  { name: "Check Point", href: "/about/vendors/partner/check-point" },
+  { name: "Cisco", href: "/about/vendors/cisco" },
+  { name: "Nutanix", href: "/about/vendors/partner/nutanix" },
+  { name: "Arista", href: "/about/vendors/partner/arista" },
+  { name: "Netskope" },
+  { name: "Extreme Networks", href: "/about/vendors/extreme" },
+  { name: "CyberArk" },
+  { name: "ForgeRock" },
+  { name: "Ping Identity" },
+  { name: "Zscaler" },
+  { name: "AWS" },
+  { name: "Riverbed" },
 ];
 
 // The public case study on rededucation.com that names Rodolfo (verified
@@ -181,11 +194,19 @@ export default async function RedEducationPage({
               <h2 className="redu-section-title">{t("authTitle")}</h2>
               <p className="redu-body">{t("authIntro")}</p>
               <ul className="redu-vendor-list">
-                {RED_EDUCATION_VENDORS.map((v) => (
-                  <li className="redu-vendor-chip" key={v}>
-                    {v}
-                  </li>
-                ))}
+                {RED_EDUCATION_VENDORS.map((v) =>
+                  v.href ? (
+                    <li key={v.name}>
+                      <Link href={v.href} className="redu-vendor-chip redu-vendor-chip--link">
+                        {v.name}
+                      </Link>
+                    </li>
+                  ) : (
+                    <li className="redu-vendor-chip" key={v.name}>
+                      {v.name}
+                    </li>
+                  ),
+                )}
               </ul>
               <h3 className="redu-awards-title">{t("awardsTitle")}</h3>
               <ul className="redu-awards">

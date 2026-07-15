@@ -6,6 +6,7 @@
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";
 import type { LineageStage } from "@/components/LineageDiagram";
+import { cabletronEnterasysProfile } from "@/content/vendors/profiles/cabletron-enterasys";
 
 // The verified corporate lineage, as diagram stages.
 const lineageStages: LineageStage[] = [
@@ -38,6 +39,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       sections={["s1", "multiproto", "ssr", "field", "customers", "s2", "s3"]}
       icons={["switch", "router", "wlan", "firewall"]}
       lineage={{ stages: lineageStages, titleKey: "cabletron.lineageTitle", descKey: "cabletron.lineageDesc" }}
+      profile={cabletronEnterasysProfile}
       next={{ slug: "riverstone", key: "riverstone" }}
     />
   );

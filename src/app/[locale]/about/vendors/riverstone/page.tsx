@@ -6,6 +6,7 @@
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";
 import type { LineageStage } from "@/components/LineageDiagram";
+import { riverstoneProfile } from "@/content/vendors/profiles/riverstone";
 
 const lineageStages: LineageStage[] = [
   { nodes: [{ label: "Yago", tone: "muted" }] },
@@ -23,6 +24,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       sections={["s1", "s2"]}
       icons={["metro", "router", "switch"]}
       lineage={{ stages: lineageStages, titleKey: "riverstone.lineageTitle", descKey: "riverstone.lineageDesc" }}
+      profile={riverstoneProfile}
       next={{ slug: "cisco", key: "cisco" }}
     />
   );
