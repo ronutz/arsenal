@@ -29,7 +29,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { partnerVendors } from "@/content/vendors/partners";
-import { CAREER_VENDORS } from "@/content/vendors/career";
+import { CAREER_VENDORS, REDU_CAREER_PARTNERS } from "@/content/vendors/career";
 
 export async function generateMetadata({
   params,
@@ -114,6 +114,18 @@ export default async function IndustryHubPage({
                     <span className="vendor-card-years mono">{tp("reduCardTag")}</span>
                     <span className="vendor-card-name">{v.name}</span>
                     <span className="vendor-card-tagline">{v.tagline}</span>
+                  </Link>
+                </li>
+              ))}
+              {/* Cisco and Palo Alto Networks are verified Red Education
+                  partners whose pages exist as career pages - the established
+                  Group B list includes them here (PRIME 2026-07-15). */}
+              {REDU_CAREER_PARTNERS.map((v) => (
+                <li key={v.slug}>
+                  <Link href={`/about/vendors/${v.slug}`} className="vendor-card">
+                    <span className="vendor-card-years mono">{tp("reduCardTag")}</span>
+                    <span className="vendor-card-name">{t(`${v.key}.name`)}</span>
+                    <span className="vendor-card-tagline">{t(`${v.key}.tagline`)}</span>
                   </Link>
                 </li>
               ))}

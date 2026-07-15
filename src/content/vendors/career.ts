@@ -21,3 +21,20 @@ export const CAREER_VENDORS = [
   { slug: "fireeye-mcafee-ixia", key: "distribution" },
   { slug: "palo-alto", key: "paloalto" },
 ] as const;
+
+// ============================================================================
+// RED EDUCATION PARTNER CROSS-LINKS (PRIME directive 2026-07-15).
+// The established Group B list (scope map, vendor-profiles session
+// 2026-07-15) is Nutanix, Arista, Check Point PLUS Cisco and Palo Alto
+// Networks - the last two are verified Red Education partners whose pages
+// already exist as CAREER pages, so the "Red Education training partners"
+// section links them here rather than duplicating them as partner entries.
+// (F5 / Fortinet / Netskope / Extreme are Red Education partners too, but
+// Rodolfo teaches those - they live under /vendors, not in this section.)
+// `key` is the i18n prefix under the "vendors" namespace, as above.
+// ============================================================================
+
+export const REDU_CAREER_PARTNERS = [
+  { slug: "cisco", key: "cisco" },
+  { slug: "palo-alto", key: "paloalto" },
+] as const;
