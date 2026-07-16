@@ -43,10 +43,13 @@ export default async function VendorsIndexPage({
               ← {t("backToAbout")}
             </Link>
 
-            <p className="hero-eyebrow">{t("indexTitle")}</p>
-            <h1 className="page-hero-title">
+            {/* Title/lede in their proper places (PRIME 2026-07-17: the
+                lede had been rendered inside the h1 at heading scale -
+                a paragraph in h1 clothing. Reading comfort over spectacle.) */}
+            <h1 className="page-hero-title">{t("indexTitle")}</h1>
+            <p className="page-hero-lede" style={{ marginBottom: "2.5rem" }}>
               {t("indexLede")}
-            </h1>
+            </p>
 
             {/* Career vendors (worked with) */}
             <ul className="vendor-grid">

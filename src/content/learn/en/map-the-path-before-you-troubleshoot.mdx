@@ -1,0 +1,29 @@
+---
+slug: map-the-path-before-you-troubleshoot
+title: "Map the Path Before You Troubleshoot"
+summary: "The most expensive troubleshooting sessions share one flaw: nobody actually knew the path. The senior habit is refusing to reason about a failure until the chain is modeled - resolution included, return leg separate, every rewrite and TLS boundary named, and every unknown left visibly unknown."
+concepts: ["troubleshooting", "network path", "NAT", "TLS termination", "return path", "identity federation", "operations"]
+relatedTools: ["flow-path-reasoner"]
+relatedArticles: ["capture-points-before-packets", "fault-isolation-first-hour"]
+category: networking
+order: 13
+status: machine-draft
+updated: "2026-07-16"
+---
+Ask three people on a bridge call how a failing request actually travels and you will usually get three different paths - or one confident path that turns out to be two years stale. Most long troubleshooting sessions are long precisely because the reasoning ran ahead of the model: hypotheses about a load balancer that is not in the path, captures on a firewall the traffic never crosses, logs read from a proxy that only handles the other data center. The senior habit looks slower and is faster: refuse to troubleshoot until the path is written down, hop by hop, with its uncertainties marked as uncertainties.
+
+## Resolution is part of the path
+
+The path does not begin at the first router; it begins at the name. Which resolver answers, which view it serves, whether a hosts file overrides it, whether service discovery is fresh - each of these decides where the packets go before a single one is sent. Split-horizon setups fail in ways that look exactly like network faults: half the clients reach the internal address, half chase the public one, and the symptom pattern maps to resolver populations rather than to anything in the transport. A model that skips resolution has skipped the hop that most often explains "works for some, not for others."
+
+## The return leg is its own path
+
+Forward reasoning comes naturally; return reasoning is where models quietly go wrong. Stateful devices - firewalls, load balancers, NAT gateways - assume they see both directions of a conversation, and an asymmetric return breaks them silently: the forward leg delivers, the reply detours around the stateful box, and the box kills the session as unknown traffic. Policy routing and multiple exits make the return leg a decision the forward model never sees. Writing the return path separately, and marking it unknown when it is unknown, converts a class of mystery failures into a named, testable candidate.
+
+## Rewrites and terminations are boundaries of meaning
+
+Every NAT, SNAT, and proxy hop changes what an address means, and every TLS termination changes what can be seen. After a source rewrite, backend logs faithfully record the wrong client; after a proxy, the upstream conversation is a different session that shares nothing but intent with the client's; at each TLS termination, a new certificate story begins and the previous one ends. These are not implementation details - they are the boundaries along which evidence must be collected and interpreted. A path model that marks them turns "the logs say X" into the sharper question: which side of which boundary said X, about whom?
+
+## Unknowns belong on the map
+
+The strongest thing a path model can do is admit what it does not contain. An unknown middlebox inventory, an unverified device order, an unestablished return route - written on the map, these become the first work items; left off the map, they become the assumptions that quietly invalidate every conclusion drawn on top of them. A proposed model with its unknowns visible is a plan. A confident diagram with its unknowns hidden is a trap that has not sprung yet.

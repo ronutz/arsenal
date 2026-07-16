@@ -4155,6 +4155,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /flow-path-reasoner:
+    get:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_flow_path_reasoner
+      summary: Flow Path Reasoner
+      description: >-
+        The senior skill is refusing to troubleshoot until the path is understood. Seven selections
+        build a canonical hop map with side-flows, TLS segments, rewrite points, and ranked
+        failure-domain candidates - and unknowns stay visibly unknown. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: Original
+        ruleset (D-18). Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_flow_path_reasoner_post
+      summary: Flow Path Reasoner (POST)
+      description: >-
+        The senior skill is refusing to troubleshoot until the path is understood. Seven selections
+        build a canonical hop map with side-flows, TLS segments, rewrite points, and ranked
+        failure-domain candidates - and unknowns stay visibly unknown. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: Original
+        ruleset (D-18). Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /fortios-sniffer-builder:
     get:
       tags:
@@ -4272,6 +4338,74 @@ paths:
               type: string
               examples:
                 - hash this text
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /health-snapshot-comparator:
+    get:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_health_snapshot_comparator
+      summary: Before/After Health Snapshot Comparator
+      description: >-
+        You declare the states, the tool gates the conclusion: seven selections produce a tiered
+        comparison report - baseline quality, a churn-classed dimension catalog,
+        delta-interpretation guidance, and the continue / observe / investigate /
+        hold-rollback-ready gate. Never labels a change successful on green components alone. The
+        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_health_snapshot_comparator_post
+      summary: Before/After Health Snapshot Comparator (POST)
+      description: >-
+        You declare the states, the tool gates the conclusion: seven selections produce a tiered
+        comparison report - baseline quality, a churn-classed dimension catalog,
+        delta-interpretation guidance, and the continue / observe / investigate /
+        hold-rollback-ready gate. Never labels a change successful on green components alone. The
+        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.
@@ -5327,6 +5461,76 @@ paths:
               type: string
               examples:
                 - function FindProxyForURL(url, host) { return "DIRECT"; }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /packet-capture-plan-builder:
+    get:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_packet_capture_plan_builder
+      summary: Packet Capture Plan Builder
+      description: >-
+        Command builders answer how to capture; this answers where, why, and what it would mean.
+        Describe the path and the symptom; a 35-rule original registry designs a phased capture
+        plan: ranked points on named boundaries, expected observations, an interpretation matrix
+        with supports and weakens decided before collection, and sync/authorization discipline. It
+        plans captures - it never ingests them. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Operations & Fieldcraft
+      operationId: run_packet_capture_plan_builder_post
+      summary: Packet Capture Plan Builder (POST)
+      description: >-
+        Command builders answer how to capture; this answers where, why, and what it would mean.
+        Describe the path and the symptom; a 35-rule original registry designs a phased capture
+        plan: ranked points on named boundaries, expected observations, an interpretation matrix
+        with supports and weakens decided before collection, and sync/authorization discipline. It
+        plans captures - it never ingests them. The input is a JSON object: send it as the request
+        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.

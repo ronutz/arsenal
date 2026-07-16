@@ -58,6 +58,9 @@ import { runFromJson as changeWindowRunbookBuilderRun } from "./change-window-ru
 import { runFromJson as incidentTimelineRcaBuilderRun } from "./incident-timeline-rca-builder";
 import { runFromJson as changeBlastRadiusMapperRun } from "./change-blast-radius-mapper";
 import { runFromJson as tacEscalationPacketBuilderRun } from "./tac-escalation-packet-builder";
+import { runFromJson as packetCapturePlanBuilderRun } from "./packet-capture-plan-builder";
+import { runFromJson as flowPathReasonerRun } from "./flow-path-reasoner";
+import { runFromJson as healthSnapshotComparatorRun } from "./health-snapshot-comparator";
 import { run as f5BigipLicenseExplainerRun } from "./f5-bigip-license-explainer";
 import { run as f5AwafDeclarativePolicyRun } from "./f5-awaf-declarative-policy-explainer";
 import { run as f5AwafEvasionRun } from "./f5-awaf-evasion-explainer";
@@ -150,6 +153,9 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "incident-timeline-rca-builder", structured: true, run: incidentTimelineRcaBuilderRun },
   { slug: "change-blast-radius-mapper", structured: true, run: changeBlastRadiusMapperRun },
   { slug: "tac-escalation-packet-builder", structured: true, run: tacEscalationPacketBuilderRun },
+  { slug: "packet-capture-plan-builder", structured: true, run: packetCapturePlanBuilderRun },
+  { slug: "flow-path-reasoner", structured: true, run: flowPathReasonerRun },
+  { slug: "health-snapshot-comparator", structured: true, run: healthSnapshotComparatorRun },
   { slug: "f5-irules-performance-linter", structured: true, run: (input) => f5IrulesPerformanceLinterRun(JSON.parse(input)) },
   { slug: "f5-release-cadence-calendar", structured: true, run: (input) => f5ReleaseCadenceCalendarRun(JSON.parse(input)) },
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },

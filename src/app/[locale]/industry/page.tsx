@@ -59,6 +59,7 @@ export default async function IndustryHubPage({
 
   const reduPartners = partnerVendors.filter((v) => v.group === "redu");
   const otherVendors = partnerVendors.filter((v) => v.group === "other");
+  const contemporaryVendors = partnerVendors.filter((v) => v.group === "contemporary");
 
   return (
     <>
@@ -149,6 +150,25 @@ export default async function IndustryHubPage({
                 <li key={v.slug}>
                   <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
                     <span className="vendor-card-years mono">{tp("otherCardTag")}</span>
+                    <span className="vendor-card-name">{v.name}</span>
+                    <span className="vendor-card-tagline">{v.tagline}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* The contemporaries (modern-era companies, still writing their
+                chapters; new group below the pioneers - PRIME roster
+                2026-07-16, shipped wave 6). */}
+            <div className="vendor-divider">
+              <h2 className="vendor-divider-title">{tp("contemporarySectionTitle")}</h2>
+              <p className="vendor-divider-note">{tp("contemporarySectionNote")}</p>
+            </div>
+            <ul className="vendor-grid">
+              {contemporaryVendors.map((v) => (
+                <li key={v.slug}>
+                  <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
+                    <span className="vendor-card-years mono">{tp("contemporaryCardTag")}</span>
                     <span className="vendor-card-name">{v.name}</span>
                     <span className="vendor-card-tagline">{v.tagline}</span>
                   </Link>

@@ -36,6 +36,16 @@
 //     log, font size, send) - the terminal-controls-on-top layout PRIME asked
 //     for. Plus free RESIZE of the console via the native CSS resize handle
 //     on the wrap's lower-right corner.
+//   - INTERACTIVE TYPING (PRIME 2026-07-16, "it should"): a true terminal
+//     input mode. With the toggle on, clicking the console focuses it and
+//     every keystroke goes to the wire character-at-a-time: printables as-is,
+//     Enter = the configured line ending, Backspace = 0x7F (the PuTTY
+//     convention; most device consoles accept it, many also take 0x08), Tab
+//     0x09, Esc 0x1B, arrows as ANSI ESC[A-D, Ctrl+letter as control bytes
+//     (Ctrl-C with an active text selection still copies; Ctrl-V pastes and
+//     the pasted text is sent raw). stopPropagation on handled keys shields
+//     the site's single-key global shortcuts. Line mode remains the default -
+//     interactive is what pagers, menus, and password prompts need.
 //   - advanced connection params (data bits / parity / stop bits / flow control)
 //
 // HONESTY, on the door and here: Web Serial is Chromium-only and permission-
@@ -178,6 +188,8 @@ export default function DevOtherWebSerialTool() {
   // ---- input + sending ----
   const [line, setLine] = useState("");
   const [ending, setEnding] = useState("cr");
+  // Interactive terminal-typing mode (off = classic line mode).
+  const [interactive, setInteractive] = useState(false);
   const [localEcho, setLocalEcho] = useState(false);
 
   // ---- display ----
@@ -419,6 +431,78 @@ export default function DevOtherWebSerialTool() {
     URL.revokeObjectURL(url);
   }, [fullText]);
 
+  // ---- interactive typing: one keystroke, one write ------------------------
+  // Mapped keys are consumed (preventDefault + stopPropagation - the latter
+  // also keeps the site's single-key shortcuts from firing while the console
+  // is focused). Unmapped combos fall through to the browser untouched.
+  const handleInteractiveKey = useCallback(
+    (e: React.KeyboardEvent<HTMLPreElement>) => {
+      if (!interactive || !writerRef.current) return;
+      const enc = new TextEncoder();
+      const fire = (bytes: Uint8Array, echoText?: string) => {
+        void writeRaw(bytes);
+        if (localEcho && echoText) ingest(echoText);
+        e.preventDefault();
+        e.stopPropagation();
+      };
+      // Ctrl combinations -> control bytes (1..26). Two deliberate exceptions:
+      // Ctrl-C with a live selection stays a copy, and Ctrl-V is left alone so
+      // the paste event below can send the clipboard text raw.
+      if (e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
+        const k = e.key.toLowerCase();
+        if (k === "c" && window.getSelection()?.toString()) return;
+        if (k === "v") return;
+        const code = k.charCodeAt(0) - 96; // a=1 .. z=26
+        if (code >= 1 && code <= 26) fire(new Uint8Array([code]));
+        return;
+      }
+      if (e.metaKey || e.altKey) return; // never eat OS/browser chords
+      switch (e.key) {
+        case "Enter":
+          fire(enc.encode(LINE_ENDINGS[ending]), "\n");
+          return;
+        case "Backspace":
+          fire(new Uint8Array([0x7f])); // PuTTY convention (DEL); 0x08 also common
+          return;
+        case "Tab":
+          fire(new Uint8Array([0x09]));
+          return;
+        case "Escape":
+          fire(new Uint8Array([0x1b]));
+          return;
+        case "ArrowUp":
+          fire(enc.encode("\x1b[A"));
+          return;
+        case "ArrowDown":
+          fire(enc.encode("\x1b[B"));
+          return;
+        case "ArrowRight":
+          fire(enc.encode("\x1b[C"));
+          return;
+        case "ArrowLeft":
+          fire(enc.encode("\x1b[D"));
+          return;
+        default:
+          if (e.key.length === 1) fire(enc.encode(e.key), e.key);
+      }
+    },
+    [interactive, ending, localEcho, writeRaw, ingest],
+  );
+
+  // Paste while interactive: the clipboard text goes to the wire raw (no
+  // added line ending), echoed if local echo is on.
+  const handleInteractivePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLPreElement>) => {
+      if (!interactive || !writerRef.current) return;
+      const text = e.clipboardData.getData("text");
+      if (!text) return;
+      e.preventDefault();
+      void writeRaw(new TextEncoder().encode(text));
+      if (localEcho) ingest(text);
+    },
+    [interactive, localEcho, writeRaw, ingest],
+  );
+
   // ---- real-time disk log (File System Access API; Chromium, like Web Serial) --
   // LIFECYCLE (PRIME ruling 2026-07-16): the log SURVIVES port disconnects and
   // reconnects within the page - it closes only on manual stop or on leaving
@@ -550,6 +634,18 @@ export default function DevOtherWebSerialTool() {
       {/* connection bar */}
       <div className="drill-config">
         <div className="ws-controls">
+          {/* Fullscreen toggle, leftmost by PRIME directive (2026-07-16): the
+              symbol makes it instantly findable; the accessible name stays
+              localized via title + aria-label. U+26F6 SQUARE FOUR CORNERS. */}
+          <button
+            type="button"
+            className="b64-copy ws-fsbtn"
+            onClick={toggleFs}
+            title={t("fullscreen")}
+            aria-label={t("fullscreen")}
+          >
+            ⛶
+          </button>
           <label className="cidr-label" htmlFor="ws-baud">
             {t("baud")}
           </label>
@@ -580,9 +676,6 @@ export default function DevOtherWebSerialTool() {
           </button>
           <button type="button" className={diskLog ? "b64-copy ws-logging" : "b64-copy"} onClick={toggleDiskLog}>
             {diskLog ? t("logStop") : t("logToDisk")}
-          </button>
-          <button type="button" className="b64-copy" onClick={toggleFs}>
-            {t("fullscreen")}
           </button>
           <button type="button" className="b64-copy" onClick={download} disabled={!buf.lines.length}>
             {t("download")}
@@ -684,6 +777,10 @@ export default function DevOtherWebSerialTool() {
           autoComplete="off"
         />
         {q && <span className="ws-matchcount">{t("matches", { n: shown.length })}</span>}
+        <label className="ws-toggle" title={t("interactiveHint")}>
+          <input type="checkbox" checked={interactive} onChange={(e) => setInteractive(e.target.checked)} />
+          {t("interactive")}
+        </label>
         <label className="ws-toggle">
           <input type="checkbox" checked={timestamps} onChange={(e) => setTimestamps(e.target.checked)} />{" "}
           {t("timestamps")}
@@ -747,6 +844,9 @@ export default function DevOtherWebSerialTool() {
       {/* console + detected side panel */}
       <div className="ws-main">
         <div className={isFs ? "ws-console-wrap ws-console-wrap--fs" : "ws-console-wrap"} ref={wrapRef}>
+          {interactive && (
+            <p className="ws-interactive-hint mono">{t("interactiveHint")}</p>
+          )}
           {/* Fullscreen-only control bar, OVERLAYED at the top of the console
               window (PRIME 2026-07-16): the essentials without leaving
               fullscreen - exit, session, export, log, font, and a send line. */}
@@ -763,6 +863,20 @@ export default function DevOtherWebSerialTool() {
               <button type="button" className={diskLog ? "b64-copy ws-logging" : "b64-copy"} onClick={toggleDiskLog}>
                 {diskLog ? t("logStop") : t("logToDisk")}
               </button>
+              {/* Console-interpreter (OS) choice stays available in fullscreen
+                  (PRIME 2026-07-16) - same state as the main toolbar select. */}
+              <select
+                className="cidr-input ws-select ws-fs-select"
+                value={os}
+                onChange={(e) => setOs(e.target.value as OsKey)}
+                aria-label={t("highlight")}
+              >
+                {OS_KEYS.map((k) => (
+                  <option key={k} value={k}>
+                    {t(`os_${k}`)}
+                  </option>
+                ))}
+              </select>
               <span className="ws-fontctl">
                 <button type="button" className="ws-iconbtn" onClick={() => setFontSize((f) => Math.max(FONT_MIN, f - 1))} aria-label={t("fontSmaller")}>A-</button>
                 <button type="button" className="ws-iconbtn" onClick={() => setFontSize((f) => Math.min(FONT_MAX, f + 1))} aria-label={t("fontLarger")}>A+</button>
@@ -780,7 +894,10 @@ export default function DevOtherWebSerialTool() {
           )}
           <pre
             ref={consoleRef}
-            className={`ws-console mono ws-console--${theme}`}
+            tabIndex={interactive ? 0 : -1}
+            onKeyDown={interactive ? handleInteractiveKey : undefined}
+            onPaste={interactive ? handleInteractivePaste : undefined}
+            className={`ws-console mono ws-console--${theme}${interactive ? " ws-console--interactive" : ""}`}
             style={{ fontSize: `${fontSize}px` }}
             aria-live="polite"
             onScroll={onScroll}

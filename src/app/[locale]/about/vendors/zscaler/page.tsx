@@ -3,6 +3,8 @@
 // zscaler tag), authorized Zscaler instructor since 2026 (PRIME 2026-07-15).
 // Content in the "vendors" namespace; rich corporate profile below the
 // career narrative (same pattern as the Extreme page).
+// s2 authorization sentence REMOVED and section retitled (PRIME 2026-07-16):
+// the page now closes on the hub/fingerprinting chapter like its siblings.
 // ============================================================================
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";

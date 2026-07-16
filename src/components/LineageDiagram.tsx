@@ -46,9 +46,12 @@ const NODE_W = 150;
 const NODE_H = 48;
 const NODE_GAP_Y = 14; // vertical gap between stacked nodes
 const STAGE_GAP_X = 70; // horizontal gap (room for the era arrow + label)
-const NOTE_SPACE = 26; // vertical room reserved for a node's note line (11px mono + clearance)
 const EDGE_LINE_H = 13; // line height for wrapped edge labels (11px mono)
-const EDGE_WRAP_CHARS = 30; // wrap edge labels so adjacent stages' labels never collide
+const EDGE_WRAP_CHARS = 26; // wrap edge labels so adjacent stages' labels never collide
+const LABEL_WRAP_CHARS = 16; // wrap node labels to stay inside the box (13px font)
+const NOTE_WRAP_CHARS = 21; // wrap node notes to stay inside the box width (11px mono)
+const NOTE_LINE_H = 13; // line height for wrapped note lines
+const NOTE_CLEAR = 10; // clearance between a note block and the next stacked node
 
 // Greedy word-wrap for edge labels. Long era labels (the Ping/ForgeRock page's
 // "2010: Oracle absorbs Sun; five engineers fork the stack") used to render as
@@ -85,8 +88,16 @@ export default function LineageDiagram({ title, desc, stages }: LineageDiagramPr
   // a stacked node can never run into the next node's box (fix 2026-07-16:
   // on the Ping/ForgeRock page the "Denver, 2002" note used to land inside
   // the Sun Microsystems rectangle). Stacks are centered on a common axis.
+  // A slot is the node box plus the FULL height of its wrapped note block.
+  // Fix 2026-07-16 v2, PRIME report: single-line notes wider than the box
+  // used to bleed sideways across neighboring columns and node borders.
+  // Notes now wrap to the box width and the slot grows with the line count.
+  function noteLines(node: LineageNode): string[] {
+    return node.note ? wrapLabel(node.note, NOTE_WRAP_CHARS) : [];
+  }
   function slotH(node: LineageNode): number {
-    return NODE_H + (node.note ? NOTE_SPACE : 0);
+    const nl = noteLines(node).length;
+    return NODE_H + (nl ? nl * NOTE_LINE_H + NOTE_CLEAR : 0);
   }
   function stackH(stage: LineageStage): number {
     const slots = stage.nodes.reduce((acc, n) => acc + slotH(n), 0);
@@ -192,23 +203,37 @@ export default function LineageDiagram({ title, desc, stages }: LineageDiagramPr
           return (
             <g key={`node-${si}-${ni}`} className={toneClass(node.tone)}>
               <rect x={nx} y={ny} width={NODE_W} height={NODE_H} rx={8} />
-              <text
-                className="lineage-node-label"
-                x={nx + NODE_W / 2}
-                y={ny + NODE_H / 2}
-                textAnchor="middle"
-                dominantBaseline="central"
-              >
-                {node.label}
-              </text>
+              {(() => {
+                const lab = wrapLabel(node.label, LABEL_WRAP_CHARS).slice(0, 2);
+                const startDy = lab.length === 2 ? -7 : 0;
+                return (
+                  <text
+                    className="lineage-node-label"
+                    x={nx + NODE_W / 2}
+                    y={ny + NODE_H / 2 + startDy}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                  >
+                    {lab.map((ln, li) => (
+                      <tspan key={li} x={nx + NODE_W / 2} dy={li === 0 ? 0 : 14}>
+                        {ln}
+                      </tspan>
+                    ))}
+                  </text>
+                );
+              })()}
               {node.note && (
                 <text
                   className="lineage-node-note"
                   x={nx + NODE_W / 2}
-                  y={ny + NODE_H + 16}
+                  y={ny + NODE_H + 14}
                   textAnchor="middle"
                 >
-                  {node.note}
+                  {noteLines(node).map((ln, li) => (
+                    <tspan key={li} x={nx + NODE_W / 2} dy={li === 0 ? 0 : NOTE_LINE_H}>
+                      {ln}
+                    </tspan>
+                  ))}
                 </text>
               )}
             </g>

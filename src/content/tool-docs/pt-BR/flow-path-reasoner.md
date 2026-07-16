@@ -1,0 +1,17 @@
+## O que a ferramenta faz
+
+Descreva o caminho como você acredita que ele corre - arquétipo, resolução de nomes, intermediários, transformação de endereços, comportamento TLS, fluxo de autenticação e caminho de retorno, mais um preset de família de comandos - e um registro fixo de 27 regras originais constrói o modelo deterministicamente. O resultado é um MAPA DO CAMINHO EM CAMADAS: a cadeia de saltos em ordem canônica, renderizada como diagrama com marcadores de transformação e TLS em cada nó; os FLUXOS LATERAIS de resolução e identidade que correm fora do caminho primário; o mapa de segmentos TLS (cada terminação é uma história separada de certificado, SNI e cifra); os pontos de transformação onde endereços - e portanto a identidade nos logs - mudam de significado; pontos de evidência nomeando onde imposição e logging precisam ser estabelecidos; e, acima de tudo, DOMÍNIOS DE FALHA CANDIDATOS ranqueados, cada um com o que o SUSTENTARIA e o que o ENFRAQUECERIA. Seleções desconhecidas nunca são disfarçadas: aparecem como lista explícita de desconhecidos, como alertas de qualidade e como pontuação para o próprio domínio "caminho não estabelecido".
+
+## O que ela deliberadamente não é
+
+O mapa é um MODELO PROPOSTO montado a partir das suas seleções - nunca topologia descoberta. A regra base do motor dispara em toda execução e diz exatamente isso, e o checklist de verificação começa por confirmar cada salto com o seu dono. Quando dois ou mais middleboxes são modelados, a cadeia usa uma ordem canônica assumida e uma regra avisa. A ferramenta não faz chamadas de rede, não realiza descoberta, não afirma ordem de processamento de pacotes de nenhum fornecedor e não sugere caminhos de contorno de controles. Exportações descrevem topologia interna, então o alerta de sensibilidade de topologia também dispara em toda execução. Rótulos e notas em texto livre vão apenas para a exportação; nunca influenciam as regras.
+
+## Como o modelo é construído - e como é verificado
+
+A inserção de nós segue uma ordem canônica (cliente, borda SSE, firewall, balanceador, proxy, par de gateways VPN, servidor); transformações se prendem ao nó mais plausível por preferência fixa; segmentos TLS derivam do comportamento declarado contra os nós capazes de terminar TLS efetivamente modelados - e quando os dois discordam (terminação única declarada sem nó capaz), o modelo sinaliza a inconsistência em vez de inventar um terminador. Regras são predicados puros que contribuem pontos para domínios de falha candidatos; o ranking é por pontuação decrescente com a ordem de definição como desempate determinístico; o selo de sinal é uma faixa de pontuação (forte ≥ 60, moderado ≥ 30, fraco abaixo), nunca uma probabilidade.
+
+A verificação segue o modelo de snapshot de disparo de regras do cluster com um pino específico do FPR: para cada entrada de teste, o build afirma exatamente quais regras disparam, a lista exata de domínios ranqueados, o conjunto exato de alertas e a SEQUÊNCIA DE SALTOS exata - a própria construção da cadeia é congelada. Treze vetores (nove cenários, quatro rejeições) fixam o registro atual; qualquer deriva quebra o build.
+
+## Entrada da API
+
+A entrada com paridade de API recebe um objeto JSON: `{"archetype", "resolution", "intermediaries", "transformation", "tls", "auth", "returnPath", "preset", "notes": {"nodeLabels", "title", "notes"}}`. Todos os campos exceto `notes` usam os vocabulários fechados do formulário; um valor fora do vocabulário é erro de formato, nunca um palpite.

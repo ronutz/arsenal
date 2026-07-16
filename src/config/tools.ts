@@ -142,6 +142,9 @@ export const tools: ToolEntry[] = [
   { id: "incident-timeline-rca-builder", href: "/tools/incident-timeline-rca-builder", category: "operations", available: true },
   { id: "change-blast-radius-mapper", href: "/tools/change-blast-radius-mapper", category: "operations", available: true },
   { id: "tac-escalation-packet-builder", href: "/tools/tac-escalation-packet-builder", category: "operations", available: true },
+  { id: "packet-capture-plan-builder", href: "/tools/packet-capture-plan-builder", category: "operations", available: true },
+  { id: "flow-path-reasoner", href: "/tools/flow-path-reasoner", category: "operations", available: true },
+  { id: "health-snapshot-comparator", href: "/tools/health-snapshot-comparator", category: "operations", available: true },
 ];
 
 /** Tools that are live and linkable. */

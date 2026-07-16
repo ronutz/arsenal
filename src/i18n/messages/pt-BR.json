@@ -4978,6 +4978,380 @@
       "curvesLabel": "Curvas elípticas",
       "formatsLabel": "Point formats",
       "ja3StringLabel": "String hasheada"
+    },
+    "packet-capture-plan-builder": {
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "intro": "Descreva o caminho e o sintoma; um registro fixo de {rules} regras projeta o plano de captura: onde observar, em que ordem e o que cada observação estabeleceria. Ele planeja a coleta - nunca recebe capturas e nunca diagnostica.",
+      "form": {
+        "heading": "Descreva o caminho e o sintoma",
+        "archetype": "Arquétipo do caminho",
+        "symptom": "Sintoma",
+        "trafficClass": "Classe de tráfego",
+        "intermediaries": "Intermediários no caminho",
+        "transformation": "Transformação no caminho",
+        "access": "Onde você consegue capturar?",
+        "timeBehavior": "Comportamento no tempo",
+        "preset": "Preset de família de comandos"
+      },
+      "options": {
+        "archetype": {
+          "direct": "Direto, cliente a servidor",
+          "load-balancer": "Através de um balanceador",
+          "firewall-nat": "Através de firewall / NAT",
+          "proxy-waf": "Através de proxy / WAF",
+          "site-to-site-vpn": "Por VPN site-a-site",
+          "outbound-sse": "Saída via SSE / gateway web seguro",
+          "east-west": "Leste-oeste (mesmo site / segmento)",
+          "unknown-mixed": "Desconhecido ou misto"
+        },
+        "symptom": {
+          "timeout": "Timeouts",
+          "reset": "Conexões resetadas",
+          "tls-failure": "Falhas de TLS",
+          "http-error": "Erros HTTP",
+          "packet-loss": "Perda de pacotes",
+          "intermittent-latency": "Latência intermitente",
+          "one-way": "Tráfego em um sentido só",
+          "connect-failure": "Não conecta de jeito nenhum"
+        },
+        "trafficClass": {
+          "tcp": "TCP (genérico)",
+          "udp": "UDP (genérico)",
+          "icmp": "ICMP",
+          "dns": "DNS",
+          "tls": "TLS / HTTPS",
+          "http": "HTTP (texto claro)",
+          "mixed": "Misto / não sei"
+        },
+        "intermediaries": {
+          "none": "Nenhum conhecido",
+          "firewall": "Firewall",
+          "nat-snat": "NAT / SNAT",
+          "load-balancer": "Balanceador de carga",
+          "proxy-waf": "Proxy / WAF",
+          "vpn-gateway": "Gateway VPN",
+          "multiple": "Vários dispositivos",
+          "unknown": "Desconhecido"
+        },
+        "transformation": {
+          "none": "Nenhuma conhecida",
+          "address-translation": "Tradução de endereços",
+          "tls-termination": "Terminação TLS no meio do caminho",
+          "protocol-proxying": "Proxy de protocolo (duas sessões)",
+          "auth-redirect": "Redirecionamento de autenticação (IdP)",
+          "multiple": "Múltiplas transformações",
+          "unknown": "Desconhecida"
+        },
+        "access": {
+          "client-only": "Só no lado do cliente",
+          "server-only": "Só no lado do servidor",
+          "one-intermediary": "Só em um intermediário",
+          "both-endpoints": "Nas duas pontas",
+          "endpoint-plus-intermediary": "Uma ponta mais um intermediário",
+          "multiple-points": "Vários pontos",
+          "unknown": "Ainda não estabelecido"
+        },
+        "timeBehavior": {
+          "constant": "Constante",
+          "intermittent": "Intermitente / aleatório",
+          "change-related": "Começou após uma mudança",
+          "load-related": "Sob carga",
+          "client-specific": "Só alguns clientes",
+          "location-specific": "Só algumas localidades",
+          "unknown": "Desconhecido"
+        },
+        "preset": {
+          "generic": "Genérico (neutro)",
+          "load-balancer": "Balanceador de carga",
+          "dns": "DNS",
+          "tls-pki": "TLS / PKI",
+          "firewall": "Firewall"
+        }
+      },
+      "notes": {
+        "summary": "Rótulos e notas (apenas exportação)",
+        "hint": "O texto livre aqui vai APENAS para o plano exportado - nunca influencia as regras.",
+        "labels": "Rótulos das pontas",
+        "labelsPh": "ex.: app-frontend -> payments-api",
+        "reference": "Referência de incidente / mudança",
+        "referencePh": "ex.: INC-4211",
+        "free": "Notas"
+      },
+      "signal": {
+        "strong": "forte",
+        "moderate": "moderado",
+        "weak": "fraco"
+      },
+      "results": {
+        "phase-1": "Fase 1 - conjunto mínimo viável de captura",
+        "phase-2": "Fase 2 - expansão se a fase 1 for inconclusiva",
+        "phaseEmpty": "Nenhum ponto pontuado - estabeleça o caminho e o acesso primeiro.",
+        "points": "Pontos de captura, ranqueados",
+        "filter": "Modelo de filtro",
+        "matrix": "Matriz de interpretação - decida antes o que significaria",
+        "supports": "Sustenta",
+        "weakens": "Enfraquece",
+        "checklist": "Checklist de disciplina",
+        "whyHeading": "Por que esses pontos? (trilha de regras)",
+        "whyIntro": "Cada ponto, fase e alerta remonta a uma regra disparada abaixo - nada mais influencia o plano.",
+        "copyMd": "Copiar plano (Markdown)",
+        "copied": "Copiado",
+        "downloadMd": "Baixar .md",
+        "privacy": "Tudo roda no seu navegador. O plano é consultivo: autorização de captura, retenção e interpretação continuam sendo suas."
+      },
+      "name": "Construtor de Plano de Captura de Pacotes",
+      "blurb": "Construtores de comandos respondem como capturar; este responde onde, por que e o que significaria. Descreva o caminho e o sintoma; um registro original de 35 regras projeta um plano de captura em fases: pontos ranqueados em fronteiras nomeadas, observações esperadas, uma matriz de interpretação com sustenta e enfraquece decididos antes da coleta, e disciplina de sincronização e autorização. Ele planeja capturas - nunca as ingere.",
+      "emptyState": "Escolha o arquétipo do caminho e o sintoma acima (ou carregue o Exemplo) - o plano aparece conforme você escolhe.",
+      "runsLocally": "Roda inteiramente no seu navegador - nada do que você seleciona ou digita sai desta página."
+    },
+    "flow-path-reasoner": {
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "intro": "Descreva o caminho como você acredita que ele corre; um registro fixo de {rules} regras constrói o modelo: a cadeia de saltos, os fluxos laterais, os segmentos TLS, os pontos de transformação - e os domínios de falha candidatos que as ambiguidades implicam. O mapa é um modelo proposto, nunca topologia descoberta, e os desconhecidos permanecem visivelmente desconhecidos.",
+      "form": {
+        "heading": "Descreva o caminho como você acredita que ele corre",
+        "archetype": "Arquétipo do caminho",
+        "resolution": "Resolução de nomes",
+        "intermediaries": "Intermediários",
+        "transformation": "Transformação de endereços",
+        "tls": "Comportamento TLS",
+        "auth": "Fluxo de autenticação",
+        "returnPath": "Caminho de retorno",
+        "preset": "Preset de família de comandos"
+      },
+      "options": {
+        "archetype": {
+          "direct": "Direto, cliente a serviço",
+          "internet-published": "Internet a aplicação publicada",
+          "load-balancer": "Cliente a balanceador a pool",
+          "proxy-waf": "Através de proxy / WAF",
+          "site-to-site-vpn": "Por VPN site-a-site",
+          "outbound-sse": "Saída via SSE / proxy",
+          "identity-federated": "Aplicação federada por identidade",
+          "east-west": "Leste-oeste interno",
+          "unknown-mixed": "Misto ou desconhecido"
+        },
+        "resolution": {
+          "public-dns": "DNS público",
+          "private-dns": "DNS privado",
+          "split-horizon": "Split-horizon",
+          "hosts-static": "Arquivo hosts / estático",
+          "service-discovery": "Descoberta de serviços",
+          "multiple": "Vários mecanismos",
+          "unknown": "Desconhecida"
+        },
+        "intermediaries": {
+          "none": "Nenhum",
+          "firewall": "Firewall",
+          "load-balancer": "Balanceador de carga",
+          "proxy-waf": "Proxy / WAF",
+          "vpn": "VPN",
+          "sse-casb": "SSE / CASB",
+          "multiple": "Vários",
+          "unknown": "Desconhecido"
+        },
+        "transformation": {
+          "none": "Nenhuma",
+          "dnat": "DNAT (destino reescrito)",
+          "snat": "SNAT (origem reescrita)",
+          "both": "DNAT e SNAT",
+          "proxy-source": "Origem gerada pelo proxy",
+          "multiple": "Várias",
+          "unknown": "Desconhecida"
+        },
+        "tls": {
+          "end-to-end": "Fim a fim",
+          "terminate-once": "Termina uma vez no caminho",
+          "terminate-reencrypt": "Termina e recriptografa",
+          "multiple-terminations": "Múltiplos pontos de terminação",
+          "plaintext": "Texto claro",
+          "unknown": "Desconhecido"
+        },
+        "auth": {
+          "none": "Nenhum",
+          "local": "Local à aplicação",
+          "redirect-idp": "Redirecionamento a um IdP",
+          "agent-connector": "Agente ou conector",
+          "multiple": "Vários",
+          "unknown": "Desconhecido"
+        },
+        "returnPath": {
+          "known-symmetric": "Simétrico conhecido",
+          "known-asymmetric": "Assimétrico conhecido",
+          "policy-routed": "Roteado por política",
+          "multiple-exits": "Múltiplas saídas",
+          "unknown": "Desconhecido"
+        },
+        "preset": {
+          "generic": "Genérico (neutro)",
+          "load-balancer": "Balanceador de carga",
+          "dns": "DNS",
+          "tls-pki": "TLS / PKI",
+          "firewall": "Firewall"
+        }
+      },
+      "notes": {
+        "summary": "Rótulos e notas (apenas exportação)",
+        "hint": "O texto livre aqui vai APENAS para o mapa exportado - nunca influencia as regras.",
+        "title": "Título do mapa",
+        "nodeLabels": "Rótulos dos nós",
+        "nodeLabelsPh": "ex.: fw-filial = FGT-201F, app = payments",
+        "free": "Notas"
+      },
+      "signal": {
+        "strong": "forte",
+        "moderate": "moderado",
+        "weak": "fraco"
+      },
+      "results": {
+        "map": "O caminho modelado",
+        "mapTitle": "Mapa do caminho do fluxo",
+        "mapDesc": "A cadeia de saltos modelada a partir das seleções, com marcadores de transformação e TLS em cada nó.",
+        "mapModel": "Ordem canônica assumida — um modelo proposto para verificar com os donos dos saltos, não topologia descoberta.",
+        "unknowns": "Explicitamente desconhecido — estabeleça isto primeiro",
+        "sideFlows": "Fluxos laterais (fora do caminho primário)",
+        "tls": "Segmentos TLS",
+        "transforms": "Transformações de endereço",
+        "domains": "Domínios de falha candidatos, ranqueados",
+        "supports": "Sustenta",
+        "weakens": "Enfraquece",
+        "evidence": "Pontos de evidência a estabelecer",
+        "checklist": "Checklist de verificação do modelo",
+        "whyHeading": "Por que este modelo? (trilha de regras)",
+        "whyIntro": "Cada domínio, alerta e item de checklist remonta a uma regra disparada abaixo — nada mais influencia o modelo.",
+        "copyMd": "Copiar mapa (Markdown)",
+        "copied": "Copiado",
+        "downloadMd": "Baixar .md",
+        "privacy": "Tudo roda no seu navegador. O mapa descreve topologia interna — mantenha-o local e compartilhe deliberadamente."
+      },
+      "name": "Raciocinador de Caminho de Fluxo",
+      "blurb": "A habilidade sênior é recusar-se a fazer troubleshooting até o caminho estar entendido. Sete seleções constroem um mapa canônico de saltos com fluxos laterais, segmentos TLS, pontos de reescrita e domínios de falha ranqueados - e os desconhecidos permanecem visivelmente desconhecidos.",
+      "emptyState": "Descreva o caminho acima e o mapa modelado aparece aqui - saltos, fluxos laterais, segmentos TLS e os domínios de falha que as ambiguidades implicam.",
+      "runsLocally": "Roda inteiramente no seu navegador. O mapa é um modelo proposto a partir das suas seleções, nunca topologia descoberta - e rótulos em texto livre vão apenas para a exportação."
+    },
+    "health-snapshot-comparator": {
+      "name": "Comparador de Snapshots de Saúde Antes/Depois",
+      "blurb": "Você declara os estados, a ferramenta condiciona a conclusão: sete seleções produzem um relatório de comparação em camadas - qualidade da baseline, catálogo de dimensões com classes de churn, orientação de interpretação de deltas e o portão continuar / observar / investigar / manter-rollback-armado. Nunca rotula uma mudança como bem-sucedida só por componentes verdes.",
+      "emptyState": "Declare a comparação acima - contexto, alvo, confiança da baseline, estado do depois, janela, churn - e o relatório condicionado aparece aqui.",
+      "runsLocally": "Roda inteiramente no seu navegador. Esta ferramenta nunca ingere dados de estado e nunca faz diff de nada: você declara os estados, a ferramenta condiciona a conclusão - e o texto livre vai apenas para a exportação.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "intro": "Declare a comparação que você está fazendo - nunca os dados em si. Um registro fixo de {rules} regras condiciona qual conclusão essas declarações podem honestamente sustentar: você declara os estados, a ferramenta condiciona a conclusão. Componentes verdes, sozinhos, nunca ganham aprovação.",
+      "form": {
+        "heading": "Declare a comparação",
+        "context": "Por que você está comparando?",
+        "target": "Classe do alvo",
+        "scope": "Escopo",
+        "beforeConfidence": "Confiança da baseline (antes)",
+        "afterState": "Estado da captura do depois",
+        "window": "Janela de observação",
+        "churn": "Churn esperado",
+        "preset": "Preset de família de comandos"
+      },
+      "options": {
+        "context": {
+          "post-change-validation": "Validação pós-mudança",
+          "post-incident-recovery": "Recuperação pós-incidente",
+          "migration-cutover": "Cutover de migração",
+          "periodic-drift-check": "Checagem periódica de deriva",
+          "rollback-decision": "Decisão de rollback",
+          "unknown": "Desconhecido"
+        },
+        "target": {
+          "firewall": "Firewall",
+          "load-balancer": "Balanceador de carga",
+          "dns": "DNS",
+          "switch-routing": "Switching / roteamento",
+          "proxy-sse": "Proxy / SSE",
+          "identity": "Identidade",
+          "server-app": "Servidor / aplicação",
+          "unknown": "Desconhecida"
+        },
+        "scope": {
+          "single-device": "Dispositivo único",
+          "ha-pair": "Par HA",
+          "cluster": "Cluster",
+          "service-population": "População de serviço",
+          "site": "Site",
+          "unknown": "Desconhecido"
+        },
+        "beforeConfidence": {
+          "captured-verified": "Capturada e verificada",
+          "captured-unverified": "Capturada, não verificada",
+          "from-memory": "De memória",
+          "assumed-healthy": "Presumida saudável",
+          "none": "Sem baseline"
+        },
+        "afterState": {
+          "captured-verified": "Capturado e verificado",
+          "captured-unverified": "Capturado, não verificado",
+          "partial": "Parcial",
+          "none-yet": "Ainda não capturado"
+        },
+        "window": {
+          "immediate": "Imediata (minutos)",
+          "short": "Curta (menos de 2 horas)",
+          "operational": "Operacional (2-24 horas)",
+          "extended": "Estendida (dias ou mais)",
+          "unknown": "Desconhecida"
+        },
+        "churn": {
+          "none-frozen": "Nenhum - congelamento de mudanças",
+          "low": "Baixo",
+          "normal": "Operacional normal",
+          "high-dynamic": "Alto / dinâmico",
+          "unknown": "Desconhecido"
+        },
+        "preset": {
+          "generic": "Genérico (neutro)",
+          "load-balancer": "Balanceador de carga",
+          "dns": "DNS",
+          "tls-pki": "TLS / PKI",
+          "firewall": "Firewall"
+        }
+      },
+      "notes": {
+        "summary": "Referência e notas (apenas exportação)",
+        "hint": "O texto livre aqui vai APENAS para o relatório exportado - nunca influencia as regras.",
+        "title": "Título do relatório",
+        "changeRef": "Referência da mudança / ticket",
+        "changeRefPh": "ex.: CHG-2041",
+        "free": "Notas"
+      },
+      "verdict": {
+        "continue": "CONTINUAR - neste patamar, condicional",
+        "observe": "OBSERVAR - continue acompanhando antes de concluir",
+        "investigate": "INVESTIGAR - feche as lacunas antes de qualquer conclusão",
+        "hold-rollback-ready": "MANTER ROLLBACK ARMADO - pronto enquanto as lacunas fecham"
+      },
+      "churnClass": {
+        "stable": "estável",
+        "slow": "movimento lento",
+        "fast": "movimento rápido"
+      },
+      "expectation": {
+        "should-match": "deve coincidir",
+        "read-with-care": "ler com cuidado",
+        "expected-drift": "deriva esperada"
+      },
+      "results": {
+        "gate": "O portão",
+        "upgrades": "Sobe o patamar",
+        "downgrades": "Desce o patamar",
+        "baseline": "Qualidade da baseline",
+        "gaps": "Completude da validação - lacunas declaradas",
+        "dimensions": "Dimensões a comparar (com interpretação de delta)",
+        "supports": "Sustenta um achado",
+        "weakens": "Enfraquece uma conclusão",
+        "checklist": "Checklist",
+        "whyHeading": "Por que este portão? (trilha de regras)",
+        "whyIntro": "Cada razão, alerta e item de checklist remonta a uma regra disparada abaixo — nada mais influencia o portão.",
+        "copyMd": "Copiar relatório (Markdown)",
+        "copied": "Copiado",
+        "downloadMd": "Baixar .md",
+        "privacy": "Tudo roda no seu navegador. O relatório descreve sua mudança e seu ambiente — mantenha-o local e compartilhe deliberadamente."
+      }
     }
   },
   "privacy_page": {
@@ -5358,8 +5732,8 @@
       "intro": "A Ping Identity abre a era de identidade deste registro - e carrega duas heranças. A pioneira de federação de Denver por trás do PingFederate e a ForgeRock, o fork norueguês que salvou a pilha de identidade open source da Sun Microsystems, foram combinadas pela Thoma Bravo em agosto de 2023 na plataforma que esta página perfila. Em 2025, esse alinhamento virou treinamento formal.",
       "s1Title": "PingFederate, estudado a sério",
       "s1Body": "Em 2025, Rodolfo concluiu o treinamento oficial de PingFederate da Ping Identity e obteve a credencial PingFederate Practitioner, mergulhando no servidor de federação que transformou o SAML de especificação em encanamento corporativo. Para quem ensina gestão de acesso em outras plataformas e constrói ferramentas de SAML e OIDC para este site, era a próxima pilha de protocolos natural a dominar por dentro.",
-      "s2Title": "O hub está aberto",
-      "s2Body": "O hub Ping Identity está no ar neste site, ancorado pelo ferramental de identidade: o decodificador SAML, os inspetores de JWT e OIDC e as ferramentas de PKCE e TOTP levam a etiqueta Ping. E em 2026 o capítulo virou de página: Rodolfo está habilitado como instrutor autorizado da Ping Identity, o quinto fornecedor do portfólio de ensino, ao lado de F5, Fortinet, Netskope e Extreme Networks.",
+      "s2Title": "Identidade, decodificada neste site",
+      "s2Body": "O ferramental de identidade deste site decodifica os mesmos artefatos que PingFederate e PingOne movem em produção: o decodificador SAML, os inspetores de JWT e OIDC e as ferramentas de PKCE e TOTP leem as asserções, tokens e fluxos sobre os quais a federação roda - localmente, no navegador. O curso de practitioner de PingFederate em 2025 marca o capítulo, e os padrões de federação que ele ensina são exatamente o que essas ferramentas tornam visível.",
       "certs": "Instrutor autorizado da Ping Identity (habilitado em 2026). PingFederate Practitioner (2025), obtido pelo Ping Identity Training. Detalhes completos na página de credenciais.",
       "lineageTitle": "Como duas linhagens de identidade viraram uma",
       "lineageDesc": "A Ping nasceu da federação em 2002. A Sun abriu o código de sua pilha de acesso como OpenSSO em 2005; quando a Oracle a engavetou em 2010, cinco engenheiros da Sun a bifurcaram como ForgeRock (OpenAM, OpenDJ) e a levaram à NYSE. A Thoma Bravo fechou o capital das duas em 2022 e as combinou em 23 de agosto de 2023."
@@ -5367,12 +5741,12 @@
     "zscaler": {
       "name": "Zscaler",
       "years": "2026 – presente",
-      "tagline": "O capítulo mais novo: zero trust em escala de nuvem, com a autorização de instrutor em mãos e o hub aberto.",
-      "intro": "A Zscaler é a entrada mais nova deste registro, e o capítulo está se abrindo rápido: o Zero Trust Exchange como matéria de ensino, um hub de fornecedor já aberto neste site e a autorização de instrutor habilitada em 2026.",
+      "tagline": "Zero trust em escala de nuvem - a empresa que apostou que o perímetro se dissolveria, e construiu a exchange que o substituiu.",
+      "intro": "A Zscaler entra neste registro carregando a tese que todos os capítulos anteriores testaram: a de que o perímetro que aqueles firewalls e balanceadores defendiam se dissolveria, e a de que a inspeção migraria para uma nuvem entre cada usuário e cada aplicação. O Zero Trust Exchange é essa aposta construída em escala planetária - uma das maiores nuvens de segurança em operação - e sua plataforma agora faz parte do currículo que este registro ensina.",
       "s1Title": "Por que Zscaler, por que agora",
       "s1Body": "Duas décadas deste registro atravessam firewalls, balanceadores e os perímetros que eles defendiam; a Zscaler é a empresa que apostou mais cedo que o perímetro se dissolveria numa nuvem global de inspeção. Estudar as arquiteturas do Zero Trust Exchange, do ZIA e do ZPA é a continuação natural do trabalho de SSE já em andamento no capítulo Netskope, do outro lado do mesmo mercado.",
-      "s2Title": "O hub está aberto",
-      "s2Body": "O hub Zscaler está aberto, semeado pelo trabalho de fingerprinting passivo: os decodificadores JA4 e JA3 levam a etiqueta Zscaler, lendo a superfície TLS que o Zero Trust Exchange inspeciona em escala, com mais ferramental a caminho. E a autorização está em mãos: Rodolfo está habilitado como instrutor autorizado da Zscaler, o sexto fornecedor do portfólio de ensino.",
+      "s2Title": "Lendo a superfície TLS",
+      "s2Body": "Os decodificadores JA4 e JA3 deste site leem a mesma superfície TLS que o Zero Trust Exchange inspeciona em escala: o handshake que um cliente oferece antes de qualquer política disparar, e tudo o que ele revela. É um par natural - uma nuvem que termina e inspeciona o TLS do mundo, e uma caixa de ferramentas que ensina o que esses handshakes dizem - com mais desse ferramental a caminho.",
       "certs": "Instrutor autorizado da Zscaler (habilitado em 2026). As certificações da plataforma serão registradas na página de credenciais à medida que chegarem."
     },
     "pulse": {
@@ -7032,7 +7406,9 @@
       "logStop": "Parar registro",
       "logStarted": "Registro em disco iniciado - cada linha é gravada no arquivo escolhido assim que chega.",
       "logStopped": "Registro em disco encerrado e arquivo fechado.",
-      "logUnsupported": "O registro em disco em tempo real requer a File System Access API (navegadores Chromium - a mesma família exigida pelo Web Serial)."
+      "logUnsupported": "O registro em disco em tempo real requer a File System Access API (navegadores Chromium - a mesma família exigida pelo Web Serial).",
+      "interactive": "Digitar no console",
+      "interactiveHint": "As teclas vão para o dispositivo: Enter = fim de linha, Backspace = 0x7F, setas = ANSI. Clique fora para liberar."
     }
   },
   "devOut": {
@@ -8765,7 +9141,11 @@
     "innovationsTitle": "Inovações-chave",
     "marketsTitle": "Principais mercados",
     "analystTitle": "Posição nos relatórios de analistas",
-    "personalChipLabel": "Capítulo do Rodolfo"
+    "personalChipLabel": "Capítulo do Rodolfo",
+    "contemporarySectionTitle": "Os contemporâneos - ainda escrevendo seus capítulos",
+    "contemporarySectionNote": "Empresas da era moderna cujas histórias ainda estão se desenrolando - sem associação de treinamento; perfiladas pelo que significam para o setor hoje.",
+    "contemporaryEyebrow": "Contemporâneo do setor",
+    "contemporaryCardTag": "contemporâneo"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",

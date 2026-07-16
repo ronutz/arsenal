@@ -4978,6 +4978,380 @@
       "curvesLabel": "Elliptic curves",
       "formatsLabel": "Point formats",
       "ja3StringLabel": "Hashed string"
+    },
+    "packet-capture-plan-builder": {
+      "example": "Example",
+      "clear": "Clear",
+      "intro": "Describe the path and the symptom; a fixed {rules}-rule registry designs the capture plan: where to observe, in what order, and what each observation would establish. It plans collection - it never receives captures, and it never diagnoses.",
+      "form": {
+        "heading": "Describe the path and the symptom",
+        "archetype": "Path archetype",
+        "symptom": "Symptom",
+        "trafficClass": "Traffic class",
+        "intermediaries": "Intermediaries in the path",
+        "transformation": "Transformation in the path",
+        "access": "Where can you capture?",
+        "timeBehavior": "Time behavior",
+        "preset": "Command-family preset"
+      },
+      "options": {
+        "archetype": {
+          "direct": "Direct client to server",
+          "load-balancer": "Through a load balancer",
+          "firewall-nat": "Through a firewall / NAT",
+          "proxy-waf": "Through a proxy / WAF",
+          "site-to-site-vpn": "Over a site-to-site VPN",
+          "outbound-sse": "Outbound via SSE / secure web gateway",
+          "east-west": "East-west (same site / segment)",
+          "unknown-mixed": "Unknown or mixed"
+        },
+        "symptom": {
+          "timeout": "Timeouts",
+          "reset": "Connection resets",
+          "tls-failure": "TLS failures",
+          "http-error": "HTTP errors",
+          "packet-loss": "Packet loss",
+          "intermittent-latency": "Intermittent latency",
+          "one-way": "One-way traffic",
+          "connect-failure": "Cannot connect at all"
+        },
+        "trafficClass": {
+          "tcp": "TCP (generic)",
+          "udp": "UDP (generic)",
+          "icmp": "ICMP",
+          "dns": "DNS",
+          "tls": "TLS / HTTPS",
+          "http": "HTTP (cleartext)",
+          "mixed": "Mixed / not sure"
+        },
+        "intermediaries": {
+          "none": "None known",
+          "firewall": "Firewall",
+          "nat-snat": "NAT / SNAT",
+          "load-balancer": "Load balancer",
+          "proxy-waf": "Proxy / WAF",
+          "vpn-gateway": "VPN gateway",
+          "multiple": "Multiple devices",
+          "unknown": "Unknown"
+        },
+        "transformation": {
+          "none": "None known",
+          "address-translation": "Address translation",
+          "tls-termination": "TLS termination mid-path",
+          "protocol-proxying": "Protocol proxying (two sessions)",
+          "auth-redirect": "Authentication redirect (IdP)",
+          "multiple": "Multiple transformations",
+          "unknown": "Unknown"
+        },
+        "access": {
+          "client-only": "Client side only",
+          "server-only": "Server side only",
+          "one-intermediary": "One intermediary only",
+          "both-endpoints": "Both endpoints",
+          "endpoint-plus-intermediary": "An endpoint plus an intermediary",
+          "multiple-points": "Multiple points",
+          "unknown": "Not established yet"
+        },
+        "timeBehavior": {
+          "constant": "Constant",
+          "intermittent": "Intermittent / random",
+          "change-related": "Started after a change",
+          "load-related": "Under load",
+          "client-specific": "Only some clients",
+          "location-specific": "Only some locations",
+          "unknown": "Unknown"
+        },
+        "preset": {
+          "generic": "Generic (vendor-neutral)",
+          "load-balancer": "Load balancer",
+          "dns": "DNS",
+          "tls-pki": "TLS / PKI",
+          "firewall": "Firewall"
+        }
+      },
+      "notes": {
+        "summary": "Labels and notes (export only)",
+        "hint": "Free text here goes ONLY into the exported plan - it never influences the rules.",
+        "labels": "Endpoint labels",
+        "labelsPh": "e.g. app-frontend -> payments-api",
+        "reference": "Incident / change reference",
+        "referencePh": "e.g. INC-4211",
+        "free": "Notes"
+      },
+      "signal": {
+        "strong": "strong",
+        "moderate": "moderate",
+        "weak": "weak"
+      },
+      "results": {
+        "phase-1": "Phase 1 - minimum viable capture set",
+        "phase-2": "Phase 2 - expansion if phase 1 is inconclusive",
+        "phaseEmpty": "No scored points - establish the path and access first.",
+        "points": "Capture points, ranked",
+        "filter": "Filter template",
+        "matrix": "Interpretation matrix - decide in advance what it would mean",
+        "supports": "Supports",
+        "weakens": "Weakens",
+        "checklist": "Discipline checklist",
+        "whyHeading": "Why these points? (rule trail)",
+        "whyIntro": "Every point, phase, and warning traces to a fired rule below - nothing else influences the plan.",
+        "copyMd": "Copy plan (Markdown)",
+        "copied": "Copied",
+        "downloadMd": "Download .md",
+        "privacy": "Everything runs in your browser. The plan is advisory: capture authorization, retention, and interpretation remain yours."
+      },
+      "name": "Packet Capture Plan Builder",
+      "blurb": "Command builders answer how to capture; this answers where, why, and what it would mean. Describe the path and the symptom; a 35-rule original registry designs a phased capture plan: ranked points on named boundaries, expected observations, an interpretation matrix with supports and weakens decided before collection, and sync/authorization discipline. It plans captures - it never ingests them.",
+      "emptyState": "Pick the path archetype and symptom above (or load the Example) - the plan appears as you choose.",
+      "runsLocally": "Runs entirely in your browser - nothing you select or type leaves this page."
+    },
+    "flow-path-reasoner": {
+      "example": "Example",
+      "clear": "Clear",
+      "intro": "Describe the path as you believe it runs; a fixed {rules}-rule registry builds the model: the hop chain, side-flows, TLS segments, transformation points - and the failure-domain candidates the ambiguities imply. The map is a proposed model, never discovered topology, and unknowns stay visibly unknown.",
+      "form": {
+        "heading": "Describe the path as you believe it runs",
+        "archetype": "Path archetype",
+        "resolution": "Name resolution",
+        "intermediaries": "Intermediaries",
+        "transformation": "Address transformation",
+        "tls": "TLS behavior",
+        "auth": "Authentication flow",
+        "returnPath": "Return path",
+        "preset": "Command-family preset"
+      },
+      "options": {
+        "archetype": {
+          "direct": "Direct client to service",
+          "internet-published": "Internet to a published application",
+          "load-balancer": "Client to load balancer to pool",
+          "proxy-waf": "Through a proxy / WAF",
+          "site-to-site-vpn": "Over a site-to-site VPN",
+          "outbound-sse": "Outbound via SSE / proxy",
+          "identity-federated": "Identity-federated application",
+          "east-west": "Internal east-west",
+          "unknown-mixed": "Mixed or unknown"
+        },
+        "resolution": {
+          "public-dns": "Public DNS",
+          "private-dns": "Private DNS",
+          "split-horizon": "Split-horizon",
+          "hosts-static": "Hosts file / static",
+          "service-discovery": "Service discovery",
+          "multiple": "Multiple mechanisms",
+          "unknown": "Unknown"
+        },
+        "intermediaries": {
+          "none": "None",
+          "firewall": "Firewall",
+          "load-balancer": "Load balancer",
+          "proxy-waf": "Proxy / WAF",
+          "vpn": "VPN",
+          "sse-casb": "SSE / CASB",
+          "multiple": "Multiple",
+          "unknown": "Unknown"
+        },
+        "transformation": {
+          "none": "None",
+          "dnat": "DNAT (destination rewritten)",
+          "snat": "SNAT (source rewritten)",
+          "both": "Both DNAT and SNAT",
+          "proxy-source": "Proxy-originated source",
+          "multiple": "Multiple",
+          "unknown": "Unknown"
+        },
+        "tls": {
+          "end-to-end": "End-to-end",
+          "terminate-once": "Terminates once mid-path",
+          "terminate-reencrypt": "Terminates and re-encrypts",
+          "multiple-terminations": "Multiple termination points",
+          "plaintext": "Plaintext",
+          "unknown": "Unknown"
+        },
+        "auth": {
+          "none": "None",
+          "local": "Local to the application",
+          "redirect-idp": "Redirect to an IdP",
+          "agent-connector": "Agent or connector",
+          "multiple": "Multiple",
+          "unknown": "Unknown"
+        },
+        "returnPath": {
+          "known-symmetric": "Known symmetric",
+          "known-asymmetric": "Known asymmetric",
+          "policy-routed": "Policy-routed",
+          "multiple-exits": "Multiple exits",
+          "unknown": "Unknown"
+        },
+        "preset": {
+          "generic": "Generic (vendor-neutral)",
+          "load-balancer": "Load balancer",
+          "dns": "DNS",
+          "tls-pki": "TLS / PKI",
+          "firewall": "Firewall"
+        }
+      },
+      "notes": {
+        "summary": "Labels and notes (export only)",
+        "hint": "Free text here goes ONLY into the exported map - it never influences the rules.",
+        "title": "Map title",
+        "nodeLabels": "Node labels",
+        "nodeLabelsPh": "e.g. branch-fw = FGT-201F, app = payments",
+        "free": "Notes"
+      },
+      "signal": {
+        "strong": "strong",
+        "moderate": "moderate",
+        "weak": "weak"
+      },
+      "results": {
+        "map": "The modeled path",
+        "mapTitle": "Flow path map",
+        "mapDesc": "The forward hop chain as modeled from the selections, with transformation and TLS markers on each node.",
+        "mapModel": "Canonical assumed order — a proposed model to verify with the hop owners, not discovered topology.",
+        "unknowns": "Explicitly unknown — establish these first",
+        "sideFlows": "Side-flows (outside the primary path)",
+        "tls": "TLS segments",
+        "transforms": "Address transformations",
+        "domains": "Failure-domain candidates, ranked",
+        "supports": "Supports",
+        "weakens": "Weakens",
+        "evidence": "Evidence points to establish",
+        "checklist": "Model-verification checklist",
+        "whyHeading": "Why this model? (rule trail)",
+        "whyIntro": "Every domain, warning, and checklist line traces to a fired rule below — nothing else influences the model.",
+        "copyMd": "Copy map (Markdown)",
+        "copied": "Copied",
+        "downloadMd": "Download .md",
+        "privacy": "Everything runs in your browser. The map describes internal topology — keep it local and share deliberately."
+      },
+      "name": "Flow Path Reasoner",
+      "blurb": "The senior skill is refusing to troubleshoot until the path is understood. Seven selections build a canonical hop map with side-flows, TLS segments, rewrite points, and ranked failure-domain candidates - and unknowns stay visibly unknown.",
+      "emptyState": "Describe the path above and the modeled map appears here - hops, side-flows, TLS segments, and the failure domains the ambiguities imply.",
+      "runsLocally": "Runs entirely in your browser. The map is a proposed model from your selections, never discovered topology - and free-text labels flow only into the export."
+    },
+    "health-snapshot-comparator": {
+      "name": "Before/After Health Snapshot Comparator",
+      "blurb": "You declare the states, the tool gates the conclusion: seven selections produce a tiered comparison report - baseline quality, a churn-classed dimension catalog, delta-interpretation guidance, and the continue / observe / investigate / hold-rollback-ready gate. Never labels a change successful on green components alone.",
+      "emptyState": "Declare the comparison above - context, target, baseline confidence, after-state, window, churn - and the gated report appears here.",
+      "runsLocally": "Runs entirely in your browser. This tool never ingests state data and never diffs anything: you declare the states, the tool gates the conclusion - and free text flows only into the export.",
+      "example": "Example",
+      "clear": "Clear",
+      "intro": "Declare the comparison you are making - never the data itself. A fixed {rules}-rule registry gates what conclusion those declarations can honestly carry: you declare the states, the tool gates the conclusion. Green components alone never earn a pass.",
+      "form": {
+        "heading": "Declare the comparison",
+        "context": "Why are you comparing?",
+        "target": "Target class",
+        "scope": "Scope",
+        "beforeConfidence": "Baseline (before) confidence",
+        "afterState": "After-capture state",
+        "window": "Observation window",
+        "churn": "Expected churn",
+        "preset": "Command-family preset"
+      },
+      "options": {
+        "context": {
+          "post-change-validation": "Post-change validation",
+          "post-incident-recovery": "Post-incident recovery",
+          "migration-cutover": "Migration cutover",
+          "periodic-drift-check": "Periodic drift check",
+          "rollback-decision": "Rollback decision",
+          "unknown": "Unknown"
+        },
+        "target": {
+          "firewall": "Firewall",
+          "load-balancer": "Load balancer",
+          "dns": "DNS",
+          "switch-routing": "Switching / routing",
+          "proxy-sse": "Proxy / SSE",
+          "identity": "Identity",
+          "server-app": "Server / application",
+          "unknown": "Unknown"
+        },
+        "scope": {
+          "single-device": "Single device",
+          "ha-pair": "HA pair",
+          "cluster": "Cluster",
+          "service-population": "Service population",
+          "site": "Site",
+          "unknown": "Unknown"
+        },
+        "beforeConfidence": {
+          "captured-verified": "Captured and verified",
+          "captured-unverified": "Captured, not verified",
+          "from-memory": "From memory",
+          "assumed-healthy": "Assumed healthy",
+          "none": "No baseline"
+        },
+        "afterState": {
+          "captured-verified": "Captured and verified",
+          "captured-unverified": "Captured, not verified",
+          "partial": "Partial",
+          "none-yet": "Not captured yet"
+        },
+        "window": {
+          "immediate": "Immediate (minutes)",
+          "short": "Short (under 2 hours)",
+          "operational": "Operational (2-24 hours)",
+          "extended": "Extended (days or more)",
+          "unknown": "Unknown"
+        },
+        "churn": {
+          "none-frozen": "None - change freeze",
+          "low": "Low",
+          "normal": "Normal operational",
+          "high-dynamic": "High / dynamic",
+          "unknown": "Unknown"
+        },
+        "preset": {
+          "generic": "Generic (vendor-neutral)",
+          "load-balancer": "Load balancer",
+          "dns": "DNS",
+          "tls-pki": "TLS / PKI",
+          "firewall": "Firewall"
+        }
+      },
+      "notes": {
+        "summary": "Reference and notes (export only)",
+        "hint": "Free text here goes ONLY into the exported report - it never influences the rules.",
+        "title": "Report title",
+        "changeRef": "Change / ticket reference",
+        "changeRefPh": "e.g. CHG-2041",
+        "free": "Notes"
+      },
+      "verdict": {
+        "continue": "CONTINUE - at this tier, conditional",
+        "observe": "OBSERVE - keep watching before concluding",
+        "investigate": "INVESTIGATE - close the gaps before any conclusion",
+        "hold-rollback-ready": "HOLD ROLLBACK READY - keep it armed while the gaps close"
+      },
+      "churnClass": {
+        "stable": "stable",
+        "slow": "slow-moving",
+        "fast": "fast-moving"
+      },
+      "expectation": {
+        "should-match": "should match",
+        "read-with-care": "read with care",
+        "expected-drift": "expected drift"
+      },
+      "results": {
+        "gate": "The gate",
+        "upgrades": "Raises the tier",
+        "downgrades": "Drops the tier",
+        "baseline": "Baseline quality",
+        "gaps": "Validation completeness - declared gaps",
+        "dimensions": "Dimensions to compare (with delta interpretation)",
+        "supports": "Supports a finding",
+        "weakens": "Weakens a conclusion",
+        "checklist": "Checklist",
+        "whyHeading": "Why this gate? (rule trail)",
+        "whyIntro": "Every reason, warning, and checklist line traces to a fired rule below — nothing else influences the gate.",
+        "copyMd": "Copy report (Markdown)",
+        "copied": "Copied",
+        "downloadMd": "Download .md",
+        "privacy": "Everything runs in your browser. The report describes your change and environment — keep it local and share deliberately."
+      }
     }
   },
   "privacy_page": {
@@ -5358,8 +5732,8 @@
       "intro": "Ping Identity opens the identity era of this record - and it carries two heritages. The Denver federation pioneer behind PingFederate, and ForgeRock, the Norwegian fork that saved Sun Microsystems' open-source identity stack, were combined by Thoma Bravo in August 2023 into the platform this page profiles. In 2025 that alignment became formal training.",
       "s1Title": "PingFederate, studied properly",
       "s1Body": "In 2025 Rodolfo completed Ping Identity's official PingFederate training and earned the PingFederate Practitioner credential, deep-diving the federation server that turned SAML from a specification into enterprise plumbing. For someone who teaches access management on other platforms and builds SAML and OIDC tooling for this site, it was the natural next protocol stack to master from the inside.",
-      "s2Title": "The hub is open",
-      "s2Body": "The Ping Identity hub is live on this site, anchored by the identity toolset: the SAML decoder, the JWT and OIDC inspectors, and the PKCE and TOTP tools all carry the Ping tag. And in 2026 the chapter turned its page: Rodolfo is cleared as an authorized Ping Identity instructor, the fifth vendor in the teaching portfolio alongside F5, Fortinet, Netskope, and Extreme Networks.",
+      "s2Title": "Identity, decoded on this site",
+      "s2Body": "The identity toolset on this site decodes the same artifacts PingFederate and PingOne move in production: the SAML decoder, the JWT and OIDC inspectors, and the PKCE and TOTP tools all read the assertions, tokens, and flows federation runs on - locally, in the browser. The chapter's coursework runs through PingFederate practitioner training in 2025, and the federation patterns it teaches are exactly what those tools make visible.",
       "certs": "Authorized Ping Identity instructor (cleared 2026). PingFederate Practitioner (2025), earned through Ping Identity Training. Full detail on the credentials page.",
       "lineageTitle": "How two identity bloodlines became one",
       "lineageDesc": "Ping was founded on federation in 2002. Sun open-sourced its access stack as OpenSSO in 2005; when Oracle shelved it in 2010, five Sun engineers forked it as ForgeRock (OpenAM, OpenDJ) and took it to the NYSE. Thoma Bravo took both private in 2022 and combined them on August 23, 2023."
@@ -5367,12 +5741,12 @@
     "zscaler": {
       "name": "Zscaler",
       "years": "2026 – present",
-      "tagline": "The newest chapter: zero trust at cloud scale, with the instructor authorization in hand and the hub open.",
-      "intro": "Zscaler is the newest entry in this record, and the chapter is opening fast: the Zero Trust Exchange as teaching ground, a vendor hub already open on this site, and the instructor authorization cleared in 2026.",
+      "tagline": "Zero trust at cloud scale - the company that bet the perimeter would dissolve, and built the exchange that replaced it.",
+      "intro": "Zscaler enters this record carrying the thesis every earlier chapter kept testing: that the perimeter those firewalls and load balancers defended would dissolve, and that inspection would move into a cloud sitting between every user and every application. The Zero Trust Exchange is that bet built at planetary scale - one of the largest security clouds running - and its platform is now part of the curriculum this record teaches.",
       "s1Title": "Why Zscaler, why now",
       "s1Body": "Two decades of this record run through firewalls, load balancers, and the perimeters they defended; Zscaler is the company that bet earliest that the perimeter would dissolve into a global inspection cloud. Studying the Zero Trust Exchange, ZIA, and ZPA architectures is the natural continuation of the SSE work already underway in the Netskope chapter, from the other side of the same market.",
-      "s2Title": "The hub is open",
-      "s2Body": "The Zscaler hub is open, seeded by the passive-fingerprinting work: the JA4 and JA3 decoders carry the Zscaler tag, reading the TLS surface the Zero Trust Exchange inspects at scale, with more tooling to follow. And the authorization is in hand: Rodolfo is cleared as an authorized Zscaler instructor, the sixth vendor in the teaching portfolio.",
+      "s2Title": "Reading the TLS surface",
+      "s2Body": "The JA4 and JA3 decoders on this site read the same TLS surface the Zero Trust Exchange inspects at scale: the handshake a client offers before any policy fires, and everything it reveals. It is a natural pairing - a cloud that terminates and inspects the world's TLS, and a toolbox that teaches what those handshakes say - with more of that tooling to follow.",
       "certs": "Authorized Zscaler instructor (cleared 2026). Platform certifications will be recorded on the credentials page as they land."
     },
     "pulse": {
@@ -7032,7 +7406,9 @@
       "logStop": "Stop logging",
       "logStarted": "Disk log started - every line is written to the chosen file as it arrives.",
       "logStopped": "Disk log stopped and file closed.",
-      "logUnsupported": "Real-time disk logging needs the File System Access API (Chromium browsers - the same family Web Serial requires)."
+      "logUnsupported": "Real-time disk logging needs the File System Access API (Chromium browsers - the same family Web Serial requires).",
+      "interactive": "Type into console",
+      "interactiveHint": "Keys go to the device: Enter = line ending, Backspace = 0x7F, arrows = ANSI. Click outside to release."
     }
   },
   "devOut": {
@@ -8765,7 +9141,11 @@
     "innovationsTitle": "Key innovations",
     "marketsTitle": "Main markets",
     "analystTitle": "Analyst standing",
-    "personalChipLabel": "Rodolfo's chapter"
+    "personalChipLabel": "Rodolfo's chapter",
+    "contemporarySectionTitle": "The contemporaries - still writing their chapters",
+    "contemporarySectionNote": "Companies of the modern era whose stories are still unfolding - no training association; profiled for what they mean to the industry today.",
+    "contemporaryEyebrow": "Industry contemporary",
+    "contemporaryCardTag": "contemporary"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",

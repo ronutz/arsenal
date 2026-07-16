@@ -38,13 +38,16 @@ export interface VendorFamily {
 }
 
 /** Declared browse order - the four training-pillar vendors. */
+// Chronological by the start of each teaching chapter (PRIME 2026-07-16):
+// F5 2020, Extreme 2021, Fortinet 2024, Netskope 2025, Ping 2026, Zscaler 2026.
+// The vendor-hubs cards render in this order.
 export const VENDOR_FAMILIES: readonly VendorFamily[] = Object.freeze([
   { key: "f5", alwaysShow: true },
+  { key: "extreme", alwaysShow: false },
   { key: "fortinet", alwaysShow: false },
   { key: "netskope", alwaysShow: false },
-  { key: "extreme", alwaysShow: false },
-  { key: "zscaler", alwaysShow: false },
   { key: "ping", alwaysShow: false },
+  { key: "zscaler", alwaysShow: false },
 ]);
 
 /** vendor key -> supplementary hue (dot + soft border only). Provisional; tune here. */

@@ -11968,7 +11968,33 @@ main[data-view="list"] .boss-viewer-blurb {
   border-bottom: 1px solid var(--border-strong);
 }
 .ws-fs-bar .ws-fs-input { flex: 1; min-width: 140px; }
+/* The leftmost fullscreen symbol button (2026-07-16): glyph-forward, name in
+   title/aria; slightly larger so U+26F6 reads at a glance. */
+.ws-fsbtn { font-size: 1.05rem; line-height: 1; padding: 0.3rem 0.55rem; }
+/* Compact interpreter select inside the fullscreen bar. */
+.ws-fs-select { max-width: 9rem; }
 .ws-console-wrap--fs .ws-console { padding-top: 3.4rem; }
+/* Interactive terminal typing (2026-07-16): focused console shows an accent
+   ring; the hint chip floats at the wrap's top-right, out of the text flow. */
+.ws-console--interactive { cursor: text; }
+.ws-console--interactive:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -2px;
+}
+.ws-interactive-hint {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  z-index: 4;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  background: color-mix(in srgb, var(--surface-base) 82%, transparent);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 2px 7px;
+  pointer-events: none;
+}
+
 .ws-logging {
   color: var(--sev-high);
   border-color: var(--sev-high);

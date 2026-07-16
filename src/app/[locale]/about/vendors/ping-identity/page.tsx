@@ -5,6 +5,8 @@
 // OpenAM, OpenDS -> OpenDJ) - combined by Thoma Bravo on August 23, 2023.
 // Includes the genealogy diagram. PingFederate Practitioner 2025; hub open.
 // Authorized Ping Identity instructor since 2026 (PRIME 2026-07-15).
+// s2 authorization sentence REMOVED and section retitled (PRIME 2026-07-16):
+// the page now closes on the hub/toolset chapter like its siblings.
 // ============================================================================
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";

@@ -389,6 +389,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_fault_hypothesis_builder",
     "tag": "Operations & Fieldcraft"
   },
+  "flow-path-reasoner": {
+    "url": "https://ronutz.com/api/v1/flow-path-reasoner",
+    "method": "GET",
+    "op": "run_flow_path_reasoner",
+    "tag": "Operations & Fieldcraft"
+  },
   "fortios-sniffer-builder": {
     "url": "https://ronutz.com/api/v1/fortios-sniffer-builder",
     "method": "GET",
@@ -400,6 +406,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_hash",
     "tag": "Hashing"
+  },
+  "health-snapshot-comparator": {
+    "url": "https://ronutz.com/api/v1/health-snapshot-comparator",
+    "method": "GET",
+    "op": "run_health_snapshot_comparator",
+    "tag": "Operations & Fieldcraft"
   },
   "hmac": {
     "url": "https://ronutz.com/api/v1/hmac",
@@ -496,6 +508,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_pac_file_explainer",
     "tag": "Netskope SSE / SASE"
+  },
+  "packet-capture-plan-builder": {
+    "url": "https://ronutz.com/api/v1/packet-capture-plan-builder",
+    "method": "GET",
+    "op": "run_packet_capture_plan_builder",
+    "tag": "Operations & Fieldcraft"
   },
   "pkce": {
     "url": "https://ronutz.com/api/v1/pkce",

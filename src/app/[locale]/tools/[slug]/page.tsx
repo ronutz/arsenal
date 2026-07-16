@@ -168,6 +168,12 @@ import ChangeBlastRadiusMapperTool from "@/components/ChangeBlastRadiusMapperToo
 import { manifest as changeBlastRadiusMapperManifest } from "@/lib/tools/change-blast-radius-mapper";
 import TacEscalationPacketBuilderTool from "@/components/TacEscalationPacketBuilderTool";
 import { manifest as tacEscalationPacketBuilderManifest } from "@/lib/tools/tac-escalation-packet-builder";
+import PacketCapturePlanBuilderTool from "@/components/PacketCapturePlanBuilderTool";
+import { manifest as packetCapturePlanBuilderManifest } from "@/lib/tools/packet-capture-plan-builder";
+import FlowPathReasonerTool from "@/components/FlowPathReasonerTool";
+import { manifest as flowPathReasonerManifest } from "@/lib/tools/flow-path-reasoner";
+import HealthSnapshotComparatorTool from "@/components/HealthSnapshotComparatorTool";
+import { manifest as healthSnapshotComparatorManifest } from "@/lib/tools/health-snapshot-comparator";
 import { manifest as f5ServiceCheckManifest } from "@/lib/tools/f5-service-check-date";
 import F5BigipLicenseExplainerTool from "@/components/F5BigipLicenseExplainerTool";
 import { manifest as f5BigipLicenseManifest } from "@/lib/tools/f5-bigip-license-explainer";
@@ -283,6 +289,21 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: TacEscalationPacketBuilderTool,
     // Provenance is the original TAC-escalation ruleset (D-18): no URL, by nature.
     sources: tacEscalationPacketBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "packet-capture-plan-builder": {
+    Component: PacketCapturePlanBuilderTool,
+    // Provenance is the original capture-planning ruleset (D-18): no URL, by nature.
+    sources: packetCapturePlanBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "flow-path-reasoner": {
+    Component: FlowPathReasonerTool,
+    // Provenance is the original path-reasoning ruleset (D-18): no URL, by nature.
+    sources: flowPathReasonerManifest.sources.map((s) => ({ id: s.id, label: s.label })),
+  },
+  "health-snapshot-comparator": {
+    Component: HealthSnapshotComparatorTool,
+    // Provenance is the original comparison-gating ruleset (D-18): no URL, by nature.
+    sources: healthSnapshotComparatorManifest.sources.map((s) => ({ id: s.id, label: s.label })),
   },
   "f5-bigd-thread-calculator": {
     Component: F5BigdThreadCalculatorTool,

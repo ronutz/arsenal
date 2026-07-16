@@ -1,0 +1,29 @@
+---
+slug: baselines-before-you-need-them
+title: "Baselines Antes de Você Precisar Delas"
+summary: "Toda comparação é tão honesta quanto o seu lado mais fraco. A disciplina é baseline capturada antes das mudanças, confiança declarada em vez de saúde lembrada, janelas de observação que deixam a convergência falar, alfabetização de churn para os contadores que sempre se movem - e nunca chamar uma mudança de bem-sucedida só por componentes verdes."
+concepts: ["validação de mudanças", "baselines", "troubleshooting", "observabilidade", "rollback", "operações"]
+relatedTools: ["health-snapshot-comparator"]
+relatedArticles: ["capture-points-before-packets", "map-the-path-before-you-troubleshoot"]
+category: networking
+order: 14
+status: machine-draft
+updated: "2026-07-16"
+---
+"Está melhor ou pior do que antes?" é a pergunta que toda mudança, toda recuperação de incidente e toda migração acaba enfrentando - e ela assume silenciosamente algo que muitas vezes não existe: um *antes*. As falhas de validação mais caras raramente são comparações mal feitas; são comparações contra baselines que nunca foram capturadas, meio lembradas, ou simplesmente presumidas saudáveis porque ninguém estava reclamando na época. A disciplina não tem glamour e paga juros compostos: capture a baseline antes de precisar dela, e seja honesto sobre a qualidade dela quando usá-la.
+
+## Confiança declarada vale mais que saúde lembrada
+
+Baseline não é "tenho quase certeza de que o pool tinha quatro membros up". É uma captura - um export de configuração, uma listagem de status, um resultado de sonda - obtida por um caminho conhecido, verificada como o dispositivo certo e o escopo certo, e datada. No momento em que uma comparação começa, o primeiro ato honesto é declarar o que cada lado realmente é: capturado e verificado, capturado mas nunca aberto, reconstruído de memória, ou presumido. Essa declaração não é burocracia; é o teto do que a comparação pode concluir. Diferenças contra uma memória são histórias. Diferenças contra uma captura verificada são evidência.
+
+## Deixe a janela fazer o trabalho dela
+
+O estado pode parecer imaculado nos cinco minutos após uma mudança e desabar na primeira expiração de cache, na primeira onda de reautenticação, no primeiro job de backup, na primeira segunda-feira. Roteamento converge, sessões se restabelecem, certificados são revalidados, consumidores lentos reconectam no próprio ritmo - e nenhum deles falou numa janela imediata. Uma foto limpa tirada cedo demais não eleva nada; só diz que a mudança não falhou instantaneamente. A validação que respeita o tempo captura de novo depois de uma janela operacional e trata a captura imediata como checkpoint, não como veredito.
+
+## Alfabetização de churn: saber o que pode se mover
+
+Contagens de sessão se movem. Contadores de erro se movem. Volume de log se move. Num sistema vivo essas dimensões diferem entre dois momentos quaisquer, com ou sem mudança - e é exatamente por isso que o diff ingênuo produz pânico ou dormência. A alfabetização é classificar as dimensões pelo churn natural: estado de configuração e certificados apresentados não deveriam se mover sozinhos; adjacências e status de objetos se movem raramente e com significado; contadores se movem o tempo todo, e só penhascos de taxa, vazios ou classes de erro inéditas contam. Sob congelamento declarado a calibração inverte - tudo deveria ficar parado, o que torna qualquer deriva evidência afiada. Ler o movimento ordinário de um contador rápido como regressão é o falso alarme clássico; perder uma classe de erro inédita porque "logs sempre mudam" é a perda clássica.
+
+## Componentes verdes não são um serviço funcionando
+
+A última armadilha é a mais confortável: todas as checagens de componente passam, então a mudança é declarada bem-sucedida. Interfaces up, membros verdes, sync saudável, CPU normal - e o fluxo de login quebrado de um jeito que nenhuma dessas dimensões mede. Estado de componentes e comportamento de serviço são duas camadas, e a validação precisa das duas: pelo menos uma sonda fim a fim ou transação real ao lado das checagens de componente, com os dois vereditos registrados. Configuração inalterada não é saúde. Componentes verdes não são um serviço funcionando. E uma comparação que não sabe dizer qual camada validou ainda não terminou de validar.

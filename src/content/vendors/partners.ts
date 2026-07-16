@@ -2,7 +2,7 @@
 // src/content/vendors/partners.ts
 // ----------------------------------------------------------------------------
 // PARTNER & OTHER-VENDOR DATA - drives the non-career vendor pages linked from
-// the Vendors index. Two groups:
+// the Vendors index. Three groups:
 //
 //   group: "redu"  -> vendors Red Education is an AUTHORIZED training partner
 //                     for, but that Rodolfo does NOT personally deliver. These
@@ -27,7 +27,7 @@
 
 export interface PartnerVendor {
   slug: string;
-  group: "redu" | "other";
+  group: "redu" | "other" | "contemporary";
   /** Display name (current company for "other", the vendor for "redu"). */
   name: string;
   /** One-line positioning shown on the card and hero. */
@@ -614,6 +614,199 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Edson de Castro left DEC to build the Nova; Tracy Kidder's Pulitzer immortalized the Eagle; CLARiiON storage carried the DNA into EMC in 1999.",
     intro: "Data General was born from the industry's most famous walkout: Edson de Castro, designer of DEC's PDP-8, left when Ken Olsen shelved his next design, and the 1969 Nova - elegant, cheap, sixteen bits - forced the entire minicomputer market to respond. Tracy Kidder's The Soul of a New Machine made its Eagle project the most celebrated engineering story ever written.",
     body: ["The profile follows the Nova and Eclipse decades, the AViiON pivot, and the CLARiiON storage line whose 1999 acquisition by EMC seeded the midrange-storage dynasty that lives on at Dell today."],
+  },
+  // ---- Pioneer wave 3 (PRIME 2026-07-16): the deep bench. ----
+  {
+    slug: "marconi",
+    group: "other",
+    name: "Marconi - wireless itself, then the bubble",
+    tagline: "Guglielmo Marconi bridged the Atlantic in 1901; a century later the company bearing his name became telecom's starkest dot-com cautionary tale, carved up by Ericsson in 2006.",
+    intro: "Marconi is two stories a century apart: the man who made radio a business - transatlantic signals in 1901, the operators aboard Titanic in 1912 - and the GEC conglomerate that took his name in 1999, bet its fortune on telecom equipment at the bubble's exact top, and collapsed within two years. Few lineages contain both the birth of an industry and its most instructive corporate death.",
+    body: ["The profile follows the Wireless Telegraph and Signal Company through GEC's electronics empire, the 1999 renaming and acquisition spree, the 2001 collapse, and the 2006 Ericsson carve-up that ended the name in networking."],
+  },
+  {
+    slug: "wang",
+    group: "other",
+    name: "Wang Laboratories - the office before the PC",
+    tagline: "An Wang's core-memory patents funded a word-processing empire that owned the office of the late 1970s - and the PC unmade it inside a decade.",
+    intro: "Before the PC, the office ran on Wang: dedicated word-processing systems so dominant that secretaries listed 'Wang' as a skill. Dr. An Wang - who sold his magnetic-core memory patents to IBM and built the Massachusetts Miracle's signature company - saw the minicomputer and the office converge before almost anyone. The general-purpose PC running WordPerfect erased the category he created.",
+    body: ["From the 1951 Boston founding through the WPS and VS golden years, the failed succession, and the 1992 Chapter 11, the profile tells the sharpest single-product rise and fall in this section."],
+  },
+  {
+    slug: "tandem",
+    group: "other",
+    name: "Tandem Computers - the machine that never stops",
+    tagline: "Jimmy Treybig's NonStop architecture made fault tolerance a product in 1976; it still runs stock exchanges and card networks today, as HPE NonStop.",
+    intro: "Tandem built computers on one premise: no single point of failure - paired processors, mirrored everything, hardware and software designed so the system survives any one fault mid-transaction. ATMs, card networks, stock exchanges, and 911 systems standardized on NonStop, and half a century later the architecture is still sold, by HPE, doing the same jobs.",
+    body: ["The profile covers the 1974 founding, the process-pair architecture, the legendary company culture, the ServerNet interconnect whose ideas fed InfiniBand, and the 1997 Compaq acquisition that carried NonStop into HP."],
+  },
+  {
+    slug: "banyan",
+    group: "other",
+    name: "Banyan Systems - the directory pioneer",
+    tagline: "VINES and StreetTalk delivered a true global directory service years before NDS or Active Directory - and lost anyway; the idea won everywhere.",
+    intro: "Banyan solved enterprise networking's hardest problem first: StreetTalk, the global naming and directory service inside VINES, let a user log in anywhere on a worldwide network years before Novell's NDS or Microsoft's Active Directory existed. The United States Marine Corps ran on it. Being right early, against NetWare's channel and NT's bundling, was not enough.",
+    body: ["The profile pairs naturally with the Novell page: the 1983 founding, the Unix-based VINES architecture, StreetTalk's design lead, the loss of the platform war, and the quiet 2000s dissolution of the company whose core idea now runs every enterprise on earth."],
+  },
+  {
+    slug: "fujitsu",
+    group: "other",
+    name: "Fujitsu - Japan's computing standard-bearer",
+    tagline: "Born from a 1935 Fuji Electric spin-off (itself a Furukawa-Siemens venture), Fujitsu fought IBM with Amdahl, absorbed ICL, and built the K and Fugaku supercomputers.",
+    intro: "Fujitsu carries Japan's mainframe century: FACOM computers from the 1950s, the Amdahl partnership that took the IBM-compatible fight to IBM's own customers, the ICL acquisition that made it a European power, and the K and Fugaku machines that twice topped the world's supercomputer rankings. Its optical and network businesses wire a substantial share of the Pacific.",
+    body: ["The profile traces the Siemens-adjacent founding lineage, the plug-compatible wars, the services transformation into Japan's largest IT company, and the ARM-based Fugaku era."],
+  },
+  {
+    slug: "nec",
+    group: "other",
+    name: "NEC - Japan's first joint venture",
+    tagline: "Founded 1899 with Western Electric capital; NEAX switched the world's calls, the PC-98 owned Japan's PC market, and the C&C vision named the convergence everyone now lives in.",
+    intro: "NEC was Japan's first joint venture with foreign capital - Western Electric, 1899 - and grew into the country's communications backbone: NEAX exchanges, satellites, submarine cable systems, and the SX vector supercomputers behind the Earth Simulator. Its PC-8001 and PC-98 lines dominated Japan's personal-computer market for over a decade, and Koji Kobayashi's 1977 'C&C' - Computers and Communications - named the convergence this whole industry became.",
+    body: ["The profile covers the Western Electric founding, the switching and space decades, the PC-98 era, the world-number-one semiconductor years that ended in the Renesas merger, and today's biometrics and submarine-cable strengths."],
+  },
+  {
+    slug: "bell-labs-lucent-alcatel",
+    group: "other",
+    name: "Bell Labs, Lucent & Alcatel - the transistor's bloodline",
+    tagline: "The transistor, information theory, Unix, the laser, cellular - ten Nobel Prizes of foundations, spun into Lucent in 1996, merged with Alcatel in 2006, carried into Nokia in 2016.",
+    intro: "No institution shaped this industry more than Bell Telephone Laboratories: the 1947 transistor, Shannon's 1948 information theory, Unix and C, the CCD, the cellular concept. Its corporate afterlife - the record-setting Lucent IPO, the bubble's hardest fall, the Alcatel merger, the Nokia acquisition - is the industry's sharpest lesson that inventing the future and capturing its value are different skills.",
+    body: ["The profile covers the 1925 founding, the 1947-1969 invention run, the 1996 trivestiture and Lucent's rise and fall, Alcatel's CGE-to-ITT ascent, the 2006 merger, and the 2016 passage into Nokia - where Bell Labs continues."],
+  },
+  {
+    slug: "intel-amd",
+    group: "other",
+    name: "Intel & AMD - Fairchild's children: the x86 rivalry",
+    tagline: "The 4004, Moore's Law, and the second source that wrote AMD64 - one entry, because neither story parses without the other.",
+    intro: "Both companies walked out of Fairchild Semiconductor a year apart - Noyce and Moore in 1968, Jerry Sanders in 1969 - and spent the next half-century pricing computing for everyone. Intel invented the commercial microprocessor and set the industry's cadence; AMD went from licensed second source to the author of the 64-bit x86 instruction set the whole world (Intel included) now runs.",
+    body: ["The profile covers the Fairchild exodus, the 4004 and the IBM PC's dual-source mandate, the memory exit, the gigahertz race, the AMD64 irony, Zen's comeback, and the duopoly's diverging bets."],
+  },
+  {
+    slug: "rand",
+    group: "other",
+    name: "RAND Corporation - where packet switching was imagined",
+    tagline: "Paul Baran's 1964 'On Distributed Communications' argued a network with no center could survive anything - AT&T declined to build it; the internet did.",
+    intro: "A Santa Monica think tank, not a vendor - included on merit no vendor matches. RAND built the postwar decision sciences (game theory's workshop, linear programming, the Delphi method), ran early AI on its own JOHNNIAC, and employed the engineer whose eleven 1964 reports specified distributed, message-block, store-and-forward networking: the conceptual root of every router on these pages.",
+    body: ["The profile covers Project RAND's 1946 origins, the mathematical toolkit years, Baran's survivability argument and its parallel invention by Donald Davies, and the flow of the idea into the ARPANET."],
+  },
+  {
+    slug: "toshiba",
+    group: "other",
+    name: "Toshiba - the company that gave the world flash",
+    tagline: "Fujio Masuoka invented NOR and then NAND flash at Toshiba in the 1980s - every SSD, phone, and memory card descends from it; the T1100 started the laptop era.",
+    intro: "From an 1875 telegraph works founded by a maker of mechanical dolls to the conglomerate that invented flash memory and the mass-market laptop - and then, through the Westinghouse disaster and the accounting scandal, sold the memory crown jewels (today's Kioxia) and left the stock exchange after 74 years. One immortal contribution bracketed by a very mortal corporate story.",
+    body: ["The profile covers the Tanaka and Hakunetsusha roots, the 1939 merger, the JW-10 and T1100 firsts, Masuoka's NOR and NAND inventions, the DVD and HD DVD chapters, and the Westinghouse-to-Kioxia unwinding."],
+  },
+  {
+    slug: "hitachi",
+    group: "other",
+    name: "Hitachi - the industrial giant that stores the world",
+    tagline: "From a mine's five-horsepower motor in 1910 to VSP arrays, HGST drives, and Britain's express trains - the conglomerate whose storage lineage runs through every SAN.",
+    intro: "Namihei Odaira believed Japan should build its own machines; the repair shop he ran became one of the broadest engineering companies on earth. For this site's purposes the storage line matters most: the plug-compatible mainframe wars (and the 1982 FBI sting), Hitachi Data Systems' enterprise arrays, and the 2003 purchase of IBM's disk-drive business - the company that invented the hard drive, absorbed and carried forward.",
+    body: ["The profile covers the 1910 founding, rail from 1924 to the UK fleets, the mainframe era and the IBM case, HDS to Vantara, HGST to Western Digital, and the Lumada-era pivot to data."],
+  },
+  {
+    slug: "bull",
+    group: "other",
+    name: "Bull - Europe's computing champion",
+    tagline: "Punch-card wars against IBM in the 1930s, the prophetic Gamma 60, nationalization and privatization - and a final act building Europe's first exascale supercomputer.",
+    intro: "Founded on a Norwegian engineer's tabulator patents, Compagnie des Machines Bull spent ninety years as the definitive national champion: fighting IBM card format against card format, surviving GE and Honeywell ownership, nationalization under Mitterrand, and privatization - to end up, inside Atos/Eviden, building the BullSequana machines that power JUPITER, Europe's first exascale system. The GECOS field in /etc/passwd is its Unix-era fingerprint.",
+    body: ["The profile covers Fredrik Rosing Bull's patents, the Gamma 3 and Gamma 60, Plan Calcul and CII-Honeywell-Bull, the Groupe Bull years, the HPC pivot from Tera-10 to BullSequana, and the Atos/Eviden exascale finale."],
+  },
+  {
+    slug: "ncsa",
+    group: "other",
+    name: "NCSA - the campus lab that made the web visible",
+    tagline: "Mosaic gave the web a face in 1993; NCSA httpd's orphaned patches became Apache; NCSA Telnet networked a generation of campuses.",
+    intro: "A national supercomputing center whose side projects changed the world: Andreessen and Bina's Mosaic made the internet something you could see (and, via Spyglass, seeded Internet Explorer too), Rob McCool's httpd and CGI defined how the early web served and ran programs, and its patch community became the Apache HTTP Server. The Netscape page on this site is the sequel to this one.",
+    body: ["The profile covers the 1983 Black Proposal and 1986 founding, NCSA Telnet, Mosaic's 1993 explosion and its two browser-war descendants, httpd and CGI, and the birth of Apache from the orphaned patches."],
+  },
+  {
+    slug: "ciena",
+    group: "other",
+    name: "Ciena - the company that taught fiber to carry colors",
+    tagline: "The first commercial DWDM deployment (Sprint, 1996) multiplied installed fiber sixteenfold - and Ciena has compounded the optical layer ever since, Nortel inheritance included.",
+    intro: "David Huber's dense wavelength-division multiplexing turned one strand of glass into sixteen channels without digging a meter of trench - the 1996 Sprint deployment that changed long-haul economics overnight. Ciena survived the crash that killed its rivals, inherited Nortel's optical crown in 2010, and its WaveLogic coherent optics have made wavelength capacity a semiconductor curve.",
+    body: ["The profile covers the 1992 founding, the MultiWave 1600 and the record 1997 IPO, the crash years, the Nortel optical acquisition, and the coherent era from 40G to today's 800G class."],
+  },
+  {
+    slug: "sniffer-lineage",
+    group: "other",
+    name: "The Sniffer lineage - Network General to NetScout",
+    tagline: "The 1986 Sniffer made protocol analysis a profession; through Dolch luggables, Network Associates, and Arbor's DDoS telemetry, the whole bloodline converged on NetScout.",
+    intro: "One entry for five companies, because they are one story: Network General's Sniffer named the practice every engineer still uses, Volker Dolch's rugged luggables were its field chassis, the Network Associates merger and un-merger carried the brand through the roll-up era, Arbor Networks scaled packet thinking to internet-wide DDoS telemetry - and NetScout, founded two years before the Sniffer existed, became the house where the whole analyzer tradition came home.",
+    body: ["The profile covers the 1986 Sniffer, Sniffer University, the Dolch chassis, the 1997 NAI merger and 2004 rebirth, Arbor's Peakflow and ATLAS, and NetScout's 2007 and 2015 consolidating acquisitions."],
+  },
+  {
+    slug: "blue-coat-packeteer",
+    group: "other",
+    name: "Blue Coat & Packeteer - the checkpoint companies",
+    tagline: "CacheFlow's pivot made the proxy a security platform; PacketShaper created traffic shaping - together, the prehistory of the SSE category.",
+    intro: "Two 1996 companies that answered the same question - what happens at the checkpoint - for content and for bandwidth. Blue Coat (born CacheFlow) made the inline proxy the enterprise web's enforcement point, SSL inspection included; Packeteer's PacketShaper taught the WAN that traffic has identity. Merged in 2008, carried through Symantec into Broadcom, their architecture is what every cloud secure web gateway runs today.",
+    body: ["The profile covers the legendary CacheFlow IPO, the 2002 pivot to Blue Coat, PacketShaper's category creation, the 2008 acquisition, the private-equity years, and the Symantec-to-Broadcom passage."],
+  },
+  {
+    slug: "cyclades-avocent-vertiv",
+    group: "other",
+    name: "Cyclades, Avocent & Vertiv - the physical layer of uptime",
+    tagline: "A Brazilian-founded console-server pioneer, the KVM leaders, and Liebert's computer-room weather - consolidated into the company whose product is uptime itself.",
+    intro: "Cyclades - founded in Fremont by Brazilian engineers, an early Linux champion - built the out-of-band discipline: the console path that shares no fate with the network it manages. Through Avocent's KVM heritage and Emerson Network Power (whose other root is Ralph Liebert's 1965 precision cooling), the lineage became Vertiv: access, power, and cooling as one problem, now the constraint the AI build-out plans around. The name also earns an honorable footnote: Pouzin's CYCLADES research network, TCP/IP's credited French ancestor.",
+    body: ["The profile covers the 1989 Brazilian founding, the console-server category, the 2006 Avocent acquisition, Emerson Network Power and the Liebert root, the 2016 Vertiv carve-out, and the AI-density era."],
+  },
+  {
+    slug: "dell-force10",
+    group: "other",
+    name: "Dell & Force10 - the direct model and its fabric",
+    tagline: "A dorm-room assembler became the datacenter's broadest supplier - and the 10GbE pioneer it absorbed in 2011 became its switching lineage.",
+    intro: "Michael Dell's direct model reset how hardware reaches buyers; the 2013 take-private and the 2016 EMC acquisition - the largest technology deal in history - rebuilt the company around the datacenter. Inside it runs Force10's engineering: the 1999 startup whose purpose-built E-Series delivered line-rate 10 Gigabit Ethernet before anyone else, whose FTOS lineage survives as Dell's switching OS today.",
+    body: ["The profile covers the 1984 dorm-room founding and the direct model, Force10's E1200 and HPC fabrics, the 2011 acquisition, the take-private, the EMC megadeal, and the PowerSwitch present."],
+  },
+  {
+    slug: "zte",
+    group: "other",
+    name: "ZTE - China's other giant",
+    tagline: "Shenzhen 1985, top-four in 5G - and the 2018 denial order that made supply-chain dependency the industry's most vivid lesson.",
+    intro: "Founded two years before its Shenzhen neighbor Huawei, ZTE grew from digital switching into one of the world's four mobile-equipment majors. In April 2018 a US component ban halted the company within weeks; the $1.4 billion settlement that restarted it - fine, escrow, replaced management, embedded monitors - turned 'where does your silicon come from' into a board-level network-design question everywhere.",
+    body: ["The profile covers the 1985 founding, the ZXJ10 era, global scale through CDMA and handsets, the 2017 plea and 2018 denial-order crisis with its settlement, and the bifurcated 5G market ZTE now inhabits."],
+  },
+  {
+    slug: "fluke",
+    group: "other",
+    name: "Fluke - the meters and certifiers in every field bag",
+    tagline: "The 87 multimeter and the DSX CableAnalyzer - and a 2015 three-way split (Fortive, NetScout, NetAlly) worth knowing cold.",
+    intro: "John Fluke Sr.'s 1948 instruments company became the generic word for the multimeter itself, and Fluke Networks made cabling certification an instrument category with legal weight. The 2015 Danaher deal split the story: enterprise visibility went to NetScout (the handheld line later reborn as NetAlly), while cable certification stayed Fluke Networks under Fortive - one company, three present-day homes.",
+    body: ["The profile covers the 1948 founding, the 87, the DSP-to-DSX certification lineage, AirMagnet, the carefully-told 2015 split, and the Fortive present."],
+  },
+  {
+    slug: "dns-bind",
+    group: "other",
+    name: "DNS & BIND - the internet's phone book and its reference implementation",
+    tagline: "Mockapetris's 1983 design and Berkeley's software that ran it - delegation, caching, and forty years of the same wire format.",
+    intro: "Before the DNS, the internet's names lived in a text file everyone downloaded. Paul Mockapetris's 1983 design replaced it with a delegated, cached, planetary database - and four Berkeley grad students wrote BIND, the implementation that made 'running DNS' and 'running BIND' the same sentence for a quarter century.",
+    body: ["The profile covers HOSTS.TXT's collapse, RFC 882/883 and 1034/1035, the MX record, Vixie and ISC, BIND 9, the Kaminsky patch, the 2010 root signing, Dyn day, and the DoT/DoH era."],
+  },
+  {
+    slug: "http-gopher",
+    group: "other",
+    name: "HTTP & Gopher - the web's protocol and the rival it eclipsed",
+    tagline: "Two futures shipped in 1991; one spring of licensing decided between them - CERN gave the web away, Minnesota asked for money.",
+    intro: "Gopher was the better-organized system and for two years it was winning. Then, weeks apart in 1993, Minnesota announced server fees and CERN declared the web royalty-free forever - the cleanest natural experiment in protocol economics ever run. HTTP went on to replace its own transport twice without breaking a URL.",
+    body: ["The profile covers the 1989 CERN proposal and HTTP/0.9, Gopher's rise and Veronica, the spring-1993 licensing fork, Mosaic, the Host header, REST, and the HTTP/2-to-HTTP/3-over-QUIC arc this site's WAF material continues."],
+  },
+  {
+    slug: "nvidia",
+    group: "contemporary",
+    name: "Nvidia - the GPU company that runs the fabric",
+    tagline: "CUDA's decade-early bet, the AlexNet ignition, Mellanox - the network's biggest customer became one of its vendors.",
+    intro: "Nvidia named the GPU, made it programmable a decade before the world needed it, and became the platform of the AI era. For this site's readers the 2020 Mellanox acquisition is the hinge: InfiniBand, Spectrum-X Ethernet, and BlueField DPUs make Nvidia simultaneously the most demanding workload networks carry and a top-tier network vendor - both sides of the AI-fabric argument.",
+    body: ["The profile covers the 1993 founding, RIVA-to-GeForce survival and naming, CUDA, AlexNet, the Mellanox networking turn, the trillion-dollar ascent, and the NVLink/InfiniBand/Spectrum-X fabric wars."],
+  },
+  {
+    slug: "ubiquiti",
+    group: "contemporary",
+    name: "Ubiquiti - enterprise features at prosumer prices",
+    tagline: "airMAX armed the WISPs, UniFi made the controller model a $200 purchase - and two incidents every security reader should know cold.",
+    intro: "Robert Pera's bet was that big-vendor radio performance could ship at a fraction of the price, sold by community instead of a sales force. airMAX connected the places carriers skipped; UniFi became the default answer for small networks and a rising share of serious ones. Kept factual, its 2015 BEC fraud and 2020-21 insider case are canonical security teaching material.",
+    body: ["The profile covers the 2005 founding, the WISP world, UniFi and the 2011 IPO, the product-led model, and the two incidents on the public record."],
   },
 ];
 

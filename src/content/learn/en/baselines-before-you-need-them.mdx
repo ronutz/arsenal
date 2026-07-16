@@ -1,0 +1,29 @@
+---
+slug: baselines-before-you-need-them
+title: "Baselines Before You Need Them"
+summary: "Every comparison is only as honest as its weaker side. The discipline is captured baselines before changes, declared confidence instead of remembered health, observation windows that let convergence speak, churn literacy for the counters that always move - and never calling a change successful on green components alone."
+concepts: ["change validation", "baselines", "troubleshooting", "observability", "rollback", "operations"]
+relatedTools: ["health-snapshot-comparator"]
+relatedArticles: ["capture-points-before-packets", "map-the-path-before-you-troubleshoot"]
+category: networking
+order: 14
+status: machine-draft
+updated: "2026-07-16"
+---
+"Is it better or worse than before?" is the question every change, every incident recovery, and every migration eventually faces - and it quietly assumes something that often does not exist: a *before*. The most expensive validation failures are rarely bad comparisons; they are comparisons against baselines that were never captured, half-remembered, or simply assumed healthy because nobody was complaining at the time. The discipline is unglamorous and pays compound interest: capture the baseline before you need it, and be honest about its quality when you use it.
+
+## Declared confidence beats remembered health
+
+A baseline is not "I'm pretty sure the pool had four members up." It is a capture - a config export, a status listing, a probe result - taken through a known path, verified to be the right device and the right scope, and dated. The moment a comparison starts, the first honest act is declaring what each side actually is: captured and verified, captured but never opened, reconstructed from memory, or assumed. That declaration is not bureaucracy; it is the ceiling on what the comparison can conclude. Differences against a memory are stories. Differences against a verified capture are evidence.
+
+## Let the window do its work
+
+State can look immaculate in the five minutes after a change and fall over at the first cache expiry, the first re-authentication wave, the first backup job, the first Monday. Routing converges, sessions re-establish, certificates get re-validated, slow consumers reconnect on their own schedule - and none of them have spoken in an immediate window. A clean picture taken too early upgrades nothing; it only tells you the change did not fail instantly. Validation that respects time captures again after an operational window and treats the immediate capture as a checkpoint, not a verdict.
+
+## Churn literacy: knowing what is allowed to move
+
+Session counts move. Error counters move. Log volume moves. On a live system these dimensions differ between any two moments, change or no change - which is exactly why naive diffing produces either panic or numbness. The literacy is classifying dimensions by their natural churn: configuration state and presented certificates should not move on their own; adjacencies and object status move rarely and meaningfully; counters move constantly, and only rate cliffs, voids, or brand-new error classes count. Under a declared change freeze the calibration inverts - everything should hold still, which makes any drift sharp evidence. Reading a fast counter's ordinary movement as a regression is the classic false alarm; missing a brand-new error class because "logs always change" is the classic miss.
+
+## Green components are not a working service
+
+The last trap is the most comfortable one: every component check passes, so the change is declared successful. Interfaces up, members green, sync healthy, CPU normal - and the login flow broken in a way none of those dimensions measure. Component state and service behavior are two tiers, and validation needs both: at least one end-to-end probe or real transaction standing next to the component checks, with both verdicts recorded. Unchanged configuration is not health. Green components are not a working service. And a comparison that cannot say which tier it validated has not finished validating.

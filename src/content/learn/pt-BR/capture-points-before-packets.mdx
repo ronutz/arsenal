@@ -1,0 +1,29 @@
+---
+slug: capture-points-before-packets
+title: "Pontos de Captura Antes dos Pacotes"
+summary: "O instinto sob pressão é rodar tcpdump em qualquer lugar conveniente e encarar a enxurrada. O hábito sênior é o oposto: decidir onde observar, em que ordem e o que cada observação significaria - antes de coletar um único pacote. Evidência se projeta, não se pesca."
+concepts: ["captura de pacotes", "troubleshooting", "tcpdump", "evidência", "fronteiras de rede", "operações"]
+relatedTools: ["packet-capture-plan-builder"]
+relatedArticles: ["fault-isolation-first-hour", "root-cause-is-a-verb-not-a-noun"]
+category: networking
+order: 12
+status: machine-draft
+updated: "2026-07-16"
+---
+Há um momento em quase todo incidente escalado em que alguém diz "vamos pegar uma captura" - e a inicia onde o acesso for mais fácil. Vinte minutos depois existe um arquivo de dois gigabytes, um filtro que se revelou errado e nenhum acordo sobre o que a captura deveria provar. O problema nunca foi a ferramenta. O problema é que a captura foi coletada antes de alguém decidir que pergunta ela responderia. Planejar captura é projetar evidência: onde observar, em que ordem e - decidido de antemão - o que ver ou não ver algo estabeleceria.
+
+## Fronteiras, não conveniência
+
+Pacotes mudam de significado nas fronteiras: um NAT reescreve endereços, um balanceador divide uma conversa em duas, um proxy origina uma sessão nova rio acima, um gateway VPN embrulha tudo em ESP, um terminador TLS encerra um mundo criptográfico e inicia outro. Um ponto de captura merece o lugar quando está sobre uma dessas fronteiras, porque é ali que uma comparação localiza a falha. Duas capturas que abraçam um firewall respondem "o firewall comeu o pacote?" num olhar; uma captura única em lugar conveniente não responde quase nada, por maior que seja o arquivo. Quando o caminho tem transformação, o plano deve parear pontos através dela - e correlacionar fluxos por portas, números de sequência e tempo, nunca por endereços que um NAT já reescreveu.
+
+## Ausência também é evidência
+
+A observação mais subutilizada do trabalho com pacotes é o pacote que não está lá. Um SYN visível no cliente e ausente na captura do lado do servidor delimita a perda ao trecho entre eles; retransmissões presentes antes de um dispositivo e sumidas depois dele o acusam; uma requisição que nunca chega à origem enquanto o cliente segura um erro nomeia o intermediário que o escreveu. Nenhuma dessas conclusões vem de ler payload - vêm de comparar presença entre dois pontos sincronizados. Essa palavra, sincronizados, carrega a disciplina: para qualquer coisa intermitente, os relógios precisam concordar e as janelas precisam se sobrepor, ou a comparação fabricará uma história em vez de testar uma.
+
+## Decida o que significaria - primeiro
+
+O passo que separa um plano de uma pescaria é a matriz de interpretação: para cada conclusão candidata, escrever de antemão que observação a sustentaria e qual a enfraqueceria. "Se o handshake completa no VIP mas nenhuma conexão aparece do lado dos membros, o balanceador ou seu pool está implicado; se o lado da frente já não mostra SYN-ACK, o problema está antes dele." Fazer isso antes da coleta mantém a evidência honesta - impede que a captura seja lida como confirmação da teoria mais barulhenta quando o arquivo enfim abrir. Também mantém as capturas pequenas: um ponto que não pode mudar conclusão alguma não pertence à fase um.
+
+## Exposição mínima faz parte do plano
+
+Capturas de classes TLS e HTTP podem conter credenciais, tokens e conteúdo de usuários. Um plano digno de exportação diz isso: trunque para cabeçalhos quando a pergunta permitir, limite a duração, controle quem lê os arquivos e redija antes de compartilhar. E todo plano começa com a linha sem glamour que legitima o resto - confirme que você está autorizado a capturar em cada ponto e acorde o destino dos arquivos depois. Evidência coletada sem essa linha tem o costume de virar o incidente.

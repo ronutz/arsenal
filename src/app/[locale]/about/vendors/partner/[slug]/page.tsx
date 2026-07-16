@@ -34,7 +34,6 @@ import { cyberarkProfile } from "@/content/vendors/profiles/cyberark";
 import { riverbedProfile } from "@/content/vendors/profiles/riverbed";
 import { symantecProfile } from "@/content/vendors/profiles/symantec";
 import { avayaProfile } from "@/content/vendors/profiles/avaya";
-import { aristaProfile } from "@/content/vendors/profiles/arista";
 import { nutanixProfile } from "@/content/vendors/profiles/nutanix";
 import { redHatProfile } from "@/content/vendors/profiles/red-hat";
 import { paesslerProfile } from "@/content/vendors/profiles/paessler";
@@ -57,6 +56,31 @@ import { netscapeProfile } from "@/content/vendors/profiles/netscape";
 import { motorolaProfile } from "@/content/vendors/profiles/motorola";
 import { unisysProfile } from "@/content/vendors/profiles/unisys";
 import { dataGeneralProfile } from "@/content/vendors/profiles/data-general";
+import { marconiProfile } from "@/content/vendors/profiles/marconi";
+import { wangProfile } from "@/content/vendors/profiles/wang";
+import { tandemProfile } from "@/content/vendors/profiles/tandem";
+import { bellLabsLucentAlcatelProfile } from "@/content/vendors/profiles/bell-labs-lucent-alcatel";
+import { intelAmdProfile } from "@/content/vendors/profiles/intel-amd";
+import { randProfile } from "@/content/vendors/profiles/rand";
+import { toshibaProfile } from "@/content/vendors/profiles/toshiba";
+import { hitachiProfile } from "@/content/vendors/profiles/hitachi";
+import { bullProfile } from "@/content/vendors/profiles/bull";
+import { ncsaProfile } from "@/content/vendors/profiles/ncsa";
+import { cienaProfile } from "@/content/vendors/profiles/ciena";
+import { snifferLineageProfile } from "@/content/vendors/profiles/sniffer-lineage";
+import { blueCoatPacketeerProfile } from "@/content/vendors/profiles/blue-coat-packeteer";
+import { cycladesAvocentVertivProfile } from "@/content/vendors/profiles/cyclades-avocent-vertiv";
+import { dellForce10Profile } from "@/content/vendors/profiles/dell-force10";
+import { zteProfile } from "@/content/vendors/profiles/zte";
+import { flukeProfile } from "@/content/vendors/profiles/fluke";
+import { dnsBindProfile } from "@/content/vendors/profiles/dns-bind";
+import { httpGopherProfile } from "@/content/vendors/profiles/http-gopher";
+import { nvidiaProfile } from "@/content/vendors/profiles/nvidia";
+import { aristaProfile } from "@/content/vendors/profiles/arista";
+import { ubiquitiProfile } from "@/content/vendors/profiles/ubiquiti";
+import { banyanProfile } from "@/content/vendors/profiles/banyan";
+import { fujitsuProfile } from "@/content/vendors/profiles/fujitsu";
+import { necProfile } from "@/content/vendors/profiles/nec";
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
@@ -76,7 +100,6 @@ const PROFILES: Record<string, VendorProfile> = {
   [riverbedProfile.slug]: riverbedProfile,
   [symantecProfile.slug]: symantecProfile,
   [avayaProfile.slug]: avayaProfile,
-  [aristaProfile.slug]: aristaProfile,
   [nutanixProfile.slug]: nutanixProfile,
   [redHatProfile.slug]: redHatProfile,
   [paesslerProfile.slug]: paesslerProfile,
@@ -101,6 +124,32 @@ const PROFILES: Record<string, VendorProfile> = {
   [motorolaProfile.slug]: motorolaProfile,
   [unisysProfile.slug]: unisysProfile,
   [dataGeneralProfile.slug]: dataGeneralProfile,
+  // Pioneer wave 3 (PRIME 2026-07-16).
+  [marconiProfile.slug]: marconiProfile,
+  [wangProfile.slug]: wangProfile,
+  [tandemProfile.slug]: tandemProfile,
+  [bellLabsLucentAlcatelProfile.slug]: bellLabsLucentAlcatelProfile,
+  [intelAmdProfile.slug]: intelAmdProfile,
+  [randProfile.slug]: randProfile,
+  [toshibaProfile.slug]: toshibaProfile,
+  [hitachiProfile.slug]: hitachiProfile,
+  [bullProfile.slug]: bullProfile,
+  [ncsaProfile.slug]: ncsaProfile,
+  [cienaProfile.slug]: cienaProfile,
+  [snifferLineageProfile.slug]: snifferLineageProfile,
+  [blueCoatPacketeerProfile.slug]: blueCoatPacketeerProfile,
+  [cycladesAvocentVertivProfile.slug]: cycladesAvocentVertivProfile,
+  [dellForce10Profile.slug]: dellForce10Profile,
+  [zteProfile.slug]: zteProfile,
+  [flukeProfile.slug]: flukeProfile,
+  [dnsBindProfile.slug]: dnsBindProfile,
+  [httpGopherProfile.slug]: httpGopherProfile,
+  [nvidiaProfile.slug]: nvidiaProfile,
+  [aristaProfile.slug]: aristaProfile,
+  [ubiquitiProfile.slug]: ubiquitiProfile,
+  [banyanProfile.slug]: banyanProfile,
+  [fujitsuProfile.slug]: fujitsuProfile,
+  [necProfile.slug]: necProfile,
 };
 
 export function generateStaticParams() {
@@ -141,7 +190,7 @@ export default async function PartnerVendorPage({
                 ← {t("backToVendors")}
               </Link>
               <p className="vendor-years mono">
-                {isRedu ? tp("reduEyebrow") : tp("otherEyebrow")}
+                {isRedu ? tp("reduEyebrow") : vendor.group === "contemporary" ? tp("contemporaryEyebrow") : tp("otherEyebrow")}
               </p>
               <h1 className="vendor-name">{vendor.name}</h1>
               <p className="vendor-tagline">{vendor.tagline}</p>
