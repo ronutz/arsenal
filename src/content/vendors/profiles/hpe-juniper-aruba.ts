@@ -67,6 +67,7 @@ export const hpeJuniperArubaProfile: VendorProfile = {
     { year: 2019, title: "Juniper acquires Mist Systems", detail: "Closed April 1, 2019: AI-driven, cloud-managed Wi-Fi and the Marvis virtual network assistant - the technology that reframed Juniper's enterprise story.", sourceNote: "Announced at $405M; Juniper's 10-Q records $359.2M total consideration." },
     { year: 2024, title: "HPE announces the Juniper acquisition (~$14B)", detail: "January 9, 2024: an all-cash agreement at $40.00 per share, approximately $14B in equity value." },
     { year: 2025, title: "DOJ suit, settlement, and close", detail: "The DOJ sues on January 30, 2025; a June 28 settlement requires divesting HPE's Instant On business and licensing Juniper's Mist AIOps source code; the merger closes July 2, 2025 for approximately $13.4B in cash. Juniper becomes the heart of HPE Networking.", sourceNote: "HPE 10-K FY2025; HPE/Juniper 8-K, Jun 28, 2025." },
+    { year: 2009, personal: true, title: "Rodolfo's chapter: inside Juniper", detail: "2009 to 2010: Rodolfo works at Juniper Networks in Brazil, representing the MX and SRX era portfolio - years that overlap the birth of Junos Pulse, a line that later re-crossed his path in distribution. The NetScreen and Juniper career page tells the chapter in full." },
   ],
   products: [
     { name: "Junos OS", what: "One operating system across Juniper routing, switching, and security since 1998." },

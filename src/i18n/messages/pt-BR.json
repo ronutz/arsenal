@@ -24,7 +24,19 @@
     "home": "Início",
     "breadcrumb": "Trilha de navegação",
     "vendors": "Fornecedores",
-    "industry": "Indústria"
+    "industry": "Indústria",
+    "network": "Redes",
+    "security": "Segurança",
+    "identity": "Identidade",
+    "glossary": "Glossário",
+    "studyGuides": "Guias de estudo",
+    "careerRecord": "O registro de carreira",
+    "credentials": "Credenciais",
+    "changelog": "Changelog",
+    "roadmap": "Roadmap",
+    "contribute": "Contribuir",
+    "colophon": "Colofão",
+    "devFun": "Laboratório de diversão"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -5022,7 +5034,8 @@
     "settings": "Configurações",
     "source": "Código-fonte",
     "disclaimer": "Aviso legal",
-    "glossary": "Glossário"
+    "glossary": "Glossário",
+    "sitemap": "sitemap"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -5084,7 +5097,7 @@
       "f5channel": "Engenharia de vendas e pré-vendas voltada ao canal para a F5, com capacitação técnica, execução de provas de conceito e treinamento de parceiros ao longo da distribuição.",
       "rededucation": "Instrutor de treinamento autorizado que ministra cursos oficiais e certificados sobre F5, Fortinet, Extreme Networks e Netskope para organizações no mundo todo.",
       "fullHistory": "Ler a história completa",
-      "vendorsLink": "Fabricantes com quem trabalhei",
+      "vendorsLink": "O registro de carreira",
       "lineagesLink": "Linhagens e aquisições de fornecedores"
     },
     "origins": {
@@ -5193,8 +5206,8 @@
     }
   },
   "vendors": {
-    "indexTitle": "Fabricantes",
-    "indexLede": "As empresas de redes e segurança cuja tecnologia moldou esta carreira, desde o cabo. São relações do passado; as plataformas ensinadas hoje estão em Treinamentos.",
+    "indexTitle": "O registro de carreira",
+    "indexLede": "Cada fornecedor de uma carreira desde 1996, contado capítulo a capítulo - das guerras dos hubs às plataformas ensinadas hoje. A árvore genealógica mais ampla da indústria, incluindo os parceiros ensinados ao lado delas, vive em Indústria.",
     "backToVendors": "Todos os fabricantes",
     "backToAbout": "Sobre",
     "technologies": "Tecnologias",
@@ -5372,7 +5385,10 @@
       "s2Title": "Um produto, cinco bandeiras",
       "s2Body": "O produto que Rodolfo distribuía carregava mais história que muitas empresas: nasceu como o Instant Virtual Extranet da Neoteris, o appliance que definiu o SSL VPN sem cliente; foi adquirido pela NetScreen em 2003; entrou na Juniper com a aquisição da NetScreen em 2004, onde virou a série SA e depois o Junos Pulse - o capítulo que se sobrepôs aos anos do próprio Rodolfo dentro da Juniper. A Siris Capital destacou o negócio em 2014 como Pulse Secure, e a Ivanti concluiu sua aquisição em 1º de dezembro de 2020, ao lado da MobileIron - a genealogia completa está nesta página, abaixo, e o capítulo NetScreen tem página própria neste registro.",
       "certs": "Sem certificações específicas de Pulse; o trabalho foi de pré-vendas e capacitação no lado do distribuidor. A linhagem de acesso seguro continua hoje como Ivanti Connect Secure."
-    }
+    },
+    "industryPointerTitle": "A árvore genealógica mais ampla",
+    "industryPointerBody": "As linhagens pesquisadas a fundo dos parceiros de treinamento da Red Education e dos pioneiros que moldaram esta indústria - de Check Point a Nortel, de Symantec a Madge - vivem na página Indústria.",
+    "industryPointerLink": "Explorar as linhagens da indústria"
   },
   "training": {
     "eyebrow": "Treinamentos que ministro",
@@ -6324,7 +6340,10 @@
     "hubMapDetail": "As famílias de ferramentas deste hub, em ordem.",
     "hubMapLabel": "Ir para uma seção de família",
     "manPageDetail": "Leia a documentação completa desta ferramenta sem sair da página.",
-    "manPageLabel": "Abrir o manual"
+    "manPageLabel": "Abrir o manual",
+    "actionGreenRoom": "Sala verde - luz ambiente em tela cheia",
+    "actionRedRoom": "Sala vermelha - tela de visão noturna",
+    "roomHint": "Qualquer tecla ou clique para sair"
   },
   "settings_page": {
     "eyebrow": "Preferências",
@@ -7006,7 +7025,14 @@
       "snippets": "Trechos",
       "hexView": "Hex",
       "hexEmpty": "Nenhum byte capturado ainda.",
-      "os_voss": "VOSS (Fabric)"
+      "os_voss": "VOSS (Fabric)",
+      "fullscreen": "Tela cheia",
+      "exitFullscreen": "Sair da tela cheia",
+      "logToDisk": "Registrar em disco",
+      "logStop": "Parar registro",
+      "logStarted": "Registro em disco iniciado - cada linha é gravada no arquivo escolhido assim que chega.",
+      "logStopped": "Registro em disco encerrado e arquivo fechado.",
+      "logUnsupported": "O registro em disco em tempo real requer a File System Access API (navegadores Chromium - a mesma família exigida pelo Web Serial)."
     }
   },
   "devOut": {
@@ -8738,15 +8764,32 @@
     "productsTitle": "Produtos e soluções emblemáticos",
     "innovationsTitle": "Inovações-chave",
     "marketsTitle": "Principais mercados",
-    "analystTitle": "Posição nos relatórios de analistas"
+    "analystTitle": "Posição nos relatórios de analistas",
+    "personalChipLabel": "Capítulo do Rodolfo"
   },
   "industry": {
-    "metaTitle": "Indústria - histórias e linhagens de fabricantes",
-    "metaDescription": "Perfis de pesquisa aprofundada dos fabricantes de redes e segurança de uma carreira desde 1996, dos parceiros de treinamento ensinados ao lado deles e das linhagens corporativas que os conectam.",
+    "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
+    "metaDescription": "Genealogias corporativas pesquisadas a fundo da indústria de redes e segurança: fundações, aquisições e onde cada linhagem foi parar. Escrito a partir de fontes primárias.",
     "eyebrow": "Indústria",
     "title": "A indústria, vista de dentro",
-    "lede": "Histórias de pesquisa aprofundada sobre os fabricantes de uma carreira desde 1996, os parceiros ensinados ao lado deles e as linhagens corporativas que os conectam. Escritas a partir de fontes primárias: registros na SEC, relatórios de investigação e a imprensa especializada de cada época.",
+    "lede": "As genealogias corporativas de redes e segurança: quem fundou cada empresa, o que construíram, quem comprou quem e onde cada linhagem foi parar. Escrito a partir de fontes primárias - registros na SEC, relatórios de inquérito e a imprensa especializada de cada época.",
     "careerTitle": "Os fabricantes da carreira",
-    "careerNote": "Relação direta de trabalho entre 1996 e 2020, em ordem cronológica do primeiro contato."
+    "careerNote": "Relação direta de trabalho entre 1996 e 2020, em ordem cronológica do primeiro contato.",
+    "careerStripTitle": "Os capítulos vividos por dentro",
+    "careerStripNote": "Estes catorze também são capítulos do registro do próprio autor - cada linha do tempo leva um marcador Capítulo do Rodolfo. A narrativa completa vive no registro de carreira.",
+    "careerStripLink": "Ler o registro de carreira"
+  },
+  "sitemap": {
+    "metaTitle": "Mapa do site - todas as seções do ronutz.com",
+    "metaDescription": "Um mapa legível do ronutz.com: ferramentas, artigos do Learn, o glossário, hubs de fornecedores, treinamento, as linhagens da indústria e o registro de carreira.",
+    "title": "Mapa do site",
+    "lede": "Todas as seções deste site em uma página. A versão legível por máquinas vive em sitemap.xml; esta é a humana.",
+    "gTools": "Ferramentas e referência",
+    "gLearn": "Aprendizado",
+    "gVendors": "Fornecedores e indústria",
+    "gAbout": "Sobre e carreira",
+    "gSite": "Site e meta",
+    "toolsCount": "{count} ferramentas determinísticas, todas com cálculo local",
+    "xmlNote": "Legível por máquinas: sitemap.xml"
   }
 }

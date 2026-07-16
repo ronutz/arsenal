@@ -40,6 +40,7 @@ export const pulseSecureProfile: VendorProfile = {
     { year: 2015, title: "Pulse One", detail: "Central policy management arrives, unifying secure access across endpoints and mobile devices to applications on-premises and in cloud - the portfolio widening beyond the gateway." },
     { year: 2017, title: "The Zeus thread arrives", detail: "Pulse acquires Brocade's virtual ADC business - the load-balancing lineage that began at Zeus Technology and passed through Riverbed as SteelApp - briefly uniting two storied product bloodlines under one small vendor." },
     { year: 2020, title: "Into Ivanti", detail: "September 28, 2020: Ivanti announces the acquisition of Pulse Secure from Siris (terms undisclosed) alongside MobileIron; both close December 1, 2020. Pulse Connect Secure becomes Ivanti Connect Secure - the remote-access line under its fifth flag.", sourceNote: "SEC 8-K and Ivanti/Siris announcements." },
+    { year: 2018, personal: true, title: "Rodolfo's chapter", detail: "2018 to 2019: Pulse Connect Secure ran through Rodolfo's ScanSource portfolio - pre-sales and partner enablement on a product he had first known from inside Juniper." },
   ],
   products: [
     { name: "Pulse Connect Secure", what: "The SSL VPN flagship - the Neoteris-lineage gateway, remote access for a generation of enterprises, now Ivanti Connect Secure." },

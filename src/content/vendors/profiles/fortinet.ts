@@ -42,6 +42,7 @@ export const fortinetProfile: VendorProfile = {
     { year: 2019, title: "Filling the SOC shelf", detail: "Bradford Networks (2018) had brought network access control as FortiNAC; late 2019 adds enSilo (endpoint detection, becoming FortiEDR) and CyberSponse (SOAR) - the operations side of the fabric fills in." },
     { year: 2024, title: "Lacework and the cloud-native push", detail: "June 2024: Fortinet acquires cloud security company Lacework, folding a CNAPP into its universal SASE and cloud story; data-loss-prevention specialist Next DLP follows in August." },
     { year: 2026, title: "The NSE program returns", detail: "July 15, 2026: Fortinet retires the FCF / FCA / FCP / FCSS certification names and restores the eight-level NSE 1-8 progression, converting active certifications forward - the training arc this site's credentials page records first-hand." },
+    { year: 2024, personal: true, title: "Rodolfo's chapter", detail: "The NSE ladder climbed from 2022, Fortinet Certified Trainer since 2024 - the FCP curriculum delivered as the portfolio's third teaching pillar." },
   ],
   products: [
     { name: "FortiGate", what: "The flagship next-generation firewall family, from desktop units to chassis and virtual and cloud editions, all running FortiOS with FortiASIC/NP-series acceleration." },

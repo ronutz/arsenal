@@ -18,6 +18,24 @@
 //   - Ctrl-C / Ctrl-Z / Esc and a serial Break
 //   - font-size control and terminal themes
 //   - bounded scrollback, pause-on-scroll-up + jump-to-bottom, in-buffer search
+//
+// 2026-07-16 feature wave (PRIME directives, ideas cross-checked against the
+// minimal reference implementation at webserialconsole.com - from which we
+// adopt the full standard baud ladder 4800..921600):
+//   - TWO-TIER SCROLLBACK: the DOM renders at most MAX_LINES memoized rows
+//     (fast), while sessionRef archives EVERY completed line since connect
+//     (capped at ARCHIVE_MAX as a memory guard). Copy/Save export the full
+//     archive, not just the visible window - huge scrollback with no render
+//     cost, exactly the "big but cheap" requirement.
+//   - REAL-TIME DISK LOG: File System Access API (showSaveFilePicker +
+//     createWritable); every line is appended to the chosen file as it
+//     arrives, through a promise queue that preserves order. Chromium-only,
+//     like Web Serial itself - feature-detected, honest sys-note otherwise.
+//   - FULLSCREEN CONSOLE: the console wrap alone goes fullscreen, with a
+//     compact control bar OVERLAYED at the top (exit, connect, clear, save,
+//     log, font size, send) - the terminal-controls-on-top layout PRIME asked
+//     for. Plus free RESIZE of the console via the native CSS resize handle
+//     on the wrap's lower-right corner.
 //   - advanced connection params (data bits / parity / stop bits / flow control)
 //
 // HONESTY, on the door and here: Web Serial is Chromium-only and permission-
@@ -61,14 +79,21 @@ function getSerial(): SerialLike | null {
 }
 
 // -- Presets ----------------------------------------------------------------
-const BAUD_PRESETS = [9600, 19200, 38400, 57600, 115200, 230400];
+// Full standard ladder (idea adopted from webserialconsole.com's picker),
+// extended down to 1200/2400 (PRIME 2026-07-16). Note on "1200/75": that
+// split rate is ITU-T V.23 - the videotex/Minitel asymmetric MODEM standard
+// (1200 bps down, 75 bps up). A UART runs one symmetric clock and the Web
+// Serial API's SerialOptions takes a single baudRate integer, so split rates
+// cannot be expressed here; 1200 is the plain symmetric rate that belongs.
+const BAUD_PRESETS = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600];
 const DATA_BITS = [8, 7];
 const STOP_BITS = [1, 2];
 const PARITIES = ["none", "even", "odd"] as const;
 const FLOW = ["none", "hardware"] as const;
 const LINE_ENDINGS: Record<string, string> = { cr: "\r", lf: "\n", crlf: "\r\n" };
 const THEMES = ["obsidian", "matrix", "amber", "paper"] as const;
-const MAX_LINES = 5000; // scrollback cap (memory bound)
+const MAX_LINES = 10000; // RENDERED scrollback cap (DOM bound; rows are memoized)
+const ARCHIVE_MAX = 200000; // full-session archive cap (memory guard, ~20-40 MB worst case)
 const RAW_MAX = 8192; // raw-byte capture cap for the hex view
 const FONT_MIN = 11;
 const FONT_MAX = 20;
@@ -139,6 +164,16 @@ export default function DevOtherWebSerialTool() {
   // ---- session buffer (completed lines + the in-progress trailing partial) --
   const [buf, setBuf] = useState<{ lines: LogLine[]; partial: string }>({ lines: [], partial: "" });
   const idRef = useRef(0);
+  // Full-session archive (two-tier scrollback): every completed line, already
+  // formatted (timestamp + marker + text), independent of the rendered window.
+  const sessionRef = useRef<string[]>([]);
+  // Real-time disk log: FS Access API writable + a promise queue for ordering.
+  const logWriterRef = useRef<FileSystemWritableFileStream | null>(null);
+  const logQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const [diskLog, setDiskLog] = useState(false);
+  // Fullscreen console state (the wrap element is the fullscreen target).
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const [isFs, setIsFs] = useState(false);
 
   // ---- input + sending ----
   const [line, setLine] = useState("");
@@ -174,6 +209,27 @@ export default function DevOtherWebSerialTool() {
   // Ingest a decoded chunk: split on newlines, completing the partial; each
   // completed line is timestamped now. The trailing (unterminated) remainder
   // stays as the partial, so a prompt with no newline still shows.
+  // Format a line the way exports want it (timestamps ALWAYS in the archive -
+  // logs without time are half a log), append to the archive, and stream it to
+  // the disk log if one is open. Called for every completed line of any kind.
+  const record = useCallback((kind: LineKind, text: string, ts: number) => {
+    const marker = kind === "tx" ? "> " : kind === "sys" ? "-- " : "";
+    const lineOut = `[${hhmmss(ts)}] ${marker}${text}`;
+    const arch = sessionRef.current;
+    arch.push(lineOut);
+    if (arch.length > ARCHIVE_MAX) arch.splice(0, arch.length - ARCHIVE_MAX);
+    const w = logWriterRef.current;
+    if (w) {
+      // Promise queue: writes stay ordered; one failure stops the log honestly.
+      logQueueRef.current = logQueueRef.current
+        .then(() => w.write(lineOut + "\n"))
+        .catch(() => {
+          logWriterRef.current = null;
+          setDiskLog(false);
+        });
+    }
+  }, []);
+
   const ingest = useCallback((chunk: string) => {
     setBuf((prev) => {
       let partial = prev.partial + chunk;
@@ -181,23 +237,28 @@ export default function DevOtherWebSerialTool() {
       let nl: number;
       while ((nl = partial.indexOf("\n")) >= 0) {
         const text = partial.slice(0, nl).replace(/\r$/, "");
-        lines.push({ id: idRef.current++, ts: Date.now(), kind: "rx", text });
+        const ts = Date.now();
+        record("rx", text, ts);
+        lines.push({ id: idRef.current++, ts, kind: "rx", text });
         partial = partial.slice(nl + 1);
       }
       return { lines: lines.length > MAX_LINES ? lines.slice(-MAX_LINES) : lines, partial };
     });
-  }, []);
+  }, [record]);
 
   // Push a complete line we generated ourselves (sent command or system note).
   const pushLine = useCallback((kind: LineKind, text: string) => {
+    const ts = Date.now();
+    record(kind, text, ts);
     setBuf((prev) => {
-      const lines = prev.lines.concat({ id: idRef.current++, ts: Date.now(), kind, text });
+      const lines = prev.lines.concat({ id: idRef.current++, ts, kind, text });
       return { lines: lines.length > MAX_LINES ? lines.slice(-MAX_LINES) : lines, partial: prev.partial };
     });
-  }, []);
+  }, [record]);
 
   const clear = useCallback(() => {
     setBuf({ lines: [], partial: "" });
+    sessionRef.current = []; // clearing clears the export archive too
     rawRef.current = new Uint8Array(0);
   }, []);
 
@@ -331,15 +392,14 @@ export default function DevOtherWebSerialTool() {
   }, [block, pasteDelay, sendText]);
 
   // ---- copy / download ------------------------------------------------------
+  // Copy/Save now export the FULL session archive (two-tier scrollback), so a
+  // long capture survives the rendered window's cap. Archive lines carry
+  // timestamps by design; the on-screen timestamps toggle affects display only.
   const fullText = useCallback(() => {
-    const body = buf.lines.map((l) => {
-      const ts = timestamps ? `[${hhmmss(l.ts)}] ` : "";
-      const marker = l.kind === "tx" ? "> " : l.kind === "sys" ? "-- " : "";
-      return ts + marker + l.text;
-    });
-    if (buf.partial) body.push((timestamps ? `[${hhmmss(Date.now())}] ` : "") + buf.partial);
+    const body = sessionRef.current.slice();
+    if (buf.partial) body.push(`[${hhmmss(Date.now())}] ${buf.partial}`);
     return body.join("\n");
-  }, [buf, timestamps]);
+  }, [buf.partial]);
 
   const copyAll = useCallback(async () => {
     try {
@@ -354,10 +414,77 @@ export default function DevOtherWebSerialTool() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "serial-session.txt";
+    a.download = "web-serial-session.txt";
     a.click();
     URL.revokeObjectURL(url);
   }, [fullText]);
+
+  // ---- real-time disk log (File System Access API; Chromium, like Web Serial) --
+  // LIFECYCLE (PRIME ruling 2026-07-16): the log SURVIVES port disconnects and
+  // reconnects within the page - it closes only on manual stop or on leaving
+  // the page (unmount must flush; FS Access writables do not outlive the
+  // document). Do not "fix" this into auto-close-on-disconnect.
+  const toggleDiskLog = useCallback(async () => {
+    if (logWriterRef.current) {
+      // Stop: drain the queue, close the file, note it in the console.
+      const w = logWriterRef.current;
+      logWriterRef.current = null;
+      setDiskLog(false);
+      try {
+        await logQueueRef.current;
+        await w.close();
+      } catch {
+        /* the file may already be gone; nothing sensible to do */
+      }
+      pushLine("sys", t("logStopped"));
+      return;
+    }
+    if (!("showSaveFilePicker" in window)) {
+      pushLine("sys", t("logUnsupported"));
+      return;
+    }
+    try {
+      const handle = await (
+        window as unknown as {
+          showSaveFilePicker: (o?: object) => Promise<FileSystemFileHandle>;
+        }
+      ).showSaveFilePicker({
+        suggestedName: `web-serial-log-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.txt`,
+        types: [{ description: "Log", accept: { "text/plain": [".txt", ".log"] } }],
+      });
+      const writable = await handle.createWritable();
+      logWriterRef.current = writable;
+      logQueueRef.current = Promise.resolve();
+      setDiskLog(true);
+      pushLine("sys", t("logStarted"));
+    } catch {
+      /* user cancelled the picker - not an error */
+    }
+  }, [pushLine, t]);
+
+  // Close an open log if the component unmounts (navigation away).
+  useEffect(() => {
+    return () => {
+      const w = logWriterRef.current;
+      if (w) {
+        logWriterRef.current = null;
+        logQueueRef.current.then(() => w.close()).catch(() => undefined);
+      }
+    };
+  }, []);
+
+  // ---- fullscreen console (the wrap alone; controls overlay on top) ---------
+  const toggleFs = useCallback(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void el.requestFullscreen();
+  }, []);
+  useEffect(() => {
+    const onChange = () => setIsFs(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
 
   // ---- autoscroll -----------------------------------------------------------
   useEffect(() => {
@@ -450,6 +577,12 @@ export default function DevOtherWebSerialTool() {
           )}
           <button type="button" className="b64-copy" onClick={copyAll} disabled={!buf.lines.length}>
             {t("copyAll")}
+          </button>
+          <button type="button" className={diskLog ? "b64-copy ws-logging" : "b64-copy"} onClick={toggleDiskLog}>
+            {diskLog ? t("logStop") : t("logToDisk")}
+          </button>
+          <button type="button" className="b64-copy" onClick={toggleFs}>
+            {t("fullscreen")}
           </button>
           <button type="button" className="b64-copy" onClick={download} disabled={!buf.lines.length}>
             {t("download")}
@@ -613,7 +746,38 @@ export default function DevOtherWebSerialTool() {
 
       {/* console + detected side panel */}
       <div className="ws-main">
-        <div className="ws-console-wrap">
+        <div className={isFs ? "ws-console-wrap ws-console-wrap--fs" : "ws-console-wrap"} ref={wrapRef}>
+          {/* Fullscreen-only control bar, OVERLAYED at the top of the console
+              window (PRIME 2026-07-16): the essentials without leaving
+              fullscreen - exit, session, export, log, font, and a send line. */}
+          {isFs && (
+            <div className="ws-fs-bar">
+              <button type="button" className="b64-copy" onClick={toggleFs}>{t("exitFullscreen")}</button>
+              {connected ? (
+                <button type="button" className="b64-copy" onClick={disconnect}>{t("disconnect")}</button>
+              ) : (
+                <button type="button" className="b64-copy" onClick={connect}>{t("connect")}</button>
+              )}
+              <button type="button" className="b64-copy" onClick={clear} disabled={empty}>{t("clear")}</button>
+              <button type="button" className="b64-copy" onClick={download} disabled={!buf.lines.length}>{t("download")}</button>
+              <button type="button" className={diskLog ? "b64-copy ws-logging" : "b64-copy"} onClick={toggleDiskLog}>
+                {diskLog ? t("logStop") : t("logToDisk")}
+              </button>
+              <span className="ws-fontctl">
+                <button type="button" className="ws-iconbtn" onClick={() => setFontSize((f) => Math.max(FONT_MIN, f - 1))} aria-label={t("fontSmaller")}>A-</button>
+                <button type="button" className="ws-iconbtn" onClick={() => setFontSize((f) => Math.min(FONT_MAX, f + 1))} aria-label={t("fontLarger")}>A+</button>
+              </span>
+              <input
+                className="tool-input ws-fs-input mono"
+                value={line}
+                onChange={(e) => setLine(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") send(); }}
+                placeholder={t("linePlaceholder")}
+                disabled={!connected}
+              />
+              <button type="button" className="b64-copy" onClick={send} disabled={!connected}>{t("send")}</button>
+            </div>
+          )}
           <pre
             ref={consoleRef}
             className={`ws-console mono ws-console--${theme}`}

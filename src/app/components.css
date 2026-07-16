@@ -11918,7 +11918,64 @@ main[data-view="list"] .boss-viewer-blurb {
   border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); cursor: pointer;
 }
 .ws-iconbtn:hover, .ws-keybtn:hover { border-color: var(--accent-primary); color: var(--text-primary); }
-.ws-console-wrap { position: relative; }
+.ws-console-wrap {
+  position: relative;
+  /* Free resize (PRIME 2026-07-16): native handle on the lower-right corner.
+     The wrap owns the size; the console fills it. */
+  resize: both;
+  overflow: hidden;
+  height: 26rem;
+  min-height: 12rem;
+  min-width: 300px;
+  max-width: 100%;
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.ws-console-wrap .ws-console {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  margin-top: 0;
+}
+/* Fullscreen console (PRIME 2026-07-16): the wrap alone is the fullscreen
+   element; resize is meaningless there, and the control bar overlays on top. */
+.ws-console-wrap--fs,
+.ws-console-wrap:fullscreen {
+  resize: none;
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  margin-top: 0;
+  background: #0a0e14;
+  padding: 0;
+}
+.ws-console-wrap--fs .ws-console { border-radius: 0; border: none; }
+.ws-fs-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: color-mix(in srgb, #0a0e14 78%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border-strong);
+}
+.ws-fs-bar .ws-fs-input { flex: 1; min-width: 140px; }
+.ws-console-wrap--fs .ws-console { padding-top: 3.4rem; }
+.ws-logging {
+  color: var(--sev-high);
+  border-color: var(--sev-high);
+  animation: ws-log-pulse 1.6s ease-in-out infinite;
+}
+@keyframes ws-log-pulse { 50% { opacity: 0.55; } }
+
 .ws-jump {
   position: absolute; right: 0.9rem; bottom: 0.9rem;
   padding: 0.3rem 0.75rem; font-size: 0.75rem; font-weight: 600;
@@ -13758,6 +13815,91 @@ main[data-view="list"] .boss-viewer-blurb {
   letter-spacing: 0.04em;
   margin-right: 0.35rem;
 }
+/* Ambient rooms (2026-07-16): full-screen solid-color utility screens on the
+   G/R shortcuts. Literal colors on purpose - these are physical light tools
+   (green: ambient light / improvised chroma; red: darkroom and night-vision,
+   preserving dark adaptation), not themed surfaces. Highest z-index on the
+   site; any key or click leaves. */
+.ambient-room {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+}
+.ambient-room--green { background: #00ff41; }
+.ambient-room--red { background: #ff0000; }
+.ambient-room-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.45);
+  padding-bottom: 18px;
+  user-select: none;
+}
+
+/* Human sitemap (2026-07-16): curated section map linked from the footer. */
+.sitemap-tools-count { color: var(--text-tertiary); font-size: 13px; margin-top: 4px; }
+.sitemap-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 28px;
+  margin-top: 28px;
+}
+.sitemap-group-title {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 6px;
+}
+.sitemap-links { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.sitemap-link { color: var(--text-primary); text-decoration: none; }
+.sitemap-link:hover { color: var(--accent-primary); }
+.sitemap-xml-note { margin-top: 32px; font-size: 12px; }
+
+/* Career chip strip on /industry (Option B, 2026-07-16): the personal record
+   as slim chronological chips - full cards live on the career record page. */
+.career-strip {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.career-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  text-decoration: none;
+  background: var(--surface-base);
+}
+.career-chip:hover { border-color: var(--accent-primary); }
+.career-chip-name { color: var(--text-primary); font-size: 14px; }
+.career-chip-years { color: var(--text-tertiary); font-size: 11px; }
+.vendor-index-pointer { margin-top: 14px; }
+
+/* Personal-involvement timeline marker (2026-07-16): events flagged
+   `personal` in a vendor profile carry an accent left edge and a small chip,
+   so Rodolfo's own chapter is findable inside any corporate timeline. */
+.lineage-deal--personal .lineage-deal-card {
+  border-left: 2px solid var(--accent-primary);
+}
+.lineage-deal-chip {
+  font-size: 10px;
+  color: var(--accent-primary);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 40%, transparent);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
 .lineage-deal-note {
   font-size: 0.75rem;
   color: var(--text-tertiary);

@@ -33,7 +33,7 @@ export async function generateMetadata({
 // route with its i18n key under devOther.tools.*.
 const OTHER_TOOLS = [
   { key: "pcapAnalyzer", href: "/dev/other/pcap-analyzer" },
-  { key: "serialConsole", href: "/dev/other/serial-console" },
+  { key: "serialConsole", href: "/dev/other/web-serial-console" },
   { key: "fingerprint", href: "/dev/other/fingerprint" },
   { key: "subnetDrill", href: "/dev/other/subnet-drill" },
 ] as const;

@@ -86,23 +86,31 @@ export default async function IndustryHubPage({
             </p>
 
             {/* Career vendors (worked with, 1996-2020, chronological). */}
+            {/* Career vendors as a compact chronological CHIP STRIP (Option B,
+                PRIME-ratified 2026-07-16): the encyclopedia keeps the partners
+                and pioneers as full cards; the personal record renders as slim
+                chips linking to the career pages, whose timelines carry the
+                "Rodolfo's chapter" markers. Full telling: /about/vendors. */}
             <div className="vendor-divider">
-              <h2 className="vendor-divider-title">{ti("careerTitle")}</h2>
-              <p className="vendor-divider-note">{ti("careerNote")}</p>
+              <h2 className="vendor-divider-title">{ti("careerStripTitle")}</h2>
+              <p className="vendor-divider-note">{ti("careerStripNote")}</p>
             </div>
-            <ul className="vendor-grid">
+            <ul className="career-strip">
               {CAREER_VENDORS.map((v) => (
                 <li key={v.slug}>
-                  <Link href={`/about/vendors/${v.slug}`} className="vendor-card">
-                    <span className="vendor-card-years mono">{t(`${v.key}.years`)}</span>
-                    <span className="vendor-card-name">{t(`${v.key}.name`)}</span>
-                    <span className="vendor-card-tagline">{t(`${v.key}.tagline`)}</span>
+                  <Link href={`/about/vendors/${v.slug}`} className="career-chip">
+                    <span className="career-chip-name">{t(`${v.key}.name`)}</span>
+                    <span className="career-chip-years mono">{t(`${v.key}.years`)}</span>
                   </Link>
                 </li>
               ))}
             </ul>
+            <p className="vendor-index-pointer">
+              <Link href="/about/vendors" className="btn btn-secondary">
+                {ti("careerStripLink")}
+              </Link>
+            </p>
 
-            {/* Red Education training partners. */}
             <div className="vendor-divider">
               <h2 className="vendor-divider-title">{tp("reduSectionTitle")}</h2>
               <p className="vendor-divider-note">{tp("reduSectionNote")}</p>

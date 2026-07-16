@@ -53,6 +53,41 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-16",
+    time: "09:00",
+    kind: "feature",
+    title: "The WebSerial console grows up",
+    body: "The serial console moved to its proper address, web-serial-console (a redirect waits at the old slug), and gained a real terminal feature set: free resizing from the lower-right corner, a fullscreen mode with the controls overlayed at the top of the console window, real-time logging straight to a file on disk through the File System Access API, and a two-tier scrollback - the screen renders a bounded window for speed while the full session is archived in memory, so Copy and Save always export everything since connect. The baud ladder now runs the full standard range from 1200 to 921600, a preset list adopted from the minimal webserialconsole.com reference.",
+  },
+  {
+    date: "2026-07-16",
+    time: "08:00",
+    kind: "content",
+    title: "Twelve pioneer giants join the industry lineages",
+    body: "Sun Microsystems, Silicon Graphics, Xerox, DEC, Nokia, Ericsson, Huawei, Siemens, Novell, Oracle, IBM, and SAP - the founders of the industry itself - each get the full lineage treatment on the Industry page: founding stories, timelines, and where every bloodline ended up, from Xerox PARC's 1973 Ethernet memo to Oracle's 2025 co-CEO handover, verified against SEC filings where the facts are recent.",
+  },
+  {
+    date: "2026-07-16",
+    time: "07:30",
+    kind: "feature",
+    title: "Two pages, two jobs: the career record and the industry encyclopedia",
+    body: "The vendors index and the Industry hub used to render the same three grids twice. Now each has one job: the career record (under About) tells the fourteen chapters of a career since 1996, with one pointer to the wider family tree; the Industry page is the encyclopedia - partners and pioneers as full cards, with the career reduced to a slim chronological strip whose pages carry the Rodolfo's chapter markers. Nothing moved URLs; everything gained a clear address.",
+  },
+  {
+    date: "2026-07-16",
+    time: "07:00",
+    kind: "feature",
+    title: "A human sitemap, and two ambient rooms",
+    body: "The footer's machine row now ends with a human-readable sitemap: every section of the site on one curated page, with the live tool count and a door to the XML version. And two new keyboard shortcuts join the set: G opens the green room and R the red room - full-screen solid-color utility screens, ambient light and night-vision respectively, any key or click to leave. Both are rebindable like every other key.",
+  },
+  {
+    date: "2026-07-16",
+    time: "05:00",
+    kind: "feature",
+    title: "Rodolfo's chapter markers on every vendor timeline",
+    body: "Every corporate timeline of a vendor from the career record now carries an explicit, visually marked entry for Rodolfo's own involvement - an accent edge and a small chip reading Rodolfo's chapter - so the personal connection is findable inside any company history at a glance. Seventeen markers across sixteen profiles, from Cabletron in 1996 to the Zscaler authorization in 2026, including the Juniper years on the HPE, Juniper, and Aruba lineage page and the distribution-side chapters on the McAfee, FireEye, and Trellix page.",
+  },
+  {
+    date: "2026-07-16",
     time: "01:30",
     kind: "content",
     title: "Ten partner lineages, the Pulse Secure chapter, and a footer with one job",

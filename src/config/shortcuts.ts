@@ -46,7 +46,7 @@ export interface ShortcutAction {
    * component switches on this. Kept as a closed union so the component and the
    * registry cannot drift.
    */
-  command?: "search-overlay" | "cheat-sheet" | "focus-search" | "boss-key";
+  command?: "search-overlay" | "cheat-sheet" | "focus-search" | "boss-key" | "green-room" | "red-room";
   /** i18n key (under the `shortcuts` namespace) for the human label. */
   labelKey: string;
 }
@@ -79,6 +79,12 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   { id: "cmd-focus-search", kind: "command", command: "focus-search", labelKey: "actionFocusSearch" },
   { id: "cmd-cheat-sheet", kind: "command", command: "cheat-sheet", labelKey: "actionCheatSheet" },
   { id: "cmd-boss", kind: "command", command: "boss-key", labelKey: "actionBoss" },
+  // Ambient light rooms (PRIME 2026-07-16): full-screen solid-color screens.
+  // Green = ambient work light / improvised chroma panel; red = the darkroom
+  // and night-ops classic, a screen that preserves dark adaptation. Any key
+  // or click leaves the room.
+  { id: "cmd-green-room", kind: "command", command: "green-room", labelKey: "actionGreenRoom" },
+  { id: "cmd-red-room", kind: "command", command: "red-room", labelKey: "actionRedRoom" },
 ];
 
 // Fast lookup by id (used by the resolver and the component).
@@ -100,6 +106,8 @@ export const ACTION_BY_ID: Record<string, ShortcutAction> = Object.fromEntries(
 //   6-0 more quick launches: Hash, UUID, URL inspector, X.509, Vendors home
 export const DEFAULT_BINDINGS: Record<string, string> = {
   b: "cmd-boss",
+  g: "cmd-green-room",
+  r: "cmd-red-room",
   f: "nav-dev-fun",
   t: "nav-tools",
   l: "nav-learn",
@@ -122,7 +130,7 @@ export const DEFAULT_BINDINGS: Record<string, string> = {
 };
 
 // The keys the settings UI exposes, in display order (matches DEFAULT_BINDINGS).
-export const SHORTCUT_KEYS: string[] = ["b", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+export const SHORTCUT_KEYS: string[] = ["b", "g", "r", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
 // ---- Sysadmin policy -------------------------------------------------------
 // Per-key operator rules. Any key absent from this map is fully customizable

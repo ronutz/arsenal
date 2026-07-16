@@ -17,6 +17,8 @@ import type { VendorProfile } from "@/content/vendors/profile-types";
 
 export interface ProfileLabels {
   founding: string;
+  /** Chip text for timeline events marked personal (e.g. "Rodolfo's chapter"). */
+  personalChip: string;
   founders: string;
   timeline: string;
   products: string;
@@ -67,7 +69,7 @@ export default function VendorProfileSections({
         <ol className="lineage-timeline">
           {events.map((e, i) => (
             <li
-              className="lineage-deal"
+              className={e.personal ? "lineage-deal lineage-deal--personal" : "lineage-deal"}
               key={`${e.year}-${e.title}`}
               data-first={i === 0 ? "true" : undefined}
             >
@@ -78,6 +80,11 @@ export default function VendorProfileSections({
               <div className="lineage-deal-card">
                 <div className="lineage-deal-top">
                   <span className="lineage-deal-name">{e.title}</span>
+                  {/* Personal-involvement marker: the localized chip makes the
+                      career connection findable at a glance (2026-07-16). */}
+                  {e.personal && (
+                    <span className="lineage-deal-chip mono">{labels.personalChip}</span>
+                  )}
                 </div>
                 <p className="lineage-deal-what">{e.detail}</p>
                 {e.sourceNote && <p className="lineage-deal-note">{e.sourceNote}</p>}

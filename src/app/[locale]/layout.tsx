@@ -169,6 +169,7 @@ export default async function LocaleLayout({
   );
   const shortcutsLabels = {
     bossHint: tShortcuts("bossHint"),
+    roomHint: tShortcuts("roomHint"),
     bossDismiss: tShortcuts("bossDismiss"),
     cheatTitle: tShortcuts("cheatTitle"),
     cheatClose: tShortcuts("cheatClose"),

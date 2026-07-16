@@ -54,6 +54,8 @@ import { manPageToHtml } from "@/lib/manPageMarkdown";
 export interface ShortcutsLabels {
   /** Boss overlay "press any key" hint. */
   bossHint: string;
+  /** Ambient-room exit hint ("any key or click to leave"). */
+  roomHint: string;
   /** Boss overlay dismiss aria-label. */
   bossDismiss: string;
   /** Cheat-sheet overlay title. */
@@ -132,6 +134,8 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
   useEffect(() => setMounted(true), []);
 
   const [bossScreen, setBossScreen] = useState<BossScreenKind | null>(null);
+  // Ambient rooms (2026-07-16): full-screen solid color; null = closed.
+  const [roomColor, setRoomColor] = useState<"green" | "red" | null>(null);
   const [cheatOpen, setCheatOpen] = useState(false);
 
   // T-DOT: the "." context panel. `contextOpen` toggles the overlay; `caps` is
@@ -148,6 +152,19 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
   } | null>(null);
   // Effective bindings, kept in sync with the store (settings UI edits, policy).
   const [bindings, setBindings] = useState<Record<string, string>>(DEFAULT_BINDINGS);
+
+  // While a room is open, ANY key leaves it - registered in the capture phase
+  // so the global shortcut resolver below never acts on the exit keystroke.
+  useEffect(() => {
+    if (!roomColor) return;
+    const leave = (e: KeyboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setRoomColor(null);
+    };
+    window.addEventListener("keydown", leave, true);
+    return () => window.removeEventListener("keydown", leave, true);
+  }, [roomColor]);
 
   // Read the resolved bindings on mount and whenever the store changes (same
   // tab via subscribe, other tabs via the native storage event).
@@ -229,6 +246,12 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
           case "boss-key":
             openRandomBoss();
             break;
+          case "green-room":
+            setRoomColor("green");
+            break;
+          case "red-room":
+            setRoomColor("red");
+            break;
         }
       }
     },
@@ -303,6 +326,17 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
   return (
     <>
       {mounted && <ShortcutRouterBridge navigateRef={navigateRef} />}
+      {roomColor && (
+        <div
+          className={`ambient-room ambient-room--${roomColor}`}
+          role="dialog"
+          aria-modal="true"
+          aria-label={labels.actionLabels[roomColor === "green" ? "cmd-green-room" : "cmd-red-room"]}
+          onClick={() => setRoomColor(null)}
+        >
+          <span className="ambient-room-hint">{labels.roomHint}</span>
+        </div>
+      )}
       {bossScreen && (
         <BossApp
           kind={bossScreen}

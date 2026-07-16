@@ -24,7 +24,19 @@
     "home": "Home",
     "breadcrumb": "Breadcrumb",
     "vendors": "Vendors",
-    "industry": "Industry"
+    "industry": "Industry",
+    "network": "Network",
+    "security": "Security",
+    "identity": "Identity",
+    "glossary": "Glossary",
+    "studyGuides": "Study guides",
+    "careerRecord": "The career record",
+    "credentials": "Credentials",
+    "changelog": "Changelog",
+    "roadmap": "Roadmap",
+    "contribute": "Contribute",
+    "colophon": "Colophon",
+    "devFun": "Fun lab"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -5022,7 +5034,8 @@
     "settings": "Settings",
     "source": "Source",
     "disclaimer": "Disclaimer",
-    "glossary": "Glossary"
+    "glossary": "Glossary",
+    "sitemap": "sitemap"
   },
   "search": {
     "kindTool": "Tool",
@@ -5084,7 +5097,7 @@
       "f5channel": "Channel-facing sales and pre-sales engineering for F5, providing technical enablement, proof-of-concept execution, and partner training across distribution.",
       "rededucation": "Authorized training instructor delivering official certified courses across F5, Fortinet, Extreme Networks, and Netskope to organizations worldwide.",
       "fullHistory": "Read the full history",
-      "vendorsLink": "Vendors I have worked with",
+      "vendorsLink": "The career record",
       "lineagesLink": "Vendor lineages & acquisitions"
     },
     "origins": {
@@ -5193,8 +5206,8 @@
     }
   },
   "vendors": {
-    "indexTitle": "Vendors",
-    "indexLede": "The networking and security companies whose technology shaped this career, from the wire up. These are past relationships; the platforms taught today are listed under Training.",
+    "indexTitle": "The career record",
+    "indexLede": "Every vendor of a career since 1996, told chapter by chapter - from the hub wars to the platforms taught today. The wider industry family tree, including the partners taught alongside them, lives under Industry.",
     "backToVendors": "All vendors",
     "backToAbout": "About",
     "technologies": "Technologies",
@@ -5372,7 +5385,10 @@
       "s2Title": "One product, five flags",
       "s2Body": "The product Rodolfo distributed carried more history than most companies: born as Neoteris's Instant Virtual Extranet, the appliance that defined clientless SSL VPN; acquired by NetScreen in 2003; carried into Juniper with the 2004 NetScreen acquisition, where it became the SA series and then Junos Pulse - the chapter that overlapped Rodolfo's own years inside Juniper. Siris Capital carved the business out in 2014 as Pulse Secure, and Ivanti closed its acquisition on December 1, 2020, alongside MobileIron - the full genealogy is on this page below, and the NetScreen chapter has its own page in this record.",
       "certs": "No Pulse-specific certifications; the work was distributor-side pre-sales and enablement. The secure-access lineage continues today as Ivanti Connect Secure."
-    }
+    },
+    "industryPointerTitle": "The wider family tree",
+    "industryPointerBody": "Deep-research lineages of the Red Education training partners and the pioneers that shaped this industry - Check Point to Nortel, Symantec to Madge - live on the Industry page.",
+    "industryPointerLink": "Explore the industry lineages"
   },
   "training": {
     "eyebrow": "Training I deliver",
@@ -6324,7 +6340,10 @@
     "hubMapDetail": "This hub's tool families, in order.",
     "hubMapLabel": "Jump to a family section",
     "manPageDetail": "Read this tool's full documentation without leaving the page.",
-    "manPageLabel": "Open the man page"
+    "manPageLabel": "Open the man page",
+    "actionGreenRoom": "Green room - full-screen ambient light",
+    "actionRedRoom": "Red room - night-vision screen",
+    "roomHint": "Any key or click to leave"
   },
   "settings_page": {
     "eyebrow": "Preferences",
@@ -7006,7 +7025,14 @@
       "snippets": "Snippets",
       "hexView": "Hex",
       "hexEmpty": "No bytes captured yet.",
-      "os_voss": "VOSS (Fabric)"
+      "os_voss": "VOSS (Fabric)",
+      "fullscreen": "Full screen",
+      "exitFullscreen": "Exit full screen",
+      "logToDisk": "Log to disk",
+      "logStop": "Stop logging",
+      "logStarted": "Disk log started - every line is written to the chosen file as it arrives.",
+      "logStopped": "Disk log stopped and file closed.",
+      "logUnsupported": "Real-time disk logging needs the File System Access API (Chromium browsers - the same family Web Serial requires)."
     }
   },
   "devOut": {
@@ -8738,15 +8764,32 @@
     "productsTitle": "Flagship products and solutions",
     "innovationsTitle": "Key innovations",
     "marketsTitle": "Main markets",
-    "analystTitle": "Analyst standing"
+    "analystTitle": "Analyst standing",
+    "personalChipLabel": "Rodolfo's chapter"
   },
   "industry": {
-    "metaTitle": "Industry - vendor histories and lineages",
-    "metaDescription": "Deep-research profiles of the networking and security vendors of a career since 1996, the training partners taught alongside them, and the corporate lineages that connect them.",
+    "metaTitle": "Industry - corporate lineages of networking and security",
+    "metaDescription": "Deep-research corporate genealogies of the networking and security industry: foundings, acquisitions, and where every bloodline ended up. Written from primary sources.",
     "eyebrow": "Industry",
     "title": "The industry, from the inside",
-    "lede": "Deep-research histories of the vendors of a career since 1996, the partners taught alongside them, and the corporate lineages that connect them. Written from primary sources: SEC filings, inquiry reports, and the trade press of each era.",
+    "lede": "The corporate genealogies of networking and security: who founded each company, what they built, who bought whom, and where every bloodline ended up. Written from primary sources - SEC filings, inquiry reports, and the trade press of each era.",
     "careerTitle": "The career vendors",
-    "careerNote": "Worked with directly between 1996 and 2020, in chronological order of first engagement."
+    "careerNote": "Worked with directly between 1996 and 2020, in chronological order of first engagement.",
+    "careerStripTitle": "The chapters lived from inside",
+    "careerStripNote": "These fourteen are also chapters of the author's own record - each timeline carries a Rodolfo's chapter marker. The full career telling lives at the career record.",
+    "careerStripLink": "Read the career record"
+  },
+  "sitemap": {
+    "metaTitle": "Sitemap - every section of ronutz.com",
+    "metaDescription": "A human-readable map of ronutz.com: tools, Learn articles, the glossary, vendor hubs, training, the industry lineages, and the career record.",
+    "title": "Sitemap",
+    "lede": "Every section of this site on one page. The machine-readable version lives at sitemap.xml; this is the human one.",
+    "gTools": "Tools and reference",
+    "gLearn": "Learning",
+    "gVendors": "Vendors and industry",
+    "gAbout": "About and career",
+    "gSite": "Site and meta",
+    "toolsCount": "{count} deterministic tools, all local-compute",
+    "xmlNote": "Machine-readable: sitemap.xml"
   }
 }

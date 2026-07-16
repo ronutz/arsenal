@@ -27,6 +27,11 @@ export interface FoundingStory {
 
 export interface TimelineEvent {
   year: number;
+  /** Marks an event describing Rodolfo's own direct involvement with this
+   *  vendor (employment, distribution, or teaching) - rendered with an accent
+   *  and a localized "Rodolfo's chapter" chip (PRIME directive 2026-07-16:
+   *  every vendor in the career history carries this marker in its timeline). */
+  personal?: boolean;
   /** Short headline, e.g. "Juniper ships the M40 and Junos". */
   title: string;
   /** One- or two-sentence detail. */

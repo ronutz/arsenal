@@ -37,6 +37,7 @@ export const netskopeProfile: VendorProfile = {
     { year: 2022, title: "Leader in the first SSE Magic Quadrant", detail: "Gartner carves Security Service Edge out of SASE and names Netskope a Leader in the inaugural Magic Quadrant - placement it has held as the category matured. Borderless SD-WAN (from the Infiot acquisition) completes the single-vendor SASE picture." },
     { year: 2025, title: "IPO: NTSK", detail: "September 18, 2025: Netskope lists on Nasdaq as NTSK after pricing at $19 - the top of a raised range - collecting $908 million in one of the year's marquee security debuts; shares open at $23 for a market value around $8.6 billion. ARR stands at $707 million, up 33 percent.", sourceNote: "CNBC, Sept 17-18, 2025." },
     { year: 2026, title: "Netskope One", detail: "The platform era: security and networking services converged as Netskope One, spanning SSE, SD-WAN, and digital experience management on NewEdge - and, increasingly, controls for enterprise AI usage." },
+    { year: 2025, personal: true, title: "Rodolfo's chapter", detail: "The accreditation sprint: Administrator, Integrator, and Architect earned across 2024 to 2026, and Netskope Certified Cloud Security Instructor in 2025 - SSE taught from inside the category's defining vendor." },
   ],
   products: [
     { name: "Netskope One", what: "The converged platform: CASB, secure web gateway, ZTNA, firewall, DLP, and SD-WAN delivered as one cloud service with a single policy model." },

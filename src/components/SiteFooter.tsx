@@ -162,6 +162,13 @@ export default async function SiteFooter() {
           <a href="/feed.xml" className="footer-contribute-link">
             feed.xml
           </a>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* The human sitemap (PRIME 2026-07-16): a curated, readable section
+              map at /sitemap - the human counterpart to sitemap.xml, which the
+              page itself links. Locale route, hence Link. */}
+          <Link href="/sitemap" className="footer-contribute-link">
+            {t("sitemap")}
+          </Link>
         </p>
       </div>
     </footer>

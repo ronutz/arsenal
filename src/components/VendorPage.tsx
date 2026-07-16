@@ -157,6 +157,7 @@ export default async function VendorPage({
                   profile={profile}
                   labels={{
                     founding: tp("foundingTitle"),
+                    personalChip: tp("personalChipLabel"),
                     founders: tp("foundersLabel"),
                     timeline: tp("timelineTitle"),
                     products: tp("productsTitle"),

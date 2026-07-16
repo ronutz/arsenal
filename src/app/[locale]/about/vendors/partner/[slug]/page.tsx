@@ -39,6 +39,18 @@ import { nutanixProfile } from "@/content/vendors/profiles/nutanix";
 import { redHatProfile } from "@/content/vendors/profiles/red-hat";
 import { paesslerProfile } from "@/content/vendors/profiles/paessler";
 import { mobileironProfile } from "@/content/vendors/profiles/mobileiron";
+import { sunMicrosystemsProfile } from "@/content/vendors/profiles/sun-microsystems";
+import { siliconGraphicsProfile } from "@/content/vendors/profiles/silicon-graphics";
+import { xeroxProfile } from "@/content/vendors/profiles/xerox";
+import { decProfile } from "@/content/vendors/profiles/dec";
+import { nokiaProfile } from "@/content/vendors/profiles/nokia";
+import { ericssonProfile } from "@/content/vendors/profiles/ericsson";
+import { huaweiProfile } from "@/content/vendors/profiles/huawei";
+import { siemensProfile } from "@/content/vendors/profiles/siemens";
+import { novellProfile } from "@/content/vendors/profiles/novell";
+import { oracleProfile } from "@/content/vendors/profiles/oracle";
+import { ibmProfile } from "@/content/vendors/profiles/ibm";
+import { sapProfile } from "@/content/vendors/profiles/sap";
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
@@ -63,6 +75,19 @@ const PROFILES: Record<string, VendorProfile> = {
   [redHatProfile.slug]: redHatProfile,
   [paesslerProfile.slug]: paesslerProfile,
   [mobileironProfile.slug]: mobileironProfile,
+  // The pioneer-giants wave (PRIME 2026-07-16): the founders of the industry.
+  [sunMicrosystemsProfile.slug]: sunMicrosystemsProfile,
+  [siliconGraphicsProfile.slug]: siliconGraphicsProfile,
+  [xeroxProfile.slug]: xeroxProfile,
+  [decProfile.slug]: decProfile,
+  [nokiaProfile.slug]: nokiaProfile,
+  [ericssonProfile.slug]: ericssonProfile,
+  [huaweiProfile.slug]: huaweiProfile,
+  [siemensProfile.slug]: siemensProfile,
+  [novellProfile.slug]: novellProfile,
+  [oracleProfile.slug]: oracleProfile,
+  [ibmProfile.slug]: ibmProfile,
+  [sapProfile.slug]: sapProfile,
 };
 
 export function generateStaticParams() {
@@ -159,6 +184,7 @@ export default async function PartnerVendorPage({
                   profile={PROFILES[slug]}
                   labels={{
                     founding: tp("foundingTitle"),
+                    personalChip: tp("personalChipLabel"),
                     founders: tp("foundersLabel"),
                     timeline: tp("timelineTitle"),
                     products: tp("productsTitle"),
