@@ -1,12 +1,11 @@
 // ============================================================================
 // src/content/vendors/profiles/zscaler.ts
 // ----------------------------------------------------------------------------
-// ZSCALER - the newest chapter, opening now: the zscaler vendor key is
-// reserved and a hub is on this site's roadmap. Public-copy guardrail
-// applies: Zscaler may be named, but nothing here implies Rodolfo delivers
-// authorized Zscaler training (his instructor authorizations are F5,
-// Fortinet, Netskope, and Extreme Networks); the career narrative in i18n
-// states that explicitly.
+// ZSCALER - the newest chapter. AUTHORIZATION UPDATE (PRIME 2026-07-15):
+// Rodolfo is cleared as an authorized Zscaler instructor; the hub is open
+// (JA3/JA4 tools carry the zscaler tag) and the i18n narrative states the
+// authorization (the earlier disclaimer is retired). Sixth vendor in the
+// teaching portfolio.
 //
 // Verified 2026-07-15: Wikipedia (founded 2007 by Jay Chaudhry and K.
 // Kailash; platform launched 2008; IPO March 2018 raising $192M, Nasdaq ZS;

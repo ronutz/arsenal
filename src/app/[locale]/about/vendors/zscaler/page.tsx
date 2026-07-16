@@ -1,5 +1,6 @@
 // ============================================================================
-// Vendor page: Zscaler. The chapter opening now: Zero Trust Exchange study, hub on the roadmap. NOT an authorized-training vendor for Rodolfo (guardrail stated in i18n).
+// Vendor page: Zscaler. The newest chapter: hub open (JA3/JA4 carry the
+// zscaler tag), authorized Zscaler instructor since 2026 (PRIME 2026-07-15).
 // Content in the "vendors" namespace; rich corporate profile below the
 // career narrative (same pattern as the Extreme page).
 // ============================================================================

@@ -46,7 +46,29 @@ const NODE_W = 150;
 const NODE_H = 48;
 const NODE_GAP_Y = 14; // vertical gap between stacked nodes
 const STAGE_GAP_X = 70; // horizontal gap (room for the era arrow + label)
-const PAD_TOP = 24;
+const NOTE_SPACE = 26; // vertical room reserved for a node's note line (11px mono + clearance)
+const EDGE_LINE_H = 13; // line height for wrapped edge labels (11px mono)
+const EDGE_WRAP_CHARS = 30; // wrap edge labels so adjacent stages' labels never collide
+
+// Greedy word-wrap for edge labels. Long era labels (the Ping/ForgeRock page's
+// "2010: Oracle absorbs Sun; five engineers fork the stack") used to render as
+// one line and overlap the neighboring stage's label; wrapped tspans keep each
+// label inside its own column (fix 2026-07-16, PRIME report).
+function wrapLabel(text: string, max = EDGE_WRAP_CHARS): string[] {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let line = "";
+  for (const w of words) {
+    if (line && line.length + 1 + w.length > max) {
+      lines.push(line);
+      line = w;
+    } else {
+      line = line ? line + " " + w : w;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
 
 export default function LineageDiagram({ title, desc, stages }: LineageDiagramProps) {
   // Compute the x position of each stage.
@@ -58,21 +80,37 @@ export default function LineageDiagram({ title, desc, stages }: LineageDiagramPr
   }
   const totalWidth = x - STAGE_GAP_X + 10;
 
-  // Compute each stage's vertical layout, centering stacks around a common axis.
-  const maxNodes = Math.max(...stages.map((s) => s.nodes.length));
-  const blockH = maxNodes * NODE_H + (maxNodes - 1) * NODE_GAP_Y;
-  const centerY = PAD_TOP + blockH / 2;
+  // Compute each stage's vertical layout. Each node occupies a SLOT of
+  // NODE_H plus, when it carries a note, NOTE_SPACE beneath - so a note under
+  // a stacked node can never run into the next node's box (fix 2026-07-16:
+  // on the Ping/ForgeRock page the "Denver, 2002" note used to land inside
+  // the Sun Microsystems rectangle). Stacks are centered on a common axis.
+  function slotH(node: LineageNode): number {
+    return NODE_H + (node.note ? NOTE_SPACE : 0);
+  }
+  function stackH(stage: LineageStage): number {
+    const slots = stage.nodes.reduce((acc, n) => acc + slotH(n), 0);
+    return slots + (stage.nodes.length - 1) * NODE_GAP_Y;
+  }
+  const blockH = Math.max(...stages.map(stackH));
 
-  // Height: tallest block + room for notes beneath + padding.
-  const hasNotes = stages.some((s) => s.nodes.some((n) => n.note));
-  const totalHeight = PAD_TOP + blockH + (hasNotes ? 40 : 0) + 20;
+  // Top padding reserves room for the tallest wrapped edge label.
+  const maxEdgeLines = Math.max(
+    1,
+    ...stages.map((st) => (st.edgeLabel ? wrapLabel(st.edgeLabel).length : 0)),
+  );
+  const padTop = 12 + maxEdgeLines * EDGE_LINE_H;
+  const centerY = padTop + blockH / 2;
 
-  // For each stage, the y of each node (stack centered on centerY).
+  // Height: padding + tallest block (which already includes note slots) + foot.
+  const totalHeight = padTop + blockH + 16;
+
+  // For each stage, the y of each node (its stack centered on centerY).
   function nodeY(stage: LineageStage, idx: number): number {
-    const n = stage.nodes.length;
-    const stackH = n * NODE_H + (n - 1) * NODE_GAP_Y;
-    const top = centerY - stackH / 2;
-    return top + idx * (NODE_H + NODE_GAP_Y);
+    const top = centerY - stackH(stage) / 2;
+    let y = top;
+    for (let i = 0; i < idx; i++) y += slotH(stage.nodes[i]) + NODE_GAP_Y;
+    return y;
   }
 
   function toneClass(tone?: string): string {
@@ -120,8 +158,19 @@ export default function LineageDiagram({ title, desc, stages }: LineageDiagramPr
         const midX = (fromX + toX) / 2;
         return (
           <g key={`edge-${si}`}>
-            <text className="lineage-edge-label" x={midX} y={centerY - blockH / 2 - 6} textAnchor="middle">
-              {stage.edgeLabel}
+            {/* Wrapped label: last line sits just above the block; earlier
+                lines stack upward into the reserved top padding. */}
+            <text
+              className="lineage-edge-label"
+              x={midX}
+              y={centerY - blockH / 2 - 6 - (wrapLabel(stage.edgeLabel).length - 1) * EDGE_LINE_H}
+              textAnchor="middle"
+            >
+              {wrapLabel(stage.edgeLabel).map((ln, li) => (
+                <tspan key={li} x={midX} dy={li === 0 ? 0 : EDGE_LINE_H}>
+                  {ln}
+                </tspan>
+              ))}
             </text>
             <line
               x1={fromX + 2}

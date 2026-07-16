@@ -29,6 +29,16 @@ import { impervaThalesProfile } from "@/content/vendors/profiles/imperva-thales"
 import { versaProfile } from "@/content/vendors/profiles/versa";
 import { nortelBayProfile } from "@/content/vendors/profiles/nortel-bay";
 import { madgeProfile } from "@/content/vendors/profiles/madge";
+import { checkPointProfile } from "@/content/vendors/profiles/check-point";
+import { cyberarkProfile } from "@/content/vendors/profiles/cyberark";
+import { riverbedProfile } from "@/content/vendors/profiles/riverbed";
+import { symantecProfile } from "@/content/vendors/profiles/symantec";
+import { avayaProfile } from "@/content/vendors/profiles/avaya";
+import { aristaProfile } from "@/content/vendors/profiles/arista";
+import { nutanixProfile } from "@/content/vendors/profiles/nutanix";
+import { redHatProfile } from "@/content/vendors/profiles/red-hat";
+import { paesslerProfile } from "@/content/vendors/profiles/paessler";
+import { mobileironProfile } from "@/content/vendors/profiles/mobileiron";
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
@@ -41,6 +51,18 @@ const PROFILES: Record<string, VendorProfile> = {
   [versaProfile.slug]: versaProfile,
   [nortelBayProfile.slug]: nortelBayProfile,
   [madgeProfile.slug]: madgeProfile,
+  // The 2026-07-15 wave (PRIME): full lineage treatment for the remaining
+  // Red Education partner catalog.
+  [checkPointProfile.slug]: checkPointProfile,
+  [cyberarkProfile.slug]: cyberarkProfile,
+  [riverbedProfile.slug]: riverbedProfile,
+  [symantecProfile.slug]: symantecProfile,
+  [avayaProfile.slug]: avayaProfile,
+  [aristaProfile.slug]: aristaProfile,
+  [nutanixProfile.slug]: nutanixProfile,
+  [redHatProfile.slug]: redHatProfile,
+  [paesslerProfile.slug]: paesslerProfile,
+  [mobileironProfile.slug]: mobileironProfile,
 };
 
 export function generateStaticParams() {

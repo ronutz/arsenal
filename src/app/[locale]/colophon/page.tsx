@@ -255,7 +255,7 @@ export default async function ColophonPage({
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("thanksTitle")}</h2>
               <p className="colophon-thanks-names">
-                Mariana, Ulli, Richard, Ocyrema, Felisberto, Regine, Eduardo, Ricardo, Pedro, Liliane, Miu, Nina, Luna, Tux, Kiki, Greg and Theo. <span aria-hidden="true">{"\u2665\uFE0E"}</span>
+                Mariana, Ulli, Richard, Ocyrema, Felisberto, Regine, Eduardo, Ricardo, Pedro, Liliane, Tereza, Cezar, Leonardo, Eduardo, Victor, Miu, Nina, Luna, Tux, Kiki, Greg and Theo. <span aria-hidden="true">{"\u2665\uFE0E"}</span>
               </p>
             </div>
           </section>

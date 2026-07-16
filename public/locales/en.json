@@ -40,7 +40,7 @@
     },
     "credibility": {
       "title": "Built by someone who has done the work since 1996.",
-      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. Certified across four platforms, so the comparisons here are made honestly, not sold.",
+      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. Authorized across six vendors, so the comparisons here are made honestly, not sold.",
       "aboutCta": "More about who builds this"
     },
     "pillars": {
@@ -5008,7 +5008,7 @@
   },
   "footer": {
     "guide": "Guide",
-    "redEducation": "Book official training with <b>Red Education</b>",
+    "redEducation": "Book official vendor training with <b>Red Education</b>, the multi-award-winning global training powerhouse",
     "builtWith": "Built by Rodolfo Nützmann with CONCORD",
     "colophon": "How this was built",
     "contribute": "Improve the translations",
@@ -5017,7 +5017,6 @@
     "feedback": "Contact",
     "privacy": "Privacy",
     "license": "License",
-    "coffee": "Buy me a coffee",
     "lastModified": "Last modified {stamp}",
     "roadmap": "Roadmap",
     "settings": "Settings",
@@ -5065,11 +5064,13 @@
     },
     "platforms": {
       "title": "Four platforms, taught in depth",
-      "body": "Being certified across four vendors means I can teach each one properly and compare them honestly. These are the platforms I am currently authorized to deliver official training for.",
+      "body": "Being authorized across six vendors means I can teach each one properly and compare them honestly. These are the platforms I am currently authorized to deliver official training for.",
       "f5": "BIG-IP across the full instructor-led curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation, and troubleshooting.",
       "fortinet": "Fortinet certified training, including the FCP track.",
       "extreme": "Extreme Networks switching, SD-WAN, and API and automation tracks, across installation, configuration, management, and troubleshooting.",
-      "netskope": "Netskope security cloud instructor-led training."
+      "netskope": "Netskope security cloud instructor-led training.",
+      "ping": "Ping Identity access management and federation, instructor authorization cleared in 2026; courses to follow.",
+      "zscaler": "Zscaler Zero Trust Exchange, instructor authorization cleared in 2026; courses to follow."
     },
     "path": {
       "title": "The path here",
@@ -5291,7 +5292,7 @@
       "s1Body": "The project was the physical build-out of RNP's RedeComep program, Redes Comunitárias de Educação e Pesquisa, the initiative that gave Brazilian cities community-run metropolitan networks for education and research. Extreme nodes went in across Campinas and its region in São Paulo, the twin cities of Petrolina in Pernambuco and Juazeiro in Bahia, Marabá in Pará, and Castanhal in Pará. Each city's network was a long-distance metropolitan-area optical ring running EAPS, Extreme's Ethernet Automatic Protection Switching, the ring-resiliency protocol that keeps a fibre ring converged when a span fails, connecting RNP's point of presence to the federal and state higher-education and scientific-research institutions it served.",
       "s2Title": "EXOS training and knowledge transfer",
       "s2Body": "Installing the nodes was only half of it. The other half was making the local teams self-sufficient: delivering ExtremeXOS (EXOS) Switching and Routing training, and the knowledge transfer that goes with it, how their systems had been configured, how the whole thing worked, and how to manage, troubleshoot, and expand it once the deployment team had moved on. Handing over the ability to run and grow the network was the point.",
-      "certs": "Extreme Networks Certified Instructor. Extreme is one of the four platforms taught today; the current instructor authorizations are listed under Training. The work here, in 2013 to 2014, was field deployment and training delivery."
+      "certs": "Extreme Networks Certified Instructor. Extreme is one of the six vendors in the instructor portfolio; the current authorizations are listed under Training. The work here, in 2013 to 2014, was field deployment and training delivery."
     },
     "distribution": {
       "name": "FireEye, McAfee and Ixia",
@@ -5301,7 +5302,7 @@
       "s1Title": "The portfolio",
       "s1Body": "Each covered a different corner of the market. FireEye was advanced threat detection, sandboxing and analysis aimed at the targeted, evasive attacks that signature-based tools miss. McAfee brought a broad endpoint- and network-security line. Ixia was the outlier and the interesting one: network test, measurement, and traffic generation, the equipment used to prove how networks and security devices behave under load, later acquired by Keysight. Together they spanned defence and the tools that verify it.",
       "s2Title": "The distribution discipline",
-      "s2Body": "Value-added distribution is its own skill. The role was pre-sales technical: architecting solutions, running demonstrations and proofs of concept, and enabling the resellers and integrators who took these products to end customers, translating each vendor's roadmap into something a partner could actually deploy and support. It is a vantage point that sees a lot of the market at once, across many vendors and many customer problems at the same time.",
+      "s2Body": "Value-added distribution is its own skill. The role was pre-sales technical: architecting solutions, running demonstrations and proofs of concept, and enabling the resellers and integrators who took these products to end customers, translating each vendor's roadmap into something a partner could actually deploy and support. It is a vantage point that sees a lot of the market at once, across many vendors and many customer problems at the same time. The ScanSource line brought Pulse Secure into the portfolio - the secure-access lineage whose full story now has its own page in this record.",
       "certs": "Vendor and distribution enablement across the portfolio, rather than a single certification track."
     },
     "f5": {
@@ -5329,7 +5330,7 @@
     "netskope": {
       "name": "Netskope",
       "years": "2024 – present",
-      "tagline": "The newest teaching pillar: SSE taught from inside the category's defining vendor.",
+      "tagline": "The SSE teaching pillar: taught from inside the category's defining vendor.",
       "intro": "The Netskope chapter is the accreditation sprint of this record: administrator to integrator to architect in under two years, the instructor authorization in between, and the SSE category itself as the subject matter.",
       "s1Title": "The accreditation sprint",
       "s1Body": "It began with the Administrator accreditation in late 2024, followed by Integrator in 2025 and Architect in 2026, with the sales-side NCSSA and NCSSE alongside, a deliberate run through every angle of the platform: operating it, deploying it, designing for it, and positioning it. The hands-on implementation and operation labs were part of the same push.",
@@ -5344,22 +5345,33 @@
       "intro": "Ping Identity opens the identity era of this record - and it carries two heritages. The Denver federation pioneer behind PingFederate, and ForgeRock, the Norwegian fork that saved Sun Microsystems' open-source identity stack, were combined by Thoma Bravo in August 2023 into the platform this page profiles. In 2025 that alignment became formal training.",
       "s1Title": "PingFederate, studied properly",
       "s1Body": "In 2025 Rodolfo completed Ping Identity's official PingFederate training and earned the PingFederate Practitioner credential, deep-diving the federation server that turned SAML from a specification into enterprise plumbing. For someone who teaches access management on other platforms and builds SAML and OIDC tooling for this site, it was the natural next protocol stack to master from the inside.",
-      "s2Title": "A hub in the making",
-      "s2Body": "A Ping Identity hub is on this site's roadmap, with identity-focused tools to match. One thing said plainly: Rodolfo does not deliver Ping Identity training. His instructor authorizations cover F5, Fortinet, Netskope, and Extreme Networks; the Ping chapter is professional depth and tooling, not an official teaching mandate.",
-      "certs": "PingFederate Practitioner (2025), earned through Ping Identity Training. Rodolfo is not an authorized Ping Identity instructor; his teaching authorizations are F5, Fortinet, Netskope, and Extreme Networks.",
+      "s2Title": "The hub is open",
+      "s2Body": "The Ping Identity hub is live on this site, anchored by the identity toolset: the SAML decoder, the JWT and OIDC inspectors, and the PKCE and TOTP tools all carry the Ping tag. And in 2026 the chapter turned its page: Rodolfo is cleared as an authorized Ping Identity instructor, the fifth vendor in the teaching portfolio alongside F5, Fortinet, Netskope, and Extreme Networks.",
+      "certs": "Authorized Ping Identity instructor (cleared 2026). PingFederate Practitioner (2025), earned through Ping Identity Training. Full detail on the credentials page.",
       "lineageTitle": "How two identity bloodlines became one",
       "lineageDesc": "Ping was founded on federation in 2002. Sun open-sourced its access stack as OpenSSO in 2005; when Oracle shelved it in 2010, five Sun engineers forked it as ForgeRock (OpenAM, OpenDJ) and took it to the NYSE. Thoma Bravo took both private in 2022 and combined them on August 23, 2023."
     },
     "zscaler": {
       "name": "Zscaler",
       "years": "2026 – present",
-      "tagline": "The chapter opening now: zero trust at cloud scale, and a hub on the roadmap.",
-      "intro": "Zscaler is the newest entry in this record, a chapter that is opening rather than closing: the Zero Trust Exchange as a study subject, and a vendor hub reserved on this site's roadmap.",
+      "tagline": "The newest chapter: zero trust at cloud scale, with the instructor authorization in hand and the hub open.",
+      "intro": "Zscaler is the newest entry in this record, and the chapter is opening fast: the Zero Trust Exchange as teaching ground, a vendor hub already open on this site, and the instructor authorization cleared in 2026.",
       "s1Title": "Why Zscaler, why now",
       "s1Body": "Two decades of this record run through firewalls, load balancers, and the perimeters they defended; Zscaler is the company that bet earliest that the perimeter would dissolve into a global inspection cloud. Studying the Zero Trust Exchange, ZIA, and ZPA architectures is the natural continuation of the SSE work already underway in the Netskope chapter, from the other side of the same market.",
-      "s2Title": "A hub in the making",
-      "s2Body": "The zscaler vendor key is already reserved in this site's architecture, and the roadmap runs through a passive-fingerprinting tool designed to open the hub. Said plainly, as with Ping: Rodolfo does not deliver Zscaler training. His instructor authorizations cover F5, Fortinet, Netskope, and Extreme Networks; this chapter is study, tooling, and the road ahead.",
-      "certs": "No Zscaler certifications yet; this chapter is opening. Rodolfo is not an authorized Zscaler instructor; his teaching authorizations are F5, Fortinet, Netskope, and Extreme Networks."
+      "s2Title": "The hub is open",
+      "s2Body": "The Zscaler hub is open, seeded by the passive-fingerprinting work: the JA4 and JA3 decoders carry the Zscaler tag, reading the TLS surface the Zero Trust Exchange inspects at scale, with more tooling to follow. And the authorization is in hand: Rodolfo is cleared as an authorized Zscaler instructor, the sixth vendor in the teaching portfolio.",
+      "certs": "Authorized Zscaler instructor (cleared 2026). Platform certifications will be recorded on the credentials page as they land."
+    },
+    "pulse": {
+      "name": "Pulse Secure",
+      "years": "2018 – 2019",
+      "tagline": "The distribution chapter's secure-access thread: Neoteris DNA, carried through five flags.",
+      "intro": "Pulse Secure entered this record from the distribution side: in the ScanSource year its secure-access line sat in the portfolio Rodolfo architected and demonstrated across Brazil - the SSL VPN he had first known from inside Juniper, in the very years Junos Pulse took shape.",
+      "s1Title": "Distributing secure access",
+      "s1Body": "The work was value-added distribution at its most technical: architecting remote-access designs around Pulse Connect Secure, running demonstrations and proof-of-concepts, and enabling channel partners on a product that sold into every vertical with a workforce outside the office. Policy Secure added the NAC conversation to the same platform, and the distributor's job was making both make sense in Brazilian enterprise networks - sizing, integration points, and the honest limits.",
+      "s2Title": "One product, five flags",
+      "s2Body": "The product Rodolfo distributed carried more history than most companies: born as Neoteris's Instant Virtual Extranet, the appliance that defined clientless SSL VPN; acquired by NetScreen in 2003; carried into Juniper with the 2004 NetScreen acquisition, where it became the SA series and then Junos Pulse - the chapter that overlapped Rodolfo's own years inside Juniper. Siris Capital carved the business out in 2014 as Pulse Secure, and Ivanti closed its acquisition on December 1, 2020, alongside MobileIron - the full genealogy is on this page below, and the NetScreen chapter has its own page in this record.",
+      "certs": "No Pulse-specific certifications; the work was distributor-side pre-sales and enablement. The secure-access lineage continues today as Ivanti Connect Secure."
     }
   },
   "training": {
@@ -5497,7 +5509,7 @@
     "title": "How this was built",
     "lede": "Most websites do not explain themselves. This one does, because how it was made is part of what it is: a deliberate experiment in building well, with unusual collaborators, and a record worth keeping.",
     "concordTitle": "CONCORD",
-    "concordBody1": "This site was designed and built through a protocol called CONCORD: a structured collaboration between one person and three different AI systems, each in a distinct role. It is not a gimmick. It is a working method, with its own governance, its own decision record, and a single human accountable for every choice that shipped.",
+    "concordBody1": "This site was designed and built through a protocol called CONCORD: a structured collaboration between one person and three different AI systems, each in a distinct role. It is a working method, with its own governance, its own decision record, and a single human accountable for every choice that shipped.",
     "concordBody2": "The premise is simple. Different AI models have different strengths, and a hard problem benefits from more than one perspective held in tension. So the work was divided by role, and one person sat at the center, relaying between them, ratifying what was sound, and rejecting what was not.",
     "concordBody3": "CONCORD was not adopted from anywhere. It was designed by Rodolfo Nützmann for this project, out of a practical need: how to draw on several AI systems at once, each genuinely strong at something different, without surrendering the single thread of human accountability that real work requires. The answer was to give each system a defined seat, keep them from negotiating with one another, and route every exchange through one person who held the whole picture. That arrangement has an older name. The AI systems are agents: they act on direction and on someone else's behalf. PRIME is the principal: the party who actually decides, who exercises the judgment, and who carries both the consequences and the name.",
     "concordBody4": "It began informally, as a way of dividing the work, and hardened over the build into a named method: fixed seats, a single overriding rule that nothing ships without PRIME ratifying it, and a written record of why each choice was made. The name states the aim: concord, agreement reached on purpose through a process, not whatever an unsupervised tool happens to produce.",
@@ -5714,7 +5726,7 @@
     "disclaimerInfra": "On top of the three seats, a Cloudflare Workers plan keeps the site served, and the domains renew once a year for a fee of their own.",
     "disclaimerTotal": "All in, it comes to roughly USD 150 to USD 250 a month, depending mostly on which Claude tier the engineering seat is running that month.",
     "disclaimerCadence": "When the tooling is funded, tools get built. When it is not, building simply pauses until it is, which is why new tools tend to arrive in bursts rather than on a fixed schedule. You can read how the seats work, and who sits in each, on <colophon>the colophon</colophon>.",
-    "disclaimerBody2": "If you would like to help it along, the Buy Me a Coffee link in the footer is the way. Every contribution goes into a single reserve spent on nothing but keeping that toolchain running: the three subscriptions, the hosting, and the domains. No cut, no surprises.",
+    "disclaimerBody2": "If you would like to help it along, <coffee>buy me a coffee</coffee>. Every contribution goes into a single reserve spent on nothing but keeping that toolchain running: the three subscriptions, the hosting, and the domains. No cut, no surprises.",
     "disclaimerStatus": "Right now: the tooling is funded and new tools are actively being built."
   },
   "license_page": {
@@ -7135,15 +7147,16 @@
     "note": "Each hub is the single place that gathers everything the site holds for a vendor: the tools, grouped by product family, and the full article library for that vendor, on one page. The same hubs are reachable from the strip on the Tools and Learn listings.",
     "scopeNote": "These four are the vendors whose training this site's author is authorized to deliver. Tools and articles may reference other vendors' technologies where relevant, but a hub here means an authorized-training relationship, not just coverage.",
     "metaTitle": "Vendor hubs - ronutz.com",
-    "metaDescription": "The vendor hubs on ronutz.com: F5, Fortinet, Netskope, and Extreme Networks, each gathering every tool and article for that vendor on one page.",
+    "metaDescription": "The vendor hubs on ronutz.com: F5, Fortinet, Netskope, Extreme Networks, Zscaler, and Ping Identity, each gathering every tool and article for that vendor on one page.",
     "blurbs": {
       "f5": "BIG-IP and the wider F5 estate: traffic management, DNS, application security, access, and F5 Distributed Cloud. The deepest hub on the site.",
       "fortinet": "The Fortinet Security Fabric: FortiGate and FortiOS, SASE, secure operations, application security, and the FortiGuard services.",
       "netskope": "Netskope One and SSE: the next-gen secure web gateway, CASB, ZTNA, cloud firewall, and the data-protection and platform layers.",
       "extreme": "Extreme Networks: Platform ONE, the ExtremeCloud IQ continuum, wired and wireless and fabric, access security, and analytics.",
-      "zscaler": "Zscaler and the Zero Trust Exchange: cloud secure web gateway and ZTNA. The angle here is the TLS-inspection surface, where client fingerprints like JA4 are read.",
-      "ping": "Ping Identity: access management and single sign-on across PingOne, PingFederate, and PingAccess. The angle here is the client signals that feed adaptive, risk-based authentication."
-    }
+      "zscaler": "Zscaler and the Zero Trust Exchange: cloud secure web gateway and firewall (ZIA), zero trust access to private applications (ZPA), digital experience monitoring (ZDX), and data protection. Security delivered as a global cloud, not an appliance.",
+      "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale."
+    },
+    "redEduCallout": "Why these vendors? Because they are the platforms Rodolfo is authorized to teach through <link>Red Education</link>, a global award-winning authorized training partner: F5, Fortinet, Netskope, and Extreme Networks, with Ping Identity and Zscaler joining in 2026 as the newest authorizations through the same house."
   },
   "glossary": {
     "title": "Glossary",
@@ -8664,7 +8677,7 @@
     "awardF5": "Best F5 ATC Award 2020/21, with a 98% customer satisfaction rating on F5 courses.",
     "awardFortinet": "Fortinet Training Institute ATC Partner of the Year for APAC (2026 ATC Awards).",
     "rodolfoTitle": "Rodolfo at Red Education",
-    "rodolfoBody": "Rodolfo Nützmann has taught through Red Education since 2021, and full-time as a Senior Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world.",
+    "rodolfoBody": "Rodolfo Nützmann has taught through Red Education since 2021, and full-time as a Senior Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world - with Ping Identity and Zscaler, the authorizations cleared in 2026, joining the roster through the same house.",
     "caseStudyNote": "Red Education's own case study on upskilling 43 engineers at a global IT firm names Rodolfo among the instructors who delivered the training.",
     "caseStudyLink": "Read the case study",
     "linkTraining": "Course catalog on this site",
@@ -8710,11 +8723,11 @@
     "reduEyebrow": "Red Education training partner",
     "otherEyebrow": "Vendor lineage",
     "disclaimerTag": "Note",
-    "disclaimerText": "Rodolfo does not deliver {vendor} training. His own authorized instruction covers F5, Fortinet, Netskope, and Extreme Networks. {vendor} is taught by Red Education's instructor team - among the most awarded in the industry, with recognition granted by multiple vendors.",
+    "disclaimerText": "Rodolfo does not deliver {vendor} training. His own authorized instruction covers F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler. {vendor} is taught by Red Education's instructor team - among the most awarded in the industry, with recognition granted by multiple vendors.",
     "awardsTitle": "Red Education recognition",
     "sourcesLabel": "Sources",
     "reduSectionTitle": "Red Education training partners",
-    "reduSectionNote": "Vendors Red Education is authorized to deliver training for. These are not part of Rodolfo's own authorized instruction - his covers F5, Fortinet, Netskope, and Extreme Networks.",
+    "reduSectionNote": "Vendors Red Education is authorized to deliver training for. These are not part of Rodolfo's own authorized instruction - his covers F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler.",
     "reduCardTag": "Partner track",
     "otherSectionTitle": "Other vendors - lineages of the pioneers",
     "otherSectionNote": "Corporate genealogies of the companies that shaped networking, telecom, and cybersecurity - who founded them, what they built, and where their IP and people live today. History pages only: no training association is implied.",

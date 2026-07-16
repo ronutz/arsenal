@@ -19,6 +19,9 @@ export const CAREER_VENDORS = [
   { slug: "netscreen-juniper", key: "juniper" },
   { slug: "extreme", key: "extreme" },
   { slug: "fireeye-mcafee-ixia", key: "distribution" },
+  // Pulse Secure: distributed in the ScanSource year (PRIME 2026-07-16) - the
+  // Neoteris/NetScreen/Juniper secure-access lineage as its own chapter.
+  { slug: "pulse-secure", key: "pulse" },
   { slug: "palo-alto", key: "paloalto" },
   // The teaching-era chapters (PRIME directive 2026-07-15: career vendors
   // include ALL vendors to today). Chronological by first engagement:

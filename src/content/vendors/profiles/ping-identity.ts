@@ -1,10 +1,10 @@
 // ============================================================================
 // src/content/vendors/profiles/ping-identity.ts
 // ----------------------------------------------------------------------------
-// PING IDENTITY - the identity chapter. Public-copy guardrail applies: Ping
-// may be named, but nothing here implies Rodolfo delivers authorized Ping
-// training (his instructor authorizations are F5, Fortinet, Netskope, and
-// Extreme Networks); the career narrative in i18n states that explicitly.
+// PING IDENTITY - the identity chapter. AUTHORIZATION UPDATE (PRIME
+// 2026-07-15): Rodolfo is cleared as an authorized Ping Identity instructor;
+// the i18n career narrative now states the authorization (the earlier
+// disclaimer is retired). Fifth vendor in the teaching portfolio.
 //
 // Verified 2026-07-15: Thoma Bravo press releases (Ping take-private
 // completed October 18, 2022, ~$2.8B all cash, $28.50/share, delisted from

@@ -26,6 +26,9 @@ import SiteFooter from "@/components/SiteFooter";
 import ObfuscatedEmail from "@/components/ObfuscatedEmail";
 import { contactEmail } from "@/config/contact";
 
+// Buy Me a Coffee support link - moved here from the site footer (2026-07-15).
+const COFFEE_URL = "https://buymeacoffee.com/ronutz";
+
 export async function generateMetadata({
   params,
 }: {
@@ -143,7 +146,26 @@ export default async function ContributeToolsPage({
                   ),
                 })}
               </p>
-              <p className="contribute-body">{t("disclaimerBody2")}</p>
+              {/* The Buy Me a Coffee link lives HERE since 2026-07-15 (moved from the
+                  footer, PRIME directive): the support pitch and the support link on
+                  one line, formatted exactly as the footer had it - the
+                  .footer-coffee-link muted-amber styling and the U+2615 cup forced
+                  monochrome with U+FE0E so it inherits the link color. */}
+              <p className="contribute-body">
+                {t.rich("disclaimerBody2", {
+                  coffee: (chunks) => (
+                    <a
+                      href={COFFEE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="footer-coffee-link"
+                    >
+                      {chunks}
+                      {"\u00A0\u2615\uFE0E"}
+                    </a>
+                  ),
+                })}
+              </p>
               <p className="contribute-body contribute-disclaimer-status">{t("disclaimerStatus")}</p>
             </div>
 

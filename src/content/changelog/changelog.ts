@@ -52,6 +52,27 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-16",
+    time: "01:30",
+    kind: "content",
+    title: "Ten partner lineages, the Pulse Secure chapter, and a footer with one job",
+    body: "The remaining Red Education partner catalog gets the full lineage treatment: Check Point, CyberArk, Riverbed, Symantec, Avaya, Arista, Nutanix, Red Hat, Paessler, and MobileIron each carry founding stories, timelines, and genealogy on their partner pages - including CyberArk's February 2026 close into Palo Alto Networks, the largest deal in security history. Pulse Secure joins the career record as its own chapter (the Westcon distribution years), tracing the Neoteris to NetScreen to Juniper to Siris to Ivanti bloodline. The Buy Me a Coffee link moved from the footer to the contribute page, where the support pitch lives; the footer line now belongs to Red Education alone - and the Red Education page records that the two newest instructor authorizations flow through the same house.",
+  },
+  {
+    date: "2026-07-15",
+    time: "23:45",
+    kind: "content",
+    title: "Ping Identity and Zscaler join the instructor portfolio",
+    body: "The instructor authorizations for Ping Identity and Zscaler are cleared, and the site now says so: the two career pages retire their not-authorized disclaimers, the About page's authorization list grows from four to six vendors, and the partner-page and vendor-hub copy names all six. Course catalogs for the two newest vendors will appear under Training as they are scheduled; until then the 28-course portfolio remains the four established platforms.",
+  },
+  {
+    date: "2026-07-15",
+    time: "23:30",
+    kind: "feature",
+    title: "Fortinet Red replaces the orange dot",
+    body: "Fortinet's vendor color across the site - the hub-strip dot, vendor cards, filter chips, and the admin chip and tag tints - is now Fortinet Red, PMS 485C (#DA291C), the official brand red from Fortinet's own brand guidelines, replacing the interim orange of 2026-07-08. Chip text uses a lightened tint of the same red for dark-canvas legibility. The FortiGate-inspired theme set is deliberately untouched: those seven palettes are homages to FortiOS's own GUI themes (Penumbra's amber nods to Eclipse; Kevlar already carries the set's red), not vendor identity marks.",
+  },
+  {
     date: "2026-07-11",
     time: "14:00",
     kind: "tool",

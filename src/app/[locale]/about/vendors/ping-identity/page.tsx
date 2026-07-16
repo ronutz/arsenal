@@ -3,8 +3,8 @@
 // two bloodlines - Denver-born federation (Ping, 2002) and the Norwegian fork
 // of Sun Microsystems' open-source identity stack (ForgeRock, 2010; OpenSSO ->
 // OpenAM, OpenDS -> OpenDJ) - combined by Thoma Bravo on August 23, 2023.
-// Includes the genealogy diagram. PingFederate Practitioner 2025; hub planned.
-// NOT an authorized-training vendor for Rodolfo (guardrail stated in i18n).
+// Includes the genealogy diagram. PingFederate Practitioner 2025; hub open.
+// Authorized Ping Identity instructor since 2026 (PRIME 2026-07-15).
 // ============================================================================
 import { setRequestLocale } from "next-intl/server";
 import VendorPage from "@/components/VendorPage";
@@ -25,7 +25,7 @@ const lineageStages: LineageStage[] = [
     ],
   },
   {
-    edgeLabel: "2022 take-privates; combined Aug 23, 2023",
+    edgeLabel: "Both taken private 2022; combined Aug 23, 2023",
     nodes: [
       { label: "Ping Identity", note: "One platform, both heritages (Thoma Bravo)", tone: "default" },
     ],

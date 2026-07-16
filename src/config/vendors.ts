@@ -50,7 +50,7 @@ export const VENDOR_FAMILIES: readonly VendorFamily[] = Object.freeze([
 /** vendor key -> supplementary hue (dot + soft border only). Provisional; tune here. */
 export const VENDOR_COLORS: Record<string, string> = {
   f5: "#E4002B", // F5 red
-  fortinet: "#F97316", // Fortinet orange (PRIME 2026-07-08: the black dot did not land well; orange keeps the dot clearly distinct from F5 red at dot size while staying warm like Fortinet's red/black brand pairing)
+  fortinet: "#DA291C", // Fortinet Red, PMS 485C - the official brand red per Fortinet's own Brand Guidelines (2019 Q1 v1.0 / 2020 Q1 v2.3). PRIME 2026-07-15; supersedes the 2026-07-08 orange dot. Third red in the palette alongside F5 #E4002B and Ping #C8102E (dot-size distinction accepted, as with Ping). 4.15:1 vs the Obsidian canvas - clears the 3:1 UI-component bar.
   netskope: "#00A9E0", // Netskope blue
   extreme: "#582C83", // Extreme Networks purple
   zscaler: "#0071C5", // Zscaler blue (provisional brand hue; dot + soft border only)

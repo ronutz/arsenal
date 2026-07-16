@@ -3073,8 +3073,11 @@
 }
 .admin-tag--f5 { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 40%, transparent); }
 .admin-tag--new { color: #c084fc; border-color: color-mix(in srgb, #c084fc 40%, transparent); }
-.admin-chip--fortinet { color: #fb923c; border-color: color-mix(in srgb, #fb923c 40%, transparent); }
-.admin-tag--fortinet { color: #fb923c; border-color: color-mix(in srgb, #fb923c 40%, transparent); }
+/* Fortinet chip text: Fortinet Red #DA291C lightened 35% toward white for
+   dark-canvas legibility (6.8:1 on Obsidian; the pure brand red reads too
+   dark as small text). Replaces the orange-400 tint, PRIME 2026-07-15. */
+.admin-chip--fortinet { color: #e7746b; border-color: color-mix(in srgb, #e7746b 40%, transparent); }
+.admin-tag--fortinet { color: #e7746b; border-color: color-mix(in srgb, #e7746b 40%, transparent); }
 .admin-chip--extreme { color: #f472b6; border-color: color-mix(in srgb, #f472b6 40%, transparent); }
 .admin-tag--extreme { color: #f472b6; border-color: color-mix(in srgb, #f472b6 40%, transparent); }
 .admin-chip--netskope { color: #818cf8; border-color: color-mix(in srgb, #818cf8 40%, transparent); }
@@ -12378,6 +12381,27 @@ main[data-view="list"] .boss-viewer-blurb {
   color: var(--chip-color, var(--accent-primary));
   margin-top: 0.15rem;
 }
+/* Red Education call-out above the vendor cards (PRIME 2026-07-15). */
+.vendors-home-callout-section {
+  padding: 0 0 1.6rem;
+}
+.vendors-home-callout {
+  max-width: 44rem;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  border-left: 2px solid var(--accent-amber);
+  padding-left: 0.8rem;
+}
+.vendors-home-callout a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.vendors-home-callout a:hover {
+  text-decoration: underline;
+}
+
 .vendors-home-note-section {
   padding: 0.5rem 0 2.5rem;
 }

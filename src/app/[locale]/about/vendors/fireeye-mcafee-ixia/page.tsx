@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       sections={["s1", "s2"]}
       icons={["firewall", "gateway"]}
       profile={fireeyeMcafeeIxiaProfile}
-      next={{ slug: "palo-alto", key: "paloalto" }}
+      next={{ slug: "pulse-secure", key: "pulse" }}
     />
   );
 }

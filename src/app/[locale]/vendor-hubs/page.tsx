@@ -115,6 +115,20 @@ export default async function VendorsHomePage({
             </div>
           </section>
 
+          {/* Red Education call-out (PRIME 2026-07-15): the "why these
+              vendors" line, placed ABOVE the cards; links to the site's own
+              /red-education page. The scope disclaimer at the bottom of the
+              page stays untouched - this is the affirmative counterpart. */}
+          <section className="vendors-home-callout-section">
+            <div className="container">
+              <p className="vendors-home-callout">
+                {t.rich("redEduCallout", {
+                  link: (chunks) => <Link href="/red-education">{chunks}</Link>,
+                })}
+              </p>
+            </div>
+          </section>
+
           {/* Vendor cards */}
           <section className="vendors-home-grid-section">
             <div className="container vendors-home-grid">

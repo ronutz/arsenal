@@ -165,6 +165,16 @@ export default async function AboutPage({
                 <span className="about-platform-name">Netskope</span>
                 <span className="about-platform-detail">{t("platforms.netskope")}</span>
               </li>
+              {/* Ping Identity + Zscaler: instructor authorizations cleared 2026
+                  (PRIME 2026-07-15); course catalogs to follow under Training. */}
+              <li className="about-platform">
+                <span className="about-platform-name">Ping Identity</span>
+                <span className="about-platform-detail">{t("platforms.ping")}</span>
+              </li>
+              <li className="about-platform">
+                <span className="about-platform-name">Zscaler</span>
+                <span className="about-platform-detail">{t("platforms.zscaler")}</span>
+              </li>
             </ul>
           </div>
         </section>

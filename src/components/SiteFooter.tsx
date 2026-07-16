@@ -4,25 +4,23 @@
 // SITE FOOTER — the shared footer used on every page.
 //
 // Order: credits (-> /colophon) | grouped utility links (ideas + translations,
-// then contact + legal) | a quiet "buy me a coffee" support link | the Red
+// then contact + legal) | the Red
 // Education training callout | the machine-readable row (monospace, a step
 // smaller) | and the build stamp last.
 //
 // next-intl rich-text is used so a single word can be styled without splitting
 // the translation: the Red Education line authors <b>Red Education</b> and we
 // map that tag to a brand-colored span; the line ends with a graduation-cap
-// emoji rather than an arrow. The coffee line ends with a coffee-cup glyph
-// forced to MONOCHROME (U+FE0E) so it inherits the link's muted-amber color and
-// blends with the footer instead of rendering as a bright color emoji.
+// emoji rather than an arrow. (The Buy Me a Coffee link that used to share
+// this row moved to /contribute/tools on 2026-07-15, taking its monochrome
+// U+FE0E cup with it - the support pitch and the support link now live
+// together.)
 // ============================================================================
 
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { BUILD_TIME } from "@/generated/build-info";
 import LicenseBadges from "@/components/LicenseBadges";
-
-// Buy Me a Coffee support link.
-const COFFEE_URL = "https://buymeacoffee.com/ronutz";
 
 export default async function SiteFooter() {
   const t = await getTranslations("footer");
@@ -102,28 +100,14 @@ export default async function SiteFooter() {
             {t("feedback")}
           </Link>
         </p>
-        {/* Support row: the coffee link and the Red Education callout share
-            ONE line, separated by a WIDE middot (.footer-sep-wide) so the two
-            unrelated items read as clearly distinct - deliberately more air
-            than the tight separators in the utility row above. The cup is
-            forced to monochrome (U+FE0E) so it inherits the link's muted
-            amber; on the training link only the brand name is colored (the
-            <b> tag in the message), and the line ends with a graduation cap.
-            Wraps into two natural lines on narrow screens. */}
+        {/* Support row: since 2026-07-15 the line belongs to Red Education
+            alone - the Buy Me a Coffee link moved to /contribute/tools, where
+            the support pitch actually lives (PRIME directive). Only the brand
+            name is colored (the <b> tag in the message) and the line ends
+            with a graduation cap. Points to the on-site profile/homage page
+            (/red-education), which carries the lead-attributed outbound link
+            - site-wide internal linking for the page (PRIME 2026-07-09). */}
         <p className="footer-support footer-built footer-redu">
-          <a
-            href={COFFEE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-coffee-link"
-          >
-            {t("coffee")}
-            {"\u00A0\u2615\uFE0E"}
-          </a>
-          <span className="footer-sep footer-sep-wide" aria-hidden="true">&#183;</span>
-          {/* Red Education callout: now points to the on-site profile/homage
-              page (/red-education), which carries the lead-attributed outbound
-              link - site-wide internal linking for the page (PRIME 2026-07-09). */}
           <Link href="/red-education" className="footer-built-link">
             {t.rich("redEducation", {
               b: (chunks) => <span className="brand">{chunks}</span>,
