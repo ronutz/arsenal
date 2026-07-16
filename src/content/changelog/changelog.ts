@@ -53,6 +53,20 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-17",
+    time: "12:00",
+    kind: "content",
+    title: "The pre-1996 story, told in full",
+    body: "The origin chapter at /about/history/pre-1996 is rebuilt from a flat summary into a proper telling: a dated timeline from the 1984 Microdigital TK-82C to the 1995 first role, a six-movement narrative (ham radio and QSL cards, the national micros, the bulletin-board and FidoNet years, the phreaking scene of the orelhao and the blue-box dreams, the 1993 academic internet, and the turn from hobby to trade), and a field guide of eleven era terms for readers who arrived after it - two of them, phreaking and the blue box, opening into the glossary's phone-phreaking lineage. Authored natively in English and Brazilian Portuguese.",
+  },
+  {
+    date: "2026-07-17",
+    time: "10:00",
+    kind: "content",
+    title: "Wave 7: the roster completes",
+    body: "Four final entries close the encyclopedia's planned roster. The access & home fleet consolidates Netgear, TP-Link, Zyxel, Asus & Askey, and Allied Telesis - the boxes everyone actually owns, the first hop of most packets on Earth. WatchGuard tells the red Firebox that turned security from a project into an object. A10 & Kemp pair the ADC challengers that kept the load-balancing leaders honest. And Datacom closes it at home: Brazil's networking manufacturer, its own gear on its own OS from Rio Grande do Sul, the existence proof that network sovereignty is buildable. The encyclopedia stands at 66 partner profiles - 16 pioneers, 15 partners, 6 contemporaries, and the wider lineage entries.",
+  },
+  {
+    date: "2026-07-17",
     time: "08:00",
     kind: "content",
     title: "Arista enriched, headings tamed, copy sharpened",

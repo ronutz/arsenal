@@ -5534,17 +5534,152 @@
     "pre1996": {
       "years": "Antes de 1996",
       "title": "A curiosidade",
-      "subtitle": "Importar peças, montar máquinas e conectar-se à internet dos primórdios, antes de nada disso ser um emprego.",
-      "intro": "Toda carreira técnica tem um antes. Antes dos selos de fabricante e das certificações, houve um adolescente que desmontava máquinas para entender como funcionavam, e um jovem autônomo que transformava esse entendimento em sustento. Foi aqui que se formou o instinto que move todo o resto.",
-      "s1Title": "Mão na massa com hardware, 1991 a 1995",
-      "s1Body": "A partir de 1991, o trabalho foi autônomo e prático: importar componentes de computador dos Estados Unidos, montar e vender computadores pessoais sob medida, e instalá-los, configurá-los e consertá-los para quem precisasse de ajuda. Era a época de construir uma máquina a partir de componentes e fazê-la funcionar, em vez de comprar uma pronta. Os sistemas daquele tempo passaram diretamente por estas mãos: DOS e CP/M, BASIC, Turbo Pascal, as primeiras versões do Windows e aplicativos de escritório, e as ferramentas de banco de dados com que as pequenas empresas trabalhavam na época, Clipper e dBase.",
-      "s2Title": "As redes anteriores à internet",
-      "s2Body": "As redes não começaram com a web. Muito antes da banda larga, o tecido que conectava tudo era diferente e mais difícil de lidar: Novell NetWare para servidores locais, sistemas de bulletin board para comunidade e troca de arquivos, as primeiras redes Ethernet, e as tecnologias de longa distância da época, X.25 (conhecida no Brasil como RENPAC) e Frame Relay. Quando a internet enfim chegou, chegou por modem, acessada por uma conta shell, SLIP ou PPP. Trabalhar com tudo isso significava entender redes desde o cabo, um entendimento que mais tarde fez as redes corporativas parecerem terreno conhecido.",
-      "s3Title": "BBS, phreaking e a internet acadêmica",
-      "s3Body": "A verdadeira curiosidade daquela época ia além do trabalho remunerado. As explorações daqueles anos incluíram operar e usar sistemas de bulletin board, a mexida na rede telefônica da cena do phreaking, UNIX na prática, e o acesso inicial à internet acadêmica. Era aprender fazendo, em uma comunidade que compartilhava conhecimento porque não havia outro lugar para obtê-lo. Esse hábito, de cavar até entender algo de verdade e então repassá-lo, nunca desapareceu.",
-      "s4Title": "1995: o primeiro emprego formal",
-      "s4Body": "Em 1995, o trabalho autônomo desaguou em um primeiro emprego formal. Na INTELECTA, uma empresa incubada pelo SEBRAE-SP, o projeto foi um sistema de troca eletrônica de dados para a comercialização de suprimentos médicos e hospitalares, construído sobre servidores Novell NetWare e o sistema de bulletin board PCBoard. Era um sistema de verdade, resolvendo um problema comercial de verdade, e marcou o ponto em que o hobby e o ofício viraram profissão.",
-      "closer": "No fim de 1995, a base estava lançada: uma pessoa que entendia máquinas e redes desde os primeiros princípios, que aprendia construindo, e que já tinha o instinto de explicar. Tudo o que veio depois, os fabricantes, as certificações, as salas de aula pelo mundo, foi construído sobre isso."
+      "subtitle": "Rádio amador, um Sinclair clonado, os BBSs, um tom de discagem roubado e a primeira internet acadêmica — todo o aprendizado, antes de qualquer coisa virar profissão.",
+      "intro": "Toda carreira técnica tem um antes. Antes dos crachás de fabricante e das certificações, havia um adolescente que precisava entender como tudo funcionava — e que perseguiu essa necessidade pelas ondas de rádio, pelos micros clonados, pelas linhas telefônicas e pela internet mais antiga. É aqui que se formou o instinto que move todo o resto. As técnicas desta página pertencem a um mundo que já não existe: a rede telefônica analógica, o orelhão a ficha e o BBS de linha única desapareceram, e é justamente por isso que a história pode ser contada sem rodeios.",
+      "mapTitle": "Como tudo aconteceu",
+      "mapNote": "Cerca de uma década, do primeiro computador ao primeiro contracheque.",
+      "tl": [
+        {
+          "years": "1984",
+          "where": "Primeiro computador · Microdigital TK-82C",
+          "what": "Um clone brasileiro do ZX81 da Sinclair. BASIC digitado à mão a partir de listagens de revista e gravado em uma fita cassete comum."
+        },
+        {
+          "years": "fim dos anos 1980",
+          "where": "Rádio amador · indicativo e cartões QSL",
+          "what": "A primeira prova de que um garoto com o equipamento certo podia alcançar um desconhecido a um continente de distância — e de que havia uma comunidade mundial que se importava com como o sinal viaja."
+        },
+        {
+          "years": "1991",
+          "where": "Sysop e montador autodidata",
+          "what": "Rodar um BBS em uma única linha telefônica; importar peças dos Estados Unidos e montar PCs sob medida para vender."
+        },
+        {
+          "years": "início dos anos 1990",
+          "where": "Phreaking no orelhão",
+          "what": "O telefone público a ficha, o truque da água no slot que às vezes funcionava, e os sonhos de blue box que ficaram só em sonho."
+        },
+        {
+          "years": "1993",
+          "where": "A internet acadêmica · shells UNIX",
+          "what": "Por uma universidade, por um modem, até um prompt de texto em uma máquina sem centro e sem dono. O mundo fechado da discagem se abriu para o planeta."
+        },
+        {
+          "years": "1995",
+          "where": "Primeiro cargo formal · INTELECTA (SEBRAE-SP)",
+          "what": "Um sistema de intercâmbio eletrônico de dados sobre Novell NetWare e PCBoard. O ponto em que hobby, ofício e profissão viraram uma coisa só."
+        }
+      ],
+      "storyTitle": "O aprendizado, em seis movimentos",
+      "mv": [
+        {
+          "title": "Sinais no ar",
+          "body": [
+            "Antes dos computadores, o rádio. O rádio amador significava um indicativo licenciado, a disciplina seca do alfabeto fonético e a pequena cerimônia do cartão QSL: um cartão-postal enviado pelo correio para confirmar que sim, naquela frequência, àquela hora, dois desconhecidos tinham mesmo se falado.",
+            "A lição chegou cedo e nunca foi embora. Um adolescente com o equipamento certo, dentro de um quarto, podia alcançar alguém em outro continente — e existia toda uma irmandade mundial de gente que se importava, profundamente, com como um sinal viaja daqui até lá. Curiosidade pelo próprio meio, e uma comunidade global ao alcance da sua mesa: cada capítulo seguinte é uma variação desse primeiro."
+          ]
+        },
+        {
+          "title": "Os micros nacionais",
+          "body": [
+            "Em 1984 o Brasil vivia sob a reserva de mercado, que proibia a importação de computadores para proteger uma indústria nacional. Então as máquinas eram clones locais. A primeira aqui foi o Microdigital TK-82C — uma cópia do ZX81 da Sinclair — mais tarde acompanhada pelo TK90X.",
+            "Não havia disco rígido nem rede. Os programas eram digitados à mão a partir das últimas páginas das revistas e gravados em uma fita cassete comum, que chiava ao carregar; um teclado de membrana sob os dedos e um aparelho de televisão como monitor. A gente aprendia BASIC porque não havia mais nada para fazer com aquilo, e no processo aprendia a verdade sobre a qual o resto deste site é construído: um computador não é mágica. É uma máquina que faz exatamente, e apenas, o que você mandar."
+          ]
+        },
+        {
+          "title": "Os anos de BBS",
+          "body": [
+            "Em 1991 a linha telefônica havia se tornado a fronteira. Um bulletin board system — um BBS — era um computador no quarto de alguém, com um modem atendendo um telefone. Para visitar um deles você mandava o seu próprio modem discar o número e escutava as duas máquinas negociarem a conexão num estouro de chiado que todo dono de modem sabia cantarolar de cor.",
+            "Um visitante por vez. Se outra pessoa já estivesse conectada, você ouvia o sinal de ocupado e tentava de novo mais tarde. Lá dentro havia murais de mensagens, bibliotecas de arquivos, telas desenhadas em texto colorido ANSI e door games que se jogavam turno a turno contra todo mundo da cidade. Rodar um deles — aqui o software era o Oblivion/2 — significava ser anfitrião, moderador e técnico ao mesmo tempo.",
+            "E os BBSs não eram ilhas. A FidoNet costurava milhares deles: de madrugada cada BBS discava para os vizinhos e passava adiante um saco de mensagens que então saltava, de BBS em BBS, pelo país e pelo mundo até o amanhecer. Era o correio eletrônico antes do correio eletrônico — e tinha exatamente o formato que os cartões QSL haviam ensinado: uma mensagem encontrando um desconhecido, confirmada um pouco depois."
+          ]
+        },
+        {
+          "title": "O jeito do jovem hacker",
+          "body": [
+            "Se o BBS ensinava como as máquinas conversavam entre si, o phreaking fazia uma pergunta mais ousada: como funciona o próprio sistema telefônico — e dá para fazê-lo executar coisas para as quais nunca foi feito?",
+            "No Brasil o telefone público era o orelhão, e funcionava a fichas, aquelas peças que você comprava e enfiava no slot. O folclore de pátio de escola dizia que um pouco de água no slot da ficha causava um curto lá dentro e liberava um tom de discagem de graça. Foi testado, mais de uma vez, e às vezes funcionava. Além disso havia as lendas — as americanas, sobre um apito de brinquedo que por acaso produzia exatamente o tom que a rede de longa distância ficava escutando, e as blue boxes construídas para imitá-lo — e os planos grandiosos e fantasiosos que essas lendas inspiravam: emendar um modem direto na fiação de um telefone público e discar para o mundo inteiro sem pagar nada.",
+            "Os planos ficaram só em planos; a água no slot foi o mais longe que a coisa chegou. Nada daquilo era por dinheiro. Era a intoxicação específica de entender um sistema bem o bastante para enxergar as costuras, e ser jovem o suficiente para forçá-las. A rede analógica onde tudo isso vivia acabou faz décadas — os tons de sinalização aposentados, as fichas derretidas — que é a razão honesta pela qual isto pode ser registrado aqui como história, e não como instrução."
+          ]
+        },
+        {
+          "title": "A internet acadêmica",
+          "body": [
+            "O mundo dos BBSs era uma cidade. A internet era o planeta. Em 1993 ela chegou por uma universidade, por um modem, como um simples prompt de texto em uma máquina UNIX que ela mesma conversava com milhares de outras — sem centro, sem dono, sem horário de fechar.",
+            "Com sorte havia SLIP ou PPP para levar tráfego de internet de verdade pela linha telefônica; sem sorte, uma conta shell e um cardápio de ferramentas de nomes estranhos — Gopher, Archie, IRC. Na primeira vez em que um comando digitado em São Paulo se estendeu e puxou um arquivo de uma máquina em outro continente, os muros do jardim da discagem simplesmente caíram, e o formato dos trinta anos seguintes apareceu inteiro de uma vez."
+          ]
+        },
+        {
+          "title": "Do hobby ao ofício",
+          "body": [
+            "Em algum ponto desses mesmos anos a curiosidade começou a pagar. A partir de 1991 o trabalho era prático e autônomo: importar componentes dos Estados Unidos, montar PCs sob medida e vendê-los, depois instalá-los e resolver seus problemas para quem precisasse — DOS e CP/M, Turbo Pascal, e os bancos de dados Clipper e dBase que silenciosamente rodavam os pequenos negócios da época.",
+            "Em 1995 tudo convergiu para um primeiro cargo formal na INTELECTA, uma empresa incubada pelo SEBRAE-SP. O projeto era um sistema de intercâmbio eletrônico de dados para a comercialização de suprimentos médicos e hospitalares, construído sobre servidores Novell NetWare e o sistema de BBS PCBoard. Um sistema de verdade resolvendo um problema comercial de verdade — o exato ponto em que o hobby, o ofício e a profissão finalmente viraram uma coisa só."
+          ]
+        }
+      ],
+      "fieldTitle": "Um guia de campo de um mundo desaparecido",
+      "fieldIntro": "O vocabulário da época, para quem chegou depois dela. Dois destes abrem no glossário, onde a linhagem do phreaking telefônico está documentada por inteiro.",
+      "field": {
+        "bbs": {
+          "tag": "O BBS",
+          "term": "Bulletin board system (BBS)",
+          "desc": "Um computador com um modem atendendo uma linha telefônica, um visitante por vez. A internet comunitária antes da internet: murais de mensagens, bibliotecas de arquivos e jogos, tudo alcançado ao discar um número de telefone."
+        },
+        "sysop": {
+          "tag": "O BBS",
+          "term": "Sysop",
+          "desc": "System operator — a pessoa que rodava um BBS a partir da própria casa: anfitrião, moderador, bibliotecário e técnico de manutenção de um pequeno mundo com um número de telefone no lugar de um endereço."
+        },
+        "baud": {
+          "tag": "A linha",
+          "term": "Baud e o handshake",
+          "desc": "A velocidade do modem, a partir de 300 baud. O chiado que você ouvia ao conectar eram dois modems negociando em tempo real — um ritual tão familiar que os donos distinguiam de ouvido uma boa conexão de uma ruim."
+        },
+        "ansi": {
+          "tag": "A tela",
+          "term": "Arte ANSI",
+          "desc": "Imagens e menus desenhados inteiramente com caracteres de texto colorido, usando códigos de escape ANSI. A linguagem visual do BBS: logotipos, bordas e telas cheias de arte, tudo feito de letras e símbolos."
+        },
+        "door": {
+          "tag": "A tela",
+          "term": "Door game",
+          "desc": "Um jogo que rodava no próprio BBS, jogado turno a turno contra os outros usuários — você fazia suas jogadas, desligava, e outro fazia as dele. A cidade inteira competindo no mesmo BBS, um dia de cada vez."
+        },
+        "fidonet": {
+          "tag": "A linha",
+          "term": "FidoNet",
+          "desc": "Uma rede store-and-forward ligando BBSs pelo mundo. Cada BBS discava para os vizinhos de madrugada para retransmitir mensagens que saltavam de BBS em BBS pelo globo — um e-mail amador que se movia enquanto todos dormiam."
+        },
+        "qsl": {
+          "tag": "O ar",
+          "term": "Cartão QSL",
+          "desc": "Um cartão-postal enviado entre radioamadores para confirmar que um contato realmente aconteceu. A prova, pelo correio, de que dois desconhecidos haviam se falado em uma dada frequência — o mesmo formato de mensagem-encontra-desconhecido que o mundo dos BBSs repetiria depois."
+        },
+        "orelhao": {
+          "tag": "O telefone",
+          "term": "Orelhão e fichas",
+          "desc": "O telefone público brasileiro e as fichas que você enfiava nele para fazer uma ligação. O hardware do dia a dia que o folclore do phreaking de pátio tentava, sem parar, driblar."
+        },
+        "phreaking": {
+          "tag": "O telefone",
+          "term": "Phreaking",
+          "desc": "Explorar e dobrar a rede telefônica por pura curiosidade sobre como ela funcionava. O ancestral, no sistema telefônico, do hacking de computador — nascido uma década antes de a maioria ter um computador para hackear.",
+          "slug": "captain-crunch"
+        },
+        "bluebox": {
+          "tag": "O telefone",
+          "term": "Blue box",
+          "desc": "Um aparelho que gerava os tons de controle em que a antiga rede de longa distância confiava — o mais famoso deles, o tom de 2600 Hz — para tomar uma linha e rotear chamadas de graça. A sinalização in-band fazia a rede acreditar em qualquer um que soubesse produzir o som certo.",
+          "slug": "blue-box"
+        },
+        "shell": {
+          "tag": "A rede",
+          "term": "Conta shell (SLIP / PPP)",
+          "desc": "O acesso à internet mais antigo, por linha telefônica: um login de texto em uma máquina UNIX remota, às vezes turbinado com SLIP ou PPP para carregar tráfego de internet de verdade. A porta do mundo fechado dos BBSs para a rede aberta."
+        }
+      },
+      "closer": "No fim de 1995 a base estava montada, e nunca tinha sido realmente sobre os truques. Era sobre o hábito por baixo deles — desmontar uma coisa até entendê-la de verdade, e então explicá-la para quem vem depois. Os crachás de fabricante, as certificações, as salas de aula em quatro continentes: tudo isso foi construído sobre um adolescente com um Sinclair clonado, um ferro de solda, um tom de discagem roubado e uma vontade desmedida de saber como tudo funcionava.",
+      "fieldMore": "No glossário →"
     },
     "era19962020": {
       "years": "1996 – 2020",

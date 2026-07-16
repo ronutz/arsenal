@@ -5534,17 +5534,152 @@
     "pre1996": {
       "years": "Before 1996",
       "title": "The curiosity",
-      "subtitle": "Importing parts, assembling machines, and dialing into the early internet, before any of it was a job.",
-      "intro": "Every technical career has a before. Before the vendor badges and the certifications, there was a teenager taking machines apart to understand how they worked, and a young autonomous professional turning that understanding into a living. This is where the instinct that drives everything else was formed.",
-      "s1Title": "Hands on hardware, 1991 to 1995",
-      "s1Body": "From 1991, the work was autonomous and hands-on: importing computer parts from the United States, assembling and selling custom-built personal computers, and installing, configuring, and troubleshooting them for whoever needed help. This was the era of building a machine from components and making it run, not buying one off a shelf. The systems of the day passed through these hands directly: DOS and CP/M, BASIC, Turbo Pascal, early Windows and office applications, and the database tools that ran small businesses then, Clipper and dBase.",
-      "s2Title": "The networks before the internet",
-      "s2Body": "Networking did not begin with the web. Long before broadband, the connective tissue was different and harder to work with: Novell NetWare for local servers, bulletin board systems for community and file exchange, early Ethernet networks, and the wide-area technologies of the time, X.25 (known in Brazil as RENPAC) and Frame Relay. When the internet did arrive, it arrived over a modem, reached through a shell account, SLIP, or PPP. Working across all of it meant understanding networks from the wire up, an understanding that later made enterprise networking feel like familiar ground.",
-      "s3Title": "BBS, phreaking, and the academic internet",
-      "s3Body": "The genuine curiosity of the era went beyond paid work. The explorations of those years included running and using bulletin board systems, the phone-network tinkering of the phreaking scene, hands-on UNIX, and early access to the academic internet. This was learning by doing, in a community that shared knowledge because there was nowhere else to get it. That habit, of digging until something is genuinely understood and then passing it on, never went away.",
-      "s4Title": "1995: the first formal role",
-      "s4Body": "In 1995, the autonomous work converged into a first formal position. At INTELECTA, a company incubated by SEBRAE-SP, the project was an electronic-data-interchange system for the commercialization of medical and hospital supplies, built on Novell NetWare servers and the PCBoard bulletin board system. It was a real system, solving a real commercial problem, and it marked the point where the hobby and the trade became a profession.",
-      "closer": "By the end of 1995, the foundation was set: a person who understood machines and networks from first principles, who learned by building, and who already had the instinct to explain. Everything that followed, the vendors, the certifications, the global classrooms, was built on this."
+      "subtitle": "Ham radio, a cloned Sinclair, bulletin boards, a stolen dial tone, and the first academic internet — the whole apprenticeship, before any of it was a job.",
+      "intro": "Every technical career has a before. Before the vendor badges and the certifications, there was a teenager who needed to know how everything worked — and who chased that need through radio waves, cloned micros, phone lines, and the earliest internet. This is where the instinct that drives all the rest was formed. The techniques on this page belong to a world that no longer exists: the analog phone network, the token payphone, and the single-line bulletin board are gone, which is exactly why the story can be told plainly.",
+      "mapTitle": "How it unfolded",
+      "mapNote": "Roughly a decade, from the first machine to the first payslip.",
+      "tl": [
+        {
+          "years": "1984",
+          "where": "First computer · Microdigital TK-82C",
+          "what": "A Brazilian clone of Sinclair's ZX81. BASIC typed in by hand from magazine listings and saved to an ordinary audio cassette."
+        },
+        {
+          "years": "late 1980s",
+          "where": "Amateur radio · call sign & QSL cards",
+          "what": "The first proof that a kid with the right gear could reach a stranger a continent away — and that a worldwide community cared how signals travel."
+        },
+        {
+          "years": "1991",
+          "where": "Sysop & self-taught builder",
+          "what": "Running a bulletin board on a single phone line; importing components from the United States and assembling custom PCs to sell."
+        },
+        {
+          "years": "early 1990s",
+          "where": "Phreaking the orelhão",
+          "what": "The token payphone, the water-in-the-slot trick that sometimes worked, and blue-box dreams that stayed dreams."
+        },
+        {
+          "years": "1993",
+          "where": "The academic internet · UNIX shells",
+          "what": "Through a university, over a modem, into a text prompt on a machine with no center and no owner. The walled dial-up world opened onto the planet."
+        },
+        {
+          "years": "1995",
+          "where": "First formal role · INTELECTA (SEBRAE-SP)",
+          "what": "An electronic-data-interchange system on Novell NetWare and PCBoard. The point where hobby, trade, and profession became one thing."
+        }
+      ],
+      "storyTitle": "The apprenticeship, in six movements",
+      "mv": [
+        {
+          "title": "Signals in the air",
+          "body": [
+            "Before the computers, there was radio. Amateur radio — \"ham\" radio — meant a licensed call sign, the clipped discipline of the phonetic alphabet, and the small ceremony of the QSL card: a postcard mailed to confirm that yes, on this frequency, at this hour, two strangers had actually spoken.",
+            "The lesson landed early and never left. A teenager with the right gear in a bedroom could reach a person on another continent, and there was a whole worldwide fellowship of people who cared, deeply, about how a signal travels from here to there. Curiosity about the medium itself, and a global community reachable from your own desk — every later chapter is a variation on that first one."
+          ]
+        },
+        {
+          "title": "The national micros",
+          "body": [
+            "In 1984 Brazil was under the reserva de mercado, a market reserve that banned imported computers to shelter a domestic industry. So the machines were local clones. The first one here was the Microdigital TK-82C — a copy of Sinclair's ZX81 — later joined by the TK90X.",
+            "There was no hard drive and no network. Programs were typed by hand from the back pages of magazines and saved to an ordinary audio cassette that screeched as it loaded; a membrane keyboard under your fingers and a television set for a monitor. You learned BASIC because there was nothing else to do with the thing, and in the process you learned the truth the rest of this site is built on: a computer is not magic. It is a machine that does exactly, and only, what you tell it."
+          ]
+        },
+        {
+          "title": "The bulletin-board years",
+          "body": [
+            "By 1991 the phone line had become the frontier. A bulletin board system — a BBS — was a computer in someone's bedroom with a modem answering a telephone. To visit one you told your own modem to dial its number, then listened to the two machines negotiate a connection in a burst of static that every modem owner could hum from memory.",
+            "One caller at a time. If someone else was already on, you got a busy signal and tried again later. Inside were message boards, libraries of files, screens drawn in colored ANSI text, and door games you played turn by turn against everyone else in town. Running one — the software here was Oblivion/2 — meant being host, moderator, and mechanic all at once.",
+            "And the boards were not islands. FidoNet stitched thousands of them together: in the small hours each board would dial its neighbors and hand off a sack of messages that then hopped, board to board, across the country and the world by morning. It was electronic mail before electronic mail — and it had exactly the shape the QSL cards had taught: a message finding a stranger, confirmed a little later."
+          ]
+        },
+        {
+          "title": "The young hacker's way",
+          "body": [
+            "If a BBS taught how the machines spoke to each other, phreaking asked a bolder question: how does the telephone system itself work — and can it be made to do things it was never meant to?",
+            "In Brazil the payphone was the orelhão, the \"big ear,\" and it ran on fichas, little tokens you bought and fed into a slot. Schoolyard folklore held that a splash of water in the coin slot would short something inside and hand you a free dial tone. It was tried, more than once, and sometimes it worked. Past that were the legends — the American ones about a toy whistle that happened to produce the exact tone the long-distance network was listening for, and the blue boxes built to imitate it — and the grand, fantastical schemes those legends inspired: to splice a modem straight into the wiring of a public phone and dial the whole world for nothing.",
+            "The schemes stayed schemes; the water in the slot was as far as it ever went. None of it was for money. It was the particular intoxication of understanding a system well enough to see its seams, and being young enough to lean on them. The analog network all of this lived on is decades gone now — the signaling tones retired, the tokens melted down — which is the honest reason it can be set down here as history rather than instruction."
+          ]
+        },
+        {
+          "title": "The academic internet",
+          "body": [
+            "The BBS world was a town. The internet was the planet. In 1993 it arrived through a university, over a modem, as a plain text prompt on a UNIX machine that was itself in conversation with thousands of others — no center, no owner, no closing time.",
+            "If you were fortunate there was SLIP or PPP to carry real internet traffic down the phone line; if not, a shell account and a menu of tools with strange names — Gopher, Archie, IRC. The first time a command typed in São Paulo reached across and pulled a file off a machine on another continent, the walls of the dial-up garden simply fell away, and the shape of the next thirty years came into view all at once."
+          ]
+        },
+        {
+          "title": "From hobby to trade",
+          "body": [
+            "Somewhere in those same years the curiosity started to pay. From 1991 the work was hands-on and autonomous: importing components from the United States, assembling custom PCs and selling them, then installing and troubleshooting them for whoever needed help — DOS and CP/M, Turbo Pascal, and the Clipper and dBase databases that quietly ran small businesses then.",
+            "In 1995 it converged into a first formal role at INTELECTA, a company incubated by SEBRAE-SP. The project was an electronic-data-interchange system for trading medical and hospital supplies, built on Novell NetWare servers and the PCBoard bulletin-board system. A real system solving a real commercial problem — the exact point where the hobby, the trade, and the profession finally became a single thing."
+          ]
+        }
+      ],
+      "fieldTitle": "A field guide to a vanished world",
+      "fieldIntro": "The vocabulary of the era, for anyone who arrived after it. Two of these open into the glossary, where the phone-phreaking lineage is documented in full.",
+      "field": {
+        "bbs": {
+          "tag": "The board",
+          "term": "Bulletin board system (BBS)",
+          "desc": "A computer with a modem answering a phone line, one visitor at a time. The community internet before the internet: message boards, file libraries, and games, all reached by dialing a phone number."
+        },
+        "sysop": {
+          "tag": "The board",
+          "term": "Sysop",
+          "desc": "System operator — the person who ran a BBS from their own home: host, moderator, librarian, and repair technician for a little world with a phone number instead of an address."
+        },
+        "baud": {
+          "tag": "The wire",
+          "term": "Baud & the handshake",
+          "desc": "The modem's speed, from 300 baud upward. The screech you heard when connecting was two modems negotiating in real time — a ritual so familiar that owners could tell a good connection from a bad one by ear."
+        },
+        "ansi": {
+          "tag": "The screen",
+          "term": "ANSI art",
+          "desc": "Pictures and menus drawn entirely in colored text characters, using ANSI escape codes. The visual language of the BBS: logos, borders, and full-screen art, all made of letters and symbols."
+        },
+        "door": {
+          "tag": "The screen",
+          "term": "Door game",
+          "desc": "A game that ran on the BBS itself, played turn by turn against the other callers — you took your moves, hung up, and someone else took theirs. The whole town competing on the same board, a day at a time."
+        },
+        "fidonet": {
+          "tag": "The wire",
+          "term": "FidoNet",
+          "desc": "A store-and-forward network linking BBSs worldwide. Each board dialed its neighbors overnight to relay messages that hopped board to board across the globe — hobbyist email that moved while everyone slept."
+        },
+        "qsl": {
+          "tag": "The air",
+          "term": "QSL card",
+          "desc": "A postcard mailed between amateur-radio operators to confirm a contact actually happened. Proof, by post, that two strangers had spoken on a given frequency — the same message-finds-a-stranger shape the BBS world would later repeat."
+        },
+        "orelhao": {
+          "tag": "The phone",
+          "term": "Orelhão & fichas",
+          "desc": "Brazil's public payphone — the \"big ear\" — and the tokens (fichas) you fed it to make a call. The everyday hardware the phreaking folklore of the schoolyard tried, endlessly, to outwit."
+        },
+        "phreaking": {
+          "tag": "The phone",
+          "term": "Phreaking",
+          "desc": "Exploring and bending the telephone network out of pure curiosity about how it worked. The phone-system ancestor of computer hacking, born a decade before most people had a computer to hack.",
+          "slug": "captain-crunch"
+        },
+        "bluebox": {
+          "tag": "The phone",
+          "term": "Blue box",
+          "desc": "A device that generated the control tones the old long-distance network trusted — most famously the 2600 Hz tone — to seize a line and route calls for free. In-band signaling meant the network believed any caller who could make the right sound.",
+          "slug": "blue-box"
+        },
+        "shell": {
+          "tag": "The net",
+          "term": "Shell account (SLIP / PPP)",
+          "desc": "Early internet access over a phone line: a text login on a remote UNIX machine, sometimes upgraded with SLIP or PPP to carry real internet traffic. The doorway from the walled BBS world onto the open network."
+        }
+      },
+      "closer": "By the end of 1995 the foundation was set, and it was never really about the tricks. It was about the habit underneath them — taking a thing apart until it is genuinely understood, then explaining it to whoever comes next. The vendor badges, the certifications, the classrooms on four continents: all of it was built on a teenager with a cloned Sinclair, a soldering iron, a stolen dial tone, and an unreasonable need to know how everything worked.",
+      "fieldMore": "In the glossary →"
     },
     "era19962020": {
       "years": "1996 – 2020",

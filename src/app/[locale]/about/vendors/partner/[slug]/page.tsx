@@ -78,6 +78,10 @@ import { httpGopherProfile } from "@/content/vendors/profiles/http-gopher";
 import { nvidiaProfile } from "@/content/vendors/profiles/nvidia";
 import { aristaProfile } from "@/content/vendors/profiles/arista";
 import { ubiquitiProfile } from "@/content/vendors/profiles/ubiquiti";
+import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
+import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
+import { a10KempProfile } from "@/content/vendors/profiles/a10-kemp";
+import { datacomProfile } from "@/content/vendors/profiles/datacom";
 import { banyanProfile } from "@/content/vendors/profiles/banyan";
 import { fujitsuProfile } from "@/content/vendors/profiles/fujitsu";
 import { necProfile } from "@/content/vendors/profiles/nec";
@@ -147,6 +151,10 @@ const PROFILES: Record<string, VendorProfile> = {
   [nvidiaProfile.slug]: nvidiaProfile,
   [aristaProfile.slug]: aristaProfile,
   [ubiquitiProfile.slug]: ubiquitiProfile,
+  [accessHomeFleetProfile.slug]: accessHomeFleetProfile,
+  [watchguardProfile.slug]: watchguardProfile,
+  [a10KempProfile.slug]: a10KempProfile,
+  [datacomProfile.slug]: datacomProfile,
   [banyanProfile.slug]: banyanProfile,
   [fujitsuProfile.slug]: fujitsuProfile,
   [necProfile.slug]: necProfile,

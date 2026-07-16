@@ -808,6 +808,38 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "Robert Pera's bet was that big-vendor radio performance could ship at a fraction of the price, sold by community instead of a sales force. airMAX connected the places carriers skipped; UniFi became the default answer for small networks and a rising share of serious ones. Kept factual, its 2015 BEC fraud and 2020-21 insider case are canonical security teaching material.",
     body: ["The profile covers the 2005 founding, the WISP world, UniFi and the 2011 IPO, the product-led model, and the two incidents on the public record."],
   },
+  {
+    slug: "access-home-fleet",
+    group: "contemporary",
+    name: "The access & home fleet - Netgear, TP-Link, Zyxel, Asus & Askey, Allied Telesis",
+    tagline: "The boxes everyone actually owns: the first hop of most packets on Earth, told as one fleet.",
+    intro: "Five names, one layer: the CPE and SOHO gear that put networking in ordinary rooms. Netgear's Bay Networks spinoff roots, TP-Link's decade-plus shipment crown, Zyxel's modem-era pedigree, the ASUS/Askey retail-and-ODM pairing, and Allied Telesis holding the access edge since 1987 - plus the 2024 geopolitics that scale eventually attracts.",
+    body: ["The profile tells the five foundings, the mesh and cloud-management turns, the enthusiast-firmware culture, the invisible carrier-ODM fleet, and why this tier is both the industry's proving ground and its largest attack surface."],
+  },
+  {
+    slug: "watchguard",
+    group: "contemporary",
+    name: "WatchGuard - the red box that made the firewall an appliance",
+    tagline: "The 1996 Firebox turned security from a project into an object - and the mid-market has run on it since.",
+    intro: "WatchGuard's founding bet was packaging: firewall software sealed into a red steel appliance, priced and consoled for the company with one IT person. The category the giants now dominate was proven here first - and the company never abandoned the mid-market and MSP channel it created.",
+    body: ["The profile covers the Firebox, the 1999 IPO and 2006 take-private, the UTM years on Fireware, AuthPoint, the Panda Security acquisition, and the MSP-first present."],
+  },
+  {
+    slug: "a10-kemp",
+    group: "contemporary",
+    name: "A10 & Kemp - the ADC challengers",
+    tagline: "The second tier that kept the load-balancing leaders honest: A10 from the throughput flank, Kemp from below.",
+    intro: "Application delivery never became a monopoly, and these two are why. Lee Chen's A10 built its franchise where traffic is heaviest - CGNAT, DDoS, the service-provider tier - while Kemp's LoadMaster priced the ADC for the Exchange administrator and went virtual before the market did. Every leader's quote was written knowing they existed.",
+    body: ["The profile covers both foundings, the Brocade litigation chapter, the 2014 A10 IPO, the CGNAT decade, Thunder TPS, Kemp's virtual-first bet, and the 2021 Progress acquisition."],
+  },
+  {
+    slug: "datacom",
+    group: "contemporary",
+    name: "Datacom - Brazil's networking manufacturer",
+    tagline: "The hometown entry: carrier gear, GPON, and a national OS, designed and built in Rio Grande do Sul since 1998.",
+    intro: "Every other company in this encyclopedia had to be imported into Brazil; Datacom grew there. Its own switching and GPON lines on its own DmOS carried the country's regional-ISP fiber boom - a standing existence proof that network sovereignty is buildable, from the same southern engineering culture that produced Cyclades' founders.",
+    body: ["The profile covers the 1998 founding, the DmSwitch carrier-Ethernet years, DmOS, the provedores' GPON wave, the domestic-financing structural factor stated plainly, and the quarter-century mark."],
+  },
 ];
 
 /** Look up a partner vendor by slug. */
