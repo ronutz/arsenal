@@ -566,6 +566,55 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "SAP is Europe's greatest software story: five IBM engineers in Mannheim who bet in 1972 that business software could be a standard product, not a custom project. R/3 rode the client-server wave into nearly every large enterprise on earth, and the company reinvented its own foundations twice - in-memory HANA in 2010 and the cloud pivot after it.",
     body: ["The profile follows Walldorf from R/1 to RISE, the ecosystem that employs a small nation of consultants, and the networking-adjacent reality that SAP traffic shaped a generation of QoS designs."],
   },
+  // ---- Pioneer wave 2 (PRIME 2026-07-16): six more founders of the industry. ----
+  {
+    slug: "3com",
+    group: "other",
+    name: "3Com - Ethernet leaves the lab",
+    tagline: "Bob Metcalfe commercialized his own PARC invention; EtherLink wired the PC era, Palm rode along, and the story ended at HP in 2010.",
+    intro: "3Com is the second half of the Ethernet story this section starts on the Xerox page: Metcalfe left PARC in 1979 to sell the network he had invented, and the EtherLink card put Ethernet inside the IBM PC itself. Computers, Communication, Compatibility - the three Coms - became the connectivity company of the LAN decade.",
+    body: ["From the first PC Ethernet adapters through the US Robotics merger that brought Palm aboard, to the H3C venture in China and the 2010 HP acquisition - the profile below follows the wire out of the lab and into everything."],
+  },
+  {
+    slug: "compaq",
+    group: "other",
+    name: "Compaq - the clone that became the king",
+    tagline: "Three ex-TI engineers sketched a portable on a placemat, clean-roomed the IBM BIOS, and built the fastest company to a billion dollars - then bought DEC and merged into HP.",
+    intro: "Compaq legitimized the PC-compatible industry: its 1982 clean-room BIOS made 'IBM compatible' a legal product category, its Deskpro 386 beat IBM to Intel's 386, and by the mid-1990s it was the world's largest PC maker. Its acquisitions of Tandem and DEC made it, briefly, the industry's everything-company - until the 2002 HP merger closed the arc.",
+    body: ["The profile runs from the Houston placemat sketch to the proxy-fight merger, with the DEC bloodline this section tells separately flowing through it."],
+  },
+  {
+    slug: "netscape",
+    group: "other",
+    name: "Netscape - the company that opened the web",
+    tagline: "Clark and Andreessen's Navigator took the internet mainstream; SSL, JavaScript, and the cookie were invented here - the browser lost the war, the inventions won everything.",
+    intro: "No company on this page matters more to this site's daily subject matter: SSL - the ancestor of every TLS session the tools here decode - was designed at Netscape, as were JavaScript and the HTTP cookie. The Navigator browser took the web from academia to everyone, triggered the browser wars, and left behind Mozilla and the open web itself.",
+    body: ["From Jim Clark's post-SGI second act and the 1995 IPO that started the dot-com era, to the AOL acquisition and the Firefox afterlife - the profile follows the fifty-one months that rewired the world."],
+  },
+  {
+    slug: "motorola",
+    group: "other",
+    name: "Motorola - the radio century",
+    tagline: "Car radios to the walkie-talkie to the first handheld cell call and the moon itself; split in 2011 into Solutions and a Mobility arm that passed through Google to Lenovo.",
+    intro: "Motorola put radio everywhere: in cars in the 1930s, on soldiers' backs in the 1940s, on the Moon in 1969, and in Martin Cooper's hand for the first handheld cellular call in 1973. The century company split in 2011 - Motorola Solutions carries the mission-critical radio and public-safety network lineage today, while the phone side journeyed through Google to Lenovo.",
+    body: ["The profile covers the Galvin brothers' Chicago startup, the DynaTAC and RAZR eras, the Iridium gamble, the 68000 processor family that powered a computing generation, and both halves of the split."],
+  },
+  {
+    slug: "unisys",
+    group: "other",
+    name: "Unisys - computing's oldest bloodlines",
+    tagline: "Burroughs (1886) plus Sperry's UNIVAC - the ENIAC creators' company - merged in 1986: the deepest lineage in this section, still running ClearPath descendants today.",
+    intro: "Unisys is where computing's two oldest commercial bloodlines meet: William Seward Burroughs's 1886 adding-machine company, and Sperry's UNIVAC division - built on Eckert and Mauchly, the engineers of ENIAC itself, whose UNIVAC I of 1951 was America's first commercial computer and famously called the 1952 election on CBS. The 1986 merger created Unisys; the mainframe heritage survives in ClearPath.",
+    body: ["The profile traces both trunks - the adding machine and ENIAC - through the 1986 merger, the services pivot, and the modern company."],
+  },
+  {
+    slug: "data-general",
+    group: "other",
+    name: "Data General - the soul of a new machine",
+    tagline: "Edson de Castro left DEC to build the Nova; Tracy Kidder's Pulitzer immortalized the Eagle; CLARiiON storage carried the DNA into EMC in 1999.",
+    intro: "Data General was born from the industry's most famous walkout: Edson de Castro, designer of DEC's PDP-8, left when Ken Olsen shelved his next design, and the 1969 Nova - elegant, cheap, sixteen bits - forced the entire minicomputer market to respond. Tracy Kidder's The Soul of a New Machine made its Eagle project the most celebrated engineering story ever written.",
+    body: ["The profile follows the Nova and Eclipse decades, the AViiON pivot, and the CLARiiON storage line whose 1999 acquisition by EMC seeded the midrange-storage dynasty that lives on at Dell today."],
+  },
 ];
 
 /** Look up a partner vendor by slug. */

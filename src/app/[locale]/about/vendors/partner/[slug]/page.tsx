@@ -51,6 +51,12 @@ import { novellProfile } from "@/content/vendors/profiles/novell";
 import { oracleProfile } from "@/content/vendors/profiles/oracle";
 import { ibmProfile } from "@/content/vendors/profiles/ibm";
 import { sapProfile } from "@/content/vendors/profiles/sap";
+import { threeComProfile } from "@/content/vendors/profiles/3com";
+import { compaqProfile } from "@/content/vendors/profiles/compaq";
+import { netscapeProfile } from "@/content/vendors/profiles/netscape";
+import { motorolaProfile } from "@/content/vendors/profiles/motorola";
+import { unisysProfile } from "@/content/vendors/profiles/unisys";
+import { dataGeneralProfile } from "@/content/vendors/profiles/data-general";
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
@@ -88,6 +94,13 @@ const PROFILES: Record<string, VendorProfile> = {
   [oracleProfile.slug]: oracleProfile,
   [ibmProfile.slug]: ibmProfile,
   [sapProfile.slug]: sapProfile,
+  // Pioneer wave 2 (PRIME 2026-07-16).
+  [threeComProfile.slug]: threeComProfile,
+  [compaqProfile.slug]: compaqProfile,
+  [netscapeProfile.slug]: netscapeProfile,
+  [motorolaProfile.slug]: motorolaProfile,
+  [unisysProfile.slug]: unisysProfile,
+  [dataGeneralProfile.slug]: dataGeneralProfile,
 };
 
 export function generateStaticParams() {

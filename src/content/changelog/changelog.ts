@@ -53,6 +53,13 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-16",
+    time: "11:00",
+    kind: "content",
+    title: "Pioneer wave two: six more giants",
+    body: "3Com, Compaq, Netscape, Motorola, Unisys, and Data General join the industry lineages. 3Com completes the Ethernet story the Xerox page begins; Netscape is where SSL, JavaScript, and the cookie were invented - this site's daily subject matter; Unisys carries computing's two oldest bloodlines, the 1886 Burroughs adding machine and ENIAC's own engineers; and Data General brings the Soul of a New Machine. The distribution career chapter also widened to 2015 to 2019, spanning both the Westcon-Comstor and ScanSource years.",
+  },
+  {
+    date: "2026-07-16",
     time: "09:00",
     kind: "feature",
     title: "The WebSerial console grows up",
