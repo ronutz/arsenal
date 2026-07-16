@@ -43,6 +43,10 @@ export interface Credential {
   period?: string;
   note?: string;
   evidence?: CredentialEvidence;
+  /** True -> this authorization has no vendor-issued certificate; the card
+   *  renders an explanatory note. Some vendors (e.g. F5 and Netskope) do not
+   *  issue a certificate for their instructor authorization. */
+  noCertificate?: boolean;
   /** Optional era label; when set on historical items, the vendor group renders
    *  a sub-heading separating eras (used for Fortinet: legacy NSE / FCP & FCSS /
    *  current program). Items without an era render before any era-tagged ones. */
@@ -74,10 +78,10 @@ const NS = (code: string) => `https://verify.skilljar.com/c/${code}`;
 // CURRENT — instructor authorizations.
 // ----------------------------------------------------------------------------
 export const instructorAuthorizations: Credential[] = [
-  { name: "F5 Authorized Instructor", issuer: "F5" },
+  { name: "F5 Authorized Instructor", issuer: "F5", noCertificate: true },
   { name: "Fortinet Certified Trainer (FCT)", issuer: "Fortinet", detail: "Cybersecurity", period: "2025 – 2027", evidence: { pdf: P("fortinet-fct"), credly: C("a3bf6c7b-d24c-476c-8914-d948164dd099"), verifyId: "6629361496RN" } },
   { name: "Extreme Networks Certified Instructor", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("ece5310e-8cb8-4c20-9121-1f4c97db441a") } },
-  { name: "Netskope Certified Cloud Security Instructor", issuer: "Netskope" },
+  { name: "Netskope Certified Cloud Security Instructor", issuer: "Netskope", noCertificate: true },
   { name: "Netskope Trainer Accreditation, Administrator License", issuer: "Netskope", period: "2026 – 2027", evidence: { pdf: P("netskope-trainer-administrator"), verifyUrl: NS("vievw5ko46i2"), verifyId: "vievw5ko46i2" } },
 ];
 
@@ -93,9 +97,16 @@ export const currentCertifications: Credential[] = [
   { name: "F5 Certified Technology Specialist, BIG-IP LTM", issuer: "F5", detail: "Local Traffic Manager", period: "2021 – 2028", evidence: { pdf: P("f5-cts-ltm"), credly: C("819ad102-2b89-422e-88b4-bf4533a3a570"), verifyUrl: F5_VERIFY, verifyId: "C1LZHFD11NEEQDWG", candidateId: F5_CANDIDATE } },
   { name: "F5 Certified Administrator, BIG-IP", issuer: "F5", detail: "F5-CA", period: "2015 – 2028", evidence: { pdf: P("f5-ca"), credly: C("be660e5c-ddc8-4eef-b1da-2a0120df8f7f"), verifyUrl: F5_VERIFY, verifyId: "VBMJFJG2CMEQ1W52", candidateId: F5_CANDIDATE } },
 
-  { name: "Fortinet Certified Professional, Network Security", issuer: "Fortinet", detail: "FCP-NS", period: "2024 – 2026", evidence: { pdf: P("fortinet-fcp-ns"), credly: C("0c227058-ebc9-488f-8362-566ffaf994cd"), verifyId: "2809799995RN" } },
-  { name: "Fortinet Certified Associate, Cybersecurity", issuer: "Fortinet", detail: "FCA", period: "2023 – 2026", evidence: { pdf: P("fortinet-fca"), credly: C("ae612b30-cdfc-4925-a417-b066558f01fe"), verifyId: "6096026203RN" } },
-  { name: "Fortinet Certified Fundamentals, Cybersecurity", issuer: "Fortinet", detail: "FCF", period: "2022 – 2026", evidence: { pdf: P("fortinet-fcf"), credly: C("4eb15e06-d410-4e3d-83ec-f23870ded229"), verifyId: "3646199477RN" } },
+  // Fortinet NSE program (restored to eight levels on 15 July 2026). These are the
+  // active certifications awarded in the transition, verified from the earner's own
+  // Credly badges. Each carries an `era` so it renders as a labelled amber "current"
+  // block above the now-retired FCP & FCSS era (see getFullRecord). Listed highest
+  // level first. Expiry is inherited from the FCP/FCSS certification each replaced
+  // (see the transition footnote); the badge link carries the authoritative dates.
+  { name: "Fortinet NSE 4 Certified in FortiOS", issuer: "Fortinet", detail: "NSE 4", period: "2026", era: "NSE certification program (2026 - present)", evidence: { credly: C("9730c60f-7a28-4b49-871d-5ffdfc7e7d31") } },
+  { name: "Fortinet NSE 3 Certified in Cybersecurity", issuer: "Fortinet", detail: "NSE 3", period: "2026", era: "NSE certification program (2026 - present)", evidence: { credly: C("3b52a0c3-4d2e-463b-bbaf-1632464904b5") } },
+  { name: "Fortinet NSE 2 Certified in Cybersecurity", issuer: "Fortinet", detail: "NSE 2", period: "2026", era: "NSE certification program (2026 - present)", evidence: { credly: C("8b72f471-0061-4ca3-8009-4814e5af9cec") } },
+  { name: "Fortinet NSE 1 Certified in Cybersecurity", issuer: "Fortinet", detail: "NSE 1", period: "2026", era: "NSE certification program (2026 - present)", evidence: { credly: C("31120bd8-4ac5-450b-9b4d-0c4986006b85") } },
 
   { name: "Extreme Certified Professional, Switching", issuer: "Extreme Networks", detail: "ECP", period: "2023 – 2026", evidence: { pdf: P("extreme-ecp-switching"), credly: C("18336611-82e7-4188-9bd5-df5452fd958e") } },
   { name: "Extreme Networks Certified Administrator, Extreme Switching", issuer: "Extreme Networks", period: "2026", note: "No expiry.", evidence: { credly: C("a840f6fd-97a7-42f4-a647-25db7b54f9d7") } },
@@ -172,15 +183,18 @@ export const historical: HistoricalGroup[] = [
   {
     vendor: "Fortinet",
     items: [
-      { name: "Fortinet Certified Professional, Security Operations", issuer: "Fortinet", detail: "FCP-SO", period: "2024 – 2026", note: "Expired 2026.", era: "FCP & FCSS era (2023 - 2025)", evidence: { pdf: P("fortinet-fcp-so"), credly: C("85a6e67d-6fe7-4c5c-9cc4-3dad553f64d1"), verifyId: "8949460026RN" } },
-      { name: "Fortinet FortiGate 7.4 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("cc71bb44-1e3e-4f1a-bebe-301262152b19") } },
-      { name: "Fortinet FortiGate 7.2 Administrator", issuer: "Fortinet", period: "2023", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("d99f54c6-ea5b-48c3-af7c-c1e4919cc8b3") } },
-      { name: "Fortinet FortiGate 7.4 Operator", issuer: "Fortinet", period: "2023", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("b2e0e422-5ec2-4ffe-93b7-cb40f95f4586") } },
-      { name: "Fortinet FortiAnalyzer 7.4 Analyst", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("89818e4f-e0a3-4ecf-b56b-17229b348511") } },
-      { name: "Fortinet FortiAnalyzer 7.4 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("0a695156-e4bf-43c9-811e-9ab5bb7971a3") } },
-      { name: "Fortinet FortiManager 7.2 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("d4436fa8-46c8-4410-be60-b55936ec8dff") } },
-      { name: "Fortinet FortiAuthenticator 6.5 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("a1ae8d56-515a-452c-bcd3-f0c614311859") } },
-      { name: "NSE Trainer Assessment, Professional Level 7.4", issuer: "Fortinet", period: "2025", era: "FCP & FCSS era (2023 - 2025)", evidence: { credly: C("4c3c0aea-426e-4165-b391-5ea201c0b4e9") } },
+      { name: "Fortinet Certified Professional, Network Security", issuer: "Fortinet", detail: "FCP-NS", period: "2024 – 2026", note: "Retired 15 July 2026; converted to NSE 4.", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { pdf: P("fortinet-fcp-ns"), credly: C("0c227058-ebc9-488f-8362-566ffaf994cd"), verifyId: "2809799995RN" } },
+      { name: "Fortinet Certified Associate, Cybersecurity", issuer: "Fortinet", detail: "FCA", period: "2023 – 2026", note: "Retired 15 July 2026; converted to NSE 3.", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { pdf: P("fortinet-fca"), credly: C("ae612b30-cdfc-4925-a417-b066558f01fe"), verifyId: "6096026203RN" } },
+      { name: "Fortinet Certified Fundamentals, Cybersecurity", issuer: "Fortinet", detail: "FCF", period: "2022 – 2026", note: "Retired 15 July 2026; converted to NSE 1 and NSE 2.", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { pdf: P("fortinet-fcf"), credly: C("4eb15e06-d410-4e3d-83ec-f23870ded229"), verifyId: "3646199477RN" } },
+      { name: "Fortinet Certified Professional, Security Operations", issuer: "Fortinet", detail: "FCP-SO", period: "2024 – 2026", note: "Expired 2026.", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { pdf: P("fortinet-fcp-so"), credly: C("85a6e67d-6fe7-4c5c-9cc4-3dad553f64d1"), verifyId: "8949460026RN" } },
+      { name: "Fortinet FortiGate 7.4 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("cc71bb44-1e3e-4f1a-bebe-301262152b19") } },
+      { name: "Fortinet FortiGate 7.2 Administrator", issuer: "Fortinet", period: "2023", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("d99f54c6-ea5b-48c3-af7c-c1e4919cc8b3") } },
+      { name: "Fortinet FortiGate 7.4 Operator", issuer: "Fortinet", period: "2023", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("b2e0e422-5ec2-4ffe-93b7-cb40f95f4586") } },
+      { name: "Fortinet FortiAnalyzer 7.4 Analyst", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("89818e4f-e0a3-4ecf-b56b-17229b348511") } },
+      { name: "Fortinet FortiAnalyzer 7.4 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("0a695156-e4bf-43c9-811e-9ab5bb7971a3") } },
+      { name: "Fortinet FortiManager 7.2 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("d4436fa8-46c8-4410-be60-b55936ec8dff") } },
+      { name: "Fortinet FortiAuthenticator 6.5 Administrator", issuer: "Fortinet", period: "2024", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("a1ae8d56-515a-452c-bcd3-f0c614311859") } },
+      { name: "NSE Trainer Assessment, Professional Level 7.4", issuer: "Fortinet", period: "2025", era: "FCP & FCSS era (2023 - 2025, retired 2026)", evidence: { credly: C("4c3c0aea-426e-4165-b391-5ea201c0b4e9") } },
       { name: "Fortinet NSE 4", issuer: "Fortinet", detail: "FortiGate", period: "2022", era: "Legacy NSE program (2022)", evidence: { pdf: P("fortinet-nse4"), verifyId: "G99ZhFg2T5" } },
       { name: "Fortinet NSE 3", issuer: "Fortinet", period: "2022", era: "Legacy NSE program (2022)", evidence: { pdf: P("fortinet-nse3"), verifyId: "ndyZwxAQoE" } },
       { name: "Fortinet NSE 2", issuer: "Fortinet", period: "2022", era: "Legacy NSE program (2022)", evidence: { pdf: P("fortinet-nse2"), verifyId: "6vEbZm87aX" } },
@@ -386,13 +400,17 @@ export function getFullRecord(): FullRecordGroup[] {
     const training = all.filter((c) => c.training);
     const certs = all.filter((c) => !c.training);
 
-    const currentCerts = certs.filter((c) => c.current);
-    const pastCertsAll = certs.filter((c) => !c.current);
-    const pastCerts = pastCertsAll.filter((c) => !c.era);
-    const eraOrder = [...new Set(pastCertsAll.filter((c) => c.era).map((c) => c.era!))];
+    // A current cert WITHOUT an era renders as the amber rows at the top of the
+    // group. A current cert WITH an era (the 2026 NSE program) renders inside its
+    // own labelled era block while keeping its amber "current" styling, and -
+    // because current certs precede historical ones in `certs` - that era leads,
+    // appearing above the historical (retired) eras.
+    const currentCerts = certs.filter((c) => c.current && !c.era);
+    const pastCerts = certs.filter((c) => !c.current && !c.era);
+    const eraOrder = [...new Set(certs.filter((c) => c.era).map((c) => c.era!))];
     const eraCerts = eraOrder.map((era) => ({
       era,
-      items: pastCertsAll.filter((c) => c.era === era),
+      items: certs.filter((c) => c.era === era),
     }));
 
     return { vendor, currentCerts, pastCerts, eraCerts, training };

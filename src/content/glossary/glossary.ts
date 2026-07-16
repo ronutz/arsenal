@@ -36,7 +36,9 @@
 /** The single-select register/form axis (spec §2). */
 export type GlossaryKind = "term" | "acronym" | "expression" | "jargon" | "lore";
 
-/** The multi-tag domain axis (spec §2). Eleven domains. */
+/** The multi-tag domain axis (spec §2). Twelve domains (vendors added 2026-07-15
+ *  for vendor/product names and vendor-specific jargon, per PRIME; the domain
+ *  chip appears automatically once entries carry it, via getGlossaryDomains). */
 export type GlossaryDomain =
   | "enterprise-networking"
   | "cyber-security"
@@ -48,7 +50,8 @@ export type GlossaryDomain =
   | "darkweb"
   | "ops-culture"
   | "web-development"
-  | "programming";
+  | "programming"
+  | "vendors";
 
 /** A primary source citation (esp. required for lore). */
 export interface GlossarySource {
@@ -84,6 +87,15 @@ export interface GlossaryEntry {
   sources?: GlossarySource[];
   /** True -> render a "disputed / apocryphal origin" marker; correct in context. */
   disputed?: boolean;
+
+  /**
+   * Optional original illustration shown on the detail page, after the context
+   * paragraph. `src` is a path under /public (served without a locale prefix).
+   * `alt` carries the full description (accessibility); `caption` is the short
+   * visible credit line. Site policy: ONLY original, on-brand artwork here -
+   * never a reproduction of a third party's copyrighted figure.
+   */
+  image?: { src: string; alt: string; caption?: string };
 }
 
 // ============================================================================
@@ -571,9 +583,9 @@ export const GLOSSARY: GlossaryEntry[] = [
     headword: "subnet",
     kind: "term",
     domains: ["enterprise-networking"],
-    aliases: ["subnetwork", "subnet mask"],
+    aliases: ["subnetwork", "subnet mask", "subnet range"],
     relatedTools: ["cidr"],
-    relatedTerms: ["cidr", "supernet", "vlsm"],
+    relatedTerms: ["cidr", "supernet", "vlsm", "broadcast"],
   },
   {
     slug: "supernet",
@@ -2686,6 +2698,11 @@ export const GLOSSARY: GlossaryEntry[] = [
     aliases: ["IEEE 802.3", "CSMA/CD"],
     relatedTerms: ["alohanet", "token-ring", "metcalfes-law"],
     sources: [{ label: "Ethernet - Wikipedia", href: "https://en.wikipedia.org/wiki/Ethernet" }],
+    image: {
+      src: "/img/glossary/ethernet-1973-concept.svg",
+      alt: "Diagram of the 1973 Ethernet concept: a single shared coaxial bus labelled THE ETHER, with five stations each tapping in through a transceiver, 50-ohm terminators at both ends, and a frame travelling along the bus carrying destination, source, type, data, and CRC fields. Original diagram after Bob Metcalfe's 1973 Ethernet concept.",
+      caption: "One shared medium, many stations: the 1973 Ethernet concept. Original diagram after Bob Metcalfe's concept.",
+    },
   },
   {
     slug: "cap-theorem",
@@ -2947,6 +2964,181 @@ export const GLOSSARY: GlossaryEntry[] = [
     relatedTerms: ["cap-theorem", "split-brain"],
     sources: [{ label: "Two Generals' Problem - Wikipedia", href: "https://en.wikipedia.org/wiki/Two_Generals%27_Problem" }],
   },
+  {
+    slug: "kalpana",
+    headword: "Kalpana",
+    kind: "lore",
+    domains: ["enterprise-networking"],
+    aliases: ["EtherSwitch"],
+    relatedTerms: ["ethernet", "token-ring"],
+    sources: [{ label: "Kalpana, Inc. - Wikipedia", href: "https://en.wikipedia.org/wiki/Kalpana,_Inc." }, { label: "Cisco to Acquire Kalpana (Cisco newsroom, 1994)", href: "https://web.archive.org/web/20100207131818/http://newsroom.cisco.com/dlls/1994/corp_102494.html" }],
+  },
+  {
+    slug: "bit",
+    headword: "bit",
+    kind: "lore",
+    domains: ["programming"],
+    expansion: "binary digit",
+    aliases: ["binary digit"],
+    relatedTerms: ["byte", "analog-vs-digital"],
+    sources: [{ label: "A Mathematical Theory of Communication - Wikipedia", href: "https://en.wikipedia.org/wiki/A_Mathematical_Theory_of_Communication" }, { label: "Origin of 'bit' (Tukey, 1947; Shannon, 1948) - History of Information", href: "https://www.historyofinformation.com/detail.php?id=673" }],
+  },
+  {
+    slug: "byte",
+    headword: "byte",
+    kind: "lore",
+    domains: ["programming"],
+    aliases: ["octet"],
+    relatedTerms: ["bit"],
+    sources: [{ label: "Werner Buchholz - Wikipedia", href: "https://en.wikipedia.org/wiki/Werner_Buchholz" }, { label: "byte - FOLDOC", href: "https://foldoc.org/byte" }],
+  },
+  {
+    slug: "tcp-ip",
+    headword: "TCP/IP",
+    kind: "lore",
+    domains: ["enterprise-networking"],
+    expansion: "Transmission Control Protocol / Internet Protocol",
+    aliases: ["Internet protocol suite", "DoD model"],
+    relatedTerms: ["ip", "udp"],
+    sources: [{ label: "RFC 793 - Transmission Control Protocol", href: "https://datatracker.ietf.org/doc/html/rfc793" }, { label: "RFC 801 - NCP/TCP Transition Plan (the flag day)", href: "https://www.rfc-editor.org/rfc/rfc801.html" }],
+  },
+  {
+    slug: "ip",
+    headword: "IP",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    expansion: "Internet Protocol",
+    aliases: ["IPv4", "Internet Protocol"],
+    relatedTerms: ["tcp-ip", "udp"],
+  },
+  {
+    slug: "udp",
+    headword: "UDP",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    expansion: "User Datagram Protocol",
+    aliases: ["User Datagram Protocol"],
+    relatedTerms: ["tcp-ip", "ip"],
+  },
+  {
+    slug: "analog-vs-digital",
+    headword: "analog vs digital",
+    kind: "term",
+    domains: ["programming", "enterprise-networking"],
+    aliases: ["analog", "digital", "digital vs analog"],
+    relatedTerms: ["bit"],
+    sources: [{ label: "Nyquist-Shannon sampling theorem - Wikipedia", href: "https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem" }, { label: "Analog signal - Wikipedia", href: "https://en.wikipedia.org/wiki/Analog_signal" }],
+  },
+  {
+    slug: "inter-frame-gap",
+    headword: "inter-frame gap",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    aliases: ["interframe spacing", "interpacket gap", "IFG"],
+    relatedTerms: ["ethernet", "csma-cd"],
+    sources: [{ label: "Interpacket gap - Wikipedia (IEEE 802.3)", href: "https://en.wikipedia.org/wiki/Interpacket_gap" }],
+  },
+  {
+    slug: "split-horizon",
+    headword: "split horizon",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    relatedTerms: ["bgp", "split-brain"],
+    sources: [{ label: "RFC 1058 - Routing Information Protocol (split horizon)", href: "https://datatracker.ietf.org/doc/html/rfc1058" }],
+  },
+  {
+    slug: "multicast",
+    headword: "multicast",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    relatedTerms: ["unicast", "broadcast", "anycast"],
+    sources: [{ label: "RFC 1112 - Host Extensions for IP Multicasting (Deering, 1989)", href: "https://datatracker.ietf.org/doc/html/rfc1112" }],
+  },
+  {
+    slug: "broadcast",
+    headword: "broadcast",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    relatedTerms: ["multicast", "unicast", "broadcast-storm", "subnet"],
+    sources: [{ label: "RFC 919 - Broadcasting Internet Datagrams (Mogul, 1984)", href: "https://datatracker.ietf.org/doc/html/rfc919" }],
+  },
+  {
+    slug: "collision-domain",
+    headword: "collision domain",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    relatedTerms: ["ethernet", "csma-cd", "kalpana"],
+    sources: [{ label: "Collision domain - Wikipedia", href: "https://en.wikipedia.org/wiki/Collision_domain" }],
+  },
+  {
+    slug: "bum",
+    headword: "BUM",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    expansion: "broadcast, unknown unicast, and multicast",
+    relatedTerms: ["broadcast", "multicast", "unicast", "broadcast-storm"],
+    sources: [{ label: "Broadcast, unknown-unicast and multicast traffic - Wikipedia", href: "https://en.wikipedia.org/wiki/Broadcast,_unknown-unicast_and_multicast_traffic" }],
+  },
+  {
+    slug: "csma-cd",
+    headword: "CSMA/CD",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    expansion: "Carrier Sense Multiple Access with Collision Detection",
+    relatedTerms: ["ethernet", "collision-domain", "csma-ca", "token-ring"],
+    sources: [{ label: "Metcalfe and Boggs, 'Ethernet: Distributed Packet Switching for Local Computer Networks' (CACM, July 1976)", href: "https://dl.acm.org/doi/10.1145/360248.360253" }, { label: "Carrier-sense multiple access with collision detection - Wikipedia", href: "https://en.wikipedia.org/wiki/Carrier-sense_multiple_access_with_collision_detection" }],
+  },
+  {
+    slug: "csma-ca",
+    headword: "CSMA/CA",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    expansion: "Carrier Sense Multiple Access with Collision Avoidance",
+    relatedTerms: ["csma-cd", "ethernet", "mac-address"],
+    sources: [{ label: "Carrier-sense multiple access with collision avoidance - Wikipedia (IEEE 802.11)", href: "https://en.wikipedia.org/wiki/Carrier-sense_multiple_access_with_collision_avoidance" }],
+  },
+  {
+    slug: "sase",
+    headword: "SASE",
+    kind: "acronym",
+    domains: ["enterprise-networking", "cyber-security", "cloud"],
+    expansion: "Secure Access Service Edge",
+    relatedTerms: ["sse", "zero-trust"],
+    sources: [{ label: "Gartner, 'The Future of Network Security Is in the Cloud' (30 August 2019)", href: "https://www.gartner.com/en/documents/3956841" }, { label: "Secure access service edge - Wikipedia", href: "https://en.wikipedia.org/wiki/Secure_access_service_edge" }],
+  },
+  {
+    slug: "sse",
+    headword: "SSE",
+    kind: "acronym",
+    domains: ["cyber-security", "cloud"],
+    expansion: "Security Service Edge",
+    relatedTerms: ["sase", "zero-trust"],
+    sources: [{ label: "Security Service Edge (SSE) - Gartner Glossary", href: "https://www.gartner.com/en/information-technology/glossary/security-service-edge-sse" }, { label: "Secure access service edge - Wikipedia (SSE subset, 2021)", href: "https://en.wikipedia.org/wiki/Secure_access_service_edge" }],
+  },
+  {
+    slug: "strata",
+    headword: "Strata",
+    kind: "term",
+    domains: ["vendors", "enterprise-networking", "cyber-security"],
+    relatedTerms: ["prisma", "cortex"],
+    sources: [{ label: "Palo Alto Networks - Strata network security platform", href: "https://www.paloaltonetworks.com/network-security" }],
+  },
+  {
+    slug: "prisma",
+    headword: "Prisma",
+    kind: "term",
+    domains: ["vendors", "cloud", "cyber-security"],
+    relatedTerms: ["strata", "cortex", "sase"],
+    sources: [{ label: "Palo Alto Networks 8-K, Q3 FY2019 (Prisma announced, May 2019)", href: "https://www.sec.gov/Archives/edgar/data/1327567/000132756719000014/ex991q319earningsrelease.htm" }, { label: "Palo Alto Networks - Prisma", href: "https://www.paloaltonetworks.com/prisma" }],
+  },
+  {
+    slug: "cortex",
+    headword: "Cortex",
+    kind: "term",
+    domains: ["vendors", "cyber-security"],
+    relatedTerms: ["strata", "prisma", "zero-trust"],
+    sources: [{ label: "Palo Alto Networks 8-K, Q2 FY2019 (Cortex and Cortex XDR announced, February 2019)", href: "https://www.sec.gov/Archives/edgar/data/1327567/000132756719000006/ex991q219earningsrelease.htm" }, { label: "Palo Alto Networks - Cortex", href: "https://www.paloaltonetworks.com/cortex" }],
+  },
 ];
 
 // ---- Registry API (mirrors the catalogue/learn helper style) ---------------
@@ -2972,7 +3164,7 @@ export function getAllGlossarySlugs(): string[] {
 export function getGlossaryDomains(): GlossaryDomain[] {
   const order: GlossaryDomain[] = [
     "enterprise-networking", "cyber-security", "crypto", "cloud", "grc",
-    "privacy", "hacking", "darkweb", "ops-culture", "web-development", "programming",
+    "privacy", "hacking", "darkweb", "ops-culture", "web-development", "programming", "vendors",
   ];
   const present = new Set(GLOSSARY.flatMap((e) => e.domains));
   return order.filter((d) => present.has(d));

@@ -125,6 +125,25 @@ export default async function GlossaryEntryPage({
             <p className="gloss-detail-def">{t(`entries.${slug}.def`)}</p>
             <p className="gloss-detail-context">{t(`entries.${slug}.context`)}</p>
 
+            {/* Optional original illustration (site policy: original art only). */}
+            {entry.image && (
+              <figure className="gloss-figure">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="gloss-figure-img"
+                  src={entry.image.src}
+                  alt={entry.image.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {entry.image.caption && (
+                  <figcaption className="gloss-figure-caption">
+                    {entry.image.caption}
+                  </figcaption>
+                )}
+              </figure>
+            )}
+
             {/* Disputed / apocryphal marker (lore accuracy rule). */}
             {entry.disputed && (
               <p className="gloss-detail-disputed">

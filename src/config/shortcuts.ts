@@ -73,7 +73,7 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   { id: "tool-uuid", kind: "navigate", path: "/tools/uuid", labelKey: "actionToolUuid" },
   { id: "tool-url-inspector", kind: "navigate", path: "/tools/url-inspector", labelKey: "actionToolUrlInspector" },
   { id: "tool-x509", kind: "navigate", path: "/tools/x509", labelKey: "actionToolX509" },
-  { id: "nav-vendors", kind: "navigate", path: "/vendors", labelKey: "actionVendors" },
+  { id: "nav-vendors", kind: "navigate", path: "/vendor-hubs", labelKey: "actionVendors" },
   // Commands — handled inside the shortcut layer
   { id: "cmd-search", kind: "command", command: "search-overlay", labelKey: "actionSearch" },
   { id: "cmd-focus-search", kind: "command", command: "focus-search", labelKey: "actionFocusSearch" },

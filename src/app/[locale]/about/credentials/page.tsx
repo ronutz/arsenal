@@ -105,6 +105,9 @@ export default async function CredentialsPage({
                     <span className="certs-current-issuer mono">{c.issuer}</span>
                     <span className="certs-current-name">{c.name}</span>
                     <EvidenceLinks evidence={c.evidence} copy={evidenceCopy} />
+                    {c.noCertificate && (
+                      <span className="certs-current-note">{t("noCertificateNote")}</span>
+                    )}
                   </li>
                 ))}
               </ul>

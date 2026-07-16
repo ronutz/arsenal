@@ -43,7 +43,7 @@ export default async function Header() {
           {/* Vendors home (T-HUB): the front door to the per-vendor hubs. The
               individual hubs are still reached from here and from the strip on
               the Tools and Learn listings; this adds one explore entry. */}
-          <Link href="/vendors" className="site-nav-link">
+          <Link href="/vendor-hubs" className="site-nav-link">
             {t("vendors")}
           </Link>
           {/* Industry hub (PRIME 2026-07-15): the front door to the

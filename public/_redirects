@@ -593,3 +593,38 @@
 /tr/dev/other/rdap-lookup /tr/dev/out/rdap-lookup/ 301
 /zh-Hans/dev/other/rdap-lookup/ /zh-Hans/dev/out/rdap-lookup/ 301
 /zh-Hans/dev/other/rdap-lookup /zh-Hans/dev/out/rdap-lookup/ 301
+
+# Route rename: /vendors -> /vendor-hubs (PRIME 2026-07-15).
+# Two forms per live locale: trailing-slash page and bare page.
+/en/vendors/ /en/vendor-hubs/ 301
+/en/vendors /en/vendor-hubs/ 301
+/pt-BR/vendors/ /pt-BR/vendor-hubs/ 301
+/pt-BR/vendors /pt-BR/vendor-hubs/ 301
+/es/vendors/ /es/vendor-hubs/ 301
+/es/vendors /es/vendor-hubs/ 301
+/de/vendors/ /de/vendor-hubs/ 301
+/de/vendors /de/vendor-hubs/ 301
+/fr/vendors/ /fr/vendor-hubs/ 301
+/fr/vendors /fr/vendor-hubs/ 301
+/nl/vendors/ /nl/vendor-hubs/ 301
+/nl/vendors /nl/vendor-hubs/ 301
+/it/vendors/ /it/vendor-hubs/ 301
+/it/vendors /it/vendor-hubs/ 301
+/sv/vendors/ /sv/vendor-hubs/ 301
+/sv/vendors /sv/vendor-hubs/ 301
+/da/vendors/ /da/vendor-hubs/ 301
+/da/vendors /da/vendor-hubs/ 301
+/nb/vendors/ /nb/vendor-hubs/ 301
+/nb/vendors /nb/vendor-hubs/ 301
+/ru/vendors/ /ru/vendor-hubs/ 301
+/ru/vendors /ru/vendor-hubs/ 301
+/pl/vendors/ /pl/vendor-hubs/ 301
+/pl/vendors /pl/vendor-hubs/ 301
+/tr/vendors/ /tr/vendor-hubs/ 301
+/tr/vendors /tr/vendor-hubs/ 301
+/ms/vendors/ /ms/vendor-hubs/ 301
+/ms/vendors /ms/vendor-hubs/ 301
+/fil/vendors/ /fil/vendor-hubs/ 301
+/fil/vendors /fil/vendor-hubs/ 301
+/zh-Hans/vendors/ /zh-Hans/vendor-hubs/ 301
+/zh-Hans/vendors /zh-Hans/vendor-hubs/ 301

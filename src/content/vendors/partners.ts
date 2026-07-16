@@ -71,7 +71,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Nutanix builds the hybrid multicloud platform that runs and manages applications and data across private and public clouds, built on hyper-converged infrastructure.",
     body: [
-      "Rodolfo does not deliver Nutanix training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education is a Nutanix Authorised Training Partner, recognised by Nutanix as Highest Quality and Top Performing Authorized Training Partner of the Year, with a 98% customer-satisfaction rating on its Nutanix courses.",
     ],
     awards: [
@@ -93,7 +92,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Arista Networks builds high-performance, cloud-scale networking - switches and routers running the programmable EOS operating system, widely deployed in data centers.",
     body: [
-      "Rodolfo does not deliver Arista training. It is delivered by Red Education's instructor team, separate from his own authorized vendors (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education is an authorised training partner for Arista, delivering the Arista Cloud Engineer (ACE) certification program with a 98% customer-satisfaction rating.",
     ],
     awards: REDU_AWARDS_GENERAL,
@@ -112,7 +110,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Check Point Software Technologies is one of the longest-established network-security vendors, known for its firewall and unified threat-prevention platforms across enterprise, cloud, and endpoint.",
     body: [
-      "Rodolfo does not deliver Check Point training. It is delivered by Red Education's instructor team, distinct from his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education is a Check Point Authorized Training Center, named Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024 and a Gold Stevie Award winner with Check Point for Global Partnership of the Year.",
     ],
     awards: [
@@ -137,7 +134,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Avaya builds enterprise communications and contact-center platforms - the Aura suite, IP Office, and the Experience Platform - carrying decades of voice-engineering heritage into unified communications and CX.",
     body: [
-      "Rodolfo does not deliver Avaya training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education runs one of the deepest Avaya schedules in its catalogue: Aura core components, System Manager and Communication Manager administration, IP Office integration and support, Meetings Server, Messaging, Experience Portal, and Call Center Elite courses run across all five of its regions, with public dates virtually every week.",
       "Avaya was spun out of Lucent Technologies in 2000, inheriting the enterprise half of a lineage that reaches back through AT&T to Bell Labs. It restructured through Chapter 11 twice, in 2017 and again briefly in 2023, and today concentrates on large-enterprise communications and contact center, increasingly delivered as cloud and hybrid services.",
     ],
@@ -157,7 +153,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Amazon Web Services is the largest public cloud, the platform whose 2006 launch of S3 and EC2 turned computing into a utility and defined what the industry now means by cloud.",
     body: [
-      "Rodolfo does not deliver Amazon Web Services training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education names AWS among the leading brands it works with in its award submissions and delivers AWS coursework alongside its security-vendor portfolio, extending the same instructor-led, lab-driven format to cloud fundamentals and architecture.",
       "AWS began inside Amazon as infrastructure plumbing and was opened to the world in 2006; within a decade it was the profit engine of its parent and the default substrate for startups and enterprises alike. Every SASE, SSE, and cloud-security curriculum in the rest of this catalogue ultimately assumes a world AWS created.",
     ],
@@ -175,7 +170,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "CyberArk defined the privileged-access-management category: vaulting, rotating, and brokering the credentials and secrets that hold the keys to everything else, extended over time into a full identity-security platform.",
     body: [
-      "Rodolfo does not deliver CyberArk training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education delivers CyberArk's official training track, with PAM administration courses running publicly across its Australasia, SAARC, and ASEAN schedules and available to the other regions on demand.",
       "Founded in 1999 in Israel by Udi Mokady and Alon Cohen, CyberArk listed on NASDAQ in 2014 and became the reference vendor auditors name when they say privileged access. In February 2026 it became part of Palo Alto Networks in the largest security acquisition on record, a combination this site's Palo Alto Networks history page covers from the acquirer's side.",
     ],
@@ -196,7 +190,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "EPI (Enterprise Products Integration Pte Ltd) is the Singapore-headquartered body behind the vendor-neutral data-centre certification ladder - CDCP, CDCS, CDCE, CDFOM and peers - and one of the leading auditors certifying facilities against the ANSI/TIA-942 standard.",
     body: [
-      "Rodolfo does not deliver EPI training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education delivers EPI's data-centre courses across its regions, bringing facility design, operations, and standards-compliance training into the same catalogue as its network and security tracks; the certifications are examined independently through EXIN.",
       "EPI's framework is taught in more than 50 countries and has become the common language of data-centre operations teams: the CDCP alone is the entry credential facilities engineers worldwide are asked for by name. Its TIA-942 audit practice certifies the buildings the rest of this industry's software runs in.",
     ],
@@ -217,7 +210,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Microsoft's operating systems, productivity suite, and Azure cloud form the substrate of most enterprise IT estates, which makes its technologies a standing presence in any serious training catalogue.",
     body: [
-      "Rodolfo does not deliver Microsoft training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Microsoft appears as a selectable vendor in Red Education's course finder, taught with the same instructor-led model as the rest of the portfolio and often alongside the security platforms that protect Microsoft-centric estates.",
       "Founded in 1975 by Bill Gates and Paul Allen, Microsoft has anchored enterprise computing for five decades, from BASIC and MS-DOS through Windows and Office to Azure and its security business, today one of the industry's largest. Several stories in this site's glossary, from the Homebrew Computer Club's Open Letter to the disputed 640K quote, trace back to it.",
     ],
@@ -235,7 +227,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "MobileIron was one of the pioneers of mobile device management, building the platform enterprises first used to enroll, secure, and wipe fleets of smartphones as they flooded into the workplace.",
     body: [
-      "Rodolfo does not deliver MobileIron training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "MobileIron courseware remains in Red Education's regional catalogues for the installed base that still runs it, taught within the same unified-endpoint-management context its successor products live in.",
       "Founded in 2007 in Mountain View, MobileIron helped define MDM as a category and listed on NASDAQ in 2014. In December 2020 it was acquired by Ivanti, together with Pulse Secure, and its technology continues inside Ivanti's unified endpoint management line - a lineage note this site records the same way it does for its career-era vendors.",
     ],
@@ -253,7 +244,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Paessler builds PRTG, the sensor-based monitoring platform that thousands of IT teams use as their single pane for network, server, and infrastructure health.",
     body: [
-      "Rodolfo does not deliver Paessler training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education carries Paessler across all five of its regional schedules, delivering official PRTG training that turns the tool most admins learn by osmosis into a discipline taught properly.",
       "Founded in 1997 by Dirk Paessler in Nuremberg, Germany, the company has stayed focused and independent for nearly three decades, an increasingly rare trajectory in this catalogue of acquisitions. PRTG's sensor model made monitoring approachable for teams without a tooling budget the size of their network.",
     ],
@@ -274,7 +264,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Red Hat made open source safe for the enterprise: Red Hat Enterprise Linux, OpenShift, and Ansible are the commercially supported spine of Linux estates, container platforms, and automation worldwide.",
     body: [
-      "Rodolfo does not deliver Red Hat training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Hat training runs in Red Education's Australasia catalogue and through its course finder, extending the portfolio from network and security appliances to the operating system and automation layer beneath them.",
       "Founded in 1993 and profitable on a business model skeptics said could not exist - selling support for software anyone could copy - Red Hat proved the open-source enterprise thesis, a story this site's glossary tells through The Cathedral and the Bazaar. IBM acquired it in July 2019 for 34 billion dollars, then the largest software acquisition ever, and runs it as a distinct unit.",
     ],
@@ -293,7 +282,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Riverbed defined WAN optimization: its SteelHead appliances made far-away applications feel local in the era when every branch office lived at the end of a thin, expensive circuit, and the company has since rebuilt itself around observability and acceleration.",
     body: [
-      "Rodolfo does not deliver Riverbed training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Red Education has provided Riverbed skills to the market since 2008 and is a Riverbed Authorised Consulting Partner, with courses continuing in its Australasia, SAARC, and ASEAN catalogues.",
       "Founded in 2002 by Jerry Kennelly and Steve McCanne - the latter a co-author of tcpdump and the Berkeley Packet Filter, tools half this site's tutorials assume - Riverbed rode the SteelHead era to an IPO, was taken private in 2015, and went through a court-supervised restructuring in late 2021. Today it competes in unified observability, a long way from the branch-office WAN it was built to shrink.",
     ],
@@ -311,7 +299,6 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Symantec was for decades the biggest name in security software, from Norton on the desktop to the enterprise endpoint, web, and data-protection suites that carried its yellow badge into every large IT estate.",
     body: [
-      "Rodolfo does not deliver Symantec training. This is one of the vendor tracks taught by Red Education's instructor team, not part of his own authorized portfolio (F5, Fortinet, Netskope, Extreme Networks).",
       "Symantec enterprise courseware remains in Red Education's Australasia, SAARC, and ASEAN catalogues, serving the substantial installed base of its endpoint and web-security platforms.",
       "Founded in 1982, Symantec grew by acquisition into a security conglomerate before splitting itself: the enterprise security business was sold to Broadcom in November 2019, which retains the Symantec brand for it, while the consumer side became NortonLifeLock and, after merging with Avast, Gen Digital. It is one more lineage this site's industry pages trace: the name survives, the company that carried it does not.",
     ],

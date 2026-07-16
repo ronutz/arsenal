@@ -42,6 +42,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { getCertificationsForVendor } from "@/content/certifications/study-guides";
+import { VENDOR_CAREER_SLUGS } from "@/content/vendors/career";
 import { tools } from "@/config/tools";
 import { subsOf } from "@/config/vendors";
 import { getAllArticles, getArticleVendors, getArticleSub, type Article } from "@/lib/learn";
@@ -135,10 +136,20 @@ export default async function VendorHubPage({
                 { label: tNav("home"), href: "/" },
                 // The vendors hub is the parent of every vendor page
                 // (breadcrumb fix, PRIME 2026-07-15).
-                { label: tNav("vendors"), href: "/vendors" },
+                { label: tNav("vendors"), href: "/vendor-hubs" },
                 { label: label },
               ]}
             />
+            {/* Top link to this vendor's page in the industry section
+                (PRIME directive 2026-07-15): every hub cross-links its
+                career/history chapter under /about/vendors/<slug>. */}
+            {VENDOR_CAREER_SLUGS[vendor] && (
+              <p className="hub-industry-link">
+                <Link href={`/about/vendors/${VENDOR_CAREER_SLUGS[vendor]}`}>
+                  {tHub("industryLink", { vendor: label })} →
+                </Link>
+              </p>
+            )}
             {/* Hero: vendor dot + eyebrow, vendor name, one-line mission. */}
             <p className="hero-eyebrow">
               <span

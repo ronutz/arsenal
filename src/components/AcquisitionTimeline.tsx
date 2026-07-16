@@ -31,8 +31,10 @@ export interface AcquisitionTimelineProps {
 export default function AcquisitionTimeline({ lineage, labels }: AcquisitionTimelineProps) {
   const { founded, names, origin, acquisitions, asOf, sources } = lineage;
 
-  // Group acquisitions by year for the rail (newest first reads as "latest").
-  const byYearDesc = [...acquisitions].sort((a, b) => b.year - a.year);
+  // Chronological (oldest-first): the rail sits under the founding date and the
+  // forward name-evolution, so acquisitions read as a growth story in the same
+  // direction. Consistent with the vendor-profile timelines.
+  const byYearAsc = [...acquisitions].sort((a, b) => a.year - b.year);
   const disclosed = acquisitions.filter((a) => /\d/.test(a.price)).length;
 
   return (
@@ -76,7 +78,7 @@ export default function AcquisitionTimeline({ lineage, labels }: AcquisitionTime
         </div>
 
         <ol className="lineage-timeline">
-          {byYearDesc.map((a, i) => (
+          {byYearAsc.map((a, i) => (
             <li className="lineage-deal" key={`${a.year}-${a.name}`} data-first={i === 0 ? "true" : undefined}>
               <div className="lineage-deal-rail" aria-hidden="true">
                 <span className="lineage-deal-year mono">{a.year}</span>

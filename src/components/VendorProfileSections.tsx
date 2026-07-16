@@ -32,7 +32,10 @@ export default function VendorProfileSections({
   profile: VendorProfile;
   labels: ProfileLabels;
 }) {
-  const events = [...profile.timeline].sort((a, b) => b.year - a.year);
+  // Oldest-first: a vendor's story reads as a chronological history (founding
+  // era -> milestones -> today), matching the career-vendor list order and the
+  // forward name-evolution in the lineage rail.
+  const events = [...profile.timeline].sort((a, b) => a.year - b.year);
 
   return (
     <div className="vprofile">

@@ -1,0 +1,73 @@
+<svg viewBox="0 0 920 480" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono','SFMono-Regular',ui-monospace,monospace">
+  <rect x="0" y="0" width="920" height="480" fill="#020617"/>
+
+  <!-- Title -->
+  <text x="460" y="44" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="23" font-weight="600" fill="#E2E8F0">The ether: one shared medium, many stations</text>
+  <text x="460" y="70" text-anchor="middle" font-size="13" letter-spacing="1.5" fill="#F59E0B">ETHERNET &#183; 1973</text>
+
+  <!-- Frame fields legend (top right) -->
+  <g>
+    <rect x="612" y="96" width="278" height="54" rx="8" fill="#0B1220" stroke="#1E293B" stroke-width="1"/>
+    <text x="626" y="118" font-size="11" fill="#94A3B8">a frame carries:</text>
+    <text x="626" y="137" font-size="12" fill="#22D3EE">dest &#183; src &#183; type &#183; data &#183; CRC</text>
+  </g>
+
+  <!-- The ether: the shared coaxial bus -->
+  <line x1="120" y1="270" x2="800" y2="270" stroke="#22D3EE" stroke-width="8" stroke-linecap="round"/>
+  <text x="140" y="258" font-size="12" fill="#22D3EE" letter-spacing="1">THE ETHER (shared coax)</text>
+
+  <!-- Terminators at both ends -->
+  <g stroke="#94A3B8" stroke-width="2" fill="none">
+    <path d="M120 258 l0 24 M112 264 l16 0 M112 276 l16 0"/>
+    <path d="M800 258 l0 24 M792 264 l16 0 M792 276 l16 0"/>
+  </g>
+  <text x="120" y="238" text-anchor="middle" font-size="10" fill="#64748B">50&#8486; term.</text>
+  <text x="800" y="238" text-anchor="middle" font-size="10" fill="#64748B">50&#8486; term.</text>
+
+  <!-- A frame travelling along the bus -->
+  <g>
+    <rect x="244" y="257" width="64" height="26" rx="5" fill="#0B1220" stroke="#22D3EE" stroke-width="1.5"/>
+    <text x="276" y="274" text-anchor="middle" font-size="11" fill="#E2E8F0">frame</text>
+    <path d="M318 270 l14 0 M326 265 l6 5 -6 5" stroke="#22D3EE" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M338 270 l10 0 M344 266 l4 4 -4 4" stroke="#22D3EE" stroke-width="1.2" fill="none" opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Stations, each tapping the bus through a transceiver -->
+  <!-- station template: tap dot on bus, drop line, box below -->
+  <g font-size="11" fill="#E2E8F0">
+    <!-- A -->
+    <circle cx="200" cy="270" r="5" fill="#F59E0B"/>
+    <line x1="200" y1="270" x2="200" y2="338" stroke="#334155" stroke-width="2"/>
+    <rect x="162" y="338" width="76" height="46" rx="6" fill="#0B1220" stroke="#334155" stroke-width="1.5"/>
+    <text x="200" y="366" text-anchor="middle">STATION A</text>
+    <!-- B -->
+    <circle cx="330" cy="270" r="5" fill="#F59E0B"/>
+    <line x1="330" y1="270" x2="330" y2="338" stroke="#334155" stroke-width="2"/>
+    <rect x="292" y="338" width="76" height="46" rx="6" fill="#0B1220" stroke="#334155" stroke-width="1.5"/>
+    <text x="330" y="366" text-anchor="middle">STATION B</text>
+    <!-- C -->
+    <circle cx="460" cy="270" r="5" fill="#F59E0B"/>
+    <line x1="460" y1="270" x2="460" y2="338" stroke="#334155" stroke-width="2"/>
+    <rect x="422" y="338" width="76" height="46" rx="6" fill="#0B1220" stroke="#334155" stroke-width="1.5"/>
+    <text x="460" y="366" text-anchor="middle">STATION C</text>
+    <!-- D -->
+    <circle cx="590" cy="270" r="5" fill="#F59E0B"/>
+    <line x1="590" y1="270" x2="590" y2="338" stroke="#334155" stroke-width="2"/>
+    <rect x="552" y="338" width="76" height="46" rx="6" fill="#0B1220" stroke="#334155" stroke-width="1.5"/>
+    <text x="590" y="366" text-anchor="middle">STATION D</text>
+    <!-- E -->
+    <circle cx="720" cy="270" r="5" fill="#F59E0B"/>
+    <line x1="720" y1="270" x2="720" y2="338" stroke="#334155" stroke-width="2"/>
+    <rect x="682" y="338" width="76" height="46" rx="6" fill="#0B1220" stroke="#334155" stroke-width="1.5"/>
+    <text x="720" y="366" text-anchor="middle">STATION E</text>
+  </g>
+
+  <!-- transceiver callout on station A's tap -->
+  <text x="214" y="304" font-size="10" fill="#64748B">transceiver (tap)</text>
+
+  <!-- CSMA/CD caption -->
+  <text x="460" y="432" text-anchor="middle" font-size="13" fill="#94A3B8">CSMA/CD: listen before sending, detect collisions, then back off and retry</text>
+
+  <!-- Credit -->
+  <text x="460" y="462" text-anchor="middle" font-size="10.5" fill="#475569">Original diagram after Bob Metcalfe's 1973 Ethernet concept.</text>
+</svg>

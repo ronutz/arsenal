@@ -2471,6 +2471,13 @@
   font-size: 0.85rem;
   color: var(--text-tertiary);
 }
+.certs-current-note {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--text-tertiary);
+  margin-top: 0.2rem;
+}
 .certs-current-period {
   font-size: 0.8rem;
   color: var(--text-secondary);
@@ -11142,6 +11149,19 @@ main[data-view="list"] .pubcat {
   color: var(--color-accent);
 }
 
+/* Hub -> industry-history cross-link (top of every vendor hub). */
+.hub-industry-link {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+}
+.hub-industry-link a {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.hub-industry-link a:hover {
+  text-decoration: underline;
+}
+
 /* ---- Vendor hub list view (scoped to .hub-main) ----
    The hub has no .pubcat table, so instead of the table swap used on /tools
    and /learn, its list mode reflows the actual card grids into rows. Scoped
@@ -12711,6 +12731,25 @@ main[data-view="list"] .boss-viewer-blurb {
   line-height: 1.75;
   color: var(--text-secondary);
   margin: 1.3rem 0 0;
+}
+
+/* Optional original illustration on a glossary detail page (see GlossaryEntry.image). */
+.gloss-figure {
+  margin: 1.6rem 0 0;
+}
+.gloss-figure-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+.gloss-figure-caption {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  text-align: center;
 }
 
 /* Disputed / apocryphal: an amber caution card (lore accuracy). */

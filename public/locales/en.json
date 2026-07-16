@@ -5303,6 +5303,63 @@
       "s2Title": "The distribution discipline",
       "s2Body": "Value-added distribution is its own skill. The role was pre-sales technical: architecting solutions, running demonstrations and proofs of concept, and enabling the resellers and integrators who took these products to end customers, translating each vendor's roadmap into something a partner could actually deploy and support. It is a vantage point that sees a lot of the market at once, across many vendors and many customer problems at the same time.",
       "certs": "Vendor and distribution enablement across the portfolio, rather than a single certification track."
+    },
+    "f5": {
+      "name": "F5",
+      "years": "2015 – present",
+      "tagline": "The application delivery company, and the platform taught most on this site.",
+      "intro": "F5 is the deepest chapter of the whole record: a decade that runs from a first administrator certification through the full specialist ladder to the instructor's chair, three DevCentral MVP years, and the flagship hub of this site.",
+      "s1Title": "The certification ladder",
+      "s1Body": "The chapter opens in 2015 with the F5 Certified Administrator, earned while distributing the platform commercially. The specialist ladder followed: Certified Technology Specialist in LTM, DNS, ASM, and APM, then the two solution-expert peaks, F5-CSE Cloud (2021) and F5-CSE Security (2022). Climbing every module of BIG-IP one exam at a time is exactly the preparation a full-time instructor needs, and that is where it led.",
+      "s2Title": "The instructor's chair and DevCentral",
+      "s2Body": "F5 Authorized Instructor since 2020, delivering twelve official BIG-IP and TMOS courses, from administration fundamentals through LTM, DNS, ASM/AWAF, APM, iRules, and troubleshooting. F5's DevCentral community named Rodolfo an MVP three consecutive years, 2022 through 2024. On this site, F5 is the flagship: the largest vendor hub, with calculators, decoders, and explainers built for the same engineers who sit in those classes.",
+      "certs": "F5 Authorized Instructor (since 2020). Current certifications: F5-CSE Security, F5-CSE Cloud, F5-CTS LTM / DNS / ASM / APM, F5-CA. DevCentral MVP 2022, 2023, 2024. Full detail on the credentials page."
+    },
+    "fortinet": {
+      "name": "Fortinet",
+      "years": "2022 – present",
+      "tagline": "From the NSE ladder to the trainer's chair, through a certification program reborn.",
+      "intro": "The Fortinet chapter is the fastest climb on this record: from the first NSE exams in 2022 to Fortinet Certified Trainer in 2024, five official FCP courses in the teaching portfolio, and a front-row seat to the program's 2026 rebirth.",
+      "s1Title": "The NSE ladder, twice",
+      "s1Body": "The ladder was climbed once in 2022, NSE 1 through NSE 4 under the legacy program, then again as Fortinet reorganized certification into the FCF, FCA, and FCP tracks: Fundamentals and Associate in Cybersecurity, Professional in Network Security, with the FortiGate, FortiAnalyzer, FortiManager, and FortiAuthenticator administrator badges alongside. In 2024 came the credential that matters most to a teacher: Fortinet Certified Trainer.",
+      "s2Title": "Five courses and a program transition",
+      "s2Body": "As FCT, Rodolfo delivers five official FCP courses across the FortiGate operating stack and its management plane. On July 15, 2026, Fortinet retired the FCP and FCSS era names and restored the eight-level NSE progression, converting active certifications forward, so this chapter's credentials now read NSE 1 through NSE 4 again, exactly where they began, one program generation later. The credentials page records that transition first-hand.",
+      "certs": "Fortinet Certified Trainer (2025 – 2027). Current certifications: Fortinet NSE 4 in FortiOS, NSE 3 / NSE 2 / NSE 1 in Cybersecurity (2026 program, converted from FCP-NS, FCA, and FCF). Full detail on the credentials page."
+    },
+    "netskope": {
+      "name": "Netskope",
+      "years": "2024 – present",
+      "tagline": "The newest teaching pillar: SSE taught from inside the category's defining vendor.",
+      "intro": "The Netskope chapter is the accreditation sprint of this record: administrator to integrator to architect in under two years, the instructor authorization in between, and the SSE category itself as the subject matter.",
+      "s1Title": "The accreditation sprint",
+      "s1Body": "It began with the Administrator accreditation in late 2024, followed by Integrator in 2025 and Architect in 2026, with the sales-side NCSSA and NCSSE alongside, a deliberate run through every angle of the platform: operating it, deploying it, designing for it, and positioning it. The hands-on implementation and operation labs were part of the same push.",
+      "s2Title": "Teaching the security service edge",
+      "s2Body": "Netskope Certified Cloud Security Instructor since 2025, with the Trainer Accreditation Administrator License current through 2027, delivering the official operation and administration and implementation and integration courses. Teaching SSE from inside one of the vendors that defined the category closes a neat loop with this site's own glossary and tooling around SASE and SSE.",
+      "certs": "Netskope Certified Cloud Security Instructor (since 2025); Trainer Accreditation, Administrator License (2026 – 2027). Current accreditations: Cloud Security Architect (2026 – 2028), Integrator (2025 – 2027), Administrator (2024 – 2026), plus NCSSA and NCSSE. Full detail on the credentials page."
+    },
+    "ping": {
+      "name": "Ping Identity and ForgeRock",
+      "years": "2025 – present",
+      "tagline": "The identity chapter: two bloodlines, one platform - federation from Denver, Sun's rescued open source from Oslo.",
+      "intro": "Ping Identity opens the identity era of this record - and it carries two heritages. The Denver federation pioneer behind PingFederate, and ForgeRock, the Norwegian fork that saved Sun Microsystems' open-source identity stack, were combined by Thoma Bravo in August 2023 into the platform this page profiles. In 2025 that alignment became formal training.",
+      "s1Title": "PingFederate, studied properly",
+      "s1Body": "In 2025 Rodolfo completed Ping Identity's official PingFederate training and earned the PingFederate Practitioner credential, deep-diving the federation server that turned SAML from a specification into enterprise plumbing. For someone who teaches access management on other platforms and builds SAML and OIDC tooling for this site, it was the natural next protocol stack to master from the inside.",
+      "s2Title": "A hub in the making",
+      "s2Body": "A Ping Identity hub is on this site's roadmap, with identity-focused tools to match. One thing said plainly: Rodolfo does not deliver Ping Identity training. His instructor authorizations cover F5, Fortinet, Netskope, and Extreme Networks; the Ping chapter is professional depth and tooling, not an official teaching mandate.",
+      "certs": "PingFederate Practitioner (2025), earned through Ping Identity Training. Rodolfo is not an authorized Ping Identity instructor; his teaching authorizations are F5, Fortinet, Netskope, and Extreme Networks.",
+      "lineageTitle": "How two identity bloodlines became one",
+      "lineageDesc": "Ping was founded on federation in 2002. Sun open-sourced its access stack as OpenSSO in 2005; when Oracle shelved it in 2010, five Sun engineers forked it as ForgeRock (OpenAM, OpenDJ) and took it to the NYSE. Thoma Bravo took both private in 2022 and combined them on August 23, 2023."
+    },
+    "zscaler": {
+      "name": "Zscaler",
+      "years": "2026 – present",
+      "tagline": "The chapter opening now: zero trust at cloud scale, and a hub on the roadmap.",
+      "intro": "Zscaler is the newest entry in this record, a chapter that is opening rather than closing: the Zero Trust Exchange as a study subject, and a vendor hub reserved on this site's roadmap.",
+      "s1Title": "Why Zscaler, why now",
+      "s1Body": "Two decades of this record run through firewalls, load balancers, and the perimeters they defended; Zscaler is the company that bet earliest that the perimeter would dissolve into a global inspection cloud. Studying the Zero Trust Exchange, ZIA, and ZPA architectures is the natural continuation of the SSE work already underway in the Netskope chapter, from the other side of the same market.",
+      "s2Title": "A hub in the making",
+      "s2Body": "The zscaler vendor key is already reserved in this site's architecture, and the roadmap runs through a passive-fingerprinting tool designed to open the hub. Said plainly, as with Ping: Rodolfo does not deliver Zscaler training. His instructor authorizations cover F5, Fortinet, Netskope, and Extreme Networks; this chapter is study, tooling, and the road ahead.",
+      "certs": "No Zscaler certifications yet; this chapter is opening. Rodolfo is not an authorized Zscaler instructor; his teaching authorizations are F5, Fortinet, Netskope, and Extreme Networks."
     }
   },
   "training": {
@@ -5430,9 +5487,10 @@
     "candidateId": "ID",
     "backToAbout": "Back to About",
     "studyGuidesPointer": "Studying for an F5 exam? See our certification study guides",
-    "fortinetTransitionNote": "Effective 15 July 2026, Fortinet retires the FCF / FCA / FCP / FCSS / FCX names and restores an eight-level NSE 1–8 progression across four tracks (Secure Networking, Security Operations, Cloud Security, SASE). On that date these map forward: FCF becomes NSE 1 and NSE 2, FCA becomes NSE 3, and the FortiGate / FortiOS exam behind FCP becomes NSE 4, with further NSE 5–7 levels assigned from the exam history above. The named certifications remain on record.",
+    "fortinetTransitionNote": "On 15 July 2026, Fortinet retired the FCF / FCA / FCP / FCSS certification names and restored the eight-level NSE 1-8 progression. Certifications that were active on that date converted forward from the exams already passed: the cybersecurity fundamentals became NSE 1, NSE 2, and NSE 3, and the FortiGate / FortiOS exam behind FCP became NSE 4. Those NSE certifications are listed above as the current program; the FCP & FCSS credentials they replaced remain on record below. Each NSE certification inherits the expiry date of the certification it replaced.",
     "fortinetTransitionLabel": "A note on the Fortinet certification program",
-    "trainingLabel": "Training"
+    "trainingLabel": "Training",
+    "noCertificateNote": "Unfortunately, the vendor does not provide a certificate for this authorization."
   },
   "colophon_page": {
     "eyebrow": "Colophon",
@@ -5742,7 +5800,8 @@
     "read": "Read",
     "metaDescription": "Every {vendor} tool and every {vendor} article on ronutz.com, on one page: tools grouped by family, then the full article library.",
     "certsEyebrow": "Certification prep",
-    "certsCta": "Study guide: {cert}"
+    "certsCta": "Study guide: {cert}",
+    "industryLink": "The {vendor} story in the industry section"
   },
   "learn": {
     "eyebrow": "Learn",
@@ -7124,7 +7183,8 @@
       "darkweb": "dark web",
       "ops-culture": "ops culture",
       "web-development": "web dev",
-      "programming": "programming"
+      "programming": "programming",
+      "vendors": "vendors & products"
     },
     "entries": {
       "the-hacker-manifesto": {
@@ -7973,7 +8033,7 @@
       },
       "subnet": {
         "def": "A slice of a larger network, defined by how many address bits are fixed.",
-        "context": "Subnetting splits an address block into smaller networks so traffic and broadcast stay contained and routing stays sane. The mask (or CIDR prefix) draws the line between the network part and the host part of each address."
+        "context": "Subnetting splits an address block into smaller networks so traffic and broadcast stay contained and routing stays sane. The mask (or CIDR prefix) draws the line between the network part and the host part of each address. Every subnet spans a contiguous range: the first address identifies the network itself, the last is the subnet's broadcast address, and the usable host range sits between them, so a /24 holds 256 addresses of which 254 are assignable. Point-to-point /31 links (RFC 3021) are the deliberate exception, using both addresses as hosts."
       },
       "supernet": {
         "def": "A single route that summarizes several smaller networks.",
@@ -8458,6 +8518,86 @@
       "two-generals-problem": {
         "def": "The proof that two parties on an unreliable channel can never be certain they agree to act together.",
         "context": "Two generals must attack simultaneously and can communicate only by messengers who may be captured; whichever confirmation is sent last, its sender cannot know it arrived, so no finite protocol reaches certain agreement, a result formalized in the 1970s. It is the bedrock impossibility beneath distributed transactions, exactly-once delivery, and every retry loop with idempotency keys. Its harder sibling, the Byzantine generals, adds traitors; real systems settle for probably-agreed, which is what timeouts and acknowledgments actually buy."
+      },
+      "kalpana": {
+        "def": "The Sunnyvale startup that shipped the first multiport Ethernet switch in 1990 and, four years later, became one of Cisco's most consequential acquisitions.",
+        "context": "Founded in the late 1980s by Vinod Bhardwaj and Larry Blair and named after Bhardwaj's wife (Kalpana means 'imagination' in Sanskrit), the company introduced the seven-port EtherSwitch in 1990, inventing Ethernet switching and with it the modern LAN: dedicated bandwidth per port instead of a shared, collision-prone medium. It followed with full-duplex Ethernet and EtherChannel link aggregation. Cisco completed its acquisition on December 7, 1994, for about 200 million dollars, and Kalpana's switching lineage runs straight into this site's Cisco and Riverstone histories, where a Kalpana engineer later co-founded Yago. Sources put the founding anywhere from 1987 to 1990; the 1990 first-switch milestone is the fixed point."
+      },
+      "bit": {
+        "def": "The smallest unit of information, a single choice between 0 and 1, and the atom on which the entire digital world is built.",
+        "context": "The word is a contraction of 'binary digit', coined by John Tukey in a Bell Labs memo dated January 9, 1947. His colleague Claude Shannon gave it its enduring meaning in 'A Mathematical Theory of Communication' (1948), the paper that founded information theory and was the first to put 'bit' in print, crediting Tukey. Shannon's insight was that any message, from text to a photograph to a song, could be measured and transmitted as a number of bits, decoupling information from whatever physical medium carries it. Everything downstream, bytes and files and protocols, follows from that one idea."
+      },
+      "byte": {
+        "def": "A group of bits handled as a unit, standardized to eight, and the everyday quantum of computer storage.",
+        "context": "Werner Buchholz coined 'byte' in 1956 while designing IBM's 7030 Stretch supercomputer, deliberately respelling 'bite' so it could never be mistaken in print for 'bit'. Early machines used bytes of six, seven, or nine bits; the eight-bit byte became universal with IBM's System/360 in 1964 and never looked back. The playful mastication theme stuck, so half a byte is a nibble. One byte holds 256 values, enough for a character of text, which is why it became the natural unit for memory, files, and addresses."
+      },
+      "tcp-ip": {
+        "def": "The two-protocol architecture, split from a single design in the late 1970s, that became the common language of the internet.",
+        "context": "Vint Cerf and Bob Kahn described the idea in 1974 as one 'Transmission Control Program'; by 1978 it was cleaved into TCP for reliable ordered delivery and IP for addressing and routing, so applications that did not need reliability could skip it. The pair were finalized as RFC 793 and RFC 791 in September 1981. On January 1, 1983, ARPANET's flag day, every host was required to switch from the older NCP to TCP/IP at once, the moment usually taken as the birth of the modern internet. Its layered, host-responsible design beat the proprietary networks of IBM, DEC, and Xerox precisely because it was open and royalty-free."
+      },
+      "ip": {
+        "def": "The best-effort, connectionless delivery layer that addresses and routes packets across interconnected networks, the thin waist every internet application stands on.",
+        "context": "IP does one job and refuses the rest: it gives every host an address, routes each datagram hop by hop toward it, and fragments packets to fit each link, but it promises nothing about order, duplication, or arrival. That deliberate minimalism, formalized in RFC 791 (September 1981, edited by Jon Postel), is what let the internet scale across wildly different networks; reliability was pushed up to TCP and left out entirely by UDP. The design traces to Cerf and Kahn's 1974 paper, and its addressing is the 'IP address' the whole world now quotes."
+      },
+      "udp": {
+        "def": "The minimal transport that wraps a packet with just ports and a checksum and sends it with no handshake, no ordering, and no retransmission: fire and forget.",
+        "context": "Jon Postel defined UDP in RFC 768 on August 28, 1980 as the thinnest possible layer over IP, an eight-byte header carrying source and destination ports, a length, and an optional checksum. It guarantees nothing about delivery or duplicates, which is exactly why latency-sensitive and query-response traffic prefers it: its first users were the internet name service and trivial file transfer, and its descendants carry DNS, DHCP, VoIP, gaming, and the QUIC transport under modern HTTP. Where TCP is a phone call, UDP is a postcard."
+      },
+      "analog-vs-digital": {
+        "def": "The distinction between a continuous signal that varies smoothly and a discrete one built from countable steps, and the boundary the whole digital age is spent crossing.",
+        "context": "An analog quantity, a voltage or a groove in vinyl or a sound wave, takes infinitely many values along a continuum; a digital one is quantized into a finite set, ultimately bits. Converting between them is sampling and quantization, and the Nyquist-Shannon theorem sets exactly how often you must sample to reconstruct a bandlimited signal without loss, the mathematical bridge from the continuous world to the discrete one. The line is blurrier than it looks: 'organic' reality is often discrete at bottom (DNA is a four-symbol code; charge and energy come in quanta), while 'digital' systems are physically analog underneath (a transistor is a voltage we agree to read as 0 or 1). So the honest answer to whether organic can be digital, or digital organic, is that the labels describe how we choose to read a signal, not a hard fact about the signal itself: the same reality can be continuous to one instrument and discrete to another."
+      },
+      "inter-frame-gap": {
+        "def": "The mandatory idle time between Ethernet frames, 96 bit times, that gives every receiver a beat to reset before the next frame arrives.",
+        "context": "IEEE 802.3 requires transmitters to leave at least 96 bit times of silence between frames: 9.6 microseconds at 10 Mb/s, 0.96 at 100 Mb/s, 96 nanoseconds at gigabit, always the same 12 byte times regardless of speed. The gap exists so receiving hardware can finish processing one frame, resynchronize, and arm for the next. It is also why line-rate arithmetic never matches the naive frame size: every frame on the wire really costs its length plus 8 bytes of preamble plus 12 bytes of gap, which is how a 64-byte minimum frame becomes the famous 84 bytes, and 10 Gb/s becomes 14.88 million packets per second."
+      },
+      "split-horizon": {
+        "def": "A distance-vector routing rule: never advertise a route back out the interface you learned it from.",
+        "context": "Documented in RFC 1058, the 1988 RIP specification, split horizon breaks the simplest routing loop: without it, two neighbors can advertise a dead route back and forth, counting the metric up toward infinity while traffic ping-pongs. The stricter variant, split horizon with poison reverse, does advertise the route back but with an infinite metric (16 in RIP), which kills the loop faster at the cost of bigger updates. The idea outlived RIP: iBGP applies its own split-horizon rule, refusing to re-advertise a route learned from one iBGP peer to another, which is exactly why iBGP needs a full mesh or route reflectors. Not to be confused with split brain, an unrelated high-availability failure that happens to share the adjective."
+      },
+      "multicast": {
+        "def": "One-to-many delivery: a single transmission sent to a group address reaches every host that joined the group, and only them.",
+        "context": "Steve Deering defined IP multicast in RFC 1112 (August 1989): senders transmit once to a group address, the network replicates only where receivers exist, and hosts join or leave groups with IGMP (MLD in IPv6). IPv4 reserves the old class D space, 224.0.0.0/4, for it; IPv6 uses ff00::/8. Routing protocols lean on it constantly, OSPF speaks to 224.0.0.5 and 224.0.0.6, and it carries IPTV, market data feeds, and service discovery. The efficiency is the point: one stream serves a thousand receivers without unicasting a thousand copies or broadcasting to hosts that never asked."
+      },
+      "broadcast": {
+        "def": "One-to-all delivery inside a network segment: a frame or packet addressed so that every host must receive and process it.",
+        "context": "On Ethernet the destination FF:FF:FF:FF:FF:FF reaches every station in the segment; in IPv4, Jon Mogul's RFC 919 (October 1984) set the conventions, 255.255.255.255 as the limited broadcast that routers never forward, and the highest address of each subnet as its directed broadcast. ARP's who-has question rides on it, as does DHCP discovery, which is why a host with no address at all can still ask for one. Because routers stop broadcasts, the broadcast domain ends where the router begins, and that boundary is most of the reason subnets and VLANs exist. IPv6 dropped broadcast entirely and does everything with multicast groups instead."
+      },
+      "collision-domain": {
+        "def": "The stretch of shared network in which two devices transmitting at once garble each other: one collision domain, one conversation at a time.",
+        "context": "On coaxial Ethernet the whole cable was a single collision domain, and hubs and repeaters only stretched it further: every added station raised the odds that two would speak at once and both would have to back off. Bridges and then switches broke the domain apart, giving each port its own, which is the entire commercial story of Kalpana's 1990 EtherSwitch. Full-duplex links finished the job by removing contention altogether, so on modern switched Ethernet a collision domain is a single cable with one device per end. The concept survives in exams and in the contrast that still matters daily: switches split collision domains, but only routers (or VLANs) split broadcast domains."
+      },
+      "bum": {
+        "def": "Switching shorthand for the three traffic types a switch cannot deliver to a single known port and therefore floods: broadcast, unknown unicast, and multicast.",
+        "context": "A switch forwards a frame out one port only when its MAC table says where the destination lives; broadcasts never qualify, multicasts map to groups rather than ports, and an unknown unicast is simply a destination the table has not learned yet. All three get flooded to every port in the VLAN, which is harmless at small scale and a scaling problem at large scale. The term earns its keep in overlay networks: VXLAN fabrics must decide how to carry BUM traffic across the underlay, by ingress replication or by a multicast underlay, and storm-control features exist to rate-limit BUM before a loop or a chatty host turns flooding into a broadcast storm."
+      },
+      "csma-cd": {
+        "def": "Classic Ethernet's channel etiquette: listen before you talk, talk only when the wire is quiet, and if two stations collide anyway, stop, jam, and retry after a random backoff.",
+        "context": "Metcalfe and Boggs described the scheme in their July 1976 CACM paper on Ethernet, and IEEE 802.3 standardized it: a station senses the carrier, transmits when idle, keeps listening while sending, and on detecting a collision emits a jam signal so everyone notices, then waits a random interval chosen by binary exponential backoff before trying again. The 64-byte minimum frame exists for it, sized so a transmission lasts at least one round trip across the maximum segment and collisions are always detected in time. It is also the losing side of the great 1980s argument with Token Ring's deterministic turn-taking. Switched, full-duplex Ethernet retired the contention entirely, so CSMA/CD survives in the framing, the minimum frame size, and the exams."
+      },
+      "csma-ca": {
+        "def": "Wi-Fi's channel etiquette: a radio cannot hear a collision while it is transmitting, so stations work to avoid collisions up front with waits, random backoff, and per-frame acknowledgements.",
+        "context": "IEEE 802.11 adopted collision avoidance because detection is physically off the table on radio: a transmitter drowns out its own receiver, and the hidden node problem means two stations can both be audible to the access point yet deaf to each other. So a station waits for the medium to go idle plus a spacing interval, counts down a random backoff, transmits, and treats a missing acknowledgement as a collision to retry. The optional RTS/CTS exchange reserves the air in advance, taming hidden nodes at the cost of overhead. The contrast with CSMA/CD is the classic exam question: Ethernet detected collisions after the fact, Wi-Fi spends effort so they mostly never happen."
+      },
+      "sase": {
+        "def": "Gartner's 2019 model that converges the WAN and its security stack into a single cloud-delivered service at the edge, as close to the user as possible.",
+        "context": "Coined by Gartner analysts Neil MacDonald, Lawrence Orans, and Joe Skorupa in 'The Future of Network Security Is in the Cloud' (August 30, 2019) and pronounced 'sassy', SASE bundles SD-WAN with secure web gateway, CASB, zero trust network access, and firewall as a service, delivered from distributed points of presence and driven by identity rather than by the address of a data center. The pitch: stop backhauling a remote workforce through headquarters appliances and put both the network path and its inspection where the users and the SaaS already are. The term reorganized the vendor market within two years, and in 2021 Gartner carved out the security half under its own name, SSE, for buyers who wanted the protection without coupling it to the SD-WAN decision."
+      },
+      "sse": {
+        "def": "Gartner's 2021 name for the security half of SASE: secure web gateway, CASB, and zero trust network access delivered as one cloud service, with the networking left out.",
+        "context": "When SASE proved to be two purchases wearing one acronym, Gartner split it in 2021: SSE names the cloud-delivered security stack (secure web gateway, cloud access security broker, zero trust network access, with firewall as a service and data protection in practice), while the SD-WAN networking half stays a separate decision. The split let security teams modernize inspection and access control without waiting for a WAN refresh, and SSE promptly got its own Gartner Magic Quadrant. The three letters are heavily overloaded outside this field, and context is everything: in web development SSE means Server-Sent Events, and in CPUs it means Streaming SIMD Extensions, neither of which will secure anyone's SaaS traffic."
+      },
+      "strata": {
+        "def": "Palo Alto Networks' name for its founding network-security family: the next-generation firewalls and everything that manages and subscribes to them.",
+        "context": "When Palo Alto Networks regrouped its portfolio into three platform brands in 2019, Strata became the home of the original business: PA-Series hardware firewalls, VM-Series virtual and CN-Series container firewalls, Panorama management, and the subscription services layered on top (Threat Prevention, URL Filtering, WildFire, DNS Security, and kin). The name signals the layered, on-path enforcement model the company was built on, in contrast to its two younger siblings: Prisma for cloud-delivered security and Cortex for security operations. In vendor conversations, 'Strata' is simply shorthand for the firewall estate."
+      },
+      "prisma": {
+        "def": "Palo Alto Networks' cloud-security family, announced in May 2019: securing cloud workloads, cloud access, and the WAN that reaches them.",
+        "context": "Prisma bundles the company's cloud bets under one brand: Prisma Cloud, the code-to-cloud platform assembled from acquisitions such as RedLock, Twistlock, and PureSec; Prisma Access, the cloud-delivered SASE/SSE service; and Prisma SD-WAN, the former CloudGenix, acquired in 2020. Announced in May 2019, three months after Cortex, it completed the three-family structure alongside Strata. The name earns a glossary entry because it collides constantly outside this context: Prisma is also a popular open-source TypeScript ORM, and neither product will do the other's job."
+      },
+      "cortex": {
+        "def": "Palo Alto Networks' security-operations family, announced in February 2019: detection, response, and automation for the SOC.",
+        "context": "Cortex arrived in February 2019 as an AI-based security platform together with Cortex XDR, the product that pushed 'XDR' into the industry vocabulary as detection and response across endpoint, network, and cloud telemetry rather than endpoint alone. The family grew by acquisition and iteration: Cortex XSOAR from Demisto (2019) for orchestration and automation, Cortex Xpanse from Expanse (2020) for attack-surface management, and Cortex XSIAM (2022) as the AI-driven SOC platform folding those capabilities together. In practice the name marks the operations side of the house, where Strata enforces and Prisma covers the cloud."
       }
     },
     "totalCount": "{count} terms",

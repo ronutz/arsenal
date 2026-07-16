@@ -1,15 +1,15 @@
 // ============================================================================
-// src/app/[locale]/vendors/page.tsx
+// src/app/[locale]/vendor-hubs/page.tsx
 // ----------------------------------------------------------------------------
 // VENDOR HOME - the front door to the vendor hubs (T-HUB). A static landing
 // page, one card per training-pillar vendor (F5, Fortinet, Netskope, Extreme),
 // each showing what the site holds for it and linking to the hub. This is the
-// destination for the new "Vendors" nav item.
+// destination for the "Vendors" nav item (route renamed vendors -> vendor-hubs, PRIME 2026-07-15).
 //
 // ROUTING. This is a STATIC sibling of the dynamic [vendor] route under
 // [locale]. Next.js resolves static segments before dynamic ones, so
-// /<locale>/vendors resolves here and /<locale>/f5 resolves to the [vendor]
-// hub. "vendors" is not a vendor key (the keys are f5/fortinet/netskope/
+// /<locale>/vendor-hubs resolves here and /<locale>/f5 resolves to the [vendor]
+// hub. "vendor-hubs" is not a vendor key (the keys are f5/fortinet/netskope/
 // extreme), so scripts/check-vendor-namespace.mjs is satisfied - the guard
 // reserves vendor KEYS as slugs, and this route does not take one.
 //
