@@ -5542,17 +5542,22 @@
         {
           "years": "1984",
           "where": "Primeiro computador · Microdigital TK-82C",
-          "what": "Um clone brasileiro do ZX81 da Sinclair. BASIC digitado à mão a partir de listagens de revista e gravado em uma fita cassete comum."
+          "what": "Um clone brasileiro do ZX81 da Sinclair, primeiro carregado da fita cassete pelo pai na TV da família — e logo programado em BASIC pelo próprio Rodolfo."
         },
         {
           "years": "fim dos anos 1980",
-          "where": "Rádio amador · indicativo e cartões QSL",
-          "what": "A primeira prova de que um garoto com o equipamento certo podia alcançar um desconhecido a um continente de distância — e de que havia uma comunidade mundial que se importava com como o sinal viaja."
+          "where": "Rádio amador · indicativo do pai e cartões QSL",
+          "what": "O mundo do pai: um engenheiro e radioamador dedicado operando as faixas locais e de longa distância, com cartões QSL chegando de desconhecidos a um continente de distância para provar um contato feito pelas ondas do ar."
         },
         {
           "years": "1991",
           "where": "Sysop e montador autodidata",
           "what": "Rodar um BBS em uma única linha telefônica; importar peças dos Estados Unidos e montar PCs sob medida para vender."
+        },
+        {
+          "years": "1991",
+          "where": "A internet acadêmica · shells UNIX",
+          "what": "Por uma universidade, por um modem, até um prompt de texto em uma máquina sem centro e sem dono. O mundo fechado da discagem se abriu para o planeta."
         },
         {
           "years": "início dos anos 1990",
@@ -5561,8 +5566,8 @@
         },
         {
           "years": "1993",
-          "where": "A internet acadêmica · shells UNIX",
-          "what": "Por uma universidade, por um modem, até um prompt de texto em uma máquina sem centro e sem dono. O mundo fechado da discagem se abriu para o planeta."
+          "where": "A World Wide Web · SLIP/PPP e NCSA Mosaic",
+          "what": "Um programa compilado na própria conta shell transformava a sessão discada em um túnel SLIP/PPP — e, por ele, o NCSA Mosaic: o primeiro vislumbre da World Wide Web."
         },
         {
           "years": "1995",
@@ -5575,15 +5580,16 @@
         {
           "title": "Sinais no ar",
           "body": [
-            "Antes dos computadores, o rádio. O rádio amador significava um indicativo licenciado, a disciplina seca do alfabeto fonético e a pequena cerimônia do cartão QSL: um cartão-postal enviado pelo correio para confirmar que sim, naquela frequência, àquela hora, dois desconhecidos tinham mesmo se falado.",
-            "A lição chegou cedo e nunca foi embora. Um adolescente com o equipamento certo, dentro de um quarto, podia alcançar alguém em outro continente — e existia toda uma irmandade mundial de gente que se importava, profundamente, com como um sinal viaja daqui até lá. Curiosidade pelo próprio meio, e uma comunidade global ao alcance da sua mesa: cada capítulo seguinte é uma variação desse primeiro."
+            "Antes dos computadores, havia o rádio — e o rádio era do seu pai. Engenheiro fascinado por cada nova tecnologia e, na mesma medida, pelas pessoas que ela conectava, o pai de Rodolfo era um radioamador dedicado que operava as faixas locais e de longa distância. O rádio amador significava um indicativo licenciado, a disciplina seca do alfabeto fonético e a pequena cerimônia do cartão QSL: um cartão-postal de verdade que chegava pelo correio, enviado por um desconhecido do outro lado do mundo para confirmar que sim, naquela frequência, àquela hora, duas pessoas tinham se encontrado pelas ondas do ar.",
+            "A lição chegou cedo e nunca foi embora. Alguém com o equipamento certo podia alcançar um desconhecido a um continente de distância, e um cartão de verdade, físico, voltava para provar — e já existia toda uma irmandade mundial de gente que se importava, profundamente, com como um sinal viaja daqui até lá. Curiosidade pelo próprio meio, e uma comunidade global ao alcance de um quarto em São Paulo — cada capítulo seguinte é uma variação desse primeiro, e do homem que o mostrou primeiro."
           ]
         },
         {
           "title": "Os micros nacionais",
           "body": [
-            "Em 1984 o Brasil vivia sob a reserva de mercado, que proibia a importação de computadores para proteger uma indústria nacional. Então as máquinas eram clones locais. A primeira aqui foi o Microdigital TK-82C — uma cópia do ZX81 da Sinclair — mais tarde acompanhada pelo TK90X.",
-            "Não havia disco rígido nem rede. Os programas eram digitados à mão a partir das últimas páginas das revistas e gravados em uma fita cassete comum, que chiava ao carregar; um teclado de membrana sob os dedos e um aparelho de televisão como monitor. A gente aprendia BASIC porque não havia mais nada para fazer com aquilo, e no processo aprendia a verdade sobre a qual o resto deste site é construído: um computador não é mágica. É uma máquina que faz exatamente, e apenas, o que você mandar."
+            "A primeira máquina chegou em casa do mesmo jeito que o rádio havia chegado: pelo pai. Um Rodolfo de nove anos observava, encantado, o pai carregar um programa no computador a partir de uma fita cassete comum e então fazer coisas acontecerem na tela do aparelho de televisão — que, naquela época, era o monitor que todo micro doméstico pegava emprestado da sala. Parecia mágica, e não demorou para que o observar virasse fazer.",
+            "A máquina em si era filha do seu tempo. Em 1984 o Brasil vivia sob a reserva de mercado, que proibia a importação de computadores para proteger uma indústria nacional, então as máquinas eram clones locais — o primeiro aqui um Microdigital TK-82C, uma cópia do ZX81 da Sinclair, mais tarde acompanhado pelo TK90X.",
+            "Não havia disco rígido nem rede. Logo Rodolfo estava escrevendo seus próprios programas em BASIC, digitados à mão a partir das últimas páginas das revistas e gravados naquela mesma fita chiante; um teclado de membrana sob os dedos, a televisão ainda fazendo as vezes de monitor. Ele aprendeu BASIC porque não havia mais nada para fazer com aquilo, e no processo aprendeu a verdade sobre a qual o resto deste site é construído: um computador não é mágica. É uma máquina que faz exatamente, e apenas, o que você mandar."
           ]
         },
         {
@@ -5600,14 +5606,16 @@
             "Se o BBS ensinava como as máquinas conversavam entre si, o phreaking fazia uma pergunta mais ousada: como funciona o próprio sistema telefônico — e dá para fazê-lo executar coisas para as quais nunca foi feito?",
             "No Brasil o telefone público era o orelhão, e funcionava a fichas, aquelas peças que você comprava e enfiava no slot. O folclore de pátio de escola dizia que um pouco de água no slot da ficha causava um curto lá dentro e liberava um tom de discagem de graça; foi testado, mais de uma vez, e às vezes funcionava. Mas a porta de verdade era a que as velhas lendas descreviam: um único tom — os famosos 2600 Hz — que a rede de longa distância escutava como seu próprio sinal interno, e a blue box construída para devolver à rede a sua própria língua.",
             "Essa porta foi usada, e muito. Uma blue box conseguia convencer a rede a entregar um tronco de longa distância como se a chamada fosse dela mesma, e o destino que importava era a Europa — os boards da \"scene\", o circuito internacional fechado de crackers, artistas e traders cujos BBSs eram inalcançáveis com qualquer orçamento que um adolescente em São Paulo tivesse. O war-dialing mapeava a metade mais silenciosa da rede: um modem solto para varrer faixas inteiras de números durante a madrugada e anotar o que respondia — um modem do outro lado, um fax, ou o tom característico de um PBX corporativo. Alguns desses PBXs podiam ser convencidos a liberar uma linha externa.",
-            "Esses ficavam intocados, e a razão era toda a ética em miniatura. Tomar um tronco a partir da própria sinalização da companhia telefônica não colocava o custo em lugar nenhum — nenhuma conta, nenhuma fatura, ninguém era cobrado. Fazer o PBX de uma empresa de verdade completar a ligação cairia na conta daquela empresa, e essa era a linha que não se cruzava. O único esquema que ficou só no sonho — um modem emendado direto na fiação de um orelhão — ficou no sonho. Nada do resto era por dinheiro; era a intoxicação pura de entender um sistema bem o bastante para enxergar as costuras, e ser jovem o suficiente para forçá-las. A rede analógica onde tudo isso vivia acabou faz décadas, seus tons de sinalização aposentados há muito, que é a razão honesta pela qual isto pode ser registrado aqui como história, e não como instrução."
+            "Esses ficavam intocados, e a razão era toda a ética em miniatura. Tomar um tronco a partir da própria sinalização da companhia telefônica não colocava o custo em lugar nenhum — nenhuma conta, nenhuma fatura, ninguém era cobrado. Fazer o PBX de uma empresa de verdade completar a ligação cairia na conta daquela empresa, e essa era a linha que não se cruzava. O único esquema que ficou só no sonho — um modem emendado direto na fiação de um orelhão — ficou no sonho. Nada do resto era por dinheiro; era a intoxicação pura de entender um sistema bem o bastante para enxergar as costuras, e ser jovem o suficiente para forçá-las. A rede analógica onde tudo isso vivia acabou faz décadas, seus tons de sinalização aposentados há muito, que é a razão honesta pela qual isto pode ser registrado aqui como história, e não como instrução.",
+            "Aquele sonho tinha agenda própria. Dezessete anos depois, segurando um dos primeiros iPhones pouco depois do lançamento — destravado pelo jailbreak para rodar os aplicativos que uma comunidade construía para si mesma — ele sentiu na hora: o sonho recorrente de um menino de catorze anos em 1990, um computador em rede na palma da mão, enfim realizado."
           ]
         },
         {
           "title": "A internet acadêmica",
           "body": [
-            "O mundo dos BBSs era uma cidade. A internet era o planeta. Em 1993 ela chegou por uma universidade, por um modem, como um simples prompt de texto em uma máquina UNIX que ela mesma conversava com milhares de outras — sem centro, sem dono, sem horário de fechar.",
-            "Com sorte havia SLIP ou PPP para levar tráfego de internet de verdade pela linha telefônica; sem sorte, uma conta shell e um cardápio de ferramentas de nomes estranhos — Gopher, Archie, IRC. Na primeira vez em que um comando digitado em São Paulo se estendeu e puxou um arquivo de uma máquina em outro continente, os muros do jardim da discagem simplesmente caíram, e o formato dos trinta anos seguintes apareceu inteiro de uma vez."
+            "O mundo dos BBSs era uma cidade. A internet era o planeta. Em 1991 ela chegou por uma universidade, por um modem, como um simples prompt de texto em uma máquina UNIX que ela mesma conversava com milhares de outras — sem centro, sem dono, sem horário de fechar.",
+            "A conta era uma conta shell — nada de SLIP ou PPP levando tráfego de internet de verdade pela linha telefônica; só um prompt e um cardápio de ferramentas de nomes estranhos: Gopher, Archie, IRC. E bastava. Na primeira vez em que um comando digitado em São Paulo se estendeu e puxou um arquivo de uma máquina em outro continente, os muros do jardim da discagem simplesmente caíram.",
+            "Então, em 1993, a conta shell virou uma porta por conta própria. Nela ele compilou um programa que, executado, transformava a própria sessão discada em um túnel SLIP/PPP — a linha de terminal silenciosamente virando uma conexão de internet de verdade — e por esse túnel abriu o NCSA Mosaic para o seu primeiro vislumbre da World Wide Web. O formato dos trinta anos seguintes apareceu inteiro de uma vez."
           ]
         },
         {

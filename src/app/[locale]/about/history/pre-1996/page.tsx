@@ -98,7 +98,9 @@ export default async function Pre1996Page({
               <p className="era-section-body">{t("pre1996.mapNote")}</p>
               <ol className="about-timeline">
                 {beats.map((b) => (
-                  <li className="about-era" key={b.years}>
+                  /* Key combines years + where: two beats can share a year
+                     (e.g. the 1991 sysop and 1991 academic-internet beats). */
+                  <li className="about-era" key={`${b.years} ${b.where}`}>
                     <span className="about-era-years mono">{b.years}</span>
                     <span className="about-era-where">{b.where}</span>
                     <span className="about-era-what">{b.what}</span>
