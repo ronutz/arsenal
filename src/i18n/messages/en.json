@@ -5540,6 +5540,11 @@
       "mapNote": "Roughly a decade, from the first machine to the first payslip.",
       "tl": [
         {
+          "years": "1975",
+          "where": "São Paulo, Brazil",
+          "what": "Rodolfo is born to a Brazilian father — a civil engineer, grandson of Portuguese, Italian, and Arab immigrants — and a German-born mother, a Bachelor of Fine Arts who had moved to Brazil with her parents and sister at the age of twelve. His maternal grandmother, especially, taught him to look at the universe and at nature with curiosity and awe; had computers not claimed him, he would probably have gone the scientist's way."
+        },
+        {
           "years": "1984",
           "where": "First computer · Microdigital TK-82C",
           "what": "A Brazilian clone of Sinclair's ZX81, first loaded from cassette by his father onto the family TV — and soon programmed in BASIC by Rodolfo himself."
@@ -5575,8 +5580,15 @@
           "what": "An electronic-data-interchange system on Novell NetWare and PCBoard. The point where hobby, trade, and profession became one thing."
         }
       ],
-      "storyTitle": "The apprenticeship, in six movements",
+      "storyTitle": "The apprenticeship, in seven movements",
       "mv": [
+        {
+          "title": "Curiosity and awe",
+          "body": [
+            "Before any machine, there was a teacher. His grandmother — his mother's mother, who had crossed an ocean from Germany to Brazil with her family and started the world over — talked with the boy, from his earliest age, about everything her world contained. The garden of her house, with its small insects and earthworms, its flowers and weeds, its tomatoes, carrots, and strawberries. The night sky full of stars, the vastness of the Universe, and the human consciousness there to behold it. She taught him that all of it answers curiosity with more curiosity, and that awe is not a childish thing to outgrow but a way of paying attention.",
+            "It took. Had computers not claimed him a few years later, he would almost certainly have gone the scientist's way — the pull toward how things work was already there, installed early and installed deep. The machines simply gave that curiosity a keyboard."
+          ]
+        },
         {
           "title": "Signals in the air",
           "body": [
@@ -5607,7 +5619,7 @@
             "In Brazil the payphone was the orelhão, the \"big ear,\" and it ran on fichas, little tokens you bought and fed into a slot. Schoolyard folklore held that a splash of water in the coin slot would short something inside and hand you a free dial tone; it was tried, more than once, and sometimes it worked. But the real doorway was the one the old legends described: a single tone — the famous 2600 Hz — that the long-distance network listened for as its own internal signal, and the blue box built to speak the network's language back to it.",
             "That doorway got used, and often. A blue box could coax the network into handing over a long-distance trunk as if the call were its own, and the destination that mattered was Europe — the \"scene\" boards, the tight international circuit of crackers, artists, and traders whose bulletin boards were unreachable on any budget a teenager in São Paulo had. War-dialing mapped the quieter half of the network: a modem set loose to sweep whole ranges of numbers overnight and log what answered — a carrier, a fax, or the distinctive tone of a corporate PBX. Some of those PBXs could be talked into handing out an outside line.",
             "Those were left alone, and the reason was the whole ethic in miniature. Seizing a trunk from the phone company's own signaling put the cost nowhere — no account, no invoice, no one billed. Making a real company's PBX place the call would have landed on that company's bill, and that was the line that stayed uncrossed. The one scheme that was only ever dreamed — a modem spliced straight into a payphone's wiring — stayed a dream. None of the rest was for money; it was the plain intoxication of understanding a system well enough to see its seams, and being young enough to lean on them. The analog network all of this lived on is decades gone now, its signaling tones long retired, which is the honest reason it can be set down here as history rather than instruction.",
-            "That one dream kept its own schedule. Seventeen years later, holding one of the first iPhones shortly after its launch — jailbroken so it could run the apps a community was building for itself — he felt it at once: the recurring dream of a fourteen-year-old boy in 1990, a networked computer riding in one hand, finally made real."
+            "That one dream kept its own schedule. In the teenager's version it had a shape: a bulky 386DX40, a 14-inch CRT monitor, a modem, and a phone line — which is to say, access to the knowledge of the whole world, as long as the world stayed within reach of the desk. Seventeen years later, holding one of the first iPhones shortly after its launch — jailbroken so it could run the apps a community was building for itself — he felt it at once: the recurring dream of the fourteen-year-old of 1990, made real — and made portable, the whole of it now possible anywhere, in the palm of the hand."
           ]
         },
         {
@@ -5615,6 +5627,7 @@
           "body": [
             "The BBS world was a town. The internet was the planet. In 1991 it arrived through a university, over a modem, as a plain text prompt on a UNIX machine that was itself in conversation with thousands of others — no center, no owner, no closing time.",
             "The account was a shell account — no SLIP or PPP carrying real internet traffic down the phone line, just a prompt and a menu of tools with strange names: Gopher, Archie, IRC. It was enough. The first time a command typed in São Paulo reached across and pulled a file off a machine on another continent, the walls of the dial-up garden simply fell away.",
+            "The door had a name, too: aandrade, an account on the UNIX servers of USP — the Universidade de São Paulo — whose access, as was the custom among enthusiasts then, was traded hand to hand like a key quietly copied for friends. Only years later did he learn how many of the people he had met in that era had stepped through the very same account. So, three decades late and with a grin: thank you, aandrade, for unknowingly holding open, for a whole generation of young explorers, one of the first doors to the world.",
             "Then, in 1993, the shell account became a doorway of its own. On it he compiled a program that, when run, turned the dial-up session itself into a SLIP/PPP tunnel — the terminal line quietly becoming a real internet connection — and through that tunnel he opened NCSA Mosaic for his first glimpse of the World Wide Web. The shape of the next thirty years came into view all at once."
           ]
         },
@@ -9231,7 +9244,7 @@
     "rodolfoBody": "Rodolfo Nützmann has taught through Red Education since 2021, and full-time as a Senior Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world - with Ping Identity and Zscaler, the authorizations cleared in 2026, joining the roster through the same house.",
     "caseStudyNote": "Red Education's own case study on upskilling 43 engineers at a global IT firm names Rodolfo among the instructors who delivered the training.",
     "caseStudyLink": "Read the case study",
-    "linkTraining": "Course catalog on this site",
+    "linkTraining": "See the courses taught by Rodolfo",
     "linkCredentials": "Rodolfo's credentials",
     "tributeTitle": "A word of thanks",
     "tribute": "I began teaching through Red Education in 2021 and joined full-time as a Senior Instructor in 2023, which turned out to be one of the best professional decisions of my career. Behind every class I deliver stands an operations team spanning five regions that makes complex logistics look effortless, account managers who genuinely care about outcomes, and a standard of quality that pushes me to be better every single session. This page is my public thank-you to the people of Red Education, for trusting me with their classrooms and their students.",

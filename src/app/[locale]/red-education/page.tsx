@@ -154,6 +154,29 @@ export default async function RedEducationPage({
             </div>
           </section>
 
+          {/* CTA (top copy): PRIME 2026-07-17 - the booking block also opens the
+              page so a visitor can act before reading. Same i18n keys and
+              markup as the closing CTA section below; edit both together. */}
+          <section className="section redu-cta-section">
+            <div className="container redu-container">
+              <h2 className="redu-section-title">{t("ctaTitle")}</h2>
+              <p className="redu-body">{t("ctaBody")}</p>
+              <div className="redu-cta-buttons">
+                <a
+                  href={reduUrl}
+                  className="btn btn-primary"
+                  target="_blank"
+                  rel={externalRel(reduUrl)}
+                >
+                  {t("ctaButton")} ↗
+                </a>
+                <Link href="/training" className="btn btn-secondary">
+                  {t("linkTraining")}
+                </Link>
+              </div>
+            </div>
+          </section>
+
           {/* Who they are: the verified scale + reach + formats. */}
           <section className="section">
             <div className="container redu-container">

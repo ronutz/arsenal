@@ -18,12 +18,14 @@
 .nf-sub { font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 600; color: #e6ecff; }
 .nf-path { font-size: 0.82rem; color: #9aa6cc; margin-top: 0.5rem; border: 1px solid #1b2540; border-radius: 999px; padding: 0.35rem 0.85rem; background: rgba(255,255,255,0.02); word-break: break-all; }
 .nf-dim { color: #5f6b91; }
+.nf-dim-a { text-decoration: underline dotted; text-underline-offset: 2px; }
+.nf-dim-a:hover { color: #8fa0c9; }
 .nf-arrow { color: #5f6b91; }
 .nf-status { color: #f59e0b; }
-.nf-quip { font-size: 1.15rem; font-weight: 600; color: #f59e0b; font-style: italic; margin: 0; }
+.nf-quip { font-size: 1.02rem; font-weight: 600; color: #f59e0b; font-style: italic; margin: 0; }
 .guru { width: 100%; max-width: 560px; background: #000; border: 3px solid #e23b3b; border-radius: 4px; padding: 1rem 1.1rem; color: #ff4d4d; text-align: center; animation: guru-blink 1.1s steps(1) infinite; }
-.guru-l1 { font-size: 0.9rem; margin-bottom: 0.5rem; }
-.guru-l2 { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.02em; }
+.guru-l1 { font-size: 0.8rem; margin-bottom: 0.5rem; }
+.guru-l2 { font-size: 0.92rem; font-weight: 700; letter-spacing: 0.02em; }
 .guru-l3 { font-size: 0.76rem; color: #ff8a8a; margin-top: 0.5rem; }
 @keyframes guru-blink { 0%,100% { border-color: #e23b3b; } 50% { border-color: #6f0f0f; } }
 .nf-console { width: 100%; max-width: 560px; background: #0a0e1a; border: 1px solid #1b2540; border-radius: 10px; padding: 0.85rem 1rem; text-align: left; font-size: 0.8rem; line-height: 1.85; color: #c3ccea; }

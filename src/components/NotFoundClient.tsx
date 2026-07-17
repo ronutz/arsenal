@@ -36,8 +36,10 @@ const GURU: { code: string; meaning: string }[] = [
 ];
 
 // A short stack of other famous non-serious errors, accurately attributed.
-const CONSOLE_ERRORS: { pre: string; tone: "info" | "warn" | "err"; text: string; dim?: string }[] = [
-  { pre: "418", tone: "info", text: "I'm a teapot: the server refuses to brew this page", dim: "RFC 2324" },
+// dimHref turns the dim attribution into a link (PRIME 2026-07-17: RFC 2324
+// links to the datatracker, where §2.3.2 defines 418 inside HTCPCP/1.0).
+const CONSOLE_ERRORS: { pre: string; tone: "info" | "warn" | "err"; text: string; dim?: string; dimHref?: string }[] = [
+  { pre: "418", tone: "info", text: "HTCPCP/1.0 - I'm a teapot: the server refuses to brew this page", dim: "RFC 2324", dimHref: "https://datatracker.ietf.org/doc/html/rfc2324.html" },
   { pre: "!!", tone: "warn", text: "PC LOAD LETTER" },
   { pre: "??", tone: "warn", text: "Keyboard not found. Press F1 to continue." },
   { pre: ">_", tone: "info", text: "These aren't the droids you're looking for." },
@@ -83,9 +85,10 @@ export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: Poo
     if (BOFH_EXCUSES.length) setExcuse(BOFH_EXCUSES[Math.floor(Math.random() * BOFH_EXCUSES.length)]);
   }, [pool, locales]);
 
-  // Cycle the Guru alert through its variations.
+  // Cycle the Guru alert through its variations. 6500ms = the original 2600ms
+  // slowed 2.5x (PRIME 2026-07-17): each alert now lingers long enough to read.
   useEffect(() => {
-    const id = window.setInterval(() => setGuru((g) => (g + 1) % GURU.length), 2600);
+    const id = window.setInterval(() => setGuru((g) => (g + 1) % GURU.length), 6500);
     return () => window.clearInterval(id);
   }, []);
 
@@ -123,7 +126,11 @@ export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: Poo
 
       {/* Authentic Amiga Guru Meditation, cycling through variations */}
       <div className="guru" aria-label="Amiga Guru Meditation error">
-        <div className="guru-l1">Software Failure.&nbsp;&nbsp;Press left mouse button to continue.</div>
+        <div className="guru-l1">
+          Critical Software Failure -- Process fatally terminated --
+          <br />
+          Press the red EMERGENCY-RECOVERY button on the back of your device to continue.
+        </div>
         <div className="guru-l2 mono">Guru Meditation&nbsp;&nbsp;#{g.code}</div>
         <div className="guru-l3 mono">{"// "}{g.meaning}</div>
       </div>
@@ -134,7 +141,15 @@ export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: Poo
           <div className="nf-cline" key={i}>
             <span className={`nf-cpre nf-cpre-${e.tone}`}>{e.pre}</span>
             <span className="nf-ctext">{e.text}</span>
-            {e.dim ? <span className="nf-dim"> {e.dim}</span> : null}
+            {e.dim ? (
+              e.dimHref ? (
+                <a className="nf-dim nf-dim-a" href={e.dimHref} target="_blank" rel="noopener noreferrer">
+                  {" "}{e.dim}
+                </a>
+              ) : (
+                <span className="nf-dim"> {e.dim}</span>
+              )
+            ) : null}
           </div>
         ))}
       </div>

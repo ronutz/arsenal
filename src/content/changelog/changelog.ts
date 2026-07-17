@@ -53,6 +53,34 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-17",
+    time: "23:59",
+    kind: "content",
+    title: "Curiosity and awe - the story's first teacher",
+    body: "The pre-1996 narrative grows from six movements to seven, and the new one comes first: his grandmother, who crossed an ocean from Germany to Brazil, and who talked with the boy from his earliest age about the garden of her house - small insects and earthworms, flowers and weeds, tomatoes, carrots, and strawberries - and about the night sky full of stars, the vastness of the Universe, and the human consciousness there to behold it. The iPhone flash-forward also gains the dream's original shape: a bulky 386DX40, a 14-inch CRT monitor, a modem, and a phone line - the knowledge of the whole world, later made possible anywhere, in the palm of the hand. In English and Brazilian Portuguese.",
+  },
+  {
+    date: "2026-07-17",
+    time: "23:55",
+    kind: "content",
+    title: "The timeline now begins in 1975",
+    body: "The pre-1996 story's timeline gains its true opening beat: S\u00e3o Paulo, 1975 - a Brazilian father, civil engineer, grandson of Portuguese, Italian, and Arab immigrants; a German-born mother, a Bachelor of Fine Arts who came to Brazil at twelve; and a maternal grandmother who taught a boy to look at the universe and at nature with curiosity and awe. Had computers not claimed him, the scientist's way was waiting. In English and Brazilian Portuguese.",
+  },
+  {
+    date: "2026-07-17",
+    time: "23:45",
+    kind: "content",
+    title: "Thanks, aandrade",
+    body: "The academic-internet chapter of the pre-1996 story gains its missing character: aandrade, the account on the UNIX servers of USP - the Universidade de S\u00e3o Paulo - whose access, as was the custom among early-nineties enthusiasts, passed from hand to hand and quietly opened one of the first doors to the world for a whole generation of young explorers. Three decades late, the page now says thank you. In English and Brazilian Portuguese.",
+  },
+  {
+    date: "2026-07-17",
+    time: "23:30",
+    kind: "feature",
+    title: "Red Education booking up top, and a slower Guru",
+    body: "The Red Education page now opens with the same book-instructor-led-training block that closes it, so a visitor can act before reading, and the on-site catalog button now says what it means: see the courses taught by Rodolfo. On the 404 page the Guru Meditation alerts linger 2.5 times longer between rotations, the teapot line now wears its full protocol - HTCPCP/1.0 - with RFC 2324 linked to the IETF datatracker, the Amiga failure line escalated to a two-line critical emergency, and three of the retro lines dropped a font size for composure.",
+  },
+  {
+    date: "2026-07-17",
     time: "23:00",
     kind: "content",
     title: "New article: HTTP/0.9 to HTTP/3",

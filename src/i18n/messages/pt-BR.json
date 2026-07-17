@@ -5540,6 +5540,11 @@
       "mapNote": "Cerca de uma década, do primeiro computador ao primeiro contracheque.",
       "tl": [
         {
+          "years": "1975",
+          "where": "São Paulo, Brasil",
+          "what": "Rodolfo nasce, filho de pai brasileiro — engenheiro civil, neto de imigrantes portugueses, italianos e árabes — e de mãe nascida na Alemanha, bacharel em Belas Artes, que se mudou para o Brasil com os pais e a irmã aos doze anos. Foi sobretudo a avó materna quem lhe ensinou a olhar o universo e a natureza com curiosidade e encantamento; não fossem os computadores, ele provavelmente teria seguido o caminho da ciência."
+        },
+        {
           "years": "1984",
           "where": "Primeiro computador · Microdigital TK-82C",
           "what": "Um clone brasileiro do ZX81 da Sinclair, primeiro carregado da fita cassete pelo pai na TV da família — e logo programado em BASIC pelo próprio Rodolfo."
@@ -5575,8 +5580,15 @@
           "what": "Um sistema de intercâmbio eletrônico de dados sobre Novell NetWare e PCBoard. O ponto em que hobby, ofício e profissão viraram uma coisa só."
         }
       ],
-      "storyTitle": "O aprendizado, em seis movimentos",
+      "storyTitle": "O aprendizado, em sete movimentos",
       "mv": [
+        {
+          "title": "Curiosidade e encantamento",
+          "body": [
+            "Antes de qualquer máquina, houve uma professora. Sua avó — a mãe de sua mãe, que havia cruzado um oceano da Alemanha ao Brasil com a família e recomeçado o mundo — conversava com o menino, desde muito cedo, sobre tudo o que o mundo dela continha. O jardim da casa dela, com seus insetinhos e minhocas, suas flores e ervas daninhas, seus tomates, cenouras e morangos. O céu noturno cheio de estrelas, a vastidão do Universo e a consciência humana ali para contemplá-lo. Ela ensinou a ele que tudo isso responde à curiosidade com mais curiosidade, e que o encantamento não é coisa de criança a ser superada, mas um jeito de prestar atenção.",
+            "A lição pegou. Não fossem os computadores reivindicá-lo poucos anos depois, ele quase certamente teria seguido o caminho da ciência — a atração pelo como-as-coisas-funcionam já estava ali, instalada cedo e instalada fundo. As máquinas apenas deram um teclado àquela curiosidade."
+          ]
+        },
         {
           "title": "Sinais no ar",
           "body": [
@@ -5607,7 +5619,7 @@
             "No Brasil o telefone público era o orelhão, e funcionava a fichas, aquelas peças que você comprava e enfiava no slot. O folclore de pátio de escola dizia que um pouco de água no slot da ficha causava um curto lá dentro e liberava um tom de discagem de graça; foi testado, mais de uma vez, e às vezes funcionava. Mas a porta de verdade era a que as velhas lendas descreviam: um único tom — os famosos 2600 Hz — que a rede de longa distância escutava como seu próprio sinal interno, e a blue box construída para devolver à rede a sua própria língua.",
             "Essa porta foi usada, e muito. Uma blue box conseguia convencer a rede a entregar um tronco de longa distância como se a chamada fosse dela mesma, e o destino que importava era a Europa — os boards da \"scene\", o circuito internacional fechado de crackers, artistas e traders cujos BBSs eram inalcançáveis com qualquer orçamento que um adolescente em São Paulo tivesse. O war-dialing mapeava a metade mais silenciosa da rede: um modem solto para varrer faixas inteiras de números durante a madrugada e anotar o que respondia — um modem do outro lado, um fax, ou o tom característico de um PBX corporativo. Alguns desses PBXs podiam ser convencidos a liberar uma linha externa.",
             "Esses ficavam intocados, e a razão era toda a ética em miniatura. Tomar um tronco a partir da própria sinalização da companhia telefônica não colocava o custo em lugar nenhum — nenhuma conta, nenhuma fatura, ninguém era cobrado. Fazer o PBX de uma empresa de verdade completar a ligação cairia na conta daquela empresa, e essa era a linha que não se cruzava. O único esquema que ficou só no sonho — um modem emendado direto na fiação de um orelhão — ficou no sonho. Nada do resto era por dinheiro; era a intoxicação pura de entender um sistema bem o bastante para enxergar as costuras, e ser jovem o suficiente para forçá-las. A rede analógica onde tudo isso vivia acabou faz décadas, seus tons de sinalização aposentados há muito, que é a razão honesta pela qual isto pode ser registrado aqui como história, e não como instrução.",
-            "Aquele sonho tinha agenda própria. Dezessete anos depois, segurando um dos primeiros iPhones pouco depois do lançamento — destravado pelo jailbreak para rodar os aplicativos que uma comunidade construía para si mesma — ele sentiu na hora: o sonho recorrente de um menino de catorze anos em 1990, um computador em rede na palma da mão, enfim realizado."
+            "Aquele sonho tinha agenda própria. Na versão do adolescente, ele tinha uma forma: um 386DX40 avantajado, um monitor CRT de 14 polegadas, um modem e uma linha telefônica — ou seja, acesso ao conhecimento do mundo inteiro, desde que o mundo ficasse ao alcance da escrivaninha. Dezessete anos depois, segurando um dos primeiros iPhones pouco depois do lançamento — com jailbreak para rodar os aplicativos que uma comunidade construía para si mesma — ele sentiu na hora: o sonho recorrente do garoto de quatorze anos de 1990, realizado — e agora portátil, tudo aquilo possível em qualquer lugar, na palma da mão."
           ]
         },
         {
@@ -5615,6 +5627,7 @@
           "body": [
             "O mundo dos BBSs era uma cidade. A internet era o planeta. Em 1991 ela chegou por uma universidade, por um modem, como um simples prompt de texto em uma máquina UNIX que ela mesma conversava com milhares de outras — sem centro, sem dono, sem horário de fechar.",
             "A conta era uma conta shell — nada de SLIP ou PPP levando tráfego de internet de verdade pela linha telefônica; só um prompt e um cardápio de ferramentas de nomes estranhos: Gopher, Archie, IRC. E bastava. Na primeira vez em que um comando digitado em São Paulo se estendeu e puxou um arquivo de uma máquina em outro continente, os muros do jardim da discagem simplesmente caíram.",
+            "A porta também tinha um nome: aandrade, uma conta nos servidores UNIX da USP — a Universidade de São Paulo — cujo acesso, como era o costume entre os entusiastas de então, passava de mão em mão como uma chave copiada discretamente para os amigos. Só anos depois ele descobriu quantas das pessoas que conheceu naquela época tinham entrado pela mesma conta. Então, com três décadas de atraso e um sorriso: obrigado, aandrade, por manter aberta, sem saber, para toda uma geração de jovens exploradores, uma das primeiras portas para o mundo.",
             "Então, em 1993, a conta shell virou uma porta por conta própria. Nela ele compilou um programa que, executado, transformava a própria sessão discada em um túnel SLIP/PPP — a linha de terminal silenciosamente virando uma conexão de internet de verdade — e por esse túnel abriu o NCSA Mosaic para o seu primeiro vislumbre da World Wide Web. O formato dos trinta anos seguintes apareceu inteiro de uma vez."
           ]
         },
@@ -9231,7 +9244,7 @@
     "rodolfoBody": "Rodolfo Nützmann leciona pela Red Education desde 2021, e em tempo integral como Instrutor Sênior desde 2023. Pela Red Education, ele ministra treinamentos oficiais com instrutor para F5, Fortinet, Netskope e Extreme Networks a alunos do mundo inteiro - com Ping Identity e Zscaler, autorizações habilitadas em 2026, entrando no elenco pela mesma casa.",
     "caseStudyNote": "O próprio estudo de caso da Red Education sobre a capacitação de 43 engenheiros em uma empresa global de TI cita Rodolfo entre os instrutores que ministraram o treinamento.",
     "caseStudyLink": "Ler o estudo de caso",
-    "linkTraining": "Catálogo de cursos neste site",
+    "linkTraining": "Veja os cursos ministrados pelo Rodolfo",
     "linkCredentials": "Credenciais do Rodolfo",
     "tributeTitle": "Uma palavra de agradecimento",
     "tribute": "Comecei a lecionar pela Red Education em 2021 e entrei em tempo integral como Instrutor Sênior em 2023, o que foi uma das melhores decisões profissionais da minha carreira. Por trás de cada turma que ministro há uma equipe de operações presente em cinco regiões que faz logísticas complexas parecerem simples, gerentes de conta que se importam de verdade com o resultado e um padrão de qualidade que me faz querer ser melhor a cada sessão. Esta página é o meu agradecimento público às pessoas da Red Education, por confiarem a mim suas salas de aula e seus alunos.",

@@ -5,7 +5,7 @@
 // (the other two eras use the shared <EraPage>): the pre-1996 story is the
 // richest — ham radio, the national micros, the BBS years, the phreaking
 // scene, and the first academic internet — so it is told as a dated timeline
-// map, a six-movement narrative, and a "field guide" of era terms (two of
+// map, a seven-movement narrative, and a "field guide" of era terms (two of
 // which open into the glossary's phone-phreaking lineage). All copy lives in
 // the "history.pre1996" message namespace; EN + pt-BR authored natively, the
 // other locales fall back per-key. Server component (static).
@@ -110,7 +110,7 @@ export default async function Pre1996Page({
             </div>
           </section>
 
-          {/* Narrative — six numbered movements, multi-paragraph bodies */}
+          {/* Narrative — seven numbered movements, multi-paragraph bodies */}
           <section className="section era-body-section">
             <div className="container era-container">
               <h2 className="era-section-title">{t("pre1996.storyTitle")}</h2>
