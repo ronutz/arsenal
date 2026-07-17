@@ -63,3 +63,5 @@ IANA adı, kayıt standardıdır. OpenSSL kısa çizgi kullanır, `WITH` ifadesi
 ## Çözmek onaylamak değildir
 
 Bir paketi okumak, ne yapacağını söyler, onu kullanmanız gerekip gerekmediğini değil. Bir ad tamamen doğru biçimlendirilmiş olabilir ve yine de RC4'ü, anonim anahtar değişimini veya ihracat düzeyinde anahtarları tanımlayabilir. Çözücü, yapısal ayrıştırmayı bir güvenlik okuması ve IANA'nın bağımsız önerisiyle eşleştirir, böylece ölümcül bir kusuru olan sağlıklı görünümlü bir ad fark edilmeden geçmez. Eşlik eden makaleler, bir paketi modern yapan şeyi ele alır: CBC yerine AEAD ve anahtar değişiminde ileri gizlilik.
+
+Bir paketin her parçasının telde gerçekte nereye düştüğünü görmek için [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) ve [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) gerçek el sıkışmalarını bayt bayt açıklar — biri uzun paketlenmiş adlar, biri kısa modern adlar için.

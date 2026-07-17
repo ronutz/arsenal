@@ -63,3 +63,5 @@ IANA-navnet er registerstandarden. OpenSSL bruger bindestreger, dropper `WITH` o
 ## At afkode er ikke at billige
 
 At læse en suite fortæller dig, hvad den ville gøre, ikke om du bør bruge den. Et navn kan være helt korrekt udformet og alligevel beskrive RC4, anonym nøgleudveksling eller nøgler af eksportstyrke. Afkoderen parrer den strukturelle opdeling med en sikkerhedsvurdering og den uafhængige IANA-anbefaling, så et sundt udseende navn med en fatal fejl ikke slipper igennem. Følgeartiklerne dækker, hvad der gør en suite moderne: AEAD i stedet for CBC, og forward secrecy i nøgleudvekslingen.
+
+For at se hvor hver del af en suite faktisk lander på ledningen, annoterer [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) og [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) rigtige handshakes byte for byte – én for de lange bundtede navne, én for de korte moderne.

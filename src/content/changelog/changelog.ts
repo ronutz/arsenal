@@ -52,6 +52,22 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-18",
+    time: "00:30",
+    kind: "feature",
+    title: "The BOFH moves up",
+    body: "On the 404 page, the Bastard Operator From Hell now delivers his ruling directly under the Guru Meditation, with the faux log of famous errors - 418 I'm a teapot, PC LOAD LETTER and friends - following below. Same cast, better billing.",
+  },
+  {
+    date: "2026-07-18",
+    time: "00:15",
+    kind: "content",
+    title: "Four small doors closed",
+    body: "A tidy batch: the Cipher Suite Anatomy article now closes, in all sixteen languages, by pointing at both Illustrated walkthroughs - TLS 1.2 for the long bundled names, TLS 1.3 for the short modern ones; the cipher suite decoder's references gain RFC 9846, the December 2025 revision of TLS 1.3 that obsoletes RFC 8446 with the suite form unchanged; and the pre-1996 field guide gains two entries the story had been using without defining - SLIP & PPP, the encapsulations that put a dial-up line truly on the internet, and NCSA Mosaic, the 1993 browser that gave the text-only internet a face. In English and Brazilian Portuguese, with the article line native in every locale.",
+    tools: ["cipher"],
+    articles: ["cipher-suite-anatomy"],
+  },
+  {
     date: "2026-07-17",
     time: "23:59",
     kind: "content",

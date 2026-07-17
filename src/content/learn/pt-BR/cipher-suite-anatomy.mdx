@@ -63,3 +63,5 @@ O nome IANA é o padrão do registro. O OpenSSL usa hifens, descarta o `WITH` e 
 ## Decodificar não é endossar
 
 Ler uma suíte diz o que ela faria, não se você deveria usá-la. Um nome pode estar perfeitamente bem formado e ainda descrever RC4, troca de chaves anônima ou chaves de nível de exportação. O decodificador combina a decomposição estrutural com uma leitura de segurança e a recomendação independente da IANA, para que um nome de aparência saudável com uma falha fatal não passe despercebido. Os artigos complementares cobrem o que torna uma suíte moderna: AEAD em vez de CBC, e sigilo de encaminhamento na troca de chaves.
+
+Para ver onde cada peça de uma suite realmente cai no fio, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) e [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) anotam handshakes reais byte a byte — um para os nomes longos e empacotados, outro para os curtos e modernos.

@@ -63,3 +63,5 @@ Nazwa IANA to standard rejestru. OpenSSL używa myślników, pomija `WITH` i zap
 ## Dekodowanie to nie aprobata
 
 Odczytanie zestawu mówi, co by zrobił, a nie czy powinieneś go używać. Nazwa może być doskonale poprawnie zbudowana, a mimo to opisywać RC4, anonimową wymianę kluczy lub klucze klasy eksportowej. Dekoder łączy strukturalny rozkład z oceną bezpieczeństwa i niezależną rekomendacją IANA, aby zdrowo wyglądająca nazwa z fatalną wadą się nie prześlizgnęła. Artykuły towarzyszące omawiają, co czyni zestaw nowoczesnym: AEAD zamiast CBC oraz utajnianie z wyprzedzeniem w wymianie kluczy.
+
+Aby zobaczyć, gdzie każdy element pakietu naprawdę ląduje na łączu, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) i [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) opisują prawdziwe handshake'i bajt po bajcie — jeden dla długich, wiązanych nazw, drugi dla krótkich, nowoczesnych.

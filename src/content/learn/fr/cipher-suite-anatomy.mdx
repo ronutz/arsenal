@@ -63,3 +63,5 @@ Le nom IANA est la norme du registre. OpenSSL utilise des tirets, abandonne le `
 ## Décoder n'est pas approuver
 
 Lire une suite vous dit ce qu'elle ferait, pas si vous devriez l'utiliser. Un nom peut être parfaitement bien formé et décrire malgré tout RC4, un échange de clés anonyme ou des clés de niveau export. Le décodeur associe la décomposition structurelle à une lecture de sécurité et à la recommandation indépendante de l'IANA, pour qu'un nom d'apparence saine avec un défaut fatal ne passe pas inaperçu. Les articles complémentaires couvrent ce qui rend une suite moderne : AEAD plutôt que CBC, et la confidentialité persistante dans l'échange de clés.
+
+Pour voir où chaque pièce d'une suite atterrit réellement sur le fil, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) et [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotent de vrais handshakes octet par octet — l'un pour les longs noms groupés, l'autre pour les noms courts et modernes.

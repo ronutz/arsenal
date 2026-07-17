@@ -63,3 +63,5 @@ Il nome IANA è lo standard del registro. OpenSSL usa i trattini, elimina il `WI
 ## Decodificare non è approvare
 
 Leggere una suite ti dice cosa farebbe, non se dovresti usarla. Un nome può essere perfettamente ben formato e descrivere comunque RC4, scambio di chiavi anonimo o chiavi di livello export. Il decodificatore abbina la scomposizione strutturale a una lettura di sicurezza e alla raccomandazione indipendente della IANA, così che un nome dall'aspetto sano con un difetto fatale non passi inosservato. Gli articoli complementari trattano ciò che rende moderna una suite: AEAD anziché CBC, e la forward secrecy nello scambio di chiavi.
+
+Per vedere dove ogni pezzo di una suite finisce davvero sul filo, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) e [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotano handshake reali byte per byte — uno per i nomi lunghi e impacchettati, uno per quelli corti e moderni.

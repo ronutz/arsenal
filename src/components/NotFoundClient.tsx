@@ -135,26 +135,8 @@ export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: Poo
         <div className="guru-l3 mono">{"// "}{g.meaning}</div>
       </div>
 
-      {/* Other famous errors, as a faux log */}
-      <div className="nf-console mono">
-        {CONSOLE_ERRORS.map((e, i) => (
-          <div className="nf-cline" key={i}>
-            <span className={`nf-cpre nf-cpre-${e.tone}`}>{e.pre}</span>
-            <span className="nf-ctext">{e.text}</span>
-            {e.dim ? (
-              e.dimHref ? (
-                <a className="nf-dim nf-dim-a" href={e.dimHref} target="_blank" rel="noopener noreferrer">
-                  {" "}{e.dim}
-                </a>
-              ) : (
-                <span className="nf-dim"> {e.dim}</span>
-              )
-            ) : null}
-          </div>
-        ))}
-      </div>
-
-      {/* The BOFH has already ruled on this incident. Corpus + provenance:
+      {/* The BOFH has already ruled on this incident (placed directly under the Guru
+          Meditation - PRIME 2026-07-17). Corpus + provenance:
           src/content/bofh/excuses.ts (481 excuses, served verbatim). */}
       <div className="nf-bofh" role="status" aria-live="polite">
         <p className="nf-bofh-intro">
@@ -182,6 +164,26 @@ export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: Poo
         >
           {s.bofhAgain} &#8635;
         </button>
+      </div>
+
+      {/* Other famous errors, as a faux log. Order: PRIME 2026-07-17 - the BOFH box
+          sits directly under the Guru Meditation; this log follows it. */}
+      <div className="nf-console mono">
+        {CONSOLE_ERRORS.map((e, i) => (
+          <div className="nf-cline" key={i}>
+            <span className={`nf-cpre nf-cpre-${e.tone}`}>{e.pre}</span>
+            <span className="nf-ctext">{e.text}</span>
+            {e.dim ? (
+              e.dimHref ? (
+                <a className="nf-dim nf-dim-a" href={e.dimHref} target="_blank" rel="noopener noreferrer">
+                  {" "}{e.dim}
+                </a>
+              ) : (
+                <span className="nf-dim"> {e.dim}</span>
+              )
+            ) : null}
+          </div>
+        ))}
       </div>
 
       {/* You seem lost — a random tool or article */}

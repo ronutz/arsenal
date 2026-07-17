@@ -5699,6 +5699,16 @@
           "term": "Conta shell (SLIP / PPP)",
           "desc": "O acesso à internet mais antigo, por linha telefônica: um login de texto em uma máquina UNIX remota, às vezes turbinado com SLIP ou PPP para carregar tráfego de internet de verdade. A porta do mundo fechado dos BBSs para a rede aberta."
         },
+        "slipppp": {
+          "tag": "A rede",
+          "term": "SLIP & PPP",
+          "desc": "Serial Line Internet Protocol e Point-to-Point Protocol — os dois encapsulamentos que transformam uma linha discada comum em um enlace de internet de verdade, carregando pacotes IP pelo fio do telefone: a diferença entre digitar na máquina UNIX de outra pessoa e o seu próprio computador estar na internet. O SLIP veio primeiro e se manteve mínimo; o PPP o sucedeu com negociação e detecção de erros. O programa compilado na conta shell em 1993 falava exatamente isso."
+        },
+        "mosaic": {
+          "tag": "A rede",
+          "term": "NCSA Mosaic",
+          "desc": "O navegador que tornou a Web visível: lançado em 1993 pelo NCSA — o National Center for Supercomputing Applications, da Universidade de Illinois — foi o primeiro navegador amplamente usado a colocar imagens junto ao texto e a rodar nos sistemas domésticos comuns da época. Um vislumbre por ele e a internet só-texto ganhou um rosto; sua jovem equipe logo saiu para construir o Netscape."
+        },
         "wardialing": {
           "tag": "O telefone",
           "term": "War-dialing",

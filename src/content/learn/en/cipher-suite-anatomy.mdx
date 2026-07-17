@@ -63,3 +63,5 @@ The IANA name is the registry standard. OpenSSL uses hyphens, drops the `WITH`, 
 ## Decoding is not endorsing
 
 Reading a suite tells you what it would do, not whether you should use it. A name can be perfectly well formed and still describe RC4, anonymous key exchange, or export-grade keys. The decoder pairs the structural breakdown with a security read-out and the independent IANA recommendation, so a healthy-looking name with a fatal flaw does not slip past. The companion articles cover what makes a suite modern: AEAD over CBC, and forward secrecy in the key exchange.
+
+To see where each piece of a suite actually lands on the wire, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) and [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotate real handshakes byte by byte — one for the long bundled names, one for the short modern ones.

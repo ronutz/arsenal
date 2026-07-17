@@ -47,6 +47,8 @@ const FIELD_TERMS: { id: string; slug?: string }[] = [
   { id: "bluebox", slug: "blue-box" },
   { id: "wardialing" },
   { id: "shell" },
+  { id: "slipppp" },
+  { id: "mosaic" },
 ];
 
 export default async function Pre1996Page({

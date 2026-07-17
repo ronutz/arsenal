@@ -63,3 +63,5 @@ El nombre IANA es el estándar del registro. OpenSSL usa guiones, descarta el `W
 ## Decodificar no es respaldar
 
 Leer una suite te dice qué haría, no si deberías usarla. Un nombre puede estar perfectamente bien formado y aun así describir RC4, intercambio de claves anónimo o claves de grado de exportación. El decodificador combina el desglose estructural con una lectura de seguridad y la recomendación independiente de la IANA, para que un nombre de aspecto sano con un fallo fatal no pase desapercibido. Los artículos complementarios cubren qué hace moderna a una suite: AEAD en lugar de CBC, y confidencialidad futura en el intercambio de claves.
+
+Para ver dónde cae realmente cada pieza de una suite en el cable, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) y [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) anotan handshakes reales byte a byte — uno para los nombres largos y empaquetados, otro para los cortos y modernos.

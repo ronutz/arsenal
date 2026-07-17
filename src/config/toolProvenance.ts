@@ -172,6 +172,11 @@ const PROVENANCE: Record<string, ToolProvenance> = {
         note: "TLS 1.3 cipher-suite form (symmetric cipher and hash only)",
       },
       {
+        label: "RFC 9846 (TLS 1.3, current revision)",
+        url: "https://www.rfc-editor.org/rfc/rfc9846",
+        note: "The December 2025 revision of TLS 1.3, obsoleting RFC 8446; the cipher-suite form and the five suites carry over unchanged",
+      },
+      {
         label: "RFC 8447",
         url: "https://www.rfc-editor.org/rfc/rfc8447",
         note: 'Meaning of the "Recommended" column (Y / N / D)',

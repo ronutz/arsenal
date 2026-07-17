@@ -63,3 +63,5 @@ De IANA-naam is de registerstandaard. OpenSSL gebruikt koppeltekens, laat de `WI
 ## Decoderen is geen goedkeuren
 
 Een suite lezen vertelt je wat hij zou doen, niet of je hem zou moeten gebruiken. Een naam kan perfect goedgevormd zijn en toch RC4, anonieme sleuteluitwisseling of sleutels van exportsterkte beschrijven. De decoder koppelt de structurele uitsplitsing aan een beveiligingsoordeel en de onafhankelijke IANA-aanbeveling, zodat een gezond ogende naam met een fatale fout niet glipt. De begeleidende artikelen behandelen wat een suite modern maakt: AEAD in plaats van CBC, en forward secrecy in de sleuteluitwisseling.
+
+Om te zien waar elk deel van een suite werkelijk op de draad belandt, annoteren [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) en [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) echte handshakes byte voor byte – één voor de lange gebundelde namen, één voor de korte moderne.

@@ -139,6 +139,15 @@ export const manifest = Object.freeze({
       status: "active",
     },
     {
+      id: "rfc9846",
+      label: "RFC 9846 - The Transport Layer Security (TLS) Protocol Version 1.3 (current revision)",
+      type: "rfc",
+      url: "https://www.rfc-editor.org/rfc/rfc9846",
+      access_date: "2026-07-17",
+      scope: "the December 2025 revision obsoleting RFC 8446; cipher-suite form and the five suites unchanged",
+      status: "active",
+    },
+    {
       id: "rfc5246",
       label: "RFC 5246 - The Transport Layer Security (TLS) Protocol Version 1.2",
       type: "rfc",

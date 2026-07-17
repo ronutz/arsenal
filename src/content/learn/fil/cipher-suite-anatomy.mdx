@@ -63,3 +63,5 @@ Ang IANA name ang pamantayan ng registry. Gumagamit ang OpenSSL ng gitling, inaa
 ## Ang pag-decode ay hindi pag-endorso
 
 Ang pagbasa ng isang suite ay nagsasabi sa iyo kung ano ang gagawin nito, hindi kung dapat mo itong gamitin. Maaaring perpektong well-formed ang isang pangalan ngunit naglalarawan pa rin ng RC4, anonymous key exchange, o export-grade na mga key. Pinagsasama ng decoder ang structural na pagkakahati at isang security reading at ang independiyenteng rekomendasyon ng IANA, para hindi makalusot ang isang malusog ang anyo na pangalan na may nakamamatay na depekto. Tinatalakay ng mga kaakibat na artikulo kung ano ang nagpapamoderno sa isang suite: AEAD sa halip na CBC, at forward secrecy sa key exchange.
+
+Para makita kung saan talaga bumabagsak sa wire ang bawat piraso ng isang suite, ina-annotate ng [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) at [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) ang totoong mga handshake sa bawat byte — isa para sa mahahabang pinagsamang pangalan, isa para sa maiikling moderno.

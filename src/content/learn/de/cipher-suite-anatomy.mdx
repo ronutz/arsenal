@@ -63,3 +63,5 @@ Der IANA-Name ist der Registry-Standard. OpenSSL verwendet Bindestriche, lässt 
 ## Decodieren ist kein Gutheißen
 
 Eine Suite zu lesen sagt Ihnen, was sie täte, nicht, ob Sie sie verwenden sollten. Ein Name kann vollkommen wohlgeformt sein und trotzdem RC4, anonymen Schlüsselaustausch oder Schlüssel in Exportstärke beschreiben. Der Decoder kombiniert die strukturelle Aufschlüsselung mit einer Sicherheitsbewertung und der unabhängigen IANA-Empfehlung, damit ein gesund aussehender Name mit einem fatalen Fehler nicht durchrutscht. Die Begleitartikel behandeln, was eine Suite modern macht: AEAD statt CBC und Forward Secrecy beim Schlüsselaustausch.
+
+Um zu sehen, wo jedes Teil einer Suite tatsächlich auf der Leitung landet, kommentieren [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) und [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) echte Handshakes Byte für Byte – einer für die langen gebündelten Namen, einer für die kurzen modernen.

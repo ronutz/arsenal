@@ -5699,6 +5699,16 @@
           "term": "Shell account (SLIP / PPP)",
           "desc": "Early internet access over a phone line: a text login on a remote UNIX machine, sometimes upgraded with SLIP or PPP to carry real internet traffic. The doorway from the walled BBS world onto the open network."
         },
+        "slipppp": {
+          "tag": "The net",
+          "term": "SLIP & PPP",
+          "desc": "Serial Line Internet Protocol and Point-to-Point Protocol — the two encapsulations that turn a plain dial-up line into a real internet link, carrying IP packets over the phone wire: the difference between typing on someone else's UNIX machine and your own computer being on the internet. SLIP came first and stayed minimal; PPP succeeded it with negotiation and error detection. The program compiled on the shell account in 1993 spoke exactly this."
+        },
+        "mosaic": {
+          "tag": "The net",
+          "term": "NCSA Mosaic",
+          "desc": "The browser that made the Web visible: released in 1993 by NCSA — the National Center for Supercomputing Applications at the University of Illinois — it was the first widely used browser to put images inline with the text and to run on the ordinary home systems of the day. One glimpse through it and the text-only internet acquired a face; its young team soon left to build Netscape."
+        },
         "wardialing": {
           "tag": "The phone",
           "term": "War-dialing",
