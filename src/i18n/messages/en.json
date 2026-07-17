@@ -4110,7 +4110,7 @@
     },
     "incident-timeline-rca-builder": {
       "name": "Incident Timeline & RCA Builder",
-      "blurb": "Enter an incident's events as a small timeline and mark the contributing-factor domains you observed; a fixed rule set orders the timeline, derives the milestone spans, and structures candidate contributing factors with the evidence for each. It never names a root cause - candidates to investigate, not a verdict.",
+      "blurb": "RCA stands for root cause analysis - the disciplined walk from an incident's symptoms back to the conditions that allowed it. Enter an incident's events as a small timeline and mark the contributing-factor domains you observed; a fixed rule set orders the timeline, derives the milestone spans, and structures candidate contributing factors with the evidence for each. It never names a root cause - candidates to investigate, not a verdict.",
       "form": {
         "heading": "Build the incident timeline",
         "timelineHeading": "Timeline events",

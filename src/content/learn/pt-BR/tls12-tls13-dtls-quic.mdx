@@ -1,0 +1,50 @@
+---
+slug: tls12-tls13-dtls-quic
+title: "TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC: Uma Família de Handshake, Quatro Formas"
+summary: "TLS 1.2 e TLS 1.3 protegem um fluxo TCP, o DTLS leva as mesmas garantias para datagramas, e o QUIC absorveu o handshake do TLS 1.3 para dentro do próprio transporte. O que é cada um, qual RFC o define hoje, o que de fato mudou entre eles e onde cada um roda."
+concepts: ["tls 1.2", "tls 1.3", "dtls", "quic", "handshake", "forward secrecy", "0-rtt", "udp", "head-of-line blocking"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "f5-tls13-vs-tls12-ciphers", "cipher-suite-anatomy", "hybrid-key-exchange-in-tls", "http-versions-09-to-3"]
+category: transport
+order: 10
+status: reviewed
+updated: "2026-07-17"
+---
+
+## Uma família, quatro formas
+
+TLS é a sigla de Transport Layer Security, a segurança da camada de transporte: o protocolo que dá a dois pontos um canal cifrado e autenticado e, de quebra, prova ao cliente quem é o servidor. Quase tudo que se chama de "seguro" na internet — HTTPS, envio seguro de e-mail, LDAPS, a maioria dos canais de controle de VPN — é uma aplicação montada sobre algum membro dessa família. Os quatro nomes no título deste artigo não são quatro invenções concorrentes. São um mesmo desenho adaptado a quatro situações: TLS 1.2 e TLS 1.3 protegem um fluxo de bytes confiável sobre TCP (Transmission Control Protocol, o protocolo de controle de transmissão); o DTLS leva as mesmas garantias para datagramas sem confiabilidade; e o QUIC é um protocolo de transporte completo que engoliu o handshake do TLS 1.3 inteiro e fez dele a forma como o próprio transporte obtém suas chaves.
+
+Cada um é definido em um RFC — Request for Comments, a série numerada de documentos em que o IETF (Internet Engineering Task Force, a força-tarefa de engenharia da internet) publica os padrões da internet — e saber qual RFC está em vigor importa, porque duas dessas especificações foram substituídas ou revisadas tão recentemente quanto 2022 e 2025.
+
+## TLS 1.2: o cavalo de batalha de longa data
+
+O TLS 1.2 foi publicado em agosto de 2008 como o [RFC 5246](https://www.rfc-editor.org/rfc/rfc5246). Seu handshake leva duas idas e voltas (uma ida e volta, ou RTT de round-trip time, é uma mensagem que sai e a resposta que volta) antes de os dados de aplicação poderem fluir, e os nomes das suas cipher suites empacotam quatro decisões em uma única string: a troca de chaves, a autenticação, a cifra e o MAC (message authentication code, o código de autenticação de mensagem) — a anatomia que [Anatomia de uma Cipher Suite](/learn/cipher-suite-anatomy) desmonta peça por peça.
+
+Essa flexibilidade é também a sua fraqueza. O TLS 1.2 permite troca de chaves RSA estática, em que o cliente cifra o segredo da sessão para a chave de longa duração do servidor — então quem obtiver essa chave mais tarde consegue decifrar tráfego gravado, o oposto de forward secrecy (sigilo futuro). Permite cifras antigas em modo CBC, cujo comportamento de padding gerou uma família de ataques, e recursos legados como renegociação e compressão, cada um com seus próprios CVEs. Uma implantação de TLS 1.2 bem configurada evita tudo isso e continua defensável hoje — e é exatamente por isso que o protocolo durou tanto: tudo o que é perigoso nele é opcional.
+
+## TLS 1.3: menos escolhas, padrões melhores
+
+O TLS 1.3 chegou uma década depois, em agosto de 2018, como o [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) — e em dezembro de 2025 o IETF publicou uma edição revisada da mesma versão do protocolo como o [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), que agora torna obsoleto o RFC 8446 (e, de passagem, o RFC 5246). A versão no fio continua sendo 1.3; o texto em vigor é o 9846.
+
+As mudanças em relação ao 1.2 são mais subtrações do que adições. O handshake cai para uma ida e volta, e tudo depois do ServerHello já viaja cifrado, então os certificados não cruzam mais a rede em claro. A troca de chaves RSA estática sumiu: todo handshake TLS 1.3 usa uma troca Diffie-Hellman efêmera (de curva elíptica), então forward secrecy deixou de ser uma escolha de configuração e virou propriedade do protocolo. Só sobreviveram cifras AEAD — authenticated encryption with associated data, cifração autenticada com dados associados, em que cifrar e garantir integridade são uma operação só — o que eliminou a classe inteira de problemas do padding CBC. A lista de cipher suites desabou de centenas de combinações para cinco, porque a suite agora nomeia apenas a cifra AEAD e o hash do handshake; [Cipher Suites do TLS 1.3: O Que Mudou](/learn/tls13-cipher-suites) cobre esse encolhimento em detalhe. O TLS 1.3 também adiciona a retomada 0-RTT, deixando um cliente que retorna enviar dados já no primeiro pacote — com a ressalva documentada de que dados 0-RTT podem ser repetidos por um atacante, então ficam reservados a requisições seguras de repetir.
+
+## DTLS: as mesmas promessas, sem a esteira transportadora
+
+DTLS é a sigla de Datagram Transport Layer Security, o TLS para datagramas — e ele existe porque o TLS assume, em silêncio, algo que o UDP (User Datagram Protocol, o protocolo de datagramas do usuário) não oferece: um fluxo confiável e ordenado. Os registros do TLS dependem de ordem — perca um registro e o estado de decifração de tudo que vem depois fica errado — e o handshake do TLS simplesmente assume que as suas mensagens chegam. Coloque TLS direto sobre UDP e um único pacote perdido trava a conexão.
+
+O DTLS é o TLS com essa suposição removida cirurgicamente. Os registros carregam números explícitos de época e de sequência, para que cada datagrama possa ser decifrado de forma independente e duplicatas ou reordenações sejam toleradas; o handshake ganha seus próprios temporizadores de retransmissão e a sua própria fragmentação, já que não há TCP embaixo para provê-los; e uma troca de cookie sem estado permite ao servidor confirmar o endereço do cliente antes de gastar trabalho de verdade, embotando amplificação com origem forjada. O DTLS 1.2 é o [RFC 6347](https://www.rfc-editor.org/rfc/rfc6347) (janeiro de 2012), e o DTLS 1.3 — acompanhando o redesenho do TLS 1.3 — é o [RFC 9147](https://www.rfc-editor.org/rfc/rfc9147) (abril de 2022). Você encontra DTLS onde tráfego em tempo real ou sem conexão precisa de proteção de nível TLS: o WebRTC usa um handshake DTLS para gerar as chaves dos seus fluxos de mídia, vários canais de dados de VPN rodam sobre ele para escapar dos travamentos de TCP sobre TCP, e protocolos de IoT com recursos limitados, como o CoAP, se protegem com ele.
+
+## QUIC: o transporte que engoliu o handshake
+
+O QUIC nasceu no Google por volta de 2012, onde o nome era um acrônimo reverso de "Quick UDP Internet Connections"; o padrão do IETF, o [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000) (maio de 2021), afirma com todas as letras que QUIC é apenas um nome, não uma sigla. De um jeito ou de outro, o QUIC é a maior mudança estrutural desta família, porque ele não é uma camada de segurança colocada sobre um transporte — ele é o transporte.
+
+O QUIC roda sobre UDP e entrega, sozinho, o que a pilha TCP mais TLS entregava: confiabilidade, controle de congestionamento e cifração. Ele carrega muitos fluxos independentes dentro de uma conexão, e como a recuperação de perdas é por fluxo, um pacote perdido trava apenas o fluxo a que pertencia — removendo o head-of-line blocking em nível de transporte (um segmento perdido segurando todos os bytes atrás dele) que o TCP impõe a tudo que roda em cima. Seu handshake é o handshake do TLS 1.3, embutido via [RFC 9001](https://www.rfc-editor.org/rfc/rfc9001) de modo que as chaves que o TLS negocia protegem os pacotes do próprio transporte; a preparação do transporte e a criptográfica se completam juntas em uma ida e volta, com 0-RTT disponível na retomada. Quase o pacote inteiro é cifrado, cabeçalhos incluídos, e as conexões são identificadas por connection IDs em vez da quádrupla de endereços, então um celular pode pular do Wi-Fi para a rede celular sem a conexão morrer. O inquilino mais visível é o HTTP/3, que é exatamente o HTTP mapeado sobre fluxos QUIC — o último capítulo de [HTTP/0.9 a HTTP/3](/learn/http-versions-09-to-3).
+
+## Qual deles estou vendo?
+
+Uma orientação rápida para capturas e configurações. Um navegador buscando uma página fala TLS 1.3 (ou 1.2) sobre TCP na porta 443, ou HTTP/3 sobre QUIC em UDP 443 — muitas vezes ambos para o mesmo site, com o QUIC anunciado e tentado depois de uma primeira visita por TCP. Uma chamada de vídeo no navegador está gerando as chaves da mídia com DTLS. Um balanceador de carga de datacenter terminando "SSL" está quase sempre terminando TLS 1.2 e 1.3 sobre TCP. E uma captura cheia de UDP 443 cifrado, em que você não consegue ler nem a maior parte dos cabeçalhos, é o QUIC funcionando como projetado: a resistência dele à inspeção por middleboxes é um recurso do protocolo, não um acidente do seu filtro de captura.
+
+## Veja no fio
+
+O jeito mais rápido de tornar os quatro concretos é ler uma conexão real anotada, byte a byte. A série Illustrated, de Michael Driscoll, faz exatamente isso, uma página por protocolo: [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/), [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/), [The Illustrated DTLS Connection](https://dtls.xargs.org/) e [The Illustrated QUIC Connection](https://quic.xargs.org/). Cada registro de um handshake de verdade aparece com cada campo explicado — o companheiro ideal das próprias especificações.

@@ -53,3 +53,5 @@ Därför måste en avkodare veta vilken värld en svit tillhör. Ett namn utan t
 ## Skydd mot nedgradering
 
 Eftersom äldre sviter fortfarande finns för äldre motparter lägger TLS 1.3 till skydd mot att en angripare framtvingar en nedgradering. En server som stöder TLS 1.3 men slutar med att förhandla en äldre version skriver ett fast vaktvärde i de sista åtta bytena av sin `server random`. En äkta TLS 1.3-klient kontrollerar den vakten och avbryter om den dyker upp på en anslutning som borde ha varit 1.3, vilket gör en tyst nedgradering till en misslyckad handskakning. Listan över chiffersviter krympte, men protokollet runt den blev mer defensivt.
+
+För att se allt detta på en riktig anslutning annoterar [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) varje byte av en riktig TLS 1.3-handskakning, record för record och fält för fält.

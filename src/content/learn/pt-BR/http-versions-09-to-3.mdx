@@ -1,0 +1,40 @@
+---
+slug: http-versions-09-to-3
+title: "HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: Cinco Versões do Protocolo da Web"
+summary: "De um GET de uma linha que só buscava HTML a um protocolo multiplexado montado sobre QUIC: o que cada versão do HTTP adicionou, por que foi necessária e qual RFC a define hoje — incluindo a reorganização de 2022 que separou a semântica do HTTP (RFC 9110) da sintaxe de fio de cada versão."
+concepts: ["http", "http/1.1", "http/2", "http/3", "quic", "multiplexing", "head-of-line blocking", "persistent connections", "rfc 9110"]
+relatedTools: ["http-message-decoder", "url-inspector"]
+relatedArticles: ["http-proxy-forward-and-reverse", "curl-protocols-beyond-http", "bigip-http3-waf", "hsts-and-https", "tls12-tls13-dtls-quic"]
+category: networking
+order: 96
+status: reviewed
+updated: "2026-07-17"
+---
+
+## Um protocolo que cresceu em público
+
+HTTP é a sigla de Hypertext Transfer Protocol, o protocolo de transferência de hipertexto: o protocolo de requisição e resposta que um cliente usa para pedir um recurso a um servidor, e que o servidor usa para responder. Ele foi inventado junto com a própria web, por volta de 1991, e cada versão desde então foi uma resposta à mesma pressão — as páginas continuaram crescendo, os sites continuaram ficando mais movimentados, e o protocolo continuou sendo cobrado a fazer coisas que a versão anterior tornava lentas. Cada versão é definida em um RFC, Request for Comments, a série de documentos em que o IETF (Internet Engineering Task Force, a força-tarefa de engenharia da internet) publica os padrões da internet; este artigo nomeia o RFC em vigor de cada versão, porque em 2022 o conjunto inteiro foi reorganizado e os números que a maioria decorou já não são os que valem.
+
+## HTTP/0.9 (1991): uma linha, uma resposta
+
+O protocolo original era uma linha única: `GET /pagina.html`, enviada por uma conexão TCP (Transmission Control Protocol, o protocolo de controle de transmissão) recém-aberta. O servidor respondia com os bytes do documento e fechava a conexão. Não havia cabeçalhos, nem códigos de status, nem tipos de conteúdo, nem métodos além do GET — a resposta só podia ser HTML, porque não havia como dizer que era outra coisa. Ninguém o chamava de 0.9 na época; o número foi aplicado retroativamente quando um esquema real de versões passou a existir, para dar um nome ao protocolo de uma linha. Vale conhecê-lo porque o seu esqueleto — um método, um caminho, uma resposta — continua visível dentro de todas as versões que vieram depois.
+
+## HTTP/1.0 (1996): chegam os cabeçalhos
+
+O HTTP/1.0, documentado no [RFC 1945](https://www.rfc-editor.org/rfc/rfc1945) (maio de 1996), transformou a linha única em um protocolo de verdade. As requisições ganharam número de versão e cabeçalhos; as respostas ganharam uma linha de status ("200 OK", "404 Not Found") e cabeçalhos próprios; o `Content-Type` deixou uma resposta ser uma imagem, uma folha de estilos ou qualquer outra coisa com um tipo MIME; e POST e HEAD se juntaram ao GET. O que ele não consertou foi o modelo de conexão: uma requisição, uma conexão TCP, derrubada depois de cada resposta. Uma página com dez imagens significava onze handshakes TCP, e o custo dessa cerimônia foi o que empurrou a versão seguinte.
+
+## HTTP/1.1 (1997-1999): o cavalo de batalha da web
+
+O HTTP/1.1 apareceu primeiro no RFC 2068 (janeiro de 1997) e foi refinado no [RFC 2616](https://www.rfc-editor.org/rfc/rfc2616) (junho de 1999), o documento que uma geração inteira de engenheiros cresceu citando. As conexões passaram a ser persistentes por padrão, então muitas requisições podiam reutilizar uma mesma conexão TCP. A transferência em chunks deixou o servidor começar a enviar uma resposta antes de saber o tamanho dela. O cabeçalho `Host` obrigatório tornou possível a hospedagem virtual por nome — muitos sites em um endereço IP, o arranjo sobre o qual a indústria de hospedagem inteira foi construída. O cache ganhou maquinário de verdade: validadores, `Cache-Control`, requisições condicionais. O fracasso famoso da versão foi o pipelining, que permitia várias requisições em voo mas exigia respostas em ordem, então uma resposta lenta bloqueava todas as enfileiradas atrás — um primeiro gosto de head-of-line blocking (bloqueio de cabeça de fila), e tão problemático na prática que os navegadores deixaram o pipelining desligado. Em 2014 a especificação foi reescrita por precisão como os RFCs 7230 a 7235, sem mudar o protocolo.
+
+## HTTP/2 (2015): binário e multiplexado
+
+O HTTP/2, publicado como o [RFC 7540](https://www.rfc-editor.org/rfc/rfc7540) (maio de 2015) e crescido do experimento SPDY do Google, manteve a semântica do HTTP — os mesmos métodos, códigos de status e cabeçalhos — e trocou o formato de fio por baixo deles. As mensagens viraram quadros binários carregados em fluxos numerados, muitos fluxos multiplexados sobre uma única conexão TCP, então uma resposta lenta já não bloqueia as outras na camada do HTTP. Os cabeçalhos, altamente repetitivos entre requisições, são comprimidos com o HPACK ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)). A especificação também incluía o server push, deixando o servidor enviar recursos antes de serem pedidos; ele nunca compensou na prática, e os navegadores acabaram abandonando-o. Um problema ficou estruturalmente fora de alcance: todos esses fluxos ainda dividem uma conexão TCP, e o TCP entrega bytes estritamente em ordem — então um único pacote perdido trava todos os fluxos até ser retransmitido. O HTTP/2 removeu o head-of-line blocking do HTTP e o deixou no transporte.
+
+## HTTP/3 (2022): mude o transporte
+
+O HTTP/3, publicado como o [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (junho de 2022), conserta esse último problema mudando aquilo sobre o que o HTTP roda. Ele mapeia o HTTP sobre o QUIC ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)) — um transporte sobre UDP (User Datagram Protocol, o protocolo de datagramas do usuário) com fluxos, recuperação de perdas e o handshake do TLS 1.3 embutido, descrito ao lado dos seus irmãos em [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Como o QUIC recupera perdas por fluxo, um pacote perdido trava apenas o próprio fluxo: o head-of-line blocking em nível de transporte, do qual o HTTP/2 não conseguia escapar, sumiu. A compressão de cabeçalhos passa do HPACK para o QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), redesenhado para que o estado de compressão não reintroduza bloqueio entre fluxos. A cifração não é opcional, porque o QUIC não tem modo sem cifra. E como o primeiro contato ainda costuma começar por TCP, os servidores anunciam o seu endpoint HTTP/3 pelo mecanismo `Alt-Svc` ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) e, cada vez mais, por registros DNS do tipo HTTPS, deixando o navegador trocar para o QUIC na busca seguinte.
+
+## A reorganização de 2022: semântica vs sintaxe de fio
+
+A coisa mais útil a saber sobre as especificações atuais do HTTP é como elas estão arrumadas hoje. Em junho de 2022, o HTTP Working Group do IETF separou o significado do protocolo da sua transmissão. O [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) define a semântica do HTTP — métodos, códigos de status, campos de cabeçalho, negociação de conteúdo — uma vez, para todas as versões; o [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) define o cache do mesmo jeito. Os formatos de fio ganham então um documento cada: o [RFC 9112](https://www.rfc-editor.org/rfc/rfc9112) para a sintaxe em texto do HTTP/1.1, o [RFC 9113](https://www.rfc-editor.org/rfc/rfc9113) para o enquadramento do HTTP/2, e o RFC 9114 para o HTTP/3 sobre QUIC. Juntos, eles tornam obsoleta toda especificação anterior do HTTP — RFC 1945, 2068, 2616, a série 7230 e o 7540 igualmente — então citar o RFC 2616 hoje é citar história. O working group mantém a lista oficial e atual em [httpwg.org/specs](https://httpwg.org/specs/), e o [RFC Editor](https://www.rfc-editor.org/) é a casa canônica dos próprios documentos. Um GET continua sendo um GET em todas as versões desde a 0.9; o que mudou, cinco vezes, foi como viajam os bytes que dizem isso.

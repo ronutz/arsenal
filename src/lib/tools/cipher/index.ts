@@ -103,6 +103,24 @@ export const manifest = Object.freeze({
   ],
   sources: [
     {
+      id: "illustrated-tls12",
+      label: "The Illustrated TLS 1.2 Connection (Michael Driscoll)",
+      type: "guide",
+      url: "https://tls12.xargs.org/",
+      access_date: "2026-07-17",
+      scope: "a byte-by-byte annotated TLS 1.2 handshake, showing where the negotiated cipher suite appears on the wire",
+      status: "active",
+    },
+    {
+      id: "illustrated-tls13",
+      label: "The Illustrated TLS 1.3 Connection (Michael Driscoll)",
+      type: "guide",
+      url: "https://tls13.xargs.org/",
+      access_date: "2026-07-17",
+      scope: "a byte-by-byte annotated TLS 1.3 handshake, showing the short suite and the separated key_share negotiation",
+      status: "active",
+    },
+    {
       id: "iana-tls-params",
       label: "IANA TLS Cipher Suites registry",
       type: "registry",

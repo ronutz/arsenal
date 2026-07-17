@@ -53,3 +53,5 @@ Kaya nga kailangang malaman ng isang decoder kung aling mundo ang kinabibilangan
 ## Proteksyon laban sa downgrade
 
 Dahil umiiral pa rin ang mas lumang suite para sa mas lumang kapareha, nagdadagdag ang TLS 1.3 ng proteksyon laban sa isang umaatake na pinipilit ang downgrade. Ang isang server na sumusuporta sa TLS 1.3 ngunit napilitang mag-negotiate ng mas lumang bersyon ay nagsusulat ng nakapirming sentinel value sa huling walong byte ng `server random` nito. Tinitingnan ng tunay na TLS 1.3 client ang sentinel na iyon at humihinto kung lumitaw ito sa isang koneksyong dapat sana ay 1.3, na ginagawang bigong handshake ang isang tahimik na downgrade. Lumiit ang listahan ng cipher suite, ngunit naging mas mapagtanggol ang protocol sa paligid nito.
+
+Para makita ang lahat ng ito sa isang totoong koneksyon, ina-annotate ng [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) ang bawat byte ng isang totoong TLS 1.3 handshake, isa-isang record at isa-isang field.

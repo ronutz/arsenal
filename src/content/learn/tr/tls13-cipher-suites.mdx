@@ -53,3 +53,5 @@ Bu yüzden bir çözücü, bir paketin hangi dünyaya ait olduğunu bilmek zorun
 ## Sürüm düşürme koruması
 
 Daha eski paketler daha eski karşı taraflar için hâlâ var olduğundan, TLS 1.3 bir saldırganın sürüm düşürmeyi zorlamasına karşı koruma ekler. TLS 1.3'ü destekleyen ama sonunda daha eski bir sürümü müzakere eden bir sunucu, `server random` değerinin son sekiz baytına sabit bir nöbetçi değer yazar. Gerçek bir TLS 1.3 istemcisi o nöbetçiyi denetler ve 1.3 olması gereken bir bağlantıda görünürse iptal eder, bu da sessiz bir sürüm düşürmeyi başarısız bir el sıkışmaya çevirir. Şifre paketi listesi küçüldü, ama etrafındaki protokol daha savunmacı hâle geldi.
+
+Tüm bunları gerçek bir bağlantıda görmek için [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) gerçek bir TLS 1.3 el sıkışmasının her baytını kayıt kayıt ve alan alan açıklar.

@@ -4110,7 +4110,7 @@
     },
     "incident-timeline-rca-builder": {
       "name": "Construtor de Linha do Tempo e RCA de Incidente",
-      "blurb": "Insira os eventos de um incidente como uma pequena linha do tempo e marque os domínios de fator contribuinte que você observou; um conjunto fixo de regras ordena a linha do tempo, deriva os intervalos entre marcos e estrutura fatores contribuintes candidatos com a evidência de cada um. Nunca aponta uma causa-raiz - candidatos a investigar, não um veredito.",
+      "blurb": "RCA é a sigla de root cause analysis, a análise de causa raiz - o caminho disciplinado dos sintomas de um incidente de volta às condições que o permitiram. Insira os eventos de um incidente como uma pequena linha do tempo e marque os domínios de fator contribuinte que você observou; um conjunto fixo de regras ordena a linha do tempo, deriva os intervalos entre marcos e estrutura fatores contribuintes candidatos com a evidência de cada um. Nunca aponta uma causa-raiz - candidatos a investigar, não um veredito.",
       "form": {
         "heading": "Monte a linha do tempo do incidente",
         "timelineHeading": "Eventos da linha do tempo",

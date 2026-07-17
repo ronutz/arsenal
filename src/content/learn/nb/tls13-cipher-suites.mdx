@@ -53,3 +53,5 @@ Derfor må en dekoder vite hvilken verden en suite tilhører. Et navn uten token
 ## Beskyttelse mot nedgradering
 
 Siden eldre suiter fremdeles finnes for eldre motparter, legger TLS 1.3 til beskyttelse mot at en angriper tvinger frem en nedgradering. En server som støtter TLS 1.3, men ender med å forhandle en eldre versjon, skriver en fast vaktverdi i de siste åtte bytene av sin `server random`. En ekte TLS 1.3-klient sjekker den vakten og avbryter hvis den dukker opp på en tilkobling som burde ha vært 1.3, noe som gjør en stille nedgradering til et mislykket håndtrykk. Listen over chiffersuiter krympet, men protokollen rundt den ble mer defensiv.
+
+For å se alt dette på en ekte forbindelse annoterer [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) hver byte av et ekte TLS 1.3-handshake, record for record og felt for felt.

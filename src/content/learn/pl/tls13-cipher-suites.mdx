@@ -53,3 +53,5 @@ Dlatego dekoder musi wiedzieć, do którego świata należy zestaw. Nazwa bez to
 ## Ochrona przed degradacją
 
 Ponieważ starsze zestawy nadal istnieją dla starszych partnerów, TLS 1.3 dodaje ochronę przed wymuszeniem degradacji przez atakującego. Serwer obsługujący TLS 1.3, który jednak negocjuje starszą wersję, zapisuje stałą wartość wartowniczą w ostatnich ośmiu bajtach swojego `server random`. Prawdziwy klient TLS 1.3 sprawdza ten wartownik i przerywa, jeśli pojawi się on na połączeniu, które powinno być 1.3, co zamienia cichą degradację w nieudane uzgadnianie. Lista zestawów szyfrów się skurczyła, ale protokół wokół niej stał się bardziej defensywny.
+
+Aby zobaczyć to wszystko na prawdziwym połączeniu, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) opisuje każdy bajt prawdziwego handshake'u TLS 1.3, rekord po rekordzie i pole po polu.

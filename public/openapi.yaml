@@ -4559,13 +4559,14 @@ paths:
       operationId: run_incident_timeline_rca_builder
       summary: Incident Timeline & RCA Builder
       description: >-
-        Enter an incident's events as a small timeline and mark the contributing-factor domains you
-        observed; a fixed rule set orders the timeline, derives the milestone spans, and structures
-        candidate contributing factors with the evidence for each. It never names a root cause -
-        candidates to investigate, not a verdict. The input is a JSON object: send it as the request
-        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        RCA stands for root cause analysis - the disciplined walk from an incident's symptoms back
+        to the conditions that allowed it. Enter an incident's events as a small timeline and mark
+        the contributing-factor domains you observed; a fixed rule set orders the timeline, derives
+        the milestone spans, and structures candidate contributing factors with the evidence for
+        each. It never names a root cause - candidates to investigate, not a verdict. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -4592,13 +4593,14 @@ paths:
       operationId: run_incident_timeline_rca_builder_post
       summary: Incident Timeline & RCA Builder (POST)
       description: >-
-        Enter an incident's events as a small timeline and mark the contributing-factor domains you
-        observed; a fixed rule set orders the timeline, derives the milestone spans, and structures
-        candidate contributing factors with the evidence for each. It never names a root cause -
-        candidates to investigate, not a verdict. The input is a JSON object: send it as the request
-        body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        RCA stands for root cause analysis - the disciplined walk from an incident's symptoms back
+        to the conditions that allowed it. Enter an incident's events as a small timeline and mark
+        the contributing-factor domains you observed; a fixed rule set orders the timeline, derives
+        the milestone spans, and structures candidate contributing factors with the evidence for
+        each. It never names a root cause - candidates to investigate, not a verdict. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.

@@ -53,3 +53,5 @@ Derfor skal en afkoder vide, hvilken verden en suite tilhører. Et navn uden tok
 ## Beskyttelse mod nedgradering
 
 Da ældre suiter stadig findes til ældre modparter, tilføjer TLS 1.3 beskyttelse mod, at en angriber fremtvinger en nedgradering. En server, der understøtter TLS 1.3, men ender med at forhandle en ældre version, skriver en fast vagtværdi i de sidste otte byte af sin `server random`. En ægte TLS 1.3-klient tjekker den vagt og afbryder, hvis den optræder på en forbindelse, der burde have været 1.3, hvilket gør en stille nedgradering til et mislykket handshake. Listen over ciphersuiter skrumpede, men protokollen omkring den blev mere defensiv.
+
+For at se alt dette på en rigtig forbindelse annoterer [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) hver byte af et rigtigt TLS 1.3-handshake, record for record og felt for felt.

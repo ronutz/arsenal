@@ -53,3 +53,5 @@ O TLS 1.3 reutiliza o mesmo registro de suítes de cifra da IANA e o mesmo espa�
 ## Proteção contra downgrade
 
 Como as suítes mais antigas ainda existem para pares mais antigos, o TLS 1.3 adiciona proteção contra um atacante que force um downgrade. Um servidor que suporta TLS 1.3 mas acaba negociando uma versão mais antiga escreve um valor sentinela fixo nos últimos oito bytes de seu `server random`. Um cliente TLS 1.3 de verdade verifica esse sentinela e aborta se ele aparecer em uma conexão que deveria ter sido 1.3, o que transforma um downgrade silencioso em um handshake malsucedido. A lista de suítes de cifra encolheu, mas o protocolo ao redor dela ficou mais defensivo.
+
+Para ver tudo isso acontecendo em uma conexão real, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) anota cada byte de um handshake TLS 1.3 de verdade, registro por registro e campo por campo.

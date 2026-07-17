@@ -53,3 +53,5 @@ Daarom moet een decoder weten tot welke wereld een suite behoort. Een naam zonde
 ## Downgradebescherming
 
 Omdat oudere suites nog bestaan voor oudere tegenpartijen, voegt TLS 1.3 bescherming toe tegen een aanvaller die een downgrade afdwingt. Een server die TLS 1.3 ondersteunt maar uiteindelijk een oudere versie onderhandelt, schrijft een vaste sentinelwaarde in de laatste acht bytes van zijn `server random`. Een echte TLS 1.3-client controleert op die sentinel en breekt af als hij verschijnt op een verbinding die 1.3 had moeten zijn, wat een stille downgrade in een mislukte handshake verandert. De lijst met cipher suites kromp, maar het protocol eromheen werd defensiever.
+
+Om dit alles op een echte verbinding te zien, annoteert [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) elke byte van een echte TLS 1.3-handshake, record voor record en veld voor veld.

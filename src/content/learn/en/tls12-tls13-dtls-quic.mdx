@@ -1,0 +1,50 @@
+---
+slug: tls12-tls13-dtls-quic
+title: "TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC: One Handshake Family, Four Shapes"
+summary: "TLS 1.2 and TLS 1.3 secure a TCP stream, DTLS carries the same guarantees over datagrams, and QUIC absorbs the TLS 1.3 handshake into the transport itself. What each one is, which RFC defines it today, what actually changed between them, and where each one runs."
+concepts: ["tls 1.2", "tls 1.3", "dtls", "quic", "handshake", "forward secrecy", "0-rtt", "udp", "head-of-line blocking"]
+relatedTools: ["cipher"]
+relatedArticles: ["tls13-cipher-suites", "f5-tls13-vs-tls12-ciphers", "cipher-suite-anatomy", "hybrid-key-exchange-in-tls", "http-versions-09-to-3"]
+category: transport
+order: 10
+status: reviewed
+updated: "2026-07-17"
+---
+
+## One family, four shapes
+
+TLS stands for Transport Layer Security: the protocol that gives two endpoints an encrypted, authenticated channel and, along the way, proves to the client who the server is. Almost everything called "secure" on the internet - HTTPS, secure mail submission, LDAPS, most VPN control channels - is an application riding on some member of this family. The four names in this article's title are not four competing inventions. They are one design adapted to four situations: TLS 1.2 and TLS 1.3 protect a reliable TCP (Transmission Control Protocol) byte stream; DTLS carries the same guarantees over unreliable datagrams; and QUIC is a full transport protocol that swallowed the TLS 1.3 handshake whole and made it the way the transport itself gets its keys.
+
+Each is defined in an RFC - a Request for Comments, the numbered document series in which the IETF (Internet Engineering Task Force) publishes internet standards - and knowing which RFC is current matters, because two of these specifications were replaced or revised as recently as 2022 and 2025.
+
+## TLS 1.2: the long-serving workhorse
+
+TLS 1.2 was published in August 2008 as [RFC 5246](https://www.rfc-editor.org/rfc/rfc5246). Its handshake takes two round trips (a round trip, or RTT for round-trip time, is one message out and its answer back) before application data can flow, and its cipher suite names bundle four decisions into one string: the key exchange, the authentication, the bulk cipher, and the MAC (message authentication code) - the anatomy that [Cipher Suite Anatomy](/learn/cipher-suite-anatomy) takes apart piece by piece.
+
+That flexibility is also its weakness. TLS 1.2 permits static RSA key exchange, in which the client encrypts the session secret to the server's long-term key - so anyone who later obtains that key can decrypt recorded traffic, the opposite of forward secrecy. It permits older CBC-mode ciphers whose padding behavior spawned a family of attacks, and legacy features such as renegotiation and compression that each earned their own CVEs. A well-configured TLS 1.2 deployment avoids all of this and remains defensible today, which is exactly why the protocol lingered for so long: everything dangerous in it is optional.
+
+## TLS 1.3: fewer choices, better defaults
+
+TLS 1.3 arrived a decade later, in August 2018, as [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446) - and in December 2025 the IETF published a revised edition of the same protocol version as [RFC 9846](https://www.rfc-editor.org/rfc/rfc9846), which now obsoletes RFC 8446 (and, for good measure, RFC 5246). The version on the wire is still 1.3; the current text is 9846.
+
+The changes over 1.2 are subtractions more than additions. The handshake drops to one round trip, and everything after the ServerHello is already encrypted, so certificates no longer cross the network in the clear. Static RSA key exchange is gone: every TLS 1.3 handshake uses an ephemeral (elliptic-curve) Diffie-Hellman exchange, so forward secrecy is no longer a configuration choice but a property of the protocol. Only AEAD ciphers survive - authenticated encryption with associated data, where encryption and integrity are one operation - which eliminated the entire CBC padding problem class. The cipher suite list collapsed from hundreds of combinations to five, because the suite now names only the AEAD cipher and the handshake hash; [TLS 1.3 Cipher Suites: What Changed](/learn/tls13-cipher-suites) covers that shrinkage in detail. TLS 1.3 also adds 0-RTT resumption, letting a returning client send data with its very first packet - with the documented caveat that 0-RTT data can be replayed, so it is reserved for requests that are safe to repeat.
+
+## DTLS: the same promises, without the conveyor belt
+
+DTLS stands for Datagram Transport Layer Security, and it exists because TLS quietly assumes something UDP (the User Datagram Protocol) does not provide: a reliable, ordered stream. TLS records depend on ordering - lose one record and the decryption state of everything after it is wrong - and the TLS handshake simply assumes its messages arrive. Put TLS directly on UDP and a single lost packet wedges the connection.
+
+DTLS is TLS with that assumption surgically removed. Records carry explicit epoch and sequence numbers so each datagram can be decrypted independently and duplicates or reordering can be tolerated; the handshake gains its own retransmission timers and fragmentation, since no TCP is underneath to provide them; and a stateless cookie exchange lets a server confirm the client's address before doing real work, blunting spoofed-source amplification. DTLS 1.2 is [RFC 6347](https://www.rfc-editor.org/rfc/rfc6347) (January 2012), and DTLS 1.3 - tracking the TLS 1.3 redesign - is [RFC 9147](https://www.rfc-editor.org/rfc/rfc9147) (April 2022). You meet DTLS wherever real-time or connectionless traffic needs TLS-grade protection: WebRTC uses a DTLS handshake to key its media streams, several VPN data channels run over it to escape TCP-over-TCP stalls, and constrained IoT protocols such as CoAP secure themselves with it.
+
+## QUIC: the transport that ate the handshake
+
+QUIC began at Google around 2012, where the name was a backronym for "Quick UDP Internet Connections"; the IETF standard, [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000) (May 2021), states plainly that QUIC is just a name, not an acronym. Either way, QUIC is the biggest structural change in this family, because it is not a security layer placed on top of a transport - it is the transport.
+
+QUIC runs over UDP and provides, by itself, what TCP-plus-TLS provided as a stack: reliability, congestion control, and encryption. It carries many independent streams inside one connection, and because loss recovery is per-stream, one lost packet stalls only the stream it belonged to - removing the transport-level head-of-line blocking (one lost segment holding up every byte behind it) that TCP imposes on everything above it. Its handshake is the TLS 1.3 handshake, embedded via [RFC 9001](https://www.rfc-editor.org/rfc/rfc9001) so that the keys TLS negotiates protect the transport's own packets; transport setup and cryptographic setup complete together in one round trip, with 0-RTT available on resumption. Almost the entire packet is encrypted, headers included, and connections are identified by connection IDs rather than the address four-tuple, so a phone can hop from Wi-Fi to cellular without the connection dying. The most visible tenant is HTTP/3, which is exactly HTTP mapped onto QUIC streams - the last chapter of [HTTP/0.9 to HTTP/3](/learn/http-versions-09-to-3).
+
+## Which one am I looking at?
+
+A quick orientation for captures and configs. A browser fetching a page speaks TLS 1.3 (or 1.2) over TCP port 443, or HTTP/3 over QUIC on UDP 443 - often both to the same site, with QUIC advertised and attempted after a first TCP visit. A video call in a browser is keying its media with DTLS. A datacenter load balancer terminating "SSL" is almost always terminating TLS 1.2 and 1.3 on TCP. And a trace full of encrypted UDP 443 in which you cannot even read most packet headers is QUIC working as designed: its resistance to middlebox inspection is a feature of the protocol, not an accident of your capture filter.
+
+## See it on the wire
+
+The fastest way to make all four concrete is to read an annotated real connection, byte by byte. Michael Driscoll's Illustrated series does exactly that, one page per protocol: [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/), [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/), [The Illustrated DTLS Connection](https://dtls.xargs.org/), and [The Illustrated QUIC Connection](https://quic.xargs.org/). Every record of a live handshake is shown with every field explained - the ideal companion to the specifications themselves.

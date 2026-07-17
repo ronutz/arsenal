@@ -53,3 +53,5 @@ This is why a decoder has to know which world a suite belongs to. A name with no
 ## Downgrade protection
 
 Because older suites still exist for older peers, TLS 1.3 adds protection against an attacker forcing a downgrade. A server that supports TLS 1.3 but ends up negotiating an older version writes a fixed sentinel value into the last eight bytes of its `server random`. A real TLS 1.3 client checks for that sentinel and aborts if it appears on a connection that should have been 1.3, which turns a silent downgrade into a failed handshake. The cipher suite list shrank, but the protocol around it grew more defensive.
+
+To watch all of this happen on a real connection, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotates every byte of a live TLS 1.3 handshake, record by record and field by field.

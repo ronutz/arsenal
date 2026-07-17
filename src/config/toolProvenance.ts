@@ -191,6 +191,16 @@ const PROVENANCE: Record<string, ToolProvenance> = {
         url: "https://ciphersuite.info/",
         note: "OpenSSL and GnuTLS cross-names",
       },
+      {
+        label: "The Illustrated TLS 1.2 Connection (Michael Driscoll)",
+        url: "https://tls12.xargs.org/",
+        note: "Byte-by-byte annotated TLS 1.2 handshake, showing the negotiated suite on the wire",
+      },
+      {
+        label: "The Illustrated TLS 1.3 Connection (Michael Driscoll)",
+        url: "https://tls13.xargs.org/",
+        note: "Byte-by-byte annotated TLS 1.3 handshake, showing the short suite and separate key_share negotiation",
+      },
     ],
   },
   "ssrf-url-classifier": {

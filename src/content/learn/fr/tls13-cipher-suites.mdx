@@ -53,3 +53,5 @@ C'est pourquoi un décodeur doit savoir à quel monde appartient une suite. Un n
 ## Protection contre la rétrogradation
 
 Comme les suites plus anciennes existent toujours pour les pairs plus anciens, TLS 1.3 ajoute une protection contre un attaquant qui forcerait une rétrogradation. Un serveur qui prend en charge TLS 1.3 mais finit par négocier une version plus ancienne écrit une valeur sentinelle fixe dans les huit derniers octets de son `server random`. Un vrai client TLS 1.3 vérifie cette sentinelle et abandonne si elle apparaît sur une connexion qui aurait dû être en 1.3, ce qui transforme une rétrogradation silencieuse en un handshake échoué. La liste des suites de chiffrement a rétréci, mais le protocole autour d'elle est devenu plus défensif.
+
+Pour voir tout cela sur une connexion réelle, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annote chaque octet d'un vrai handshake TLS 1.3, enregistrement par enregistrement et champ par champ.

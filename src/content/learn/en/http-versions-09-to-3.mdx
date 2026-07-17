@@ -1,0 +1,40 @@
+---
+slug: http-versions-09-to-3
+title: "HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: Five Versions of the Web's Protocol"
+summary: "From a one-line GET that could only fetch HTML to a multiplexed protocol riding QUIC: what each HTTP version added, why it was needed, and which RFC defines it today - including the 2022 reorganization that split HTTP semantics (RFC 9110) from the per-version wire syntax."
+concepts: ["http", "http/1.1", "http/2", "http/3", "quic", "multiplexing", "head-of-line blocking", "persistent connections", "rfc 9110"]
+relatedTools: ["http-message-decoder", "url-inspector"]
+relatedArticles: ["http-proxy-forward-and-reverse", "curl-protocols-beyond-http", "bigip-http3-waf", "hsts-and-https", "tls12-tls13-dtls-quic"]
+category: networking
+order: 96
+status: reviewed
+updated: "2026-07-17"
+---
+
+## A protocol that grew up in public
+
+HTTP stands for Hypertext Transfer Protocol: the request-response protocol a client uses to ask a server for a resource, and the server uses to answer. It was invented alongside the web itself around 1991, and every version since has been a response to the same pressure - pages kept getting bigger, sites kept getting busier, and the protocol kept being asked to do things its previous version made slow. Each version is defined in an RFC, a Request for Comments, the document series in which the IETF (Internet Engineering Task Force) publishes internet standards; this article names the current one for each version, because in 2022 the whole set was reorganized and the RFC numbers most people memorized are no longer the ones in force.
+
+## HTTP/0.9 (1991): one line, one answer
+
+The original protocol was a single line: `GET /page.html`, sent over a fresh TCP (Transmission Control Protocol) connection. The server replied with the bytes of the document and closed the connection. There were no headers, no status codes, no content types, and no methods other than GET - the response could only be HTML, because there was no way to say it was anything else. Nobody called it 0.9 at the time; the number was applied retroactively once a real versioning scheme existed, to give the one-line protocol a name. It is worth knowing because its skeleton - a method, a path, a response - is still visible inside every version that followed.
+
+## HTTP/1.0 (1996): headers arrive
+
+HTTP/1.0, documented in [RFC 1945](https://www.rfc-editor.org/rfc/rfc1945) (May 1996), turned the one-liner into a real protocol. Requests gained a version number and headers; responses gained a status line ("200 OK", "404 Not Found") and headers of their own; `Content-Type` let a response be an image, a stylesheet, or anything else with a MIME type; and POST and HEAD joined GET. What it did not fix was the connection model: one request, one TCP connection, torn down after every answer. A page with ten images meant eleven TCP handshakes, and the cost of that ceremony is what drove the next version.
+
+## HTTP/1.1 (1997-1999): the web's long workhorse
+
+HTTP/1.1 first appeared in RFC 2068 (January 1997) and was refined into [RFC 2616](https://www.rfc-editor.org/rfc/rfc2616) (June 1999), the document a whole generation of engineers grew up quoting. Connections became persistent by default, so many requests could reuse one TCP connection. Chunked transfer encoding let a server start sending a response before knowing its length. The mandatory `Host` header made name-based virtual hosting possible - many websites on one IP address, the arrangement the entire hosting industry is built on. Caching got real machinery: validators, `Cache-Control`, conditional requests. The version's one famous failure was pipelining, which allowed several requests in flight but required answers in order, so one slow response blocked all the ones queued behind it - a first taste of head-of-line blocking, and so troublesome in practice that browsers left pipelining off. In 2014 the specification was rewritten for precision as RFCs 7230 through 7235, without changing the protocol.
+
+## HTTP/2 (2015): binary and multiplexed
+
+HTTP/2, published as [RFC 7540](https://www.rfc-editor.org/rfc/rfc7540) (May 2015) and grown out of Google's SPDY experiment, kept HTTP's semantics - the same methods, status codes, and headers - and replaced the wire format underneath them. Messages became binary frames carried on numbered streams, many streams multiplexed over a single TCP connection, so a slow response no longer blocks the others at the HTTP layer. Headers, highly repetitive across requests, are compressed with HPACK ([RFC 7541](https://www.rfc-editor.org/rfc/rfc7541)). The specification also included server push, letting a server send resources before they were asked for; it never paid off in practice, and browsers have since walked away from it. One problem remained structurally out of reach: all those streams still share one TCP connection, and TCP delivers bytes strictly in order - so a single lost packet stalls every stream until it is retransmitted. HTTP/2 removed head-of-line blocking from HTTP and left it in the transport.
+
+## HTTP/3 (2022): move the transport
+
+HTTP/3, published as [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (June 2022), fixes that last problem by changing what HTTP runs on. It maps HTTP onto QUIC ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)) - a transport over UDP (the User Datagram Protocol) with streams, loss recovery, and the TLS 1.3 handshake built in, described alongside its siblings in [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Because QUIC recovers losses per stream, one lost packet stalls only its own stream: the transport-level head-of-line blocking that HTTP/2 could not escape is gone. Header compression moves from HPACK to QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), redesigned so compression state cannot reintroduce cross-stream blocking. Encryption is not optional, because QUIC has no unencrypted mode. And since a first contact still usually begins over TCP, servers advertise their HTTP/3 endpoint through the `Alt-Svc` mechanism ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) and, increasingly, through HTTPS DNS records, letting the browser switch to QUIC on the next fetch.
+
+## The 2022 reorganization: semantics vs wire syntax
+
+The most useful thing to know about today's HTTP specifications is how they are now arranged. In June 2022 the IETF HTTP Working Group split the protocol's meaning from its transmission. [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) defines HTTP semantics - methods, status codes, header fields, content negotiation - once, for every version; [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) defines caching the same way. The wire formats then get one document each: [RFC 9112](https://www.rfc-editor.org/rfc/rfc9112) for HTTP/1.1's text syntax, [RFC 9113](https://www.rfc-editor.org/rfc/rfc9113) for HTTP/2's framing, and RFC 9114 for HTTP/3 on QUIC. Together these obsolete every prior HTTP specification - RFC 1945, 2068, 2616, the 7230 series, and 7540 alike - so a citation of RFC 2616 today is a citation of history. The working group maintains the authoritative, current list at [httpwg.org/specs](https://httpwg.org/specs/), and the [RFC Editor](https://www.rfc-editor.org/) is the canonical home of the documents themselves. A GET is still a GET in every version since 0.9; what changed, five times, is how the bytes that say so travel.

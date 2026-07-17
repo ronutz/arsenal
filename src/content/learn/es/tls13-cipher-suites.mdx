@@ -53,3 +53,5 @@ Por eso un decodificador tiene que saber a qué mundo pertenece una suite. Un no
 ## Protección contra degradación
 
 Como las suites más antiguas siguen existiendo para pares más antiguos, TLS 1.3 añade protección contra un atacante que fuerce una degradación. Un servidor que admite TLS 1.3 pero acaba negociando una versión más antigua escribe un valor centinela fijo en los últimos ocho bytes de su `server random`. Un cliente de TLS 1.3 real comprueba ese centinela y aborta si aparece en una conexión que debería haber sido 1.3, lo que convierte una degradación silenciosa en un handshake fallido. La lista de suites de cifrado se redujo, pero el protocolo a su alrededor se volvió más defensivo.
+
+Para ver todo esto en una conexión real, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) anota cada byte de un handshake TLS 1.3 real, registro por registro y campo por campo.
