@@ -5556,8 +5556,8 @@
         },
         {
           "years": "início dos anos 1990",
-          "where": "Phreaking no orelhão",
-          "what": "O telefone público a ficha, o truque da água no slot que às vezes funcionava, e os sonhos de blue box que ficaram só em sonho."
+          "where": "Phreaking, blue boxes, war-dialing",
+          "what": "O telefone público a ficha e o truque da água no slot; blue-boxing de troncos de operadora até os boards da \"scene\" na Europa; e PBXs corporativos encontrados por war-dialing, deixados de propósito intocados."
         },
         {
           "years": "1993",
@@ -5598,8 +5598,9 @@
           "title": "O jeito do jovem hacker",
           "body": [
             "Se o BBS ensinava como as máquinas conversavam entre si, o phreaking fazia uma pergunta mais ousada: como funciona o próprio sistema telefônico — e dá para fazê-lo executar coisas para as quais nunca foi feito?",
-            "No Brasil o telefone público era o orelhão, e funcionava a fichas, aquelas peças que você comprava e enfiava no slot. O folclore de pátio de escola dizia que um pouco de água no slot da ficha causava um curto lá dentro e liberava um tom de discagem de graça. Foi testado, mais de uma vez, e às vezes funcionava. Além disso havia as lendas — as americanas, sobre um apito de brinquedo que por acaso produzia exatamente o tom que a rede de longa distância ficava escutando, e as blue boxes construídas para imitá-lo — e os planos grandiosos e fantasiosos que essas lendas inspiravam: emendar um modem direto na fiação de um telefone público e discar para o mundo inteiro sem pagar nada.",
-            "Os planos ficaram só em planos; a água no slot foi o mais longe que a coisa chegou. Nada daquilo era por dinheiro. Era a intoxicação específica de entender um sistema bem o bastante para enxergar as costuras, e ser jovem o suficiente para forçá-las. A rede analógica onde tudo isso vivia acabou faz décadas — os tons de sinalização aposentados, as fichas derretidas — que é a razão honesta pela qual isto pode ser registrado aqui como história, e não como instrução."
+            "No Brasil o telefone público era o orelhão, e funcionava a fichas, aquelas peças que você comprava e enfiava no slot. O folclore de pátio de escola dizia que um pouco de água no slot da ficha causava um curto lá dentro e liberava um tom de discagem de graça; foi testado, mais de uma vez, e às vezes funcionava. Mas a porta de verdade era a que as velhas lendas descreviam: um único tom — os famosos 2600 Hz — que a rede de longa distância escutava como seu próprio sinal interno, e a blue box construída para devolver à rede a sua própria língua.",
+            "Essa porta foi usada, e muito. Uma blue box conseguia convencer a rede a entregar um tronco de longa distância como se a chamada fosse dela mesma, e o destino que importava era a Europa — os boards da \"scene\", o circuito internacional fechado de crackers, artistas e traders cujos BBSs eram inalcançáveis com qualquer orçamento que um adolescente em São Paulo tivesse. O war-dialing mapeava a metade mais silenciosa da rede: um modem solto para varrer faixas inteiras de números durante a madrugada e anotar o que respondia — um modem do outro lado, um fax, ou o tom característico de um PBX corporativo. Alguns desses PBXs podiam ser convencidos a liberar uma linha externa.",
+            "Esses ficavam intocados, e a razão era toda a ética em miniatura. Tomar um tronco a partir da própria sinalização da companhia telefônica não colocava o custo em lugar nenhum — nenhuma conta, nenhuma fatura, ninguém era cobrado. Fazer o PBX de uma empresa de verdade completar a ligação cairia na conta daquela empresa, e essa era a linha que não se cruzava. O único esquema que ficou só no sonho — um modem emendado direto na fiação de um orelhão — ficou no sonho. Nada do resto era por dinheiro; era a intoxicação pura de entender um sistema bem o bastante para enxergar as costuras, e ser jovem o suficiente para forçá-las. A rede analógica onde tudo isso vivia acabou faz décadas, seus tons de sinalização aposentados há muito, que é a razão honesta pela qual isto pode ser registrado aqui como história, e não como instrução."
           ]
         },
         {
@@ -5676,6 +5677,11 @@
           "tag": "A rede",
           "term": "Conta shell (SLIP / PPP)",
           "desc": "O acesso à internet mais antigo, por linha telefônica: um login de texto em uma máquina UNIX remota, às vezes turbinado com SLIP ou PPP para carregar tráfego de internet de verdade. A porta do mundo fechado dos BBSs para a rede aberta."
+        },
+        "wardialing": {
+          "tag": "O telefone",
+          "term": "War-dialing",
+          "desc": "Um modem programado para discar automaticamente por faixas inteiras de números de telefone, anotando quais respondiam — um modem, um fax ou um PBX. Batizado a partir do filme WarGames (1983), era a metade de reconhecimento do phreaking: mapear a rede para descobrir o que havia por lá."
         }
       },
       "closer": "No fim de 1995 a base estava montada, e nunca tinha sido realmente sobre os truques. Era sobre o hábito por baixo deles — desmontar uma coisa até entendê-la de verdade, e então explicá-la para quem vem depois. Os crachás de fabricante, as certificações, as salas de aula em quatro continentes: tudo isso foi construído sobre um adolescente com um Sinclair clonado, um ferro de solda, um tom de discagem roubado e uma vontade desmedida de saber como tudo funcionava.",

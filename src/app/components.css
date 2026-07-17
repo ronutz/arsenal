@@ -603,7 +603,7 @@
   transform: translateY(-2px);
 }
 .learn-card-title {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
@@ -4116,7 +4116,7 @@ a.tools-card:hover {
 }
 
 .tools-card-name {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 0.4rem;
@@ -11154,7 +11154,9 @@ main[data-view="list"] .pubcat {
 
 /* Hub -> industry-history cross-link (top of every vendor hub). */
 .hub-industry-link {
-  margin: 0.9rem 0 0;
+  /* Room to breathe: 0.9rem/0 pinned this between the breadcrumb above and the
+     hero eyebrow/title below (PRIME 2026-07-17). Now clearly separated. */
+  margin: 1.5rem 0 1.75rem;
   font-size: 0.9rem;
 }
 .hub-industry-link a {

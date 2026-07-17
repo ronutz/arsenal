@@ -45,6 +45,7 @@ const FIELD_TERMS: { id: string; slug?: string }[] = [
   { id: "orelhao" },
   { id: "phreaking", slug: "captain-crunch" },
   { id: "bluebox", slug: "blue-box" },
+  { id: "wardialing" },
   { id: "shell" },
 ];
 

@@ -53,6 +53,13 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-17",
+    time: "14:00",
+    kind: "content",
+    title: "Pre-1996 correction, and a vendor-hub polish",
+    body: "Two fixes. The pre-1996 phreaking passage is corrected on the record: blue-boxing was not a dream but a working doorway - operator trunks seized by the network's own 2600 Hz signaling, reaching the European scene boards - and war-dialing turned up corporate PBXs that could hand out an outside line, deliberately left alone because those calls would bill a real company, unlike an operator trunk that billed no one. Only the modem-into-a-payphone scheme stayed a dream; a war-dialing entry joins the field guide. Separately, on every vendor hub the story call-out now has room to breathe between the breadcrumb and the title, and the tool and article card titles were brought down to sit under their section headings instead of towering over them.",
+  },
+  {
+    date: "2026-07-17",
     time: "12:00",
     kind: "content",
     title: "The pre-1996 story, told in full",

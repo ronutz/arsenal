@@ -5556,8 +5556,8 @@
         },
         {
           "years": "early 1990s",
-          "where": "Phreaking the orelhão",
-          "what": "The token payphone, the water-in-the-slot trick that sometimes worked, and blue-box dreams that stayed dreams."
+          "where": "Phreaking, blue boxes, war-dialing",
+          "what": "The token payphone and the water-in-the-slot trick; blue-boxing operator trunks all the way to Europe's \"scene\" boards; and war-dialed corporate PBXs left deliberately untouched."
         },
         {
           "years": "1993",
@@ -5598,8 +5598,9 @@
           "title": "The young hacker's way",
           "body": [
             "If a BBS taught how the machines spoke to each other, phreaking asked a bolder question: how does the telephone system itself work — and can it be made to do things it was never meant to?",
-            "In Brazil the payphone was the orelhão, the \"big ear,\" and it ran on fichas, little tokens you bought and fed into a slot. Schoolyard folklore held that a splash of water in the coin slot would short something inside and hand you a free dial tone. It was tried, more than once, and sometimes it worked. Past that were the legends — the American ones about a toy whistle that happened to produce the exact tone the long-distance network was listening for, and the blue boxes built to imitate it — and the grand, fantastical schemes those legends inspired: to splice a modem straight into the wiring of a public phone and dial the whole world for nothing.",
-            "The schemes stayed schemes; the water in the slot was as far as it ever went. None of it was for money. It was the particular intoxication of understanding a system well enough to see its seams, and being young enough to lean on them. The analog network all of this lived on is decades gone now — the signaling tones retired, the tokens melted down — which is the honest reason it can be set down here as history rather than instruction."
+            "In Brazil the payphone was the orelhão, the \"big ear,\" and it ran on fichas, little tokens you bought and fed into a slot. Schoolyard folklore held that a splash of water in the coin slot would short something inside and hand you a free dial tone; it was tried, more than once, and sometimes it worked. But the real doorway was the one the old legends described: a single tone — the famous 2600 Hz — that the long-distance network listened for as its own internal signal, and the blue box built to speak the network's language back to it.",
+            "That doorway got used, and often. A blue box could coax the network into handing over a long-distance trunk as if the call were its own, and the destination that mattered was Europe — the \"scene\" boards, the tight international circuit of crackers, artists, and traders whose bulletin boards were unreachable on any budget a teenager in São Paulo had. War-dialing mapped the quieter half of the network: a modem set loose to sweep whole ranges of numbers overnight and log what answered — a carrier, a fax, or the distinctive tone of a corporate PBX. Some of those PBXs could be talked into handing out an outside line.",
+            "Those were left alone, and the reason was the whole ethic in miniature. Seizing a trunk from the phone company's own signaling put the cost nowhere — no account, no invoice, no one billed. Making a real company's PBX place the call would have landed on that company's bill, and that was the line that stayed uncrossed. The one scheme that was only ever dreamed — a modem spliced straight into a payphone's wiring — stayed a dream. None of the rest was for money; it was the plain intoxication of understanding a system well enough to see its seams, and being young enough to lean on them. The analog network all of this lived on is decades gone now, its signaling tones long retired, which is the honest reason it can be set down here as history rather than instruction."
           ]
         },
         {
@@ -5676,6 +5677,11 @@
           "tag": "The net",
           "term": "Shell account (SLIP / PPP)",
           "desc": "Early internet access over a phone line: a text login on a remote UNIX machine, sometimes upgraded with SLIP or PPP to carry real internet traffic. The doorway from the walled BBS world onto the open network."
+        },
+        "wardialing": {
+          "tag": "The phone",
+          "term": "War-dialing",
+          "desc": "A modem set to dial automatically through whole ranges of phone numbers, logging which ones answered — a carrier, a fax, or a PBX. Named for the 1983 film WarGames, it was the reconnaissance half of phreaking: mapping the network to find what was out there."
         }
       },
       "closer": "By the end of 1995 the foundation was set, and it was never really about the tricks. It was about the habit underneath them — taking a thing apart until it is genuinely understood, then explaining it to whoever comes next. The vendor badges, the certifications, the classrooms on four continents: all of it was built on a teenager with a cloned Sinclair, a soldering iron, a stolen dial tone, and an unreasonable need to know how everything worked.",
