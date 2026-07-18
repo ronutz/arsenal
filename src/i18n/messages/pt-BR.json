@@ -5600,7 +5600,7 @@
           "title": "Os micros nacionais",
           "body": [
             "A primeira máquina chegou em casa do mesmo jeito que o rádio havia chegado: pelo pai. Um Rodolfo de nove anos observava, encantado, o pai carregar um programa no computador a partir de uma fita cassete comum e então fazer coisas acontecerem na tela do aparelho de televisão — que, naquela época, era o monitor que todo micro doméstico pegava emprestado da sala. Parecia mágica, e não demorou para que o observar virasse fazer.",
-            "A máquina em si era filha do seu tempo. Em 1984 o Brasil vivia sob a reserva de mercado, que proibia a importação de computadores para proteger uma indústria nacional, então as máquinas eram clones locais — o primeiro aqui um Microdigital TK-82C, uma cópia do ZX81 da Sinclair, mais tarde acompanhado pelo TK90X.",
+            "A máquina em si era filha do seu tempo. Em 1984 o Brasil vivia sob a reserva de mercado, que proibia a importação de computadores para proteger uma indústria nacional, então as máquinas eram clones locais — o primeiro aqui um Microdigital TK-82C, um clone brasileiro do ZX81 da Sinclair, mais tarde acompanhado pelo TK90X, um clone do ZX Spectrum 48Kb.",
             "Não havia disco rígido nem rede. Logo Rodolfo estava escrevendo seus próprios programas em BASIC, digitados à mão a partir das últimas páginas das revistas e gravados naquela mesma fita chiante; um teclado de membrana sob os dedos, a televisão ainda fazendo as vezes de monitor. Ele aprendeu BASIC porque não havia mais nada para fazer com aquilo, e no processo aprendeu a verdade sobre a qual o resto deste site é construído: um computador não é mágica. É uma máquina que faz exatamente, e apenas, o que você mandar."
           ]
         },
@@ -9343,5 +9343,40 @@
     "gSite": "Site e meta",
     "toolsCount": "{count} ferramentas determinísticas, todas com cálculo local",
     "xmlNote": "Legível por máquinas: sitemap.xml"
+  },
+  "studyGuidesIndex": {
+    "eyebrow": "Guias de estudo",
+    "title": "Guias de estudo",
+    "lede": "Duas formas de estudar aqui, ambas gratuitas. As trilhas de leitura percorrem a biblioteca Learn em ordem didática - cada uma é uma sequência ordenada de artigos com as ferramentas para praticar. Os guias de estudo de certificação mapeiam os blueprints oficiais das provas, objetivo por objetivo, para artigos, ferramentas e os manuais do próprio fabricante.",
+    "pathsTitle": "Trilhas de leitura",
+    "pathsLede": "Cada trilha é um currículo sem prova: leia na ordem e pratique com as ferramentas pelo caminho. Tudo computa localmente e nada fica atrás de paywall.",
+    "certTitle": "Guias de estudo de certificação",
+    "certLede": "Guias mapeados por blueprint para as provas por trás das credenciais - cada objetivo ligado aos artigos que o ensinam, às ferramentas que o exercitam e às páginas do manual oficial, que continuam sendo a fonte da verdade.",
+    "certAllCta": "Todas as certificações e guias",
+    "stepsLabel": "Ordem de leitura",
+    "practiceLabel": "Pratique com",
+    "articlesCount": "{count} artigos",
+    "paths": {
+      "bigip-fundamentals": {
+        "title": "Fundamentos de BIG-IP",
+        "lede": "A plataforma BIG-IP da F5, do plano de tráfego local ao plano de DNS: como o LTM (Local Traffic Manager) balanceia e representa serviços, como a caixa se defende sob SYN floods e pressão de conexões, e como o GTM/BIG-IP DNS (Global Traffic Manager, o balanceador global baseado em DNS) decide - terminando no iQuery, o protocolo que une os dois planos."
+      },
+      "modern-identity": {
+        "title": "Identidade moderna, do token para cima",
+        "lede": "Os padrões abertos por trás do single sign-on, em ordem de dependência: o próprio JWT (JSON Web Token), as assinaturas e o JWKS (JSON Web Key Set) que o tornam verificável, os fluxos OAuth 2.0 e PKCE (Proof Key for Code Exchange) que o emitem, o OIDC (OpenID Connect) por cima, e TOTP/HOTP (senhas de uso único por tempo e por HMAC) como segundo fator."
+      },
+      "tls-from-zero": {
+        "title": "TLS do zero",
+        "lede": "TLS (Transport Layer Security) da string da cipher suite para cima: o que significa cada parte do nome de uma suite, o que o TLS 1.3 removeu e por quê, como funciona a troca de chaves híbrida pós-quântica, e como TLS 1.2, TLS 1.3, DTLS (Datagram TLS) e QUIC se relacionam como uma só família."
+      },
+      "http-evolution": {
+        "title": "HTTP, contado para a frente",
+        "lede": "O HTTP (Hypertext Transfer Protocol, o protocolo de transferência de hipertexto) nas suas cinco versões - do GET de uma linha de 1991 ao HTTP/3 sobre QUIC - e depois a camada operacional: proxies diretos e reversos, HSTS (HTTP Strict Transport Security) e o curl além do navegador."
+      },
+      "regex-mastery": {
+        "title": "Expressões regulares, do jeito certo",
+        "lede": "A habilidade de ofício por baixo da análise de logs e de todo parser: quantificadores e classes, grupos e backreferences, âncoras e fronteiras, flags e modos - terminando no catastrophic backtracking, o modo de falha que toda regex em produção precisa evitar."
+      }
+    }
   }
 }

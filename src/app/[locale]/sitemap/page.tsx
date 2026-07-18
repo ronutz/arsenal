@@ -45,7 +45,7 @@ export default async function SitemapPage({
       title: t("gTools"),
       links: [
         { href: "/tools", label: tNav("tools") },
-        { href: "/category/network", label: tNav("network") },
+        { href: "/category/networking", label: tNav("network") },
         { href: "/category/security", label: tNav("security") },
         { href: "/category/identity", label: tNav("identity") },
         { href: "/glossary", label: tNav("glossary") },

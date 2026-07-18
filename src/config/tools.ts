@@ -28,6 +28,17 @@ export interface ToolEntry {
   /** Vendor sub-category (tools.subs.<vendor>.<sub> label); vendor tools only. */
   sub?: string;
   vendors?: string[];
+  /**
+   * vendorNeutral - the tool implements an OPEN STANDARD (JWT, OIDC, TOTP,
+   * SAML, ...) and is only AFFILIATED with the vendors above (it appears on
+   * their hubs because the vendor's products live on that standard), not owned
+   * by them. Consumers that split "generic" from "vendor-specific" (the tools
+   * grid, /category pages, the Learn category grouping) treat a vendorNeutral
+   * tool as generic, so tagging a standards tool for a hub can never make it -
+   * or the articles that reference it - vanish from the vendor-agnostic
+   * surfaces again (the 2026-07-18 identity-category regression).
+   */
+  vendorNeutral?: boolean;
   /** Additional category KEYS this tool also appears under (additive, like
    *  vendors[]). The primary `category` still owns the tool's home; each key
    *  here makes it ALSO render on that category's page. Used where a tool
@@ -40,10 +51,10 @@ export interface ToolEntry {
 }
 
 export const tools: ToolEntry[] = [
-  { id: "jwt", href: "/tools/jwt", category: "identity", vendors: ["ping"], sub: "oauth-tokens", available: true },
-  { id: "pkce", href: "/tools/pkce", category: "identity", vendors: ["ping"], sub: "oauth-tokens", available: true },
-  { id: "oidc", href: "/tools/oidc", category: "identity", vendors: ["ping"], sub: "sso", available: true },
-  { id: "totp-hotp", href: "/tools/totp-hotp", category: "identity", vendors: ["ping"], sub: "mfa", available: true },
+  { id: "jwt", href: "/tools/jwt", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
+  { id: "pkce", href: "/tools/pkce", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
+  { id: "oidc", href: "/tools/oidc", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "sso", available: true },
+  { id: "totp-hotp", href: "/tools/totp-hotp", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "mfa", available: true },
   { id: "base64", href: "/tools/base64", category: "encoding", available: true },
   { id: "hash", href: "/tools/hash", category: "hashing", available: true },
   { id: "hmac", href: "/tools/hmac", category: "hashing", available: true },
@@ -63,7 +74,7 @@ export const tools: ToolEntry[] = [
   { id: "dig-output-explainer", href: "/tools/dig-output-explainer", category: "networking", available: true },
   { id: "nslookup-output-explainer", href: "/tools/nslookup-output-explainer", category: "networking", available: true },
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
-  { id: "saml-decoder", href: "/tools/saml-decoder", category: "identity", secondaryCategories: ["security"], vendors: ["ping"], sub: "sso", available: true },
+  { id: "saml-decoder", href: "/tools/saml-decoder", category: "identity", secondaryCategories: ["security"], vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "sso", available: true },
   { id: "xml-decoder", href: "/tools/xml-decoder", category: "security", available: true },
   { id: "f5xc-service-policy-explainer", sub: "f5xc", href: "/tools/f5xc-service-policy-explainer", category: "security", vendors: ["f5"], available: true },
   { id: "f5xc-rate-limit-calculator", sub: "f5xc", href: "/tools/f5xc-rate-limit-calculator", category: "security", vendors: ["f5"], available: true },
@@ -110,7 +121,7 @@ export const tools: ToolEntry[] = [
   { id: "syslog-pri-decoder", href: "/tools/syslog-pri-decoder", category: "networking", available: true },
   { id: "ja4-fingerprint-decoder", href: "/tools/ja4-fingerprint-decoder", category: "security", vendors: ["zscaler", "ping"], sub: "signals", available: true },
   { id: "ja3-tls-fingerprint", href: "/tools/ja3-tls-fingerprint", category: "security", vendors: ["zscaler", "ping"], sub: "signals", available: true },
-  { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", vendors: ["ping"], sub: "oauth-tokens", available: true },
+  { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
   // The four below were built but never registered here (drift caught and

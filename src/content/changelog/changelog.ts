@@ -53,6 +53,28 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-18",
+    time: "12:00",
+    kind: "feature",
+    title: "Study guides: reading paths and blueprint guides, one door",
+    body: "The sitemap's Study guides link now opens a real page. Five curated reading paths walk the Learn library in teaching order - BIG-IP fundamentals, modern identity from the token up, TLS from zero, HTTP told forward, and regular expressions done properly - each an ordered syllabus of articles with the tools to practice on, titles resolved live so nothing can go stale. Below them, the certification study guides render as the same cards the certifications hub uses, blueprint-mapped and honestly badged while in preparation. A new build guard keeps every path's articles and tools verified on every build, and the Learn library links across.",
+  },
+  {
+    date: "2026-07-18",
+    time: "11:30",
+    kind: "feature",
+    title: "The identity category returns",
+    body: "A quiet regression, found and fixed: tagging the open-standard identity tools - the JWT decoder, PKCE, OIDC, TOTP/HOTP, SAML, and JWKS explainers - for the Ping Identity hub had made every consumer treat them as vendor-specific, which erased the identity category from the tools grid, the Learn library, and the category pages, taking twenty-one standards articles with it. The registry now distinguishes vendor-owned tools from vendor-affiliated open standards, so identity is back everywhere it belongs and the hub keeps its tools. The category short-link also now lands: /category/network permanently redirects to the canonical networking page in every language.",
+    tools: ["jwt", "pkce", "oidc", "totp-hotp", "saml-decoder", "jwks-explainer"],
+  },
+  {
+    date: "2026-07-18",
+    time: "10:00",
+    kind: "content",
+    title: "The clones get their lineage",
+    body: "The pre-1996 story now names both machines' ancestry precisely: the Microdigital TK-82C as a Brazilian clone of Sinclair's ZX81, and the TK90X as a clone of the ZX Spectrum 48Kb - the two ends of Brazil's market-reserve micro era, in one sentence. In English and Brazilian Portuguese.",
+  },
+  {
+    date: "2026-07-18",
     time: "00:30",
     kind: "feature",
     title: "The BOFH moves up",

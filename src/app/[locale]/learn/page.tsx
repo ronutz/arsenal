@@ -49,7 +49,8 @@ export default async function LearnIndexPage({
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
-  const tGloss = await getTranslations("glossary"); // glossary callout
+  const tGloss = await getTranslations("glossary");
+  const tSg = await getTranslations("studyGuidesIndex"); // glossary callout
   // Articles, grouped by the loader (within each group: curated order; English
   // fallback handled inside). Category groups themselves are sorted A->Z by
   // resolved label, locale-aware, to mirror the Tools index taxonomy.
@@ -82,6 +83,16 @@ export default async function LearnIndexPage({
             <p className="learn-glossary-callout">
               <Link href="/glossary" className="learn-glossary-callout-link">
                 {tGloss("title")}: {tGloss("tagline")}
+              </Link>
+            </p>
+
+            {/* Study-guides companion pointer: same discoverability pattern as
+                the glossary callout above - the curated reading paths and the
+                certification guides get a one-click door from the library they
+                draw on (2026-07-18, the /study-guides launch). */}
+            <p className="learn-glossary-callout">
+              <Link href="/study-guides" className="learn-glossary-callout-link">
+                {tSg("title")}: {tSg("pathsLede")}
               </Link>
             </p>
 

@@ -39,7 +39,9 @@ import { vendorColor } from "@/config/vendors";
  */
 function categoryKeys(): string[] {
   const set = new Set<string>();
-  for (const t of tools.filter((tool) => !(tool.vendors ?? []).length)) {
+  // vendorNeutral tools are open-standard tools merely affiliated with a hub;
+  // they count as generic here (see the field doc in src/config/tools.ts).
+  for (const t of tools.filter((tool) => !(tool.vendors ?? []).length || tool.vendorNeutral)) {
     set.add(t.category);
     for (const c of t.secondaryCategories ?? []) set.add(c);
   }
@@ -81,7 +83,14 @@ export default async function CategoryPage({
 
   // Tools in this category, available only, sorted by localized name.
   const catTools = tools
-    .filter((tool) => (tool.category === key || (tool.secondaryCategories ?? []).includes(key)) && tool.available && !(tool.vendors ?? []).length)
+    .filter(
+      (tool) =>
+        (tool.category === key || (tool.secondaryCategories ?? []).includes(key)) &&
+        tool.available &&
+        // vendorNeutral = open-standard tool with a hub affiliation only; it
+        // belongs on its category page (see src/config/tools.ts).
+        (!(tool.vendors ?? []).length || tool.vendorNeutral),
+    )
     .sort((a, b) => t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale));
 
   // Articles in this category, in the loader's curated order (English fallback

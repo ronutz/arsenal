@@ -215,7 +215,11 @@ export function getArticleVendors(article: Article): string[] {
   }
   for (const slug of article.relatedTools) {
     const tool = tools.find((t) => t.id === slug);
-    if (tool?.vendors) {
+    // vendorNeutral tools are open-standard tools with a hub AFFILIATION only;
+    // an article about the standard (JWT, OIDC, TOTP, ...) does not become a
+    // vendor article by referencing them (see src/config/tools.ts - the
+    // 2026-07-18 identity-category regression).
+    if (tool?.vendors && !tool.vendorNeutral) {
       for (const vendor of tool.vendors) set.add(vendor);
     }
   }

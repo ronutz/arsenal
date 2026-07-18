@@ -47,7 +47,10 @@ export default async function ToolsPage({
 
   // The generic index lists VENDOR-AGNOSTIC tools only (PRIME directive
   // 2026-07-03); vendor tools live on their hubs, linked in the strip above.
-  const agnosticTools = tools.filter((t) => t.available && !(t.vendors ?? []).length);
+  // Open-standard tools with a vendor AFFILIATION (vendorNeutral) belong in the
+  // generic grid too - the hub tag must not hide a standards tool (see
+  // src/config/tools.ts).
+  const agnosticTools = tools.filter((t) => t.available && (!(t.vendors ?? []).length || t.vendorNeutral));
   // Public-safe catalogue join for the list view: posture and anchors are
   // already public on the roadmap; isNew/vectors are quality signals, not
   // internal machinery (ranks, notes, merge IDs stay admin-only).

@@ -628,3 +628,40 @@
 /fil/vendors /fil/vendor-hubs/ 301
 /zh-Hans/vendors/ /zh-Hans/vendor-hubs/ 301
 /zh-Hans/vendors /zh-Hans/vendor-hubs/ 301
+
+# /category/network -> /category/networking (2026-07-18): the sitemap briefly
+# linked the short key; the canonical category key is `networking`. Two forms
+# per locale (trailing-slash page + bare page), permanent.
+
+/da/category/network/ /da/category/networking/ 301
+/da/category/network /da/category/networking/ 301
+/de/category/network/ /de/category/networking/ 301
+/de/category/network /de/category/networking/ 301
+/en/category/network/ /en/category/networking/ 301
+/en/category/network /en/category/networking/ 301
+/es/category/network/ /es/category/networking/ 301
+/es/category/network /es/category/networking/ 301
+/fil/category/network/ /fil/category/networking/ 301
+/fil/category/network /fil/category/networking/ 301
+/fr/category/network/ /fr/category/networking/ 301
+/fr/category/network /fr/category/networking/ 301
+/it/category/network/ /it/category/networking/ 301
+/it/category/network /it/category/networking/ 301
+/ms/category/network/ /ms/category/networking/ 301
+/ms/category/network /ms/category/networking/ 301
+/nb/category/network/ /nb/category/networking/ 301
+/nb/category/network /nb/category/networking/ 301
+/nl/category/network/ /nl/category/networking/ 301
+/nl/category/network /nl/category/networking/ 301
+/pl/category/network/ /pl/category/networking/ 301
+/pl/category/network /pl/category/networking/ 301
+/pt-BR/category/network/ /pt-BR/category/networking/ 301
+/pt-BR/category/network /pt-BR/category/networking/ 301
+/ru/category/network/ /ru/category/networking/ 301
+/ru/category/network /ru/category/networking/ 301
+/sv/category/network/ /sv/category/networking/ 301
+/sv/category/network /sv/category/networking/ 301
+/tr/category/network/ /tr/category/networking/ 301
+/tr/category/network /tr/category/networking/ 301
+/zh-Hans/category/network/ /zh-Hans/category/networking/ 301
+/zh-Hans/category/network /zh-Hans/category/networking/ 301
