@@ -1,0 +1,30 @@
+---
+slug: time-arithmetic-and-time-zones
+title: "Aritmética de tempo e fusos horários: durações exatas, reuniões honestas"
+summary: "Por que 'mais um mês' não tem resposta exata, o que as durações ISO 8601 realmente prometem e como um instante UTC vira quatro relógios de parede diferentes. A armadilha do horário de verão, a armadilha da mudança de data e o argumento para planejar reuniões com uma data real."
+concepts: ["ISO 8601", "durações", "UTC", "fusos horários", "horário de verão", "tzdata IANA"]
+relatedTools: ["time-calculator", "timezone-meeting-planner", "epoch"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds"]
+category: encoding
+order: 7
+status: reviewed
+updated: "2026-07-18"
+---
+
+Aritmética de tempo parece aritmética até encontrar o calendário. Aí duas perguntas honestas se separam: "quantos segundos entre estes instantes?" tem exatamente uma resposta, e "que data é um mês depois?" não tem nenhuma sem uma convenção. Ferramentas que mantêm essas perguntas separadas poupam você dos bugs que moram no meio.
+
+## Tempo exato versus tempo de calendário
+
+Um instante é um ponto na linha do tempo UTC; o intervalo entre dois instantes é um número fixo de milissegundos, e as unidades exatas se empilham de forma limpa: um segundo tem 1000 ms, um minuto 60 s, uma hora 60 min, um dia 24 h, uma semana 7 dias. Tudo acima disso é aritmética de calendário: um mês tem de 28 a 31 dias, um ano 365 ou 366, então "mais um mês" a partir de 31 de janeiro cai numa data que não existe e cada biblioteca escolhe a própria resposta (28 de fevereiro? 2 de março? 3 de março?). As durações ISO 8601 codificam os dois mundos numa só sintaxe - P1DT2H30M é exata, P1M é de calendário - e é exatamente por isso que uma calculadora que promete respostas exatas deve aceitar a primeira e recusar a segunda com uma explicação. A calculadora de tempo faz exatamente isso, e o dia bissexto é um ótimo teste: de 2024-02-28 a 2024-03-01 são exatamente P2D, porque 2024 guardou um 29 de fevereiro.
+
+## Offset não é fuso
+
+2026-07-18T15:00-03:00 e 2026-07-18T18:00Z são o mesmo instante escrito de dois pontos de referência; o offset é parte do timestamp, e o RFC 3339 o torna obrigatório por bons motivos. Um timestamp sem offset não é um ponto no tempo - é uma leitura de relógio de parede esperando por um lugar. Por isso também um offset não é um fuso horário: -03:00 diz onde o relógio estava naquele instante, enquanto America/Sao_Paulo diz as regras - incluindo o fato de que o Brasil aboliu o horário de verão em 2019, então São Paulo é -03:00 em julho e em janeiro igualmente.
+
+## Um instante, muitos relógios de parede
+
+As regras dos fusos vivem na base de fusos horários da IANA, a tzdata compartilhada que sistemas operacionais e navegadores mantêm atualizada, e as regras dependem da data. 15:00 UTC em meados de julho é 12:00 em São Paulo, 17:00 em Berlim (CEST, +2), 08:00 em Los Angeles (PDT, -7) - e meia-noite em Tóquio, na data de amanhã. Rode o mesmo instante em meados de janeiro e Berlim responde 16:00 (+1) enquanto Los Angeles responde 07:00 (-8); só São Paulo não se move. Duas armadilhas se escondem nessa tabela: a do horário de verão, em que uma reunião semanal fixa deriva uma hora para parte dos participantes duas vezes por ano, porque o fuso do organizador e o deles mudam em datas diferentes; e a da mudança de data, em que um participante não está apenas em outra hora, mas em outra data de calendário - o que vale dizer em voz alta no convite.
+
+## Planejando com honestidade
+
+As regras práticas derivam da mecânica. Fixe o instante em UTC ou com offset explícito, nunca como hora de parede nua. Converta por participante usando fusos IANA reais e a data real da reunião, porque a resposta de julho e a de janeiro diferem. Sinalize o horário comercial explicitamente - 09:00 às 17:59 locais em dias úteis é o envelope convencional, e nomear a convenção é melhor que escondê-la. O planejador de reunião multifuso renderiza exatamente essa tabela, e o conversor de tempo Unix transforma qualquer timestamp no instante que ele denota quando a entrada chega em tempo Unix.

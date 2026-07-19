@@ -4286,6 +4286,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /greek-alphabet:
+    get:
+      tags:
+        - Text & utilities
+      operationId: run_greek_alphabet
+      summary: Greek alphabet explainer
+      description: >-
+        Type Greek and get names plus transliteration; type letter names and get glyphs. The full
+        24-letter table explains where engineers meet each one, from μ micro to Ω ohms. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Text & utilities
+      operationId: run_greek_alphabet_post
+      summary: Greek alphabet explainer (POST)
+      description: >-
+        Type Greek and get names plus transliteration; type letter names and get glyphs. The full
+        24-letter table explains where engineers meet each one, from μ micro to Ω ohms. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /hash:
     get:
       tags:
@@ -5740,6 +5801,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /roman-numerals:
+    get:
+      tags:
+        - Identifiers & time
+      operationId: run_roman_numerals
+      summary: Roman numerals converter
+      description: >-
+        Numbers to numerals and back, with the canonical subtractive form, the place-by-place
+        construction, and honest validation: IIII is accepted and explained, IL is refused with the
+        rule it breaks. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Identifiers & time
+      operationId: run_roman_numerals_post
+      summary: Roman numerals converter (POST)
+      description: >-
+        Numbers to numerals and back, with the canonical subtractive form, the place-by-place
+        construction, and honest validation: IIII is accepted and explained, IL is refused with the
+        rule it breaks. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /saml-decoder:
     get:
       tags:
@@ -6138,6 +6260,134 @@ paths:
                 - >-
                   { "class": "Telemetry", "My_System": { "class": "Telemetry_System",
                   "systemPoller": { "interval": 60 } } }
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /time-calculator:
+    get:
+      tags:
+        - Identifiers & time
+      operationId: run_time_calculator
+      summary: Time calculator
+      description: >-
+        Exact time arithmetic: the span between two instants, or an instant plus or minus a
+        duration, in ISO 8601 or plain shorthand. Months and years are refused honestly: they are
+        calendar units with no single exact length. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Identifiers & time
+      operationId: run_time_calculator_post
+      summary: Time calculator (POST)
+      description: >-
+        Exact time arithmetic: the span between two instants, or an instant plus or minus a
+        duration, in ISO 8601 or plain shorthand. Months and years are refused honestly: they are
+        calendar units with no single exact length. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /timezone-meeting-planner:
+    get:
+      tags:
+        - Identifiers & time
+      operationId: run_timezone_meeting_planner
+      summary: Multi-time-zone meeting planner
+      description: >-
+        One instant, read in every attendee's IANA time zone: local time, UTC offset, day shift, and
+        a working-hours flag. DST is whatever the zone database says for that date, which is exactly
+        why you plan with a real one. The input is a JSON object: send it as the request body (POST)
+        or as a JSON string (?input=). Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Identifiers & time
+      operationId: run_timezone_meeting_planner_post
+      summary: Multi-time-zone meeting planner (POST)
+      description: >-
+        One instant, read in every attendee's IANA time zone: local time, UTC offset, day shift, and
+        a working-hours flag. DST is whatever the zone database says for that date, which is exactly
+        why you plan with a real one. The input is a JSON object: send it as the request body (POST)
+        or as a JSON string (?input=). Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.

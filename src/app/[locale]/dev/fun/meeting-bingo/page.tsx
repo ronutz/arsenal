@@ -43,6 +43,13 @@ const TYPE_IDS = [
   "strategy",
   "kickoff",
   "budget",
+  // The 2026-07-18 profession pack (PRIME): four fields whose meetings have
+  // their own liturgy. Pools authored NATIVELY in en / pt-BR / es / de - the
+  // other locales fall back to the English pool via the i18n deep-merge.
+  "legal",
+  "infra",
+  "hr",
+  "marketing",
 ] as const;
 
 // A 5x5 card with a FREE center needs 24 phrases; pools carry ~30 so cards

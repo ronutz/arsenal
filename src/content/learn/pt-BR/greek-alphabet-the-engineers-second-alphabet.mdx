@@ -1,0 +1,32 @@
+---
+slug: greek-alphabet-the-engineers-second-alphabet
+title: "O alfabeto grego: o segundo alfabeto da engenharia"
+summary: "Por que Ω significa ohm, μ significa micro e λ comanda tanto comprimentos de onda quanto funções serverless. As 24 letras, a regra do sigma final e as pegadinhas de transliteração entre o grego moderno e o clássico que silenciosamente renomeiam beta e eta."
+concepts: ["alfabeto grego", "transliteração", "notação científica", "unicode", "sigma final"]
+relatedTools: ["greek-alphabet"]
+relatedArticles: ["roman-numerals-how-the-system-works"]
+category: text
+order: 4
+status: reviewed
+updated: "2026-07-18"
+---
+
+Abra qualquer texto de engenharia e um segundo alfabeto já está lá: Δ para variação, Σ para somatórios, Ω em cada resistor, μ em cada microssegundo. As letras gregas são o espaço de transbordo do vocabulário técnico - 26 letras latinas nunca foram suficientes - e conhecer as 24 pelo nome é um pequeno superpoder para ler artigos em voz alta e escrever símbolos que as pessoas conseguem pesquisar.
+
+## As 24, e onde cada uma ganha o seu lugar
+
+O alfabeto vai de alfa a ômega. Algumas letras carregam campos inteiros nas costas: λ (lambda) é o comprimento de onda na física, a função anônima no cálculo lambda e uma marca de serverless; μ (mu) é o prefixo micro- em μs e μm, a média na estatística e o coeficiente de atrito; Ω (ômega) é o ohm, a letra própria da resistência elétrica, enquanto sua minúscula ω é a frequência angular. Outras são famosas por um único trabalho - π dispensa apresentações, θ é dona dos ângulos e dos limites Big-Theta, σ é o desvio padrão por trás do "seis sigma" - e algumas são famosas por confundir: ν (nu) parece um v latino, e Ο (ômicron, "o pequeno") faz par com Ω ("o grande") no nome e na notação.
+
+## O sigma final
+
+Sigma é a única letra com duas formas minúsculas: σ dentro da palavra, ς no final. λόγος (logos) termina em ς, e é a mesma letra que o σ que seria em qualquer outra posição - uma regra puramente posicional, sem paralelo no alfabeto latino. Processamento de texto que trata ς e σ como letras diferentes quebra busca e capitalização em grego; o Unicode codifica as duas e define o case folding entre elas.
+
+## Transliteração: moderno versus clássico
+
+Romanizar o grego tem duas tradições, e elas discordam exatamente nas letras que a engenharia mais pronuncia. O grego moderno (a família ISO 843 / ELOT 743) escreve β como v e η como i - a pronúncia mudou há séculos. A romanização clássica, a que está impregnada no vocabulário científico, escreve β como b e η como e: por isso a letra chamada "beta" translitera para v num nome de rua de Atenas moderna, mas nos deu a palavra alfabeto com b. φ é f (classicamente ph, daí filosofia), χ é ch (o X de Xmas é esta letra, não o X latino), υ é pai de nada menos que quatro letras latinas: U, V, W e Y.
+
+Um conversor que escolhe um esquema em silêncio está adivinhando por você; o explicador do alfabeto grego mostra a forma moderna com a clássica entre parênteses onde diferem.
+
+## Digitando
+
+Cada letra aqui é Unicode puro do bloco Greek and Coptic (U+0370 a U+03FF), com as formas acentuadas no Greek Extended. Acentos se decompõem: ά é α mais um diacrítico combinante, e é por isso que a ferramenta remove os acentos combinantes antes da consulta - άλφα resolve letra a letra para alfa, lambda, fi, alfa, e translitera para alfa. O jeito certo de escrever μs num documento é o μ de verdade, não um u torcendo para dar certo.

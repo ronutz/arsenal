@@ -28,6 +28,7 @@ const TOYS = [
   { key: "megaBrain", href: "/dev/fun/mega-brain", badged: true },
   { key: "meetingBingo", href: "/dev/fun/meeting-bingo", badged: false },
   { key: "bossScreens", href: "/dev/fun/boss-screens", badged: false },
+  { key: "catDistribution", href: "/dev/fun/cat-distribution", badged: false },
 ] as const;
 
 export async function generateMetadata({

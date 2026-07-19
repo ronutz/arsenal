@@ -1,0 +1,38 @@
+---
+slug: roman-numerals-how-the-system-works
+title: "Números romanos: como o sistema realmente funciona"
+summary: "Sete símbolos, nenhum zero e uma regra de subtração que chegou mil anos depois de Roma. Por que IIII está no seu relógio e IV está no livro didático, o que IL viola e por que o sistema clássico termina em 3999."
+concepts: ["números romanos", "notação subtrativa", "notação aditiva", "sistemas de numeração", "vínculo"]
+relatedTools: ["roman-numerals"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds"]
+category: encoding
+order: 6
+status: reviewed
+updated: "2026-07-18"
+---
+
+Os números romanos são a notação mais antiga que a maioria dos engenheiros ainda lê toda semana: créditos de filme, nomes de reis, mostradores de relógio, capítulos, Super Bowls. O sistema tem sete símbolos e duas regras de composição, e saber qual regra veio primeiro explica a maior parte das suas esquisitices.
+
+## Os sete símbolos
+
+I é 1, V é 5, X é 10, L é 50, C é 100, D é 500, M é 1000. Esse é o alfabeto inteiro. Não há zero: o sistema conta coisas, e os romanos escreviam a ausência de coisas em palavras (nulla), não em numerais. Também não há negativos, nem nada maior que M.
+
+## Primeiro aditivo, depois subtrativo
+
+O sistema original era puramente aditivo: símbolos escritos do maior para o menor e somados. Quatro era IIII, nove era VIIII, 1910 era MDCCCCX. A abreviação subtrativa - um símbolo menor antes de um maior subtrai, então IV é 4 e CM é 900 - existia na Antiguidade, mas só virou a convenção padrão na Idade Média, muito depois da queda de Roma.
+
+Essa história explica por que as duas grafias sobrevivem. Mostradores de relógio tradicionalmente exibem IIII (equilíbrio visual com o VIII do outro lado é a explicação usual, e a Biblioteca do Congresso americana mantém um arquivo delicioso sobre a questão), inscrições monumentais usam datas aditivas, e ainda assim todo livro ensina o cânone subtrativo. Um conversor bem-comportado aceita a forma aditiva, calcula o valor corretamente e mostra a grafia canônica ao lado - exatamente o que o conversor de números romanos faz.
+
+## As regras que o cânone impõe
+
+O cânone subtrativo é mais rígido do que parece. Apenas seis pares subtraem: IV, IX, XL, XC, CD, CM. O padrão por trás deles: I subtrai apenas de V e X, X apenas de L e C, C apenas de D e M - cada símbolo alcança no máximo uma ordem de grandeza acima. Por isso IL não é 49 (é XLIX) e IM não é 999 (é CMXCIX). Apenas um símbolo pode ser subtraído, então IIX não é 8 (VIII é). E os símbolos de "cinco" - V, L, D - nunca se repetem e nunca subtraem: dois deles são simplesmente o próximo símbolo de "dez".
+
+Cada símbolo aditivo se repete no máximo três vezes no cânone - III é 3, mas o 4 vira IV. Empilhe as regras e cada valor de 1 a 3999 tem exatamente uma grafia canônica, que é o que torna a notação analisável.
+
+## Por que termina em 3999
+
+MMMCMXCIX é 3999, e o valor seguinte não tem forma canônica em texto simples: não existe símbolo para 5000. A prática romana usava o vínculo, uma barra superior que multiplicava o numeral por 1000, então V com barra era 5000. O Unicode carrega barras combinantes, mas nenhuma convenção de texto simples para elas jamais se padronizou. Uma ferramenta que calcula em vez de adivinhar declara esse limite em vez de inventar notação em silêncio - o conversor recusa 4000 e diz por quê.
+
+## Lendo 1994
+
+A construção canônica é casa a casa, e lê-la de volta do mesmo jeito é o truque da fluência: MCMXCIV é M (1000) + CM (900) + XC (90) + IV (4). Cada casa é ou uma sequência simples ou um par subtrativo, nunca os dois. Quando você passa a ler numerais por casas em vez de símbolos, MMXXVI deixa de ser um quebra-cabeça e vira 2026.

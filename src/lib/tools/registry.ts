@@ -36,6 +36,10 @@ import { run as cvssVectorDecoderRun } from "./cvss-vector-decoder";
 import { run as diffRun } from "./diff";
 import { run as digOutputExplainerRun } from "./dig-output-explainer";
 import { run as epochRun } from "./epoch";
+import { run as romanNumeralsRun } from "./roman-numerals";
+import { run as greekAlphabetRun } from "./greek-alphabet";
+import { run as timeCalculatorRun } from "./time-calculator";
+import { run as timezoneMeetingPlannerRun } from "./timezone-meeting-planner";
 import { run as f5CipherStringExpanderRun } from "./f5-cipher-string-expander";
 import { run as f5SslProfileExplainerRun } from "./f5-ssl-profile-explainer";
 import { run as f5xcServicePolicyExplainerRun } from "./f5xc-service-policy-explainer";
@@ -162,6 +166,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "diff", structured: true, run: (input) => diffRun(JSON.parse(input)) },
   { slug: "dig-output-explainer", run: digOutputExplainerRun },
   { slug: "epoch", run: epochRun },
+  { slug: "roman-numerals", run: romanNumeralsRun },
+  { slug: "greek-alphabet", run: greekAlphabetRun },
+  { slug: "time-calculator", structured: true, run: (input) => timeCalculatorRun(JSON.parse(input)) },
+  { slug: "timezone-meeting-planner", structured: true, run: (input) => timezoneMeetingPlannerRun(JSON.parse(input)) },
   { slug: "f5-cipher-string-expander", run: f5CipherStringExpanderRun },
   { slug: "f5-ssl-profile-explainer", run: f5SslProfileExplainerRun },
   { slug: "f5xc-service-policy-explainer", run: f5xcServicePolicyExplainerRun },

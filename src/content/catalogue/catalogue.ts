@@ -194,6 +194,10 @@ export const CATALOGUE: CatalogueEntry[] = [
 
   // ---- QUEUED — Identifiers & time ----------------------------------------
   { slug: "epoch", name: "Unix time converter", family: "Identifiers & time", status: "live", posture: "convert", disposition: "built", vectors: 7 },
+  { slug: "roman-numerals", name: "Roman numerals converter", family: "Identifiers & time", status: "live", posture: "convert / explain", disposition: "built", vectors: 21 },
+  { slug: "greek-alphabet", name: "Greek alphabet explainer", family: "Text & utilities", status: "live", posture: "convert / explain", disposition: "built", vectors: 9 },
+  { slug: "time-calculator", name: "Time calculator", family: "Identifiers & time", status: "live", posture: "compute", disposition: "built", vectors: 8 },
+  { slug: "timezone-meeting-planner", name: "Multi-time-zone meeting planner", family: "Identifiers & time", status: "live", posture: "compute", disposition: "built", vectors: 4 },
 
   // ---- QUEUED — Text & utilities ------------------------------------------
   { slug: "regex", name: "Regex toolkit", family: "Text & utilities", status: "live", posture: "test / explain", disposition: "built", specs: ["ECMAScript regular expressions"], vectors: 24 },

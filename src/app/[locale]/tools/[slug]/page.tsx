@@ -210,7 +210,15 @@ import { manifest as f5AwafDiffManifest } from "@/lib/tools/f5-awaf-policy-diff"
 import F5SslProfileExplainerTool from "@/components/F5SslProfileExplainerTool";
 import { manifest as sslProfileManifest } from "@/lib/tools/f5-ssl-profile-explainer";
 import EpochTool from "@/components/EpochTool";
+import RomanNumeralsTool from "@/components/RomanNumeralsTool";
+import GreekAlphabetTool from "@/components/GreekAlphabetTool";
+import TimeCalculatorTool from "@/components/TimeCalculatorTool";
+import TimezoneMeetingPlannerTool from "@/components/TimezoneMeetingPlannerTool";
 import { manifest as epochManifest } from "@/lib/tools/epoch";
+import { manifest as romanManifest } from "@/lib/tools/roman-numerals";
+import { manifest as greekManifest } from "@/lib/tools/greek-alphabet";
+import { manifest as timeCalcManifest } from "@/lib/tools/time-calculator";
+import { manifest as tzPlannerManifest } from "@/lib/tools/timezone-meeting-planner";
 import CertRenewalPlannerTool from "@/components/CertRenewalPlannerTool";
 import { manifest as certRenewalManifest } from "@/lib/tools/cert-renewal-planner";
 import CsrDecoderTool from "@/components/CsrDecoderTool";
@@ -631,6 +639,22 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   epoch: {
     Component: EpochTool,
     sources: epochManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "roman-numerals": {
+    Component: RomanNumeralsTool,
+    sources: romanManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "greek-alphabet": {
+    Component: GreekAlphabetTool,
+    sources: greekManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "time-calculator": {
+    Component: TimeCalculatorTool,
+    sources: timeCalcManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "timezone-meeting-planner": {
+    Component: TimezoneMeetingPlannerTool,
+    sources: tzPlannerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "cert-renewal-planner": {
     Component: CertRenewalPlannerTool,

@@ -401,6 +401,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_fortios_sniffer_builder",
     "tag": "Fortinet FortiGate & FortiOS"
   },
+  "greek-alphabet": {
+    "url": "https://ronutz.com/api/v1/greek-alphabet",
+    "method": "GET",
+    "op": "run_greek_alphabet",
+    "tag": "Text & utilities"
+  },
   "hash": {
     "url": "https://ronutz.com/api/v1/hash",
     "method": "GET",
@@ -533,6 +539,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_regex",
     "tag": "Text & utilities"
   },
+  "roman-numerals": {
+    "url": "https://ronutz.com/api/v1/roman-numerals",
+    "method": "GET",
+    "op": "run_roman_numerals",
+    "tag": "Identifiers & time"
+  },
   "saml-decoder": {
     "url": "https://ronutz.com/api/v1/saml-decoder",
     "method": "GET",
@@ -568,6 +580,18 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_telemetry_streaming_explainer",
     "tag": "F5 automation (AS3 / DO)"
+  },
+  "time-calculator": {
+    "url": "https://ronutz.com/api/v1/time-calculator",
+    "method": "GET",
+    "op": "run_time_calculator",
+    "tag": "Identifiers & time"
+  },
+  "timezone-meeting-planner": {
+    "url": "https://ronutz.com/api/v1/timezone-meeting-planner",
+    "method": "GET",
+    "op": "run_timezone_meeting_planner",
+    "tag": "Identifiers & time"
   },
   "totp-hotp": {
     "url": "https://ronutz.com/api/v1/totp-hotp",

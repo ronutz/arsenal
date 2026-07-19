@@ -1,0 +1,30 @@
+---
+slug: time-arithmetic-and-time-zones
+title: "Time Arithmetic and Time Zones: Exact Durations, Honest Meetings"
+summary: "Why 'plus one month' has no exact answer, what ISO 8601 durations actually promise, and how one UTC instant becomes four different wall clocks. The DST trap, the day-shift trap, and the case for planning meetings with a real date."
+concepts: ["ISO 8601", "durations", "UTC", "time zones", "DST", "IANA tzdata"]
+relatedTools: ["time-calculator", "timezone-meeting-planner", "epoch"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds"]
+category: encoding
+order: 7
+status: reviewed
+updated: "2026-07-18"
+---
+
+Time arithmetic looks like arithmetic until it meets the calendar. Then two honest questions split apart: "how many seconds between these instants?" has exactly one answer, and "what date is one month later?" has none without a convention. Tooling that keeps those questions separate saves you from the bugs that live in between.
+
+## Exact time vs calendar time
+
+An instant is a point on the UTC timeline; the span between two instants is a fixed number of milliseconds, and exact units stack on it cleanly: a second is 1000 ms, a minute 60 s, an hour 60 min, a day 24 h, a week 7 days. Everything above that is calendar arithmetic: a month is 28 to 31 days, a year 365 or 366, so "plus one month" from January 31 lands on a date that does not exist and every library picks its own answer (February 28? March 2? March 3?). ISO 8601 durations encode both worlds in one syntax - P1DT2H30M is exact, P1M is calendar - which is precisely why a calculator that promises exact answers should accept the first and refuse the second with an explanation. The time calculator does exactly that, and the leap day is a fine test: 2024-02-28 to 2024-03-01 is exactly P2D, because 2024 kept a February 29.
+
+## Offsets are not zones
+
+2026-07-18T15:00-03:00 and 2026-07-18T18:00Z are the same instant written from two reference points; the offset is part of the timestamp, and RFC 3339 makes it mandatory for good reason. A timestamp without one is not a point in time at all - it is a wall-clock reading waiting for a location. That is also why an offset is not a time zone: -03:00 tells you where the clock stood at that instant, while America/Sao_Paulo tells you the rules - including the fact that Brazil abolished daylight saving in 2019, so São Paulo is -03:00 in July and in January alike.
+
+## One instant, many wall clocks
+
+Zone rules live in the IANA time zone database, the shared tzdata that operating systems and browsers keep current, and the rules depend on the date. 15:00 UTC in mid-July is 12:00 in São Paulo, 17:00 in Berlin (CEST, +2), 08:00 in Los Angeles (PDT, -7) - and midnight in Tokyo, on tomorrow's date. Run the same instant in mid-January and Berlin answers 16:00 (+1) while Los Angeles answers 07:00 (-8); São Paulo alone does not move. Two traps hide in that table: the DST trap, where a standing weekly meeting drifts an hour for some attendees twice a year because the organizer's zone and theirs change on different dates; and the day-shift trap, where an attendee is not just on another hour but another calendar date, which is worth saying out loud in the invitation.
+
+## Planning honestly
+
+The practical rules fall out of the mechanics. Fix the instant in UTC or with an explicit offset, never as a bare wall time. Convert per attendee using real IANA zones and the real meeting date, because July's answer and January's answer differ. Flag working hours explicitly - 09:00 to 17:59 local on weekdays is the conventional envelope, and naming the convention beats hiding it. The multi-time-zone meeting planner renders exactly that table, and the epoch converter turns any timestamp into the instant it denotes when the input arrives in Unix time instead.

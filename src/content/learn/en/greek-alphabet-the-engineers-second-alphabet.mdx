@@ -1,0 +1,32 @@
+---
+slug: greek-alphabet-the-engineers-second-alphabet
+title: "The Greek Alphabet: Engineering's Second Alphabet"
+summary: "Why Ω means ohms, μ means micro, and λ runs both wavelengths and serverless functions. The 24 letters, the final-sigma rule, and the transliteration gotchas between modern and classical Greek that quietly rename beta and eta."
+concepts: ["greek alphabet", "transliteration", "scientific notation", "unicode", "final sigma"]
+relatedTools: ["greek-alphabet"]
+relatedArticles: ["roman-numerals-how-the-system-works"]
+category: text
+order: 4
+status: reviewed
+updated: "2026-07-18"
+---
+
+Open any engineering text and a second alphabet is already there: Δ for change, Σ for sums, Ω on every resistor, μ in every microsecond. Greek letters are technical vocabulary's overflow space - 26 Latin letters were never enough - and knowing the 24 by name is a small superpower for reading papers aloud and writing symbols people can search for.
+
+## The 24, and where each one earns its keep
+
+The alphabet runs alpha to omega. Some letters carry entire fields on their backs: λ (lambda) is wavelength in physics, the anonymous function in the lambda calculus, and a serverless brand name; μ (mu) is the micro- prefix in μs and μm, the mean in statistics, and the coefficient of friction; Ω (omega) is the ohm, electrical resistance's own letter, while its lowercase ω is angular frequency. Others are famous for one job - π needs no introduction, θ owns angles and Big-Theta bounds, σ is the standard deviation behind "six sigma" - and a few are famous for being confused: ν (nu) looks like a Latin v, and Ο (omicron, "small o") sits opposite Ω ("big o") in name and in notation.
+
+## The final sigma
+
+Sigma is the one letter with two lowercase forms: σ inside a word, ς at the end. λόγος (logos) ends in ς, and it is the same letter as the σ it would be anywhere else - a purely positional rule, like nothing in the Latin alphabet. Text processing that treats ς and σ as different letters breaks Greek search and casing; Unicode encodes both and defines the case-folding between them.
+
+## Transliteration: modern vs classical
+
+Romanizing Greek has two traditions, and they disagree on exactly the letters engineers say most. Modern Greek (the ISO 843 / ELOT 743 family) writes β as v and η as i - the pronunciation shifted centuries ago. Classical romanization, the one baked into English scientific vocabulary, writes β as b and η as e: that is why the letter called "beta" transliterates to v in a modern Athens street name but gave us the word alphabet with a b. φ is f (classically ph, hence philosophy), χ is ch (the X in Xmas is this letter, not the Latin X), υ fathered no fewer than four Latin letters: U, V, W and Y.
+
+A converter that silently picks one scheme is guessing on your behalf; the Greek alphabet explainer shows the modern form with the classical in parentheses wherever they differ.
+
+## Typing it
+
+Every letter here is plain Unicode from the Greek and Coptic block (U+0370 to U+03FF), with accented forms in Greek Extended. Accents decompose: ά is α plus a combining mark, which is why the tool strips combining accents before lookup - άλφα resolves letter by letter to alpha, lambda, phi, alpha, and transliterates to alfa. The right way to write μs in a document is the real μ, not a u that hopes for the best.

@@ -1,0 +1,38 @@
+---
+slug: roman-numerals-how-the-system-works
+title: "Roman Numerals: How the System Actually Works"
+summary: "Seven symbols, no zero, and one subtraction rule that arrived a thousand years after Rome. Why IIII is on your watch and IV is in your textbook, what IL breaks, and why the classical system runs out of road at 3999."
+concepts: ["roman numerals", "subtractive notation", "additive notation", "numeral systems", "vinculum"]
+relatedTools: ["roman-numerals"]
+relatedArticles: ["epoch-units-seconds-to-nanoseconds"]
+category: encoding
+order: 6
+status: reviewed
+updated: "2026-07-18"
+---
+
+Roman numerals are the oldest notation most engineers still read weekly: film credits, regnal numbers, clock faces, chapter headings, Super Bowls. The system is seven symbols and two composition rules, and knowing which rule came first explains most of its oddities.
+
+## The seven symbols
+
+I is 1, V is 5, X is 10, L is 50, C is 100, D is 500, M is 1000. That is the entire alphabet. There is no zero: the system counts things, and the Romans wrote the absence of things in words (nulla) rather than in numerals. There are no negatives either, and nothing larger than M.
+
+## Additive first, subtractive later
+
+The original system was purely additive: symbols written largest-first and summed. Four was IIII, nine was VIIII, 1910 was MDCCCCX. The subtractive shorthand - a smaller symbol before a larger one subtracts, so IV is 4 and CM is 900 - existed in antiquity but only became the standard convention in the Middle Ages, long after Rome fell.
+
+That history is why both spellings survive. Clock faces traditionally show IIII (visual balance with VIII across the dial is the usual explanation, and the Library of Congress keeps a delightful file on the question), monument inscriptions use additive dates, and yet every textbook teaches the subtractive canon. A well-behaved converter accepts the additive form, values it correctly, and shows the canonical spelling beside it - which is exactly what the Roman numerals converter does.
+
+## The rules the canon enforces
+
+The subtractive canon is tighter than it looks. Only six pairs subtract: IV, IX, XL, XC, CD, CM. The pattern behind them: I subtracts only from V and X, X only from L and C, C only from D and M - each symbol reaches at most one order of magnitude up. That is why IL is not 49 (it is XLIX) and IM is not 999 (it is CMXCIX). Only a single symbol may be subtracted, so IIX is not 8 (VIII is). And the "five" symbols V, L, D never repeat and are never subtracted: two of them are simply the next "ten" symbol.
+
+Each additive symbol repeats at most three times in the canon - III is 3, but 4 flips to IV. Stack the rules together and every value from 1 to 3999 has exactly one canonical spelling, which is what makes the notation parseable at all.
+
+## Why it stops at 3999
+
+MMMCMXCIX is 3999, and the next value has no canonical plain-text form: there is no symbol for 5000. Roman practice used the vinculum, an overline that multiplied a numeral by 1000, so V-with-a-bar was 5000. Unicode carries combining overlines, but no plain-text convention for them ever standardized. A tool that computes rather than guesses states that limit instead of quietly inventing notation - the converter refuses 4000 and tells you why.
+
+## Reading 1994
+
+The canonical construction is place by place, and reading it back the same way is the trick to fluency: MCMXCIV is M (1000) + CM (900) + XC (90) + IV (4). Each place is either a plain run or one subtractive pair, never both. Once you read numerals in places instead of symbols, MMXXVI stops being a puzzle and becomes 2026.

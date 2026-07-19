@@ -53,6 +53,35 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-18",
+    time: "16:30",
+    kind: "feature",
+    title: "The Global Cat Distribution System opens for tracking",
+    body: "The /dev/fun shelf gains its fourth toy: a tracking console for the internet's most reliable logistics network - stray cats assigning themselves to humans. Enter your name, read your delivery manifest: unit, coat, temperament, delivery vector (doorstep during rain remains the classic route), and the six-step status timeline. Assignments are deterministic - the same name always receives the same cat, which is not a bug but destiny. Fully native in English and Brazilian Portuguese: o Sistema escolheu voc\u00ea.",
+  },
+  {
+    date: "2026-07-18",
+    time: "16:00",
+    kind: "tool",
+    title: "Four tools: Roman numerals, the Greek alphabet, and exact time",
+    body: "The Identifiers & time family grows around the Unix time converter, and Text & utilities gains an alphabet. The Roman numerals converter builds the canonical subtractive form place by place, accepts historical additive spellings like IIII with an explanation, and refuses IL with the rule it breaks. The Greek alphabet explainer transliterates both directions and carries the full 24-letter table, from \u03bc micro to \u03a9 ohms. The time calculator does exact duration arithmetic - and honestly refuses 'plus one month', a calendar unit with no single length. The multi-time-zone meeting planner reads one instant in every attendee's IANA zone, flags working hours and the Tokyo-joins-tomorrow date shift. Forty-two golden vectors across the four; three companion articles in English and Brazilian Portuguese.",
+    tools: ["roman-numerals", "greek-alphabet", "time-calculator", "timezone-meeting-planner"],
+  },
+  {
+    date: "2026-07-18",
+    time: "15:00",
+    kind: "i18n",
+    title: "Meeting Bingo speaks seven languages",
+    body: "Every meeting type on the card - all thirteen, from the video call to the marketing review - is now natively authored in English, Brazilian Portuguese, Spanish, German, Italian, French, and Dutch. Not translations: each language's own meeting liturgy, ninety-one pools and more than two thousand three hundred phrases in all. The Italian war room knows \u00e8 sempre il DNS, the French one c'est toujours le DNS, the Dutch strategy meeting has its stip op de horizon, and the academic quarter-hour arrives in every language that observes it.",
+  },
+  {
+    date: "2026-07-18",
+    time: "13:30",
+    kind: "feature",
+    title: "Meeting Bingo: the profession pack",
+    body: "Four new meeting types join the card deck: the tax and legal review, civil works and public infrastructure, the HR meeting, and the marketing review. Each pool is authored natively in English, Brazilian Portuguese, Spanish, and German - real utterances from each language's own meeting culture, not translations - twenty-six per pool, four hundred and sixteen phrases in all. Salvo melhor ju\u00edzo, vorbehaltlich der Pr\u00fcfung, sin perjuicio de lo anterior: bingo.",
+  },
+  {
+    date: "2026-07-18",
     time: "12:00",
     kind: "feature",
     title: "Study guides: reading paths and blueprint guides, one door",
