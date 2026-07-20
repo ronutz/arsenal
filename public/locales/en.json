@@ -7508,7 +7508,7 @@
   "guide": {
     "eyebrow": "User guide",
     "title": "How to use this site",
-    "lede": "A practical guide to the toolbox: what is here, how each tool works, which tools to reach for, and how the site handles privacy, languages, and offline use. Everything computes locally in your browser.",
+    "lede": "A practical guide to the site: what is here, how each tool works, which tools to reach for, the learning material that surrounds them, and how the site handles privacy, languages, and offline use. Everything computes locally in your browser.",
     "tocAria": "Guide sections",
     "nav": {
       "datasheet": "At a glance",
@@ -7532,7 +7532,8 @@
       "tech": "Built with",
       "techValue": "Next.js, a statically exported progressive web app",
       "cost": "Price",
-      "costValue": "Free to use; the first useful answer is never behind a paywall"
+      "costValue": "Free to use; the first useful answer is never behind a paywall",
+      "glossary": "Glossary terms"
     },
     "quickrefHeading": "Tool reference",
     "quickrefIntro": "Every general-purpose tool, grouped by category. This list is generated from the live registry, so it is always complete. Tools tied to a specific vendor live on that vendor's page.",
@@ -7637,6 +7638,14 @@
       "source": {
         "h": "Source and license",
         "b": "The project is open source. The code is licensed under Apache 2.0 and the written content under CC BY 4.0. You can read the source, report an issue, or suggest a tool from the repository, which is linked in the footer and on the License page."
+      },
+      "learning": {
+        "h": "Learning as you go",
+        "b": "Two learning aids sit alongside the tools. The Glossary defines the acronyms, terms, and jargon the tools and articles use, from protocol names to attack backronyms, each with a short definition and a fuller explanation. And in the Learn articles and tool documentation, the first mention of a term carries a subtle dashed underline: hover or tap it for a quick definition without leaving the page, with a link to the full glossary entry. If you find the underlines distracting, turn them off under Settings, in the Reading section."
+      },
+      "beyond": {
+        "h": "Beyond the tools",
+        "b": "The site is more than the calculators. The Learn library holds articles that explain the concepts the tools operate on. The Vendors pages gather the vendor-specific tools and reference material for platforms like F5, along with the corporate history behind the names. And the Certifications area offers study guides and reading paths for people working toward a certification. All of it is reachable from the header."
       }
     },
     "backToTools": "Browse all tools",

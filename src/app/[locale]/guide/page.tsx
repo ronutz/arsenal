@@ -43,6 +43,7 @@ import FamilyChip from "@/components/FamilyChip";
 import { tools } from "@/config/tools";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getAllArticles } from "@/lib/learn";
+import { getAllGlossaryEntries } from "@/content/glossary/glossary";
 import { TRANSLATED_LOCALE_COUNT } from "@/i18n/locales";
 import { GUIDE_RECIPES } from "@/content/guide/recipes";
 
@@ -71,6 +72,7 @@ export default async function GuidePage({
   // --- Derived datasheet numbers (authoritative sources; never hand-typed) ---
   const liveToolCount = CATALOGUE.filter((tool) => tool.status === "live").length;
   const articleCount = getAllArticles().length;
+  const glossaryCount = getAllGlossaryEntries().length;
   const localeCount = TRANSLATED_LOCALE_COUNT;
 
   // Vendor-agnostic live tools, grouped by category for the quick reference,
@@ -96,6 +98,7 @@ export default async function GuidePage({
     { label: t("ds.tools"), value: String(liveToolCount) },
     { label: t("ds.categories"), value: String(categoryCount) },
     { label: t("ds.articles"), value: String(articleCount) },
+    { label: t("ds.glossary"), value: String(glossaryCount) },
     { label: t("ds.languages"), value: String(localeCount) },
     { label: t("ds.compute"), value: t("ds.computeValue") },
     { label: t("ds.privacy"), value: t("ds.privacyValue") },
@@ -108,6 +111,8 @@ export default async function GuidePage({
   // Detailed-manual sections: heading + body, all from i18n.
   const manual: { h: string; b: string }[] = [
     { h: t("manual.start.h"), b: t("manual.start.b") },
+    { h: t("manual.learning.h"), b: t("manual.learning.b") },
+    { h: t("manual.beyond.h"), b: t("manual.beyond.b") },
     { h: t("manual.privacy.h"), b: t("manual.privacy.b") },
     { h: t("manual.api.h"), b: t("manual.api.b") },
     { h: t("manual.languages.h"), b: t("manual.languages.b") },

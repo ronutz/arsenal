@@ -7508,7 +7508,7 @@
   "guide": {
     "eyebrow": "Guia de uso",
     "title": "Como usar este site",
-    "lede": "Um guia prático da caixa de ferramentas: o que existe aqui, como cada ferramenta funciona, qual usar em cada caso e como o site trata privacidade, idiomas e uso offline. Tudo é calculado localmente, no seu navegador.",
+    "lede": "Um guia prático do site: o que há aqui, como cada ferramenta funciona, quais usar em cada caso, o material de aprendizado que as acompanha e como o site lida com privacidade, idiomas e uso offline. Tudo é calculado localmente no seu navegador.",
     "tocAria": "Seções do guia",
     "nav": {
       "datasheet": "Visão geral",
@@ -7532,7 +7532,8 @@
       "tech": "Feito com",
       "techValue": "Next.js, um progressive web app exportado de forma estática",
       "cost": "Preço",
-      "costValue": "Uso gratuito; a primeira resposta útil nunca fica atrás de um paywall"
+      "costValue": "Uso gratuito; a primeira resposta útil nunca fica atrás de um paywall",
+      "glossary": "Termos do glossário"
     },
     "quickrefHeading": "Referência de ferramentas",
     "quickrefIntro": "Todas as ferramentas de uso geral, organizadas por categoria. Esta lista é gerada a partir do registro ativo, então está sempre completa. As ferramentas ligadas a um fabricante específico ficam na página desse fabricante.",
@@ -7637,6 +7638,14 @@
       "source": {
         "h": "Código e licença",
         "b": "O projeto é de código aberto. O código é licenciado sob Apache 2.0 e o conteúdo escrito sob CC BY 4.0. Você pode ler o código, relatar um problema ou sugerir uma ferramenta pelo repositório, que fica no rodapé e na página de Licença."
+      },
+      "learning": {
+        "h": "Aprendendo pelo caminho",
+        "b": "Dois recursos de aprendizado acompanham as ferramentas. O Glossário define as siglas, os termos e o jargão que as ferramentas e os artigos usam, de nomes de protocolos a backronyms de ataques, cada um com uma definição curta e uma explicação mais completa. E nos artigos do Aprender (Learn) e na documentação das ferramentas, a primeira menção de um termo traz um sublinhado tracejado sutil: passe o mouse ou toque para ver uma definição rápida sem sair da página, com um link para a entrada completa do glossário. Se os sublinhados o distraírem, desligue-os em Configurações, na seção Leitura."
+      },
+      "beyond": {
+        "h": "Além das ferramentas",
+        "b": "O site é mais do que as calculadoras. A biblioteca Aprender (Learn) reúne artigos que explicam os conceitos sobre os quais as ferramentas operam. As páginas de Fornecedores reúnem as ferramentas específicas de cada fabricante e o material de referência de plataformas como a F5, junto com a história corporativa por trás dos nomes. E a área de Certificações oferece guias de estudo e trilhas de leitura para quem está se preparando para uma certificação. Tudo isso é acessível pelo cabeçalho."
       }
     },
     "backToTools": "Ver todas as ferramentas",

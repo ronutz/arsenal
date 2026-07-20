@@ -53,6 +53,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-19",
+    time: "22:00",
+    kind: "content",
+    title: "The glossary grows past 800 entries, and terms light up inline",
+    body: "Two threads land together. First, the glossary crossed from 605 to 814 entries: every acronym the site teaches now has a home, and a shelf of named vulnerabilities and backronyms joins the lore, from BEAST, POODLE, and CRIME through Heartbleed, Spectre, and Terrapin, each with a short definition and a fuller explanation in English and Brazilian Portuguese. Second, those definitions now come to you: in the Learn articles and every tool's documentation, the first mention of a term on a page carries a subtle dashed underline, and hovering or tapping it shows a quick definition without leaving the page, with a link to the full glossary entry. The underlines are first-occurrence only, so the prose stays clean, and if you would rather not see them there is an off switch under Settings, in the new Reading section.",
+    links: [{ label: "Glossary", href: "/glossary" }],
+  },
+  {
+    date: "2026-07-19",
     time: "20:00",
     kind: "tool",
     title: "BIG-IP DNS (GTM) GSLB simulator: watch a wide IP pick a pool, then a server",
