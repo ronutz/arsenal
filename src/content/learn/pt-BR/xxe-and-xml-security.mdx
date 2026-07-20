@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## O XML carrega um recurso perigoso
 
-O SAML é XML, e o XML tem um recurso que transforma a interpretação de entradas não confiáveis em um problema de segurança: a Definição de Tipo de Documento (DTD) e as entidades que ela pode declarar. Uma entidade é uma substituição nomeada, como uma macro. A maioria é inofensiva, mas uma DTD pode definir entidades que puxam conteúdo externo ou expandem de forma explosiva, e um parser que as processa faz o trabalho do atacante enquanto apenas lê o documento. Como uma mensagem SAML chega de fora e é processada por um servidor, essa é exatamente a situação perigosa.
+O SAML (Linguagem de Marcação para Asserção de Segurança, do inglês Security Assertion Markup Language) é XML, e o XML tem um recurso que transforma a interpretação de entradas não confiáveis em um problema de segurança: a Definição de Tipo de Documento (DTD) e as entidades que ela pode declarar. Uma entidade é uma substituição nomeada, como uma macro. A maioria é inofensiva, mas uma DTD pode definir entidades que puxam conteúdo externo ou expandem de forma explosiva, e um parser que as processa faz o trabalho do atacante enquanto apenas lê o documento. Como uma mensagem SAML chega de fora e é processada por um servidor, essa é exatamente a situação perigosa.
 
 ## Entidade Externa de XML (XXE)
 

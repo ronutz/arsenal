@@ -251,7 +251,10 @@
       "err_order": "A data de expiração deve ser posterior à de emissão.",
       "err_tooLong": "Esta entrada é longa demais.",
       "err_invalid": "Não foi possível ler essas datas.",
-      "clearLabel": "Limpar"
+      "clearLabel": "Limpar",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "datesLabel": "Validade do certificado"
     },
     "cidr": {
       "title": "Calculadora CIDR",
@@ -592,7 +595,8 @@
         "err_path": "Informe o caminho de um arquivo local para a URL file://.",
         "err_protocol": "Escolha um protocolo.",
         "windowsNote": "As aspas seguem shells POSIX (bash, zsh). O cmd.exe e o PowerShell usam regras diferentes; execute como está no Git Bash ou no WSL.",
-        "privacy": "Roda inteiramente no seu navegador. Nada do que você digita é enviado e nenhuma requisição é executada."
+        "privacy": "Roda inteiramente no seu navegador. Nada do que você digita é enviado e nenhuma requisição é executada.",
+        "clearFields": "Limpar campos"
       },
       "tls": {
         "clear": "texto claro",
@@ -4956,7 +4960,8 @@
         "standby": "Membros em um priority group mais baixo estão em standby e não recebem tráfego enquanto o grupo ativo atende ao limite de priority group activation.",
         "lc-fresh": "O Least Connections é simulado a partir de uma tabela de conexões limpa (esta ferramenta não recebe contagem de conexões atuais), então começa uniforme, como o Round Robin. Em um sistema ao vivo ele favorece membros com menos conexões ativas.",
         "cookie-fallback": "O Least Sessions usa a contagem de registros de persistência como métrica. Nota: com persistência baseada em cookie, o BIG-IP volta para Round Robin."
-      }
+      },
+      "clear": "Limpar"
     },
     "ja3-tls-fingerprint": {
       "name": "Fingerprint TLS passivo JA3 / JA3N",
@@ -5440,6 +5445,151 @@
       "colBusiness": "Horário comercial",
       "bhYes": "sim",
       "bhNo": "não"
+    },
+    "p0f-signature-explainer": {
+      "name": "Explicador de assinatura TCP/IP passiva p0f",
+      "blurb": "Decodifique uma impressão digital SYN do p0f v3 em seus oito campos e veja o que cada um revela sobre o SO, o caminho de rede e a pilha do remetente.",
+      "inputLabel": "Assinatura p0f v3",
+      "inputPlaceholder": "4:64:0:*:mss*20,7:mss,sok,ts,nop,ws:df,id+:0",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda localmente. A assinatura que você cola nunca sai do seu navegador.",
+      "errorTitle": "Não foi possível interpretar",
+      "errGeneric": "Erro inesperado ao interpretar a assinatura.",
+      "osTitle": "Palpite de família de SO",
+      "confidence": "Confiança",
+      "conf": {
+        "exact": "correspondência exata",
+        "family": "família (por TTL)",
+        "none": "sem correspondência"
+      },
+      "fieldsTitle": "Os oito campos",
+      "colField": "Campo",
+      "colValue": "Valor",
+      "colMeaning": "Significado",
+      "ttlTitle": "TTL inicial e raciocínio de proxy",
+      "optionsTitle": "Opções TCP em ordem",
+      "colToken": "Token",
+      "colName": "Nome",
+      "quirksTitle": "Peculiaridades"
+    },
+    "user-agent-entropy-analyzer": {
+      "name": "Analisador de entropia de User-Agent",
+      "blurb": "Cole uma string de User-Agent e veja os tokens identificadores que ela expõe, os bits distintivos que cada um contribui e a migração para Client Hints.",
+      "inputLabel": "String de User-Agent",
+      "inputPlaceholder": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ... Chrome/120.0.0.0 Safari/537.36",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda localmente. A string que você cola nunca sai do seu navegador; nada é lido do seu próprio navegador.",
+      "errorTitle": "Não foi possível interpretar",
+      "errGeneric": "Erro inesperado ao interpretar o User-Agent.",
+      "summaryTitle": "O que ele identifica",
+      "reducedTag": "Esta é a forma reduzida / congelada do UA - a versão menor é fixa e o detalhe de plataforma é limitado.",
+      "componentsTitle": "Superfície de fingerprinting",
+      "colComponent": "Componente",
+      "colValue": "Valor",
+      "colBits": "~bits",
+      "colNote": "Nota",
+      "totalRow": "Total",
+      "totalNote": "soma ilustrativa de bits distintivos",
+      "bitsDisclaimer": "As estimativas de bits são ilustrativas, de pesquisa publicada sobre fingerprinting - não uma medição ao vivo de nenhuma população.",
+      "freezeTitle": "Congelamento do UA",
+      "chTitle": "Client Hints"
+    },
+    "http-header-order-fingerprint": {
+      "name": "Impressão digital pela ordem de cabeçalhos HTTP",
+      "blurb": "Cole um bloco de cabeçalhos de requisição e veja como a ordem e a caixa dos cabeçalhos identificam o cliente - o análogo em HTTP passivo do JA3.",
+      "inputLabel": "Bloco bruto de cabeçalhos da requisição",
+      "inputPlaceholder": "GET / HTTP/1.1\nHost: example.com\nUser-Agent: ...",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda localmente. Os cabeçalhos que você cola nunca saem do seu navegador.",
+      "errorTitle": "Não foi possível interpretar",
+      "errGeneric": "Erro inesperado ao interpretar os cabeçalhos.",
+      "clientTitle": "Palpite de cliente",
+      "confidence": "Confiança",
+      "conf": {
+        "strong": "forte",
+        "weak": "fraco",
+        "none": "nenhum"
+      },
+      "orderHash": "Hash da ordem (apenas exibição)",
+      "orderTitle": "Ordem dos cabeçalhos",
+      "colHeader": "Cabeçalho",
+      "colNote": "Nota",
+      "casingTitle": "Sinal de caixa",
+      "missingTitle": "Cabeçalhos comuns ausentes",
+      "missingIntro": "Um navegador normalmente enviaria estes:"
+    },
+    "bigip-dns-gslb-simulator": {
+      "name": "Simulador GSLB do BIG-IP DNS (GTM)",
+      "blurb": "Modele o balanceamento global de carga em dois níveis: um wide IP escolhe um pool e o pool escolhe um servidor virtual. Veja como N requisições DNS são resolvidas entre pools e membros.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda localmente. Sua topologia e requisições nunca saem do seu navegador.",
+      "wideIpLabel": "Configuração do wide IP",
+      "poolMethodLabel": "Método de pool do wide IP",
+      "clientRegionLabel": "Região do cliente",
+      "requestsLabel": "Requisições (N)",
+      "addPool": "Adicionar pool",
+      "removePool": "Remover pool",
+      "addMember": "Adicionar membro",
+      "removeMember": "Remover",
+      "poolWord": "Pool",
+      "memberWord": "VS",
+      "poolIdCol": "Pool",
+      "memberIdCol": "Servidor virtual",
+      "ratioCol": "Ratio",
+      "regionCol": "Região",
+      "upCol": "Ativo",
+      "memberMethodLabel": "Método de membro",
+      "errorTitle": "Não é possível simular",
+      "notSimulableTitle": "Não simulável de forma determinística",
+      "notSimulableGeneric": "Este método depende de métricas de desempenho ao vivo coletadas pelo big3d em cada data center, então seu resultado não pode ser reproduzido offline. A ferramenta declara isso em vez de inventar uma distribuição.",
+      "poolTierTitle": "Nível de pool - qual pool responde",
+      "memberTierTitle": "Nível de membro - qual servidor virtual resolve",
+      "countCol": "Requisições",
+      "pctCol": "Fração",
+      "upYes": "sim",
+      "upNo": "não",
+      "memberDynamicNote": "Um ou mais pools usam um método de membro dinâmico; esses membros mostram 0 porque a seleção precisa de métricas ao vivo.",
+      "notesTitle": "Notas",
+      "method": {
+        "round-robin": "Round Robin",
+        "ratio": "Ratio",
+        "global-availability": "Global Availability",
+        "topology": "Topology",
+        "qos": "Quality of Service (dinâmico)",
+        "completion-rate": "Completion Rate (dinâmico)",
+        "lowest-round-trip-time": "Lowest Round-Trip Time (dinâmico)",
+        "fewest-hops": "Fewest Hops (dinâmico)",
+        "kilobytes-per-second": "Kilobytes/Segundo (dinâmico)",
+        "packet-rate": "Packet Rate (dinâmico)",
+        "virtual-server-score": "Virtual Server Score (dinâmico)",
+        "least-connections": "Least Connections (dinâmico)",
+        "cpu": "CPU (dinâmico)"
+      },
+      "reason": {
+        "qos": "O Quality of Service pontua cada servidor virtual a partir de métricas ao vivo de RTT, saltos e hit-ratio.",
+        "completion-rate": "O Completion Rate compara a porcentagem de pacotes trocados com sucesso, uma métrica ao vivo.",
+        "lowest-round-trip-time": "O Lowest Round-Trip Time escolhe o recurso com o menor RTT medido a partir do DNS local.",
+        "fewest-hops": "O Fewest Hops escolhe o recurso com o menor número de saltos de roteador a partir do DNS local, medido pelo big3d.",
+        "kilobytes-per-second": "O Kilobytes/Segundo roteia pela vazão ao vivo.",
+        "packet-rate": "O Packet Rate roteia por pacotes por segundo ao vivo.",
+        "virtual-server-score": "O Virtual Server Score usa uma pontuação de desempenho por VS ao vivo.",
+        "least-connections": "O Least Connections roteia pela contagem de conexões ao vivo.",
+        "cpu": "O CPU roteia pela utilização de processador ao vivo."
+      },
+      "note": {
+        "pool:global-availability": "O Global Availability do wide IP envia todas as requisições ao primeiro pool disponível; os demais ficam em reserva.",
+        "pool:topology-match": "O Topology do wide IP casou a região do cliente com um pool (pontuação 10).",
+        "pool:topology-nomatch": "Nenhuma região de pool casou com a região do cliente, então o wide IP recorreu a round-robin entre os pools disponíveis.",
+        "pool:none-up": "Nenhum pool está disponível.",
+        "global-availability": "O Global Availability envia todas as requisições ao primeiro recurso disponível.",
+        "topology-match": "O Topology casou a região do cliente (pontuação 10).",
+        "topology-nomatch": "Nenhuma região casou; recorreu a round-robin.",
+        "none-up": "Nenhum recurso está disponível."
+      }
     }
   },
   "privacy_page": {
@@ -5688,7 +5838,7 @@
           "title": "Os micros nacionais",
           "body": [
             "A primeira máquina chegou em casa do mesmo jeito que o rádio havia chegado: pelo pai. Um Rodolfo de nove anos observava, encantado, o pai carregar um programa no computador a partir de uma fita cassete comum e então fazer coisas acontecerem na tela do aparelho de televisão — que, naquela época, era o monitor que todo micro doméstico pegava emprestado da sala. Parecia mágica, e não demorou para que o observar virasse fazer.",
-            "A máquina em si era filha do seu tempo. Em 1984 o Brasil vivia sob a reserva de mercado, que proibia a importação de computadores para proteger uma indústria nacional, então as máquinas eram clones locais — o primeiro aqui um Microdigital TK-82C, um clone brasileiro do ZX81 da Sinclair, mais tarde acompanhado pelo TK90X, um clone do ZX Spectrum 48Kb.",
+            "A máquina em si era filha do seu tempo. Em 1984 o Brasil vivia sob a reserva de mercado, que proibia a importação de computadores para proteger uma indústria nacional, então as máquinas eram clones locais — o primeiro aqui um Microdigital TK-82C, um clone brasileiro do ZX81 da Sinclair, mais tarde acompanhado pelo TK90X, um clone do ZX Spectrum 48K.",
             "Não havia disco rígido nem rede. Logo Rodolfo estava escrevendo seus próprios programas em BASIC, digitados à mão a partir das últimas páginas das revistas e gravados naquela mesma fita chiante; um teclado de membrana sob os dedos, a televisão ainda fazendo as vezes de monitor. Ele aprendeu BASIC porque não havia mais nada para fazer com aquilo, e no processo aprendeu a verdade sobre a qual o resto deste site é construído: um computador não é mágica. É uma máquina que faz exatamente, e apenas, o que você mandar."
           ]
         },
@@ -6933,7 +7083,9 @@
         ]
       }
     },
-    "devFunTitle": "Voltar para /dev/fun"
+    "devFunTitle": "Voltar para /dev/fun",
+    "fullscreenEnterAria": "Entrar em tela cheia",
+    "fullscreenExitAria": "Sair da tela cheia"
   },
   "devFun": {
     "metaTitle": "/dev/fun",
@@ -7987,7 +8139,9 @@
       "ops-culture": "cultura de operações",
       "web-development": "desenvolvimento web",
       "programming": "programação",
-      "vendors": "fornecedores e produtos"
+      "vendors": "fornecedores e produtos",
+      "isp-telecom": "Provedores e telecom",
+      "it-support": "Suporte de TI"
     },
     "entries": {
       "the-hacker-manifesto": {
@@ -9401,6 +9555,1738 @@
       "cortex": {
         "def": "A família de operações de segurança da Palo Alto Networks, anunciada em fevereiro de 2019: detecção, resposta e automação para o SOC.",
         "context": "O Cortex chegou em fevereiro de 2019 como plataforma de segurança baseada em IA junto com o Cortex XDR, o produto que empurrou 'XDR' para o vocabulário do setor como detecção e resposta sobre telemetria de endpoint, rede e nuvem, e não apenas de endpoint. A família cresceu por aquisição e iteração: Cortex XSOAR, da Demisto (2019), para orquestração e automação; Cortex Xpanse, da Expanse (2020), para gestão de superfície de ataque; e Cortex XSIAM (2022) como a plataforma de SOC guiada por IA que consolida essas capacidades. Na prática, o nome marca o lado de operações da casa, onde o Strata aplica políticas e o Prisma cobre a nuvem."
+      },
+      "vlan": {
+        "def": "Virtual LAN: um domínio de broadcast lógico de camada 2 recortado de uma rede física de switches, isolando tráfego sem hardware separado.",
+        "context": "Definida pelo IEEE 802.1Q, que marca cada quadro com um VLAN ID de 12 bits - daí as 4094 VLANs utilizáveis."
+      },
+      "trunk-port": {
+        "def": "Porta de switch que transporta várias VLANs ao mesmo tempo, cada quadro etiquetado com seu VLAN ID para o outro lado separá-los.",
+        "context": "O oposto da porta de acesso, que pertence a exatamente uma VLAN e transporta quadros sem tag."
+      },
+      "spanning-tree": {
+        "def": "O protocolo de camada 2 que bloqueia enlaces redundantes entre switches para evitar loops, mantendo exatamente um caminho ativo entre dois pontos.",
+        "context": "IEEE 802.1D e seus sucessores mais rápidos (RSTP, MST); uma rede L2 em loop sem ele derrete numa tempestade de broadcast."
+      },
+      "arp": {
+        "def": "Address Resolution Protocol: como um host pergunta 'quem tem este IP?' na rede local e aprende o endereço MAC que responde.",
+        "context": "Toda conversa IPv4 numa LAN começa por ele; a falta de autenticação é o que torna o ARP spoofing possível."
+      },
+      "dhcp": {
+        "def": "Dynamic Host Configuration Protocol: entrega a cada dispositivo que entra um endereço IP, máscara, gateway e servidores DNS, alugados por tempo limitado.",
+        "context": "A dança de quatro passos é DORA: Discover, Offer, Request, Acknowledge."
+      },
+      "ospf": {
+        "def": "Open Shortest Path First: o protocolo padrão de roteamento interno por estado de enlace, em que cada roteador mapeia a área inteira e calcula os menores caminhos.",
+        "context": "Roda Dijkstra sobre uma base de estado de enlace compartilhada; a convergência é rápida porque todos recalculam do mesmo mapa."
+      },
+      "static-route": {
+        "def": "Uma rota inserida à mão em vez de aprendida por protocolo: absoluta, silenciosa e exatamente tão correta quanto quem a digitou.",
+        "context": "Escala lindamente até mais ou menos uma dúzia; além disso, roteamento dinâmico existe por um motivo."
+      },
+      "default-route": {
+        "def": "A rota de último recurso - 0.0.0.0/0 - que casa com tudo o que nenhuma rota mais específica reivindica; a saída do pacote do prédio.",
+        "context": "Nos hosts é o 'gateway padrão'; nos roteadores do núcleo da internet famosamente não existe - a default-free zone."
+      },
+      "administrative-distance": {
+        "def": "O ranking de confiança que um roteador aplica quando duas fontes oferecem o mesmo prefixo: menor vence, então conectada supera estática, que supera OSPF, que supera rotas via BGP.",
+        "context": "Um critério local de desempate, não um campo de protocolo: dois fabricantes podem ranquear as mesmas fontes de forma diferente."
+      },
+      "longest-prefix-match": {
+        "def": "A regra de roteamento de que o prefixo mais específico vence: /32 supera /24, que supera /0, independentemente de protocolo ou métrica.",
+        "context": "A razão pela qual um /25 vazado pode sequestrar tráfego do /24 legítimo."
+      },
+      "lacp": {
+        "def": "Link Aggregation Control Protocol: agrupa vários enlaces físicos num canal lógico para banda e redundância, negociado em vez de esperado.",
+        "context": "IEEE 802.3ad/802.1AX; um agregado sem negociação é como se obtêm port channels de um lado só e falhas misteriosas."
+      },
+      "vrrp": {
+        "def": "Virtual Router Redundancy Protocol: dois ou mais roteadores compartilham um endereço de gateway virtual, para o gateway padrão sobreviver à falha de um equipamento.",
+        "context": "O irmão de padrão aberto do HSRP da Cisco; o ritual é uma eleição, o prêmio é o MAC virtual."
+      },
+      "vrf": {
+        "def": "Virtual Routing and Forwarding: várias tabelas de roteamento independentes num só roteador, para redes sobrepostas ou não relacionadas nunca se misturarem.",
+        "context": "O irmão de roteamento da ideia de VLAN: virtualizar a tabela, não só o domínio de broadcast."
+      },
+      "mpls": {
+        "def": "Multiprotocol Label Switching: encaminha pacotes por rótulos curtos em vez de consultas IP, permitindo às operadoras caminhos rápidos e VPNs privadas sobre núcleos compartilhados.",
+        "context": "O 'multiprotocol' é literal: o rótulo não sabe nem se importa com o payload que carrega."
+      },
+      "gre-tunnel": {
+        "def": "Generic Routing Encapsulation: embrulha um pacote dentro de outro para o tráfego cruzar redes que não o roteariam nativamente - um túnel, sem criptografia.",
+        "context": "Combine com IPsec quando a confidencialidade importa; GRE sozinho é um envelope, não um cofre."
+      },
+      "ipsec": {
+        "def": "A suíte padrão para criptografar e autenticar tráfego IP, base da maioria das VPNs site-to-site; as chaves são negociadas pelo IKE.",
+        "context": "Dois modos: transport protege o payload, tunnel embrulha o pacote inteiro - as VPNs site-to-site vivem no segundo."
+      },
+      "acl": {
+        "def": "Access Control List: um conjunto ordenado de regras de permissão e negação avaliado de cima para baixo contra o tráfego, com um deny implícito esperando no final.",
+        "context": "A primeira correspondência vence, e é por isso que a ordem das regras é o jogo inteiro."
+      },
+      "stateful-firewall": {
+        "def": "Um firewall que rastreia conexões, liberando automaticamente o tráfego de retorno das sessões que viu começar - julgando fluxos, não pacotes isolados.",
+        "context": "O contraste é o filtro de pacotes stateless, que avalia cada pacote como um desconhecido."
+      },
+      "dmz": {
+        "def": "Zona desmilitarizada: a rede-tampão entre a internet e o interior, onde vivem os servidores expostos ao público sob vigilância mais rígida.",
+        "context": "Batizada em referência à faixa-tampão militar; o comprometimento de um host da DMZ não deveria entregar o interior."
+      },
+      "snmp": {
+        "def": "Simple Network Management Protocol: o padrão de décadas para consultar saúde e contadores de equipamentos, e receber traps quando algo quebra.",
+        "context": "A versão 3 trouxe autenticação e criptografia reais; as communities 'public' e 'private' ainda assombram auditorias."
+      },
+      "syslog": {
+        "def": "O protocolo universal de envio de logs: equipamentos transmitem eventos com timestamp e severidade a um coletor central, do ruído de debug às emergências.",
+        "context": "O RFC 5424 formalizou o que o BSD improvisou; severidade 0 é Emergency, 7 é Debug, e ambas são ignoradas às 3 da manhã."
+      },
+      "netflow": {
+        "def": "Telemetria de fluxos: roteadores exportam registros de quem-falou-com-quem (endereços, portas, bytes, duração) para enxergar padrões de tráfego sem capturar pacotes.",
+        "context": "Original da Cisco; IPFIX é o descendente padrão IETF, sFlow o primo por amostragem."
+      },
+      "port-mirroring": {
+        "def": "Copiar o tráfego de uma porta ou VLAN para outra porta, para um analisador ou IDS observar sem ficar em linha.",
+        "context": "SPAN espelha localmente, RSPAN entre switches, ERSPAN através de redes roteadas - cada salto adiciona formas de descartar pacotes em silêncio."
+      },
+      "jumbo-frames": {
+        "def": "Quadros Ethernet acima do payload padrão de 1500 bytes, tipicamente 9000: menos cabeçalhos por gigabyte, e sofrimento quando um salto do caminho discorda.",
+        "context": "Todos os equipamentos do caminho precisam concordar, e é por isso que prosperam dentro do data center e morrem ao cruzar a internet."
+      },
+      "duplex-mismatch": {
+        "def": "Uma ponta em full duplex, a outra em half: o link funciona, devagar e com colisões tardias - a clássica causa raiz do 'a rede está estranha' dos anos 2000.",
+        "context": "Geralmente nasce de um lado fixado à mão e o outro autonegociando; o lado em autonegociação cai para half."
+      },
+      "poe": {
+        "def": "Power over Ethernet: o switch alimenta energia pelo próprio cabo de dados, dispensando tomada para telefones, câmeras e access points.",
+        "context": "As classes IEEE 802.3af/at/bt entregam cerca de 15 W, 30 W e até 90 W por porta."
+      },
+      "sfp": {
+        "def": "Small Form-factor Pluggable: o módulo intercambiável que dá à porta do switch seu meio físico - cobre ou fibra, curto alcance ou longa distância.",
+        "context": "SFP+ carrega 10G, QSFP agrupa quatro pistas; a porta é um soquete, o transceiver é a decisão."
+      },
+      "lldp": {
+        "def": "Link Layer Discovery Protocol: vizinhos se apresentam no cabo - equipamento, porta, capacidades - transformando 'o que há do outro lado?' num comando show.",
+        "context": "O sucessor neutro de fabricante do CDP da Cisco; telefones IP o estendem como LLDP-MED para VLANs de voz e dicas de PoE."
+      },
+      "ecmp": {
+        "def": "Equal-Cost Multi-Path: quando várias rotas empatam em custo, o tráfego é distribuído por hash entre todas - balanceamento gratuito, por fluxo, não por pacote.",
+        "context": "O hash por fluxo mantém os pacotes em ordem; fluxos-elefante ainda podem sobrecarregar injustamente um caminho."
+      },
+      "leaf-spine": {
+        "def": "A malha moderna de data center: cada switch leaf conecta a todos os spines, dando a quaisquer dois servidores o mesmo caminho curto e previsível.",
+        "context": "Substituiu o desenho de três camadas core/distribuição/acesso quando o tráfego leste-oeste ultrapassou o norte-sul."
+      },
+      "vxlan": {
+        "def": "Virtual Extensible LAN: estende segmentos de camada 2 sobre uma rede roteada de camada 3 encapsulando quadros em UDP, com 16 milhões de IDs de segmento.",
+        "context": "O overlay sob a maioria das malhas de nuvem e data centers modernos, geralmente com EVPN como plano de controle."
+      },
+      "underlay-overlay": {
+        "def": "A visão em duas camadas das redes modernas: o underlay é o encanamento físico roteado; o overlay é a topologia virtual tunelada por cima dele.",
+        "context": "Quando o overlay se comporta mal, o underlay é onde se investiga; confundir os dois é a confusão clássica das redes modernas."
+      },
+      "out-of-band-management": {
+        "def": "Um caminho de gerência separado - servidores de console, portas dedicadas, até 4G - que continua funcionando quando a rede de produção é justamente o que quebrou.",
+        "context": "A diferença entre consertar um core switch morto de casa e dirigir até o site às 3 da manhã."
+      },
+      "loopback-interface": {
+        "def": "Uma interface virtual que nunca cai, dando ao roteador uma identidade estável para protocolos de roteamento e gerência independentemente do estado dos links físicos.",
+        "context": "Sessões BGP e router IDs se ancoram em loopbacks precisamente porque cabos falham e loopbacks não."
+      },
+      "asymmetric-routing": {
+        "def": "Tráfego que sai por um caminho e volta por outro: comportamento IP perfeitamente legal que quebra silenciosamente firewalls stateful que esperavam ver as duas direções.",
+        "context": "Comum onde há multihoming; a cura é compartilhar estado entre firewalls ou aceitar a assimetria por projeto."
+      },
+      "mac-flapping": {
+        "def": "O mesmo endereço MAC aparecendo rapidamente em portas diferentes do switch - a assinatura de um loop, um bond mal feito ou um dispositivo fazendo bridge onde não devia.",
+        "context": "Os logs do switch anunciam literalmente - 'host flapping between ports' - uma das poucas mensagens de erro que nomeia o próprio diagnóstico."
+      },
+      "storm-control": {
+        "def": "Um teto por porta para tráfego broadcast, multicast ou unicast desconhecido, que limita ou desliga a porta quando uma tempestade começa.",
+        "context": "Um cinto de segurança bruto mas eficaz: não encontra o loop, apenas sobrevive a ele."
+      },
+      "port-security": {
+        "def": "Regras de porta de switch limitando quais e quantos endereços MAC podem aparecer, para um hub clandestino ou dispositivo forjado derrubar a porta em vez de entrar nela.",
+        "context": "O aprendizado sticky de MAC grava o primeiro endereço visto na configuração - a ordem importa no dia da instalação."
+      },
+      "rfc1918": {
+        "def": "As faixas IPv4 privadas - 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 - roteáveis internamente, nunca na internet pública, e a razão de o NAT existir.",
+        "context": "Publicado em 1996 com o esgotamento de endereços à vista; todo 192.168.0.1 doméstico descende dele."
+      },
+      "link-local": {
+        "def": "Endereços válidos apenas no segmento local: o fe80::/10 do IPv6 em toda interface por design, o 169.254.0.0/16 do IPv4 geralmente significando que o DHCP falhou.",
+        "context": "Ver 169.254.x.x numa estação de trabalho é um diagnóstico, não um plano de endereçamento."
+      },
+      "dual-stack": {
+        "def": "Rodar IPv4 e IPv6 lado a lado nos mesmos hosts e enlaces - a estratégia padrão de transição enquanto as duas internets coexistem.",
+        "context": "O meio-termo pragmático da transição IPv6, à frente das abordagens de tradução (NAT64) e tunelamento."
+      },
+      "slaac": {
+        "def": "Stateless Address Autoconfiguration: hosts IPv6 constroem os próprios endereços a partir de anúncios do roteador - sem servidor DHCP, sem tabela de leases.",
+        "context": "O método EUI-64 derivava endereços dos MACs até as extensões de privacidade os tornarem aleatórios."
+      },
+      "oversubscription": {
+        "def": "Vender ou provisionar mais capacidade agregada do que o uplink realmente tem, apostando que nunca todos atingem o pico juntos - uma razão, e uma promessa.",
+        "context": "Prática normal de engenharia, de fabrics de switch a banda larga; o pecado não é a razão, é escondê-la."
+      },
+      "wire-speed": {
+        "def": "Encaminhar na taxa plena do meio sem perda por fila - a alegação de benchmark que todo datasheet faz e todo teste RFC 2544 verifica.",
+        "context": "Leia a letra miúda: em qual tamanho de quadro? Wire speed com quadros de 64 bytes é o número honesto."
+      },
+      "dark-fiber": {
+        "def": "Fibras instaladas mas apagadas, alugadas como vidro puro: o cliente traz a óptica e é dono do teto de capacidade.",
+        "context": "O nome é literal - nenhuma luz no vidro até o locatário acendê-la."
+      },
+      "bfd": {
+        "def": "Bidirectional Forwarding Detection: pacotes de hello em escala de milissegundos que avisam aos protocolos de roteamento que um caminho morreu bem antes de seus próprios timers perceberem.",
+        "context": "Os protocolos de roteamento mantêm seus hellos lentos por sanidade; o BFD existe para o failover acontecer antes de o usuário perceber."
+      },
+      "last-mile": {
+        "def": "O trecho final de rede entre a infraestrutura do provedor e a porta do cliente - os quilômetros mais caros das telecomunicações.",
+        "context": "Fibra, coaxial, cobre ou rádio; toda tecnologia de acesso é uma resposta a esse único segmento."
+      },
+      "ftth": {
+        "def": "Fiber to the Home: fibra óptica percorrendo toda a última milha até dentro da residência, sem resto de cobre ou coaxial.",
+        "context": "O X de FTTx marca onde a fibra para: casa, prédio (FTTB), calçada (FTTC), nó (FTTN)."
+      },
+      "gpon": {
+        "def": "Gigabit Passive Optical Network: uma fibra do OLT é dividida passivamente entre até 64 ou 128 assinantes, compartilhando 2,5 Gbps de descida e 1,25 de subida.",
+        "context": "O padrão FTTH dominante dos anos 2010; XGS-PON é seu sucessor simétrico de 10 gigabits."
+      },
+      "olt": {
+        "def": "Optical Line Terminal: a cabeça da PON do lado do provedor, terminando centenas de fibras de assinantes e agendando cada rajada de upstream.",
+        "context": "Vive na central ou num armário de rua; sua contraparte na casa é a ONT."
+      },
+      "ont": {
+        "def": "Optical Network Terminal: a caixa do lado do cliente que converte a luz da PON em Ethernet - o modem de fibra, na fala cotidiana.",
+        "context": "ONU é o quase sinônimo dos padrões; técnicos de campo usam os termos de forma intercambiável."
+      },
+      "optical-splitter": {
+        "def": "O componente passivo de vidro que divide uma fibra PON em várias - sem energia, sem eletrônica, apenas perda de luz projetada.",
+        "context": "Cada divisão 1:2 custa cerca de 3 dB; uma árvore 1:64 gasta uns 18 dB do orçamento óptico antes do drop."
+      },
+      "optical-budget": {
+        "def": "Os decibéis que um enlace pode se dar ao luxo de perder entre transmissor e receptor; splitters, emendas, conectores e distância gastam desse orçamento.",
+        "context": "Medido com power meter; um enlace estourado funciona mal ou intermitentemente, o pior tipo de quebrado."
+      },
+      "fusion-splice": {
+        "def": "Unir duas fibras derretendo-as num arco elétrico - a forma permanente e de menor perda de conectar vidro, com cerca de 0,02 dB.",
+        "context": "A máquina de emenda alinha os núcleos automaticamente; o ofício está na clivagem."
+      },
+      "otdr": {
+        "def": "Optical Time-Domain Reflectometer: dispara pulsos de luz na fibra e lê os reflexos, mapeando cada emenda, curva e rompimento por distância.",
+        "context": "O radar do técnico de fibra; o traçado mostra exatamente a quantos metros a retroescavadeira acertou."
+      },
+      "drop-cable": {
+        "def": "O cabo final do poste, pedestal ou caixa de splitter até o imóvel do cliente - a parte da planta mais exposta a clima, árvores e caminhões.",
+        "context": "Na PON é a fibra do último splitter até a ONT; a maioria das visitas técnicas termina aqui."
+      },
+      "demarc": {
+        "def": "O ponto de demarcação onde a rede do provedor termina e a do cliente começa - e, com ele, de quem é o problema.",
+        "context": "'Estender o demarc' é o jargão para cabear além desse ponto, cobrável e sem garantia."
+      },
+      "cpe": {
+        "def": "Customer Premises Equipment: qualquer equipamento gerenciado pelo provedor no cliente - modem, ONT, roteador - a metade em hardware de toda ligação 'o problema é seu ou meu?'.",
+        "context": "Gerenciado remotamente via TR-069 ou sucessores, quando tudo vai bem."
+      },
+      "docsis": {
+        "def": "O padrão que transforma o coaxial da TV a cabo em banda larga, compartilhando espectro entre os modems de um bairro sob um agendador CMTS.",
+        "context": "As versões 3.0, 3.1 e 4.0 marcam a corrida ao gigabit; o upstream foi historicamente a direção escassa."
+      },
+      "cmts": {
+        "def": "Cable Modem Termination System: o roteador de head-end dono de todos os cable modems de sua área, concedendo a cada um seus timeslots e faixa de velocidade.",
+        "context": "O gêmeo DOCSIS do OLT do mundo PON."
+      },
+      "dslam": {
+        "def": "DSL Access Multiplexer: o rack do lado da central que termina centenas de linhas DSL de cobre e entrega o tráfego ao backhaul.",
+        "context": "A distância até ele decidia sua velocidade; a razão de 'a que distância você está da central?' ser pergunta de suporte."
+      },
+      "pppoe": {
+        "def": "Point-to-Point Protocol over Ethernet: embrulha o tráfego de cada assinante numa sessão autenticada, para o provedor saber quem você é antes de roteá-lo.",
+        "context": "O ritual de login e senha do DSL que sobreviveu em boa parte do FTTH; custa 8 bytes de cada quadro."
+      },
+      "ipoe": {
+        "def": "IP over Ethernet: acesso do assinante sem PPPoE - DHCP puro, com a identidade tirada da própria linha em vez de um login.",
+        "context": "Mais simples e rápido que PPPoE; a autenticação migra para a opção 82 do DHCP e a porta de acesso."
+      },
+      "radius": {
+        "def": "O burro de carga do AAA: autentica quem conecta, autoriza o que recebe e contabiliza o que usou - para provedores, VPNs e Wi-Fi igualmente.",
+        "context": "Remote Authentication Dial-In User Service; o nome lembra os modems, o protocolo sobreviveu a eles."
+      },
+      "cgnat": {
+        "def": "Carrier-Grade NAT: o provedor compartilha um endereço IPv4 público entre muitos assinantes, traduzindo em escala de operadora porque os endereços acabaram.",
+        "context": "Quebra conexões de entrada, port forwarding e alguns jogos; o argumento cotidiano mais forte a favor do IPv6."
+      },
+      "peering": {
+        "def": "Duas redes trocando diretamente o tráfego de seus clientes, geralmente sem pagamento - porque ambas economizam em trânsito.",
+        "context": "A economia do aperto de mão da internet; disputas sobre ela ocasionalmente viram manchete e picos de latência."
+      },
+      "ixp": {
+        "def": "Internet Exchange Point: a malha de comutação compartilhada onde dezenas ou centenas de redes se encontram para fazer peering num só lugar.",
+        "context": "O IX.br brasileiro está entre os maiores do mundo em participantes; um cross-connect, muitos peers."
+      },
+      "transit": {
+        "def": "Pagar a uma rede maior para alcançar a internet inteira - a conta de upstream do provedor, precificada por megabit de taxa comprometida.",
+        "context": "Peering é comércio entre iguais; trânsito é comprar carona de quem está melhor conectado."
+      },
+      "backhaul": {
+        "def": "Os enlaces que levam o tráfego agregado de torres, armários e OLTs de volta ao núcleo da rede - a milha do meio.",
+        "context": "Uma torre com rádio gigabit e backhaul megabit é um carro esporte no congestionamento."
+      },
+      "mdf-idf": {
+        "def": "Main e Intermediate Distribution Frames: a hierarquia de cabeamento do prédio - tudo converge ao MDF, andares terminam nos IDFs.",
+        "context": "Onde o cabeamento estruturado nasce e onde cabos misteriosos recebem a etiqueta 'não remover'."
+      },
+      "patch-panel": {
+        "def": "O painel passivo onde o cabeamento permanente termina em conectores numerados, para as mudanças acontecerem com patch cords em vez de ferramenta punch-down.",
+        "context": "A foto arrumada do primeiro dia e o sítio arqueológico cinco anos depois."
+      },
+      "truck-roll": {
+        "def": "Despachar um técnico ao endereço - a forma mais cara de fechar um chamado, e às vezes a única.",
+        "context": "Todo diagnóstico remoto, kit de autoinstalação e recurso TR-069 existe para evitar um."
+      },
+      "tr-069": {
+        "def": "O protocolo de gerência remota do Broadband Forum: o ACS do provedor configura, atualiza e diagnostica a frota de CPEs sem uma única visita.",
+        "context": "CWMP pelo nome do protocolo; USP (TR-369) é o sucessor moderno."
+      },
+      "provisioning": {
+        "def": "A cadeia automatizada que transforma contrato assinado em serviço funcionando: cadastros criados, equipamento autorizado, perfil de velocidade aplicado.",
+        "context": "Quando quebra, a linha está perfeita e a internet mesmo assim não existe."
+      },
+      "walled-garden": {
+        "def": "Um estado restrito de rede em que o assinante só alcança o portal do provedor - usado para faturas em aberto, ativação ou hosts infectados.",
+        "context": "A página 'sua conta precisa de atenção' que responde a qualquer URL digitada."
+      },
+      "sla": {
+        "def": "Service Level Agreement: as promessas mensuráveis do contrato - disponibilidade, prazo de reparo, vazão - e as penalidades quando falham.",
+        "context": "99,9% permite 8,8 horas fora do ar por ano; cada nove multiplica o preço."
+      },
+      "mttr": {
+        "def": "Mean Time To Repair: a média do relógio entre a falha e a restauração - o número operacional por trás de toda promessa de reparo em SLA.",
+        "context": "Os irmãos MTBF e MTTF medem com que frequência as coisas quebram; o MTTR mede quanto tempo se sofre."
+      },
+      "attenuation": {
+        "def": "A perda de sinal com a distância e através de obstáculos, medida em dB - o orçamento que todo enlace gasta, seja cobre, fibra ou rádio.",
+        "context": "Na fibra, medida por quilômetro; no DSL, decidia seu plano; no Wi-Fi, é a parede entre você e o roteador."
+      },
+      "snr": {
+        "def": "Signal-to-Noise Ratio: quão acima do piso de ruído o sinal está, em dB - o número que decide se o enlace sustenta a velocidade nominal.",
+        "context": "Toda modulação tem seu preço em SNR; a margem é o que mantém o enlace vivo num dia de chuva."
+      },
+      "node-split": {
+        "def": "Dividir uma área congestionada de cabo ou PON em duas menores, reduzindo à metade os assinantes que compartilham a mesma capacidade.",
+        "context": "A alavanca de capacidade das redes de meio compartilhado: menos vizinhos por nó, mais velocidade por vizinho."
+      },
+      "aerial-vs-underground": {
+        "def": "As duas formas de a planta externa chegar ao cliente: em postes (barata, rápida, exposta a tempestades) ou enterrada (cara, lenta, exposta a retroescavadeiras).",
+        "context": "O mapa de construção de todo provedor é uma negociação entre essas duas economias."
+      },
+      "pole-attachment": {
+        "def": "O direito regulado de pendurar cabos em postes de energia ou telefonia - espaço alugado, regras rígidas, filas longas.",
+        "context": "As adequações e taxas de ocupação moldam onde a fibra competitiva de fato é construída."
+      },
+      "upstream-downstream": {
+        "def": "As duas direções de um enlace de acesso: downstream em direção ao assinante, upstream em direção à internet - historicamente dimensionadas de forma bem desigual.",
+        "context": "Videochamadas e backups em nuvem tornaram o upstream magro um problema de todo mundo."
+      },
+      "dhcp-option-82": {
+        "def": "A opção de informação de relay: o equipamento de acesso carimba cada pedido DHCP com a linha física de origem, dando ao provedor identidade por porta.",
+        "context": "É como redes IPoE sabem qual cliente é qual sem um login."
+      },
+      "wifi-site-survey": {
+        "def": "Medir cobertura real, interferência e redes vizinhas no local antes ou depois de posicionar access points - o mapa contra o chute.",
+        "context": "A diferença entre 'o roteador está na sala' e saber por que o quarto não recebe nada."
+      },
+      "mesh-wifi": {
+        "def": "Vários nós cooperando para formar uma rede única e contínua, retransmitindo sem fio onde o cabo não chega.",
+        "context": "Cada salto sem fio gasta o tempo de ar duas vezes; backhaul cabeado entre os nós é o upgrade silencioso."
+      },
+      "ss7": {
+        "def": "Signaling System 7: a rede de sinalização que estabelece chamadas e SMS no mundo inteiro - projetada para um clube fechado de operadoras confiáveis.",
+        "context": "Esse modelo de confiança é o motivo de o acesso ao SS7 permitir interceptação de chamadas e sequestro de SMS hoje."
+      },
+      "number-porting": {
+        "def": "Levar um número de telefone de uma operadora a outra mantendo-o - um direito regulado, uma atualização de base de dados e um vetor de fraude quando sequestrado.",
+        "context": "O golpe do SIM swap é o gêmeo do mal da portabilidade: mesmo mecanismo, identidade roubada."
+      },
+      "service-desk": {
+        "def": "O ponto único de contato entre usuários e a TI: entrada, triagem, resolução ou escalonamento, e o registro de tudo.",
+        "context": "O ITIL o distingue do help desk pelo escopo - o service desk é dono da relação de serviço inteira, não só dos consertos."
+      },
+      "ticket": {
+        "def": "A unidade de trabalho do suporte: um registro rastreado por problema, com status, responsável, histórico e prioridade - se não está no chamado, não aconteceu.",
+        "context": "Também a unidade de responsabilização: métricas, SLAs e escalonamentos às 3 da manhã pendem dele."
+      },
+      "incident-vs-request": {
+        "def": "A grande bifurcação do ITIL: incidente é algo quebrado; requisição é algo desejado - filas, prazos e expectativas diferentes.",
+        "context": "Classificar um como o outro é como um reset de senha ganha uma ponte de crise de incidente grave."
+      },
+      "severity-levels": {
+        "def": "A escada de impacto e urgência dos incidentes: P1 é tudo-parado-larga-tudo, P4 é um arranhão com fila.",
+        "context": "A negociação perpétua: todo problema é um P1 para quem ligou."
+      },
+      "escalation": {
+        "def": "Subir um chamado - funcionalmente para mais especialização, hierarquicamente para a gestão - quando o nível atual não pode ou não deve resolver.",
+        "context": "Saber quando escalar é a habilidade; escalar com uma passagem limpa é o ofício."
+      },
+      "tier-1-2-3": {
+        "def": "O modelo de suporte em camadas: N1 absorve volume com scripts e soluções conhecidas, N2 traz especialização, N3 é quem construiu ou é dono da coisa.",
+        "context": "Cada nível existe para proteger o tempo do seguinte."
+      },
+      "first-call-resolution": {
+        "def": "O percentual de problemas resolvidos no primeiro contato, sem retornos nem escalonamento - a métrica que melhor prevê a satisfação do usuário.",
+        "context": "Fácil de inflar fechando chamados prematuramente, e por isso anda em par com a taxa de reabertura."
+      },
+      "knowledge-base": {
+        "def": "A biblioteca pesquisável de problemas conhecidos, correções e tutoriais - os juros compostos do suporte, depositados um chamado resolvido por vez.",
+        "context": "KCS (Knowledge-Centered Service) é a disciplina de escrever o artigo enquanto se resolve o caso."
+      },
+      "itil": {
+        "def": "O framework de gestão de serviços de TI: vocabulário e práticas comuns para incidentes, problemas, mudanças e entrega de serviço.",
+        "context": "Nascido da prática do governo britânico nos anos 1980; hoje é a língua franca dos service desks."
+      },
+      "problem-management": {
+        "def": "A prática ITIL que caça a causa por trás de incidentes recorrentes: incidentes restauram o serviço, problemas removem o motivo da quebra.",
+        "context": "Dez chamados idênticos fechados são dez incidentes; uma causa raiz removida é gestão de problemas."
+      },
+      "change-management-itsm": {
+        "def": "O portão pelo qual passam as mudanças em produção: avaliadas por risco, agendadas em janelas, aprovadas e prontas para rollback.",
+        "context": "O CAB (comitê de mudanças) é seu parlamento; mudanças emergenciais são sua brecha e sua fábrica de lições."
+      },
+      "cmdb": {
+        "def": "Configuration Management Database: o inventário de todos os ativos e das relações entre eles - o que conversa com o quê, e quem grita quando morre.",
+        "context": "Toda organização tem um; na maioria, ele já foi preciso um dia."
+      },
+      "asset-management": {
+        "def": "Rastrear hardware e software por todo o ciclo de vida - compra, atribuição, atualização, aposentadoria - para licenças, orçamentos e auditorias fecharem.",
+        "context": "A disciplina sem glamour que decide se uma auditoria é formalidade ou escavação arqueológica."
+      },
+      "remote-desktop": {
+        "def": "Assumir a tela e o teclado do usuário à distância - RDP, VNC e seus primos comerciais - o teletransporte do suporte.",
+        "context": "Também superfície de ataque: RDP exposto foi por anos a porta da frente favorita do ransomware."
+      },
+      "golden-image": {
+        "def": "A imagem-mestre abençoada do sistema operacional com aplicativos e configurações padrão, clonada em cada máquina nova.",
+        "context": "Sua deriva ao longo do tempo é o motivo de 'reimagear' continuar sendo a opção nuclear do suporte."
+      },
+      "gpo": {
+        "def": "Group Policy Object: configurações de domínio Windows aplicadas centralmente a usuários e máquinas - do papel de parede à política de senhas, de drives mapeados ao bloqueio.",
+        "context": "gpupdate /force é o encantamento; 'isso é GPO' é o diagnóstico."
+      },
+      "active-directory": {
+        "def": "O serviço de diretório da Microsoft: a lista telefônica e a autoridade de segurança do domínio - usuários, grupos, máquinas e as permissões que os ligam.",
+        "context": "As joias da coroa da maioria das redes corporativas, e por isso os atacantes vão direto nele."
+      },
+      "sso": {
+        "def": "Single Sign-On: autentique uma vez, alcance muitas aplicações - identidade centralizada, senhas dizimadas e uma cesta muito importante para os ovos.",
+        "context": "SAML e OpenID Connect são seus protocolos; o IdP é seu coração."
+      },
+      "mdm": {
+        "def": "Mobile Device Management: registrar celulares, tablets e notebooks sob política central - configurar, atualizar, localizar e apagar de um só console.",
+        "context": "A linha de trégua do BYOD: o aparelho é seu, as regras da empresa valem na parte de trabalho."
+      },
+      "byod": {
+        "def": "Bring Your Own Device: funcionários trabalhando no próprio hardware - frotas mais baratas, usuários mais felizes e um perímetro de segurança feito de celulares alheios.",
+        "context": "Containerização e MDM existem para tornar a sigla sobrevivível."
+      },
+      "patch-management": {
+        "def": "O ciclo de testar e implantar atualizações na frota - equilibrando o risco do bug contra o risco da correção.",
+        "context": "A Patch Tuesday o transformou em calendário; vulnerabilidades conhecidas sem correção seguem sendo a causa de violação mais evitável."
+      },
+      "rma": {
+        "def": "Return Merchandise Authorization: a bênção do fabricante para devolver hardware - o número sem o qual a caixa volta fechada.",
+        "context": "O advance replacement envia a unidade nova primeiro; o RMA padrão ensina paciência."
+      },
+      "warm-cold-boot": {
+        "def": "Reiniciar sem cortar a energia versus a partir do desligamento completo - o cold boot limpa estados que o warm preserva.",
+        "context": "Por isso 'desliga e liga da tomada' às vezes resolve o que 'reiniciar' não resolveu."
+      },
+      "safe-mode": {
+        "def": "Inicializar com o mínimo de drivers e serviços: se o problema some aqui, algo carregado na inicialização é o suspeito.",
+        "context": "Diagnóstico por subtração - o teste de isolamento do próprio sistema."
+      },
+      "event-viewer": {
+        "def": "O diário do sistema operacional com erros, avisos e auditorias - onde 'simplesmente travou' vira uma origem, um ID e um timestamp.",
+        "context": "O Event Viewer do Windows e os journals do Unix: a mesma ideia, a máquina anotou o que aconteceu."
+      },
+      "driver": {
+        "def": "O software que ensina o sistema operacional a falar com um hardware específico - e o primeiro suspeito quando esse hardware se comporta mal.",
+        "context": "Vizinho do kernel por natureza, e por isso um driver ruim pode levar o sistema inteiro junto."
+      },
+      "full-disk-encryption": {
+        "def": "Criptografar o disco inteiro para uma máquina perdida ou roubada não vazar nada - BitLocker, FileVault, LUKS - destravada no boot, transparente depois.",
+        "context": "Transforma 'notebook furtado do carro' de notificação de violação em despesa de hardware."
+      },
+      "password-manager": {
+        "def": "Um cofre que gera e guarda uma senha forte e única por site, destravado por um segredo-mestre - o fim prático da reutilização de senhas.",
+        "context": "O conselho que sobreviveu a todas as outras regras de senha: comprimento vence complexidade, unicidade vence ambos."
+      },
+      "least-privilege-desktop": {
+        "def": "Trabalho diário numa conta sem privilégios, elevação só quando necessário: a versão desktop do menor privilégio, e a política menos favorita do malware.",
+        "context": "A maior parte do malware comum simplesmente falha sem admin local."
+      },
+      "shadow-copy": {
+        "def": "Snapshots são pontos de restauração rápidos e locais que compartilham o destino do original; backups vivem em outro lugar e sobrevivem a ele - só o segundo responde ao ransomware.",
+        "context": "A regra 3-2-1: três cópias, duas mídias, uma fora do site."
+      },
+      "layer-8": {
+        "def": "A camada não oficial da OSI acima da aplicação: o humano - onde uma parcela surpreendente dos problemas de rede realmente acontece.",
+        "context": "Dita com um sorriso no NOC; a prima educada do PEBKAC."
+      },
+      "percussive-maintenance": {
+        "def": "A arte consagrada de consertar um equipamento com uma pancada firme - ocasionalmente eficaz em contatos oxidados, sempre eficaz no moral.",
+        "context": "Imortalizada por gerações de folclore de campo; não coberta pela garantia."
+      },
+      "have-you-tried-turning-it-off": {
+        "def": "A liturgia de abertura do suporte e sua pergunta mais estatisticamente justificada: reiniciar limpa o estado acumulado onde vive a maioria das falhas transitórias.",
+        "context": "Canonizada por The IT Crowd; irritante precisamente porque funciona."
+      },
+      "ticket-ping-pong": {
+        "def": "Um chamado quicando entre equipes, cada uma reatribuindo como não-é-meu - o modo de falha organizacional em que rotear substitui resolver.",
+        "context": "A cura é a posse: quem está com ele, conduz, mesmo atravessando fronteiras de equipe."
+      },
+      "user-error-codes": {
+        "def": "Os 'códigos de erro' de brincadeira para problemas causados pelo usuário - ID-10-T, PICNIC, camada 8 - a taquigrafia privada do suporte, melhor mantida privada.",
+        "context": "Engraçados na copa, limitadores de carreira nas notas do chamado."
+      },
+      "onboarding-offboarding": {
+        "def": "O ciclo de contas e acessos na contratação e no desligamento: criados e concedidos no primeiro dia, revogados por completo no último - a segunda metade é o achado de auditoria.",
+        "context": "Contas órfãs de ex-funcionários são um vetor perene de violação."
+      },
+      "kba-security-questions": {
+        "def": "Autenticação baseada em conhecimento - nome de solteira da mãe, primeiro animal de estimação - provas de identidade de uma era anterior às redes sociais publicarem as respostas.",
+        "context": "Trate-as como senhas: gere respostas sem sentido e guarde no gerenciador."
+      },
+      "remote-hands": {
+        "def": "A equipe do data center agindo como seu corpo no local: trocar o disco, ler os LEDs, mover o cabo - seus olhos e mãos, cobrados por quarto de hora.",
+        "context": "As instruções precisam sobreviver ao contato com quem nunca viu o seu rack."
+      },
+      "maintenance-window": {
+        "def": "O período agendado de baixo impacto em que mudanças são permitidas - anunciado, delimitado e com rollback planejado; trabalho fora dele exige justificativa de emergência.",
+        "context": "O motivo de tanta coisa em TI acontecer às 2 da manhã de domingo."
+      },
+      "vpc": {
+        "def": "Virtual Private Cloud: sua própria rede logicamente isolada dentro de uma nuvem pública - espaço de endereços, sub-redes, roteamento e gateways, definidos em software.",
+        "context": "A resposta da nuvem para 'onde minha rede vive agora?'; toda carga de trabalho mora dentro de uma."
+      },
+      "security-group": {
+        "def": "O firewall stateful por instância da nuvem: regras de liberação anexadas às cargas, tráfego de retorno implícito, entrada negada por padrão.",
+        "context": "Segue a instância aonde ela for - o conjunto de regras é amarrado à carga, não ao fio."
+      },
+      "nacl": {
+        "def": "O filtro stateless em nível de sub-rede nas redes de nuvem: regras numeradas de liberação e negação avaliadas em ordem, cada direção filtrada de forma independente.",
+        "context": "Stateless significa que o tráfego de retorno precisa da própria regra - a clássica lição de NACL, aprendida uma vez por engenheiro."
+      },
+      "route-table": {
+        "def": "As decisões de roteamento por sub-rede de uma VPC: quais destinos vão ao internet gateway, ao NAT, ao peering ou ao túnel.",
+        "context": "O primeiro lugar a olhar quando uma sub-rede de nuvem 'está sem internet'."
+      },
+      "internet-gateway": {
+        "def": "O componente da VPC que dá às sub-redes públicas uma porta para a internet - escalado horizontalmente, sem botão de banda, sem caixa única para falhar.",
+        "context": "Sua presença na tabela de rotas é o que torna uma sub-rede 'pública'."
+      },
+      "nat-gateway": {
+        "def": "O serviço gerenciado que permite a sub-redes privadas alcançar a internet sem serem alcançáveis por ela - saída sim, entrada não.",
+        "context": "Cobrado por hora e por gigabyte processado, e é assim que vira uma linha-surpresa na fatura."
+      },
+      "elastic-ip": {
+        "def": "Um endereço público estático que você possui e pode remapear entre instâncias - identidade que sobrevive à carga por trás dela.",
+        "context": "A resposta da nuvem para 'o IP não pode mudar'; o IPv4 escasso torna os ociosos cobráveis."
+      },
+      "availability-zone": {
+        "def": "Um ou mais data centers com energia, refrigeração e rede independentes dentro de uma região - perto o bastante para replicação síncrona, longe o bastante para falhar separadamente.",
+        "context": "Multi-AZ é o primeiro degrau da resiliência em nuvem; redundância na mesma AZ é destino compartilhado."
+      },
+      "cloud-region": {
+        "def": "Um agrupamento geográfico de zonas de disponibilidade, isolado de todas as outras regiões - a fronteira de raio de impacto e a unidade de residência de dados.",
+        "context": "Entre regiões é onde começam as conversas de latência, custo e conformidade."
+      },
+      "transit-gateway": {
+        "def": "O roteador central da nuvem: VPCs, VPNs e interconexões se conectam a um hub em vez de formar malha entre si.",
+        "context": "Transforma N ao quadrado peerings em N conexões - o padrão hub-and-spoke como serviço gerenciado."
+      },
+      "vpc-peering": {
+        "def": "Um enlace privado um-a-um entre duas VPCs, roteando seus espaços de endereços entre si - não transitivo por projeto.",
+        "context": "Peering A-B e B-C não conecta A a C; essa lacuna é o motivo de existirem transit gateways."
+      },
+      "hub-and-spoke": {
+        "def": "A topologia em que tudo se conecta através de um hub central em vez de entre si - menos enlaces, controle central, um meio muito importante.",
+        "context": "O desenho por trás de transit gateways, backbones SD-WAN e da maioria dos mapas de companhias aéreas."
+      },
+      "dedicated-interconnect": {
+        "def": "Um circuito físico privado das suas instalações até a borda do provedor de nuvem - latência previsível, banda real, nenhuma internet pública no caminho.",
+        "context": "AWS Direct Connect, Azure ExpressRoute, Google Cloud Interconnect: três nomes, uma ideia."
+      },
+      "privatelink": {
+        "def": "Consumir um serviço por um endereço privado dentro da sua própria VPC, para o tráfego nunca tocar a internet pública.",
+        "context": "O padrão que impede que 'chamar a API' signifique 'atravessar a internet'."
+      },
+      "public-vs-private-subnet": {
+        "def": "A divisão básica da VPC: sub-redes públicas roteiam ao internet gateway e podem ser alcançadas; privadas saem via NAT e não podem.",
+        "context": "Balanceadores no público, cargas no privado: o padrão por trás da maioria das arquiteturas de referência."
+      },
+      "flow-logs": {
+        "def": "O NetFlow da nuvem: registros de conexões aceitas e rejeitadas por interface, sub-rede ou VPC - quem falou com quem, e quem foi recusado.",
+        "context": "A primeira evidência puxada na resposta a incidentes em nuvem; linhas REJECT são detecção de reconhecimento de graça."
+      },
+      "cdn": {
+        "def": "Content Delivery Network: cópias do seu conteúdo em cache em pontos de borda pelo mundo, para os usuários buscarem de perto em vez da origem.",
+        "context": "A física da latência como produto; também o escudo que absorve picos de tráfego e boa parte do DDoS."
+      },
+      "pop": {
+        "def": "Point of Presence: um ponto físico de borda do provedor - onde a CDN faz cache, o trânsito é entregue e o backbone toca o chão.",
+        "context": "Contados às centenas pelas redes globais; o 'PoP mais próximo' decide sua latência de primeiro salto."
+      },
+      "egress-cost": {
+        "def": "A cobrança por gigabyte de dados saindo da nuvem - entrar é de graça, sair é cobrado, e a arquitetura silenciosamente se curva a essa assimetria.",
+        "context": "A economia por trás da gravidade dos dados e de muitas decepções multi-cloud."
+      },
+      "sd-wan": {
+        "def": "Software-Defined WAN: conectividade de filiais dirigida por política central sobre qualquer mistura de enlaces - MPLS, banda larga, LTE - escolhidos por aplicação em tempo real.",
+        "context": "A tecnologia que transformou 'o roteador da filial' em 'a política da filial'."
+      },
+      "l4-vs-l7-load-balancing": {
+        "def": "Balancear por endereços e portas versus pela própria aplicação: L4 é rápido e cego, L7 lê HTTP e roteia por caminho, header ou cookie.",
+        "context": "A divisão NLB/ALB dos menus de nuvem; a terminação TLS é o pedágio de entrada no L7."
+      },
+      "health-check": {
+        "def": "A sonda que decide se um alvo recebe tráfego - um endpoint respondendo 'estou vivo?' num timer, com consequências.",
+        "context": "Checagens rasas mentem (porta aberta, aplicação morta); profundas causam cascatas; calibrá-las é uma arte."
+      },
+      "autoscaling": {
+        "def": "Capacidade que segue a demanda: instâncias adicionadas sob carga, removidas na calmaria - a elasticidade como promessa fundadora da nuvem.",
+        "context": "Escalar para fora é fácil; encolher sem derrubar conexões é onde mora o ofício."
+      },
+      "bastion-host": {
+        "def": "O único ponto de entrada endurecido e auditado para acesso administrativo a uma rede privada - um jump host por projeto, não por acidente.",
+        "context": "Nuvens modernas o substituem por acesso intermediado por sessão, mas o conceito - uma porta vigiada - permanece."
+      },
+      "cloud-vpn": {
+        "def": "O túnel IPsec gerenciado entre suas instalações e sua VPC - a alternativa rápida, criptografada e via internet ao circuito dedicado.",
+        "context": "Minutos para subir contra semanas de uma interconexão; o jitter é o preço do atalho."
+      },
+      "private-dns-zone": {
+        "def": "Nomes DNS que resolvem apenas dentro das suas VPCs - nomes de serviços internos invisíveis à internet pública.",
+        "context": "Split-horizon como serviço gerenciado: o mesmo nome pode responder diferente dentro e fora."
+      },
+      "ipam": {
+        "def": "IP Address Management: o sistema de registro de quem possui qual faixa - alocações, atribuições e conflitos, rastreados em vez de lembrados.",
+        "context": "A planilha que ele substitui é o arquivo mais perigoso do networking."
+      },
+      "byoip": {
+        "def": "Bring Your Own IP: anunciar seus próprios blocos de endereços pela rede do provedor de nuvem - sua reputação e liberações, a infraestrutura deles.",
+        "context": "Migração sem renumeração; os endereços se mudam, as regras de firewall alheias continuam funcionando."
+      },
+      "cold-potato-hot-potato": {
+        "def": "Duas filosofias para transportar tráfego: hot-potato o entrega à próxima rede o quanto antes; cold-potato o mantém no seu backbone o máximo possível.",
+        "context": "As nuvens vendem cold-potato como 'camada premium': mais da viagem na fibra delas, menos na internet aberta."
+      },
+      "shared-vpc": {
+        "def": "Uma rede administrada centralmente e compartilhada com vários projetos ou contas - o time de plataforma é dono do encanamento, os times de produto implantam dentro dele.",
+        "context": "Governança tornada topológica: sub-redes como serviço, com proteções inclusas."
+      },
+      "eni": {
+        "def": "Elastic Network Interface: a NIC virtual destacável da nuvem - endereços, security groups e MAC que podem migrar entre instâncias.",
+        "context": "Failover por migração de interface: a instância substituta herda a identidade de rede."
+      },
+      "five-tuple": {
+        "def": "A impressão digital da conexão: IP de origem, porta de origem, IP de destino, porta de destino, protocolo - a chave pela qual firewalls, NATs e balanceadores rastreiam fluxos.",
+        "context": "Faça o hash e você obtém ECMP e afinidade de balanceador; mude qualquer elemento e é um novo fluxo."
+      },
+      "east-west-north-south": {
+        "def": "Os dois eixos do tráfego de data center: norte-sul cruza o perímetro até os usuários; leste-oeste flui entre servidores por dentro.",
+        "context": "Os microsserviços tornaram o leste-oeste dominante - e tornaram obsoleta a segurança só de perímetro."
+      },
+      "sdn": {
+        "def": "Software-Defined Networking: separar o plano de controle do plano de encaminhamento, para a rede ser programada centralmente em vez de configurada caixa por caixa.",
+        "context": "A ideia que tornou as nuvens possíveis; OpenFlow foi seu manifesto, APIs são seu legado."
+      },
+      "nfv": {
+        "def": "Network Functions Virtualization: firewalls, roteadores e gateways como software em servidores comuns em vez de appliances dedicados.",
+        "context": "O movimento das operadoras que transformou racks de caixas em racks de computação; núcleos 5G rodam sobre ele."
+      },
+      "gslb": {
+        "def": "Global Server Load Balancing: direcionamento de tráfego em nível de DNS entre sites e regiões - respondendo a cada resolver com o destino mais saudável, próximo ou menos carregado.",
+        "context": "Failover na velocidade dos TTLs; a disciplina por trás de toda alegação de 'ativo-ativo entre regiões'."
+      },
+      "virtual-appliance": {
+        "def": "A função de rede de um fabricante entregue como imagem de VM - o firewall ou balanceador que você instala lançando em vez de carregando.",
+        "context": "A era-ponte entre caixas de hardware e serviços cloud-native; o licenciamento pegou carona."
+      },
+      "shared-responsibility-model": {
+        "def": "A divisão de trabalho da nuvem: o provedor protege a infraestrutura, o cliente protege o que constrói e configura sobre ela.",
+        "context": "Segurança DA nuvem versus segurança NA nuvem; a maioria das violações acontece do lado do cliente da linha."
+      },
+      "iam": {
+        "def": "Identity and Access Management: quem existe, o que pode fazer e sob quais condições - o tecido de permissões da nuvem.",
+        "context": "Na nuvem, a identidade é o perímetro; uma política IAM larga demais é uma porta de firewall aberta com outro nome."
+      },
+      "rbac": {
+        "def": "Role-Based Access Control: permissões concedidas a papéis, pessoas atribuídas a papéis - acesso gerido por função, não por favor individual.",
+        "context": "ABAC o estende com atributos (departamento, horário, dispositivo); ambos existem para tornar a revogação possível."
+      },
+      "service-account": {
+        "def": "Uma identidade para software em vez de pessoa: as credenciais sob as quais pipelines, jobs e aplicações agem.",
+        "context": "Chaves não rotacionadas em service accounts esquecidas estão entre as portas de entrada mais comuns de violações em nuvem."
+      },
+      "workload-identity": {
+        "def": "Cargas de trabalho provando quem são através da própria plataforma - credenciais de curta duração e emissão automática em vez de segredos longevos em arquivos.",
+        "context": "O estado final de 'sem chaves para roubar': a plataforma atesta o pod, o pod nunca guarda senha."
+      },
+      "imds": {
+        "def": "Instance Metadata Service: o endpoint link-local (169.254.169.254) onde uma instância de nuvem pergunta sobre si mesma - e coleta suas credenciais temporárias.",
+        "context": "O alvo-joia dos ataques SSRF; os tokens de sessão do IMDSv2 existem por causa dessa história."
+      },
+      "ssrf": {
+        "def": "Server-Side Request Forgery: enganar um servidor para fazer requisições em nome do atacante - alcançando endereços internos que o atacante jamais alcançaria direto.",
+        "context": "A técnica por trás da violação da Capital One em 2019: uma requisição forjada ao serviço de metadados, credenciais para fora."
+      },
+      "confused-deputy": {
+        "def": "Um serviço privilegiado enganado a usar sua autoridade em nome de quem não deveria - o deputado é honesto, só está confuso sobre quem pede.",
+        "context": "A assunção de papéis entre contas ganhou external IDs especificamente para quebrar esse ataque."
+      },
+      "kms": {
+        "def": "Key Management Service: o cofre gerenciado onde as chaves de criptografia vivem, guardadas por hardware, usadas via API e nunca exportadas em claro.",
+        "context": "Você o chama para cifrar e decifrar; a chave-mestra em si nunca sai do serviço."
+      },
+      "envelope-encryption": {
+        "def": "Cifrar dados com uma chave de dados e então cifrar essa chave com uma chave-mestra - o trabalho pesado feito localmente, a joia da coroa guardada centralmente.",
+        "context": "Como as nuvens cifram petabytes com chaves que nunca saem do KMS: uma chamada de API por envelope, não por byte."
+      },
+      "key-rotation": {
+        "def": "Substituir chaves criptográficas e credenciais em cronograma, para um segredo roubado ter data de validade em vez de vida inteira.",
+        "context": "A pergunta que expõe maturidade: não 'é rotacionado?', mas 'o que quebra quando se rotaciona?'"
+      },
+      "secrets-management": {
+        "def": "Centralizar senhas, tokens e chaves num cofre com controle de acesso, auditoria e rotação - em vez de espalhá-los por código e configuração.",
+        "context": "A confissão que substitui: credenciais em variáveis de ambiente, wikis e aquele .env no repositório."
+      },
+      "hsm": {
+        "def": "Hardware Security Module: um dispositivo resistente a violação que gera, guarda e usa chaves internamente - as chaves podem ser usadas, nunca extraídas.",
+        "context": "A raiz física de confiança sob ofertas de KMS, autoridades certificadoras e redes de pagamento."
+      },
+      "cspm": {
+        "def": "Cloud Security Posture Management: varredura contínua da configuração de nuvem contra boas práticas - a ferramenta que acha o bucket público antes do pesquisador.",
+        "context": "Responde 'o que está mal configurado?' entre contas, na velocidade em que as configurações derivam."
+      },
+      "cwpp": {
+        "def": "Cloud Workload Protection Platform: defesa em tempo de execução das próprias cargas - VMs, containers, funções - vulnerabilidades, integridade e comportamento.",
+        "context": "O CSPM observa a configuração; o CWPP observa o que de fato está rodando."
+      },
+      "cnapp": {
+        "def": "Cloud-Native Application Protection Platform: o guarda-chuva do mercado unindo postura, proteção de cargas e análise de permissões numa plataforma.",
+        "context": "O nome de categoria para 'CSPM mais CWPP mais CIEM numa só fatura'."
+      },
+      "casb": {
+        "def": "Cloud Access Security Broker: o ponto de controle entre usuários e SaaS - visibilidade de quais apps de nuvem são usados e política sobre o que flui para eles.",
+        "context": "Nasceu para responder 'quem envia o quê para qual SaaS?'; hoje costuma ser uma letra dentro de SASE."
+      },
+      "ztna": {
+        "def": "Zero Trust Network Access: acesso por aplicação concedido após verificar usuário, dispositivo e contexto - sem túnel para a rede toda, sem interior plano.",
+        "context": "O sucessor da VPN na história do zero trust: você alcança o app, não a sub-rede."
+      },
+      "siem": {
+        "def": "Security Information and Event Management: logs de toda parte, correlacionados em alertas - o sistema nervoso central do time de segurança.",
+        "context": "Sua economia é uma disciplina própria: a ingestão é cobrada, então o que NÃO enviar vira decisão de arquitetura."
+      },
+      "soar": {
+        "def": "Security Orchestration, Automation, and Response: playbooks que agem sobre alertas automaticamente - enriquecer, conter, abrir chamado - antes de um humano chegar.",
+        "context": "Existe porque analistas se afogam: a automação cuida dos oitenta por cento repetíveis."
+      },
+      "edr": {
+        "def": "Endpoint Detection and Response: o agente que registra o que os endpoints fazem - processos, conexões, alterações - detecta o malicioso e pode isolar o host.",
+        "context": "O antivírus perguntava 'este arquivo é mau?'; o EDR pergunta 'este comportamento é mau?' e guarda a fita."
+      },
+      "xdr": {
+        "def": "Extended Detection and Response: o escopo do EDR ampliado - sinais de endpoint, identidade, e-mail, rede e nuvem correlacionados num só tecido de detecção.",
+        "context": "O argumento: ataques cruzam domínios, então a detecção também deveria."
+      },
+      "dlp": {
+        "def": "Data Loss Prevention: reconhecer dados sensíveis - números de cartão, registros, segredos - e impedir que saiam por e-mail, uploads ou áreas de transferência.",
+        "context": "Casamento de padrões com política; calibrá-lo é a guerra eterna entre a segurança e os anexos do negócio."
+      },
+      "sbom": {
+        "def": "Software Bill of Materials: a lista de ingredientes de um software - cada componente e versão, para 'somos afetados?' ter resposta.",
+        "context": "O Log4Shell o tornou política: a Ordem Executiva 14028 dos EUA levou SBOMs às compras federais."
+      },
+      "landing-zone": {
+        "def": "A fundação pré-construída e governada de um ambiente de nuvem: estrutura de contas, identidade, rede, logging e proteções, prontos antes da primeira carga.",
+        "context": "A diferença entre uma adoção de nuvem e um espalhamento de nuvem, decidida no dia zero."
+      },
+      "service-control-policy": {
+        "def": "Proteções em nível de organização que delimitam o que qualquer conta pode fazer - tetos de permissão que nem administradores ultrapassam.",
+        "context": "Não é concessão, é fronteira: a organização diz 'ninguém apaga logs de auditoria', e nenhum admin local consegue."
+      },
+      "drift-detection": {
+        "def": "Detectar a lacuna entre a infraestrutura como declarada e como ela realmente está - a edição no console que o código nunca soube.",
+        "context": "A deriva é como ambientes imutáveis apodrecem; a detecção é o alarme de fumaça."
+      },
+      "break-glass": {
+        "def": "A credencial de emergência lacrada que contorna os controles normais quando a própria identidade cai - guardada offline, alarmada no uso, testada em cronograma.",
+        "context": "Batizada pelo alarme de incêndio: quebrar o vidro precisa funcionar, e jamais passar despercebido."
+      },
+      "just-in-time-access": {
+        "def": "Privilégios concedidos para a tarefa e a hora, depois revogados automaticamente - direitos de admin permanentes trocados por solicitados, aprovados e com validade.",
+        "context": "Encolhe a janela em que uma credencial roubada vale o roubo."
+      },
+      "audit-trail": {
+        "def": "O registro à prova de adulteração de quem fez o quê, quando e de onde - o log de API por onde toda investigação começa.",
+        "context": "Imutável e centralizado, ou vira sugestão; atacantes apagam logs primeiro por um motivo."
+      },
+      "conditional-access": {
+        "def": "Política de login com contexto: quem, de qual dispositivo, de onde, com qual nível de risco - e só então, com qual segundo fator, o acesso.",
+        "context": "O semáforo da camada de identidade: verde do notebook gerenciado, desafio do café, vermelho do país impossível."
+      },
+      "egress-filtering": {
+        "def": "Controlar o que pode sair da rede, não só o que pode entrar - as regras de saída que privam o malware do seu canal de comando.",
+        "context": "A direção mais negligenciada do firewall; exfiltração e C2 precisam ambas de uma saída."
+      },
+      "honeypot": {
+        "def": "Um sistema-isca construído para ser atacado: nenhum usuário legítimo o toca, então toda interação é sinal.",
+        "context": "De sensores de pesquisa a fios de tropa corporativos; seu irmão de rede é a honeynet."
+      },
+      "canary-token": {
+        "def": "Uma credencial, arquivo ou link com armadilha que avisa quando tocado - chaves AWS falsas que alarmam no momento em que alguém as testa.",
+        "context": "Detecção ao custo de um arquivo de texto; o descendente moderno da cédula marcada."
+      },
+      "attack-surface": {
+        "def": "Tudo o que um atacante pode alcançar e tentar: serviços expostos, APIs, credenciais, pessoas - a soma dos caminhos de entrada.",
+        "context": "Cada recurso soma, cada desativação subtrai; gerenciá-la é a subtração como disciplina."
+      },
+      "iaas-paas-saas": {
+        "def": "As três camadas de serviço da nuvem: alugar a infraestrutura, alugar a plataforma ou alugar a aplicação pronta - cada uma trocando controle por conveniência.",
+        "context": "A linha de responsabilidade compartilhada se move com a letra: quanto mais alta a camada, mais o provedor é dono."
+      },
+      "tokenization": {
+        "def": "Substituir valores sensíveis por representantes sem significado, mantendo o dado real num único cofre vigiado - o token é inútil em qualquer outro lugar.",
+        "context": "Como sistemas de pagamento encolhem seu escopo de conformidade: a maioria dos sistemas só vê o token."
+      },
+      "lgpd": {
+        "def": "Lei Geral de Proteção de Dados: a lei brasileira de proteção de dados (13.709/2018), regendo o tratamento de dados pessoais sobre princípios inspirados no GDPR com dentes brasileiros.",
+        "context": "Em vigor desde 2020, sanções desde 2021, fiscalizada pela ANPD; as bases legais incluem consentimento e legítimo interesse."
+      },
+      "anpd": {
+        "def": "Autoridade Nacional de Proteção de Dados: a autoridade brasileira de proteção de dados - reguladora, fiscalizadora e intérprete da LGPD.",
+        "context": "Edita as normas que transformam os princípios da lei em checklists; a contraparte brasileira das DPAs europeias."
+      },
+      "ccpa": {
+        "def": "A lei de privacidade do consumidor da Califórnia: direitos de saber, apagar e recusar a venda de dados pessoais - emendada e endurecida pela CPRA.",
+        "context": "A base de fato nos EUA na ausência de lei federal; os links 'Do Not Sell or Share' existem por causa dela."
+      },
+      "dpo": {
+        "def": "Data Protection Officer: o guardião designado de um programa de proteção de dados - conselheiro por dentro, ponto de contato para reguladores e titulares por fora.",
+        "context": "Obrigatório em vários cenários do GDPR e nomeado na LGPD como 'encarregado'."
+      },
+      "dpia": {
+        "def": "Data Protection Impact Assessment: a análise estruturada de 'o que isto pode causar às pessoas?' exigida antes de tratamentos de alto risco.",
+        "context": "O primo na LGPD é o RIPD; ambos existem para o risco ser examinado antes do lançamento, não depois das manchetes."
+      },
+      "dsar": {
+        "def": "Data Subject Access Request: uma pessoa exercendo o direito de ver os dados mantidos sobre ela - e o relógio que dispara quando pede.",
+        "context": "O GDPR dá um mês, prorrogável; o teste operacional de se um programa de privacidade realmente funciona."
+      },
+      "right-to-erasure": {
+        "def": "O direito de ter dados pessoais apagados quando não há mais razão lícita para mantê-los - popularmente, o direito ao esquecimento.",
+        "context": "Não é absoluto: obrigações legais, contratos e liberdade de expressão podem prevalecer, caso a caso."
+      },
+      "data-portability": {
+        "def": "O direito de levar seus dados num formato legível por máquina - e, quando viável, enviá-los direto ao próximo provedor.",
+        "context": "O direito anti-aprisionamento: seu histórico não deveria ser o custo de troca."
+      },
+      "consent": {
+        "def": "Uma base legal entre várias: um sim livre, específico, informado e inequívoco - revogável tão facilmente quanto foi dado.",
+        "context": "Caixas pré-marcadas e aceites embutidos falham em todos os adjetivos da definição."
+      },
+      "legitimate-interest": {
+        "def": "A base legal para tratar dados sem consentimento quando a necessidade genuína do controlador supera os direitos do titular - após um teste de balanceamento documentado.",
+        "context": "A base mais flexível e a alegação mais abusada; o teste em três partes é necessidade, finalidade, equilíbrio."
+      },
+      "purpose-limitation": {
+        "def": "Dados coletados para uma finalidade declarada não podem ser silenciosamente reutilizados para outra - o princípio que impede conjuntos de dados de vagar.",
+        "context": "A razão pela qual 'pode ser útil depois' não é estratégia de coleta."
+      },
+      "data-controller": {
+        "def": "A parte que decide por que e como dados pessoais são tratados - e, portanto, a responsável por eles.",
+        "context": "O 'controlador' da LGPD; decidir a finalidade é o que torna alguém controlador, independentemente de quem opera os servidores."
+      },
+      "data-processor": {
+        "def": "A parte que trata dados pessoais sob instruções documentadas de um controlador - o provedor de nuvem, o SaaS, a folha de pagamento terceirizada.",
+        "context": "O 'operador' da LGPD; sair das instruções é virar controlador, com a responsabilidade de controlador."
+      },
+      "data-processing-agreement": {
+        "def": "O contrato que vincula um operador às instruções do controlador: medidas de segurança, suboperadores, deveres em violações e exclusão ao final.",
+        "context": "O documento em torno do qual orbitam as revisões de fornecedores; o Artigo 28 do GDPR dita seu esqueleto."
+      },
+      "standard-contractual-clauses": {
+        "def": "As cláusulas contratuais pré-aprovadas da UE que tornam lícitas as transferências de dados pessoais a outros países - proteção por contrato onde a lei sozinha não alcança.",
+        "context": "O burro de carga das transferências internacionais, especialmente desde que o caso Schrems II exigiu salvaguardas caso a caso."
+      },
+      "privacy-by-design": {
+        "def": "Construir a proteção de dados nos sistemas desde o primeiro rascunho - minimização, padrões e salvaguardas como arquitetura, não como remendos.",
+        "context": "Codificado no Artigo 25 do GDPR; em forma de lema: a configuração mais protetiva é a configuração padrão."
+      },
+      "pseudonymization": {
+        "def": "Substituir identificadores por pseudônimos mantendo o mapeamento em outro lugar - reversível por projeto, protetivo nesse meio-tempo.",
+        "context": "Ainda é dado pessoal sob GDPR e LGPD, porque a chave existe; a anonimização é a irmã de mão única."
+      },
+      "anonymization": {
+        "def": "Transformar dados de modo que indivíduos não possam mais ser identificados por nenhum meio razoavelmente disponível - a porta de saída da lei de proteção de dados.",
+        "context": "Mais difícil do que parece: pesquisas de reidentificação seguem provando que conjuntos 'anonimizados' falam demais."
+      },
+      "k-anonymity": {
+        "def": "Uma propriedade de conjuntos de dados em que cada pessoa é indistinguível de pelo menos k-1 outras nos quase-identificadores - esconder-se numa multidão de tamanho k.",
+        "context": "Também o truque por trás da checagem de senhas do Have I Been Pwned: envie um prefixo de hash, receba a multidão."
+      },
+      "differential-privacy": {
+        "def": "Uma garantia matemática: respostas a consultas mal mudam com a presença ou ausência de qualquer indivíduo no conjunto - privacidade como ruído demonstrável.",
+        "context": "Usada pelo Censo americano e pela telemetria das big techs; épsilon é o botão entre verdade e proteção."
+      },
+      "data-retention": {
+        "def": "Manter dados apenas enquanto a finalidade exigir, e então apagar em cronograma - a disciplina que encolhe tanto o risco quanto o alcance de uma violação.",
+        "context": "Toda violação é menor quando o arquivo é; 'para sempre' não é prazo de retenção."
+      },
+      "cookie-banner": {
+        "def": "A interface de consentimento para rastreamento não essencial - nascida das regras de ePrivacy e dos padrões de consentimento do GDPR, degradada por design num ritual de cliques.",
+        "context": "Recusar precisa ser tão fácil quanto aceitar para o consentimento valer; dark patterns aqui atraem fogo regulatório."
+      },
+      "tracking-pixel": {
+        "def": "Uma imagem invisível de um pixel ou beacon cujo carregamento informa que você abriu a página ou o e-mail - rastreamento de presença disfarçado de conteúdo.",
+        "context": "As taxas de abertura de e-mail são construídas sobre ele; bloquear imagens remotas é a contramedida."
+      },
+      "browser-fingerprinting": {
+        "def": "Identificar um navegador pela combinação de suas características - fontes, renderização de canvas, hardware, configurações - única o bastante para rastrear sem cookie algum.",
+        "context": "A fronteira do rastreamento pós-cookie; o Cover Your Tracks da EFF demonstra o quanto um navegador 'privado' grita."
+      },
+      "global-privacy-control": {
+        "def": "Um sinal do navegador declarando 'não venda nem compartilhe meus dados' automaticamente em cada site - o opt-out como configuração em vez de tarefa por site.",
+        "context": "Onde o DNT morreu de voluntariedade, o GPC ganhou força legal: a Califórnia obriga a respeitá-lo."
+      },
+      "do-not-track": {
+        "def": "O cabeçalho de navegador que pedia educadamente aos sites que não rastreassem - e, sem força legal alguma, foi quase universalmente ignorado.",
+        "context": "O conto de advertência do qual o GPC aprendeu: um sinal sem enforcement é preferência, não proteção."
+      },
+      "privacy-enhancing-technologies": {
+        "def": "A caixa de ferramentas que permite usar dados expondo menos deles: privacidade diferencial, criptografia homomórfica, computação multipartidária segura, aprendizado federado.",
+        "context": "O campo de pesquisa onde 'computar sobre dados que não se pode ler' deixou de ser contradição."
+      },
+      "data-breach-notification": {
+        "def": "O dever legal de comunicar uma violação de dados pessoais à autoridade e, quando o risco é alto, às pessoas afetadas - num relógio que dispara na descoberta.",
+        "context": "As famosas 72 horas do GDPR para a autoridade; a LGPD exige comunicação 'em prazo razoável' conforme regras da ANPD."
+      },
+      "special-category-data": {
+        "def": "Os dados cujo mau uso corta mais fundo - saúde, biometria, crenças, orientação, genética - trancados atrás de condições mais estritas que dados pessoais comuns.",
+        "context": "A LGPD os chama de 'dado pessoal sensível'; o consentimento aqui costuma precisar ser explícito e específico."
+      },
+      "biometric-data": {
+        "def": "Medidas do corpo usadas para identificar a pessoa - impressões digitais, geometria facial, voz, modo de andar - identificadores que não se pode trocar após um vazamento.",
+        "context": "Uma senha se troca; um rosto, não. Essa assimetria é todo o debate de política pública."
+      },
+      "data-residency": {
+        "def": "Exigências de que certos dados permaneçam fisicamente dentro das fronteiras de uma jurisdição - a lei expressa como seleção de região.",
+        "context": "O motivo de provedores de nuvem abrirem regiões locais e de diagramas de arquitetura agora carregarem bandeiras."
+      },
+      "cross-border-transfer": {
+        "def": "Mover dados pessoais entre jurisdições - lícito apenas por mecanismos reconhecidos: decisões de adequação, cláusulas contratuais ou exceções específicas.",
+        "context": "O capítulo da LGPD sobre transferência internacional espelha o do GDPR; a geografia virou propriedade de conformidade dos dados."
+      },
+      "schrems-ii": {
+        "def": "A decisão de 2020 da corte da UE que derrubou o Privacy Shield UE-EUA: as reclamações de um estudante de direito austríaco, duas vezes, remodelaram o direito de dados transatlântico.",
+        "context": "Max Schrems contestou as transferências do Facebook pelo alcance da vigilância americana; o TJUE concordou, duas vezes - o Safe Harbor caiu em 2015, o Privacy Shield em 2020."
+      },
+      "metadata": {
+        "def": "Dados sobre dados: quem contatou quem, quando, de onde, com que frequência - tudo exceto o conteúdo, e muitas vezes mais revelador que ele.",
+        "context": "'Matamos pessoas com base em metadados' - a franqueza de um ex-diretor da NSA virou a citação definidora do campo."
+      },
+      "profiling": {
+        "def": "Avaliação automatizada de uma pessoa a partir de seus dados - prevendo comportamento, interesses, confiabilidade, deslocamento - o modelo de você contra o qual decisões são tomadas.",
+        "context": "GDPR e LGPD concedem direitos sobre decisões puramente automatizadas com efeitos significativos."
+      },
+      "data-broker": {
+        "def": "Uma empresa cujo produto são outras pessoas: perfis montados de compras, aplicativos, registros públicos e trilhas de localização, vendidos a quem pagar.",
+        "context": "A indústria de que a maioria nunca ouviu falar, mas que já ouviu tudo sobre a maioria."
+      },
+      "opt-in-vs-opt-out": {
+        "def": "As duas posturas padrão do consentimento: nada acontece até você dizer sim, versus tudo acontece até você dizer não - padrões decidem resultados em escala populacional.",
+        "context": "A única escolha de design com o maior impacto em privacidade; as taxas de participação oscilam enormemente sobre ela."
+      },
+      "surveillance-capitalism": {
+        "def": "O modelo de negócio de prever e direcionar comportamento a partir de dados pessoais colhidos - atenção entra, previsões saem, anunciantes pagam.",
+        "context": "Cunhado e dissecado por Shoshana Zuboff (2019); o termo que deu nome ao debate."
+      },
+      "nat-firewall-myth": {
+        "def": "A crença de que tradução de endereços é um controle de segurança. O NAT esconde topologia como efeito colateral, mas não filtra nada por política - um firewall stateful sim.",
+        "context": "A confusão vem de roteadores domésticos empacotarem ambos; o RFC 4864 existe em parte para separar 'segurança do NAT' de proteção real, e o IPv6 sem NAT reabriu o debate."
+      },
+      "incognito-myth": {
+        "def": "A navegação privada apaga histórico e cookies locais quando a janela fecha - nada mais. Sites, empregadores e provedores veem você exatamente como antes.",
+        "context": "O próprio aviso do modo anônimo do Chrome lista esses limites; uma ação coletiva nos EUA sobre rastreamento no modo anônimo terminou com o Google concordando em 2024 em destruir bilhões de registros coletados."
+      },
+      "https-padlock-myth": {
+        "def": "O cadeado prova que a conexão é cifrada até quem controla aquele domínio - nada diz sobre quem é. Sites de phishing obtêm certificados em minutos, de graça.",
+        "context": "No fim dos anos 2010 a maioria das páginas de phishing já servia HTTPS válido; o FBI publicou um alerta em 2019 avisando que o cadeado não é sinal de confiança. Navegadores vêm rebaixando o cadeado desde então."
+      },
+      "vpn-anonymity-myth": {
+        "def": "Uma VPN comercial move sua confiança da rede local para a empresa de VPN: esconde o tráfego do café e seu IP dos sites, enquanto ela mesma vê tudo.",
+        "context": "Fingerprinting de navegador, logins e cookies identificam você independentemente do IP; alegações de 'sem logs' já foram contraditas em processos e vazamentos. Ferramenta útil, substantivo errado."
+      },
+      "five-ghz-myth": {
+        "def": "Bandas mais altas carregam mais dados mas morrem mais rápido através de paredes e distância. 5 GHz vence ao lado do roteador; 2,4 GHz muitas vezes vence dois cômodos depois - é física, não níveis de qualidade.",
+        "context": "A perda de percurso cresce com a frequência, e a atenuação em obstáculos a agrava - o trade-off de propagação está escrito nos próprios planos de banda do 802.11; o band steering existe para escolher por situação."
+      },
+      "mac-permanence-myth": {
+        "def": "O endereço gravado de fábrica deixou de ser ambos: sistemas operacionais randomizam MACs de Wi-Fi por rede por padrão, e qualquer MAC pode ser definido por software em segundos.",
+        "context": "iOS, Android, Windows e macOS trazem randomização de MAC para derrotar rastreamento; o IEEE 802c formalizou o uso de endereços locais. O rastreamento por MAC e a segurança baseada em MAC quebraram em silêncio."
+      },
+      "bandwidth-latency-myth": {
+        "def": "Banda é número de pistas; latência é tempo de viagem. Passado um limiar modesto, páginas, chamadas e jogos são governados por latência e bufferbloat - que um plano maior não conserta.",
+        "context": "O trabalho de bufferbloat de Jim Gettys mostrou filas superdimensionadas arruinando a responsividade em linhas 'rápidas'; o gerenciamento moderno de filas (fq_codel, CAKE) conserta o que upgrades não conseguem."
+      },
+      "password-rotation-myth": {
+        "def": "Trocas obrigatórias a cada 90 dias treinaram as pessoas em Senha1, Senha2 - mutações previsíveis que atacantes modelam. A orientação atual: frases longas e únicas, trocadas diante de evidência de comprometimento.",
+        "context": "O NIST SP 800-63B recomenda contra trocas periódicas forçadas e contra regras de composição; comprimento e unicidade (via gerenciador) vencem a complexidade ritual."
+      },
+      "file-deletion-myth": {
+        "def": "Excluir remove a entrada de diretório e marca o espaço como reutilizável - os bytes permanecem até serem sobrescritos, o que ferramentas de recuperação exploram diariamente.",
+        "context": "O NIST SP 800-88 define o espectro real: clear, purge, destroy. SSDs complicam ainda mais - o wear leveling espalha cópias, então cifrar-e-destruir-a-chave virou o purge prático."
+      },
+      "someone-elses-computer": {
+        "def": "A meia-verdade do adesivo: fisicamente precisa, arquiteturalmente enganosa. A substância da nuvem é elasticidade, APIs, serviços gerenciados e presença global - propriedades que nenhum computador sozinho tem.",
+        "context": "Popularizada como adesivo por Chris Watterston (2015) e adotada como piada e crítica; útil como lembrete sobre confiança e localização, errada como descrição do que se está comprando."
+      },
+      "quantum-breaks-everything-myth": {
+        "def": "O algoritmo de Shor ameaça a matemática de chave pública atual (RSA, curvas elípticas) num computador quântico grande e tolerante a falhas - que ainda não existe. Cifras simétricas e hashes basicamente dobram o tamanho das chaves.",
+        "context": "O NIST publicou padrões pós-quânticos em 2024 (FIPS 203, 204, 205) precisamente para a migração acontecer antes de tais máquinas; 'colher agora, decifrar depois' é o risco real do presente."
+      },
+      "tor-criminals-myth": {
+        "def": "Os usuários diários do Tor são esmagadoramente comuns: pessoas contornando censura, jornalistas protegendo fontes, pesquisadores e os atentos à privacidade - a rede foi financiada para proteger exatamente esses.",
+        "context": "O onion routing nasceu no Naval Research Laboratory dos EUA, e o Tor Project documenta sua base de usuários; sistemas de anonimato só funcionam quando usuários lícitos formam a multidão."
+      },
+      "public-wifi-panic": {
+        "def": "Uma verdade de dez anos atrás que envelheceu: com HTTPS quase universal, a rede do café vê nomes de host, não conteúdos. Os riscos realistas encolheram para portais falsos, gêmeos malignos e o raro serviço sem criptografia.",
+        "context": "A EFF - antes a maior alertadora do Wi-Fi público - publicou 'Why Public Wi-Fi Is a Lot Safer Than You Think' (2020) depois que a adoção de HTTPS mudou a matemática. Cautela, sim; pânico, não."
+      },
+      "aead": {
+        "def": "Uma cifra que criptografa e autentica em um único passo, de modo que a adulteração falha como uma só operação.",
+        "context": "Criptografia autenticada com dados associados (do inglês Authenticated Encryption with Associated Data, RFC 5116) combina confidencialidade e integridade em uma única primitiva - AES-GCM, AES-CCM, ChaCha20-Poly1305. O TLS 1.3 permite apenas cifras AEAD, porque as construções antigas de cifrar-e-autenticar-separadamente continuavam produzindo ataques de oráculo de preenchimento."
+      },
+      "aes": {
+        "def": "A cifra de bloco simétrica padrão usada em quase todo lugar para criptografia em massa.",
+        "context": "Padrão de Criptografia Avançada (do inglês Advanced Encryption Standard, NIST FIPS 197), originalmente a cifra Rijndael, criptografa dados em blocos de 128 bits com chaves de 128, 192 ou 256 bits. É a base da proteção de registros do TLS, da criptografia de disco e das VPNs."
+      },
+      "cbc": {
+        "def": "Um modo de cifra de bloco mais antigo que encadeia blocos mas não fornece integridade por si só.",
+        "context": "Encadeamento de Blocos de Cifra (do inglês Cipher Block Chaining, NIST SP 800-38A) aplica XOR entre cada bloco de texto claro e o bloco cifrado anterior antes de criptografar. Precisa de um MAC separado para integridade, e a ordem dessas operações produziu os ataques BEAST, Lucky13 e POODLE. O TLS 1.3 abandona o CBC por completo."
+      },
+      "gcm": {
+        "def": "Um modo AEAD que transforma o AES em uma cifra autenticada usando um contador e um nonce.",
+        "context": "Modo Galois/Contador (do inglês Galois/Counter Mode, NIST SP 800-38D) fornece criptografia e integridade em uma única passagem e é o modo AEAD mais comum no TLS. Sua única aresta perigosa: reutilizar um nonce com a mesma chave destrói completamente sua segurança."
+      },
+      "ccm": {
+        "def": "Um modo AEAD que combina criptografia em modo contador com uma etiqueta de autenticação baseada em CBC.",
+        "context": "Contador com CBC-MAC (do inglês Counter with CBC-MAC, NIST SP 800-38C) é uma construção AEAD usada onde o GCM é indesejável, comum em enlaces restritos. A variante CCM_8 trunca a etiqueta para 8 bytes para economizar sobrecarga, o que enfraquece de forma mensurável a integridade."
+      },
+      "prf": {
+        "def": "Uma função que expande um segredo em todo o material de chave que um protocolo precisa.",
+        "context": "Uma Função Pseudoaleatória (do inglês Pseudorandom Function) recebe uma chave e entradas e produz saída indistinguível de aleatória. No TLS ela deriva as chaves de sessão a partir do segredo negociado; o hash final da suíte de cifras nomeia o hash da PRF no TLS 1.2."
+      },
+      "rsa": {
+        "def": "O algoritmo clássico de chave pública para assinaturas e, historicamente, transporte de chave.",
+        "context": "Rivest-Shamir-Adleman (RFC 8017) é um criptossistema de chave pública baseado na dificuldade de fatorar números grandes. No TLS moderno ele autentica o servidor por meio de seu certificado; seu uso para transporte de chave foi descontinuado porque não oferece sigilo de encaminhamento."
+      },
+      "ecdsa": {
+        "def": "Um algoritmo de assinatura que usa curvas elípticas - chaves menores que o RSA para a mesma força.",
+        "context": "Algoritmo de Assinatura Digital de Curva Elíptica (do inglês Elliptic Curve Digital Signature Algorithm, FIPS 186-5) fornece assinaturas digitais com chaves muito menores que o RSA para segurança equivalente, razão pela qual os certificados modernos usam cada vez mais chaves ECDSA."
+      },
+      "sha": {
+        "def": "A família padrão de funções hash criptográficas.",
+        "context": "Algoritmo de Hash Seguro (do inglês Secure Hash Algorithm, NIST FIPS 180-4) é a família que inclui SHA-256 e SHA-384, usada para integridade, assinaturas de certificado e como o hash dentro do HMAC. O SHA-1 é hoje considerado quebrado quanto à resistência a colisões."
+      },
+      "md5": {
+        "def": "Uma antiga função hash de 128 bits, criptograficamente quebrada e insegura para uso em segurança.",
+        "context": "Message Digest 5 (RFC 1321) já foi onipresente mas hoje é trivialmente colidível. Sobrevive apenas como checksum sem função de segurança - por exemplo em alguns fingerprintings legados - e nunca deve ser usada onde a resistência a colisões importa."
+      },
+      "dtls": {
+        "def": "O TLS adaptado para rodar sobre UDP em vez de TCP.",
+        "context": "Segurança da Camada de Transporte por Datagrama (do inglês Datagram Transport Layer Security, RFC 9147) leva a confidencialidade e a integridade do TLS a transportes de datagrama que podem reordenar ou perder pacotes, usada em coisas como canais de dados de VPN e mídia em tempo real."
+      },
+      "ocsp": {
+        "def": "Um protocolo para verificar em tempo real se um certificado foi revogado.",
+        "context": "Protocolo de Status de Certificado Online (do inglês Online Certificate Status Protocol, RFC 6960) permite que um cliente pergunte a um respondedor se um certificado ainda é válido, uma alternativa a baixar grandes listas de revogação. O grampeamento OCSP permite que o próprio servidor apresente a prova para evitar uma viagem de ida e volta separada."
+      },
+      "sni": {
+        "def": "O campo em um handshake TLS que indica qual site o cliente deseja.",
+        "context": "Indicação de Nome de Servidor (do inglês Server Name Indication, RFC 6066) permite que um endereço IP hospede muitos sites TLS: o cliente envia o nome do host no ClientHello para que o servidor apresente o certificado correto. É enviado em texto claro no TLS 1.2, razão pela qual existe o Encrypted Client Hello."
+      },
+      "alpn": {
+        "def": "O campo do handshake TLS que negocia qual protocolo de aplicação usar.",
+        "context": "Negociação de Protocolo de Camada de Aplicação (do inglês Application-Layer Protocol Negotiation, RFC 7301) permite que cliente e servidor concordem durante o handshake sobre o protocolo que rodará na conexão - por exemplo h2 para HTTP/2 - evitando uma viagem de ida e volta de negociação adicional."
+      },
+      "ecdhe": {
+        "def": "Um método de troca de chaves que dá a cada sessão suas próprias chaves descartáveis, de modo que o tráfego passado permanece seguro se uma chave de longo prazo vazar.",
+        "context": "Diffie-Hellman Efêmero de Curva Elíptica (do inglês Ephemeral Elliptic-Curve Diffie-Hellman, RFC 8422) é a troca de chaves com sigilo de encaminhamento padrão no TLS moderno. A parte 'efêmera' significa que as chaves existem apenas para uma sessão, o que é o que fornece o sigilo de encaminhamento; a parte de curva elíptica a torna rápida com chaves pequenas."
+      },
+      "ssh": {
+        "def": "O protocolo criptografado padrão para acesso remoto ao shell e tunelamento seguro.",
+        "context": "Secure Shell (RFC 4251) substituiu o Telnet ao criptografar toda a sessão. Também é a base do SCP, do SFTP e dos túneis de encaminhamento de porta, e é autenticado por chaves de host e chaves de usuário ou senhas."
+      },
+      "ftp": {
+        "def": "Um protocolo antigo, sem criptografia, para transferir arquivos entre hosts.",
+        "context": "Protocolo de Transferência de Arquivos (do inglês File Transfer Protocol, RFC 959) usa conexões de controle e de dados separadas e envia credenciais em texto claro, razão pela qual foi em grande parte substituído por SFTP ou FTPS para qualquer coisa sensível."
+      },
+      "ftps": {
+        "def": "O FTP envolvido em TLS para criptografar os canais de controle e de dados.",
+        "context": "FTPS (RFC 4217) adiciona TLS ao FTP clássico. É diferente do SFTP, que é um protocolo distinto construído sobre o SSH; o FTPS é o FTP mais uma camada de TLS."
+      },
+      "sftp": {
+        "def": "Um protocolo de transferência de arquivos que roda de forma segura sobre o SSH.",
+        "context": "Protocolo de Transferência de Arquivos por SSH (do inglês SSH File Transfer Protocol) roda dentro de uma sessão SSH, herdando a criptografia e a autenticação do SSH. Apesar do nome parecido, não compartilha nada com o FTP ou o FTPS."
+      },
+      "scp": {
+        "def": "Um comando simples para copiar arquivos sobre uma conexão SSH.",
+        "context": "Protocolo de Cópia Segura (do inglês Secure Copy Protocol) copia arquivos usando o SSH para transporte e autenticação. É mais simples que o SFTP mas menos flexível, e o OpenSSH moderno implementa o scp sobre o protocolo SFTP."
+      },
+      "smtp": {
+        "def": "O protocolo que move e-mail entre servidores de correio.",
+        "context": "Protocolo Simples de Transferência de Correio (do inglês Simple Mail Transfer Protocol, RFC 5321) cuida do envio e do encaminhamento de e-mail. A recuperação é feita por IMAP ou POP3; o SMTP é o lado da entrega."
+      },
+      "imap": {
+        "def": "Um protocolo para ler e-mail mantido no servidor, em múltiplos dispositivos.",
+        "context": "Protocolo de Acesso a Mensagens da Internet (do inglês Internet Message Access Protocol, RFC 9051) mantém as mensagens no servidor e sincroniza o estado (lida, arquivada) entre clientes, ao contrário do POP3, que normalmente as baixa e remove."
+      },
+      "imaps": {
+        "def": "O IMAP criptografado com TLS.",
+        "context": "IMAPS é o IMAP sobre uma conexão TLS implícita (a RFC 8314 recomenda TLS para acesso a correio), protegendo o conteúdo da caixa de correio e as credenciais em trânsito."
+      },
+      "pop3": {
+        "def": "Um protocolo mais antigo e simples para baixar e-mail de um servidor.",
+        "context": "Protocolo de Correio versão 3 (do inglês Post Office Protocol version 3, RFC 1939) normalmente baixa as mensagens para um dispositivo e as apaga do servidor, razão pela qual o IMAP é preferido para uso em múltiplos dispositivos."
+      },
+      "ldap": {
+        "def": "O protocolo para consultar e modificar serviços de diretório como o Active Directory.",
+        "context": "Protocolo Leve de Acesso a Diretórios (do inglês Lightweight Directory Access Protocol, RFC 4511) lê e grava dados hierárquicos de diretório - usuários, grupos, atributos. É central para autenticação e identidade corporativas."
+      },
+      "ldaps": {
+        "def": "O LDAP criptografado com TLS.",
+        "context": "LDAPS envolve o LDAP em TLS para que consultas de diretório e credenciais de bind não sejam enviadas em texto claro (a RFC 4513 cobre os mecanismos de segurança), essencial onde quer que senhas trafeguem pela rede."
+      },
+      "mqtt": {
+        "def": "Um protocolo leve de publicação/assinatura para IoT e telemetria.",
+        "context": "Transporte de Telemetria por Enfileiramento de Mensagens (do inglês Message Queuing Telemetry Transport, OASIS MQTT 5.0) é um protocolo compacto de publicação/assinatura projetado para dispositivos restritos e redes não confiáveis, onipresente em IoT."
+      },
+      "mqtts": {
+        "def": "O MQTT criptografado com TLS.",
+        "context": "MQTTS é o MQTT transportado sobre uma conexão TLS, protegendo a telemetria e as credenciais dos dispositivos em redes onde o tráfego IoT ficaria exposto."
+      },
+      "rtsp": {
+        "def": "Um protocolo de controle para mídia em streaming - reproduzir, pausar, avançar.",
+        "context": "Protocolo de Streaming em Tempo Real (do inglês Real-Time Streaming Protocol, RFC 7826) controla servidores de mídia como um controle remoto; a própria mídia geralmente flui por um transporte separado, como o RTP."
+      },
+      "rtmp": {
+        "def": "Um protocolo para transmitir áudio e vídeo, historicamente baseado em Flash.",
+        "context": "Protocolo de Mensagens em Tempo Real (do inglês Real-Time Messaging Protocol, Adobe) foi criado para streaming de mídia Flash e persiste em pipelines de ingestão de vídeo ao vivo mesmo após o fim do Flash."
+      },
+      "smb": {
+        "def": "O protocolo Windows para compartilhar arquivos, impressoras e pipes nomeados.",
+        "context": "Bloco de Mensagens de Servidor (do inglês Server Message Block, conhecido como CIFS em sua forma antiga) fornece compartilhamento de arquivos e recursos em redes Windows. Seu histórico de vulnerabilidades torna perigoso expô-lo à internet."
+      },
+      "telnet": {
+        "def": "Um antigo protocolo de terminal remoto sem criptografia, substituído pelo SSH.",
+        "context": "Rede de Teletipo (do inglês Teletype Network, RFC 854) abre uma sessão interativa em texto claro com um host remoto. Como envia tudo, inclusive senhas, em texto claro, nunca deve ser usado em redes não confiáveis."
+      },
+      "tftp": {
+        "def": "Um protocolo mínimo de transferência de arquivos sem autenticação, usado para inicializar dispositivos.",
+        "context": "Protocolo Trivial de Transferência de Arquivos (do inglês Trivial File Transfer Protocol, RFC 1350) é um protocolo minúsculo baseado em UDP, comum para boot de rede (PXE) e firmware de dispositivos, deliberadamente simples e por isso sem autenticação."
+      },
+      "dict": {
+        "def": "Um protocolo para consultar servidores de dicionário em rede.",
+        "context": "Protocolo de Servidor de Dicionário (do inglês Dictionary Server Protocol, RFC 2229) permite que clientes busquem definições de palavras em bases de dicionário pela rede - um dos esquemas mais obscuros que o curl consegue falar."
+      },
+      "gopher": {
+        "def": "Um protocolo pré-web para navegar por menus de documentos.",
+        "context": "O protocolo Gopher (RFC 1436) organizava documentos da internet em menus hierárquicos e antecedeu a World Wide Web. Sobrevive como curiosidade e, notavelmente, como um vetor de ataque SSRF."
+      },
+      "sip": {
+        "def": "O protocolo de sinalização que estabelece chamadas de voz e vídeo.",
+        "context": "Protocolo de Iniciação de Sessão (do inglês Session Initiation Protocol, RFC 3261) estabelece, modifica e encerra sessões em tempo real, como chamadas VoIP; a própria mídia normalmente flui por RTP depois que o SIP estabelece a chamada."
+      },
+      "ws": {
+        "def": "Um protocolo para conexões persistentes e full-duplex entre um navegador e um servidor.",
+        "context": "WebSocket (RFC 6455) transforma uma conexão HTTP em um canal bidirecional que permanece aberto, viabilizando aplicações web em tempo real sem polling. A forma criptografada é o WSS."
+      },
+      "wss": {
+        "def": "O WebSocket criptografado com TLS.",
+        "context": "WebSocket Seguro (do inglês WebSocket Secure) é o protocolo WebSocket transportado sobre TLS (RFC 6455), o equivalente ws:// do https://, e a forma que qualquer aplicação de tempo real em produção deve usar."
+      },
+      "aaaa": {
+        "def": "O registro DNS que mapeia um nome de host para um endereço IPv6.",
+        "context": "Um registro AAAA (RFC 3596) é a contraparte IPv6 do registro A - quatro vezes os bits, daí o apelido 'quad-A'. Um nome pode ter registros A e AAAA ao mesmo tempo para alcançabilidade em pilha dupla."
+      },
+      "cname": {
+        "def": "Um registro DNS que faz um nome ser um apelido de outro.",
+        "context": "Um registro de Nome Canônico (do inglês Canonical Name, RFC 1034) aponta um nome de host para outro, de modo que as consultas seguem a cadeia até os registros de endereço reais do alvo. Um CNAME não pode coexistir com outros tipos de registro no mesmo nome."
+      },
+      "mx": {
+        "def": "O registro DNS que indica quais servidores recebem o e-mail de um domínio.",
+        "context": "Um registro de Troca de Correio (do inglês Mail Exchange, RFC 5321) lista os servidores de correio de um domínio, cada um com um número de preferência para que os remetentes tentem primeiro o servidor de menor número."
+      },
+      "soa": {
+        "def": "O registro DNS que contém os metadados autoritativos de uma zona.",
+        "context": "Um registro de Início de Autoridade (do inglês Start of Authority, RFC 1035) carrega o servidor de nomes primário, o número de série da zona e os temporizadores que governam como os secundários se atualizam. Cada zona tem exatamente um."
+      },
+      "txt": {
+        "def": "Um registro DNS de uso geral que contém texto livre.",
+        "context": "Um registro de Texto (do inglês Text record, RFC 1035) armazena cadeias arbitrárias, razão pela qual tantos mecanismos de verificação e autenticação de e-mail - SPF, DKIM, provas de propriedade de domínio - vivem em registros TXT."
+      },
+      "spf": {
+        "def": "Um método de autenticação de e-mail que declara quais servidores podem enviar por um domínio.",
+        "context": "Estrutura de Política do Remetente (do inglês Sender Policy Framework, RFC 7208) publica, em um registro TXT, a lista de IPs autorizados a enviar e-mail por um domínio, para que os destinatários possam rejeitar falsificações. Combina-se com o DKIM sob o DMARC."
+      },
+      "dkim": {
+        "def": "Um método de autenticação de e-mail que assina mensagens criptograficamente.",
+        "context": "Correio Identificado por DomainKeys (do inglês DomainKeys Identified Mail, RFC 6376) anexa uma assinatura ao e-mail enviado e publica a chave pública de verificação no DNS, para que os destinatários possam confirmar que uma mensagem foi autorizada pelo domínio e não foi alterada."
+      },
+      "ptr": {
+        "def": "Um registro DNS que mapeia um endereço IP de volta para um nome de host.",
+        "context": "Um registro Ponteiro (do inglês Pointer record, RFC 1035) fornece o DNS reverso - dado um IP, encontrar o nome. Servidores de correio comumente verificam se um IP remetente tem um PTR correspondente como um sinal básico anti-spam."
+      },
+      "srv": {
+        "def": "Um registro DNS que anuncia o host e a porta de um serviço específico.",
+        "context": "Um registro de Serviço (do inglês Service record, RFC 2782) informa aos clientes onde um serviço reside - nome de host, porta, prioridade, peso - usado por protocolos como o SIP e pelo Active Directory para descoberta de serviços."
+      },
+      "caa": {
+        "def": "Um registro DNS que declara quais autoridades certificadoras podem emitir para um domínio.",
+        "context": "Um registro de Autorização de Autoridade Certificadora (do inglês Certification Authority Authorization, RFC 8659) permite que o dono de um domínio restrinja quais ACs têm permissão para emitir certificados para o domínio, uma verificação que as ACs devem respeitar antes da emissão."
+      },
+      "tsig": {
+        "def": "Um método de chave compartilhada para autenticar transações DNS como transferências de zona.",
+        "context": "Assinatura de Transação (do inglês Transaction Signature, RFC 8945) usa um segredo compartilhado e um HMAC para autenticar mensagens DNS - o mais importante, transferências de zona entre servidores primário e secundário - provando que não foram falsificadas nem adulteradas."
+      },
+      "mcp": {
+        "def": "Um protocolo aberto que permite a modelos de IA chamar ferramentas e fontes de dados externas de forma padronizada.",
+        "context": "Protocolo de Contexto de Modelo (do inglês Model Context Protocol) padroniza como um modelo de linguagem se conecta a ferramentas, arquivos e serviços, para que uma aplicação de IA use muitas capacidades por meio de uma única interface, em vez de uma integração sob medida para cada uma."
+      },
+      "llm": {
+        "def": "Uma rede neural treinada em vastos volumes de texto que gera e compreende linguagem.",
+        "context": "Um Modelo de Linguagem Grande (do inglês Large Language Model) é um modelo baseado em transformadores treinado em enormes corpora para prever texto, dando forma a assistentes de chat, ferramentas de código e sistemas de recuperação. Sua escala é o que lhe confere ampla capacidade."
+      },
+      "rag": {
+        "def": "Uma técnica que fornece a um modelo de IA documentos recuperados para que suas respostas sejam fundamentadas.",
+        "context": "Geração Aumentada por Recuperação (do inglês Retrieval-Augmented Generation) busca contexto relevante em uma fonte de conhecimento e o fornece ao modelo no momento da consulta, reduzindo alucinações e permitindo que o modelo cite informações nas quais não foi treinado."
+      },
+      "rest": {
+        "def": "Um estilo arquitetural para APIs web construído sobre métodos HTTP e recursos.",
+        "context": "Transferência de Estado Representacional (do inglês Representational State Transfer, Fielding, 2000) modela uma API como recursos endereçados por URLs e manipulados com métodos HTTP. É o estilo dominante para APIs web, em contraste com o SOAP mais antigo, baseado em envelope."
+      },
+      "soap": {
+        "def": "Um protocolo mais antigo, baseado em XML, para mensagens estruturadas de serviços web.",
+        "context": "Protocolo Simples de Acesso a Objetos (do inglês Simple Object Access Protocol, W3C) envolve requisições em um envelope XML rígido com seus próprios padrões de segurança e transações. Mais pesado que o REST, persiste em integrações corporativas e legadas."
+      },
+      "cli": {
+        "def": "Uma interface baseada em texto onde você digita comandos para controlar o software.",
+        "context": "Uma Interface de Linha de Comando (do inglês Command-Line Interface) aceita comandos digitados em vez de cliques do mouse. Em equipamentos de rede e servidores é a principal superfície de controle, programável e precisa de um modo que as interfaces gráficas não são."
+      },
+      "saml": {
+        "def": "Um padrão XML para trocar autenticação entre provedores de identidade e serviços.",
+        "context": "Linguagem de Marcação de Asserção de Segurança (do inglês Security Assertion Markup Language, OASIS) permite que um provedor de identidade ateste um usuário a um serviço por meio de asserções XML assinadas, a espinha dorsal de grande parte do login único corporativo. O OIDC baseado em JWT é a alternativa mais moderna."
+      },
+      "ike": {
+        "def": "O protocolo que negocia chaves e parâmetros de segurança para VPNs IPsec.",
+        "context": "Troca de Chaves da Internet (do inglês Internet Key Exchange, RFC 7296) estabelece as associações de segurança que um túnel IPsec precisa - autenticando os pares e concordando sobre as chaves - antes que o tráfego criptografado possa fluir."
+      },
+      "ntp": {
+        "def": "O protocolo que sincroniza relógios entre dispositivos em rede.",
+        "context": "Protocolo de Tempo de Rede (do inglês Network Time Protocol, RFC 5905) mantém os relógios dos dispositivos alinhados a fontes de tempo de referência. A precisão do tempo importa para logs, certificados e autenticação, que muitas vezes falham quando os relógios se desviam."
+      },
+      "icmp": {
+        "def": "O protocolo que o IP usa para mensagens de erro e diagnóstico, como o ping.",
+        "context": "Protocolo de Mensagens de Controle da Internet (do inglês Internet Control Message Protocol, RFC 792) transporta erros de alcançabilidade e diagnósticos em vez de dados de usuário. O ping e o traceroute são construídos sobre ele, e o tratamento do ICMP por um firewall molda como uma rede relata problemas."
+      },
+      "sql": {
+        "def": "A linguagem padrão para consultar e manipular bancos de dados relacionais.",
+        "context": "Linguagem de Consulta Estruturada (do inglês Structured Query Language, ISO/IEC 9075) lê e grava dados em bancos de dados relacionais. A injeção de SQL - contrabandear SQL malicioso por uma entrada - é uma das vulnerabilidades web mais antigas e danosas."
+      },
+      "l7": {
+        "def": "A camada de aplicação - onde protocolos como o HTTP vivem no modelo OSI.",
+        "context": "A Camada 7 é o topo do modelo OSI de sete camadas, a camada dos protocolos de aplicação. Operar na L7 permite que um dispositivo entenda o HTTP, tome decisões de roteamento com base em URLs e defenda aplicações, como faz um WAF."
+      },
+      "as3": {
+        "def": "Uma extensão da F5 para configurar serviços de aplicação declarativamente via JSON.",
+        "context": "Extensão Application Services 3 (do inglês Application Services 3 Extension) recebe uma declaração JSON da configuração de aplicação desejada e faz o BIG-IP correspondê-la, uma alternativa declarativa aos comandos imperativos do tmsh, entregue por um endpoint REST."
+      },
+      "aws": {
+        "def": "A plataforma de nuvem da Amazon - computação, armazenamento, rede e centenas de serviços.",
+        "context": "Amazon Web Services é o maior provedor de nuvem pública, oferecendo infraestrutura sob demanda e serviços gerenciados. Muitas integrações, incluindo destinos de telemetria como o CloudWatch e o S3, têm a AWS como alvo."
+      },
+      "fips": {
+        "def": "Padrões do governo dos EUA para criptografia e segurança de computadores.",
+        "context": "Padrões Federais de Processamento de Informação (do inglês Federal Information Processing Standards, NIST) são as publicações que definem os algoritmos criptográficos aprovados - o AES na FIPS 197, o pós-quântico ML-KEM na FIPS 203 - e os requisitos que os sistemas devem cumprir para uso governamental."
+      },
+      "ml-kem": {
+        "def": "O algoritmo pós-quântico de encapsulamento de chave padronizado pelo NIST.",
+        "context": "Mecanismo de Encapsulamento de Chave Baseado em Reticulado de Módulo (do inglês Module-Lattice Key Encapsulation Mechanism, NIST FIPS 203), derivado do Kyber, é um esquema baseado em reticulados projetado para resistir a ataques quânticos. É implantado em trocas de chaves TLS híbridas ao lado do ECDHE clássico."
+      },
+      "qat": {
+        "def": "Hardware da Intel que descarrega criptografia e compressão da CPU.",
+        "context": "Tecnologia QuickAssist (do inglês QuickAssist Technology) acelera criptografia, descriptografia e compressão em silício dedicado, liberando ciclos de CPU. Em appliances, pode elevar de forma significativa a taxa de transferência do TLS quando habilitada."
+      },
+      "rpm": {
+        "def": "Um formato e gerenciador de pacotes usado por sistemas Linux da família Red Hat.",
+        "context": "Gerenciador de Pacotes RPM (do inglês RPM Package Manager) é tanto o formato de pacote .rpm quanto as ferramentas que instalam, atualizam e rastreiam software em distribuições como RHEL e Fedora. Os volumes de software do BIG-IP são construídos a partir de RPMs."
+      },
+      "stp": {
+        "def": "Um protocolo que evita loops em uma rede Ethernet comutada.",
+        "context": "Protocolo Spanning Tree (do inglês Spanning Tree Protocol, IEEE 802.1D) constrói uma topologia livre de loops bloqueando enlaces redundantes até que sejam necessários, evitando as tempestades de broadcast que um loop físico causaria."
+      },
+      "tps": {
+        "def": "Uma medida de vazão que conta as transações tratadas a cada segundo.",
+        "context": "Transações Por Segundo (do inglês Transactions Per Second) mede a taxa de processamento, e em algumas plataformas é também um limite de capacidade licenciado - por exemplo, um teto de TPS de SSL que limita quantos handshakes por segundo uma licença permite."
+      },
+      "bados": {
+        "def": "Uma defesa que detecta negação de serviço aprendendo o comportamento normal do tráfego.",
+        "context": "Proteção contra Negação de Serviço Comportamental (do inglês Behavioral Denial of Service) constrói uma linha de base do tráfego normal e mitiga desvios automaticamente, capturando ataques na camada de aplicação que defesas baseadas em assinatura não percebem."
+      },
+      "c3d": {
+        "def": "Um recurso da F5 que reassina certificados de cliente para o TLS mútuo com o backend.",
+        "context": "Delegação Restrita por Certificado de Cliente (do inglês Client Certificate Constrained Delegation) permite que o BIG-IP encerre o TLS de um cliente e então apresente um certificado recém-gerado que representa esse cliente ao backend, preservando a identidade através de uma fronteira de recriptografia."
+      },
+      "ehf": {
+        "def": "Uma correção fora de banda que a F5 emite para um problema urgente específico.",
+        "context": "Um Hotfix de Engenharia (do inglês Engineering Hotfix) é um patch direcionado, entregue fora da cadência normal de lançamentos para tratar um defeito específico, posteriormente incorporado a uma versão de manutenção."
+      },
+      "df": {
+        "def": "Uma designação de hardware da F5 para uma variante de plataforma com ventilação dupla.",
+        "context": "DF marca uma variante de ventilação dupla (do inglês dual-fan) de um appliance da F5 - um detalhe de hardware específico de plataforma, relevante ao verificar quais modelos uma versão de software suporta."
+      },
+      "ja3": {
+        "def": "Uma impressão digital de um cliente TLS construída a partir dos campos do seu ClientHello.",
+        "context": "O JA3 transforma um conjunto de campos do ClientHello - versão do TLS, lista de cifras, extensões - em uma assinatura curta (um hash MD5) que muitas vezes identifica o software cliente ou a família de malware, independentemente do IP. O JA4 é seu sucessor mais robusto."
+      },
+      "ja4": {
+        "def": "Uma família mais nova e robusta de impressões digitais de TLS e rede.",
+        "context": "O JA4 (parte do conjunto JA4+) aprimora o JA3 com uma impressão digital do ClientHello mais estruturada e difícil de evadir, e adiciona impressões digitais complementares para outros protocolos. Resiste aos truques de ordenação que permitiam aos clientes driblar o JA3."
+      },
+      "spbm": {
+        "def": "Uma tecnologia de fabric Ethernet que constrói encaminhamento por caminho mais curto usando o IS-IS.",
+        "context": "Modo MAC de Ponte por Caminho Mais Curto (do inglês Shortest Path Bridging MAC mode, IEEE 802.1aq) cria um fabric Ethernet livre de loops e por caminho mais curto, controlado pelo protocolo de roteamento IS-IS, substituindo o spanning tree por encaminhamento multicaminho real através de um backbone de provedor ou campus."
+      },
+      "is-is": {
+        "def": "Um protocolo de roteamento de estado de enlace, usado em grandes redes e fabrics Ethernet.",
+        "context": "Sistema Intermediário para Sistema Intermediário (do inglês Intermediate System to Intermediate System, ISO/IEC 10589) é um protocolo de gateway interior de estado de enlace, um par do OSPF, preferido em grandes núcleos de provedores de serviço e usado como plano de controle para fabrics SPBM."
+      },
+      "exos": {
+        "def": "O sistema operacional de switches da Extreme Networks.",
+        "context": "Sistema Operacional Extreme (do inglês Extreme Operating System, ExtremeXOS) é o sistema operacional de rede modular que roda nos switches da Extreme Networks, com uma arquitetura de processos isolados e uma superfície de scripting/automação para configuração e gerenciamento."
+      },
+      "rip": {
+        "def": "Um dos protocolos de roteamento mais antigos, que usa a contagem de saltos como métrica.",
+        "context": "Protocolo de Informação de Roteamento (do inglês Routing Information Protocol, RFC 2453) escolhe rotas pelo menor número de saltos, limitado a 15, o que o torna simples mas inadequado para grandes redes. Sobrevive principalmente em implantações pequenas ou legadas, há muito substituído pelo OSPF e pelo BGP."
+      },
+      "beb": {
+        "def": "Um dispositivo de borda em um fabric Ethernet que encapsula o tráfego para o backbone.",
+        "context": "Uma Ponte de Borda de Backbone (do inglês Backbone Edge Bridge, IEEE 802.1ah) fica na fronteira de um fabric de backbone de provedor ou SPBM, envolvendo os quadros do cliente em cabeçalhos MAC de backbone para que o núcleo encaminhe com base em endereços de backbone - os pontos de entrada e saída do fabric."
+      },
+      "set-us-up-the-bomb": {
+        "def": "Outra frase truncada da mesma abertura do jogo de 1991 que \"all your base\", hoje uma forma abreviada de dizer que um sistema foi súbita e catastroficamente comprometido.",
+        "context": "Da introdução notoriamente maltraduzida de Zero Wing (o capitão é avisado \"Somebody set up us the bomb\"), a frase se espalhou junto com o meme \"all your base are belong to us\" no início dos anos 2000. Na cultura de operações é uma forma carinhosa de se referir ao momento em que um incidente começa - o alarme que diz que algo acabou de dar muito errado."
+      },
+      "oidc": {
+        "def": "Uma camada de identidade sobre o OAuth 2.0 para autenticar usuários.",
+        "context": "OpenID Connect adiciona autenticação ao framework de autorização OAuth 2.0, emitindo tokens de identidade assinados (JWTs) para que uma aplicação verifique quem é um usuário. É o sucessor moderno de grande parte do que o SAML fazia para o login único na web."
+      },
+      "jwk": {
+        "def": "Um formato JSON para representar uma chave criptográfica.",
+        "context": "Chave Web JSON (do inglês JSON Web Key, RFC 7517) codifica uma chave pública ou privada como um objeto JSON, o formato em que as chaves de assinatura são publicadas para verificação de JWT. Uma coleção delas é um JWK Set (JWKS)."
+      },
+      "jwks": {
+        "def": "Um conjunto publicado de chaves usado para verificar tokens assinados.",
+        "context": "Conjunto de Chaves Web JSON (do inglês JSON Web Key Set) é um documento JSON que lista as chaves públicas (como JWKs) que um serviço usa para assinar seus tokens. As relying parties buscam o JWKS para verificar assinaturas de JWT e acompanhar a rotação de chaves sem reconfiguração manual."
+      },
+      "pss": {
+        "def": "Um esquema de assinatura RSA aleatorizado, mais robusto que o preenchimento determinístico antigo.",
+        "context": "Esquema de Assinatura Probabilística (do inglês Probabilistic Signature Scheme, RSASSA-PSS, RFC 8017) adiciona sal aleatório às assinaturas RSA, dando provas de segurança mais fortes que o preenchimento legado PKCS#1 v1.5. É o preenchimento de assinatura RSA recomendado nos protocolos modernos."
+      },
+      "hqc": {
+        "def": "Um algoritmo pós-quântico de encapsulamento de chave baseado em códigos, selecionado pelo NIST como reserva.",
+        "context": "Hamming Quase-Cíclico (do inglês Hamming Quasi-Cyclic) é um mecanismo de encapsulamento de chave baseado em códigos que o NIST selecionou em 2025 como reserva para o ML-KEM baseado em reticulados, para que a segurança pós-quântica não dependa de uma única suposição matemática."
+      },
+      "ecdh": {
+        "def": "Troca de chaves de curva elíptica - a forma não efêmera não tem sigilo de encaminhamento.",
+        "context": "Diffie-Hellman de Curva Elíptica (do inglês Elliptic-Curve Diffie-Hellman) deriva um segredo compartilhado sobre curvas elípticas. Sem o 'E' de efêmero (como no ECDHE) as chaves são de longa duração, então uma chave vazada expõe sessões passadas - razão pela qual a variante efêmera é preferida."
+      },
+      "rs256": {
+        "def": "Um algoritmo de assinatura de JWT: RSA com SHA-256.",
+        "context": "RS256 é um identificador de Algoritmo Web JSON (do inglês JSON Web Algorithm, RFC 7518) para uma assinatura RSA usando SHA-256. É um dos algoritmos de assinatura de JWT mais comuns, combinado com uma chave pública publicada em um JWKS."
+      },
+      "es256": {
+        "def": "Um algoritmo de assinatura de JWT: ECDSA com SHA-256.",
+        "context": "ES256 é um identificador de Algoritmo Web JSON (do inglês JSON Web Algorithm, RFC 7518) para uma assinatura ECDSA sobre a curva P-256 usando SHA-256. Oferece a mesma segurança que o RS256 com chaves e assinaturas muito menores."
+      },
+      "acme": {
+        "def": "Um protocolo que automatiza a obtenção e a renovação de certificados TLS.",
+        "context": "Ambiente de Gerenciamento Automático de Certificados (do inglês Automatic Certificate Management Environment, RFC 8555) é o protocolo por trás do Let's Encrypt e de CAs semelhantes. Permite que um cliente prove o controle de um domínio e obtenha certificados sem interação humana, razão pela qual o TLS gratuito e com renovação automática se tornou universal."
+      },
+      "fqdn": {
+        "def": "Um nome de domínio completo que especifica a localização exata de um host no DNS.",
+        "context": "Um Nome de Domínio Totalmente Qualificado (do inglês Fully Qualified Domain Name) dá o caminho completo do host até a raiz, como `www.example.com.`, sem ambiguidade sobre qual domínio se trata - ao contrário de um nome curto ou relativo que depende de um sufixo de busca."
+      },
+      "san": {
+        "def": "O campo do certificado que lista todos os nomes de host para os quais o certificado é válido.",
+        "context": "Nome Alternativo do Titular (do inglês Subject Alternative Name, RFC 5280) é a extensão X.509 que carrega os domínios que um certificado cobre. Os navegadores modernos ignoram o antigo Common Name e validam contra a lista SAN, então um certificado deve nomear ali cada host que atende."
+      },
+      "isrg": {
+        "def": "A organização sem fins lucrativos que opera o Let's Encrypt.",
+        "context": "Grupo de Pesquisa em Segurança da Internet (do inglês Internet Security Research Group) é a organização sem fins lucrativos por trás do Let's Encrypt, cujo certificado ISRG Root X1 ancora os certificados gratuitos e automatizados que boa parte da web hoje usa."
+      },
+      "ios": {
+        "def": "O sistema operacional de longa data da Cisco para roteadores e switches.",
+        "context": "Sistema Operacional de Internetworking (do inglês Internetwork Operating System) é o clássico sistema operacional de rede da Cisco e seu estilo de linha de comando. Suas convenções (`enable`, `configure terminal`) são tão difundidas que muitos outros fabricantes oferecem um modo de CLI no estilo IOS por familiaridade. Não confundir com o iOS da Apple."
+      },
+      "fa": {
+        "def": "Um protocolo que conecta automaticamente switches de borda a um fabric Ethernet.",
+        "context": "Fabric Attach permite que um switch de borda entre em um fabric e sinalize mapeamentos de VLAN para serviço automaticamente via LLDP, para que a borda não precise rodar o protocolo de controle do fabric (IS-IS/SPBM) ela mesma."
+      },
+      "sike": {
+        "def": "Um candidato pós-quântico que foi drasticamente quebrado em 2022.",
+        "context": "Encapsulamento de Chave por Isogenia Supersingular (do inglês Supersingular Isogeny Key Encapsulation) foi um esquema pós-quântico promissor baseado em isogenias até que um ataque de 2022 o quebrou em um laptop em cerca de uma hora - um alerta sobre por que o processo do NIST se protege usando famílias matemáticas diferentes."
+      },
+      "totp": {
+        "def": "Um código de uso único que muda a cada 30 segundos, usado para autenticação de dois fatores.",
+        "context": "Senha de Uso Único Baseada em Tempo (do inglês Time-based One-Time Password, RFC 6238) deriva um código curto de um segredo compartilhado e do horário atual usando HMAC, para que apps autenticadores e servidores calculem o mesmo valor de forma independente. É a base da maioria dos 2FA baseados em app."
+      },
+      "hotp": {
+        "def": "Um código de uso único avançado por um contador em vez de um relógio.",
+        "context": "Senha de Uso Único Baseada em HMAC (do inglês HMAC-based One-Time Password, RFC 4226) deriva códigos de um segredo compartilhado e de um contador incremental. O TOTP é o HOTP com o contador substituído pelo tempo; o próprio HOTP é usado onde um contador é mais fácil de sincronizar que um relógio."
+      },
+      "qr": {
+        "def": "Um código de barras 2D que celulares escaneiam para ler dados rapidamente.",
+        "context": "Código de Resposta Rápida (do inglês Quick Response code, ISO/IEC 18004) é um código de barras em matriz que codifica texto ou URLs, muito usado para provisionar apps autenticadores ao codificar a URI otpauth para que a câmera de um celular cadastre um segredo em uma única leitura."
+      },
+      "dnssec": {
+        "def": "Extensões que permitem verificar criptograficamente as respostas do DNS.",
+        "context": "Extensões de Segurança do Sistema de Nomes de Domínio (do inglês Domain Name System Security Extensions, RFC 4033) adicionam assinaturas aos registros DNS para que um resolvedor prove que uma resposta veio da zona real e não foi adulterada em trânsito. Constrói uma cadeia de confiança da raiz para baixo através de cada delegação."
+      },
+      "dnskey": {
+        "def": "O registro DNS que publica a chave pública de assinatura de uma zona.",
+        "context": "Um registro DNSKEY (RFC 4034) guarda a chave pública que um resolvedor usa para verificar as assinaturas DNSSEC de uma zona. Seu hash é publicado como um registro DS na zona pai, ligando a cadeia de confiança."
+      },
+      "nsec": {
+        "def": "Um registro DNSSEC que prova que um nome não existe.",
+        "context": "Registros Próximo Seguro (do inglês Next Secure, RFC 4034) encadeiam os nomes existentes em uma zona para que um resolvedor prove a negação autenticada - que um nome consultado realmente está ausente - em vez de confiar em um 'não encontrado' sem assinatura."
+      },
+      "nsec3": {
+        "def": "Uma versão com hash do NSEC que oculta o conteúdo de uma zona.",
+        "context": "Próximo Seguro versão 3 (do inglês Next Secure version 3, RFC 5155) fornece a mesma negação autenticada que o NSEC, mas sobre nomes com hash, para que um atacante não consiga percorrer a cadeia e enumerar todos os nomes da zona."
+      },
+      "tld": {
+        "def": "O último rótulo de um nome de domínio, como com ou org.",
+        "context": "Um domínio de topo (do inglês top-level domain) é a parte mais à direita de um domínio, situada diretamente sob a raiz do DNS. Registros operam cada TLD, e o registro DS neste nível é onde uma cadeia de confiança DNSSEC vinda da raiz continua para baixo."
+      },
+      "pac": {
+        "def": "Um arquivo JavaScript que diz ao navegador qual proxy usar por URL.",
+        "context": "Um arquivo de Configuração Automática de Proxy (do inglês Proxy Auto-Config) define uma função `FindProxyForURL` que o navegador chama para cada requisição, retornando qual proxy (se houver) usar. Permite regras de proxy detalhadas por destino sem fixar um único proxy."
+      },
+      "wpad": {
+        "def": "Um método para navegadores encontrarem um arquivo PAC automaticamente.",
+        "context": "Descoberta Automática de Proxy Web (do inglês Web Proxy Auto-Discovery) permite que um navegador localize um arquivo de configuração de proxy (PAC) via DHCP ou DNS sem configuração manual. Conveniente, mas uma superfície de ataque clássica, já que uma resposta WPAD maliciosa pode redirecionar o tráfego por um proxy do atacante."
+      },
+      "mime": {
+        "def": "Um padrão para rotular o tipo de um conteúdo.",
+        "context": "Extensões Multifunção de Correio da Internet (do inglês Multipurpose Internet Mail Extensions, RFC 2045) definiram tipos de conteúdo como `text/html` e `application/json`, originalmente para anexos de e-mail e hoje o sistema de tipos de mídia que toda a web usa para dizer o que é um fluxo de bytes."
+      },
+      "mdn": {
+        "def": "O site de documentação de tecnologias web da Mozilla, amplamente usado.",
+        "context": "Rede de Desenvolvedores da Mozilla (do inglês Mozilla Developer Network) é a documentação de referência que muitos desenvolvedores tratam como a descrição canônica do comportamento de HTML, CSS, JavaScript e HTTP nos navegadores."
+      },
+      "hs256": {
+        "def": "Um algoritmo de assinatura de JWT: HMAC com SHA-256.",
+        "context": "HS256 é um identificador de Algoritmo Web JSON (do inglês JSON Web Algorithm, RFC 7518) para uma assinatura HMAC simétrica usando SHA-256. Como assinar e verificar usam o mesmo segredo compartilhado, confundi-lo com um algoritmo assimétrico como o RS256 é a raiz de um ataque de JWT bem conhecido."
+      },
+      "kdf": {
+        "def": "Uma função que transforma um segredo em uma ou mais chaves criptográficas.",
+        "context": "Uma função de derivação de chave (do inglês key derivation function) estica ou transforma material de chave de entrada em chaves. As KDFs voltadas a senhas (bcrypt, scrypt, Argon2, PBKDF2) são deliberadamente lentas e ajustáveis para que adivinhar uma senha continue custoso."
+      },
+      "der": {
+        "def": "Uma codificação binária estrita para certificados e chaves X.509.",
+        "context": "Regras de Codificação Distinta (do inglês Distinguished Encoding Rules, ITU-T X.690) é uma forma binária canônica de estruturas ASN.1. As assinaturas de certificados são calculadas sobre os bytes DER, e o PEM é apenas DER envolto em Base64 com linhas de cabeçalho."
+      },
+      "crl": {
+        "def": "Uma lista publicada de certificados que foram revogados.",
+        "context": "Lista de Revogação de Certificados (do inglês Certificate Revocation List, RFC 5280) é uma lista assinada que uma CA publica de certificados que deixaram de ser válidos antes do vencimento. Um cliente pode baixar a CRL, ou usar o OCSP mais leve, para verificar se um certificado foi revogado."
+      },
+      "pem": {
+        "def": "Um invólucro de texto Base64 para certificados e chaves, com linhas BEGIN/END.",
+        "context": "Correio com Privacidade Aprimorada (do inglês Privacy-Enhanced Mail, RFC 7468) é o familiar formato de texto `-----BEGIN CERTIFICATE-----`. Apesar do nome da era do e-mail, é hoje a forma padrão de armazenar e colar certificados e chaves codificados em DER como ASCII."
+      },
+      "sid": {
+        "def": "Um identificador que mapeia um serviço para uma rede virtual em todo o fabric.",
+        "context": "No Shortest Path Bridging, um Identificador de Serviço (I-SID) marca o tráfego para que o fabric saiba a qual rede virtual um quadro pertence, desacoplando o serviço de qualquer VLAN específica e permitindo que a borda sinalize a associação sem rodar o protocolo do núcleo."
+      },
+      "rpz": {
+        "def": "Um mecanismo do DNS para reescrever ou bloquear respostas por política.",
+        "context": "Uma Zona de Política de Resposta permite que um resolvedor sobrescreva respostas DNS - retornando NXDOMAIN, um endereço de jardim murado ou um registro personalizado - para domínios em um feed de ameaças. Transforma o DNS em um ponto de aplicação usando a maquinaria comum de transferência de zona."
+      },
+      "cert": {
+        "def": "Uma equipe que coordena a resposta a incidentes de segurança.",
+        "context": "Uma Equipe de Resposta a Emergências Computacionais (do inglês Computer Emergency Response Team, também CSIRT) trata e coordena a resposta a incidentes de cibersegurança para uma organização ou nação. CERTs nacionais publicam feeds de ameaças e alertas que os defensores a jusante consomem."
+      },
+      "pva": {
+        "def": "Hardware da F5 que acelera tráfego simples de camada 4.",
+        "context": "ASIC de Velocidade de Pacotes (do inglês Packet Velocity ASIC) é o caminho rápido em hardware do BIG-IP. Em modo full ou assisted, ele descarrega fluxos simples e já estabelecidos para o silício, liberando o TMM em software para conexões que precisam de processamento na camada 7."
+      },
+      "icap": {
+        "def": "Um protocolo para entregar conteúdo HTTP a um serviço externo para adaptação.",
+        "context": "Protocolo de Adaptação de Conteúdo da Internet (do inglês Internet Content Adaptation Protocol, RFC 3507) permite que um proxy passe corpos de requisição ou resposta a um servidor separado - para varredura antivírus, DLP ou reescrita de conteúdo - e reinsira o resultado no fluxo."
+      },
+      "eui": {
+        "def": "Um formato de identificador da IEEE usado para construir IDs de interface IPv6.",
+        "context": "Identificador Único Estendido (do inglês Extended Unique Identifier), em sua forma EUI-64, deriva um identificador de interface de 64 bits do endereço MAC de um dispositivo. O SLAAC do IPv6 historicamente o usava para gerar automaticamente a parte de host de um endereço."
+      },
+      "dad": {
+        "def": "Uma verificação do IPv6 de que um endereço escolhido ainda não está em uso.",
+        "context": "Detecção de Endereço Duplicado (do inglês Duplicate Address Detection, RFC 4862) faz um nó enviar uma solicitação de vizinho para seu próprio endereço tentativo antes de usá-lo; se alguém responder, o endereço é duplicado e não pode ser reivindicado."
+      },
+      "ldns": {
+        "def": "O resolvedor recursivo que um cliente realmente consulta.",
+        "context": "O resolvedor DNS local (do inglês local DNS resolver) é o servidor recursivo para o qual um cliente stub envia consultas, e cujo IP um serviço como o GTM/DNS enxerga, não o do usuário final. Como a localização do LDNS aproxima a do usuário, ela orienta decisões de balanceamento geográfico."
+      },
+      "isp": {
+        "def": "Uma empresa que fornece acesso à internet.",
+        "context": "Um provedor de acesso à internet (do inglês internet service provider) conecta assinantes à internet. Em decisões de DNS geográfico e de topologia, o ISP da rede resolvedora pode ser um dos atributos usados para direcionar um cliente a um data center próximo."
+      },
+      "bind": {
+        "def": "O software de servidor DNS mais amplamente implantado.",
+        "context": "Berkeley Internet Name Domain é o servidor DNS de referência da ISC. No BIG-IP DNS, uma ação de 'escorrer para o BIND' entrega uma consulta à instância local do BIND quando nenhum wide IP ou outro objeto a responde."
+      },
+      "ips": {
+        "def": "Um controle que detecta e bloqueia ataques em linha.",
+        "context": "Um sistema de prevenção de intrusão (do inglês intrusion prevention system) inspeciona o tráfego no caminho de dados e pode descartar ou resetar conexões que correspondam a assinaturas de ataque conhecidas ou anomalias, ficando em linha, ao contrário de um sensor passivo apenas de detecção."
+      },
+      "wad": {
+        "def": "O processo do FortiGate que trata da inspeção baseada em proxy.",
+        "context": "O Daemon de Aplicação Web (do inglês Web Application Daemon) é o processo proxy em espaço de usuário do FortiGate. Na inspeção SSL baseada em proxy e na filtragem web, o WAD termina e reorigina a sessão para que os perfis de segurança vejam o conteúdo completo."
+      },
+      "ntlm": {
+        "def": "Um protocolo legado de autenticação desafio-resposta da Microsoft.",
+        "context": "O Gerenciador de LAN NT (do inglês NT LAN Manager) autentica um usuário via uma troca de desafio-resposta sem enviar a senha. Ainda visto em ambientes Windows, é mais fraco que o Kerberos e um alvo frequente de ataques de retransmissão."
+      },
+      "spn": {
+        "def": "O nome que um cliente Kerberos usa para solicitar um ticket de serviço.",
+        "context": "Um Nome Principal de Serviço (do inglês Service Principal Name) identifica de forma única uma instância de serviço no Kerberos, atrelado à conta que a executa. Um SPN registrado incorretamente é uma causa clássica de falhas de login único."
+      },
+      "esp": {
+        "def": "O protocolo IPsec que criptografa e autentica cargas de pacotes.",
+        "context": "Carga de Segurança de Encapsulamento (do inglês Encapsulating Security Payload, RFC 4303) é o componente do IPsec que fornece confidencialidade e integridade ao tráfego tunelado. Uma captura feita fora do túnel vê apenas o ESP, não os pacotes internos protegidos."
+      },
+      "vip": {
+        "def": "O endereço ao qual os clientes se conectam em um balanceador de carga.",
+        "context": "Um IP virtual (do inglês virtual IP) é o endereço de porta de entrada em que um balanceador de carga ou virtual server escuta. Tráfego que completa no VIP mas nunca alcança um membro do pool aponta para um problema no lado servidor do proxy."
+      },
+      "first": {
+        "def": "O corpo global de equipes de resposta a incidentes por trás do CVSS e do EPSS.",
+        "context": "O Fórum de Equipes de Resposta a Incidentes e Segurança (do inglês Forum of Incident Response and Security Teams) é a associação internacional que mantém padrões como o CVSS e o EPSS. Seu trabalho dá aos defensores uma linguagem comum para pontuar e priorizar vulnerabilidades."
+      },
+      "epss": {
+        "def": "Uma pontuação baseada em dados que estima a chance de uma vulnerabilidade ser explorada.",
+        "context": "Sistema de Pontuação de Previsão de Exploração (do inglês Exploit Prediction Scoring System) estima a probabilidade de uma dada vulnerabilidade ser explorada no mundo real em curto prazo. Complementa a severidade do CVSS ao adicionar uma dimensão de probabilidade à priorização."
+      },
+      "pkce": {
+        "def": "Uma extensão do OAuth que protege o fluxo de código de autorização.",
+        "context": "Chave de Prova para Troca de Código (do inglês Proof Key for Code Exchange, RFC 7636) vincula um código de autorização ao cliente que o solicitou, usando um segredo de uso único. Impede que um código interceptado seja resgatado por um atacante e é hoje padrão para clientes OAuth públicos."
+      },
+      "eigrp": {
+        "def": "Um protocolo de roteamento da Cisco conhecido pela convergência rápida.",
+        "context": "Protocolo Aprimorado de Roteamento de Gateway Interior (do inglês Enhanced Interior Gateway Routing Protocol) é um protocolo de vetor de distância da Cisco com reconvergência rápida via seu algoritmo DUAL. Pode sumarizar rotas em quase qualquer interface, razão pela qual aparece em discussões sobre sumarização de rotas."
+      },
+      "as": {
+        "def": "Uma rede sob uma única política administrativa de roteamento, identificada por um ASN.",
+        "context": "Um sistema autônomo (do inglês autonomous system) é um conjunto de prefixos IP sob uma única política de roteamento, identificado por um número de sistema autônomo. O BGP troca alcançabilidade entre sistemas autônomos, e as fronteiras de AS são lugares naturais para sumarizar rotas."
+      },
+      "ca": {
+        "def": "O emissor confiável que assina certificados digitais.",
+        "context": "Uma autoridade certificadora (do inglês certificate authority) é a entidade cuja assinatura torna um certificado TLS confiável. Os navegadores trazem um conjunto de CAs confiáveis; um certificado só é válido se encadear até uma delas, e a CA é também quem revoga certificados via CRL ou OCSP."
+      },
+      "pin": {
+        "def": "Um segredo numérico curto usado para autenticar uma pessoa.",
+        "context": "Um número de identificação pessoal (do inglês personal identification number) é um código numérico curto usado para provar identidade, como em um cartão bancário. Por ser curto, um PIN tem um espaço de chaves minúsculo, então depende de tentativas limitadas ou de um elemento seguro em hardware, não de resistência a adivinhação offline."
+      },
+      "otp": {
+        "def": "Uma senha válida para um único login ou uma janela curta.",
+        "context": "Uma senha de uso único (do inglês one-time password) é usada uma vez e depois se torna inválida, derrotando a repetição de um código capturado. TOTP (baseada em tempo) e HOTP (baseada em contador) são as duas formas comuns de gerá-las para autenticação de dois fatores."
+      },
+      "acs": {
+        "def": "O endpoint onde uma resposta SAML é entregue à aplicação.",
+        "context": "O Serviço Consumidor de Asserção (do inglês Assertion Consumer Service) é a URL no provedor de serviço que recebe e processa uma asserção SAML do provedor de identidade. Uma resposta deve ser enviada ao ACS registrado exato, o que faz parte do que impede ataques de redirecionamento de asserção."
+      },
+      "dcv": {
+        "def": "Provar que você controla um domínio antes de um certificado ser emitido.",
+        "context": "Validação de Controle de Domínio (do inglês Domain Control Validation) é como uma CA confirma que o solicitante controla o domínio, via um desafio HTTP, DNS ou e-mail. Os Baseline Requirements reduzem cada vez mais por quanto tempo um resultado de DCV pode ser reutilizado, apertando a emissão de certificados."
+      },
+      "csr": {
+        "def": "Uma requisição assinada contendo a chave pública e os detalhes para um certificado.",
+        "context": "Uma Requisição de Assinatura de Certificado (do inglês Certificate Signing Request, PKCS #10) reúne a chave pública e as informações do titular, assinada pela chave privada do solicitante, e é submetida a uma CA para obter um certificado. O ACME automatiza o que antes significava colar uma CSR em um formulário web."
+      },
+      "adc": {
+        "def": "Um dispositivo que faz balanceamento de carga e otimiza o tráfego de aplicações.",
+        "context": "Um controlador de entrega de aplicações (do inglês application delivery controller) fica à frente dos servidores para distribuir carga, terminar TLS e aplicar verificações de saúde e políticas de tráfego. O BIG-IP LTM é um ADC canônico; uma declaração AS3 'apenas ADC' configura só essas funções."
+      },
+      "sii": {
+        "def": "Dados reutilizáveis de identidade do assinante no processo de emissão de certificados.",
+        "context": "Informação de Identidade do Assinante (do inglês Subscriber Identity Information) refere-se a detalhes previamente validados sobre um assinante de certificado que uma CA pode reutilizar por tempo limitado. Como o DCV, a janela para reutilizar SII foi apertada pelas regras baseline do setor."
+      },
+      "xxe": {
+        "def": "Um ataque que abusa de entidades externas XML para ler arquivos ou alcançar sistemas internos.",
+        "context": "Injeção de Entidade Externa XML (do inglês XML External Entity) engana um parser XML para que ele resolva uma entidade externa, permitindo que um atacante leia arquivos locais, alcance serviços internos (SSRF) ou cause negação de serviço. A correção é desabilitar o processamento de DOCTYPE/entidades externas no parser."
+      },
+      "posix": {
+        "def": "Um padrão que define uma interface portátil para sistemas operacionais tipo Unix.",
+        "context": "Interface Portátil de Sistema Operacional (do inglês Portable Operating System Interface, IEEE 1003.1) especifica APIs, shells e utilitários para que software escrito segundo ela rode em sistemas tipo Unix. Sua definição de um dia como exatamente 86.400 segundos é a razão pela qual o tempo POSIX ignora segundos bissextos."
+      },
+      "tai": {
+        "def": "Uma escala de tempo atômica contínua sem segundos bissextos.",
+        "context": "Tempo Atômico Internacional (do inglês International Atomic Time) é uma escala de tempo uniforme mantida por relógios atômicos que nunca insere segundos bissextos. O UTC é derivado do TAI mas adiciona segundos bissextos para permanecer alinhado com a rotação da Terra, de modo que os dois se distanciam por segundos inteiros."
+      },
+      "icann": {
+        "def": "O órgão que coordena os sistemas de nomes de domínio e de números da internet.",
+        "context": "Corporação da Internet para Atribuição de Nomes e Números (do inglês Internet Corporation for Assigned Names and Numbers) supervisiona a raiz do DNS, a política de domínios de topo e a coordenação da alocação de números IP. Na Public Suffix List, a seção ICANN contém sufixos controlados por registros, ao contrário dos enviados de forma privada."
+      },
+      "si": {
+        "def": "O sistema métrico moderno de unidades de medida.",
+        "context": "O Sistema Internacional de Unidades (do inglês International System of Units) define o segundo e outras unidades de base. Um segundo SI verdadeiro é a unidade física contra a qual escalas de tempo como o TAI são medidas, distinta da contabilidade de dia-calendário que o tempo POSIX usa."
+      },
+      "utc": {
+        "def": "O principal padrão de tempo civil pelo qual o mundo acerta os relógios.",
+        "context": "Tempo Universal Coordenado (do inglês Coordinated Universal Time) é a base do tempo civil no mundo todo. Acompanha o tempo atômico (TAI) mas insere segundos bissextos ocasionais para permanecer dentro de um segundo do tempo solar, e os deslocamentos de fuso horário são expressos em relação a ele."
+      },
+      "iana": {
+        "def": "A função que gerencia as atribuições globais de IP, portas e números de protocolo.",
+        "context": "Autoridade para Atribuição de Números da Internet (do inglês Internet Assigned Numbers Authority) mantém os registros de blocos de endereços IP, números de porta, parâmetros de protocolo e a zona raiz do DNS, e publica o banco de dados de fusos horários no qual a maioria dos sistemas se apoia."
+      },
+      "ce": {
+        "def": "Um nó que conecta um site do cliente ao F5 Distributed Cloud.",
+        "context": "Um nó de borda do cliente (do inglês Customer Edge node) é o appliance de software que se registra no F5 Distributed Cloud e termina o tráfego no site ou nuvem do cliente. Na inicialização ele precisa alcançar endpoints de controle específicos, DNS e NTP, razão pela qual sua allowlist de egresso importa."
+      },
+      "opt": {
+        "def": "Um pseudo-registro que carrega opções EDNS em uma mensagem DNS.",
+        "context": "O registro OPT (RFC 6891) não é um registro de recurso real, mas um contêiner na seção adicional que carrega metadados EDNS como tamanho de buffer e flags. O dig o mostra como a pseudo-seção OPT."
+      },
+      "edns": {
+        "def": "Uma extensão que adiciona capacidades ao formato original de mensagem DNS.",
+        "context": "Mecanismos de Extensão para DNS (do inglês Extension Mechanisms for DNS, RFC 6891) permitem que o DNS carregue respostas maiores, sinalize suporte a DNSSEC e passe opções, tudo via o pseudo-registro OPT, sem quebrar o formato de mensagem legado."
+      },
+      "sirt": {
+        "def": "A equipe da F5 que trata de incidentes e alertas de segurança.",
+        "context": "A Equipe de Resposta a Incidentes de Segurança (do inglês Security Incident Response Team) da F5 investiga e coordena respostas a problemas de segurança nos produtos F5, publicando alertas e respondendo a relatos, muitas vezes na mesma semana em que uma vulnerabilidade é divulgada."
+      },
+      "adsp": {
+        "def": "A marca de plataforma unificada da F5 para entrega e segurança de aplicações.",
+        "context": "Plataforma de Entrega e Segurança de Aplicações (do inglês Application Delivery and Security Platform) é o nome guarda-chuva da F5 para sua oferta convergente de entrega e segurança. Sinaliza a direção para a qual os clientes são apontados ao planejar em torno do portfólio de produtos em evolução da F5."
+      },
+      "ad": {
+        "def": "O serviço de diretório da Microsoft para identidade e autenticação.",
+        "context": "O Active Directory armazena usuários, grupos e computadores e os autentica em ambientes Windows, tipicamente via Kerberos ou NTLM. Políticas de acesso frequentemente consultam um agente AD para determinar quem é um usuário e o que ele pode alcançar."
+      },
+      "l4": {
+        "def": "A camada de transporte, que lida com portas e conexões como TCP/UDP.",
+        "context": "A Camada 4 do modelo OSI é a camada de transporte, onde vivem o TCP e o UDP. O balanceamento L4 encaminha com base em IP e porta sem inspecionar o conteúdo da aplicação, o que é mais rápido mas cego a detalhes da Camada 7 como nomes de host ou URLs."
+      },
+      "yaml": {
+        "def": "Um formato de dados legível por humanos, muito usado para configuração.",
+        "context": "YAML Ain't Markup Language é um formato de serialização baseado em espaços em branco, popular para arquivos de configuração e pipelines de CI. Sua legibilidade vem com armadilhas, como surpresas de coerção de tipos e indentação significativa."
+      },
+      "jws": {
+        "def": "Um padrão para assinar dados representados como JSON.",
+        "context": "Assinatura Web JSON (do inglês JSON Web Signature, RFC 7515) define como assinar um payload e codificar a assinatura de forma compacta. Está por trás dos JWTs assinados; notavelmente seu algoritmo 'none', destinado a tokens não seguros, é uma fonte clássica de bugs de verificação."
+      },
+      "pdf": {
+        "def": "Um formato de arquivo de documento com layout fixo.",
+        "context": "Formato de Documento Portátil (do inglês Portable Document Format, ISO 32000) preserva o layout exato de um documento entre dispositivos. Em contextos de segurança, geradores de PDF ou de captura de tela do lado do servidor são um vetor comum de SSRF porque buscam URLs."
+      },
+      "bsd": {
+        "def": "Uma linhagem Unix; também o nome do formato original de syslog.",
+        "context": "Berkeley Software Distribution é uma família de sistemas Unix da UC Berkeley. Em registro de logs, o 'syslog BSD' (RFC 3164) refere-se ao formato de mensagem original, vagamente especificado, que a RFC 5424 depois substituiu."
+      },
+      "pri": {
+        "def": "O campo inicial de uma mensagem syslog que codifica facilidade e severidade.",
+        "context": "O valor de prioridade (do inglês priority value) é o número entre colchetes angulares no início de uma linha syslog. Ele empacota a facilidade e a severidade em um único inteiro, do qual ambos podem ser recuperados."
+      },
+      "y2038": {
+        "def": "O momento em que o tempo Unix de 32 bits transborda, em janeiro de 2038.",
+        "context": "O problema do ano 2038 (do inglês Year 2038 problem) é quando um contador time_t de 32 bits com sinal, que mede segundos desde 1970, transborda e vira um número negativo. Diferente do problema de formatação do Y2K, este é um limite representacional rígido, corrigido ao migrar para tempo de 64 bits."
+      },
+      "snat": {
+        "def": "Reescrever o endereço de origem do cliente quando o tráfego passa por um dispositivo.",
+        "context": "A tradução de endereços de rede de origem (do inglês source network address translation) faz as conexões parecerem originar do endereço do dispositivo, e não do cliente. No BIG-IP ela garante que o tráfego de retorno volte pelo proxy, ao custo de ocultar o IP original do cliente do servidor."
+      },
+      "msrdp": {
+        "def": "O protocolo da Microsoft para sessões gráficas de área de trabalho remota.",
+        "context": "O Protocolo de Área de Trabalho Remota da Microsoft (do inglês Microsoft Remote Desktop Protocol) carrega sessões de área de trabalho remota. A persistência MSRDP em um balanceador de carga usa o token de roteamento da sessão para manter um cliente que reconecta no mesmo servidor de backend."
+      },
+      "wccp": {
+        "def": "Um protocolo para redirecionar tráfego de forma transparente para um cache ou proxy.",
+        "context": "O Protocolo de Comunicação de Cache Web (do inglês Web Cache Communication Protocol) permite que um roteador redirecione tráfego selecionado para um cache ou appliance de segurança sem que o cliente seja configurado para isso. É uma das formas de configurar a interceptação transparente por proxy."
+      },
+      "hsts": {
+        "def": "Um cabeçalho que força os navegadores a usar HTTPS em um site.",
+        "context": "A Segurança de Transporte Estrito HTTP (do inglês HTTP Strict Transport Security, RFC 6797) diz a um navegador para se conectar a um site apenas por HTTPS, recusando texto puro e bloqueando o prosseguimento em avisos de certificado. Defende contra ataques de downgrade e de remoção de TLS."
+      },
+      "lb": {
+        "def": "Um dispositivo ou serviço que distribui o tráfego entre vários servidores.",
+        "context": "Um balanceador de carga (do inglês load balancer) distribui as requisições dos clientes por um pool de backends para escala e disponibilidade. No F5 Distributed Cloud, o objeto load balancer também ancora a configuração de roteamento, segurança e pool de origem."
+      },
+      "l3": {
+        "def": "A camada de rede, onde acontece o roteamento IP.",
+        "context": "A Camada 3 do modelo OSI é a camada de rede, lar do endereçamento e roteamento IP. Um proxy L3 ou uma decisão de encaminhamento opera sobre endereços IP, uma camada abaixo das camadas de transporte (L4) e de aplicação (L7)."
+      },
+      "asn": {
+        "def": "Um número que identifica uma rede sob uma única política de roteamento.",
+        "context": "Um número de sistema autônomo (do inglês autonomous system number) identifica de forma única um sistema autônomo no BGP. Políticas podem casar com um ASN específico para permitir ou negar rotas de uma dada rede, como bloquear um provedor sabidamente ruim."
+      },
+      "rng": {
+        "def": "Uma fonte de valores aleatórios, idealmente imprevisíveis.",
+        "context": "Um gerador de números aleatórios (do inglês random number generator) produz a aleatoriedade da qual a segurança depende. Um RNG fraco ou previsível, e não uma falha em um esquema como o UUIDv4, costuma ser a real causa quando valores supostamente únicos ou secretos colidem ou são adivinhados."
+      },
+      "ulid": {
+        "def": "Um identificador único e ordenável, alternativa ao UUID.",
+        "context": "Identificador Universalmente Único Lexicograficamente Ordenável (do inglês Universally Unique Lexicographically Sortable Identifier) codifica um timestamp mais aleatoriedade para que os IDs ordenem aproximadamente por tempo de criação e permaneçam únicos. Foi uma resposta popular à falta de ordenação do UUIDv4 antes de o UUIDv7 surgir."
+      },
+      "ecma": {
+        "def": "Um órgão de padrões por trás das especificações de JavaScript e JSON.",
+        "context": "Associação Europeia de Fabricantes de Computadores (do inglês European Computer Manufacturers Association), hoje Ecma International, publica padrões incluindo o ECMAScript (JavaScript) e o ECMA-404, uma das duas especificações que definem o JSON."
+      },
+      "cdata": {
+        "def": "Uma seção XML cujo conteúdo não é interpretado como marcação.",
+        "context": "Uma seção de dados de caractere (do inglês character data) permite que um documento XML inclua texto puro - como código ou marcação - sem que o parser interprete colchetes angulares e e-comerciais. É escrita como um bloco CDATA para que caracteres especiais não precisem de escape."
+      },
+      "lcs": {
+        "def": "A maior sequência comum a duas entradas, preservando a ordem.",
+        "context": "A maior subsequência comum (do inglês longest common subsequence) é a base da maioria das ferramentas de diff: a maior sequência ordenada (mas não necessariamente contígua) de elementos compartilhada por dois arquivos. O que sobra vira as adições e remoções que um diff mostra."
+      },
+      "nvd": {
+        "def": "O banco de dados público de vulnerabilidades conhecidas do governo dos EUA.",
+        "context": "O Banco de Dados Nacional de Vulnerabilidades (do inglês National Vulnerability Database), mantido pelo NIST, enriquece entradas CVE com pontuações CVSS e outros metadados. Reproduzir sua pontuação publicada para uma vulnerabilidade é uma boa checagem de que um cálculo CVSS corresponde à fonte autoritativa."
+      },
+      "ajax": {
+        "def": "Uma técnica para atualizar uma página web sem recarregá-la por completo.",
+        "context": "JavaScript e XML Assíncronos (do inglês Asynchronous JavaScript and XML) refere-se a fazer requisições HTTP em segundo plano a partir de uma página e atualizá-la no lugar. O nome é anterior ao JSON, que substituiu em grande parte o XML como payload, mas o termo permaneceu para requisições dinâmicas na página."
+      },
+      "sec1": {
+        "def": "Um formato padrão para codificar chaves privadas de curva elíptica.",
+        "context": "Padrões para Criptografia Eficiente 1 (do inglês Standards for Efficient Cryptography 1) define uma codificação de chave de curva elíptica, distinta dos formatos PKCS#1 (RSA) e PKCS#8 (genérico). Um arquivo de chave privada pode estar em qualquer um deles, envolto em PEM ou DER."
+      },
+      "captcha": {
+        "def": "Um desafio destinado a diferenciar humanos de bots.",
+        "context": "Teste de Turing Público Completamente Automatizado para Diferenciar Computadores de Humanos (do inglês Completely Automated Public Turing test to tell Computers and Humans Apart) é um desafio, como texto distorcido ou seleção de imagens, fácil para pessoas e difícil para bots. É uma defesa de último recurso porque adiciona atrito real ao usuário."
+      },
+      "gui": {
+        "def": "Uma interface visual de apontar e clicar para software.",
+        "context": "Uma interface gráfica de usuário (do inglês graphical user interface) permite operar software por janelas, botões e menus em vez de comandos digitados. No BIG-IP algumas tarefas só são práticas pela GUI, enquanto outras são mais rápidas pela CLI."
+      },
+      "dh": {
+        "def": "Um método para duas partes concordarem em um segredo compartilhado.",
+        "context": "Diffie-Hellman é um método de troca de chaves que permite a dois lados derivar um segredo compartilhado por um canal público. Sua forma efêmera dá forward secrecy; os parâmetros, incluindo o grupo DH, determinam a força da troca."
+      },
+      "iis": {
+        "def": "O software de servidor web da Microsoft para Windows.",
+        "context": "Internet Information Services é o servidor web integrado ao Windows Server. Suas peculiaridades de tratamento de URL e caminho, como aceitar barras invertidas como separadores, são uma fonte comum de truques de evasão de WAF que atacantes usam para escapar da correspondência de assinaturas."
       }
     },
     "totalCount": "{count} termos",
@@ -9656,23 +11542,25 @@
       "copiloto de ombro"
     ],
     "catNames": [
-      "Pixel",
-      "Mochi",
-      "Bagunça",
-      "Turbo",
-      "Miss Vector",
-      "Chairman Meow",
-      "Nula",
+      "Frajola",
+      "Mingau",
+      "Amora",
+      "Nina",
+      "Tom",
+      "Chiquinha",
+      "Nero",
       "Biscoito",
-      "Sir Pounce",
-      "Lambda",
-      "Farofa",
-      "Ctrl"
+      "Salém",
+      "Pipoca",
+      "Fumaça",
+      "Xerife"
     ],
     "vectors": [
       "porta de casa, durante a chuva (rota clássica)",
       "cofre do motor de um carro estacionado (protocolo de partida a quente)",
+      "entra na sua cola na calçada e escolta você até em casa",
       "segue você do ponto de ônibus até em casa",
+      "aparece na janela aberta, já com metade do corpo para dentro",
       "aparece na varanda; não fornece explicações",
       "caixa de papelão no estacionamento, já etiquetada 'doação'",
       "pátio do escritório, encarando diretamente a sua alma"
@@ -9684,6 +11572,8 @@
       "A unidade está observando você. Avaliação: adequado.",
       "Vetor de entrega travado. Condições climáticas sendo providenciadas.",
       "Entrega pendente. Não resista. Providencie sachês."
-    ]
+    ],
+    "fullscreenEnterAria": "Entrar em tela cheia",
+    "fullscreenExitAria": "Sair da tela cheia"
   }
 }

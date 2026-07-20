@@ -25,7 +25,7 @@ The `kty` (key type) parameter is the first thing to read on any JSON Web Key, b
 
 ## Public versus private is the safety line
 
-The single most important habit when reading a JWK is to check whether it contains private material. For RSA that means `d`, `p`, or `q`; for EC and OKP it means `d`; for oct the whole key `k` is secret. A JWKS is meant to be fetched by anyone, so it must contain only public keys. If you ever see a `d` or a `k` in a set that is served publicly, the corresponding private key should be considered exposed and rotated immediately. The [JWKS explainer](/tools/jwks-explainer) marks each private parameter it finds and warns when a published set should never have contained it.
+The single most important habit when reading a JWK (JSON Web Key) is to check whether it contains private material. For RSA that means `d`, `p`, or `q`; for EC and OKP it means `d`; for oct the whole key `k` is secret. A JWKS is meant to be fetched by anyone, so it must contain only public keys. If you ever see a `d` or a `k` in a set that is served publicly, the corresponding private key should be considered exposed and rotated immediately. The [JWKS explainer](/tools/jwks-explainer) marks each private parameter it finds and warns when a published set should never have contained it.
 
 ## Reading them at a glance
 

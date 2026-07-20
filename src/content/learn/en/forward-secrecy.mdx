@@ -29,7 +29,7 @@ Ephemeral Diffie-Hellman breaks the link between the session secret and any long
 
 Because the shared secret was never encrypted under the server's long-term key, and the ephemeral private keys no longer exist, a later compromise of the long-term key reveals nothing about past sessions. There is simply nothing in the recording to unwrap.
 
-You will see this as `ECDHE`, ephemeral elliptic-curve Diffie-Hellman, or `DHE`, the older finite-field variant. ECDHE is faster and is the modern default; DHE is being phased out, which is why even a strong DHE-AEAD suite like `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` now carries an IANA discouraged flag. The static, non-ephemeral cousins `ECDH` and `DH`, without the trailing `E`, do not provide forward secrecy.
+You will see this as `ECDHE`, ephemeral elliptic-curve Diffie-Hellman, or `DHE`, the older finite-field variant. ECDHE is faster and is the modern default; DHE is being phased out, which is why even a strong DHE-AEAD suite like `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` now carries an IANA discouraged flag. The static, non-ephemeral cousins `ECDH` (Elliptic-Curve Diffie-Hellman) and `DH`, without the trailing `E`, do not provide forward secrecy.
 
 ## Authentication is a separate job
 

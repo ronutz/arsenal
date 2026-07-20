@@ -37,6 +37,6 @@ A six-digit code is one of 1,000,000 values, and an acceptance window makes seve
 
 ## The secret is as sensitive as a password
 
-All of this assumes the shared secret is itself protected. A server that stores OTP secrets in the clear hands an attacker who reads that store the ability to generate valid codes for every user indefinitely. Treat the secret as credential-grade material: store it encrypted, limit who can read it, and provision it over a channel that does not leak it. Verifying the derived code carefully is wasted effort if the secret behind it is exposed.
+All of this assumes the shared secret is itself protected. A server that stores OTP (one-time password) secrets in the clear hands an attacker who reads that store the ability to generate valid codes for every user indefinitely. Treat the secret as credential-grade material: store it encrypted, limit who can read it, and provision it over a channel that does not leak it. Verifying the derived code carefully is wasted effort if the secret behind it is exposed.
 
 You can see the window logic directly in the TOTP / HOTP tool: its validator accepts the adjacent steps, which is exactly the plus or minus one step tolerance a real server applies.

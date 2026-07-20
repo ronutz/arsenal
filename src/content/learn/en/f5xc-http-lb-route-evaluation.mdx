@@ -29,7 +29,7 @@ A route can also match on the HTTP method (or ANY), on request headers (present,
 
 ## The per-route WAF
 
-A load balancer applies one WAF policy at its base, but the WAF is not all-or-nothing. Any simple route can, in its Advanced Options, attach its own App Firewall - so you can run one policy in blocking mode on `/trading/.*` and a different one in monitoring mode on everything else - or disable WAF for that route, or inherit the load balancer's policy, which is the default. A route that disables WAF is a real exposure and is nearly invisible in raw JSON, which is exactly the kind of thing worth surfacing.
+A load balancer applies one WAF policy at its base, but the WAF is not all-or-nothing. Any simple route can, in its Advanced Options, attach its own App Firewall - so you can run one policy in blocking mode on `/trading/.*` and a different one in monitoring mode on everything else - or disable WAF for that route, or inherit the load balancer's policy, which is the default. A route that disables WAF (web application firewall) is a real exposure and is nearly invisible in raw JSON, which is exactly the kind of thing worth surfacing.
 
 ## Rewrites and header mutations
 

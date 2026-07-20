@@ -15,7 +15,7 @@ AS3, the F5 Application Services 3 Extension, lets you configure a BIG-IP by des
 
 ## Two ways in: the AS3 request or an ADC-only declaration
 
-The outermost object is one of two classes. A full **AS3 request** has `class: "AS3"` and carries top-level options: `action` (deploy, dry-run, redeploy, retrieve, remove, or patch), `persist` (whether to save the result to the running configuration), and a `declaration` property holding the actual config. You can also skip the wrapper and send the declaration directly, an **ADC-only declaration** with `class: "ADC"` at the top, but then the `action` and `persist` options are no longer available. Both are posted to the same place: `POST https://<BIG-IP>/mgmt/shared/appsvcs/declare`.
+The outermost object is one of two classes. A full **AS3 request** has `class: "AS3"` and carries top-level options: `action` (deploy, dry-run, redeploy, retrieve, remove, or patch), `persist` (whether to save the result to the running configuration), and a `declaration` property holding the actual config. You can also skip the wrapper and send the declaration directly, an **ADC (application delivery controller)-only declaration** with `class: "ADC"` at the top, but then the `action` and `persist` options are no longer available. Both are posted to the same place: `POST https://<BIG-IP>/mgmt/shared/appsvcs/declare`.
 
 You transmit declarations with an ordinary REST client. AS3 supports POST to deploy, GET to retrieve what was previously posted, DELETE to remove tenants, and PATCH (since AS3 3.1.0) to modify. GET, DELETE, and PATCH work against declarations you have already posted and AS3 has retained.
 

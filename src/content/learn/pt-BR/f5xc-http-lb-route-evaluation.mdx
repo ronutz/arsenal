@@ -29,7 +29,7 @@ Uma rota também pode dar match no método HTTP (ou ANY), em headers de request 
 
 ## O WAF por rota
 
-Um load balancer aplica uma política de WAF na sua base, mas o WAF não é tudo-ou-nada. Qualquer rota simple pode, em suas Advanced Options, anexar seu próprio App Firewall - então você pode rodar uma política em modo blocking em `/trading/.*` e uma diferente em modo monitoring em todo o resto - ou desabilitar o WAF para aquela rota, ou herdar a política do load balancer, que é o padrão. Uma rota que desabilita o WAF é uma exposição real e é quase invisível em JSON puro, que é exatamente o tipo de coisa que vale a pena destacar.
+Um load balancer aplica uma política de WAF (firewall de aplicação web, do inglês web application firewall) na sua base, mas o WAF não é tudo-ou-nada. Qualquer rota simple pode, em suas Advanced Options, anexar seu próprio App Firewall - então você pode rodar uma política em modo blocking em `/trading/.*` e uma diferente em modo monitoring em todo o resto - ou desabilitar o WAF para aquela rota, ou herdar a política do load balancer, que é o padrão. Uma rota que desabilita o WAF é uma exposição real e é quase invisível em JSON puro, que é exatamente o tipo de coisa que vale a pena destacar.
 
 ## Rewrites e mutações de header
 

@@ -21,7 +21,7 @@ Eles importam porque é no navegador que cai a maior parte do estrago de uma vul
 
 Uma leitura comum e equivocada é achar que adicionar cabeçalhos torna a aplicação segura. Não torna. Cabeçalhos são uma segunda camada. Se o seu código concatena entrada não confiável dentro do HTML, você tem um bug de cross-site scripting, e uma Content-Security-Policy existe para conter o estrago, não para corrigir o bug. Corrija o bug; mantenha o cabeçalho como rede de proteção para o bug que você ainda não encontrou.
 
-O modelo mental correto é o de camadas que falham de forma independente. O tratamento da entrada é a primeira camada. Uma Content-Security-Policy forte é a segunda. As flags de cookie são uma terceira. O HSTS elimina toda uma classe de downgrade de transporte. Nenhuma é suficiente sozinha, e o valor vem de empilhá-las para que uma fraqueza não vire um comprometimento completo.
+O modelo mental correto é o de camadas que falham de forma independente. O tratamento da entrada é a primeira camada. Uma Content-Security-Policy forte é a segunda. As flags de cookie são uma terceira. O HSTS (Segurança de Transporte Estrito HTTP, do inglês HTTP Strict Transport Security) elimina toda uma classe de downgrade de transporte. Nenhuma é suficiente sozinha, e o valor vem de empilhá-las para que uma fraqueza não vire um comprometimento completo.
 
 ## Os cabeçalhos que têm mais peso
 

@@ -33,7 +33,7 @@ That is the whole game. Every evasion sub-violation is either a decoder for one 
 
 **Directory traversals** detects path-traversal patterns such as `../` that climb out of the intended path toward files elsewhere on the server.
 
-**IIS backslashes** normalizes the backslash `\` to a forward slash `/`, the way IIS treats the two as equivalent in a path, so a payload using `\` cannot slip past signatures written for `/`.
+**IIS (Internet Information Services) backslashes** normalizes the backslash `\` to a forward slash `/`, the way IIS treats the two as equivalent in a path, so a payload using `\` cannot slip past signatures written for `/`.
 
 **IIS Unicode codepoints** decodes IIS-specific `%u` code-point mappings from the Windows-1252 code page, the escapes behind a whole generation of IIS traversal exploits.
 

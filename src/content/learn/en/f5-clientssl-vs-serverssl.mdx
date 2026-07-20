@@ -19,7 +19,7 @@ A `client-ssl` profile faces the **client**. With it attached, the BIG-IP acts a
 
 ## Server SSL: the BIG-IP is the client
 
-A `server-ssl` profile faces the **pool member**. With it attached, the BIG-IP acts as the TLS *client* toward the backend: it opens a new TLS connection to the server and, if configured, validates the server's certificate against a trusted CA. The backend sees the BIG-IP as just another TLS client.
+A `server-ssl` profile faces the **pool member**. With it attached, the BIG-IP acts as the TLS *client* toward the backend: it opens a new TLS connection to the server and, if configured, validates the server's certificate against a trusted CA (certificate authority). The backend sees the BIG-IP as just another TLS client.
 
 ## Three common shapes
 

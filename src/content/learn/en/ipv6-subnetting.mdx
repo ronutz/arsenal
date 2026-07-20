@@ -13,7 +13,7 @@ updated: "2026-06-27"
 
 ## A different reason to subnet
 
-In IPv4, subnetting is mostly about conservation: addresses are scarce, so you carve a block into the smallest pieces that still fit each network (the logic in the [subnetting basics](/learn/subnetting-basics) article). IPv6 removes that pressure entirely. A single /64 subnet contains 2^64 addresses, more than the entire IPv4 internet squared, so you never subnet an IPv6 network to save space. You subnet it to give structure: one prefix per VLAN, per site, per customer. The math is the same prefix arithmetic as IPv4 (the tool computes it with arbitrary-precision integers), but the mindset is the opposite.
+In IPv4, subnetting is mostly about conservation: addresses are scarce, so you carve a block into the smallest pieces that still fit each network (the logic in the [subnetting basics](/learn/subnetting-basics) article). IPv6 removes that pressure entirely. A single /64 subnet contains 2^64 addresses, more than the entire IPv4 internet squared, so you never subnet an IPv6 network to save space. You subnet it to give structure: one prefix per VLAN (virtual LAN), per site, per customer. The math is the same prefix arithmetic as IPv4 (the tool computes it with arbitrary-precision integers), but the mindset is the opposite.
 
 ## Why a subnet is a /64
 

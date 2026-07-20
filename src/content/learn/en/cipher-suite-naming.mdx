@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## Why one suite has many names
 
-A single cipher suite can be written at least three ways, and the differences trip up anyone comparing a server config against a packet capture or a scanner report. The suite that IANA calls `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` is the same one OpenSSL calls `ECDHE-RSA-AES128-GCM-SHA256`. They describe identical bytes on the wire, namely the code point `0xC02F`.
+A single cipher suite can be written at least three ways, and the differences trip up anyone comparing a server config against a packet capture or a scanner report. The suite that IANA (the Internet Assigned Numbers Authority) calls `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` is the same one OpenSSL calls `ECDHE-RSA-AES128-GCM-SHA256` (ECDHE ephemeral elliptic-curve Diffie-Hellman, RSA the Rivest-Shamir-Adleman signature, GCM Galois/Counter Mode, SHA256 a Secure Hash Algorithm digest). They describe identical bytes on the wire, namely the code point `0xC02F`.
 
 The code point is the only thing the protocol actually uses. The names are conveniences for configuration files, documentation, and humans, and each tool ecosystem grew its own convention.
 

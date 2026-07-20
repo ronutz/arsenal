@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-06"
 ---
 
-Quando um reverse proxy fica na frente de aplicações HTTPS, ele precisa decidir o que fazer com a sessão TLS que chega do cliente. A escolha não é incidental: ela determina se o proxy pode ver e agir sobre o tráfego, se os dados ficam criptografados no salto curto até o backend, e quanto trabalho criptográfico o proxy precisa fazer. Há exatamente três opções, e todo balanceador de carga e ADC oferece alguma combinação delas.
+Quando um reverse proxy fica na frente de aplicações HTTPS, ele precisa decidir o que fazer com a sessão TLS que chega do cliente. A escolha não é incidental: ela determina se o proxy pode ver e agir sobre o tráfego, se os dados ficam criptografados no salto curto até o backend, e quanto trabalho criptográfico o proxy precisa fazer. Há exatamente três opções, e todo balanceador de carga e ADC (controlador de entrega de aplicações, do inglês application delivery controller) oferece alguma combinação delas.
 
 A única coisa comum a todo TLS de entrada em reverse proxy é a direção do certificado. Como o proxy está na frente dos servidores, ele apresenta o certificado do **servidor** aos clientes que chegam (ou um certificado válido para o mesmo nome de host). O cliente está se conectando a `www.example.com` e precisa ver um certificado para `www.example.com`; que a caixa terminando o TLS seja um balanceador de carga em vez do servidor web de origem é invisível e intencional. Isso é o oposto de um forward proxy de saída, que forja certificados para destinos que ele não possui, coberto no artigo sobre SSL forward proxy.
 

@@ -17,7 +17,7 @@ You want to prove a message came from someone who holds a shared secret and was 
 
 ## The length-extension attack
 
-Hashes in the Merkle-Damgård family, which includes MD5, SHA-1, and SHA-256, process input in blocks and carry forward an internal state. Their final output *is* that internal state. That leaks something dangerous: given `SHA256(secret + message)` and the length of `secret + message`, an attacker can set the hash's internal state to your tag and keep hashing, computing
+Hashes in the Merkle-Damgård family, which includes MD5 (Message Digest 5), SHA-1, and SHA-256, process input in blocks and carry forward an internal state. Their final output *is* that internal state. That leaks something dangerous: given `SHA256(secret + message)` and the length of `secret + message`, an attacker can set the hash's internal state to your tag and keep hashing, computing
 
 ```
 SHA256(secret + message + padding + attacker_data)

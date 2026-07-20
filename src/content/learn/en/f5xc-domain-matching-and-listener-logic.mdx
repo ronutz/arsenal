@@ -21,7 +21,7 @@ Every load balancer advertises on an IP and a port - together, the advertise pol
 
 ## Most specific wins
 
-Within one advertise policy, XC picks the load balancer whose domain most specifically matches the request's hostname. An exact FQDN beats a wildcard. If a request for app-b.domain.com can match both an LB that lists app-b.domain.com exactly and an LB that lists *.domain.com, the exact one wins - every time. This is the single rule that resolves most "why did my traffic go there" puzzles: look for the more specific domain.
+Within one advertise policy, XC picks the load balancer whose domain most specifically matches the request's hostname. An exact FQDN (fully qualified domain name) beats a wildcard. If a request for app-b.domain.com can match both an LB (load balancer) that lists app-b.domain.com exactly and an LB that lists *.domain.com, the exact one wins - every time. This is the single rule that resolves most "why did my traffic go there" puzzles: look for the more specific domain.
 
 ## Where the hostname comes from
 

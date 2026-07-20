@@ -13,7 +13,7 @@ updated: "2026-07-11"
 
 ## The registration handshake
 
-When you bring up a CE, the first thing it does is call home. Using the node token you generated - a JWT that encodes the registration endpoint - the CE contacts the F5 Distributed Cloud Global Controller. The controller selects two Regional Edges based on the GeoIP proximity of the public IP address the registration arrived from, so the CE connects to the REs closest to where it actually sits on the internet. (You can also pin specific REs at creation time.) The controller returns those two REs to the CE, along with the CE's identity and PKI certificates, which the system rotates regularly.
+When you bring up a CE (Customer Edge node), the first thing it does is call home. Using the node token you generated - a JWT that encodes the registration endpoint - the CE contacts the F5 Distributed Cloud Global Controller. The controller selects two Regional Edges based on the GeoIP proximity of the public IP address the registration arrived from, so the CE connects to the REs closest to where it actually sits on the internet. (You can also pin specific REs at creation time.) The controller returns those two REs to the CE, along with the CE's identity and PKI certificates, which the system rotates regularly.
 
 ## IPsec, with SSL as the fallback
 

@@ -15,7 +15,7 @@ Quando o nslookup imprime `Non-authoritative answer:` antes de um resultado, ele
 
 ## Dois tipos de servidor
 
-O DNS tem servidores autoritativos e resolvedores recursivos. Um servidor **autoritativo** mantém os dados reais da zona de um domínio; ele é a fonte da verdade. Um **resolvedor recursivo** (como 1.1.1.1 ou 8.8.8.8, ou o do seu provedor) não é dono de nenhuma zona. Ele responde por você perguntando aos servidores autoritativos e depois guardando o resultado em **cache** pelo tempo do TTL.
+O DNS tem servidores autoritativos e resolvedores recursivos. Um servidor **autoritativo** mantém os dados reais da zona de um domínio; ele é a fonte da verdade. Um **resolvedor recursivo** (como 1.1.1.1 ou 8.8.8.8, ou o do seu provedor) não é dono de nenhuma zona. Ele responde por você perguntando aos servidores autoritativos e depois guardando o resultado em **cache** pelo tempo do TTL (tempo de vida, do inglês time to live).
 
 Quando você consulta um resolvedor recursivo e ele responde a partir desse cache, a resposta é **não autoritativa**: correta, mas uma cópia, possivelmente com alguns segundos ou minutos de idade. É isso que o marcador significa. Quando o marcador está **ausente**, você alcançou um servidor autoritativo para o nome, e o dado veio diretamente da zona.
 

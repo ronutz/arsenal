@@ -17,7 +17,7 @@ No F5 Distributed Cloud, uma API não é protegida por uma lista de coisas a blo
 
 ## Segurança positiva: o modelo de allowlist
 
-A razão pela qual o inventário importa é que o XC impõe um modelo de segurança positivo. Em vez de enumerar ataques, ele enumera comportamento válido - endpoints válidos, métodos válidos, parâmetros válidos, payloads válidos - e pode reportar ou bloquear qualquer coisa que não conforme. Muitos dos itens do OWASP API Security Top 10 se resumem a validação de entrada ausente, e um allowlist dirigido por spec fecha essa lacuna por construção: uma requisição para um path não documentado, com um parâmetro inesperado, ou um body malformado, falha a validação porque nunca foi descrita como válida. Ler a sua própria spec com cuidado, então, é ler a forma exata do que a sua API vai aceitar.
+A razão pela qual o inventário importa é que o XC impõe um modelo de segurança positivo. Em vez de enumerar ataques, ele enumera comportamento válido - endpoints válidos, métodos válidos, parâmetros válidos, payloads válidos - e pode reportar ou bloquear qualquer coisa que não conforme. Muitos dos itens do OWASP (Projeto Aberto Mundial de Segurança de Aplicações Web, do inglês Open Worldwide Application Security Project) API Security Top 10 se resumem a validação de entrada ausente, e um allowlist dirigido por spec fecha essa lacuna por construção: uma requisição para um path não documentado, com um parâmetro inesperado, ou um body malformado, falha a validação porque nunca foi descrita como válida. Ler a sua própria spec com cuidado, então, é ler a forma exata do que a sua API vai aceitar.
 
 ## Shadow APIs e as que você gera
 

@@ -13,17 +13,17 @@ updated: "2026-07-10"
 
 ## What a TLS fingerprint is
 
-Every TLS connection opens with the client sending a ClientHello: a message that lays out, in the clear, exactly how the client is willing to negotiate. Which TLS versions it supports, which cipher suites it offers, which extensions it sends and in what form, which elliptic curves and signature algorithms it will accept, which application protocols it wants through ALPN. None of this is secret, because the server needs it to pick a common set of parameters. But the particular combination is a tell. A given build of Chrome, or curl, or a Go program, or a piece of malware, assembles its ClientHello in a characteristic way, and that characteristic shape can be reduced to a short string. That string is a TLS fingerprint, and it lets a server, proxy, or passive sensor recognize the client software without decrypting a single byte of the conversation.
+Every TLS connection opens with the client sending a ClientHello: a message that lays out, in the clear, exactly how the client is willing to negotiate. Which TLS versions it supports, which cipher suites it offers, which extensions it sends and in what form, which elliptic curves and signature algorithms it will accept, which application protocols it wants through ALPN (Application-Layer Protocol Negotiation). None of this is secret, because the server needs it to pick a common set of parameters. But the particular combination is a tell. A given build of Chrome, or curl, or a Go program, or a piece of malware, assembles its ClientHello in a characteristic way, and that characteristic shape can be reduced to a short string. That string is a TLS fingerprint, and it lets a server, proxy, or passive sensor recognize the client software without decrypting a single byte of the conversation.
 
 ## JA3, and why it faded
 
-The first widely used TLS fingerprint was JA3, published by Salesforce in 2017. JA3 takes five fields from the ClientHello (the TLS version, the cipher list, the extension list, the elliptic curves, and the elliptic-curve point formats), joins their numeric values into one string in the order the client sent them, and takes the MD5 of that string. For years it worked well.
+The first widely used TLS fingerprint was JA3, published by Salesforce in 2017. JA3 (a TLS client fingerprint) takes five fields from the ClientHello (the TLS version, the cipher list, the extension list, the elliptic curves, and the elliptic-curve point formats), joins their numeric values into one string in the order the client sent them, and takes the MD5 of that string. For years it worked well.
 
 What broke it was a defensive change in the clients themselves. To stop servers from relying on a fixed extension order, Chrome and then other browsers began randomizing the order of TLS extensions on every connection. Because JA3 hashed the extensions in the order they arrived, a randomized order produced a different JA3 each time, and a fingerprint that changes on every connection is useless for identification. JA3 still has value for software that does not randomize, but for modern browsers it no longer holds.
 
 ## How JA4 is built
 
-JA4, published by FoxIO, is the successor designed for that world. Its single most important change is that it sorts the cipher and extension lists before hashing them, so a client that shuffles its extension order still produces the same fingerprint. A JA4 also trades MD5 for SHA-256 and, unlike JA3's opaque hash, keeps a human-readable prefix.
+JA4, published by FoxIO, is the successor designed for that world. Its single most important change is that it sorts the cipher and extension lists before hashing them, so a client that shuffles its extension order still produces the same fingerprint. A JA4 (a more robust TLS client fingerprint) also trades MD5 for SHA-256 and, unlike JA3's opaque hash, keeps a human-readable prefix.
 
 A JA4 is three sections joined by underscores, for example `t13d1516h2_8daaf6152771_e5627efa2ab1`:
 
@@ -35,7 +35,7 @@ The two hash sections are one-way, so a JA4 identifies a client without exposing
 
 ## GREASE
 
-One detail that trips up hand-computed fingerprints is GREASE. Defined in draft-davidben-tls-grease, GREASE has clients send reserved, meaningless values among their real ciphers and extensions specifically so that servers learn to ignore unknown values and stay tolerant of future TLS changes. JA4 ignores GREASE everywhere, so those values never count toward the totals or enter the hashes. Any correct implementation, including this one, filters them out first.
+One detail that trips up hand-computed fingerprints is GREASE. Defined in draft-davidben-tls-grease, GREASE has clients send reserved, meaningless values among their real ciphers and extensions specifically so that servers learn to ignore unknown values and stay tolerant of future TLS changes. JA4 ignores GREASE (Generate Random Extensions And Sustain Extensibility) everywhere, so those values never count toward the totals or enter the hashes. Any correct implementation, including this one, filters them out first.
 
 ## Where JA4 shows up
 

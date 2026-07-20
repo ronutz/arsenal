@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-06"
 ---
 
-The proxies in the companion articles operate on packets and connections: a TCP proxy splices transport flows, an HTTP proxy parses requests, a TLS proxy handles encryption. A SAML proxy operates on something different, the authentication decision, and it is worth being precise about the sense in which it is a proxy at all. It does not primarily move bytes; it inserts itself into the single-sign-on handshake so that no request reaches a protected resource until an identity provider has vouched for the user. Understanding it requires the SAML roles first (the overview article covers them in full), then how a proxy slots between them.
+The proxies in the companion articles operate on packets and connections: a TCP proxy splices transport flows, an HTTP proxy parses requests, a TLS proxy handles encryption. A SAML (Security Assertion Markup Language) proxy operates on something different, the authentication decision, and it is worth being precise about the sense in which it is a proxy at all. It does not primarily move bytes; it inserts itself into the single-sign-on handshake so that no request reaches a protected resource until an identity provider has vouched for the user. Understanding it requires the SAML roles first (the overview article covers them in full), then how a proxy slots between them.
 
 ## A one-paragraph refresher on the roles
 

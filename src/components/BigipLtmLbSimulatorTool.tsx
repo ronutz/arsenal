@@ -63,6 +63,9 @@ export default function BigipLtmLbSimulatorTool() {
             <button type="button" className="b64-copy" onClick={() => { setRows(EXAMPLE); setMethod("round-robin"); setThreshold(0); setRequests(100); }}>
               {t("example")}
             </button>
+            <button type="button" className="b64-copy" onClick={() => { setRows([{ id: "member-1", node: "10.0.0.1", ratio: 1, nodeRatio: 1, priority: 0, persistence: 0 }]); setMethod("round-robin"); setThreshold(0); setRequests(100); }}>
+              {t("clear")}
+            </button>
             <button type="button" className="b64-copy" onClick={addRow}>
               {t("addMember")}
             </button>

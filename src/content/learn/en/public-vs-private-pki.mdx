@@ -17,7 +17,7 @@ Not every certificate plays by the same rules, and the difference matters a grea
 
 ## What "publicly trusted" actually means
 
-A certificate is publicly trusted when it is issued by a CA included in the major root programs — Apple, Google, Mozilla, and Microsoft. Those CAs agree to follow the TLS Baseline Requirements as a condition of staying in the programs, and the validity and validation-reuse cuts are written into those requirements. The reason the rules can be imposed at all is this membership: a browser can simply distrust a CA that does not comply. So the 47-day cap, the shrinking DCV window, and the SII reduction all apply to certificates from these CAs, and a public CA will refuse to issue anything that breaks them.
+A certificate is publicly trusted when it is issued by a CA included in the major root programs — Apple, Google, Mozilla, and Microsoft. Those CAs agree to follow the TLS Baseline Requirements as a condition of staying in the programs, and the validity and validation-reuse cuts are written into those requirements. The reason the rules can be imposed at all is this membership: a browser can simply distrust a CA that does not comply. So the 47-day cap, the shrinking DCV (Domain Control Validation) window, and the SII (Subscriber Identity Information) reduction all apply to certificates from these CAs, and a public CA will refuse to issue anything that breaks them.
 
 ## What private PKI is free to do
 

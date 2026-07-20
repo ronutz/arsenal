@@ -35,7 +35,7 @@ example.com.		3600	IN	A	93.184.216.34
 ;; MSG SIZE  rcvd: 56
 ```
 
-Lendo de cima a baixo: a primeira linha ecoa a versão do dig e a consulta que você executou. A linha `->>HEADER<<-` carrega o opcode, o status (o RCODE) e o id da mensagem. A linha de flags lista quais bits do cabeçalho estão definidos e informa a contagem de registros em cada uma das quatro seções. A pseudo-seção OPT é metadado do EDNS, não um registro real. Depois vêm as próprias seções: QUESTION (o que você perguntou), ANSWER (os registros que respondem), AUTHORITY (quais servidores são autoritativos, ou o SOA de uma resposta negativa) e ADDITIONAL (registros auxiliares). As linhas `;;` no rodapé são as estatísticas da consulta.
+Lendo de cima a baixo: a primeira linha ecoa a versão do dig e a consulta que você executou. A linha `->>HEADER<<-` carrega o opcode, o status (o RCODE) e o id da mensagem. A linha de flags lista quais bits do cabeçalho estão definidos e informa a contagem de registros em cada uma das quatro seções. A pseudo-seção OPT (Opção, do inglês Option) é metadado do EDNS (Mecanismos de Extensão para DNS, do inglês Extension Mechanisms for DNS), não um registro real. Depois vêm as próprias seções: QUESTION (o que você perguntou), ANSWER (os registros que respondem), AUTHORITY (quais servidores são autoritativos, ou o SOA de uma resposta negativa) e ADDITIONAL (registros auxiliares). As linhas `;;` no rodapé são as estatísticas da consulta.
 
 ## Onde olhar primeiro
 

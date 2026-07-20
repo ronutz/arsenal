@@ -15,7 +15,7 @@ Uma cipher string pode ser lida quanto à sua postura de segurança quase tão r
 
 ## As palavras-chave que você quer
 
-A **forward secrecy** é a propriedade mais importante, e vem de uma troca de chaves efêmera: `ECDHE` (curva elíptica) ou `DHE` (campo finito). Com forward secrecy, capturar a chave privada de um servidor não permite a um atacante descriptografar sessões passadas, porque cada sessão usou uma chave descartável. O ECDHE é preferido por ser mais rápido que o DHE. Para a criptografia de bloco, as cifras **AEAD** `AES-GCM` e `CHACHA20-POLY1305` são as escolhas fortes, combinando criptografia e integridade em uma única construção. A F5 recomenda incluir o alias `HIGH` e, ao servir um certificado ECDSA, incluir `ECDHE_ECDSA` para que as suites certas estejam disponíveis.
+A **forward secrecy** é a propriedade mais importante, e vem de uma troca de chaves efêmera: `ECDHE` (curva elíptica) ou `DHE` (campo finito). Com forward secrecy, capturar a chave privada de um servidor não permite a um atacante descriptografar sessões passadas, porque cada sessão usou uma chave descartável. O ECDHE é preferido por ser mais rápido que o DHE. Para a criptografia de bloco, as cifras **AEAD** (criptografia autenticada com dados associados, do inglês authenticated encryption with associated data) `AES-GCM` (sendo o AES o Advanced Encryption Standard e o GCM o seu modo Galois/Contador) e `CHACHA20-POLY1305` são as escolhas fortes, combinando criptografia e integridade em uma única construção. A F5 recomenda incluir o alias `HIGH` e, ao servir um certificado ECDSA (Algoritmo de Assinatura Digital de Curva Elíptica, do inglês Elliptic Curve Digital Signature Algorithm), incluir `ECDHE_ECDSA` para que as suites certas estejam disponíveis.
 
 ## As palavras-chave que você quer fora
 
@@ -29,7 +29,7 @@ Uma lista negra curta cobre a maior parte do perigo:
 - `ADH` e `AECDH`: trocas de chave anônimas sem certificado e, portanto, sem proteção contra um intermediário.
 - `LOW`: o alias para suites de chave curta e baixa força.
 
-A forma segura de proibi-las é o operador `!`, que as exclui permanentemente. Uma string que diz `!RC4:!SSLv3:!EXP:!DES` está fazendo exatamente a coisa certa. A F5 recomenda especificamente desabilitar o DH anônimo mantendo a força alta, escrito como `!ADH:HIGH`.
+A forma segura de proibi-las é o operador `!`, que as exclui permanentemente. Uma string que diz `!RC4:!SSLv3:!EXP:!DES` (sendo RC4 e DES a Cifra Rivest 4 e o Padrão de Criptografia de Dados, ambos quebrados) está fazendo exatamente a coisa certa. A F5 recomenda especificamente desabilitar o DH (Diffie-Hellman) anônimo mantendo a força alta, escrito como `!ADH:HIGH`.
 
 ## As versões de protocolo
 

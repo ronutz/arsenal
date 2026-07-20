@@ -29,7 +29,7 @@ p ≈ n² / (2 × 2¹²²)
 
 Uma chance de 50% de uma única colisão só chega depois de cerca de **2⁶¹** UUIDs, o que é por volta de 2,3 quintilhões. Para tornar isso concreto: gerando um bilhão de UUIDs versão 4 por segundo, você precisaria da ordem de *85 anos* só para alcançar uma chance de 50% de uma colisão. Em qualquer volume realista de aplicação, a probabilidade é tão pequena que é ofuscada pela chance de uma falha de hardware corromper os dados de qualquer forma.
 
-A única ressalva real é a **qualidade da aleatoriedade**. A matemática só vale se o gerador for uma fonte criptograficamente segura adequada. Uma fonte aleatória fraca ou mal semeada pode produzir repetições muito mais cedo, então o risco prático é um RNG ruim, não o design do UUID.
+A única ressalva real é a **qualidade da aleatoriedade**. A matemática só vale se o gerador for uma fonte criptograficamente segura adequada. Uma fonte aleatória fraca ou mal semeada pode produzir repetições muito mais cedo, então o risco prático é um RNG (gerador de números aleatórios, do inglês random number generator) ruim, não o design do UUID.
 
 ## Quando você não quer aleatoriedade
 

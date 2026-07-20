@@ -29,6 +29,6 @@ Replace the fast hash with a **key derivation function** that has a tunable work
 
 ## Tuning
 
-Choose a target wall-clock cost per hash on your own hardware and set the parameters to hit it, then raise the work factor over time as hardware gets faster. OWASP publishes current starting parameters for each algorithm.
+Choose a target wall-clock cost per hash on your own hardware and set the parameters to hit it, then raise the work factor over time as hardware gets faster. OWASP (the Open Worldwide Application Security Project) publishes current starting parameters for each algorithm.
 
-The combination is what matters: a unique salt to defeat precomputation, plus a slow, tuned KDF to make every remaining guess expensive.
+The combination is what matters: a unique salt to defeat precomputation, plus a slow, tuned KDF (key derivation function) to make every remaining guess expensive.

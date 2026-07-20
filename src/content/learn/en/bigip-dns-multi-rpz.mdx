@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-08"
 ---
 
-A Response Policy Zone is DNS's native firewall rule format: a zone file whose records do not describe where names live but what the resolver should do when asked about them. Feed a resolver an RPZ of known-bad domains and every client behind it inherits the protection at the cheapest possible layer, the name lookup itself. BIG-IP DNS has supported RPZ on its cache for years; the ceiling was one feed and one global response behavior. BIG-IP 21.1 removes both.
+A Response Policy Zone is DNS's native firewall rule format: a zone file whose records do not describe where names live but what the resolver should do when asked about them. Feed a resolver an RPZ (Response Policy Zone) of known-bad domains and every client behind it inherits the protection at the cheapest possible layer, the name lookup itself. BIG-IP DNS has supported RPZ on its cache for years; the ceiling was one feed and one global response behavior. BIG-IP 21.1 removes both.
 
 ## From one feed to sixty-five thousand
 
@@ -21,7 +21,7 @@ Layering creates conflicts, so 21.1 adds the second half: the zones are evaluate
 
 ## Feeds you can trust arriving
 
-An RPZ is only as trustworthy as its transfer path: it is a zone, it arrives by zone transfer, and a tampered transfer is a policy injection. 21.1 adds support for securing RPZ zone transfers with TSIG using HMAC-SHA-512, so each feed's transfers are authenticated with a shared key at the strongest HMAC the TSIG ecosystem commonly offers. For feeds crossing organizational boundaries, commercial intel providers, national CERT feeds, this moves from nice-to-have to baseline.
+An RPZ is only as trustworthy as its transfer path: it is a zone, it arrives by zone transfer, and a tampered transfer is a policy injection. 21.1 adds support for securing RPZ zone transfers with TSIG using HMAC-SHA-512, so each feed's transfers are authenticated with a shared key at the strongest HMAC the TSIG ecosystem commonly offers. For feeds crossing organizational boundaries, commercial intel providers, national CERT (Computer Emergency Response Team) feeds, this moves from nice-to-have to baseline.
 
 ## The full action vocabulary
 

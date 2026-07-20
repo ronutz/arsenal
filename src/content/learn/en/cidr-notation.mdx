@@ -13,7 +13,7 @@ updated: "2026-06-23"
 
 ## The problem CIDR solves
 
-Every device on an IP network needs an address. In IPv4, that address is 32 bits, usually written as four numbers from 0 to 255 separated by dots, like `192.168.1.10`. The hard question is never "what is one address" but "how do I describe a *range* of addresses that belong together", a single office, a subnet, a customer allocation. **CIDR notation** is the compact way to write that range.
+Every device on an IP network needs an address. In IPv4, that address is 32 bits, usually written as four numbers from 0 to 255 separated by dots, like `192.168.1.10`. The hard question is never "what is one address" but "how do I describe a *range* of addresses that belong together", a single office, a subnet, a customer allocation. **CIDR (Classless Inter-Domain Routing) notation** is the compact way to write that range.
 
 CIDR stands for Classless Inter-Domain Routing. The "classless" part matters: older addressing forced ranges into fixed sizes (the old Class A, B, and C blocks). CIDR removed that rigidity and let a range be *any* power-of-two size, which is why it is the standard today.
 

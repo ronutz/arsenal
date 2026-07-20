@@ -13,7 +13,7 @@ updated: "2026-06-27"
 
 ## Uma razão diferente para criar sub-redes
 
-No IPv4, criar sub-redes é principalmente sobre conservação: os endereços são escassos, então você talha um bloco nas menores peças que ainda cabem em cada rede (a lógica no artigo de [fundamentos de sub-redes](/learn/subnetting-basics)). O IPv6 remove essa pressão inteiramente. Uma única sub-rede /64 contém 2^64 endereços, mais do que toda a internet IPv4 ao quadrado, então você nunca cria sub-redes em uma rede IPv6 para economizar espaço. Você cria sub-redes para dar estrutura: um prefixo por VLAN, por site, por cliente. A matemática é a mesma aritmética de prefixo do IPv4 (a ferramenta a computa com inteiros de precisão arbitrária), mas a mentalidade é a oposta.
+No IPv4, criar sub-redes é principalmente sobre conservação: os endereços são escassos, então você talha um bloco nas menores peças que ainda cabem em cada rede (a lógica no artigo de [fundamentos de sub-redes](/learn/subnetting-basics)). O IPv6 remove essa pressão inteiramente. Uma única sub-rede /64 contém 2^64 endereços, mais do que toda a internet IPv4 ao quadrado, então você nunca cria sub-redes em uma rede IPv6 para economizar espaço. Você cria sub-redes para dar estrutura: um prefixo por VLAN (LAN virtual, do inglês virtual LAN), por site, por cliente. A matemática é a mesma aritmética de prefixo do IPv4 (a ferramenta a computa com inteiros de precisão arbitrária), mas a mentalidade é a oposta.
 
 ## Por que uma sub-rede é um /64
 

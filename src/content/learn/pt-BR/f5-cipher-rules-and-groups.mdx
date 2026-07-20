@@ -15,7 +15,7 @@ Editar uma cipher string longa à mão é propenso a erros, e um único operador
 
 ## Rules e groups
 
-Uma **cipher rule** é um objeto nomeado que guarda uma cipher string, junto com metadados opcionais. O BIG-IP vem com várias rules pré-definidas, e suas strings valem a pena conhecer: `f5-default` é a palavra-chave `DEFAULT`, `f5-ecc` é `ECDHE:ECDHE_ECDSA`, e `f5-secure` é `ECDHE:RSA:!SSLV3:!RC4:!EXP:!DES`. Essas rules pré-definidas são somente leitura e servem como modelos de partida.
+Uma **cipher rule** é um objeto nomeado que guarda uma cipher string, junto com metadados opcionais. O BIG-IP vem com várias rules pré-definidas, e suas strings valem a pena conhecer: `f5-default` é a palavra-chave `DEFAULT`, `f5-ecc` é `ECDHE:ECDHE_ECDSA` (sendo ECDHE o Diffie-Hellman efêmero de curva elíptica, do inglês ephemeral elliptic-curve Diffie-Hellman), e `f5-secure` é `ECDHE:RSA:!SSLV3:!RC4:!EXP:!DES` (sendo RSA o algoritmo Rivest-Shamir-Adleman). Essas rules pré-definidas são somente leitura e servem como modelos de partida.
 
 Um **cipher group** combina uma ou mais rules com instruções de como aplicá-las: quais rules permitir, a quais restringir o resultado e quais excluir. Um group pode construir sua string final a partir de uma rule personalizada mais a `f5-default`, ao mesmo tempo em que exclui tudo de outra rule como `f5-hw_keys`. O group então exibe uma prévia da cipher string final, e você atribui o group, ou uma string crua, a um perfil Client SSL ou Server SSL. A F5 desaconselha depender apenas das rules pré-definidas, porque seu conteúdo muda conforme a F5 atualiza seus requisitos criptográficos, o que pode silenciosamente derrubar clientes mais antigos.
 

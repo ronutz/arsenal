@@ -1,0 +1,51 @@
+---
+slug: gslb-two-tier-pool-then-member
+title: "GSLB in Two Tiers: The Wide IP Picks a Pool, the Pool Picks a Server"
+summary: "The single most common BIG-IP DNS misunderstanding is treating global load balancing as one decision. It is two: a wide IP first selects a pool, then that pool selects a virtual server - and each tier can use a different method. Walking the two-tier decision with a worked example."
+concepts: ["gslb", "bigip dns", "gtm", "wide ip", "pool", "load balancing tiers", "topology", "global availability"]
+relatedTools: ["bigip-dns-gslb-simulator"]
+relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longest-match"]
+category: networking
+order: 140
+status: reviewed
+updated: "2026-07-19"
+---
+
+When someone says "BIG-IP DNS load balances the request," they usually picture one choice: a list of servers, one of them selected. That picture is wrong in a way that causes real confusion, because global server load balancing (GSLB) is two decisions stacked on top of each other, and the two can behave completely differently.
+
+Here is the actual shape. A wide IP - the fully-qualified name a client resolves, like `www.example.com` - does not point at addresses directly. It points at **pools**. Each pool holds **virtual servers** (typically the LTM virtual servers standing in front of the real application at each site). When a DNS request arrives, BIG-IP DNS first chooses a pool, and only then chooses a virtual server inside that pool to return as the answer. Two tiers, two selections.
+
+## Tier one: the wide IP picks a pool
+
+The wide IP has its own load-balancing method that governs pool selection, and pools are considered in the order they are listed. Four static methods apply here:
+
+**Round Robin** rotates through the available pools evenly. Over many requests each pool gets an equal share.
+
+**Ratio** weights the pools. Assign the Americas pool a ratio of 2 and the EMEA pool a ratio of 1, and roughly two-thirds of requests go to the Americas.
+
+**Global Availability** is not really "balancing" at all - it sends every request to the *first available pool in the list*, and only moves to the next pool when the first goes down. It is a priority order, useful for active/standby site failover. A pool counts as available if it can answer from any of its configured methods.
+
+**Topology** routes by proximity: it compares the client's location (via topology records) to each pool's location and sends the request to the pool that matches. European clients land on the EU pool, everyone else on the Americas pool - the classic geographic steering pattern.
+
+## Tier two: the pool picks a virtual server
+
+Once a pool is chosen, that pool runs *its own* method to select a virtual server from its members. It has the same static options - Round Robin, Ratio, Global Availability, Topology - plus a three-tier fallthrough of its own: a **preferred** method, an **alternate** (which must be static) if the preferred cannot answer, and a **fallback** if the alternate cannot either.
+
+The crucial point is that the two tiers are independent. A wide IP can select pools by Topology while each pool selects its virtual server by Ratio. That combination is extremely common: *steer the client to the nearest region, then within that region weight the bigger data center more heavily.* One decision is geographic, the next is capacity-based, and they compose.
+
+## A worked example
+
+Say `www.example.com` has two pools. The wide IP uses **Topology**; the client is in the EU.
+
+- `pool-americas` (region na), members `vs-sfo` and `vs-nyc`, pool method Round Robin.
+- `pool-emea` (region eu), members `vs-lon` (ratio 3) and `vs-fra` (ratio 1), pool method Ratio.
+
+Tier one: Topology compares the EU client to each pool. `pool-emea` matches (highest score), so **all** requests go there; `pool-americas` gets nothing. Tier two: inside `pool-emea`, Ratio 3:1 splits the traffic - `vs-lon` takes three-quarters, `vs-fra` one-quarter. Of 100 requests: 0 to the Americas, 75 to London, 25 to Frankfurt.
+
+Change only the wide-IP method to Round Robin and the picture inverts at tier one: now the 100 requests split 50/50 between the pools regardless of client location, and the EU pool's 50 still divide 3:1 into 37/38 and 12/13. Same pools, same members, a completely different answer - because the tier-one decision changed.
+
+## The dynamic methods, and honesty about them
+
+Both tiers also offer *dynamic* methods - Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops, and others - that route by live performance metrics the big3d agents measure from each data center. These are powerful in production but cannot be reproduced offline: there is no fixed answer without live probes. A tool that claims to simulate them is guessing. The **BIG-IP DNS GSLB simulator** covers the static methods deterministically and, for the dynamic ones, tells you plainly that the outcome depends on live metrics rather than fabricating a distribution - the same discipline that keeps any "tool that computes, never guesses" honest.
+
+Load the simulator, build the two-pool topology above, and change one method at a time. Watching the pool tier and the member tier move independently is the fastest way to internalize that GSLB is not one decision but two.

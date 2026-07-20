@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-06"
 ---
 
-O proxy auto-config é anterior a quase tudo o mais na infraestrutura web, e ainda é como uma grande parte do tráfego corporativo é direcionada. Um arquivo PAC é uma única função JavaScript que o navegador avalia a cada requisição. Entendê-la é a diferença entre confiar em uma configuração de direcionamento e adivinhá-la. Este texto explica o modelo que a ferramenta correspondente lê.
+O proxy auto-config é anterior a quase tudo o mais na infraestrutura web, e ainda é como uma grande parte do tráfego corporativo é direcionada. Um arquivo PAC (Configuração Automática de Proxy, do inglês Proxy Auto-Config) é uma única função JavaScript que o navegador avalia a cada requisição. Entendê-la é a diferença entre confiar em uma configuração de direcionamento e adivinhá-la. Este texto explica o modelo que a ferramenta correspondente lê.
 
 ## Uma função, chamada a cada requisição
 
@@ -24,7 +24,7 @@ function FindProxyForURL(url, host) {
 }
 ```
 
-O navegador a chama com a `url` completa e o `host` extraído, e espera de volta uma string dizendo para onde enviar a requisição. Todo o resto no arquivo existe para ajudar essa função a decidir. O arquivo é servido com o tipo MIME `application/x-ns-proxy-autoconfig`, normalmente a partir de uma URL configurada no navegador ou descoberta por WPAD.
+O navegador a chama com a `url` completa e o `host` extraído, e espera de volta uma string dizendo para onde enviar a requisição. Todo o resto no arquivo existe para ajudar essa função a decidir. O arquivo é servido com o tipo MIME (Extensões Multifunção de Correio da Internet, do inglês Multipurpose Internet Mail Extensions) `application/x-ns-proxy-autoconfig`, normalmente a partir de uma URL configurada no navegador ou descoberta por WPAD.
 
 Há uma sutileza moderna que vale saber de antemão: muitos navegadores baseados em Chromium agora removem o caminho e a query de URLs `https://` antes de chamar a função, passando apenas o esquema, o host e a porta. Uma lógica que tenta casar pelo caminho de uma URL HTTPS não o verá. Casar pelo host ainda funciona.
 
@@ -38,7 +38,7 @@ As diretivas são `DIRECT` (conectar direto ao destino, sem proxy), `PROXY host:
 
 Arquivos PAC decidem usando uma biblioteca fixa de funções auxiliares. A maioria delas são operações puras de string e não custam nada: `isPlainHostName` (verdadeiro para um nome de rótulo único sem qualificação, o jeito clássico de mandar nomes curtos de intranet direto), `dnsDomainIs` (o host termina em um sufixo de domínio), `shExpMatch` (uma correspondência shell-glob), `dnsDomainLevels`, `weekdayRange`, `dateRange` e `timeRange`.
 
-Três auxiliares são diferentes, e a distinção importa para o desempenho: `isInNet`, `isResolvable` e `dnsResolve` todas consultam DNS. A MDN aponta isso explicitamente, porque uma consulta DNS a cada requisição pode bloquear e deixar a navegação lenta. A regra prática é ordenar suas verificações de modo que as comparações baratas de string decidam primeiro, e o DNS só seja consultado quando nada mais decidiu. Um arquivo que recorre a `isInNet` no topo da função paga esse custo em cada requisição.
+Três auxiliares são diferentes, e a distinção importa para o desempenho: `isInNet`, `isResolvable` e `dnsResolve` todas consultam DNS. A MDN (a Rede de Desenvolvedores da Mozilla, do inglês Mozilla Developer Network) aponta isso explicitamente, porque uma consulta DNS a cada requisição pode bloquear e deixar a navegação lenta. A regra prática é ordenar suas verificações de modo que as comparações baratas de string decidam primeiro, e o DNS só seja consultado quando nada mais decidiu. Um arquivo que recorre a `isInNet` no topo da função paga esse custo em cada requisição.
 
 Mais duas arestas valem ser internalizadas. `shExpMatch` usa curingas de shell-glob (`*` e `?`), não expressões regulares, então um padrão escrito em sintaxe de regex silenciosamente não casa. E `myIpAddress` é não confiável em máquinas com várias interfaces e pode cair em um endereço de loopback como `127.0.0.1`, então uma lógica que ramifica com base nele pode se comportar de forma diferente do esperado em máquinas com VPN ou múltiplas interfaces. Há também um conjunto de extensões IPv6 da Microsoft com sufixo `Ex` (`dnsResolveEx`, `isInNetEx`, `myIpAddressEx` e outras) suportadas pelo Chromium, mas não pelo Firefox.
 

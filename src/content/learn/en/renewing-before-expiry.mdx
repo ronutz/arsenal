@@ -17,7 +17,7 @@ Renewing a certificate early costs almost nothing; renewing it late risks an out
 
 ## ACME, the automation backbone
 
-The Automatic Certificate Management Environment, defined in RFC 8555, is the protocol that makes unattended renewal possible; it is what Let's Encrypt and most modern CAs speak. A client fetches the CA's directory, holds an account key, places an order for the names it wants, and is handed authorizations to satisfy. It proves control through a challenge — HTTP-01 (serve a token at a well-known URL), DNS-01 (publish a token as a TXT record), or TLS-ALPN-01 (answer on a special TLS handshake) — then finalizes the order with a CSR and downloads the certificate. Because every step is machine-driven, the same flow can run on a schedule with no human in the loop, which is the only way the cadences in the [lifetimes article](/learn/tls-certificate-lifetimes) become manageable.
+The Automatic Certificate Management Environment, defined in RFC 8555, is the protocol that makes unattended renewal possible; it is what Let's Encrypt and most modern CAs speak. A client fetches the CA's (certificate authority) directory, holds an account key, places an order for the names it wants, and is handed authorizations to satisfy. It proves control through a challenge — HTTP-01 (serve a token at a well-known URL), DNS-01 (publish a token as a TXT record), or TLS-ALPN-01 (answer on a special TLS handshake) — then finalizes the order with a CSR and downloads the certificate. Because every step is machine-driven, the same flow can run on a schedule with no human in the loop, which is the only way the cadences in the [lifetimes article](/learn/tls-certificate-lifetimes) become manageable.
 
 ## ARI: letting the CA steer the window
 

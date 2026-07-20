@@ -58,6 +58,7 @@ export default function VendorProfileSections({
                 </div>
               </header>
               <p className="vprofile-founding-story">{f.story}</p>
+              {f.sourceNote && <p className="lineage-deal-note">{f.sourceNote}</p>}
             </article>
           ))}
         </div>

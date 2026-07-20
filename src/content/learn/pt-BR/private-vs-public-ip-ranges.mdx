@@ -15,7 +15,7 @@ Nem todo endereço IP é alcançável a partir da internet pública, e uma verif
 
 ## Espaço de endereços privados (RFC 1918)
 
-Três blocos são reservados para redes privadas e nunca são roteados na internet pública: `10.0.0.0/8`, `172.16.0.0/12` e `192.168.0.0/16`. Dentro de uma rede corporativa ou de uma VPC de nuvem, é onde vivem os serviços internos, então um SSRF que os alcança pode falar com bancos de dados, caches e painéis administrativos.
+Três blocos são reservados para redes privadas e nunca são roteados na internet pública: `10.0.0.0/8`, `172.16.0.0/12` e `192.168.0.0/16`. Dentro de uma rede corporativa ou de uma VPC (nuvem privada virtual, do inglês virtual private cloud) de nuvem, é onde vivem os serviços internos, então um SSRF que os alcança pode falar com bancos de dados, caches e painéis administrativos.
 
 ## Loopback e link-local
 

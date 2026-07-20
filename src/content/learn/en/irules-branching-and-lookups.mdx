@@ -41,7 +41,7 @@ switch [string tolower [HTTP::host]] {
 }
 ```
 
-**For a fixed set of about a hundred entries or fewer, switch (even switch -glob) beats matchclass** provided the data does not need to change independently of the rule. The reason F5 gives is that the old `matchclass` command hashes with MD5, which the small-set `switch` does not need.
+**For a fixed set of about a hundred entries or fewer, switch (even switch -glob) beats matchclass** provided the data does not need to change independently of the rule. The reason F5 gives is that the old `matchclass` command hashes with MD5 (Message Digest 5), which the small-set `switch` does not need.
 
 **For an exact-key lookup on static data, a directly-indexed array is fastest of all.** If what you have is really a key-to-value map, put it in a `static::` array at load time and index it directly. That is an O(1) hash lookup with none of the per-comparison work of `switch` or the function call of `matchclass`.
 

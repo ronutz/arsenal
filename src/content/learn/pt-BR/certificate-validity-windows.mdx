@@ -13,7 +13,7 @@ updated: "2026-06-30"
 
 ## Dois carimbos de tempo definem o tempo de vida
 
-Todo certificado X.509 carrega um campo de validade com exatamente dois valores: `notBefore` e `notAfter`, definidos na RFC 5280. São instantes absolutos, expressos em UTC, e juntos marcam a janela durante a qual o certificado deve ser honrado. Um cliente TLS compara o horário atual com essa janela para cada certificado da cadeia, não apenas o de ponta: um certificado expirado, ou ainda não válido, falha na validação independentemente de quão sólido seja todo o resto. O planejador desta página toma essas duas datas como sua única entrada, porque tudo o mais que ele informa é derivado delas.
+Todo certificado X.509 carrega um campo de validade com exatamente dois valores: `notBefore` e `notAfter`, definidos na RFC 5280. São instantes absolutos, expressos em UTC (Tempo Universal Coordenado, do inglês Coordinated Universal Time), e juntos marcam a janela durante a qual o certificado deve ser honrado. Um cliente TLS compara o horário atual com essa janela para cada certificado da cadeia, não apenas o de ponta: um certificado expirado, ou ainda não válido, falha na validação independentemente de quão sólido seja todo o resto. O planejador desta página toma essas duas datas como sua única entrada, porque tudo o mais que ele informa é derivado delas.
 
 ## Como um tempo de vida é medido
 

@@ -45,7 +45,7 @@ Two of the standard alphabet's characters cause trouble in specific places. `+` 
 - `/` becomes `_`
 - the `=` padding is usually stripped, since the length can be inferred
 
-The result is a string that drops cleanly into a URL, a filename, or a JSON Web Token without further escaping. This is exactly why JWTs and OAuth PKCE challenges use Base64URL rather than the classic form: those values live inside URLs and tokens.
+The result is a string that drops cleanly into a URL, a filename, or a JSON Web Token without further escaping. This is exactly why JWTs and OAuth PKCE (Proof Key for Code Exchange) challenges use Base64URL rather than the classic form: those values live inside URLs and tokens.
 
 ## Where you meet it
 

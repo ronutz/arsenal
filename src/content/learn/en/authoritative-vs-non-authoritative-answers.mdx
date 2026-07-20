@@ -15,7 +15,7 @@ When nslookup prints `Non-authoritative answer:` before a result, it is telling 
 
 ## Two kinds of server
 
-DNS has authoritative servers and recursive resolvers. An **authoritative** server holds the actual zone data for a domain; it is the source of truth. A **recursive resolver** (like 1.1.1.1 or 8.8.8.8, or your ISP's) does not own any zones. It answers on your behalf by asking the authoritative servers and then **caching** the result for its TTL.
+DNS has authoritative servers and recursive resolvers. An **authoritative** server holds the actual zone data for a domain; it is the source of truth. A **recursive resolver** (like 1.1.1.1 or 8.8.8.8, or your ISP's) does not own any zones. It answers on your behalf by asking the authoritative servers and then **caching** the result for its TTL (time to live).
 
 When you query a recursive resolver and it answers from that cache, the answer is **non-authoritative**: correct, but a copy, possibly a few seconds or minutes old. That is what the marker means. When the marker is **absent**, you reached a server that is authoritative for the name, and the data came straight from the zone.
 

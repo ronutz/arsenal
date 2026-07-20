@@ -35,7 +35,7 @@ Each link is a signature: the issuer signs the child's certificate with the issu
 
 A certificate is not JSON or text. It is described in ASN.1 (Abstract Syntax Notation One) and encoded with the Distinguished Encoding Rules (DER), specified in ITU-T X.690. DER is a tag-length-value (TLV) format: every element starts with a tag byte saying what type it is, then a length, then that many content bytes. Constructed types such as SEQUENCE and SET hold child elements, so the whole certificate is a tree of TLVs.
 
-A PEM file is just that DER, Base64-encoded and wrapped in armor lines:
+A PEM (Privacy-Enhanced Mail) file is just that DER, Base64-encoded and wrapped in armor lines:
 
 ```
 -----BEGIN CERTIFICATE-----

@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-08"
 ---
 
-Uma Response Policy Zone é o formato nativo de regra de firewall do DNS: um arquivo de zona cujos registros não descrevem onde os nomes vivem, mas o que o resolvedor deve fazer quando perguntado sobre eles. Alimente um resolvedor com uma RPZ de domínios sabidamente maliciosos e todo cliente atrás dele herda a proteção na camada mais barata possível, a própria consulta de nome. O BIG-IP DNS suporta RPZ no seu cache há anos; o teto era um único feed e um único comportamento global de resposta. O BIG-IP 21.1 remove os dois.
+Uma Response Policy Zone é o formato nativo de regra de firewall do DNS: um arquivo de zona cujos registros não descrevem onde os nomes vivem, mas o que o resolvedor deve fazer quando perguntado sobre eles. Alimente um resolvedor com uma RPZ (Zona de Política de Resposta, do inglês Response Policy Zone) de domínios sabidamente maliciosos e todo cliente atrás dele herda a proteção na camada mais barata possível, a própria consulta de nome. O BIG-IP DNS suporta RPZ no seu cache há anos; o teto era um único feed e um único comportamento global de resposta. O BIG-IP 21.1 remove os dois.
 
 ## De um feed a sessenta e cinco mil
 
@@ -21,7 +21,7 @@ Empilhar cria conflitos, então o 21.1 traz a segunda metade: as zonas são aval
 
 ## Feeds em cuja chegada você pode confiar
 
-Uma RPZ é tão confiável quanto seu caminho de transferência: ela é uma zona, chega por transferência de zona, e uma transferência adulterada é uma injeção de política. O 21.1 adiciona suporte a proteger as transferências de zona RPZ com TSIG usando HMAC-SHA-512, de modo que as transferências de cada feed são autenticadas com uma chave compartilhada no HMAC mais forte que o ecossistema TSIG costuma oferecer. Para feeds que cruzam fronteiras organizacionais, provedores comerciais de inteligência, feeds de CERT nacionais, isso passa de conveniência a linha de base.
+Uma RPZ é tão confiável quanto seu caminho de transferência: ela é uma zona, chega por transferência de zona, e uma transferência adulterada é uma injeção de política. O 21.1 adiciona suporte a proteger as transferências de zona RPZ com TSIG usando HMAC-SHA-512, de modo que as transferências de cada feed são autenticadas com uma chave compartilhada no HMAC mais forte que o ecossistema TSIG costuma oferecer. Para feeds que cruzam fronteiras organizacionais, provedores comerciais de inteligência, feeds de CERT (Equipe de Resposta a Emergências Computacionais, do inglês Computer Emergency Response Team) nacionais, isso passa de conveniência a linha de base.
 
 ## O vocabulário completo de ações
 

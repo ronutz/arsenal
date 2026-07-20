@@ -37,7 +37,7 @@ You cannot just take the first few bytes of the HMAC, because that would waste m
 - Clear the top bit, leaving a positive 31-bit value. This avoids sign-related differences across platforms.
 - Take that value modulo `10^digits`.
 
-Because the offset is derived from the MAC, which byte window becomes the code is itself unpredictable, and every code remains a deterministic function of the secret and counter.
+Because the offset is derived from the MAC (message authentication code), which byte window becomes the code is itself unpredictable, and every code remains a deterministic function of the secret and counter.
 
 ## TOTP: let the clock be the counter
 

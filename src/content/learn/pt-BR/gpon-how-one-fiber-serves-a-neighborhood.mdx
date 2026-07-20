@@ -1,0 +1,48 @@
+---
+slug: gpon-how-one-fiber-serves-a-neighborhood
+title: "GPON: como uma fibra atende um bairro inteiro"
+summary: "Uma Gigabit Passive Optical Network leva um único filamento de vidro da central, divide a luz com prismas sem energia e o compartilha entre dezenas de casas. Como a luz é dividida, por que o upstream precisa de agenda e para onde vai o orçamento de decibéis."
+concepts: ["gpon", "rede óptica passiva", "olt", "ont", "splitter óptico", "orçamento óptico", "tdma"]
+relatedTools: []
+relatedArticles: []
+category: networking
+order: 139
+status: reviewed
+updated: "2026-07-19"
+---
+
+A maioria das tecnologias de banda larga coloca eletrônica entre você e o provedor: um armário com energia, refrigeração e coisas que falham. O GPON, sigla de Gigabit Passive Optical Network (rede óptica passiva gigabit), faz a aposta oposta. Entre o equipamento do provedor e a sua casa não existe nada além de vidro - fibras e pequenos divisores ópticos que não precisam de eletricidade alguma. Essa única decisão de projeto explica quase todo o resto do funcionamento.
+
+## A árvore de vidro
+
+Uma rede GPON é uma árvore. Na raiz, na central do provedor ou num armário de rua, fica a OLT - a Optical Line Terminal (terminal de linha óptica). De uma porta da OLT, uma única fibra parte para o bairro. No caminho, ela atravessa um ou mais splitters ópticos: componentes passivos que dividem a luz entre ramos como um prisma divide um feixe. Um splitter 1:2 manda metade da luz para cada lado; encadeie as divisões e chega-se às razões comuns de 1:32, 1:64 ou 1:128 assinantes compartilhando uma porta da OLT.
+
+Em cada folha da árvore fica uma ONT - a Optical Network Terminal (terminal de rede óptica), a caixa na sua parede que transforma luz de volta em Ethernet. As normas também a chamam de ONU, Optical Network Unit (unidade de rede óptica); os técnicos de campo usam os dois nomes como sinônimos.
+
+Nada entre a OLT e a ONT é alimentado. Nenhuma eletrônica de armário para falhar numa onda de calor, nenhuma bateria para trocar, nada que uma tempestade reinicie. A planta é vidro, conectores e bandejas de emenda. Esse é o "passivo" do nome, e é por isso que a arquitetura venceu a era da fibra até a casa: as partes caras e sujeitas a falha vivem apenas nas duas pontas.
+
+## Downstream: todo mundo ouve tudo
+
+Como um splitter divide a luz sem julgamento, toda ONT da árvore recebe tudo o que a OLT transmite. O downstream do GPON é um broadcast a 2,488 gigabits por segundo: os quadros do seu vizinho chegam fisicamente à sua ONT, e os seus à dele.
+
+O sistema lida com isso do único jeito possível - criptograficamente. O tráfego de descida de cada assinante é cifrado com AES, o Advanced Encryption Standard (padrão de criptografia avançada), sob chaves negociadas por ONT, de modo que os quadros que a sua ONT não consegue decifrar são apenas ruído para ela. A ONT filtra por identificador e decifra somente o que é seu. Privacidade num meio compartilhado aqui não é cortesia; é exigência do protocolo.
+
+## Upstream: luz com hora marcada
+
+O upstream é o problema mais difícil. Se duas ONTs transmitissem ao mesmo tempo, a luz colidiria no splitter - o divisor funciona nos dois sentidos, combinando com a mesma boa vontade com que divide. Por isso o upstream do GPON, a 1,244 gigabit por segundo, roda sobre TDMA, Time Division Multiple Access (acesso múltiplo por divisão de tempo): a OLT concede a cada ONT janelas de tempo precisas, e cada ONT dispara seu laser em rajadas apenas quando autorizada.
+
+Para a agenda funcionar, a OLT precisa saber a que distância está cada ONT - a luz de uma casa a 1 km e de outra a 19 km leva tempos mensuravelmente diferentes para chegar. Na ativação, a OLT executa o ranging: mede o atraso de ida e volta de cada ONT e atribui um atraso de equalização para que toda rajada caia na sua janela, independentemente da distância. É por isso que uma ONT nova demora um instante para entrar no ar, e por isso a norma limita o alcance diferencial de uma árvore.
+
+A assimetria - 2,488 de descida, 1,244 de subida - foi uma aposta deliberada nos padrões de tráfego dos anos 2000. O sucessor XGS-PON, em que XGS significa 10 Gigabit Symmetric (10 gigabits simétricos), paga essa dívida: 10 gigabits nos dois sentidos, geralmente sobre o mesmo vidro em comprimentos de onda diferentes, o que permite ao provedor rodar as duas gerações numa mesma árvore durante a migração.
+
+## Para onde vão os decibéis
+
+Todo enlace óptico vive de um orçamento de potência: o transmissor lança tantos dB de luz, o receptor precisa de tantos para ouvir, e tudo no meio gasta a diferença. A óptica GPON classe B+, o caso comum, orça cerca de 28 dB de ponta a ponta.
+
+Os splitters são os grandes gastadores. Cada divisão 1:2 custa cerca de 3 dB - metade da luz, por definição, mais uma pequena perda - então uma árvore 1:64 gasta uns 18 dB só em divisão. A própria fibra consome cerca de 0,35 dB por quilômetro nos comprimentos de onda do GPON, cada conector uns 0,3 dB, cada emenda por fusão alguns centésimos. Some tudo e uma divisão 1:64 a 20 km chega perto da borda do orçamento - que é exatamente o ponto de projeto da norma.
+
+Essa aritmética é a realidade diária do técnico de provedor. Um conector sujo que come 2 dB, um drop dobrado além do raio mínimo, uma emenda mecânica ruim: qualquer um desses empurra uma folha marginal para além da linha, e a falha aparece como perda de pacotes misteriosa em vez de escuridão. O OTDR - o Optical Time-Domain Reflectometer (reflectômetro óptico no domínio do tempo) - existe para transformar esse mistério numa distância: dispara um pulso, lê os reflexos, e o traçado mostra a quantos metros o orçamento está vazando.
+
+## O que levar
+
+Uma fibra, dividida passivamente, compartilhada por agenda. O downstream é um broadcast cifrado; o upstream é um coral cronometrado em que a OLT rege. O projeto inteiro troca eletrônica no campo por aritmética em decibéis - e quando o GPON se comporta mal, a resposta quase sempre está nessa aritmética.

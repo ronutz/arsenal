@@ -34,6 +34,6 @@ A few habits remove almost all of the risk:
 - **Anchor your pattern.** A leading `^` (and a trailing `$` when validating a whole field) stops the engine from retrying the match at every position in the string.
 - **Bound your repetition.** `\d{1,9}` cannot run away the way `\d+` can on adversarial input; an explicit upper bound caps the search.
 
-JavaScript does not offer atomic groups or possessive quantifiers, the features other engines use to forbid backtracking outright, so in JS the answer is structural: write the pattern so the ambiguity never exists. For untrusted input at scale, the most robust option is a non-backtracking engine such as RE2, which guarantees linear time but drops backreferences and lookarounds.
+JavaScript does not offer atomic groups or possessive quantifiers, the features other engines use to forbid backtracking outright, so in JS (JavaScript) the answer is structural: write the pattern so the ambiguity never exists. For untrusted input at scale, the most robust option is a non-backtracking engine such as RE2, which guarantees linear time but drops backreferences and lookarounds.
 
 ReDoS is listed by OWASP as a real attack class, not a theoretical one — a single crafted request can pin a CPU. Build the patterns in the [Regex Toolkit](/tools/regex), heed the warning when it fires, and revisit the [quantifiers and classes](/learn/regex-quantifiers-and-classes) that make a pattern specific enough to stay fast.

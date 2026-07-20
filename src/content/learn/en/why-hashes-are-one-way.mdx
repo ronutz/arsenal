@@ -27,4 +27,4 @@ Being one-way is the first of these. The function deliberately mixes and discard
 
 They do not invert the function. They **search**. There are two ways: keep a precomputed table of input-to-hash pairs and look the digest up, or generate candidate inputs, hash each, and compare. Both find a match by trying inputs, not by reversing math.
 
-That is the key insight this demonstrator makes concrete. A hash protects a secret only as far as that secret is hard to guess. A weak input, like a short PIN, is recoverable by search in moments even though the hash itself remains mathematically one-way. The strength was never in the hash; it was in the entropy of what you fed it.
+That is the key insight this demonstrator makes concrete. A hash protects a secret only as far as that secret is hard to guess. A weak input, like a short PIN (personal identification number), is recoverable by search in moments even though the hash itself remains mathematically one-way. The strength was never in the hash; it was in the entropy of what you fed it.

@@ -34,7 +34,7 @@ A Autoconfiguração de Endereço sem Estado (Stateless Address Autoconfiguratio
 
 O identificador de interface pode ser formado de várias maneiras, e isto tem consequências reais de privacidade:
 
-- O **EUI-64 modificado** deriva o identificador do endereço MAC da interface, o que a ferramenta pode demonstrar. Ele é estável e conveniente, mas embute o endereço de hardware em todo endereço IPv6 que o host usa, deixando um servidor remoto rastrear o dispositivo através de redes.
+- O **EUI-64 modificado** deriva o identificador do endereço MAC (controle de acesso ao meio, do inglês media access control) da interface, o que a ferramenta pode demonstrar. Ele é estável e conveniente, mas embute o endereço de hardware em todo endereço IPv6 que o host usa, deixando um servidor remoto rastrear o dispositivo através de redes.
 - **Identificadores estáveis e opacos** (RFC 7217) produzem um identificador que é estável por rede mas não revela nenhum endereço de hardware, corrigindo o problema de rastreamento entre redes enquanto mantém um endereço consistente em um dado enlace.
 - **Endereços temporários (de privacidade)** (RFC 8981, que torna obsoleta a anterior RFC 4941) geram identificadores aleatórios que rotacionam ao longo do tempo, então as conexões de saída não apresentam um endereço de longa duração de modo algum.
 
@@ -42,7 +42,7 @@ Os sistemas operacionais modernos tipicamente usam um endereço estável para co
 
 ## Detecção de Endereço Duplicado
 
-Antes de um host realmente usar qualquer endereço que tenha formado, ele roda a Detecção de Endereço Duplicado (Duplicate Address Detection): ele envia uma Solicitação de Vizinho (Neighbor Solicitation) para seu próprio endereço tentativo e espera. Se alguém responder, o endereço já está em uso e não deve ser reivindicado. O DAD é um seguro barato de que a autoconfiguração não produz colisões, e ele se apoia nas mesmas mensagens de descoberta de vizinhos descritas no artigo companheiro.
+Antes de um host realmente usar qualquer endereço que tenha formado, ele roda a Detecção de Endereço Duplicado (Duplicate Address Detection): ele envia uma Solicitação de Vizinho (Neighbor Solicitation) para seu próprio endereço tentativo e espera. Se alguém responder, o endereço já está em uso e não deve ser reivindicado. O DAD (Detecção de Endereço Duplicado, do inglês Duplicate Address Detection) é um seguro barato de que a autoconfiguração não produz colisões, e ele se apoia nas mesmas mensagens de descoberta de vizinhos descritas no artigo companheiro.
 
 ## DHCPv6 para controle com estado
 

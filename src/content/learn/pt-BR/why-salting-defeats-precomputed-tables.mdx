@@ -27,6 +27,6 @@ Para usar uma tabela pré-computada contra um hash com sal, o atacante teria que
 
 ## O que o salt não faz
 
-O salt não desacelera um ataque contra um único salt conhecido. Uma vez que o atacante tem o salt (ele não é secreto), ainda pode tentar e verificar contra aquele alvo tão rápido quanto o hash permitir. Derrotar isso é tarefa de uma KDF lenta, não do salt.
+O salt não desacelera um ataque contra um único salt conhecido. Uma vez que o atacante tem o salt (ele não é secreto), ainda pode tentar e verificar contra aquele alvo tão rápido quanto o hash permitir. Derrotar isso é tarefa de uma KDF (função de derivação de chave, do inglês key derivation function) lenta, não do salt.
 
 Um salt não é secreto e não substitui um hash de senha lento. O armazenamento correto de senhas precisa dos dois: um salt único para matar a pré-computação e uma função deliberadamente lenta para tornar cada tentativa cara.

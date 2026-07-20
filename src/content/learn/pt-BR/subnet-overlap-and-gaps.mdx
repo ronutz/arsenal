@@ -21,7 +21,7 @@ Dois prefixos se sobrepõem quando compartilham ao menos um endereço. Há algum
 
 - **Idêntico**: o mesmo bloco listado duas vezes, muitas vezes um erro de copiar e colar.
 - **Contenção**: um bloco está inteiramente dentro de outro. `10.0.0.0/24` contém `10.0.0.128/25`, porque o /25 é a metade superior do /24.
-- **Parcial**: dois intervalos compartilham alguns endereços mas nenhum contém o outro. Dois blocos CIDR corretos nunca se sobrepõem assim. Dois blocos alinhados de potência de dois quaisquer são disjuntos ou totalmente aninhados, um inteiramente dentro do outro, que é exatamente por que o endereçamento CIDR forma uma hierarquia limpa. Uma sobreposição parcial só aparece quando uma entrada não é um bloco alinhado.
+- **Parcial**: dois intervalos compartilham alguns endereços mas nenhum contém o outro. Dois blocos CIDR (Roteamento entre Domínios sem Classe, do inglês Classless Inter-Domain Routing) corretos nunca se sobrepõem assim. Dois blocos alinhados de potência de dois quaisquer são disjuntos ou totalmente aninhados, um inteiramente dentro do outro, que é exatamente por que o endereçamento CIDR forma uma hierarquia limpa. Uma sobreposição parcial só aparece quando uma entrada não é um bloco alinhado.
 
 A contenção nem sempre é um erro. Os roteadores encaminham usando a **correspondência de prefixo mais longo**: vence a rota mais específica que corresponde a um destino. Um `/25` específico anunciado dentro de um `/24` sumarizado é um padrão deliberado e comum, usado para direcionar uma parte do tráfego de forma diferente. O perigo é a sobreposição *não intencional*, em que duas partes da sua rede acreditam ambas possuir os mesmos endereços e o tráfego aterrissa no lugar errado.
 

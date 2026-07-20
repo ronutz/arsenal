@@ -17,9 +17,9 @@ Before virtual servers, before iRules, before nearly everything an application d
 
 Rules live in a single global list. Each rule carries four mandatory attributes, name, order, action, and expression, and the man page's order semantics leave nothing to interpretation: no two rules may share an order value, the system evaluates the lowest first, and its own worked example is worth quoting by shape, five rules numbered 500, 100, 300, 200, 201 evaluate as 100, 200, 201, 300, 500.
 
-Three of the four actions are terminal. Accept takes the packet and stops evaluating; discard drops it silently and stops; reject drops it and tells the sender, with the reply's shape governed by a global option, an ICMP type 3 code 13 administratively-prohibited message when Send ICMP Error on Packet Reject is enabled, a protocol-dependent reject otherwise. The fourth action, continue, is the interesting one: it acknowledges the packet for logging or statistics and makes no handling decision at all, evaluation proceeds to the next rule. It is the only way a packet touches two rules.
+Three of the four actions are terminal. Accept takes the packet and stops evaluating; discard drops it silently and stops; reject drops it and tells the sender, with the reply's shape governed by a global option, an ICMP (Internet Control Message Protocol) type 3 code 13 administratively-prohibited message when Send ICMP Error on Packet Reject is enabled, a protocol-dependent reject otherwise. The fourth action, continue, is the interesting one: it acknowledges the packet for logging or statistics and makes no handling decision at all, evaluation proceeds to the next rule. It is the only way a packet touches two rules.
 
-The expression is mandatory but may be empty, and the man page is blunt about what that means: an empty rule matches ALL packets. Put a terminal action behind an empty expression and every rule after it, within the VLAN scope it applies to, is decoration. F5's own sequencing advice in the same man page: give the most specific rules the lowest orders, and prefer one expression with several criteria over several rules with one criterion each, the engine evaluates the former more efficiently.
+The expression is mandatory but may be empty, and the man page is blunt about what that means: an empty rule matches ALL packets. Put a terminal action behind an empty expression and every rule after it, within the VLAN (virtual LAN) scope it applies to, is decoration. F5's own sequencing advice in the same man page: give the most specific rules the lowest orders, and prefer one expression with several criteria over several rules with one criterion each, the engine evaluates the former more efficiently.
 
 ## The switch that ships off
 
@@ -31,13 +31,13 @@ Several classes of traffic never meet your rules at all, and knowing them is mos
 
 Trusted exemptions come first, literally. The `net packet-filter-trusted` reference states that processing of trusted traffic occurs before rule list evaluation, making it impossible to override this option and mask out certain types of traffic with a packet filter rule. Trusted wins arguments you did not know you were having.
 
-Protocol exemptions are on by default: ARP is always accepted, and so are four IPv4 ICMP types the chapter names, UNREACH, SOURCEQUENCH, REDIRECT, and TIMEXCEED. Both settings can be cleared, but until they are, a rule that appears to block ICMP is not blocking those four.
+Protocol exemptions are on by default: ARP (the Address Resolution Protocol) is always accepted, and so are four IPv4 ICMP types the chapter names, UNREACH, SOURCEQUENCH, REDIRECT, and TIMEXCEED. Both settings can be cleared, but until they are, a rule that appears to block ICMP is not blocking those four.
 
 Established connections are exempt by default too, in a way that surprises people: the Filter Established Connections option ships unchecked, so rules evaluate connection-initiating traffic, not every packet of every flow. F5's note on enabling it is candid, doing so does not typically enhance security and can impact system performance.
 
 And one interface is exempt by design: the man page's own management-access example notes that the management port is not affected by any packet filter configuration. Locking yourself out of TMM-side self-IPs is possible; locking yourself out of mgmt via packet filters is not.
 
-One careful-reading note for the chapter itself: its definitional prose says a value of None on the MAC, IP, and VLAN exemption lists means traffic from all sources is subject to filtering, the default, while the step-by-step enabling procedure's quick-reference tables use inverted wording for the same value. The definitional sections, the None default, and the accept-by-default posture agree with each other; read the prose, not the tables.
+One careful-reading note for the chapter itself: its definitional prose says a value of None on the MAC (media access control), IP, and VLAN exemption lists means traffic from all sources is subject to filtering, the default, while the step-by-step enabling procedure's quick-reference tables use inverted wording for the same value. The definitional sections, the None default, and the accept-by-default posture agree with each other; read the prose, not the tables.
 
 ## The name collision
 

@@ -26,4 +26,4 @@ dig prints every record in the same five columns. nslookup does something differ
 
 ## The one to watch
 
-SOA is the odd one out, because it is the only type nslookup breaks across multiple lines. The `mail addr` field is a mailbox with the first dot standing in for the `@`, and `minimum` doubles as the negative-cache TTL, so it governs how long a "does not exist" answer for the zone is remembered. If you want the same fields laid out the classic way, dig prints them on a single SOA record line instead.
+SOA is the odd one out, because it is the only type nslookup breaks across multiple lines. The `mail addr` field is a mailbox with the first dot standing in for the `@`, and `minimum` doubles as the negative-cache TTL (time to live), so it governs how long a "does not exist" answer for the zone is remembered. If you want the same fields laid out the classic way, dig prints them on a single SOA record line instead.

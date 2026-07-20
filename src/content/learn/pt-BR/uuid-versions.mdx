@@ -17,7 +17,7 @@ Um UUID tem sempre a mesma forma: 128 bits, escritos como 32 dígitos hexadecima
 
 ## Como um UUID anuncia sua versão
 
-Dois pequenos campos são reservados não importa a versão, e a ferramenta lê ambos. A **versão** é codificada em quatro bits (o primeiro dígito hexadecimal do terceiro grupo), então um `4` ali significa um UUID v4 e um `7` significa v7. A **variante** é codificada nos bits superiores do grupo seguinte (o primeiro dígito hexadecimal do quarto grupo é tipicamente `8`, `9`, `a` ou `b` para a variante padrão). Juntos, eles dizem a quem lê como interpretar os bits restantes, e é por isso que uma ferramenta consegue rotular a versão de um UUID apenas o inspecionando, sem contexto.
+Dois pequenos campos são reservados não importa a versão, e a ferramenta lê ambos. A **versão** é codificada em quatro bits (o primeiro dígito hexadecimal do terceiro grupo), então um `4` ali significa um UUID (identificador universalmente único, do inglês universally unique identifier) v4 e um `7` significa v7. A **variante** é codificada nos bits superiores do grupo seguinte (o primeiro dígito hexadecimal do quarto grupo é tipicamente `8`, `9`, `a` ou `b` para a variante padrão). Juntos, eles dizem a quem lê como interpretar os bits restantes, e é por isso que uma ferramenta consegue rotular a versão de um UUID apenas o inspecionando, sem contexto.
 
 ## As versões baseadas em tempo: v1, v6, v7
 

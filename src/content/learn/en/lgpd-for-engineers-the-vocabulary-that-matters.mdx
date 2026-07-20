@@ -1,0 +1,54 @@
+---
+slug: lgpd-for-engineers-the-vocabulary-that-matters
+title: "The LGPD for Engineers: The Vocabulary That Matters"
+summary: "Brazil's data protection law assigns you a role, gives you ten legal bases instead of one, and puts a three-working-day clock on breach notification. What controlador, operador, and encarregado mean when you are the one running the systems."
+concepts: ["lgpd", "anpd", "data controller", "data processor", "legal bases", "breach notification"]
+relatedTools: []
+relatedArticles: []
+category: security
+order: 95
+status: reviewed
+updated: "2026-07-19"
+---
+
+The LGPD - the Lei Geral de Proteção de Dados, Brazil's general data protection law, Law 13.709 of 2018 - reads like a legal document because it is one. But underneath the articles is a small vocabulary that decides, in practice, what your systems must do. If you build or run anything that touches personal data of people in Brazil, these are the words that reach your architecture. The law took effect in 2020, its administrative sanctions in 2021, and its enforcement lives with the ANPD, the Autoridade Nacional de Proteção de Dados, the national data protection authority.
+
+## Three roles, and you are one of them
+
+The LGPD assigns every party a role, and the role decides the obligations.
+
+The controlador - the data controller - is whoever decides why and how personal data is processed. Deciding the purpose is the test. If your company chooses to collect emails to send invoices, your company is the controller, even if the servers belong to someone else.
+
+The operador - the data processor - processes data on the controller's documented instructions: the cloud provider, the SaaS platform, the payroll bureau. The critical engineering consequence: an operator that steps outside the instructions and starts deciding purposes becomes a controller, with a controller's liability. "We just host it" is a defense that lasts exactly as long as you only host it.
+
+The encarregado - the officer the GDPR (General Data Protection Regulation) world calls a DPO, a Data Protection Officer - is the named human channel: the point of contact between the organization, the data subjects, and the ANPD. When a titular - a data subject, the person the data is about - exercises a right, the request lands here.
+
+## Ten legal bases, not one
+
+Engineers tend to equate data protection with consent banners. The LGPD's article 7 lists ten legal bases for processing, and consent is only one of them. Contract performance, legal obligation, credit protection, legitimate interest, protection of life, health procedures, research, judicial process - each is a lawful reason to process without asking permission, provided the fit is genuine and documented.
+
+This matters in system design. A base of consent means you must store the consent, timestamp it, honor its revocation, and stop processing when it goes - consent is a state machine your database has to model. A base of contract or legal obligation means the data is required for the relationship and a "delete my data" request meets a legitimate "not yet: retention law says five years." Choosing the base is a legal decision; implementing its consequences is an engineering one, and the two teams need to make it together.
+
+Legitimate interest, the most flexible base, comes with homework: a documented balancing test showing the organization's need does not override the person's rights. It is the base most often claimed and most often claimed badly.
+
+## Sensitive data raises the bar
+
+The LGPD's dado pessoal sensível - sensitive personal data - covers the categories whose misuse cuts deepest: health, biometrics, genetics, religious and political beliefs, sexual orientation, union membership. Processing them demands stricter conditions, usually specific and explicit consent, and their presence in a system changes its risk class. A field named "blood_type" in a schema is a compliance property, not just a column.
+
+## The rights that become features
+
+The titular's rights read, to an engineer, like a feature list: confirmation that processing exists, access to the data, correction, anonymization or deletion of unnecessary data, portability in a usable format, information about sharing, and revocation of consent. Each right implies a capability - export pipelines, deletion that actually propagates through backups and replicas on a defined schedule, an audit trail of who accessed what. A privacy program that exists only as policy documents fails at the first real request; the requests are answered by systems.
+
+## The clock: three working days
+
+Article 48 of the law requires communicating security incidents that may cause relevant risk or harm to data subjects. For years the deadline was the law's phrase "reasonable time"; in April 2024 the ANPD made it concrete. Resolution CD/ANPD number 15 of 2024, the incident communication regulation, sets the controller's deadline at three working days from the moment the controller learns the incident affected personal data - to the ANPD and to the affected data subjects - with the period doubled for small-size processing agents and a complementary report allowed within twenty working days when the first notice was necessarily preliminary.
+
+Three working days is an engineering constraint. It assumes you can detect the incident, determine that personal data was involved, and scope which subjects were affected - fast. Organizations discover at the worst moment that their logs cannot answer "whose records did this query touch?"; the regulation quietly demands that they can.
+
+## LGPD and GDPR: cousins, not twins
+
+The family resemblance to Europe's GDPR, the General Data Protection Regulation, is deliberate - roles, rights, principles, and international transfer rules all rhyme. The differences are real: ten legal bases instead of six, credit protection as a base with no GDPR equivalent, penalty ceilings set in Brazilian terms (up to two percent of revenue in Brazil, capped at fifty million reais per infraction), and a younger authority still writing its regulations. Building for one law gets you most of the way to the other - and the remaining distance is exactly where legal review earns its keep.
+
+## What to remember
+
+Know your role, because the role sets the duties. Pick the legal basis deliberately, because the basis dictates the data model. Treat the rights as features and the three-working-day clock as an observability requirement. The LGPD's vocabulary is small; its consequences are architectural.

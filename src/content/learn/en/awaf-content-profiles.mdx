@@ -17,7 +17,7 @@ A WAF that treats a request body as one opaque blob cannot tell a legitimate JSO
 
 A JSON profile lets Advanced WAF parse a JSON body and apply signatures per field. Its defense attributes cap the shape of the data, maximum structure depth, maximum array length, maximum value length, and maximum total length, so a deeply nested or oversized document cannot exhaust the parser. This is how you stop JSON-based denial-of-service, and it is why an API endpoint should carry an explicit JSON profile rather than being treated as a bag of generic parameters.
 
-## XML and SOAP
+## XML and SOAP (Simple Object Access Protocol)
 
 An XML profile inspects document structure and detects XML injection, XXE, and malformed-schema attacks. For SOAP, you control which methods the policy allows; disable a SOAP method and a request that uses it raises the "SOAP method not allowed" violation and is blocked in blocking mode. XML profiles also gate antivirus: if a policy contains XML profiles, SOAP attachments can be sent to an ICAP server for virus scanning. You can validate documents against a schema (WSDL or XSD) using validation files.
 

@@ -113,6 +113,7 @@ import F5xcSecurityEventExplainerTool from "@/components/F5xcSecurityEventExplai
 import F5xcObjectLinterTool from "@/components/F5xcObjectLinterTool";
 import F5xcApiPathExplainerTool from "@/components/F5xcApiPathExplainerTool";
 import BigipLtmLbSimulatorTool from "@/components/BigipLtmLbSimulatorTool";
+import BigipDnsGslbSimulatorTool from "@/components/BigipDnsGslbSimulatorTool";
 import Ja3TlsFingerprintTool from "@/components/Ja3TlsFingerprintTool";
 import { manifest as f5xcServicePolicyManifest } from "@/lib/tools/f5xc-service-policy-explainer";
 import { manifest as f5xcRateLimitManifest } from "@/lib/tools/f5xc-rate-limit-calculator";
@@ -126,6 +127,7 @@ import { manifest as f5xcSecurityEventManifest } from "@/lib/tools/f5xc-security
 import { manifest as f5xcObjectLinterManifest } from "@/lib/tools/f5xc-object-linter";
 import { manifest as f5xcApiPathManifest } from "@/lib/tools/f5xc-api-path-explainer";
 import { manifest as bigipLtmSimManifest } from "@/lib/tools/bigip-ltm-lb-simulator";
+import { manifest as bigipDnsGslbManifest } from "@/lib/tools/bigip-dns-gslb-simulator";
 import { manifest as ja3Manifest } from "@/lib/tools/ja3-tls-fingerprint";
 import PersistenceMethodExplainerTool from "@/components/PersistenceMethodExplainerTool";
 import { manifest as persistManifest } from "@/lib/tools/f5-persistence-method-explainer";
@@ -212,11 +214,17 @@ import { manifest as sslProfileManifest } from "@/lib/tools/f5-ssl-profile-expla
 import EpochTool from "@/components/EpochTool";
 import RomanNumeralsTool from "@/components/RomanNumeralsTool";
 import GreekAlphabetTool from "@/components/GreekAlphabetTool";
+import P0fSignatureExplainerTool from "@/components/P0fSignatureExplainerTool";
+import UserAgentEntropyAnalyzerTool from "@/components/UserAgentEntropyAnalyzerTool";
+import HttpHeaderOrderFingerprintTool from "@/components/HttpHeaderOrderFingerprintTool";
 import TimeCalculatorTool from "@/components/TimeCalculatorTool";
 import TimezoneMeetingPlannerTool from "@/components/TimezoneMeetingPlannerTool";
 import { manifest as epochManifest } from "@/lib/tools/epoch";
 import { manifest as romanManifest } from "@/lib/tools/roman-numerals";
 import { manifest as greekManifest } from "@/lib/tools/greek-alphabet";
+import { manifest as p0fManifest } from "@/lib/tools/p0f-signature-explainer";
+import { manifest as uaManifest } from "@/lib/tools/user-agent-entropy-analyzer";
+import { manifest as hdrManifest } from "@/lib/tools/http-header-order-fingerprint";
 import { manifest as timeCalcManifest } from "@/lib/tools/time-calculator";
 import { manifest as tzPlannerManifest } from "@/lib/tools/timezone-meeting-planner";
 import CertRenewalPlannerTool from "@/components/CertRenewalPlannerTool";
@@ -488,6 +496,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: BigipLtmLbSimulatorTool,
     sources: bigipLtmSimManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "bigip-dns-gslb-simulator": {
+    Component: BigipDnsGslbSimulatorTool,
+    sources: bigipDnsGslbManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "ja3-tls-fingerprint": {
     Component: Ja3TlsFingerprintTool,
     sources: ja3Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -647,6 +659,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "greek-alphabet": {
     Component: GreekAlphabetTool,
     sources: greekManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "p0f-signature-explainer": {
+    Component: P0fSignatureExplainerTool,
+    sources: p0fManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "user-agent-entropy-analyzer": {
+    Component: UserAgentEntropyAnalyzerTool,
+    sources: uaManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "http-header-order-fingerprint": {
+    Component: HttpHeaderOrderFingerprintTool,
+    sources: hdrManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "time-calculator": {
     Component: TimeCalculatorTool,

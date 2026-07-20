@@ -29,7 +29,7 @@ p ≈ n² / (2 × 2¹²²)
 
 A 50% chance of a single collision arrives only after about **2⁶¹** UUIDs, which is around 2.3 quintillion. To make that concrete: generating a billion version-4 UUIDs every second, you would need on the order of *85 years* just to reach a 50% chance of one collision. At any realistic application volume, the probability is so small it is dwarfed by the chance of a hardware fault corrupting the data anyway.
 
-The one real caveat is the **quality of the randomness**. The math holds only if the generator is a proper cryptographically secure source. A weak or poorly seeded random source can produce repeats far sooner, so the practical risk is a bad RNG, not the UUID design.
+The one real caveat is the **quality of the randomness**. The math holds only if the generator is a proper cryptographically secure source. A weak or poorly seeded random source can produce repeats far sooner, so the practical risk is a bad RNG (random number generator), not the UUID design.
 
 ## When you do not want randomness
 

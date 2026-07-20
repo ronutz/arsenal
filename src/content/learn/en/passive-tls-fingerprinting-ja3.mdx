@@ -13,11 +13,11 @@ updated: "2026-07-11"
 
 ## The passive fingerprint
 
-Every TLS connection begins with the client announcing itself in the clear. Before any encryption is negotiated, the ClientHello lists the versions, ciphers, and extensions the client is willing to use - and the particular combination and ordering of those values is characteristic of the software that produced it. Passive fingerprinting reads that announcement without touching the client: no probes, no challenges, just the packet the client already sent. JA3 is the best-known way to turn that packet into a short, comparable string.
+Every TLS connection begins with the client announcing itself in the clear. Before any encryption is negotiated, the ClientHello lists the versions, ciphers, and extensions the client is willing to use - and the particular combination and ordering of those values is characteristic of the software that produced it. Passive fingerprinting reads that announcement without touching the client: no probes, no challenges, just the packet the client already sent. JA3 (a TLS client fingerprint) is the best-known way to turn that packet into a short, comparable string.
 
 ## What goes into a JA3
 
-JA3 takes five fields from the ClientHello - the TLS version, the cipher suites, the extensions, the elliptic curves (supported groups), and the point formats - concatenates their decimal values with dashes inside a field and commas between fields, and hashes the result with MD5. The output is a 32-character identifier. The reason it works as a fingerprint is that these fields are populated by the TLS library, not the application: a program calls into OpenSSL or NSS or Windows schannel and lets it fill in the ClientHello, so the fingerprint reflects the library and its build far more than the code on top. A Python script, a curl build, a specific Chrome version, and a piece of malware each tend to have their own JA3.
+JA3 takes five fields from the ClientHello - the TLS version, the cipher suites, the extensions, the elliptic curves (supported groups), and the point formats - concatenates their decimal values with dashes inside a field and commas between fields, and hashes the result with MD5 (Message Digest 5). The output is a 32-character identifier. The reason it works as a fingerprint is that these fields are populated by the TLS library, not the application: a program calls into OpenSSL or NSS or Windows schannel and lets it fill in the ClientHello, so the fingerprint reflects the library and its build far more than the code on top. A Python script, a curl build, a specific Chrome version, and a piece of malware each tend to have their own JA3.
 
 ## GREASE: the noise you have to remove
 
@@ -29,7 +29,7 @@ JA3 held up for years, and then browsers changed. Starting around 2024, Chrome a
 
 ## JA3N, and the move to JA4
 
-There are two responses. The immediate one is JA3N: sort the extension list before hashing, and the order no longer matters, so a permuting browser lands on a single stable value again. It is a one-line change and it works, which is why the calculator shows JA3N next to JA3. The durable one is JA4, the successor built by the original JA3 author. JA4 sorts natively, hashes with SHA256 instead of MD5, carries a readable prefix that shows the TLS version and whether SNI and ALPN were present, and extends the idea beyond TLS to HTTP, SSH, QUIC, and TCP. New detection should be built on JA4; JA3 remains worth understanding because a great deal of existing tooling, threat intelligence, and logs still speak it.
+There are two responses. The immediate one is JA3N: sort the extension list before hashing, and the order no longer matters, so a permuting browser lands on a single stable value again. It is a one-line change and it works, which is why the calculator shows JA3N next to JA3. The durable one is JA4 (a more robust TLS client fingerprint), the successor built by the original JA3 author. JA4 sorts natively, hashes with SHA256 instead of MD5, carries a readable prefix that shows the TLS version and whether SNI (Server Name Indication) and ALPN (Application-Layer Protocol Negotiation) were present, and extends the idea beyond TLS to HTTP, SSH, QUIC, and TCP. New detection should be built on JA4; JA3 remains worth understanding because a great deal of existing tooling, threat intelligence, and logs still speak it.
 
 ## Where fingerprints meet access and identity
 

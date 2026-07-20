@@ -31,7 +31,7 @@ O Base64 é a mais compacta, o Base16 a menos. A codificação por porcentagem �
 ## Alfabeto e legibilidade
 
 - **Base16 / hex** usa `0`-`9` e `A`-`F`. Um byte são sempre dois caracteres, então os limites de byte são perfeitamente claros. É a mais fácil de ler e comparar a olho, por isso os hashes, as chaves e os despejos hexadecimais a usam.
-- **Base32** usa `A`-`Z` e `2`-`7`, insensível a maiúsculas, com os caracteres confundíveis `0`, `1` e `8` removidos. É feita para valores que uma pessoa vai digitar, ditar ou armazenar sem distinguir maiúsculas, como os segredos TOTP e os endereços onion.
+- **Base32** usa `A`-`Z` e `2`-`7`, insensível a maiúsculas, com os caracteres confundíveis `0`, `1` e `8` removidos. É feita para valores que uma pessoa vai digitar, ditar ou armazenar sem distinguir maiúsculas, como os segredos TOTP (senha de uso único baseada em tempo, do inglês time-based one-time password) e os endereços onion.
 - **Base64** usa `A`-`Z`, `a`-`z`, `0`-`9`, `+` e `/`, sensível a maiúsculas. É a mais densa das três, mas `+` e `/` não são seguros em URLs e nomes de arquivo, que é o que a [variante segura para URL](/learn/base64url) corrige.
 - **A codificação por porcentagem** mantém legível o texto legível e escapa apenas o que uma URL não pode transportar literalmente. É um esquema de escape em vez de uma recodificação completa.
 

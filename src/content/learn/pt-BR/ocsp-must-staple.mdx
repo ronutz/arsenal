@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## O problema do soft-fail
 
-A checagem OCSP ao vivo parece tranquilizadora: antes de confiar em um certificado, o cliente pergunta ao respondedor da CA se ele foi revogado. O problema é o que acontece quando essa pergunta não pode ser respondida. Respondedores OCSP às vezes estão lentos, sobrecarregados ou bloqueados, e um navegador não pode travar cada carregamento de página esperando por um. Então, na prática, os clientes fazem soft-fail: se o respondedor não responde, eles assumem que o certificado está em ordem e prosseguem. Essa decisão silenciosamente derrota todo o mecanismo, porque um atacante usando um certificado roubado mas revogado só precisa bloquear o acesso da vítima ao respondedor, o que é fácil quando o atacante já controla o caminho de rede.
+A checagem OCSP (Protocolo de Status de Certificado Online, do inglês Online Certificate Status Protocol) ao vivo parece tranquilizadora: antes de confiar em um certificado, o cliente pergunta ao respondedor da CA se ele foi revogado. O problema é o que acontece quando essa pergunta não pode ser respondida. Respondedores OCSP às vezes estão lentos, sobrecarregados ou bloqueados, e um navegador não pode travar cada carregamento de página esperando por um. Então, na prática, os clientes fazem soft-fail: se o respondedor não responde, eles assumem que o certificado está em ordem e prosseguem. Essa decisão silenciosamente derrota todo o mecanismo, porque um atacante usando um certificado roubado mas revogado só precisa bloquear o acesso da vítima ao respondedor, o que é fácil quando o atacante já controla o caminho de rede.
 
 ## O stapling move a prova para o servidor
 

@@ -38,6 +38,9 @@ import { run as digOutputExplainerRun } from "./dig-output-explainer";
 import { run as epochRun } from "./epoch";
 import { run as romanNumeralsRun } from "./roman-numerals";
 import { run as greekAlphabetRun } from "./greek-alphabet";
+import { run as p0fSignatureExplainerRun } from "./p0f-signature-explainer";
+import { run as userAgentEntropyAnalyzerRun } from "./user-agent-entropy-analyzer";
+import { run as httpHeaderOrderFingerprintRun } from "./http-header-order-fingerprint";
 import { run as timeCalculatorRun } from "./time-calculator";
 import { run as timezoneMeetingPlannerRun } from "./timezone-meeting-planner";
 import { run as f5CipherStringExpanderRun } from "./f5-cipher-string-expander";
@@ -54,6 +57,7 @@ import { run as f5xcSecurityEventExplainerRun } from "./f5xc-security-event-expl
 import { run as f5xcObjectLinterRun } from "./f5xc-object-linter";
 import { run as f5xcApiPathExplainerRun } from "./f5xc-api-path-explainer";
 import { run as bigipLtmLbSimulatorRun } from "./bigip-ltm-lb-simulator";
+import { run as bigipDnsGslbSimulatorRun } from "./bigip-dns-gslb-simulator";
 import { run as ja3TlsFingerprintRun } from "./ja3-tls-fingerprint";
 import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
@@ -168,6 +172,9 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "epoch", run: epochRun },
   { slug: "roman-numerals", run: romanNumeralsRun },
   { slug: "greek-alphabet", run: greekAlphabetRun },
+  { slug: "p0f-signature-explainer", run: p0fSignatureExplainerRun },
+  { slug: "user-agent-entropy-analyzer", run: userAgentEntropyAnalyzerRun },
+  { slug: "http-header-order-fingerprint", run: httpHeaderOrderFingerprintRun },
   { slug: "time-calculator", structured: true, run: (input) => timeCalculatorRun(JSON.parse(input)) },
   { slug: "timezone-meeting-planner", structured: true, run: (input) => timezoneMeetingPlannerRun(JSON.parse(input)) },
   { slug: "f5-cipher-string-expander", run: f5CipherStringExpanderRun },
@@ -184,6 +191,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5xc-object-linter", run: f5xcObjectLinterRun },
   { slug: "f5xc-api-path-explainer", run: f5xcApiPathExplainerRun },
   { slug: "bigip-ltm-lb-simulator", run: bigipLtmLbSimulatorRun },
+  { slug: "bigip-dns-gslb-simulator", run: bigipDnsGslbSimulatorRun },
   { slug: "ja3-tls-fingerprint", run: ja3TlsFingerprintRun },
   { slug: "f5-service-check-date", run: f5ServiceCheckDateRun },
   { slug: "f5-bigip-license-explainer", run: f5BigipLicenseExplainerRun },

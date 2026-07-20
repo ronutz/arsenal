@@ -11,11 +11,11 @@ status: machine-draft
 updated: "2026-07-08"
 ---
 
-The flashy parts of BIG-IP 21.x are MCP and post-quantum TLS; the parts an operations team will feel every week are quieter. This article collects the platform and lifecycle changes from F5's 21.0 and 21.1 release notes into one operational read: how upgrades work now, what changed under the control plane's hood, and the new sizing rules for the daemons you actually watch.
+The flashy parts of BIG-IP 21.x are MCP (the Model Context Protocol) and post-quantum TLS; the parts an operations team will feel every week are quieter. This article collects the platform and lifecycle changes from F5's 21.0 and 21.1 release notes into one operational read: how upgrades work now, what changed under the control plane's hood, and the new sizing rules for the daemons you actually watch.
 
 ## In-place upgrade, and its two honest limits
 
-The traditional BIG-IP upgrade installs every RPM into a software volume and reboots. BIG-IP 21.1 introduces the in-place upgrade: only the modified RPMs and their dependencies are installed, directly in the active software volume, and each affected process is restarted individually in proper order rather than the whole system rebooting unless a reboot is required. The payoff is significantly faster upgrades and shorter maintenance windows.
+The traditional BIG-IP upgrade installs every RPM (RPM Package Manager package) into a software volume and reboots. BIG-IP 21.1 introduces the in-place upgrade: only the modified RPMs and their dependencies are installed, directly in the active software volume, and each affected process is restarted individually in proper order rather than the whole system rebooting unless a reboot is required. The payoff is significantly faster upgrades and shorter maintenance windows.
 
 Two limits keep expectations honest, both stated plainly by F5. First, this is not an in-service upgrade: the device is still expected to be offline during the procedure. Faster is not the same as hitless. Second, availability starts narrow: initially only a carefully selected set of Engineering Hotfixes supports in-place upgrade, with the list expanding as the feature matures, which is also why an "is my target eligible" calculator would be guesswork rather than computation.
 
@@ -23,7 +23,7 @@ The companion feature is Dry Run: it compares the image you selected against wha
 
 ## The 64-bit control plane
 
-21.x continues the migration of the control plane from 32-bit to 64-bit x86_64. In 21.1, mergeD is 64-bit (larger addressable memory for TM stat table processing), restjavad moves from Java 8 to Java 21 (better garbage collection and memory management), and the TMSH libraries used by iControl services gain 64-bit builds so restjavad and icrd_child run in a 64-bit address space, with 32-bit libraries retained for modules not yet ported. F5 states the change is transparent: no impact to the TMSH CLI or to existing iControl REST and SOAP clients. The practical operator note comes from the 21.0 side of the story: 64-bit binaries have larger resident memory than their 32-bit ancestors, so verify available memory before upgrading a tightly-sized VE.
+21.x continues the migration of the control plane from 32-bit to 64-bit x86_64. In 21.1, mergeD is 64-bit (larger addressable memory for TM stat table processing), restjavad moves from Java 8 to Java 21 (better garbage collection and memory management), and the TMSH libraries used by iControl services gain 64-bit builds so restjavad and icrd_child run in a 64-bit address space, with 32-bit libraries retained for modules not yet ported. F5 states the change is transparent: no impact to the TMSH CLI (command-line interface) or to existing iControl REST (representational state transfer) and SOAP (Simple Object Access Protocol) clients. The practical operator note comes from the 21.0 side of the story: 64-bit binaries have larger resident memory than their 32-bit ancestors, so verify available memory before upgrading a tightly-sized VE.
 
 ## Memory pressure and the OOM ladder
 
@@ -39,7 +39,7 @@ The health-monitor daemon becomes a single multi-threaded instance supporting up
 
 ## Migration, admin, and the small quality-of-life set
 
-UCS-based migration gains a `validate` option on `tmsh load sys ucs ... platform-migrate`: a JSON preview of what a load would change, with warnings for ignored objects, and the platform-adjustment logic that used to live in the F5 Journeys tool now built in, removing unsupported trunks and STP settings on the way to rSeries, VELOS, or VE while preserving the destination's management IP and DHCP settings. You can finally change the primary administrator away from the literal "admin" account, from TMUI, TMSH, or iControl REST. A first cut of the modernized TMUI ships disabled by default behind the New UI (Beta) preference. And one removal deserves a pre-upgrade check: Node.js v0.12 support is gone, so iRules LX workspaces on v0.12 must move to Node.js v6 before the upgrade, with affected workspaces flagged in the logs.
+UCS-based migration gains a `validate` option on `tmsh load sys ucs ... platform-migrate`: a JSON preview of what a load would change, with warnings for ignored objects, and the platform-adjustment logic that used to live in the F5 Journeys tool now built in, removing unsupported trunks and STP (Spanning Tree Protocol) settings on the way to rSeries, VELOS, or VE while preserving the destination's management IP and DHCP (Dynamic Host Configuration Protocol) settings. You can finally change the primary administrator away from the literal "admin" account, from TMUI, TMSH, or iControl REST. A first cut of the modernized TMUI ships disabled by default behind the New UI (Beta) preference. And one removal deserves a pre-upgrade check: Node.js v0.12 support is gone, so iRules LX workspaces on v0.12 must move to Node.js v6 before the upgrade, with affected workspaces flagged in the logs.
 
 ## The platform gate, one more time
 

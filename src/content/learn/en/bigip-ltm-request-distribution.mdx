@@ -29,7 +29,7 @@ Least Sessions is the one method whose input is persistence itself. It sends eac
 
 ## Why the dynamic methods cannot be drawn
 
-Round Robin, Ratio, Least Connections, and Least Sessions can be simulated because everything they need is either configuration or a load figure you can state. Fastest, Observed, Predictive, and Dynamic Ratio cannot, and it is worth being clear about why rather than pretending. These methods decide from live runtime measurements: response times, connection counts sampled every second, whether a member's performance is trending up or down, metrics pulled over SNMP. None of that is in a pool's configuration, and all of it changes continuously. A tool that produced a fixed distribution for "Observed" would be inventing the very measurements the method depends on. The honest move is to name what these methods need and stop there.
+Round Robin, Ratio, Least Connections, and Least Sessions can be simulated because everything they need is either configuration or a load figure you can state. Fastest, Observed, Predictive, and Dynamic Ratio cannot, and it is worth being clear about why rather than pretending. These methods decide from live runtime measurements: response times, connection counts sampled every second, whether a member's performance is trending up or down, metrics pulled over SNMP (Simple Network Management Protocol). None of that is in a pool's configuration, and all of it changes continuously. A tool that produced a fixed distribution for "Observed" would be inventing the very measurements the method depends on. The honest move is to name what these methods need and stop there.
 
 ## Reading a simulation
 

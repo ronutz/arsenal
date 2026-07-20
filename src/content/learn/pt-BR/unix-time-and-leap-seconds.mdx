@@ -19,9 +19,9 @@ A rotação da Terra é levemente irregular e, em média, está desacelerando le
 
 ## O tempo Unix desvia o olhar
 
-Eis o fato-chave: **o tempo Unix não conta os segundos bissextos.** O padrão POSIX define um dia como exatamente **86.400 segundos**, ponto final. Quando um segundo bissexto acontece, o tempo Unix não ganha um `:60`; em vez disso o mesmo valor de timestamp é efetivamente usado duas vezes (ou o relógio é ajustado), de modo que a meia-noite sempre cai em um múltiplo redondo de 86.400. O calendário fica arrumado ao custo da exatidão estrita.
+Eis o fato-chave: **o tempo Unix não conta os segundos bissextos.** O padrão POSIX (Interface Portátil de Sistema Operacional, do inglês Portable Operating System Interface) define um dia como exatamente **86.400 segundos**, ponto final. Quando um segundo bissexto acontece, o tempo Unix não ganha um `:60`; em vez disso o mesmo valor de timestamp é efetivamente usado duas vezes (ou o relógio é ajustado), de modo que a meia-noite sempre cai em um múltiplo redondo de 86.400. O calendário fica arrumado ao custo da exatidão estrita.
 
-A consequência é precisa e um pouco surpreendente: um timestamp Unix **não** é o número verdadeiro de segundos SI decorridos desde a época. Ele está atrasado pelo número de segundos bissextos inseridos no meio do caminho — cerca de 27 segundos no fim da década de 2010. A escala de tempo atômico que *de fato* conta cada segundo, o TAI, se distanciou tanto à frente do UTC.
+A consequência é precisa e um pouco surpreendente: um timestamp Unix **não** é o número verdadeiro de segundos SI (Sistema Internacional de Unidades, do inglês International System of Units) decorridos desde a época. Ele está atrasado pelo número de segundos bissextos inseridos no meio do caminho — cerca de 27 segundos no fim da década de 2010. A escala de tempo atômico que *de fato* conta cada segundo, o TAI (Tempo Atômico Internacional, do inglês International Atomic Time), se distanciou tanto à frente do UTC.
 
 ## Por que essa é a escolha certa
 

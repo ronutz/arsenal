@@ -31,7 +31,7 @@ Um hash criptográfico mapeia qualquer entrada para uma impressão digital de ta
 Um guia rápido de decisão:
 
 - Integridade de uso geral, assinaturas ou "só preciso de um hash seguro": **SHA-256**.
-- Quer diversidade de algoritmo ou imunidade à extensão de comprimento sem HMAC: **SHA-3** ou **SHA-512/256**.
+- Quer diversidade de algoritmo ou imunidade à extensão de comprimento sem HMAC (código de autenticação de mensagem baseado em hash, do inglês hash-based message authentication code): **SHA-3** ou **SHA-512/256**.
 - Hash de arquivos grandes onde a vazão importa: **BLAKE3**.
 - Um checksum rápido e sem segurança (detectar corrupção acidental, não adulteração): um CRC ou MD5 serve, mas nunca chame isso de "seguro".
 - **Senhas são um problema à parte.** Hashes de uso geral são rápidos demais para armazenamento de senhas; use um hash de senha próprio para esse fim, como bcrypt, scrypt ou Argon2 (veja o artigo sobre hashing de senhas).

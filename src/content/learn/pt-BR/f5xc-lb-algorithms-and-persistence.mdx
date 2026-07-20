@@ -25,7 +25,7 @@ Os algoritmos de consistent-hashing - Source IP Stickiness, Cookie Based Stickin
 
 ## As três coisas que você pode fazer hash
 
-O consistent hashing precisa de uma chave, e o XC te dá três. **Source IP** faz hash do endereço do cliente - simples, mas concentra todo mundo atrás de um NAT ou proxy compartilhado em um origin, então fica desbalanceado quando a diversidade de clientes é baixa. **Cookie** faz hash de um cookie nomeado, com um TTL e path que você define, o que funciona bem para browsers que o devolvem fielmente. **Ring Hash com uma hash policy custom** deixa você fazer hash de um header que você escolhe - tipicamente um carregando um session ID - que é o encaixe mais limpo para microsserviços que já passam um token de sessão. Escolha a chave que seja ao mesmo tempo estável por sessão e bem distribuída entre os clientes.
+O consistent hashing precisa de uma chave, e o XC te dá três. **Source IP** faz hash do endereço do cliente - simples, mas concentra todo mundo atrás de um NAT (tradução de endereços de rede, do inglês network address translation) ou proxy compartilhado em um origin, então fica desbalanceado quando a diversidade de clientes é baixa. **Cookie** faz hash de um cookie nomeado, com um TTL e path que você define, o que funciona bem para browsers que o devolvem fielmente. **Ring Hash com uma hash policy custom** deixa você fazer hash de um header que você escolhe - tipicamente um carregando um session ID - que é o encaixe mais limpo para microsserviços que já passam um token de sessão. Escolha a chave que seja ao mesmo tempo estável por sessão e bem distribuída entre os clientes.
 
 ## Quando você não precisa de persistência
 

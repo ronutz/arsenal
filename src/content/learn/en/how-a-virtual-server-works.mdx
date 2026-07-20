@@ -19,7 +19,7 @@ The `destination` field sets the address and port the virtual server answers on,
 
 ## The profile stack
 
-The `profiles` block is the heart of a virtual server's behavior. Profiles are layered: a TCP profile governs the transport, an HTTP profile adds layer-7 parsing, and SSL profiles terminate or originate TLS. A client-SSL profile means TLS is decrypted at the BIG-IP; without one, an HTTPS-looking virtual simply passes encrypted bytes straight through to the backend. If no profiles are attached at all, the virtual falls back to the FastL4 default and behaves as a pure layer-4 forwarder, with no awareness of HTTP or TLS. Reading the profile list is therefore the quickest way to tell whether a virtual is an L4 pass-through or a full L7 proxy.
+The `profiles` block is the heart of a virtual server's behavior. Profiles are layered: a TCP profile governs the transport, an HTTP profile adds layer-7 parsing, and SSL profiles terminate or originate TLS. A client-SSL profile means TLS is decrypted at the BIG-IP; without one, an HTTPS-looking virtual simply passes encrypted bytes straight through to the backend. If no profiles are attached at all, the virtual falls back to the FastL4 default and behaves as a pure layer-4 forwarder, with no awareness of HTTP or TLS. Reading the profile list is therefore the quickest way to tell whether a virtual is an L4 (Layer 4, transport) pass-through or a full L7 (Layer 7, application) proxy.
 
 ## Persistence and the pool
 

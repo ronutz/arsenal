@@ -1,0 +1,40 @@
+---
+slug: passive-fingerprinting-what-you-emit
+title: "Fingerprinting passivo: o que você emite sem que perguntem"
+summary: "Toda conexão anuncia sua pilha antes de um byte de dados de aplicação fluir. Como um SYN TCP, uma string de User-Agent e a mera ordem dos cabeçalhos HTTP identificam um cliente - e por que a contradição entre eles é o indício clássico de proxy e bot."
+concepts: ["fingerprinting passivo", "p0f", "pilha tcp/ip", "user-agent", "client hints", "ordem de cabeçalhos", "ja3"]
+relatedTools: ["p0f-signature-explainer", "user-agent-entropy-analyzer", "http-header-order-fingerprint"]
+relatedArticles: []
+category: security
+order: 96
+status: reviewed
+updated: "2026-07-19"
+---
+
+O fingerprinting ativo faz perguntas: roda código no seu navegador, mede uma renderização de canvas, sonda por fontes. O fingerprinting passivo não pergunta nada. Ele apenas escuta o que você já ia dizer de qualquer forma. Antes de um único byte de dados de aplicação fluir, uma conexão já anunciou o formato do seu sistema operacional, da sua pilha TCP, do seu navegador e da biblioteca que montou a requisição - não por meio de nenhum segredo, mas por escolhas comuns e observáveis que diferem de uma implementação para outra.
+
+Vale entender isso por dois motivos. Primeiro, é o núcleo honesto da tese de privacidade: você vaza identidade só por existir na rede, e nenhuma configuração fecha isso por completo. Segundo, é assim que a detecção de bots realmente funciona - e o mecanismo é o mesmo, quer esteja protegendo uma página de login, quer traçando o perfil de um visitante. Três camadas, três ferramentas, uma ideia.
+
+## Camada 1: a pilha TCP/IP (p0f)
+
+O primeiríssimo pacote de qualquer conexão, o SYN, está cheio de indícios. O TTL inicial, o tamanho da janela TCP, a ordem exata das opções TCP, pequenas peculiaridades nos cabeçalhos IP e TCP - nada disso é configurável pela aplicação, e tudo isso difere entre sistemas operacionais e versões de kernel. A ferramenta p0f, escrita por Michal Zalewski há duas décadas, lê esses campos de pacotes que um host emite e os compara com um banco de dados de pilhas conhecidas. Ela nunca envia uma sonda; apenas observa. É isso que a torna passiva, e invisível.
+
+O campo mais útil é o TTL inicial. Como cada roteador no caminho decrementa o TTL, um valor que chega perto de 64 quase certamente partiu de 64 - o padrão de Linux, macOS, BSD e Android. O Windows parte de 128. Alguns equipamentos de rede usam 255. O **explicador de assinatura p0f** decodifica a assinatura completa de oito campos e percorre cada um, mas o TTL é onde mora o drama: quando o TTL de pilha de um pacote diz Linux enquanto o User-Agent que vai por cima afirma Windows, você está diante de um proxy ou NAT. O pacote carrega o kernel do intermediário, não o do cliente. Essa contradição é impossível de forjar na camada de aplicação, e é exatamente por isso que é confiável.
+
+## Camada 2: a string de User-Agent
+
+Uma camada acima, o navegador se apresenta no cabeçalho User-Agent. Durante boa parte da história da web essa string foi uma confissão generosa: navegador, versão completa, motor, sistema operacional, versão, às vezes o modelo do aparelho. Cada token é um pouco de entropia. Nenhum isolado identifica você - milhões de pessoas rodam o mesmo Chrome no mesmo Windows - mas empilhados eles estreitam o campo, e uma string detalhada o estreita mais do que uma simples.
+
+O **analisador de entropia de User-Agent** separa uma string colada nesses tokens e estima os bits distintivos que cada um contribui. As estimativas são ilustrativas, extraídas de pesquisa publicada sobre fingerprinting em vez de medidas ao vivo, e o ponto não é uma pontuação, mas um formato: tornar a superfície visível. Ele também sinaliza a grande mudança em curso. Os navegadores modernos agora congelam o User-Agent - o Chromium fixa a versão menor em 0.0.0 e limita o detalhe de plataforma; o Safari fixou boa parte da sua string há muito tempo. O detalhe não sumiu. Migrou para os User-Agent Client Hints, a família de cabeçalhos Sec-CH-UA, que um site precisa solicitar ativamente pelo Accept-CH. O efeito líquido é que a coleta de alta entropia agora é visível nos cabeçalhos da requisição, em vez de implícita numa string sempre enviada - uma melhoria de privacidade genuína, ainda que parcial.
+
+## Camada 3: a própria ordem dos cabeçalhos
+
+Aqui está a sutil. Mesmo que todo valor de cabeçalho fosse forjado perfeitamente, a *ordem* em que um cliente envia seus cabeçalhos é, ela própria, uma impressão digital. O Chromium os emite numa sequência característica, o Firefox em outra, o curl e a biblioteca requests do Python nas suas próprias ordens mínimas. A sequência está gravada no código do cliente e sobrevive por inteiro à falsificação de valores.
+
+Essa é exatamente a mesma ideia do JA3, que identifica um cliente TLS pela ordem das cifras e extensões no seu ClientHello - apenas movida do handshake TLS para a requisição HTTP. A ferramenta de **impressão digital pela ordem de cabeçalhos HTTP** classifica um bloco de cabeçalhos colado comparando sua sequência com clientes conhecidos e verificando cabeçalhos exclusivos de navegador como Sec-Fetch e Sec-CH-UA. Uma requisição que carrega o User-Agent do Chrome mas a ordem de quatro cabeçalhos do curl não é uma requisição do Chrome; é um script vestido de fantasia, e a ordem dos cabeçalhos é o que o entrega. Serviços de detecção de bots e firewalls de aplicação web se baseiam exatamente nisso.
+
+## Por que a contradição é o jogo inteiro
+
+Repare no fio que atravessa as três camadas: o poder não está em nenhuma impressão digital isolada, mas na *contradição entre elas*. Uma pilha que diz Linux, um User-Agent que diz Windows e uma ordem de cabeçalhos que diz curl não podem todos descrever o mesmo cliente honesto. Cada camada é difícil de forjar por conta própria; forjar todas de forma consistente, ao mesmo tempo, é mais difícil ainda. É por isso que o fingerprinting passivo em camadas é a espinha dorsal da detecção de bots - e por que entendê-lo é o primeiro passo para raciocinar com honestidade sobre o que o anonimato na rede pode e não pode significar.
+
+As três ferramentas aqui apenas decodificam e explicam. Você cola uma assinatura, uma string ou um bloco de cabeçalhos que já tem; nada é lido do seu próprio navegador, e nada é enviado a lugar algum. O objetivo é mostrar a você a superfície que um rastreador lê - não lê-la.

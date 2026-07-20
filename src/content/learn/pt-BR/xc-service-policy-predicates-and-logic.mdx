@@ -43,6 +43,6 @@ Uma armadilha relacionada é que uma única string de valor de cabeçalho é com
 
 ## Presença, ausência e inversão
 
-Comparadores de cabeçalho, cookie, argumento e claim de JWT também suportam `check_present` e `check_not_present`, que testam apenas se o campo está lá ou não, sem comparação de valor. E a maioria dos comparadores suporta `invert_matcher`, que inverte o resultado: o predicado casa quando a condição **não** é atendida. Um comparador de método invertido em `["GET"]` casa com todo método exceto GET. A inversão é poderosa e fácil de ler errado, então vale destacá-la explicitamente sempre que aparece.
+Comparadores de cabeçalho, cookie, argumento e claim de JWT (Token Web JSON, do inglês JSON Web Token) também suportam `check_present` e `check_not_present`, que testam apenas se o campo está lá ou não, sem comparação de valor. E a maioria dos comparadores suporta `invert_matcher`, que inverte o resultado: o predicado casa quando a condição **não** é atendida. Um comparador de método invertido em `["GET"]` casa com todo método exceto GET. A inversão é poderosa e fácil de ler errado, então vale destacá-la explicitamente sempre que aparece.
 
 O explicador neste site renderiza cada predicado com seus valores, marca as listas OU e sinaliza comparadores invertidos, de modo que os dois níveis de lógica ficam visíveis num relance em vez de inferidos do aninhamento.

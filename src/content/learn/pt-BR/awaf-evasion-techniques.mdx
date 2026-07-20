@@ -33,7 +33,7 @@ Um web application firewall e o servidor de origem precisam concordar sobre o qu
 
 **Directory traversals** detecta padrões de travessia de diretório como `../` que escapam do caminho pretendido rumo a arquivos em outro lugar do servidor.
 
-**IIS backslashes** normaliza a barra invertida `\` para uma barra normal `/`, do jeito que o IIS trata as duas como equivalentes em um caminho, para que um payload usando `\` não escape de assinaturas escritas para `/`.
+**IIS (Serviços de Informação da Internet, do inglês Internet Information Services) backslashes** normaliza a barra invertida `\` para uma barra normal `/`, do jeito que o IIS trata as duas como equivalentes em um caminho, para que um payload usando `\` não escape de assinaturas escritas para `/`.
 
 **IIS Unicode codepoints** decodifica os mapeamentos de code-point `%u` específicos do IIS a partir da code page Windows-1252, os escapes por trás de toda uma geração de exploits de travessia no IIS.
 

@@ -41,7 +41,7 @@ switch [string tolower [HTTP::host]] {
 }
 ```
 
-**Para um conjunto fixo de cerca de cem entradas ou menos, switch (mesmo switch -glob) supera matchclass** desde que os dados não precisem mudar independentemente da regra. A razão que a F5 dá é que o antigo comando `matchclass` faz hash com MD5, o que o `switch` de conjunto pequeno não precisa fazer.
+**Para um conjunto fixo de cerca de cem entradas ou menos, switch (mesmo switch -glob) supera matchclass** desde que os dados não precisem mudar independentemente da regra. A razão que a F5 dá é que o antigo comando `matchclass` faz hash com MD5 (Message Digest 5), o que o `switch` de conjunto pequeno não precisa fazer.
 
 **Para uma busca por chave exata em dados estáticos, um array indexado diretamente é o mais rápido de todos.** Se o que você tem é de fato um mapa de chave para valor, coloque-o em um array `static::` no carregamento e indexe-o diretamente. Isso é uma busca hash O(1) sem nada do trabalho por comparação do `switch` ou da chamada de função do `matchclass`.
 

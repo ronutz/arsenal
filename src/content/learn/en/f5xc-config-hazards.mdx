@@ -13,7 +13,7 @@ updated: "2026-07-11"
 
 ## Why a linter, not a wizard
 
-XC's configuration objects are permissive: they will happily accept a setting that is technically valid but operationally wrong. A WAF left in monitoring mode is a valid WAF. An origin pool that skips certificate verification is a valid pool. A catch-all route sitting above your specific routes is a valid route list. None of these produce an error - they produce surprising behavior, weeks later, that you then have to trace back. A linter catches the class of problem that is legal but probably not what you meant.
+XC's configuration objects are permissive: they will happily accept a setting that is technically valid but operationally wrong. A WAF (web application firewall) left in monitoring mode is a valid WAF. An origin pool that skips certificate verification is a valid pool. A catch-all route sitting above your specific routes is a valid route list. None of these produce an error - they produce surprising behavior, weeks later, that you then have to trace back. A linter catches the class of problem that is legal but probably not what you meant.
 
 ## The origin-pool hazards
 

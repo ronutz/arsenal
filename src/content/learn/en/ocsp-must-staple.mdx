@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## The soft-fail problem
 
-Live OCSP checking sounds reassuring: before trusting a certificate, the client asks the CA's responder whether it has been revoked. The problem is what happens when that question cannot be answered. OCSP responders are sometimes slow, overloaded, or blocked, and a browser cannot stall every page load waiting for one. So in practice clients soft-fail: if the responder does not answer, they assume the certificate is fine and proceed. That decision quietly defeats the entire mechanism, because an attacker using a stolen but revoked certificate only needs to block the victim's access to the responder, which is easy when the attacker already controls the network path.
+Live OCSP (Online Certificate Status Protocol) checking sounds reassuring: before trusting a certificate, the client asks the CA's responder whether it has been revoked. The problem is what happens when that question cannot be answered. OCSP responders are sometimes slow, overloaded, or blocked, and a browser cannot stall every page load waiting for one. So in practice clients soft-fail: if the responder does not answer, they assume the certificate is fine and proceed. That decision quietly defeats the entire mechanism, because an attacker using a stolen but revoked certificate only needs to block the victim's access to the responder, which is easy when the attacker already controls the network path.
 
 ## Stapling moves the proof to the server
 

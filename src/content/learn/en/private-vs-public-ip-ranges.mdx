@@ -15,7 +15,7 @@ Not every IP address is reachable from the public internet, and an SSRF check ex
 
 ## Private address space (RFC 1918)
 
-Three blocks are set aside for private networks and are never routed on the public internet: `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. Inside a corporate network or a cloud VPC, these are where internal services live, so an SSRF that reaches them can talk to databases, caches, and admin panels.
+Three blocks are set aside for private networks and are never routed on the public internet: `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. Inside a corporate network or a cloud VPC (virtual private cloud), these are where internal services live, so an SSRF that reaches them can talk to databases, caches, and admin panels.
 
 ## Loopback and link-local
 

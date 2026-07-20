@@ -100,6 +100,8 @@ export default async function MeetingBingoPage({
     bingo: t("bingo"),
     bingoSub: t("bingoSub"),
     shuffling: t("shuffling"),
+    fullscreenEnterAria: t("fullscreenEnterAria"),
+    fullscreenExitAria: t("fullscreenExitAria"),
   };
 
   return (

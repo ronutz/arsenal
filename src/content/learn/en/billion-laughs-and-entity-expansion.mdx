@@ -30,7 +30,7 @@ Each entity expands to ten of the previous one. With a handful of levels, a docu
 
 ## Why it works
 
-The attack exploits the same entity mechanism behind XXE, but a different property of it. XXE abuses *external* entities to reach out and fetch things. Billion laughs abuses *internal* entities and the fact that expansion is **recursive and multiplicative**, so cost grows exponentially with depth while the source text grows only linearly. Everything needed is inside the document, which is why disabling external entities alone does not stop it.
+The attack exploits the same entity mechanism behind XXE (XML External Entity), but a different property of it. XXE abuses *external* entities to reach out and fetch things. Billion laughs abuses *internal* entities and the fact that expansion is **recursive and multiplicative**, so cost grows exponentially with depth while the source text grows only linearly. Everything needed is inside the document, which is why disabling external entities alone does not stop it.
 
 ## The defense
 

@@ -21,7 +21,7 @@ Quase todo ID ordenável usa uma ideia: pôr um **carimbo de tempo primeiro** e 
 
 ## ULID
 
-O ULID é um identificador de 128 bits, a mesma largura de um UUID, renderizado como 26 caracteres em base32 de Crockford. Os primeiros 48 bits são um carimbo de tempo em milissegundos e os 80 restantes são aleatórios. A codificação não diferencia maiúsculas de minúsculas e foi escolhida para ser legível, e é lexicograficamente ordenável, com um modo monotônico opcional que garante a ordenação mesmo para IDs criados no mesmo milissegundo. O ULID foi uma das respostas mais populares ao problema de ordenação do v4 e, sendo de 128 bits, pode ser armazenado no mesmo espaço de um UUID.
+O ULID é um identificador de 128 bits, a mesma largura de um UUID, renderizado como 26 caracteres em base32 de Crockford. Os primeiros 48 bits são um carimbo de tempo em milissegundos e os 80 restantes são aleatórios. A codificação não diferencia maiúsculas de minúsculas e foi escolhida para ser legível, e é lexicograficamente ordenável, com um modo monotônico opcional que garante a ordenação mesmo para IDs criados no mesmo milissegundo. O ULID (Identificador Universalmente Único Lexicograficamente Ordenável, do inglês Universally Unique Lexicographically Sortable Identifier) foi uma das respostas mais populares ao problema de ordenação do v4 e, sendo de 128 bits, pode ser armazenado no mesmo espaço de um UUID.
 
 ## KSUID
 

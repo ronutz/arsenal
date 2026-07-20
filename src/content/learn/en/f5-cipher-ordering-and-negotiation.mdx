@@ -17,7 +17,7 @@ When a cipher string expands into a concrete list, the order of that list matter
 
 In a TLS handshake the client offers the ciphers it supports and the server picks one. There are two philosophies for the pick. With **client preference**, the server chooses the client's most-preferred cipher that it also supports. With **server preference**, the server walks its *own* ordered list and picks the first entry the client supports, ignoring the client's ranking. Most hardened configurations, BIG-IP included, use server preference, because it lets the operator, not the client, decide the priority.
 
-Under server preference, the position of a cipher in the expanded list is a control knob. Put a strong AEAD cipher with forward secrecy first, and any reasonably modern client lands on it. Leave a weaker but still-enabled cipher near the top, and clients that support it will be steered there even when something better was available further down. This is why simply *including* good ciphers is not enough; they have to be *ahead* of the weaker ones.
+Under server preference, the position of a cipher in the expanded list is a control knob. Put a strong AEAD (authenticated encryption with associated data) cipher with forward secrecy first, and any reasonably modern client lands on it. Leave a weaker but still-enabled cipher near the top, and clients that support it will be steered there even when something better was available further down. This is why simply *including* good ciphers is not enough; they have to be *ahead* of the weaker ones.
 
 ## Why expansion shows the order
 

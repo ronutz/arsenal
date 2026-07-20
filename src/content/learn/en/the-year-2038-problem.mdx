@@ -19,7 +19,7 @@ One second after `2147483647`, a 32-bit signed counter overflows. Instead of inc
 
 ## Why it is like Y2K, and why it is not
 
-Like the Year 2000 problem, Y2038 is a representational limit baked into a lot of old assumptions, and like Y2K it is being addressed quietly and ahead of time rather than in a panic. The difference is the fix. Y2K was about how years were *written* (two digits versus four); Y2038 is about how time is *stored* (the width of an integer). The remedy is to widen `time_t` to **64 bits**, which pushes the overflow roughly 292 billion years out — comfortably past any practical concern.
+Like the Year 2000 problem, Y2038 is a representational limit baked into a lot of old assumptions, and like Y2K it is being addressed quietly and ahead of time rather than in a panic. The difference is the fix. Y2K (the Year 2000 problem) was about how years were *written* (two digits versus four); Y2038 is about how time is *stored* (the width of an integer). The remedy is to widen `time_t` to **64 bits**, which pushes the overflow roughly 292 billion years out — comfortably past any practical concern.
 
 ## Where it still bites
 

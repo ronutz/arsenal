@@ -41,7 +41,7 @@ Um único arquivo PEM pode conter vários blocos um atrás do outro, que é como
 
 ## A extensão de arquivo não é o formato
 
-Esta é a parte que confunde as pessoas: `.crt`, `.cer`, `.pem` e `.key` descrevem intenção, não codificação. Um `.crt` pode ser PEM ou DER. Um `.cer` é frequentemente DER no Windows mas PEM em outros lugares. Um `.key` é uma chave privada, mas poderia ser PKCS#1, PKCS#8 ou SEC1, em PEM ou DER. A única maneira confiável de saber o que você tem é olhar os primeiros bytes: PEM começa com a linha visível `-----BEGIN`, enquanto DER começa com o byte de tag de SEQUENCE `0x30`. A ferramenta aceita qualquer um, então você pode colar um bloco PEM ou carregar DER cru sem converter primeiro.
+Esta é a parte que confunde as pessoas: `.crt`, `.cer`, `.pem` e `.key` descrevem intenção, não codificação. Um `.crt` pode ser PEM ou DER. Um `.cer` é frequentemente DER no Windows mas PEM em outros lugares. Um `.key` é uma chave privada, mas poderia ser PKCS#1, PKCS#8 ou SEC1 (Padrões para Criptografia Eficiente 1, do inglês Standards for Efficient Cryptography 1), em PEM ou DER. A única maneira confiável de saber o que você tem é olhar os primeiros bytes: PEM começa com a linha visível `-----BEGIN`, enquanto DER começa com o byte de tag de SEQUENCE `0x30`. A ferramenta aceita qualquer um, então você pode colar um bloco PEM ou carregar DER cru sem converter primeiro.
 
 ## Contêineres que agrupam mais de uma coisa
 

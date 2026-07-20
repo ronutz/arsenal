@@ -31,7 +31,7 @@ Essa única propriedade torna o v7 uma chave primária muito melhor: novas linha
 
 ## As outras versões, brevemente
 
-Para completar: a **versão 1** combina um carimbo de tempo com o endereço MAC da máquina geradora, o que vaza a identidade do hardware e o horário de criação e, assim, levanta preocupações de privacidade. As **versões 3 e 5** são baseadas em nome, elas fazem hash de um namespace mais um nome (com MD5 e SHA-1 respectivamente) para produzir um UUID determinístico, útil quando a mesma entrada deve sempre mapear para o mesmo identificador. A **versão 6** reordena os campos da versão 1 para serem ordenáveis, mas para novos sistemas o v7 é a escolha recomendada ordenada por tempo.
+Para completar: a **versão 1** combina um carimbo de tempo com o endereço MAC (controle de acesso ao meio, do inglês media access control) da máquina geradora, o que vaza a identidade do hardware e o horário de criação e, assim, levanta preocupações de privacidade. As **versões 3 e 5** são baseadas em nome, elas fazem hash de um namespace mais um nome (com MD5 e SHA-1 respectivamente) para produzir um UUID determinístico, útil quando a mesma entrada deve sempre mapear para o mesmo identificador. A **versão 6** reordena os campos da versão 1 para serem ordenáveis, mas para novos sistemas o v7 é a escolha recomendada ordenada por tempo.
 
 ## Escolhendo uma
 

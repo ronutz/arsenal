@@ -19,7 +19,7 @@ Um segundo depois de `2147483647`, um contador de 32 bits com sinal transborda. 
 
 ## Por que é como o Y2K, e por que não é
 
-Como o problema do Ano 2000, o Y2038 é um limite de representação embutido em muitas suposições antigas, e como o Y2K está sendo tratado com calma e antecedência, não em pânico. A diferença é a correção. O Y2K era sobre como os anos eram *escritos* (dois dígitos versus quatro); o Y2038 é sobre como o tempo é *armazenado* (a largura de um inteiro). O remédio é alargar o `time_t` para **64 bits**, o que empurra o transbordamento cerca de 292 bilhões de anos à frente — confortavelmente além de qualquer preocupação prática.
+Como o problema do Ano 2000, o Y2038 é um limite de representação embutido em muitas suposições antigas, e como o Y2K está sendo tratado com calma e antecedência, não em pânico. A diferença é a correção. O Y2K (o problema do ano 2000) era sobre como os anos eram *escritos* (dois dígitos versus quatro); o Y2038 é sobre como o tempo é *armazenado* (a largura de um inteiro). O remédio é alargar o `time_t` para **64 bits**, o que empurra o transbordamento cerca de 292 bilhões de anos à frente — confortavelmente além de qualquer preocupação prática.
 
 ## Onde ainda morde
 

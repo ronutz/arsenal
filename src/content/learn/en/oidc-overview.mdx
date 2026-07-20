@@ -25,7 +25,7 @@ The trust between them rests on a signature. The provider signs the ID token wit
 
 ## The authorization code flow
 
-The most common and most secure way to obtain an ID token is the authorization code flow. It keeps tokens off the browser URL and delivers them through a direct back-channel call, and with PKCE it is safe even for public clients like single-page and mobile apps.
+The most common and most secure way to obtain an ID token is the authorization code flow. It keeps tokens off the browser URL and delivers them through a direct back-channel call, and with PKCE (Proof Key for Code Exchange) it is safe even for public clients like single-page and mobile apps.
 
 The flow runs roughly like this. The relying party redirects the browser to the provider's authorization endpoint, including its client identifier, the requested scopes (with openid among them, which is what makes the request an OIDC request), a redirect URI, a state value, and a nonce. The provider authenticates the user and asks for any needed consent, then redirects the browser back to the relying party's redirect URI carrying a short-lived authorization code. The relying party then makes a direct, server-to-server call to the provider's token endpoint, exchanging that code for tokens. The response contains an ID token, usually an access token, and often a refresh token. The relying party validates the ID token and now knows who the user is.
 

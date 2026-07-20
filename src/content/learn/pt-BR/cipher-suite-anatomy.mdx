@@ -15,7 +15,7 @@ updated: "2026-06-29"
 
 Uma suíte de cifra TLS é um pacote nomeado de escolhas criptográficas que um cliente e um servidor acordam durante o handshake. Um único nome como `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` reúne várias decisões independentes em um identificador: como os dois lados combinam um segredo compartilhado, como o servidor prova quem é, qual algoritmo cifra os dados da aplicação e como esses dados são protegidos contra adulteração.
 
-Toda suíte registrada também tem um ponto de código de dois bytes, atribuído pela IANA. O nome acima é `0xC02F` na conexão. O handshake nunca envia o nome em texto; ele envia os dois bytes. Os nomes existem para humanos, e há mais de uma convenção de nomes — uma fonte frequente de confusão.
+Toda suíte registrada também tem um ponto de código de dois bytes, atribuído pela IANA (a Autoridade para Atribuição de Números da Internet, do inglês Internet Assigned Numbers Authority). O nome acima é `0xC02F` na conexão. O handshake nunca envia o nome em texto; ele envia os dois bytes. Os nomes existem para humanos, e há mais de uma convenção de nomes — uma fonte frequente de confusão.
 
 ## As tarefas que uma suíte descreve
 
@@ -40,7 +40,7 @@ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 
 **Modo** transforma a cifra de bloco em algo que pode cifrar um fluxo de registros. `GCM`, `CCM` e `CHACHA20_POLY1305` são modos AEAD que cuidam da integridade por conta própria. `CBC` é o modo mais antigo que precisa de um MAC separado.
 
-**Hash de MAC ou PRF** é o último token. Em uma suíte CBC é o hash HMAC que autentica cada registro. Em uma suíte AEAD a cifra já fornece integridade, então o hash final em vez disso nomeia o PRF que o handshake usa para derivar chaves (`SHA256` ou `SHA384`).
+**Hash de MAC ou PRF** é o último token - sendo o MAC o código de autenticação de mensagem (do inglês message authentication code) e o PRF a função pseudoaleatória (do inglês pseudorandom function). Em uma suíte CBC é o hash HMAC (código de autenticação de mensagem baseado em hash, do inglês hash-based message authentication code) que autentica cada registro. Em uma suíte AEAD a cifra já fornece integridade, então o hash final em vez disso nomeia o PRF que o handshake usa para derivar chaves (`SHA256` ou `SHA384`).
 
 ## Lendo no sentido inverso
 

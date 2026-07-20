@@ -36,7 +36,7 @@ Sources can be the keyword `'self'` (the page's own origin), a host such as `htt
 
 `default-src` is the fallback for any resource type that does not have its own directive. With `default-src 'self'`, images, fonts, scripts, styles, and the rest are all limited to the page's origin unless a more specific directive overrides it. Without a `default-src`, every resource type that you did not explicitly name is unrestricted, which is a common way a policy looks strict but leaks.
 
-Set `default-src` first, then open up specific types only as needed. A policy that starts from `default-src 'self'` and adds a known CDN to `script-src` is far easier to reason about than one that lists a dozen directives with no fallback.
+Set `default-src` first, then open up specific types only as needed. A policy that starts from `default-src 'self'` and adds a known CDN (content delivery network) to `script-src` is far easier to reason about than one that lists a dozen directives with no fallback.
 
 ## script-src and the cost of 'unsafe-inline'
 

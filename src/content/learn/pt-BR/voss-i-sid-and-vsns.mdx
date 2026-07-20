@@ -24,7 +24,7 @@ A unidade desse serviço é o **I-SID** (Service Instance Identifier), um númer
 O mesmo mecanismo de I-SID carrega três tipos de serviço, dependendo do que você mapeia para ele:
 
 - **Layer 2 VSN** - uma VLAN de cliente é mapeada para um I-SID (`vlan i-sid <vlan> <isid>`). É um serviço Layer 2 any-to-any: a VLAN aparece em todo BEB que compartilha o I-SID, como se estivessem no mesmo switch.
-- **Layer 3 VSN** - uma VRF é mapeada para um I-SID. É um serviço roteado em full-mesh: uma tabela de roteamento virtualizada carregada pela fabric.
+- **Layer 3 VSN** - uma VRF (instância de Roteamento e Encaminhamento Virtual, do inglês Virtual Routing and Forwarding) é mapeada para um I-SID. É um serviço roteado em full-mesh: uma tabela de roteamento virtualizada carregada pela fabric.
 - **IP Shortcuts** - a tabela de roteamento global (VRF 0) é encaminhada por IS-IS sem I-SID algum; o encaminhamento segue a alcançabilidade de backbone-MAC por caminho mais curto.
 
 Portanto, um número de I-SID por si só não diz se é um serviço Layer 2 ou Layer 3 - isso depende do que você anexou a ele. É exatamente por isso que a ferramenta complementar valida o número e explica as opções, em vez de adivinhar um tipo.

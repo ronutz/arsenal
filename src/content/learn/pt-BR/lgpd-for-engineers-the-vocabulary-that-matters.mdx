@@ -1,0 +1,54 @@
+---
+slug: lgpd-for-engineers-the-vocabulary-that-matters
+title: "A LGPD para engenheiros: o vocabulário que importa"
+summary: "A lei brasileira de proteção de dados atribui um papel a você, oferece dez bases legais em vez de uma e coloca um relógio de três dias úteis na comunicação de incidentes. O que controlador, operador e encarregado significam quando é você quem opera os sistemas."
+concepts: ["lgpd", "anpd", "controlador", "operador", "bases legais", "comunicação de incidente"]
+relatedTools: []
+relatedArticles: []
+category: security
+order: 95
+status: reviewed
+updated: "2026-07-19"
+---
+
+A LGPD - a Lei Geral de Proteção de Dados, Lei 13.709 de 2018 - lê-se como um documento jurídico porque é um. Mas por baixo dos artigos existe um vocabulário pequeno que decide, na prática, o que os seus sistemas precisam fazer. Se você constrói ou opera qualquer coisa que toque dados pessoais de pessoas no Brasil, estas são as palavras que chegam à sua arquitetura. A lei entrou em vigor em 2020, suas sanções administrativas em 2021, e a fiscalização vive na ANPD, a Autoridade Nacional de Proteção de Dados.
+
+## Três papéis, e um deles é o seu
+
+A LGPD atribui um papel a cada parte, e o papel decide as obrigações.
+
+O controlador é quem decide por que e como os dados pessoais são tratados. Decidir a finalidade é o teste. Se a sua empresa escolhe coletar e-mails para enviar faturas, a sua empresa é a controladora, mesmo que os servidores pertençam a outra.
+
+O operador trata dados sob as instruções documentadas do controlador: o provedor de nuvem, a plataforma SaaS, a folha de pagamento terceirizada. A consequência crítica de engenharia: um operador que sai das instruções e começa a decidir finalidades vira controlador, com a responsabilidade de controlador. "Nós só hospedamos" é uma defesa que dura exatamente enquanto vocês apenas hospedam.
+
+O encarregado - a figura que o mundo do GDPR (Regulamento Geral de Proteção de Dados, do inglês General Data Protection Regulation) chama de DPO, Data Protection Officer (encarregado de proteção de dados) - é o canal humano nomeado: o ponto de contato entre a organização, os titulares e a ANPD. Quando um titular - a pessoa a quem os dados se referem - exerce um direito, o pedido aterrissa aqui.
+
+## Dez bases legais, não uma
+
+Engenheiros tendem a igualar proteção de dados a banners de consentimento. O artigo 7 da LGPD lista dez bases legais para o tratamento, e o consentimento é apenas uma delas. Execução de contrato, obrigação legal, proteção ao crédito, legítimo interesse, proteção da vida, tutela da saúde, pesquisa, processo judicial - cada uma é uma razão lícita para tratar sem pedir permissão, desde que o enquadramento seja genuíno e documentado.
+
+Isso importa no desenho do sistema. Uma base de consentimento significa armazenar o consentimento, registrar quando foi dado, honrar a revogação e parar o tratamento quando ela chega - consentimento é uma máquina de estados que o seu banco de dados precisa modelar. Uma base de contrato ou obrigação legal significa que o dado é necessário para a relação, e um pedido de "apaguem meus dados" encontra um legítimo "ainda não: a lei de retenção diz cinco anos". Escolher a base é uma decisão jurídica; implementar suas consequências é uma decisão de engenharia, e os dois times precisam tomá-la juntos.
+
+O legítimo interesse, a base mais flexível, vem com lição de casa: um teste de balanceamento documentado mostrando que a necessidade da organização não atropela os direitos da pessoa. É a base mais alegada e a mais mal alegada.
+
+## Dados sensíveis sobem a régua
+
+O dado pessoal sensível da LGPD cobre as categorias cujo mau uso corta mais fundo: saúde, biometria, genética, convicções religiosas e políticas, orientação sexual, filiação sindical. Tratá-las exige condições mais estritas, em geral consentimento específico e destacado, e a presença delas num sistema muda a sua classe de risco. Um campo chamado "tipo_sanguineo" num esquema é uma propriedade de conformidade, não apenas uma coluna.
+
+## Os direitos que viram funcionalidades
+
+Os direitos do titular leem-se, para um engenheiro, como uma lista de funcionalidades: confirmação de que o tratamento existe, acesso aos dados, correção, anonimização ou eliminação de dados desnecessários, portabilidade em formato utilizável, informação sobre compartilhamento e revogação do consentimento. Cada direito implica uma capacidade - pipelines de exportação, exclusão que de fato se propaga por backups e réplicas num cronograma definido, uma trilha de auditoria de quem acessou o quê. Um programa de privacidade que existe só em documentos de política falha no primeiro pedido real; quem responde aos pedidos são os sistemas.
+
+## O relógio: três dias úteis
+
+O artigo 48 da lei exige comunicar incidentes de segurança que possam acarretar risco ou dano relevante aos titulares. Por anos o prazo foi a expressão da lei, "prazo razoável"; em abril de 2024 a ANPD o tornou concreto. A Resolução CD/ANPD nº 15 de 2024, o Regulamento de Comunicação de Incidente de Segurança, fixa o prazo do controlador em três dias úteis contados do conhecimento de que o incidente afetou dados pessoais - à ANPD e aos titulares afetados - com o prazo contado em dobro para agentes de tratamento de pequeno porte e um relatório complementar admitido em vinte dias úteis quando a primeira comunicação foi necessariamente preliminar.
+
+Três dias úteis é uma restrição de engenharia. Ela pressupõe que você consegue detectar o incidente, determinar que dados pessoais foram envolvidos e delimitar quais titulares foram afetados - rápido. Organizações descobrem no pior momento que seus logs não respondem "os registros de quem esta consulta tocou?"; o regulamento silenciosamente exige que respondam.
+
+## LGPD e GDPR: primos, não gêmeos
+
+A semelhança de família com o GDPR europeu, o General Data Protection Regulation (regulamento geral de proteção de dados), é deliberada - papéis, direitos, princípios e regras de transferência internacional rimam. As diferenças são reais: dez bases legais em vez de seis, a proteção ao crédito como base sem equivalente no GDPR, tetos de multa em termos brasileiros (até dois por cento do faturamento no Brasil, limitados a cinquenta milhões de reais por infração) e uma autoridade mais jovem ainda escrevendo seus regulamentos. Construir para uma das leis leva você quase até a outra - e a distância restante é exatamente onde a revisão jurídica ganha o salário.
+
+## O que levar
+
+Saiba o seu papel, porque o papel define os deveres. Escolha a base legal deliberadamente, porque a base dita o modelo de dados. Trate os direitos como funcionalidades e o relógio de três dias úteis como um requisito de observabilidade. O vocabulário da LGPD é pequeno; suas consequências são arquiteturais.

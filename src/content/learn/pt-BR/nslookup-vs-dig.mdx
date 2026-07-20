@@ -17,7 +17,7 @@ Ambas as ferramentas fazem uma pergunta a um servidor DNS e imprimem a resposta.
 
 O nslookup otimiza para uma resposta rápida e legível. Ele imprime o resolvedor, se a resposta é não autoritativa, e os registros em um formato de prosa amigável. O que ele não mostra é quase tudo que o dig coloca em primeiro plano: as flags do cabeçalho (aa, tc, rd, ra, ad), o TTL exato de cada registro, a pseudo-seção OPT do EDNS e a estrutura de seções (answer vs authority vs additional). Para muitas perguntas do dia a dia ("para que este nome resolve?") isso está ótimo, e o nslookup é mais rápido de ler.
 
-O dig mostra a mensagem inteira. Quando você precisa do TTL para diagnosticar um problema de cache, da flag aa para confirmar que alcançou um servidor autoritativo, da flag tc para pegar uma resposta truncada, ou dos registros DNSSEC, o dig é a ferramenta. Sua saída é mais densa, mas nada fica escondido.
+O dig mostra a mensagem inteira. Quando você precisa do TTL para diagnosticar um problema de cache, da flag aa para confirmar que alcançou um servidor autoritativo, da flag tc para pegar uma resposta truncada, ou dos registros DNSSEC (Extensões de Segurança do DNS, do inglês DNS Security Extensions), o dig é a ferramenta. Sua saída é mais densa, mas nada fica escondido.
 
 ## Uma regra prática
 

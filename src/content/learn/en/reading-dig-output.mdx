@@ -35,7 +35,7 @@ example.com.		3600	IN	A	93.184.216.34
 ;; MSG SIZE  rcvd: 56
 ```
 
-Reading down: the first line echoes the dig version and the query you ran. The `->>HEADER<<-` line carries the opcode, the status (the RCODE), and the message id. The flags line lists which header bits are set and gives the record count in each of the four sections. The OPT pseudo-section is EDNS metadata, not a real record. Then come the sections themselves: QUESTION (what you asked), ANSWER (the records that answer it), AUTHORITY (which servers are authoritative, or the SOA for a negative answer), and ADDITIONAL (helper records). The `;;` lines at the bottom are the query statistics.
+Reading down: the first line echoes the dig version and the query you ran. The `->>HEADER<<-` line carries the opcode, the status (the RCODE), and the message id. The flags line lists which header bits are set and gives the record count in each of the four sections. The OPT (Option) pseudo-section is EDNS (Extension Mechanisms for DNS) metadata, not a real record. Then come the sections themselves: QUESTION (what you asked), ANSWER (the records that answer it), AUTHORITY (which servers are authoritative, or the SOA for a negative answer), and ADDITIONAL (helper records). The `;;` lines at the bottom are the query statistics.
 
 ## Where to look first
 

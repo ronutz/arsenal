@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## XML carries a loaded feature
 
-SAML is XML, and XML has a feature that turns parsing untrusted input into a security problem: the Document Type Definition (DTD), and the entities it can declare. An entity is a named substitution, like a macro. Most are harmless, but a DTD can define entities that pull in external content or expand explosively, and a parser that processes them does the attacker's bidding while merely reading the document. Because a SAML message arrives from outside and is processed by a server, this is exactly the dangerous situation.
+SAML (Security Assertion Markup Language) is XML, and XML has a feature that turns parsing untrusted input into a security problem: the Document Type Definition (DTD), and the entities it can declare. An entity is a named substitution, like a macro. Most are harmless, but a DTD can define entities that pull in external content or expand explosively, and a parser that processes them does the attacker's bidding while merely reading the document. Because a SAML message arrives from outside and is processed by a server, this is exactly the dangerous situation.
 
 ## XML External Entity (XXE)
 

@@ -21,7 +21,7 @@ Cada load balancer se anuncia em um IP e uma porta - juntos, a advertise policy.
 
 ## O mais específico vence
 
-Dentro de uma advertise policy, o XC escolhe o load balancer cujo domínio casa mais especificamente com o hostname da requisição. Um FQDN exato vence um wildcard. Se uma requisição para app-b.domain.com pode casar tanto com um LB que lista app-b.domain.com exatamente quanto com um LB que lista *.domain.com, o exato vence - toda vez. Essa é a única regra que resolve a maioria dos enigmas "por que meu tráfego foi para lá": procure o domínio mais específico.
+Dentro de uma advertise policy, o XC escolhe o load balancer cujo domínio casa mais especificamente com o hostname da requisição. Um FQDN exato vence um wildcard. Se uma requisição para app-b.domain.com pode casar tanto com um LB (balanceador de carga, do inglês load balancer) que lista app-b.domain.com exatamente quanto com um LB que lista *.domain.com, o exato vence - toda vez. Essa é a única regra que resolve a maioria dos enigmas "por que meu tráfego foi para lá": procure o domínio mais específico.
 
 ## De onde vem o hostname
 

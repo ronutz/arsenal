@@ -15,7 +15,7 @@ Source-address persistence (also called simple persistence) keys entirely on the
 
 ## When many clients share one address
 
-That assumption fails behind a large NAT or proxy, the classic **mega-proxy** case. When thousands of users sit behind one corporate NAT, a carrier-grade NAT, or a big proxy farm, they all arrive with the same source IP. Source-address persistence sees one address and pins every one of those users to a single pool member. The result is the opposite of load balancing: one member is buried while the others sit idle, and if that member fails, a huge block of users is affected at once. Carrier-grade NAT has made this common enough that source-address persistence can quietly wreck the distribution you expected.
+That assumption fails behind a large NAT (network address translation) or proxy, the classic **mega-proxy** case. When thousands of users sit behind one corporate NAT, a carrier-grade NAT, or a big proxy farm, they all arrive with the same source IP. Source-address persistence sees one address and pins every one of those users to a single pool member. The result is the opposite of load balancing: one member is buried while the others sit idle, and if that member fails, a huge block of users is affected at once. Carrier-grade NAT has made this common enough that source-address persistence can quietly wreck the distribution you expected.
 
 ## When one client changes address
 

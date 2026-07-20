@@ -13,7 +13,7 @@ updated: "2026-06-26"
 
 ## The problem: trusting a request
 
-When a server receives an API request, how does it know the caller is who they claim to be, and that nobody altered the request in transit? Sending a shared secret with every request would work until that secret is logged, cached, or leaked. **HMAC request signing** solves this without ever transmitting the secret: the caller proves it holds the secret by using it to sign the request, and the server checks the signature.
+When a server receives an API request, how does it know the caller is who they claim to be, and that nobody altered the request in transit? Sending a shared secret with every request would work until that secret is logged, cached, or leaked. **HMAC (hash-based message authentication code) request signing** solves this without ever transmitting the secret: the caller proves it holds the secret by using it to sign the request, and the server checks the signature.
 
 ## How signing works
 

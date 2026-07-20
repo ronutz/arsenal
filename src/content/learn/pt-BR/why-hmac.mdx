@@ -17,7 +17,7 @@ Você quer provar que uma mensagem veio de alguém que possui um segredo compart
 
 ## O ataque de extensão de comprimento
 
-Os hashes da família Merkle-Damgård, que inclui MD5, SHA-1 e SHA-256, processam a entrada em blocos e carregam um estado interno adiante. Sua saída final *é* esse estado interno. Isso vaza algo perigoso: dado `SHA256(segredo + mensagem)` e o comprimento de `segredo + mensagem`, um atacante pode definir o estado interno do hash como a sua tag e continuar fazendo o hash, calculando
+Os hashes da família Merkle-Damgård, que inclui MD5 (Message Digest 5), SHA-1 e SHA-256, processam a entrada em blocos e carregam um estado interno adiante. Sua saída final *é* esse estado interno. Isso vaza algo perigoso: dado `SHA256(segredo + mensagem)` e o comprimento de `segredo + mensagem`, um atacante pode definir o estado interno do hash como a sua tag e continuar fazendo o hash, calculando
 
 ```
 SHA256(segredo + mensagem + padding + dados_do_atacante)

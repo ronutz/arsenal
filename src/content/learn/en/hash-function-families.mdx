@@ -31,7 +31,7 @@ A cryptographic hash maps any input to a fixed-size fingerprint. Several familie
 A short decision guide:
 
 - General-purpose integrity, signatures, or "I just need a secure hash": **SHA-256**.
-- Want algorithm diversity or length-extension immunity without HMAC: **SHA-3** or **SHA-512/256**.
+- Want algorithm diversity or length-extension immunity without HMAC (hash-based message authentication code): **SHA-3** or **SHA-512/256**.
 - Hashing large files where throughput matters: **BLAKE3**.
 - A fast non-security checksum (detecting accidental corruption, not tampering): a CRC or MD5 is fine, but never call that "secure".
 - **Passwords are a separate problem.** General hashes are too fast for password storage; use a purpose-built password hash such as bcrypt, scrypt, or Argon2 instead (see the password hashing article).

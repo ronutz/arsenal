@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-03"
 ---
 
-A BIG-IP DNS (formerly GTM - Global Traffic Manager) name resolution answer is decided twice. The wide IP receives the query and selects one of its pools; the selected pool then selects a member, a virtual server, whose address becomes the answer. The two tiers use different method sets and different rules, and most GSLB surprises live in the second one.
+A BIG-IP DNS (formerly GTM - Global Traffic Manager) name resolution answer is decided twice. The wide IP receives the query and selects one of its pools; the selected pool then selects a member, a virtual server, whose address becomes the answer. The two tiers use different method sets and different rules, and most GSLB (global server load balancing) surprises live in the second one.
 
 ## The wide-IP tier: pool-lb-mode
 

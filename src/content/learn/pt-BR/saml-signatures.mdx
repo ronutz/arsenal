@@ -25,7 +25,7 @@ O DigestMethod nomeia o hash aplicado ao conteúdo canonicalizado, produzindo o 
 
 ## Algoritmos fracos
 
-Os algoritmos não são todos igualmente seguros, e o decodificador sinaliza os fracos. O SHA-1, tanto como digest quanto dentro de assinaturas RSA-SHA1, está quebrado: colisões práticas existem, e ele não deve ser usado para assinar nada em que você confie. O MD5 é pior e morto há muito tempo. A linha de base moderna é SHA-256 ou mais forte para o digest, e RSA-SHA256, uma variante ECDSA sobre SHA-256, ou RSA-PSS para a assinatura. Ver RSA-SHA1 ou um digest SHA-1 em uma implantação SAML atual é um sinal para atualizar a federação, e por isso esses recebem um marcador de fraqueza.
+Os algoritmos não são todos igualmente seguros, e o decodificador sinaliza os fracos. O SHA-1, tanto como digest quanto dentro de assinaturas RSA-SHA1, está quebrado: colisões práticas existem, e ele não deve ser usado para assinar nada em que você confie. O MD5 é pior e morto há muito tempo. A linha de base moderna é SHA-256 ou mais forte para o digest, e RSA-SHA256, uma variante ECDSA sobre SHA-256, ou RSA-PSS (Esquema de Assinatura Probabilística, do inglês Probabilistic Signature Scheme) para a assinatura. Ver RSA-SHA1 ou um digest SHA-1 em uma implantação SAML atual é um sinal para atualizar a federação, e por isso esses recebem um marcador de fraqueza.
 
 ## Assinar a Response, a Assertion ou ambas
 

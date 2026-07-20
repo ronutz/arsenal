@@ -24,7 +24,7 @@ The unit of that service is the **I-SID** (Service Instance Identifier), a 24-bi
 The same I-SID mechanism carries three kinds of service, depending on what you map to it:
 
 - **Layer 2 VSN** - a customer VLAN is mapped to an I-SID (`vlan i-sid <vlan> <isid>`). This is an any-to-any Layer 2 service: the VLAN appears at every BEB that shares the I-SID, as if they were on the same switch.
-- **Layer 3 VSN** - a VRF is mapped to an I-SID. This is a routed, full-mesh service: a virtualized routing table carried across the fabric.
+- **Layer 3 VSN** - a VRF (Virtual Routing and Forwarding instance) is mapped to an I-SID. This is a routed, full-mesh service: a virtualized routing table carried across the fabric.
 - **IP Shortcuts** - the global routing table (VRF 0) is forwarded over IS-IS with no I-SID at all; forwarding follows shortest-path backbone-MAC reachability.
 
 So an I-SID number by itself does not tell you whether it is a Layer 2 or Layer 3 service - that depends on what you attached to it. That is exactly why the companion tool validates the number and explains the options rather than guessing a type.

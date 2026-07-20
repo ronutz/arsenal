@@ -19,7 +19,7 @@ O esquema `file://` endereça o sistema de arquivos local em vez de um host de r
 
 ## gopher:// forja bytes brutos
 
-O esquema `gopher://` é o mais abusado, porque permite ao atacante colocar bytes quase arbitrários em um fluxo TCP para um host e porta escolhidos. Isso transforma o SSRF em uma forma de falar outros protocolos: uma URL gopher forjada pode enviar comandos a uma instância Redis, forjar uma mensagem SMTP ou conduzir qualquer serviço simples baseado em linhas ouvindo na rede interna. É smuggling de protocolo através de um buscador de URL.
+O esquema `gopher://` é o mais abusado, porque permite ao atacante colocar bytes quase arbitrários em um fluxo TCP para um host e porta escolhidos. Isso transforma o SSRF em uma forma de falar outros protocolos: uma URL gopher forjada pode enviar comandos a uma instância Redis, forjar uma mensagem SMTP (Protocolo Simples de Transferência de Correio, do inglês Simple Mail Transfer Protocol) ou conduzir qualquer serviço simples baseado em linhas ouvindo na rede interna. É smuggling de protocolo através de um buscador de URL.
 
 ## Os demais
 

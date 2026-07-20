@@ -21,7 +21,7 @@ Os dois switches superiores formam um cluster e precisam permanecer sincronizado
 
 ## Virtual IST
 
-Tradicionalmente, o IST é um enlace físico dedicado entre os dois switches do cluster. O **Virtual IST (vIST)** roda esse trunk como um canal pela fabric SPBM, de modo que nenhum cabo direto entre os peers é necessário. Você cria uma VLAN de vIST com um I-SID e uma interface Layer 3, e depois aponta os peers um para o outro:
+Tradicionalmente, o IST é um enlace físico dedicado entre os dois switches do cluster. O **Virtual IST (vIST)** roda esse trunk como um canal pela fabric SPBM, de modo que nenhum cabo direto entre os peers é necessário. Você cria uma VLAN de vIST com um I-SID (Identificador de Serviço Individual, do inglês Individual Service Identifier) e uma interface Layer 3, e depois aponta os peers um para o outro:
 
 ```
 vlan create 4053 type port-mstprstp 1

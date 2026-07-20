@@ -19,9 +19,9 @@ The Earth's rotation is slightly irregular and, on average, slowly slowing. To k
 
 ## Unix time looks away
 
-Here is the key fact: **Unix time does not count leap seconds.** The POSIX standard defines a day as exactly **86,400 seconds**, full stop. When a leap second happens, Unix time does not get a `:60`; instead the same timestamp value is effectively used twice (or the clock is nudged), so that midnight always lands on a round multiple of 86,400. The calendar stays tidy at the cost of strict accuracy.
+Here is the key fact: **Unix time does not count leap seconds.** The POSIX (Portable Operating System Interface) standard defines a day as exactly **86,400 seconds**, full stop. When a leap second happens, Unix time does not get a `:60`; instead the same timestamp value is effectively used twice (or the clock is nudged), so that midnight always lands on a round multiple of 86,400. The calendar stays tidy at the cost of strict accuracy.
 
-The consequence is precise and a little surprising: a Unix timestamp is **not** the true number of SI seconds elapsed since the epoch. It is short by the number of leap seconds inserted in between — around 27 seconds as of the late 2010s. The atomic-time scale that *does* count every second, TAI, has drifted that far ahead of UTC.
+The consequence is precise and a little surprising: a Unix timestamp is **not** the true number of SI (International System of Units) seconds elapsed since the epoch. It is short by the number of leap seconds inserted in between — around 27 seconds as of the late 2010s. The atomic-time scale that *does* count every second, TAI (International Atomic Time), has drifted that far ahead of UTC.
 
 ## Why this is the right choice
 

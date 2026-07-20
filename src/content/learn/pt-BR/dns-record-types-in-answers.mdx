@@ -21,15 +21,15 @@ Isto é **nome** (`example.com.`), **TTL** em segundos (`3600`, por quanto tempo
 
 ## Os tipos que você encontra, e seu rdata
 
-- **A** e **AAAA**: um endereço IPv4 ou IPv6. O rdata é apenas o endereço.
-- **CNAME**: um alias. O rdata é outro nome, e os registros reais ficam sob esse alvo. Um CNAME em uma resposta é o motivo de você às vezes ver dois registros: o alias e, em seguida, o endereço para o qual ele aponta.
+- **A** e **AAAA** (os registros de endereço IPv4 e endereço IPv6): um endereço IPv4 ou IPv6. O rdata é apenas o endereço.
+- **CNAME** (Nome Canônico, do inglês Canonical Name): um alias. O rdata é outro nome, e os registros reais ficam sob esse alvo. Um CNAME em uma resposta é o motivo de você às vezes ver dois registros: o alias e, em seguida, o endereço para o qual ele aponta.
 - **NS**: um servidor de nomes autoritativo para a zona. O rdata é o nome do servidor.
-- **MX**: um mail exchanger. O rdata são dois campos, um número de preferência e um hostname; a menor preferência vence.
-- **SOA**: o registro do ápice da zona, e o rdata mais denso que você vai ler. Seus sete campos são o servidor primário, a caixa postal do administrador (com o primeiro ponto substituindo o `@`), o serial e os timers de refresh, retry, expire e minimum. O minimum também serve como TTL de cache negativo, então ele governa por quanto tempo um NXDOMAIN dessa zona é lembrado.
-- **TXT**: texto livre, entre aspas. Carrega políticas SPF, chaves DKIM e tokens de verificação de domínio.
-- **PTR**: o registro reverso, mapeando um endereço de volta para um nome. Você o vê ao consultar um endereço sob `in-addr.arpa` ou `ip6.arpa`.
-- **SRV**: um localizador de serviço. O rdata são quatro campos: prioridade, peso, porta e host alvo.
-- **CAA**: quais autoridades certificadoras podem emitir para o domínio. O rdata é um byte de flags, uma tag (`issue`, `issuewild`, `iodef`) e um valor.
+- **MX** (Troca de Correio, do inglês Mail Exchange): um mail exchanger. O rdata são dois campos, um número de preferência e um hostname; a menor preferência vence.
+- **SOA** (Início de Autoridade, do inglês Start of Authority): o registro do ápice da zona, e o rdata mais denso que você vai ler. Seus sete campos são o servidor primário, a caixa postal do administrador (com o primeiro ponto substituindo o `@`), o serial e os timers de refresh, retry, expire e minimum. O minimum também serve como TTL de cache negativo, então ele governa por quanto tempo um NXDOMAIN dessa zona é lembrado.
+- **TXT** (Texto, do inglês Text): texto livre, entre aspas. Carrega políticas SPF (Estrutura de Política do Remetente, do inglês Sender Policy Framework), chaves DKIM (Correio Identificado por DomainKeys, do inglês DomainKeys Identified Mail) e tokens de verificação de domínio.
+- **PTR** (Ponteiro, do inglês Pointer): o registro reverso, mapeando um endereço de volta para um nome. Você o vê ao consultar um endereço sob `in-addr.arpa` ou `ip6.arpa`.
+- **SRV** (Serviço, do inglês Service): um localizador de serviço. O rdata são quatro campos: prioridade, peso, porta e host alvo.
+- **CAA** (Autorização de Autoridade Certificadora, do inglês Certification Authority Authorization): quais autoridades certificadoras podem emitir para o domínio. O rdata é um byte de flags, uma tag (`issue`, `issuewild`, `iodef`) e um valor.
 - **HTTPS** e **SVCB**: registros de service binding mais novos que carregam dicas de conexão (ALPN, porta, dicas de endereço) para uma origem.
 
 ## O TTL é um relógio, não uma constante

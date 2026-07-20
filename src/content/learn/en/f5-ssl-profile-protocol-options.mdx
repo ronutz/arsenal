@@ -35,6 +35,6 @@ options { dont-insert-empty-fragments no-sslv3 no-tlsv1 no-tlsv1.1 }
 
 ## Two non-protocol flags worth knowing
 
-`dont-insert-empty-fragments` turns off the old 1/n−1 record split that was an early BEAST mitigation; it appears in most default option sets and is largely historical now. `cipher-server-preference` tells the BIG-IP to choose the cipher from its **own** ordered list rather than honoring the client's preference order — generally what you want, so that your carefully ordered, forward-secret suites win.
+`dont-insert-empty-fragments` turns off the old 1/n−1 record split that was an early BEAST (Browser Exploit Against SSL/TLS) mitigation; it appears in most default option sets and is largely historical now. `cipher-server-preference` tells the BIG-IP to choose the cipher from its **own** ordered list rather than honoring the client's preference order — generally what you want, so that your carefully ordered, forward-secret suites win.
 
 Because the protocol matrix is derived purely from which `no-` flags are present, the SSL profile explainer can show you, version by version, exactly what a pasted `options` line permits — and flag the deprecated ones it leaves open.

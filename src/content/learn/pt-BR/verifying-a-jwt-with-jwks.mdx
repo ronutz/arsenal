@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
-Um JWKS só é útil no momento em que você verifica um token. A verificação em si é um pequeno pipeline, e acertar cada passo exatamente é o que separa um verificador seguro de um contornável.
+Um JWKS (Conjunto de Chaves Web JSON, do inglês JSON Web Key Set) só é útil no momento em que você verifica um token. A verificação em si é um pequeno pipeline, e acertar cada passo exatamente é o que separa um verificador seguro de um contornável.
 
 ## A sequência
 
@@ -31,7 +31,7 @@ Três erros clássicos transformam esse pipeline em uma vulnerabilidade.
 
 O primeiro é a **confusão de algoritmo**. Se um verificador confia cegamente no `alg` do cabeçalho, um atacante pode mudá-lo. O caso notório troca um token `RS256` (assimétrico) por `HS256` (simétrico) e o assina com a chave pública do provedor como se fosse um segredo HMAC; um verificador que não fixa o algoritmo o aceita. Sempre decida o algoritmo aceitável a partir da chave, não a partir do cabeçalho controlado pelo atacante.
 
-O segundo é **aceitar `alg` igual a `none`**. A especificação JWS define um algoritmo não seguro `none` com uma assinatura vazia. Um verificador nunca deve aceitá-lo para tokens que deveriam estar assinados.
+O segundo é **aceitar `alg` igual a `none`**. A especificação JWS (Assinatura Web JSON, do inglês JSON Web Signature) define um algoritmo não seguro `none` com uma assinatura vazia. Um verificador nunca deve aceitá-lo para tokens que deveriam estar assinados.
 
 O terceiro é **selecionar pelo campo errado**. Se o cabeçalho não tem `kid`, algumas bibliotecas recorrem à correspondência por `alg`, o que é frágil e pode corresponder à chave errada. Um provedor bem formado sempre define um `kid`; o explicador sinaliza um ausente e mostra o frágil fallback por alg quando precisa usá-lo.
 

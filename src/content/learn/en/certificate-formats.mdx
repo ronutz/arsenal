@@ -41,7 +41,7 @@ A single PEM file can hold several blocks back to back, which is how a server's 
 
 ## The file extension is not the format
 
-This is the part that trips people up: `.crt`, `.cer`, `.pem`, and `.key` describe intent, not encoding. A `.crt` might be PEM or DER. A `.cer` is often DER on Windows but PEM elsewhere. A `.key` is a private key, but could be PKCS#1, PKCS#8, or SEC1, in either PEM or DER. The only reliable way to know what you have is to look at the first bytes: PEM starts with the visible `-----BEGIN` line, while DER starts with the SEQUENCE tag byte `0x30`. The tool accepts either, so you can paste a PEM block or upload raw DER without converting first.
+This is the part that trips people up: `.crt`, `.cer`, `.pem`, and `.key` describe intent, not encoding. A `.crt` might be PEM or DER. A `.cer` is often DER on Windows but PEM elsewhere. A `.key` is a private key, but could be PKCS#1, PKCS#8, or SEC1 (Standards for Efficient Cryptography 1), in either PEM or DER. The only reliable way to know what you have is to look at the first bytes: PEM starts with the visible `-----BEGIN` line, while DER starts with the SEQUENCE tag byte `0x30`. The tool accepts either, so you can paste a PEM block or upload raw DER without converting first.
 
 ## Containers that bundle more than one thing
 

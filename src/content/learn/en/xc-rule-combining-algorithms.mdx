@@ -23,7 +23,7 @@ A service policy with a `rule_list` holds an ordered list of rules. The **rule c
 
 ## Why the order matters
 
-Consider two rules: one denies a specific bad ASN, and one allows everything from a partner country. Under FIRST_MATCH, whichever appears first decides. Under DENY_OVERRIDES, the deny is considered first, so a request from the bad ASN is blocked even if it also comes from the partner country. Under ALLOW_OVERRIDES, the same request is allowed, because the allow is considered first.
+Consider two rules: one denies a specific bad ASN (autonomous system number), and one allows everything from a partner country. Under FIRST_MATCH, whichever appears first decides. Under DENY_OVERRIDES, the deny is considered first, so a request from the bad ASN is blocked even if it also comes from the partner country. Under ALLOW_OVERRIDES, the same request is allowed, because the allow is considered first.
 
 Same rules, three different outcomes for the overlapping request. This is why reading a policy without knowing its algorithm can mislead you.
 

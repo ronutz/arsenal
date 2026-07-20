@@ -35,6 +35,6 @@ options { dont-insert-empty-fragments no-sslv3 no-tlsv1 no-tlsv1.1 }
 
 ## Duas flags não relacionadas a protocolo que vale conhecer
 
-`dont-insert-empty-fragments` desliga a antiga divisão de registro 1/n−1 que foi uma mitigação inicial do BEAST; aparece na maioria dos conjuntos de options padrão e hoje é em grande parte histórica. `cipher-server-preference` diz ao BIG-IP para escolher a cifra a partir da **sua própria** lista ordenada, em vez de honrar a ordem de preferência do cliente — geralmente o que você quer, para que suas suites com sigilo futuro, cuidadosamente ordenadas, prevaleçam.
+`dont-insert-empty-fragments` desliga a antiga divisão de registro 1/n−1 que foi uma mitigação inicial do BEAST (Browser Exploit Against SSL/TLS); aparece na maioria dos conjuntos de options padrão e hoje é em grande parte histórica. `cipher-server-preference` diz ao BIG-IP para escolher a cifra a partir da **sua própria** lista ordenada, em vez de honrar a ordem de preferência do cliente — geralmente o que você quer, para que suas suites com sigilo futuro, cuidadosamente ordenadas, prevaleçam.
 
 Como a matriz de protocolos é derivada puramente de quais flags `no-` estão presentes, o explicador de perfis SSL mostra, versão por versão, exatamente o que uma linha `options` colada permite — e sinaliza as descontinuadas que ela deixa abertas.

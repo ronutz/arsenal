@@ -23,6 +23,9 @@ export interface FoundingStory {
   founders: string[];
   /** The founding story paragraph. */
   story: string;
+  /** Optional provenance for the founding facts (year/place/founders) - kept
+   *  honest when the source is a specific citation rather than general record. */
+  sourceNote?: string;
 }
 
 export interface TimelineEvent {

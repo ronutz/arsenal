@@ -39,4 +39,4 @@ The last format combines the route domain layout with an IPv6 address: `rd3o2001
 
 ## The encrypted form
 
-If cookie encryption is enabled, none of the above applies. The value begins with `!` and is roughly eighty characters of base64, for example `!VPyexJn...HwA=`. This is AES ciphertext and cannot be decoded without the BIG-IP's key. The decoder recognizes it and says so rather than guessing. Why you would want this form is covered in the [cookie encryption](/learn/bigip-cookie-encryption) article.
+If cookie encryption is enabled, none of the above applies. The value begins with `!` and is roughly eighty characters of base64, for example `!VPyexJn...HwA=`. This is AES (Advanced Encryption Standard) ciphertext and cannot be decoded without the BIG-IP's key. The decoder recognizes it and says so rather than guessing. Why you would want this form is covered in the [cookie encryption](/learn/bigip-cookie-encryption) article.

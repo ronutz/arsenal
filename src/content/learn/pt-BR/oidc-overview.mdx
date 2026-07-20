@@ -25,7 +25,7 @@ A confiança entre elas se apoia em uma assinatura. O provedor assina o ID token
 
 ## O fluxo de código de autorização
 
-A forma mais comum e mais segura de obter um ID token é o fluxo de código de autorização. Ele mantém os tokens fora da URL do navegador e os entrega por uma chamada direta de back-channel, e com PKCE é seguro até para clientes públicos como aplicações de página única e móveis.
+A forma mais comum e mais segura de obter um ID token é o fluxo de código de autorização. Ele mantém os tokens fora da URL do navegador e os entrega por uma chamada direta de back-channel, e com PKCE (Chave de Prova para Troca de Código, do inglês Proof Key for Code Exchange) é seguro até para clientes públicos como aplicações de página única e móveis.
 
 O fluxo funciona mais ou menos assim. A relying party redireciona o navegador para o endpoint de autorização do provedor, incluindo seu identificador de cliente, os escopos solicitados (com openid entre eles, que é o que torna a requisição uma requisição OIDC), uma URI de redirecionamento, um valor de state e um nonce. O provedor autentica o usuário e pede qualquer consentimento necessário, depois redireciona o navegador de volta à URI de redirecionamento da relying party carregando um código de autorização de curta duração. A relying party então faz uma chamada direta, de servidor para servidor, ao endpoint de token do provedor, trocando esse código por tokens. A resposta contém um ID token, normalmente um access token e, com frequência, um refresh token. A relying party valida o ID token e agora sabe quem é o usuário.
 

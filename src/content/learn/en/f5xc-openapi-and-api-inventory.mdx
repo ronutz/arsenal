@@ -17,7 +17,7 @@ On F5 Distributed Cloud, an API is not protected by a list of things to block - 
 
 ## Positive security: the allowlist model
 
-The reason the inventory matters is that XC enforces a positive security model. Instead of enumerating attacks, it enumerates valid behavior - valid endpoints, valid methods, valid parameters, valid payloads - and can report or block anything that does not conform. Many of the entries on the OWASP API Security Top 10 come down to missing input validation, and a spec-driven allowlist closes that gap by construction: a request to an undocumented path, with an unexpected parameter, or a malformed body, fails validation because it was never described as valid. Reading your own spec carefully, then, is reading the exact shape of what your API will accept.
+The reason the inventory matters is that XC enforces a positive security model. Instead of enumerating attacks, it enumerates valid behavior - valid endpoints, valid methods, valid parameters, valid payloads - and can report or block anything that does not conform. Many of the entries on the OWASP (Open Worldwide Application Security Project) API Security Top 10 come down to missing input validation, and a spec-driven allowlist closes that gap by construction: a request to an undocumented path, with an unexpected parameter, or a malformed body, fails validation because it was never described as valid. Reading your own spec carefully, then, is reading the exact shape of what your API will accept.
 
 ## Shadow APIs and the ones you generate
 

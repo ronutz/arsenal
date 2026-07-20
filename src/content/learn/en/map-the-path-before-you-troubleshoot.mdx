@@ -22,7 +22,7 @@ Forward reasoning comes naturally; return reasoning is where models quietly go w
 
 ## Rewrites and terminations are boundaries of meaning
 
-Every NAT, SNAT, and proxy hop changes what an address means, and every TLS termination changes what can be seen. After a source rewrite, backend logs faithfully record the wrong client; after a proxy, the upstream conversation is a different session that shares nothing but intent with the client's; at each TLS termination, a new certificate story begins and the previous one ends. These are not implementation details - they are the boundaries along which evidence must be collected and interpreted. A path model that marks them turns "the logs say X" into the sharper question: which side of which boundary said X, about whom?
+Every NAT, SNAT (source NAT), and proxy hop changes what an address means, and every TLS termination changes what can be seen. After a source rewrite, backend logs faithfully record the wrong client; after a proxy, the upstream conversation is a different session that shares nothing but intent with the client's; at each TLS termination, a new certificate story begins and the previous one ends. These are not implementation details - they are the boundaries along which evidence must be collected and interpreted. A path model that marks them turns "the logs say X" into the sharper question: which side of which boundary said X, about whom?
 
 ## Unknowns belong on the map
 

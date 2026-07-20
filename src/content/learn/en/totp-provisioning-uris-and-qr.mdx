@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-01"
 ---
 
-A TOTP app and a server only agree on codes if they start from the same secret and the same settings. Getting that secret and those settings into the app is **provisioning**, and it runs on a small de-facto standard: the otpauth URI.
+A TOTP (Time-based One-Time Password) app and a server only agree on codes if they start from the same secret and the same settings. Getting that secret and those settings into the app is **provisioning**, and it runs on a small de-facto standard: the otpauth URI.
 
 ## The otpauth URI
 
@@ -27,11 +27,11 @@ The pieces are:
 - **label**: the account this is for, usually `Issuer:account`, so the app can show a meaningful name.
 - **secret**: the shared key, in **base32**. This is the one field that must be kept secret.
 - **issuer**: the service name, shown in the app and used to disambiguate accounts.
-- **algorithm**, **digits**, **period**: the HMAC hash, the code length, and the time step. These must match on both sides or the codes will never agree. For HOTP, a **counter** parameter appears instead of `period`.
+- **algorithm**, **digits**, **period**: the HMAC hash, the code length, and the time step. These must match on both sides or the codes will never agree. For HOTP (HMAC-based One-Time Password), a **counter** parameter appears instead of `period`.
 
 ## Why base32, and why a QR code
 
-The secret is base32 rather than raw bytes or base64 because base32 uses only uppercase letters and digits, avoiding characters that are ambiguous or awkward, which matters on the rare occasion someone types the key by hand instead of scanning. The QR code is simply this whole URI encoded as an image: scanning it hands the app every field at once, which is why setup is usually "scan this code" rather than copying a string. The manual-entry key a site offers as a fallback is the same base32 secret from the URI, entered by hand.
+The secret is base32 rather than raw bytes or base64 because base32 uses only uppercase letters and digits, avoiding characters that are ambiguous or awkward, which matters on the rare occasion someone types the key by hand instead of scanning. The QR (Quick Response) code is simply this whole URI encoded as an image: scanning it hands the app every field at once, which is why setup is usually "scan this code" rather than copying a string. The manual-entry key a site offers as a fallback is the same base32 secret from the URI, entered by hand.
 
 ## The provisioning gotcha
 

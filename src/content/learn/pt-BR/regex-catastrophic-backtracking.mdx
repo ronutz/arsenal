@@ -34,6 +34,6 @@ Alguns hábitos removem quase todo o risco:
 - **Ancore seu padrão.** Um `^` inicial (e um `$` final ao validar um campo inteiro) impede o motor de tentar a correspondência em cada posição da string.
 - **Limite sua repetição.** `\d{1,9}` não pode disparar como `\d+` em entrada adversária; um limite superior explícito restringe a busca.
 
-O JavaScript não oferece grupos atômicos nem quantificadores possessivos, os recursos que outros motores usam para proibir o backtracking de vez, então em JS a resposta é estrutural: escreva o padrão de forma que a ambiguidade nunca exista. Para entrada não confiável em escala, a opção mais robusta é um motor sem backtracking como o RE2, que garante tempo linear mas abre mão de retrorreferências e lookarounds.
+O JavaScript não oferece grupos atômicos nem quantificadores possessivos, os recursos que outros motores usam para proibir o backtracking de vez, então em JS (JavaScript) a resposta é estrutural: escreva o padrão de forma que a ambiguidade nunca exista. Para entrada não confiável em escala, a opção mais robusta é um motor sem backtracking como o RE2, que garante tempo linear mas abre mão de retrorreferências e lookarounds.
 
 O ReDoS é listado pela OWASP como uma classe de ataque real, não teórica — uma única requisição forjada pode prender uma CPU. Construa os padrões no [Kit de Regex](/tools/regex), preste atenção ao aviso quando ele disparar, e revisite os [quantificadores e classes](/learn/regex-quantifiers-and-classes) que tornam um padrão específico o bastante para continuar rápido.

@@ -25,7 +25,7 @@ This is why address planning matters before the first device is configured. Allo
 
 ## Where it happens
 
-Summarization lives at boundaries. In OSPF it is configured on area border routers and AS boundary routers, since within an area the full link-state topology is flooded and cannot be summarized. EIGRP can summarize on almost any interface. In BGP, aggregation combines specific prefixes into a covering route before advertising them to other autonomous systems, which is a large part of why the global routing table is far smaller than the number of allocated networks.
+Summarization lives at boundaries. In OSPF it is configured on area border routers and AS (autonomous system) boundary routers, since within an area the full link-state topology is flooded and cannot be summarized. EIGRP (Enhanced Interior Gateway Routing Protocol) can summarize on almost any interface. In BGP, aggregation combines specific prefixes into a covering route before advertising them to other autonomous systems, which is a large part of why the global routing table is far smaller than the number of allocated networks.
 
 ## The black-hole trap
 

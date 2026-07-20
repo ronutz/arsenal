@@ -27,6 +27,6 @@ To use a precomputed table against a salted hash, the attacker would have to hav
 
 ## What salting does not do
 
-Salting does not slow down an attack against a single known salt. Once the attacker has the salt (it is not secret), they can still guess-and-check against that one target as fast as the hash allows. Defeating that is the job of a slow KDF, not the salt.
+Salting does not slow down an attack against a single known salt. Once the attacker has the salt (it is not secret), they can still guess-and-check against that one target as fast as the hash allows. Defeating that is the job of a slow KDF (key derivation function), not the salt.
 
 A salt is not a secret and is not a substitute for a slow password hash. Correct password storage needs both: a unique salt to kill precomputation, and a deliberately slow function to make each guess expensive.

@@ -23,9 +23,9 @@ Esses limites fazem parte da especificação, então uma pontuação de 6.9 é M
 
 ## Severidade não é risco
 
-A coisa mais importante a entender sobre uma pontuação Base do CVSS é o que ela deliberadamente deixa de fora. A base mede a **severidade intrínseca** de uma falha sob uma premissa razoável de pior caso. Ela não mede o seu risco. Em particular, a pontuação Base não sabe nada sobre:
+A coisa mais importante a entender sobre uma pontuação Base do CVSS (Sistema Comum de Pontuação de Vulnerabilidades, do inglês Common Vulnerability Scoring System) é o que ela deliberadamente deixa de fora. A base mede a **severidade intrínseca** de uma falha sob uma premissa razoável de pior caso. Ela não mede o seu risco. Em particular, a pontuação Base não sabe nada sobre:
 
-- **Exploração na prática.** Se uma exploração existe ou está sendo usada ativamente é uma questão Temporal ou de inteligência de ameaças. Um esforço separado da FIRST.org, o EPSS, estima a probabilidade de exploração e é uma entrada melhor para essa dimensão.
+- **Exploração na prática.** Se uma exploração existe ou está sendo usada ativamente é uma questão Temporal ou de inteligência de ameaças. Um esforço separado da FIRST.org (Fórum de Equipes de Resposta a Incidentes e Segurança, do inglês Forum of Incident Response and Security Teams), o EPSS (Sistema de Pontuação de Previsão de Exploração, do inglês Exploit Prediction Scoring System), estima a probabilidade de exploração e é uma entrada melhor para essa dimensão.
 - **Valor do ativo.** Uma falha Crítica em uma máquina de teste descartável e em um sistema de pagamento compartilham o mesmo número base. Apenas a pontuação Ambiental, ou o seu próprio contexto de ativos, as distingue.
 - **Controles compensatórios.** Uma mitigação apenas de rede, uma regra de WAF, ou o fato de um serviço ser inacessível pela internet não muda a base em nada.
 

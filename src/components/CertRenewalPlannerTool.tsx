@@ -66,6 +66,13 @@ export default function CertRenewalPlannerTool() {
 
   return (
     <div className="cidr-tool jwt-tool saml-tool json-tool tmsh-tool epoch-tool cert-renewal-tool">
+      <div className="dig-input-head">
+        <span className="cidr-label">{t("datesLabel")}</span>
+        <div className="dig-input-actions">
+          <button type="button" className="b64-copy" onClick={() => { setNotBefore("2026-01-01"); setNotAfter("2027-02-02"); }}>{t("example")}</button>
+          <button type="button" className="b64-copy" onClick={() => { setNotBefore(""); setNotAfter(""); }}>{t("clear")}</button>
+        </div>
+      </div>
       <div className="cert-renewal-inputs">
         <div className="cidr-input-row">
           <label className="cidr-label" htmlFor="crp-nb">

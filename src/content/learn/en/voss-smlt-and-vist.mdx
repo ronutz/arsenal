@@ -21,7 +21,7 @@ The two upstream switches form a cluster and must stay in sync - MAC tables, ARP
 
 ## Virtual IST
 
-Traditionally the IST is a dedicated physical link between the two cluster switches. **Virtual IST (vIST)** runs that trunk as a channel through the SPBM fabric instead, so no direct cable between the peers is required. You create a vIST VLAN with an I-SID and a Layer 3 interface, then point the peers at each other:
+Traditionally the IST is a dedicated physical link between the two cluster switches. **Virtual IST (vIST)** runs that trunk as a channel through the SPBM fabric instead, so no direct cable between the peers is required. You create a vIST VLAN with an I-SID (Individual Service Identifier) and a Layer 3 interface, then point the peers at each other:
 
 ```
 vlan create 4053 type port-mstprstp 1

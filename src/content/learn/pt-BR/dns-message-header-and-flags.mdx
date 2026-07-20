@@ -21,7 +21,7 @@ Duas linhas carregam todo o estado de uma mensagem DNS: a linha `->>HEADER<<-` e
 
 O **opcode** é quase sempre `QUERY`. Você verá `NOTIFY` (um primário avisando um secundário de que a zona mudou) e `UPDATE` (DNS dinâmico) em cenários específicos, mas uma consulta normal é `QUERY`.
 
-O **status** é o RCODE, e é o campo mais útil. `NOERROR` significa que a consulta foi processada normalmente. `NXDOMAIN` significa que o nome não existe. `SERVFAIL` significa que o servidor não conseguiu concluir a consulta, o que na prática aponta para uma delegação quebrada, uma validação DNSSEC que falhou ou um upstream que deu timeout. `NOTIMP` significa que o servidor não implementa o tipo ou opcode pedido. `REFUSED` significa que o servidor recusou, geralmente por controle de acesso ou porque a recursão está desabilitada para você.
+O **status** é o RCODE, e é o campo mais útil. `NOERROR` significa que a consulta foi processada normalmente. `NXDOMAIN` significa que o nome não existe. `SERVFAIL` significa que o servidor não conseguiu concluir a consulta, o que na prática aponta para uma delegação quebrada, uma validação DNSSEC (Extensões de Segurança do DNS, do inglês DNS Security Extensions) que falhou ou um upstream que deu timeout. `NOTIMP` significa que o servidor não implementa o tipo ou opcode pedido. `REFUSED` significa que o servidor recusou, geralmente por controle de acesso ou porque a recursão está desabilitada para você.
 
 O **id** é o id de transação de 16 bits que associa uma resposta à sua consulta. Em um `dig` manual isolado, é apenas um identificador; ele importa quando você está correlacionando capturas.
 

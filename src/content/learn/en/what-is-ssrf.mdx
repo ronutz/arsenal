@@ -15,11 +15,11 @@ Server-Side Request Forgery is a vulnerability in which an application takes a U
 
 ## Why the origin of the request matters
 
-The danger is not the fetch itself; it is who is making it. A request from the public internet cannot reach a database on `10.0.0.5`, an admin panel on `localhost`, or a cloud metadata service on `169.254.169.254`. A request from the application server usually can, because that server sits inside the trust boundary. SSRF lets an attacker borrow the server's network position.
+The danger is not the fetch itself; it is who is making it. A request from the public internet cannot reach a database on `10.0.0.5`, an admin panel on `localhost`, or a cloud metadata service on `169.254.169.254`. A request from the application server usually can, because that server sits inside the trust boundary. SSRF (server-side request forgery) lets an attacker borrow the server's network position.
 
 ## Where it shows up
 
-Any feature that fetches a user-supplied URL is a candidate: webhook senders, link-preview and unfurl services, image and document proxies, PDF or screenshot generators, RSS and import tools, and "check this URL" health probes. All of them accept an address and make a request, which is exactly the primitive SSRF abuses.
+Any feature that fetches a user-supplied URL is a candidate: webhook senders, link-preview and unfurl services, image and document proxies, PDF (Portable Document Format) or screenshot generators, RSS and import tools, and "check this URL" health probes. All of them accept an address and make a request, which is exactly the primitive SSRF abuses.
 
 ## What an attacker gains
 

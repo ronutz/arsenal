@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-01"
 ---
 
-CVSS defines a qualitative scale so a numeric score can be spoken about in words. The bands are fixed:
+CVSS (Common Vulnerability Scoring System) defines a qualitative scale so a numeric score can be spoken about in words. The bands are fixed:
 
 - **None**: 0.0
 - **Low**: 0.1 to 3.9
@@ -25,7 +25,7 @@ These boundaries are part of the specification, so a score of 6.9 is Medium and 
 
 The most important thing to understand about a CVSS Base score is what it deliberately leaves out. The base measures the **intrinsic severity** of a flaw under a reasonable worst-case assumption. It does not measure your risk. In particular, the Base score knows nothing about:
 
-- **Exploitation in the wild.** Whether an exploit exists or is being used actively is a Temporal or threat-intelligence question. A separate FIRST.org effort, EPSS, estimates the probability of exploitation and is a better input for that dimension.
+- **Exploitation in the wild.** Whether an exploit exists or is being used actively is a Temporal or threat-intelligence question. A separate FIRST.org (Forum of Incident Response and Security Teams) effort, EPSS (Exploit Prediction Scoring System), estimates the probability of exploitation and is a better input for that dimension.
 - **Asset value.** A Critical flaw on a disposable test box and on a payment system share the same base number. Only Environmental scoring, or your own asset context, distinguishes them.
 - **Compensating controls.** A network-only mitigation, a WAF rule, or the fact that a service is unreachable from the internet does not change the base at all.
 

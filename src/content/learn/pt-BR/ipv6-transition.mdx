@@ -35,7 +35,7 @@ Para redes que se tornaram somente-IPv6, o NAT64 (RFC 6146) e o DNS64 (RFC 6147)
 
 Algumas aplicações ainda passam endereços IPv4 literais e quebram em uma rede somente-IPv6 mesmo com o NAT64 presente. O 464XLAT (RFC 6877), amplamente implantado em operadoras móveis, adiciona uma pequena tradução no cliente que apresenta um endereço IPv4 privado localmente e o tunela através da rede somente-IPv6 até um gateway NAT64. É a razão pela qual redes móveis somente-IPv6 ainda podem rodar aplicações somente-IPv4 sem o usuário perceber.
 
-## Por que não há NAT no IPv6 nativo
+## Por que não há NAT (tradução de endereços de rede, do inglês network address translation) no IPv6 nativo
 
 Uma pergunta frequente de administradores IPv4 é para onde o NAT foi. O IPv6 nativo dá a todo host um endereço globalmente roteável, então o NAT de compartilhamento de endereços que definiu as redes domésticas e de escritório do IPv4 é simplesmente desnecessário; a conectividade é fim a fim, e um firewall com estado, não a tradução de endereços, provê a fronteira. Onde o endereçamento privado e não roteado é genuinamente desejado, o IPv6 oferece Endereços Locais Únicos (Unique Local Addresses) em `fc00::/7`, o tipo ULA que a ferramenta identifica. A tradução vista nas bordas do IPv6 é para alcançar o protocolo *antigo*, não para esticar um espaço de endereços escasso.
 

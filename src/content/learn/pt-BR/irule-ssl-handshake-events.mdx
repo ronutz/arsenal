@@ -17,7 +17,7 @@ Quando um virtual server tem um perfil Client-SSL, o BIG-IP termina o TLS do cli
 
 Dois eventos importam mais no lado cliente, e a ordem entre eles é o ponto central:
 
-- `CLIENTSSL_CLIENTHELLO` dispara quando o **ClientHello** TLS do cliente chega, *antes* de o BIG-IP processar o handshake. Isso é cedo o bastante para ler o nome de servidor SNI e outros campos do ClientHello e tomar uma decisão.
+- `CLIENTSSL_CLIENTHELLO` dispara quando o **ClientHello** TLS do cliente chega, *antes* de o BIG-IP processar o handshake. Isso é cedo o bastante para ler o nome de servidor SNI (Indicação de Nome de Servidor, do inglês Server Name Indication) e outros campos do ClientHello e tomar uma decisão.
 - `CLIENTSSL_HANDSHAKE` dispara *depois* de o handshake do lado cliente concluir com sucesso. Aqui, a cifra e o protocolo negociados já estão definidos.
 
 Como `CLIENTSSL_CLIENTHELLO` roda antes de o handshake terminar, ele é o gancho para a seleção baseada em SNI — escolher um perfil Client-SSL ou um pool com base no nome de host que o cliente pediu:

@@ -17,7 +17,7 @@ A cipher string that worked for years suddenly seems to have no effect on TLS 1.
 
 A **TLS 1.2** cipher suite is a bundle: it names the key-exchange method, the authentication method, the bulk encryption cipher, and the MAC all at once, which is why names like `ECDHE-RSA-AES128-GCM-SHA256` are so long. The keyword-based cipher string exists to select and filter across all those dimensions.
 
-A **TLS 1.3** cipher suite names only two things: the AEAD bulk cipher and its hash. The full set is tiny and fixed, essentially AES-GCM and ChaCha20-Poly1305 variants (for example `TLS_AES_128_GCM_SHA256`). Key exchange and authentication are no longer part of the suite; 1.3 always uses ephemeral Diffie-Hellman for forward secrecy and negotiates the group and the signature algorithm separately. There is nothing to "select" for key exchange in a 1.3 suite because it is not encoded there.
+A **TLS 1.3** cipher suite names only two things: the AEAD (authenticated encryption with associated data) bulk cipher and its hash. The full set is tiny and fixed, essentially AES-GCM and ChaCha20-Poly1305 variants (for example `TLS_AES_128_GCM_SHA256`). Key exchange and authentication are no longer part of the suite; 1.3 always uses ephemeral Diffie-Hellman for forward secrecy and negotiates the group and the signature algorithm separately. There is nothing to "select" for key exchange in a 1.3 suite because it is not encoded there.
 
 ## What this means on BIG-IP
 

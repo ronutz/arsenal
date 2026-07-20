@@ -1,9 +1,11 @@
 // ============================================================================
 // CYCLADES -> AVOCENT -> VERTIV - out-of-band and the physical layer of
-// uptime, with a Brazilian founding story. Knowledge-based (2026-07-16):
-// Cyclades Corporation founded 1989, Fremont, California, by Brazilian
-// engineers (founder names deliberately omitted pending PRIME's first-hand
-// knowledge); Linux-embracing console servers (TS/ACS, AlterPath) define
+// uptime, with a Brazilian founding story. Founding facts verified 2026-07-19
+// against pt.wikipedia.org/wiki/Cyclades: Cyclades founded 1988 in Sao Paulo
+// (a Vila Olimpia garage, ~US$6k initial capital; the idea sparked that year
+// at the Wells lanchonete on Rua Augusta) by Joao "John" Lima and Daniel
+// Dalarossa, later relocating to Fremont, California. Linux-embracing console
+// servers (TS/ACS, AlterPath) define
 // out-of-band management. The name invites the honorable disambiguation to
 // Louis Pouzin's CYCLADES research network (France, 1970s) - the datagram
 // pioneer whose ideas Cerf credits in TCP/IP's ancestry. Avocent (formed
@@ -21,11 +23,12 @@ export const cycladesAvocentVertivProfile: VendorProfile = {
   foundings: [
     {
       company: "Cyclades Corporation",
-      year: 1989,
-      place: "Fremont, California",
-      founders: ["Brazilian engineers of the Bay Area diaspora"],
+      year: 1988,
+      place: "São Paulo, Brazil",
+      founders: ["João \"John\" Lima", "Daniel Dalarossa"],
       story:
-        "Founded by Brazilian engineers in Fremont, Cyclades built the discipline of reaching equipment when the network is down: serial console servers, out-of-band paths, remote power - the last-resort plane every operator prays they configured. An early and vocal Linux adopter (its console servers ran and championed open source), Cyclades became the name on the RJ-45-to-serial adapters in a generation of data-center crash carts - and a quiet landmark of the Brazilian technology diaspora.",
+        "Cyclades began in 1988 in a Vila Olímpia garage in São Paulo - the idea sparked that year over a table at the Wells lanchonete on Rua Augusta - founded by João \"John\" Lima and Daniel Dalarossa on roughly six thousand dollars of initial capital. It later relocated to Fremont, California, but the founding was Brazilian, and so was the instinct: build the discipline of reaching equipment when the network is down - serial console servers, out-of-band paths, remote power, the last-resort plane every operator prays they configured. An early and vocal Linux adopter (its console servers ran and championed open source), Cyclades became the name on the RJ-45-to-serial adapters in a generation of data-center crash carts - and a quiet landmark of the Brazilian technology diaspora.",
+      sourceNote: "Founding year, São Paulo origin, and founder names per pt.wikipedia.org/wiki/Cyclades.",
     },
     {
       company: "Liebert (Vertiv's physical-layer root)",

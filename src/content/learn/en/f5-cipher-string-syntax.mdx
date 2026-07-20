@@ -19,7 +19,7 @@ A cipher string is a list of **sets**, separated by a colon `:`, a comma `,`, or
 
 ## Keywords combined with plus
 
-Within a set, **keywords** are joined with a plus sign `+` to narrow the selection. Each keyword constrains a different part of a cipher suite: the protocol version (`TLSv1_2`), the key exchange and authentication (`ECDHE`, `RSA`, `ECDHE_ECDSA`), the bulk cipher (`AES-GCM`, `3DES`), and the MAC or hash (`SHA256`). So `TLSv1_2+ECDHE+AES-GCM+SHA384` means exactly the suites that are TLS 1.2, use ECDHE, use AES-GCM, and use SHA-384. A bare keyword like `AES` with no pluses is broad, matching every AES suite. Keywords are case-insensitive, so `tlsv1_2+ecdhe` and `TLSv1_2+ECDHE` are identical.
+Within a set, **keywords** are joined with a plus sign `+` to narrow the selection. Each keyword constrains a different part of a cipher suite: the protocol version (`TLSv1_2`), the key exchange and authentication (`ECDHE`, `RSA`, `ECDHE_ECDSA`), the bulk cipher (`AES-GCM`, `3DES`), and the MAC or hash (`SHA256`). So `TLSv1_2+ECDHE+AES-GCM+SHA384` means exactly the suites that are TLS 1.2, use ECDHE, use AES (Advanced Encryption Standard)-GCM, and use SHA-384. A bare keyword like `AES` with no pluses is broad, matching every AES suite. Keywords are case-insensitive, so `tlsv1_2+ecdhe` and `TLSv1_2+ECDHE` are identical.
 
 ## Operators
 
@@ -30,7 +30,7 @@ A set can carry a leading operator that changes what BIG-IP does with it:
 - A leading `+` **lowers the priority** of the set, moving its suites toward the end of the list rather than removing them. Note this is different from the `+` that joins keywords inside a set.
 - `@STRENGTH` is not a set but a directive: it re-sorts everything selected so far by key length, strongest first. `@SPEED` sorts by encryption speed instead.
 
-So `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` reads as: prefer ECDHE, then RSA, never allow SSL 3.0 or RC4, then sort what remains by strength.
+So `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` reads as: prefer ECDHE, then RSA, never allow SSL 3.0 or RC4 (Rivest Cipher 4), then sort what remains by strength.
 
 ## What the string does not tell you directly
 

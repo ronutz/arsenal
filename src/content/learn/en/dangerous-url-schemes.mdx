@@ -19,7 +19,7 @@ The `file://` scheme addresses the local filesystem rather than a network host. 
 
 ## gopher:// crafts raw bytes
 
-The `gopher://` scheme is the most abused, because it lets an attacker place nearly arbitrary bytes into a TCP stream to a chosen host and port. That turns SSRF into a way to speak other protocols: a crafted gopher URL can send commands to a Redis instance, forge an SMTP message, or drive any simple line-based service listening on the internal network. It is protocol smuggling through a URL fetcher.
+The `gopher://` scheme is the most abused, because it lets an attacker place nearly arbitrary bytes into a TCP stream to a chosen host and port. That turns SSRF into a way to speak other protocols: a crafted gopher URL can send commands to a Redis instance, forge an SMTP (Simple Mail Transfer Protocol) message, or drive any simple line-based service listening on the internal network. It is protocol smuggling through a URL fetcher.
 
 ## The others
 

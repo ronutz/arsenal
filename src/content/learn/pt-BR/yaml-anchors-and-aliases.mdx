@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-01"
 ---
 
-O YAML tem um recurso que o JSON simplesmente não tem: você pode nomear um valor e reutilizá-lo, em vez de repeti-lo. É uma das maiores razões de um arquivo YAML e seu equivalente em JSON não se parecerem.
+O YAML (YAML Ain't Markup Language) tem um recurso que o JSON simplesmente não tem: você pode nomear um valor e reutilizá-lo, em vez de repeti-lo. É uma das maiores razões de um arquivo YAML e seu equivalente em JSON não se parecerem.
 
 ## A sintaxe
 
@@ -19,7 +19,7 @@ O YAML tem um recurso que o JSON simplesmente não tem: você pode nomear um val
 - Um **alias** `*nome` se refere de volta a ele, inserindo o mesmo valor.
 - Uma **merge key** `<<: *nome` mescla as chaves de um mapping ancorado no mapping atual, uma forma comum de compartilhar padrões (defaults).
 
-Então um conjunto base de configurações pode ser definido uma vez com uma âncora e puxado para vários lugares com aliases, mantendo o arquivo DRY. Isso é muito usado em configs de CI e em ferramentas próximas do Kubernetes.
+Então um conjunto base de configurações pode ser definido uma vez com uma âncora e puxado para vários lugares com aliases, mantendo o arquivo DRY (não se repita, do inglês don't repeat yourself). Isso é muito usado em configs de CI e em ferramentas próximas do Kubernetes.
 
 ## O que a conversão faz com eles
 

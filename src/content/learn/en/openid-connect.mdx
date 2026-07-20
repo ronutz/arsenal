@@ -29,7 +29,7 @@ Because it is a JWT, the client verifies the ID token's signature and validates 
 
 ## How a login flows
 
-OIDC reuses OAuth's machinery. The recommended flow is the **authorization code flow with PKCE**:
+OIDC reuses OAuth's machinery. The recommended flow is the **authorization code flow with PKCE (Proof Key for Code Exchange)**:
 
 1. The app sends the user to the provider's authorization endpoint, requesting the `openid` scope (plus `profile`, `email`, and so on), and includes a PKCE `code_challenge`.
 2. The user authenticates and consents at the provider.

@@ -14,7 +14,7 @@ There is a moment in almost every escalated incident when someone says "let's ge
 
 ## Boundaries, not convenience
 
-Packets change meaning at boundaries: a NAT rewrites addresses, a load balancer splits one conversation into two, a proxy originates a fresh session upstream, a VPN gateway wraps everything in ESP, a TLS terminator ends one cryptographic world and starts another. A capture point earns its place by sitting on one of these boundaries, because that is where a comparison localizes a fault. Two captures that straddle a firewall answer "did the firewall eat it?" in one look; a single capture taken somewhere convenient answers almost nothing, however large the file. When the path has a transformation in it, the plan should pair points across that transformation - and match flows by ports, sequence numbers, and timing, never by addresses that a NAT has already rewritten.
+Packets change meaning at boundaries: a NAT rewrites addresses, a load balancer splits one conversation into two, a proxy originates a fresh session upstream, a VPN gateway wraps everything in ESP (Encapsulating Security Payload), a TLS terminator ends one cryptographic world and starts another. A capture point earns its place by sitting on one of these boundaries, because that is where a comparison localizes a fault. Two captures that straddle a firewall answer "did the firewall eat it?" in one look; a single capture taken somewhere convenient answers almost nothing, however large the file. When the path has a transformation in it, the plan should pair points across that transformation - and match flows by ports, sequence numbers, and timing, never by addresses that a NAT has already rewritten.
 
 ## Absence is evidence too
 
@@ -22,7 +22,7 @@ The most underused observation in packet work is the packet that is not there. A
 
 ## Decide what it would mean - first
 
-The step that separates a plan from a fishing trip is the interpretation matrix: for each candidate conclusion, write down in advance what observation would support it and what would weaken it. "If the handshake completes at the VIP but no member-side connection appears, the balancer or its pool is implicated; if the front side already shows no SYN-ACK, the problem is in front of it." Doing this before collection keeps the evidence honest - it prevents the capture from being read as confirmation of whatever theory was loudest when the file finally opened. It also keeps captures small: a point that cannot change any conclusion does not belong in phase one.
+The step that separates a plan from a fishing trip is the interpretation matrix: for each candidate conclusion, write down in advance what observation would support it and what would weaken it. "If the handshake completes at the VIP (virtual IP, the virtual server address) but no member-side connection appears, the balancer or its pool is implicated; if the front side already shows no SYN-ACK, the problem is in front of it." Doing this before collection keeps the evidence honest - it prevents the capture from being read as confirmation of whatever theory was loudest when the file finally opened. It also keeps captures small: a point that cannot change any conclusion does not belong in phase one.
 
 ## Minimal exposure is part of the plan
 

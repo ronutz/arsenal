@@ -30,7 +30,7 @@ Suppose you need four separate subnets instead of one. Four is 2², so you need 
   - `192.168.1.128/26`, addresses .128 to .191
   - `192.168.1.192/26`, addresses .192 to .255
 
-Notice the pattern: each subnet is 64 addresses wide, so each one starts on a multiple of 64. That "starts on a multiple of its size" rule is how valid subnet boundaries are found. A block must begin on an address that is a multiple of its own size, or it is not a valid CIDR block.
+Notice the pattern: each subnet is 64 addresses wide, so each one starts on a multiple of 64. That "starts on a multiple of its size" rule is how valid subnet boundaries are found. A block must begin on an address that is a multiple of its own size, or it is not a valid CIDR (Classless Inter-Domain Routing) block.
 
 ## The trade-off
 

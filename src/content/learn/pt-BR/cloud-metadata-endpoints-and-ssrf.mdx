@@ -15,7 +15,7 @@ Quando um SSRF alcança o serviço de metadados da instância na nuvem, o impact
 
 ## O endereço fixo
 
-AWS, Google Cloud e Azure expõem um Instance Metadata Service (IMDS) no endereço link-local `169.254.169.254`. Ele retorna informações sobre a instância em execução e, na AWS, pode retornar credenciais de segurança temporárias do papel IAM associado à instância. Como o endereço é fixo e, por padrão, sem autenticação, qualquer código que consiga fazer o servidor buscar uma URL pode potencialmente lê-lo.
+AWS, Google Cloud e Azure expõem um Instance Metadata Service (IMDS) no endereço link-local `169.254.169.254`. Ele retorna informações sobre a instância em execução e, na AWS, pode retornar credenciais de segurança temporárias do papel IAM (Gerenciamento de Identidade e Acesso, do inglês Identity and Access Management) associado à instância. Como o endereço é fixo e, por padrão, sem autenticação, qualquer código que consiga fazer o servidor buscar uma URL pode potencialmente lê-lo.
 
 ## Os endpoints a conhecer
 
@@ -23,7 +23,7 @@ O endereço IPv4 `169.254.169.254` é compartilhado entre provedores. O Google C
 
 ## Por que é tão danoso
 
-Credenciais de papel roubadas permitem ao atacante agir como a instância contra a API do provedor de nuvem, dentro das permissões que o papel tem. A partir de um único SSRF, isso pode escalar para ler buckets de armazenamento, lançar recursos ou mover-se lateralmente, sem nunca invadir o sistema operacional do host.
+Credenciais de papel roubadas permitem ao atacante agir como a instância contra a API do provedor de nuvem, dentro das permissões que o papel tem. A partir de um único SSRF (falsificação de requisição do lado do servidor, do inglês server-side request forgery), isso pode escalar para ler buckets de armazenamento, lançar recursos ou mover-se lateralmente, sem nunca invadir o sistema operacional do host.
 
 ## A defesa: IMDSv2 e regras de rede
 

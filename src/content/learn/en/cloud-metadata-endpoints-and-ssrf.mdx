@@ -11,11 +11,11 @@ status: machine-draft
 updated: "2026-07-01"
 ---
 
-When an SSRF can reach the cloud instance metadata service, the impact jumps from "internal access" to "credential theft." This is the endpoint attackers reach for first.
+When an SSRF (server-side request forgery) can reach the cloud instance metadata service, the impact jumps from "internal access" to "credential theft." This is the endpoint attackers reach for first.
 
 ## The fixed address
 
-AWS, Google Cloud, and Azure all expose an Instance Metadata Service (IMDS) at the link-local address `169.254.169.254`. It returns information about the running instance, and on AWS it can return temporary security credentials for the IAM role attached to the instance. Because the address is fixed and unauthenticated by default, any code that can make the server fetch a URL can potentially read it.
+AWS, Google Cloud, and Azure all expose an Instance Metadata Service (IMDS) at the link-local address `169.254.169.254`. It returns information about the running instance, and on AWS it can return temporary security credentials for the IAM (Identity and Access Management) role attached to the instance. Because the address is fixed and unauthenticated by default, any code that can make the server fetch a URL can potentially read it.
 
 ## The endpoints to know
 

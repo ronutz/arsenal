@@ -20,6 +20,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useFullscreen } from "@/lib/hooks/useFullscreen";
 
 /** Trait tables + labels, resolved by the server page from i18n catalogs. */
 export interface CatDistributionData {
@@ -48,6 +49,8 @@ export interface CatDistributionData {
     stampSub: string;
     exampleName: string;
     exampleCity: string;
+    fullscreenEnterAria: string;
+    fullscreenExitAria: string;
   };
   coats: string[];
   ages: string[];
@@ -67,50 +70,58 @@ function fnv1a(s: string): number {
   return h >>> 0;
 }
 
-/** mulberry32 — a small deterministic PRNG over the seed. */
-function mulberry32(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a |= 0; a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-const pick = <T,>(rng: () => number, arr: T[]): T => arr[Math.floor(rng() * arr.length)];
+// Each trait is drawn from its OWN hash — fnv1a(applicant|traitKey) — instead
+// of sequential PRNG draws. Independent by construction: traits can never
+// couple through draw order, and each is uniform over its table. (Field
+// report, 2026-07-18: with sequential draws, "rodolfo", "mariana", AND the
+// Example applicant all received the rain vector by honest coincidence.
+// Uniformity was verified over 6000 names; the clustering was destiny, but
+// destiny with better statistical hygiene is still destiny.)
+const pick = <T,>(applicant: string, traitKey: string, arr: T[]): T =>
+  arr[fnv1a(`${applicant}#${traitKey}`) % arr.length];
 
 export default function CatDistribution({ data }: { data: CatDistributionData }) {
   const { labels } = data;
+  const { ref: fsRef, isFullscreen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
 
   const assignment = useMemo(() => {
     const n = name.trim();
     if (!n) return null;
-    const seed = fnv1a(`${n.toLowerCase()}|${city.trim().toLowerCase()}`);
-    const rng = mulberry32(seed);
+    const applicant = `${n.toLowerCase()}|${city.trim().toLowerCase()}`;
+    const seed = fnv1a(applicant);
     return {
       unitId: `CAT-${String(seed % 100000).padStart(5, "0")}`,
-      coat: pick(rng, data.coats),
-      age: pick(rng, data.ages),
-      temperament: pick(rng, data.temperaments),
-      catName: pick(rng, data.catNames),
-      vector: pick(rng, data.vectors),
-      etaDays: 1 + Math.floor(rng() * 14),
+      coat: pick(applicant, "coat", data.coats),
+      age: pick(applicant, "age", data.ages),
+      temperament: pick(applicant, "temperament", data.temperaments),
+      catName: pick(applicant, "catName", data.catNames),
+      vector: pick(applicant, "vector", data.vectors),
+      etaDays: 1 + (fnv1a(`${applicant}#eta`) % 14),
       // Steps 1..5 complete; the delivery step stays pending until the doorbell.
       completed: 5,
     };
   }, [name, city, data]);
 
   return (
-    <div className="cidr-tool jwt-tool json-tool tmsh-tool">
+    <div ref={fsRef} className={`cidr-tool jwt-tool json-tool tmsh-tool fs-fill${isFullscreen ? " is-fullscreen" : ""}`}>
       <div className="cidr-input-row">
         <div className="dig-input-head">
           <label className="cidr-label" htmlFor="catd-name">{labels.nameLabel}</label>
           <div className="dig-input-actions">
             <button type="button" className="b64-copy" onClick={() => { setName(labels.exampleName); setCity(labels.exampleCity); }}>{labels.example}</button>
             <button type="button" className="b64-copy" onClick={() => { setName(""); setCity(""); }}>{labels.clear}</button>
+            <button
+              type="button"
+              className="fs-toggle"
+              onClick={toggleFs}
+              aria-pressed={isFullscreen}
+              aria-label={isFullscreen ? labels.fullscreenExitAria : labels.fullscreenEnterAria}
+              title={isFullscreen ? labels.fullscreenExitAria : labels.fullscreenEnterAria}
+            >
+              <span aria-hidden="true">{isFullscreen ? "\u2921" : "\u2922"}</span>
+            </button>
           </div>
         </div>
         <input id="catd-name" className="cidr-input mono json-input" value={name}

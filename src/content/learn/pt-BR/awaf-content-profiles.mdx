@@ -19,7 +19,7 @@ Um JSON profile permite que o Advanced WAF analise um corpo JSON e aplique assin
 
 ## XML e SOAP
 
-Um XML profile inspeciona a estrutura do documento e detecta injeção de XML, XXE e ataques de esquema malformado. Para SOAP, você controla quais métodos a política permite; desabilite um método SOAP e uma requisição que o utilize dispara a violação "SOAP method not allowed" e é bloqueada em modo blocking. Os XML profiles também controlam o antivírus: se uma política contém XML profiles, anexos SOAP podem ser enviados a um servidor ICAP para verificação de vírus. Você pode validar documentos contra um schema (WSDL ou XSD) usando validation files.
+Um XML profile inspeciona a estrutura do documento e detecta injeção de XML, XXE e ataques de esquema malformado. Para SOAP, você controla quais métodos a política permite; desabilite um método SOAP e uma requisição que o utilize dispara a violação "SOAP method not allowed" e é bloqueada em modo blocking. Os XML profiles também controlam o antivírus: se uma política contém XML profiles, anexos SOAP (Protocolo Simples de Acesso a Objetos, do inglês Simple Object Access Protocol) podem ser enviados a um servidor ICAP para verificação de vírus. Você pode validar documentos contra um schema (WSDL ou XSD) usando validation files.
 
 ## GraphQL
 

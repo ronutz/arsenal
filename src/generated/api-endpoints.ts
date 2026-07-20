@@ -35,6 +35,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_base64",
     "tag": "Encoding"
   },
+  "bigip-dns-gslb-simulator": {
+    "url": "https://ronutz.com/api/v1/bigip-dns-gslb-simulator",
+    "method": "GET",
+    "op": "run_bigip_dns_gslb_simulator",
+    "tag": "F5 GTM, AFM & APM"
+  },
   "bigip-ltm-lb-simulator": {
     "url": "https://ronutz.com/api/v1/bigip-ltm-lb-simulator",
     "method": "GET",
@@ -425,6 +431,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_hmac",
     "tag": "Hashing"
   },
+  "http-header-order-fingerprint": {
+    "url": "https://ronutz.com/api/v1/http-header-order-fingerprint",
+    "method": "GET",
+    "op": "run_http_header_order_fingerprint",
+    "tag": "Fingerprinting"
+  },
   "http-request-translator": {
     "url": "https://ronutz.com/api/v1/http-request-translator",
     "method": "GET",
@@ -508,6 +520,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_oui_lookup",
     "tag": "Networking & addressing"
+  },
+  "p0f-signature-explainer": {
+    "url": "https://ronutz.com/api/v1/p0f-signature-explainer",
+    "method": "GET",
+    "op": "run_p0f_signature_explainer",
+    "tag": "Fingerprinting"
   },
   "pac-file-explainer": {
     "url": "https://ronutz.com/api/v1/pac-file-explainer",
@@ -604,6 +622,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_url_inspector",
     "tag": "HTTP & web"
+  },
+  "user-agent-entropy-analyzer": {
+    "url": "https://ronutz.com/api/v1/user-agent-entropy-analyzer",
+    "method": "GET",
+    "op": "run_user_agent_entropy_analyzer",
+    "tag": "Fingerprinting"
   },
   "uuid": {
     "url": "https://ronutz.com/api/v1/uuid",

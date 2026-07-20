@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-06"
 ---
 
-Os proxies dos artigos companheiros operam sobre pacotes e conexões: um proxy TCP une fluxos de transporte, um proxy HTTP parseia requisições, um proxy TLS trata da criptografia. Um SAML proxy opera sobre algo diferente, a decisão de autenticação, e vale ser preciso sobre o sentido em que ele é um proxy afinal. Ele não move bytes primariamente; ele se insere no handshake de single-sign-on de modo que nenhuma requisição alcance um recurso protegido até que um provedor de identidade tenha atestado o usuário. Entendê-lo requer primeiro os papéis do SAML (o artigo de visão geral os cobre por completo), depois como um proxy se encaixa entre eles.
+Os proxies dos artigos companheiros operam sobre pacotes e conexões: um proxy TCP une fluxos de transporte, um proxy HTTP parseia requisições, um proxy TLS trata da criptografia. Um SAML (Linguagem de Marcação para Asserção de Segurança, do inglês Security Assertion Markup Language) proxy opera sobre algo diferente, a decisão de autenticação, e vale ser preciso sobre o sentido em que ele é um proxy afinal. Ele não move bytes primariamente; ele se insere no handshake de single-sign-on de modo que nenhuma requisição alcance um recurso protegido até que um provedor de identidade tenha atestado o usuário. Entendê-lo requer primeiro os papéis do SAML (o artigo de visão geral os cobre por completo), depois como um proxy se encaixa entre eles.
 
 ## Uma revisão de um parágrafo dos papéis
 

@@ -21,7 +21,7 @@ Almost every sortable ID uses one idea: put a **timestamp first** and **random o
 
 ## ULID
 
-ULID is a 128-bit identifier, the same width as a UUID, rendered as 26 characters in Crockford base32. The first 48 bits are a millisecond timestamp and the remaining 80 are random. The encoding is case-insensitive and chosen to be readable, and it is lexicographically sortable, with an optional monotonic mode that guarantees ordering even for IDs created in the same millisecond. ULID was one of the most popular answers to the v4 ordering problem, and being 128-bit, it can be stored in the same space as a UUID.
+ULID is a 128-bit identifier, the same width as a UUID, rendered as 26 characters in Crockford base32. The first 48 bits are a millisecond timestamp and the remaining 80 are random. The encoding is case-insensitive and chosen to be readable, and it is lexicographically sortable, with an optional monotonic mode that guarantees ordering even for IDs created in the same millisecond. ULID (Universally Unique Lexicographically Sortable Identifier) was one of the most popular answers to the v4 ordering problem, and being 128-bit, it can be stored in the same space as a UUID.
 
 ## KSUID
 

@@ -26,7 +26,7 @@ Estes são convenções e pontos de partida, não leis: cada um desses dispositi
 
 ## Colocando em prática
 
-É aqui que decodificar um PRI compensa operacionalmente. Suponha que um coletor central mostre uma rajada de mensagens `<189>`. Decodifique: 189 dividido por 8 é 23 com resto 5, então isso é `local7` na severity 5 (notice). Em uma rede onde o FortiGate é dono de `local7`, isso imediatamente restringe a fonte a um FortiGate, em um nível de notice rotineiro. Mude a atribuição de facility por plataforma e o PRI sozinho diz tanto a classe do dispositivo quanto a urgência antes de você ler uma única palavra do corpo da mensagem.
+É aqui que decodificar um PRI (valor de prioridade, do inglês priority value) compensa operacionalmente. Suponha que um coletor central mostre uma rajada de mensagens `<189>`. Decodifique: 189 dividido por 8 é 23 com resto 5, então isso é `local7` na severity 5 (notice). Em uma rede onde o FortiGate é dono de `local7`, isso imediatamente restringe a fonte a um FortiGate, em um nível de notice rotineiro. Mude a atribuição de facility por plataforma e o PRI sozinho diz tanto a classe do dispositivo quanto a urgência antes de você ler uma única palavra do corpo da mensagem.
 
 ## Limiares de severity na prática
 

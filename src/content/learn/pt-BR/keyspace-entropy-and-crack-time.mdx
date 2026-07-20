@@ -21,7 +21,7 @@ A **entropia** em bits é `log2(espaço de chaves)`. Como cada caractere extra m
 
 ## Tempo de quebra
 
-O tempo de quebra é aproximadamente o espaço de chaves dividido pela taxa. A uma taxa rápida e sem sal de 1.000.000.000 de hashes por segundo numa GPU, 10.000 candidatos caem instantaneamente, enquanto 6,6 x 10^15 leva da ordem de meses em média. Agora troque o hash: com uma KDF lenta ajustada para 10.000 tentativas por segundo, esse mesmo espaço levaria milhões de anos.
+O tempo de quebra é aproximadamente o espaço de chaves dividido pela taxa. A uma taxa rápida e sem sal de 1.000.000.000 de hashes por segundo numa GPU, 10.000 candidatos caem instantaneamente, enquanto 6,6 x 10^15 leva da ordem de meses em média. Agora troque o hash: com uma KDF (função de derivação de chave, do inglês key derivation function) lenta ajustada para 10.000 tentativas por segundo, esse mesmo espaço levaria milhões de anos.
 
 ## Por que comprimento vence complexidade
 

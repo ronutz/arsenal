@@ -21,7 +21,7 @@ Two prefixes overlap when they share at least one address. There are a few disti
 
 - **Identical**: the same block listed twice, often a copy-and-paste mistake.
 - **Containment**: one block sits entirely inside another. `10.0.0.0/24` contains `10.0.0.128/25`, because the /25 is the upper half of the /24.
-- **Partial**: two ranges share some addresses but neither contains the other. Two proper CIDR blocks never overlap this way. Any two aligned power-of-two blocks are either disjoint or fully nested, one wholly inside the other, which is exactly why CIDR addressing forms a clean hierarchy. A partial overlap only appears when an input is not an aligned block.
+- **Partial**: two ranges share some addresses but neither contains the other. Two proper CIDR (Classless Inter-Domain Routing) blocks never overlap this way. Any two aligned power-of-two blocks are either disjoint or fully nested, one wholly inside the other, which is exactly why CIDR addressing forms a clean hierarchy. A partial overlap only appears when an input is not an aligned block.
 
 Containment is not always a mistake. Routers forward using **longest-prefix match**: the most specific route that matches a destination wins. A specific `/25` advertised inside a summarized `/24` is a deliberate, common pattern, used to steer a slice of traffic differently. The danger is the *unintended* overlap, where two parts of your network both believe they own the same addresses and traffic lands in the wrong place.
 

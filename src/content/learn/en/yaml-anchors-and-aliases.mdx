@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-01"
 ---
 
-YAML has a feature JSON simply does not: you can name a value and reuse it, instead of repeating it. It is one of the biggest reasons a YAML file and its JSON equivalent do not look alike.
+YAML (YAML Ain't Markup Language) has a feature JSON simply does not: you can name a value and reuse it, instead of repeating it. It is one of the biggest reasons a YAML file and its JSON equivalent do not look alike.
 
 ## The syntax
 
@@ -19,7 +19,7 @@ YAML has a feature JSON simply does not: you can name a value and reuse it, inst
 - An **alias** `*name` refers back to it, inserting the same value.
 - A **merge key** `<<: *name` merges the keys of an anchored mapping into the current one, a common way to share defaults.
 
-So a base set of settings can be defined once with an anchor and pulled into several places with aliases, keeping the file DRY. This is heavily used in CI configs and Kubernetes-adjacent tooling.
+So a base set of settings can be defined once with an anchor and pulled into several places with aliases, keeping the file DRY (don't repeat yourself). This is heavily used in CI configs and Kubernetes-adjacent tooling.
 
 ## What conversion does to them
 

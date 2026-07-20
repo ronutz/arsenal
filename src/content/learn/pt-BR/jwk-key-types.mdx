@@ -25,7 +25,7 @@ O parâmetro `kty` (tipo de chave) é a primeira coisa a ler em qualquer JSON We
 
 ## Público versus privado é a linha de segurança
 
-O hábito mais importante ao ler uma JWK é verificar se ela contém material privado. Para RSA isso significa `d`, `p` ou `q`; para EC e OKP significa `d`; para oct a chave inteira `k` é secreta. Um JWKS é feito para ser buscado por qualquer um, então deve conter apenas chaves públicas. Se você algum dia vir um `d` ou um `k` em um conjunto servido publicamente, a chave privada correspondente deve ser considerada exposta e rotacionada imediatamente. O [explicador de JWKS](/tools/jwks-explainer) marca cada parâmetro privado que encontra e avisa quando um conjunto publicado nunca deveria tê-lo contido.
+O hábito mais importante ao ler uma JWK (Chave Web JSON, do inglês JSON Web Key) é verificar se ela contém material privado. Para RSA isso significa `d`, `p` ou `q`; para EC e OKP significa `d`; para oct a chave inteira `k` é secreta. Um JWKS é feito para ser buscado por qualquer um, então deve conter apenas chaves públicas. Se você algum dia vir um `d` ou um `k` em um conjunto servido publicamente, a chave privada correspondente deve ser considerada exposta e rotacionada imediatamente. O [explicador de JWKS](/tools/jwks-explainer) marca cada parâmetro privado que encontra e avisa quando um conjunto publicado nunca deveria tê-lo contido.
 
 ## Lendo-os num relance
 

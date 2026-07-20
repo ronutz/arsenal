@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-06"
 ---
 
-When a reverse proxy sits in front of HTTPS applications, it has to decide what to do with the TLS session arriving from the client. The choice is not incidental: it determines whether the proxy can see and act on the traffic, whether data is encrypted on the short hop to the backend, and how much cryptographic work the proxy has to do. There are exactly three options, and every load balancer and ADC offers some combination of them.
+When a reverse proxy sits in front of HTTPS applications, it has to decide what to do with the TLS session arriving from the client. The choice is not incidental: it determines whether the proxy can see and act on the traffic, whether data is encrypted on the short hop to the backend, and how much cryptographic work the proxy has to do. There are exactly three options, and every load balancer and ADC (application delivery controller) offers some combination of them.
 
 The one thing common to all inbound reverse-proxy TLS is the direction of the certificate. Because the proxy is fronting the servers, it presents the **server's** certificate to arriving clients (or a certificate valid for the same hostname). The client is connecting to `www.example.com` and must see a certificate for `www.example.com`; that the box terminating TLS is a load balancer rather than the origin web server is invisible and intended. This is the opposite of an outbound forward proxy, which forges certificates for destinations it does not own, covered in the SSL forward proxy article.
 

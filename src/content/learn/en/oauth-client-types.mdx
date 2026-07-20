@@ -13,7 +13,7 @@ updated: "2026-06-27"
 
 ## The question that decides everything
 
-OAuth divides clients into two kinds, and the dividing line is a single question: can this client keep a secret? RFC 6749 calls the two answers **confidential** and **public** clients, and which one you are determines how you authenticate, which flows are safe, and whether you need PKCE. Almost every OAuth design mistake at the application level traces back to treating a public client as if it could hold a secret it cannot actually protect.
+OAuth divides clients into two kinds, and the dividing line is a single question: can this client keep a secret? RFC 6749 calls the two answers **confidential** and **public** clients, and which one you are determines how you authenticate, which flows are safe, and whether you need PKCE (Proof Key for Code Exchange). Almost every OAuth design mistake at the application level traces back to treating a public client as if it could hold a secret it cannot actually protect.
 
 ## Confidential clients can hold a secret
 

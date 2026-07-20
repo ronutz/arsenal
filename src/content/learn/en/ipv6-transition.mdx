@@ -35,7 +35,7 @@ For networks that have gone IPv6-only, NAT64 (RFC 6146) and DNS64 (RFC 6147) let
 
 Some applications still hand around literal IPv4 addresses and break on an IPv6-only network even with NAT64 present. 464XLAT (RFC 6877), widely deployed on mobile carriers, adds a small translation on the client that presents a private IPv4 address locally and tunnels it across the IPv6-only network to a NAT64 gateway. It is the reason IPv6-only mobile networks can still run IPv4-only apps without the user noticing.
 
-## Why there is no NAT in native IPv6
+## Why there is no NAT (network address translation) in native IPv6
 
 A frequent question from IPv4 administrators is where the NAT went. Native IPv6 gives every host a globally routable address, so the address-sharing NAT that defined IPv4 home and office networks is simply unnecessary; connectivity is end to end, and a stateful firewall, not address translation, provides the boundary. Where private, non-routed addressing is genuinely wanted, IPv6 offers Unique Local Addresses in `fc00::/7`, the ULA type the tool identifies. The translation seen at IPv6 edges is for reaching the *old* protocol, not for stretching a scarce address space.
 

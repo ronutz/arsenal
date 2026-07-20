@@ -15,7 +15,7 @@ A persistência por endereço de origem (também chamada de persistência simple
 
 ## Quando muitos clientes compartilham um endereço
 
-Essa premissa falha atrás de um NAT grande ou proxy, o clássico caso **mega-proxy**. Quando milhares de usuários ficam atrás de um NAT corporativo, um carrier-grade NAT, ou uma grande fazenda de proxies, todos chegam com o mesmo IP de origem. A persistência por endereço de origem vê um endereço e fixa cada um desses usuários em um único pool member. O resultado é o oposto do balanceamento de carga: um member fica soterrado enquanto os outros ficam ociosos, e se esse member falha, um enorme bloco de usuários é afetado de uma vez. O carrier-grade NAT tornou isso comum o suficiente para que a persistência por endereço de origem possa silenciosamente arruinar a distribuição que você esperava.
+Essa premissa falha atrás de um NAT (tradução de endereços de rede, do inglês network address translation) grande ou proxy, o clássico caso **mega-proxy**. Quando milhares de usuários ficam atrás de um NAT corporativo, um carrier-grade NAT, ou uma grande fazenda de proxies, todos chegam com o mesmo IP de origem. A persistência por endereço de origem vê um endereço e fixa cada um desses usuários em um único pool member. O resultado é o oposto do balanceamento de carga: um member fica soterrado enquanto os outros ficam ociosos, e se esse member falha, um enorme bloco de usuários é afetado de uma vez. O carrier-grade NAT tornou isso comum o suficiente para que a persistência por endereço de origem possa silenciosamente arruinar a distribuição que você esperava.
 
 ## Quando um cliente muda de endereço
 

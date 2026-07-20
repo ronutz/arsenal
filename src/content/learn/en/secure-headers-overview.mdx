@@ -21,7 +21,7 @@ They matter because the browser is where most of the damage from a web vulnerabi
 
 A common misreading is that adding headers makes an application secure. It does not. Headers are a second layer. If your code concatenates untrusted input into HTML, you have a cross-site scripting bug, and a Content-Security-Policy is there to blunt it, not to fix it. Fix the bug; keep the header as the safety net for the bug you have not found yet.
 
-The right mental model is layers that each fail independently. Input handling is the first layer. A strong Content-Security-Policy is the second. Cookie flags are a third. HSTS removes a whole class of transport downgrade. None of them is sufficient alone, and the value comes from stacking them so that one weakness does not become a full compromise.
+The right mental model is layers that each fail independently. Input handling is the first layer. A strong Content-Security-Policy is the second. Cookie flags are a third. HSTS (HTTP Strict Transport Security) removes a whole class of transport downgrade. None of them is sufficient alone, and the value comes from stacking them so that one weakness does not become a full compromise.
 
 ## The headers that carry the most weight
 

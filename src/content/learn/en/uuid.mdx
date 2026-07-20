@@ -31,7 +31,7 @@ That single property makes v7 a much better primary key: new rows append near th
 
 ## The other versions, briefly
 
-For completeness: **version 1** combines a timestamp with the generating machine's MAC address, which leaks hardware identity and creation time and so raises privacy concerns. **Versions 3 and 5** are name-based, they hash a namespace plus a name (with MD5 and SHA-1 respectively) to produce a deterministic UUID, useful when the same input must always map to the same identifier. **Version 6** reorders version 1's fields to be sortable, but for new systems v7 is the recommended time-ordered choice.
+For completeness: **version 1** combines a timestamp with the generating machine's MAC (media access control) address, which leaks hardware identity and creation time and so raises privacy concerns. **Versions 3 and 5** are name-based, they hash a namespace plus a name (with MD5 and SHA-1 respectively) to produce a deterministic UUID, useful when the same input must always map to the same identifier. **Version 6** reorders version 1's fields to be sortable, but for new systems v7 is the recommended time-ordered choice.
 
 ## Choosing one
 

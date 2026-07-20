@@ -1,7 +1,7 @@
 ---
 slug: voss-fabric-attach
 title: "Fabric Attach: Auto-Provisioning the Edge (Where VOSS Meets EXOS)"
-summary: "How Fabric Attach lets an edge device signal the service it needs so the fabric provisions the I-SID automatically, the FA Server / Proxy / Client roles, how it rides LLDP, and how an EXOS switch attaches to a VOSS fabric without running SPBM itself."
+summary: "How Fabric Attach lets an edge device signal the service it needs so the fabric provisions the I-SID automatically, the FA Server / Proxy / Client roles, how it rides LLDP (Link Layer Discovery Protocol), and how an EXOS switch attaches to a VOSS fabric without running SPBM itself."
 concepts: ["fabric attach", "fa server", "fa proxy", "fa client", "lldp", "i-sid", "zero touch", "exos"]
 relatedTools: ["voss-fabric-id"]
 relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "voss-vs-exos"]
@@ -29,7 +29,7 @@ FA rides **LLDP**. The Server discovers FA neighbors through FA-specific TLVs ca
 
 ## Where EXOS fits
 
-An EXOS switch attaches to a VOSS fabric as an FA Proxy or Client. On the EXOS side you enable Fabric Attach on the uplink - optionally with an authentication key - and add the access VLANs to that uplink; the VOSS FA Server then provisions the matching I-SIDs into the fabric. This is the standard, supported way to bring a traditional-Ethernet EXOS edge onto a VOSS fabric **without running SPBM or IS-IS on the EXOS switch itself**. Extending IP routing across the boundary is a separate matter, handled by redistributing OSPF, BGP, or RIP into the fabric's IS-IS.
+An EXOS switch attaches to a VOSS fabric as an FA (Fabric Attach) Proxy or Client. On the EXOS side you enable Fabric Attach on the uplink - optionally with an authentication key - and add the access VLANs to that uplink; the VOSS FA Server then provisions the matching I-SIDs into the fabric. This is the standard, supported way to bring a traditional-Ethernet EXOS edge onto a VOSS fabric **without running SPBM or IS-IS on the EXOS switch itself**. Extending IP routing across the boundary is a separate matter, handled by redistributing OSPF, BGP, or RIP into the fabric's IS-IS.
 
 ## Verifying it
 

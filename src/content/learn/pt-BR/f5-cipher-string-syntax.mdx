@@ -19,7 +19,7 @@ Uma cipher string é uma lista de **conjuntos**, separados por dois-pontos `:`, 
 
 ## Palavras-chave combinadas com mais
 
-Dentro de um conjunto, as **palavras-chave** são unidas com um sinal de mais `+` para estreitar a seleção. Cada palavra-chave restringe uma parte diferente de uma cipher suite: a versão de protocolo (`TLSv1_2`), a troca de chaves e autenticação (`ECDHE`, `RSA`, `ECDHE_ECDSA`), a cifra de bloco (`AES-GCM`, `3DES`) e o MAC ou hash (`SHA256`). Então `TLSv1_2+ECDHE+AES-GCM+SHA384` significa exatamente as suites que são TLS 1.2, usam ECDHE, usam AES-GCM e usam SHA-384. Uma palavra-chave isolada como `AES` sem nenhum mais é ampla, correspondendo a todas as suites AES. As palavras-chave não diferenciam maiúsculas de minúsculas, então `tlsv1_2+ecdhe` e `TLSv1_2+ECDHE` são idênticas.
+Dentro de um conjunto, as **palavras-chave** são unidas com um sinal de mais `+` para estreitar a seleção. Cada palavra-chave restringe uma parte diferente de uma cipher suite: a versão de protocolo (`TLSv1_2`), a troca de chaves e autenticação (`ECDHE`, `RSA`, `ECDHE_ECDSA`), a cifra de bloco (`AES-GCM`, `3DES`) e o MAC ou hash (`SHA256`). Então `TLSv1_2+ECDHE+AES-GCM+SHA384` significa exatamente as suites que são TLS 1.2, usam ECDHE, usam AES (Padrão de Criptografia Avançada, do inglês Advanced Encryption Standard)-GCM e usam SHA-384. Uma palavra-chave isolada como `AES` sem nenhum mais é ampla, correspondendo a todas as suites AES. As palavras-chave não diferenciam maiúsculas de minúsculas, então `tlsv1_2+ecdhe` e `TLSv1_2+ECDHE` são idênticas.
 
 ## Operadores
 
@@ -30,7 +30,7 @@ Um conjunto pode carregar um operador inicial que muda o que o BIG-IP faz com el
 - Um `+` inicial **rebaixa a prioridade** do conjunto, movendo suas suites para o fim da lista em vez de removê-las. Note que isso é diferente do `+` que une palavras-chave dentro de um conjunto.
 - `@STRENGTH` não é um conjunto, mas uma diretiva: reordena tudo o que foi selecionado até ali por comprimento de chave, do mais forte primeiro. `@SPEED` ordena por velocidade de criptografia em vez disso.
 
-Então `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` lê-se como: prefira ECDHE, depois RSA, nunca permita SSL 3.0 ou RC4, depois ordene o que resta por força.
+Então `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` lê-se como: prefira ECDHE, depois RSA, nunca permita SSL 3.0 ou RC4 (Cifra Rivest 4, do inglês Rivest Cipher 4), depois ordene o que resta por força.
 
 ## O que a string não diz diretamente
 

@@ -11,18 +11,18 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-O DNSSEC assina os dados DNS para que um resolvedor possa provar que uma resposta não foi adulterada. Quando você consulta com `+dnssec` (o que define a flag `do` do EDNS), os registros extras aparecem ao lado dos normais.
+O DNSSEC (Extensões de Segurança do Sistema de Nomes de Domínio, do inglês Domain Name System Security Extensions) assina os dados DNS para que um resolvedor possa provar que uma resposta não foi adulterada. Quando você consulta com `+dnssec` (o que define a flag `do` do EDNS), os registros extras aparecem ao lado dos normais.
 
 ## Os tipos de registro
 
 - **RRSIG** é uma assinatura sobre um conjunto de registros de um tipo (um RRset). Seu rdata começa com o tipo que ela cobre, o número do algoritmo, uma contagem de labels, o TTL original, um horário de expiração e de início da assinatura, um key tag e o nome de quem assinou, seguidos pela assinatura em si. A janela de validade importa operacionalmente: um RRSIG expirado faz um resolvedor validador retornar `SERVFAIL`, e assinaturas expiradas são uma causa comum de um domínio que "de repente parou de resolver" para alguns usuários mas não para outros.
 - **DNSKEY** é uma chave pública da zona. Um validador a usa para verificar os RRSIGs daquela zona. Seu rdata é um campo de flags, um byte de protocolo (sempre 3), um algoritmo e o material da chave.
-- **DS** (Delegation Signer) é o elo entre uma zona pai e uma filha. É um hash da DNSKEY da filha, publicado na pai. Seu rdata é um key tag, um algoritmo, um tipo de digest e o digest. É o registro que você entrega ao seu registrar para ligar o DNSSEC de uma delegação.
-- **NSEC** e **NSEC3** fornecem negação de existência autenticada. Em vez de simplesmente dizer "não existe esse nome", uma zona assinada prova a lacuna: NSEC aponta para o próximo nome existente, e NSEC3 faz o mesmo sobre nomes com hash para dificultar a varredura da zona. É assim que um `NXDOMAIN` ou NODATA validado é, ele próprio, confiável.
+- **DS** (Delegation Signer) é o elo entre uma zona pai e uma filha. É um hash da DNSKEY (registro de chave pública do DNS, do inglês DNS Public Key) da filha, publicado na pai. Seu rdata é um key tag, um algoritmo, um tipo de digest e o digest. É o registro que você entrega ao seu registrar para ligar o DNSSEC de uma delegação.
+- **NSEC** e **NSEC3** fornecem negação de existência autenticada. Em vez de simplesmente dizer "não existe esse nome", uma zona assinada prova a lacuna: NSEC (registro Próximo Seguro, do inglês Next Secure) aponta para o próximo nome existente, e NSEC3 faz o mesmo sobre nomes com hash para dificultar a varredura da zona. É assim que um `NXDOMAIN` ou NODATA validado é, ele próprio, confiável.
 
 ## A cadeia de confiança
 
-A validação é uma cadeia da raiz para baixo. Um resolvedor confia na chave da raiz (o único trust anchor configurado), usa o DS da raiz para atestar a DNSKEY do domínio de topo, usa isso para validar o DS do TLD para a próxima zona, e assim por diante até o nome que você pediu. Cada salto é um DS na pai combinando com uma DNSKEY na filha, e cada RRset é coberto por um RRSIG. Uma quebra em qualquer ponto, um DS ausente em uma delegação, um key rollover que removeu a chave errada, uma assinatura expirada, rompe a cadeia e o resolvedor retorna `SERVFAIL`.
+A validação é uma cadeia da raiz para baixo. Um resolvedor confia na chave da raiz (o único trust anchor configurado), usa o DS da raiz para atestar a DNSKEY do domínio de topo, usa isso para validar o DS do TLD (domínio de topo, do inglês top-level domain) para a próxima zona, e assim por diante até o nome que você pediu. Cada salto é um DS na pai combinando com uma DNSKEY na filha, e cada RRset é coberto por um RRSIG. Uma quebra em qualquer ponto, um DS ausente em uma delegação, um key rollover que removeu a chave errada, uma assinatura expirada, rompe a cadeia e o resolvedor retorna `SERVFAIL`.
 
 ## O que ad realmente significa
 

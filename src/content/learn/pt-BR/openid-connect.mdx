@@ -29,7 +29,7 @@ Por ser um JWT, o cliente verifica a assinatura do token de ID e valida essas cl
 
 ## Como um login flui
 
-O OIDC reaproveita a maquinaria do OAuth. O fluxo recomendado é o **fluxo de código de autorização com PKCE**:
+O OIDC reaproveita a maquinaria do OAuth. O fluxo recomendado é o **fluxo de código de autorização com PKCE (Chave de Prova para Troca de Código, do inglês Proof Key for Code Exchange)**:
 
 1. O aplicativo envia o usuário ao endpoint de autorização do provedor, solicitando o escopo `openid` (mais `profile`, `email` e assim por diante), e inclui um `code_challenge` do PKCE.
 2. O usuário se autentica e consente no provedor.

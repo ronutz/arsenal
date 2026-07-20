@@ -15,11 +15,11 @@ Server-Side Request Forgery é uma vulnerabilidade na qual uma aplicação receb
 
 ## Por que a origem da requisição importa
 
-O perigo não é a busca em si — é quem a faz. Uma requisição vinda da internet pública não alcança um banco de dados em `10.0.0.5`, um painel administrativo em `localhost`, ou um serviço de metadados de nuvem em `169.254.169.254`. Uma requisição vinda do servidor da aplicação normalmente alcança, porque esse servidor está dentro da fronteira de confiança. O SSRF permite ao atacante tomar emprestada a posição de rede do servidor.
+O perigo não é a busca em si — é quem a faz. Uma requisição vinda da internet pública não alcança um banco de dados em `10.0.0.5`, um painel administrativo em `localhost`, ou um serviço de metadados de nuvem em `169.254.169.254`. Uma requisição vinda do servidor da aplicação normalmente alcança, porque esse servidor está dentro da fronteira de confiança. O SSRF (falsificação de requisição do lado do servidor, do inglês server-side request forgery) permite ao atacante tomar emprestada a posição de rede do servidor.
 
 ## Onde aparece
 
-Qualquer recurso que busca uma URL fornecida pelo usuário é candidato: envio de webhooks, serviços de pré-visualização de links, proxies de imagem e documento, geradores de PDF ou captura de tela, ferramentas de importação e RSS, e sondas de saúde do tipo "verifique esta URL". Todos aceitam um endereço e fazem uma requisição, exatamente a primitiva que o SSRF abusa.
+Qualquer recurso que busca uma URL fornecida pelo usuário é candidato: envio de webhooks, serviços de pré-visualização de links, proxies de imagem e documento, geradores de PDF (Formato de Documento Portátil, do inglês Portable Document Format) ou captura de tela, ferramentas de importação e RSS, e sondas de saúde do tipo "verifique esta URL". Todos aceitam um endereço e fazem uma requisição, exatamente a primitiva que o SSRF abusa.
 
 ## O que o atacante ganha
 

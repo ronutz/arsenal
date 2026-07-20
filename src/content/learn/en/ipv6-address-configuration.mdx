@@ -34,7 +34,7 @@ Stateless Address Autoconfiguration (RFC 4862) is the mechanism a host uses to f
 
 The interface identifier can be formed several ways, and this has real privacy consequences:
 
-- **Modified EUI-64** derives the identifier from the interface's MAC address, which the tool can demonstrate. It is stable and convenient, but it embeds the hardware address into every IPv6 address the host uses, letting a remote server track the device across networks.
+- **Modified EUI-64** derives the identifier from the interface's MAC (media access control) address, which the tool can demonstrate. It is stable and convenient, but it embeds the hardware address into every IPv6 address the host uses, letting a remote server track the device across networks.
 - **Stable, opaque identifiers** (RFC 7217) produce an identifier that is stable per network but reveals no hardware address, fixing the cross-network tracking problem while keeping a consistent address on a given link.
 - **Temporary (privacy) addresses** (RFC 8981, which obsoletes the earlier RFC 4941) generate random identifiers that rotate over time, so outbound connections do not present a long-lived address at all.
 
@@ -42,7 +42,7 @@ Modern operating systems typically use a stable address for incoming connections
 
 ## Duplicate Address Detection
 
-Before a host actually uses any address it has formed, it runs Duplicate Address Detection: it sends a Neighbor Solicitation for its own tentative address and waits. If anyone answers, the address is already in use and must not be claimed. DAD is cheap insurance that self-configuration does not produce collisions, and it relies on the same neighbor discovery messages described in the companion article.
+Before a host actually uses any address it has formed, it runs Duplicate Address Detection: it sends a Neighbor Solicitation for its own tentative address and waits. If anyone answers, the address is already in use and must not be claimed. DAD (Duplicate Address Detection) is cheap insurance that self-configuration does not produce collisions, and it relies on the same neighbor discovery messages described in the companion article.
 
 ## DHCPv6 for stateful control
 

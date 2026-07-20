@@ -21,15 +21,15 @@ That is **name** (`example.com.`), **TTL** in seconds (`3600`, how long it may b
 
 ## The types you meet, and their rdata
 
-- **A** and **AAAA**: an IPv4 or IPv6 address. The rdata is just the address.
-- **CNAME**: an alias. The rdata is another name, and the real records live under that target. A CNAME in an answer is why you sometimes see two records: the alias, then the address of what it points to.
+- **A** and **AAAA** (the IPv4 address and IPv6 address records): an IPv4 or IPv6 address. The rdata is just the address.
+- **CNAME** (Canonical Name): an alias. The rdata is another name, and the real records live under that target. A CNAME in an answer is why you sometimes see two records: the alias, then the address of what it points to.
 - **NS**: a name server that is authoritative for the zone. The rdata is the server's name.
-- **MX**: a mail exchanger. The rdata is two fields, a preference number and a hostname; lower preference wins.
-- **SOA**: the zone apex record, and the densest rdata you will read. Its seven fields are the primary server, the admin mailbox (with the first dot standing in for `@`), the serial, and the refresh, retry, expire, and minimum timers. The minimum doubles as the negative-cache TTL, so it governs how long an NXDOMAIN for this zone is remembered.
-- **TXT**: free-form text, quoted. It carries SPF policies, DKIM keys, and domain-verification tokens.
-- **PTR**: the reverse record, mapping an address back to a name. You see it when you look up an address under `in-addr.arpa` or `ip6.arpa`.
-- **SRV**: a service locator. The rdata is four fields: priority, weight, port, and target host.
-- **CAA**: which certificate authorities may issue for the domain. The rdata is a flags byte, a tag (`issue`, `issuewild`, `iodef`), and a value.
+- **MX** (Mail Exchange): a mail exchanger. The rdata is two fields, a preference number and a hostname; lower preference wins.
+- **SOA** (Start of Authority): the zone apex record, and the densest rdata you will read. Its seven fields are the primary server, the admin mailbox (with the first dot standing in for `@`), the serial, and the refresh, retry, expire, and minimum timers. The minimum doubles as the negative-cache TTL, so it governs how long an NXDOMAIN for this zone is remembered.
+- **TXT** (Text): free-form text, quoted. It carries SPF (Sender Policy Framework) policies, DKIM (DomainKeys Identified Mail) keys, and domain-verification tokens.
+- **PTR** (Pointer): the reverse record, mapping an address back to a name. You see it when you look up an address under `in-addr.arpa` or `ip6.arpa`.
+- **SRV** (Service): a service locator. The rdata is four fields: priority, weight, port, and target host.
+- **CAA** (Certification Authority Authorization): which certificate authorities may issue for the domain. The rdata is a flags byte, a tag (`issue`, `issuewild`, `iodef`), and a value.
 - **HTTPS** and **SVCB**: newer service-binding records that carry connection hints (ALPN, port, address hints) for an origin.
 
 ## TTL is a clock, not a constant

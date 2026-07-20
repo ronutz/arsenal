@@ -88,6 +88,7 @@ export const tools: ToolEntry[] = [
   { id: "f5xc-object-linter", sub: "f5xc", href: "/tools/f5xc-object-linter", category: "security", vendors: ["f5"], available: true },
   { id: "f5xc-api-path-explainer", sub: "f5xc", href: "/tools/f5xc-api-path-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "bigip-ltm-lb-simulator", sub: "ltm", href: "/tools/bigip-ltm-lb-simulator", category: "networking", vendors: ["f5"], available: true },
+  { id: "bigip-dns-gslb-simulator", sub: "dns-gtm", href: "/tools/bigip-dns-gslb-simulator", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-bigip-persistence-cookie", sub: "ltm", href: "/tools/f5-bigip-persistence-cookie", category: "networking", vendors: ["f5"], available: true },
   { id: "url-inspector", href: "/tools/url-inspector", category: "web", available: true },
   { id: "json-formatter", href: "/tools/json-formatter", category: "encoding", available: true },
@@ -123,8 +124,11 @@ export const tools: ToolEntry[] = [
   { id: "timezone-meeting-planner", href: "/tools/timezone-meeting-planner", category: "encoding", available: true },
   { id: "f5-irules-event-order", sub: "irules", href: "/tools/f5-irules-event-order", category: "networking", vendors: ["f5"], available: true },
   { id: "syslog-pri-decoder", href: "/tools/syslog-pri-decoder", category: "networking", available: true },
-  { id: "ja4-fingerprint-decoder", href: "/tools/ja4-fingerprint-decoder", category: "security", vendors: ["zscaler", "ping"], sub: "signals", available: true },
-  { id: "ja3-tls-fingerprint", href: "/tools/ja3-tls-fingerprint", category: "security", vendors: ["zscaler", "ping"], sub: "signals", available: true },
+  { id: "ja4-fingerprint-decoder", href: "/tools/ja4-fingerprint-decoder", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* FoxIO open suite; hub-affiliated, not vendor-owned */, sub: "signals", available: true },
+  { id: "ja3-tls-fingerprint", href: "/tools/ja3-tls-fingerprint", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* Salesforce open-source origin; hub-affiliated, not vendor-owned */, sub: "signals", available: true },
+  { id: "user-agent-entropy-analyzer", href: "/tools/user-agent-entropy-analyzer", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* generic UA analysis; relevant to signal-based risk auth, not vendor-owned */, sub: "signals", available: true },
+  { id: "http-header-order-fingerprint", href: "/tools/http-header-order-fingerprint", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* generic header-order fingerprint; relevant to bot/risk signals, not vendor-owned */, sub: "signals", available: true },
+  { id: "p0f-signature-explainer", href: "/tools/p0f-signature-explainer", category: "networking", vendors: ["zscaler"], vendorNeutral: true /* generic passive TCP fingerprint; relevant to TLS-inspection signal surface, not vendor-owned */, sub: "signals", available: true },
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
@@ -149,7 +153,7 @@ export const tools: ToolEntry[] = [
   // First Fortinet tool: populates the Fortinet vendor hub.
   { id: "fortios-sniffer-builder", sub: "fortigate", href: "/tools/fortios-sniffer-builder", category: "networking", vendors: ["fortinet"], available: true },
   // First Netskope tool: populates the Netskope vendor hub.
-  { id: "pac-file-explainer", sub: "swg", href: "/tools/pac-file-explainer", category: "networking", vendors: ["netskope"], available: true },
+  { id: "pac-file-explainer", sub: "swg", href: "/tools/pac-file-explainer", category: "networking", vendors: ["netskope"], vendorNeutral: true /* Netscape-era open browser standard; hub-affiliated, not vendor-owned */, available: true },
   // First Extreme tool: populates the Extreme vendor hub.
   { id: "exos-config-explainer", sub: "switching", href: "/tools/exos-config-explainer", category: "networking", vendors: ["extreme"], available: true },
   { id: "fault-hypothesis-builder", href: "/tools/fault-hypothesis-builder", category: "operations", available: true },

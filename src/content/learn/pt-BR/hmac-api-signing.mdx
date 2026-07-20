@@ -13,7 +13,7 @@ updated: "2026-06-27"
 
 ## O problema: confiar em uma requisição
 
-Quando um servidor recebe uma requisição de API, como ele sabe que quem chamou é quem afirma ser, e que ninguém alterou a requisição em trânsito? Enviar um segredo compartilhado a cada requisição funcionaria até esse segredo ser registrado em log, armazenado em cache ou vazado. A **assinatura de requisições com HMAC** resolve isso sem nunca transmitir o segredo: quem chama prova que possui o segredo usando-o para assinar a requisição, e o servidor verifica a assinatura.
+Quando um servidor recebe uma requisição de API, como ele sabe que quem chamou é quem afirma ser, e que ninguém alterou a requisição em trânsito? Enviar um segredo compartilhado a cada requisição funcionaria até esse segredo ser registrado em log, armazenado em cache ou vazado. A **assinatura de requisições com HMAC (código de autenticação de mensagem baseado em hash, do inglês hash-based message authentication code)** resolve isso sem nunca transmitir o segredo: quem chama prova que possui o segredo usando-o para assinar a requisição, e o servidor verifica a assinatura.
 
 ## Como a assinatura funciona
 

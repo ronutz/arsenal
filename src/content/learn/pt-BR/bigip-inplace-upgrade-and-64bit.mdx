@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-08"
 ---
 
-As partes vistosas do BIG-IP 21.x são o MCP e o TLS pós-quântico; as partes que uma equipe de operações vai sentir toda semana são mais silenciosas. Este artigo reúne as mudanças de plataforma e ciclo de vida das release notes do 21.0 e do 21.1 em uma leitura operacional: como upgrades funcionam agora, o que mudou sob o capô do plano de controle e as novas regras de dimensionamento dos daemons que você de fato observa.
+As partes vistosas do BIG-IP 21.x são o MCP (o Protocolo de Contexto de Modelo, do inglês Model Context Protocol) e o TLS pós-quântico; as partes que uma equipe de operações vai sentir toda semana são mais silenciosas. Este artigo reúne as mudanças de plataforma e ciclo de vida das release notes do 21.0 e do 21.1 em uma leitura operacional: como upgrades funcionam agora, o que mudou sob o capô do plano de controle e as novas regras de dimensionamento dos daemons que você de fato observa.
 
 ## Upgrade in-place, e seus dois limites honestos
 
@@ -23,7 +23,7 @@ O recurso companheiro é o Dry Run: ele compara a imagem selecionada com o que r
 
 ## O plano de controle 64-bit
 
-O 21.x continua a migração do plano de controle de 32 para 64 bits x86_64. No 21.1, o mergeD é 64-bit (mais memória endereçável para o processamento das tabelas TM stat), o restjavad passa de Java 8 para Java 21 (melhor coleta de lixo e gestão de memória), e as bibliotecas TMSH usadas pelos serviços iControl ganham builds 64-bit, de modo que restjavad e icrd_child rodam em espaço de endereçamento de 64 bits, com as bibliotecas de 32 bits mantidas para módulos ainda não portados. A F5 declara a mudança transparente: sem impacto no CLI do TMSH nem nos clientes iControl REST e SOAP existentes. A nota prática do operador vem do lado 21.0 da história: binários 64-bit têm memória residente maior que seus ancestrais 32-bit, então verifique a memória disponível antes de atualizar uma VE dimensionada no limite.
+O 21.x continua a migração do plano de controle de 32 para 64 bits x86_64. No 21.1, o mergeD é 64-bit (mais memória endereçável para o processamento das tabelas TM stat), o restjavad passa de Java 8 para Java 21 (melhor coleta de lixo e gestão de memória), e as bibliotecas TMSH usadas pelos serviços iControl ganham builds 64-bit, de modo que restjavad e icrd_child rodam em espaço de endereçamento de 64 bits, com as bibliotecas de 32 bits mantidas para módulos ainda não portados. A F5 declara a mudança transparente: sem impacto no CLI (interface de linha de comando, do inglês command-line interface) do TMSH nem nos clientes iControl REST (transferência de estado representacional, do inglês representational state transfer) e SOAP (Protocolo Simples de Acesso a Objetos, do inglês Simple Object Access Protocol) existentes. A nota prática do operador vem do lado 21.0 da história: binários 64-bit têm memória residente maior que seus ancestrais 32-bit, então verifique a memória disponível antes de atualizar uma VE dimensionada no limite.
 
 ## Pressão de memória e a escada de OOM
 
@@ -39,7 +39,7 @@ O daemon de health monitors vira uma instância única multi-thread suportando a
 
 ## Migração, administração e o pequeno conjunto de qualidade de vida
 
-A migração via UCS ganha a opção `validate` no `tmsh load sys ucs ... platform-migrate`: uma prévia em JSON do que uma carga mudaria, com avisos para objetos ignorados, e a lógica de ajuste de plataforma que vivia na ferramenta F5 Journeys agora embutida, removendo trunks e configurações de STP não suportados no caminho para rSeries, VELOS ou VE, preservando o IP de gerência e o DHCP do destino. Finalmente é possível trocar o administrador primário da conta literal "admin", por TMUI, TMSH ou iControl REST. Uma primeira versão da TMUI modernizada chega desabilitada por padrão atrás da preferência New UI (Beta). E uma remoção merece checagem pré-upgrade: o suporte a Node.js v0.12 acabou, então workspaces de iRules LX em v0.12 precisam migrar para Node.js v6 antes do upgrade, com os workspaces afetados sinalizados nos logs.
+A migração via UCS ganha a opção `validate` no `tmsh load sys ucs ... platform-migrate`: uma prévia em JSON do que uma carga mudaria, com avisos para objetos ignorados, e a lógica de ajuste de plataforma que vivia na ferramenta F5 Journeys agora embutida, removendo trunks e configurações de STP (Protocolo Spanning Tree, do inglês Spanning Tree Protocol) não suportados no caminho para rSeries, VELOS ou VE, preservando o IP de gerência e o DHCP (Protocolo de Configuração Dinâmica de Host, do inglês Dynamic Host Configuration Protocol) do destino. Finalmente é possível trocar o administrador primário da conta literal "admin", por TMUI, TMSH ou iControl REST. Uma primeira versão da TMUI modernizada chega desabilitada por padrão atrás da preferência New UI (Beta). E uma remoção merece checagem pré-upgrade: o suporte a Node.js v0.12 acabou, então workspaces de iRules LX em v0.12 precisam migrar para Node.js v6 antes do upgrade, com os workspaces afetados sinalizados nos logs.
 
 ## O portão de plataforma, mais uma vez
 

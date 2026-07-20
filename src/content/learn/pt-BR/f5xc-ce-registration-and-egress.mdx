@@ -13,7 +13,7 @@ updated: "2026-07-11"
 
 ## O handshake de registro
 
-Quando você sobe um CE, a primeira coisa que ele faz é chamar a base. Usando o token de nó que você gerou - um JWT que codifica o endpoint de registro - o CE contata o F5 Distributed Cloud Global Controller. O controller seleciona dois Regional Edges com base na proximidade GeoIP do endereço IP público de onde o registro chegou, então o CE se conecta aos REs mais próximos de onde ele realmente está na internet. (Você também pode fixar REs específicos no momento da criação.) O controller retorna esses dois REs ao CE, junto com a identidade e os certificados PKI do CE, que o sistema rotaciona regularmente.
+Quando você sobe um CE (nó de borda do cliente, do inglês Customer Edge node), a primeira coisa que ele faz é chamar a base. Usando o token de nó que você gerou - um JWT que codifica o endpoint de registro - o CE contata o F5 Distributed Cloud Global Controller. O controller seleciona dois Regional Edges com base na proximidade GeoIP do endereço IP público de onde o registro chegou, então o CE se conecta aos REs mais próximos de onde ele realmente está na internet. (Você também pode fixar REs específicos no momento da criação.) O controller retorna esses dois REs ao CE, junto com a identidade e os certificados PKI do CE, que o sistema rotaciona regularmente.
 
 ## IPsec, com SSL como fallback
 

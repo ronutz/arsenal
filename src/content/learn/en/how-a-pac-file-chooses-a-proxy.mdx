@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-06"
 ---
 
-Proxy auto-config predates almost everything else in web infrastructure, and it is still how a great deal of enterprise traffic is steered. A PAC file is a single JavaScript function that the browser evaluates for every request. Understanding it is the difference between trusting a steering configuration and guessing at it. This explains the model the paired tool reads.
+Proxy auto-config predates almost everything else in web infrastructure, and it is still how a great deal of enterprise traffic is steered. A PAC (Proxy Auto-Config) file is a single JavaScript function that the browser evaluates for every request. Understanding it is the difference between trusting a steering configuration and guessing at it. This explains the model the paired tool reads.
 
 ## One function, called for every request
 
@@ -24,7 +24,7 @@ function FindProxyForURL(url, host) {
 }
 ```
 
-The browser calls it with the full `url` and the extracted `host`, and expects a string back telling it where to send the request. Everything else in the file exists to help that function decide. The file is served with the MIME type `application/x-ns-proxy-autoconfig`, usually from a URL configured in the browser or discovered by WPAD.
+The browser calls it with the full `url` and the extracted `host`, and expects a string back telling it where to send the request. Everything else in the file exists to help that function decide. The file is served with the MIME (Multipurpose Internet Mail Extensions) type `application/x-ns-proxy-autoconfig`, usually from a URL configured in the browser or discovered by WPAD.
 
 There is one modern subtlety worth knowing up front: many Chromium-based browsers now strip the path and query from `https://` URLs before calling the function, passing only the scheme, host, and port. Logic that tries to match on the path of an HTTPS URL will not see it. Matching on the host still works.
 
@@ -38,7 +38,7 @@ The directives are `DIRECT` (connect straight to the destination with no proxy),
 
 PAC files decide using a fixed library of helper functions. Most of them are pure string operations and cost nothing: `isPlainHostName` (true for an unqualified single-label name, the classic way to send intranet short names direct), `dnsDomainIs` (host ends in a domain suffix), `shExpMatch` (a shell-glob match), `dnsDomainLevels`, `weekdayRange`, `dateRange`, and `timeRange`.
 
-Three helpers are different, and the distinction matters for performance: `isInNet`, `isResolvable`, and `dnsResolve` all consult DNS. MDN calls this out explicitly, because a DNS lookup on every request can block and slow browsing. The practical rule is to order your checks so the cheap string comparisons decide first, and DNS is only consulted when nothing else has. A file that reaches for `isInNet` at the top of the function pays that cost on every single request.
+Three helpers are different, and the distinction matters for performance: `isInNet`, `isResolvable`, and `dnsResolve` all consult DNS. MDN (the Mozilla Developer Network) calls this out explicitly, because a DNS lookup on every request can block and slow browsing. The practical rule is to order your checks so the cheap string comparisons decide first, and DNS is only consulted when nothing else has. A file that reaches for `isInNet` at the top of the function pays that cost on every single request.
 
 Two more sharp edges are worth internalizing. `shExpMatch` uses shell-glob wildcards (`*` and `?`), not regular expressions, so a pattern written in regex syntax silently fails to match. And `myIpAddress` is unreliable on multi-homed machines and can fall back to a loopback address such as `127.0.0.1`, so logic that branches on it may behave differently than expected on machines with a VPN or multiple interfaces. There is also a set of Microsoft IPv6 extensions with an `Ex` suffix (`dnsResolveEx`, `isInNetEx`, `myIpAddressEx`, and others) that are supported by Chromium but not by Firefox.
 

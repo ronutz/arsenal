@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## Why an unquoted scalar is dangerous
 
-In YAML, a scalar that is not quoted has its type inferred from how it looks. Write `count: 3` and you get the integer three; write `ratio: 1.5` and you get a float; write `enabled: true` and you get a boolean. This is convenient until the inference guesses wrong, and because the same text can be a string in one context and a typed value in another, the mistakes are easy to miss. The fix is always the same, quote the scalar, but you have to know which values need it.
+In YAML (YAML Ain't Markup Language), a scalar that is not quoted has its type inferred from how it looks. Write `count: 3` and you get the integer three; write `ratio: 1.5` and you get a float; write `enabled: true` and you get a boolean. This is convenient until the inference guesses wrong, and because the same text can be a string in one context and a typed value in another, the mistakes are easy to miss. The fix is always the same, quote the scalar, but you have to know which values need it.
 
 ## The Norway problem
 

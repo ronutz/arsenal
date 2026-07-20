@@ -13,7 +13,7 @@ updated: "2026-06-27"
 
 ## A pergunta que decide tudo
 
-O OAuth divide os clientes em dois tipos, e a linha divisória é uma única pergunta: este cliente consegue guardar um segredo? A RFC 6749 chama as duas respostas de clientes **confidenciais** e **públicos**, e qual deles você é determina como você se autentica, quais fluxos são seguros e se você precisa de PKCE. Quase todo erro de design do OAuth no nível da aplicação remonta a tratar um cliente público como se ele pudesse guardar um segredo que na verdade não consegue proteger.
+O OAuth divide os clientes em dois tipos, e a linha divisória é uma única pergunta: este cliente consegue guardar um segredo? A RFC 6749 chama as duas respostas de clientes **confidenciais** e **públicos**, e qual deles você é determina como você se autentica, quais fluxos são seguros e se você precisa de PKCE (Chave de Prova para Troca de Código, do inglês Proof Key for Code Exchange). Quase todo erro de design do OAuth no nível da aplicação remonta a tratar um cliente público como se ele pudesse guardar um segredo que na verdade não consegue proteger.
 
 ## Clientes confidenciais conseguem guardar um segredo
 

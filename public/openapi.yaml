@@ -254,6 +254,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /bigip-dns-gslb-simulator:
+    get:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_bigip_dns_gslb_simulator
+      summary: BIG-IP DNS (GTM) GSLB simulator
+      description: >-
+        Model two-tier global server load balancing: a wide IP picks a pool, then the pool picks a
+        virtual server. See how N DNS requests resolve across pools and members. Standards: BIG-IP
+        DNS / GTM. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - F5 GTM, AFM & APM
+      operationId: run_bigip_dns_gslb_simulator_post
+      summary: BIG-IP DNS (GTM) GSLB simulator (POST)
+      description: >-
+        Model two-tier global server load balancing: a wide IP picks a pool, then the pool picks a
+        virtual server. See how N DNS requests resolve across pools and members. Standards: BIG-IP
+        DNS / GTM. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /bigip-ltm-lb-simulator:
     get:
       tags:
@@ -4546,6 +4607,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /http-header-order-fingerprint:
+    get:
+      tags:
+        - Fingerprinting
+      operationId: run_http_header_order_fingerprint
+      summary: HTTP header-order fingerprint
+      description: >-
+        Paste a request header block and see how header order and casing fingerprint the client -
+        the passive-HTTP analog of JA3. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Fingerprinting
+      operationId: run_http_header_order_fingerprint_post
+      summary: HTTP header-order fingerprint (POST)
+      description: >-
+        Paste a request header block and see how header order and casing fingerprint the client -
+        the passive-HTTP analog of JA3. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /http-request-translator:
     get:
       tags:
@@ -5457,6 +5577,65 @@ paths:
               type: string
               examples:
                 - 00:1b:54:11:22:33
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /p0f-signature-explainer:
+    get:
+      tags:
+        - Fingerprinting
+      operationId: run_p0f_signature_explainer
+      summary: p0f passive TCP/IP signature explainer
+      description: >-
+        Decode a p0f v3 SYN fingerprint into its eight fields and see what each reveals about the
+        sender's OS, network path, and stack. Standards: p0f v3. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Fingerprinting
+      operationId: run_p0f_signature_explainer_post
+      summary: p0f passive TCP/IP signature explainer (POST)
+      description: >-
+        Decode a p0f v3 SYN fingerprint into its eight fields and see what each reveals about the
+        sender's OS, network path, and stack. Standards: p0f v3. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
       responses:
         '200':
           description: The computed result.
@@ -6523,6 +6702,65 @@ paths:
               type: string
               examples:
                 - https://user@host.example.com:8443/p?a=1#f
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user-agent-entropy-analyzer:
+    get:
+      tags:
+        - Fingerprinting
+      operationId: run_user_agent_entropy_analyzer
+      summary: User-Agent entropy analyzer
+      description: >-
+        Paste a User-Agent string and see the identifying tokens it exposes, the distinguishing bits
+        each contributes, and the Client Hints migration. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Fingerprinting
+      operationId: run_user_agent_entropy_analyzer_post
+      summary: User-Agent entropy analyzer (POST)
+      description: >-
+        Paste a User-Agent string and see the identifying tokens it exposes, the distinguishing bits
+        each contributes, and the Client Hints migration. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
       responses:
         '200':
           description: The computed result.

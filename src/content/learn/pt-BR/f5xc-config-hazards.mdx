@@ -13,7 +13,7 @@ updated: "2026-07-11"
 
 ## Por que um linter, não um wizard
 
-Os objetos de configuração do XC são permissivos: eles alegremente aceitam uma configuração que é tecnicamente válida mas operacionalmente errada. Um WAF deixado em modo de monitoramento é um WAF válido. Um origin pool que pula a verificação de certificado é um pool válido. Uma rota catch-all sentada acima das suas rotas específicas é uma lista de rotas válida. Nenhuma dessas produz um erro - elas produzem comportamento surpreendente, semanas depois, que você então tem que rastrear de volta. Um linter pega a classe de problema que é legal mas provavelmente não é o que você quis dizer.
+Os objetos de configuração do XC são permissivos: eles alegremente aceitam uma configuração que é tecnicamente válida mas operacionalmente errada. Um WAF (firewall de aplicação web, do inglês web application firewall) deixado em modo de monitoramento é um WAF válido. Um origin pool que pula a verificação de certificado é um pool válido. Uma rota catch-all sentada acima das suas rotas específicas é uma lista de rotas válida. Nenhuma dessas produz um erro - elas produzem comportamento surpreendente, semanas depois, que você então tem que rastrear de volta. Um linter pega a classe de problema que é legal mas provavelmente não é o que você quis dizer.
 
 ## Os perigos do origin pool
 

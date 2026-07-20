@@ -36,7 +36,7 @@ As fontes podem ser a palavra-chave `'self'` (a própria origem da página), um 
 
 `default-src` é o fallback para qualquer tipo de recurso que não tenha diretiva própria. Com `default-src 'self'`, imagens, fontes, scripts, estilos e o resto ficam limitados à origem da página, a menos que uma diretiva mais específica sobreponha isso. Sem um `default-src`, todo tipo de recurso que você não nomeou explicitamente fica sem restrição, o que é uma forma comum de uma política parecer rígida e vazar.
 
-Defina o `default-src` primeiro e depois abra tipos específicos só quando necessário. Uma política que parte de `default-src 'self'` e adiciona uma CDN conhecida ao `script-src` é muito mais fácil de raciocinar do que uma com uma dezena de diretivas e nenhum fallback.
+Defina o `default-src` primeiro e depois abra tipos específicos só quando necessário. Uma política que parte de `default-src 'self'` e adiciona uma CDN (rede de entrega de conteúdo, do inglês content delivery network) conhecida ao `script-src` é muito mais fácil de raciocinar do que uma com uma dezena de diretivas e nenhum fallback.
 
 ## script-src e o custo do 'unsafe-inline'
 

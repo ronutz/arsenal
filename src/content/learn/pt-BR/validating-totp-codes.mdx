@@ -37,6 +37,6 @@ Um código de seis dígitos é um entre 1.000.000 de valores, e uma janela de ac
 
 ## O segredo é tão sensível quanto uma senha
 
-Tudo isso pressupõe que o próprio segredo compartilhado esteja protegido. Um servidor que armazena segredos OTP em texto claro entrega a quem lê esse armazenamento a capacidade de gerar códigos válidos para todos os usuários indefinidamente. Trate o segredo como material de nível credencial: armazene-o cifrado, restrinja quem pode lê-lo e provisione-o por um canal que não o vaze. Validar o código derivado com cuidado é esforço desperdiçado se o segredo por trás dele estiver exposto.
+Tudo isso pressupõe que o próprio segredo compartilhado esteja protegido. Um servidor que armazena segredos OTP (senha de uso único, do inglês one-time password) em texto claro entrega a quem lê esse armazenamento a capacidade de gerar códigos válidos para todos os usuários indefinidamente. Trate o segredo como material de nível credencial: armazene-o cifrado, restrinja quem pode lê-lo e provisione-o por um canal que não o vaze. Validar o código derivado com cuidado é esforço desperdiçado se o segredo por trás dele estiver exposto.
 
 Você pode ver a lógica da janela diretamente na ferramenta TOTP / HOTP: o validador dela aceita os intervalos adjacentes, que é exatamente a tolerância de mais ou menos um intervalo que um servidor real aplica.

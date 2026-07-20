@@ -25,8 +25,8 @@ A **FastL4** virtual server is built for raw throughput. It processes traffic la
 - The HTTP events do not fire — there is no HTTP parsing.
 - The SSL handshake events do not fire — TLS is not terminated.
 
-You still get basic connection events, but the L7 and SSL hooks an HTTP iRule relies on are simply absent. Specifying one of those events on a FastL4 virtual server is not an error; the event just never triggers — which is a confusing way to discover the mismatch.
+You still get basic connection events, but the L7 (Layer 7, the application layer) and SSL hooks an HTTP iRule relies on are simply absent. Specifying one of those events on a FastL4 virtual server is not an error; the event just never triggers — which is a confusing way to discover the mismatch.
 
 ## Choosing deliberately
 
-The trade-off is throughput against visibility. FastL4 is the right call for high-volume L4 load balancing where you do not need to touch application content. The moment you need to read a header, steer on SNI, or run any HTTP or SSL logic, you need a Standard virtual server. This tool models the Standard sequence; when the FastL4 toggle is on, treat the HTTP and SSL rows as not applicable, because on a real FastL4 virtual server those events would never fire.
+The trade-off is throughput against visibility. FastL4 is the right call for high-volume L4 (Layer 4, the transport layer) load balancing where you do not need to touch application content. The moment you need to read a header, steer on SNI, or run any HTTP or SSL logic, you need a Standard virtual server. This tool models the Standard sequence; when the FastL4 toggle is on, treat the HTTP and SSL rows as not applicable, because on a real FastL4 virtual server those events would never fire.

@@ -35,7 +35,7 @@ Cada elo é uma assinatura: o emissor assina o certificado do filho com a chave 
 
 Um certificado não é JSON nem texto. Ele é descrito em ASN.1 (Abstract Syntax Notation One) e codificado com as Distinguished Encoding Rules (DER), especificadas na ITU-T X.690. O DER é um formato tag-length-value (TLV): cada elemento começa com um byte de tag dizendo que tipo ele é, depois um comprimento, depois aquela quantidade de bytes de conteúdo. Tipos construídos como SEQUENCE e SET contêm elementos filhos, então o certificado inteiro é uma árvore de TLVs.
 
-Um arquivo PEM é apenas aquele DER, codificado em Base64 e envolto em linhas de armadura:
+Um arquivo PEM (Correio com Privacidade Aprimorada, do inglês Privacy-Enhanced Mail) é apenas aquele DER, codificado em Base64 e envolto em linhas de armadura:
 
 ```
 -----BEGIN CERTIFICATE-----

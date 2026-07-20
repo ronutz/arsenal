@@ -26,7 +26,7 @@ These are conventions and starting points, not laws: every one of these devices 
 
 ## Putting it to work
 
-This is where decoding a PRI pays off operationally. Suppose a central collector shows a burst of `<189>` messages. Decode it: 189 divided by 8 is 23 with a remainder of 5, so that is `local7` at severity 5 (notice). On a network where FortiGate owns `local7`, that immediately narrows the source to a FortiGate, at a routine notice level. Change the facility assignment per platform and the PRI alone tells you both the device class and the urgency before you have read a single word of the message body.
+This is where decoding a PRI (priority value) pays off operationally. Suppose a central collector shows a burst of `<189>` messages. Decode it: 189 divided by 8 is 23 with a remainder of 5, so that is `local7` at severity 5 (notice). On a network where FortiGate owns `local7`, that immediately narrows the source to a FortiGate, at a routine notice level. Change the facility assignment per platform and the PRI alone tells you both the device class and the urgency before you have read a single word of the message body.
 
 ## Severity thresholds in practice
 

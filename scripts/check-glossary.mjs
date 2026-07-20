@@ -35,7 +35,7 @@ const VALID_KINDS = new Set(["term", "acronym", "expression", "jargon", "lore"])
 const VALID_DOMAINS = new Set([
   "enterprise-networking", "cyber-security", "crypto", "cloud", "grc",
   "privacy", "hacking", "darkweb", "ops-culture", "web-development", "programming",
-  "vendors",
+  "vendors", "isp-telecom", "it-support",
 ]);
 
 // ---- 1. parse the registry into structured entries ------------------------

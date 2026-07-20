@@ -11,7 +11,7 @@ status: machine-draft
 updated: "2026-07-01"
 ---
 
-Um app TOTP e um servidor só concordam sobre códigos se partirem do mesmo segredo e das mesmas configurações. Colocar esse segredo e essas configurações no app é o **provisionamento**, e ele roda sobre um pequeno padrão de fato: a URI otpauth.
+Um app TOTP (Senha de Uso Único Baseada em Tempo, do inglês Time-based One-Time Password) e um servidor só concordam sobre códigos se partirem do mesmo segredo e das mesmas configurações. Colocar esse segredo e essas configurações no app é o **provisionamento**, e ele roda sobre um pequeno padrão de fato: a URI otpauth.
 
 ## A URI otpauth
 
@@ -27,11 +27,11 @@ As partes são:
 - **label**: a conta a que isto se refere, normalmente `Issuer:conta`, para que o app possa exibir um nome significativo.
 - **secret**: a chave compartilhada, em **base32**. Este é o único campo que precisa ser mantido em segredo.
 - **issuer**: o nome do serviço, exibido no app e usado para desambiguar contas.
-- **algorithm**, **digits**, **period**: o hash HMAC, o comprimento do código e o passo de tempo. Precisam coincidir em ambos os lados ou os códigos nunca vão concordar. Para HOTP, um parâmetro **counter** aparece no lugar de `period`.
+- **algorithm**, **digits**, **period**: o hash HMAC, o comprimento do código e o passo de tempo. Precisam coincidir em ambos os lados ou os códigos nunca vão concordar. Para HOTP (Senha de Uso Único Baseada em HMAC, do inglês HMAC-based One-Time Password), um parâmetro **counter** aparece no lugar de `period`.
 
 ## Por que base32, e por que um QR code
 
-O segredo é base32 em vez de bytes crus ou base64 porque o base32 usa apenas letras maiúsculas e dígitos, evitando caracteres que são ambíguos ou incômodos, o que importa na rara ocasião em que alguém digita a chave à mão em vez de escanear. O QR code é simplesmente essa URI inteira codificada como imagem: escaneá-lo entrega ao app cada campo de uma vez, que é por que a configuração é normalmente "escaneie este código" em vez de copiar uma string. A chave de entrada manual que um site oferece como alternativa é o mesmo segredo base32 da URI, digitado à mão.
+O segredo é base32 em vez de bytes crus ou base64 porque o base32 usa apenas letras maiúsculas e dígitos, evitando caracteres que são ambíguos ou incômodos, o que importa na rara ocasião em que alguém digita a chave à mão em vez de escanear. O QR (Resposta Rápida, do inglês Quick Response) code é simplesmente essa URI inteira codificada como imagem: escaneá-lo entrega ao app cada campo de uma vez, que é por que a configuração é normalmente "escaneie este código" em vez de copiar uma string. A chave de entrada manual que um site oferece como alternativa é o mesmo segredo base32 da URI, digitado à mão.
 
 ## A pegadinha do provisionamento
 

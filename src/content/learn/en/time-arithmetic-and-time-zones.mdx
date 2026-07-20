@@ -15,7 +15,7 @@ Time arithmetic looks like arithmetic until it meets the calendar. Then two hone
 
 ## Exact time vs calendar time
 
-An instant is a point on the UTC timeline; the span between two instants is a fixed number of milliseconds, and exact units stack on it cleanly: a second is 1000 ms, a minute 60 s, an hour 60 min, a day 24 h, a week 7 days. Everything above that is calendar arithmetic: a month is 28 to 31 days, a year 365 or 366, so "plus one month" from January 31 lands on a date that does not exist and every library picks its own answer (February 28? March 2? March 3?). ISO 8601 durations encode both worlds in one syntax - P1DT2H30M is exact, P1M is calendar - which is precisely why a calculator that promises exact answers should accept the first and refuse the second with an explanation. The time calculator does exactly that, and the leap day is a fine test: 2024-02-28 to 2024-03-01 is exactly P2D, because 2024 kept a February 29.
+An instant is a point on the UTC (Coordinated Universal Time) timeline; the span between two instants is a fixed number of milliseconds, and exact units stack on it cleanly: a second is 1000 ms, a minute 60 s, an hour 60 min, a day 24 h, a week 7 days. Everything above that is calendar arithmetic: a month is 28 to 31 days, a year 365 or 366, so "plus one month" from January 31 lands on a date that does not exist and every library picks its own answer (February 28? March 2? March 3?). ISO 8601 durations encode both worlds in one syntax - P1DT2H30M is exact, P1M is calendar - which is precisely why a calculator that promises exact answers should accept the first and refuse the second with an explanation. The time calculator does exactly that, and the leap day is a fine test: 2024-02-28 to 2024-03-01 is exactly P2D, because 2024 kept a February 29.
 
 ## Offsets are not zones
 
@@ -23,7 +23,7 @@ An instant is a point on the UTC timeline; the span between two instants is a fi
 
 ## One instant, many wall clocks
 
-Zone rules live in the IANA time zone database, the shared tzdata that operating systems and browsers keep current, and the rules depend on the date. 15:00 UTC in mid-July is 12:00 in São Paulo, 17:00 in Berlin (CEST, +2), 08:00 in Los Angeles (PDT, -7) - and midnight in Tokyo, on tomorrow's date. Run the same instant in mid-January and Berlin answers 16:00 (+1) while Los Angeles answers 07:00 (-8); São Paulo alone does not move. Two traps hide in that table: the DST trap, where a standing weekly meeting drifts an hour for some attendees twice a year because the organizer's zone and theirs change on different dates; and the day-shift trap, where an attendee is not just on another hour but another calendar date, which is worth saying out loud in the invitation.
+Zone rules live in the IANA (Internet Assigned Numbers Authority) time zone database, the shared tzdata that operating systems and browsers keep current, and the rules depend on the date. 15:00 UTC in mid-July is 12:00 in São Paulo, 17:00 in Berlin (CEST, +2), 08:00 in Los Angeles (PDT, -7) - and midnight in Tokyo, on tomorrow's date. Run the same instant in mid-January and Berlin answers 16:00 (+1) while Los Angeles answers 07:00 (-8); São Paulo alone does not move. Two traps hide in that table: the DST trap, where a standing weekly meeting drifts an hour for some attendees twice a year because the organizer's zone and theirs change on different dates; and the day-shift trap, where an attendee is not just on another hour but another calendar date, which is worth saying out loud in the invitation.
 
 ## Planning honestly
 

@@ -1,0 +1,48 @@
+---
+slug: gpon-how-one-fiber-serves-a-neighborhood
+title: "GPON: How One Fiber Serves a Whole Neighborhood"
+summary: "A Gigabit Passive Optical Network runs one strand of glass from the exchange, splits it with unpowered prisms, and shares it among dozens of homes. How the light is divided, why upstream needs a schedule, and where the decibel budget goes."
+concepts: ["gpon", "passive optical network", "olt", "ont", "optical splitter", "optical budget", "tdma"]
+relatedTools: []
+relatedArticles: []
+category: networking
+order: 139
+status: reviewed
+updated: "2026-07-19"
+---
+
+Most broadband technologies put electronics between you and the provider: a cabinet with power, cooling, and things that fail. GPON, which stands for Gigabit Passive Optical Network, takes the opposite bet. Between the provider's equipment and your home there is nothing but glass - fibers and small optical splitters that need no electricity at all. That single design decision explains almost everything else about how it works.
+
+## The tree of glass
+
+A GPON deployment is a tree. At the root, in the provider's central office or a street cabinet, sits the OLT - the Optical Line Terminal. From one OLT port, a single fiber runs out into the neighborhood. Along the way it passes through one or more optical splitters: passive components that divide the light among branches the way a prism divides a beam. A 1:2 splitter sends half the light each way; cascade the splits and you reach the common ratios of 1:32, 1:64, or 1:128 subscribers sharing one OLT port.
+
+At each leaf of the tree sits an ONT - the Optical Network Terminal, the box on your wall that turns light back into Ethernet. The standards also call it an ONU, an Optical Network Unit; field technicians use the two names interchangeably.
+
+Nothing between the OLT and the ONT is powered. No cabinet electronics to fail in a heat wave, no batteries to replace, nothing for a storm to reboot. The plant is glass, connectors, and splice trays. This is the "passive" in the name, and it is why the architecture won the fiber-to-the-home era: the expensive, failure-prone parts live only at the two ends.
+
+## Downstream: everyone hears everything
+
+Because a splitter divides light without judgment, every ONT on the tree receives everything the OLT transmits. Downstream GPON is a broadcast at 2.488 gigabits per second: your neighbor's frames physically arrive at your ONT, and yours at theirs.
+
+The system deals with this the only way it can - cryptographically. Each subscriber's downstream traffic is encrypted with AES, the Advanced Encryption Standard, under keys negotiated per ONT, so the frames your ONT cannot decrypt are noise to it. The ONT filters by identifier and decrypts only its own. Privacy on a shared medium is not a courtesy here; it is a protocol requirement.
+
+## Upstream: light on a schedule
+
+Upstream is the harder problem. If two ONTs transmitted at once, their light would collide at the splitter - the splitter works in both directions, combining as happily as it divides. So upstream GPON, at 1.244 gigabits per second, is run on TDMA, Time Division Multiple Access: the OLT grants each ONT precise time slots, and each ONT fires its laser in bursts only when told.
+
+For the schedule to work, the OLT must know how far away each ONT is - light from a home 1 km out and a home 19 km out takes measurably different time to arrive. During activation the OLT performs ranging: it measures each ONT's round-trip delay and assigns an equalization delay so that every burst lands in its slot regardless of distance. This is why a new ONT takes a moment to come online, and why the standard caps the differential reach of a tree.
+
+The asymmetry - 2.488 down, 1.244 up - was a deliberate bet on traffic patterns of the 2000s. Its successor XGS-PON, where XGS stands for 10 Gigabit Symmetric, pays that debt: 10 gigabits in both directions, usually over the same glass on different wavelengths, which lets a provider run both generations on one tree during migration.
+
+## Where the decibels go
+
+Every optical link lives on a power budget: the transmitter launches so many dB of light, the receiver needs so many to hear, and everything in between spends the difference. GPON class B+ optics, the common case, budget about 28 dB end to end.
+
+Splitters are the big spenders. Every 1:2 division costs about 3 dB - half the light, by definition, plus a little loss - so a 1:64 tree spends roughly 18 dB on splitting alone. The fiber itself takes about 0.35 dB per kilometer at GPON's wavelengths, each connector 0.3 dB or so, each fusion splice a few hundredths. Add it up and a 1:64 split at 20 km arrives near the edge of the budget - which is exactly the design point of the standard.
+
+This arithmetic is the ISP technician's daily reality. A dirty connector that eats 2 dB, a drop cable bent past its radius, one bad mechanical splice: any of these can push a marginal leaf over the line, and the failure looks like mystery packet loss rather than darkness. The OTDR - the Optical Time-Domain Reflectometer - exists to turn that mystery into a distance: fire a pulse, read the reflections, and the trace shows how many meters out the budget is leaking.
+
+## What to remember
+
+One fiber, split passively, shared by schedule. Downstream is an encrypted broadcast; upstream is a timed choir where the OLT conducts. The whole design trades electronics in the field for arithmetic in decibels - and when GPON misbehaves, the answer is almost always in that arithmetic.

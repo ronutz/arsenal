@@ -17,7 +17,7 @@ Nem todo certificado segue as mesmas regras, e a diferença importa muito aqui. 
 
 ## O que "publicamente confiável" significa de fato
 
-Um certificado é publicamente confiável quando é emitido por uma AC incluída nos principais programas de raiz, da Apple, do Google, da Mozilla e da Microsoft. Essas ACs concordam em seguir os Baseline Requirements de TLS como condição para permanecer nos programas, e os cortes de validade e de reutilização de validação estão escritos nesses requisitos. O motivo pelo qual as regras podem ser impostas é justamente essa participação: um navegador pode simplesmente deixar de confiar em uma AC que não cumpra. Assim, o limite de 47 dias, a janela de DCV cada vez menor e a redução de SII aplicam-se a certificados dessas ACs, e uma AC pública se recusará a emitir qualquer coisa que quebre essas regras.
+Um certificado é publicamente confiável quando é emitido por uma AC incluída nos principais programas de raiz, da Apple, do Google, da Mozilla e da Microsoft. Essas ACs concordam em seguir os Baseline Requirements de TLS como condição para permanecer nos programas, e os cortes de validade e de reutilização de validação estão escritos nesses requisitos. O motivo pelo qual as regras podem ser impostas é justamente essa participação: um navegador pode simplesmente deixar de confiar em uma AC que não cumpra. Assim, o limite de 47 dias, a janela de DCV (Validação de Controle de Domínio, do inglês Domain Control Validation) cada vez menor e a redução de SII (Informação de Identidade do Assinante, do inglês Subscriber Identity Information) aplicam-se a certificados dessas ACs, e uma AC pública se recusará a emitir qualquer coisa que quebre essas regras.
 
 ## O que a PKI privada pode fazer
 

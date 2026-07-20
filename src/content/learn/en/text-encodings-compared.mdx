@@ -31,7 +31,7 @@ Base64 is the most compact, Base16 the least. Percent-encoding is the odd one ou
 ## Alphabet and readability
 
 - **Base16 / hex** uses `0`-`9` and `A`-`F`. One byte is always two characters, so byte boundaries are perfectly clear. It is the easiest to read and compare by eye, which is why hashes, keys, and hex dumps use it.
-- **Base32** uses `A`-`Z` and `2`-`7`, case-insensitive, with the confusable characters `0`, `1`, and `8` removed. It is built for values a human will type, dictate, or store case-insensitively, like TOTP secrets and onion addresses.
+- **Base32** uses `A`-`Z` and `2`-`7`, case-insensitive, with the confusable characters `0`, `1`, and `8` removed. It is built for values a human will type, dictate, or store case-insensitively, like TOTP (time-based one-time password) secrets and onion addresses.
 - **Base64** uses `A`-`Z`, `a`-`z`, `0`-`9`, `+`, and `/`, case-sensitive. It is the densest of the three, but `+` and `/` are unsafe in URLs and filenames, which is what the [URL-safe variant](/learn/base64url) fixes.
 - **Percent-encoding** keeps readable text readable and escapes only what a URL cannot carry literally. It is an escape scheme rather than a full re-encoding.
 

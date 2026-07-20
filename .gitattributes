@@ -1,0 +1,28 @@
+# ============================================================================
+# .gitattributes — line-ending canon for the arsenal repository.
+# ----------------------------------------------------------------------------
+# WHY THIS FILE EXISTS (2026-07-18, PRIME ruling): the repo is built on Linux
+# and applied on Windows via zip; every text file is LF. Without this file,
+# Git for Windows' default core.autocrlf=true announces "LF will be replaced
+# by CRLF" for every file on every apply — thousands of warnings — and would
+# rewrite endings on checkout. This file makes LF the committed, machine-
+# independent canon: it OVERRIDES any local core.autocrlf setting, so every
+# clone behaves identically with no per-machine configuration.
+#
+#   text=auto  -> Git detects text vs binary per file
+#   eol=lf     -> text files are LF in the working tree AND in the repo
+# ============================================================================
+
+* text=auto eol=lf
+
+# Binary formats, declared explicitly so no heuristic ever touches them.
+*.png   -text
+*.jpg   -text
+*.jpeg  -text
+*.ico   -text
+*.pdf   -text
+*.xlsx  -text
+*.pyc   -text
+*.woff  -text
+*.woff2 -text
+*.zip   -text

@@ -14,7 +14,7 @@ Há um momento em quase todo incidente escalado em que alguém diz "vamos pegar 
 
 ## Fronteiras, não conveniência
 
-Pacotes mudam de significado nas fronteiras: um NAT reescreve endereços, um balanceador divide uma conversa em duas, um proxy origina uma sessão nova rio acima, um gateway VPN embrulha tudo em ESP, um terminador TLS encerra um mundo criptográfico e inicia outro. Um ponto de captura merece o lugar quando está sobre uma dessas fronteiras, porque é ali que uma comparação localiza a falha. Duas capturas que abraçam um firewall respondem "o firewall comeu o pacote?" num olhar; uma captura única em lugar conveniente não responde quase nada, por maior que seja o arquivo. Quando o caminho tem transformação, o plano deve parear pontos através dela - e correlacionar fluxos por portas, números de sequência e tempo, nunca por endereços que um NAT já reescreveu.
+Pacotes mudam de significado nas fronteiras: um NAT reescreve endereços, um balanceador divide uma conversa em duas, um proxy origina uma sessão nova rio acima, um gateway VPN embrulha tudo em ESP (Carga de Segurança de Encapsulamento, do inglês Encapsulating Security Payload), um terminador TLS encerra um mundo criptográfico e inicia outro. Um ponto de captura merece o lugar quando está sobre uma dessas fronteiras, porque é ali que uma comparação localiza a falha. Duas capturas que abraçam um firewall respondem "o firewall comeu o pacote?" num olhar; uma captura única em lugar conveniente não responde quase nada, por maior que seja o arquivo. Quando o caminho tem transformação, o plano deve parear pontos através dela - e correlacionar fluxos por portas, números de sequência e tempo, nunca por endereços que um NAT já reescreveu.
 
 ## Ausência também é evidência
 
@@ -22,7 +22,7 @@ A observação mais subutilizada do trabalho com pacotes é o pacote que não es
 
 ## Decida o que significaria - primeiro
 
-O passo que separa um plano de uma pescaria é a matriz de interpretação: para cada conclusão candidata, escrever de antemão que observação a sustentaria e qual a enfraqueceria. "Se o handshake completa no VIP mas nenhuma conexão aparece do lado dos membros, o balanceador ou seu pool está implicado; se o lado da frente já não mostra SYN-ACK, o problema está antes dele." Fazer isso antes da coleta mantém a evidência honesta - impede que a captura seja lida como confirmação da teoria mais barulhenta quando o arquivo enfim abrir. Também mantém as capturas pequenas: um ponto que não pode mudar conclusão alguma não pertence à fase um.
+O passo que separa um plano de uma pescaria é a matriz de interpretação: para cada conclusão candidata, escrever de antemão que observação a sustentaria e qual a enfraqueceria. "Se o handshake completa no VIP (IP virtual, o endereço do virtual server, do inglês virtual IP) mas nenhuma conexão aparece do lado dos membros, o balanceador ou seu pool está implicado; se o lado da frente já não mostra SYN-ACK, o problema está antes dele." Fazer isso antes da coleta mantém a evidência honesta - impede que a captura seja lida como confirmação da teoria mais barulhenta quando o arquivo enfim abrir. Também mantém as capturas pequenas: um ponto que não pode mudar conclusão alguma não pertence à fase um.
 
 ## Exposição mínima faz parte do plano
 

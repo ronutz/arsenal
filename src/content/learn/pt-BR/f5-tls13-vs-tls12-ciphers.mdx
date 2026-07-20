@@ -17,7 +17,7 @@ Uma cipher string que funcionou por anos de repente parece não ter efeito no TL
 
 Uma cipher suite **TLS 1.2** é um pacote: ela nomeia o método de troca de chaves, o método de autenticação, a cifra de criptografia em massa e o MAC, tudo de uma vez, que é por que nomes como `ECDHE-RSA-AES128-GCM-SHA256` são tão longos. A cipher string baseada em keywords existe para selecionar e filtrar por todas essas dimensões.
 
-Uma cipher suite **TLS 1.3** nomeia apenas duas coisas: a cifra em massa AEAD e seu hash. O conjunto completo é minúsculo e fixo, essencialmente variantes de AES-GCM e ChaCha20-Poly1305 (por exemplo `TLS_AES_128_GCM_SHA256`). Troca de chaves e autenticação não fazem mais parte da suite; o 1.3 sempre usa Diffie-Hellman efêmero para forward secrecy e negocia o grupo e o algoritmo de assinatura separadamente. Não há nada a "selecionar" para troca de chaves em uma suite 1.3 porque isso não está codificado lá.
+Uma cipher suite **TLS 1.3** nomeia apenas duas coisas: a cifra em massa AEAD (criptografia autenticada com dados associados, do inglês authenticated encryption with associated data) e seu hash. O conjunto completo é minúsculo e fixo, essencialmente variantes de AES-GCM e ChaCha20-Poly1305 (por exemplo `TLS_AES_128_GCM_SHA256`). Troca de chaves e autenticação não fazem mais parte da suite; o 1.3 sempre usa Diffie-Hellman efêmero para forward secrecy e negocia o grupo e o algoritmo de assinatura separadamente. Não há nada a "selecionar" para troca de chaves em uma suite 1.3 porque isso não está codificado lá.
 
 ## O que isso significa no BIG-IP
 

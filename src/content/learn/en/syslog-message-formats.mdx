@@ -13,9 +13,9 @@ updated: "2026-07-01"
 
 Every syslog message starts with the same `<PRI>`, but the text after it comes in two very different formats, and a lot of parsing pain comes from not knowing which you have.
 
-## RFC 3164: the BSD format
+## RFC 3164: the BSD (Berkeley Software Distribution) format
 
-The original format was documented, after the fact, in RFC 3164. It is loose: after the PRI comes a timestamp like `Oct  1 14:23:05`, a hostname, and then a free-form tag and message. The weaknesses are real:
+The original format was documented, after the fact, in RFC 3164. It is loose: after the PRI (priority value) comes a timestamp like `Oct  1 14:23:05`, a hostname, and then a free-form tag and message. The weaknesses are real:
 
 - The timestamp has **no year and no timezone**, so a stored message is ambiguous about when it actually happened.
 - The structure is only loosely specified, so the boundary between the tag and the message varies by sender.

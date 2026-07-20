@@ -13,17 +13,17 @@ updated: "2026-07-10"
 
 ## O que é um fingerprint TLS
 
-Toda conexão TLS começa com o cliente enviando um ClientHello: uma mensagem que expõe, em texto claro, exatamente como o cliente está disposto a negociar. Quais versões do TLS ele suporta, quais cifras oferece, quais extensões envia e em que forma, quais curvas elípticas e algoritmos de assinatura aceita, quais protocolos de aplicação deseja via ALPN. Nada disso é secreto, porque o servidor precisa dessas informações para escolher um conjunto comum de parâmetros. Mas a combinação específica é reveladora. Uma determinada versão do Chrome, ou do curl, ou de um programa em Go, ou de um malware, monta seu ClientHello de um jeito característico, e essa forma característica pode ser reduzida a uma string curta. Essa string é um fingerprint TLS, e ela permite que um servidor, proxy ou sensor passivo reconheça o software cliente sem descriptografar um único byte da conversa.
+Toda conexão TLS começa com o cliente enviando um ClientHello: uma mensagem que expõe, em texto claro, exatamente como o cliente está disposto a negociar. Quais versões do TLS ele suporta, quais cifras oferece, quais extensões envia e em que forma, quais curvas elípticas e algoritmos de assinatura aceita, quais protocolos de aplicação deseja via ALPN (Negociação de Protocolo de Camada de Aplicação, do inglês Application-Layer Protocol Negotiation). Nada disso é secreto, porque o servidor precisa dessas informações para escolher um conjunto comum de parâmetros. Mas a combinação específica é reveladora. Uma determinada versão do Chrome, ou do curl, ou de um programa em Go, ou de um malware, monta seu ClientHello de um jeito característico, e essa forma característica pode ser reduzida a uma string curta. Essa string é um fingerprint TLS, e ela permite que um servidor, proxy ou sensor passivo reconheça o software cliente sem descriptografar um único byte da conversa.
 
 ## O JA3, e por que perdeu força
 
-O primeiro fingerprint TLS amplamente usado foi o JA3, publicado pela Salesforce em 2017. O JA3 pega cinco campos do ClientHello (a versão do TLS, a lista de cifras, a lista de extensões, as curvas elípticas e os formatos de ponto das curvas elípticas), une seus valores numéricos em uma string na ordem em que o cliente os enviou, e calcula o MD5 dessa string. Por anos funcionou bem.
+O primeiro fingerprint TLS amplamente usado foi o JA3 (uma impressão digital de cliente TLS), publicado pela Salesforce em 2017. O JA3 pega cinco campos do ClientHello (a versão do TLS, a lista de cifras, a lista de extensões, as curvas elípticas e os formatos de ponto das curvas elípticas), une seus valores numéricos em uma string na ordem em que o cliente os enviou, e calcula o MD5 dessa string. Por anos funcionou bem.
 
 O que o quebrou foi uma mudança defensiva nos próprios clientes. Para impedir que servidores dependessem de uma ordem fixa de extensões, o Chrome e depois outros navegadores começaram a embaralhar a ordem das extensões TLS a cada conexão. Como o JA3 fazia o hash das extensões na ordem em que chegavam, uma ordem embaralhada produzia um JA3 diferente a cada vez, e um fingerprint que muda a cada conexão é inútil para identificação. O JA3 ainda tem valor para softwares que não embaralham, mas para navegadores modernos ele já não se sustenta.
 
 ## Como um JA4 é formado
 
-O JA4, publicado pela FoxIO, é o sucessor projetado para esse cenário. Sua mudança mais importante é ordenar as listas de cifras e extensões antes de fazer o hash, de modo que um cliente que embaralha a ordem das extensões ainda produz o mesmo fingerprint. Um JA4 também troca o MD5 pelo SHA-256 e, ao contrário do hash opaco do JA3, mantém um prefixo legível.
+O JA4, publicado pela FoxIO, é o sucessor projetado para esse cenário. Sua mudança mais importante é ordenar as listas de cifras e extensões antes de fazer o hash, de modo que um cliente que embaralha a ordem das extensões ainda produz o mesmo fingerprint. Um JA4 (uma impressão digital de cliente TLS mais robusta) também troca o MD5 pelo SHA-256 e, ao contrário do hash opaco do JA3, mantém um prefixo legível.
 
 Um JA4 tem três seções unidas por sublinhados, por exemplo `t13d1516h2_8daaf6152771_e5627efa2ab1`:
 
@@ -35,7 +35,7 @@ As duas seções de hash são unidirecionais, então um JA4 identifica um client
 
 ## GREASE
 
-Um detalhe que atrapalha fingerprints calculados à mão é o GREASE. Definido no draft-davidben-tls-grease, o GREASE faz os clientes enviarem valores reservados e sem significado no meio de suas cifras e extensões reais, justamente para que os servidores aprendam a ignorar valores desconhecidos e permaneçam tolerantes a mudanças futuras do TLS. O JA4 ignora o GREASE em todos os pontos, então esses valores nunca contam nos totais nem entram nos hashes. Qualquer implementação correta, inclusive esta, os filtra primeiro.
+Um detalhe que atrapalha fingerprints calculados à mão é o GREASE (Gerar Extensões Aleatórias e Sustentar a Extensibilidade, do inglês Generate Random Extensions And Sustain Extensibility). Definido no draft-davidben-tls-grease, o GREASE faz os clientes enviarem valores reservados e sem significado no meio de suas cifras e extensões reais, justamente para que os servidores aprendam a ignorar valores desconhecidos e permaneçam tolerantes a mudanças futuras do TLS. O JA4 ignora o GREASE em todos os pontos, então esses valores nunca contam nos totais nem entram nos hashes. Qualquer implementação correta, inclusive esta, os filtra primeiro.
 
 ## Onde o JA4 aparece
 

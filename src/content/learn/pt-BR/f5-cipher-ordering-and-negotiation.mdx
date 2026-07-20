@@ -17,7 +17,7 @@ Quando uma cipher string expande em uma lista concreta, a ordem dessa lista impo
 
 Em um handshake TLS o cliente oferece os ciphers que suporta e o servidor escolhe um. Há duas filosofias para a escolha. Com **preferência de cliente**, o servidor escolhe o cipher mais preferido do cliente que ele também suporta. Com **preferência de servidor**, o servidor percorre a sua *própria* lista ordenada e escolhe a primeira entrada que o cliente suporta, ignorando o ranking do cliente. A maioria das configurações endurecidas, incluindo o BIG-IP, usa preferência de servidor, porque isso deixa o operador, não o cliente, decidir a prioridade.
 
-Sob preferência de servidor, a posição de um cipher na lista expandida é um botão de controle. Coloque um cipher AEAD forte com forward secrecy primeiro, e qualquer cliente razoavelmente moderno cai nele. Deixe um cipher mais fraco mas ainda habilitado perto do topo, e clientes que o suportam serão direcionados a ele mesmo quando algo melhor estava disponível mais abaixo. É por isso que simplesmente *incluir* bons ciphers não basta; eles precisam estar *à frente* dos mais fracos.
+Sob preferência de servidor, a posição de um cipher na lista expandida é um botão de controle. Coloque um cipher AEAD (criptografia autenticada com dados associados, do inglês authenticated encryption with associated data) forte com forward secrecy primeiro, e qualquer cliente razoavelmente moderno cai nele. Deixe um cipher mais fraco mas ainda habilitado perto do topo, e clientes que o suportam serão direcionados a ele mesmo quando algo melhor estava disponível mais abaixo. É por isso que simplesmente *incluir* bons ciphers não basta; eles precisam estar *à frente* dos mais fracos.
 
 ## Por que a expansão mostra a ordem
 

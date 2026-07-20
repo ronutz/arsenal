@@ -15,7 +15,7 @@ Source address affinity and cookie persistence together cover most needs, which 
 
 ## Source address affinity: the NAT problem
 
-Source affinity is simple and protocol-agnostic, but it keys on the client IP, and that assumption breaks whenever many users share one address. Behind a NAT gateway, a corporate proxy, or a VPN concentrator, hundreds of clients can arrive with the same source IP. Source affinity will pin all of them to a single pool member, and load distribution quietly collapses onto one server. It also consumes memory on BIG-IP: with the default `255.255.255.255` mask, every distinct client address gets its own persistence record. A coarser mask reduces the record count but groups more clients together, which trades one problem for another. Source affinity is a good fit only when clients have stable, genuinely distinct addresses.
+Source affinity is simple and protocol-agnostic, but it keys on the client IP, and that assumption breaks whenever many users share one address. Behind a NAT (network address translation) gateway, a corporate proxy, or a VPN concentrator, hundreds of clients can arrive with the same source IP. Source affinity will pin all of them to a single pool member, and load distribution quietly collapses onto one server. It also consumes memory on BIG-IP: with the default `255.255.255.255` mask, every distinct client address gets its own persistence record. A coarser mask reduces the record count but groups more clients together, which trades one problem for another. Source affinity is a good fit only when clients have stable, genuinely distinct addresses.
 
 ## Cookie persistence: the HTTP requirement
 

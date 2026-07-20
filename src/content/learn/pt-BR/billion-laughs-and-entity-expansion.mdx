@@ -30,7 +30,7 @@ Cada entidade expande para dez da anterior. Com um punhado de níveis, um docume
 
 ## Por que funciona
 
-O ataque explora o mesmo mecanismo de entidades por trás do XXE, mas uma propriedade diferente dele. XXE abusa de entidades *externas* para alcançar e buscar coisas. Billion laughs abusa de entidades *internas* e do fato de que a expansão é **recursiva e multiplicativa**, então o custo cresce exponencialmente com a profundidade enquanto o texto de origem cresce apenas linearmente. Tudo que é necessário está dentro do documento, que é por que desabilitar entidades externas sozinho não o detém.
+O ataque explora o mesmo mecanismo de entidades por trás do XXE (Entidade Externa XML, do inglês XML External Entity), mas uma propriedade diferente dele. XXE abusa de entidades *externas* para alcançar e buscar coisas. Billion laughs abusa de entidades *internas* e do fato de que a expansão é **recursiva e multiplicativa**, então o custo cresce exponencialmente com a profundidade enquanto o texto de origem cresce apenas linearmente. Tudo que é necessário está dentro do documento, que é por que desabilitar entidades externas sozinho não o detém.
 
 ## A defesa
 

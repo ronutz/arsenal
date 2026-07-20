@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## Por que uma suíte tem muitos nomes
 
-Uma única suíte de cifra pode ser escrita de pelo menos três maneiras, e as diferenças confundem qualquer um que compare a configuração de um servidor com uma captura de pacotes ou um relatório de scanner. A suíte que a IANA chama de `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` é a mesma que o OpenSSL chama de `ECDHE-RSA-AES128-GCM-SHA256`. Elas descrevem bytes idênticos na conexão, a saber, o ponto de código `0xC02F`.
+Uma única suíte de cifra pode ser escrita de pelo menos três maneiras, e as diferenças confundem qualquer um que compare a configuração de um servidor com uma captura de pacotes ou um relatório de scanner. A suíte que a IANA (a Autoridade para Atribuição de Números da Internet, do inglês Internet Assigned Numbers Authority) chama de `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` é a mesma que o OpenSSL chama de `ECDHE-RSA-AES128-GCM-SHA256` (ECDHE Diffie-Hellman efêmero de curva elíptica, RSA a assinatura Rivest-Shamir-Adleman, GCM o modo Galois/Contador, SHA256 um resumo do Algoritmo de Hash Seguro), o mesmo `ECDHE-RSA-AES128-GCM-SHA256`. Elas descrevem bytes idênticos na conexão, a saber, o ponto de código `0xC02F`.
 
 O ponto de código é a única coisa que o protocolo realmente usa. Os nomes são conveniências para arquivos de configuração, documentação e humanos, e cada ecossistema de ferramentas criou sua própria convenção.
 

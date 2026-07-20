@@ -17,11 +17,11 @@ Um HTTP load balancer do XC oferece três níveis de segurança TLS predefinidos
 
 ## Default é High
 
-O ponto que as pessoas não percebem é que **Default é High**. Um HTTPS load balancer com certificado automático usa o nível Default, e o nível Default é o nível High: mínimo TLS 1.2, máximo TLS 1.3, e uma lista curta de ciphers AEAD com forward secrecy - as suites TLS 1.3 mais ECDHE-ECDSA e ECDHE-RSA com GCM ou ChaCha20. Essa é uma postura forte já de saída.
+O ponto que as pessoas não percebem é que **Default é High**. Um HTTPS load balancer com certificado automático usa o nível Default, e o nível Default é o nível High: mínimo TLS 1.2, máximo TLS 1.3, e uma lista curta de ciphers AEAD (criptografia autenticada com dados associados, do inglês authenticated encryption with associated data) com forward secrecy - as suites TLS 1.3 mais ECDHE (Diffie-Hellman efêmero de curva elíptica, do inglês ephemeral elliptic-curve Diffie-Hellman)-ECDSA (Algoritmo de Assinatura Digital de Curva Elíptica, do inglês Elliptic Curve Digital Signature Algorithm) e ECDHE-RSA com GCM (modo Galois/Contador, do inglês Galois/Counter Mode) ou ChaCha20. Essa é uma postura forte já de saída.
 
 ## Os níveis são cumulativos
 
-Descer a partir de High não troca a lista de ciphers, ela a estende. O **Medium** mantém todo cipher de High e adiciona quatro suites ECDHE-CBC-SHA - ainda com forward secrecy, mas CBC com SHA-1 em vez de AEAD, logo de força média - e reduz a versão mínima para TLS 1.0. O **Low** mantém todo cipher de Medium e adiciona quatro suites RSA estáticas, e RSA estático significa nenhuma forward secrecy. Então Low é um superconjunto de Medium, que é um superconjunto de High. Todo nível ainda chega no máximo a TLS 1.3.
+Descer a partir de High não troca a lista de ciphers, ela a estende. O **Medium** mantém todo cipher de High e adiciona quatro suites ECDHE-CBC (Encadeamento de Blocos de Cifra, do inglês Cipher Block Chaining)-SHA - ainda com forward secrecy, mas CBC com SHA-1 em vez de AEAD, logo de força média - e reduz a versão mínima para TLS 1.0. O **Low** mantém todo cipher de Medium e adiciona quatro suites RSA estáticas, e RSA estático significa nenhuma forward secrecy. Então Low é um superconjunto de Medium, que é um superconjunto de High. Todo nível ainda chega no máximo a TLS 1.3.
 
 ## Por que um scanner sinaliza TLS 1.0 ou 1.1
 

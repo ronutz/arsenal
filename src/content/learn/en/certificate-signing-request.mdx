@@ -61,7 +61,7 @@ For DV, the CA challenges you to demonstrate control of the domain. Common metho
 
 ## Self-signed certificates skip the CA
 
-If you sign your own CSR with your own key instead of sending it to a CA, you get a self-signed certificate, where the Issuer equals the Subject. It carries no external authority, because the only thing vouching for it is itself, but it is perfectly useful for local development, internal services with their own trust store, or acting as the root of a private PKI. The tool flags when a certificate is self-issued, which tells you immediately that its trust comes from somewhere other than a public CA.
+If you sign your own CSR with your own key instead of sending it to a CA, you get a self-signed certificate, where the Issuer equals the Subject. It carries no external authority, because the only thing vouching for it is itself, but it is perfectly useful for local development, internal services with their own trust store, or acting as the root of a private PKI (public key infrastructure). The tool flags when a certificate is self-issued, which tells you immediately that its trust comes from somewhere other than a public CA.
 
 ## ACME: automating the exchange
 

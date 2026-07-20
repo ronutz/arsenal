@@ -1,0 +1,40 @@
+---
+slug: passive-fingerprinting-what-you-emit
+title: "Passive Fingerprinting: What You Emit Without Being Asked"
+summary: "Every connection announces its stack before a byte of application data flows. How a TCP SYN, a User-Agent string, and the mere order of HTTP headers each identify a client - and why a mismatch between them is the classic proxy and bot tell."
+concepts: ["passive fingerprinting", "p0f", "tcp/ip stack", "user-agent", "client hints", "header order", "ja3"]
+relatedTools: ["p0f-signature-explainer", "user-agent-entropy-analyzer", "http-header-order-fingerprint"]
+relatedArticles: []
+category: security
+order: 96
+status: reviewed
+updated: "2026-07-19"
+---
+
+Active fingerprinting asks questions: it runs code in your browser, measures a canvas render, probes for fonts. Passive fingerprinting asks nothing. It just listens to what you were already going to say. Before a single byte of application data flows, a connection has already announced the shape of its operating system, its TCP stack, its browser, and the library that built the request - not through any secret, but through ordinary, observable choices that differ from one implementation to the next.
+
+This is worth understanding for two reasons. First, it is the honest core of the privacy thesis: you leak identity by existing on the network, and no setting fully closes it. Second, it is how bot detection actually works - and the mechanism is the same one whether it is protecting a login page or profiling a visitor. Three layers, three tools, one idea.
+
+## Layer 1: the TCP/IP stack (p0f)
+
+The very first packet of any connection, the SYN, is full of tells. The initial TTL, the TCP window size, the exact order of TCP options, small quirks in the IP and TCP headers - none of these are configurable by the application, and all of them differ between operating systems and kernel versions. The tool p0f, first written by Michal Zalewski two decades ago, reads these fields off packets a host emits and matches them against a database of known stacks. It never sends a probe; it only watches. That is what makes it passive, and invisible.
+
+The single most useful field is the initial TTL. Because every router along the path decrements TTL, a value arriving near 64 was almost certainly launched at 64 - the default for Linux, macOS, BSD, and Android. Windows launches at 128. Some network gear uses 255. The **p0f signature explainer** decodes the full eight-field signature and walks through each field, but the TTL is where the drama lives: when a packet's stack TTL says Linux while the User-Agent riding on top claims Windows, you are looking at a proxy or NAT. The packet carries the intermediary's kernel, not the client's. That contradiction is unforgeable at the application layer, which is exactly why it is trusted.
+
+## Layer 2: the User-Agent string
+
+One layer up, the browser introduces itself in the User-Agent header. For most of the web's history this string was a generous confession: browser, full version, engine, operating system, version, sometimes the device model. Each token is a little entropy. No single one identifies you - millions of people run the same Chrome on the same Windows - but stacked together they narrow the field, and a detailed string narrows it further than a plain one.
+
+The **User-Agent entropy analyzer** breaks a pasted string into those tokens and estimates the distinguishing bits each contributes. The estimates are illustrative, drawn from published fingerprinting research rather than measured live, and the point is not a score but a shape: to make the surface visible. It also flags the big shift underway. Modern browsers now freeze the User-Agent - Chromium pins the minor version to 0.0.0 and caps platform detail; Safari fixed much of its string long ago. The detail did not vanish. It moved to User-Agent Client Hints, the Sec-CH-UA family of headers, which a site must actively request through Accept-CH. The net effect is that high-entropy collection is now visible in the request headers instead of implicit in one always-sent string - a genuine, if partial, privacy improvement.
+
+## Layer 3: the order of the headers themselves
+
+Here is the subtle one. Even if every header value were spoofed perfectly, the *order* in which a client sends its headers is itself a fingerprint. Chromium emits them in one characteristic sequence, Firefox in another, curl and the Python requests library in their own minimal orders. The sequence is baked into the client's code and survives value spoofing entirely.
+
+This is the exact same idea as JA3, which fingerprints a TLS client by the order of ciphers and extensions in its ClientHello - just moved up from the TLS handshake to the HTTP request. The **HTTP header-order fingerprint** tool classifies a pasted header block by matching its sequence against known clients and checking for browser-only headers like Sec-Fetch and Sec-CH-UA. A request carrying Chrome's User-Agent but curl's four-header order is not a Chrome request; it is a script wearing a costume, and header order is what gives it away. Bot-detection services and web application firewalls key on exactly this.
+
+## Why the mismatch is the whole game
+
+Notice the thread running through all three layers: the power is not in any single fingerprint but in the *contradiction between them*. A stack that says Linux, a User-Agent that says Windows, and a header order that says curl cannot all describe the same honest client. Each layer is hard to forge on its own; forging all of them consistently, at the same time, is harder still. That is why layered passive fingerprinting is the backbone of bot detection - and why understanding it is the first step to reasoning honestly about what anonymity on the network can and cannot mean.
+
+All three tools here are decode-and-explain only. You paste a signature, a string, or a header block you already hold; nothing is read from your own browser, and nothing is sent anywhere. The aim is to show you the surface a tracker reads - not to read it.

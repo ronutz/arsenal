@@ -251,7 +251,10 @@
       "err_order": "The expiry date must be after the issue date.",
       "err_tooLong": "That input is too long.",
       "err_invalid": "Could not read those dates.",
-      "clearLabel": "Clear"
+      "clearLabel": "Clear",
+      "example": "Example",
+      "clear": "Clear",
+      "datesLabel": "Certificate validity"
     },
     "cidr": {
       "name": "CIDR / Subnet Calculator",
@@ -592,7 +595,8 @@
         "err_path": "Enter a local file path for the file:// URL.",
         "err_protocol": "Pick a protocol.",
         "windowsNote": "Quoting targets POSIX shells (bash, zsh). cmd.exe and PowerShell quote differently; run these as written in Git Bash or WSL.",
-        "privacy": "Runs entirely in your browser. Nothing you type is sent anywhere and no request is ever executed."
+        "privacy": "Runs entirely in your browser. Nothing you type is sent anywhere and no request is ever executed.",
+        "clearFields": "Clear fields"
       },
       "tls": {
         "clear": "cleartext",
@@ -4956,7 +4960,8 @@
         "standby": "Members in a lower priority group are on standby and receive no traffic while the active group meets the priority group activation threshold.",
         "lc-fresh": "Least Connections is simulated from a fresh connection table (this tool takes no current-connection count), so it starts even, like Round Robin. On a live system it favors members with fewer active connections.",
         "cookie-fallback": "Least Sessions uses the persistence-record count as its metric. Note: with cookie-based persistence, BIG-IP falls back to Round Robin."
-      }
+      },
+      "clear": "Clear"
     },
     "ja3-tls-fingerprint": {
       "name": "JA3 / JA3N passive TLS fingerprint",
@@ -5440,6 +5445,151 @@
       "colBusiness": "Working hours",
       "bhYes": "yes",
       "bhNo": "no"
+    },
+    "p0f-signature-explainer": {
+      "name": "p0f passive TCP/IP signature explainer",
+      "blurb": "Decode a p0f v3 SYN fingerprint into its eight fields and see what each reveals about the sender's OS, network path, and stack.",
+      "inputLabel": "p0f v3 signature",
+      "inputPlaceholder": "4:64:0:*:mss*20,7:mss,sok,ts,nop,ws:df,id+:0",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs locally. The signature you paste never leaves your browser.",
+      "errorTitle": "Could not parse",
+      "errGeneric": "Unexpected error parsing the signature.",
+      "osTitle": "OS family hint",
+      "confidence": "Confidence",
+      "conf": {
+        "exact": "exact match",
+        "family": "family (TTL-based)",
+        "none": "no match"
+      },
+      "fieldsTitle": "The eight fields",
+      "colField": "Field",
+      "colValue": "Value",
+      "colMeaning": "Meaning",
+      "ttlTitle": "Initial TTL and proxy reasoning",
+      "optionsTitle": "TCP options in order",
+      "colToken": "Token",
+      "colName": "Name",
+      "quirksTitle": "Quirks"
+    },
+    "user-agent-entropy-analyzer": {
+      "name": "User-Agent entropy analyzer",
+      "blurb": "Paste a User-Agent string and see the identifying tokens it exposes, the distinguishing bits each contributes, and the Client Hints migration.",
+      "inputLabel": "User-Agent string",
+      "inputPlaceholder": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ... Chrome/120.0.0.0 Safari/537.36",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs locally. The string you paste never leaves your browser; nothing is read from your own browser.",
+      "errorTitle": "Could not parse",
+      "errGeneric": "Unexpected error parsing the User-Agent.",
+      "summaryTitle": "What it identifies",
+      "reducedTag": "This is the reduced / frozen UA form - the minor version is fixed and platform detail is capped.",
+      "componentsTitle": "Fingerprinting surface",
+      "colComponent": "Component",
+      "colValue": "Value",
+      "colBits": "~bits",
+      "colNote": "Note",
+      "totalRow": "Total",
+      "totalNote": "illustrative sum of distinguishing bits",
+      "bitsDisclaimer": "Bit estimates are illustrative, from published fingerprinting research - not a live measurement of any population.",
+      "freezeTitle": "UA freeze",
+      "chTitle": "Client Hints"
+    },
+    "http-header-order-fingerprint": {
+      "name": "HTTP header-order fingerprint",
+      "blurb": "Paste a request header block and see how header order and casing fingerprint the client - the passive-HTTP analog of JA3.",
+      "inputLabel": "Raw request header block",
+      "inputPlaceholder": "GET / HTTP/1.1\nHost: example.com\nUser-Agent: ...",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs locally. The headers you paste never leave your browser.",
+      "errorTitle": "Could not parse",
+      "errGeneric": "Unexpected error parsing the headers.",
+      "clientTitle": "Client hint",
+      "confidence": "Confidence",
+      "conf": {
+        "strong": "strong",
+        "weak": "weak",
+        "none": "none"
+      },
+      "orderHash": "Order hash (display only)",
+      "orderTitle": "Header order",
+      "colHeader": "Header",
+      "colNote": "Note",
+      "casingTitle": "Casing signal",
+      "missingTitle": "Missing common headers",
+      "missingIntro": "A browser would normally send these:"
+    },
+    "bigip-dns-gslb-simulator": {
+      "name": "BIG-IP DNS (GTM) GSLB simulator",
+      "blurb": "Model two-tier global server load balancing: a wide IP picks a pool, then the pool picks a virtual server. See how N DNS requests resolve across pools and members.",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs locally. Your topology and requests never leave your browser.",
+      "wideIpLabel": "Wide IP configuration",
+      "poolMethodLabel": "Wide-IP pool method",
+      "clientRegionLabel": "Client region",
+      "requestsLabel": "Requests (N)",
+      "addPool": "Add pool",
+      "removePool": "Remove pool",
+      "addMember": "Add member",
+      "removeMember": "Remove",
+      "poolWord": "Pool",
+      "memberWord": "VS",
+      "poolIdCol": "Pool",
+      "memberIdCol": "Virtual server",
+      "ratioCol": "Ratio",
+      "regionCol": "Region",
+      "upCol": "Up",
+      "memberMethodLabel": "Member method",
+      "errorTitle": "Cannot simulate",
+      "notSimulableTitle": "Not deterministically simulable",
+      "notSimulableGeneric": "This method depends on live big3d performance metrics collected from each data center, so its outcome cannot be reproduced offline. The tool states this instead of inventing a distribution.",
+      "poolTierTitle": "Pool tier — which pool answers",
+      "memberTierTitle": "Member tier — which virtual server resolves",
+      "countCol": "Requests",
+      "pctCol": "Share",
+      "upYes": "yes",
+      "upNo": "no",
+      "memberDynamicNote": "One or more pools use a dynamic member method; those members show 0 because their selection needs live metrics.",
+      "notesTitle": "Notes",
+      "method": {
+        "round-robin": "Round Robin",
+        "ratio": "Ratio",
+        "global-availability": "Global Availability",
+        "topology": "Topology",
+        "qos": "Quality of Service (dynamic)",
+        "completion-rate": "Completion Rate (dynamic)",
+        "lowest-round-trip-time": "Lowest Round-Trip Time (dynamic)",
+        "fewest-hops": "Fewest Hops (dynamic)",
+        "kilobytes-per-second": "Kilobytes/Second (dynamic)",
+        "packet-rate": "Packet Rate (dynamic)",
+        "virtual-server-score": "Virtual Server Score (dynamic)",
+        "least-connections": "Least Connections (dynamic)",
+        "cpu": "CPU (dynamic)"
+      },
+      "reason": {
+        "qos": "Quality of Service scores each virtual server from live RTT, hops, and hit-ratio metrics.",
+        "completion-rate": "Completion Rate compares the percentage of packets successfully exchanged, a live metric.",
+        "lowest-round-trip-time": "Lowest Round-Trip Time picks the resource with the least measured RTT from the local DNS.",
+        "fewest-hops": "Fewest Hops picks the resource with the least router hops from the local DNS, measured by big3d.",
+        "kilobytes-per-second": "Kilobytes/Second routes by live throughput.",
+        "packet-rate": "Packet Rate routes by live packets-per-second.",
+        "virtual-server-score": "Virtual Server Score uses a live per-VS performance score.",
+        "least-connections": "Least Connections routes by current live connection counts.",
+        "cpu": "CPU routes by live processor utilization."
+      },
+      "note": {
+        "pool:global-availability": "Wide-IP Global Availability sends all requests to the first available pool; the rest stand by.",
+        "pool:topology-match": "Wide-IP Topology matched the client region to a pool (score 10).",
+        "pool:topology-nomatch": "No pool region matched the client region, so the wide-IP fell back to round-robin across available pools.",
+        "pool:none-up": "No pools are available.",
+        "global-availability": "Global Availability sends all requests to the first available resource.",
+        "topology-match": "Topology matched the client region (score 10).",
+        "topology-nomatch": "No region matched; fell back to round-robin.",
+        "none-up": "No resources are available."
+      }
     }
   },
   "privacy_page": {
@@ -5688,7 +5838,7 @@
           "title": "The national micros",
           "body": [
             "The first machine came home the same way the radio had: through his father. A nine-year-old Rodolfo would watch, rapt, as his father fed a program into the computer from an ordinary audio cassette and then made things happen on the screen of the television set — which, in that era, was the monitor every home micro borrowed from the living room. It looked like conjuring, and it was not long before the watching turned into doing.",
-            "The machine itself was a product of its moment. In 1984 Brazil was under the reserva de mercado, a market reserve that banned imported computers to shelter a domestic industry, so the machines were local clones — the first one here a Microdigital TK-82C, a Brazilian clone of Sinclair's ZX81, later joined by the TK90X, a clone of the ZX Spectrum 48Kb.",
+            "The machine itself was a product of its moment. In 1984 Brazil was under the reserva de mercado, a market reserve that banned imported computers to shelter a domestic industry, so the machines were local clones — the first one here a Microdigital TK-82C, a Brazilian clone of Sinclair's ZX81, later joined by the TK90X, a clone of the ZX Spectrum 48K.",
             "There was no hard drive and no network. Soon Rodolfo was writing his own programs in BASIC, typed by hand from the back pages of magazines and saved to that same screeching cassette; a membrane keyboard under his fingers, the television still standing in for a monitor. He learned BASIC because there was nothing else to do with the thing, and in the process learned the truth the rest of this site is built on: a computer is not magic. It is a machine that does exactly, and only, what you tell it."
           ]
         },
@@ -6933,7 +7083,9 @@
         ]
       }
     },
-    "devFunTitle": "Back to /dev/fun"
+    "devFunTitle": "Back to /dev/fun",
+    "fullscreenEnterAria": "Enter full screen",
+    "fullscreenExitAria": "Exit full screen"
   },
   "devFun": {
     "metaTitle": "/dev/fun",
@@ -7987,7 +8139,9 @@
       "ops-culture": "ops culture",
       "web-development": "web dev",
       "programming": "programming",
-      "vendors": "vendors & products"
+      "vendors": "vendors & products",
+      "isp-telecom": "ISP & telecom",
+      "it-support": "IT support"
     },
     "entries": {
       "the-hacker-manifesto": {
@@ -9401,6 +9555,1738 @@
       "cortex": {
         "def": "Palo Alto Networks' security-operations family, announced in February 2019: detection, response, and automation for the SOC.",
         "context": "Cortex arrived in February 2019 as an AI-based security platform together with Cortex XDR, the product that pushed 'XDR' into the industry vocabulary as detection and response across endpoint, network, and cloud telemetry rather than endpoint alone. The family grew by acquisition and iteration: Cortex XSOAR from Demisto (2019) for orchestration and automation, Cortex Xpanse from Expanse (2020) for attack-surface management, and Cortex XSIAM (2022) as the AI-driven SOC platform folding those capabilities together. In practice the name marks the operations side of the house, where Strata enforces and Prisma covers the cloud."
+      },
+      "vlan": {
+        "def": "Virtual LAN: a logical Layer 2 broadcast domain carved out of a physical switch network, isolating traffic without separate hardware.",
+        "context": "Defined by IEEE 802.1Q, which tags each frame with a 12-bit VLAN ID - hence the 4094 usable VLANs."
+      },
+      "trunk-port": {
+        "def": "A switch port carrying multiple VLANs at once, each frame tagged with its VLAN ID so the far end can sort them back out.",
+        "context": "The opposite of an access port, which belongs to exactly one VLAN and carries untagged frames."
+      },
+      "spanning-tree": {
+        "def": "The Layer 2 protocol that blocks redundant switch links to prevent loops, keeping exactly one active path between any two points.",
+        "context": "IEEE 802.1D and its faster successors (RSTP, MST); a looped L2 network without it melts down in a broadcast storm."
+      },
+      "arp": {
+        "def": "Address Resolution Protocol: how a host asks 'who has this IP?' on the local network and learns the answering MAC address.",
+        "context": "Every IPv4 conversation on a LAN starts with it; its lack of authentication is what makes ARP spoofing possible."
+      },
+      "dhcp": {
+        "def": "Dynamic Host Configuration Protocol: hands each joining device an IP address, mask, gateway, and DNS servers, leased for a limited time.",
+        "context": "The four-step dance is DORA: Discover, Offer, Request, Acknowledge."
+      },
+      "ospf": {
+        "def": "Open Shortest Path First: the standard link-state interior routing protocol, in which every router maps the whole area and computes shortest paths.",
+        "context": "Runs Dijkstra over a shared link-state database; convergence is fast because everyone recalculates from the same map."
+      },
+      "static-route": {
+        "def": "A route entered by hand rather than learned from a protocol: absolute, silent, and exactly as correct as the person who typed it.",
+        "context": "Scales beautifully to about a dozen; beyond that, dynamic routing exists for a reason."
+      },
+      "default-route": {
+        "def": "The route of last resort - 0.0.0.0/0 - matching everything no more specific route claims; the packet's way out of the building.",
+        "context": "On hosts it is the 'default gateway'; on the internet's core routers there famously is none - the default-free zone."
+      },
+      "administrative-distance": {
+        "def": "The trust ranking a router applies when two routing sources offer the same prefix: lower wins, so connected beats static beats OSPF beats BGP-learned.",
+        "context": "A local tiebreaker, not a protocol field: two vendors may rank the same sources differently."
+      },
+      "longest-prefix-match": {
+        "def": "The routing rule that the most specific matching prefix wins: /32 beats /24 beats /0, regardless of protocol or metric.",
+        "context": "The reason a leaked /25 can hijack traffic away from the legitimate /24."
+      },
+      "lacp": {
+        "def": "Link Aggregation Control Protocol: bundles multiple physical links into one logical channel for bandwidth and redundancy, negotiated rather than hoped for.",
+        "context": "IEEE 802.3ad/802.1AX; a bundle without negotiation is how you get one-sided port channels and mystery outages."
+      },
+      "vrrp": {
+        "def": "Virtual Router Redundancy Protocol: two or more routers share one virtual gateway address, so the default gateway survives a device failure.",
+        "context": "The open standard sibling of Cisco's HSRP; the ritual is an election, the prize is the virtual MAC."
+      },
+      "vrf": {
+        "def": "Virtual Routing and Forwarding: multiple independent routing tables on one router, so overlapping or unrelated networks never mix.",
+        "context": "The routing sibling of the VLAN idea: virtualize the table, not just the broadcast domain."
+      },
+      "mpls": {
+        "def": "Multiprotocol Label Switching: forwards packets by short labels instead of IP lookups, letting carriers build fast paths and private VPNs over shared cores.",
+        "context": "The 'multiprotocol' is literal: the label neither knows nor cares what payload it carries."
+      },
+      "gre-tunnel": {
+        "def": "Generic Routing Encapsulation: wraps one packet inside another so traffic can cross networks that could not route it natively - a tunnel, without encryption.",
+        "context": "Pair it with IPsec when confidentiality matters; GRE alone is an envelope, not a safe."
+      },
+      "ipsec": {
+        "def": "The standard suite for encrypting and authenticating IP traffic, powering most site-to-site VPNs; keys are negotiated by IKE.",
+        "context": "Two modes: transport protects the payload, tunnel wraps the whole packet - site-to-site VPNs live in the second."
+      },
+      "acl": {
+        "def": "Access Control List: an ordered set of permit and deny rules evaluated top-down against traffic, with an implicit deny waiting at the end.",
+        "context": "First match wins, which is why rule order is the whole game."
+      },
+      "stateful-firewall": {
+        "def": "A firewall that tracks connections, allowing return traffic automatically for sessions it saw begin - judging flows, not lone packets.",
+        "context": "The contrast is the stateless packet filter, which evaluates every packet as a stranger."
+      },
+      "dmz": {
+        "def": "Demilitarized zone: the buffer network between the internet and the inside, where public-facing servers live under stricter watch.",
+        "context": "Named after the military buffer strip; compromise of a DMZ host should not hand over the interior."
+      },
+      "snmp": {
+        "def": "Simple Network Management Protocol: the decades-old standard for polling device health and counters, and for receiving traps when something breaks.",
+        "context": "Version 3 added real authentication and encryption; communities 'public' and 'private' still haunt audits."
+      },
+      "syslog": {
+        "def": "The universal log-shipping protocol: devices stream timestamped severity-tagged events to a central collector, from debug chatter to emergencies.",
+        "context": "RFC 5424 formalized what BSD improvised; severity 0 is Emergency, 7 is Debug, and both get ignored at 3 a.m."
+      },
+      "netflow": {
+        "def": "Flow telemetry: routers export who-talked-to-whom records (addresses, ports, bytes, duration) so you can see traffic patterns without capturing packets.",
+        "context": "Cisco's original; IPFIX is the IETF standard descendant, sFlow the sampling cousin."
+      },
+      "port-mirroring": {
+        "def": "Copying a port's or VLAN's traffic to another port so an analyzer or IDS can watch without sitting inline.",
+        "context": "SPAN mirrors locally, RSPAN across switches, ERSPAN across routed networks - each hop adds ways to drop packets silently."
+      },
+      "jumbo-frames": {
+        "def": "Ethernet frames above the standard 1500-byte payload, typically 9000: fewer headers per gigabyte, and misery when one hop in the path disagrees.",
+        "context": "Every device in the path must agree, which is why they thrive inside data centers and die crossing the internet."
+      },
+      "duplex-mismatch": {
+        "def": "One end at full duplex, the other at half: the link works, slowly and with late collisions - the classic 'network is weird' root cause of the 2000s.",
+        "context": "Usually born from one side hard-coded and the other autonegotiating; the autoneg side falls back to half."
+      },
+      "poe": {
+        "def": "Power over Ethernet: the switch feeds power down the data cable, so phones, cameras, and access points need no outlet.",
+        "context": "IEEE 802.3af/at/bt tiers roughly 15 W, 30 W, and up to 90 W per port."
+      },
+      "sfp": {
+        "def": "Small Form-factor Pluggable: the swappable module that gives a switch port its physical medium - copper or fiber, short reach or long haul.",
+        "context": "SFP+ carries 10G, QSFP bundles four lanes; the port is a socket, the transceiver is the decision."
+      },
+      "lldp": {
+        "def": "Link Layer Discovery Protocol: neighbors introduce themselves on the wire - device, port, capabilities - turning 'what is on the other end?' into a show command.",
+        "context": "The vendor-neutral successor to Cisco's CDP; IP phones extend it as LLDP-MED for voice VLANs and PoE hints."
+      },
+      "ecmp": {
+        "def": "Equal-Cost Multi-Path: when several routes tie on cost, traffic is hashed across all of them - free load sharing, per flow, not per packet.",
+        "context": "Per-flow hashing keeps packets in order; elephant flows can still make one path unfairly heavy."
+      },
+      "leaf-spine": {
+        "def": "The modern data-center fabric: every leaf switch connects to every spine, giving any two servers the same short predictable path.",
+        "context": "Replaced the three-tier core/distribution/access design as east-west traffic overtook north-south."
+      },
+      "vxlan": {
+        "def": "Virtual Extensible LAN: stretches Layer 2 segments over a routed Layer 3 network by encapsulating frames in UDP, with 16 million segment IDs.",
+        "context": "The overlay under most cloud and modern data-center fabrics, usually driven by EVPN as its control plane."
+      },
+      "underlay-overlay": {
+        "def": "The two-layer view of modern networks: the underlay is the physical routed plumbing; the overlay is the virtual topology tunneled on top of it.",
+        "context": "When the overlay misbehaves, the underlay is where you troubleshoot; conflating the two is the classic modern-network confusion."
+      },
+      "out-of-band-management": {
+        "def": "A separate management path - console servers, dedicated ports, even 4G - that still works when the production network is the thing that broke.",
+        "context": "The difference between fixing a dead core switch from home and driving to the site at 3 a.m."
+      },
+      "loopback-interface": {
+        "def": "A virtual interface that never goes down, giving the router a stable identity for routing protocols and management regardless of physical link state.",
+        "context": "BGP sessions and router IDs anchor to loopbacks precisely because cables fail and loopbacks do not."
+      },
+      "asymmetric-routing": {
+        "def": "Traffic out one path and back another: perfectly legal IP behavior that quietly breaks stateful firewalls expecting to see both directions.",
+        "context": "Common wherever multihoming exists; the cure is state sharing between firewalls or accepting the asymmetry by design."
+      },
+      "mac-flapping": {
+        "def": "The same MAC address appearing rapidly on different switch ports - the signature of a loop, a bad bond, or a device bridging where it should not.",
+        "context": "Switch logs announce it verbatim - 'host flapping between ports' - one of the few error messages that names its own diagnosis."
+      },
+      "storm-control": {
+        "def": "A per-port ceiling on broadcast, multicast, or unknown-unicast traffic that throttles or shuts the port when a storm begins.",
+        "context": "A blunt but effective seatbelt: it will not find the loop, only survive it."
+      },
+      "port-security": {
+        "def": "Switch-port rules limiting which and how many MAC addresses may appear, so a rogue hub or spoofed device trips the port instead of joining it.",
+        "context": "Sticky MAC learning writes the first seen address into config - order matters on installation day."
+      },
+      "rfc1918": {
+        "def": "The private IPv4 ranges - 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 - routable inside, never on the public internet, and the reason NAT exists.",
+        "context": "Published in 1996 as address exhaustion loomed; every home 192.168.0.1 descends from it."
+      },
+      "link-local": {
+        "def": "Addresses valid only on the local segment: IPv6's fe80::/10 on every interface by design, IPv4's 169.254.0.0/16 usually meaning DHCP failed.",
+        "context": "Seeing 169.254.x.x on a workstation is a diagnosis, not an address plan."
+      },
+      "dual-stack": {
+        "def": "Running IPv4 and IPv6 side by side on the same hosts and links - the standard transition strategy while both internets coexist.",
+        "context": "The pragmatic middle of the IPv6 transition, ahead of translation (NAT64) and tunneling approaches."
+      },
+      "slaac": {
+        "def": "Stateless Address Autoconfiguration: IPv6 hosts build their own addresses from router advertisements - no DHCP server required, no lease table kept.",
+        "context": "The EUI-64 method derived addresses from MACs until privacy extensions randomized them."
+      },
+      "oversubscription": {
+        "def": "Selling or provisioning more aggregate capacity than the uplink actually has, betting that everyone never peaks at once - a ratio, and a promise.",
+        "context": "Normal engineering practice everywhere from switch fabrics to broadband; the sin is not the ratio but hiding it."
+      },
+      "wire-speed": {
+        "def": "Forwarding at the full rate of the medium with no queueing loss - the benchmark claim every datasheet makes and every RFC 2544 test verifies.",
+        "context": "Read the fine print: at which frame size? 64-byte wire speed is the honest number."
+      },
+      "dark-fiber": {
+        "def": "Installed but unlit fiber strands leased as raw glass: the customer brings the optics and owns the capacity ceiling.",
+        "context": "The name is literal - no light in the glass until the lessee lights it."
+      },
+      "bfd": {
+        "def": "Bidirectional Forwarding Detection: millisecond-scale hello packets that tell routing protocols a path died long before their own timers would notice.",
+        "context": "Routing protocols keep their slow hellos for sanity; BFD exists so failover happens before users notice."
+      },
+      "last-mile": {
+        "def": "The final stretch of network between the provider's infrastructure and the customer's door - the most expensive kilometers in telecom.",
+        "context": "Fiber, coax, copper, or radio; every access technology is an answer to this one segment."
+      },
+      "ftth": {
+        "def": "Fiber to the Home: optical fiber running the entire last mile into the residence, with no copper or coax remainder.",
+        "context": "The X in FTTx marks where fiber stops: home, building (FTTB), curb (FTTC), node (FTTN)."
+      },
+      "gpon": {
+        "def": "Gigabit Passive Optical Network: one fiber from the OLT is split passively among up to 64 or 128 subscribers, sharing 2.5 Gbps down and 1.25 up.",
+        "context": "The dominant FTTH standard of the 2010s; XGS-PON is its symmetrical 10-gigabit successor."
+      },
+      "olt": {
+        "def": "Optical Line Terminal: the provider-side head of a PON, terminating hundreds of subscriber fibers and scheduling every upstream burst.",
+        "context": "Lives in the central office or a street cabinet; its counterpart in the home is the ONT."
+      },
+      "ont": {
+        "def": "Optical Network Terminal: the customer-side box that converts the PON's light into Ethernet - the fiber modem, in everyday speech.",
+        "context": "ONU is the near-synonym from the standards; field techs use the terms interchangeably."
+      },
+      "optical-splitter": {
+        "def": "The passive glass component that divides one PON fiber into many - no power, no electronics, just engineered light loss.",
+        "context": "Each 1:2 split costs about 3 dB; a 1:64 tree spends roughly 18 dB of the optical budget before the drop."
+      },
+      "optical-budget": {
+        "def": "The decibels a link can afford to lose between transmitter and receiver; splitters, splices, connectors, and distance all spend from it.",
+        "context": "Measured against it with a power meter; a link over budget works badly or intermittently, the worst kind of broken."
+      },
+      "fusion-splice": {
+        "def": "Joining two fibers by melting them together in an arc - the lowest-loss, permanent way to connect glass, at about 0.02 dB.",
+        "context": "The splicer machine aligns cores automatically; the craft is in the cleave."
+      },
+      "otdr": {
+        "def": "Optical Time-Domain Reflectometer: fires light pulses down a fiber and reads the reflections, mapping every splice, bend, and break by distance.",
+        "context": "The fiber tech's radar; the trace shows exactly how many meters away the backhoe struck."
+      },
+      "drop-cable": {
+        "def": "The final cable from the pole, pedestal, or splitter box to the customer's building - the piece of plant most exposed to weather, trees, and trucks.",
+        "context": "In PON it is the fiber from the last splitter to the ONT; most truck rolls end here."
+      },
+      "demarc": {
+        "def": "The contractual boundary where the provider's network ends and the customer's begins - and with it, whose problem the fault is.",
+        "context": "'Extending the demarc' is telecom for wiring past that point, billable and disclaimed."
+      },
+      "cpe": {
+        "def": "Customer Premises Equipment: any provider-managed device at the customer site - modem, ONT, router - the equipment half of every 'is it you or is it me?' call.",
+        "context": "Managed remotely via TR-069 or its successors when all goes well."
+      },
+      "docsis": {
+        "def": "The standard that turns cable-TV coax into broadband, sharing spectrum among a neighborhood of modems under one CMTS scheduler.",
+        "context": "Versions 3.0, 3.1, and 4.0 mark the gigabit march; upstream was historically the scarce direction."
+      },
+      "cmts": {
+        "def": "Cable Modem Termination System: the head-end router that owns every cable modem in its footprint, granting each its timeslots and speed tier.",
+        "context": "The DOCSIS twin of the PON world's OLT."
+      },
+      "dslam": {
+        "def": "DSL Access Multiplexer: the exchange-side rack that terminates hundreds of copper DSL lines and hands their traffic to the backhaul.",
+        "context": "Distance from it decided your speed; the reason 'how far are you from the exchange?' was a support question."
+      },
+      "pppoe": {
+        "def": "Point-to-Point Protocol over Ethernet: wraps each subscriber's traffic in an authenticated session, so the ISP knows who you are before routing you.",
+        "context": "The login-and-password ritual of DSL that survived into much of FTTH; costs 8 bytes of every frame."
+      },
+      "ipoe": {
+        "def": "IP over Ethernet: subscriber access without PPPoE - plain DHCP, with identity taken from the line itself rather than a login.",
+        "context": "Simpler and faster than PPPoE; authentication moves to DHCP option 82 and the access port."
+      },
+      "radius": {
+        "def": "The AAA workhorse: authenticates who connects, authorizes what they get, and accounts for what they used - for ISPs, VPNs, and Wi-Fi alike.",
+        "context": "Remote Authentication Dial-In User Service; the name remembers modems, the protocol outlived them."
+      },
+      "cgnat": {
+        "def": "Carrier-Grade NAT: the ISP shares one public IPv4 address among many subscribers, translating at provider scale because the addresses ran out.",
+        "context": "Breaks inbound connections, port forwarding, and some games; the strongest everyday argument for IPv6."
+      },
+      "peering": {
+        "def": "Two networks exchanging each other's customer traffic directly, usually settlement-free - because both save on transit.",
+        "context": "The handshake economy of the internet; disputes over it occasionally make headlines and lag spikes."
+      },
+      "ixp": {
+        "def": "Internet Exchange Point: the shared switching fabric where dozens or hundreds of networks meet to peer in one place.",
+        "context": "Brazil's IX.br is among the world's largest by participants; one cross-connect, many peers."
+      },
+      "transit": {
+        "def": "Paying a bigger network to reach the whole internet - the ISP's upstream bill, priced per megabit of committed rate.",
+        "context": "Peering is trade between equals; transit is buying a ride from someone better connected."
+      },
+      "backhaul": {
+        "def": "The links carrying aggregated access traffic from towers, cabinets, and OLTs back to the network core - the middle mile.",
+        "context": "A tower with gigabit radio and megabit backhaul is a sports car in traffic."
+      },
+      "mdf-idf": {
+        "def": "Main and Intermediate Distribution Frames: the building's cabling hierarchy - everything homes to the MDF, floors terminate in IDFs.",
+        "context": "Where structured cabling is born and where mystery cables go to be labeled 'do not remove'."
+      },
+      "patch-panel": {
+        "def": "The passive frame where permanent cabling terminates in numbered jacks, so changes happen with patch cords instead of a punch-down tool.",
+        "context": "The tidy photo on day one and the archaeology site five years later."
+      },
+      "truck-roll": {
+        "def": "Dispatching a technician to the premises - the most expensive way to close a ticket, and sometimes the only one.",
+        "context": "Every remote diagnostic, self-install kit, and TR-069 feature exists to avoid one."
+      },
+      "tr-069": {
+        "def": "The Broadband Forum's remote-management protocol: the ISP's ACS can configure, update, and diagnose the CPE fleet without a single site visit.",
+        "context": "CWMP by its protocol name; USP (TR-369) is the modern successor."
+      },
+      "provisioning": {
+        "def": "The automated chain that turns a signed contract into a working service: records created, equipment authorized, speed profile applied.",
+        "context": "When it breaks, the line is perfect and the internet still does not exist."
+      },
+      "walled-garden": {
+        "def": "A restricted network state where the subscriber can reach only the provider's portal - used for unpaid bills, activation, or infected hosts.",
+        "context": "The 'your account needs attention' page that answers every URL you type."
+      },
+      "sla": {
+        "def": "Service Level Agreement: the contract's measurable promises - availability, repair time, throughput - and the penalties when they slip.",
+        "context": "99.9% allows 8.8 hours down a year; every nine multiplies the price."
+      },
+      "mttr": {
+        "def": "Mean Time To Repair: the average clock from failure to restoration - the operational number behind every SLA repair promise.",
+        "context": "Its siblings MTBF and MTTF measure how often things break; MTTR measures how long you suffer."
+      },
+      "attenuation": {
+        "def": "Signal loss over distance and through obstacles, measured in dB - the budget every link spends whether copper, fiber, or radio.",
+        "context": "In fiber measured per kilometer; in DSL it decided your plan; in Wi-Fi it is the wall between you and the router."
+      },
+      "snr": {
+        "def": "Signal-to-Noise Ratio: how far the signal stands above the noise floor, in dB - the single number that decides whether a link can run its rated speed.",
+        "context": "Every modulation scheme has an SNR price; margin is what keeps the link alive on a rainy day."
+      },
+      "node-split": {
+        "def": "Dividing a congested cable or PON serving area into two smaller ones, halving the subscribers who share the same capacity.",
+        "context": "The capacity lever of shared-medium networks: fewer neighbors per node, more speed per neighbor."
+      },
+      "aerial-vs-underground": {
+        "def": "The two ways outside plant reaches customers: on poles (cheap, fast, storm-exposed) or buried (costly, slow, backhoe-exposed).",
+        "context": "Every ISP's build map is a negotiation between these two economics."
+      },
+      "pole-attachment": {
+        "def": "The regulated right to hang cables on utility poles owned by power or phone companies - rented space, strict rules, long queues.",
+        "context": "Make-ready work and attachment fees shape where competitive fiber actually gets built."
+      },
+      "upstream-downstream": {
+        "def": "The two directions of an access link: downstream toward the subscriber, upstream toward the internet - historically sized very unequally.",
+        "context": "Video calls and cloud backups made the skinny upstream everyone's problem."
+      },
+      "dhcp-option-82": {
+        "def": "The relay information option: the access device stamps each DHCP request with the physical line it arrived on, giving the ISP per-port identity.",
+        "context": "How IPoE networks know which customer is which without a login."
+      },
+      "wifi-site-survey": {
+        "def": "Measuring actual coverage, interference, and neighbor networks on site before or after placing access points - the map versus the guess.",
+        "context": "The difference between 'the router is in the living room' and knowing why the bedroom gets nothing."
+      },
+      "mesh-wifi": {
+        "def": "Multiple cooperating access nodes forming one seamless network, relaying wirelessly where cable cannot reach.",
+        "context": "Each wireless hop spends airtime twice; wired backhaul between nodes is the quiet upgrade."
+      },
+      "ss7": {
+        "def": "Signaling System 7: the signaling network that sets up phone calls and SMS worldwide - designed for a closed club of trusted carriers.",
+        "context": "That trust model is why SS7 access enables call interception and SMS hijacking today."
+      },
+      "number-porting": {
+        "def": "Moving a phone number between carriers while keeping it - a regulated right, a database update, and a fraud vector when hijacked.",
+        "context": "SIM-swap attacks are porting's evil twin: same mechanism, stolen identity."
+      },
+      "service-desk": {
+        "def": "The single point of contact between users and IT: intake, triage, resolution or escalation, and the record of it all.",
+        "context": "ITIL distinguishes it from a help desk by scope - the desk owns the whole service relationship, not just fixes."
+      },
+      "ticket": {
+        "def": "The unit of support work: one tracked record per issue, with status, owner, history, and priority - if it is not in the ticket, it did not happen.",
+        "context": "Also the unit of accountability: metrics, SLAs, and 3 a.m. escalations all hang off it."
+      },
+      "incident-vs-request": {
+        "def": "The great ITIL fork: an incident is something broken; a request is something wanted - different queues, clocks, and expectations.",
+        "context": "Misfiling one as the other is how a password reset gets a major-incident bridge call."
+      },
+      "severity-levels": {
+        "def": "The impact-and-urgency ladder for incidents: P1 is everyone-down-drop-everything, P4 is a papercut with a queue.",
+        "context": "The perpetual negotiation: every caller's issue is a P1 to the caller."
+      },
+      "escalation": {
+        "def": "Moving a ticket up - functionally to deeper expertise, hierarchically to management - when the current tier cannot or should not resolve it.",
+        "context": "Knowing when to escalate is the skill; escalating with a clean handoff is the craft."
+      },
+      "tier-1-2-3": {
+        "def": "The layered support model: L1 handles volume with scripts and known fixes, L2 brings expertise, L3 is the people who built or own the thing.",
+        "context": "Each tier exists to protect the next one's time."
+      },
+      "first-call-resolution": {
+        "def": "The percentage of issues closed in the first contact, no callbacks, no escalation - the metric that best predicts user happiness.",
+        "context": "Easy to inflate by closing tickets prematurely, which is why it pairs with reopen rate."
+      },
+      "knowledge-base": {
+        "def": "The searchable library of known issues, fixes, and how-tos - support's compound interest, paid into one resolved ticket at a time.",
+        "context": "KCS (Knowledge-Centered Service) is the discipline of writing the article while solving the case."
+      },
+      "itil": {
+        "def": "The IT service management framework: a shared vocabulary and practice set for incidents, problems, changes, and service delivery.",
+        "context": "Born from UK government practice in the 1980s; today it is the lingua franca of service desks."
+      },
+      "problem-management": {
+        "def": "The ITIL practice that hunts the cause behind recurring incidents: incidents restore service, problems remove the reason it broke.",
+        "context": "Ten identical tickets closed is ten incidents; one root cause removed is problem management."
+      },
+      "change-management-itsm": {
+        "def": "The gate through which production changes pass: assessed for risk, scheduled in windows, approved, and rollback-ready.",
+        "context": "The CAB (change advisory board) is its parliament; emergency changes are its loophole and its lesson generator."
+      },
+      "cmdb": {
+        "def": "Configuration Management Database: the inventory of every asset and the relationships between them - what talks to what, and who screams when it dies.",
+        "context": "Every organization has one; in most, it was accurate once."
+      },
+      "asset-management": {
+        "def": "Tracking hardware and software through their whole lifecycle - procurement, assignment, patching, retirement - so licenses, budgets, and audits reconcile.",
+        "context": "The unglamorous discipline that decides whether an audit is a formality or an archaeology dig."
+      },
+      "remote-desktop": {
+        "def": "Taking over a user's screen and input from afar - RDP, VNC, and their commercial cousins - support's teleportation.",
+        "context": "Also an attack surface: exposed RDP was ransomware's favorite front door for years."
+      },
+      "golden-image": {
+        "def": "The blessed master build of an operating system plus standard apps and settings, cloned onto every new machine.",
+        "context": "Its drift over time is why 'reimage it' remains support's nuclear option."
+      },
+      "gpo": {
+        "def": "Group Policy Object: Windows domain settings pushed centrally to users and machines - wallpaper to password policy, mapped drives to lockdown.",
+        "context": "gpupdate /force is the incantation; 'it is a GPO' is the diagnosis."
+      },
+      "active-directory": {
+        "def": "Microsoft's directory service: the domain's phone book and security authority - users, groups, machines, and the permissions binding them.",
+        "context": "The crown jewels of most corporate networks, which is why attackers head straight for it."
+      },
+      "sso": {
+        "def": "Single Sign-On: authenticate once, reach many applications - identity centralized, passwords decimated, and one very important basket for the eggs.",
+        "context": "SAML and OpenID Connect are its wire protocols; the IdP is its heart."
+      },
+      "mdm": {
+        "def": "Mobile Device Management: enrolling phones, tablets, and laptops under central policy - configure, patch, locate, and wipe from one console.",
+        "context": "The truce line of BYOD: your device, the company's rules on the work part of it."
+      },
+      "byod": {
+        "def": "Bring Your Own Device: employees working from personal hardware - cheaper fleets, happier users, and a security perimeter made of other people's phones.",
+        "context": "Containerization and MDM exist to make the acronym survivable."
+      },
+      "patch-management": {
+        "def": "The cycle of testing and deploying software updates across the fleet - balancing the risk of the bug against the risk of the fix.",
+        "context": "Patch Tuesday made it a calendar; unpatched known vulnerabilities remain the most preventable breach cause."
+      },
+      "rma": {
+        "def": "Return Merchandise Authorization: the vendor's blessing to send hardware back - the number without which the box comes home unopened.",
+        "context": "Advance replacement ships the new unit first; standard RMA teaches patience."
+      },
+      "warm-cold-boot": {
+        "def": "Restarting without cutting power versus from full power-off - the cold boot clears states the warm one preserves.",
+        "context": "Why 'turn it off and on again' sometimes fixes what 'restart' did not."
+      },
+      "safe-mode": {
+        "def": "Booting with minimal drivers and services: if the problem vanishes here, something loaded at startup is the suspect.",
+        "context": "Diagnosis by subtraction - the OS's own isolation test."
+      },
+      "event-viewer": {
+        "def": "The operating system's diary of errors, warnings, and audits - where 'it just crashed' becomes a source, an ID, and a timestamp.",
+        "context": "Windows' Event Viewer and Unix's journals: same idea, the machine wrote down what happened."
+      },
+      "driver": {
+        "def": "The software that teaches the operating system to speak to a specific piece of hardware - and the first suspect when that hardware misbehaves.",
+        "context": "Kernel-adjacent by nature, which is why a bad one can take the whole system down with it."
+      },
+      "full-disk-encryption": {
+        "def": "Encrypting the entire drive so a lost or stolen machine leaks nothing - BitLocker, FileVault, LUKS - unlocked at boot, transparent after.",
+        "context": "Turns 'laptop stolen from car' from a breach notification into a hardware expense."
+      },
+      "password-manager": {
+        "def": "A vault that generates and stores a unique strong password per site, unlocked by one master secret - the practical end of password reuse.",
+        "context": "The advice that survived every other password rule: length beats complexity, uniqueness beats both."
+      },
+      "least-privilege-desktop": {
+        "def": "Daily work in an unprivileged account, elevation only when needed: the desktop version of least privilege, and malware's least favorite policy.",
+        "context": "Most commodity malware simply fails without local admin."
+      },
+      "shadow-copy": {
+        "def": "Snapshots are fast local restore points sharing the original's fate; backups live elsewhere and survive it - only the second answers ransomware.",
+        "context": "The 3-2-1 rule: three copies, two media, one off-site."
+      },
+      "layer-8": {
+        "def": "The unofficial OSI layer above application: the human - where a startling share of network problems actually occur.",
+        "context": "Said with a smile in the NOC; the polite cousin of PEBKAC."
+      },
+      "percussive-maintenance": {
+        "def": "The time-honored art of fixing a device by striking it firmly - occasionally effective on oxidized contacts, always effective on morale.",
+        "context": "Immortalized across generations of field lore; not covered by warranty."
+      },
+      "have-you-tried-turning-it-off": {
+        "def": "Support's opening liturgy and its most statistically justified question: a restart clears the accumulated state where most transient faults live.",
+        "context": "Canonized by The IT Crowd; annoying precisely because it works."
+      },
+      "ticket-ping-pong": {
+        "def": "A ticket bounced between teams, each reassigning it as not-mine - the organizational failure mode where routing replaces resolving.",
+        "context": "The cure is ownership: whoever holds it, drives it, even across team lines."
+      },
+      "user-error-codes": {
+        "def": "The joke 'error codes' for user-caused issues - ID-10-T, PICNIC, layer 8 - support's private shorthand, best kept private.",
+        "context": "Funny in the break room, career-limiting in the ticket notes."
+      },
+      "onboarding-offboarding": {
+        "def": "The account-and-access lifecycle at hiring and departure: created and granted on day one, revoked completely on the last - the second half is the audit finding.",
+        "context": "Orphaned accounts of departed employees are a perennial breach vector."
+      },
+      "kba-security-questions": {
+        "def": "Knowledge-based authentication - mother's maiden name, first pet - identity proofs from an era before social media published the answers.",
+        "context": "Treat them as passwords: generate nonsense and store it in the manager."
+      },
+      "remote-hands": {
+        "def": "Data-center staff acting as your on-site body: swap the drive, read the LEDs, move the cable - your eyes and hands, billed by the quarter hour.",
+        "context": "The instructions must survive contact with someone who has never seen your rack."
+      },
+      "maintenance-window": {
+        "def": "The scheduled low-impact period when changes are allowed - announced, bounded, and rollback-planned; work outside it needs an emergency's justification.",
+        "context": "Why so much of IT happens at 2 a.m. on a Sunday."
+      },
+      "vpc": {
+        "def": "Virtual Private Cloud: your own logically isolated network inside a public cloud - address space, subnets, routing, and gateways, defined in software.",
+        "context": "The cloud's answer to 'where does my network live now?'; every workload sits inside one."
+      },
+      "security-group": {
+        "def": "The cloud's stateful per-instance firewall: allow rules attached to workloads, return traffic implied, default deny inbound.",
+        "context": "Follows the instance wherever it moves - the rule set is tied to the workload, not the wire."
+      },
+      "nacl": {
+        "def": "The stateless subnet-level filter in cloud networks: numbered allow and deny rules evaluated in order, both directions filtered independently.",
+        "context": "Stateless means return traffic needs its own rule - the classic NACL lesson, learned once per engineer."
+      },
+      "route-table": {
+        "def": "The per-subnet routing decisions of a VPC: which destinations go to the internet gateway, the NAT, the peering, or the tunnel.",
+        "context": "The first place to look when a cloud subnet 'has no internet'."
+      },
+      "internet-gateway": {
+        "def": "The VPC component that gives public subnets a door to the internet - horizontally scaled, no bandwidth knob, no single box to fail.",
+        "context": "Its presence in the route table is what makes a subnet 'public'."
+      },
+      "nat-gateway": {
+        "def": "The managed service that lets private subnets reach out to the internet without being reachable from it - outbound yes, inbound no.",
+        "context": "Billed per hour and per gigabyte processed, which is how it becomes a surprise line item."
+      },
+      "elastic-ip": {
+        "def": "A static public address you own and can remap between instances - identity that survives the workload behind it.",
+        "context": "The cloud's answer to 'the IP must not change'; scarce IPv4 makes idle ones billable."
+      },
+      "availability-zone": {
+        "def": "One or more data centers with independent power, cooling, and network inside a region - close enough for sync replication, far enough to fail separately.",
+        "context": "Multi-AZ is the first rung of cloud resilience; same-AZ redundancy is a shared fate."
+      },
+      "cloud-region": {
+        "def": "A geographic cluster of availability zones, isolated from every other region - the blast-radius boundary and the data-residency unit.",
+        "context": "Cross-region is where latency, cost, and compliance conversations begin."
+      },
+      "transit-gateway": {
+        "def": "The cloud's central router: VPCs, VPNs, and interconnects attach to one hub instead of meshing with each other.",
+        "context": "Turns N-squared peerings into N attachments - the hub-and-spoke pattern as a managed service."
+      },
+      "vpc-peering": {
+        "def": "A private one-to-one link between two VPCs, routing their address spaces to each other - non-transitive by design.",
+        "context": "Peering A-B and B-C does not connect A to C; that gap is why transit gateways exist."
+      },
+      "hub-and-spoke": {
+        "def": "The topology where everything connects through a central hub instead of to each other - fewer links, central control, one very important middle.",
+        "context": "The design behind transit gateways, SD-WAN backbones, and most airline maps."
+      },
+      "dedicated-interconnect": {
+        "def": "A private physical circuit from your premises into the cloud provider's edge - predictable latency, real bandwidth, no public internet in the path.",
+        "context": "AWS Direct Connect, Azure ExpressRoute, Google Cloud Interconnect: three names, one idea."
+      },
+      "privatelink": {
+        "def": "Consuming a service through a private address inside your own VPC, so the traffic never touches the public internet.",
+        "context": "The pattern that keeps 'call the API' from meaning 'cross the internet'."
+      },
+      "public-vs-private-subnet": {
+        "def": "The basic VPC split: public subnets route to the internet gateway and can be reached; private subnets reach out through NAT and cannot.",
+        "context": "Load balancers in public, workloads in private: the pattern behind most cloud reference architectures."
+      },
+      "flow-logs": {
+        "def": "The cloud's NetFlow: records of accepted and rejected connections per interface, subnet, or VPC - who talked to whom, and who was refused.",
+        "context": "The first evidence pulled in cloud incident response; REJECT lines are free reconnaissance detection."
+      },
+      "cdn": {
+        "def": "Content Delivery Network: copies of your content cached at edge locations worldwide, so users fetch from nearby instead of from origin.",
+        "context": "Latency physics as a product; also the shield that absorbs traffic spikes and much DDoS."
+      },
+      "pop": {
+        "def": "Point of Presence: a provider's physical edge site - where the CDN caches, the transit hands off, and the backbone touches the ground.",
+        "context": "Counted in the hundreds by global networks; 'nearest PoP' decides your first-hop latency."
+      },
+      "egress-cost": {
+        "def": "The per-gigabyte charge for data leaving the cloud - in is free, out is billed, and architecture quietly bends around that asymmetry.",
+        "context": "The economics behind data gravity and many multi-cloud disappointments."
+      },
+      "sd-wan": {
+        "def": "Software-Defined WAN: branch connectivity steered by central policy over any mix of links - MPLS, broadband, LTE - chosen per application in real time.",
+        "context": "The technology that turned 'the branch router' into 'the branch policy'."
+      },
+      "l4-vs-l7-load-balancing": {
+        "def": "Balancing on addresses and ports versus on the application itself: L4 is fast and blind, L7 reads HTTP and routes by path, header, or cookie.",
+        "context": "The NLB/ALB split in cloud menus; TLS termination is the toll gate into L7."
+      },
+      "health-check": {
+        "def": "The probe that decides whether a target receives traffic - an endpoint answering 'am I alive?' on a timer, with consequences.",
+        "context": "Shallow checks lie (port open, app dead); deep checks cascade; tuning them is an art form."
+      },
+      "autoscaling": {
+        "def": "Capacity that follows demand: instances added on load, removed in quiet - elasticity as the cloud's founding promise.",
+        "context": "Scale-out is easy; scale-in without dropping connections is where the craft lives."
+      },
+      "bastion-host": {
+        "def": "The one hardened, audited entry point for administrative access to a private network - a jump host by design rather than accident.",
+        "context": "Modern clouds replace it with session-brokered access, but the concept - one guarded door - endures."
+      },
+      "cloud-vpn": {
+        "def": "The managed IPsec tunnel between your premises and your VPC - the quick, encrypted, internet-riding alternative to a dedicated circuit.",
+        "context": "Minutes to stand up versus weeks for an interconnect; jitter is the price of the shortcut."
+      },
+      "private-dns-zone": {
+        "def": "DNS names that resolve only inside your VPCs - internal service names invisible to the public internet.",
+        "context": "Split-horizon as a managed service: the same name can answer differently inside and out."
+      },
+      "ipam": {
+        "def": "IP Address Management: the system of record for who owns which range - allocations, assignments, and conflicts, tracked instead of remembered.",
+        "context": "The spreadsheet it replaces is the most dangerous file in networking."
+      },
+      "byoip": {
+        "def": "Bring Your Own IP: advertising your own address blocks from the cloud provider's network - your reputation and whitelistings, their infrastructure.",
+        "context": "Migration without renumbering; the addresses move, the incumbents' firewall rules keep working."
+      },
+      "cold-potato-hot-potato": {
+        "def": "Two philosophies for carrying traffic: hot-potato hands it to the next network as soon as possible; cold-potato keeps it on your backbone as long as possible.",
+        "context": "Clouds sell cold-potato as 'premium tier': more of the journey on their fiber, less on the open internet."
+      },
+      "shared-vpc": {
+        "def": "One centrally administered network shared into many projects or accounts - the platform team owns the plumbing, product teams deploy into it.",
+        "context": "Governance made topological: subnets as a service, guardrails included."
+      },
+      "eni": {
+        "def": "Elastic Network Interface: the cloud's detachable virtual NIC - addresses, security groups, and MAC that can move between instances.",
+        "context": "Failover by interface migration: the replacement instance inherits the network identity."
+      },
+      "five-tuple": {
+        "def": "The connection's fingerprint: source IP, source port, destination IP, destination port, protocol - the key by which firewalls, NATs, and balancers track flows.",
+        "context": "Hash it and you get ECMP and load-balancer stickiness; change any element and it is a new flow."
+      },
+      "east-west-north-south": {
+        "def": "The two axes of data-center traffic: north-south crosses the perimeter to users; east-west flows between servers inside.",
+        "context": "Microservices made east-west dominant - and made perimeter-only security obsolete."
+      },
+      "sdn": {
+        "def": "Software-Defined Networking: separating the control plane from the forwarding plane, so the network is programmed centrally instead of configured box by box.",
+        "context": "The idea that made clouds possible; OpenFlow was its manifesto, APIs are its legacy."
+      },
+      "nfv": {
+        "def": "Network Functions Virtualization: firewalls, routers, and gateways as software on standard servers instead of dedicated appliances.",
+        "context": "The carrier movement that turned racks of boxes into racks of compute; 5G cores run on it."
+      },
+      "gslb": {
+        "def": "Global Server Load Balancing: DNS-level traffic steering across sites and regions - answering each resolver with the healthiest, closest, or least-loaded destination.",
+        "context": "Failover at the speed of TTLs; the discipline behind every 'active-active across regions' claim."
+      },
+      "virtual-appliance": {
+        "def": "A vendor's network function shipped as a VM image - the firewall or load balancer you rack by launching instead of lifting.",
+        "context": "The bridge era between hardware boxes and cloud-native services; licensing came along for the ride."
+      },
+      "shared-responsibility-model": {
+        "def": "The cloud's division of labor: the provider secures the infrastructure, the customer secures what they build and configure on it.",
+        "context": "Security OF the cloud versus security IN the cloud; most cloud breaches happen on the customer's side of the line."
+      },
+      "iam": {
+        "def": "Identity and Access Management: who exists, what they may do, and under which conditions - the permission fabric of the cloud.",
+        "context": "In the cloud, identity is the perimeter; an over-broad IAM policy is an open firewall port by another name."
+      },
+      "rbac": {
+        "def": "Role-Based Access Control: permissions granted to roles, people assigned to roles - access managed by job, not by individual favor.",
+        "context": "ABAC extends it with attributes (department, time, device); both exist to make revocation possible."
+      },
+      "service-account": {
+        "def": "An identity for software rather than a person: the credentials under which pipelines, jobs, and applications act.",
+        "context": "Unrotated keys on forgotten service accounts are among the most common cloud breach entry points."
+      },
+      "workload-identity": {
+        "def": "Workloads proving who they are through the platform itself - short-lived, automatically issued credentials instead of long-lived secrets in files.",
+        "context": "The end state of 'no keys to steal': the platform vouches for the pod, the pod never holds a password."
+      },
+      "imds": {
+        "def": "Instance Metadata Service: the link-local endpoint (169.254.169.254) where a cloud instance asks about itself - and collects its temporary credentials.",
+        "context": "The crown-jewel target of SSRF attacks; IMDSv2's session tokens exist because of that history."
+      },
+      "ssrf": {
+        "def": "Server-Side Request Forgery: tricking a server into making requests on the attacker's behalf - reaching internal addresses the attacker never could directly.",
+        "context": "The technique behind the 2019 Capital One breach: one forged request to the metadata service, credentials out."
+      },
+      "confused-deputy": {
+        "def": "A privileged service tricked into using its authority on behalf of an unauthorized caller - the deputy is honest, just confused about who is asking.",
+        "context": "Cross-account role assumption grew external IDs specifically to break this attack."
+      },
+      "kms": {
+        "def": "Key Management Service: the managed vault where encryption keys live, guarded by hardware, used via API, and never exported in the clear.",
+        "context": "You call it to encrypt and decrypt; the master key itself never leaves the service."
+      },
+      "envelope-encryption": {
+        "def": "Encrypting data with a data key, then encrypting that key with a master key - bulk work done locally, the crown jewel guarded centrally.",
+        "context": "How clouds encrypt petabytes with keys that never leave the KMS: one API call per envelope, not per byte."
+      },
+      "key-rotation": {
+        "def": "Replacing cryptographic keys and credentials on schedule, so a stolen secret has an expiry date instead of a lifetime.",
+        "context": "The question that exposes maturity: not 'do you rotate?' but 'what breaks when you do?'"
+      },
+      "secrets-management": {
+        "def": "Centralizing passwords, tokens, and keys in a vault with access control, audit, and rotation - instead of scattering them through code and config.",
+        "context": "The confession it replaces: credentials in environment variables, wikis, and that one .env file in the repo."
+      },
+      "hsm": {
+        "def": "Hardware Security Module: a tamper-resistant device that generates, holds, and uses keys internally - the keys can be used but never extracted.",
+        "context": "The physical root of trust under KMS offerings, certificate authorities, and payment networks."
+      },
+      "cspm": {
+        "def": "Cloud Security Posture Management: continuous scanning of cloud configuration against best practice - the tool that finds the public bucket before the researcher does.",
+        "context": "Answers 'what is misconfigured?' across accounts, at the speed configurations drift."
+      },
+      "cwpp": {
+        "def": "Cloud Workload Protection Platform: runtime defense for the workloads themselves - VMs, containers, functions - vulnerabilities, integrity, and behavior.",
+        "context": "CSPM watches the configuration; CWPP watches what is actually running."
+      },
+      "cnapp": {
+        "def": "Cloud-Native Application Protection Platform: the industry's umbrella merging posture, workload protection, and permissions analysis into one platform.",
+        "context": "The category name for 'CSPM plus CWPP plus CIEM in one bill'."
+      },
+      "casb": {
+        "def": "Cloud Access Security Broker: the control point between users and SaaS - visibility into which cloud apps are used and policy over what flows into them.",
+        "context": "Born to answer 'who is uploading what to which SaaS?'; now usually one letter inside SASE."
+      },
+      "ztna": {
+        "def": "Zero Trust Network Access: per-application access granted after verifying user, device, and context - no network-wide tunnel, no flat inside.",
+        "context": "The VPN's successor in the zero-trust story: you reach the app, not the subnet."
+      },
+      "siem": {
+        "def": "Security Information and Event Management: logs from everywhere, correlated into alerts - the security team's central nervous system.",
+        "context": "Its economics are its own discipline: ingestion is billed, so what NOT to send becomes an architecture decision."
+      },
+      "soar": {
+        "def": "Security Orchestration, Automation, and Response: playbooks that act on alerts automatically - enrich, contain, ticket - before a human arrives.",
+        "context": "Exists because analysts drown: automation handles the repeatable eighty percent."
+      },
+      "edr": {
+        "def": "Endpoint Detection and Response: the agent that records what endpoints do - processes, connections, changes - detects the malicious, and can isolate the host.",
+        "context": "Antivirus asked 'is this file bad?'; EDR asks 'is this behavior bad?' and keeps the tape."
+      },
+      "xdr": {
+        "def": "Extended Detection and Response: EDR's scope widened - endpoint, identity, email, network, and cloud signals correlated in one detection fabric.",
+        "context": "The pitch: attacks cross domains, so detection should too."
+      },
+      "dlp": {
+        "def": "Data Loss Prevention: recognizing sensitive data - card numbers, records, secrets - and stopping it from leaving through email, uploads, or clipboards.",
+        "context": "Pattern-matching meets policy; tuning it is the eternal war between security and the business's attachments."
+      },
+      "sbom": {
+        "def": "Software Bill of Materials: the ingredient list of a piece of software - every component and version, so 'are we affected?' has an answer.",
+        "context": "Log4Shell made it policy: US Executive Order 14028 pushed SBOMs into federal procurement."
+      },
+      "landing-zone": {
+        "def": "The pre-built, governed foundation of a cloud estate: account structure, identity, networking, logging, and guardrails, ready before the first workload.",
+        "context": "The difference between a cloud adoption and a cloud sprawl, decided on day zero."
+      },
+      "service-control-policy": {
+        "def": "Organization-level guardrails that bound what any account may ever do - ceilings on permissions that even administrators cannot exceed.",
+        "context": "Not a grant but a boundary: the org says 'no one deletes audit logs', and no local admin can."
+      },
+      "drift-detection": {
+        "def": "Spotting the gap between infrastructure as declared and infrastructure as it actually is - the console edit that code never knew about.",
+        "context": "Drift is how immutable estates rot; detection is the smoke alarm."
+      },
+      "break-glass": {
+        "def": "The sealed emergency credential that bypasses normal controls when identity itself is down - stored offline, alarmed on use, tested on schedule.",
+        "context": "Named for the fire alarm: breaking the glass must work, and must never go unnoticed."
+      },
+      "just-in-time-access": {
+        "def": "Privileges granted for the task and the hour, then automatically revoked - standing admin rights replaced by requested, approved, expiring ones.",
+        "context": "Shrinks the window a stolen credential is worth stealing."
+      },
+      "audit-trail": {
+        "def": "The tamper-evident record of who did what, when, and from where - the API log every investigation starts from.",
+        "context": "Immutable and centralized or it is a suggestion; attackers delete logs first for a reason."
+      },
+      "conditional-access": {
+        "def": "Sign-in policy with context: who, from which device, from where, at what risk level - and only then, with which second factor, access.",
+        "context": "The identity layer's traffic light: green from the managed laptop, challenge from the café, red from the impossible country."
+      },
+      "egress-filtering": {
+        "def": "Controlling what may leave the network, not just what may enter - the outbound rules that starve malware of its command channel.",
+        "context": "The most neglected firewall direction; exfiltration and C2 both need a way out."
+      },
+      "honeypot": {
+        "def": "A decoy system built to be attacked: no legitimate user ever touches it, so every interaction is a signal.",
+        "context": "From research sensors to enterprise tripwires; its network sibling is the honeynet."
+      },
+      "canary-token": {
+        "def": "A booby-trapped credential, file, or link that phones home when touched - fake AWS keys that alarm the moment someone tries them.",
+        "context": "Detection at the cost of a text file; the modern descendant of the marked bill."
+      },
+      "attack-surface": {
+        "def": "Everything an attacker can reach and try: exposed services, APIs, credentials, people - the sum of ways in.",
+        "context": "Every feature adds to it, every decommission subtracts; managing it is subtraction as a discipline."
+      },
+      "iaas-paas-saas": {
+        "def": "The cloud's three service layers: rent the infrastructure, rent the platform, or rent the finished application - each trading control for convenience.",
+        "context": "The shared-responsibility line moves with the letter: the higher the layer, the more the provider owns."
+      },
+      "tokenization": {
+        "def": "Replacing sensitive values with meaningless stand-ins, keeping the real data in one guarded vault - the token is useless anywhere else.",
+        "context": "How payment systems shrink their compliance scope: most systems only ever see the token."
+      },
+      "lgpd": {
+        "def": "Lei Geral de Proteção de Dados: Brazil's general data protection law (13.709/2018), governing personal data processing on GDPR-inspired principles with Brazilian teeth.",
+        "context": "In force since 2020, sanctions since 2021, enforced by the ANPD; legal bases include consent and legitimate interest."
+      },
+      "anpd": {
+        "def": "Autôridade Nacional de Proteção de Dados: Brazil's data protection authority - regulator, enforcer, and interpreter of the LGPD.",
+        "context": "Issues the regulations that turn the law's principles into checklists; the Brazilian counterpart of Europe's DPAs."
+      },
+      "ccpa": {
+        "def": "California's consumer privacy law: rights to know, delete, and opt out of the sale of personal information - amended and hardened by the CPRA.",
+        "context": "The de facto US baseline in the absence of a federal law; 'Do Not Sell or Share' links exist because of it."
+      },
+      "dpo": {
+        "def": "Data Protection Officer: the designated guardian of a data protection program - advisor inside, contact point for regulators and data subjects outside.",
+        "context": "Mandatory in many GDPR scenarios and named in the LGPD as 'encarregado'."
+      },
+      "dpia": {
+        "def": "Data Protection Impact Assessment: the structured 'what could this do to people?' analysis required before high-risk processing begins.",
+        "context": "The LGPD's cousin is the RIPD; both exist so risk is examined before launch, not after headlines."
+      },
+      "dsar": {
+        "def": "Data Subject Access Request: a person exercising their right to see the data held about them - and the clock that starts when they ask.",
+        "context": "GDPR gives one month, extendable; the operational test of whether a privacy program actually works."
+      },
+      "right-to-erasure": {
+        "def": "The right to have personal data deleted when there is no longer a lawful reason to keep it - popularly, the right to be forgotten.",
+        "context": "Not absolute: legal obligations, contracts, and free expression can outweigh it, case by case."
+      },
+      "data-portability": {
+        "def": "The right to take your data with you in a machine-readable format - and, where feasible, have it sent straight to the next provider.",
+        "context": "The anti-lock-in right: your history should not be the switching cost."
+      },
+      "consent": {
+        "def": "One lawful basis among several: a freely given, specific, informed, unambiguous yes - revocable as easily as it was given.",
+        "context": "Pre-ticked boxes and bundled agreements fail every adjective in the definition."
+      },
+      "legitimate-interest": {
+        "def": "The lawful basis for processing without consent when the controller's genuine need outweighs the person's rights - after a documented balancing test.",
+        "context": "The most flexible basis and the most abused claim; the three-part test is necessity, purpose, balance."
+      },
+      "purpose-limitation": {
+        "def": "Data collected for one stated purpose may not be quietly reused for another - the principle that keeps datasets from wandering.",
+        "context": "The reason 'we might find it useful later' is not a collection strategy."
+      },
+      "data-controller": {
+        "def": "The party that decides why and how personal data is processed - and therefore the one accountable for it.",
+        "context": "The LGPD's 'controlador'; deciding the purpose is what makes you one, regardless of who holds the servers."
+      },
+      "data-processor": {
+        "def": "The party processing personal data on a controller's documented instructions - the cloud provider, the SaaS, the payroll bureau.",
+        "context": "The LGPD's 'operador'; step outside the instructions and you become a controller with a controller's liability."
+      },
+      "data-processing-agreement": {
+        "def": "The contract binding a processor to the controller's instructions: security measures, sub-processors, breach duties, and deletion at the end.",
+        "context": "The document vendor security reviews orbit around; GDPR Article 28 dictates its skeleton."
+      },
+      "standard-contractual-clauses": {
+        "def": "The EU's pre-approved contract terms that make personal data transfers to other countries lawful - protection by contract where law alone does not reach.",
+        "context": "The workhorse of international transfers, especially since Schrems II demanded case-by-case safeguards."
+      },
+      "privacy-by-design": {
+        "def": "Building data protection into systems from the first sketch - minimization, defaults, and safeguards as architecture, not as patches.",
+        "context": "Codified in GDPR Article 25; its slogan form: the most protective setting is the default setting."
+      },
+      "pseudonymization": {
+        "def": "Replacing identifiers with pseudonyms while keeping the mapping elsewhere - reversible by design, protective in the meantime.",
+        "context": "Still personal data under GDPR and LGPD, because the key exists; anonymization is the one-way sibling."
+      },
+      "anonymization": {
+        "def": "Transforming data so individuals can no longer be identified by any reasonably available means - the exit door from data protection law.",
+        "context": "Harder than it looks: re-identification research keeps proving 'anonymized' datasets talkative."
+      },
+      "k-anonymity": {
+        "def": "A dataset property where every person is indistinguishable from at least k-1 others on the quasi-identifiers - hiding in a crowd of size k.",
+        "context": "Also the trick behind Have I Been Pwned's password checks: send a hash prefix, receive the crowd."
+      },
+      "differential-privacy": {
+        "def": "A mathematical guarantee: query answers barely change whether or not any one person is in the dataset - privacy as provable noise.",
+        "context": "Used by the US Census and big-tech telemetry; epsilon is the knob between truth and protection."
+      },
+      "data-retention": {
+        "def": "Keeping data only as long as its purpose requires, then deleting on schedule - the discipline that shrinks both risk and discovery scope.",
+        "context": "Every breach is smaller when the archive is; 'forever' is not a retention period."
+      },
+      "cookie-banner": {
+        "def": "The consent interface for non-essential tracking - born of the ePrivacy rules and GDPR consent standards, degraded by design into a click-through ritual.",
+        "context": "Reject must be as easy as accept for the consent to be valid; dark patterns here draw regulatory fire."
+      },
+      "tracking-pixel": {
+        "def": "An invisible one-pixel image or beacon whose loading reports that you opened the page or email - presence-tracking disguised as content.",
+        "context": "Email open rates are built on it; blocking remote images is the countermeasure."
+      },
+      "browser-fingerprinting": {
+        "def": "Identifying a browser by its combination of traits - fonts, canvas rendering, hardware, settings - unique enough to track without any cookie.",
+        "context": "The post-cookie tracking frontier; the EFF's Cover Your Tracks demonstrates how loud a 'private' browser is."
+      },
+      "global-privacy-control": {
+        "def": "A browser signal declaring 'do not sell or share my data' automatically on every site - opt-out as a setting instead of a per-site chore.",
+        "context": "Where DNT died of voluntariness, GPC gained legal force: California enforces honoring it."
+      },
+      "do-not-track": {
+        "def": "The browser header that politely asked sites not to track - and, lacking any legal force, was almost universally ignored.",
+        "context": "The cautionary tale GPC learned from: a signal without enforcement is a preference, not a protection."
+      },
+      "privacy-enhancing-technologies": {
+        "def": "The toolbox that lets data be used while exposing less of it: differential privacy, homomorphic encryption, secure multiparty computation, federated learning.",
+        "context": "The research field where 'compute on data you cannot read' stopped being a contradiction."
+      },
+      "data-breach-notification": {
+        "def": "The legal duty to report a personal-data breach to the authority and, when risk is high, to the affected people - on a clock that starts at discovery.",
+        "context": "GDPR's famous 72 hours to the authority; the LGPD requires notice 'in reasonable time' per ANPD rules."
+      },
+      "special-category-data": {
+        "def": "The data whose misuse cuts deepest - health, biometrics, beliefs, orientation, genetics - locked behind stricter conditions than ordinary personal data.",
+        "context": "The LGPD calls it 'dado pessoal sensível'; consent here must usually be explicit and specific."
+      },
+      "biometric-data": {
+        "def": "Measurements of the body used to identify the person - fingerprints, face geometry, voice, gait - identifiers you cannot rotate after a breach.",
+        "context": "A password can be changed; a face cannot. That asymmetry is the whole policy debate."
+      },
+      "data-residency": {
+        "def": "Requirements that certain data physically remain within a jurisdiction's borders - law expressed as region selection.",
+        "context": "Why cloud providers open local regions and why architecture diagrams now carry flags."
+      },
+      "cross-border-transfer": {
+        "def": "Moving personal data between jurisdictions - lawful only through recognized mechanisms: adequacy decisions, contractual clauses, or specific exceptions.",
+        "context": "The LGPD's chapter on international transfer mirrors the GDPR's; geography became a compliance property of data."
+      },
+      "schrems-ii": {
+        "def": "The 2020 EU court ruling that struck down the EU-US Privacy Shield: one Austrian law student's complaints, twice, reshaped transatlantic data law.",
+        "context": "Max Schrems challenged Facebook's transfers over US surveillance reach; the CJEU agreed, twice - Safe Harbor fell in 2015, Privacy Shield in 2020."
+      },
+      "metadata": {
+        "def": "Data about data: who contacted whom, when, from where, how often - everything except the content, and often more revealing than it.",
+        "context": "'We kill people based on metadata' - a former NSA director's candor became the field's defining quote."
+      },
+      "profiling": {
+        "def": "Automated evaluation of a person from their data - predicting behavior, interests, reliability, movement - the model of you that decisions get made against.",
+        "context": "GDPR and LGPD both grant rights around purely automated decisions with significant effects."
+      },
+      "data-broker": {
+        "def": "A company whose product is other people: profiles assembled from purchases, apps, public records, and location trails, sold to whoever pays.",
+        "context": "The industry most people have never heard of that has heard all about them."
+      },
+      "opt-in-vs-opt-out": {
+        "def": "The two default postures of consent: nothing happens until you say yes, versus everything happens until you say no - defaults decide outcomes at population scale.",
+        "context": "The single design choice with the largest privacy impact; participation rates swing enormously on it."
+      },
+      "surveillance-capitalism": {
+        "def": "The business model of predicting and steering behavior from harvested personal data - attention in, predictions out, advertisers billed.",
+        "context": "Coined and dissected by Shoshana Zuboff (2019); the term that gave the debate its name."
+      },
+      "nat-firewall-myth": {
+        "def": "The belief that address translation is a security control. NAT hides topology as a side effect, but it filters nothing by policy - a stateful firewall does.",
+        "context": "The confusion comes from home routers bundling both; RFC 4864 exists partly to untangle 'NAT security' from actual protection, and IPv6 without NAT reopened the debate."
+      },
+      "incognito-myth": {
+        "def": "Private browsing deletes local history and cookies when the window closes - nothing more. Websites, employers, and providers see you exactly as before.",
+        "context": "Chrome's own Incognito splash text lists these limits; a US class action over Incognito-mode tracking ended with Google agreeing in 2024 to destroy billions of collected records."
+      },
+      "https-padlock-myth": {
+        "def": "The padlock proves the connection is encrypted to whoever holds that domain - it says nothing about who they are. Phishing sites get certificates in minutes, for free.",
+        "context": "By the late 2010s most phishing pages served valid HTTPS; the FBI issued a public advisory in 2019 warning that the lock icon is not a trust signal. Browsers have been quietly demoting the padlock since."
+      },
+      "vpn-anonymity-myth": {
+        "def": "A commercial VPN moves your trust from the local network to the VPN company: it hides traffic from the coffee shop and your IP from sites, while seeing everything itself.",
+        "context": "Browser fingerprinting, logins, and cookies identify you regardless of IP; 'no-logs' claims have been contradicted in court cases and breach disclosures. Useful tool, wrong noun."
+      },
+      "five-ghz-myth": {
+        "def": "Higher bands carry more data but die faster through walls and distance. 5 GHz wins next to the router; 2.4 GHz often wins two rooms away - it is physics, not quality tiers.",
+        "context": "Free-space path loss grows with frequency, and attenuation through obstacles compounds it - the propagation trade-off is written into the 802.11 band plans themselves; band steering exists to pick per situation."
+      },
+      "mac-permanence-myth": {
+        "def": "The burned-in address stopped being either: operating systems randomize Wi-Fi MACs per network by default, and any MAC can be set in software in seconds.",
+        "context": "iOS, Android, Windows, and macOS all ship MAC randomization to defeat tracking; IEEE 802c formalized local-address usage. Tracking-by-MAC and MAC-based security both quietly broke."
+      },
+      "bandwidth-latency-myth": {
+        "def": "Bandwidth is lane count; latency is trip time. Past a modest threshold, page loads, calls, and games are ruled by latency and bufferbloat - which a bigger plan does not fix.",
+        "context": "Jim Gettys' bufferbloat work showed oversized queues wrecking responsiveness on 'fast' lines; modern queue management (fq_codel, CAKE) fixes what upgrades cannot."
+      },
+      "password-rotation-myth": {
+        "def": "Mandatory 90-day rotations trained people into Password1, Password2 - predictable mutations attackers model. Current guidance: long unique passphrases, changed on evidence of compromise.",
+        "context": "NIST SP 800-63B recommends against periodic forced changes and against composition rules; length and uniqueness (via a manager) beat ritual complexity."
+      },
+      "file-deletion-myth": {
+        "def": "Delete removes the directory entry and marks the space reusable - the bytes remain until overwritten, which recovery tools exploit daily.",
+        "context": "NIST SP 800-88 defines the real spectrum: clear, purge, destroy. SSDs complicate it further - wear leveling scatters copies, so encryption-plus-key-destruction became the practical purge."
+      },
+      "someone-elses-computer": {
+        "def": "The sticker-slogan half-truth: physically accurate, architecturally misleading. The cloud's substance is elasticity, APIs, managed services, and global footprint - properties no single computer has.",
+        "context": "Popularized as a sticker by Chris Watterston (2015) and adopted as both joke and critique; useful as a reminder about trust and location, wrong as a description of what you are buying."
+      },
+      "quantum-breaks-everything-myth": {
+        "def": "Shor's algorithm threatens today's public-key math (RSA, elliptic curves) on a large fault-tolerant quantum computer - which does not yet exist. Symmetric ciphers and hashes mostly just double their key sizes.",
+        "context": "NIST published post-quantum standards in 2024 (FIPS 203, 204, 205) precisely so migration happens before such machines do; 'harvest now, decrypt later' is the real present-day risk."
+      },
+      "tor-criminals-myth": {
+        "def": "Tor's daily users are overwhelmingly ordinary: people evading censorship, journalists protecting sources, researchers, and the privacy-minded - the network was funded to protect exactly them.",
+        "context": "Onion routing began at the US Naval Research Laboratory, and the Tor Project documents its user base; anonymity systems only work when lawful users provide the crowd."
+      },
+      "public-wifi-panic": {
+        "def": "A decade-old truth gone stale: with HTTPS now near-universal, the café network sees hostnames, not contents. The realistic risks shrank to fake portals, rogue twins, and the rare unencrypted service.",
+        "context": "The EFF - once the loudest public-Wi-Fi warner - published 'Why Public Wi-Fi Is a Lot Safer Than You Think' (2020) after HTTPS adoption changed the math. Caution, yes; panic, no."
+      },
+      "aead": {
+        "def": "A cipher that encrypts and authenticates in one step, so tampering fails as a single operation.",
+        "context": "Authenticated Encryption with Associated Data (RFC 5116) combines confidentiality and integrity in one primitive - AES-GCM, AES-CCM, ChaCha20-Poly1305. TLS 1.3 permits AEAD ciphers only, because the older encrypt-then-separately-authenticate constructions kept producing padding-oracle attacks."
+      },
+      "aes": {
+        "def": "The standard symmetric block cipher used almost everywhere for bulk encryption.",
+        "context": "Advanced Encryption Standard (NIST FIPS 197), originally the Rijndael cipher, encrypts data in 128-bit blocks with 128-, 192-, or 256-bit keys. It is the workhorse behind TLS record protection, disk encryption, and VPNs."
+      },
+      "cbc": {
+        "def": "An older block-cipher mode that chains blocks together but provides no integrity on its own.",
+        "context": "Cipher Block Chaining (NIST SP 800-38A) XORs each plaintext block with the previous ciphertext block before encrypting. It needs a separate MAC for integrity, and the order of those operations produced the BEAST, Lucky13, and POODLE attacks. TLS 1.3 drops CBC entirely."
+      },
+      "gcm": {
+        "def": "An AEAD mode that turns AES into an authenticated cipher using a counter and a nonce.",
+        "context": "Galois/Counter Mode (NIST SP 800-38D) provides both encryption and integrity in one pass and is the most common AEAD mode in TLS. Its one sharp edge: reusing a nonce with the same key collapses its security entirely."
+      },
+      "ccm": {
+        "def": "An AEAD mode combining counter-mode encryption with a CBC-based authentication tag.",
+        "context": "Counter with CBC-MAC (NIST SP 800-38C) is an AEAD construction used where GCM is undesirable, common on constrained links. The CCM_8 variant truncates the tag to 8 bytes to save overhead, which measurably weakens integrity."
+      },
+      "prf": {
+        "def": "A function that stretches a secret into as much key material as a protocol needs.",
+        "context": "A Pseudorandom Function takes a key and inputs and produces output indistinguishable from random. In TLS it derives the session keys from the negotiated secret; the cipher suite's trailing hash names the PRF hash in TLS 1.2."
+      },
+      "rsa": {
+        "def": "The classic public-key algorithm for signatures and, historically, key transport.",
+        "context": "Rivest-Shamir-Adleman (RFC 8017) is a public-key cryptosystem based on the difficulty of factoring large numbers. In modern TLS it authenticates the server via its certificate; its use for key transport is deprecated because it lacks forward secrecy."
+      },
+      "ecdsa": {
+        "def": "A signature algorithm using elliptic curves - smaller keys than RSA for the same strength.",
+        "context": "Elliptic Curve Digital Signature Algorithm (FIPS 186-5) provides digital signatures with far smaller keys than RSA at equivalent security, which is why modern certificates increasingly use ECDSA keys."
+      },
+      "sha": {
+        "def": "The standard family of cryptographic hash functions.",
+        "context": "Secure Hash Algorithm (NIST FIPS 180-4) is the family that includes SHA-256 and SHA-384, used for integrity, certificate signatures, and as the hash inside HMAC. SHA-1 is now considered broken for collision resistance."
+      },
+      "md5": {
+        "def": "An old 128-bit hash function, cryptographically broken and unsafe for security use.",
+        "context": "Message Digest 5 (RFC 1321) was once ubiquitous but is trivially collidable today. It survives only as a non-security checksum - for example in some legacy fingerprinting - and must never be used where collision resistance matters."
+      },
+      "dtls": {
+        "def": "TLS adapted to run over UDP instead of TCP.",
+        "context": "Datagram Transport Layer Security (RFC 9147) brings TLS's confidentiality and integrity to datagram transports that can reorder or lose packets, used for things like VPN data channels and real-time media."
+      },
+      "ocsp": {
+        "def": "A protocol to check in real time whether a certificate has been revoked.",
+        "context": "Online Certificate Status Protocol (RFC 6960) lets a client ask a responder whether a certificate is still valid, an alternative to downloading large revocation lists. OCSP stapling lets the server present the proof itself to avoid a separate round trip."
+      },
+      "sni": {
+        "def": "The field in a TLS handshake that names which site the client wants.",
+        "context": "Server Name Indication (RFC 6066) lets one IP address host many TLS sites: the client sends the hostname in the ClientHello so the server can present the right certificate. It is sent in the clear in TLS 1.2, which is why Encrypted Client Hello exists."
+      },
+      "alpn": {
+        "def": "The TLS handshake field that negotiates which application protocol to use.",
+        "context": "Application-Layer Protocol Negotiation (RFC 7301) lets client and server agree during the handshake on the protocol that will run over the connection - for example h2 for HTTP/2 - avoiding an extra negotiation round trip."
+      },
+      "ecdhe": {
+        "def": "A key-exchange method that gives every session its own throwaway keys, so past traffic stays safe if a long-term key leaks.",
+        "context": "Ephemeral Elliptic-Curve Diffie-Hellman (RFC 8422) is the standard forward-secret key exchange in modern TLS. The 'ephemeral' part means the keys exist only for one session, which is what provides forward secrecy; the elliptic-curve part makes it fast with small keys."
+      },
+      "ssh": {
+        "def": "The standard encrypted protocol for remote shell access and secure tunneling.",
+        "context": "Secure Shell (RFC 4251) replaced Telnet by encrypting the whole session. It also underpins SCP, SFTP, and port-forwarding tunnels, and is authenticated by host keys and user keys or passwords."
+      },
+      "ftp": {
+        "def": "An old, unencrypted protocol for transferring files between hosts.",
+        "context": "File Transfer Protocol (RFC 959) uses separate control and data connections and sends credentials in the clear, which is why it has largely been replaced by SFTP or FTPS for anything sensitive."
+      },
+      "ftps": {
+        "def": "FTP wrapped in TLS to encrypt the control and data channels.",
+        "context": "FTPS (RFC 4217) adds TLS to classic FTP. It is distinct from SFTP, which is a different protocol built on SSH; FTPS is FTP plus a TLS layer."
+      },
+      "sftp": {
+        "def": "A file-transfer protocol that runs securely over SSH.",
+        "context": "SSH File Transfer Protocol runs inside an SSH session, so it inherits SSH's encryption and authentication. Despite the similar name it shares nothing with FTP or FTPS."
+      },
+      "scp": {
+        "def": "A simple command for copying files over an SSH connection.",
+        "context": "Secure Copy Protocol copies files using SSH for transport and authentication. It is simpler than SFTP but less flexible, and modern OpenSSH implements scp over the SFTP protocol."
+      },
+      "smtp": {
+        "def": "The protocol that moves email between mail servers.",
+        "context": "Simple Mail Transfer Protocol (RFC 5321) handles the sending and relaying of email. Retrieval is done by IMAP or POP3; SMTP is the delivery side."
+      },
+      "imap": {
+        "def": "A protocol for reading email kept on the server, across multiple devices.",
+        "context": "Internet Message Access Protocol (RFC 9051) leaves messages on the server and syncs state (read, foldered) across clients, unlike POP3 which typically downloads and removes them."
+      },
+      "imaps": {
+        "def": "IMAP encrypted with TLS.",
+        "context": "IMAPS is IMAP over an implicit TLS connection (RFC 8314 recommends TLS for mail access), protecting mailbox contents and credentials in transit."
+      },
+      "pop3": {
+        "def": "An older, simple protocol for downloading email from a server.",
+        "context": "Post Office Protocol version 3 (RFC 1939) typically downloads messages to one device and deletes them from the server, which is why IMAP is preferred for multi-device use."
+      },
+      "ldap": {
+        "def": "The protocol for querying and modifying directory services like Active Directory.",
+        "context": "Lightweight Directory Access Protocol (RFC 4511) reads and writes hierarchical directory data - users, groups, attributes. It is central to enterprise authentication and identity."
+      },
+      "ldaps": {
+        "def": "LDAP encrypted with TLS.",
+        "context": "LDAPS wraps LDAP in TLS so directory queries and bind credentials are not sent in the clear (RFC 4513 covers the security mechanisms), essential wherever passwords cross the wire."
+      },
+      "mqtt": {
+        "def": "A lightweight publish-subscribe protocol for IoT and telemetry.",
+        "context": "Message Queuing Telemetry Transport (OASIS MQTT 5.0) is a compact publish/subscribe protocol designed for constrained devices and unreliable networks, ubiquitous in IoT."
+      },
+      "mqtts": {
+        "def": "MQTT encrypted with TLS.",
+        "context": "MQTTS is MQTT carried over a TLS connection, protecting telemetry and device credentials on networks where IoT traffic would otherwise be exposed."
+      },
+      "rtsp": {
+        "def": "A control protocol for streaming media - play, pause, seek.",
+        "context": "Real-Time Streaming Protocol (RFC 7826) controls media servers like a remote control; the media itself usually flows over a separate transport such as RTP."
+      },
+      "rtmp": {
+        "def": "A protocol for streaming audio and video, historically Flash-based.",
+        "context": "Real-Time Messaging Protocol (Adobe) was built for Flash media streaming and persists in live-video ingest pipelines even after Flash's demise."
+      },
+      "smb": {
+        "def": "The Windows protocol for sharing files, printers, and named pipes.",
+        "context": "Server Message Block (also known as CIFS in older form) provides file and resource sharing on Windows networks. Its history of vulnerabilities makes exposing it to the internet dangerous."
+      },
+      "telnet": {
+        "def": "An old, unencrypted remote-terminal protocol, superseded by SSH.",
+        "context": "Teletype Network (RFC 854) opens a plaintext interactive session to a remote host. Because it sends everything, including passwords, in the clear, it should never be used on untrusted networks."
+      },
+      "tftp": {
+        "def": "A minimal file-transfer protocol with no authentication, used for booting devices.",
+        "context": "Trivial File Transfer Protocol (RFC 1350) is a tiny UDP-based protocol common for network boot (PXE) and device firmware, deliberately simple and therefore unauthenticated."
+      },
+      "dict": {
+        "def": "A protocol for querying network dictionary servers.",
+        "context": "Dictionary Server Protocol (RFC 2229) lets clients look up word definitions from dictionary databases over the network - one of the more obscure schemes curl can speak."
+      },
+      "gopher": {
+        "def": "A pre-web protocol for browsing menus of documents.",
+        "context": "The Gopher protocol (RFC 1436) organized internet documents into hierarchical menus and predated the World Wide Web. It survives as a curiosity and, notably, as an SSRF attack vector."
+      },
+      "sip": {
+        "def": "The signaling protocol that sets up voice and video calls.",
+        "context": "Session Initiation Protocol (RFC 3261) establishes, modifies, and tears down real-time sessions such as VoIP calls; the media itself typically flows over RTP once SIP has set the call up."
+      },
+      "ws": {
+        "def": "A protocol for full-duplex, persistent connections between a browser and server.",
+        "context": "WebSocket (RFC 6455) upgrades an HTTP connection into a two-way channel that stays open, enabling real-time web apps without polling. The encrypted form is WSS."
+      },
+      "wss": {
+        "def": "WebSocket encrypted with TLS.",
+        "context": "WebSocket Secure is the WebSocket protocol carried over TLS (RFC 6455), the ws:// equivalent of https://, and the form any production real-time app should use."
+      },
+      "aaaa": {
+        "def": "The DNS record that maps a hostname to an IPv6 address.",
+        "context": "An AAAA record (RFC 3596) is the IPv6 counterpart of the A record - four times the bits, hence 'quad-A'. A name can have both A and AAAA records for dual-stack reachability."
+      },
+      "cname": {
+        "def": "A DNS record that makes one name an alias for another.",
+        "context": "A Canonical Name record (RFC 1034) points one hostname at another, so lookups follow the chain to the target's real address records. A CNAME cannot coexist with other record types at the same name."
+      },
+      "mx": {
+        "def": "The DNS record that says which servers receive a domain's email.",
+        "context": "A Mail Exchange record (RFC 5321) lists the mail servers for a domain, each with a preference number so senders try the lowest-numbered server first."
+      },
+      "soa": {
+        "def": "The DNS record holding a zone's authoritative metadata.",
+        "context": "A Start of Authority record (RFC 1035) carries the primary nameserver, the zone's serial number, and the timers that govern how secondaries refresh. Every zone has exactly one."
+      },
+      "txt": {
+        "def": "A general-purpose DNS record holding free-form text.",
+        "context": "A Text record (RFC 1035) stores arbitrary strings, which is why so many verification and email-authentication mechanisms - SPF, DKIM, domain ownership proofs - live in TXT records."
+      },
+      "spf": {
+        "def": "An email-authentication method declaring which servers may send for a domain.",
+        "context": "Sender Policy Framework (RFC 7208) publishes, in a TXT record, the list of IPs allowed to send mail for a domain, so receivers can reject forgeries. It pairs with DKIM under DMARC."
+      },
+      "dkim": {
+        "def": "An email-authentication method that cryptographically signs messages.",
+        "context": "DomainKeys Identified Mail (RFC 6376) attaches a signature to outgoing mail and publishes the verifying public key in DNS, so receivers can confirm a message was authorized by the domain and not altered."
+      },
+      "ptr": {
+        "def": "A DNS record that maps an IP address back to a hostname.",
+        "context": "A Pointer record (RFC 1035) provides reverse DNS - given an IP, find the name. Mail servers commonly check that a sending IP has a matching PTR as a basic anti-spam signal."
+      },
+      "srv": {
+        "def": "A DNS record that advertises the host and port for a specific service.",
+        "context": "A Service record (RFC 2782) tells clients where a service lives - hostname, port, priority, weight - used by protocols like SIP and by Active Directory for service discovery."
+      },
+      "caa": {
+        "def": "A DNS record declaring which certificate authorities may issue for a domain.",
+        "context": "A Certification Authority Authorization record (RFC 8659) lets a domain owner restrict which CAs are allowed to issue certificates for the domain, a check CAs must honor before issuance."
+      },
+      "tsig": {
+        "def": "A shared-key method for authenticating DNS transactions like zone transfers.",
+        "context": "Transaction Signature (RFC 8945) uses a shared secret and an HMAC to authenticate DNS messages - most importantly zone transfers between primary and secondary servers - proving they were not forged or tampered with."
+      },
+      "mcp": {
+        "def": "An open protocol that lets AI models call external tools and data sources in a standard way.",
+        "context": "Model Context Protocol standardizes how a language model connects to tools, files, and services, so an AI application can use many capabilities through one interface rather than a bespoke integration for each."
+      },
+      "llm": {
+        "def": "A neural network trained on vast text that generates and understands language.",
+        "context": "A Large Language Model is a transformer-based model trained on huge corpora to predict text, powering chat assistants, code tools, and retrieval systems. Its scale is what gives it broad capability."
+      },
+      "rag": {
+        "def": "A technique that feeds an AI model retrieved documents so its answers are grounded.",
+        "context": "Retrieval-Augmented Generation fetches relevant context from a knowledge source and supplies it to the model at query time, reducing hallucination and letting the model cite information it was not trained on."
+      },
+      "rest": {
+        "def": "An architectural style for web APIs built on HTTP methods and resources.",
+        "context": "Representational State Transfer (Fielding, 2000) models an API as resources addressed by URLs and manipulated with HTTP methods. It is the dominant style for web APIs, contrasted with the older, envelope-based SOAP."
+      },
+      "soap": {
+        "def": "An older, XML-based protocol for structured web-service messages.",
+        "context": "Simple Object Access Protocol (W3C) wraps requests in a rigid XML envelope with its own standards for security and transactions. Heavier than REST, it persists in enterprise and legacy integrations."
+      },
+      "cli": {
+        "def": "A text-based interface where you type commands to control software.",
+        "context": "A Command-Line Interface accepts typed commands rather than mouse clicks. On network gear and servers it is the primary control surface, scriptable and precise in a way graphical interfaces are not."
+      },
+      "saml": {
+        "def": "An XML standard for exchanging authentication between identity providers and services.",
+        "context": "Security Assertion Markup Language (OASIS) lets an identity provider vouch for a user to a service via signed XML assertions, the backbone of much enterprise single sign-on. JWT-based OIDC is the more modern alternative."
+      },
+      "ike": {
+        "def": "The protocol that negotiates keys and security parameters for IPsec VPNs.",
+        "context": "Internet Key Exchange (RFC 7296) sets up the security associations an IPsec tunnel needs - authenticating the peers and agreeing on keys - before encrypted traffic can flow."
+      },
+      "ntp": {
+        "def": "The protocol that synchronizes clocks across networked devices.",
+        "context": "Network Time Protocol (RFC 5905) keeps device clocks aligned to reference time sources. Accurate time matters for logs, certificates, and authentication, which often fail when clocks drift."
+      },
+      "icmp": {
+        "def": "The protocol IP uses for error and diagnostic messages, like ping.",
+        "context": "Internet Control Message Protocol (RFC 792) carries reachability errors and diagnostics rather than user data. Ping and traceroute are built on it, and a firewall's handling of ICMP shapes how a network reports problems."
+      },
+      "sql": {
+        "def": "The standard language for querying and manipulating relational databases.",
+        "context": "Structured Query Language (ISO/IEC 9075) reads and writes data in relational databases. SQL injection - smuggling malicious SQL through an input - is one of the oldest and most damaging web vulnerabilities."
+      },
+      "l7": {
+        "def": "The application layer - where protocols like HTTP live in the OSI model.",
+        "context": "Layer 7 is the top of the seven-layer OSI model, the layer of application protocols. Operating at L7 lets a device understand HTTP, make routing decisions on URLs, and defend applications, as a WAF does."
+      },
+      "as3": {
+        "def": "An F5 extension for declaratively configuring application services via JSON.",
+        "context": "Application Services 3 Extension takes a JSON declaration of the desired application configuration and makes BIG-IP match it, a declarative alternative to imperative tmsh commands, delivered over a REST endpoint."
+      },
+      "aws": {
+        "def": "Amazon's cloud platform - compute, storage, networking, and hundreds of services.",
+        "context": "Amazon Web Services is the largest public cloud provider, offering on-demand infrastructure and managed services. Many integrations, including telemetry destinations like CloudWatch and S3, target AWS."
+      },
+      "fips": {
+        "def": "US government standards for cryptography and computer security.",
+        "context": "Federal Information Processing Standards (NIST) are the publications that define approved cryptographic algorithms - AES in FIPS 197, the post-quantum ML-KEM in FIPS 203 - and the requirements systems must meet for government use."
+      },
+      "ml-kem": {
+        "def": "The NIST-standardized post-quantum key-encapsulation algorithm.",
+        "context": "Module-Lattice Key Encapsulation Mechanism (NIST FIPS 203), derived from Kyber, is a lattice-based scheme designed to resist quantum attacks. It is deployed in hybrid TLS key exchanges alongside classical ECDHE."
+      },
+      "qat": {
+        "def": "Intel hardware that offloads cryptography and compression from the CPU.",
+        "context": "QuickAssist Technology accelerates encryption, decryption, and compression in dedicated silicon, freeing CPU cycles. On appliances it can materially raise TLS throughput when enabled."
+      },
+      "rpm": {
+        "def": "A package format and manager used by Red Hat-family Linux systems.",
+        "context": "RPM Package Manager is both the .rpm package format and the tooling that installs, upgrades, and tracks software on distributions like RHEL and Fedora. BIG-IP's software volumes are built from RPMs."
+      },
+      "stp": {
+        "def": "A protocol that prevents loops in a switched Ethernet network.",
+        "context": "Spanning Tree Protocol (IEEE 802.1D) builds a loop-free topology by blocking redundant links until they are needed, preventing the broadcast storms that a physical loop would otherwise cause."
+      },
+      "tps": {
+        "def": "A throughput measure counting transactions handled each second.",
+        "context": "Transactions Per Second measures processing rate, and on some platforms it is also a licensed capacity limit - for example an SSL TPS ceiling that caps how many handshakes per second a license permits."
+      },
+      "bados": {
+        "def": "A defense that detects denial-of-service by learning normal traffic behavior.",
+        "context": "Behavioral Denial of Service protection builds a baseline of normal traffic and mitigates deviations automatically, catching application-layer attacks that signature-based defenses miss."
+      },
+      "c3d": {
+        "def": "An F5 feature that re-signs client certificates for backend mutual TLS.",
+        "context": "Client Certificate Constrained Delegation lets BIG-IP terminate a client's TLS and then present a freshly generated certificate representing that client to the backend, preserving identity across a re-encryption boundary."
+      },
+      "ehf": {
+        "def": "An out-of-band fix F5 issues for a specific urgent problem.",
+        "context": "An Engineering Hotfix is a targeted patch delivered outside the normal release cadence to address a specific defect, later rolled into a maintenance release."
+      },
+      "df": {
+        "def": "An F5 hardware designation for a dual-fan platform variant.",
+        "context": "DF marks a dual-fan variant of an F5 appliance - a platform-specific hardware detail relevant when checking which models a software release supports."
+      },
+      "ja3": {
+        "def": "A fingerprint of a TLS client built from the fields in its ClientHello.",
+        "context": "JA3 hashes a set of ClientHello fields - TLS version, cipher list, extensions - into a short signature (an MD5 hash) that often identifies the client software or malware family, regardless of IP. JA4 is its more robust successor."
+      },
+      "ja4": {
+        "def": "A newer, more robust family of TLS and network fingerprints.",
+        "context": "JA4 (part of the JA4+ suite) improves on JA3 with a more structured, harder-to-evade fingerprint of the ClientHello, and adds companion fingerprints for other protocols. It resists the ordering tricks that let clients dodge JA3."
+      },
+      "spbm": {
+        "def": "An Ethernet fabric technology that builds shortest-path forwarding using IS-IS.",
+        "context": "Shortest Path Bridging MAC mode (IEEE 802.1aq) creates a loop-free, shortest-path Ethernet fabric controlled by the IS-IS routing protocol, replacing spanning tree with true multipath forwarding across a provider or campus backbone."
+      },
+      "is-is": {
+        "def": "A link-state routing protocol, used in large networks and Ethernet fabrics.",
+        "context": "Intermediate System to Intermediate System (ISO/IEC 10589) is a link-state interior gateway protocol, a peer to OSPF, favored in large service-provider cores and used as the control plane for SPBM fabrics."
+      },
+      "exos": {
+        "def": "Extreme Networks' switch operating system.",
+        "context": "Extreme Operating System (ExtremeXOS) is the modular network OS that runs on Extreme Networks switches, with a process-isolated architecture and a scripting/automation surface for configuration and management."
+      },
+      "rip": {
+        "def": "One of the oldest routing protocols, using hop count as its metric.",
+        "context": "Routing Information Protocol (RFC 2453) picks routes by fewest hops, capped at 15, which makes it simple but unsuitable for large networks. It survives mostly in small or legacy deployments, long superseded by OSPF and BGP."
+      },
+      "beb": {
+        "def": "An edge device in an Ethernet fabric that encapsulates traffic into the backbone.",
+        "context": "A Backbone Edge Bridge (IEEE 802.1ah) sits at the boundary of a provider-backbone or SPBM fabric, wrapping customer frames in backbone MAC headers so the core forwards on backbone addresses - the entry and exit points of the fabric."
+      },
+      "set-us-up-the-bomb": {
+        "def": "Another garbled line from the same 1991 game's opening as \"all your base\", now shorthand for a system suddenly and catastrophically compromised.",
+        "context": "From Zero Wing's notoriously mistranslated intro (the captain is told \"Somebody set up us the bomb\"), the phrase spread with the \"all your base are belong to us\" meme in the early 2000s. In ops culture it is affectionate shorthand for the moment an incident begins - the alarm that says something has just gone very wrong."
+      },
+      "oidc": {
+        "def": "An identity layer on top of OAuth 2.0 for authenticating users.",
+        "context": "OpenID Connect adds authentication to the OAuth 2.0 authorization framework, issuing signed ID tokens (JWTs) so an application can verify who a user is. It is the modern successor to much of what SAML did for web single sign-on."
+      },
+      "jwk": {
+        "def": "A JSON format for representing a cryptographic key.",
+        "context": "JSON Web Key (RFC 7517) encodes a public or private key as a JSON object, the format signing keys are published in for JWT verification. A collection of them is a JWK Set (JWKS)."
+      },
+      "jwks": {
+        "def": "A published set of keys used to verify signed tokens.",
+        "context": "JSON Web Key Set is a JSON document listing the public keys (as JWKs) a service uses to sign its tokens. Relying parties fetch the JWKS to verify JWT signatures and to follow key rotation without manual reconfiguration."
+      },
+      "pss": {
+        "def": "A randomized RSA signature scheme, more robust than the older deterministic padding.",
+        "context": "Probabilistic Signature Scheme (RSASSA-PSS, RFC 8017) adds randomized salt to RSA signatures, giving stronger security proofs than the legacy PKCS#1 v1.5 padding. It is the recommended RSA signature padding in modern protocols."
+      },
+      "hqc": {
+        "def": "A code-based post-quantum key-encapsulation algorithm selected by NIST as a backup.",
+        "context": "Hamming Quasi-Cyclic is a code-based key-encapsulation mechanism NIST selected in 2025 as a backup to the lattice-based ML-KEM, so that post-quantum security does not rest on a single mathematical assumption."
+      },
+      "ecdh": {
+        "def": "Elliptic-curve key exchange - the non-ephemeral form lacks forward secrecy.",
+        "context": "Elliptic-Curve Diffie-Hellman derives a shared secret over elliptic curves. Without the ephemeral 'E' (as in ECDHE) the keys are long-lived, so a leaked key exposes past sessions - which is why the ephemeral variant is preferred."
+      },
+      "rs256": {
+        "def": "A JWT signing algorithm: RSA with SHA-256.",
+        "context": "RS256 is a JSON Web Algorithm identifier (RFC 7518) for an RSA signature using SHA-256. It is one of the most common JWT signing algorithms, paired with a public key published in a JWKS."
+      },
+      "es256": {
+        "def": "A JWT signing algorithm: ECDSA with SHA-256.",
+        "context": "ES256 is a JSON Web Algorithm identifier (RFC 7518) for an ECDSA signature over the P-256 curve using SHA-256. It offers the same security as RS256 with much smaller keys and signatures."
+      },
+      "acme": {
+        "def": "A protocol that automates getting and renewing TLS certificates.",
+        "context": "Automatic Certificate Management Environment (RFC 8555) is the protocol behind Let's Encrypt and similar CAs. It lets a client prove domain control and obtain certificates without human interaction, which is why free, auto-renewing TLS became universal."
+      },
+      "fqdn": {
+        "def": "A complete domain name that specifies a host's exact location in DNS.",
+        "context": "A Fully Qualified Domain Name gives the full path from host to root, like `www.example.com.`, leaving no ambiguity about which domain is meant - as opposed to a short or relative name that depends on a search suffix."
+      },
+      "san": {
+        "def": "The certificate field listing all hostnames the certificate is valid for.",
+        "context": "Subject Alternative Name (RFC 5280) is the X.509 extension that carries the domains a certificate covers. Modern browsers ignore the old Common Name and validate against the SAN list, so a certificate must name every hostname it serves there."
+      },
+      "isrg": {
+        "def": "The nonprofit that runs Let's Encrypt.",
+        "context": "Internet Security Research Group is the nonprofit behind Let's Encrypt, whose ISRG Root X1 certificate anchors the free, automated certificates that a large share of the web now uses."
+      },
+      "ios": {
+        "def": "Cisco's long-standing operating system for routers and switches.",
+        "context": "Internetwork Operating System is Cisco's classic network OS and command-line style. Its conventions (`enable`, `configure terminal`) are so widespread that many other vendors offer an IOS-like CLI mode for familiarity. Not to be confused with Apple's iOS."
+      },
+      "fa": {
+        "def": "A protocol that auto-attaches edge switches to an Ethernet fabric.",
+        "context": "Fabric Attach lets an edge switch join a fabric and signal VLAN-to-service mappings automatically over LLDP, so the edge does not have to run the fabric's control protocol (IS-IS/SPBM) itself."
+      },
+      "sike": {
+        "def": "A post-quantum candidate that was dramatically broken in 2022.",
+        "context": "Supersingular Isogeny Key Encapsulation was a promising isogeny-based post-quantum scheme until a 2022 attack broke it on a laptop in about an hour - a cautionary tale in why the NIST process hedges across different mathematical families."
+      },
+      "totp": {
+        "def": "A one-time code that changes every 30 seconds, used for two-factor auth.",
+        "context": "Time-based One-Time Password (RFC 6238) derives a short code from a shared secret and the current time using HMAC, so authenticator apps and servers compute the same value independently. It is the basis of most app-based 2FA."
+      },
+      "hotp": {
+        "def": "A one-time code advanced by a counter rather than a clock.",
+        "context": "HMAC-based One-Time Password (RFC 4226) derives codes from a shared secret and an incrementing counter. TOTP is HOTP with the counter replaced by time; HOTP itself is used where a counter is easier to synchronize than a clock."
+      },
+      "qr": {
+        "def": "A 2D barcode that phones scan to read data quickly.",
+        "context": "Quick Response code (ISO/IEC 18004) is a matrix barcode that encodes text or URLs, widely used to provision authenticator apps by encoding the otpauth URI so a phone camera can enroll a secret in one scan."
+      },
+      "dnssec": {
+        "def": "Extensions that let DNS answers be cryptographically verified.",
+        "context": "Domain Name System Security Extensions (RFC 4033) add signatures to DNS records so a resolver can prove an answer came from the real zone and was not tampered with in transit. It builds a chain of trust from the root down through each delegation."
+      },
+      "dnskey": {
+        "def": "The DNS record that publishes a zone's public signing key.",
+        "context": "A DNSKEY record (RFC 4034) holds the public key a resolver uses to verify a zone's DNSSEC signatures. Its hash is published as a DS record in the parent zone, linking the chain of trust."
+      },
+      "nsec": {
+        "def": "A DNSSEC record that proves a name does not exist.",
+        "context": "Next Secure records (RFC 4034) chain the existing names in a zone so a resolver can prove authenticated denial - that a queried name genuinely is absent - rather than trusting an unsigned 'not found'."
+      },
+      "nsec3": {
+        "def": "A hashed version of NSEC that hides a zone's contents.",
+        "context": "Next Secure version 3 (RFC 5155) provides the same authenticated denial as NSEC but over hashed names, so an attacker cannot walk the chain to enumerate every name in the zone."
+      },
+      "tld": {
+        "def": "The last label of a domain name, like com or org.",
+        "context": "A top-level domain is the rightmost part of a domain, sitting directly under the DNS root. Registries operate each TLD, and the DS record at this level is where a DNSSEC chain of trust from the root continues downward."
+      },
+      "pac": {
+        "def": "A JavaScript file that tells a browser which proxy to use per URL.",
+        "context": "A Proxy Auto-Config file defines a `FindProxyForURL` function the browser calls for each request, returning which proxy (if any) to use. It allows fine-grained, per-destination proxy rules without hardcoding a single proxy."
+      },
+      "wpad": {
+        "def": "A method for browsers to find a PAC file automatically.",
+        "context": "Web Proxy Auto-Discovery lets a browser locate a proxy config (PAC) file via DHCP or DNS without manual setup. Convenient but a classic attack surface, since a rogue WPAD response can redirect traffic through an attacker's proxy."
+      },
+      "mime": {
+        "def": "A standard for labeling the type of a piece of content.",
+        "context": "Multipurpose Internet Mail Extensions (RFC 2045) defined content types like `text/html` and `application/json`, originally for email attachments and now the media-type system the whole web uses to say what a byte stream is."
+      },
+      "mdn": {
+        "def": "Mozilla's widely used web-technology documentation site.",
+        "context": "Mozilla Developer Network is the reference documentation many developers treat as the canonical description of HTML, CSS, JavaScript, and HTTP behavior in browsers."
+      },
+      "hs256": {
+        "def": "A JWT signing algorithm: HMAC with SHA-256.",
+        "context": "HS256 is a JSON Web Algorithm identifier (RFC 7518) for a symmetric HMAC signature using SHA-256. Because signing and verifying use the same shared secret, mixing it up with an asymmetric algorithm like RS256 is the root of a well-known JWT attack."
+      },
+      "kdf": {
+        "def": "A function that turns a secret into one or more cryptographic keys.",
+        "context": "A key derivation function stretches or transforms input keying material into keys. Password-oriented KDFs (bcrypt, scrypt, Argon2, PBKDF2) are deliberately slow and tunable so that guessing a password stays expensive."
+      },
+      "der": {
+        "def": "A strict binary encoding for X.509 certificates and keys.",
+        "context": "Distinguished Encoding Rules (ITU-T X.690) is a canonical binary form of ASN.1 structures. Certificate signatures are computed over the DER bytes, and PEM is just DER wrapped in Base64 with header lines."
+      },
+      "crl": {
+        "def": "A published list of certificates that have been revoked.",
+        "context": "Certificate Revocation List (RFC 5280) is a signed list a CA publishes of certificates no longer valid before their expiry. A client may download the CRL, or use the lighter-weight OCSP, to check whether a certificate has been revoked."
+      },
+      "pem": {
+        "def": "A Base64 text wrapper for certificates and keys, with BEGIN/END lines.",
+        "context": "Privacy-Enhanced Mail (RFC 7468) is the familiar `-----BEGIN CERTIFICATE-----` text format. Despite the mail-era name, it is now the standard way to store and paste DER-encoded certificates and keys as ASCII."
+      },
+      "sid": {
+        "def": "An identifier that maps a service to a fabric-wide virtual network.",
+        "context": "In Shortest Path Bridging, a Service Identifier (I-SID) tags traffic so the fabric knows which virtual network a frame belongs to, decoupling the service from any specific VLAN and letting the edge signal membership without running the core protocol."
+      },
+      "rpz": {
+        "def": "A DNS mechanism for rewriting or blocking answers by policy.",
+        "context": "A Response Policy Zone lets a resolver override DNS answers - returning NXDOMAIN, a walled-garden address, or a custom record - for domains on a threat feed. It turns DNS into an enforcement point using ordinary zone-transfer machinery."
+      },
+      "cert": {
+        "def": "A team that coordinates response to security incidents.",
+        "context": "A Computer Emergency Response Team (also CSIRT) handles and coordinates the response to cybersecurity incidents for an organization or nation. National CERTs publish threat feeds and advisories that downstream defenders consume."
+      },
+      "pva": {
+        "def": "F5 hardware that accelerates simple Layer 4 traffic.",
+        "context": "Packet Velocity ASIC is BIG-IP's hardware fast path. In full or assisted mode it offloads established, simple flows to silicon, freeing the software TMM for connections that need Layer 7 processing."
+      },
+      "icap": {
+        "def": "A protocol for handing HTTP content to an external service for adaptation.",
+        "context": "Internet Content Adaptation Protocol (RFC 3507) lets a proxy pass request or response bodies to a separate server - for antivirus scanning, DLP, or content rewriting - and splice the result back into the flow."
+      },
+      "eui": {
+        "def": "An IEEE identifier format used to build IPv6 interface IDs.",
+        "context": "Extended Unique Identifier, in its EUI-64 form, derives a 64-bit interface identifier from a device's MAC address. IPv6 SLAAC historically used it to auto-generate the host part of an address."
+      },
+      "dad": {
+        "def": "An IPv6 check that a chosen address is not already in use.",
+        "context": "Duplicate Address Detection (RFC 4862) has a node send a neighbor solicitation for its own tentative address before using it; if anyone answers, the address is a duplicate and cannot be claimed."
+      },
+      "ldns": {
+        "def": "The recursive resolver a client actually queries.",
+        "context": "The local DNS resolver is the recursive server a stub client sends queries to, and whose IP a service like GTM/DNS sees, not the end user's. Because the LDNS location approximates the user's, it drives geographic load-balancing decisions."
+      },
+      "isp": {
+        "def": "A company that provides internet access.",
+        "context": "An internet service provider connects subscribers to the internet. In geographic DNS and topology decisions, the resolving network's ISP can be one of the attributes used to steer a client toward a nearby data center."
+      },
+      "bind": {
+        "def": "The most widely deployed DNS server software.",
+        "context": "Berkeley Internet Name Domain is the reference DNS server from ISC. On BIG-IP DNS, a 'fall through to BIND' action hands a query to the local BIND instance when no wide IP or other object answers it."
+      },
+      "ips": {
+        "def": "A control that detects and blocks attacks inline.",
+        "context": "An intrusion prevention system inspects traffic in the data path and can drop or reset connections matching known attack signatures or anomalies, sitting inline unlike a passive detection-only sensor."
+      },
+      "wad": {
+        "def": "The FortiGate process that handles proxy-based inspection.",
+        "context": "The Web Application Daemon is FortiGate's user-space proxy process. In proxy-based SSL inspection and web filtering, WAD terminates and re-originates the session so security profiles can see the full content."
+      },
+      "ntlm": {
+        "def": "A legacy Microsoft challenge-response authentication protocol.",
+        "context": "NT LAN Manager authenticates a user via a challenge-response exchange without sending the password. Still seen in Windows environments, it is weaker than Kerberos and a frequent relay-attack target."
+      },
+      "spn": {
+        "def": "The name a Kerberos client uses to request a service ticket.",
+        "context": "A Service Principal Name uniquely identifies a service instance in Kerberos, tied to the account running it. A misregistered SPN is a classic cause of single sign-on failures."
+      },
+      "esp": {
+        "def": "The IPsec protocol that encrypts and authenticates packet payloads.",
+        "context": "Encapsulating Security Payload (RFC 4303) is the IPsec component that provides confidentiality and integrity for tunneled traffic. A capture taken outside the tunnel sees only ESP, not the protected inner packets."
+      },
+      "vip": {
+        "def": "The address clients connect to on a load balancer.",
+        "context": "A virtual IP is the front-door address a load balancer or virtual server listens on. Traffic completing at the VIP but never reaching a pool member points to a problem on the server-side of the proxy."
+      },
+      "first": {
+        "def": "The global body of incident-response teams behind CVSS and EPSS.",
+        "context": "The Forum of Incident Response and Security Teams is the international association that maintains standards like CVSS and EPSS. Its work gives defenders a common language for scoring and prioritizing vulnerabilities."
+      },
+      "epss": {
+        "def": "A data-driven score estimating the odds a vulnerability gets exploited.",
+        "context": "Exploit Prediction Scoring System estimates the probability that a given vulnerability will be exploited in the wild in the near term. It complements CVSS severity by adding a likelihood dimension to prioritization."
+      },
+      "pkce": {
+        "def": "An OAuth extension that protects the authorization-code flow.",
+        "context": "Proof Key for Code Exchange (RFC 7636) binds an authorization code to the client that requested it, using a one-time secret. It stops an intercepted code from being redeemed by an attacker and is now standard for public OAuth clients."
+      },
+      "eigrp": {
+        "def": "A Cisco routing protocol known for fast convergence.",
+        "context": "Enhanced Interior Gateway Routing Protocol is a Cisco distance-vector protocol with fast reconvergence via its DUAL algorithm. It can summarize routes on nearly any interface, which is why it appears in route-summarization discussions."
+      },
+      "as": {
+        "def": "A network under one administrative routing policy, identified by an ASN.",
+        "context": "An autonomous system is a collection of IP prefixes under a single routing policy, identified by an autonomous system number. BGP exchanges reachability between autonomous systems, and AS boundaries are natural places to summarize routes."
+      },
+      "ca": {
+        "def": "The trusted issuer that signs digital certificates.",
+        "context": "A certificate authority is the entity whose signature makes a TLS certificate trusted. Browsers ship a set of trusted CAs; a certificate is valid only if it chains to one of them, and the CA is also who revokes certificates via CRL or OCSP."
+      },
+      "pin": {
+        "def": "A short numeric secret used to authenticate a person.",
+        "context": "A personal identification number is a short numeric code used to prove identity, as on a bank card. Being short, a PIN has a tiny keyspace, so it relies on limited attempts or a hardware secure element rather than resistance to offline guessing."
+      },
+      "otp": {
+        "def": "A password valid for a single login or a short window.",
+        "context": "A one-time password is used once and then invalid, defeating replay of a captured code. TOTP (time-based) and HOTP (counter-based) are the two common ways to generate them for two-factor authentication."
+      },
+      "acs": {
+        "def": "The endpoint where a SAML response is delivered to the application.",
+        "context": "The Assertion Consumer Service is the URL at the service provider that receives and processes a SAML assertion from the identity provider. A response must be sent to the exact registered ACS, which is part of what stops assertion redirection attacks."
+      },
+      "dcv": {
+        "def": "Proving you control a domain before a certificate is issued.",
+        "context": "Domain Control Validation is how a CA confirms the requester controls the domain, via an HTTP, DNS, or email challenge. Baseline Requirements keep shrinking how long a DCV result can be reused, tightening certificate issuance."
+      },
+      "csr": {
+        "def": "A signed request containing the public key and details for a certificate.",
+        "context": "A Certificate Signing Request (PKCS #10) bundles the public key and subject information, signed by the requester's private key, and is submitted to a CA to obtain a certificate. ACME automates what once meant pasting a CSR into a web form."
+      },
+      "adc": {
+        "def": "A device that load-balances and optimizes application traffic.",
+        "context": "An application delivery controller sits in front of servers to distribute load, terminate TLS, and apply health checks and traffic policies. BIG-IP LTM is a canonical ADC; an AS3 'ADC-only' declaration configures just those functions."
+      },
+      "sii": {
+        "def": "Reusable subscriber-identity data in the certificate issuance process.",
+        "context": "Subscriber Identity Information refers to previously validated details about a certificate subscriber that a CA may reuse for a limited time. Like DCV, the window for reusing SII has been tightened by industry baseline rules."
+      },
+      "xxe": {
+        "def": "An attack that abuses XML external entities to read files or reach internal systems.",
+        "context": "XML External Entity injection tricks an XML parser into resolving an external entity, letting an attacker read local files, reach internal services (SSRF), or cause denial of service. The fix is to disable DOCTYPE/external-entity processing in the parser."
+      },
+      "posix": {
+        "def": "A standard defining a portable interface for Unix-like operating systems.",
+        "context": "Portable Operating System Interface (IEEE 1003.1) specifies APIs, shells, and utilities so software written to it runs across Unix-like systems. Its definition of a day as exactly 86,400 seconds is why POSIX time ignores leap seconds."
+      },
+      "tai": {
+        "def": "A continuous atomic timescale with no leap seconds.",
+        "context": "International Atomic Time is a uniform timescale kept by atomic clocks that never inserts leap seconds. UTC is derived from TAI but adds leap seconds to stay aligned with the Earth's rotation, so the two drift apart by whole seconds."
+      },
+      "icann": {
+        "def": "The body that coordinates the internet's domain-name and number systems.",
+        "context": "Internet Corporation for Assigned Names and Numbers oversees the DNS root, top-level domain policy, and IP-number allocation coordination. In the Public Suffix List, the ICANN section holds registry-controlled suffixes as opposed to privately submitted ones."
+      },
+      "si": {
+        "def": "The modern metric system of measurement units.",
+        "context": "The International System of Units defines the second and other base units. A true SI second is the physical unit against which timescales like TAI are measured, distinct from the calendar-day accounting that POSIX time uses."
+      },
+      "utc": {
+        "def": "The primary civil time standard the world sets clocks by.",
+        "context": "Coordinated Universal Time is the basis for civil time worldwide. It tracks atomic time (TAI) but inserts occasional leap seconds to stay within a second of solar time, and time-zone offsets are expressed relative to it."
+      },
+      "iana": {
+        "def": "The function that manages global IP, port, and protocol-number assignments.",
+        "context": "Internet Assigned Numbers Authority maintains the registries of IP address blocks, port numbers, protocol parameters, and the DNS root zone, and publishes the time-zone database that most systems rely on."
+      },
+      "ce": {
+        "def": "A node that connects a customer site into F5 Distributed Cloud.",
+        "context": "A Customer Edge node is the software appliance that registers into F5 Distributed Cloud and terminates traffic at the customer's site or cloud. On startup it must reach specific control endpoints, DNS, and NTP, which is why its egress allowlist matters."
+      },
+      "opt": {
+        "def": "A pseudo-record that carries EDNS options in a DNS message.",
+        "context": "The OPT record (RFC 6891) is not a real resource record but a container in the additional section that carries EDNS metadata like buffer size and flags. dig shows it as the OPT pseudo-section."
+      },
+      "edns": {
+        "def": "An extension that adds capabilities to the original DNS message format.",
+        "context": "Extension Mechanisms for DNS (RFC 6891) let DNS carry larger responses, signal DNSSEC support, and pass options, all via the OPT pseudo-record, without breaking the legacy message format."
+      },
+      "sirt": {
+        "def": "F5's team that handles security incidents and advisories.",
+        "context": "The Security Incident Response Team at F5 investigates and coordinates responses to security issues in F5 products, publishing advisories and responding to reports, often in the same week a vulnerability is disclosed."
+      },
+      "adsp": {
+        "def": "F5's unified platform branding for application delivery and security.",
+        "context": "Application Delivery and Security Platform is F5's umbrella name for its converged delivery and security offering. It signals the direction customers are pointed toward when planning around F5's evolving product portfolio."
+      },
+      "ad": {
+        "def": "Microsoft's directory service for identity and authentication.",
+        "context": "Active Directory stores users, groups, and computers and authenticates them in Windows environments, typically via Kerberos or NTLM. Access policies often query an AD agent to resolve who a user is and what they may reach."
+      },
+      "l4": {
+        "def": "The transport layer, handling ports and connections like TCP/UDP.",
+        "context": "Layer 4 of the OSI model is the transport layer, where TCP and UDP live. L4 load balancing forwards based on IP and port without inspecting application content, which is faster but blind to Layer 7 details like hostnames or URLs."
+      },
+      "yaml": {
+        "def": "A human-readable data format often used for configuration.",
+        "context": "YAML Ain't Markup Language is a whitespace-based serialization format popular for config files and CI pipelines. Its readability comes with sharp edges, like type-coercion surprises and significant indentation."
+      },
+      "jws": {
+        "def": "A standard for signing data represented as JSON.",
+        "context": "JSON Web Signature (RFC 7515) defines how to sign a payload and encode the signature compactly. It underlies signed JWTs; notably its 'none' algorithm, meant for unsecured tokens, is a classic source of verification bugs."
+      },
+      "pdf": {
+        "def": "A fixed-layout document file format.",
+        "context": "Portable Document Format (ISO 32000) preserves a document's exact layout across devices. In security contexts, server-side PDF or screenshot generators are a common SSRF vector because they fetch URLs."
+      },
+      "bsd": {
+        "def": "A Unix lineage; also the name of the original syslog format.",
+        "context": "Berkeley Software Distribution is a family of Unix systems from UC Berkeley. In logging, 'BSD syslog' (RFC 3164) refers to the original, loosely specified message format that RFC 5424 later replaced."
+      },
+      "pri": {
+        "def": "The leading field in a syslog message encoding facility and severity.",
+        "context": "The priority value is the number in angle brackets at the start of a syslog line. It packs the facility and severity into one integer, from which both can be recovered."
+      },
+      "y2038": {
+        "def": "The moment 32-bit Unix time overflows, in January 2038.",
+        "context": "The Year 2038 problem is when a signed 32-bit time_t counter, measuring seconds since 1970, overflows and wraps to a negative number. Unlike Y2K's formatting issue, this is a hard representational limit fixed by moving to 64-bit time."
+      },
+      "snat": {
+        "def": "Rewriting the client source address as traffic passes through a device.",
+        "context": "Source network address translation makes connections appear to originate from the device's address rather than the client's. On BIG-IP it ensures return traffic comes back through the proxy, at the cost of hiding the original client IP from the server."
+      },
+      "msrdp": {
+        "def": "Microsoft's protocol for remote graphical desktop sessions.",
+        "context": "Microsoft Remote Desktop Protocol carries remote desktop sessions. MSRDP persistence on a load balancer uses the session's routing token to keep a reconnecting client on the same backend server."
+      },
+      "wccp": {
+        "def": "A protocol for transparently redirecting traffic to a cache or proxy.",
+        "context": "Web Cache Communication Protocol lets a router redirect selected traffic to a cache or security appliance without the client being configured for it. It is one way transparent proxy interception is set up."
+      },
+      "hsts": {
+        "def": "A header that forces browsers to use HTTPS for a site.",
+        "context": "HTTP Strict Transport Security (RFC 6797) tells a browser to only ever connect to a site over HTTPS, refusing plaintext and blocking click-through on certificate warnings. It defends against downgrade and stripping attacks."
+      },
+      "lb": {
+        "def": "A device or service that spreads traffic across multiple servers.",
+        "context": "A load balancer distributes client requests across a pool of backends for scale and availability. In F5 Distributed Cloud the load balancer object also anchors routing, security, and origin-pool configuration."
+      },
+      "l3": {
+        "def": "The network layer, where IP routing happens.",
+        "context": "Layer 3 of the OSI model is the network layer, home to IP addressing and routing. An L3 proxy or forwarding decision operates on IP addresses, one layer below the transport (L4) and application (L7) layers."
+      },
+      "asn": {
+        "def": "A number identifying a network under one routing policy.",
+        "context": "An autonomous system number uniquely identifies an autonomous system in BGP. Policies can match on a specific ASN to permit or deny routes from a given network, such as blocking a known-bad provider."
+      },
+      "rng": {
+        "def": "A source of random values, ideally unpredictable.",
+        "context": "A random number generator produces the randomness that security depends on. A weak or predictable RNG, not a flaw in a scheme like UUIDv4, is usually the real cause when supposedly unique or secret values collide or are guessed."
+      },
+      "ulid": {
+        "def": "A sortable, unique identifier alternative to UUID.",
+        "context": "Universally Unique Lexicographically Sortable Identifier encodes a timestamp plus randomness so IDs sort roughly by creation time while staying unique. It was a popular answer to UUIDv4's lack of ordering before UUIDv7 arrived."
+      },
+      "ecma": {
+        "def": "A standards body behind JavaScript and JSON specifications.",
+        "context": "European Computer Manufacturers Association, now Ecma International, publishes standards including ECMAScript (JavaScript) and ECMA-404, one of the two specifications that define JSON."
+      },
+      "cdata": {
+        "def": "An XML section whose content is not parsed as markup.",
+        "context": "A character data section lets an XML document include raw text - like code or markup - without the parser interpreting angle brackets and ampersands. It is written as a CDATA block so special characters need no escaping."
+      },
+      "lcs": {
+        "def": "The longest sequence common to two inputs, keeping order.",
+        "context": "The longest common subsequence is the basis of most diff tools: the longest ordered (but not necessarily contiguous) run of elements shared by two files. What is left over becomes the additions and deletions a diff shows."
+      },
+      "nvd": {
+        "def": "The US government's public database of known vulnerabilities.",
+        "context": "The National Vulnerability Database, run by NIST, enriches CVE entries with CVSS scores and other metadata. Reproducing its published score for a vulnerability is a good check that a CVSS calculation matches the authoritative source."
+      },
+      "ajax": {
+        "def": "A technique for updating a web page without a full reload.",
+        "context": "Asynchronous JavaScript and XML refers to making background HTTP requests from a page and updating it in place. The name predates JSON, which has largely replaced XML as the payload, but the term stuck for in-page dynamic requests."
+      },
+      "sec1": {
+        "def": "A standard format for encoding elliptic-curve private keys.",
+        "context": "Standards for Efficient Cryptography 1 defines an elliptic-curve key encoding, distinct from the PKCS#1 (RSA) and PKCS#8 (generic) formats. A private key file may be in any of these, wrapped in either PEM or DER."
+      },
+      "captcha": {
+        "def": "A challenge meant to tell humans and bots apart.",
+        "context": "Completely Automated Public Turing test to tell Computers and Humans Apart is a challenge, like distorted text or image selection, that is easy for people and hard for bots. It is a last-resort defense because it adds real user friction."
+      },
+      "gui": {
+        "def": "A visual, point-and-click interface to software.",
+        "context": "A graphical user interface lets a user operate software through windows, buttons, and menus rather than typed commands. On BIG-IP some tasks are only practical through the GUI, while others are faster from the CLI."
+      },
+      "dh": {
+        "def": "A method for two parties to agree on a shared secret.",
+        "context": "Diffie-Hellman is a key-exchange method letting two sides derive a shared secret over a public channel. Its ephemeral form gives forward secrecy; the parameters, including the DH group, determine the strength of the exchange."
+      },
+      "iis": {
+        "def": "Microsoft's web server software for Windows.",
+        "context": "Internet Information Services is the web server built into Windows Server. Its URL and path handling quirks, like accepting backslashes as separators, are a common source of WAF evasion tricks that attackers use to slip past signature matching."
       }
     },
     "totalCount": "{count} terms",
@@ -9658,21 +11544,23 @@
     "catNames": [
       "Pixel",
       "Mochi",
-      "Bagunça",
+      "Ziggy",
       "Turbo",
       "Miss Vector",
       "Chairman Meow",
-      "Nula",
-      "Biscoito",
+      "Null",
+      "Biscuit",
       "Sir Pounce",
       "Lambda",
-      "Farofa",
+      "Waffles",
       "Ctrl"
     ],
     "vectors": [
       "doorstep, during rain (classic route)",
       "engine bay of a parked car (warm-start protocol)",
+      "falls in behind you on the sidewalk and escorts you home",
       "follows you home from the bus stop",
+      "appears at an open window, already halfway in",
       "appears on the balcony; provides no explanation",
       "cardboard box in a parking lot, pre-labeled 'free'",
       "office parking lot, staring directly into your soul"
@@ -9684,6 +11572,8 @@
       "Unit is observing you. Assessment: adequate.",
       "Delivery vector locked. Weather conditions being arranged.",
       "Delivery pending. Do not resist. Acquire treats."
-    ]
+    ],
+    "fullscreenEnterAria": "Enter full screen",
+    "fullscreenExitAria": "Exit full screen"
   }
 }

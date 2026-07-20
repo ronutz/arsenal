@@ -21,6 +21,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useFullscreen } from "@/lib/hooks/useFullscreen";
 
 /** One meeting type: id (stable key), display name, and its phrase pool. */
 export interface BingoType {
@@ -37,6 +38,8 @@ export interface BingoLabels {
   bingo: string;
   bingoSub: string;
   shuffling: string;
+  fullscreenEnterAria: string;
+  fullscreenExitAria: string;
 }
 
 /** Grid geometry: 5x5 = 25 squares, index 12 is the FREE center. */
@@ -63,6 +66,7 @@ function drawRandom(pool: string[], n: number): string[] {
 }
 
 export default function MeetingBingo({ labels, types }: { labels: BingoLabels; types: BingoType[] }) {
+  const { ref: fsRef, isFullscreen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
   const [typeId, setTypeId] = useState(types[0]?.id ?? "");
   // The 24 dealt phrases (null until the client deals — see header note).
   const [dealt, setDealt] = useState<string[] | null>(null);
@@ -116,7 +120,7 @@ export default function MeetingBingo({ labels, types }: { labels: BingoLabels; t
   };
 
   return (
-    <div className="bingo" data-bingo={hasBingo ? "1" : "0"}>
+    <div ref={fsRef} className={`bingo fs-fill${isFullscreen ? " is-fullscreen" : ""}`} data-bingo={hasBingo ? "1" : "0"}>
       <div className="bingo-controls">
         <label className="bingo-type-label" htmlFor="bingo-type">
           {labels.typeLabel}
@@ -135,6 +139,16 @@ export default function MeetingBingo({ labels, types }: { labels: BingoLabels; t
         </select>
         <button type="button" className="bingo-new" onClick={() => current && deal(current.phrases)}>
           {labels.newCard} <span aria-hidden="true">&#8635;</span>
+        </button>
+        <button
+          type="button"
+          className="fs-toggle"
+          onClick={toggleFs}
+          aria-pressed={isFullscreen}
+          aria-label={isFullscreen ? labels.fullscreenExitAria : labels.fullscreenEnterAria}
+          title={isFullscreen ? labels.fullscreenExitAria : labels.fullscreenEnterAria}
+        >
+          <span aria-hidden="true">{isFullscreen ? "\u2921" : "\u2922"}</span>
         </button>
       </div>
 

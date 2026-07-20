@@ -25,7 +25,7 @@ The DigestMethod names the hash applied to the canonicalized content, producing 
 
 ## Weak algorithms
 
-The algorithms are not all equally safe, and the decoder flags the weak ones. SHA-1, as both a digest and inside RSA-SHA1 signatures, is broken: practical collisions exist, and it should not be used to sign anything you rely on. MD5 is worse and long dead. The modern baseline is SHA-256 or stronger for the digest, and RSA-SHA256, an ECDSA variant over SHA-256, or RSA-PSS for the signature. Seeing RSA-SHA1 or a SHA-1 digest in a current SAML deployment is a signal to upgrade the federation, which is why those carry a weak marker.
+The algorithms are not all equally safe, and the decoder flags the weak ones. SHA-1, as both a digest and inside RSA-SHA1 signatures, is broken: practical collisions exist, and it should not be used to sign anything you rely on. MD5 is worse and long dead. The modern baseline is SHA-256 or stronger for the digest, and RSA-SHA256, an ECDSA variant over SHA-256, or RSA-PSS (Probabilistic Signature Scheme) for the signature. Seeing RSA-SHA1 or a SHA-1 digest in a current SAML deployment is a signal to upgrade the federation, which is why those carry a weak marker.
 
 ## Sign the Response, the Assertion, or both
 

@@ -18,7 +18,7 @@ A JWK (JSON Web Key) describes a single key as a JSON object. Alongside the raw 
 - **`kty`** (key type) is the one required member: RSA, EC, OKP, or oct. It determines which other members are present.
 - **`use`** says whether the key is for signatures (`sig`) or encryption (`enc`), and **`key_ops`** can list specific operations. A verifier should honor these and not, say, encrypt with a signing key.
 - **`alg`** names the intended algorithm, such as RS256 or ES256.
-- **`kid`** (key ID) is a label used to pick the right key from a set. When a JWT header carries a `kid`, the verifier matches it against the `kid` in the JWKS.
+- **`kid`** (key ID) is a label used to pick the right key from a set. When a JWT header carries a `kid`, the verifier matches it against the `kid` in the JWKS (JSON Web Key Set).
 - Type-specific members carry the actual key: `n` and `e` for RSA, `crv`/`x`/`y` for EC, `crv`/`x` for OKP. Optional `x5c` and `x5t` embed or fingerprint an X.509 certificate for the key.
 
 ## Thumbprints

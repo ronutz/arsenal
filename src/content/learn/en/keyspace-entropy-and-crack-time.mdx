@@ -21,7 +21,7 @@ The keyspace is the number of possible inputs: roughly `(alphabet size) ^ length
 
 ## Crack time
 
-Crack time is approximately keyspace divided by rate. At a fast unsalted rate of 1,000,000,000 hashes per second on a GPU, 10,000 candidates fall instantly, while 6.6 x 10^15 takes on the order of months on average. Now change the hash: with a slow KDF tuned to 10,000 guesses per second, that same keyspace would take millions of years.
+Crack time is approximately keyspace divided by rate. At a fast unsalted rate of 1,000,000,000 hashes per second on a GPU, 10,000 candidates fall instantly, while 6.6 x 10^15 takes on the order of months on average. Now change the hash: with a slow KDF (key derivation function) tuned to 10,000 guesses per second, that same keyspace would take millions of years.
 
 ## Why length beats complexity
 

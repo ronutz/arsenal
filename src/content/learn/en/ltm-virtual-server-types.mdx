@@ -19,7 +19,7 @@ A Standard virtual server with a TCP profile implements the full-proxy architect
 
 ## Performance (Layer 4), the FastL4 path
 
-A Performance (Layer 4) virtual server carries a FastL4 profile and processes connections packet by packet rather than as a terminated proxy. On hardware platforms that have it, flows can be offloaded to the ePVA, which the guide credits with higher throughput and lower latency; the PVA acceleration mode can be full, assisted, or none, and platforms without the chip do all FastL4 processing in TMM. The fit, in the guide's words, is when little or no Layer 4 to Layer 7 processing is required: no SSL handling, no L7 profiles or persistence, forwarding decisions from Layer 4 information, and only Layer 1 to 4 iRules events. Address and port translation still work, but load-balancing decisions are limited because minimal Layer 7 information exists.
+A Performance (Layer 4) virtual server carries a FastL4 profile and processes connections packet by packet rather than as a terminated proxy. On hardware platforms that have it, flows can be offloaded to the ePVA, which the guide credits with higher throughput and lower latency; the PVA (Packet Velocity ASIC) acceleration mode can be full, assisted, or none, and platforms without the chip do all FastL4 processing in TMM. The fit, in the guide's words, is when little or no Layer 4 to Layer 7 processing is required: no SSL handling, no L7 profiles or persistence, forwarding decisions from Layer 4 information, and only Layer 1 to 4 iRules events. Address and port translation still work, but load-balancing decisions are limited because minimal Layer 7 information exists.
 
 ## Forwarding (IP), the router impression
 
@@ -31,7 +31,7 @@ Forwarding (Layer 2) is the Forwarding idea one layer down: it typically shares 
 
 ## Performance (HTTP) and the rest
 
-Performance (HTTP) uses a FastHTTP-style fast path with a behavior worth knowing from K8082: it can maintain idle server-side flows, so a client connection may be paired with a pre-existing server connection rather than a fresh one, or run with no idle flows, opening the server side only after the client handshake. The remaining types are specialists. DHCP Relay listens for client broadcasts and relays them to DHCP servers. Internal virtual servers receive traffic from other virtual servers, the request-adapt and response-adapt pattern used for ICAP-style content adaptation. Message Routing virtual servers use the message-routing framework to route individual messages, SIP being the canonical protocol.
+Performance (HTTP) uses a FastHTTP-style fast path with a behavior worth knowing from K8082: it can maintain idle server-side flows, so a client connection may be paired with a pre-existing server connection rather than a fresh one, or run with no idle flows, opening the server side only after the client handshake. The remaining types are specialists. DHCP Relay listens for client broadcasts and relays them to DHCP servers. Internal virtual servers receive traffic from other virtual servers, the request-adapt and response-adapt pattern used for ICAP (Internet Content Adaptation Protocol)-style content adaptation. Message Routing virtual servers use the message-routing framework to route individual messages, SIP (Session Initiation Protocol) being the canonical protocol.
 
 ## Choosing, in one breath
 

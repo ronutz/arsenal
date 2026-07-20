@@ -19,7 +19,7 @@ Two roles do all the work. The identity provider (IdP) authenticates the user an
 
 ## The Web Browser SSO flow
 
-The most common SAML profile is SP-initiated Web Browser SSO, and the browser is the courier that carries every message between the two servers. Nothing flows IdP-to-SP directly; the user's browser relays each step.
+The most common SAML profile is SP-initiated Web Browser SSO (single sign-on), and the browser is the courier that carries every message between the two servers. Nothing flows IdP-to-SP directly; the user's browser relays each step.
 
 The flow runs like this. The user visits the SP and is not yet authenticated. The SP builds an AuthnRequest and redirects the browser to the IdP with it. The IdP authenticates the user, by password, a second factor, an existing session, or whatever it requires. The IdP then builds a Response containing an assertion about the user and sends it back through the browser to a fixed SP endpoint called the Assertion Consumer Service (ACS). The SP validates the Response, and if everything checks out, it creates a local session and the user is in.
 

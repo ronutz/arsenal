@@ -23,7 +23,7 @@ Uma service policy com um `rule_list` guarda uma lista ordenada de regras. O **a
 
 ## Por que a ordem importa
 
-Considere duas regras: uma nega um ASN ruim específico, e uma permite tudo de um país parceiro. Sob FIRST_MATCH, o que aparecer primeiro decide. Sob DENY_OVERRIDES, a negação é considerada primeiro, então uma requisição do ASN ruim é bloqueada mesmo que também venha do país parceiro. Sob ALLOW_OVERRIDES, a mesma requisição é permitida, porque a permissão é considerada primeiro.
+Considere duas regras: uma nega um ASN (número de sistema autônomo, do inglês autonomous system number) ruim específico, e uma permite tudo de um país parceiro. Sob FIRST_MATCH, o que aparecer primeiro decide. Sob DENY_OVERRIDES, a negação é considerada primeiro, então uma requisição do ASN ruim é bloqueada mesmo que também venha do país parceiro. Sob ALLOW_OVERRIDES, a mesma requisição é permitida, porque a permissão é considerada primeiro.
 
 As mesmas regras, três resultados diferentes para a requisição que se sobrepõe. É por isso que ler uma política sem conhecer seu algoritmo pode enganar você.
 

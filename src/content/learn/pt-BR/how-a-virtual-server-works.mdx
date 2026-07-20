@@ -19,7 +19,7 @@ O campo `destination` define o endereço e a porta em que o virtual server respo
 
 ## A pilha de perfis
 
-O bloco `profiles` é o coração do comportamento de um virtual server. Os perfis são empilhados: um perfil TCP governa o transporte, um perfil HTTP acrescenta a análise de camada 7, e os perfis SSL terminam ou originam o TLS. Um perfil client-SSL significa que o TLS é descriptografado no BIG-IP; sem ele, um virtual com aparência de HTTPS simplesmente repassa os bytes criptografados direto ao backend. Se nenhum perfil estiver anexado, o virtual recai para o padrão FastL4 e se comporta como um encaminhador puro de camada 4, sem consciência de HTTP ou TLS. Ler a lista de perfis é, portanto, a forma mais rápida de saber se um virtual é um repasse L4 ou um proxy L7 completo.
+O bloco `profiles` é o coração do comportamento de um virtual server. Os perfis são empilhados: um perfil TCP governa o transporte, um perfil HTTP acrescenta a análise de camada 7, e os perfis SSL terminam ou originam o TLS. Um perfil client-SSL significa que o TLS é descriptografado no BIG-IP; sem ele, um virtual com aparência de HTTPS simplesmente repassa os bytes criptografados direto ao backend. Se nenhum perfil estiver anexado, o virtual recai para o padrão FastL4 e se comporta como um encaminhador puro de camada 4, sem consciência de HTTP ou TLS. Ler a lista de perfis é, portanto, a forma mais rápida de saber se um virtual é um repasse L4 (Camada 4, transporte) ou um proxy L7 (Camada 7, aplicação) completo.
 
 ## Persistência e o pool
 

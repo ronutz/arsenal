@@ -37,7 +37,7 @@ Não dá para simplesmente pegar os primeiros bytes do HMAC, porque isso desperd
 - Zerar o bit mais alto, deixando um valor positivo de 31 bits. Isso evita diferenças de sinal entre plataformas.
 - Tomar esse valor módulo `10^dígitos`.
 
-Como o deslocamento é derivado do próprio MAC, qual janela de bytes vira o código também é imprevisível, e cada código continua sendo uma função determinística do segredo e do contador.
+Como o deslocamento é derivado do próprio MAC (código de autenticação de mensagem, do inglês message authentication code), qual janela de bytes vira o código também é imprevisível, e cada código continua sendo uma função determinística do segredo e do contador.
 
 ## TOTP: deixe o relógio ser o contador
 

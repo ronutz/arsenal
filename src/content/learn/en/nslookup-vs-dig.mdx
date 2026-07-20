@@ -17,7 +17,7 @@ Both tools ask a DNS server a question and print the answer. The difference is h
 
 nslookup optimises for a quick, readable answer. It prints the resolver, whether the answer is non-authoritative, and the records in a friendly prose format. What it does not show is almost everything dig puts front and centre: the header flags (aa, tc, rd, ra, ad), the exact TTL on each record, the EDNS OPT pseudo-section, and the section structure (answer vs authority vs additional). For a lot of everyday questions ("what does this name resolve to?") that is fine, and nslookup is faster to read.
 
-dig shows the whole message. When you need the TTL to diagnose a caching issue, the aa flag to confirm you reached an authoritative server, the tc flag to catch a truncated answer, or the DNSSEC records, dig is the tool. Its output is denser, but nothing is hidden.
+dig shows the whole message. When you need the TTL to diagnose a caching issue, the aa flag to confirm you reached an authoritative server, the tc flag to catch a truncated answer, or the DNSSEC (DNS Security Extensions) records, dig is the tool. Its output is denser, but nothing is hidden.
 
 ## A rule of thumb
 

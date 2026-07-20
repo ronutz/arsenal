@@ -25,7 +25,7 @@ The consistent-hashing algorithms - Source IP Stickiness, Cookie Based Stickines
 
 ## The three things you can hash
 
-Consistent hashing needs a key, and XC gives you three. **Source IP** hashes the client address - simple, but it concentrates everyone behind a shared NAT or proxy onto one origin, so it goes lopsided when client diversity is low. **Cookie** hashes a named cookie, with a TTL and path you set, which works well for browsers that faithfully return it. **Ring Hash with a custom hash policy** lets you hash a header you choose - typically one carrying a session ID - which is the cleanest fit for microservices that already pass a session token. Pick the key that is both stable per session and well-distributed across clients.
+Consistent hashing needs a key, and XC gives you three. **Source IP** hashes the client address - simple, but it concentrates everyone behind a shared NAT (network address translation) or proxy onto one origin, so it goes lopsided when client diversity is low. **Cookie** hashes a named cookie, with a TTL and path you set, which works well for browsers that faithfully return it. **Ring Hash with a custom hash policy** lets you hash a header you choose - typically one carrying a session ID - which is the cleanest fit for microservices that already pass a session token. Pick the key that is both stable per session and well-distributed across clients.
 
 ## When you don't need persistence
 

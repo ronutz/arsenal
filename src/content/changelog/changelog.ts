@@ -52,6 +52,29 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-19",
+    time: "20:00",
+    kind: "tool",
+    title: "BIG-IP DNS (GTM) GSLB simulator: watch a wide IP pick a pool, then a server",
+    body: "The global-tier companion to the LTM load balancing simulator. BIG-IP DNS load balancing is two-tier - a wide IP first selects a pool, then the pool selects a virtual server - and this tool models both. Configure pools (each with a ratio, a region tag, an up/down state, and a member-selection method) and their members, set the wide-IP pool method, a client region, and a request count N, and see how the next N DNS name-resolution requests resolve: pool by pool, then member by member. The static methods are simulated deterministically at both tiers - Round Robin, Ratio, Global Availability (first available in list order), and Topology (highest region-match score wins, ties round-robin). The dynamic methods that need live big3d metrics - QoS, completion rate, round-trip time, fewest hops, kbps, packet rate, VS score, least connections, CPU - are explained honestly rather than faked. Grounded in F5 BIG-IP DNS documentation, with a paired Learn article in English and Brazilian Portuguese on the two-tier decision.",
+    tools: ["bigip-dns-gslb-simulator"],
+  },
+  {
+    date: "2026-07-19",
+    time: "18:00",
+    kind: "tool",
+    title: "Three passive-fingerprint explainers: p0f, User-Agent, header order",
+    body: "A new trio decodes the signatures you emit before a byte of application data flows - the honest core of the privacy thesis. The p0f signature explainer decodes a v3 SYN fingerprint (ver:ittl:olen:mss:wsize,scale:olayout:quirks:pclass) into all eight fields and matches the shape to documented OS stacks; the TTL-versus-User-Agent mismatch it surfaces is the classic proxy tell. The User-Agent entropy analyzer breaks a pasted UA into its identifying tokens, estimates the distinguishing bits each contributes, and explains the Client Hints migration that froze the string. The HTTP header-order fingerprint reads a request header block and classifies the client by header sequence alone - the passive-HTTP analog of JA3, and how a Chrome UA wearing curl's header order gets caught. All three are decode-and-explain only: you paste a signature you already hold, nothing is read from your browser, nothing is sent. A paired Learn article ships in English and Brazilian Portuguese.",
+    tools: ["p0f-signature-explainer", "user-agent-entropy-analyzer", "http-header-order-fingerprint"],
+  },
+  {
+    date: "2026-07-19",
+    time: "14:00",
+    kind: "content",
+    title: "The glossary grows from 353 to 605 entries",
+    body: "The largest single expansion of the glossary: 252 new entries across six working fields - network engineering (VLAN, OSPF, spanning tree, VXLAN, BFD), the ISP technician's world (GPON, OTDR, optical budget, CGNAT, truck roll), IT support (ITIL, golden image, percussive maintenance, layer 8), cloud network engineering (VPC, transit gateway, cold-potato routing, egress cost), cloud security (shared responsibility, IMDS, SSRF, envelope encryption, canary tokens), and privacy - with the LGPD, the ANPD, Schrems II, and differential privacy taking their places. Two new domain filters arrive with the content: ISP & telecom and IT support. And a new shelf of thirteen sourced myths joins the lore: NAT is not a firewall, incognito is not anonymity, the padlock is not safety, deleted is not erased - each one disputed, each one cited. Every entry authored natively in English and Brazilian Portuguese.",
+  },
+  {
     date: "2026-07-18",
     time: "16:30",
     kind: "feature",
@@ -100,7 +123,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "10:00",
     kind: "content",
     title: "The clones get their lineage",
-    body: "The pre-1996 story now names both machines' ancestry precisely: the Microdigital TK-82C as a Brazilian clone of Sinclair's ZX81, and the TK90X as a clone of the ZX Spectrum 48Kb - the two ends of Brazil's market-reserve micro era, in one sentence. In English and Brazilian Portuguese.",
+    body: "The pre-1996 story now names both machines' ancestry precisely: the Microdigital TK-82C as a Brazilian clone of Sinclair's ZX81, and the TK90X as a clone of the ZX Spectrum 48K - the two ends of Brazil's market-reserve micro era, in one sentence. In English and Brazilian Portuguese.",
   },
   {
     date: "2026-07-18",

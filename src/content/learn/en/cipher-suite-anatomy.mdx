@@ -15,7 +15,7 @@ updated: "2026-06-29"
 
 A TLS cipher suite is a named bundle of cryptographic choices that a client and server agree on during the handshake. A single name like `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` packs several independent decisions into one identifier: how the two sides agree on a shared secret, how the server proves who it is, which algorithm encrypts the application data, and how that data is protected from tampering.
 
-Every registered suite also has a two-byte code point, assigned by IANA. The name above is `0xC02F` on the wire. The handshake never sends the text name; it sends the two bytes. The names exist for humans, and there is more than one naming convention, which is a frequent source of confusion.
+Every registered suite also has a two-byte code point, assigned by IANA (the Internet Assigned Numbers Authority). The name above is `0xC02F` on the wire. The handshake never sends the text name; it sends the two bytes. The names exist for humans, and there is more than one naming convention, which is a frequent source of confusion.
 
 ## The jobs a suite describes
 
@@ -40,7 +40,7 @@ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 
 **Mode** turns the block cipher into something that can encrypt a stream of records. `GCM`, `CCM`, and `CHACHA20_POLY1305` are AEAD modes that handle integrity themselves. `CBC` is the older mode that needs a separate MAC.
 
-**MAC or PRF hash** is the last token. In a CBC suite it is the HMAC hash that authenticates each record. In an AEAD suite the cipher already provides integrity, so the trailing hash instead names the PRF that the handshake uses to derive keys (`SHA256` or `SHA384`).
+**MAC or PRF hash** is the last token - MAC being the message authentication code and PRF the pseudorandom function. In a CBC suite it is the HMAC (hash-based message authentication code) hash that authenticates each record. In an AEAD suite the cipher already provides integrity, so the trailing hash instead names the PRF that the handshake uses to derive keys (`SHA256` or `SHA384`).
 
 ## Reading it the other way
 

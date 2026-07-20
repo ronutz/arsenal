@@ -25,7 +25,7 @@ O FA tem três tipos de elemento:
 
 ## Como ele sinaliza
 
-O FA usa o **LLDP**. O Server descobre os vizinhos FA por meio de TLVs específicos do FA carregados dentro das PDUs de LLDP, então nenhum protocolo de controle separado é necessário. O FA é habilitado globalmente (`fa enable`) e depois nas portas relevantes. Quando um Proxy ou Client anuncia uma associação entre uma VLAN e um I-SID, o Server provisiona aquele Layer 2 VSN automaticamente - a ideia do Zero Touch. A troca pode ser protegida com autenticação de mensagem (uma chave compartilhada), que o Server habilita por padrão quando você ativa o FA em uma porta.
+O FA usa o **LLDP**. O Server descobre os vizinhos FA por meio de TLVs específicos do FA carregados dentro das PDUs de LLDP (Protocolo de Descoberta de Camada de Enlace, do inglês Link Layer Discovery Protocol), então nenhum protocolo de controle separado é necessário. O FA é habilitado globalmente (`fa enable`) e depois nas portas relevantes. Quando um Proxy ou Client anuncia uma associação entre uma VLAN e um I-SID, o Server provisiona aquele Layer 2 VSN automaticamente - a ideia do Zero Touch. A troca pode ser protegida com autenticação de mensagem (uma chave compartilhada), que o Server habilita por padrão quando você ativa o FA em uma porta.
 
 ## Onde o EXOS entra
 

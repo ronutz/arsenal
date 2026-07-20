@@ -23,7 +23,7 @@ DataSafe is part of **Fraud Protection Service (FPS)**, which must be provisione
 
 Everything at the URL or single-page-application view level sits under Application Layer Encryption (ALE), which must be enabled first. F5 states ALE protects against credential theft from man-in-the-middle and MITM-browser attacks, verifies whether a user is trying to use a fabricated password, validates the client-side password, and encrypts credentials in real time on submission.
 
-Under ALE sit the individual protections. **Real-Time Encryption** encrypts passwords as the user types, defeating in-browser key loggers. **HTML Field Obfuscation** encrypts the `name` attribute of input fields and decrypts it back on the BIG-IP, so field names are not stable targets. **Add Decoy Inputs** continuously generates and removes fake input fields, making it harder for an attacker to pick the real one out by script or proxy. **Full AJAX Encryption** covers JSON and AJAX submissions. **Identify Stolen Credentials** checks whether a submitted password was stolen from a substitute-value parameter.
+Under ALE sit the individual protections. **Real-Time Encryption** encrypts passwords as the user types, defeating in-browser key loggers. **HTML Field Obfuscation** encrypts the `name` attribute of input fields and decrypts it back on the BIG-IP, so field names are not stable targets. **Add Decoy Inputs** continuously generates and removes fake input fields, making it harder for an attacker to pick the real one out by script or proxy. **Full AJAX (Asynchronous JavaScript and XML) Encryption** covers JSON and AJAX submissions. **Identify Stolen Credentials** checks whether a submitted password was stolen from a substitute-value parameter.
 
 ## The caveats that catch people
 

@@ -44,5 +44,8 @@ export const routing = defineRouting({
   // Retained as intent; inert in static export (a middleware feature). First-
   // visit routing is handled at the edge (public/_redirects today; Accept-
   // Language detection can move into the API Worker later).
-  localeDetection: true,
+  // English is the default for every new visit (PRIME 2026-07-19): do NOT
+  // sniff the browser Accept-Language on first visit. Users choose their locale
+  // explicitly via the switcher; the choice persists in the NEXT_LOCALE cookie.
+  localeDetection: false,
 });

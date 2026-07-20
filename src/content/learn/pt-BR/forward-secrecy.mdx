@@ -29,7 +29,7 @@ O Diffie-Hellman efêmero rompe o vínculo entre o segredo da sessão e qualquer
 
 Como o segredo compartilhado nunca foi cifrado sob a chave de longo prazo do servidor, e as chaves privadas efêmeras não existem mais, um comprometimento posterior da chave de longo prazo não revela nada sobre sessões passadas. Simplesmente não há nada na gravação para desembrulhar.
 
-Você verá isso como `ECDHE`, Diffie-Hellman efêmero de curva elíptica, ou `DHE`, a variante mais antiga de campo finito. O ECDHE é mais rápido e é o padrão moderno; o DHE está sendo descontinuado, e é por isso que até uma suíte DHE-AEAD forte como `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` agora carrega uma marca de desaconselhado da IANA. Os primos estáticos e não efêmeros `ECDH` e `DH`, sem o `E` final, não oferecem sigilo de encaminhamento.
+Você verá isso como `ECDHE`, Diffie-Hellman efêmero de curva elíptica, ou `DHE`, a variante mais antiga de campo finito. O ECDHE é mais rápido e é o padrão moderno; o DHE está sendo descontinuado, e é por isso que até uma suíte DHE-AEAD forte como `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` agora carrega uma marca de desaconselhado da IANA. Os primos estáticos e não efêmeros `ECDH` (Diffie-Hellman de curva elíptica, do inglês Elliptic-Curve Diffie-Hellman) e `DH`, sem o `E` final, não oferecem sigilo de encaminhamento.
 
 ## Autenticação é uma tarefa à parte
 

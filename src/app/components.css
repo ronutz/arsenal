@@ -4542,7 +4542,9 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .tools-family-heading {
   font-size: 1.02rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  /* PRIME 2026-07-19: prominent cyan for vendor-hub sub-section titles
+     (e.g. "BIG-IP LTM - Local Traffic Manager"), replacing the muted gray. */
+  color: var(--accent);
   margin: 1.6rem 0 0.9rem;
 }
 
@@ -14210,3 +14212,32 @@ main[data-view="list"] .boss-viewer-blurb {
   color: var(--text-secondary);
   line-height: 1.55;
 }
+
+/* ---- Generic /dev/fun fullscreen (shared useFullscreen hook) --------------
+   The MegaBrainConsole has its own .mb-console fullscreen rules; these are the
+   reusable equivalents for the other toys (meeting bingo, cat distribution).
+   Apply `fs-fill` to the root element the hook's ref points at; the hook adds
+   `is-fullscreen` for the CSS fallback path (iPhone Safari). :fullscreen covers
+   the real API. 100dvh tracks the mobile dynamic viewport; a solid canvas
+   background prevents the page showing through a transparent toy root. */
+.fs-fill:fullscreen {
+  max-width: none; margin: 0; border: none; border-radius: 0;
+  width: 100%; height: 100%; overflow: auto;
+  background: var(--canvas-primary); padding: 1.25rem;
+}
+.fs-fill.is-fullscreen {
+  position: fixed; inset: 0; z-index: 2147483000;
+  max-width: none; margin: 0; border: none; border-radius: 0;
+  width: 100vw; height: 100dvh; overflow: auto;
+  background: var(--canvas-primary); padding: 1.25rem;
+}
+/* Reusable fullscreen toggle button for the toys (mirrors .mb-fs-toggle). */
+.fs-toggle {
+  flex: 0 0 auto;
+  background: none; border: 1px solid transparent; border-radius: 6px;
+  color: #5b6689; cursor: pointer; font-size: 0.82rem; line-height: 1;
+  padding: 0.2rem 0.45rem;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+.fs-toggle:hover, .fs-toggle:focus-visible { color: #22d3ee; border-color: rgba(34, 211, 238, 0.4); outline: none; }
+.fs-toggle[aria-pressed="true"] { color: #8b97bf; border-color: rgba(139, 151, 191, 0.35); background: rgba(139, 151, 191, 0.08); }

@@ -43,6 +43,6 @@ A related trap is that a single header value string is matched literally, commas
 
 ## Presence, absence, and inversion
 
-Header, cookie, argument, and JWT-claim matchers also support `check_present` and `check_not_present`, which test only for the field being there or not, with no value comparison. And most matchers support `invert_matcher`, which flips the result: the predicate matches when the condition is **not** met. An inverted method matcher on `["GET"]` matches every method except GET. Inversion is powerful and easy to misread, so it is worth calling out explicitly whenever it appears.
+Header, cookie, argument, and JWT (JSON Web Token)-claim matchers also support `check_present` and `check_not_present`, which test only for the field being there or not, with no value comparison. And most matchers support `invert_matcher`, which flips the result: the predicate matches when the condition is **not** met. An inverted method matcher on `["GET"]` matches every method except GET. Inversion is powerful and easy to misread, so it is worth calling out explicitly whenever it appears.
 
 The explainer on this site renders each predicate with its values, marks OR lists, and flags inverted matchers, so the two levels of logic are visible at a glance rather than inferred from nesting.

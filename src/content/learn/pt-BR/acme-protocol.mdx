@@ -13,7 +13,7 @@ updated: "2026-07-07"
 
 ## O problema que o ACME resolve
 
-Uma autoridade certificadora não assina um certificado para um nome enquanto não estiver convencida de que você controla aquele nome. Historicamente essa verificação era manual: colar uma CSR em um formulário web, receber um e-mail, clicar em um link. Isso não escala, e não sobrevive à mudança para certificados de vida curta (veja [tempos de vida de certificados](/learn/tls-certificate-lifetimes)), em que um certificado que se renova a cada poucas semanas não pode envolver uma pessoa a cada vez. O ACME, definido na RFC 8555, é o protocolo que automatiza toda a conversa entre um cliente e uma CA, da prova de controle até o recebimento do certificado, sem etapas manuais.
+Uma autoridade certificadora não assina um certificado para um nome enquanto não estiver convencida de que você controla aquele nome. Historicamente essa verificação era manual: colar uma CSR (Requisição de Assinatura de Certificado, do inglês Certificate Signing Request) em um formulário web, receber um e-mail, clicar em um link. Isso não escala, e não sobrevive à mudança para certificados de vida curta (veja [tempos de vida de certificados](/learn/tls-certificate-lifetimes)), em que um certificado que se renova a cada poucas semanas não pode envolver uma pessoa a cada vez. O ACME (Ambiente de Gerenciamento Automático de Certificados, do inglês Automatic Certificate Management Environment), definido na RFC 8555, é o protocolo que automatiza toda a conversa entre um cliente e uma CA, da prova de controle até o recebimento do certificado, sem etapas manuais.
 
 ## A conta e o pedido
 

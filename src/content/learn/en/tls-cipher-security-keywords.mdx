@@ -15,7 +15,7 @@ A cipher string can be read for its security posture almost as quickly as for it
 
 ## The keywords you want
 
-**Forward secrecy** is the single most important property, and it comes from an ephemeral key exchange: `ECDHE` (elliptic curve) or `DHE` (finite field). With forward secrecy, capturing a server's private key does not let an attacker decrypt past sessions, because each session used a throwaway key. ECDHE is preferred for being faster than DHE. For bulk encryption, the **AEAD** ciphers `AES-GCM` and `CHACHA20-POLY1305` are the strong choices, combining encryption and integrity in one construction. F5 recommends including the `HIGH` alias and, when serving an ECDSA certificate, including `ECDHE_ECDSA` so the right suites are available.
+**Forward secrecy** is the single most important property, and it comes from an ephemeral key exchange: `ECDHE` (elliptic curve) or `DHE` (finite field). With forward secrecy, capturing a server's private key does not let an attacker decrypt past sessions, because each session used a throwaway key. ECDHE is preferred for being faster than DHE. For bulk encryption, the **AEAD** (authenticated encryption with associated data) ciphers `AES-GCM` (AES being the Advanced Encryption Standard, GCM its Galois/Counter Mode) and `CHACHA20-POLY1305` are the strong choices, combining encryption and integrity in one construction. F5 recommends including the `HIGH` alias and, when serving an ECDSA (Elliptic Curve Digital Signature Algorithm) certificate, including `ECDHE_ECDSA` so the right suites are available.
 
 ## The keywords you want gone
 
@@ -29,7 +29,7 @@ A short blacklist covers most of the danger:
 - `ADH` and `AECDH`: anonymous key exchanges with no certificate and therefore no protection against a man in the middle.
 - `LOW`: the alias for short-key, low-strength suites.
 
-The safe way to forbid these is the `!` operator, which excludes them permanently. A string that says `!RC4:!SSLv3:!EXP:!DES` is doing exactly the right thing. F5 specifically recommends disabling anonymous DH while keeping strength high, written as `!ADH:HIGH`.
+The safe way to forbid these is the `!` operator, which excludes them permanently. A string that says `!RC4:!SSLv3:!EXP:!DES` (RC4 and DES being the broken Rivest Cipher 4 and Data Encryption Standard) is doing exactly the right thing. F5 specifically recommends disabling anonymous DH (Diffie-Hellman) while keeping strength high, written as `!ADH:HIGH`.
 
 ## The protocol versions
 

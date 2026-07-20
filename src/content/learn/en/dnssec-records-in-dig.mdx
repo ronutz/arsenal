@@ -11,18 +11,18 @@ status: machine-draft
 updated: "2026-06-30"
 ---
 
-DNSSEC signs DNS data so a resolver can prove an answer was not tampered with. When you query with `+dnssec` (which sets the EDNS `do` flag), the extra records appear alongside the normal ones.
+DNSSEC (Domain Name System Security Extensions) signs DNS data so a resolver can prove an answer was not tampered with. When you query with `+dnssec` (which sets the EDNS `do` flag), the extra records appear alongside the normal ones.
 
 ## The record types
 
 - **RRSIG** is a signature over a set of records of one type (an RRset). Its rdata leads with the type it covers, the algorithm number, a label count, the original TTL, a signature expiration and inception time, a key tag, and the signer's name, followed by the signature itself. The validity window matters operationally: an expired RRSIG makes a validating resolver return `SERVFAIL`, and expired signatures are a common cause of a domain that "suddenly stopped resolving" for some users but not others.
 - **DNSKEY** is a public key for the zone. A validator uses it to check the RRSIGs in that zone. Its rdata is a flags field, a protocol byte (always 3), an algorithm, and the key material.
-- **DS** (Delegation Signer) is the link between a parent zone and a child. It is a hash of the child's DNSKEY, published in the parent. Its rdata is a key tag, an algorithm, a digest type, and the digest. This is the record you give your registrar to turn DNSSEC on for a delegation.
-- **NSEC** and **NSEC3** provide authenticated denial of existence. Instead of simply saying "no such name," a signed zone proves the gap: NSEC points to the next existing name, and NSEC3 does the same over hashed names to make walking the zone harder. This is how a validated `NXDOMAIN` or NODATA is itself trustworthy.
+- **DS** (Delegation Signer) is the link between a parent zone and a child. It is a hash of the child's DNSKEY (DNS Public Key record), published in the parent. Its rdata is a key tag, an algorithm, a digest type, and the digest. This is the record you give your registrar to turn DNSSEC on for a delegation.
+- **NSEC** (Next Secure record) and **NSEC3** (Next Secure version 3) provide authenticated denial of existence. Instead of simply saying "no such name," a signed zone proves the gap: NSEC points to the next existing name, and NSEC3 does the same over hashed names to make walking the zone harder. This is how a validated `NXDOMAIN` or NODATA is itself trustworthy.
 
 ## The chain of trust
 
-Validation is a chain from the root down. A resolver trusts the root's key (the single configured trust anchor), uses the root's DS to vouch for the top-level domain's DNSKEY, uses that to validate the TLD's DS for the next zone, and so on down to the name you asked about. Each hop is a DS in the parent matching a DNSKEY in the child, and each RRset is covered by an RRSIG. A break anywhere, a missing DS at a delegation, a key rollover that removed the wrong key, an expired signature, snaps the chain and the resolver returns `SERVFAIL`.
+Validation is a chain from the root down. A resolver trusts the root's key (the single configured trust anchor), uses the root's DS to vouch for the top-level domain's DNSKEY, uses that to validate the TLD's (top-level domain) DS for the next zone, and so on down to the name you asked about. Each hop is a DS in the parent matching a DNSKEY in the child, and each RRset is covered by an RRSIG. A break anywhere, a missing DS at a delegation, a key rollover that removed the wrong key, an expired signature, snaps the chain and the resolver returns `SERVFAIL`.
 
 ## What ad actually means
 

@@ -15,7 +15,7 @@ Most of an XML document is elements and text, but three other constructs show up
 
 ## CDATA sections
 
-A **CDATA section** holds text that should be taken literally, without the parser interpreting `<` and `&` as markup. It is written `<![CDATA[ ... ]]>`, and everything between the brackets is raw character data:
+A **CDATA (character data) section** holds text that should be taken literally, without the parser interpreting `<` and `&` as markup. It is written `<![CDATA[ ... ]]>`, and everything between the brackets is raw character data:
 
 ```
 <summary><![CDATA[Uses <tags> & symbols freely]]></summary>

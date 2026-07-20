@@ -13,7 +13,7 @@ updated: "2026-07-07"
 
 ## The problem ACME solves
 
-A certificate authority will not sign a certificate for a name until it is satisfied you control that name. Historically that check was manual: paste a CSR into a web form, receive an email, click a link. That does not scale, and it does not survive the move to short certificate lifetimes (see [certificate lifetimes](/learn/tls-certificate-lifetimes)), where a certificate that renews every few weeks cannot involve a human each time. ACME, defined in RFC 8555, is the protocol that automates the entire conversation between a client and a CA, from proving control to receiving the certificate, with no manual steps.
+A certificate authority will not sign a certificate for a name until it is satisfied you control that name. Historically that check was manual: paste a CSR (Certificate Signing Request) into a web form, receive an email, click a link. That does not scale, and it does not survive the move to short certificate lifetimes (see [certificate lifetimes](/learn/tls-certificate-lifetimes)), where a certificate that renews every few weeks cannot involve a human each time. ACME (Automatic Certificate Management Environment), defined in RFC 8555, is the protocol that automates the entire conversation between a client and a CA, from proving control to receiving the certificate, with no manual steps.
 
 ## The account and the order
 

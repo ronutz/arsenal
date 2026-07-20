@@ -61,7 +61,7 @@ Para DV, a CA o desafia a demonstrar controle do domínio. Métodos comuns são 
 
 ## Certificados autoassinados pulam a CA
 
-Se você assina sua própria CSR com sua própria chave em vez de enviá-la a uma CA, você obtém um certificado autoassinado, onde o Issuer é igual ao Subject. Ele não carrega nenhuma autoridade externa, porque a única coisa atestando por ele é ele mesmo, mas é perfeitamente útil para desenvolvimento local, serviços internos com seu próprio repositório de confiança, ou para atuar como a raiz de uma PKI privada. A ferramenta sinaliza quando um certificado é autoemitido, o que lhe diz imediatamente que sua confiança vem de algum lugar que não uma CA pública.
+Se você assina sua própria CSR com sua própria chave em vez de enviá-la a uma CA, você obtém um certificado autoassinado, onde o Issuer é igual ao Subject. Ele não carrega nenhuma autoridade externa, porque a única coisa atestando por ele é ele mesmo, mas é perfeitamente útil para desenvolvimento local, serviços internos com seu próprio repositório de confiança, ou para atuar como a raiz de uma PKI (infraestrutura de chave pública, do inglês public key infrastructure) privada. A ferramenta sinaliza quando um certificado é autoemitido, o que lhe diz imediatamente que sua confiança vem de algum lugar que não uma CA pública.
 
 ## ACME: automatizando a troca
 

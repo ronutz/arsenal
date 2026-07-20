@@ -17,13 +17,13 @@ O FortiOS tem um cliente ACME embutido no sistema operacional. Seu propósito do
 
 ## Os requisitos que o moldam
 
-Como a CA precisa validar o controle do FortiGate diretamente, os pré-requisitos são estritos. O FortiGate precisa ter um endereço IP público e um nome de host em DNS, um FQDN, que resolva para esse IP público. Você designa uma interface ACME na qual o cliente escuta os desafios, e essa interface precisa ser publicamente alcançável. De forma crítica, as portas que o desafio usa, TCP/80 e TCP/443, não podem estar ocupadas por outros serviços nessa interface, então ela não pode carregar VIPs ou encaminhamento de portas nessas portas, e certificados ACME não são suportados em interfaces de loopback. Essas restrições decorrem diretamente de como os desafios funcionam.
+Como a CA precisa validar o controle do FortiGate diretamente, os pré-requisitos são estritos. O FortiGate precisa ter um endereço IP público e um nome de host em DNS, um FQDN (nome de domínio totalmente qualificado, do inglês fully qualified domain name), que resolva para esse IP público. Você designa uma interface ACME na qual o cliente escuta os desafios, e essa interface precisa ser publicamente alcançável. De forma crítica, as portas que o desafio usa, TCP/80 e TCP/443, não podem estar ocupadas por outros serviços nessa interface, então ela não pode carregar VIPs ou encaminhamento de portas nessas portas, e certificados ACME não são suportados em interfaces de loopback. Essas restrições decorrem diretamente de como os desafios funcionam.
 
 O limite mais definidor de todos é o nome do certificado. O FortiOS preenche o Subject Alternative Name automaticamente com o nome de host DNS do FortiGate, e esse campo não pode ser editado: você não pode usar um curinga, e não pode adicionar múltiplos SANs. O resultado é um certificado de FQDN único para o próprio equipamento. Se você precisa de um curinga ou de um certificado de múltiplos nomes, o cliente nativo não é a ferramenta para isso.
 
 ## Os desafios, por versão
 
-Como o FortiGate prova a posse evoluiu. Versões mais novas do FortiOS suportam dois tipos de desafio: **TLS-ALPN-01** na TCP/443 e **HTTP-01** na TCP/80, com o TLS-ALPN-01 como padrão. O TLS-ALPN-01, definido na RFC 8737, faz o FortiGate apresentar um certificado autoassinado especial carregando um `acmeIdentifier` e o SAN correto durante um handshake TLS na 443; como esse certificado é deliberadamente incomum, scanners de segurança frequentemente o sinalizam, o que a Fortinet observa ser esperado. O HTTP-01, como o "s" ausente no nome sugere, responde por HTTP puro na porta 80. Por padrão a porta 80 redireciona para a 443, e se a 443 já estiver em uso pelo daemon HTTPS, o daemon ACME recai para o desafio HTTP-01 na 80. Versões mais antigas do FortiOS ofereciam apenas o caminho HTTP-01 na porta 80, e é por isso que os pré-requisitos de interface foram originalmente escritos em torno dessa porta.
+Como o FortiGate prova a posse evoluiu. Versões mais novas do FortiOS suportam dois tipos de desafio: **TLS-ALPN-01** na TCP/443 e **HTTP-01** na TCP/80, com o TLS-ALPN-01 como padrão. O TLS-ALPN-01, definido na RFC 8737, faz o FortiGate apresentar um certificado autoassinado especial carregando um `acmeIdentifier` e o SAN (Nome Alternativo do Titular, do inglês Subject Alternative Name) correto durante um handshake TLS na 443; como esse certificado é deliberadamente incomum, scanners de segurança frequentemente o sinalizam, o que a Fortinet observa ser esperado. O HTTP-01, como o "s" ausente no nome sugere, responde por HTTP puro na porta 80. Por padrão a porta 80 redireciona para a 443, e se a 443 já estiver em uso pelo daemon HTTPS, o daemon ACME recai para o desafio HTTP-01 na 80. Versões mais antigas do FortiOS ofereciam apenas o caminho HTTP-01 na porta 80, e é por isso que os pré-requisitos de interface foram originalmente escritos em torno dessa porta.
 
 ## Configurando
 
@@ -41,7 +41,7 @@ config vpn certificate local
 end
 ```
 
-Habilitá-lo solicita que você aceite os Termos de Serviço da Let's Encrypt. Uma vez emitido, o certificado encadeia até um intermediário da Let's Encrypt sob a ISRG Root X1, e a renovação é feita pelo mesmo cliente escutando na interface ACME, sem nenhuma tarefa agendada para manter.
+Habilitá-lo solicita que você aceite os Termos de Serviço da Let's Encrypt. Uma vez emitido, o certificado encadeia até um intermediário da Let's Encrypt sob a ISRG (Grupo de Pesquisa em Segurança da Internet, do inglês Internet Security Research Group) Root X1, e a renovação é feita pelo mesmo cliente escutando na interface ACME, sem nenhuma tarefa agendada para manter.
 
 ## Como isso difere do BIG-IP
 

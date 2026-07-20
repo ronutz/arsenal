@@ -17,13 +17,13 @@ FortiOS has an ACME client built into the operating system. Its documented purpo
 
 ## The requirements that shape it
 
-Because the CA has to validate control of the FortiGate directly, the prerequisites are strict. The FortiGate must have a public IP address and a hostname in DNS, an FQDN, that resolves to that public IP. You designate an ACME interface on which the client listens for challenges, and that interface must be publicly reachable. Critically, the ports the challenge uses, TCP/80 and TCP/443, must not be occupied by other services on that interface, so it cannot carry VIPs or port forwarding on those ports, and ACME certificates are not supported on loopback interfaces. These constraints follow directly from how the challenges work.
+Because the CA has to validate control of the FortiGate directly, the prerequisites are strict. The FortiGate must have a public IP address and a hostname in DNS, an FQDN (fully qualified domain name), that resolves to that public IP. You designate an ACME interface on which the client listens for challenges, and that interface must be publicly reachable. Critically, the ports the challenge uses, TCP/80 and TCP/443, must not be occupied by other services on that interface, so it cannot carry VIPs or port forwarding on those ports, and ACME certificates are not supported on loopback interfaces. These constraints follow directly from how the challenges work.
 
 The single most defining limit is the certificate's name. FortiOS fills the Subject Alternative Name automatically with the FortiGate's DNS hostname, and that field cannot be edited: you cannot use a wildcard, and you cannot add multiple SANs. The result is a single-FQDN certificate for the box itself. If you need a wildcard or a multi-name certificate, the native client is not the tool for it.
 
 ## The challenges, by version
 
-How the FortiGate proves ownership has evolved. Newer FortiOS releases support two challenge types: **TLS-ALPN-01** on TCP/443 and **HTTP-01** on TCP/80, with TLS-ALPN-01 as the default. TLS-ALPN-01, defined in RFC 8737, has the FortiGate present a special self-signed certificate carrying an `acmeIdentifier` and the right SAN during a TLS handshake on 443; because that certificate is deliberately unusual, security scanners often flag it, which Fortinet notes is expected. HTTP-01, as the missing "s" in the name implies, answers over plain HTTP on port 80. By default port 80 redirects to 443, and if 443 is already in use by the HTTPS daemon, the ACME daemon falls back to the HTTP-01 challenge on 80. Older FortiOS versions offered only the HTTP-01 path on port 80, which is why the interface prerequisites were originally written around that port.
+How the FortiGate proves ownership has evolved. Newer FortiOS releases support two challenge types: **TLS-ALPN-01** on TCP/443 and **HTTP-01** on TCP/80, with TLS-ALPN-01 as the default. TLS-ALPN-01, defined in RFC 8737, has the FortiGate present a special self-signed certificate carrying an `acmeIdentifier` and the right SAN (Subject Alternative Name) during a TLS handshake on 443; because that certificate is deliberately unusual, security scanners often flag it, which Fortinet notes is expected. HTTP-01, as the missing "s" in the name implies, answers over plain HTTP on port 80. By default port 80 redirects to 443, and if 443 is already in use by the HTTPS daemon, the ACME daemon falls back to the HTTP-01 challenge on 80. Older FortiOS versions offered only the HTTP-01 path on port 80, which is why the interface prerequisites were originally written around that port.
 
 ## Configuring it
 
@@ -41,7 +41,7 @@ config vpn certificate local
 end
 ```
 
-Enabling it prompts you to accept the Let's Encrypt Terms of Service. Once issued, the certificate chains to a Let's Encrypt intermediate under ISRG Root X1, and renewal is handled by the same client listening on the ACME interface, with no scheduled job to maintain.
+Enabling it prompts you to accept the Let's Encrypt Terms of Service. Once issued, the certificate chains to a Let's Encrypt intermediate under ISRG (Internet Security Research Group) Root X1, and renewal is handled by the same client listening on the ACME interface, with no scheduled job to maintain.
 
 ## How this differs from BIG-IP
 

@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## The assertion is a set of statements
 
-A SAML assertion is a signed package of statements about one subject, issued by one IdP, valid for one audience, within one time window. Decoding it means reading each of those parts and understanding what the service provider is supposed to check before it trusts any of them. Every field below is something a real SP validates, which is why a decoder surfaces them.
+A SAML (Security Assertion Markup Language) assertion is a signed package of statements about one subject, issued by one IdP, valid for one audience, within one time window. Decoding it means reading each of those parts and understanding what the service provider is supposed to check before it trusts any of them. Every field below is something a real SP validates, which is why a decoder surfaces them.
 
 ## Subject and NameID
 
@@ -25,7 +25,7 @@ An emailAddress format is a human-readable address. A persistent format is a sta
 
 The SubjectConfirmation says how the SP can confirm the presenter really is the subject. Its Method matters. The overwhelmingly common method in browser SSO is bearer, which means whoever bears the assertion is treated as the subject, exactly like a bearer token. That convenience is also the risk: a stolen bearer assertion is a stolen identity, so the surrounding data exists to keep the window of theft small.
 
-The SubjectConfirmationData carries that protective data, and a correct SP enforces all of it. NotOnOrAfter caps how long the confirmation is good for, so a captured assertion expires quickly. Recipient pins the assertion to the exact ACS URL it was meant for, so it cannot be replayed at a different endpoint. InResponseTo ties the assertion back to the specific AuthnRequest the SP sent, which defeats unsolicited injected assertions. A bearer confirmation missing NotOnOrAfter or Recipient is a real weakness, because it removes one of these limits, and the decoder flags those cases.
+The SubjectConfirmationData carries that protective data, and a correct SP enforces all of it. NotOnOrAfter caps how long the confirmation is good for, so a captured assertion expires quickly. Recipient pins the assertion to the exact ACS (Assertion Consumer Service) URL it was meant for, so it cannot be replayed at a different endpoint. InResponseTo ties the assertion back to the specific AuthnRequest the SP sent, which defeats unsolicited injected assertions. A bearer confirmation missing NotOnOrAfter or Recipient is a real weakness, because it removes one of these limits, and the decoder flags those cases.
 
 ## Conditions and the audience
 

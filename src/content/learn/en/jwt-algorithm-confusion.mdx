@@ -19,7 +19,7 @@ The JWT spec includes `none`, meaning an unsigned token. If a verifier honors it
 
 ## RS256 to HS256 confusion
 
-This one is subtler and is why JWKS is relevant. With **RS256**, the server holds an RSA key pair and verifies signatures with the *public* key, which by design is not secret. With **HS256**, verification uses a shared *secret* with HMAC. The attack: the attacker takes a token, sets `alg` to `HS256`, and signs it using the server's **public key as the HMAC secret**. If the server reads `alg` from the token and switches to HS256, it will HMAC-verify using that same public key, which the attacker also has, so the signature checks out. The public key, meant to be shared freely, becomes the shared secret.
+This one is subtler and is why JWKS is relevant. With **RS256** (RSA signature with SHA-256), the server holds an RSA key pair and verifies signatures with the *public* key, which by design is not secret. With **HS256** (HMAC with SHA-256), verification uses a shared *secret* with HMAC. The attack: the attacker takes a token, sets `alg` to `HS256`, and signs it using the server's **public key as the HMAC secret**. If the server reads `alg` from the token and switches to HS256, it will HMAC-verify using that same public key, which the attacker also has, so the signature checks out. The public key, meant to be shared freely, becomes the shared secret.
 
 ## The single defense
 

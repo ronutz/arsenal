@@ -13,7 +13,7 @@ updated: "2026-06-30"
 
 ## Two timestamps define the lifetime
 
-Every X.509 certificate carries a validity field with exactly two values: `notBefore` and `notAfter`, defined in RFC 5280. They are absolute instants, expressed in UTC, and together they mark the window during which the certificate is meant to be honoured. A TLS client checks the current time against this window for every certificate in the chain, not just the leaf — a certificate that is expired, or not yet valid, fails validation regardless of how sound everything else is. The planner on this page takes these two dates as its only input, because everything else it tells you is derived from them.
+Every X.509 certificate carries a validity field with exactly two values: `notBefore` and `notAfter`, defined in RFC 5280. They are absolute instants, expressed in UTC (Coordinated Universal Time), and together they mark the window during which the certificate is meant to be honoured. A TLS client checks the current time against this window for every certificate in the chain, not just the leaf — a certificate that is expired, or not yet valid, fails validation regardless of how sound everything else is. The planner on this page takes these two dates as its only input, because everything else it tells you is derived from them.
 
 ## How a lifetime is measured
 

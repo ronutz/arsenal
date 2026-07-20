@@ -26,4 +26,4 @@ O dig imprime todo registro nas mesmas cinco colunas. O nslookup faz algo difere
 
 ## O que observar
 
-O SOA é o ponto fora da curva, porque é o único tipo que o nslookup quebra em várias linhas. O campo `mail addr` é uma caixa postal com o primeiro ponto substituindo o `@`, e o `minimum` também serve como TTL de cache negativo, então ele governa por quanto tempo uma resposta de "não existe" da zona é lembrada. Se você quiser os mesmos campos dispostos da maneira clássica, o dig os imprime em uma única linha de registro SOA.
+O SOA é o ponto fora da curva, porque é o único tipo que o nslookup quebra em várias linhas. O campo `mail addr` é uma caixa postal com o primeiro ponto substituindo o `@`, e o `minimum` também serve como TTL (tempo de vida, do inglês time to live) de cache negativo, então ele governa por quanto tempo uma resposta de "não existe" da zona é lembrada. Se você quiser os mesmos campos dispostos da maneira clássica, o dig os imprime em uma única linha de registro SOA.

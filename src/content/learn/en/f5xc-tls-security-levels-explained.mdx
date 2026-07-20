@@ -17,11 +17,11 @@ An XC HTTP load balancer offers three predefined TLS security levels - **High**,
 
 ## Default is High
 
-The point people miss is that **Default is High**. An HTTPS load balancer with an automatic certificate uses the Default level, and the Default level is the High level: minimum TLS 1.2, maximum TLS 1.3, and a short list of forward-secret AEAD ciphers - the TLS 1.3 suites plus ECDHE-ECDSA and ECDHE-RSA with GCM or ChaCha20. That is a strong posture out of the box.
+The point people miss is that **Default is High**. An HTTPS load balancer with an automatic certificate uses the Default level, and the Default level is the High level: minimum TLS 1.2, maximum TLS 1.3, and a short list of forward-secret AEAD (authenticated encryption with associated data) ciphers - the TLS 1.3 suites plus ECDHE (ephemeral elliptic-curve Diffie-Hellman)-ECDSA (Elliptic Curve Digital Signature Algorithm) and ECDHE-RSA with GCM (Galois/Counter Mode) or ChaCha20. That is a strong posture out of the box.
 
 ## The levels are cumulative
 
-Going down from High does not swap the cipher list, it extends it. **Medium** keeps every High cipher and adds four ECDHE-CBC-SHA suites - still forward-secret, but CBC with SHA-1 rather than AEAD, so medium strength - and lowers the minimum version to TLS 1.0. **Low** keeps every Medium cipher and adds four static-RSA suites, and static RSA means no forward secrecy at all. So Low is a superset of Medium, which is a superset of High. Every level still caps at TLS 1.3.
+Going down from High does not swap the cipher list, it extends it. **Medium** keeps every High cipher and adds four ECDHE-CBC (Cipher Block Chaining)-SHA suites - still forward-secret, but CBC with SHA-1 rather than AEAD, so medium strength - and lowers the minimum version to TLS 1.0. **Low** keeps every Medium cipher and adds four static-RSA suites, and static RSA means no forward secrecy at all. So Low is a superset of Medium, which is a superset of High. Every level still caps at TLS 1.3.
 
 ## Why a scanner flags TLS 1.0 or 1.1
 
